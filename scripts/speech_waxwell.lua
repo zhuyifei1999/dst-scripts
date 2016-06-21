@@ -208,7 +208,7 @@ return {
 			--Pride... Arrogance... Conceit...
 			ATTACKER = "I know that look, %s. What are you up to?",
 			MURDERER = "Old habits die hard... and so will you!",
-			REVIVER = "Trust only yourself, hey %s?.",
+			REVIVER = "Trust only yourself, hey %s?",
 			GHOST = "I'll have to pay in blood to bring you back, %s.",
 			FIRESTARTER = "Do not blow this for us, %s.",
 		},

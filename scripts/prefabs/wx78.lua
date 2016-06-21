@@ -133,7 +133,10 @@ local function onlightingstrike(inst)
             inst.components.sanity:DoDelta(-TUNING.SANITY_LARGE)
             inst.components.talker:Say(GetString(inst, "ANNOUNCE_CHARGE"))
 
-            startovercharge(inst, inst.charge_time + TUNING.TOTAL_DAY_TIME * (.5 + .5 * math.random()))
+            local basecharge = TUNING.TOTAL_DAY_TIME
+            local dampen = 3 * basecharge / (inst.charge_time + 3 * basecharge)
+            local dcharge = dampen * basecharge * .5 * (1 + math.random() * dampen)
+            startovercharge(inst, inst.charge_time + dcharge)
         end
     end
 end

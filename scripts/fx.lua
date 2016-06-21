@@ -42,6 +42,14 @@ local fx =
         fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
     },
     {
+        name = "frogsplash",
+        bank = "splash",
+        build = "splash",
+        anim = "splash",
+        sound = "dontstarve/frog/splash",
+        fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
+    },
+    {
         name = "waterballoon_splash",
         bank = "waterballoon",
         build = "waterballoon",

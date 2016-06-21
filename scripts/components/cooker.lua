@@ -31,8 +31,13 @@ function Cooker:CookItem(item, chef)
             self.oncookitem(item, newitem)
         end
 
-        if self.inst.SoundEmitter ~= nil then
-            self.inst.SoundEmitter:PlaySound("dontstarve/wilson/cook")
+        local sound_inst =
+            self.inst.components.inventoryitem ~= nil and
+            self.inst.components.inventoryitem:GetGrandOwner() or
+            self.inst
+
+        if sound_inst.SoundEmitter ~= nil then
+            sound_inst.SoundEmitter:PlaySound("dontstarve/wilson/cook")
         end
 
         if self.oncookfn ~= nil then

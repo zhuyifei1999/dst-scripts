@@ -183,6 +183,9 @@ local function fn()
     --herdmember (from herdmember component) added to pristine state for optimization
     inst:AddTag("herdmember")
 
+    --saltlicker (from saltlicker component) added to pristine state for optimization
+    inst:AddTag("saltlicker")
+
     inst.Light:Enable(false)
     inst.Light:SetRadius(.85)
     inst.Light:SetFalloff(0.5)

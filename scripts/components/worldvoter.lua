@@ -63,7 +63,7 @@ local _commandid = net_uint(inst.GUID, "worldvoter._commandid")
 local _targetuserid = net_string(inst.GUID, "worldvoter._targetuserid")
 local _votecounts = {}
 for i = 1, MAX_VOTE_OPTIONS do
-    table.insert(_votecounts, net_tinybyte(inst.GUID, "worldvoter._votecounts["..tostring(i).."]", "votecountsdirty"))
+    table.insert(_votecounts, net_byte(inst.GUID, "worldvoter._votecounts["..tostring(i).."]", "votecountsdirty"))
 end
 
 --------------------------------------------------------------------------

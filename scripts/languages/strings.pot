@@ -35608,7 +35608,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WAXWELL.REVIVER
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.WAXWELL.REVIVER"
-msgid "Trust only yourself, hey %s?."
+msgid "Trust only yourself, hey %s?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.SPIDERDEN
@@ -53748,7 +53748,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.MOUNT.TARGETINCOMBAT
 msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.MOUNT.TARGETINCOMBAT"
-msgid "I should wait for the dust to settle, eh?."
+msgid "I should wait for the dust to settle, eh?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.MOUNT.INUSE
@@ -53773,7 +53773,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.SADDLE.TARGETINCOMBAT
 msgctxt "STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.SADDLE.TARGETINCOMBAT"
-msgid "I should wait for the dust to settle, eh?."
+msgid "I should wait for the dust to settle, eh?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.TEACH.KNOWN

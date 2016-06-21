@@ -7,16 +7,9 @@ local assets =
     Asset("SOUND", "sound/pig.fsb"),
 }
 
-local windowassets =
-{
-    Asset("ANIM", "anim/pig_house.zip"),
-}
-
 local prefabs =
 {
     "pigman",
-    "pighousewindow",
-    "pighousewindowsnow",
 }
 
 --Client update
@@ -288,6 +281,52 @@ local function oninit(inst)
     end
 end
 
+local function MakeWindow()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+
+    inst:AddTag("DECOR")
+    inst:AddTag("NOCLICK")
+    --[[Non-networked entity]]
+    inst.persists = false
+
+    inst.AnimState:SetBank("pig_house")
+    inst.AnimState:SetBuild("pig_house")
+    inst.AnimState:PlayAnimation("windowlight_idle")
+    inst.AnimState:SetLightOverride(.6)
+    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+    inst.AnimState:SetFinalOffset(1)
+
+    inst:Hide()
+
+    return inst
+end
+
+local function MakeWindowSnow()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+
+    inst:AddTag("DECOR")
+    inst:AddTag("NOCLICK")
+    --[[Non-networked entity]]
+    inst.persists = false
+
+    inst.AnimState:SetBank("pig_house")
+    inst.AnimState:SetBuild("pig_house")
+    inst.AnimState:PlayAnimation("windowsnow_idle")
+    inst.AnimState:SetFinalOffset(2)
+
+    inst:Hide()
+
+    MakeSnowCovered(inst)
+
+    return inst
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -318,9 +357,9 @@ local function fn()
     MakeSnowCoveredPristine(inst)
 
     if not TheNet:IsDedicated() then
-        inst._window = SpawnPrefab("pighousewindow")
+        inst._window = MakeWindow()
         inst._window.entity:SetParent(inst.entity)
-        inst._windowsnow = SpawnPrefab("pighousewindowsnow")
+        inst._windowsnow = MakeWindowSnow()
         inst._windowsnow.entity:SetParent(inst.entity)
         if not TheWorld.ismastersim then
             inst._window:DoPeriodicTask(FRAMES, OnUpdateWindow, nil, inst, inst._windowsnow)
@@ -373,51 +412,5 @@ local function fn()
     return inst
 end
 
-local function windowfn()
-    local inst = CreateEntity()
-
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-
-    inst:AddTag("FX")
-    --[[Non-networked entity]]
-    inst.persists = false
-
-    inst.AnimState:SetBank("pig_house")
-    inst.AnimState:SetBuild("pig_house")
-    inst.AnimState:PlayAnimation("windowlight_idle")
-    inst.AnimState:SetLightOverride(.6)
-    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
-    inst.AnimState:SetFinalOffset(1)
-
-    inst:Hide()
-
-    return inst
-end
-
-local function windowsnowfn()
-    local inst = CreateEntity()
-
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-
-    inst:AddTag("FX")
-    --[[Non-networked entity]]
-    inst.persists = false
-
-    inst.AnimState:SetBank("pig_house")
-    inst.AnimState:SetBuild("pig_house")
-    inst.AnimState:PlayAnimation("windowsnow_idle")
-    inst.AnimState:SetFinalOffset(2)
-
-    inst:Hide()
-
-    MakeSnowCovered(inst)
-
-    return inst
-end
-
 return Prefab("pighouse", fn, assets, prefabs),
-    Prefab("pighousewindow", windowfn, windowassets),
-    Prefab("pighousewindowsnow", windowsnowfn, windowassets),
     MakePlacer("pighouse_placer", "pig_house", "pig_house", "idle")
