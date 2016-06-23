@@ -15,6 +15,7 @@ local ChatQueue = Class(Widget, function(self, owner)
     self.whispers = {}
     self.timestamp = {}
     self.colours = {}
+    self.nolabel = {}
 
     self.chat_font = TALKINGFONT--DEFAULTFONT --UIFONT
     self.chat_size = 30 --22
@@ -74,22 +75,19 @@ end
 function ChatQueue:OnUpdate()
     local current_time = GetTime()
 
-    for i = 1,CHAT_QUEUE_SIZE do
+    for i = 1, CHAT_QUEUE_SIZE do
         local chat_time = self.timestamp[i]
 
-        if chat_time > 0.0 or chat_time == -1 then
-            local time_past_expiring = current_time - ( chat_time + CHAT_EXPIRE_TIME ) 
-            if time_past_expiring > 0.0 then
-                local alpha_fade = self:GetChatAlpha( current_time, chat_time )
-                if self.whispers[i]:IsVisible() then
-                    self.messages[i]:SetColour(WHISPER_COLOR[1],WHISPER_COLOR[2],WHISPER_COLOR[3],alpha_fade)
-                else
-                    self.messages[i]:SetColour(SAY_COLOR[1],SAY_COLOR[2],SAY_COLOR[3],alpha_fade)
-                end
+        if chat_time > 0 or chat_time == -1 then
+            local time_past_expiring = current_time - (chat_time + CHAT_EXPIRE_TIME)
+            if time_past_expiring > 0 then
+                local alpha_fade = self:GetChatAlpha(current_time, chat_time)
                 local clr = self.colours[i]
-                self.users[i]:SetColour(clr[1],clr[2],clr[3],alpha_fade)
-                self.whispers[i]:SetColour(clr[1],clr[2],clr[3],alpha_fade)
-                if alpha_fade <= 0.0 then
+                local msgclr = (self.nolabel[i] and clr) or (self.whispers[i].shown and WHISPER_COLOR) or SAY_COLOR
+                self.messages[i]:SetColour(msgclr[1], msgclr[2], msgclr[3], alpha_fade)
+                self.users[i]:SetColour(clr[1], clr[2], clr[3], alpha_fade)
+                self.whispers[i]:SetColour(clr[1], clr[2], clr[3], alpha_fade)
+                if alpha_fade <= 0 then
                     -- Get out of here!
                     self.timestamp[i] = -1
                 end
@@ -98,7 +96,7 @@ function ChatQueue:OnUpdate()
                 return
             end
             -- If the chat input screen is open, reset the timer to fade out soon
-            if ThePlayer and ThePlayer.HUD and ThePlayer.HUD:IsChatInputScreenOpen() then
+            if ThePlayer ~= nil and ThePlayer.HUD ~= nil and ThePlayer.HUD:IsChatInputScreenOpen() then
                 self.timestamp[i] = current_time - CHAT_EXPIRE_TIME - CHAT_LINGER_TIME
             end
         end
@@ -124,15 +122,23 @@ function ChatQueue:DisplaySystemMessage(message)
         textbox:Kill()
 
         for i,splitline in ipairs(splitlines) do
-            self:OnMessageReceived(nil, STRINGS.UI.CHATINPUTSCREEN.SYSTEMNAME, nil, splitline, {1,1,1,1}, false)
+            self:PushMessage(STRINGS.UI.CHATINPUTSCREEN.SYSTEMNAME, splitline, WHITE, false, false)
         end
     end
 end
 
+function ChatQueue:DisplayEmoteMessage(userid, name, prefab, message, colour, whisper)
+    -- Process Chat username
+    message = self:GetDisplayName(name, prefab).." "..message
+    self:PushMessage("", message, colour, whisper, true)
+end
+
 function ChatQueue:OnMessageReceived(userid, name, prefab, message, colour, whisper)
     -- Process Chat username
-    local username = self:GetDisplayName(name, prefab)
+    self:PushMessage(self:GetDisplayName(name, prefab), message, colour, whisper, false)
+end
 
+function ChatQueue:PushMessage(username, message, colour, whisper, nolabel)
     -- Shuffle upwards
     for i = 1, CHAT_QUEUE_SIZE - 1 do
         local y = -400 - i * (self.chat_size + 2)
@@ -144,28 +150,38 @@ function ChatQueue:OnMessageReceived(userid, name, prefab, message, colour, whis
         local newer_user = self.users[i + 1]
         local older_whisper = self.whispers[i]
         local newer_whisper = self.whispers[i + 1]
+        local clr = self.colours[i + 1]
+        local nolabel = self.nolabel[i + 1]
+        self.timestamp[i] = self.timestamp[i + 1]
+        self.colours[i] = clr
+        self.nolabel[i] = nolabel
+        local alpha_fade = self:GetChatAlpha(GetTime(), self.timestamp[i])
         older_user:SetString(newer_user:GetString())
         older_user:SetPosition(newer_user:GetPosition().x, y)
-        if newer_whisper:IsVisible() then
+        if newer_whisper.shown then
             older_whisper:Show()
             older_whisper:SetPosition(newer_whisper:GetPosition().x, y)
-            older_message:SetColour(WHISPER_COLOR)
+            if not nolabel then
+                older_message:SetColour(WHISPER_COLOR)
+            end
         else
             older_whisper:Hide()
-            older_message:SetColour(SAY_COLOR)
+            if not nolabel then
+                older_message:SetColour(SAY_COLOR)
+            end
         end
-        self.timestamp[i] = self.timestamp[i+1]
-        self.colours[i] = self.colours[i+1]
-        local clr = self.colours[i]
-        
-        local current_time = GetTime()
-        local alpha_fade = self:GetChatAlpha(current_time, self.timestamp[i])
         if clr ~= nil then
             older_user:SetColour(clr[1], clr[2], clr[3], alpha_fade)
             older_whisper:SetColour(clr[1], clr[2], clr[3], alpha_fade)
+            if nolabel then
+                older_message:SetColour(clr[1], clr[2], clr[3], alpha_fade)
+            end
         else
             older_user:SetColour(DEFAULT_PLAYER_COLOUR[1], DEFAULT_PLAYER_COLOUR[2], DEFAULT_PLAYER_COLOUR[3], alpha_fade)
             older_whisper:SetColour(DEFAULT_PLAYER_COLOUR[1], DEFAULT_PLAYER_COLOUR[2], DEFAULT_PLAYER_COLOUR[3], alpha_fade)
+            if nolabel then
+                older_message:SetColour(DEFAULT_PLAYER_COLOUR[1], DEFAULT_PLAYER_COLOUR[2], DEFAULT_PLAYER_COLOUR[3], alpha_fade)
+            end
         end
     end
     -- Add our new entry
@@ -173,10 +189,14 @@ function ChatQueue:OnMessageReceived(userid, name, prefab, message, colour, whis
     self.messages[CHAT_QUEUE_SIZE]:SetTruncatedString(message, self.message_width, self.message_max_chars, true)
     local w = self.messages[CHAT_QUEUE_SIZE]:GetRegionSize()
     self.messages[CHAT_QUEUE_SIZE]:SetPosition(w * .5 - 325, y)
-    self.users[CHAT_QUEUE_SIZE]:SetTruncatedString(username..":", self.user_width, self.user_max_chars, "..:")
+    self.users[CHAT_QUEUE_SIZE]:SetTruncatedString(nolabel and "" or (username..":"), self.user_width, self.user_max_chars, "..:")
     w = self.users[CHAT_QUEUE_SIZE]:GetRegionSize()
     self.users[CHAT_QUEUE_SIZE]:SetPosition(w * -.5 - 330, y)
-    if whisper then
+    local clr = colour or DEFAULT_PLAYER_COLOUR
+    if nolabel then
+        self.whispers[CHAT_QUEUE_SIZE]:Hide()
+        self.messages[CHAT_QUEUE_SIZE]:SetColour(clr[1], clr[2], clr[3], 1)
+    elseif whisper then
         self.whispers[CHAT_QUEUE_SIZE]:Show()
         local w2 = self.whispers[CHAT_QUEUE_SIZE]:GetRegionSize()
         self.whispers[CHAT_QUEUE_SIZE]:SetPosition(w2 * -.5 - w - 332, y)
@@ -186,8 +206,8 @@ function ChatQueue:OnMessageReceived(userid, name, prefab, message, colour, whis
         self.messages[CHAT_QUEUE_SIZE]:SetColour(SAY_COLOR)
     end
     self.timestamp[CHAT_QUEUE_SIZE] = GetTime()
-    local clr = colour or DEFAULT_PLAYER_COLOUR
     self.colours[CHAT_QUEUE_SIZE] = clr
+    self.nolabel[CHAT_QUEUE_SIZE] = nolabel
     self.users[CHAT_QUEUE_SIZE]:SetColour(clr[1], clr[2], clr[3], 1)
     self.whispers[CHAT_QUEUE_SIZE]:SetColour(clr[1], clr[2], clr[3], 1)
 end

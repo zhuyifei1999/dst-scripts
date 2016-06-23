@@ -69,15 +69,15 @@ local UserCommandPickerScreen = Class(Screen, function(self, owner, targetuserid
 
     self.buttons = {}
     for i,action in ipairs(self.actions) do
-        local text = action.prettyname
+        local text =
+            (action.exectype == COMMAND_RESULT.VOTE or action.exectype == COMMAND_RESULT.DENY) and
+            string.format(STRINGS.UI.COMMANDSSCREEN.VOTEFMT, action.prettyname) or
+            action.prettyname
         local button = self:AddChild(ImageButton("images/frontend.xml", "button_xlong.tex", "button_xlong_halfshadow.tex", "button_xlong_disabled.tex", "button_xlong_halfshadow.tex", "button_xlong_disabled.tex"))
         button:SetFont(NEWFONT)
         button.text:SetColour(0,0,0,1)
         button:SetTextSize(40)
         button:SetScale(0.5)
-        if action.exectype == COMMAND_RESULT.VOTE or action.exectype == COMMAND_RESULT.DENY then
-            text = string.format(STRINGS.UI.COMMANDSSCREEN.VOTEFMT, text)
-        end
         button.text:SetTruncatedString(text, 350, 58, true)
         button:SetText(button.text:GetString())
         --Max out the region size for triggering the hover text
@@ -177,7 +177,12 @@ function UserCommandPickerScreen:RefreshButtons()
         end
 
         if action ~= nil then
-            if action.exectype == COMMAND_RESULT.DENY then
+            if action.exectype == COMMAND_RESULT.DISABLED then
+                --we know canstart is false, but we want the reason
+                local canstart, reason = UserCommands.CanUserStartCommand(action.commandname, self.owner, self.targetuserid)
+                button:SetHoverText(reason ~= nil and STRINGS.UI.PLAYERSTATUSSCREEN.COMMANDCANNOTSTART[reason] or "")
+                button:Select()
+            elseif action.exectype == COMMAND_RESULT.DENY then
                 if worldvoter == nil or playervoter == nil or not worldvoter:IsEnabled() then
                     --technically we should never get here (expected COMMAND_RESULT.INVALID)
                 elseif worldvoter:IsVoteActive() then
@@ -187,7 +192,7 @@ function UserCommandPickerScreen:RefreshButtons()
                 else
                     --we know canstart is false, but we want the reason
                     local canstart, reason = UserCommands.CanUserStartVote(action.commandname, self.owner, self.targetuserid)
-                    button:SetHoverText(reason ~= nil and STRINGS.UI.PLAYERSTATUSSCREEN.VOTECANNOTSTART[reason] or "wot")
+                    button:SetHoverText(reason ~= nil and STRINGS.UI.PLAYERSTATUSSCREEN.VOTECANNOTSTART[reason] or "")
                 end
                 button:Select()
             else

@@ -86,10 +86,9 @@ if TheSim then
     end
 end
 
-if PLATFORM == "NACL" then
-    package.loaders[2] = nil
-elseif PLATFORM == "WIN32" then
-end
+--if PLATFORM == "NACL" then
+--    package.loaders[2] = nil
+--end
 
 --if not TheNet:GetIsClient() then
 --	require("mobdebug").start()

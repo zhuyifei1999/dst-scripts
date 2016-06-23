@@ -17,25 +17,10 @@ local prefabs =
 }
 
 local function getstatus(inst)
-    return inst.components.fueled:IsEmpty() and "BROKEN" or "GENERIC"
+    return inst.components.fueled:IsEmpty() and "BROKEN" or nil
 end
 
-local function activate(inst)
-    if inst._activatetask == nil then
-        inst._activatetask = inst:DoPeriodicTask(1, inst._onplayergoinsane)
-    end
-end
-
-local function deactivate(inst)
-    if inst._activatetask ~= nil then
-        inst._activatetask:Cancel()
-        inst._activatetask = nil
-    end
-end
-
-local function IsValidLink(inst, player)
-    return player:HasTag("pyromaniac") and player.bernie == nil
-end
+--------------------------------------------------------------------------
 
 local function dodecay(inst)
     if inst.components.lootdropper == nil then
@@ -51,7 +36,6 @@ end
 local function startdecay(inst)
     if inst._decaytask == nil then
         inst._decaytask = inst:DoTaskInTime(TUNING.BERNIE_DECAY_TIME, dodecay)
-        inst._decaystart = GetTime()
     end
 end
 
@@ -59,16 +43,13 @@ local function stopdecay(inst)
     if inst._decaytask ~= nil then
         inst._decaytask:Cancel()
         inst._decaytask = nil
-        inst._decaystart = nil
     end
 end
 
 local function onsave(inst, data)
-    if inst._decaystart ~= nil then
-        local time = GetTime() - inst._decaystart
-        if time > 0 then
-            data.decaytime = time
-        end
+    if inst._decaytask ~= nil then
+        local time = TUNING.BERNIE_DECAY_TIME - GetTaskRemaining(inst._decaytask)
+        data.decaytime = time > 0 and time or nil
     end
 end
 
@@ -77,137 +58,92 @@ local function onload(inst, data)
         local remaining = math.max(0, TUNING.BERNIE_DECAY_TIME - data.decaytime)
         inst._decaytask:Cancel()
         inst._decaytask = inst:DoTaskInTime(remaining, dodecay)
-        inst._decaystart = GetTime() + remaining - TUNING.BERNIE_DECAY_TIME
     end
 end
 
-local function updatestate(inst)
-    if inst.components.fueled:IsEmpty() then
-        if not inst._isdeadstate then
-            inst._isdeadstate = true
-            inst.AnimState:PlayAnimation("dead_loop")
-            inst.components.inventoryitem:ChangeImageName("bernie_dead")
-        end
-    elseif inst._isdeadstate then
-        inst._isdeadstate = nil
-        inst.AnimState:PlayAnimation("inactive")
-        inst.components.inventoryitem:ChangeImageName("bernie_dead")
-    end
-
-    if inst._playerlink ~= nil and
-        not inst.components.fueled:IsEmpty() and
-        inst.components.inventoryitem.owner == nil then
-        activate(inst)
-    else
-        deactivate(inst)
-    end
-end
+--------------------------------------------------------------------------
 
 local function tryreanimate(inst)
-    if inst._playerlink ~= nil and
-        inst._playerlink.bernie == nil and
-        inst._playerlink.components.sanity:IsCrazy() and
-        inst._playerlink.components.leader ~= nil and
-        inst.components.inventoryitem.owner == nil and
-        not inst.components.fueled:IsEmpty() and
-        inst:GetDistanceSqToInst(inst._playerlink) < 256 --[[16 * 16]] then
-
+    local target = nil
+    local rangesq = 256 --[[16 * 16]]
+    local x, y, z = inst.Transform:GetWorldPosition()
+    for i, v in ipairs(AllPlayers) do
+        if v.components.sanity:IsCrazy() and v.entity:IsVisible() then
+            local distsq = v:GetDistanceSqToPoint(x, y, z)
+            if distsq < rangesq then
+                rangesq = distsq
+                target = v
+            end
+        end
+    end
+    if target ~= nil then
         local active = SpawnPrefab("bernie_active")
         if active ~= nil then
             --Transform fuel % into health.
             active.components.health:SetPercent(inst.components.fueled:GetPercent())
             active.Transform:SetPosition(inst.Transform:GetWorldPosition())
-            active:LinkToPlayer(inst._playerlink)
             inst:Remove()
         end
     end
 end
 
-local function linktoplayer(inst, player)
-    if player ~= nil and IsValidLink(inst, player) then
-        inst:ListenForEvent("onremove", inst._onremoveplayer, player)
-        inst:ListenForEvent("goinsane", inst._onplayergoinsane, player)
-        inst._playerlink = player
-        player.bernie_bears[inst] = true
+local function activate(inst)
+    if inst._activatetask == nil then
+        inst._activatetask = inst:DoPeriodicTask(1, tryreanimate)
     end
 end
 
-local function unlink(inst)
-    if inst._playerlink ~= nil then
-        inst:RemoveEventCallback("onremove", inst._onremoveplayer, inst._playerlink)
-        inst:RemoveEventCallback("goinsane", inst._onplayergoinsane, inst._playerlink)
-        inst._playerlink.bernie_bears[inst] = nil
-        inst._playerlink = nil
+local function deactivate(inst)
+    if inst._activatetask ~= nil then
+        inst._activatetask:Cancel()
+        inst._activatetask = nil
     end
 end
 
-local function storeincontainer(inst, container)
-    if container ~= nil and container.components.container ~= nil then
-        inst:ListenForEvent("onopen", inst._ontogglecontainer, container)
-        inst:ListenForEvent("onclose", inst._ontogglecontainer, container)
-        inst:ListenForEvent("onremove", inst._onremovecontainer, container)
-        inst._container = container
-    end
-end
-
-local function unstore(inst)
-    if inst._container ~= nil then
-        inst:RemoveEventCallback("onopen", inst._ontogglecontainer, inst._container)
-        inst:RemoveEventCallback("onclose", inst._ontogglecontainer, inst._container)
-        inst:RemoveEventCallback("onremove", inst._onremovecontainer, inst._container)
-        inst._container = nil
+local function onfuelchange(section, oldsection, inst)
+    if inst.components.fueled:IsEmpty() then
+        if not inst._isdeadstate then
+            inst._isdeadstate = true
+            inst.AnimState:PlayAnimation("dead_loop")
+            inst.components.inventoryitem:ChangeImageName("bernie_dead")
+            if not inst.components.inventoryitem:IsHeld() then
+                deactivate(inst)
+                startdecay(inst)
+            end
+        end
+    elseif inst._isdeadstate then
+        inst._isdeadstate = nil
+        inst.AnimState:PlayAnimation("inactive")
+        inst.components.inventoryitem:ChangeImageName()
+        if not inst.components.inventoryitem:IsHeld() then
+            stopdecay(inst)
+            if inst.entity:IsAwake() then
+                activate(inst)
+            end
+        end
     end
 end
 
 local function topocket(inst, owner)
     stopdecay(inst)
     deactivate(inst)
-    if inst._container ~= owner then
-        unstore(inst)
-        storeincontainer(inst, owner)
-    end
-    if owner.components.container ~= nil then
-        owner = owner.components.container.opener
-    end
-    if inst._playerlink ~= owner then
-        unlink(inst)
-        linktoplayer(inst, owner)
-        updatestate(inst)
-    end
 end
 
 local function toground(inst)
-    unstore(inst)
-    if inst._playerlink == nil then
+    if inst.components.fueled:IsEmpty() then
         startdecay(inst)
-    elseif not inst.components.fueled:IsEmpty() then
+    elseif inst.entity:IsAwake() then
         activate(inst)
     end
 end
 
-local function refresh(inst)
-    if inst._playerlink == nil then
-        local owner = inst.components.inventoryitem.owner
-        if owner ~= nil then
-            if owner.components.container ~= nil then
-                owner = owner.components.container.opener
-            end
-            linktoplayer(inst, owner)
-            updatestate(inst)
-        end
-    elseif not IsValidLink(inst, inst._playerlink) then
-        unlink(inst)
-        updatestate(inst)
-        if inst.components.inventoryitem.owner == nil then
-            startdecay(inst)
-        end
+local function onentitywake(inst)
+    if not (inst.components.inventoryitem:IsHeld() or inst.components.fueled:IsEmpty()) then
+        activate(inst)
     end
 end
 
-local function externallinktoplayer(inst, player)
-    linktoplayer(inst, player)
-    updatestate(inst)
-end
+--------------------------------------------------------------------------
 
 local function fn()
     local inst = CreateEntity()
@@ -231,31 +167,8 @@ local function fn()
     end
 
     inst._isdeadstate = nil
-    inst._playerlink = nil
-    inst._container = nil
     inst._decaytask = nil
-    inst._decaystart = nil
     inst._activatetask = nil
-
-    inst._onremoveplayer = function() 
-        unlink(inst)
-        updatestate(inst)
-        if inst.components.inventoryitem.owner == nil then
-            startdecay(inst)
-        end
-    end
-
-    inst._onplayergoinsane = function()
-        tryreanimate(inst)
-    end
-
-    inst._ontogglecontainer = function(container)
-        topocket(inst, container)
-    end
-
-    inst._onremovecontainer = function()
-        unstore(inst)
-    end
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = getstatus
@@ -265,21 +178,19 @@ local function fn()
     inst:AddComponent("fueled")
     inst.components.fueled.fueltype = FUELTYPE.USAGE
     inst.components.fueled:InitializeFuelLevel(TUNING.BERNIE_FUEL)
-    inst.components.fueled:SetSectionCallback(function() updatestate(inst) end)
-
-    updatestate(inst)
-    startdecay(inst)
+    inst.components.fueled:SetSectionCallback(onfuelchange)
 
     inst:ListenForEvent("onputininventory", topocket)
     inst:ListenForEvent("ondropped", toground)
+    toground(inst)
 
     MakeHauntableLaunch(inst)
 
+    inst.OnEntitySleep = deactivate
+    inst.OnEntityWake = onentitywake
+
     inst.OnLoad = onload
     inst.OnSave = onsave
-    inst.OnRemoveEntity = unlink
-    inst.Refresh = refresh
-    inst.LinkToPlayer = externallinktoplayer
 
     return inst
 end

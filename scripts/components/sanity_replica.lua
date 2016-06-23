@@ -106,11 +106,13 @@ end
 function Sanity:GetPercent()
     if self.inst.components.sanity ~= nil then
         return self.inst.components.sanity:GetPercent()
-    elseif self.classified ~= nil then
-        return self.classified.currentsanity:value() / self.classified.maxsanity:value()
-    else
-        return 1
     end
+    return self:GetPercentNetworked()
+end
+
+function Sanity:GetPercentNetworked()
+    --Use networked value whether we are server or client
+    return self.classified ~= nil and self.classified.currentsanity:value() / self.classified.maxsanity:value() or 1
 end
 
 function Sanity:GetCurrent()

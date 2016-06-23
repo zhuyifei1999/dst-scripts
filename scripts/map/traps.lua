@@ -7,14 +7,14 @@ local Rare = {
 
 local Forest = {
 	["Sleeping Spider"] = StaticLayout.Get("map/static_layouts/trap_sleepingspider"),
-	["Chilled Base"] = StaticLayout.Get("map/static_layouts/trap_winter"),
+	--["Chilled Base"] = StaticLayout.Get("map/static_layouts/trap_winter"),
 }
 
 local Deciduous = {
 }
 
 local Grasslands = {
-	["Chilled Decid Base"] = StaticLayout.Get("map/static_layouts/trap_winter_deciduous"),
+	--["Chilled Decid Base"] = StaticLayout.Get("map/static_layouts/trap_winter_deciduous"),
 }
 
 local Swamp = {
@@ -25,7 +25,7 @@ local Rocky = {
 }
 
 local Badlands = {
-	["Hot Base"] = StaticLayout.Get("map/static_layouts/trap_summer"),
+	--["Hot Base"] = StaticLayout.Get("map/static_layouts/trap_summer"),
 }
 
 local Savanna = {

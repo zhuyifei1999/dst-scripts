@@ -173,36 +173,16 @@ function InventoryItem:OnRemoved()
 end
 
 function InventoryItem:OnDropped(randomdir)
-    --print("InventoryItem:OnDropped", self.inst, randomdir)
-
     if not self.inst:IsValid() then
         return
     end
 
-    --print("OWNER", self.owner, self.owner and Point(self.owner.Transform:GetWorldPosition()))
+    local x, y, z = (self.owner or self.inst).Transform:GetWorldPosition()
 
-    local x, y, z
-    if self.owner ~= nil then
-        -- if we're owned, our own coords are junk at this point
-        x, y, z = self.owner.Transform:GetWorldPosition()
-    else
-        x, y, z = self.inst.Transform:GetWorldPosition()
-        --print("pos", x,y,z)
-    end
-
-    --print("REMOVED", self.inst)
     self:OnRemoved()
 
-    -- now in world space, if we weren't already
-    --print("setpos", x,y,z)
-    self.inst.Transform:SetPosition(x, y, z)
-
     if self.inst.Physics ~= nil then
-        if not self.nobounce then
-            y = y + 1
-            --print("setpos", x,y,z)
-            self.inst.Physics:Teleport(x, y, z)
-        end
+        self.inst.Physics:Teleport(x, self.nobounce and y or y + 1, z)
 
         -- convert x, y, z to velocity
         if randomdir then
@@ -216,8 +196,9 @@ function InventoryItem:OnDropped(randomdir)
             y = self.nobounce and 0 or 5
             z = 0
         end
-        --print("vel", x, y, z)
         self.inst.Physics:SetVel(x, y, z)
+    else
+        self.inst.Transform:SetPosition(x, y, z)
     end
 
     if self.ondropfn ~= nil then

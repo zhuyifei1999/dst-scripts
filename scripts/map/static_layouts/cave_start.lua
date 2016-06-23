@@ -78,17 +78,6 @@ return {
       objects = {
         {
           name = "",
-          type = "spawnpoint_multiplayer",
-          shape = "rectangle",
-          x = 256,
-          y = 256,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
           type = "cavelight",
           shape = "rectangle",
           x = 310,

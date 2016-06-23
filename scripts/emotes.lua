@@ -67,6 +67,7 @@ for k, v in pairs(EMOTES) do
         desc = function() return STRINGS.UI.BUILTINCOMMANDS.EMOTES.DESC end,
         permission = COMMAND_PERMISSION.USER,
         params = {},
+        emote = true,
         slash = true,
         usermenu = false,
         servermenu = false,

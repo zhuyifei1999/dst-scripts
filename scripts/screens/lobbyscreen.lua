@@ -358,7 +358,7 @@ function LobbyScreen:MakeTextEntryBox(parent)
         local chat_string = self.chatbox.textbox:GetString()
         chat_string = chat_string ~= nil and chat_string:match("^%s*(.-%S)%s*$") or ""
         if chat_string ~= "" then
-            TheNet:Say(chat_string, false)
+            TheNet:Say(chat_string)
             TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/chat_send")
         end
         self.chatbox.textbox:SetString("")

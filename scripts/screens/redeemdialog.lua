@@ -20,8 +20,8 @@ local RedeemDialog = Class(Screen, function(self)
     self.black:SetVAnchor(ANCHOR_MIDDLE)
     self.black:SetHAnchor(ANCHOR_MIDDLE)
     self.black:SetScaleMode(SCALEMODE_FILLSCREEN)
-	self.black:SetTint(0,0,0,.75)	
-    
+	self.black:SetTint(0,0,0,.75)
+
 	self.proot = self:AddChild(Widget("ROOT"))
     self.proot:SetVAnchor(ANCHOR_MIDDLE)
     self.proot:SetHAnchor(ANCHOR_MIDDLE)
@@ -33,7 +33,7 @@ local RedeemDialog = Class(Screen, function(self)
     self.bg.fill = self.proot:AddChild(Image("images/fepanel_fills.xml", "panel_fill_tiny.tex"))
     self.bg.fill:SetScale(.92, .68)
     self.bg.fill:SetPosition(8, 12)
-	
+
 	--title	
     self.title = self.proot:AddChild(Text(BUTTONFONT, 50))
     self.title:SetPosition(5, 88, 0)
@@ -65,12 +65,12 @@ local RedeemDialog = Class(Screen, function(self)
 
     local spacing = 200
 
-    local buttons = 
+    local buttons =
     {
         {text=STRINGS.UI.REDEEMDIALOG.SUBMIT, cb = function() self:DoSubmitCode() end },
         {text=STRINGS.UI.REDEEMDIALOG.CANCEL, cb = function() self:Close() end }  
     }
-	
+
 	self.menu = self.proot:AddChild(Menu(buttons, spacing, true))
 	self.menu:SetPosition(-(spacing*(#buttons-1))/2, -127, 0) 
     for i,v in pairs(self.menu.items) do
@@ -95,12 +95,10 @@ function RedeemDialog:MakeTextEntryBox(parent)
     local entrybox = parent:AddChild(Widget("entrybox"))
     local box_size = 75
     local box_y = 40
-    
-    
-   
+
    	entrybox.bgs = {}
     entrybox.textboxes = {}
-	
+
     local offset = 110
     for i = 1, NUM_CODE_GROUPS do
 		entrybox.textboxes[i] = parent:AddChild(TextEditLinked( CODEFONT, 32, nil, {0,0,0,1} ) )
@@ -145,7 +143,7 @@ function RedeemDialog:MakeTextEntryBox(parent)
 					end
 					redeem_code	= redeem_code .. entrybox.textboxes[i]:GetString() 
 				end
-			
+
 				if string.len(redeem_code) == NUM_CODE_GROUPS * DIGITS_PER_GROUP + (NUM_CODE_GROUPS-1) then --(NUM_CODE_GROUPS-1) is for dashes
 					self.text:SetString("")
 					self.menu.items[1]:Select()
@@ -156,10 +154,10 @@ function RedeemDialog:MakeTextEntryBox(parent)
 				end
 			end
 		end
-		
+
 		entrybox.textboxes[i].OnLargePaste = function()
 			local clipboard = TheSim:GetClipboardData()
-						
+
 			--clear invalid characters
 			local res = ""
 			for i=1,#clipboard do
@@ -169,7 +167,7 @@ function RedeemDialog:MakeTextEntryBox(parent)
 				end
 			end
 			clipboard = res
-			
+
 			local i = 1
 			while #clipboard > 0 and i <= NUM_CODE_GROUPS do
 				local seg = clipboard:sub(1,DIGITS_PER_GROUP)
@@ -178,16 +176,16 @@ function RedeemDialog:MakeTextEntryBox(parent)
 				entrybox.textboxes[i]:SetEditing(true)
 				i = i + 1
 			end
-			
+
 			return true
 		end
-		
+
 		if i > 1 then
 			entrybox.textboxes[i-1]:SetNextTextEdit(entrybox.textboxes[i])
 			entrybox.textboxes[i]:SetLastTextEdit(entrybox.textboxes[i-1])
 		end
    	end
-	
+
     self.entrybox = entrybox
 end
 
@@ -197,20 +195,20 @@ function RedeemDialog:DisplayResult(success, status, item_type, category, messag
 	--success=false, status="INVALID_CODE"
 	--success=false, status="ALREADY_REDEEMED"
 	--success=false, status="FAILED_TO_CONTACT"	
-	
+
     self.menu.items[1]:Unselect()
     self.redeem_in_progress = false
-        
+
 	--DO WE DEAL WITH item_type = FROMNUM???
 	print( "RedeemDialog:DisplayResult", success, status, item_type, category, message )
 	if success then
 		local items = {} -- early access thank you gifts
 		table.insert(items, {item=item_type, item_id=0, gifttype=category, message=message})
-		
+
 		for i = 1, NUM_CODE_GROUPS do
 			self.entrybox.textboxes[i]:SetString("")
 		end
-		
+
 		self.title:Show()
 		self.text:Hide()
 
@@ -224,11 +222,10 @@ function RedeemDialog:DisplayResult(success, status, item_type, category, messag
 	end
 end
 
-
 function RedeemDialog:OnRawKey(key, down)
     if RedeemDialog._base.OnRawKey(self, key, down) then return true end
 
-	if down and (key == KEY_V and TheInput:IsKeyDown(KEY_CTRL)) or (key == KEY_INSERT and TheInput:IsKeyDown(KEY_SHIFT)) then
+	if down and TheInput:IsPasteKey(key) then
 		local clipboard = TheSim:GetClipboardData()
 		if #clipboard > DIGITS_PER_GROUP then
 			self.entrybox.textboxes[1]:OnLargePaste()
@@ -237,18 +234,18 @@ function RedeemDialog:OnRawKey(key, down)
 			for i = 1, NUM_CODE_GROUPS do
 				if #self.entrybox.textboxes[i]:GetString() < DIGITS_PER_GROUP then
 					self.entrybox.textboxes[i]:SetEditing(true)
-					self.entrybox.textboxes[i]:OnRawKey(key, down)				
+					self.entrybox.textboxes[i]:OnRawKey(key, down)
 					return true
 				end
 			end
-		end		
+		end
 	end
 	return false
 end
 
 function RedeemDialog:OnControl(control, down)
     if RedeemDialog._base.OnControl(self,control, down) then return true end
-    
+
     if control == CONTROL_CANCEL and not down then    
         if #self.buttons > 1 and self.buttons[#self.buttons] then
             self.buttons[#self.buttons].cb()

@@ -27,8 +27,7 @@ AddUserCommand("help", {
     paramsoptional = {true},
     vote = false,
     localfn = function(params, caller)
-        local hud = ThePlayer ~= nil and ThePlayer.HUD or nil
-        if hud == nil then
+        if caller == nil or caller.HUD == nil then
             return
         end
 
@@ -64,10 +63,32 @@ AddUserCommand("help", {
             end
         end
 
-        hud.controls.networkchatqueue:DisplaySystemMessage(s)
+        caller.HUD.controls.networkchatqueue:DisplaySystemMessage(s)
     end,
 })
 
+AddUserCommand("emote", {
+    aliases = { "e" },
+    prettyname = nil, --default to STRINGS.UI.BUILTINCOMMANDS.EMOTE.PRETTYNAME
+    desc = nil, --default to STRINGS.UI.BUILTINCOMMANDS.EMOTE.DESC
+    permission = COMMAND_PERMISSION.USER,
+    slash = true,
+    usermenu = false,
+    servermenu = false,
+    params = {"emotename"},
+    paramsoptional = {false},
+    vote = false,
+    localfn = function(params, caller)
+        local trailing = params.rest or ""
+        local command = trailing:len() <= 0 and UserCommands.GetCommandFromName(params.emotename) or nil
+        if command ~= nil and command.emote then
+            UserCommands.RunUserCommand(params.emotename, {}, caller, false)
+        else
+            --NOTE: whitespace already trimmed in all params
+            TheNet:Say(trailing:len() > 0 and (params.emotename.." "..trailing) or params.emotename, true, true)
+        end
+    end,
+})
 
 AddUserCommand("bug", {
     prettyname = nil, --default to STRINGS.UI.BUILTINCOMMANDS.BUG.PRETTYNAME
@@ -167,6 +188,31 @@ AddUserCommand("stopvote", {
     vote = false,
     localfn = function(params, caller)
         TheNet:StopVote()
+    end,
+})
+
+AddUserCommand("roll", {
+    aliases = { "dice", "random", "diceroll" },
+    prettyname = nil, --default to STRINGS.UI.BUILTINCOMMANDS.ROLL.PRETTYNAME
+    desc = nil, --default to STRINGS.UI.BUILTINCOMMANDS.ROLL.DESC
+    permission = COMMAND_PERMISSION.USER,
+    slash = true,
+    usermenu = false,
+    servermenu = true,
+    params = {},
+    vote = false,
+    canstartfn = function(command, caller, targetid)
+        if GetTime() <= (caller._dicerollcooldown or 0) then
+            return false, "COOLDOWN"
+        end
+        return true
+    end,
+    localfn = function(params, caller)
+        local t = GetTime()
+        if t > (caller._dicerollcooldown or 0) then
+            caller._dicerollcooldown = t + TUNING.DICE_ROLL_COOLDOWN
+            TheNet:DiceRoll()
+        end
     end,
 })
 

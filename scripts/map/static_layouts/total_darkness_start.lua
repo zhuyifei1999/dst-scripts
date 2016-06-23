@@ -62,17 +62,6 @@ return {
       objects = {
         {
           name = "",
-          type = "spawnpoint",
-          shape = "rectangle",
-          x = 157,
-          y = 155,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
           type = "skeleton",
           shape = "rectangle",
           x = 96,

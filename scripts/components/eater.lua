@@ -161,6 +161,16 @@ function Eater:Eat(food, feeder)
             end
         end
 
+        if feeder ~= self.inst and self.inst.components.inventoryitem ~= nil then
+            local owner = self.inst.components.inventoryitem:GetGrandOwner()
+            if owner ~= nil and
+                (   owner == feeder
+                    or (owner.components.container ~= nil and
+                        owner.components.container.opener == feeder)    ) then
+                feeder:PushEvent("feedincontainer")
+            end
+        end
+
         self.inst:PushEvent("oneat", { food = food, feeder = feeder })
         if self.oneatfn ~= nil then
             self.oneatfn(self.inst, food)

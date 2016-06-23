@@ -188,7 +188,8 @@ end
 
 local function userlevel(user)
     local client = TheNet:GetClientTableForUser(user.userid)
-    return (client.admin and 3)
+    return (client == nil and 0)
+        or (client.admin and 3)
         or (client.moderator and 2)
         or ((user.components.playervoter == nil or not user.components.playervoter:IsSquelched()) and 1)
         or 0
@@ -229,9 +230,8 @@ local function getexectype(command, caller, targetid)
         end
     end
 
-    local clevel = commandlevel(command)
-    local ulevel = userlevel(caller)
-    return (ulevel >= clevel and COMMAND_RESULT.ALLOW)
+    return (command.canstartfn ~= nil and not command.canstartfn(command, caller, targetid) and COMMAND_RESULT.DISABLED)
+        or (userlevel(caller) >= commandlevel(command) and COMMAND_RESULT.ALLOW)
         or (not command.vote and COMMAND_RESULT.INVALID)
         or ((TheWorld.net == nil or TheWorld.net.components.worldvoter == nil or not TheWorld.net.components.worldvoter:IsEnabled()) and COMMAND_RESULT.INVALID)
         or (caller.components.playervoter == nil and COMMAND_RESULT.INVALID)
@@ -243,17 +243,21 @@ end
 
 local function runcommand(command, params, caller, onserver, confirm)
     local exec_type = getexectype(command, caller, UserToClientID(params.user)) -- 'user' is the magical param name
-    if exec_type == COMMAND_RESULT.DENY then
+    if exec_type == COMMAND_RESULT.DISABLED then
+        sendsystemmessage(string.format(STRINGS.UI.USERCOMMANDS.DISABLEDFMT, prettyname(command)))
+        print(string.format("User %s tried to run command %s, but it is disabled.", caller.name, command.name))
+        return
+    elseif exec_type == COMMAND_RESULT.DENY then
         sendsystemmessage(string.format(STRINGS.UI.USERCOMMANDS.SQUELCHEDFMT, prettyname(command)))
-        print(string.format("User %s tried to run command %s but is squelched.", caller.name, command.name))
+        print(string.format("User %s tried to run command %s, but is squelched.", caller.name, command.name))
         return
     elseif exec_type == COMMAND_RESULT.INVALID then
         if params.user ~= nil then
             sendsystemmessage(string.format(STRINGS.UI.USERCOMMANDS.BADTARGETFMT, prettyname(command), UserToName(params.user)))
-            print(string.format("User %s tried to run command %s but target was bad.", caller.name, command.name))
+            print(string.format("User %s tried to run command %s, but target was bad.", caller.name, command.name))
         else
             sendsystemmessage(string.format(STRINGS.UI.USERCOMMANDS.NOTALLOWEDFMT, prettyname(command)))
-            print(string.format("User %s tried to run command %s but not allowed.", caller.name, command.name))
+            print(string.format("User %s tried to run command %s, but was not allowed.", caller.name, command.name))
         end
         return
     end
@@ -314,9 +318,18 @@ local function UserRunCommandResult(commandname, player, targetid)
     return getexectype(command, player, targetid)
 end
 
-local function CanUserRunCommand(commandname, player, targetid)
+local function CanUserAccessCommand(commandname, player, targetid)
     local exectype = UserRunCommandResult(commandname, player, targetid)
     return exectype ~= COMMAND_RESULT.INVALID
+end
+
+local function CanUserStartCommand(commandname, player, targetid)
+    local command = getcommand(commandname)
+    if command.canstartfn == nil then
+        return true, nil
+    end
+    --Expects 2 return values, so don't inline!
+    return command.canstartfn(command, player, targetid)
 end
 
 local function CanUserStartVote(commandname, player, targetid)
@@ -551,7 +564,8 @@ return {
     RunUserCommand = RunUserCommand,
     RunTextUserCommand = RunTextUserCommand,
     UserRunCommandResult = UserRunCommandResult,
-    CanUserRunCommand = CanUserRunCommand,
+    CanUserAccessCommand = CanUserAccessCommand,
+    CanUserStartCommand = CanUserStartCommand,
     CanUserStartVote = CanUserStartVote,
     FinishVote = FinishVote,
     ClearModData = ClearModData,

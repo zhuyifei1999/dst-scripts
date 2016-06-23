@@ -185,6 +185,8 @@ KEY_RCTRL = 305 -- use KEY_CTRL instead
 KEY_LCTRL = 306 -- use KEY_CTRL instead
 KEY_RALT = 307 -- use KEY_ALT instead
 KEY_LALT = 308 -- use KEY_ALT instead
+KEY_LSUPER = 311
+KEY_RSUPER = 312
 KEY_ALT = 400
 KEY_CTRL = 401
 KEY_SHIFT = 402
@@ -760,18 +762,19 @@ FADE_WHITE_COLOUR = {237/255, 224/255, 189/255, 255/255}
 
 ANNOUNCEMENT_ICONS =
 {
-	default={atlas="images/button_icons.xml", texture="announcement.tex"},
-	afk_start={atlas="images/button_icons.xml", texture="AFKstart.tex"},
-	afk_stop={atlas="images/button_icons.xml", texture="AFKstop.tex"},
-	death={atlas="images/button_icons.xml", texture="death.tex"},
-	resurrect={atlas="images/button_icons.xml", texture="resurrect.tex"},
-	join_game={atlas="images/button_icons.xml", texture="join.tex"},
-	leave_game={atlas="images/button_icons.xml", texture="leave.tex"},
-    kicked_from_game={atlas="images/button_icons.xml", texture="kicked.tex"},
-    banned_from_game={atlas="images/button_icons.xml", texture="banned.tex"},
-	item_drop={atlas="images/button_icons.xml", texture="item_drop.tex"},
-    vote={atlas="images/button_icons.xml", texture="vote.tex"},
-    mod={atlas="images/button_icons.xml", texture="mod_announcement.tex"},
+    ["default"] =           { atlas = "images/button_icons.xml", texture = "announcement.tex" },
+    ["afk_start"] =         { atlas = "images/button_icons.xml", texture = "AFKstart.tex" },
+    ["afk_stop"] =          { atlas = "images/button_icons.xml", texture = "AFKstop.tex" },
+    ["death"] =             { atlas = "images/button_icons.xml", texture = "death.tex" },
+    ["resurrect"] =         { atlas = "images/button_icons.xml", texture = "resurrect.tex" },
+    ["join_game"] =         { atlas = "images/button_icons.xml", texture = "join.tex" },
+    ["leave_game"] =        { atlas = "images/button_icons.xml", texture = "leave.tex" },
+    ["kicked_from_game"] =  { atlas = "images/button_icons.xml", texture = "kicked.tex" },
+    ["banned_from_game"] =  { atlas = "images/button_icons.xml", texture = "banned.tex" },
+    ["item_drop"] =         { atlas = "images/button_icons.xml", texture = "item_drop.tex" },
+    ["vote"] =              { atlas = "images/button_icons.xml", texture = "vote.tex" },
+    ["dice_roll"] =         { atlas = "images/button_icons.xml", texture = "diceroll.tex" },
+    ["mod"] =               { atlas = "images/button_icons.xml", texture = "mod_announcement.tex" },
 }
 
 ROAD_STRIPS = 
@@ -810,8 +813,8 @@ VIBRATION_BLOOD_OVER = 2
 
 --V2C: NUM_DST_SAVE_SLOTS is totally redundant...
 --     Not sure why it was added, but keeping it around in case mods are using it
---     Also, use SaveGameIndex:GetNumSlots() instead of NUM_SAVE_SLOTS from now on
---     NUM_SAVE_SLOTS constant is now only intended for initializing SaveGameIndex
+--     SaveGameIndex:GetNumSlots() for ALL save data, e.g. maintain session cache
+--     Use NUM_SAVE_SLOTS for logic on ONLY accessible save data, e.g. FE screens
 NUM_SAVE_SLOTS = 5
 NUM_DST_SAVE_SLOTS = NUM_SAVE_SLOTS
 
@@ -1173,8 +1176,9 @@ COMMAND_PERMISSION = {
 
 COMMAND_RESULT = {
     ALLOW = "ALLOW",
+    DISABLED = "DISABLED", --cannot run it right now (not related to voting)
     VOTE = "VOTE",
-    DENY = "DENY",
+    DENY = "DENY", --cannot start vote right now
     INVALID = "INVALID",
 }
 

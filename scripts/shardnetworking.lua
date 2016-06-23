@@ -107,3 +107,33 @@ function Shard_ReceiveVote(selection, user_id)
         })
     end
 end
+
+--------------------------------------------------------------------------
+
+local RecentDiceRolls = {}
+
+function Shard_OnDiceRollRequest(user_id)
+    if TheWorld == nil or not TheWorld.ismastershard then
+        return false
+    end
+
+    --Clear out old rolls
+    local curt = GetTime()
+    local toremove = {}
+    for id, endt in pairs(RecentDiceRolls) do
+        if curt > endt then
+            table.insert(toremove, id)
+        end
+    end
+    for _, id in ipairs(toremove) do
+        RecentDiceRolls[id] = nil
+    end
+
+    --Check that user is not still on cooldown
+    if RecentDiceRolls[user_id] ~= nil then
+        return false
+    end
+
+    RecentDiceRolls[user_id] = curt + TUNING.DICE_ROLL_COOLDOWN
+    return true
+end
