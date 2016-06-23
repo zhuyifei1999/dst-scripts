@@ -2455,6 +2455,7 @@ STRINGS.UI =
         LEFTGAME = "%s has left the game.",
         KICKEDFROMGAME = "%s was kicked from the game.",
         BANNEDFROMGAME = "%s was banned from the game.",
+        DICEROLLED = "%s rolls %i", --period at the end looks bad after a number
         DEFAULTVOTEPASSEDFMT = "The %s has passed.",
         DEFAULTVOTEFAILEDFMT = "The %s has failed.",
         DEFAULTVOTENAMEFMT = "vote",
@@ -2672,6 +2673,10 @@ STRINGS.UI =
         {
             MINPLAYERS = "Not enough players to start a vote.",
         },
+        COMMANDCANNOTSTART =
+        {
+            COOLDOWN = "You cannot use this command again yet.",
+        },
         BAN = "Ban",
         USERACTIONS = "More Actions...",
         ADMIN = "Admin",
@@ -2736,6 +2741,7 @@ STRINGS.UI =
     USERCOMMANDS =
     {
         SQUELCHEDFMT = "You aren't allowed to start a '%s' vote right now.",
+        DISABLEDFMT = "You can't run '%s' right now.",
         BADTARGETFMT = "You can't run '%s' on %s.",
         NOTALLOWEDFMT = "You don't have permission to run '%s'.",
         MISSINGPARAMSFMT = "Missing parameters! Type /help %s for more info.",
@@ -2754,6 +2760,10 @@ STRINGS.UI =
             OVERVIEW = "Type '/help commandname' for more info on a command.",
             AVAILABLE = "Available commands:",
             NOTFOUND = "Couldn't find a command called '%s'",
+        },
+        EMOTE = {
+            PRETTYNAME = "Emote",
+            DESC = "Express your feelings!",
         },
         BUG = {
             PRETTYNAME = "Report Bug",
@@ -2776,6 +2786,10 @@ STRINGS.UI =
         STOPVOTE = {
             PRETTYNAME = "Stop Vote",
             DESC = "Cancel a vote in progress if you don't like it!",
+        },
+        ROLL = {
+            PRETTYNAME = "Dice Roll",
+            DESC = "Roll for a random number between 1 and 100.",
         },
         RESET = {
             PRETTYNAME = "Reset",

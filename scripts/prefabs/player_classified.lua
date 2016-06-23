@@ -39,7 +39,7 @@ local function OnHungerDelta(parent, data)
 end
 
 local function UpdateAnimOverrideSanity(parent)
-    parent.AnimState:SetClientSideBuildOverrideFlag("insane", parent.replica.sanity:IsCrazy())
+    parent.AnimState:SetClientSideBuildOverrideFlag("insane", parent.replica.sanity:GetPercentNetworked() <= (parent:HasTag("dappereffects") and TUNING.DAPPER_BEARDLING_SANITY or TUNING.BEARDLING_SANITY))
 end
 
 local function OnSanityDelta(parent, data)
@@ -107,8 +107,8 @@ local function OnMakeFriend(parent)
     parent.player_classified.makefriendevent:push()
 end
 
-local function OnFeedSmallCreature(parent)
-    parent.player_classified.feedsmallcreatureevent:push()
+local function OnFeedInContainer(parent)
+    parent.player_classified.feedincontainerevent:push()
 end
 
 local function AddMorgueRecord(inst)
@@ -604,7 +604,7 @@ local function OnMakeFriendEvent(inst)
     end
 end
 
-local function OnFeedSmallCreatureEvent(inst)
+local function OnFeedInContainerEvent(inst)
     if inst._parent ~= nil and TheFocalPoint.entity:GetParent() == inst._parent then
         TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/feed")
     end
@@ -678,7 +678,7 @@ local function RegisterNetListeners(inst)
         inst:ListenForEvent("actionfailed", OnActionFailed, inst._parent)
         inst:ListenForEvent("wormholetravel", OnWormholeTravel, inst._parent)
         inst:ListenForEvent("makefriend", OnMakeFriend, inst._parent)
-        inst:ListenForEvent("feedsmallcreature", OnFeedSmallCreature, inst._parent)
+        inst:ListenForEvent("feedincontainer", OnFeedInContainer, inst._parent)
     else
         inst.ishealthpulse:set_local(false)
         inst.ishungerpulse:set_local(false)
@@ -728,7 +728,7 @@ local function RegisterNetListeners(inst)
     inst:ListenForEvent("playerfadedirty", OnPlayerFadeDirty)
     inst:ListenForEvent("wormholetraveldirty", OnWormholeTravelDirty)
     inst:ListenForEvent("leader.makefriend", OnMakeFriendEvent)
-    inst:ListenForEvent("eater.feedsmallcreature", OnFeedSmallCreatureEvent)
+    inst:ListenForEvent("eater.feedincontainer", OnFeedInContainerEvent)
     inst:ListenForEvent("morguedirty", OnMorgueDirty)
     OnGiftsDirty(inst)
     OnMountHurtDirty(inst)
@@ -890,7 +890,7 @@ local function fn()
     inst.makefriendevent = net_event(inst.GUID, "leader.makefriend")
 
     --Eater variables (more like feeding)
-    inst.feedsmallcreatureevent = net_event(inst.GUID, "eater.feedsmallcreature")
+    inst.feedincontainerevent = net_event(inst.GUID, "eater.feedincontainer")
 
     --Rider variables
     inst.ridermount = net_entity(inst.GUID, "rider.mount")

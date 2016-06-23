@@ -34,7 +34,7 @@ end
 
 function TextEditLinked:OnRawKey(key, down)
 	--if box is empty and backpack is pressed, move to last box (set cursor to end by doing getstring setstring)
-	if self.editing and down then
+	if down and self.editing then
 		if key == KEY_BACKSPACE then
 			local str = self:GetString()
 			if string.len(str) == 0 and self.last_text_edit ~= nil then
@@ -48,7 +48,7 @@ function TextEditLinked:OnRawKey(key, down)
 			if self.next_text_edit then
 				self.next_text_edit:SetEditing(true)
 			end
-		elseif (key == KEY_V and TheInput:IsKeyDown(KEY_CTRL)) or (key == KEY_INSERT and TheInput:IsKeyDown(KEY_SHIFT)) then
+        elseif TheInput:IsPasteKey(key) then
 			local clipboard = TheSim:GetClipboardData()
 			if self.OnLargePaste ~= nil and #clipboard > self.limit then
 				self:OnLargePaste()

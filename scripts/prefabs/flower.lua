@@ -16,15 +16,25 @@ local names = {"f1","f2","f3","f4","f5","f6","f7","f8","f9","f10"}
 local ROSE_NAME = "rose"
 local ROSE_CHANCE = 0.01
 
+local function setflowertype(inst, name)
+    if inst.animname == nil or (name ~= nil and inst.animname ~= name) then
+        if inst.animname == ROSE_NAME then
+            inst:RemoveTag("thorny")
+        end
+        inst.animname = name or (math.random() < ROSE_CHANCE and ROSE_NAME or names[math.random(#names)])
+        inst.AnimState:PlayAnimation(inst.animname)
+        if inst.animname == ROSE_NAME then
+            inst:AddTag("thorny")
+        end
+    end
+end
+
 local function onsave(inst, data)
     data.anim = inst.animname
 end
 
 local function onload(inst, data)
-    if data and data.anim then
-        inst.animname = data.anim
-        inst.AnimState:PlayAnimation(inst.animname)
-    end
+    setflowertype(inst, data ~= nil and data.anim or nil)
 end
 
 local function onpickedfn(inst, picker)
@@ -92,13 +102,6 @@ local function fn()
         return inst
     end
 
-    if math.random() < ROSE_CHANCE then
-        inst.animname = ROSE_NAME
-    else
-        inst.animname = names[math.random(#names)]
-    end
-    inst.AnimState:PlayAnimation(inst.animname)
-
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = GetStatus
 
@@ -124,6 +127,9 @@ local function fn()
 
     MakeHauntableChangePrefab(inst, "flower_evil")
 
+    if not POPULATING then
+        setflowertype(inst)
+    end
     --------SaveLoad
     inst.OnSave = onsave
     inst.OnLoad = onload

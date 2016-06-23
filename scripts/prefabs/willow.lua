@@ -10,7 +10,6 @@ local assets =
 local prefabs =
 {
     "lighter",
-    "small_puff",
 }
 
 local start_inv =
@@ -51,30 +50,6 @@ local function onsanitydelta(inst, data)
         or 0)
 end
 
-local function OnDespawn(inst)
-    if inst.bernie ~= nil then
-        inst.bernie.components.health:SetInvincible(true)
-        SpawnPrefab("small_puff").Transform:SetPosition(inst.bernie.Transform:GetWorldPosition())
-        inst.bernie:DoTaskInTime(.3, inst.bernie.Remove)
-    end
-end
-
-local function OnSave(inst, data)
-    if inst.bernie ~= nil then
-        data.bernie = inst.bernie:GetSaveRecord()
-    end
-end
-
-local function OnLoad(inst, data)
-    if data.bernie ~= nil and inst.bernie == nil then
-        local bernie = SpawnSaveRecord(data.bernie)
-        if bernie ~= nil then
-            SpawnPrefab("small_puff").Transform:SetPosition(bernie.Transform:GetWorldPosition())
-            bernie:LinkToPlayer(inst)
-        end
-    end
-end
-
 local function master_postinit(inst)
     inst.components.health.fire_damage_scale = TUNING.WILLOW_FIRE_DAMAGE
     inst.components.health.fire_timestart = TUNING.WILLOW_FIRE_IMMUNITY
@@ -84,13 +59,6 @@ local function master_postinit(inst)
     inst.components.sanity.rate_modifier = TUNING.WILLOW_SANITY_MODIFIER
 
     inst:ListenForEvent("sanitydelta", onsanitydelta)
-
-    inst.bernie = nil
-    inst.bernie_bears = {}
-
-    inst.OnDespawn = OnDespawn
-    inst.OnSave = OnSave
-    inst.OnLoad = OnLoad
 end
 
 return MakePlayerCharacter("willow", prefabs, assets, common_postinit, master_postinit, start_inv)

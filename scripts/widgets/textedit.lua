@@ -223,7 +223,7 @@ function TextEdit:OnRawKey(key, down)
 
     if self.editing then
         if down then
-            if (key == KEY_V and TheInput:IsKeyDown(KEY_CTRL)) or (key == KEY_INSERT and TheInput:IsKeyDown(KEY_SHIFT)) then
+            if TheInput:IsPasteKey(key) then
                 self.pasting = true
                 local clipboard = TheSim:GetClipboardData()
                 for i = 1, #clipboard do

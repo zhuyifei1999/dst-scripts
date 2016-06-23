@@ -187,7 +187,8 @@ function PlayerStatusScreen:OnUpdate(dt)
                             end
 
                             if playerListing.kick:IsVisible() then
-                                if UserCommands.UserRunCommandResult("kick", self.owner, client.userid) == COMMAND_RESULT.DENY then
+                                local res = UserCommands.UserRunCommandResult("kick", self.owner, client.userid)
+                                if res == COMMAND_RESULT.DENY or res == COMMAND_RESULT.DISABLED then
                                     playerListing.kick:Select()
                                 else
                                     playerListing.kick:Unselect()
@@ -195,7 +196,8 @@ function PlayerStatusScreen:OnUpdate(dt)
                             end
 
                             if playerListing.ban:IsVisible() then
-                                if UserCommands.UserRunCommandResult("ban", self.owner, client.userid) == COMMAND_RESULT.DENY then
+                                local res = UserCommands.UserRunCommandResult("ban", self.owner, client.userid)
+                                if res == COMMAND_RESULT.DENY or res == COMMAND_RESULT.DISABLED then
                                     playerListing.ban:Select()
                                 else
                                     playerListing.ban:Unselect()
@@ -496,6 +498,10 @@ function PlayerStatusScreen:DoInit(ClientObjs)
             elseif commandresult == COMMAND_RESULT.VOTE then
                 -- TODO: This thing should be voter-unaware, that should be handled by the usercommands and just return an appropriate result
                 playerListing.kick:SetHoverText(string.format(STRINGS.UI.PLAYERSTATUSSCREEN.VOTEHOVERFMT, STRINGS.UI.PLAYERSTATUSSCREEN.KICK))
+            elseif commandresult == COMMAND_RESULT.DISABLED then
+                --we know canstart is false, but we want the reason
+                local canstart, reason = UserCommands.CanUserStartCommand("kick", self.owner, playerListing.userid)
+                playerListing.kick:SetHoverText(reason ~= nil and STRINGS.UI.PLAYERSTATUSSCREEN.COMMANDCANNOTSTART[reason] or "")
             elseif commandresult == COMMAND_RESULT.DENY then
                 local worldvoter = TheWorld.net ~= nil and TheWorld.net.components.worldvoter or nil
                 local playervoter = self.owner.components.playervoter
@@ -628,8 +634,8 @@ function PlayerStatusScreen:DoInit(ClientObjs)
             playerListing.viewprofile:Show()
             playerListing.viewprofile:SetPosition(button_x,3,0)
             button_x = button_x + button_x_offset
-            can_kick = UserCommands.CanUserRunCommand("kick", self.owner, client.userid)
-            can_ban = BAN_ENABLED and UserCommands.CanUserRunCommand("ban", self.owner, client.userid)
+            can_kick = UserCommands.CanUserAccessCommand("kick", self.owner, client.userid)
+            can_ban = BAN_ENABLED and UserCommands.CanUserAccessCommand("ban", self.owner, client.userid)
         else
             playerListing.viewprofile:Hide()
         end
@@ -662,7 +668,8 @@ function PlayerStatusScreen:DoInit(ClientObjs)
             playerListing.kick:SetPosition(button_x,3,0)
             button_x = button_x + button_x_offset
 
-            if UserCommands.UserRunCommandResult("kick", self.owner, client.userid) == COMMAND_RESULT.DENY then
+            local res = UserCommands.UserRunCommandResult("kick", self.owner, client.userid)
+            if res == COMMAND_RESULT.DENY or res == COMMAND_RESULT.DISABLED then
                 playerListing.kick:Select()
             else
                 playerListing.kick:Unselect()
@@ -676,7 +683,8 @@ function PlayerStatusScreen:DoInit(ClientObjs)
             playerListing.ban:SetPosition(button_x,3,0)
             button_x = button_x + button_x_offset
 
-            if UserCommands.UserRunCommandResult("ban", self.owner, client.userid) == COMMAND_RESULT.DENY then
+            local res = UserCommands.UserRunCommandResult("ban", self.owner, client.userid)
+            if res == COMMAND_RESULT.DENY or res == COMMAND_RESULT.DISABLED then
                 playerListing.ban:Select()
             else
                 playerListing.ban:Unselect()

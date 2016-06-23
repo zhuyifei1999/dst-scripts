@@ -30,7 +30,8 @@ local MAX_TARGET_SHARES = 5
 local SHARE_TARGET_DIST = 30
 
 local function IsCrazyGuy(guy)
-    return guy ~= nil and guy.components.sanity ~= nil and guy.components.sanity:IsCrazy() and guy:HasTag("player")
+    local sanity = guy ~= nil and guy.replica.sanity or nil
+    return sanity ~= nil and sanity:GetPercentNetworked() <= (guy:HasTag("dappereffects") and TUNING.DAPPER_BEARDLING_SANITY or TUNING.BEARDLING_SANITY)
 end
 
 local function ontalk(inst)
@@ -194,8 +195,7 @@ local function fn()
 
     inst.DynamicShadow:SetSize(1.5, .75)
     inst.Transform:SetFourFaced()
-    local s = 1.25
-    inst.Transform:SetScale(s, s, s)
+    inst.Transform:SetScale(1.25, 1.25, 1.25)
 
     inst:AddTag("cavedweller")
     inst:AddTag("character")

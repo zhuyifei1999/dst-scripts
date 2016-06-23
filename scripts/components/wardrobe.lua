@@ -76,7 +76,6 @@ end
 
 function Wardrobe:CanBeginChanging(doer)
     if self.changers[doer] or
-        not doer:IsValid() or
         doer.sg == nil or
         (doer.sg:HasStateTag("busy") and doer.sg.currentstate.name ~= "opengift") then
         return false

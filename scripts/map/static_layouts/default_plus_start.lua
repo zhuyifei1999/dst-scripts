@@ -88,17 +88,6 @@ return {
         },
         {
           name = "",
-          type = "spawnpoint",
-          shape = "rectangle",
-          x = 162,
-          y = 165,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
           type = "treasurechest",
           shape = "rectangle",
           x = 4,

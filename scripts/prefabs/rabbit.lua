@@ -46,31 +46,50 @@ local function IsWinterRabbit(inst)
 end
 
 local function IsCrazyGuy(guy)
-    return guy ~= nil and guy.components.sanity ~= nil and guy.components.sanity:IsCrazy() and guy:HasTag("player")
+    local sanity = guy ~= nil and guy.replica.sanity or nil
+    return sanity ~= nil and sanity:GetPercentNetworked() <= (guy:HasTag("dappereffects") and TUNING.DAPPER_BEARDLING_SANITY or TUNING.BEARDLING_SANITY)
 end
 
 local function SetRabbitLoot(lootdropper)
-    lootdropper:SetLoot(rabbitloot)
+    if lootdropper.loot ~= rabbitloot then
+        lootdropper:SetLoot(rabbitloot)
+    end
 end
 
 local function SetBeardlingLoot(lootdropper)
-    lootdropper:SetLoot(nil)
-    lootdropper:AddRandomLoot("beardhair", .5)
-    lootdropper:AddRandomLoot("monstermeat", 1)
-    lootdropper:AddRandomLoot("nightmarefuel", 1)
-    lootdropper.numrandomloot = 1
+    if lootdropper.loot == rabbitloot then
+        lootdropper:SetLoot(nil)
+        lootdropper:AddRandomLoot("beardhair", .5)
+        lootdropper:AddRandomLoot("monstermeat", 1)
+        lootdropper:AddRandomLoot("nightmarefuel", 1)
+        lootdropper.numrandomloot = 1
+    end
 end
 
 local function MakeInventoryRabbit(inst)
+    inst._crazyinv = nil
     inst.components.inventoryitem:ChangeImageName(IsWinterRabbit(inst) and "rabbit_winter" or "rabbit")
     inst.components.health.murdersound = inst.sounds.hurt
     SetRabbitLoot(inst.components.lootdropper)
 end
 
 local function MakeInventoryBeardMonster(inst)
+    inst._crazyinv = true
     SetBeardlingLoot(inst.components.lootdropper)
     inst.components.inventoryitem:ChangeImageName("beard_monster")
     inst.components.health.murdersound = beardsounds.hurt
+end
+
+local function UpdateInventoryState(inst)
+    local viewer = inst.components.inventoryitem:GetGrandOwner()
+    while viewer ~= nil and viewer.components.container ~= nil do
+        viewer = viewer.components.container.opener
+    end
+    if IsCrazyGuy(viewer) then
+        MakeInventoryBeardMonster(inst)
+    else
+        MakeInventoryRabbit(inst)
+    end
 end
 
 local function BecomeRabbit(inst)
@@ -79,7 +98,7 @@ local function BecomeRabbit(inst)
     end
     inst.AnimState:SetBuild("rabbit_build")
     inst.sounds = rabbitsounds
-    inst.UpdateInventoryState()
+    UpdateInventoryState(inst)
     if inst.components.hauntable ~= nil then
         inst.components.hauntable.haunted = false
     end
@@ -91,7 +110,7 @@ local function BecomeWinterRabbit(inst)
     end
     inst.AnimState:SetBuild("rabbit_winter_build")
     inst.sounds = wintersounds
-    inst.UpdateInventoryState()
+    UpdateInventoryState(inst)
     if inst.components.hauntable ~= nil then
         inst.components.hauntable.haunted = false
     end
@@ -177,8 +196,7 @@ end
 
 local function StopWatchingSanity(inst)
     if inst._sanitywatching ~= nil then
-        inst:RemoveEventCallback("goinsane", inst.UpdateInventoryState, inst._sanitywatching)
-        inst:RemoveEventCallback("gosane", inst.UpdateInventoryState, inst._sanitywatching)
+        inst:RemoveEventCallback("sanitydelta", inst.OnWatchSanityDelta, inst._sanitywatching)
         inst._sanitywatching = nil
     end
 end
@@ -186,8 +204,7 @@ end
 local function WatchSanity(inst, target)
     StopWatchingSanity(inst)
     if target ~= nil then
-        inst:ListenForEvent("goinsane", inst.UpdateInventoryState, target)
-        inst:ListenForEvent("gosane", inst.UpdateInventoryState, target)
+        inst:ListenForEvent("sanitydelta", inst.OnWatchSanityDelta, target)
         inst._sanitywatching = target
     end
 end
@@ -217,26 +234,13 @@ local function OnPickup(inst, owner)
         StopWatchingForOpener(inst)
         WatchSanity(inst, owner)
     end
-    inst.UpdateInventoryState()
+    UpdateInventoryState(inst)
 end
 
 local function OnDropped(inst)
     StopWatchingSanity(inst)
-    inst.UpdateInventoryState()
+    UpdateInventoryState(inst)
     inst.sg:GoToState("stunned")
-end
-
-local function OnEat(inst, data)
-    if data.feeder ~= nil then
-        local owner = inst.components.inventoryitem:GetGrandOwner()
-        if owner ~= nil and
-            (   owner == data.feeder or
-                (owner.components.container ~= nil and
-                owner.components.container.opener == data.feeder)
-            ) then
-            data.feeder:PushEvent("feedsmallcreature")
-        end
-    end
 end
 
 local function fn()
@@ -288,7 +292,6 @@ local function fn()
 
     inst:AddComponent("eater")
     inst.components.eater:SetDiet({ FOODTYPE.VEGGIE }, { FOODTYPE.VEGGIE })
-    inst:ListenForEvent("oneat", OnEat)
 
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem.nobounce = true
@@ -320,26 +323,24 @@ local function fn()
     inst:AddComponent("tradable")
 
     --declared here so it can be used for event handlers
-    inst.UpdateInventoryState = function()
-        local viewer = inst.components.inventoryitem:GetGrandOwner()
-        while viewer ~= nil and viewer.components.container ~= nil do
-            viewer = viewer.components.container.opener
-        end
+    inst.OnWatchSanityDelta = function(viewer)
         if IsCrazyGuy(viewer) then
-            MakeInventoryBeardMonster(inst)
-        else
+            if not inst._crazyinv then
+                MakeInventoryBeardMonster(inst)
+            end
+        elseif inst._crazyinv then
             MakeInventoryRabbit(inst)
         end
     end
 
     inst.OnContainerOpened = function(container, data)
         WatchSanity(inst, data.doer)
-        inst.UpdateInventoryState()
+        UpdateInventoryState(inst)
     end
 
     inst.OnContainerClosed = function()
         StopWatchingSanity(inst)
-        inst.UpdateInventoryState()
+        UpdateInventoryState(inst)
     end
 
     inst._sanitywatching = nil

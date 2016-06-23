@@ -119,16 +119,17 @@ local ServerCreationScreen = Class(Screen, function(self, prev_screen)
     self:DoFocusHookUps()
 
     local startingsaveslot = SaveGameIndex:GetLastUsedSlot()
-    if startingsaveslot < 0 or SaveGameIndex:IsSlotEmpty(startingsaveslot) then
+    if startingsaveslot < 1 or
+        startingsaveslot > NUM_SAVE_SLOTS or
+        SaveGameIndex:IsSlotEmpty(startingsaveslot) then
         --find first empty slot
-        for k = 1, SaveGameIndex:GetNumSlots() do
+        --if we have no empty slots and no last slot used, pick the first slot
+        startingsaveslot = 1
+        for k = 1, NUM_SAVE_SLOTS do
             if SaveGameIndex:IsSlotEmpty(k) then
                 startingsaveslot = k
                 break
             end
-        end
-        if startingsaveslot < 0 then
-            startingsaveslot = 1 --if we have no empty slots and no last slot used, pick the first slot
         end
     end
 
@@ -332,10 +333,10 @@ end
 function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOutOfDateMods)
     local function onCreate()
         -- Check that the player has selected a spot
-        if self.saveslot < 0 then
+        if self.saveslot < 1 or self.saveslot > NUM_SAVE_SLOTS then
             -- If not, look for the first empty one
             local emptySlot = nil
-            for k = 1, SaveGameIndex:GetNumSlots() do
+            for k = 1, NUM_SAVE_SLOTS do
                 if SaveGameIndex:IsSlotEmpty(k) then
                     emptySlot = k
                     break
@@ -343,19 +344,24 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
             end
 
             -- If we found an empty slot, make that our save slot and call Create() again
-            if emptySlot then
+            if emptySlot ~= nil then
                 self.saveslot = emptySlot
                 self.default_focus = self.save_slots[emptySlot] or self.save_slots[1]
                 self:Create()
             else -- Otherwise, show dialog informing that they must either load a game or delete a game
                 self.last_focus = TheFrontEnd:GetFocusWidget()
-                local popup = PopupDialogScreen(STRINGS.UI.SERVERCREATIONSCREEN.FULLSLOTSTITLE, STRINGS.UI.SERVERCREATIONSCREEN.FULLSLOTSBODY,
-                    {
-                        {text=STRINGS.UI.SERVERCREATIONSCREEN.OK, cb = function()
-                            TheFrontEnd:PopScreen() 
-                        end},
-                    })
-                TheFrontEnd:PushScreen( popup )
+                TheFrontEnd:PushScreen(
+                    PopupDialogScreen(
+                        STRINGS.UI.SERVERCREATIONSCREEN.FULLSLOTSTITLE,
+                        STRINGS.UI.SERVERCREATIONSCREEN.FULLSLOTSBODY,
+                        {
+                            {
+                                text = STRINGS.UI.SERVERCREATIONSCREEN.OK,
+                                cb = function() TheFrontEnd:PopScreen() end,
+                            },
+                        }
+                    )
+                )
             end
         else
             self.server_settings_tab:SetEditingTextboxes(false)
@@ -742,9 +748,9 @@ function ServerCreationScreen:RefreshNavButtons()
 
     self.save_slots = self.nav_bar:AddChild(Widget("save_slots"))
 
-    for k = 1, SaveGameIndex:GetNumSlots() do
-        local btn = self:MakeSaveSlotButton(k)
-        self.save_slots[k] = self.save_slots:AddChild(btn)
+    for i = 1, NUM_SAVE_SLOTS do
+        local btn = self:MakeSaveSlotButton(i)
+        self.save_slots[i] = self.save_slots:AddChild(btn)
     end
 
     self:DoFocusHookUps()

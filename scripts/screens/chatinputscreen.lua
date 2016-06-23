@@ -160,10 +160,11 @@ function ChatInputScreen:DoInit()
     local fontsize = 30
 
     local edit_width = 850
+    local edit_width_padding = 8
     local chat_type_width = 150
     local edit_bg_padding = 100
 
-    self.autocompleteOffset = -1    
+    self.autocompleteOffset = -1
     self.autocompletePrefix = nil
     self.autocompleteObj = nil
     self.autocompleteObjName = ""
@@ -174,25 +175,25 @@ function ChatInputScreen:DoInit()
     self.root:SetVAnchor(ANCHOR_BOTTOM)
     self.root = self.root:AddChild(Widget(""))
 
-    self.root:SetPosition(10,100,0)
+    self.root:SetPosition(10, 100, 0)
 
-    self.chat_type = self.root:AddChild( Text( TALKINGFONT, fontsize ) )--DEFAULTFONT, fontsize ) )
+    self.chat_type = self.root:AddChild(Text(TALKINGFONT, fontsize))
     self.chat_type:SetPosition(-505, 0, 0)
-    self.chat_type:SetRegionSize( chat_type_width, label_height )
+    self.chat_type:SetRegionSize(chat_type_width, label_height)
     self.chat_type:SetHAlign(ANCHOR_RIGHT)
     if self.whisper then
         self.chat_type:SetString(STRINGS.UI.CHATINPUTSCREEN.WHISPER)
     else
         self.chat_type:SetString(STRINGS.UI.CHATINPUTSCREEN.SAY)
     end
-    self.chat_type:SetColour(0.6,0.6,0.6,1)
+    self.chat_type:SetColour(.6, .6, .6, 1)
 
-    self.chat_edit = self.root:AddChild( TextEdit( TALKINGFONT, fontsize, "" ) )--DEFAULTFONT, fontsize, "" ) )
-    self.chat_edit.edit_text_color = {1,1,1,1}
-    self.chat_edit.idle_text_color = {1,1,1,1}
-    self.chat_edit:SetEditCursorColour(1,1,1,1) 
-    self.chat_edit:SetPosition(0, 0, 0)
-    self.chat_edit:SetRegionSize( edit_width, label_height )
+    self.chat_edit = self.root:AddChild(TextEdit(TALKINGFONT, fontsize, ""))
+    self.chat_edit.edit_text_color = WHITE
+    self.chat_edit.idle_text_color = WHITE
+    self.chat_edit:SetEditCursorColour(unpack(WHITE))
+    self.chat_edit:SetPosition(-.5 * edit_width_padding, 0, 0)
+    self.chat_edit:SetRegionSize(edit_width - edit_width_padding, label_height)
     self.chat_edit:SetHAlign(ANCHOR_LEFT)
 
     -- the screen will handle the help text
@@ -205,13 +206,16 @@ function ChatInputScreen:DoInit()
     self.chat_edit:SetPassControlToScreen(CONTROL_CANCEL, true)
     self.chat_edit:SetPassControlToScreen(CONTROL_MENU_MISC_2, true) -- toggle between say and whisper
     self.chat_edit:SetTextLengthLimit(CHAT_INPUT_MAX_LENGTH)
+    self.chat_edit:EnableWordWrap(true)
+    self.chat_edit:EnableWhitespaceWrap(true)
+    self.chat_edit:EnableRegionSizeLimit(true)
+    self.chat_edit:EnableScrollEditWindow(false)
 
     self.chat_edit:SetString("")
     self.history_idx = nil
 
     self.chat_edit.validrawkeys[KEY_UP] = true
     self.chat_edit.validrawkeys[KEY_DOWN] = true
-
 end
 
 return ChatInputScreen

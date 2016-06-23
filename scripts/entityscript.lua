@@ -960,22 +960,26 @@ function EntityScript:PushEvent(event, data)
     if self.event_listeners then
         local listeners = self.event_listeners[event]
         if listeners then
+            --make a copy list of all callbacks first in case
+            --listener tables become altered in some handlers
+            local tocall = {}
             for entity, fns in pairs(listeners) do
-                for i,fn in ipairs(fns) do
-                    fn(self, data)
+                for i, fn in ipairs(fns) do
+                    table.insert(tocall, fn)
                 end
+            end
+            for i, fn in ipairs(tocall) do
+                fn(self, data)
             end
         end
     end
 
-    if self.sg then
-        if self.sg:IsListeningForEvent(event) then
-            if SGManager:OnPushEvent(self.sg) then
-                self.sg:PushEvent(event, data)
-            end
-        end
+    if self.sg and
+        self.sg:IsListeningForEvent(event) and
+        SGManager:OnPushEvent(self.sg) then
+        self.sg:PushEvent(event, data)
     end
-    
+
     if self.brain then
         self.brain:PushEvent(event, data)
     end

@@ -37,7 +37,7 @@ local function OnUsed(inst, data)
 end
 
 local function OnBuilt(inst)
-    --inst.SoundEmitter:PlaySound("dontstarve/common/salt_lick_craft")
+    inst.SoundEmitter:PlaySound("dontstarve/common/salt_lick_craft")
     inst.AnimState:PlayAnimation("place")
     PlayIdle(inst, true)
     AlertNearbyCritters(inst)
@@ -63,7 +63,7 @@ end
 
 local function OnHit(inst)
     if not inst:HasTag("burnt") then
-        --inst.SoundEmitter:PlaySound("dontstarve/common/salt_lick_hit")
+        inst.SoundEmitter:PlaySound("dontstarve/common/salt_lick_hit")
         inst.AnimState:PlayAnimation("hit"..getimagenum(inst, inst.components.finiteuses:GetPercent()))
         PlayIdle(inst, true)
     end

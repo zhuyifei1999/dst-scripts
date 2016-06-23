@@ -85,7 +85,7 @@ function Networking_VoteAnnouncement(commandid, targetname, passed)
     local command = UserCommands.GetCommandFromHash(commandid)
     if command ~= nil and command.vote then
         local fmt = ResolveCommandStringProperty(command, "votenamefmt", STRINGS.UI.NOTIFICATION.DEFAULTVOTENAMEFMT)
-        local votename = string.format(fmt, targetname:len() > 0 and Networking_Announcement_GetDisplayName(targetname) or "")
+        local votename = string.format(fmt, targetname:len() > 0 and targetname or "")
         fmt = passed and
             ResolveCommandStringProperty(command, "votepassedfmt", STRINGS.UI.NOTIFICATION.DEFAULTVOTEPASSEDFMT) or
             ResolveCommandStringProperty(command, "votefailedfmt", STRINGS.UI.NOTIFICATION.DEFAULTVOTEFAILEDFMT)
@@ -100,13 +100,21 @@ function Networking_SkinAnnouncement(user_name, user_colour, skin_name)
     end
 end
 
-function Networking_Say(guid, userid, name, prefab, message, colour, whisper)
+function Networking_RollAnnouncement(userid, name, prefab, colour, roll)
+    local hud = ThePlayer ~= nil and ThePlayer.HUD or nil
+    if hud ~= nil then
+        name = hud.controls.networkchatqueue:GetDisplayName(name, prefab)
+        Networking_Announcement(string.format(STRINGS.UI.NOTIFICATION.DICEROLLED, name, roll), colour, "dice_roll")
+    end
+end
+
+function Networking_Say(guid, userid, name, prefab, message, colour, whisper, isemote)
     local entity = Ents[guid]
-    if entity ~= nil and entity.components.talker ~= nil then
+    if not isemote and entity ~= nil and entity.components.talker ~= nil then
         entity.components.talker:Say(not entity:HasTag("mime") and message or "", nil, nil, nil, true, colour)
     end
     if message ~= nil then
-        if not whisper then
+        if not (whisper or isemote) then
             local screen = TheFrontEnd:GetActiveScreen()
             if screen ~= nil and screen.name == "LobbyScreen" then
                 screen.chatqueue:OnMessageReceived(userid, name, prefab, message, colour, whisper)
@@ -118,7 +126,11 @@ function Networking_Say(guid, userid, name, prefab, message, colour, whisper)
                 or (entity ~= nil
                     and (hud:HasTargetIndicator(entity) or
                         entity.entity:FrustumCheck()))) then
-            hud.controls.networkchatqueue:OnMessageReceived(userid, name, prefab, message, colour, whisper)
+            if isemote then
+                hud.controls.networkchatqueue:DisplayEmoteMessage(userid, name, prefab, message, colour, whisper)
+            else
+                hud.controls.networkchatqueue:OnMessageReceived(userid, name, prefab, message, colour, whisper)
+            end
         end
     end
 end

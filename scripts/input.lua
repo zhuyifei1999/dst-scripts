@@ -240,6 +240,16 @@ function Input:GetAnalogControlValue(control)
     return TheSim:GetAnalogControl(control)
 end
 
+function Input:IsPasteKey(key)
+    if key == KEY_V then
+        if PLATFORM == "OSX_STEAM" then
+            return self:IsKeyDown(KEY_LSUPER) or self:IsKeyDown(KEY_RSUPER)
+        end
+        return self:IsKeyDown(KEY_CTRL)
+    end
+    return key == KEY_INSERT and PLATFORM == "LINUX_STEAM" and self:IsKeyDown(KEY_SHIFT)
+end
+
 function Input:OnUpdate()
     if self.mouse_enabled then
         self.entitiesundermouse = TheSim:GetEntitiesAtScreenPoint(TheSim:GetPosition())

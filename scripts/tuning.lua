@@ -1444,7 +1444,7 @@ function Tune(overrides)
 		WET_HEAT_FACTOR_PENALTY = 0.75,
 
 		SPRING_FIRE_RANGE_MOD = 0.67,
- 
+
 		WILDFIRE_THRESHOLD = 80,
 		WILDFIRE_CHANCE = 0.2,
 		WILDFIRE_RETRY_TIME = seg_time * 1.5,
@@ -1454,19 +1454,19 @@ function Tune(overrides)
 		TENT_USES = 6,
 		SIESTA_CANOPY_USES = 6,
 
+        DAPPER_BEARDLING_SANITY = .3,
 		BEARDLING_SANITY = .4,
 		UMBRELLA_USES = 20,
-		
+
 		GUNPOWDER_RANGE = 3,
 		GUNPOWDER_DAMAGE = 200,
 		BIRD_RAIN_FACTOR = .25,
-		
+
 		RESURRECT_HEALTH = 50,
-		
+
 		SEWINGKIT_USES = 5,
 		SEWINGKIT_REPAIR_VALUE = total_day_time*5,
 
-		
 		RABBIT_CARROT_LOYALTY = seg_time*8,
 		RABBIT_POLITENESS_LOYALTY_BONUS = seg_time * 4,
 	    BUNNYMAN_DAMAGE = 40,
@@ -1990,6 +1990,8 @@ function Tune(overrides)
         VOTE_FAILED_SQUELCH_TIME = 30,
         VOTE_CANCELLED_SQUELCH_TIME = 30,
         VOTE_TIMEOUT_DEFAULT = 30,
+
+        DICE_ROLL_COOLDOWN = 30,
     }
 end
 
