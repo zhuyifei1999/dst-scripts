@@ -15,6 +15,7 @@ local function kill_light(inst)
     inst.AnimState:PlayAnimation("disappear")
     inst:ListenForEvent("animover", kill_sound)
     inst:DoTaskInTime(1, inst.Remove) --originally 0.6, padded for network
+    inst.persists = false
 end
 
 local function ontimer(inst, data)
@@ -120,7 +121,10 @@ local function fn()
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_SMALL)
     inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-        kill_light(inst)
+        if inst.components.timer:TimerExists("extinguish") then
+            inst.components.timer:StopTimer("extinguish")
+            kill_light(inst)
+        end
         return true
     end)
 

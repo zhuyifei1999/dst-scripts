@@ -199,7 +199,8 @@ AddUserCommand("roll", {
     slash = true,
     usermenu = false,
     servermenu = true,
-    params = {},
+    params = { "max" },
+    paramsoptional = { true },
     vote = false,
     canstartfn = function(command, caller, targetid)
         if GetTime() <= (caller._dicerollcooldown or 0) then
@@ -211,7 +212,7 @@ AddUserCommand("roll", {
         local t = GetTime()
         if t > (caller._dicerollcooldown or 0) then
             caller._dicerollcooldown = t + TUNING.DICE_ROLL_COOLDOWN
-            TheNet:DiceRoll()
+            TheNet:DiceRoll(params.max ~= nil and tonumber(params.max) or 100)
         end
     end,
 })

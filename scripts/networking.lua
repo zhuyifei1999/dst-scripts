@@ -33,6 +33,12 @@ function Networking_Announcement(message, colour, announce_type)
     end
 end
 
+function Networking_SystemMessage(message)
+    if ThePlayer ~= nil and ThePlayer.HUD ~= nil then
+        ThePlayer.HUD.controls.networkchatqueue:DisplaySystemMessage(message)
+    end
+end
+
 function Networking_ModOutOfDateAnnouncement(mod)
     Networking_Announcement(string.format(STRINGS.MODS.VERSIONING.OUT_OF_DATE, mod), nil, "mod")
 end
@@ -100,11 +106,11 @@ function Networking_SkinAnnouncement(user_name, user_colour, skin_name)
     end
 end
 
-function Networking_RollAnnouncement(userid, name, prefab, colour, roll)
+function Networking_RollAnnouncement(userid, name, prefab, colour, roll, max)
     local hud = ThePlayer ~= nil and ThePlayer.HUD or nil
     if hud ~= nil then
         name = hud.controls.networkchatqueue:GetDisplayName(name, prefab)
-        Networking_Announcement(string.format(STRINGS.UI.NOTIFICATION.DICEROLLED, name, roll), colour, "dice_roll")
+        Networking_Announcement(string.format(STRINGS.UI.NOTIFICATION.DICEROLLED, name, roll, max), colour, "dice_roll")
     end
 end
 
