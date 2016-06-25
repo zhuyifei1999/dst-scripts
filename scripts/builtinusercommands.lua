@@ -68,7 +68,7 @@ AddUserCommand("help", {
 })
 
 AddUserCommand("emote", {
-    aliases = { "e" },
+    aliases = { "e", "me" },
     prettyname = nil, --default to STRINGS.UI.BUILTINCOMMANDS.EMOTE.PRETTYNAME
     desc = nil, --default to STRINGS.UI.BUILTINCOMMANDS.EMOTE.DESC
     permission = COMMAND_PERMISSION.USER,
