@@ -487,43 +487,53 @@ function UserToClient(input)
         return
     end
 
-    -- Priority (highest to lowest):
-    --  4: userid
-    --  3: case-sensitive name
-    --  2: case-insensitive name 
-    --  1: player listing index
+    -- Match by player listing index first
+    local inputidx = tonumber(input)
+    if inputidx ~= nil and inputidx > 0 and inputidx <= numclients then
+        local index = 1
+        for i, client in ipairs(clients) do
+            if isdedicated and client.performance ~= nil then
+                --skip true dedicated server [Host] client
+
+            elseif index == inputidx then
+                return client
+            else
+                index = index + 1
+            end
+        end
+        --should never get past this loop, but might as well handle it...
+    end
+
+    if type(input) ~= "string" then
+        return
+    end
+
+    -- String matching priority (highest to lowest):
+    --  3: userid
+    --  2: case-sensitive name
+    --  1: case-insensitive name 
     local clientmatch = nil
     local lowerinput = string.lower(input)
-    local inputidx = tonumber(input)
-    local priority = inputidx ~= nil and inputidx > 0 and inputidx <= numclients and 0 or 1
-    local index = 1
+    local priority = 0
     for i, client in ipairs(clients) do
         if isdedicated and client.performance ~= nil then
             --skip true dedicated server [Host] client
 
-        --Priority 4: match by userid
+        --Priority 3: match by userid
         elseif client.userid == input then
             return client
 
-        --Priority 3: match by case-sensitive name
-        elseif priority >= 3 then
-        elseif client.name == input then
-            clientmatch = client
-            priority = 3
-
-        --Priority 2: match by case-insensitive name
+        --Priority 2: match by case-sensitive name
         elseif priority >= 2 then
-        elseif string.lower(client.name) == lowerinput then
+        elseif client.name == input then
             clientmatch = client
             priority = 2
 
-        --Priority 1: match by listing index
+        --Priority 1: match by case-insensitive name
         elseif priority >= 1 then
-        elseif index == inputidx then
+        elseif string.lower(client.name) == lowerinput then
             clientmatch = client
             priority = 1
-        else
-            index = index + 1
         end
     end
     return clientmatch

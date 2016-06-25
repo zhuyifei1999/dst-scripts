@@ -70768,7 +70768,7 @@ msgstr ""
 
 #. STRINGS.UI.NOTIFICATION.DICEROLLED
 msgctxt "STRINGS.UI.NOTIFICATION.DICEROLLED"
-msgid "%s rolls %i"
+msgid "%s rolls %i (1-%i)"
 msgstr ""
 
 #. STRINGS.UI.NOTIFICATION.JOINEDGAME
@@ -72578,7 +72578,7 @@ msgstr ""
 
 #. STRINGS.UI.BUILTINCOMMANDS.ROLL.DESC
 msgctxt "STRINGS.UI.BUILTINCOMMANDS.ROLL.DESC"
-msgid "Roll for a random number between 1 and 100."
+msgid "Roll for a random number between 1 and 'max'. 'max' is 100 if unspecified."
 msgstr ""
 
 #. STRINGS.UI.BUILTINCOMMANDS.RESCUE.PRETTYNAME

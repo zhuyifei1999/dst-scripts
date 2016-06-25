@@ -2455,7 +2455,7 @@ STRINGS.UI =
         LEFTGAME = "%s has left the game.",
         KICKEDFROMGAME = "%s was kicked from the game.",
         BANNEDFROMGAME = "%s was banned from the game.",
-        DICEROLLED = "%s rolls %i", --period at the end looks bad after a number
+        DICEROLLED = "%s rolls %i (1-%i)", --period at the end looks bad
         DEFAULTVOTEPASSEDFMT = "The %s has passed.",
         DEFAULTVOTEFAILEDFMT = "The %s has failed.",
         DEFAULTVOTENAMEFMT = "vote",
@@ -2789,7 +2789,7 @@ STRINGS.UI =
         },
         ROLL = {
             PRETTYNAME = "Dice Roll",
-            DESC = "Roll for a random number between 1 and 100.",
+            DESC = "Roll for a random number between 1 and 'max'. 'max' is 100 if unspecified.",
         },
         RESET = {
             PRETTYNAME = "Reset",

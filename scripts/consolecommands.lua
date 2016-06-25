@@ -42,13 +42,24 @@ function c_announce(msg, interval, category)
             TheWorld.__announcementtask:Cancel()
             TheWorld.__announcementtask = nil
         end
-    elseif interval == nil then
-        TheNet:Announce(msg, nil, nil, category)
+    elseif interval == nil or interval <= 0 then
+        if category == "system" then
+            TheNet:SystemMessage(msg)
+        else
+            TheNet:Announce(msg, nil, nil, category)
+        end
     else
         if TheWorld.__announcementtask ~= nil then
             TheWorld.__announcementtask:Cancel()
         end
-        TheWorld.__announcementtask = TheWorld:DoPeriodicTask(interval, function() TheNet:Announce(msg, nil, nil, category) end, 0)
+        TheWorld.__announcementtask =
+            TheWorld:DoPeriodicTask(
+                interval,
+                category == "system" and
+                function() TheNet:SystemMessage(msg) end or
+                function() TheNet:Announce(msg, nil, nil, category) end,
+                0
+            )
     end
 end
 
