@@ -232,6 +232,14 @@ local function OnBurnt(inst)
     end
 end
 
+local function OnBuilt(inst)
+    inst.SoundEmitter:PlaySound(
+        inst.level < 3 and
+        "dontstarve/common/farm_basic_craft" or
+        "dontstarve/common/farm_improved_craft"
+    )
+end
+
 local function onsave(inst, data)
     if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
         data.burnt = true
@@ -314,6 +322,7 @@ local function plot(level)
         inst.OnLoad = onload
 
         inst:ListenForEvent("burntup", OnBurnt)
+        inst:ListenForEvent("onbuilt", OnBuilt)
 
         inst:AddComponent("grower")
         inst.components.grower.level = level
@@ -321,8 +330,7 @@ local function plot(level)
         inst.components.grower.croppoints = croppoints[level]
         inst.components.grower.growrate = rates[level]
 
-        local cycles_per_level = {10,20,30}
-
+        local cycles_per_level = { 10, 20, 30 }
         inst.components.grower.max_cycles_left = cycles_per_level[level] or 6
         inst.components.grower.cycles_left = inst.components.grower.max_cycles_left
         inst.components.grower.setfertility = setfertilityfn

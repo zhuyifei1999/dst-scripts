@@ -1039,8 +1039,10 @@ function ModsTab:CleanAllButton()
                     KnownModIndex:DisableAllMods()
                     KnownModIndex:Save()
 
-                    self.options_scroll_list_client:Clear()
-                    self.options_scroll_list_server:Clear()
+					if self.options_scroll_list_client then
+						self.options_scroll_list_client:Clear()
+						self.options_scroll_list_server:Clear()
+					end
                     TheFrontEnd:PopScreen()
                     
                     self.mainmenu:Disable()

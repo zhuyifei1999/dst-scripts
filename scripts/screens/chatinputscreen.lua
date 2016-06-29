@@ -160,7 +160,7 @@ function ChatInputScreen:DoInit()
     local fontsize = 30
 
     local edit_width = 850
-    local edit_width_padding = 8
+    local edit_width_padding = 0
     local chat_type_width = 150
     local edit_bg_padding = 100
 
@@ -206,8 +206,8 @@ function ChatInputScreen:DoInit()
     self.chat_edit:SetPassControlToScreen(CONTROL_CANCEL, true)
     self.chat_edit:SetPassControlToScreen(CONTROL_MENU_MISC_2, true) -- toggle between say and whisper
     self.chat_edit:SetTextLengthLimit(CHAT_INPUT_MAX_LENGTH)
-    self.chat_edit:EnableWordWrap(true)
-    self.chat_edit:EnableWhitespaceWrap(true)
+    self.chat_edit:EnableWordWrap(false)
+    --self.chat_edit:EnableWhitespaceWrap(true)
     self.chat_edit:EnableRegionSizeLimit(true)
     self.chat_edit:EnableScrollEditWindow(false)
 
