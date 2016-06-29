@@ -199,7 +199,7 @@ AddUserCommand("roll", {
     slash = true,
     usermenu = false,
     servermenu = true,
-    params = { "max" },
+    params = { "dice" },
     paramsoptional = { true },
     vote = false,
     canstartfn = function(command, caller, targetid)
@@ -212,7 +212,21 @@ AddUserCommand("roll", {
         local t = GetTime()
         if t > (caller._dicerollcooldown or 0) then
             caller._dicerollcooldown = t + TUNING.DICE_ROLL_COOLDOWN
-            TheNet:DiceRoll(params.max ~= nil and tonumber(params.max) or 100)
+            if params.dice ~= nil then
+                local dice, sides = string.match(params.dice, "(%d+)[dD](%d+)")
+                if dice ~= nil and sides ~= nil then
+                    TheNet:DiceRoll(sides, dice)
+                    return
+                end
+
+                sides = tonumber(params.dice)
+                if sides ~= nil then
+                    TheNet:DiceRoll(sides, 1)
+                    return
+                end
+            end
+
+            TheNet:DiceRoll(100, 1)
         end
     end,
 })

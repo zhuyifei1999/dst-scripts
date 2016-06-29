@@ -249,11 +249,6 @@ function PlayerStatusScreen:DoInit(ClientObjs)
         self.servertitle = self.root:AddChild(Text(UIFONT,45))
         self.servertitle:SetColour(1,1,1,1)
     end
-    if serverNameStr ~= "" then
-        self.servertitle:SetTruncatedString(serverNameStr, 800, 100, true)
-    else
-        self.servertitle:SetString(serverNameStr)
-    end
 
     if not self.serverstate then
         self.serverstate = self.root:AddChild(Text(UIFONT,30))
@@ -263,27 +258,31 @@ function PlayerStatusScreen:DoInit(ClientObjs)
     local modeStr = GetGameModeString(TheNet:GetServerGameMode()) ~= nil and GetGameModeString(TheNet:GetServerGameMode()).." - " or ""
     self.serverstate:SetString(modeStr.." "..STRINGS.UI.PLAYERSTATUSSCREEN.AGE_PREFIX..self.serverage)
 
+    local servermenunumbtns = 0
+
     self.server_group = TheNet:GetServerClanID()
     if self.server_group ~= "" and not TheInput:ControllerAttached() then
         if self.viewgroup_button == nil then
-            self.viewgroup_button = self.root:AddChild(ImageButton("images/scoreboard.xml", "clan_normal.tex", "clan_hover.tex", "clan.tex", "clan.tex", nil, {0.6,0.6}, {0,0}))
+            self.viewgroup_button = self.root:AddChild(ImageButton("images/scoreboard.xml", "clan_normal.tex", "clan_hover.tex", "clan.tex", "clan.tex", nil, { .4, .4 }, { 0, 0 }))
             self.viewgroup_button:SetOnClick(function() TheNet:ViewNetProfile(self.server_group) end)
-            self.viewgroup_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.VIEWGROUP, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 48, colour = {1,1,1,1}})
+            self.viewgroup_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.VIEWGROUP, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 48, colour = WHITE})
         end
+        servermenunumbtns = servermenunumbtns + 1
     elseif self.viewgroup_button ~= nil then
         self.viewgroup_button:Kill()
         self.viewgroup_button = nil
     end
 
-    if not TheInput:ControllerAttached() then
-        if #UserCommands.GetServerActions(self.owner) > 0 and self.serveractions_button == nil then
-            self.serveractions_button = self.root:AddChild(ImageButton("images/scoreboard.xml", "more_actions_normal.tex", "more_actions_hover.tex", "more_actions.tex", "more_actions.tex", nil, {0.6,0.6}, {0,0}))
+    if not TheInput:ControllerAttached() and #UserCommands.GetServerActions(self.owner) > 0 then
+        if self.serveractions_button == nil then
+            self.serveractions_button = self.root:AddChild(ImageButton("images/scoreboard.xml", "more_actions_normal.tex", "more_actions_hover.tex", "more_actions.tex", "more_actions.tex", nil, { .4, .4 }, { 0, 0 }))
             self.serveractions_button:SetOnClick(function()
                 TheFrontEnd:PopScreen()
                 self:OpenUserCommandPickerScreen(nil)
             end)
-            self.serveractions_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.SERVERACTIONS, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 48, colour = {1,1,1,1}})
+            self.serveractions_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.SERVERACTIONS, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 48, colour = WHITE})
         end
+        servermenunumbtns = servermenunumbtns + 1
     elseif self.serveractions_button ~= nil then
         self.serveractions_button:Kill()
         self.serveractions_button = nil
@@ -294,8 +293,8 @@ function PlayerStatusScreen:DoInit(ClientObjs)
     end
     self.numPlayers = #ClientObjs
 
-    if not self.players_number then 
-        self.players_number = self.root:AddChild(Text(UIFONT, 25, "x/y"))
+    if not self.players_number then
+        self.players_number = self.root:AddChild(Text(UIFONT, 25))
         self.players_number:SetPosition(303,170) 
         self.players_number:SetRegionSize(100,30)
         self.players_number:SetHAlign(ANCHOR_RIGHT)
@@ -307,26 +306,24 @@ function PlayerStatusScreen:DoInit(ClientObjs)
     if not self.serverdesc then
         self.serverdesc = self.root:AddChild(Text(UIFONT,30))
         self.serverdesc:SetColour(1,1,1,1)
-        if serverDescStr ~= "" then
-            self.serverdesc:SetTruncatedString(serverDescStr, 800, 150, true)
-        else
-            self.serverdesc:SetString(serverDescStr)
-        end
     end
 
     if not self.divider then
         self.divider = self.root:AddChild(Image("images/scoreboard.xml", "white_line.tex"))
     end
 
+    local servermenux = -329
+    local servermenubtnoffs = 24
+    if self.viewgroup_button ~= nil then
+        self.viewgroup_button:SetPosition(servermenux - (servermenunumbtns > 1 and servermenubtnoffs or 0), 200)
+    end
+    if self.serveractions_button ~= nil then
+        self.serveractions_button:SetPosition(servermenux + (servermenunumbtns > 1 and servermenubtnoffs or 0), 200)
+    end
+
     if serverDescStr == "" then
         self.servertitle:SetPosition(0,215)
         self.serverdesc:SetPosition(0,175)
-        if self.viewgroup_button ~= nil then
-            self.viewgroup_button:SetPosition(-328,200)
-        end
-        if self.serveractions_button ~= nil then
-            self.serveractions_button:SetPosition(-258,200)
-        end
         self.serverstate:SetPosition(0,175)
         self.divider:SetPosition(0,155)
     else
@@ -334,12 +331,6 @@ function PlayerStatusScreen:DoInit(ClientObjs)
         self.servertitle:SetSize(40)
         self.serverdesc:SetPosition(0,188)
         self.serverdesc:SetSize(23)
-        if self.viewgroup_button ~= nil then
-            self.viewgroup_button:SetPosition(-328,208)
-        end
-        if self.serveractions_button ~= nil then
-            self.serveractions_button:SetPosition(-258,208)
-        end
         self.serverstate:SetPosition(0,163)
         self.serverstate:SetSize(23)
         self.players_number:SetPosition(303,160)
@@ -347,7 +338,27 @@ function PlayerStatusScreen:DoInit(ClientObjs)
         self.divider:SetPosition(0,149)
     end
 
-    if TheNet:GetServerModsEnabled() and not self.servermods then
+    if serverNameStr == "" then
+        self.servertitle:SetString(serverNameStr)
+    elseif servermenunumbtns > 1 then
+        self.servertitle:SetTruncatedString(serverNameStr, 550, 100, true)
+    elseif servermenunumbtns > 0 then
+        self.servertitle:SetTruncatedString(serverNameStr, 600, 110, true)
+    else
+        self.servertitle:SetTruncatedString(serverNameStr, 800, 145, true)
+    end
+
+    if serverDescStr == "" then
+        self.serverdesc:SetString(serverDescStr)
+    elseif servermenunumbtns > 1 then
+        self.serverdesc:SetTruncatedString(serverDescStr, 550, 175, true)
+    elseif servermenunumbtns > 0 then
+        self.serverdesc:SetTruncatedString(serverDescStr, 600, 190, true)
+    else
+        self.serverdesc:SetTruncatedString(serverDescStr, 800, 250, true)
+    end
+
+    if not self.servermods and TheNet:GetServerModsEnabled() then
         local modsStr = TheNet:GetServerModsDescription()
         self.servermods = self.root:AddChild(Text(UIFONT,25))
         self.servermods:SetPosition(20,-250,0)

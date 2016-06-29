@@ -1,5 +1,7 @@
 local SAVEDATA_VERSION = 2
 
+local Levels = require"map/levels"
+
 SaveIndex = Class(function(self)
     self:Init()
 end)
@@ -208,6 +210,9 @@ local function OnLoad(self, filename, callback, load_success, str)
                 v.world = v2.world or v.world
                 if v.world.options ~= nil then
                     v.world.options = UpgradeSavedLevelData(v.world.options)
+                else
+                    v.world.options = {}
+                    v.world.options[1] = Levels.GetDefaultLevelData(LEVELTYPE.SURVIVAL)
                 end
                 v.server = v2.server or v.server
                 v.session_id = v2.session_id or v.session_id
