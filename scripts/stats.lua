@@ -110,10 +110,12 @@ local function BuildContextTable(player)
     --end
 
     local client_metrics = nil
-    if sendstats.user == TheNet:GetUserID() then
-        client_metrics = GetClientMetricsData()
-    elseif TheNet:GetIsServer() then
-        client_metrics = TheNet:GetClientMetricsForUser(sendstats.user)
+    if sendstats.user ~= nil then
+        if sendstats.user == TheNet:GetUserID() then
+            client_metrics = GetClientMetricsData()
+        elseif TheNet:GetIsServer() then
+            client_metrics = TheNet:GetClientMetricsForUser(sendstats.user)
+        end
     end
 
     sendstats.build = APP_VERSION
