@@ -698,16 +698,17 @@ local function GetValueOrDefault( value, default )
 end
 
 function PlayerProfile:Set(str, callback)
-	if not str or string.len(str) == 0 then
+    if str == nil or string.len(str) <= 0 then
+        if callback ~= nil then
+            --These are purposely inside the if to prevent infinite recursion
+            self:SoftReset()
+            self:GetPlayInstance() --force stashing play instance
+            callback(false)
+        end
+    else
+        self.dirty = false
 
-		if callback then
-			self:SoftReset()	-- this is purposely inside the if
-			callback(false)
-		end
-	else
-		self.dirty = false
-
-		self.persistdata = TrackedAssert("TheSim:GetPersistentString profile",  json.decode, str)
+        self.persistdata = TrackedAssert("TheSim:GetPersistentString profile",  json.decode, str)
 
         if self.persistdata.saw_display_adjustment_popup == nil then
             self.persistdata.saw_display_adjustment_popup = false
@@ -816,17 +817,19 @@ function PlayerProfile:Set(str, callback)
             self.dirty = true
         end
 
-		self.persistdata.device_caps_a, self.persistdata.device_caps_b = TheSim:UpdateDeviceCaps(self.persistdata.device_caps_a, self.persistdata.device_caps_b)
+        self.persistdata.device_caps_a, self.persistdata.device_caps_b = TheSim:UpdateDeviceCaps(self.persistdata.device_caps_a, self.persistdata.device_caps_b)
         self.dirty = true
 
-		if callback then
-			callback(true)
-		end
-	end
+        if callback ~= nil then
+            --purposely inside the if (see above)
+            self:GetPlayInstance() --force stashing play instance
+            callback(true)
+        end
+    end
 end
 
 function PlayerProfile:SetDirty(dirty)
-	self.dirty = dirty
+    self.dirty = dirty
 end
 
 function PlayerProfile:GetControls(guid)

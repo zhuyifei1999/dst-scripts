@@ -174,9 +174,9 @@ local OnAutoSaverUpdate = _ismastersim and not _ismastershard and function(src, 
         end
     end
     if _loading == true then
-        --We may receive 2 packets, construction and dirty, after
-        --loading, so delay clearing the flag till the next frame
-        _loading = inst:DoTaskInTime(0, OnClearLoading)
+        --We may receive 2-3 packets, construction and dirty, right
+        --after loading, so add some delay before clearing the flag
+        _loading = inst:DoTaskInTime(1, OnClearLoading)
     end
 end or nil
 

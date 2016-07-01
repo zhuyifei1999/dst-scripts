@@ -1,12 +1,17 @@
 --Global so Mods can use them too
 function checkbool(val) return val == nil or type(val) == "boolean" end
 function checknumber(val) return type(val) == "number" end
+function checkuint(val) return type(val) == "number" and tostring(val):find("%D") == nil end
 function checkstring(val) return type(val) == "string" end
 function checkentity(val) return type(val) == "table" end
 optbool = checkbool
 function optnumber(val) return val == nil or type(val) == "number" end
+function optuint(val) return val == nil or (type(val) == "number" and tostring(val):find("%D") == nil) end
 function optstring(val) return val == nil or type(val) == "string" end
 function optentity(val) return val == nil or type(val) == "table" end
+
+--NOTE: checkuint since non-integer inventory slots are not handled gracefully
+--      checknumber is generally enough for other cases
 
 local function printinvalid(rpcname, player)
     print(string.format("Invalid %s RPC from (%s) %s", rpcname, player.userid or "", player.name or ""))
@@ -305,7 +310,7 @@ local RPC_HANDLERS =
     end,
 
     PutOneOfActiveItemInSlot = function(player, slot, container)
-        if not (checknumber(slot) and
+        if not (checkuint(slot) and
                 optentity(container)) then
             printinvalid("PutOneOfActiveItemInSlot", player)
             return
@@ -324,7 +329,7 @@ local RPC_HANDLERS =
     end,
 
     PutAllOfActiveItemInSlot = function(player, slot, container)
-        if not (checknumber(slot) and
+        if not (checkuint(slot) and
                 optentity(container)) then
             printinvalid("PutAllOfActiveItemInSlot", player)
             return
@@ -343,7 +348,7 @@ local RPC_HANDLERS =
     end,
 
     TakeActiveItemFromHalfOfSlot = function(player, slot, container)
-        if not (checknumber(slot) and
+        if not (checkuint(slot) and
                 optentity(container)) then
             printinvalid("TakeActiveItemFromHalfOfSlot", player)
             return
@@ -362,7 +367,7 @@ local RPC_HANDLERS =
     end,
 
     TakeActiveItemFromAllOfSlot = function(player, slot, container)
-        if not (checknumber(slot) and
+        if not (checkuint(slot) and
                 optentity(container)) then
             printinvalid("TakeActiveItemFromAllOfSlot", player)
             return
@@ -381,7 +386,7 @@ local RPC_HANDLERS =
     end,
 
     AddOneOfActiveItemToSlot = function(player, slot, container)
-        if not (checknumber(slot) and
+        if not (checkuint(slot) and
                 optentity(container)) then
             printinvalid("AddOneOfActiveItemToSlot", player)
             return
@@ -400,7 +405,7 @@ local RPC_HANDLERS =
     end,
 
     AddAllOfActiveItemToSlot = function(player, slot, container)
-        if not (checknumber(slot) and
+        if not (checkuint(slot) and
                 optentity(container)) then
             printinvalid("AddAllOfActiveItemToSlot", player)
             return
@@ -419,7 +424,7 @@ local RPC_HANDLERS =
     end,
 
     SwapActiveItemWithSlot = function(player, slot, container)
-        if not (checknumber(slot) and
+        if not (checkuint(slot) and
                 optentity(container)) then
             printinvalid("SwapActiveItemWithSlot", player)
             return
@@ -561,7 +566,7 @@ local RPC_HANDLERS =
     end,
 
     MoveInvItemFromAllOfSlot = function(player, slot, destcontainer)
-        if not (checknumber(slot) and
+        if not (checkuint(slot) and
                 checkentity(destcontainer)) then
             printinvalid("MoveInvItemFromAllOfSlot", player)
             return
@@ -573,7 +578,7 @@ local RPC_HANDLERS =
     end,
 
     MoveInvItemFromHalfOfSlot = function(player, slot, destcontainer)
-        if not (checknumber(slot) and
+        if not (checkuint(slot) and
                 checkentity(destcontainer)) then
             printinvalid("MoveInvItemFromHalfOfSlot", player)
             return
@@ -585,7 +590,7 @@ local RPC_HANDLERS =
     end,
 
     MoveItemFromAllOfSlot = function(player, slot, srccontainer, destcontainer)
-        if not (checknumber(slot) and
+        if not (checkuint(slot) and
                 checkentity(srccontainer) and
                 optentity(destcontainer)) then
             printinvalid("MoveItemFromAllOfSlot", player)
@@ -598,7 +603,7 @@ local RPC_HANDLERS =
     end,
 
     MoveItemFromHalfOfSlot = function(player, slot, srccontainer, destcontainer)
-        if not (checknumber(slot) and
+        if not (checkuint(slot) and
                 checkentity(srccontainer) and
                 optentity(destcontainer)) then
             printinvalid("MoveItemFromHalfOfSlot", player)

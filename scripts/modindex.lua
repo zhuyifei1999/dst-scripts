@@ -1,12 +1,7 @@
 require("mods")
 require("modutil")
 
-local function modprint(...)
-    --print(type(...) == "table" and unpack(...) or ...)
-end
-
 local mod_config_path = "mod_config_data/"
-
 
 -- Note: This is a singleton (created at the bottom of this file) so the class is local
 local ModIndex = Class(function(self)

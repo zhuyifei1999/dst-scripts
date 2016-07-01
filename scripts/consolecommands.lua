@@ -21,6 +21,13 @@ function ConsoleWorldEntityUnderMouse()
     end
 end
 
+local function ListingOrConsolePlayer(input)
+    if type(input) == "string" or type(input) == "number" then
+        return UserToPlayer(input)
+    end
+    return input or ConsoleCommandPlayer()
+end
+
 local function Spawn(prefab)
     --TheSim:LoadPrefabs({prefab})
     return SpawnPrefab(prefab)
@@ -172,7 +179,7 @@ end
 -- Despawn a player, returning to character select screen
 function c_despawn(player)
     if TheWorld ~= nil and TheWorld.ismastersim then
-        player = player or ConsoleCommandPlayer()
+        player = ListingOrConsolePlayer(player)
         if player ~= nil and player:IsValid() then
             --Queue it because remote command may currently be overriding
             --ThePlayer, which will get stomped during delete
@@ -360,7 +367,7 @@ function c_mat(recname)
     local player = ConsoleCommandPlayer()
     local recipe = AllRecipes[recname]
     if player.components.inventory and recipe then
-      for ik, iv in pairs(recipe.ingredients) do
+        for ik, iv in pairs(recipe.ingredients) do
             for i = 1, iv.amount do
                 local item = SpawnPrefab(iv.type)
                 player.components.inventory:GiveItem(item)
@@ -371,7 +378,7 @@ function c_mat(recname)
 end
 
 function c_pos(inst)
-    return inst and Point(inst.Transform:GetWorldPosition())
+    return inst ~= nil and inst:GetPosition() or nil
 end
 
 function c_printpos(inst)
@@ -379,8 +386,8 @@ function c_printpos(inst)
 end
 
 function c_teleport(x, y, z, inst)
-    inst = inst or ConsoleCommandPlayer()
-    if inst then
+    inst = ListingOrConsolePlayer(inst)
+    if inst ~= nil then
         inst.Transform:SetPosition(x, y, z)
         SuUsed("c_teleport", true)
     end
@@ -388,19 +395,28 @@ end
 
 function c_move(inst)
     inst = inst or c_sel()
-    inst.Transform:SetPosition(ConsoleWorldPosition():Get())
-    SuUsed("c_move", true)
+    if inst ~= nil then
+        inst.Transform:SetPosition(ConsoleWorldPosition():Get())
+        SuUsed("c_move", true)
+    end
 end
 
 function c_goto(dest, inst)
-    inst = inst or ConsoleCommandPlayer()
-    if inst.Physics ~= nil then
-        inst.Physics:Teleport(dest.Transform:GetWorldPosition())
-    else
-        inst.Transform:SetPosition(dest.Transform:GetWorldPosition())
+    if type(dest) == "string" or type(dest) == "number" then
+        dest = UserToPlayer(dest)
     end
-    SuUsed("c_goto", true)
-    return dest
+    if dest ~= nil then
+        inst = ListingOrConsolePlayer(inst)
+        if inst ~= nil then
+            if inst.Physics ~= nil then
+                inst.Physics:Teleport(dest.Transform:GetWorldPosition())
+            else
+                inst.Transform:SetPosition(dest.Transform:GetWorldPosition())
+            end
+            SuUsed("c_goto", true)
+            return dest
+        end
+    end
 end
 
 function c_inst(guid)
@@ -428,7 +444,10 @@ end
 
 local lastroom = -1
 function c_gotoroom(roomname, inst)
-    inst = inst or ConsoleCommandPlayer()
+    inst = ListingOrConsolePlayer(inst)
+    if inst == nil then
+        return
+    end
 
     local found = nil
     local foundid = nil
@@ -472,7 +491,16 @@ end
 local lastfound = -1
 local lastprefab = nil
 function c_findnext(prefab, radius, inst)
+    if type(inst) == "string" or type(inst) == "number" then
+        inst = UserToPlayer(input)
+        if inst == nil then
+            return
+        end
+    end
     inst = inst or ConsoleCommandPlayer() or TheWorld
+    if inst == nil then
+        return
+    end
     prefab = prefab or lastprefab
     lastprefab = prefab
 
@@ -524,8 +552,8 @@ function c_findnext(prefab, radius, inst)
     return found
 end
 
-function c_godmode(target)
-    local player = target or ConsoleCommandPlayer()
+function c_godmode(player)
+    player = ListingOrConsolePlayer(player)
     if player ~= nil then
         SuUsed("c_godmode", true)
         if player:HasTag("playerghost") then
@@ -540,8 +568,8 @@ function c_godmode(target)
     end
 end
 
-function c_supergodmode(target)
-    local player = target or ConsoleCommandPlayer()
+function c_supergodmode(player)
+    player = ListingOrConsolePlayer(player)
     if player ~= nil then
         SuUsed("c_supergodmode", true)
         if player:HasTag("playerghost") then
@@ -562,7 +590,10 @@ function c_supergodmode(target)
 end
 
 function c_find(prefab, radius, inst)
-    inst = inst or ConsoleCommandPlayer()
+    inst = ListingOrConsolePlayer(inst)
+    if inst == nil then
+        return
+    end
     radius = radius or 9001
 
     local trans = inst.Transform
@@ -583,7 +614,8 @@ function c_find(prefab, radius, inst)
 end
 
 function c_findtag(tag, radius, inst)
-    return GetClosestInstWithTag(tag, inst or ConsoleCommandPlayer(), radius or 1000)
+    inst = ListingOrConsolePlayer(inst)
+    return inst ~= nil and GetClosestInstWithTag(tag, inst, radius or 1000) or nil
 end
 
 function c_gonext(name)
@@ -800,76 +832,90 @@ function c_searchprefabs(str)
 end
 
 function c_maintainhealth(player, percent)
-    player = player or ConsoleCommandPlayer()
-    if player.debug_maintainhealthtask ~= nil then
-        player.debug_maintainhealthtask:Cancel()
+    player = ListingOrConsolePlayer(player)
+    if player ~= nil then
+        if player.debug_maintainhealthtask ~= nil then
+            player.debug_maintainhealthtask:Cancel()
+        end
+        player.debug_maintainhealthtask = player:DoPeriodicTask(3, function(inst) inst.components.health:SetPercent(percent or 1) end)
     end
-    player.debug_maintainhealthtask = player:DoPeriodicTask(3, function(inst) inst.components.health:SetPercent(percent or 1) end)
 end
 
 function c_maintainsanity(player, percent)
-    player = player or ConsoleCommandPlayer()
-    if player.debug_maintainsanitytask ~= nil then
-        player.debug_maintainsanitytask:Cancel()
+    player = ListingOrConsolePlayer(player)
+    if player ~= nil then
+        if player.debug_maintainsanitytask ~= nil then
+            player.debug_maintainsanitytask:Cancel()
+        end
+        player.debug_maintainsanitytask = player:DoPeriodicTask(3, function(inst) inst.components.sanity:SetPercent(percent or 1) end)
     end
-    player.debug_maintainsanitytask = player:DoPeriodicTask(3, function(inst) inst.components.sanity:SetPercent(percent or 1) end)
 end
 
 function c_maintainhunger(player, percent)
-    player = player or ConsoleCommandPlayer()
-    if player.debug_maintainhungertask ~= nil then
-        player.debug_maintainhungertask:Cancel()
+    player = ListingOrConsolePlayer(player)
+    if player ~= nil then
+        if player.debug_maintainhungertask ~= nil then
+            player.debug_maintainhungertask:Cancel()
+        end
+        player.debug_maintainhungertask = player:DoPeriodicTask(3, function(inst) inst.components.hunger:SetPercent(percent or 1) end)
     end
-    player.debug_maintainhungertask = player:DoPeriodicTask(3, function(inst) inst.components.hunger:SetPercent(percent or 1) end)
 end
 
 function c_maintaintemperature(player, temp)
-    player = player or ConsoleCommandPlayer()
-    if player.debug_maintaintemptask ~= nil then
-        player.debug_maintaintemptask:Cancel()
+    player = ListingOrConsolePlayer(player)
+    if player ~= nil then
+        if player.debug_maintaintemptask ~= nil then
+            player.debug_maintaintemptask:Cancel()
+        end
+        player.debug_maintaintemptask = player:DoPeriodicTask(3, function(inst) inst.components.temperature:SetTemperature(temp or 25) end)
     end
-    player.debug_maintaintemptask = player:DoPeriodicTask(3, function(inst) inst.components.temperature:SetTemperature(temp or 25) end)
 end
 
 function c_maintainmoisture(player, percent)
-    player = player or ConsoleCommandPlayer()
-    if player.debug_maintainmoisturetask ~= nil then
-        player.debug_maintainmoisturetask:Cancel()
+    player = ListingOrConsolePlayer(player)
+    if player ~= nil then
+        if player.debug_maintainmoisturetask ~= nil then
+            player.debug_maintainmoisturetask:Cancel()
+        end
+        player.debug_maintainmoisturetask = player:DoPeriodicTask(3, function(inst) inst.components.moisture:SetPercent(percent or 0) end)
     end
-    player.debug_maintainmoisturetask = player:DoPeriodicTask(3, function(inst) inst.components.moisture:SetPercent(percent or 0) end)
 end
 
 -- Use this instead of godmode if you still want to see deltas and things
 function c_maintainall(player)
-    player = player or ConsoleCommandPlayer()
-    c_maintainhealth(player)
-    c_maintainsanity(player)
-    c_maintainhunger(player)
-    c_maintaintemperature(player)
-    c_maintainmoisture(player)
+    player = ListingOrConsolePlayer(player)
+    if player ~= nil then
+        c_maintainhealth(player)
+        c_maintainsanity(player)
+        c_maintainhunger(player)
+        c_maintaintemperature(player)
+        c_maintainmoisture(player)
+    end
 end
 
 function c_cancelmaintaintasks(player)
-    player = player or ConsoleCommandPlayer()
-    if player.debug_maintainhealthtask ~= nil then
-        player.debug_maintainhealthtask:Cancel()
-        player.debug_maintainhealthtask = nil
-    end
-    if player.debug_maintainsanitytask ~= nil then
-        player.debug_maintainsanitytask:Cancel()
-        player.debug_maintainsanitytask = nil
-    end
-    if player.debug_maintainhungertask ~= nil then
-        player.debug_maintainhungertask:Cancel()
-        player.debug_maintainhungertask = nil
-    end
-    if player.debug_maintaintemptask ~= nil then
-        player.debug_maintaintemptask:Cancel()
-        player.debug_maintaintemptask = nil
-    end
-    if player.debug_maintainmoisturetask ~= nil then
-        player.debug_maintainmoisturetask:Cancel()
-        player.debug_maintainmoisturetask = nil
+    player = ListingOrConsolePlayer(player)
+    if player ~= nil then
+        if player.debug_maintainhealthtask ~= nil then
+            player.debug_maintainhealthtask:Cancel()
+            player.debug_maintainhealthtask = nil
+        end
+        if player.debug_maintainsanitytask ~= nil then
+            player.debug_maintainsanitytask:Cancel()
+            player.debug_maintainsanitytask = nil
+        end
+        if player.debug_maintainhungertask ~= nil then
+            player.debug_maintainhungertask:Cancel()
+            player.debug_maintainhungertask = nil
+        end
+        if player.debug_maintaintemptask ~= nil then
+            player.debug_maintaintemptask:Cancel()
+            player.debug_maintaintemptask = nil
+        end
+        if player.debug_maintainmoisturetask ~= nil then
+            player.debug_maintainmoisturetask:Cancel()
+            player.debug_maintainmoisturetask = nil
+        end
     end
 end
 
@@ -939,25 +985,27 @@ function c_migrationportal(worldId, portalId)
     end
 end
 
-function c_goadventuring(target)
-    local player = target or ConsoleCommandPlayer()
-    c_select(player)
-    player.components.inventory:Equip( c_spawn("backpack", nil, true) )
-    c_give("lantern", nil, true)
-    c_give("minerhat", nil, true)
-    c_give("axe", nil, true)
-    c_give("pickaxe", nil, true)
-    c_give("footballhat", nil, true)
-    c_give("armorwood", nil, true)
-    c_give("spear", nil, true)
-    c_give("carrot_cooked", 10, true)
-    c_give("berries_cooked", 10, true)
-    c_give("smallmeat_dried", 5, true)
-    c_give("flowerhat", nil, true)
-    c_give("cutgrass", 20, true)
-    c_give("twigs", 20, true)
-    c_give("log", 20, true)
-    c_give("flint", 20, true)
+function c_goadventuring(player)
+    player = ListingOrConsolePlayer(player)
+    if player ~= nil then
+        c_select(player)
+        player.components.inventory:Equip( c_spawn("backpack", nil, true) )
+        c_give("lantern", nil, true)
+        c_give("minerhat", nil, true)
+        c_give("axe", nil, true)
+        c_give("pickaxe", nil, true)
+        c_give("footballhat", nil, true)
+        c_give("armorwood", nil, true)
+        c_give("spear", nil, true)
+        c_give("carrot_cooked", 10, true)
+        c_give("berries_cooked", 10, true)
+        c_give("smallmeat_dried", 5, true)
+        c_give("flowerhat", nil, true)
+        c_give("cutgrass", 20, true)
+        c_give("twigs", 20, true)
+        c_give("log", 20, true)
+        c_give("flint", 20, true)
+    end
 end
 
 function c_sounddebug()
@@ -969,11 +1017,14 @@ function c_sounddebug()
 end
 
 function c_migrateto(worldId, portalId)
-    portalId = portalId or 1
-    TheWorld:PushEvent(
-        "ms_playerdespawnandmigrate",
-        { player = ConsoleCommandPlayer(), portalid = portalId, worldid = worldId }
-    )
+    local player = ConsoleCommandPlayer()
+    if player ~= nil then
+        portalId = portalId or 1
+        TheWorld:PushEvent(
+            "ms_playerdespawnandmigrate",
+            { player = player, portalid = portalId, worldid = worldId }
+        )
+    end
 end
 
 function c_debugshards()
@@ -1042,6 +1093,11 @@ function c_startvote(commandname, playeroruserid)
     local userid = playeroruserid
     if type(userid) == "table" then
         userid = userid.userid
+    elseif type(userid) == "string" or type(userid) == "number" then
+        userid = UserToClientID(userid)
+        if userid == nil then
+            return
+        end
     end
     TheNet:StartVote(smallhash(commandname), userid)
 end

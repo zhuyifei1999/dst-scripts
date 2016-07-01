@@ -136,10 +136,11 @@ function Container:DropItem(itemtodrop)
 end
 
 function Container:CanTakeItemInSlot(item, slot)
-	return item ~= nil and
-        item.components.inventoryitem ~= nil and
-        item.components.inventoryitem.cangoincontainer and
-        (self.itemtestfn == nil or self:itemtestfn(item, slot))
+    return item ~= nil
+        and item.components.inventoryitem ~= nil
+        and item.components.inventoryitem.cangoincontainer
+        and (slot == nil or (slot >= 1 and slot <= self.numslots))
+        and (self.itemtestfn == nil or self:itemtestfn(item, slot))
 end
 
 function Container:AcceptsStacks()

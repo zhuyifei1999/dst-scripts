@@ -120,12 +120,10 @@ function Inventory:OnSave()
 end   
 
 function Inventory:CanTakeItemInSlot(item, slot)
-
-    if not (item and item.components.inventoryitem and (item.components.inventoryitem.cangoincontainer or self.ignorescangoincontainer) ) then
-        return false
-    end
-
-    return item and item.components.inventoryitem ~= nil
+    return item ~= nil
+        and item.components.inventoryitem ~= nil
+        and (item.components.inventoryitem.cangoincontainer or self.ignorescangoincontainer)
+        and (slot == nil or (slot >= 1 and slot <= self.maxslots))
 end
 
 function Inventory:AcceptsStacks()
