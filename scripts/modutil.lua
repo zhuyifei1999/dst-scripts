@@ -95,6 +95,12 @@ function modassert(test, message)
     end
 end
 
+function modprint(...)
+    if KnownModIndex:IsModErrorEnabled() then
+        print(...)
+    end
+end
+
 local function getfenvminfield(level, fieldname)
     level = level + 1 -- increase level due to this function call
     -- tail call doesn't have full debug info, its func is nil

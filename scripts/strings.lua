@@ -2742,6 +2742,7 @@ STRINGS.UI =
     {
         SQUELCHEDFMT = "You aren't allowed to start a '%s' vote right now.",
         DISABLEDFMT = "You can't run '%s' right now.",
+        FAILEDFMT = "You can't run '%s' right now.",
         BADTARGETFMT = "You can't run '%s' on %s.",
         NOTALLOWEDFMT = "You don't have permission to run '%s'.",
         MISSINGPARAMSFMT = "Missing parameters! Type /help %s for more info.",

@@ -122,9 +122,8 @@ local function parseinput(input)
     local args = string.split(input, " ")
     local command = getcommand(args[1])
     if command == nil then
-        print("Tried running unknown user command: ",args[1])
-        dumptable(args)
-        print("input:", input)
+        modprint("Tried running unknown user command: ",args[1])
+        modprint("input:", input)
         return nil
     end
     local params = {}
@@ -242,7 +241,13 @@ local function getexectype(command, caller, targetid)
 end
 
 local function runcommand(command, params, caller, onserver, confirm)
-    local exec_type = getexectype(command, caller, UserToClientID(params.user)) -- 'user' is the magical param name
+    local userid = UserToClientID(params.user)
+    if userid == nil and params.user ~= nil then
+        sendsystemmessage(string.format(STRINGS.UI.USERCOMMANDS.FAILEDFMT, prettyname(command)))
+        print(string.format("User %s failed to run command %s.", caller.name, command.name))
+        return
+    end
+    local exec_type = getexectype(command, caller, userid) -- 'user' is the magical param name
     if exec_type == COMMAND_RESULT.DISABLED then
         sendsystemmessage(string.format(STRINGS.UI.USERCOMMANDS.DISABLEDFMT, prettyname(command)))
         print(string.format("User %s tried to run command %s, but it is disabled.", caller.name, command.name))
@@ -253,7 +258,12 @@ local function runcommand(command, params, caller, onserver, confirm)
         return
     elseif exec_type == COMMAND_RESULT.INVALID then
         if params.user ~= nil then
-            sendsystemmessage(string.format(STRINGS.UI.USERCOMMANDS.BADTARGETFMT, prettyname(command), UserToName(params.user)))
+            local username = UserToName(params.user)
+            if username ~= nil then
+                sendsystemmessage(string.format(STRINGS.UI.USERCOMMANDS.BADTARGETFMT, prettyname(command), username))
+            else
+                sendsystemmessage(string.format(STRINGS.UI.USERCOMMANDS.FAILEDFMT, prettyname(command)))
+            end
             print(string.format("User %s tried to run command %s, but target was bad.", caller.name, command.name))
         else
             sendsystemmessage(string.format(STRINGS.UI.USERCOMMANDS.NOTALLOWEDFMT, prettyname(command)))
@@ -263,17 +273,23 @@ local function runcommand(command, params, caller, onserver, confirm)
     end
 
     if not onserver and command.confirm and not confirm then
-        TheFrontEnd:PushScreen(
-            PopupDialogScreen(
-                params.user ~= nil and string.format(STRINGS.UI.COMMANDSSCREEN.CONFIRMTITLE_TARGET, prettyname(command), UserToName(params.user)) or string.format(STRINGS.UI.COMMANDSSCREEN.CONFIRMTITLE, prettyname(command)),
-                ResolveCommandStringProperty(command, "desc", ""),
-                {
-                    {text=STRINGS.UI.PLAYERSTATUSSCREEN.OK, cb = function() TheFrontEnd:PopScreen() runcommand(command, params, caller, onserver, true) end},
-                    {text=STRINGS.UI.PLAYERSTATUSSCREEN.CANCEL, cb = function() TheFrontEnd:PopScreen() end}
-                }
-            ))
+        local username = params.user ~= nil and UserToName(params.user) or nil
+        if username ~= nil or params.user == nil then
+            TheFrontEnd:PushScreen(
+                PopupDialogScreen(
+                    username ~= nil and string.format(STRINGS.UI.COMMANDSSCREEN.CONFIRMTITLE_TARGET, prettyname(command), username) or string.format(STRINGS.UI.COMMANDSSCREEN.CONFIRMTITLE, prettyname(command)),
+                    ResolveCommandStringProperty(command, "desc", ""),
+                    {
+                        {text=STRINGS.UI.PLAYERSTATUSSCREEN.OK, cb = function() TheFrontEnd:PopScreen() runcommand(command, params, caller, onserver, true) end},
+                        {text=STRINGS.UI.PLAYERSTATUSSCREEN.CANCEL, cb = function() TheFrontEnd:PopScreen() end}
+                    }
+                ))
+        end
     elseif exec_type == COMMAND_RESULT.VOTE then
-        TheNet:StartVote(command.hash, UserToClientID(params.user))
+        local userid = UserToClientID(params.user)
+        if userid ~= nil then
+            TheNet:StartVote(command.hash, userid)
+        end
     elseif exec_type == COMMAND_RESULT.ALLOW then
         if not onserver then
             if command.localfn ~= nil then
@@ -372,6 +388,11 @@ local function ClearModData(mod)
 end
 
 local function FinishVote(commandname, params, voteresults)
+    local username = UserToName(params.user)
+    if username == nil then
+        return false
+    end
+
     local command = getcommand(commandname)
 
     local passed = false
@@ -386,7 +407,7 @@ local function FinishVote(commandname, params, voteresults)
         end
     end
 
-    TheNet:AnnounceVoteResult(command.hash, UserToName(params.user), passed)
+    TheNet:AnnounceVoteResult(command.hash, username, passed)
     if passed then
         -- Vote always runs commands they were called by the server, so just run both localfn and serverfn
         -- Don't need to queue these because we reach here during game component (worldvoter) update loop.

@@ -208,11 +208,19 @@ local function OnLoad(self, filename, callback, load_success, str)
             local v2 = savedata.slots[i]
             if v2 ~= nil then
                 v.world = v2.world or v.world
-                if v.world.options ~= nil then
-                    v.world.options = UpgradeSavedLevelData(v.world.options)
-                else
+                if v.world == nil then
+                    print("OnLoad slot",i,": World was nil!")
+                    v.world = {}
+                end
+                if v.world.options == nil then
+                    print("OnLoad slot",i,": World options was nil! Populating with default.")
                     v.world.options = {}
                     v.world.options[1] = Levels.GetDefaultLevelData(LEVELTYPE.SURVIVAL)
+                elseif next(v.world.options) == nil then
+                    print("OnLoad slot",i,": World options was empty! Populating with default")
+                    v.world.options[1] = Levels.GetDefaultLevelData(LEVELTYPE.SURVIVAL)
+                else
+                    v.world.options = UpgradeSavedLevelData(v.world.options)
                 end
                 v.server = v2.server or v.server
                 v.session_id = v2.session_id or v.session_id

@@ -112,11 +112,6 @@ function GetEnabledServerModsConfigData()
 	return encoded_data
 end
 
-	
-local function modprint(...)
-	--print(unpack({...}))
-end
-
 local runmodfn = function(fn,mod,modtype)
 	return (function(...)
 		if fn then

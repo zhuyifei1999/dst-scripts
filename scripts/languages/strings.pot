@@ -72421,14 +72421,19 @@ msgctxt "STRINGS.UI.USERCOMMANDS.DISABLEDFMT"
 msgid "You can't run '%s' right now."
 msgstr ""
 
-#. STRINGS.UI.USERCOMMANDS.MISSINGPARAMSFMT
-msgctxt "STRINGS.UI.USERCOMMANDS.MISSINGPARAMSFMT"
-msgid "Missing parameters! Type /help %s for more info."
+#. STRINGS.UI.USERCOMMANDS.FAILEDFMT
+msgctxt "STRINGS.UI.USERCOMMANDS.FAILEDFMT"
+msgid "You can't run '%s' right now."
 msgstr ""
 
 #. STRINGS.UI.USERCOMMANDS.SQUELCHEDFMT
 msgctxt "STRINGS.UI.USERCOMMANDS.SQUELCHEDFMT"
 msgid "You aren't allowed to start a '%s' vote right now."
+msgstr ""
+
+#. STRINGS.UI.USERCOMMANDS.MISSINGPARAMSFMT
+msgctxt "STRINGS.UI.USERCOMMANDS.MISSINGPARAMSFMT"
+msgid "Missing parameters! Type /help %s for more info."
 msgstr ""
 
 #. STRINGS.UI.USERCOMMANDS.NOTALLOWEDFMT

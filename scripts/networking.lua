@@ -110,7 +110,7 @@ function Networking_RollAnnouncement(userid, name, prefab, colour, rolls, max)
     local hud = ThePlayer ~= nil and ThePlayer.HUD or nil
     if hud ~= nil then
         name = hud.controls.networkchatqueue:GetDisplayName(name, prefab)
-        Networking_Announcement(string.format(STRINGS.UI.NOTIFICATION.DICEROLLED, name, table.concat(rolls, " "), max), colour, "dice_roll")
+        Networking_Announcement(string.format(STRINGS.UI.NOTIFICATION.DICEROLLED, name, table.concat(rolls, ", "), max), colour, "dice_roll")
     end
 end
 

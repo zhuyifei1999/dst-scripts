@@ -9,6 +9,19 @@ TrackingTimingStats = {}
 local GameStats = {}
 local OnLoadGameInfo = {}
 
+-- GLOBAL FOR C++
+function GetClientMetricsData()
+    if Profile == nil then
+        return nil
+    end
+
+    local data = {}
+    data.play_instance = Profile:GetPlayInstance()
+    data.install_id = Profile:GetInstallID()
+
+    return data
+end
+
 local function IncTrackingStat(stat, subtable)
 
 	if not STATS_ENABLE then
@@ -82,20 +95,6 @@ end
 local function BuildContextTable(player)
     local sendstats = {}
 
-    sendstats.build = APP_VERSION
-    if Profile ~= nil then
-        sendstats.install_id = Profile:GetInstallID()
-        sendstats.session_id = Profile:GetPlayInstance()
-    end
-    if TheWorld ~= nil then
-        sendstats.save_id = TheWorld.meta.session_identifier
-        sendstats.master_save_id = TheWorld.net ~= nil and TheWorld.net.components.shardstate ~= nil and TheWorld.net.components.shardstate:GetMasterSessionId() or nil
-
-        if TheWorld.state ~= nil then
-            sendstats.world_time = TheWorld.state.cycles + TheWorld.state.time
-        end
-    end
-
     -- can be called with a player or a userid
     if type(player) == "table" then
         sendstats.user = player.userid
@@ -109,6 +108,28 @@ local function BuildContextTable(player)
     --else
         --sendstats.host = host
     --end
+
+    local client_metrics = nil
+    if sendstats.user == TheNet:GetUserID() then
+        client_metrics = GetClientMetricsData()
+    elseif TheNet:GetIsServer() then
+        client_metrics = TheNet:GetClientMetricsForUser(sendstats.user)
+    end
+
+    sendstats.build = APP_VERSION
+    if client_metrics ~= nil then
+        sendstats.install_id = client_metrics.install_id
+        sendstats.session_id = client_metrics.play_instance
+    end
+    if TheWorld ~= nil then
+        sendstats.save_id = TheWorld.meta.session_identifier
+        sendstats.master_save_id = TheWorld.net ~= nil and TheWorld.net.components.shardstate ~= nil and TheWorld.net.components.shardstate:GetMasterSessionId() or nil
+
+        if TheWorld.state ~= nil then
+            sendstats.world_time = TheWorld.state.cycles + TheWorld.state.time
+        end
+    end
+
 
     sendstats.user =
         (sendstats.user ~= nil and (sendstats.user.."@chester")) or

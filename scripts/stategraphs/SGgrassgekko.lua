@@ -8,7 +8,7 @@ local function getBuild(inst,tail)
     if inst.components.diseaseable ~= nil and inst.components.diseaseable:IsDiseased() then
         build = build .. "_disease"
     end
-    print(build)
+    --print(build)
     return build
 end
 
