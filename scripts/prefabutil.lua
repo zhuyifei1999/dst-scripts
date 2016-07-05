@@ -3,7 +3,10 @@ function MakePlacer(name, bank, build, anim, onground, snap, metersnap, scale, f
     local function fn()
         local inst = CreateEntity()
 
+        inst:AddTag("FX")
         --[[Non-networked entity]]
+        inst.entity:SetCanSleep(false)
+        inst.persists = false
 
         inst.entity:AddTransform()
         inst.entity:AddAnimState()
@@ -23,7 +26,6 @@ function MakePlacer(name, bank, build, anim, onground, snap, metersnap, scale, f
         end
 
         inst:AddComponent("placer")
-        inst.persists = false
         inst.components.placer.snaptogrid = snap
         inst.components.placer.snap_to_meters = metersnap
         inst.components.placer.fixedcameraoffset = fixedcameraoffset

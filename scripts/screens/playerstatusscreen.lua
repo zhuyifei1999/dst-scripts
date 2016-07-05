@@ -222,14 +222,17 @@ function PlayerStatusScreen:DoInit(ClientObjs)
 
     if not self.black then
         --darken everything behind the dialog
-        self.black = self:AddChild(ImageButton("images/global.xml", "square.tex"))
-        self.black.image:SetVRegPoint(ANCHOR_MIDDLE)
-        self.black.image:SetHRegPoint(ANCHOR_MIDDLE)
-        self.black.image:SetVAnchor(ANCHOR_MIDDLE)
-        self.black.image:SetHAnchor(ANCHOR_MIDDLE)
-        self.black.image:SetScaleMode(SCALEMODE_FILLSCREEN)
-        self.black.image:SetTint(0,0,0,0) -- invisible, but clickable!
-        self.black:SetOnClick(function() --[[ eat the click ]] end)
+        --bleed outside the screen a bit, otherwise it may not cover
+        --the edge of the screen perfectly when scaled to some sizes
+        local bleeding = 4
+        self.black = self:AddChild(Image("images/global.xml", "square.tex"))
+        self.black:SetSize(RESOLUTION_X + bleeding, RESOLUTION_Y + bleeding)
+        self.black:SetVRegPoint(ANCHOR_MIDDLE)
+        self.black:SetHRegPoint(ANCHOR_MIDDLE)
+        self.black:SetVAnchor(ANCHOR_MIDDLE)
+        self.black:SetHAnchor(ANCHOR_MIDDLE)
+        self.black:SetScaleMode(SCALEMODE_FIXEDPROPORTIONAL)
+        self.black:SetTint(0,0,0,0) -- invisible, but clickable!
     end
 
     if not self.root then
