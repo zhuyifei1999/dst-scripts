@@ -152,30 +152,29 @@ function Container:IsSideWidget()
 end
 
 function Container:DestroyContents()
-	for k = 1,self.numslots do
-		local item = self:RemoveItemBySlot(k)
-		if item then
-			item:Remove()
-		end		
-	end
+    for k = 1, self.numslots do
+        local item = self:RemoveItemBySlot(k)
+        if item ~= nil then
+            item:Remove()
+        end
+    end
 end
 
 function Container:GiveItem(item, slot, src_pos, drop_on_fail)
     drop_on_fail = drop_on_fail == nil and true or false
     --print("Container:GiveItem", item.prefab)
     if item and item.components.inventoryitem and self:CanTakeItemInSlot(item, slot) then
-		
-		--try to burn off stacks if we're just dumping it in there
-		if item.components.stackable ~= nil and self.acceptsstacks then
+
+        --try to burn off stacks if we're just dumping it in there
+        if item.components.stackable ~= nil and self.acceptsstacks then
             --Added this for when we want to dump a stack back into a
             --specific spot (e.g. moving half a stack failed, so we
             --need to dump the leftovers back into the original stack)
             if slot ~= nil and slot <= self.numslots then
                 local other_item = self.slots[slot]
                 if other_item ~= nil and other_item.prefab == item.prefab and not other_item.components.stackable:IsFull() then
-
                     if self.inst.components.inventoryitem ~= nil and self.inst.components.inventoryitem.owner ~= nil then
-                        self.inst.components.inventoryitem.owner:PushEvent("containergotitem", { item = item, src_pos = src_pos })
+                        self.inst.components.inventoryitem.owner:PushEvent("gotnewitem", { item = item, slot = slot })
                     end
 
                     item = other_item.components.stackable:Put(item, src_pos)
@@ -188,23 +187,22 @@ function Container:GiveItem(item, slot, src_pos, drop_on_fail)
             end
 
             if slot == nil then
-                for k = 1,self.numslots do
-    				local other_item = self.slots[k]
-    				if other_item and other_item.prefab == item.prefab and not other_item.components.stackable:IsFull() then
-    					
-    					if self.inst.components.inventoryitem and self.inst.components.inventoryitem.owner then
-    						self.inst.components.inventoryitem.owner:PushEvent("containergotitem", {item = item, src_pos = src_pos})
-    					end
-    					
-    		            item = other_item.components.stackable:Put(item, src_pos)
-    		            if not item then
-    						return true
-    		            end
-    				end
+                for k = 1, self.numslots do
+                    local other_item = self.slots[k]
+                    if other_item and other_item.prefab == item.prefab and not other_item.components.stackable:IsFull() then
+                        if self.inst.components.inventoryitem ~= nil and self.inst.components.inventoryitem.owner ~= nil then
+                            self.inst.components.inventoryitem.owner:PushEvent("gotnewitem", { item = item, slot = k })
+                        end
+
+                        item = other_item.components.stackable:Put(item, src_pos)
+                        if item == nil then
+                            return true
+                        end
+                    end
                 end
             end
-		end
-		
+        end
+
         local use_slot = slot and slot <= self.numslots and not self.slots[slot]
         local in_slot = nil
         if use_slot then
@@ -217,34 +215,34 @@ function Container:GiveItem(item, slot, src_pos, drop_on_fail)
                 end
             end
         end
-        
+
         if in_slot then
 
-			--weird case where we are trying to force a stack into a non-stacking container. this should probably have been handled earlier, but this is a failsafe        
-			if item.components.stackable and item.components.stackable:StackSize() > 1 and not self.acceptsstacks then
-				item = item.components.stackable:Get()
-				self.slots[in_slot] = item
-				item.components.inventoryitem:OnPutInInventory(self.inst)
-				self.inst:PushEvent("itemget", {slot = in_slot, item = item, src_pos = src_pos})	
-				return false
-			end
-			
-			self.slots[in_slot] = item
-			item.components.inventoryitem:OnPutInInventory(self.inst)
-			self.inst:PushEvent("itemget", {slot = in_slot, item = item, src_pos = src_pos})
-			
-			if self.inst.components.inventoryitem and self.inst.components.inventoryitem.owner and not self.ignoresound then
-				self.inst.components.inventoryitem.owner:PushEvent("containergotitem", {item = item, src_pos = src_pos})
-			end
-			
-			return true
+            --weird case where we are trying to force a stack into a non-stacking container. this should probably have been handled earlier, but this is a failsafe        
+            if not self.acceptsstacks and item.components.stackable and item.components.stackable:StackSize() > 1 then
+                item = item.components.stackable:Get()
+                self.slots[in_slot] = item
+                item.components.inventoryitem:OnPutInInventory(self.inst)
+                self.inst:PushEvent("itemget", { slot = in_slot, item = item, src_pos = src_pos })
+                return false
+            end
+
+            self.slots[in_slot] = item
+            item.components.inventoryitem:OnPutInInventory(self.inst)
+            self.inst:PushEvent("itemget", { slot = in_slot, item = item, src_pos = src_pos })
+
+            if not self.ignoresound and self.inst.components.inventoryitem ~= nil and self.inst.components.inventoryitem.owner ~= nil then
+                self.inst.components.inventoryitem.owner:PushEvent("gotnewitem", { item = item, slot = in_slot })
+            end
+
+            return true
         else
             if drop_on_fail then
-				item.Transform:SetPosition(self.inst.Transform:GetWorldPosition())
-				if item.components.inventoryitem then
-	                item.components.inventoryitem:OnDropped(true)
-				end
-			end				
+                item.Transform:SetPosition(self.inst.Transform:GetWorldPosition())
+                if item.components.inventoryitem then
+                    item.components.inventoryitem:OnDropped(true)
+                end
+            end
             return false
         end
         
@@ -307,7 +305,7 @@ function Container:Open(doer)
         if doer.HUD ~= nil then
             doer.HUD:OpenContainer(self.inst, self:IsSideWidget())
             if self:IsSideWidget() then
-                TheFocalPoint.SoundEmitter:PlaySound("dontstarve/wilson/backpack_open", "open")
+                TheFocalPoint.SoundEmitter:PlaySound("dontstarve/wilson/backpack_open")
             end
         elseif self.widget ~= nil
             and self.widget.buttoninfo ~= nil
@@ -333,7 +331,7 @@ function Container:Close()
         if doer.HUD ~= nil then
             doer.HUD:CloseContainer(self.inst, self:IsSideWidget())
             if self:IsSideWidget() then
-                TheFocalPoint.SoundEmitter:PlaySound("dontstarve/wilson/backpack_close", "open")
+                TheFocalPoint.SoundEmitter:PlaySound("dontstarve/wilson/backpack_close")
             end
         elseif doer.components.playeractionpicker ~= nil then
             doer.components.playeractionpicker:UnregisterContainer(self.inst)

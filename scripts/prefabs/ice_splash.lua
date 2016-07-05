@@ -6,21 +6,19 @@ local assets =
 local function fn()
     local inst = CreateEntity()
 
+    inst:AddTag("FX")
+    --[[Non-networked entity]]
+    inst.entity:SetCanSleep(false)
+    inst.persists = false
+
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
-    inst.entity:AddNetwork()
 
     inst.AnimState:SetBank("ice_splash")
     inst.AnimState:SetBuild("ice_splash")
     inst.AnimState:PlayAnimation("full")
 
-    inst:AddTag("FX")
-
-    inst.entity:SetPristine()
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
+    inst:ListenForEvent("animover", inst.Remove)
 
     return inst
 end

@@ -18,8 +18,24 @@ local Container = Class(function(self, inst)
         self.classified.entity:SetParent(inst.entity)
 
         --Server intercepts messages and forwards to clients via classified net vars
-        inst:ListenForEvent("itemget", function(inst, data) self.classified:SetSlotItem(data.slot, data.item, data.src_pos) end)
-        inst:ListenForEvent("itemlose", function(inst, data) self.classified:SetSlotItem(data.slot) end)
+        self._onitemget = function(inst, data)
+            self.classified:SetSlotItem(data.slot, data.item, data.src_pos)
+            if self.issidewidget and
+                inst.components.inventoryitem.owner ~= nil and
+                inst.components.inventoryitem.owner.HUD ~= nil then
+                inst.components.inventoryitem.owner:PushEvent("refreshcrafting")
+            end
+        end
+        self._onitemlose = function(inst, data)
+            self.classified:SetSlotItem(data.slot)
+            if self.issidewidget and
+                inst.components.inventoryitem.owner ~= nil and
+                inst.components.inventoryitem.owner.HUD ~= nil then
+                inst.components.inventoryitem.owner:PushEvent("refreshcrafting")
+            end
+        end
+        inst:ListenForEvent("itemget", self._onitemget)
+        inst:ListenForEvent("itemlose", self._onitemlose)
     else
         containers.widgetsetup(self)
 
@@ -39,6 +55,15 @@ function Container:OnRemoveFromEntity()
         if TheWorld.ismastersim then
             self.classified:Remove()
             self.classified = nil
+            self.inst:RemoveEventCallback("itemget", self._onitemget)
+            self.inst:RemoveEventCallback("itemlose", self._onitemlose)
+            if self._onputininventory ~= nil then
+                self.inst:RemoveEventCallback("onputininventory", self._onputininventory)
+                self.inst:RemoveEventCallback("ondropped", self._ondropped)
+                self._onputininventory = nil
+                self._ondropped = nil
+                self._owner = nil
+            end
         else
             self.classified._parent = nil
             self.inst:RemoveEventCallback("onremove", self.ondetachclassified, self.classified)
@@ -53,9 +78,16 @@ Container.OnRemoveEntity = Container.OnRemoveFromEntity
 --Client triggers open/close based on receiving access to classified data
 --------------------------------------------------------------------------
 
+local function OnRefreshCrafting(inst)
+    if ThePlayer ~= nil and ThePlayer.HUD ~= nil then
+        ThePlayer:PushEvent("refreshcrafting")
+    end
+end
+
 local function OpenContainer(inst, self)
     self.opentask = nil
     self:Open(ThePlayer)
+    OnRefreshCrafting(inst)
 end
 
 function Container:AttachClassified(classified)
@@ -67,11 +99,21 @@ function Container:AttachClassified(classified)
     classified:InitializeSlots(self:GetNumSlots())
 
     self.opentask = self.inst:DoTaskInTime(0, OpenContainer, self)
+
+    if self.issidewidget then
+        self.inst:ListenForEvent("itemget", OnRefreshCrafting)
+        self.inst:ListenForEvent("itemlose", OnRefreshCrafting)
+    end
 end
 
 function Container:DetachClassified()
     self.classified = nil
     self.ondetachclassified = nil
+    if self.issidewidget then
+        self.inst:RemoveEventCallback("itemget", OnRefreshCrafting)
+        self.inst:RemoveEventCallback("itemlose", OnRefreshCrafting)
+        OnRefreshCrafting(self.inst)
+    end
     self:Close()
 end
 
@@ -83,6 +125,29 @@ function Container:WidgetSetup(prefab, data)
     containers.widgetsetup(self, prefab, data)
     if self.classified ~= nil then
         self.classified:InitializeSlots(self:GetNumSlots())
+    end
+    if self.issidewidget then
+        if self._onputininventory == nil then
+            self._owner = nil
+            self._ondropped = function(inst)
+                if self._owner ~= nil then
+                    local owner = self._owner
+                    self._owner = nil
+                    if owner.HUD ~= nil then
+                        owner:PushEvent("refreshcrafting")
+                    end
+                end
+            end
+            self._onputininventory = function(inst, owner)
+                self._ondropped(inst)
+                self._owner = owner
+                if owner ~= nil and owner.HUD ~= nil then
+                    owner:PushEvent("refreshcrafting")
+                end
+            end
+            self.inst:ListenForEvent("onputininventory", self._onputininventory)
+            self.inst:ListenForEvent("ondropped", self._ondropped)
+        end
     end
 end
 
@@ -203,7 +268,7 @@ function Container:Open(doer)
         elseif not self._isopen then
             doer.HUD:OpenContainer(self.inst, self:IsSideWidget())
             if self:IsSideWidget() then
-                TheFocalPoint.SoundEmitter:PlaySound("dontstarve/wilson/backpack_open", "open")
+                TheFocalPoint.SoundEmitter:PlaySound("dontstarve/wilson/backpack_open")
             end
             self._isopen = true
         end
@@ -221,7 +286,7 @@ function Container:Close()
         if ThePlayer ~= nil and ThePlayer.HUD ~= nil then
             ThePlayer.HUD:CloseContainer(self.inst, self:IsSideWidget())
             if self:IsSideWidget() then
-                TheFocalPoint.SoundEmitter:PlaySound("dontstarve/wilson/backpack_close", "open")
+                TheFocalPoint.SoundEmitter:PlaySound("dontstarve/wilson/backpack_close")
             end
         end
         self._isopen = false

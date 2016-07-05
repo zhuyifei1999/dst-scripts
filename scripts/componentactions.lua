@@ -81,7 +81,7 @@ local COMPONENT_ACTIONS =
 
         inventoryitem = function(inst, doer, actions)
             if inst.replica.inventoryitem:CanBePickedUp() and doer.replica.inventory ~= nil and 
-                not (inst:HasTag("catchable") or inst:HasTag("fire")) then
+                not (inst:HasTag("catchable") or inst:HasTag("fire") or inst:HasTag("smolder")) then
                 table.insert(actions, ACTIONS.PICKUP)
             end
         end,

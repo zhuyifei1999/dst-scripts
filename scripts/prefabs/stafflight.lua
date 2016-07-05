@@ -91,6 +91,8 @@ local function fn()
     --cooker (from cooker component) added to pristine state for optimization
     inst:AddTag("cooker")
 
+    inst.no_wet_prefix = true
+
     inst.entity:SetPristine()
 
     if not inst._ismastersim then

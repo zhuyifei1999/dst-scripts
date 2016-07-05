@@ -344,22 +344,23 @@ local function PopulateWorld(savedata, profile)
             if story ~= "START" then
                 story = string.sub(story, 1, string.find(story,":")-1)
             end
-            
+
             if table.contains( node.tags, "Mist" ) then
                 if node.area_emitter == nil then
-
-                    local mist = SpawnPrefab( "mist" )
-                    mist.Transform:SetPosition( node.cent[1], 0, node.cent[2] )
-                    mist.components.emitter.area_emitter = CreateAreaEmitter( node.poly, node.cent )
-
                     if node.area == nil then
                         node.area = 1
                     end
-                    local ext = ResetextentsForPoly(node.poly)
 
-                    mist.entity:SetAABB(ext.radius, 2)
-                    mist.components.emitter.density_factor = math.ceil(node.area / 4)/31
-                    mist.components.emitter:Emit()
+                    if not TheNet:IsDedicated() then
+                        local mist = SpawnPrefab("mist")
+                        mist.Transform:SetPosition(node.cent[1], 0, node.cent[2])
+                        mist.components.emitter.area_emitter = CreateAreaEmitter(node.poly, node.cent)
+
+                        local ext = ResetextentsForPoly(node.poly)
+                        mist.entity:SetAABB(ext.radius, 2)
+                        mist.components.emitter.density_factor = math.ceil(node.area / 4) / 31
+                        mist.components.emitter:Emit()
+                    end
                 end
             end
 

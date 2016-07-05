@@ -76,24 +76,24 @@ local function createmachine(level, name, soundprefix, techtree, giftsound)
     local function onturnon(inst)
         if inst._activetask == nil and not inst:HasTag("burnt") then
             if isgifting(inst) then
-                if not inst.AnimState:IsCurrentAnimation("proximity_gift_loop") then
-                    if inst.AnimState:IsCurrentAnimation("place") then
-                        inst.AnimState:PushAnimation("proximity_gift_loop", true)
-                    else
-                        inst.AnimState:PlayAnimation("proximity_gift_loop", true)
-                    end
+                if inst.AnimState:IsCurrentAnimation("proximity_gift_loop") or
+                    inst.AnimState:IsCurrentAnimation("place") then
+                    --NOTE: push again even if already playing, in case an idle was also pushed
+                    inst.AnimState:PushAnimation("proximity_gift_loop", true)
+                else
+                    inst.AnimState:PlayAnimation("proximity_gift_loop", true)
                 end
                 if not inst.SoundEmitter:PlayingSound("loop") then
                     inst.SoundEmitter:KillSound("idlesound")
                     inst.SoundEmitter:PlaySound("dontstarve/common/research_machine_gift_active_LP", "loop")
                 end
             else
-                if not inst.AnimState:IsCurrentAnimation("proximity_loop") then
-                    if inst.AnimState:IsCurrentAnimation("place") then
-                        inst.AnimState:PushAnimation("proximity_loop", true)
-                    else
-                        inst.AnimState:PlayAnimation("proximity_loop", true)
-                    end
+                if inst.AnimState:IsCurrentAnimation("proximity_loop") or
+                    inst.AnimState:IsCurrentAnimation("place") then
+                    --NOTE: push again even if already playing, in case an idle was also pushed
+                    inst.AnimState:PushAnimation("proximity_loop", true)
+                else
+                    inst.AnimState:PlayAnimation("proximity_loop", true)
                 end
                 if not inst.SoundEmitter:PlayingSound("idlesound") then
                     inst.SoundEmitter:KillSound("loop")

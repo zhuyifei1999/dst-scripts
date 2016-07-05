@@ -245,10 +245,6 @@ end
 --Audio events
 --------------------------------------------------------------------------
 
-local function OnContainerGotItem()
-    TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/collect_resource")
-end
-
 local function OnGotNewItem(inst, data)
     if data.slot ~= nil or data.eslot ~= nil then
         TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/collect_resource")
@@ -340,14 +336,12 @@ end
 
 local function RegisterActivePlayerEventListeners(inst)
     --HUD Audio events
-    inst:ListenForEvent("containergotitem", OnContainerGotItem)
     inst:ListenForEvent("gotnewitem", OnGotNewItem)
     inst:ListenForEvent("equip", OnEquip)
 end
 
 local function UnregisterActivePlayerEventListeners(inst)
     --HUD Audio events
-    inst:RemoveEventCallback("containergotitem", OnContainerGotItem)
     inst:RemoveEventCallback("gotnewitem", OnGotNewItem)
     inst:RemoveEventCallback("equip", OnEquip)
 end

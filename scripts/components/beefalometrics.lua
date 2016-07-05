@@ -10,7 +10,7 @@ end
 local function OnDomesticationDelta(inst, data)
     local self = inst.components.beefalometrics
     if data.old == 0 and data.new > 0 then
-        PushEvent("beefalo.domestication.start", inst, self.lastdomesticator)
+        PushEvent("beefalo.domestication.start", inst, self:GetLastDomesticator())
     end
 end
 
@@ -18,7 +18,7 @@ local function OnEat(inst, data)
     local self = inst.components.beefalometrics
     if data.feeder ~= nil then
         -- note: this relies on the "oneat" event being called before the oneatfn callback, and beefalo using the callback
-        self.lastdomesticator = data.feeder
+        self:SetLastDomesticator(data.feeder)
     end
 
     PushEvent("beefalo.domestication.feed", inst, data.feeder, {
@@ -33,7 +33,7 @@ local function OnBrushed(inst, data)
     local self = inst.components.beefalometrics
     if data.doer ~= nil then
         -- note: this relies on the "onbrushed" event being called before the onbrushfn callback, and beefalo using the callback
-        self.lastdomesticator = data.doer
+        self:SetLastDomesticator(data.doer)
     end
 
     PushEvent("beefalo.domestication.brushed", inst, data.feeder, {
@@ -46,7 +46,7 @@ end
 
 local function OnDomesticated(inst, data)
     local self = inst.components.beefalometrics
-    PushEvent("beefalo.domestication.domesticated", inst, self.lastdomesticator, {
+    PushEvent("beefalo.domestication.domesticated", inst, self:GetLastDomesticator(), {
         tendency = inst.tendency,
         tendency_rider = data.tendencies[TENDENCY.RIDER],
         tendency_pudgy = data.tendencies[TENDENCY.PUDGY],
@@ -56,7 +56,7 @@ end
 
 local function OnFeral(inst)
     local self = inst.components.beefalometrics
-    PushEvent("beefalo.domestication.feral", inst, self.lastdomesticator, {
+    PushEvent("beefalo.domestication.feral", inst, self:GetLastDomesticator(), {
         domesticated = inst.components.domesticatable:IsDomesticated(),
         tendency = inst.tendency,
     })
@@ -135,5 +135,41 @@ local BeefaloMetrics = Class(function(self, inst)
     self.inst:ListenForEvent("attacked", OnAttacked)
     self.inst:ListenForEvent("riderdoattackother", OnRiderDoAttack)
 end)
+
+function BeefaloMetrics:SetLastDomesticator(player)
+    self.lastdomesticator_id = nil
+    self.lastdomesticator = player
+end
+
+function BeefaloMetrics:GetLastDomesticator()
+    if self.lastdomesticator ~= nil then
+        return self.lastdomesticator
+    elseif self.lastdomesticator_id ~= nil then
+        local player = UserToPlayer(self.lastdomesticator_id)
+        if player ~= nil then
+            self:SetLastDomesticator(player)
+            return player
+        else
+            return self.lastdomesticator_id
+        end
+    end
+
+    return nil -- This will invalidate the metric, but I think that's the most correct behaviour for now.
+end
+
+function BeefaloMetrics:OnSave()
+    if self.lastdomesticator ~= nil then
+        return {lastdomesticator_id = self.lastdomesticator.userid}
+    elseif self.lastdomesticator_id ~= nil then
+        return {lastdomesticator_id = self.lastdomesticator_id}
+    end
+    return nil
+end
+
+function BeefaloMetrics:OnLoad(data)
+    if data.lastdomesticator_id ~= nil then
+        self.lastdomesticator_id = data.lastdomesticator_id
+    end
+end
 
 return BeefaloMetrics

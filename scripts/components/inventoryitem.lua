@@ -221,8 +221,8 @@ function InventoryItem:OnPickup(pickupguy)
 
     if self.inst.components.burnable and self.inst.components.burnable:IsSmoldering() then
         self.inst.components.burnable:StopSmoldering()
-        if pickupguy.components.health then
-            pickupguy.components.health:DoFireDamage(TUNING.SMOTHER_DAMAGE, nil, true)
+        if pickupguy.components.health ~= nil then
+            pickupguy.components.health:DoFireDamage(pickupguy:HasTag("pyromaniac") and 0 or TUNING.SMOTHER_DAMAGE, nil, true)
             pickupguy:PushEvent("burnt")
         end
     end

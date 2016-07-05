@@ -287,7 +287,7 @@ local function runcommand(command, params, caller, onserver, confirm)
         end
     elseif exec_type == COMMAND_RESULT.VOTE then
         local userid = UserToClientID(params.user)
-        if userid ~= nil then
+        if userid ~= nil or params.user == nil then
             TheNet:StartVote(command.hash, userid)
         end
     elseif exec_type == COMMAND_RESULT.ALLOW then
@@ -396,7 +396,7 @@ local function FinishVote(commandname, params, voteresults)
     local command = getcommand(commandname)
 
     local passed = false
-    if command.allownotvoted or voteresults.total_not_voted <= 0 then
+    if command.voteallownotvoted or voteresults.total_not_voted <= 0 then
         local result, count = command.voteresultfn(params, voteresults)
         if result ~= nil and count >= (command.voteminpasscount or 1) then
             --the winning selection passes and we have enough votes for it

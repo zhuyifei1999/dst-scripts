@@ -6,23 +6,19 @@ local assets =
 local function fn()
     local inst = CreateEntity()
 
+    --Use FX, not DECOR, otherwise won't inspect properly when parented
+    inst:AddTag("FX")
+    --[[Non-networked entity]]
+    inst.persists = false
+
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
-    inst.entity:AddNetwork()
 
     inst.AnimState:SetBank("ice_puddle")
     inst.AnimState:SetBuild("ice_puddle")
     inst.AnimState:PlayAnimation("full")
     inst.AnimState:SetLayer(LAYER_BACKGROUND)
     inst.AnimState:SetSortOrder(3)
-
-    inst:AddTag("FX")
-
-    inst.entity:SetPristine()
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
 
     return inst
 end

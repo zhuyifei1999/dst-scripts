@@ -202,7 +202,7 @@ local function OnItemsDirty(inst, slot, netitem)
                 inst._itemspreview[slot].prefab ~= item.prefab) and
                 inst._parent.replica.inventoryitem ~= nil and
                 inst._parent.replica.inventoryitem:IsHeldBy(ThePlayer) then
-                ThePlayer:PushEvent("containergotitem", data)
+                ThePlayer:PushEvent("gotnewitem", data)
             end
             inst._parent:PushEvent("itemget", data)
         else
@@ -232,7 +232,7 @@ local function OnStackItemDirty(inst, item)
             if item == v:value() then
                 data.item = item
                 data.slot = i
-                ThePlayer:PushEvent("containergotitem", data)
+                ThePlayer:PushEvent("gotnewitem", data)
                 break
             end
         end
@@ -282,7 +282,7 @@ local function PushItemGet(inst, data, ignoresound)
             if not ignoresound and
                 inst._parent.replica.inventoryitem ~= nil and
                 inst._parent.replica.inventoryitem:IsHeldBy(ThePlayer) then
-                ThePlayer:PushEvent("containergotitem", data)
+                ThePlayer:PushEvent("gotnewitem", data)
             end
             inst._parent:PushEvent("itemget", data)
         end
@@ -314,7 +314,7 @@ local function PushStackSize(inst, inventory, item, stacksize, animatestacksize,
             local inventory = player ~= nil and player.replica.inventory ~= nil and player.replica.inventory.classified or nil
             local overflow = inventory ~= nil and inventory:GetOverflowContainer() or nil
             if overflow ~= nil and overflow.classified == inst then
-                ThePlayer:PushEvent("containergotitem", sounddata)
+                ThePlayer:PushEvent("gotnewitem", sounddata)
             end
         end
         local oldstacksize = item.replica.stackable:StackSize()
