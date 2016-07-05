@@ -292,7 +292,7 @@ function Burnable:SmotherSmolder(smotherer)
         elseif smotherer.components.stackable ~= nil then
             smotherer.components.stackable:Get():Remove()
         elseif smotherer.components.health ~= nil and smotherer.components.combat ~= nil then
-            smotherer.components.health:DoFireDamage(TUNING.SMOTHER_DAMAGE, nil, true)
+            smotherer.components.health:DoFireDamage(smotherer:HasTag("pyromaniac") and 0 or TUNING.SMOTHER_DAMAGE, nil, true)
             smotherer:PushEvent("burnt")
         end
     end

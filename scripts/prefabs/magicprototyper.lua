@@ -59,15 +59,22 @@ end
 
 local function createmachine(level, name, soundprefix, sounddelay, techtree, mergeanims, onact)
     local function onturnon(inst)
-        if inst._activetask == nil and not inst:HasTag("burnt") then 
+        if inst._activetask == nil and not inst:HasTag("burnt") then
             if mergeanims then
-                if inst.AnimState:IsCurrentAnimation("place") then
-                    inst.AnimState:PushAnimation("proximity_pre")
+                if inst.AnimState:IsCurrentAnimation("proximity_loop") then
+                    --In case other animations were still in queue
+                    inst.AnimState:PlayAnimation("proximity_loop", true)
                 else
-                    inst.AnimState:PlayAnimation("proximity_pre")
+                    if inst.AnimState:IsCurrentAnimation("place") then
+                        inst.AnimState:PushAnimation("proximity_pre")
+                    else
+                        inst.AnimState:PlayAnimation("proximity_pre")
+                    end
+                    inst.AnimState:PushAnimation("proximity_loop", true)
                 end
-                inst.AnimState:PushAnimation("proximity_loop", true)
-            elseif inst.AnimState:IsCurrentAnimation("place") then
+            elseif inst.AnimState:IsCurrentAnimation("proximity_loop")
+                or inst.AnimState:IsCurrentAnimation("place") then
+                --NOTE: push again even if already playing, in case an idle was also pushed
                 inst.AnimState:PushAnimation("proximity_loop", true)
             else
                 inst.AnimState:PlayAnimation("proximity_loop", true)

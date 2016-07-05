@@ -267,7 +267,12 @@ local function common_fn(anim)
 end
 
 local function complete_onturnon(inst)
-    inst.AnimState:PlayAnimation("proximity_loop", true)
+    if inst.AnimState:IsCurrentAnimation("proximity_loop") then
+        --NOTE: push again even if already playing, in case an idle was also pushed
+        inst.AnimState:PushAnimation("proximity_loop", true)
+    else
+        inst.AnimState:PlayAnimation("proximity_loop", true)
+    end
     if not inst.SoundEmitter:PlayingSound("idlesound") then
         inst.SoundEmitter:PlaySound("dontstarve/common/ancienttable_LP", "idlesound")
     end

@@ -57,6 +57,37 @@ for i, v in ipairs(STAGES) do
     STAGE_INDICES[v.name] = i
 end
 
+local function DeserializeStage(inst)
+    if inst._stage:value() > 3 then
+        return inst._stage:value() - 3, true
+    else
+        return inst._stage:value() + 1, false
+    end
+end
+
+local function OnStageDirty(inst)
+    local stageindex, ismelt = DeserializeStage(inst)
+    local stagedata = STAGES[stageindex]
+    if stagedata ~= nil and inst._puddle ~= nil then
+        inst._puddle.AnimState:PlayAnimation(stagedata.animation)
+        if stagedata.name == "empty" then
+            inst._puddle.AnimState:PushAnimation("idle", true)
+        end
+        if ismelt and not inst:IsAsleep() then
+            local fx = SpawnPrefab("ice_splash")
+            fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+            fx.AnimState:PlayAnimation(stagedata.animation)
+        end
+    end
+end
+
+local function SerializeStage(inst, stageindex, source)
+    -- index is normally [1,4]
+    -- if "melt" then serialize to [4,7], otherwise [0,3]
+    inst._stage:set(source == "melt" and stageindex + 3 or stageindex - 1)
+    OnStageDirty(inst)
+end
+
 local function SetStage(inst, stage, source)
     if stage == inst.stage then
         return
@@ -82,6 +113,7 @@ local function SetStage(inst, stage, source)
     -- otherwise just set the stage to the target!
 
     inst.stage = STAGES[targetstage].name
+    SerializeStage(inst, targetstage, source)
 
     if STAGES[targetstage].showrock then
         inst.AnimState:PlayAnimation(STAGES[targetstage].animation)
@@ -100,10 +132,6 @@ local function SetStage(inst, stage, source)
         inst.components.named:SetName(STRINGS.NAMES["ROCK_ICE_MELTED"])
         RemovePhysicsColliders(inst)
     end
-
-    inst.puddle.AnimState:PlayAnimation(STAGES[targetstage].animation)
-    if STAGES[targetstage].name == "empty" then inst.puddle.AnimState:PushAnimation("idle", true) end
-    if source == "melt" then inst.splash.AnimState:PlayAnimation(STAGES[targetstage].animation) end
 
     if inst.components.workable ~= nil then
         if source == "work" then
@@ -244,7 +272,18 @@ local function rock_ice_fn()
     --Sneak these into pristine state for optimization
     inst:AddTag("_named")
 
+    inst._stage = net_tinybyte(inst.GUID, "rock_ice.stage", "stagedirty")
+
     inst.entity:SetPristine()
+
+    if not TheNet:IsDedicated() then
+        inst._puddle = SpawnPrefab("ice_puddle")
+        inst._puddle.entity:SetParent(inst.entity)
+
+        if not TheWorld.ismastersim then
+            inst:ListenForEvent("stagedirty", OnStageDirty)
+        end
+    end
 
     if not TheWorld.ismastersim then
         return inst
@@ -271,13 +310,6 @@ local function rock_ice_fn()
     inst:AddComponent("timer")
     inst:ListenForEvent("timerdone", ontimerdone)
 
-    inst.puddle = SpawnPrefab("ice_puddle")
-    inst.splash = SpawnPrefab("ice_splash")
-    inst:AddChild(inst.puddle)
-    inst.puddle.Transform:SetPosition(0,0,0)
-    inst:AddChild(inst.splash)
-    inst.splash.Transform:SetPosition(0,0,0)
-
     -- Make sure we start at a good height for starting in a season when it shouldn't start as full
     inst:DoTaskInTime(0, function()
         if inst.stage then
@@ -302,7 +334,7 @@ local function rock_ice_fn()
     inst.OnSave = onsave
     inst.OnLoad = onload
 
-    MakeSnowCoveredPristine(inst)
+    MakeSnowCovered(inst)
 
     MakeHauntableWork(inst)
 
