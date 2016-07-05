@@ -833,7 +833,7 @@ end
 
 function c_maintainhealth(player, percent)
     player = ListingOrConsolePlayer(player)
-    if player ~= nil then
+    if player ~= nil and player.components.health ~= nil then
         if player.debug_maintainhealthtask ~= nil then
             player.debug_maintainhealthtask:Cancel()
         end
@@ -843,7 +843,7 @@ end
 
 function c_maintainsanity(player, percent)
     player = ListingOrConsolePlayer(player)
-    if player ~= nil then
+    if player ~= nil and player.components.sanity ~= nil then
         if player.debug_maintainsanitytask ~= nil then
             player.debug_maintainsanitytask:Cancel()
         end
@@ -853,7 +853,7 @@ end
 
 function c_maintainhunger(player, percent)
     player = ListingOrConsolePlayer(player)
-    if player ~= nil then
+    if player ~= nil and player.components.hunger ~= nil then
         if player.debug_maintainhungertask ~= nil then
             player.debug_maintainhungertask:Cancel()
         end
@@ -863,7 +863,7 @@ end
 
 function c_maintaintemperature(player, temp)
     player = ListingOrConsolePlayer(player)
-    if player ~= nil then
+    if player ~= nil and player.components.temperature ~= nil then
         if player.debug_maintaintemptask ~= nil then
             player.debug_maintaintemptask:Cancel()
         end
@@ -873,7 +873,7 @@ end
 
 function c_maintainmoisture(player, percent)
     player = ListingOrConsolePlayer(player)
-    if player ~= nil then
+    if player ~= nil and player.components.moisture ~= nil then
         if player.debug_maintainmoisturetask ~= nil then
             player.debug_maintainmoisturetask:Cancel()
         end

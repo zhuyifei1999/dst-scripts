@@ -381,6 +381,10 @@ local function GetGrowthStages(inst)
     return growth_stages[inst.build] or growth_stages["normal"]
 end
 
+local function WakeUpLeif(ent)
+    ent.components.sleeper:WakeUp()
+end
+
 local function chop_tree(inst, chopper, chops)
     if chopper == nil or not chopper:HasTag("playerghost") then
         inst.SoundEmitter:PlaySound(
@@ -390,19 +394,21 @@ local function chop_tree(inst, chopper, chops)
         )
     end
 
-    local x, y, z = inst.Transform:GetWorldPosition()
-    SpawnPrefab("pine_needles_chop").Transform:SetPosition(x, y + math.random() * 2, z)
-
     inst.AnimState:PlayAnimation(inst.anims.chop)
     inst.AnimState:PushAnimation(inst.anims.sway1, true)
 
-    --tell any nearby leifs to wake up
-    local ents = TheSim:FindEntities(x, y, z, TUNING.LEIF_REAWAKEN_RADIUS, {"leif"})
-    for k,v in pairs(ents) do
-        if v.components.sleeper and v.components.sleeper:IsAsleep() then
-            v:DoTaskInTime(math.random(), function() v.components.sleeper:WakeUp() end)
+    if inst.build ~= "twiggy" then
+        local x, y, z = inst.Transform:GetWorldPosition()
+        SpawnPrefab("pine_needles_chop").Transform:SetPosition(x, y + math.random() * 2, z)
+
+        --tell any nearby leifs to wake up
+        local ents = TheSim:FindEntities(x, y, z, TUNING.LEIF_REAWAKEN_RADIUS, { "leif" })
+        for i, v in ipairs(ents) do
+            if v.components.sleeper ~= nil and v.components.sleeper:IsAsleep() then
+                v:DoTaskInTime(math.random(), WakeUpLeif)
+            end
+            v.components.combat:SuggestTarget(chopper)
         end
-        v.components.combat:SuggestTarget(chopper)
     end
 end
 
@@ -452,7 +458,6 @@ local function spawn_leif(target)
 end
 
 local function make_stump(inst)
-
     inst:RemoveComponent("burnable")
     MakeSmallBurnable(inst)
     MakeDragonflyBait(inst, 1)
@@ -796,6 +801,30 @@ local function ondiseasedfn_twiggy(inst)
     PushSway(inst)
 end
 
+local function onhauntwork(inst, haunter)
+    if inst.components.workable ~= nil and math.random() <= TUNING.HAUNT_CHANCE_OFTEN then
+        inst.components.workable:WorkedBy(haunter, 1)
+        inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
+        return true
+    end
+    return false
+end
+
+local function onhauntevergreen(inst, haunter)
+    if math.random() <= TUNING.HAUNT_CHANCE_SUPERRARE and
+        find_leif_spawn_target(inst) and
+        not (inst:HasTag("burnt") or inst:HasTag("stump")) then
+
+        inst.leifscale = GetGrowthStages(inst)[inst.components.growable.stage].leifscale or 1
+        spawn_leif(inst)
+
+        inst.components.hauntable.hauntvalue = TUNING.HAUNT_HUGE
+        inst.components.hauntable.cooldown_on_successful_haunt = false
+        return true
+    end
+    return onhauntwork(inst, haunter)
+end
+
 local function tree(name, build, stage, data)
     local function fn()
         local inst = CreateEntity()
@@ -906,35 +935,7 @@ local function tree(name, build, stage, data)
         ---------------------
 
         inst:AddComponent("hauntable")
-        inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-            local ret = false
-            if inst.components.workable ~= nil and math.random() <= TUNING.HAUNT_CHANCE_OFTEN then
-                inst.components.workable:WorkedBy(haunter, 1)
-                inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
-                ret = true
-            end
-            --#HAUNTFIX
-            --if math.random() <= TUNING.HAUNT_CHANCE_VERYRARE then
-                --if inst.components.burnable and not inst.components.burnable:IsBurning() then
-                    --inst.components.burnable:Ignite()
-                    --inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
-                    --inst.components.hauntable.cooldown_on_successful_haunt = false
-                    --ret = true
-                --end
-            --else
-            if math.random() <= TUNING.HAUNT_CHANCE_SUPERRARE and
-                find_leif_spawn_target(inst) and
-                not (inst:HasTag("burnt") or inst:HasTag("stump")) then
-
-                inst.leifscale = GetGrowthStages(inst)[inst.components.growable.stage].leifscale or 1
-                spawn_leif(inst)
-
-                inst.components.hauntable.hauntvalue = TUNING.HAUNT_HUGE
-                inst.components.hauntable.cooldown_on_successful_haunt = false
-                ret = true
-            end
-            return ret
-        end)
+        inst.components.hauntable:SetOnHauntFn(build == "twiggy" and onhauntevergreen or onhauntwork)
 
         ---------------------
 

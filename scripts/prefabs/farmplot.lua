@@ -360,9 +360,10 @@ local function placerdecor(level)
                     local item_inst = SpawnPrefab(item_name)
                     item_inst:AddTag("placer")
                     item_inst:AddTag("NOCLICK") --not all decor pieces come with NOCLICK by default
-                    item_inst.AnimState:SetLightOverride(1)
+                    item_inst.entity:SetCanSleep(false)
                     item_inst.entity:SetParent(inst.entity)
                     item_inst.Transform:SetPosition(unpack(offset))
+                    item_inst.AnimState:SetLightOverride(1)
                     inst.components.placer:LinkEntity(item_inst)
                 end
             end

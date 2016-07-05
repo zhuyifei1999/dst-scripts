@@ -404,6 +404,8 @@ local function placer_postinit_fn(inst)
     local placer2 = CreateEntity()
 
     --[[Non-networked entity]]
+    placer2.entity:SetCanSleep(false)
+    placer2.persists = false
 
     placer2.entity:AddTransform()
     placer2.entity:AddAnimState()
@@ -419,7 +421,6 @@ local function placer_postinit_fn(inst)
     placer2.AnimState:PlayAnimation("idle_off")
     placer2.AnimState:SetLightOverride(1)
 
-    placer2.persists = false
     placer2.entity:SetParent(inst.entity)
 
     inst.components.placer:LinkEntity(placer2)
