@@ -2,6 +2,13 @@
 
 CLOTHING =
 {
+	body_buttons_black_jet =
+	{
+		type = "body",
+		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		override_build = "body_buttons_black_jet",
+		torso_tuck = "untucked",
+	},
 	body_buttons_blue_sky =
 	{
 		type = "body",
@@ -69,6 +76,13 @@ CLOTHING =
 		override_build = "body_flannel_blue_snowbird",
 		torso_tuck = "untucked",
 	},
+	body_flannel_green_napier =
+	{
+		type = "body",
+		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		override_build = "body_flannel_green_napier",
+		torso_tuck = "untucked",
+	},
 	body_flannel_orange_lumberjack =
 	{
 		type = "body",
@@ -83,11 +97,53 @@ CLOTHING =
 		override_build = "body_flannel_purple_grape",
 		torso_tuck = "untucked",
 	},
+	body_overalls_black_scribble =
+	{
+		type = "body",
+		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", "torso_pelvis", "leg", },
+		override_build = "body_overalls_black_scribble",
+		torso_tuck = "untucked",
+		rarity = "Spiffy",
+		legs_cuff_size = 2,
+	},
+	body_overalls_blue_denim =
+	{
+		type = "body",
+		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", "torso_pelvis", "leg", },
+		override_build = "body_overalls_blue_denim",
+		torso_tuck = "untucked",
+		rarity = "Spiffy",
+		legs_cuff_size = 2,
+	},
+	body_overalls_navy_ocean =
+	{
+		type = "body",
+		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", "torso_pelvis", "leg", },
+		override_build = "body_overalls_navy_ocean",
+		torso_tuck = "untucked",
+		rarity = "Spiffy",
+		legs_cuff_size = 2,
+	},
+	body_pj_purple_mauve =
+	{
+		type = "body",
+		symbol_overrides = { "torso", "arm_upper", "arm_lower", "arm_lower_cuff", },
+		override_build = "body_pj_purple_mauve",
+		torso_tuck = "untucked",
+		rarity = "Spiffy",
+	},
 	body_polo_blue_denim =
 	{
 		type = "body",
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_polo_blue_denim",
+		torso_tuck = "untucked",
+	},
+	body_polo_orange_salmon =
+	{
+		type = "body",
+		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		override_build = "body_polo_orange_salmon",
 		torso_tuck = "untucked",
 	},
 	body_polo_red_higgsbury =
@@ -179,6 +235,14 @@ CLOTHING =
 		rarity = "Distinguished",
 		legs_cuff_size = 5,
 	},
+	body_sleepgown_blue_ice =
+	{
+		type = "body",
+		symbol_overrides = { "torso", "torso_pelvis", "arm_upper", "skirt", },
+		override_build = "body_sleepgown_blue_ice",
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+	},
 	body_suspenders_pink_pearl =
 	{
 		type = "body",
@@ -216,6 +280,14 @@ CLOTHING =
 		type = "body",
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_sweatervest_brown_beaver",
+		torso_tuck = "untucked",
+		rarity = "Classy",
+	},
+	body_sweatervest_green_forest =
+	{
+		type = "body",
+		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		override_build = "body_sweatervest_green_forest",
 		torso_tuck = "untucked",
 		rarity = "Classy",
 	},
@@ -299,6 +371,14 @@ CLOTHING =
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_tshirt_white_smoke",
 		torso_tuck = "untucked",
+	},
+	body_tweedvest_blue_lightning =
+	{
+		type = "body",
+		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		override_build = "body_tweedvest_blue_lightning",
+		torso_tuck = "untucked",
+		rarity = "Classy",
 	},
 	body_tweedvest_brown_chocolate =
 	{
@@ -619,6 +699,20 @@ CLOTHING =
 		torso_tuck = "skirt",
 		rarity = "Distinguished",
 	},
+	feet_bootie_black_scribble =
+	{
+		type = "feet",
+		symbol_overrides = { "foot", },
+		override_build = "feet_bootie_black_scribble",
+	},
+	feet_bunnyslippers_purple_mauve =
+	{
+		type = "feet",
+		symbol_overrides = { "foot", },
+		override_build = "feet_bunnyslippers_purple_mauve",
+		rarity = "Distinguished",
+		feet_cuff_size = 3,
+	},
 	feet_fleece_boot_brown_sepia =
 	{
 		type = "feet",
@@ -649,6 +743,14 @@ CLOTHING =
 		override_build = "feet_formal_stiletto_black_scribble",
 		rarity = "Classy",
 	},
+	feet_fuzzyslippers_blue_ice =
+	{
+		type = "feet",
+		symbol_overrides = { "foot", },
+		override_build = "feet_fuzzyslippers_blue_ice",
+		rarity = "Distinguished",
+		feet_cuff_size = 5,
+	},
 	feet_maryjanes_white_pure =
 	{
 		type = "feet",
@@ -676,17 +778,53 @@ CLOTHING =
 		symbol_overrides = { "foot", },
 		override_build = "feet_sneakers_green_cactus",
 	},
+	feet_sneakers_orange_carrot =
+	{
+		type = "feet",
+		symbol_overrides = { "foot", },
+		override_build = "feet_sneakers_orange_carrot",
+	},
 	feet_sneakers_red_auburn =
 	{
 		type = "feet",
 		symbol_overrides = { "foot", },
 		override_build = "feet_sneakers_red_auburn",
 	},
+	feet_workboot_brown_chocolate =
+	{
+		type = "feet",
+		symbol_overrides = { "foot", },
+		override_build = "feet_workboot_brown_chocolate",
+		rarity = "Classy",
+		feet_cuff_size = 5,
+	},
+	feet_workboot_tan_clay =
+	{
+		type = "feet",
+		symbol_overrides = { "foot", },
+		override_build = "feet_workboot_tan_clay",
+		rarity = "Classy",
+		feet_cuff_size = 5,
+	},
 	hand_beltedgloves_brown_beaver =
 	{
 		type = "hand",
 		symbol_overrides = { "hand", },
 		override_build = "hand_beltedgloves_brown_beaver",
+		rarity = "Classy",
+	},
+	hand_beltedgloves_red_firehound =
+	{
+		type = "hand",
+		symbol_overrides = { "hand", },
+		override_build = "hand_beltedgloves_red_firehound",
+		rarity = "Classy",
+	},
+	hand_beltedgloves_teal_jungle =
+	{
+		type = "hand",
+		symbol_overrides = { "hand", },
+		override_build = "hand_beltedgloves_teal_jungle",
 		rarity = "Classy",
 	},
 	hand_drivergloves_white_ivory =
@@ -707,6 +845,12 @@ CLOTHING =
 		type = "hand",
 		symbol_overrides = { "arm_lower_cuff", "hand", },
 		override_build = "hand_longgloves_grey_battleship",
+	},
+	hand_longgloves_white_pure =
+	{
+		type = "hand",
+		symbol_overrides = { "arm_lower_cuff", "hand", },
+		override_build = "hand_longgloves_white_pure",
 	},
 	hand_longgloves_yellow_straw =
 	{
@@ -786,6 +930,14 @@ CLOTHING =
 		override_build = "legs_pants_basic_brown_sepia",
 		legs_cuff_size = 2,
 	},
+	legs_pants_basic_green_forest =
+	{
+		type = "legs",
+		symbol_overrides = { "torso_pelvis", "leg", },
+		symbol_hides = { "skirt", },
+		override_build = "legs_pants_basic_green_forest",
+		legs_cuff_size = 2,
+	},
 	legs_pants_basic_grey_dark =
 	{
 		type = "legs",
@@ -800,6 +952,15 @@ CLOTHING =
 		symbol_overrides = { "torso_pelvis", "leg", },
 		symbol_hides = { "skirt", },
 		override_build = "legs_pants_basic_tan_cream",
+		legs_cuff_size = 2,
+	},
+	legs_pj_purple_mauve =
+	{
+		type = "legs",
+		symbol_overrides = { "torso_pelvis", "leg", },
+		symbol_hides = { "skirt", },
+		override_build = "legs_pj_purple_mauve",
+		rarity = "Spiffy",
 		legs_cuff_size = 2,
 	},
 	legs_skirt_basic_black_scribble =
@@ -820,6 +981,12 @@ CLOTHING =
 		symbol_overrides = { "skirt", },
 		override_build = "legs_skirt_basic_grey_dark",
 	},
+	legs_skirt_basic_pink_pigman =
+	{
+		type = "legs",
+		symbol_overrides = { "skirt", },
+		override_build = "legs_skirt_basic_pink_pigman",
+	},
 	legs_skirt_basic_tan_cream =
 	{
 		type = "legs",
@@ -838,6 +1005,22 @@ CLOTHING =
 		type = "legs",
 		symbol_overrides = { "skirt", },
 		override_build = "legs_skirt_plaid_green_pistachio",
+		rarity = "Classy",
+	},
+	legs_tweed_knickerbocker_green_hunters =
+	{
+		type = "legs",
+		symbol_overrides = { "torso_pelvis", "leg", },
+		symbol_hides = { "skirt", },
+		override_build = "legs_tweed_knickerbocker_green_hunters",
+		rarity = "Classy",
+	},
+	legs_tweed_knickerbocker_tan_grass =
+	{
+		type = "legs",
+		symbol_overrides = { "torso_pelvis", "leg", },
+		symbol_hides = { "skirt", },
+		override_build = "legs_tweed_knickerbocker_tan_grass",
 		rarity = "Classy",
 	},
 }

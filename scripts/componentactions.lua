@@ -633,18 +633,14 @@ local COMPONENT_ACTIONS =
         end,
 
         spellcaster = function(inst, doer, target, actions, right)
-            if right then
-                if inst:HasTag("castontargets") then
-                    table.insert(actions, ACTIONS.CASTSPELL)
-                else
-                    local castonrecipes = inst:HasTag("castonrecipes")
-                    local castonlocomotors = inst:HasTag("castonlocomotors")
-                    if (castonrecipes or castonlocomotors) and
-                        (not castonrecipes or AllRecipes[target.prefab] ~= nil) and
-                        (not castonlocomotors or target:HasTag("locomotor")) then
-                        table.insert(actions, ACTIONS.CASTSPELL)
-                    end
-                end
+            if right and (
+                    inst:HasTag("castontargets") or
+                    (inst:HasTag("castonrecipes") and AllRecipes[target.prefab] ~= nil) or
+                    (inst:HasTag("castonlocomotors") and target:HasTag("locomotor") and (TheNet:GetPVPEnabled() or not (target:HasTag("player") and doer:HasTag("player")))) or
+                    (inst:HasTag("castonworkable") and (target:HasTag("CHOP_workable") or target:HasTag("DIG_workable") or target:HasTag("HAMMER_workable") or target:HasTag("MINE_workable"))) or
+                    (inst:HasTag("castoncombat") and doer.replica.combat ~= nil and doer.replica.combat:CanTarget(target))
+                ) then
+                table.insert(actions, ACTIONS.CASTSPELL)
             end
         end,
 

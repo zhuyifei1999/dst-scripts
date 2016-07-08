@@ -1193,10 +1193,7 @@ ACTIONS.TAKEITEM.strfn = function(act)
 end
 
 ACTIONS.CASTSPELL.strfn = function(act)
-    return act.invobject ~= nil
-        and act.invobject.components.spellcaster ~= nil
-        and act.invobject.components.spellcaster.actiontype
-        or nil
+    return act.invobject ~= nil and act.invobject.spelltype or nil
 end
 
 ACTIONS.CASTSPELL.fn = function(act)

@@ -141,6 +141,9 @@ local function Retarget(inst)
                 TUNING.BEEFALO_TARGET_DIST,
                 function(guy)
                     return inst.components.combat:CanTarget(guy)
+                        and (guy.components.rider == nil
+                            or guy.components.rider:GetMount() == nil
+                            or not guy.components.rider:GetMount():HasTag("beefalo"))
                 end,
                 { "_combat" }, --See entityreplica.lua (re: "_combat" tag)
                 { "beefalo", "wall", "INLIMBO" }
@@ -657,7 +660,7 @@ local function beefalo()
 
     inst:AddComponent("timer")
     inst:AddComponent("saltlicker")
-    inst.components.saltlicker:SetUp(TUNING.SALTLICK_BEEFALO_DURATION) -- duration is the total time salt lasts, check 8 times that often
+    inst.components.saltlicker:SetUp(TUNING.SALTLICK_BEEFALO_USES)
     inst:ListenForEvent("saltchange", OnSaltChange)
 
     inst.ApplyBuildOverrides = ApplyBuildOverrides

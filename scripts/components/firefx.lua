@@ -98,7 +98,7 @@ function FireFX:SetLevel(lev, immediate)
         
         if self.playingsound ~= self.levels[self.level].sound then
             if self.playingsound then
-                self.inst.SoundEmitter:KillSound(self.playingsound)
+                self.inst.SoundEmitter:KillSound("fire")
             end
             self.playingsound = self.levels[self.level].sound
             self.inst.SoundEmitter:PlaySound(self.levels[self.level].sound, "fire")

@@ -286,24 +286,22 @@ function Health:SetPercent(percent, overtime, cause)
 end
 
 function Health:SetVal(val, cause, afflicter)
-    local old_percent = self:GetPercent()
+    local old_health = self.currenthealth
+    local max_health = self:GetMaxWithPenalty()
+    local min_health = math.min(self.minhealth or 0, max_health)
 
-    if val > self:GetMaxWithPenalty() then
-        val = self:GetMaxWithPenalty()
+    if val > max_health then
+        val = max_health
     end
 
-    if self.minhealth ~= nil and val < self.minhealth then
-        self.currenthealth = self.minhealth
+    if val <= min_health then
+        self.currenthealth = min_health
         self.inst:PushEvent("minhealth", { cause = cause, afflicter = afflicter })
-    elseif val < 0 then
-        self.currenthealth = 0
     else
         self.currenthealth = val
     end
 
-    local new_percent = self:GetPercent()
-
-    if old_percent > 0 and new_percent <= 0 or self:GetMaxWithPenalty() <= 0 then
+    if old_health > 0 and self.currenthealth <= 0 then
         --Push world event first, because the entity event may invalidate itself
         --i.e. items that use .nofadeout and manually :Remove() on "death" event
         TheWorld:PushEvent("entity_death", { inst = self.inst, cause = cause, afflicter = afflicter })

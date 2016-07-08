@@ -60,6 +60,11 @@ function ControllerCrafting:UpdateIdx()
     self.use_idx = true
 end
 
+--Override for ControllerCrafting, which always shows scroll buttons.
+function ControllerCrafting:CanScroll()
+    return #self.valid_recipes > self.max_slots - 2
+end
+
 function ControllerCrafting:GetTabs()
     return self.parent ~= nil and self.parent.name == "CraftTabs" and self.parent or nil
 end

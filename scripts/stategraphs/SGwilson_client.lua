@@ -153,7 +153,13 @@ local actionhandlers =
     ActionHandler(ACTIONS.PLAY, "play"),
     ActionHandler(ACTIONS.JUMPIN, "jumpin"),
     ActionHandler(ACTIONS.DRY, "doshortaction"),
-    ActionHandler(ACTIONS.CASTSPELL, "castspell"),
+    ActionHandler(ACTIONS.CASTSPELL,
+        function(inst, action)
+            return action.invobject ~= nil
+                and action.invobject:HasTag("quickcast")
+                and "quickcastspell"
+                or "castspell"
+        end),
     ActionHandler(ACTIONS.BLINK, "quicktele"),
     ActionHandler(ACTIONS.COMBINESTACK, "doshortaction"),
     ActionHandler(ACTIONS.FEED, "dolongaction"),
@@ -1419,6 +1425,36 @@ local states =
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("staff_pre")
             inst.AnimState:PushAnimation("staff_lag", false)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    State
+    {
+        name = "quickcastspell",
+        tags = { "doing", "busy", "canrotate" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("atk_pre")
+            inst.AnimState:PushAnimation("atk_lag", false)
 
             inst:PerformPreviewBufferedAction()
             inst.sg:SetTimeout(TIMEOUT)

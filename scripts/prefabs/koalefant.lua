@@ -94,8 +94,6 @@ local function create_base(build)
 
     inst:AddComponent("inspectable")
 
-    inst:AddComponent("knownlocations")
-
     inst:AddComponent("periodicspawner")
     inst.components.periodicspawner:SetPrefab("poop")
     inst.components.periodicspawner:SetRandomTimes(40, 60)
@@ -105,7 +103,7 @@ local function create_base(build)
 
     inst:AddComponent("timer")
     inst:AddComponent("saltlicker")
-    inst.components.saltlicker:SetUp(TUNING.SALTLICK_KOALEFANT_DURATION) -- duration is the total time salt lasts, check 8 times that often
+    inst.components.saltlicker:SetUp(TUNING.SALTLICK_KOALEFANT_USES)
 
     MakeLargeBurnableCharacter(inst, "beefalo_body")
     MakeLargeFreezableCharacter(inst, "beefalo_body")
