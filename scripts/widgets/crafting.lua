@@ -163,7 +163,7 @@ function Crafting:UpdateIdx()
 end
 
 function Crafting:CanScroll()
-    return #self.valid_recipes > self.max_slots
+    return self.valid_recipes ~= nil and #self.valid_recipes > self.max_slots
 end
 
 function Crafting:UpdateRecipes()

@@ -62,7 +62,7 @@ end
 
 --Override for ControllerCrafting, which always shows scroll buttons.
 function ControllerCrafting:CanScroll()
-    return #self.valid_recipes > self.max_slots - 2
+    return self.valid_recipes ~= nil and #self.valid_recipes > self.max_slots - 2
 end
 
 function ControllerCrafting:GetTabs()
