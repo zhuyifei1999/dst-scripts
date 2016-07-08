@@ -40,9 +40,10 @@ end
 
 local function FollowGrownBeefalo(inst)
     local nearest = FindEntity(inst, 30, function(guy)
-        return guy.components.leader and guy.components.leader:CountFollowers() < 1
+        return guy.components.leader
+            and guy.components.leader:CountFollowers() < 1
     end,
-    {"beefalo"},
+    {"beefalo", "herdmember"}, -- only follow herd beefalo (i.e. nondomesticated)
     {"baby"}
     )
     if nearest and nearest.components.leader then

@@ -798,6 +798,7 @@ AddGameDebugKey(KEY_M, function()
             TheWorld.minimap.MiniMap:ContinuouslyClearRevealedAreas(hide_revealed)
         end
     end
+
     return true
 end)
 
@@ -915,12 +916,64 @@ AddGlobalDebugKey(KEY_PAUSE, function()
     return true
 end)
 
+local frommember = nil
 AddGameDebugKey(KEY_H, function()
     if TheInput:IsKeyDown(KEY_LCTRL) then
         ThePlayer.HUD:Toggle()
     elseif TheInput:IsKeyDown(KEY_ALT) then
         TheWorld.components.hounded:ForceNextWave()
+    elseif TheInput:IsKeyDown(KEY_SHIFT) then
+        if c_sel() ~= nil and c_sel().components.herdmember ~= nil and c_sel().components.herdmember.herd ~= nil then
+            frommember = c_sel()
+            c_select(c_sel().components.herdmember.herd)
+        elseif c_sel() ~= nil and c_sel().components.herd ~= nil then
+            c_select(frommember) -- just assume it's the same herd and we're reversing..
+        end
+    else
+        if c_sel() ~= nil and c_sel().components.herdmember ~= nil and c_sel().components.herdmember.herd ~= nil then
+            print("me:", c_sel())
+            for k,v in pairs(c_sel().components.herdmember.herd.components.herd.members) do
+                print("  ", k)
+            end
+            local first, _ = next(c_sel().components.herdmember.herd.components.herd.members)
+            print("first", first)
+            local current, _ = next(c_sel().components.herdmember.herd.components.herd.members, first)
+            local prev = first
+            while current ~= nil do
+                print("testing", current, "prev", prev, "csel", c_sel())
+                if prev == c_sel() then
+                    print("selecting", current)
+                    c_select(current)
+                    break
+                else
+                    prev = current
+                    current, _ = next(c_sel().components.herdmember.herd.components.herd.members, current)
+                    if current == nil then
+                        if prev == c_sel() then
+                            print("got to the end, selecting first!")
+                            c_select(first)
+                        end
+                    end
+                end
+            end
+        elseif c_sel().components.herd ~= nil then
+            c_select(next(c_sel().components.herd.members))
+        end
     end
+    return true
+end)
+
+AddGameDebugKey(KEY_J, function()
+    if TheInput:IsKeyDown(KEY_SHIFT) then
+        if c_sel() ~= nil and c_sel().components.periodicspawner ~= nil then
+            c_sel().components.periodicspawner:TrySpawn()
+        end
+    else
+        if c_sel() ~= nil and c_sel().components.mood ~= nil then
+            c_sel().components.mood:SetIsInMood(true)
+        end
+    end
+    return true
 end)
 
 AddGameDebugKey(KEY_INSERT, function()

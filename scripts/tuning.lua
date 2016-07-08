@@ -1980,11 +1980,13 @@ function Tune(overrides)
 
         NUM_PREFAB_SWAPS = 0,
 
-        SALTLICK_CHECK_DIST = 30,
-        SALTLICK_MAX_LICKS = 120, -- 15 days @ 8 licks per day
-        SALTLICK_BEEFALO_DURATION = total_day_time / 8,
-        SALTLICK_KOALEFANT_DURATION = total_day_time / 16,
-        SALTLICK_LIGHTNINGGOAT_DURATION = total_day_time / 6,
+        SALTLICK_CHECK_DIST = 20,
+        SALTLICK_USE_DIST = 4,
+        SALTLICK_DURATION = total_day_time / 8,
+        SALTLICK_MAX_LICKS = 240, -- 15 days @ 8 beefalo licks per day
+        SALTLICK_BEEFALO_USES = 2,
+        SALTLICK_KOALEFANT_USES = 4,
+        SALTLICK_LIGHTNINGGOAT_USES = 1,
 
         VOTE_PASSED_SQUELCH_TIME = 0,
         VOTE_FAILED_SQUELCH_TIME = 30,

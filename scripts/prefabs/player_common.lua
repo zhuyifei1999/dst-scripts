@@ -718,7 +718,12 @@ local function OnPlayerDeath(inst, data)
 
     inst.deathclientobj = TheNet:GetClientTableForUser(inst.userid)
     inst.deathcause = data ~= nil and data.cause or "unknown"
-    if data ~= nil and data.afflicter ~= nil then
+    if data == nil or data.afflicter == nil then
+        inst.deathpkname = nil
+    elseif data.afflicter.overridepkname ~= nil then
+        inst.deathpkname = data.afflicter.overridepkname
+        inst.deathbypet = data.afflicter.overridepkpet
+    else
         local killer = data.afflicter.components.follower ~= nil and data.afflicter.components.follower:GetLeader() or nil
         if killer ~= nil and
             killer.components.petleash ~= nil and
@@ -728,8 +733,6 @@ local function OnPlayerDeath(inst, data)
             killer = data.afflicter
         end
         inst.deathpkname = killer:HasTag("player") and killer:GetDisplayName() or nil
-    else
-        inst.deathpkname = nil
     end
 
     if not inst.ghostenabled then
@@ -1478,6 +1481,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         "frostbreath",
         "reticule",
         "mining_fx",
+        "mining_ice_fx",
         "die_fx",
         "ghost_transform_overlay_fx",
         "attune_out_fx",

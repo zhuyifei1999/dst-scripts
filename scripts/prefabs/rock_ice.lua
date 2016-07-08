@@ -68,15 +68,24 @@ end
 local function OnStageDirty(inst)
     local stageindex, ismelt = DeserializeStage(inst)
     local stagedata = STAGES[stageindex]
-    if stagedata ~= nil and inst._puddle ~= nil then
-        inst._puddle.AnimState:PlayAnimation(stagedata.animation)
-        if stagedata.name == "empty" then
-            inst._puddle.AnimState:PushAnimation("idle", true)
+    if stagedata ~= nil then
+        if stagedata.showrock then
+            inst.name = STRINGS.NAMES.ROCK_ICE
+            inst.no_wet_prefix = false
+        else
+            inst.name = STRINGS.NAMES.ROCK_ICE_MELTED
+            inst.no_wet_prefix = true
         end
-        if ismelt and not inst:IsAsleep() then
-            local fx = SpawnPrefab("ice_splash")
-            fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
-            fx.AnimState:PlayAnimation(stagedata.animation)
+        if inst._puddle ~= nil then
+            inst._puddle.AnimState:PlayAnimation(stagedata.animation)
+            if stagedata.name == "empty" then
+                inst._puddle.AnimState:PushAnimation("idle", true)
+            end
+            if ismelt and not inst:IsAsleep() then
+                local fx = SpawnPrefab("ice_splash")
+                fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+                fx.AnimState:PlayAnimation(stagedata.animation)
+            end
         end
     end
 end
@@ -123,13 +132,11 @@ local function SetStage(inst, stage, source)
             inst.AnimState:Show("snow")
         end
         inst.MiniMapEntity:SetEnabled(true)
-        inst.components.named:SetName(STRINGS.NAMES["ROCK_ICE"])
         ChangeToObstaclePhysics(inst)
     else
         inst.AnimState:Hide("rock")
         inst.AnimState:Hide("snow")
         inst.MiniMapEntity:SetEnabled(false)
-        inst.components.named:SetName(STRINGS.NAMES["ROCK_ICE_MELTED"])
         RemovePhysicsColliders(inst)
     end
 
@@ -269,10 +276,11 @@ local function rock_ice_fn()
     inst:AddTag("frozen")
     MakeSnowCoveredPristine(inst)
 
-    --Sneak these into pristine state for optimization
-    inst:AddTag("_named")
+    inst.name = STRINGS.NAMES.ROCK_ICE
+    inst.no_wet_prefix = false
 
     inst._stage = net_tinybyte(inst.GUID, "rock_ice.stage", "stagedirty")
+    inst._stage:set(3) --tall
 
     inst.entity:SetPristine()
 
@@ -285,12 +293,11 @@ local function rock_ice_fn()
         end
     end
 
+    OnStageDirty(inst)
+
     if not TheWorld.ismastersim then
         return inst
     end
-
-    --Remove these tags so that they can be added properly when replicating components below
-    inst:RemoveTag("_named")
 
     inst:AddComponent("lootdropper")
     SetLoot(inst, "tall")
@@ -300,9 +307,6 @@ local function rock_ice_fn()
     inst.components.workable:SetWorkLeft(TUNING.ICE_MINE)
 
     inst.components.workable:SetOnWorkCallback(OnWorked)
-
-    inst:AddComponent("named")
-    inst.components.named:SetName(STRINGS.NAMES["ROCK_ICE"])
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = GetStatus

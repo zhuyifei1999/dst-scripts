@@ -7,7 +7,10 @@ local function oncancast(self)
         end
 
         if self.canuseontargets then
-            if not self.canonlyuseonrecipes and not self.canonlyuseonlocomotors then
+            if not (self.canonlyuseonrecipes or
+                    self.canonlyuseonlocomotors or
+                    self.canonlyuseonworkable or
+                    self.canonlyuseoncombat) then
                 self.inst:AddTag("castontargets")
             else
                 self.inst:RemoveTag("castontargets")
@@ -24,10 +27,24 @@ local function oncancast(self)
             else
                 self.inst:RemoveTag("castonlocomotors")
             end
+
+            if self.canonlyuseonworkable then
+                self.inst:AddTag("castonworkable")
+            else
+                self.inst:RemoveTag("castonworkable")
+            end
+
+            if self.canonlyuseoncombat then
+                self.inst:AddTag("castoncombat")
+            else
+                self.inst:RemoveTag("castoncombat")
+            end
         else
             self.inst:RemoveTag("castontargets")
             self.inst:RemoveTag("castonrecipes")
             self.inst:RemoveTag("castonlocomotors")
+            self.inst:RemoveTag("castonworkable")
+            self.inst:RemoveTag("castoncombat")
         end
 
         if self.canuseonpoint then
@@ -40,7 +57,17 @@ local function oncancast(self)
         self.inst:RemoveTag("castontargets")
         self.inst:RemoveTag("castonrecipes")
         self.inst:RemoveTag("castonlocomotors")
+        self.inst:RemoveTag("castonworkable")
+        self.inst:RemoveTag("castoncombat")
         self.inst:RemoveTag("castonpoint")
+    end
+end
+
+local function onquickcast(self)
+    if self.quickcast then
+        self.inst:AddTag("quickcast")
+    else
+        self.inst:RemoveTag("quickcast")
     end
 end
 
@@ -51,8 +78,11 @@ local SpellCaster = Class(function(self, inst)
     self.canuseontargets = false
     self.canonlyuseonrecipes = false
     self.canonlyuseonlocomotors = false
+    self.canonlyuseonworkable = false
+    self.canonlyuseoncombat = false
     self.canuseonpoint = false
     self.spell = nil
+    self.quickcast = false
 end,
 nil,
 {
@@ -61,7 +91,10 @@ nil,
     canuseontargets = oncancast,
     canonlyuseonrecipes = oncancast,
     canonlyuseonlocomotors = oncancast,
+    canonlyuseonworkable = oncancast,
+    canonlyuseoncombat = oncancast,
     canuseonpoint = oncancast,
+    quickcast = onquickcast,
 })
 
 function SpellCaster:OnRemoveFromEntity()
@@ -69,7 +102,10 @@ function SpellCaster:OnRemoveFromEntity()
     self.inst:RemoveTag("castontargets")
     self.inst:RemoveTag("castonrecipes")
     self.inst:RemoveTag("castonlocomotors")
+    self.inst:RemoveTag("castonworkable")
+    self.inst:RemoveTag("castoncombat")
     self.inst:RemoveTag("castonpoint")
+    self.inst:RemoveTag("quickcast")
 end
 
 function SpellCaster:SetSpellFn(fn)
@@ -90,12 +126,21 @@ function SpellCaster:CastSpell(target, pos)
     end
 end
 
+local function IsWorkAction(action)
+    return action == ACTIONS.CHOP
+        or action == ACTIONS.DIG
+        or action == ACTIONS.HAMMER
+        or action == ACTIONS.MINE
+end
+
 function SpellCaster:CanCast(doer, target, pos)
-    if target == nil then
+    if self.spell == nil then
+        return false
+    elseif target == nil then
         if pos == nil then
-            return self.inst:HasTag("castfrominventory")
+            return self.canusefrominventory
         end
-        return self.inst:HasTag("castonpoint") and TheWorld.Map:IsAboveGroundAtPoint(pos:Get())
+        return self.canuseonpoint and TheWorld.Map:IsAboveGroundAtPoint(pos:Get())
     elseif target:IsInLimbo()
         or not target.entity:IsVisible()
         or (target.components.health ~= nil and target.components.health:IsDead())
@@ -105,15 +150,13 @@ function SpellCaster:CanCast(doer, target, pos)
                 target.sg:HasStateTag("invisible")
             )) then
         return false
-    elseif self.inst:HasTag("castontargets") then
-        return true
     end
-
-    local castonrecipes = self.inst:HasTag("castonrecipes")
-    local castonlocomotors = self.inst:HasTag("castonlocomotors")
-    return (castonrecipes or castonlocomotors) and
-        (not castonrecipes or AllRecipes[target.prefab] ~= nil) and
-        (not castonlocomotors or target:HasTag("locomotor"))
+    return self.canuseontargets and (
+            (self.canonlyuseonrecipes and AllRecipes[target.prefab] ~= nil) or
+            (self.canonlyuseonlocomotors and target.components.locomotor ~= nil and (TheNet:GetPVPEnabled() or not (target:HasTag("player") and doer:HasTag("player")))) or
+            (self.canonlyuseonworkable and target.components.workable ~= nil and target.components.workable:CanBeWorked() and IsWorkAction(target.components.workable:GetWorkAction())) or
+            (self.canonlyuseoncombat and doer.components.combat ~= nil and doer.components.combat:CanTarget(target))
+        )
 end
 
 return SpellCaster

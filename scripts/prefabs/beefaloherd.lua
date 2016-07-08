@@ -32,6 +32,18 @@ local function AddMember(inst, member)
     end
 end
 
+local function SpawnableParent(inst)
+    for member,_ in pairs(inst.components.herd.members) do
+        if member.components.domesticatable == nil
+            or (member.components.domesticatable:IsDomesticated() == false and member.components.rideable:GetRider() == nil)
+            then
+
+            return member
+        end
+    end
+    return nil
+end
+
 local function CanSpawn(inst)
     -- Note that there are other conditions inside periodic spawner governing this as well.
 
@@ -39,14 +51,23 @@ local function CanSpawn(inst)
         return false
     end
 
+    local found = SpawnableParent(inst)
+
     local x, y, z = inst.Transform:GetWorldPosition()
-    return #TheSim:FindEntities(x, y, z, inst.components.herd.gatherrange, { "herdmember", inst.components.herd.membertag }) < TUNING.BEEFALOHERD_MAX_IN_RANGE
+    return found ~= nil
+        and #TheSim:FindEntities(x, y, z, inst.components.herd.gatherrange, { "herdmember", inst.components.herd.membertag }) < TUNING.BEEFALOHERD_MAX_IN_RANGE
 end
 
 local function OnSpawned(inst, newent)
-    print("At ONSPAWNED",inst)
+    --print("At ONSPAWNED",inst)
     if inst.components.herd ~= nil then
         inst.components.herd:AddMember(newent)
+    end
+    local parent = SpawnableParent(inst)
+    if parent ~= nil then
+        newent:DoTaskInTime(0, function()
+            newent.Transform:SetPosition(parent.Transform:GetWorldPosition())
+        end)
     end
 end
 

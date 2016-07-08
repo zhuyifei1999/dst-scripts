@@ -116,6 +116,12 @@ local fx =
         build = "mining_fx",
         anim = "anim",
     },
+    {
+        name = "mining_ice_fx",
+        bank = "mining_fx",
+        build = "mining_ice_fx",
+        anim = "anim",
+    },
     --[[{
         name = "pine_needles",
         bank = "pine_needles",

@@ -105,6 +105,7 @@ function backpack_init_fn(inst, build_name)
     inst.OnLongUpdate = backpack_decay_long_update
 end
 
+
 --------------------------------------------------------------------------
 --[[ Torch skin functions ]]
 --------------------------------------------------------------------------
@@ -116,6 +117,29 @@ function torch_init_fn(inst, build_name)
 
     inst.AnimState:SetSkin(build_name, "swap_torch")
     inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+
+
+--------------------------------------------------------------------------
+--[[ Bedroll skin functions ]]
+--------------------------------------------------------------------------
+
+function bedroll_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "swap_bedroll_straw")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+
+
+--------------------------------------------------------------------------
+--[[ Crockpot skin functions ]]
+--------------------------------------------------------------------------
+
+function cookpot_init_fn(inst, build_name)
+    inst.AnimState:SetSkin(build_name, "cook_pot")
 end
 
 --------------------------------------------------------------------------

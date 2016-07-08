@@ -12,7 +12,7 @@ require "widgets/widgetutil"
 
 local Crafting = Class(Widget, function(self, owner, num_slots)
     Widget._ctor(self, "Crafting")
-    
+
     self.owner = owner
 
     self.bg = self:AddChild(TileBG(HUD_ATLAS, "craft_slotbg.tex"))
@@ -110,16 +110,22 @@ end
 
 function Crafting:Close(fn)
     self.open = false
-    self:Disable() 
+    self:Disable()
     self.craftslots:CloseAll()
-    self:MoveTo(self.in_pos, self.out_pos, .33, function() self:Hide() if fn then fn() end end)
+    self:MoveTo(self.in_pos, self.out_pos, .33, function()
+        self:Hide()
+        if fn ~= nil then
+            fn()
+        end
+    end)
 end
 
 function Crafting:Open(fn)
     self.open = true
-    self:Enable() 
+    self:Enable()
     self:MoveTo(self.out_pos, self.in_pos, .33, fn)
-    self:Show() 
+    self:Show()
+    self:UpdateScrollButtons()
 end
 
 local function SortByKey(a, b)
@@ -153,11 +159,14 @@ function Crafting:Resize(num_recipes)
 end
 
 function Crafting:UpdateIdx()
-    self.use_idx = #self.valid_recipes > self.max_slots
+    self.use_idx = self:CanScroll()
+end
+
+function Crafting:CanScroll()
+    return #self.valid_recipes > self.max_slots
 end
 
 function Crafting:UpdateRecipes()
-
     if self.owner ~= nil and self.owner.replica.builder ~= nil then
 
         self.valid_recipes = {}
@@ -183,7 +192,7 @@ function Crafting:UpdateRecipes()
         --V2C: NOTE: when it does need to scroll, there are 2 empty half-slots
         --           at the top and bottom, which is why this math looks weird
         --default is -1, the recipe starts in the top slot.
-        self.idx = #self.valid_recipes > self.max_slots
+        self.idx = self.use_idx
             and math.clamp(self.idx, -1, #self.valid_recipes - (self.max_slots - 1))
             or -1
 
@@ -198,19 +207,25 @@ function Crafting:UpdateRecipes()
             end
         end
 
-        -- #### It should be noted that downbutton goes "up" and up button goes "down"! ####
+        self:UpdateScrollButtons()
+    end
+end
 
-        if self.idx >= 0 and #self.valid_recipes > self.max_slots then
-            self.downbutton:Enable()
-        else
-            self.downbutton:Disable()
-        end
+function Crafting:UpdateScrollButtons()
+    -- #### It should be noted that downbutton goes "up" and up button goes "down"! ####
 
-        if #self.valid_recipes < self.idx + self.current_slots or #self.valid_recipes <= self.max_slots then  
-            self.upbutton:Disable()
-        else
-            self.upbutton:Enable()
-        end
+    local canscroll = self:CanScroll()
+
+    if canscroll and self.idx >= 0 then
+        self.downbutton:Enable()
+    else
+        self.downbutton:Disable()
+    end
+
+    if canscroll and self.idx + self.current_slots <= #self.valid_recipes then
+        self.upbutton:Enable()
+    else
+        self.upbutton:Disable()
     end
 end
 

@@ -1,10 +1,10 @@
 local _StopSeeking --forward declare
 
 local function _checkforsaltlick(inst, self)
-    local ent = FindEntity(inst, TUNING.SALTLICK_CHECK_DIST, nil, { "saltlick" }, { "INLIMBO", "fire", "burnt" })
+    local ent = FindEntity(inst, TUNING.SALTLICK_USE_DIST, nil, { "saltlick" }, { "INLIMBO", "fire", "burnt" })
     if ent ~= nil then
         if ent.components.finiteuses ~= nil then
-            ent.components.finiteuses:Use(1)
+            ent.components.finiteuses:Use(self.uses_per_lick)
         end
         inst.components.timer:StartTimer("salt", self.saltedduration)
         _StopSeeking(self)
@@ -15,7 +15,8 @@ local function _checkforsaltlick(inst, self)
 end
 
 local function _onsaltlickplaced(inst, data)
-    if not inst.components.timer:TimerExists("salt") then
+    if not inst.components.timer:TimerExists("salt") and
+        inst:IsNear(data.inst, TUNING.SALTLICK_USE_DIST) then
         local self = inst.components.saltlicker
         inst.components.timer:StartTimer("salt", self.saltedduration)
         _StopSeeking(self)
@@ -62,7 +63,8 @@ local SaltLicker = Class(function(self, inst)
     inst:AddTag("saltlicker")
 
     self.salted = false
-    self.saltedduration = nil
+    self.saltedduration = TUNING.SALTLICK_DURATION
+    self.uses_per_lick = nil
     self._task = nil
 end)
 
@@ -76,10 +78,10 @@ local function OnExitLimbo(inst)
     end
 end
 
-function SaltLicker:SetUp(duration)
+function SaltLicker:SetUp(uses_per_lick)
     self:Stop()
-    self.saltedduration = duration
-    if duration ~= nil then
+    self.uses_per_lick = uses_per_lick
+    if uses_per_lick ~= nil then
         self.inst:ListenForEvent("timerdone", _ontimerdone)
         self.inst:ListenForEvent("enterlimbo", OnEnterLimbo)
         self.inst:ListenForEvent("exitlimbo", OnExitLimbo)
@@ -90,12 +92,12 @@ function SaltLicker:SetUp(duration)
 end
 
 function SaltLicker:Stop()
-    if self.saltedduration ~= nil then
+    if self.uses_per_lick ~= nil then
         self.inst:RemoveEventCallback("timerdone", _ontimerdone)
         self.inst:RemoveEventCallback("enterlimbo", OnEnterLimbo)
         self.inst:RemoveEventCallback("exitlimbo", OnExitLimbo)
         _StopSeeking(self)
-        self.saltedduration = nil
+        self.uses_per_lick = nil
     end
 end
 
@@ -123,6 +125,7 @@ function SaltLicker:GetDebugString()
     return "salted: "..(self.salted and string.format("%2.2f", self.inst.components.timer:GetTimeLeft("salt")) or "--")
         ..", seeking: "..(self._task ~= nil and string.format("%2.2f", self._task:NextTime() - GetTime()) or "--")
         ..", duration: "..tostring(self.saltedduration)
+        ..", uses: "..tostring(self.uses_per_lick)
 end
 
 return SaltLicker

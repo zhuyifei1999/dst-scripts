@@ -276,7 +276,7 @@ local actionhandlers =
         function(inst, action)
             if action.invobject ~= nil then
                 if action.invobject.onuse ~= nil then
-                    action.invobject.onuse(inst)
+                    action.invobject:onuse(inst)
                 end
                 return "bedroll"
             else
@@ -334,7 +334,11 @@ local actionhandlers =
     ActionHandler(ACTIONS.DRY, "doshortaction"),
     ActionHandler(ACTIONS.CASTSPELL,
         function(inst, action)
-            return action.invobject.components.spellcaster.castingstate or "castspell"
+            return action.invobject ~= nil
+                and action.invobject.components.spellcaster ~= nil
+                and action.invobject.components.spellcaster.quickcast
+                and "quickcastspell"
+                or "castspell"
         end),
     ActionHandler(ACTIONS.BLINK, "quicktele"),
     ActionHandler(ACTIONS.COMBINESTACK, "doshortaction"),
@@ -1419,10 +1423,11 @@ local states =
                 if inst.sg.statemem.action ~= nil then
                     local target = inst.sg.statemem.action.target
                     if target ~= nil and target:IsValid() then
+                        local frozen = target:HasTag("frozen")
                         if target.Transform ~= nil then
-                            SpawnPrefab("mining_fx").Transform:SetPosition(target.Transform:GetWorldPosition())
+                            SpawnPrefab(frozen and "mining_ice_fx" or "mining_fx").Transform:SetPosition(target.Transform:GetWorldPosition())
                         end
-                        inst.SoundEmitter:PlaySound(target:HasTag("frozen") and "dontstarve_DLC001/common/iceboulder_hit" or "dontstarve/wilson/use_pick_rock")
+                        inst.SoundEmitter:PlaySound(frozen and "dontstarve_DLC001/common/iceboulder_hit" or "dontstarve/wilson/use_pick_rock")
                     end
                 end
                 inst:PerformBufferedAction()
@@ -4730,6 +4735,34 @@ local states =
     },
 
     State{
+        name = "quickcastspell",
+        tags = { "doing", "busy", "canrotate" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("atk_pre") 
+            inst.AnimState:PushAnimation("atk", false)
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_weapon")
+        end,
+
+        timeline =
+        {
+            TimeEvent(5 * FRAMES, function(inst)
+                inst:PerformBufferedAction()
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
+
+    State{
         name = "quicktele",
         tags = { "doing", "busy", "canrotate" },
 
@@ -4742,7 +4775,9 @@ local states =
 
         timeline =
         {
-            TimeEvent(8*FRAMES, function(inst) inst:PerformBufferedAction() end),
+            TimeEvent(8 * FRAMES, function(inst)
+                inst:PerformBufferedAction()
+            end),
         },
 
         events =
@@ -5192,40 +5227,6 @@ local states =
             if inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) then
                 inst.AnimState:Show("ARM_carry") 
                 inst.AnimState:Hide("ARM_normal")
-            end
-        end,
-    },
-
-    State{
-        name = "castspell_tornado",
-        tags = { "doing", "busy", "canrotate" },
-
-        onenter = function(inst)
-            if inst.components.playercontroller ~= nil then
-                inst.components.playercontroller:Enable(false)
-            end
-            inst.AnimState:PlayAnimation("atk") 
-            inst.components.locomotor:Stop()
-            --Spawn an effect on the player's location
-        end,
-
-        timeline = 
-        {
-            TimeEvent(5*FRAMES, function(inst) inst:PerformBufferedAction() end),
-        },
-
-        events =
-        {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle") 
-                end
-            end),
-        },
-
-        onexit = function(inst)
-            if inst.components.playercontroller ~= nil then
-                inst.components.playercontroller:Enable(true)
             end
         end,
     },

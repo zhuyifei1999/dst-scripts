@@ -166,10 +166,10 @@ end
 local function ondoerarrive(inst, self, doer)
     -- V2C: can reach here even if doer goes invalid because
     --      this is not a task or event handler on the doer.
-    if doer:IsValid() then
-        doer.sg:GoToState("jumpout")
-    else
+    if not doer:IsValid() then
         doer = nil
+    elseif doer.sg.currentstate.name == "jumpin" then
+        doer.sg:GoToState("jumpout")
     end
     self.numteleporting = self.numteleporting - 1
     self:PushDoneTeleporting(doer)

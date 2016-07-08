@@ -79,12 +79,17 @@ local function onsleep(inst, sleeper)
     inst.sleeptask = inst:DoPeriodicTask(TUNING.SLEEP_TICK_PERIOD, onsleeptick, nil, sleeper)
 end
 
-local function onuse_straw(inst)
-    inst.AnimState:OverrideSymbol("swap_bedroll", "swap_bedroll_straw", "bedroll_straw")
+local function onuse_straw(inst, sleeper)
+	sleeper.AnimState:OverrideSymbol("swap_bedroll", "swap_bedroll_straw", "bedroll_straw")
 end
 
-local function onuse_furry(inst)
-    inst.AnimState:OverrideSymbol("swap_bedroll", "swap_bedroll_furry", "bedroll_furry")
+local function onuse_furry(inst, sleeper)
+    local skin_build = inst:GetSkinBuild()
+    if skin_build ~= nil then
+        sleeper.AnimState:OverrideItemSkinSymbol("swap_bedroll", skin_build, "bedroll_furry", inst.GUID, "swap_bedroll_furry")
+    else
+		sleeper.AnimState:OverrideSymbol("swap_bedroll", "swap_bedroll_furry", "bedroll_furry")
+    end
 end
 
 local function common_fn(bank, build)

@@ -7,6 +7,8 @@ require "behaviours/attackwall"
 --require "behaviours/runaway"
 --require "behaviours/doaction"
 
+local BrainCommon = require("brains/braincommon")
+
 -- states
 local GREETING = "greeting"
 local LOITERING = "loitering"
@@ -40,7 +42,8 @@ local LOITER_ANCHOR_RESET_DIST = 20
 local LOITER_ANCHOR_HERD_DIST = 40
 
 local function GetFaceTargetFn(inst)
-    if not(inst.components.domesticatable and inst.components.domesticatable:IsDomesticated()) then
+    if not (inst.components.domesticatable ~= nil and inst.components.domesticatable:IsDomesticated()) and
+        not BrainCommon.ShouldSeekSalt(inst) then
         local target = FindClosestPlayerToInst(inst, START_FACE_DIST, true)
         return target ~= nil and not target:HasTag("notarget") and target or nil
     end
@@ -54,6 +57,7 @@ local function KeepFaceTargetFn(inst, target)
         and not (target:HasTag("notarget") or
                 target:HasTag("playerghost"))
         and inst:IsNear(target, KEEP_FACE_DIST)
+        and not BrainCommon.ShouldSeekSalt(inst)
 end
 
 local function GetWanderDistFn(inst)
@@ -85,17 +89,6 @@ local function GetLoiterAnchor(inst)
     end
 
     return inst.components.knownlocations:GetLocation("loiteranchor")
-end
-
-local function CheckForSaltlick(inst)
-    local lick = FindEntity(inst, TUNING.SALTLICK_CHECK_DIST, nil, { "saltlick" }, { "INLIMBO", "fire", "burnt" })
-    if lick ~= nil then
-        inst.components.knownlocations:RememberLocation("saltlick", lick:GetPosition())
-        return true
-    else
-        inst.components.knownlocations:ForgetLocation("saltlick")
-        return false
-    end
 end
 
 local function TryBeginLoiterState(inst)
@@ -169,8 +162,7 @@ function BeefaloBrain:OnStart()
         }),
 
         -- anchor to nearest saltlick
-        IfNode(function() return CheckForSaltlick(self.inst) end, "Stay Near Salt",
-            Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("saltlick") end, GetWanderDistFn)),
+        BrainCommon.AnchorToSaltlick(self.inst),
 
         -- waiting for feeder
         WhileNode(function() return InState(self.inst, LOITERING) end, "Loitering", PriorityNode{
