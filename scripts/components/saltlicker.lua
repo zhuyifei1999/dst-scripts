@@ -113,7 +113,12 @@ function SaltLicker:SetSalted(salted)
     end
 end
 
-function SaltLicker:OnLoadPostPass()
+function SaltLicker:OnSave()
+    --V2C: can't trigger LoadPostPass unless there is any save data
+    return self.salted and { salted = true } or nil
+end
+
+function SaltLicker:LoadPostPass()
     -- the timer's save/load has all the data we need...
     if self.inst.components.timer:TimerExists("salt") then
         _StopSeeking(self)

@@ -240,7 +240,7 @@ CLOTHING =
 		type = "body",
 		symbol_overrides = { "torso", "torso_pelvis", "arm_upper", "skirt", },
 		override_build = "body_sleepgown_blue_ice",
-		torso_tuck = "untucked",
+		torso_tuck = "skirt",
 		rarity = "Distinguished",
 	},
 	body_suspenders_pink_pearl =
@@ -312,7 +312,7 @@ CLOTHING =
 		type = "body",
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", "arm_lower", "skirt", },
 		override_build = "body_trenchcoat_brown_fawn",
-		torso_tuck = "untucked",
+		torso_tuck = "skirt",
 		rarity = "Spiffy",
 	},
 	body_trenchcoat_yellow_straw =
@@ -320,7 +320,7 @@ CLOTHING =
 		type = "body",
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", "arm_lower", "skirt", },
 		override_build = "body_trenchcoat_yellow_straw",
-		torso_tuck = "untucked",
+		torso_tuck = "skirt",
 		rarity = "Spiffy",
 	},
 	body_trimmed_blouse_red_higgsbury =

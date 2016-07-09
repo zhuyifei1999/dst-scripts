@@ -464,7 +464,7 @@ function PlayerHud:OpenControllerInventory()
     self:CloseControllerCrafting()
     self:HideControllerCrafting()
     self.controls.inv:OpenControllerInventory()
-    self.controls.item_notification:ToggleController(false)
+    self.controls.item_notification:ToggleController(true)
     self.controls:ShowStatusNumbers()
 
     self.owner.components.playercontroller:OnUpdate(0)
@@ -477,7 +477,7 @@ function PlayerHud:CloseControllerInventory()
     self.controls:HideStatusNumbers()
     self:ShowControllerCrafting()
     self.controls.inv:CloseControllerInventory()
-    self.controls.item_notification:ToggleController(true)
+    self.controls.item_notification:ToggleController(false)
 end
 
 function PlayerHud:HasInputFocus()
@@ -577,6 +577,7 @@ function PlayerHud:OpenControllerCrafting()
     self:CloseControllerInventory()
     self.controls.inv:Disable()
     self.controls.crafttabs:OpenControllerCrafting()
+    self.controls.item_notification:ToggleController(true)
 end
 
 function PlayerHud:CloseControllerCrafting()

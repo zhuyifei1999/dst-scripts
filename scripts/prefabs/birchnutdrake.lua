@@ -68,14 +68,14 @@ local function SleepTest()
     return false
 end
 
-local function OnDeath(inst, data, immediate)
+local function DoExtinguish(inst)
     if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() then
-        if immediate then
-            inst.components.burnable:Extinguish()
-        else
-            inst:DoTaskInTime(.5, OnDeath, nil, true)
-        end
+        inst.components.burnable:Extinguish()
     end
+end
+
+local function OnDeath(inst)
+    inst:DoTaskInTime(.5, DoExtinguish)
 end
 
 local function fn()

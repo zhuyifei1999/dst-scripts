@@ -707,6 +707,7 @@ local function RegisterNetListeners(inst)
 
         OnIsTakingFireDamageDirty(inst)
         OnTemperatureDirty(inst)
+        OnTechTreesDirty(inst)
         if inst._parent ~= nil then
             inst._oldhealthpercent = inst.maxhealth:value() > 0 and inst.currenthealth:value() / inst.maxhealth:value() or 0
             inst._oldhungerpercent = inst.maxhunger:value() > 0 and inst.currenthunger:value() / inst.maxhunger:value() or 0
