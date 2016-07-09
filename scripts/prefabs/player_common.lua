@@ -382,6 +382,9 @@ end
 local function ActivateHUD(inst)
     local hud = PlayerHud()
     TheFrontEnd:PushScreen(hud)
+    if TheFrontEnd:GetFocusWidget() == nil then
+        hud:SetFocus()
+    end
     TheCamera:SetOnUpdateFn(not TheWorld:HasTag("cave") and function(camera) hud:UpdateClouds(camera) end or nil)
     hud:SetMainCharacter(inst)
 end

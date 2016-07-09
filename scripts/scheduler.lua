@@ -7,19 +7,16 @@ SLEEP = "sleep"
 local coroutine = coroutine
 local debug = debug
 
-
 -------------------------------
 local taskguid = 0
 local Task = Class( function(self, fn, id, param)
     self.guid = taskguid
     taskguid = taskguid + 1    
     self.param = param
-    
     self.id = id
     self.fn = fn
     self.co = coroutine.create(fn)
     self.list = nil
-    
 end)
 
 function Task:__tostring()
@@ -45,31 +42,26 @@ Periodic = Class(function(self, fn, period, limit, id, nexttick, ...)
     self.nexttick = nexttick
     self.list = nil
     self.onfinish = nil
-    
-    if ... then
-        self.arg = {...}
-    end
-
+    self.arg = toarrayornil(...)
 end)
 
 function Periodic:Cancel()
-    
     self.limit = 0
     if self.list then
         self.list[self] = nil
         self.list = nil
     end
-    
+
     if self.onfinish then
         if self.arg then
-			self.onfinish(self, false, unpack(self.arg))
-		else
-			self.onfinish(self, false)
-		end
+            self.onfinish(self, false, unpack(self.arg))
+        else
+            self.onfinish(self, false)
+        end
         self.onfinish = nil
     end
-    
-	self.fn = nil
+
+    self.fn = nil
     self.arg = nil
     self.nexttick = nil
 end
@@ -79,7 +71,6 @@ function Periodic:NextTime()
 end
 
 function Periodic:Cleanup()
-    
     self.limit = 0
     --- if someone keeps a reference to us let it not be us keeping the list alive
     if self.list then
@@ -87,9 +78,9 @@ function Periodic:Cleanup()
     --  not even when it's empty
         self.list = nil
     end
-    
+
     self.onfinish = nil
-    
+
     self.fn = nil
     self.arg = nil
     self.nexttick = nil
@@ -114,22 +105,19 @@ local function GetNewList()
 end
 -------------------------------
 
-
 local Scheduler = Class( function(self)
-   
     self.tasks = {}
     self.running = {}
-	self.waitingfortick = {}
-	self.waking = {}
+    self.waitingfortick = {}
+    self.waking = {}
     self.hibernating = {}
     self.attime = {}
 end)
 
 function Scheduler:__tostring()
-    
     local numrun = 0
     local numtasks = 0
-    
+
     for k, v in pairs(self.running) do
         numrun = numrun + 1
     end
@@ -137,9 +125,9 @@ function Scheduler:__tostring()
     for k, v in pairs(self.tasks) do
         numtasks = numtasks + 1
     end
-    
+
     local str = string.format("Running Tasks: %d/%d", numrun, numtasks)
-    
+
     return str
 end
 
@@ -152,26 +140,22 @@ function Scheduler:KillTask(task)
 end
 
 function Scheduler:AddTask(fn, id, param)
-	local task = Task(fn, id, param)
-	if task.co == nil then
-	    print("TASK.CO is nil!")
-	    for k,v in pairs(task) do
-	        print(k,v)
-	    end
-	end
+    local task = Task(fn, id, param)
+    if task.co == nil then
+        print("TASK.CO is nil!")
+        for k,v in pairs(task) do
+            print(k,v)
+        end
+    end
     self.tasks[task.co] = task
     task:SetList(self.running)
     return task
 end
 
-
 function Scheduler:OnTick(tick)
-
     for k,v in pairs(self.waitingfortick) do
-		assert (k >= tick)
+        assert (k >= tick)
     end
-    
-
 
     if self.waitingfortick[tick] ~= nil then
         for k, v in pairs(self.waitingfortick[tick]) do
@@ -181,8 +165,7 @@ function Scheduler:OnTick(tick)
         table.insert(listrecycler, list)
         self.waitingfortick[tick] = nil
     end
-    
-    
+
     --do our at time callbacks!
     if self.attime[tick] ~= nil then
         for k,v in pairs(self.attime[tick]) do
@@ -196,11 +179,11 @@ function Scheduler:OnTick(tick)
                         k.fn()
                     end
                 end
-                
+
                 if k.limit then
                     k.limit = k.limit - 1
                 end
-                
+
                 if not k.limit or k.limit > 0 then
                     local list, nexttick = self:GetListForTimeFromNow(k.period)
                     list[k] = true
@@ -208,44 +191,37 @@ function Scheduler:OnTick(tick)
                     k.nexttick = nexttick
                 else
                     if k.onfinish and not already_dead then
-						if k.arg then
-							k.onfinish(k, true, unpack(k.arg))
-						else
-							k.onfinish(k, true)
-						end
-						k.onfinish = nil
+                        if k.arg then
+                            k.onfinish(k, true, unpack(k.arg))
+                        else
+                            k.onfinish(k, true)
+                        end
+                        k.onfinish = nil
                     end
                     k:Cleanup()
                 end
             end
-            
         end
         self.attime[tick] = nil
     end
 end
 
-
-
 function Scheduler:Run()
+    for k, v in pairs(self.waking) do
+        v:SetList(self.running)
+    end
+    self.waking = {}
 
-	for k, v in pairs(self.waking) do
-		v:SetList(self.running)
-	end
-	self.waking = {}
-
-
-	for k, v in pairs(self.running) do
-    
-		if coroutine.status(v.co) == "dead" then
-			--The task is finished. kill it!
+    for k, v in pairs(self.running) do
+        if coroutine.status(v.co) == "dead" then
+            --The task is finished. kill it!
             task:SetList(nil)
             self.tasks[v.co] = nil
-		else
- 
-			local success, yieldtype, yieldparam = coroutine.resume(v.co, v.param)
+        else
+            local success, yieldtype, yieldparam = coroutine.resume(v.co, v.param)
 
-			if success and coroutine.status(v.co) ~= "dead" then
-				if yieldtype == HIBERNATE then
+            if success and coroutine.status(v.co) ~= "dead" then
+                if yieldtype == HIBERNATE then
                     v:SetList(self.hibernating)
                 elseif yieldtype == SLEEP then
                     yieldparam = math.floor(yieldparam)
@@ -255,8 +231,8 @@ function Scheduler:Run()
                         self.waitingfortick[yieldparam] = list
                     end
                     v:SetList(list)
-				end
-			else
+                end
+            else
                 v:SetList(nil)
                 v.retval = yieldtype
                 if not success then
@@ -265,19 +241,17 @@ function Scheduler:Run()
                     return
                 end
                 self:KillTask(v)
-                
-			end
-		end
-	end
+            end
+        end
+    end
 end
 
-
 function Scheduler:KillAll()
-	self.tasks = {}
+    self.tasks = {}
     self.hibernating = {}
     self.running = {}
     self.waitingfortick = {}
-	self.waking = {}
+    self.waking = {}
     self.attime = {}
     
 end
@@ -317,8 +291,6 @@ function Scheduler:ExecutePeriodic(period, fn, limit, initialdelay, id, ...)
     return periodic
 end
 
-
-
 function Scheduler:KillTasksWithID(id)
     local function pred(task) return task.id == id end
 
@@ -326,13 +298,11 @@ function Scheduler:KillTasksWithID(id)
     removeif(self.hibernating, pred)
     removeif(self.running, pred)
     removeif(self.waking, pred)
-    
+
     for k, v in pairs( self.waitingfortick ) do
         removeif(v, pred)
     end
-    
 end
-
 
 function Scheduler:GetCurrentTask()
     local co = coroutine.running ()
@@ -344,10 +314,7 @@ end
 
 scheduler = Scheduler()
 
-
 ------------------------------------------------------------------------------------
-
-
 
 --These are to be called from within a thread
 
@@ -368,13 +335,12 @@ end
 
 function Sleep(time)
     local desttick = math.ceil((GetTime() + time)/GetTickTime())
-	if GetTick() < desttick then
+    if GetTick() < desttick then
         coroutine.yield(SLEEP, desttick)
     else
         coroutine.yield()
     end
 end
-
 
 function KillThread(task)
     scheduler:KillTask(task)
@@ -397,15 +363,14 @@ function StartThread(fn, id, param)
             id = task.id
         end
     end
-	return scheduler:AddTask(fn, id, param)
+    return scheduler:AddTask(fn, id, param)
 end
-
 
 function RunScheduler(tick)
     TheSim:ProfilerPush("scheduler:OnTick")
     scheduler:OnTick(tick)
     TheSim:ProfilerPop()
-    
+
     TheSim:ProfilerPush("scheduler:Run")
     scheduler:Run()
     TheSim:ProfilerPop()
@@ -418,4 +383,3 @@ end
 function StopAllThreads()
     scheduler:KillAll()
 end
-

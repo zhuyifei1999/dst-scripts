@@ -1,13 +1,3 @@
-local prefabs =
-{
-    "sparks",
-}
-
-local function OnAttack(inst)
-    local x, y, z = inst.Transform:GetWorldPosition()
-    SpawnPrefab("sparks").Transform:SetPosition(x, y - .5, z)
-end
-
 local function fn()
     local inst = CreateEntity()
 
@@ -19,7 +9,7 @@ local function fn()
 
     inst.Light:SetIntensity(.75)
     inst.Light:SetColour(252 / 255, 251 / 255, 237 / 255)
-    inst.Light:SetFalloff(0.6)
+    inst.Light:SetFalloff(.6)
     inst.Light:SetRadius(4)
     inst.Light:Enable(true)
 
@@ -31,9 +21,7 @@ local function fn()
 
     inst.persists = false
 
-    inst.OnAttack = OnAttack
-
     return inst
 end
 
-return Prefab("nightstickfire", fn, nil, prefabs)
+return Prefab("nightstickfire", fn)

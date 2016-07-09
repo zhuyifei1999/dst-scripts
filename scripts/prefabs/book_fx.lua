@@ -5,7 +5,7 @@ local assets =
 
 local MAX_LAG = 1.5
 
-local function PlayBookFX(proxy, tint, tintalpha, anim)
+local function PlayBookFX(proxy, anim, tintalpha, tint)
     local inst = CreateEntity()
 
     inst:AddTag("FX")
@@ -31,8 +31,8 @@ local function PlayBookFX(proxy, tint, tintalpha, anim)
     inst.AnimState:SetFinalOffset(-1)
 
     if tint ~= nil then
-        inst.AnimState:SetMultColour(tint.x, tint.y, tint.z, tintalpha or 1)
-    elseif tintalpha ~= nil then
+        inst.AnimState:SetMultColour(tint.x, tint.y, tint.z, tintalpha)
+    elseif tintalpha ~= 1 then
         inst.AnimState:SetMultColour(tintalpha, tintalpha, tintalpha, tintalpha)
     end
 
@@ -60,7 +60,8 @@ local function OnStateDirty(inst)
     end
 
     --Delay one frame in case we are about to be removed
-    inst:DoTaskInTime(0, PlayBookFX, inst.tint, inst.tintalpha, inst.anim)
+    --Optional params (i.e. nils) must be at the end
+    inst:DoTaskInTime(0, PlayBookFX, inst.anim, inst.tintalpha, inst.tint)
     inst._complete = true
 end
 
@@ -84,6 +85,8 @@ local function common_fn()
     inst._complete = false
 
     inst.anim = "book_fx"
+    inst.tintalpha = 1
+    inst.tint = nil
 
     inst:ListenForEvent("statedirty", OnStateDirty)
 
@@ -107,7 +110,7 @@ end
 local function book_fn()
     local inst = common_fn()
 
-    inst.tintalpha = 0.4
+    inst.tintalpha = .4
 
     return inst
 end
@@ -115,7 +118,7 @@ end
 local function mount_book_fn()
     local inst = common_fn()
 
-    inst.tintalpha = 0.4
+    inst.tintalpha = .4
     inst.anim = "book_fx_mount"
 
     return inst

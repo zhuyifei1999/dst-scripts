@@ -8,13 +8,20 @@ local assets =
 local prefabs =
 {
     "nightstickfire",
+    "sparks",
 }
 
 local function onpocket(inst)
     inst.components.burnable:Extinguish()
 end
 
-local function onequip(inst, owner) 
+local function onequipfueldelta(inst)
+    if inst.components.fueled.currentfuel < inst.components.fueled.maxfuel then
+        inst.components.fueled:DoDelta(-.01 * inst.components.fueled.maxfuel)
+    end
+end
+
+local function onequip(inst, owner)
     inst.components.burnable:Ignite()
     owner.AnimState:OverrideSymbol("swap_object", "swap_nightstick", "swap_nightstick")
     owner.AnimState:Show("ARM_carry")
@@ -23,24 +30,23 @@ local function onequip(inst, owner)
     inst.SoundEmitter:PlaySound("dontstarve_DLC001/common/morningstar", "torch")
     --inst.SoundEmitter:SetParameter("torch", "intensity", 1)
 
-    inst.fire = SpawnPrefab("nightstickfire")
-    local follower = inst.fire.entity:AddFollower()
-    follower:FollowSymbol(owner.GUID, "swap_object", 0, -110, 1)
+    if inst.fire == nil then
+        inst.fire = SpawnPrefab("nightstickfire")
+        inst.fire.entity:AddFollower()
+        inst.fire.Follower:FollowSymbol(owner.GUID, "swap_object", 0, -110, 0)
+    end
 
     --take a percent of fuel next frame instead of this one, so we can remove the torch properly if it runs out at that point
-    inst:DoTaskInTime(0, function()
-        if inst.components.fueled.currentfuel < inst.components.fueled.maxfuel then
-            inst.components.fueled:DoDelta(-inst.components.fueled.maxfuel*.01)
-        end
-    end)
+    inst:DoTaskInTime(0, onequipfueldelta)
 end
 
 local function onunequip(inst,owner)
-    inst.fire:Remove()
-    inst.fire = nil
+    if inst.fire ~= nil then
+        inst.fire:Remove()
+        inst.fire = nil
+    end
 
     inst.components.burnable:Extinguish()
-    owner.components.combat.damage = owner.components.combat.defaultdamage
     owner.AnimState:Hide("ARM_carry")
     owner.AnimState:Show("ARM_normal")
     inst.SoundEmitter:KillSound("torch")
@@ -49,24 +55,32 @@ end
 local function sectioncallback(newsection, oldsection, inst)
     if newsection == 0 then
         --when we burn out
-        if inst.components.burnable then
+        if inst.components.burnable ~= nil then
             inst.components.burnable:Extinguish()
         end
-
-        if inst.components.inventoryitem and inst.components.inventoryitem:IsHeld() then
-            local owner = inst.components.inventoryitem.owner
-            inst:Remove()
-
-            if owner then
-                owner:PushEvent("nightstickranout", {nightstick = inst})
+        local equippable = inst.components.equippable
+        if equippable ~= nil and equippable:IsEquipped() then
+            local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner or nil
+            if owner ~= nil then
+                local data =
+                {
+                    prefab = inst.prefab,
+                    equipslot = equippable.equipslot,
+                    announce = "ANNOUNCE_TORCH_OUT",
+                }
+                inst:Remove()
+                owner:PushEvent("itemranout", data)
+                return
             end
         end
+        inst:Remove()
     end
 end
 
 local function onattack(inst)
-    if inst ~= nil and inst:IsValid() and inst.fire ~= nil and inst.fire:IsValid() then
-        inst.fire:OnAttack()
+    if inst ~= nil and inst.fire ~= nil and inst:IsValid() and inst.fire:IsValid() then
+        local x, y, z = inst.fire.Transform:GetWorldPosition()
+        SpawnPrefab("sparks").Transform:SetPosition(x, y - .5, z)
     end
 end
 
@@ -84,8 +98,7 @@ local function fn()
 
     MakeInventoryPhysics(inst)
 
-    --lighter (from lighter component) added to pristine state for optimization
-    --inst:AddTag("lighter")
+    inst:AddTag("wildfireprotected")
 
     inst.entity:SetPristine()
 
@@ -97,20 +110,6 @@ local function fn()
     inst.components.weapon:SetDamage(TUNING.NIGHTSTICK_DAMAGE)
     inst.components.weapon:SetOnAttack(onattack)
     inst.components.weapon:SetElectric()
-
-    -- inst.components.weapon:SetOnAttack(
-    --     function(attacker, target)
-    --         if target.components.burnable then
-    --             if math.random() < TUNING.TORCH_ATTACK_IGNITE_PERCENT*target.components.burnable.flammability then
-    --                 target.components.burnable:Ignite()
-    --             end
-    --         end
-    --     end
-    -- )
-
-    -- -----------------------------------
-    -- inst:AddComponent("lighter")
-    -- -----------------------------------
 
     inst:AddComponent("inventoryitem")
     -----------------------------------
@@ -129,25 +128,15 @@ local function fn()
     inst:AddComponent("burnable")
     inst.components.burnable.canlight = false
     inst.components.burnable.fxprefab = nil
-    --inst.components.burnable:AddFXOffset(Vector3(0,1.5,-.01))
 
     -----------------------------------
 
     inst:AddComponent("fueled")
-
-    -- inst.components.fueled:SetUpdateFn( function()
-    --     if GetSeasonManager():IsRaining() then
-    --         inst.components.fueled.rate = 1 + TUNING.TORCH_RAIN_RATE*GetSeasonManager():GetPrecipitationRate()
-    --     else
-    --         inst.components.fueled.rate = 1
-    --     end
-    -- end)
-
-    MakeHauntableLaunch(inst)
-
     inst.components.fueled:SetSectionCallback(sectioncallback)
     inst.components.fueled:InitializeFuelLevel(TUNING.NIGHTSTICK_FUEL)
     inst.components.fueled:SetDepletedFn(inst.Remove)
+
+    MakeHauntableLaunch(inst)
 
     return inst
 end

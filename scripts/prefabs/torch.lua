@@ -12,12 +12,11 @@ local prefabs =
 
 local function onequipfueldelta(inst)
     if inst.components.fueled.currentfuel < inst.components.fueled.maxfuel then
-        inst.components.fueled:DoDelta(-inst.components.fueled.maxfuel*.01)
+        inst.components.fueled:DoDelta(-.01 * inst.components.fueled.maxfuel)
     end
 end
 
 local function onequip(inst, owner)
-    --owner.components.combat.damage = TUNING.PICK_DAMAGE 
     inst.components.burnable:Ignite()
 
     local skin_build = inst:GetSkinBuild()
@@ -66,7 +65,6 @@ local function onunequip(inst, owner)
     end
 
     inst.components.burnable:Extinguish()
-    owner.components.combat.damage = owner.components.combat.defaultdamage 
     owner.AnimState:Hide("ARM_carry") 
     owner.AnimState:Show("ARM_normal")
     inst.SoundEmitter:KillSound("torch")
@@ -102,6 +100,31 @@ local function onisraining(inst, israining)
     end
 end
 
+local function sectioncallback(newsection, oldsection, inst)
+    if newsection == 0 then
+        --when we burn out
+        if inst.components.burnable ~= nil then
+            inst.components.burnable:Extinguish()
+        end
+        local equippable = inst.components.equippable
+        if equippable ~= nil and equippable:IsEquipped() then
+            local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner or nil
+            if owner ~= nil then
+                local data =
+                {
+                    prefab = inst.prefab,
+                    equipslot = equippable.equipslot,
+                    announce = "ANNOUNCE_TORCH_OUT",
+                }
+                inst:Remove()
+                owner:PushEvent("itemranout", data)
+                return
+            end
+        end
+        inst:Remove()
+    end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -115,6 +138,8 @@ local function fn()
     inst.AnimState:SetBank("torch")
     inst.AnimState:SetBuild("swap_torch")
     inst.AnimState:PlayAnimation("idle")
+
+    inst:AddTag("wildfireprotected")
 
     --lighter (from lighter component) added to pristine state for optimization
     inst:AddTag("lighter")
@@ -158,36 +183,11 @@ local function fn()
     inst:AddComponent("burnable")
     inst.components.burnable.canlight = false
     inst.components.burnable.fxprefab = nil
-    --inst.components.burnable:AddFXOffset(Vector3(0, 1.5, -.01))
 
     -----------------------------------
 
     inst:AddComponent("fueled")
-    inst.components.fueled:SetSectionCallback(
-        function(section)
-            if section == 0 then
-                --when we burn out
-                if inst.components.burnable ~= nil then
-                    inst.components.burnable:Extinguish()
-                end
-                local equippable = inst.components.equippable
-                if equippable ~= nil and equippable:IsEquipped() then
-                    local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner or nil
-                    if owner ~= nil then
-                        local data =
-                        {
-                            prefab = inst.prefab,
-                            equipslot = equippable.equipslot,
-                            announce = "ANNOUNCE_TORCH_OUT"
-                        }
-                        inst:Remove()
-                        owner:PushEvent("itemranout", data)
-                        return
-                    end
-                end
-                inst:Remove()
-            end
-        end)
+    inst.components.fueled:SetSectionCallback(sectioncallback)
     inst.components.fueled:InitializeFuelLevel(TUNING.TORCH_FUEL)
     inst.components.fueled:SetDepletedFn(inst.Remove)
 
