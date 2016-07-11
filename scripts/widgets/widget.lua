@@ -503,10 +503,7 @@ function Widget:SetFocusChangeDir(dir, widget, ...)
     end
 
     self.focus_flow[dir] = widget
-
-    if ... then
-        self.focus_flow_args[dir] = {...}
-    end
+    self.focus_flow_args[dir] = toarrayornil(...)
 end
 
 function Widget:GetDeepestFocus()

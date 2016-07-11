@@ -1992,6 +1992,7 @@ function Tune(overrides)
         VOTE_FAILED_SQUELCH_TIME = 30,
         VOTE_CANCELLED_SQUELCH_TIME = 30,
         VOTE_TIMEOUT_DEFAULT = 30,
+        VOTE_KICK_TIME = 10 * 60, --10min
 
         DICE_ROLL_COOLDOWN = 30,
     }

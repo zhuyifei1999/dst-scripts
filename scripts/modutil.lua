@@ -208,38 +208,32 @@ local function InsertPostInitFunctions(env, isworldgen)
 		table.insert(env.postinitfns.RoomPreInit[roomname], fn)
 	end
 
-	env.AddLocation = function(...)
-		arg = {...}
-		initprint("AddLocation", arg[1].location)
-		AddModLocation(env.modname, ...)
+	env.AddLocation = function(arg1, ...)
+		initprint("AddLocation", arg1.location)
+		AddModLocation(env.modname, arg1, ...)
 	end
-	env.AddLevel = function(...)
-		arg = {...}
-		initprint("AddLevel", arg[1], arg[2].id)
+	env.AddLevel = function(arg1, arg2, ...)
+		initprint("AddLevel", arg1, arg2.id)
 
-		arg[2] = modcompatability.UpgradeModLevelFromV1toV2(env.modname, arg[2])
+		arg2 = modcompatability.UpgradeModLevelFromV1toV2(env.modname, arg2)
 
-		AddModLevel(env.modname, unpack(arg))
+		AddModLevel(env.modname, arg1, arg2, ...)
 	end
-	env.AddTaskSet = function(...)
-		arg = {...}
-		initprint("AddTaskSet", arg[1])
-		AddModTaskSet(env.modname, ...)
+	env.AddTaskSet = function(arg1, ...)
+		initprint("AddTaskSet", arg1)
+		AddModTaskSet(env.modname, arg1, ...)
 	end
-	env.AddTask = function(...)
-		arg = {...}
-		initprint("AddTask", arg[1])
-		AddModTask(env.modname, ...)
+	env.AddTask = function(arg1, ...)
+		initprint("AddTask", arg1)
+		AddModTask(env.modname, arg1, ...)
 	end
-	env.AddRoom = function(...)
-		arg = {...}
-		initprint("AddRoom", arg[1])
-		AddModRoom(env.modname, ...)
+	env.AddRoom = function(arg1, ...)
+		initprint("AddRoom", arg1)
+		AddModRoom(env.modname, arg1, ...)
 	end
-    env.AddStartLocation = function(...)
-        arg = {...}
-        initprint("AddStartLocation", arg[1])
-        AddModStartLocation(env.modname, ...)
+    env.AddStartLocation = function(arg1, ...)
+        initprint("AddStartLocation", arg1)
+        AddModStartLocation(env.modname, arg1, ...)
     end
 
 	env.AddGameMode = function(game_mode, game_mode_text)
@@ -458,12 +452,11 @@ local function InsertPostInitFunctions(env, isworldgen)
 		RemoveDefaultCharacter(name)
 	end
 
-	env.AddRecipe = function(...)
-		arg = {...}
-		initprint("AddRecipe", arg[1])
+	env.AddRecipe = function(arg1, ...)
+		initprint("AddRecipe", arg1)
 		require("recipe")
 		mod_protect_Recipe = false
-		local rec = Recipe(...)
+		local rec = Recipe(arg1, ...)
 		mod_protect_Recipe = true
 		rec:SetModRPCID()
 		return rec

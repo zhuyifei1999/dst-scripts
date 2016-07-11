@@ -101,6 +101,7 @@ CLOTHING =
 	{
 		type = "body",
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", "torso_pelvis", "leg", },
+		symbol_hides = { "skirt", },
 		override_build = "body_overalls_black_scribble",
 		torso_tuck = "untucked",
 		rarity = "Spiffy",
@@ -110,6 +111,7 @@ CLOTHING =
 	{
 		type = "body",
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", "torso_pelvis", "leg", },
+		symbol_hides = { "skirt", },
 		override_build = "body_overalls_blue_denim",
 		torso_tuck = "untucked",
 		rarity = "Spiffy",
@@ -119,6 +121,7 @@ CLOTHING =
 	{
 		type = "body",
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", "torso_pelvis", "leg", },
+		symbol_hides = { "skirt", },
 		override_build = "body_overalls_navy_ocean",
 		torso_tuck = "untucked",
 		rarity = "Spiffy",

@@ -20,9 +20,6 @@ local function PillarEmerge(inst)
     end
     pillar:Emerge(true)
 
-    if c_sel() == inst then
-        c_select(pillar)
-    end
     inst:Remove()
 end
 

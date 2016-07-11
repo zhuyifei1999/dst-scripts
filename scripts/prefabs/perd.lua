@@ -34,7 +34,6 @@ local function OnLoadPostPass(inst, newents, data)
     if data ~= nil and data.home ~= nil then
         local home = newents[data.home]
         if home ~= nil and inst.components.homeseeker ~= nil then
-            c_select(home.entity)
             inst.components.homeseeker:SetHome(home.entity)
         end
     end
