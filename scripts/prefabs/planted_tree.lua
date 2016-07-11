@@ -31,7 +31,6 @@ local twiggy_nut_prefabs =
 
 local function growtree(inst)
     local tree = SpawnPrefab(inst.growprefab)
-    if c_sel() == inst then c_select(tree) end
     if tree then
         tree.Transform:SetPosition(inst.Transform:GetWorldPosition())
         tree:growfromseed()

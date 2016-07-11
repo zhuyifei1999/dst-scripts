@@ -194,9 +194,6 @@ local function SwapToHole(inst)
         other.components.teleporter:Target(hole)
     end
 
-    if c_sel() == inst then
-        c_select(hole)
-    end
     inst:Remove()
 end
 

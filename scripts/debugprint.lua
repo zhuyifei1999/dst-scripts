@@ -36,9 +36,9 @@ end
 local function packstring(...)
     local str = ""
     local n = select('#', ...)
-    local arg = {...}
+    local args = toarray(...)
     for i=1,n do
-        str = str..tostring(arg[i]).."\t"
+        str = str..tostring(args[i]).."\t"
     end
     return str
 end

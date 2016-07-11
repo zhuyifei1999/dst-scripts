@@ -139,12 +139,12 @@ AddUserCommand("kick", {
     votetitlefmt = nil, --default to STRINGS.UI.BUILTINCOMMANDS.KICK.VOTETITLEFMT
     votenamefmt = nil, --default to STRINGS.UI.BUILTINCOMMANDS.KICK.VOTENAMEFMT
     votecanstartfn = VoteUtil.DefaultCanStartVote,
-    voteresultfn = VoteUtil.YesNoUnanimousVote,
+    voteresultfn = VoteUtil.YesNoMajorityVote,
     localfn = function(params, caller)
         --NOTE: must support nil caller for voting
         local clientid = UserToClientID(params.user)
         if clientid ~= nil then
-            TheNet:Kick(clientid)
+            TheNet:Kick(clientid, caller == nil and TUNING.VOTE_KICK_TIME or nil)
         end
     end,
 })
@@ -251,7 +251,7 @@ AddUserCommand("rollback", {
     votenamefmt = nil, --default to STRINGS.UI.BUILTINCOMMANDS.ROLLBACK.VOTENAMEFMT
     votepassedfmt = nil, --default to STRINGS.UI.BUILTINCOMMANDS.ROLLBACK.VOTEPASSEDFMT
     votecanstartfn = VoteUtil.DefaultCanStartVote,
-    voteresultfn = VoteUtil.YesNoUnanimousVote,
+    voteresultfn = VoteUtil.YesNoMajorityVote,
     serverfn = function(params, caller)
         --NOTE: must support nil caller for voting
         if caller ~= nil then
@@ -288,7 +288,7 @@ AddUserCommand("regenerate", {
     votenamefmt = nil, --default to STRINGS.UI.BUILTINCOMMANDS.REGENERATE.VOTENAMEFMT
     votepassedfmt = nil, --default to STRINGS.UI.BUILTINCOMMANDS.REGENERATE.VOTEPASSEDFMT
     votecanstartfn = VoteUtil.DefaultCanStartVote,
-    voteresultfn = VoteUtil.YesNoUnanimousVote,
+    voteresultfn = VoteUtil.YesNoMajorityVote,
     serverfn = function(params, caller)
         --NOTE: must support nil caller for voting
         if caller ~= nil then
