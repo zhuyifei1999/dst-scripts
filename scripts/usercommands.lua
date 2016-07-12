@@ -389,7 +389,7 @@ end
 
 local function FinishVote(commandname, params, voteresults)
     local username = UserToName(params.user)
-    if username == nil then
+    if username == nil and params.user ~= nil and params.user:len() > 0 then
         return false
     end
 
