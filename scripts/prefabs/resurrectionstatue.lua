@@ -35,13 +35,8 @@ local function onhammered(inst, worker)
 end
 
 local function onburnt(inst)
-    inst:AddTag("burnt")
-    inst.components.burnable.canlight = false
-    if inst.components.workable ~= nil then
-        inst.components.workable:SetWorkLeft(1)
-    end
     inst:RemoveComponent("attunable")
-    inst.AnimState:PlayAnimation("burnt", true)
+    DefaultBurntStructureFn(inst)
 end
 
 local function onhit(inst, worker)

@@ -369,8 +369,8 @@ local function OnHaunt(inst)
             inst,
             25,
             CanTarget,
-            { "_combat", "_health" }, --see entityreplica.lua
-            { "playerghost", "spider", "INLIMBO" }
+            { "_combat", "_health", "character" }, --see entityreplica.lua
+            { "player", "spider", "INLIMBO" }
         )
         if target ~= nil then
             SpawnDefenders(inst, target)

@@ -853,12 +853,16 @@ function ModIndex:UpdateModSettings()
 
 	local filename = MODS_ROOT.."modsettings.lua"
 	local fn = kleiloadlua( filename )
-	assert(fn, "could not load modsettings: "..filename)
-	if type(fn)=="string" then
-		error("Error loading modsettings:\n"..fn)
+	if fn == nil then
+		print("could not load modsettings: "..filename)
+		print("Warning: You may want to try reinstalling the game if you need access to forcing mods on.")
+	else
+		if type(fn)=="string" then
+			error("Error loading modsettings:\n"..fn)
+		end
+		setfenv(fn, env)
+		fn()
 	end
-	setfenv(fn, env)
-	fn()
 end
 
 function ModIndex:DoesModExistAnyVersion( modname )

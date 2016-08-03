@@ -1121,6 +1121,10 @@ ACTIONS.MURDER.fn = function(act)
     end
 end
 
+ACTIONS.HEAL.strfn = function(act)
+    return (act.target == nil or act.target == act.doer) and "SELF" or nil
+end
+
 ACTIONS.HEAL.fn = function(act)
     if act.invobject and act.invobject.components.healer then
         local target = act.target or act.doer

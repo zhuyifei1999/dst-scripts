@@ -31,6 +31,12 @@ local function GetGenTaskLists(world)
         end
     end
 
+    -- Because this is used by frontend, we have to give some kind of value for display.
+    if next(ret) == nil then
+        local v = taskgrouplist['default']
+        table.insert(ret, {text=v.name, data='default'})
+    end
+
     return ret
 end
 

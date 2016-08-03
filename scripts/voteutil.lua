@@ -36,9 +36,11 @@ local function DefaultMajorityVote(params, voteresults)
         if v > count then
             result = i
             count = v
+        elseif v == count then
+            result = nil
         end
     end
-    return result, count > 0 and count or nil
+    return result, result ~= nil and count or nil
 end
 
 local function YesNoUnanimousVote(params, voteresults)

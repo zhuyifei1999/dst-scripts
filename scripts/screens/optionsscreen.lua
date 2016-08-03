@@ -89,7 +89,7 @@ local all_controls =
     {name=CONTROL_USE_ITEM_ON_ITEM, keyboard=nil, controller=CONTROL_USE_ITEM_ON_ITEM},
     {name=CONTROL_SPLITSTACK, keyboard=CONTROL_SPLITSTACK, controller=nil},
     {name=CONTROL_TRADEITEM, keyboard=CONTROL_TRADEITEM, controller=nil},
-    {name=CONTROL_TRADESTACK, keyboard=CONTROL_TRADESTACK, controller=nil},
+    --{name=CONTROL_TRADESTACK, keyboard=CONTROL_TRADESTACK, controller=nil},
     {name=CONTROL_FORCE_TRADE, keyboard=CONTROL_FORCE_TRADE, controller=nil},
     {name=CONTROL_FORCE_STACK, keyboard=CONTROL_FORCE_STACK, controller=nil},
     {name=CONTROL_INV_1, keyboard=CONTROL_INV_1, controller=nil},
@@ -227,6 +227,7 @@ local OptionsScreen = Class(Screen, function(self, prev_screen)
 		netbookmode = TheSim:IsNetbookMode(),
 		vibration = Profile:GetVibrationEnabled(),
 		showpassword = Profile:GetShowPasswordEnabled(),
+        movementprediction = Profile:GetMovementPredictionEnabled(),
 		automods = Profile:GetAutoSubscribeModsEnabled(),
 		wathgrithrfont = Profile:IsWathgrithrFontEnabled(),
 	}
@@ -312,7 +313,7 @@ local OptionsScreen = Class(Screen, function(self, prev_screen)
 
 	-- NOTE: if we add more options, they should be made scrollable. Look at customization screen for an example.
 	self.grid = self.settingsroot:AddChild(Grid())
-	self.grid:SetPosition(-180, 140, 0)
+	self.grid:SetPosition(-180, 144, 0)
 
 	self:DoInit()
 	self:InitializeSpinners(true)
@@ -528,6 +529,7 @@ function OptionsScreen:Save(cb)
 	Profile:SetHUDSize( self.options.hudSize )
 	Profile:SetVibrationEnabled( self.options.vibration )
 	Profile:SetShowPasswordEnabled( self.options.showpassword )
+    Profile:SetMovementPredictionEnabled(self.options.movementprediction)
 	Profile:SetAutoSubscribeModsEnabled( self.options.automods )
 
 	Profile:Save( function() if cb then cb() end end)
@@ -663,6 +665,10 @@ function OptionsScreen:Apply()
         end
     end
 
+    if ThePlayer ~= nil then
+        ThePlayer:EnableMovementPrediction(self.working.movementprediction)
+    end
+
     self:MakeClean()
 end
 
@@ -771,10 +777,10 @@ function OptionsScreen:CreateSpinnerGroup( text, spinner )
 	spinner:SetTextColour(0,0,0,1)
 	local group = Widget( "SpinnerGroup" )
 	local bg = group:AddChild(Image("images/ui.xml", "single_option_bg.tex"))
-	bg:SetSize(380, 45)
+	bg:SetSize(380, 40)
 	bg:SetPosition(50, 0, 0)
 
-	local label = group:AddChild( Text( NEWFONT, 28, text ) )
+	local label = group:AddChild( Text( NEWFONT, 26, text ) )
 	label:SetPosition( -label_width/2 + 55, 0, 0 )
 	label:SetRegionSize( label_width, 50 )
 	label:SetHAlign( ANCHOR_RIGHT )
@@ -782,7 +788,7 @@ function OptionsScreen:CreateSpinnerGroup( text, spinner )
 	
 	group:AddChild( spinner )
 	spinner:SetPosition( 148, 0, 0 )
-	spinner:SetTextSize(23)
+	spinner:SetTextSize(22)
 
 	--pass focus down to the spinner
 	group.focus_forward = spinner
@@ -982,7 +988,7 @@ function OptionsScreen:DoInit()
 	local this = self
 
 	local spinner_width = 180
-	local spinner_height = nil -- use default
+	local spinner_height = 36 --nil -- use default
 	local spinner_scale_x = .76
 	local spinner_scale_y = .68
 	
@@ -1126,7 +1132,19 @@ function OptionsScreen:DoInit()
 			--this:Apply()
 			self:UpdateMenu()
 		end
-	
+
+    self.movementpredictionSpinner = Spinner(
+        {
+            { text = STRINGS.UI.OPTIONS.MOVEMENTPREDICTION_DISABLED, data = false },
+            { text = STRINGS.UI.OPTIONS.MOVEMENTPREDICTION_ENABLED, data = true },
+        },
+        spinner_width, spinner_height, nil, nil, nil, nil, true, nil, nil, spinner_scale_x, spinner_scale_y)
+    self.movementpredictionSpinner.OnChanged =
+        function(_, data)
+            this.working.movementprediction = data
+            self:UpdateMenu()
+        end
+
 	self.automodsSpinner = Spinner( enableDisableOptions, spinner_width, spinner_height, nil, nil, nil, nil, true, nil, nil, spinner_scale_x, spinner_scale_y )
 	self.automodsSpinner.OnChanged =
 		function( _, data )
@@ -1184,6 +1202,7 @@ function OptionsScreen:DoInit()
 		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.REFRESHRATE, self.refreshRateSpinner } )
 		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.SMALLTEXTURES, self.smallTexturesSpinner } )
 		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.NETBOOKMODE, self.netbookModeSpinner } )
+        table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.MOVEMENTPREDICTION, self.movementpredictionSpinner } )
 	else
 		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.SCREENSHAKE, self.screenshakeSpinner } )
 		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.DISTORTION, self.distortionSpinner } )
@@ -1200,14 +1219,14 @@ function OptionsScreen:DoInit()
         table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.HUDSIZE, self.hudSize} )
 	end
 
-	self.grid:InitSize(2, 9, 440, -43)
+	self.grid:InitSize(2, 10, 440, -40)
 
 	for k,v in ipairs(self.left_spinners) do
-		self.grid:AddItem(self:CreateSpinnerGroup(v[1], v[2]), 1, k)	
+		self.grid:AddItem(self:CreateSpinnerGroup(v[1], v[2]), 1, k)
 	end
 
 	for k,v in ipairs(self.right_spinners) do
-		self.grid:AddItem(self:CreateSpinnerGroup(v[1], v[2]), 2, k)	
+		self.grid:AddItem(self:CreateSpinnerGroup(v[1], v[2]), 2, k)
 	end
 
 	--------------
@@ -1451,6 +1470,7 @@ function OptionsScreen:InitializeSpinners(first)
 	self.hudSize:SetSelectedIndex( self.working.hudSize or 5)
 	self.vibrationSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.vibration ) )
 	self.passwordSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.showpassword ) )
+    self.movementpredictionSpinner:SetSelectedIndex(EnabledOptionsIndex(self.working.movementprediction))
 	self.wathgrithrfontSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.wathgrithrfont ) )
 	
 	self.automodsSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.automods ) )
@@ -1461,8 +1481,8 @@ function OptionsScreen:InitializeSpinners(first)
 			if v and v[2] then
 				local spinner = v[2]
 			    spinner.changed_image = spinner:AddChild(Image("images/ui.xml", "option_highlight.tex"))
-				spinner.changed_image:SetPosition(-1,0)
-				spinner.changed_image:SetScale(.6, .74)
+				spinner.changed_image:SetPosition(-1, -1)
+				spinner.changed_image:SetScale(.6, .67)
 				spinner.changed_image:MoveToBack()
 				spinner.changed_image:SetClickable(false)
 				spinner.changed_image:Hide()
@@ -1488,8 +1508,8 @@ function OptionsScreen:InitializeSpinners(first)
 			if v and v[2] then
 				local spinner = v[2]
 			    spinner.changed_image = spinner:AddChild(Image("images/ui.xml", "option_highlight.tex"))
-				spinner.changed_image:SetPosition(-1,0)
-				spinner.changed_image:SetScale(.6, .74)
+				spinner.changed_image:SetPosition(-1, -1)
+				spinner.changed_image:SetScale(.6, .67)
 				spinner.changed_image:MoveToBack()
 				spinner.changed_image:SetClickable(false)
 				spinner.changed_image:Hide()

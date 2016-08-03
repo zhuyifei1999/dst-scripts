@@ -1,7 +1,3 @@
-local function ontransplantfn(inst)
-    inst.components.pickable:MakeBarren()
-end
-
 local function ondiseaseddeathfn(inst)
     SpawnPrefab("disease_puff").Transform:SetPosition(inst.Transform:GetWorldPosition())
     inst:Remove()
@@ -27,46 +23,83 @@ local function ondiseasedfn_juicy(inst)
     ondiseasedfn_common(inst, inst.components.witherable ~= nil and inst.components.witherable:IsWithered() and "disease_fx_small" or "disease_fx")
 end
 
+local function setberries(inst, pct)
+    if inst._setberriesonanimover then
+        inst._setberriesonanimover = nil
+        inst:RemoveEventCallback("animover", setberries)
+    end
+
+    local berries =
+        (pct == nil and "") or
+        (pct >= .9 and "berriesmost") or
+        (pct >= .33 and "berriesmore") or
+        "berries"
+
+    for i, v in ipairs({ "berries", "berriesmore", "berriesmost" }) do
+        if v == berries then
+            inst.AnimState:Show(v)
+        else
+            inst.AnimState:Hide(v)
+        end
+    end
+end
+
+local function setberriesonanimover(inst)
+    if inst._setberriesonanimover then
+        setberries(inst, nil)
+    else
+        inst._setberriesonanimover = true
+        inst:ListenForEvent("animover", setberries)
+    end
+end
+
+local function cancelsetberriesonanimover(inst)
+    if inst._setberriesonanimover then
+        setberries(inst, nil)
+    end
+end
+
 local function makeemptyfn(inst)
-    if not POPULATING and inst:HasTag("withered") or inst.AnimState:IsCurrentAnimation("idle_dead") then
+    if POPULATING then
+        inst.AnimState:PlayAnimation("idle", true)
+        inst.AnimState:SetTime(math.random() * inst.AnimState:GetCurrentAnimationLength())
+    elseif inst:HasTag("withered") or inst.AnimState:IsCurrentAnimation("dead") then
         --inst.SoundEmitter:PlaySound("dontstarve/common/bush_fertilize")
-        inst.AnimState:PlayAnimation("dead_to_empty")
-        inst.AnimState:PushAnimation("empty", false)
+        inst.AnimState:PlayAnimation("dead_to_idle")
+        inst.AnimState:PushAnimation("idle")
     else
-        inst.AnimState:PlayAnimation("empty")
+        inst.AnimState:PlayAnimation("idle", true)
     end
+    setberries(inst, nil)
 end
 
-local function makebarrenfn(inst, wasempty)
-    if not POPULATING and inst:HasTag("withered") then
-        inst.AnimState:PlayAnimation(wasempty and "empty_to_dead" or "full_to_dead")
-        inst.AnimState:PushAnimation("idle_dead", false)
+local function makebarrenfn(inst)--, wasempty)
+    if not POPULATING and (inst:HasTag("withered") or inst.AnimState:IsCurrentAnimation("idle")) then
+        inst.AnimState:PlayAnimation("idle_to_dead")
+        inst.AnimState:PushAnimation("dead", false)
     else
-        inst.AnimState:PlayAnimation("idle_dead")
+        inst.AnimState:PlayAnimation("dead")
     end
+    cancelsetberriesonanimover(inst)
 end
 
-local function pickanim(inst)
-    if inst.components.pickable == nil then
-        return "idle"
-    elseif not inst.components.pickable:CanBePicked() then
-        return inst.components.pickable:IsBarren() and "idle_dead" or "idle"
-    end
-
-    --V2C: nil cycles_left means unlimited picks, so use max value for math
-    local percent = inst.components.pickable.cycles_left ~= nil and inst.components.pickable.cycles_left / inst.components.pickable.max_cycles or 1
-    return (percent >= .9 and "berriesmost")
-        or (percent >= .33 and "berriesmore")
-        or "berries"
+local function ontransplantfn(inst)
+    inst.AnimState:PlayAnimation("dead")
+    setberries(inst, nil)
+    inst.components.pickable:MakeBarren()
 end
 
 local function shake(inst)
-    inst.AnimState:PlayAnimation(
-        inst.components.pickable ~= nil and
-        inst.components.pickable:CanBePicked() and
-        "shake" or
-        "shake_empty")
-    inst.AnimState:PushAnimation(pickanim(inst), false)
+    if inst.components.pickable ~= nil and
+        not inst.components.pickable:CanBePicked() and
+        inst.components.pickable:IsBarren() then
+        inst.AnimState:PlayAnimation("shake_dead")
+        inst.AnimState:PushAnimation("dead", false)
+    else
+        inst.AnimState:PlayAnimation("shake")
+        inst.AnimState:PushAnimation("idle")
+    end
+    cancelsetberriesonanimover(inst)
 end
 
 local function spawnperd(inst)
@@ -84,16 +117,17 @@ end
 local function onpickedfn(inst, picker)
     if inst.components.pickable ~= nil then
         --V2C: nil cycles_left means unlimited picks, so use max value for math
-        local old_percent = inst.components.pickable.cycles_left ~= nil and (inst.components.pickable.cycles_left + 1) / inst.components.pickable.max_cycles or 1
-        inst.AnimState:PlayAnimation(
-            (old_percent >= .9 and "berriesmost_picked") or
-            (old_percent >= .33 and "berriesmore_picked") or
-            "berries_picked")
-        inst.AnimState:PushAnimation(
-            inst.components.pickable:IsBarren() and
-            "idle_dead" or
-            "idle",
-            false)
+        --local old_percent = inst.components.pickable.cycles_left ~= nil and (inst.components.pickable.cycles_left + 1) / inst.components.pickable.max_cycles or 1
+        --setberries(inst, old_percent)
+        if inst.components.pickable:IsBarren() then
+            inst.AnimState:PlayAnimation("idle_to_dead")
+            inst.AnimState:PushAnimation("dead", false)
+            setberries(inst, nil)
+        else
+            inst.AnimState:PlayAnimation("picked")
+            inst.AnimState:PushAnimation("idle")
+            setberriesonanimover(inst)
+        end
     end
     if not picker:HasTag("berrythief") and math.random() < TUNING.PERD_SPAWNCHANCE then
         inst:DoTaskInTime(3 + math.random() * 3, spawnperd)
@@ -127,7 +161,25 @@ local function getregentimefn_juicy(inst)
 end
 
 local function makefullfn(inst)
-    inst.AnimState:PlayAnimation(pickanim(inst))
+    local anim = "idle"
+    local berries = nil
+    if inst.components.pickable ~= nil then
+        if inst.components.pickable:CanBePicked() then
+            berries = inst.components.pickable.cycles_left ~= nil and inst.components.pickable.cycles_left / inst.components.pickable.max_cycles or 1
+        elseif inst.components.pickable:IsBarren() then
+            anim = "dead"
+        end
+    end
+    if anim ~= "idle" then
+        inst.AnimState:PlayAnimation(anim)
+    elseif POPULATING then
+        inst.AnimState:PlayAnimation("idle", true)
+        inst.AnimState:SetTime(math.random() * inst.AnimState:GetCurrentAnimationLength())
+    else
+        inst.AnimState:PlayAnimation("grow")
+        inst.AnimState:PushAnimation("idle", true)
+    end
+    setberries(inst, berries)
 end
 
 local function onworked_juicy(inst, worker, workleft)
@@ -223,7 +275,8 @@ local function createbush(bushname, bank, build, berryname, diseaseable, master_
 
         inst.AnimState:SetBank(bank)
         inst.AnimState:SetBuild(build)
-        inst.AnimState:PlayAnimation("berriesmost", false)
+        inst.AnimState:PlayAnimation("idle", true)
+        setberries(inst, 1)
 
         MakeDragonflyBait(inst, 1)
         MakeSnowCoveredPristine(inst)
@@ -233,6 +286,8 @@ local function createbush(bushname, bank, build, berryname, diseaseable, master_
         if not TheWorld.ismastersim then
             return inst
         end
+
+        inst.AnimState:SetTime(math.random() * inst.AnimState:GetCurrentAnimationLength())
 
         inst:AddComponent("pickable")
         inst.components.pickable.picksound = "dontstarve/wilson/harvest_berries"

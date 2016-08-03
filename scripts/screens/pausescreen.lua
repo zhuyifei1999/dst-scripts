@@ -32,7 +32,7 @@ local PauseScreen = Class(Screen, function(self)
     self.black.image:SetHAnchor(ANCHOR_MIDDLE)
     self.black.image:SetScaleMode(SCALEMODE_FILLSCREEN)
     self.black.image:SetTint(0,0,0,0) -- invisible, but clickable!
-    self.black:SetOnClick(function() TheFrontEnd:PopScreen() end)
+    self.black:SetOnClick(function() self:unpause() end)
 
     self.proot = self:AddChild(Widget("ROOT"))
     self.proot:SetVAnchor(ANCHOR_MIDDLE)

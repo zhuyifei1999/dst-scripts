@@ -9,6 +9,7 @@ local function oncancast(self)
         if self.canuseontargets then
             if not (self.canonlyuseonrecipes or
                     self.canonlyuseonlocomotors or
+                    self.canonlyuseonlocomotorspvp or
                     self.canonlyuseonworkable or
                     self.canonlyuseoncombat) then
                 self.inst:AddTag("castontargets")
@@ -22,10 +23,16 @@ local function oncancast(self)
                 self.inst:RemoveTag("castonrecipes")
             end
 
-            if self.canonlyuseonlocomotors then
-                self.inst:AddTag("castonlocomotors")
-            else
+            if self.canonlyuseonlocomotorspvp then
+                self.inst:AddTag("castonlocomotorspvp")
                 self.inst:RemoveTag("castonlocomotors")
+            else
+                self.inst:RemoveTag("castonlocomotorspvp")
+                if self.canonlyuseonlocomotors then
+                    self.inst:AddTag("castonlocomotors")
+                else
+                    self.inst:RemoveTag("castonlocomotors")
+                end
             end
 
             if self.canonlyuseonworkable then
@@ -43,6 +50,7 @@ local function oncancast(self)
             self.inst:RemoveTag("castontargets")
             self.inst:RemoveTag("castonrecipes")
             self.inst:RemoveTag("castonlocomotors")
+            self.inst:RemoveTag("castonlocomotorspvp")
             self.inst:RemoveTag("castonworkable")
             self.inst:RemoveTag("castoncombat")
         end
@@ -57,6 +65,7 @@ local function oncancast(self)
         self.inst:RemoveTag("castontargets")
         self.inst:RemoveTag("castonrecipes")
         self.inst:RemoveTag("castonlocomotors")
+        self.inst:RemoveTag("castonlocomotorspvp")
         self.inst:RemoveTag("castonworkable")
         self.inst:RemoveTag("castoncombat")
         self.inst:RemoveTag("castonpoint")
@@ -78,6 +87,7 @@ local SpellCaster = Class(function(self, inst)
     self.canuseontargets = false
     self.canonlyuseonrecipes = false
     self.canonlyuseonlocomotors = false
+    self.canonlyuseonlocomotorspvp = false
     self.canonlyuseonworkable = false
     self.canonlyuseoncombat = false
     self.canuseonpoint = false
@@ -91,6 +101,7 @@ nil,
     canuseontargets = oncancast,
     canonlyuseonrecipes = oncancast,
     canonlyuseonlocomotors = oncancast,
+    canonlyuseonlocomotorspvp = oncancast,
     canonlyuseonworkable = oncancast,
     canonlyuseoncombat = oncancast,
     canuseonpoint = oncancast,
@@ -102,6 +113,7 @@ function SpellCaster:OnRemoveFromEntity()
     self.inst:RemoveTag("castontargets")
     self.inst:RemoveTag("castonrecipes")
     self.inst:RemoveTag("castonlocomotors")
+    self.inst:RemoveTag("castonlocomotorspvp")
     self.inst:RemoveTag("castonworkable")
     self.inst:RemoveTag("castoncombat")
     self.inst:RemoveTag("castonpoint")
@@ -153,7 +165,10 @@ function SpellCaster:CanCast(doer, target, pos)
     end
     return self.canuseontargets and (
             (self.canonlyuseonrecipes and AllRecipes[target.prefab] ~= nil) or
-            (self.canonlyuseonlocomotors and target.components.locomotor ~= nil and (TheNet:GetPVPEnabled() or not (target:HasTag("player") and doer:HasTag("player")))) or
+            (target.components.locomotor ~= nil and (
+                (self.canonlyuseonlocomotors and not self.canonlyuseonlocomotorspvp) or
+                (self.canonlyuseonlocomotorspvp and (target == doer or TheNet:GetPVPEnabled() or not (target:HasTag("player") and doer:HasTag("player"))))
+            )) or
             (self.canonlyuseonworkable and target.components.workable ~= nil and target.components.workable:CanBeWorked() and IsWorkAction(target.components.workable:GetWorkAction())) or
             (self.canonlyuseoncombat and doer.components.combat ~= nil and doer.components.combat:CanTarget(target))
         )

@@ -81,7 +81,8 @@ return {
         },
 	},
 	ACTIONFAIL_GENERIC = "Mom told me never to do that.",
-
+	ANNOUNCE_DIG_DISEASE_WARNING = "Doesn't that feel better!",
+	ANNOUNCE_PICK_DISEASE_WARNING = "Yuck!",
 	ANNOUNCE_MOUNT_LOWHEALTH = "Our hairy friend is hurt!",
 	ANNOUNCE_ADVENTUREFAIL = "Play time is over.",
 	ANNOUNCE_BEES = "Flying ouchies!",
@@ -631,6 +632,7 @@ return {
 			GENERIC = "Ripe for the pickin'.",
 			PICKED = "See you soon, berries!",
 			DISEASED = "Maybe it needs some chicken soup?",
+			DISEASING = "Are you okay, lil bush?",
 		},
 		BERRYBUSH_JUICY =
 		{
@@ -639,6 +641,7 @@ return {
 			GENERIC = "Those berries look so juicy!",
 			PICKED = "It's taking a nap.",
 			DISEASED = "Maybe it needs some chicken soup?",
+			DISEASING = "Are you okay, lil bush?",
 		},
 		BIGFOOT = "AAAAAAAAAAH!",
 		--SUNKBOAT = "So close, so far away.",
@@ -955,6 +958,7 @@ return {
 			GENERIC = "Grass, next best thing to silk.",
 			PICKED = "Picked down to the stems.",
 			DISEASED = "Maybe it needs some chicken soup?",
+			DISEASING = "Are you okay, lil tuft?",
 		},
 		GREEN_CAP = "Smells really earthy.",
 		GREEN_CAP_COOKED = "Heat really brings out the juices.",
@@ -1319,6 +1323,7 @@ return {
 			GENERIC = "These sure grow slowly.",
 			PICKED = "Don't worry lil guy, it'll grow back!",
 			DISEASED = "Maybe it needs some chicken soup?",
+			DISEASING = "Are you okay, lil sapling?",
 		},
 		SEEDS = "A small life trapped within. My sympathies.",
 		SEEDS_COOKED = "Their growing days are over.",

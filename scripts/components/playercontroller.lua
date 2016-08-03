@@ -1904,14 +1904,26 @@ local function UpdateControllerAttackTarget(self, dt, x, y, z, dirx, dirz)
         end
     end
 
-    if target == nil and
-        self.controller_target ~= nil and
-        self.controller_target:IsValid() and
-        self.controller_target:HasTag("wall") and
-        self.controller_target.replica.health ~= nil and
-        not self.controller_target.replica.health:IsDead() then
-        target = self.controller_target
-        target_isally = false
+    if self.controller_target ~= nil and self.controller_target:IsValid() then
+        if target ~= nil then
+            if target:HasTag("wall") and
+                self.classified ~= nil and
+                self.classified.hasgift:value() and
+                self.classified.hasgiftmachine:value() and
+                self.controller_target:HasTag("giftmachine") then
+                --if giftmachine has (Y) control priority, then it
+                --should also have (X) control priority over walls
+                target = nil
+                target_isally = true
+            end
+        elseif self.controller_target:HasTag("wall")
+            and self.controller_target.replica.health ~= nil
+            and not self.controller_target.replica.health:IsDead() then
+            --if we have no (X) control target, then give
+            --it to our (Y) control target if it's a wall
+            target = self.controller_target
+            target_isally = false
+        end
     end
 
     if target ~= self.controller_attack_target then
@@ -2007,8 +2019,14 @@ local function UpdateControllerInteractionTarget(self, dt, x, y, z, dirx, dirz)
 
                 --just a little hysteresis
                 local mult = v == self.controller_target and not v:HasTag("wall") and 1.5 or 1
-                
+
                 local score = angle_component * dist_component * mult + add
+
+                --make it easier to target stuff dropped inside the portal when alive
+                --make it easier to haunt the portal for resurrection in endless mode
+                if v:HasTag("portal") then
+                    score = score * (self.inst:HasTag("playerghost") and GetPortalRez(TheNet:GetServerGameMode()) and 1.1 or .9)
+                end
 
                 --print(v, angle_component, dist_component, mult, add, score)
 

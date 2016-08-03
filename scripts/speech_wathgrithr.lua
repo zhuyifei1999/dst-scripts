@@ -81,6 +81,8 @@ return {
         },
 	},
 	ACTIONFAIL_GENERIC = "If I can't do it, it can't be done!",
+	ANNOUNCE_DIG_DISEASE_WARNING = "Be banished, beastly blight!",
+	ANNOUNCE_PICK_DISEASE_WARNING = "Foul!",
 	ANNOUNCE_MOUNT_LOWHEALTH = "Don't give up, beast! Fight!",
 	ANNOUNCE_BURNT = "By Hel's fire!",
 	ANNOUNCE_NODANGERAFK = "Only a coward would leave now!",
@@ -629,6 +631,7 @@ return {
 			GENERIC = "A fruit bush.",
 			PICKED = "The fruits have been snatched.",
 			DISEASED = "Disease festers within its soul.",
+			DISEASING = "It is weakening before mine eyes!",
 		},
 		BERRYBUSH_JUICY =
 		{
@@ -637,6 +640,7 @@ return {
 			GENERIC = "It's covered in rabbit food.",
 			PICKED = "The rabbit food is all gone.",
 			DISEASED = "Disease festers within its soul.",
+			DISEASING = "It is weakening before mine eyes!",
 		},
 		BIRDCAGE =
 		{
@@ -965,6 +969,7 @@ return {
 			GENERIC = "That could be useful.",
 			PICKED = "I eagerly await the next harvest.",
 			DISEASED = "Disease festers within its soul.",
+			DISEASING = "It is weakening before mine eyes!",
 		},
 		GREEN_CAP = "Terrible!",
 		GREEN_CAP_COOKED = "Charred by flame or not, that will not touch my lips!",
@@ -1326,6 +1331,7 @@ return {
 			GENERIC = "It longs to be a spear.",
 			PICKED = "The small tree has been slain!",
 			DISEASED = "Disease festers within its soul.",
+			DISEASING = "It is weakening before mine eyes!",
 		},
 		TWIGGYTREE = 
 		{

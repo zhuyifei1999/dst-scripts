@@ -27,6 +27,7 @@ local sounds =
     swish = "dontstarve/creatures/beefalo_baby/tail_swish",
     curious = "dontstarve/creatures/beefalo_baby/curious",
     angry = "dontstarve/creatures/beefalo_baby/angry",
+    sleep = "dontstarve/creatures/beefalo_baby/sleep",
 }
 
 local brain = require "brains/babybeefalobrain"

@@ -82,6 +82,8 @@ return {
         },
 	},
 	ACTIONFAIL_GENERIC = "I can't do that.",
+	ANNOUNCE_DIG_DISEASE_WARNING = "It looks better already.",
+	ANNOUNCE_PICK_DISEASE_WARNING = "Uh, is it supposed to smell like that?",
 	ANNOUNCE_ADVENTUREFAIL = "That didn't go well. I'll have to try again.",
     ANNOUNCE_MOUNT_LOWHEALTH = "This beast seems to be wounded.",
 	ANNOUNCE_BEES = "BEEEEEEEEEEEEES!!!!",
@@ -633,6 +635,7 @@ return {
 			GENERIC = "I think those are the edible kind.",
 			PICKED = "Maybe they'll grow back?",
 			DISEASED = "It looks pretty sick.",
+			DISEASING = "Err, something's not right.",
 		},
 		BERRYBUSH_JUICY =
 		{
@@ -641,6 +644,7 @@ return {
 			GENERIC = "I should leave them there until it's time to eat.",
 			PICKED = "The bush is working hard on the next batch.",
 			DISEASED = "It looks pretty sick.",
+			DISEASING = "Err, something's not right.",
 		},
 		BIGFOOT = "That is one biiig foot.",
 		BIRDCAGE =
@@ -970,6 +974,7 @@ return {
 			GENERIC = "It's a tuft of grass.",
 			PICKED = "It was cut down in the prime of its life.",
 			DISEASED = "It looks pretty sick.",
+			DISEASING = "Err, something's not right.",
 		},
 		GRASSGEKKO = 
 		{
@@ -1337,6 +1342,7 @@ return {
 			GENERIC = "Baby trees are so cute!",
 			PICKED = "That'll teach him.",
 			DISEASED = "It looks pretty sick.",
+			DISEASING = "Err, something's not right.",
 		},
 		SEEDS = "Each one is a tiny mystery.",
 		SEEDS_COOKED = "That cooked the life right out of 'em!",

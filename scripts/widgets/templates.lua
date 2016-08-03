@@ -441,13 +441,13 @@ TEMPLATES = {
     -------------------
 
     -- Ornate black frame, no fill (nine-slice)
-    CurlyWindow = function(sizeX, sizeY, scaleX, scaleY, topCrownOffset, bottomCrownOffset)
+    CurlyWindow = function(sizeX, sizeY, scaleX, scaleY, topCrownOffset, bottomCrownOffset, xOffset)
         local w = NineSlice("images/fepanels.xml",
                 "TopLeft.tex", "TopCenter.tex", "TopRight.tex",
                 "MiddleLeft.tex", "CenterMiddle.tex", "MiddleRight.tex",
                 "BottomLeft.tex", "BottomCenter.tex", "BottomRight.tex")
-        w:AddCrown("TopCap.tex", ANCHOR_MIDDLE, ANCHOR_TOP, 0, topCrownOffset or 68)
-        w:AddCrown("BottomCap.tex", ANCHOR_MIDDLE, ANCHOR_BOTTOM, 0, bottomCrownOffset or -42)
+        w:AddCrown("TopCap.tex", ANCHOR_MIDDLE, ANCHOR_TOP, xOffset or 0, topCrownOffset or 68)
+        w:AddCrown("BottomCap.tex", ANCHOR_MIDDLE, ANCHOR_BOTTOM, xOffset or 0, bottomCrownOffset or -42)
         w:SetSize(sizeX or 200, sizeY or 200)
         w:SetScale(scaleX or 1, scaleY or 1)
         return w
@@ -1130,7 +1130,7 @@ TEMPLATES = {
     -----------------------
     -----------------------
     -- An item image with text to the right of it. 
-    ItemImageText = function(type, name, iconScale, font, textsize, string, colour, textwidth)
+    ItemImageText = function(type, name, iconScale, font, textsize, string, colour, textwidth, image_offset)
         textwidth = textwidth or 50 
 
         local widg = Widget("ImageText")
@@ -1150,7 +1150,9 @@ TEMPLATES = {
                                         string or "", colour or BLACK))
 
         widg.text:SetRegionSize(textwidth, 40)
-        widg.text:SetPosition(20 + .5*textwidth, -2)
+        
+        local text_offset = image_offset or 20
+        widg.text:SetPosition(text_offset + .5*textwidth, -2)
         widg.text:SetHAlign( ANCHOR_LEFT )
 
        

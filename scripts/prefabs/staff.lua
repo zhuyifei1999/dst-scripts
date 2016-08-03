@@ -682,7 +682,7 @@ local function purple()
     inst.components.spellcaster:SetSpellFn(teleport_func)
     inst.components.spellcaster.canuseontargets = true
     inst.components.spellcaster.canusefrominventory = true
-    inst.components.spellcaster.canonlyuseonlocomotors = true
+    inst.components.spellcaster.canonlyuseonlocomotorspvp = true
 
     MakeHauntableLaunch(inst)
     AddHauntableCustomReaction(inst, onhauntpurple, true, false, true)

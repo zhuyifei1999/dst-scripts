@@ -795,6 +795,9 @@ function ModsTab:ShowModDetails(idx, client_mod)
     end
     
 	local modinfo = KnownModIndex:GetModInfo(modname)
+	if modinfo == nil then
+		return
+	end
     if modinfo.icon and modinfo.icon_atlas then
         self.detailimage:SetTexture(modinfo.icon_atlas, modinfo.icon)
         self.detailimage:SetSize(102, 102)
@@ -1061,30 +1064,38 @@ end
 
 function ModsTab:UpdateAllButton(force)
     if force then
-        for _,name_version in pairs(self.modnames_client) do
-            if IsWorkshopMod(name_version.modname) and name_version.version ~= "" and name_version.version ~= KnownModIndex:GetModInfo(name_version.modname).version then
-                TheSim:UpdateWorkshopMod(name_version.modname)
-            end
-        end
-        for _,name_version in pairs(self.modnames_server) do
-            if IsWorkshopMod(name_version.modname) and name_version.version ~= "" and name_version.version ~= KnownModIndex:GetModInfo(name_version.modname).version then
-                TheSim:UpdateWorkshopMod(name_version.modname)
-            end
-        end
+		if self.modnames_client ~= nil then
+			for _,name_version in pairs(self.modnames_client) do
+				if IsWorkshopMod(name_version.modname) and name_version.version ~= "" and name_version.version ~= KnownModIndex:GetModInfo(name_version.modname).version then
+					TheSim:UpdateWorkshopMod(name_version.modname)
+				end
+			end
+		end
+		if self.modnames_server ~= nil then
+			for _,name_version in pairs(self.modnames_server) do
+				if IsWorkshopMod(name_version.modname) and name_version.version ~= "" and name_version.version ~= KnownModIndex:GetModInfo(name_version.modname).version then
+					TheSim:UpdateWorkshopMod(name_version.modname)
+				end
+			end
+		end
         self:UpdateForWorkshop()
 	elseif self.updateallenabled then
 		local mod_warning = PopupDialogScreen(STRINGS.UI.MODSSCREEN.UPDATEALL_TITLE, STRINGS.UI.MODSSCREEN.UPDATEALL_BODY,
 			{
 				{text=STRINGS.UI.SERVERLISTINGSCREEN.OK, cb = 
 					function()
-						for _,name_version in pairs(self.modnames_client) do
-							if IsWorkshopMod(name_version.modname) and name_version.version ~= "" and name_version.version ~= KnownModIndex:GetModInfo(name_version.modname).version then
-								TheSim:UpdateWorkshopMod(name_version.modname)
+						if self.modnames_client ~= nil then
+							for _,name_version in pairs(self.modnames_client) do
+								if IsWorkshopMod(name_version.modname) and name_version.version ~= "" and name_version.version ~= KnownModIndex:GetModInfo(name_version.modname).version then
+									TheSim:UpdateWorkshopMod(name_version.modname)
+								end
 							end
 						end
-						for _,name_version in pairs(self.modnames_server) do
-							if IsWorkshopMod(name_version.modname) and name_version.version ~= "" and name_version.version ~= KnownModIndex:GetModInfo(name_version.modname).version then
-								TheSim:UpdateWorkshopMod(name_version.modname)
+						if self.modnames_server ~= nil then
+							for _,name_version in pairs(self.modnames_server) do
+								if IsWorkshopMod(name_version.modname) and name_version.version ~= "" and name_version.version ~= KnownModIndex:GetModInfo(name_version.modname).version then
+									TheSim:UpdateWorkshopMod(name_version.modname)
+								end
 							end
 						end
 						self:UpdateForWorkshop()

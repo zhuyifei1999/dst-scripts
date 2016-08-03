@@ -61,12 +61,13 @@ function SubmittingBugReportPopup:OnUpdate( dt )
 
     if not TheSystemService:IsBugReportRunning() then
 
-        local title = STRINGS.UI.BUGREPORTSCREEN.SUBMIT_SUCCESS_TITLE
-        local text = STRINGS.UI.BUGREPORTSCREEN.SUBMIT_SUCCESS_TEXT
+		local title = STRINGS.UI.BUGREPORTSCREEN.SUBMIT_FAILURE_TITLE
+		local text = STRINGS.UI.BUGREPORTSCREEN.SUBMIT_FAILURE_TEXT
 
-        if not TheSystemService:DidBugReportSucceed() then
-            title = STRINGS.UI.BUGREPORTSCREEN.SUBMIT_FAILURE_TITLE
-            text = STRINGS.UI.BUGREPORTSCREEN.SUBMIT_FAILURE_TEXT
+        if TheSystemService:DidBugReportSucceed() then
+			title = STRINGS.UI.BUGREPORTSCREEN.SUBMIT_SUCCESS_TITLE
+			text = STRINGS.UI.BUGREPORTSCREEN.SUBMIT_SUCCESS_TEXT
+			text = text .. TheSystemService:GetBugReportUserCode()
         end
 
         local popup = PopupDialogScreen(title, text,

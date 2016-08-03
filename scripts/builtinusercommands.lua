@@ -41,7 +41,7 @@ AddUserCommand("help", {
             table.insert(s, table.concat(names, ", "))
         else
             local command = UserCommands.GetCommandFromName(params.commandname)
-            if command ~= nil then
+            if command ~= nil and (command.hasaccessfn == nil or command.hasaccessfn(command, caller)) then
                 local call = command.name
                 local params = deepcopy(command.params)
                 for i,param in ipairs(params) do
@@ -81,7 +81,10 @@ AddUserCommand("emote", {
     localfn = function(params, caller)
         local trailing = params.rest or ""
         local command = trailing:len() <= 0 and UserCommands.GetCommandFromName(params.emotename) or nil
-        if command ~= nil and command.emote then
+        if command ~= nil and
+            command.emote and
+            (command.hasaccessfn == nil or
+            command.hasaccessfn(command, caller)) then
             UserCommands.RunUserCommand(params.emotename, {}, caller, false)
         else
             --NOTE: whitespace already trimmed in all params

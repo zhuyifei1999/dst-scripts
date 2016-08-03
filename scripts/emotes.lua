@@ -60,10 +60,10 @@ local EMOTES =
         },
 }
 
-for k, v in pairs(EMOTES) do
-    AddUserCommand(k, {
-        aliases = v.aliases,
-        prettyname = function(command) return string.format(STRINGS.UI.BUILTINCOMMANDS.EMOTES.PRETTYNAMEFMT, command.name) end,
+local function CreateEmoteCommand(emotedef)
+    return {
+        aliases = emotedef.aliases,
+        prettyname = function(command) return string.format(STRINGS.UI.BUILTINCOMMANDS.EMOTES.PRETTYNAMEFMT, FirstToUpper(command.name)) end,
         desc = function() return STRINGS.UI.BUILTINCOMMANDS.EMOTES.DESC end,
         permission = COMMAND_PERMISSION.USER,
         params = {},
@@ -75,8 +75,31 @@ for k, v in pairs(EMOTES) do
         serverfn = function(params, caller)
             local player = UserToPlayer(caller.userid)
             if player ~= nil then
-                player:PushEvent("emote", v.data)
+                player:PushEvent("emote", emotedef.data)
             end
-        end
-    })
+        end,
+    }
 end
+
+for k, v in pairs(EMOTES) do
+    AddUserCommand(k, CreateEmoteCommand(v))
+end
+
+--------------------------------------------------------------------------
+for item_type, v in pairs(EMOTE_ITEMS) do
+    local cmd_data = CreateEmoteCommand(v)
+    cmd_data.requires_item_type = item_type
+    cmd_data.hasaccessfn = function(command, caller)
+        if caller == nil then
+            return false
+        elseif TheWorld.ismastersim then
+            return TheInventory:CheckClientOwnership(caller.userid, item_type)
+        else
+            return caller.userid == TheNet:GetUserID() and TheInventory:CheckOwnership(item_type)
+        end
+    end
+    AddUserCommand(v.cmd_name, cmd_data)
+end
+
+--------------------------------------------------------------------------
+CreateEmoteCommand = nil

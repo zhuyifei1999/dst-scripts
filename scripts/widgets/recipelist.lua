@@ -199,9 +199,9 @@ function RecipeList:DisplayData(recipe_data)
 
 				temp:SetString(str)
 				local w,h = temp:GetRegionSize()
-				if w > maxwidth then 
+				if w > maxwidth then
 					maxwidth = w
-				end 
+				end
 
 				if show_icon then 
 					self.specials[i].icon:SetItem(coalesce_res.type or "", coalesce_res.item_type, nil, nil)

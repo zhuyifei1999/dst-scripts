@@ -82,6 +82,8 @@ return {
         },
 	},
 	ACTIONFAIL_GENERIC = "Sorry, I can't do that.",
+	ANNOUNCE_DIG_DISEASE_WARNING = "Fixed'r right up.",
+	ANNOUNCE_PICK_DISEASE_WARNING = "Well that's not right.",
 	ANNOUNCE_MOUNT_LOWHEALTH = "This beast looks in a bad way, eh.",
 	ANNOUNCE_ADVENTUREFAIL = "Oh well. I gave it a good try.",
 	ANNOUNCE_BEES = "Bees! Bees!",
@@ -847,6 +849,7 @@ return {
 			GENERIC = "Saskatoon berries?",
 			PICKED = "No berries left!",
 			DISEASED = "It's caught a bit of a bug.",
+			DISEASING = "Lookin' a bit down.",
 		},
 		BERRYBUSH_JUICY =
 		{
@@ -855,6 +858,7 @@ return {
 			GENERIC = "I see a snack.",
 			PICKED = "Eh, they'll be back.",
 			DISEASED = "It's caught a bit of a bug.",
+			DISEASING = "Lookin' a bit down.",
 		},
 		BIRDCAGE =
 		{
@@ -1101,6 +1105,7 @@ return {
 			GENERIC = "Looks like kindling.",
 			PICKED = "It's gone all nubbly.",
 			DISEASED = "It's caught a bit of a bug.",
+			DISEASING = "Lookin' a bit down.",
 		},
 		GREEN_CAP = "I've eaten stranger things in the woods.",
 		GREEN_CAP_COOKED = "I don't trust it.",
@@ -1359,6 +1364,7 @@ return {
 			GENERIC = "I want to see it grow so I can chop it down.",
 			PICKED = "Picking isn't as fun as chopping.",
 			DISEASED = "It's caught a bit of a bug.",
+			DISEASING = "A poor excuse for wood.",
 		},
 		SEEDS = "Not trees.",
 		SEEDS_COOKED = "We call this \"lumberjack surprise\".",
