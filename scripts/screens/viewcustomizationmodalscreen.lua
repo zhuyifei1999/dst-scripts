@@ -150,7 +150,7 @@ function ViewCustomizationModalScreen:Refresh()
         presetdata = Levels.GetDataForLocation(self.leveldata[self.currentmultilevel].location)
     end
     if presetdata ~= nil then
-        self.customizationlist:SetPresetValues(presetdata)
+        self.customizationlist:SetPresetValues(presetdata.overrides)
     end
 
     local title = self.leveldata[self.currentmultilevel].name

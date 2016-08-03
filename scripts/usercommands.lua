@@ -229,7 +229,8 @@ local function getexectype(command, caller, targetid)
         end
     end
 
-    return (command.canstartfn ~= nil and not command.canstartfn(command, caller, targetid) and COMMAND_RESULT.DISABLED)
+    return (command.hasaccessfn ~= nil and not command.hasaccessfn(command, caller, targetid) and COMMAND_RESULT.INVALID)
+        or (command.canstartfn ~= nil and not command.canstartfn(command, caller, targetid) and COMMAND_RESULT.DISABLED)
         or (userlevel(caller) >= commandlevel(command) and COMMAND_RESULT.ALLOW)
         or (not command.vote and COMMAND_RESULT.INVALID)
         or ((TheWorld.net == nil or TheWorld.net.components.worldvoter == nil or not TheWorld.net.components.worldvoter:IsEnabled()) and COMMAND_RESULT.INVALID)
@@ -257,7 +258,9 @@ local function runcommand(command, params, caller, onserver, confirm)
         print(string.format("User %s tried to run command %s, but is squelched.", caller.name, command.name))
         return
     elseif exec_type == COMMAND_RESULT.INVALID then
-        if params.user ~= nil then
+        if command.hasaccessfn ~= nil and not command.hasaccessfn(command, caller, userid) then
+            print(string.format("User %s tried to run command %s, but has no access.", caller.name, command.name))
+        elseif params.user ~= nil then
             local username = UserToName(params.user)
             if username ~= nil then
                 sendsystemmessage(string.format(STRINGS.UI.USERCOMMANDS.BADTARGETFMT, prettyname(command), username))
@@ -357,11 +360,13 @@ end
 
 local function RunUserCommand(commandname, params, caller, onserver)
     local command = getcommand(commandname)
-    if command == nil then
+    if command == nil or
+        (command.hasaccessfn ~= nil and
+        not command.hasaccessfn(command, caller, UserToClientID(params.user))) then
         return
     end
 
-    print(caller.userid, "running command:",command.name, tostring(onserver))
+    print(caller.userid, "running command:", command.name, tostring(onserver))
     dumptable(params)
 
     runcommand(command, params, caller, onserver)
@@ -369,11 +374,13 @@ end
 
 local function RunTextUserCommand(input, caller, onserver)
     local command, params = parseinput(input)
-    if command == nil then
+    if command == nil or
+        (command.hasaccessfn ~= nil and
+        not command.hasaccessfn(command, caller, UserToClientID(params.user))) then
         return
     end
 
-    print(caller.userid, "running text command:",command.name, tostring(onserver))
+    print(caller.userid, "running text command:", command.name, tostring(onserver))
     dumptable(params)
 
     runcommand(command, params, caller, onserver)
@@ -440,7 +447,8 @@ local function GetCommandNames()
         end
     end
     for hash,command in pairs(usercommands) do
-        if command.aliasfor == nil then
+        if command.aliasfor == nil and
+            (command.requires_item_type == nil or TheInventory:CheckOwnershipGetLatest(command.requires_item_type)) then
             table.insert(ret, command.name)
         end
     end
@@ -450,15 +458,13 @@ end
 
 local function GetUserActions(caller, targetid)
     return getsomecommands(caller, targetid, function(command)
-        local exectype = getexectype(command, caller, targetid)
-        return command.usermenu == true and exectype ~= COMMAND_RESULT.INVALID
+        return command.usermenu and getexectype(command, caller, targetid) ~= COMMAND_RESULT.INVALID
     end)
 end
 
 local function GetServerActions(caller)
     return getsomecommands(caller, nil, function(command)
-        local exectype = getexectype(command, caller)
-        return command.servermenu == true and exectype ~= COMMAND_RESULT.INVALID
+        return command.servermenu and getexectype(command, caller) ~= COMMAND_RESULT.INVALID
     end)
 end
 
@@ -490,7 +496,7 @@ function AddModUserCommand(mod, name, data)
     if data.aliases ~= nil then
         for i,alias in ipairs(data.aliases) do
             hash = smallhash(alias)
-            usercommands[mod][hash] = {aliasfor=name}
+            modusercommands[mod][hash] = {aliasfor=name}
         end
     end
 end

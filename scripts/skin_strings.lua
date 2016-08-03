@@ -83,7 +83,7 @@ STRINGS.SKIN_NAMES =
 	body_silk_loungewear_green_laurel = "Silk Loungewear", 
 	body_silk_loungewear_red_cranberry = "Silk Loungewear", 
 	body_silk_loungewear_white_marble = "Silk Loungewear", 
-	body_sleepgown_blue_ice = "Nightdress", 
+	body_sleepgown_blue_ice = "Nightgown", 
 	body_suspenders_pink_pearl = "Suspension Shirt", 
 	body_suspenders_white_pure = "Suspension Shirt", 
 	body_suspenders_yellow_flax = "Suspension Shirt", 
@@ -265,7 +265,7 @@ STRINGS.SKIN_DESCRIPTIONS =
 	body_overalls_black_scribble = "These sturdy 'scribble black' colored overalls are great for plumbing the depths.", 
 	body_overalls_blue_denim = "These sturdy 'hyper-intelligent blue' colored overalls are great for plumbing the depths.", 
 	body_overalls_navy_ocean = "These sturdy 'unsuitably blue' colored overalls are great for plumbing the depths.", 
-	body_pj_purple_mauve = "Sleep as happy as a pajama squid in this 'snail mucus purple' colored striped pajama top.", 
+	body_pj_purple_mauve = "Don't worry if this 'snail mucus purple' colored pajama top is too big on you. That just makes it cuter.", 
 	body_polo_blue_denim = "A 'hyper-intelligent blue' colored polo shirt. Don't let your collar flap in the wind.", 
 	body_polo_orange_salmon = "A 'fishy tincture orange' colored polo shirt. Don't let your collar flap in the wind.", 
 	body_polo_red_higgsbury = "A 'Higgsbury red' colored polo shirt. Don't let your collar flap in the wind.", 
@@ -279,7 +279,7 @@ STRINGS.SKIN_DESCRIPTIONS =
 	body_silk_loungewear_green_laurel = "Bathe under the new moon in comfort and luxury with this silk 'willful green' colored loungewear.", 
 	body_silk_loungewear_red_cranberry = "Bathe under the new moon in comfort and luxury with this silk 'apidae maxwellius red' colored loungewear.", 
 	body_silk_loungewear_white_marble = "Bathe under the new moon in comfort and luxury with this silk 'marble white' colored loungewear.", 
-	body_sleepgown_blue_ice = "A soft, fuzzy, 'anthropomorphic feline blue' colored garment for sleeping in.", 
+	body_sleepgown_blue_ice = "It might look a bit itchy, but this 'anthropomorphic feline blue' nightgown is actually the coziest thing in the world.", 
 	body_suspenders_pink_pearl = "Wearing this 'pigman pink' colored shirt makes you feel like the cat's pajamas.", 
 	body_suspenders_white_pure = "Wearing this 'pure white' colored shirt makes you feel like the cat's pajamas.", 
 	body_suspenders_yellow_flax = "Wearing this 'follicle yellow' colored shirt makes you feel like the cat's pajamas.", 
@@ -375,7 +375,7 @@ STRINGS.SKIN_DESCRIPTIONS =
 	legs_pants_basic_green_forest = "Wearing these 'forest guardian green' colored pants won't help you survive... But you'll look great!", 
 	legs_pants_basic_grey_dark = "Wearing these 'stormcloud gray' colored pants won't help you survive... But you'll look great!", 
 	legs_pants_basic_tan_cream = "Wearing these 'no-tan-lines tan' colored pants won't help you survive... But you'll look great!", 
-	legs_pj_purple_mauve = "No striped pajama squid were harmed in the making of these 'snail mucus purple' colored sleeping pants.", 
+	legs_pj_purple_mauve = "No striped pajama squid were harmed in the making of these 'snail mucus purple' colored naptime pants.", 
 	legs_skirt_basic_black_scribble = "Wearing this 'scribble black' colored skirt won't help you survive... But you'll look great!", 
 	legs_skirt_basic_brown_sepia = "Wearing this 'werebeaver brown' colored skirt won't help you survive... But you'll look great!", 
 	legs_skirt_basic_grey_dark = "Wearing this 'stormcloud gray' colored skirt won't help you survive... But you'll look great!", 
@@ -422,4 +422,10 @@ STRINGS.SKIN_DESCRIPTIONS =
 	wx78_formal = "ERROR: DO NOT RECOGNIZE COMMAND \"MOUSTACHE.TWIRL\"", 
 	wx78_shadow = "This robot was evil before. Now they're double evil.", 
 	wx78_survivor = "Exposure to the elements causes corrosion.", 
+}
+STRINGS.SET_NAMES =
+{
+}
+STRINGS.SET_DESCRIPTIONS =
+{
 }

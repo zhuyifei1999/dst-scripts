@@ -202,7 +202,7 @@ local function fn()
 
     inst:ListenForEvent("attacked", OnAttacked)
 
-    local start_scale = math.random(TUNING.ROCKY_MIN_SCALE, TUNING.ROCKY_MAX_SCALE)
+    local start_scale = GetRandomMinMax(TUNING.ROCKY_MIN_SCALE, TUNING.ROCKY_MAX_SCALE)
     inst.components.scaler:SetScale(start_scale)
     local dt = 60 + math.random() * 10
     inst.growtask = inst:DoPeriodicTask(dt, grow, nil, dt)

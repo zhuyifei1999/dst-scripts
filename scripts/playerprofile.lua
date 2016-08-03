@@ -31,6 +31,7 @@ local PlayerProfile = Class(function(self)
         self.persistdata.HUDSize = 5
         self.persistdata.vibration = true
         self.persistdata.showpassword = false
+        self.persistdata.movementprediction = true
         self.persistdata.wathgrithrfont = true
         self.persistdata.screenshake = true
         self.persistdata.warneddifficultyrog = false
@@ -59,6 +60,7 @@ function PlayerProfile:Reset()
         self.persistdata.HUDSize = 5
         self.persistdata.vibration = true
         self.persistdata.showpassword = false
+        self.persistdata.movementprediction = true
         self.persistdata.wathgrithrfont = true
         self.persistdata.screenshake = true
         self.persistdata.warneddifficultyrog = false
@@ -89,6 +91,7 @@ function PlayerProfile:SoftReset()
         self.persistdata.HUDSize = 5
         self.persistdata.vibration = true
         self.persistdata.showpassword = false
+        self.persistdata.movementprediction = true
         self.persistdata.wathgrithrfont = true
         self.persistdata.screenshake = true
         self.persistdata.warneddifficultyrog = false
@@ -489,6 +492,24 @@ function PlayerProfile:GetShowPasswordEnabled()
 	end
 end
 
+function PlayerProfile:SetMovementPredictionEnabled(enabled)
+    if USE_SETTINGS_FILE then
+        TheSim:SetSetting("misc", "movementprediction", tostring(enabled))
+    else
+        self:SetValue("movementprediction", enabled)
+        self.dirty = true
+    end
+end
+
+function PlayerProfile:GetMovementPredictionEnabled()
+    -- an undefined movementprediction is considered to be enabled
+    if USE_SETTINGS_FILE then
+        return TheSim:GetSetting("misc", "movementprediction") ~= "false"
+    else
+        return self:GetValue("movementprediction") ~= false
+    end
+end
+
 function PlayerProfile:SetAutoSubscribeModsEnabled(enabled)
  	if USE_SETTINGS_FILE then
 		TheSim:SetSetting("misc", "autosubscribemods", tostring(enabled))
@@ -753,6 +774,7 @@ function PlayerProfile:Set(str, callback)
                 self.persistdata.HUDSize = 5
                 self.persistdata.vibration = true
                 self.persistdata.showpassword = false
+                self.persistdata.movementprediction = true
 		    end
 		end
 

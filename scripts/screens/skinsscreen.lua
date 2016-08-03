@@ -1,6 +1,5 @@
 local Screen = require "widgets/screen"
 local PopupDialogScreen = require "screens/popupdialog"
-local ScrollableList = require "widgets/scrollablelist"
 local PagedList = require "widgets/pagedlist"
 local ImageButton = require "widgets/imagebutton"
 local ItemImage = require "widgets/itemimage"
@@ -14,6 +13,7 @@ local Puppet = require "widgets/skinspuppet"
 local CharacterSelectScreen = require "screens/characterselectscreen"
 local TradeScreen = require "screens/tradescreen"
 local TEMPLATES = require "widgets/templates"
+local SetPopupDialog = require "screens/setpopupdialog"
 
 local DEBUG_MODE = BRANCH == "dev"
 
@@ -120,11 +120,16 @@ function SkinsScreen:UnselectAll()
 	end
 end
 
--- Update the details panel when an item is clicked
-function SkinsScreen:OnItemSelect(type, item, item_id, itemimage)
-	--print( "OnItemSelect", type, item, item_id, itemimage )
 
-	if type == nil or item == nil then 
+local RARITY_POS_LONE = -206
+local RARITY_POS_SET = -196
+local SET_POS_SET = -217
+
+-- Update the details panel when an item is clicked
+function SkinsScreen:OnItemSelect(type, item_type, item_id, itemimage)
+	--print( "OnItemSelect", type, item_type, item_id, itemimage )
+
+	if type == nil or item_type == nil then 
 		self.details_panel:Hide()
 		self.dressup_hanger:Show()
 		return
@@ -132,7 +137,7 @@ function SkinsScreen:OnItemSelect(type, item, item_id, itemimage)
 
 	self.dressup_hanger:Hide()
 
-	local buildfile = GetBuildForItem(type, item) 
+	local buildfile = GetBuildForItem(type, item_type) 
 
 	if type == "base"  then 
 		self.details_panel.shadow:SetScale(.4)
@@ -148,15 +153,50 @@ function SkinsScreen:OnItemSelect(type, item, item_id, itemimage)
 
 	self.details_panel.image:GetAnimState():OverrideSkinSymbol("SWAP_ICON", buildfile, "SWAP_ICON")
 
-	local rarity = GetRarityForItem(type, item)
-	local nameStr = GetName(item)
+	local rarity = GetRarityForItem(type, item_type)
+	local nameStr = GetName(item_type)
 
 	self.details_panel.name:SetTruncatedString(nameStr, 200, 50, true)
 	self.details_panel.name:SetColour(unpack(SKIN_RARITY_COLORS[rarity]))
-	self.details_panel.description:SetString(STRINGS.SKIN_DESCRIPTIONS[item] or STRINGS.SKIN_DESCRIPTIONS["missing"])
+	self.details_panel.description:SetString(STRINGS.SKIN_DESCRIPTIONS[item_type] or STRINGS.SKIN_DESCRIPTIONS["missing"])
  
 	self.details_panel.rarity:SetString(rarity.." Item")
 	self.details_panel.rarity:SetColour(unpack(SKIN_RARITY_COLORS[rarity]))
+	
+
+    
+	self.details_panel.set_info_btn.show_help = nil
+	
+	if IsItemInCollection(item_type) then
+		self.details_panel.set_title:Show()
+		
+		if TheInput:ControllerAttached() then 
+			self.details_panel.set_info_btn:Hide()
+			self.details_panel.set_info_btn.show_help = true
+		else
+			self.details_panel.set_info_btn:Show()
+		end
+		
+		self.details_panel.rarity:SetPosition(0, RARITY_POS_SET)
+		
+		if IsItemIsReward(item_type) then
+			self.details_panel.set_title:SetString(STRINGS.SET_NAMES[item_type] .. " " .. STRINGS.UI.SKINSSCREEN.BONUS )
+			
+			self.details_panel.set_info_btn.set_item_type = item_type --save it for the click press
+		else
+			local position,total,set_item_type = GetSkinSetData(item_type)
+			self.details_panel.set_title:SetString(STRINGS.SET_NAMES[set_item_type] .. " " .. STRINGS.UI.SKINSSCREEN.SET_PROGRESS)
+			
+			self.details_panel.set_info_btn.set_item_type = set_item_type --save it for the click press
+		end
+	else
+		self.details_panel.set_title:Hide()
+		self.details_panel.set_info_btn:Hide()
+	
+		self.details_panel.rarity:SetString(rarity.." Item")
+		self.details_panel.rarity:SetColour(unpack(SKIN_RARITY_COLORS[rarity]))
+		self.details_panel.rarity:SetPosition(0, RARITY_POS_LONE)
+	end
 
 	self.details_panel:Show()
 end
@@ -181,7 +221,7 @@ function SkinsScreen:BuildDetailsPanel()
     self.details_panel:SetPosition(-400, -0, 0)
 
     self.details_panel.shadow = self.details_panel:AddChild(Image("images/frontscreen.xml", "char_shadow.tex"))
-	self.details_panel.shadow:SetPosition(0, 35)
+	self.details_panel.shadow:SetPosition(0, 45)
 	self.details_panel.shadow:SetScale(.8)
 
 	self.details_panel.image = self.details_panel:AddChild(UIAnim()) 
@@ -190,29 +230,44 @@ function SkinsScreen:BuildDetailsPanel()
 	self.details_panel.image:GetAnimState():Hide("frame")
 	self.details_panel.image:GetAnimState():Hide("NEW")
 	self.details_panel.image:GetAnimState():PlayAnimation("icon")
-	self.details_panel.image:SetPosition(0, 125)
+	self.details_panel.image:SetPosition(0, 130)
 	self.details_panel.image:SetScale(1.65)
 	
 	self.details_panel.name = self.details_panel:AddChild(Text(TALKINGFONT, 30, "name", {0, 0, 0, 1}))
-	self.details_panel.name:SetPosition(0, -30)
+	self.details_panel.name:SetPosition(0, -7)
 
     self.details_panel.upper_horizontal_line = self.details_panel:AddChild(Image("images/ui.xml", "line_horizontal_6.tex"))
     self.details_panel.upper_horizontal_line:SetScale(.55)
-    self.details_panel.upper_horizontal_line:SetPosition(0, -45, 0)
+    self.details_panel.upper_horizontal_line:SetPosition(0, -25, 0)
 
 	self.details_panel.description = self.details_panel:AddChild(Text(NEWFONT, 20, "lorem ipsum dolor sit amet", {0, 0, 0, 1}))
 	self.details_panel.description:SetRegionSize( 180, 150)
 	self.details_panel.description:EnableWordWrap(true)
-	self.details_panel.description:SetPosition(0, -120)
+	self.details_panel.description:SetPosition(0, -100)
 
 	self.details_panel.lower_horizontal_line = self.details_panel:AddChild(Image("images/ui.xml", "line_horizontal_6.tex"))
     self.details_panel.lower_horizontal_line:SetScale(.55)
-    self.details_panel.lower_horizontal_line:SetPosition(0, -200, 0)
+    self.details_panel.lower_horizontal_line:SetPosition(0, -175, 0)
 
 
 	self.details_panel.rarity = self.details_panel:AddChild(Text(TALKINGFONT, 20, "Common Item", {0, 0, 0, 1}))
-	self.details_panel.rarity:SetPosition(0, -215)
+	self.details_panel.rarity:SetPosition(0, RARITY_POS_SET)
+	self.details_panel.set_title = self.details_panel:AddChild(Text(NEWFONT, 20, "Set Progress", {0, 0, 0, 1}))
+	self.details_panel.set_title:SetPosition(0, SET_POS_SET)
 
+	--self.details_panel.set_info_btn = self.details_panel:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "steam.tex", "", false, false, function() if data.netid ~= nil then TheNet:ViewNetProfile(data.netid) end end ))
+	
+	self.details_panel.set_info_btn = self.details_panel:AddChild(ImageButton())
+	self.details_panel.set_info_btn:SetPosition(0,-250)
+    self.details_panel.set_info_btn:SetScale(0.6,0.6)
+    self.details_panel.set_info_btn:SetText(STRINGS.UI.SKINSSCREEN.SET_INFO)
+    self.details_panel.set_info_btn:SetOnClick(
+		function()
+			self.set_info_screen = SetPopupDialog( self.details_panel.set_info_btn.set_item_type )
+			TheFrontEnd:PushScreen(self.set_info_screen)
+		end
+	)
+    self.details_panel.set_info_btn:Hide()
 end
 
 
@@ -245,35 +300,36 @@ function SkinsScreen:Quit()
 end
 
 function SkinsScreen:OnBecomeActive()
-	if not self.popup and (not TheNet:IsOnlineMode() or TheFrontEnd:GetIsOfflineMode()) then
+	if not self.sorry_popup and (not TheNet:IsOnlineMode() or TheFrontEnd:GetIsOfflineMode()) then
 		--The game is offline, don't show any inventory
 		self.skins_list = {}
 		self.page_list:SetItemsData(self.skins_list)
 		
 		--now open a popup saying "sorry"
-		self.popup = PopupDialogScreen(STRINGS.UI.SKINSSCREEN.SORRY, STRINGS.UI.SKINSSCREEN.OFFLINE, 
+		self.sorry_popup = PopupDialogScreen(STRINGS.UI.SKINSSCREEN.SORRY, STRINGS.UI.SKINSSCREEN.OFFLINE, 
 			{ {text=STRINGS.UI.POPUPDIALOG.OK, cb = function() TheFrontEnd:PopScreen() end}  }) 
-		TheFrontEnd:PushScreen(self.popup)
+		TheFrontEnd:PushScreen(self.sorry_popup)
 
-	elseif not self.popup then 
-		-- We don't have a saved popup, which means the game is online. Go ahead and activate it.
-	    SkinsScreen._base.OnBecomeActive(self)  
+	elseif not self.sorry_popup then
+		SkinsScreen._base.OnBecomeActive(self)
+		if self.set_info_screen == nil then
+			-- We don't have a saved popup, which means the game is online. Go ahead and activate it.
+			if not self.no_item_popup and #self.full_skins_list == 0 then
+				self.no_item_popup = PopupDialogScreen(STRINGS.UI.SKINSSCREEN.NO_ITEMS_TITLE, STRINGS.UI.SKINSSCREEN.NO_ITEMS, { {text=STRINGS.UI.POPUPDIALOG.OK, cb = function() TheFrontEnd:PopScreen() end} }) 
+				TheFrontEnd:PushScreen(self.no_item_popup)
+			end	
+		
+			if self.exit_button then 
+	    		self.exit_button:Enable()
+			end
 
-		if not self.no_item_popup and #self.full_skins_list == 0 then
-			self.no_item_popup = PopupDialogScreen(STRINGS.UI.SKINSSCREEN.NO_ITEMS_TITLE, STRINGS.UI.SKINSSCREEN.NO_ITEMS, { {text=STRINGS.UI.POPUPDIALOG.OK, cb = function() TheFrontEnd:PopScreen() end} }) 
-			TheFrontEnd:PushScreen(self.no_item_popup)
-		end	
-	
-	    if self.exit_button then 
-	    	self.exit_button:Enable()
-	    end
+			self.leaving = nil
 
-	    self.leaving = nil
-
-	    -- If we came from the tradescreen, we need to update the inventory list
-    	self:UpdateInventoryList()
-    	self:OnItemSelect() --empty params, to go back to the default hanger
-    	
+			-- If we came from the tradescreen, we need to update the inventory list
+    		self:UpdateInventoryList()
+    		self:OnItemSelect() --empty params, to go back to the default hanger
+    	end
+    	self.set_info_screen = nil
 	else
 		-- This triggers when the "sorry" popup closes. Just quit.
 		self:Quit()
@@ -318,6 +374,9 @@ function SkinsScreen:OnControl(control, down)
 		       TheFrontEnd:PushScreen(TradeScreen(self.profile))
 		        TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
 		    end)
+			return true
+		elseif not down and control == CONTROL_MENU_MISC_1 then 
+			self.details_panel.set_info_btn.onclick()
 			return true
 		end
     end
@@ -376,6 +435,10 @@ function SkinsScreen:GetHelpText()
    	table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE) .. " " .. STRINGS.UI.SKINSSCREEN.LOADOUT)
 
    	table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_INSPECT) .. " " .. STRINGS.UI.SKINSSCREEN.TRADE)
+   	
+   	if self.details_panel.set_info_btn.show_help then
+   		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_1) .. " " .. STRINGS.UI.SKINSSCREEN.SET_INFO)
+   	end
    	
     return table.concat(t, "  ")
 end

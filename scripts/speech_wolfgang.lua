@@ -81,12 +81,13 @@ return {
         },
 	},
 	ACTIONFAIL_GENERIC = "I am not mighty enough to do that.",
+	ANNOUNCE_DIG_DISEASE_WARNING = "Ha! Dirt spoon fix it!",
+	ANNOUNCE_PICK_DISEASE_WARNING = "Bah! Tiny plant is smell terrible!",
 	ANNOUNCE_MOUNT_LOWHEALTH = "What is wrong, hair beast? Feeling not-so-mighty?",
 	ANNOUNCE_NORMALTOMIGHTY="I AM MIGHTY!",
 	ANNOUNCE_NORMALTOWIMPY="I am not feeling so good.",
 	ANNOUNCE_WIMPYTONORMAL="Wolfgang is better.",
 	ANNOUNCE_MIGHTYTONORMAL="I need to fill my mighty belly again!",
-
 	ANNOUNCE_NOSLEEPONFIRE = "Is too hot for sleeping.",
 	ANNOUNCE_NODANGERSIESTA = "I prefer fighting to napping!",
 	ANNOUNCE_NONIGHTSIESTA = "Wolfgang have principles against siesta at night.",
@@ -848,6 +849,7 @@ return {
 			GENERIC = "Is full of food-balls!",
 			PICKED = "Eating part is gone.",
 			DISEASED = "Is weak. Sickly!",
+			DISEASING = "Is looking shrivelly.",
 		},
 		BERRYBUSH_JUICY =
 		{
@@ -856,6 +858,7 @@ return {
 			GENERIC = "I will eat you!",
 			PICKED = "Eating part is gone.",
 			DISEASED = "Is weak. Sickly!",
+			DISEASING = "Is looking shrivelly.",
 		},
 		BIRDCAGE =
 		{
@@ -1101,6 +1104,7 @@ return {
 			GENERIC = "Is grass.",
 			PICKED = "The grass has been defeated!",
 			DISEASED = "Is weak. Sickly!",
+			DISEASING = "Is looking shrivelly.",
 		},
 		GREEN_CAP = "Is for salads. Blech.",
 		GREEN_CAP_COOKED = "Is not same.",
@@ -1348,6 +1352,7 @@ return {
 			GENERIC = "Puny tree! I am stronger than you!",
 			PICKED = "Ha! Ha! Ha! Tree is floppy!",
 			DISEASED = "Is weak. Sickly!",
+			DISEASING = "Is look even more puny.",
 		},
 		SEEDS = "Too small to eat.",
 		SEEDS_COOKED = "Fire make bigger, can eat now.",

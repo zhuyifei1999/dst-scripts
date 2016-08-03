@@ -11,6 +11,30 @@ local prefabs =
     "book_fx",
 }
 
+--helper function for book_gardening
+local function trygrowth(inst)
+    if inst:IsInLimbo()
+        or (inst.components.witherable ~= nil and
+            inst.components.witherable:IsWithered()) then
+        return
+    end
+
+    if inst.components.pickable ~= nil then
+        if inst.components.pickable:CanBePicked() and inst.components.pickable.caninteractwith then
+            return
+        end
+        inst.components.pickable:FinishGrowing()
+    end
+
+    if inst.components.crop ~= nil then
+        inst.components.crop:DoGrow(TUNING.TOTAL_DAY_TIME * 3, true)
+    end
+
+    if inst.components.growable ~= nil and inst:HasTag("tree") and not inst:HasTag("stump") then
+        inst.components.growable:DoGrowth()
+    end
+end
+
 local book_defs =
 {
     {
@@ -152,23 +176,18 @@ local book_defs =
         name = "book_gardening",
         uses = 5,
         fn = function(inst, reader)
-            local pt = reader:GetPosition()
-
             reader.components.sanity:DoDelta(-TUNING.SANITY_LARGE)
 
+            local x, y, z = reader.Transform:GetWorldPosition()
             local range = 30
-            local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, range, nil, { "pickable", "stump", "withered", "INLIMBO" })
-            for k, v in pairs(ents) do
-                if v.components.pickable ~= nil then
-                    v.components.pickable:FinishGrowing()
-                end
-
-                if v.components.crop ~= nil then
-                    v.components.crop:DoGrow(TUNING.TOTAL_DAY_TIME * 3, true)
-                end
-
-                if v.components.growable ~= nil and v:HasTag("tree") --[[and not v:HasTag("stump")]] then
-                    v.components.growable:DoGrowth()
+            local ents = TheSim:FindEntities(x, y, z, range, nil, { "pickable", "stump", "withered", "INLIMBO" })
+            if #ents > 0 then
+                trygrowth(table.remove(ents, math.random(#ents)))
+                if #ents > 0 then
+                    local timevar = 1 - 1 / (#ents + 1)
+                    for i, v in ipairs(ents) do
+                        v:DoTaskInTime(timevar * math.random(), trygrowth)
+                    end
                 end
             end
             return true

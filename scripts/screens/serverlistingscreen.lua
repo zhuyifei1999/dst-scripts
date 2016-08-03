@@ -1301,9 +1301,17 @@ function ServerListingScreen:ProcessPlayerData(session)
     if self.sessions[session] == nil and self.session_mapping ~= nil then
         local data = self.session_mapping[session]
         if data ~= nil then
-            local success, playerdata = RunInSandboxSafe(data)
-            self.sessions[session] = success and playerdata or false
-            self.session_mapping[session] = nil
+            if type(data) == "table" and data.session_data_processed then
+                self.sessions[session] = data.data
+            else
+                local success, playerdata = RunInSandboxSafe(data)
+                self.sessions[session] = success and playerdata or false
+                self.session_mapping[session] =
+                {
+                    session_data_processed = true,
+                    data = self.sessions[session],
+                }
+            end
         end
     end 
 end

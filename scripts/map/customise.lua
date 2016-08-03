@@ -309,9 +309,11 @@ local function GetOptionsWithLocationDefaults(location, is_master_world)
     local options = GetOptions(location, is_master_world)
 
     local locationdata = Levels.GetDataForLocation(location)
-    for i,option in ipairs(options) do
-        if locationdata.overrides[option.name] ~= nil then
-            option.default = locationdata.overrides[option.name]
+    if locationdata ~= nil then -- custom locations won't show on the client
+        for i,option in ipairs(options) do
+            if locationdata.overrides[option.name] ~= nil then
+                option.default = locationdata.overrides[option.name]
+            end
         end
     end
 
@@ -330,7 +332,7 @@ end
 
 local function GetLocationDefaultForOption(location, option)
     local locationdata = Levels.GetDataForLocation(location)
-    return locationdata.overrides[option] or GetDefaultForOption(option)
+    return locationdata ~= nil and locationdata.overrides[option] or GetDefaultForOption(option)
 end
 
 local function ValidateOption(tweak, value, location)

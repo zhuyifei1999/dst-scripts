@@ -14,6 +14,13 @@ local function onfar(inst)
     inst.AnimState:PushAnimation("swarm_loop", true)
 end
 
+local function oninit(inst)
+    inst.components.playerprox:ForceUpdate()
+    if not inst.components.playerprox:IsPlayerClose() then
+        inst.SoundEmitter:PlaySound("dontstarve/common/flies", "flies")
+    end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -31,8 +38,6 @@ local function fn()
     inst:AddTag("NOCLICK")
     inst:AddTag("FX")
 
-    --inst.SoundEmitter:PlaySound("dontstarve/common/flies", "flies")
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -43,6 +48,8 @@ local function fn()
     inst.components.playerprox:SetDist(2,3)
     inst.components.playerprox:SetOnPlayerNear(onnear)
     inst.components.playerprox:SetOnPlayerFar(onfar)
+
+    inst:DoTaskInTime(0, oninit)
 
     return inst
 end

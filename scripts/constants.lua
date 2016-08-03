@@ -296,6 +296,7 @@ DST_CHARACTERLIST =
 require("prefabskins")
 require("clothing")
 require("misc_items")
+require("emote_items")
 
 MAINSCREEN_TOOL_LIST = 
 {

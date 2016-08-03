@@ -21,6 +21,12 @@ local function GetGenStartLocations(world)
         end
     end
 
+    -- Because this is used by frontend, we have to give some kind of value for display.
+    if next(ret) == nil then
+        local v = startlocations['default']
+        table.insert(ret, {text=v.name, data='default'})
+    end
+
     return ret
 end
 

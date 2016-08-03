@@ -229,7 +229,11 @@ STRINGS=
             HAUNT = "Haunt",
         },
         MURDER = "Murder",
-        HEAL = "Heal",
+        HEAL =
+        {
+            GENERIC = "Heal",
+            SELF = "Heal Self",
+        },
         UNLOCK = 
         {
             GENERIC = "Unlock",
@@ -2050,7 +2054,7 @@ STRINGS.UI =
         SUBMIT_TEXT = "Would you like to upload your logs and data files to Klei?",
 
         SUBMIT_SUCCESS_TITLE = "Success",
-        SUBMIT_SUCCESS_TEXT = "Files successfully uploaded.",
+        SUBMIT_SUCCESS_TEXT = "Files successfully uploaded. Code: ",
 
         SUBMIT_FAILURE_TITLE = "Error",
         SUBMIT_FAILURE_TEXT = "There was a problem uploading your files.",
@@ -2436,6 +2440,9 @@ STRINGS.UI =
         HUDSIZE = "HUD Size:",
         VIBRATION = "Vibration:",
         WATHGRITHRFONT = "Wigfrid's Umlauts:",
+        MOVEMENTPREDICTION = "Lag Compensation:",
+        MOVEMENTPREDICTION_ENABLED = "Predictive",
+        MOVEMENTPREDICTION_DISABLED = "None",
         DISPLAY_AREA_LABEL = "Display Area",
         DISPLAY_AREA_BUTTON = "Adjust",
         -- INPUTFREQENCY = "Input Frequency(hz):",
@@ -2752,7 +2759,7 @@ STRINGS.UI =
     BUILTINCOMMANDS =
     {
         EMOTES = {
-            PRETTYNAMEFMT = "'%s' emote",
+            PRETTYNAMEFMT = "%s emote",
             DESC = "Perform an emote!",
         },
         HELP = {
@@ -3256,7 +3263,7 @@ STRINGS.UI =
         NEWHOST_DESC =
         {
             ALONE = "Play alone in a private world where you can collect your bearings and get the hang of not starving. This is recommended for your first time playing.",
-            TOGETHER = "Start an online server where other players can join in your adventures. It's up to you whether it open to everyone, or just your friends.",
+            TOGETHER = "Start an online world where other players can join in your adventures. It's up to you whether your world is open to everyone, or just your friends.",
         },
         CLANID = "Group ID:",
         CLANONLY = "Members Only:",
@@ -3428,13 +3435,6 @@ STRINGS.UI =
     	LEGS = "LEGS",
     	FEET = "FEET",
     	ITEM = "Craftables",
-    	COMMON = "Common", 
-    	CLASSY = "Classy", 
-    	SPIFFY = "Spiffy", 
-    	DISTINGUISHED = "Distinguished",
-    	ELEGANT = "Elegant",
-    	TIMELESS = "Timeless",
-    	LOYAL = "Loyal",
     	SAVE = "Save Outfit",
     	RESET = "Last Outfit",
     	CLEAR = "Reset to Default",
@@ -3449,8 +3449,17 @@ STRINGS.UI =
     	TRADE_TOOLTIP = "Trade all your unwanted items in for something new!",
 		NO_ITEMS_TITLE = "Nothing to see here",
     	NO_ITEMS = "Start playing to earn items!",
+    	BONUS = "Reward",
+    	SET_PROGRESS = "Piece",
+    	SET_INFO = "Ensemble Info",
 	},
 
+	SETPOPUP =
+	{
+    	OK = "OK",
+    	REWARD = "Reward:"
+	},
+	
     -- Rarity and colour tables are to allow translation of item properties. Keys are the names as returned by the item server.
     RARITY = 
     {
@@ -3461,6 +3470,8 @@ STRINGS.UI =
         Elegant         = "Elegant", -- an extremely rare item (eg rabbit pack, GoH base skins)
         Timeless        = "Timeless", -- not used (yet)
         Loyal           = "Loyal", -- a special item that isn't tradeable
+        Reward          = "Reward", -- a set bonus item
+        Event			= "Event",
     },
 
     COLOUR = 
@@ -4796,4 +4807,4 @@ STRINGS.SHARD =
 ----------------------------------------------------------------------------
 -- Include the names and descriptions of the clothing and craftable skins.
 ----------------------------------------------------------------------------
-require "skins_strings"
+require "skin_strings"

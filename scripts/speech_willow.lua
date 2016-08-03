@@ -81,7 +81,8 @@ return {
         },
 	},
 	ACTIONFAIL_GENERIC = "I can'tttttt.",
-
+	ANNOUNCE_DIG_DISEASE_WARNING = "Pfft. Fire would've worked just as well.",
+	ANNOUNCE_PICK_DISEASE_WARNING = "Ugh, put it back!",
 	ANNOUNCE_MOUNT_LOWHEALTH = "This beast is looking pretty bad.",
 	ANNOUNCE_ADVENTUREFAIL = "You win THIS time, Maxwell.",
 	ANNOUNCE_BOOMERANG = "Stupid boomerang!",
@@ -888,6 +889,7 @@ return {
 			GENERIC = "Mmmmm. Berries.",
 			PICKED = "But I want more berries!",
 			DISEASED = "Burn the sick!",
+			DISEASING = "Blech. You smell.",
 		},
 		BERRYBUSH_JUICY =
 		{
@@ -896,6 +898,7 @@ return {
 			GENERIC = "Ready for picking!",
 			PICKED = "Make mooooore!",
 			DISEASED = "Burn the sick!",
+			DISEASING = "Blech. You smell.",
 		},
 		BIRDCAGE =
 		{
@@ -1144,6 +1147,7 @@ return {
 			GENERIC = "It's a flammable tuft of grass.",
 			PICKED = "Grass stubble is kind of useless.",
 			DISEASED = "Burn the sick!",
+			DISEASING = "Blech. You smell.",
 		},
 		GREEN_CAP = "Boring!",
 		GREEN_CAP_COOKED = "It's been transformed by fire!",
@@ -1396,6 +1400,7 @@ return {
 			GENERIC = "It'd be worth it to pick that.",
 			PICKED = "Poor little limp tree.",
 			DISEASED = "Burn the sick!",
+			DISEASING = "Blech. You smell.",
 		},
 		SEEDS = "Farming is boring.",
 		SEEDS_COOKED = "No good for farming now.",

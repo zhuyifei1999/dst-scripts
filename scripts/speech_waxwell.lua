@@ -81,7 +81,8 @@ return {
         },
 	},
 	ACTIONFAIL_GENERIC = "That didn't work.",
-
+	ANNOUNCE_DIG_DISEASE_WARNING = "That takes care of that.",
+	ANNOUNCE_PICK_DISEASE_WARNING = "How putrid!",
 	ANNOUNCE_MOUNT_LOWHEALTH = "Say, pal, you don't look so good.",
     ANNOUNCE_BECOMEGHOST = "oOooooOO!!",
 	ANNOUNCE_GHOSTDRAIN = "They're whispering through the core of my mind...!",
@@ -825,6 +826,7 @@ return {
 			GENERIC = "Reduced to eating berries. Sigh.",
 			PICKED = "And now we wait.",
 			DISEASED = "What has brought this blight upon my world?",
+			DISEASING = "Looks a little off, if you ask me.",
 		},
 		BERRYBUSH_JUICY =
 		{
@@ -833,6 +835,7 @@ return {
 			GENERIC = "The berries will stay fresh as long as I leave them there.",
 			PICKED = "I fear I'll have to wait.",
 			DISEASED = "What has brought this blight upon my world?",
+			DISEASING = "Looks a little off, if you ask me.",
 		},
 		BIRDCAGE =
 		{
@@ -1072,6 +1075,7 @@ return {
 			GENERIC = "Tufty.",
 			PICKED = "Nothing to harvest.",
 			DISEASED = "What has brought this blight upon my world?",
+			DISEASING = "Looks a little off, if you ask me.",
 		},
 		GREEN_CAP = "I should eat it.",
 		GREEN_CAP_COOKED = "Salty!",
@@ -1344,6 +1348,7 @@ return {
 			GENERIC = "A supple, woody stem.",
 			PICKED = "It'll grow back.",
 			DISEASED = "What has brought this blight upon my world?",
+			DISEASING = "Looks a little off, if you ask me.",
 		},
 		SEEDS = "I suppose these won't plant themselves.",
 		SEEDS_COOKED = "Broiled the life out of 'em.",

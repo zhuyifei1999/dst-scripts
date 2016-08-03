@@ -81,17 +81,16 @@ local plantables =
 {
     {
         name = "berrybush",
-        anim = "idle_dead"
+        anim = "dead",
     },
     {
         name = "berrybush2",
-        bank = "berrybush",
-        anim = "idle_dead",
+        anim = "dead",
         inspectoverride = "dug_berrybush",
     },
     {
         name = "berrybush_juicy",
-        anim = "idle_dead",
+        anim = "dead",
         inspectoverride = "dug_berrybush",
     },
     {

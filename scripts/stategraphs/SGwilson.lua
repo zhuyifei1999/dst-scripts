@@ -149,10 +149,19 @@ local function DoEmoteFX(inst, prefab)
     end
 end
 
-local function DoEmoteSound(inst, soundname)
-    inst.SoundEmitter:PlaySound(soundname, "emotesound")
+local function DoForcedEmoteSound(inst, soundpath)
+    inst.SoundEmitter:PlaySound(soundpath)
 end
 
+local function DoEmoteSound(inst, soundoverride)
+    local soundname = soundoverride or "emote"
+    local emotesoundoverride = soundname.."soundoverride"
+    if inst[emotesoundoverride] ~= nil then
+        inst.SoundEmitter:PlaySound(inst[emotesoundoverride])
+    elseif not inst:HasTag("mime") then
+        inst.SoundEmitter:PlaySound((inst.talker_path_override or "dontstarve/characters/")..(inst.soundsname or inst.prefab).."/"..soundname)
+    end
+end
 
 local function ToggleOffPhysics(inst)
     inst.sg.statemem.isphysicstoggle = true
@@ -581,7 +590,8 @@ local events =
                     inst.sg:HasStateTag("nopredict") or
                     inst.sg:HasStateTag("sleeping"))
                 and (data.mounted or not (inst.components.rider ~= nil and inst.components.rider:IsRiding()))
-                and (data.beaver or not inst:HasTag("beaver")) then
+                and (data.beaver or not inst:HasTag("beaver"))
+                and (not data.requires_validation or TheInventory:CheckClientOwnership(inst.userid, data.item_type)) then
                 inst.sg:GoToState("emote", data)
             end
         end),
@@ -4876,13 +4886,17 @@ local states =
             end
 
             if data.sound then --sound might be a boolean, so don't do ~= nil
-                if data.sounddelay == nil or data.sounddelay == 0 then
-                    inst.SoundEmitter:PlaySound(data.sound, "emotesound")
+                if (data.sounddelay or 0) <= 0 then
+                    inst.SoundEmitter:PlaySound(data.sound)
                 else
-                    inst.sg.statemem.emotesoundtask = inst:DoTaskInTime(data.sounddelay, DoEmoteSound, data.sound)
+                    inst.sg.statemem.emotesoundtask = inst:DoTaskInTime(data.sounddelay, DoForcedEmoteSound, data.sound)
                 end
             elseif data.sound ~= false then
-                inst.SoundEmitter:PlaySound((inst.talker_path_override or "dontstarve/characters/")..(inst.soundsname or inst.prefab).."/"..(data.soundoverride or "emote"), "emotesound")
+                if (data.sounddelay or 0) <= 0 then
+                    DoEmoteSound(inst, data.soundoverride)
+                else
+                    inst.sg.statemem.emotesoundtask = inst:DoTaskInTime(data.sounddelay, DoEmoteSound, data.soundoverride)
+                end
             end
 
             if data.zoom ~= nil then

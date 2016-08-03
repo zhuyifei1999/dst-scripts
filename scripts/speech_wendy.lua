@@ -81,7 +81,8 @@ return {
         },
 	},
 	ACTIONFAIL_GENERIC = "I can't do anything right.",
-
+	ANNOUNCE_DIG_DISEASE_WARNING = "Your death has been delayed another day.",
+	ANNOUNCE_PICK_DISEASE_WARNING = "Smells like death.",
 	ANNOUNCE_MOUNT_LOWHEALTH = "This beast... is not long for this world.",
 	ANNOUNCE_ADVENTUREFAIL = "Not all deaths are alike.",
 	ANNOUNCE_BOOMERANG = "Ow! That was karma.",
@@ -871,6 +872,7 @@ return {
 			GENERIC = "A snack, perchance?",
 			PICKED = "The wait begins.",
 			DISEASED = "It's not long for this world...",
+			DISEASING = "It is on the precipice...",
 		},
 		BERRYBUSH_JUICY =
 		{
@@ -879,6 +881,7 @@ return {
 			GENERIC = "I could strip it clean, if I so chose...",
 			PICKED = "It's given all it had to give.",
 			DISEASED = "It's not long for this world...",
+			DISEASING = "It is on the precipice...",
 		},
 		BIRDCAGE =
 		{
@@ -1112,6 +1115,7 @@ return {
 			GENERIC = "It's just a tuft of grass.",
 			PICKED = "It has been killed.",
 			DISEASED = "It's not long for this world...",
+			DISEASING = "It is on the precipice...",
 		},
 		GREEN_CAP = "This mushroom is disappointingly normal.",
 		GREEN_CAP_COOKED = "All is malleable.",
@@ -1361,6 +1365,7 @@ return {
 			GENERIC = "It's trying to grow up.",
 			PICKED = "Maybe next time, sapling.",
 			DISEASED = "It's not long for this world...",
+			DISEASING = "It is on the precipice...",
 		},
 		SEEDS = "Life, or at least the promise of it.",
 		SEEDS_COOKED = "The fire has toasted their life away.",

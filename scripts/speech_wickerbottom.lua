@@ -87,7 +87,8 @@ return
         },
     },
     ACTIONFAIL_GENERIC = "It seems I can't do that.",
-    
+    ANNOUNCE_DIG_DISEASE_WARNING = "Caught it just in time. The roots were nearly rotten.",
+    ANNOUNCE_PICK_DISEASE_WARNING = "This plant is exhibiting concerning signs.",
     ANNOUNCE_MOUNT_LOWHEALTH = "My mount requires attention of the medical variety.",
     ANNOUNCE_NODANGERAFK = "Were I to lose focus now I'd be sure to sustain bodily injury.",
     ANNOUNCE_NODANGERGIFT = "Presents are not a top survival priority at this moment.",
@@ -1132,6 +1133,7 @@ return
             BARREN = "It will require an intervention.",
             WITHERED = "Ardisia crenata don't do well in extreme heat.",
             DISEASED = "It's afflicted with an agrarian disease beyond my curing.",
+            DISEASING = "Hm... The leaves are curling at the edges.",
         },
 
         BERRYBUSH_JUICY =
@@ -1141,6 +1143,7 @@ return
             GENERIC = "That bush looks ready for harvest.",
             PICKED = "It will have to wait.",
             DISEASED = "It's afflicted with an agrarian disease beyond my curing.",
+            DISEASING = "Hm... The leaves are curling at the edges.",
         },
 
         DUG_GRASS = "It requires soil to grow.",
@@ -1156,6 +1159,7 @@ return
             PICKED = "Odd. I thought that would have killed it.",
             BURNING = "Combustion!",
             DISEASED = "It's afflicted with an agrarian disease beyond my curing.",
+            DISEASING = "Hm... Seems more brittle than is usual.",
         },
         TWIGGYTREE =
         {
@@ -1178,6 +1182,7 @@ return
             WITHERED = "It can't survive in this hot climate.",
             BURNING = "Combustion!",
             DISEASED = "It's afflicted with an agrarian disease beyond my curing.",
+            DISEASING = "Hm... There are spots of discoloration here.",
         },
 
         REEDS = 

@@ -38,7 +38,9 @@ rarityList["Spiffy"] = true
 rarityList["Distinguished"] = true
 rarityList["Elegant"] = true
 rarityList["Timeless"] = true
+rarityList["Reward"] = true
 rarityList["Loyal"] = true
+rarityList["Event"] = true
 
 local coloursList = {}
 coloursList["black"] = true

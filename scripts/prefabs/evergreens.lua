@@ -935,7 +935,7 @@ local function tree(name, build, stage, data)
         ---------------------
 
         inst:AddComponent("hauntable")
-        inst.components.hauntable:SetOnHauntFn(build == "twiggy" and onhauntevergreen or onhauntwork)
+        inst.components.hauntable:SetOnHauntFn(build ~= "twiggy" and onhauntevergreen or onhauntwork)
 
         ---------------------
 

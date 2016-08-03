@@ -710,7 +710,7 @@ CommonStates.AddSleepStates(states,
 {
     sleeptimeline = 
     {
-        TimeEvent(46*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.grunt) end)
+        TimeEvent(46*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.sleep) end)
     },
 })
     

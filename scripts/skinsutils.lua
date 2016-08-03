@@ -9,41 +9,30 @@ SKIN_RARITY_COLORS =
 	Elegant			= { 0.741, 0.275, 0.275, 1 }, -- BD4646 - an extremely rare item (eg rabbit pack, GoH base skins)
 	Timeless		= { 0.957, 0.769, 0.188, 1 }, -- F4C430 - not used
 	Loyal			= { 0.635, 0.769, 0.435, 1 }, -- A2C46F - a one-time giveaway (eg mini monument)
+	Reward			= { 0.910, 0.592, 0.118, 1 }, -- E8971E - a set bonus reward
+	Event			= { 0.957, 0.769, 0.188, 1 }, -- F4C430 - an event item
 }
+
 
 -- for use in sort functions
 -- return true if rarity1 should go first in the list
+local rarity_order =
+{
+	Loyal = 1,
+	Reward = 2,
+	Event = 3,
+	Timeless = 4,
+	Elegant = 5,
+	Distinguished = 6,
+	Spiffy = 7,
+	Classy = 8,
+	Common = 9
+}
 function CompareRarities(a, b)
 	local rarity1 = type(a) == "string" and a or a.rarity
 	local rarity2 = type(b) == "string" and b or b.rarity
 
-	if rarity1 == rarity2 then 
-		return false
-	elseif rarity1 == "Loyal" then 
-		return true
-	elseif rarity1 == "Timeless" and 
-		rarity2 ~= "Loyal" then 
-		return true
-	elseif rarity1 == "Elegant" and 
-		rarity2 ~= "Loyal" and 
-		rarity2 ~= "Timeless" then 
-		return true
-	elseif rarity1 == "Distinguished" and 
-		(	rarity2 == "Spiffy" or 
-			rarity2 == "Classy" or 
-			rarity2 == "Common" ) then 
-		return true
-	elseif rarity1 == "Spiffy" and 
-		( rarity2 == "Classy" or rarity2 == "Common" ) then 
-		return true
-	elseif rarity1 == "Classy" and 
-		rarity2 == "Common" then 
-		return true
-	else
-		return false
-	end
-
-	return false
+	return rarity_order[rarity1] < rarity_order[rarity2]
 end
 
 function GetNextRarity(rarity)
@@ -52,7 +41,9 @@ function GetNextRarity(rarity)
 					  Spiffy = "Distinguished",
 					  Distinguished = "Elegant",
 					  Elegant = "Timeless",
-					  Timeless = "Loyal"
+					  Timeless = "Reward",
+					  Reward = "Loyal",
+					  Loyal = "Event",
 					 }
 
 	return rarities[rarity] or nil
@@ -65,7 +56,7 @@ function GetBuildForItem(type, name)
 			name = skinsData.ui_preview.build
 		end
 		return name
-	elseif type == "misc" then 
+	elseif type == "misc" or type == "emote" then 
 		local skinsData = MISC_ITEMS[name]
 		if skinsData and skinsData.skin_build then 
 			name = skinsData.skin_build
@@ -103,6 +94,8 @@ function GetTypeForItem(item)
 		type = CLOTHING[itemName].type
 	elseif MISC_ITEMS[itemName] then 
 		type = MISC_ITEMS[itemName].type
+	elseif EMOTE_ITEMS[itemName] then 
+		type = EMOTE_ITEMS[itemName].type
 	else
 
 		local skinsData = Prefabs[itemName]
@@ -126,10 +119,14 @@ function GetTagFromType(type)
 		return string.upper("CLOTHING_" .. type)
 	elseif type == "base" then
 		return "CHARACTER"
+	elseif type == "emote" then
+		return "EMOTE"
 	elseif type == "item" then
 		return nil --what tags are on item type things
+	elseif type == "oddment" then
+		return "ODDMENT"
 	else
-		return string.upper("MISCELLANEOUS_" .. type)
+		return string.upper("MISC_" .. type)
 	end
 end
 function GetTypeFromTag(tag)
@@ -163,6 +160,8 @@ function GetRarityForItem(type, item)
 		rarity = CLOTHING[item].rarity
 	elseif MISC_ITEMS[item] then 
 		rarity = MISC_ITEMS[item].rarity
+	elseif EMOTE_ITEMS[item] then 
+		rarity = EMOTE_ITEMS[item].rarity
 	end
 
 	if not rarity then 
@@ -301,6 +300,7 @@ function GetSortedSkinsList()
 
 	local listoflists = 
 	{
+		emote = {},
 		feet = {},
 		hand = {},
 		body = {},
@@ -350,10 +350,11 @@ function GetSortedSkinsList()
 	table.sort(listoflists.legs, compare)
 	table.sort(listoflists.base, compare)
 	table.sort(listoflists.item, compare)
+	table.sort(listoflists.emote, compare)
 	table.sort(listoflists.misc, compare)
 	table.sort(listoflists.unknown, compare)
 
-
+	skins_list = JoinArrays(skins_list, listoflists.emote)
 	skins_list = JoinArrays(skins_list, listoflists.item)
 	skins_list = JoinArrays(skins_list, listoflists.base)
 	skins_list = JoinArrays(skins_list, listoflists.body)
@@ -378,4 +379,44 @@ function CopySkinsList(list)
 	end
 
 	return newList
+end
+
+
+
+local SKIN_SET_ITEMS = require("skin_set_info")
+function IsItemInCollection(item_type)
+	for bonus_item,input_items in pairs(SKIN_SET_ITEMS) do
+		if bonus_item == item_type then
+			return true
+		end
+		for _,input_item in pairs(input_items) do
+			if input_item == item_type then
+				return true
+			end
+		end
+	end
+	return false
+end
+function IsItemIsReward(item_type)
+	for bonus_item,input_items in pairs(SKIN_SET_ITEMS) do
+		if bonus_item == item_type then
+			return true
+		end
+	end
+	return false
+end
+function GetSkinSetData(item_type)
+	for bonus_item,input_items in pairs(SKIN_SET_ITEMS) do
+		local item_pos = 0
+		local set_count = 0
+		for _,input_item in pairs(input_items) do
+			set_count = set_count + 1
+			if input_item == item_type then
+				item_pos = set_count
+			end
+		end
+		if item_pos > 0 then
+			return item_pos,set_count,bonus_item
+		end
+	end
 end

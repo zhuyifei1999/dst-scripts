@@ -577,7 +577,7 @@ local function OnSetOwner(inst)
 
     if inst ~= nil and (inst == ThePlayer or TheWorld.ismastersim) then
         if inst.components.playercontroller == nil then
-            EnableMovementPrediction(inst, true)
+            EnableMovementPrediction(inst, Profile:GetMovementPredictionEnabled())
             inst:AddComponent("playeractionpicker")
             inst:AddComponent("playercontroller")
             inst:AddComponent("playervoter")
