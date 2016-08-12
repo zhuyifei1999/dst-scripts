@@ -17,7 +17,7 @@ return {
       margin = 0,
       image = "../../../../tools/tiled/dont_starve/tiles.png",
       imagewidth = 512,
-      imageheight = 128,
+      imageheight = 384,
       properties = {},
       tiles = {}
     }
@@ -372,7 +372,7 @@ return {
         },
         {
           name = "",
-          type = "grass",
+          type = "perma_grass",
           shape = "rectangle",
           x = 256,
           y = 128,
@@ -383,7 +383,7 @@ return {
         },
         {
           name = "",
-          type = "grass",
+          type = "perma_grass",
           shape = "rectangle",
           x = 256,
           y = 352,
@@ -394,7 +394,7 @@ return {
         },
         {
           name = "",
-          type = "grass",
+          type = "perma_grass",
           shape = "rectangle",
           x = 304,
           y = 384,
@@ -416,7 +416,7 @@ return {
         },
         {
           name = "",
-          type = "grass",
+          type = "perma_grass",
           shape = "rectangle",
           x = 416,
           y = 416,
@@ -427,7 +427,7 @@ return {
         },
         {
           name = "",
-          type = "grass",
+          type = "perma_grass",
           shape = "rectangle",
           x = 336,
           y = 352,
@@ -449,7 +449,7 @@ return {
         },
         {
           name = "",
-          type = "grass",
+          type = "perma_grass",
           shape = "rectangle",
           x = 80,
           y = 208,

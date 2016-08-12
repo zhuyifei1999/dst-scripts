@@ -9,47 +9,94 @@ local prefabs =
 {
     "twigs",
     "dug_sapling",
-    "disease_fx_small",
     "disease_puff",
     "diseaseflies",
+    "spoiled_food",
 }
 
-local function ondiseaseddeathfn(inst)
+local function SpawnDiseasePuff(inst)
     SpawnPrefab("disease_puff").Transform:SetPosition(inst.Transform:GetWorldPosition())
-    inst:Remove()
+end
+
+local function SetDiseaseBuild(inst)
+    inst.AnimState:SetBuild("sapling_diseased_build")
 end
 
 local function ondiseasedfn(inst)
-    inst.AnimState:SetBuild("sapling_diseased_build")
-    SpawnPrefab("disease_fx_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
     inst.components.pickable:ChangeProduct("spoiled_food")
+    if POPULATING then
+        SetDiseaseBuild(inst)
+    else
+        if inst.components.pickable:CanBePicked() then
+            inst.AnimState:PlayAnimation("transform")
+            inst.AnimState:PushAnimation("sway", true)
+        elseif inst.components.witherable ~= nil
+            and inst.components.witherable:IsWithered()
+            or inst.components.pickable:IsBarren() then
+            inst.AnimState:PlayAnimation("transform_dead")
+            inst.AnimState:PushAnimation("idle_dead", false)
+        else
+            inst.AnimState:PlayAnimation("transform_empty")
+            inst.AnimState:PushAnimation("empty", false)
+        end
+        inst:DoTaskInTime(6 * FRAMES, SpawnDiseasePuff)
+        inst:DoTaskInTime(10 * FRAMES, SetDiseaseBuild)
+    end
 end
 
-local function onrebirthedfn(inst)
-    if inst.components.pickable:CanBePicked() then
-        inst.components.pickable:MakeEmpty()
+local function makediseaseable(inst)
+    if inst.components.diseaseable == nil then
+        inst:AddComponent("diseaseable")
+        inst.components.diseaseable:SetDiseasedFn(ondiseasedfn)
     end
 end
 
 local function ontransplantfn(inst)
     inst.components.pickable:MakeEmpty()
+    makediseaseable(inst)
+    inst.components.diseaseable:RestartNearbySpread()
 end
 
-local function dig_up(inst, chopper)
-    if inst.components.pickable and inst.components.pickable:CanBePicked() then
-        inst.components.lootdropper:SpawnLootPrefab("twigs")
-    end
-    if not inst:HasTag("withered") then
-        local bush = inst.components.lootdropper:SpawnLootPrefab("dug_sapling")
-    else
-        inst.components.lootdropper:SpawnLootPrefab("twigs")
+local function dig_up(inst, worker)
+    if inst.components.pickable ~= nil and inst.components.lootdropper ~= nil then
+        local withered = inst.components.witherable ~= nil and inst.components.witherable:IsWithered()
+        local diseased = inst.components.diseaseable ~= nil and inst.components.diseaseable:IsDiseased()
+
+        if diseased then
+            SpawnDiseasePuff(inst)
+        elseif inst.components.diseaseable ~= nil and inst.components.diseaseable:IsBecomingDiseased() then
+            SpawnDiseasePuff(inst)
+            if worker ~= nil then
+                worker:PushEvent("digdiseasing")
+            end
+        end
+
+        if inst.components.pickable:CanBePicked() then
+            inst.components.lootdropper:SpawnLootPrefab(inst.components.pickable.product)
+        end
+
+        inst.components.lootdropper:SpawnLootPrefab(
+            (withered or diseased) and
+            "twigs" or
+            "dug_sapling"
+        )
     end
     inst:Remove()
 end
 
-local function onpickedfn(inst)
+local function onpickedfn(inst, picker)
     inst.AnimState:PlayAnimation("rustle")
     inst.AnimState:PushAnimation("picked", false)
+    if inst.components.diseaseable ~= nil then
+        if inst.components.diseaseable:IsDiseased() then
+            SpawnDiseasePuff(inst)
+        elseif inst.components.diseaseable:IsBecomingDiseased() then
+            SpawnDiseasePuff(inst)
+            if picker ~= nil then
+                picker:PushEvent("pickdiseasing")
+            end
+        end
+    end
 end
 
 local function onregenfn(inst)
@@ -58,7 +105,11 @@ local function onregenfn(inst)
 end
 
 local function makeemptyfn(inst)
-    if not POPULATING and inst:HasTag("withered") or inst.AnimState:IsCurrentAnimation("idle_dead") then
+    if not POPULATING and
+        (   inst.components.witherable ~= nil and
+            inst.components.witherable:IsWithered() or
+            inst.AnimState:IsCurrentAnimation("idle_dead")
+        ) then
         inst.AnimState:PlayAnimation("dead_to_empty")
         inst.AnimState:PushAnimation("empty", false)
     else
@@ -67,11 +118,20 @@ local function makeemptyfn(inst)
 end
 
 local function makebarrenfn(inst, wasempty)
-    if not POPULATING and inst:HasTag("withered") then
+    if not POPULATING and
+        (   inst.components.witherable ~= nil and
+            inst.components.witherable:IsWithered()
+        ) then
         inst.AnimState:PlayAnimation(wasempty and "empty_to_dead" or "full_to_dead")
         inst.AnimState:PushAnimation("idle_dead", false)
     else
         inst.AnimState:PlayAnimation("idle_dead")
+    end
+end
+
+local function OnPreLoad(inst, data)
+    if data ~= nil and (data.pickable ~= nil and data.pickable.transplanted or data.diseaseable ~= nil) then
+        makediseaseable(inst)
     end
 end
 
@@ -124,16 +184,14 @@ local function fn()
     inst.components.workable:SetOnFinishCallback(dig_up)
     inst.components.workable:SetWorkLeft(1)
 
-    inst:AddComponent("diseaseable")
-    inst.components.diseaseable:SetDiseasedFn(ondiseasedfn)
-    inst.components.diseaseable:SetRebirthedFn(onrebirthedfn)
-    inst.components.diseaseable:SetDiseasedDeathFn(ondiseaseddeathfn)
-
     MakeMediumBurnable(inst)
     MakeSmallPropagator(inst)
     MakeNoGrowInWinter(inst)
     MakeHauntableIgnite(inst)
-    ---------------------   
+    ---------------------
+
+    inst.OnPreLoad = OnPreLoad
+    inst.MakeDiseaseable = makediseaseable
 
     return inst
 end

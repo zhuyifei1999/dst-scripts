@@ -46,7 +46,7 @@ local column_offsets ={
     }
 
 local dev_color = { 80/255, 16/255, 158/255, 1 }
-local mismatch_color = { 130/255, 19/255, 19/255, 1 }
+mismatch_color = { 123/255, 123/255, 123/255, 1 }
 local offline_color = { 19/255, 67/255, 80/255, 1 }
 local normal_color = { 0, 0, 0, 1 }
 
@@ -338,6 +338,21 @@ end
 
 function ServerListingScreen:Join(warnedOffline)
     if self.selected_server ~= nil then
+		if BRANCH == "release" and string.find(string.lower(self.selected_server.tags), STRINGS.TAGS.ANRBETA, 1, true) ~= nil then
+            local beta_popup = PopupDialogScreen(STRINGS.UI.NETWORKDISCONNECT.TITLE.VERSION_MISMATCH_ARNBETA, STRINGS.UI.NETWORKDISCONNECT.BODY.VERSION_MISMATCH_ARNBETA,
+                                {
+                                    {text=STRINGS.UI.MODSSCREEN.MODLINK_MOREINFO, cb = function()
+                                        VisitURL("http://forums.kleientertainment.com/topic/69435-a-new-reign-begins/")
+                                        TheFrontEnd:PopScreen()
+                                    end},
+                                    {text=STRINGS.UI.SERVERLISTINGSCREEN.CANCEL, cb = function()
+                                        TheFrontEnd:PopScreen()
+                                    end},
+                                })
+            self.last_focus = TheFrontEnd:GetFocusWidget()
+            TheFrontEnd:PushScreen(beta_popup)
+			return
+		end
         if not warnedOffline and self.selected_server.offline then 
             local confirm_offline_popup = PopupDialogScreen(STRINGS.UI.SERVERLISTINGSCREEN.OFFLINEWARNINGTITLE, STRINGS.UI.SERVERLISTINGSCREEN.OFFLINEMODEBODYJOIN,
                                 {
@@ -1387,6 +1402,13 @@ function ServerListingScreen:IsValidWithFilters(server)
     -- We don't count this towards unjoinable because you probably could
     -- have joined them previously, and this keeps the count consistent.
     local version_mismatch = APP_VERSION ~= tostring(server.version)
+    local server_is_anr_beta = string.find(string.lower(server.tags), STRINGS.TAGS.ANRBETA, 1, true) ~= nil
+	
+	-- Allow the A New Reign Beta servers to be seen from the release builds.
+    if version_mismatch and BRANCH == "release" and server_is_anr_beta == true then
+		version_mismatch = false
+	end
+	
     local dev_build = APP_VERSION == "-1" or BRANCH == "dev"
     if version_mismatch and not dev_build then
         return false

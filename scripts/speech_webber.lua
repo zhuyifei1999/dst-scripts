@@ -351,6 +351,7 @@ return {
 		POND_ALGAE = "Just a normal pond plant.",
 		GREENSTAFF = "Magic taker-apart-er.",
 		POTTEDFERN = "Mum would like this nice fern.",
+		SENTRYWARD = "Woah! I bet it sees so far!",
 
 		LIGHTER = "Lighter than what?",
 		
@@ -376,8 +377,17 @@ return {
 		SPEAR_WATHGRITHR = "Pointy ouchies!",
 		WATHGRITHRHAT = "Haha! It's way too big for us!",
 		WAXWELLJOURNAL = "I don't think we should play with that...",
-		MOONROCKNUGGET = "Neat!",
 		ROCK_MOON = "Neat!",
+		MOONROCKNUGGET = "Neat!",
+        MOONROCKCRATER = "Haha. It's heavy!",
+
+        REDMOONEYE = "That rock needs a nap. Its eye is all red!",
+        PURPLEMOONEYE = "Now we won't need to leave a trail of breadcrumbs!",
+        GREENMOONEYE = "We could always use more eyes!",
+        ORANGEMOONEYE = "This rock helps me find my friends!",
+        YELLOWMOONEYE = "Even with all our eyes, we'd still lose in a staring contest.",
+        BLUEMOONEYE = "Hey! Did anyone lose an eye?",
+
 		--OBSIDIANMACHETE = "It cooks with every cut!",
 		--MACHETE = "Hyah! Hyah!",
 		--MOWER = "Hyah! Hyah!",

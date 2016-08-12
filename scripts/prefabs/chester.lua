@@ -26,6 +26,7 @@ local prefabs =
     "chester_eyebone",
     "chesterlight",
     "chester_transform_fx",
+    "globalmapicon",
 }
 
 local sounds =
@@ -80,6 +81,7 @@ local function MorphShadowChester(inst)
     inst.AnimState:SetBuild("chester_shadow_build")
     inst:AddTag("spoiler")
     inst.MiniMapEntity:SetIcon("chestershadow.png")
+    inst.components.maprevealable:SetIcon("chestershadow.png")
 
     inst.components.container:WidgetSetup("shadowchester")
 
@@ -96,6 +98,7 @@ local function MorphSnowChester(inst)
     inst.AnimState:SetBuild("chester_snow_build")
     inst:AddTag("fridge")
     inst.MiniMapEntity:SetIcon("chestersnow.png")
+    inst.components.maprevealable:SetIcon("chestersnow.png")
 
     local leader = inst.components.follower.leader
     if leader ~= nil then
@@ -112,10 +115,11 @@ local function MorphNormalChester(inst)
     inst:RemoveTag("fridge")
     inst:RemoveTag("spoiler")
     inst.MiniMapEntity:SetIcon("chester.png")
+    inst.components.maprevealable:SetIcon("chester.png")
 
     inst.components.container:WidgetSetup("chester")
 
-    local leader = inst.components.follower.leader    
+    local leader = inst.components.follower.leader
     if leader ~= nil then
         inst.components.follower.leader:MorphNormalEyebone()
     end
@@ -241,6 +245,7 @@ local function create_chester()
 
     inst.MiniMapEntity:SetIcon("chester.png")
     inst.MiniMapEntity:SetCanUseCache(false)
+    inst.MiniMapEntity:SetDrawOverFogOfWar(true)
 
     inst.AnimState:SetBank("chester")
     inst.AnimState:SetBuild("chester_build")
@@ -260,6 +265,7 @@ local function create_chester()
     end
 
     ------------------------------------------
+    inst:AddComponent("maprevealable")
 
     inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "chester_body"

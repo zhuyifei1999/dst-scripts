@@ -491,8 +491,16 @@ return {
 		WATHGRITHRHAT = "Is strong helm for strong warrior!",
 
 		WAXWELLJOURNAL = "Wolfgang is glad he cannot read!",
-		MOONROCKNUGGET = "But is not cheese?",
 		ROCK_MOON = "But is not cheese?",
+		MOONROCKNUGGET = "But is not cheese?",
+        MOONROCKCRATER = "Rock from moon has hole. Like a cheese!",
+
+        REDMOONEYE = "Marks Wolfgang's way, and good weight for squats!",
+        PURPLEMOONEYE = "Is creepy, but maybe Wolfgang not get lost so much now.",
+        GREENMOONEYE = "Is never blinking.",
+        ORANGEMOONEYE = "Tiny rock watches Wolfgang wherever he go.",
+        YELLOWMOONEYE = "Hmm, maybe Wolfgang try shotput?",
+        BLUEMOONEYE = "Is small, but not crushable.",
 
         TRAILMIX = "Berries and nuts, berries and nuts!",
         HOTCHILI = "Haha, nothing is too spicy for Wolfgang!",
@@ -646,6 +654,7 @@ return {
 		POND_ALGAE = "Plant is so small! Is funny to me.",
 		GREENSTAFF = "This stick has green gem in it.",
 		POTTEDFERN = "Wolfgang worry greenthumb is gangrene.",
+		SENTRYWARD = "Wolfgang thinks is full of secrets.",
 
 		SLURPER = "No! No! Stay off head!",
 		SLURPER_PELT = "It's still moving!",

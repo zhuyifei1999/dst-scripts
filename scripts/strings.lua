@@ -117,15 +117,16 @@ STRINGS=
         READ = "Read",
         MAKEBALLOON = "Inflate",
         SEW = "Sew",
-        GIVE = 
+        GIVE =
         {
             GENERIC  = "Give",
             NOTREADY = "Place",
             READY    = "Sacrifice",
+            SOCKET   = "Socket",
         },
         GIVETOPLAYER = "Give",
         GIVEALLTOPLAYER = "Give All",
-        FEEDPLAYER = "Feed",        
+        FEEDPLAYER = "Feed",
         DROP = 
         {
             GENERIC = "Drop",
@@ -931,6 +932,7 @@ STRINGS=
         THULECITE_PIECES = "Thulecite Fragments",
         RUINSHAT = "Thulecite Crown",
         POTTEDFERN = "Potted Fern",
+        SENTRYWARD = "Ocuvigil",
         UNAGI = "Unagi",
         EEL = "Eel",
         EEL_COOKED = "Cooked Eel",
@@ -1062,6 +1064,14 @@ STRINGS=
         SHADOWMETEOR = "Meteor",
 
         MOONROCKNUGGET = "Moon Rock",
+        MOONROCKCRATER = "Cratered Moonrock",
+
+        REDMOONEYE ="Red Moonlens",
+        PURPLEMOONEYE = "Purple Moonlens",
+        GREENMOONEYE = "Green Moonlens",
+        ORANGEMOONEYE = "Orange Moonlens",
+        YELLOWMOONEYE = "Yellow Moonlens",
+        BLUEMOONEYE = "Blue Moonlens",
 
         LAVAE = "Lavae",
         LAVAE_PET = "Extra-Adorable Lavae",
@@ -1216,6 +1226,7 @@ STRINGS=
         WALL_STONE_ITEM = "Stone wall segments.",
         WALL_HAY_ITEM = "Hay wall segments. Not very sturdy.",
         WALL_MOONROCK_ITEM = "Walls for the lunar loony.",
+        MOONROCKCRATER = "A rock for marking your territory.",
         TURF_WOODFLOOR = "High-quality laminate floorboards.",
         TURF_CHECKERFLOOR = "Nicely checkered marble tiles.",
         TURF_CARPETFLOOR = "Super soft. Smells like Beefalo.",
@@ -1252,6 +1263,7 @@ STRINGS=
         ACCOMPLISHMENT_SHRINE = "Prove your worth as a human being.",
         WALL_RUINS_ITEM = "These walls will take quite a beating.",
         POTTEDFERN = "Make a pot and stick a fern inside.",
+        SENTRYWARD = "The cartographer's most valuable weapon.",
         THULECITE = "Combine tiny bits into a big chunk.",
         RUINSHAT = "Complete with ancient force field!",
         SPIDEREGGSACK = "Get a little help from your friends.",
@@ -2199,6 +2211,7 @@ STRINGS.UI =
         LASTBUILDDAYS = "Last build %d days ago",
         NEXTBUILDIMMINENT = "Next build imminent!",
         NEXTUPDATEDAYS = "Next Update: %d days",
+        BETA_LABEL = "A New Reign Beta",
 
         MOTDTITLE = "Klei Store",
         MOTD = "Check out the latest items in the Klei Store!",
@@ -2562,6 +2575,7 @@ STRINGS.UI =
             ID_NAT_CONNECTION_TO_TARGET_LOST = "Could Not Connect",
             VERSION_MISMATCH_OLD_SERVER = "Version Mismatch",
             VERSION_MISMATCH_OLD_CLIENT = "Version Mismatch",
+            VERSION_MISMATCH_ARNBETA = "A New Reign Beta",
             VERSION_HANDSHAKE_FAILED    = "Version Mismatch",
             ID_INCOMPATIBLE_PROTOCOL_VERSION = "Version Mismatch",
             ID_DST_INCOMPATIBLE_PROTOCOL_VERSION = "Version Mismatch",
@@ -2609,6 +2623,7 @@ STRINGS.UI =
             ID_NAT_CONNECTION_TO_TARGET_LOST = "Unable to connect to the server. Look, I'll be honest. I'm pretty sure our programmers are actual wizards. I just write these things.",
             VERSION_MISMATCH_OLD_SERVER = "The server is on an older version than you. Be a little patient and hopefully it'll catch up soon.",
             VERSION_MISMATCH_OLD_CLIENT = "The server is on a newer version than you. Well, what are you doing just sitting there? Go and get the new version!",
+            VERSION_MISMATCH_ARNBETA = "The server is running the A New Reign Beta version.\nWant to experience new content while its hot?\nYou can join too!",
             VERSION_HANDSHAKE_FAILED    = "The server is on a different version than you. Why can't we all just get along?",
             ID_INCOMPATIBLE_PROTOCOL_VERSION = "The server has a different version than you do. No use crying over split versions! Just make sure everything's on the latest version.",
             ID_DST_INCOMPATIBLE_PROTOCOL_VERSION = "The server has a different version than you do. No use crying over split versions! Just make sure everything's on the latest version.",
@@ -3008,6 +3023,8 @@ STRINGS.UI =
 
         PREFABSWAPS = "Changing Resources",
         PREFABSWAPS_START = "Starting Resource Variety",
+        DISEASE_DELAY = "Disease",
+        PETRIFICATION = "Forest Petrification",
 
         REGROWTH = "World Regrowth",
         BERRYBUSH = "Berry Bushes",
@@ -4657,6 +4674,7 @@ STRINGS.MODS =
 
 STRINGS.TAGS = 
 {
+    ANRBETA = "a_new_reign_beta",
     PVP = "pvp",
     FRIENDSONLY = "friendsonly",
     CLAN = "group",

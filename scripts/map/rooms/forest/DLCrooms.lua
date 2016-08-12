@@ -107,6 +107,7 @@ AddRoom("BGDeciduous", {
 										rock2=0.05,
 
 										sapling=1,
+					                    twiggytree=0.4,
 										grass=0.03,								
 
 										flower=0.75,
@@ -135,6 +136,7 @@ AddRoom("DeepDeciduous", {
 					                {
 					                    grass = .03,
 					                    sapling=1,
+					                    twiggytree=0.4,
 					                    berrybush=.1,
 					                    berrybush_juicy = 0.05,
 
@@ -166,6 +168,7 @@ AddRoom("MagicalDeciduous", {
 					                {
 					                    grass = .03,
 					                    sapling=1,
+					                    twiggytree=0.4,
 					                    berrybush=1,
 					                    berrybush_juicy = 0.05,
 
@@ -197,6 +200,7 @@ AddRoom("DeciduousMole", {
 					                    rock1 = 0.05,
 					                    grass = .05,
 					                    sapling=.8,
+					                    twiggytree=0.32,
 					                    rocks=.05,
 					                    flint=.05,
 					                    molehill=.5,
@@ -223,6 +227,7 @@ AddRoom("MolesvilleDeciduous", {
 					                    molehill=.7,
 					                    grass = .05,
 					                    sapling=.5,
+					                    twiggytree=0.2,
 					                    rocks=.03,
 					                    flint=.03,
 					                    berrybush=.02,
@@ -257,7 +262,8 @@ AddRoom("DeciduousClearing", {
 
 					                    grass = .5,
 					                    sapling = .5,
-					                    berrybush = .5,
+					                    twiggytree = .2,
+										berrybush = .5,
 					                    berrybush_juicy = 0.25,
 
 					                    red_mushroom = .5,
@@ -279,6 +285,7 @@ AddRoom("PondyGrass", {
                                         fireflies = 0.1,
 					                    grass = .05,
 					                    sapling=.2,
+					                    twiggytree=0.08,
 					                    berrybush=.02,
 					                    berrybush_juicy = 0.01,
 					                    pond = 0.15,

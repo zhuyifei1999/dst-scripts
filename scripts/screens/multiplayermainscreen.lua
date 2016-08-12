@@ -9,6 +9,9 @@ local UIAnim = require "widgets/uianim"
 local Widget = require "widgets/widget"
 require "os"
 
+local ANR_BETA_COUNTDOWN_LAYOUT = BRANCH == "staging"
+local ANR_BETA_COUNTDOWN_DATE = nil --{year = 2016, day = 11, month = 8, hour = 13}
+
 local WorldGenScreen = require "screens/worldgenscreen"
 local PopupDialogScreen = require "screens/popupdialog"
 local RedeemDialog = require "screens/redeemdialog"
@@ -18,6 +21,7 @@ local MovieDialog = require "screens/moviedialog"
 local CreditsScreen = require "screens/creditsscreen"
 local ModsScreen = require "screens/modsscreen"
 local Countdown = require "widgets/countdown"
+local CountdownBeta = require "widgets/countdownbeta"
 
 local OptionsScreen = require "screens/optionsscreen"
 local MorgueScreen = require "screens/morguescreen"
@@ -261,7 +265,7 @@ function MultiplayerMainScreen:DoInit()
     self:MakeMainMenu()
 	self:MakeSubMenu()
 
-    self.onlinestatus = self.fg:AddChild(OnlineStatus())
+    self.onlinestatus = self.fixed_root:AddChild(OnlineStatus())
 
 	self:UpdateMOTD()
 	--self:UpdateCountdown()
@@ -287,6 +291,26 @@ function MultiplayerMainScreen:DoInit()
     	self.submenu:SetFocusChangeDir(MOVE_LEFT, self.menu, -1)
         self.submenu:SetFocusChangeDir(MOVE_UP, self.motd.button)
     end
+
+	if ANR_BETA_COUNTDOWN_LAYOUT then
+		self.beta_countdown = self.right_col:AddChild(CountdownBeta())
+		self.beta_countdown:SetScale(.8)
+		self.beta_countdown:SetPosition(0, -120, 0)
+		self.beta_countdown:SetCountdownDate( ANR_BETA_COUNTDOWN_DATE );
+		
+		self.motd:SetScale(.8)
+		self.motd:SetPosition(0, RESOLUTION_Y/2-180, 0)
+
+		if self.beta_countdown.button ~= nil then
+			self.beta_countdown:SetFocusChangeDir(MOVE_DOWN, self.submenu)
+			self.beta_countdown:SetFocusChangeDir(MOVE_UP, self.motd.button)
+			self.submenu:SetFocusChangeDir(MOVE_UP, self.beta_countdown)
+			self.motd.button:SetFocusChangeDir(MOVE_DOWN, self.beta_countdown)
+		end
+
+		self.right_gradient = self.fixed_root:AddChild(TEMPLATES.RightGradient())
+		self.right_gradient:MoveToBack()
+	end
 
     self.menu:SetFocus(#self.menu.items)
 

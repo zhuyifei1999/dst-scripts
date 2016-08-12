@@ -1,15 +1,7 @@
 require("stategraphs/commonstates")
 
-local function getBuild(inst,tail)
-    local build = "grassgecko"
-    if not tail then 
-        build = build .. "_notail_build"
-    end
-    if inst.components.diseaseable ~= nil and inst.components.diseaseable:IsDiseased() then
-        build = build .. "_disease"
-    end
-    --print(build)
-    return build
+local function getBuild(inst, tail)
+    return tail and "grassgecko" or "grassgecko_notail_build"
 end
 
 --hiss_pre, vomit, swipe_pre

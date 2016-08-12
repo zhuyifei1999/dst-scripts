@@ -454,7 +454,7 @@ local function destroystructure(staff, target)
         if caster ~= nil and DESTSOUNDSMAP[v.type] ~= nil then
             caster.SoundEmitter:PlaySound(DESTSOUNDSMAP[v.type])
         end
-        if not string.find(v.type, "gem") then
+        if string.sub(v.type, -3) ~= "gem" then
             --V2C: always at least one in case ingredient_percent is 0%
             local amt = math.max(1, math.ceil(v.amount * ingredient_percent))
             for n = 1, amt do

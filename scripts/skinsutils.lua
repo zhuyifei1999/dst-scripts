@@ -300,6 +300,7 @@ function GetSortedSkinsList()
 
 	local listoflists = 
 	{
+		oddment = {},
 		emote = {},
 		feet = {},
 		hand = {},
@@ -351,9 +352,11 @@ function GetSortedSkinsList()
 	table.sort(listoflists.base, compare)
 	table.sort(listoflists.item, compare)
 	table.sort(listoflists.emote, compare)
+	table.sort(listoflists.oddment, compare)
 	table.sort(listoflists.misc, compare)
 	table.sort(listoflists.unknown, compare)
 
+	skins_list = JoinArrays(skins_list, listoflists.oddment)
 	skins_list = JoinArrays(skins_list, listoflists.emote)
 	skins_list = JoinArrays(skins_list, listoflists.item)
 	skins_list = JoinArrays(skins_list, listoflists.base)

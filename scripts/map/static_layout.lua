@@ -1,5 +1,7 @@
 require "util"
 
+local PrefabSwaps = require("prefabswaps")
+
 local ParseNestedKey -- must define it first so we can recurse
 ParseNestedKey = function(obj, key, value)
 	if #key == 1 then
@@ -50,61 +52,65 @@ local function ConvertStaticLayoutToLayout(layoutsrc, additionalProps)
 						}
 	layout.ground = {}
 
+
 	-- so we can support both 16 wide grids and 64 wide grids from tiled
 	local tilefactor = math.ceil(64/staticlayout.tilewidth)
-	
+
 	-- See \tools\tiled\dont_starve\objecttypes.xml for objects
 	layout.layout = {}
-	
+
 	for layer_idx, layer in ipairs(staticlayout.layers) do
-		if layer.type == "tilelayer" and layer.name == "BG_TILES" then 
+		if layer.type == "tilelayer" and layer.name == "BG_TILES" then
 			local val_per_row = layer.width * (tilefactor-1)
 			local i = val_per_row
 
-			while i < #layer.data do		
-				local data = {}	
+			while i < #layer.data do
+				local data = {}
 				local j = 1
 				while j < layer.width and i+j < #layer.data do
 					table.insert(data, layer.data[i+j])
 					j = j + tilefactor
 				end
-				table.insert(layout.ground, data)	
+				table.insert(layout.ground, data)
 				i = i + val_per_row + layer.width
 			end
-		elseif layer.type == "objectgroup" and layer.name == "FG_OBJECTS" then 
+		elseif layer.type == "objectgroup" and layer.name == "FG_OBJECTS" then
 			for obj_idx, obj in ipairs(layer.objects) do
-				if layout.layout[obj.type] == nil then
-					layout.layout[obj.type] = {}
-				end
-				
-				-- TODO: Check the object properties for other options to substitute here
-				local x = obj.x+obj.width/2
-				x = x/64.0-(staticlayout.width/tilefactor)/2
-				local y = obj.y+obj.height/2
-				y = y/64.0-(staticlayout.height/tilefactor)/2
+                if not PrefabSwaps.IsPrefabInactive(obj.type) then
+                    local prefab = PrefabSwaps.ResolvePrefabProxy(obj.type)
 
-				local width = obj.width/64.0
-				local height = obj.height/64.0
+    				if layout.layout[prefab] == nil then
+    					layout.layout[prefab] = {}
+    				end
 
-				local properties = {}
-				if obj.properties then
-					for k,v in pairs(obj.properties) do
-						local keys = k:split(".")
-						local number_v = tonumber(v)
-						if v == "true" or v == "false" then
-							ParseNestedKey(properties,keys, v == "true")
-						else
-							ParseNestedKey(properties,keys,number_v or v)
-						end
-					end
-					
-					--print("Static Layout Properties for ", layoutsrc)
-					--dumptable(properties,1,10)
+    				-- TODO: Check the object properties for other options to substitute here
+    				local x = obj.x+obj.width/2
+    				x = x/64.0-(staticlayout.width/tilefactor)/2
+    				local y = obj.y+obj.height/2
+    				y = y/64.0-(staticlayout.height/tilefactor)/2
 
-				end
+    				local width = obj.width/64.0
+    				local height = obj.height/64.0
 
-				table.insert(layout.layout[obj.type], {x=x, y=y, properties=properties, width=width, height=height})				
-			
+    				local properties = {}
+    				if obj.properties then
+    					for k,v in pairs(obj.properties) do
+    						local keys = k:split(".")
+    						local number_v = tonumber(v)
+    						if v == "true" or v == "false" then
+    							ParseNestedKey(properties,keys, v == "true")
+    						else
+    							ParseNestedKey(properties,keys,number_v or v)
+    						end
+    					end
+
+    					--print("Static Layout Properties for ", layoutsrc)
+    					--dumptable(properties,1,10)
+
+    				end
+
+    				table.insert(layout.layout[prefab], {x=x, y=y, properties=properties, width=width, height=height})				
+                end
 			end
 
 			if layout.initfn then

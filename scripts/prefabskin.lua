@@ -119,6 +119,18 @@ function torch_init_fn(inst, build_name)
     inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
 end
 
+--------------------------------------------------------------------------
+--[[ Hat skin functions ]]
+--------------------------------------------------------------------------
+
+function hat_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "swap_hat")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
 
 --------------------------------------------------------------------------
 --[[ Bedroll skin functions ]]

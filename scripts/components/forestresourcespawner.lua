@@ -79,21 +79,18 @@ local function DoPrefabRenew(x, z, ents, renewable_set, max)
     end
 
     --Check if this set has a spawnable prefab
-    local prefabswapmanager = inst.components.prefabswapmanager
-    for _, prefab in ipairs(renewable_set.spawns) do
-        if not (prefabswapmanager ~= nil and prefabswapmanager:IsDiseasedPrefab(prefab)) then
-            --Spawn random up to max count
-            for i = math.random(max), 1, -1 do
-                local theta = math.random() * 2 * PI
-                local radius = math.random() * RENEW_RADIUS
-                local x1 = x + radius * math.cos(theta)
-                local z1 = z - radius * math.sin(theta)
-                if inst.Map:CanPlantAtPoint(x1, 0, z1) and
-                    not (RoadManager ~= nil and RoadManager:IsOnRoad(x1, 0, z1)) then
-                    SpawnPrefab(prefab).Transform:SetPosition(x1, 0, z1)
-                end
+    local prefab = renewable_set.spawns[1]
+    if prefab ~= nil then
+        --Spawn random up to max count
+        for i = math.random(max), 1, -1 do
+            local theta = math.random() * 2 * PI
+            local radius = math.random() * RENEW_RADIUS
+            local x1 = x + radius * math.cos(theta)
+            local z1 = z - radius * math.sin(theta)
+            if inst.Map:CanPlantAtPoint(x1, 0, z1) and
+                not (RoadManager ~= nil and RoadManager:IsOnRoad(x1, 0, z1)) then
+                SpawnPrefab(prefab).Transform:SetPosition(x1, 0, z1)
             end
-            return
         end
     end
 end

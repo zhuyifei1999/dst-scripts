@@ -156,11 +156,11 @@ TEMPLATES = {
         return vig
     end,
 
-    ------------------------
-    ------------------------    
-    -- LEFT SIDE GRADIENT --
-    ------------------------
-    ------------------------
+    -------------------------------
+    -------------------------------
+    -- LEFT/RIGHT SIDE GRADIENTS --
+    -------------------------------
+    -------------------------------
 
     -- To be added as a child of the root
     LeftGradient = function()
@@ -175,6 +175,22 @@ TEMPLATES = {
         grad:SetPosition(-.5 * RESOLUTION_X, 0)
 
         return root
+    end,
+
+    -- To be added as a child of the root
+    RightGradient = function()
+        local root = Widget("left_gradient_root")
+        root:SetVAnchor(ANCHOR_MIDDLE)
+        root:SetHAnchor(ANCHOR_MIDDLE)
+        root:SetScaleMode(SCALEMODE_PROPORTIONAL)
+
+        local grad = root:AddChild(Image("images/frontend.xml", "sidemenu_bg.tex"))
+        grad:SetVRegPoint(ANCHOR_MIDDLE)
+        grad:SetHRegPoint(ANCHOR_LEFT)
+        grad:SetPosition(.5 * RESOLUTION_X, 0)
+		grad:SetScale(-1)
+
+        return root      
     end,
 
     ----------------

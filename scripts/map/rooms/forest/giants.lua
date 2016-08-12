@@ -20,7 +20,8 @@ AddRoom("MooseGooseBreedingGrounds", {
 			grass = 0.8,
 			flint = 0.1,
 			sapling = 0.8,
-			evergreen = 1,
+			twiggytree = .32,
+            evergreen = 1,
 			pond = 0.01,
         },
     }

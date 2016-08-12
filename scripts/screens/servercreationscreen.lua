@@ -271,6 +271,10 @@ local function BuildTagsStringHosting(self, worldoptions)
 
     local tagsTable = {}
 
+    if BRANCH == "staging" then
+        table.insert(tagsTable, STRINGS.TAGS.ANRBETA)
+    end
+
     table.insert(tagsTable, self.server_settings_tab:GetGameMode())
 
     if self.server_settings_tab:GetPVP() then
