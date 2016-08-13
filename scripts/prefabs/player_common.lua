@@ -1673,6 +1673,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst:AddComponent("bloomer")
 
         inst:AddComponent("maprevealable")
+        inst.components.maprevealable:SetIconPriority(10)
 
         inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
         ConfigurePlayerLocomotor(inst)

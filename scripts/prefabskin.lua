@@ -180,7 +180,7 @@ function CreatePrefabSkin(name, info)
     prefab_skin.base_prefab         = info.base_prefab or ""
     prefab_skin.ui_preview          = info.ui_preview
     prefab_skin.tags                = info.tags or {}
-    prefab_skin.item_type           = info.item_type or "CHARACTER_SKIN"
+    prefab_skin.inheritance         = info.inheritance
     prefab_skin.init_fn             = info.init_fn
     prefab_skin.build_name          = info.build_name
     prefab_skin.rarity              = info.rarity

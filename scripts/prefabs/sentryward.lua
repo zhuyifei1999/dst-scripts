@@ -9,6 +9,16 @@ local prefabs =
     "globalmapicon",
 }
 
+local function doidleanims(inst)
+    inst.AnimState:PlayAnimation("idle_full_loop2")
+    for i = 1, math.random(3) do
+        inst.AnimState:PushAnimation("idle_full_loop2", false)
+    end
+
+    local anim_num = math.random(4)
+    inst.AnimState:PushAnimation(anim_num == 1 and "idle_full_loop" or ("idle_full_loop"..tostring(anim_num)), false)
+end
+
 local function onhammered(inst)
     inst.components.lootdropper:DropLoot()
     local fx = SpawnPrefab("collapse_small")
@@ -20,18 +30,20 @@ end
 local function onhit(inst)
     if not inst:HasTag("burnt") then
         inst.AnimState:PlayAnimation("hit_full")
-        inst.AnimState:PushAnimation("idle_full_loop2")
     end
 end
 
 local function onbuilt(inst)
     --inst.SoundEmitter:PlaySound("dontstarve/common/nightmareAddFuel")
     inst.AnimState:PlayAnimation("place")
-    inst.AnimState:PushAnimation("idle_full_loop2")
 end
 
 local function onburnt(inst)
     inst.components.maprevealer:Stop()
+    if inst.icon ~= nil then
+        inst.icon:Remove()
+        inst.icon = nil
+    end
 end
 
 local function onsave(inst, data)
@@ -47,8 +59,10 @@ local function onload(inst, data)
 end
 
 local function init(inst)
-    inst.icon = SpawnPrefab("globalmapicon")
-    inst.icon:TrackEntity(inst)
+    if inst.icon == nil and not inst:HasTag("burnt") then
+        inst.icon = SpawnPrefab("globalmapicon")
+        inst.icon:TrackEntity(inst)
+    end
 end
 
 local function fn()
@@ -68,7 +82,7 @@ local function fn()
 
     inst.AnimState:SetBank("sentryward")
     inst.AnimState:SetBuild("sentryward")
-    inst.AnimState:PlayAnimation("idle_full_loop2", false)
+    inst.AnimState:PlayAnimation("idle_full_loop2")
 
     inst:AddTag("structure")
 
@@ -80,6 +94,9 @@ local function fn()
     if not TheWorld.ismastersim then
         return inst
     end
+
+    inst:ListenForEvent("animqueueover", doidleanims)
+    inst.AnimState:SetTime(math.random() * 1.5)
 
     -----------------------
     MakeSmallBurnable(inst, nil, nil, true)
