@@ -6,6 +6,10 @@ local MapRevealable = Class(function(self, inst)
     self.iconpriority = nil
     self.icon = nil
     self.task = nil
+    self.revealsources = {}
+    self._onremovesource = function(source)
+        self:RemoveRevealSource(source)
+    end
 
     self:Start(math.random() * self.refreshperiod)
 end)
@@ -24,13 +28,56 @@ function MapRevealable:SetIconPriority(priority)
     end
 end
 
-function MapRevealable:StartRevealing()
+function MapRevealable:AddRevealSource(source, restriction)
+    if self.revealsources[source] == nil then
+        self.revealsources[source] = { restriction = restriction }
+        if type(source) == "table" and source.entity ~= nil then
+            self.revealsources[source].isentity = true
+            self.inst:ListenForEvent("onremove", self._onremovesource, source)
+        end
+        self:RefreshRevealSources()
+    elseif self.revealsources[source].restriction ~= restriction then
+        self.revealsources[source].restriction = restriction
+        self:RefreshRevealSources()
+    end
+end
+
+function MapRevealable:RemoveRevealSource(source)
+    if self.revealsources[source] ~= nil then
+        if self.revealsources[source].isentity then
+            self.inst:RemoveEventCallback("onremove", self._onremovesource, source)
+        end
+        self.revealsources[source] = nil
+        self:RefreshRevealSources()
+    end
+end
+
+function MapRevealable:RefreshRevealSources()
+    if next(self.revealsources) == nil then
+        self:StopRevealing()
+        return
+    end
+    local restriction
+    for k, v in pairs(self.revealsources) do
+        if v.restriction == nil then
+            self:StartRevealing()
+            return
+        else
+            restriction = v.restriction
+        end
+    end
+    self:StartRevealing(restriction)
+end
+
+function MapRevealable:StartRevealing(restriction)
     if self.icon == nil then
         self.icon = SpawnPrefab("globalmapicon")
         if self.iconpriority ~= nil then
             self.icon.MiniMapEntity:SetPriority(self.iconpriority)
         end
-        self.icon:TrackEntity(self.inst, nil, self.iconname)
+        self.icon:TrackEntity(self.inst, restriction, self.iconname)
+    else
+        self.icon.MiniMapEntity:SetRestriction(restriction or "")
     end
 end
 
@@ -44,9 +91,9 @@ end
 function MapRevealable:Refresh()
     if self.task ~= nil then
         if GetClosestInstWithTag("maprevealer", self.inst, 30) ~= nil then
-            self:StartRevealing()
+            self:AddRevealSource("maprevealer")
         else
-            self:StopRevealing()
+            self:RemoveRevealSource("maprevealer")
         end
     end
 end
@@ -62,13 +109,22 @@ function MapRevealable:Start(delay)
 end
 
 function MapRevealable:Stop()
-    self:StopRevealing()
+    self:RemoveRevealSource("maprevealer")
     if self.task ~= nil then
         self.task:Cancel()
         self.task = nil
     end
 end
 
-MapRevealable.OnRemoveFromEntity = MapRevealable.Stop
+function MapRevealable:OnRemoveFromEntity()
+    self:Stop()
+    local toremove = {}
+    for k, v in pairs(self.revealsources) do
+        table.insert(toremove, k)
+    end
+    for i, v in ipairs(toremove) do
+        self:RemoveRevealSource(v)
+    end
+end
 
 return MapRevealable

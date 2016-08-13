@@ -4,11 +4,6 @@ local assets =
     Asset("ANIM", "anim/swap_compass.zip"),
 }
 
-local prefabs =
-{
-    "globalmapicon",
-}
-
 --[[
 local dirs =
 {
@@ -63,12 +58,9 @@ local function onequip(inst, owner)
     --take a percent of fuel next frame instead of this one, so we can remove the torch properly if it runs out at that point
     inst:DoTaskInTime(0, onequipfueldelta)
 
-    if inst.icon == nil and owner:HasTag("player") then
-        inst.icon = SpawnPrefab("globalmapicon")
-        inst.icon.MiniMapEntity:SetPriority(10)
-        inst.icon:TrackEntity(owner, "compassbearer")
+    if owner.components.maprevealable ~= nil then
+        owner.components.maprevealable:AddRevealSource(inst, "compassbearer")
     end
-
     owner:AddTag("compassbearer")
 end
 
@@ -78,11 +70,9 @@ local function onunequip(inst, owner)
 
     inst.components.fueled:StopConsuming()
 
-    if inst.icon ~= nil then
-        inst.icon:Remove()
-        inst.icon = nil
+    if owner.components.maprevealable ~= nil then
+        owner.components.maprevealable:RemoveRevealSource(inst)
     end
-
     owner:RemoveTag("compassbearer")
 end
 
@@ -160,4 +150,4 @@ local function fn()
     return inst
 end
 
-return Prefab("compass", fn, assets, prefabs)
+return Prefab("compass", fn, assets)
