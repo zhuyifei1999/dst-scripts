@@ -1405,6 +1405,11 @@ function BuildTagsStringCommon(tagsTable)
     local lang_code = TheNet:GetLanguageCode()
     table.insert(tagsTable, 1, SERVER_LANGUAGES_TAGS[lang_code] or lang_code)
 
+    -- Beta tag (forced to front of list)
+    if BRANCH == "staging" and BETA_SERVER_TAGS[CURRENT_BETA] ~= nil then
+        table.insert(tagsTable, 1, BETA_SERVER_TAGS[CURRENT_BETA])
+    end
+
     -- Concat unique tags
     local tagged = {}
     local tagsString = ""

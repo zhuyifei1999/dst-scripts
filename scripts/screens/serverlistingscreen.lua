@@ -47,12 +47,13 @@ local column_offsets ={
 
 local dev_color = { 80/255, 16/255, 158/255, 1 }
 local mismatch_color = { 130/255, 19/255, 19/255, 1 }
+local beta_color = { 80/255, 53/255, 19/255, 1 }
 local offline_color = { 19/255, 67/255, 80/255, 1 }
 local normal_color = { 0, 0, 0, 1 }
 
 local font_size = 35
 if JapaneseOnPS4() then
-    font_size = 35 * 0.75;
+    font_size = 35 * 0.75
 end
 
 local STRING_MAX_LENGTH = 254 -- http://tools.ietf.org/html/rfc5321#section-4.5.3.1
@@ -65,6 +66,10 @@ local intention_images = {
     [INTENTIONS.COMPETITIVE] = { big="competitive.tex", small="playstyle_competitive.tex" },
     [INTENTIONS.MADNESS] = { big="madness.tex", small="playstyle_madness.tex" },
 }
+
+local function ContainsCurrentBetaTag(tags)
+    return BETA_SERVER_TAGS[CURRENT_BETA] ~= nil and string.find(string.lower(tags), BETA_SERVER_TAGS[CURRENT_BETA], 1, true) ~= nil
+end
 
 local ServerListingScreen = Class(Screen, function(self, prev_screen, filters, cb, offlineMode, session_mapping)
     Widget._ctor(self, "ServerListingScreen")
@@ -338,7 +343,20 @@ end
 
 function ServerListingScreen:Join(warnedOffline)
     if self.selected_server ~= nil then
-        if not warnedOffline and self.selected_server.offline then 
+        if BRANCH == "release" and ContainsCurrentBetaTag(self.selected_server.tags) then
+            local beta_popup = PopupDialogScreen(STRINGS.UI.NETWORKDISCONNECT.TITLE.VERSION_MISMATCH_ARNBETA, STRINGS.UI.NETWORKDISCONNECT.BODY.VERSION_MISMATCH_ARNBETA,
+                                {
+                                    {text=STRINGS.UI.MODSSCREEN.MODLINK_MOREINFO, cb = function()
+                                        VisitURL("http://forums.kleientertainment.com/topic/69435-a-new-reign-begins/")
+                                        TheFrontEnd:PopScreen()
+                                    end},
+                                    {text=STRINGS.UI.SERVERLISTINGSCREEN.CANCEL, cb = function()
+                                        TheFrontEnd:PopScreen()
+                                    end},
+                                })
+            self.last_focus = TheFrontEnd:GetFocusWidget()
+            TheFrontEnd:PushScreen(beta_popup)
+        elseif not warnedOffline and self.selected_server.offline then
             local confirm_offline_popup = PopupDialogScreen(STRINGS.UI.SERVERLISTINGSCREEN.OFFLINEWARNINGTITLE, STRINGS.UI.SERVERLISTINGSCREEN.OFFLINEMODEBODYJOIN,
                                 {
                                     {text=STRINGS.UI.SERVERLISTINGSCREEN.OK, cb = function()
@@ -993,6 +1011,7 @@ function ServerListingScreen:MakeServerListWidgets()
 
             widget.version = serverdata.version
             widget.offline = serverdata.offline
+            widget.beta = ContainsCurrentBetaTag(serverdata.tags)
 
             widget.cursor:Show()
 
@@ -1090,7 +1109,7 @@ function ServerListingScreen:MakeServerListWidgets()
             if dev_server then
                 self:SetRowColour(widget, dev_color)
             elseif version_check_failed then
-                self:SetRowColour(widget, mismatch_color)
+                self:SetRowColour(widget, widget.beta and beta_color or mismatch_color)
             else
                 self:SetRowColour(widget, serverdata.offline and offline_color or normal_color)
             end
@@ -1123,7 +1142,7 @@ function ServerListingScreen:GuaranteeSelectedServerHighlighted()
             if dev_server then
                 self:SetRowColour(v, dev_color)
             elseif version_check_failed then 
-                self:SetRowColour(v, mismatch_color)
+                self:SetRowColour(v, v.beta and beta_color or mismatch_color)
             else
                 self:SetRowColour(v, v.offline and offline_color or normal_color)
                 v.NAME:SetFont(NEWFONT)
@@ -1138,7 +1157,7 @@ function ServerListingScreen:GuaranteeSelectedServerHighlighted()
             if dev_server then
                 self:SetRowColour(v, dev_color)
             elseif version_check_failed then
-                self:SetRowColour(v, mismatch_color)
+                self:SetRowColour(v, v.beta and beta_color or mismatch_color)
             else
                 self:SetRowColour(v, v.offline and offline_color or normal_color)
             end
@@ -1383,12 +1402,14 @@ function ServerListingScreen:IsValidWithFilters(server)
     -- Now do checks for servers you can potentially join, but are currently
     -- being filtered due to your settings.
 
-    -- Hide version mismatched servers on live builds
+    -- Hide version mismatched servers (except beta) on live builds
     -- We don't count this towards unjoinable because you probably could
     -- have joined them previously, and this keeps the count consistent.
     local version_mismatch = APP_VERSION ~= tostring(server.version)
+    local beta_server = ContainsCurrentBetaTag(server.tags)
     local dev_build = APP_VERSION == "-1" or BRANCH == "dev"
-    if version_mismatch and not dev_build then
+
+    if version_mismatch and not (beta_server and BRANCH == "release") and not dev_build then
         return false
     end
 

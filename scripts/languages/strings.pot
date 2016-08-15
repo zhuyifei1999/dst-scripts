@@ -73356,6 +73356,11 @@ msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.SERVER_MODS_WORKSHOP_ACCESS_DENIED"
 msgid "You failed to download the required mods from the Steam Workshop because one or more are not visible to you."
 msgstr ""
 
+#. STRINGS.UI.NETWORKDISCONNECT.BODY.SERVER_MODS_WORKSHOP_VERSION_MISMATCH
+msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.SERVER_MODS_WORKSHOP_VERSION_MISMATCH"
+msgid "The server is running mods with an old version. The server owner must update the mods so that new players can join."
+msgstr ""
+
 #. STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_LOGGED_IN_SOMEWHERE_ELSE
 msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_LOGGED_IN_SOMEWHERE_ELSE"
 msgid "Someone has just logged into this server using your account. We can't have clones running around--you'll have to go."
@@ -73371,14 +73376,14 @@ msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_FRIENDS_ONLY_SERVER"
 msgid "Attempted to join a 'friends only' server, but you're not friends with the host. Friendship is not a transitive property."
 msgstr ""
 
-#. STRINGS.UI.NETWORKDISCONNECT.BODY.SERVER_MODS_WORKSHOP_VERSION_MISMATCH
-msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.SERVER_MODS_WORKSHOP_VERSION_MISMATCH"
-msgid "The server is running mods with an old version. The server owner must update the mods so that new players can join."
-msgstr ""
-
 #. STRINGS.UI.NETWORKDISCONNECT.BODY.ID_ALREADY_CONNECTED
 msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.ID_ALREADY_CONNECTED"
 msgid "You are already connected to the server. Maybe share some of that cloning science with the lab, OK?"
+msgstr ""
+
+#. STRINGS.UI.NETWORKDISCONNECT.BODY.APP_OWNERSHIP_CHECK_FAILED
+msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.APP_OWNERSHIP_CHECK_FAILED"
+msgid "Steam says you don't own the game. But you do... right?"
 msgstr ""
 
 #. STRINGS.UI.NETWORKDISCONNECT.BODY.ID_CONNECTION_ATTEMPT_FAILED
@@ -73391,9 +73396,9 @@ msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.ID_NAT_TARGET_UNRESPONSIVE"
 msgid "Unable to connect to the server. Look, I'll be honest. I'm pretty sure our programmers are actual wizards. I just write these things."
 msgstr ""
 
-#. STRINGS.UI.NETWORKDISCONNECT.BODY.APP_OWNERSHIP_CHECK_FAILED
-msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.APP_OWNERSHIP_CHECK_FAILED"
-msgid "Steam says you don't own the game. But you do... right?"
+#. STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_GAME_SESSION_AUTH_FAILED
+msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_GAME_SESSION_AUTH_FAILED"
+msgid "Something fishy is going on... either we couldn't reach the Klei server or you're not who you say you are."
 msgstr ""
 
 #. STRINGS.UI.NETWORKDISCONNECT.BODY.ID_NAT_CONNECTION_TO_TARGET_LOST
@@ -73401,9 +73406,9 @@ msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.ID_NAT_CONNECTION_TO_TARGET_LOST"
 msgid "Unable to connect to the server. Look, I'll be honest. I'm pretty sure our programmers are actual wizards. I just write these things."
 msgstr ""
 
-#. STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_GAME_SESSION_AUTH_FAILED
-msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_GAME_SESSION_AUTH_FAILED"
-msgid "Something fishy is going on... either we couldn't reach the Klei server or you're not who you say you are."
+#. STRINGS.UI.NETWORKDISCONNECT.BODY.VERSION_MISMATCH_ARNBETA
+msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.VERSION_MISMATCH_ARNBETA"
+msgid "The server is running the A New Reign Beta version.\nWant to experience new content while its hot?\nYou can join too!"
 msgstr ""
 
 #. STRINGS.UI.NETWORKDISCONNECT.BODY.INVALID_GAME_SESSION_TOKEN
@@ -73576,6 +73581,11 @@ msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.SERVER_MODS_WORKSHOP_ACCESS_DENIED"
 msgid "Disconnected Due To Missing Mods"
 msgstr ""
 
+#. STRINGS.UI.NETWORKDISCONNECT.TITLE.SERVER_MODS_WORKSHOP_VERSION_MISMATCH
+msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.SERVER_MODS_WORKSHOP_VERSION_MISMATCH"
+msgid "Disconnected Due To Missing Mods"
+msgstr ""
+
 #. STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_DST_LOGGED_IN_SOMEWHERE_ELSE
 msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_DST_LOGGED_IN_SOMEWHERE_ELSE"
 msgid "Duplicate Login"
@@ -73591,14 +73601,14 @@ msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_DST_FRIENDS_ONLY_SERVER"
 msgid "Friends Only"
 msgstr ""
 
-#. STRINGS.UI.NETWORKDISCONNECT.TITLE.SERVER_MODS_WORKSHOP_VERSION_MISMATCH
-msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.SERVER_MODS_WORKSHOP_VERSION_MISMATCH"
-msgid "Disconnected Due To Missing Mods"
-msgstr ""
-
 #. STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_ALREADY_CONNECTED
 msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_ALREADY_CONNECTED"
 msgid "Duplicate Connection"
+msgstr ""
+
+#. STRINGS.UI.NETWORKDISCONNECT.TITLE.APP_OWNERSHIP_CHECK_FAILED
+msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.APP_OWNERSHIP_CHECK_FAILED"
+msgid "Steam Ownership Check Failed"
 msgstr ""
 
 #. STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_CONNECTION_ATTEMPT_FAILED
@@ -73611,9 +73621,9 @@ msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_NAT_TARGET_UNRESPONSIVE"
 msgid "Could Not Connect"
 msgstr ""
 
-#. STRINGS.UI.NETWORKDISCONNECT.TITLE.APP_OWNERSHIP_CHECK_FAILED
-msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.APP_OWNERSHIP_CHECK_FAILED"
-msgid "Steam Ownership Check Failed"
+#. STRINGS.UI.NETWORKDISCONNECT.TITLE.E_UPGRADE
+msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.E_UPGRADE"
+msgid "Version Out of Date"
 msgstr ""
 
 #. STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_NAT_CONNECTION_TO_TARGET_LOST
@@ -73621,9 +73631,9 @@ msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_NAT_CONNECTION_TO_TARGET_LOST"
 msgid "Could Not Connect"
 msgstr ""
 
-#. STRINGS.UI.NETWORKDISCONNECT.TITLE.E_UPGRADE
-msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.E_UPGRADE"
-msgid "Version Out of Date"
+#. STRINGS.UI.NETWORKDISCONNECT.TITLE.VERSION_MISMATCH_ARNBETA
+msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.VERSION_MISMATCH_ARNBETA"
+msgid "A New Reign Beta"
 msgstr ""
 
 #. STRINGS.UI.NETWORKDISCONNECT.TITLE.E_BANNED
@@ -74874,6 +74884,11 @@ msgstr ""
 #. STRINGS.UI.MAINSCREEN.UNLOCKEVERYTHING
 msgctxt "STRINGS.UI.MAINSCREEN.UNLOCKEVERYTHING"
 msgid "Unlock Everything"
+msgstr ""
+
+#. STRINGS.UI.MAINSCREEN.BETA_LABEL
+msgctxt "STRINGS.UI.MAINSCREEN.BETA_LABEL"
+msgid "A New Reign Beta"
 msgstr ""
 
 #. STRINGS.UI.MAINSCREEN.CANT_LOAD_ROG

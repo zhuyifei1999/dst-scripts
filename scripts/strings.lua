@@ -2199,6 +2199,7 @@ STRINGS.UI =
         LASTBUILDDAYS = "Last build %d days ago",
         NEXTBUILDIMMINENT = "Next build imminent!",
         NEXTUPDATEDAYS = "Next Update: %d days",
+        BETA_LABEL = "A New Reign Beta",
 
         MOTDTITLE = "Klei Store",
         MOTD = "Check out the latest items in the Klei Store!",
@@ -2562,6 +2563,7 @@ STRINGS.UI =
             ID_NAT_CONNECTION_TO_TARGET_LOST = "Could Not Connect",
             VERSION_MISMATCH_OLD_SERVER = "Version Mismatch",
             VERSION_MISMATCH_OLD_CLIENT = "Version Mismatch",
+            VERSION_MISMATCH_ARNBETA = "A New Reign Beta",
             VERSION_HANDSHAKE_FAILED    = "Version Mismatch",
             ID_INCOMPATIBLE_PROTOCOL_VERSION = "Version Mismatch",
             ID_DST_INCOMPATIBLE_PROTOCOL_VERSION = "Version Mismatch",
@@ -2609,6 +2611,7 @@ STRINGS.UI =
             ID_NAT_CONNECTION_TO_TARGET_LOST = "Unable to connect to the server. Look, I'll be honest. I'm pretty sure our programmers are actual wizards. I just write these things.",
             VERSION_MISMATCH_OLD_SERVER = "The server is on an older version than you. Be a little patient and hopefully it'll catch up soon.",
             VERSION_MISMATCH_OLD_CLIENT = "The server is on a newer version than you. Well, what are you doing just sitting there? Go and get the new version!",
+            VERSION_MISMATCH_ARNBETA = "The server is running the A New Reign Beta version.\nWant to experience new content while its hot?\nYou can join too!",
             VERSION_HANDSHAKE_FAILED    = "The server is on a different version than you. Why can't we all just get along?",
             ID_INCOMPATIBLE_PROTOCOL_VERSION = "The server has a different version than you do. No use crying over split versions! Just make sure everything's on the latest version.",
             ID_DST_INCOMPATIBLE_PROTOCOL_VERSION = "The server has a different version than you do. No use crying over split versions! Just make sure everything's on the latest version.",
@@ -4657,6 +4660,8 @@ STRINGS.MODS =
 
 STRINGS.TAGS = 
 {
+    --V2C: Don't add beta branch tags here, since they should not be
+    --     localized. Add to constants.lua BETA_SERVER_TAGS instead.
     PVP = "pvp",
     FRIENDSONLY = "friendsonly",
     CLAN = "group",
