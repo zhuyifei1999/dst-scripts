@@ -249,20 +249,26 @@ end
 
 function LootDropper:DropLoot(pt)
     local prefabs = self:GenerateLoot()
-    if not self.inst.components.fueled and self.inst.components.burnable and self.inst.components.burnable:IsBurning() then
-        for k,v in pairs(prefabs) do
-            local cookedAfter = v.."_cooked"
-            local cookedBefore = "cooked"..v
-            if PrefabExists(cookedAfter) then
-                prefabs[k] = cookedAfter
-            elseif PrefabExists(cookedBefore) then
-                prefabs[k] = cookedBefore 
-            else             
-                prefabs[k] = "ash"               
+    if self.inst:HasTag("burnt")
+        or (self.inst.components.fueled == nil and
+            self.inst.components.burnable ~= nil and
+            self.inst.components.burnable:IsBurning()) then
+
+        for k, v in pairs(prefabs) do
+            if PrefabExists(v.."_cooked") then
+                prefabs[k] = v.."_cooked"
+            elseif PrefabExists("cooked"..v) then
+                prefabs[k] = "cooked"..v
+            --V2C: This used to make hammering WHILE burning give ash only
+            --     while hammering AFTER burnt give back good ingredients.
+            --     It *should* ALWAYS return ash based on certain types of
+            --     ingredients (wood), but we'll let them have this one :O
+            --else
+                --prefabs[k] = "ash"
             end
         end
     end
-    for k,v in pairs(prefabs) do
+    for k, v in pairs(prefabs) do
         self:SpawnLootPrefab(v, pt)
     end
 end

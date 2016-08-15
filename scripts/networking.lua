@@ -651,10 +651,6 @@ function UpdateServerTagsString()
 
     table.insert(tagsTable, TheNet:GetDefaultGameMode())
 
-    if BRANCH == "staging" then
-        table.insert(tagsTable, STRINGS.TAGS.ANRBETA)
-    end
-
     if TheNet:GetDefaultPvpSetting() then
         table.insert(tagsTable, STRINGS.TAGS.PVP)
     end

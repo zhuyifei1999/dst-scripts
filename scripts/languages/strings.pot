@@ -8621,24 +8621,19 @@ msgctxt "STRINGS.PIG_TALK_GO_HOME.2"
 msgid "HOME! HOME!"
 msgstr ""
 
-#. STRINGS.TAGS.MULTISERVER
-msgctxt "STRINGS.TAGS.MULTISERVER"
-msgid "multilevel"
-msgstr ""
-
 #. STRINGS.TAGS.LOCATION.CAVE
 msgctxt "STRINGS.TAGS.LOCATION.CAVE"
 msgid "caves"
 msgstr ""
 
+#. STRINGS.TAGS.MULTISERVER
+msgctxt "STRINGS.TAGS.MULTISERVER"
+msgid "multilevel"
+msgstr ""
+
 #. STRINGS.TAGS.VOTE
 msgctxt "STRINGS.TAGS.VOTE"
 msgid "vote"
-msgstr ""
-
-#. STRINGS.TAGS.ANRBETA
-msgctxt "STRINGS.TAGS.ANRBETA"
-msgid "a_new_reign_beta"
 msgstr ""
 
 #. STRINGS.TAGS.LOCAL
@@ -8864,11 +8859,6 @@ msgstr ""
 #. STRINGS.CHARACTER_QUOTES.wes
 msgctxt "STRINGS.CHARACTER_QUOTES.wes"
 msgid "..."
-msgstr ""
-
-#. STRINGS.CHARACTER_QUOTES.wathgrithr
-msgctxt "STRINGS.CHARACTER_QUOTES.wathgrithr"
-msgid "\"All the world's a stage. For me!\""
 msgstr ""
 
 #. STRINGS.CHARACTER_QUOTES.random

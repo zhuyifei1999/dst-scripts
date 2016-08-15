@@ -229,11 +229,7 @@ local function OnBurnt(inst, immediate)
     inst.AnimState:SetRayTestOnBB(true)
     inst:AddTag("burnt")
 
-    if inst.build == "twiggy" then
-        inst.MiniMapEntity:SetIcon("twiggy_burnt.png")
-    else
-        inst.MiniMapEntity:SetIcon("evergreen_burnt.png")
-    end
+    inst.MiniMapEntity:SetIcon(inst.build == "twiggy" and "twiggy_burnt.png" or "evergreen_burnt.png")
 
     if inst.components.timer ~= nil and not inst.components.timer:TimerExists("decay") then
         inst.components.timer:StartTimer("decay", GetRandomWithVariance(GetBuild(inst).regrowth_tuning.DEAD_DECAY_TIME, GetBuild(inst).regrowth_tuning.DEAD_DECAY_TIME*0.5))
@@ -500,12 +496,8 @@ local function make_stump(inst)
         inst.components.growable:StopGrowing()
     end
 
-    if inst.build == "twiggy" then
-        inst.MiniMapEntity:SetIcon("twiggy_stump.png")
-    else
-        inst.MiniMapEntity:SetIcon("evergreen_stump.png")
-    end
-	
+    inst.MiniMapEntity:SetIcon(inst.build == "twiggy" and "twiggy_stump.png" or "evergreen_stump.png")
+
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.DIG)
     inst.components.workable:SetOnFinishCallback(dig_up_stump)
@@ -889,19 +881,17 @@ local function tree(name, build, stage, data)
             --diseaseable (from diseaseable component) added to pristine state for optimization
             --#DISEASE inst:AddTag("diseaseable")
 
+            inst:AddTag("renewable")
+
             inst.MiniMapEntity:SetIcon("twiggy.png")
         else
             --petrifiable (from petrifiable component) added to pristine state for optimization
             inst:AddTag("petrifiable")
 
             inst:AddTag("evergreens")
-            if build == "normal" then
-                inst.MiniMapEntity:SetIcon("evergreen.png")
-            elseif build == "sparse" then
-                inst.MiniMapEntity:SetIcon("evergreen_lumpy.png")
-            end
+            inst.MiniMapEntity:SetIcon(build == "sparse" and "evergreen_lumpy.png" or "evergreen.png")
 
-	        inst:AddTag("shelter")
+            inst:AddTag("shelter")
         end
 
         inst.MiniMapEntity:SetPriority(-1)
@@ -918,11 +908,6 @@ local function tree(name, build, stage, data)
 
         MakeDragonflyBait(inst, 1)
         MakeSnowCoveredPristine(inst)
-
-        if data == "stump" then
-            RemovePhysicsColliders(inst)
-            inst:AddTag("stump")
-        end
 
         inst.entity:SetPristine()
 
@@ -1008,6 +993,10 @@ local function tree(name, build, stage, data)
         end
 
         if data == "stump" then
+            RemovePhysicsColliders(inst)
+            inst:AddTag("stump")
+            inst:RemoveTag("shelter")
+
             inst:RemoveComponent("burnable")
             MakeSmallBurnable(inst)
             inst:RemoveComponent("workable")
@@ -1019,11 +1008,7 @@ local function tree(name, build, stage, data)
             inst.components.workable:SetOnFinishCallback(dig_up_stump)
             inst.components.workable:SetWorkLeft(1)
             inst.AnimState:PlayAnimation(inst.anims.stump)
-            if inst.build == "twiggy" then
-                inst.MiniMapEntity:SetIcon("twiggy_stump.png")
-            else
-                inst.MiniMapEntity:SetIcon("evergreen_stump.png")
-            end
+            inst.MiniMapEntity:SetIcon(build == "twiggy" and "twiggy_stump.png" or "evergreen_stump.png")
         else
             inst.AnimState:SetTime(math.random() * 2)
             if data == "burnt" then

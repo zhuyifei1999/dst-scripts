@@ -1237,6 +1237,7 @@ local function makefn(build, stage, data)
         inst:AddTag("birchnut")
         inst:AddTag("cattoyairborne")
         inst:AddTag("deciduoustree")
+        inst:AddTag("shelter")
 
         inst.build = build
         inst.AnimState:SetBank("tree_leaf")
@@ -1251,13 +1252,6 @@ local function makefn(build, stage, data)
         MakeDragonflyBait(inst, 1)
 
         MakeSnowCoveredPristine(inst)
-
-        if data == "stump" then
-            RemovePhysicsColliders(inst)
-            inst:AddTag("stump")
-        else
-            inst:AddTag("shelter")
-        end
 
         --Sneak these into pristine state for optimization
         inst:AddTag("__combat")
@@ -1348,6 +1342,10 @@ local function makefn(build, stage, data)
         MakeSnowCovered(inst)
 
         if data == "stump" then
+            RemovePhysicsColliders(inst)
+            inst:AddTag("stump")
+            inst:RemoveTag("shelter")
+
             inst:RemoveComponent("burnable")
             MakeSmallBurnable(inst)
             inst:RemoveComponent("workable")
@@ -1359,7 +1357,7 @@ local function makefn(build, stage, data)
             inst.components.workable:SetOnFinishCallback(dig_up_stump)
             inst.components.workable:SetWorkLeft(1)
             inst.AnimState:PlayAnimation(inst.anims.stump)
-		    inst.MiniMapEntity:SetIcon("tree_leaf_stump.png")
+            inst.MiniMapEntity:SetIcon("tree_leaf_stump.png")
         else
             --When POPULATING, season won't be valid yet at this point,
             --but we want this immediate for all later spawns.

@@ -1184,3 +1184,9 @@ COMMAND_RESULT = {
 }
 
 MAX_VOTE_OPTIONS = 6
+
+CURRENT_BETA = "ANRBETA"
+BETA_SERVER_TAGS =
+{
+    ANRBETA = "a_new_reign_beta",
+}

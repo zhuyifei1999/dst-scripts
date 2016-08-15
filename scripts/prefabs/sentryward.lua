@@ -9,16 +9,6 @@ local prefabs =
     "globalmapicon",
 }
 
-local function doidleanims(inst)
-    inst.AnimState:PlayAnimation("idle_full_loop2")
-    for i = 1, math.random(3) do
-        inst.AnimState:PushAnimation("idle_full_loop2", false)
-    end
-
-    local anim_num = math.random(4)
-    inst.AnimState:PushAnimation(anim_num == 1 and "idle_full_loop" or ("idle_full_loop"..tostring(anim_num)), false)
-end
-
 local function onhammered(inst)
     inst.components.lootdropper:DropLoot()
     local fx = SpawnPrefab("collapse_small")
@@ -30,12 +20,14 @@ end
 local function onhit(inst)
     if not inst:HasTag("burnt") then
         inst.AnimState:PlayAnimation("hit_full")
+        inst.AnimState:PushAnimation("idle_full_loop")
     end
 end
 
 local function onbuilt(inst)
-    --inst.SoundEmitter:PlaySound("dontstarve/common/nightmareAddFuel")
+    inst.SoundEmitter:PlaySound("dontstarve/common/sentryward_craft")
     inst.AnimState:PlayAnimation("place")
+    inst.AnimState:PushAnimation("idle_full_loop")
 end
 
 local function onburnt(inst)
@@ -82,7 +74,7 @@ local function fn()
 
     inst.AnimState:SetBank("sentryward")
     inst.AnimState:SetBuild("sentryward")
-    inst.AnimState:PlayAnimation("idle_full_loop2")
+    inst.AnimState:PlayAnimation("idle_full_loop", true)
 
     inst:AddTag("structure")
 
@@ -95,8 +87,7 @@ local function fn()
         return inst
     end
 
-    inst:ListenForEvent("animqueueover", doidleanims)
-    inst.AnimState:SetTime(math.random() * 1.5)
+    inst.AnimState:SetTime(math.random() * 1.8)
 
     -----------------------
     MakeSmallBurnable(inst, nil, nil, true)

@@ -70,7 +70,7 @@ STRINGS=
         wickerbottom = "\"Shhhh! No talking!\"",
         waxwell = "\"Freedom suits me.\"",
         wes = "...",
-        wathgrithr = "\"All the world's a stage. For me!\"",
+        wathgrithr = "\"All the wörld's a stage. För me!\"",
         webber = "\"We're always together, and never alone!\"",
         random = "Anybody could be under that hat.",
     },
@@ -4674,7 +4674,8 @@ STRINGS.MODS =
 
 STRINGS.TAGS = 
 {
-    ANRBETA = "a_new_reign_beta",
+    --V2C: Don't add beta branch tags here, since they should not be
+    --     localized. Add to constants.lua BETA_SERVER_TAGS instead.
     PVP = "pvp",
     FRIENDSONLY = "friendsonly",
     CLAN = "group",
