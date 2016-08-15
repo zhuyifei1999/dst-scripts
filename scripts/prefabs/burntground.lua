@@ -42,54 +42,43 @@ local function OnLoad(inst, data)
     end
 end
 
-local function makeburntground(name, initial_fade)
+local function fn()
+    local inst = CreateEntity()
 
-    local function fn()
-        local inst = CreateEntity()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddNetwork()
 
-        inst.entity:AddTransform()
-        inst.entity:AddAnimState()
-        inst.entity:AddNetwork()
+    inst.AnimState:SetBuild("burntground")
+    inst.AnimState:SetBank("burntground")
+    inst.AnimState:PlayAnimation("idle")
+    inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+    inst.AnimState:SetLayer(LAYER_BACKGROUND)
+    inst.AnimState:SetSortOrder(3)
 
-        inst.AnimState:SetBuild("burntground")
-        inst.AnimState:SetBank("burntground")
-        inst.AnimState:PlayAnimation("idle")
-        inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
-        inst.AnimState:SetLayer(LAYER_BACKGROUND)
-        inst.AnimState:SetSortOrder(3)
+    inst:AddTag("NOCLICK")
+    inst:AddTag("FX")
 
-        inst:AddTag("NOCLICK")
-        inst:AddTag("FX")
+    inst._fade = net_smallbyte(inst.GUID, "burntground._fade", "fadedirty")
+    OnFadeDirty(inst)
 
-        inst._fade = net_smallbyte(inst.GUID, "burntground._fade", "fadedirty")
-        if initial_fade ~= nil then
-            inst._fade:set(initial_fade)
-            inst:SetPrefabName("burntground")
-        end
-        OnFadeDirty(inst)
+    inst.entity:SetPristine()
 
-        inst.entity:SetPristine()
-
-        if not TheWorld.ismastersim then
-            inst:DoPeriodicTask(FADE_INTERVAL, UpdateFade, math.random())
-            inst:ListenForEvent("fadedirty", OnFadeDirty)
-
-            return inst
-        end
-
-        inst:DoPeriodicTask(FADE_INTERVAL, UpdateFade, math.max(0, FADE_INTERVAL - math.random()))
-
-        inst.Transform:SetRotation(math.random() * 360)
-
-        inst.OnSave = OnSave
-        inst.OnLoad = OnLoad
+    if not TheWorld.ismastersim then
+        inst:DoPeriodicTask(FADE_INTERVAL, UpdateFade, math.random())
+        inst:ListenForEvent("fadedirty", OnFadeDirty)
 
         return inst
     end
 
-    return Prefab(name, fn, assets)
-end
-	
+    inst:DoPeriodicTask(FADE_INTERVAL, UpdateFade, math.max(0, FADE_INTERVAL - math.random()))
 
-return makeburntground("burntground"),
-	makeburntground("burntground_faded", 20)
+    inst.Transform:SetRotation(math.random() * 360)
+
+    inst.OnSave = OnSave
+    inst.OnLoad = OnLoad
+
+    return inst
+end
+
+return Prefab("burntground", fn, assets)

@@ -467,12 +467,12 @@ local fx =
     },
     {
         name = "disease_puff",
-        bank = "flies",
-        build = "flies",
-        anim = "flies_puff",
-        sound = "dontstarve/common/flies_appear",
+        bank = "small_puff",
+        build = "smoke_puff_small",
+        anim = "puff",
+        sound = "dontstarve/common/together/diseased/small",
     },
-    --[[{
+    {
         name = "disease_fx_small",
         bank = "disease_fx",
         build = "disease_fx",
@@ -492,7 +492,7 @@ local fx =
         build = "disease_fx",
         anim = "disease_tall",
         sound = "dontstarve/common/together/diseased/big",
-    },]]
+    },
 }
 
 if ACCOMPLISHMENTS_ENABLED then

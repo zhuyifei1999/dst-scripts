@@ -747,8 +747,9 @@ end
 local function fn()
     local inst = CreateEntity()
 
-    inst.entity:AddTransform() --So we can follow parent's sleep state
-    inst.entity:AddMapExplorer()
+    if TheWorld.ismastersim then
+        inst.entity:AddTransform() --So we can follow parent's sleep state
+    end
     inst.entity:AddNetwork()
     inst.entity:Hide()
     inst:AddTag("CLASSIFIED")

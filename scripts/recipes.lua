@@ -130,7 +130,6 @@ Recipe("firestaff", {Ingredient("nightmarefuel", 2), Ingredient("spear", 1), Ing
 Recipe("icestaff", {Ingredient("spear", 1),Ingredient("bluegem", 1)}, RECIPETABS.MAGIC,  TECH.MAGIC_TWO)
 Recipe("telestaff", {Ingredient("nightmarefuel", 4), Ingredient("livinglog", 2), Ingredient("purplegem", 2)}, RECIPETABS.MAGIC, TECH.MAGIC_THREE)
 Recipe("telebase", {Ingredient("nightmarefuel", 4), Ingredient("livinglog", 4), Ingredient("goldnugget", 8)}, RECIPETABS.MAGIC, TECH.MAGIC_THREE, "telebase_placer")
-Recipe("sentryward", {Ingredient("yellowmooneye", 1), Ingredient("compass", 1), Ingredient("boards", 2)}, RECIPETABS.MAGIC, TECH.MAGIC_THREE, "sentryward_placer")
 
 --REFINE
 Recipe("rope", {Ingredient("cutgrass", 3)}, RECIPETABS.REFINE,  TECH.SCIENCE_ONE)
@@ -140,7 +139,6 @@ Recipe("papyrus", {Ingredient("cutreeds", 4)}, RECIPETABS.REFINE,  TECH.SCIENCE_
 Recipe("bearger_fur", {Ingredient("furtuft", 90)}, RECIPETABS.REFINE, TECH.SCIENCE_TWO, nil, nil, nil, 3)
 Recipe("nightmarefuel", {Ingredient("petals_evil", 4)}, RECIPETABS.REFINE, TECH.MAGIC_TWO)
 Recipe("purplegem", {Ingredient("redgem",1), Ingredient("bluegem", 1)}, RECIPETABS.REFINE, TECH.MAGIC_TWO)
-Recipe("moonrockcrater", {Ingredient("moonrocknugget", 3)}, RECIPETABS.REFINE, TECH.SCIENCE_TWO)
 
 --WAR
 Recipe("spear_wathgrithr", {Ingredient("twigs", 2), Ingredient("flint", 2), Ingredient("goldnugget", 2)}, RECIPETABS.WAR, {SCIENCE = 0, MAGIC = 0, ANCIENT = 0}, nil, nil, nil, nil, "valkyrie")
@@ -241,11 +239,5 @@ Recipe("shadowduelist_builder", {Ingredient("nightmarefuel", 2), Ingredient("spe
 Recipe("pighead", {Ingredient("pigskin", 4), Ingredient("twigs", 4)}, nil, TECH.LOST)
 Recipe("mermhead", {Ingredient("spoiled_food", 4), Ingredient("twigs", 4)}, nil, TECH.LOST)
 
-Recipe("purplemooneye", {Ingredient("moonrockcrater", 1), Ingredient("purplegem", 1)}, nil, TECH.LOST)
-Recipe("bluemooneye", {Ingredient("moonrockcrater", 1), Ingredient("bluegem", 1)}, nil, TECH.LOST)
-Recipe("redmooneye", {Ingredient("moonrockcrater", 1), Ingredient("redgem", 1)}, nil, TECH.LOST)
-Recipe("orangemooneye", {Ingredient("moonrockcrater", 1), Ingredient("orangegem", 1)}, nil, TECH.LOST)
-Recipe("yellowmooneye", {Ingredient("moonrockcrater", 1), Ingredient("yellowgem", 1)}, nil, TECH.LOST)
-Recipe("greenmooneye", {Ingredient("moonrockcrater", 1), Ingredient("greengem", 1)}, nil, TECH.LOST)
 
 mod_protect_Recipe = true

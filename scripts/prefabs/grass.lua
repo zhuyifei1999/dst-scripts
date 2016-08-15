@@ -10,38 +10,23 @@ local prefabs =
 {
     "cutgrass",
     "dug_grass",
+    "disease_fx_small",
     "disease_puff",
     "diseaseflies",
-    "spoiled_food",
 }
 
-local function SpawnDiseasePuff(inst)
-    SpawnPrefab("disease_puff").Transform:SetPosition(inst.Transform:GetWorldPosition())
+local function ontransplantfn(inst)
+    inst.components.pickable:MakeBarren()
 end
 
-local function dig_up(inst, worker)
-    if inst.components.pickable ~= nil and inst.components.lootdropper ~= nil then
-        local withered = inst.components.witherable ~= nil and inst.components.witherable:IsWithered()
-        local diseased = inst.components.diseaseable ~= nil and inst.components.diseaseable:IsDiseased()
-
-        if diseased then
-            SpawnDiseasePuff(inst)
-        elseif inst.components.diseaseable ~= nil and inst.components.diseaseable:IsBecomingDiseased() then
-            SpawnDiseasePuff(inst)
-            if worker ~= nil then
-                worker:PushEvent("digdiseasing")
-            end
-        end
-
-        if inst.components.pickable:CanBePicked() then
-            inst.components.lootdropper:SpawnLootPrefab(inst.components.pickable.product)
-        end
-
-        inst.components.lootdropper:SpawnLootPrefab(
-            (withered or diseased) and
-            "cutgrass" or
-            "dug_grass"
-        )
+local function dig_up(inst, chopper)
+    if inst.components.pickable and inst.components.pickable:CanBePicked() then
+        inst.components.lootdropper:SpawnLootPrefab("cutgrass")
+    end
+    if inst.components.pickable and not inst.components.pickable.withered then
+        local bush = inst.components.lootdropper:SpawnLootPrefab("dug_grass")
+    else
+        inst.components.lootdropper:SpawnLootPrefab("cutgrass")
     end
     inst:Remove()
 end
@@ -52,11 +37,7 @@ local function onregenfn(inst)
 end
 
 local function makeemptyfn(inst)
-    if not POPULATING and
-        (   inst.components.witherable ~= nil and
-            inst.components.witherable:IsWithered() or
-            inst.AnimState:IsCurrentAnimation("idle_dead")
-        ) then
+    if not POPULATING and inst:HasTag("withered") or inst.AnimState:IsCurrentAnimation("idle_dead") then
         inst.AnimState:PlayAnimation("dead_to_empty")
         inst.AnimState:PushAnimation("picked", false)
     else
@@ -65,10 +46,7 @@ local function makeemptyfn(inst)
 end
 
 local function makebarrenfn(inst, wasempty)
-    if not POPULATING and
-        (   inst.components.witherable ~= nil and
-            inst.components.witherable:IsWithered()
-        ) then
+    if not POPULATING and inst:HasTag("withered") then
         inst.AnimState:PlayAnimation(wasempty and "empty_to_dead" or "full_to_dead")
         inst.AnimState:PushAnimation("idle_dead", false)
     else
@@ -76,20 +54,9 @@ local function makebarrenfn(inst, wasempty)
     end
 end
 
-local function onpickedfn(inst, picker)
+local function onpickedfn(inst)
     inst.SoundEmitter:PlaySound("dontstarve/wilson/pickup_reeds")
     inst.AnimState:PlayAnimation("picking")
-
-    if inst.components.diseaseable ~= nil then
-        if inst.components.diseaseable:IsDiseased() then
-            SpawnDiseasePuff(inst)
-        elseif inst.components.diseaseable:IsBecomingDiseased() then
-            SpawnDiseasePuff(inst)
-            if picker ~= nil then
-                picker:PushEvent("pickdiseasing")
-            end
-        end
-    end
 
     if inst.components.pickable:IsBarren() then
         inst.AnimState:PushAnimation("empty_to_dead")
@@ -99,51 +66,15 @@ local function onpickedfn(inst, picker)
     end
 end
 
-local function SetDiseaseBuild(inst)
-    inst.AnimState:SetBuild("grass_diseased_build")
+local function ondiseaseddeathfn(inst)
+    SpawnPrefab("disease_puff").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    inst:Remove()
 end
 
 local function ondiseasedfn(inst)
+    inst.AnimState:SetBuild("grass_diseased_build")
+    SpawnPrefab("disease_fx_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
     inst.components.pickable:ChangeProduct("spoiled_food")
-    if POPULATING then
-        SetDiseaseBuild(inst)
-    elseif inst.components.pickable:CanBePicked() then
-        inst.AnimState:PlayAnimation("rustle")
-        inst.AnimState:PushAnimation("idle", true)
-        SpawnDiseasePuff(inst)
-        inst:DoTaskInTime(4 * FRAMES, SetDiseaseBuild)
-    else
-        if inst.components.witherable ~= nil and
-            inst.components.witherable:IsWithered() or
-            inst.components.pickable:IsBarren() then
-            inst.AnimState:PlayAnimation("rustle_dead")
-            inst.AnimState:PushAnimation("idle_dead", false)
-        else
-            inst.AnimState:PlayAnimation("rustle_empty")
-            inst.AnimState:PushAnimation("picked", false)
-        end
-        inst:DoTaskInTime(2 * FRAMES, SpawnDiseasePuff)
-        inst:DoTaskInTime(6 * FRAMES, SetDiseaseBuild)
-    end
-end
-
-local function makediseaseable(inst)
-    if inst.components.diseaseable == nil then
-        inst:AddComponent("diseaseable")
-        inst.components.diseaseable:SetDiseasedFn(ondiseasedfn)
-    end
-end
-
-local function ontransplantfn(inst)
-    inst.components.pickable:MakeBarren()
-    makediseaseable(inst)
-    inst.components.diseaseable:RestartNearbySpread()
-end
-
-local function OnPreLoad(inst, data)
-    if data ~= nil and (data.pickable ~= nil and data.pickable.transplanted or data.diseaseable ~= nil) then
-        makediseaseable(inst)
-    end
 end
 
 local function grass(name, stage)
@@ -163,6 +94,8 @@ local function grass(name, stage)
         inst.AnimState:PlayAnimation("idle", true)
 
         inst:AddTag("renewable")
+
+        inst:AddTag("disease_check_grass")
 
         --witherable (from witherable component) added to pristine state for optimization
         inst:AddTag("witherable")
@@ -207,16 +140,17 @@ local function grass(name, stage)
         inst.components.workable:SetOnFinishCallback(dig_up)
         inst.components.workable:SetWorkLeft(1)
 
+        inst:AddComponent("diseaseable")
+        inst.components.diseaseable:SetDiseasedFn(ondiseasedfn)
+        inst.components.diseaseable:SetDiseasedDeathFn(ondiseaseddeathfn)
+
         ---------------------
 
         MakeMediumBurnable(inst)
         MakeSmallPropagator(inst)
         MakeNoGrowInWinter(inst)
         MakeHauntableIgnite(inst)
-        ---------------------
-
-        inst.OnPreLoad = OnPreLoad
-        inst.MakeDiseaseable = makediseaseable
+        ---------------------   
 
         return inst
     end

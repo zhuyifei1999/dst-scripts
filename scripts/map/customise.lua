@@ -31,12 +31,13 @@ local starting_swaps_descriptions = {
 	{ text = STRINGS.UI.SANDBOXMENU.HIGHLYRANDOM, data = "highly random" },	
 }
 
-local petrification_descriptions = {
-	{ text = STRINGS.UI.SANDBOXMENU.QTYNONE, data = "none" },	
-	{ text = STRINGS.UI.SANDBOXMENU.SLIDESLOW, data = "few" },	
+local swaps_descriptions = {
 	{ text = STRINGS.UI.SANDBOXMENU.SLIDEDEFAULT, data = "default" },		
-	{ text = STRINGS.UI.SANDBOXMENU.SLIDEFAST, data = "many" },	
-	{ text = STRINGS.UI.SANDBOXMENU.SLIDEVERYFAST, data = "max" },	
+	{ text = STRINGS.UI.SANDBOXMENU.QTYNONE, data = "none" },	
+	{ text = STRINGS.UI.SANDBOXMENU.QTYFEW, data = "few" },	
+	{ text = STRINGS.UI.SANDBOXMENU.QTYMEDIUM, data = "normal" },		
+	{ text = STRINGS.UI.SANDBOXMENU.QTYMANY, data = "many" },	
+	{ text = STRINGS.UI.SANDBOXMENU.QTYMAX, data = "max" },	
 }
 
 local speed_descriptions = {
@@ -45,14 +46,6 @@ local speed_descriptions = {
 	{ text = STRINGS.UI.SANDBOXMENU.SLIDEDEFAULT, data = "default" },
 	{ text = STRINGS.UI.SANDBOXMENU.SLIDEFAST, data = "fast" },
 	{ text = STRINGS.UI.SANDBOXMENU.SLIDEVERYFAST, data = "veryfast" },
-}
-
-local disease_descriptions = {
-	{ text = STRINGS.UI.SANDBOXMENU.QTYNONE, data = "none" },
-	{ text = STRINGS.UI.SANDBOXMENU.RANDOM, data = "random" },
-	{ text = STRINGS.UI.SANDBOXMENU.SLIDESLOW, data = "long" },
-	{ text = STRINGS.UI.SANDBOXMENU.SLIDEDEFAULT, data = "default" },
-	{ text = STRINGS.UI.SANDBOXMENU.SLIDEFAST, data = "short" },
 }
 
 local day_descriptions = {
@@ -262,9 +255,8 @@ local GROUP = {
 							["boons"] = {value = "default", enable = false, image = "skeletons.tex", desc = freqency_descriptions, order = 18}, 
 							["regrowth"] = {value = "default", enable = false, image = "regrowth.tex", desc = speed_descriptions, order = 17}, 						
 							["cavelight"] = {value = "default", enable = false, image = "cavelight.tex", desc = speed_descriptions, order = 18, world={"cave"}},							
-                            ["disease_delay"] = {value = "default", enable = false, image = "berrybush_diseased.tex", desc = disease_descriptions, order = 19},
-							["prefabswaps_start"] = {value = "default", enable = false, image = "starting_variety.tex", desc = starting_swaps_descriptions, order = 20},	
-                            ["petrification"] = {value = "default", enable = false, image = "petrified_tree.tex", desc = petrification_descriptions, order = 21}, 												
+							["prefabswaps_start"] = {value = "default", enable = false, image = "starting_variety.tex", desc = starting_swaps_descriptions, order = 19},	
+                            ["prefabswaps"] = {value = "default", enable = false, image = "changing_resources.tex", desc = swaps_descriptions, order = 20}, 												
 						}
 					},
 }

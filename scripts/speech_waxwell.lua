@@ -616,7 +616,6 @@ return {
 		POND_ALGAE = "It's some algae.",
 		GREENSTAFF = "It is a focusing tool.",
 		POTTEDFERN = "How quaint.",
-		SENTRYWARD = "This is a conduit for strong revelatory magicks.",
 
 		THULECITE = "An exceedingly rare but useful material.",
 		ARMORRUINS = "Thulecite meshes so well with nightmare fuel.",
@@ -1564,17 +1563,8 @@ return {
 		ACCOMPLISHMENT_SHRINE = "Even They couldn't build something so devious.",		
         REVIVER = "I'm not sure I really want to give this up.",
         LIFEINJECTOR = "Who would put this filth in their veins?",
-        ROCK_MOON = "\"Moon\" rock.",
         MOONROCKNUGGET = "\"Moon\" rock.",
-        MOONROCKCRATER = "This will make a decent magical vessel.",
-
-        REDMOONEYE = "Its aura can be felt from anywhere. Quite useful.",
-        PURPLEMOONEYE = "A decent enough use of the gem's power, I suppose.",
-        GREENMOONEYE = "It's useful for keeping in contact with my... acquaintances.",
-        ORANGEMOONEYE = "I have a feeling of being watched, even from a considerable distance away.",
-        YELLOWMOONEYE = "A conveniently color-coded place marker.",
-        BLUEMOONEYE = "That reminds me, I must practice my cold glare tonight!",
-
+        ROCK_MOON = "\"Moon\" rock.",
         MULTIPLAYER_PORTAL = "Always did have a flair for the dramatic...",
 		--...Make your jokes...I'll be seeing you soon...
 	},

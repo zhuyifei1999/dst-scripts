@@ -13,8 +13,6 @@ local assets =
     Asset("SOUND", "sound/forest.fsb"),
     Asset("SOUND", "sound/decidous.fsb"),
     Asset("MINIMAP_IMAGE", "tree_leaf"),
-    Asset("MINIMAP_IMAGE", "tree_leaf_burnt"),
-    Asset("MINIMAP_IMAGE", "tree_leaf_stump"),
 }
 
 local prefabs =
@@ -497,8 +495,6 @@ local function make_stump(inst)
     inst:RemoveTag("cattoyairborne")
     inst:AddTag("stump")
 
-    inst.MiniMapEntity:SetIcon("tree_leaf_stump.png")
-	
     if inst.monster_start_task ~= nil then
         inst.monster_start_task:Cancel()
         inst.monster_start_task = nil
@@ -668,8 +664,6 @@ local function onburntchanges(inst)
         inst.leaveschangetask:Cancel()
         inst.leaveschangetask = nil
     end
-
-    inst.MiniMapEntity:SetIcon("tree_leaf_burnt.png")
 
     inst.AnimState:PlayAnimation(inst.anims.burnt, true)
     inst:DoTaskInTime(3*FRAMES, function(inst)
@@ -1237,7 +1231,6 @@ local function makefn(build, stage, data)
         inst:AddTag("birchnut")
         inst:AddTag("cattoyairborne")
         inst:AddTag("deciduoustree")
-        inst:AddTag("shelter")
 
         inst.build = build
         inst.AnimState:SetBank("tree_leaf")
@@ -1252,6 +1245,13 @@ local function makefn(build, stage, data)
         MakeDragonflyBait(inst, 1)
 
         MakeSnowCoveredPristine(inst)
+
+        if data == "stump" then
+            RemovePhysicsColliders(inst)
+            inst:AddTag("stump")
+        else
+            inst:AddTag("shelter")
+        end
 
         --Sneak these into pristine state for optimization
         inst:AddTag("__combat")
@@ -1342,10 +1342,6 @@ local function makefn(build, stage, data)
         MakeSnowCovered(inst)
 
         if data == "stump" then
-            RemovePhysicsColliders(inst)
-            inst:AddTag("stump")
-            inst:RemoveTag("shelter")
-
             inst:RemoveComponent("burnable")
             MakeSmallBurnable(inst)
             inst:RemoveComponent("workable")
@@ -1357,7 +1353,6 @@ local function makefn(build, stage, data)
             inst.components.workable:SetOnFinishCallback(dig_up_stump)
             inst.components.workable:SetWorkLeft(1)
             inst.AnimState:PlayAnimation(inst.anims.stump)
-            inst.MiniMapEntity:SetIcon("tree_leaf_stump.png")
         else
             --When POPULATING, season won't be valid yet at this point,
             --but we want this immediate for all later spawns.

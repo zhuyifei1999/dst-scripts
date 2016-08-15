@@ -639,7 +639,6 @@ return {
 		POND_ALGAE = "Some algae.",
 		GREENSTAFF = "I can see the power sparkling deep within.",
 		POTTEDFERN = "Its growth is stunted by the limits of the pot.",
-		SENTRYWARD = "Grant us the power of sight...",
 
 		THULECITE = "Its presence marks the edge of the unknown.",
 		ARMORRUINS = "A reprieve from death.",
@@ -1556,15 +1555,6 @@ return {
 		WATERMELON_SEEDS = "Perfectly shaped for spitting.",
 		MOONROCKNUGGET = "It's traveled so far...",
 		ROCK_MOON = "It's traveled so far...",
-        MOONROCKCRATER = "It's useless and missing a piece, much like me.",
-
-        REDMOONEYE = "Now Wolfgang won't get \"lost\" when I invite him to play.",
-        PURPLEMOONEYE = "Maybe now I'll lose fewer friends...",
-        GREENMOONEYE = "A green aura hangs over us...",
-        ORANGEMOONEYE = "It sees all, and yet nothing.",
-        YELLOWMOONEYE = "What color were mother's eyes?",
-        BLUEMOONEYE = "Such an icy gaze...",
-
 		TREECLUMP = "Was this placed intentionally?",
 	},
 	DESCRIBE_GENERIC = "Sigh... I don't know.",

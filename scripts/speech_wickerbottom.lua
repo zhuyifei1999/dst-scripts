@@ -236,15 +236,6 @@ return
 
         MOONROCKNUGGET = "Implications of a lunar body? Interesting.",
         ROCK_MOON = "Implications of a lunar body? Interesting.",
-        MOONROCKCRATER = "Would make a useful cartographic instrument with proper embellishments.",
-
-        REDMOONEYE = "The red lens will mark this position.",
-        PURPLEMOONEYE = "A tool to mark our whereabouts.",
-        GREENMOONEYE = "That should help us keep our bearings.",
-        ORANGEMOONEYE = "The fewer search parties we have to organize, the better.",
-        YELLOWMOONEYE = "The geography of this place is less unknown each day.",
-        BLUEMOONEYE = "An excellent marker for group coordination.",
-
         MOLE =
         {
             HELD = "I don't think my pocket is its natural habitat.",
@@ -567,7 +558,6 @@ return
         POND_ALGAE = "It is a good thing this algae has no need for photosynthesis.",
         GREENSTAFF = "It appears to rewind time on an object.",
         POTTEDFERN = "A potted plant.",
-		SENTRYWARD = "Ah! A scrying orb.",
 
         BOOK_BIRDS = "The expurgated version, but it has my favorite: Megascops kennicottii.",
         BOOK_TENTACLES = "Hard to put this one down. It's gripping, frankly.",

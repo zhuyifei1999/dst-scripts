@@ -121,6 +121,10 @@ local function commonfn()
 
     MakeInventoryPhysics(inst)
 
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
     inst.MiniMapEntity:SetIcon("telebase.png")
 
     inst:AddTag("telebase")
@@ -132,12 +136,6 @@ local function commonfn()
     inst.AnimState:SetLayer(LAYER_BACKGROUND)
     inst.AnimState:SetSortOrder(3)
     inst.Transform:SetRotation(45)
-
-    inst.entity:SetPristine()
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
 
     inst.onteleto = teleport_target
     inst.canteleto = validteleporttarget

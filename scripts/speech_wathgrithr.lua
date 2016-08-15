@@ -351,7 +351,6 @@ return {
 		POND_ALGAE = "Ancient flora.",
 		GREENSTAFF = "Twirly green power.",
 		POTTEDFERN = "What are you meant to do with such a thing?",
-		SENTRYWARD = "May the secrets of this land be divulged by the gods.",
 
 		LIGHTER = "It lights the fires of mine heart!",
 		
@@ -1574,16 +1573,8 @@ return {
 		SPEAR_WATHGRITHR = "My comrade in arms!",
         REVIVER = "Feel the passion inside!",
         LIFEINJECTOR = "This will return me to top form.",
-        ROCK_MOON = "A gift from Mani.",
         MOONROCKNUGGET = "A gift from Mani.",
-        MOONROCKCRATER = "Mani's gift may have some use yet!",
-
-        REDMOONEYE = "Odin's eye, grant us wisdom!",
-        PURPLEMOONEYE = "Odin's eye guides our path.",
-        GREENMOONEYE = "Odin gave his eye that we might see.",
-        ORANGEMOONEYE = "May Odin guide us.",
-        YELLOWMOONEYE = "Odin, lend us your sight!",
-        BLUEMOONEYE = "Odin's eye!",
+        ROCK_MOON = "A gift from Mani.",
         --GOLDENMACHETE = "You shall be swung with pride.",
         --MACHETE = "A fine length of blade.",
         --MOWER = "A fine length of blade.",
