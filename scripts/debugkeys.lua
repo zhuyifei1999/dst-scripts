@@ -803,44 +803,7 @@ AddGameDebugKey(KEY_M, function()
 end)
 
 AddGameDebugKey(KEY_N, function()
-    if TheInput:IsKeyDown(KEY_ALT) then
-        local world = TheWorld
-        local area = nil
-        local player = ConsoleCommandPlayer()
-        local x, y, z = player.Transform:GetWorldPosition()
-        for i, node in ipairs(TheWorld.topology.nodes) do
-            if TheSim:WorldPointInPoly(x, z, node.poly) then
-                 area =  i
-            end
-        end
-        if area then
-            world:PushEvent("ms_petrifyforest", { area = area })
-
-            local function startPetrifySound(world)
-                local pos = world.topology.nodes[area].cent
-                SpawnPrefab("petrify_announce").Transform:SetPosition(pos[1], 0, pos[2])
-            end
-            world:DoTaskInTime(TUNING.SEG_TIME, startPetrifySound)
-
-            local function _DoPetrifiedSpeech(world,player)
-                if player then
-                    player.components.talker:Say(GetString(player, "ANNOUNCE_PETRIFED_TREES"))
-                end
-            end
-            for i, v in ipairs(AllPlayers) do
-                world:DoTaskInTime( TUNING.SEG_TIME + 1 + (math.random() * 2), _DoPetrifiedSpeech, v)
-            end
-        end
-    elseif TheInput:IsKeyDown(KEY_SHIFT) then
-        print("OVERRIDING PREFAB SWAPS")
-        TheWorld:PushEvent("ms_setnextprefabswaps", { ["berries"] = "regular berries" })
-    elseif TheInput:IsKeyDown(KEY_CTRL) then
-            local prefabswap_list = require"prefabswap_list"
-
-            prefabswap_list.petrifyForest(TheWorld)
-    else
-        c_gonext()
-    end
+    c_gonext()
 end)
 
 AddGameDebugKey(KEY_S, function()

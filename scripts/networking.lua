@@ -262,7 +262,7 @@ function SerializeUserSession(player, isnewspawn)
         --we don't care about references for player saves
         local playerinfo--[[, refs]] = player:GetSaveRecord()
         local data = DataDumper(playerinfo, nil, BRANCH ~= "dev")
-        TheNet:SerializeUserSession(player.userid, data, isnewspawn == true)
+        TheNet:SerializeUserSession(player.userid, data, isnewspawn == true, player.player_classified ~= nil and player.player_classified.entity or nil)
     end
 end
 

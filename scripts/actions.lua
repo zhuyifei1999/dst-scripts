@@ -826,11 +826,10 @@ ACTIONS.FEEDPLAYER.fn = function(act)
 end
 
 ACTIONS.GIVE.strfn = function(act)
-    local targ = act.target or act.invobject
-    return targ ~= nil
-        and targ:HasTag("altar")
-        and (targ.state:value() and "READY" or "NOTREADY")
-        or nil
+    return act.target ~= nil and (
+        (act.target:HasTag("gemsocket") and act.invobject ~= nil and string.sub(act.invobject.prefab, -3) == "gem" and "SOCKET") or
+        (act.target:HasTag("altar") and (targ.state:value() and "READY" or "NOTREADY"))
+    ) or nil
 end
 
 ACTIONS.STORE.fn = function(act)

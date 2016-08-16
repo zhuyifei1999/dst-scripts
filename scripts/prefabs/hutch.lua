@@ -32,6 +32,7 @@ local prefabs =
     "hutch_move_fx",
     "chester_transform_fx",
     "impact",
+    "globalmapicon",
 }
 
 local sounds =
@@ -258,6 +259,7 @@ local function CreateForm(name, itemtags, build, icon, onenter, onexit)
     local function enterfn(inst)
         inst.AnimState:SetBuild(build)
         inst.MiniMapEntity:SetIcon(icon)
+        inst.components.maprevealable:SetIcon(icon)
         if onenter ~= nil then
             onenter(inst)
         end
@@ -339,6 +341,7 @@ local function create_hutch()
 
     inst.MiniMapEntity:SetIcon("hutch.png")
     inst.MiniMapEntity:SetCanUseCache(false)
+    inst.MiniMapEntity:SetDrawOverFogOfWar(true)
 
     inst.AnimState:SetBank("hutch")
     inst.AnimState:SetBuild("hutch_build")
@@ -361,6 +364,7 @@ local function create_hutch()
     end
 
     ------------------------------------------
+    inst:AddComponent("maprevealable")
 
     inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "hutch_body"

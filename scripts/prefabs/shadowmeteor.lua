@@ -197,7 +197,7 @@ local function SetSize(inst, sz, mod)
             { prefab = "rocks", chance = TUNING.METEOR_CHANCE_INVITEM_RARE * mod },
             { prefab = "flint", chance = TUNING.METEOR_CHANCE_INVITEM_ALWAYS * mod },
             { prefab = "flint", chance = TUNING.METEOR_CHANCE_INVITEM_VERYRARE * mod },
-            { prefab = "moonrocknugget", chance = TUNING.METEOR_CHANCE_INVITEM_SUPERRARE * mod },
+            { prefab = "moonrocknugget", chance = TUNING.METEOR_CHANCE_INVITEM_SOMETIMES * mod },
         }
     elseif sz == "large" then
         local rand = math.random()
@@ -224,6 +224,10 @@ local function SetSize(inst, sz, mod)
         else -- Don't check for chance or mod this one: we need to pick a boulder
             inst.loot =
             {
+	            { 
+                    prefab = "moonrocknugget",
+                    chance = TUNING.METEOR_CHANCE_INVITEM_SOMETIMES * mod
+                },
                 {
                     prefab = "rock1",
                     chance = 1,

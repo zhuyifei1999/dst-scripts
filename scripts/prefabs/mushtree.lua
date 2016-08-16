@@ -85,6 +85,8 @@ local function makestump(inst)
     inst.AnimState:PlayAnimation("idle_stump")
     inst.AnimState:ClearBloomEffectHandle()
 
+    inst.MiniMapEntity:SetIcon("mushroom_tree_stump.png")
+
     inst.Light:Enable(false)
 
     if inst.components.timer and not inst.components.timer:TimerExists("decay") then
@@ -439,6 +441,7 @@ function treeset(name, data, build, bloombuild)
         buildasset,
         bloombuildasset,
         Asset("MINIMAP_IMAGE", data.icon),
+        Asset("MINIMAP_IMAGE", "mushroom_tree_stump"),
     }
 
     local prefabs =

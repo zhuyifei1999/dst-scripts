@@ -7,7 +7,6 @@ AddRoom("TallbirdNests", {
 					                distributepercent = .1,
 					                distributeprefabs=
 					                {
-					                	rock_petrified_tree = 6,
 					                    rock1 = 2,
 					                    rock2 = 2,
 										rock_ice = .5,
