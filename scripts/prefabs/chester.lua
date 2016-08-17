@@ -26,7 +26,7 @@ local prefabs =
     "chester_eyebone",
     "chesterlight",
     "chester_transform_fx",
-    "globalmapicon",
+    "globalmapiconunderfog",
 }
 
 local sounds =
@@ -245,7 +245,6 @@ local function create_chester()
 
     inst.MiniMapEntity:SetIcon("chester.png")
     inst.MiniMapEntity:SetCanUseCache(false)
-    inst.MiniMapEntity:SetDrawOverFogOfWar(true)
 
     inst.AnimState:SetBank("chester")
     inst.AnimState:SetBuild("chester_build")
@@ -266,6 +265,7 @@ local function create_chester()
 
     ------------------------------------------
     inst:AddComponent("maprevealable")
+    inst.components.maprevealable:SetIconPrefab("globalmapiconunderfog")
 
     inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "chester_body"

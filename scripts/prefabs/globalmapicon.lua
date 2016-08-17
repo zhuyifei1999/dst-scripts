@@ -11,7 +11,13 @@ local function TrackEntity(inst, target, restriction, icon)
     if restriction ~= nil then
         inst.MiniMapEntity:SetRestriction(restriction)
     end
-    inst.MiniMapEntity:SetIcon(icon or (target.prefab..".png"))
+    if icon ~= nil then
+        inst.MiniMapEntity:SetIcon(icon)
+    elseif target.MiniMapEntity ~= nil then
+        inst.MiniMapEntity:CopyIcon(target.MiniMapEntity)
+    else
+        inst.MiniMapEntity:SetIcon(target.prefab..".png")
+    end
     inst:ListenForEvent("onremove", function() inst:Remove() end, target)
     inst:DoPeriodicTask(0, UpdatePosition, nil, target)
     UpdatePosition(inst, target)
@@ -27,7 +33,6 @@ local function fn()
     inst:AddTag("CLASSIFIED")
 
     inst.MiniMapEntity:SetCanUseCache(false)
-    inst.MiniMapEntity:SetDrawOverFogOfWar(true)
     inst.MiniMapEntity:SetIsProxy(true)
 
     inst.entity:SetCanSleep(false)
@@ -46,4 +51,13 @@ local function fn()
     return inst
 end
 
-return Prefab("globalmapicon", fn)
+local function overfog_fn()
+    local inst = fn()
+
+    inst.MiniMapEntity:SetDrawOverFogOfWar(true)
+
+    return inst
+end
+
+return Prefab("globalmapicon", overfog_fn),
+    Prefab("globalmapiconunderfog", fn)

@@ -4,6 +4,7 @@ local MapRevealable = Class(function(self, inst)
     self.refreshperiod = 1.5
     self.iconname = nil
     self.iconpriority = nil
+    self.iconprefab = "globalmapicon"
     self.icon = nil
     self.task = nil
     self.revealsources = {}
@@ -15,16 +16,30 @@ local MapRevealable = Class(function(self, inst)
 end)
 
 function MapRevealable:SetIcon(iconname)
-    self.iconname = iconname
-    if self.icon ~= nil then
-        self.icon.MiniMapEntity:SetIcon(iconname)
+    if self.iconname ~= iconname then
+        self.iconname = iconname
+        if self.icon ~= nil then
+            self.icon.MiniMapEntity:SetIcon(iconname)
+        end
     end
 end
 
 function MapRevealable:SetIconPriority(priority)
-    self.iconpriority = priority
-    if self.icon ~= nil then
-        self.icon.MiniMapEntity:SetPriority(priority)
+    if self.iconpriority ~= priority then
+        self.iconpriority = priority
+        if self.icon ~= nil then
+            self.icon.MiniMapEntity:SetPriority(priority)
+        end
+    end
+end
+
+function MapRevealable:SetIconPrefab(prefab)
+    if self.iconprefab ~= prefab then
+        self.iconprefab = prefab
+        if self.icon ~= nil then
+            self:StopRevealing()
+            self:RefreshRevealSources()
+        end
     end
 end
 
@@ -71,7 +86,7 @@ end
 
 function MapRevealable:StartRevealing(restriction)
     if self.icon == nil then
-        self.icon = SpawnPrefab("globalmapicon")
+        self.icon = SpawnPrefab(self.iconprefab)
         if self.iconpriority ~= nil then
             self.icon.MiniMapEntity:SetPriority(self.iconpriority)
         end
