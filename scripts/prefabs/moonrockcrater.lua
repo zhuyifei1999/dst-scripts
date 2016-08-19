@@ -1,6 +1,6 @@
 local assets =
 {
-    Asset("ANIM", "anim/moonrock_crater.zip"),
+    Asset("ANIM", "anim/mooneyes.zip"),
 }
 
 local prefabs =
@@ -29,6 +29,7 @@ local function OnGemGiven(inst, giver, item)
         inst:Remove()
         mooneye.Transform:SetPosition(x, y, z)
     end
+    mooneye.SoundEmitter:PlaySound("dontstarve/common/telebase_gemplace")
 end
 
 local function fn()
@@ -42,9 +43,9 @@ local function fn()
     MakeInventoryPhysics(inst)
 
     inst.AnimState:SetRayTestOnBB(true)
-    inst.AnimState:SetBank("moonrock_crater")
-    inst.AnimState:SetBuild("moonrock_crater")
-    inst.AnimState:PlayAnimation("idle")
+    inst.AnimState:SetBank("mooneyes")
+    inst.AnimState:SetBuild("mooneyes")
+    inst.AnimState:PlayAnimation("crater")
 
     inst:AddTag("gemsocket")
 

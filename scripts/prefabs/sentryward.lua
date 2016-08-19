@@ -53,6 +53,7 @@ end
 local function init(inst)
     if inst.icon == nil and not inst:HasTag("burnt") then
         inst.icon = SpawnPrefab("globalmapicon")
+        inst.icon.MiniMapEntity:SetIsFogRevealer(true)
         inst.icon:TrackEntity(inst)
     end
 end
@@ -75,6 +76,7 @@ local function fn()
     inst.AnimState:SetBank("sentryward")
     inst.AnimState:SetBuild("sentryward")
     inst.AnimState:PlayAnimation("idle_full_loop", true)
+    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
 
     inst:AddTag("structure")
 

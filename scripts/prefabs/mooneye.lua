@@ -55,6 +55,7 @@ local function buildeye(colour)
         inst.AnimState:SetBank("mooneyes")
         inst.AnimState:SetBuild("mooneyes")
         inst.AnimState:PlayAnimation(colour.."gem_idle")
+        inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
 
         inst.entity:SetPristine()
 
