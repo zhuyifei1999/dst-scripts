@@ -29,10 +29,10 @@ local Bait = Class(function(self, inst)
 end)
 
 function Bait:OnRemoveFromEntity()
-    inst:RemoveEventCallback("onremove", OnRemove)
-    inst:RemoveEventCallback("onpickup", OnRemove)
-    inst:RemoveEventCallback("oneaten", OnEaten)
-    inst:RemoveEventCallback("onstolen", OnStolen)
+    self.inst:RemoveEventCallback("onremove", OnRemove)
+    self.inst:RemoveEventCallback("onpickup", OnRemove)
+    self.inst:RemoveEventCallback("oneaten", OnEaten)
+    self.inst:RemoveEventCallback("onstolen", OnStolen)
 end
 
 function Bait:DebugString()

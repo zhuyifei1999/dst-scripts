@@ -656,48 +656,51 @@ local function OnEntitySleep(inst)
 end
 
 local function OnEntityWake(inst)
-    if not inst:HasTag("burnt") and not (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
-        if inst.components.burnable == nil then
-            if inst:HasTag("stump") then
-                MakeSmallBurnable(inst)
-                MakeDragonflyBait(inst, 1)
-            else
-                MakeLargeBurnable(inst, TUNING.TREE_BURN_TIME)
-                MakeDragonflyBait(inst, 1)
-                inst.components.burnable:SetFXLevel(5)
-                inst.components.burnable:SetOnBurntFn(tree_burnt)
+    if inst:HasTag("burnt") then
+        tree_burnt(inst)
+    else
+        local isstump = inst:HasTag("stump")
+
+        if not (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
+            if inst.components.burnable == nil then
+                if isstump then
+                    MakeSmallBurnable(inst)
+                    MakeDragonflyBait(inst, 1)
+                else
+                    MakeLargeBurnable(inst, TUNING.TREE_BURN_TIME)
+                    MakeDragonflyBait(inst, 1)
+                    inst.components.burnable:SetFXLevel(5)
+                    inst.components.burnable:SetOnBurntFn(tree_burnt)
+                end
+            end
+
+            if inst.components.propagator == nil then
+                if isstump then
+                    MakeSmallPropagator(inst)
+                else
+                    MakeMediumPropagator(inst)
+                end
             end
         end
 
-        if inst.components.propagator == nil then
-            if inst:HasTag("stump") then
-                MakeSmallPropagator(inst)
-            else
-                MakeMediumPropagator(inst)
+        if not isstump and GetBuild(inst).rebirth_loot ~= nil then
+            -- This is a failsafe because trees don't actually grow offscreen (or
+            -- rather, never more than one stage) So this will cause trees that
+            -- have been offscreen for multiple stages to drop some loot even if
+            -- their growth hasn't reached there yet.
+            local growthcycletime = inst._lastrebirth
+            for i,data in ipairs(GetBuild(inst).grow_times) do
+                growthcycletime = growthcycletime + data.base
+            end
+            if growthcycletime < GetTime() then
+                DoRebirthLoot(inst)
             end
         end
-    elseif inst:HasTag("burnt") then
-        tree_burnt(inst)
     end
 
     if inst.components.inspectable == nil then
         inst:AddComponent("inspectable")
         inst.components.inspectable.getstatus = inspect_tree
-    end
-
-    if GetBuild(inst).rebirth_loot ~= nil then
-        -- This is a failsafe because trees don't actually grow offscreen (or
-        -- rather, never more than one stage) So this will cause trees that
-        -- have been offscreen for multiple stages to drop some loot even if
-        -- their growth hasn't reached there yet.
-        local growthcycletime = 0
-        for i,data in ipairs(GetBuild(inst).grow_times) do
-            growthcycletime = growthcycletime + data.base
-        end
-        growthcycletime = growthcycletime
-        if inst._lastrebirth + growthcycletime < GetTime() then
-            DoRebirthLoot(inst)
-        end
     end
 end
 

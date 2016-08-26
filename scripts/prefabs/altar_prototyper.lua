@@ -300,7 +300,7 @@ local function complete_doonact(inst)
         inst.SoundEmitter:KillSound("sound")
     end
 
-    inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_3_ding")
+    inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_lvl3_ding")
 end
 
 local function complete_onactivate(inst)
@@ -375,7 +375,7 @@ local function broken_doonact(inst)
         inst.SoundEmitter:KillSound("sound")
     end
 
-    inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_3_ding")
+    inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_lvl3_ding")
     SpawnPrefab("sanity_lower").Transform:SetPosition(inst.Transform:GetWorldPosition())
 end
 
