@@ -501,7 +501,7 @@ function SaveIndex:LoadSlotCharacter(slot)
                         if slotdata.session_id ~= nil then
                             local file = TheNet:GetUserSessionFileInClusterSlot(slot, shard, slotdata.session_id, snapshot, online_mode)
                             if file ~= nil then
-                                TheNet:DeserializeUserSessionInClusterSlot(slot, shard ,file, onreadusersession)
+                                TheSim:GetPersistentStringInClusterSlot(slot, shard ,file, onreadusersession)
                             end
                         end
                     end
@@ -510,7 +510,7 @@ function SaveIndex:LoadSlotCharacter(slot)
         else
             local file = TheNet:GetUserSessionFile(slotdata.session_id, nil, online_mode)
             if file ~= nil then
-                TheNet:DeserializeUserSession(file, onreadusersession)
+                TheSim:GetPersistentString(file, onreadusersession)
             end
         end
     end

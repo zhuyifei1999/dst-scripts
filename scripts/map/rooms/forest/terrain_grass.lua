@@ -7,7 +7,8 @@ AddRoom("BGGrassBurnt", {
 					                distributepercent = .275,
 					                distributeprefabs=
 					                {
-					                	rock1=0.01,
+					                	rock_petrified_tree = 0.03,
+										rock1=0.01,
 										rock2=0.01,
 										spiderden=0.001,
 										beehive=0.003,

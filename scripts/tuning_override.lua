@@ -122,19 +122,6 @@ return
         OverrideTuningVariables(tuning_vars[difficulty])
     end,
 
-    disease_delay = function(difficulty)
-    
-        local tuning_vars = {
-            none      = { DISEASE_DELAY_TIME = 0, DISEASE_DELAY_TIME_VARIANCE = 0 },                                                   -- disabled
-            random    = { DISEASE_DELAY_TIME = TUNING.TOTAL_DAY_TIME * 50, DISEASE_DELAY_TIME_VARIANCE = TUNING.TOTAL_DAY_TIME * 40 }, -- from 10 days to 5 seasons
-            long      = { DISEASE_DELAY_TIME = TUNING.TOTAL_DAY_TIME * 80, DISEASE_DELAY_TIME_VARIANCE = TUNING.TOTAL_DAY_TIME * 20 }, -- around 5 to 6 seasons
-            default   = { },                                                                                                           -- around 2 seasons to 4 seasons
-            short     = { DISEASE_DELAY_TIME = TUNING.TOTAL_DAY_TIME * 35, DISEASE_DELAY_TIME_VARIANCE = TUNING.TOTAL_DAY_TIME * 15 }, -- around 1 seasons to 3 seasons
-        }
-
-        OverrideTuningVariables(tuning_vars[difficulty])
-    end,
-
     perd = function(difficulty)
         local tuning_vars =
         {
@@ -666,16 +653,18 @@ return
         OverrideTuningVariables(tuning_vars[difficulty])
     end,
 
-    petrification = function(difficulty)
+    prefabswaps = function(difficulty)
+        local prefabswap_list = require("prefabswap_list")
         local tuning_vars =
         {
-            none = { PETRIFICATION_CYCLE = { MIN_YEARS = 0, MAX_YEARS = 0 } },
-            few = { PETRIFICATION_CYCLE = { MIN_YEARS = .9, MAX_YEARS = 1.2 } },
-            default = { PETRIFICATION_CYCLE = { MIN_YEARS = .6, MAX_YEARS = .9 } },
-            many = { PETRIFICATION_CYCLE = { MIN_YEARS = .4, MAX_YEARS = .6 } },
-            max = { PETRIFICATION_CYCLE = { MIN_YEARS = .2, MAX_YEARS = .4 } },
-        }
+            default = { NUM_PREFAB_SWAPS = 0 }, -- for now, default is "none". eventually this will be "normal"
 
+            none    = { NUM_PREFAB_SWAPS = 0 },
+            few     = { NUM_PREFAB_SWAPS = 1 },
+            normal  = { NUM_PREFAB_SWAPS = 2 },
+            many    = { NUM_PREFAB_SWAPS = 3 },
+            max     = { NUM_PREFAB_SWAPS = GetTableSize(prefabswap_list:getPrefabSwapsForWorldGen()) },
+        }
         OverrideTuningVariables(tuning_vars[difficulty])
     end,
 }

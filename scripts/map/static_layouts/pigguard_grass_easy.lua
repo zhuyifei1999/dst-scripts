@@ -62,7 +62,7 @@ return {
       objects = {
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 96,
           y = 57,
@@ -73,7 +73,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 96,
           y = 121,
@@ -106,7 +106,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 96,
           y = 105,
@@ -117,7 +117,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 96,
           y = 137,
@@ -128,7 +128,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 96,
           y = 201,
@@ -139,7 +139,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 96,
           y = 73,
@@ -150,7 +150,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 96,
           y = 89,
@@ -183,7 +183,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 128,
           y = 57,
@@ -194,7 +194,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 128,
           y = 185,
@@ -205,7 +205,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 128,
           y = 201,
@@ -216,7 +216,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 128,
           y = 89,
@@ -227,7 +227,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 128,
           y = 153,
@@ -238,7 +238,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 128,
           y = 121,
@@ -249,7 +249,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 128,
           y = 137,
@@ -260,7 +260,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 128,
           y = 169,
@@ -271,7 +271,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 128,
           y = 73,
@@ -282,7 +282,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 128,
           y = 105,
@@ -293,7 +293,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 160,
           y = 57,
@@ -304,7 +304,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 160,
           y = 185,
@@ -315,7 +315,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 160,
           y = 201,
@@ -326,7 +326,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 160,
           y = 153,
@@ -337,7 +337,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 160,
           y = 121,
@@ -348,7 +348,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 160,
           y = 137,
@@ -359,7 +359,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 160,
           y = 169,
@@ -370,7 +370,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 192,
           y = 57,
@@ -381,7 +381,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 192,
           y = 185,
@@ -392,7 +392,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 192,
           y = 201,
@@ -403,7 +403,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 192,
           y = 89,
@@ -414,7 +414,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 192,
           y = 153,
@@ -425,7 +425,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 192,
           y = 121,
@@ -436,7 +436,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 192,
           y = 137,
@@ -447,7 +447,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 192,
           y = 169,
@@ -458,7 +458,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 192,
           y = 73,
@@ -469,7 +469,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 192,
           y = 105,
@@ -480,7 +480,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 64,
           y = 57,
@@ -491,7 +491,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 64,
           y = 185,
@@ -502,7 +502,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 64,
           y = 201,
@@ -513,7 +513,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 64,
           y = 89,
@@ -524,7 +524,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 64,
           y = 153,
@@ -535,7 +535,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 64,
           y = 121,
@@ -546,7 +546,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 64,
           y = 137,
@@ -557,7 +557,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 64,
           y = 169,
@@ -568,7 +568,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 64,
           y = 73,
@@ -579,7 +579,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 64,
           y = 105,

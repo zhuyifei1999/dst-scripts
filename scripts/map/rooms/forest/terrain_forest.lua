@@ -14,6 +14,7 @@ AddRoom("BGCrappyForest", {
 										sapling=0.15,
 										twiggytree = 0.15,
 										ground_twigs = 0.06,
+										rock_petrified_tree = 0.024,
 										rock1=0.008,
 										rock2=0.008,
 										evergreen_sparse=1.5,
@@ -41,6 +42,7 @@ AddRoom("BGForest", {
 										ground_twigs = 0.06,										
 										berrybush=0.005,
 										berrybush_juicy = 0.0025,
+										rock_petrified_tree = 0.012,
 										rock1=0.004,
 										rock2=0.004,
 										evergreen=1.5,
@@ -66,6 +68,7 @@ AddRoom("BGDeepForest", {
 					                distributeprefabs=
 					                {
 										spiderden=0.05,
+										rock_petrified_tree = 0.012,
 										rock1=0.004,
 										rock2=0.004,
 										evergreen=4.5,
@@ -165,6 +168,7 @@ AddRoom("Forest", {
 					                {
                                         fireflies = 0.2,
 										--evergreen = 6,
+										rock_petrified_tree = 0.015,
 					                    rock1 = 0.05,
 					                    grass = .05,
 					                    sapling=.8,
@@ -190,6 +194,7 @@ AddRoom("ForestMole", {
 					                {
                                         fireflies = 0.2,
 					                    --evergreen = 6,
+					                    rock_petrified_tree = 0.015,
 					                    rock1 = 0.05,
 					                    grass = .05,
 					                    sapling=.8,
@@ -217,6 +222,7 @@ AddRoom("CrappyForest", {
 					                {
                                         fireflies = 0.2,
 					                    evergreen_sparse = 6,
+					                    rock_petrified_tree = 0.015,
 					                    rock1 = 0.05,
 					                    grass = .05,
 					                    sapling=.8,
@@ -240,6 +246,7 @@ AddRoom("SpiderForest", {
 					                distributeprefabs=
 					                {
 					                    evergreen_sparse = 6,
+					                    rock_petrified_tree = 0.15,
 					                    rock1 = 0.05,
 					                    sapling = .05,
 										twiggytree = 0.05,

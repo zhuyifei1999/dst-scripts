@@ -675,7 +675,6 @@ function Story:GenerateNodesFromTasks()
 									countprefabs = {
 										spawnpoint=1,
 										sapling=1,
-					                    twiggytree=1,
 										flint=1,
 										berrybush=1, 
 										berrybush_juicy = 0.5,

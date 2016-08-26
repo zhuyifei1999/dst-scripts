@@ -42,50 +42,61 @@ local function OnDropped(inst)
     inst.sg:GoToState("stunned")
 end
 
-local function ChooseItem()
-    local mercy_items =
-    {
-        "flint",
-        "flint",
-        "flint",
-        "twigs",
-        "twigs",
-        "grass",
-    }
-    return mercy_items[math.random(#mercy_items)]
+local function SeedSpawnTest()
+    return not TheWorld.state.iswinter
 end
 
-local function ChooseSeeds()
-    return not TheWorld.state.iswinter and "seeds" or nil
-end
+local function chooseItem()
 
-local function SpawnPrefabChooser(inst)
-    if TheWorld.state.cycles <= 3 then
-        -- The item drop is for drop-in players, players from the start of the game have to forage like normal
-        return ChooseSeeds()
-    end
+    local items = {"flint"}
 
-    local x, y, z = inst.Transform:GetWorldPosition()
-    local players = FindPlayersInRange(x, y, z, 20, true)
+    local swaps  = TheWorld.prefabswapstatus
+    if swaps ~= nil then
+        for k,v in pairs(swaps)do
+            for i,set in ipairs(v)do
 
-    -- Give item if only fresh players are nearby
-    local oldestplayer = -1
-    for i, player in ipairs(players) do
-        if player.components.age ~= nil then
-            local playerage = player.components.age:GetAgeInDays()
-            if playerage >= 3 then
-                return ChooseSeeds()
-            elseif playerage > oldestplayer then
-                oldestplayer = playerage
+                if set.status == "active" and set.mercy_items then
+                    for t,item in ipairs(set.mercy_items)do
+                        table.insert(items,item)
+                    end
+                end
             end
         end
     end
 
-    -- Lower chance for older players to get item
-    return oldestplayer >= 0
-        and math.random() < .35 - oldestplayer * .1
-        and ChooseItem()
-        or ChooseSeeds()
+    return items[math.random(#items)]
+end
+
+local function SpawnPrefabChooser(inst)
+    if TheWorld.state.cycles <= 3 then
+        -- The flint drop is for drop-in players, players from the start of the game have to forage like normal
+        return "seeds"
+    end
+
+    local x,y,z = inst.Transform:GetWorldPosition()
+    local players = FindPlayersInRange(x, y, z, 20, true)
+
+    -- only give flint if only fresh players are nearby
+    local oldestplayer = -1
+    for i,player in ipairs(players) do
+        if player.components.age ~= nil then
+            oldestplayer = math.max(oldestplayer, player.components.age:GetAgeInDays())
+        end
+    end
+
+
+    if oldestplayer < 3 then
+        local r = math.random()
+        local item = "seeds"
+
+        if (oldestplayer == 0 and r < 0.35) or (oldestplayer == 1 and r < 0.25)  or (oldestplayer == 2 and r < 0.15) then
+            item = chooseItem()
+        end
+
+        return item
+    else
+        return "seeds"
+    end
 end
 
 local function makebird(name, soundname)
@@ -203,6 +214,7 @@ local function makebird(name, soundname)
         inst.components.periodicspawner:SetPrefab(SpawnPrefabChooser)
         inst.components.periodicspawner:SetDensityInRange(20, 2)
         inst.components.periodicspawner:SetMinimumSpacing(8)
+        inst.components.periodicspawner:SetSpawnTestFn(SeedSpawnTest)
         
         inst:ListenForEvent("ontrapped", OnTrapped)
         inst:ListenForEvent("attacked", OnAttacked)

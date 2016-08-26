@@ -11,6 +11,8 @@ local clothing_assets =
 	Asset("DYNAMIC_ANIM", "anim/dynamic/body_cardigan_red_cardinal.zip"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/body_cardigan_teal_jade.zip"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/body_cardigan_white_ghost.zip"),
+	Asset("DYNAMIC_ANIM", "anim/dynamic/body_expo_letterman_yellow_beige.zip"),
+	Asset("DYNAMIC_ANIM", "anim/dynamic/body_expo_sweater_blue_agean.zip"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/body_flannel_blue_snowbird.zip"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/body_flannel_green_napier.zip"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/body_flannel_orange_lumberjack.zip"),

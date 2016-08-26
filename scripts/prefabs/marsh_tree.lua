@@ -2,8 +2,6 @@ local assets =
 {
     Asset("ANIM", "anim/tree_marsh.zip"),
 	Asset("MINIMAP_IMAGE", "marshtree"),
-    Asset("MINIMAP_IMAGE", "marshtree_stump"),
-    Asset("MINIMAP_IMAGE", "marshtree_burnt"),
 }
 
 local prefabs =
@@ -43,7 +41,6 @@ local function set_stump(inst)
     end
     RemovePhysicsColliders(inst)
     inst:AddTag("stump")
-    inst.MiniMapEntity:SetIcon("marshtree_stump.png")
 end
 
 local function dig_up_stump(inst, chopper)
@@ -92,7 +89,6 @@ local function OnBurnt(inst)
     inst.components.workable:SetOnFinishCallback(chop_down_burnt_tree)
     inst.AnimState:PlayAnimation("burnt_idle", true)
     inst:AddTag("burnt")
-    inst.MiniMapEntity:SetIcon("marshtree_burnt.png")
 end
 
 local function inspect_tree(inst)

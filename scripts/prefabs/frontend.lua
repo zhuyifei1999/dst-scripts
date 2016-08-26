@@ -84,8 +84,6 @@ local assets =
 
     Asset("ANIM", "anim/chest_bg.zip"),
 
-    Asset("ANIM", "anim/puff_spawning.zip"),
-
     --Credits screen
     Asset("SOUND", "sound/gramaphone.fsb"),
 

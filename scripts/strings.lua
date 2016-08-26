@@ -70,7 +70,7 @@ STRINGS=
         wickerbottom = "\"Shhhh! No talking!\"",
         waxwell = "\"Freedom suits me.\"",
         wes = "...",
-        wathgrithr = "\"All the wörld's a stage. För me!\"",
+        wathgrithr = "\"All the world's a stage. For me!\"",
         webber = "\"We're always together, and never alone!\"",
         random = "Anybody could be under that hat.",
     },
@@ -117,16 +117,15 @@ STRINGS=
         READ = "Read",
         MAKEBALLOON = "Inflate",
         SEW = "Sew",
-        GIVE =
+        GIVE = 
         {
             GENERIC  = "Give",
             NOTREADY = "Place",
             READY    = "Sacrifice",
-            SOCKET   = "Socket",
         },
         GIVETOPLAYER = "Give",
         GIVEALLTOPLAYER = "Give All",
-        FEEDPLAYER = "Feed",
+        FEEDPLAYER = "Feed",        
         DROP = 
         {
             GENERIC = "Drop",
@@ -932,7 +931,6 @@ STRINGS=
         THULECITE_PIECES = "Thulecite Fragments",
         RUINSHAT = "Thulecite Crown",
         POTTEDFERN = "Potted Fern",
-        SENTRYWARD = "Ocuvigil",
         UNAGI = "Unagi",
         EEL = "Eel",
         EEL_COOKED = "Cooked Eel",
@@ -1064,14 +1062,6 @@ STRINGS=
         SHADOWMETEOR = "Meteor",
 
         MOONROCKNUGGET = "Moon Rock",
-        MOONROCKCRATER = "Cratered Moonrock",
-
-        REDMOONEYE ="Red Moonlens",
-        PURPLEMOONEYE = "Purple Moonlens",
-        GREENMOONEYE = "Green Moonlens",
-        ORANGEMOONEYE = "Orange Moonlens",
-        YELLOWMOONEYE = "Yellow Moonlens",
-        BLUEMOONEYE = "Blue Moonlens",
 
         LAVAE = "Lavae",
         LAVAE_PET = "Extra-Adorable Lavae",
@@ -1226,7 +1216,6 @@ STRINGS=
         WALL_STONE_ITEM = "Stone wall segments.",
         WALL_HAY_ITEM = "Hay wall segments. Not very sturdy.",
         WALL_MOONROCK_ITEM = "Walls for the lunar loony.",
-        MOONROCKCRATER = "A rock for marking your territory.",
         TURF_WOODFLOOR = "High-quality laminate floorboards.",
         TURF_CHECKERFLOOR = "Nicely checkered marble tiles.",
         TURF_CARPETFLOOR = "Super soft. Smells like Beefalo.",
@@ -1263,7 +1252,6 @@ STRINGS=
         ACCOMPLISHMENT_SHRINE = "Prove your worth as a human being.",
         WALL_RUINS_ITEM = "These walls will take quite a beating.",
         POTTEDFERN = "Make a pot and stick a fern inside.",
-        SENTRYWARD = "The cartographer's most valuable weapon.",
         THULECITE = "Combine tiny bits into a big chunk.",
         RUINSHAT = "Complete with ancient force field!",
         SPIDEREGGSACK = "Get a little help from your friends.",
@@ -3023,8 +3011,6 @@ STRINGS.UI =
 
         PREFABSWAPS = "Changing Resources",
         PREFABSWAPS_START = "Starting Resource Variety",
-        DISEASE_DELAY = "Disease",
-        PETRIFICATION = "Forest Petrification",
 
         REGROWTH = "World Regrowth",
         BERRYBUSH = "Berry Bushes",

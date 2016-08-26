@@ -69,6 +69,22 @@ CLOTHING =
 		torso_tuck = "untucked",
 		rarity = "Classy",
 	},
+	body_expo_letterman_yellow_beige =
+	{
+		type = "body",
+		symbol_overrides = { "torso", "arm_upper", "arm_lower", "arm_lower_cuff", },
+		override_build = "body_expo_letterman_yellow_beige",
+		torso_tuck = "untucked",
+		rarity = "Spiffy",
+	},
+	body_expo_sweater_blue_agean =
+	{
+		type = "body",
+		symbol_overrides = { "torso", "arm_upper", "arm_lower", "arm_lower_cuff", },
+		override_build = "body_expo_sweater_blue_agean",
+		torso_tuck = "untucked",
+		rarity = "Spiffy",
+	},
 	body_flannel_blue_snowbird =
 	{
 		type = "body",

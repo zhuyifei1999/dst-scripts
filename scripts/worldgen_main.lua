@@ -74,7 +74,7 @@ local rooms = require("map/rooms")
 local tasksets = require("map/tasksets")
 local forest_map = require("map/forest_map")
 local startlocations = require("map/startlocations")
-local PrefabSwaps = require("prefabswaps")
+
 
 local moddata = json.decode(GEN_MODDATA)
 if moddata then
@@ -312,7 +312,6 @@ local function AddSetPeices(level)
 
 end
 
-
 function GenerateNew(debug, world_gen_data)
 
     print("Generating world with these parameters:")
@@ -325,20 +324,12 @@ function GenerateNew(debug, world_gen_data)
 
     print(string.format("\n#######\n#\n# Generating %s Mode Level\n#\n#######\n", world_gen_data.level_type))
 
-    assert(level.location ~= nil, "Level must specify a location!")
-    local prefab = level.location
-
-    PrefabSwaps.SelectPrefabSwaps(prefab, level.overrides)
-    --[[
-    --debugging
-    PrefabSwaps.SelectPrefabSwaps(prefab, level.overrides, {
-        ["berries"] = "juicy berries",
-    })
-    ]]
-
     level:ChooseTasks(tasks.taskdefinitions)
     AddSetPeices(level)
     level:ChooseSetPieces()
+
+    assert(level.location ~= nil, "Level must specify a location!")
+    local prefab = level.location
 
     local choose_tasks = level:GetTasksForLevel()
 

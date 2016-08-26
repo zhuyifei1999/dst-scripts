@@ -15,7 +15,6 @@ AddRoom("SinkholeForest", {
         {
             grass = 1,
             sapling = .8,
-            twiggytree = .32,
             evergreen = 6.3,
             fireflies = .1,
             cavelight = 0.5,
@@ -40,7 +39,6 @@ AddRoom("SinkholeCopses", {
         {
             grass = 1,
             sapling = .8,
-            twiggytree = .32,
             evergreen = .3,
             cave_fern = .75,
             berrybush = .2,
@@ -65,7 +63,6 @@ AddRoom("SparseSinkholes", {
         {
             grass = 1,
             sapling = .8,
-            twiggytree = .32,
             evergreen = .3,
             cave_fern = .75,
             fireflies = .1,
@@ -91,7 +88,6 @@ AddRoom("SinkholeOasis", {
         {
             grass = 1,
             sapling = .8,
-            twiggytree = .32,
             pond = .05,
             stalagmite = 0.03,
             cave_fern = .75,
@@ -138,7 +134,6 @@ local bgsinkhole = {
         {
             grass = 1,
             sapling = .8,
-            twiggytree = .32,
             evergreen = .3,
             cave_fern = .75,
             fireflies = .1,

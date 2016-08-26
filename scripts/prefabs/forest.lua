@@ -115,6 +115,10 @@ local prefabs =
     "chester",
     "grassgekko",
     "petrify_announce",
+
+    --Set piece spawners
+    "sps_berrybush",
+    "sps_berrybush_juicy",
 }
 
 local monsters =
@@ -215,7 +219,7 @@ local function master_postinit(inst)
     inst:AddComponent("forestresourcespawner")
     inst:AddComponent("regrowthmanager")
     inst:AddComponent("desolationspawner")
-    inst:AddComponent("forestpetrification")
+    inst:AddComponent("prefabswapmanager") 
 
     if METRICS_ENABLED then
         inst:AddComponent("worldoverseer")
