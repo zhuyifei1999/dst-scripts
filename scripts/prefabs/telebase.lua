@@ -99,14 +99,48 @@ end
 
 local function OnBuilt(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
-    for k, v in pairs(telebase_parts) do
+    local rot = (45 - inst.Transform:GetRotation()) * DEGREES
+    local sin_rot = math.sin(rot)
+    local cos_rot = math.cos(rot)
+    for i, v in ipairs(telebase_parts) do
         local part = inst.components.objectspawner:SpawnObject(v.part)
-        part.Transform:SetPosition(x + v.x, 0, z + v.z)
+        part.Transform:SetPosition(x + v.x * cos_rot - v.z * sin_rot, 0, z + v.z * cos_rot + v.x * sin_rot)
     end
 
     for k, v in pairs(inst.components.objectspawner.objects) do
         v:Hide()
         v:DoTaskInTime(math.random() * 0.5, RevealPart)
+    end
+end
+
+local function createplacerpart()
+    local inst = CreateEntity()
+
+    inst:AddTag("placer")
+    inst:AddTag("NOCLICK")
+    --[[Non-networked entity]]
+    inst.entity:SetCanSleep(false)
+    inst.persists = false
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+
+    inst.AnimState:SetBank("staff_purple_base")
+    inst.AnimState:SetBuild("staff_purple_base")
+    inst.AnimState:PlayAnimation("idle_empty")
+
+    return inst
+end
+
+local function placerdecor(inst)
+    local rot = 45 * DEGREES
+    local sin_rot = math.sin(rot)
+    local cos_rot = math.cos(rot)
+    for i, v in ipairs(telebase_parts) do
+        local part = createplacerpart()
+        part.Transform:SetPosition(v.x * cos_rot - v.z * sin_rot, 0, v.z * cos_rot + v.x * sin_rot)
+        part.entity:SetParent(inst.entity)
+        inst.components.placer:LinkEntity(part)
     end
 end
 
@@ -131,7 +165,8 @@ local function commonfn()
     inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
     inst.AnimState:SetLayer(LAYER_BACKGROUND)
     inst.AnimState:SetSortOrder(3)
-    inst.Transform:SetRotation(45)
+
+    --inst.Transform:SetRotation(45)
 
     inst.entity:SetPristine()
 
@@ -166,4 +201,4 @@ local function commonfn()
 end
 
 return Prefab("telebase", commonfn, assets, prefabs),
-    MakePlacer("telebase_placer", "staff_purple_base_ground", "staff_purple_base_ground", "idle")
+    MakePlacer("telebase_placer", "staff_purple_base_ground", "staff_purple_base_ground", "idle", true, nil, nil, nil, 90, nil, placerdecor)
