@@ -4,7 +4,7 @@ local Wisecracker = Class(function(self, inst)
     self.inlight = true
 
     inst:ListenForEvent("oneat",
-        function(inst, data) 
+        function(inst, data)
             if data.food ~= nil and data.food.components.edible ~= nil then
                 if data.food.prefab == "spoiled_food" then
                     inst.components.talker:Say(GetString(inst, "ANNOUNCE_EAT", "SPOILED"))
@@ -124,6 +124,14 @@ local Wisecracker = Class(function(self, inst)
 
     inst:ListenForEvent("mountwounded", function(inst, data)
         inst.components.talker:Say(GetString(inst, "ANNOUNCE_MOUNT_LOWHEALTH"))
+    end)
+
+    inst:ListenForEvent("pickdiseasing", function(inst)
+        inst.components.talker:Say(GetString(inst, "ANNOUNCE_PICK_DISEASE_WARNING"))
+    end)
+
+    inst:ListenForEvent("digdiseasing", function(inst)
+        inst.components.talker:Say(GetString(inst, "ANNOUNCE_DIG_DISEASE_WARNING"))
     end)
 end)
 

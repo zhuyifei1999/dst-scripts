@@ -29,7 +29,6 @@ AddRoom("Wormhole_Plains", {
 					                distributeprefabs= {
 					                    grass = 3,
 										rocks = 2,
-										rock_petrified_tree = 0.15,
 										rock1 = 0.5,
 										rock2 = 0.5,
 									},
@@ -46,6 +45,7 @@ AddRoom("Wormhole_Burnt", {
 					                distributeprefabs= {
 					                    grass = 0.5,
 										sapling = 0.5,
+					                    twiggytree = 0.2,
 										rocks = 3,
 										evergreen = 7,
 									},
@@ -65,6 +65,7 @@ AddRoom("Wormhole", {
 					                distributeprefabs= {
 					                    grass = 1,
 										sapling = 1,
+					                    twiggytree = 0.4,
 										rocks = 3,
 										evergreen_normal = 1,
 										evergreen_short = 5,
@@ -83,6 +84,7 @@ AddRoom("Sinkhole", { -- This room is used to tag for the caves - it will be rem
 					                distributeprefabs= {
 					                    grass = 1,
 										sapling = 1,
+					                    twiggytree = 0.4,
 										rocks = 3,
 										evergreen_normal = 1,
 										evergreen_short = 5,
@@ -101,6 +103,7 @@ AddRoom("GrassySinkhole", {
 					                distributeprefabs= {
 					                    grass = 1,
 										sapling = 1,
+					                    twiggytree = 0.4,
 										rocks = 3,
 										deciduoustree = 7,
 					                }

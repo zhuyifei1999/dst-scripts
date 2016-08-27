@@ -7,18 +7,24 @@ local assets =
 
     Asset("SOUND", "sound/forest.fsb"),
     Asset("MINIMAP_IMAGE", "evergreen_lumpy"),
+
+    Asset("MINIMAP_IMAGE", "evergreen_burnt"),
+    Asset("MINIMAP_IMAGE", "evergreen_stump"),
 }
 
 local twiggy_assets =
 {
     Asset("ANIM", "anim/twiggy_build.zip"), --build
-    Asset("ANIM", "anim/twiggy_diseased_build.zip"), --build
+    --#DISEASE Asset("ANIM", "anim/twiggy_diseased_build.zip"), --build
     Asset("ANIM", "anim/twiggy_short_normal.zip"),
     Asset("ANIM", "anim/twiggy_tall_old.zip"),
-    Asset("ANIM", "anim/twiggy_to_diseased.zip"),
+    --#DISEASE Asset("ANIM", "anim/twiggy_to_diseased.zip"),
 
     Asset("SOUND", "sound/forest.fsb"),
     Asset("MINIMAP_IMAGE", "twiggy"),
+
+    Asset("MINIMAP_IMAGE", "twiggy_burnt"),
+    Asset("MINIMAP_IMAGE", "twiggy_stump"),
 }
 
 local prefabs =
@@ -33,10 +39,11 @@ local prefabs =
     "rock_petrified_tree_med",
     "rock_petrified_tree_tall",
     "rock_petrified_tree_old",
-    "disease_puff",
-    "disease_fx_small",
-    "disease_fx",
-    "disease_fx_tall",
+    "petrified_tree_fx_short",
+    "petrified_tree_fx_normal",
+    "petrified_tree_fx_tall",
+    "petrified_tree_fx_old",
+    "petrified_trunk_break_fx",
 }
 
 local twiggy_prefabs =
@@ -45,17 +52,17 @@ local twiggy_prefabs =
     "twigs",
     "twiggy_nut",
     "charcoal",
-    "disease_fx_small",
-    "disease_fx",
-    "disease_fx_tall",
-    "diseaseflies",
-    "green_leaves_chop",
+    --#DISEASE "diseaseflies",
+    --#DISEASE "disease_flies_puff",
+    --#DISEASE "green_leaves_chop",
 }
 
+--[[--#DISEASE
 SetSharedLootTable( 'diseaseTree',
 {
     {'twigs',        0.125},
 })
+]]
 
 local builds =
 {
@@ -91,7 +98,6 @@ local builds =
         file="twiggy_build",
         file_bank = "twiggy",
         file_disease = "twiggy_diseased_build",
-        file_disease_bank = "twiggy",
         prefab_name="twiggytree",
         regrowth_product="twiggy_nut_sapling",
         regrowth_tuning=TUNING.EVERGREEN_REGROWTH,
@@ -101,7 +107,6 @@ local builds =
         tall_loot = {"log", "twigs","twigs","twiggy_nut","twiggy_nut"},
         drop_pinecones=false,
         rebirth_loot = {loot="twigs", max=2},
-        disease_fx = "green_leaves_chop",
         chop_camshake_delay=20*FRAMES,
     },
 }
@@ -119,7 +124,8 @@ local function makeanims(stage)
         burnt="burnt_"..stage,
         chop_burnt="chop_burnt_"..stage,
         idle_chop_burnt="idle_chop_burnt_"..stage,
-        transform = "transform_"..stage,
+        --#DISEASE transform = "transform_"..stage,
+        --#DISEASE transform_stump = "transform_stump_"..stage,
     }
 end
 
@@ -139,11 +145,23 @@ local old_anims =
     burnt="burnt_tall",
     chop_burnt="chop_burnt_tall",
     idle_chop_burnt="idle_chop_burnt_tall",
-    transform="transform_old",
+    --#DISEASE transform="transform_old",
+    --#DISEASE transform_stump = "transform_stump_old",
 }
+
+--[[--#DISEASE 
+local function SpawnDiseasePuff(inst)
+    SpawnPrefab("disease_puff").Transform:SetPosition(inst.Transform:GetWorldPosition())
+end
+]]
 
 local function dig_up_stump(inst, chopper)
     inst.components.lootdropper:SpawnLootPrefab("log")
+    --[[--#DISEASE 
+    if inst.components.diseaseable ~= nil and inst.components.diseaseable:IsDiseased() then
+        SpawnDiseasePuff(inst)
+    end
+    ]]
     inst:Remove()
 end
 
@@ -158,7 +176,7 @@ local function chop_down_burnt_tree(inst, chopper)
     inst:ListenForEvent("animover", inst.Remove)
     inst.components.lootdropper:SpawnLootPrefab("charcoal")
     inst.components.lootdropper:DropLoot()
-    if inst.pineconetask then
+    if inst.pineconetask ~= nil then
         inst.pineconetask:Cancel()
         inst.pineconetask = nil
     end
@@ -177,7 +195,11 @@ local function OnBurnt(inst, immediate)
         inst:RemoveComponent("propagator")
         inst:RemoveComponent("growable")
         inst:RemoveComponent("hauntable")
-        inst:RemoveComponent("diseaseable")
+        if inst.components.petrifiable ~= nil then
+            inst:RemoveComponent("petrifiable")
+        --#DISEASE elseif inst.components.diseaseable ~= nil then
+        --#DISEASE     inst:RemoveComponent("diseaseable")
+        end
         inst:RemoveTag("shelter")
         MakeHauntableWork(inst)
 
@@ -207,6 +229,8 @@ local function OnBurnt(inst, immediate)
     inst.AnimState:SetRayTestOnBB(true)
     inst:AddTag("burnt")
 
+    inst.MiniMapEntity:SetIcon(inst.build == "twiggy" and "twiggy_burnt.png" or "evergreen_burnt.png")
+
     if inst.components.timer ~= nil and not inst.components.timer:TimerExists("decay") then
         inst.components.timer:StartTimer("decay", GetRandomWithVariance(GetBuild(inst).regrowth_tuning.DEAD_DECAY_TIME, GetBuild(inst).regrowth_tuning.DEAD_DECAY_TIME*0.5))
     end
@@ -234,19 +258,11 @@ local function DoRebirthLoot(inst)
 end
 
 local function PushSway(inst)
-    if math.random() > .5 then
-        inst.AnimState:PushAnimation(inst.anims.sway1, true)
-    else
-        inst.AnimState:PushAnimation(inst.anims.sway2, true)
-    end
+    inst.AnimState:PushAnimation(math.random() > .5 and inst.anims.sway1 or inst.anims.sway2, true)
 end
 
 local function Sway(inst)
-    if math.random() > .5 then
-        inst.AnimState:PlayAnimation(inst.anims.sway1, true)
-    else
-        inst.AnimState:PlayAnimation(inst.anims.sway2, true)
-    end
+    inst.AnimState:PlayAnimation(math.random() > .5 and inst.anims.sway1 or inst.anims.sway2, true)
 end
 
 local function SetShort(inst)
@@ -258,7 +274,9 @@ local function SetShort(inst)
 
     inst.components.lootdropper:SetLoot(GetBuild(inst).short_loot)
 
-    inst:AddTag("shelter")
+    if inst.build ~= "twiggy" then
+	    inst:AddTag("shelter")
+	end
 
     Sway(inst)
 end
@@ -279,7 +297,9 @@ local function SetNormal(inst)
 
     inst.components.lootdropper:SetLoot(GetBuild(inst).normal_loot)
 
-    inst:AddTag("shelter")
+    if inst.build ~= "twiggy" then
+	    inst:AddTag("shelter")
+	end
 
     Sway(inst)
 end
@@ -298,7 +318,9 @@ local function SetTall(inst)
 
     inst.components.lootdropper:SetLoot(GetBuild(inst).tall_loot)
 
-    inst:AddTag("shelter")
+    if inst.build ~= "twiggy" then
+	    inst:AddTag("shelter")
+	end
 
     Sway(inst)
 end
@@ -339,7 +361,7 @@ end
 local function inspect_tree(inst)
     return (inst:HasTag("burnt") and "BURNT")
         or (inst:HasTag("stump") and "CHOPPED")
-        or (inst:HasTag("diseased") and "DISEASED")
+        --#DISEASE or (inst:HasTag("diseased") and "DISEASED")
         or nil
 end
 
@@ -436,8 +458,7 @@ local function spawn_leif(target)
     --assert(GetBuild(target).leif ~= nil)
     local leif = SpawnPrefab(GetBuild(target).leif)
     local scale = target.leifscale
-    local r,g,b,a = target.AnimState:GetMultColour()
-    leif.AnimState:SetMultColour(r,g,b,a)
+    leif.AnimState:SetMultColour(target.AnimState:GetMultColour())
 
     --we should serialize this?
     leif.components.locomotor.walkspeed = leif.components.locomotor.walkspeed*scale
@@ -475,6 +496,8 @@ local function make_stump(inst)
         inst.components.growable:StopGrowing()
     end
 
+    inst.MiniMapEntity:SetIcon(inst.build == "twiggy" and "twiggy_stump.png" or "evergreen_stump.png")
+
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.DIG)
     inst.components.workable:SetOnFinishCallback(dig_up_stump)
@@ -483,11 +506,6 @@ local function make_stump(inst)
     if inst.components.timer and not inst.components.timer:TimerExists("decay") then
         inst.components.timer:StartTimer("decay", GetRandomWithVariance(GetBuild(inst).regrowth_tuning.DEAD_DECAY_TIME, GetBuild(inst).regrowth_tuning.DEAD_DECAY_TIME*0.5))
     end
-end
-
-local function finish_chop_down_diseased_tree(inst)
-    SpawnPrefab("disease_puff").Transform:SetPosition(inst.Transform:GetWorldPosition())
-    inst:Remove()
 end
 
 local function chop_down_tree(inst, chopper)
@@ -519,38 +537,38 @@ local function chop_down_tree(inst, chopper)
         inst:DoTaskInTime(GetBuild(inst).chop_camshake_delay, chop_down_twiggy_shake)
     end
 
+    --[[--#DISEASE
     if inst.components.diseaseable ~= nil and inst.components.diseaseable:IsDiseased() then
-        inst:AddTag("NOCLICK")
-        inst.persists = false
-        inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength(), finish_chop_down_diseased_tree)
-    else
-        make_stump(inst)
-        inst.AnimState:PushAnimation(inst.anims.stump)
+        SpawnDiseasePuff(inst)
+    end
+    ]]
 
-        if GetBuild(inst).leif ~= nil then
-            local days_survived = TheWorld.state.cycles
-            if days_survived >= TUNING.LEIF_MIN_DAY then
-                if math.random() <= TUNING.LEIF_PERCENT_CHANCE then
+    make_stump(inst)
+    inst.AnimState:PushAnimation(inst.anims.stump)
 
-                    local numleifs = 1
-                    if days_survived > 30 then
-                        numleifs = math.random(2)
-                    elseif days_survived > 80 then
-                        numleifs = math.random(3)
-                    end
+    if GetBuild(inst).leif ~= nil then
+        local days_survived = TheWorld.state.cycles
+        if days_survived >= TUNING.LEIF_MIN_DAY then
+            if math.random() <= TUNING.LEIF_PERCENT_CHANCE then
 
-                    for k = 1,numleifs do
-                        local target = FindEntity(inst, TUNING.LEIF_MAXSPAWNDIST, find_leif_spawn_target, { "evergreens", "tree" }, { "leif", "stump", "burnt" })
-                        if target ~= nil then
-                            target.noleif = true
-                            target.leifscale = GetGrowthStages(target)[target.components.growable.stage].leifscale or 1
-                            target.chopper = chopper
-                            target:DoTaskInTime(1 + math.random() * 3, spawn_leif)
-                        end
+                local numleifs = 1
+                if days_survived > 30 then
+                    numleifs = math.random(2)
+                elseif days_survived > 80 then
+                    numleifs = math.random(3)
+                end
+
+                for k = 1,numleifs do
+                    local target = FindEntity(inst, TUNING.LEIF_MAXSPAWNDIST, find_leif_spawn_target, { "evergreens", "tree" }, { "leif", "stump", "burnt" })
+                    if target ~= nil then
+                        target.noleif = true
+                        target.leifscale = GetGrowthStages(target)[target.components.growable.stage].leifscale or 1
+                        target.chopper = chopper
+                        target:DoTaskInTime(1 + math.random() * 3, spawn_leif)
                     end
                 end
             end
-        end 
+        end
     end
 end
 
@@ -716,19 +734,29 @@ local STAGE_PETRIFY_PREFABS =
     "rock_petrified_tree_tall",
     "rock_petrified_tree_old",
 }
-local function dopetrify(inst, stage)
+local STAGE_PETRIFY_FX =
+{
+    "petrified_tree_fx_short",
+    "petrified_tree_fx_normal",
+    "petrified_tree_fx_tall",
+    "petrified_tree_fx_old",
+}
+local function dopetrify(inst, stage, instant)
     local x, y, z = inst.Transform:GetWorldPosition()
+    local r, g, b = inst.AnimState:GetMultColour()
     inst:Remove()
     --remap anim
     local rock = SpawnPrefab(STAGE_PETRIFY_PREFABS[stage])
     if rock ~= nil then
+        rock.AnimState:SetMultColour(r, g, b, 1)
         rock.Transform:SetPosition(x, 0, z)
-        rock.SoundEmitter:PlaySound("dontstarve/common/together/petrified/post")
-        SpawnPrefab(
-            (stage > 2 and "disease_fx_tall") or
-            (stage > 1 and "disease_fx") or
-            "disease_fx_small"
-        ).Transform:SetPosition(x, y, z)
+        --sound is now part of the fx
+        --rock.SoundEmitter:PlaySound("dontstarve/common/together/petrified/post")
+        if not instant then
+            local fx = SpawnPrefab(STAGE_PETRIFY_FX[stage])
+            fx.Transform:SetPosition(x, y, z)
+            fx:InheritColour(r, g, b)
+        end
     end
 end
 
@@ -739,70 +767,82 @@ local STAGE_PETRIFY_ANIMS =
     "petrify_tall",
     "petrify_old",
 }
-local function ondiseasedfn_evergreen(inst)
+local function onpetrifiedfn_evergreen(inst)
     if inst.components.growable ~= nil and not inst:HasTag("stump") then
         local stage = inst.components.growable.stage
         if STAGE_PETRIFY_ANIMS[stage] ~= nil then
-            inst.AnimState:PlayAnimation(STAGE_PETRIFY_ANIMS[stage])
-            inst.SoundEmitter:PlaySound("dontstarve/common/together/petrified/pre")
-            inst:AddTag("NOCLICK")
-            inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength(), dopetrify, stage)
-            inst.components.diseaseable:Stop()
+            if POPULATING then
+                dopetrify(inst, stage, true)
+            else
+                inst.AnimState:PlayAnimation(STAGE_PETRIFY_ANIMS[stage])
+                inst.SoundEmitter:PlaySound("dontstarve/common/together/petrified/pre")
+                inst:AddTag("NOCLICK")
+                inst.noleif = true
+                inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength(), dopetrify, stage)
+            end
             return
         end
     end
-    inst.components.diseaseable:ForceDeath()
-end
-
-local function ondiseaseddeathfn_evergreen(inst)
-    --Should normally only reach here for stumps
-    --Others would've petrified
-    SpawnPrefab("disease_puff").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    if not POPULATING then
+        local fx = SpawnPrefab("petrified_trunk_break_fx")
+        fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+        if inst.AnimState:IsCurrentAnimation("stump_short") then
+            fx.Transform:SetScale(.75, .75, .75)
+        elseif inst.AnimState:IsCurrentAnimation("stump_tall") then
+            fx.Transform:SetScale(1.2, 1.2, 1.2)
+        end
+        fx:InheritColour(inst.AnimState:GetMultColour())
+    end
     inst:Remove()
 end
 
-local function ondiseasedfn_twiggy(inst)
+--[[--#DISEASE 
+local function SetDiseaseBuild(inst)
     inst.AnimState:SetBuild(GetBuild(inst).file_disease)
-    local disease_bank = GetBuild(inst).file_disease_bank
-    if disease_bank ~= nil then
-        inst.AnimState:SetBank(disease_bank)
-    end
-
-    if inst:HasTag("stump") then
-        ondiseaseddeathfn_evergreen(inst)
-        return
-    end
-
-    inst.components.lootdropper:SetLoot({})
-    inst.components.lootdropper:SetChanceLootTable('diseaseTree')
-
-    if GetBuild(inst).disease_fx then
-        local leaffx = SpawnPrefab(GetBuild(inst).disease_fx) 
-        local x, y, z= inst.Transform:GetWorldPosition()
-        if inst.components.growable and inst.components.growable.stage == 1 then
-            y = y + 0 --Short FX height
-        elseif inst.components.growable and inst.components.growable.stage == 2 then
-            y = y + 0.3 --Normal FX height
-        elseif inst.components.growable and inst.components.growable.stage == 3 then
-            y = y + 1 --Tall FX height
-        end
-        leaffx.Transform:SetPosition(x,y,z)
-    end
-
-    if inst.components.growable ~= nil then
-        inst.components.growable:StopGrowing()
-        SpawnPrefab(
-            (inst.components.growable.stage > 2 and "disease_fx_tall") or
-            (inst.components.growable.stage > 1 and "disease_fx") or
-            "disease_fx_small"
-        ).Transform:SetPosition(inst.Transform:GetWorldPosition())
-    else
-        SpawnPrefab("disease_fx_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
-    end
-
-    inst.AnimState:PlayAnimation(inst.anims.transform)
-    PushSway(inst)
 end
+
+local function ondiseasedfn_twiggy(inst)
+    if inst:HasTag("stump") then
+        if POPULATING then
+            SetDiseaseBuild(inst)
+        else
+            inst.AnimState:PlayAnimation(inst.anims.transform_stump)
+            inst.AnimState:PushAnimation(inst.anims.stump)
+            inst:DoTaskInTime(7 * FRAMES, SpawnDiseasePuff)
+            inst:DoTaskInTime(11 * FRAMES, SetDiseaseBuild)
+        end
+    elseif inst.components.growable ~= nil then
+        inst.components.growable:StopGrowing()
+
+        inst.components.lootdropper:SetLoot({})
+        inst.components.lootdropper:SetChanceLootTable('diseaseTree')
+
+        if POPULATING then
+            SetDiseaseBuild(inst)
+            Sway(inst)
+            inst.AnimState:SetTime(math.random() * inst.AnimState:GetCurrentAnimationLength())
+        else
+            local x, y, z = inst.Transform:GetWorldPosition()
+            local stage = inst.components.growable.stage
+            if stage < 4 then
+                SpawnPrefab("green_leaves_chop").Transform:SetPosition(
+                    x,
+                    (inst.components.growable.stage == 2 and y + .3) or --normal
+                    (inst.components.growable.stage == 3 and y + 1) or --tall
+                    y,
+                    z
+                )
+            end
+
+            --inst.SoundEmitter:PlaySound("dontstarve/common/together/diseased/pre")
+            inst.AnimState:PlayAnimation(inst.anims.transform)
+            inst:DoTaskInTime(8 * FRAMES, SpawnDiseasePuff)
+            inst:DoTaskInTime(15 * FRAMES, SetDiseaseBuild)
+            PushSway(inst)
+        end
+    end
+end
+]]
 
 local function onhauntwork(inst, haunter)
     if inst.components.workable ~= nil and math.random() <= TUNING.HAUNT_CHANCE_OFTEN then
@@ -841,20 +881,25 @@ local function tree(name, build, stage, data)
         MakeObstaclePhysics(inst, .25)
 
         if build == "twiggy" then
+            --diseaseable (from diseaseable component) added to pristine state for optimization
+            --#DISEASE inst:AddTag("diseaseable")
+
+            inst:AddTag("renewable")
+
             inst.MiniMapEntity:SetIcon("twiggy.png")
         else
+            --petrifiable (from petrifiable component) added to pristine state for optimization
+            inst:AddTag("petrifiable")
+
             inst:AddTag("evergreens")
-            if build == "normal" then
-                inst.MiniMapEntity:SetIcon("evergreen.png")
-            elseif build == "sparse" then
-                inst.MiniMapEntity:SetIcon("evergreen_lumpy.png")
-            end
+            inst.MiniMapEntity:SetIcon(build == "sparse" and "evergreen_lumpy.png" or "evergreen.png")
+
+            inst:AddTag("shelter")
         end
 
         inst.MiniMapEntity:SetPriority(-1)
 
         inst:AddTag("tree")
-        inst:AddTag("shelter")
 
         inst.build = build
         inst.AnimState:SetBuild(GetBuild(inst).file)
@@ -866,11 +911,6 @@ local function tree(name, build, stage, data)
 
         MakeDragonflyBait(inst, 1)
         MakeSnowCoveredPristine(inst)
-
-        if data == "stump" then
-            RemovePhysicsColliders(inst)
-            inst:AddTag("stump")
-        end
 
         inst.entity:SetPristine()
 
@@ -921,15 +961,12 @@ local function tree(name, build, stage, data)
         inst:ListenForEvent("timerdone", OnTimerDone)
 
         ---------------------
-        inst:AddComponent("diseaseable")
-        if build == "twiggy" then
-            inst.components.diseaseable:SetDiseasedFn(ondiseasedfn_twiggy)
-            inst.components.diseaseable:SetRebirthedFn(SetShort)
-            inst.components.diseaseable:SetDiseasedDeathFn(chop_down_tree)
-        else
-            inst.components.diseaseable:SetDefaultDelayRange(TUNING.SEG_TIME, TUNING.SEG_TIME * 1.3)
-            inst.components.diseaseable:SetDiseasedFn(ondiseasedfn_evergreen)
-            inst.components.diseaseable:SetDiseasedDeathFn(ondiseaseddeathfn_evergreen)
+        if build ~= "twiggy" then
+            inst:AddComponent("petrifiable")
+            inst.components.petrifiable:SetPetrifiedFn(onpetrifiedfn_evergreen)
+        --#DISEASE else
+        --#DISEASE     inst:AddComponent("diseaseable")
+        --#DISEASE     inst.components.diseaseable:SetDiseasedFn(ondiseasedfn_twiggy)
         end
 
         ---------------------
@@ -959,6 +996,10 @@ local function tree(name, build, stage, data)
         end
 
         if data == "stump" then
+            RemovePhysicsColliders(inst)
+            inst:AddTag("stump")
+            inst:RemoveTag("shelter")
+
             inst:RemoveComponent("burnable")
             MakeSmallBurnable(inst)
             inst:RemoveComponent("workable")
@@ -970,6 +1011,7 @@ local function tree(name, build, stage, data)
             inst.components.workable:SetOnFinishCallback(dig_up_stump)
             inst.components.workable:SetWorkLeft(1)
             inst.AnimState:PlayAnimation(inst.anims.stump)
+            inst.MiniMapEntity:SetIcon(build == "twiggy" and "twiggy_stump.png" or "evergreen_stump.png")
         else
             inst.AnimState:SetTime(math.random() * 2)
             if data == "burnt" then

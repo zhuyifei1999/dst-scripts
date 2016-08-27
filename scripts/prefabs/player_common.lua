@@ -398,19 +398,9 @@ end
 local function ActivatePlayer(inst)
     inst.activatetask = nil
 
-    inst.MiniMapEntity:SetDrawOverFogOfWar(true)
-
-    local minimap = TheWorld.minimap.MiniMap
-
-    if inst == ThePlayer then
-        minimap:EnablePlayerMinimapUpdate(not inst:HasTag("playerghost"))
-        minimap:DrawForgottenFogOfWar(true)
-        minimap:ClearRevealedAreas()
-        minimap:CacheForgottenEntities(true)
-
-        -- Reference local minimap reveal cache
-        -- In the future this will come from the server
-        TheNet:DeserializeLocalUserSessionMinimap()
+    TheWorld.minimap.MiniMap:DrawForgottenFogOfWar(true)
+    if inst.player_classified ~= nil then
+        inst.player_classified.MapExplorer:ActivateLocalMiniMap()
     end
 
     inst:PushEvent("playeractivated")
@@ -425,8 +415,6 @@ local function DeactivatePlayer(inst)
     end
 
     if inst == ThePlayer then
-        TheWorld.minimap.MiniMap:EnablePlayerMinimapUpdate(false)
-
         -- For now, clients save their local minimap reveal cache
         -- and we need to trigger this here as well as on network
         -- disconnect.  On migration, we will hit this code first
@@ -535,7 +523,6 @@ local function SetGhostMode(inst, isghost)
     if not inst.ghostenabled then
         return
     end
-    TheWorld.minimap.MiniMap:EnablePlayerMinimapUpdate(not isghost)
     TheWorld:PushEvent("enabledynamicmusic", not isghost)
     inst.HUD.controls.status:SetGhostMode(isghost)
     if isghost then
@@ -753,9 +740,7 @@ local function OnPlayerDeath(inst, data)
 end
 
 local function DoActualRez(inst, source)
-    if inst == ThePlayer then
-        TheWorld.minimap.MiniMap:EnablePlayerMinimapUpdate(true)
-    end
+    inst.player_classified.MapExplorer:EnableUpdate(true)
 
     local x, y, z
     if source ~= nil then
@@ -965,14 +950,12 @@ local function OnRespawnFromGhost(inst, data)
         data.source.components.attunable:GetAttunableTag() == "remoteresurrector"
 end
 
-local function OnMakePlayerGhost( inst, data )
+local function OnMakePlayerGhost(inst, data)
     if inst:HasTag("playerghost") then
         return
     end
-    
-    if inst == ThePlayer then
-        TheWorld.minimap.MiniMap:EnablePlayerMinimapUpdate(false)
-    end
+
+    inst.player_classified.MapExplorer:EnableUpdate(false)
 
     local x, y, z = inst.Transform:GetWorldPosition()
 
@@ -1496,6 +1479,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         "tears",
         "shock_fx",
         "splash",
+        "globalmapicon",
 
         -- Player specific classified prefabs
         "player_classified",
@@ -1575,6 +1559,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.MiniMapEntity:SetIcon(name..".png")
         inst.MiniMapEntity:SetPriority(10)
         inst.MiniMapEntity:SetCanUseCache(false)
+        inst.MiniMapEntity:SetDrawOverFogOfWar(true)
 
         --Default to electrocute light values
         inst.Light:SetIntensity(.8)
@@ -1686,6 +1671,9 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         end
 
         inst:AddComponent("bloomer")
+
+        inst:AddComponent("maprevealable")
+        inst.components.maprevealable:SetIconPriority(10)
 
         inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
         ConfigurePlayerLocomotor(inst)

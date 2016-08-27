@@ -69,46 +69,49 @@ function PeriodicSpawner:TrySpawn(prefab)
         prefab = prefab(self.inst)
     end
 
-    if not self.inst:IsValid() or not prefab then
-        return
+    if not (prefab and self.inst:IsValid()) or
+        (self.spawnoffscreen and not self.inst:IsAsleep()) or
+        (self.spawntest ~= nil and not self.spawntest(self.inst)) then
+        return false
     end
-    
-    local canspawn = true
-    
-    if canspawn and self.spawnoffscreen and not self.inst:IsAsleep() then
-        canspawn = false
-    end
-    
-    if canspawn and self.spawntest then
-        canspawn = self.spawntest(self.inst)
-    end
-    
-    if canspawn and (self.range or self.spacing) then
-        local pos = Vector3(self.inst.Transform:GetWorldPosition())
-        local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, self.range or self.spacing)
+
+    local x, y, z = self.inst.Transform:GetWorldPosition()
+
+    if self.range ~= nil or self.spacing ~= nil then
+        local density = self.density or 0
+        if density <= 0 then
+            return false
+        end
+
+        local ents = TheSim:FindEntities(x, y, z, self.range or self.spacing)
         local count = 0
-        for k,v in pairs(ents) do
+        for i, v in ipairs(ents) do
             if v.prefab == prefab then
-                if self.spacing and v:GetDistanceSqToInst(self.inst) < self.spacing*self.spacing then
-                    canspawn = false
-                    break
+                --can't spawn if anything within "spacing"
+                --optimized to skip distance checks when we already
+                --know that FindEntities radius is within "spacing"
+                if self.range == nil or (
+                    self.spacing ~= nil and (
+                        self.spacing >= self.range or
+                        v:GetDistanceSqToPoint(x, y, z) < self.spacing * self.spacing
+                    )
+                ) then
+                    return false
                 end
                 count = count + 1
+                if count >= density then
+                    return false
+                end
             end
-        end
-        if self.density and count >= self.density then
-            canspawn = false
         end
     end
 
-    if canspawn then
-        local inst = SpawnPrefab(prefab)
-        if self.onspawn then
-            self.onspawn(self.inst, inst)
-        end
-        inst.Transform:SetPosition(self.inst.Transform:GetWorldPosition())
+    local inst = SpawnPrefab(prefab)
+    if self.onspawn ~= nil then
+        self.onspawn(self.inst, inst)
     end
-    return canspawn
+    inst.Transform:SetPosition(x, y, z)
+    return true
 end
 
 function PeriodicSpawner:Start()

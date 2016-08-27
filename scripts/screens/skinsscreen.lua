@@ -375,7 +375,7 @@ function SkinsScreen:OnControl(control, down)
 		        TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
 		    end)
 			return true
-		elseif not down and control == CONTROL_MENU_MISC_1 and self.details_panel.set_info_btn.show_help then 
+		elseif not down and control == CONTROL_MENU_MISC_1 then 
 			self.details_panel.set_info_btn.onclick()
 			return true
 		end
