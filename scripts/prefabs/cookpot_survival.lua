@@ -23,6 +23,6 @@ return CreatePrefabSkin("cookpot_survival",
 	tags = tags,
 	init_fn = function(inst) cookpot_init_fn(inst, ui_preview.build) end,
 	ui_preview = ui_preview,
-	item_type = "ITEM_SKIN",
+	inheritance = "ITEM_SKIN",
 	rarity = "Elegant",
 })

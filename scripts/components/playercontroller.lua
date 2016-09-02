@@ -1152,7 +1152,7 @@ function PlayerController:IsDoingOrWorking()
 end
 
 local TARGET_EXCLUDE_TAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO" }
-local PICKUP_TARGET_EXCLUDE_TAGS = { "catchable", "mineactive" }
+local PICKUP_TARGET_EXCLUDE_TAGS = { "catchable", "mineactive", "heavy", "intense" }
 local HAUNT_TARGET_EXCLUDE_TAGS = { "haunted", "catchable" }
 for i, v in ipairs(TARGET_EXCLUDE_TAGS) do
     table.insert(PICKUP_TARGET_EXCLUDE_TAGS, v)

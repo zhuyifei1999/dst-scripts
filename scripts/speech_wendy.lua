@@ -1,6 +1,10 @@
 return {
 	ACTIONFAIL =
 	{
+		REPAIR =
+        {
+            WRONGPIECE = "Will I never make the pieces fit in this pitiful life?",
+        },
         BUILD =
         {
             MOUNTED = "I can't place that from this lofty position.",
@@ -59,6 +63,9 @@ return {
             BUSY = "It's too busy to pay attention to me...",
             ABIGAILHEART = "Why isn't it working, Abigail?",
             GHOSTHEART = "Some things should stay dead.",
+            NOTGEM = "I don't think that will work there...",
+            WRONGGEM = "I got it wrong... again...",
+            NOTSTAFF = "That's not the right thing...",
         },
         GIVETOPLAYER = 
         {
@@ -78,6 +85,7 @@ return {
         {
             KNOWN = "I already possess that knowledge...",
             CANTLEARN = "That knowledge is beyond me...",
+            WRONGWORLD = "It's... not right...",
         },
 	},
 	ACTIONFAIL_GENERIC = "I can't do anything right.",
@@ -589,7 +597,7 @@ return {
 			GENERIC = "Why do I feel that it is measuring our mortality?",
 			BURNT = "Does that mean my day to die is here?",
 		},
-		HOME = "A pathetic simulcra...",
+		HOME = "A pathetic simulacrum...",
 		HOMESIGN =
 		{
 			GENERIC = "A mark is made, however transient.",
@@ -640,6 +648,13 @@ return {
 		GREENSTAFF = "I can see the power sparkling deep within.",
 		POTTEDFERN = "Its growth is stunted by the limits of the pot.",
 		SENTRYWARD = "Grant us the power of sight...",
+        MOONBASE =
+        {
+            GENERIC = "I felt a terrible chill run down my spine.",
+            BROKEN = "It's been ravaged by time.",
+            --STAFFED = "",
+            --WRONGSTAFF = "",
+        },
 
 		THULECITE = "Its presence marks the edge of the unknown.",
 		ARMORRUINS = "A reprieve from death.",
@@ -677,6 +692,8 @@ return {
 		YELLOWSTAFF = "The stick is as twisted as my soul.",
 		YELLOWGEM = "It reminds me of my mother.",
 		ORANGEGEM = "Such things used to bring me happiness.",
+        --OPALSTAFF = "",
+        --OPALPRECIOUSGEM = "",
 		TELEBASE = 
 		{
 			VALID = "Energy flows through it.",
@@ -688,6 +705,7 @@ return {
 			GEMS = "It looks so empty.",
 		},
 		STAFFLIGHT = "I can almost make out a tiny solar system.",
+        --STAFFCOLDLIGHT = "",
 		
 		ABIGAIL_FLOWER = 
 		{ 
@@ -942,6 +960,12 @@ return {
 		CARROT_COOKED = "It's a carrot that's gone through a gauntlet of fire.",
 		CARROT_PLANTED = "It's a carrot that's in the ground.",
 		CARROT_SEEDS = "It's a carrot that's waiting to be.",
+		CARTOGRAPHYDESK = 
+		{	
+			GENERIC = "Maps are best with monsters drawn on the borders.",
+			BURNING = "Well, old maps always do look burnt at the edges...",
+			BURNT = "No more mapmaking, then.",
+		},
 		CAVE_FERN = "A touch of color in the darkness.",
 		CHARCOAL = "Cold, dead and black, just like my heart.",
         CHESSJUNK1 = "Cold, dead artificial life.",
@@ -1062,6 +1086,7 @@ return {
 		FEATHER_CROW = "A crow feather, black like eternal darkness.",
 		FEATHER_ROBIN = "A redbird feather, red like blood.",
 		FEATHER_ROBIN_WINTER = "A snowbird feather, white as the light at the end of the tunnel.",
+		FEATHERPENCIL = "M...maybe I'll doodle something... When no one's looking.",
 		FEM_PUPPET = "I wonder what she did.",
 		FIREFLIES =
 		{
@@ -1190,7 +1215,8 @@ return {
         MANDRAKE_ACTIVE = "Onward, vegetable minion!",
         MANDRAKE_PLANTED = "The mighty mandrake. It's best picked at night.",
         MANDRAKE_COOKED = "Now it's just food.",
-        COOKEDMANDRAKE = "It was a good death. You will be delicious.",
+        MAPSCROLL = "Blank as Abigail now.",
+		COOKEDMANDRAKE = "It was a good death. You will be delicious.",
 
 		MARBLE = "Smooth and lifeless.",
 		MARBLEPILLAR = "Even stone can not withstand the constant pull of decay.",
@@ -1368,6 +1394,27 @@ return {
 			DISEASED = "It's not long for this world...",
 			DISEASING = "It is on the precipice...",
 		},
+		SCULPTURE_KNIGHTHEAD = "Off with his head! Heehee.",
+		SCULPTURE_KNIGHTBODY = 
+		{
+			COVERED = "There's a sickly beauty to it...",
+			UNCOVERED = "We all have monsters within, I suppose.",
+			FINISHED = "If only the rest of us could be whole again.",
+		},
+        SCULPTURE_BISHOPHEAD = "How did this get here?",
+		SCULPTURE_BISHOPBODY = 
+		{
+			COVERED = "A beautiful corruption gnaws at its base...",
+			UNCOVERED = "The more the marble wastes, the more the statue grows.",
+			FINISHED = "Not everyone can be put back together after falling apart.",
+		},
+        SCULPTURE_ROOKNOSE = "Strange marble debris...",
+		SCULPTURE_ROOKBODY = 
+		{
+			COVERED = "I feel... queasy...",
+			UNCOVERED = "Perhaps it wanted to hide the shame of its monstrous form?",
+			FINISHED = "It's been made whole again. Lucky.",
+		},
 		SEEDS = "Life, or at least the promise of it.",
 		SEEDS_COOKED = "The fire has toasted their life away.",
 		SEWING_KIT = "Another implement for staving off the inevitable decay.",
@@ -1413,6 +1460,12 @@ return {
 			SLEEPING = "I must beware.",
 		},
 		SPOILED_FOOD = "Everything turns to waste, eventually.",
+        STAGEHAND =
+        {
+			AWAKE = "A creature of shadow that seeks the light... how sad...",
+			HIDING = "My heart aches with its beauty.",
+        },
+        --STATUE_MARBLE = "",
 		STATUEHARP = "Maybe these statues will keep me company.",
 		STATUEMAXWELL = "Did it go as you planned?",
 		STEELWOOL = "This offers no hope of warmth.",

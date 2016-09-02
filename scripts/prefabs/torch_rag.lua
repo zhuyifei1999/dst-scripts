@@ -21,7 +21,7 @@ return CreatePrefabSkin("torch_rag",
 {
 	base_prefab = base_prefab, 
 	ui_preview = ui_preview,
-	item_type = "ITEM_SKIN",
+	inheritance = "ITEM_SKIN",
 	init_fn = function(inst) torch_init_fn(inst, ui_preview.build) end,
 	assets = assets,
 	prefabs = prefabs,

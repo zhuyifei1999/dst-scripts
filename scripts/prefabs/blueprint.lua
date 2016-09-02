@@ -24,7 +24,7 @@ end
 
 local function CanBlueprintRecipe(recipe)
     --Exclude character specific and TECH.NONE
-    if not recipe.nounlock and recipe.builder_tag == nil and type(recipe.level) == "table" then
+    if not recipe.nounlock and recipe.builder_tag == nil then
         for k, v in pairs(recipe.level) do
             if v > 0 then
                 return true
@@ -93,6 +93,12 @@ local function fn()
     inst:AddComponent("named")
     inst:AddComponent("teacher")
     inst.components.teacher.onteach = OnTeach
+
+    inst:AddComponent("fuel")
+    inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL
+
+    MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
+    MakeSmallPropagator(inst)
 
     MakeHauntableLaunch(inst)
     AddHauntableCustomReaction(inst, OnHaunt, true, false, true)
@@ -185,9 +191,13 @@ local prefabs = {}
 
 table.insert(prefabs, Prefab("blueprint", MakeAnyBlueprint, assets))
 for k, v in pairs(RECIPETABS) do
-    table.insert(prefabs, Prefab(string.lower(v.str or "NONAME").."_blueprint", MakeAnyBlueprintFromTab(v), assets))
+    if not v.crafting_station then
+        table.insert(prefabs, Prefab(string.lower(v.str or "NONAME").."_blueprint", MakeAnyBlueprintFromTab(v), assets))
+    end
 end
 for k, v in pairs(AllRecipes) do
-    table.insert(prefabs, Prefab(string.lower(k or "NONAME").."_blueprint", MakeSpecificBlueprint(k), assets))
+    if CanBlueprintRecipe(v) then
+        table.insert(prefabs, Prefab(string.lower(k or "NONAME").."_blueprint", MakeSpecificBlueprint(k), assets))
+    end
 end
 return unpack(prefabs)

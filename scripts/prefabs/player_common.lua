@@ -519,6 +519,28 @@ local function EnableMovementPrediction(inst, enable)
     end
 end
 
+--Always on the bottom of the stack
+local function PlayerActionFilter(inst, action)
+    return not action.ghost_exclusive
+end
+
+--Pushed/popped when dying/resurrecting
+local function GhostActionFilter(inst, action)
+    return action.ghost_valid
+end
+
+local function ConfigurePlayerActions(inst)
+    if inst.components.playeractionpicker ~= nil then
+        inst.components.playeractionpicker:PopActionFilter(GhostActionFilter)
+    end
+end
+
+local function ConfigureGhostActions(inst)
+    if inst.components.playeractionpicker ~= nil then
+        inst.components.playeractionpicker:PushActionFilter(GhostActionFilter, 99)
+    end
+end
+
 local function SetGhostMode(inst, isghost)
     if not inst.ghostenabled then
         return
@@ -530,27 +552,26 @@ local function SetGhostMode(inst, isghost)
     else
         TheMixer:PopMix("death")
     end
-    if not TheWorld.ismastersim and USE_MOVEMENT_PREDICTION then
-        if inst.components.locomotor ~= nil then
-            inst:PushEvent("cancelmovementprediction")
-            if isghost then
-                ConfigureGhostLocomotor(inst)
-            else
-                ConfigurePlayerLocomotor(inst)
+    if not TheWorld.ismastersim then
+        if USE_MOVEMENT_PREDICTION then
+            if inst.components.locomotor ~= nil then
+                inst:PushEvent("cancelmovementprediction")
+                if isghost then
+                    ConfigureGhostLocomotor(inst)
+                else
+                    ConfigurePlayerLocomotor(inst)
+                end
+            end
+            if inst.sg ~= nil then
+                inst:SetStateGraph(isghost and "SGwilsonghost_client" or "SGwilson_client")
             end
         end
-        if inst.sg ~= nil then
-            inst:SetStateGraph(isghost and "SGwilsonghost_client" or "SGwilson_client")
+        if isghost then
+            ConfigureGhostActions(inst)
+        else
+            ConfigurePlayerActions(inst)
         end
     end
-end
-
---Action filter must be a valid check on both server and client
-local function CheckGhostActionFilter(inst, action)
-    if action.ghost_exclusive then
-        return inst:HasTag("playerghost")
-    end
-    return action.ghost_valid or not inst:HasTag("playerghost")
 end
 
 local function OnSetOwner(inst)
@@ -569,7 +590,7 @@ local function OnSetOwner(inst)
             inst:AddComponent("playercontroller")
             inst:AddComponent("playervoter")
             inst:AddComponent("playermetrics")
-            inst.components.playeractionpicker:PushActionFilter( CheckGhostActionFilter )
+            inst.components.playeractionpicker:PushActionFilter(PlayerActionFilter, -99)
         end
     elseif inst.components.playercontroller ~= nil then
         inst:RemoveComponent("playeractionpicker")
@@ -837,6 +858,7 @@ local function DoActualRez(inst, source)
     inst.components.age:ResumeAging()
 
     ConfigurePlayerLocomotor(inst)
+    ConfigurePlayerActions(inst)
 
     if inst.rezsource ~= nil then
         local announcement_string = GetNewRezAnnouncementString(inst, inst.rezsource)
@@ -1040,6 +1062,7 @@ local function OnMakePlayerGhost(inst, data)
     inst.player_classified:SetGhostMode(true)
 
     ConfigureGhostLocomotor(inst)
+    ConfigureGhostActions(inst)
 
     inst:PushEvent("ms_becameghost")
 
@@ -1429,6 +1452,9 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_idles_groggy.zip"),
         Asset("ANIM", "anim/player_groggy.zip"),
 
+        Asset("ANIM", "anim/player_encumbered.zip"),
+        Asset("ANIM", "anim/player_encumbered_jump.zip"),
+
         Asset("ANIM", "anim/fish01.zip"),   --These are used for the fishing animations.
         Asset("ANIM", "anim/eel01.zip"),
 
@@ -1448,6 +1474,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_mount_shock.zip"),
         Asset("ANIM", "anim/player_mount_frozen.zip"),
         Asset("ANIM", "anim/player_mount_groggy.zip"),
+        Asset("ANIM", "anim/player_mount_encumbered.zip"),
         Asset("ANIM", "anim/player_mount_hit_darkness.zip"),
         Asset("ANIM", "anim/player_mount_emotes.zip"),
         Asset("ANIM", "anim/player_mount_emotes_dance0.zip"),

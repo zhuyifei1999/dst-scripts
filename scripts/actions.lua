@@ -32,10 +32,10 @@ Action = Class(function(self, data, instant, rmb, distance, ghost_valid, ghost_e
     self.rmb = data.rmb or nil -- note! This actually only does something for tools, everything tests 'right' in componentactions
     self.distance = data.distance or nil
     self.mindistance = data.mindistance or nil
-    self.ghost_valid = data.ghost_valid or false
     self.ghost_exclusive = data.ghost_exclusive or false
+    self.ghost_valid = self.ghost_exclusive or data.ghost_valid or false -- If it's ghost-exclusive, then it must be ghost-valid
     self.mount_valid = data.mount_valid or false
-    if self.ghost_exclusive then self.ghost_valid = true end -- If it's ghost-exclusive, then it must be ghost-valid
+    self.encumbered_valid = data.encumbered_valid or false
     self.canforce = data.canforce or nil
     self.rangecheckfn = self.canforce ~= nil and data.rangecheckfn or nil
     self.mod_name = nil
@@ -43,9 +43,9 @@ end)
 
 ACTIONS =
 {
-    REPAIR = Action(),
+    REPAIR = Action({ encumbered_valid=true }),
     READ = Action({ mount_valid=true }),
-    DROP = Action({ priority=-1, mount_valid=true }),
+    DROP = Action({ priority=-1, mount_valid=true, encumbered_valid=true }),
     TRAVEL = Action(),
     CHOP = Action(),
     ATTACK = Action({ priority=2, canforce=true, mount_valid=true }), -- No custom range check, attack already handles that
@@ -65,9 +65,9 @@ ACTIONS =
     ADDWETFUEL = Action(),
     LIGHT = Action({ priority=-4 }),
     EXTINGUISH = Action({ priority=0 }),
-    LOOKAT = Action({ priority=-3, instant=true, ghost_valid=true, mount_valid=true }),
-    TALKTO = Action({ priority=3, instant=true, mount_valid=true }),
-    WALKTO = Action({ priority=-4, ghost_valid=true, mount_valid=true }),
+    LOOKAT = Action({ priority=-3, instant=true, ghost_valid=true, mount_valid=true, encumbered_valid=true }),
+    TALKTO = Action({ priority=3, instant=true, mount_valid=true, encumbered_valid=true }),
+    WALKTO = Action({ priority=-4, ghost_valid=true, mount_valid=true, encumbered_valid=true }),
     BAIT = Action(),
     CHECKTRAP = Action({ priority=2 }),
     BUILD = Action({ mount_valid=true }),
@@ -76,8 +76,8 @@ ACTIONS =
     GOHOME = Action(),
     SLEEPIN = Action(),
     CHANGEIN = Action({ priority=-1 }),
-    EQUIP = Action({ priority=0,instant=true, mount_valid=true }),
-    UNEQUIP = Action({ priority=-2,instant=true, mount_valid=true }),
+    EQUIP = Action({ priority=0,instant=true, mount_valid=true, encumbered_valid=true }),
+    UNEQUIP = Action({ priority=-2,instant=true, mount_valid=true, encumbered_valid=true }),
     --OPEN_SHOP = Action(),
     SHAVE = Action({ mount_valid=true }),
     STORE = Action(),
@@ -97,7 +97,7 @@ ACTIONS =
     LAYEGG = Action(),
     HAMMER = Action({ priority=3 }),
     TERRAFORM = Action(),
-    JUMPIN = Action({ ghost_valid=true }),
+    JUMPIN = Action({ ghost_valid=true, encumbered_valid=true }),
     RESETMINE = Action({ priority=3 }),
     ACTIVATE = Action(),
     MURDER = Action({ priority=0, mount_valid=true }),
@@ -137,8 +137,8 @@ ACTIONS =
     ATTUNE = Action(),
     REMOTERESURRECT = Action({ rmb=false, ghost_valid=true, ghost_exclusive=true }),
     MIGRATE = Action({ rmb=false, ghost_valid=true }),
-    MOUNT = Action({ priority=1, rmb=true }),
-    DISMOUNT = Action({ priority=1, instant=true, rmb=true, mount_valid=true }),
+    MOUNT = Action({ priority=1, rmb=true, encumbered_valid=true }),
+    DISMOUNT = Action({ priority=1, instant=true, rmb=true, mount_valid=true, encumbered_valid=true }),
     SADDLE = Action({ priority=1 }),
     UNSADDLE = Action({ priority=3, rmb=false }),
     BRUSH = Action({ priority=3, rmb=false }),
@@ -202,6 +202,13 @@ ACTIONS.EQUIP.fn = function(act)
     end
 end
 
+ACTIONS.UNEQUIP.strfn = function(act)
+    return act.invobject ~= nil
+        and act.invobject:HasTag("heavy")
+        and "HEAVY"
+        or nil
+end
+
 ACTIONS.UNEQUIP.fn = function(act)
     if act.invobject ~= nil and act.doer.components.inventory ~= nil then
         if act.invobject.components.inventoryitem.cangoincontainer then
@@ -211,6 +218,13 @@ ACTIONS.UNEQUIP.fn = function(act)
         end
         return true
     end
+end
+
+ACTIONS.PICKUP.strfn = function(act)
+    return act.target ~= nil
+        and act.target:HasTag("heavy")
+        and "HEAVY"
+        or nil
 end
 
 ACTIONS.PICKUP.fn = function(act)
@@ -249,11 +263,18 @@ ACTIONS.PICKUP.fn = function(act)
 end
 
 ACTIONS.REPAIR.fn = function(act)
-    if act.target ~= nil and
-        act.invobject ~= nil and 
-        act.target.components.repairable ~= nil and
-        act.invobject.components.repairer ~= nil then
-        return act.target.components.repairable:Repair(act.doer, act.invobject)
+    if act.target ~= nil and act.target.components.repairable ~= nil then
+        local material
+        if act.doer ~= nil and
+            act.doer.components.inventory ~= nil and
+            act.doer.components.inventory:IsHeavyLifting() then
+            material = act.doer.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY)
+        else
+            material = act.invobject
+        end
+        if material ~= nil and material.components.repairer ~= nil then
+            return act.target.components.repairable:Repair(act.doer, material)
+        end
     end
 end
 
@@ -827,7 +848,7 @@ end
 
 ACTIONS.GIVE.strfn = function(act)
     return act.target ~= nil and (
-        (act.target:HasTag("gemsocket") and act.invobject ~= nil and string.sub(act.invobject.prefab, -3) == "gem" and "SOCKET") or
+        (act.target:HasTag("gemsocket") and "SOCKET") or
         (act.target:HasTag("altar") and (targ.state:value() and "READY" or "NOTREADY"))
     ) or nil
 end
@@ -1146,9 +1167,17 @@ ACTIONS.UNLOCK.fn = function(act)
 end
 
 ACTIONS.TEACH.fn = function(act)
-    if act.invobject and act.invobject.components.teacher then
+    if act.invobject ~= nil then
         local target = act.target or act.doer
-        return act.invobject.components.teacher:Teach(target)
+        if act.invobject.components.teacher ~= nil then
+            return act.invobject.components.teacher:Teach(target)
+        elseif act.invobject.components.maprecorder ~= nil then
+            local success, reason = act.invobject.components.maprecorder:TeachMap(target)
+            if success or reason == "BLANK" then
+                return true
+            end
+            return success, reason
+        end
     end
 end
 

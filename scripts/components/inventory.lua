@@ -6,6 +6,10 @@ local function OnDeath(inst)
     end
 end
 
+local function onheavylifting(self, heavylifting)
+    self.inst.replica.inventory:SetHeavyLifting(heavylifting)
+end
+
 local Inventory = Class(function(self, inst)
     self.inst = inst
 
@@ -22,6 +26,7 @@ local Inventory = Class(function(self, inst)
     self.maxslots = MAXITEMSLOTS
 
     self.equipslots = {}
+    self.heavylifting = false
 
     self.activeitem = nil
     self.acceptsstacks = true
@@ -38,7 +43,8 @@ local Inventory = Class(function(self, inst)
     end
 end,
 nil,
-{--need this empty so we can add readonly properties
+{
+    heavylifting = onheavylifting,
 })
 
 function Inventory:EnableDropOnDeath()
@@ -62,7 +68,7 @@ function Inventory:NumItems()
     for k,v in pairs(self.itemslots) do
         num = num + 1
     end
-    
+
     return num
 end
 
@@ -105,8 +111,7 @@ function Inventory:OnSave()
             end
         end
     end
-    
-    
+
     if self.activeitem and not (self.activeitem.components.equippable and self.equipslots[self.activeitem.components.equippable.equipslot] == self.activeitem) then
         data.activeitem, refs = self.activeitem:GetSaveRecord()
         if refs then
@@ -115,9 +120,9 @@ function Inventory:OnSave()
             end
         end
     end
-    
+
     return data, references
-end   
+end
 
 function Inventory:CanTakeItemInSlot(item, slot)
     return item ~= nil
@@ -163,7 +168,7 @@ function Inventory:OnLoad(data, newents)
             end
         end
     end
-    
+
     if data.equip ~= nil then
         for k, v in pairs(data.equip) do
             local item = SpawnSaveRecord(v, newents)
@@ -173,7 +178,7 @@ function Inventory:OnLoad(data, newents)
             end
         end
     end
-    
+
     if data.activeitem ~= nil then
         local item = SpawnSaveRecord(data.activeitem, newents)
         if item ~= nil then
@@ -240,6 +245,10 @@ function Inventory:EquipHasTag(tag)
     end
 end
 
+function Inventory:IsHeavyLifting()
+    return self.heavylifting
+end
+
 function Inventory:ApplyDamage(damage, attacker, weapon)
     --check resistance and specialised armor
     local absorbers = {}
@@ -294,7 +303,7 @@ function Inventory:SelectActiveItemFromEquipSlot(slot)
         local olditem = self.activeitem
         local newitem = self:Unequip(slot)
         self:SetActiveItem(newitem)
-        
+
         if olditem and not self:IsItemEquipped(olditem) then
             self:GiveItem(olditem)
         end
@@ -332,7 +341,7 @@ function Inventory:SelectActiveItemFromSlot(slot)
     local newitem = self.itemslots[slot]
     self.itemslots[slot] = nil
     self.inst:PushEvent("itemlose", { slot = slot })
-    
+
     self:SetActiveItem(newitem)
 
     if olditem ~= nil then
@@ -399,7 +408,7 @@ function Inventory:FindItem(fn)
             return v
         end
     end
-    
+
     if self.activeitem and fn(self.activeitem) then
         return self.activeitem
     end
@@ -410,13 +419,13 @@ end
 
 function Inventory:FindItems(fn)
     local items = {}
-    
+
     for k,v in pairs(self.itemslots) do
         if fn(v) then
             table.insert(items, v)
         end
     end
-    
+
     if self.activeitem and fn(self.activeitem) then
         table.insert(items, self.activeitem)
     end
@@ -443,22 +452,24 @@ function Inventory:DropItem(item, wholestack, randomdir, pos)
     if item == nil or item.components.inventoryitem == nil then
         return
     end
-    
-    local dropped = item.components.inventoryitem:RemoveFromOwner(wholestack) or item
-    
-    if dropped then
-        pos = pos or Vector3(self.inst.Transform:GetWorldPosition())
-        --print("Inventory:DropItem", item, pos)
-        dropped.Transform:SetPosition(pos:Get())
 
-        if dropped.components.inventoryitem then
+    local dropped = item.components.inventoryitem:RemoveFromOwner(wholestack) or item
+
+    if dropped ~= nil then
+        if pos ~= nil then
+            dropped.Transform:SetPosition(pos:Get())
+        else
+            dropped.Transform:SetPosition(self.inst.Transform:GetWorldPosition())
+        end
+
+        if dropped.components.inventoryitem ~= nil then
             dropped.components.inventoryitem:OnDropped(randomdir)
         end
 
         dropped.prevcontainer = nil
         dropped.prevslot = nil
-        
-        self.inst:PushEvent("dropitem", {item = dropped})
+
+        self.inst:PushEvent("dropitem", { item = dropped })
     end
 
     return dropped
@@ -495,7 +506,7 @@ function Inventory:GetNextAvailableSlot(item)
     local prefabname = nil
     if item.components.stackable ~= nil then
         prefabname = item.prefab
-    
+
         --check for stacks that aren't full
         for k, v in pairs(self.equipslots) do
             if v.prefab == prefabname and v.components.equippable.equipstack and v.components.stackable and not v.components.stackable:IsFull() then
@@ -628,7 +639,7 @@ function Inventory:GiveItem(inst, slot, src_pos)
     local eslot = self:IsItemEquipped(inst)
 
     if eslot then
-       self:Unequip(eslot) 
+       self:Unequip(eslot)
     end
 
     local new_item = inst ~= self.activeitem
@@ -757,11 +768,16 @@ end
 function Inventory:Unequip(equipslot, slip)
     local item = self.equipslots[equipslot]
     --print("Inventory:Unequip", item)
-    if item and item.components.equippable then
-        item.components.equippable:Unequip(self.inst)
-        local overflow = self:GetOverflowContainer()
-        if overflow ~= nil and overflow.inst == item then
-            self.inst:PushEvent("setoverflow", {})
+    if item ~= nil then
+        if item.components.equippable ~= nil then
+            item.components.equippable:Unequip(self.inst)
+            local overflow = self:GetOverflowContainer()
+            if overflow ~= nil and overflow.inst == item then
+                self.inst:PushEvent("setoverflow", {})
+            end
+        end
+        if equipslot == EQUIPSLOTS.BODY then
+            self.heavylifting = false
         end
     end
     self.equipslots[equipslot] = nil
@@ -798,6 +814,25 @@ function Inventory:Equip(item, old_to_active)
         item.prevslot = item.components.inventoryitem.owner.components.container:GetItemSlot(item)
     else
         item.prevcontainer = nil
+    end
+    -----
+    --heavy lifting
+    if item.components.equippable.equipslot == EQUIPSLOTS.HANDS then
+        local heavyitem = self:GetEquippedItem(EQUIPSLOTS.BODY)
+        if heavyitem ~= nil and heavyitem:HasTag("heavy") then
+            self:DropItem(heavyitem, true, true)
+        end
+    elseif item.components.equippable.equipslot == EQUIPSLOTS.BODY and item:HasTag("heavy") then
+        local handitem = self:GetEquippedItem(EQUIPSLOTS.HANDS)
+        if handitem ~= nil then
+            if handitem.components.inventoryitem.cangoincontainer then
+                self.silentfull = true
+                self:GiveItem(handitem)
+                self.silentfull = false
+            else
+                self:DropItem(handitem, true, true)
+            end
+        end
     end
     -----
 
@@ -847,8 +882,11 @@ function Inventory:Equip(item, old_to_active)
         item.components.equippable:Equip(self.inst)
         self.equipslots[eslot] = item
 
-        if eslot == EQUIPSLOTS.BODY and item.components.container ~= nil then
-            self.inst:PushEvent("setoverflow", { overflow = item })
+        if eslot == EQUIPSLOTS.BODY then
+            if item.components.container ~= nil then
+                self.inst:PushEvent("setoverflow", { overflow = item })
+            end
+            self.heavylifting = item:HasTag("heavy")
         end
 
         self.inst:PushEvent("equip", { item = item, eslot = eslot })
@@ -975,11 +1013,11 @@ function Inventory:GetItemByName(item, amount)
             break
         end
     end
-    
+
     if self.activeitem and self.activeitem.prefab == item and total_num_found < amount then
         total_num_found = total_num_found + tryfind(self.activeitem)
     end
-    
+
     local overflow = self:GetOverflowContainer()
     if overflow and total_num_found < amount then
         local overflow_items = overflow:GetItemByName(item, (amount - total_num_found))
@@ -987,53 +1025,51 @@ function Inventory:GetItemByName(item, amount)
             items[k] = v
         end
     end
- 
+
     return items
 end
 
+local function tryconsume(self, v, amount)
+    if v.components.stackable == nil then
+        self:RemoveItem(v):Remove()
+        return 1
+    elseif v.components.stackable.stacksize > amount then
+        v.components.stackable:SetStackSize(v.components.stackable.stacksize - amount)
+        return amount
+    else
+        amount = v.components.stackable.stacksize
+        self:RemoveItem(v, true):Remove()
+        return amount
+    end
+    --shouldn't be possible?
+    return 0
+end
+
 function Inventory:ConsumeByName(item, amount)
-    
-    local total_num_found = 0
-    
-    local function tryconsume(v)
-        local num_found = 0
-        if v and v.prefab == item then
-            local num_left_to_find = amount - total_num_found
-            
-            if v.components.stackable then
-                if v.components.stackable.stacksize > num_left_to_find then
-                    v.components.stackable:SetStackSize(v.components.stackable.stacksize - num_left_to_find)
-                    num_found = amount
-                else
-                    num_found = num_found + v.components.stackable.stacksize
-                    self:RemoveItem(v, true):Remove()
-                end
-            else
-                num_found = num_found + 1
-                self:RemoveItem(v):Remove()
+    if amount <= 0 then
+        return
+    end
+
+    for k = 1, self.maxslots do
+        local v = self.itemslots[k]
+        if v ~= nil and v.prefab == item then
+            amount = amount - tryconsume(self, v, amount)
+            if amount <= 0 then
+                return
             end
         end
-        return num_found
     end
 
-    for k = 1,self.maxslots do
-        local v = self.itemslots[k]
-        total_num_found = total_num_found + tryconsume(v)
-        
-        if total_num_found >= amount then
-            break
+    if self.activeitem ~= nil and self.activeitem.prefab == item then
+        amount = amount - tryconsume(self, self.activeitem, amount)
+        if amount <= 0 then
+            return
         end
-    end
-    
-    if self.activeitem and self.activeitem.prefab == item and total_num_found < amount then
-        total_num_found = total_num_found + tryconsume(self.activeitem)
     end
 
-    if total_num_found < amount then
-        local overflow = self:GetOverflowContainer()
-        if overflow ~= nil then
-            overflow:ConsumeByName(item, amount - total_num_found)
-        end
+    local overflow = self:GetOverflowContainer()
+    if overflow ~= nil then
+        overflow:ConsumeByName(item, amount)
     end
 end
 
@@ -1147,11 +1183,7 @@ function Inventory:GetDebugString()
         end
     end
 
-    s = count..": "..s
-
-    s = s..string.format(" waterproofness:",self:GetWaterproofness())
-
-    return s
+    return count..": "..s..string.format(" waterproofness:", self:GetWaterproofness())
 end
 
 function Inventory:IsOpenedBy(guy)
@@ -1441,11 +1473,12 @@ function Inventory:ControllerUseItemOnSelfFromInvTile(item, actioncode, mod_name
     if not self.inst.sg:HasStateTag("busy") and
         self:CanAccessItem(item) and
         self.inst.components.playercontroller ~= nil then
-        local act =
-            item.components.equippable ~= nil and
-            item.components.equippable:IsEquipped() and
-            BufferedAction(self.inst, nil, ACTIONS.UNEQUIP, item) or
-            self.inst.components.playercontroller:GetItemSelfAction(item)
+        local act = nil
+        if not (item.components.equippable ~= nil and item.components.equippable:IsEquipped()) then
+            act = self.inst.components.playercontroller:GetItemSelfAction(item)
+        elseif not item:HasTag("heavy") then
+            act = BufferedAction(self.inst, nil, ACTIONS.UNEQUIP, item)
+        end
 
         if act == nil then
             return

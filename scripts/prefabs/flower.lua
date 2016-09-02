@@ -137,4 +137,18 @@ local function fn()
     return inst
 end
 
-return Prefab("flower", fn, assets, prefabs)
+function rosefn()
+	local inst = fn()
+	
+	if not TheWorld.ismastersim then
+		return inst
+	end
+	
+	inst:SetPrefabName("flower")
+	setflowertype(inst, ROSE_NAME)
+
+	return inst
+end
+
+return Prefab("flower", fn, assets, prefabs),
+       Prefab("flower_rose", rosefn, assets, prefabs)

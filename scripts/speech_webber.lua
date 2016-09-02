@@ -1,6 +1,10 @@
 return {
 	ACTIONFAIL =
 	{
+        REPAIR =
+        {
+            WRONGPIECE = "This two piece puzzle sure is hard!",
+        },
         BUILD =
         {
             MOUNTED = "All our arms can't quite reach from up here.",
@@ -49,6 +53,9 @@ return {
             BUSY = "We can try again when it's finished.",
             ABIGAILHEART = "Wendy would've been so happy if it worked.",
             GHOSTHEART = "We don't think we even want them to come back.",
+            NOTGEM = "It doesn't fit right!",
+            WRONGGEM = "We'd rather keep this one for ourselves.",
+            NOTSTAFF = "I think that'd make it angry.",
         },
         GIVETOPLAYER = 
         {
@@ -78,6 +85,7 @@ return {
         {
             KNOWN = "I'm pretty sure one of us knows that one.",
             CANTLEARN = "Ms. Wickerbottom will have to explain this one.",
+            WRONGWORLD = "Is it upside down? Nope. It's just wrong.",
         },
 	},
 	ACTIONFAIL_GENERIC = "Mom told me never to do that.",
@@ -352,6 +360,13 @@ return {
 		GREENSTAFF = "Magic taker-apart-er.",
 		POTTEDFERN = "Mum would like this nice fern.",
 		SENTRYWARD = "Woah! I bet it sees so far!",
+        MOONBASE =
+        {
+            GENERIC = "I wonder what it wants?",
+            BROKEN = "It's broke.",
+            --STAFFED = "",
+            --WRONGSTAFF = "",
+        },
 
 		LIGHTER = "Lighter than what?",
 		
@@ -420,6 +435,8 @@ return {
 		YELLOWSTAFF = "We summon you, warm ball of light!",
 		YELLOWGEM = "Yellow-bellied gem.",
 		ORANGEGEM = "Orange you glad we found you, gem?",
+        --OPALSTAFF = "",
+        --OPALPRECIOUSGEM = "",
 		TELEBASE = 
 		{
 			VALID = "Teleportation, away!",
@@ -431,6 +448,7 @@ return {
 			GEMS = "Still needs a gem.",
 		},
 		STAFFLIGHT = "Cozy.",
+        --STAFFCOLDLIGHT = "",
 	
         ANCIENT_ALTAR = "Old and full of mysteries.",
 
@@ -741,6 +759,12 @@ return {
 		CARROT_COOKED = "Easier for us both.",
 		CARROT_PLANTED = "Bury your head, carrot.",
 		CARROT_SEEDS = "We could grow something with these.",
+		CARTOGRAPHYDESK = 
+		{	
+			GENERIC = "Heh heh. I was never allowed in father's study.",
+			BURNING = "Ohh no, uh, oh no!",
+			BURNT = "That's probably why I wasn't allowed in father's study.",
+		},
 		CAVE_FERN = "Swirly plants.",
 		CHARCOAL = "Hard and black, like my better half.",
         CHESSJUNK1 = "A mess of chess.",
@@ -860,7 +884,7 @@ return {
 		{
 			BURNING = "What a senseless waste of firewood.",
 			BURNT = "Only we can prevent forest fires.",
-			CHOPPED = "Would a cool bandaid make it better, Mr. Tree?",
+			CHOPPED = "Would a cool bandage make it better, Mr. Tree?",
 			POISON = "What're you so mad about?",
 			GENERIC = "My, what nice foliage you have.",
 		},
@@ -872,14 +896,14 @@ return {
 		{
 			BURNING = "What a senseless waste of firewood.",
 			BURNT = "Only we can prevent forest fires.",
-			CHOPPED = "Would a cool bandaid make it better, Mr. Tree?",
+			CHOPPED = "Would a cool bandage make it better, Mr. Tree?",
 			GENERIC = "Pines are always greener on the other side of the fence.",
 		},
 		EVERGREEN_SPARSE =
 		{
 			BURNING = "What a senseless waste of firewood.",
 			BURNT = "Only we can prevent forest fires.",
-			CHOPPED = "Would a cool bandaid make it better, Mr. Tree?",
+			CHOPPED = "Would a cool bandage make it better, Mr. Tree?",
 			GENERIC = "A dying breed.",
 		},
 		EYEPLANT = "Ever vigilant.",
@@ -894,6 +918,7 @@ return {
 		FEATHER_CROW = "Feather of black.",
 		FEATHER_ROBIN = "Feather of red.",
 		FEATHER_ROBIN_WINTER = "Feather of white.",
+		FEATHERPENCIL = "Haha! It tickles!",
 		FEM_PUPPET = "She's locked up!",
 		FIREFLIES =
 		{
@@ -1067,6 +1092,7 @@ return {
 
 		MANDRAKESOUP = "We fall asleep in the bath too!",
 		MANDRAKE_COOKED = "The meeping had to stop.",
+		MAPSCROLL = "There's nothing on it.",
 		MARBLE = "Maybe we should take up sculpting.",
 		MARBLEPILLAR = "Nothing lasts forever on its own.",
 		MARBLETREE = "I hope it doesn't fall on us.",
@@ -1335,6 +1361,27 @@ return {
 			DISEASED = "Maybe it needs some chicken soup?",
 			DISEASING = "Are you okay, lil sapling?",
 		},
+		SCULPTURE_KNIGHTHEAD = "Did someone lose this?",
+		SCULPTURE_KNIGHTBODY = 
+		{
+			COVERED = "I think it really ties the island together.",
+			UNCOVERED = "Peekaboo, monster!",
+			FINISHED = "You look great!",
+		},
+        SCULPTURE_BISHOPHEAD = "I think it's looking at us!",
+		SCULPTURE_BISHOPBODY = 
+		{
+			COVERED = "That looks really nice!",
+			UNCOVERED = "Where's your head, mister?",
+			FINISHED = "There! All better!",
+		},
+        SCULPTURE_ROOKNOSE = "Looks like a... cactus? No, that's not right.",
+		SCULPTURE_ROOKBODY = 
+		{
+			COVERED = "It's a bit scary, but we don't like to judge.",
+			UNCOVERED = "It was hiding!",
+			FINISHED = "Oh! That piece was his nose.",
+		},
 		SEEDS = "A small life trapped within. My sympathies.",
 		SEEDS_COOKED = "Their growing days are over.",
 		SEWING_KIT = "Mum used to handle all of our sewing.",
@@ -1379,6 +1426,12 @@ return {
 			DEAD = "Forgive us, brother.",
 		},
 		SPOILED_FOOD = "Blech!",
+        STAGEHAND =
+        {
+			AWAKE = "Definitely not a spider!",
+			HIDING = "Is there a spider friend rustling beneath?",
+        },
+        --STATUE_MARBLE = "",
 		STATUEHARP = "Someone took the head.",
 		STATUEMAXWELL = "We're still a little mad at him. But only a little.",
 		STINGER = "We should be careful, we could poke an eye out!",
@@ -1521,7 +1574,7 @@ return {
         {
             BURNING = "What a senseless waste of firewood.",
 			BURNT = "Only we can prevent forest fires.",
-			CHOPPED = "Would a cool bandaid make you feel better, Mr. Tree?",
+			CHOPPED = "Would a cool bandage make you feel better, Mr. Tree?",
             GENERIC = "We want to climb it!",           
             DISEASED = "Maybe it needs some chicken soup?",
         },

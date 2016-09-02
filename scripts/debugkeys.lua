@@ -652,7 +652,19 @@ AddGameDebugKey(KEY_T, function()
     else
         local MainCharacter = DebugKeyPlayer()
         if MainCharacter then
-            MainCharacter.Physics:Teleport(TheInput:GetWorldPosition():Get())
+            local topscreen = TheFrontEnd:GetActiveScreen()
+            if topscreen.minimap ~= nil then
+
+                local mousepos = TheInput:GetScreenPosition()
+                local mousewidgetpos = topscreen:ScreenPosToWidgetPos( mousepos )
+                local mousemappos = topscreen:WidgetPosToMapPos( mousewidgetpos )
+
+                local x,y,z = topscreen.minimap:MapPosToWorldPos( mousemappos:Get() )
+
+                MainCharacter.Physics:Teleport(x, 0, y)
+            else
+                MainCharacter.Physics:Teleport(TheInput:GetWorldPosition():Get())
+            end
         end
     end
     return true
@@ -694,7 +706,7 @@ end)
 AddGameDebugKey(KEY_D, function()
     if TheInput:IsKeyDown(KEY_CTRL) then
         local MouseCharacter = TheInput:GetWorldEntityUnderMouse()
-        if MouseCharacter then
+        if MouseCharacter and MouseCharacter.components.diseaseable ~= nil then
             MouseCharacter.components.diseaseable:ForceDiseased(1*TUNING.TOTAL_DAY_TIME, 1*TUNING.TOTAL_DAY_TIME)
         end
     end

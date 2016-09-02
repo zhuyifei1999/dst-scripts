@@ -1,6 +1,10 @@
 return {
 	ACTIONFAIL =
 	{
+        REPAIR =
+        {
+            WRONGPIECE = "Is wrong piece for little statue!",
+        },
         BUILD =
         {
             MOUNTED = "Hair-cow is too tall. I can't reach.",
@@ -49,6 +53,9 @@ return {
             BUSY = "The Mighty Wolfgang will try again soon!",
             ABIGAILHEART = "Wolfgang smush heart into ghost girl but nothing happen!",
             GHOSTHEART = "No!",
+            NOTGEM = "Not even mighty muscles can make fit!",
+            WRONGGEM = "Little rock does not want to go there.",
+            NOTSTAFF = "I do not think little platform would like that.",
         },
         GIVETOPLAYER = 
         {
@@ -78,6 +85,7 @@ return {
         {
             KNOWN = "Wolfgang already knows this!",
             CANTLEARN = "I do not get it.",
+            WRONGWORLD = "Little paper is not for here!",
         },
 	},
 	ACTIONFAIL_GENERIC = "I am not mighty enough to do that.",
@@ -655,6 +663,13 @@ return {
 		GREENSTAFF = "This stick has green gem in it.",
 		POTTEDFERN = "Wolfgang worry greenthumb is gangrene.",
 		SENTRYWARD = "Wolfgang thinks is full of secrets.",
+        MOONBASE =
+        {
+            GENERIC = "Little platform is still missing pieces.",
+            BROKEN = "Tiny platform is broken!",
+            --STAFFED = "",
+           	WRONGSTAFF = "Feels wrong to Wolfgang.",
+        },
 
 		SLURPER = "No! No! Stay off head!",
 		SLURPER_PELT = "It's still moving!",
@@ -666,6 +681,8 @@ return {
 		WATERMELON_SEEDS = "Maybe will grow into tasty snacks?",
 		YELLOWGEM = "Pretty rock.",
 		ORANGEGEM = "Pretty rock.",
+        --OPALSTAFF = "",
+        --OPALPRECIOUSGEM = "",
 		TELEBASE = 
 		{
 			VALID = "Glow is good sign.",
@@ -677,6 +694,7 @@ return {
 			GEMS = "Is empty.",
 		},
 		STAFFLIGHT = "It hurts to touch.",
+        --STAFFCOLDLIGHT = "",
 
         ANCIENT_ALTAR =
         {
@@ -927,6 +945,12 @@ return {
 		CARROT_COOKED = "Is not more like meat after do cooking.",
 		CARROT_PLANTED = "Is hiding?",
 		CARROT_SEEDS = "Seeds is too small.",
+		CARTOGRAPHYDESK = 
+		{	
+			GENERIC = "Friends make little pictures to help Wolfgang not get lost!",
+			BURNING = "Is no good!",
+			BURNT = "No more little pictures.",
+		},
 		CAVE_FERN = "Pretty plant!",
 		CHARCOAL = "Is like holding tiny dead tree.",
         CHESSJUNK1 = "Metal junk.",
@@ -1055,6 +1079,7 @@ return {
 		FEATHER_CROW = "Is feather of bird black.",
 		FEATHER_ROBIN = "Is feather of bird red.",
 		FEATHER_ROBIN_WINTER = "Is feather of bird white.",
+		FEATHERPENCIL = "Wolfgang must stick pinky out when holding it.",
 		FEM_PUPPET = "Scary chair scares her!",
 		FIREFLIES =
 		{
@@ -1173,6 +1198,7 @@ return {
 		LIVINGLOG = "Creepy face log!",
 		PIGTENT = "Is tent of pigs.",
 		MANDRAKE_COOKED = "Little plant man is ready for eating!",
+		MAPSCROLL = "No little pictures! Just paper.",
 		BURNT_MARSH_BUSH = "Is burnt now.",
 		FOOTBALLHAT = "To protect head!",
 		LOG = "Is thick like my arm.",
@@ -1363,6 +1389,27 @@ return {
 			DISEASED = "Is weak. Sickly!",
 			DISEASING = "Is look even more puny.",
 		},
+		SCULPTURE_KNIGHTHEAD = "Everyone! Watch Wolfgang carry horse head!",
+		SCULPTURE_KNIGHTBODY = 
+		{
+			COVERED = "Is big fancy rock!",
+			UNCOVERED = "Hidden marble man has big booboo.",
+			FINISHED = "Booboo is all better!",
+		},
+        SCULPTURE_BISHOPHEAD = "Watch Wolfgang lift little marble head!",
+		SCULPTURE_BISHOPBODY = 
+		{
+			COVERED = "Lumpy, bumpy rock!",
+			UNCOVERED = "Strange little man was in big rock!",
+			FINISHED = "Marble man is fixed!",
+		},
+        SCULPTURE_ROOKNOSE = "Wolfgang will carry long rock, is no problem!",
+		SCULPTURE_ROOKBODY = 
+		{
+			COVERED = "Does not budge, even under Wolfgang's mighty strength!",
+			UNCOVERED = "Is many big rocks!",
+			FINISHED = "Rock has all pieces now.",
+		},
 		SEEDS = "Too small to eat.",
 		SEEDS_COOKED = "Fire make bigger, can eat now.",
 		SEWING_KIT = "Is pokey!",
@@ -1408,6 +1455,12 @@ return {
 			SLEEPING = "I think not smart to poke it.",
 		},
 		SPOILED_FOOD = "Is ball of yuck!",
+        STAGEHAND =
+        {
+			AWAKE = "GAH! Table is creepy walking fist!",
+			HIDING = "Wolfgang has no use for tiny table.",
+        },
+        --STATUE_MARBLE = "",
 		STATUEHARP = "Where is pretty music?",
 		STATUEMAXWELL = "Ha ha! Looks just like Wolfgang's new friend!",
 		STEELWOOL = "Is like my arm hair.",

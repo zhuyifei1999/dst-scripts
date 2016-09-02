@@ -21,7 +21,7 @@ return CreatePrefabSkin("torch_shadow",
 {
 	base_prefab = base_prefab, 
 	ui_preview = ui_preview,
-	item_type = "ITEM_SKIN_LOYAL",
+	inheritance = "ITEM_SKIN_LOYAL",
 	init_fn = function(inst) torch_init_fn(inst, ui_preview.build) end,
 	assets = assets,
 	prefabs = prefabs,

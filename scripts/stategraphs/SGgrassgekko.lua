@@ -225,7 +225,44 @@ local states=
             end),
             
         },
-    },  
+    },
+
+    State{
+        name = "emerge",
+        tags = { "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+
+            local player = inst:GetNearestPlayer()
+            if player ~= nil and inst:IsNear(player, 7) then
+                inst:FaceAwayFromPoint(player:GetPosition(), true)
+            else
+                inst.Transform:SetRotation(math.random(360))
+            end
+
+            inst.AnimState:PlayAnimation("gecko_pop")
+        end,
+
+        timeline =
+        {
+            TimeEvent(12 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/wilson/pickup_reeds")
+            end),
+            TimeEvent(32 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/grass_gekko/emerge")
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
 }
 
 --inst.components.locomotor:WantsToRun()

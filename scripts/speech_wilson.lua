@@ -2,6 +2,10 @@ return {
 
 	ACTIONFAIL =
 	{
+        REPAIR =
+        {
+            WRONGPIECE = "I don't think that was right.",
+        },
         BUILD =
         {
             MOUNTED = "I can't place that from way up here.",
@@ -21,7 +25,7 @@ return {
 		RUMMAGE =
 		{	
 			GENERIC = "I can't do that.",
-			INUSE = "They're elbow deep in junk right now.",	
+			INUSE = "They're elbow deep in junk right now.",
 		},
         COOK =
         {
@@ -36,15 +40,18 @@ return {
             BUSY = "I'll try again in a second.",
             ABIGAILHEART = "It was worth a shot.",
             GHOSTHEART = "Perhaps this is a bad idea.",
+            NOTGEM = "I'm not sticking that in there!",
+            WRONGGEM = "This gem won't work here.",
+            NOTSTAFF = "It's not quite the right shape.",
         },
-        GIVETOPLAYER = 
+        GIVETOPLAYER =
         {
         	FULL = "Your pockets are too full!",
             DEAD = "Maybe I'll just hold on to this.",
             SLEEPING = "Too unconscious to care.",
             BUSY = "I'll try again in a second.",
     	},
-    	GIVEALLTOPLAYER = 
+    	GIVEALLTOPLAYER =
         {
         	FULL = "Your pockets are too full!",
             DEAD = "Maybe I'll just hold on to this.",
@@ -77,8 +84,12 @@ return {
         },
         TEACH =
         {
+            --Recipes/Teacher
             KNOWN = "I already know that one.",
             CANTLEARN = "I can't learn that one.",
+
+            --MapRecorder/MapExplorer
+            WRONGWORLD = "This map was made for some other place.",
         },
 	},
 	ACTIONFAIL_GENERIC = "I can't do that.",
@@ -218,7 +229,7 @@ return {
         },
 		WILSON = 
 		{
-			GENERIC = "Stars and atoms! Are you my doppleganger, %s?",
+			GENERIC = "Stars and atoms! Are you my doppelganger, %s?",
 			ATTACKER = "Yeesh. Do I always look that creepy?",
 			MURDERER = "Your existence is an affront to the laws of science, %s!",
 			REVIVER = "%s has expertly put our theories into practice.",
@@ -377,6 +388,13 @@ return {
 		GREENSTAFF = "This will come in handy.",
 		POTTEDFERN = "A fern in a pot.",
 		SENTRYWARD = "That's an entirely scientific mapping tool.",
+        MOONBASE =
+        {
+            GENERIC = "There's a hole in the middle for something to go in.",
+            BROKEN = "It's all smashed up.",
+            STAFFED = "Now what?",
+            WRONGSTAFF = "I have a distinct feeling this isn't right.",
+        },
 		--MOWER = "I like the cut of this blade.",
 		--MACHETE = "I like the cut of this blade.",
 		--GOLDENMACHETE = "Hack in style!",
@@ -419,7 +437,9 @@ return {
 		YELLOWSTAFF = "A genius invention... a gem on a stick.",
 		YELLOWGEM = "This gem is yellow.",
 		ORANGEGEM = "It's an orange gem.",
-		TELEBASE = 
+        OPALSTAFF = "It's scientifically proven that gems look better on top of sticks.",
+        OPALPRECIOUSGEM = "This gem seems special.",
+        TELEBASE = 
 		{
 			VALID = "It's ready to go.",
 			GEMS = "It needs more purple gems.",
@@ -430,7 +450,8 @@ return {
 			GEMS = "It needs a gem.",
 		},
 		STAFFLIGHT = "That seems really dangerous.",
-	
+        STAFFCOLDLIGHT = "Brr! Chilling.",
+
         ANCIENT_ALTAR = "An ancient and mysterious structure.",
 
         ANCIENT_ALTAR_BROKEN = "This seems to be broken.",
@@ -735,6 +756,12 @@ return {
 		CARROT_COOKED = "Mushy.",
 		CARROT_PLANTED = "The earth is making plantbabies.",
 		CARROT_SEEDS = "It's a carrot seed.",
+		CARTOGRAPHYDESK = 
+		{	
+			GENERIC = "Now I can show everyone what I found!",
+			BURNING = "So much for that.",
+			BURNT = "Nothing but ash now.",
+		},
 		WATERMELON_SEEDS = "It's a melon seed.",
 		CAVE_FERN = "It's a fern.",
 		CHARCOAL = "It's small, dark, and smells like burnt wood.",
@@ -900,6 +927,7 @@ return {
 		FEATHER_CROW = "A crow feather.",
 		FEATHER_ROBIN = "A redbird feather.",
 		FEATHER_ROBIN_WINTER = "A snowbird feather.",
+		FEATHERPENCIL = "The feather increases the scientific properties of the writing.",
 		FEM_PUPPET = "She's trapped!",
 		FIREFLIES =
 		{
@@ -1082,6 +1110,7 @@ return {
 
 		MANDRAKESOUP = "Well, he won't be waking up again.",
 		MANDRAKE_COOKED = "It doesn't seem so strange anymore.",
+		MAPSCROLL = "A blank map. Doesn't seem very useful.",
 		MARBLE = "Fancy!",
 		MARBLEPILLAR = "I think I could use that.",
 		MARBLETREE = "I don't think an axe will cut it.",
@@ -1242,7 +1271,7 @@ return {
 		},
 		RAINCOAT = "Keeps the rain where it ought to be. Outside your body.",
 		RAINHAT = "Messy hair... the terrible price of dryness.",
-		RATATOUILLE = "An excellent source of fibre.",
+		RATATOUILLE = "An excellent source of fiber.",
 		RAZOR = "A sharpened rock tied to a stick. For hygiene!",
 		REDGEM = "It sparkles with inner warmth.",
 		RED_CAP = "It smells funny.",
@@ -1345,6 +1374,29 @@ return {
 			DISEASED = "It looks pretty sick.",
 			DISEASING = "Err, something's not right.",
 		},
+        SCULPTURE_KNIGHTHEAD = "Where's the rest of it?",
+		SCULPTURE_KNIGHTBODY = 
+		{
+			COVERED = "It's an odd marble statue.",
+			UNCOVERED = "I guess he cracked under the pressure.",
+			FINISHED = "At least it's back in one piece now.",
+		},
+        SCULPTURE_BISHOPHEAD = "Is that a head?",
+		SCULPTURE_BISHOPBODY = 
+		{
+			COVERED = "It looks old, but it feels new.",
+			UNCOVERED = "There's a big piece missing.",
+			FINISHED = "Now what?",
+		},
+        SCULPTURE_ROOKNOSE = "Where did this come from?",
+		SCULPTURE_ROOKBODY = 
+		{
+			COVERED = "It's some sort of marble statue.",
+			UNCOVERED = "It's not in the best shape.",
+			FINISHED = "All patched up.",
+		},
+        GARGOYLE_HOUND = "It looks very lifelike.",
+        GARGOYLE_WEREPIG = "It looks very lifelike.",
 		SEEDS = "Each one is a tiny mystery.",
 		SEEDS_COOKED = "That cooked the life right out of 'em!",
 		SEWING_KIT = "Darn it! Darn it all to heck!",
@@ -1383,9 +1435,15 @@ return {
 			SLEEPING = "I should keep my distance.",
 		},
 		SPOILED_FOOD = "It's a furry ball of rotten food.",
+        STAGEHAND =
+        {
+			AWAKE = "Just keep your hand to yourself, alright?",
+			HIDING = "Something's odd here, but I can't put my finger on it.",
+        },
+        STATUE_MARBLE = "It's a fancy marble statue.",
 		STATUEHARP = "What happened to the head?",
 		STATUEMAXWELL = "He's a lot shorter in person.",
-		STEELWOOL = "Scratchy metal fibres.",
+		STEELWOOL = "Scratchy metal fibers.",
 		STINGER = "Looks sharp!",
 		STRAWHAT = "Hats always ruin my hair.",
 		STUFFEDEGGPLANT = "It's really stuffing!",

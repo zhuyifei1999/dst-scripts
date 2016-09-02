@@ -27,7 +27,7 @@ AddRoom("BGCrappyForest", {
 AddRoom("BGForest", {
 					colour={r=.1,g=.8,b=.1,a=.50},
 					value = GROUND.FOREST,
-					tags = {"ExitPiece", "Chester_Eyebone"},
+					tags = {"ExitPiece", "Chester_Eyebone", "StagehandGarden"},
 					contents =  {
 					                distributepercent = .6,
 					                distributeprefabs=
@@ -279,7 +279,7 @@ AddRoom("BurntClearing", {
 AddRoom("Clearing", {
 					colour={r=.8,g=0.5,b=.6,a=.50},
 					value = GROUND.FOREST,
-					tags = {"ExitPiece", "Chester_Eyebone"},
+					tags = {"ExitPiece", "Chester_Eyebone", "StagehandGarden"},
 					contents =  {
 									countprefabs = {
     										spawnpoint_multiplayer = 1,
@@ -305,6 +305,32 @@ AddRoom("Clearing", {
 					                    beehive=.05,
 					                    red_mushroom = .01,
 					                    green_mushroom = .02,
+					                },
+					            }
+					})
+
+AddRoom("MoonbaseOne", {
+					colour={r=.8,g=0.5,b=.6,a=.50},
+					value = GROUND.FOREST,
+					tags = { "RoadPoison" },
+					contents =  {
+									countprefabs = {
+    										
+    									},
+									countstaticlayouts={["MoonbaseOne"]=1},
+									
+					                distributepercent = .8,
+					                distributeprefabs=
+					                {
+										evergreen=6,
+                                        fireflies = .5,
+					                    blue_mushroom = .05,
+					                    green_mushroom = .05,
+					                    grass = .1,
+					                    sapling=.8,
+										twiggytree = 0.8,
+										ground_twigs = 0.06,						                    
+					                    berrybush_juicy = 0.05,
 					                },
 					            }
 					})

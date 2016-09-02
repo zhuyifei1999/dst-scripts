@@ -2,6 +2,10 @@ return
 {
     ACTIONFAIL =
     {
+        REPAIR =
+        {
+            WRONGPIECE = "That is clearly the incorrect piece.",
+        },
         BUILD =
         {
             MOUNTED = "In this elevated position, I can't reach the ground.",
@@ -65,6 +69,9 @@ return
             BUSY = "I'll try again when it's done.",
             ABIGAILHEART = "Her spirit is already bound to something in this world.",
             GHOSTHEART = "I'll not be meddling in that business.",
+            NOTGEM = "Don't be silly, dear.",
+            WRONGGEM = "This gemstone's properties are incorrect for my purposes.",
+            NOTSTAFF = "This is not the staff I seek.",
         },
         GIVETOPLAYER = 
         {
@@ -84,6 +91,7 @@ return
         {
             KNOWN = "Please. That knowledge is child's play.",
             CANTLEARN = "A piece of knowledge I cannot grasp... Intriguing!",
+            WRONGWORLD = "This map is for some other location.",
         },
     },
     ACTIONFAIL_GENERIC = "It seems I can't do that.",
@@ -196,7 +204,7 @@ return
             ATTACKER = "That's enough funny business, young arachnid.",
             MURDERER = "Someone needs to teach you some manners, %s!",
             REVIVER = "You're a sweet boy, %s.",
-            GHOST = "Poor dear. We'll get you a nice colored bandaid once you're revived.",
+            GHOST = "Poor dear. We'll get you a nice colored bandage once you're revived.",
             FIRESTARTER = "Who gave you matches, %s?",
         },
         WATHGRITHR = 
@@ -290,7 +298,8 @@ return
         BIGFOOT = "Prehistoric!",
         PIGTENT = "Filthy.",
         MANDRAKE_COOKED = "Mandragora officinarum, cooked in the name of discovery.",
-        BOAT = "Where did this vessel come from?",
+        MAPSCROLL = "The potential of the blank page is paralyzing for some.",
+		BOAT = "Where did this vessel come from?",
         BURNT_MARSH_BUSH = "Reduced to ash.",
         BONESHARD = "Remnants of a life well lived.",
         BUZZARD = "Cathartes, of course.",
@@ -568,6 +577,13 @@ return
         GREENSTAFF = "It appears to rewind time on an object.",
         POTTEDFERN = "A potted plant.",
 		SENTRYWARD = "Ah! A scrying orb.",
+        MOONBASE =
+        {
+            GENERIC = "The magic of this structure ebbs in predictable cycles.",
+            BROKEN = "Ancient debris. Perhaps it can be restored?",
+            --STAFFED = "",
+            --WRONGSTAFF = "",
+        },
 
         BOOK_BIRDS = "The expurgated version, but it has my favorite: Megascops kennicottii.",
         BOOK_TENTACLES = "Hard to put this one down. It's gripping, frankly.",
@@ -585,6 +601,8 @@ return
         YELLOWSTAFF = "Luckily the star is a manageable size.",
         YELLOWGEM = "Perhaps it is similar to Citrine.",
         ORANGEGEM = "It looks like a Spessartite garnet.",
+        --OPALSTAFF = "",
+        OPALPRECIOUSGEM = "A precious light diffracting mineraloid.",
         TELEBASE = 
         {
             VALID = "It looks to be ready.",
@@ -596,6 +614,7 @@ return
             GEMS = "These hold gems.",
         },
         STAFFLIGHT = "Perhaps a larger staff would summon a larger star.",
+        --STAFFCOLDLIGHT = "",
 
         ANCIENT_ALTAR = "A monument to some long dead god.",
         ANCIENT_ALTAR_BROKEN = "Parts of this are missing.",
@@ -886,14 +905,20 @@ return
         CARROT_COOKED = "Daucus carota, roasted to perfection.",
         CARROT_PLANTED = "Daucus carota is a root vegetable.",
         CARROT_SEEDS = "Seed of Daucus carota.",
-        BERRIES = "Some Ardisia crenata berries, I think.",
+        CARTOGRAPHYDESK = 
+		{	
+			GENERIC = "Ah! A proper desk! Just look at the finish on that wood!",
+            BURNING = "Can we have nothing decent?",
+			BURNT = "The destruction of knowledge is such a difficult thing to stomach.",
+		},
+		BERRIES = "Some Ardisia crenata berries, I think.",
         BERRIES_COOKED = "Roasted Ardisia crenata, just in case.",
         BERRIES_JUICY = "A variant of Ardisia crenata berries. Good hydration.",
         BERRIES_JUICY_COOKED = "Spoilage is a constant threat.",
         CUTSTONE = "Some smoothed rock slabs.",
         SEEDS = "A handful of unidentifiable seeds.",
         SEEDS_COOKED = "A toasted embryonic plant treat!",
-        SILK = "Protein fibre extruded from an arachnid.",
+        SILK = "Protein fiber extruded from an arachnid.",
         SPIDERGLAND = "This gland secretes a mildly toxic venom.",
         BOARDS = "Roughly hewn wood boards.",
         BONESTEW = "Not quite how mum used to make, but it smells superb!",
@@ -1053,6 +1078,12 @@ return
         ONEMANBAND = "An impressive improvement to the traditional pipe and tabor.",
         BIRDTRAP = "A simple clap-trap for birds.",
         GEARS = "Various cogs and wheels.",
+        STAGEHAND =
+        {
+			AWAKE = "That was an underhanded trick!",
+			HIDING = "Something devious is lurking in the shadows.",
+        },
+        --STATUE_MARBLE = "",
         STATUEHARP = "A simple statue.",
         STATUEMAXWELL = "He's actually quite a sweet boy when you peel away the ego.",
         SKELETON = "An incredibly well preserved human skeleton.",
@@ -1161,7 +1192,6 @@ return
         DUG_BERRYBUSH = "It requires soil to grow.",
         DUG_BERRYBUSH_JUICY = "It requires soil to grow.",
         DUG_MARSH_BUSH = "It requires soil to grow.",
-
         SAPLING = 
         {
             GENERIC = "It's a small tree.",
@@ -1171,6 +1201,27 @@ return
             DISEASED = "It's afflicted with an agrarian disease beyond my curing.",
             DISEASING = "Hm... Seems more brittle than is usual.",
         },
+        SCULPTURE_KNIGHTHEAD = "You have to lift with your knees, dear.",
+		SCULPTURE_KNIGHTBODY = 
+		{
+			COVERED = "Very tasteful.",
+			UNCOVERED = "They say every block of stone has a statue inside.",
+			FINISHED = "The structure is whole once again.",
+		},
+        SCULPTURE_BISHOPHEAD = "I can lift it. I'm more spry than I look.",
+		SCULPTURE_BISHOPBODY = 
+		{
+			COVERED = "There's an almost animalistic ferocity in the chiselwork.",
+			UNCOVERED = "So this is what was lurking inside.",
+			FINISHED = "An excellent repair job.",
+		},
+        SCULPTURE_ROOKNOSE = "That's a thrown out back waiting to happen.",
+		SCULPTURE_ROOKBODY = 
+		{
+			COVERED = "I feel a light dusting of magic. Odd.",
+			UNCOVERED = "What an awful state it's in!",
+			FINISHED = "We may want to keep an eye on this.",
+		},
         TWIGGYTREE =
         {
             CHOPPED = "It has been harvested.",
@@ -1302,7 +1353,8 @@ return
         FEATHER_CROW = "Feather of Corvus.",
         FEATHER_ROBIN = "Feather of Cardinalis.",
         FEATHER_ROBIN_WINTER = "It looks like a feather of Cardinalis, but white.",
-
+		FEATHERPENCIL = "Oh, how I missed proper writing implements!",
+		
         TRINKET_1 = "What a lovely set of bottle washers! Too bad they're all melted.",
         TRINKET_2 = "A fake membranophone.",
         TRINKET_3 = "Oh, I just love the bard.",

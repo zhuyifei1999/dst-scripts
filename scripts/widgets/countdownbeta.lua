@@ -8,7 +8,7 @@ require "os"
 
 local klei_tz = 28800--The time zone offset for vancouver
 
-local CountdownBeta = Class(Widget, function(self, mode, update_name)
+local CountdownBeta = Class(Widget, function(self, mode, update_name, release_date)
 	Widget._ctor(self, "Countdown")
 
 	if mode == "text" then
@@ -22,7 +22,13 @@ local CountdownBeta = Class(Widget, function(self, mode, update_name)
 		self.daysuntiltext:SetRegionSize( 240, 50 )
 		self.daysuntiltext:SetClickable(false)
 		
-	elseif mode == "image" or mode == "reveal" then
+		if release_date ~= nil then
+			self:SetCountdownDate(release_date)
+		else
+			self.daysuntiltext:SetString(STRINGS.UI.MAINSCREEN.BETA_LABEL)
+		end
+
+	elseif mode == "image" or mode == "reveal" or mode == "released" then
 		self.image = self:AddChild(Image("images/frontend.xml", "silhouette_beta_1.tex"))
 		self.image:SetScale(-1, 1, 1)
 		self.image:SetPosition(0, 90, 0)
@@ -46,6 +52,8 @@ local CountdownBeta = Class(Widget, function(self, mode, update_name)
 		self.daysuntiltext:SetRegionSize( 240, 50 )
 		self.daysuntiltext:SetClickable(false)
 		
+		self:SetCountdownDate(release_date)
+
 		if mode == "reveal" then
 			self.title2 = lableroot:AddChild(Text(NUMBERFONT, 25))
 			self.title2:SetPosition(0, -3, 0)
@@ -57,8 +65,6 @@ local CountdownBeta = Class(Widget, function(self, mode, update_name)
 			self.daysuntiltext:SetPosition(0, -28, 0)
 			self.daysuntiltext:SetSize(25)
 
-		
-		
 			self.reveal_image = self:AddChild(Image("images/frontend.xml", "silhouette_beta_1_reveal.tex"))
 			self.reveal_image:SetScale(-1, 1, 1)
 			self.reveal_image:SetPosition(0, 90, 0)
@@ -78,6 +84,23 @@ local CountdownBeta = Class(Widget, function(self, mode, update_name)
 				self.smoke:GetAnimState():PlayAnimation("tiny")
 				TheFrontEnd:GetSound():PlaySound("dontstarve/common/spawn/spawnportal_spawnplayer")
 			end)
+			
+		elseif mode == "released" then
+			self.title2 = lableroot:AddChild(Text(NUMBERFONT, 25))
+			self.title2:SetPosition(0, -3, 0)
+			self.title2:SetRegionSize( 240, 50 )
+			self.title2:SetClickable(false)
+			self.title2:SetString(STRINGS.UI.MAINSCREEN.UPDATERELEASED)
+
+			self.title:SetPosition(0, 28, 0)
+			self.daysuntiltext:SetPosition(0, -28, 0)
+			self.daysuntiltext:SetSize(25)
+			self.daysuntiltext:SetString(update_name)
+
+			self.reveal_image = self:AddChild(Image("images/frontend.xml", "silhouette_beta_1_reveal.tex"))
+			self.reveal_image:SetScale(-1, 1, 1)
+			self.reveal_image:SetPosition(0, 90, 0)
+			self.reveal_image:SetClickable(false)
 		end
 		
 	end
@@ -92,7 +115,6 @@ end
 
 function CountdownBeta:SetCountdownDate(date)
 	if not date or type(date) ~= "table" then
-		self.daysuntiltext:SetString(STRINGS.UI.MAINSCREEN.BETA_LABEL)
 		return
 	end
 

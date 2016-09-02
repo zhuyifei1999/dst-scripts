@@ -20,7 +20,7 @@ return CreatePrefabSkin("backpack_bat",
 {
 	base_prefab = base_prefab, 
 	ui_preview = ui_preview,
-	item_type = "ITEM_SKIN",
+	inheritance = "ITEM_SKIN",
 	init_fn = function(inst) backpack_init_fn(inst, ui_preview.build) end,
 	assets = assets,
 	tags = tags,

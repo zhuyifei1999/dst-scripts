@@ -28,7 +28,7 @@ AddRoom("BGGrassBurnt", {
 AddRoom("BGGrass", {
 					colour={r=.5,g=.8,b=.5,a=.50},
 					value = GROUND.GRASS,
-					tags = {"ExitPiece", "Chester_Eyebone"},
+					tags = {"ExitPiece", "Chester_Eyebone", "StagehandGarden"},
 					contents =  {
 									countprefabs = {
     										spawnpoint_multiplayer = 1,
@@ -59,7 +59,7 @@ AddRoom("BGGrass", {
 AddRoom("FlowerPatch", {
 					colour={r=.5, g=1,b=.8,a=.50},
 					value = GROUND.GRASS,
-					tags = {"ExitPiece", "Chester_Eyebone"},
+					tags = {"ExitPiece", "Chester_Eyebone", "StagehandGarden"},
 					contents =  {
 					                distributepercent = .1,
 					                distributeprefabs=

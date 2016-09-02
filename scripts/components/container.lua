@@ -61,17 +61,17 @@ function Container:NumItems()
     for k,v in pairs(self.slots) do
         num = num + 1
     end
-    
+
     return num
 end
 
 function Container:IsFull()
-	local items = 0
-	for k, v in pairs(self.slots) do
-		items = items + 1
+    local items = 0
+    for k, v in pairs(self.slots) do
+        items = items + 1
     end
 
-	return items >= self.numslots
+    return items >= self.numslots
 end
 
 function Container:IsEmpty()
@@ -161,10 +161,9 @@ function Container:DestroyContents()
 end
 
 function Container:GiveItem(item, slot, src_pos, drop_on_fail)
-    drop_on_fail = drop_on_fail == nil and true or false
-    --print("Container:GiveItem", item.prefab)
-    if item and item.components.inventoryitem and self:CanTakeItemInSlot(item, slot) then
-
+    if item == nil then
+        return false
+    elseif item.components.inventoryitem ~= nil and self:CanTakeItemInSlot(item, slot) then
         --try to burn off stacks if we're just dumping it in there
         if item.components.stackable ~= nil and self.acceptsstacks then
             --Added this for when we want to dump a stack back into a
@@ -217,7 +216,6 @@ function Container:GiveItem(item, slot, src_pos, drop_on_fail)
         end
 
         if in_slot then
-
             --weird case where we are trying to force a stack into a non-stacking container. this should probably have been handled earlier, but this is a failsafe        
             if not self.acceptsstacks and item.components.stackable and item.components.stackable:StackSize() > 1 then
                 item = item.components.stackable:Get()
@@ -236,34 +234,33 @@ function Container:GiveItem(item, slot, src_pos, drop_on_fail)
             end
 
             return true
-        else
-            if drop_on_fail then
-                item.Transform:SetPosition(self.inst.Transform:GetWorldPosition())
-                if item.components.inventoryitem then
-                    item.components.inventoryitem:OnDropped(true)
-                end
-            end
-            return false
         end
-        
     end
+
+    --default to true if nil
+    if drop_on_fail ~= false then
+        item.Transform:SetPosition(self.inst.Transform:GetWorldPosition())
+        if item.components.inventoryitem ~= nil then
+            item.components.inventoryitem:OnDropped(true)
+        end
+    end
+    return false
 end
 
 function Container:RemoveItemBySlot(slot)
     if slot and self.slots[slot] then
         local item = self.slots[slot]
         if item then
-			self.slots[slot] = nil
-			if item.components.inventoryitem then
-				item.components.inventoryitem:OnRemoved()
-			end
-			
-			self.inst:PushEvent("itemlose", {slot = slot})
-		end
+            self.slots[slot] = nil
+            if item.components.inventoryitem then
+                item.components.inventoryitem:OnRemoved()
+            end
+
+            self.inst:PushEvent("itemlose", {slot = slot})
+        end
         item.prevcontainer = self
         item.prevslot = slot
         return item
-        
     end
 end
 
@@ -340,7 +337,7 @@ function Container:Close()
         if doer.components.inventory ~= nil then
             doer.components.inventory.opencontainers[self.inst] = nil
         end
-        
+
         if self.onclosefn ~= nil then
             self.onclosefn(self.inst)
         end
@@ -350,7 +347,7 @@ function Container:Close()
 end
 
 function Container:IsOpen()
-	return self.opener ~= nil
+    return self.opener ~= nil
 end
 
 function Container:IsOpenedBy(guy)
@@ -383,7 +380,7 @@ end
 
 function Container:FindItems(fn)
     local items = {}
-    
+
     for k,v in pairs(self.slots) do
         if fn(v) then
             table.insert(items, v)
@@ -397,14 +394,14 @@ function Container:Has(item, amount)
     local num_found = 0
     for k,v in pairs(self.slots) do
         if v and v.prefab == item then
-        	if v.components.stackable ~= nil then
-        		num_found = num_found + v.components.stackable:StackSize()
-        	else
-            	num_found = num_found + 1
+            if v.components.stackable ~= nil then
+                num_found = num_found + v.components.stackable:StackSize()
+            else
+                num_found = num_found + 1
             end
         end
     end
-    
+
     return num_found >= amount, num_found
 end
 
@@ -443,36 +440,33 @@ function Container:GetItemByName(item, amount)
     return items
 end
 
+local function tryconsume(self, v, amount)
+    if v.components.stackable == nil then
+        self:RemoveItem(v):Remove()
+        return 1
+    elseif v.components.stackable.stacksize > amount then
+        v.components.stackable:SetStackSize(v.components.stackable.stacksize - amount)
+        return amount
+    else
+        amount = v.components.stackable.stacksize
+        self:RemoveItem(v, true):Remove()
+        return amount
+    end
+    --shouldn't be possible?
+    return 0
+end
+
 function Container:ConsumeByName(item, amount)
-    
-    local total_num_found = 0
-    
-    local function tryconsume(v)
-		local num_found = 0
-        if v and v.prefab == item then
-            local num_left_to_find = amount - total_num_found
-            
-            if v.components.stackable then
-                if v.components.stackable.stacksize > num_left_to_find then
-                    v.components.stackable:SetStackSize(v.components.stackable.stacksize - num_left_to_find)
-                    num_found = amount
-                else
-                    num_found = num_found + v.components.stackable.stacksize
-                    self:RemoveItem(v, true):Remove()
-                end
-            else
-                num_found = num_found + 1
-                self:RemoveItem(v):Remove()
-            end
-        end
-        return num_found
+    if amount <= 0 then
+        return
     end
 
-    for k,v in pairs(self.slots) do
-        total_num_found = total_num_found + tryconsume(v)
-        
-        if total_num_found >= amount then
-            break
+    for k, v in pairs(self.slots) do
+        if v.prefab == item then
+            amount = amount - tryconsume(self, v, amount)
+            if amount <= 0 then
+                return
+            end
         end
     end
 end
@@ -487,7 +481,7 @@ function Container:OnSave()
             if refs then
                 for k,v in pairs(refs) do
                     table.insert(references, v)
-                end 
+                end
             end
         end
     end

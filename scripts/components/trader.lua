@@ -84,7 +84,7 @@ function Trader:AbleToAccept(item, giver)
         return false, "DEAD"
     elseif self.inst.components.sleeper ~= nil and self.inst.components.sleeper:IsAsleep() then
         return false, "SLEEPING"
-    elseif self.inst:HasTag("busy") then
+    elseif self.inst.sg ~= nil and self.inst.sg:HasStateTag("busy") then
         return false, "BUSY"
     end
     return true
@@ -110,19 +110,19 @@ function Trader:AcceptGift(giver, item, count)
             item.components.inventoryitem:RemoveFromOwner(true)
         end
 
-        if self.inst.components.inventory ~= nil and not self.deleteitemonaccept then
+        if self.deleteitemonaccept then
+            item:Remove()
+        elseif self.inst.components.inventory ~= nil then
             item.prevslot = nil
             item.prevcontainer = nil
             self.inst.components.inventory:GiveItem(item, nil, giver ~= nil and giver:GetPosition() or nil)
-        elseif self.deleteitemonaccept then
-            item:Remove()
         end
 
         if self.onaccept ~= nil then
             self.onaccept(self.inst, giver, item)
         end
 
-        self.inst:PushEvent("trade", {giver = giver, item = item})
+        self.inst:PushEvent("trade", { giver = giver, item = item })
 
         return true
     end

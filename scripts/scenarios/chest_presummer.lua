@@ -1,5 +1,5 @@
 chestfunctions = require("scenarios/chestfunctions")
-loot =
+local loot =
 {
     {
         item = "log",

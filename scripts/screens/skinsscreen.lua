@@ -34,7 +34,6 @@ local SkinsScreen = Class(Screen, function(self, profile)
 end)
 
 function SkinsScreen:DoInit()
-	STATS_ENABLE = true
 	TheFrontEnd:GetGraphicsOptions():DisableStencil()
 	TheFrontEnd:GetGraphicsOptions():DisableLightMapComponent()
 	
@@ -375,7 +374,7 @@ function SkinsScreen:OnControl(control, down)
 		        TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
 		    end)
 			return true
-		elseif not down and control == CONTROL_MENU_MISC_1 then 
+		elseif not down and control == CONTROL_MENU_MISC_1 and self.details_panel.set_info_btn.show_help then 
 			self.details_panel.set_info_btn.onclick()
 			return true
 		end

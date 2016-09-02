@@ -20,6 +20,6 @@ return CreatePrefabSkin("firepit_hole",
 	tags = tags,
 	init_fn = function(inst) firepit_init_fn(inst, ui_preview.build, Vector3(0, 26, 0)) end,
 	ui_preview = ui_preview,
-	item_type = "ITEM_SKIN_LOYAL",
+	inheritance = "ITEM_SKIN_LOYAL",
 	rarity = "Loyal",
 })

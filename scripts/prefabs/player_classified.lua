@@ -116,6 +116,10 @@ local function OnLearnRecipeSuccess(parent)
     parent.player_classified.learnrecipeevent:push()
 end
 
+local function OnLearnMapSuccess(parent)
+    parent.player_classified.learnmapevent:push()
+end
+
 local function OnRepairSuccess(parent)
     parent.player_classified.repairevent:push()
 end
@@ -375,6 +379,7 @@ local function OnTechTreesDirty(inst)
     inst.techtrees.MAGIC = inst.magiclevel:value()
     inst.techtrees.ANCIENT = inst.ancientlevel:value()
     inst.techtrees.SHADOW = inst.shadowlevel:value()
+    inst.techtrees.CARTOGRAPHY = inst.cartographylevel:value()
     if inst._parent ~= nil then
         inst._parent:PushEvent("techtreechange", { level = inst.techtrees })
     end
@@ -501,6 +506,12 @@ end
 local function OnLearnRecipeEvent(inst)
     if inst._parent ~= nil and TheFocalPoint.entity:GetParent() == inst._parent then
         TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/get_gold")
+    end
+end
+
+local function OnLearnMapEvent(inst)
+    if inst._parent ~= nil and TheFocalPoint.entity:GetParent() == inst._parent then
+        TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/Together_HUD/learn_map")
     end
 end
 
@@ -722,6 +733,7 @@ local function RegisterNetListeners(inst)
         inst:ListenForEvent("buildstructure", OnBuildSuccess, inst._parent)
         inst:ListenForEvent("consumehealthcost", OnConsumeHealthCost, inst._parent)
         inst:ListenForEvent("learnrecipe", OnLearnRecipeSuccess, inst._parent)
+        inst:ListenForEvent("learnmap", OnLearnMapSuccess, inst._parent)
         inst:ListenForEvent("repair", OnRepairSuccess, inst._parent)
         inst:ListenForEvent("performaction", OnPerformAction, inst._parent)
         inst:ListenForEvent("actionfailed", OnActionFailed, inst._parent)
@@ -775,6 +787,7 @@ local function RegisterNetListeners(inst)
     inst:ListenForEvent("builder.build", OnBuildEvent)
     inst:ListenForEvent("builder.damaged", OnBuilderDamagedEvent)
     inst:ListenForEvent("builder.learnrecipe", OnLearnRecipeEvent)
+    inst:ListenForEvent("MapExplorer.learnmap", OnLearnMapEvent)
     inst:ListenForEvent("repair.repair", OnRepairEvent)
     inst:ListenForEvent("giftsdirty", OnGiftsDirty)
     inst:ListenForEvent("ismounthurtdirty", OnMountHurtDirty)
@@ -903,11 +916,13 @@ local function fn()
     inst.magicbonus = net_tinybyte(inst.GUID, "builder.magic_bonus")
     inst.ancientbonus = net_tinybyte(inst.GUID, "builder.ancient_bonus")
     inst.shadowbonus = net_tinybyte(inst.GUID, "builder.shadow_bonus")
+    inst.cartographybonus = net_tinybyte(inst.GUID, "builder.cartography_bonus")
     inst.ingredientmod = net_tinybyte(inst.GUID, "builder.ingredientmod")
     inst.sciencelevel = net_tinybyte(inst.GUID, "builder.accessible_tech_trees.SCIENCE", "techtreesdirty")
     inst.magiclevel = net_tinybyte(inst.GUID, "builder.accessible_tech_trees.MAGIC", "techtreesdirty")
     inst.ancientlevel = net_tinybyte(inst.GUID, "builder.accessible_tech_trees.ANCIENT", "techtreesdirty")
     inst.shadowlevel = net_tinybyte(inst.GUID, "builder.accessible_tech_trees.SHADOW", "techtreesdirty")
+    inst.cartographylevel = net_tinybyte(inst.GUID, "builder.accessible_tech_trees.CARTOGRAPHY", "techtreesdirty")
     inst.isfreebuildmode = net_bool(inst.GUID, "builder.freebuildmode", "recipesdirty")
     inst.recipes = {}
     inst.bufferedbuilds = {}
@@ -922,6 +937,10 @@ local function fn()
     inst.magiclevel:set(inst.techtrees.MAGIC)
     inst.ancientlevel:set(inst.techtrees.ANCIENT)
     inst.shadowlevel:set(inst.techtrees.SHADOW)
+    inst.cartographylevel:set(inst.techtrees.CARTOGRAPHY)
+
+    --MapExplorer variables
+    inst.learnmapevent = net_event(inst.GUID, "MapExplorer.learnmap")
 
     --Repair variables
     inst.repairevent = net_event(inst.GUID, "repair.repair")

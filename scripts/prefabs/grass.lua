@@ -6,6 +6,12 @@ local assets =
     Asset("SOUND", "sound/common.fsb"),
 }
 
+local grasspart_assets =
+{
+    Asset("ANIM", "anim/grass.zip"),
+    Asset("ANIM", "anim/grass1.zip"),
+}
+
 local prefabs =
 {
     "cutgrass",
@@ -13,10 +19,52 @@ local prefabs =
     "disease_puff",
     "diseaseflies",
     "spoiled_food",
+    "grassgekko",
+    "grasspartfx",
 }
 
 local function SpawnDiseasePuff(inst)
     SpawnPrefab("disease_puff").Transform:SetPosition(inst.Transform:GetWorldPosition())
+end
+
+local function canmorph(inst)
+    return inst.AnimState:IsCurrentAnimation("idle")
+        and not (inst.components.diseaseable ~= nil and
+                inst.components.diseaseable:IsDiseased())
+end
+
+local function triggernearbymorph(inst, quick, range)
+    range = range or 1
+
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x, y, z, range, { "renewable" }, { "INLIMBO" })
+    local count = 0
+
+    for i, v in ipairs(ents) do
+        if v ~= inst and
+            v.prefab == "grass" and
+            v.components.timer ~= nil and
+            not (v.components.timer:TimerExists("morphdelay") or
+                v.components.timer:TimerExists("morphing") or
+                v.components.timer:TimerExists("morphrelay")) then
+
+            count = count + 1
+
+            if canmorph(v) and math.random() < .75 then
+                v.components.timer:StartTimer(
+                    "morphing",
+                    ((not quick or count > 3) and .75 + math.random() * 1.5) or
+                    (.2 + math.random() * .2) * count
+                )
+            else
+                v.components.timer:StartTimer("morphrelay", count * FRAMES)
+            end
+        end
+    end
+
+    if count <= 0 and range < 4 then
+        triggernearbymorph(inst, quick, range * 2)
+    end
 end
 
 local function dig_up(inst, worker)
@@ -31,6 +79,11 @@ local function dig_up(inst, worker)
             if worker ~= nil then
                 worker:PushEvent("digdiseasing")
             end
+        elseif not TheWorld.state.iswinter
+            and worker ~= nil
+            and worker:HasTag("player")
+            and math.random() < TUNING.GRASSGEKKO_MORPH_CHANCE then
+            triggernearbymorph(inst, true)
         end
 
         if inst.components.pickable:CanBePicked() then
@@ -80,15 +133,18 @@ local function onpickedfn(inst, picker)
     inst.SoundEmitter:PlaySound("dontstarve/wilson/pickup_reeds")
     inst.AnimState:PlayAnimation("picking")
 
-    if inst.components.diseaseable ~= nil then
-        if inst.components.diseaseable:IsDiseased() then
-            SpawnDiseasePuff(inst)
-        elseif inst.components.diseaseable:IsBecomingDiseased() then
-            SpawnDiseasePuff(inst)
-            if picker ~= nil then
-                picker:PushEvent("pickdiseasing")
-            end
+    if inst.components.diseaseable ~= nil and inst.components.diseaseable:IsDiseased() then
+        SpawnDiseasePuff(inst)
+    elseif inst.components.diseaseable ~= nil and inst.components.diseaseable:IsBecomingDiseased() then
+        SpawnDiseasePuff(inst)
+        if picker ~= nil then
+            picker:PushEvent("pickdiseasing")
         end
+    elseif not TheWorld.state.iswinter
+        and picker ~= nil
+        and picker:HasTag("player")
+        and math.random() < TUNING.GRASSGEKKO_MORPH_CHANCE then
+        triggernearbymorph(inst, true)
     end
 
     if inst.components.pickable:IsBarren() then
@@ -134,15 +190,59 @@ local function makediseaseable(inst)
     end
 end
 
+local function onmorphtimer(inst, data)
+    local morphing = data.name == "morphing"
+    if morphing or data.name == "morphrelay" then
+        if morphing and canmorph(inst) then
+            local x, y, z = inst.Transform:GetWorldPosition()
+            if #TheSim:FindEntities(x, y, z, 10, { "grassgekko" }) < 8 then
+                local gekko = SpawnPrefab("grassgekko")
+                gekko.Transform:SetPosition(x, y, z)
+                gekko.sg:GoToState("emerge")
+
+                local partfx = SpawnPrefab("grasspartfx")
+                partfx.Transform:SetPosition(x, y, z)
+                partfx.Transform:SetRotation(inst.Transform:GetRotation())
+                partfx.AnimState:SetMultColour(inst.AnimState:GetMultColour())
+
+                triggernearbymorph(inst, false)
+                inst:Remove()
+                return
+            end
+        end
+        inst.components.timer:StartTimer("morphdelay", GetRandomWithVariance(TUNING.GRASSGEKKO_MORPH_DELAY, TUNING.GRASSGEKKO_MORPH_DELAY_VARIANCE))
+        triggernearbymorph(inst, false)
+    end
+end
+
+local function makemorphable(inst)
+    if inst.components.timer == nil then
+        inst:AddComponent("timer")
+        inst:ListenForEvent("timerdone", onmorphtimer)
+    end
+end
+
 local function ontransplantfn(inst)
     inst.components.pickable:MakeBarren()
     makediseaseable(inst)
+    makemorphable(inst)
     inst.components.diseaseable:RestartNearbySpread()
+    inst.components.timer:StartTimer("morphdelay", GetRandomWithVariance(TUNING.GRASSGEKKO_MORPH_DELAY, TUNING.GRASSGEKKO_MORPH_DELAY_VARIANCE))
 end
 
 local function OnPreLoad(inst, data)
-    if data ~= nil and (data.pickable ~= nil and data.pickable.transplanted or data.diseaseable ~= nil) then
-        makediseaseable(inst)
+    if data ~= nil then
+        if data.pickable ~= nil and data.pickable.transplanted then
+            makediseaseable(inst)
+            makemorphable(inst)
+        else
+            if data.diseaseable ~= nil then
+                makediseaseable(inst)
+            end
+            if data.timer ~= nil then
+                makemorphable(inst)
+            end
+        end
     end
 end
 
@@ -157,7 +257,7 @@ local function grass(name, stage)
         inst.entity:AddNetwork()
 
         inst.MiniMapEntity:SetIcon("grass.png")
-        
+
         inst.AnimState:SetBank("grass")
         inst.AnimState:SetBuild("grass1")
         inst.AnimState:PlayAnimation("idle", true)
@@ -200,8 +300,6 @@ local function grass(name, stage)
         inst:AddComponent("lootdropper")
         inst:AddComponent("inspectable")
 
-        --inst:AddComponent("lootdropper")
-
         inst:AddComponent("workable")
         inst.components.workable:SetWorkAction(ACTIONS.DIG)
         inst.components.workable:SetOnFinishCallback(dig_up)
@@ -224,5 +322,35 @@ local function grass(name, stage)
     return Prefab(name, fn, assets, prefabs)
 end
 
+local function grasspart_fn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddNetwork()
+
+    inst.AnimState:SetBank("grass")
+    inst.AnimState:SetBuild("grass1")
+    inst.AnimState:PlayAnimation("grass_part")
+    inst.AnimState:SetFinalOffset(1)
+
+    inst:AddTag("FX")
+    inst:AddTag("NOCLICK")
+
+    inst.SoundEmitter:PlaySound("dontstarve/wilson/pickup_reeds")
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst:ListenForEvent("animover", inst.Remove)
+
+    return inst
+end
+
 return grass("grass", 0),
-    grass("depleted_grass", 1)
+    grass("depleted_grass", 1),
+    Prefab("grasspartfx", grasspart_fn, grasspart_assets)

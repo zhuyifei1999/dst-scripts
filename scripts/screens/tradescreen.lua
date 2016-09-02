@@ -93,7 +93,6 @@ local TradeScreen = Class(Screen, function(self, profile, screen)
 end)
 
 function TradeScreen:DoInit()
-	STATS_ENABLE = true
 	TheFrontEnd:GetGraphicsOptions():DisableStencil()
 	TheFrontEnd:GetGraphicsOptions():DisableLightMapComponent()
 	

@@ -1407,7 +1407,7 @@ function ServerListingScreen:IsValidWithFilters(server)
     -- have joined them previously, and this keeps the count consistent.
     local version_mismatch = APP_VERSION ~= tostring(server.version)
     local beta_server = ContainsCurrentBetaTag(server.tags)
-    local dev_build = APP_VERSION == "-1" or BRANCH == "dev"
+    local dev_build = BRANCH == "dev"
 
     if version_mismatch and not (beta_server and BRANCH == "release") and not dev_build then
         return false

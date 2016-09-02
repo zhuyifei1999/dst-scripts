@@ -102,7 +102,18 @@ PrefabSwaps.AddPrefabProxy("ground_twigs", "twigs")
 --------------------------------------------------------------------------
 
 local _selected_sets = nil
-local _inactive_prefabs = nil
+local _inactive_prefabs = {}
+
+-- Defaults to partially support mods that generate set pieces too early.
+for cat, v in pairs(_base_sets) do
+    for i, set in ipairs(v) do
+        if not set.primary then
+            for _, prefab in ipairs(set.prefabs) do
+                _inactive_prefabs[prefab] = true
+            end
+        end
+    end
+end
 
 local function ActivateSet(set)
     print("Prefab Swap Selection: "..set.name)

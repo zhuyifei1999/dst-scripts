@@ -80,6 +80,10 @@ local prefabs =
     "marbletree",
     "statueharp",
     "statuemaxwell",
+    "sculpture_knight",
+    "sculpture_bishop",
+    "sculpture_rook",
+    "statue_marble",
     "eyeplant",
     "lureplant",
     "purpleamulet",
@@ -104,6 +108,7 @@ local prefabs =
     "shadowskittish",
     "shadowwatcher",
     "shadowhand",
+    "stagehand",
     "rubble",
     "tumbleweedspawner",
     "meteorspawner",
@@ -115,6 +120,7 @@ local prefabs =
     "chester",
     "grassgekko",
     "petrify_announce",
+    "moonbase",
 }
 
 local monsters =

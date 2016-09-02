@@ -716,6 +716,49 @@ local ExampleLayout =
 
 	["BlueMushyStart"] = StaticLayout.Get("map.static_layouts/blue_mushy_entrance"),
 
+--------------------------------------------------------------------------------
+-- ANR - A New Reign
+--------------------------------------------------------------------------------
+
+	["MoonbaseOne"] = StaticLayout.Get("map/static_layouts/moonbaseone",
+	{
+			start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+			fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+			layout_position = LAYOUT_POSITION.CENTER,
+			disable_transform = true
+	}),
+
+	["StagehandGarden"] = StaticLayout.Get("map/static_layouts/stagehandgarden",
+	{
+		start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+		fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+	}),
+	
+	["Sculptures_1"] = StaticLayout.Get("map/static_layouts/sculptures_1",
+	{
+		start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+		fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+	}),
+	
+	["Sculptures_2"] = StaticLayout.Get("map/static_layouts/sculptures_2",
+	{
+		areas =
+		{
+			sculpture_random = function(area) return PickSomeWithDups(1, {"sculpture_knight", "sculpture_bishop"}) end,
+		},
+	}),
+	
+	["Sculptures_3"] = StaticLayout.Get("map/static_layouts/sculptures_3"),
+	["Sculptures_4"] = StaticLayout.Get("map/static_layouts/sculptures_4"),
+
+	["Sculptures_5"] = StaticLayout.Get("map/static_layouts/sculptures_5",
+	{
+		areas =
+		{
+			sculpture_random = function(area) return (math.random(2) == 1) and PickSomeWithDups(1, {"statue_marble", "marblepillar", "sculpture_knight", "sculpture_bishop"}) or {nil} end,
+		},
+	}),
+
 }
 
 return {Layouts = ExampleLayout}

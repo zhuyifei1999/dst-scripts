@@ -14,7 +14,14 @@ local prefabs =
 }
 
 local function ItemTradeTest(inst, item)
-    return item ~= nil and string.sub(item.prefab, -3) == "gem"
+    if item == nil then
+        return false
+    elseif string.sub(item.prefab, -3) ~= "gem" then
+        return false, "NOTGEM"
+    elseif string.sub(item.prefab, -11, -4) == "precious" then
+        return false, "WRONGGEM"
+    end
+    return true
 end
 
 local function OnGemGiven(inst, giver, item)
@@ -49,6 +56,9 @@ local function fn()
 
     inst:AddTag("gemsocket")
 
+    --trader (from trader component) added to pristine state for optimization
+    inst:AddTag("trader")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -62,6 +72,7 @@ local function fn()
     inst:AddComponent("repairer")
     inst.components.repairer.repairmaterial = MATERIALS.MOONROCK
     inst.components.repairer.healthrepairvalue = TUNING.REPAIR_MOONROCK_CRATER_HEALTH
+    inst.components.repairer.workrepairvalue = TUNING.REPAIR_MOONROCK_CRATER_WORK
 
     inst:AddComponent("trader")
     inst.components.trader:SetAbleToAcceptTest(ItemTradeTest)
