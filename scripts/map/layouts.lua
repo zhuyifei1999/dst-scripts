@@ -722,22 +722,22 @@ local ExampleLayout =
 
 	["MoonbaseOne"] = StaticLayout.Get("map/static_layouts/moonbaseone",
 	{
-			start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
-			fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+			start_mask = PLACE_MASK.IGNORE_BARREN_RESERVED,
+			fill_mask = PLACE_MASK.IGNORE_BARREN_RESERVED,
 			layout_position = LAYOUT_POSITION.CENTER,
 			disable_transform = true
 	}),
 
 	["StagehandGarden"] = StaticLayout.Get("map/static_layouts/stagehandgarden",
 	{
-		start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
-		fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+		start_mask = PLACE_MASK.IGNORE_BARREN_RESERVED,
+		fill_mask = PLACE_MASK.IGNORE_BARREN_RESERVED,
 	}),
 	
 	["Sculptures_1"] = StaticLayout.Get("map/static_layouts/sculptures_1",
 	{
-		start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
-		fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+		start_mask = PLACE_MASK.IGNORE_BARREN_RESERVED,
+		fill_mask = PLACE_MASK.IGNORE_BARREN_RESERVED,
 	}),
 	
 	["Sculptures_2"] = StaticLayout.Get("map/static_layouts/sculptures_2",

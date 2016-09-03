@@ -16,12 +16,11 @@ local function StartWarning(self, duration)
 end
 
 local function OnDelayOver(inst, self, StartDelay)
-    local rnd = math.random()
-    if rnd >= TUNING.DISEASE_CHANCE then
+    if math.random() >= TUNING.DISEASE_CHANCE then
         --Disease failed; schedule long retry
         StartDelay(self)
-    elseif inst:IsAsleep() and rnd >= TUNING.DISEASE_CHANCE * TUNING.DISEASE_OFFSCREEN_MOD then
-        --Offscreen disease failed; schedule short retry
+    elseif inst:IsAsleep() then
+        --Offscreen; schedule short retry
         local delay = math.min(TUNING.TOTAL_DAY_TIME * 3, TUNING.DISEASE_DELAY_TIME)
         local variance = math.min(TUNING.TOTAL_DAY_TIME * 2, TUNING.DISEASE_DELAY_TIME_VARIANCE)
         StartDelay(self, GetRandomWithVariance(delay, variance))

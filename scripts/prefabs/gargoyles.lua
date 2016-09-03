@@ -90,6 +90,9 @@ local function makegargoyle(data)
         inst._reanimatetask = inst:DoTaskInTime(1, ErodeAway)
 
         local creature = SpawnPrefab(data.petrify_prefab)
+        if data.named then
+            creature.components.named:SetName(inst.components.named.name)
+        end
         creature.Transform:SetPosition(inst.Transform:GetWorldPosition())
         creature.Transform:SetRotation(inst.Transform:GetRotation())
         if moonbase ~= nil and moonbase:IsValid() then
@@ -137,6 +140,11 @@ local function makegargoyle(data)
 
         inst.entity:AddTag("gargoyle")
 
+        if data.named then
+            --Sneak these into pristine state for optimization
+            inst:AddTag("_named")
+        end
+
         MakeObstaclePhysics(inst, .9)
 
         inst.Transform:SetFourFaced()
@@ -152,6 +160,13 @@ local function makegargoyle(data)
 
         if not TheWorld.ismastersim then
             return inst
+        end
+
+        if data.named then
+            --Remove these tags so that they can be added properly when replicating components below
+            inst:RemoveTag("_named")
+
+            inst:AddComponent("named")
         end
 
         inst:AddComponent("lootdropper")
@@ -211,6 +226,7 @@ local data =
         petrify_anim = "were_atk_petrify",
         petrify_time = 16 * FRAMES,
         reanimate_anim = "were_atk_reanimate",
+        named = true,
     },
     {
         name = "werepig",
@@ -222,6 +238,7 @@ local data =
         petrify_time = 13 * FRAMES,
         reanimate_anim = "death",
         reanimate_time = 13 * FRAMES,
+        named = true,
     },
     {
         name = "werepig",
@@ -233,6 +250,7 @@ local data =
         petrify_time = 29 * FRAMES,
         reanimate_anim = "howl",
         reanimate_time = 29 * FRAMES,
+        named = true,
     },
 }
 

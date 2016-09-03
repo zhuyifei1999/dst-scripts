@@ -12,12 +12,10 @@ local actionhandlers =
 
 local events=
 {
-    EventHandler("attacked", function(inst) if not inst.components.health:IsDead() then inst.sg:GoToState("hit") end end),
-    EventHandler("doattack", function(inst) if not inst.components.health:IsDead() and not inst.sg:HasStateTag("busy") then inst.sg:GoToState("attack") end end),
     EventHandler("death", function(inst) inst.sg:GoToState("death") end),
     EventHandler("worked", function(inst) inst.sg:GoToState("hit") end),
-    EventHandler("workfinished", function(inst) inst.sg:GoToState("death") end),
-    EventHandler("onignite", function(inst) inst.sg:GoToState("extinguish") end),
+    EventHandler("workfinished", function(inst) inst.sg:GoToState("giveup") end),
+    EventHandler("onignite", function(inst) if not inst.sg:HasStateTag("givingup") then inst.sg:GoToState("extinguish") end end),
     
 	EventHandler("locomote", function(inst)
         local is_moving = inst.sg:HasStateTag("moving")
@@ -223,6 +221,36 @@ local states=
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),
         },        
     },    
+    
+    State{
+        name = "giveup",
+        tags = {"busy", "givingup"},
+        
+        onenter = function(inst)
+			if inst.sg.is_hiding then
+	            inst.AnimState:PlayAnimation("extinguish")
+		        inst.Physics:Stop()            
+		    else
+				inst.sg:GoToState("hide")
+		    end
+        end,
+		
+		onexit = function(inst)
+		    inst.components.workable:SetWorkLeft(TUNING.STAGEHAND_HITS_TO_GIVEUP)
+		end,
+		
+        timeline=
+        {
+	        TimeEvent(14*FRAMES, function(inst) inst.components.lootdropper:SpawnLootPrefab("endtable_blueprint", inst:GetPosition()) end ),
+	    },
+        
+        events=
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),
+        },        
+    },    
+    
+    
     
     
 }

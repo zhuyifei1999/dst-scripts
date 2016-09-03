@@ -97,7 +97,10 @@ function Writeable:IsBeingWritten()
 end
 
 function Writeable:Write(doer, text)
-    if self.writer == doer and doer ~= nil then
+    --NOTE: text may be network data, so enforcing length is
+    --      NOT redundant in order for rendering to be safe.
+    if self.writer == doer and doer ~= nil and
+        (text == nil or text:utf8len() <= MAX_WRITEABLE_LENGTH) then
         self:SetText(text)
         self:EndWriting()
     end

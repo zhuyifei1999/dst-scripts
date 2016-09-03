@@ -428,6 +428,10 @@ local function GetStatus(inst)
         or nil
 end
 
+local function displaynamefn(inst)
+    return inst.name
+end
+
 local function OnSave(inst, data)
     data.build = inst.build
 end
@@ -482,7 +486,10 @@ local function common(moonbeast)
         inst:AddTag("werepig")
         inst:AddTag("moonbeast")
         inst.AnimState:SetBuild("werepig_build")
+        --Since we override prefab name, we will need to use the higher
+        --priority displaynamefn to return us back plain old .name LOL!
         inst:SetPrefabNameOverride("pigman")
+        inst.displaynamefn = displaynamefn
     else
         inst:AddComponent("talker")
         inst.components.talker.fontsize = 35
@@ -641,12 +648,19 @@ local function OnMoonPetrify(inst)
             inst.components.health:IsDead()) then
         local x, y, z = inst.Transform:GetWorldPosition()
         local rot = inst.Transform:GetRotation()
+        local name = inst.components.named.name
         inst:Remove()
         local gargoyle = SpawnPrefab(gargoyles[math.random(#gargoyles)])
+        gargoyle.components.named:SetName(name)
         gargoyle.Transform:SetPosition(x, y, z)
         gargoyle.Transform:SetRotation(rot)
         gargoyle:Petrify()
     end
+end
+
+local function OnMoonTransformed(inst, data)
+    inst.components.named:SetName(data.old.components.named.name)
+    inst.sg:GoToState("howl")
 end
 
 local function moon()
@@ -680,6 +694,7 @@ local function moon()
     inst.components.combat:SetKeepTargetFunction(MoonpigKeepTargetFn)
 
     inst:ListenForEvent("moonpetrify", OnMoonPetrify)
+    inst:ListenForEvent("moontransformed", OnMoonTransformed)
 
     return inst
 end

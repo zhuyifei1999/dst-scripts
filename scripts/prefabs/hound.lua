@@ -364,6 +364,13 @@ local function OnMoonPetrify(inst)
     end
 end
 
+local function OnMoonTransformed(inst, data)
+    if data.old.prefab ~= "hound" then
+        SpawnPrefab("small_puff").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    end
+    inst.sg:GoToState("taunt")
+end
+
 local function fnmoon()
     local inst = fncommon("hound", nil, moonbrain, "moonbeast")
 
@@ -386,6 +393,7 @@ local function fnmoon()
     inst:AddComponent("entitytracker")
 
     inst:ListenForEvent("moonpetrify", OnMoonPetrify)
+    inst:ListenForEvent("moontransformed", OnMoonTransformed)
 
     return inst
 end

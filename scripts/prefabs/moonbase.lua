@@ -231,6 +231,7 @@ local STAFF_SYMBOLS =
 {
     ["firestaff"] = "redstaff",
     ["icestaff"] = "bluestaff",
+    ["telestaff"] = "purplestaff",
 }
 
 local function GetStaffSymbol(staffname)
@@ -313,6 +314,7 @@ local function OnTimerDone(inst, data)
         end
 
         if not inst._loading then
+            inst.components.moonbeastspawner:ForcePetrify()
             ToggleMoonCharge(inst)
         end
     end

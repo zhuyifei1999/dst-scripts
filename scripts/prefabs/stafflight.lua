@@ -57,18 +57,18 @@ local function onhaunt(inst)
     return true
 end
 
-local function PlayRandomStarIdle(inst)
-	local coldstaridles = {"idle_loop", "idle_loop2", "idle_loop3"}
-	local anim = coldstaridles[math.random(#coldstaridles)]
-	inst.AnimState:PushAnimation(anim, false)
-end
+local function makestafflight(name, is_hot, anim, colour, idles)
+    local assets =
+    {
+        Asset("ANIM", "anim/"..anim..".zip"),
+    }
 
-
-local function makestafflight(name, is_hot, anim, colour)
-	local assets =
-	{
-		Asset("ANIM", "anim/"..anim..".zip"),
-	}
+    local PlayRandomStarIdle = #idles > 1 and function(inst)
+        --Don't if we're extinguished
+        if inst.persists then
+            inst.AnimState:PlayAnimation(idles[math.random(#idles)])
+        end
+    end or nil
 
     local function fn()
         local inst = CreateEntity()
@@ -94,6 +94,9 @@ local function makestafflight(name, is_hot, anim, colour)
         inst.AnimState:SetBank(anim)
         inst.AnimState:SetBuild(anim)
         inst.AnimState:PlayAnimation("appear")
+        if #idles == 1 then
+            inst.AnimState:PushAnimation(idles[1], true)
+        end
         inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
 
         inst.SoundEmitter:PlaySound("dontstarve/common/staff_star_LP", "staff_star_loop")
@@ -152,7 +155,9 @@ local function makestafflight(name, is_hot, anim, colour)
         inst.components.timer:StartTimer("extinguish", is_hot and TUNING.YELLOWSTAFF_STAR_DURATION or TUNING.OPALSTAFF_STAR_DURATION)
         inst:ListenForEvent("timerdone", ontimer)
 
-	    inst:ListenForEvent("animqueueover", PlayRandomStarIdle)
+        if #idles > 1 then
+            inst:ListenForEvent("animover", PlayRandomStarIdle)
+        end
 
         return inst
     end
@@ -160,5 +165,5 @@ local function makestafflight(name, is_hot, anim, colour)
     return Prefab(name, fn, assets)
 end
 
-return makestafflight("stafflight", true, "star_hot", {223 / 255, 208 / 255, 69 / 255} ),
-       makestafflight("staffcoldlight", false, "star_cold", {64 / 255, 64 / 255, 208 / 255} )
+return makestafflight("stafflight", true, "star_hot", { 223 / 255, 208 / 255, 69 / 255 }, { "idle_loop" }),
+       makestafflight("staffcoldlight", false, "star_cold", { 64 / 255, 64 / 255, 208 / 255 }, { "idle_loop", "idle_loop2", "idle_loop3" })

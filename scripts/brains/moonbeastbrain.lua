@@ -11,7 +11,7 @@ local BASE_DIST = 6
 
 local LOST_TIME = 5
 local AGGRO_TIME = 6
-local PETRIFY_TIME = 4
+local PETRIFY_TIME = 3
 local PETRIFY_TIME_VAR = 1
 
 local MoonBeastBrain = Class(Brain, function(self, inst)
@@ -19,6 +19,10 @@ local MoonBeastBrain = Class(Brain, function(self, inst)
     self._losttime = nil
     self._petrifytime = nil
 end)
+
+function MoonBeastBrain:ForcePetrify()
+    self._petrifytime = GetTime() + math.random()
+end
 
 local function GetMoonBase(inst)
     return inst.components.entitytracker:GetEntity("moonbase")

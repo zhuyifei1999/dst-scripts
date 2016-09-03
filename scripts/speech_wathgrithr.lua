@@ -877,6 +877,11 @@ return {
 		EGGPLANT = "Purple and bulbous.",
 		EGGPLANT_COOKED = "Food for the weak.",
 		EGGPLANT_SEEDS = "Tiny nature bits.",
+--		ENDTABLE = 
+--		{
+--			BURNT = "",
+--			GENERIC = "",
+--		},
 		DECIDUOUSTREE = 
 		{
 			BURNING = "The wood's ablaze!",

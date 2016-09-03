@@ -67,8 +67,15 @@ local intention_images = {
     [INTENTIONS.MADNESS] = { big="madness.tex", small="playstyle_madness.tex" },
 }
 
-local function ContainsCurrentBetaTag(tags)
-    return BETA_SERVER_TAGS[CURRENT_BETA] ~= nil and string.find(string.lower(tags), BETA_SERVER_TAGS[CURRENT_BETA], 1, true) ~= nil
+local function GetBetaInfoId(tags)
+	tags = string.lower(tags)
+	for i,beta_info in ipairs(BETA_INFO) do
+		if string.find(tags, beta_info.SERVERTAG, 1, true) ~= nil then
+			return i
+		end
+	end
+	
+	return 0
 end
 
 local ServerListingScreen = Class(Screen, function(self, prev_screen, filters, cb, offlineMode, session_mapping)
@@ -343,11 +350,13 @@ end
 
 function ServerListingScreen:Join(warnedOffline)
     if self.selected_server ~= nil then
-        if BRANCH == "release" and ContainsCurrentBetaTag(self.selected_server.tags) then
-            local beta_popup = PopupDialogScreen(STRINGS.UI.NETWORKDISCONNECT.TITLE.VERSION_MISMATCH_ARNBETA, STRINGS.UI.NETWORKDISCONNECT.BODY.VERSION_MISMATCH_ARNBETA,
+		local beta = GetBetaInfoId(self.selected_server.tags)
+        if BRANCH == "release" and beta > 0 then
+			local beta_info = BETA_INFO[beta]
+            local beta_popup = PopupDialogScreen(STRINGS.UI.NETWORKDISCONNECT.TITLE[beta_info.VERSION_MISMATCH_STRING], STRINGS.UI.NETWORKDISCONNECT.BODY[beta_info.VERSION_MISMATCH_STRING],
                                 {
                                     {text=STRINGS.UI.MODSSCREEN.MODLINK_MOREINFO, cb = function()
-                                        VisitURL("http://forums.kleientertainment.com/topic/69435-a-new-reign-begins/")
+                                        VisitURL(beta_info.URL)
                                         TheFrontEnd:PopScreen()
                                     end},
                                     {text=STRINGS.UI.SERVERLISTINGSCREEN.CANCEL, cb = function()
@@ -1011,7 +1020,7 @@ function ServerListingScreen:MakeServerListWidgets()
 
             widget.version = serverdata.version
             widget.offline = serverdata.offline
-            widget.beta = ContainsCurrentBetaTag(serverdata.tags)
+            widget.beta = GetBetaInfoId(serverdata.tags)
 
             widget.cursor:Show()
 
@@ -1109,7 +1118,7 @@ function ServerListingScreen:MakeServerListWidgets()
             if dev_server then
                 self:SetRowColour(widget, dev_color)
             elseif version_check_failed then
-                self:SetRowColour(widget, widget.beta and beta_color or mismatch_color)
+                self:SetRowColour(widget, widget.beta > 0 and beta_color or mismatch_color)
             else
                 self:SetRowColour(widget, serverdata.offline and offline_color or normal_color)
             end
@@ -1142,7 +1151,7 @@ function ServerListingScreen:GuaranteeSelectedServerHighlighted()
             if dev_server then
                 self:SetRowColour(v, dev_color)
             elseif version_check_failed then 
-                self:SetRowColour(v, v.beta and beta_color or mismatch_color)
+                self:SetRowColour(v, v.beta > 0 and beta_color or mismatch_color)
             else
                 self:SetRowColour(v, v.offline and offline_color or normal_color)
                 v.NAME:SetFont(NEWFONT)
@@ -1157,7 +1166,7 @@ function ServerListingScreen:GuaranteeSelectedServerHighlighted()
             if dev_server then
                 self:SetRowColour(v, dev_color)
             elseif version_check_failed then
-                self:SetRowColour(v, v.beta and beta_color or mismatch_color)
+                self:SetRowColour(v, v.beta > 0 and beta_color or mismatch_color)
             else
                 self:SetRowColour(v, v.offline and offline_color or normal_color)
             end
@@ -1406,10 +1415,10 @@ function ServerListingScreen:IsValidWithFilters(server)
     -- We don't count this towards unjoinable because you probably could
     -- have joined them previously, and this keeps the count consistent.
     local version_mismatch = APP_VERSION ~= tostring(server.version)
-    local beta_server = ContainsCurrentBetaTag(server.tags)
+    local beta_server = GetBetaInfoId(server.tags)
     local dev_build = BRANCH == "dev"
 
-    if version_mismatch and not (beta_server and BRANCH == "release") and not dev_build then
+    if version_mismatch and not ((beta_server > 0) and BRANCH == "release") and not dev_build then
         return false
     end
 

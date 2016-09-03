@@ -138,6 +138,7 @@ PREFABFILES = {
   "dummytarget",
   "eel",
   "egg",
+  "endtable",
   "evergreens",
   "explode_small",
   "eye_charge",

@@ -272,7 +272,10 @@ local actionhandlers =
     ActionHandler(ACTIONS.STORE, "doshortaction"),
     ActionHandler(ACTIONS.DROP,
         function(inst)
-            return inst.components.inventory:IsHeavyLifting() and "heavylifting_drop" or "doshortaction"
+            return inst.components.inventory:IsHeavyLifting()
+                and not (inst.components.rider ~= nil and inst.components.rider:IsRiding())
+                and "heavylifting_drop"
+                or "doshortaction"
         end),
     ActionHandler(ACTIONS.MURDER, "dolongaction"),
     ActionHandler(ACTIONS.UPGRADE, "dolongaction"),
@@ -479,7 +482,8 @@ local events =
     EventHandler("equip", function(inst, data)
         if data.eslot == EQUIPSLOTS.BODY and data.item ~= nil and data.item:HasTag("heavy") then
             inst.sg:GoToState("heavylifting_start")
-        elseif inst.components.inventory:IsHeavyLifting() then
+        elseif inst.components.inventory:IsHeavyLifting()
+            and not (inst.components.rider ~= nil and inst.components.rider:IsRiding()) then
             if inst.sg:HasStateTag("idle") or inst.sg:HasStateTag("moving") then
                 inst.sg:GoToState("heavylifting_item_hat")
             end
@@ -493,7 +497,8 @@ local events =
             if not inst.sg:HasStateTag("busy") then
                 inst.sg:GoToState("heavylifting_stop")
             end
-        elseif inst.components.inventory:IsHeavyLifting() then
+        elseif inst.components.inventory:IsHeavyLifting()
+            and not (inst.components.rider ~= nil and inst.components.rider:IsRiding()) then
             if inst.sg:HasStateTag("idle") or inst.sg:HasStateTag("moving") then
                 inst.sg:GoToState("heavylifting_item_hat")
             end
@@ -516,6 +521,7 @@ local events =
             if not inst:HasTag("mime") then
                 inst.sg:GoToState("talk", data.noanim)
             elseif not inst.components.inventory:IsHeavyLifting() then
+                --Don't do it even if mounted!
                 inst.sg:GoToState("mime")
             end
         end
@@ -2247,7 +2253,8 @@ local states =
                 inst.SoundEmitter:PlaySound("dontstarve/wilson/eat", "eating")
             end
 
-            if inst.components.inventory:IsHeavyLifting() then
+            if inst.components.inventory:IsHeavyLifting() and
+                not (inst.components.rider ~= nil and inst.components.rider:IsRiding()) then
                 inst.AnimState:PlayAnimation("heavy_eat")
             else
                 inst.AnimState:PlayAnimation("eat_pre")
@@ -2322,7 +2329,8 @@ local states =
                 inst.SoundEmitter:PlaySound("dontstarve/wilson/eat", "eating")
             end
 
-            if inst.components.inventory:IsHeavyLifting() then
+            if inst.components.inventory:IsHeavyLifting() and
+                not (inst.components.rider ~= nil and inst.components.rider:IsRiding()) then
                 inst.AnimState:PlayAnimation("heavy_quick_eat")
             else
                 inst.AnimState:PlayAnimation("quick_eat_pre")
@@ -2745,7 +2753,12 @@ local states =
 
         onenter = function(inst, noanim)
             if not noanim then
-                inst.AnimState:PlayAnimation(inst.components.inventory:IsHeavyLifting() and "heavy_dial_loop" or "dial_loop", true)
+                inst.AnimState:PlayAnimation(
+                    inst.components.inventory:IsHeavyLifting() and
+                    not (inst.components.rider ~= nil and inst.components.rider:IsRiding()) and
+                    "heavy_dial_loop" or
+                    "dial_loop",
+                    true)
             end
             DoTalkSound(inst)
             inst.sg:SetTimeout(1.5 + math.random() * .5)

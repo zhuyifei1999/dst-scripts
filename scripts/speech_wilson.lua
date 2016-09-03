@@ -877,6 +877,11 @@ return {
 		EGGPLANT = "It doesn't look like an egg.",
 		EGGPLANT_COOKED = "It's even less eggy.",
 		EGGPLANT_SEEDS = "It's an eggplant seed.",
+		ENDTABLE = 
+		{
+			BURNT = "This is why we can't have nice things.",
+			GENERIC = "A flower in a vase on a table.",
+		},
 		DECIDUOUSTREE = 
 		{
 			BURNING = "What a waste of wood.",

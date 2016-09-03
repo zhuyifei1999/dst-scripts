@@ -5,27 +5,29 @@ local assets =
 
 local prefabs =
 {
-    "nightmarefuel",
-    "petals",
-    "marble",
+    "endtable_blueprint",
 }
 
 SetSharedLootTable('stagehand_creature',
 {
-    {'nightmarefuel', 1.0},
-    {'nightmarefuel', 0.5},
-    {'marble', .5},
-    {'petals', 1},
+    {'endtable_blueprint', 1.0},
 })
 
+local function onworked(inst, worker)
+	-- if the player stops working it then the stagehand will reset
+	if inst.prevtimeworked == nil or ((GetTime() - inst.prevtimeworked) > (TUNING.SEG_TIME * 0.5)) then
+		inst.components.workable:SetWorkLeft(TUNING.STAGEHAND_HITS_TO_GIVEUP)
+	end
+	inst.prevtimeworked = inst.components.workable.lastworktime
+end
 
 local function getstatus(inst)
     return (inst.sg:HasStateTag("hiding") and "HIDING")
 		or "AWAKE"
 end
 local function CanStandUp(inst)
-	-- if not in light or off screen, then it can stand up and walk around
-	return (not inst.LightWatcher:IsInLight()) or (not inst:IsNearPlayer(30))
+	-- if not in light or off screen (off screen is so it doesnt get stuck forever on things like firefly/pighouse light), then it can stand up and walk around
+	return (not inst.LightWatcher:IsInLight()) or (TheWorld.state.isnight and not inst:IsNearPlayer(30))
 end
 
 
@@ -68,9 +70,9 @@ local function MakeStagehand(name)
 
 		inst:AddComponent("workable")
 		inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
-		inst.components.workable:SetWorkLeft(6)
+		inst.components.workable:SetWorkLeft(TUNING.STAGEHAND_HITS_TO_GIVEUP)
 		--inst.components.workable:SetOnFinishCallback(onhammered)
-		--inst.components.workable:SetOnWorkCallback(onhit)
+		inst.components.workable:SetOnWorkCallback(onworked)
 
         inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
         inst.components.locomotor.walkspeed = TUNING.TERRORBEAK_SPEED
@@ -82,13 +84,10 @@ local function MakeStagehand(name)
         inst:SetBrain(brain)
 
 	    inst:AddComponent("inspectable")
+        inst.components.inspectable.getstatus = getstatus
 
         inst:AddComponent("lootdropper")
         inst.components.lootdropper:SetChanceLootTable('stagehand_creature')
-
-		inst.is_awake = false
-
-        --inst:AddComponent("knownlocations")
 
         return inst
     end

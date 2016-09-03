@@ -29,6 +29,11 @@ local function createbeam(layer, offset)
 
         inst:AddTag("FX")
 
+        if layer == "front" then
+            inst.entity:AddSoundEmitter()
+            inst.SoundEmitter:PlaySound("dontstarve/common/staff_star_LP", "positron_beam_loop")
+        end
+
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
@@ -38,6 +43,10 @@ local function createbeam(layer, offset)
         inst.persists = false
 
         inst.KillFX = KillFX
+
+        if layer == "front" then
+            inst.SoundEmitter:PlaySound("dontstarve/common/staff_star_create")
+        end
 
         return inst
     end

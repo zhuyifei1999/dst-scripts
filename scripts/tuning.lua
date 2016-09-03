@@ -144,6 +144,8 @@ function Tune(overrides)
 
 	    FISHING_MINWAIT = 2,
 	    FISHING_MAXWAIT = 20,
+		
+		STAGEHAND_HITS_TO_GIVEUP = 86,
 
 		RESEARCH_MACHINE_DIST = 4,
 
@@ -2046,7 +2048,6 @@ function Tune(overrides)
         DISEASE_WARNING_TIME = total_day_time * 2.5,
         DISEASE_WARNING_TIME_VARIANCE = total_day_time * .5,
         DISEASE_CHANCE = .1,
-        DISEASE_OFFSCREEN_MOD = .5,
 
         SALTLICK_CHECK_DIST = 20,
         SALTLICK_USE_DIST = 4,

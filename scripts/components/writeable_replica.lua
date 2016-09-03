@@ -87,12 +87,11 @@ end
 function Writeable:Write(doer, text)
     --NOTE: text may be network data, so enforcing length is
     --      NOT redundant in order for rendering to be safe.
-    if text:utf8len() <= MAX_WRITEABLE_LENGTH then
-        if self.inst.components.writeable ~= nil then
-            self.inst.components.writeable:Write(doer, text)
-        elseif self.classified ~= nil and doer == ThePlayer then
-            SendRPCToServer(RPC.SetWriteableText, self.inst, text)
-        end
+    if self.inst.components.writeable ~= nil then
+        self.inst.components.writeable:Write(doer, text)
+    elseif self.classified ~= nil and doer == ThePlayer
+        and (text == nil or text:utf8len() <= MAX_WRITEABLE_LENGTH) then
+        SendRPCToServer(RPC.SetWriteableText, self.inst, text)
     end
 end
 

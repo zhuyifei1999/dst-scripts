@@ -1221,24 +1221,24 @@ msgctxt "STRINGS.RECIPE_DESC.SHADOWDIGGER_BUILDER"
 msgid "Diggy diggy hole."
 msgstr ""
 
-#. STRINGS.RECIPE_DESC.COLDFIREPIT
-msgctxt "STRINGS.RECIPE_DESC.COLDFIREPIT"
-msgid "More efficient, but still backwards."
-msgstr ""
-
 #. STRINGS.RECIPE_DESC.SHADOWLUMBER_BUILDER
 msgctxt "STRINGS.RECIPE_DESC.SHADOWLUMBER_BUILDER"
 msgid "Holds a grudge against trees."
 msgstr ""
 
+#. STRINGS.RECIPE_DESC.COLDFIREPIT
+msgctxt "STRINGS.RECIPE_DESC.COLDFIREPIT"
+msgid "More efficient, but still backwards."
+msgstr ""
+
+#. STRINGS.RECIPE_DESC.MAPSCROLL
+msgctxt "STRINGS.RECIPE_DESC.MAPSCROLL"
+msgid "Show everyone what you've seen!"
+msgstr ""
+
 #. STRINGS.RECIPE_DESC.TELESTAFF
 msgctxt "STRINGS.RECIPE_DESC.TELESTAFF"
 msgid "Bend space! Time bend sold separately."
-msgstr ""
-
-#. STRINGS.RECIPE_DESC.REVIVER
-msgctxt "STRINGS.RECIPE_DESC.REVIVER"
-msgid "Ghastly revival of a ghostly friend."
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.PITCHFORK
@@ -1251,19 +1251,24 @@ msgctxt "STRINGS.RECIPE_DESC.BERNIE_INACTIVE"
 msgid "A familiar face in this mad world."
 msgstr ""
 
-#. STRINGS.RECIPE_DESC.ICEBOX
-msgctxt "STRINGS.RECIPE_DESC.ICEBOX"
-msgid "Slows food spoilage."
-msgstr ""
-
 #. STRINGS.RECIPE_DESC.PURPLEAMULET
 msgctxt "STRINGS.RECIPE_DESC.PURPLEAMULET"
 msgid "Induce insanity."
 msgstr ""
 
+#. STRINGS.RECIPE_DESC.ICEBOX
+msgctxt "STRINGS.RECIPE_DESC.ICEBOX"
+msgid "Slows food spoilage."
+msgstr ""
+
 #. STRINGS.RECIPE_DESC.ABIGAIL_FLOWER
 msgctxt "STRINGS.RECIPE_DESC.ABIGAIL_FLOWER"
 msgid "A magical keepsake."
+msgstr ""
+
+#. STRINGS.RECIPE_DESC.REVIVER
+msgctxt "STRINGS.RECIPE_DESC.REVIVER"
+msgid "Ghastly revival of a ghostly friend."
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.WAXWELLJOURNAL
@@ -1286,14 +1291,14 @@ msgctxt "STRINGS.RECIPE_DESC.FOOTBALLHAT"
 msgid "Protect your braincase."
 msgstr ""
 
-#. STRINGS.RECIPE_DESC.MAPSCROLL
-msgctxt "STRINGS.RECIPE_DESC.MAPSCROLL"
-msgid "Show everyone what you've seen!"
-msgstr ""
-
 #. STRINGS.RECIPE_DESC.FEATHERPENCIL
 msgctxt "STRINGS.RECIPE_DESC.FEATHERPENCIL"
 msgid "Yes, the feather IS necessary."
+msgstr ""
+
+#. STRINGS.RECIPE_DESC.CATCOONHAT
+msgctxt "STRINGS.RECIPE_DESC.CATCOONHAT"
+msgid "For those who value warmth over friends."
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.SWEATERVEST
@@ -1306,14 +1311,14 @@ msgctxt "STRINGS.RECIPE_DESC.ICESTAFF"
 msgid "Freeze enemies in their tracks."
 msgstr ""
 
-#. STRINGS.RECIPE_DESC.CATCOONHAT
-msgctxt "STRINGS.RECIPE_DESC.CATCOONHAT"
-msgid "For those who value warmth over friends."
-msgstr ""
-
 #. STRINGS.RECIPE_DESC.ARMORSLURPER
 msgctxt "STRINGS.RECIPE_DESC.ARMORSLURPER"
 msgid "Keep that belly full."
+msgstr ""
+
+#. STRINGS.RECIPE_DESC.SPEAR_WATHGRITHR
+msgctxt "STRINGS.RECIPE_DESC.SPEAR_WATHGRITHR"
+msgid "The gold makes it sharper."
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.BUGNET
@@ -1321,9 +1326,9 @@ msgctxt "STRINGS.RECIPE_DESC.BUGNET"
 msgid "Catch bugs."
 msgstr ""
 
-#. STRINGS.RECIPE_DESC.TELEBASE
-msgctxt "STRINGS.RECIPE_DESC.TELEBASE"
-msgid "Just add gems."
+#. STRINGS.RECIPE_DESC.SADDLE_WAR
+msgctxt "STRINGS.RECIPE_DESC.SADDLE_WAR"
+msgid "A throne for the boss of the battlefield."
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.CARTOGRAPHYDESK
@@ -1331,19 +1336,14 @@ msgctxt "STRINGS.RECIPE_DESC.CARTOGRAPHYDESK"
 msgid "Show everyone exactly where you've been."
 msgstr ""
 
-#. STRINGS.RECIPE_DESC.SADDLE_WAR
-msgctxt "STRINGS.RECIPE_DESC.SADDLE_WAR"
-msgid "A throne for the boss of the battlefield."
+#. STRINGS.RECIPE_DESC.SADDLE_BASIC
+msgctxt "STRINGS.RECIPE_DESC.SADDLE_BASIC"
+msgid "Lets you sit on animals. In theory."
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.TURF_CHECKERFLOOR
 msgctxt "STRINGS.RECIPE_DESC.TURF_CHECKERFLOOR"
 msgid "Nicely checkered marble tiles."
-msgstr ""
-
-#. STRINGS.RECIPE_DESC.SADDLE_BASIC
-msgctxt "STRINGS.RECIPE_DESC.SADDLE_BASIC"
-msgid "Lets you sit on animals. In theory."
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.EYEBRELLAHAT
@@ -1356,14 +1356,19 @@ msgctxt "STRINGS.RECIPE_DESC.WALL_STONE_ITEM"
 msgid "Stone wall segments."
 msgstr ""
 
+#. STRINGS.RECIPE_DESC.TURF_WOODFLOOR
+msgctxt "STRINGS.RECIPE_DESC.TURF_WOODFLOOR"
+msgid "High-quality laminate floorboards."
+msgstr ""
+
 #. STRINGS.RECIPE_DESC.MEATRACK
 msgctxt "STRINGS.RECIPE_DESC.MEATRACK"
 msgid "The jerkiest of racks."
 msgstr ""
 
-#. STRINGS.RECIPE_DESC.TURF_WOODFLOOR
-msgctxt "STRINGS.RECIPE_DESC.TURF_WOODFLOOR"
-msgid "High-quality laminate floorboards."
+#. STRINGS.RECIPE_DESC.WATHGRITHRHAT
+msgctxt "STRINGS.RECIPE_DESC.WATHGRITHRHAT"
+msgid "The unicorn is what protects you."
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.ARMORWOOD
@@ -1376,14 +1381,14 @@ msgctxt "STRINGS.RECIPE_DESC.SADDLE_RACE"
 msgid "Offsets the time spent making it. Maybe."
 msgstr ""
 
-#. STRINGS.RECIPE_DESC.SPEAR_WATHGRITHR
-msgctxt "STRINGS.RECIPE_DESC.SPEAR_WATHGRITHR"
-msgid "The gold makes it sharper."
-msgstr ""
-
 #. STRINGS.RECIPE_DESC.GRASS_UMBRELLA
 msgctxt "STRINGS.RECIPE_DESC.GRASS_UMBRELLA"
 msgid "Posh & portable protection."
+msgstr ""
+
+#. STRINGS.RECIPE_DESC.RUINSHAT
+msgctxt "STRINGS.RECIPE_DESC.RUINSHAT"
+msgid "Complete with ancient force field!"
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.RESURRECTIONSTATUE
@@ -1401,14 +1406,14 @@ msgctxt "STRINGS.RECIPE_DESC.WALL_WOOD_ITEM"
 msgid "Wooden wall segments."
 msgstr ""
 
-#. STRINGS.RECIPE_DESC.RUINSHAT
-msgctxt "STRINGS.RECIPE_DESC.RUINSHAT"
-msgid "Complete with ancient force field!"
+#. STRINGS.RECIPE_DESC.TELEBASE
+msgctxt "STRINGS.RECIPE_DESC.TELEBASE"
+msgid "Just add gems."
 msgstr ""
 
-#. STRINGS.RECIPE_DESC.WATHGRITHRHAT
-msgctxt "STRINGS.RECIPE_DESC.WATHGRITHRHAT"
-msgid "The unicorn is what protects you."
+#. STRINGS.RECIPE_DESC.ENDTABLE
+msgctxt "STRINGS.RECIPE_DESC.ENDTABLE"
+msgid "A decorative table."
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.ROPE
@@ -4311,6 +4316,11 @@ msgctxt "STRINGS.NAMES.SNURTLE"
 msgid "Snurtle"
 msgstr ""
 
+#. STRINGS.NAMES.SPIDERDEN
+msgctxt "STRINGS.NAMES.SPIDERDEN"
+msgid "Spider Den"
+msgstr ""
+
 #. STRINGS.NAMES.NITRE
 msgctxt "STRINGS.NAMES.NITRE"
 msgid "Nitre"
@@ -4321,14 +4331,14 @@ msgctxt "STRINGS.NAMES.GLOMMERFUEL"
 msgid "Glommer's Goop"
 msgstr ""
 
-#. STRINGS.NAMES.SPIDERDEN
-msgctxt "STRINGS.NAMES.SPIDERDEN"
-msgid "Spider Den"
-msgstr ""
-
 #. STRINGS.NAMES.ROCK_PETRIFIED_TREE
 msgctxt "STRINGS.NAMES.ROCK_PETRIFIED_TREE"
 msgid "Petrified Tree"
+msgstr ""
+
+#. STRINGS.NAMES.HALF_SANITY
+msgctxt "STRINGS.NAMES.HALF_SANITY"
+msgid "Maximum Sanity"
 msgstr ""
 
 #. STRINGS.NAMES.MOSQUITO
@@ -4339,11 +4349,6 @@ msgstr ""
 #. STRINGS.NAMES.TURF_CAVE
 msgctxt "STRINGS.NAMES.TURF_CAVE"
 msgid "Guano Turf"
-msgstr ""
-
-#. STRINGS.NAMES.HALF_SANITY
-msgctxt "STRINGS.NAMES.HALF_SANITY"
-msgid "Maximum Sanity"
 msgstr ""
 
 #. STRINGS.NAMES.DECREASE_SANITY
@@ -4361,6 +4366,11 @@ msgctxt "STRINGS.NAMES.DECREASE_HEALTH"
 msgid "Health"
 msgstr ""
 
+#. STRINGS.NAMES.BERNIE_ACTIVE
+msgctxt "STRINGS.NAMES.BERNIE_ACTIVE"
+msgid "Bernie"
+msgstr ""
+
 #. STRINGS.NAMES.TRUNK_SUMMER
 msgctxt "STRINGS.NAMES.TRUNK_SUMMER"
 msgid "Koalefant Trunk"
@@ -4371,14 +4381,14 @@ msgctxt "STRINGS.NAMES.UNKNOWN"
 msgid "Unknown"
 msgstr ""
 
-#. STRINGS.NAMES.BERNIE_ACTIVE
-msgctxt "STRINGS.NAMES.BERNIE_ACTIVE"
-msgid "Bernie"
+#. STRINGS.NAMES.RAINHAT
+msgctxt "STRINGS.NAMES.RAINHAT"
+msgid "Rain Hat"
 msgstr ""
 
-#. STRINGS.NAMES.GRASS_UMBRELLA
-msgctxt "STRINGS.NAMES.GRASS_UMBRELLA"
-msgid "Pretty Parasol"
+#. STRINGS.NAMES.LAVA_POND
+msgctxt "STRINGS.NAMES.LAVA_POND"
+msgid "Magma"
 msgstr ""
 
 #. STRINGS.NAMES.WATERMELON
@@ -4396,9 +4406,9 @@ msgctxt "STRINGS.NAMES.MARBLE"
 msgid "Marble"
 msgstr ""
 
-#. STRINGS.NAMES.LAVA_POND
-msgctxt "STRINGS.NAMES.LAVA_POND"
-msgid "Magma"
+#. STRINGS.NAMES.LAVAE_TOOTH
+msgctxt "STRINGS.NAMES.LAVAE_TOOTH"
+msgid "Lavae Tooth"
 msgstr ""
 
 #. STRINGS.NAMES.RESURRECTIONSTONE
@@ -4406,9 +4416,9 @@ msgctxt "STRINGS.NAMES.RESURRECTIONSTONE"
 msgid "Touch Stone"
 msgstr ""
 
-#. STRINGS.NAMES.LAVAE_TOOTH
-msgctxt "STRINGS.NAMES.LAVAE_TOOTH"
-msgid "Lavae Tooth"
+#. STRINGS.NAMES.MOOSE1
+msgctxt "STRINGS.NAMES.MOOSE1"
+msgid "Moose"
 msgstr ""
 
 #. STRINGS.NAMES.FISH
@@ -4416,24 +4426,14 @@ msgctxt "STRINGS.NAMES.FISH"
 msgid "Fish"
 msgstr ""
 
-#. STRINGS.NAMES.MOOSE2
-msgctxt "STRINGS.NAMES.MOOSE2"
-msgid "Goose"
+#. STRINGS.NAMES.TALLBIRDEGG_CRACKED
+msgctxt "STRINGS.NAMES.TALLBIRDEGG_CRACKED"
+msgid "Hatching Tallbird Egg"
 msgstr ""
 
-#. STRINGS.NAMES.FEATHER_CROW
-msgctxt "STRINGS.NAMES.FEATHER_CROW"
-msgid "Jet Feather"
-msgstr ""
-
-#. STRINGS.NAMES.PIGHEAD
-msgctxt "STRINGS.NAMES.PIGHEAD"
-msgid "Pig Head"
-msgstr ""
-
-#. STRINGS.NAMES.SPIDER_HIDER
-msgctxt "STRINGS.NAMES.SPIDER_HIDER"
-msgid "Cave Spider"
+#. STRINGS.NAMES.DEERCLOPS_EYEBALL
+msgctxt "STRINGS.NAMES.DEERCLOPS_EYEBALL"
+msgid "Deerclops Eyeball"
 msgstr ""
 
 #. STRINGS.NAMES.ORANGEMOONEYE
@@ -4441,9 +4441,19 @@ msgctxt "STRINGS.NAMES.ORANGEMOONEYE"
 msgid "Orange Moonlens"
 msgstr ""
 
+#. STRINGS.NAMES.SPIDER_HIDER
+msgctxt "STRINGS.NAMES.SPIDER_HIDER"
+msgid "Cave Spider"
+msgstr ""
+
 #. STRINGS.NAMES.GREENMOONEYE
 msgctxt "STRINGS.NAMES.GREENMOONEYE"
 msgid "Green Moonlens"
+msgstr ""
+
+#. STRINGS.NAMES.TALLBIRD
+msgctxt "STRINGS.NAMES.TALLBIRD"
+msgid "Tallbird"
 msgstr ""
 
 #. STRINGS.NAMES.SEEDS_COOKED
@@ -4466,9 +4476,9 @@ msgctxt "STRINGS.NAMES.MUSHTREE_SMALL"
 msgid "Green Mushtree"
 msgstr ""
 
-#. STRINGS.NAMES.MOLEHILL
-msgctxt "STRINGS.NAMES.MOLEHILL"
-msgid "Burrow"
+#. STRINGS.NAMES.MOONROCKCRATER
+msgctxt "STRINGS.NAMES.MOONROCKCRATER"
+msgid "Cratered Moonrock"
 msgstr ""
 
 #. STRINGS.NAMES.TRINKET_14
@@ -4479,11 +4489,6 @@ msgstr ""
 #. STRINGS.NAMES.MINOTAURHORN
 msgctxt "STRINGS.NAMES.MINOTAURHORN"
 msgid "Guardian's Horn"
-msgstr ""
-
-#. STRINGS.NAMES.MOONROCKCRATER
-msgctxt "STRINGS.NAMES.MOONROCKCRATER"
-msgid "Cratered Moonrock"
 msgstr ""
 
 #. STRINGS.NAMES.MOONROCKNUGGET
@@ -4506,9 +4511,9 @@ msgctxt "STRINGS.NAMES.ARMORDRAGONFLY"
 msgid "Scalemail"
 msgstr ""
 
-#. STRINGS.NAMES.TALLBIRD
-msgctxt "STRINGS.NAMES.TALLBIRD"
-msgid "Tallbird"
+#. STRINGS.NAMES.BATWING_COOKED
+msgctxt "STRINGS.NAMES.BATWING_COOKED"
+msgid "Cooked Batilisk Wing"
 msgstr ""
 
 #. STRINGS.NAMES.PHLEGM
@@ -4521,19 +4526,14 @@ msgctxt "STRINGS.NAMES.SPAT"
 msgid "Ewecus"
 msgstr ""
 
-#. STRINGS.NAMES.BOOK_SLEEP
-msgctxt "STRINGS.NAMES.BOOK_SLEEP"
-msgid "Sleepytime Stories"
-msgstr ""
-
 #. STRINGS.NAMES.WARG
 msgctxt "STRINGS.NAMES.WARG"
 msgid "Varg"
 msgstr ""
 
-#. STRINGS.NAMES.MONSTERMEAT
-msgctxt "STRINGS.NAMES.MONSTERMEAT"
-msgid "Monster Meat"
+#. STRINGS.NAMES.BOOK_SLEEP
+msgctxt "STRINGS.NAMES.BOOK_SLEEP"
+msgid "Sleepytime Stories"
 msgstr ""
 
 #. STRINGS.NAMES.SALTLICK
@@ -4541,9 +4541,19 @@ msgctxt "STRINGS.NAMES.SALTLICK"
 msgid "Salt Lick"
 msgstr ""
 
+#. STRINGS.NAMES.MONSTERMEAT
+msgctxt "STRINGS.NAMES.MONSTERMEAT"
+msgid "Monster Meat"
+msgstr ""
+
 #. STRINGS.NAMES.COONTAIL
 msgctxt "STRINGS.NAMES.COONTAIL"
 msgid "Cat Tail"
+msgstr ""
+
+#. STRINGS.NAMES.CATCOONDEN
+msgctxt "STRINGS.NAMES.CATCOONDEN"
+msgid "Hollow Stump"
 msgstr ""
 
 #. STRINGS.NAMES.TRUNK_COOKED
@@ -4556,9 +4566,9 @@ msgctxt "STRINGS.NAMES.NIGHTLIGHT"
 msgid "Night Light"
 msgstr ""
 
-#. STRINGS.NAMES.CATCOONDEN
-msgctxt "STRINGS.NAMES.CATCOONDEN"
-msgid "Hollow Stump"
+#. STRINGS.NAMES.ORANGESTAFF
+msgctxt "STRINGS.NAMES.ORANGESTAFF"
+msgid "The Lazy Explorer"
 msgstr ""
 
 #. STRINGS.NAMES.JAMMYPRESERVES
@@ -4571,9 +4581,9 @@ msgctxt "STRINGS.NAMES.TURF_DIRT"
 msgid "Dirt Turf"
 msgstr ""
 
-#. STRINGS.NAMES.SHADOWDUELIST_BUILDER
-msgctxt "STRINGS.NAMES.SHADOWDUELIST_BUILDER"
-msgid "Shadow Duelist"
+#. STRINGS.NAMES.CATCOONHAT
+msgctxt "STRINGS.NAMES.CATCOONHAT"
+msgid "Cat Cap"
 msgstr ""
 
 #. STRINGS.NAMES.CAVE_ENTRANCE
@@ -4591,11 +4601,6 @@ msgctxt "STRINGS.NAMES.CHESSJUNK2"
 msgid "Broken Clockworks"
 msgstr ""
 
-#. STRINGS.NAMES.CATCOONHAT
-msgctxt "STRINGS.NAMES.CATCOONHAT"
-msgid "Cat Cap"
-msgstr ""
-
 #. STRINGS.NAMES.WATERMELONHAT
 msgctxt "STRINGS.NAMES.WATERMELONHAT"
 msgid "Fashion Melon"
@@ -4611,14 +4616,14 @@ msgctxt "STRINGS.NAMES.ACORN_COOKED"
 msgid "Roasted Birchnut"
 msgstr ""
 
-#. STRINGS.NAMES.GREEN_CAP
-msgctxt "STRINGS.NAMES.GREEN_CAP"
-msgid "Green Cap"
-msgstr ""
-
 #. STRINGS.NAMES.CACTUS_MEAT_COOKED
 msgctxt "STRINGS.NAMES.CACTUS_MEAT_COOKED"
 msgid "Cooked Cactus Flesh"
+msgstr ""
+
+#. STRINGS.NAMES.GREEN_CAP
+msgctxt "STRINGS.NAMES.GREEN_CAP"
+msgid "Green Cap"
 msgstr ""
 
 #. STRINGS.NAMES.FERTILIZER
@@ -4631,6 +4636,11 @@ msgctxt "STRINGS.NAMES.DUG_MARSH_BUSH"
 msgid "Spiky Bush"
 msgstr ""
 
+#. STRINGS.NAMES.MOLEHILL
+msgctxt "STRINGS.NAMES.MOLEHILL"
+msgid "Burrow"
+msgstr ""
+
 #. STRINGS.NAMES.SEWING_KIT
 msgctxt "STRINGS.NAMES.SEWING_KIT"
 msgid "Sewing Kit"
@@ -4641,9 +4651,9 @@ msgctxt "STRINGS.NAMES.PURPLEMOONEYE"
 msgid "Purple Moonlens"
 msgstr ""
 
-#. STRINGS.NAMES.TALLBIRDEGG
-msgctxt "STRINGS.NAMES.TALLBIRDEGG"
-msgid "Tallbird Egg"
+#. STRINGS.NAMES.MOLE_ABOVEGROUND
+msgctxt "STRINGS.NAMES.MOLE_ABOVEGROUND"
+msgid "Moleworm"
 msgstr ""
 
 #. STRINGS.NAMES.CARROT
@@ -4661,24 +4671,19 @@ msgctxt "STRINGS.NAMES.STAGEHAND"
 msgid "Stagehand"
 msgstr ""
 
-#. STRINGS.NAMES.MOLE_ABOVEGROUND
-msgctxt "STRINGS.NAMES.MOLE_ABOVEGROUND"
-msgid "Moleworm"
-msgstr ""
-
 #. STRINGS.NAMES.LEIF_SPARSE
 msgctxt "STRINGS.NAMES.LEIF_SPARSE"
 msgid "Treeguard"
 msgstr ""
 
-#. STRINGS.NAMES.COLDFIREPIT
-msgctxt "STRINGS.NAMES.COLDFIREPIT"
-msgid "Endothermic Fire Pit"
-msgstr ""
-
 #. STRINGS.NAMES.INSANITYROCK
 msgctxt "STRINGS.NAMES.INSANITYROCK"
 msgid "Obelisk"
+msgstr ""
+
+#. STRINGS.NAMES.COLDFIREPIT
+msgctxt "STRINGS.NAMES.COLDFIREPIT"
+msgid "Endothermic Fire Pit"
 msgstr ""
 
 #. STRINGS.NAMES.MOLEHAT
@@ -4689,6 +4694,11 @@ msgstr ""
 #. STRINGS.NAMES.ICEHAT
 msgctxt "STRINGS.NAMES.ICEHAT"
 msgid "Ice Cube"
+msgstr ""
+
+#. STRINGS.NAMES.GRASS_UMBRELLA
+msgctxt "STRINGS.NAMES.GRASS_UMBRELLA"
+msgid "Pretty Parasol"
 msgstr ""
 
 #. STRINGS.NAMES.TENTACLE_GARDEN
@@ -4711,14 +4721,14 @@ msgctxt "STRINGS.NAMES.LAVA_POND_ROCK"
 msgid "Rock"
 msgstr ""
 
-#. STRINGS.NAMES.RAINHAT
-msgctxt "STRINGS.NAMES.RAINHAT"
-msgid "Rain Hat"
+#. STRINGS.NAMES.SCULPTURE_BISHOPBODY
+msgctxt "STRINGS.NAMES.SCULPTURE_BISHOPBODY"
+msgid "Marble Sculpture"
 msgstr ""
 
-#. STRINGS.NAMES.SCULPTURE_ROOKNOSE
-msgctxt "STRINGS.NAMES.SCULPTURE_ROOKNOSE"
-msgid "Suspicious Marble"
+#. STRINGS.NAMES.EYETURRET_ITEM
+msgctxt "STRINGS.NAMES.EYETURRET_ITEM"
+msgid "Houndius Shootius"
 msgstr ""
 
 #. STRINGS.NAMES.RESEARCHLAB4
@@ -4746,11 +4756,6 @@ msgctxt "STRINGS.NAMES.GREEN_CAP_COOKED"
 msgid "Cooked Green Cap"
 msgstr ""
 
-#. STRINGS.NAMES.POND_ALGAE
-msgctxt "STRINGS.NAMES.POND_ALGAE"
-msgid "Algae"
-msgstr ""
-
 #. STRINGS.NAMES.LIGHTNINGGOAT
 msgctxt "STRINGS.NAMES.LIGHTNINGGOAT"
 msgid "Volt Goat"
@@ -4761,14 +4766,14 @@ msgctxt "STRINGS.NAMES.CACTUS_FLOWER"
 msgid "Cactus Flower"
 msgstr ""
 
-#. STRINGS.NAMES.RELIC
-msgctxt "STRINGS.NAMES.RELIC"
-msgid "Relic"
-msgstr ""
-
 #. STRINGS.NAMES.CACTUS_MEAT
 msgctxt "STRINGS.NAMES.CACTUS_MEAT"
 msgid "Cactus Flesh"
+msgstr ""
+
+#. STRINGS.NAMES.RELIC
+msgctxt "STRINGS.NAMES.RELIC"
+msgid "Relic"
 msgstr ""
 
 #. STRINGS.NAMES.CACTUS
@@ -4776,19 +4781,19 @@ msgctxt "STRINGS.NAMES.CACTUS"
 msgid "Cactus"
 msgstr ""
 
-#. STRINGS.NAMES.NIGHTMAREFUEL
-msgctxt "STRINGS.NAMES.NIGHTMAREFUEL"
-msgid "Nightmare Fuel"
-msgstr ""
-
 #. STRINGS.NAMES.STATUEGLOMMER
 msgctxt "STRINGS.NAMES.STATUEGLOMMER"
 msgid "Glommer's Statue"
 msgstr ""
 
-#. STRINGS.NAMES.TREASURECHEST_TRAP
-msgctxt "STRINGS.NAMES.TREASURECHEST_TRAP"
-msgid "Treasure Chest"
+#. STRINGS.NAMES.NIGHTMAREFUEL
+msgctxt "STRINGS.NAMES.NIGHTMAREFUEL"
+msgid "Nightmare Fuel"
+msgstr ""
+
+#. STRINGS.NAMES.HOUND
+msgctxt "STRINGS.NAMES.HOUND"
+msgid "Hound"
 msgstr ""
 
 #. STRINGS.NAMES.DRUMSTICK
@@ -4799,6 +4804,11 @@ msgstr ""
 #. STRINGS.NAMES.ACORN
 msgctxt "STRINGS.NAMES.ACORN"
 msgid "Birchnut"
+msgstr ""
+
+#. STRINGS.NAMES.DECIDUOUS_ROOT
+msgctxt "STRINGS.NAMES.DECIDUOUS_ROOT"
+msgid "Birchnut Tree"
 msgstr ""
 
 #. STRINGS.NAMES.FLOWER
@@ -4831,9 +4841,9 @@ msgctxt "STRINGS.NAMES.MOOSEEGG1"
 msgid "Moose Egg"
 msgstr ""
 
-#. STRINGS.NAMES.DECIDUOUS_ROOT
-msgctxt "STRINGS.NAMES.DECIDUOUS_ROOT"
-msgid "Birchnut Tree"
+#. STRINGS.NAMES.BIRCHNUTDRAKE
+msgctxt "STRINGS.NAMES.BIRCHNUTDRAKE"
+msgid "Birchnutter"
 msgstr ""
 
 #. STRINGS.NAMES.MAXWELLTHRONE
@@ -4846,19 +4856,9 @@ msgctxt "STRINGS.NAMES.CANE"
 msgid "Walking Cane"
 msgstr ""
 
-#. STRINGS.NAMES.BIRCHNUTDRAKE
-msgctxt "STRINGS.NAMES.BIRCHNUTDRAKE"
-msgid "Birchnutter"
-msgstr ""
-
 #. STRINGS.NAMES.MOSSLING
 msgctxt "STRINGS.NAMES.MOSSLING"
 msgid "Mosling"
-msgstr ""
-
-#. STRINGS.NAMES.WATHGRITHRHAT
-msgctxt "STRINGS.NAMES.WATHGRITHRHAT"
-msgid "Battle Helm"
 msgstr ""
 
 #. STRINGS.NAMES.MOOSENEST2
@@ -4866,19 +4866,29 @@ msgctxt "STRINGS.NAMES.MOOSENEST2"
 msgid "Goose Nest"
 msgstr ""
 
+#. STRINGS.NAMES.WATHGRITHRHAT
+msgctxt "STRINGS.NAMES.WATHGRITHRHAT"
+msgid "Battle Helm"
+msgstr ""
+
+#. STRINGS.NAMES.MOOSE2
+msgctxt "STRINGS.NAMES.MOOSE2"
+msgid "Goose"
+msgstr ""
+
 #. STRINGS.NAMES.LAVAE_EGG
 msgctxt "STRINGS.NAMES.LAVAE_EGG"
 msgid "Lavae Egg"
 msgstr ""
 
-#. STRINGS.NAMES.MOOSE1
-msgctxt "STRINGS.NAMES.MOOSE1"
-msgid "Moose"
-msgstr ""
-
 #. STRINGS.NAMES.SPEAR_WATHGRITHR
 msgctxt "STRINGS.NAMES.SPEAR_WATHGRITHR"
 msgid "Battle Spear"
+msgstr ""
+
+#. STRINGS.NAMES.RESURRECTION_PENALTY
+msgctxt "STRINGS.NAMES.RESURRECTION_PENALTY"
+msgid "Resurrection Sickness"
 msgstr ""
 
 #. STRINGS.NAMES.DARKNESS
@@ -4891,14 +4901,14 @@ msgctxt "STRINGS.NAMES.TURF_DECIDUOUS"
 msgid "Deciduous Turf"
 msgstr ""
 
-#. STRINGS.NAMES.BEARGER_FUR
-msgctxt "STRINGS.NAMES.BEARGER_FUR"
-msgid "Thick Fur"
-msgstr ""
-
 #. STRINGS.NAMES.WATER
 msgctxt "STRINGS.NAMES.WATER"
 msgid "Short Circuit"
+msgstr ""
+
+#. STRINGS.NAMES.BEARGER_FUR
+msgctxt "STRINGS.NAMES.BEARGER_FUR"
+msgid "Thick Fur"
 msgstr ""
 
 #. STRINGS.NAMES.RAIN
@@ -4911,24 +4921,19 @@ msgctxt "STRINGS.NAMES.MEAT"
 msgid "Meat"
 msgstr ""
 
-#. STRINGS.NAMES.RESURRECTION_PENALTY
-msgctxt "STRINGS.NAMES.RESURRECTION_PENALTY"
-msgid "Resurrection Sickness"
-msgstr ""
-
 #. STRINGS.NAMES.SHENANIGANS
 msgctxt "STRINGS.NAMES.SHENANIGANS"
 msgid "Shenanigans"
 msgstr ""
 
-#. STRINGS.NAMES.BEARDHAIR
-msgctxt "STRINGS.NAMES.BEARDHAIR"
-msgid "Beard Hair"
-msgstr ""
-
 #. STRINGS.NAMES.HOT
 msgctxt "STRINGS.NAMES.HOT"
 msgid "Overheating"
+msgstr ""
+
+#. STRINGS.NAMES.BEARDHAIR
+msgctxt "STRINGS.NAMES.BEARDHAIR"
+msgid "Beard Hair"
 msgstr ""
 
 #. STRINGS.NAMES.COLD
@@ -4946,19 +4951,24 @@ msgctxt "STRINGS.NAMES.CHARLIE"
 msgid "Charlie"
 msgstr ""
 
-#. STRINGS.NAMES.ORANGEGEM
-msgctxt "STRINGS.NAMES.ORANGEGEM"
-msgid "Orange Gem"
-msgstr ""
-
 #. STRINGS.NAMES.TRINKET_18
 msgctxt "STRINGS.NAMES.TRINKET_18"
 msgid "Toy Trojan Horse"
 msgstr ""
 
-#. STRINGS.NAMES.WORMLIGHT_LESSER
-msgctxt "STRINGS.NAMES.WORMLIGHT_LESSER"
-msgid "Lesser Glow Berry"
+#. STRINGS.NAMES.ORANGEGEM
+msgctxt "STRINGS.NAMES.ORANGEGEM"
+msgid "Orange Gem"
+msgstr ""
+
+#. STRINGS.NAMES.WORMLIGHT
+msgctxt "STRINGS.NAMES.WORMLIGHT"
+msgid "Glow Berry"
+msgstr ""
+
+#. STRINGS.NAMES.SHADOWDUELIST_BUILDER
+msgctxt "STRINGS.NAMES.SHADOWDUELIST_BUILDER"
+msgid "Shadow Duelist"
 msgstr ""
 
 #. STRINGS.NAMES.CATCOON
@@ -4966,9 +4976,9 @@ msgctxt "STRINGS.NAMES.CATCOON"
 msgid "Catcoon"
 msgstr ""
 
-#. STRINGS.NAMES.STAFFCOLDLIGHT
-msgctxt "STRINGS.NAMES.STAFFCOLDLIGHT"
-msgid "Polar Light"
+#. STRINGS.NAMES.SHADOWMINER_BUILDER
+msgctxt "STRINGS.NAMES.SHADOWMINER_BUILDER"
+msgid "Shadow Miner"
 msgstr ""
 
 #. STRINGS.NAMES.STATUEMAXWELL
@@ -4981,9 +4991,9 @@ msgctxt "STRINGS.NAMES.ANCIENT_STATUE"
 msgid "Ancient Statue"
 msgstr ""
 
-#. STRINGS.NAMES.SHADOWMINER_BUILDER
-msgctxt "STRINGS.NAMES.SHADOWMINER_BUILDER"
-msgid "Shadow Miner"
+#. STRINGS.NAMES.CARROT_COOKED
+msgctxt "STRINGS.NAMES.CARROT_COOKED"
+msgid "Roasted Carrot"
 msgstr ""
 
 #. STRINGS.NAMES.FLINT
@@ -4991,19 +5001,9 @@ msgctxt "STRINGS.NAMES.FLINT"
 msgid "Flint"
 msgstr ""
 
-#. STRINGS.NAMES.CARROT_COOKED
-msgctxt "STRINGS.NAMES.CARROT_COOKED"
-msgid "Roasted Carrot"
-msgstr ""
-
 #. STRINGS.NAMES.MOSQUITOSACK
 msgctxt "STRINGS.NAMES.MOSQUITOSACK"
 msgid "Mosquito Sack"
-msgstr ""
-
-#. STRINGS.NAMES.FEATHER_ROBIN
-msgctxt "STRINGS.NAMES.FEATHER_ROBIN"
-msgid "Crimson Feather"
 msgstr ""
 
 #. STRINGS.NAMES.WORM
@@ -5011,9 +5011,19 @@ msgctxt "STRINGS.NAMES.WORM"
 msgid "Depths Worm"
 msgstr ""
 
+#. STRINGS.NAMES.FEATHER_ROBIN
+msgctxt "STRINGS.NAMES.FEATHER_ROBIN"
+msgid "Crimson Feather"
+msgstr ""
+
 #. STRINGS.NAMES.WORM_PLANT
 msgctxt "STRINGS.NAMES.WORM_PLANT"
 msgid "Mysterious Plant"
+msgstr ""
+
+#. STRINGS.NAMES.WORMLIGHT_LESSER
+msgctxt "STRINGS.NAMES.WORMLIGHT_LESSER"
+msgid "Lesser Glow Berry"
 msgstr ""
 
 #. STRINGS.NAMES.ACCOMPLISHMENT_SHRINE
@@ -5026,9 +5036,9 @@ msgctxt "STRINGS.NAMES.CUTREEDS"
 msgid "Cut Reeds"
 msgstr ""
 
-#. STRINGS.NAMES.WORMLIGHT
-msgctxt "STRINGS.NAMES.WORMLIGHT"
-msgid "Glow Berry"
+#. STRINGS.NAMES.POND_ALGAE
+msgctxt "STRINGS.NAMES.POND_ALGAE"
+msgid "Algae"
 msgstr ""
 
 #. STRINGS.NAMES.GOATMILK
@@ -5041,9 +5051,9 @@ msgctxt "STRINGS.NAMES.WALL_RUINS_ITEM"
 msgid "Thulecite Wall"
 msgstr ""
 
-#. STRINGS.NAMES.EYETURRET_ITEM
-msgctxt "STRINGS.NAMES.EYETURRET_ITEM"
-msgid "Houndius Shootius"
+#. STRINGS.NAMES.BUTTERFLYWINGS
+msgctxt "STRINGS.NAMES.BUTTERFLYWINGS"
+msgid "Butterfly Wings"
 msgstr ""
 
 #. STRINGS.NAMES.KRAMPUS
@@ -5081,11 +5091,6 @@ msgctxt "STRINGS.NAMES.TURF_MUD"
 msgid "Mud Turf"
 msgstr ""
 
-#. STRINGS.NAMES.DIRTPILE
-msgctxt "STRINGS.NAMES.DIRTPILE"
-msgid "Suspicious Dirt Pile"
-msgstr ""
-
 #. STRINGS.NAMES.UNAGI
 msgctxt "STRINGS.NAMES.UNAGI"
 msgid "Unagi"
@@ -5096,19 +5101,14 @@ msgctxt "STRINGS.NAMES.SENTRYWARD"
 msgid "Ocuvigil"
 msgstr ""
 
+#. STRINGS.NAMES.BISHOP_NIGHTMARE
+msgctxt "STRINGS.NAMES.BISHOP_NIGHTMARE"
+msgid "Damaged Bishop"
+msgstr ""
+
 #. STRINGS.NAMES.FROGLEGS
 msgctxt "STRINGS.NAMES.FROGLEGS"
 msgid "Frog Legs"
-msgstr ""
-
-#. STRINGS.NAMES.ROOK_NIGHTMARE
-msgctxt "STRINGS.NAMES.ROOK_NIGHTMARE"
-msgid "Damaged Rook"
-msgstr ""
-
-#. STRINGS.NAMES.WILSON
-msgctxt "STRINGS.NAMES.WILSON"
-msgid "Wilson"
 msgstr ""
 
 #. STRINGS.NAMES.SPIDER_DROPPER
@@ -5116,9 +5116,19 @@ msgctxt "STRINGS.NAMES.SPIDER_DROPPER"
 msgid "Dangling Depth Dweller"
 msgstr ""
 
+#. STRINGS.NAMES.WILSON
+msgctxt "STRINGS.NAMES.WILSON"
+msgid "Wilson"
+msgstr ""
+
 #. STRINGS.NAMES.KNIGHT_NIGHTMARE
 msgctxt "STRINGS.NAMES.KNIGHT_NIGHTMARE"
 msgid "Damaged Knight"
+msgstr ""
+
+#. STRINGS.NAMES.ROOK_NIGHTMARE
+msgctxt "STRINGS.NAMES.ROOK_NIGHTMARE"
+msgid "Damaged Rook"
 msgstr ""
 
 #. STRINGS.NAMES.THULECITE_PIECES
@@ -5126,9 +5136,9 @@ msgctxt "STRINGS.NAMES.THULECITE_PIECES"
 msgid "Thulecite Fragments"
 msgstr ""
 
-#. STRINGS.NAMES.BISHOP_NIGHTMARE
-msgctxt "STRINGS.NAMES.BISHOP_NIGHTMARE"
-msgid "Damaged Bishop"
+#. STRINGS.NAMES.NIGHTMARE_TIMEPIECE
+msgctxt "STRINGS.NAMES.NIGHTMARE_TIMEPIECE"
+msgid "Thulecite Medallion"
 msgstr ""
 
 #. STRINGS.NAMES.WILLOW
@@ -5136,9 +5146,9 @@ msgctxt "STRINGS.NAMES.WILLOW"
 msgid "Willow"
 msgstr ""
 
-#. STRINGS.NAMES.NIGHTMARE_TIMEPIECE
-msgctxt "STRINGS.NAMES.NIGHTMARE_TIMEPIECE"
-msgid "Thulecite Medallion"
+#. STRINGS.NAMES.RUINS_BAT
+msgctxt "STRINGS.NAMES.RUINS_BAT"
+msgid "Thulecite Club"
 msgstr ""
 
 #. STRINGS.NAMES.ROBIN
@@ -5151,9 +5161,9 @@ msgctxt "STRINGS.NAMES.RESEARCHLAB2"
 msgid "Alchemy Engine"
 msgstr ""
 
-#. STRINGS.NAMES.RUINS_BAT
-msgctxt "STRINGS.NAMES.RUINS_BAT"
-msgid "Thulecite Club"
+#. STRINGS.NAMES.SCULPTURE_ROOKNOSE
+msgctxt "STRINGS.NAMES.SCULPTURE_ROOKNOSE"
+msgid "Suspicious Marble"
 msgstr ""
 
 #. STRINGS.NAMES.GUACAMOLE
@@ -5191,14 +5201,14 @@ msgctxt "STRINGS.NAMES.WARDROBE"
 msgid "Wardrobe"
 msgstr ""
 
-#. STRINGS.NAMES.HOUND
-msgctxt "STRINGS.NAMES.HOUND"
-msgid "Hound"
-msgstr ""
-
 #. STRINGS.NAMES.SLURPER_PELT
 msgctxt "STRINGS.NAMES.SLURPER_PELT"
 msgid "Slurper Pelt"
+msgstr ""
+
+#. STRINGS.NAMES.STAFFCOLDLIGHT
+msgctxt "STRINGS.NAMES.STAFFCOLDLIGHT"
+msgid "Polar Light"
 msgstr ""
 
 #. STRINGS.NAMES.SHADOWDIGGER_BUILDER
@@ -5211,19 +5221,14 @@ msgctxt "STRINGS.NAMES.BANDAGE"
 msgid "Honey Poultice"
 msgstr ""
 
-#. STRINGS.NAMES.ORANGESTAFF
-msgctxt "STRINGS.NAMES.ORANGESTAFF"
-msgid "The Lazy Explorer"
+#. STRINGS.NAMES.SLURPER
+msgctxt "STRINGS.NAMES.SLURPER"
+msgid "Slurper"
 msgstr ""
 
 #. STRINGS.NAMES.TRINKET_12
 msgctxt "STRINGS.NAMES.TRINKET_12"
 msgid "Dessicated Tentacle"
-msgstr ""
-
-#. STRINGS.NAMES.SLURPER
-msgctxt "STRINGS.NAMES.SLURPER"
-msgid "Slurper"
 msgstr ""
 
 #. STRINGS.NAMES.CARROT_SEEDS
@@ -5236,24 +5241,24 @@ msgctxt "STRINGS.NAMES.HAWAIIANSHIRT"
 msgid "Floral Shirt"
 msgstr ""
 
-#. STRINGS.NAMES.DEFAULT
-msgctxt "STRINGS.NAMES.DEFAULT"
-msgid "INVENTORY ITEM"
-msgstr ""
-
 #. STRINGS.NAMES.CAVE_BANANA_COOKED
 msgctxt "STRINGS.NAMES.CAVE_BANANA_COOKED"
 msgid "Cooked Banana"
 msgstr ""
 
-#. STRINGS.NAMES.MARSH_PLANT
-msgctxt "STRINGS.NAMES.MARSH_PLANT"
-msgid "Plant"
+#. STRINGS.NAMES.DEFAULT
+msgctxt "STRINGS.NAMES.DEFAULT"
+msgid "INVENTORY ITEM"
 msgstr ""
 
 #. STRINGS.NAMES.CAVE_BANANA
 msgctxt "STRINGS.NAMES.CAVE_BANANA"
 msgid "Cave Banana"
+msgstr ""
+
+#. STRINGS.NAMES.MARSH_PLANT
+msgctxt "STRINGS.NAMES.MARSH_PLANT"
+msgid "Plant"
 msgstr ""
 
 #. STRINGS.NAMES.WOLFGANG
@@ -5271,19 +5276,24 @@ msgctxt "STRINGS.NAMES.TURKEYDINNER"
 msgid "Turkey Dinner"
 msgstr ""
 
-#. STRINGS.NAMES.TURF_UNDERROCK
-msgctxt "STRINGS.NAMES.TURF_UNDERROCK"
-msgid "Cave Rock Turf"
-msgstr ""
-
 #. STRINGS.NAMES.EYEPLANT
 msgctxt "STRINGS.NAMES.EYEPLANT"
 msgid "Eye Plant"
 msgstr ""
 
+#. STRINGS.NAMES.TURF_UNDERROCK
+msgctxt "STRINGS.NAMES.TURF_UNDERROCK"
+msgid "Cave Rock Turf"
+msgstr ""
+
 #. STRINGS.NAMES.SPIDERHOLE
 msgctxt "STRINGS.NAMES.SPIDERHOLE"
 msgid "Spilagmite"
+msgstr ""
+
+#. STRINGS.NAMES.FLOWER_CAVE_DOUBLE
+msgctxt "STRINGS.NAMES.FLOWER_CAVE_DOUBLE"
+msgid "Light Flower"
 msgstr ""
 
 #. STRINGS.NAMES.PANFLUTE
@@ -5296,8 +5306,8 @@ msgctxt "STRINGS.NAMES.TRINKET_5"
 msgid "Tiny Rocketship"
 msgstr ""
 
-#. STRINGS.NAMES.FLOWER_CAVE_DOUBLE
-msgctxt "STRINGS.NAMES.FLOWER_CAVE_DOUBLE"
+#. STRINGS.NAMES.FLOWER_CAVE
+msgctxt "STRINGS.NAMES.FLOWER_CAVE"
 msgid "Light Flower"
 msgstr ""
 
@@ -5311,9 +5321,9 @@ msgctxt "STRINGS.NAMES.WALL_HAY"
 msgid "Hay Wall"
 msgstr ""
 
-#. STRINGS.NAMES.FLOWER_CAVE
-msgctxt "STRINGS.NAMES.FLOWER_CAVE"
-msgid "Light Flower"
+#. STRINGS.NAMES.POWCAKE
+msgctxt "STRINGS.NAMES.POWCAKE"
+msgid "Powdercake"
 msgstr ""
 
 #. STRINGS.NAMES.LANTERN
@@ -5326,9 +5336,9 @@ msgctxt "STRINGS.NAMES.MANDRAKE_ACTIVE"
 msgid "Mandrake"
 msgstr ""
 
-#. STRINGS.NAMES.POWCAKE
-msgctxt "STRINGS.NAMES.POWCAKE"
-msgid "Powdercake"
+#. STRINGS.NAMES.DIRTPILE
+msgctxt "STRINGS.NAMES.DIRTPILE"
+msgid "Suspicious Dirt Pile"
 msgstr ""
 
 #. STRINGS.NAMES.ROPE
@@ -5351,9 +5361,9 @@ msgctxt "STRINGS.NAMES.EEL"
 msgid "Eel"
 msgstr ""
 
-#. STRINGS.NAMES.BATWING_COOKED
-msgctxt "STRINGS.NAMES.BATWING_COOKED"
-msgid "Cooked Batilisk Wing"
+#. STRINGS.NAMES.LEIF
+msgctxt "STRINGS.NAMES.LEIF"
+msgid "Treeguard"
 msgstr ""
 
 #. STRINGS.NAMES.BEEMINE_MAXWELL
@@ -5361,9 +5371,9 @@ msgctxt "STRINGS.NAMES.BEEMINE_MAXWELL"
 msgid "Maxwell's Mosquito Trap"
 msgstr ""
 
-#. STRINGS.NAMES.LEIF
-msgctxt "STRINGS.NAMES.LEIF"
-msgid "Treeguard"
+#. STRINGS.NAMES.PIGHEAD
+msgctxt "STRINGS.NAMES.PIGHEAD"
+msgid "Pig Head"
 msgstr ""
 
 #. STRINGS.NAMES.BABYBEEFALO
@@ -5384,11 +5394,6 @@ msgstr ""
 #. STRINGS.NAMES.POND_CAVE
 msgctxt "STRINGS.NAMES.POND_CAVE"
 msgid "Pond"
-msgstr ""
-
-#. STRINGS.NAMES.DEERCLOPS_EYEBALL
-msgctxt "STRINGS.NAMES.DEERCLOPS_EYEBALL"
-msgid "Deerclops Eyeball"
 msgstr ""
 
 #. STRINGS.NAMES.SLURTLE_SHELLPIECES
@@ -5421,6 +5426,11 @@ msgctxt "STRINGS.NAMES.WATERBALLOON"
 msgid "Waterballoon"
 msgstr ""
 
+#. STRINGS.NAMES.HEALINGSALVE
+msgctxt "STRINGS.NAMES.HEALINGSALVE"
+msgid "Healing Salve"
+msgstr ""
+
 #. STRINGS.NAMES.TWIGGY_NUT_SAPLING
 msgctxt "STRINGS.NAMES.TWIGGY_NUT_SAPLING"
 msgid "Twiggy Sapling"
@@ -5451,9 +5461,9 @@ msgctxt "STRINGS.NAMES.HONEYHAM"
 msgid "Honey Ham"
 msgstr ""
 
-#. STRINGS.NAMES.HEALINGSALVE
-msgctxt "STRINGS.NAMES.HEALINGSALVE"
-msgid "Healing Salve"
+#. STRINGS.NAMES.TREASURECHEST_TRAP
+msgctxt "STRINGS.NAMES.TREASURECHEST_TRAP"
+msgid "Treasure Chest"
 msgstr ""
 
 #. STRINGS.NAMES.ARMORSLURPER
@@ -5471,9 +5481,9 @@ msgctxt "STRINGS.NAMES.MAXWELL"
 msgid "Maxwell"
 msgstr ""
 
-#. STRINGS.NAMES.SCULPTURE_BISHOPBODY
-msgctxt "STRINGS.NAMES.SCULPTURE_BISHOPBODY"
-msgid "Marble Sculpture"
+#. STRINGS.NAMES.SCULPTURE_BISHOPHEAD
+msgctxt "STRINGS.NAMES.SCULPTURE_BISHOPHEAD"
+msgid "Suspicious Marble"
 msgstr ""
 
 #. STRINGS.NAMES.TENTACLESPOTS
@@ -5501,14 +5511,14 @@ msgctxt "STRINGS.NAMES.WAXWELL"
 msgid "Maxwell"
 msgstr ""
 
-#. STRINGS.NAMES.SCULPTURE_BISHOPHEAD
-msgctxt "STRINGS.NAMES.SCULPTURE_BISHOPHEAD"
-msgid "Suspicious Marble"
-msgstr ""
-
 #. STRINGS.NAMES.SCULPTURE_KNIGHTHEAD
 msgctxt "STRINGS.NAMES.SCULPTURE_KNIGHTHEAD"
 msgid "Suspicious Marble"
+msgstr ""
+
+#. STRINGS.NAMES.STATUE_MARBLE
+msgctxt "STRINGS.NAMES.STATUE_MARBLE"
+msgid "Marble Sculpture"
 msgstr ""
 
 #. STRINGS.NAMES.TUMBLEWEED
@@ -6061,14 +6071,14 @@ msgctxt "STRINGS.NAMES.CARTOGRAPHYDESK"
 msgid "Cartographer's Desk"
 msgstr ""
 
-#. STRINGS.NAMES.STATUE_MARBLE
-msgctxt "STRINGS.NAMES.STATUE_MARBLE"
-msgid "Marble Statue"
-msgstr ""
-
 #. STRINGS.NAMES.BLOWDART_PIPE
 msgctxt "STRINGS.NAMES.BLOWDART_PIPE"
 msgid "Blow Dart"
+msgstr ""
+
+#. STRINGS.NAMES.FEATHER_ROBIN_WINTER
+msgctxt "STRINGS.NAMES.FEATHER_ROBIN_WINTER"
+msgid "Azure Feather"
 msgstr ""
 
 #. STRINGS.NAMES.CORN_SEEDS
@@ -6076,9 +6086,9 @@ msgctxt "STRINGS.NAMES.CORN_SEEDS"
 msgid "Corn Seeds"
 msgstr ""
 
-#. STRINGS.NAMES.FEATHER_ROBIN_WINTER
-msgctxt "STRINGS.NAMES.FEATHER_ROBIN_WINTER"
-msgid "Azure Feather"
+#. STRINGS.NAMES.FEATHER_CROW
+msgctxt "STRINGS.NAMES.FEATHER_CROW"
+msgid "Jet Feather"
 msgstr ""
 
 #. STRINGS.NAMES.BUTTER
@@ -6091,9 +6101,9 @@ msgctxt "STRINGS.NAMES.LAVAE"
 msgid "Lavae"
 msgstr ""
 
-#. STRINGS.NAMES.TALLBIRDEGG_CRACKED
-msgctxt "STRINGS.NAMES.TALLBIRDEGG_CRACKED"
-msgid "Hatching Tallbird Egg"
+#. STRINGS.NAMES.TALLBIRDEGG
+msgctxt "STRINGS.NAMES.TALLBIRDEGG"
+msgid "Tallbird Egg"
 msgstr ""
 
 #. STRINGS.NAMES.MOLE
@@ -6111,9 +6121,9 @@ msgctxt "STRINGS.NAMES.EEL_COOKED"
 msgid "Cooked Eel"
 msgstr ""
 
-#. STRINGS.NAMES.BUTTERFLYWINGS
-msgctxt "STRINGS.NAMES.BUTTERFLYWINGS"
-msgid "Butterfly Wings"
+#. STRINGS.NAMES.ENDTABLE
+msgctxt "STRINGS.NAMES.ENDTABLE"
+msgid "End Table"
 msgstr ""
 
 #. STRINGS.NAMES.BEEHAT
@@ -13076,19 +13086,24 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.BOOK_SLEEP"
 msgid "Strange, it's just 500 pages of telegraph codes."
 msgstr ""
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SMALLMEAT_DRIED
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SMALLMEAT_DRIED"
+msgid "A little jerky."
+msgstr ""
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MONSTERMEAT
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MONSTERMEAT"
 msgid "Ugh. I don't think I should eat that."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPAT
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPAT"
-msgid "What a crusty looking animal."
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.YELLOWMOONEYE
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.YELLOWMOONEYE"
 msgid "That ought to show everyone the way."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ORANGEMOONEYE
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ORANGEMOONEYE"
+msgid "No one could get lost with that thing looking out for them."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRUNK_COOKED
@@ -13101,9 +13116,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.NIGHTLIGHT"
 msgid "It gives off a spooky light."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ORANGEMOONEYE
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ORANGEMOONEYE"
-msgid "No one could get lost with that thing looking out for them."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.GREENMOONEYE
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.GREENMOONEYE"
+msgid "That'll keep a watchful eye on the place."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.JAMMYPRESERVES
@@ -13116,9 +13131,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TURF_DIRT"
 msgid "A chunk of ground."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.GREENMOONEYE
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.GREENMOONEYE"
-msgid "That'll keep a watchful eye on the place."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRAP
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRAP"
+msgid "I wove it real tight."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.CAVE_ENTRANCE
@@ -13126,19 +13141,14 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.CAVE_ENTRANCE"
 msgid "I wonder if that rock could be moved."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ICESTAFF
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ICESTAFF"
-msgid "It's cold to the touch."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MOONROCKCRATER
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MOONROCKCRATER"
+msgid "I should stick something shiny in it. For research."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.CHESSJUNK2
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.CHESSJUNK2"
 msgid "Another pile of broken chess pieces."
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MOONROCKCRATER
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MOONROCKCRATER"
-msgid "I should stick something shiny in it. For research."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MOONROCKNUGGET
@@ -13156,14 +13166,14 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HUMANMEAT_DRIED"
 msgid "Letting it dry makes it not come from a human, right?"
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.RUINS_BAT
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.RUINS_BAT"
-msgid "It has quite a heft to it."
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.DRAGONFLYCHEST
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.DRAGONFLYCHEST"
 msgid "Next best thing to a lockbox!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.RUINS_BAT
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.RUINS_BAT"
+msgid "It has quite a heft to it."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SKELETON_PLAYER.DEFAULT
@@ -13186,9 +13196,14 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SKELETON_PLAYER.ROBOT"
 msgid "%s must've died performing an experiment with %s."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.LUMPY_SAPLING
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.LUMPY_SAPLING"
-msgid "How did this tree even reproduce?"
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TELEPORTATO_BOX
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TELEPORTATO_BOX"
+msgid "This may control the polarity of the whole universe."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ICESTAFF
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ICESTAFF"
+msgid "It's cold to the touch."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SEWING_KIT
@@ -13201,9 +13216,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.PURPLEMOONEYE"
 msgid "Makes a good marker, but I wish it'd stop looking at me."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRAP_TEETH
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRAP_TEETH"
-msgid "This is a nasty surprise."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WORMHOLE_LIMITED
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WORMHOLE_LIMITED"
+msgid "Guh, that thing looks worse off than usual."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.CARROT
@@ -13226,11 +13241,6 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.STAGEHAND.HIDING"
 msgid "Something's odd here, but I can't put my finger on it."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WORMHOLE_LIMITED
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WORMHOLE_LIMITED"
-msgid "Guh, that thing looks worse off than usual."
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WORMHOLE.GENERIC
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WORMHOLE.GENERIC"
 msgid "Soft and undulating."
@@ -13239,6 +13249,16 @@ msgstr ""
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WORMHOLE.OPEN
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WORMHOLE.OPEN"
 msgid "Science compels me to jump in."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WINTEROMETER.GENERIC
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WINTEROMETER.GENERIC"
+msgid "Mercurial."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WINTEROMETER.BURNT
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WINTEROMETER.BURNT"
+msgid "Its measuring days are over."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.COLDFIREPIT.GENERIC
@@ -13271,24 +13291,19 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.COLDFIREPIT.NORMAL"
 msgid "Nice and comfy."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WINTEROMETER.GENERIC
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WINTEROMETER.GENERIC"
-msgid "Mercurial."
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WINTEROMETER.BURNT
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WINTEROMETER.BURNT"
-msgid "Its measuring days are over."
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MAXWELLTHRONE
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MAXWELLTHRONE"
-msgid "That doesn't look very comfortable."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MAXWELLLOCK
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MAXWELLLOCK"
+msgid "Looks almost like a key hole."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WATERMELONHAT
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WATERMELONHAT"
 msgid "Let the juice run down your face."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WATERBALLOON
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WATERBALLOON"
+msgid "What a scientific marvel!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.CACTUS_FLOWER
@@ -13311,14 +13326,14 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.LAVA_POND_ROCK"
 msgid "As gneiss a place as any."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WATERBALLOON
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WATERBALLOON"
-msgid "What a scientific marvel!"
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WASPHIVE
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WASPHIVE"
 msgid "I think those bees are mad."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WARG
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WARG"
+msgid "You might be something to reckon with, big dog."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.RESEARCHLAB4.GENERIC
@@ -13356,14 +13371,14 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SLURPERPELT"
 msgid "Doesn't look all that much different dead."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WARG
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WARG"
-msgid "You might be something to reckon with, big dog."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.FISHSTICKS
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.FISHSTICKS"
+msgid "Sticks to your ribs."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TELEPORTATO_BOX
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TELEPORTATO_BOX"
-msgid "This may control the polarity of the whole universe."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WALL_MOONROCK
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WALL_MOONROCK"
+msgid "Spacey and smooth!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.RELIC.GENERIC
@@ -13376,14 +13391,14 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.RELIC.BROKEN"
 msgid "Nothing to work with here."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WALL_MOONROCK
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WALL_MOONROCK"
-msgid "Spacey and smooth!"
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.BERRIES_JUICY_COOKED
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.BERRIES_JUICY_COOKED"
+msgid "Better eat them before they spoil!"
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.GREEN_CAP
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.GREEN_CAP"
-msgid "It seems pretty normal."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TORCH
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TORCH"
+msgid "Something to hold back the night."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.NIGHTMAREFUEL
@@ -13391,9 +13406,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.NIGHTMAREFUEL"
 msgid "This stuff is crazy!"
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.BEEHAT
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.BEEHAT"
-msgid "Protects your skin, but squashes your meticulous coiffure."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WALL_STONE
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WALL_STONE"
+msgid "That's a nice wall."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MALE_PUPPET
@@ -13401,14 +13416,14 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MALE_PUPPET"
 msgid "He's trapped!"
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WALL_STONE
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WALL_STONE"
-msgid "That's a nice wall."
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WALL_HAY_ITEM
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WALL_HAY_ITEM"
 msgid "This seems like a bad idea."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPEAR_WATHGRITHR
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPEAR_WATHGRITHR"
+msgid "It feels very stabby."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.FLOWER.GENERIC
@@ -13441,14 +13456,14 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SADDLE_RACE"
 msgid "This saddle really flies!"
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WATHGRITHRHAT
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WATHGRITHRHAT"
-msgid "Pretty fancy hat, that."
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WAFFLES
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WAFFLES"
 msgid "I'm waffling on whether it needs more syrup."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.HOUND
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HOUND"
+msgid "You ain't nothing, hound dog!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.STALAGMITE_TALL
@@ -13461,19 +13476,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.CANE"
 msgid "Technically walking is just controlled falling."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TURF_DECIDUOUS
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TURF_DECIDUOUS"
-msgid "Yet another ground type."
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.UMBRELLA
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.UMBRELLA"
 msgid "I always hate when my hair gets wet and poofy."
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WEBBERSKULL
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WEBBERSKULL"
-msgid "Poor little guy. He deserves a proper funeral."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TURKEYDINNER
@@ -13481,19 +13486,19 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TURKEYDINNER"
 msgid "Mmmm."
 msgstr ""
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WEBBERSKULL
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WEBBERSKULL"
+msgid "Poor little guy. He deserves a proper funeral."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SALTLICK
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SALTLICK"
+msgid "How many licks does it take to get to the center?"
+msgstr ""
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.LAVAE_EGG.GENERIC
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.LAVAE_EGG.GENERIC"
 msgid "There's a faint warmth coming from inside."
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SANITYROCK.INACTIVE
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SANITYROCK.INACTIVE"
-msgid "Where did the rest of it go?"
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SANITYROCK.ACTIVE
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SANITYROCK.ACTIVE"
-msgid "That's a CRAZY looking rock!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRUNK_WINTER
@@ -13506,14 +13511,14 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRUNKVEST_SUMMER"
 msgid "Wilderness casual."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.LAVA_POND_ROCK5
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.LAVA_POND_ROCK5"
-msgid "As gneiss a place as any."
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_27
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_27"
 msgid "If you unwound it you could poke someone from really far away."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.LAVA_POND_ROCK5
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.LAVA_POND_ROCK5"
+msgid "As gneiss a place as any."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_26
@@ -13521,14 +13526,14 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_26"
 msgid "Food and a cup! The ultimate survival container."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.RAZOR
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.RAZOR"
-msgid "A sharpened rock tied to a stick. For hygiene!"
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.RAINOMETER.GENERIC
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.RAINOMETER.GENERIC"
+msgid "It measures cloudiness."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDERHOLE
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDERHOLE"
-msgid "It's encrusted with old webbing."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.RAINOMETER.BURNT
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.RAINOMETER.BURNT"
+msgid "The measuring parts went up in a cloud of smoke."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_22
@@ -13536,14 +13541,14 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_22"
 msgid "I have a few theories about this string."
 msgstr ""
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDERHOLE
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDERHOLE"
+msgid "It's encrusted with old webbing."
+msgstr ""
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_21
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_21"
 msgid "This egg beater is all bent out of shape."
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.BEARDHAIR
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.BEARDHAIR"
-msgid "It's only gross when they're not your own."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_20
@@ -13551,14 +13556,19 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_20"
 msgid "Wigfrid keeps jumping out and hitting me with it?!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.BEARDHAIR
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.BEARDHAIR"
+msgid "It's only gross when they're not your own."
+msgstr ""
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_18
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_18"
 msgid "I wonder what it's hiding?"
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ICEHAT
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ICEHAT"
-msgid "Stay cool, boy."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ICEBOX
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ICEBOX"
+msgid "I have harnessed the power of cold!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_15
@@ -13566,19 +13576,24 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_15"
 msgid "...Maxwell left his stuff out again."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ORANGEGEM
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ORANGEGEM"
-msgid "It's an orange gem."
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_13
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_13"
 msgid "It must be some kind of religious artifact."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TALLBIRDEGG
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TALLBIRDEGG"
-msgid "Will it hatch?"
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ORANGEGEM
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ORANGEGEM"
+msgid "It's an orange gem."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.HAWAIIANSHIRT
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HAWAIIANSHIRT"
+msgid "It's not lab-safe!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_11
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_11"
+msgid "Hal whispers beautiful lies to me."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.CATCOON
@@ -13586,9 +13601,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.CATCOON"
 msgid "A playful little thing."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_11
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_11"
-msgid "Hal whispers beautiful lies to me."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_9
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_9"
+msgid "I'm more of a zipper person, myself."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.STATUEMAXWELL
@@ -13601,9 +13616,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ANCIENT_STATUE"
 msgid "It seems to throb out of tune with the world."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_9
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_9"
-msgid "I'm more of a zipper person, myself."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_7
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_7"
+msgid "There's no time for fun and games!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.FLINT
@@ -13611,14 +13626,24 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.FLINT"
 msgid "It's a very sharp rock."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_7
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_7"
-msgid "There's no time for fun and games!"
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_6
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_6"
 msgid "Their electricity carrying days are over."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDER.GENERIC
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDER.GENERIC"
+msgid "I hate spiders."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDER.SLEEPING
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDER.SLEEPING"
+msgid "I'd better not be here when he wakes up."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDER.DEAD
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDER.DEAD"
+msgid "Ewwww!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.FEATHER_ROBIN
@@ -13626,14 +13651,14 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.FEATHER_ROBIN"
 msgid "A redbird feather."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDERDEN
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDERDEN"
-msgid "Sticky!"
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_3
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_3"
 msgid "The knot is stuck. Forever."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRAP_TEETH
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRAP_TEETH"
+msgid "This is a nasty surprise."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ACCOMPLISHMENT_SHRINE
@@ -13646,9 +13671,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.CUTREEDS"
 msgid "Cut reeds, ready for crafting and hobbying."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRAP
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRAP"
-msgid "I wove it real tight."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.BEEHAT
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.BEEHAT"
+msgid "Protects your skin, but squashes your meticulous coiffure."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.GOATMILK
@@ -13661,9 +13686,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WALL_RUINS_ITEM"
 msgid "A solid piece of history."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TORCH
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TORCH"
-msgid "Something to hold back the night."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TENTACLE_GARDEN
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TENTACLE_GARDEN"
+msgid "Yet another slimy pole."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.KRAMPUS
@@ -13716,11 +13741,6 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TURF_MUD"
 msgid "Yet another ground type."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TENTACLE_GARDEN
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TENTACLE_GARDEN"
-msgid "Yet another slimy pole."
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TENTACLESPOTS
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TENTACLESPOTS"
 msgid "I think these were its genitalia."
@@ -13731,14 +13751,24 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TENTACLESPIKE"
 msgid "It's pointy and slimy."
 msgstr ""
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.FERTILIZER
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.FERTILIZER"
+msgid "That is definitely a bucket full of poop."
+msgstr ""
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TWIGGY_OLD
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TWIGGY_OLD"
 msgid "That tree looks pretty wimpy."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.PUMPKINCOOKIE
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.PUMPKINCOOKIE"
-msgid "That's a pretty gourd cookie!"
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SIESTAHUT.GENERIC
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SIESTAHUT.GENERIC"
+msgid "A nice place for an afternoon rest, safely out of the heat."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SIESTAHUT.BURNT
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SIESTAHUT.BURNT"
+msgid "It won't provide much shade now."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WILSON.GENERIC
@@ -13771,16 +13801,6 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WILSON.REVIVER"
 msgid "%s has expertly put our theories into practice."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SIESTAHUT.GENERIC
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SIESTAHUT.GENERIC"
-msgid "A nice place for an afternoon rest, safely out of the heat."
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SIESTAHUT.BURNT
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SIESTAHUT.BURNT"
-msgid "It won't provide much shade now."
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TENT.GENERIC
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TENT.GENERIC"
 msgid "I get sort of crazy when I don't sleep."
@@ -13791,14 +13811,19 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TENT.BURNT"
 msgid "Nothing left to sleep in."
 msgstr ""
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TELESTAFF
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TELESTAFF"
+msgid "That could reveal the world."
+msgstr ""
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.THULECITE_PIECES
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.THULECITE_PIECES"
 msgid "It's some smaller chunks of Thulecite."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TELESTAFF
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TELESTAFF"
-msgid "That could reveal the world."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TELEPORTATO_RING
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TELEPORTATO_RING"
+msgid "A ring that could focus dimensional energies."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WILLOW.GENERIC
@@ -13831,9 +13856,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WILLOW.REVIVER"
 msgid "%s, friend of ghosts."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TELEPORTATO_RING
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TELEPORTATO_RING"
-msgid "A ring that could focus dimensional energies."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TELEPORTATO_POTATO
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TELEPORTATO_POTATO"
+msgid "This metal potato contains great and fearful power..."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ROBIN.GENERIC
@@ -13856,9 +13881,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.RESEARCHLAB2.BURNT"
 msgid "The extra science didn't keep it alive."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TELEPORTATO_POTATO
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TELEPORTATO_POTATO"
-msgid "This metal potato contains great and fearful power..."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TURF_ROCKY
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TURF_ROCKY"
+msgid "A chunk of ground."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.GUACAMOLE
@@ -13916,16 +13941,6 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.LAVA_POND_ROCK2"
 msgid "As gneiss a place as any."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.FISHSTICKS
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.FISHSTICKS"
-msgid "Sticks to your ribs."
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.BANDAGE
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.BANDAGE"
-msgid "Seems sterile enough."
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TALLBIRDEGG_CRACKED.GENERIC
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TALLBIRDEGG_CRACKED.GENERIC"
 msgid "Looks like it's hatching!"
@@ -13951,14 +13966,19 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TALLBIRDEGG_CRACKED.LONG"
 msgid "I have a feeling this is going to take a while..."
 msgstr ""
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.BANDAGE
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.BANDAGE"
+msgid "Seems sterile enough."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TALLBIRDEGG
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TALLBIRDEGG"
+msgid "Will it hatch?"
+msgstr ""
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_12
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_12"
 msgid "That's just asking to be experimented on."
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.HAWAIIANSHIRT
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HAWAIIANSHIRT"
-msgid "It's not lab-safe!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.STUFFEDEGGPLANT
@@ -13981,14 +14001,14 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.STATUE_MARBLE"
 msgid "It's a fancy marble statue."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MARSH_PLANT
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MARSH_PLANT"
-msgid "It's a plant."
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPOILED_FOOD
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPOILED_FOOD"
 msgid "It's a furry ball of rotten food."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MARSH_PLANT
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MARSH_PLANT"
+msgid "It's a plant."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDER_WARRIOR.GENERIC
@@ -14016,14 +14036,19 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDERGLAND"
 msgid "It has a tangy, antiseptic smell."
 msgstr ""
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDEREGGSACK
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDEREGGSACK"
+msgid "I hope these don't hatch. Period."
+msgstr ""
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TURF_UNDERROCK
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TURF_UNDERROCK"
 msgid "Yet another ground type."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDEREGGSACK
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDEREGGSACK"
-msgid "I hope these don't hatch. Period."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDERDEN
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDERDEN"
+msgid "Sticky!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ROBOT_PUPPET
@@ -14046,19 +14071,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_5"
 msgid "Sadly it's too small for me to escape on."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDER.GENERIC
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDER.GENERIC"
-msgid "I hate spiders."
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDER.SLEEPING
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDER.SLEEPING"
-msgid "I'd better not be here when he wakes up."
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDER.DEAD
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDER.DEAD"
-msgid "Ewwww!"
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WATHGRITHRHAT
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WATHGRITHRHAT"
+msgid "Pretty fancy hat, that."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPORE_MEDIUM
@@ -14076,9 +14091,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WALL_HAY.BURNT"
 msgid "That won't do at all."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPEAR_WATHGRITHR
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPEAR_WATHGRITHR"
-msgid "It feels very stabby."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPEAR
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPEAR"
+msgid "That's one pointy stick."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.LANTERN
@@ -14131,9 +14146,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.BEEMINE_MAXWELL"
 msgid "Bottled mosquito rage!"
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPEAR
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPEAR"
-msgid "That's one pointy stick."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPAT
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPAT"
+msgid "What a crusty looking animal."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.BABYBEEFALO
@@ -14156,11 +14171,6 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.CAVE_BANANA_COOKED"
 msgid "Yum!"
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SMALLMEAT_DRIED
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SMALLMEAT_DRIED"
-msgid "A little jerky."
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SMALLMEAT
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SMALLMEAT"
 msgid "A tiny chunk of dead animal."
@@ -14181,19 +14191,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SMALLBIRD.STARVING"
 msgid "It must be starving."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SCULPTURE_BISHOPBODY.UNCOVERED
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SCULPTURE_BISHOPBODY.UNCOVERED"
-msgid "There's a big piece missing."
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SCULPTURE_BISHOPBODY.FINISHED
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SCULPTURE_BISHOPBODY.FINISHED"
-msgid "Now what?"
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SCULPTURE_BISHOPBODY.COVERED
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SCULPTURE_BISHOPBODY.COVERED"
-msgid "It looks old, but it feels new."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SCULPTURE_BISHOPHEAD
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SCULPTURE_BISHOPHEAD"
+msgid "Is that a head?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SILK
@@ -14209,6 +14209,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SEEDS_COOKED
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SEEDS_COOKED"
 msgid "That cooked the life right out of 'em!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SEEDS
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SEEDS"
+msgid "Each one is a tiny mystery."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TWIGGY_NUT_SAPLING
@@ -14246,9 +14251,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HONEYHAM"
 msgid "Sweet and savory."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SEEDS
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SEEDS"
-msgid "Each one is a tiny mystery."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SCULPTURE_ROOKNOSE
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SCULPTURE_ROOKNOSE"
+msgid "Where did this come from?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ARMORSLURPER
@@ -14266,9 +14271,19 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MAXWELL"
 msgid "I hate that guy."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SCULPTURE_ROOKNOSE
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SCULPTURE_ROOKNOSE"
-msgid "Where did this come from?"
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SCULPTURE_BISHOPBODY.UNCOVERED
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SCULPTURE_BISHOPBODY.UNCOVERED"
+msgid "There's a big piece missing."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SCULPTURE_BISHOPBODY.FINISHED
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SCULPTURE_BISHOPBODY.FINISHED"
+msgid "Now what?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SCULPTURE_BISHOPBODY.COVERED
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SCULPTURE_BISHOPBODY.COVERED"
+msgid "It looks old, but it feels new."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPIDER_DROPPER
@@ -14336,14 +14351,19 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WAXWELL.REVIVER"
 msgid "%s is using his powers for good."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SCULPTURE_BISHOPHEAD
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SCULPTURE_BISHOPHEAD"
-msgid "Is that a head?"
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SCULPTURE_KNIGHTHEAD
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SCULPTURE_KNIGHTHEAD"
 msgid "Where's the rest of it?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SANITYROCK.INACTIVE
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SANITYROCK.INACTIVE"
+msgid "Where did the rest of it go?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SANITYROCK.ACTIVE
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SANITYROCK.ACTIVE"
+msgid "That's a CRAZY looking rock!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TUMBLEWEED
@@ -14351,9 +14371,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TUMBLEWEED"
 msgid "Who knows what that tumbleweed has picked up."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SALTLICK
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SALTLICK"
-msgid "How many licks does it take to get to the center?"
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SADDLE_WAR
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SADDLE_WAR"
+msgid "The only problem is the saddle sores."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.PIGTORCH
@@ -14366,9 +14386,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.GREENAMULET"
 msgid "No base should be without one!"
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SADDLE_WAR
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SADDLE_WAR"
-msgid "The only problem is the saddle sores."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPORE_TALL_INV
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPORE_TALL_INV"
+msgid "I'll keep a little light in my pocket."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.DUG_BERRYBUSH
@@ -14381,19 +14401,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MANDRAKE_PLANTED"
 msgid "I've heard strange things about those plants."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPORE_TALL_INV
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SPORE_TALL_INV"
-msgid "I'll keep a little light in my pocket."
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ROTTENEGG
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ROTTENEGG"
 msgid "Ew! It stinks!"
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.PAPYRUS
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.PAPYRUS"
-msgid "Some sheets of paper."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ROPE
@@ -14401,9 +14411,19 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ROPE"
 msgid "Some short lengths of rope."
 msgstr ""
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.PAPYRUS
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.PAPYRUS"
+msgid "Some sheets of paper."
+msgstr ""
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ROOK
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ROOK"
 msgid "Storm the castle!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ROCKS
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ROCKS"
+msgid "We could make stuff with these."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ORANGEAMULET
@@ -14411,9 +14431,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ORANGEAMULET"
 msgid "Teleportation can be so useful."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.BERRIES_JUICY_COOKED
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.BERRIES_JUICY_COOKED"
-msgid "Better eat them before they spoil!"
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TURF_FUNGUS_GREEN
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TURF_FUNGUS_GREEN"
+msgid "A chunk of ground."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.FIREHOUND
@@ -14424,11 +14444,6 @@ msgstr ""
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.GUNPOWDER
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.GUNPOWDER"
 msgid "It looks like pepper."
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.FERTILIZER
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.FERTILIZER"
-msgid "That is definitely a bucket full of poop."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ROCK_PETRIFIED_TREE_OLD
@@ -14461,11 +14476,6 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.CARROT_SEEDS"
 msgid "It's a carrot seed."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.FURTUFT
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.FURTUFT"
-msgid "Black and white fur."
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.REEDS.GENERIC
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.REEDS.GENERIC"
 msgid "It's a clump of reeds."
@@ -14481,14 +14491,24 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.REEDS.BURNING"
 msgid "That's really burning!"
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.NIGHTSTICK
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.NIGHTSTICK"
-msgid "It's electric!"
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.FURTUFT
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.FURTUFT"
+msgid "Black and white fur."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.RED_CAP_COOKED
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.RED_CAP_COOKED"
 msgid "It's different now..."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.NIGHTSTICK
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.NIGHTSTICK"
+msgid "It's electric!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.REDGEM
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.REDGEM"
+msgid "It sparkles with inner warmth."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MIGRATION_PORTAL.GENERIC
@@ -14511,9 +14531,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.FEM_PUPPET"
 msgid "She's trapped!"
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.REDGEM
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.REDGEM"
-msgid "It sparkles with inner warmth."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.RAZOR
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.RAZOR"
+msgid "A sharpened rock tied to a stick. For hygiene!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_24
@@ -14521,14 +14541,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_24"
 msgid "I think Wickerbottom had a cat."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.RAINOMETER.GENERIC
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.RAINOMETER.GENERIC"
-msgid "It measures cloudiness."
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.RAINOMETER.BURNT
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.RAINOMETER.BURNT"
-msgid "The measuring parts went up in a cloud of smoke."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ACORN
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ACORN"
+msgid "There's definitely something inside there."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ANCIENT_ALTAR
@@ -14546,11 +14561,6 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MARBLETREE"
 msgid "I don't think an axe will cut it."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ACORN
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ACORN"
-msgid "There's definitely something inside there."
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.PURPLEGEM
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.PURPLEGEM"
 msgid "It contains the mysteries of the universe."
@@ -14559,6 +14569,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.PUMPKIN_SEEDS
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.PUMPKIN_SEEDS"
 msgid "It's a pumpkin seed."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.PUMPKINCOOKIE
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.PUMPKINCOOKIE"
+msgid "That's a pretty gourd cookie!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TWIGGYTREE.BURNT
@@ -14601,9 +14616,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.BEEHIVE"
 msgid "It's buzzing with activity."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TURF_FUNGUS_GREEN
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TURF_FUNGUS_GREEN"
-msgid "A chunk of ground."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.POMEGRANATE_SEEDS
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.POMEGRANATE_SEEDS"
+msgid "It's a pome-whatsit seed."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.CAVE_FERN
@@ -14611,9 +14626,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.CAVE_FERN"
 msgid "It's a fern."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.POMEGRANATE_SEEDS
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.POMEGRANATE_SEEDS"
-msgid "It's a pome-whatsit seed."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.GREEN_CAP
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.GREEN_CAP"
+msgid "It seems pretty normal."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.PLANTMEAT_COOKED
@@ -14621,24 +14636,14 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.PLANTMEAT_COOKED"
 msgid "At least it's warm now."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.GREEN_MUSHROOM.GENERIC
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.GREEN_MUSHROOM.GENERIC"
-msgid "It's a mushroom."
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.GREEN_MUSHROOM.INGROUND
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.GREEN_MUSHROOM.INGROUND"
-msgid "It's sleeping."
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.GREEN_MUSHROOM.PICKED
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.GREEN_MUSHROOM.PICKED"
-msgid "I wonder if it will come back?"
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.POMEGRANATE
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.POMEGRANATE"
 msgid "It looks like the inside of an alien's brain."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.LUMPY_SAPLING
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.LUMPY_SAPLING"
+msgid "How did this tree even reproduce?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TELEPORTATO_CRANK
@@ -14651,9 +14656,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.PIGGYBACK"
 msgid "This little piggy's gone... \"home\"."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TURF_ROCKY
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TURF_ROCKY"
-msgid "A chunk of ground."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MOSSLING
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MOSSLING"
+msgid "Aaah! You are definitely not an electron!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.CHESTER
@@ -14664,11 +14669,6 @@ msgstr ""
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.GUANO
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.GUANO"
 msgid "Another flavor of poop."
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MOSQUITOSACK
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MOSQUITOSACK"
-msgid "It's probably someone else's blood..."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.PIGMAN.GENERIC
@@ -14711,24 +14711,24 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.PICKAXE"
 msgid "Iconic, isn't it?"
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TURF_DESERTDIRT
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TURF_DESERTDIRT"
-msgid "A chunk of ground."
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.PHLEGM
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.PHLEGM"
 msgid "It's thick and pliable. And salty."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MUSHTREE_TALL_WEBBED
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MUSHTREE_TALL_WEBBED"
-msgid "The spiders thought this one was important."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TURF_DESERTDIRT
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TURF_DESERTDIRT"
+msgid "A chunk of ground."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.PERD
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.PERD"
 msgid "Stupid bird! Stay away from those berries!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MUSHTREE_TALL_WEBBED
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MUSHTREE_TALL_WEBBED"
+msgid "The spiders thought this one was important."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.PANFLUTE
@@ -14746,14 +14746,14 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.CACTUS_MEAT"
 msgid "There are still some spines between me and a tasty meal."
 msgstr ""
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MOSQUITOSACK
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MOSQUITOSACK"
+msgid "It's probably someone else's blood..."
+msgstr ""
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.PIGSKIN
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.PIGSKIN"
 msgid "It still has the tail on it."
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MOSSLING
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MOSSLING"
-msgid "Aaah! You are definitely not an electron!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.HOTCHILI
@@ -14761,14 +14761,14 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HOTCHILI"
 msgid "Five alarm!"
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.AXE
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.AXE"
-msgid "A trusty axe."
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ICECREAM
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ICECREAM"
 msgid "I scream for ice cream!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.AXE
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.AXE"
+msgid "A trusty axe."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WICKERBOTTOM.GENERIC
@@ -14799,16 +14799,6 @@ msgstr ""
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WICKERBOTTOM.REVIVER
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WICKERBOTTOM.REVIVER"
 msgid "I have deep respect for %s's practical theorems."
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ACORN_SAPLING
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ACORN_SAPLING"
-msgid "It'll be a tree soon!"
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.LUREPLANTBULB
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.LUREPLANTBULB"
-msgid "Now I can start my very own meat farm."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.COMPASS.GENERIC
@@ -14856,9 +14846,14 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.COMPASS.N"
 msgid "North."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.COOKEDMEAT
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.COOKEDMEAT"
-msgid "Charbroiled to perfection."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ACORN_SAPLING
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ACORN_SAPLING"
+msgid "It'll be a tree soon!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.LUREPLANTBULB
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.LUREPLANTBULB"
+msgid "Now I can start my very own meat farm."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MERMHEAD.GENERIC
@@ -14871,34 +14866,29 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MERMHEAD.BURNT"
 msgid "Burnt merm flesh somehow smells even worse."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.EVERGREEN_SPARSE.BURNT
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.EVERGREEN_SPARSE.BURNT"
-msgid "I feel like I could have prevented that."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.COOKEDMEAT
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.COOKEDMEAT"
+msgid "Charbroiled to perfection."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.EVERGREEN_SPARSE.CHOPPED
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.EVERGREEN_SPARSE.CHOPPED"
-msgid "Take that, nature!"
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.HEALINGSALVE
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HEALINGSALVE"
+msgid "The stinging means that it's working."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.EVERGREEN_SPARSE.GENERIC
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.EVERGREEN_SPARSE.GENERIC"
-msgid "This sad tree has no cones."
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.EVERGREEN_SPARSE.BURNING
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.EVERGREEN_SPARSE.BURNING"
-msgid "What a waste of wood."
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.KABOBS
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.KABOBS"
-msgid "Lunch on a stick."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.LUCY
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.LUCY"
+msgid "That's a prettier axe than I'm used to."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MEAT
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MEAT"
 msgid "It's a bit gamey, but it'll do."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MAXWELLTHRONE
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MAXWELLTHRONE"
+msgid "That doesn't look very comfortable."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.BEEFALOHAT
@@ -14914,11 +14904,6 @@ msgstr ""
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WINTERHAT
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WINTERHAT"
 msgid "It'll be good for when winter comes."
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MAXWELLLOCK
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MAXWELLLOCK"
-msgid "Looks almost like a key hole."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MAXWELLHEAD
@@ -14961,14 +14946,14 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MARSH_BUSH.BURNING"
 msgid "That's burning fast!"
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.BATWING
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.BATWING"
-msgid "I hate those things, even when they're dead."
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MARBLE
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MARBLE"
 msgid "Fancy!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.BATWING
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.BATWING"
+msgid "I hate those things, even when they're dead."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MANDRAKE_COOKED
@@ -14976,14 +14961,19 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MANDRAKE_COOKED"
 msgid "It doesn't seem so strange anymore."
 msgstr ""
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.INSANITYROCK.INACTIVE
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.INSANITYROCK.INACTIVE"
+msgid "It's more of a pyramid than an obelisk."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.INSANITYROCK.ACTIVE
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.INSANITYROCK.ACTIVE"
+msgid "TAKE THAT, SANE SELF!"
+msgstr ""
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MEATBALLS
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MEATBALLS"
 msgid "It's just a big wad of meat."
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.LUCY
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.LUCY"
-msgid "That's a prettier axe than I'm used to."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.LOG.GENERIC
@@ -14999,6 +14989,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.LITTLE_WALRUS
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.LITTLE_WALRUS"
 msgid "He won't be cute and cuddly forever."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.LIGHTER
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.LIGHTER"
+msgid "It's her lucky lighter."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.LAVA_POND
@@ -15061,13 +15056,13 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.STALAGMITE_TALL_FULL"
 msgid "Rocks, rocks, rocks, rocks..."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.LIGHTER
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.LIGHTER"
-msgid "It's her lucky lighter."
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.LEIF_SPARSE
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.LEIF_SPARSE"
+msgid "He's huge!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.LEIF
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.LEIF"
 msgid "He's huge!"
 msgstr ""
 
@@ -15081,9 +15076,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.KOALEFANT_WINTER"
 msgid "It looks warm and full of meat."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.LEIF
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.LEIF"
-msgid "He's huge!"
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.KABOBS
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.KABOBS"
+msgid "Lunch on a stick."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MANDRAKESOUP
@@ -15091,19 +15086,14 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MANDRAKESOUP"
 msgid "Well, he won't be waking up again."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.INSANITYROCK.INACTIVE
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.INSANITYROCK.INACTIVE"
-msgid "It's more of a pyramid than an obelisk."
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.INSANITYROCK.ACTIVE
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.INSANITYROCK.ACTIVE"
-msgid "TAKE THAT, SANE SELF!"
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.FROGLEGS
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.FROGLEGS"
 msgid "I've heard it's a delicacy."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ICEHAT
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ICEHAT"
+msgid "Stay cool, boy."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_16
@@ -15111,9 +15101,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_16"
 msgid "...Maxwell left his stuff out again."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ICEBOX
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ICEBOX"
-msgid "I have harnessed the power of cold!"
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TURF_DECIDUOUS
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TURF_DECIDUOUS"
+msgid "Yet another ground type."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.GRASS_UMBRELLA
@@ -15121,14 +15111,14 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.GRASS_UMBRELLA"
 msgid "My hair looks good wet... it's when it dries that's the problem."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.HOUND
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HOUND"
-msgid "You ain't nothing, hound dog!"
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.HORN
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HORN"
 msgid "It sounds like a beefalo field in there."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.HONEYCOMB
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HONEYCOMB"
+msgid "Bees used to live in this."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MAXWELLPHONOGRAPH
@@ -15136,9 +15126,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.MAXWELLPHONOGRAPH"
 msgid "So that's where the music was coming from."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.HONEYCOMB
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HONEYCOMB"
-msgid "Bees used to live in this."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.HONEY
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HONEY"
+msgid "Looks delicious!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.CATCOONDEN.GENERIC
@@ -15151,19 +15141,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.CATCOONDEN.EMPTY"
 msgid "Its owner ran out of lives."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.HONEY
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HONEY"
-msgid "Looks delicious!"
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.DEVTOOL
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.DEVTOOL"
 msgid "It smells of bacon!"
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.CORN_SEEDS
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.CORN_SEEDS"
-msgid "It's a corn seed."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.DUG_MARSH_BUSH
@@ -15171,14 +15151,9 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.DUG_MARSH_BUSH"
 msgid "This needs to be planted."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.BUTTER
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.BUTTER"
-msgid "I can't believe it's butter!"
-msgstr ""
-
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.LAVAE
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.LAVAE"
-msgid "Too hot to handle."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.CORN_SEEDS
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.CORN_SEEDS"
+msgid "It's a corn seed."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.HOMESIGN.GENERIC
@@ -15194,6 +15169,36 @@ msgstr ""
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.HOMESIGN.BURNT
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HOMESIGN.BURNT"
 msgid "\"Don't play with matches.\""
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.BUTTER
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.BUTTER"
+msgid "I can't believe it's butter!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.LAVAE
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.LAVAE"
+msgid "Too hot to handle."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.EVERGREEN_SPARSE.BURNT
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.EVERGREEN_SPARSE.BURNT"
+msgid "I feel like I could have prevented that."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.EVERGREEN_SPARSE.CHOPPED
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.EVERGREEN_SPARSE.CHOPPED"
+msgid "Take that, nature!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.EVERGREEN_SPARSE.GENERIC
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.EVERGREEN_SPARSE.GENERIC"
+msgid "This sad tree has no cones."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.EVERGREEN_SPARSE.BURNING
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.EVERGREEN_SPARSE.BURNING"
+msgid "What a waste of wood."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.MOLE.UNDERGROUND
@@ -15221,14 +15226,24 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.EEL_COOKED"
 msgid "Smells great!"
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.HEALINGSALVE
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HEALINGSALVE"
-msgid "The stinging means that it's working."
-msgstr ""
-
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.HAMMER
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HAMMER"
 msgid "Stop! It's time! To hammer things!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.GREEN_MUSHROOM.GENERIC
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.GREEN_MUSHROOM.GENERIC"
+msgid "It's a mushroom."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.GREEN_MUSHROOM.INGROUND
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.GREEN_MUSHROOM.INGROUND"
+msgid "It's sleeping."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.GREEN_MUSHROOM.PICKED
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.GREEN_MUSHROOM.PICKED"
+msgid "I wonder if it will come back?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.POMEGRANATE_COOKED
@@ -15246,9 +15261,14 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.DUG_GRASS"
 msgid "It can be planted anywhere now."
 msgstr ""
 
-#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ROCKS
-msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ROCKS"
-msgid "We could make stuff with these."
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ENDTABLE.BURNT
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ENDTABLE.BURNT"
+msgid "This is why we can't have nice things."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.ENDTABLE.GENERIC
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.ENDTABLE.GENERIC"
+msgid "A flower in a vase on a table."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WENDY.GENERIC
@@ -75341,6 +75361,11 @@ msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.SERVER_MODS_WORKSHOP_VERSION_MISMATCH
 msgid "The server is running mods with an old version. The server owner must update the mods so that new players can join."
 msgstr ""
 
+#. STRINGS.UI.NETWORKDISCONNECT.BODY.ID_ALREADY_CONNECTED
+msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.ID_ALREADY_CONNECTED"
+msgid "You are already connected to the server. Maybe share some of that cloning science with the lab, OK?"
+msgstr ""
+
 #. STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_LOGGED_IN_SOMEWHERE_ELSE
 msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_LOGGED_IN_SOMEWHERE_ELSE"
 msgid "Someone has just logged into this server using your account. We can't have clones running around--you'll have to go."
@@ -75356,14 +75381,14 @@ msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_FRIENDS_ONLY_SERVER"
 msgid "Attempted to join a 'friends only' server, but you're not friends with the host. Friendship is not a transitive property."
 msgstr ""
 
-#. STRINGS.UI.NETWORKDISCONNECT.BODY.ID_ALREADY_CONNECTED
-msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.ID_ALREADY_CONNECTED"
-msgid "You are already connected to the server. Maybe share some of that cloning science with the lab, OK?"
-msgstr ""
-
 #. STRINGS.UI.NETWORKDISCONNECT.BODY.APP_OWNERSHIP_CHECK_FAILED
 msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.APP_OWNERSHIP_CHECK_FAILED"
 msgid "Steam says you don't own the game. But you do... right?"
+msgstr ""
+
+#. STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_GAME_SESSION_AUTH_FAILED
+msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_GAME_SESSION_AUTH_FAILED"
+msgid "Something fishy is going on... either we couldn't reach the Klei server or you're not who you say you are."
 msgstr ""
 
 #. STRINGS.UI.NETWORKDISCONNECT.BODY.ID_CONNECTION_ATTEMPT_FAILED
@@ -75376,9 +75401,9 @@ msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.ID_NAT_TARGET_UNRESPONSIVE"
 msgid "Unable to connect to the server. Look, I'll be honest. I'm pretty sure our programmers are actual wizards. I just write these things."
 msgstr ""
 
-#. STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_GAME_SESSION_AUTH_FAILED
-msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_GAME_SESSION_AUTH_FAILED"
-msgid "Something fishy is going on... either we couldn't reach the Klei server or you're not who you say you are."
+#. STRINGS.UI.NETWORKDISCONNECT.BODY.INVALID_GAME_SESSION_TOKEN
+msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.INVALID_GAME_SESSION_TOKEN"
+msgid "Unable to reach the Klei server. That thing is sort of the gatekeeper to this whole \"online game\" business. Try again?"
 msgstr ""
 
 #. STRINGS.UI.NETWORKDISCONNECT.BODY.ID_NAT_CONNECTION_TO_TARGET_LOST
@@ -75391,14 +75416,9 @@ msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.VERSION_MISMATCH_ARNBETA"
 msgid "The server is running the A New Reign Beta version.\nWant to experience new content while its hot?\nYou can join too!"
 msgstr ""
 
-#. STRINGS.UI.NETWORKDISCONNECT.BODY.INVALID_GAME_SESSION_TOKEN
-msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.INVALID_GAME_SESSION_TOKEN"
-msgid "Unable to reach the Klei server. That thing is sort of the gatekeeper to this whole \"online game\" business. Try again?"
-msgstr ""
-
-#. STRINGS.UI.NETWORKDISCONNECT.BODY.FORCE_DISCONNECTION
-msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.FORCE_DISCONNECTION"
-msgid "The connection has been forcibly closed by the engine. Vrooom vroom."
+#. STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_INCOMPATIBLE_PROTOCOL_VERSION
+msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_INCOMPATIBLE_PROTOCOL_VERSION"
+msgid "The server has a different version than you do. No use crying over split versions! Just make sure everything's on the latest version."
 msgstr ""
 
 #. STRINGS.UI.NETWORKDISCONNECT.BODY.E_UPGRADE
@@ -75406,14 +75426,19 @@ msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.E_UPGRADE"
 msgid "A new version is available. Please update Don't Starve Together."
 msgstr ""
 
+#. STRINGS.UI.NETWORKDISCONNECT.BODY.E_BANNED
+msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.E_BANNED"
+msgid "Your account has been banned for violating the terms of use. This is no laughing matter."
+msgstr ""
+
 #. STRINGS.UI.NETWORKDISCONNECT.BODY.ID_CONNECTION_LOST
 msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.ID_CONNECTION_LOST"
 msgid "You have lost connection to the server. Maybe it's for the best, you know? Then again, I'm just a dialog box--who am I to say?"
 msgstr ""
 
-#. STRINGS.UI.NETWORKDISCONNECT.BODY.E_BANNED
-msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.E_BANNED"
-msgid "Your account has been banned for violating the terms of use. This is no laughing matter."
+#. STRINGS.UI.NETWORKDISCONNECT.BODY.FORCE_DISCONNECTION
+msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.FORCE_DISCONNECTION"
+msgid "The connection has been forcibly closed by the engine. Vrooom vroom."
 msgstr ""
 
 #. STRINGS.UI.NETWORKDISCONNECT.BODY.INVALID_CLIENT_TOKEN
@@ -75431,11 +75456,6 @@ msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_USER_KICKED"
 msgid "You have been kicked from this server. Well, you'll probably have more fun elsewhere anyways."
 msgstr ""
 
-#. STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_INCOMPATIBLE_PROTOCOL_VERSION
-msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_INCOMPATIBLE_PROTOCOL_VERSION"
-msgid "The server has a different version than you do. No use crying over split versions! Just make sure everything's on the latest version."
-msgstr ""
-
 #. STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_IDLE_TIMEOUT
 msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_IDLE_TIMEOUT"
 msgid "You have lost connection to the server. Maybe it's for the best, you know? Then again, I'm just a dialog box--who am I to say?"
@@ -75444,6 +75464,11 @@ msgstr ""
 #. STRINGS.UI.NETWORKDISCONNECT.BODY.VERSION_HANDSHAKE_FAILED
 msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.VERSION_HANDSHAKE_FAILED"
 msgid "The server is on a different version than you. Why can't we all just get along?"
+msgstr ""
+
+#. STRINGS.UI.NETWORKDISCONNECT.BODY.VERSION_MISMATCH_PUBLIC_BETA
+msgctxt "STRINGS.UI.NETWORKDISCONNECT.BODY.VERSION_MISMATCH_PUBLIC_BETA"
+msgid "The server is running a public beta world.\nWant to experience new content while its hot?\nYou can join too!"
 msgstr ""
 
 #. STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_SLOT_RESERVATION
@@ -75566,6 +75591,11 @@ msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.SERVER_MODS_WORKSHOP_VERSION_MISMATC
 msgid "Disconnected Due To Missing Mods"
 msgstr ""
 
+#. STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_ALREADY_CONNECTED
+msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_ALREADY_CONNECTED"
+msgid "Duplicate Connection"
+msgstr ""
+
 #. STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_DST_LOGGED_IN_SOMEWHERE_ELSE
 msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_DST_LOGGED_IN_SOMEWHERE_ELSE"
 msgid "Duplicate Login"
@@ -75581,14 +75611,14 @@ msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_DST_FRIENDS_ONLY_SERVER"
 msgid "Friends Only"
 msgstr ""
 
-#. STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_ALREADY_CONNECTED
-msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_ALREADY_CONNECTED"
-msgid "Duplicate Connection"
-msgstr ""
-
 #. STRINGS.UI.NETWORKDISCONNECT.TITLE.APP_OWNERSHIP_CHECK_FAILED
 msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.APP_OWNERSHIP_CHECK_FAILED"
 msgid "Steam Ownership Check Failed"
+msgstr ""
+
+#. STRINGS.UI.NETWORKDISCONNECT.TITLE.E_UPGRADE
+msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.E_UPGRADE"
+msgid "Version Out of Date"
 msgstr ""
 
 #. STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_CONNECTION_ATTEMPT_FAILED
@@ -75601,9 +75631,9 @@ msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_NAT_TARGET_UNRESPONSIVE"
 msgid "Could Not Connect"
 msgstr ""
 
-#. STRINGS.UI.NETWORKDISCONNECT.TITLE.E_UPGRADE
-msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.E_UPGRADE"
-msgid "Version Out of Date"
+#. STRINGS.UI.NETWORKDISCONNECT.TITLE.E_BANNED
+msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.E_BANNED"
+msgid "Account Banned"
 msgstr ""
 
 #. STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_NAT_CONNECTION_TO_TARGET_LOST
@@ -75616,19 +75646,19 @@ msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.VERSION_MISMATCH_ARNBETA"
 msgid "A New Reign Beta"
 msgstr ""
 
-#. STRINGS.UI.NETWORKDISCONNECT.TITLE.E_BANNED
-msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.E_BANNED"
-msgid "Account Banned"
-msgstr ""
-
 #. STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_DST_GAME_SESSION_AUTH_FAILED
 msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_DST_GAME_SESSION_AUTH_FAILED"
 msgid "Authentication Failed"
 msgstr ""
 
-#. STRINGS.UI.NETWORKDISCONNECT.TITLE.FORCE_DISCONNECTION
-msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.FORCE_DISCONNECTION"
-msgid "Force Disconnection"
+#. STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_DST_INCOMPATIBLE_PROTOCOL_VERSION
+msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_DST_INCOMPATIBLE_PROTOCOL_VERSION"
+msgid "Version Mismatch"
+msgstr ""
+
+#. STRINGS.UI.NETWORKDISCONNECT.TITLE.INVALID_GAME_SESSION_TOKEN
+msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.INVALID_GAME_SESSION_TOKEN"
+msgid "Could Not Connect"
 msgstr ""
 
 #. STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_CONNECTION_LOST
@@ -75636,9 +75666,9 @@ msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_CONNECTION_LOST"
 msgid "Disconnected"
 msgstr ""
 
-#. STRINGS.UI.NETWORKDISCONNECT.TITLE.INVALID_GAME_SESSION_TOKEN
-msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.INVALID_GAME_SESSION_TOKEN"
-msgid "Could Not Connect"
+#. STRINGS.UI.NETWORKDISCONNECT.TITLE.FORCE_DISCONNECTION
+msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.FORCE_DISCONNECTION"
+msgid "Force Disconnection"
 msgstr ""
 
 #. STRINGS.UI.NETWORKDISCONNECT.TITLE.INVALID_CLIENT_TOKEN
@@ -75656,11 +75686,6 @@ msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_DST_USER_KICKED"
 msgid "Kicked"
 msgstr ""
 
-#. STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_DST_INCOMPATIBLE_PROTOCOL_VERSION
-msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_DST_INCOMPATIBLE_PROTOCOL_VERSION"
-msgid "Version Mismatch"
-msgstr ""
-
 #. STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_DST_IDLE_TIMEOUT
 msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_DST_IDLE_TIMEOUT"
 msgid "Disconnected"
@@ -75669,6 +75694,11 @@ msgstr ""
 #. STRINGS.UI.NETWORKDISCONNECT.TITLE.VERSION_HANDSHAKE_FAILED
 msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.VERSION_HANDSHAKE_FAILED"
 msgid "Version Mismatch"
+msgstr ""
+
+#. STRINGS.UI.NETWORKDISCONNECT.TITLE.VERSION_MISMATCH_PUBLIC_BETA
+msgctxt "STRINGS.UI.NETWORKDISCONNECT.TITLE.VERSION_MISMATCH_PUBLIC_BETA"
+msgid "Public Beta Server"
 msgstr ""
 
 #. STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_DST_SLOT_RESERVATION

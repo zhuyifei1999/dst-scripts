@@ -1408,8 +1408,9 @@ function BuildTagsStringCommon(tagsTable)
     table.insert(tagsTable, 1, SERVER_LANGUAGES_TAGS[lang_code] or lang_code)
 
     -- Beta tag (forced to front of list)
-    if BRANCH == "staging" and BETA_SERVER_TAGS[CURRENT_BETA] ~= nil then
-        table.insert(tagsTable, 1, BETA_SERVER_TAGS[CURRENT_BETA])
+    if BRANCH == "staging" and CURRENT_BETA > 0 then
+        table.insert(tagsTable, 1, BETA_INFO[CURRENT_BETA].SERVERTAG)
+        table.insert(tagsTable, 1, BETA_INFO[PUBLIC_BETA].SERVERTAG)
     end
 
     -- Concat unique tags

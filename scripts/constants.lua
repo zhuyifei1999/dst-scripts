@@ -1201,8 +1201,22 @@ COMMAND_RESULT = {
 
 MAX_VOTE_OPTIONS = 6
 
-CURRENT_BETA = "ANRBETA"
-BETA_SERVER_TAGS =
+CURRENT_BETA = 1 -- set to 0 if there is no beta. Note: release builds wont use this so only staging and dev really care
+BETA_INFO =
 {
-    ANRBETA = "a_new_reign_beta",
+    {	
+		NAME = "ANRBETA",
+		SERVERTAG = "a_new_reign_beta",
+		VERSION_MISMATCH_STRING = "VERSION_MISMATCH_ARNBETA",
+		URL = "http://forums.kleientertainment.com/topic/69487-how-to-opt-in-to-a-new-reign-beta-for-dont-starve-together/",
+	},
+	
+	-- THE PUBLIC BETA MUST BE LAST --
+	{
+		NAME = "PUBLIC_BETA",
+		SERVERTAG = "public_beta",
+		VERSION_MISMATCH_STRING = "VERSION_MISMATCH_PUBLIC_BETA",
+		URL = "http://forums.kleientertainment.com/forum/66-dont-starve-together-general-discussion/",
+	},
 }
+PUBLIC_BETA = #BETA_INFO

@@ -35,7 +35,7 @@ local drop_loot =
 local function triggertrap(inst)
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetLoot(drop_loot)
-    inst.components.lootdropper:DropLoot()  
+    inst.components.lootdropper:DropLoot()
     --give the chest a loot dropper.
     --make the chest drop gunpowder and the fire object from fire hounds.
 end
