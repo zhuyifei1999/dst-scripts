@@ -644,8 +644,7 @@ end
 local moonbeastbrain = require "brains/moonbeastbrain"
 
 local function OnMoonPetrify(inst)
-    if not (inst.sg:HasStateTag("busy") or
-            inst.components.health:IsDead()) then
+    if not inst.components.health:IsDead() and (not inst.sg:HasStateTag("busy") or inst:IsAsleep()) then
         local x, y, z = inst.Transform:GetWorldPosition()
         local rot = inst.Transform:GetRotation()
         local name = inst.components.named.name

@@ -648,12 +648,13 @@ return {
 		GREENSTAFF = "I can see the power sparkling deep within.",
 		POTTEDFERN = "Its growth is stunted by the limits of the pot.",
 		SENTRYWARD = "Grant us the power of sight...",
+        MOONROCK_PIECES = "Now it will never decay...",
         MOONBASE =
         {
             GENERIC = "I felt a terrible chill run down my spine.",
             BROKEN = "It's been ravaged by time.",
-            --STAFFED = "",
-            --WRONGSTAFF = "",
+            STAFFED = "Perhaps it thirsts for a sacrifice. Where's Webber...",
+            WRONGSTAFF = "That doesn't look right...",
         },
 
 		THULECITE = "Its presence marks the edge of the unknown.",
@@ -692,8 +693,8 @@ return {
 		YELLOWSTAFF = "The stick is as twisted as my soul.",
 		YELLOWGEM = "It reminds me of my mother.",
 		ORANGEGEM = "Such things used to bring me happiness.",
-        --OPALSTAFF = "",
-        --OPALPRECIOUSGEM = "",
+        OPALSTAFF = "As cold and lifeless as... well...",
+        OPALPRECIOUSGEM = "I see a million sad eyes reflecting back at me...",
 		TELEBASE = 
 		{
 			VALID = "Energy flows through it.",
@@ -705,7 +706,7 @@ return {
 			GEMS = "It looks so empty.",
 		},
 		STAFFLIGHT = "I can almost make out a tiny solar system.",
-        --STAFFCOLDLIGHT = "",
+        STAFFCOLDLIGHT = "Stars die like everything else...",
 		
 		ABIGAIL_FLOWER = 
 		{ 
@@ -1065,6 +1066,12 @@ return {
 		EGGPLANT = "Almost a deadly nightshade. Almost.",
 		EGGPLANT_COOKED = "Cooking this nightshade made it even less deadly.",
 		EGGPLANT_SEEDS = "It's a nightshade seed.",
+
+		ENDTABLE = 
+		{
+			BURNT = "Nothing lasts forever.",
+			GENERIC = "The shadow equivalent of taxidermy. I like it.",
+		},
 		ACORN = "A tiny life, ensconced in brittle death.",
         ACORN_SAPLING = "A tree will grow soon.",
 		EVERGREEN =
@@ -1400,6 +1407,7 @@ return {
 			COVERED = "There's a sickly beauty to it...",
 			UNCOVERED = "We all have monsters within, I suppose.",
 			FINISHED = "If only the rest of us could be whole again.",
+			READY = "It wants out...",
 		},
         SCULPTURE_BISHOPHEAD = "How did this get here?",
 		SCULPTURE_BISHOPBODY = 
@@ -1407,6 +1415,7 @@ return {
 			COVERED = "A beautiful corruption gnaws at its base...",
 			UNCOVERED = "The more the marble wastes, the more the statue grows.",
 			FINISHED = "Not everyone can be put back together after falling apart.",
+			READY = "It wants out...",
 		},
         SCULPTURE_ROOKNOSE = "Strange marble debris...",
 		SCULPTURE_ROOKBODY = 
@@ -1414,6 +1423,7 @@ return {
 			COVERED = "I feel... queasy...",
 			UNCOVERED = "Perhaps it wanted to hide the shame of its monstrous form?",
 			FINISHED = "It's been made whole again. Lucky.",
+			READY = "It wants out...",
 		},
 		SEEDS = "Life, or at least the promise of it.",
 		SEEDS_COOKED = "The fire has toasted their life away.",
@@ -1465,7 +1475,13 @@ return {
 			AWAKE = "A creature of shadow that seeks the light... how sad...",
 			HIDING = "My heart aches with its beauty.",
         },
-        --STATUE_MARBLE = "",
+        STATUE_MARBLE = 
+        {
+            GENERIC = "Cold, hard stone...",
+            TYPE1 = "We wear many masks...",
+            TYPE2 = "We all fear discovering that there is nothing behind the mask.",
+            --TYPE3 = "",
+        },
 		STATUEHARP = "Maybe these statues will keep me company.",
 		STATUEMAXWELL = "Did it go as you planned?",
 		STEELWOOL = "This offers no hope of warmth.",

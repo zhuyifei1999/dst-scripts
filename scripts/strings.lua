@@ -964,6 +964,7 @@ STRINGS=
         POTTEDFERN = "Potted Fern",
         SENTRYWARD = "Ocuvigil",
         MOONBASE = "Moon Stone",
+        MOONROCK_PIECES = "Moon Rubble",
         UNAGI = "Unagi",
         EEL = "Eel",
         EEL_COOKED = "Cooked Eel",

@@ -5,7 +5,9 @@ SetSharedLootTable('sculptures_loot',
 })
 
 local function onworked(inst, worker, workleft)
-    if workleft <= TUNING.SCULPTURE_COVERED_WORK then
+    if inst._task ~= nil then
+        inst:Reanimate()
+    elseif workleft <= TUNING.SCULPTURE_COVERED_WORK then
         inst.components.workable.workleft = 0
     end
 end
@@ -16,6 +18,40 @@ local PIECE_NAME =
     ["sculpture_bishopbody"] = "sculpture_bishophead",
     ["sculpture_knightbody"] = "sculpture_knighthead",
 }
+
+local function DoStruggle(inst, count)
+    inst.AnimState:PlayAnimation("jiggle")
+    inst.SoundEmitter:PlaySound("dontstarve/creatures/together/lavae/egg_crack")
+    inst._task =
+        count > 1 and
+        inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength(), DoStruggle, count - 1) or
+        inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() + math.random() + .6, DoStruggle, math.max(1, math.random(3) - 1))
+end
+
+local function StartStruggle(inst)
+    if inst._task == nil then
+        inst._task = inst:DoTaskInTime(math.random(), DoStruggle, 1)
+    end
+end
+
+local function StopStruggle(inst)
+    if inst._task ~= nil then
+        inst._task:Cancel()
+        inst._task = nil
+    end
+end
+
+local function CheckMorph(inst)
+    if inst.components.repairable == nil and
+        inst.components.workable.workleft > TUNING.SCULPTURE_COVERED_WORK and
+        TheWorld.state.isfullmoon and
+        not inst:IsAsleep() and
+        inst._reanimatetask == nil then
+        StartStruggle(inst)
+    else
+        StopStruggle(inst)
+    end
+end
 
 local function MakeFixed(inst)
     inst.AnimState:PlayAnimation("fixed")
@@ -29,6 +65,8 @@ local function MakeFixed(inst)
 
     inst.components.lootdropper:SetChanceLootTable(nil)
     inst.components.lootdropper:SetLoot({ PIECE_NAME[inst.prefab] })
+
+    CheckMorph(inst)
 end
 
 local function checkpiece(inst, piece)
@@ -51,10 +89,13 @@ local function MakeBroken(inst)
         inst.components.repairable.checkmaterialfn = checkpiece
         inst.components.repairable.noannounce = true
     end
+
+    StopStruggle(inst)
 end
 
 local function getstatus(inst)
-    return (inst.components.repairable ~= nil and "UNCOVERED")
+    return (inst._task ~= nil and "READY")
+        or (inst.components.repairable ~= nil and "UNCOVERED")
         or (inst.components.workable.workleft > TUNING.SCULPTURE_COVERED_WORK and "FINISHED")
         or "COVERED"
 end
@@ -80,14 +121,6 @@ local function onworkload(inst)
     end
 end
 
-local function OnFullmoon(inst)
-	if inst.components.workable.workleft > TUNING.SCULPTURE_COVERED_WORK then
-		local ent = SpawnPrefab(inst.spawnprefab)
-		ent.Transform:SetPosition(inst.Transform:GetWorldPosition())
-		inst:Remove()
-	end
-end
-
 local function makesculpture(name, physics_radius, second_piece_name)
     local assets =
     {
@@ -105,7 +138,34 @@ local function makesculpture(name, physics_radius, second_piece_name)
         table.insert(prefabs, "sculpture_"..second_piece_name)
     end
 
-    local onloadpostpass = function(inst)
+    local function Reanimate(inst)
+        if inst._reanimatetask == nil then
+            StopStruggle(inst)
+
+            inst.components.workable:SetOnWorkCallback(nil)
+            inst.components.workable:SetOnFinishCallback(nil)
+            inst.components.workable:SetWorkable(false)
+
+            inst.AnimState:PlayAnimation("transform")
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
+            RemovePhysicsColliders(inst)
+            inst:AddTag("NOCLICK")
+            inst.persists = false
+            inst._reanimatetask = inst:DoTaskInTime(2, ErodeAway)
+
+            local creature = SpawnPrefab(name)
+            creature.Transform:SetPosition(inst.Transform:GetWorldPosition())
+            creature.Transform:SetRotation(inst.Transform:GetRotation())
+            creature.sg:GoToState("taunt")
+
+            local player = creature:GetNearestPlayer(true)
+            if player ~= nil and creature:IsNear(player, 20) then
+                creature.components.combat:SetTarget(player)
+            end
+        end
+    end
+
+    local onloadpostpass = second_piece_name ~= nil and function(inst)
         local second_piece = SpawnPrefab("sculpture_"..second_piece_name)
 
         local placed = false
@@ -123,7 +183,7 @@ local function makesculpture(name, physics_radius, second_piece_name)
                 end
             end
         end
-    end
+    end or nil
 
     local function fn()
         local inst = CreateEntity()
@@ -134,9 +194,12 @@ local function makesculpture(name, physics_radius, second_piece_name)
         inst.entity:AddMiniMapEntity()
         inst.entity:AddNetwork()
 
-        inst.entity:AddTag("statue")
+        inst:AddTag("statue")
+        inst:AddTag("sculpture")
 
         MakeObstaclePhysics(inst, physics_radius)
+
+        inst.Transform:SetFourFaced()
 
         inst.AnimState:SetBank(name)
         inst.AnimState:SetBuild("sculpture_"..name)
@@ -167,13 +230,13 @@ local function makesculpture(name, physics_radius, second_piece_name)
 
         MakeHauntableWork(inst)
 
-        if second_piece_name ~= nil then
-            inst.OnLoadPostPass = onloadpostpass
-        end
+        inst.OnLoadPostPass = onloadpostpass
+        inst.OnEntityWake = CheckMorph
+        inst.OnEntitySleep = CheckMorph
 
-		inst:WatchWorldState("isfullmoon", OnFullmoon)
-		inst.spawnprefab = name
-		
+        inst:WatchWorldState("isfullmoon", CheckMorph)
+        inst.Reanimate = Reanimate
+
         return inst
     end
 

@@ -8,6 +8,13 @@ local MoonBeastSpawner = Class(function(self, inst)
     self.task = nil
 end)
 
+function MoonBeastSpawner:OnRemoveFromEntity()
+    if self.task ~= nil then
+        self.task:Cancel()
+        self.task = nil
+    end
+end
+
 local MOONBEASTS =
 {
     "moonhound",
@@ -55,7 +62,19 @@ local function DoSpawn(inst, self)
         end
     end
 
-    if offscreenworkers ~= nil then
+    if offscreenworkers ~= nil and #offscreenworkers > 0 then
+        local walls = TheSim:FindEntities(pos.x, pos.y, pos.z, 10, nil, nil, { "wall", "playerskeleton" })
+        for i, v in ipairs(walls) do
+            if math.random(self.maxspawns * 2 + 1) <= #offscreenworkers then
+                if v.components.health ~= nil and not v.components.health:IsDead() then
+                    --walls
+                    v.components.health:Kill()
+                elseif v.components.workable ~= nil and v.components.workable:CanBeWorked() then
+                    --skellies
+                    v.components.workable:Destroy(inst)
+                end
+            end
+        end
         for i, v in ipairs(offscreenworkers) do
             inst.components.workable:WorkedBy(v, 1)
             if not self.started then
@@ -66,11 +85,34 @@ local function DoSpawn(inst, self)
 
     local maxwavespawn = math.random(2)
     for i = #ents + 1, self.maxspawns do
-        local offset = FindWalkableOffset(pos, math.random() * 2 * PI, self.range, 16, false, true)
+        local offset
+        if inst:IsAsleep() then
+            local numattempts = 3
+            local minrange = 3
+            for attempt = 1, numattempts do
+                offset = FindWalkableOffset(pos, math.random() * 2 * PI, GetRandomMinMax(minrange, math.max(minrange, minrange + .9 * (self.range - minrange) * attempt / numattempts)), 16, false, true)
+                local x1 = pos.x + offset.x
+                local z1 = pos.z + offset.z
+                local collisions = TheSim:FindEntities(x1, 0, z1, 4, nil, { "INLIMBO" })
+                for i, v in ipairs(collisions) do
+                    local r = v.Physics ~= nil and v.Physics:GetRadius() + 1 or 1
+                    if v:GetDistanceSqToPoint(x1, 0, z1) < r * r then
+                        offset = nil
+                        break
+                    end
+                end
+                if offset ~= nil then
+                    break
+                end
+            end
+        else
+            offset = FindWalkableOffset(pos, math.random() * 2 * PI, self.range, 16, false, true)
+        end
         if offset ~= nil then
             local creature = SpawnPrefab(MOONBEASTS[math.random(#MOONBEASTS)])
             creature.components.entitytracker:TrackEntity("moonbase", inst)
             creature.Transform:SetPosition(pos.x + offset.x, 0, pos.z + offset.z)
+            creature:ForceFacePoint(pos)
             if maxwavespawn > 1 then
                 maxwavespawn = maxwavespawn - 1
             else
@@ -84,7 +126,12 @@ function MoonBeastSpawner:ForcePetrify()
     local x, y, z = self.inst.Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x, y, z, self.range, { "moonbeast" }, { "INLIMBO" })
     for i, v in ipairs(ents) do
-        v.brain:ForcePetrify()
+        if v.brain ~= nil then
+            v.brain:ForcePetrify()
+        end
+        if v:IsAsleep() then
+            v:PushEvent("moonpetrify")
+        end
     end
 end
 
@@ -107,9 +154,12 @@ function MoonBeastSpawner:Stop()
         self.started = false
         self.task:Cancel()
         self.task = nil
+
+        --Normally the brain will handle petrification after some time instead
+        if self.inst:IsAsleep() then
+            self:ForcePetrify()
+        end
     end
 end
-
-MoonBeastSpawner.OnRemoveFromEntity = MoonBeastSpawner.Stop
 
 return MoonBeastSpawner

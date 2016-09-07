@@ -388,6 +388,7 @@ return {
 		GREENSTAFF = "This will come in handy.",
 		POTTEDFERN = "A fern in a pot.",
 		SENTRYWARD = "That's an entirely scientific mapping tool.",
+        MOONROCK_PIECES = "I could probably break that.",
         MOONBASE =
         {
             GENERIC = "There's a hole in the middle for something to go in.",
@@ -395,7 +396,7 @@ return {
             STAFFED = "Now what?",
             WRONGSTAFF = "I have a distinct feeling this isn't right.",
         },
-		--MOWER = "I like the cut of this blade.",
+ 		--MOWER = "I like the cut of this blade.",
 		--MACHETE = "I like the cut of this blade.",
 		--GOLDENMACHETE = "Hack in style!",
 		--OBSIDIANMACHETE = "It's hot to the touch.",
@@ -877,9 +878,10 @@ return {
 		EGGPLANT = "It doesn't look like an egg.",
 		EGGPLANT_COOKED = "It's even less eggy.",
 		EGGPLANT_SEEDS = "It's an eggplant seed.",
+		
 		ENDTABLE = 
 		{
-			BURNT = "This is why we can't have nice things.",
+			BURNT = "A burnt flower in a burnt vase on a burnt table.",
 			GENERIC = "A flower in a vase on a table.",
 		},
 		DECIDUOUSTREE = 
@@ -1385,6 +1387,7 @@ return {
 			COVERED = "It's an odd marble statue.",
 			UNCOVERED = "I guess he cracked under the pressure.",
 			FINISHED = "At least it's back in one piece now.",
+			READY = "Something's moving inside.",
 		},
         SCULPTURE_BISHOPHEAD = "Is that a head?",
 		SCULPTURE_BISHOPBODY = 
@@ -1392,6 +1395,7 @@ return {
 			COVERED = "It looks old, but it feels new.",
 			UNCOVERED = "There's a big piece missing.",
 			FINISHED = "Now what?",
+			READY = "Something's moving inside.",
 		},
         SCULPTURE_ROOKNOSE = "Where did this come from?",
 		SCULPTURE_ROOKBODY = 
@@ -1399,6 +1403,7 @@ return {
 			COVERED = "It's some sort of marble statue.",
 			UNCOVERED = "It's not in the best shape.",
 			FINISHED = "All patched up.",
+			READY = "Something's moving inside.",
 		},
         GARGOYLE_HOUND = "It looks very lifelike.",
         GARGOYLE_WEREPIG = "It looks very lifelike.",
@@ -1445,7 +1450,13 @@ return {
 			AWAKE = "Just keep your hand to yourself, alright?",
 			HIDING = "Something's odd here, but I can't put my finger on it.",
         },
-        STATUE_MARBLE = "It's a fancy marble statue.",
+        STATUE_MARBLE = 
+        {
+            GENERIC = "It's a fancy marble statue.",
+            --TYPE1 = "",
+            --TYPE2 = "",
+            --TYPE3 = "It's a fancy marble statue.",
+        },
 		STATUEHARP = "What happened to the head?",
 		STATUEMAXWELL = "He's a lot shorter in person.",
 		STEELWOOL = "Scratchy metal fibers.",

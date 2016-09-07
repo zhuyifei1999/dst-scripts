@@ -1,6 +1,9 @@
 local assets =
 {
-    Asset("ANIM", "anim/statue_small_marble_build.zip"),
+    Asset("ANIM", "anim/statue_small_type1_build.zip"),
+    Asset("ANIM", "anim/statue_small_type2_build.zip"),
+    Asset("ANIM", "anim/statue_small_type3_build.zip"),
+    Asset("ANIM", "anim/statue_small.zip"),
    	Asset("MINIMAP_IMAGE", "statue_small"),
 }
 
@@ -27,26 +30,35 @@ local function OnWorked(inst, worker, workleft)
         inst.AnimState:PlayAnimation(
             (workleft < TUNING.MARBLEPILLAR_MINE / 3 and "low") or
             (workleft < TUNING.MARBLEPILLAR_MINE * 2 / 3 and "med") or
-            inst.animname
+            "full"
         )
     end
 end
 
-local names = {"s1", "s2", "s3"}
-local function setstatuetype(inst, name)
-    if inst.animname == nil or (name ~= nil and inst.animname ~= name) then
-        inst.animname = name or names[math.random(#names)]
-    end
+local function OnWorkLoad(inst)
+    OnWorked(inst, nil, inst.components.workable.workleft)
+end
 
-    inst.AnimState:PlayAnimation(inst.animname)
+local function setstatuetype(inst, typeid)
+    typeid = typeid or math.random(3)
+    if typeid ~= inst.typeid then
+        inst.typeid = typeid
+        inst.AnimState:OverrideSymbol("swap_statue", "statue_small_type"..tostring(typeid).."_build", "swap_statue")
+    end
+end
+
+local function GetStatus(inst)
+    return "TYPE"..tostring(inst.typeid)
 end
 
 local function onsave(inst, data)
-    data.anim = inst.animname
+    data.typeid = inst.typeid
 end
 
 local function onload(inst, data)
-    setstatuetype(inst, data ~= nil and data.anim or nil)
+    if data ~= nil and data.typeid ~= nil then
+        setstatuetype(inst, data.typeid)
+    end
 end
 
 local function fn()
@@ -62,8 +74,10 @@ local function fn()
 
     inst.entity:AddTag("statue")
 
-    inst.AnimState:SetBank("statue")
-    inst.AnimState:SetBuild("statue_small_marble_build")
+    inst.AnimState:SetBank("statue_small")
+    inst.AnimState:SetBuild("statue_small")
+    inst.AnimState:OverrideSymbol("swap_statue", "statue_small_type1_build", "swap_statue")
+    inst.AnimState:PlayAnimation("full")
 
     inst.MiniMapEntity:SetIcon("statue_small.png")
 
@@ -77,16 +91,20 @@ local function fn()
     inst.components.lootdropper:SetChanceLootTable('statue_marble')
 
     inst:AddComponent("inspectable")
+    inst.components.inspectable.getstatus = GetStatus
+
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.MINE)
     inst.components.workable:SetWorkLeft(TUNING.MARBLEPILLAR_MINE)
     inst.components.workable:SetOnWorkCallback(OnWorked)
+    inst.components.workable:SetOnLoadFn(OnWorkLoad)
+    inst.components.workable.savestate = true
 
     MakeHauntableWork(inst)
 
-    if not POPULATING then
-        setstatuetype(inst)
-    end
+    inst.typeid = 1
+    setstatuetype(inst)
+
     --------SaveLoad
     inst.OnSave = onsave
     inst.OnLoad = onload

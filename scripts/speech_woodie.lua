@@ -605,12 +605,13 @@ return {
 		GREENSTAFF = "This'll help me dismantle stuff!",
 		POTTEDFERN = "I do love me some plant life.",
 		SENTRYWARD = "That's an odd looking tree.",
+        MOONROCK_PIECES = "That's in a pretty sorry state, eh?",
         MOONBASE =
         {
             GENERIC = "I'd rather not muck with that if I can help it.",
             BROKEN = "That'll need more than a roll of duct tape to fix.",
-            --STAFFED = "",
-            --WRONGSTAFF = "",
+            STAFFED = "I'm happy to just leave it there for now.",
+            WRONGSTAFF = "Looks a little off.",
         },
 
 		THULECITE = "It's the wood of the caves!",
@@ -652,8 +653,8 @@ return {
 		YELLOWGEM = "I can see the stars in it.",
 		WATERMELON_SEEDS = "Maybe I could plant them?",
 		ORANGEGEM = "It's shimmering.",
-        --OPALSTAFF = "",
-        --OPALPRECIOUSGEM = "",
+        OPALSTAFF = "Err, moon magic isn't really... my thing... Heh.",
+        OPALPRECIOUSGEM = "You're fond of it, aren'tcha Lucy?",
 		RELIC =
 		{
 			BROKEN = "I don't plan on fixin' that.",
@@ -670,7 +671,7 @@ return {
 			GEMS = "It'll need a gem.",
 		},
 		STAFFLIGHT = "Well ain't that something.",	
-        --STAFFCOLDLIGHT = "",
+        STAFFCOLDLIGHT = "At least it won't start a forest fire.",
 		LUCY = "I love Lucy!",
         ANCIENT_ALTAR =
         {
@@ -1046,6 +1047,12 @@ return {
 		EGGPLANT = "I bet the birds have something to do with this.",
 		EGGPLANT_COOKED = "Suspiciously birdy.",
 		EGGPLANT_SEEDS = "Hmmm. I'm not sure.",
+
+		ENDTABLE = 
+		{
+			BURNT = "A burnt wood table.",
+			GENERIC = "Such a beaut of a wood table shouldn't be hidden by a cloth.",
+		},
 		ACORN = "I should grow it and then chop it down!",
         ACORN_SAPLING = "Here comes a tree!",
 		EVERGREEN =
@@ -1399,6 +1406,7 @@ return {
 			COVERED = "Once you've seen one weird statue, you've seen'em all.",
 			UNCOVERED = "Yikes. Put it back in.",
 			FINISHED = "Just needed a little duct tape.",
+			READY = "Is stone supposed to move like that?",
 		},
         SCULPTURE_BISHOPHEAD = "That doesn't seem right.",
 		SCULPTURE_BISHOPBODY = 
@@ -1406,6 +1414,7 @@ return {
 			COVERED = "I don't get art. Whattaya think Lucy?",
 			UNCOVERED = "Creepy.",
 			FINISHED = "Whose bright idea was it to fix this thing?",
+			READY = "Is stone supposed to move like that?",
 		},
         SCULPTURE_ROOKNOSE = "Just a big hunk of marble, that.",
 		SCULPTURE_ROOKBODY = 
@@ -1413,6 +1422,7 @@ return {
 			COVERED = "Just a big hunk of stone, as far as I'm concerned.",
 			UNCOVERED = "Looks a bit like one of them chargin' hosers.",
 			FINISHED = "As if I didn't have enough reasons to hate full moons.",
+			READY = "Is stone supposed to move like that?",
 		},
 		SEEDS = "Not trees.",
 		SEEDS_COOKED = "We call this \"lumberjack surprise\".",
@@ -1462,7 +1472,13 @@ return {
 			AWAKE = "I really wish I hadn't seen that.",
 			HIDING = "Not my style.",
         },
-        --STATUE_MARBLE = "",
+        STATUE_MARBLE = 
+        {
+        	GENERIC = "I prefer wood carving.",
+        	--TYPE1 = "",
+        	--TYPE2 = "I prefer wood carving.",
+        	TYPE3 = "Could make a nice planter outta that.",
+    	},
 		STATUEHARP = "You lost your head, eh?",
 		STATUEMAXWELL = "I'm gonna make fun of him for this later, eh?",
 		STEELWOOL = "That'll put the shine back on yer axe.",

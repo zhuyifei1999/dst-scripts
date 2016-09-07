@@ -121,6 +121,7 @@ local prefabs =
     "grassgekko",
     "petrify_announce",
     "moonbase",
+    "moonrock_pieces",
 }
 
 local monsters =

@@ -23,12 +23,12 @@ function FindClosest:Visit()
     end
 
     if self.status == RUNNING then
-		local valid_target = true
         if GetTime() - self.lastchecktime > CHECK_INTERVAL then
             self:PickTarget()
         else
-			valid_target = self.targ ~= nil and self.targ:IsValid()
+			local valid_target = self.targ ~= nil and self.targ:IsValid()
 			
+			-- Has all of the tags
 			if valid_target and self.tags ~= nil then
 				for i,k in ipairs(self.tags) do
 					if not self.targ:HasTag(k) then
@@ -38,6 +38,7 @@ function FindClosest:Visit()
 				end
 			end
 
+			-- Has none of the tags
 			if valid_target and self.exclude_tag ~= nil then
 				for i,k in ipairs(self.exclude_tag) do
 					if self.targ:HasTag(k) then
@@ -47,6 +48,7 @@ function FindClosest:Visit()
 				end
 			end
 			
+			-- Has or or more of the tags
 			if valid_target and self.one_of_tags ~= nil then
 				valid_target = false
 				for i,k in ipairs(self.one_of_tags) do
@@ -57,9 +59,12 @@ function FindClosest:Visit()
 				end
 			end
 
+			if not valid_target then
+				self.targ = nil
+			end
         end
 
-        if not valid_target then
+        if self.targ == nil or not self.targ:IsValid() then
             self.status = FAILED
         else
             local actual_safe_dist = type(self.safe_dist) == "function" and self.safe_dist(self.inst, self.targ) or self.safe_dist or 5
@@ -76,7 +81,7 @@ end
 function FindClosest:PickTarget()
     local x, y, z = self.inst.Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x, y, z, self.see_dist, self.tags, self.exclude_tag, self.one_of_tags)
-    self.targ = ents[1] ~= self.inst and ents[1] or ents[2]
+    self.targ = (#ents == 0) and nil or (ents[1] ~= self.inst and ents[1] or ents[2])
 
     self.lastchecktime = GetTime()
 end

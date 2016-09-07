@@ -28,6 +28,7 @@ local function makegargoyle(data)
     {
         "moonrocknugget",
         data.petrify_prefab,
+        "gargoyle_"..data.name..data.anim.."_fx",
     }
 
     local function crumble(inst)
@@ -65,6 +66,9 @@ local function makegargoyle(data)
     end
 
     local function OnPetrified(inst)
+        local fx = SpawnPrefab("gargoyle_"..data.name..data.anim.."_fx")
+        fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+        fx.Transform:SetRotation(inst.Transform:GetRotation())
         inst.AnimState:SetBank("sculpture_"..data.name)
         inst.AnimState:SetBuild("sculpture_"..data.name.."_moonrock_build")
         inst.AnimState:PlayAnimation(data.anim.."_pre")
@@ -72,7 +76,16 @@ local function makegargoyle(data)
     end
 
     local function Petrify(inst)
-        if inst._petrifytask == nil then
+        if inst:IsAsleep() then
+            if inst._petrifytask ~= nil then
+                inst._petrifytask:Cancel()
+                inst._petrifytask = nil
+            end
+            inst.components.workable:SetWorkable(true)
+            inst.AnimState:SetBank("sculpture_"..data.name)
+            inst.AnimState:SetBuild("sculpture_"..data.name.."_moonrock_build")
+            inst.AnimState:PlayAnimation(data.anim)
+        elseif inst._petrifytask == nil then
             inst.components.workable:SetWorkable(false)
             inst.AnimState:SetBank(data.petrify_bank)
             inst.AnimState:SetBuild(data.petrify_build)
@@ -104,14 +117,16 @@ local function makegargoyle(data)
         end
     end
 
-    local function Struggle2(inst, moonbase)
-        inst.AnimState:PlayAnimation(data.anim.."_pre", true)
-        inst._reanimatetask = inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() * math.random(2) - 5 * FRAMES, OnReanimate, moonbase)
-    end
-
-    local function Struggle(inst, moonbase)
+    local function Struggle(inst, moonbase, count)
         inst.AnimState:PlayAnimation(data.anim.."_pre")
-        inst._reanimatetask = inst:DoTaskInTime(math.random() * .5 + .5, Struggle2, moonbase)
+        inst.SoundEmitter:PlaySound("dontstarve/creatures/together/lavae/egg_crack")
+        if count == nil then
+            inst._reanimatetask = inst:DoTaskInTime(math.random() * .5 + .5, Struggle, moonbase, math.random(2))
+        elseif count > 1 then
+            inst._reanimatetask = inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength(), Struggle, moonbase, count - 1)
+        else
+            inst._reanimatetask = inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() - 5 * FRAMES, OnReanimate, moonbase)
+        end
     end
 
     local function Reanimate(inst, moonbase)
@@ -194,6 +209,68 @@ local function makegargoyle(data)
     return Prefab("gargoyle_"..data.name..data.anim, fn, assets, prefabs)
 end
 
+local function makefx(data)
+    local assets =
+    {
+        Asset("ANIM", "anim/sculpture_fx.zip"),
+        Asset("ANIM", "anim/petrified_tree_fx.zip"),
+    }
+
+    local function PlayFX(proxy)
+        local inst = CreateEntity()
+
+        inst:AddTag("FX")
+        --[[Non-networked entity]]
+        inst.entity:SetCanSleep(false)
+        inst.persists = false
+
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddSoundEmitter()
+
+        inst.Transform:SetFromProxy(proxy.GUID)
+
+        inst.AnimState:SetBank("sculpture_fx")
+        inst.AnimState:SetBuild("petrified_tree_fx")
+        inst.AnimState:PlayAnimation(data.name..data.anim)
+        --I think we like 'em behind
+        --inst.AnimState:SetFinalOffset(-1)
+
+        inst.SoundEmitter:PlaySound("dontstarve/common/together/petrified/post")
+
+        inst:ListenForEvent("animover", inst.Remove)
+    end
+
+    local function fn()
+        local inst = CreateEntity()
+
+        inst.entity:AddTransform()
+        inst.entity:AddNetwork()
+
+        inst:AddTag("FX")
+
+        --Dedicated server does not need to spawn the local fx
+        if not TheNet:IsDedicated() then
+            --Delay one frame so that we are positioned properly before starting the effect
+            --or in case we are about to be removed
+            inst:DoTaskInTime(0, PlayFX)
+        end
+
+        inst.entity:SetPristine()
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst.persists = false
+        inst:DoTaskInTime(1, inst.Remove)
+
+        return inst
+    end
+
+    return Prefab("gargoyle_"..data.name..data.anim.."_fx", fn, assets)
+end
+
 local data =
 {
     {
@@ -257,6 +334,7 @@ local data =
 local t = {}
 for i, v in ipairs(data) do
     table.insert(t, makegargoyle(v))
+    table.insert(t, makefx(v))
 end
 data = nil
 return unpack(t)

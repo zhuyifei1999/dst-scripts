@@ -577,12 +577,13 @@ return
         GREENSTAFF = "It appears to rewind time on an object.",
         POTTEDFERN = "A potted plant.",
 		SENTRYWARD = "Ah! A scrying orb.",
+        MOONROCK_PIECES = "What a perplexing transformation.",
         MOONBASE =
         {
             GENERIC = "The magic of this structure ebbs in predictable cycles.",
             BROKEN = "Ancient debris. Perhaps it can be restored?",
-            --STAFFED = "",
-            --WRONGSTAFF = "",
+            STAFFED = "Now we must be patient.",
+            WRONGSTAFF = "Hmm... It seems the staves are not interchangeable.",
         },
 
         BOOK_BIRDS = "The expurgated version, but it has my favorite: Megascops kennicottii.",
@@ -601,7 +602,7 @@ return
         YELLOWSTAFF = "Luckily the star is a manageable size.",
         YELLOWGEM = "Perhaps it is similar to Citrine.",
         ORANGEGEM = "It looks like a Spessartite garnet.",
-        --OPALSTAFF = "",
+        OPALSTAFF = "Appears to summon a cold star into being.",
         OPALPRECIOUSGEM = "A precious light diffracting mineraloid.",
         TELEBASE = 
         {
@@ -614,7 +615,7 @@ return
             GEMS = "These hold gems.",
         },
         STAFFLIGHT = "Perhaps a larger staff would summon a larger star.",
-        --STAFFCOLDLIGHT = "",
+        STAFFCOLDLIGHT = "Some sort of self-contained aurora.",
 
         ANCIENT_ALTAR = "A monument to some long dead god.",
         ANCIENT_ALTAR_BROKEN = "Parts of this are missing.",
@@ -807,8 +808,13 @@ return
         EGGPLANT = "A nightshade. Solanum melongena, specifically.",
         EGGPLANT_COOKED = "For your enjoyment: Braised Solanum melongena.",
         EGGPLANT_SEEDS = "Seed of aubergine.",
+       
+        ENDTABLE = 
+        {
+          BURNT = "Well, such as it is.",
+          GENERIC = "It's pleasant to see a little decor out here.",
+        },
         WAFFLES = "Salutations, waffles.",
-        
         WALL_WOOD_ITEM = "Deployable pickets.",
         WALL_STONE_ITEM = "I'll carry them. My strong backbone always was my best asset.",
         WALL_RUINS_ITEM = "My pockets must be bigger on the inside.",
@@ -1083,7 +1089,13 @@ return
 			AWAKE = "That was an underhanded trick!",
 			HIDING = "Something devious is lurking in the shadows.",
         },
-        --STATUE_MARBLE = "",
+        STATUE_MARBLE = 
+        {
+            GENERIC = "Elegant, though there's an unmistakable darkness to the work.",
+            --TYPE1 = "",
+            --TYPE2 = "Elegant, though there's an unmistakable darkness to the work.",
+            --TYPE3 = "",
+        },
         STATUEHARP = "A simple statue.",
         STATUEMAXWELL = "He's actually quite a sweet boy when you peel away the ego.",
         SKELETON = "An incredibly well preserved human skeleton.",
@@ -1207,6 +1219,7 @@ return
 			COVERED = "Very tasteful.",
 			UNCOVERED = "They say every block of stone has a statue inside.",
 			FINISHED = "The structure is whole once again.",
+            READY = "Something is stirring within.",
 		},
         SCULPTURE_BISHOPHEAD = "I can lift it. I'm more spry than I look.",
 		SCULPTURE_BISHOPBODY = 
@@ -1214,6 +1227,7 @@ return
 			COVERED = "There's an almost animalistic ferocity in the chiselwork.",
 			UNCOVERED = "So this is what was lurking inside.",
 			FINISHED = "An excellent repair job.",
+            READY = "Something is stirring within.",
 		},
         SCULPTURE_ROOKNOSE = "That's a thrown out back waiting to happen.",
 		SCULPTURE_ROOKBODY = 
@@ -1221,6 +1235,7 @@ return
 			COVERED = "I feel a light dusting of magic. Odd.",
 			UNCOVERED = "What an awful state it's in!",
 			FINISHED = "We may want to keep an eye on this.",
+            READY = "Something is stirring within.",
 		},
         TWIGGYTREE =
         {

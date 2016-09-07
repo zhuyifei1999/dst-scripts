@@ -625,12 +625,13 @@ return {
 		GREENSTAFF = "It is a focusing tool.",
 		POTTEDFERN = "How quaint.",
 		SENTRYWARD = "This is a conduit for strong revelatory magicks.",
+        MOONROCK_PIECES = "This might be bad.",
         MOONBASE =
         {
             GENERIC = "I had thought these all destroyed eons ago.",
             BROKEN = "Ruins of an ancient relic.",
-            --STAFFED = "",
-            --WRONGSTAFF = "",
+            STAFFED = "Something magic-y needs to happen, I think.",
+            WRONGSTAFF = "Waste of a good staff.",
         },
 
 		THULECITE = "An exceedingly rare but useful material.",
@@ -669,8 +670,8 @@ return {
 		YELLOWSTAFF = "With a bigger gem it would be so much more powerful.",
 		YELLOWGEM = "I can sense magic in it.",
 		ORANGEGEM = "This will be quite powerful with some fuel.",
-        --OPALSTAFF = "",
-        --OPALPRECIOUSGEM = "",
+        OPALSTAFF = "The charge has made it incredibly powerful.",
+        OPALPRECIOUSGEM = "A sizable magic gem.",
 		TELEBASE = 
 		{
 			VALID = "That should do the trick.",
@@ -682,7 +683,7 @@ return {
 			GEMS = "The fuel needs a focus.",
 		},
 		STAFFLIGHT = "That should chase the shadows away.",
-        --STAFFCOLDLIGHT = "",
+        STAFFCOLDLIGHT = "An impressively condensed point of freezing magic.",
        	ANCIENT_ALTAR =
         {
         	WORKING = "Where are their gods now?",
@@ -1021,6 +1022,12 @@ return {
 		EGGPLANT = "Just another boring plant.",
 		EGGPLANT_COOKED = "A little more refined, at least.",
 		EGGPLANT_SEEDS = "Such labor is beneath me.",
+
+		ENDTABLE = 
+		{
+			BURNT = "That was uncalled for.",
+			GENERIC = "Purely decorative.",
+		},
 		ACORN = "A more outdoorsy type might be able to make something of this.",
         ACORN_SAPLING = "Huh, it seems to belong in the ground.",
 		EVERGREEN =
@@ -1383,6 +1390,7 @@ return {
 			COVERED = "Waste of good marble if you ask me.",
 			UNCOVERED = "My creations! How rude.",
 			FINISHED = "Back as intended.",
+			READY = "We'll get you out in a tick, friend.",
 		},
         SCULPTURE_BISHOPHEAD = "I've seen that head before... but never in marble.",
 		SCULPTURE_BISHOPBODY = 
@@ -1390,6 +1398,7 @@ return {
 			COVERED = "Hmph. I was never a fan of the Grecian look.",
 			UNCOVERED = "Come now! I liked that one.",
 			FINISHED = "That looks much better.",
+			READY = "We'll get you out in a tick, friend.",
 		},
         SCULPTURE_ROOKNOSE = "That's quite the schnozz.",
 		SCULPTURE_ROOKBODY = 
@@ -1397,6 +1406,7 @@ return {
 			COVERED = "Some truly questionable taste in decor.",
 			UNCOVERED = "Why would anyone want to cover this up?",
 			FINISHED = "Doesn't that feel better now?",
+			READY = "We'll get you out in a tick, friend.",
 		},
 		SEEDS = "I suppose these won't plant themselves.",
 		SEEDS_COOKED = "Broiled the life out of 'em.",
@@ -1445,7 +1455,13 @@ return {
 			AWAKE = "Hmph. Impressive sleight of hand.",
 			HIDING = "This must be the work of an unseen hand.",
         },
-        --STATUE_MARBLE = "",
+        STATUE_MARBLE = 
+        {
+        	GENERIC = "Hm. Stately.",
+        	--TYPE1 = "",
+        	--TYPE2 = "Hm. Stately.",
+        	--TYPE3 = "",
+    	},
 		STATUEHARP = "Not my best work.",
 		STATUEMAXWELL = "It seems silly now...",
 		--Your hubris... Maxy... it was always your weakness...

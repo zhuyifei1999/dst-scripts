@@ -111,25 +111,22 @@ function Follower:SetLeader(inst)
     end
     if inst ~= nil then
         self.inst:ListenForEvent("onremove", self.OnLeaderRemoved, inst)
-    end
 
-    self.leader = inst
+        self.leader = inst
 
-    if self.leader ~= nil and
-        (   self.leader:HasTag("player") or
+        local grandleader = inst.components.inventoryitem ~= nil and inst.components.inventoryitem:GetGrandOwner() or inst
+        if grandleader ~= nil and grandleader:HasTag("player") then
             --Special case for pets leashed to inventory items
-            (   self.leader.components.inventoryitem ~= nil and
-                self.leader.components.inventoryitem.owner ~= nil and
-                self.leader.components.inventoryitem.owner:HasTag("player")
-            )
-        ) then
-        self:StartLeashing()
-    end
+            self:StartLeashing()
+        end
+    else
+        self.leader = nil
 
-    if inst == nil and self.task ~= nil then
-        self.task:Cancel()
-        self.task = nil
-        self:StopLeashing()
+        if self.task ~= nil then
+            self.task:Cancel()
+            self.task = nil
+            self:StopLeashing()
+        end
     end
 end
 
@@ -189,18 +186,16 @@ function Follower:OnLoad(data)
 end
 
 function Follower:IsLeaderSame(otherfollower)
+    if self.leader == nil then
+        return false
+    end
     local othercmp = otherfollower.components.follower
     if othercmp == nil or othercmp.leader == nil then
         return false
-    elseif othercmp.leader == self.leader then
-        return true
-    --Special case for pets leashed to inventory items
-    elseif othercmp.leader.components.inventoryitem ~= nil and
-        othercmp.leader.components.inventoryitem.owner ~= nil and
-        othercmp.leader.components.inventoryitem.owner == self.leader then
-        return true
     end
-    return false
+    --Special case for pets leashed to inventory items
+    return (self.leader.components.inventoryitem ~= nil and self.leader.components.inventoryitem:GetGrandOwner() or self.leader)
+        == (othercmp.leader.components.inventoryitem ~= nil and othercmp.leader.components.inventoryitem:GetGrandOwner() or othercmp.leader)
 end
 
 function Follower:KeepLeaderOnAttacked()

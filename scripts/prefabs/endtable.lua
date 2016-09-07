@@ -39,6 +39,8 @@ local function fn()
         return inst
     end
 
+    inst:AddTag("structure")
+
     inst.AnimState:SetBank("stagehand")
     inst.AnimState:SetBuild("stagehand")
     inst.AnimState:PlayAnimation("idle")

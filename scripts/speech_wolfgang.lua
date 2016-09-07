@@ -663,11 +663,12 @@ return {
 		GREENSTAFF = "This stick has green gem in it.",
 		POTTEDFERN = "Wolfgang worry greenthumb is gangrene.",
 		SENTRYWARD = "Wolfgang thinks is full of secrets.",
+        MOONROCK_PIECES = "Is little pieces from moon!",
         MOONBASE =
         {
             GENERIC = "Little platform is still missing pieces.",
             BROKEN = "Tiny platform is broken!",
-            --STAFFED = "",
+            STAFFED = "Is ready for good fight!",
            	WRONGSTAFF = "Feels wrong to Wolfgang.",
         },
 
@@ -681,8 +682,8 @@ return {
 		WATERMELON_SEEDS = "Maybe will grow into tasty snacks?",
 		YELLOWGEM = "Pretty rock.",
 		ORANGEGEM = "Pretty rock.",
-        --OPALSTAFF = "",
-        --OPALPRECIOUSGEM = "",
+        OPALSTAFF = "Tiny stick make big cold!",
+        OPALPRECIOUSGEM = "Is very nice little stone.",
 		TELEBASE = 
 		{
 			VALID = "Glow is good sign.",
@@ -694,7 +695,7 @@ return {
 			GEMS = "Is empty.",
 		},
 		STAFFLIGHT = "It hurts to touch.",
-        --STAFFCOLDLIGHT = "",
+        STAFFCOLDLIGHT = "Is cold! Wolfgang will punch!",
 
         ANCIENT_ALTAR =
         {
@@ -1052,6 +1053,12 @@ return {
 		EGGPLANT = "Is not egg!",
 		EGGPLANT_COOKED = "Has no yolk! Yolk is strongest part!",
 		EGGPLANT_SEEDS = "Teensy fake egg plant.",
+
+		ENDTABLE = 
+		{
+			BURNT = "Is burny bits.",
+			GENERIC = "Puny table will not hold Wolfgang's weight.",
+		},
 		STUFFEDEGGPLANT = "Make yolk of other foods.",
 		GRASSGEKKO = 
 		{
@@ -1395,6 +1402,7 @@ return {
 			COVERED = "Is big fancy rock!",
 			UNCOVERED = "Hidden marble man has big booboo.",
 			FINISHED = "Booboo is all better!",
+			READY = "Stone is getting scarier!",
 		},
         SCULPTURE_BISHOPHEAD = "Watch Wolfgang lift little marble head!",
 		SCULPTURE_BISHOPBODY = 
@@ -1402,6 +1410,7 @@ return {
 			COVERED = "Lumpy, bumpy rock!",
 			UNCOVERED = "Strange little man was in big rock!",
 			FINISHED = "Marble man is fixed!",
+			READY = "Stone is getting scarier!",
 		},
         SCULPTURE_ROOKNOSE = "Wolfgang will carry long rock, is no problem!",
 		SCULPTURE_ROOKBODY = 
@@ -1409,6 +1418,7 @@ return {
 			COVERED = "Does not budge, even under Wolfgang's mighty strength!",
 			UNCOVERED = "Is many big rocks!",
 			FINISHED = "Rock has all pieces now.",
+			READY = "Stone is getting scarier!",
 		},
 		SEEDS = "Too small to eat.",
 		SEEDS_COOKED = "Fire make bigger, can eat now.",
@@ -1460,7 +1470,13 @@ return {
 			AWAKE = "GAH! Table is creepy walking fist!",
 			HIDING = "Wolfgang has no use for tiny table.",
         },
-        --STATUE_MARBLE = "",
+        STATUE_MARBLE = 
+        {
+        	GENERIC = "Wolfgang does not know what to do with pretty statues.",
+        	--TYPE1 = "Wolfgang does not know what to do with pretty statues.",
+        	--TYPE2 = "",
+        	TYPE3 = "Is manly spittoon?",
+    	},
 		STATUEHARP = "Where is pretty music?",
 		STATUEMAXWELL = "Ha ha! Looks just like Wolfgang's new friend!",
 		STEELWOOL = "Is like my arm hair.",

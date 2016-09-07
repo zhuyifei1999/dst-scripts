@@ -73,6 +73,13 @@ local function WorkMoonBase(inst)
     inst:PushEvent("workmoonbase", { moonbase = GetMoonBase(inst) })
 end
 
+local function BreakSkeletons(inst)
+    local skel = FindEntity(inst, 1.25, nil, { "playerskeleton", "hammer_workable" })
+    if skel ~= nil then
+        skel.components.workable:WorkedBy(inst, 1)
+    end
+end
+
 function MoonBeastBrain:OnStart()
     local root = PriorityNode(
     {
@@ -87,7 +94,10 @@ function MoonBeastBrain:OnStart()
         WhileNode(function() return LostMoonCharge(self) end, "Petrify",
             ActionNode(function() self.inst:PushEvent("moonpetrify") end)),
 
-        AttackWall(self.inst),
+        SequenceNode{
+            ActionNode(function() BreakSkeletons(self.inst) end),
+            AttackWall(self.inst),
+        },
 
         WhileNode(function() return ShouldTargetMoonBase(self.inst) end, "MoonCharge",
             PriorityNode({

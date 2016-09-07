@@ -15,7 +15,7 @@ local events=
     EventHandler("death", function(inst) inst.sg:GoToState("death") end),
     EventHandler("worked", function(inst) inst.sg:GoToState("hit") end),
     EventHandler("workfinished", function(inst) inst.sg:GoToState("giveup") end),
-    EventHandler("onignite", function(inst) if not inst.sg:HasStateTag("givingup") then inst.sg:GoToState("extinguish") end end),
+    EventHandler("onignite", function(inst) inst.sg:GoToState("extinguish") end),
     
 	EventHandler("locomote", function(inst)
         local is_moving = inst.sg:HasStateTag("moving")
@@ -26,13 +26,12 @@ local events=
 
         if is_moving and not should_move then
             inst.sg:GoToState("walk_stop")
-        elseif (is_idling and should_move) or (is_moving and should_move) then
+        elseif should_move and not is_moving and is_idling then
             if inst.sg.is_hiding then
                 inst.sg:GoToState("standup")
-            elseif is_busy then
-				print "HERE"
+            elseif not is_busy then
                 inst.sg:GoToState("walk_start")
-            end
+			end
         end
     end),
 
@@ -47,7 +46,7 @@ local states=
         
         onenter = function(inst)
 			inst.sg.is_hiding = true
-            ChangeToObstaclePhysics(inst)
+			inst:ChangePhysics(false)
 			inst.sg:GoToState("idle_hiding")
 		end,
 	},
@@ -73,7 +72,9 @@ local states=
     State{
         name = "idle",
         onenter = function(inst)
-			if (not inst:CanStandUp()) and not inst.components.locomotor:WantsToMoveForward() then
+			if inst.components.burnable:IsBurning() then
+				inst.sg:GoToState("extinguish")
+			elseif (not inst:CanStandUp()) and not inst.components.locomotor:WantsToMoveForward() then
 				inst.sg:GoToState("idle_hiding")
 			else
 				inst.sg:GoToState("idle_standing")
@@ -153,7 +154,7 @@ local states=
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("sleep")
             inst.sg.is_hiding = true
-            ChangeToObstaclePhysics(inst)
+			inst:ChangePhysics(false)
         end,
         
         events=
@@ -175,8 +176,7 @@ local states=
         {
             EventHandler("animover", function(inst) 
                 inst.sg.is_hiding = false
-                ChangeToCharacterPhysics(inst)
-                inst.Physics:SetMass(inst.CharacterPhyscisMass)
+				inst:ChangePhysics(true)
                 inst.sg:GoToState(inst.components.locomotor:WantsToMoveForward() and "walk_start" or "idle") end
             ),
         },

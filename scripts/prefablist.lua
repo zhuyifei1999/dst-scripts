@@ -291,6 +291,7 @@ PREFABFILES = {
   "monsterwarningsounds",
   "moonbase",
   "mooneye",
+  "moonrock_pieces",
   "moonrockcrater",
   "moonrocknugget",
   "moose",

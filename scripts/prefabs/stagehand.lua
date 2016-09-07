@@ -25,11 +25,40 @@ local function getstatus(inst)
     return (inst.sg:HasStateTag("hiding") and "HIDING")
 		or "AWAKE"
 end
+
 local function CanStandUp(inst)
 	-- if not in light or off screen (off screen is so it doesnt get stuck forever on things like firefly/pighouse light), then it can stand up and walk around
-	return (not inst.LightWatcher:IsInLight()) or (TheWorld.state.isnight and not inst:IsNearPlayer(30))
+	return (not inst.LightWatcher:IsInLight()) or (TheWorld.state.isnight and (not TheWorld.state.isfullmoon) and not inst:IsNearPlayer(30))
 end
 
+
+local function ChangePhysics(inst, is_standing)
+	local phys = inst.Physics
+
+	if is_standing then
+		inst:RemoveTag("blocker")
+
+		phys:SetMass(100)
+		phys:SetFriction(0)
+		phys:SetDamping(5)
+		phys:SetCollisionGroup(COLLISION.CHARACTERS)
+		phys:ClearCollisionMask()
+		phys:CollidesWith(COLLISION.WORLD)
+	else
+		inst:AddTag("blocker")
+	    
+		local phys = inst.entity:AddPhysics()
+		phys:SetMass(0) 
+		phys:SetCollisionGroup(COLLISION.OBSTACLES)
+		phys:ClearCollisionMask()
+	end
+
+	phys:CollidesWith(COLLISION.ITEMS)
+	phys:CollidesWith(COLLISION.OBSTACLES)
+	phys:CollidesWith(COLLISION.SMALLOBSTACLES)
+	phys:CollidesWith(COLLISION.CHARACTERS)
+	phys:CollidesWith(COLLISION.GIANTS)
+end
 
 local brain = require( "brains/stagehandbrain")
 
@@ -46,14 +75,16 @@ local function MakeStagehand(name)
 
         inst.Transform:SetFourFaced()
 
-        MakeObstaclePhysics(inst, 1)
-         
+        local phys = inst.entity:AddPhysics()
+        phys:SetCapsule(0.5, 1)
+		phys:SetFriction(0)
+		phys:SetDamping(5)
+        ChangePhysics(inst, false)
+        
         inst.AnimState:SetBank(name)
         inst.AnimState:SetBuild(name)
         inst.AnimState:PlayAnimation("idle")
 
-        inst:AddTag("monster")
-        inst:AddTag("shadow")
         inst:AddTag("notraptrigger")
 
         inst.entity:SetPristine()
@@ -61,8 +92,6 @@ local function MakeStagehand(name)
         if not TheWorld.ismastersim then
             return inst
         end
-
-		inst.CharacterPhyscisMass = 150
 
 	    MakeSmallBurnable(inst, nil, nil, false)
 	    MakeSmallPropagator(inst)
@@ -75,10 +104,11 @@ local function MakeStagehand(name)
 		inst.components.workable:SetOnWorkCallback(onworked)
 
         inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
-        inst.components.locomotor.walkspeed = TUNING.TERRORBEAK_SPEED
+        inst.components.locomotor.walkspeed = 8
         --inst.sounds = sounds
 
 		inst.CanStandUp = CanStandUp
+		inst.ChangePhysics = ChangePhysics
 
         inst:SetStateGraph("SGstagehand")
         inst:SetBrain(brain)

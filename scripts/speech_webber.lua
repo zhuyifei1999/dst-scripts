@@ -360,12 +360,13 @@ return {
 		GREENSTAFF = "Magic taker-apart-er.",
 		POTTEDFERN = "Mum would like this nice fern.",
 		SENTRYWARD = "Woah! I bet it sees so far!",
+        MOONROCK_PIECES = "Oh... We don't like this!",
         MOONBASE =
         {
             GENERIC = "I wonder what it wants?",
             BROKEN = "It's broke.",
-            --STAFFED = "",
-            --WRONGSTAFF = "",
+            STAFFED = "Something else needs to happen, right?",
+            WRONGSTAFF = "I don't think it wanted that.",
         },
 
 		LIGHTER = "Lighter than what?",
@@ -435,8 +436,8 @@ return {
 		YELLOWSTAFF = "We summon you, warm ball of light!",
 		YELLOWGEM = "Yellow-bellied gem.",
 		ORANGEGEM = "Orange you glad we found you, gem?",
-        --OPALSTAFF = "",
-        --OPALPRECIOUSGEM = "",
+        OPALSTAFF = "Whew. Gotta be careful where you point it!",
+        OPALPRECIOUSGEM = "We see eight million eyes reflecting back at us. Neat!",
 		TELEBASE = 
 		{
 			VALID = "Teleportation, away!",
@@ -448,7 +449,7 @@ return {
 			GEMS = "Still needs a gem.",
 		},
 		STAFFLIGHT = "Cozy.",
-        --STAFFCOLDLIGHT = "",
+        STAFFCOLDLIGHT = "Woah! The cold makes all our hairs stand up!",
 	
         ANCIENT_ALTAR = "Old and full of mysteries.",
 
@@ -880,6 +881,12 @@ return {
 		EGGPLANT = "Blech, eggplant.",
 		EGGPLANT_COOKED = "Mum knew I liked it braised.",
 		EGGPLANT_SEEDS = "We could grow something with these.",
+
+		ENDTABLE = 
+		{
+			BURNT = "Antiques are dumb, anyway.",
+			GENERIC = "Reminds me of antique shopping with mother.",
+		},
 		DECIDUOUSTREE = 
 		{
 			BURNING = "What a senseless waste of firewood.",
@@ -1367,6 +1374,7 @@ return {
 			COVERED = "I think it really ties the island together.",
 			UNCOVERED = "Peekaboo, monster!",
 			FINISHED = "You look great!",
+			READY = "I think it's stuck in there.",
 		},
         SCULPTURE_BISHOPHEAD = "I think it's looking at us!",
 		SCULPTURE_BISHOPBODY = 
@@ -1374,6 +1382,7 @@ return {
 			COVERED = "That looks really nice!",
 			UNCOVERED = "Where's your head, mister?",
 			FINISHED = "There! All better!",
+			READY = "I think it's stuck in there.",
 		},
         SCULPTURE_ROOKNOSE = "Looks like a... cactus? No, that's not right.",
 		SCULPTURE_ROOKBODY = 
@@ -1381,6 +1390,7 @@ return {
 			COVERED = "It's a bit scary, but we don't like to judge.",
 			UNCOVERED = "It was hiding!",
 			FINISHED = "Oh! That piece was his nose.",
+			READY = "I think it's stuck in there.",
 		},
 		SEEDS = "A small life trapped within. My sympathies.",
 		SEEDS_COOKED = "Their growing days are over.",
@@ -1431,7 +1441,13 @@ return {
 			AWAKE = "Definitely not a spider!",
 			HIDING = "Is there a spider friend rustling beneath?",
         },
-        --STATUE_MARBLE = "",
+        STATUE_MARBLE = 
+        {
+            GENERIC = "It looks real life-like, but it's all cold to touch.",
+            --TYPE1 = "It looks real life-like, but it's all cold to touch.",
+            --TYPE2 = "",
+            --TYPE3 = "",
+        },
 		STATUEHARP = "Someone took the head.",
 		STATUEMAXWELL = "We're still a little mad at him. But only a little.",
 		STINGER = "We should be careful, we could poke an eye out!",

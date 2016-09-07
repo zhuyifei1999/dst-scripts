@@ -6,7 +6,7 @@ end
 
 local function OnUnlockRecipe(inst, data)
     if data ~= nil and data.recipe ~= nil then
-        PushEvent("character.prorotyped", inst, { prefab = data.recipe })
+        PushEvent("character.prototyped", inst, { prefab = data.recipe })
     end
 end
 

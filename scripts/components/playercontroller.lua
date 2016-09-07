@@ -1777,7 +1777,7 @@ function PlayerController:OnUpdate(dt)
                 elseif self.inst.replica.combat ~= nil then
                     retarget = self.inst.replica.combat:GetTarget()
                 end
-                if retarget ~= nil then
+                if retarget ~= nil and CanEntitySeeTarget(self.inst, retarget) then
                     --Handle chain attacking
                     if self.inst.sg ~= nil then
                         if self.handler == nil then

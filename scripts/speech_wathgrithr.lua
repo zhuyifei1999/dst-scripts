@@ -360,12 +360,13 @@ return {
 		GREENSTAFF = "Twirly green power.",
 		POTTEDFERN = "What are you meant to do with such a thing?",
 		SENTRYWARD = "May the secrets of this land be divulged by the gods.",
+        MOONROCK_PIECES = "It has faced Mani's wrath.",
         MOONBASE =
         {
             GENERIC = "What dost thou want, altar?",
             BROKEN = "Perhaps it crashed from the heavens.",
-            --STAFFED = "",
-            --WRONGSTAFF = "",
+            STAFFED = "Prepare for glorious battle!",
+            WRONGSTAFF = "This shall not please the gods.",
         },
 
 		LIGHTER = "It lights the fires of mine heart!",
@@ -426,10 +427,10 @@ return {
 		ARMORSLURPER = "She ebbs the ache of hunger. Good fur.",
 		ORANGEAMULET = "Gathering has never been so easy.",
 		YELLOWSTAFF = "It summons the stars!",
-		YELLOWGEM = "A yellow beaut.",
+		YELLOWGEM = "A yellow beauty.",
 		ORANGEGEM = "A stone of orange.",
-        --OPALSTAFF = "",
-        --OPALPRECIOUSGEM = "",
+        OPALSTAFF = "It weaves the cold from thin air!",
+        OPALPRECIOUSGEM = "The spoils of war!",
 		TELEBASE = 
 		{
 			VALID = "Prepare yourselves for the power of purple!",
@@ -441,7 +442,7 @@ return {
 			GEMS = "It's empty.",
 		},
 		STAFFLIGHT = "Behold! A gift from Wotan!",
-        --STAFFCOLDLIGHT = "",
+        STAFFCOLDLIGHT = "Frigid as a frost giant's heart.",
 
         ANCIENT_ALTAR = "These crafts had better be good.",
 
@@ -877,11 +878,12 @@ return {
 		EGGPLANT = "Purple and bulbous.",
 		EGGPLANT_COOKED = "Food for the weak.",
 		EGGPLANT_SEEDS = "Tiny nature bits.",
---		ENDTABLE = 
---		{
---			BURNT = "",
---			GENERIC = "",
---		},
+
+		ENDTABLE = 
+		{
+			BURNT = "It was no challenge at all.",
+			GENERIC = "There is no beast beneath.",
+		},
 		DECIDUOUSTREE = 
 		{
 			BURNING = "The wood's ablaze!",
@@ -1371,6 +1373,7 @@ return {
 			COVERED = "An abandoned monument to the gods?",
 			UNCOVERED = "An icon of evil, surely!",
 			FINISHED = "Might we come to regret this action?",
+            READY = "The beast has been roused beneath!",
 		},
         SCULPTURE_BISHOPHEAD = "A follower of Mimir, mayhaps?",
 		SCULPTURE_BISHOPBODY = 
@@ -1378,6 +1381,7 @@ return {
 			COVERED = "More apt for the halls of Valhalla.",
 			UNCOVERED = "We've freed the figure slumbering in the stone.",
 			FINISHED = "Will this please the gods? Or anger them?",
+            READY = "The beast has been roused beneath!",
 		},
         SCULPTURE_ROOKNOSE = "It has strayed from the warrior's path.",
 		SCULPTURE_ROOKBODY = 
@@ -1385,6 +1389,7 @@ return {
 			COVERED = "Warriors are not concerned with decorative sculptures.",
 			UNCOVERED = "I fear we've unleashed a great evil.",
 			FINISHED = "Gods help us on Mani's night.",
+            READY = "The beast has been roused beneath!",
 		},
 		TWIGGYTREE = 
 		{
@@ -1447,7 +1452,13 @@ return {
 			AWAKE = "Keep thy hand from out mine fires!",
 			HIDING = "Merely a table.",
         },
-        --STATUE_MARBLE = "",
+        STATUE_MARBLE = 
+        {
+            GENERIC = "Delicate appearance, but hard as stone.",
+            --TYPE1 = "Delicate appearance, but hard as stone.",
+            --TYPE2 = "",
+            --TYPE3 = "",
+        },
 		STATUEHARP = "It must be Gunnar. The snakes took his head.",
 		STATUEMAXWELL = "The villain turns hero!",
 		STINGER = "The sword on the back of a bee.",

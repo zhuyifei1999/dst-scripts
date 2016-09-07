@@ -1376,7 +1376,8 @@ local states =
                     inst.sg.statemem.action.target ~= nil and
                     inst.sg.statemem.action.target.components.workable ~= nil and
                     inst.sg.statemem.action.target.components.workable:CanBeWorked() and
-                    inst.sg.statemem.action.target:IsActionValid(inst.sg.statemem.action.action) then
+                    inst.sg.statemem.action.target:IsActionValid(inst.sg.statemem.action.action) and
+                    CanEntitySeeTarget(inst, inst.sg.statemem.action.target) then
                     inst:ClearBufferedAction()
                     inst:PushBufferedAction(inst.sg.statemem.action)
                 end
@@ -1415,7 +1416,8 @@ local states =
                     inst.sg.statemem.action.target ~= nil and
                     inst.sg.statemem.action.target.components.workable ~= nil and
                     inst.sg.statemem.action.target.components.workable:CanBeWorked() and
-                    inst.sg.statemem.action.target:IsActionValid(inst.sg.statemem.action.action) then
+                    inst.sg.statemem.action.target:IsActionValid(inst.sg.statemem.action.action) and
+                    CanEntitySeeTarget(inst, inst.sg.statemem.action.target) then
                     inst:ClearBufferedAction()
                     inst:PushBufferedAction(inst.sg.statemem.action)
                 end
@@ -1500,7 +1502,8 @@ local states =
                     inst.sg.statemem.action.target ~= nil and
                     inst.sg.statemem.action.target.components.workable ~= nil and
                     inst.sg.statemem.action.target.components.workable:CanBeWorked() and
-                    inst.sg.statemem.action.target:IsActionValid(inst.sg.statemem.action.action) then
+                    inst.sg.statemem.action.target:IsActionValid(inst.sg.statemem.action.action) and
+                    CanEntitySeeTarget(inst, inst.sg.statemem.action.target) then
                     inst:ClearBufferedAction()
                     inst:PushBufferedAction(inst.sg.statemem.action)
                 end
@@ -1571,7 +1574,8 @@ local states =
                     inst.sg.statemem.action.target ~= nil and
                     inst.sg.statemem.action.target.components.workable ~= nil and
                     inst.sg.statemem.action.target.components.workable:CanBeWorked() and
-                    inst.sg.statemem.action.target:IsActionValid(inst.sg.statemem.action.action, true) then
+                    inst.sg.statemem.action.target:IsActionValid(inst.sg.statemem.action.action, true) and
+                    CanEntitySeeTarget(inst, inst.sg.statemem.action.target) then
                     inst:ClearBufferedAction()
                     inst:PushBufferedAction(inst.sg.statemem.action)
                 end
@@ -1648,7 +1652,8 @@ local states =
                     inst.sg.statemem.action.target ~= nil and
                     inst.sg.statemem.action.target.components.workable ~= nil and
                     inst.sg.statemem.action.target.components.workable:CanBeWorked() and
-                    inst.sg.statemem.action.target.components.workable:GetWorkAction() == inst.sg.statemem.action.action then
+                    inst.sg.statemem.action.target.components.workable:GetWorkAction() == inst.sg.statemem.action.action and
+                    CanEntitySeeTarget(inst, inst.sg.statemem.action.target) then
                     inst:ClearBufferedAction()
                     inst:PushBufferedAction(inst.sg.statemem.action)
                 end
@@ -1958,7 +1963,8 @@ local states =
                     inst.sg.statemem.action.target ~= nil and
                     inst.sg.statemem.action.target.components.workable ~= nil and
                     inst.sg.statemem.action.target.components.workable:CanBeWorked() and
-                    inst.sg.statemem.action.target:IsActionValid(inst.sg.statemem.action.action, true) then
+                    inst.sg.statemem.action.target:IsActionValid(inst.sg.statemem.action.action, true) and
+                    CanEntitySeeTarget(inst, inst.sg.statemem.action.target) then
                     inst:ClearBufferedAction()
                     inst:PushBufferedAction(inst.sg.statemem.action)
                 end
@@ -3602,6 +3608,7 @@ local states =
         timeline =
         {
             TimeEvent(7 * FRAMES, function(inst)
+                inst.sg.statemem.thrown = true
                 inst:PerformBufferedAction()
                 inst.sg:RemoveStateTag("abouttoattack")
             end),
@@ -3615,7 +3622,11 @@ local states =
         events =
         {
             EventHandler("equip", function(inst) inst.sg:GoToState("idle") end),
-            EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
+            EventHandler("unequip", function(inst, data)
+                if data.eslot ~= EQUIPSLOTS.HANDS or not inst.sg.statemem.thrown then
+                    inst.sg:GoToState("idle")
+                end
+            end),
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
                     inst.sg:GoToState("idle")
