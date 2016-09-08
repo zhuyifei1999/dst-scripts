@@ -81,16 +81,18 @@ local function OnEntitySleep(inst)
 end
 
 function Follower:StartLeashing()
-    if not self.leashing then
-        self.leashing = true
+    if self._onleaderwake == nil and self.leader ~= nil then
+        self._onleaderwake = function() OnEntitySleep(self.inst) end
+        self.inst:ListenForEvent("entitywake", self._onleaderwake, self.leader)
         self.inst:ListenForEvent("entitysleep", OnEntitySleep)
     end
 end
 
 function Follower:StopLeashing()
-    if self.leashing then
-        self.leashing = nil
+    if self._onleaderwake ~= nil then
         self.inst:RemoveEventCallback("entitysleep", OnEntitySleep)
+        self.inst:RemoveEventCallback("entitywake", self._leaderwake, self.leader)
+        self._leaderwake = nil
         if self.porttask ~= nil then
             self.porttask:Cancel()
             self.porttask = nil
@@ -114,18 +116,18 @@ function Follower:SetLeader(inst)
 
         self.leader = inst
 
-        local grandleader = inst.components.inventoryitem ~= nil and inst.components.inventoryitem:GetGrandOwner() or inst
-        if grandleader ~= nil and grandleader:HasTag("player") then
+        if inst.components.inventoryitem ~= nil then
             --Special case for pets leashed to inventory items
             self:StartLeashing()
         end
     else
+        self:StopLeashing()
+
         self.leader = nil
 
         if self.task ~= nil then
             self.task:Cancel()
             self.task = nil
-            self:StopLeashing()
         end
     end
 end
@@ -219,16 +221,12 @@ function Follower:LongUpdate(dt)
 end
 
 function Follower:OnRemoveFromEntity()
+    self:StopLeashing()
     if self.task ~= nil then
         self.task:Cancel()
         self.task = nil
     end
-    if self.porttask ~= nil then
-        self.porttask:Cancel()
-        self.porttask = nil
-    end
     self.inst:RemoveEventCallback("attacked", onattacked)
-    self.inst:RemoveEventCallback("entitysleep", OnEntitySleep)
     if self.leader ~= nil then
         self.inst:RemoveEventCallback("onremove", self.OnLeaderRemoved, self.leader)
     end

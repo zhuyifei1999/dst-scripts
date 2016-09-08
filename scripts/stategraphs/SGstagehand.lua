@@ -10,11 +10,27 @@ local actionhandlers =
 {
 }
 
+local function onworked(inst)
+	local mem = inst.sg.mem
+	local cur_time = GetTime()
+	
+	-- if the player stops working it then the stagehand will reset
+	if mem.prevtimeworked == nil or ((cur_time - mem.prevtimeworked) > (TUNING.SEG_TIME * 0.5)) then
+		mem.hits_left = TUNING.STAGEHAND_HITS_TO_GIVEUP
+	end
+
+	-- it now takes 86 hits, instead of work done, in order to '86' the blueprint
+	mem.hits_left = (mem.hits_left and (mem.hits_left) or TUNING.STAGEHAND_HITS_TO_GIVEUP) - 1
+	if not inst.sg:HasStateTag("givingup") then
+		inst.sg:GoToState( mem.hits_left > 0 and "hit" or "giveup")
+	end
+	mem.prevtimeworked = cur_time
+end
+
 local events=
 {
     EventHandler("death", function(inst) inst.sg:GoToState("death") end),
-    EventHandler("worked", function(inst) inst.sg:GoToState("hit") end),
-    EventHandler("workfinished", function(inst) inst.sg:GoToState("giveup") end),
+    EventHandler("worked", onworked),
     EventHandler("onignite", function(inst) inst.sg:GoToState("extinguish") end),
     
 	EventHandler("locomote", function(inst)
@@ -229,14 +245,16 @@ local states=
         onenter = function(inst)
 			if inst.sg.is_hiding then
 	            inst.AnimState:PlayAnimation("extinguish")
-		        inst.Physics:Stop()            
+		        inst.Physics:Stop()   
+		        inst.components.workable:SetWorkable(false)
 		    else
 				inst.sg:GoToState("hide")
 		    end
         end,
 		
 		onexit = function(inst)
-		    inst.components.workable:SetWorkLeft(TUNING.STAGEHAND_HITS_TO_GIVEUP)
+			inst.sg.mem.hits_left = TUNING.STAGEHAND_HITS_TO_GIVEUP
+	        inst.components.workable:SetWorkable(true)
 		end,
 		
         timeline=

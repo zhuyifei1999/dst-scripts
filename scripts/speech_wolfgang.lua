@@ -1420,6 +1420,8 @@ return {
 			FINISHED = "Rock has all pieces now.",
 			READY = "Stone is getting scarier!",
 		},
+		GARGOYLE_HOUND = "Is make Wolfgang uncomfortable!",
+        GARGOYLE_WEREPIG = "Wolfgang does not like that.",
 		SEEDS = "Too small to eat.",
 		SEEDS_COOKED = "Fire make bigger, can eat now.",
 		SEWING_KIT = "Is pokey!",
@@ -1473,8 +1475,8 @@ return {
         STATUE_MARBLE = 
         {
         	GENERIC = "Wolfgang does not know what to do with pretty statues.",
-        	--TYPE1 = "Wolfgang does not know what to do with pretty statues.",
-        	--TYPE2 = "",
+        	--TYPE1 = "",
+        	TYPE2 = "She seems like happy lady.",
         	TYPE3 = "Is manly spittoon?",
     	},
 		STATUEHARP = "Where is pretty music?",

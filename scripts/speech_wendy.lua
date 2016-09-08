@@ -1425,6 +1425,8 @@ return {
 			FINISHED = "It's been made whole again. Lucky.",
 			READY = "It wants out...",
 		},
+		GARGOYLE_HOUND = "A \"puppy\", frozen in time...",
+        GARGOYLE_WEREPIG = "I can make that face too...",
 		SEEDS = "Life, or at least the promise of it.",
 		SEEDS_COOKED = "The fire has toasted their life away.",
 		SEWING_KIT = "Another implement for staving off the inevitable decay.",
@@ -1478,8 +1480,8 @@ return {
         STATUE_MARBLE = 
         {
             GENERIC = "Cold, hard stone...",
-            TYPE1 = "We wear many masks...",
-            TYPE2 = "We all fear discovering that there is nothing behind the mask.",
+            TYPE1 = "Each of us wear many masks...",
+            TYPE2 = "A chilling thought... what if nothing's beneath the mask?",
             --TYPE3 = "",
         },
 		STATUEHARP = "Maybe these statues will keep me company.",

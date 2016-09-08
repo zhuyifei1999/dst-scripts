@@ -1468,6 +1468,8 @@ return {
 			FINISHED = "I'm more used to destroying things than fixing them.",
 			READY = "Ew! It's wriggling!",
 		},
+		GARGOYLE_HOUND = "Lookit this big dumb lawn ornament!",
+        GARGOYLE_WEREPIG = "At least it doesn't smell anymore.",
 		SEEDS = "Farming is boring.",
 		SEEDS_COOKED = "No good for farming now.",
 		SEWING_KIT = "But destruction is so much more fun!",

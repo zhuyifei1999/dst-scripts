@@ -1408,6 +1408,8 @@ return {
 			FINISHED = "Doesn't that feel better now?",
 			READY = "We'll get you out in a tick, friend.",
 		},
+		GARGOYLE_HOUND = "Try and get me now. Ha!",
+        GARGOYLE_WEREPIG = "Not so tough.",
 		SEEDS = "I suppose these won't plant themselves.",
 		SEEDS_COOKED = "Broiled the life out of 'em.",
 		SEWING_KIT = "A fine and noble endeavor.",
@@ -1458,8 +1460,8 @@ return {
         STATUE_MARBLE = 
         {
         	GENERIC = "Hm. Stately.",
-        	--TYPE1 = "",
-        	--TYPE2 = "Hm. Stately.",
+        	TYPE1 = "Her tragedy does not define her.",
+        	TYPE2 = "She's still in there somewhere. I know it.",
         	--TYPE3 = "",
     	},
 		STATUEHARP = "Not my best work.",

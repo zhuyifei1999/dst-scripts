@@ -1392,6 +1392,8 @@ return {
 			FINISHED = "Oh! That piece was his nose.",
 			READY = "I think it's stuck in there.",
 		},
+		GARGOYLE_HOUND = "Haha. We can stack things on its head and it won't even move.",
+        GARGOYLE_WEREPIG = "Yikes.",
 		SEEDS = "A small life trapped within. My sympathies.",
 		SEEDS_COOKED = "Their growing days are over.",
 		SEWING_KIT = "Mum used to handle all of our sewing.",
@@ -1443,9 +1445,9 @@ return {
         },
         STATUE_MARBLE = 
         {
-            GENERIC = "It looks real life-like, but it's all cold to touch.",
-            --TYPE1 = "It looks real life-like, but it's all cold to touch.",
-            --TYPE2 = "",
+            GENERIC = "Solid marble!",
+            TYPE1 = "Nice sword!",
+            TYPE2 = "It looks real lifelike, but it's all cold to touch.",
             --TYPE3 = "",
         },
 		STATUEHARP = "Someone took the head.",

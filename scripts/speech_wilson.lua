@@ -1405,7 +1405,7 @@ return {
 			FINISHED = "All patched up.",
 			READY = "Something's moving inside.",
 		},
-        GARGOYLE_HOUND = "It looks very lifelike.",
+        GARGOYLE_HOUND = "I don't like how it's looking at me.",
         GARGOYLE_WEREPIG = "It looks very lifelike.",
 		SEEDS = "Each one is a tiny mystery.",
 		SEEDS_COOKED = "That cooked the life right out of 'em!",
@@ -1453,9 +1453,9 @@ return {
         STATUE_MARBLE = 
         {
             GENERIC = "It's a fancy marble statue.",
-            --TYPE1 = "",
-            --TYPE2 = "",
-            --TYPE3 = "It's a fancy marble statue.",
+            TYPE1 = "Don't lose your head now!",
+            TYPE2 = "Statuesque.",
+            --TYPE3 = "",
         },
 		STATUEHARP = "What happened to the head?",
 		STATUEMAXWELL = "He's a lot shorter in person.",

@@ -9,6 +9,27 @@ function ModInfoname(name)
 	end
 end
 
+
+ReleaseID = {
+	IDs = {},
+	Current = nil,
+	}
+
+function AddModReleaseID( name )
+	ReleaseID.IDs[name] = name
+	ReleaseID.Current = name
+end
+
+CurrentRelease = {}
+CurrentRelease.GreaterOrEqualTo = function(rhs)
+	return (rhs ~= nil) and (ReleaseID.IDs[rhs] ~= nil) or false
+end
+
+CurrentRelease.PrintID = function()
+	print ("Current Release ID: " .. ((ReleaseID.Current ~= nil) and ("ReleaseID."..ReleaseID.Current) or ".."))
+end
+
+
 -- This isn't for modders to use: see environment version added in InsertPostInitFunctions
 function GetModConfigData(optionname, modname, get_local_config)
 	assert(modname, "modname must be supplied manually if calling GetModConfigData from outside of modmain or modworldgenmain. Use ModIndex:GetModActualName(fancyname) function [fancyname is name string from modinfo].")
@@ -285,6 +306,9 @@ local function InsertPostInitFunctions(env, isworldgen)
 	--	AddTile( env.modname, tile_name, texture_name, noise_texture, runsound, walksound, snowsound, mudsound, flashpoint_modifier )
 	--end
 	
+	env.ReleaseID = ReleaseID.IDs
+	env.CurrentRelease = CurrentRelease
+
 	------------------------------------------------------------------------------
 	-- Everything above this point is available in Worldgen or Main.
 	-- Everything below is ONLY available in Main.

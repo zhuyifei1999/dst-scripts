@@ -1391,6 +1391,8 @@ return {
 			FINISHED = "Gods help us on Mani's night.",
             READY = "The beast has been roused beneath!",
 		},
+        GARGOYLE_HOUND = "Shed your stone form and fight, beast!",
+        GARGOYLE_WEREPIG = "Do not coward behind your carapace of rock! Fight!",
 		TWIGGYTREE = 
 		{
 			BURNING = "The wood's ablaze!",
@@ -1454,10 +1456,10 @@ return {
         },
         STATUE_MARBLE = 
         {
-            GENERIC = "Delicate appearance, but hard as stone.",
-            --TYPE1 = "Delicate appearance, but hard as stone.",
+            GENERIC = "Delicate appearance, but hard as stone. Admirable.",
+            TYPE1 = "What plagues you, fair maiden?",
             --TYPE2 = "",
-            --TYPE3 = "",
+            TYPE3 = "Tis a stone basin!",
         },
 		STATUEHARP = "It must be Gunnar. The snakes took his head.",
 		STATUEMAXWELL = "The villain turns hero!",

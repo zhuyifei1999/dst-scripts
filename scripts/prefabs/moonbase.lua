@@ -107,6 +107,40 @@ local function OnRemoveEntity(inst)
     end
 end
 
+local function PushMusic(inst)
+    if ThePlayer ~= nil and ThePlayer:IsNear(inst, 30) then
+        ThePlayer:PushEvent("triggeredevent")
+    end
+end
+
+local function OnMusicDirty(inst)
+    --Dedicated server does not need to trigger music
+    if not TheNet:IsDedicated() then
+        if inst._music:value() then
+            if inst._musictask == nil then
+                inst._musictask = inst:DoPeriodicTask(1, PushMusic, 0)
+            end
+        elseif inst._musictask ~= nil then
+            inst._musictask:Cancel()
+            inst._musictask = nil
+        end
+    end
+end
+
+local function StartMusic(inst)
+    if not inst._music:value() then
+        inst._music:set(true)
+        OnMusicDirty(inst)
+    end
+end
+
+local function StopMusic(inst)
+    if inst._music:value() then
+        inst._music:set(false)
+        OnMusicDirty(inst)
+    end
+end
+
 local function IsInAnimState(inst, state)
     return inst.AnimState:IsCurrentAnimation(state)
         or inst.AnimState:IsCurrentAnimation("recharging_"..state)
@@ -184,6 +218,7 @@ local function ToggleMoonCharge(inst)
             if inst.components.timer:TimerExists("mooncharge") then
                 inst.components.moonbeastspawner:Start()
                 StartFX(inst)
+                StartMusic(inst)
             elseif not inst.components.timer:TimerExists("moonchargepre") then
                 inst.components.timer:StartTimer("moonchargepre", math.max(MIN_CHARGE_START_DELAY, inst.components.timer:GetTimeLeft("fullmoonstartdelay") or MIN_CHARGE_START_DELAY))
                 inst.components.timer:StopTimer("fullmoonstartdelay")
@@ -248,6 +283,7 @@ local function OnStaffGiven(inst, giver, item)
     inst.components.pickable.caninteractwith = true
 
     inst.AnimState:OverrideSymbol("swap_staffs", "staffs", GetStaffSymbol(staffname))
+    inst.SoundEmitter:PlaySound("dontstarve/common/together/moonbase/moonstaff_place")
 
     if type(item) == "table" then
         inst._staffuse = item.components.finiteuses ~= nil and item.components.finiteuses:GetUses() or nil
@@ -266,6 +302,7 @@ local function OnStaffTaken(inst, picker, loot)
     inst.components.pickable.caninteractwith = false
 
     inst.AnimState:ClearOverrideSymbol("swap_staffs")
+    inst.SoundEmitter:PlaySound("dontstarve/common/together/moonbase/moonstaff_place")
 
     if inst._staffuse ~= nil then
         if loot ~= nil and loot.components.finiteuses ~= nil then
@@ -289,6 +326,7 @@ local function OnTimerDone(inst, data)
             inst.components.timer:StartTimer("mooncharge2", TUNING.MOONBASE_CHARGE_DURATION / 3)
             inst.components.moonbeastspawner:Start()
             StartFX(inst)
+            StartMusic(inst)
         end
     elseif data.name == "mooncharge2" then
         if inst._fxpulse ~= nil then
@@ -315,6 +353,7 @@ local function OnTimerDone(inst, data)
 
         if not inst._loading then
             inst.components.moonbeastspawner:ForcePetrify()
+            StopMusic(inst)
             ToggleMoonCharge(inst)
         end
     end
@@ -331,6 +370,7 @@ local function OnRepaired(inst)
 
     if not IsInAnimState(inst, state) then
         if state ~= "low" then
+            inst.SoundEmitter:PlaySound("dontstarve/common/together/moonbase/repair")
             inst.AnimState:PlayAnimation("fix_"..state)
             if inst.components.timer:TimerExists("mooncharge") then
                 inst.AnimState:PushAnimation("recharging_"..state, true)
@@ -411,6 +451,7 @@ end
 local function OnFullmoon(inst, isfullmoon)
     if not isfullmoon then
         inst.components.timer:StopTimer("fullmoonstartdelay")
+        StopMusic(inst)
     elseif not inst.components.timer:TimerExists("fullmoonstartdelay") then
         inst.components.timer:StartTimer("fullmoonstartdelay", TUNING.MOONBASE_CHARGE_DELAY)
     end
@@ -454,9 +495,13 @@ local function fn()
 
     inst:AddTag("moonbase")
 
+    inst._music = net_bool(inst.GUID, "moonbase._music", "musicdirty")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+        inst:ListenForEvent("musicdirty", OnMusicDirty)
+
         return inst
     end
 

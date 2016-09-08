@@ -21,7 +21,7 @@ local PIECE_NAME =
 
 local function DoStruggle(inst, count)
     inst.AnimState:PlayAnimation("jiggle")
-    inst.SoundEmitter:PlaySound("dontstarve/creatures/together/lavae/egg_crack")
+    inst.SoundEmitter:PlaySound("dontstarve/common/together/sculptures/shake")
     inst._task =
         count > 1 and
         inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength(), DoStruggle, count - 1) or
@@ -54,13 +54,18 @@ local function CheckMorph(inst)
 end
 
 local function MakeFixed(inst)
-    inst.AnimState:PlayAnimation("fixed")
     inst.MiniMapEntity:SetIcon(inst.prefab.."_fixed.png")
 
     inst.components.workable:SetOnWorkCallback(onworked)
 
     if inst.components.repairable ~= nil then
         inst:RemoveComponent("repairable")
+
+        inst.SoundEmitter:PlaySound("dontstarve/common/together/sculptures/shake")
+        inst.AnimState:PlayAnimation("jiggle")
+        inst.AnimState:PushAnimation("fixed", false)
+    else
+        inst.AnimState:PlayAnimation("fixed")
     end
 
     inst.components.lootdropper:SetChanceLootTable(nil)

@@ -56,7 +56,7 @@ return {
             GHOSTHEART = "Not today.",
             NOTGEM = "That doesn't look like a magic rock to me.",
             WRONGGEM = "I don't think that one'll work here.",
-            NOTSTAFF = "Nah. Something long and thing goes there, but not this.",
+            NOTSTAFF = "Nah. Something long and thin goes there, but not this.",
         },
         GIVETOPLAYER = 
         {
@@ -1424,6 +1424,8 @@ return {
 			FINISHED = "As if I didn't have enough reasons to hate full moons.",
 			READY = "Is stone supposed to move like that?",
 		},
+		GARGOYLE_HOUND = "That's unfortunate there, buddy.",
+        GARGOYLE_WEREPIG = "Hmph. Maybe I don't got it so bad.",
 		SEEDS = "Not trees.",
 		SEEDS_COOKED = "We call this \"lumberjack surprise\".",
 		SEWING_KIT = "I'm pretty good at sewing.",
@@ -1474,9 +1476,9 @@ return {
         },
         STATUE_MARBLE = 
         {
-        	GENERIC = "I prefer wood carving.",
-        	--TYPE1 = "",
-        	--TYPE2 = "I prefer wood carving.",
+        	--GENERIC = "I prefer wood carvings.",
+        	TYPE1 = "She's a real tall one, eh?",
+        	TYPE2 = "I'm not sure I get it.",
         	TYPE3 = "Could make a nice planter outta that.",
     	},
 		STATUEHARP = "You lost your head, eh?",

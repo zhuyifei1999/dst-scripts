@@ -1091,10 +1091,10 @@ return
         },
         STATUE_MARBLE = 
         {
-            GENERIC = "Elegant, though there's an unmistakable darkness to the work.",
-            --TYPE1 = "",
-            --TYPE2 = "Elegant, though there's an unmistakable darkness to the work.",
-            --TYPE3 = "",
+            --GENERIC = "Elegant, though there's an unmistakable darkness to the work.",
+            TYPE1 = "A Grecian-inspired sculpture of the muse Melpomene. Some liberties have been taken.",
+            TYPE2 = "A Grecian-inspired sculpture of the muse Thalia. Some liberties have been taken.",
+            TYPE3 = "The rain may inadvertently turn it into a bird bath.",
         },
         STATUEHARP = "A simple statue.",
         STATUEMAXWELL = "He's actually quite a sweet boy when you peel away the ego.",
@@ -1237,6 +1237,8 @@ return
 			FINISHED = "We may want to keep an eye on this.",
             READY = "Something is stirring within.",
 		},
+        GARGOYLE_HOUND = "Completely petrified as a result of lunar exposure.",
+        GARGOYLE_WEREPIG = "Lunar light catalyzes a strange reaction in its skin.",
         TWIGGYTREE =
         {
             CHOPPED = "It has been harvested.",

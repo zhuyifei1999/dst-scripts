@@ -14,11 +14,8 @@ SetSharedLootTable('stagehand_creature',
 })
 
 local function onworked(inst, worker)
-	-- if the player stops working it then the stagehand will reset
-	if inst.prevtimeworked == nil or ((GetTime() - inst.prevtimeworked) > (TUNING.SEG_TIME * 0.5)) then
-		inst.components.workable:SetWorkLeft(TUNING.STAGEHAND_HITS_TO_GIVEUP)
-	end
-	inst.prevtimeworked = inst.components.workable.lastworktime
+	-- make sure it never runs out of work to do
+	inst.components.workable:SetWorkLeft(TUNING.STAGEHAND_HITS_TO_GIVEUP)
 end
 
 local function getstatus(inst)

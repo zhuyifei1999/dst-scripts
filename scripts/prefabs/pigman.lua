@@ -454,6 +454,42 @@ local function CustomOnHaunt(inst)
     end
 end
 
+local function OnClientFadeUpdate(inst)
+    inst._fadeval = math.max(0, inst._fadeval - FRAMES)
+    local k = 1 - inst._fadeval * inst._fadeval
+    inst.AnimState:OverrideMultColour(k, k, k, k)
+    if inst._fadeval <= 0 then
+        inst._fadetask:Cancel()
+        inst._fadetask = nil
+    end
+end
+
+local function OnMasterFadeUpdate(inst)
+    OnClientFadeUpdate(inst)
+    inst._fade:set_local(math.floor(7 * inst._fadeval + .5))
+    inst.DynamicShadow:Enable(inst._fadeval < .8)
+    if inst._fadetask == nil then
+        inst:RemoveTag("NOCLICK")
+    end
+end
+
+local function OnFadeDirty(inst)
+    if inst._fadetask == nil then
+        inst._fadeval = inst._fade:value() / 7
+        inst._fadetask = inst:DoPeriodicTask(FRAMES, OnClientFadeUpdate)
+        OnClientFadeUpdate(inst)
+    end
+end
+
+local function FadeIn(inst)
+    inst._fadeval = 1
+    if inst._fadetask == nil then
+        inst._fadetask = inst:DoPeriodicTask(FRAMES, OnMasterFadeUpdate)
+        inst:AddTag("NOCLICK")
+        OnMasterFadeUpdate(inst)
+    end
+end
+
 local function common(moonbeast)
     local inst = CreateEntity()
 
@@ -490,6 +526,8 @@ local function common(moonbeast)
         --priority displaynamefn to return us back plain old .name LOL!
         inst:SetPrefabNameOverride("pigman")
         inst.displaynamefn = displaynamefn
+
+        inst._fade = net_tinybyte(inst.GUID, "moonpig._fade", "fadedirty")
     else
         inst:AddComponent("talker")
         inst.components.talker.fontsize = 35
@@ -502,6 +540,10 @@ local function common(moonbeast)
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+        if moonbeast then
+            inst:ListenForEvent("fadedirty", OnFadeDirty)
+        end
+
         return inst
     end
 
@@ -590,7 +632,9 @@ local function common(moonbeast)
     inst.components.inspectable.getstatus = GetStatus
     ------------------------------------------
 
-    if not moonbeast then
+    if moonbeast then
+        inst.FadeIn = FadeIn
+    else
         inst.OnSave = OnSave
         inst.OnLoad = OnLoad
     end

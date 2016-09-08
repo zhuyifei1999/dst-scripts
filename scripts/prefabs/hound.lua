@@ -185,6 +185,41 @@ local function OnLoad(inst, data)
     end
 end
 
+local function OnClientFadeUpdate(inst)
+    inst._fadeval = math.max(0, inst._fadeval - FRAMES)
+    local k = 1 - inst._fadeval * inst._fadeval
+    inst.AnimState:OverrideMultColour(k, k, k, k)
+    if inst._fadeval <= 0 then
+        inst._fadetask:Cancel()
+        inst._fadetask = nil
+    end
+end
+
+local function OnMasterFadeUpdate(inst)
+    OnClientFadeUpdate(inst)
+    inst._fade:set_local(math.floor(7 * inst._fadeval + .5))
+    if inst._fadetask == nil then
+        inst:RemoveTag("NOCLICK")
+    end
+end
+
+local function OnFadeDirty(inst)
+    if inst._fadetask == nil then
+        inst._fadeval = inst._fade:value() / 7
+        inst._fadetask = inst:DoPeriodicTask(FRAMES, OnClientFadeUpdate)
+        OnClientFadeUpdate(inst)
+    end
+end
+
+local function FadeIn(inst)
+    inst._fadeval = 1
+    if inst._fadetask == nil then
+        inst._fadetask = inst:DoPeriodicTask(FRAMES, OnMasterFadeUpdate)
+        inst:AddTag("NOCLICK")
+        OnMasterFadeUpdate(inst)
+    end
+end
+
 local function fncommon(build, morphlist, custombrain, tag)
     local inst = CreateEntity()
 
@@ -213,9 +248,13 @@ local function fncommon(build, morphlist, custombrain, tag)
     inst.AnimState:SetBuild(build)
     inst.AnimState:PlayAnimation("idle")
 
+    inst._fade = net_tinybyte(inst.GUID, "hound._fade", "fadedirty")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+        inst:ListenForEvent("fadedirty", OnFadeDirty)
+
         return inst
     end
 
@@ -267,6 +306,7 @@ local function fncommon(build, morphlist, custombrain, tag)
 
     inst:WatchWorldState("stopday", OnStopDay)
     inst.OnEntitySleep = OnEntitySleep
+    inst.FadeIn = FadeIn
 
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad

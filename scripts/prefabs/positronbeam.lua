@@ -29,11 +29,6 @@ local function createbeam(layer, offset)
 
         inst:AddTag("FX")
 
-        if layer == "front" then
-            inst.entity:AddSoundEmitter()
-            inst.SoundEmitter:PlaySound("dontstarve/common/staff_star_LP", "positron_beam_loop")
-        end
-
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
@@ -43,10 +38,6 @@ local function createbeam(layer, offset)
         inst.persists = false
 
         inst.KillFX = KillFX
-
-        if layer == "front" then
-            inst.SoundEmitter:PlaySound("dontstarve/common/staff_star_create")
-        end
 
         return inst
     end
@@ -59,17 +50,21 @@ local function SetLevel(inst, level)
         --wot
     elseif level == nil or level < 2 then
         inst:Hide()
+        --inst.SoundEmitter:SetParameter("beam", "INTENSITY", 0)
     else
         local anim = "lunar_"..tostring(math.min(level, 3)).."_loop"
         if not inst.AnimState:IsCurrentAnimation(anim) then
             inst.AnimState:PlayAnimation(anim, true)
         end
         inst:Show()
+        --inst.SoundEmitter:SetParameter("beam", "INTENSITY", level < 3 and 6 or 9)
     end
 end
 
 local function FinishFX(inst)
     if not (inst._finished or inst.AnimState:IsCurrentAnimation("lunar_full_pst")) then
+        inst.SoundEmitter:KillSound("beam")
+        inst.SoundEmitter:PlaySound("dontstarve/common/together/moonbase/beam_stop")
         inst.AnimState:PlayAnimation("lunar_full_pst")
         inst._finished = inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() + 2 * FRAMES, inst.Remove)
         inst:Show()
@@ -82,6 +77,7 @@ local function createpulse(offset)
 
         inst.entity:AddTransform()
         inst.entity:AddAnimState()
+        inst.entity:AddSoundEmitter()
         inst.entity:AddNetwork()
 
         inst.AnimState:SetBank("lunar_fx")
@@ -94,11 +90,16 @@ local function createpulse(offset)
 
         inst:Hide()
 
+        inst.SoundEmitter:PlaySound("dontstarve/common/staff_star_LP", "beam")
+        --inst.SoundEmitter:SetParameter("beam", "INTENSITY", 0)
+
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
             return inst
         end
+
+        inst.SoundEmitter:PlaySound("dontstarve/common/together/moonbase/beam_start")
 
         inst.persists = false
 

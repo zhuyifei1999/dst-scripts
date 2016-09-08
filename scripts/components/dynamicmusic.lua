@@ -32,6 +32,8 @@ local SEASON_DANGER_MUSIC =
     summer = "dontstarve_DLC001/music/music_danger_summer",
 }
 
+local TRIGGERED_DANGER_MUSIC = "dontstarve/music/music_epicfight_moonbase"
+
 --------------------------------------------------------------------------
 --[[ Member variables ]]
 --------------------------------------------------------------------------
@@ -45,6 +47,7 @@ local _iscave = _isruin or inst:HasTag("cave")
 local _isenabled = true
 local _busytask = nil
 local _dangertask = nil
+local _istriggered = nil
 local _isday = nil
 local _isbusydirty = nil
 local _extendtime = nil
@@ -113,6 +116,7 @@ local function StopDanger(inst, istimeout)
             end
         end
         _dangertask = nil
+        _istriggered = nil
         _extendtime = 0
         _soundemitter:KillSound("danger")
     end
@@ -133,6 +137,20 @@ local function StartDanger(player)
                 (SEASON_DANGER_MUSIC[inst.state.season])),
             "danger")
         _dangertask = inst:DoTaskInTime(10, StopDanger, true)
+        _istriggered = nil
+        _extendtime = 0
+    end
+end
+
+local function StartTriggeredDanger()
+    if _istriggered then
+        _extendtime = GetTime() + 10
+    elseif _isenabled then
+        StopBusy()
+        StopDanger()
+        _soundemitter:PlaySound(TRIGGERED_DANGER_MUSIC, "danger")
+        _dangertask = inst:DoTaskInTime(10, StopDanger, true)
+        _istriggered = true
         _extendtime = 0
     end
 end
@@ -197,6 +215,7 @@ local function StartPlayerListeners(player)
     inst:ListenForEvent("performaction", CheckAction, player)
     inst:ListenForEvent("attacked", OnAttacked, player)
     inst:ListenForEvent("goinsane", OnInsane, player)
+    inst:ListenForEvent("triggeredevent", StartTriggeredDanger, player)
 end
 
 local function StopPlayerListeners(player)
@@ -205,6 +224,7 @@ local function StopPlayerListeners(player)
     inst:RemoveEventCallback("performaction", CheckAction, player)
     inst:RemoveEventCallback("attacked", OnAttacked, player)
     inst:RemoveEventCallback("goinsane", OnInsane, player)
+    inst:RemoveEventCallback("triggeredevent", StartTriggeredDanger, player)
 end
 
 local function OnPhase(inst, phase)

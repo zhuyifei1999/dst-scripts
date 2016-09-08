@@ -119,7 +119,7 @@ local function makegargoyle(data)
 
     local function Struggle(inst, moonbase, count)
         inst.AnimState:PlayAnimation(data.anim.."_pre")
-        inst.SoundEmitter:PlaySound("dontstarve/creatures/together/lavae/egg_crack")
+        inst.SoundEmitter:PlaySound("dontstarve/common/together/sculptures/shake")
         if count == nil then
             inst._reanimatetask = inst:DoTaskInTime(math.random() * .5 + .5, Struggle, moonbase, math.random(2))
         elseif count > 1 then
