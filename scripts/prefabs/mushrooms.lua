@@ -189,7 +189,7 @@ local function mushcommonfn(data)
     inst.opentaskfn = function()
         inst.AnimState:PlayAnimation("open_inground")
         inst.AnimState:PushAnimation("open_"..data.animname)
-        inst.AnimState:PushAnimation(data.animname)
+        inst.AnimState:PushAnimation(data.animname, false)
         inst.SoundEmitter:PlaySound("dontstarve/common/mushroom_up")
         inst.growtask = nil
         if inst.components.pickable ~= nil then
@@ -199,7 +199,7 @@ local function mushcommonfn(data)
 
     inst.closetaskfn = function()
         inst.AnimState:PlayAnimation("close_"..data.animname)
-        inst.AnimState:PushAnimation("inground")
+        inst.AnimState:PushAnimation("inground", false)
         inst:DoTaskInTime(.25, function() inst.SoundEmitter:PlaySound("dontstarve/common/mushroom_down") end )
         inst.growtask = nil
         if inst.components.pickable then

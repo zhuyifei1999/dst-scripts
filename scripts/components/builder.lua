@@ -517,7 +517,7 @@ function Builder:MakeRecipeAtPoint(recipe, pt, rot, skin)
     if recipe.placer ~= nil and
         self:KnowsRecipe(recipe.name) and
         self:IsBuildBuffered(recipe.name) and
-        TheWorld.Map:CanDeployRecipeAtPoint(pt, recipe) then
+        TheWorld.Map:CanDeployRecipeAtPoint(pt, recipe, rot) then
         self:MakeRecipe(recipe, pt, rot, skin)
     end
 end

@@ -132,7 +132,25 @@ Recipe("purpleamulet", {Ingredient("goldnugget", 6), Ingredient("nightmarefuel",
 Recipe("firestaff", {Ingredient("nightmarefuel", 2), Ingredient("spear", 1), Ingredient("redgem", 1)}, RECIPETABS.MAGIC, TECH.MAGIC_THREE)
 Recipe("icestaff", {Ingredient("spear", 1),Ingredient("bluegem", 1)}, RECIPETABS.MAGIC,  TECH.MAGIC_TWO)
 Recipe("telestaff", {Ingredient("nightmarefuel", 4), Ingredient("livinglog", 2), Ingredient("purplegem", 2)}, RECIPETABS.MAGIC, TECH.MAGIC_THREE)
-Recipe("telebase", {Ingredient("nightmarefuel", 4), Ingredient("livinglog", 4), Ingredient("goldnugget", 8)}, RECIPETABS.MAGIC, TECH.MAGIC_THREE, "telebase_placer")
+Recipe("telebase", {Ingredient("nightmarefuel", 4), Ingredient("livinglog", 4), Ingredient("goldnugget", 8)}, RECIPETABS.MAGIC, TECH.MAGIC_THREE, "telebase_placer", nil, nil, nil, nil, nil, nil,
+    function(pt, rot)
+        --See telebase.lua
+        local telebase_parts =
+        {
+            { x = -1.6, z = -1.6 },
+            { x =  2.7, z = -0.8 },
+            { x = -0.8, z =  2.7 },
+        }
+        rot = (45 - rot) * DEGREES
+        local sin_rot = math.sin(rot)
+        local cos_rot = math.cos(rot)
+        for i, v in ipairs(telebase_parts) do
+            if not TheWorld.Map:IsPassableAtPoint(pt.x + v.x * cos_rot - v.z * sin_rot, pt.y, pt.z + v.z * cos_rot + v.x * sin_rot) then
+                return false
+            end
+        end
+        return true
+    end)
 Recipe("sentryward", {Ingredient("purplemooneye", 1), Ingredient("compass", 1), Ingredient("boards", 2)}, RECIPETABS.MAGIC, TECH.MAGIC_THREE, "sentryward_placer")
 
 --REFINE

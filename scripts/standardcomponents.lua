@@ -117,11 +117,11 @@ local burnfx =
     generic = "fire",
 }
 
-function MakeSmallBurnable(inst, time, offset, structure)
+function MakeSmallBurnable(inst, time, offset, structure, sym)
     inst:AddComponent("burnable")
     inst.components.burnable:SetFXLevel(2)
     inst.components.burnable:SetBurnTime(time or 10)
-    inst.components.burnable:AddBurnFX(burnfx.generic, offset or Vector3(0, 0, 0) )
+    inst.components.burnable:AddBurnFX(burnfx.generic, offset or Vector3(0, 0, 0), sym )
     inst.components.burnable:SetOnIgniteFn(DefaultBurnFn)
     inst.components.burnable:SetOnBurntFn(DefaultBurntFn)
     inst.components.burnable:SetOnExtinguishFn(DefaultExtinguishFn)

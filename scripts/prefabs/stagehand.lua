@@ -90,7 +90,7 @@ local function MakeStagehand(name)
             return inst
         end
 
-	    MakeSmallBurnable(inst, nil, nil, false)
+	    MakeSmallBurnable(inst, nil, nil, false, "swap_fire")
 	    MakeSmallPropagator(inst)
 		MakeHauntableWork(inst)
 

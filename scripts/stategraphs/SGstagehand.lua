@@ -54,6 +54,13 @@ local events=
     
 }
 
+local function OnHide(inst)
+    inst.components.locomotor:StopMoving()
+    inst.Physics:Stop()
+    inst.sg.is_hiding = true
+	inst:ChangePhysics(false)
+end
+
 
 local states=
 {
@@ -166,11 +173,8 @@ local states=
         tags = {"busy"},
         
         onenter = function(inst)
-            inst.components.locomotor:StopMoving()
-            inst.Physics:Stop()
-            inst.AnimState:PlayAnimation("sleep")
-            inst.sg.is_hiding = true
-			inst:ChangePhysics(false)
+			OnHide(inst)
+		    inst.AnimState:PlayAnimation("sleep")
         end,
         
         events=
@@ -243,12 +247,15 @@ local states=
         tags = {"busy", "givingup"},
         
         onenter = function(inst)
+	        inst.components.workable:SetWorkable(false)
 			if inst.sg.is_hiding then
 	            inst.AnimState:PlayAnimation("extinguish")
 		        inst.Physics:Stop()   
-		        inst.components.workable:SetWorkable(false)
 		    else
-				inst.sg:GoToState("hide")
+				OnHide(inst)
+				inst.AnimState:PlayAnimation("sleep")
+	            inst.AnimState:PushAnimation("extinguish", false)
+				inst.sg.statemem.hide_delay = true
 		    end
         end,
 		
@@ -259,12 +266,13 @@ local states=
 		
         timeline=
         {
-	        TimeEvent(14*FRAMES, function(inst) inst.components.lootdropper:SpawnLootPrefab("endtable_blueprint", inst:GetPosition()) end ),
+	        TimeEvent(14*FRAMES,      function(inst) if inst.sg.statemem.hide_delay     then return end inst.components.lootdropper:SpawnLootPrefab("endtable_blueprint", inst:GetPosition()) end ),
+	        TimeEvent((14+31)*FRAMES, function(inst) if not inst.sg.statemem.hide_delay then return end inst.components.lootdropper:SpawnLootPrefab("endtable_blueprint", inst:GetPosition()) end ),
 	    },
         
         events=
         {
-            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),
+            EventHandler("animqueueover", function(inst) inst.sg:GoToState("idle") end ),
         },        
     },    
     

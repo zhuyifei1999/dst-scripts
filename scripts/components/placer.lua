@@ -68,7 +68,7 @@ function Placer:OnUpdate(dt)
         end
     end
 
-    self.can_build = self.testfn == nil or self.testfn(self.inst:GetPosition())
+    self.can_build = self.testfn == nil or self.testfn(self.inst:GetPosition(), self.inst:GetRotation())
 
     --self.inst.AnimState:SetMultColour(0, 0, 0, .5)
 

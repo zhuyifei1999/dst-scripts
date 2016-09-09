@@ -910,9 +910,9 @@ function PlayerController:StartBuildPlacementMode(recipe, skin)
         SpawnPrefab(recipe.placer)
 
     self.placer.components.placer:SetBuilder(self.inst, recipe)
-    self.placer.components.placer.testfn = function(pt)
+    self.placer.components.placer.testfn = function(pt, rot)
         local builder = self.inst.replica.builder
-        return builder ~= nil and builder:CanBuildAtPoint(pt, recipe)
+        return builder ~= nil and builder:CanBuildAtPoint(pt, recipe, rot)
     end
 end
 

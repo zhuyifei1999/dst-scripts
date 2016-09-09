@@ -91,8 +91,8 @@ end
 function Follower:StopLeashing()
     if self._onleaderwake ~= nil then
         self.inst:RemoveEventCallback("entitysleep", OnEntitySleep)
-        self.inst:RemoveEventCallback("entitywake", self._leaderwake, self.leader)
-        self._leaderwake = nil
+        self.inst:RemoveEventCallback("entitywake", self._onleaderwake, self.leader)
+        self._onleaderwake = nil
         if self.porttask ~= nil then
             self.porttask:Cancel()
             self.porttask = nil

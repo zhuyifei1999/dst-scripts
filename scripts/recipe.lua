@@ -24,7 +24,7 @@ AllRecipes = {}
 
 mod_protect_Recipe = false
 
-Recipe = Class(function(self, name, ingredients, tab, level, placer, min_spacing, nounlock, numtogive, builder_tag, atlas, image)
+Recipe = Class(function(self, name, ingredients, tab, level, placer, min_spacing, nounlock, numtogive, builder_tag, atlas, image, testfn)
     if mod_protect_Recipe then
         print("Warning: Calling Recipe from a mod is now deprecated. Please call AddRecipe from your modmain.lua file.")
     end
@@ -62,6 +62,9 @@ Recipe = Class(function(self, name, ingredients, tab, level, placer, min_spacing
     self.level.CARTOGRAPHY = self.level.CARTOGRAPHY or 0
     self.placer        = placer
     self.min_spacing   = min_spacing or 3.2
+
+    --V2C: custom test function if default test isn't enough
+    self.testfn        = testfn
 
     self.nounlock      = nounlock or false
 
