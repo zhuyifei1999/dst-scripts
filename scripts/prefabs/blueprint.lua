@@ -22,15 +22,35 @@ local function OnTeach(inst, learner)
     learner:PushEvent("learnrecipe", { teacher = inst, recipe = inst.components.teacher.recipe })
 end
 
-local function CanBlueprintRecipe(recipe)
-    --Exclude character specific and TECH.NONE
-    if not recipe.nounlock and recipe.builder_tag == nil then
-        for k, v in pairs(recipe.level) do
-            if v > 0 then
-                return true
-            end
+local function CanBlueprintRandomRecipe(recipe)
+    if recipe.nounlock or recipe.builder_tag ~= nil then
+        --Exclude crafting station and character specific
+        return false
+    end
+    local hastech = false
+    for k, v in pairs(recipe.level) do
+        if v >= 10 then
+            --Exclude TECH.LOST
+            return false
+        elseif v > 0 then
+            hastech = true
         end
     end
+    --Exclude TECH.NONE
+    return hastech
+end
+
+local function CanBlueprintSpecificRecipe(recipe)
+    --Exclude crafting station and character specific
+    if recipe.nounlock or recipe.builder_tag ~= nil then
+        return false
+    end
+    for k, v in pairs(recipe.level) do
+        if v > 0 then
+            return true
+        end
+    end
+    --Exclude TECH.NONE
     return false
 end
 
@@ -42,7 +62,7 @@ local function OnHaunt(inst, haunter)
             if IsRecipeValid(v.name) and
                 old ~= v and
                 (old == nil or old.tab == v.tab) and
-                CanBlueprintRecipe(v) and
+                CanBlueprintRandomRecipe(v) and
                 not haunter.components.builder:KnowsRecipe(v.name) and
                 haunter.components.builder:CanLearn(v.name) then
                 table.insert(recipes, v)
@@ -86,7 +106,7 @@ local function fn()
     --Remove these tags so that they can be added properly when replicating components below
     inst:RemoveTag("_named")
 
-    inst:AddComponent("inspectable")    
+    inst:AddComponent("inspectable")
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem:ChangeImageName("blueprint")
 
@@ -119,7 +139,7 @@ local function MakeAnyBlueprint()
     local recipes = {}
     local allplayers = AllPlayers
     for k, v in pairs(AllRecipes) do
-        if IsRecipeValid(v.name) and CanBlueprintRecipe(v) then
+        if IsRecipeValid(v.name) and CanBlueprintRandomRecipe(v) then
             local known = false
             for i, player in ipairs(allplayers) do
                 if player.components.builder:KnowsRecipe(v.name) or
@@ -166,7 +186,7 @@ local function MakeAnyBlueprintFromTab(recipetab)
         local recipes = {}
         local allplayers = AllPlayers
         for k, v in pairs(AllRecipes) do
-            if IsRecipeValid(v.name) and v.tab == recipetab and CanBlueprintRecipe(v) then
+            if IsRecipeValid(v.name) and v.tab == recipetab and CanBlueprintRandomRecipe(v) then
                 local known = false
                 for i, player in ipairs(allplayers) do
                     if player.components.builder:KnowsRecipe(v.name) or
@@ -196,8 +216,9 @@ for k, v in pairs(RECIPETABS) do
     end
 end
 for k, v in pairs(AllRecipes) do
-    if CanBlueprintRecipe(v) then
+    if CanBlueprintSpecificRecipe(v) then
         table.insert(prefabs, Prefab(string.lower(k or "NONAME").."_blueprint", MakeSpecificBlueprint(k), assets))
     end
 end
+CanBlueprintSpecificRecipe = nil --don't need this anymore
 return unpack(prefabs)

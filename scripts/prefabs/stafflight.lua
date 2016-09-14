@@ -99,8 +99,6 @@ local function makestafflight(name, is_hot, anim, colour, idles)
         end
         inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
 
-        inst.SoundEmitter:PlaySound("dontstarve/common/staff_star_LP", "staff_star_loop")
-
         --HASHEATER (from heater component) added to pristine state for optimization
         inst:AddTag("HASHEATER")
 
@@ -109,6 +107,10 @@ local function makestafflight(name, is_hot, anim, colour, idles)
             inst:AddTag("cooker")
 
             inst:AddTag("daylight")
+
+            inst.SoundEmitter:PlaySound("dontstarve/common/staff_star_LP", "staff_star_loop")
+        else
+            inst.SoundEmitter:PlaySound("dontstarve/common/staff_coldlight_LP", "staff_star_loop")
         end
 
         inst.no_wet_prefix = true

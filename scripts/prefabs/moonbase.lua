@@ -107,38 +107,31 @@ local function OnRemoveEntity(inst)
     end
 end
 
-local function PushMusic(inst)
+local function PushMusic(inst, level)
     if ThePlayer ~= nil and ThePlayer:IsNear(inst, 30) then
-        ThePlayer:PushEvent("triggeredevent")
+        ThePlayer:PushEvent("triggeredevent", { level = level })
     end
 end
 
 local function OnMusicDirty(inst)
     --Dedicated server does not need to trigger music
     if not TheNet:IsDedicated() then
-        if inst._music:value() then
-            if inst._musictask == nil then
-                inst._musictask = inst:DoPeriodicTask(1, PushMusic, 0)
-            end
-        elseif inst._musictask ~= nil then
+        if inst._musictask ~= nil then
             inst._musictask:Cancel()
-            inst._musictask = nil
         end
+        inst._musictask = inst._music:value() > 0 and inst:DoPeriodicTask(1, PushMusic, 0, inst._music:value()) or nil
     end
 end
 
-local function StartMusic(inst)
-    if not inst._music:value() then
-        inst._music:set(true)
+local function StartMusic(inst, level)
+    if inst._music:value() ~= level then
+        inst._music:set(level)
         OnMusicDirty(inst)
     end
 end
 
 local function StopMusic(inst)
-    if inst._music:value() then
-        inst._music:set(false)
-        OnMusicDirty(inst)
-    end
+    StartMusic(inst, 0)
 end
 
 local function IsInAnimState(inst, state)
@@ -218,7 +211,7 @@ local function ToggleMoonCharge(inst)
             if inst.components.timer:TimerExists("mooncharge") then
                 inst.components.moonbeastspawner:Start()
                 StartFX(inst)
-                StartMusic(inst)
+                StartMusic(inst, (inst.components.timer:TimerExists("mooncharge2") or inst.components.timer:TimerExists("mooncharge3")) and 1 or 2)
             elseif not inst.components.timer:TimerExists("moonchargepre") then
                 inst.components.timer:StartTimer("moonchargepre", math.max(MIN_CHARGE_START_DELAY, inst.components.timer:GetTimeLeft("fullmoonstartdelay") or MIN_CHARGE_START_DELAY))
                 inst.components.timer:StopTimer("fullmoonstartdelay")
@@ -323,21 +316,23 @@ local function OnTimerDone(inst, data)
             inst.components.timer:StopTimer("fullmoonstartdelay")
         else
             inst.components.timer:StartTimer("mooncharge", TUNING.MOONBASE_CHARGE_DURATION)
-            inst.components.timer:StartTimer("mooncharge2", TUNING.MOONBASE_CHARGE_DURATION / 3)
+            inst.components.timer:StartTimer("mooncharge2", math.min(TUNING.MOONBASE_CHARGE_DURATION1, TUNING.MOONBASE_CHARGE_DURATION))
             inst.components.moonbeastspawner:Start()
             StartFX(inst)
-            StartMusic(inst)
+            StartMusic(inst, 1)
         end
     elseif data.name == "mooncharge2" then
         if inst._fxpulse ~= nil then
             inst._fxpulse:SetLevel(2)
         end
         inst:AddTag("intense")
-        inst.components.timer:StartTimer("mooncharge3", TUNING.MOONBASE_CHARGE_DURATION / 3)
+        inst.components.timer:StartTimer("mooncharge3", math.min(TUNING.MOONBASE_CHARGE_DURATION1, math.max(0, TUNING.MOONBASE_CHARGE_DURATION - TUNING.MOONBASE_CHARGE_DURATION1)))
+        --StartMusic(inst, 2)
     elseif data.name == "mooncharge3" then
         if inst._fxpulse ~= nil then
             inst._fxpulse:SetLevel(3)
         end
+        StartMusic(inst, 2)
     elseif data.name == "mooncharge"
         and inst.components.pickable.caninteractwith
         and inst.components.pickable.product == KEY_STAFF then
@@ -495,7 +490,7 @@ local function fn()
 
     inst:AddTag("moonbase")
 
-    inst._music = net_bool(inst.GUID, "moonbase._music", "musicdirty")
+    inst._music = net_tinybyte(inst.GUID, "moonbase._music", "musicdirty")
 
     inst.entity:SetPristine()
 

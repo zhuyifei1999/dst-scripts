@@ -7,6 +7,9 @@ local function createbeam(layer, offset)
     local function KillFX(inst)
         if not inst._iskilled then --i skilled?
             inst._iskilled = true
+            if layer == "front" then
+                inst.SoundEmitter:PlaySound("dontstarve/common/together/moonbase/beam_stop_fail")
+            end
             inst.AnimState:PlayAnimation("lunar_"..layer.."_pst")
             inst:ListenForEvent("animover", inst.Remove)
             inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() + FRAMES, inst.Remove)
@@ -18,6 +21,9 @@ local function createbeam(layer, offset)
 
         inst.entity:AddTransform()
         inst.entity:AddAnimState()
+        if layer == "front" then
+            inst.entity:AddSoundEmitter()
+        end
         inst.entity:AddNetwork()
 
         inst.AnimState:SetBank("lunar_fx")
@@ -50,14 +56,15 @@ local function SetLevel(inst, level)
         --wot
     elseif level == nil or level < 2 then
         inst:Hide()
-        --inst.SoundEmitter:SetParameter("beam", "INTENSITY", 0)
+        inst.SoundEmitter:SetParameter("beam", "intensity", 0)
     else
         local anim = "lunar_"..tostring(math.min(level, 3)).."_loop"
         if not inst.AnimState:IsCurrentAnimation(anim) then
             inst.AnimState:PlayAnimation(anim, true)
         end
         inst:Show()
-        --inst.SoundEmitter:SetParameter("beam", "INTENSITY", level < 3 and 6 or 9)
+        inst.SoundEmitter:SetParameter("beam", "intensity", level < 3 and .6 or .9)
+        inst.SoundEmitter:PlaySound("dontstarve/common/together/moonbase/beam_level_up")
     end
 end
 
@@ -69,6 +76,10 @@ local function FinishFX(inst)
         inst._finished = inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() + 2 * FRAMES, inst.Remove)
         inst:Show()
     end
+end
+
+local function InitFX(inst)
+    inst.SoundEmitter:PlaySound("dontstarve/common/together/moonbase/beam_level_up")
 end
 
 local function createpulse(offset)
@@ -90,8 +101,8 @@ local function createpulse(offset)
 
         inst:Hide()
 
-        inst.SoundEmitter:PlaySound("dontstarve/common/staff_star_LP", "beam")
-        --inst.SoundEmitter:SetParameter("beam", "INTENSITY", 0)
+        inst.SoundEmitter:PlaySound("dontstarve/common/together/moonbase/beam", "beam")
+        inst.SoundEmitter:SetParameter("beam", "intensity", 0)
 
         inst.entity:SetPristine()
 
@@ -99,7 +110,7 @@ local function createpulse(offset)
             return inst
         end
 
-        inst.SoundEmitter:PlaySound("dontstarve/common/together/moonbase/beam_start")
+        inst:DoTaskInTime(0, InitFX)
 
         inst.persists = false
 

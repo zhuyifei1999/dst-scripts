@@ -108,6 +108,8 @@ function Follower:SetLeader(inst)
         inst.components.leader:AddFollower(self.inst)
     end
 
+    self:StopLeashing()
+
     if self.leader ~= nil then
         self.inst:RemoveEventCallback("onremove", self.OnLeaderRemoved, self.leader)
     end
@@ -116,13 +118,11 @@ function Follower:SetLeader(inst)
 
         self.leader = inst
 
-        if inst.components.inventoryitem ~= nil then
-            --Special case for pets leashed to inventory items
+        if inst:HasTag("player") or inst.components.inventoryitem ~= nil then
+            --Special case for pets leashed to players or inventory items
             self:StartLeashing()
         end
     else
-        self:StopLeashing()
-
         self.leader = nil
 
         if self.task ~= nil then
@@ -140,11 +140,8 @@ function Follower:GetLoyaltyPercent()
     return 0
 end
 
-local function stopfollow(inst)
-    if inst:IsValid() and inst.components.follower ~= nil then
-        inst:PushEvent("loseloyalty", { leader = inst.components.follower.leader })
-        inst.components.follower:SetLeader(nil)
-    end
+local function stopfollow(inst, self)
+    self:StopLeashing()
 end
 
 function Follower:AddLoyaltyTime(time)
@@ -158,14 +155,13 @@ function Follower:AddLoyaltyTime(time)
     if self.task ~= nil then
         self.task:Cancel()
     end
-    self.task = self.inst:DoTaskInTime(timeLeft, stopfollow)
+    self.task = self.inst:DoTaskInTime(timeLeft, stopfollow, self)
 end
 
 function Follower:StopFollowing()
     if self.inst:IsValid() then
-        self.inst:PushEvent("loseloyalty", {leader=self.inst.components.follower.leader})
-        self.inst.components.follower:SetLeader(nil)
-        self:StopLeashing()
+        self.inst:PushEvent("loseloyalty", { leader = self.leader })
+        self:SetLeader(nil)
     end
 end
 
@@ -215,7 +211,7 @@ function Follower:LongUpdate(dt)
             self:SetLeader(nil) 
         else
             self.targettime = GetTime() + time_left
-            self.task = self.inst:DoTaskInTime(time_left, stopfollow)
+            self.task = self.inst:DoTaskInTime(time_left, stopfollow, self)
         end
     end
 end

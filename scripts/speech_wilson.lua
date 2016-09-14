@@ -424,7 +424,6 @@ return {
 		NIGHTSTICK = "It's electric!",
 		GREENGEM = "It's green and gemmy.",
 		RELIC = "Ancient household goods.",
-		RUINS_RUBBLE = "This can be fixed.",
 		MULTITOOL_AXE_PICKAXE = "It's brilliant!",
 		ORANGESTAFF = "This beats walking.",
 		YELLOWAMULET = "Warm to the touch.",
@@ -1352,7 +1351,7 @@ return {
 		ROCK_PETRIFIED_TREE_OLD = "It looks scared stiff.",
 		ROCK_ICE = 
 		{
-			GENERIC = "A very isolated glacier.",
+			GENERIC = "Ice to meet you.",
 			MELTED = "Won't be useful until it freezes again.",
 		},
 		ROCK_ICE_MELTED = "Won't be useful until it freezes again.",

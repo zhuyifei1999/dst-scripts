@@ -76,10 +76,12 @@ end
 
 function BeargerOffScreen:WorkEntitiesAlongLine(x1,y1,x2,y2,r)
 	local ents = GetEntitiesAlongLine(x1,y1,x2,y2,r,nil,nil,{"running","tree"})
-	ApplyToEntities(ents, 
+	ApplyToEntities(ents,
 			function(ent)
 				if ent.components.workable ~= nil and ent.components.workable:CanBeWorked() then
-					ent.components.lootdropper:SetLoot({})
+                    if ent.components.lootdropper ~= nil and (ent:HasTag("tree") or ent:HasTag("boulder")) then
+                        ent.components.lootdropper:SetLoot({})
+                    end
 					ent.components.workable:Destroy(self.inst)
 				end
 			end

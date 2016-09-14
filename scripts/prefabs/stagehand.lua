@@ -1,12 +1,15 @@
 local assets =
 {
     Asset("ANIM", "anim/stagehand.zip"),
+    Asset("SOUND", "sound/sfx.fsb"),
 }
 
 local prefabs =
 {
     "endtable_blueprint",
 }
+
+local brain = require( "brains/stagehandbrain")
 
 SetSharedLootTable('stagehand_creature',
 {
@@ -28,6 +31,12 @@ local function CanStandUp(inst)
 	return (not inst.LightWatcher:IsInLight()) or (TheWorld.state.isnight and (not TheWorld.state.isfullmoon) and not inst:IsNearPlayer(30))
 end
 
+local sounds =
+{
+    hit              = "dontstarve/creatures/together/stagehand/hit",
+	awake_pre        = "dontstarve/creatures/together/stagehand/awake_pre",
+	footstep         = "dontstarve/creatures/together/stagehand/footstep",
+}
 
 local function ChangePhysics(inst, is_standing)
 	local phys = inst.Physics
@@ -57,8 +66,6 @@ local function ChangePhysics(inst, is_standing)
 	phys:CollidesWith(COLLISION.GIANTS)
 end
 
-local brain = require( "brains/stagehandbrain")
-
 local function MakeStagehand(name)
 
     local function fn()
@@ -84,6 +91,8 @@ local function MakeStagehand(name)
 
         inst:AddTag("notraptrigger")
 
+	    MakeSnowCoveredPristine(inst)
+
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
@@ -93,6 +102,7 @@ local function MakeStagehand(name)
 	    MakeSmallBurnable(inst, nil, nil, false, "swap_fire")
 	    MakeSmallPropagator(inst)
 		MakeHauntableWork(inst)
+	    MakeSnowCovered(inst)
 
 		inst:AddComponent("workable")
 		inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
@@ -102,7 +112,7 @@ local function MakeStagehand(name)
 
         inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
         inst.components.locomotor.walkspeed = 8
-        --inst.sounds = sounds
+        inst.sounds = sounds
 
 		inst.CanStandUp = CanStandUp
 		inst.ChangePhysics = ChangePhysics

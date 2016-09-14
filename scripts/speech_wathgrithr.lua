@@ -1392,7 +1392,7 @@ return {
             READY = "The beast has been roused beneath!",
 		},
         GARGOYLE_HOUND = "Shed your stone form and fight, beast!",
-        GARGOYLE_WEREPIG = "Do not coward behind your carapace of rock! Fight!",
+        GARGOYLE_WEREPIG = "Do not cower behind your carapace of rock! Fight!",
 		TWIGGYTREE = 
 		{
 			BURNING = "The wood's ablaze!",

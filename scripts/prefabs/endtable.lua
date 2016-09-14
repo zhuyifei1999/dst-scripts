@@ -6,6 +6,7 @@ local prefabs =
 local assets =
 {
     Asset("ANIM", "anim/stagehand.zip"),
+    Asset("SOUND", "sound/sfx.fsb"),
 }
 
 local function onhammered(inst)
@@ -16,8 +17,9 @@ local function onhammered(inst)
     inst:Remove()
 end
 
-local function onhit(inst)
-    if not inst:HasTag("burnt") then
+local function onhit(inst, worker, workleft)
+    if not inst:HasTag("burnt") and workleft > 0 then
+        inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stagehand/hit")
         inst.AnimState:PlayAnimation("hit")
         inst.AnimState:PushAnimation("idle")
     end
@@ -32,12 +34,6 @@ local function fn()
     inst.entity:AddNetwork()
 
     MakeObstaclePhysics(inst, .6)
-     
-    inst.entity:SetPristine()
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
 
     inst:AddTag("structure")
 
@@ -45,9 +41,18 @@ local function fn()
     inst.AnimState:SetBuild("stagehand")
     inst.AnimState:PlayAnimation("idle")
 
+	MakeSnowCoveredPristine(inst)
+     
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
     MakeSmallBurnable(inst, nil, nil, true)
     MakeSmallPropagator(inst)
 	MakeHauntableWork(inst)
+	MakeSnowCovered(inst)
 
 	inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.HAMMER)

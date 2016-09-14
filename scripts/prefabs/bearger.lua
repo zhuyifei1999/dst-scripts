@@ -121,7 +121,7 @@ end
 local function OnDestroyOther(inst, other)
     if other:IsValid() and other.components.workable ~= nil and other.components.workable:CanBeWorked() then
         SpawnPrefab("collapse_small").Transform:SetPosition(other.Transform:GetWorldPosition())
-        if other.components.lootdropper ~= nil then
+        if other.components.lootdropper ~= nil and (other:HasTag("tree") or other:HasTag("boulder")) then
             other.components.lootdropper:SetLoot({})
         end
         other.components.workable:Destroy(inst)

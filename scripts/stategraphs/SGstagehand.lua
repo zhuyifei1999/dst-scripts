@@ -177,6 +177,12 @@ local states=
 		    inst.AnimState:PlayAnimation("sleep")
         end,
         
+        timeline=
+        {
+            TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.awake_pre) end),
+            TimeEvent(15*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.hit) end),
+        },
+
         events=
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),
@@ -192,6 +198,14 @@ local states=
             inst.AnimState:PlayAnimation("awake_pre")
         end,
         
+        timeline=
+        {
+            TimeEvent(2*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.hit) end),
+            TimeEvent(11*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.awake_pre) end),
+            TimeEvent(12*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.footstep) end),
+            TimeEvent(22*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.footstep) end),
+        },
+
         events=
         {
             EventHandler("animover", function(inst) 
@@ -207,11 +221,17 @@ local states=
         tags = {"busy"},
         
         onenter = function(inst)
---            inst.SoundEmitter:PlaySound(inst.sounds.hit)
+            inst.SoundEmitter:PlaySound(inst.sounds.hit)
             inst.AnimState:PlayAnimation(inst.sg.is_hiding and "hit" or "awake_hit")
             inst.Physics:Stop()            
         end,
         
+        timeline=
+        {
+            TimeEvent(0*FRAMES, function(inst) if not inst.sg.is_hiding then inst.SoundEmitter:PlaySound(inst.sounds.hit) end end), -- awake hit timing
+            TimeEvent(3*FRAMES, function(inst) if inst.sg.is_hiding then     inst.SoundEmitter:PlaySound(inst.sounds.hit) end end), -- hiding hit timing
+        },
+
         events=
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),
@@ -234,6 +254,7 @@ local states=
         timeline=
         {
 	        TimeEvent(20*FRAMES, function(inst) inst.components.burnable:Extinguish() end ),
+            TimeEvent(28*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.hit) end ),
 	    },
         
         events=
@@ -266,8 +287,15 @@ local states=
 		
         timeline=
         {
-	        TimeEvent(14*FRAMES,      function(inst) if inst.sg.statemem.hide_delay     then return end inst.components.lootdropper:SpawnLootPrefab("endtable_blueprint", inst:GetPosition()) end ),
-	        TimeEvent((14+31)*FRAMES, function(inst) if not inst.sg.statemem.hide_delay then return end inst.components.lootdropper:SpawnLootPrefab("endtable_blueprint", inst:GetPosition()) end ),
+            TimeEvent(10*FRAMES,      function(inst) if inst.sg.statemem.hide_delay then inst.SoundEmitter:PlaySound(inst.sounds.awake_pre) end end ),
+            TimeEvent(15*FRAMES,      function(inst) if inst.sg.statemem.hide_delay then inst.SoundEmitter:PlaySound(inst.sounds.hit) end end ),
+            TimeEvent(31*FRAMES,      function(inst) if inst.sg.statemem.hide_delay then inst.SoundEmitter:PlaySound(inst.sounds.awake_pre) end end ),
+            TimeEvent((14+31)*FRAMES, function(inst) if inst.sg.statemem.hide_delay then inst.components.lootdropper:SpawnLootPrefab("endtable_blueprint", inst:GetPosition()) end end ),
+            TimeEvent((28+31)*FRAMES, function(inst) if inst.sg.statemem.hide_delay then inst.SoundEmitter:PlaySound(inst.sounds.hit) end end ),
+
+            TimeEvent(6*FRAMES,       function(inst) if not inst.sg.statemem.hide_delay then inst.SoundEmitter:PlaySound(inst.sounds.awake_pre) end end ),
+            TimeEvent(14*FRAMES,      function(inst) if not inst.sg.statemem.hide_delay then inst.components.lootdropper:SpawnLootPrefab("endtable_blueprint", inst:GetPosition()) end end ),
+            TimeEvent(28*FRAMES,      function(inst) if not inst.sg.statemem.hide_delay then inst.SoundEmitter:PlaySound(inst.sounds.hit) end end ),
 	    },
         
         events=
@@ -283,12 +311,21 @@ local states=
 
 CommonStates.AddWalkStates(states,
 {
-	walktimeline = {
-		TimeEvent(0*FRAMES, PlayFootstep ),
-		TimeEvent(5*FRAMES, PlayFootstep ),
-		TimeEvent(12*FRAMES, PlayFootstep ),
-		TimeEvent(17*FRAMES, PlayFootstep ),
-	},
+    starttimeline = {
+        TimeEvent( 6*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.footstep) end),
+    },
+
+    walktimeline = {
+        TimeEvent( 0*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.footstep) end),
+        TimeEvent( 6*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.footstep) end),
+        TimeEvent(12*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.footstep) end),
+        TimeEvent(17*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.footstep) end),
+    },
+
+    endtimeline = {
+        TimeEvent( 0*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.footstep) end),
+        TimeEvent( 5*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.footstep) end),
+    },
 })
 
 return StateGraph("stagehand", states, events, "initailstate", actionhandlers)

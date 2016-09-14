@@ -881,7 +881,7 @@ function Combat:DoAreaAttack(target, range, weapon, validfn, stimuli, excludetag
             ent ~= self.inst and
             self:IsValidTarget(ent) and
             (validfn == nil or validfn(ent)) then
-            self.inst:PushEvent("onareaattackother", { target = target, weapon = weapon, stimuli = stimuli })
+            self.inst:PushEvent("onareaattackother", { target = ent, weapon = weapon, stimuli = stimuli })
             ent.components.combat:GetAttacked(self.inst, self:CalcDamage(ent, weapon, self.areahitdamagepercent), weapon, stimuli)
             hitcount = hitcount + 1
         end

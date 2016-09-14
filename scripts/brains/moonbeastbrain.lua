@@ -97,6 +97,7 @@ function MoonBeastBrain:OnStart()
         SequenceNode{
             ActionNode(function() BreakSkeletons(self.inst) end),
             AttackWall(self.inst),
+            ActionNode(function() self.inst.components.combat:ResetCooldown() end),
         },
 
         WhileNode(function() return ShouldTargetMoonBase(self.inst) end, "MoonCharge",

@@ -1331,6 +1331,7 @@ function Tune(overrides)
 
         MOONBASE_CHARGE_DELAY = 10, --so it won't start right away as it fades to night
         MOONBASE_CHARGE_DURATION = seg_time * 2 - 10.1, --tiny error to make sure it fits within a 2 seg night
+        MOONBASE_CHARGE_DURATION1 = 18.7, --18.6, --first stage, to match music length
         MOONBASE_COMPLETE_WORK = 6,
         MOONBASE_DAMAGED_WORK = 4,
 

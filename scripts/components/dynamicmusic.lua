@@ -32,7 +32,11 @@ local SEASON_DANGER_MUSIC =
     summer = "dontstarve_DLC001/music/music_danger_summer",
 }
 
-local TRIGGERED_DANGER_MUSIC = "dontstarve/music/music_epicfight_moonbase"
+local TRIGGERED_DANGER_MUSIC =
+{
+    "dontstarve/music/music_epicfight_moonbase",
+    "dontstarve/music/music_epicfight_moonbase_b",
+}
 
 --------------------------------------------------------------------------
 --[[ Member variables ]]
@@ -47,7 +51,7 @@ local _iscave = _isruin or inst:HasTag("cave")
 local _isenabled = true
 local _busytask = nil
 local _dangertask = nil
-local _istriggered = nil
+local _triggeredlevel = nil
 local _isday = nil
 local _isbusydirty = nil
 local _extendtime = nil
@@ -116,7 +120,7 @@ local function StopDanger(inst, istimeout)
             end
         end
         _dangertask = nil
-        _istriggered = nil
+        _triggeredlevel = nil
         _extendtime = 0
         _soundemitter:KillSound("danger")
     end
@@ -137,20 +141,21 @@ local function StartDanger(player)
                 (SEASON_DANGER_MUSIC[inst.state.season])),
             "danger")
         _dangertask = inst:DoTaskInTime(10, StopDanger, true)
-        _istriggered = nil
+        _triggeredlevel = nil
         _extendtime = 0
     end
 end
 
-local function StartTriggeredDanger()
-    if _istriggered then
+local function StartTriggeredDanger(player, data)
+    local level = math.max(1, math.floor(data ~= nil and data.level or 1))
+    if _triggeredlevel == level then
         _extendtime = GetTime() + 10
     elseif _isenabled then
         StopBusy()
         StopDanger()
-        _soundemitter:PlaySound(TRIGGERED_DANGER_MUSIC, "danger")
+        _soundemitter:PlaySound(TRIGGERED_DANGER_MUSIC[level] or TRIGGERED_DANGER_MUSIC[1], "danger")
         _dangertask = inst:DoTaskInTime(10, StopDanger, true)
-        _istriggered = true
+        _triggeredlevel = level
         _extendtime = 0
     end
 end
