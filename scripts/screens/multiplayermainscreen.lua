@@ -11,9 +11,9 @@ require "os"
 
 local ANR_BETA_COUNTDOWN_LAYOUT = BRANCH == "staging"
 local ANR_BETA_COUNTDOWN_DATE = {year = 2016, day = 22, month = 9, hour = 13}
-local ANR_BETA_COUNTDOWN_MODE = "image"                                          -- "text", "image", "reveal", "released"
+local ANR_BETA_COUNTDOWN_MODE = "reveal"                                         -- "text", "image", "reveal", "released"
 local ANR_BETA_COUNTDOWN_IMAGE = "silhouette_beta_2"                             -- "silhouette_beta_1"
-local ANR_BETA_COUNTDOWN_NAME = ""                                               -- "\"A Little Fixer Upper\""
+local ANR_BETA_COUNTDOWN_NAME = "\"Warts And All\""                              -- "\"A Little Fixer Upper\""
 
 local WorldGenScreen = require "screens/worldgenscreen"
 local PopupDialogScreen = require "screens/popupdialog"
