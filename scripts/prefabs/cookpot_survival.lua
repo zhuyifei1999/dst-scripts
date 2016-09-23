@@ -13,7 +13,6 @@ local tags = {"CROCKPOT", "CRAFTABLE", "SURVIVOR"}
 local ui_preview =
 {
 	build = "cookpot_survival",
-	bank = "cook_pot",
 }
 
 return CreatePrefabSkin("cookpot_survival",

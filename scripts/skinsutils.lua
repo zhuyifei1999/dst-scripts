@@ -97,7 +97,6 @@ function GetTypeForItem(item)
 	elseif EMOTE_ITEMS[itemName] then 
 		type = EMOTE_ITEMS[itemName].type
 	else
-
 		local skinsData = Prefabs[itemName]
 
 		if skinsData then 
@@ -112,6 +111,22 @@ function GetTypeForItem(item)
 	return type, itemName
 end
 
+function GetSortCategoryForItem(item)
+	local category = "none"
+
+	if CLOTHING[item] then
+		category = CLOTHING[item].type
+	elseif MISC_ITEMS[item] then
+		category = MISC_ITEMS[itemName].type
+	elseif EMOTE_ITEMS[item] then
+		category = EMOTE_ITEMS[itemName].type
+	else
+		local skinsData = Prefabs[item]
+		category = skinsData.base_prefab
+	end
+	
+	return category
+end
 
 --Note(Peter): do we actually want to do this here, or actually provide the json tags from the pipeline?
 function GetTagFromType(type)
@@ -338,7 +353,7 @@ function GetSortedSkinsList()
 							if a.item == b.item then 
 								return a.timestamp > b.timestamp
 							else
-								return a.item < b.item 
+								return GetSortCategoryForItem(a.item)..GetName(a.item) < GetSortCategoryForItem(b.item)..GetName(b.item)
 							end
 						else 
 							return CompareRarities(a,b)

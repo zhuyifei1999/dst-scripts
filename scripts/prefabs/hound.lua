@@ -422,6 +422,8 @@ local function fnmoon()
     MakeMediumFreezableCharacter(inst, "hound_body")
     MakeMediumBurnableCharacter(inst, "hound_body")
 
+    inst.components.freezable:SetDefaultWearOffTime(TUNING.MOONHOUND_FREEZE_WEAR_OFF_TIME)
+
     inst.components.combat:SetDefaultDamage(TUNING.MOONHOUND_DAMAGE)
     inst.components.combat:SetAttackPeriod(TUNING.MOONHOUND_ATTACK_PERIOD)
     inst.components.combat:SetRetargetFunction(3, moon_retargetfn)

@@ -10,7 +10,7 @@ local survival_together = {
 		name = STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS.SURVIVAL_TOGETHER,
 		desc = STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELDESC.SURVIVAL_TOGETHER,
         location = "forest",
-        version = 2,
+        version = 3,
 		overrides = {
 		},		
 		ordered_story_setpieces = {
@@ -59,7 +59,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 		name = STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS.SURVIVAL_TOGETHER_CLASSIC,
 		desc = STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELDESC.SURVIVAL_TOGETHER_CLASSIC,
         location = "forest",
-        version = 2,
+        version = 3,
         overrides = {
             task_set = "classic",
             spring = "noseason",
@@ -82,18 +82,25 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 
             cactus = "never",
         },
+		ordered_story_setpieces = {
+			"Sculptures_1",
+		},
 		numrandom_set_pieces = 5,
 		random_set_pieces = 
 		{
+			"Sculptures_2",
+			"Sculptures_3",
+			"Sculptures_4",
+			"Sculptures_5",
 			"Chessy_1",
 			"Chessy_2",
 			"Chessy_3",
 			"Chessy_4",
 			"Chessy_5",
 			"Chessy_6",
-			"ChessSpot1",
-			"ChessSpot2",
-			"ChessSpot3",
+			--"ChessSpot1",
+			--"ChessSpot2",
+			--"ChessSpot3",
 			"Maxwell1",
 			"Maxwell2",
 			"Maxwell3",
@@ -114,7 +121,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 		name=STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS.SURVIVAL_DEFAULT_PLUS,
 		desc= STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELDESC.SURVIVAL_DEFAULT_PLUS,
         location = "forest",
-        version = 2,
+        version = 3,
         overrides={
             start_location = "plus",
 
@@ -161,7 +168,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 		name=STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS.SURVIVAL_DEFAULT_PLUS,
 		desc= STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELDESC.SURVIVAL_DEFAULT_PLUS,
         location = "forest",
-        version = 2,
+        version = 3,
         overrides={
             start_location = "plus",
             boons = "often",
@@ -211,7 +218,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 		name=STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS.COMPLETE_DARKNESS,
 		desc= STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELDESC.COMPLETE_DARKNESS,
         location = "forest",
-        version = 2,
+        version = 3,
         overrides={
             start_location = "darkness",
             day = "onlynight",

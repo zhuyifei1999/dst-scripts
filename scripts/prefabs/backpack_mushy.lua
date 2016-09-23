@@ -11,7 +11,6 @@ local tags = {"BACKPACK", "CRAFTABLE"}
 local ui_preview =
 {
 	build = "swap_backpack_mushy",
-	bank = "swap_backpack_mushy",
 }
 
 return CreatePrefabSkin("backpack_mushy",

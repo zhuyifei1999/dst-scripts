@@ -787,7 +787,7 @@ function Combat:DoAttack(target_override, weapon, projectile, stimuli, instancem
     if not self:CanHitTarget(targ, weapon) then
         self.inst:PushEvent("onmissother", { target = targ, weapon = weapon })
         if self.areahitrange ~= nil then
-            self:DoAreaAttack(projectile or self.inst, self.areahitrange, weapon, nil, stimuli)
+            self:DoAreaAttack(projectile or self.inst, self.areahitrange, weapon, nil, stimuli, { "INLIMBO" })
         end
         return
     end
@@ -840,7 +840,7 @@ function Combat:DoAttack(target_override, weapon, projectile, stimuli, instancem
     end
 
     if self.areahitrange ~= nil then
-        self:DoAreaAttack(targ, self.areahitrange, weapon, nil, stimuli)
+        self:DoAreaAttack(targ, self.areahitrange, weapon, nil, stimuli, { "INLIMBO" })
     end
 
     self.lastdoattacktime = GetTime()

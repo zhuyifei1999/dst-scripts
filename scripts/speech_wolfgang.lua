@@ -165,6 +165,9 @@ return {
 	ANNOUNCE_ACCOMPLISHMENT_DONE = "I have defeated the tiny arrow!",	
 	ANNOUNCE_INSUFFICIENTFERTILIZER = "Is not enough poop.",
 	ANNOUNCE_LIGHTNING_DAMAGE_AVOIDED = "Lightning is weak compared to Wolfgang clothes!",
+	ANNOUNCE_TOADESCAPING = "Is looking skittery!",
+	ANNOUNCE_TOADESCAPED = "Scary frog got scared and left.",
+
 	ANNOUNCE_NODANGERAFK = "Wolfgang will not abandon the fight!",
 	ANNOUNCE_NODANGERGIFT = "Fight is better than present!",
 	ANNOUNCE_NOMOUNTEDGIFT = "Wolfgang will fall if try to open on top of hair cow!",
@@ -722,62 +725,93 @@ return {
 		MONKEY = "Ugly monkey man!",
 		MONKEYBARREL = "This... thing. It smells not so good.",
 
-		HOUNDSTOOTH="Puppy tooth!",
-		ARMORSNURTLESHELL="Is sticky inside.",
-		BAT="Flying mousey!",
-		BATBAT = "This club makes me feel funny.",
-		BATWING="Is all hairy and gross",
-		BATWING_COOKED="Crispy!",
+        HOUNDSTOOTH = "Puppy tooth!",
+        ARMORSNURTLESHELL = "Is sticky inside.",
+        BAT = "Flying mousey!",
+        BATBAT = "This club makes me feel funny.",
+        BATWING = "Is all hairy and gross",
+        BATWING_COOKED = "Crispy!",
         BATCAVE = "It's the hidey hole for the flying mousies!",
-		BEDROLL_FURRY="So comfy!",
-		BUNNYMAN="Hello rabbit!",
-		FLOWER_CAVE="Is light plant.",
-		FLOWER_CAVE_DOUBLE="Is light plant.",
-		FLOWER_CAVE_TRIPLE="Is light plant.",
-		GUANO="More poop.",
-		LANTERN="It keeps me safe from dark.",
-		LIGHTBULB="Is food?",
-		MANRABBIT_TAIL="Puffy!",
-		MUSHTREE_TALL=
-		{
+        BEDROLL_FURRY="So comfy!",
+        BUNNYMAN = "Hello rabbit!",
+        FLOWER_CAVE = "Is light plant.",
+        FLOWER_CAVE_DOUBLE = "Is light plant.",
+        FLOWER_CAVE_TRIPLE = "Is light plant.",
+        GUANO = "More poop.",
+        LANTERN = "It keeps me safe from dark.",
+        LIGHTBULB = "Is food?",
+        MANRABBIT_TAIL = "Puffy!",
+        MUSHROOMHAT = "Is mushy-room... for head!",
+        MUSHROOM_LIGHT2 =
+        {
+            ON = "Tall mushy-room make very pretty light!",
+            OFF = "How Wolfgang turn on mushy-room light?",
+            BURNT = "No more little lights.",
+        },
+        MUSHROOM_LIGHT =
+        {
+            ON = "Is nice light. Soft.",
+            OFF = "Big mushy-room make little light, maybe.",
+            BURNT = "Little light burnt too bright?",
+        },
+        MUSHROOMBOMB = "Is dangerous mushy-boom!",
+        SHROOM_SKIN = "Is squishy yucky frogman skin!",
+        TOADSTOOL_CAP =
+        {
+            EMPTY = "Is little dirt hole.",
+            INGROUND = "Squishy thing in ground.",
+            GENERIC = "Tiny purple mushy-room is no threat to Wolfgang!",
+        },
+        TOADSTOOL =
+        {
+            GENERIC = "Bah! Frogman was hiding like coward!",
+            RAGE = "Frogman is very strong now!",
+        },
+        MUSHROOMSPROUT =
+        {
+            GENERIC = "Tall mushy-room looks very bad!",
+            BURNT = "Tall mushy-room is burnt now!",
+        },
+        MUSHTREE_TALL =
+        {
             GENERIC = "Big mushtree is big.",
             BLOOM = "Woah! It's even bigger!",
         },
-		MUSHTREE_MEDIUM=
-		{
+        MUSHTREE_MEDIUM =
+        {
             GENERIC = "Mushy bush.",
             BLOOM = "It's having fun!",
         },
-		MUSHTREE_SMALL=
-		{
+        MUSHTREE_SMALL =
+        {
             GENERIC = "Mushy shrub.",
             BLOOM = "Even smell is strong!",
         },
         MUSHTREE_TALL_WEBBED = "Aw, cheer up!",
-        SPORE_TALL = "Is tiny bug?",
-        SPORE_MEDIUM = "Is tiny bug?",
-        SPORE_SMALL = "Is tiny bug?",
+        SPORE_TALL = "Little blue bug has no wings.",
+        SPORE_MEDIUM = "Is tiny red bug?",
+        SPORE_SMALL = "Nice green bug. Wolfgang will not swat.",
         SPORE_TALL_INV = "I make it my pet.",
         SPORE_MEDIUM_INV = "I make it my pet.",
         SPORE_SMALL_INV = "I make it my pet.",
-		SLURTLE="Ha! You are slow!",
-		SLURTLE_SHELLPIECES="Is broken.",
-		SLURTLEHAT="Keeps head safe.",
-		SLURTLEHOLE="Hole full of slugs.",
-		SLURTLESLIME="Boom snot!",
-		SNURTLE="Spirally!",
-		SPIDER_HIDER="Is scared spider!",
-		SPIDER_SPITTER="Ptoo! Ptoo!",
-		SPIDERHOLE="Spiders everywhere.",
-		SPIDERHOLE_ROCK ="Spiders everywhere.",
-		STALAGMITE="Is pointy.",
-		STALAGMITE_FULL="Is pointy.",
-		STALAGMITE_LOW="Is pointy.",
-		STALAGMITE_MED="Is pointy.",
-		STALAGMITE_TALL="Rock, reaching for the roof.",
-		STALAGMITE_TALL_FULL="Rock, reaching for the roof.",
-		STALAGMITE_TALL_LOW="Rock, reaching for the roof.",
-		STALAGMITE_TALL_MED="Rock, reaching for the roof.",
+        SLURTLE = "Ha! You are slow!",
+        SLURTLE_SHELLPIECES = "Is broken.",
+        SLURTLEHAT = "Keeps head safe.",
+        SLURTLEHOLE = "Hole full of slugs.",
+        SLURTLESLIME = "Boom snot!",
+        SNURTLE = "Spirally!",
+        SPIDER_HIDER = "Is scared spider!",
+        SPIDER_SPITTER = "Ptoo! Ptoo!",
+        SPIDERHOLE = "Spiders everywhere.",
+        SPIDERHOLE_ROCK = "Spiders everywhere.",
+        STALAGMITE = "Is pointy.",
+        STALAGMITE_FULL = "Is pointy.",
+        STALAGMITE_LOW = "Is pointy.",
+        STALAGMITE_MED = "Is pointy.",
+        STALAGMITE_TALL = "Rock, reaching for the roof.",
+        STALAGMITE_TALL_FULL = "Rock, reaching for the roof.",
+        STALAGMITE_TALL_LOW = "Rock, reaching for the roof.",
+        STALAGMITE_TALL_MED = "Rock, reaching for the roof.",
 
 		TREASURECHEST_TRAP = "Raagh!",
 		TURF_CARPETFLOOR = "Step stones.",
@@ -906,12 +940,17 @@ return {
 		BLOWDART_FIRE = "Careful, Wolfgang.",
 		BLOWDART_SLEEP = "Dart do sleeping to enemies.",
 		BLOWDART_PIPE = "Dart do pain to enemies.",
+		BLOWDART_YELLOW = "Do not know if Wolfgang should be allowed to have this.",
 		BLUEGEM = "Pretty rock.",
 		
 		SHADOWDIGGER = "Ha ha! Tiny men should dance for amusement!",
 
-		BLUEPRINT = "Pretty pictures!",
-		BELL_BLUEPRINT = "Pretty pictures!",
+		BLUEPRINT = 
+		{ 
+            COMMON = "Pretty pictures!",
+            RARE = "Very, very fancy pictures!",
+        },
+		BELL_BLUEPRINT = "Blueprint. Footprint!",
 		BLUE_CAP = "Is good for tired muscles, I think.",
 		BLUE_CAP_COOKED = "Is not same.",
 		BLUE_MUSHROOM =
@@ -969,6 +1008,11 @@ return {
 		CORN = "Is corn. What expect?",
 		CORN_COOKED = "Pop pop pop! Ha ha, funny corn.",
 		CORN_SEEDS = "Is seeds for grow corn.",
+		CANARY =
+		{
+			GENERIC = "Is small yellow bird!",
+			HELD = "Small bird fit easily in big Wolfgang hands.",
+		},
 		CROW =
 		{
 			GENERIC = "I do not like birds. Too fragile.",
@@ -1001,6 +1045,13 @@ return {
 		},
 		DIVININGRODSTART = "Is funny rod thing.",
 		DRAGONFLY = "I confuse... Is dragonfly, or dragon-fly?",
+		DRAGONFLYFURNACE = 
+		{
+		    HAMMERED = "Is very cute!",
+			GENERIC = "Scaly pot for making hotness.", --no gems
+			NORMAL = "Brainlady warned not to touch pot with bare hands.", --one gem
+			HIGH = "Wolfgang hope does not burn moustache.", --two gems
+		},
 
 		HUTCH = "You are creepy.",
         HUTCH_FISHBOWL =
@@ -1083,6 +1134,7 @@ return {
 		},
 		EYEPLANT = "They are not what they seem.",
 		FEATHERHAT = "Is silly hat of feather. Could make Wolfgang bird?",
+		FEATHER_CANARY = "Is feather of bird yellow.",
 		FEATHER_CROW = "Is feather of bird black.",
 		FEATHER_ROBIN = "Is feather of bird red.",
 		FEATHER_ROBIN_WINTER = "Is feather of bird white.",
@@ -1396,6 +1448,12 @@ return {
 			DISEASED = "Is weak. Sickly!",
 			DISEASING = "Is look even more puny.",
 		},
+		SCARECROW = 
+   		{
+			GENERIC = "Ha! Is not man! Is straw!",
+			BURNING = "Little straw man is burning!",
+			BURNT = "Little straw man is dead.",
+   		},
 		SCULPTURE_KNIGHTHEAD = "Everyone! Watch Wolfgang carry horse head!",
 		SCULPTURE_KNIGHTBODY = 
 		{

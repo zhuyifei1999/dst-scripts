@@ -17,6 +17,9 @@ Recipe("molehat", {Ingredient("mole", 2), Ingredient("transistor", 2), Ingredien
 Recipe("pumpkin_lantern", {Ingredient("pumpkin", 1), Ingredient("fireflies", 1)}, RECIPETABS.LIGHT, TECH.SCIENCE_TWO)
 Recipe("lantern", {Ingredient("twigs", 3), Ingredient("rope", 2), Ingredient("lightbulb", 2)}, RECIPETABS.LIGHT, TECH.SCIENCE_TWO)
 
+Recipe("mushroom_light", {Ingredient("shroom_skin", 1), Ingredient("fertilizer", 1, nil, true)}, RECIPETABS.LIGHT, TECH.LOST, "mushroom_light_placer")
+Recipe("mushroom_light2", {Ingredient("shroom_skin", 1), Ingredient("fertilizer", 1, nil, true), Ingredient("boards", 1)}, RECIPETABS.LIGHT, TECH.LOST, "mushroom_light2_placer")
+
 --STRUCTURES
 Recipe("spidereggsack", {Ingredient("silk", 12), Ingredient("spidergland", 6), Ingredient("papyrus", 6)}, RECIPETABS.TOWN, TECH.NONE, nil, nil, nil, nil, "spiderwhisperer")
 Recipe("treasurechest", {Ingredient("boards", 3)}, RECIPETABS.TOWN, TECH.SCIENCE_ONE, "treasurechest_placer",1)
@@ -33,6 +36,7 @@ Recipe("wardrobe", {Ingredient("boards", 4), Ingredient("cutgrass", 3)}, RECIPET
 Recipe("pighouse", {Ingredient("boards", 4), Ingredient("cutstone", 3), Ingredient("pigskin", 4)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO, "pighouse_placer")
 Recipe("rabbithouse", {Ingredient("boards", 4), Ingredient("carrot", 10), Ingredient("manrabbit_tail", 4)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO, "rabbithouse_placer")
 Recipe("birdcage", {Ingredient("papyrus", 2), Ingredient("goldnugget", 6), Ingredient("seeds", 2)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO, "birdcage_placer")
+Recipe("scarecrow", {Ingredient("pumpkin", 1), Ingredient("boards", 3), Ingredient("cutgrass", 3)}, RECIPETABS.TOWN, TECH.LOST, "scarecrow_placer")
 
 Recipe("turf_road", {Ingredient("turf_rocky", 1), Ingredient("boards", 1)}, RECIPETABS.TOWN,  TECH.SCIENCE_TWO)
 Recipe("turf_woodfloor", {Ingredient("boards", 1)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO)
@@ -44,6 +48,7 @@ Recipe("pottedfern", {Ingredient("foliage", 5), Ingredient("slurtle_shellpieces"
 Recipe("endtable", {Ingredient("marble", 2), Ingredient("boards", 2), Ingredient("turf_carpetfloor", 2)}, RECIPETABS.TOWN, TECH.LOST, "endtable_placer", 1.5)
 
 Recipe("dragonflychest", {Ingredient("dragon_scales", 1), Ingredient("boards", 4), Ingredient("goldnugget", 10)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO, "dragonflychest_placer", 1.5)
+Recipe("dragonflyfurnace", {Ingredient("dragon_scales", 2), Ingredient("redgem", 2), Ingredient("charcoal", 10)}, RECIPETABS.TOWN, TECH.LOST, "dragonflyfurnace_placer", 1.5)
 
 
 --FARM
@@ -177,6 +182,7 @@ Recipe("footballhat", {Ingredient("pigskin", 1), Ingredient("rope", 1)}, RECIPET
 Recipe("blowdart_sleep", {Ingredient("cutreeds", 2),Ingredient("stinger", 1),Ingredient("feather_crow", 1) }, RECIPETABS.WAR,  TECH.SCIENCE_ONE)
 Recipe("blowdart_fire", {Ingredient("cutreeds", 2),Ingredient("charcoal", 1),Ingredient("feather_robin", 1) }, RECIPETABS.WAR,  TECH.SCIENCE_ONE)
 Recipe("blowdart_pipe", {Ingredient("cutreeds", 2),Ingredient("houndstooth", 1),Ingredient("feather_robin_winter", 1) }, RECIPETABS.WAR,  TECH.SCIENCE_ONE)
+Recipe("blowdart_yellow", {Ingredient("cutreeds", 2),Ingredient("goldnugget", 1),Ingredient("feather_canary", 1) }, RECIPETABS.WAR,  TECH.SCIENCE_ONE)
 Recipe("boomerang", {Ingredient("boards", 1),Ingredient("silk", 1),Ingredient("charcoal", 1)}, RECIPETABS.WAR,  TECH.SCIENCE_TWO)
 Recipe("beemine", {Ingredient("boards", 1),Ingredient("bee", 4),Ingredient("flint", 1) }, RECIPETABS.WAR,  TECH.SCIENCE_ONE)
 Recipe("trap_teeth", {Ingredient("log", 1),Ingredient("rope", 1),Ingredient("houndstooth", 1)}, RECIPETABS.WAR,  TECH.SCIENCE_TWO)
@@ -210,6 +216,9 @@ Recipe("hawaiianshirt", {Ingredient("papyrus", 3), Ingredient("silk", 3), Ingred
 Recipe("cane", {Ingredient("goldnugget", 2), Ingredient("walrus_tusk", 1), Ingredient("twigs", 4)}, RECIPETABS.DRESS,  TECH.SCIENCE_TWO)
 Recipe("beargervest", {Ingredient("bearger_fur", 1), Ingredient("sweatervest", 1), Ingredient("rope", 2)}, RECIPETABS.DRESS,  TECH.SCIENCE_TWO)
 Recipe("eyebrellahat", {Ingredient("deerclops_eyeball", 1), Ingredient("twigs", 15), Ingredient("boneshard", 4)}, RECIPETABS.DRESS,  TECH.SCIENCE_TWO)
+Recipe("red_mushroomhat", {Ingredient("red_cap", 6)}, RECIPETABS.DRESS, TECH.LOST)
+Recipe("green_mushroomhat", {Ingredient("green_cap", 6)}, RECIPETABS.DRESS, TECH.LOST)
+Recipe("blue_mushroomhat", {Ingredient("blue_cap", 6)}, RECIPETABS.DRESS, TECH.LOST)
 
 
 ----GEMS----

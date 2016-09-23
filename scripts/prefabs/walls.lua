@@ -71,6 +71,10 @@ local function onhealthchange(inst, old_percent, new_percent)
     end
 end
 
+local function keeptargetfn()
+    return false
+end
+
 local function onload(inst)
     if inst.components.health:IsDead() then
         clearobstacle(inst)
@@ -257,6 +261,7 @@ function MakeWallType(data)
         inst.components.repairable.onrepaired = onrepaired
 
         inst:AddComponent("combat")
+        inst.components.combat:SetKeepTargetFunction(keeptargetfn)
         inst.components.combat.onhitfn = onhit
 
         inst:AddComponent("health")

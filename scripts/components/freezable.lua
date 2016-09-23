@@ -111,15 +111,22 @@ end
 
 function Freezable:AddColdness(coldness, freezetime)
     self.coldness = math.max(0, self.coldness + coldness)
-    self:UpdateTint()
     --V2C: when removing coldness, don't update freeze states here
     if coldness > 0 then
-        if self.coldness >= self.resistance or self:IsFrozen() then
+        if self:IsFrozen() then
             self:Freeze(freezetime)
-        elseif self.coldness > 0 then
+        elseif self.coldness <= 0 then
+            --not possible?
+        elseif self.coldness < self.resistance then
             self:StartWearingOff()
+        elseif self.sg ~= nil and self.sg:HasStateTag("nofreeze") then
+            self.coldness = self.resistance
+            self:StartWearingOff()
+        else
+            self:Freeze(freezetime)
         end
     end
+    self:UpdateTint()
 end
 
 function Freezable:StartWearingOff(wearofftime)
@@ -131,9 +138,9 @@ end
 
 function Freezable:UpdateTint()
     if self.inst.AnimState ~= nil then
-        if self:IsFrozen() then
+        if self:IsFrozen() or self.coldness >= self.resistance then
             self.inst.AnimState:SetAddColour(unpack(FREEZE_COLOUR))
-        elseif self.coldness == 0 then
+        elseif self.coldness <= 0 then
             self.inst.AnimState:SetAddColour(0, 0, 0, 0)
         else
             local percent = self.coldness / self.resistance

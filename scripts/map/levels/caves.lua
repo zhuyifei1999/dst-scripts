@@ -10,7 +10,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
         name=STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS.DST_CAVE,
         desc= STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELDESC.DST_CAVE,
         location = "cave",
-        version = 2,
+        version = 3,
 
         overrides={
         },
@@ -22,7 +22,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
         name=STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS.DST_CAVE_PLUS,
         desc= STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELDESC.DST_CAVE_PLUS,
         location = "cave",
-        version = 2,
+        version = 3,
 
         overrides={
             boons = "often",

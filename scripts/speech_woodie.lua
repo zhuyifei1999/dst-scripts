@@ -159,6 +159,9 @@ return {
 	ANNOUNCE_ACCOMPLISHMENT_DONE = "That's a wrap, eh!",
 	ANNOUNCE_INSUFFICIENTFERTILIZER = "Need more poop, eh?",
 	ANNOUNCE_LIGHTNING_DAMAGE_AVOIDED = "That tickled a bit, eh?",
+	ANNOUNCE_TOADESCAPING = "It's gonna turn tail soon.",
+	ANNOUNCE_TOADESCAPED = "The warty hoser ran away!",
+
 	ANNOUNCE_HIGHRESEARCH = "Informative.",
 	ANNOUNCE_LOWRESEARCH = "That was barely even worth it, eh?",
 	ANNOUNCE_NODANGERAFK = "I better deal with these hosers first.",
@@ -706,63 +709,93 @@ return {
 		MONKEY = "Well then. That's a new one.",
 		MONKEYBARREL = "What a fine choice of building material.",
 
-		HOUNDSTOOTH="It's a beaut.",
-		ARMORSNURTLESHELL="You can never be too safe.",
-		BAT="Who taught that rat to fly?",
-		BATBAT = "A mouse with wings?",
-		BATWING="Gross!",
-		BATWING_COOKED="Gross! And tasty! So confusing!",
+        HOUNDSTOOTH = "It's a beaut.",
+        ARMORSNURTLESHELL = "You can never be too safe.",
+        BAT = "Who taught that rat to fly?",
+        BATBAT = "A mouse with wings?",
+        BATWING = "Gross!",
+        BATWING_COOKED = "Gross! And tasty! So confusing!",
         BATCAVE = "Full of the little critters!",
-		
-		BEDROLL_FURRY="I love camping.",
-		BUNNYMAN="He looks friendly enough.",
-		FLOWER_CAVE="Shiny!",
-		FLOWER_CAVE_DOUBLE="Shiny!",
-		FLOWER_CAVE_TRIPLE="Shiny!",
-		GUANO= "It stinks less than the other kind.",
-		LANTERN= "Well that's enlightening, eh?",
-		LIGHTBULB= "It looks chewy.",
-		MANRABBIT_TAIL= "I feel sorry for it.",
-		MUSHTREE_TALL=
-		{
+
+        BEDROLL_FURRY = "I love camping.",
+        BUNNYMAN = "He looks friendly enough.",
+        FLOWER_CAVE = "Shiny!",
+        FLOWER_CAVE_DOUBLE = "Shiny!",
+        FLOWER_CAVE_TRIPLE = "Shiny!",
+        GUANO = "It stinks less than the other kind.",
+        LANTERN = "Well that's enlightening, eh?",
+        LIGHTBULB = "It looks chewy.",
+        MANRABBIT_TAIL = "I feel sorry for it.",
+        MUSHROOMHAT = "That there'll make you one with the forest.",
+        MUSHROOM_LIGHT2 =
+        {
+            ON = "It illuminates with all the colours of the wind.",
+            OFF = "It oughta be green like a lush, choppable forest.",
+            BURNT = "That got charred real good.",
+        },
+        MUSHROOM_LIGHT =
+        {
+            ON = "Soak in that all-natural light, Lucy.",
+            OFF = "My kind of decor.",
+            BURNT = "Whose bright idea was it to kill the lights?",
+        },
+        MUSHROOMBOMB = "I don't like the look of that.",
+        SHROOM_SKIN = "That's gross.",
+        TOADSTOOL_CAP =
+        {
+            EMPTY = "It's a hole.",
+            INGROUND = "Is that how trees are born?",
+            GENERIC = "It isn't polypore-sonal, I just gotta chop you.",
+        },
+        TOADSTOOL =
+        {
+            GENERIC = "I'm gonna need a bigger axe.",
+            RAGE = "Alright, enough playin' around! Get'em Lucy!",
+        },
+        MUSHROOMSPROUT =
+        {
+            GENERIC = "Mushrooms don't have no reason to be that big.",
+            BURNT = "Don't breathe it in, Lucy!",
+        },
+        MUSHTREE_TALL =
+        {
             GENERIC = "I can't let that stand.",
             BLOOM = "Chop it down before it spreads!",
         },
-		MUSHTREE_MEDIUM=
-		{
+        MUSHTREE_MEDIUM =
+        {
             GENERIC = "Maybe I should chop it.",
             BLOOM = "I like the colour of this one.",
         },
-		MUSHTREE_SMALL=
-		{
+        MUSHTREE_SMALL =
+        {
             GENERIC = "It's made of wood.",
             BLOOM = "Well, I can't cut it down now...",
         },
         MUSHTREE_TALL_WEBBED = "This one needs pruning, at least.",
-        SPORE_TALL = "Flying pinecones!",
-        SPORE_MEDIUM = "Flying pinecones!",
-        SPORE_SMALL = "Flying pinecones!",
+        SPORE_TALL = "A flying green pinecone!",
+        SPORE_MEDIUM = "A floating red pinecone!",
+        SPORE_SMALL = "We've been visited by a forest sprite, Lucy!",
         SPORE_TALL_INV = "One day this might be a tree.",
         SPORE_MEDIUM_INV = "One day this might be a tree.",
         SPORE_SMALL_INV = "One day this might be a tree.",
-		SLURTLE="He's just misunderstood.",
-		SLURTLE_SHELLPIECES= "His home is broken now. Oh.",
-		SLURTLEHAT = "That could sure keep a noggin safe.",
-		SLURTLEHOLE="Are you guys doing okay in there?",
-		SLURTLESLIME="Someone needs a tissue.",
-		SNURTLE="Spirals!",
-		SPIDER_HIDER="Tricky devil!",
-		SPIDER_SPITTER="Spitting is rude!",
-		SPIDERHOLE="I should skedaddle before they come out of there.",
-		STALAGMITE="I'm not too interested in rocks.",
-		STALAGMITE_FULL="I'm not too interested in rocks.",
-		STALAGMITE_LOW="I'm not too interested in rocks.",
-		STALAGMITE_MED="I'm not too interested in rocks.",
-		STALAGMITE_TALL="I'm not too interested in rocks.",
-		STALAGMITE_TALL_FULL="I'm not too interested in rocks.",
-		STALAGMITE_TALL_LOW="I'm not too interested in rocks.",
-		STALAGMITE_TALL_MED="I'm not too interested in rocks.",
-
+        SLURTLE = "He's just misunderstood.",
+        SLURTLE_SHELLPIECES = "His home is broken now. Oh.",
+        SLURTLEHAT = "That could sure keep a noggin safe.",
+        SLURTLEHOLE = "Are you guys doing okay in there?",
+        SLURTLESLIME = "Someone needs a tissue.",
+        SNURTLE = "Spirals!",
+        SPIDER_HIDER = "Tricky devil!",
+        SPIDER_SPITTER = "Spitting is rude!",
+        SPIDERHOLE = "I should skedaddle before they come out of there.",
+        STALAGMITE = "I'm not too interested in rocks.",
+        STALAGMITE_FULL = "I'm not too interested in rocks.",
+        STALAGMITE_LOW = "I'm not too interested in rocks.",
+        STALAGMITE_MED = "I'm not too interested in rocks.",
+        STALAGMITE_TALL = "I'm not too interested in rocks.",
+        STALAGMITE_TALL_FULL = "I'm not too interested in rocks.",
+        STALAGMITE_TALL_LOW = "I'm not too interested in rocks.",
+        STALAGMITE_TALL_MED = "I'm not too interested in rocks.",
 
 		TURF_CARPETFLOOR = "Some ground.",
 		TURF_CHECKERFLOOR = "Some ground.",
@@ -897,9 +930,14 @@ return {
 		BLOWDART_FIRE = "This seems a bit aggressive.",
 		BLOWDART_SLEEP = "A couple blows on that and you can escape just aboot anything!",
 		BLOWDART_PIPE = "Anyone want a demonstration of my impressive lungpower?",
+		BLOWDART_YELLOW = "Gross bird parts made an okay weapon, I guess.",
 		BLUEGEM = "It's very cold.",
-		BLUEPRINT = "I'm not one for book learning.",
-		BELL_BLUEPRINT = "I'm not one for book learning.",
+		BLUEPRINT = 
+		{ 
+            COMMON = "I'm not one for book learning.",
+            RARE = "Looks real complicated, that one.",
+        },
+		BELL_BLUEPRINT = "Figuring that one out would be a feet.",
 		BLUE_CAP = "That's not meat.",
 		BLUE_CAP_COOKED = "That's not meat.",
 		BLUE_MUSHROOM =
@@ -962,6 +1000,11 @@ return {
 		CORN = "I like it, but not in everything that I eat.",
 		CORN_COOKED = "Cooked with the goodness of corn.",
 		CORN_SEEDS = "I'm more of a hewer of wood than a tiller of soil.",
+		CANARY =
+		{
+			GENERIC = "Degenerate.",
+			HELD = "Want a peek at our prisoner, Lucy?",
+		},
 		CROW =
 		{
 			GENERIC = "He's planning something. I can tell.",
@@ -996,6 +1039,13 @@ return {
 		},
 		DIVININGRODSTART = "That's a weird looking rod.",
 		DRAGONFLY = "She'll burn all the trees before I can chop them!",
+		DRAGONFLYFURNACE = 
+		{
+		    HAMMERED = "It got even tackier, eh?",
+			GENERIC = "Tacky taxidermy.", --no gems
+			NORMAL = "Just bask in that warm glow.", --one gem
+			HIGH = "I'm sweaty enough without help from a furnace.", --two gems
+		},
 
 		HUTCH = "Friendly lil guy, eh?",
         HUTCH_FISHBOWL =
@@ -1071,6 +1121,7 @@ return {
 		},
 		EYEPLANT = "It needs to mind its own business.",
 		FEATHERHAT = "I want nothing to do with that... thing.",
+		FEATHER_CANARY = "A grody feather.",
 		FEATHER_CROW = "A gross feather.",
 		FEATHER_ROBIN = "A disgusting feather.",
 		FEATHER_ROBIN_WINTER = "A stupid feather.",
@@ -1400,6 +1451,12 @@ return {
 			DISEASED = "It's caught a bit of a bug.",
 			DISEASING = "A poor excuse for wood.",
 		},
+		SCARECROW = 
+   		{
+			GENERIC = "He's doing the world a service.",
+			BURNING = "Glad that's not me.",
+			BURNT = "Great, now those feathered hosers are gonna run wild.",
+   		},
 		SCULPTURE_KNIGHTHEAD = "That's a heavy lookin' hoser.",
 		SCULPTURE_KNIGHTBODY = 
 		{

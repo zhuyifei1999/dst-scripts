@@ -645,7 +645,7 @@ function SaveGame(isshutdown, cb)
     assert(save.map.width, "Map width missing from savedata on save")
     assert(save.map.height, "Map height missing from savedata on save")
     --assert(save.map.topology, "Map topology missing from savedata on save")
-    assert(save.ents, "Entites missing from savedata on save")
+    assert(save.ents, "Entities missing from savedata on save")
     assert(save.mods, "Mod records missing from savedata on save")
 
     local PRETTY_PRINT = BRANCH == "dev"

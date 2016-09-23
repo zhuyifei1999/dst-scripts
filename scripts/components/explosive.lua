@@ -56,7 +56,7 @@ function Explosive:OnBurnt()
                     v.components.burnable:Ignite()
                 end
 
-                if v.components.combat ~= nil then
+                if v.components.combat ~= nil and not (v.components.health ~= nil and v.components.health:IsDead()) then
                     v.components.combat:GetAttacked(self.inst, totaldamage, nil)
                 end
 

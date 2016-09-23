@@ -117,7 +117,7 @@ end
 --end
 
 local function DoAreaAttack(inst)
-    inst.components.combat:DoAreaAttack(inst, 2)
+    inst.components.combat:DoAreaAttack(inst, 2, nil, nil, nil, { "INLIMBO" })
 end
 
 local function OnDeath(inst)

@@ -74,7 +74,7 @@ local function WorkMoonBase(inst)
 end
 
 local function BreakSkeletons(inst)
-    local skel = FindEntity(inst, 1.25, nil, { "playerskeleton", "hammer_workable" })
+    local skel = FindEntity(inst, 1.25, nil, { "playerskeleton", "HAMMER_workable" })
     if skel ~= nil then
         skel.components.workable:WorkedBy(inst, 1)
     end

@@ -6,6 +6,7 @@ local MoonBeastSpawner = Class(function(self, inst)
     self.period = 3
     self.maxspawns = 6
     self.task = nil
+    self.cc = nil
 end)
 
 function MoonBeastSpawner:OnRemoveFromEntity()
@@ -22,7 +23,7 @@ local MOONBEASTS =
 }
 
 local function MorphMoonBeast(old, moonbase)
-    if not old.components.health:IsDead() then
+    if not (old.components.health ~= nil and old.components.health:IsDead()) then
         local x, y, z = old.Transform:GetWorldPosition()
         local rot = old.Transform:GetRotation()
         local oldprefab = old.prefab
@@ -39,30 +40,76 @@ local function MorphMoonBeast(old, moonbase)
     end
 end
 
+local function CheckCCToFree(oldcc, newcc, tofree, target)
+    --On top of breaking petrification, moon charge
+    --also overpowers some lesser disabling effects
+    if target.components.health ~= nil and target.components.health:IsDead() then
+        return
+    elseif target.components.sleeper ~= nil and target.components.sleeper:IsAsleep() then
+        newcc[target] = "sleeping"
+    elseif target.components.freezable ~= nil and target.components.freezable:IsFrozen() and not target.components.freezable:IsThawing() then
+        newcc[target] = "frozen"
+    else
+        return
+    end
+
+    if newcc[target] == oldcc[target] then
+        table.insert(tofree, target)
+    end
+end
+
 local function DoSpawn(inst, self)
     local pos = inst:GetPosition()
     local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, self.range, nil, { "INLIMBO" }, { --[["moonbeast",]] "gargoyle", "werepig", "hound" })
-    local offscreenworkers = inst:IsAsleep() and {} or nil
+    local offscreenworkers, newcc, tofree
+    if inst:IsAsleep() then
+        offscreenworkers = {}
+        if next(self.cc) ~= nil then
+            self.cc = {}
+        end
+    else
+        newcc = {}
+        tofree = {}
+    end
 
     for i, v in ipairs(ents) do
         if not (v:HasTag("moonbeast") or v:HasTag("gargoyle")) then
             --claim regular werepigs and hounds
-            if v.sg:HasStateTag("busy") then
+            if not v.sg:HasStateTag("busy") then
                 MorphMoonBeast(v, inst)
-            elseif not v._morphmoonbeast then
-                v._morphmoonbeast = true
-                v:ListenForEvent("newstate", function()
-                    if not v.sg:HasStateTag("busy") and v._morphmoonbeast == true then
-                        v._morphmoonbeast = v:DoTaskInTime(0, MorphMoonBeast, inst)
-                    end
-                end)
+            else
+                if not v._morphmoonbeast then
+                    v._morphmoonbeast = true
+                    v:ListenForEvent("newstate", function()
+                        if not v.sg:HasStateTag("busy") and v._morphmoonbeast == true then
+                            v._morphmoonbeast = v:DoTaskInTime(0, MorphMoonBeast, inst)
+                        end
+                    end)
+                end
+                if offscreenworkers == nil then
+                    CheckCCToFree(self.cc, newcc, tofree, v)
+                end
             end
-        elseif offscreenworkers ~= nil and v.components.combat ~= nil and math.random() < .25 then
+        elseif offscreenworkers == nil then
+            CheckCCToFree(self.cc, newcc, tofree, v)
+        elseif v.components.combat ~= nil and math.random() < .25 then
+            --do random work when off-screen
             table.insert(offscreenworkers, v)
         end
     end
 
-    if offscreenworkers ~= nil and #offscreenworkers > 0 then
+    if offscreenworkers == nil then
+        for i = 1, math.min(#tofree, math.random(2)) do
+            local ent = table.remove(tofree, math.random(#tofree))
+            if ent.components.sleeper ~= nil and ent.components.sleeper:IsAsleep() then
+                ent.components.sleeper:WakeUp()
+            elseif ent.components.freezable ~= nil and ent.components.freezable:IsFrozen() and not ent.components.freezable:IsThawing() then
+                ent.components.freezable:Thaw()
+            end
+            newcc[ent] = nil
+        end
+        self.cc = newcc
+    elseif #offscreenworkers > 0 then
         local walls = TheSim:FindEntities(pos.x, pos.y, pos.z, 10, nil, nil, { "wall", "playerskeleton" })
         for i, v in ipairs(walls) do
             if math.random(self.maxspawns * 2 + 1) <= #offscreenworkers then
@@ -147,6 +194,7 @@ function MoonBeastSpawner:Start()
         end
 
         self.task = self.inst:DoPeriodicTask(self.period, DoSpawn, nil, self)
+        self.cc = {}
     end
 end
 
@@ -155,6 +203,7 @@ function MoonBeastSpawner:Stop()
         self.started = false
         self.task:Cancel()
         self.task = nil
+        self.cc = nil
 
         --Normally the brain will handle petrification after some time instead
         if self.inst:IsAsleep() then

@@ -1,7 +1,7 @@
 require "class"
 require "util"
 
-Ingredient = Class(function(self, ingredienttype, amount, atlas)
+Ingredient = Class(function(self, ingredienttype, amount, atlas, deconstruct)
     --Character ingredient multiples of 5 check only applies to
     --health and sanity cost, not max health or max sanity
     if ingredienttype == CHARACTER_INGREDIENT.HEALTH or
@@ -17,6 +17,7 @@ Ingredient = Class(function(self, ingredienttype, amount, atlas)
     self.type = ingredienttype
     self.amount = amount
     self.atlas = resolvefilepath(atlas or "images/inventoryimages.xml")
+    self.deconstruct = deconstruct
 end)
 
 local num = 0

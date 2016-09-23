@@ -3,7 +3,7 @@ local assets =
     Asset("ANIM", "anim/hound_base.zip"),
 }
 
-prefabs =
+local prefabs =
 {
     "boneshard",
     "houndstooth",
@@ -22,7 +22,7 @@ local function onsave(inst, data)
 end
 
 local function onload(inst, data)
-    if data ~= nil and data.anim then
+    if data ~= nil and data.anim ~= nil then
         inst.animname = data.anim
         inst.AnimState:PlayAnimation(inst.animname)
     end
@@ -67,7 +67,7 @@ local function fn()
     inst.components.workable:SetOnFinishCallback(onhammered)
 
     inst:AddComponent("lootdropper")
-    inst.components.lootdropper:SetChanceLootTable('houndbone') 
+    inst.components.lootdropper:SetChanceLootTable('houndbone')
     if bonetype == 3 then
         inst.components.lootdropper:AddChanceLoot("houndstooth", .5)
     end
@@ -76,7 +76,7 @@ local function fn()
 
     -------------------
     inst:AddComponent("inspectable")
-    
+
     --MakeSnowCovered(inst)
     inst.OnSave = onsave
     inst.OnLoad = onload

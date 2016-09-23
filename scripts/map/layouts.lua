@@ -619,7 +619,12 @@ local ExampleLayout =
         },
         scale = 1.9,
     },
-	
+	["ToadstoolArena"] = StaticLayout.Get("map/static_layouts/toadstool_arena", {
+		start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+		fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+		layout_position = LAYOUT_POSITION.CENTER,
+		disable_transform = true
+    }),
 
 --------------------------------------------------------------------------------
 -- RUINS

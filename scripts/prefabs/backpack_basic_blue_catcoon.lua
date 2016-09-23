@@ -13,7 +13,6 @@ local tags = {"BACKPACK", "CRAFTABLE"}
 local ui_preview =
 {
 	build = "swap_backpack_basic_blue_catcoon",
-	bank = "swap_backpack_basic_blue_catcoon",
 }
 
 return CreatePrefabSkin("backpack_basic_blue_catcoon",

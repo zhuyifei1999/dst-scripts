@@ -28,12 +28,14 @@ local prefabs =
     "orangegem",
     "yellowgem",
     "greengem",
+    "dragonfurnace_blueprint",
 }
 
 SetSharedLootTable('dragonfly',
 {
-    {'dragon_scales',    1.00},
-    {'lavae_egg',        0.33},
+    {'dragon_scales',             1.00},
+    {'dragonfurnace_blueprint',   1.00},
+    {'lavae_egg',                 0.33},
     
     {'meat',             1.00},
     {'meat',             1.00},

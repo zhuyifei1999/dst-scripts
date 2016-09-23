@@ -162,6 +162,8 @@ return {
 	ANNOUNCE_INSUFFICIENTFERTILIZER = "Not good enough for you, plant?",
 	ANNOUNCE_TOOL_SLIP = "Hey! We were using that!",
 	ANNOUNCE_LIGHTNING_DAMAGE_AVOIDED = "We're invincible!",
+	ANNOUNCE_TOADESCAPING = "It's looking around for a way out.",
+	ANNOUNCE_TOADESCAPED = "Aww, the frog left!",
 
 	ANNOUNCE_DAMP = "Splishy splashy.",
 	ANNOUNCE_WET = "We're unpleasantly moist.",
@@ -487,71 +489,102 @@ return {
 			NW = "Northwest!",
 			SW = "Southwest!",
 		},
-		HOUNDSTOOTH= "It's the perfect tooth to gnash.",
-		ARMORSNURTLESHELL= "It didn't protect the last guy.",
-		BAT= "Screechy mean guy!",
-		BATBAT = "Flap that bat like you were born to do it.",
-		BATWING= "This thing drives me batty.",
-		BATWING_COOKED= "Tastes like chicken.",
-        BATCAVE= "Oooh they're hiding in there!",
-		BEDROLL_FURRY="I miss being able to properly feel a nice bedroll.",
-		BUNNYMAN= "Hop along, lil bunny.",
-		FLOWER_CAVE= "Oooh, a glowing ball of flower!",
-		FLOWER_CAVE_DOUBLE= "Oooh, a glowing ball of flower!",
-		FLOWER_CAVE_TRIPLE= "Oooh, a glowing ball of flower!",
-		GUANO= "Bat doodoo.",
-		LANTERN= "The sun's trapped in there.",
-		LIGHTBULB= "Bright and delicious.",
-		MANRABBIT_TAIL= "We feel lucky, oh so lucky.",
-		MUSHTREE_TALL=
-		{
+        HOUNDSTOOTH = "It's the perfect tooth to gnash.",
+        ARMORSNURTLESHELL = "It didn't protect the last guy.",
+        BAT = "Screechy mean guy!",
+        BATBAT = "Flap that bat like you were born to do it.",
+        BATWING = "This thing drives me batty.",
+        BATWING_COOKED = "Tastes like chicken.",
+        BATCAVE = "Oooh they're hiding in there!",
+        BEDROLL_FURRY = "I miss being able to properly feel a nice bedroll.",
+        BUNNYMAN = "Hop along, lil bunny.",
+        FLOWER_CAVE = "Oooh, a glowing ball of flower!",
+        FLOWER_CAVE_DOUBLE = "Oooh, a glowing ball of flower!",
+        FLOWER_CAVE_TRIPLE = "Oooh, a glowing ball of flower!",
+        GUANO = "Bat doodoo.",
+        LANTERN = "The sun's trapped in there.",
+        LIGHTBULB = "Bright and delicious.",
+        MANRABBIT_TAIL = "We feel lucky, oh so lucky.",
+        MUSHROOMHAT = "It's a cap cap!",
+        MUSHROOM_LIGHT2 =
+        {
+            ON = "We love all the colors!",
+            OFF = "Maybe the night won't be as scary now.",
+            BURNT = "Aw. It was kinda growing on us.",
+        },
+        MUSHROOM_LIGHT =
+        {
+            ON = "It's giving off a nice light.",
+            OFF = "It still needs to be turned on.",
+            BURNT = "Well that's no fun-gus.",
+        },
+        MUSHROOMBOMB = "Explodey fungus!",
+        SHROOM_SKIN = "Haha! Yuck!",
+        TOADSTOOL_CAP =
+        {
+            EMPTY = "Do you think we'd fit?",
+            INGROUND = "I think it needs help getting out.",
+            GENERIC = "Purple! It's purple!",
+        },
+        TOADSTOOL =
+        {
+            GENERIC = "Yikes! That's a big frog!",
+            RAGE = "Toadally terrifying!",
+        },
+        MUSHROOMSPROUT =
+        {
+            GENERIC = "I think it's doing something bad!",
+            BURNT = "We should have chopped it!",
+        },
+        MUSHTREE_TALL =
+        {
             GENERIC = "How did it get so big?",
             BLOOM = "It sounds so funny!",
         },
-		MUSHTREE_MEDIUM=
-		{
+        MUSHTREE_MEDIUM =
+        {
             GENERIC = "It's upsettingly large.",
             BLOOM = "Hahah! Wow, it smells so bad!",
         },
-		MUSHTREE_SMALL=
-		{
+        MUSHTREE_SMALL =
+        {
             GENERIC = "Bigger than a normal mushroom.",
             BLOOM = "It's all round and squishy now!",
         },
         MUSHTREE_TALL_WEBBED = "This one looks friendly!",
-        SPORE_TALL = "Catch it! Catch it!",
-        SPORE_MEDIUM = "Catch it! Catch it!",
-        SPORE_SMALL = "Catch it! Catch it!",
-        SPORE_TALL_INV = "If we stare at it we'll turn to stone!",
-        SPORE_MEDIUM_INV = "If we lick it we'll turn to wood!",
-        SPORE_SMALL_INV = "If we eat it we'll turn to water!",
-		RABBITHOUSE=
-		{
-			GENERIC = "Just like grandpa said, \"You live in what you eat.\"",
-			BURNT = "A little overdone and overlarge.",
-		},
-		SLURTLE= "We'll slaughter that slurtle.",
-		SLURTLE_SHELLPIECES= "Maybe that was a little too rough.",
-		SLURTLEHAT="A solid helmet.",
-		SLURTLEHOLE="Slimy and rocky.",
-		SLURTLESLIME="Slime-time!",
-		BURNT_MARSH_BUSH = "All burned up.",
-		SNURTLE= "Let's snuff out that snurtle.",
-		SPIDER_HIDER="Friends!",
-		SPIDER_SPITTER="Lay down some web for us.",
-		SPIDERHOLE="We could stand to live there.",
-		TREECLUMP = "It's in our way!",
-		MAXWELLHEAD = "Imagine the trouble he has buying hats!",
-		WATERMELON_SEEDS = "If we eat these will they grow inside us?",
-		SPIDERHOLE_ROCK = "We could stand to live there.",
-		STALAGMITE="Rocks, underground?! Shocking.",
-		STALAGMITE_FULL="Rocks, underground?! Shocking.",
-		STALAGMITE_LOW="Rocks, underground?! Shocking.",
-		STALAGMITE_MED="Rocks, underground?! Shocking.",
-		STALAGMITE_TALL="Pointy rocks, underground?! Simply stunning.",
-		STALAGMITE_TALL_FULL="Pointy rocks, underground?! Simply stunning.",
-		STALAGMITE_TALL_LOW="Pointy rocks, underground?! Simply stunning.",
-		STALAGMITE_TALL_MED="Pointy rocks, underground?! Simply stunning.",
+        SPORE_TALL = "Blue! That's our favorite color!",
+        SPORE_MEDIUM = "Our favorite color! Red!",
+        SPORE_SMALL = "That's green, our favoritest color!",
+        SPORE_TALL_INV = "If we eat it we'll turn to water!",
+        SPORE_MEDIUM_INV = "If we stare at it we'll turn to stone!",
+        SPORE_SMALL_INV = "If we lick it we'll turn to wood!",
+        RABBITHOUSE =
+        {
+            GENERIC = "Just like grandpa said, \"You live in what you eat.\"",
+            BURNT = "A little overdone and overlarge.",
+        },
+        SLURTLE = "We'll slaughter that slurtle.",
+        SLURTLE_SHELLPIECES = "Maybe that was a little too rough.",
+        SLURTLEHAT = "A solid helmet.",
+        SLURTLEHOLE = "Slimy and rocky.",
+        SLURTLESLIME = "Slime-time!",
+        BURNT_MARSH_BUSH = "All burned up.",
+        SNURTLE = "Let's snuff out that snurtle.",
+        SPIDER_HIDER = "Friends!",
+        SPIDER_SPITTER = "Lay down some web for us.",
+        SPIDERHOLE = "We could stand to live there.",
+        TREECLUMP = "It's in our way!",
+        MAXWELLHEAD = "Imagine the trouble he has buying hats!",
+        WATERMELON_SEEDS = "If we eat these will they grow inside us?",
+        SPIDERHOLE_ROCK = "We could stand to live there.",
+        STALAGMITE = "Rocks, underground?! Shocking.",
+        STALAGMITE_FULL = "Rocks, underground?! Shocking.",
+        STALAGMITE_LOW = "Rocks, underground?! Shocking.",
+        STALAGMITE_MED = "Rocks, underground?! Shocking.",
+        STALAGMITE_TALL = "Pointy rocks, underground?! Simply stunning.",
+        STALAGMITE_TALL_FULL = "Pointy rocks, underground?! Simply stunning.",
+        STALAGMITE_TALL_LOW = "Pointy rocks, underground?! Simply stunning.",
+        STALAGMITE_TALL_MED = "Pointy rocks, underground?! Simply stunning.",
 
 		TURF_CARPETFLOOR = "Soft like our body.",
 		TURF_CHECKERFLOOR = "Our feet go click-clack on this.",
@@ -694,10 +727,15 @@ return {
 		BLOWDART_FIRE = "One step above blowing hot air.",
 		BLOWDART_SLEEP = "Airborne sleeping agent.",
 		BLOWDART_PIPE = "Same as blowing bubbles.",
+		BLOWDART_YELLOW = "It's a shock to the system.",
 		BLUEAMULET = "I guess it's nice.",
 		BLUEGEM = "Glittering and cool.",
-		BLUEPRINT = "\"Follow the instructions\", mum always said.",
-		BELL_BLUEPRINT = "\"Follow the instructions\", mum always said.",
+		BLUEPRINT =
+		{ 
+            COMMON = "\"Follow the instructions\", mum always said.",
+            RARE = "This one feels special.",
+        },
+		BELL_BLUEPRINT = "We're ankle-deep in knowledge!",
 		BLUE_CAP = "You'd have to be crazy...",
 		BLUE_CAP_COOKED = "Good thing we're feeling healthy.",
 		BLUE_MUSHROOM =
@@ -792,6 +830,11 @@ return {
 		CORN = "Corn in the raw.",
 		CORN_COOKED = "Popping corn.",
 		CORN_SEEDS = "We could grow something with these.",
+		CANARY =
+		{
+			GENERIC = "That's a yellow bird.",
+			HELD = "Caught you!",
+		},
 		CROW =
 		{
 			GENERIC = "Oh, you look like you're having a grand time, flying about.",
@@ -830,6 +873,13 @@ return {
 		ARMORDRAGONFLY = "Another creature casing.",
 		DRAGON_SCALES = "They don't weigh much for scales.",
 		DRAGONFLYCHEST = "It looks like my old toy chest!",
+		DRAGONFLYFURNACE = 
+		{
+		    HAMMERED = "What happened to your face?",
+			GENERIC = "It's a fancy furnace!", --no gems
+			NORMAL = "Warmish furnace.", --one gem
+			HIGH = "Hot hot furnace!", --two gems
+		},
 
 		HUTCH = "Give us a Huggy!",
         HUTCH_FISHBOWL =
@@ -922,6 +972,7 @@ return {
 			BURNT = "A razed farm is no farm at all.",
 		},
 		FEATHERHAT = "It looks like it took a whole flock to make that hat!",
+		FEATHER_CANARY = "Feather of yellow.",
 		FEATHER_CROW = "Feather of black.",
 		FEATHER_ROBIN = "Feather of red.",
 		FEATHER_ROBIN_WINTER = "Feather of white.",
@@ -1368,6 +1419,12 @@ return {
 			DISEASED = "Maybe it needs some chicken soup?",
 			DISEASING = "Are you okay, lil sapling?",
 		},
+		SCARECROW = 
+   		{
+			GENERIC = "Let's play dress up!",
+			BURNING = "Someone should address this.",
+			BURNT = "He got dressed down.",
+   		},
 		SCULPTURE_KNIGHTHEAD = "Did someone lose this?",
 		SCULPTURE_KNIGHTBODY = 
 		{

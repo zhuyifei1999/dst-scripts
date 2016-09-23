@@ -108,6 +108,7 @@ local prefabs =
     "crow",
     "robin",
     "robin_winter",
+    "canary",
     "butterfly",
     "flint",
     "log",

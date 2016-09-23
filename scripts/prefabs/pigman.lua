@@ -719,6 +719,7 @@ local function moon()
     inst:SetStateGraph("SGmoonpig")
 
     inst.components.sleeper:SetResistance(3)
+    inst.components.freezable:SetDefaultWearOffTime(TUNING.MOONPIG_FREEZE_WEAR_OFF_TIME)
 
     inst.components.combat:SetDefaultDamage(TUNING.WEREPIG_DAMAGE)
     inst.components.combat:SetAttackPeriod(TUNING.WEREPIG_ATTACK_PERIOD)

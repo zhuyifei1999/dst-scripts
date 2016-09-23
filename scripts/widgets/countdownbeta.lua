@@ -8,7 +8,7 @@ require "os"
 
 local klei_tz = 28800--The time zone offset for vancouver
 
-local CountdownBeta = Class(Widget, function(self, mode, image, update_name, release_date)
+local CountdownBeta = Class(Widget, function(self, owner, mode, image, update_name, release_date)
 	Widget._ctor(self, "Countdown")
 
 	if mode == "text" then
@@ -97,13 +97,17 @@ local CountdownBeta = Class(Widget, function(self, mode, image, update_name, rel
 				self.smoke:GetAnimState():PlayAnimation("sporecloud_overlay_pre")
 				self.smoke:GetAnimState():PushAnimation("sporecloud_overlay_pst", false)
 
-				TheFrontEnd:GetSound():PlaySound("dontstarve/creatures/together/toad_stool/infection_attack")
+				if TheFrontEnd:GetActiveScreen() == owner then
+					TheFrontEnd:GetSound():PlaySound("dontstarve/creatures/together/toad_stool/infection_attack")
+				end
 
 				self.inst:DoTaskInTime(25 * FRAMES, function(inst)
 					self.reveal_image:TintTo({r=1,g=1,b=1,a=0}, {r=1,g=1,b=1,a=1}, .5 )
 
 					self.inst:DoTaskInTime(5 * FRAMES, function(inst)
-						TheFrontEnd:GetSound():PlaySound("dontstarve/creatures/together/toad_stool/infection_post")
+						if TheFrontEnd:GetActiveScreen() == owner then
+							TheFrontEnd:GetSound():PlaySound("dontstarve/creatures/together/toad_stool/infection_post")
+						end
 					end)
 				end)
 			end)

@@ -38,6 +38,11 @@ local TRIGGERED_DANGER_MUSIC =
     "dontstarve/music/music_epicfight_moonbase_b",
 }
 
+local TRIGGERED_CAVE_DANGER_MUSIC =
+{
+    "dontstarve/music/music_epicfight_ruins",
+}
+
 --------------------------------------------------------------------------
 --[[ Member variables ]]
 --------------------------------------------------------------------------
@@ -153,7 +158,8 @@ local function StartTriggeredDanger(player, data)
     elseif _isenabled then
         StopBusy()
         StopDanger()
-        _soundemitter:PlaySound(TRIGGERED_DANGER_MUSIC[level] or TRIGGERED_DANGER_MUSIC[1], "danger")
+        local music = _iscave and TRIGGERED_CAVE_DANGER_MUSIC or TRIGGERED_DANGER_MUSIC
+        _soundemitter:PlaySound(music[level] or music[1], "danger")
         _dangertask = inst:DoTaskInTime(10, StopDanger, true)
         _triggeredlevel = level
         _extendtime = 0

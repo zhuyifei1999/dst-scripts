@@ -99,6 +99,15 @@ end
 local function PickBird(spawnpoint)
     local tile = _map:GetTileAtPoint(spawnpoint:Get())
     local bird = GetRandomItem(BIRD_TYPES[tile] or { "crow" })
+
+    if bird == "crow" then
+        local x, y, z = spawnpoint:Get()
+        local canarylure = TheSim:FindEntities(x, y, z, TUNING.BIRD_CANARY_LURE_DISTANCE, { "scarecrow" })
+        if #canarylure ~= 0 then
+            bird = "canary"
+        end
+    end
+
     return _worldstate.iswinter and bird == "robin" and "robin_winter" or bird
 end
 
@@ -290,7 +299,7 @@ end
 --------------------------------------------------------------------------
 
 function self:OnSave()
-    return 
+    return
     {
         maxbirds = _maxbirds,
         minspawndelay = _minspawndelay,

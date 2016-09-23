@@ -28,7 +28,7 @@ end
 
 function EntityTracker:ForgetEntity(name)
     if self.entities[name] ~= nil then
-        self.inst:RemoveEventCallback("onremove", self.entities[name].onremove, self.entites[name].inst)
+        self.inst:RemoveEventCallback("onremove", self.entities[name].onremove, self.entities[name].inst)
         self.entities[name] = nil
     end
 end

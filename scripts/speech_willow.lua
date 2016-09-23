@@ -176,6 +176,9 @@ return {
     ANNOUNCE_INSUFFICIENTFERTILIZER = "It looks slightly happier.",
 	ANNOUNCE_CANFIX = "\nI think I can fix this!",
 	ANNOUNCE_LIGHTNING_DAMAGE_AVOIDED = "I'm safe from the sky-fire.",
+	ANNOUNCE_TOADESCAPING = "Don't even think about running, toad!",
+	ANNOUNCE_TOADESCAPED = "Ughh! But I was winning!",
+
 	BATTLECRY =
 	{
 		GENERIC = "It's you or me!",
@@ -754,66 +757,97 @@ return {
 		MONKEY = "Joke's on you! I can burn this poo.",
 		MONKEYBARREL = "What a wonderfully flammable home.",
 
-		HOUNDSTOOTH="It's sharp. I like it!",
-		ARMORSNURTLESHELL="Less defense! More offense!",
-		BAT="Cute little guy!",
-		BATBAT = "That thing's great for batting at enemies.",
-		BATWING="Yuck!",
-		BATWING_COOKED="Yuck!",
+        HOUNDSTOOTH = "It's sharp. I like it!",
+        ARMORSNURTLESHELL = "Less defense! More offense!",
+        BAT = "Cute little guy!",
+        BATBAT = "That thing's great for batting at enemies.",
+        BATWING = "Yuck!",
+        BATWING_COOKED = "Yuck!",
         BATCAVE = "What would happen if I dropped a match in there?",
-		BEDROLL_FURRY="It's too frilly.",
-		BUNNYMAN="Ugh. They look so stupid.",
-		FLOWER_CAVE="It's burning inside.",
-		FLOWER_CAVE_DOUBLE="It's burning inside.",
-		FLOWER_CAVE_TRIPLE="It's burning inside.",
-		GRASSGEKKO = 
-		{
-			GENERIC = "Ew.",	
-			DISEASED = "Double ew!",
-		},
-		GUANO="It burns like normal poop.",
-		LANTERN="Fire is not meant to be contained like this!",
-		LIGHTBULB="It's called a \"lightbulb\" but it's kinda heavy.",
-		MANRABBIT_TAIL="The rabbits lost that argument.",
-		MUSHTREE_TALL=
-		{
+        BEDROLL_FURRY = "It's too frilly.",
+        BUNNYMAN = "Ugh. They look so stupid.",
+        FLOWER_CAVE = "It's burning inside.",
+        FLOWER_CAVE_DOUBLE = "It's burning inside.",
+        FLOWER_CAVE_TRIPLE = "It's burning inside.",
+        GRASSGEKKO =
+        {
+            GENERIC = "Ew.",
+            DISEASED = "Double ew!",
+        },
+        GUANO = "It burns like normal poop.",
+        LANTERN = "Fire is not meant to be contained like this!",
+        LIGHTBULB = "It's called a \"lightbulb\" but it's kinda heavy.",
+        MANRABBIT_TAIL = "The rabbits lost that argument.",
+        MUSHROOMHAT = "I don't like having my head messed with.",
+        MUSHROOM_LIGHT2 =
+        {
+            ON = "Pfft, well that was a bright idea.",
+            OFF = "I've got a few ideas on how to light it. Heh heh.",
+            BURNT = "Now what?",
+        },
+        MUSHROOM_LIGHT =
+        {
+            ON = "Not as nice as a warm fire.",
+            OFF = "This dumb mushroom's not lighting up.",
+            BURNT = "C'mon, you saw that coming.",
+        },
+        MUSHROOMBOMB = "She's gonna blow!",
+        SHROOM_SKIN = "Ew! Burn that!",
+        TOADSTOOL_CAP =
+        {
+            EMPTY = "It's a hole, what do you want from me?",
+            INGROUND = "What is that? It's smelly.",
+            GENERIC = "A purple one! I want it!",
+        },
+        TOADSTOOL =
+        {
+            GENERIC = "It's covered in nasty warts and fungus!!",
+            RAGE = "Woah! It's packing a punch now!",
+        },
+        MUSHROOMSPROUT =
+        {
+            GENERIC = "A big gross mushroom! Burn it!",
+            BURNT = "How could that not work?!",
+        },
+        MUSHTREE_TALL =
+        {
             GENERIC = "Gross. This tree is sick all over.",
             BLOOM = "Ack! It stinks!",
         },
-		MUSHTREE_MEDIUM=
-		{
+        MUSHTREE_MEDIUM =
+        {
             GENERIC = "Gross. It smells like leprechaun butt.",
             BLOOM = "It's spreading junk everywhere.",
         },
-		MUSHTREE_SMALL=
-		{
+        MUSHTREE_SMALL =
+        {
             GENERIC = "Gross. It's all mushroomy.",
             BLOOM = "Ew, I don't want to get too close.",
         },
         MUSHTREE_TALL_WEBBED = "That one got what it deserves.",
         SPORE_TALL = "It's like colorful sparks!",
-        SPORE_MEDIUM = "It's like colorful sparks!",
-        SPORE_SMALL = "It's like colorful sparks!",
+        SPORE_MEDIUM = "It's like floating fire!",
+        SPORE_SMALL = "It has no idea where it's going.",
         SPORE_TALL_INV = "It feels flammable.",
         SPORE_MEDIUM_INV = "It feels flammable.",
         SPORE_SMALL_INV = "It feels flammable.",
-		SLURTLE="I want to blow it up!",
-		SLURTLE_SHELLPIECES="Heh. It broke.",
-		SLURTLEHAT = "It's perfectly head-shaped.",
-		SLURTLEHOLE="I should burn them out.",
-		SLURTLESLIME="I love this stuff!",
-		SNURTLE="Kaboom!",
-		SPIDER_HIDER="What a frustrating jerk!",
-		SPIDER_SPITTER="Get over here!",
-		SPIDERHOLE="It's full of spiders.",
-		STALAGMITE="Rocks are boring.",
-		STALAGMITE_FULL="Rocks are boring.",
-		STALAGMITE_LOW="Rocks are boring.",
-		STALAGMITE_MED="Rocks are boring.",
-		STALAGMITE_TALL="More boring rocks.",
-		STALAGMITE_TALL_FULL="More boring rocks.",
-		STALAGMITE_TALL_LOW="More boring rocks.",
-		STALAGMITE_TALL_MED="More boring rocks.",
+        SLURTLE = "I want to blow it up!",
+        SLURTLE_SHELLPIECES = "Heh. It broke.",
+        SLURTLEHAT = "It's perfectly head-shaped.",
+        SLURTLEHOLE = "I should burn them out.",
+        SLURTLESLIME = "I love this stuff!",
+        SNURTLE = "Kaboom!",
+        SPIDER_HIDER = "What a frustrating jerk!",
+        SPIDER_SPITTER = "Get over here!",
+        SPIDERHOLE = "It's full of spiders.",
+        STALAGMITE = "Rocks are boring.",
+        STALAGMITE_FULL = "Rocks are boring.",
+        STALAGMITE_LOW = "Rocks are boring.",
+        STALAGMITE_MED = "Rocks are boring.",
+        STALAGMITE_TALL = "More boring rocks.",
+        STALAGMITE_TALL_FULL = "More boring rocks.",
+        STALAGMITE_TALL_LOW = "More boring rocks.",
+        STALAGMITE_TALL_MED = "More boring rocks.",
 
 		TURF_CARPETFLOOR = "The ground is boring.",
 		TURF_CHECKERFLOOR = "The ground is boring.",
@@ -947,9 +981,14 @@ return {
 		BLOWDART_FIRE = "That's my favorite thing in the whole wide world.",
 		BLOWDART_SLEEP = "Tranquilized things are easier to light on fire.",
 		BLOWDART_PIPE = "Good practice for blowing into a fire.",
+		BLOWDART_YELLOW = "Lightning is sort of like fire.",
 		BLUEGEM = "Ugh. This one is ugly.",
-		BLUEPRINT = "This will save some experimentation.",
-		BELL_BLUEPRINT = "This will save some experimentation.",
+		BLUEPRINT =
+		{ 
+            COMMON = "This will save some experimentation.",
+            RARE = "Woah. It doesn't burn!!",
+        },
+		BELL_BLUEPRINT = "I might get a kick out of that.",
 		BLUE_CAP = "It smells like a gym sock!",
 		BLUE_CAP_COOKED = "Transformed by fire!",
 		BLUE_MUSHROOM =
@@ -1007,6 +1046,11 @@ return {
 		CORN = "A sweet vegetable, yum!",
 		CORN_COOKED = "Ooh, this one explodes when it goes in fire!",
 		CORN_SEEDS = "Seeds for my favorite explosive vegetable.",
+		CANARY =
+		{
+			GENERIC = "If it kicks the bucket I'm outta here.",
+			HELD = "You still breathing? Just checking.",
+		},
 		CROW =
 		{
 			GENERIC = "I think it's waiting for me to die.",
@@ -1035,6 +1079,13 @@ return {
 		},
 		DIVININGRODSTART = "I'll make something out of it.",
 		DRAGONFLY = "It's filled with fire!",
+		DRAGONFLYFURNACE = 
+		{
+		    HAMMERED = "That's certainly a look.",
+		    GENERIC = "Let's turn it back on!",
+			NORMAL = "Stick another gem in there!",
+			HIGH = "I think I'm in love.",
+		},
 
 		HUTCH = "What's your angle?",
         HUTCH_FISHBOWL =
@@ -1124,6 +1175,7 @@ return {
 		},
 		EYEPLANT = "They spread like fire.",
 		FEATHERHAT = "A phoenix reborn!",
+		FEATHER_CANARY = "Canary feather. It probably smells terrible on fire.",
 		FEATHER_CROW = "Crow feather. It probably smells terrible on fire.",
 		FEATHER_ROBIN = "Redbird feather. It probably smells terrible on fire.",
 		FEATHER_ROBIN_WINTER = "Snowbird feather. It probably smells terrible on fire.",
@@ -1444,6 +1496,12 @@ return {
 			DISEASED = "Burn the sick!",
 			DISEASING = "Blech. You smell.",
 		},
+		SCARECROW = 
+   		{
+			GENERIC = "Ha! He thinks he's people!",
+			BURNING = "It's a burning man.",
+			BURNT = "Just burnt straw.",
+   		},
 		SCULPTURE_KNIGHTHEAD = "Great, now we've irritated some marble crime boss!",
 		SCULPTURE_KNIGHTBODY = 
 		{

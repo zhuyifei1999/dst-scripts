@@ -1,4 +1,4 @@
-local SAVEDATA_VERSION = 2
+local SAVEDATA_VERSION = 3
 
 local Levels = require"map/levels"
 
@@ -184,6 +184,10 @@ local function UpgradeSavedLevelData(worldoptions)
         ret[i] = deepcopy(level)
         if level.version == nil or level.version == 1 then
             ret[i] = savefileupgrades.utilities.UpgradeSavedLevelFromV1toV2(ret[i], i == 1)
+        end
+        
+        if level.version == 2 then
+            ret[i] = savefileupgrades.utilities.UpgradeSavedLevelFromV2toV3(ret[i], i == 1)
         end
     end
     return ret

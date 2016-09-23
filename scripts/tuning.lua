@@ -274,6 +274,7 @@ function Tune(overrides)
         LITTLE_WALRUS_ATTACK_DIST = 15,
 
         PIPE_DART_DAMAGE = 100,
+        YELLOW_DART_DAMAGE = 60,
 
 	    PENGUIN_DAMAGE = 33,
 	    PENGUIN_HEALTH = 150,
@@ -445,6 +446,9 @@ function Tune(overrides)
         MUSHSPORE_MAX_DENSITY_RAD = 20,
         MUSHSPORE_DENSITY_CHECK_TIME = 15,
         MUSHSPORE_DENSITY_CHECK_VAR = 15,
+        
+        MUSHROOMHAT_SPORE_TIME = seg_time * 2,
+        MUSHROOMHAT_SLOW_HUNGER = 0.75,
 	    
 	    ICE_MINE = 3,
 	    ROCKS_MINE = 6,
@@ -921,9 +925,11 @@ function Tune(overrides)
         MOONHOUND_SPEED = 10,
         MOONHOUND_AGGRO_DIST = 15,
         MOONHOUND_RETURN_DIST = 30,
+        MOONHOUND_FREEZE_WEAR_OFF_TIME = 3,
 
         MOONPIG_AGGRO_DIST = 15,
         MOONPIG_RETURN_DIST = 30,
+        MOONPIG_FREEZE_WEAR_OFF_TIME = 3,
 
 		MOSQUITO_WALKSPEED = 8,
 		MOSQUITO_RUNSPEED = 12,
@@ -1017,7 +1023,7 @@ function Tune(overrides)
 	    COLDFIREPIT_FUEL_MAX = (night_time+dusk_time)*2,
 	    COLDFIREPIT_FUEL_START = night_time+dusk_time,
 	    COLDFIREPIT_BONUS_MULT = 2,
-
+	    
 	    PIGTORCH_RAIN_RATE = 2,
 	    PIGTORCH_FUEL_MAX = night_time,
 	    
@@ -1095,6 +1101,7 @@ function Tune(overrides)
 	    BIRD_TRAP_CHANCE = 0.025,
 	    BIRD_HEALTH = 25*multiplayer_attack_modifier,
 	    BIRD_PERISH_TIME = total_day_time * 5,
+	    BIRD_CANARY_LURE_DISTANCE = 12,
 
 	    BUTTERFLY_SPAWN_TIME = 10*multiplayer_wildlife_respawn_modifier,
 	    BUTTERFLY_POP_CAP = 4,
@@ -1280,6 +1287,8 @@ function Tune(overrides)
 	    PERISH_COLD_FROZEN_MULT = 0, -- frozen things don't spoil in an ice box or if it's cold out
 	    PERISH_FROZEN_FIRE_MULT = 30, -- frozen things spoil very quickly if near a fire
 	    PERISH_FRIDGE_MULT = .5,
+	    PERISH_MUSHROOMLIGHT_MUSHROOM_MULT = 0.0, -- mushrooms are in poop so they can stay healthy
+	    PERISH_MUSHROOMLIGHT_BATTERY_MULT = 0.25, -- lights will have a slow burn
 	    PERISH_GROUND_MULT = 1.5,
 	    PERISH_WET_MULT = 1.3,
 	    PERISH_CAGE_MULT = 0.25,
@@ -1429,14 +1438,12 @@ function Tune(overrides)
 		INSULATION_LARGE = seg_time*8,
 		INSULATION_PER_BEARD_BIT = seg_time*.5,
 		WEBBER_BEARD_INSULATION_FACTOR = .75,
-		
-		PLAYER_FREEZE_WEAR_OFF_TIME = 3,
-		PLAYER_BURN_TIME = 5.3,
-		
-		DUSK_INSULATION_BONUS = seg_time*2,
-		NIGHT_INSULATION_BONUS = seg_time*4,
 
 		PLAYER_FREEZE_WEAR_OFF_TIME = 3,
+		PLAYER_BURN_TIME = 5.3,
+
+		DUSK_INSULATION_BONUS = seg_time*2,
+		NIGHT_INSULATION_BONUS = seg_time*4,
 
 		--CROP_BONUS_TEMP = 28,
 		MIN_CROP_GROW_TEMP = 5,
@@ -1577,6 +1584,61 @@ function Tune(overrides)
 		MOSSLING_ATTACK_RANGE = 2,
 		MOSSLING_WALK_SPEED = 5,
 
+        TOADSTOOL_HEALTH = 156500,
+        TOADSTOOL_DAMAGE = 100,
+        TOADSTOOL_ATTACK_PERIOD = 3.5,
+        TOADSTOOL_ATTACK_RANGE = 7,
+        TOADSTOOL_SPEED = .6,
+        TOADSTOOL_HIT_RECOVERY = 1,
+        TOADSTOOL_VULNERABLE_MULT = -4,
+        TOADSTOOL_EPICSCARE_RANGE = 10,
+
+        TOADSTOOL_DEAGGRO_DIST = 25,
+        TOADSTOOL_AGGRO_DIST = 15,
+        TOADSTOOL_FLEE_TIME = 300,
+        TOADSTOOL_FLEE_WARNING = 45,
+
+        TOADSTOOL_RESPAWN_TIME = total_day_time * 20,
+
+        TOADSTOOL_UPG1_DAMAGE = 120,
+        TOADSTOOL_UPG1_SPEED = 0.8,
+        TOADSTOOL_UPG1_ATTACK_PERIOD = 3,
+
+        TOADSTOOL_UPG2_DAMAGE = 150,
+        TOADSTOOL_UPG2_SPEED = 1.2,
+        TOADSTOOL_UPG2_ATTACK_PERIOD = 2.5,
+
+        TOADSTOOL_UPG3_DAMAGE = 250,
+        TOADSTOOL_UPG3_SPEED = 3.2,
+        TOADSTOOL_UPG3_ATTACK_PERIOD = 2,
+
+        TOADSTOOL_MUSHROOMBOMB_MIN_RANGE = 4,
+        TOADSTOOL_MUSHROOMBOMB_MAX_RANGE = 8.75,
+        TOADSTOOL_MUSHROOMBOMB_RADIUS = 3.5,
+        TOADSTOOL_MUSHROOMBOMB_CD = 5,
+
+        TOADSTOOL_SPOREBOMB_ATTACK_RANGE = 10,
+        TOADSTOOL_SPOREBOMB_HIT_RANGE = 14,
+        TOADSTOOL_SPOREBOMB_TIMER = 3.5,
+        TOADSTOOL_SPOREBOMB_CD_PHASE1 = 14,
+        TOADSTOOL_SPOREBOMB_CD_PHASE2 = 10,
+
+        TOADSTOOL_SPORECLOUD_DAMAGE = 20,
+        TOADSTOOL_SPORECLOUD_ROT = .07,
+        TOADSTOOL_SPORECLOUD_RADIUS = 4.35,
+        TOADSTOOL_SPORECLOUD_TICK = 1,
+        TOADSTOOL_SPORECLOUD_LIFETIME = 70,
+
+        TOADSTOOL_MUSHROOMSPROUT_NUM = 8,
+        TOADSTOOL_MUSHROOMSPROUT_MIN_RANGE = 6,
+        TOADSTOOL_MUSHROOMSPROUT_MAX_RANGE = 10,
+        TOADSTOOL_MUSHROOMSPROUT_TICK = 2,
+        TOADSTOOL_MUSHROOMSPROUT_DURATION = 15,
+        TOADSTOOL_MUSHROOMSPROUT_CD = 70,
+
+        TOADSTOOL_POUND_CD = 45,
+        TOADSTOOL_ABILITY_INTRO_CD = 15,
+
 		DRAGONFLY_RESPAWN_TIME = total_day_time * 20,
 		DRAGONFLY_SPAWN_TIME = 1,
 
@@ -1617,6 +1679,7 @@ function Tune(overrides)
 		LAVAE_HIT_RANGE = 3,
 		LAVAE_ATTACK_RANGE = 6,
 		LAVAE_HUNGER_RATE = 50/total_day_time,
+		LAVAE_LIFESPAN = 30,
 
 	    LAVAE_HATCH_CRACK_TIME = 10,
 	    LAVAE_HATCH_TIME = total_day_time*2,

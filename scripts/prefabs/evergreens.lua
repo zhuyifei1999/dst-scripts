@@ -168,7 +168,7 @@ end
 local function chop_down_burnt_tree(inst, chopper)
     inst:RemoveComponent("workable")
     inst.SoundEmitter:PlaySound("dontstarve/forest/treeCrumble")
-    if not chopper or (chopper and not chopper:HasTag("playerghost")) then
+    if not (chopper ~= nil and chopper:HasTag("playerghost")) then
         inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_tree")
     end
     inst.AnimState:PlayAnimation(inst.anims.chop_burnt)
@@ -408,7 +408,7 @@ local function WakeUpLeif(ent)
 end
 
 local function chop_tree(inst, chopper, chops)
-    if chopper == nil or not chopper:HasTag("playerghost") then
+    if not (chopper ~= nil and chopper:HasTag("playerghost")) then
         inst.SoundEmitter:PlaySound(
             chopper ~= nil and chopper:HasTag("beaver") and
             "dontstarve/characters/woodie/beaver_chop_tree" or

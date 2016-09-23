@@ -154,6 +154,16 @@ function cookpot_init_fn(inst, build_name)
     inst.AnimState:SetSkin(build_name, "cook_pot")
 end
 
+
+--------------------------------------------------------------------------
+--[[ Endtable skin functions ]]
+--------------------------------------------------------------------------
+
+function endtable_init_fn(inst, build_name)
+    inst.AnimState:SetSkin(build_name, "stagehand")
+end
+
+
 --------------------------------------------------------------------------
 --[[ Firepit skin functions ]]
 --------------------------------------------------------------------------

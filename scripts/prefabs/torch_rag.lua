@@ -14,7 +14,6 @@ local tags = {"TORCH", "CRAFTABLE", "SURVIVOR"}
 local ui_preview =
 {
 	build = "swap_torch_rag",
-	bank = "swap_torch_rag",
 }
 
 return CreatePrefabSkin("torch_rag",

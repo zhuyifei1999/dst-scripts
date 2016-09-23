@@ -96,7 +96,7 @@ local function makestump(inst)
 end
 
 local function workcallback(inst, worker, workleft)
-    if not worker or (worker and not worker:HasTag("playerghost")) then
+    if not (worker ~= nil and worker:HasTag("playerghost")) then
         inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_mushroom")
     end
     if workleft <= 0 then

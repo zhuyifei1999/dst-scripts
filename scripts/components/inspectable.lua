@@ -15,7 +15,7 @@ function Inspectable:SetDescription(desc)
 end
 
 function Inspectable:RecordViews(state)
-    self.recordview = state or true
+    self.recordview = state ~= false
 end
 
 function Inspectable:GetStatus(viewer)

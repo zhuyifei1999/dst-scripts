@@ -10,7 +10,6 @@ local tags = {"FIREPIT", "CRAFTABLE"}
 local ui_preview =
 {
 	build = "firepit_stonehenge",
-	bank = "firepit",
 }
 
 return CreatePrefabSkin("firepit_stonehenge",

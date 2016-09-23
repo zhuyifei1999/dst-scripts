@@ -162,6 +162,8 @@ return {
 	ANNOUNCE_INSUFFICIENTFERTILIZER = "More droppings for you?",
 	ANNOUNCE_TOOL_SLIP = "Slippery devil!",
 	ANNOUNCE_LIGHTNING_DAMAGE_AVOIDED = "I rode in on a bolt lightning.",
+    ANNOUNCE_TOADESCAPING = "Don't let the beast entertain thoughts of escape.",
+    ANNOUNCE_TOADESCAPED = "The beast returned from whence it came.",
 
 	ANNOUNCE_DAMP = "Slick for battle.",
 	ANNOUNCE_WET = "I am a wet warrior.",
@@ -471,68 +473,99 @@ return {
 			NOMAGIC = "The magic slumbers far from here.",
 		},
 
-		HOUNDSTOOTH = "A token of a successful conquest.",
-		ARMORSNURTLESHELL = "A shield of sorts.",
-		BAT = "Dark winged meat.",
-		BATBAT = "Winged spear!",
-		BATWING = "Like the wings of my helm, only meatier.",
-		BATWING_COOKED = "Cooked dark wing.",
+        HOUNDSTOOTH = "A token of a successful conquest.",
+        ARMORSNURTLESHELL = "A shield of sorts.",
+        BAT = "Dark winged meat.",
+        BATBAT = "Winged spear!",
+        BATWING = "Like the wings of my helm, only meatier.",
+        BATWING_COOKED = "Cooked dark wing.",
         BATCAVE = "They're hiding under the stage.",
-		BEDROLL_FURRY = "A luxury fur bed!",
-		BUNNYMAN = "I want to eat you.",
-		FLOWER_CAVE = "And it lit up the night, upon the darkest hour.",
-		FLOWER_CAVE_DOUBLE = "And it lit up the night, upon the darkest hour.",
-		FLOWER_CAVE_TRIPLE = "And it lit up the night, upon the darkest hour.",
-		GUANO = "Hmm, dark wing turds.",
-		LANTERN = "A lantern to hold back the night.",
-		LIGHTBULB = "Glow!",
-		MANRABBIT_TAIL = "The fuzzy trophy of a successful battle.",
-		MUSHTREE_TALL=
-		{
+        BEDROLL_FURRY = "A luxury fur bed!",
+        BUNNYMAN = "I want to eat you.",
+        FLOWER_CAVE = "And it lit up the night, upon the darkest hour.",
+        FLOWER_CAVE_DOUBLE = "And it lit up the night, upon the darkest hour.",
+        FLOWER_CAVE_TRIPLE = "And it lit up the night, upon the darkest hour.",
+        GUANO = "Hmm, dark wing turds.",
+        LANTERN = "A lantern to hold back the night.",
+        LIGHTBULB = "Glow!",
+        MANRABBIT_TAIL = "The fuzzy trophy of a successful battle.",
+        MUSHROOMHAT = "This helm runs flush with the forest's magic!",
+        MUSHROOM_LIGHT2 =
+        {
+            ON = "Behold! It blazes bright!",
+            OFF = "I demand strong, passionate colors. Red!",
+            BURNT = "Twas consumed by Hel's fire.",
+        },
+        MUSHROOM_LIGHT =
+        {
+            ON = "Tis a spotted spotlight!",
+            OFF = "A gift from the earth.",
+            BURNT = "Laid to waste.",
+        },
+        MUSHROOMBOMB = "Defend thyselves, my allies!",
+        SHROOM_SKIN = "A trophy of our battles!",
+        TOADSTOOL_CAP =
+        {
+            EMPTY = "A cleft in the earth.",
+            INGROUND = "Something emerges!",
+            GENERIC = "You will bend to my blade, toadstool!",
+        },
+        TOADSTOOL =
+        {
+            GENERIC = "Ha! Finally, a worthy foe!",
+            RAGE = "Give me your best shot, I'll not hold back!",
+        },
+        MUSHROOMSPROUT =
+        {
+            GENERIC = "Destroy the source of its unholy power!",
+            BURNT = "Naught but ash.",
+        },
+        MUSHTREE_TALL =
+        {
             GENERIC = "What magic is this?",
             BLOOM = "An enthusiastic performance!",
         },
-		MUSHTREE_MEDIUM=
-		{
+        MUSHTREE_MEDIUM =
+        {
             GENERIC = "I do like its glow.",
             BLOOM = "What a great effect!",
         },
-		MUSHTREE_SMALL=
-		{
+        MUSHTREE_SMALL =
+        {
             GENERIC = "I don't care for mushrooms.",
             BLOOM = "I'll fight alongside you any day!",
         },
         MUSHTREE_TALL_WEBBED = "This mushroom needs to be retired.",
-        SPORE_TALL = "Light the set!",
-        SPORE_MEDIUM = "Light the set!",
-        SPORE_SMALL = "Light the set!",
+        SPORE_TALL = "At peace, benevolent river spirit.",
+        SPORE_MEDIUM = "At peace, benevolent flame spirit.",
+        SPORE_SMALL = "At peace, benevolent forest spirit.",
         SPORE_TALL_INV = "I'll direct this light where I please.",
         SPORE_MEDIUM_INV = "I'll direct this light where I please.",
         SPORE_SMALL_INV = "I'll direct this light where I please.",
-		RABBITHOUSE=
-		{
-			GENERIC = "What's to be done with a carrot that big?",
-			BURNT = "Good riddance, giant carrot.",
-		},
-		SLURTLE="You are an angel. Of nasty.",
-		SLURTLE_SHELLPIECES="They're smashed up good.",
-		SLURTLEHAT = "A fine battle helm!",
-		SLURTLEHOLE = "Not where I'd choose to hang my helm.",
-		SLURTLESLIME = "Yes. Slime.",
-		WATERMELON_SEEDS = "Seedy.",
-		SNURTLE = "I like his helmet.",
-		SPIDER_HIDER = "I'll smash you!",
-		SPIDER_SPITTER = "That one's feisty.",
-		SPIDERHOLE = "Webbing. Never a good sign.",
-		SPIDERHOLE_ROCK = "Webbing. Never a good sign.",
-		STALAGMITE="Cave boulder.",
-		STALAGMITE_FULL="Cave boulder.",
-		STALAGMITE_LOW="Cave boulder.",
-		STALAGMITE_MED="Cave boulder.",
-		STALAGMITE_TALL="A pointy rock of sorts.",
-		STALAGMITE_TALL_FULL="A pointy rock of sorts.",
-		STALAGMITE_TALL_LOW="A pointy rock of sorts.",
-		STALAGMITE_TALL_MED="A pointy rock of sorts.",
+        RABBITHOUSE =
+        {
+            GENERIC = "What's to be done with a carrot that big?",
+            BURNT = "Good riddance, giant carrot.",
+        },
+        SLURTLE = "You are an angel. Of nasty.",
+        SLURTLE_SHELLPIECES = "They're smashed up good.",
+        SLURTLEHAT = "A fine battle helm!",
+        SLURTLEHOLE = "Not where I'd choose to hang my helm.",
+        SLURTLESLIME = "Yes. Slime.",
+        WATERMELON_SEEDS = "Seedy.",
+        SNURTLE = "I like his helmet.",
+        SPIDER_HIDER = "I'll smash you!",
+        SPIDER_SPITTER = "That one's feisty.",
+        SPIDERHOLE = "Webbing. Never a good sign.",
+        SPIDERHOLE_ROCK = "Webbing. Never a good sign.",
+        STALAGMITE = "Cave boulder.",
+        STALAGMITE_FULL = "Cave boulder.",
+        STALAGMITE_LOW = "Cave boulder.",
+        STALAGMITE_MED = "Cave boulder.",
+        STALAGMITE_TALL = "A pointy rock of sorts.",
+        STALAGMITE_TALL_FULL = "A pointy rock of sorts.",
+        STALAGMITE_TALL_LOW = "A pointy rock of sorts.",
+        STALAGMITE_TALL_MED = "A pointy rock of sorts.",
 
 		TURF_CARPETFLOOR = "It soaks up the blood of battle.",
 		TURF_CHECKERFLOOR = "Fancy floor.",
@@ -679,10 +712,15 @@ return {
 		BLOWDART_FIRE = "Like the breath of a dragon.",
 		BLOWDART_SLEEP = "Goodnight to our foes.",
 		BLOWDART_PIPE = "Projectile weaponry!",
+        BLOWDART_YELLOW = "A face-to-face fight would be more honorable.",
 		BLUEAMULET = "Cold jewelery.",
 		BLUEGEM = "An icy blue sapphire.",
-		BLUEPRINT = "Oh, a map! No, wait. That's wrong.",
-		BELL_BLUEPRINT = "Oh, a map! No, wait. That's wrong.",
+		BLUEPRINT =
+        { 
+            COMMON = "Oh, a map! No, wait. That's wrong.",
+            RARE = "Tis a blessed scroll.",
+        },
+		BELL_BLUEPRINT = "Knowledge to enrich one's sole.",
 		BLUE_CAP = "Hmm, a blue one.",
 		BLUE_CAP_COOKED = "I have no desire to eat it.",
 		BLUE_MUSHROOM =
@@ -789,6 +827,11 @@ return {
 		CORN = "A vegetable sword!",
 		CORN_COOKED = "Popped corn smells good.",
 		CORN_SEEDS = "Tiny nature bits.",
+        CANARY =
+        {
+            GENERIC = "Oh sweet songbird, sing me thy tune!",
+            HELD = "Freedom has been wrenched from thy grasp by mine own.",
+        },
 		CROW =
 		{
 			GENERIC = "Raven friend!",
@@ -827,6 +870,13 @@ return {
 		ARMORDRAGONFLY = "Excellent armor for the heat of battle.",
 		DRAGON_SCALES = "Mystical scales.",
 		DRAGONFLYCHEST = "This chest is worthy of my weapons.",
+        DRAGONFLYFURNACE = 
+        {
+            HAMMERED = "It has seen much battle.",
+            GENERIC = "It retains the heat of the fallen beast.", --no gems
+            NORMAL = "A small inferno burns within.", --one gem
+            HIGH = "Its belly is alight with fearsome dragonfire.", --two gems
+        },
 
 		HUTCH = "A loyal companion, if ever there were one.",
         HUTCH_FISHBOWL =
@@ -919,6 +969,7 @@ return {
 			BURNT = "Serves you right for not growing meats!",
 		},
 		FEATHERHAT = "Seems a bit flashy for battle.",
+        FEATHER_CANARY = "In remembrance of a songbird.",
 		FEATHER_CROW = "A token from the ravens!",
 		FEATHER_ROBIN = "Red as my hair.",
 		FEATHER_ROBIN_WINTER = "Winter's feather.",
@@ -1367,6 +1418,12 @@ return {
 			DISEASED = "Disease festers within its soul.",
 			DISEASING = "It is weakening before mine eyes!",
 		},
+        SCARECROW = 
+        {
+            GENERIC = "Dost thou yearn for a brain?",
+            BURNING = "The scarecrow burns.",
+            BURNT = "The scarecrow dost yearn for nothing, now.",
+        },
 		SCULPTURE_KNIGHTHEAD = "Dost thou yearn for a body?",
 		SCULPTURE_KNIGHTBODY = 
 		{

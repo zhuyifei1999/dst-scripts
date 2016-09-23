@@ -12,7 +12,6 @@ local tags = {"BEDROLL", "CRAFTABLE"}
 local ui_preview =
 {
 	build = "swap_bedroll_furry_quilt_white_ivory",
-	bank = "swap_bedroll_furry_quilt_white_ivory",
 }
 
 return CreatePrefabSkin("bedroll_furry_quilt_white_ivory",

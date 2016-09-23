@@ -26,6 +26,10 @@ AddTaskSet("cave_default", {
         "CaveExitTask9",
         "CaveExitTask10",
 
+		"ToadStoolTask1",
+		"ToadStoolTask2",
+		"ToadStoolTask3",
+
         -- ruins
         "LichenLand",
         "Residential",

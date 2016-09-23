@@ -63,6 +63,9 @@ local function fn()
     inst:AddComponent("inspectable")
     inst:AddComponent("lootdropper")
 
+	--make sure the vase contains a rose
+	inst.AnimState:OverrideSymbol( "swap_flower", "stagehand", "swap_flower" )
+    
     return inst
 end
 

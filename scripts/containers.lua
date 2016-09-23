@@ -157,6 +157,53 @@ function params.cookpot.widget.buttoninfo.validfn(inst)
 end
 
 --------------------------------------------------------------------------
+--[[ mushroom_light ]]
+--------------------------------------------------------------------------
+
+params.mushroom_light =
+{
+    widget =
+    {
+        slotpos =
+        {
+            Vector3(0, 64 + 32 + 8 + 4, 0), 
+            Vector3(0, 32 + 4, 0),
+            Vector3(0, -(32 + 4), 0), 
+            Vector3(0, -(64 + 32 + 8 + 4), 0),
+        },
+        animbank = "ui_lamp_1x4",
+        animbuild = "ui_lamp_1x4",
+        pos = Vector3(200, 0, 0),
+        side_align_tip = 100,
+    },
+    acceptsstacks = false,
+    type = "cooker",
+}
+
+function params.mushroom_light.itemtestfn(container, item, slot)
+	if container.inst:HasTag("burnt") then
+		return false
+	end
+	
+	return item:HasTag("lightbattery")
+end
+
+--------------------------------------------------------------------------
+--[[ mushroom_light2 ]]
+--------------------------------------------------------------------------
+
+params.mushroom_light2 = deepcopy(params.mushroom_light)
+
+function params.mushroom_light2.itemtestfn(container, item, slot)
+	if container.inst:HasTag("burnt") then
+		return false
+	end
+	
+	return item:HasTag("lightbattery") or item:HasTag("mushroom") or item:HasTag("spore")
+end
+
+
+--------------------------------------------------------------------------
 --[[ icebox ]]
 --------------------------------------------------------------------------
 
