@@ -20,8 +20,8 @@ local MIN_PLAYER_DISTANCE = 240
 local RENEW_RADIUS = 60
 
 --each renewable set contains a list of prefab spawns and prefab matches.
---if there aren't any of the prefab matches in an area, it will spawn one
---of the prefabs in the spawns list randomly.
+--if there aren't any of the prefab matches in an area, it will spawn the
+--first non-diseased prefab in prefab spawns.
 local RENEWABLES =
 {
     {
@@ -29,15 +29,15 @@ local RENEWABLES =
         matches = { "flint" },
     },
     {
-        spawns = { "sapling", "sapling", "twiggytree" },
-        matches = { "sapling", "twigs", "twiggytree" },
+        spawns = { "sapling", "twigs" },
+        matches = { "sapling", "twigs" },
     },
     {
-        spawns = { "grass" },
+        spawns = { "grass", "cutgrass" },
         matches = { "grass", "depleted_grass", "cutgrass", "grassgekko" },
     },
     {
-        spawns = { "berrybush", "berrybush", "berrybush_juicy" },
+        spawns = { "berrybush", "berrybush_juicy" },
         matches = { "berrybush", "berrybush2", "berrybush_juicy" },
     },
 }
@@ -79,17 +79,21 @@ local function DoPrefabRenew(x, z, ents, renewable_set, max)
     end
 
     --Check if this set has a spawnable prefab
-    if #renewable_set.spawns > 0 then
-        --Spawn random up to max count
-        for i = math.random(max), 1, -1 do
-            local theta = math.random() * 2 * PI
-            local radius = math.random() * RENEW_RADIUS
-            local x1 = x + radius * math.cos(theta)
-            local z1 = z - radius * math.sin(theta)
-            if inst.Map:CanPlantAtPoint(x1, 0, z1) and
-                not (RoadManager ~= nil and RoadManager:IsOnRoad(x1, 0, z1)) then
-                SpawnPrefab(renewable_set.spawns[math.random(#renewable_set.spawns)]).Transform:SetPosition(x1, 0, z1)
+    local prefabswapmanager = inst.components.prefabswapmanager
+    for _, prefab in ipairs(renewable_set.spawns) do
+        if not (prefabswapmanager ~= nil and prefabswapmanager:IsDiseasedPrefab(prefab)) then
+            --Spawn random up to max count
+            for i = math.random(max), 1, -1 do
+                local theta = math.random() * 2 * PI
+                local radius = math.random() * RENEW_RADIUS
+                local x1 = x + radius * math.cos(theta)
+                local z1 = z - radius * math.sin(theta)
+                if inst.Map:CanPlantAtPoint(x1, 0, z1) and
+                    not (RoadManager ~= nil and RoadManager:IsOnRoad(x1, 0, z1)) then
+                    SpawnPrefab(prefab).Transform:SetPosition(x1, 0, z1)
+                end
             end
+            return
         end
     end
 end

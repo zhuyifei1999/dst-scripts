@@ -1,3 +1,7 @@
+--Disease: -delay till you become "diseased", usually a build swap
+--         -another dealy till you die from disease, usually removed
+--         -rebirth triggers when spawned in for a species becoming active again
+
 local function ondiseased(self, diseased)
     if diseased then
         self.inst:AddTag("diseased")
@@ -6,73 +10,22 @@ local function ondiseased(self, diseased)
     end
 end
 
-local function OnWarningOver(inst, self)
-    self._warningtask = nil
-    self:Disease()
-end
-
-local function StartWarning(self, duration)
-    self._warningtask = self.inst:DoTaskInTime(duration or GetRandomWithVariance(TUNING.DISEASE_WARNING_TIME, TUNING.DISEASE_WARNING_TIME_VARIANCE), OnWarningOver, self)
-end
-
-local function OnDelayOver(inst, self, StartDelay)
-    if math.random() >= TUNING.DISEASE_CHANCE then
-        --Disease failed; schedule long retry
-        StartDelay(self)
-    elseif inst:IsAsleep() then
-        --Offscreen; schedule short retry
-        local delay = math.min(TUNING.TOTAL_DAY_TIME * 3, TUNING.DISEASE_DELAY_TIME)
-        local variance = math.min(TUNING.TOTAL_DAY_TIME * 2, TUNING.DISEASE_DELAY_TIME_VARIANCE)
-        StartDelay(self, GetRandomWithVariance(delay, variance))
-    else
-        --Disease success; start warning time
-        self._delaytask = nil
-        StartWarning(self)
-
-        --Restart delays on stuff in range of spreading, so that this round
-        --of disease can be stopped by quickly removing the diseased entity
-        local x, y, z = inst.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x, y, z, TUNING.DISEASE_SPREAD_RADIUS, { "diseaseable" })
-        if #ents > 1 then --1 becaues it includes ourself
-            local ents2 = TheSim:FindEntities(x, y, z, 2 * TUNING.DISEASE_SPREAD_RADIUS, { "diseaseable" })
-            if #ents2 > #ents then
-                ents = ents2
-                ents2 = TheSim:FindEntities(x, y, z, 3 * TUNING.DISEASE_SPREAD_RADIUS, { "diseaseable" })
-                if #ents2 > #ents then
-                    ents = ents2
-                end
-            end
-            for i, v in ipairs(ents) do
-                if v.components.diseaseable._delaytask ~= nil then
-                    v.components.diseaseable._delaytask:Cancel()
-                    StartDelay(v.components.diseaseable)
-                end
-            end
-        end
-    end
-end
-
-local function StartDelay(self, delay)
-    if TUNING.DISEASE_DELAY_TIME > 0 then
-        self._delaytask = self.inst:DoTaskInTime(delay or GetRandomWithVariance(TUNING.DISEASE_DELAY_TIME, TUNING.DISEASE_DELAY_TIME_VARIANCE), OnDelayOver, self, StartDelay)
-    end
-end
-
 local Diseaseable = Class(function(self, inst)
     self.inst = inst
 
-    --V2C: Recommended to explicitly add tag to prefab pristine state
-    inst:AddTag("diseaseable")
-
-    self.onDiseasedFn = nil
+    self.task = nil
+    self.fxtask = nil
+    self.lastfx = 0
     self.diseased = false
-    self._lastfx = 0
-    self._fxtask = nil
-    self._spreadtask = nil
-    --self._delaytask = nil
-    self._warningtask = nil
+    self.defaultDelayMin = TUNING.SEG_TIME
+    self.defaultDelayMax = TUNING.TOTAL_DAY_TIME
+    self.defaultDeathTimeMin = TUNING.SEG_TIME
+    self.defaultDeathTimeMax = TUNING.TOTAL_DAY_TIME
+    self.onDiseasedFn = nil
+    self.onDiseasedDeathFn = nil
+    self.onRebirthedFn = nil
 
-    StartDelay(self)
+    TheWorld:PushEvent("ms_registerdiseaseable", inst)
 end,
 nil,
 {
@@ -80,36 +33,19 @@ nil,
 })
 
 function Diseaseable:OnRemoveFromEntity()
-    if self._fxtask ~= nil then
-        self._fxtask:Cancel()
-        self._fxtask = nil
+    if not self.diseased then
+        TheWorld:PushEvent("ms_unregisterdiseaseable", self.inst)
     end
-    if self._spreadtask ~= nil then
-        self._spreadtask:Cancel()
-        self._spreadtask = nil
+    if self.fxtask ~= nil then
+        self.fxtask:Cancel()
+        self.fxtask = nil
     end
-    if self._delaytask ~= nil then
-        self._delaytask:Cancel()
-        self._delaytask = nil
-    end
-    if self._warningtask ~= nil then
-        self._warningtask:Cancel()
-        self._warningtask = nil
-    end
+    self:Stop()
     self.inst:RemoveTag("diseased")
-    self.inst:RemoveTag("diseaseable")
 end
 
 function Diseaseable:IsDiseased()
     return self.diseased
-end
-
-function Diseaseable:IsBecomingDiseased()
-    return self._warningtask ~= nil
-end
-
-function Diseaseable:SetDiseasedFn(fn)
-    self.onDiseasedFn = fn
 end
 
 local function DoFX(inst, self)
@@ -121,110 +57,166 @@ local function DoFX(inst, self)
     for i, v in ipairs(ents) do
         if v ~= inst and
             v.components.diseaseable ~= nil and
-            v.components.diseaseable._lastfx < time then
+            v.components.diseaseable.lastfx < time then
             num = num + 1
         end
     end
     if math.random(num) == 1 then
         loops = math.random(3, 7) --limit to net_tinybyte!
-        self._lastfx = GetTime() + (loops * 100 + 35) * FRAMES
+        self.lastfx = GetTime() + (loops * 100 + 35) * FRAMES
         local fx = SpawnPrefab("diseaseflies")
         fx.entity:SetParent(inst.entity)
         fx:SetLoops(loops)
     end
-    self._fxtask = inst:DoTaskInTime(loops * 100 * FRAMES + 5 + math.random() * 3, DoFX, self)
+    self.fxtask = inst:DoTaskInTime(loops * 100 * FRAMES + 5 + math.random() * 3, DoFX, self)
 end
 
-local function DoSpread(inst, self)
-    self._spreadtask = nil
-    self:Spread()
-end
-
-local function ScheduleSpread(self, delay)
-    self._spreadtask = self.inst:DoTaskInTime(delay or GetRandomWithVariance(TUNING.DISEASE_SPREAD_TIME, TUNING.DISEASE_SPREAD_TIME_VARIANCE), DoSpread, self)
-end
-
-function Diseaseable:Disease()
+function Diseaseable:ForceDiseased(deathTimeMin, deathTimeMax)
     if not self.diseased then
-        self:OnRemoveFromEntity()
-
         self.diseased = true
-        ScheduleSpread(self)
-        self._fxtask = self.inst:DoTaskInTime(math.random(), DoFX, self)
-
+        TheWorld:PushEvent("ms_unregisterdiseaseable", self.inst)
+        self:Stop()
+        self:StartDeathTime(deathTimeMin, deathTimeMax)
+        if self.fxtask == nil then
+            self.fxtask = self.inst:DoTaskInTime(math.random(), DoFX, self)
+        end
         if self.onDiseasedFn ~= nil then
             self.onDiseasedFn(self.inst)
         end
     end
 end
 
-function Diseaseable:Spread()
-    if self.diseased then
-        if self._spreadtask ~= nil then
-            self._spreadtask:Cancel()
-            self._spreadtask = nil
-        end
-        local ent = FindEntity(self.inst, TUNING.DISEASE_SPREAD_RADIUS, nil, { "diseaseable" })
-        if ent ~= nil then
-            ent.components.diseaseable:Disease()
-            ScheduleSpread(self)
+function Diseaseable:ForceDeath()
+    self:ForceDiseased()
+    self:Stop()
+    if self.onDiseasedDeathFn ~= nil then
+        self.onDiseasedDeathFn(self.inst)
+    else
+        self.inst:Remove()
+    end
+end
+
+--Should only be called by prefabswapmanager for notification
+--of things newly spawned in after prefab swap just occurred.
+function Diseaseable:OnRebirth()
+    if self.onRebirthedFn ~= nil then
+        self.onRebirthedFn(self.inst)
+    end
+end
+
+function Diseaseable:Start()
+    if self.task == nil then
+        if self.diseased then
+            self:StartDeathTime()
+        else
+            self:StartDiseaseTime()
         end
     end
 end
 
-function Diseaseable:RestartNearbySpread()
-    local x, y, z = self.inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, TUNING.DISEASE_SPREAD_RADIUS, { "diseased" })
-    for i, v in ipairs(ents) do
-        if v.components.diseaseable._spreadtask ~= nil then
-            v.components.diseaseable._spreadtask:Cancel()
-        end
-        ScheduleSpread(v.components.diseaseable)
+function Diseaseable:Stop()
+    if self.task ~= nil then
+        self.task:Cancel()
+        self.task = nil
     end
+end
+
+local function OnDiseaseTime(inst, self)
+    self.task = nil
+    self:ForceDiseased()
+end
+
+function Diseaseable:StartDiseaseTime(min, max)
+    if not self.diseased and self.task == nil then
+        local delay = GetRandomMinMax(min or self.defaultDelayMin, max or min or self.defaultDelayMax)
+        self.task = self.inst:DoTaskInTime(delay, OnDiseaseTime, self)
+    end
+end
+
+local function OnDeathTime(inst, self)
+    self.task = nil
+    self:ForceDeath()
+end
+
+function Diseaseable:StartDeathTime(min, max)
+    if self.diseased and self.task == nil then
+        local delay = GetRandomMinMax(min or self.defaultDeathTimeMin, max or min or self.defaultDeathTimeMax)
+        self.task = self.inst:DoTaskInTime(delay, OnDeathTime, self)
+    end
+end
+
+function Diseaseable:SetDefaultDelayRange(min, max)
+    self.defaultDelayMin = math.max(0, min)
+    self.defaultDelayMax = max ~= nil and math.max(max, self.defaultDelayMin) or self.defaultDelayMin
+end
+
+function Diseaseable:SetDefaultDeathTimeRange(min, max)
+    self.defaultDeathTimeMin = math.max(0, min)
+    self.defaultDeathTimeMax = max ~= nil and math.max(max, self.defaultDeathTimeMin) or self.defaultDeathTimeMin
+end
+
+function Diseaseable:SetDiseasedFn(fn)
+    self.onDiseasedFn = fn
+end
+
+function Diseaseable:SetDiseasedDeathFn(fn)
+    self.onDiseasedDeathFn = fn
+end
+
+function Diseaseable:SetRebirthedFn(fn)
+    self.onRebirthedFn = fn
 end
 
 function Diseaseable:OnSave()
-    return (self.diseased and { spreadtime = self._spreadtask ~= nil and GetTaskRemaining(self._spreadtask) or -1 })
-        or (self._delaytask ~= nil and { delaytime = GetTaskRemaining(self._delaytask) })
-        or (self._warningtask ~= nil and { warningtime = GetTaskRemaining(self._warningtask) })
-        or nil
+    local data =
+    {
+        diseased = self.diseased or nil,
+        remainingtime = self.task ~= nil and GetTaskRemaining(self.task) or nil,
+    }
+    return next(data) ~= nil and data or nil
 end
 
 function Diseaseable:OnLoad(data)
     if data ~= nil then
-        if data.spreadtime ~= nil then
-            self:Disease()
-            if self._spreadtask ~= nil then
-                self._spreadtask:Cancel()
-                self._spreadtask = nil
+        if data.diseased then
+            if not self.diseased then
+                self:ForceDiseased(data.remainingtime)
+            elseif data.remainingtime ~= nil then
+                self:Stop()
+                self:StartDeathTime(data.remainingtime)
             end
-            if data.spreadtime >= 0 then
-                ScheduleSpread(self, data.spreadtime)
+        elseif data.remainingtime ~= nil and not self.diseased then
+            self:Stop()
+            self:StartDiseaseTime(data.remainingtime)
+        end
+    end
+end
+
+function Diseaseable:LongUpdate(dt)
+    if self.task ~= nil and dt > 0 then
+        local remaining = GetTaskRemaining(self.task)
+        self:Stop()
+        if remaining > dt then
+            if self.diseased then
+                self:StartDeathTime(remaining - dt)
+            else
+                self:StartDiseaseTime(remaining - dt)
             end
-        elseif data.delaytime ~= nil and data.delaytime >= 0 and self._delaytask ~= nil then
-            self._delaytask:Cancel()
-            StartDelay(self, data.delaytime)
-        elseif data.warningtime ~= nil and data.warningtime >= 0 and not self.diseased then
-            if self._delaytask ~= nil then
-                self._delaytask:Cancel()
-                self._delaytask = nil
-            end
-            if self._warningtask ~= nil then
-                self._warningtask:Cancel()
-            end
-            StartWarning(self, data.warningtime)
+        elseif self.diseased then
+            OnDeathTime(self.inst, self)
+        else
+            self:ForceDiseased()
+            self:LongUpdate(dt - remaining)
         end
     end
 end
 
 function Diseaseable:GetDebugString()
-    return string.format(
-        "diseased: %s, spreadtime: %.2f, delaytime: %.2f, warningtime: %.2f",
-        tostring(self.diseased),
-        self._spreadtask ~= nil and GetTaskRemaining(self._spreadtask) or 0,
-        self._delaytask ~= nil and GetTaskRemaining(self._delaytask) or 0,
-        self._warningtask ~= nil and GetTaskRemaining(self._warningtask) or 0
-    )
+    local s = "diseased: "..tostring(self.diseased)
+    if self.task ~= nil then
+        s = s..string.format(", time to %s: %2.2f", self.diseased and "death" or "disease", GetTaskRemaining(self.task))
+    end
+    return s
 end
 
 return Diseaseable

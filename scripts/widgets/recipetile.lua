@@ -13,26 +13,23 @@ local RecipeTile = Class(Widget, function(self, recipe)
     Widget._ctor(self, "RecipeTile")
     self.img = self:AddChild(Image())
     self:SetClickable(false)
-    if recipe ~= nil then
+    if recipe then
         self.recipe = recipe
-        local image = recipe.imagefn ~= nil and recipe.imagefn() or recipe.image
-        self.img:SetTexture(recipe.atlas, image, image ~= recipe.image and recipe.image or nil)
+        self.img:SetTexture(recipe.atlas, recipe.image)
         --self:MakeNonClickable()
     end
 end)
 
 function RecipeTile:SetRecipe(recipe)
     self.recipe = recipe
-    local image = recipe.imagefn ~= nil and recipe.imagefn() or recipe.image
-    self.img:SetTexture(recipe.atlas, image, image ~= recipe.image and recipe.image or nil)
+    self.img:SetTexture(recipe.atlas, recipe.image)
 end
 
 function RecipeTile:SetCanBuild(canbuild)
     --[[if canbuild then
-        local image = recipe.imagefn ~= nil and recipe.imagefn() or recipe.image
-        self.img:SetTexture(self.recipe.atlas, image, image ~= recipe.image and recipe.image or nil)
+        self.img:SetTexture(self.recipe.atlas, self.recipe.image)
         self.img:SetTint(1,1,1,1)
-    elseif self.recipe ~= nil and self.recipe.lockedatlas ~= nil then
+    elseif self.recipe and self.recipe.lockedatlas then
         self.img:SetTexture(self.recipe.lockedatlas, self.recipe.lockedimage)
     else
         self.img:SetTint(0,0,0,1)

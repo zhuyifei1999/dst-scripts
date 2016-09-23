@@ -79,11 +79,9 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-        inventoryitem = function(inst, doer, actions, right)
-            if inst.replica.inventoryitem:CanBePickedUp() and
-                doer.replica.inventory ~= nil and 
-                not (inst:HasTag("catchable") or inst:HasTag("fire") or inst:HasTag("smolder")) and
-                (right or not inst:HasTag("heavy")) then
+        inventoryitem = function(inst, doer, actions)
+            if inst.replica.inventoryitem:CanBePickedUp() and doer.replica.inventory ~= nil and 
+                not (inst:HasTag("catchable") or inst:HasTag("fire") or inst:HasTag("smolder")) then
                 table.insert(actions, ACTIONS.PICKUP)
             end
         end,
@@ -126,7 +124,7 @@ local COMPONENT_ACTIONS =
         end,
 
         pickable = function(inst, doer, actions)
-            if inst:HasTag("pickable") and not (inst:HasTag("fire") or inst:HasTag("intense")) then
+            if inst:HasTag("pickable") and not inst:HasTag("fire") then
                 table.insert(actions, ACTIONS.PICK)
             end
         end,
@@ -134,18 +132,6 @@ local COMPONENT_ACTIONS =
         projectile = function(inst, doer, actions)
             if inst:HasTag("catchable") and doer:HasTag("cancatch") then
                 table.insert(actions, ACTIONS.CATCH)
-            end
-        end,
-
-        repairable = function(inst, doer, actions, right)
-            if right and
-                inst:HasTag("repairable_sculpture") and
-                doer.replica.inventory ~= nil and
-                doer.replica.inventory:IsHeavyLifting() then
-                local item = doer.replica.inventory:GetEquippedItem(EQUIPSLOTS.BODY)
-                if item ~= nil and item:HasTag("work_sculpture") then
-                    table.insert(actions, ACTIONS.REPAIR)
-                end
             end
         end,
 
@@ -412,12 +398,6 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-        maprecorder = function(inst, doer, target, actions)
-            if doer == target and target:HasTag("player") then
-                table.insert(actions, ACTIONS.TEACH)
-            end
-        end,
-
         occupier = function(inst, doer, target, actions)
             for k, v in pairs(OCCUPANTTYPE) do
                 if target:HasTag(v.."_occupiable") then
@@ -495,7 +475,7 @@ local COMPONENT_ACTIONS =
         end,
 
         teacher = function(inst, doer, target, actions)
-            if doer == target and target.replica.builder ~= nil then
+            if target.replica.builder ~= nil then
                 table.insert(actions, ACTIONS.TEACH)
             end
         end,
@@ -823,12 +803,6 @@ local COMPONENT_ACTIONS =
             table.insert(actions, ACTIONS.DROP)
         end,
         --]]
-
-        maprecorder = function(inst, doer, actions)
-            if doer:HasTag("player") then
-                table.insert(actions, ACTIONS.TEACH)
-            end
-        end,
 
         machine = function(inst, doer, actions, right)
             if right and not inst:HasTag("cooldown") and

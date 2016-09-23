@@ -423,7 +423,6 @@ local function onbecamehuman(inst)
     inst.components.moisture:SetInherentWaterproofness(0)
     inst.components.talker:StopIgnoringAll("becamebeaver")
     inst.components.catcher:SetEnabled(true)
-    inst.components.debuffable:SetFollowSymbol("headbase", 0, -200, 0)
 
     if inst.components.inspectable.getstatus == BeaverGetStatus then
         inst.components.inspectable.getstatus = inst._getstatus
@@ -475,7 +474,6 @@ local function onbecamebeaver(inst)
     inst.components.moisture:SetInherentWaterproofness(TUNING.WATERPROOFNESS_LARGE)
     inst.components.talker:IgnoreAll("becamebeaver")
     inst.components.catcher:SetEnabled(false)
-    inst.components.debuffable:SetFollowSymbol("torso", 0, -280, 0)
 
     if inst.components.inspectable.getstatus ~= BeaverGetStatus then
         inst._getstatus = inst.components.inspectable.getstatus

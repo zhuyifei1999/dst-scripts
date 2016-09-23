@@ -13,13 +13,14 @@ local tags = {"BACKPACK", "CRAFTABLE"}
 local ui_preview =
 {
 	build = "swap_backpack_buckle_grey_pewter",
+	bank = "swap_backpack_buckle_grey_pewter",
 }
 
 return CreatePrefabSkin("backpack_buckle_grey_pewter",
 {
 	base_prefab = base_prefab, 
 	ui_preview = ui_preview,
-	inheritance = "ITEM_SKIN",
+	item_type = "ITEM_SKIN",
 	init_fn = function(inst) backpack_init_fn(inst, ui_preview.build) end,
 	assets = assets,
 	tags = tags,

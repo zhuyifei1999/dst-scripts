@@ -10,7 +10,6 @@ local MAX_CHASE_TIME = 60
 local MAX_CHASE_DIST = 40
 local DAMAGE_UNTIL_SHIELD = TUNING.SLURTLE_DAMAGE_UNTIL_SHIELD
 local AVOID_PROJECTILE_ATTACKS = true
-local HIDE_WHEN_SCARED = true
 local SHIELD_TIME = 2
 local SEE_FOOD_DIST = 13
 local HUNGER_TOLERANCE = 70
@@ -134,7 +133,7 @@ end
 function SlurtleBrain:OnStart()
     local root = PriorityNode(
     {
-        UseShield(self.inst, DAMAGE_UNTIL_SHIELD, SHIELD_TIME, AVOID_PROJECTILE_ATTACKS, HIDE_WHEN_SCARED),
+        UseShield(self.inst, DAMAGE_UNTIL_SHIELD, SHIELD_TIME, AVOID_PROJECTILE_ATTACKS),
         WhileNode( function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
         ChaseAndAttack(self.inst, MAX_CHASE_TIME, MAX_CHASE_DIST),
         DoAction(self.inst, EatFoodAction),

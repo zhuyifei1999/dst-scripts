@@ -4,8 +4,8 @@ local assets =
 {
     Asset("ANIM", "anim/grassgecko_notail_build.zip"),
     Asset("ANIM", "anim/grassgecko.zip"),
-    --Asset("ANIM", "anim/grassgecko_disease.zip"),
-    --Asset("ANIM", "anim/grassgecko_notail_build_disease.zip"),
+    Asset("ANIM", "anim/grassgecko_disease.zip"),
+    Asset("ANIM", "anim/grassgecko_notail_build_disease.zip"),
     Asset("SOUND", "sound/catcoon.fsb"),
 }
 
@@ -14,6 +14,8 @@ local prefabs =
     "cutgrass",
     "plantmeat",
     "grassgekkoherd",
+    "disease_fx_small",
+    "diseaseflies",
 }
 
 SetSharedLootTable( 'grassgekko',
@@ -91,6 +93,23 @@ local function WakeTest(inst)
     end
 end
 
+local function ondiseasedfn(inst)
+    inst.AnimState:SetBuild("grassgecko_disease")
+
+    SpawnPrefab("disease_fx_small").Transform:SetPosition(inst.Transform:GetWorldPosition())
+
+    --inst.AnimState:PlayAnimation(inst.anims.transform)
+    inst.components.lootdropper:SetChanceLootTable()
+
+    inst.components.lootdropper:SetLoot({"spoiled_food"})
+
+    inst.AnimState:SetBuild(inst.hasTail and "grassgecko_disease" or "grassgecko_notail_build_disease")
+end
+
+local function ondiseaseddeathfn(inst)
+    inst.components.health:Kill()
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -165,6 +184,10 @@ local function fn()
     inst:AddComponent("locomotor")
     inst.components.locomotor.runspeed = TUNING.GRASSGEKKO_RUN_SPEED
     inst.components.locomotor.walkspeed = TUNING.GRASSGEKKO_WALK_SPEED
+
+    inst:AddComponent("diseaseable")
+    inst.components.diseaseable:SetDiseasedFn(ondiseasedfn)
+    inst.components.diseaseable:SetDiseasedDeathFn(ondiseaseddeathfn)
 
     MakeSmallBurnableCharacter(inst, "grassgecko_body", Vector3(1,0,1))
     MakeSmallFreezableCharacter(inst)

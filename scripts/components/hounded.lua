@@ -289,9 +289,6 @@ local function SummonSpawn(pt)
 		if spawn then
 			spawn.Physics:Teleport(spawn_pt:Get())
 			spawn:FacePoint(pt)
-            if spawn.FadeIn ~= nil then
-                spawn:FadeIn()
-            end
 
 			return spawn
 		end

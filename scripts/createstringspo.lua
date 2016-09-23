@@ -110,42 +110,29 @@ end
 -- Version 2 msgctxt based
 --
 
-local output_strings = nil
 --Recursive function to process table structure
 local function PrintStringTableV2( base, tbl, file )
-	if file then
-		output_strings = {}
-	end
 	
 	for k,v in pairs(tbl) do
 		local path = base.."."..k
 		if type(v) == "table" then
-			PrintStringTableV2(path, v)
+			PrintStringTableV2(path, v, file)
 		else
 			local str = string.gsub(v, "\n", "\\n")
 			str = string.gsub(str, "\r", "\\r")
 			str = string.gsub(str, "\"", "\\\"")
 			if IsValidString( str ) then
-				local to_add = {}
-				to_add.path = path
-				to_add.str = str
-				table.insert( output_strings, to_add )
+
+				file:write("#. "..path)
+				file:write("\n")
+				file:write("msgctxt \""..path.."\"")
+				file:write("\n")
+				file:write("msgid \""..str.."\"")
+				file:write("\n")
+				file:write("msgstr \"\"")
+				file:write("\n\n")
 			end
 
-		end
-	end
-	
-	if file then
-		table.sort(output_strings, function(a,b) return a.path < b.path end )
-		for _,v in pairs(output_strings) do
-			file:write("#. "..v.path)
-			file:write("\n")
-			file:write("msgctxt \""..v.path.."\"")
-			file:write("\n")
-			file:write("msgid \""..v.str.."\"")
-			file:write("\n")
-			file:write("msgstr \"\"")
-			file:write("\n\n")
 		end
 	end
 end

@@ -182,22 +182,18 @@ function InventoryItem:OnDropped(randomdir)
     self:OnRemoved()
 
     if self.inst.Physics ~= nil then
-        local heavy = self.inst:HasTag("heavy")
-        if not self.nobounce then
-            y = y + (heavy and .5 or 1)
-        end
-        self.inst.Physics:Teleport(x, y, z)
+        self.inst.Physics:Teleport(x, self.nobounce and y or y + 1, z)
 
         -- convert x, y, z to velocity
         if randomdir then
-            local speed = (heavy and 1 or 2) + math.random()
+            local speed = 2 + math.random()
             local angle = math.random() * 2 * PI
             x = speed * math.cos(angle)
             y = self.nobounce and 0 or speed * 3
             z = -speed * math.sin(angle)
         else
             x = 0
-            y = (self.nobounce and 0) or (heavy and 2.5) or 5
+            y = self.nobounce and 0 or 5
             z = 0
         end
         self.inst.Physics:SetVel(x, y, z)

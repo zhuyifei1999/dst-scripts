@@ -35,6 +35,7 @@ AddRoom("SpiderVillage", {
 					                },
 									distributepercent = 0.1,
 									distributeprefabs = {
+										rock_petrified_tree = 3,
 					                    rock1 = 1,
 					                    rock2 = 1,
 					                    rocks = 1,

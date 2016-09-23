@@ -32,17 +32,6 @@ local SEASON_DANGER_MUSIC =
     summer = "dontstarve_DLC001/music/music_danger_summer",
 }
 
-local TRIGGERED_DANGER_MUSIC =
-{
-    "dontstarve/music/music_epicfight_moonbase",
-    "dontstarve/music/music_epicfight_moonbase_b",
-}
-
-local TRIGGERED_CAVE_DANGER_MUSIC =
-{
-    "dontstarve/music/music_epicfight_ruins",
-}
-
 --------------------------------------------------------------------------
 --[[ Member variables ]]
 --------------------------------------------------------------------------
@@ -56,7 +45,6 @@ local _iscave = _isruin or inst:HasTag("cave")
 local _isenabled = true
 local _busytask = nil
 local _dangertask = nil
-local _triggeredlevel = nil
 local _isday = nil
 local _isbusydirty = nil
 local _extendtime = nil
@@ -125,7 +113,6 @@ local function StopDanger(inst, istimeout)
             end
         end
         _dangertask = nil
-        _triggeredlevel = nil
         _extendtime = 0
         _soundemitter:KillSound("danger")
     end
@@ -146,22 +133,6 @@ local function StartDanger(player)
                 (SEASON_DANGER_MUSIC[inst.state.season])),
             "danger")
         _dangertask = inst:DoTaskInTime(10, StopDanger, true)
-        _triggeredlevel = nil
-        _extendtime = 0
-    end
-end
-
-local function StartTriggeredDanger(player, data)
-    local level = math.max(1, math.floor(data ~= nil and data.level or 1))
-    if _triggeredlevel == level then
-        _extendtime = GetTime() + 10
-    elseif _isenabled then
-        StopBusy()
-        StopDanger()
-        local music = _iscave and TRIGGERED_CAVE_DANGER_MUSIC or TRIGGERED_DANGER_MUSIC
-        _soundemitter:PlaySound(music[level] or music[1], "danger")
-        _dangertask = inst:DoTaskInTime(10, StopDanger, true)
-        _triggeredlevel = level
         _extendtime = 0
     end
 end
@@ -226,7 +197,6 @@ local function StartPlayerListeners(player)
     inst:ListenForEvent("performaction", CheckAction, player)
     inst:ListenForEvent("attacked", OnAttacked, player)
     inst:ListenForEvent("goinsane", OnInsane, player)
-    inst:ListenForEvent("triggeredevent", StartTriggeredDanger, player)
 end
 
 local function StopPlayerListeners(player)
@@ -235,7 +205,6 @@ local function StopPlayerListeners(player)
     inst:RemoveEventCallback("performaction", CheckAction, player)
     inst:RemoveEventCallback("attacked", OnAttacked, player)
     inst:RemoveEventCallback("goinsane", OnInsane, player)
-    inst:RemoveEventCallback("triggeredevent", StartTriggeredDanger, player)
 end
 
 local function OnPhase(inst, phase)

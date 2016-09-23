@@ -5,9 +5,6 @@ local ModWarningScreen = require "screens/modwarningscreen"
 
 MOD_API_VERSION = 10
 
-if BRANCH == "staging" then
-	AddModReleaseID( "R01_ANR_PART1" )
-end
 
 MOD_AVATAR_LOCATIONS = { Default = "images/avatars/" }
 --Add your avatar atlas locations for each prefab if you don't want to use the default mod avatar location

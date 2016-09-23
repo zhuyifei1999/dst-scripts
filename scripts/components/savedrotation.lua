@@ -3,13 +3,12 @@ local SavedRotation = Class(function(self, inst)
 end)
 
 function SavedRotation:OnSave()
-    return { rotation = self.inst.Transform:GetRotation() }
+    local rot = self.inst.Transform:GetRotation()
+    return rot ~= 0 and { rotation = rot } or nil
 end
 
 function SavedRotation:OnLoad(data)
-    if data.rotation then
-        self.inst.Transform:SetRotation(data.rotation)
-    end
+    self.inst.Transform:SetRotation(data.rotation or 0)
 end
 
 return SavedRotation

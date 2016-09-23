@@ -14,10 +14,6 @@ local function onshadowbonus(self, shadowbonus)
     self.inst.replica.builder:SetShadowBonus(shadowbonus)
 end
 
-local function oncartographybonus(self, cartographybonus)
-    self.inst.replica.builder:SetCartographyBonus(cartographybonus)
-end
-
 local function oningredientmod(self, ingredientmod)
     assert(INGREDIENT_MOD[ingredientmod] ~= nil, "Ingredient mods restricted to certain values, see constants.lua INGREDIENT_MOD")
     self.inst.replica.builder:SetIngredientMod(ingredientmod)
@@ -40,7 +36,6 @@ local Builder = Class(function(self, inst)
     self.magic_bonus = 0
     self.ancient_bonus = 0
     self.shadow_bonus = 0
-    self.cartography_bonus = 0
     self.ingredientmod = 1
 
     self.freebuildmode = false
@@ -65,7 +60,6 @@ nil,
     magic_bonus = onmagicbonus,
     ancient_bonus = onancientbonus,
     shadow_bonus = onshadowbonus,
-    cartography_bonus = oncartographybonus,
     ingredientmod = oningredientmod,
     freebuildmode = onfreebuildmode,
 })
@@ -172,18 +166,16 @@ function Builder:EvaluateTechTrees()
     end
 
     --add any character specific bonuses to your current tech levels.
-    if not prototyper_active then
+    if not prototyper_active  then
         self.accessible_tech_trees.SCIENCE = self.science_bonus
         self.accessible_tech_trees.MAGIC = self.magic_bonus
         self.accessible_tech_trees.ANCIENT = self.ancient_bonus
         self.accessible_tech_trees.SHADOW = self.shadow_bonus
-        self.accessible_tech_trees.CARTOGRAPHY = self.cartography_bonus
     else
         self.accessible_tech_trees.SCIENCE = self.accessible_tech_trees.SCIENCE + self.science_bonus
         self.accessible_tech_trees.MAGIC = self.accessible_tech_trees.MAGIC + self.magic_bonus
         self.accessible_tech_trees.ANCIENT = self.accessible_tech_trees.ANCIENT + self.ancient_bonus
         self.accessible_tech_trees.SHADOW = self.accessible_tech_trees.SHADOW + self.shadow_bonus
-        self.accessible_tech_trees.CARTOGRAPHY = self.accessible_tech_trees.CARTOGRAPHY + self.cartography_bonus
     end
 
     local trees_changed = false
@@ -452,8 +444,7 @@ function Builder:KnowsRecipe(recname)
         and (   (   recipe.level.SCIENCE <= self.science_bonus and
                     recipe.level.MAGIC <= self.magic_bonus and
                     recipe.level.ANCIENT <= self.ancient_bonus and
-                    recipe.level.SHADOW <= self.shadow_bonus and
-                    recipe.level.CARTOGRAPHY <= self.cartography_bonus or
+                    recipe.level.SHADOW <= self.shadow_bonus or
                     self.freebuildmode
                 ) and (
                     recipe.builder_tag == nil or

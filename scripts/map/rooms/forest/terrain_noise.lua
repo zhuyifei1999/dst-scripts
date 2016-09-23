@@ -10,6 +10,7 @@ AddRoom("BGNoise", {
 					                {
 										flint=0.4,
 										rocks=0.4,
+										rock_petrified_tree = 0.3,
 										rock1=0.1,
 										rock2=0.1,
 										grass=0.09,

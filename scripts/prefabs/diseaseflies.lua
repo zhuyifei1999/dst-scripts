@@ -32,7 +32,7 @@ local function PlayFlies(proxy)
     inst.AnimState:PushAnimation("swarm_pst", false)
     inst.AnimState:SetFinalOffset(1)
 
-    inst.SoundEmitter:PlaySound("dontstarve/common/flies", "flies", .5)
+    --inst.SoundEmitter:PlaySound("dontstarve/common/flies", "flies", .5)
 
     inst:ListenForEvent("animqueueover", inst.Remove)
 end

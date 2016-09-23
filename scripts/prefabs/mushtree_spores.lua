@@ -1,8 +1,3 @@
-
-MUSHTREE_SPORE_BLUE = "spore_tall"
-MUSHTREE_SPORE_RED = "spore_medium"
-MUSHTREE_SPORE_GREEN = "spore_small"
-
 local assets =
 {
     Asset("ANIM", "anim/mushroom_spore.zip"),
@@ -56,7 +51,7 @@ end
 
 local function onpickup(inst)
     --These last longer when held    
-    inst.components.perishable:SetLocalMultiplier( TUNING.SEG_TIME * 3/ TUNING.PERISH_MED )
+    inst.components.perishable:SetLocalMultiplier( TUNING.SEG_TIME * 3/ TUNING.PERISH_SLOW )
     if inst.crowdingtask ~= nil then
         inst.crowdingtask:Cancel()
         inst.crowdingtask = nil
@@ -180,7 +175,6 @@ local function makespore(data)
 
         inst:ListenForEvent("onpickup", onpickup)
         inst:ListenForEvent("ondropped", ondropped)
-        inst:ListenForEvent("onputininventory", onpickup)
 
 	    inst:SetStateGraph("SGspore")
 	    inst:SetBrain(brain)
@@ -196,6 +190,6 @@ local function makespore(data)
 	return fn
 end
 
-return Prefab(MUSHTREE_SPORE_BLUE, makespore(data.tall), assets),
-    Prefab(MUSHTREE_SPORE_RED, makespore(data.medium), assets),
-    Prefab(MUSHTREE_SPORE_GREEN, makespore(data.small), assets)
+return Prefab("spore_tall", makespore(data.tall), assets),
+    Prefab("spore_medium", makespore(data.medium), assets),
+    Prefab("spore_small", makespore(data.small), assets)

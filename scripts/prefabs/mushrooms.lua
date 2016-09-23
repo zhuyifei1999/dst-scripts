@@ -304,7 +304,6 @@ local function capcommonfn(data)
 
     --cookable (from cookable component) added to pristine state for optimization
     inst:AddTag("cookable")
-    inst:AddTag("mushroom")
 
     inst.entity:SetPristine()
 

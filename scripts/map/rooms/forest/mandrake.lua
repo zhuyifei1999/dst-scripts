@@ -23,7 +23,6 @@ AddRoom("MandrakeHome", {
 					                    evergreen = 6,
 					                    grass = .05,
 					                    sapling=.5,
-					                    twiggytree=0.2,
 					                    berrybush=.05,
 					                    berrybush_juicy = 0.025,
 					                },

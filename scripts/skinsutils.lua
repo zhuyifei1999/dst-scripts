@@ -97,6 +97,7 @@ function GetTypeForItem(item)
 	elseif EMOTE_ITEMS[itemName] then 
 		type = EMOTE_ITEMS[itemName].type
 	else
+
 		local skinsData = Prefabs[itemName]
 
 		if skinsData then 
@@ -111,22 +112,6 @@ function GetTypeForItem(item)
 	return type, itemName
 end
 
-function GetSortCategoryForItem(item)
-	local category = "none"
-
-	if CLOTHING[item] then
-		category = CLOTHING[item].type
-	elseif MISC_ITEMS[item] then
-		category = MISC_ITEMS[itemName].type
-	elseif EMOTE_ITEMS[item] then
-		category = EMOTE_ITEMS[itemName].type
-	else
-		local skinsData = Prefabs[item]
-		category = skinsData.base_prefab
-	end
-	
-	return category
-end
 
 --Note(Peter): do we actually want to do this here, or actually provide the json tags from the pipeline?
 function GetTagFromType(type)
@@ -315,7 +300,6 @@ function GetSortedSkinsList()
 
 	local listoflists = 
 	{
-		oddment = {},
 		emote = {},
 		feet = {},
 		hand = {},
@@ -353,7 +337,7 @@ function GetSortedSkinsList()
 							if a.item == b.item then 
 								return a.timestamp > b.timestamp
 							else
-								return GetSortCategoryForItem(a.item)..GetName(a.item) < GetSortCategoryForItem(b.item)..GetName(b.item)
+								return a.item < b.item 
 							end
 						else 
 							return CompareRarities(a,b)
@@ -367,11 +351,9 @@ function GetSortedSkinsList()
 	table.sort(listoflists.base, compare)
 	table.sort(listoflists.item, compare)
 	table.sort(listoflists.emote, compare)
-	table.sort(listoflists.oddment, compare)
 	table.sort(listoflists.misc, compare)
 	table.sort(listoflists.unknown, compare)
 
-	skins_list = JoinArrays(skins_list, listoflists.oddment)
 	skins_list = JoinArrays(skins_list, listoflists.emote)
 	skins_list = JoinArrays(skins_list, listoflists.item)
 	skins_list = JoinArrays(skins_list, listoflists.base)

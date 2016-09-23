@@ -70,7 +70,7 @@ STRINGS=
         wickerbottom = "\"Shhhh! No talking!\"",
         waxwell = "\"Freedom suits me.\"",
         wes = "...",
-        wathgrithr = "\"All the wörld's a stage. För me!\"",
+        wathgrithr = "\"All the world's a stage. For me!\"",
         webber = "\"We're always together, and never alone!\"",
         random = "Anybody could be under that hat.",
     },
@@ -117,16 +117,15 @@ STRINGS=
         READ = "Read",
         MAKEBALLOON = "Inflate",
         SEW = "Sew",
-        GIVE =
+        GIVE = 
         {
             GENERIC  = "Give",
             NOTREADY = "Place",
             READY    = "Sacrifice",
-            SOCKET   = "Socket",
         },
         GIVETOPLAYER = "Give",
         GIVEALLTOPLAYER = "Give All",
-        FEEDPLAYER = "Feed",
+        FEEDPLAYER = "Feed",        
         DROP = 
         {
             GENERIC = "Drop",
@@ -137,11 +136,7 @@ STRINGS=
         BUILD = "Build",
         PICK = "Pick",
         REPAIR = "Repair",
-        PICKUP =
-        {
-            GENERIC = "Pick up",
-            HEAVY = "Carry",
-        },
+        PICKUP = "Pick up",
         CHOP = "Chop",
         FERTILIZE = "Fertilize",
         SMOTHER = "Extinguish",
@@ -177,11 +172,7 @@ STRINGS=
         CHANGEIN = "Use",
         EQUIP = "Equip",
         TERRAFORM = "Dig",
-        UNEQUIP =
-        {
-            GENERIC = "Unequip",
-            HEAVY = "Drop",
-        },
+        UNEQUIP = "Unequip",
         RESEARCH = "Research",
         SHAVE = "Shave",
         DRY = "Dry",
@@ -372,8 +363,7 @@ STRINGS=
         EGGPLANT = "Eggplant",
         ICEBOX = "Ice Box",
         CARROT_SEEDS = "Carrot Seeds",
-        CARTOGRAPHYDESK = "Cartography Desk",
-		PUMPKIN_SEEDS = "Pumpkin Seeds",
+        PUMPKIN_SEEDS = "Pumpkin Seeds",
         DRAGONFRUIT_SEEDS = "Dragon Fruit Seeds",
         POMEGRANATE_SEEDS = "Pomegranate Seeds",
         CORN_SEEDS = "Corn Seeds",
@@ -402,7 +392,6 @@ STRINGS=
         GREENGEM = "Green Gem",
         ORANGEGEM = "Orange Gem",
         YELLOWGEM = "Yellow Gem",
-        OPALPRECIOUSGEM = "Iridescent Gem",
         HOUNDSTOOTH = "Hound's Tooth",
         SWEATERVEST = "Dapper Vest",
         REFLECTIVEVEST = "Summer Frest",
@@ -524,7 +513,6 @@ STRINGS=
         SUNKBOAT = "Boat",
         BONFIRE = "Bonfire",
         CAMPFIRE = "Campfire",
-        CANARY = "Canary",
         CROW = "Crow",
         ROBIN = "Redbird",
         ROBIN_WINTER = "Snowbird",
@@ -623,14 +611,12 @@ STRINGS=
         RESEARCHLAB2 = "Alchemy Engine",
         RESEARCHLAB3 = "Shadow Manipulator",
         RESEARCHLAB4 = "Prestihatitator",
-        CARTOGRAPHYDESK = "Cartographer's Desk",
         PLANT_NORMAL = "Crop",
         RAZOR = "Razor",
         BEARDHAIR = "Beard Hair",
         FURTUFT = "Fur Tuft",
         TREASURECHEST = "Chest",
         DRAGONFLYCHEST = "Scaled Chest",
-        DRAGONFLYFURNACE = "Scaled Furnace",
         SKULLCHEST = "Skullchest",
         PANDORASCHEST = "Ornate Chest",
         MINOTAURCHEST = "Large Ornate Chest",
@@ -653,7 +639,6 @@ STRINGS=
         MANDRAKE = "Mandrake",
         COOKEDMANDRAKE = "Cooked Mandrake",
         REEDS = "Reeds",
-		MAPSCROLL = "Map Scroll",
         CUTREEDS = "Cut Reeds",
         MARSH_PLANT = "Plant",
         TUMBLEWEED = "Tumbleweed",
@@ -681,8 +666,6 @@ STRINGS=
         MOSQUITO = "Mosquito",
         BEEHAT = "Beekeeper Hat",
         STINGER = "Stinger",
-        STAGEHAND = "Stagehand",
-        ENDTABLE = "End Table",
         BUTTERFLY = "Butterfly",
         BUTTERFLYWINGS = "Butterfly Wings",
         BUTTER = "Butter",
@@ -704,17 +687,13 @@ STRINGS=
         FEATHER_CROW = "Jet Feather",
         FEATHER_ROBIN = "Crimson Feather",
         FEATHER_ROBIN_WINTER = "Azure Feather",
-        FEATHER_CANARY = "Saffron Feather",
-        FEATHERPENCIL = "Feather Pencil",
-		BIRDTRAP = "Bird Trap",
+        BIRDTRAP = "Bird Trap",
         BLOWDART_SLEEP = "Sleep Dart",
         BLOWDART_FIRE = "Fire Dart",
         BLOWDART_PIPE = "Blow Dart",
-        BLOWDART_YELLOW = "Electric Dart",
         BEEMINE = "Bee Mine",
         BEEMINE_MAXWELL = "Maxwell's Mosquito Trap",
         BIRDCAGE = "Birdcage",
-   		SCARECROW = "Friendly Scarecrow",
         SPIDERQUEEN = "Spider Queen",
         EARMUFFSHAT = "Rabbit Earmuffs",
         WINTERHAT = "Winter Hat",
@@ -849,7 +828,6 @@ STRINGS=
         ORANGESTAFF = "The Lazy Explorer",
         GREENSTAFF = "Deconstruction Staff",
         YELLOWSTAFF = "Star Caller's Staff",
-        OPALSTAFF = "Moon Caller's Staff",
 
         ICEHOUND = "Blue Hound",
         PENGUIN = "Pengull",
@@ -878,18 +856,6 @@ STRINGS=
         MAXWELLTHRONE = "Nightmare Throne",
         MAXWELLLOCK = "Nightmare Lock",
 
-        STATUE_MARBLE = "Marble Sculpture",
-
-        SCULPTURE_KNIGHTHEAD = "Suspicious Marble",
-		SCULPTURE_KNIGHTBODY = "Marble Sculpture",
-        SCULPTURE_BISHOPHEAD = "Suspicious Marble",
-		SCULPTURE_BISHOPBODY = "Marble Sculpture",
-        SCULPTURE_ROOKNOSE = "Suspicious Marble",
-		SCULPTURE_ROOKBODY = "Marble Sculpture",
-
-        GARGOYLE_HOUND = "Suspicious Moonrock",
-        GARGOYLE_WEREPIG = "Suspicious Moonrock",
-
         TREASURECHEST_TRAP = "Treasure Chest",
         MEATRACK = "Drying Rack",
         BANDAGE = "Honey Poultice",
@@ -912,7 +878,6 @@ STRINGS=
         ARMORSNURTLESHELL = "Snurtle Shell Armor",
         MAGIC_BLUEPRINT = "Blank Blueprint",
         BLUEPRINT = "Blueprint",
-        BLUEPRINT_RARE = "{item} Blueprint",
         BAT = "Batilisk",
         TEAMLEADER = "Team Leader",
         BATWING = "Batilisk Wing",
@@ -944,7 +909,6 @@ STRINGS=
         MONKEYBARREL = "Splumonkey Pod",
         SLURPER = "Slurper",
         STAFFLIGHT = "Dwarf Star",
-        STAFFCOLDLIGHT = "Polar Light",
 
         RELIC = "Relic",
         RUINS_RUBBLE = "Broken Relic",
@@ -967,9 +931,6 @@ STRINGS=
         THULECITE_PIECES = "Thulecite Fragments",
         RUINSHAT = "Thulecite Crown",
         POTTEDFERN = "Potted Fern",
-        SENTRYWARD = "Ocuvigil",
-        MOONBASE = "Moon Stone",
-        MOONROCK_PIECES = "Moon Rubble",
         UNAGI = "Unagi",
         EEL = "Eel",
         EEL_COOKED = "Cooked Eel",
@@ -1101,14 +1062,6 @@ STRINGS=
         SHADOWMETEOR = "Meteor",
 
         MOONROCKNUGGET = "Moon Rock",
-        MOONROCKCRATER = "Cratered Moonrock",
-
-        REDMOONEYE ="Red Moonlens",
-        PURPLEMOONEYE = "Purple Moonlens",
-        GREENMOONEYE = "Green Moonlens",
-        ORANGEMOONEYE = "Orange Moonlens",
-        YELLOWMOONEYE = "Yellow Moonlens",
-        BLUEMOONEYE = "Blue Moonlens",
 
         LAVAE = "Lavae",
         LAVAE_PET = "Extra-Adorable Lavae",
@@ -1132,23 +1085,9 @@ STRINGS=
 
         HUTCH = "Hutch",
         HUTCH_FISHBOWL = "Star-sky",
-
-        MUSHROOMHAT = "Funcap",
-        RED_MUSHROOMHAT = "Red Funcap",
-        GREEN_MUSHROOMHAT = "Green Funcap",
-        BLUE_MUSHROOMHAT = "Blue Funcap",
-        MUSHROOM_LIGHT2 = "Glowcap",
-        MUSHROOM_LIGHT = "Mushlight",
-        SHROOM_SKIN = "Shroom Skin",
-
-        TOADSTOOL = "Toadstool",
-        TOADSTOOL_CAP = "Toadstool",
-        TOADSTOOL_HOLE = "Hole",
-        MUSHROOMBOMB = "Boomshroom",
-        MUSHROOMSPROUT = "Sporecap",
     },
 
-    DIRECTIONS =
+    DIRECTIONS=
     {
         N = "North",
         S = "South",
@@ -1169,7 +1108,6 @@ STRINGS=
         BOOK_SLEEP = "Soothing tales to send you off to dreamland.",
         BOOK_BRIMSTONE = "The world will end in fire and tribulation!",
 
-        CARTOGRAPHYDESK = "Show everyone exactly where you've been.",
         COMPASS = "Points the way north.",
         GUNPOWDER = "A handful of gunpowder.",
         TORCH = "Portable light source.",
@@ -1234,7 +1172,6 @@ STRINGS=
         BEEHAT = "Protection against angry bees.",
         TREASURECHEST = "A sturdy container.",
         DRAGONFLYCHEST = "A sturdy and fireproof container.",
-        DRAGONFLYFURNACE = "Build yourself a fly flue.",
         BEDROLL_STRAW = "Sleep through the night.",
         BEDROLL_FURRY = "Sleep through the night in comfort!",
         PUMPKIN_LANTERN = "Spooky illumination.",
@@ -1245,7 +1182,6 @@ STRINGS=
         BLOWDART_SLEEP = "Spit sleepiness at your enemies.",
         BLOWDART_FIRE = "Spit fire at your enemies.",
         BLOWDART_PIPE = "Spit teeth at your enemies.",
-        BLOWDART_YELLOW = "Spit lightning at your enemies.",
         BEEMINE = "Weaponized bees. What could go wrong?",
         AMULET = "Protects you from death.",
         PURPLEAMULET = "Induce insanity.",
@@ -1262,8 +1198,7 @@ STRINGS=
         TRUNKVEST_SUMMER = "Warm, but not that warm.",
         TRUNKVEST_WINTER = "Warm enough for winter storms.",
         BIRDCAGE = "A happy home for your avian friends.",
-   		SCARECROW = "Models all the latest fall fashions.",
-        SPIDERHAT = "Spiders will call you \"mom\".",
+        SPIDERHAT = "Spiders will call you 'mom'.",
         TRAP_TEETH = "Pops up and bites whoever steps on it.",
         TRAP_TEETH_MAXWELL = "Pops up and bites whoever steps on it.",
         EARMUFFSHAT = "A fuzzy little bit of warmth.",
@@ -1281,7 +1216,6 @@ STRINGS=
         WALL_STONE_ITEM = "Stone wall segments.",
         WALL_HAY_ITEM = "Hay wall segments. Not very sturdy.",
         WALL_MOONROCK_ITEM = "Walls for the lunar loony.",
-        MOONROCKCRATER = "A rock for marking your territory.",
         TURF_WOODFLOOR = "High-quality laminate floorboards.",
         TURF_CHECKERFLOOR = "Nicely checkered marble tiles.",
         TURF_CARPETFLOOR = "Super soft. Smells like Beefalo.",
@@ -1318,8 +1252,6 @@ STRINGS=
         ACCOMPLISHMENT_SHRINE = "Prove your worth as a human being.",
         WALL_RUINS_ITEM = "These walls will take quite a beating.",
         POTTEDFERN = "Make a pot and stick a fern inside.",
-        ENDTABLE = "A decorative table.",
-        SENTRYWARD = "The cartographer's most valuable weapon.",
         THULECITE = "Combine tiny bits into a big chunk.",
         RUINSHAT = "Complete with ancient force field!",
         SPIDEREGGSACK = "Get a little help from your friends.",
@@ -1349,9 +1281,6 @@ STRINGS=
 
         CATCOONHAT = "For those who value warmth over friends.",
 
-        FEATHERPENCIL = "Yes, the feather IS necessary.",
-		MAPSCROLL = "Show everyone what you've seen!",
-
         REVIVER = "Ghastly revival of a ghostly friend.",
         ABIGAIL_FLOWER = "A magical keepsake.",
 
@@ -1366,12 +1295,6 @@ STRINGS=
         SHADOWMINER_BUILDER = "Mine that rock!",
         SHADOWDIGGER_BUILDER = "Diggy diggy hole.",
         SHADOWDUELIST_BUILDER = "Ethereal bodyguard.",
-
-        RED_MUSHROOMHAT = "It's like eating all kinds of mushrooms.",
-        GREEN_MUSHROOMHAT = "It's like eating all kinds of mushrooms.",
-        BLUE_MUSHROOMHAT = "It's like eating all kinds of mushrooms.",
-        MUSHROOM_LIGHT2 = "Inspired by the lava lamp sciences.",
-        MUSHROOM_LIGHT = "The perfect addition to any mush-Room.",
     },
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
@@ -1604,8 +1527,6 @@ STRINGS=
         "It reads \"Right behind you...\" and \"Made you look!\"",
         "\"Whoops.\"",
         "It's cracked down the middle.",
-        "It says \"The end is only the beginning\".",
-        "It says \"I was underground before it was a thing.\" Huh?",
         "Someone left flowers.",
         "It's old and worn.",
         "It says \"Did I make it into the history books?\"",
@@ -1650,7 +1571,6 @@ STRINGS=
         GEMOLOGY = "Gemology",
         ANCIENT = "Ancient",
         SHADOW = "Shadow",
-        CARTOGRAPHY = "Cartography",
     },
 
     GREENAMULET_TOOLTIP = "Reduced Material Cost",
@@ -1697,7 +1617,6 @@ STRINGS.BUNNYMANNAMES =
     "Juwarot",
     "Karotan",
     "Magno",
-    "Crandice",
     "Nantes",
     "Nelson",
     "Onward",
@@ -1944,6 +1863,7 @@ STRINGS.UI =
         NEEDSHADOWMANIPULATOR = "Use a shadow manipulator to build a prototype!",
         NEEDPRESTIHATITATOR = "Use a Prestihatitator to build a prototype!",
         NEEDSANCIENT_FOUR = "It seems that this altar is not fully functional!",
+        NEEDWAXWELLJOURNAL = "Curses! Now where did I put that journal...",
         CANTRESEARCH = "Some things are unknowable.",
         DEFAULT = "Classic",
     },
@@ -2276,7 +2196,6 @@ STRINGS.UI =
         QUIT = "Quit",
 
         FRESHBUILD = "Fresh Build!",
-        UPDATERELEASED = "Now Playing:",
         LASTBUILDDAYS = "Last build %d days ago",
         NEXTBUILDIMMINENT = "Next build imminent!",
         NEXTUPDATEDAYS = "Next Update: %d days",
@@ -2702,7 +2621,7 @@ STRINGS.UI =
             E_BANNED = "Your account has been banned for violating the terms of use. This is no laughing matter.",
             E_UPGRADE = "A new version is available. Please update Don't Starve Together.",
             INVALID_CLIENT_TOKEN = "Hmmm, the token error. If this keeps happening, let us know in the forums. In the meantime, try again and it just might work.",
-            INVALID_GAME_SESSION_TOKEN = "Unable to reach the Klei server. That thing is sort of the gatekeeper to this whole \"online game\" business. Try again?",
+            INVALID_GAME_SESSION_TOKEN = "Unable to reach the Klei server. That thing is sort of the gatekeeper to this whole 'online game' business. Try again?",
             ID_DST_GAME_SESSION_AUTH_FAILED = "Something fishy is going on... either we couldn't reach the Klei server or you're not who you say you are.",
             ID_DST_USER_CONNECTION_FAILED = "We tried really hard to get you connected, but something went awry.",
             ID_DST_FRIENDS_ONLY_SERVER = "Attempted to join a 'friends only' server, but you're not friends with the host. Friendship is not a transitive property.",
@@ -3094,8 +3013,6 @@ STRINGS.UI =
 
         PREFABSWAPS = "Changing Resources",
         PREFABSWAPS_START = "Starting Resource Variety",
-        DISEASE_DELAY = "Disease",
-        PETRIFICATION = "Forest Petrification",
 
         REGROWTH = "World Regrowth",
         BERRYBUSH = "Berry Bushes",
@@ -4762,12 +4679,7 @@ STRINGS.TAGS =
 
 STRINGS.SIGNS = 
 {
-    ADJ_NOUN_FMT = "{adjective} {noun}",
-    ADJ_NOUN_ADD_FMT = "{adjective} {noun} {addition}",
-    QUANT_ADJ_NOUN_FMT = "{quantifier} {adjective} {noun}",
-    QUANT_ADJ_NOUN_ADD_FMT = "{quantifier} {adjective} {noun} {addition}",
-
-	QUANTIFIERS =
+	QUANTIFIERS = 
 	{
 		"Really",
 		"Very",
@@ -4884,19 +4796,6 @@ STRINGS.SIGNS =
 		"of Death",
 		"full of Bees",
 	},
-}
-
-STRINGS.MAPRECORDER =
-{
-    --no space before {location} so that we can have blank location
-    MAPDESC = "Mapped{location} by {author} on day {day}.",
-    UNKNOWN_AUTHOR = "an explorer",
-    UNKNOWN_DAY = "???",
-    LOCATION =
-    {
-        DEFAULT = "",
-        CAVE = " in the caves",
-    },
 }
 
 STRINGS.SHARD =

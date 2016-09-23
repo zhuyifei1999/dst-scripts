@@ -52,5 +52,4 @@ end
 
 return makefeather("crow"),
     makefeather("robin"),
-    makefeather("robin_winter"),
-    makefeather("canary")
+    makefeather("robin_winter")

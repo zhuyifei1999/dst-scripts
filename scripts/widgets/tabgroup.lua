@@ -96,26 +96,20 @@ function TabGroup:OpenTab(idx)
     end
 end
 
-function TabGroup:AddTab(name, atlas, icon_atlas, icon, imnorm, imselected, imhighlight, imalthighlight, imoverlay, onselect, ondeselect, collapsed)
-    local tab = self:AddChild(Tab(self, name, atlas, icon_atlas, icon, imnorm, imselected, imhighlight, imalthighlight, imoverlay, onselect, ondeselect, collapsed))
+function TabGroup:AddTab(name, atlas, icon_atlas, icon, imnorm, imselected, imhighlight, imalthighlight, imoverlay, highlightpos, onselect, ondeselect)
+    local tab = self:AddChild(Tab(self, name, atlas, icon_atlas, icon, imnorm, imselected, imhighlight, imalthighlight, imoverlay, highlightpos, onselect, ondeselect))
     table.insert(self.tabs, tab)
 
-    local numtabs = 0
-    for i, v in ipairs(self.tabs) do
-        if not v.collapsed then
-            numtabs = numtabs + 1
-        end
-    end
+    local numtabs = #self.tabs
 
-    local scalar = self.spacing * (1 - numtabs) * .5
-    local offset = self.offset * scalar
+    local scalar = -self.spacing*(numtabs-1)*.5
+    local offset = self.offset*scalar
 
-    for i, v in ipairs(self.tabs) do
-        if i > 1 and not v.collapsed then
-            offset = offset + self.offset * self.spacing
-        end
-        v:SetPosition(offset)
-        self.base_pos[v] = Vector3(offset:Get())
+    for k,v in ipairs(self.tabs) do
+
+        v:SetPosition(offset.x, offset.y, offset.z)
+        self.base_pos[v] = Vector3(offset.x, offset.y, offset.z)
+        offset = offset + self.offset*self.spacing
     end
 
     self.shown[tab] = true

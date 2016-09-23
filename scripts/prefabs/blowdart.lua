@@ -95,9 +95,6 @@ local function common(anim, tags, removephysicscolliders)
     return inst
 end
 
--------------------------------------------------------------------------------
--- Sleep Dart
--------------------------------------------------------------------------------
 local function sleepthrown(inst)
     inst.AnimState:PlayAnimation("dart_purple")
     inst:AddTag("NOCLICK")
@@ -137,9 +134,6 @@ local function sleep()
     return inst
 end
 
--------------------------------------------------------------------------------
--- Fire Dart
--------------------------------------------------------------------------------
 local function firethrown(inst)
     inst.AnimState:PlayAnimation("dart_red")
     inst:AddTag("NOCLICK")
@@ -181,9 +175,6 @@ local function fire()
     return inst
 end
 
--------------------------------------------------------------------------------
--- Pipe Dart (Damage)
--------------------------------------------------------------------------------
 local function pipeequip(inst, owner) 
     owner.AnimState:OverrideSymbol("swap_object", "swap_blowdart_pipe", "swap_blowdart_pipe")
     owner.AnimState:Show("ARM_carry") 
@@ -210,45 +201,7 @@ local function pipe()
     return inst
 end
 
--------------------------------------------------------------------------------
--- Yellow Dart (Electric Damage)
--------------------------------------------------------------------------------
-
-local function yellowthrown(inst)
-    inst.AnimState:PlayAnimation("dart_red")
-    inst:AddTag("NOCLICK")
-    inst.persists = false
-end
-
-local function yellowattack(inst, attacker, target)
-    if not target:IsValid() then
-        --target killed or removed in combat damage phase
-        return
-    end
-
-    local x, y, z = inst.Transform:GetWorldPosition()
-    SpawnPrefab("sparks").Transform:SetPosition(x, y - .5, z)
-end
-
-local function yellow()
-    local inst = common("idle_red", { "firedart" })
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
-
-    inst.components.weapon:SetOnAttack(yellowattack)
-    inst.components.weapon:SetDamage(TUNING.YELLOW_DART_DAMAGE)
-    inst.components.weapon:SetElectric()
-    inst.components.projectile:SetOnThrownFn(yellowthrown)
-
-    return inst
-end
-
-
--------------------------------------------------------------------------------
--- Walrus blowdart - use by walrus creature, not player
--------------------------------------------------------------------------------
+-- walrus blowdart is for use by walrus creature, not player
 local function walrus()
     local inst = common("idle_pipe", { "NOCLICK" }, true)
 
@@ -270,9 +223,7 @@ local function walrus()
     return inst
 end
 
--------------------------------------------------------------------------------
 return Prefab("blowdart_sleep", sleep, assets, prefabs),
        Prefab("blowdart_fire", fire, assets, prefabs),
        Prefab("blowdart_pipe", pipe, assets, prefabs),
-       Prefab("blowdart_yellow", yellow, assets, prefabs),
        Prefab("blowdart_walrus", walrus, assets, prefabs)
