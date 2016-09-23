@@ -73,7 +73,7 @@ local function makestump(inst, instant)
 end
 
 local function onworked(inst, chopper, workleft)
-    if chopper == nil or not chopper:HasTag("playerghost") then
+    if not (chopper ~= nil and chopper:HasTag("playerghost")) then
         inst.SoundEmitter:PlaySound(
             chopper ~= nil and chopper:HasTag("beaver") and
             "dontstarve/characters/woodie/beaver_chop_tree" or

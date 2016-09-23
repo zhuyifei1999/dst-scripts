@@ -131,9 +131,9 @@ end
 
 function Freezable:UpdateTint()
     if self.inst.AnimState ~= nil then
-        if self:IsFrozen() then
+        if self:IsFrozen() or self.coldness >= self.resistance then
             self.inst.AnimState:SetAddColour(unpack(FREEZE_COLOUR))
-        elseif self.coldness == 0 then
+        elseif self.coldness <= 0 then
             self.inst.AnimState:SetAddColour(0, 0, 0, 0)
         else
             local percent = self.coldness / self.resistance

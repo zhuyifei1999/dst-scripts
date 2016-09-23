@@ -5,6 +5,7 @@ local Aura = Class(function(self, inst)
     self.active = false
     self.applying = false
     self.auratestfn = nil
+    self.auraexcludetags = { "noauradamage", "INLIMBO" }
     self._fn = function(target) return self.auratestfn(inst, target) end
 end)
 
@@ -47,7 +48,7 @@ function Aura:OnTick()
             nil,
             self.auratestfn ~= nil and self._fn or nil,
             nil,
-            { "noauradamage" }
+            self.auraexcludetags
         ) > 0
 
     if applied ~= self.applying then

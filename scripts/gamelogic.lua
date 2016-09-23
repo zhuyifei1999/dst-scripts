@@ -576,8 +576,8 @@ local function DoInitGame(savedata, profile)
 	--assert(savedata.map.generated, "Original generation data missing from savedata on load")
 	--assert(savedata.map.generated.densities, "Generated prefab densities missing from savedata on load")
 
-	assert(savedata.ents, "Entites missing from savedata on load")
-	
+	assert(savedata.ents, "Entities missing from savedata on load")
+
 	if savedata.map.roads then
 		Roads = savedata.map.roads
 		for k, road_data in pairs( savedata.map.roads ) do

@@ -67,9 +67,13 @@ local ItemTile = Class(Widget, function(self, invitem)
                     local dest_pos = self:GetWorldPosition()
                     local im = Image(invitem.replica.inventoryitem:GetAtlas(), invitem.replica.inventoryitem:GetImage())
                     im:MoveTo(Vector3(TheSim:GetScreenPos(data.src_pos:Get())), dest_pos, .3, function()
-                        self.ismoving = false
-                        self:SetQuantity(data.stacksize)
-                        self:ScaleTo(self.basescale * 2, self.basescale, .25)
+                        --V2C: tile could be killed already if the user picked it
+                        --     up with mouse cursor during the move to animation.
+                        if self.inst:IsValid() then
+                            self.ismoving = false
+                            self:SetQuantity(data.stacksize)
+                            self:ScaleTo(self.basescale * 2, self.basescale, .25)
+                        end
                         im:Kill()
                     end)
                     self.ismoving = true

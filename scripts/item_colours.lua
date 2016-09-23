@@ -13,6 +13,7 @@ ITEM_COLOURS =
 	backpack_camping_orange_carrot = "orange",
 	backpack_camping_red_koalefant = "red",
 	backpack_catcoon = "",
+	backpack_crab = "",
 	backpack_dragonfly_fire = "",
 	backpack_mushy = "",
 	backpack_poop = "",

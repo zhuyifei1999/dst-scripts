@@ -646,7 +646,7 @@ function SaveGame(isshutdown, cb)
     assert(save.map.width, "Map width missing from savedata on save")
     assert(save.map.height, "Map height missing from savedata on save")
     --assert(save.map.topology, "Map topology missing from savedata on save")
-    assert(save.ents, "Entites missing from savedata on save")
+    assert(save.ents, "Entities missing from savedata on save")
     assert(save.mods, "Mod records missing from savedata on save")
 
     local PRETTY_PRINT = BRANCH == "dev"
@@ -1406,8 +1406,9 @@ function BuildTagsStringCommon(tagsTable)
     table.insert(tagsTable, 1, SERVER_LANGUAGES_TAGS[lang_code] or lang_code)
 
     -- Beta tag (forced to front of list)
-    if BRANCH == "staging" and BETA_SERVER_TAGS[CURRENT_BETA] ~= nil then
-        table.insert(tagsTable, 1, BETA_SERVER_TAGS[CURRENT_BETA])
+    if BRANCH == "staging" and CURRENT_BETA > 0 then
+        table.insert(tagsTable, 1, BETA_INFO[CURRENT_BETA].SERVERTAG)
+        table.insert(tagsTable, 1, BETA_INFO[PUBLIC_BETA].SERVERTAG)
     end
 
     -- Concat unique tags

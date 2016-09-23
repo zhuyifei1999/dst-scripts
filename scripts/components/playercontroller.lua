@@ -910,9 +910,9 @@ function PlayerController:StartBuildPlacementMode(recipe, skin)
         SpawnPrefab(recipe.placer)
 
     self.placer.components.placer:SetBuilder(self.inst, recipe)
-    self.placer.components.placer.testfn = function(pt)
+    self.placer.components.placer.testfn = function(pt, rot)
         local builder = self.inst.replica.builder
-        return builder ~= nil and builder:CanBuildAtPoint(pt, recipe)
+        return builder ~= nil and builder:CanBuildAtPoint(pt, recipe, rot)
     end
 end
 
@@ -1777,7 +1777,7 @@ function PlayerController:OnUpdate(dt)
                 elseif self.inst.replica.combat ~= nil then
                     retarget = self.inst.replica.combat:GetTarget()
                 end
-                if retarget ~= nil then
+                if retarget ~= nil and CanEntitySeeTarget(self.inst, retarget) then
                     --Handle chain attacking
                     if self.inst.sg ~= nil then
                         if self.handler == nil then

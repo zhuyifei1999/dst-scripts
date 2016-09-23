@@ -58,15 +58,16 @@ function Crafting:SetOrientation(horizontal)
 
     for k = 1, #self.craftslots.slots do
         local slotpos = self.bg:GetSlotPos(k)
-        self.craftslots.slots[k]:SetPosition( slotpos.x,slotpos.y,slotpos.z )
+        self.craftslots.slots[k]:SetPosition(slotpos:Get())
     end
 
     if horizontal then
         self.downbutton:SetRotation(90)
         self.upbutton:SetRotation(-90)
 
-        self.downbutton:SetPosition(-self.bg.length/2 - self.but_w/2 + slot_w/2,0,0)
-        self.upbutton:SetPosition(self.bg.length/2 + self.but_w/2 - slot_w/2,0,0)
+        local x = (self.bg.length + self.but_w - slot_w) * .5
+        self.downbutton:SetPosition(-x, 0, 0)
+        self.upbutton:SetPosition(x, 0, 0)
 
         self.downconnector:Hide()
         self.upconnector:Hide()
@@ -74,24 +75,30 @@ function Crafting:SetOrientation(horizontal)
         self.upendcapbg:Hide()
     else
         self.downbutton:SetScale(Vector3(1, -1, 1))
+        local end_padding = 25
         if self.valid_recipes ~= nil and #self.valid_recipes <= self.max_slots then
-            self.downbutton:SetPosition(0, self.bg.length/2 + self.but_h/1.35 - slot_h/2 - 23,0)
-            self.upbutton:SetPosition(0, -self.bg.length/2 - self.but_h/1.35 + slot_h/2 + 23,0)
+            local dy = (self.bg.length - slot_h) * .5 - end_padding
+            local y = dy + self.but_h / 1.35
+            self.downbutton:SetPosition(0, y, 0)
+            self.upbutton:SetPosition(0, -y, 0)
 
-            self.downconnector:SetPosition(-68, self.bg.length/2 + self.but_h/1.5 - slot_h/2 - 23,0)
-            self.upconnector:SetPosition(-68, -self.bg.length/2 - self.but_h/1.5 + slot_h/2 + 23,0)
+            y = dy + self.but_h / 1.5
+            self.downconnector:SetPosition(-68, y, 0)
+            self.upconnector:SetPosition(-68, -y, 0)
 
-            self.downendcapbg:SetPosition(0, self.bg.length/2 + self.but_h/2 - slot_h/2 - 23)
-            self.upendcapbg:SetPosition(0, -self.bg.length/2 - self.but_h/2 + slot_h/2 + 23)
+            y = dy + self.but_h * .5
+            self.downendcapbg:SetPosition(0, y, 0)
+            self.upendcapbg:SetPosition(0, -y, 0)
 
             self.downendcapbg:Show()
             self.upendcapbg:Show()
         else
-            self.downbutton:SetPosition(0, self.bg.length/2 + self.but_h/2 - slot_h/2,0)
-            self.upbutton:SetPosition(0, - self.bg.length/2 - self.but_h/2 + slot_h/2,0)
+            local y = (self.bg.length + self.but_h - slot_h) * .5
+            self.downbutton:SetPosition(0, y, 0)
+            self.upbutton:SetPosition(0, -y, 0)
 
-            self.downconnector:SetPosition(-68, self.bg.length/2 + self.but_h/2 - slot_h/2 - 23,0)
-            self.upconnector:SetPosition(-68, - self.bg.length/2 - self.but_h/2 + slot_h/2 + 23,0)
+            self.downconnector:SetPosition(-68, y - end_padding, 0)
+            self.upconnector:SetPosition(-68, end_padding - y, 0)
 
             self.downendcapbg:Hide()
             self.upendcapbg:Hide()

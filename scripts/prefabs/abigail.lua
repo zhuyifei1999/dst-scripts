@@ -8,20 +8,27 @@ local assets =
 local brain = require("brains/abigailbrain")
 
 local function Retarget(inst)
-    return FindEntity(inst, 20, function(guy)
-        return inst._playerlink ~= nil
-            and inst.components.combat:CanTarget(guy)
-            and (guy.components.combat.target == inst._playerlink or
-                inst._playerlink.components.combat.target == guy)
-    end)
+    return FindEntity(
+        inst,
+        20,
+        function(guy)
+            return inst._playerlink ~= nil
+                and inst.components.combat:CanTarget(guy)
+                and (guy.components.combat.target == inst._playerlink or
+                    inst._playerlink.components.combat.target == guy)
+        end,
+        { "_combat", "_health" },
+        { "INLIMBO", "noauradamage" }
+    )
 end
 
 local function OnAttacked(inst, data)
-    local attacker = data.attacker
-    if attacker ~= nil and attacker == inst._playerlink then
+    if data.attacker == nil then
+        inst.components.combat:SetTarget(nil)
+    elseif data.attacker == inst._playerlink then
         inst.components.health:SetVal(0)
-    else
-        inst.components.combat:SetTarget(attacker)
+    elseif not data.attacker:HasTag("noauradamage") then
+        inst.components.combat:SetTarget(data.attacker)
     end
 end
 

@@ -239,7 +239,7 @@ local function MakeBook(def)
         inst:AddComponent("fuel")
         inst.components.fuel.fuelvalue = TUNING.MED_FUEL
 
-        MakeSmallBurnable(inst)
+        MakeSmallBurnable(inst, TUNING.MED_BURNTIME)
         MakeSmallPropagator(inst)
 
         --MakeHauntableLaunchOrChangePrefab(inst, TUNING.HAUNT_CHANCE_OFTEN, TUNING.HAUNT_CHANCE_OCCASIONAL, nil, nil, morphlist)

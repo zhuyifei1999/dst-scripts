@@ -173,20 +173,20 @@ function ShowDebug(savedata)
 		end
 	end
 
-	WorldSim:ShowDebugItems(item_table)			
+	WorldSim:ShowDebugItems(item_table)
 end
 
 function CheckMapSaveData(savedata)
-	print("Checking map...")
-        
+    print("Checking map...")
+
     assert(savedata.map, "Map missing from savedata on generate")
     assert(savedata.map.prefab, "Map prefab missing from savedata on generate")
     assert(savedata.map.tiles, "Map tiles missing from savedata on generate")
     assert(savedata.map.width, "Map width missing from savedata on generate")
     assert(savedata.map.height, "Map height missing from savedata on generate")
-	assert(savedata.map.topology, "Map topology missing from savedata on generate")
-        
-	assert(savedata.ents, "Entites missing from savedata on generate")
+    assert(savedata.map.topology, "Map topology missing from savedata on generate")
+
+    assert(savedata.ents, "Entities missing from savedata on generate")
 end
 
 local function GetRandomFromLayouts( layouts )

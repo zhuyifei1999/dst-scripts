@@ -84,7 +84,7 @@ function Trader:AbleToAccept(item, giver)
         return false, "DEAD"
     elseif self.inst.components.sleeper ~= nil and self.inst.components.sleeper:IsAsleep() then
         return false, "SLEEPING"
-    elseif self.inst:HasTag("busy") then
+    elseif self.inst.sg ~= nil and self.inst.sg:HasStateTag("busy") then
         return false, "BUSY"
     end
     return true

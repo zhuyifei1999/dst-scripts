@@ -1050,6 +1050,8 @@ BROWN = {97/255, 73/255, 46/255, 255/255}
 RED = {.7, .1, .1, 1}
 DARKGREY = {.12, .12, .12, 1}
 
+MAX_WRITEABLE_LENGTH = 200
+
 --Bit flags, currently supports up to 8
 --Server may use these for things that clients need to know about
 --other clients whose player entities may or may not be available
@@ -1185,8 +1187,22 @@ COMMAND_RESULT = {
 
 MAX_VOTE_OPTIONS = 6
 
-CURRENT_BETA = "ANRBETA"
-BETA_SERVER_TAGS =
+CURRENT_BETA = 0 -- set to 0 if there is no beta
+BETA_INFO =
 {
-    ANRBETA = "a_new_reign_beta",
+    {	
+		NAME = "ANRBETA",
+		SERVERTAG = "a_new_reign_beta",
+		VERSION_MISMATCH_STRING = "VERSION_MISMATCH_ARNBETA",
+		URL = "http://forums.kleientertainment.com/topic/69487-how-to-opt-in-to-a-new-reign-beta-for-dont-starve-together/",
+	},
+	
+	-- THE PUBLIC BETA MUST BE LAST --
+	{
+		NAME = "PUBLIC_BETA",
+		SERVERTAG = "public_beta",
+		VERSION_MISMATCH_STRING = "VERSION_MISMATCH_PUBLIC_BETA",
+		URL = "http://forums.kleientertainment.com/forum/66-dont-starve-together-general-discussion/",
+	},
 }
+PUBLIC_BETA = #BETA_INFO

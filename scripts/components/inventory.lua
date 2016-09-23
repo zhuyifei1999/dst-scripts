@@ -62,7 +62,7 @@ function Inventory:NumItems()
     for k,v in pairs(self.itemslots) do
         num = num + 1
     end
-    
+
     return num
 end
 
@@ -105,8 +105,7 @@ function Inventory:OnSave()
             end
         end
     end
-    
-    
+
     if self.activeitem and not (self.activeitem.components.equippable and self.equipslots[self.activeitem.components.equippable.equipslot] == self.activeitem) then
         data.activeitem, refs = self.activeitem:GetSaveRecord()
         if refs then
@@ -115,9 +114,9 @@ function Inventory:OnSave()
             end
         end
     end
-    
+
     return data, references
-end   
+end
 
 function Inventory:CanTakeItemInSlot(item, slot)
     return item ~= nil
@@ -163,7 +162,7 @@ function Inventory:OnLoad(data, newents)
             end
         end
     end
-    
+
     if data.equip ~= nil then
         for k, v in pairs(data.equip) do
             local item = SpawnSaveRecord(v, newents)
@@ -173,7 +172,7 @@ function Inventory:OnLoad(data, newents)
             end
         end
     end
-    
+
     if data.activeitem ~= nil then
         local item = SpawnSaveRecord(data.activeitem, newents)
         if item ~= nil then
@@ -294,7 +293,7 @@ function Inventory:SelectActiveItemFromEquipSlot(slot)
         local olditem = self.activeitem
         local newitem = self:Unequip(slot)
         self:SetActiveItem(newitem)
-        
+
         if olditem and not self:IsItemEquipped(olditem) then
             self:GiveItem(olditem)
         end
@@ -332,7 +331,7 @@ function Inventory:SelectActiveItemFromSlot(slot)
     local newitem = self.itemslots[slot]
     self.itemslots[slot] = nil
     self.inst:PushEvent("itemlose", { slot = slot })
-    
+
     self:SetActiveItem(newitem)
 
     if olditem ~= nil then
@@ -399,7 +398,7 @@ function Inventory:FindItem(fn)
             return v
         end
     end
-    
+
     if self.activeitem and fn(self.activeitem) then
         return self.activeitem
     end
@@ -410,13 +409,13 @@ end
 
 function Inventory:FindItems(fn)
     local items = {}
-    
+
     for k,v in pairs(self.itemslots) do
         if fn(v) then
             table.insert(items, v)
         end
     end
-    
+
     if self.activeitem and fn(self.activeitem) then
         table.insert(items, self.activeitem)
     end
@@ -495,7 +494,7 @@ function Inventory:GetNextAvailableSlot(item)
     local prefabname = nil
     if item.components.stackable ~= nil then
         prefabname = item.prefab
-    
+
         --check for stacks that aren't full
         for k, v in pairs(self.equipslots) do
             if v.prefab == prefabname and v.components.equippable.equipstack and v.components.stackable and not v.components.stackable:IsFull() then
@@ -628,7 +627,7 @@ function Inventory:GiveItem(inst, slot, src_pos)
     local eslot = self:IsItemEquipped(inst)
 
     if eslot then
-       self:Unequip(eslot) 
+       self:Unequip(eslot)
     end
 
     local new_item = inst ~= self.activeitem
@@ -975,11 +974,11 @@ function Inventory:GetItemByName(item, amount)
             break
         end
     end
-    
+
     if self.activeitem and self.activeitem.prefab == item and total_num_found < amount then
         total_num_found = total_num_found + tryfind(self.activeitem)
     end
-    
+
     local overflow = self:GetOverflowContainer()
     if overflow and total_num_found < amount then
         local overflow_items = overflow:GetItemByName(item, (amount - total_num_found))
@@ -987,53 +986,51 @@ function Inventory:GetItemByName(item, amount)
             items[k] = v
         end
     end
- 
+
     return items
 end
 
+local function tryconsume(self, v, amount)
+    if v.components.stackable == nil then
+        self:RemoveItem(v):Remove()
+        return 1
+    elseif v.components.stackable.stacksize > amount then
+        v.components.stackable:SetStackSize(v.components.stackable.stacksize - amount)
+        return amount
+    else
+        amount = v.components.stackable.stacksize
+        self:RemoveItem(v, true):Remove()
+        return amount
+    end
+    --shouldn't be possible?
+    return 0
+end
+
 function Inventory:ConsumeByName(item, amount)
-    
-    local total_num_found = 0
-    
-    local function tryconsume(v)
-        local num_found = 0
-        if v and v.prefab == item then
-            local num_left_to_find = amount - total_num_found
-            
-            if v.components.stackable then
-                if v.components.stackable.stacksize > num_left_to_find then
-                    v.components.stackable:SetStackSize(v.components.stackable.stacksize - num_left_to_find)
-                    num_found = amount
-                else
-                    num_found = num_found + v.components.stackable.stacksize
-                    self:RemoveItem(v, true):Remove()
-                end
-            else
-                num_found = num_found + 1
-                self:RemoveItem(v):Remove()
+    if amount <= 0 then
+        return
+    end
+
+    for k = 1, self.maxslots do
+        local v = self.itemslots[k]
+        if v ~= nil and v.prefab == item then
+            amount = amount - tryconsume(self, v, amount)
+            if amount <= 0 then
+                return
             end
         end
-        return num_found
     end
 
-    for k = 1,self.maxslots do
-        local v = self.itemslots[k]
-        total_num_found = total_num_found + tryconsume(v)
-        
-        if total_num_found >= amount then
-            break
+    if self.activeitem ~= nil and self.activeitem.prefab == item then
+        amount = amount - tryconsume(self, self.activeitem, amount)
+        if amount <= 0 then
+            return
         end
-    end
-    
-    if self.activeitem and self.activeitem.prefab == item and total_num_found < amount then
-        total_num_found = total_num_found + tryconsume(self.activeitem)
     end
 
-    if total_num_found < amount then
-        local overflow = self:GetOverflowContainer()
-        if overflow ~= nil then
-            overflow:ConsumeByName(item, amount - total_num_found)
-        end
+    local overflow = self:GetOverflowContainer()
+    if overflow ~= nil then
+        overflow:ConsumeByName(item, amount)
     end
 end
 
@@ -1147,11 +1144,7 @@ function Inventory:GetDebugString()
         end
     end
 
-    s = count..": "..s
-
-    s = s..string.format(" waterproofness:",self:GetWaterproofness())
-
-    return s
+    return count..": "..s..string.format(" waterproofness:", self:GetWaterproofness())
 end
 
 function Inventory:IsOpenedBy(guy)

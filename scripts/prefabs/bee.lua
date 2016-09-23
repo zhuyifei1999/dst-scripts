@@ -134,7 +134,7 @@ local function commonfn(build, tags)
 
     inst.AnimState:SetBank("bee")
     inst.AnimState:SetBuild(build)
-    inst.AnimState:PlayAnimation("idle")
+    inst.AnimState:PlayAnimation("idle", true)
     inst.AnimState:SetRayTestOnBB(true)
 
     MakeFeedableSmallLivestockPristine(inst)

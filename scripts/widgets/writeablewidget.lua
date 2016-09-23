@@ -10,8 +10,6 @@ local Menu = require "widgets/menu"
 local UIAnim = require "widgets/uianim"
 local ImageButton = require "widgets/imagebutton"
 
-local STRING_MAX_LENGTH = 200 -- http://tools.ietf.org/html/rfc5321#section-4.5.3.1
-
 local function onaccept(inst, doer, widget)
     if not widget.isopen then
         return
@@ -132,7 +130,7 @@ local WriteableWidget = Class(Screen, function(self, owner, writeable, config)
     self.edit_text:SetHAlign(ANCHOR_LEFT)
     self.edit_text:SetVAlign(ANCHOR_TOP)
     --self.edit_text:SetFocusedImage(self.edit_text_bg, "images/textboxes.xml", "textbox_long_over.tex", "textbox_long.tex")
-    self.edit_text:SetTextLengthLimit(STRING_MAX_LENGTH)
+    self.edit_text:SetTextLengthLimit(MAX_WRITEABLE_LENGTH)
     self.edit_text:EnableWordWrap(true)
     self.edit_text:EnableWhitespaceWrap(true)
     self.edit_text:EnableRegionSizeLimit(true)

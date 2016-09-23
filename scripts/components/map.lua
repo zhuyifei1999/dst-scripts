@@ -117,10 +117,12 @@ local RECIPE_PADDING =
     },
 }
 
-function Map:CanDeployRecipeAtPoint(pt, recipe)
-    if not self:IsPassableAtPoint(pt:Get()) then
+function Map:CanDeployRecipeAtPoint(pt, recipe, rot)
+    if not self:IsPassableAtPoint(pt:Get()) or
+        (recipe.testfn ~= nil and not recipe.testfn(pt, rot)) then
         return false
     end
+
     local min_spacing = recipe.min_spacing or 3.2
 
     local padding = RECIPE_PADDING[recipe.name]

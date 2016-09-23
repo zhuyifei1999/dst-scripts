@@ -30,6 +30,7 @@ local function getstatus(inst)
     return validteleporttarget(inst) and "VALID" or "GEMS"
 end
 
+--V2C: Update recipe custom testfn if this ever changes
 local telebase_parts =
 {
     { part = "gemsocket", x = -1.6, z = -1.6 },

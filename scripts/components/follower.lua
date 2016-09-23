@@ -81,16 +81,18 @@ local function OnEntitySleep(inst)
 end
 
 function Follower:StartLeashing()
-    if not self.leashing then
-        self.leashing = true
+    if self._onleaderwake == nil and self.leader ~= nil then
+        self._onleaderwake = function() OnEntitySleep(self.inst) end
+        self.inst:ListenForEvent("entitywake", self._onleaderwake, self.leader)
         self.inst:ListenForEvent("entitysleep", OnEntitySleep)
     end
 end
 
 function Follower:StopLeashing()
-    if self.leashing then
-        self.leashing = nil
+    if self._onleaderwake ~= nil then
         self.inst:RemoveEventCallback("entitysleep", OnEntitySleep)
+        self.inst:RemoveEventCallback("entitywake", self._onleaderwake, self.leader)
+        self._onleaderwake = nil
         if self.porttask ~= nil then
             self.porttask:Cancel()
             self.porttask = nil
@@ -106,30 +108,27 @@ function Follower:SetLeader(inst)
         inst.components.leader:AddFollower(self.inst)
     end
 
+    self:StopLeashing()
+
     if self.leader ~= nil then
         self.inst:RemoveEventCallback("onremove", self.OnLeaderRemoved, self.leader)
     end
     if inst ~= nil then
         self.inst:ListenForEvent("onremove", self.OnLeaderRemoved, inst)
-    end
 
-    self.leader = inst
+        self.leader = inst
 
-    if self.leader ~= nil and
-        (   self.leader:HasTag("player") or
-            --Special case for pets leashed to inventory items
-            (   self.leader.components.inventoryitem ~= nil and
-                self.leader.components.inventoryitem.owner ~= nil and
-                self.leader.components.inventoryitem.owner:HasTag("player")
-            )
-        ) then
-        self:StartLeashing()
-    end
+        if inst:HasTag("player") or inst.components.inventoryitem ~= nil then
+            --Special case for pets leashed to players or inventory items
+            self:StartLeashing()
+        end
+    else
+        self.leader = nil
 
-    if inst == nil and self.task ~= nil then
-        self.task:Cancel()
-        self.task = nil
-        self:StopLeashing()
+        if self.task ~= nil then
+            self.task:Cancel()
+            self.task = nil
+        end
     end
 end
 
@@ -141,11 +140,8 @@ function Follower:GetLoyaltyPercent()
     return 0
 end
 
-local function stopfollow(inst)
-    if inst:IsValid() and inst.components.follower ~= nil then
-        inst:PushEvent("loseloyalty", { leader = inst.components.follower.leader })
-        inst.components.follower:SetLeader(nil)
-    end
+local function stopfollow(inst, self)
+    self:StopLeashing()
 end
 
 function Follower:AddLoyaltyTime(time)
@@ -159,14 +155,13 @@ function Follower:AddLoyaltyTime(time)
     if self.task ~= nil then
         self.task:Cancel()
     end
-    self.task = self.inst:DoTaskInTime(timeLeft, stopfollow)
+    self.task = self.inst:DoTaskInTime(timeLeft, stopfollow, self)
 end
 
 function Follower:StopFollowing()
     if self.inst:IsValid() then
-        self.inst:PushEvent("loseloyalty", {leader=self.inst.components.follower.leader})
-        self.inst.components.follower:SetLeader(nil)
-        self:StopLeashing()
+        self.inst:PushEvent("loseloyalty", { leader = self.leader })
+        self:SetLeader(nil)
     end
 end
 
@@ -189,18 +184,16 @@ function Follower:OnLoad(data)
 end
 
 function Follower:IsLeaderSame(otherfollower)
+    if self.leader == nil then
+        return false
+    end
     local othercmp = otherfollower.components.follower
     if othercmp == nil or othercmp.leader == nil then
         return false
-    elseif othercmp.leader == self.leader then
-        return true
-    --Special case for pets leashed to inventory items
-    elseif othercmp.leader.components.inventoryitem ~= nil and
-        othercmp.leader.components.inventoryitem.owner ~= nil and
-        othercmp.leader.components.inventoryitem.owner == self.leader then
-        return true
     end
-    return false
+    --Special case for pets leashed to inventory items
+    return (self.leader.components.inventoryitem ~= nil and self.leader.components.inventoryitem:GetGrandOwner() or self.leader)
+        == (othercmp.leader.components.inventoryitem ~= nil and othercmp.leader.components.inventoryitem:GetGrandOwner() or othercmp.leader)
 end
 
 function Follower:KeepLeaderOnAttacked()
@@ -218,22 +211,18 @@ function Follower:LongUpdate(dt)
             self:SetLeader(nil) 
         else
             self.targettime = GetTime() + time_left
-            self.task = self.inst:DoTaskInTime(time_left, stopfollow)
+            self.task = self.inst:DoTaskInTime(time_left, stopfollow, self)
         end
     end
 end
 
 function Follower:OnRemoveFromEntity()
+    self:StopLeashing()
     if self.task ~= nil then
         self.task:Cancel()
         self.task = nil
     end
-    if self.porttask ~= nil then
-        self.porttask:Cancel()
-        self.porttask = nil
-    end
     self.inst:RemoveEventCallback("attacked", onattacked)
-    self.inst:RemoveEventCallback("entitysleep", OnEntitySleep)
     if self.leader ~= nil then
         self.inst:RemoveEventCallback("onremove", self.OnLeaderRemoved, self.leader)
     end

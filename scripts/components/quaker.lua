@@ -134,7 +134,7 @@ local _GroundDetectionUpdate = _ismastersim and function(debris)
                         local vx, vy, vz = v.Transform:GetWorldPosition()
                         SpawnPrefab("ground_chunks_breaking").Transform:SetPosition(vx, 0, vz)
                         v:Remove()
-                    elseif v.components.combat ~= nil then
+                    elseif v.components.combat ~= nil and not (v:HasTag("epic") or v:HasTag("wall")) then
                         v.components.combat:GetAttacked(debris, 20, nil)
                     end
                 end

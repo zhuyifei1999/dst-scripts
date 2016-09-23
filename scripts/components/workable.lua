@@ -32,7 +32,6 @@ local Workable = Class(function(self, inst)
     self.maxwork = -1
     self.action = ACTIONS.CHOP
     self.savestate = false
-    self.destroyed = false
     self.workable = true
 end,
 nil,
@@ -65,9 +64,8 @@ function Workable:GetWorkAction()
 end
 
 function Workable:Destroy(destroyer)
-    if not self.destroyed then
+    if self:CanBeWorked() then
         self:WorkedBy(destroyer, self.workleft)
-        self.destroyed = true
     end
 end
 
