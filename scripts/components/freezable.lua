@@ -119,7 +119,7 @@ function Freezable:AddColdness(coldness, freezetime)
             --not possible?
         elseif self.coldness < self.resistance then
             self:StartWearingOff()
-        elseif self.sg ~= nil and self.sg:HasStateTag("nofreeze") then
+        elseif self.inst.sg ~= nil and self.inst.sg:HasStateTag("nofreeze") then
             self.coldness = self.resistance
             self:StartWearingOff()
         else
