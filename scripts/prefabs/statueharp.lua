@@ -2,7 +2,7 @@ local assets =
 {
     Asset("ANIM", "anim/statue_small.zip"),
     Asset("ANIM", "anim/statue_small_harp_build.zip"),
-	Asset("MINIMAP_IMAGE", "statue_small"),
+    Asset("MINIMAP_IMAGE", "statue_small"),
 }
 
 local prefabs =
@@ -33,6 +33,10 @@ local function OnWorked(inst, worker, workleft)
     end
 end
 
+local function OnWorkLoad(inst)
+    OnWorked(inst, nil, inst.components.workable.workleft)
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -50,7 +54,6 @@ local function fn()
     inst.AnimState:SetBuild("statue_small")
     inst.AnimState:OverrideSymbol("swap_statue", "statue_small_harp_build", "swap_statue")
     inst.AnimState:PlayAnimation("full")
-    inst.AnimState:SetRayTestOnBB(true) --TODO: remove this when artists adds a mouseover region
 
     inst.MiniMapEntity:SetIcon("statue_small.png")
 
@@ -68,6 +71,8 @@ local function fn()
     inst.components.workable:SetWorkAction(ACTIONS.MINE)
     inst.components.workable:SetWorkLeft(TUNING.MARBLEPILLAR_MINE)
     inst.components.workable:SetOnWorkCallback(OnWorked)
+    inst.components.workable:SetOnLoadFn(OnWorkLoad)
+    inst.components.workable.savestate = true
 
     MakeHauntableWork(inst)
 

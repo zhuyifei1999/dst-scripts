@@ -4,7 +4,7 @@ local PlayerActionPicker = Class(function(self, inst)
     self.containers = {}
     self.leftclickoverride = nil
     self.rightclickoverride = nil
-    self.actionfilterstack = {} -- only the top filter is active
+    self.actionfilterstack = {} -- only the highest priority filter is active
     self.actionfilter = nil
 end)
 
@@ -24,23 +24,40 @@ function PlayerActionPicker:UnregisterContainer(container)
     end
 end
 
-function PlayerActionPicker:PushActionFilter(filterfn)
-    table.insert(self.actionfilterstack, filterfn)
-    self.actionfilter = filterfn
+function PlayerActionPicker:OnUpdateActionFilterStack()
+    local num = #self.actionfilterstack
+    if num > 0 then
+        local topfilter = self.actionfilterstack[num]
+        for i = num - 1, 1, -1 do
+            local filter = self.actionfilterstack[i]
+            if filter.priority > topfilter.priority then
+                topfilter = filter
+            end
+        end
+        self.actionfilter = topfilter.fn
+    else
+        self.actionfilter = nil
+    end
+end
+
+function PlayerActionPicker:PushActionFilter(filterfn, priority)
+    table.insert(self.actionfilterstack, { fn = filterfn, priority = priority or 0 })
+    self:OnUpdateActionFilterStack()
 end
 
 function PlayerActionPicker:PopActionFilter(filterfn)
     if filterfn ~= nil then
         for i = #self.actionfilterstack, 1, -1 do
-            if self.actionfilterstack[i] == filterfn then
+            if self.actionfilterstack[i].fn == filterfn then
                 table.remove(self.actionfilterstack, i)
-                break
+                self:OnUpdateActionFilterStack()
+                return
             end
         end
     else
         table.remove(self.actionfilterstack, #self.actionfilterstack)
+        self:OnUpdateActionFilterStack()
     end
-    self.actionfilter = #self.actionfilterstack > 0 and self.actionfilterstack[#self.actionfilterstack] or nil
 end
 
 local function OrderByPriority(l, r)

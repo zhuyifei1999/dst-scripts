@@ -12,14 +12,13 @@ local tags = {"BEDROLL", "CRAFTABLE"}
 local ui_preview =
 {
 	build = "swap_bedroll_furry_quilt_white_ivory",
-	bank = "swap_bedroll_furry_quilt_white_ivory",
 }
 
 return CreatePrefabSkin("bedroll_furry_quilt_white_ivory",
 {
 	base_prefab = base_prefab, 
 	ui_preview = ui_preview,
-	item_type = "ITEM_SKIN",
+	inheritance = "ITEM_SKIN",
 	init_fn = function(inst) bedroll_init_fn(inst, ui_preview.build) end,
 	assets = assets,
 	tags = tags,

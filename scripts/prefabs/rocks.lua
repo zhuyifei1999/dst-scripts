@@ -7,17 +7,19 @@ local rock1_assets =
 local rock2_assets =
 {
     Asset("ANIM", "anim/rock2.zip"),
-    Asset("MINIMAP_IMAGE", "rock"),
+    Asset("MINIMAP_IMAGE", "rock_gold"),
 }
 
 local rock_flintless_assets =
 {
     Asset("ANIM", "anim/rock_flintless.zip"),
+    Asset("MINIMAP_IMAGE", "rock"),
 }
 
 local rock_moon_assets =
 {
     Asset("ANIM", "anim/rock7.zip"),
+    Asset("MINIMAP_IMAGE", "rock_moon"),
 }
 
 local rock_petrified_tree_assets =
@@ -79,7 +81,6 @@ SetSharedLootTable( 'rock_flintless_med',
     {'rocks', 0.4},
 })
 
-
 SetSharedLootTable( 'rock_flintless_low',
 {
     {'rocks', 1.0},
@@ -90,11 +91,10 @@ SetSharedLootTable( 'rock_flintless_low',
 SetSharedLootTable( 'rock_moon',
 {
     {'rocks',           1.00},
-    {'rocks',           1.00},
-    {'moonrocknugget',  1.00},
     {'flint',           1.00},
-    {'moonrocknugget',  0.25},
-    {'flint',           0.60},
+    {'moonrocknugget',  1.00},
+    {'moonrocknugget',  0.6},
+    {'moonrocknugget',  0.3},
 })
 
 SetSharedLootTable( 'rock_petrified_tree',
@@ -189,6 +189,7 @@ local function onload(inst, data)
         setPetrifiedTreeSize(inst) 
     end
 end
+
 local function baserock_fn(bank, build, anim, icon, tag)
     local inst = CreateEntity()
 
@@ -200,7 +201,9 @@ local function baserock_fn(bank, build, anim, icon, tag)
 
     MakeObstaclePhysics(inst, 1)
 
-    inst.MiniMapEntity:SetIcon(icon or "rock.png")
+    if icon ~= nil then
+        inst.MiniMapEntity:SetIcon(icon)
+    end
 
     inst.AnimState:SetBank(bank)
     inst.AnimState:SetBuild(build)
@@ -249,7 +252,7 @@ local function baserock_fn(bank, build, anim, icon, tag)
 end
 
 local function rock1_fn()
-    local inst = baserock_fn("rock", "rock", "full")
+    local inst = baserock_fn("rock", "rock", "full", "rock.png")
 
     if not TheWorld.ismastersim then
         return inst
@@ -261,7 +264,7 @@ local function rock1_fn()
 end
 
 local function rock2_fn()
-    local inst = baserock_fn("rock2", "rock2", "full")
+    local inst = baserock_fn("rock2", "rock2", "full", "rock_gold.png")
 
     if not TheWorld.ismastersim then
         return inst
@@ -312,7 +315,7 @@ local function rock_flintless_low()
 end
 
 local function rock_moon()
-    local inst = baserock_fn("rock5", "rock7", "full")
+    local inst = baserock_fn("rock5", "rock7", "full", "rock_moon.png")
 
     if not TheWorld.ismastersim then
         return inst
@@ -345,7 +348,7 @@ local function rock_petrified_tree_common(size)
         else
             size = 3
         end
-    end    
+    end
 
     inst.treeSize = size
 

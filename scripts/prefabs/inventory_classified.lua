@@ -697,11 +697,13 @@ local function ControllerUseItemOnSelfFromInvTile(inst, item)
         not (inst._parent.sg ~= nil and
             inst._parent.sg:HasStateTag("busy")) and
         inst._parent.components.playercontroller ~= nil then
-        local act =
-            item.replica.equippable ~= nil and
-            item.replica.equippable:IsEquipped() and
-            BufferedAction(inst._parent, nil, ACTIONS.UNEQUIP, item) or
-            inst._parent.components.playercontroller:GetItemSelfAction(item)
+        local act = nil
+        if not (item.replica.equippable ~= nil and item.replica.equippable:IsEquipped()) then
+            act = inst._parent.components.playercontroller:GetItemSelfAction(item)
+        elseif not item:HasTag("heavy") then
+            act = BufferedAction(inst._parent, nil, ACTIONS.UNEQUIP, item)
+        end
+
         if act ~= nil then
             if act.action == ACTIONS.RUMMAGE then
                 local overflow = GetOverflowContainer(inst)
@@ -1066,6 +1068,7 @@ local function fn()
 
     --Network variables
     inst.visible = net_bool(inst.GUID, "inventory.visible", "visibledirty")
+    inst.heavylifting = net_bool(inst.GUID, "inventory.heavylifting", "heavyliftingdirty")
 
     inst._active = net_entity(inst.GUID, "inventory._active", "activedirty")
     inst._items = {}

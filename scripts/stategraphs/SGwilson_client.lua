@@ -97,7 +97,10 @@ local actionhandlers =
     ActionHandler(ACTIONS.MAKEBALLOON, "makeballoon"),
     ActionHandler(ACTIONS.DEPLOY, "doshortaction"),
     ActionHandler(ACTIONS.STORE, "doshortaction"),
-    ActionHandler(ACTIONS.DROP, "doshortaction"),
+    ActionHandler(ACTIONS.DROP,
+        function(inst)
+            return inst.replica.inventory:IsHeavyLifting() and "heavylifting_drop" or "doshortaction"
+        end),
     ActionHandler(ACTIONS.MURDER, "dolongaction"),
     ActionHandler(ACTIONS.UPGRADE, "dolongaction"),
     ActionHandler(ACTIONS.ACTIVATE,
@@ -248,6 +251,8 @@ local states =
                 else
                     table.insert(anims, "idle_loop")
                 end
+            elseif inst.replica.inventory ~= nil and inst.replica.inventory:IsHeavyLifting() then
+                table.insert(anims, "heavy_idle")
             elseif inst.replica.sanity ~= nil and not inst.replica.sanity:IsSane() then
                 table.insert(anims, "idle_sanity_pre")
                 table.insert(anims, "idle_sanity_loop")
@@ -295,10 +300,17 @@ local states =
         tags = { "moving", "running", "canrotate" },
         
         onenter = function(inst)
-            inst.components.locomotor:RunForward()
-            inst.AnimState:PlayAnimation(inst:HasTag("groggy") and "idle_walk_pre" or "run_pre")
-            inst.sg.mem.footsteps = 0
             inst.sg.statemem.riding = inst.replica.rider ~= nil and inst.replica.rider:IsRiding()
+            inst.sg.statemem.heavy = not inst.sg.statemem.riding and inst.replica.inventory:IsHeavyLifting()
+
+            inst.components.locomotor:RunForward()
+            inst.AnimState:PlayAnimation(
+                (inst.sg.statemem.heavy and "heavy_walk_pre") or
+                (inst:HasTag("groggy") and "idle_walk_pre") or
+                "run_pre"
+            )
+
+            inst.sg.mem.footsteps = 0
         end,
 
         onupdate = function(inst)
@@ -314,9 +326,17 @@ local states =
                 end
             end),
 
+            --heavy lifting
+            TimeEvent(1 * FRAMES, function(inst)
+                if inst.sg.statemem.heavy then
+                    PlayFootstep(inst, nil, true)
+                    DoFoleySounds(inst)
+                end
+            end),
+
             --unmounted
             TimeEvent(4 * FRAMES, function(inst)
-                if not inst.sg.statemem.riding then
+                if not (inst.sg.statemem.riding or inst.sg.statemem.heavy) then
                     PlayFootstep(inst, nil, true)
                     DoFoleySounds(inst)
                 end
@@ -346,13 +366,20 @@ local states =
         tags = { "moving", "running", "canrotate" },
 
         onenter = function(inst)
+            inst.sg.statemem.riding = inst.replica.rider ~= nil and inst.replica.rider:IsRiding()
+            inst.sg.statemem.heavy = not inst.sg.statemem.riding and inst.replica.inventory:IsHeavyLifting()
+
             inst.components.locomotor:RunForward()
-            local anim = inst:HasTag("groggy") and "idle_walk" or "run_loop"
+
+            local anim =
+                (inst.sg.statemem.heavy and "heavy_walk") or
+                (inst:HasTag("groggy") and "idle_walk") or
+                "run_loop"
             if not inst.AnimState:IsCurrentAnimation(anim) then
                 inst.AnimState:PlayAnimation(anim, true)
             end
+
             inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
-            inst.sg.statemem.riding = inst.replica.rider ~= nil and inst.replica.rider:IsRiding()
         end,
 
         onupdate = function(inst)
@@ -363,7 +390,7 @@ local states =
         {
             --unmounted
             TimeEvent(7 * FRAMES, function(inst)
-                if not inst.sg.statemem.riding then
+                if not (inst.sg.statemem.riding or inst.sg.statemem.heavy) then
                     if inst.sg.mem.footsteps > 3 then
                         PlayFootstep(inst, .6, true)
                     else
@@ -374,7 +401,31 @@ local states =
                 end
             end),
             TimeEvent(15 * FRAMES, function(inst)
-                if not inst.sg.statemem.riding then
+                if not (inst.sg.statemem.riding or inst.sg.statemem.heavy) then
+                    if inst.sg.mem.footsteps > 3 then
+                        PlayFootstep(inst, .6, true)
+                    else
+                        inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
+                        PlayFootstep(inst, 1, true)
+                    end
+                    DoFoleySounds(inst)
+                end
+            end),
+
+            --heavy lifting
+            TimeEvent(11 * FRAMES, function(inst)
+                if inst.sg.statemem.heavy then
+                    if inst.sg.mem.footsteps > 3 then
+                        PlayFootstep(inst, .6, true)
+                    else
+                        inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
+                        PlayFootstep(inst, 1, true)
+                    end
+                    DoFoleySounds(inst)
+                end
+            end),
+            TimeEvent(36 * FRAMES, function(inst)
+                if inst.sg.statemem.heavy then
                     if inst.sg.mem.footsteps > 3 then
                         PlayFootstep(inst, .6, true)
                     else
@@ -414,8 +465,15 @@ local states =
         tags = { "canrotate", "idle" },
 
         onenter = function(inst)
+            local riding = inst.replica.rider ~= nil and inst.replica.rider:IsRiding()
+            local heavy = not riding and inst.replica.inventory:IsHeavyLifting()
+
             inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation(inst:HasTag("groggy") and "idle_walk_pst" or "run_pst")
+            inst.AnimState:PlayAnimation(
+                (heavy and "heavy_walk_pst") or
+                (inst:HasTag("groggy") and "idle_walk_pst") or
+                "run_pst"
+            )
         end,
 
         events =
@@ -1080,6 +1138,45 @@ local states =
 
     State
     {
+        name = "heavylifting_drop",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("heavy_item_hat")
+            inst.AnimState:PushAnimation("heavy_item_hat_lag", false)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        timeline =
+        {
+            TimeEvent(4 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.AnimState:PlayAnimation("heavy_item_hat_pst")
+                inst.sg:GoToState("idle", true)
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.AnimState:PlayAnimation("heavy_item_hat_pst")
+            inst.sg:GoToState("idle", true)
+        end,
+    },
+
+    State
+    {
         name = "doshortaction",
         tags = { "doing", "busy" },
 
@@ -1393,8 +1490,10 @@ local states =
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("jump_pre")
-            inst.AnimState:PushAnimation("jump_lag", false)
+
+            local heavy = inst.replica.inventory:IsHeavyLifting()
+            inst.AnimState:PlayAnimation(heavy and "heavy_jump_pre" or "jump_pre")
+            inst.AnimState:PushAnimation(heavy and "heavy_jump_lag" or "jump_lag", false)
 
             inst:PerformPreviewBufferedAction()
             inst.sg:SetTimeout(TIMEOUT)

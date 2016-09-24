@@ -1,4 +1,4 @@
-local SAVEDATA_VERSION = 2
+local SAVEDATA_VERSION = 3
 
 local Levels = require"map/levels"
 
@@ -184,6 +184,10 @@ local function UpgradeSavedLevelData(worldoptions)
         ret[i] = deepcopy(level)
         if level.version == nil or level.version == 1 then
             ret[i] = savefileupgrades.utilities.UpgradeSavedLevelFromV1toV2(ret[i], i == 1)
+        end
+        
+        if level.version == 2 then
+            ret[i] = savefileupgrades.utilities.UpgradeSavedLevelFromV2toV3(ret[i], i == 1)
         end
     end
     return ret
@@ -501,7 +505,7 @@ function SaveIndex:LoadSlotCharacter(slot)
                         if slotdata.session_id ~= nil then
                             local file = TheNet:GetUserSessionFileInClusterSlot(slot, shard, slotdata.session_id, snapshot, online_mode)
                             if file ~= nil then
-                                TheSim:GetPersistentStringInClusterSlot(slot, shard ,file, onreadusersession)
+                                TheNet:DeserializeUserSessionInClusterSlot(slot, shard ,file, onreadusersession)
                             end
                         end
                     end
@@ -510,7 +514,7 @@ function SaveIndex:LoadSlotCharacter(slot)
         else
             local file = TheNet:GetUserSessionFile(slotdata.session_id, nil, online_mode)
             if file ~= nil then
-                TheSim:GetPersistentString(file, onreadusersession)
+                TheNet:DeserializeUserSession(file, onreadusersession)
             end
         end
     end

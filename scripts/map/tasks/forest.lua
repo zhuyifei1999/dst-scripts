@@ -771,6 +771,7 @@ AddTask("Forest hunters", {
 			["ForestMole"] = 2,
 			["DeepForest"] = 1,
 			["Clearing"] = 1,
+			["MoonbaseOne"] = 1,
 		},  
 		room_bg=GROUND.FOREST,
 		background_room="BGForest",

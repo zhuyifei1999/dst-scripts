@@ -147,6 +147,17 @@ return {
           height = 0,
           visible = true,
           properties = {}
+        },
+        {
+          name = "",
+          type = "rook",
+          shape = "rectangle",
+          x = 32,
+          y = 96,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
         }
       }
     }

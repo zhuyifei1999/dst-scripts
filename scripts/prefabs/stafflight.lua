@@ -1,8 +1,3 @@
-local assets =
-{
-    Asset("ANIM", "anim/star.zip"),
-}
-
 local PULSE_SYNC_PERIOD = 30
 
 --Needs to save/load time alive.
@@ -54,87 +49,123 @@ local function pulse_light(inst)
     inst.Light:SetRadius(rad)
 end
 
-local function fn()
-    local inst = CreateEntity()
+local function onhaunt(inst)
+    if inst.components.timer:TimerExists("extinguish") then
+        inst.components.timer:StopTimer("extinguish")
+        kill_light(inst)
+    end
+    return true
+end
 
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddSoundEmitter()
-    inst.entity:AddLight()
-    inst.entity:AddNetwork()
+local function makestafflight(name, is_hot, anim, colour, idles)
+    local assets =
+    {
+        Asset("ANIM", "anim/"..anim..".zip"),
+    }
 
-    MakeInventoryPhysics(inst)
+    local PlayRandomStarIdle = #idles > 1 and function(inst)
+        --Don't if we're extinguished
+        if inst.persists then
+            inst.AnimState:PlayAnimation(idles[math.random(#idles)])
+        end
+    end or nil
 
-    inst._ismastersim = TheWorld.ismastersim
-    inst._pulseoffs = 0
-    inst._pulsetime = net_float(inst.GUID, "_pulsetime", "pulsetimedirty")
+    local function fn()
+        local inst = CreateEntity()
 
-    inst:DoPeriodicTask(0.1, pulse_light)
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddSoundEmitter()
+        inst.entity:AddLight()
+        inst.entity:AddNetwork()
 
-    inst.Light:SetColour(223 / 255, 208 / 255, 69 / 255)
-    inst.Light:Enable(false)
-    inst.Light:EnableClientModulation(true)
+        MakeInventoryPhysics(inst)
 
-    inst.AnimState:SetBank("star")
-    inst.AnimState:SetBuild("star")
-    inst.AnimState:PlayAnimation("appear")
-    inst.AnimState:PushAnimation("idle_loop", true)
-    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+        inst._ismastersim = TheWorld.ismastersim
+        inst._pulseoffs = 0
+        inst._pulsetime = net_float(inst.GUID, "_pulsetime", "pulsetimedirty")
 
-    inst.SoundEmitter:PlaySound("dontstarve/common/staff_star_LP", "staff_star_loop")
+        inst:DoPeriodicTask(0.1, pulse_light)
 
-    inst:AddTag("daylight")
+        inst.Light:SetColour(unpack(colour))
+        inst.Light:Enable(false)
+        inst.Light:EnableClientModulation(true)
 
-    --HASHEATER (from heater component) added to pristine state for optimization
-    inst:AddTag("HASHEATER")
+        inst.AnimState:SetBank(anim)
+        inst.AnimState:SetBuild(anim)
+        inst.AnimState:PlayAnimation("appear")
+        if #idles == 1 then
+            inst.AnimState:PushAnimation(idles[1], true)
+        end
+        inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
 
-    --cooker (from cooker component) added to pristine state for optimization
-    inst:AddTag("cooker")
+        --HASHEATER (from heater component) added to pristine state for optimization
+        inst:AddTag("HASHEATER")
 
-    inst.no_wet_prefix = true
+        if is_hot then
+            --cooker (from cooker component) added to pristine state for optimization
+            inst:AddTag("cooker")
 
-    inst.entity:SetPristine()
+            inst:AddTag("daylight")
 
-    if not inst._ismastersim then
-        inst:ListenForEvent("pulsetimedirty", onpulsetimedirty)
+            inst.SoundEmitter:PlaySound("dontstarve/common/staff_star_LP", "staff_star_loop")
+        else
+            inst.SoundEmitter:PlaySound("dontstarve/common/staff_coldlight_LP", "staff_star_loop")
+        end
+
+        inst.no_wet_prefix = true
+
+        inst.entity:SetPristine()
+
+        if not inst._ismastersim then
+            inst:ListenForEvent("pulsetimedirty", onpulsetimedirty)
+            return inst
+        end
+
+        inst._pulsetime:set(inst:GetTimeAlive())
+        inst._lastpulsesync = inst._pulsetime:value()
+
+        inst:AddComponent("inspectable")
+
+        if is_hot then
+            inst:AddComponent("cooker")
+
+            inst:AddComponent("propagator")
+            inst.components.propagator.heatoutput = 15
+            inst.components.propagator.spreading = true
+            inst.components.propagator:StartUpdating()
+        end
+
+        inst:AddComponent("heater")
+        if is_hot then
+            inst.components.heater.heat = 100
+        else
+            inst.components.heater.heat = -100
+            inst.components.heater:SetThermics(false, true)
+        end
+
+        inst.SoundEmitter:PlaySound("dontstarve/common/staff_star_create")
+
+        inst:AddComponent("sanityaura")
+        inst.components.sanityaura.aura = TUNING.SANITYAURA_SMALL
+
+        inst:AddComponent("hauntable")
+        inst.components.hauntable:SetHauntValue(TUNING.HAUNT_SMALL)
+        inst.components.hauntable:SetOnHauntFn(onhaunt)
+
+        inst:AddComponent("timer")
+        inst.components.timer:StartTimer("extinguish", is_hot and TUNING.YELLOWSTAFF_STAR_DURATION or TUNING.OPALSTAFF_STAR_DURATION)
+        inst:ListenForEvent("timerdone", ontimer)
+
+        if #idles > 1 then
+            inst:ListenForEvent("animover", PlayRandomStarIdle)
+        end
+
         return inst
     end
 
-    inst._pulsetime:set(inst:GetTimeAlive())
-    inst._lastpulsesync = inst._pulsetime:value()
-
-    inst:AddComponent("inspectable")
-
-    inst:AddComponent("cooker")
-
-    inst:AddComponent("propagator")
-    inst.components.propagator.heatoutput = 15
-    inst.components.propagator.spreading = true
-    inst.components.propagator:StartUpdating()
-
-    inst:AddComponent("heater")
-    inst.components.heater.heat = 100
-
-    inst.SoundEmitter:PlaySound("dontstarve/common/staff_star_create")
-
-    inst:AddComponent("sanityaura")
-    inst.components.sanityaura.aura = TUNING.SANITYAURA_SMALL
-
-    inst:AddComponent("hauntable")
-    inst.components.hauntable:SetHauntValue(TUNING.HAUNT_SMALL)
-    inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-        if inst.components.timer:TimerExists("extinguish") then
-            inst.components.timer:StopTimer("extinguish")
-            kill_light(inst)
-        end
-        return true
-    end)
-
-    inst:AddComponent("timer")
-    inst.components.timer:StartTimer("extinguish", TUNING.YELLOWSTAFF_STAR_DURATION)
-    inst:ListenForEvent("timerdone", ontimer)
-
-    return inst
+    return Prefab(name, fn, assets)
 end
 
-return Prefab("stafflight", fn, assets)
+return makestafflight("stafflight", true, "star_hot", { 223 / 255, 208 / 255, 69 / 255 }, { "idle_loop" }),
+       makestafflight("staffcoldlight", false, "star_cold", { 64 / 255, 64 / 255, 208 / 255 }, { "idle_loop", "idle_loop2", "idle_loop3" })

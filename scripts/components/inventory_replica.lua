@@ -71,6 +71,24 @@ local function OnVisibleDirty(classified)
     end
 end
 
+local function HeavyLiftingActionFilter(inst, action)
+    return action.encumbered_valid == true
+end
+
+local function _OnHeavyLiftingDirty(inst, classified)
+    if inst ~= nil and inst.components.playeractionpicker ~= nil then
+        if classified.heavylifting:value() then
+            inst.components.playeractionpicker:PushActionFilter(HeavyLiftingActionFilter, 10)
+        else
+            inst.components.playeractionpicker:PopActionFilter(HeavyLiftingActionFilter)
+        end
+    end
+end
+
+local function OnHeavyLiftingDirty(classified)
+    _OnHeavyLiftingDirty(classified._parent, classified)
+end
+
 function Inventory:AttachClassified(classified)
     self.classified = classified
 
@@ -78,6 +96,7 @@ function Inventory:AttachClassified(classified)
     self.inst:ListenForEvent("onremove", self.ondetachclassified, classified)
 
     self.inst:ListenForEvent("visibledirty", OnVisibleDirty, classified)
+    self.inst:ListenForEvent("heavyliftingdirty", OnHeavyLiftingDirty, classified)
     classified:DoTaskInTime(0, OnVisibleDirty)
 end
 
@@ -130,6 +149,17 @@ function Inventory:OnHide()
 end
 
 --------------------------------------------------------------------------
+--Server interface
+--------------------------------------------------------------------------
+
+function Inventory:SetHeavyLifting(heavylifting)
+    if self.classified ~= nil then
+        self.classified.heavylifting:set(heavylifting)
+        _OnHeavyLiftingDirty(self.inst, self.classified)
+    end
+end
+
+--------------------------------------------------------------------------
 --Common interface
 --------------------------------------------------------------------------
 
@@ -172,6 +202,14 @@ function Inventory:EquipHasTag(tag)
                 return true
             end
         end
+    end
+end
+
+function Inventory:IsHeavyLifting()
+    if self.inst.components.inventory ~= nil then
+        return self.inst.components.inventory:IsHeavyLifting()
+    else
+        return self.classified ~= nil and self.classified.heavylifting:value()
     end
 end
 

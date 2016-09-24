@@ -10,7 +10,6 @@ local tags = {"FIREPIT", "CRAFTABLE"}
 local ui_preview =
 {
 	build = "firepit_fanged",
-	bank = "firepit",
 }
 
 return CreatePrefabSkin("firepit_fanged",
@@ -20,6 +19,6 @@ return CreatePrefabSkin("firepit_fanged",
 	tags = tags,
 	init_fn = function(inst) firepit_init_fn(inst, ui_preview.build, Vector3(0, 20, 0)) end,
 	ui_preview = ui_preview,
-	item_type = "ITEM_SKIN",
+	inheritance = "ITEM_SKIN",
 	rarity = "Distinguished",
 })

@@ -6,6 +6,10 @@ local function OnDeath(inst)
     end
 end
 
+local function onheavylifting(self, heavylifting)
+    self.inst.replica.inventory:SetHeavyLifting(heavylifting)
+end
+
 local Inventory = Class(function(self, inst)
     self.inst = inst
 
@@ -22,6 +26,7 @@ local Inventory = Class(function(self, inst)
     self.maxslots = MAXITEMSLOTS
 
     self.equipslots = {}
+    self.heavylifting = false
 
     self.activeitem = nil
     self.acceptsstacks = true
@@ -38,7 +43,8 @@ local Inventory = Class(function(self, inst)
     end
 end,
 nil,
-{--need this empty so we can add readonly properties
+{
+    heavylifting = onheavylifting,
 })
 
 function Inventory:EnableDropOnDeath()
@@ -237,6 +243,10 @@ function Inventory:EquipHasTag(tag)
             return true
         end
     end
+end
+
+function Inventory:IsHeavyLifting()
+    return self.heavylifting
 end
 
 function Inventory:ApplyDamage(damage, attacker, weapon)
@@ -442,22 +452,24 @@ function Inventory:DropItem(item, wholestack, randomdir, pos)
     if item == nil or item.components.inventoryitem == nil then
         return
     end
-    
-    local dropped = item.components.inventoryitem:RemoveFromOwner(wholestack) or item
-    
-    if dropped then
-        pos = pos or Vector3(self.inst.Transform:GetWorldPosition())
-        --print("Inventory:DropItem", item, pos)
-        dropped.Transform:SetPosition(pos:Get())
 
-        if dropped.components.inventoryitem then
+    local dropped = item.components.inventoryitem:RemoveFromOwner(wholestack) or item
+
+    if dropped ~= nil then
+        if pos ~= nil then
+            dropped.Transform:SetPosition(pos:Get())
+        else
+            dropped.Transform:SetPosition(self.inst.Transform:GetWorldPosition())
+        end
+
+        if dropped.components.inventoryitem ~= nil then
             dropped.components.inventoryitem:OnDropped(randomdir)
         end
 
         dropped.prevcontainer = nil
         dropped.prevslot = nil
-        
-        self.inst:PushEvent("dropitem", {item = dropped})
+
+        self.inst:PushEvent("dropitem", { item = dropped })
     end
 
     return dropped
@@ -756,11 +768,16 @@ end
 function Inventory:Unequip(equipslot, slip)
     local item = self.equipslots[equipslot]
     --print("Inventory:Unequip", item)
-    if item and item.components.equippable then
-        item.components.equippable:Unequip(self.inst)
-        local overflow = self:GetOverflowContainer()
-        if overflow ~= nil and overflow.inst == item then
-            self.inst:PushEvent("setoverflow", {})
+    if item ~= nil then
+        if item.components.equippable ~= nil then
+            item.components.equippable:Unequip(self.inst)
+            local overflow = self:GetOverflowContainer()
+            if overflow ~= nil and overflow.inst == item then
+                self.inst:PushEvent("setoverflow", {})
+            end
+        end
+        if equipslot == EQUIPSLOTS.BODY then
+            self.heavylifting = false
         end
     end
     self.equipslots[equipslot] = nil
@@ -797,6 +814,25 @@ function Inventory:Equip(item, old_to_active)
         item.prevslot = item.components.inventoryitem.owner.components.container:GetItemSlot(item)
     else
         item.prevcontainer = nil
+    end
+    -----
+    --heavy lifting
+    if item.components.equippable.equipslot == EQUIPSLOTS.HANDS then
+        local heavyitem = self:GetEquippedItem(EQUIPSLOTS.BODY)
+        if heavyitem ~= nil and heavyitem:HasTag("heavy") then
+            self:DropItem(heavyitem, true, true)
+        end
+    elseif item.components.equippable.equipslot == EQUIPSLOTS.BODY and item:HasTag("heavy") then
+        local handitem = self:GetEquippedItem(EQUIPSLOTS.HANDS)
+        if handitem ~= nil then
+            if handitem.components.inventoryitem.cangoincontainer then
+                self.silentfull = true
+                self:GiveItem(handitem)
+                self.silentfull = false
+            else
+                self:DropItem(handitem, true, true)
+            end
+        end
     end
     -----
 
@@ -846,8 +882,11 @@ function Inventory:Equip(item, old_to_active)
         item.components.equippable:Equip(self.inst)
         self.equipslots[eslot] = item
 
-        if eslot == EQUIPSLOTS.BODY and item.components.container ~= nil then
-            self.inst:PushEvent("setoverflow", { overflow = item })
+        if eslot == EQUIPSLOTS.BODY then
+            if item.components.container ~= nil then
+                self.inst:PushEvent("setoverflow", { overflow = item })
+            end
+            self.heavylifting = item:HasTag("heavy")
         end
 
         self.inst:PushEvent("equip", { item = item, eslot = eslot })
@@ -1434,11 +1473,12 @@ function Inventory:ControllerUseItemOnSelfFromInvTile(item, actioncode, mod_name
     if not self.inst.sg:HasStateTag("busy") and
         self:CanAccessItem(item) and
         self.inst.components.playercontroller ~= nil then
-        local act =
-            item.components.equippable ~= nil and
-            item.components.equippable:IsEquipped() and
-            BufferedAction(self.inst, nil, ACTIONS.UNEQUIP, item) or
-            self.inst.components.playercontroller:GetItemSelfAction(item)
+        local act = nil
+        if not (item.components.equippable ~= nil and item.components.equippable:IsEquipped()) then
+            act = self.inst.components.playercontroller:GetItemSelfAction(item)
+        elseif not item:HasTag("heavy") then
+            act = BufferedAction(self.inst, nil, ACTIONS.UNEQUIP, item)
+        end
 
         if act == nil then
             return

@@ -1,13 +1,14 @@
 local Widget = require "widgets/widget"
 local Image = require "widgets/image"
 
-local Tab = Class(Widget, function(self, tabgroup, name, atlas, icon_atlas, icon, imnorm, imselected, imhighlight, imalthighlight, imoverlay, selectfn, deselectfn)
+local Tab = Class(Widget, function(self, tabgroup, name, atlas, icon_atlas, icon, imnorm, imselected, imhighlight, imalthighlight, imoverlay, selectfn, deselectfn, collapsed)
     Widget._ctor(self, "Tab")
     self.group = tabgroup
     self.atlas = atlas
     self.icon_atlas = icon_atlas
     self.selectfn = selectfn
     self.deselectfn = deselectfn
+    self.collapsed = collapsed
     self.imnormal = imnorm
     self.imselected = imselected
     self.imhighlight = imhighlight

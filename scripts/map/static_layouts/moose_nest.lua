@@ -84,7 +84,7 @@ return {
         },
         {
           name = "",
-          type = "sps_berrybush",
+          type = "berrybush",
           shape = "rectangle",
           x = 229,
           y = 103,
@@ -95,7 +95,7 @@ return {
         },
         {
           name = "",
-          type = "sps_berrybush",
+          type = "berrybush",
           shape = "rectangle",
           x = 173,
           y = 106,
@@ -106,7 +106,7 @@ return {
         },
         {
           name = "",
-          type = "sps_berrybush",
+          type = "berrybush",
           shape = "rectangle",
           x = 151,
           y = 162,
@@ -117,7 +117,7 @@ return {
         },
         {
           name = "",
-          type = "sps_berrybush",
+          type = "berrybush",
           shape = "rectangle",
           x = 27,
           y = 164,
@@ -128,7 +128,7 @@ return {
         },
         {
           name = "",
-          type = "sps_berrybush",
+          type = "berrybush",
           shape = "rectangle",
           x = 84,
           y = 221,
@@ -139,7 +139,7 @@ return {
         },
         {
           name = "",
-          type = "sps_berrybush_juicy",
+          type = "berrybush_juicy",
           shape = "rectangle",
           x = 134,
           y = 185,
@@ -150,7 +150,7 @@ return {
         },
         {
           name = "",
-          type = "sps_berrybush_juicy",
+          type = "berrybush_juicy",
           shape = "rectangle",
           x = 38,
           y = 149,
@@ -161,7 +161,7 @@ return {
         },
         {
           name = "",
-          type = "sps_berrybush_juicy",
+          type = "berrybush_juicy",
           shape = "rectangle",
           x = 158,
           y = 86,
