@@ -652,8 +652,10 @@ function Tune(overrides)
 	    
 	    BIRD_SPAWN_MAX = 4,
 	    BIRD_SPAWN_DELAY = {min=5, max=15},
-	    BIRD_SPAWN_MAX_FEATHERHAT = 7,
-	    BIRD_SPAWN_DELAY_FEATHERHAT = {min=2, max=10},
+	    BIRD_SPAWN_MAX_FEATHERHAT = 7,                   -- DEPRECATED
+	    BIRD_SPAWN_DELAY_FEATHERHAT = {min=2, max=10},   -- DEPRECATED
+	    BIRD_SPAWN_MAXDELTA_FEATHERHAT = 3,
+	    BIRD_SPAWN_DELAYDELTA_FEATHERHAT = {MIN = -3, MAX = -5},
 	    
 		FROG_RAIN_DELAY = {min=0.1, max=2},
 		FROG_RAIN_SPAWN_RADIUS = 60,
@@ -1584,57 +1586,104 @@ function Tune(overrides)
 		MOSSLING_ATTACK_RANGE = 2,
 		MOSSLING_WALK_SPEED = 5,
 
-        TOADSTOOL_HEALTH = 156500,
-        TOADSTOOL_DAMAGE = 100,
-        TOADSTOOL_ATTACK_PERIOD = 3.5,
+        TOADSTOOL_HEALTH = 32500,
         TOADSTOOL_ATTACK_RANGE = 7,
-        TOADSTOOL_SPEED = .6,
-        TOADSTOOL_HIT_RECOVERY = 1,
-        TOADSTOOL_VULNERABLE_MULT = -4,
         TOADSTOOL_EPICSCARE_RANGE = 10,
-
         TOADSTOOL_DEAGGRO_DIST = 25,
         TOADSTOOL_AGGRO_DIST = 15,
-        TOADSTOOL_FLEE_TIME = 300,
-        TOADSTOOL_FLEE_WARNING = 45,
-
         TOADSTOOL_RESPAWN_TIME = total_day_time * 20,
+        TOADSTOOL_FREEZE_RESIST = 4,
 
-        TOADSTOOL_UPG1_DAMAGE = 120,
-        TOADSTOOL_UPG1_SPEED = 0.8,
-        TOADSTOOL_UPG1_ATTACK_PERIOD = 3,
-
-        TOADSTOOL_UPG2_DAMAGE = 150,
-        TOADSTOOL_UPG2_SPEED = 1.2,
-        TOADSTOOL_UPG2_ATTACK_PERIOD = 2.5,
-
-        TOADSTOOL_UPG3_DAMAGE = 250,
-        TOADSTOOL_UPG3_SPEED = 3.2,
-        TOADSTOOL_UPG3_ATTACK_PERIOD = 2,
+        --TOADSTOOL stats are scaled by level [0..3] and phase [1..3]
+        TOADSTOOL_SPEED_LVL =
+        {
+            [0] = .6,
+            [1] = .8,
+            [2] = 1.2,
+            [3] = 3.2,
+        },
+        TOADSTOOL_DAMAGE_LVL =
+        {
+            [0] = 100,
+            [1] = 120,
+            [2] = 150,
+            [3] = 250,
+        },
+        TOADSTOOL_ATTACK_PERIOD_LVL =
+        {
+            [0] = 3.5,
+            [1] = 3,
+            [2] = 2.5,
+            [3] = 2,
+        },
+        TOADSTOOL_ABSORPTION_LVL =
+        {
+            [0] = 0,
+            [1] = .2,
+            [2] = .4,
+            [3] = .8,
+        },
+        TOADSTOOL_HIT_RECOVERY_LVL =
+        {
+            [0] = 1,
+            [1] = 1.5,
+            [2] = 2,
+            [3] = 3,
+        },
 
         TOADSTOOL_MUSHROOMBOMB_MIN_RANGE = 4,
         TOADSTOOL_MUSHROOMBOMB_MAX_RANGE = 8.75,
         TOADSTOOL_MUSHROOMBOMB_RADIUS = 3.5,
         TOADSTOOL_MUSHROOMBOMB_CD = 5,
+        TOADSTOOL_MUSHROOMBOMB_COUNT_PHASE =
+        {
+            [1] = 4,
+            [2] = 5,
+            [3] = 6,
+        },
+        TOADSTOOL_MUSHROOMBOMB_VAR_LVL =
+        {
+            [0] = 0,
+            [1] = 1,
+            [2] = 2,
+            [3] = 3,
+        },
+        TOADSTOOL_MUSHROOMBOMB_CHAIN_LVL =
+        {
+            [0] = 1,
+            [1] = 2,
+            [2] = 3,
+            [3] = 5,
+        },
 
         TOADSTOOL_SPOREBOMB_ATTACK_RANGE = 10,
         TOADSTOOL_SPOREBOMB_HIT_RANGE = 14,
         TOADSTOOL_SPOREBOMB_TIMER = 3.5,
-        TOADSTOOL_SPOREBOMB_CD_PHASE1 = 14,
-        TOADSTOOL_SPOREBOMB_CD_PHASE2 = 10,
+        TOADSTOOL_SPOREBOMB_TARGETS_PHASE =
+        {
+            [1] = 1,
+            [2] = 2,
+            [3] = 2,
+        },
+        TOADSTOOL_SPOREBOMB_CD_PHASE =
+        {
+            [1] = 14,
+            [2] = 10,
+            [3] = 10,
+        },
 
         TOADSTOOL_SPORECLOUD_DAMAGE = 20,
         TOADSTOOL_SPORECLOUD_ROT = .07,
-        TOADSTOOL_SPORECLOUD_RADIUS = 4.35,
+        TOADSTOOL_SPORECLOUD_RADIUS = 3.5,
         TOADSTOOL_SPORECLOUD_TICK = 1,
-        TOADSTOOL_SPORECLOUD_LIFETIME = 70,
+        TOADSTOOL_SPORECLOUD_LIFETIME = 60,
 
         TOADSTOOL_MUSHROOMSPROUT_NUM = 8,
         TOADSTOOL_MUSHROOMSPROUT_MIN_RANGE = 6,
         TOADSTOOL_MUSHROOMSPROUT_MAX_RANGE = 10,
         TOADSTOOL_MUSHROOMSPROUT_TICK = 2,
         TOADSTOOL_MUSHROOMSPROUT_DURATION = 15,
-        TOADSTOOL_MUSHROOMSPROUT_CD = 70,
+        TOADSTOOL_MUSHROOMSPROUT_CD = 60,
 
         TOADSTOOL_POUND_CD = 45,
         TOADSTOOL_ABILITY_INTRO_CD = 15,

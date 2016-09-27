@@ -628,9 +628,10 @@ local states=
 			inst.components.propagator:StopSpreading()
 			inst.AnimState:PlayAnimation("death")
 			inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/death")
+            inst:AddTag("NOCLICK")
 		end,
 
-		timeline=
+		timeline =
 		{
 			TimeEvent(12*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/blink") end),
 			TimeEvent(26*FRAMES, function(inst)
@@ -640,10 +641,18 @@ local states=
 			TimeEvent(28*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/land") end),
 			TimeEvent(29*FRAMES, function(inst)
 				ShakeIfClose(inst)
-				inst.components.lootdropper:DropLoot(Vector3(inst.Transform:GetWorldPosition()))
+                if inst.persists then
+                    inst.persists = false
+                    inst.components.lootdropper:DropLoot(inst:GetPosition())
+                end
 			end),
+            TimeEvent(5, ErodeAway),
 		},
 
+        onexit = function(inst)
+            --Should NOT reach here!
+            inst:RemoveTag("NOCLICK")
+        end,
 	},
 
 	State{

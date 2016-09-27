@@ -74,7 +74,7 @@ local function CanBlueprintSpecificRecipe(recipe)
 end
 
 local function OnHaunt(inst, haunter)
-    if (not is_rare) and math.random() <= TUNING.HAUNT_CHANCE_HALF then
+    if (not inst.is_rare) and math.random() <= TUNING.HAUNT_CHANCE_HALF then
         local recipes = {}
         local old = inst.recipetouse ~= nil and GetValidRecipe(inst.recipetouse) or nil
         for k, v in pairs(AllRecipes) do

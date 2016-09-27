@@ -19,10 +19,24 @@ local light_str =
 local colour_tint = { 0.4, 0.3, 0.25, 0.2, 0.1 }
 local mult_tint = { 0.7, 0.6, 0.55, 0.5, 0.45 }
 
+local sounds_1 = 
+{
+	toggle = "dontstarve/common/together/mushroom_lamp/lantern_1_on",
+	craft = "dontstarve/common/together/mushroom_lamp/craft_1",
+}
+local sounds_2 = 
+{
+	toggle = "dontstarve/common/together/mushroom_lamp/lantern_2_on",
+	colour = "dontstarve/common/together/mushroom_lamp/change_colour",
+	craft = "dontstarve/common/together/mushroom_lamp/craft_2",
+}
+
 local function UpdateLightState(inst, skip_toggle_anims)
 	if inst:HasTag("burnt") then
 		return
 	end
+	
+	local sound = inst.onlywhite and sounds_1 or sounds_2
 
 	local num_batteries = #inst.components.container:FindItems( function(item) return item:HasTag("lightbattery") or item:HasTag("spore") end )
 	local toggling = IsLightOn(inst) ~= (num_batteries > 0)
@@ -49,28 +63,25 @@ local function UpdateLightState(inst, skip_toggle_anims)
 	
 		if skip_toggle_anims then
 			inst.AnimState:PlayAnimation("idle_on", true)
-            inst.SoundEmitter:PlaySound("dontstarve/wilson/lantern_LP", "loop")
-		elseif toggling then
+		elseif toggling or inst.onlywhite then
 			inst.AnimState:PlayAnimation("turn_on")
 			inst.AnimState:PushAnimation("idle_on", false)
-            inst.SoundEmitter:PlaySound("dontstarve/wilson/lantern_on")
-            inst.SoundEmitter:PlaySound("dontstarve/wilson/lantern_LP", "loop")
+            inst.SoundEmitter:PlaySound(sound.toggle)
 		else
-			inst.AnimState:PlayAnimation( inst.onlywhite and "turn_on" or "colour_change" )
+			inst.AnimState:PlayAnimation("colour_change")
 			inst.AnimState:PushAnimation("idle_on", false)
-            inst.SoundEmitter:PlaySound("dontstarve/wilson/lantern_on")
+            inst.SoundEmitter:PlaySound(sound.colour)
 		end
 	else
 		inst.Light:Enable(false)
         inst.AnimState:ClearBloomEffectHandle()
 		inst.AnimState:SetMultColour(.7, .7, .7, 1)
-		inst.SoundEmitter:KillSound("loop")
 		if skip_toggle_anims then
 			inst.AnimState:PlayAnimation("idle", true)
 		elseif toggling then
 			inst.AnimState:PlayAnimation("turn_off")
 			inst.AnimState:PushAnimation("idle")
-		    inst.SoundEmitter:PlaySound(inst.onlywhite and "dontstarve/wilson/lantern_off" or "dontstarve/wilson/lantern_on" )
+		    inst.SoundEmitter:PlaySound(sound.toggle)
 		end
 	end
 end
@@ -96,6 +107,7 @@ end
 local function onbuilt(inst)
     inst.AnimState:PlayAnimation("place")
     inst.AnimState:PushAnimation("idle")
+    inst.SoundEmitter:PlaySound(inst.onlywhite and sounds_1.craft or sounds_2.craft)
     UpdateLightState(inst)
 end
 
@@ -144,7 +156,7 @@ local function MakeMushroomLight( name, onlywhite, physics_rad )
 		inst.AnimState:PlayAnimation("idle")
 	     
 		inst:AddTag("structure")
-		--inst:AddTag("fridge")
+		inst:AddTag("fridge")
 		
 		inst.onlywhite = onlywhite
 

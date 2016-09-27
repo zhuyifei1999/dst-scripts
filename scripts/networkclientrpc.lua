@@ -19,7 +19,7 @@ local function printinvalid(rpcname, player)
     --This event is for MODs that want to handle players sending invalid rpcs
     TheWorld:PushEvent("invalidrpc", { player = player, rpcname = rpcname })
 
-    if BRANCH ~= "release" or PLATFORM == "PS4" then
+    if BRANCH == "dev" then
         --Internal testing
         assert(false, string.format("Invalid %s RPC from (%s) %s", rpcname, player.userid or "", player.name or ""))
     end

@@ -56,7 +56,7 @@ end
 
 local function onpickup(inst)
     --These last longer when held    
-    inst.components.perishable:SetLocalMultiplier( TUNING.SEG_TIME * 3/ TUNING.PERISH_MED )
+    inst.components.perishable:SetLocalMultiplier( TUNING.SEG_TIME * 3/ TUNING.PERISH_SLOW )
     if inst.crowdingtask ~= nil then
         inst.crowdingtask:Cancel()
         inst.crowdingtask = nil
@@ -178,9 +178,8 @@ local function makespore(data)
 
         MakeHauntablePerish(inst, .5)
 
-        inst:ListenForEvent("onpickup", onpickup)
-        inst:ListenForEvent("ondropped", ondropped)
         inst:ListenForEvent("onputininventory", onpickup)
+        inst:ListenForEvent("ondropped", ondropped)
 
 	    inst:SetStateGraph("SGspore")
 	    inst:SetBrain(brain)

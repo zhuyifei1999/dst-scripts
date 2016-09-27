@@ -22,9 +22,10 @@ local function DoTick(inst, self)
 end
 
 function Aura:Enable(val)
+    val = val ~= false
     if self.active ~= val then
         self.active = val
-        if self.active ~= nil then
+        if val then
             self.task = self.inst:DoPeriodicTask(self.tickperiod, DoTick, nil, self)
         else
             if self.task ~= nil then

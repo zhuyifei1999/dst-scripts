@@ -374,20 +374,31 @@ local function MakeHat(name)
 
     local function feather_equip(inst, owner)
         onequip(inst, owner)
-        local birdspawner = TheWorld.components.birdspawner
-        if birdspawner ~= nil then
-            birdspawner:SetSpawnTimes(TUNING.BIRD_SPAWN_DELAY_FEATHERHAT)
-            birdspawner:SetMaxBirds(TUNING.BIRD_SPAWN_MAX_FEATHERHAT)
-        end
+		local attractor = owner.components.birdattractor
+		if attractor then
+			attractor.spawnmodifier:SetModifier(inst, TUNING.BIRD_SPAWN_MAXDELTA_FEATHERHAT, "maxbirds")
+			attractor.spawnmodifier:SetModifier(inst, TUNING.BIRD_SPAWN_DELAYDELTA_FEATHERHAT.MIN, "mindelay")
+			attractor.spawnmodifier:SetModifier(inst, TUNING.BIRD_SPAWN_DELAYDELTA_FEATHERHAT.MAX, "maxdelay")
+	        
+			local birdspawner = TheWorld.components.birdspawner
+			if birdspawner ~= nil then
+				birdspawner:ToggleUpdate(true)
+			end
+		end
     end
 
     local function feather_unequip(inst, owner)
         onunequip(inst, owner)
-        local birdspawner = TheWorld.components.birdspawner
-        if birdspawner ~= nil then
-            birdspawner:SetSpawnTimes(TUNING.BIRD_SPAWN_DELAY)
-            birdspawner:SetMaxBirds(TUNING.BIRD_SPAWN_MAX)
-        end
+
+		local attractor = owner.components.birdattractor
+		if attractor then
+			attractor.spawnmodifier:RemoveModifier(inst)
+
+			local birdspawner = TheWorld.components.birdspawner
+			if birdspawner ~= nil then
+				birdspawner:ToggleUpdate(true)
+			end
+		end
     end
 
     local function feather()

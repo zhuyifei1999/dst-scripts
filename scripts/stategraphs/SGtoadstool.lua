@@ -2,7 +2,7 @@ require("stategraphs/commonstates")
 
 local function DestroyStuff(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, 4, nil, { "INLIMBO", "mushroomsprout", "NET_workable" })
+    local ents = TheSim:FindEntities(x, y, z, 3, nil, { "INLIMBO", "mushroomsprout", "NET_workable" })
     for i, v in ipairs(ents) do
         if v:IsValid() and
             v.components.workable ~= nil and
@@ -157,7 +157,6 @@ local function OnEndChannel(inst)
         inst.sg.mem.channelshaketask:Cancel()
         inst.sg.mem.channelshaketask = nil
     end
-    inst.components.health:SetAbsorptionAmount(0)
     if inst.components.timer:TimerExists("channel") then
         inst.components.timer:PauseTimer("channel")
         inst.components.timer:PauseTimer("channeltick")
@@ -167,36 +166,6 @@ local function OnEndChannel(inst)
         inst.sg.mem.mushroomsprout_angles = nil
     end
     inst.components.sanityaura.aura = 0
-end
-
---------------------------------------------------------------------------
-
-local function StartFade(inst)
-    inst.sg.statemem.fade = 1
-end
-
-local function UpdateFade(inst)
-    if inst.sg.statemem.fade ~= nil then
-        if inst.sg.statemem.fade <= .05 then
-            inst.Light:Enable(false)
-        else
-            local k = inst.sg.statemem.fade - .05
-            inst.sg.statemem.fade = k
-            k = k * k
-            inst.Light:SetRadius(2 * k)
-            inst.Light:SetFalloff(1 - .5 * k)
-            inst.Light:SetIntensity(.75 * k)
-        end
-    end
-end
-
-local function CancelFade(inst)
-    if (inst.sg.statemem.fade or 1) < 1 then
-        inst.Light:SetRadius(2)
-        inst.Light:SetFalloff(.5)
-        inst.Light:SetIntensity(.75)
-        inst.Light:Enable(true)
-    end
 end
 
 --------------------------------------------------------------------------
@@ -219,7 +188,7 @@ local events =
     EventHandler("attacked", function(inst)
         if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) and
             (   inst.sg.mem.last_hit_time == nil or
-                inst.sg.mem.last_hit_time + TUNING.TOADSTOOL_HIT_RECOVERY < GetTime()
+                inst.sg.mem.last_hit_time + inst.hit_recovery < GetTime()
             ) then
             inst.sg:GoToState("hit")
         end
@@ -409,7 +378,9 @@ local states =
             TimeEvent(40 * FRAMES, function(inst)
                 ShakeAllCameras(CAMERASHAKE.VERTICAL, 30 * FRAMES , .03, .7, inst, 40)
             end),
-            TimeEvent(48 * FRAMES, StartFade),
+            TimeEvent(48 * FRAMES, function(inst)
+                inst:FadeOut()
+            end),
         },
 
         events =
@@ -421,13 +392,11 @@ local states =
             end),
         },
 
-        onupdate = UpdateFade,
-
         onexit = function(inst)
             --Should NOT happen!
             inst.components.health:SetInvincible(false)
             inst.DynamicShadow:Enable(true)
-            CancelFade(inst)
+            inst:CancelFade()
         end,
     },
 
@@ -479,7 +448,7 @@ local states =
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("death")
             inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/death")
-            inst.sg:SetTimeout((inst.components.health.destroytime or 2) - FRAMES)
+            inst:AddTag("NOCLICK")
         end,
 
         timeline =
@@ -495,7 +464,10 @@ local states =
             end),
             TimeEvent(35 * FRAMES, function(inst)
                 ShakeIfClose(inst)
-                inst.components.lootdropper:DropLoot(inst:GetPosition())
+                if inst.persists then
+                    inst.persists = false
+                    inst.components.lootdropper:DropLoot(inst:GetPosition())
+                end
             end),
             TimeEvent(36 * FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("dontstarve/creatures/together/toad_stool/death_fall")
@@ -503,16 +475,17 @@ local states =
             TimeEvent(52 * FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("dontstarve/creatures/together/toad_stool/death_roar")
             end),
+            TimeEvent(5 - FRAMES, function(inst)
+                inst:FadeOut()
+            end),
+            TimeEvent(5, ErodeAway),
         },
-
-        ontimeout = StartFade,
-
-        onupdate = UpdateFade,
 
         onexit = function(inst)
             --Should NOT happen!
             inst.SoundEmitter:KillSound("channel")
-            CancelFade(inst)
+            inst:RemoveTag("NOCLICK")
+            inst:CancelFade()
         end,
     },
 
@@ -571,7 +544,7 @@ local states =
             EventHandler("attacked", function(inst)
                 if not inst.components.health:IsDead() and
                     (   inst.sg.mem.last_hit_time == nil or
-                        inst.sg.mem.last_hit_time + TUNING.TOADSTOOL_HIT_RECOVERY < GetTime()
+                        inst.sg.mem.last_hit_time + inst.hit_recovery < GetTime()
                     ) then
                     inst.sg:GoToState("channel_hit")
                 end
@@ -603,7 +576,6 @@ local states =
                 inst.sg.mem.channelshaketask:Cancel()
             end
             inst.sg.mem.channelshaketask = inst:DoPeriodicTask(inst.AnimState:GetCurrentAnimationLength(), DoChannelingShake, 0)
-            inst.components.health:SetAbsorptionAmount(TUNING.TOADSTOOL_VULNERABLE_MULT)
             inst.sg.mem.wantstochannel = nil
             OnStartChannel(inst)
         end,
@@ -617,7 +589,7 @@ local states =
             EventHandler("attacked", function(inst)
                 if not inst.components.health:IsDead() and
                     (   inst.sg.mem.last_hit_time == nil or
-                        inst.sg.mem.last_hit_time + TUNING.TOADSTOOL_HIT_RECOVERY < GetTime()
+                        inst.sg.mem.last_hit_time + inst.hit_recovery < GetTime()
                     ) then
                     inst.sg.statemem.continuechannel = true
                     inst.sg:GoToState("channel_hit")

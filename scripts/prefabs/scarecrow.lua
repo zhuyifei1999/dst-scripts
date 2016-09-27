@@ -27,6 +27,7 @@ end
 
 local function onbuilt(inst)
     inst.AnimState:PlayAnimation("place")
+    inst.SoundEmitter:PlaySound("dontstarve/common/scarecrow_craft")
 end
 
 local function onburnt(inst)

@@ -457,25 +457,18 @@ end
 local function spawn_leif(target)
     --assert(GetBuild(target).leif ~= nil)
     local leif = SpawnPrefab(GetBuild(target).leif)
-    local scale = target.leifscale
     leif.AnimState:SetMultColour(target.AnimState:GetMultColour())
+    leif:SetLeifScale(target.leifscale)
 
-    --we should serialize this?
-    leif.components.locomotor.walkspeed = leif.components.locomotor.walkspeed*scale
-    leif.components.combat.defaultdamage = leif.components.combat.defaultdamage*scale
-    leif.components.combat.hitrange = leif.components.combat.hitrange*scale
-    leif.components.combat.attackrange = leif.components.combat.attackrange*scale
-    local maxhealth = leif.components.health.maxhealth*scale
-    local currenthealth = leif.components.health.currenthealth*scale
-    leif.components.health:SetMaxHealth(maxhealth)
-    leif.components.health:SetCurrentHealth(currenthealth)
+    if target.chopper ~= nil then
+        leif.components.combat:SuggestTarget(target.chopper)
+    end
 
-    leif.Transform:SetScale(scale,scale,scale)
-    if target.chopper then leif.components.combat:SuggestTarget(target.chopper) end
-    leif.sg:GoToState("spawn")
+    local x, y, z = target.Transform:GetWorldPosition()
     target:Remove()
 
-    leif.Transform:SetPosition(target.Transform:GetWorldPosition())
+    leif.Transform:SetPosition(x, y, z)
+    leif.sg:GoToState("spawn")
 end
 
 local function make_stump(inst)
@@ -918,7 +911,7 @@ local function tree(name, build, stage, data)
             return inst
         end
 
-        local color = 0.5 + math.random() * 0.5
+        local color = .5 + math.random() * .5
         inst.AnimState:SetMultColour(color, color, color, 1)
 
         -------------------

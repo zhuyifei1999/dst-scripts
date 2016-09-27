@@ -1707,6 +1707,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         end
 
         inst:AddComponent("bloomer")
+        inst:AddComponent("birdattractor")
 
         inst:AddComponent("maprevealable")
         inst.components.maprevealable:SetIconPriority(10)

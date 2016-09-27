@@ -23,6 +23,12 @@ local Crafting = Class(Widget, function(self, owner, num_slots)
     self.craftslots = CraftSlots(num_slots, owner)
     self:AddChild(self.craftslots)
 
+    --connectors
+    self.downconnector = self:AddChild(Image(HUD_ATLAS, "craft_sep_h.tex"))
+    self.upconnector = self:AddChild(Image(HUD_ATLAS, "craft_sep_h.tex"))
+    self.downendcapbg = self:AddChild(Image(HUD_ATLAS, "craft_sep.tex"))
+    self.upendcapbg = self:AddChild(Image(HUD_ATLAS, "craft_sep.tex"))
+
     --buttons
     self.downbutton = self:AddChild(ImageButton(HUD_ATLAS, "craft_end_normal.tex", "craft_end_normal_mouseover.tex", "craft_end_normal_disabled.tex", nil, nil, {1,1}, {0,0}))
     self.upbutton = self:AddChild(ImageButton(HUD_ATLAS, "craft_end_normal.tex", "craft_end_normal_mouseover.tex", "craft_end_normal_disabled.tex", nil, nil, {1,1}, {0,0}))
@@ -33,12 +39,6 @@ local Crafting = Class(Widget, function(self, owner, num_slots)
     self.upbutton.scale_on_focus = false
     self.downbutton:SetOnClick(function() self:ScrollDown() end)
     self.upbutton:SetOnClick(function() self:ScrollUp() end)
-
-    self.downconnector = self:AddChild(Image(HUD_ATLAS, "craft_sep_h.tex"))
-    self.upconnector = self:AddChild(Image(HUD_ATLAS, "craft_sep_h.tex"))
-
-    self.downendcapbg = self:AddChild(Image(HUD_ATLAS, "craft_sep.tex"))
-    self.upendcapbg = self:AddChild(Image(HUD_ATLAS, "craft_sep.tex"))
 
     -- start slightly scrolled down
     self.idx = -1
@@ -83,8 +83,8 @@ function Crafting:SetOrientation(horizontal)
             self.upbutton:SetPosition(0, -y, 0)
 
             y = dy + self.but_h / 1.5
-            self.downconnector:SetPosition(-68, y, 0)
-            self.upconnector:SetPosition(-68, -y, 0)
+            self.downconnector:SetPosition(-71, 2 + y, 0)
+            self.upconnector:SetPosition(-71, 2 - y, 0)
 
             y = dy + self.but_h * .5
             self.downendcapbg:SetPosition(0, y, 0)
@@ -97,8 +97,8 @@ function Crafting:SetOrientation(horizontal)
             self.downbutton:SetPosition(0, y, 0)
             self.upbutton:SetPosition(0, -y, 0)
 
-            self.downconnector:SetPosition(-68, y - end_padding, 0)
-            self.upconnector:SetPosition(-68, end_padding - y, 0)
+            self.downconnector:SetPosition(-68, y - end_padding + 5, 0)
+            self.upconnector:SetPosition(-68, end_padding - y + 5, 0)
 
             self.downendcapbg:Hide()
             self.upendcapbg:Hide()

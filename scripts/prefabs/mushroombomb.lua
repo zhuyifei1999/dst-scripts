@@ -106,7 +106,7 @@ local function Explode(inst)
             toadstool ~= nil and
             toadstool.components.combat ~= nil and
             toadstool.components.combat.defaultdamage or
-            TUNING.TOADSTOOL_DAMAGE
+            TUNING.TOADSTOOL_DAMAGE_LVL[0]
 
         for i, v in ipairs(ents) do
             if v:IsValid() and not v:IsInLimbo() and

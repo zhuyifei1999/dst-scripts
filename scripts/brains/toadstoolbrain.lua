@@ -2,46 +2,55 @@ require "behaviours/chaseandattack"
 require "behaviours/leash"
 require "behaviours/wander"
 
+local MAX_CHANNEL_LEASH_TIME = 15
+local FLEE_WARNING_DELAY = 3.5 --enuf time for combat retarget
+local FLEE_DELAY = 10
+
 local ToadstoolBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
+    self.channeling = false
 end)
 
 local function GetHomePos(inst)
     return inst.components.knownlocations:GetLocation("spawnpoint")
 end
 
-local function ShouldFlee(inst)
-    return not inst.components.timer:TimerExists("flee")
-end
-
-local function ShouldChannel(inst)
-    return inst.components.timer:TimerExists("channel")
-        or (inst.level < 3 and
-            not inst.components.timer:TimerExists("mushroomsprout_cd") and
-            not inst.components.timer:IsPaused("flee"))
+local function ShouldChannel(self)
+    if self.inst.components.timer:TimerExists("channel")
+        or (self.inst.engaged and
+            self.inst.level < 3 and
+            not self.inst.components.timer:TimerExists("mushroomsprout_cd")) then
+        return true
+    end
+    self.channeling = false
+    return false
 end
 
 function ToadstoolBrain:OnStart()
     local root = PriorityNode(
     {
-        WhileNode(function() return ShouldFlee(self.inst) end, "Flee",
-            ActionNode(function()
-                self.inst:PushEvent("roar")
-                self.inst:PushEvent("flee")
-            end)),
-        WhileNode(function() return ShouldChannel(self.inst) end, "Channel",
+        WhileNode(function() return ShouldChannel(self) end, "Channel",
             PriorityNode{
-                Leash(self.inst, GetHomePos, 8, 6),
-                ActionNode(function() self.inst:PushEvent("startchanneling") end),
+                WhileNode(function() return not self.channeling end, "ReturnToHole",
+                    FailIfSuccessDecorator(ParallelNodeAny{
+                        Leash(self.inst, GetHomePos, 8, 6),
+                        WaitNode(MAX_CHANNEL_LEASH_TIME),
+                    })),
+                ActionNode(function()
+                    self.channeling = true
+                    self.inst:PushEvent("startchanneling")
+                end),
             }, 1),
         Leash(self.inst, GetHomePos, 30, 25),
         ChaseAndAttack(self.inst),
         ParallelNode{
-            Wander(self.inst, GetHomePos, 5),
             SequenceNode{
-                WaitNode(10),
+                WaitNode(FLEE_WARNING_DELAY),
+                ActionNode(function() self.inst:PushEvent("fleewarning") end),
+                WaitNode(FLEE_DELAY),
                 ActionNode(function() self.inst:PushEvent("flee") end),
             },
+            Wander(self.inst, GetHomePos, 5),
         },
     }, 1)
 

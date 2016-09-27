@@ -32,20 +32,19 @@ local prefabs =
 }
 
 local function AddSpecialLoot(inst)
-	-- one hat
-	local hat = GetRandomItem({"red_mushroomhat_blueprint", "green_mushroomhat_blueprint", "blue_mushroomhat_blueprint"})
+    -- one hat
+    local hat = GetRandomItem({ "red_mushroomhat_blueprint", "green_mushroomhat_blueprint", "blue_mushroomhat_blueprint" })
     inst.components.lootdropper:AddChanceLoot(hat, 1.0)
 
-	-- one mushroom light
-	inst.components.lootdropper:AddChanceLoot(math.random() < 0.1 and "mushroom_light2_blueprint" or "mushroom_light_blueprint", 1.0)
-    
-    -- 2-3 spores
-	local spores = PickSomeWithDups(3, {MUSHTREE_SPORE_RED, MUSHTREE_SPORE_GREEN, MUSHTREE_SPORE_BLUE})
-	inst.components.lootdropper:AddChanceLoot(spores[1], 1.0)
-	inst.components.lootdropper:AddChanceLoot(spores[2], 1.0)
-	inst.components.lootdropper:AddChanceLoot(spores[3], 0.5)
-end
+    -- one mushroom light
+    inst.components.lootdropper:AddChanceLoot(math.random() < 0.1 and "mushroom_light2_blueprint" or "mushroom_light_blueprint", 1.0)
 
+    -- 2-3 spores
+    local spores = PickSomeWithDups(3, { MUSHTREE_SPORE_RED, MUSHTREE_SPORE_GREEN, MUSHTREE_SPORE_BLUE })
+    inst.components.lootdropper:AddChanceLoot(spores[1], 1.0)
+    inst.components.lootdropper:AddChanceLoot(spores[2], 1.0)
+    inst.components.lootdropper:AddChanceLoot(spores[3], 0.5)
+end
 
 SetSharedLootTable('toadstool',
 {
@@ -71,7 +70,59 @@ SetSharedLootTable('toadstool',
     {"green_cap",     0.33},
 })
 
+--------------------------------------------------------------------------
+
 local brain = require("brains/toadstoolbrain")
+
+--------------------------------------------------------------------------
+
+local FADE_FRAMES = 20
+local FADE_INTENSITY = .75
+local FADE_RADIUS = 2
+local FADE_FALLOFF = .5
+
+local function OnUpdateFade(inst)
+    local k
+    if inst._fade:value() <= FADE_FRAMES then
+        inst._fade:set_local(math.min(inst._fade:value() + 1, FADE_FRAMES))
+        k = inst._fade:value() / FADE_FRAMES
+    else
+        inst._fade:set_local(math.min(inst._fade:value() + 1, FADE_FRAMES * 2 + 1))
+        k = (FADE_FRAMES * 2 + 1 - inst._fade:value()) / FADE_FRAMES
+    end
+
+    inst.Light:SetIntensity(FADE_INTENSITY * k)
+    inst.Light:SetRadius(FADE_RADIUS * k)
+    inst.Light:SetFalloff(1 - (1 - FADE_FALLOFF) * k)
+
+    if TheWorld.ismastersim then
+        inst.Light:Enable(inst._fade:value() > 0 and inst._fade:value() <= FADE_FRAMES * 2)
+    end
+
+    if inst._fade:value() == FADE_FRAMES or inst._fade:value() > FADE_FRAMES * 2 then
+        inst._fadetask:Cancel()
+        inst._fadetask = nil
+    end
+end
+
+local function OnFadeDirty(inst)
+    if inst._fadetask == nil then
+        inst._fadetask = inst:DoPeriodicTask(FRAMES, OnUpdateFade)
+    end
+    OnUpdateFade(inst)
+end
+
+local function FadeOut(inst)
+    inst._fade:set(FADE_FRAMES + 1)
+    if inst._fadetask == nil then
+        inst._fadetask = inst:DoPeriodicTask(FRAMES, OnUpdateFade)
+    end
+end
+
+local function CancelFade(inst)
+    inst._fade:set(FADE_FRAMES)
+    OnFadeDirty(inst)
+end
 
 --------------------------------------------------------------------------
 
@@ -259,41 +310,27 @@ end
 
 local function SetLevel(inst, level)
     inst.level = level
+
+    inst.components.locomotor.walkspeed = TUNING.TOADSTOOL_SPEED_LVL[level]
+    inst.components.health:SetAbsorptionAmount(TUNING.TOADSTOOL_ABSORPTION_LVL[level])
+    inst.components.combat:SetDefaultDamage(TUNING.TOADSTOOL_DAMAGE_LVL[level])
+    inst.components.combat:SetAttackPeriod(TUNING.TOADSTOOL_ATTACK_PERIOD_LVL[level])
+    inst.hit_recovery = TUNING.TOADSTOOL_HIT_RECOVERY_LVL[level]
+    inst.mushroombomb_variance = TUNING.TOADSTOOL_MUSHROOMBOMB_VAR_LVL[level]
+    inst.mushroombomb_maxchain = TUNING.TOADSTOOL_MUSHROOMBOMB_CHAIN_LVL[level]
+
     if level < 1 then
         inst.AnimState:ClearOverrideSymbol("toad_mushroom")
-        inst.AnimState:ClearOverrideSymbol("swap_toad_frozen")
-        inst.components.locomotor.walkspeed = TUNING.TOADSTOOL_SPEED
-        inst.components.combat:SetDefaultDamage(TUNING.TOADSTOOL_DAMAGE)
-        inst.components.combat:SetAttackPeriod(TUNING.TOADSTOOL_ATTACK_PERIOD)
-        inst.mushroombomb_variance = 0
-        inst.mushroombomb_maxchain = 1
     else
         inst.AnimState:OverrideSymbol("toad_mushroom", "toadstool_upg_build", "toad_mushroom"..tostring(level))
-        if inst.sg:HasStateTag("frozen") or inst.sg:HasStateTag("thaw") then
-            inst.AnimState:OverrideSymbol("swap_toad_frozen", "toadstool_upg_build", "swap_toad_frozen"..tostring(level))
-        else
-            inst.AnimState:ClearOverrideSymbol("swap_toad_frozen")
-        end
-        if level == 1 then
-            inst.components.locomotor.walkspeed = TUNING.TOADSTOOL_UPG1_SPEED
-            inst.components.combat:SetDefaultDamage(TUNING.TOADSTOOL_UPG1_DAMAGE)
-            inst.components.combat:SetAttackPeriod(TUNING.TOADSTOOL_UPG1_ATTACK_PERIOD)
-            inst.mushroombomb_variance = 1
-            inst.mushroombomb_maxchain = 2
-        elseif level == 2 then
-            inst.components.locomotor.walkspeed = TUNING.TOADSTOOL_UPG2_SPEED
-            inst.components.combat:SetDefaultDamage(TUNING.TOADSTOOL_UPG2_DAMAGE)
-            inst.components.combat:SetAttackPeriod(TUNING.TOADSTOOL_UPG2_ATTACK_PERIOD)
-            inst.mushroombomb_variance = 2
-            inst.mushroombomb_maxchain = 3
-        else
-            inst.components.locomotor.walkspeed = TUNING.TOADSTOOL_UPG3_SPEED
-            inst.components.combat:SetDefaultDamage(TUNING.TOADSTOOL_UPG3_DAMAGE)
-            inst.components.combat:SetAttackPeriod(TUNING.TOADSTOOL_UPG3_ATTACK_PERIOD)
-            inst.mushroombomb_variance = 3
-            inst.mushroombomb_maxchain = 5
-        end
     end
+
+    if inst.level > 0 and (inst.sg:HasStateTag("frozen") or inst.sg:HasStateTag("thaw")) then
+        inst.AnimState:OverrideSymbol("swap_toad_frozen", "toadstool_upg_build", "swap_toad_frozen"..tostring(level))
+    else
+        inst.AnimState:ClearOverrideSymbol("swap_toad_frozen")
+    end
+
     inst:PushEvent("toadstoollevel", level)
 end
 
@@ -377,14 +414,31 @@ local function KeepTargetFn(inst, target)
 end
 
 local function OnNewTarget(inst, data)
-    if data.target ~= nil and inst.components.timer:IsPaused("flee") then
-        inst.components.timer:ResumeTimer("flee")
-        inst.components.timer:StartTimer("fleewarning", inst.components.timer:GetTimeLeft("flee") - TUNING.TOADSTOOL_FLEE_WARNING)
+    if data.target ~= nil then
+        inst:RemoveEventCallback("newcombattarget", OnNewTarget)
+        inst.engaged = true
+
         --Ability first use timers 
         inst.components.timer:StartTimer("sporebomb_cd", TUNING.TOADSTOOL_ABILITY_INTRO_CD)
         --inst.components.timer:StartTimer("mushroombomb_cd", inst.mushroombomb_cd)
         inst.components.timer:StartTimer("mushroomsprout_cd", inst.mushroomsprout_cd)
         inst.components.timer:StartTimer("pound_cd", TUNING.TOADSTOOL_ABILITY_INTRO_CD, true)
+    end
+end
+
+local function ClearRecentAttacker(inst, attacker)
+    if inst._recentattackers[data.attacker] ~= nil then
+        inst._recentattackers[data.attacker]:Cancel()
+        inst._recentattackers[data.attacker] = nil
+    end
+end
+
+local function OnAttacked(inst, data)
+    if data.attacker ~= nil and data.attacker:HasTag("player") then
+        if inst._recentattackers[data.attacker] ~= nil then
+            inst._recentattackers[data.attacker]:Cancel()
+        end
+        inst._recentattackers[data.attacker] = inst:DoTaskInTime(120, ClearRecentAttacker, data.attacker)
     end
 end
 
@@ -397,14 +451,16 @@ local function AnnounceWarning(inst, player)
     end
 end
 
-local function OnTimerDone(inst, data)
-    if data.name == "fleewarning" and not (inst.sg:HasStateTag("noattack") or inst.components.health:IsDead()) then
+local function OnFleeWarning(inst)
+    if not (inst.sg:HasStateTag("noattack") or inst.components.health:IsDead()) then
         --Toadstool escaping soon, announce to all live players in range
         --Must re-validate Toadstool state
         local x, y, z = inst.Transform:GetWorldPosition()
-        local players = FindPlayersInRange(x, y, z, 15)
+        local players = FindPlayersInRange(x, y, z, 40)
         for i, v in ipairs(players) do
-            inst:DoTaskInTime(math.random() * 2, AnnounceWarning, v)
+            if inst._recentattackers[v] ~= nil then
+                inst:DoTaskInTime(math.random() * 2, AnnounceWarning, v)
+            end
         end
     end
 end
@@ -421,30 +477,64 @@ local function OnEscaped(inst)
     --Toadstool escaped, announce to all live players in range
     --Don't validate Toadstool state
     local x, y, z = inst.Transform:GetWorldPosition()
-    local players = FindPlayersInRange(x, y, z, 15)
+    local players = FindPlayersInRange(x, y, z, 40)
     for i, v in ipairs(players) do
-        v:DoTaskInTime(math.random(), AnnounceEscaped)
+        if inst._recentattackers[v] ~= nil or v:IsNear(inst, 15) then
+            v:DoTaskInTime(math.random(), AnnounceEscaped)
+        end
     end
 
     inst:Remove()
 end
 
+local function DecayFreeze(inst, SetFreezeExtraResist)
+    local new_resist = math.max(0, inst.freezable_extra_resist - .2)
+    local current_resist = inst.components.freezable.coldness - TUNING.TOADSTOOL_FREEZE_RESIST
+    if new_resist >= current_resist then
+        SetFreezeExtraResist(inst, new_resist)
+    elseif current_resist < inst.freezable_extra_resist then
+        SetFreezeExtraResist(inst, current_resist)
+    end
+end
+
+local function SetFreezeExtraResist(inst, resist)
+    inst.freezable_extra_resist = resist
+    inst.components.freezable:SetResistance(TUNING.TOADSTOOL_FREEZE_RESIST + resist)
+    if resist > 0 then
+        if inst._freezetask == nil then
+            inst._freezetask = inst:DoPeriodicTask(12, DecayFreeze, nil, SetFreezeExtraResist)
+        end
+    elseif inst._freezetask ~= nil then
+        inst._freezetask:Cancel()
+        inst._freezetask = nil
+    end
+end
+
+--Called whenever Freeze is triggered, whether I'm frozen already or not
+local function OnFreezeFn(inst)
+    if inst._freezetask ~= nil then
+        --Restart decay timer
+        inst._freezetask:Cancel()
+        inst._freezetask = inst:DoPeriodicTask(12, DecayFreeze, nil, SetFreezeExtraResist)
+    end
+end
+
+--Triggered only if I wasn't already completely frozen
+local function OnFreeze(inst)
+    SetFreezeExtraResist(inst, inst.freezable_extra_resist + 1)
+end
+
 --------------------------------------------------------------------------
 
 local function SetPhaseLevel(inst, phase)
-    if phase <= 1 then
-        inst.sporebomb_targets = 1
-        inst.sporebomb_cd = TUNING.TOADSTOOL_SPOREBOMB_CD_PHASE1
-        inst.mushroombomb_count = 4
-    elseif phase <= 2 then
-        inst.sporebomb_targets = 2
-        inst.sporebomb_cd = TUNING.TOADSTOOL_SPOREBOMB_CD_PHASE2
-        inst.mushroombomb_count = 5
-    else
-        inst.sporebomb_targets = 2
-        inst.sporebomb_cd = TUNING.TOADSTOOL_SPOREBOMB_CD_PHASE2
-        inst.mushroombomb_count = 6
+    inst.sporebomb_targets = TUNING.TOADSTOOL_SPOREBOMB_TARGETS_PHASE[phase]
+    inst.sporebomb_cd = TUNING.TOADSTOOL_SPOREBOMB_CD_PHASE[phase]
+    inst.mushroombomb_count = TUNING.TOADSTOOL_MUSHROOMBOMB_COUNT_PHASE[phase]
+    if phase > 2 then
         inst.components.timer:ResumeTimer("pound_cd")
+    else
+        inst.components.timer:StopTimer("pound_cd")
+        inst.components.timer:StartTimer("pound_cd", TUNING.TOADSTOOL_ABILITY_INTRO_CD, true)
     end
 end
 
@@ -454,22 +544,31 @@ local function DropShroomSkin(inst)
     inst.components.lootdropper:SpawnLootPrefab("shroom_skin", pt)
 end
 
+local PHASE2_HEALTH = .7
+local PHASE3_HEALTH = .4
+
 local function EnterPhase2Trigger(inst)
     SetPhaseLevel(inst, 2)
-    DropShroomSkin(inst)
+    if inst.components.health:GetPercent() > PHASE3_HEALTH then
+        DropShroomSkin(inst)
+    end
     inst:PushEvent("roar")
 end
 
 local function EnterPhase3Trigger(inst)
     SetPhaseLevel(inst, 3)
-    DropShroomSkin(inst)
+    if not inst.components.health:IsDead() then
+        DropShroomSkin(inst)
+    end
     inst:PushEvent("roar")
 end
 
-local PHASE2_HEALTH = .7
-local PHASE3_HEALTH = .4
+local function OnSave(inst, data)
+    data.engaged = inst.engaged or nil
+    data.freezeresist = inst.freezable_extra_resist > 0 and math.floor(inst.freezable_extra_resist * 10) * .1 or nil
+end
 
-local function OnLoad(inst)
+local function OnLoad(inst, data)
     local healthpct = inst.components.health:GetPercent()
     SetPhaseLevel(
         inst,
@@ -477,6 +576,16 @@ local function OnLoad(inst)
         (healthpct > PHASE3_HEALTH and 2) or
         3
     )
+
+    if data ~= nil then
+        if data.freezeresist ~= nil then
+            SetFreezeExtraResist(inst, math.max(0, data.freezeresist))
+        end
+        if data.engaged then
+            inst:RemoveEventCallback("newcombattarget", OnNewTarget)
+            inst.engaged = true
+        end
+    end
 end
 
 --------------------------------------------------------------------------
@@ -509,7 +618,6 @@ local function OnCollide(inst, other)
         other.components.workable ~= nil and
         other.components.workable:CanBeWorked() and
         other.components.workable.action ~= ACTIONS.NET and
-        Vector3(inst.Physics:GetVelocity()):LengthSq() >= 1 and
         not inst.recentlycharged[other] then
         inst:DoTaskInTime(2 * FRAMES, OnDestroyOther, other)
     end
@@ -522,8 +630,13 @@ local function getstatus(inst)
 end
 
 local function PushMusic(inst)
-    if ThePlayer ~= nil and ThePlayer:IsNear(inst, 30) then
-        ThePlayer:PushEvent("triggeredevent")
+    if ThePlayer == nil then
+        inst._playingmusic = false
+    elseif ThePlayer:IsNear(inst, inst._playingmusic and 30 or 20) then
+        inst._playingmusic = true
+        ThePlayer:PushEvent("triggeredevent", { cave = true })
+    elseif inst._playingmusic and not ThePlayer:IsNear(inst, 40) then
+        inst._playingmusic = false
     end
 end
 
@@ -543,10 +656,11 @@ local function fn()
 
     inst.DynamicShadow:SetSize(6, 3.5)
 
-    inst.Light:SetRadius(2)
-    inst.Light:SetFalloff(.5)
-    inst.Light:SetIntensity(.75)
+    inst.Light:SetRadius(FADE_RADIUS)
+    inst.Light:SetFalloff(FADE_FALLOFF)
+    inst.Light:SetIntensity(FADE_INTENSITY)
     inst.Light:SetColour(255 / 255, 235 / 255, 153 / 255)
+    inst.Light:EnableClientModulation(true)
 
     MakeGiantCharacterPhysics(inst, 1000, 2.5)
 
@@ -561,11 +675,16 @@ local function fn()
     inst:AddTag("scarytoprey")
     inst:AddTag("largecreature")
 
+    inst._fade = net_smallbyte(inst.GUID, "toadstool._fade", "fadedirty")
+
+    inst._playingmusic = false
     inst:DoPeriodicTask(1, PushMusic, 0)
 
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+        inst:ListenForEvent("fadedirty", OnFadeDirty)
+
         return inst
     end
 
@@ -584,19 +703,21 @@ local function fn()
     inst.components.sleeper:SetResistance(4)
 
     inst:AddComponent("locomotor")
-    inst.components.locomotor.walkspeed = TUNING.TOADSTOOL_SPEED
+    inst.components.locomotor.pathcaps = { ignorewalls = true }
+    inst.components.locomotor.walkspeed = TUNING.TOADSTOOL_SPEED_LVL[0]
 
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(TUNING.TOADSTOOL_HEALTH)
-    inst.components.health.destroytime = 5
+    inst.components.health:SetAbsorptionAmount(TUNING.TOADSTOOL_ABSORPTION_LVL[0])
+    inst.components.health.nofadeout = true
 
     inst:AddComponent("healthtrigger")
     inst.components.healthtrigger:AddTrigger(PHASE2_HEALTH, EnterPhase2Trigger)
     inst.components.healthtrigger:AddTrigger(PHASE3_HEALTH, EnterPhase3Trigger)
 
     inst:AddComponent("combat")
-    inst.components.combat:SetDefaultDamage(TUNING.TOADSTOOL_DAMAGE)
-    inst.components.combat:SetAttackPeriod(TUNING.TOADSTOOL_ATTACK_PERIOD)
+    inst.components.combat:SetDefaultDamage(TUNING.TOADSTOOL_DAMAGE_LVL[0])
+    inst.components.combat:SetAttackPeriod(TUNING.TOADSTOOL_ATTACK_PERIOD_LVL[0])
     inst.components.combat.playerdamagepercent = .5
     inst.components.combat:SetRange(TUNING.TOADSTOOL_ATTACK_RANGE)
     inst.components.combat:SetRetargetFunction(3, RetargetFn)
@@ -606,12 +727,10 @@ local function fn()
 
     inst:AddComponent("sanityaura")
     
-
     inst:AddComponent("epicscare")
     inst.components.epicscare:SetRange(TUNING.TOADSTOOL_EPICSCARE_RANGE)
 
     inst:AddComponent("timer")
-    inst.components.timer:StartTimer("flee", TUNING.TOADSTOOL_FLEE_TIME, true)
 
     inst:AddComponent("grouptargeter")
     inst:AddComponent("groundpounder")
@@ -619,6 +738,10 @@ local function fn()
 
     MakeLargeBurnableCharacter(inst, "swap_fire")
     MakeHugeFreezableCharacter(inst, "toad_torso")
+    inst.components.freezable:SetResistance(TUNING.TOADSTOOL_FREEZE_RESIST)
+    inst.components.freezable.onfreezefn = OnFreezeFn
+    inst.freezable_extra_resist = 0
+    inst._freezetask = nil
 
     inst:SetStateGraph("SGtoadstool")
     inst:SetBrain(brain)
@@ -630,17 +753,19 @@ local function fn()
     inst.DoMushroomSprout = DoMushroomSprout
     inst.OnEscaped = OnEscaped
 
-    inst.sporebomb_targets = 1
-    inst.sporebomb_cd = TUNING.TOADSTOOL_SPOREBOMB_CD_PHASE1
+    inst.sporebomb_targets = TUNING.TOADSTOOL_SPOREBOMB_TARGETS_PHASE[1]
+    inst.sporebomb_cd = TUNING.TOADSTOOL_SPOREBOMB_CD_PHASE[1]
 
-    inst.mushroombomb_count = 4
-    inst.mushroombomb_variance = 0
-    inst.mushroombomb_maxchain = 1
+    inst.mushroombomb_count = TUNING.TOADSTOOL_MUSHROOMBOMB_COUNT_PHASE[1]
+    inst.mushroombomb_variance = TUNING.TOADSTOOL_MUSHROOMBOMB_VAR_LVL[0]
+    inst.mushroombomb_maxchain = TUNING.TOADSTOOL_MUSHROOMBOMB_CHAIN_LVL[0]
     inst.mushroombomb_cd = TUNING.TOADSTOOL_MUSHROOMBOMB_CD
 
     inst.mushroomsprout_cd = TUNING.TOADSTOOL_MUSHROOMSPROUT_CD
 
     inst.pound_cd = TUNING.TOADSTOOL_POUND_CD
+
+    inst.hit_recovery = TUNING.TOADSTOOL_HIT_RECOVERY_LVL[0]
 
     inst.level = 0
     inst._numlinks = 0
@@ -648,10 +773,19 @@ local function fn()
     inst:ListenForEvent("linkmushroomsprout", OnLinkMushroomSprout)
     inst:ListenForEvent("unlinkmushroomsprout", OnUnlinkMushroomSprout)
 
-    inst:ListenForEvent("newcombattarget", OnNewTarget)
-    inst:ListenForEvent("timerdone", OnTimerDone)
+    inst._recentattackers = {}
+    inst.engaged = false
 
+    inst:ListenForEvent("newcombattarget", OnNewTarget)
+    inst:ListenForEvent("attacked", OnAttacked)
+    inst:ListenForEvent("fleewarning", OnFleeWarning)
+    inst:ListenForEvent("freeze", OnFreeze)
+
+    inst.OnSave = OnSave
     inst.OnLoad = OnLoad
+
+    inst.FadeOut = FadeOut
+    inst.CancelFade = CancelFade
 
     return inst
 end

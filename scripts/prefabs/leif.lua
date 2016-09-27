@@ -19,19 +19,46 @@ local prefabs =
     "livinglog",
 }
 
-local onloadfn = function(inst, data)
-    if data and data.hibernate then
-        inst.components.sleeper.hibernate = true
-    end
-    if data and data.sleep_time then
-         inst.components.sleeper.testtime = data.sleep_time
-    end
-    if data and data.sleeping then     
-         inst.components.sleeper:GoToSleep()
+local function SetLeifScale(inst, scale)
+    inst._scale = scale ~= 1 and scale or nil
+
+    inst.Transform:SetScale(scale, scale, scale)
+    inst.Physics:SetCapsule(.5 * scale, 1)
+    inst.DynamicShadow:SetSize(4 * scale, 1.5 * scale)
+
+    inst.components.locomotor.walkspeed = 1.5 * scale
+
+    inst.components.combat:SetDefaultDamage(TUNING.LEIF_DAMAGE * scale)
+    inst.components.combat:SetRange(3 * scale)
+
+    local health_percent = inst.components.health:GetPercent()
+    inst.components.health:SetMaxHealth(TUNING.LEIF_HEALTH * scale)
+    inst.components.health:SetPercent(health_percent, true)
+end
+
+local function onpreloadfn(inst, data)
+    if data ~= nil and data.leifscale ~= nil then
+        SetLeifScale(inst, data.leifscale)
     end
 end
 
-local onsavefn = function(inst, data)
+local function onloadfn(inst, data)
+    if data ~= nil then
+        if data.hibernate then
+            inst.components.sleeper.hibernate = true
+        end
+        if data.sleep_time ~= nil then
+            inst.components.sleeper.testtime = data.sleep_time
+        end
+        if data.sleeping then
+            inst.components.sleeper:GoToSleep()
+        end
+    end
+end
+
+local function onsavefn(inst, data)
+    data.leifscale = inst._scale
+
     if inst.components.sleeper:IsAsleep() then
         data.sleeping = true
         data.sleep_time = inst.components.sleeper.testtime
@@ -88,13 +115,19 @@ local function common_fn(build)
         return inst
     end
 
+    local color = .5 + math.random() * .5
+    inst.AnimState:SetMultColour(color, color, color, 1)
+
+    ------------------------------------------
+
+    inst.OnPreLoad = onpreloadfn
     inst.OnLoad = onloadfn
     inst.OnSave = onsavefn
 
     ------------------------------------------
 
     inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
-    inst.components.locomotor.walkspeed = 1.5    
+    inst.components.locomotor.walkspeed = 1.5
 
     ------------------------------------------
     inst:SetStateGraph("SGLeif")
@@ -120,6 +153,7 @@ local function common_fn(build)
     inst.components.combat:SetDefaultDamage(TUNING.LEIF_DAMAGE)
     inst.components.combat.playerdamagepercent = TUNING.LEIF_DAMAGE_PLAYER_PERCENT
     inst.components.combat.hiteffectsymbol = "marker"
+    inst.components.combat:SetRange(3)
     inst.components.combat:SetAttackPeriod(TUNING.LEIF_ATTACK_PERIOD)
 
     ------------------------------------------
@@ -143,6 +177,8 @@ local function common_fn(build)
     inst:SetBrain(brain)
 
     inst:ListenForEvent("attacked", OnAttacked)
+
+    inst.SetLeifScale = SetLeifScale
 
     return inst
 end

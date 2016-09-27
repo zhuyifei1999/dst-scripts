@@ -158,7 +158,7 @@ local function StartTriggeredDanger(player, data)
     elseif _isenabled then
         StopBusy()
         StopDanger()
-        local music = _iscave and TRIGGERED_CAVE_DANGER_MUSIC or TRIGGERED_DANGER_MUSIC
+        local music = data ~= nil and data.cave and TRIGGERED_CAVE_DANGER_MUSIC or TRIGGERED_DANGER_MUSIC
         _soundemitter:PlaySound(music[level] or music[1], "danger")
         _dangertask = inst:DoTaskInTime(10, StopDanger, true)
         _triggeredlevel = level
