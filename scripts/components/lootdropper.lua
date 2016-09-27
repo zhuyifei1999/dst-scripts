@@ -91,6 +91,35 @@ function LootDropper:PickRandomLoot()
     end
 end
 
+function LootDropper:GetRecipeLoot(recipe)
+	local percent = 1
+	
+	local loots = {}
+
+	if self.inst.components.finiteuses then
+		percent = self.inst.components.finiteuses:GetPercent()
+	end
+
+	for k,v in ipairs(recipe.ingredients) do
+		local amt = math.ceil( (v.amount * TUNING.HAMMER_LOOT_PERCENT) * percent)
+		if self.inst:HasTag("burnt") then 
+			amt = math.ceil( (v.amount * TUNING.BURNT_HAMMER_LOOT_PERCENT) * percent)
+		end
+		for n = 1, amt do
+			if v.deconstruct then
+				local recipeloot = self:GetRecipeLoot(AllRecipes[v.type])
+				for k,v in ipairs(recipeloot) do
+					table.insert(loots, v)
+				end
+			else
+				table.insert(loots, v.type)
+			end
+		end
+	end
+
+	return loots
+end
+
 function LootDropper:GenerateLoot()
     local loots = {}
 
@@ -149,23 +178,12 @@ function LootDropper:GenerateLoot()
 		end
 	end
 	
+
 	local recipe = AllRecipes[self.inst.prefab]
-
 	if recipe then
-		local percent = 1
-
-		if self.inst.components.finiteuses then
-			percent = self.inst.components.finiteuses:GetPercent()
-		end
-
-		for k,v in ipairs(recipe.ingredients) do
-			local amt = math.ceil( (v.amount * TUNING.HAMMER_LOOT_PERCENT) * percent)
-			if self.inst:HasTag("burnt") then 
-				amt = math.ceil( (v.amount * TUNING.BURNT_HAMMER_LOOT_PERCENT) * percent)
-			end
-			for n = 1, amt do
-				table.insert(loots, v.type)
-			end
+		local recipeloot = self:GetRecipeLoot(recipe)
+		for k,v in ipairs(recipeloot) do
+			table.insert(loots, v)
 		end
 	end
     
@@ -240,6 +258,7 @@ function LootDropper:SpawnLootPrefab(lootprefab, pt)
                 end
             end
 
+		-- here? so we can run a full drop loot?
             self:FlingItem(loot, pt)
 
             return loot
@@ -249,21 +268,29 @@ end
 
 function LootDropper:DropLoot(pt)
     local prefabs = self:GenerateLoot()
-    if not self.inst.components.fueled and self.inst.components.burnable and self.inst.components.burnable:IsBurning() then
-        for k,v in pairs(prefabs) do
-            local cookedAfter = v.."_cooked"
-            local cookedBefore = "cooked"..v
-            if PrefabExists(cookedAfter) then
-                prefabs[k] = cookedAfter
-            elseif PrefabExists(cookedBefore) then
-                prefabs[k] = cookedBefore 
-            else             
-                prefabs[k] = "ash"               
+    if self.inst:HasTag("burnt")
+        or (self.inst.components.fueled == nil and
+            self.inst.components.burnable ~= nil and
+            self.inst.components.burnable:IsBurning()) then
+
+        local isstructure = self.inst:HasTag("structure")
+        for k, v in pairs(prefabs) do
+            if PrefabExists(v.."_cooked") then
+                prefabs[k] = v.."_cooked"
+            elseif PrefabExists("cooked"..v) then
+                prefabs[k] = "cooked"..v
+            --V2C: This used to make hammering WHILE burning give ash only
+            --     while hammering AFTER burnt give back good ingredients.
+            --     It *should* ALWAYS return ash based on certain types of
+            --     ingredients (wood), but we'll let them have this one :O
+            elseif not isstructure then
+                prefabs[k] = "ash"
             end
         end
     end
-    for k,v in pairs(prefabs) do
+    for k, v in pairs(prefabs) do
         self:SpawnLootPrefab(v, pt)
+        
     end
 end
 

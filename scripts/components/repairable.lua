@@ -10,6 +10,8 @@ end
 local Repairable = Class(function(self, inst)
     self.inst = inst
     self.repairmaterial = nil
+    self.noannounce = nil
+    self.checkmaterialfn = nil
 end,
 nil,
 {
@@ -39,7 +41,14 @@ function Repairable:Repair(doer, repair_item)
     if repair_item.components.repairer == nil or self.repairmaterial ~= repair_item.components.repairer.repairmaterial then
         --wrong material
         return false
-    elseif self.inst.components.health ~= nil then
+    elseif self.checkmaterialfn ~= nil then
+        local success, reason = self.checkmaterialfn(self.inst, repair_item)
+        if not success then
+            return false, reason
+        end
+    end
+
+    if self.inst.components.health ~= nil then
         if self.inst.components.health:GetPercent() >= 1 then
             return false
         end

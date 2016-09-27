@@ -47,10 +47,19 @@ local _timescale = 1
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
 
+local function CalcValue(player, basevalue, modifier)
+	local ret = basevalue
+	local attractor = player and player.components.birdattractor
+	if attractor then
+		ret = ret + attractor.spawnmodifier:CalculateModifierFromKey(modifier)
+	end
+	return ret
+end
+
 local function SpawnBirdForPlayer(player, reschedule)
     local pt = player:GetPosition()
     local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 64, { "bird" })
-    if #ents < _maxbirds then
+    if #ents < CalcValue(player, _maxbirds, "maxbirds") then
         local spawnpoint = self:GetSpawnPoint(pt)
         if spawnpoint ~= nil then
             self:SpawnBird(spawnpoint)
@@ -62,8 +71,10 @@ end
 
 local function ScheduleSpawn(player, initialspawn)
     if _scheduledtasks[player] == nil then
-        local lowerbound = initialspawn and 0 or _minspawndelay
-        local upperbound = initialspawn and (_maxspawndelay - _minspawndelay) or _maxspawndelay
+		local mindelay = CalcValue(player, _minspawndelay, "mindelay")
+		local maxdelay = CalcValue(player, _maxspawndelay, "maxdelay")
+        local lowerbound = initialspawn and 0 or mindelay
+        local upperbound = initialspawn and (maxdelay - mindelay) or maxdelay
         _scheduledtasks[player] = player:DoTaskInTime(GetRandomMinMax(lowerbound, upperbound) * _timescale, SpawnBirdForPlayer, ScheduleSpawn)
     end
 end
@@ -99,6 +110,15 @@ end
 local function PickBird(spawnpoint)
     local tile = _map:GetTileAtPoint(spawnpoint:Get())
     local bird = GetRandomItem(BIRD_TYPES[tile] or { "crow" })
+
+    if bird == "crow" then
+        local x, y, z = spawnpoint:Get()
+        local canarylure = TheSim:FindEntities(x, y, z, TUNING.BIRD_CANARY_LURE_DISTANCE, { "scarecrow" })
+        if #canarylure ~= 0 then
+            bird = "canary"
+        end
+    end
+
     return _worldstate.iswinter and bird == "robin" and "robin_winter" or bird
 end
 
@@ -176,13 +196,19 @@ end
 --------------------------------------------------------------------------
 
 function self:SetSpawnTimes(delay)
+	print "DEPRECATED: SetSpawnTimes() in birdspawner.lua, use birdattractor.spawnmodifier instead"
     _minspawndelay = delay.min
     _maxspawndelay = delay.max
 end
 
 function self:SetMaxBirds(max)
+	print "DEPRECATED: SetMaxBirds() in birdspawner.lua, use birdattractor.spawnmodifier instead"
     _maxbirds = max
     ToggleUpdate(true)
+end
+
+function self:ToggleUpdate()
+	ToggleUpdate(true)
 end
 
 function self:SpawnModeNever()
@@ -290,7 +316,7 @@ end
 --------------------------------------------------------------------------
 
 function self:OnSave()
-    return 
+    return
     {
         maxbirds = _maxbirds,
         minspawndelay = _minspawndelay,

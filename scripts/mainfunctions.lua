@@ -594,7 +594,6 @@ function SaveGame(isshutdown, cb)
         save.map.persistdata, new_refs = ground:GetPersistData()
         save.meta = ground.meta
         save.map.hideminimap = ground.hideminimap
-        save.map.prefabswapstatus = ground.prefabswapstatus
 
         if new_refs ~= nil then
             for k, v in pairs(new_refs) do
@@ -1304,6 +1303,8 @@ function ResumeExistingUserSession(data, guid)
 
             -- Spawn the player to last known location
             TheWorld.components.playerspawner:SpawnAtLocation(TheWorld, player, data.x or 0, data.y or 0, data.z or 0, true)
+
+            return player.player_classified ~= nil and player.player_classified.entity or nil
         end
     end
 end
@@ -1312,7 +1313,7 @@ function RestoreSnapshotUserSession(sessionid, userid)
     local file = TheNet:GetUserSessionFile(sessionid, userid)
     if file ~= nil then
         print("Restoring user: "..file)
-        TheSim:GetPersistentString(file, function(success, str)
+        TheNet:DeserializeUserSession(file, function(success, str)
             if success and str ~= nil and #str > 0 then
                 local playerdata, prefab = ParseUserSessionData(str)
                 if playerdata ~= nil and GetTableSize(playerdata) > 0 and prefab ~= nil and prefab ~= "" then
@@ -1321,6 +1322,7 @@ function RestoreSnapshotUserSession(sessionid, userid)
                         player.userid = userid
                         player:SetPersistData(playerdata.data or {})
                         player.Physics:Teleport(playerdata.x or 0, playerdata.y or 0, playerdata.z or 0)
+                        return player.player_classified ~= nil and player.player_classified.entity or nil
                     end
                 end
             end

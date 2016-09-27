@@ -82,7 +82,7 @@ end
 
 local function destroystuff(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, 5, nil, { "INLIMBO" })
+    local ents = TheSim:FindEntities(x, y, z, 5, nil, { "INLIMBO", "NET_workable" })
     for i, v in ipairs(ents) do
         if v:IsValid() and
             v.components.workable ~= nil and

@@ -1,6 +1,8 @@
 local assets =
 {
     Asset("ANIM", "anim/cave_banana_tree.zip"),
+    Asset("MINIMAP_IMAGE", "cave_banana_tree_stump"),
+    Asset("MINIMAP_IMAGE", "cave_banana_tree_burnt"),
 }
 
 local prefabs_tree =
@@ -203,7 +205,7 @@ local function stump_fn()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
-    inst.MiniMapEntity:SetIcon("cave_banana_tree.png")
+    inst.MiniMapEntity:SetIcon("cave_banana_tree_stump.png")
 
     inst.AnimState:SetBank("cave_banana_tree")
     inst.AnimState:SetBuild("cave_banana_tree")
@@ -267,7 +269,7 @@ local function burnt_fn()
 
     MakeObstaclePhysics(inst,.5)
 
-    inst.MiniMapEntity:SetIcon("cave_banana_tree.png")
+    inst.MiniMapEntity:SetIcon("cave_banana_tree_burnt.png")
 
     inst.AnimState:SetBank("cave_banana_tree")
     inst.AnimState:SetBuild("cave_banana_tree")

@@ -5,14 +5,14 @@ function Tune(overrides)
 	if overrides == nil then
 		overrides = {}
 	end
-	
+
 	local seg_time = 30
 	local total_day_time = seg_time*16
-	
+
 	local day_segs = 10
 	local dusk_segs = 4
 	local night_segs = 2
-	
+
 	--default day composition. changes in winter, etc
 	local day_time = seg_time * day_segs
 	local dusk_time = seg_time * dusk_segs
@@ -27,12 +27,12 @@ function Tune(overrides)
 	local wilson_attack = 34 * multiplayer_attack_modifier
 	local wilson_health = 150
 	local calories_per_day = 75
-	
+
 	local wilson_attack_period = .1
 	-----------------------
-	
+
 	local perish_warp = 1--/200
-	
+
 	TUNING =
 	{
 		MAX_SERVER_SIZE = 6,
@@ -125,10 +125,13 @@ function Tune(overrides)
 	    BLUEGEM_COOLER = -20,
 
 		PURPLEAMULET_FUEL = total_day_time * 0.4,
-	    
+
 		YELLOWAMULET_FUEL = total_day_time,
 		YELLOWSTAFF_USES = 20,
         YELLOWSTAFF_STAR_DURATION = total_day_time * 3.5,
+
+        OPALSTAFF_USES = 50,
+        OPALSTAFF_STAR_DURATION = total_day_time * 2,
 
 		ORANGEAMULET_USES = 225,
 		ORANGEAMULET_RANGE = 4,
@@ -141,6 +144,8 @@ function Tune(overrides)
 
 	    FISHING_MINWAIT = 2,
 	    FISHING_MAXWAIT = 20,
+		
+		STAGEHAND_HITS_TO_GIVEUP = 86,
 
 		RESEARCH_MACHINE_DIST = 4,
 
@@ -191,6 +196,7 @@ function Tune(overrides)
 
 		CANE_SPEED_MULT = 1.25,
 		PIGGYBACK_SPEED_MULT = 0.9,
+        HEAVY_SPEED_MULT = .15,
 
 	    TORCH_ATTACK_IGNITE_PERCENT = 1,
 
@@ -268,6 +274,7 @@ function Tune(overrides)
         LITTLE_WALRUS_ATTACK_DIST = 15,
 
         PIPE_DART_DAMAGE = 100,
+        YELLOW_DART_DAMAGE = 60,
 
 	    PENGUIN_DAMAGE = 33,
 	    PENGUIN_HEALTH = 150,
@@ -439,6 +446,9 @@ function Tune(overrides)
         MUSHSPORE_MAX_DENSITY_RAD = 20,
         MUSHSPORE_DENSITY_CHECK_TIME = 15,
         MUSHSPORE_DENSITY_CHECK_VAR = 15,
+        
+        MUSHROOMHAT_SPORE_TIME = seg_time * 2,
+        MUSHROOMHAT_SLOW_HUNGER = 0.75,
 	    
 	    ICE_MINE = 3,
 	    ROCKS_MINE = 6,
@@ -642,8 +652,10 @@ function Tune(overrides)
 	    
 	    BIRD_SPAWN_MAX = 4,
 	    BIRD_SPAWN_DELAY = {min=5, max=15},
-	    BIRD_SPAWN_MAX_FEATHERHAT = 7,
-	    BIRD_SPAWN_DELAY_FEATHERHAT = {min=2, max=10},
+	    BIRD_SPAWN_MAX_FEATHERHAT = 7,                   -- DEPRECATED
+	    BIRD_SPAWN_DELAY_FEATHERHAT = {min=2, max=10},   -- DEPRECATED
+	    BIRD_SPAWN_MAXDELTA_FEATHERHAT = 3,
+	    BIRD_SPAWN_DELAYDELTA_FEATHERHAT = {MIN = -3, MAX = -5},
 	    
 		FROG_RAIN_DELAY = {min=0.1, max=2},
 		FROG_RAIN_SPAWN_RADIUS = 60,
@@ -798,72 +810,89 @@ function Tune(overrides)
         HUTCH_HEALTH_REGEN_AMOUNT = (wilson_health*3) * 3/60,
         HUTCH_HEALTH_REGEN_PERIOD = 3,
 
-		PROTOTYPER_TREES = {
-		    SCIENCEMACHINE =
-		    {
-		    	SCIENCE = 1,
-		    	MAGIC = 1,
-		    	ANCIENT = 0,
+        PROTOTYPER_TREES =
+        {
+            SCIENCEMACHINE =
+            {
+                SCIENCE = 1,
+                MAGIC = 1,
+                ANCIENT = 0,
                 SHADOW = 0,
-			},
+                CARTOGRAPHY = 0,
+            },
 
-			ALCHEMYMACHINE =
-			{
-				SCIENCE = 2,
-				MAGIC = 1,
-				ANCIENT = 0,
+            ALCHEMYMACHINE =
+            {
+                SCIENCE = 2,
+                MAGIC = 1,
+                ANCIENT = 0,
                 SHADOW = 0,
-			},
+                CARTOGRAPHY = 0,
+            },
 
-			PRESTIHATITATOR =
-			{
-				SCIENCE = 0,
-				MAGIC = 2,
-				ANCIENT = 0,
+            PRESTIHATITATOR =
+            {
+                SCIENCE = 0,
+                MAGIC = 2,
+                ANCIENT = 0,
                 SHADOW = 0,
-			},
+                CARTOGRAPHY = 0,
+            },
 
-			SHADOWMANIPULATOR =
-			{
-				SCIENCE = 0,
-				MAGIC = 3,
-				ANCIENT = 0,
+            SHADOWMANIPULATOR =
+            {
+                SCIENCE = 0,
+                MAGIC = 3,
+                ANCIENT = 0,
                 SHADOW = 0,
-			},
+                CARTOGRAPHY = 0,
+            },
 
-			ANCIENTALTAR_LOW =
-			{
-				SCIENCE = 0,
-				MAGIC = 0,
-				ANCIENT = 2,
+            ANCIENTALTAR_LOW =
+            {
+                SCIENCE = 0,
+                MAGIC = 0,
+                ANCIENT = 2,
                 SHADOW = 0,
-			},
+                CARTOGRAPHY = 0,
+            },
 
-			ANCIENTALTAR_HIGH =
-			{
-				SCIENCE = 0,
-				MAGIC = 0,
-				ANCIENT = 4,
+            ANCIENTALTAR_HIGH =
+            {
+                SCIENCE = 0,
+                MAGIC = 0,
+                ANCIENT = 4,
                 SHADOW = 0,
-			},
+                CARTOGRAPHY = 0,
+            },
 
-			WAXWELLJOURNAL =
-			{
-				SCIENCE = 0,
-				MAGIC = 0,
-				ANCIENT = 0,
-				SHADOW = 4,
-			},
-		},
+            WAXWELLJOURNAL =
+            {
+                SCIENCE = 0,
+                MAGIC = 0,
+                ANCIENT = 0,
+                SHADOW = 4,
+                CARTOGRAPHY = 0,
+            },
+
+            CARTOGRAPHYDESK =
+            {
+                SCIENCE = 0,
+                MAGIC = 0,
+                ANCIENT = 0,
+                SHADOW = 0,
+                CARTOGRAPHY = 2,
+            },
+        },
 
 	    RABBIT_HEALTH = 25*multiplayer_attack_modifier,
 	    MOLE_HEALTH = 30,
-	    
+
 	    FROG_HEALTH = 100,
 	    FROG_DAMAGE = 10,
 	    FROG_ATTACK_PERIOD = 1,
 	    FROG_TARGET_DIST = 4,
-	        
+
 	    HOUND_SPECIAL_CHANCE = 
 	    {
 	        {minday=0, chance=0},
@@ -872,7 +901,7 @@ function Tune(overrides)
 	        {minday=50, chance=.333},
 	        {minday=75, chance=.5},
 	    },
-	
+
 	    HOUND_HEALTH = 150,
 	    HOUND_DAMAGE = 20,
 	    HOUND_ATTACK_PERIOD = 2,
@@ -881,17 +910,29 @@ function Tune(overrides)
 
         HOUND_FOLLOWER_TARGET_DIST = 10,
         HOUND_FOLLOWER_TARGET_KEEP = 20,
-	
+
 	    FIREHOUND_HEALTH = 100,
 	    FIREHOUND_DAMAGE = 30,
 	    FIREHOUND_ATTACK_PERIOD = 2,
 	    FIREHOUND_SPEED = 10,
-	    
+
 	    ICEHOUND_HEALTH = 100,
 	    ICEHOUND_DAMAGE = 30,
 	    ICEHOUND_ATTACK_PERIOD = 2,
 	    ICEHOUND_SPEED = 10,
-	    
+
+        MOONHOUND_HEALTH = 150,
+        MOONHOUND_DAMAGE = 20,
+        MOONHOUND_ATTACK_PERIOD = 2,
+        MOONHOUND_SPEED = 10,
+        MOONHOUND_AGGRO_DIST = 15,
+        MOONHOUND_RETURN_DIST = 30,
+        MOONHOUND_FREEZE_WEAR_OFF_TIME = 3,
+
+        MOONPIG_AGGRO_DIST = 15,
+        MOONPIG_RETURN_DIST = 30,
+        MOONPIG_FREEZE_WEAR_OFF_TIME = 3,
+
 		MOSQUITO_WALKSPEED = 8,
 		MOSQUITO_RUNSPEED = 12,
 		MOSQUITO_DAMAGE = 3,
@@ -900,7 +941,7 @@ function Tune(overrides)
 		MOSQUITO_MAX_DRINKS = 4,
 		MOSQUITO_BURST_DAMAGE = 34,
 		MOSQUITO_BURST_RANGE = 4,
-	
+
 	    KRAMPUS_HEALTH = 200 * 1.5, -- harder for multiplayer
 	    KRAMPUS_DAMAGE = 50,
 	    KRAMPUS_ATTACK_PERIOD = 1.2,
@@ -911,19 +952,19 @@ function Tune(overrides)
 	    KRAMPUS_INCREASE_LVL2 = 100,
 	    KRAMPUS_INCREASE_RAMP = 2,
 	    KRAMPUS_NAUGHTINESS_DECAY_PERIOD = 60,
-	
+
 	    TERRORBEAK_SPEED = 7,
 	    TERRORBEAK_HEALTH = 400,
 	    TERRORBEAK_DAMAGE = 50,
 	    TERRORBEAK_ATTACK_PERIOD= 1.5,
-	
+
 	    CRAWLINGHORROR_SPEED = 3,
 	    CRAWLINGHORROR_HEALTH = 300,
 	    CRAWLINGHORROR_DAMAGE = 20,
 	    CRAWLINGHORROR_ATTACK_PERIOD= 2.5,
-	    
+
 	    SHADOWCREATURE_TARGET_DIST = 20,
-	    
+
 		FROSTY_BREATH = -5,
 
 	    SEEDS_GROW_TIME = day_time*6,
@@ -984,7 +1025,7 @@ function Tune(overrides)
 	    COLDFIREPIT_FUEL_MAX = (night_time+dusk_time)*2,
 	    COLDFIREPIT_FUEL_START = night_time+dusk_time,
 	    COLDFIREPIT_BONUS_MULT = 2,
-
+	    
 	    PIGTORCH_RAIN_RATE = 2,
 	    PIGTORCH_FUEL_MAX = night_time,
 	    
@@ -1062,6 +1103,7 @@ function Tune(overrides)
 	    BIRD_TRAP_CHANCE = 0.025,
 	    BIRD_HEALTH = 25*multiplayer_attack_modifier,
 	    BIRD_PERISH_TIME = total_day_time * 5,
+	    BIRD_CANARY_LURE_DISTANCE = 12,
 
 	    BUTTERFLY_SPAWN_TIME = 10*multiplayer_wildlife_respawn_modifier,
 	    BUTTERFLY_POP_CAP = 4,
@@ -1241,32 +1283,34 @@ function Tune(overrides)
 		CALORIES_LARGE = calories_per_day/2, -- cooked meat
 		CALORIES_HUGE = calories_per_day, -- crockpot foods?
 		CALORIES_SUPERHUGE = calories_per_day*2, -- crockpot foods?
-		
+
 	    SPOILED_HEALTH = -1,
 	    SPOILED_HUNGER = -10,
 	    PERISH_COLD_FROZEN_MULT = 0, -- frozen things don't spoil in an ice box or if it's cold out
 	    PERISH_FROZEN_FIRE_MULT = 30, -- frozen things spoil very quickly if near a fire
 	    PERISH_FRIDGE_MULT = .5,
+	    PERISH_MUSHROOMLIGHT_MUSHROOM_MULT = 0.0, -- mushrooms are in poop so they can stay healthy
+	    PERISH_MUSHROOMLIGHT_BATTERY_MULT = 0.25, -- lights will have a slow burn
 	    PERISH_GROUND_MULT = 1.5,
 	    PERISH_WET_MULT = 1.3,
 	    PERISH_CAGE_MULT = 0.25,
 	    PERISH_GLOBAL_MULT = 1,
 	    PERISH_WINTER_MULT = .75,
 	    PERISH_SUMMER_MULT = 1.25,
-	    
+
 	    STALE_FOOD_HUNGER = .667,
 	    SPOILED_FOOD_HUNGER = .5,
-	    
+
 	    STALE_FOOD_HEALTH = .333,
 	    SPOILED_FOOD_HEALTH = 0,
-	    
+
 		BASE_COOK_TIME = night_time*.3333,
-		
+
 	    TALLBIRDEGG_HEALTH = 15;
 	    TALLBIRDEGG_HUNGER = 15,
 	    TALLBIRDEGG_COOKED_HEALTH = 25;
 	    TALLBIRDEGG_COOKED_HUNGER = 30,
-		
+
 		REPAIR_CUTSTONE_HEALTH = 50,
 		REPAIR_ROCKS_HEALTH = 50/3,
 		REPAIR_GEMS_WORK = 1,
@@ -1277,21 +1321,40 @@ function Tune(overrides)
 
 		REPAIR_THULECITE_PIECES_WORK = 1.5/6,
 		REPAIR_THULECITE_PIECES_HEALTH = 100/6,
-	
+
 		REPAIR_BOARDS_HEALTH = 25,
 		REPAIR_LOGS_HEALTH = 25/4,
 		REPAIR_STICK_HEALTH = 13,
 		REPAIR_CUTGRASS_HEALTH = 13,
-		
+
+		REPAIR_MOONROCK_CRATER_HEALTH = 80,
+        REPAIR_MOONROCK_CRATER_WORK = 4,
+
+		REPAIR_MOONROCK_NUGGET_HEALTH = 80/2,
+        REPAIR_MOONROCK_NUGGET_WORK = 2,
+
+        SCULPTURE_COMPLETE_WORK = 10,
+        SCULPTURE_COVERED_WORK = 6,
+
+        GARGOYLE_MINE = 4,
+        GARGOYLE_MINE_LOW = 2,
+        GARGOYLE_REANIMATE_DELAY = .2,--6 * FRAMES--FRAMES is not declared at worldgen YO
+
+        MOONBASE_CHARGE_DELAY = 10, --so it won't start right away as it fades to night
+        MOONBASE_CHARGE_DURATION = seg_time * 2 - 10.1, --tiny error to make sure it fits within a 2 seg night
+        MOONBASE_CHARGE_DURATION1 = 18.7, --18.6, --first stage, to match music length
+        MOONBASE_COMPLETE_WORK = 6,
+        MOONBASE_DAMAGED_WORK = 4,
+
 		HAYWALL_HEALTH = 100,
 		WOODWALL_HEALTH = 200,
 		STONEWALL_HEALTH = 400,
 		RUINSWALL_HEALTH = 800,
-		
+
 		MOONROCKWALL_HEALTH = 600,
 		MOONROCKWALL_PLAYERDAMAGEMOD = .25,
 		MOONROCKWALL_WORK = 25,
-	
+
 		PORTAL_HEALTH_PENALTY = 0.25,
 		HEART_HEALTH_PENALTY = 0.125,
 
@@ -1377,14 +1440,12 @@ function Tune(overrides)
 		INSULATION_LARGE = seg_time*8,
 		INSULATION_PER_BEARD_BIT = seg_time*.5,
 		WEBBER_BEARD_INSULATION_FACTOR = .75,
-		
-		PLAYER_FREEZE_WEAR_OFF_TIME = 3,
-		PLAYER_BURN_TIME = 5.3,
-		
-		DUSK_INSULATION_BONUS = seg_time*2,
-		NIGHT_INSULATION_BONUS = seg_time*4,
 
 		PLAYER_FREEZE_WEAR_OFF_TIME = 3,
+		PLAYER_BURN_TIME = 5.3,
+
+		DUSK_INSULATION_BONUS = seg_time*2,
+		NIGHT_INSULATION_BONUS = seg_time*4,
 
 		--CROP_BONUS_TEMP = 28,
 		MIN_CROP_GROW_TEMP = 5,
@@ -1525,6 +1586,108 @@ function Tune(overrides)
 		MOSSLING_ATTACK_RANGE = 2,
 		MOSSLING_WALK_SPEED = 5,
 
+        TOADSTOOL_HEALTH = 32500,
+        TOADSTOOL_ATTACK_RANGE = 7,
+        TOADSTOOL_EPICSCARE_RANGE = 10,
+        TOADSTOOL_DEAGGRO_DIST = 25,
+        TOADSTOOL_AGGRO_DIST = 15,
+        TOADSTOOL_RESPAWN_TIME = total_day_time * 20,
+        TOADSTOOL_FREEZE_RESIST = 4,
+
+        --TOADSTOOL stats are scaled by level [0..3] and phase [1..3]
+        TOADSTOOL_SPEED_LVL =
+        {
+            [0] = .6,
+            [1] = .8,
+            [2] = 1.2,
+            [3] = 3.2,
+        },
+        TOADSTOOL_DAMAGE_LVL =
+        {
+            [0] = 100,
+            [1] = 120,
+            [2] = 150,
+            [3] = 250,
+        },
+        TOADSTOOL_ATTACK_PERIOD_LVL =
+        {
+            [0] = 3.5,
+            [1] = 3,
+            [2] = 2.5,
+            [3] = 2,
+        },
+        TOADSTOOL_ABSORPTION_LVL =
+        {
+            [0] = 0,
+            [1] = .2,
+            [2] = .4,
+            [3] = .8,
+        },
+        TOADSTOOL_HIT_RECOVERY_LVL =
+        {
+            [0] = 1,
+            [1] = 1.5,
+            [2] = 2,
+            [3] = 3,
+        },
+
+        TOADSTOOL_MUSHROOMBOMB_MIN_RANGE = 4,
+        TOADSTOOL_MUSHROOMBOMB_MAX_RANGE = 8.75,
+        TOADSTOOL_MUSHROOMBOMB_RADIUS = 3.5,
+        TOADSTOOL_MUSHROOMBOMB_CD = 5,
+        TOADSTOOL_MUSHROOMBOMB_COUNT_PHASE =
+        {
+            [1] = 4,
+            [2] = 5,
+            [3] = 6,
+        },
+        TOADSTOOL_MUSHROOMBOMB_VAR_LVL =
+        {
+            [0] = 0,
+            [1] = 1,
+            [2] = 2,
+            [3] = 3,
+        },
+        TOADSTOOL_MUSHROOMBOMB_CHAIN_LVL =
+        {
+            [0] = 1,
+            [1] = 2,
+            [2] = 3,
+            [3] = 5,
+        },
+
+        TOADSTOOL_SPOREBOMB_ATTACK_RANGE = 10,
+        TOADSTOOL_SPOREBOMB_HIT_RANGE = 14,
+        TOADSTOOL_SPOREBOMB_TIMER = 3.5,
+        TOADSTOOL_SPOREBOMB_TARGETS_PHASE =
+        {
+            [1] = 1,
+            [2] = 2,
+            [3] = 2,
+        },
+        TOADSTOOL_SPOREBOMB_CD_PHASE =
+        {
+            [1] = 14,
+            [2] = 10,
+            [3] = 10,
+        },
+
+        TOADSTOOL_SPORECLOUD_DAMAGE = 20,
+        TOADSTOOL_SPORECLOUD_ROT = .07,
+        TOADSTOOL_SPORECLOUD_RADIUS = 3.5,
+        TOADSTOOL_SPORECLOUD_TICK = 1,
+        TOADSTOOL_SPORECLOUD_LIFETIME = 60,
+
+        TOADSTOOL_MUSHROOMSPROUT_NUM = 8,
+        TOADSTOOL_MUSHROOMSPROUT_MIN_RANGE = 6,
+        TOADSTOOL_MUSHROOMSPROUT_MAX_RANGE = 10,
+        TOADSTOOL_MUSHROOMSPROUT_TICK = 2,
+        TOADSTOOL_MUSHROOMSPROUT_DURATION = 15,
+        TOADSTOOL_MUSHROOMSPROUT_CD = 60,
+
+        TOADSTOOL_POUND_CD = 45,
+        TOADSTOOL_ABILITY_INTRO_CD = 15,
+
 		DRAGONFLY_RESPAWN_TIME = total_day_time * 20,
 		DRAGONFLY_SPAWN_TIME = 1,
 
@@ -1565,6 +1728,7 @@ function Tune(overrides)
 		LAVAE_HIT_RANGE = 3,
 		LAVAE_ATTACK_RANGE = 6,
 		LAVAE_HUNGER_RATE = 50/total_day_time,
+		LAVAE_LIFESPAN = 30,
 
 	    LAVAE_HATCH_CRACK_TIME = 10,
 	    LAVAE_HATCH_TIME = total_day_time*2,
@@ -1773,6 +1937,9 @@ function Tune(overrides)
         GRASSGEKKO_REGROW_INCREASE = total_day_time*.5,
         GRASSGEKKO_REGROW_VARIANCE = total_day_time,
         GRASSGEKKO_CYCLES = 3,
+        GRASSGEKKO_MORPH_DELAY = total_day_time * 25,
+        GRASSGEKKO_MORPH_DELAY_VARIANCE = total_day_time * 5,
+        GRASSGEKKO_MORPH_CHANCE = 1 / 100,
 
 		FERTILIZER_USES = 10,
 
@@ -1852,7 +2019,7 @@ function Tune(overrides)
 		METEOR_RADIUS = 3.5,
 		METEOR_SMASH_INVITEM_CHANCE = .75,
 
-		METEOR_MEDIUM_CHANCE = .2,
+		METEOR_MEDIUM_CHANCE = .4,
 		METEOR_LARGE_CHANCE = .2,
 
 		METEOR_CHANCE_INVITEM_ALWAYS = 1,
@@ -1865,7 +2032,7 @@ function Tune(overrides)
 
 		METEOR_CHANCE_BOULDERROCK = 1,
 		METEOR_CHANCE_BOULDERFLINTLESS = .3,
-		METEOR_CHANCE_BOULDERMOON = .1,
+		METEOR_CHANCE_BOULDERMOON = .15,
 		
 		METEOR_SHOWER_SPAWN_RADIUS = 60,
 		METEOR_SHOWER_CLEANUP_BUFFER = 10,
@@ -1979,6 +2146,21 @@ function Tune(overrides)
         HUTCH_PRICKLY_DAMAGE = 30,
 
         NUM_PREFAB_SWAPS = 0,
+
+        PETRIFICATION_CYCLE =
+        {
+            MIN_YEARS = .6,
+            MAX_YEARS = .9,
+        },
+
+        DISEASE_SPREAD_RADIUS = 4,
+        DISEASE_SPREAD_TIME = seg_time * 2,
+        DISEASE_SPREAD_TIME_VARIANCE = seg_time * .5,
+        DISEASE_DELAY_TIME = total_day_time * 50,
+        DISEASE_DELAY_TIME_VARIANCE = total_day_time * 20,
+        DISEASE_WARNING_TIME = total_day_time * 2.5,
+        DISEASE_WARNING_TIME_VARIANCE = total_day_time * .5,
+        DISEASE_CHANCE = .1,
 
         SALTLICK_CHECK_DIST = 20,
         SALTLICK_USE_DIST = 4,

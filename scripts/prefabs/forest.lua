@@ -80,6 +80,10 @@ local prefabs =
     "marbletree",
     "statueharp",
     "statuemaxwell",
+    "sculpture_knight",
+    "sculpture_bishop",
+    "sculpture_rook",
+    "statue_marble",
     "eyeplant",
     "lureplant",
     "purpleamulet",
@@ -104,6 +108,7 @@ local prefabs =
     "shadowskittish",
     "shadowwatcher",
     "shadowhand",
+    "stagehand",
     "rubble",
     "tumbleweedspawner",
     "meteorspawner",
@@ -115,10 +120,8 @@ local prefabs =
     "chester",
     "grassgekko",
     "petrify_announce",
-
-    --Set piece spawners
-    "sps_berrybush",
-    "sps_berrybush_juicy",
+    "moonbase",
+    "moonrock_pieces",
 }
 
 local monsters =
@@ -219,7 +222,8 @@ local function master_postinit(inst)
     inst:AddComponent("forestresourcespawner")
     inst:AddComponent("regrowthmanager")
     inst:AddComponent("desolationspawner")
-    inst:AddComponent("prefabswapmanager") 
+    inst:AddComponent("forestpetrification")
+    inst:AddComponent("retrofitforestmap_anr")
 
     if METRICS_ENABLED then
         inst:AddComponent("worldoverseer")

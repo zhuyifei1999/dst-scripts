@@ -16,6 +16,7 @@ local RUN_AWAY_DIST = 12
 local STOP_RUN_AWAY_DIST = 14
 local DAMAGE_UNTIL_SHIELD = TUNING.SNURTLE_DAMAGE_UNTIL_SHIELD
 local AVOID_PROJECTILE_ATTACKS = true
+local HIDE_WHEN_SCARED = true
 local SHIELD_TIME = 2
 local SEE_FOOD_DIST = 13
 local HUNGER_TOLERANCE = 70
@@ -137,7 +138,7 @@ end
 function SlurtleSnailBrain:OnStart()
     local root = PriorityNode(
     {
-        UseShield(self.inst, DAMAGE_UNTIL_SHIELD, SHIELD_TIME, AVOID_PROJECTILE_ATTACKS),
+        UseShield(self.inst, DAMAGE_UNTIL_SHIELD, SHIELD_TIME, AVOID_PROJECTILE_ATTACKS, HIDE_WHEN_SCARED),
         WhileNode( function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
         RunAway(self.inst, ShouldRunAway, RUN_AWAY_DIST, STOP_RUN_AWAY_DIST),
         DoAction(self.inst, EatFoodAction),

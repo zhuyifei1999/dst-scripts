@@ -177,10 +177,8 @@ self:SetRegrowthForType("flower_cave_triple", TUNING.FLOWER_CAVE_REGROWTH_TIME, 
 function self:LongUpdate(dt)
 
     for k,list in pairs(_lists) do
-        local diseased = self.inst.components.prefabswapmanager ~= nil
-                            and self.inst.components.prefabswapmanager:IsDiseasedPrefab(k)
         local prefabtimemult = _regrowthvalues[k].timemult()
-        if not diseased and prefabtimemult > 0 then
+        if prefabtimemult > 0 then
 
             _internaltimes[k] = _internaltimes[k] + dt * TUNING.REGROWTH_TIME_MULTIPLIER * prefabtimemult
 

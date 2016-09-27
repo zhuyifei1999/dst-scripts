@@ -100,6 +100,22 @@ function Builder:ShadowBonus()
     end
 end
 
+function Builder:SetCartographyBonus(cartographybonus)
+    if self.classified ~= nil then
+        self.classified.cartographybonus:set(cartographybonus)
+    end
+end
+
+function Builder:CartographyBonus()
+    if self.inst.components.builder ~= nil then
+        return self.inst.components.builder.cartography_bonus or 0
+    elseif self.classified ~= nil then
+        return self.classified.cartographybonus:value()
+    else
+        return 0
+    end
+end
+
 function Builder:SetIngredientMod(ingredientmod)
     if self.classified ~= nil then
         self.classified.ingredientmod:set(INGREDIENT_MOD[ingredientmod])
@@ -128,6 +144,7 @@ function Builder:SetTechTrees(techlevels)
         self.classified.magiclevel:set(techlevels.MAGIC or 0)
         self.classified.ancientlevel:set(techlevels.ANCIENT or 0)
         self.classified.shadowlevel:set(techlevels.SHADOW or 0)
+        self.classified.cartographylevel:set(techlevels.CARTOGRAPHY or 0)
     end
 end
 
@@ -218,7 +235,8 @@ function Builder:KnowsRecipe(recipename)
             and (   (   recipe.level.SCIENCE <= self.classified.sciencebonus:value() and
                         recipe.level.MAGIC <= self.classified.magicbonus:value() and
                         recipe.level.ANCIENT <= self.classified.ancientbonus:value() and
-                        recipe.level.SHADOW <= self.classified.shadowbonus:value() or
+                        recipe.level.SHADOW <= self.classified.shadowbonus:value() and
+                        recipe.level.CARTOGRAPHY <= self.classified.cartographybonus:value() or
                         self.classified.isfreebuildmode:value()
                     ) and (
                         recipe.builder_tag == nil or

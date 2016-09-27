@@ -1,3 +1,8 @@
+
+MUSHTREE_SPORE_BLUE = "spore_tall"
+MUSHTREE_SPORE_RED = "spore_medium"
+MUSHTREE_SPORE_GREEN = "spore_small"
+
 local assets =
 {
     Asset("ANIM", "anim/mushroom_spore.zip"),
@@ -190,6 +195,6 @@ local function makespore(data)
 	return fn
 end
 
-return Prefab("spore_tall", makespore(data.tall), assets),
-    Prefab("spore_medium", makespore(data.medium), assets),
-    Prefab("spore_small", makespore(data.small), assets)
+return Prefab(MUSHTREE_SPORE_BLUE, makespore(data.tall), assets),
+    Prefab(MUSHTREE_SPORE_RED, makespore(data.medium), assets),
+    Prefab(MUSHTREE_SPORE_GREEN, makespore(data.small), assets)

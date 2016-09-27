@@ -11,6 +11,8 @@ local MAX_DIST_FROM_WATER = 6
 local SEARCH_RADIUS = 50
 local SEARCH_RADIUS2 = SEARCH_RADIUS*SEARCH_RADIUS
 
+local ICEBLOCKER_SEARCH_RADIUS = 15
+
 local DEFAULT_NUM_BOULDERS = 7
 
 --------------------------------------------------------------------------
@@ -272,9 +274,15 @@ local function EstablishColony(loc)
                     local ents = TheSim:FindEntities(pos.x + offset.x, pos.y + offset.y, pos.z + offset.z, 1.2)
                     if #ents == 0 then
                         foundvalidplacement = true
-                        local icerock = SpawnPrefab("rock_ice")
-                        icerock.Transform:SetPosition(pos.x + offset.x, pos.y + offset.y, pos.z + offset.z)
                         numboulders = numboulders - 1
+                        
+                        -- Note: if the rock_ice is trying to be placed near something that is prevents it from spawning, then abort this attempt
+                        --       but still count it as a placed rock_ice, that way they dont pile up around the radius of the iceblocker
+	                    ents = TheSim:FindEntities(pos.x + offset.x, pos.y + offset.y, pos.z + offset.z, ICEBLOCKER_SEARCH_RADIUS, {"iceblocker"})
+                        if #ents == 0 then
+                            local icerock = SpawnPrefab("rock_ice")
+                            icerock.Transform:SetPosition(pos.x + offset.x, pos.y + offset.y, pos.z + offset.z)
+                        end
                     end
                 end
                 placement_attempts = placement_attempts + 1

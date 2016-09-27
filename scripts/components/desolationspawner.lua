@@ -198,12 +198,8 @@ inst:DoTaskInTime(0, PopulateAreaDataFromReplacements)
 
 function self:LongUpdate(dt)
     for k, data in pairs(_replacementdata) do
-        local diseased = self.inst.components.prefabswapmanager ~= nil
-                            and self.inst.components.prefabswapmanager:IsDiseasedPrefab(k)
-        if not diseased then
-            local prefabtimemult = _replacementdata[k].timemult and _replacementdata[k].timemult() or 1
-            _internaltimes[k] = _internaltimes[k] + dt * TUNING.REGROWTH_TIME_MULTIPLIER * prefabtimemult
-        end
+        local prefabtimemult = _replacementdata[k].timemult and _replacementdata[k].timemult() or 1
+        _internaltimes[k] = _internaltimes[k] + dt * TUNING.REGROWTH_TIME_MULTIPLIER * prefabtimemult
     end
 
     for area,data in pairs(_areadata) do
