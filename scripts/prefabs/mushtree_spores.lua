@@ -173,7 +173,7 @@ local function makespore(data)
 
         MakeHauntablePerish(inst, .5)
 
-        inst:ListenForEvent("onpickup", onpickup)
+        inst:ListenForEvent("onputininventory", onpickup)
         inst:ListenForEvent("ondropped", ondropped)
 
 	    inst:SetStateGraph("SGspore")
