@@ -398,9 +398,19 @@ end
 local function ActivatePlayer(inst)
     inst.activatetask = nil
 
-    TheWorld.minimap.MiniMap:DrawForgottenFogOfWar(true)
-    if inst.player_classified ~= nil then
-        inst.player_classified.MapExplorer:ActivateLocalMiniMap()
+    inst.MiniMapEntity:SetDrawOverFogOfWar(true)
+
+    local minimap = TheWorld.minimap.MiniMap
+
+    if inst == ThePlayer then
+        minimap:EnablePlayerMinimapUpdate(not inst:HasTag("playerghost"))
+        minimap:DrawForgottenFogOfWar(true)
+        minimap:ClearRevealedAreas()
+        minimap:CacheForgottenEntities(true)
+
+        -- Reference local minimap reveal cache
+        -- In the future this will come from the server
+        TheNet:DeserializeLocalUserSessionMinimap()
     end
 
     inst:PushEvent("playeractivated")
@@ -415,6 +425,8 @@ local function DeactivatePlayer(inst)
     end
 
     if inst == ThePlayer then
+        TheWorld.minimap.MiniMap:EnablePlayerMinimapUpdate(false)
+
         -- For now, clients save their local minimap reveal cache
         -- and we need to trigger this here as well as on network
         -- disconnect.  On migration, we will hit this code first
@@ -519,32 +531,11 @@ local function EnableMovementPrediction(inst, enable)
     end
 end
 
---Always on the bottom of the stack
-local function PlayerActionFilter(inst, action)
-    return not action.ghost_exclusive
-end
-
---Pushed/popped when dying/resurrecting
-local function GhostActionFilter(inst, action)
-    return action.ghost_valid
-end
-
-local function ConfigurePlayerActions(inst)
-    if inst.components.playeractionpicker ~= nil then
-        inst.components.playeractionpicker:PopActionFilter(GhostActionFilter)
-    end
-end
-
-local function ConfigureGhostActions(inst)
-    if inst.components.playeractionpicker ~= nil then
-        inst.components.playeractionpicker:PushActionFilter(GhostActionFilter, 99)
-    end
-end
-
 local function SetGhostMode(inst, isghost)
     if not inst.ghostenabled then
         return
     end
+    TheWorld.minimap.MiniMap:EnablePlayerMinimapUpdate(not isghost)
     TheWorld:PushEvent("enabledynamicmusic", not isghost)
     inst.HUD.controls.status:SetGhostMode(isghost)
     if isghost then
@@ -552,26 +543,27 @@ local function SetGhostMode(inst, isghost)
     else
         TheMixer:PopMix("death")
     end
-    if not TheWorld.ismastersim then
-        if USE_MOVEMENT_PREDICTION then
-            if inst.components.locomotor ~= nil then
-                inst:PushEvent("cancelmovementprediction")
-                if isghost then
-                    ConfigureGhostLocomotor(inst)
-                else
-                    ConfigurePlayerLocomotor(inst)
-                end
-            end
-            if inst.sg ~= nil then
-                inst:SetStateGraph(isghost and "SGwilsonghost_client" or "SGwilson_client")
+    if not TheWorld.ismastersim and USE_MOVEMENT_PREDICTION then
+        if inst.components.locomotor ~= nil then
+            inst:PushEvent("cancelmovementprediction")
+            if isghost then
+                ConfigureGhostLocomotor(inst)
+            else
+                ConfigurePlayerLocomotor(inst)
             end
         end
-        if isghost then
-            ConfigureGhostActions(inst)
-        else
-            ConfigurePlayerActions(inst)
+        if inst.sg ~= nil then
+            inst:SetStateGraph(isghost and "SGwilsonghost_client" or "SGwilson_client")
         end
     end
+end
+
+--Action filter must be a valid check on both server and client
+local function CheckGhostActionFilter(inst, action)
+    if action.ghost_exclusive then
+        return inst:HasTag("playerghost")
+    end
+    return action.ghost_valid or not inst:HasTag("playerghost")
 end
 
 local function OnSetOwner(inst)
@@ -590,7 +582,7 @@ local function OnSetOwner(inst)
             inst:AddComponent("playercontroller")
             inst:AddComponent("playervoter")
             inst:AddComponent("playermetrics")
-            inst.components.playeractionpicker:PushActionFilter(PlayerActionFilter, -99)
+            inst.components.playeractionpicker:PushActionFilter( CheckGhostActionFilter )
         end
     elseif inst.components.playercontroller ~= nil then
         inst:RemoveComponent("playeractionpicker")
@@ -761,7 +753,9 @@ local function OnPlayerDeath(inst, data)
 end
 
 local function DoActualRez(inst, source)
-    inst.player_classified.MapExplorer:EnableUpdate(true)
+    if inst == ThePlayer then
+        TheWorld.minimap.MiniMap:EnablePlayerMinimapUpdate(true)
+    end
 
     local x, y, z
     if source ~= nil then
@@ -849,8 +843,6 @@ local function DoActualRez(inst, source)
 
     inst.components.sheltered:Start()
 
-    inst.components.debuffable:Enable(true)
-
     --don't ignore sanity any more
     inst.components.sanity.ignore = false
 
@@ -860,7 +852,6 @@ local function DoActualRez(inst, source)
     inst.components.age:ResumeAging()
 
     ConfigurePlayerLocomotor(inst)
-    ConfigurePlayerActions(inst)
 
     if inst.rezsource ~= nil then
         local announcement_string = GetNewRezAnnouncementString(inst, inst.rezsource)
@@ -974,12 +965,14 @@ local function OnRespawnFromGhost(inst, data)
         data.source.components.attunable:GetAttunableTag() == "remoteresurrector"
 end
 
-local function OnMakePlayerGhost(inst, data)
+local function OnMakePlayerGhost( inst, data )
     if inst:HasTag("playerghost") then
         return
     end
-
-    inst.player_classified.MapExplorer:EnableUpdate(false)
+    
+    if inst == ThePlayer then
+        TheWorld.minimap.MiniMap:EnablePlayerMinimapUpdate(false)
+    end
 
     local x, y, z = inst.Transform:GetWorldPosition()
 
@@ -1043,8 +1036,6 @@ local function OnMakePlayerGhost(inst, data)
 
     inst.components.sheltered:Stop()
 
-    inst.components.debuffable:Enable(false)
-
     inst.components.age:PauseAging()
 
     inst.components.health:SetCurrentHealth(TUNING.RESURRECT_HEALTH)
@@ -1066,7 +1057,6 @@ local function OnMakePlayerGhost(inst, data)
     inst.player_classified:SetGhostMode(true)
 
     ConfigureGhostLocomotor(inst)
-    ConfigureGhostActions(inst)
 
     inst:PushEvent("ms_becameghost")
 
@@ -1233,8 +1223,6 @@ local function OnDespawn(inst)
     end
     inst:OnWakeUp()
     --
-
-    inst.components.debuffable:Enable(false)
 
     inst.components.rider:ActualDismount()
 
@@ -1458,9 +1446,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_idles_groggy.zip"),
         Asset("ANIM", "anim/player_groggy.zip"),
 
-        Asset("ANIM", "anim/player_encumbered.zip"),
-        Asset("ANIM", "anim/player_encumbered_jump.zip"),
-
         Asset("ANIM", "anim/fish01.zip"),   --These are used for the fishing animations.
         Asset("ANIM", "anim/eel01.zip"),
 
@@ -1480,7 +1465,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_mount_shock.zip"),
         Asset("ANIM", "anim/player_mount_frozen.zip"),
         Asset("ANIM", "anim/player_mount_groggy.zip"),
-        Asset("ANIM", "anim/player_mount_encumbered.zip"),
         Asset("ANIM", "anim/player_mount_hit_darkness.zip"),
         Asset("ANIM", "anim/player_mount_emotes.zip"),
         Asset("ANIM", "anim/player_mount_emotes_dance0.zip"),
@@ -1512,7 +1496,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         "tears",
         "shock_fx",
         "splash",
-        "globalmapicon",
 
         -- Player specific classified prefabs
         "player_classified",
@@ -1592,7 +1575,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.MiniMapEntity:SetIcon(name..".png")
         inst.MiniMapEntity:SetPriority(10)
         inst.MiniMapEntity:SetCanUseCache(false)
-        inst.MiniMapEntity:SetDrawOverFogOfWar(true)
 
         --Default to electrocute light values
         inst.Light:SetIntensity(.8)
@@ -1654,9 +1636,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         --trader (from trader component) added to pristine state for optimization
         inst:AddTag("trader")
 
-        --debuffable (from debuffable component) added to pristine state for optimization
-        inst:AddTag("debuffable")
-
         --Sneak these into pristine state for optimization
         inst:AddTag("_health")
         inst:AddTag("_hunger")
@@ -1707,10 +1686,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         end
 
         inst:AddComponent("bloomer")
-        inst:AddComponent("birdattractor")
-
-        inst:AddComponent("maprevealable")
-        inst.components.maprevealable:SetIconPriority(10)
 
         inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
         ConfigurePlayerLocomotor(inst)
@@ -1789,8 +1764,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.components.grue:SetSounds("dontstarve/charlie/warn","dontstarve/charlie/attack")
 
         inst:AddComponent("pinnable")
-        inst:AddComponent("debuffable")
-        inst.components.debuffable:SetFollowSymbol("headbase", 0, -200, 0)
 
         inst:AddComponent("grogginess")
         inst.components.grogginess:SetResistance(3)

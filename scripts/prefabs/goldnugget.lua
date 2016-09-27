@@ -4,11 +4,12 @@ local assets =
 }
 
 local function shine(inst)
+    inst.task = nil
     if not inst.AnimState:IsCurrentAnimation("sparkle") then
         inst.AnimState:PlayAnimation("sparkle")
         inst.AnimState:PushAnimation("idle", true)
     end
-    inst:DoTaskInTime(4 + math.random() * 5, shine)
+    inst.task = inst:DoTaskInTime(4 + math.random() * 5, shine)
 end
 
 local function fn()

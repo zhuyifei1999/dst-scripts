@@ -17,7 +17,7 @@ return {
       margin = 0,
       image = "../../../../tools/tiled/dont_starve/tiles.png",
       imagewidth = 512,
-      imageheight = 384,
+      imageheight = 128,
       properties = {},
       tiles = {}
     }
@@ -194,7 +194,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 176,
           y = 208,
@@ -205,7 +205,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 352,
           y = 432,
@@ -216,7 +216,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 160,
           y = 48,
@@ -253,50 +253,6 @@ return {
           shape = "rectangle",
           x = 448,
           y = 80,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "twiggy_tree",
-          shape = "rectangle",
-          x = 166,
-          y = 331,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "twiggy_tree",
-          shape = "rectangle",
-          x = 445,
-          y = 86,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "ground_twigs",
-          shape = "rectangle",
-          x = 408,
-          y = 102,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "ground_twigs",
-          shape = "rectangle",
-          x = 184,
-          y = 375,
           width = 0,
           height = 0,
           visible = true,

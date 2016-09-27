@@ -79,7 +79,6 @@ AddRoom("GreenMushSinkhole", {
             evergreen = 0.1,
             grass = 0.1,
             sapling = 0.1,
-            twiggytree = 0.04,
             berrybush = 0.05,
             berrybush_juicy = 0.025,
 
@@ -138,7 +137,6 @@ AddRoom("GreenMushRabbits", {
             evergreen = 0.1,
             grass = 0.1,
             sapling = 0.1,
-            twiggytree = 0.04,
             berrybush = 0.05,
             berrybush_juicy = 0.025,
 

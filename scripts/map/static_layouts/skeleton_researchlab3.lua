@@ -639,7 +639,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 273,
           y = 125,
@@ -650,7 +650,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush_juicy",
+          type = "sps_berrybush_juicy",
           shape = "rectangle",
           x = 273,
           y = 125,
@@ -727,7 +727,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 301,
           y = 153,
@@ -738,7 +738,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush_juicy",
+          type = "sps_berrybush_juicy",
           shape = "rectangle",
           x = 301,
           y = 153,
@@ -760,7 +760,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 327,
           y = 178,
@@ -771,7 +771,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush_juicy",
+          type = "sps_berrybush_juicy",
           shape = "rectangle",
           x = 327,
           y = 178,
@@ -793,7 +793,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush",
+          type = "sps_berrybush",
           shape = "rectangle",
           x = 353,
           y = 203,
@@ -804,7 +804,7 @@ return {
         },
         {
           name = "",
-          type = "berrybush_juicy",
+          type = "sps_berrybush_juicy",
           shape = "rectangle",
           x = 353,
           y = 203,
@@ -819,61 +819,6 @@ return {
           shape = "rectangle",
           x = 294,
           y = 257,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "twiggy_tall",
-          shape = "rectangle",
-          x = 162,
-          y = 101,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "twiggy_normal",
-          shape = "rectangle",
-          x = 359,
-          y = 297,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "twiggy_normal",
-          shape = "rectangle",
-          x = 400,
-          y = 257,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "twiggy_normal",
-          shape = "rectangle",
-          x = 400,
-          y = 336,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "twiggy_normal",
-          shape = "rectangle",
-          x = 439,
-          y = 297,
           width = 0,
           height = 0,
           visible = true,

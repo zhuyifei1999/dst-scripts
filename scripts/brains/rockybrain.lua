@@ -18,7 +18,6 @@ local MAX_FOLLOW_DIST = 10
 
 local DAMAGE_UNTIL_SHIELD = 200
 local AVOID_PROJECTILE_ATTACKS = true
-local HIDE_WHEN_SCARED = true
 local SHIELD_TIME = 5
 
 local function GetFaceTargetFn(inst)
@@ -61,7 +60,7 @@ end)
 function RockyBrain:OnStart()
     local root = PriorityNode(
     {
-        UseShield(self.inst, DAMAGE_UNTIL_SHIELD, SHIELD_TIME, AVOID_PROJECTILE_ATTACKS, HIDE_WHEN_SCARED),
+        UseShield(self.inst, DAMAGE_UNTIL_SHIELD, SHIELD_TIME, AVOID_PROJECTILE_ATTACKS),
         WhileNode( function() return self.inst.components.hauntable ~= nil and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
         ChaseAndAttack(self.inst, SpringCombatMod(MAX_CHASE_TIME), SpringCombatMod(MAX_CHASE_DIST)),
         DoAction(self.inst, EatFoodAction),

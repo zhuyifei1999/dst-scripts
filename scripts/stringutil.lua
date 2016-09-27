@@ -218,7 +218,7 @@ function GetDescription(inst, item, modifier)
     if character ~= nil and STRINGS.CHARACTERS[character] ~= nil then
         ret = getcharacterstring(STRINGS.CHARACTERS[character].DESCRIBE, itemname, modifier)
         if ret ~= nil then
-            if item ~= nil and item.components.repairable ~= nil and not item.components.repairable.noannounce and item.components.repairable:NeedsRepairs() then
+            if item ~= nil and item.components.repairable ~= nil and item.components.repairable:NeedsRepairs() then
                 return ret..(getcharacterstring(STRINGS.CHARACTERS[character], "ANNOUNCE_CANFIX", modifier) or "")
             end
             return ret
@@ -227,7 +227,7 @@ function GetDescription(inst, item, modifier)
 
     ret = getcharacterstring(STRINGS.CHARACTERS.GENERIC.DESCRIBE, itemname, modifier)
 
-    if item ~= nil and item.components.repairable ~= nil and not item.components.repairable.noannounce and item.components.repairable:NeedsRepairs() then
+    if item ~= nil and item.components.repairable ~= nil and item.components.repairable:NeedsRepairs() then
         if ret ~= nil then
             return ret..(getcharacterstring(STRINGS.CHARACTERS.GENERIC, "ANNOUNCE_CANFIX", modifier) or "")
         end
@@ -273,11 +273,3 @@ end
 function TrimString( s )
    return string.match( s, "^()%s*$" ) and "" or string.match( s, "^%s*(.*%S)" )
 end
-
--- usage:
--- subfmt("this is my {adjective} string, read it {number} times!", {adjective="cool", number="five"})
--- => "this is my cool string, read it five times"
-function subfmt(s, tab)
-  return (s:gsub('(%b{})', function(w) return tab[w:sub(2, -2)] or w end))
-end
-

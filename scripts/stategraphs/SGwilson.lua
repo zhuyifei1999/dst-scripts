@@ -98,16 +98,6 @@ local function ClearStatusAilments(inst)
     end
 end
 
-local function ForceStopHeavyLifting(inst)
-    if inst.components.inventory:IsHeavyLifting() then
-        inst.components.inventory:DropItem(
-            inst.components.inventory:Unequip(EQUIPSLOTS.BODY),
-            true,
-            true
-        )
-    end
-end
-
 local function SetSleeperSleepState(inst)
     if inst.components.grue ~= nil then
         inst.components.grue:AddImmunity("sleeping")
@@ -270,13 +260,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.MAKEBALLOON, "makeballoon"),
     ActionHandler(ACTIONS.DEPLOY, "doshortaction"),
     ActionHandler(ACTIONS.STORE, "doshortaction"),
-    ActionHandler(ACTIONS.DROP,
-        function(inst)
-            return inst.components.inventory:IsHeavyLifting()
-                and not (inst.components.rider ~= nil and inst.components.rider:IsRiding())
-                and "heavylifting_drop"
-                or "doshortaction"
-        end),
+    ActionHandler(ACTIONS.DROP, "doshortaction"),
     ActionHandler(ACTIONS.MURDER, "dolongaction"),
     ActionHandler(ACTIONS.UPGRADE, "dolongaction"),
     ActionHandler(ACTIONS.ACTIVATE,
@@ -480,29 +464,13 @@ local events =
     end),
 
     EventHandler("equip", function(inst, data)
-        if data.eslot == EQUIPSLOTS.BODY and data.item ~= nil and data.item:HasTag("heavy") then
-            inst.sg:GoToState("heavylifting_start")
-        elseif inst.components.inventory:IsHeavyLifting()
-            and not (inst.components.rider ~= nil and inst.components.rider:IsRiding()) then
-            if inst.sg:HasStateTag("idle") or inst.sg:HasStateTag("moving") then
-                inst.sg:GoToState("heavylifting_item_hat")
-            end
-        elseif inst.sg:HasStateTag("idle") and not inst:HasTag("beaver") then
+        if inst.sg:HasStateTag("idle") and not inst:HasTag("beaver") then
             inst.sg:GoToState(data.eslot == EQUIPSLOTS.HANDS and "item_out" or "item_hat")
         end
     end),
 
     EventHandler("unequip", function(inst, data)
-        if data.eslot == EQUIPSLOTS.BODY and data.item ~= nil and data.item:HasTag("heavy") then
-            if not inst.sg:HasStateTag("busy") then
-                inst.sg:GoToState("heavylifting_stop")
-            end
-        elseif inst.components.inventory:IsHeavyLifting()
-            and not (inst.components.rider ~= nil and inst.components.rider:IsRiding()) then
-            if inst.sg:HasStateTag("idle") or inst.sg:HasStateTag("moving") then
-                inst.sg:GoToState("heavylifting_item_hat")
-            end
-        elseif inst.sg:HasStateTag("idle") then
+        if inst.sg:HasStateTag("idle") then
             inst.sg:GoToState(GetUnequipState(inst, data))
         end
     end),
@@ -518,11 +486,10 @@ local events =
 
     EventHandler("ontalk", function(inst, data)
         if inst.sg:HasStateTag("idle") and not inst.sg:HasStateTag("notalking") then
-            if not inst:HasTag("mime") then
-                inst.sg:GoToState("talk", data.noanim)
-            elseif not inst.components.inventory:IsHeavyLifting() then
-                --Don't do it even if mounted!
+            if inst:HasTag("mime") then
                 inst.sg:GoToState("mime")
+            else
+                inst.sg:GoToState("talk", data.noanim)
             end
         end
     end),
@@ -622,7 +589,6 @@ local events =
             if not (inst.sg:HasStateTag("busy") or
                     inst.sg:HasStateTag("nopredict") or
                     inst.sg:HasStateTag("sleeping"))
-                and not inst.components.inventory:IsHeavyLifting()
                 and (data.mounted or not (inst.components.rider ~= nil and inst.components.rider:IsRiding()))
                 and (data.beaver or not inst:HasTag("beaver"))
                 and (not data.requires_validation or TheInventory:CheckClientOwnership(inst.userid, data.item_type)) then
@@ -738,7 +704,6 @@ local states =
         tags = { "busy", "pausepredict", "nomorph" },
 
         onenter = function(inst)
-            ForceStopHeavyLifting(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("powerup")
 
@@ -762,7 +727,6 @@ local states =
         tags = { "busy", "pausepredict", "nomorph" },
 
         onenter = function(inst)
-            ForceStopHeavyLifting(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("powerdown")
 
@@ -790,7 +754,6 @@ local states =
 
             if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
                 inst.sg:AddStateTag("dismounting")
-                ForceStopHeavyLifting(inst)
                 inst.AnimState:PlayAnimation("fall_off")
                 inst.SoundEmitter:PlaySound("dontstarve/beefalo/saddle/dismount")
             else
@@ -897,7 +860,6 @@ local states =
 
         onenter = function(inst)
             ClearStatusAilments(inst)
-            ForceStopHeavyLifting(inst)
 
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
@@ -1028,7 +990,6 @@ local states =
             assert(inst.deathcause ~= nil, "Entered death state without cause.")
 
             ClearStatusAilments(inst)
-            ForceStopHeavyLifting(inst)
 
             inst.components.locomotor:Stop()
             inst.components.locomotor:Clear()
@@ -1130,9 +1091,6 @@ local states =
                 else
                     table.insert(anims, "idle_loop")
                 end
-                dofunny = false
-            elseif inst.components.inventory:IsHeavyLifting() then
-                table.insert(anims, "heavy_idle")
                 dofunny = false
             elseif not inst.components.sanity:IsSane() then
                 table.insert(anims, "idle_sanity_pre")
@@ -2258,14 +2216,9 @@ local states =
                 feed.components.edible.foodtype ~= FOODTYPE.GEARS then
                 inst.SoundEmitter:PlaySound("dontstarve/wilson/eat", "eating")
             end
-
-            if inst.components.inventory:IsHeavyLifting() and
-                not (inst.components.rider ~= nil and inst.components.rider:IsRiding()) then
-                inst.AnimState:PlayAnimation("heavy_eat")
-            else
-                inst.AnimState:PlayAnimation("eat_pre")
-                inst.AnimState:PushAnimation("eat", false)
-            end
+            
+            inst.AnimState:PlayAnimation("eat_pre")
+            inst.AnimState:PushAnimation("eat", false)
 
             inst.components.hunger:Pause()
         end,
@@ -2276,17 +2229,17 @@ local states =
                 if inst.sg.statemem.feed ~= nil then
                     inst.components.eater:Eat(inst.sg.statemem.feed, inst.sg.statemem.feeder)
                 else
-                    inst:PerformBufferedAction()
+                    inst:PerformBufferedAction() 
                 end
             end),
 
-            TimeEvent(30 * FRAMES, function(inst)
+            TimeEvent(30 * FRAMES, function(inst) 
                 inst.sg:RemoveStateTag("busy")
                 inst.sg:RemoveStateTag("pausepredict")
             end),
 
-            TimeEvent(70 * FRAMES, function(inst)
-                inst.SoundEmitter:KillSound("eating")
+            TimeEvent(70 * FRAMES, function(inst) 
+                inst.SoundEmitter:KillSound("eating")    
             end),
         },
 
@@ -2335,13 +2288,8 @@ local states =
                 inst.SoundEmitter:PlaySound("dontstarve/wilson/eat", "eating")
             end
 
-            if inst.components.inventory:IsHeavyLifting() and
-                not (inst.components.rider ~= nil and inst.components.rider:IsRiding()) then
-                inst.AnimState:PlayAnimation("heavy_quick_eat")
-            else
-                inst.AnimState:PlayAnimation("quick_eat_pre")
-                inst.AnimState:PushAnimation("quick_eat", false)
-            end
+            inst.AnimState:PlayAnimation("quick_eat_pre")
+            inst.AnimState:PushAnimation("quick_eat", false)
 
             inst.components.hunger:Pause()
         end,
@@ -2441,7 +2389,7 @@ local states =
             inst.components.locomotor:Clear()
             inst:ClearBufferedAction()
 
-            inst.AnimState:PlayAnimation(inst.components.inventory:IsHeavyLifting() and "heavy_refuseeat" or "refuseeat")
+            inst.AnimState:PlayAnimation("refuseeat")
 
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:RemotePausePrediction()
@@ -2476,8 +2424,6 @@ local states =
                 end
                 return
             end
-
-            ForceStopHeavyLifting(inst)
 
             inst.SoundEmitter:PlaySound("dontstarve/common/player_receives_gift")
             inst.AnimState:PlayAnimation("gift_pre")
@@ -2759,12 +2705,7 @@ local states =
 
         onenter = function(inst, noanim)
             if not noanim then
-                inst.AnimState:PlayAnimation(
-                    inst.components.inventory:IsHeavyLifting() and
-                    not (inst.components.rider ~= nil and inst.components.rider:IsRiding()) and
-                    "heavy_dial_loop" or
-                    "dial_loop",
-                    true)
+                inst.AnimState:PlayAnimation("dial_loop", true)
             end
             DoTalkSound(inst)
             inst.sg:SetTimeout(1.5 + math.random() * .5)
@@ -2840,115 +2781,6 @@ local states =
                 inst.sg:RemoveStateTag("busy")
             end),
             TimeEvent(15 * FRAMES, function(inst)
-                inst:PerformBufferedAction()
-            end),
-        },
-
-        ontimeout = function(inst)
-            --pickup_pst should still be playing
-            inst.sg:GoToState("idle", true)
-        end,
-
-        onexit = function(inst)
-            if inst.bufferedaction == inst.sg.statemem.action then
-                inst:ClearBufferedAction()
-            end
-        end,
-    },
-
-    State{
-        name = "heavylifting_start",
-        tags = { "busy", "pausepredict" },
-
-        onenter = function(inst)
-            inst.components.locomotor:Stop()
-            inst:ClearBufferedAction()
-
-            inst.AnimState:PlayAnimation("heavy_pickup_pst")
-
-            if inst.components.playercontroller ~= nil then
-                inst.components.playercontroller:RemotePausePrediction()
-            end
-        end,
-
-        events =
-        {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end),
-        },
-    },
-
-    State{
-        name = "heavylifting_stop",
-        tags = { "busy", "pausepredict" },
-
-        onenter = function(inst)
-            inst.components.locomotor:Stop()
-            inst:ClearBufferedAction()
-
-            inst.AnimState:PlayAnimation("pickup")
-            inst.AnimState:PushAnimation("pickup_pst", false)
-
-            local stun_frames = 6
-            if inst.components.playercontroller ~= nil then
-                --Specify min frames of pause since "busy" tag may be
-                --removed too fast for our network update interval.
-                inst.components.playercontroller:RemotePausePrediction(stun_frames)
-            end
-            inst.sg:SetTimeout(stun_frames * FRAMES)
-        end,
-
-        ontimeout = function(inst)
-            inst.sg:GoToState("idle", true)
-        end,
-    },
-
-    State{
-        name = "heavylifting_item_hat",
-        tags = { "busy", "pausepredict" },
-
-        onenter = function(inst)
-            inst.components.locomotor:Stop()
-            inst:ClearBufferedAction()
-
-            inst.AnimState:PlayAnimation("heavy_item_hat")
-            inst.AnimState:PushAnimation("heavy_item_hat_pst", false)
-
-            if inst.components.playercontroller ~= nil then
-                --12 frames is too long for specifying min frames
-                inst.components.playercontroller:RemotePausePrediction()
-            end
-            inst.sg:SetTimeout(12 * FRAMES)
-        end,
-
-        ontimeout = function(inst)
-            inst.sg:GoToState("idle", true)
-        end,
-    },
-
-    State
-    {
-        name = "heavylifting_drop",
-        tags = { "doing", "busy" },
-
-        onenter = function(inst)
-            inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("heavy_item_hat")
-            inst.AnimState:PushAnimation("heavy_item_hat_pst", false)
-
-            inst.sg.statemem.action = inst.bufferedaction
-            inst.sg:SetTimeout(12 * FRAMES)
-        end,
-
-        timeline =
-        {
-            TimeEvent(8 * FRAMES, function(inst)
-                inst.sg:RemoveStateTag("busy")
-            end),
-            TimeEvent(10 * FRAMES, function(inst)
                 inst:PerformBufferedAction()
             end),
         },
@@ -3811,17 +3643,10 @@ local states =
         tags = { "moving", "running", "canrotate", "autopredict" },
 
         onenter = function(inst)
-            inst.sg.statemem.riding = inst.components.rider ~= nil and inst.components.rider:IsRiding()
-            inst.sg.statemem.heavy = not inst.sg.statemem.riding and inst.components.inventory:IsHeavyLifting()
-
             inst.components.locomotor:RunForward()
-            inst.AnimState:PlayAnimation(
-                (inst.sg.statemem.heavy and "heavy_walk_pre") or
-                (inst:HasTag("groggy") and "idle_walk_pre") or
-                "run_pre"
-            )
-
+            inst.AnimState:PlayAnimation(inst:HasTag("groggy") and "idle_walk_pre" or "run_pre")
             inst.sg.mem.footsteps = 0
+            inst.sg.statemem.riding = inst.components.rider ~= nil and inst.components.rider:IsRiding()
         end,
 
         onupdate = function(inst)
@@ -3837,17 +3662,9 @@ local states =
                 end
             end),
 
-            --heavy lifting
-            TimeEvent(1 * FRAMES, function(inst)
-                if inst.sg.statemem.heavy then
-                    PlayFootstep(inst, nil, true)
-                    DoFoleySounds(inst)
-                end
-            end),
-
             --unmounted
             TimeEvent(4 * FRAMES, function(inst)
-                if not (inst.sg.statemem.riding or inst.sg.statemem.heavy) then
+                if not inst.sg.statemem.riding then
                     PlayFootstep(inst, nil, true)
                     DoFoleySounds(inst)
                 end
@@ -3876,20 +3693,13 @@ local states =
         tags = { "moving", "running", "canrotate", "autopredict" },
 
         onenter = function(inst) 
-            inst.sg.statemem.riding = inst.components.rider ~= nil and inst.components.rider:IsRiding()
-            inst.sg.statemem.heavy = not inst.sg.statemem.riding and inst.components.inventory:IsHeavyLifting()
-
             inst.components.locomotor:RunForward()
-
-            local anim =
-                (inst.sg.statemem.heavy and "heavy_walk") or
-                (inst:HasTag("groggy") and "idle_walk") or
-                "run_loop"
+            local anim = inst:HasTag("groggy") and "idle_walk" or "run_loop"
             if not inst.AnimState:IsCurrentAnimation(anim) then
                 inst.AnimState:PlayAnimation(anim, true)
             end
-
             inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
+            inst.sg.statemem.riding = inst.components.rider ~= nil and inst.components.rider:IsRiding()
         end,
 
         onupdate = function(inst)
@@ -3900,7 +3710,7 @@ local states =
         {
             --unmounted
             TimeEvent(7 * FRAMES, function(inst)
-                if not (inst.sg.statemem.riding or inst.sg.statemem.heavy) then
+                if not inst.sg.statemem.riding then
                     if inst.sg.mem.footsteps > 3 then
                         PlayFootstep(inst, .6, true)
                     else
@@ -3911,35 +3721,7 @@ local states =
                 end
             end),
             TimeEvent(15 * FRAMES, function(inst)
-                if not (inst.sg.statemem.riding or inst.sg.statemem.heavy) then
-                    if inst.sg.mem.footsteps > 3 then
-                        PlayFootstep(inst, .6, true)
-                    else
-                        inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
-                        PlayFootstep(inst, 1, true)
-                    end
-                    DoFoleySounds(inst)
-                end
-            end),
-
-            --heavy lifting
-            TimeEvent(11 * FRAMES, function(inst)
-                if inst.sg.statemem.heavy then
-                    PlayFootstep(inst, nil, true)
-                    DoFoleySounds(inst)
-                    if inst.sg.mem.footsteps > 3 then
-                        PlayFootstep(inst, .6, true)
-                    else
-                        inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
-                        PlayFootstep(inst, 1, true)
-                    end
-                    DoFoleySounds(inst)
-                end
-            end),
-            TimeEvent(36 * FRAMES, function(inst)
-                if inst.sg.statemem.heavy then
-                    PlayFootstep(inst, nil, true)
-                    DoFoleySounds(inst)
+                if not inst.sg.statemem.riding then
                     if inst.sg.mem.footsteps > 3 then
                         PlayFootstep(inst, .6, true)
                     else
@@ -3977,16 +3759,9 @@ local states =
         name = "run_stop",
         tags = { "canrotate", "idle", "autopredict" },
 
-        onenter = function(inst)
-            local riding = inst.components.rider ~= nil and inst.components.rider:IsRiding()
-            local heavy = not riding and inst.components.inventory:IsHeavyLifting()
-
+        onenter = function(inst) 
             inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation(
-                (heavy and "heavy_walk_pst") or
-                (inst:HasTag("groggy") and "idle_walk_pst") or
-                "run_pst"
-            )
+            inst.AnimState:PlayAnimation(inst:HasTag("groggy") and "idle_walk_pst" or "run_pst")
         end,
 
         events =
@@ -4279,7 +4054,6 @@ local states =
         tags = { "busy", "knockout", "nopredict", "nomorph" },
 
         onenter = function(inst)
-            ForceStopHeavyLifting(inst)
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
 
@@ -4359,7 +4133,6 @@ local states =
         tags = { "busy", "pausepredict" },
 
         onenter = function(inst)
-            ForceStopHeavyLifting(inst)
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
 
@@ -4387,7 +4160,6 @@ local states =
         tags = { "busy", "pausepredict" },
 
         onenter = function(inst)
-            ForceStopHeavyLifting(inst)
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
 
@@ -4487,8 +4259,6 @@ local states =
         tags = { "busy", "pausepredict" },
 
         onenter = function(inst, armor)
-            ForceStopHeavyLifting(inst)
-
             inst.AnimState:PlayAnimation("hit")
             inst.SoundEmitter:PlaySound("dontstarve/wilson/use_armour_break")
             inst.sg.statemem.armor = armor
@@ -4768,7 +4538,7 @@ local states =
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation(inst.components.inventory:IsHeavyLifting() and "heavy_jump_pre" or "jump_pre", false)
+            inst.AnimState:PlayAnimation("jump_pre", false)
         end,
 
         events =
@@ -4792,11 +4562,9 @@ local states =
         onenter = function(inst, data)
             ToggleOffPhysics(inst)
             inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("jump", false)
 
             inst.sg.statemem.target = data.teleporter
-            inst.sg.statemem.heavy = inst.components.inventory:IsHeavyLifting()
-
-            inst.AnimState:PlayAnimation(inst.sg.statemem.heavy and "heavy_jump" or "jump", false)
 
             local pos = data ~= nil and data.teleporter and data.teleporter:GetPosition() or nil
 
@@ -4829,45 +4597,16 @@ local states =
         timeline =
         {
             TimeEvent(.5 * FRAMES, function(inst)
-                inst.Physics:SetMotorVel(inst.sg.statemem.speed * (inst.sg.statemem.heavy and .55 or .75), 0, 0)
+                inst.Physics:SetMotorVel(inst.sg.statemem.speed * .75, 0, 0)
             end),
             TimeEvent(1 * FRAMES, function(inst)
-                inst.Physics:SetMotorVel(inst.sg.statemem.heavy and inst.sg.statemem.speed * .6 or inst.sg.statemem.speed, 0, 0)
+                inst.Physics:SetMotorVel(inst.sg.statemem.speed, 0, 0)
             end),
-
-            --Heavy lifting
-            TimeEvent(12 * FRAMES, function(inst)
-                if inst.sg.statemem.heavy then
-                    inst.Physics:SetMotorVel(inst.sg.statemem.speed * .5, 0, 0)
-                end
-            end),
-            TimeEvent(13 * FRAMES, function(inst)
-                if inst.sg.statemem.heavy then
-                    inst.Physics:SetMotorVel(inst.sg.statemem.speed * .4, 0, 0)
-                end
-            end),
-            TimeEvent(14 * FRAMES, function(inst)
-                if inst.sg.statemem.heavy then
-                    inst.Physics:SetMotorVel(inst.sg.statemem.speed * .3, 0, 0)
-                end
-            end),
-
-            --Normal
+            -- this is just hacked in here to make the sound play BEFORE the player hits the wormhole
             TimeEvent(15 * FRAMES, function(inst)
-                if not inst.sg.statemem.heavy then
-                    inst.Physics:Stop()
-                end
-
-                -- this is just hacked in here to make the sound play BEFORE the player hits the wormhole
+                inst.Physics:Stop()
                 if inst.sg.statemem.target ~= nil then
                     inst.sg.statemem.target:PushEvent("starttravelsound", inst)
-                end
-            end),
-
-            --Heavy lifting
-            TimeEvent(20 * FRAMES, function(inst)
-                if inst.sg.statemem.heavy then
-                    inst.Physics:Stop()
                 end
             end),
         },
@@ -4915,63 +4654,27 @@ local states =
         onenter = function(inst)
             ToggleOffPhysics(inst)
             inst.components.locomotor:Stop()
-
-            inst.sg.statemem.heavy = inst.components.inventory:IsHeavyLifting()
-
-            inst.AnimState:PlayAnimation(inst.sg.statemem.heavy and "heavy_jumpout" or "jumpout")
+            inst.AnimState:PlayAnimation("jumpout")
 
             inst.Physics:SetMotorVel(4, 0, 0)
         end,
 
         timeline =
         {
-            --Heavy lifting
-            TimeEvent(4 * FRAMES, function(inst)
-                if inst.sg.statemem.heavy then
-                    inst.Physics:SetMotorVel(3, 0, 0)
-                end
-            end),
-            TimeEvent(12 * FRAMES, function(inst)
-                if inst.sg.statemem.heavy then
-                    inst.Physics:SetMotorVel(2, 0, 0)
-                end
-            end),
-            TimeEvent(12.2 * FRAMES, function(inst)
-                if inst.sg.statemem.heavy then
-                    if inst.sg.statemem.isphysicstoggle then
-                        ToggleOnPhysics(inst)
-                    end
-                    inst.SoundEmitter:PlaySound("dontstarve/movement/bodyfall_dirt")
-                end
-            end),
-            TimeEvent(16 * FRAMES, function(inst)
-                if inst.sg.statemem.heavy then
-                    inst.Physics:SetMotorVel(1, 0, 0)
-                end
-            end),
-
-            --Normal
             TimeEvent(10 * FRAMES, function(inst)
-                if not inst.sg.statemem.heavy then
-                    inst.Physics:SetMotorVel(3, 0, 0)
-                end
+                inst.Physics:SetMotorVel(3, 0, 0)
             end),
             TimeEvent(15 * FRAMES, function(inst)
-                if not inst.sg.statemem.heavy then
-                    inst.Physics:SetMotorVel(2, 0, 0)
-                end
+                inst.Physics:SetMotorVel(2, 0, 0)
             end),
             TimeEvent(15.2 * FRAMES, function(inst)
-                if not inst.sg.statemem.heavy then
-                    if inst.sg.statemem.isphysicstoggle then
-                        ToggleOnPhysics(inst)
-                    end
-                    inst.SoundEmitter:PlaySound("dontstarve/movement/bodyfall_dirt")
+                if inst.sg.statemem.isphysicstoggle then
+                    ToggleOnPhysics(inst)
                 end
+                inst.SoundEmitter:PlaySound("dontstarve/movement/bodyfall_dirt")
             end),
-
             TimeEvent(17 * FRAMES, function(inst)
-                inst.Physics:SetMotorVel(inst.sg.statemem.heavy and .5 or 1, 0, 0)
+                inst.Physics:SetMotorVel(1, 0, 0)
             end),
             TimeEvent(18 * FRAMES, function(inst)
                 inst.Physics:Stop()
@@ -5261,7 +4964,6 @@ local states =
                 inst.components.pinnable:Unstick()
             end
 
-            ForceStopHeavyLifting(inst)
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
 
@@ -5360,7 +5062,6 @@ local states =
                 inst.components.freezable:Unfreeze()
             end
 
-            ForceStopHeavyLifting(inst)
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
 
@@ -5560,7 +5261,6 @@ local states =
         tags = { "busy", "yawn", "pausepredict" },
 
         onenter = function(inst, data)
-            ForceStopHeavyLifting(inst)
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
 
@@ -5643,9 +5343,8 @@ local states =
         tags = { "doing", "busy", "nomorph", "nopredict" },
 
         onenter = function(inst)
-            inst.sg.statemem.heavy = inst.components.inventory:IsHeavyLifting()
             inst.components.locomotor:StopMoving()
-            inst.AnimState:PlayAnimation(inst.sg.statemem.heavy and "heavy_mount" or "mount")
+            inst.AnimState:PlayAnimation("mount")
 
             inst:PushEvent("ms_closepopups")
 
@@ -5656,24 +5355,9 @@ local states =
 
         timeline =
         {
-            --Heavy lifting
-            TimeEvent(12 * FRAMES, function(inst)
-                if inst.sg.statemem.heavy then
-                    inst.SoundEmitter:PlaySound("dontstarve/beefalo/saddle/dismount")
-                end
-            end),
-            TimeEvent(35 * FRAMES, function(inst)
-                if inst.sg.statemem.heavy then
-                    inst.SoundEmitter:PlaySound("dontstarve/movement/bodyfall_dirt")
-                end
-            end),
-
-            --Normal
-            TimeEvent(20 * FRAMES, function(inst)
-                if not inst.sg.statemem.heavy then
-                    inst.SoundEmitter:PlaySound("dontstarve/beefalo/saddle/dismount")
-                    inst.SoundEmitter:PlaySound("dontstarve/movement/bodyfall_dirt")
-                end
+            TimeEvent(20 * FRAMES, function(inst) 
+                inst.SoundEmitter:PlaySound("dontstarve/beefalo/saddle/dismount")
+                inst.SoundEmitter:PlaySound("dontstarve/movement/bodyfall_dirt")
             end),
         },
 
@@ -5728,7 +5412,6 @@ local states =
         tags = { "busy", "pausepredict", "nomorph", "dismounting" },
 
         onenter = function(inst)
-            ForceStopHeavyLifting(inst)
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
 
@@ -5761,7 +5444,6 @@ local states =
         tags = { "busy", "pausepredict", "nomorph", "dismounting" },
 
         onenter = function(inst)
-            ForceStopHeavyLifting(inst)
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
 

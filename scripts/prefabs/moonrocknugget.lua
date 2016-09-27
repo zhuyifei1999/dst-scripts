@@ -38,8 +38,7 @@ local function fn()
 
     inst:AddComponent("repairer")
     inst.components.repairer.repairmaterial = MATERIALS.MOONROCK
-    inst.components.repairer.healthrepairvalue = TUNING.REPAIR_MOONROCK_NUGGET_HEALTH
-    inst.components.repairer.workrepairvalue = TUNING.REPAIR_MOONROCK_NUGGET_WORK
+    inst.components.repairer.healthrepairvalue = TUNING.REPAIR_ROCKS_HEALTH
 
     MakeHauntableLaunchAndSmash(inst)
 

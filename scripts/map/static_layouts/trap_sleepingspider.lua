@@ -17,7 +17,7 @@ return {
       margin = 0,
       image = "../../../../tools/tiled/dont_starve/tiles.png",
       imagewidth = 512,
-      imageheight = 384,
+      imageheight = 128,
       properties = {},
       tiles = {}
     }
@@ -201,7 +201,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 226,
           y = 259,
@@ -212,7 +212,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 194,
           y = 260,
@@ -223,7 +223,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 198,
           y = 290,
@@ -234,7 +234,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 189,
           y = 312,
@@ -245,7 +245,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 227,
           y = 314,
@@ -256,7 +256,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 232,
           y = 288,
@@ -777,39 +777,6 @@ return {
           shape = "rectangle",
           x = 304,
           y = 304,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "twiggy_tall",
-          shape = "rectangle",
-          x = 197,
-          y = 159,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "twiggy_tall",
-          shape = "rectangle",
-          x = 232,
-          y = 178,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "twiggy_tall",
-          shape = "rectangle",
-          x = 197,
-          y = 200,
           width = 0,
           height = 0,
           visible = true,

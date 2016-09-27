@@ -17,7 +17,7 @@ return {
       margin = 0,
       image = "../../../../tools/tiled/dont_starve/tiles.png",
       imagewidth = 512,
-      imageheight = 384,
+      imageheight = 128,
       properties = {},
       tiles = {}
     }
@@ -78,7 +78,7 @@ return {
       objects = {
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 251,
           y = 314,
@@ -89,7 +89,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 219,
           y = 202,
@@ -100,7 +100,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 379,
           y = 378,
@@ -111,7 +111,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 347,
           y = 266,
@@ -122,7 +122,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 203,
           y = 378,
@@ -133,7 +133,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 155,
           y = 330,
@@ -144,7 +144,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 155,
           y = 170,
@@ -155,7 +155,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 43,
           y = 250,
@@ -166,7 +166,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 64,
           y = 32,
@@ -177,7 +177,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 480,
           y = 352,
@@ -188,7 +188,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 384,
           y = 480,
@@ -199,7 +199,7 @@ return {
         },
         {
           name = "",
-          type = "perma_grass",
+          type = "grass",
           shape = "rectangle",
           x = 384,
           y = 16,

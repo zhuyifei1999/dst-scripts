@@ -1,5 +1,26 @@
-local function SpawnDiseasePuff(inst)
+local function ondiseaseddeathfn(inst)
     SpawnPrefab("disease_puff").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    inst:Remove()
+end
+
+local function onrebirthedfn(inst)
+    if inst.components.pickable:CanBePicked() then
+        inst.components.pickable:MakeEmpty()
+    end
+end
+
+local function ondiseasedfn_common(inst, diseasefx)
+    SpawnPrefab(diseasefx).Transform:SetPosition(inst.Transform:GetWorldPosition())
+    inst.AnimState:SetBuild(inst.prefab.."_diseased_build")
+    inst.components.pickable:ChangeProduct("spoiled_food")
+end
+
+local function ondiseasedfn_normal(inst)
+    ondiseasedfn_common(inst, "disease_fx_small")
+end
+
+local function ondiseasedfn_juicy(inst)
+    ondiseasedfn_common(inst, inst.components.witherable ~= nil and inst.components.witherable:IsWithered() and "disease_fx_small" or "disease_fx")
 end
 
 local function setberries(inst, pct)
@@ -62,6 +83,12 @@ local function makebarrenfn(inst)--, wasempty)
     cancelsetberriesonanimover(inst)
 end
 
+local function ontransplantfn(inst)
+    inst.AnimState:PlayAnimation("dead")
+    setberries(inst, nil)
+    inst.components.pickable:MakeBarren()
+end
+
 local function shake(inst)
     if inst.components.pickable ~= nil and
         not inst.components.pickable:CanBePicked() and
@@ -100,17 +127,6 @@ local function onpickedfn(inst, picker)
             inst.AnimState:PlayAnimation("picked")
             inst.AnimState:PushAnimation("idle")
             setberriesonanimover(inst)
-        end
-
-        if inst.components.diseaseable ~= nil then
-            if inst.components.diseaseable:IsDiseased() then
-                SpawnDiseasePuff(inst)
-            elseif inst.components.diseaseable:IsBecomingDiseased() then
-                SpawnDiseasePuff(inst)
-                if picker ~= nil then
-                    picker:PushEvent("pickdiseasing")
-                end
-            end
         end
     end
     if not picker:HasTag("berrythief") and math.random() < TUNING.PERD_SPAWNCHANCE then
@@ -178,21 +194,9 @@ local function onworked_juicy(inst, worker, workleft)
     end
 end
 
-local function dig_up_common(inst, worker, numberries)
+local function dig_up_common(inst, numberries)
     if inst.components.pickable ~= nil and inst.components.lootdropper ~= nil then
-        local withered = inst.components.witherable ~= nil and inst.components.witherable:IsWithered()
-        local diseased = inst.components.diseaseable ~= nil and inst.components.diseaseable:IsDiseased()
-
-        if diseased then
-            SpawnDiseasePuff(inst)
-        elseif inst.components.diseaseable ~= nil and inst.components.diseaseable:IsBecomingDiseased() then
-            SpawnDiseasePuff(inst)
-            if worker ~= nil then
-                worker:PushEvent("digdiseasing")
-            end
-        end
-
-        if withered or inst.components.pickable:IsBarren() then
+        if inst.components.pickable:IsBarren() or inst:HasTag("withered") then
             inst.components.lootdropper:SpawnLootPrefab("twigs")
             inst.components.lootdropper:SpawnLootPrefab("twigs")
         else
@@ -203,59 +207,18 @@ local function dig_up_common(inst, worker, numberries)
                     inst.components.lootdropper:SpawnLootPrefab(inst.components.pickable.product, pt)
                 end
             end
-            if diseased then
-                inst.components.lootdropper:SpawnLootPrefab("twigs")
-                inst.components.lootdropper:SpawnLootPrefab("twigs")
-            else
-                inst.components.lootdropper:SpawnLootPrefab("dug_"..inst.prefab)
-            end
+            inst.components.lootdropper:SpawnLootPrefab("dug_"..inst.prefab)
         end
     end
     inst:Remove()
 end
 
-local function dig_up_normal(inst, worker)
-    dig_up_common(inst, worker, 1)
+local function dig_up_normal(inst)
+    dig_up_common(inst, 1)
 end
 
-local function dig_up_juicy(inst, worker)
-    dig_up_common(inst, worker, 3)
-end
-
-local function SetDiseaseBuild(inst)
-    inst.AnimState:SetBuild(inst.prefab.."_diseased_build")
-end
-
-local function ondiseasedfn(inst)
-    inst.components.pickable:ChangeProduct("spoiled_food")
-    if POPULATING then
-        SetDiseaseBuild(inst)
-    else
-        shake(inst)
-        inst:DoTaskInTime(23 * FRAMES, SpawnDiseasePuff)
-        inst:DoTaskInTime(27 * FRAMES, SetDiseaseBuild)
-    end
-end
-
-local function makediseaseable(inst)
-    if inst.components.diseaseable == nil then
-        inst:AddComponent("diseaseable")
-        inst.components.diseaseable:SetDiseasedFn(ondiseasedfn)
-    end
-end
-
-local function ontransplantfn(inst)
-    inst.AnimState:PlayAnimation("dead")
-    setberries(inst, nil)
-    inst.components.pickable:MakeBarren()
-    makediseaseable(inst)
-    inst.components.diseaseable:RestartNearbySpread()
-end
-
-local function OnPreLoad(inst, data)
-    if data ~= nil and (data.pickable ~= nil and data.pickable.transplanted or data.diseaseable ~= nil) then
-        makediseaseable(inst)
-    end
+local function dig_up_juicy(inst)
+    dig_up_common(inst, 3)
 end
 
 local function OnHaunt(inst)
@@ -267,23 +230,30 @@ local function OnHaunt(inst)
     return false
 end
 
-local function createbush(name, inspectname, berryname, master_postinit)
+local function createbush(bushname, bank, build, berryname, diseaseable, master_postinit)
     local assets =
     {
-        Asset("ANIM", "anim/"..name..".zip"),
-        Asset("ANIM", "anim/"..name.."_diseased_build.zip"),
+        Asset("ANIM", "anim/"..bank..".zip"),
     }
+    if bank ~= build then
+        table.insert(assets, Asset("ANIM", "anim/"..build..".zip"))
+    end
 
     local prefabs =
     {
         berryname,
-        "dug_"..name,
+        "dug_"..bushname,
         "perd",
         "twigs",
-        "disease_puff",
-        "diseaseflies",
-        "spoiled_food",
     }
+
+    if diseaseable then
+        table.insert(assets, Asset("ANIM", "anim/"..bushname.."_diseased_build.zip"))
+        table.insert(prefabs, "disease_puff")
+        table.insert(prefabs, "disease_fx_small")
+        table.insert(prefabs, "disease_fx")
+        table.insert(prefabs, "diseaseflies")
+    end
 
     local function fn()
         local inst = CreateEntity()
@@ -301,10 +271,10 @@ local function createbush(name, inspectname, berryname, master_postinit)
         --witherable (from witherable component) added to pristine state for optimization
         inst:AddTag("witherable")
 
-        inst.MiniMapEntity:SetIcon(name..".png")
+        inst.MiniMapEntity:SetIcon(bushname..".png")
 
-        inst.AnimState:SetBank(name)
-        inst.AnimState:SetBuild(name)
+        inst.AnimState:SetBank(bank)
+        inst.AnimState:SetBuild(build)
         inst.AnimState:PlayAnimation("idle", true)
         setberries(inst, 1)
 
@@ -335,15 +305,19 @@ local function createbush(name, inspectname, berryname, master_postinit)
         MakeHauntableIgnite(inst)
         AddHauntableCustomReaction(inst, OnHaunt, false, false, true)
 
+        if diseaseable then
+            inst:AddComponent("diseaseable")
+            inst.components.diseaseable:SetRebirthedFn(onrebirthedfn)
+            inst.components.diseaseable:SetDiseasedDeathFn(ondiseaseddeathfn)
+        end
+
         inst:AddComponent("lootdropper")
         inst:AddComponent("workable")
         inst.components.workable:SetWorkAction(ACTIONS.DIG)
         inst.components.workable:SetWorkLeft(1)
 
         inst:AddComponent("inspectable")
-        if name ~= inspectname then
-            inst.components.inspectable.nameoverride = inspectname
-        end
+        inst.components.inspectable.nameoverride = "berrybush"
 
         inst:ListenForEvent("onwenthome", shake)
         MakeSnowCovered(inst)
@@ -351,13 +325,10 @@ local function createbush(name, inspectname, berryname, master_postinit)
 
         master_postinit(inst)
 
-        inst.OnPreLoad = OnPreLoad
-        inst.MakeDiseaseable = makediseaseable
-
         return inst
     end
 
-    return Prefab(name, fn, assets, prefabs)
+    return Prefab(bushname, fn, assets, prefabs)
 end
 
 local function normal_postinit(inst)
@@ -365,6 +336,10 @@ local function normal_postinit(inst)
     inst.components.pickable.getregentimefn = getregentimefn_normal
     inst.components.pickable.max_cycles = TUNING.BERRYBUSH_CYCLES + math.random(2)
     inst.components.pickable.cycles_left = inst.components.pickable.max_cycles
+
+    if inst.components.diseaseable ~= nil then
+        inst.components.diseaseable:SetDiseasedFn(ondiseasedfn_normal)
+    end
 
     inst.components.workable:SetOnFinishCallback(dig_up_normal)
 end
@@ -378,10 +353,12 @@ local function juicy_postinit(inst)
     inst.components.pickable.droppicked = true
     inst.components.pickable.dropheight = 3.5
 
+    inst.components.diseaseable:SetDiseasedFn(ondiseasedfn_juicy)
+
     inst.components.workable:SetOnWorkCallback(onworked_juicy)
     inst.components.workable:SetOnFinishCallback(dig_up_juicy)
 end
 
-return createbush("berrybush", "berrybush", "berries", normal_postinit),
-    createbush("berrybush2", "berrybush", "berries", normal_postinit),
-    createbush("berrybush_juicy", "berrybush_juicy", "berries_juicy", juicy_postinit)
+return createbush("berrybush", "berrybush", "berrybush", "berries", true, normal_postinit),
+    createbush("berrybush2", "berrybush2", "berrybush2", "berries", false, normal_postinit),
+    createbush("berrybush_juicy", "berrybush_juicy", "berrybush_juicy", "berries_juicy", true, juicy_postinit)

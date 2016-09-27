@@ -113,8 +113,6 @@ local function onkilledother(victim, killer)
 				OnNaughtyAction(2, playerdata)
 			elseif victim.prefab == "robin_winter" then
 				OnNaughtyAction(2, playerdata)
-			elseif victim.prefab == "canary" then
-				OnNaughtyAction(2, playerdata)
 			elseif victim.prefab == "butterfly" then
 				OnNaughtyAction(1, playerdata)
 			elseif victim.prefab == "rabbit" then

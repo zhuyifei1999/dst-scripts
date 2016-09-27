@@ -169,28 +169,6 @@ return {
           height = 0,
           visible = true,
           properties = {}
-        },
-        {
-          name = "",
-          type = "knight",
-          shape = "rectangle",
-          x = 224,
-          y = 224,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "bishop",
-          shape = "rectangle",
-          x = 32,
-          y = 32,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
         }
       }
     }

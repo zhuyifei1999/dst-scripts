@@ -23,7 +23,8 @@ AddRoom("Plain", {
 					                distributepercent = .2,
 					                distributeprefabs=
 					                {
-					                	rock1 = 0.05,
+					                	rock_petrified_tree = 0.15,
+					                    rock1 = 0.05,
 					                    perma_grass = 0.5,
 					                    rabbithole= 0.25, 
 					                    green_mushroom = .005,

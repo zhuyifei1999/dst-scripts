@@ -4,12 +4,7 @@ local assets =
 }
 
 local function ItemTradeTest(inst, item)
-    if item == nil then
-        return false
-    elseif item.prefab ~= "purplegem" then
-        return false, string.sub(item.prefab, -3) == "gem" and "WRONGGEM" or "NOTGEM"
-    end
-    return true
+    return item.prefab == "purplegem"
 end
 
 local function OnGemGiven(inst, giver, item)
@@ -77,8 +72,6 @@ local function fn()
     inst.AnimState:SetBuild("staff_purple_base")
     inst.AnimState:PlayAnimation("idle_empty")
 
-    inst:AddTag("gemsocket")
-
     --trader (from trader component) added to pristine state for optimization
     inst:AddTag("trader")
 
@@ -96,7 +89,7 @@ local function fn()
     inst.components.pickable.onpickedfn = OnGemTaken
 
     inst:AddComponent("trader")
-    inst.components.trader:SetAbleToAcceptTest(ItemTradeTest)
+    inst.components.trader:SetAcceptTest(ItemTradeTest)
     inst.components.trader.onaccept = OnGemGiven
 
     inst.DestroyGemFn = DestroyGem

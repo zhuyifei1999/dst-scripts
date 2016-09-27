@@ -191,10 +191,6 @@ function WorldOverseer:OnPlayerDeath(player, data)
 								cause = data and data.cause or ""
                                 -- note: 'cause' is the character prefab for player kills. probably need another field which is the player ID.
 							}
-    -- ~gjans: Trying to catch a metrics bug, added 2016-08-29
-    if BRANCH == "dev" and sendstats.playerdeath.cause == 0 then
-        assert(false, "Ack! We got killed by '0', please let Graham know what killed you!")
-    end
 	local jsonstats = json.encode(sendstats)
 	TheSim:SendProfileStats(jsonstats)
 end

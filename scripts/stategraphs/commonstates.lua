@@ -475,16 +475,14 @@ local function onthaw(inst)
     inst.sg:GoToState("thaw")
 end
 
-local function onenterfrozenpre(inst)
+local function onenterfrozen(inst)
     if inst.components.locomotor ~= nil then
         inst.components.locomotor:StopMoving()
     end
     inst.AnimState:PlayAnimation("frozen")
     inst.SoundEmitter:PlaySound("dontstarve/common/freezecreature")
     inst.AnimState:OverrideSymbol("swap_frozen", "frozen", "frozen")
-end
 
-local function onenterfrozenpst(inst)
     --V2C: cuz... freezable component and SG need to match state,
     --     but messages to SG are queued, so it is not great when
     --     when freezable component tries to change state several
@@ -496,11 +494,6 @@ local function onenterfrozenpst(inst)
     elseif not inst.components.freezable:IsFrozen() then
         onunfreeze(inst)
     end
-end
-
-local function onenterfrozen(inst)
-    onenterfrozenpre(inst)
-    onenterfrozenpst(inst)
 end
 
 local function onexitfrozen(inst)
@@ -521,17 +514,13 @@ local function onexitthaw(inst)
     inst.AnimState:ClearOverrideSymbol("swap_frozen")
 end
 
-CommonStates.AddFrozenStates = function(states, onoverridesymbols, onclearsymbols)
+CommonStates.AddFrozenStates = function(states)
     table.insert(states, State
     {
         name = "frozen",
         tags = { "busy", "frozen" },
 
-        onenter = onoverridesymbols ~= nil and function(inst)
-            onenterfrozenpre(inst)
-            onoverridesymbols(inst)
-            onenterfrozenpst(inst)
-        end or onenterfrozen,
+        onenter = onenterfrozen,
 
         events =
         {
@@ -539,10 +528,7 @@ CommonStates.AddFrozenStates = function(states, onoverridesymbols, onclearsymbol
             EventHandler("onthaw", onthaw),
         },
 
-        onexit = onclearsymbols ~= nil and function(inst)
-            onexitfrozen(inst)
-            onclearsymbols(inst)
-        end or onexitfrozen,
+        onexit = onexitfrozen,
     })
 
     table.insert(states, State
@@ -550,20 +536,14 @@ CommonStates.AddFrozenStates = function(states, onoverridesymbols, onclearsymbol
         name = "thaw",
         tags = { "busy", "thawing" },
 
-        onenter = onoverridesymbols ~= nil and function(inst)
-            onenterthaw(inst)
-            onoverridesymbols(inst)
-        end or onenterthaw,
+        onenter = onenterthaw,
 
         events =
         {
             EventHandler("unfreeze", onunfreeze),
         },
 
-        onexit = onclearsymbols ~= nil and function(inst)
-            onexitthaw(inst)
-            onclearsymbols(inst)
-        end or onexitthaw,
+        onexit = onexitthaw,
     })
 end
 
