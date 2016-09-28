@@ -37,8 +37,10 @@ local function fn()
     inst.AnimState:SetBuild("slurtle_slime")
     inst.AnimState:PlayAnimation("idle")
 
+    inst:AddTag("explosive")
+
     MakeDragonflyBait(inst, 3)
-    
+
     --[[
     inst.Light:SetFalloff(0.7)
     inst.Light:SetIntensity(.1)
@@ -54,7 +56,7 @@ local function fn()
     end
 
     inst:AddComponent("stackable")
-    inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM    
+    inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
     inst:AddComponent("inspectable")
 
     inst:AddComponent("fuel")

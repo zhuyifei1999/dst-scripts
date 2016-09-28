@@ -893,7 +893,8 @@ local states =
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("attack_pound_pre")
-            inst.components.timer:StartTimer("pound_cd", inst.pound_cd)
+            inst.pound_speed = math.min(6, inst.pound_speed + 1)
+            inst.components.timer:StartTimer("pound_cd", Remap(inst.pound_speed, 1, 6, inst.pound_cd, inst.pound_cd / 3))
         end,
 
         timeline =

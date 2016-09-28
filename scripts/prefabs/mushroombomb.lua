@@ -221,6 +221,8 @@ local function fn()
     inst.Light:Enable(false)
     inst.Light:EnableClientModulation(true)
 
+    inst:AddTag("explosive")
+
     inst._explode = net_event(inst.GUID, "mushroombomb._explode")
     inst._fade = net_smallbyte(inst.GUID, "mushroombomb._fade", "fadedirty")
 

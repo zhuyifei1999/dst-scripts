@@ -1592,6 +1592,9 @@ function Tune(overrides)
         TOADSTOOL_DEAGGRO_DIST = 25,
         TOADSTOOL_AGGRO_DIST = 15,
         TOADSTOOL_RESPAWN_TIME = total_day_time * 20,
+
+        --Base values b4 factoring in diminishing returns
+        TOADSTOOL_FREEZE_WEAR_OFF_TIME = 10,
         TOADSTOOL_FREEZE_RESIST = 4,
 
         --TOADSTOOL stats are scaled by level [0..3] and phase [1..3]
@@ -1685,7 +1688,7 @@ function Tune(overrides)
         TOADSTOOL_MUSHROOMSPROUT_DURATION = 15,
         TOADSTOOL_MUSHROOMSPROUT_CD = 60,
 
-        TOADSTOOL_POUND_CD = 45,
+        TOADSTOOL_POUND_CD = 30,
         TOADSTOOL_ABILITY_INTRO_CD = 15,
 
 		DRAGONFLY_RESPAWN_TIME = total_day_time * 20,

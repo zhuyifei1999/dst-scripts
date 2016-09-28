@@ -24,6 +24,7 @@ local Sleeper = Class(function(self, inst)
     self.sleepiness = 0
     self.wearofftime = 10
     self.hibernate = false
+    --self.sleeptimemult = 1 --nil for default since 99% of stuff don't use this
 
     self.inst:ListenForEvent("onignite", onattacked)
     self.inst:ListenForEvent("firedamage", onattacked)
@@ -180,6 +181,10 @@ function Sleeper:SetResistance(resist)
     self.resistance = resist
 end
 
+function Sleeper:SetSleepTimeMult(mult)
+    self.sleeptimemult = mult ~= 1 and mult or nil
+end
+
 function Sleeper:StartTesting(time)
     if self.isasleep then
         self:SetTest(ShouldWakeUp, time)
@@ -261,7 +266,7 @@ function Sleeper:GoToSleep(sleeptime)
             self.inst:PushEvent("gotosleep")
         end
 
-        self:SetWakeTest(self.waketestfn, sleeptime)
+        self:SetWakeTest(self.waketestfn, sleeptime ~= nil and self.sleeptimemult ~= nil and sleeptime * self.sleeptimemult or sleeptime)
     end
 end
 

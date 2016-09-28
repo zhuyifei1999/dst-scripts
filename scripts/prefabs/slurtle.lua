@@ -122,6 +122,7 @@ local function commonfn(bank, build, tag)
 
     inst:AddTag("cavedweller")
     inst:AddTag("animal")
+    inst:AddTag("explosive")
 
     if tag ~= nil then
         inst:AddTag(tag)

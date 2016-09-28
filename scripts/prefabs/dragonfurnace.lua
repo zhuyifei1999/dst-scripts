@@ -114,6 +114,7 @@ local function fn()
     inst:AddTag("wildfireprotected")
     inst:AddTag("HASHEATER")
     inst:AddTag("iceblocker")
+    inst:AddTag("cooker")
 
     if not TheNet:IsDedicated() then
         --inst._grill = MakeGrill()
@@ -134,6 +135,7 @@ local function fn()
     inst.components.workable:SetOnWorkCallback(onworked)
 
     -----------------------
+    inst:AddComponent("cooker")
     inst:AddComponent("lootdropper")
 
     -----------------------

@@ -50,7 +50,7 @@ end
 
 local function OnDoKilled(inst)
     inst.components.lootdropper:DropLoot(inst:GetPosition())
-    inst.SoundEmitter:PlaySound("dontstarve/creatures/slurtle/mound_explode") 
+    inst.SoundEmitter:PlaySound("dontstarve/creatures/slurtle/mound_explode")
 end
 
 local function OnKilled(inst)
@@ -103,6 +103,7 @@ local function fn()
 
     inst:AddTag("cavedweller")
     inst:AddTag("hostile")
+    inst:AddTag("explosive")
 
     inst.entity:SetPristine()
 
@@ -159,4 +160,4 @@ local function fn()
     return inst
 end
 
-return Prefab("slurtlehole", fn, assets, prefabs) 
+return Prefab("slurtlehole", fn, assets, prefabs)
