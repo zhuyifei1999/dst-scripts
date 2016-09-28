@@ -427,9 +427,9 @@ local function OnNewTarget(inst, data)
 end
 
 local function ClearRecentAttacker(inst, attacker)
-    if inst._recentattackers[data.attacker] ~= nil then
-        inst._recentattackers[data.attacker]:Cancel()
-        inst._recentattackers[data.attacker] = nil
+    if inst._recentattackers[attacker] ~= nil then
+        inst._recentattackers[attacker]:Cancel()
+        inst._recentattackers[attacker] = nil
     end
 end
 
