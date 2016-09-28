@@ -1,8 +1,8 @@
-local SourceModifierList = require "util/SourceModifierList"
+local SourceModifierList = require "util/sourcemodifierlist"
 
 local BirdAttractor = Class(function(self, inst)
     self.inst = inst
-    
+
     -- This modifier is using multple keys, always call CalculateModifierFromKey() with "maxbirds", "mindelay" or "maxdelay"
     self.spawnmodifier = SourceModifierList(inst, 0, SourceModifierList.additive)
 end)
