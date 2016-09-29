@@ -66951,6 +66951,31 @@ msgctxt "STRINGS.PIG_TALK_PANIC.3"
 msgid "AAAAAAAAAH!!"
 msgstr ""
 
+#. STRINGS.PIG_TALK_PANICBOSS.1
+msgctxt "STRINGS.PIG_TALK_PANICBOSS.1"
+msgid "AHHHH"
+msgstr ""
+
+#. STRINGS.PIG_TALK_PANICBOSS.2
+msgctxt "STRINGS.PIG_TALK_PANICBOSS.2"
+msgid "UH OH!"
+msgstr ""
+
+#. STRINGS.PIG_TALK_PANICBOSS.3
+msgctxt "STRINGS.PIG_TALK_PANICBOSS.3"
+msgid "ME SCARED"
+msgstr ""
+
+#. STRINGS.PIG_TALK_PANICBOSS.4
+msgctxt "STRINGS.PIG_TALK_PANICBOSS.4"
+msgid "BAD!"
+msgstr ""
+
+#. STRINGS.PIG_TALK_PANICBOSS.5
+msgctxt "STRINGS.PIG_TALK_PANICBOSS.5"
+msgid "OHHH!"
+msgstr ""
+
 #. STRINGS.PIG_TALK_PANICFIRE.1
 msgctxt "STRINGS.PIG_TALK_PANICFIRE.1"
 msgid "HOT HOT HOT!"
@@ -67101,6 +67126,26 @@ msgctxt "STRINGS.RABBIT_MEAT_BATTLECRY.5"
 msgid "MONSTER!"
 msgstr ""
 
+#. STRINGS.RABBIT_PANICBOSS.1
+msgctxt "STRINGS.RABBIT_PANICBOSS.1"
+msgid "RUN!"
+msgstr ""
+
+#. STRINGS.RABBIT_PANICBOSS.2
+msgctxt "STRINGS.RABBIT_PANICBOSS.2"
+msgid "AHHH!"
+msgstr ""
+
+#. STRINGS.RABBIT_PANICBOSS.3
+msgctxt "STRINGS.RABBIT_PANICBOSS.3"
+msgid "IT MAD"
+msgstr ""
+
+#. STRINGS.RABBIT_PANICBOSS.4
+msgctxt "STRINGS.RABBIT_PANICBOSS.4"
+msgid "EHHH!"
+msgstr ""
+
 #. STRINGS.RABBIT_PANICFIRE.1
 msgctxt "STRINGS.RABBIT_PANICFIRE.1"
 msgid "EEEH!"
@@ -67116,6 +67161,26 @@ msgctxt "STRINGS.RABBIT_PANICFIRE.3"
 msgid "AAAH!"
 msgstr ""
 
+#. STRINGS.RABBIT_PANICHAUNT.1
+msgctxt "STRINGS.RABBIT_PANICHAUNT.1"
+msgid "SCARED!"
+msgstr ""
+
+#. STRINGS.RABBIT_PANICHAUNT.2
+msgctxt "STRINGS.RABBIT_PANICHAUNT.2"
+msgid "AAAH!!"
+msgstr ""
+
+#. STRINGS.RABBIT_PANICHAUNT.3
+msgctxt "STRINGS.RABBIT_PANICHAUNT.3"
+msgid "OHH!"
+msgstr ""
+
+#. STRINGS.RABBIT_PANICHAUNT.4
+msgctxt "STRINGS.RABBIT_PANICHAUNT.4"
+msgid "GHOST!"
+msgstr ""
+
 #. STRINGS.RABBIT_PANICHOUSEFIRE.1
 msgctxt "STRINGS.RABBIT_PANICHOUSEFIRE.1"
 msgid "HOME!"
@@ -67129,6 +67194,26 @@ msgstr ""
 #. STRINGS.RABBIT_PANICHOUSEFIRE.3
 msgctxt "STRINGS.RABBIT_PANICHOUSEFIRE.3"
 msgid "BURNING!"
+msgstr ""
+
+#. STRINGS.RABBIT_RESCUE.1
+msgctxt "STRINGS.RABBIT_RESCUE.1"
+msgid "KILL!"
+msgstr ""
+
+#. STRINGS.RABBIT_RESCUE.2
+msgctxt "STRINGS.RABBIT_RESCUE.2"
+msgid "FIGHT!"
+msgstr ""
+
+#. STRINGS.RABBIT_RESCUE.3
+msgctxt "STRINGS.RABBIT_RESCUE.3"
+msgid "BITE!"
+msgstr ""
+
+#. STRINGS.RABBIT_RESCUE.4
+msgctxt "STRINGS.RABBIT_RESCUE.4"
+msgid "PUNCH!"
 msgstr ""
 
 #. STRINGS.RABBIT_RETREAT.1
@@ -74243,7 +74328,7 @@ msgstr ""
 
 #. STRINGS.UI.EMAILSCREEN.BIRTHDAYREASON
 msgctxt "STRINGS.UI.EMAILSCREEN.BIRTHDAYREASON"
-msgid "We need to know your birthdate in order to send age appropriate updates!\r\nDon't worry, we won't spam you or sell your information."
+msgid "We need to know your birthdate in order to send age appropriate updates!\nDon't worry, we won't spam you or sell your information."
 msgstr ""
 
 #. STRINGS.UI.EMAILSCREEN.CANCEL

@@ -10,10 +10,10 @@ local Widget = require "widgets/widget"
 require "os"
 
 local ANR_BETA_COUNTDOWN_LAYOUT = BRANCH == "staging"
-local ANR_BETA_COUNTDOWN_DATE = {year = 2016, day = 22, month = 9, hour = 13}
-local ANR_BETA_COUNTDOWN_MODE = "released"                                       -- "text", "image", "reveal", "released"
-local ANR_BETA_COUNTDOWN_IMAGE = "silhouette_beta_2"                             -- "silhouette_beta_1"
-local ANR_BETA_COUNTDOWN_NAME = "\"Warts And All\""                              -- "\"A Little Fixer Upper\""
+local ANR_BETA_COUNTDOWN_DATE = {year = 2016, day = 13, month = 10, hour = 13}
+local ANR_BETA_COUNTDOWN_MODE = "image"											-- "text", "image", "reveal", "released"
+local ANR_BETA_COUNTDOWN_IMAGE = "silhouette_beta_3"                            -- "silhouette_beta_1", "silhouette_beta_2"
+local ANR_BETA_COUNTDOWN_NAME = nil												-- "\"A Little Fixer Upper\"", "\"Warts And All\""
 
 local WorldGenScreen = require "screens/worldgenscreen"
 local PopupDialogScreen = require "screens/popupdialog"

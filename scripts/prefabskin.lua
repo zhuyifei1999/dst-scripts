@@ -154,6 +154,13 @@ function cookpot_init_fn(inst, build_name)
     inst.AnimState:SetSkin(build_name, "cook_pot")
 end
 
+--------------------------------------------------------------------------
+--[[ Chest skin functions ]]
+--------------------------------------------------------------------------
+
+function chest_init_fn(inst, build_name)
+    inst.AnimState:SetSkin(build_name, "treasure_chest")
+end
 
 --------------------------------------------------------------------------
 --[[ Endtable skin functions ]]
@@ -195,6 +202,7 @@ function CreatePrefabSkin(name, info)
     prefab_skin.build_name          = info.build_name
     prefab_skin.rarity              = info.rarity
     prefab_skin.skins               = info.skins
+    prefab_skin.disabled            = info.disabled
 
     if info.torso_tuck_builds ~= nil then
         for _,base_skin in pairs(info.torso_tuck_builds) do

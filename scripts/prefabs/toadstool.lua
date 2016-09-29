@@ -389,14 +389,20 @@ local function RetargetFn(inst)
     UpdatePlayerTargets(inst)
 
     local player = inst.components.grouptargeter:TryGetNewTarget()
-    if player ~= nil then
+    if player ~= nil and player:IsNear(inst, TUNING.TOADSTOOL_ATTACK_RANGE) then
         return player, true
+    end
+
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local nearplayers = FindPlayersInRange(x, y, z, TUNING.TOADSTOOL_ATTACK_RANGE, true)
+    if #nearplayers > 0 then
+        return nearplayers[math.random(#nearplayers)], true
     end
 
     --Also needs to deal with other creatures in the world
     local spawnpoint = inst.components.knownlocations:GetLocation("spawnpoint")
     local deaggro_dist_sq = TUNING.TOADSTOOL_DEAGGRO_DIST * TUNING.TOADSTOOL_DEAGGRO_DIST
-    return FindEntity(
+    local creature = FindEntity(
         inst,
         TUNING.TOADSTOOL_AGGRO_DIST,
         function(guy)
@@ -406,6 +412,17 @@ local function RetargetFn(inst)
         { "_combat" }, --see entityreplica.lua
         { "prey", "smallcreature" }
     )
+
+    if player ~= nil and
+        (   creature == nil or
+            player:GetDistanceSqToPoint(x, y, z) <= creature:GetDistanceSqToPoint(x, y, z)
+        ) then
+        return player, true
+    end
+
+    if creature ~= nil then
+        return creature, true
+    end
 end
 
 local function KeepTargetFn(inst, target)

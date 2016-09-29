@@ -7,6 +7,8 @@ require "behaviours/panic"
 require "behaviours/attackwall"
 require "behaviours/useshield"
 
+local BrainCommon = require "brains/braincommon"
+
 local RUN_AWAY_DIST = 10
 local SEE_FOOD_DIST = 10
 local SEE_TARGET_DIST = 6
@@ -46,7 +48,6 @@ local function KeepTraderFn(inst, target)
 end
 
 local function EatFoodAction(inst)
-
     local target = FindEntity(inst, SEE_FOOD_DIST, function(item) return inst.components.eater:CanEat(item) and item:IsOnValidGround() and item:GetTimeAlive() > TUNING.SPIDER_EAT_DELAY end)
     if target then
         return BufferedAction(inst, target, ACTIONS.EAT)
@@ -82,8 +83,9 @@ function SpiderBrain:OnStart()
     local root =
         PriorityNode(
         {
-            WhileNode( function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
-            WhileNode( function() return self.inst.components.health.takingfiredamage end, "OnFire", Panic(self.inst)),
+            BrainCommon.PanicWhenScared(self.inst, .3),
+            WhileNode(function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
+            WhileNode(function() return self.inst.components.health.takingfiredamage end, "OnFire", Panic(self.inst)),
             IfNode(function() return self.inst:HasTag("spider_hider") end, "IsHider",
                 UseShield(self.inst, DAMAGE_UNTIL_SHIELD, SHIELD_TIME, AVOID_PROJECTILE_ATTACKS, HIDE_WHEN_SCARED)),
             AttackWall(self.inst),
@@ -97,7 +99,7 @@ function SpiderBrain:OnStart()
                     DoAction(self.inst, function() return GoHomeAction(self.inst) end ) ),
             FaceEntity(self.inst, GetTraderFn, KeepTraderFn),
             Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("home") end, MAX_WANDER_DIST)
-        },1)
+        }, 1)
     self.bt = BT(self.inst, root)
 end
 
