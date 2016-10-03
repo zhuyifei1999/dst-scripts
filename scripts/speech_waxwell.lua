@@ -1,10 +1,6 @@
 return {
 	ACTIONFAIL =
 	{
-        REPAIR =
-        {
-            WRONGPIECE = "I could have told you that wouldn't fit.",
-        },
         BUILD =
         {
             MOUNTED = "Even with my long arms, I still can't reach.",
@@ -63,9 +59,6 @@ return {
             BUSY = "It's busy, currently.",
             ABIGAILHEART = "I had to try.",
             GHOSTHEART = "I don't think so. They might still be mad.",
-            NOTGEM = "Even The Amazing Maxwell couldn't wring magic from that.",
-            WRONGGEM = "That would be an amateurish misuse of its magic.",
-            NOTSTAFF = "Hm. No, that's not right.",
         },
         GIVETOPLAYER = 
         {
@@ -85,7 +78,6 @@ return {
         {
             KNOWN = "I am far too advanced for this.",
             CANTLEARN = "There's a lesson to be learned about tampering with secret knowledge.",
-            WRONGWORLD = "I seem to be in the wrong place to use this.",
         },
 	},
 	ACTIONFAIL_GENERIC = "That didn't work.",
@@ -166,9 +158,6 @@ return {
 	ANNOUNCE_ACCOMPLISHMENT_DONE = "Ah. The satisfaction of a job well done.",	
 	ANNOUNCE_INSUFFICIENTFERTILIZER = "It perked up just a tiny bit.",
 	ANNOUNCE_LIGHTNING_DAMAGE_AVOIDED = "Can't touch this!",
-	ANNOUNCE_TOADESCAPING = "Now is the time to strike!",
-	ANNOUNCE_TOADESCAPED = "It fled back into the earth.",
-
 	BATTLECRY =
 	{
 		GENERIC = "To arms!",
@@ -627,15 +616,6 @@ return {
 		POND_ALGAE = "It's some algae.",
 		GREENSTAFF = "It is a focusing tool.",
 		POTTEDFERN = "How quaint.",
-		SENTRYWARD = "This is a conduit for strong revelatory magicks.",
-        MOONROCK_PIECES = "This might be bad.",
-        MOONBASE =
-        {
-            GENERIC = "I had thought these all destroyed eons ago.",
-            BROKEN = "Ruins of an ancient relic.",
-            STAFFED = "Something magic-y needs to happen, I think.",
-            WRONGSTAFF = "Waste of a good staff.",
-        },
 
 		THULECITE = "An exceedingly rare but useful material.",
 		ARMORRUINS = "Thulecite meshes so well with nightmare fuel.",
@@ -673,8 +653,6 @@ return {
 		YELLOWSTAFF = "With a bigger gem it would be so much more powerful.",
 		YELLOWGEM = "I can sense magic in it.",
 		ORANGEGEM = "This will be quite powerful with some fuel.",
-        OPALSTAFF = "The charge has made it incredibly powerful.",
-        OPALPRECIOUSGEM = "A sizable magic gem.",
 		TELEBASE = 
 		{
 			VALID = "That should do the trick.",
@@ -686,7 +664,6 @@ return {
 			GEMS = "The fuel needs a focus.",
 		},
 		STAFFLIGHT = "That should chase the shadows away.",
-        STAFFCOLDLIGHT = "An impressively condensed point of freezing magic.",
        	ANCIENT_ALTAR =
         {
         	WORKING = "Where are their gods now?",
@@ -703,95 +680,63 @@ return {
 		CAVE_BANANA_BURNT = "I refuse to be held responsible for that.",
 		ROCKY = "I banished these guys down here for a reason.",
 		SCORCHED_SKELETON = "At least the fire cut down on the smell.",
-
-        HOUNDSTOOTH = "It could be used for fashion.",
-        ARMORSNURTLESHELL = "That is not dapper at all.",
-        BAT = "Ugh. Ugly beasts.",
-        BATBAT = "Violence has never felt better.",
-        BATWING = "I'm not eating that.",
-        BATWING_COOKED = "I'm still not eating that.",
+		
+		HOUNDSTOOTH="It could be used for fashion.",
+		ARMORSNURTLESHELL="That is not dapper at all.",
+		BAT="Ugh. Ugly beasts.",
+		BATBAT = "Violence has never felt better.",
+		BATWING="I'm not eating that.",
+		BATWING_COOKED="I'm still not eating that.",
         BATCAVE = "Ugh. It stinks.",
-        BEDROLL_FURRY = "At least they're good for something.",
-        BUNNYMAN = "It reminds me of my old act.",
-        FLOWER_CAVE = "It's so dark down here.",
-        FLOWER_CAVE_DOUBLE = "It's so dark down here.",
-        FLOWER_CAVE_TRIPLE = "It's so dark down here.",
-        GUANO = "Disgusting!",
-        LANTERN = "I hope it keeps Them away.",
-        LIGHTBULB = "It will run out eventually.",
-        MANRABBIT_TAIL = "Silly rabbit.",
-        MUSHROOMHAT = "It possesses a spritely magic.",
-        MUSHROOM_LIGHT2 =
-        {
-            ON = "A light to repel the encroaching shadow.",
-            OFF = "I'm partial to the lavender shade, myself.",
-            BURNT = "Who ordered the mushroom flambe?",
-        },
-        MUSHROOM_LIGHT =
-        {
-            ON = "A rather pale light.",
-            OFF = "I suppose we're decorating with fungus now.",
-            BURNT = "C'est la vie.",
-        },
-        MUSHROOMBOMB = "That blewit's gonna blowit!",
-        SHROOM_SKIN = "I hope the warts are not contagious.",
-        --a blewit is a kind of purple mushroom it's a pun let me have this -.-'
-        TOADSTOOL_CAP =
-        {
-            EMPTY = "It's a dirt hole.",
-            INGROUND = "That looks filthy.",
-            GENERIC = "Pitiful. I'll make short work of that 'shroom.",
-        },
-        TOADSTOOL =
-        {
-            GENERIC = "What an abomination!",
-            RAGE = "It is coursing with fungal power!",
-        },
-        MUSHROOMSPROUT =
-        {
-            GENERIC = "I don't like how much magic is collecting in that.",
-            BURNT = "Singing it released the toxic cloud!",
-        },
-        MUSHTREE_TALL =
-        {
+		BEDROLL_FURRY = "At least they're good for something.",
+		BUNNYMAN = "It reminds me of my old act.",
+		FLOWER_CAVE="It's so dark down here.",
+		FLOWER_CAVE_DOUBLE="It's so dark down here.",
+		FLOWER_CAVE_TRIPLE="It's so dark down here.",
+		GUANO="Disgusting!",
+		LANTERN="I hope it keeps Them away.",
+		LIGHTBULB="It will run out eventually.",
+		MANRABBIT_TAIL="Silly rabbit.",
+		MUSHTREE_TALL=
+		{
             GENERIC = "It smells of rot and failure.",
             BLOOM = "It's spawning.",
         },
-        MUSHTREE_MEDIUM =
-        {
+		MUSHTREE_MEDIUM=
+		{
             GENERIC = "Where's Waldo?",
             BLOOM = "I hope I'm not standing next to it when it goes off.",
         },
-        MUSHTREE_SMALL =
-        {
+		MUSHTREE_SMALL=
+		{
             GENERIC = "Ugh, it smells bad.",
             BLOOM = "Oh fine, do what you like.",
         },
         MUSHTREE_TALL_WEBBED = "Could it get any less appealing?",
         SPORE_TALL = "How can a seed be so cheerful?",
-        SPORE_MEDIUM = "Magical red, and yet it holds no power of use to me.",
-        SPORE_SMALL = "Hateful, ambulatory whimsy.",
+        SPORE_MEDIUM = "How can a seed be so cheerful?",
+        SPORE_SMALL = "How can a seed be so cheerful?",
         SPORE_TALL_INV = "I hope it doesn't stain my jacket.",
         SPORE_MEDIUM_INV = "I hope it doesn't stain my jacket.",
         SPORE_SMALL_INV = "I hope it doesn't stain my jacket.",
-        SLURTLE = "I don't remember those...",
-        SLURTLE_SHELLPIECES = "Some cracks can't be mended.",
-        SLURTLEHAT = "This will keep me standing, if I need to fight.",
-        SLURTLEHOLE = "That's revolting.",
-        SLURTLESLIME = "There must be a better way.",
-        SNURTLE = "That's strange. They must be new.",
-        SPIDER_HIDER = "It's a tricky one.",
-        SPIDER_SPITTER = "Aggressive little thing, isn't it?",
-        SPIDERHOLE = "How did that get down here?",
-        SPIDERHOLE_ROCK = "How did that get down here?",
-        STALAGMITE = "Rocks. How dull.",
-        STALAGMITE_FULL = "Rocks. How dull.",
-        STALAGMITE_LOW = "Rocks. How dull.",
-        STALAGMITE_MED = "Rocks. How dull.",
-        STALAGMITE_TALL = "Stalagmite. How dull.",
-        STALAGMITE_TALL_FULL = "Stalagmite. How dull.",
-        STALAGMITE_TALL_LOW = "Stalagmite. How dull.",
-        STALAGMITE_TALL_MED = "Stalagmite. How dull.",
+		SLURTLE="I don't remember those...",
+		SLURTLE_SHELLPIECES="Some cracks can't be mended.",
+		SLURTLEHAT= "This will keep me standing, if I need to fight.",
+		SLURTLEHOLE="That's revolting.",
+		SLURTLESLIME="There must be a better way.",
+		SNURTLE="That's strange. They must be new.",
+		SPIDER_HIDER="It's a tricky one.",
+		SPIDER_SPITTER="Aggressive little thing, isn't it?",
+		SPIDERHOLE="How did that get down here?",
+		SPIDERHOLE_ROCK ="How did that get down here?",
+		STALAGMITE="Rocks. How dull.",
+		STALAGMITE_FULL="Rocks. How dull.",
+		STALAGMITE_LOW="Rocks. How dull.",
+		STALAGMITE_MED="Rocks. How dull.",
+		STALAGMITE_TALL="Stalagmite. How dull.",
+		STALAGMITE_TALL_FULL="Stalagmite. How dull.",
+		STALAGMITE_TALL_LOW="Stalagmite. How dull.",
+		STALAGMITE_TALL_MED="Stalagmite. How dull.",
 
 		POWCAKE = "What foul manifestation of evil is this?",
 		CAVE_ENTRANCE = "I plugged it a long time ago.",
@@ -909,15 +854,10 @@ return {
 		BLOWDART_FIRE = "Just make sure to breathe out.",
 		BLOWDART_SLEEP = "Call me \"Mr. Sandman\".",
 		BLOWDART_PIPE = "A glorious tube of pain!",
-		BLOWDART_YELLOW = "Never strikes the same place twice, except when it does.",
 		BLUEAMULET = "It's frosted over.",
 		BLUEGEM = "Blue brings ice.",
-		BLUEPRINT =
-		{ 
-            COMMON = "I know all about that. I... just forgot.",
-            RARE = "A rare blueprint, indeed.",
-        },
-		BELL_BLUEPRINT = "Never sell your sole for forbidden knowledge.",
+		BLUEPRINT = "I know all about that. I... just forgot.",
+		BELL_BLUEPRINT = "I know all about that. I... just forgot.",
 		BLUE_CAP = "What could go wrong?",
 		BLUE_CAP_COOKED = "Umami!",
 		BLUE_MUSHROOM =
@@ -953,12 +893,6 @@ return {
 		CARROT_COOKED = "A little more refined, at least.",
 		CARROT_PLANTED = "How mundane.",
 		CARROT_SEEDS = "Such labor is beneath me.",
-		CARTOGRAPHYDESK = 
-		{	
-			GENERIC = "Mapmaking is a soothing pastime. Methodical.",
-			BURNING = "Such directionless destruction.",
-			BURNT = "Useless.",
-		},
 		CAVE_FERN = "I'd like to step on it.",
 		CHARCOAL = "Nothing will steal my carbon!",
         CHESSJUNK1 = "There's a reason I never finished that.",
@@ -977,11 +911,6 @@ return {
 		CORN = "High in fructose.",
 		CORN_COOKED = "A little more refined, at least.",
 		CORN_SEEDS = "Such labor is beneath me.",
-		CANARY =
-		{
-			GENERIC = "How do these things keep getting into my world?",
-			HELD = "Bait.",
-		},
 		CROW =
 		{
 			GENERIC = "I don't know how they got here.",
@@ -1016,13 +945,6 @@ return {
 		},
 		DIVININGRODSTART = "The portals lead to the next rod.",
 		DRAGONFLY = "A fiery fly.",
-		DRAGONFLYFURNACE = 
-		{
-		    HAMMERED = "How undignified.",
-			GENERIC = "Such a spiffy design!", --no gems
-			NORMAL = "With only one gem it is only moderately scorching.", --one gem
-			HIGH = "The red gems are producing a sweltering heat.", --two gems
-		},
 
 		HUTCH = "Stick your tongue in. You're getting slobber on my pantlegs.",
         HUTCH_FISHBOWL =
@@ -1074,12 +996,6 @@ return {
 		EGGPLANT = "Just another boring plant.",
 		EGGPLANT_COOKED = "A little more refined, at least.",
 		EGGPLANT_SEEDS = "Such labor is beneath me.",
-
-		ENDTABLE = 
-		{
-			BURNT = "That was uncalled for.",
-			GENERIC = "Purely decorative.",
-		},
 		ACORN = "A more outdoorsy type might be able to make something of this.",
         ACORN_SAPLING = "Huh, it seems to belong in the ground.",
 		EVERGREEN =
@@ -1098,11 +1014,9 @@ return {
 		},
 		EYEPLANT = "The Meat Bulb's pawns.",
 		FEATHERHAT = "I always considered myself the peacock of people.",
-		FEATHER_CANARY = "Yellow is the color of naivety.",
 		FEATHER_CROW = "Black is the color of sleep.",
 		FEATHER_ROBIN = "Red is the color of fire.",
 		FEATHER_ROBIN_WINTER = "Grey is the color of pain.",
-		FEATHERPENCIL = "Not as elegant as a quill and inkwell, but it'll do.",
 		FEM_PUPPET = "Better her than me.",
 		FIREFLIES =
 		{
@@ -1252,7 +1166,6 @@ return {
 
 		MANDRAKESOUP = "There'll be no more crying out of you.",
 		MANDRAKE_COOKED = "Looks like I got the last meep.",
-		MAPSCROLL = "There's nothing to be gleaned from this.",
 		MARBLE = "It's strong stuff.",
 		MARBLEPILLAR = "I've always wondered who built those.",
 		MARBLETREE = "How whimsical.",
@@ -1437,38 +1350,6 @@ return {
 			DISEASED = "What has brought this blight upon my world?",
 			DISEASING = "Looks a little off, if you ask me.",
 		},
-		SCARECROW = 
-   		{
-			GENERIC = "It's an empty shell of a man.",
-			BURNING = "Nothing is safe.",
-			BURNT = "The scarecrow has gone to a place where there is no fear.",
-   		},
-		SCULPTURE_KNIGHTHEAD = "That looks... familiar...",
-		SCULPTURE_KNIGHTBODY = 
-		{
-			COVERED = "Waste of good marble if you ask me.",
-			UNCOVERED = "My creations! How rude.",
-			FINISHED = "Back as intended.",
-			READY = "We'll get you out in a tick, friend.",
-		},
-        SCULPTURE_BISHOPHEAD = "I've seen that head before... but never in marble.",
-		SCULPTURE_BISHOPBODY = 
-		{
-			COVERED = "Hmph. I was never a fan of the Grecian look.",
-			UNCOVERED = "Come now! I liked that one.",
-			FINISHED = "That looks much better.",
-			READY = "We'll get you out in a tick, friend.",
-		},
-        SCULPTURE_ROOKNOSE = "That's quite the schnozz.",
-		SCULPTURE_ROOKBODY = 
-		{
-			COVERED = "Some truly questionable taste in decor.",
-			UNCOVERED = "Why would anyone want to cover this up?",
-			FINISHED = "Doesn't that feel better now?",
-			READY = "We'll get you out in a tick, friend.",
-		},
-		GARGOYLE_HOUND = "Try and get me now. Ha!",
-        GARGOYLE_WEREPIG = "Not so tough.",
 		SEEDS = "I suppose these won't plant themselves.",
 		SEEDS_COOKED = "Broiled the life out of 'em.",
 		SEWING_KIT = "A fine and noble endeavor.",
@@ -1511,18 +1392,6 @@ return {
 			SLEEPING = "I don't want to wake that one.",
 		},
 		SPOILED_FOOD = "That used to be food until I wasted it.",
-        STAGEHAND =
-        {
-			AWAKE = "Hmph. Impressive sleight of hand.",
-			HIDING = "This must be the work of an unseen hand.",
-        },
-        STATUE_MARBLE = 
-        {
-        	GENERIC = "Hm. Stately.",
-        	TYPE1 = "Her tragedy does not define her.",
-        	TYPE2 = "She's still in there somewhere. I know it.",
-        	--TYPE3 = "",
-    	},
 		STATUEHARP = "Not my best work.",
 		STATUEMAXWELL = "It seems silly now...",
 		--Your hubris... Maxy... it was always your weakness...
@@ -1694,17 +1563,8 @@ return {
 		ACCOMPLISHMENT_SHRINE = "Even They couldn't build something so devious.",		
         REVIVER = "I'm not sure I really want to give this up.",
         LIFEINJECTOR = "Who would put this filth in their veins?",
-        ROCK_MOON = "\"Moon\" rock.",
         MOONROCKNUGGET = "\"Moon\" rock.",
-        MOONROCKCRATER = "This will make a decent magical vessel.",
-
-        REDMOONEYE = "Its aura can be felt from anywhere. Quite useful.",
-        PURPLEMOONEYE = "A decent enough use of the gem's power, I suppose.",
-        GREENMOONEYE = "It's useful for keeping in contact with my... acquaintances.",
-        ORANGEMOONEYE = "I have a feeling of being watched, even from a considerable distance away.",
-        YELLOWMOONEYE = "A conveniently color-coded place marker.",
-        BLUEMOONEYE = "That reminds me, I must practice my cold glare tonight!",
-
+        ROCK_MOON = "\"Moon\" rock.",
         MULTIPLAYER_PORTAL = "Always did have a flair for the dramatic...",
 		--...Make your jokes...I'll be seeing you soon...
 	},

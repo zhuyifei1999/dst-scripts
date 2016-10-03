@@ -1,5 +1,7 @@
 local startlocations = require"map/startlocations"
 
+local prefabswap_list = require"prefabswap_list"
+
 local SKIP_GEN_CHECKS = false
 
 local trees = {"evergreen_short", "evergreen_normal", "evergreen_tall"}
@@ -83,7 +85,7 @@ local TRANSLATE_TO_PREFABS = {
 	["trees"] = 			{"evergreen", "evergreen_sparse", "deciduoustree", "marsh_tree"},	
 	["evergreen"] = 		{"evergreen"},	
 	["carrot"] = 			{"carrot_planted"},
-	["berrybush"] = 		{"berrybush", "berrybush2", "berrybush_juicy"},
+	["berrybush"] = 		{"berrybush", "berrybush2","sps_berrybush","berrybush_juicy","sps_berrybush_juicy"},
 	["maxwelllight"] = 		{"maxwelllight"},
 	["maxwelllight_area"] = {"maxwelllight_area"},
 	["fireflies"] = 		{"fireflies"},
@@ -124,6 +126,109 @@ local TRANSLATE_AND_OVERRIDE = { --These are entities that should be translated 
 	["rock_ice"] = 			{"rock_ice"}, 
 }
 
+
+
+local PREFAB_SWAPS = prefabswap_list.getPrefabSwapsForWorldGen()
+
+-- USE THIS FOR DEBUGGING OR FOR FORCE SETTING CERTAIN CATEGORIES OF PREFAB SPAWNS
+--local set = {["berries"]="juicy berries"}
+--prefabswap_list.setNextSwaps(set)
+	
+local next_swaps = prefabswap_list.getNextSwaps()
+
+local PREFAB_PROXIES = prefabswap_list.getPrefabProxiesForWorldGen()
+
+
+local function setSetToActive(set)
+	set.status = "active"
+	print("PREFAB SWAP SELECTION:",set.name)
+	return set
+end
+
+-- sets the prefabSwaps to start settings and then chooses the prefab swaps for the world gen
+local function selectPrefabSwapSets(prefabSwaps, veryRandom, noswaps)
+
+	local weighted_list = require "util/weighted_list"
+	--set all 'status's to "inactive"
+	for k,v in pairs(prefabSwaps)do
+		for k1,v1 in ipairs(v)do
+			v1.status = "inactive"
+		end
+	end
+
+	if next_swaps then
+
+		local primarySet = {}
+		for k,v in pairs(prefabSwaps)do
+			for i,set in ipairs(v)do
+				if set.primary then
+					primarySet[set.category] = set.name
+				end
+			end
+		end
+
+		for category,newswap in pairs(next_swaps)do		
+			primarySet[category] = newswap
+		end
+
+		for category,newswap in pairs(primarySet)do
+			for k,v in pairs(prefabSwaps)do
+				if k == category then
+					local primary = nil					
+					local active = false
+					for i,set in ipairs(v)do
+						if set.primary then
+							primary = set
+						end
+						if set.name == newswap then
+							set = setSetToActive(set)
+							active = true
+						end
+					end
+					if primary and not active then
+						primary = setSetToActive(primary)
+					end
+				end
+			end
+		end
+
+		prefabswap_list.setNextSwaps(nil)
+				
+	else
+		--set one set of each block to 'keep', the rest will have their prefabs filtered out.
+		for k,v in pairs(prefabSwaps)do
+
+			local choiceList = weighted_list()
+			local primary = nil
+			for i,set in ipairs(v)do		
+
+				local weight = set.weight 
+				if veryRandom then
+					weight = 1
+				end
+
+			--	if not veryRandom or not set.primary then
+					choiceList:addChoice( i, set.weight )			
+			--	end
+
+				if set.primary then
+					primary = i
+				end
+			end
+
+			local choice = choiceList:getChoice(  math.random(1, choiceList:getTotalWeight())  )	
+			if noswaps and primary then
+				print("==> Setting to primary")
+				choice = primary
+			end
+			v[choice] = setSetToActive(v[choice])
+		end
+	end
+
+	return prefabSwaps
+end
+
+
 local customise = require("map/customise")
 local function TranslateWorldGenChoices(gen_params)
     if gen_params == nil or GetTableSize(gen_params) == 0 then
@@ -161,7 +266,7 @@ local function TranslateWorldGenChoices(gen_params)
 
     return translated_prefabs, runtime_overrides
 end
-
+	
 local function UpdatePercentage(distributeprefabs, gen_params)
 	for selected, v in pairs(gen_params) do
 		if v ~= "default" then		
@@ -493,7 +598,26 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
     save.map.generated = {}
     save.map.generated.densities = {}
 
-    topology_save.root:PopulateVoronoi(SpawnFunctions, entities, map_width, map_height, translated_prefabs, save.map.generated.densities)
+    local veryRandom = false
+    local noswaps = false
+
+   	local world_gen_choices = deepcopy(level.overrides)
+
+       --dumptable(world_gen_choices)
+    if world_gen_choices then
+
+	    if world_gen_choices["prefabswaps_start"] == "classic" then
+	    	noswaps = true
+	    end
+	    if world_gen_choices["prefabswaps_start"] == "highly random" then
+	    	veryRandom = true
+	    end
+	end    
+    local prefabSwaps = selectPrefabSwapSets(PREFAB_SWAPS, veryRandom, noswaps)
+
+    save.map.prefabswapstatus = prefabSwaps      
+
+    topology_save.root:PopulateVoronoi(SpawnFunctions, entities, map_width, map_height, translated_prefabs, save.map.generated.densities, prefabSwaps, PREFAB_PROXIES)
     topology_save.root:GlobalPostPopulate(entities, map_width, map_height)
 
     for k,ents in pairs(entities) do

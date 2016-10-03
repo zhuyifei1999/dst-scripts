@@ -519,7 +519,7 @@ function DressupPanel:GetSkinOptionsForSlot(slot)
 			else
 				--print(self.skins_list[which].item or "?", "Got timestamp", self.skins_list[which].timestamp or "nil", dressup_timestamp)
 				local item = self.skins_list[which].item
-				if (Prefabs[item] ~= nil and not Prefabs[item].disabled) or (CLOTHING[item] ~= nil and (CLOTHING[item].limited_to_prefab == nil or CLOTHING[item].limited_to_prefab == self.currentcharacter) and not CLOTHING[item].disabled) then --check if this clothing is available for this character and it's not disabled
+				if CLOTHING[item] == nil or CLOTHING[item].limited_to_prefab == nil or CLOTHING[item].limited_to_prefab == self.currentcharacter then --check if this clothing is available for this character
 					local new_indicator = not self.skins_list[which].timestamp or (self.skins_list[which].timestamp > dressup_timestamp)
 					local rarity = GetRarityForItem(slot, item)
 					local colour = rarity and SKIN_RARITY_COLORS[rarity] or SKIN_RARITY_COLORS["Common"]

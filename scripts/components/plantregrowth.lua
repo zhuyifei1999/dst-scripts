@@ -37,8 +37,12 @@ local function DoUpdate()
     local dt = GetTime() - LastTime
     LastTime = GetTime()
     for k,v in pairs(InternalTimes) do
-        local timemult = TimeMultipliers[k]()
-        InternalTimes[k] = InternalTimes[k] + dt * timemult * TUNING.REGROWTH_TIME_MULTIPLIER
+        local diseased = TheWorld.components.prefabswapmanager ~= nil
+                            and TheWorld.components.prefabswapmanager:IsDiseasedPrefab(k)
+        if not diseased then
+            local timemult = TimeMultipliers[k]()
+            InternalTimes[k] = InternalTimes[k] + dt * timemult * TUNING.REGROWTH_TIME_MULTIPLIER
+        end
     end
 
     CurrentBucket = CurrentBucket < #UpdateBuckets and CurrentBucket + 1 or 1

@@ -11,11 +11,11 @@ local prefabs =
 
 local function ontradeforgold(inst, item)
     inst.SoundEmitter:PlaySound("dontstarve/pig/PigKingThrowGold")
-
+    
     for k = 1, item.components.tradable.goldvalue do
         local nug = SpawnPrefab("goldnugget")
         local pt = Vector3(inst.Transform:GetWorldPosition()) + Vector3(0, 4.5, 0)
-
+        
         nug.Transform:SetPosition(pt:Get())
         local down = TheCamera:GetDownVec()
         local angle = math.atan2(down.z, down.x) + (math.random() * 60 - 30) * DEGREES
@@ -84,6 +84,7 @@ local function fn()
 
     MakeObstaclePhysics(inst, 2, .5)
 
+    inst.MiniMapEntity:SetPriority(5)
     inst.MiniMapEntity:SetIcon("pigking.png")
     inst.MiniMapEntity:SetPriority(1)
 

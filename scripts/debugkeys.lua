@@ -652,19 +652,7 @@ AddGameDebugKey(KEY_T, function()
     else
         local MainCharacter = DebugKeyPlayer()
         if MainCharacter then
-            local topscreen = TheFrontEnd:GetActiveScreen()
-            if topscreen.minimap ~= nil then
-
-                local mousepos = TheInput:GetScreenPosition()
-                local mousewidgetpos = topscreen:ScreenPosToWidgetPos( mousepos )
-                local mousemappos = topscreen:WidgetPosToMapPos( mousewidgetpos )
-
-                local x,y,z = topscreen.minimap:MapPosToWorldPos( mousemappos:Get() )
-
-                MainCharacter.Physics:Teleport(x, 0, y)
-            else
-                MainCharacter.Physics:Teleport(TheInput:GetWorldPosition():Get())
-            end
+            MainCharacter.Physics:Teleport(TheInput:GetWorldPosition():Get())
         end
     end
     return true
@@ -706,7 +694,7 @@ end)
 AddGameDebugKey(KEY_D, function()
     if TheInput:IsKeyDown(KEY_CTRL) then
         local MouseCharacter = TheInput:GetWorldEntityUnderMouse()
-        if MouseCharacter and MouseCharacter.components.diseaseable ~= nil then
+        if MouseCharacter then
             MouseCharacter.components.diseaseable:ForceDiseased(1*TUNING.TOTAL_DAY_TIME, 1*TUNING.TOTAL_DAY_TIME)
         end
     end
@@ -815,7 +803,44 @@ AddGameDebugKey(KEY_M, function()
 end)
 
 AddGameDebugKey(KEY_N, function()
-    c_gonext()
+    if TheInput:IsKeyDown(KEY_ALT) then
+        local world = TheWorld
+        local area = nil
+        local player = ConsoleCommandPlayer()
+        local x, y, z = player.Transform:GetWorldPosition()
+        for i, node in ipairs(TheWorld.topology.nodes) do
+            if TheSim:WorldPointInPoly(x, z, node.poly) then
+                 area =  i
+            end
+        end
+        if area then
+            world:PushEvent("ms_petrifyforest", { area = area })
+
+            local function startPetrifySound(world)
+                local pos = world.topology.nodes[area].cent
+                SpawnPrefab("petrify_announce").Transform:SetPosition(pos[1], 0, pos[2])
+            end
+            world:DoTaskInTime(TUNING.SEG_TIME, startPetrifySound)
+
+            local function _DoPetrifiedSpeech(world,player)
+                if player then
+                    player.components.talker:Say(GetString(player, "ANNOUNCE_PETRIFED_TREES"))
+                end
+            end
+            for i, v in ipairs(AllPlayers) do
+                world:DoTaskInTime( TUNING.SEG_TIME + 1 + (math.random() * 2), _DoPetrifiedSpeech, v)
+            end
+        end
+    elseif TheInput:IsKeyDown(KEY_SHIFT) then
+        print("OVERRIDING PREFAB SWAPS")
+        TheWorld:PushEvent("ms_setnextprefabswaps", { ["berries"] = "regular berries" })
+    elseif TheInput:IsKeyDown(KEY_CTRL) then
+            local prefabswap_list = require"prefabswap_list"
+
+            prefabswap_list.petrifyForest(TheWorld)
+    else
+        c_gonext()
+    end
 end)
 
 AddGameDebugKey(KEY_S, function()

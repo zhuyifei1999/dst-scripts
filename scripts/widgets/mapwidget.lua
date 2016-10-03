@@ -26,13 +26,6 @@ local MapWidget = Class(Widget, function(self)
 
 end)
 
-function MapWidget:WorldPosToMapPos(x,y,z)
-    return self.minimap:WorldPosToMapPos(x,y,z)
-end
-
-function MapWidget:MapPosToWorldPos(x,y,z)
-    return self.minimap:MapPosToWorldPos(x,y,z)
-end
 
 function MapWidget:SetTextureHandle(handle)
 	self.img.inst.ImageWidget:SetTextureHandle( handle )

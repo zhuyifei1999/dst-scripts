@@ -82,62 +82,6 @@ function MapScreen:OnUpdate(dt)
     end
 end
 
---[[ EXAMPLE of map coordinate functions
-function MapScreen:NearestEntToCursor()
-    local closestent = nil
-    local closest = nil
-    for ent,_ in pairs(someentities) do
-        local ex,ey,ez = ent.Transform:GetWorldPosition()
-        local entpos = self:MapPosToWidgetPos( Vector3(self.minimap:WorldPosToMapPos(ex,ez,0)) )
-        local mousepos = self:ScreenPosToWidgetPos( TheInput:GetScreenPosition() )
-        local delta = mousepos - entpos
-
-        local length = delta:Length()
-        if length < 30 then
-            if closest == nil or length < closest then
-                closestent = ent
-                closest = length
-            end
-        end
-    end
-
-    if closestent ~= nil then
-        local ex,ey,ez = closestent.Transform:GetWorldPosition()
-        local entpos = self:MapPosToWidgetPos( Vector3(self.minimap:WorldPosToMapPos(ex,ez,0)) )
-
-        self.hovertext:SetPosition(entpos:Get())
-        self.hovertext:Show()
-    else
-        self.hovertext:Hide()
-    end
-end
-]]
-
-function MapScreen:MapPosToWidgetPos(mappos)
-    return Vector3(
-        mappos.x * RESOLUTION_X/2,
-        mappos.y * RESOLUTION_Y/2,
-        0
-    )
-end
-
-function MapScreen:ScreenPosToWidgetPos(screenpos)
-    local w, h = TheSim:GetScreenSize()
-    return Vector3(
-        screenpos.x / w * RESOLUTION_X - RESOLUTION_X/2,
-        screenpos.y / h * RESOLUTION_Y - RESOLUTION_Y/2,
-        0
-    )
-end
-
-function MapScreen:WidgetPosToMapPos(widgetpos)
-    return Vector3(
-        widgetpos.x / (RESOLUTION_X/2),
-        widgetpos.y / (RESOLUTION_Y/2),
-        0
-    )
-end
-
 function MapScreen:OnControl(control, down)
     if MapScreen._base.OnControl(self, control, down) then return true end
 

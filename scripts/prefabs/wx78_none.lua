@@ -21,7 +21,7 @@ return CreatePrefabSkin("wx78_none",
 	assets = assets,
 	tags = tags,
 	
-	--torso_tuck_builds = { "wx78" },
+	torso_tuck_builds = { "wx78" },
 	has_alternate_for_body = { "wx78" },
 	
 	feet_cuff_size = { wx78 = 3 },

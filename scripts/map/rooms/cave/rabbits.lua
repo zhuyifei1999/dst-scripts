@@ -114,7 +114,6 @@ AddRoom("RabbitSinkhole", {
 
             fireflies = 1,
             sapling = 15,
-            twiggytree = 6,
             evergreen = .25,
             berrybush = .5,
             berrybush_juicy = 0.25,
@@ -161,7 +160,6 @@ AddRoom("SpiderIncursion", {
 
             fireflies = 1,
             sapling = 15,
-            twiggytree = 6,
             evergreen = .25,
             berrybush = .5,
             berrybush_juicy = 0.25,

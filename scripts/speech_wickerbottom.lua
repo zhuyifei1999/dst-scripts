@@ -2,10 +2,6 @@ return
 {
     ACTIONFAIL =
     {
-        REPAIR =
-        {
-            WRONGPIECE = "That is clearly the incorrect piece.",
-        },
         BUILD =
         {
             MOUNTED = "In this elevated position, I can't reach the ground.",
@@ -69,9 +65,6 @@ return
             BUSY = "I'll try again when it's done.",
             ABIGAILHEART = "Her spirit is already bound to something in this world.",
             GHOSTHEART = "I'll not be meddling in that business.",
-            NOTGEM = "Don't be silly, dear.",
-            WRONGGEM = "This gemstone's properties are incorrect for my purposes.",
-            NOTSTAFF = "This is not the staff I seek.",
         },
         GIVETOPLAYER = 
         {
@@ -91,7 +84,6 @@ return
         {
             KNOWN = "Please. That knowledge is child's play.",
             CANTLEARN = "A piece of knowledge I cannot grasp... Intriguing!",
-            WRONGWORLD = "This map is for some other location.",
         },
     },
     ACTIONFAIL_GENERIC = "It seems I can't do that.",
@@ -204,7 +196,7 @@ return
             ATTACKER = "That's enough funny business, young arachnid.",
             MURDERER = "Someone needs to teach you some manners, %s!",
             REVIVER = "You're a sweet boy, %s.",
-            GHOST = "Poor dear. We'll get you a nice colored bandage once you're revived.",
+            GHOST = "Poor dear. We'll get you a nice colored bandaid once you're revived.",
             FIRESTARTER = "Who gave you matches, %s?",
         },
         WATHGRITHR = 
@@ -244,15 +236,6 @@ return
 
         MOONROCKNUGGET = "Implications of a lunar body? Interesting.",
         ROCK_MOON = "Implications of a lunar body? Interesting.",
-        MOONROCKCRATER = "Would make a useful cartographic instrument with proper embellishments.",
-
-        REDMOONEYE = "The red lens will mark this position.",
-        PURPLEMOONEYE = "A tool to mark our whereabouts.",
-        GREENMOONEYE = "That should help us keep our bearings.",
-        ORANGEMOONEYE = "The fewer search parties we have to organize, the better.",
-        YELLOWMOONEYE = "The geography of this place is less unknown each day.",
-        BLUEMOONEYE = "An excellent marker for group coordination.",
-
         MOLE =
         {
             HELD = "I don't think my pocket is its natural habitat.",
@@ -298,8 +281,7 @@ return
         BIGFOOT = "Prehistoric!",
         PIGTENT = "Filthy.",
         MANDRAKE_COOKED = "Mandragora officinarum, cooked in the name of discovery.",
-        MAPSCROLL = "The potential of the blank page is paralyzing for some.",
-		BOAT = "Where did this vessel come from?",
+        BOAT = "Where did this vessel come from?",
         BURNT_MARSH_BUSH = "Reduced to ash.",
         BONESHARD = "Remnants of a life well lived.",
         BUZZARD = "Cathartes, of course.",
@@ -576,15 +558,6 @@ return
         POND_ALGAE = "It is a good thing this algae has no need for photosynthesis.",
         GREENSTAFF = "It appears to rewind time on an object.",
         POTTEDFERN = "A potted plant.",
-		SENTRYWARD = "Ah! A scrying orb.",
-        MOONROCK_PIECES = "What a perplexing transformation.",
-        MOONBASE =
-        {
-            GENERIC = "The magic of this structure ebbs in predictable cycles.",
-            BROKEN = "Ancient debris. Perhaps it can be restored?",
-            STAFFED = "Now we must be patient.",
-            WRONGSTAFF = "Hmm... It seems the staves are not interchangeable.",
-        },
 
         BOOK_BIRDS = "The expurgated version, but it has my favorite: Megascops kennicottii.",
         BOOK_TENTACLES = "Hard to put this one down. It's gripping, frankly.",
@@ -600,10 +573,8 @@ return
         TREASURECHEST_TRAP = "Looks suspicious...",
         WATERMELON_SEEDS = "Plant them to grow a lanatus.",
         YELLOWSTAFF = "Luckily the star is a manageable size.",
-        YELLOWGEM = "Perhaps it is similar to citrine.",
+        YELLOWGEM = "Perhaps it is similar to Citrine.",
         ORANGEGEM = "It looks like a Spessartite garnet.",
-        OPALSTAFF = "Appears to summon a cold star into being.",
-        OPALPRECIOUSGEM = "A precious light diffracting mineraloid.",
         TELEBASE = 
         {
             VALID = "It looks to be ready.",
@@ -615,7 +586,6 @@ return
             GEMS = "These hold gems.",
         },
         STAFFLIGHT = "Perhaps a larger staff would summon a larger star.",
-        STAFFCOLDLIGHT = "Some sort of self-contained aurora.",
 
         ANCIENT_ALTAR = "A monument to some long dead god.",
         ANCIENT_ALTAR_BROKEN = "Parts of this are missing.",
@@ -635,93 +605,62 @@ return
         MONKEY = "They produce quite an odor.",
         MONKEYBARREL = "This appears to be the home of several primates.",
 
-        HOUNDSTOOTH = "Made of calcium and brimstone.",
-        ARMORSNURTLESHELL = "It is quite capacious.",
-        BAT = "A flying mammal.",
-        BATWING = "Technically edible.",
-        BATWING_COOKED = "Technically edible.",
+        HOUNDSTOOTH="Made of calcium and brimstone.",
+        ARMORSNURTLESHELL="It is quite capacious.",
+        BAT="A flying mammal.",
+        BATWING="Technically edible.",
+        BATWING_COOKED="Technically edible.",
         BATCAVE = "This nook is actually a dwelling.",
-        BEDROLL_FURRY = "I'm not sleeping on the ground.",
-        BUNNYMAN = "A sentient lagomorph.",
-        FLOWER_CAVE = "You could read by that light.",
-        FLOWER_CAVE_DOUBLE = "You could read by that light.",
-        FLOWER_CAVE_TRIPLE = "You could read by that light.",
-        GUANO = "More metabolic byproduct.",
-        LANTERN = "A refuelable light source.",
-        LIGHTBULB = "Is this animal or vegetable?",
-        MANRABBIT_TAIL = "They use their tails to balance.",
-        MUSHROOMHAT = "Ooo. What a delightfully wizened look.",
-        MUSHROOM_LIGHT2 =
-        {
-            ON = "Red and blue spores produce lovely reading light when combined.",
-            OFF = "Basic color theory is a must.",
-            BURNT = "Ahem. I'll be needing a new reading light.",
-        },
-        MUSHROOM_LIGHT =
-        {
-            ON = "Quite enthralling, no?",
-            OFF = "A bioluminescent fungus. Neither Agaricales nor Xylariales.",
-            BURNT = "That was myco-illogical. Ho ho!",
-        },
-        MUSHROOMBOMB = "Everyone, give the volatile Agaricus wide berth!",
-        SHROOM_SKIN = "Frog skin must remain damp, or they will suffocate. Not that this one minds.",
-        TOADSTOOL_CAP =
-        {
-            EMPTY = "The soil has been disturbed here.",
-            INGROUND = "The growth needs a catalyst to breach the surface.",
-            GENERIC = "A new member of the Agaricus genus?",
-        },
-        TOADSTOOL =
-        {
-            GENERIC = "It has formed a dangerous symbiotic relationship with fungal spores.",
-            RAGE = "The symbiotic bond between toad and fungus has reached its apex.",
-        },
-        MUSHROOMSPROUT =
-        {
-            GENERIC = "We must destroy that towering Agaricus.",
-            BURNT = "A towering, burnt Agaricus.",
-        },
-        MUSHTREE_TALL =
+        BEDROLL_FURRY="I'm not sleeping on the ground.",
+        BUNNYMAN="A sentient lagomorph.",
+        FLOWER_CAVE="You could read by that light.",
+        FLOWER_CAVE_DOUBLE="You could read by that light.",
+        FLOWER_CAVE_TRIPLE="You could read by that light.",
+        GUANO="More metabolic byproduct.",
+        LANTERN="A refuelable light source.",
+        LIGHTBULB="Is this animal or vegetable?",
+        MANRABBIT_TAIL="They use their tails to balance.",
+        MUSHTREE_TALL=
         {
             GENERIC = "A tree with a fungal parasite.",
             BLOOM = "Apparently it's the breeding season for this species.",
         },
-        MUSHTREE_MEDIUM =
+        MUSHTREE_MEDIUM=
         {
             GENERIC = "A red variety of Mycena luxaeterna.",
             BLOOM = "The smell is used to ward off predators.",
         },
-        MUSHTREE_SMALL =
+        MUSHTREE_SMALL=
         {
             GENERIC = "My word! A huge Mycena silvaelucens.",
             BLOOM = "The light is caused by a chemical reaction.",
         },
         MUSHTREE_TALL_WEBBED = "This relationship appears symbiotic.",
-        SPORE_TALL = "A soft blue carrier of genetic information.",
-        SPORE_MEDIUM = "A bright red carrier of genetic information.",
-        SPORE_SMALL = "A lovely green carrier of genetic information.",
+        SPORE_TALL = "A carrier of genetic information.",
+        SPORE_MEDIUM = "A carrier of genetic information.",
+        SPORE_SMALL = "A carrier of genetic information.",
         SPORE_TALL_INV = "I'm a carrier of a carrier of genetic information.",
         SPORE_MEDIUM_INV = "I'm a carrier of a carrier of genetic information.",
         SPORE_SMALL_INV = "I'm a carrier of a carrier of genetic information.",
         SLURTLE = "A mineral-devouring gastropod.",
         SLURTLE_SHELLPIECES = "Pieces of the broken.",
-        SLURTLEHAT = "It provides protection.",
-        SLURTLEHOLE = "A gastropod pod.",
-        SLURTLESLIME = "Their mucus is explosive for some reason.",
-        SNURTLE = "A rare variant of gastropod.",
-        SPIDER_HIDER = "An arachnid with a thick carapace.",
-        SPIDER_SPITTER = "An arachnid that spits projectiles.",
-        SPIDERHOLE = "This is the source of the spider infestation.",
-        SPIDERHOLE_ROCK = "This is the source of the spider infestation.",
-        STALAGMITE = "A strange rock formation.",
+        SLURTLEHAT="It provides protection.",
+        SLURTLEHOLE="A gastropod pod.",
+        SLURTLESLIME="Their mucus is explosive for some reason.",
+        SNURTLE="A rare variant of gastropod.",
+        SPIDER_HIDER="An arachnid with a thick carapace.",
+        SPIDER_SPITTER="An arachnid that spits projectiles.",
+        SPIDERHOLE="This is the source of the spider infestation.",
+        SPIDERHOLE_ROCK ="This is the source of the spider infestation.",
+        STALAGMITE="A strange rock formation.",
         TREECLUMP = "The flora grows thick here.",
-        STALAGMITE_FULL = "A strange rock formation.",
-        STALAGMITE_LOW = "A strange rock formation.",
-        STALAGMITE_MED = "A strange rock formation.",
-        STALAGMITE_TALL = "Another stalagmite.",
-        STALAGMITE_TALL_FULL = "Another stalagmite.",
-        STALAGMITE_TALL_LOW = "Another stalagmite.",
-        STALAGMITE_TALL_MED = "Another stalagmite.",
+        STALAGMITE_FULL="A strange rock formation.",
+        STALAGMITE_LOW="A strange rock formation.",
+        STALAGMITE_MED="A strange rock formation.",
+        STALAGMITE_TALL="Another stalagmite.",
+        STALAGMITE_TALL_FULL="Another stalagmite.",
+        STALAGMITE_TALL_LOW="Another stalagmite.",
+        STALAGMITE_TALL_MED="Another stalagmite.",
 
         TURF_DESERTDIRT = "The ground. You step on it.",
         TURF_FUNGUS_GREEN = "The ground. You step on it.",
@@ -793,13 +732,6 @@ return
         },
         DIVININGRODSTART = "This rod could be useful!",
         DRAGONFLY = "It's some kind of mythical variant of a Diptera.",
-        DRAGONFLYFURNACE = 
-        {
-            HAMMERED = "Hm, that was an interesting choice of alteration.",
-            GENERIC = "A very efficient, magically powered furnace.", --no gems
-            NORMAL = "It is burning at half strength, presently.", --one gem
-            HIGH = "The magic of the two gems keeps it burning at maximum strength.", --two gems
-        },
 
         HUTCH = "Eons of subterranean evolution went into this widdle malformed monstrosity.",
         HUTCH_FISHBOWL =
@@ -846,13 +778,8 @@ return
         EGGPLANT = "A nightshade. Solanum melongena, specifically.",
         EGGPLANT_COOKED = "For your enjoyment: Braised Solanum melongena.",
         EGGPLANT_SEEDS = "Seed of aubergine.",
-       
-        ENDTABLE = 
-        {
-          BURNT = "Well, such as it is.",
-          GENERIC = "It's pleasant to see a little decor out here.",
-        },
         WAFFLES = "Salutations, waffles.",
+        
         WALL_WOOD_ITEM = "Deployable pickets.",
         WALL_STONE_ITEM = "I'll carry them. My strong backbone always was my best asset.",
         WALL_RUINS_ITEM = "My pockets must be bigger on the inside.",
@@ -949,20 +876,14 @@ return
         CARROT_COOKED = "Daucus carota, roasted to perfection.",
         CARROT_PLANTED = "Daucus carota is a root vegetable.",
         CARROT_SEEDS = "Seed of Daucus carota.",
-        CARTOGRAPHYDESK = 
-		{	
-			GENERIC = "Ah! A proper desk! Just look at the finish on that wood!",
-            BURNING = "Can we have nothing decent?",
-			BURNT = "The destruction of knowledge is such a difficult thing to stomach.",
-		},
-		BERRIES = "Some Ardisia crenata berries, I think.",
+        BERRIES = "Some Ardisia crenata berries, I think.",
         BERRIES_COOKED = "Roasted Ardisia crenata, just in case.",
         BERRIES_JUICY = "A variant of Ardisia crenata berries. Good hydration.",
         BERRIES_JUICY_COOKED = "Spoilage is a constant threat.",
         CUTSTONE = "Some smoothed rock slabs.",
         SEEDS = "A handful of unidentifiable seeds.",
         SEEDS_COOKED = "A toasted embryonic plant treat!",
-        SILK = "Protein fiber extruded from an arachnid.",
+        SILK = "Protein fibre extruded from an arachnid.",
         SPIDERGLAND = "This gland secretes a mildly toxic venom.",
         BOARDS = "Roughly hewn wood boards.",
         BONESTEW = "Not quite how mum used to make, but it smells superb!",
@@ -1036,7 +957,6 @@ return
         BLOWDART_FIRE = "Improvised inflammatory device.",
         BLOWDART_SLEEP = "Improvised tranquilizer device.",
         BLOWDART_PIPE = "Improvised missile device.",
-        BLOWDART_YELLOW = "Improvised electric device.",
         SPIDERHAT = "Psionic control to exert over spiders. Excluding the boy, of course.",
         WETGOOP = "Oh no. No, no, no. This won't do at all.",
         WHIP = "An instrument for developing pain compliance.",
@@ -1046,12 +966,8 @@ return
         NIGHTSWORD = "Transdimensional weaponry.",
         ARMORMARBLE = "An interesting choice of materials.",
         ARMORGRASS = "Surprisingly effective with enough layers.",
-        BLUEPRINT =
-        { 
-            COMMON = "A detailed technical drawing.",
-            RARE = "Such a rare and detailed drawing!",
-        },
-        BELL_BLUEPRINT = "We must take the proper steps when using this knowledge.",
+        BLUEPRINT = "A detailed technical drawing.",
+        BELL_BLUEPRINT = "A detailed technical drawing.",
         MAXWELLHEAD = "I wish he wouldn't do that.",
 
         WALRUSHAT = "Should auld acquaintance be forgot?",
@@ -1080,11 +996,6 @@ return
         CORN = "Zea mays, a great staple food.",
         CORN_COOKED = "Popped corn!",
         CORN_SEEDS = "These maize seeds will grow in many climates.",
-        CANARY =
-        {
-            GENERIC = "Serinus canaria. A historically useful sentinel species.",
-            HELD = "Serinus canaria. We ought never enter a cave without one.",
-        },
         CROW = 
         {
             GENERIC = "Corvus brachyrhynchos.",
@@ -1132,18 +1043,6 @@ return
         ONEMANBAND = "An impressive improvement to the traditional pipe and tabor.",
         BIRDTRAP = "A simple clap-trap for birds.",
         GEARS = "Various cogs and wheels.",
-        STAGEHAND =
-        {
-			AWAKE = "That was an underhanded trick!",
-			HIDING = "Something devious is lurking in the shadows.",
-        },
-        STATUE_MARBLE = 
-        {
-            --GENERIC = "Elegant, though there's an unmistakable darkness to the work.",
-            TYPE1 = "A Grecian-inspired sculpture of the muse Melpomene. Some liberties have been taken.",
-            TYPE2 = "A Grecian-inspired sculpture of the muse Thalia. Some liberties have been taken.",
-            TYPE3 = "The rain may inadvertently turn it into a bird bath.",
-        },
         STATUEHARP = "A simple statue.",
         STATUEMAXWELL = "He's actually quite a sweet boy when you peel away the ego.",
         SKELETON = "An incredibly well preserved human skeleton.",
@@ -1252,6 +1151,7 @@ return
         DUG_BERRYBUSH = "It requires soil to grow.",
         DUG_BERRYBUSH_JUICY = "It requires soil to grow.",
         DUG_MARSH_BUSH = "It requires soil to grow.",
+
         SAPLING = 
         {
             GENERIC = "It's a small tree.",
@@ -1261,38 +1161,6 @@ return
             DISEASED = "It's afflicted with an agrarian disease beyond my curing.",
             DISEASING = "Hm... Seems more brittle than is usual.",
         },
-        SCARECROW = 
-        {
-            GENERIC = "Ah, excellent. No more leaving clothes on branches to get wrinkled.",
-            BURNING = "Hm. I suppose it was quite flammable.",
-            BURNT = "Pity. He was such a jolly fellow.",
-        },
-        SCULPTURE_KNIGHTHEAD = "You have to lift with your knees, dear.",
-		SCULPTURE_KNIGHTBODY = 
-		{
-			COVERED = "Very tasteful.",
-			UNCOVERED = "They say every block of stone has a statue inside.",
-			FINISHED = "The structure is whole once again.",
-            READY = "Something is stirring within.",
-		},
-        SCULPTURE_BISHOPHEAD = "I can lift it. I'm more spry than I look.",
-		SCULPTURE_BISHOPBODY = 
-		{
-			COVERED = "There's an almost animalistic ferocity in the chiselwork.",
-			UNCOVERED = "So this is what was lurking inside.",
-			FINISHED = "An excellent repair job.",
-            READY = "Something is stirring within.",
-		},
-        SCULPTURE_ROOKNOSE = "That's a thrown out back waiting to happen.",
-		SCULPTURE_ROOKBODY = 
-		{
-			COVERED = "I feel a light dusting of magic. Odd.",
-			UNCOVERED = "What an awful state it's in!",
-			FINISHED = "We may want to keep an eye on this.",
-            READY = "Something is stirring within.",
-		},
-        GARGOYLE_HOUND = "Completely petrified as a result of lunar exposure.",
-        GARGOYLE_WEREPIG = "Lunar light catalyzes a strange reaction in its skin.",
         TWIGGYTREE =
         {
             CHOPPED = "It has been harvested.",
@@ -1421,12 +1289,10 @@ return
         },
 
         FEATHERHAT = "Not quite the genuine article, but it might fool some birds.",
-        FEATHER_CANARY = "Feather of Canaria.",
         FEATHER_CROW = "Feather of Corvus.",
         FEATHER_ROBIN = "Feather of Cardinalis.",
         FEATHER_ROBIN_WINTER = "It looks like a feather of Cardinalis, but white.",
-		FEATHERPENCIL = "Oh, how I missed proper writing implements!",
-		
+
         TRINKET_1 = "What a lovely set of bottle washers! Too bad they're all melted.",
         TRINKET_2 = "A fake membranophone.",
         TRINKET_3 = "Oh, I just love the bard.",
@@ -1750,9 +1616,6 @@ return
     ANNOUNCE_NODAYSLEEP = "I can hardly get to sleep at night, nevermind during the day.", 
     ANNOUNCE_INSUFFICIENTFERTILIZER = "It needs just a touch more fecal assistance, I'd say.",
     ANNOUNCE_LIGHTNING_DAMAGE_AVOIDED = "Thank goodness for this non-conductive clothing!",
-    ANNOUNCE_TOADESCAPING = "It will need to burrow soon to rehydrate its skin.",
-    ANNOUNCE_TOADESCAPED = "It has burrowed away.",
-
     ANNOUNCE_TOOMANYBIRDS = "It doesn't work as well with this many birds around.",
     ANNOUNCE_WAYTOOMANYBIRDS = "The sky is out of birds for now.",
 }

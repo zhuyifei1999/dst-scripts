@@ -187,28 +187,28 @@ end
 
 function Wardrobe:ApplySkins(doer, skins)
     if doer.components.skinner ~= nil then
-        if skins.base ~= nil and (Prefabs[skins.base] ~= nil and not Prefabs[skins.base].disabled) then
+        if skins.base ~= nil then
             doer.components.skinner:SetSkinName(skins.base)
         end
 
         -- Must clear clothing items in case the new value is nil
-        doer.components.skinner:ClearClothing("body")
-        if skins.body ~= nil and (CLOTHING[skins.body] ~= nil and not CLOTHING[skins.body].disabled) then
+        if skins.body ~= nil then
+            doer.components.skinner:ClearClothing("body")
             doer.components.skinner:SetClothing(skins.body)
         end
 
-		doer.components.skinner:ClearClothing("hand")
-        if skins.hand ~= nil and (CLOTHING[skins.hand] ~= nil and not CLOTHING[skins.hand].disabled) then
+        if skins.hand ~= nil then
+            doer.components.skinner:ClearClothing("hand")
             doer.components.skinner:SetClothing(skins.hand)
         end
 
-		doer.components.skinner:ClearClothing("legs")
-        if skins.legs ~= nil and (CLOTHING[skins.legs] ~= nil and not CLOTHING[skins.legs].disabled) then
+        if skins.legs ~= nil then
+            doer.components.skinner:ClearClothing("legs")
             doer.components.skinner:SetClothing(skins.legs)
         end
         
-        doer.components.skinner:ClearClothing("feet")
-        if skins.feet ~= nil and (CLOTHING[skins.feet] ~= nil and not CLOTHING[skins.feet].disabled) then
+        if skins.feet ~= nil then
+            doer.components.skinner:ClearClothing("feet")
             doer.components.skinner:SetClothing(skins.feet)
         end
     end

@@ -110,19 +110,19 @@ function Trader:AcceptGift(giver, item, count)
             item.components.inventoryitem:RemoveFromOwner(true)
         end
 
-        if self.deleteitemonaccept then
-            item:Remove()
-        elseif self.inst.components.inventory ~= nil then
+        if self.inst.components.inventory ~= nil and not self.deleteitemonaccept then
             item.prevslot = nil
             item.prevcontainer = nil
             self.inst.components.inventory:GiveItem(item, nil, giver ~= nil and giver:GetPosition() or nil)
+        elseif self.deleteitemonaccept then
+            item:Remove()
         end
 
         if self.onaccept ~= nil then
             self.onaccept(self.inst, giver, item)
         end
 
-        self.inst:PushEvent("trade", { giver = giver, item = item })
+        self.inst:PushEvent("trade", {giver = giver, item = item})
 
         return true
     end

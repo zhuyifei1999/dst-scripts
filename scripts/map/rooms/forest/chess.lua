@@ -96,9 +96,9 @@ AddRoom("ChessForest", {
 										spiderden=0.02,
 										grass=0.0025,
 										sapling=0.15,
-					                    twiggytree=0.06,
 										berrybush=0.005,
 										berrybush_juicy = 0.0025,
+										rock_petrified_tree = 0.012,
 										rock1=0.004,
 										rock2=0.004,
 										evergreen_sparse=1.5,
@@ -127,6 +127,7 @@ AddRoom("ChessBarrens", {
 					                distributeprefabs=
 					                {
 										flint=0.5,
+										rock_petrified_tree = 3,
 										rock1=1,
 										rock2=1,
 										tallbirdnest=0.008,

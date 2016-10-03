@@ -30,8 +30,7 @@ local function ontalk(inst, script)
 end
 
 local function CalcSanityAura(inst, observer)
-    return (inst.prefab == "moonpig" and -TUNING.SANITYAURA_LARGE)
-        or (inst.components.werebeast ~= nil and inst.components.werebeast:IsInWereState() and -TUNING.SANITYAURA_LARGE)
+    return (inst.components.werebeast ~= nil and inst.components.werebeast:IsInWereState() and -TUNING.SANITYAURA_LARGE)
         or (inst.components.follower ~= nil and inst.components.follower.leader == observer and TUNING.SANITYAURA_SMALL)
         or 0
 end
@@ -341,7 +340,7 @@ local function WerepigRetargetFn(inst)
         SpringCombatMod(TUNING.PIG_TARGET_DIST),
         function(guy)
             return inst.components.combat:CanTarget(guy)
-                and not (guy.sg ~= nil and guy.sg:HasStateTag("transform"))
+               and not (guy.sg ~= nil and guy.sg:HasStateTag("transform"))
         end,
         { "_combat" }, --See entityreplica.lua (re: "_combat" tag)
         { "werepig", "alwaysblock", "beaver" }
@@ -353,32 +352,6 @@ local function WerepigKeepTargetFn(inst, target)
            and not target:HasTag("werepig")
            and not target:HasTag("beaver")
            and not (target.sg ~= nil and target.sg:HasStateTag("transform"))
-end
-
-local function IsNearMoonBase(inst, dist)
-    local moonbase = inst.components.entitytracker:GetEntity("moonbase")
-    return moonbase == nil or inst:IsNear(moonbase, dist)
-end
-
-local function MoonpigRetargetFn(inst)
-    return IsNearMoonBase(inst, TUNING.MOONPIG_AGGRO_DIST)
-        and FindEntity(
-                inst,
-                TUNING.PIG_TARGET_DIST,
-                function(guy)
-                    return inst.components.combat:CanTarget(guy)
-                        and not (guy.sg ~= nil and guy.sg:HasStateTag("transform"))
-                end,
-                { "_combat" }, --See entityreplica.lua (re: "_combat" tag)
-                { "werepig", "alwaysblock", "beaver", "moonbeast" }
-            )
-        or nil
-end
-
-local function MoonpigKeepTargetFn(inst, target)
-    return IsNearMoonBase(inst, TUNING.MOONPIG_RETURN_DIST)
-        and not target:HasTag("moonbeast")
-        and WerepigKeepTargetFn(inst, target)
 end
 
 local function WerepigSleepTest(inst)
@@ -428,10 +401,6 @@ local function GetStatus(inst)
         or nil
 end
 
-local function displaynamefn(inst)
-    return inst.name
-end
-
 local function OnSave(inst, data)
     data.build = inst.build
 end
@@ -454,43 +423,7 @@ local function CustomOnHaunt(inst)
     end
 end
 
-local function OnClientFadeUpdate(inst)
-    inst._fadeval = math.max(0, inst._fadeval - FRAMES)
-    local k = 1 - inst._fadeval * inst._fadeval
-    inst.AnimState:OverrideMultColour(k, k, k, k)
-    if inst._fadeval <= 0 then
-        inst._fadetask:Cancel()
-        inst._fadetask = nil
-    end
-end
-
-local function OnMasterFadeUpdate(inst)
-    OnClientFadeUpdate(inst)
-    inst._fade:set_local(math.floor(7 * inst._fadeval + .5))
-    inst.DynamicShadow:Enable(inst._fadeval < .8)
-    if inst._fadetask == nil then
-        inst:RemoveTag("NOCLICK")
-    end
-end
-
-local function OnFadeDirty(inst)
-    if inst._fadetask == nil then
-        inst._fadeval = inst._fade:value() / 7
-        inst._fadetask = inst:DoPeriodicTask(FRAMES, OnClientFadeUpdate)
-        OnClientFadeUpdate(inst)
-    end
-end
-
-local function FadeIn(inst)
-    inst._fadeval = 1
-    if inst._fadetask == nil then
-        inst._fadetask = inst:DoPeriodicTask(FRAMES, OnMasterFadeUpdate)
-        inst:AddTag("NOCLICK")
-        OnMasterFadeUpdate(inst)
-    end
-end
-
-local function common(moonbeast)
+local function common()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -518,41 +451,23 @@ local function common(moonbeast)
     --Sneak these into pristine state for optimization
     inst:AddTag("_named")
 
-    if moonbeast then
-        inst:AddTag("werepig")
-        inst:AddTag("moonbeast")
-        inst.AnimState:SetBuild("werepig_build")
-        --Since we override prefab name, we will need to use the higher
-        --priority displaynamefn to return us back plain old .name LOL!
-        inst:SetPrefabNameOverride("pigman")
-        inst.displaynamefn = displaynamefn
-
-        inst._fade = net_tinybyte(inst.GUID, "moonpig._fade", "fadedirty")
-    else
-        inst:AddComponent("talker")
-        inst.components.talker.fontsize = 35
-        inst.components.talker.font = TALKINGFONT
-        --inst.components.talker.colour = Vector3(133/255, 140/255, 167/255)
-        inst.components.talker.offset = Vector3(0, -400, 0)
-        inst.components.talker:MakeChatter()
-    end
+    inst:AddComponent("talker")
+    inst.components.talker.fontsize = 35
+    inst.components.talker.font = TALKINGFONT
+    --inst.components.talker.colour = Vector3(133/255, 140/255, 167/255)
+    inst.components.talker.offset = Vector3(0, -400, 0)
+    inst.components.talker:MakeChatter()
 
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
-        if moonbeast then
-            inst:ListenForEvent("fadedirty", OnFadeDirty)
-        end
-
         return inst
     end
 
     --Remove these tags so that they can be added properly when replicating components below
     inst:RemoveTag("_named")
 
-    if not moonbeast then
-        inst.components.talker.ontalk = ontalk
-    end
+    inst.components.talker.ontalk = ontalk
 
     inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
     inst.components.locomotor.runspeed = TUNING.PIG_RUN_SPEED --5
@@ -579,15 +494,12 @@ local function common(moonbeast)
     inst.components.named:PickNewName()
 
     ------------------------------------------
+    inst:AddComponent("werebeast")
+    inst.components.werebeast:SetOnWereFn(SetWerePig)
+    inst.components.werebeast:SetTriggerLimit(4)
+
     MakeHauntablePanic(inst)
-
-    if not moonbeast then
-        inst:AddComponent("werebeast")
-        inst.components.werebeast:SetOnWereFn(SetWerePig)
-        inst.components.werebeast:SetTriggerLimit(4)
-
-        AddHauntableCustomReaction(inst, CustomOnHaunt, true, nil, true)
-    end
+    AddHauntableCustomReaction(inst, CustomOnHaunt, true, nil, true)
 
     ------------------------------------------
     inst:AddComponent("follower")
@@ -606,13 +518,11 @@ local function common(moonbeast)
 
     ------------------------------------------
 
-    if not moonbeast then
-        inst:AddComponent("trader")
-        inst.components.trader:SetAcceptTest(ShouldAcceptItem)
-        inst.components.trader.onaccept = OnGetItemFromPlayer
-        inst.components.trader.onrefuse = OnRefuseItem
-        inst.components.trader.deleteitemonaccept = false
-    end
+    inst:AddComponent("trader")
+    inst.components.trader:SetAcceptTest(ShouldAcceptItem)
+    inst.components.trader.onaccept = OnGetItemFromPlayer
+    inst.components.trader.onrefuse = OnRefuseItem
+    inst.components.trader.deleteitemonaccept = false
     
     ------------------------------------------
 
@@ -632,12 +542,8 @@ local function common(moonbeast)
     inst.components.inspectable.getstatus = GetStatus
     ------------------------------------------
 
-    if moonbeast then
-        inst.FadeIn = FadeIn
-    else
-        inst.OnSave = OnSave
-        inst.OnLoad = OnLoad
-    end
+    inst.OnSave = OnSave
+    inst.OnLoad = OnLoad
 
     inst:ListenForEvent("attacked", OnAttacked)
     inst:ListenForEvent("newcombattarget", OnNewTarget)
@@ -646,7 +552,7 @@ local function common(moonbeast)
 end
 
 local function normal()
-    local inst = common(false)
+    local inst = common()
 
     if not TheWorld.ismastersim then
         return inst
@@ -659,7 +565,7 @@ local function normal()
 end
 
 local function guard()
-    local inst = common(false)
+    local inst = common()
 
     if not TheWorld.ismastersim then
         return inst
@@ -671,78 +577,5 @@ local function guard()
     return inst
 end
 
-local gargoyles =
-{
-    "gargoyle_werepigatk",
-    "gargoyle_werepigdeath",
-    "gargoyle_werepighowl",
-}
-local moonpigprefabs = {}
-for i, v in ipairs(gargoyles) do
-    table.insert(moonpigprefabs, v)
-end
-for i, v in ipairs(prefabs) do
-    table.insert(moonpigprefabs, v)
-end
-
-local moonbeastbrain = require "brains/moonbeastbrain"
-
-local function OnMoonPetrify(inst)
-    if not inst.components.health:IsDead() and (not inst.sg:HasStateTag("busy") or inst:IsAsleep()) then
-        local x, y, z = inst.Transform:GetWorldPosition()
-        local rot = inst.Transform:GetRotation()
-        local name = inst.components.named.name
-        inst:Remove()
-        local gargoyle = SpawnPrefab(gargoyles[math.random(#gargoyles)])
-        gargoyle.components.named:SetName(name)
-        gargoyle.Transform:SetPosition(x, y, z)
-        gargoyle.Transform:SetRotation(rot)
-        gargoyle:Petrify()
-    end
-end
-
-local function OnMoonTransformed(inst, data)
-    inst.components.named:SetName(data.old.components.named.name)
-    inst.sg:GoToState("howl")
-end
-
-local function moon()
-    local inst = common(true)
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
-
-    inst:AddComponent("entitytracker")
-
-    inst:SetBrain(moonbeastbrain)
-    inst:SetStateGraph("SGmoonpig")
-
-    inst.components.sleeper:SetResistance(3)
-    inst.components.freezable:SetDefaultWearOffTime(TUNING.MOONPIG_FREEZE_WEAR_OFF_TIME)
-
-    inst.components.combat:SetDefaultDamage(TUNING.WEREPIG_DAMAGE)
-    inst.components.combat:SetAttackPeriod(TUNING.WEREPIG_ATTACK_PERIOD)
-    inst.components.locomotor.runspeed = TUNING.WEREPIG_RUN_SPEED 
-    inst.components.locomotor.walkspeed = TUNING.WEREPIG_WALK_SPEED 
-
-    inst.components.sleeper:SetSleepTest(WerepigSleepTest)
-    inst.components.sleeper:SetWakeTest(WerepigWakeTest)
-
-    inst.components.lootdropper:SetLoot({ "meat", "meat", "pigskin" })
-    inst.components.lootdropper.numrandomloot = 0
-
-    inst.components.health:SetMaxHealth(TUNING.WEREPIG_HEALTH)
-    inst.components.combat:SetTarget(nil)
-    inst.components.combat:SetRetargetFunction(3, MoonpigRetargetFn)
-    inst.components.combat:SetKeepTargetFunction(MoonpigKeepTargetFn)
-
-    inst:ListenForEvent("moonpetrify", OnMoonPetrify)
-    inst:ListenForEvent("moontransformed", OnMoonTransformed)
-
-    return inst
-end
-
 return Prefab("pigman", normal, assets, prefabs),
-    Prefab("pigguard", guard, assets, prefabs),
-    Prefab("moonpig", moon, assets, moonpigprefabs)
+    Prefab("pigguard", guard, assets, prefabs)

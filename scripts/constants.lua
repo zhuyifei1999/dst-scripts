@@ -441,33 +441,22 @@ GROUND =
 --	SALT_WATER_DEEP = 135,
 }
 
-TECH =
-{
-	NONE =
-    {
-        SCIENCE = 0,
-        MAGIC = 0,
-        ANCIENT = 0,
-        SHADOW = 0,
-        CARTOGRAPHY = 0,
-    },
+TECH = {
+	NONE = { SCIENCE = 0, MAGIC = 0, ANCIENT = 0, SHADOW = 0 },
+	SCIENCE_ONE = {SCIENCE = 1},
+	SCIENCE_TWO = {SCIENCE = 2},
+	SCIENCE_THREE = {SCIENCE = 3},
+	-- Magic starts at level 2 so it's not teased from the start.
+	MAGIC_TWO = {MAGIC = 2},
+	MAGIC_THREE = {MAGIC = 3},
 
-    SCIENCE_ONE = { SCIENCE = 1 },
-    SCIENCE_TWO = { SCIENCE = 2 },
-    SCIENCE_THREE = { SCIENCE = 3 },
-    -- Magic starts at level 2 so it's not teased from the start.
-    MAGIC_TWO = { MAGIC = 2 },
-    MAGIC_THREE = { MAGIC = 3 },
+	LOST = {MAGIC = 10, SCIENCE = 10, ANCIENT = 10},
 
-    ANCIENT_TWO = { ANCIENT = 2 },
-    ANCIENT_THREE = { ANCIENT = 3 },
-    ANCIENT_FOUR = { ANCIENT = 4 },
+	ANCIENT_TWO = {ANCIENT = 2},
+	ANCIENT_THREE = {ANCIENT = 3},
+	ANCIENT_FOUR = {ANCIENT = 4},
 
-    SHADOW_TWO = { SHADOW = 3 },
-
-    CARTOGRAPHY_TWO = { CARTOGRAPHY = 2 },
-
-    LOST = { MAGIC = 10, SCIENCE = 10, ANCIENT = 10 },
+	SHADOW_TWO = {SHADOW = 3},
 }
 
 -- See cell_data.h
@@ -631,28 +620,26 @@ ANIM_ORIENTATION =
 	OnGround = 1,
 }
 
-RECIPETABS =
-{
-    TOOLS =         { str = "TOOLS",        sort = 0,   icon = "tab_tool.tex" },
-    LIGHT =         { str = "LIGHT",        sort = 1,   icon = "tab_light.tex" },
-    SURVIVAL =      { str = "SURVIVAL",     sort = 2,   icon = "tab_trap.tex" },
-    FARM =          { str = "FARM",         sort = 3,   icon = "tab_farm.tex" },
-    SCIENCE =       { str = "SCIENCE",      sort = 4,   icon = "tab_science.tex" },
-    WAR =           { str = "WAR",          sort = 5,   icon = "tab_fight.tex" },
-    TOWN =          { str = "TOWN",         sort = 6,   icon = "tab_build.tex" },
-    REFINE =        { str = "REFINE",       sort = 7,   icon = "tab_refine.tex" },
-    MAGIC =         { str = "MAGIC",        sort = 8,   icon = "tab_arcane.tex" },
-    DRESS =         { str = "DRESS",        sort = 9,   icon = "tab_dress.tex" },
 
-    --Crafting stations
-    ANCIENT =       { str = "ANCIENT",      sort = 10,  icon = "tab_crafting_table.tex",    crafting_station = true },
-    CARTOGRAPHY =   { str = "CARTOGRAPHY",  sort = 10,  icon = "tab_cartography.tex",    crafting_station = true },
+RECIPETABS=
+{
+    TOOLS = {str = "TOOLS", sort=0, icon = "tab_tool.tex"},
+    LIGHT = {str = "LIGHT", sort=1, icon = "tab_light.tex"},
+    SURVIVAL = {str = "SURVIVAL", sort=2, icon = "tab_trap.tex"},
+    FARM = {str = "FARM", sort=3, icon = "tab_farm.tex"},
+    SCIENCE = {str = "SCIENCE", sort=4, icon = "tab_science.tex"},
+    WAR = {str = "WAR", sort=5, icon = "tab_fight.tex"},
+    TOWN = {str = "TOWN", sort=6, icon = "tab_build.tex"},
+    REFINE = {str = "REFINE", sort=7, icon = "tab_refine.tex"},
+    MAGIC = {str = "MAGIC", sort=8, icon = "tab_arcane.tex"},
+    DRESS = {str = "DRESS", sort=9, icon = "tab_dress.tex"},
+    ANCIENT = {str = "ANCIENT", sort = 10, icon = "tab_crafting_table.tex"},
 }
 
 CUSTOM_RECIPETABS =
 {
-    BOOKS =         { str = "BOOKS",        sort = 999, icon = "tab_book.tex",      owner_tag = "bookbuilder" },
-    SHADOW =        { str = "SHADOW",       sort = 999, icon = "tab_shadow.tex",    owner_tag = "shadowmagic" },
+    BOOKS = { str = "BOOKS", sort = 999, icon = "tab_book.tex", owner_tag = "bookbuilder" },
+    SHADOW = { str = "SHADOW", sort = 999, icon = "tab_shadow.tex", owner_tag = "shadowmagic" },
 }
 
 VERBOSITY =
@@ -865,13 +852,12 @@ MATERIALS =
     GEARS = "gears",
     MOONROCK = "moonrock",
     ICE = "ice",
-    SCULPTURE = "sculpture",
 }
 
 UPGRADETYPES =
 {
-    DEFAULT = "default",
-    SPIDER = "spider",
+	DEFAULT = "default",
+	SPIDER = "spider",
 }
 
 LOCKTYPE =
@@ -1201,7 +1187,7 @@ COMMAND_RESULT = {
 
 MAX_VOTE_OPTIONS = 6
 
-CURRENT_BETA = 1 -- set to 0 if there is no beta. Note: release builds wont use this so only staging and dev really care
+CURRENT_BETA = 0 -- set to 0 if there is no beta
 BETA_INFO =
 {
     {	

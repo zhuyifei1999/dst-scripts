@@ -1,5 +1,4 @@
 require "behaviours/wander"
-require "behaviours/panic"
 
 local BrainCommon = {}
 --------------------------------------------------------------------------
@@ -65,43 +64,6 @@ end
 
 BrainCommon.ShouldSeekSalt = ShouldSeekSalt
 BrainCommon.AnchorToSaltlick = AnchorToSaltlick
-
---------------------------------------------------------------------------
-
-local function PanicWhenScared(inst, loseloyaltychance, chatty)
-    local scareendtime = 0
-
-    inst:ListenForEvent("epicscare", function(inst, data)
-        scareendtime = math.max(scareendtime, data.duration + GetTime() + math.random())
-    end)
-
-    local panicscarednode = Panic(inst)
-
-    if chatty ~= nil then
-        panicscarednode = ChattyNode(inst, chatty, panicscarednode)
-    end
-
-    if loseloyaltychance ~= nil and loseloyaltychance > 0 then
-        panicscarednode = ParallelNode{
-            panicscarednode,
-            LoopNode({
-                WaitNode(3),
-                ActionNode(function()
-                    if math.random() < loseloyaltychance and
-                        inst.components.follower ~= nil and
-                        inst.components.follower:GetLoyaltyPercent() > 0 and
-                        inst.components.follower:GetLeader() ~= nil then
-                        inst.components.follower:SetLeader(nil)
-                    end
-                end),
-            }),
-        }
-    end
-
-    return WhileNode(function() return GetTime() < scareendtime end, "PanicScared", panicscarednode)
-end
-
-BrainCommon.PanicWhenScared = PanicWhenScared
 
 --------------------------------------------------------------------------
 return BrainCommon

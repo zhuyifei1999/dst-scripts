@@ -10,10 +10,7 @@ local Widget = require "widgets/widget"
 require "os"
 
 local ANR_BETA_COUNTDOWN_LAYOUT = BRANCH == "staging"
-local ANR_BETA_COUNTDOWN_DATE = {year = 2016, day = 13, month = 10, hour = 13}
-local ANR_BETA_COUNTDOWN_MODE = "image"											-- "text", "image", "reveal", "released"
-local ANR_BETA_COUNTDOWN_IMAGE = "silhouette_beta_3"                            -- "silhouette_beta_1", "silhouette_beta_2"
-local ANR_BETA_COUNTDOWN_NAME = nil												-- "\"A Little Fixer Upper\"", "\"Warts And All\""
+local ANR_BETA_COUNTDOWN_DATE = nil --{year = 2016, day = 11, month = 8, hour = 13}
 
 local WorldGenScreen = require "screens/worldgenscreen"
 local PopupDialogScreen = require "screens/popupdialog"
@@ -296,9 +293,10 @@ function MultiplayerMainScreen:DoInit()
     end
 
 	if ANR_BETA_COUNTDOWN_LAYOUT then
-		self.beta_countdown = self.right_col:AddChild(CountdownBeta(self, ANR_BETA_COUNTDOWN_MODE, ANR_BETA_COUNTDOWN_IMAGE, ANR_BETA_COUNTDOWN_NAME, ANR_BETA_COUNTDOWN_DATE))
+		self.beta_countdown = self.right_col:AddChild(CountdownBeta())
 		self.beta_countdown:SetScale(.8)
-		self.beta_countdown:SetPosition(0, -150, 0)
+		self.beta_countdown:SetPosition(0, -120, 0)
+		self.beta_countdown:SetCountdownDate( ANR_BETA_COUNTDOWN_DATE );
 		
 		self.motd:SetScale(.8)
 		self.motd:SetPosition(0, RESOLUTION_Y/2-180, 0)

@@ -3,7 +3,7 @@ local assets =
     Asset("ANIM", "anim/gems.zip"),
 }
 
-local function buildgem(colour, precious)
+local function buildgem(colour)
     local function Sparkle(inst)
         if not inst.AnimState:IsCurrentAnimation(colour.."gem_sparkle") then
             inst.AnimState:PlayAnimation(colour.."gem_sparkle")
@@ -59,7 +59,7 @@ local function buildgem(colour, precious)
 
         return inst
     end
-    return Prefab(colour..(precious and "preciousgem" or "gem"), fn, assets)
+    return Prefab(colour.."gem", fn, assets)
 end
 
 return buildgem("purple"),
@@ -67,5 +67,4 @@ return buildgem("purple"),
     buildgem("red"),
     buildgem("orange"),
     buildgem("yellow"),
-    buildgem("green"),
-    buildgem("opal", true)
+    buildgem("green")

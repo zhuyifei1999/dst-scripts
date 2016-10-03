@@ -17,7 +17,7 @@ return {
       margin = 0,
       image = "../../../../tools/tiled/dont_starve/tiles.png",
       imagewidth = 512,
-      imageheight = 384,
+      imageheight = 128,
       properties = {},
       tiles = {}
     }
@@ -205,17 +205,6 @@ return {
           shape = "rectangle",
           x = 266,
           y = 162,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "twiggy_tall",
-          shape = "rectangle",
-          x = 394,
-          y = 336,
           width = 0,
           height = 0,
           visible = true,
