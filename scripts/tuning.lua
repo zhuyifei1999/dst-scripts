@@ -642,8 +642,10 @@ function Tune(overrides)
 	    
 	    BIRD_SPAWN_MAX = 4,
 	    BIRD_SPAWN_DELAY = {min=5, max=15},
-	    BIRD_SPAWN_MAX_FEATHERHAT = 7,
-	    BIRD_SPAWN_DELAY_FEATHERHAT = {min=2, max=10},
+	    BIRD_SPAWN_MAX_FEATHERHAT = 7,                   -- DEPRECATED
+	    BIRD_SPAWN_DELAY_FEATHERHAT = {min=2, max=10},   -- DEPRECATED
+	    BIRD_SPAWN_MAXDELTA_FEATHERHAT = 3,
+	    BIRD_SPAWN_DELAYDELTA_FEATHERHAT = {MIN = -3, MAX = -5},
 	    
 		FROG_RAIN_DELAY = {min=0.1, max=2},
 		FROG_RAIN_SPAWN_RADIUS = 60,

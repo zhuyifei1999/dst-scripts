@@ -43,6 +43,7 @@ local function fn()
     inst.AnimState:PlayAnimation("idle")
 
     inst:AddTag("molebait")
+    inst:AddTag("explosive")
 
     inst.entity:SetPristine()
 

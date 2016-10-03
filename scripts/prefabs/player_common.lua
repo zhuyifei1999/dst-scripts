@@ -1686,6 +1686,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         end
 
         inst:AddComponent("bloomer")
+        inst:AddComponent("birdattractor")
 
         inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
         ConfigurePlayerLocomotor(inst)
