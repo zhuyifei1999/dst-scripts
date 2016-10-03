@@ -163,44 +163,55 @@ local function KillOverlayFX(fx)
     fx.AnimState:PlayAnimation("sporecloud_overlay_pst")
 end
 
+local function DoDisperse(inst)
+    if inst._inittask ~= nil then
+        inst._inittask:Cancel()
+        inst._inittask = nil
+    end
+
+    inst.components.aura:Enable(false)
+
+    if inst._spoiltask ~= nil then
+        inst._spoiltask:Cancel()
+        inst._spoiltask = nil
+    end
+
+    inst:RemoveEventCallback("animover", OnAnimOver)
+    inst._state:set(2)
+    FadeOut(inst)
+
+    inst.AnimState:PlayAnimation("sporecloud_pst")
+    inst.SoundEmitter:KillSound("spore_loop")
+    inst.persists = false
+    inst:DoTaskInTime(3, inst.Remove) --anim len + 1.5 sec
+
+    if inst._basefx ~= nil then
+        inst._basefx.AnimState:PlayAnimation("sporecloud_base_pst")
+    end
+
+    if inst._overlaytasks ~= nil then
+        for k, v in pairs(inst._overlaytasks) do
+            v:Cancel()
+        end
+        inst._overlaytasks = nil
+    end
+    if inst._overlayfx ~= nil then
+        for i, v in ipairs(inst._overlayfx) do
+            v:DoTaskInTime(i == 1 and 0 or math.random() * .5, KillOverlayFX)
+        end
+    end
+end
+
 local function OnTimerDone(inst, data)
     if data.name == "disperse" then
-        if inst._inittask ~= nil then
-            inst._inittask:Cancel()
-            inst._inittask = nil
-        end
+        DoDisperse(inst)
+    end
+end
 
-        inst.components.aura:Enable(false)
-
-        if inst._spoiltask ~= nil then
-            inst._spoiltask:Cancel()
-            inst._spoiltask = nil
-        end
-
-        inst:RemoveEventCallback("animover", OnAnimOver)
-        inst._state:set(2)
-        FadeOut(inst)
-
-        inst.AnimState:PlayAnimation("sporecloud_pst")
-        inst.SoundEmitter:KillSound("spore_loop")
-        inst.persists = false
-        inst:DoTaskInTime(3, inst.Remove) --anim len + 1.5 sec
-
-        if inst._basefx ~= nil then
-            inst._basefx.AnimState:PlayAnimation("sporecloud_base_pst")
-        end
-
-        if inst._overlaytasks ~= nil then
-            for k, v in pairs(inst._overlaytasks) do
-                v:Cancel()
-            end
-            inst._overlaytasks = nil
-        end
-        if inst._overlayfx ~= nil then
-            for i, v in ipairs(inst._overlayfx) do
-                v:DoTaskInTime(i == 1 and 0 or math.random() * .5, KillOverlayFX)
-            end
-        end
+local function FinishImmediately(inst)
+    if inst.components.timer:TimerExists("disperse") then
+        inst.components.timer:StopTimer("disperse")
+        DoDisperse(inst)
     end
 end
 
@@ -314,6 +325,7 @@ local function fn()
     inst:AddTag("FX")
     inst:AddTag("NOCLICK")
     inst:AddTag("notarget")
+    inst:AddTag("sporecloud")
 
     inst.SoundEmitter:PlaySound("dontstarve/creatures/together/toad_stool/spore_cloud_LP", "spore_loop")
 
@@ -355,6 +367,7 @@ local function fn()
     inst.OnLoad = OnLoad
 
     inst.FadeInImmediately = FadeInImmediately
+    inst.FinishImmediately = FinishImmediately
 
     inst._overlaytasks = {}
     for i, v in ipairs(OVERLAY_COORDS) do

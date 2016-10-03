@@ -463,6 +463,10 @@ local states =
                 inst.SoundEmitter:PlaySound("dontstarve/creatures/together/toad_stool/roar")
             end),
             TimeEvent(35 * FRAMES, function(inst)
+                local x, y, z = inst.Transform:GetWorldPosition()
+                for i, v in ipairs(TheSim:FindEntities(x, y, z, 8, { "sporecloud" })) do
+                    v:FinishImmediately()
+                end
                 ShakeIfClose(inst)
                 if inst.persists then
                     inst.persists = false
@@ -894,7 +898,7 @@ local states =
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("attack_pound_pre")
             inst.pound_speed = math.min(6, inst.pound_speed + 1)
-            inst.components.timer:StartTimer("pound_cd", Remap(inst.pound_speed, 1, 6, inst.pound_cd, inst.pound_cd / 3))
+            inst.components.timer:StartTimer("pound_cd", Remap(inst.pound_speed, 1, 6, inst.pound_cd, inst.pound_cd * .5))
         end,
 
         timeline =
