@@ -5,6 +5,8 @@ require "behaviours/panic"
 require "behaviours/runaway"
 require "behaviours/leash"
 
+local BrainCommon = require "brains/braincommon"
+
 local MIN_FOLLOW_DIST = 0
 local MAX_FOLLOW_DIST = 25
 local TARGET_FOLLOW_DIST = 6
@@ -29,7 +31,7 @@ end)
 local function PlayAction(inst)
     if inst.sg:HasStateTag("busy") then return end
     if inst.hairball_friend_interval and inst.hairball_friend_interval <= 5 then return end
-    
+
     local target = nil
     local pt = inst:GetPosition()
     target = FindEntity(inst, TUNING.CATCOON_TARGET_DIST, nil, nil, NO_TAGS, PLAY_TAGS)
@@ -38,9 +40,9 @@ local function PlayAction(inst)
         if inst.last_play_air_time and (GetTime() - inst.last_play_air_time) < 15 then return end
         target:RemoveTag("cattoyairborne")
         target:DoTaskInTime(GetRandomWithVariance(30, 5), function(target) 
-            if target and not target:HasTag("cattoyairborne") and not target:HasTag("stump") and not target:HasTag("burnt") then 
-                target:AddTag("cattoyairborne") 
-            end 
+            if target and not target:HasTag("cattoyairborne") and not target:HasTag("stump") and not target:HasTag("burnt") then
+                target:AddTag("cattoyairborne")
+            end
         end)
         return BufferedAction(inst, target, ACTIONS.CATPLAYAIR)
     elseif target then
@@ -67,7 +69,7 @@ local function GetNoLeaderHomePos(inst)
 end
 
 local function GetLeader(inst)
-    return inst.components.follower.leader 
+    return inst.components.follower.leader
 end
 
 local function GetFaceTargetFn(inst)
@@ -119,10 +121,12 @@ local function WhineAction(inst)
 end
 
 function CatcoonBrain:OnStart()
-    local root = 
+    local root =
     PriorityNode(
     {
-        WhileNode( function() return self.inst.components.health.takingfiredamage end, "OnFire", Panic(self.inst)),
+        BrainCommon.PanicWhenScared(self.inst, 1),
+        WhileNode(function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
+        WhileNode(function() return self.inst.components.health.takingfiredamage end, "OnFire", Panic(self.inst)),
         IfNode(function() return ShouldHairball(self.inst) end, "hairball",
             DoAction(self.inst, HairballAction, "hairballact", true)),
         ChaseAndAttack(self.inst, MAX_CHASE_TIME, MAX_CHASE_DIST),

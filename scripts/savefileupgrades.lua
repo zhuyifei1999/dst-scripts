@@ -58,6 +58,29 @@ t = {
 
             return ret
         end,
+        UpgradeUserPresetFromV2toV3 = function(preset, custompresets)
+            if preset.version == nil or preset.version ~= 2 then
+                return preset
+            end
+
+            print(string.format("Upgrading user preset data for '%s' from v2 to v3 (A New Reign Part 1).", tostring(preset.id)))
+
+            if preset.location == "forest" then
+				if preset.ordered_story_setpieces == nil then
+					preset.ordered_story_setpieces = {}
+				end
+				preset.ordered_story_setpieces = ArrayUnion(preset.ordered_story_setpieces, {"Sculptures_1"})
+				
+				if preset.random_set_pieces == nil then
+					preset.random_set_pieces = {}
+				end
+				preset.random_set_pieces = ArrayUnion(preset.random_set_pieces, {"Sculptures_2", "Sculptures_3", "Sculptures_4", "Sculptures_5"})
+			end
+
+			preset.version = 3
+
+            return preset
+        end,
         UpgradeSavedLevelFromV1toV2 = function(level, master_world)
             if level.version ~= nil and level.version >= 2 then
                 return level
@@ -120,6 +143,28 @@ t = {
             end
 
             return ret
+        end,
+        UpgradeSavedLevelFromV2toV3 = function(level, master_world)
+            if level.version ~= 2 then
+                return level
+            end
+            
+            print(string.format("Upgrading saved level data for '%s' from v2 to v3 (A New Reign Part 1).", tostring(level.id)))
+
+            if level.location == "forest" then
+				if level.ordered_story_setpieces == nil then
+					level.ordered_story_setpieces = {}
+				end
+				level.ordered_story_setpieces = ArrayUnion(level.ordered_story_setpieces, {"Sculptures_1"})
+				
+				if level.random_set_pieces == nil then
+					level.random_set_pieces = {}
+				end
+				level.random_set_pieces = ArrayUnion(level.random_set_pieces, {"Sculptures_2", "Sculptures_3", "Sculptures_4", "Sculptures_5"})
+			end
+
+			level.version = 3
+            return level        
         end,
         UpgradeWorldgenoverrideFromV1toV2 = function(wgo)
             local validfields = {
@@ -342,6 +387,34 @@ t = {
                         savedata.map.persistdata.prefabswapmanager.changes = {}
                     end
                 end
+            end,
+        },
+        {
+            version = 4, -- ANR:A Little Fixer Upper
+            fn = function(savedata)
+                if savedata == nil then
+                    return
+                end
+				if savedata.map ~= nil and savedata.map.prefab == "forest" and savedata.map.persistdata ~= nil then
+                    if savedata.map.persistdata.retrofitforestmap_anr == nil then
+						savedata.map.persistdata.retrofitforestmap_anr = {}
+					end
+					savedata.map.persistdata.retrofitforestmap_anr.retrofit_part1 = true
+				end
+            end,
+        },
+        {
+            version = 4.1, -- ANR:Warts and All
+            fn = function(savedata)
+                if savedata == nil then
+                    return
+                end
+				if savedata.map ~= nil and savedata.map.prefab == "cave" and savedata.map.persistdata ~= nil then
+                    if savedata.map.persistdata.retrofitcavemap_anr == nil then
+						savedata.map.persistdata.retrofitcavemap_anr = {}
+					end
+					savedata.map.persistdata.retrofitcavemap_anr.retrofit_warts = true
+				end
             end,
         }
     },

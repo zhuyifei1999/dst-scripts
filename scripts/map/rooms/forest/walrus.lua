@@ -32,6 +32,7 @@ AddRoom("WalrusHut_Grassy", {
 										carrot_planted=0.05,
 										flint=0.05,
 										sapling=0.2,
+					                    twiggytree=0.08,
 										evergreen=0.3,
 										pond=.005,
 					                },
@@ -48,7 +49,6 @@ AddRoom("WalrusHut_Rocky", {
 					                distributeprefabs=
 					                {
 										flint=0.5,
-										rock_petrified_tree = 3,
 										rock1=1,
 										rock2=1,
 										tallbirdnest=0.3,

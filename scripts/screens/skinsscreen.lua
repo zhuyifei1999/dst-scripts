@@ -34,7 +34,6 @@ local SkinsScreen = Class(Screen, function(self, profile)
 end)
 
 function SkinsScreen:DoInit()
-	STATS_ENABLE = true
 	TheFrontEnd:GetGraphicsOptions():DisableStencil()
 	TheFrontEnd:GetGraphicsOptions():DisableLightMapComponent()
 	

@@ -28,7 +28,7 @@ return CreatePrefabSkin("wx78_shadow",
 	ui_preview = ui_preview,
 	tags = tags,
 	
-	torso_tuck_builds = { "wx78_shadow" },
+	--torso_tuck_builds = { "wx78_shadow" },
 	has_alternate_for_body = { "wx78_shadow" },
 
 	rarity = "Elegant",

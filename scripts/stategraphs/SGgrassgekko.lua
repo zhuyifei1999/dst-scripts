@@ -1,15 +1,7 @@
 require("stategraphs/commonstates")
 
-local function getBuild(inst,tail)
-    local build = "grassgecko"
-    if not tail then 
-        build = build .. "_notail_build"
-    end
-    if inst.components.diseaseable ~= nil and inst.components.diseaseable:IsDiseased() then
-        build = build .. "_disease"
-    end
-    --print(build)
-    return build
+local function getBuild(inst, tail)
+    return tail and "grassgecko" or "grassgecko_notail_build"
 end
 
 --hiss_pre, vomit, swipe_pre
@@ -233,7 +225,44 @@ local states=
             end),
             
         },
-    },  
+    },
+
+    State{
+        name = "emerge",
+        tags = { "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+
+            local player = inst:GetNearestPlayer()
+            if player ~= nil and inst:IsNear(player, 7) then
+                inst:FaceAwayFromPoint(player:GetPosition(), true)
+            else
+                inst.Transform:SetRotation(math.random(360))
+            end
+
+            inst.AnimState:PlayAnimation("gecko_pop")
+        end,
+
+        timeline =
+        {
+            TimeEvent(12 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/wilson/pickup_reeds")
+            end),
+            TimeEvent(32 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/grass_gekko/emerge")
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
 }
 
 --inst.components.locomotor:WantsToRun()

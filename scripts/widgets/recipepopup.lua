@@ -29,8 +29,7 @@ local function GetHintTextForRecipe(player, recipe)
     local validmachines = {}
     local adjusted_level = deepcopy(recipe.level)
 
-    for k,v in pairs(TUNING.PROTOTYPER_TREES) do
-
+    for k, v in pairs(TUNING.PROTOTYPER_TREES) do
         -- Adjust level for bonus so that the hint gives the right message
         if player.replica.builder ~= nil then
             if k == "SCIENCEMACHINE" or k == "ALCHEMYMACHINE" then
@@ -41,6 +40,8 @@ local function GetHintTextForRecipe(player, recipe)
                 adjusted_level.ANCIENT = adjusted_level.ANCIENT - player.replica.builder:AncientBonus()
             elseif k == "WAXWELLJOURNAL" then
                 adjusted_level.SHADOW = adjusted_level.SHADOW - player.replica.builder:ShadowBonus()
+            elseif k == "CARTOGRAPHYDESK" then
+                adjusted_level.CARTOGRAPHY = adjusted_level.CARTOGRAPHY - player.replica.builder:CartographyBonus()
             end
         end
 
@@ -77,7 +78,7 @@ local function GetHintTextForRecipe(player, recipe)
             end
         end
 
-        -- local bestmachine = nil    
+        -- local bestmachine = nil
         -- for each req in recipe.level do
         --     for m in validmachines do
         --         if req > 0 and m[req] >= req and m[req] < bestmachine[req] then
@@ -95,16 +96,16 @@ local function GetHintTextForRecipe(player, recipe)
 end
 
 function RecipePopup:BuildWithSpinner(horizontal)
-	self:KillAllChildren()
+    self:KillAllChildren()
 
-	local hud_atlas = resolvefilepath( "images/hud.xml" )
+    local hud_atlas = resolvefilepath( "images/hud.xml" )
 
     self.bg = self:AddChild(Image())
     local img = horizontal and "craftingsubmenu_fullvertical.tex" or "craftingsubmenu_fullhorizontal.tex"
 
     local y_offset = 0
     if horizontal then
-    	y_offset = -55
+        y_offset = -55
         self.bg:SetPosition(240,-15,0)
     else
         self.bg:SetPosition(210,16,0)
@@ -126,7 +127,6 @@ function RecipePopup:BuildWithSpinner(horizontal)
     end
     self.name:SetPosition(320, 172, 0)
     self.name:SetHAlign(ANCHOR_MIDDLE)
-   
 
     if JapaneseOnPS4() then
         self.desc = self.contents:AddChild(Text(BODYTEXTFONT, 33 * 0.8))
@@ -135,7 +135,7 @@ function RecipePopup:BuildWithSpinner(horizontal)
     else
         self.desc = self.contents:AddChild(Text(BODYTEXTFONT, 33))
         self.desc:SetPosition(320, 25, 0)
-        self.desc:SetRegionSize(64*3+30,70) 
+        self.desc:SetRegionSize(64*3+30,70)
     end
     self.desc:EnableWordWrap(true)
 
@@ -144,42 +144,41 @@ function RecipePopup:BuildWithSpinner(horizontal)
     self.spinner_bg:SetScale(1, 1.32, 1)
     self.spinner_bg:SetPosition(317, -68)
 
-   	self.lines.line_under_desc = self.lines:AddChild(Image("images/ui.xml", "line_horizontal_white.tex"))
-   	self.lines.line_under_desc:SetPosition(320, -15)
-   	self.lines.line_under_desc:SetTint(unpack(BROWN))
+    self.lines.line_under_desc = self.lines:AddChild(Image("images/ui.xml", "line_horizontal_white.tex"))
+    self.lines.line_under_desc:SetPosition(320, -15)
+    self.lines.line_under_desc:SetTint(unpack(BROWN))
 
     self.ing = {}
 
     self.button = self.contents:AddChild(ImageButton())
     self.button:SetOnClick(function()
-								if not DoRecipeClick(self.owner, self.recipe, self.skins_spinner.GetItem()) then
-									self.owner.HUD.controls.crafttabs:Close()
-								end
-								Profile:SetRecipeTimestamp(self.recipe.name, self.timestamp)
-								Profile:SetLastUsedSkinForItem(self.recipe.name, self.skins_spinner.GetItem())
-    						end)
+                                if not DoRecipeClick(self.owner, self.recipe, self.skins_spinner.GetItem()) then
+                                    self.owner.HUD.controls.crafttabs:Close()
+                                end
+                                Profile:SetRecipeTimestamp(self.recipe.name, self.timestamp)
+                                Profile:SetLastUsedSkinForItem(self.recipe.name, self.skins_spinner.GetItem())
+                            end)
     self.button:SetPosition(320, -155, 0)
-  
+
     self.button:SetScale(.7,.7,.7)
     self.button.image:SetScale(.45, .7)
-  
+
     --self.skinbuttons = {}
     self.build_title = self.contents:AddChild(Text(BODYTEXTFONT, 33))
     self.build_title:SetPosition(330, -60, 0)
 
-
     self.skins_spinner = self.contents:AddChild(self:MakeSpinner())
     -- self.skins_spinner:SetScale(.3)
-	self.skins_spinner:SetPosition(307, -100)
+    self.skins_spinner:SetPosition(307, -100)
 
-	if horizontal and TheInput:ControllerAttached() then 
-		-- Put symbols showing the controls for the spinner next to the spinner buttons
-		self.skins_spinner.spinner:AddControllerHints()
-	end
+    if horizontal and TheInput:ControllerAttached() then
+        -- Put symbols showing the controls for the spinner next to the spinner buttons
+        self.skins_spinner.spinner:AddControllerHints()
+    end
 
-	self.lines.line_under_spinner = self.lines:AddChild(Image("images/ui.xml", "line_horizontal_white.tex"))
-   	self.lines.line_under_spinner:SetPosition(320, -120)
-   	self.lines.line_under_spinner:SetTint(unpack(BROWN))
+    self.lines.line_under_spinner = self.lines:AddChild(Image("images/ui.xml", "line_horizontal_white.tex"))
+    self.lines.line_under_spinner:SetPosition(320, -120)
+    self.lines.line_under_spinner:SetTint(unpack(BROWN))
 
     self.recipecost = self.contents:AddChild(Text(NUMBERFONT, 40))
     self.recipecost = self.contents:AddChild(Text(NUMBERFONT, 40))
@@ -191,24 +190,22 @@ function RecipePopup:BuildWithSpinner(horizontal)
     self.amulet = self.contents:AddChild(Image( resolvefilepath("images/inventoryimages.xml"), "greenamulet.tex"))
     self.amulet:SetPosition(415, -155, 0)
     self.amulet:SetTooltip(STRINGS.GREENAMULET_TOOLTIP)
-    
+
     self.teaser = self.contents:AddChild(Text(BODYTEXTFONT, 28))
     self.teaser:SetPosition(325, -150, 0)
     self.teaser:SetRegionSize(64*3+20,100)
     self.teaser:EnableWordWrap(true)
     self.teaser:Hide()
-
 end
 
 function RecipePopup:BuildNoSpinner(horizontal)
-	self:KillAllChildren()
-	
-	self.skins_spinner = nil
-	
-	local hud_atlas = resolvefilepath( "images/hud.xml" )
+    self:KillAllChildren()
 
-	
-   	self.bg = self:AddChild(Image())
+    self.skins_spinner = nil
+
+    local hud_atlas = resolvefilepath( "images/hud.xml" )
+
+    self.bg = self:AddChild(Image())
     local img = horizontal and "craftingsubmenu_fullvertical.tex" or "craftingsubmenu_fullhorizontal.tex"
 
     if horizontal then
@@ -219,11 +216,11 @@ function RecipePopup:BuildNoSpinner(horizontal)
     self.bg:SetTexture(hud_atlas, img)
 
     if horizontal then
-    	self.bg.light_box = self.bg:AddChild(Image(hud_atlas, "craftingsubmenu_litehorizontal.tex"))
-    	self.bg.light_box:SetPosition(0, -50)
-    else 
-    	self.bg.light_box = self.bg:AddChild(Image(hud_atlas, "craftingsubmenu_litevertical.tex"))
-    	self.bg.light_box:SetPosition(30, -22)
+        self.bg.light_box = self.bg:AddChild(Image(hud_atlas, "craftingsubmenu_litehorizontal.tex"))
+        self.bg.light_box:SetPosition(0, -50)
+    else
+        self.bg.light_box = self.bg:AddChild(Image(hud_atlas, "craftingsubmenu_litevertical.tex"))
+        self.bg.light_box:SetPosition(30, -22)
     end
 
     --
@@ -262,10 +259,10 @@ function RecipePopup:BuildNoSpinner(horizontal)
     self.button:SetScale(.7,.7,.7)
     self.button.image:SetScale(.45, .7)
     self.button:SetOnClick(function()
-							if not DoRecipeClick(self.owner, self.recipe) then
-									self.owner.HUD.controls.crafttabs:Close()
-								end
-							end)
+                            if not DoRecipeClick(self.owner, self.recipe) then
+                                    self.owner.HUD.controls.crafttabs:Close()
+                                end
+                            end)
 
     self.recipecost = self.contents:AddChild(Text(NUMBERFONT, 40))
     self.recipecost:SetHAlign(ANCHOR_LEFT)
@@ -276,13 +273,12 @@ function RecipePopup:BuildNoSpinner(horizontal)
     self.amulet = self.contents:AddChild(Image( resolvefilepath("images/inventoryimages.xml"), "greenamulet.tex"))
     self.amulet:SetPosition(415, -105, 0)
     self.amulet:SetTooltip(STRINGS.GREENAMULET_TOOLTIP)
-    
+
     self.teaser = self.contents:AddChild(Text(BODYTEXTFONT, 28))
     self.teaser:SetPosition(325, -100, 0)
     self.teaser:SetRegionSize(64*3+20,100)
     self.teaser:EnableWordWrap(true)
     self.teaser:Hide()
-
 end
 
 function RecipePopup:Refresh()
@@ -301,30 +297,28 @@ function RecipePopup:Refresh()
     local tech_level = builder:GetTechTrees()
     local should_hint = not knows and ShouldHintRecipe(recipe.level, tech_level) and not CanPrototypeRecipe(recipe.level, tech_level)
 
-   
     self.skins_list = self:GetSkinsList()
-	
-	self.skins_options = self:GetSkinOptions() -- In offline mode, this will return the default option and nothing else
 
-	if #self.skins_options == 1 then 
-		-- No skins available, so use the original version of this popup
-		if self.skins_spinner ~= nil then 
-			self:BuildNoSpinner(self.horizontal)
-		end
-	else
-		--Skins are available, use the spinner version of this popup
-		if self.skins_spinner == nil then 
-			self:BuildWithSpinner(self.horizontal)
-		end
+    self.skins_options = self:GetSkinOptions() -- In offline mode, this will return the default option and nothing else
 
-		self.skins_spinner.spinner:SetOptions(self.skins_options)
-		local last_skin = Profile:GetLastUsedSkinForItem(recipe.name)
-		if last_skin then 
-			self.skins_spinner.spinner:SetSelectedIndex(self:GetIndexForSkin(last_skin) or 1)
-		end
-	end
+    if #self.skins_options == 1 then
+        -- No skins available, so use the original version of this popup
+        if self.skins_spinner ~= nil then
+            self:BuildNoSpinner(self.horizontal)
+        end
+    else
+        --Skins are available, use the spinner version of this popup
+        if self.skins_spinner == nil then
+            self:BuildWithSpinner(self.horizontal)
+        end
 
-  
+        self.skins_spinner.spinner:SetOptions(self.skins_options)
+        local last_skin = Profile:GetLastUsedSkinForItem(recipe.name)
+        if last_skin then
+            self.skins_spinner.spinner:SetSelectedIndex(self:GetIndexForSkin(last_skin) or 1)
+        end
+    end
+
     local equippedBody = inventory:GetEquippedItem(EQUIPSLOTS.BODY)
     local showamulet = equippedBody and equippedBody.prefab == "greenamulet"
 
@@ -342,71 +336,41 @@ function RecipePopup:Refresh()
             ["PRESTIHATITATOR"] = STRINGS.UI.CRAFTING.NEEDPRESTIHATITATOR,
             ["CANTRESEARCH"] = STRINGS.UI.CRAFTING.CANTRESEARCH,
             ["ANCIENTALTAR_HIGH"] = STRINGS.UI.CRAFTING.NEEDSANCIENT_FOUR,
-            ["WAXWELLJOURNAL"] = STRINGS.UI.CRAFTING.NEEDWAXWELLJOURNAL,
         }
         local str = hint_text[GetHintTextForRecipe(owner, recipe)] or "Text not found."
         self.teaser:SetScale(TEASER_SCALE_TEXT)
         self.teaser:SetString(str)
         self.teaser:Show()
         showamulet = false
-    elseif knows then
-        self.teaser:Hide()
-        self.recipecost:Hide()
-
-        if TheInput:ControllerAttached() then
-            self.button:Hide()
-            self.teaser:Show()
-
-            if can_build then
-                self.teaser:SetScale(TEASER_SCALE_BTN)
-                self.teaser:SetString(TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT) .. " " .. (buffered and STRINGS.UI.CRAFTING.PLACE or STRINGS.UI.CRAFTING.BUILD))
-            else
-                self.teaser:SetScale(TEASER_SCALE_TEXT)
-                self.teaser:SetString(STRINGS.UI.CRAFTING.NEEDSTUFF)
-            end
-        else
-            self.button:Show()
-            if self.skins_spinner ~= nil then 
-            	self.button:SetPosition(320, -155, 0)
-            else 
-            	self.button:SetPosition(320, -105, 0)
-            end
-            self.button:SetScale(1,1,1)
-
-            self.button:SetText(buffered and STRINGS.UI.CRAFTING.PLACE or STRINGS.UI.CRAFTING.BUILD)
-            if can_build then
-                self.button:Enable()
-            else
-                self.button:Disable()
-            end
-        end
     else
         self.teaser:Hide()
         self.recipecost:Hide()
 
+        local buttonstr =
+            not (knows or recipe.nounlock) and STRINGS.UI.CRAFTING.PROTOTYPE or
+            (buffered and STRINGS.UI.CRAFTING.PLACE or STRINGS.UI.CRAFTING.BUILD)
+
         if TheInput:ControllerAttached() then
             self.button:Hide()
             self.teaser:Show()
 
-            self.teaser:SetColour(1,1,1,1) 
-
             if can_build then
                 self.teaser:SetScale(TEASER_SCALE_BTN)
-                self.teaser:SetString(TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT) .. " " .. STRINGS.UI.CRAFTING.PROTOTYPE)
+                self.teaser:SetString(TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT).." "..buttonstr)
             else
                 self.teaser:SetScale(TEASER_SCALE_TEXT)
                 self.teaser:SetString(STRINGS.UI.CRAFTING.NEEDSTUFF)
             end
         else
             self.button:Show()
-            if self.skins_spinner ~= nil then 
-            	self.button:SetPosition(320, -155, 0)
-            else 
-            	self.button:SetPosition(320, -105, 0)
+            if self.skins_spinner ~= nil then
+                self.button:SetPosition(320, -155, 0)
+            else
+                self.button:SetPosition(320, -105, 0)
             end
             self.button:SetScale(1,1,1)
 
-            self.button:SetText(STRINGS.UI.CRAFTING.PROTOTYPE)
+            self.button:SetText(buttonstr)
             if can_build then
                 self.button:Enable()
             else
@@ -435,7 +399,7 @@ function RecipePopup:Refresh()
     local div = 10
     local half_div = div * .5
     local offset = 315 --center
-    if num > 1 then 
+    if num > 1 then
         offset = offset - (w *.5 + half_div) * (num - 1)
     end
 
@@ -445,10 +409,10 @@ function RecipePopup:Refresh()
         if num > 1 and #self.ing > 0 then
             offset = offset + half_div
         end
-        if self.skins_spinner ~= nil then 
-        	ing:SetPosition(Vector3(offset, 110, 0))
-        else 
-        	ing:SetPosition(Vector3(offset, 80, 0))
+        if self.skins_spinner ~= nil then
+            ing:SetPosition(Vector3(offset, 110, 0))
+        else
+            ing:SetPosition(Vector3(offset, 80, 0))
         end
         offset = offset + w + half_div
         table.insert(self.ing, ing)
@@ -462,18 +426,18 @@ function RecipePopup:Refresh()
         if num > 1 and #self.ing > 0 then
             offset = offset + half_div
         end
-        if self.skins_spinner ~= nil then 
-        	ing:SetPosition(Vector3(offset, 110, 0))
-        else 
-        	ing:SetPosition(Vector3(offset, 80, 0))
+        if self.skins_spinner ~= nil then
+            ing:SetPosition(Vector3(offset, 110, 0))
+        else
+            ing:SetPosition(Vector3(offset, 80, 0))
         end
         offset = offset + w + half_div
         table.insert(self.ing, ing)
     end
 
     -- update new tags
-    if self.skins_spinner then 
-    	self.skins_spinner.spinner:Changed()
+    if self.skins_spinner then
+        self.skins_spinner.spinner:Changed()
     end
 end
 
@@ -484,166 +448,161 @@ function RecipePopup:SetRecipe(recipe, owner)
 end
 
 function RecipePopup:GetSkinAtIndex(idx)
-	if idx == 1 then 
-		return self.recipe.name
-	end
-
-    return self.skins_list[idx-1].item
+    return idx == 1 and self.recipe.name or self.skins_list[idx - 1].item
 end
 
 function RecipePopup:GetIndexForSkin(skin)
-	for i=1, #self.skins_list do 
-		if self.skins_list[i].item == skin then 
-			return i + 1
-		end
-	end
+    for i=1, #self.skins_list do
+        if self.skins_list[i].item == skin then
+            return i + 1
+        end
+    end
 
-	return 1
+    return 1
 end
 
 function RecipePopup:GetSkinsList()
-	if not self.timestamp then self.timestamp = -10000 end
+    if not self.timestamp then self.timestamp = -10000 end
 
-	--Note(Peter): This could get a speed improvement by passing in self.recipe.name into a c-side inventory check, and then add the PREFAB_SKINS data to c-side
-	-- so that we don't have to walk the whole inventory for each prefab for each item_type in PREFAB_SKINS[self.recipe.name]
-	self.skins_list = {}
-	if self.recipe and PREFAB_SKINS[self.recipe.name] then
-		for _,item_type in pairs(PREFAB_SKINS[self.recipe.name]) do
-			local has_item, modified_time = TheInventory:CheckOwnershipGetLatest(item_type)
-			if has_item then
-				local data  = {}
-				data.type = type
-				data.item = item_type
-				data.timestamp = modified_time
-				table.insert(self.skins_list, data)
+    --Note(Peter): This could get a speed improvement by passing in self.recipe.name into a c-side inventory check, and then add the PREFAB_SKINS data to c-side
+    -- so that we don't have to walk the whole inventory for each prefab for each item_type in PREFAB_SKINS[self.recipe.name]
+    self.skins_list = {}
+    if self.recipe and PREFAB_SKINS[self.recipe.name] then
+        for _,item_type in pairs(PREFAB_SKINS[self.recipe.name]) do
+            local has_item, modified_time = TheInventory:CheckOwnershipGetLatest(item_type)
+            if has_item then
+                local data  = {}
+                data.type = type
+                data.item = item_type
+                data.timestamp = modified_time
+                table.insert(self.skins_list, data)
 
-				if data.timestamp > self.timestamp then 
-					self.timestamp = data.timestamp
-				end
-			end
-		end
-	end
+                if data.timestamp > self.timestamp then
+                    self.timestamp = data.timestamp
+                end
+            end
+        end
+    end
 
-	return self.skins_list
+    return self.skins_list
 end
 
 function RecipePopup:GetSkinOptions()
-	local skin_options = {}
+    local skin_options = {}
 
-	table.insert(skin_options, 
-	{
-		text = STRINGS.UI.CRAFTING.DEFAULT,
-		data = nil, 
-		colour = SKIN_RARITY_COLORS["Common"],
-		new_indicator = false,
-		image =  {"images/inventoryimages.xml", self.recipe.name..".tex", "default.tex"},
-	})
+    table.insert(skin_options,
+    {
+        text = STRINGS.UI.CRAFTING.DEFAULT,
+        data = nil,
+        colour = SKIN_RARITY_COLORS["Common"],
+        new_indicator = false,
+        image = {"images/inventoryimages.xml", self.recipe.name..".tex", "default.tex"},
+    })
 
-	local recipe_timestamp = Profile:GetRecipeTimestamp(self.recipe.name)
-	--print(self.recipe.name, "Recipe timestamp is ", recipe_timestamp)
-	if self.skins_list and TheNet:IsOnlineMode() then 
-		for which = 1, #self.skins_list do 
-			local image_name = self.skins_list[which].item 
+    local recipe_timestamp = Profile:GetRecipeTimestamp(self.recipe.name)
+    --print(self.recipe.name, "Recipe timestamp is ", recipe_timestamp)
+    if self.skins_list and TheNet:IsOnlineMode() then
+        for which = 1, #self.skins_list do
+            local image_name = self.skins_list[which].item
 
-			local rarity = GetRarityForItem("item", image_name)
-			local colour = rarity and SKIN_RARITY_COLORS[rarity] or SKIN_RARITY_COLORS["Common"]
-			local text_name = GetName(image_name) or STRINGS.SKIN_NAMES["missing"]
-			local new_indicator = not self.skins_list[which].timestamp or (self.skins_list[which].timestamp > recipe_timestamp)
+            local rarity = GetRarityForItem("item", image_name)
+            local colour = rarity and SKIN_RARITY_COLORS[rarity] or SKIN_RARITY_COLORS["Common"]
+            local text_name = GetName(image_name) or STRINGS.SKIN_NAMES["missing"]
+            local new_indicator = not self.skins_list[which].timestamp or (self.skins_list[which].timestamp > recipe_timestamp)
 
-			if image_name == "" then 
-				image_name = "default"
-			else
-				image_name = string.gsub(image_name, "_none", "")
-			end
+            if image_name == "" then
+                image_name = "default"
+            else
+                image_name = string.gsub(image_name, "_none", "")
+            end
 
-			table.insert(skin_options,  
-			{
-				text = text_name, 
-				data = nil,
-				colour = colour,
-				new_indicator = new_indicator,
-				image = {"images/inventoryimages.xml", image_name..".tex" or "default.tex", "default.tex"},
-			})
-		end
+            table.insert(skin_options,
+            {
+                text = text_name,
+                data = nil,
+                colour = colour,
+                new_indicator = new_indicator,
+                image = {"images/inventoryimages.xml", image_name..".tex" or "default.tex", "default.tex"},
+            })
+        end
 
-	else 
-		self.spinner_empty = true
-	end
+    else
+        self.spinner_empty = true
+    end
 
-	return skin_options
+    return skin_options
 end
 
 function RecipePopup:MakeSpinner()
 
-	local spinner_group = Widget("spinner group")
+    local spinner_group = Widget("spinner group")
 
-	local textures = {
-		arrow_left_normal = "crafting_inventory_arrow_l_idle.tex",
-		arrow_left_over = "crafting_inventory_arrow_l_hl.tex",
-		arrow_left_disabled = "arrow_left_disabled.tex",
-		arrow_left_down = "crafting_inventory_arrow_l_hl.tex",
-		arrow_right_normal = "crafting_inventory_arrow_r_idle.tex",
-		arrow_right_over = "crafting_inventory_arrow_r_hl.tex",
-		arrow_right_disabled = "arrow_right_disabled.tex",
-		arrow_right_down = "crafting_inventory_arrow_r_hl.tex",
-		bg_middle = "blank.tex",
-		bg_middle_focus = "blank.tex", --"box_2.tex",
-		bg_middle_changing = "blank.tex",
-		bg_end = "blank.tex",
-		bg_end_focus = "blank.tex",
-		bg_end_changing = "blank.tex",
-	}
+    local textures = {
+        arrow_left_normal = "crafting_inventory_arrow_l_idle.tex",
+        arrow_left_over = "crafting_inventory_arrow_l_hl.tex",
+        arrow_left_disabled = "arrow_left_disabled.tex",
+        arrow_left_down = "crafting_inventory_arrow_l_hl.tex",
+        arrow_right_normal = "crafting_inventory_arrow_r_idle.tex",
+        arrow_right_over = "crafting_inventory_arrow_r_hl.tex",
+        arrow_right_disabled = "arrow_right_disabled.tex",
+        arrow_right_down = "crafting_inventory_arrow_r_hl.tex",
+        bg_middle = "blank.tex",
+        bg_middle_focus = "blank.tex", --"box_2.tex",
+        bg_middle_changing = "blank.tex",
+        bg_end = "blank.tex",
+        bg_end_focus = "blank.tex",
+        bg_end_changing = "blank.tex",
+    }
 
-	local spinner_width = 220
-	local spinner_height = 68
+    local spinner_width = 220
+    local spinner_height = 68
 
-	
-	--local bg = spinner_group:AddChild(Image("images/ui.xml", "single_option_bg.tex"))
-	--bg:SetSize(220, 30)
-	--bg:SetPosition(10, 4, 0)
+    --local bg = spinner_group:AddChild(Image("images/ui.xml", "single_option_bg.tex"))
+    --bg:SetSize(220, 30)
+    --bg:SetPosition(10, 4, 0)
 
-	spinner_group.spinner = spinner_group:AddChild(Spinner( {}, spinner_width, nil, {font=UIFONT, size=28}, nil, nil, textures, true, 200, nil))
-	spinner_group.spinner:SetPosition(10, 46, 0)
-	spinner_group.spinner.text:SetPosition(0, -44)
-	spinner_group.spinner.fgimage:SetScale(.9)
-	spinner_group.spinner.fgimage:SetPosition(0, 6)
-	spinner_group.spinner.background:ScaleToSize(spinner_width + 2, spinner_height)
-	spinner_group.spinner.background:SetPosition(0, 6)
-	
+    spinner_group.spinner = spinner_group:AddChild(Spinner( {}, spinner_width, nil, {font=UIFONT, size=28}, nil, nil, textures, true, 200, nil))
+    spinner_group.spinner:SetPosition(10, 46, 0)
+    spinner_group.spinner.text:SetPosition(0, -44)
+    spinner_group.spinner.fgimage:SetScale(.9)
+    spinner_group.spinner.fgimage:SetPosition(0, 6)
+    spinner_group.spinner.background:ScaleToSize(spinner_width + 2, spinner_height)
+    spinner_group.spinner.background:SetPosition(0, 6)
+
     spinner_group.new_tag = spinner_group:AddChild(Image("images/ui.xml", "new_label.tex"))
     spinner_group.new_tag:SetScale(.8)
     spinner_group.new_tag:SetPosition(-45, 60)
-    --spinner_group.new_tag:SetPosition(60, 60) 
-   
+    --spinner_group.new_tag:SetPosition(60, 60)
+
     spinner_group.spinner:SetOnChangedFn(function()
-												  	local which = spinner_group.spinner:GetSelectedIndex()
-												  	if which > 1 then 
-													  if self.skins_options[which].new_indicator or testNewTag then 
-													  	spinner_group.new_tag:Show()
-													  else
-													  	spinner_group.new_tag:Hide()
-													  end
-													else
-														spinner_group.new_tag:Hide()
-													end
-										end)
+                                                    local which = spinner_group.spinner:GetSelectedIndex()
+                                                    if which > 1 then 
+                                                      if self.skins_options[which].new_indicator or testNewTag then 
+                                                        spinner_group.new_tag:Show()
+                                                      else
+                                                        spinner_group.new_tag:Hide()
+                                                      end
+                                                    else
+                                                        spinner_group.new_tag:Hide()
+                                                    end
+                                        end)
 
-	spinner_group.GetItem = 
-		function()
-			local which = spinner_group.spinner:GetSelectedIndex()
-			if which > 1 then 
-				local name = self.skins_list[which - 1].item
-				return name
-			else 
-				return self.recipe.name
-			end
-		end
+    spinner_group.GetItem =
+        function()
+            local which = spinner_group.spinner:GetSelectedIndex()
+            if which > 1 then
+                local name = self.skins_list[which - 1].item
+                return name
+            else
+                return self.recipe.name
+            end
+        end
 
-	spinner_group.OnControl = function(self, control, down) spinner_group.spinner:OnControl(control, down) end
+    spinner_group.OnControl = function(self, control, down) spinner_group.spinner:OnControl(control, down) end
 
-	spinner_group.focus_forward = spinner_group.spinner
+    spinner_group.focus_forward = spinner_group.spinner
 
-	return spinner_group
+    return spinner_group
 
 end
 
@@ -653,7 +612,7 @@ function RecipePopup:OnControl(control, down)
     -- This function gets called by craftslot when left or right d-pad buttons are pushed. Pass those through to the 
     -- spinner.
     if self.skins_spinner ~= nil and TheInput:ControllerAttached() then 
-    	self.skins_spinner:OnControl(control, down)
+        self.skins_spinner:OnControl(control, down)
     end
 end
 

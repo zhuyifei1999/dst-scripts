@@ -73,7 +73,7 @@ function Rider:SetActionFilter(riding)
     if self.inst.components.playercontroller ~= nil then
         if riding then
             self.inst.components.playercontroller.actionbuttonoverride = ActionButtonOverride
-            self.inst.components.playeractionpicker:PushActionFilter(MountedActionFilter)
+            self.inst.components.playeractionpicker:PushActionFilter(MountedActionFilter, 20)
         else
             self.inst.components.playercontroller.actionbuttonoverride = nil
             self.inst.components.playeractionpicker:PopActionFilter(MountedActionFilter)

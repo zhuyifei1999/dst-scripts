@@ -134,6 +134,7 @@ AddRoom("Pondopolis", {
 					                    grass = 8,
 					                    flower = 6,
 					                    sapling = 1,
+					                    twiggytree = 0.4,
 									},
 					            }
 					})

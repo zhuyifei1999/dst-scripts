@@ -1050,9 +1050,9 @@ function EntityScript:GetDistanceSqToPoint(x, y, z)
     return distsq(x, z, x1, z1)
 end
 
-function EntityScript:IsNearPlayer(range)
+function EntityScript:IsNearPlayer(range, isalive)
     local x, y, z = self.Transform:GetWorldPosition()
-    return IsAnyPlayerInRange(x, y, z, range)
+    return IsAnyPlayerInRange(x, y, z, range, isalive)
 end
 
 function EntityScript:GetNearestPlayer(isalive)

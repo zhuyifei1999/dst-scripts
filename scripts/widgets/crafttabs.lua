@@ -79,13 +79,18 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
     InitTabSoundsAfterFadein(self.inst, self)
 
     local tabnames = {}
-    for k,v in pairs(RECIPETABS) do
+    local numtabslots = 1 --reserver 1 slot for crafting station tabs
+    for k, v in pairs(RECIPETABS) do
         table.insert(tabnames, v)
+        if not v.crafting_station then
+            numtabslots = numtabslots + 1
+        end
     end
 
-    for k,v in pairs(CUSTOM_RECIPETABS) do
-        if v.owner_tag == nil or owner:HasTag( v.owner_tag ) then
+    for k, v in pairs(CUSTOM_RECIPETABS) do
+        if v.owner_tag == nil or owner:HasTag(v.owner_tag) then
             table.insert(tabnames, v)
+            numtabslots = numtabslots + 1
         end
     end
 
@@ -93,12 +98,21 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
 
     self.tab_order = {}
 
-    self.tabs.spacing = 750/#tabnames
+    self.tabs.spacing = 750 / numtabslots
 
     self.tabbyfilter = {}
-    for k,v in ipairs(tabnames) do
-        local tab = self.tabs:AddTab(STRINGS.TABS[v.str], resolvefilepath("images/hud.xml"), v.icon_atlas or resolvefilepath("images/hud.xml"),
-        v.icon, tab_bg.normal, tab_bg.selected, tab_bg.highlight, tab_bg.bufferedhighlight, tab_bg.overlay,
+    local was_crafting_station = nil
+    for k, v in ipairs(tabnames) do
+        local tab = self.tabs:AddTab(
+            STRINGS.TABS[v.str],
+            resolvefilepath("images/hud.xml"),
+            v.icon_atlas or resolvefilepath("images/hud.xml"),
+            v.icon,
+            tab_bg.normal,
+            tab_bg.selected,
+            tab_bg.highlight,
+            tab_bg.bufferedhighlight,
+            tab_bg.overlay,
 
             function() --select fn
                 if not self.controllercraftingopen then
@@ -131,7 +145,11 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
             function() --deselect fn
                 self.craft_idx_by_tab[k] = self.crafting.idx
                 self.crafting:Close()
-            end)
+            end,
+
+            was_crafting_station and v.crafting_station --collapsed
+        )
+        was_crafting_station = v.crafting_station
         tab.filter = v
         tab.icon = v.icon
         tab.icon_atlas = v.icon_atlas or resolvefilepath("images/hud.xml")

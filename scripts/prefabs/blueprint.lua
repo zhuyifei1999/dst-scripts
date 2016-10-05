@@ -3,19 +3,38 @@ require "recipes"
 local assets =
 {
     Asset("ANIM", "anim/blueprint.zip"),
+    Asset("ANIM", "anim/blueprint_rare.zip"),
     Asset("INV_IMAGE", "blueprint"),
+    Asset("INV_IMAGE", "blueprint_rare"),
 }
 
 local function onload(inst, data)
     if data ~= nil and data.recipetouse ~= nil then
         inst.recipetouse = data.recipetouse
         inst.components.teacher:SetRecipe(inst.recipetouse)
-        inst.components.named:SetName((STRINGS.NAMES[string.upper(inst.recipetouse)] or STRINGS.NAMES.UNKNOWN).." "..STRINGS.NAMES.BLUEPRINT)
+        
+        if data.is_rare then
+        	inst.is_rare = data.is_rare
+    	    inst.components.named:SetName(subfmt(STRINGS.NAMES.BLUEPRINT_RARE, {item=STRINGS.NAMES[string.upper(inst.recipetouse)]}))
+			inst.AnimState:SetBank("blueprint_rare")
+			inst.AnimState:SetBuild("blueprint_rare")
+		    inst.components.inventoryitem:ChangeImageName("blueprint_rare")
+			inst:RemoveComponent("burnable")
+			inst:RemoveComponent("propagator")
+	    else
+	        inst.components.named:SetName((STRINGS.NAMES[string.upper(inst.recipetouse)] or STRINGS.NAMES.UNKNOWN).." "..STRINGS.NAMES.BLUEPRINT)
+		end
     end
 end
 
 local function onsave(inst, data)
     data.recipetouse = inst.recipetouse
+    data.is_rare = inst.is_rare or nil
+end
+
+local function getstatus(inst)
+    return (inst.is_rare and "RARE")
+           or "COMMON"
 end
 
 local function OnTeach(inst, learner)
@@ -28,7 +47,7 @@ local function CanBlueprintRandomRecipe(recipe)
         return false
     end
     local hastech = false
-        for k, v in pairs(recipe.level) do
+    for k, v in pairs(recipe.level) do
         if v >= 10 then
             --Exclude TECH.LOST
             return false
@@ -46,16 +65,16 @@ local function CanBlueprintSpecificRecipe(recipe)
         return false
     end
     for k, v in pairs(recipe.level) do
-            if v > 0 then
-                return true
-            end
+        if v > 0 then
+            return true
         end
+    end
     --Exclude TECH.NONE
     return false
 end
 
 local function OnHaunt(inst, haunter)
-    if math.random() <= TUNING.HAUNT_CHANCE_HALF then
+    if (not inst.is_rare) and math.random() <= TUNING.HAUNT_CHANCE_HALF then
         local recipes = {}
         local old = inst.recipetouse ~= nil and GetValidRecipe(inst.recipetouse) or nil
         for k, v in pairs(AllRecipes) do
@@ -79,7 +98,7 @@ local function OnHaunt(inst, haunter)
     return false
 end
 
-local function fn()
+local function fn(is_rare)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -103,10 +122,14 @@ local function fn()
         return inst
     end
 
+	inst.is_rare = is_rare
+
     --Remove these tags so that they can be added properly when replicating components below
     inst:RemoveTag("_named")
 
     inst:AddComponent("inspectable")
+	inst.components.inspectable.getstatus = getstatus
+
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem:ChangeImageName("blueprint")
 
@@ -117,9 +140,15 @@ local function fn()
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL
 
-    MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
-    MakeSmallPropagator(inst)
-
+	if not is_rare then
+		MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
+		MakeSmallPropagator(inst)
+	else
+		inst.AnimState:SetBank("blueprint_rare")
+		inst.AnimState:SetBuild("blueprint_rare")
+	    inst.components.inventoryitem:ChangeImageName("blueprint_rare")
+	end
+	
     MakeHauntableLaunch(inst)
     AddHauntableCustomReaction(inst, OnHaunt, true, false, true)
 
@@ -161,7 +190,19 @@ end
 
 local function MakeSpecificBlueprint(specific_item)
     return function()
-        local inst = fn()
+		local is_rare = false
+
+        local r = GetValidRecipe(specific_item)
+		if r ~= nil then
+			for k, v in pairs(r.level) do
+				if v >= 10 then
+					is_rare = true
+					break
+				end
+			end
+		end
+    
+        local inst = fn(is_rare)
 
         if not TheWorld.ismastersim then
             return inst
@@ -170,7 +211,11 @@ local function MakeSpecificBlueprint(specific_item)
         local r = GetValidRecipe(specific_item)
         inst.recipetouse = r ~= nil and not r.nounlock and r.name or STRINGS.NAMES.UNKNOWN
         inst.components.teacher:SetRecipe(inst.recipetouse)
-        inst.components.named:SetName(STRINGS.NAMES[string.upper(inst.recipetouse)].." "..STRINGS.NAMES.BLUEPRINT)
+        if is_rare then
+	        inst.components.named:SetName(subfmt(STRINGS.NAMES.BLUEPRINT_RARE, {item=STRINGS.NAMES[string.upper(inst.recipetouse)]}))
+	    else
+			inst.components.named:SetName(STRINGS.NAMES[string.upper(inst.recipetouse)].." "..STRINGS.NAMES.BLUEPRINT)
+		end
         return inst
     end
 end
@@ -211,7 +256,9 @@ local prefabs = {}
 
 table.insert(prefabs, Prefab("blueprint", MakeAnyBlueprint, assets))
 for k, v in pairs(RECIPETABS) do
-    table.insert(prefabs, Prefab(string.lower(v.str or "NONAME").."_blueprint", MakeAnyBlueprintFromTab(v), assets))
+    if not v.crafting_station then
+        table.insert(prefabs, Prefab(string.lower(v.str or "NONAME").."_blueprint", MakeAnyBlueprintFromTab(v), assets))
+    end
 end
 for k, v in pairs(AllRecipes) do
     if CanBlueprintSpecificRecipe(v) then

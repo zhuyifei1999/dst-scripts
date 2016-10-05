@@ -10,6 +10,8 @@ require "behaviours/panic"
 require "behaviours/chattynode"
 require "behaviours/leash"
 
+local BrainCommon = require("brains/braincommon")
+
 local MIN_FOLLOW_DIST = 2
 local TARGET_FOLLOW_DIST = 5
 local MAX_FOLLOW_DIST = 9
@@ -126,7 +128,10 @@ function BunnymanBrain:OnStart()
     local root = 
         PriorityNode(
         {
-            WhileNode( function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
+            BrainCommon.PanicWhenScared(self.inst, .25, "RABBIT_PANICBOSS"),
+            WhileNode( function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted",
+                ChattyNode(self.inst, "RABBIT_PANICHAUNT",
+                    Panic(self.inst))),
             WhileNode(function() return self.inst.components.health.takingfiredamage end, "OnFire",
                 ChattyNode(self.inst, "RABBIT_PANICFIRE",
                     Panic(self.inst))),

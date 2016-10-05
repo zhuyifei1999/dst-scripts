@@ -188,7 +188,7 @@ return {
         },
         {
           name = "",
-          type = "grass",
+          type = "perma_grass",
           shape = "rectangle",
           x = 360,
           y = 152,
@@ -199,7 +199,7 @@ return {
         },
         {
           name = "",
-          type = "grass",
+          type = "perma_grass",
           shape = "rectangle",
           x = 80,
           y = 112,
@@ -210,7 +210,7 @@ return {
         },
         {
           name = "",
-          type = "grass",
+          type = "perma_grass",
           shape = "rectangle",
           x = 144,
           y = 448,
@@ -221,7 +221,7 @@ return {
         },
         {
           name = "",
-          type = "grass",
+          type = "perma_grass",
           shape = "rectangle",
           x = 496,
           y = 368,
@@ -232,7 +232,7 @@ return {
         },
         {
           name = "",
-          type = "grass",
+          type = "perma_grass",
           shape = "rectangle",
           x = 32,
           y = 0,
@@ -243,7 +243,7 @@ return {
         },
         {
           name = "",
-          type = "grass",
+          type = "perma_grass",
           shape = "rectangle",
           x = 0,
           y = 352,
@@ -254,7 +254,7 @@ return {
         },
         {
           name = "",
-          type = "grass",
+          type = "perma_grass",
           shape = "rectangle",
           x = 374,
           y = 256,
@@ -418,6 +418,50 @@ return {
           y = 241,
           width = 0,
           height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "twiggy_tall",
+          shape = "rectangle",
+          x = 276,
+          y = 451,
+          width = 16,
+          height = 16,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "twiggy_tall",
+          shape = "rectangle",
+          x = 167,
+          y = 37,
+          width = 16,
+          height = 16,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "ground_twigs",
+          shape = "rectangle",
+          x = 286,
+          y = 426,
+          width = 16,
+          height = 16,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "ground_twigs",
+          shape = "rectangle",
+          x = 179,
+          y = 75,
+          width = 16,
+          height = 16,
           visible = true,
           properties = {}
         }

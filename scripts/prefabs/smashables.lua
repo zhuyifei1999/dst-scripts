@@ -35,6 +35,7 @@ local function OnDeath(inst)
     inst:Remove()
 end
 
+--Only call this if inst.animated
 local function OnHit(inst)
     if inst.rubble then
         inst.AnimState:PlayAnimation("repair")
@@ -42,16 +43,20 @@ local function OnHit(inst)
     else
         inst.AnimState:PlayAnimation("hit")
         inst.AnimState:PushAnimation("idle")
-        end
+    end
 end
 
 local function MakeRelic(inst)
     if inst.components.repairable ~= nil then
         inst:RemoveComponent("repairable")
     end
-        inst.components.inspectable.nameoverride = "relic"
-        inst.components.named:SetName(STRINGS.NAMES["RELIC"])
-    inst.AnimState:PushAnimation("idle")
+    inst.components.inspectable.nameoverride = "relic"
+    inst.components.named:SetName(STRINGS.NAMES["RELIC"])
+    if inst.animated then
+        inst.AnimState:PushAnimation("idle")
+    else
+        inst.AnimState:PlayAnimation("idle")
+    end
 end
 
 local function OnRepaired(inst, doer)
@@ -60,14 +65,18 @@ local function OnRepaired(inst, doer)
             doer.components.sanity:DoDelta(TUNING.SANITY_TINY)
         end
         if inst.rubble then
-        inst.rubble = false
-            inst.AnimState:PlayAnimation("hit")
+            inst.rubble = false
+            if inst.animated then
+                inst.AnimState:PlayAnimation("hit")
+            end
             MakeRelic(inst)
         end
         inst.SoundEmitter:PlaySound("dontstarve/common/fixed_stonefurniture")
     else
         inst.SoundEmitter:PlaySound("dontstarve/common/repair_stonefurniture")
-        OnHit(inst)
+        if inst.animated then
+            OnHit(inst)
+        end
     end
 end
 
@@ -79,13 +88,19 @@ local function MakeRubble(inst)
     end
     inst.components.inspectable.nameoverride = "ruins_rubble"
     inst.components.named:SetName(STRINGS.NAMES["RUINS_RUBBLE"])
-    inst.AnimState:PushAnimation("broken")
+    if inst.animated then
+        inst.AnimState:PushAnimation("broken")
+    else
+        inst.AnimState:PlayAnimation("broken")
+    end
 end
 
 local function OnHealthDelta(inst, oldpct, newpct)
     if not inst.rubble and newpct < .5 and newpct < oldpct then
         inst.rubble = true
-        inst.AnimState:PlayAnimation("repair")
+        if inst.animated then
+            inst.AnimState:PlayAnimation("repair")
+        end
         MakeRubble(inst)
     end
 end
@@ -99,20 +114,21 @@ local function OnPreLoad(inst, data)
     if data ~= nil then
         if data.maxhealth ~= nil then
             inst.components.health:SetMaxHealth(data.maxhealth)
-    end
+        end
+
         if data.rubble then
-    if not inst.rubble then
+            if not inst.rubble then
                 inst.rubble = true
                 MakeRubble(inst)
-        end
+            end
         elseif inst.rubble then
             inst.rubble = false
             MakeRelic(inst)
-    end
+        end
     end
 end
 
-local function makefn(name, asset, smashsound, rubble)
+local function makefn(name, asset, animated, smashsound, rubble)
     return function()
         local inst = CreateEntity()
 
@@ -148,12 +164,15 @@ local function makefn(name, asset, smashsound, rubble)
         inst:RemoveTag("_named")
 
         inst.rubble = rubble
+        inst.animated = animated
 
         inst.OnSave = OnSave
         inst.OnPreLoad = OnPreLoad
 
         inst:AddComponent("combat")
-        inst.components.combat.onhitfn = OnHit
+        if animated then
+            inst.components.combat.onhitfn = OnHit
+        end
 
         inst:AddComponent("health")
         inst.components.health.nofadeout = true
@@ -209,20 +228,20 @@ local function makefn(name, asset, smashsound, rubble)
     end
 end
 
-local function item(name, sound)
-    return Prefab(name, makefn(name, name, sound, false), makeassetlist(name), prefabs)
+local function item(name, animated, sound)
+    return Prefab(name, makefn(name, name, animated, sound, false), makeassetlist(name), prefabs)
 end
 
-local function rubble(name, assetname, sound, rubble)
-    return Prefab(name, makefn(name, assetname, sound, true), makeassetlist(assetname), prefabs)
+local function rubble(name, assetname, animated, sound, rubble)
+    return Prefab(name, makefn(name, assetname, animated, sound, true), makeassetlist(assetname), prefabs)
 end
 
-return item("ruins_plate"),
-    item("ruins_bowl"),
-    item("ruins_chair", "rock"),
-    item("ruins_chipbowl"),
-    item("ruins_vase"),
-    item("ruins_table", "rock"),
-    rubble("ruins_rubble_table", "ruins_table", "rock"),
-    rubble("ruins_rubble_chair", "ruins_chair", "rock"),
-    rubble("ruins_rubble_vase", "ruins_vase")
+return item("ruins_plate", false),
+    item("ruins_bowl", false),
+    item("ruins_chair", true, "rock"),
+    item("ruins_chipbowl", false),
+    item("ruins_vase", true),
+    item("ruins_table", true, "rock"),
+    rubble("ruins_rubble_table", "ruins_table", true, "rock"),
+    rubble("ruins_rubble_chair", "ruins_chair", true, "rock"),
+    rubble("ruins_rubble_vase", "ruins_vase", true)
