@@ -161,6 +161,11 @@ end
 ------------ skins functions --------------------
 ---------------------------------------------------
 
+function d_test_skins_popup()
+	local SkinsItemPopUp = require "screens/skinsitempopup"
+	TheFrontEnd:PushScreen( SkinsItemPopUp("body_catcoon_costume", "Peter", {1.0, 0.2, 0.6, 1.0}) )
+end
+
 function d_skin_mode(mode)
     ConsoleCommandPlayer().components.skinner:SetSkinMode(mode)
 end

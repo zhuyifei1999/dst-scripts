@@ -42,6 +42,8 @@ local prefabs =
     "deerclops",
     "gravestone",
     "flower",
+    "fossil_piece",
+    "fossil_stalker",
     "animal_track",
     "dirtpile",
     "beefaloherd",
@@ -122,6 +124,9 @@ local prefabs =
     "petrify_announce",
     "moonbase",
     "moonrock_pieces",
+    "shadow_rook",
+    "shadow_knight",
+    "shadow_bishop",
 }
 
 local monsters =

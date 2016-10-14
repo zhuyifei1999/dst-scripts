@@ -66,6 +66,11 @@ return {
             NOTGEM = "I don't think that will work there...",
             WRONGGEM = "I got it wrong... again...",
             NOTSTAFF = "That's not the right thing...",
+            MUSHROOMFARM_NEEDSSHROOM = "It doesn't need that. It needs a mushroom.",
+            MUSHROOMFARM_NEEDSLOG = "It doesn't need that. It needs a log.",
+            SLOTFULL = "There's no room...",
+            DUPLICATE = "Oh... my information's useless...",
+            NOTSCULPTABLE = "I think that's... wrong...",
         },
         GIVETOPLAYER = 
         {
@@ -628,6 +633,16 @@ return {
 			SOMEHONEY = "Toil on.",
 			BURNT = "Burnt honey.",
 		},
+		MUSHROOM_FARM =
+		{
+			STUFFED = "Completely teeming with life...",
+			LOTS = "It thrives... against all odds...",
+			SOME = "The beginnings of life...",
+			EMPTY = "Emptiness. The natural state of all things.", -- tell the player to put a mushroom or spore into the farm to get things started
+			ROTTEN = "Nothing escapes the pull of decay.", -- tell the player to put a log into the farm to restore it
+			BURNT = "It is no more.",
+			SNOWCOVERED = "A frigid cold bites at its heart.",
+		},
 		LIVINGTREE = "Can it never die?",
 		ICESTAFF = "A staff to freeze.",
 		WORMLIGHT = "There's a slight humming coming from it.",
@@ -658,6 +673,15 @@ return {
             BROKEN = "It's been ravaged by time.",
             STAFFED = "Perhaps it thirsts for a sacrifice. Where's Webber...",
             WRONGSTAFF = "That doesn't look right...",
+        },
+        MOONDIAL = 
+        {
+			GENERIC = "Does it reflect from the other side too, Abigail?",
+			NIGHT_NEW = "A new moon looms above us.",
+			NIGHT_WAX = "The moon waxes before us.",
+			NIGHT_FULL = "A full moon looms overhead. Watchful.",
+			NIGHT_WANE = "The moon is on the wane.",
+			CAVE = "Caves. The moon's one weakness.",
         },
 
 		THULECITE = "Its presence marks the edge of the unknown.",
@@ -967,7 +991,8 @@ return {
             COMMON = "Whoever drew this is probably dead.",
             RARE = "I'm surprised we didn't die trying to get this.",
         },
-		BELL_BLUEPRINT = "Whoever drew this is probably six feet under.",
+        SKETCH = "I wish we could draw with something besides charcoal.",
+		--BELL_BLUEPRINT = "Whoever drew this is probably six feet under.",
 		BLUE_CAP = "A fungus to preserve the monotony.",
 		BLUE_CAP_COOKED = "All is malleable.",
 		BLUE_MUSHROOM =
@@ -1010,6 +1035,43 @@ return {
 		},
 		CAVE_FERN = "A touch of color in the darkness.",
 		CHARCOAL = "Cold, dead and black, just like my heart.",
+
+		CHESSPIECE_PAWN = 
+        {
+			GENERIC = "We are all but pawns in this game called \"life\".",
+		},
+        CHESSPIECE_ROOK = 
+        {
+			GENERIC = "A mere minion to something greater.",
+			STRUGGLE = "They're here.",
+		},
+        CHESSPIECE_KNIGHT = 
+        {
+			GENERIC = "Oh, if I could ride away into the night.",
+			STRUGGLE = "They're here.",
+		},
+        CHESSPIECE_BISHOP = 
+        {
+			GENERIC = "A piece, constrained to the board.",
+			STRUGGLE = "They're here.",
+		},
+        CHESSPIECE_MUSE = 
+        {
+			GENERIC = "She holds the true power, here.",
+			--STRUGGLE = "Something wicked this way comes.",
+		},
+        CHESSPIECE_FORMAL = 
+        {
+			GENERIC = "Alas, the king is but a figurehead, at best.",
+		},
+		CHESSPIECE_HORNUCOPIA = 
+        {
+			GENERIC = "A cold mockery.",
+		},
+        CHESSPIECE_PIPE = 
+        {
+			GENERIC = "A bubble, frozen in time, can never pop.",
+		},
         CHESSJUNK1 = "Cold, dead artificial life.",
         CHESSJUNK2 = "Cold, dead artificial life.",
         CHESSJUNK3 = "Cold, dead artificial life.",
@@ -1030,6 +1092,7 @@ return {
 			GENERIC = "Such a cheery yellow... I can't stand it.",
 			HELD = "You're at my mercy, bird.",
 		},
+		CANARY_POISONED = "Pestilence and death will soon claim you.",
 		CROW =
 		{
 			GENERIC = "Take thy beak from out my heart!",
@@ -1172,6 +1235,13 @@ return {
 		FLOWER_EVIL = "At least they're better than the other flowers.",
 		FOLIAGE = "Lead me to the Aarnivalkea.",
 		FOOTBALLHAT = "A dead thing for me to wear. Goody.",
+		FOSSIL_PIECE = "It is death, preserved.",
+        FOSSIL_STALKER =
+        {
+			GENERIC = "We must find more pieces.",
+			FUNNY = "Death has a sense of humor.",
+			COMPLETE = "What horrors have we resurrected here today?",
+        },
 		FROG =
 		{
 			DEAD = "Life is small and short.",
@@ -1461,6 +1531,13 @@ return {
 			BURNING = "Antagonizing crows is always bad luck.",
 			BURNT = "Now the crows will be at peace.",
    		},
+   		SCULPTINGTABLE=
+        {
+            EMPTY = "That looks... f-fun...",
+            BLOCK = "Abigail... You be Death, I'll be the Sculptor...",
+            SCULPTURE = "Cleft from the stone.",
+            BURNT = "...I can't be disappointed... If I expect nothing...",
+        },
 		SCULPTURE_KNIGHTHEAD = "Off with his head! Heehee.",
 		SCULPTURE_KNIGHTBODY = 
 		{
@@ -1542,7 +1619,6 @@ return {
             GENERIC = "Cold, hard stone...",
             TYPE1 = "Each of us wear many masks...",
             TYPE2 = "A chilling thought... what if nothing's beneath the mask?",
-            --TYPE3 = "",
         },
 		STATUEHARP = "Maybe these statues will keep me company.",
 		STATUEMAXWELL = "Did it go as you planned?",
@@ -1676,6 +1752,7 @@ return {
         WHIP = "It only provides the illusion of control.",
 		WINTERHAT = "It helps stave off the encroaching cold.",
 		REVIVER = "Choices matter.",
+		SHADOWHEART = "It beats with a sorrow to span the skies and plumb the darkest seas.",
         LIFEINJECTOR = "We were not meant to cheat death.",
 		WORMHOLE =
 		{

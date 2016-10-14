@@ -4,12 +4,35 @@ require "prefabutil"
 local assets =
 {
     Asset("ANIM", "anim/scarecrow.zip"),
+    Asset("ANIM", "anim/swap_scarecrow_face.zip"),
 }
 
 local prefabs =
 {
     "collapse_big",
 }
+
+local numfaces =
+{
+	hit = 4,
+	scary = 5,
+	screaming = 3,
+}
+
+local function ChangeFace(inst, prefix)
+	if inst:HasTag("fire") then
+		prefix = "screaming"
+	end
+	prefix = prefix or "scary"
+	
+	local prev_face = inst.face or 1
+	inst.face = math.random(numfaces[prefix]-1)
+	if inst.face >= prev_face then
+		inst.face = inst.face + 1
+	end
+	
+	inst.AnimState:OverrideSymbol("swap_scarecrow_face", "swap_scarecrow_face", prefix.."face"..inst.face)
+end
 
 local function onhammered(inst)
     inst.components.lootdropper:DropLoot()
@@ -22,6 +45,7 @@ end
 local function onhit(inst)
     if not inst:HasTag("burnt") then
         inst.AnimState:PlayAnimation("hit")
+        ChangeFace(inst, "hit")
     end
 end
 
@@ -33,6 +57,15 @@ end
 local function onburnt(inst)
 	DefaultBurntStructureFn(inst)
 	inst:RemoveTag("scarecrow")
+end
+
+local function onignite(inst)
+	DefaultBurnFn(inst)
+	ChangeFace(inst)
+end
+
+local function oncycleschange(inst)
+	ChangeFace(inst)
 end
 
 local function onsave(inst, data)
@@ -86,15 +119,19 @@ local function fn()
 
     MakeMediumBurnable(inst, nil, nil, true)
     inst.components.burnable.onburnt = onburnt
+    inst.components.burnable:SetOnIgniteFn(onignite)
     MakeMediumPropagator(inst)
 
+    MakeSnowCovered(inst)
+    MakeHauntableWork(inst)
+    
     inst:ListenForEvent("onbuilt", onbuilt)
+	inst:WatchWorldState("cycles", oncycleschange)
 
     inst.OnSave = onsave
     inst.OnLoad = onload
 
-    MakeSnowCovered(inst)
-    MakeHauntableWork(inst)
+    ChangeFace(inst)
 
     return inst
 end

@@ -471,7 +471,9 @@ local function AnnounceWarning(inst, player)
     if player:IsValid() and player.entity:IsVisible() and
         not (player.components.health ~= nil and player.components.health:IsDead()) and
         not player:HasTag("playerghost") and
-        not (inst.sg:HasStateTag("noattack") or inst.components.health:IsDead()) then
+        not (inst.sg:HasStateTag("noattack") or
+            inst.components.combat:HasTarget() or
+            inst.components.health:IsDead()) then
         player:PushEvent("toadstoolwarning", { escaped = false })
     end
 end

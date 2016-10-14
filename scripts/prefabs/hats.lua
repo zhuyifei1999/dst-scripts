@@ -1113,7 +1113,7 @@ local function MakeHat(name)
         inst.components.periodicspawner:Start()
 
 		if owner.components.hunger then
-			owner.components.hunger.burnratemultiplier:SetMultiplier(inst, TUNING.MUSHROOMHAT_SLOW_HUNGER)
+			owner.components.hunger.burnratemodifiers:SetModifier(inst, TUNING.MUSHROOMHAT_SLOW_HUNGER)
 		end
         
     end
@@ -1125,7 +1125,7 @@ local function MakeHat(name)
         inst.components.periodicspawner:Stop()
  
  		if owner.components.hunger then
-			owner.components.hunger.burnratemultiplier:RemoveMultiplier(inst)
+			owner.components.hunger.burnratemodifiers:RemoveModifier(inst)
 		end
     end
 

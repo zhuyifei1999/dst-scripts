@@ -24,7 +24,11 @@ end
 local function onhit(inst)
     if not inst:HasTag("burnt") then
         inst.AnimState:PlayAnimation("hit")
-        inst.AnimState:PushAnimation("idle", false)
+        if inst.components.prototyper.on then
+            inst.AnimState:PushAnimation("proximity_loop", true)
+        else
+            inst.AnimState:PushAnimation("idle", false)
+        end
     end
 end
 

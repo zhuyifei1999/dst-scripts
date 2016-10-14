@@ -62,7 +62,7 @@ return {
       objects = {
         {
           name = "",
-          type = "statue_marble",
+          type = "statue_marble_muse",
           shape = "rectangle",
           x = 128,
           y = 128,

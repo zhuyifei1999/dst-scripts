@@ -118,6 +118,13 @@ local function OnRemoveEntity(inst)
     end
 end
 
+local function OnInit(inst)
+    local parent = inst.entity:GetParent()
+    if parent ~= nil then
+        parent:PushEvent("startfumedebuff", inst)
+    end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -146,6 +153,7 @@ local function fn()
     inst._fadetask = inst:DoPeriodicTask(FRAMES, OnUpdateFade)
 
     inst.OnRemoveEntity = OnRemoveEntity
+    inst:DoTaskInTime(0, OnInit)
 
     inst.entity:SetPristine()
 

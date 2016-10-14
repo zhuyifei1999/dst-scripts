@@ -23,6 +23,28 @@ end)
 local num = 0
 AllRecipes = {}
 
+local is_character_ingredient = nil
+function IsCharacterIngredient(ingredienttype)
+    if is_character_ingredient == nil then
+        is_character_ingredient = {}
+        for k, v in pairs(CHARACTER_INGREDIENT) do
+            is_character_ingredient[v] = true
+        end
+    end
+    return ingredienttype ~= nil and is_character_ingredient[ingredienttype] == true
+end
+
+local is_tech_ingredient = nil
+function IsTechIngredient(ingredienttype)
+    if is_tech_ingredient == nil then
+        is_tech_ingredient = {}
+        for k, v in pairs(TECH_INGREDIENT) do
+            is_tech_ingredient[v] = true
+        end
+    end
+    return ingredienttype ~= nil and is_tech_ingredient[ingredienttype] == true
+end
+
 mod_protect_Recipe = false
 
 Recipe = Class(function(self, name, ingredients, tab, level, placer, min_spacing, nounlock, numtogive, builder_tag, atlas, image, testfn)
@@ -34,13 +56,15 @@ Recipe = Class(function(self, name, ingredients, tab, level, placer, min_spacing
 
     self.ingredients   = {}
     self.character_ingredients = {}
+    self.tech_ingredients = {}
 
     for k,v in pairs(ingredients) do
-        if table.contains(CHARACTER_INGREDIENT, v.type) then
-            table.insert(self.character_ingredients, v)
-        else
-            table.insert(self.ingredients, v)
-        end
+        table.insert(
+            (IsCharacterIngredient(v.type) and self.character_ingredients) or
+            (IsTechIngredient(v.type) and self.tech_ingredients) or
+            self.ingredients,
+            v
+        )
     end
 
     self.product       = name
@@ -61,6 +85,7 @@ Recipe = Class(function(self, name, ingredients, tab, level, placer, min_spacing
     self.level.SCIENCE = self.level.SCIENCE or 0
     self.level.SHADOW  = self.level.SHADOW or 0
     self.level.CARTOGRAPHY = self.level.CARTOGRAPHY or 0
+    self.level.SCULPTING = self.level.SCULPTING or 0
     self.placer        = placer
     self.min_spacing   = min_spacing or 3.2
 

@@ -33,6 +33,10 @@ local function trygrowth(inst)
     if inst.components.growable ~= nil and inst:HasTag("tree") and not inst:HasTag("stump") then
         inst.components.growable:DoGrowth()
     end
+    
+    if inst.components.harvestable ~= nil and inst.components.harvestable:CanBeHarvested() and inst:HasTag("mushroom_farm") then
+        inst.components.harvestable:Grow()
+    end
 end
 
 local book_defs =

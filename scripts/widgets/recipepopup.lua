@@ -40,8 +40,6 @@ local function GetHintTextForRecipe(player, recipe)
                 adjusted_level.ANCIENT = adjusted_level.ANCIENT - player.replica.builder:AncientBonus()
             elseif k == "WAXWELLJOURNAL" then
                 adjusted_level.SHADOW = adjusted_level.SHADOW - player.replica.builder:ShadowBonus()
-            elseif k == "CARTOGRAPHYDESK" then
-                adjusted_level.CARTOGRAPHY = adjusted_level.CARTOGRAPHY - player.replica.builder:CartographyBonus()
             end
         end
 
@@ -347,8 +345,10 @@ function RecipePopup:Refresh()
         self.recipecost:Hide()
 
         local buttonstr =
-            not (knows or recipe.nounlock) and STRINGS.UI.CRAFTING.PROTOTYPE or
-            (buffered and STRINGS.UI.CRAFTING.PLACE or STRINGS.UI.CRAFTING.BUILD)
+            (not (knows or recipe.nounlock) and STRINGS.UI.CRAFTING.PROTOTYPE) or
+            (buffered and STRINGS.UI.CRAFTING.PLACE) or
+            STRINGS.UI.CRAFTING.TABACTION[recipe.tab.str] or
+            STRINGS.UI.CRAFTING.BUILD
 
         if TheInput:ControllerAttached() then
             self.button:Hide()
@@ -394,7 +394,10 @@ function RecipePopup:Refresh()
 
     self.ing = {}
 
-    local num = (recipe.ingredients ~= nil and #recipe.ingredients or 0) + (recipe.character_ingredients ~= nil and #recipe.character_ingredients or 0)
+    local num =
+        (recipe.ingredients ~= nil and #recipe.ingredients or 0) +
+        (recipe.character_ingredients ~= nil and #recipe.character_ingredients or 0) +
+        (recipe.tech_ingredients ~= nil and #recipe.tech_ingredients or 0)
     local w = 64
     local div = 10
     local half_div = div * .5
@@ -403,17 +406,26 @@ function RecipePopup:Refresh()
         offset = offset - (w *.5 + half_div) * (num - 1)
     end
 
+    for i, v in ipairs(recipe.tech_ingredients) do
+        if v.type:sub(-9) == "_material" then
+            local has, level = builder:HasTechIngredient(v)
+            local ing = self.contents:AddChild(IngredientUI(v.atlas, v.type..".tex", nil, nil, has, STRINGS.NAMES[string.upper(v.type)], owner, v.type))
+            if num > 1 and #self.ing > 0 then
+                offset = offset + half_div
+            end
+            ing:SetPosition(Vector3(offset, self.skins_spinner ~= nil and 110 or 80, 0))
+            offset = offset + w + half_div
+            table.insert(self.ing, ing)
+        end
+    end
+
     for i, v in ipairs(recipe.ingredients) do
         local has, num_found = inventory:Has(v.type, RoundBiasedUp(v.amount * builder:IngredientMod()))
-        local ing = self.contents:AddChild(IngredientUI(v.atlas, v.type..".tex", v.amount, num_found, has, STRINGS.NAMES[string.upper(v.type)], owner))
+        local ing = self.contents:AddChild(IngredientUI(v.atlas, v.type..".tex", v.amount, num_found, has, STRINGS.NAMES[string.upper(v.type)], owner, v.type))
         if num > 1 and #self.ing > 0 then
             offset = offset + half_div
         end
-        if self.skins_spinner ~= nil then
-            ing:SetPosition(Vector3(offset, 110, 0))
-        else
-            ing:SetPosition(Vector3(offset, 80, 0))
-        end
+        ing:SetPosition(Vector3(offset, self.skins_spinner ~= nil and 110 or 80, 0))
         offset = offset + w + half_div
         table.insert(self.ing, ing)
     end
@@ -426,11 +438,7 @@ function RecipePopup:Refresh()
         if num > 1 and #self.ing > 0 then
             offset = offset + half_div
         end
-        if self.skins_spinner ~= nil then
-            ing:SetPosition(Vector3(offset, 110, 0))
-        else
-            ing:SetPosition(Vector3(offset, 80, 0))
-        end
+        ing:SetPosition(Vector3(offset, self.skins_spinner ~= nil and 110 or 80, 0))
         offset = offset + w + half_div
         table.insert(self.ing, ing)
     end

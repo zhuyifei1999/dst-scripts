@@ -14,7 +14,6 @@ local function ShouldSleep(inst)
     return DefaultSleepTest(inst) and not inst.sg:HasStateTag("flight")
 end
 
-
 local function OnAttacked(inst, data)
     local x, y, z = inst.Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x, y, z, 30, { "bird" })
@@ -88,6 +87,88 @@ local function SpawnPrefabChooser(inst)
         or ChooseSeeds()
 end
 
+--------------------------------------------------------------------------
+
+local function StopExhalingGas(inst)
+    if inst._gasdowntask ~= nil then
+        inst._gasdowntask:Cancel()
+        inst._gasdowntask = nil
+    end
+end
+
+local function OnExhaleGas(inst)
+    if inst._gaslevel > 1 then
+        inst._gaslevel = inst._gaslevel - 1
+    else
+        inst._gaslevel = 0
+        StopExhalingGas(inst)
+    end
+end
+
+local function StartExhalingGas(inst)
+    if inst._gaslevel > 0 and inst._gasdowntask == nil then
+        inst._gasdowntask = inst:DoPeriodicTask(TUNING.SEG_TIME, OnExhaleGas, TUNING.SEG_TIME * (.5 + math.random() * .5))
+    end
+end
+
+local function TestGasLevel(inst, gaslevel)
+    --Trigger with increasing chance from level 12 -> 24
+    if gaslevel > 12 and math.random() * 12 < gaslevel - 12 then
+        local cage = inst.components.occupier:GetOwner()
+        if cage ~= nil and cage:HasTag("cage") then
+            local data = { bird = inst, poisoned_prefab = "canary_poisoned" }
+            TheWorld:PushEvent("birdpoisoned", data)
+            cage:PushEvent("birdpoisoned", data)
+        end
+    end
+end
+
+local function OnInhaleGas(inst)
+    if TheWorld.components.toadstoolspawner:IsEmittingGas() then
+        inst._gaslevel = inst._gaslevel + 1
+        TestGasLevel(inst, inst._gaslevel)
+    elseif inst._gaslevel > 0 then
+        inst._gaslevel = math.max(0, inst._gaslevel - 1)
+    end
+end
+
+local function StopInhalingGas(inst)
+    if inst._gasuptask ~= nil then
+        inst._gasuptask:Cancel()
+        inst._gasuptask = nil
+
+        StartExhalingGas(inst)
+    end
+end
+
+local function StartInhalingGas(inst)
+    if inst._gasuptask == nil then
+        inst._gasuptask = inst:DoPeriodicTask(TUNING.SEG_TIME, OnInhaleGas, TUNING.SEG_TIME * (.5 + math.random() * .5))
+
+        StopExhalingGas(inst)
+    end
+end
+
+local function OnCanaryOccupied(inst, cage)
+    if cage ~= nil and cage:HasTag("cage") then
+        StartInhalingGas(inst)
+    else
+        StopInhalingGas(inst)
+    end
+end
+
+local function OnCanarySave(inst, data)
+    data.gaslevel = inst._gaslevel > 0 and math.ceil(inst._gaslevel) or nil
+end
+
+local function OnCanaryLoad(inst, data)
+    if data ~= nil and data.gaslevel ~= nil then
+        inst._gaslevel = math.max(0, math.floor(data.gaslevel))
+    end
+end
+
+--------------------------------------------------------------------------
+
 local function makebird(name, soundname)
     local assets =
     {
@@ -95,7 +176,7 @@ local function makebird(name, soundname)
         Asset("ANIM", "anim/"..name.."_build.zip"),
         Asset("SOUND", "sound/birds.fsb"),
     }
-    
+
     local prefabs =
     {
         "seeds",
@@ -103,6 +184,10 @@ local function makebird(name, soundname)
         "cookedsmallmeat",
         "feather_"..name,
     }
+
+    if name == "canary" then
+        table.insert(prefabs, "canary_poisoned")
+    end
 
     local function fn()
         local inst = CreateEntity()
@@ -162,15 +247,15 @@ local function makebird(name, soundname)
         inst:SetStateGraph("SGbird")
 
         inst:AddComponent("lootdropper")
-        inst.components.lootdropper:AddRandomLoot("feather_"..name, 1)
+        inst.components.lootdropper:AddRandomLoot("feather_"..name, name == "canary" and .1 or 1)
         inst.components.lootdropper:AddRandomLoot("smallmeat", 1)
         inst.components.lootdropper.numrandomloot = 1
-        
+
         inst:AddComponent("occupier")
-        
+
         inst:AddComponent("eater")
         inst.components.eater:SetDiet({ FOODTYPE.SEEDS }, { FOODTYPE.SEEDS })
-        
+
         inst:AddComponent("sleeper")
         inst.components.sleeper:SetSleepTest(ShouldSleep)
 
@@ -185,14 +270,14 @@ local function makebird(name, soundname)
         inst:AddComponent("health")
         inst.components.health:SetMaxHealth(TUNING.BIRD_HEALTH)
         inst.components.health.murdersound = "dontstarve/wilson/hit_animal"
-        
+
         inst:AddComponent("combat")
         inst.components.combat.hiteffectsymbol = "crow_body"
-        
+
         inst:AddComponent("inspectable")
-       
+
         inst:SetBrain(brain)
-        
+
         MakeSmallBurnableCharacter(inst, "crow_body")
         MakeTinyFreezableCharacter(inst, "crow_body")
 
@@ -203,7 +288,7 @@ local function makebird(name, soundname)
         inst.components.periodicspawner:SetPrefab(SpawnPrefabChooser)
         inst.components.periodicspawner:SetDensityInRange(20, 2)
         inst.components.periodicspawner:SetMinimumSpacing(8)
-        
+
         inst:ListenForEvent("ontrapped", OnTrapped)
         inst:ListenForEvent("attacked", OnAttacked)
 
@@ -216,6 +301,24 @@ local function makebird(name, soundname)
         end
 
         MakeFeedableSmallLivestock(inst, TUNING.BIRD_PERISH_TIME, nil, OnDropped)
+
+        if name == "canary" and TheWorld.components.toadstoolspawner ~= nil then
+            inst.components.occupier.onoccupied = OnCanaryOccupied
+            inst:ListenForEvent("exitlimbo", StopInhalingGas)
+            inst._gasuptask = nil
+            inst._gasdowntask = nil
+            inst._gaslevel = 0
+
+            --Other bird poisoned
+            inst:ListenForEvent("birdpoisoned", function(world, data)
+                if data.bird ~= inst then
+                    inst._gaslevel = math.min(inst._gaslevel, math.random(6) - 1)
+                end
+            end, TheWorld)
+
+            inst.OnSave = OnCanarySave
+            inst.OnLoad = OnCanaryLoad
+        end
 
         return inst
     end

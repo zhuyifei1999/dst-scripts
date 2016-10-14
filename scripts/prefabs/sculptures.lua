@@ -44,7 +44,7 @@ end
 local function CheckMorph(inst)
     if inst.components.repairable == nil and
         inst.components.workable.workleft > TUNING.SCULPTURE_COVERED_WORK and
-        TheWorld.state.isfullmoon and
+        (TheWorld.state.isfullmoon or TheWorld.state.isnewmoon) and
         not inst:IsAsleep() and
         inst._reanimatetask == nil then
         StartStruggle(inst)
@@ -126,7 +126,13 @@ local function onworkload(inst)
     end
 end
 
-local function makesculpture(name, physics_radius, second_piece_name)
+local function onshadowchessroar(inst)
+    if inst.components.repairable == nil and inst.components.workable.workleft > TUNING.SCULPTURE_COVERED_WORK then
+		inst:Reanimate(inst, true)
+	end
+end
+
+local function makesculpture(name, physics_radius, scale, second_piece_name)
     local assets =
     {
         Asset("ANIM", "anim/sculpture_"..name..".zip"),
@@ -137,15 +143,19 @@ local function makesculpture(name, physics_radius, second_piece_name)
     local prefabs =
     {
         "marble",
+        "chesspiece_"..name.."_sketch",
+        "shadow_"..name,
     }
 
     if second_piece_name ~= nil then
         table.insert(prefabs, "sculpture_"..second_piece_name)
     end
 
-    local function Reanimate(inst)
+    local function Reanimate(inst, forceshadow)
         if inst._reanimatetask == nil then
             StopStruggle(inst)
+
+			inst.components.lootdropper:SpawnLootPrefab("chesspiece_"..name.."_sketch")
 
             inst.components.workable:SetOnWorkCallback(nil)
             inst.components.workable:SetOnFinishCallback(nil)
@@ -158,7 +168,14 @@ local function makesculpture(name, physics_radius, second_piece_name)
             inst.persists = false
             inst._reanimatetask = inst:DoTaskInTime(2, ErodeAway)
 
-            local creature = SpawnPrefab(name)
+			local creaturename = name
+			if TheWorld.state.isnewmoon or forceshadow then
+				creaturename = "shadow_"..creaturename
+				inst.components.lootdropper:SpawnLootPrefab("gears")
+				inst.components.lootdropper:SpawnLootPrefab("gears")
+			end
+
+            local creature = SpawnPrefab(creaturename)
             creature.Transform:SetPosition(inst.Transform:GetWorldPosition())
             creature.Transform:SetRotation(inst.Transform:GetRotation())
             creature.sg:GoToState("taunt")
@@ -201,14 +218,17 @@ local function makesculpture(name, physics_radius, second_piece_name)
 
         inst:AddTag("statue")
         inst:AddTag("sculpture")
+        inst:AddTag("chess_moonevent")
 
         MakeObstaclePhysics(inst, physics_radius)
 
         inst.Transform:SetFourFaced()
+        inst.Transform:SetScale(scale, scale, scale)
 
         inst.AnimState:SetBank(name)
         inst.AnimState:SetBuild("sculpture_"..name)
         inst.AnimState:PlayAnimation("full")
+        inst.AnimState:SetFinalOffset(1)
 
         inst:SetPrefabName("sculpture_"..name.."body")
         inst.MiniMapEntity:SetIcon(inst.prefab.."_fixed.png")
@@ -240,6 +260,10 @@ local function makesculpture(name, physics_radius, second_piece_name)
         inst.OnEntitySleep = CheckMorph
 
         inst:WatchWorldState("isfullmoon", CheckMorph)
+        inst:WatchWorldState("isnewmoon", CheckMorph)
+        
+     	inst:ListenForEvent("shadowchessroar", onshadowchessroar)
+
         inst.Reanimate = Reanimate
 
         return inst
@@ -249,10 +273,16 @@ local function makesculpture(name, physics_radius, second_piece_name)
     return Prefab(prefab_name, fn, assets, prefabs)
 end
 
-local ROOK_VOLUME = 2.25
+local ROOK_VOLUME = 1.575 --2.25 * .7
 local KNIGHT_VOLUME = 0.66
 local BISHOP_VOLUME = 0.70
+local ROOK_SCALE = .7
+local KNIGHT_SCALE = 1
+local BISHOP_SCALE = 1
 
-return makesculpture("rook",   ROOK_VOLUME, nil),    makesculpture("rook",   ROOK_VOLUME, "rooknose"),
-       makesculpture("knight", KNIGHT_VOLUME, nil),  makesculpture("knight", KNIGHT_VOLUME, "knighthead"),
-       makesculpture("bishop", BISHOP_VOLUME, nil),  makesculpture("bishop", BISHOP_VOLUME, "bishophead")
+return makesculpture("rook",   ROOK_VOLUME,   ROOK_SCALE,   nil),
+       makesculpture("rook",   ROOK_VOLUME,   ROOK_SCALE,   "rooknose"),
+       makesculpture("knight", KNIGHT_VOLUME, KNIGHT_SCALE, nil),
+       makesculpture("knight", KNIGHT_VOLUME, KNIGHT_SCALE, "knighthead"),
+       makesculpture("bishop", BISHOP_VOLUME, BISHOP_SCALE, nil),
+       makesculpture("bishop", BISHOP_VOLUME, BISHOP_SCALE, "bishophead")

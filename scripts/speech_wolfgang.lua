@@ -56,6 +56,11 @@ return {
             NOTGEM = "Not even mighty muscles can make fit!",
             WRONGGEM = "Little rock does not want to go there.",
             NOTSTAFF = "I do not think little platform would like that.",
+            MUSHROOMFARM_NEEDSSHROOM = "Is needing tiny mushy-room, I think.",
+            MUSHROOMFARM_NEEDSLOG = "Is needing tiny log, I think.",
+            SLOTFULL = "Something is already put!",
+            DUPLICATE = "Little recipe is already in there!",
+            NOTSCULPTABLE = "Material is not mighty enough for strong statues!",
         },
         GIVETOPLAYER = 
         {
@@ -643,6 +648,16 @@ return {
 			SOMEHONEY = "Bees are busy.",
 			BURNT = "Bees are burned.",
 		},
+		MUSHROOM_FARM =
+		{
+			STUFFED = "Is no more room for more mushy-rooms!",
+			LOTS = "So many little mushy-rooms!",
+			SOME = "Little mushy-rooms is start to grow.",
+			EMPTY = "Is nothing.", -- tell the player to put a mushroom or spore into the farm to get things started
+			ROTTEN = "Log is need to be replaced.", -- tell the player to put a log into the farm to restore it
+			BURNT = "Log is not looking mighty!",
+            SNOWCOVERED = "Mushy-rooms not mighty enough to fight snow!",
+		},
 		LIVINGTREE = "I do not like tree with eyes.",
 		ICESTAFF = "Frosted tip.",
 		WORMLIGHT = "Pretty light.",
@@ -673,6 +688,15 @@ return {
             BROKEN = "Tiny platform is broken!",
             STAFFED = "Is ready for good fight!",
            	WRONGSTAFF = "Feels wrong to Wolfgang.",
+        },
+        MOONDIAL = 
+        {
+            GENERIC = "Wolfgang see moon reflection, but not his mighty self!",
+            NIGHT_NEW = "Moon is hiding.",
+            NIGHT_WAX = "Tiny moon is get bigger!",
+            NIGHT_FULL = "Moon is very mighty!",
+            NIGHT_WANE = "Moon is get sleepy.",
+            CAVE = "Moon is shy in cave!",
         },
 
 		SLURPER = "No! No! Stay off head!",
@@ -950,7 +974,8 @@ return {
             COMMON = "Pretty pictures!",
             RARE = "Very, very fancy pictures!",
         },
-		BELL_BLUEPRINT = "Blueprint. Footprint!",
+        SKETCH = "Wolfgang understands pictures!",
+		--BELL_BLUEPRINT = "Blueprint. Footprint!",
 		BLUE_CAP = "Is good for tired muscles, I think.",
 		BLUE_CAP_COOKED = "Is not same.",
 		BLUE_MUSHROOM =
@@ -993,6 +1018,43 @@ return {
 		},
 		CAVE_FERN = "Pretty plant!",
 		CHARCOAL = "Is like holding tiny dead tree.",
+
+		CHESSPIECE_PAWN = 
+        {
+            GENERIC = "Little man is wearing little hat!",
+        },
+        CHESSPIECE_ROOK = 
+        {
+            GENERIC = "Does not look like castle to Wolfgang.",
+            STRUGGLE = "Wolfgang does not like moving statues!!",
+        },
+        CHESSPIECE_KNIGHT = 
+        {
+            GENERIC = "Is good horsey, Wolfgang thinks.",
+            STRUGGLE = "Wolfgang does not like moving statues!!",
+        },
+        CHESSPIECE_BISHOP = 
+        {
+            GENERIC = "Weak little rock man looks nice.",
+            STRUGGLE = "Wolfgang does not like moving statues!!",
+        },
+        CHESSPIECE_MUSE = 
+        {
+            GENERIC = "Faceless lady make Wolfgang uncomfortable.",
+            --STRUGGLE = "Scary statue is moving!!",
+        },
+        CHESSPIECE_FORMAL = 
+        {
+            GENERIC = "Looks very not-mighty.",
+        },
+        CHESSPIECE_HORNUCOPIA = 
+        {
+            GENERIC = "Why stone food hurt mouth?",
+        },
+        CHESSPIECE_PIPE = 
+        {
+            GENERIC = "Might be good for lifting!",
+        },
         CHESSJUNK1 = "Metal junk.",
         CHESSJUNK2 = "Metal junk.",
         CHESSJUNK3 = "Metal junk.",
@@ -1013,6 +1075,7 @@ return {
 			GENERIC = "Is small yellow bird!",
 			HELD = "Small bird fit easily in big Wolfgang hands.",
 		},
+        CANARY_POISONED = "Bird is okay?",
 		CROW =
 		{
 			GENERIC = "I do not like birds. Too fragile.",
@@ -1172,6 +1235,13 @@ return {
 		FLOWER_EVIL = "Is not potato.",
 		FOLIAGE = "Pretty plant is dead now.",
 		FOOTBALLHELMET = "Is hat for make tackling.",
+        FOSSIL_PIECE = "Is tiny bone!",
+        FOSSIL_STALKER =
+        {
+            GENERIC = "Is not look done yet.",
+            FUNNY = "Eh, maybe we take apart.",
+            COMPLETE = "Is look good! Mighty!",
+        },
 		FROG =
 		{
 			DEAD = "Is delicacy in my country.",
@@ -1454,6 +1524,13 @@ return {
 			BURNING = "Little straw man is burning!",
 			BURNT = "Little straw man is dead.",
    		},
+        SCULPTINGTABLE=
+        {
+            EMPTY = "Is table for rocks!",
+            BLOCK = "Is time for arts and crafts!",
+            SCULPTURE = "Does not compare to chiseled jaw of Wolfgang!",
+            BURNT = "Is burny bits.",
+        },
 		SCULPTURE_KNIGHTHEAD = "Everyone! Watch Wolfgang carry horse head!",
 		SCULPTURE_KNIGHTBODY = 
 		{
@@ -1533,7 +1610,6 @@ return {
         STATUE_MARBLE = 
         {
         	GENERIC = "Wolfgang does not know what to do with pretty statues.",
-        	--TYPE1 = "",
         	TYPE2 = "She seems like happy lady.",
         	TYPE3 = "Is manly spittoon?",
     	},
@@ -1702,6 +1778,7 @@ return {
         YELLOWAMULET = "Is glowing yellow.",    
 		ACCOMPLISHMENT_SHRINE = "I will defeat you, tiny arrow!",                
         REVIVER = "Blib blup! Blib blup! Blib blup!",
+        SHADOWHEART = "Wolfgang is not shaking! Is manly flexing!!",
         LIFEINJECTOR = "EeeeEEeeEEE!!",
 	},
 	DESCRIBE_GENERIC = "What is this thing?",

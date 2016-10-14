@@ -68,6 +68,8 @@ local assets =
     Asset("INV_IMAGE", "half_hunger"),
     Asset("INV_IMAGE", "half_sanity"),
 
+    Asset("INV_IMAGE", "sculpting_material"),
+
     Asset("SOUND", "sound/together.fsb"),
 }
 

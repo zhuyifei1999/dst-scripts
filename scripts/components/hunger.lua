@@ -1,5 +1,5 @@
 
-local SourceMultipliers = require("util/sourcemultipliers")
+local SourceModifierList = require("util/sourcemodifierlist")
 
 local function onmax(self, max)
     self.inst.replica.hunger:SetMax(max)
@@ -24,8 +24,8 @@ local Hunger = Class(function(self, inst)
     
     self.burning = true
     --100% burn rate. Currently used only by belt of hunger, will have to change unequip if use in something else
-    self.burnrate = 1 -- DEPRECATED, please use burnratemultiplier instead
-    self.burnratemultiplier = SourceMultipliers(self.inst)
+    self.burnrate = 1 -- DEPRECATED, please use burnratemodifiers instead
+    self.burnratemodifiers = SourceModifierList(self.inst)
 
     local period = 1
     self.inst:DoPeriodicTask(period, OnTaskTick, nil, self, period)
@@ -68,7 +68,7 @@ function Hunger:IsPaused()
 end
 
 function Hunger:GetDebugString()
-    return string.format("%2.2f / %2.2f, rate: (%2.2f * %2.2f)", self.current, self.max, self.hungerrate, self.burnrate*self.burnratemultiplier:Get())
+    return string.format("%2.2f / %2.2f, rate: (%2.2f * %2.2f)", self.current, self.max, self.hungerrate, self.burnrate*self.burnratemodifiers:Get())
 end
 
 function Hunger:SetMax(amount)
@@ -137,7 +137,7 @@ function Hunger:DoDec(dt, ignore_damage)
 
     if self.burning then
         if self.current > 0 then
-            self:DoDelta(-self.hungerrate * dt * self.burnrate * self.burnratemultiplier:Get(), true)
+            self:DoDelta(-self.hungerrate * dt * self.burnrate * self.burnratemodifiers:Get(), true)
         elseif not ignore_damage then
             if self.overridestarvefn ~= nil then
                 self.overridestarvefn(self.inst, dt)

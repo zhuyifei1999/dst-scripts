@@ -749,7 +749,7 @@ local ExampleLayout =
 	{
 		areas =
 		{
-			sculpture_random = function(area) return PickSomeWithDups(1, {"sculpture_knight", "sculpture_bishop"}) end,
+			sculpture_random = function(area) return PickSomeWithDups(1, {"statue_marble_muse", "statue_marble_pawn", "sculpture_knight", "sculpture_bishop"}) end,
 		},
 	}),
 	

@@ -40,7 +40,7 @@ local TRIGGERED_DANGER_MUSIC =
 
 local TRIGGERED_CAVE_DANGER_MUSIC =
 {
-    "dontstarve/music/music_epicfight_ruins",
+    "dontstarve/music/music_epicfight_toadboss",
 }
 
 --------------------------------------------------------------------------

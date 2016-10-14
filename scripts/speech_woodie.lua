@@ -57,6 +57,11 @@ return {
             NOTGEM = "That doesn't look like a magic rock to me.",
             WRONGGEM = "I don't think that one'll work here.",
             NOTSTAFF = "Nah. Something long and thin goes there, but not this.",
+            MUSHROOMFARM_NEEDSSHROOM = "That needs a mushroom spore, eh?",
+            MUSHROOMFARM_NEEDSLOG = "That needs a log, eh?",
+            SLOTFULL = "I should probably use what's up there first.",
+            DUPLICATE = "No sense having two of the same recipe.",
+            NOTSCULPTABLE = "I'd prefer wood, personally.",
         },
         GIVETOPLAYER = 
         {
@@ -616,7 +621,16 @@ return {
             STAFFED = "I'm happy to just leave it there for now.",
             WRONGSTAFF = "Looks a little off.",
         },
-
+        MOONDIAL = 
+        {
+			GENERIC = "Do I really need to be reminded of the moon during the day?",
+			NIGHT_NEW = "The moon's gone for now. Phew.",
+			NIGHT_WAX = "The moon's waxing again.",
+			NIGHT_FULL = "Not a good night to have a curse, but then when's it ever?",
+			NIGHT_WANE = "The moon's waning. Time for some peace and quiet.",
+			CAVE = "We're free from the moon's reach down here.",
+			WEREBEAVER = "Just about time again, Lucy.",
+        },
 		THULECITE = "It's the wood of the caves!",
 		ARMORRUINS = "That'll stop the hurt.",
 		RUINS_BAT = "Metal on a stick.",
@@ -871,6 +885,16 @@ return {
 			SOMEHONEY = "I could get more if I waited.",
 			BURNT = "No, not the bees!",
 		},
+		MUSHROOM_FARM =
+		{
+			STUFFED = "Doesn't need us no more.",
+			LOTS = "It's doing real well on its own.",
+			SOME = "There we go. Everyone needs a bit of help sometimes.",
+			EMPTY = "It needs a bit of help getting started.", -- tell the player to put a mushroom or spore into the farm to get things started
+			ROTTEN = "That rotten log needs replacing.", -- tell the player to put a log into the farm to restore it
+			BURNT = "If a log burns in the forest does it hurt my feelings? Yes. It does.",
+			SNOWCOVERED = "Everybody's got hardships, eh?",
+		},
 		BEEFALO =
 		{
 			FOLLOWER = "I think he likes me.",
@@ -937,7 +961,8 @@ return {
             COMMON = "I'm not one for book learning.",
             RARE = "Looks real complicated, that one.",
         },
-		BELL_BLUEPRINT = "Figuring that one out would be a feet.",
+        SKETCH = "That's one way to spread information.",
+		--BELL_BLUEPRINT = "Figuring that one out would be a feet.",
 		BLUE_CAP = "That's not meat.",
 		BLUE_CAP_COOKED = "That's not meat.",
 		BLUE_MUSHROOM =
@@ -980,9 +1005,44 @@ return {
 			BURNT = "Eh, I prefer to just wander around the woods anyway.",
 		},
 		CAVE_FERN = "Hey! It's a fern!",
-
 		CHARCOAL = "This makes me a bit sad.",
 
+		CHESSPIECE_PAWN = 
+        {
+			GENERIC = "Just a humble peasant, really.",
+		},
+        CHESSPIECE_ROOK = 
+        {
+			GENERIC = "Pfft, tacky.",
+			STRUGGLE = "Get ready, Lucy.",
+		},
+        CHESSPIECE_KNIGHT = 
+        {
+			GENERIC = "I miss horses.",
+			STRUGGLE = "Get ready, Lucy.",
+		},
+        CHESSPIECE_BISHOP = 
+        {
+			GENERIC = "That's not really my sort of thing, eh?",
+			STRUGGLE = "Get ready, Lucy.",
+		},
+        CHESSPIECE_MUSE = 
+        {
+			GENERIC = "I don't tend to trust anyone without a face. Lucy excluded, of course.",
+			--STRUGGLE = "Brace yourself, Lucy.",
+		},
+        CHESSPIECE_FORMAL = 
+        {
+			GENERIC = "Looks like a bit of a hoser.",
+		},
+		CHESSPIECE_HORNUCOPIA = 
+        {
+			GENERIC = "Well, I did say I had a hankering for \"stone fruit\".",
+		},
+        CHESSPIECE_PIPE = 
+        {
+			GENERIC = "Kitschy. Just how Lucy and I like it.",
+		},
         CHESSJUNK1 = "Dead metal.",
         CHESSJUNK2 = "Dead metal.",
         CHESSJUNK3 = "Dead metal.",
@@ -1005,6 +1065,7 @@ return {
 			GENERIC = "Degenerate.",
 			HELD = "Want a peek at our prisoner, Lucy?",
 		},
+		CANARY_POISONED = "Diseased vermin.",
 		CROW =
 		{
 			GENERIC = "He's planning something. I can tell.",
@@ -1159,6 +1220,13 @@ return {
 		FLOWER_EVIL = "Something is wrong with that flower.",
 		FOLIAGE = "Looks like a salad.",
 		FOOTBALLHAT = "Will this give me hockey hair?",
+		FOSSIL_PIECE = "Brittle.",
+        FOSSIL_STALKER =
+        {
+			GENERIC = "Still got some work to do, looks like.",
+			FUNNY = "Eh... Should we try again, Lucy?",
+			COMPLETE = "One hundred percent assembled beastie.",
+        },
 		FROG =
 		{
 			DEAD = "Ex-frog.",
@@ -1457,6 +1525,13 @@ return {
 			BURNING = "Glad that's not me.",
 			BURNT = "Great, now those feathered hosers are gonna run wild.",
    		},
+   		SCULPTINGTABLE=
+        {
+            EMPTY = "Oughta put a block of cut stone up there.",
+            BLOCK = "I'm really more of a whittler.",
+            SCULPTURE = "Hm. Not bad, eh?",
+            BURNT = "Back to whittling.",
+        },
 		SCULPTURE_KNIGHTHEAD = "That's a heavy lookin' hoser.",
 		SCULPTURE_KNIGHTBODY = 
 		{
@@ -1707,6 +1782,7 @@ return {
 		LIVINGTREE = "I feel conflicted, eh?",
 		ICESTAFF = "It reminds me of home.",
         REVIVER = "I need to share this with somebody!",
+        SHADOWHEART = "Yeesh. Don't get that near me.",
         LIFEINJECTOR = "This should cure those sniffles.",
         ROCK_MOON = "It's uh, a moon rock.",
         MOONROCKNUGGET = "It's uh, a moon rock.",

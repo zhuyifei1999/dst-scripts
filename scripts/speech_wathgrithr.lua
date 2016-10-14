@@ -56,6 +56,11 @@ return {
             NOTGEM = "This object is not blessed with the power of the gods.",
             WRONGGEM = "This gem was not chosen for this purpose.",
             NOTSTAFF = "The gods may frown were I to do that.",
+            MUSHROOMFARM_NEEDSSHROOM = "Forest sprites have no need of that.",
+            MUSHROOMFARM_NEEDSLOG = "The sprite home requires sprucing up. With spruce!",
+            SLOTFULL = "One material at a time!",
+            DUPLICATE = "We have already conquered this knowledge.",
+            NOTSCULPTABLE = "That material is not befitting a work of art.",
         },
         GIVETOPLAYER = 
         {
@@ -370,7 +375,15 @@ return {
             STAFFED = "Prepare for glorious battle!",
             WRONGSTAFF = "This shall not please the gods.",
         },
-
+        MOONDIAL = 
+        {
+            GENERIC = "Mani's visage remains, even in the light of day.",
+            NIGHT_NEW = "Mani's retired to her realm for the eve.",
+            NIGHT_WAX = "Mani's power grows!",
+            NIGHT_FULL = "Mani claims the skies!",
+            NIGHT_WANE = "Mani's power is on the wane.",
+            CAVE = "Mani cannot see us here.",
+        },
 		LIGHTER = "It lights the fires of mine heart!",
 		
 		ABIGAIL_FLOWER = 
@@ -655,6 +668,16 @@ return {
 			SOMEHONEY = "Pithy honey. More patience is needed.",
 			BURNT = "The hive is silent.",
 		},
+        MUSHROOM_FARM =
+        {
+            STUFFED = "The forest sprite has returned a glorious bounty!",
+            LOTS = "It is growing strong and hearty.",
+            SOME = "The forest sprite has taken root.",
+            EMPTY = "An empty home for forest sprites.", -- tell the player to put a mushroom or spore into the farm to get things started
+            ROTTEN = "A blight has beset this log. Another!", -- tell the player to put a log into the farm to restore it
+            BURNT = "Twas consumed by a mighty inferno!",
+            SNOWCOVERED = "Not all can withstand the frost giant's touch.",
+        },
 		BEEFALO =
 		{
 			FOLLOWER = "Come along beastie.",
@@ -720,7 +743,8 @@ return {
             COMMON = "Oh, a map! No, wait. That's wrong.",
             RARE = "Tis a blessed scroll.",
         },
-		BELL_BLUEPRINT = "Knowledge to enrich one's sole.",
+        SKETCH = "Powerful knowledge, inscribed on an ancient scroll!",
+		--BELL_BLUEPRINT = "Knowledge to enrich one's sole.",
 		BLUE_CAP = "Hmm, a blue one.",
 		BLUE_CAP_COOKED = "I have no desire to eat it.",
 		BLUE_MUSHROOM =
@@ -803,6 +827,43 @@ return {
 		},
 		CAVE_FERN = "Foliage from the dark ages.",
 		CHARCOAL = "Loot from Loge, the demigod.",
+
+        CHESSPIECE_PAWN = 
+        {
+            GENERIC = "Tis a noble foot soldier.",
+        },
+        CHESSPIECE_ROOK = 
+        {
+            GENERIC = "A castle fit for a queen.",
+            STRUGGLE = "Battle is nigh!",
+        },
+        CHESSPIECE_KNIGHT = 
+        {
+            GENERIC = "The figure of a fellow warrior!",
+            STRUGGLE = "Battle is nigh!",
+        },
+        CHESSPIECE_BISHOP = 
+        {
+            GENERIC = "This warrior does battle in the mind.",
+            STRUGGLE = "Battle is nigh!",
+        },
+        CHESSPIECE_MUSE = 
+        {
+            GENERIC = "A Valkyrie's spirit dwells within.",
+            --STRUGGLE = "A formidable foe approaches!",
+        },
+        CHESSPIECE_FORMAL = 
+        {
+            GENERIC = "Not a man fit for battle.",
+        },
+        CHESSPIECE_HORNUCOPIA = 
+        {
+            GENERIC = "Feasts, feasts, everywhere, and not a ham to eat.",
+        },
+        CHESSPIECE_PIPE = 
+        {
+            GENERIC = "Tis but a jest.",
+        },
         CHESSJUNK1 = "It's only a pile of fallen warriors.",
         CHESSJUNK2 = "More fallen mechanical warriors.",
         CHESSJUNK3 = "Someone should really clean this place up.",
@@ -832,6 +893,7 @@ return {
             GENERIC = "Oh sweet songbird, sing me thy tune!",
             HELD = "Freedom has been wrenched from thy grasp by mine own.",
         },
+        CANARY_POISONED = "What plague has beseiged this innocent woodland creature?",
 		CROW =
 		{
 			GENERIC = "Raven friend!",
@@ -1023,6 +1085,13 @@ return {
 		FLOWER_EVIL = "A terrible evil plagues this flora.",
 		FOLIAGE = "A collection of ferns.",
 		FOOTBALLHAT = "A pig's bottom made this helmet.",
+        FOSSIL_PIECE = "Bones of a dark and ancient foe.",
+        FOSSIL_STALKER =
+        {
+            GENERIC = "All that remains of a terrible beast.",
+            FUNNY = "Tis not as majestic as I once pictured.",
+            COMPLETE = "It looks as though it might roam the earth any moment!",
+        },
 		FROG =
 		{
 			DEAD = "You're a bit slimy for Valhalla.",
@@ -1424,6 +1493,13 @@ return {
             BURNING = "The scarecrow burns.",
             BURNT = "The scarecrow dost yearn for nothing, now.",
         },
+        SCULPTINGTABLE=
+        {
+            EMPTY = "A transformative altar for the stone gods.",
+            BLOCK = "May the muses guide our hands!",
+            SCULPTURE = "The muses have been kind this day.",
+            BURNT = "Lain to waste.",
+        },
 		SCULPTURE_KNIGHTHEAD = "Dost thou yearn for a body?",
 		SCULPTURE_KNIGHTBODY = 
 		{
@@ -1515,7 +1591,6 @@ return {
         {
             GENERIC = "Delicate appearance, but hard as stone. Admirable.",
             TYPE1 = "What plagues you, fair maiden?",
-            --TYPE2 = "",
             TYPE3 = "Tis a stone basin!",
         },
 		STATUEHARP = "It must be Gunnar. The snakes took his head.",
@@ -1701,6 +1776,7 @@ return {
 		WATERBALLOON = "Prepare to engage in water-y battle!",
 		SPEAR_WATHGRITHR = "My comrade in arms!",
         REVIVER = "Feel the passion inside!",
+        SHADOWHEART = "Blackest hearts. Darkest omens.",
         LIFEINJECTOR = "This will return me to top form.",
         ROCK_MOON = "A gift from Mani.",
         MOONROCKNUGGET = "A gift from Mani.",

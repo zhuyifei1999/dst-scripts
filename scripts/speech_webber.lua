@@ -56,6 +56,11 @@ return {
             NOTGEM = "It doesn't fit right!",
             WRONGGEM = "We'd rather keep this one for ourselves.",
             NOTSTAFF = "I think that'd make it angry.",
+            MUSHROOMFARM_NEEDSSHROOM = "It needs a mushroom!",
+            MUSHROOMFARM_NEEDSLOG = "It needs a log!",
+            SLOTFULL = "Mom said to always finish my plate before seconds.",
+            DUPLICATE = "We don't need two!",
+            NOTSCULPTABLE = "Eight legs isn't nearly enough to sculpt with THAT.",
         },
         GIVETOPLAYER = 
         {
@@ -370,6 +375,15 @@ return {
             STAFFED = "Something else needs to happen, right?",
             WRONGSTAFF = "I don't think it wanted that.",
         },
+        MOONDIAL = 
+        {
+			GENERIC = "Hey, Ms. Wicker! How come we can still see the moon?",
+			NIGHT_NEW = "New moon! Neat!",
+			NIGHT_WAX = "The moon is growing!",
+			NIGHT_FULL = "Wow! Full moon!",
+			NIGHT_WANE = "The moon is shrinking!",
+			CAVE = "The moon can't fit in a cave! I think.",
+        },
 
 		LIGHTER = "Lighter than what?",
 		
@@ -665,6 +679,16 @@ return {
 			SOMEHONEY = "Work faster, bees!",
 			BURNT = "The site of The Great Honey Fire.",
 		},
+		MUSHROOM_FARM =
+		{
+			STUFFED = "Wow! So many mushrooms!",
+			LOTS = "They look happy.",
+			SOME = "Aw, they're so little.",
+			EMPTY = "There aren't any mushrooms.", -- tell the player to put a mushroom or spore into the farm to get things started
+			ROTTEN = "It's all yucky.", -- tell the player to put a log into the farm to restore it
+			BURNT = "Fire's dangerous, I guess.",
+			SNOWCOVERED = "You look chilly.",
+		},
 		BEEFALO =
 		{
 			FOLLOWER = "He seems to want to stick around.",
@@ -735,7 +759,8 @@ return {
             COMMON = "\"Follow the instructions\", mum always said.",
             RARE = "This one feels special.",
         },
-		BELL_BLUEPRINT = "We're ankle-deep in knowledge!",
+        SKETCH = "I hope Ms. Wickerbottom pins it up on the icebox!",
+		--BELL_BLUEPRINT = "We're ankle-deep in knowledge!",
 		BLUE_CAP = "You'd have to be crazy...",
 		BLUE_CAP_COOKED = "Good thing we're feeling healthy.",
 		BLUE_MUSHROOM =
@@ -806,6 +831,43 @@ return {
 		},
 		CAVE_FERN = "Swirly plants.",
 		CHARCOAL = "Hard and black, like my better half.",
+
+		CHESSPIECE_PAWN = 
+        {
+			GENERIC = "Pawns are just as important as the rest of the pieces.",
+		},
+        CHESSPIECE_ROOK = 
+        {
+			GENERIC = "Where's the king of the castle?",
+			STRUGGLE = "It's... alive?!",
+		},
+        CHESSPIECE_KNIGHT = 
+        {
+			GENERIC = "We could sculpt a stallion battalion!",
+			STRUGGLE = "It's... alive?!",
+		},
+        CHESSPIECE_BISHOP = 
+        {
+			GENERIC = "We've never seen toys so big.",
+			STRUGGLE = "It's... alive?!",
+		},
+        CHESSPIECE_MUSE = 
+        {
+			GENERIC = "We're sure she's nicer than she looks.",
+			--STRUGGLE = "Uh-oh! That looks bad!",
+		},
+        CHESSPIECE_FORMAL = 
+        {
+			GENERIC = "Reminds me of grandpa.",
+		},
+		CHESSPIECE_HORNUCOPIA = 
+        {
+			GENERIC = "Boy, I wish we could eat it.",
+		},
+        CHESSPIECE_PIPE = 
+        {
+			GENERIC = "Bubbles!",
+		},
         CHESSJUNK1 = "A mess of chess.",
         CHESSJUNK2 = "A mess of chess.",
         CHESSJUNK3 = "A mess of chess.",
@@ -835,6 +897,7 @@ return {
 			GENERIC = "That's a yellow bird.",
 			HELD = "Caught you!",
 		},
+		CANARY_POISONED = "Uh, are you feeling okay?",
 		CROW =
 		{
 			GENERIC = "Oh, you look like you're having a grand time, flying about.",
@@ -1026,6 +1089,13 @@ return {
 		FLOWER_EVIL = "This flower is decidedly not nice!",
 		FOLIAGE = "Soft and leafy.",
 		FOOTBALLHAT = "We could be good at football, much better than I was!",
+		FOSSIL_PIECE = "We want to play archaeologist!",
+        FOSSIL_STALKER =
+        {
+			GENERIC = "Needs more bones!",
+			FUNNY = "Maybe we shouldn't play with bones.",
+			COMPLETE = "That looks real good!",
+        },
 		FROG =
 		{
 			DEAD = "A hop too far.",
@@ -1425,6 +1495,13 @@ return {
 			BURNING = "Someone should address this.",
 			BURNT = "He got dressed down.",
    		},
+   		SCULPTINGTABLE=
+        {
+            EMPTY = "I always wanted pottery lessons!",
+            BLOCK = "Oh! There's so many possibilities!",
+            SCULPTURE = "Wow! It looks great!",
+            BURNT = "Aww. Can we make another one?",
+        },
 		SCULPTURE_KNIGHTHEAD = "Did someone lose this?",
 		SCULPTURE_KNIGHTBODY = 
 		{
@@ -1505,7 +1582,6 @@ return {
             GENERIC = "Solid marble!",
             TYPE1 = "Nice sword!",
             TYPE2 = "It looks real lifelike, but it's all cold to touch.",
-            --TYPE3 = "",
         },
 		STATUEHARP = "Someone took the head.",
 		STATUEMAXWELL = "We're still a little mad at him. But only a little.",
@@ -1718,6 +1794,7 @@ return {
 		LIVINGTREE = "Hello, Mr. Tree!",
 		ICESTAFF = "It makes me feel funny.",
         REVIVER = "I think it loves me.",
+        SHADOWHEART = "Why does it make me feel so bad?",
         LIFEINJECTOR = "I hate taking my medicine!",
 	},
 	DESCRIBE_GENERIC = "Can we play with it?",

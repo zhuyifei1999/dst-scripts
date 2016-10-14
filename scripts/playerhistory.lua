@@ -139,6 +139,7 @@ function PlayerHistory:Save(callback)
         --print( "SAVING Player History", #self.persistdata )
         local str = json.encode(self.persistdata)
         local insz, outsz = SavePersistentString(self:GetSaveName(), str, ENCODE_SAVES, callback)
+		self:OnUpdated()
     elseif callback ~= nil then
         callback(true)
     end
@@ -191,4 +192,8 @@ function PlayerHistory:Set(str, callback)
 			end
 		end
     end
+end
+
+function PlayerHistory:OnUpdated()
+	TheNet:OnPlayerHistoryUpdated(self.persistdata)
 end

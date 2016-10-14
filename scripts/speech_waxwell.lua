@@ -66,6 +66,11 @@ return {
             NOTGEM = "Even The Amazing Maxwell couldn't wring magic from that.",
             WRONGGEM = "That would be an amateurish misuse of its magic.",
             NOTSTAFF = "Hm. No, that's not right.",
+            MUSHROOMFARM_NEEDSSHROOM = "A mushroom would be more suited to this.",
+            MUSHROOMFARM_NEEDSLOG = "A log would be more suited to this.",
+            SLOTFULL = "Occupied.",
+            DUPLICATE = "That can already be made here.",
+            NOTSCULPTABLE = "That is certainly not for sculpting with.",
         },
         GIVETOPLAYER = 
         {
@@ -636,7 +641,16 @@ return {
             STAFFED = "Something magic-y needs to happen, I think.",
             WRONGSTAFF = "Waste of a good staff.",
         },
-
+		MOONDIAL = 
+        {
+			GENERIC = "The gem conjures water springs in conjunction with the \"moon's\" cycles.",
+			NIGHT_NEW = "The... \"moon\"... has retreated for now.",
+			NIGHT_WAX = "The \"moon\" is waxing.",
+			NIGHT_FULL = "The \"moon\" is full in the sky.",
+			NIGHT_WANE = "The \"moon\" is on the wane.",
+			CAVE = "The cave provides sanctuary from the \"moon's\" prying eyes.",
+        },
+        
 		THULECITE = "An exceedingly rare but useful material.",
 		ARMORRUINS = "Thulecite meshes so well with nightmare fuel.",
 		RUINS_BAT = "The fuel runs deep in this.",
@@ -851,6 +865,16 @@ return {
 			BURNT = "Honey roasted.",
 			READY = "So tempting, but so full of bees.",
 		},
+		MUSHROOM_FARM =
+		{
+			STUFFED = "It's so full it's almost obscene.",
+			LOTS = "The mushrooms have really taken to the log.",
+			SOME = "They seem to be doing well.",
+			EMPTY = "Smells... \"piney\".", -- tell the player to put a mushroom or spore into the farm to get things started
+			ROTTEN = "Rotten, all the way through. I relate.", -- tell the player to put a log into the farm to restore it
+			BURNT = "Only ash and ruin remain here.",
+			SNOWCOVERED = "Nothing grows in these frigid wastes.",
+		},
 		BEEFALO =
 		{
 			FOLLOWER = "Aw nuts, it's following me.",
@@ -917,7 +941,8 @@ return {
             COMMON = "I know all about that. I... just forgot.",
             RARE = "A rare blueprint, indeed.",
         },
-		BELL_BLUEPRINT = "Never sell your sole for forbidden knowledge.",
+        SKETCH = "Non-magical knowledge? Sounds shifty.",
+		--BELL_BLUEPRINT = "Never sell your sole for forbidden knowledge.",
 		BLUE_CAP = "What could go wrong?",
 		BLUE_CAP_COOKED = "Umami!",
 		BLUE_MUSHROOM =
@@ -961,6 +986,43 @@ return {
 		},
 		CAVE_FERN = "I'd like to step on it.",
 		CHARCOAL = "Nothing will steal my carbon!",
+
+		CHESSPIECE_PAWN = 
+        {
+			GENERIC = "I have no idea what that is.",
+		},
+        CHESSPIECE_ROOK = 
+        {
+			GENERIC = "It's nice, but where's the rust? The exhaust pipes?",
+			STRUGGLE = "The pieces are in motion!",
+		},
+        CHESSPIECE_KNIGHT = 
+        {
+			GENERIC = "A dreadful lack of accordions.",
+			STRUGGLE = "And I thought chivalry was dead!",
+		},
+        CHESSPIECE_BISHOP = 
+        {
+			GENERIC = "Could use a few more mechanical bits in my opinion.",
+			STRUGGLE = "The pieces are in motion!",
+		},
+        CHESSPIECE_MUSE = 
+        {
+			GENERIC = "Must everything be about my shortcomings?",
+			--STRUGGLE = "I'm not strong enough for this.",
+		},
+        CHESSPIECE_FORMAL = 
+        {
+			GENERIC = "What a well-dressed figure!",
+		},
+		CHESSPIECE_HORNUCOPIA = 
+        {
+			GENERIC = "This seems cruel.",
+		},
+        CHESSPIECE_PIPE = 
+        {
+			GENERIC = "Ceci n'est pas une pipe. Pity.",
+		},
         CHESSJUNK1 = "There's a reason I never finished that.",
         CHESSJUNK2 = "That one was a jerk.",
         CHESSJUNK3 = "Didn't like that one's face.",
@@ -982,6 +1044,7 @@ return {
 			GENERIC = "How do these things keep getting into my world?",
 			HELD = "Bait.",
 		},
+		CANARY_POISONED = "You look atrocious.",
 		CROW =
 		{
 			GENERIC = "I don't know how they got here.",
@@ -1136,6 +1199,13 @@ return {
 		FLOWER_EVIL = "I like that flower.",
 		FOLIAGE = "A meal fit for a peasant.",
 		FOOTBALLHAT = "Ready for the scrimmage.",
+		FOSSIL_PIECE = "Perhaps it is best left in pieces.",
+        FOSSIL_STALKER =
+        {
+			GENERIC = "The beginnings of some demonic beast.",
+			FUNNY = "It will be the laughingstock of the demon community.",
+			COMPLETE = "Was it wise to unleash this upon the world?",
+        },
 		FROG =
 		{
 			DEAD = "It croaked.",
@@ -1443,6 +1513,13 @@ return {
 			BURNING = "Nothing is safe.",
 			BURNT = "The scarecrow has gone to a place where there is no fear.",
    		},
+   		SCULPTINGTABLE=
+        {
+            EMPTY = "A block of marble might suffice.",
+            BLOCK = "How I've missed the act of creation.",
+            SCULPTURE = "Ah, yes. Not terrible.",
+            BURNT = "To sculpt, to carve, no more.",
+        },
 		SCULPTURE_KNIGHTHEAD = "That looks... familiar...",
 		SCULPTURE_KNIGHTBODY = 
 		{
@@ -1521,7 +1598,6 @@ return {
         	GENERIC = "Hm. Stately.",
         	TYPE1 = "Her tragedy does not define her.",
         	TYPE2 = "She's still in there somewhere. I know it.",
-        	--TYPE3 = "",
     	},
 		STATUEHARP = "Not my best work.",
 		STATUEMAXWELL = "It seems silly now...",
@@ -1693,6 +1769,7 @@ return {
 		WORMHOLE_LIMITED = "It looks ill.",
 		ACCOMPLISHMENT_SHRINE = "Even They couldn't build something so devious.",		
         REVIVER = "I'm not sure I really want to give this up.",
+        SHADOWHEART = "A pulse of malice and betrayal beats within.",
         LIFEINJECTOR = "Who would put this filth in their veins?",
         ROCK_MOON = "\"Moon\" rock.",
         MOONROCKNUGGET = "\"Moon\" rock.",

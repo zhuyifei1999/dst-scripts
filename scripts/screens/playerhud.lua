@@ -9,6 +9,7 @@ local FireOver = require "widgets/fireover"
 local BloodOver = require "widgets/bloodover"
 local BeefBloodOver = require "widgets/beefbloodover"
 local HeatOver = require "widgets/heatover"
+local FumeOver = require "widgets/fumeover"
 local easing = require("easing")
 
 local PauseScreen = nil
@@ -85,6 +86,7 @@ function PlayerHud:CreateOverlays(owner)
     self.iceover = self.overlayroot:AddChild(IceOver(owner))
     self.fireover = self.overlayroot:AddChild(FireOver(owner))
     self.heatover = self.overlayroot:AddChild(HeatOver(owner))
+    self.fumeover = self.overlayroot:AddChild(FumeOver(owner))
 
     self.clouds = self.under_root:AddChild(UIAnim())
     self.clouds:SetClickable(false)

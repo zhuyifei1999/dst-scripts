@@ -43,6 +43,11 @@ return {
             NOTGEM = "I'm not sticking that in there!",
             WRONGGEM = "This gem won't work here.",
             NOTSTAFF = "It's not quite the right shape.",
+            MUSHROOMFARM_NEEDSSHROOM = "A mushroom would probably be of more use.",
+            MUSHROOMFARM_NEEDSLOG = "A log would probably be of more use.",
+            SLOTFULL = "We already put something there.",
+            DUPLICATE = "We already know that one.",
+            NOTSCULPTABLE = "Not even science could make that into a sculpture.",
         },
         GIVETOPLAYER =
         {
@@ -398,6 +403,15 @@ return {
             STAFFED = "Now what?",
             WRONGSTAFF = "I have a distinct feeling this isn't right.",
         },
+        MOONDIAL = 
+        {
+			GENERIC = "Water amplifies the science, allowing us to measure the moon.",
+			NIGHT_NEW = "It's a new moon.",
+			NIGHT_WAX = "The moon is waxing.",
+			NIGHT_FULL = "It's a full moon.",
+			NIGHT_WANE = "The moon is waning.",
+			CAVE = "There's no moon down here to measure.",
+        },
  		--MOWER = "I like the cut of this blade.",
 		--MACHETE = "I like the cut of this blade.",
 		--GOLDENMACHETE = "Hack in style!",
@@ -661,6 +675,16 @@ return {
 			SOMEHONEY = "Need to wait a bit.",
 			BURNT = "How did it get burned?!!",
 		},
+		MUSHROOM_FARM =
+		{
+			STUFFED = "That's a lot of mushrooms!",
+			LOTS = "The mushrooms have really taken to the log.",
+			SOME = "It should keep growing now.",
+			EMPTY = "It could use a spore. Or a mushroom transplant.",
+			ROTTEN = "I might be able to fix it with a fresh log.",
+			BURNT = "The power of science compelled it.",
+			SNOWCOVERED = "I don't think it can grow in this cold.",
+		},
 		BEEFALO =
 		{
 			FOLLOWER = "He's coming along peacefully.",
@@ -728,7 +752,8 @@ return {
             COMMON = "It's scientific!",
             RARE = "It's REALLY scientific!",
         },
-		BELL_BLUEPRINT = "There's SCIENCE afoot!",
+        SKETCH = "Now we can trade science secrets!",
+		--BELL_BLUEPRINT = "There's SCIENCE afoot!",
 		BLUE_CAP = "It's weird and gooey.",
 		BLUE_CAP_COOKED = "It's different now...",
 		BLUE_MUSHROOM =
@@ -803,6 +828,42 @@ return {
 		WATERMELON_SEEDS = "It's a melon seed.",
 		CAVE_FERN = "It's a fern.",
 		CHARCOAL = "It's small, dark, and smells like burnt wood.",
+        CHESSPIECE_PAWN = 
+        {
+			GENERIC = "I can relate.",
+		},
+        CHESSPIECE_ROOK = 
+        {
+			GENERIC = "It's even heavier than it looks.",
+			STRUGGLE = "The chess pieces are moving themselves!",
+		},
+        CHESSPIECE_KNIGHT = 
+        {
+			GENERIC = "It's a horse, of course.",
+			STRUGGLE = "The chess pieces are moving themselves!",
+		},
+        CHESSPIECE_BISHOP = 
+        {
+			GENERIC = "It's a stone bishop.",
+			STRUGGLE = "The chess pieces are moving themselves!",
+		},
+        CHESSPIECE_MUSE = 
+        {
+			GENERIC = "Hmm... Looks familiar.",
+			--STRUGGLE = "Something's coming!!",
+		},
+        CHESSPIECE_FORMAL = 
+        {
+			GENERIC = "Doesn't seem very \"kingly\" to me.",
+		},
+        CHESSPIECE_HORNUCOPIA = 
+        {
+			GENERIC = "Makes my stomach rumble just looking at it.",
+		},
+        CHESSPIECE_PIPE = 
+        {
+			GENERIC = "That was never really my thing.",
+		},
         CHESSJUNK1 = "A pile of broken chess pieces.",
         CHESSJUNK2 = "Another pile of broken chess pieces.",
         CHESSJUNK3 = "Even more broken chess pieces.",
@@ -832,6 +893,7 @@ return {
 			GENERIC = "Some sort of yellow creature made of science.",
 			HELD = "I'm not squishing you, am I?",
 		},
+        CANARY_POISONED = "It's probably fine.",
 		CROW =
 		{
 			GENERIC = "Creepy!",
@@ -1034,6 +1096,13 @@ return {
 		FLOWER_EVIL = "Augh! It's so evil!",
 		FOLIAGE = "Some leafy greens.",
 		FOOTBALLHAT = "I don't like sports.",
+        FOSSIL_PIECE = "Science bones! We should put them back together.",
+        FOSSIL_STALKER =
+        {
+			GENERIC = "Still missing some pieces.",
+			FUNNY = "My scientific instincts say this isn't quite right.",
+			COMPLETE = "It's alive! Oh wait, no, it's not.",
+        },
 		FROG =
 		{
 			DEAD = "He's croaked.",
@@ -1437,6 +1506,13 @@ return {
 			BURNING = "Someone made that strawman eat crow.",
 			BURNT = "Someone MURDERed that scarecrow!",
    		},
+   		SCULPTINGTABLE=
+   		{
+			EMPTY = "We can make stone sculptures with this.",
+			BLOCK = "Ready for sculpting.",
+			SCULPTURE = "A masterpiece!",
+			BURNT = "Burnt right down.",
+   		},
         SCULPTURE_KNIGHTHEAD = "Where's the rest of it?",
 		SCULPTURE_KNIGHTBODY = 
 		{
@@ -1511,7 +1587,6 @@ return {
             GENERIC = "It's a fancy marble statue.",
             TYPE1 = "Don't lose your head now!",
             TYPE2 = "Statuesque.",
-            --TYPE3 = "",
         },
 		STATUEHARP = "What happened to the head?",
 		STATUEMAXWELL = "He's a lot shorter in person.",
@@ -1687,6 +1762,7 @@ return {
 		LIVINGTREE = "Is it watching me?",
 		ICESTAFF = "It's cold to the touch.",
 		REVIVER = "The beating of this hideous heart will bring a ghost back to life!",
+		SHADOWHEART = "The power of science must have reanimated it...",
 		LIFEINJECTOR = "A scientific breakthrough! The cure!",
 		SKELETON_PLAYER =
 		{

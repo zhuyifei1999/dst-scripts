@@ -10,6 +10,7 @@ MOD_API_VERSION = 10
 if true or BRANCH == "staging" then
 	AddModReleaseID( "R01_ANR_PART1" )
 	AddModReleaseID( "R02_ANR_WARTSANDALL" )
+	AddModReleaseID( "R03_ANR_ARTSANDCRAFTS" )
 end
 -----------------------------------------------------------------------------------------------
 

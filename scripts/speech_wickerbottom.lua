@@ -72,6 +72,11 @@ return
             NOTGEM = "Don't be silly, dear.",
             WRONGGEM = "This gemstone's properties are incorrect for my purposes.",
             NOTSTAFF = "This is not the staff I seek.",
+            MUSHROOMFARM_NEEDSSHROOM = "Goodness no, it needs a fresh mushroom.",
+            MUSHROOMFARM_NEEDSLOG = "Goodness no, it needs a fresh log.",
+            SLOTFULL = "Let's finish what's on our plate first, shall we?",
+            DUPLICATE = "We've already taken note of this recipe.",
+            NOTSCULPTABLE = "No one ought to sculpt with that, dear.",
         },
         GIVETOPLAYER = 
         {
@@ -554,6 +559,16 @@ return
             SOMEHONEY = "It's not ready for harvesting.",
             BURNT = "Poor bees!",
         },
+        MUSHROOM_FARM =
+        {
+            STUFFED = "We ought to pick them before they outgrow their planter.",
+            LOTS = "An excellent fungal yield.",
+            SOME = "The fungi are fruiting nicely.",
+            EMPTY = "It must first be seeded with a cut specimen or fungal spore.", -- tell the player to put a mushroom or spore into the farm to get things started
+            ROTTEN = "The state of decomposition is too advanced to support any specimens.", -- tell the player to put a log into the farm to restore it
+            BURNT = "Carbonized by an exothermic chemical reaction.",
+            SNOWCOVERED = "Its growth has been halted by the extreme cold.",
+        },
         LIVINGTREE = "This tree is special.",
         ICESTAFF = "Some kind of ice-throwing contraption.",
         WORMLIGHT = "It's softer than I would've thought.",
@@ -585,7 +600,16 @@ return
             STAFFED = "Now we must be patient.",
             WRONGSTAFF = "Hmm... It seems the staves are not interchangeable.",
         },
-
+        MOONDIAL = 
+        {
+            GENERIC = "Something very odd is going on here.",
+            NIGHT_NEW = "The moon's cycle begins anew.",
+            NIGHT_WAX = "The moon is waxing.",
+            NIGHT_FULL = "This cycle of the moon has drawn to a close.",
+            NIGHT_WANE = "The moon is waning.",
+            CAVE = "It appears to lose functionality in subterranean conditions.",
+        },
+        
         BOOK_BIRDS = "The expurgated version, but it has my favorite: Megascops kennicottii.",
         BOOK_TENTACLES = "Hard to put this one down. It's gripping, frankly.",
         BOOK_GARDENING = "Dead plants tied together to help me aid living plants.",
@@ -753,7 +777,13 @@ return
         CAVE_FERN = "A lovely ornamental plant.",
         FOLIAGE = "These may have some nutritional value.",
         FOOTBALLHAT = "Protective gear for full-contact endeavors.",
-
+        FOSSIL_PIECE = "Hardened remains preserved by taphonomic processes.",
+        FOSSIL_STALKER =
+        {
+            GENERIC = "There are pieces of the skeleton still yet to be assembled.",
+            FUNNY = "Paleontological incompetence has produced a sad excuse for a creature.",
+            COMPLETE = "Oh! A specimen fit for a museum!",
+        },
         POWCAKE = "The crowning achievement of the agricultural-industrial complex.",
         CAVE_ENTRANCE = "The placement of that rock looks intentional.",
         CAVE_ENTRANCE_RUINS = "The passage has been obstructed.",
@@ -1051,7 +1081,8 @@ return
             COMMON = "A detailed technical drawing.",
             RARE = "Such a rare and detailed drawing!",
         },
-        BELL_BLUEPRINT = "We must take the proper steps when using this knowledge.",
+        SKETCH = "Diagrams are a universally understood language.",
+        --BELL_BLUEPRINT = "We must take the proper steps when using this knowledge.",
         MAXWELLHEAD = "I wish he wouldn't do that.",
 
         WALRUSHAT = "Should auld acquaintance be forgot?",
@@ -1085,6 +1116,7 @@ return
             GENERIC = "Serinus canaria. A historically useful sentinel species.",
             HELD = "Serinus canaria. We ought never enter a cave without one.",
         },
+        CANARY_POISONED = "Oh, dear.",
         CROW = 
         {
             GENERIC = "Corvus brachyrhynchos.",
@@ -1266,6 +1298,13 @@ return
             GENERIC = "Ah, excellent. No more leaving clothes on branches to get wrinkled.",
             BURNING = "Hm. I suppose it was quite flammable.",
             BURNT = "Pity. He was such a jolly fellow.",
+        },
+        SCULPTINGTABLE=
+        {
+            EMPTY = "A method of ceramic production. We somehow use it for sculpture.",
+            BLOCK = "Oh, I never considered myself much of an artist!",
+            SCULPTURE = "We were all in dire need of an emotional outlet, I believe.",
+            BURNT = "What a shame. It was a lovely addition.",
         },
         SCULPTURE_KNIGHTHEAD = "You have to lift with your knees, dear.",
 		SCULPTURE_KNIGHTBODY = 
@@ -1492,6 +1531,42 @@ return
         },
         WORMHOLE_LIMITED = "It will only last a few trips.",
 
+        CHESSPIECE_PAWN = 
+        {
+            GENERIC = "Pawns that journey to the seat of power can be quite dangerous.",
+        },
+        CHESSPIECE_ROOK = 
+        {
+            GENERIC = "Represents the protective walls of the king's castle.",
+            STRUGGLE = "It seems magic is afoot.",
+        },
+        CHESSPIECE_KNIGHT = 
+        {
+            GENERIC = "A knight, in service to the king. Or perhaps the queen.",
+            STRUGGLE = "It seems magic is afoot.",
+        },
+        CHESSPIECE_BISHOP = 
+        {
+            GENERIC = "A decorative stone carving of a bishop chess piece.",
+            STRUGGLE = "It seems magic is afoot.",
+        },
+        CHESSPIECE_MUSE = 
+        {
+            GENERIC = "In chess, the queen is by far the most strategically formidable.",
+            --STRUGGLE = "Something stirs in the shadows.",
+        },
+        CHESSPIECE_FORMAL = 
+        {
+            GENERIC = "The king is, by all measures, a liability to everyone on the board.",
+        },
+        CHESSPIECE_HORNUCOPIA = 
+        {
+            GENERIC = "It is a commonly held belief that art imitates life.",
+        },
+        CHESSPIECE_PIPE = 
+        {
+            GENERIC = "I hope this does not have a bad influence on the children.",
+        },
         CHESSJUNK1 = "The magician's unfinished projects?",
         CHESSJUNK2 = "The magician's unfinished projects?",
         CHESSJUNK3 = "The magician's unfinished projects?",
@@ -1644,6 +1719,7 @@ return
         YELLOWAMULET = "This amulet is glowing at the mid 530 nanometer wavelength.",    --Emits light, player walks faster.
         ACCOMPLISHMENT_SHRINE = "I feel a compulsive urge to activate it, again and again.",        
         REVIVER = "This provides a corporeal anchor for the ectoplasmic configuration.",
+        SHADOWHEART = "This... This is no child's magic.",
         LIFEINJECTOR = "The mold appears to have medicinal properties.",
    },
 

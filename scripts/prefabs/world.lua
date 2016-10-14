@@ -142,6 +142,7 @@ local prefabs =
     "mermhouse",
     "flower_evil",
     "blueprint",
+    "sketch",
     "wormhole_limited_1",
     "diviningrod",
     "diviningrodbase",
@@ -189,6 +190,15 @@ local prefabs =
     "container_classified",
 
     "dummytarget",
+    
+    "chesspiece_pawn",
+    "chesspiece_rook",
+    "chesspiece_knight",
+    "chesspiece_bishop",
+    "chesspiece_muse",
+    "chesspiece_formal",
+    "chesspiece_hornucopia",
+    "chesspiece_pipe",
 }
 
 --------------------------------------------------------------------------

@@ -66,6 +66,11 @@ return {
             NOTGEM = "I can cram it in there but I dunno if I could get it back out.",
             WRONGGEM = "It's the wrong rock!",
             NOTSTAFF = "I don't have to jam stuff into every hole I see!",
+            MUSHROOMFARM_NEEDSSHROOM = "Ughh, it doesn't need this! It needs a mushroom!",
+            MUSHROOMFARM_NEEDSLOG = "Ughh, it doesn't need this! It needs a log!",
+            SLOTFULL = "Naw, can't make it fit.",
+            DUPLICATE = "Awww, we already know that one!",
+            NOTSCULPTABLE = "I'd like to see someone try to sculpt with that!",
         },
         GIVETOPLAYER = 
         {
@@ -639,6 +644,16 @@ return {
 			SOMEHONEY = "Patience.",
 			BURNT = "Smoked you out!",
 		},
+		MUSHROOM_FARM =
+		{
+			STUFFED = "Geez, who even needs that many mushrooms?",
+			LOTS = "Gross, they're taking over!",
+			SOME = "There's mushrooms growing in it now.",
+			EMPTY = "It's just a dumb log.", -- tell the player to put a mushroom or spore into the farm to get things started
+			ROTTEN = "Nasty. Let's burn the rot out.", -- tell the player to put a log into the farm to restore it
+			BURNT = "Mold problem's taken care of.",
+			SNOWCOVERED = "I'm sure fire would fix that.",
+		},
 		LIVINGTREE = "It might be alive, but it'll still burn.",
 		ICESTAFF = "Booooring.",
 		WORMLIGHT = "Light without fire. Unnatural.",
@@ -671,21 +686,33 @@ return {
             STAFFED = "Hurry up already, stupid rock!",
             WRONGSTAFF = "That's obviously completely wrong.",
         },
+        MOONDIAL = 
+        {
+			GENERIC = "What the heck? I can still see the moon!",
+			NIGHT_NEW = "A new moon! Great, I hated the old one!",
+			NIGHT_WAX = "The moon is waxing, unlike me.",
+			NIGHT_FULL = "That's as full as it gets.",
+			NIGHT_WANE = "The moon's outta here!",
+			CAVE = "Doesn't work down here.",
+        },
+
 		TREEGUARD = "You'll burn like the rest!",
 		THULECITE = "I don't think it would burn.",
 		ARMORRUINS = "Human beings probably shouldn't wear this.",
 		RUINS_BAT = "This will keep the nasties at bay.",
 		RUINSHAT = "It seems like there's something flowing through it.",
+
 		NIGHTMARE_TIMEPIECE = --Keeps track of the nightmare cycle
 		{
-		CALM = "Looks normal to me.",	--Calm phase
-		WARN = "It's warning me.",	--Before nightmare
-		WAXING = "The fuel is coming to life!", --Nightmare Phase first 33%
-		STEADY = "It's almost humming.", --Nightmare 33% - 66%
-		WANING = "I think it's turning off.", --Nightmare 66% +
-		DAWN = "I guess it's nearly over.", --After nightmare
-		NOMAGIC = "I don't think it's working.", --Place with no nightmare cycle.
+			CALM = "Looks normal to me.",	--Calm phase
+			WARN = "It's warning me.",	--Before nightmare
+			WAXING = "The fuel is coming to life!", --Nightmare Phase first 33%
+			STEADY = "It's almost humming.", --Nightmare 33% - 66%
+			WANING = "I think it's turning off.", --Nightmare 66% +
+			DAWN = "I guess it's nearly over.", --After nightmare
+			NOMAGIC = "I don't think it's working.", --Place with no nightmare cycle.
 		},
+
 		BISHOP_NIGHTMARE = "Ahhh!",
 		ROOK_NIGHTMARE = "It has a nasty smile.",
 		KNIGHT_NIGHTMARE = "It looks pretty worn down.",
@@ -762,7 +789,7 @@ return {
         BAT = "Cute little guy!",
         BATBAT = "That thing's great for batting at enemies.",
         BATWING = "Yuck!",
-        BATWING_COOKED = "Yuck!",
+        BATWING_COOKED = "Still yuck!",
         BATCAVE = "What would happen if I dropped a match in there?",
         BEDROLL_FURRY = "It's too frilly.",
         BUNNYMAN = "Ugh. They look so stupid.",
@@ -988,7 +1015,8 @@ return {
             COMMON = "This will save some experimentation.",
             RARE = "Woah. It doesn't burn!!",
         },
-		BELL_BLUEPRINT = "I might get a kick out of that.",
+        SKETCH = "Trading diagrams is for dorks.",
+		--BELL_BLUEPRINT = "I might get a kick out of that.",
 		BLUE_CAP = "It smells like a gym sock!",
 		BLUE_CAP_COOKED = "Transformed by fire!",
 		BLUE_MUSHROOM =
@@ -1031,6 +1059,43 @@ return {
 		},
 		CAVE_FERN = "Looks flammable.",
 		CHARCOAL = "Mmmm. Smells like fire.",
+
+		CHESSPIECE_PAWN = 
+        {
+			GENERIC = "What sort of peasant doesn't have a torch?!",
+		},
+        CHESSPIECE_ROOK = 
+        {
+			GENERIC = "That one looks like it could do some damage.",
+			STRUGGLE = "I don't wanna see what comes outta that!",
+		},
+        CHESSPIECE_KNIGHT = 
+        {
+			GENERIC = "A horse with no butt.",
+			STRUGGLE = "I don't wanna see what comes outta that!",
+		},
+        CHESSPIECE_BISHOP = 
+        {
+			GENERIC = "Just some dumb bishop piece.",
+			STRUGGLE = "I don't wanna see what comes outta that!",
+		},
+        CHESSPIECE_MUSE = 
+        {
+			GENERIC = "Ewww, she doesn't have a head!",
+			--STRUGGLE = "Is that supposed to happen?!",
+		},
+        CHESSPIECE_FORMAL = 
+        {
+			GENERIC = "I'm not afraid of that guy. He doesn't even have arms!",
+		},
+		CHESSPIECE_HORNUCOPIA = 
+        {
+			GENERIC = "Ouchhh! I think I chipped a tooth.",
+		},
+        CHESSPIECE_PIPE = 
+        {
+			GENERIC = "I prefer smokey fires.",
+		},
         CHESSJUNK1 = "Dead windup horsey.",
         CHESSJUNK2 = "Dead windup priest.",
         CHESSJUNK3 = "Dead windup castle.",
@@ -1051,6 +1116,7 @@ return {
 			GENERIC = "If it kicks the bucket I'm outta here.",
 			HELD = "You still breathing? Just checking.",
 		},
+		CANARY_POISONED = "Is that infectious? We should burn it.",
 		CROW =
 		{
 			GENERIC = "I think it's waiting for me to die.",
@@ -1216,6 +1282,13 @@ return {
 		FLOWER_EVIL = "Ugh, that smells terrible.",
 		FOLIAGE = "Fuel for the fire.",
 		FOOTBALLHAT = "Sports are hard.",
+		FOSSIL_PIECE = "It's just nasty old bits of bones!",
+        FOSSIL_STALKER =
+        {
+			GENERIC = "Needs more gross old bits.",
+			FUNNY = "That looks absolutely ridiculous.",
+			COMPLETE = "Looks passable.",
+        },
 		FROG =
 		{
 			DEAD = "Showed him!",
@@ -1502,6 +1575,13 @@ return {
 			BURNING = "It's a burning man.",
 			BURNT = "Just burnt straw.",
    		},
+   		SCULPTINGTABLE=
+        {
+            EMPTY = "Hm... I could make things that DON'T burn?",
+            BLOCK = "I'm gonna carve a stone butt.",
+            SCULPTURE = "I guess that's good, too.",
+            BURNT = "Haha!",
+        },
 		SCULPTURE_KNIGHTHEAD = "Great, now we've irritated some marble crime boss!",
 		SCULPTURE_KNIGHTBODY = 
 		{
@@ -1565,7 +1645,7 @@ return {
 		},
 		SPIDERDEN = "That's just nasty.",
 		SPIDEREGGSACK = "Tons of tiny disgusting spiders.",
-		SPIDERGLAND = "Eeeeew it's slimy and stinky!",
+		SPIDERGLAND = "Eeeeew, it's slimy and stinky!",
 		SPIDERHAT = "Who's your mommy!",
 		SPIDERQUEEN = "Kill it with fire!",
 		SPIDER_WARRIOR =
@@ -1720,6 +1800,7 @@ return {
 		WORMHOLE_LIMITED = "Yuck. That won't hold long.",
 		ACCOMPLISHMENT_SHRINE = "I hate that arrow!",        		
         REVIVER = "I expected it to be blacker.",
+        SHADOWHEART = "Oh, ewww! Who would ever touch that?!",
         LIFEINJECTOR = "Don't you dare stick that in me!",
 	},
 	DESCRIBE_GENERIC = "I have no idea what that is!",

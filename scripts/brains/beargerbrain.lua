@@ -64,7 +64,7 @@ local function EatFoodAction(inst) --Look for food to eat
 end
 
 local function StealFoodAction(inst) --Look for things to take food from (EatFoodAction handles picking up/ eating)
-    -- Food On Ground > Pots = Farms = Drying Racks > Beebox > Look In Fridge > Chests > Backpacks (on ground) > Plants
+    -- Food On Ground > Pots = Farms = Drying Racks > Beebox > Mushroom Farm > Look In Fridge > Chests > Backpacks (on ground) > Plants
 
     if inst.sg:HasStateTag("busy")
         or (inst.components.inventory ~= nil and
@@ -94,6 +94,10 @@ local function StealFoodAction(inst) --Look for things to take food from (EatFoo
             elseif item:HasTag("beebox") then
                 if targets.beebox == nil and item.components.harvestable ~= nil and item.components.harvestable:CanBeHarvested() then
                     targets.beebox = item
+                end
+            elseif item:HasTag("mushroom_farm") then
+                if targets.mushroom_farm == nil and item.components.harvestable ~= nil and item.components.harvestable:CanBeHarvested() then
+                    targets.mushroom_farm = item
                 end
             elseif item.components.container ~= nil then
                 if not item.components.container:IsEmpty() then
@@ -150,6 +154,8 @@ local function StealFoodAction(inst) --Look for things to take food from (EatFoo
         return BufferedAction(inst, targets.honeyed_backpack, ACTIONS.STEAL)
     elseif targets.harvestable ~= nil then
         return BufferedAction(inst, targets.harvestable, ACTIONS.HARVEST)
+    elseif targets.mushroom_farm ~= nil then
+        return BufferedAction(inst, targets.mushroom_farm, ACTIONS.HARVEST)
     elseif targets.fridge ~= nil then
         return BufferedAction(inst, targets.fridge, ACTIONS.HAMMER)
     elseif targets.chest ~= nil then

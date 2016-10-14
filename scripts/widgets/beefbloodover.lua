@@ -7,7 +7,7 @@ local BeefBloodOver =  Class(Widget, function(self, owner)
 
     self:SetClickable(false)
 
-    self.bg = self:AddChild(Image("images/fx2.xml", "beefblood_over.tex"))
+    self.bg = self:AddChild(Image("images/fx.xml", "beefblood_over.tex"))
     self.bg:SetVRegPoint(ANCHOR_BOTTOM)
     self.bg:SetHRegPoint(ANCHOR_MIDDLE)
     self.bg:SetVAnchor(ANCHOR_BOTTOM)

@@ -38,7 +38,7 @@ To add a new language:
 ***************************************************************    
 ]]
 
-STRINGS=
+STRINGS =
 {
 
     CHARACTER_NAMES =
@@ -110,7 +110,7 @@ STRINGS=
     },
 
     --ACTION MOUSEOVER TEXT
-    ACTIONS=
+    ACTIONS =
     {
         TRAVEL = "Travel",
         GNAW = "Gnaw",
@@ -532,6 +532,7 @@ STRINGS=
         EVERGREEN_SPARSE = "Lumpy Evergreen",
         SLOW_FARMPLOT = "Basic Farm",
         FAST_FARMPLOT = "Improved Farm",
+        MUSHROOM_FARM = "Mushroom Planter",
         FIRE = "Fire",
         HOUNDFIRE = "Fire",
         COLDFIRE = "Endothermic Fire",
@@ -670,6 +671,8 @@ STRINGS=
         FISHINGROD = "Fishing Rod",
         FISH = "Fish",
         FISH_COOKED = "Cooked Fish",
+        FOSSIL_PIECE = "Fossil Fragment",
+        FOSSIL_STALKER = "Odd Skeleton",
         HONEY = "Honey",
         HONEYCOMB = "Honeycomb",
         BEEHIVE = "Beehive",
@@ -887,6 +890,8 @@ STRINGS=
         SCULPTURE_ROOKNOSE = "Suspicious Marble",
 		SCULPTURE_ROOKBODY = "Marble Sculpture",
 
+		SCULPTINGTABLE = "Potter's Wheel",
+
         GARGOYLE_HOUND = "Suspicious Moonrock",
         GARGOYLE_WEREPIG = "Suspicious Moonrock",
 
@@ -913,6 +918,7 @@ STRINGS=
         MAGIC_BLUEPRINT = "Blank Blueprint",
         BLUEPRINT = "Blueprint",
         BLUEPRINT_RARE = "{item} Blueprint",
+        SKETCH = "{item} Sketch",
         BAT = "Batilisk",
         TEAMLEADER = "Team Leader",
         BATWING = "Batilisk Wing",
@@ -969,6 +975,7 @@ STRINGS=
         POTTEDFERN = "Potted Fern",
         SENTRYWARD = "Ocuvigil",
         MOONBASE = "Moon Stone",
+        MOONDIAL = "Moon Dial",
         MOONROCK_PIECES = "Moon Rubble",
         UNAGI = "Unagi",
         EEL = "Eel",
@@ -1098,6 +1105,8 @@ STRINGS=
         SADDLE_WAR = "War Saddle",
 
         REVIVER = "Telltale Heart",
+        SHADOWHEART = "Shadow Atrium",
+        
         SHADOWMETEOR = "Meteor",
 
         MOONROCKNUGGET = "Moon Rock",
@@ -1126,6 +1135,8 @@ STRINGS=
         DECREASE_SANITY = "Sanity",
         HALF_SANITY = "Maximum Sanity",
 
+        SCULPTING_MATERIAL = "Sculpting Block",
+
         GRASSGEKKO = "Grass Gekko",
         ROCK_PETRIFIED_TREE = "Petrified Tree",
         TWIGGYTREE = "Twiggy Tree",
@@ -1147,6 +1158,28 @@ STRINGS=
         MUSHROOMBOMB = "Boomshroom",
         MUSHROOMSPROUT = "Sporecap",
         SPORECLOUD = "Spore Cloud",
+        
+        CHESSPIECE_PAWN = "Pawn Figure",
+        CHESSPIECE_ROOK = "Rook Figure",
+        CHESSPIECE_KNIGHT = "Knight Figure",
+        CHESSPIECE_BISHOP = "Bishop Figure",
+        CHESSPIECE_MUSE = "Queenly Figure",
+        CHESSPIECE_FORMAL = "Kingly Figure",
+        CHESSPIECE_HORNUCOPIA = "Carved Hornucopia",
+        CHESSPIECE_PIPE = "Bubble Pipe Carving",
+
+        CHESSPIECE_PAWN_BUILDER = "Pawn Figure",
+        CHESSPIECE_ROOK_BUILDER = "Rook Figure",
+        CHESSPIECE_KNIGHT_BUILDER = "Knight Figure",
+        CHESSPIECE_BISHOP_BUILDER = "Bishop Figure",
+        CHESSPIECE_MUSE_BUILDER = "Queenly Figure",
+        CHESSPIECE_FORMAL_BUILDER = "Kingly Figure",
+        CHESSPIECE_HORNUCOPIA_BUILDER = "Carved Hornucopia",
+        CHESSPIECE_PIPE_BUILDER = "Bubble Pipe Carving",
+
+        SHADOW_ROOK = "Shadow Rook",
+        SHADOW_KNIGHT = "Shadow Knight",
+        SHADOW_BISHOP = "Shadow Bishop",
     },
 
     DIRECTIONS =
@@ -1188,6 +1221,7 @@ STRINGS=
         HEATROCK = "Stores thermals for travel.",
         SLOW_FARMPLOT = "Grows seeds.",
         FAST_FARMPLOT = "Grows seeds a bit faster.",
+        MUSHROOM_FARM = "Grow some growths.",
         TENT = "Restores sanity, but costs time and hunger.",
         SIESTAHUT = "Escape the heat to restore sanity.",
         ROPE = "Tightly woven coils of usefulness.",
@@ -1321,6 +1355,7 @@ STRINGS=
         POTTEDFERN = "Make a pot and stick a fern inside.",
         ENDTABLE = "A decorative table.",
         SENTRYWARD = "The cartographer's most valuable weapon.",
+        MOONDIAL = "Keep track of the phases of the moon!",
         THULECITE = "Combine tiny bits into a big chunk.",
         RUINSHAT = "Complete with ancient force field!",
         SPIDEREGGSACK = "Get a little help from your friends.",
@@ -1345,6 +1380,8 @@ STRINGS=
         SADDLE_BASIC = "Lets you sit on animals. In theory.",
         SADDLE_WAR = "A throne for the boss of the battlefield.",
         SADDLE_RACE = "Offsets the time spent making it. Maybe.",
+
+		SCULPTINGTABLE = "Marble will be like clay in your hands!",
 
         BELL = "This isn't just any bell.",
 
@@ -1373,6 +1410,15 @@ STRINGS=
         BLUE_MUSHROOMHAT = "It's like eating all kinds of mushrooms.",
         MUSHROOM_LIGHT2 = "Inspired by the lava lamp sciences.",
         MUSHROOM_LIGHT = "The perfect addition to any mush-Room.",
+
+        CHESSPIECE_PAWN_BUILDER = "It takes a village to raise an army.",
+        CHESSPIECE_ROOK_BUILDER = "Next best thing to an actual castle.",
+        CHESSPIECE_KNIGHT_BUILDER = "Shining armor not included.",
+        CHESSPIECE_BISHOP_BUILDER = "Sermons not included.",
+        CHESSPIECE_MUSE_BUILDER = "The most powerful piece on the board.",
+        CHESSPIECE_FORMAL_BUILDER = "Behind every great queen is dapper king.",
+        CHESSPIECE_HORNUCOPIA_BUILDER = "Reveal your innermost desires through sculpture.",
+        CHESSPIECE_PIPE_BUILDER = "Put this on your wheel and sculpt it.",
     },
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
@@ -1575,6 +1621,7 @@ STRINGS=
     EPITAPHS =
     {
         "It says \"Come on in.\"",
+        "\"Don't even think about it.\"",
         "\"Here lies some guy.\"",
         "\"Here lies some gal.\"",
         "\"Here lies some person.\"",
@@ -1656,6 +1703,7 @@ STRINGS=
         ANCIENT = "Ancient",
         SHADOW = "Shadow",
         CARTOGRAPHY = "Cartography",
+        SCULPTING = "Sculpt",
     },
 
     GREENAMULET_TOOLTIP = "Reduced Material Cost",
@@ -1928,19 +1976,25 @@ STRINGS.UI =
         SERVERACTIONS = "More Server Actions",
         CANCEL = "Cancel",
     },
-    CHARACTERSELECT=
+
+    CHARACTERSELECT =
     {
         SELECT = "Select",
         APPLY = "Apply",
         CANCEL = "Cancel",
         DISCONNECT = "Disconnect",
     },
-    
-    CRAFTING=
-    {   
+
+    CRAFTING =
+    {
         PLACE = "Place",
         BUILD = "Build",
         PROTOTYPE = "Prototype",
+        TABACTION =
+        {
+            CARTOGRAPHY = "Scribe",
+            SCULPTING = "Create",
+        },
         NEEDSTUFF = "Find ingredients \nto craft!",
         BUILD = "Build",
         RESEARCH = "Research",
@@ -1952,11 +2006,11 @@ STRINGS.UI =
         CANTRESEARCH = "Some things are unknowable.",
         DEFAULT = "Classic",
     },
-    
-    CREDITS=
+
+    CREDITS =
     {
         TITLE = "CREDITS",
-        NAMES=
+        NAMES =
         {
             "Kevin Forbes",
             "Ju-Lian Kwan",
@@ -2002,15 +2056,16 @@ STRINGS.UI =
             "Dany Gagnon",
             "May Wa Leng",
             "Will Turnbull",
+            "Michael Rodriguez",
         },
 
-        ALTGAMES = 
+        ALTGAMES =
         {
             TITLE = "Linux and OSX ports by Alternative Games",
             NAMES = 
             {
                 "Turo Lamminen",
-                "Tuomas Narvainen", 
+                "Tuomas Narvainen",
                 "Tapio Honkonen",
             },
         },

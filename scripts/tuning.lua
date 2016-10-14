@@ -819,6 +819,7 @@ function Tune(overrides)
                 ANCIENT = 0,
                 SHADOW = 0,
                 CARTOGRAPHY = 0,
+                SCULPTING = 0,
             },
 
             ALCHEMYMACHINE =
@@ -828,6 +829,7 @@ function Tune(overrides)
                 ANCIENT = 0,
                 SHADOW = 0,
                 CARTOGRAPHY = 0,
+                SCULPTING = 0,
             },
 
             PRESTIHATITATOR =
@@ -837,6 +839,7 @@ function Tune(overrides)
                 ANCIENT = 0,
                 SHADOW = 0,
                 CARTOGRAPHY = 0,
+                SCULPTING = 0,
             },
 
             SHADOWMANIPULATOR =
@@ -846,6 +849,7 @@ function Tune(overrides)
                 ANCIENT = 0,
                 SHADOW = 0,
                 CARTOGRAPHY = 0,
+                SCULPTING = 0,
             },
 
             ANCIENTALTAR_LOW =
@@ -855,6 +859,7 @@ function Tune(overrides)
                 ANCIENT = 2,
                 SHADOW = 0,
                 CARTOGRAPHY = 0,
+                SCULPTING = 0,
             },
 
             ANCIENTALTAR_HIGH =
@@ -864,6 +869,7 @@ function Tune(overrides)
                 ANCIENT = 4,
                 SHADOW = 0,
                 CARTOGRAPHY = 0,
+                SCULPTING = 0,
             },
 
             WAXWELLJOURNAL =
@@ -873,6 +879,7 @@ function Tune(overrides)
                 ANCIENT = 0,
                 SHADOW = 4,
                 CARTOGRAPHY = 0,
+                SCULPTING = 0,
             },
 
             CARTOGRAPHYDESK =
@@ -882,6 +889,17 @@ function Tune(overrides)
                 ANCIENT = 0,
                 SHADOW = 0,
                 CARTOGRAPHY = 2,
+                SCULPTING = 0,
+            },
+
+            SCULPTINGTABLE =
+            {
+                SCIENCE = 0,
+                MAGIC = 0,
+                ANCIENT = 0,
+                SHADOW = 0,
+                CARTOGRAPHY = 0,
+                SCULPTING = 1,
             },
         },
 
@@ -965,6 +983,47 @@ function Tune(overrides)
 
 	    SHADOWCREATURE_TARGET_DIST = 20,
 
+        SHADOW_CHESSPIECE_EPICSCARE_RANGE = 10,
+        SHADOW_CHESSPIECE_DESPAWN_TIME = 30,
+	
+		SHADOW_ROOK =
+		{
+			LEVELUP_SCALE = {1, 1.2, 1.6},
+			SPEED = 7,							-- levels are procedural
+			HEALTH = {1000, 4000, 10000},
+			DAMAGE = {45, 100, 165},
+			ATTACK_PERIOD = {6, 5.5, 5},
+			ATTACK_RANGE = 8,					-- levels are procedural
+            HIT_RANGE = 3.35,
+            RETARGET_DIST = 15,
+		},
+
+		SHADOW_KNIGHT =
+		{
+			LEVELUP_SCALE = {1, 1.7, 2.5},
+			SPEED = {7, 9, 12},
+			HEALTH = {900, 2700, 8100},
+			DAMAGE = {40, 90, 150},
+			ATTACK_PERIOD = {3, 2.5, 2},
+			ATTACK_RANGE = 2.3,				    -- levels are procedural
+			ATTACK_RANGE_LONG = 4.5,			-- levels are procedural
+            RETARGET_DIST = 15,
+		},
+
+		SHADOW_BISHOP =
+		{
+			LEVELUP_SCALE = {1, 1.6, 2.2},
+			SPEED = 3,							-- levels are procedural
+			HEALTH = {800, 2500, 7500},
+			DAMAGE = {20, 35, 60},
+			ATTACK_PERIOD = {15, 14, 12},
+			ATTACK_RANGE = {4, 6, 8},			-- levels are procedural
+            HIT_RANGE = 1.75,
+            ATTACK_TICK = .5,
+            ATTACK_START_TICK = .2,
+            RETARGET_DIST = 15,
+		},
+
 		FROSTY_BREATH = -5,
 
 	    SEEDS_GROW_TIME = day_time*6,
@@ -986,6 +1045,9 @@ function Tune(overrides)
 	    SPOILEDFOOD_SOILCYCLES = 2,
 	    SPOILEDFOOD_WITHEREDCYCLES = 0.5,
 	    
+	    MUSHROOMFARM_MAX_HARVESTS = 3,
+	    MUSHROOMFARM_FULL_GROW_TIME = total_day_time * 3.25,
+	    MUSHROOMFARM_SPAWN_SPORE_CHANCE = 0.50,
 	    
 	    
 	    FISHING_CATCH_CHANCE = 0.4,

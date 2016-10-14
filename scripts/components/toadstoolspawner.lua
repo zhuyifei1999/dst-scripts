@@ -35,10 +35,6 @@ local function GetSpawnedToadstool()
     end
 end
 
-local function IsToadstoolSpawned()
-    return GetSpawnedToadstool() ~= nil
-end
-
 local function TriggerRandomSpawner()
     if #_spawners <= 0 then
         return
@@ -59,7 +55,7 @@ end
 
 local function OnRespawnTimer()
     _respawntask = nil
-    if not IsToadstoolSpawned() then
+    if GetSpawnedToadstool() == nil then
         TriggerRandomSpawner()
     end
 end
@@ -74,7 +70,7 @@ end
 --------------------------------------------------------------------------
 
 local function OnToadstoolStateChanged()
-    if IsToadstoolSpawned() then
+    if GetSpawnedToadstool() ~= nil then
         StopRespawnTimer()
     elseif _respawntask == nil then
         StartRespawnTimer()
@@ -82,7 +78,7 @@ local function OnToadstoolStateChanged()
 end
 
 local function OnToadstoolKilled()
-    if IsToadstoolSpawned() then
+    if GetSpawnedToadstool() ~= nil then
         StopRespawnTimer()
     else --force restart
         StartRespawnTimer()
@@ -94,7 +90,7 @@ local function OnRemoveSpawner(spawner)
         if v == spawner then
             table.remove(_spawners, i)
 
-            if IsToadstoolSpawned() then
+            if GetSpawnedToadstool() ~= nil then
                 StopRespawnTimer()
             elseif _respawntask == nil and #_spawners > 0 then
                 StartRespawnTimer(INITIAL_SPAWN_TIME)
@@ -116,7 +112,7 @@ local function OnRegisterToadstoolSpawner(inst, spawner)
     inst:ListenForEvent("toadstoolkilled", OnToadstoolKilled, spawner)
     inst:ListenForEvent("onremove", OnRemoveSpawner, spawner)
 
-    if IsToadstoolSpawned() then
+    if GetSpawnedToadstool() ~= nil then
         StopRespawnTimer()
     elseif _respawntask == nil then
         StartRespawnTimer(INITIAL_SPAWN_TIME)
@@ -139,7 +135,7 @@ StartRespawnTimer(INITIAL_SPAWN_TIME)
 --------------------------------------------------------------------------
 
 function self:OnPostInit()
-    if IsToadstoolSpawned() then
+    if GetSpawnedToadstool() ~= nil then
         StopRespawnTimer()
     elseif _respawntask == nil then
         StartRespawnTimer()
@@ -165,6 +161,13 @@ end
 --------------------------------------------------------------------------
 --[[ Public member functions ]]
 --------------------------------------------------------------------------
+
+function self:IsEmittingGas()
+    --return GetSpawnedToadstool() ~= nil
+    --this "should" be the same result, except much faster
+    --could differ when a spawnpoint is forcefully removed
+    return _respawntask == nil
+end
 
 --------------------------------------------------------------------------
 --[[ Save/Load ]]

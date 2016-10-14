@@ -140,6 +140,7 @@ local function makespore(data)
         inst:AddComponent("inspectable")
 
         inst:AddComponent("knownlocations")
+		inst:AddComponent("tradable")
 
 	    inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
 	    inst.components.locomotor:EnableGroundSpeedMultiplier(false)
