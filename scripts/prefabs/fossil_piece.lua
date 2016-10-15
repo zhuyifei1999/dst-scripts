@@ -3,19 +3,19 @@ local assets =
     Asset("ANIM", "anim/fossil_piece.zip"),
 }
 
-local prefabs = 
+local prefabs =
 {
-	"fossil_stalker",
+    "fossil_stalker",
 }
 
 local NUM_FOSSIL_TYPES = 6
 local function SetFossilType(inst, fossiltype)
-	inst.fossiltype = fossiltype
-	inst.AnimState:PlayAnimation(""..(fossiltype or "idle"))  -- "idle" is the generic anim to use once its been picked up
+    inst.fossiltype = fossiltype
+    inst.AnimState:PlayAnimation(""..(fossiltype or "idle")) -- "idle" is the generic anim to use once its been picked up
 end
 
 local function cleanfossil(inst, data)
-	SetFossilType(inst, nil) -- show the cleaned bones image instead of the random mined images
+    SetFossilType(inst, nil) -- show the cleaned bones image instead of the random mined images
 end
 
 local function onsave(inst, data)
@@ -26,12 +26,12 @@ local function onload(inst, data)
     SetFossilType(inst, data and data.fossiltype)
 end
 
-local function ondeploy(inst, pt) 
+local function ondeploy(inst, pt)
     local mound = SpawnPrefab("fossil_stalker")
     if mound then
         mound.Transform:SetPosition(pt:Get())
-		mound.SoundEmitter:PlaySound("dontstarve/creatures/together/fossil/repair")
-		
+        mound.SoundEmitter:PlaySound("dontstarve/creatures/together/fossil/repair")
+
         inst.components.stackable:Get():Remove()
     end
 end
@@ -90,18 +90,18 @@ local function fn()
 end
 
 function cleanfn()
-	local inst = fn()
-	
-	if not TheWorld.ismastersim then
-		return inst
-	end
-	
-	inst:SetPrefabName("fossil_piece")
+    local inst = fn()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst:SetPrefabName("fossil_piece")
     SetFossilType(inst, nil)
 
-	return inst
+    return inst
 end
 
-return Prefab("fossil_piece", fn, assets),				-- the fossile chunks that are dropped from the stalagmites
+return Prefab("fossil_piece", fn, assets, prefabs),
        MakePlacer("fossil_piece_placer", "fossil_piece", "fossil_piece", "idle"),
-       Prefab("fossil_piece_clean", cleanfn, assets)
+       Prefab("fossil_piece_clean", cleanfn, assets, prefabs)
