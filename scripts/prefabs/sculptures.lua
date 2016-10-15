@@ -128,8 +128,8 @@ end
 
 local function onshadowchessroar(inst)
     if inst.components.repairable == nil and inst.components.workable.workleft > TUNING.SCULPTURE_COVERED_WORK then
-		inst:Reanimate(inst, true)
-	end
+        inst:Reanimate(inst, true)
+    end
 end
 
 local function makesculpture(name, physics_radius, scale, second_piece_name)
@@ -143,6 +143,7 @@ local function makesculpture(name, physics_radius, scale, second_piece_name)
     local prefabs =
     {
         "marble",
+        "gears",
         "chesspiece_"..name.."_sketch",
         "shadow_"..name,
     }
@@ -155,7 +156,7 @@ local function makesculpture(name, physics_radius, scale, second_piece_name)
         if inst._reanimatetask == nil then
             StopStruggle(inst)
 
-			inst.components.lootdropper:SpawnLootPrefab("chesspiece_"..name.."_sketch")
+            inst.components.lootdropper:SpawnLootPrefab("chesspiece_"..name.."_sketch")
 
             inst.components.workable:SetOnWorkCallback(nil)
             inst.components.workable:SetOnFinishCallback(nil)
@@ -168,12 +169,12 @@ local function makesculpture(name, physics_radius, scale, second_piece_name)
             inst.persists = false
             inst._reanimatetask = inst:DoTaskInTime(2, ErodeAway)
 
-			local creaturename = name
-			if TheWorld.state.isnewmoon or forceshadow then
-				creaturename = "shadow_"..creaturename
-				inst.components.lootdropper:SpawnLootPrefab("gears")
-				inst.components.lootdropper:SpawnLootPrefab("gears")
-			end
+            local creaturename = name
+            if TheWorld.state.isnewmoon or forceshadow then
+                creaturename = "shadow_"..creaturename
+                inst.components.lootdropper:SpawnLootPrefab("gears")
+                inst.components.lootdropper:SpawnLootPrefab("gears")
+            end
 
             local creature = SpawnPrefab(creaturename)
             creature.Transform:SetPosition(inst.Transform:GetWorldPosition())
@@ -262,7 +263,7 @@ local function makesculpture(name, physics_radius, scale, second_piece_name)
         inst:WatchWorldState("isfullmoon", CheckMorph)
         inst:WatchWorldState("isnewmoon", CheckMorph)
         
-     	inst:ListenForEvent("shadowchessroar", onshadowchessroar)
+        inst:ListenForEvent("shadowchessroar", onshadowchessroar)
 
         inst.Reanimate = Reanimate
 

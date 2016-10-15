@@ -19,9 +19,18 @@ end
 ShadowChessFunctions.AwakenNearbyStatues = AwakenNearbyStatues
 
 --------------------------------------------------------------------------
+local function TriggerEpicScare(inst)
+    if inst:HasTag("epic") then
+        inst.components.epicscare:Scare(5)
+    end
+end
+
+ShadowChessFunctions.TriggerEpicScare = TriggerEpicScare
+
+--------------------------------------------------------------------------
 local function levelup(inst, data)
 	if not inst.components.health:IsDead()then
-		local queued = inst:QueueLevelUp(data.prefab)
+		local queued = inst:QueueLevelUp(data.source)
 		if queued then
 			if not inst.sg:HasStateTag("busy") then 
 				inst.sg:GoToState("levelup")
@@ -75,7 +84,7 @@ ShadowChessStates.AddIdle = function(states, idle_anim)
 end
 
 --------------------------------------------------------------------------
-ShadowChessStates.AddLevelUp = function(states, anim, sound_frame, transition_frame)
+ShadowChessStates.AddLevelUp = function(states, anim, sound_frame, transition_frame, busyover_frame)
     table.insert(states, State
     {
 		name = "levelup",
@@ -90,11 +99,13 @@ ShadowChessStates.AddLevelUp = function(states, anim, sound_frame, transition_fr
         {
 			TimeEvent(sound_frame*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.levelup) end),
 			TimeEvent(transition_frame*FRAMES, function(inst)
-				AwakenNearbyStatues(inst)
 				while inst:WantsToLevelUp() do
 					inst:LevelUp()
 				end
+                AwakenNearbyStatues(inst)
+                TriggerEpicScare(inst)
 			end),
+            TimeEvent(busyover_frame*FRAMES, function(inst) inst.sg:RemoveStateTag("busy") end),
         },
 
         events=
@@ -105,11 +116,11 @@ ShadowChessStates.AddLevelUp = function(states, anim, sound_frame, transition_fr
 end
 
 --------------------------------------------------------------------------
-ShadowChessStates.AddTaunt = function(states, anim, sound_frame, action_frame)
+ShadowChessStates.AddTaunt = function(states, anim, sound_frame, action_frame, busyover_frame)
     table.insert(states, State
     {
 		name = "taunt",
-        tags = {"busy"},
+        tags = { "taunt", "busy"},
 
         onenter = function(inst)
             inst.Physics:Stop()
@@ -119,7 +130,11 @@ ShadowChessStates.AddTaunt = function(states, anim, sound_frame, action_frame)
 		timeline=
         {
 			TimeEvent(sound_frame*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.taunt) end),
-			TimeEvent(action_frame*FRAMES, function(inst) AwakenNearbyStatues(inst) end),
+			TimeEvent(action_frame*FRAMES, function(inst)
+                AwakenNearbyStatues(inst)
+                TriggerEpicScare(inst)
+            end),
+            TimeEvent(busyover_frame*FRAMES, function(inst) inst.sg:RemoveStateTag("busy") end),
         },
 
         events=
@@ -130,7 +145,7 @@ ShadowChessStates.AddTaunt = function(states, anim, sound_frame, action_frame)
 end
 
 --------------------------------------------------------------------------
-ShadowChessStates.AddHit = function(states, anim, sound_frame)
+ShadowChessStates.AddHit = function(states, anim, sound_frame, busyover_frame)
     table.insert(states, State
     {
 		name = "hit",
@@ -144,6 +159,7 @@ ShadowChessStates.AddHit = function(states, anim, sound_frame)
 		timeline=
         {
 			TimeEvent(sound_frame*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.hit) end),
+            TimeEvent(busyover_frame*FRAMES, function(inst) inst.sg:RemoveStateTag("busy") end),
         },
 
         events=
@@ -159,7 +175,7 @@ local function LevelUpAlliesTimelineEvent(frame)
 		-- trigger all near by shadow chess pieces to level up
 		local ents = inst:GetAllSCPInRange(LEVELUP_RADIUS)
 		for i, v in ipairs(ents) do
-			v:PushEvent("levelup", {prefab=inst.prefab})
+			v:PushEvent("levelup", {source=inst})
 		end
 	end)
 end

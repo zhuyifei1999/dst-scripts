@@ -89,6 +89,26 @@ function self:OnPostInit()
 		end
 	end
 
+	if self.retrofit_artsandcrafts then
+		local count = 10
+	    for k,v in pairs(Ents) do
+			if v ~= inst and v.prefab == "spiderhole" then
+				count = count - 1
+				if count == 0 then
+					break
+				end
+			end
+		end
+		
+		if count > 0 then
+			print ("Retrofitting for A New Reign: Arts and Crafts.")
+			for i = 1,count do
+				RetrofitNewCaveContentPrefab(inst, "fossil_piece", 1)
+			end
+		else
+			print ("Retrofitting for A New Reign: Arts and Crafts is not required.")
+		end
+	end
 end
 
 --------------------------------------------------------------------------
@@ -104,6 +124,7 @@ function self:OnLoad(data)
 
     if data ~= nil then
 		retrofit_warts = data.retrofit_warts or false
+		self.retrofit_artsandcrafts = data.retrofit_artsandcrafts
     end
 end
 

@@ -15,7 +15,7 @@ local prefabs =
 local numfaces =
 {
 	hit = 4,
-	scary = 5,
+	scary = 10,
 	screaming = 3,
 }
 
@@ -113,7 +113,7 @@ local function fn()
     inst:AddComponent("lootdropper")
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
-    inst.components.workable:SetWorkLeft(4)
+    inst.components.workable:SetWorkLeft(6)
     inst.components.workable:SetOnFinishCallback(onhammered)
     inst.components.workable:SetOnWorkCallback(onhit)
 

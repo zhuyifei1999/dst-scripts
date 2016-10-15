@@ -12,7 +12,6 @@ local prefabs =
     "cavelight_small",
     "cavelight_tiny",
     "flower_cave",
-    "fossil_piece",
     "ancient_altar",
     "ancient_altar_broken",
     "stalagmite",

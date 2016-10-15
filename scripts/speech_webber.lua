@@ -759,7 +759,7 @@ return {
             COMMON = "\"Follow the instructions\", mum always said.",
             RARE = "This one feels special.",
         },
-        SKETCH = "I hope Ms. Wickerbottom pins it up on the icebox!",
+        SKETCH = "We need somewhere to make it!",
 		--BELL_BLUEPRINT = "We're ankle-deep in knowledge!",
 		BLUE_CAP = "You'd have to be crazy...",
 		BLUE_CAP_COOKED = "Good thing we're feeling healthy.",

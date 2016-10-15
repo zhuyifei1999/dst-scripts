@@ -1248,7 +1248,7 @@ STRINGS =
         WINTEROMETER = "Measure ambient air temperature.",
         RAINOMETER = "Observe precipitation probabilities.",
         RESURRECTIONSTATUE = "Resurrect yourself via the power of meat.",
-        BOARDS = "Like logs but flatter.",
+        BOARDS = "Like logs, but flatter.",
         RESEARCHLAB = "Unlock new crafting recipes!",
         BACKPACK = "Carry more stuff.",
         PIGGYBACK = "Carries a lot, but slows you down.",
@@ -1414,10 +1414,10 @@ STRINGS =
         CHESSPIECE_PAWN_BUILDER = "It takes a village to raise an army.",
         CHESSPIECE_ROOK_BUILDER = "Next best thing to an actual castle.",
         CHESSPIECE_KNIGHT_BUILDER = "Shining armor not included.",
-        CHESSPIECE_BISHOP_BUILDER = "Sermons not included.",
+        CHESSPIECE_BISHOP_BUILDER = "A chesspiece with a checkered past.",
         CHESSPIECE_MUSE_BUILDER = "The most powerful piece on the board.",
-        CHESSPIECE_FORMAL_BUILDER = "Behind every great queen is dapper king.",
-        CHESSPIECE_HORNUCOPIA_BUILDER = "Reveal your innermost desires through sculpture.",
+        CHESSPIECE_FORMAL_BUILDER = "Behind every queen is a dapper king.",
+        CHESSPIECE_HORNUCOPIA_BUILDER = "A sculpture for a starving artist.",
         CHESSPIECE_PIPE_BUILDER = "Put this on your wheel and sculpt it.",
     },
 
@@ -2003,6 +2003,10 @@ STRINGS.UI =
         NEEDSHADOWMANIPULATOR = "Use a shadow manipulator to build a prototype!",
         NEEDPRESTIHATITATOR = "Use a Prestihatitator to build a prototype!",
         NEEDSANCIENT_FOUR = "It seems that this altar is not fully functional!",
+        NEEDSTECH =
+        {
+            SCULPTING = "Put stone on the wheel to create a Sculpting Block!",
+        },
         CANTRESEARCH = "Some things are unknowable.",
         DEFAULT = "Classic",
     },

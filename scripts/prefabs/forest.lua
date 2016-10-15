@@ -34,7 +34,7 @@ local assets =
     Asset("IMAGE", "images/wave.tex"),
 }
 
-local prefabs = 
+local prefabs =
 {
     "forest_network",
     "adventure_portal",
@@ -42,8 +42,6 @@ local prefabs =
     "deerclops",
     "gravestone",
     "flower",
-    "fossil_piece",
-    "fossil_stalker",
     "animal_track",
     "dirtpile",
     "beefaloherd",

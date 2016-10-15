@@ -44,6 +44,12 @@ end
 return
 {
     hounds = function(difficulty)
+		print "HERE wormattacks"
+        SetSpawnMode(TheWorld.components.hounded, difficulty)
+    end,
+
+    wormattacks = function(difficulty)
+		print ("HERE wormattacks", tostring(difficulty))
         SetSpawnMode(TheWorld.components.hounded, difficulty)
     end,
 

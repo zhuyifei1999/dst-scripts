@@ -941,7 +941,7 @@ return {
             COMMON = "I know all about that. I... just forgot.",
             RARE = "A rare blueprint, indeed.",
         },
-        SKETCH = "Non-magical knowledge? Sounds shifty.",
+        SKETCH = "I'll need somewhere to sculpt it.",
 		--BELL_BLUEPRINT = "Never sell your sole for forbidden knowledge.",
 		BLUE_CAP = "What could go wrong?",
 		BLUE_CAP_COOKED = "Umami!",

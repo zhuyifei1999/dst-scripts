@@ -974,7 +974,7 @@ return {
             COMMON = "Pretty pictures!",
             RARE = "Very, very fancy pictures!",
         },
-        SKETCH = "Wolfgang understands pictures!",
+        SKETCH = "Picture will help Wolfgang carve nice rocks!",
 		--BELL_BLUEPRINT = "Blueprint. Footprint!",
 		BLUE_CAP = "Is good for tired muscles, I think.",
 		BLUE_CAP_COOKED = "Is not same.",

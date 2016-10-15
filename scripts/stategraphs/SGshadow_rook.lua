@@ -9,7 +9,11 @@ local events =
         end
     end),
     EventHandler("doattack", function(inst, data)
-        if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) then
+        if not (inst.sg:HasStateTag("busy") or
+                inst.sg:HasStateTag("attack") or
+                inst.sg:HasStateTag("taunt") or
+                inst.sg:HasStateTag("levelup") or
+                inst.components.health:IsDead()) then
             inst.sg:GoToState("attack", data.target)
         end
     end),
@@ -80,6 +84,7 @@ local states =
                 inst.components.health:SetInvincible(false)
                 inst.components.combat:DoAreaAttack(inst, inst.components.combat.hitrange, nil, nil, nil, { "INLIMBO", "notarget", "invisible", "noattack", "flight", "playerghost", "shadow", "shadowchesspiece", "shadowcreature" })
             end),
+            TimeEvent(34 * FRAMES, function(inst) inst.sg:RemoveStateTag("busy") end),
         },
 
         events =
@@ -98,9 +103,9 @@ local states =
 }
 
 ShadowChessStates.AddIdle(states, "idle_loop")
-ShadowChessStates.AddLevelUp(states, "transform", 20, 60)
-ShadowChessStates.AddTaunt(states, "taunt", 20, 30)
-ShadowChessStates.AddHit(states, "hit", 0)
+ShadowChessStates.AddLevelUp(states, "transform", 20, 60, 88)
+ShadowChessStates.AddTaunt(states, "taunt", 20, 30, 45)
+ShadowChessStates.AddHit(states, "hit", 0, 14)
 ShadowChessStates.AddDeath(states, "disappear", 10, nil)
 ShadowChessStates.AddEvolvedDeath(states, "death", 38, nil)
 ShadowChessStates.AddDespawn(states, "disappear")

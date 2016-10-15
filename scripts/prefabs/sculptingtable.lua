@@ -20,6 +20,14 @@ local sculptable_materials =
 
 local function AddSketch(inst, sketch)
 	inst.components.craftingstation:LearnItem(sketch:GetSpecificSketchPrefab(), sketch:GetRecipeName())
+    inst.AnimState:PlayAnimation("hit")
+    inst.SoundEmitter:PlaySound("dontstarve/common/together/moonbase/moonstaff_place")
+
+    if inst.components.prototyper.on then
+        inst.AnimState:PushAnimation("proximity_loop", true)
+    else
+        inst.AnimState:PushAnimation("idle", false)
+    end
 end
 
 local function CalcSymbolFile(itemname)

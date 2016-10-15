@@ -752,7 +752,7 @@ return {
             COMMON = "It's scientific!",
             RARE = "It's REALLY scientific!",
         },
-        SKETCH = "Now we can trade science secrets!",
+        SKETCH = "A picture of a sculpture. We'll need somewhere to make it.",
 		--BELL_BLUEPRINT = "There's SCIENCE afoot!",
 		BLUE_CAP = "It's weird and gooey.",
 		BLUE_CAP_COOKED = "It's different now...",

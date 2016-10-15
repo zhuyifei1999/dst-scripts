@@ -81,10 +81,6 @@ local function onload(inst)
     end
 end
 
-local function oninit(inst)
-    inst.AnimState:PlayAnimation(resolveanimtoplay(inst, inst.components.health:GetPercent()))
-end
-
 local function onremove(inst)
     inst._ispathfinding:set_local(false)
     OnIsPathFindingDirty(inst)
@@ -230,7 +226,7 @@ function MakeWallType(data)
 
         inst.AnimState:SetBank("wall")
         inst.AnimState:SetBuild("wall_"..data.name)
-        inst.AnimState:PlayAnimation("fullA", false)
+        inst.AnimState:PlayAnimation("half")
 
         for i, v in ipairs(data.tags) do
             inst:AddTag(v)
@@ -266,7 +262,7 @@ function MakeWallType(data)
 
         inst:AddComponent("health")
         inst.components.health:SetMaxHealth(data.maxhealth)
-        inst.components.health:SetCurrentHealth(data.maxhealth / 2)
+        inst.components.health:SetCurrentHealth(data.maxhealth * .5)
         inst.components.health.ondelta = onhealthchange
         inst.components.health.nofadeout = true
         inst.components.health.canheal = false
@@ -296,8 +292,6 @@ function MakeWallType(data)
         MakeHauntableWork(inst)
 
         inst.OnLoad = onload
-
-        inst:DoTaskInTime(0, oninit)
 
         MakeSnowCovered(inst)
 

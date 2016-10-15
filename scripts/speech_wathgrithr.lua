@@ -743,7 +743,7 @@ return {
             COMMON = "Oh, a map! No, wait. That's wrong.",
             RARE = "Tis a blessed scroll.",
         },
-        SKETCH = "Powerful knowledge, inscribed on an ancient scroll!",
+        SKETCH = "The muses' knowledge, inscribed upon an ancient scroll!",
 		--BELL_BLUEPRINT = "Knowledge to enrich one's sole.",
 		BLUE_CAP = "Hmm, a blue one.",
 		BLUE_CAP_COOKED = "I have no desire to eat it.",

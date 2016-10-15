@@ -991,7 +991,7 @@ return {
             COMMON = "Whoever drew this is probably dead.",
             RARE = "I'm surprised we didn't die trying to get this.",
         },
-        SKETCH = "I wish we could draw with something besides charcoal.",
+        SKETCH = "I think we could make what's drawn here...",
 		--BELL_BLUEPRINT = "Whoever drew this is probably six feet under.",
 		BLUE_CAP = "A fungus to preserve the monotony.",
 		BLUE_CAP_COOKED = "All is malleable.",

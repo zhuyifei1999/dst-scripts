@@ -317,74 +317,6 @@ function RecipePopup:Refresh()
         end
     end
 
-    local equippedBody = inventory:GetEquippedItem(EQUIPSLOTS.BODY)
-    local showamulet = equippedBody and equippedBody.prefab == "greenamulet"
-
-    local controller_id = TheInput:GetControllerID()
-
-    if should_hint then
-        self.recipecost:Hide()
-        self.button:Hide()
-
-        local hint_text =
-        {
-            ["SCIENCEMACHINE"] = STRINGS.UI.CRAFTING.NEEDSCIENCEMACHINE,
-            ["ALCHEMYMACHINE"] = STRINGS.UI.CRAFTING.NEEDALCHEMYENGINE,
-            ["SHADOWMANIPULATOR"] = STRINGS.UI.CRAFTING.NEEDSHADOWMANIPULATOR,
-            ["PRESTIHATITATOR"] = STRINGS.UI.CRAFTING.NEEDPRESTIHATITATOR,
-            ["CANTRESEARCH"] = STRINGS.UI.CRAFTING.CANTRESEARCH,
-            ["ANCIENTALTAR_HIGH"] = STRINGS.UI.CRAFTING.NEEDSANCIENT_FOUR,
-        }
-        local str = hint_text[GetHintTextForRecipe(owner, recipe)] or "Text not found."
-        self.teaser:SetScale(TEASER_SCALE_TEXT)
-        self.teaser:SetString(str)
-        self.teaser:Show()
-        showamulet = false
-    else
-        self.teaser:Hide()
-        self.recipecost:Hide()
-
-        local buttonstr =
-            (not (knows or recipe.nounlock) and STRINGS.UI.CRAFTING.PROTOTYPE) or
-            (buffered and STRINGS.UI.CRAFTING.PLACE) or
-            STRINGS.UI.CRAFTING.TABACTION[recipe.tab.str] or
-            STRINGS.UI.CRAFTING.BUILD
-
-        if TheInput:ControllerAttached() then
-            self.button:Hide()
-            self.teaser:Show()
-
-            if can_build then
-                self.teaser:SetScale(TEASER_SCALE_BTN)
-                self.teaser:SetString(TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT).." "..buttonstr)
-            else
-                self.teaser:SetScale(TEASER_SCALE_TEXT)
-                self.teaser:SetString(STRINGS.UI.CRAFTING.NEEDSTUFF)
-            end
-        else
-            self.button:Show()
-            if self.skins_spinner ~= nil then
-                self.button:SetPosition(320, -155, 0)
-            else
-                self.button:SetPosition(320, -105, 0)
-            end
-            self.button:SetScale(1,1,1)
-
-            self.button:SetText(buttonstr)
-            if can_build then
-                self.button:Enable()
-            else
-                self.button:Disable()
-            end
-        end
-    end
-
-    if not showamulet then
-        self.amulet:Hide()
-    else
-        self.amulet:Show()
-    end
-
     self.name:SetString(STRINGS.NAMES[string.upper(self.recipe.name)])
     self.desc:SetString(STRINGS.RECIPE_DESC[string.upper(self.recipe.name)])
 
@@ -406,6 +338,8 @@ function RecipePopup:Refresh()
         offset = offset - (w *.5 + half_div) * (num - 1)
     end
 
+    local hint_tech_ingredient = nil
+
     for i, v in ipairs(recipe.tech_ingredients) do
         if v.type:sub(-9) == "_material" then
             local has, level = builder:HasTechIngredient(v)
@@ -416,6 +350,9 @@ function RecipePopup:Refresh()
             ing:SetPosition(Vector3(offset, self.skins_spinner ~= nil and 110 or 80, 0))
             offset = offset + w + half_div
             table.insert(self.ing, ing)
+            if not has and hint_tech_ingredient == nil then
+                hint_tech_ingredient = v.type:sub(1, -10):upper()
+            end
         end
     end
 
@@ -441,6 +378,77 @@ function RecipePopup:Refresh()
         ing:SetPosition(Vector3(offset, self.skins_spinner ~= nil and 110 or 80, 0))
         offset = offset + w + half_div
         table.insert(self.ing, ing)
+    end
+
+    local equippedBody = inventory:GetEquippedItem(EQUIPSLOTS.BODY)
+    local showamulet = equippedBody and equippedBody.prefab == "greenamulet"
+
+    if should_hint or hint_tech_ingredient ~= nil then
+        self.recipecost:Hide()
+        self.button:Hide()
+
+        local str
+        if should_hint then
+            local hint_text =
+            {
+                ["SCIENCEMACHINE"] = STRINGS.UI.CRAFTING.NEEDSCIENCEMACHINE,
+                ["ALCHEMYMACHINE"] = STRINGS.UI.CRAFTING.NEEDALCHEMYENGINE,
+                ["SHADOWMANIPULATOR"] = STRINGS.UI.CRAFTING.NEEDSHADOWMANIPULATOR,
+                ["PRESTIHATITATOR"] = STRINGS.UI.CRAFTING.NEEDPRESTIHATITATOR,
+                ["CANTRESEARCH"] = STRINGS.UI.CRAFTING.CANTRESEARCH,
+                ["ANCIENTALTAR_HIGH"] = STRINGS.UI.CRAFTING.NEEDSANCIENT_FOUR,
+            }
+            str = hint_text[GetHintTextForRecipe(owner, recipe)]
+        else
+            str = STRINGS.UI.CRAFTING.NEEDSTECH[hint_tech_ingredient]
+        end
+        self.teaser:SetScale(TEASER_SCALE_TEXT)
+        self.teaser:SetString(str or "Text not found.")
+        self.teaser:Show()
+        showamulet = false
+    else
+        self.teaser:Hide()
+        self.recipecost:Hide()
+
+        local buttonstr =
+            (not (knows or recipe.nounlock) and STRINGS.UI.CRAFTING.PROTOTYPE) or
+            (buffered and STRINGS.UI.CRAFTING.PLACE) or
+            STRINGS.UI.CRAFTING.TABACTION[recipe.tab.str] or
+            STRINGS.UI.CRAFTING.BUILD
+
+        if TheInput:ControllerAttached() then
+            self.button:Hide()
+            self.teaser:Show()
+
+            if can_build then
+                self.teaser:SetScale(TEASER_SCALE_BTN)
+                self.teaser:SetString(TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_ACCEPT).." "..buttonstr)
+            else
+                self.teaser:SetScale(TEASER_SCALE_TEXT)
+                self.teaser:SetString(STRINGS.UI.CRAFTING.NEEDSTUFF)
+            end
+        else
+            self.button:Show()
+            if self.skins_spinner ~= nil then
+                self.button:SetPosition(320, -155, 0)
+            else
+                self.button:SetPosition(320, -105, 0)
+            end
+            self.button:SetScale(1,1,1)
+
+            self.button:SetText(buttonstr)
+            if can_build then
+                self.button:Enable()
+            else
+                self.button:Disable()
+            end
+        end
+    end
+
+    if showamulet then
+        self.amulet:Show()
+    else
+        self.amulet:Hide()
     end
 
     -- update new tags

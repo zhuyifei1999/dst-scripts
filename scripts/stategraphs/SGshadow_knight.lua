@@ -4,24 +4,31 @@ require("stategraphs/sgshadow_chesspieces")
 -- basic attack extent = 2.75
 -- plus attack extent = 4.75
 
-local actionhandlers =
-{
-}
-
 local events =
 {
-    EventHandler("attacked", function(inst) if not inst.components.health:IsDead() and not inst.sg:HasStateTag("busy") then inst.sg:GoToState("hit") end end),
-    EventHandler("doattack", function(inst, data) if not inst.components.health:IsDead() and not inst.sg:HasStateTag("busy") then inst.sg:GoToState("attack_pre") end end),
+    EventHandler("attacked", function(inst)
+        if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) then
+            inst.sg:GoToState("hit")
+        end
+    end),
+    EventHandler("doattack", function(inst, data)
+        if not (inst.sg:HasStateTag("busy") or
+                inst.sg:HasStateTag("attack") or
+                inst.sg:HasStateTag("taunt") or
+                inst.sg:HasStateTag("levelup") or
+                inst.components.health:IsDead()) then
+            inst.sg:GoToState("attack_pre")
+        end
+    end),
 
 	ShadowChessEvents.LevelUp(),
     ShadowChessEvents.OnDeath(),
 	ShadowChessEvents.OnDespawn(),
-    CommonHandlers.OnLocomote(false,true),
+    CommonHandlers.OnLocomote(false, true),
 }
 
 local states =
 {
-
 	State{
         name = "attack_pre",
         tags = { "attack", "busy" },
@@ -68,6 +75,7 @@ local states =
         {
 			TimeEvent(0, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.attack) end),
 			TimeEvent(7*FRAMES, function(inst) inst.components.combat:DoAttack() end),
+            TimeEvent(13*FRAMES, function(inst) inst.sg:RemoveStateTag("busy") end),
 		},
 		
         events =
@@ -90,6 +98,7 @@ local states =
         {
 			TimeEvent(0, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.attack) end),
 			TimeEvent(7*FRAMES, function(inst) inst.components.combat:DoAttack() end),
+            TimeEvent(17*FRAMES, function(inst) inst.sg:RemoveStateTag("busy") end),
 		},
 		
         events =
@@ -100,7 +109,7 @@ local states =
     
     State{
 		name = "taunt",
-        tags = {"busy"},
+        tags = { "taunt", "busy" },
 
         onenter = function(inst, remaining)
 			inst.sg.statemem.remaining = (remaining or 2) - 1
@@ -126,7 +135,11 @@ local states =
 		timeline=
         {
 			TimeEvent(20*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.taunt) end),
-			TimeEvent(30*FRAMES, function(inst) ShadowChessFunctions.AwakenNearbyStatues(inst) end),
+			TimeEvent(30*FRAMES, function(inst)
+                ShadowChessFunctions.AwakenNearbyStatues(inst)
+                ShadowChessFunctions.TriggerEpicScare(inst)
+            end),
+            TimeEvent(44*FRAMES, function(inst) inst.sg:RemoveStateTag("busy") end),
         },
 
         events=
@@ -138,13 +151,12 @@ local states =
 }
 
 ShadowChessStates.AddIdle(states, "idle_loop")
-ShadowChessStates.AddLevelUp(states, "transform", 20, 61)
-ShadowChessStates.AddHit(states, "hit", 0)
+ShadowChessStates.AddLevelUp(states, "transform", 20, 61, 91)
+ShadowChessStates.AddHit(states, "hit", 0, 13)
 ShadowChessStates.AddDeath(states, "disappear", 12, nil)
 ShadowChessStates.AddEvolvedDeath(states, "death", 30, nil)
 ShadowChessStates.AddDespawn(states, "disappear")
 
 CommonStates.AddWalkStates(states)
 
-return StateGraph("shadow_knight", states, events, "idle", actionhandlers)
-
+return StateGraph("shadow_knight", states, events, "idle")

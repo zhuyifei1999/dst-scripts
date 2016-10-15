@@ -176,7 +176,6 @@ PREFABFILES = {
   "forcefieldfx",
   "forest",
   "forest_network",
-  "fossil_mound",
   "fossil_piece",
   "frog",
   "froglegs",

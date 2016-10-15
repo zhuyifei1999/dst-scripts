@@ -5553,7 +5553,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SKETCH
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.SKETCH"
-msgid "Now we can trade science secrets!"
+msgid "A picture of a sculpture. We'll need somewhere to make it."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.SKULLCHEST
@@ -11658,7 +11658,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.SKETCH
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.SKETCH"
-msgid "Powerful knowledge, inscribed on an ancient scroll!"
+msgid "The muses' knowledge, inscribed upon an ancient scroll!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.SKULLCHEST
@@ -17768,7 +17768,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.SKETCH
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.SKETCH"
-msgid "Non-magical knowledge? Sounds shifty."
+msgid "I'll need somewhere to sculpt it."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.SKULLCHEST
@@ -23888,7 +23888,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.SKETCH
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.SKETCH"
-msgid "I hope Ms. Wickerbottom pins it up on the icebox!"
+msgid "We need somewhere to make it!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.SKULLCHEST
@@ -29978,7 +29978,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.SKETCH
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.SKETCH"
-msgid "I wish we could draw with something besides charcoal."
+msgid "I think we could make what's drawn here..."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.SKULLCHEST
@@ -36098,7 +36098,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.SKETCH
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.SKETCH"
-msgid "Diagrams are a universally understood language."
+msgid "Detailed diagrams of a stone sculpture."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.SKULLCHEST
@@ -48383,7 +48383,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.SKETCH
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.SKETCH"
-msgid "Wolfgang understands pictures!"
+msgid "Picture will help Wolfgang carve nice rocks!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.SKULLCHEST
@@ -54508,7 +54508,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.SKETCH
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.SKETCH"
-msgid "That's one way to spread information."
+msgid "Some plans for a fancy stone carving."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.SKULLCHEST
@@ -60623,7 +60623,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.SKETCH
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.SKETCH"
-msgid "READ-ONLY FILE"
+msgid "USELESS PAPER FOR MAKING USELESS SCULPTURES"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.SKULLCHEST
@@ -69498,7 +69498,7 @@ msgstr ""
 
 #. STRINGS.RECIPE_DESC.BOARDS
 msgctxt "STRINGS.RECIPE_DESC.BOARDS"
-msgid "Like logs but flatter."
+msgid "Like logs, but flatter."
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.BOOK_BIRDS
@@ -69568,17 +69568,17 @@ msgstr ""
 
 #. STRINGS.RECIPE_DESC.CHESSPIECE_BISHOP_BUILDER
 msgctxt "STRINGS.RECIPE_DESC.CHESSPIECE_BISHOP_BUILDER"
-msgid "Sermons not included."
+msgid "A chesspiece with a checkered past."
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.CHESSPIECE_FORMAL_BUILDER
 msgctxt "STRINGS.RECIPE_DESC.CHESSPIECE_FORMAL_BUILDER"
-msgid "Behind every great queen is dapper king."
+msgid "Behind every queen is a dapper king."
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.CHESSPIECE_HORNUCOPIA_BUILDER
 msgctxt "STRINGS.RECIPE_DESC.CHESSPIECE_HORNUCOPIA_BUILDER"
-msgid "Reveal your innermost desires through sculpture."
+msgid "A sculpture for a starving artist."
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.CHESSPIECE_KNIGHT_BUILDER
@@ -75314,6 +75314,11 @@ msgstr ""
 #. STRINGS.UI.CRAFTING.NEEDSHADOWMANIPULATOR
 msgctxt "STRINGS.UI.CRAFTING.NEEDSHADOWMANIPULATOR"
 msgid "Use a shadow manipulator to build a prototype!"
+msgstr ""
+
+#. STRINGS.UI.CRAFTING.NEEDSTECH.SCULPTING
+msgctxt "STRINGS.UI.CRAFTING.NEEDSTECH.SCULPTING"
+msgid "Put stone on the wheel to create a Sculpting Block!"
 msgstr ""
 
 #. STRINGS.UI.CRAFTING.NEEDSTUFF

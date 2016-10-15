@@ -1,4 +1,4 @@
-local function createprefabs(loots)
+local function createprefabs(customprefabs)
     local prefabs =
     {
         "nightmarefuel",
@@ -7,7 +7,7 @@ local function createprefabs(loots)
         "nightsword",
     }
 
-    for i, v in ipairs(loots) do
+    for i, v in ipairs(customprefabs) do
         if not table.contains(prefabs, v) then
             table.insert(prefabs, v)
         end
@@ -22,6 +22,11 @@ local function createassets(name)
         Asset("ANIM", "anim/"..name.."_upg_build.zip"),
     }
 end
+
+local bishopfxassets =
+{
+    Asset("ANIM", "anim/shadow_bishop_fx.zip"),
+}
 
 local brains =
 {
@@ -166,12 +171,14 @@ local function OnAttacked(inst, data)
 end
 
 --------------------------------------------------------------------------
-local function QueueLevelUp(inst, source_prefab)
-	if inst.prefab ~= source_prefab 
-			and inst.level < 3 
-			and not table.contains(inst.levelupsource, source_prefab) then
+local function QueueLevelUp(inst, source)
+	if source ~= nil and source:IsValid()
+			and inst.prefab ~= source.prefab 
+			and inst.level < 3
+			and source.level > GetTableSize(inst.levelupsource)			-- only level up if the source's level is equal or greater then this inst's level (test #inst.levelupsource because there may be some queued)
+			and not table.contains(inst.levelupsource, source.prefab) then
 
-		table.insert(inst.levelupsource, source_prefab)
+		table.insert(inst.levelupsource, source.prefab)
 		return true
 	end
 
@@ -192,6 +199,9 @@ local function IsMaxLevel(inst)
 end
 
 local function commonlevelup(inst, overridelevel)
+    if inst.components.health:IsDead() then
+        return
+    end
     local level = math.min(overridelevel or (inst.level + 1), MAX_LEVEL)
     if level ~= inst.level then
         inst.level = level
@@ -204,10 +214,14 @@ local function commonlevelup(inst, overridelevel)
         inst.Physics:SetCapsule(PHYS_RADIUS[inst.prefab] * scale, 1)
         inst.Physics:Teleport(x, y, z)
 
-        inst.components.health:SetMaxHealth(tunings.HEALTH[level])
+        inst.AnimState:SetMultColour(1, 1, 1, 0.5 + (0.12*(level-1)))
 
-        if overridelevel == nil then
-            inst.components.epicscare:Scare(5)
+        inst.components.health:SetMaxHealth(tunings.HEALTH[level])
+        
+        if level > 1 then
+            inst:AddTag("epic")
+        else
+            inst:RemoveTag("epic")
         end
 
         return level, scale
@@ -342,7 +356,7 @@ local sounds =
     hit = "dontstarve/sanity/creature1/dissappear",
 }
 
-local function commonfn(name)
+local function commonfn(name, sixfaced)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -357,7 +371,11 @@ local function commonfn(name)
     --inst.Physics:CollidesWith(COLLISION.SANITY)
     inst.Physics:CollidesWith(COLLISION.WORLD)
 
-    inst.Transform:SetFourFaced()
+    if sixfaced then
+        inst.Transform:SetSixFaced()
+    else
+        inst.Transform:SetFourFaced()
+    end
 
     inst:AddTag("monster")
     inst:AddTag("hostile")
@@ -452,7 +470,7 @@ local function knightfn()
 end
 
 local function bishopfn()
-    local inst = commonfn("shadow_bishop")
+    local inst = commonfn("shadow_bishop", true)
 
     if not TheWorld.ismastersim then
         return inst
@@ -469,6 +487,33 @@ local function bishopfn()
     return inst
 end
 
+local function bishopfxfn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddNetwork()
+
+    inst:AddTag("FX")
+
+    inst.AnimState:SetBank("shadow_bishop_fx")
+    inst.AnimState:SetBuild("shadow_bishop_fx")
+    inst.AnimState:PlayAnimation("feather_loop")
+    inst.AnimState:SetFinalOffset(1)
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.persists = false
+    inst:ListenForEvent("animover", inst.Remove)
+
+    return inst
+end
+
 return Prefab("shadow_rook", rookfn, createassets("shadow_rook"), createprefabs({ --[["shadow_lance"]] })),
     Prefab("shadow_knight", knightfn, createassets("shadow_knight"), createprefabs({ --[["shadow_crest"]] })),
-    Prefab("shadow_bishop", bishopfn, createassets("shadow_bishop"), createprefabs({ --[["shadow_mitre", "shadow_sceptre"]] }))
+    Prefab("shadow_bishop", bishopfn, createassets("shadow_bishop"), createprefabs({ "shadow_bishop_fx"--[[, "shadow_mitre", "shadow_sceptre"]] })),
+    Prefab("shadow_bishop_fx", bishopfxfn, bishopfxassets)

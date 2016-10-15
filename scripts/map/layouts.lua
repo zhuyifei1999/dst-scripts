@@ -279,7 +279,11 @@ local ExampleLayout =
 		["Maxwell2"] = StaticLayout.Get("map/static_layouts/maxwell_2"),
 		["Maxwell3"] = StaticLayout.Get("map/static_layouts/maxwell_3"),
 		["Maxwell4"] = StaticLayout.Get("map/static_layouts/maxwell_4"),
-		["Maxwell5"] = StaticLayout.Get("map/static_layouts/maxwell_5"),
+		["Maxwell5"] = StaticLayout.Get("map/static_layouts/maxwell_5",
+		{
+			start_mask = PLACE_MASK.IGNORE_BARREN_RESERVED,
+			fill_mask = PLACE_MASK.IGNORE_BARREN_RESERVED,
+		}),
 		["Maxwell6"] = StaticLayout.Get("map/static_layouts/maxwell_6"),
 		["Maxwell7"] = StaticLayout.Get("map/static_layouts/maxwell_7"),
 

@@ -15,7 +15,8 @@ local Follower = Class(function(self, inst)
     self.targettime = nil
     self.maxfollowtime = nil
     self.canaccepttarget = true
-    self.keepdeadleader = nil
+    --self.keepdeadleader = nil
+    --self.keepleaderonattacked = nil
 
     self.inst:ListenForEvent("attacked", onattacked)
     self.OnLeaderRemoved = function()
@@ -197,6 +198,7 @@ function Follower:IsLeaderSame(otherfollower)
 end
 
 function Follower:KeepLeaderOnAttacked()
+    self.keepleaderonattacked = true
     self.inst:RemoveEventCallback("attacked", onattacked)
 end
 

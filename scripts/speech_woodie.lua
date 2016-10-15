@@ -961,7 +961,7 @@ return {
             COMMON = "I'm not one for book learning.",
             RARE = "Looks real complicated, that one.",
         },
-        SKETCH = "That's one way to spread information.",
+        SKETCH = "Some plans for a fancy stone carving.",
 		--BELL_BLUEPRINT = "Figuring that one out would be a feet.",
 		BLUE_CAP = "That's not meat.",
 		BLUE_CAP_COOKED = "That's not meat.",

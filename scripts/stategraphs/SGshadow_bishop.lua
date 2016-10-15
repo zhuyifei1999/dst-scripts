@@ -9,7 +9,11 @@ local events =
         end
     end),
     EventHandler("doattack", function(inst, data)
-        if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) then
+        if not (inst.sg:HasStateTag("busy") or
+                inst.sg:HasStateTag("attack") or
+                inst.sg:HasStateTag("taunt") or
+                inst.sg:HasStateTag("levelup") or
+                inst.components.health:IsDead()) then
             inst.sg:GoToState("attack", data.target)
         end
     end),
@@ -25,6 +29,13 @@ local SWARM_START_DELAY = .25
 
 local function DoSwarmAttack(inst)
     inst.components.combat:DoAreaAttack(inst, inst.components.combat.hitrange, nil, nil, nil, { "INLIMBO", "notarget", "invisible", "noattack", "flight", "playerghost", "shadow", "shadowchesspiece", "shadowcreature", "shadowminion" })
+end
+
+local function DoSwarmFX(inst)
+    local fx = SpawnPrefab("shadow_bishop_fx")
+    fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    fx.Transform:SetScale(inst.Transform:GetScale())
+    fx.AnimState:SetMultColour(inst.AnimState:GetMultColour())
 end
 
 local states =
@@ -58,6 +69,7 @@ local states =
             TimeEvent(8 * FRAMES, function(inst)
                 inst.sg:AddStateTag("noattack")
                 inst.components.health:SetInvincible(true)
+                DoSwarmFX(inst)
             end),
         },
 
@@ -102,6 +114,7 @@ local states =
             inst.AnimState:PushAnimation("atk_side_loop", false)
 
             inst.sg.statemem.task = inst:DoPeriodicTask(TUNING.SHADOW_BISHOP.ATTACK_TICK, DoSwarmAttack, TUNING.SHADOW_BISHOP.ATTACK_START_TICK)
+            inst.sg.statemem.fxtask = inst:DoPeriodicTask(1.2, DoSwarmFX, .5)
         end,
 
         onupdate = function(inst)
@@ -129,6 +142,7 @@ local states =
 
         onexit = function(inst)
             inst.sg.statemem.task:Cancel()
+            inst.sg.statemem.fxtask:Cancel()
             if not inst.sg.statemem.attack then
                 inst.components.health:SetInvincible(false)
             end
@@ -193,6 +207,7 @@ local states =
         {
             TimeEvent(21 * FRAMES, function(inst)
                 inst.sg:RemoveStateTag("noattack")
+                inst.sg:RemoveStateTag("busy")
             end),
         },
 
@@ -212,9 +227,9 @@ local states =
 }
 
 ShadowChessStates.AddIdle(states, "idle_loop")
-ShadowChessStates.AddLevelUp(states, "transform", 22, 58)
-ShadowChessStates.AddTaunt(states, "taunt", 3, 12)
-ShadowChessStates.AddHit(states, "hit", 0)
+ShadowChessStates.AddLevelUp(states, "transform", 22, 58, 95)
+ShadowChessStates.AddTaunt(states, "taunt", 3, 12, 47)
+ShadowChessStates.AddHit(states, "hit", 0, 14)
 ShadowChessStates.AddDeath(states, "disappear", 20, nil)
 ShadowChessStates.AddEvolvedDeath(states, "death", 25, nil)
 ShadowChessStates.AddDespawn(states, "disappear")

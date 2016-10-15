@@ -1081,7 +1081,7 @@ return
             COMMON = "A detailed technical drawing.",
             RARE = "Such a rare and detailed drawing!",
         },
-        SKETCH = "Diagrams are a universally understood language.",
+        SKETCH = "Detailed diagrams of a stone sculpture.",
         --BELL_BLUEPRINT = "We must take the proper steps when using this knowledge.",
         MAXWELLHEAD = "I wish he wouldn't do that.",
 

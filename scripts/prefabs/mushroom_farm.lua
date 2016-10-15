@@ -224,7 +224,6 @@ local function accepttest(inst, item)
 end
 
 local function onacceptitem(inst, giver, item)
-	print "onacceptitem"
 	if inst.remainingharvests == 0 then
 		inst.remainingharvests = TUNING.MUSHROOMFARM_MAX_HARVESTS
 		updatelevel(inst)

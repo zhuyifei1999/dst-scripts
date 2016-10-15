@@ -118,8 +118,6 @@ end
 function ShowLoading()
 	if global_loading_widget then 
 		global_loading_widget:SetEnabled(true)
-
-		TheSim:StopAllSounds()
 	end
 end
 
