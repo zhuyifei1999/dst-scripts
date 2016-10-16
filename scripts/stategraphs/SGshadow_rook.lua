@@ -1,5 +1,5 @@
 require("stategraphs/commonstates")
-require("stategraphs/sgshadow_chesspieces")
+require("stategraphs/SGshadow_chesspieces")
 
 local events =
 {

@@ -1,5 +1,5 @@
 require("stategraphs/commonstates")
-require("stategraphs/sgshadow_chesspieces")
+require("stategraphs/SGshadow_chesspieces")
 
 -- basic attack extent = 2.75
 -- plus attack extent = 4.75
