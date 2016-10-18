@@ -64,10 +64,6 @@ local function onignite(inst)
 	ChangeFace(inst)
 end
 
-local function oncycleschange(inst)
-	ChangeFace(inst)
-end
-
 local function onsave(inst, data)
     if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
         data.burnt = true
@@ -126,7 +122,8 @@ local function fn()
     MakeHauntableWork(inst)
     
     inst:ListenForEvent("onbuilt", onbuilt)
-	inst:WatchWorldState("cycles", oncycleschange)
+
+    inst.OnEntityWake = ChangeFace
 
     inst.OnSave = onsave
     inst.OnLoad = onload

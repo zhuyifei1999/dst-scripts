@@ -1748,6 +1748,10 @@ return {
         TRINKET_25 = "I stuck one down Wolfgang's unitard when he wasn't looking. Haha.",
 		TRINKET_26 = "I would have roasted it.",
 		TRINKET_27 = "I want to stick it in a fire!",
+		TRINKET_28 = "Chess is for pompous dorks.",
+        TRINKET_29 = "Chess is for pompous dorks.",
+        TRINKET_30 = "Probably the most boring game ever invented.",
+        TRINKET_31 = "Probably the most boring game ever invented.",
 
 		LAVA_POND_ROCK = "Oh great, another stinkin' rock!",
 		LAVA_POND_ROCK2 = "Oh great, another stinkin' rock!",

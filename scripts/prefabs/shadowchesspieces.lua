@@ -171,6 +171,43 @@ local function OnAttacked(inst, data)
 end
 
 --------------------------------------------------------------------------
+
+local function PushMusic(inst)
+    if ThePlayer ~= nil and ThePlayer:IsNear(inst, 30) then
+        ThePlayer:PushEvent("triggeredevent", { name = "shadowchess" })
+    end
+end
+
+local function OnMusicDirty(inst)
+    --Dedicated server does not need to trigger music
+    if not TheNet:IsDedicated() then
+        if inst._music:value() then
+            if inst._musictask == nil then
+                inst._musictask = inst:DoPeriodicTask(1, PushMusic, 0)
+            end
+        elseif inst._musictask ~= nil then
+            inst._musictask:Cancel()
+            inst._musictask = nil
+        end
+    end
+end
+
+local function StartMusic(inst)
+    if not inst._music:value() then
+        inst._music:set(true)
+        OnMusicDirty(inst)
+    end
+end
+
+local function StopMusic(inst)
+    if inst._music:value() then
+        inst._music:set(false)
+        OnMusicDirty(inst)
+    end
+end
+
+--------------------------------------------------------------------------
+
 local function QueueLevelUp(inst, source)
 	if source ~= nil and source:IsValid()
 			and inst.prefab ~= source.prefab 
@@ -220,8 +257,10 @@ local function commonlevelup(inst, overridelevel)
         
         if level > 1 then
             inst:AddTag("epic")
+            StartMusic(inst)
         else
             inst:RemoveTag("epic")
+            StopMusic(inst)
         end
 
         return level, scale
@@ -356,6 +395,8 @@ local sounds =
     hit = "dontstarve/sanity/creature1/dissappear",
 }
 
+--------------------------------------------------------------------------
+
 local function commonfn(name, sixfaced)
     local inst = CreateEntity()
 
@@ -388,9 +429,13 @@ local function commonfn(name, sixfaced)
     inst.AnimState:SetMultColour(1, 1, 1, .5)
     inst.AnimState:SetFinalOffset(1)
 
+    inst._music = net_bool(inst.GUID, "shadowchesspiece._music", "musicdirty")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+        inst:ListenForEvent("musicdirty", OnMusicDirty)
+
         return inst
     end
 

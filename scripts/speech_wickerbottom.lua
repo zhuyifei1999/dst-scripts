@@ -1493,6 +1493,10 @@ return
         TRINKET_25 = "What an unpleasant scent.",
         TRINKET_26 = "It appears to be a primitive cup fashioned from a tuber.",
         TRINKET_27 = "I miss the comforts of home.",
+        TRINKET_28 = "It was once called the \"tower\", long ago.",
+        TRINKET_29 = "Calling it a \"castle\" is plainly incorrect.",
+        TRINKET_30 = "Knights are better pieces when they're active in the center.",
+        TRINKET_31 = "In German it is referred to as the \"springer\".",
 
         SKULLCHEST = "A container resembling a cranium.",
         PANDORASCHEST = "An artifact which may contain other artifacts.",

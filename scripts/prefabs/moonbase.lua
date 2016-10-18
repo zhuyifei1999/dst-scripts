@@ -109,7 +109,7 @@ end
 
 local function PushMusic(inst, level)
     if ThePlayer ~= nil and ThePlayer:IsNear(inst, 30) then
-        ThePlayer:PushEvent("triggeredevent", { level = level })
+        ThePlayer:PushEvent("triggeredevent", { name = "moonbase", level = level })
     end
 end
 

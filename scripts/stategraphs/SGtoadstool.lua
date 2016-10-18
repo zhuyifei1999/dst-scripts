@@ -988,6 +988,11 @@ local states =
     },
 }
 
+local function OnUnfreezeTask(inst)
+    inst.sg.mem._unfreezetask = nil
+    inst:UpdateLevel()
+end
+
 CommonStates.AddFrozenStates(states,
     function(inst) --onoverridesymbols
         if inst.level > 0 then
@@ -995,9 +1000,16 @@ CommonStates.AddFrozenStates(states,
         else
             inst.AnimState:ClearOverrideSymbol("swap_toad_frozen")
         end
+        if inst.sg.mem._unfreezetask ~= nil then
+            inst.sg.mem._unfreezetask:Cancel()
+            inst.sg.mem._unfreezetask = nil
+        end
     end,
     function(inst) --onclearsymbols
         inst.AnimState:ClearOverrideSymbol("swap_toad_frozen")
+        if inst.sg.mem._unfreezetask == nil then
+            inst.sg.mem._unfreezetask = inst:DoTaskInTime(0, OnUnfreezeTask)
+        end
     end
 )
 CommonStates.AddSleepStates(states,

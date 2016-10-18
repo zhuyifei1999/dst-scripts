@@ -1704,6 +1704,11 @@ return {
         TRINKET_25 = "Perhaps the stench will drive the enemy away.",
 		TRINKET_26 = "My allies will appreciate the survival training I've bestowed.",
 		TRINKET_27 = "This weak, flimsy wire reminds me... I must toughen Maxwell up!",
+        TRINKET_28 = "Even the feeble can wage mighty battle upon the board.",
+        TRINKET_29 = "Even the feeble can wage mighty battle upon the board.",
+        TRINKET_30 = "Tis not a unicorn.",
+        TRINKET_31 = "Tis not a unicorn.",
+
 		TRUNKVEST_SUMMER = "It will not suffice in the frozen wastes.",
 		TRUNKVEST_WINTER = "The warm pelt of a bested creature. A fine garment.",
 		TRUNK_COOKED = "A juicy reward after a hard battle.",

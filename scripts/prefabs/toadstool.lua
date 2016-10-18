@@ -308,32 +308,6 @@ end
 
 --------------------------------------------------------------------------
 
-local function SetLevel(inst, level)
-    inst.level = level
-
-    inst.components.locomotor.walkspeed = TUNING.TOADSTOOL_SPEED_LVL[level]
-    inst.components.health:SetAbsorptionAmount(TUNING.TOADSTOOL_ABSORPTION_LVL[level])
-    inst.components.combat:SetDefaultDamage(TUNING.TOADSTOOL_DAMAGE_LVL[level])
-    inst.components.combat:SetAttackPeriod(TUNING.TOADSTOOL_ATTACK_PERIOD_LVL[level])
-    inst.hit_recovery = TUNING.TOADSTOOL_HIT_RECOVERY_LVL[level]
-    inst.mushroombomb_variance = TUNING.TOADSTOOL_MUSHROOMBOMB_VAR_LVL[level]
-    inst.mushroombomb_maxchain = TUNING.TOADSTOOL_MUSHROOMBOMB_CHAIN_LVL[level]
-
-    if level < 1 then
-        inst.AnimState:ClearOverrideSymbol("toad_mushroom")
-    else
-        inst.AnimState:OverrideSymbol("toad_mushroom", "toadstool_upg_build", "toad_mushroom"..tostring(level))
-    end
-
-    if inst.level > 0 and (inst.sg:HasStateTag("frozen") or inst.sg:HasStateTag("thaw")) then
-        inst.AnimState:OverrideSymbol("swap_toad_frozen", "toadstool_upg_build", "swap_toad_frozen"..tostring(level))
-    else
-        inst.AnimState:ClearOverrideSymbol("swap_toad_frozen")
-    end
-
-    inst:PushEvent("toadstoollevel", level)
-end
-
 local function CalculateLevel(links)
     return (links < 1 and 0)
         or (links < 5 and 1)
@@ -341,12 +315,36 @@ local function CalculateLevel(links)
         or 3
 end
 
+local function UpdateLevel(inst)
+    local level = CalculateLevel(inst._numlinks)
+
+    if not (inst.sg:HasStateTag("frozen") or inst.sg:HasStateTag("thawing")) then
+        inst.level = level
+
+        inst.components.locomotor.walkspeed = TUNING.TOADSTOOL_SPEED_LVL[level]
+        inst.components.health:SetAbsorptionAmount(TUNING.TOADSTOOL_ABSORPTION_LVL[level])
+        inst.components.combat:SetDefaultDamage(TUNING.TOADSTOOL_DAMAGE_LVL[level])
+        inst.components.combat:SetAttackPeriod(TUNING.TOADSTOOL_ATTACK_PERIOD_LVL[level])
+        inst.hit_recovery = TUNING.TOADSTOOL_HIT_RECOVERY_LVL[level]
+        inst.mushroombomb_variance = TUNING.TOADSTOOL_MUSHROOMBOMB_VAR_LVL[level]
+        inst.mushroombomb_maxchain = TUNING.TOADSTOOL_MUSHROOMBOMB_CHAIN_LVL[level]
+
+        if level < 1 then
+            inst.AnimState:ClearOverrideSymbol("toad_mushroom")
+        else
+            inst.AnimState:OverrideSymbol("toad_mushroom", "toadstool_upg_build", "toad_mushroom"..tostring(level))
+        end
+    end
+
+    inst:PushEvent("toadstoollevel", level)
+end
+
 local function OnUnlinkMushroomSprout(inst, link)
     if inst._links[link] ~= nil then
         inst:RemoveEventCallback("onremove", inst._links[link], link)
         inst._links[link] = nil
         inst._numlinks = inst._numlinks - 1
-        SetLevel(inst, CalculateLevel(inst._numlinks))
+        UpdateLevel(inst)
     end
 end
 
@@ -355,7 +353,7 @@ local function OnLinkMushroomSprout(inst, link)
         inst._numlinks = inst._numlinks + 1
         inst._links[link] = function(link) OnUnlinkMushroomSprout(inst, link) end
         inst:ListenForEvent("onremove", inst._links[link], link)
-        SetLevel(inst, CalculateLevel(inst._numlinks))
+        UpdateLevel(inst)
     end
 end
 
@@ -720,7 +718,7 @@ local function PushMusic(inst)
         inst._playingmusic = false
     elseif ThePlayer:IsNear(inst, inst._playingmusic and 30 or 20) then
         inst._playingmusic = true
-        ThePlayer:PushEvent("triggeredevent", { cave = true })
+        ThePlayer:PushEvent("triggeredevent", { name = "toadstool" })
     elseif inst._playingmusic and not ThePlayer:IsNear(inst, 40) then
         inst._playingmusic = false
     end
@@ -881,6 +879,8 @@ local function fn()
 
     inst.FadeOut = FadeOut
     inst.CancelFade = CancelFade
+
+    inst.UpdateLevel = UpdateLevel
 
     inst.OnEntitySleep = OnEntitySleep
     inst.OnEntityWake = OnEntityWake

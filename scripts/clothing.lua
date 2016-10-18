@@ -69,6 +69,24 @@ CLOTHING =
 		torso_tuck = "untucked",
 		rarity = "Classy",
 	},
+	body_catcoon_costume =
+	{
+		type = "body",
+		symbol_overrides = { "arm_lower", "arm_upper_skin", "hand", "torso", "torso_pelvis", "leg", "foot", "tail", },
+		symbol_hides = { "skirt", "arm_upper", },
+		override_build = "body_catcoon_costume",
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+	},
+	body_chester_costume =
+	{
+		type = "body",
+		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "hand", "torso", "torso_pelvis", "leg", "foot", },
+		symbol_hides = { "skirt", },
+		override_build = "body_chester_costume",
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+	},
 	body_expo_letterman_yellow_beige =
 	{
 		type = "body",
@@ -112,6 +130,24 @@ CLOTHING =
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_flannel_purple_grape",
 		torso_tuck = "untucked",
+	},
+	body_glommer_costume =
+	{
+		type = "body",
+		symbol_overrides = { "arm_upper_skin", "arm_lower", "hand", "torso", "torso_pelvis", "leg", "foot", },
+		symbol_hides = { "skirt", "arm_upper", },
+		override_build = "body_glommer_costume",
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+	},
+	body_hutch_costume =
+	{
+		type = "body",
+		symbol_overrides = { "torso", "arm_upper", "torso_pelvis", "leg", "foot", "tail", },
+		symbol_hides = { "skirt", },
+		override_build = "body_hutch_costume",
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
 	},
 	body_overalls_black_scribble =
 	{
@@ -325,6 +361,14 @@ CLOTHING =
 		override_build = "body_sweatervest_red_firehound",
 		torso_tuck = "untucked",
 		rarity = "Classy",
+	},
+	body_toga_white_pure =
+	{
+		type = "body",
+		symbol_overrides = { "torso", "torso_pelvis", "arm_upper", "skirt", },
+		override_build = "body_toga_white_pure",
+		torso_tuck = "skirt",
+		rarity = "Spiffy",
 	},
 	body_trenchcoat_brown_fawn =
 	{
@@ -784,6 +828,14 @@ CLOTHING =
 		override_build = "feet_ridingboot_white_pure",
 		rarity = "Classy",
 		feet_cuff_size = 10,
+	},
+	feet_sandals_blue_catcoon =
+	{
+		type = "feet",
+		symbol_overrides = { "foot", },
+		override_build = "feet_sandals_blue_catcoon",
+		rarity = "Classy",
+		feet_cuff_size = 5,
 	},
 	feet_sneakers_blue_catcoon =
 	{

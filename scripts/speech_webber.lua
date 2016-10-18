@@ -1691,6 +1691,11 @@ return {
         TRINKET_25 = "It's stinky.",
 		TRINKET_26 = "You're our cuppy cup!",
 		TRINKET_27 = "This is stupid.",
+		TRINKET_28 = "Maybe Maxwell will teach us how to play.",
+        TRINKET_29 = "Maybe Maxwell will teach us how to play.",
+        TRINKET_30 = "We can't follow the rules if we don't know them.",
+        TRINKET_31 = "We can't follow the rules if we don't know them.",
+
 		TRUNKVEST_SUMMER = "It's so puffy!",
 		TRUNKVEST_WINTER = "You're always supposed to wear a jacket!",
 		TRUNK_COOKED = "Looks filling!",

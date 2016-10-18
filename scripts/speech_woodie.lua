@@ -1702,6 +1702,11 @@ return {
         TRINKET_25 = "I already smell like pine and woodchips, according to Lucy.",
 		TRINKET_26 = "Genius! A cup for a proper woodsman.",
 		TRINKET_27 = "No point hanging clothes in the woods.",
+		TRINKET_28 = "That one moves diagonally, I think.",
+        TRINKET_29 = "That's, uh, the rook piece.",
+        TRINKET_30 = "That one can only move one square at time.",
+        TRINKET_31 = "That's the, uh, horse piece.",
+
 		TRUNKVEST_SUMMER = "Nice and breezy.",
 		TRUNKVEST_WINTER = "This could stand up to the winters back home, eh?",
 		TRUNK_COOKED = "I think it boiled off all of the nose cheese.",

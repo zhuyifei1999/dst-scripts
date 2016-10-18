@@ -98,6 +98,7 @@ local function OnAttacked(parent, data)
         data ~= nil and
         data.attacker ~= nil and
         not (data.attacker:HasTag("shadow") or
+            data.attacker:HasTag("shadowchesspiece") or
             data.attacker:HasTag("thorny") or
             data.attacker:HasTag("smolder"))
     )

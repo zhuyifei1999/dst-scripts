@@ -161,7 +161,8 @@ local GROUP = {
 							["dragonfly"] = {value = "default", enable = false, image = "dragonfly.tex", order = 15, world={"forest"}},
 							["bats"] = {value = "default", enable = false, image = "bats.tex", order = 16, world={"cave"}},
 							["fissure"] = {value = "default", enable = false, image = "fissure.tex", order = 17, world={"cave"}},
-							["worms"] = {value = "default", enable = false, image = "worms.tex", order = 18, world={"cave"}},
+							["wormattacks"] = {value = "default", enable = false, image = "wormattacks.tex", order = 18, world={"cave"}}, 
+							["worms"] = {value = "default", enable = false, image = "worms.tex", order = 19, world={"cave"}},
 						}
 					},
 	["animals"] =  	{	-- These guys live and let live

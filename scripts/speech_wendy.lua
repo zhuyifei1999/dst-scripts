@@ -1701,6 +1701,10 @@ return {
         TRINKET_25 = "It smells of decay and death.",
 		TRINKET_26 = "That potato is as hollow as I am.",
 		TRINKET_27 = "Now at least the wardrobe can be organized.",
+		TRINKET_28 = "A horse! A horse! My castle for a horse!",
+        TRINKET_29 = "A horse! A horse! My castle for a horse!",
+        TRINKET_30 = "I'd rather have the castle...",
+        TRINKET_31 = "I'd rather have the castle...",
 
 		TRUNKVEST_SUMMER = "Skin to wear over your skin.",
 		TRUNKVEST_WINTER = "It may warm the body, but what of the spirit?",

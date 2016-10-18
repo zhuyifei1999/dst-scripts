@@ -1045,8 +1045,8 @@ function Tune(overrides)
 	    SPOILEDFOOD_SOILCYCLES = 2,
 	    SPOILEDFOOD_WITHEREDCYCLES = 0.5,
 	    
-	    MUSHROOMFARM_MAX_HARVESTS = 3,
-	    MUSHROOMFARM_FULL_GROW_TIME = total_day_time * 3.25,
+	    MUSHROOMFARM_MAX_HARVESTS = 4,
+	    MUSHROOMFARM_FULL_GROW_TIME = total_day_time * 3.75,
 	    MUSHROOMFARM_SPAWN_SPORE_CHANCE = 0.50,
 	    
 	    
@@ -1271,6 +1271,10 @@ function Tune(overrides)
                 2, --[25] Air Unfreshener
                 9, --[26] Potato Cup
                 4, --[27] Wire Hanger
+                4, --[28] White Rook
+                4, --[29] Black Rook
+                4, --[30] White Knight
+                4, --[31] Black Knight
             },
         },
 
@@ -2219,12 +2223,12 @@ function Tune(overrides)
         },
 
         DISEASE_SPREAD_RADIUS = 4,
-        DISEASE_SPREAD_TIME = seg_time * 2,
-        DISEASE_SPREAD_TIME_VARIANCE = seg_time * .5,
+        DISEASE_SPREAD_TIME = total_day_time * 2,
+        DISEASE_SPREAD_TIME_VARIANCE = total_day_time * .5,
         DISEASE_DELAY_TIME = total_day_time * 50,
         DISEASE_DELAY_TIME_VARIANCE = total_day_time * 20,
-        DISEASE_WARNING_TIME = total_day_time * 2.5,
-        DISEASE_WARNING_TIME_VARIANCE = total_day_time * .5,
+        DISEASE_WARNING_TIME = total_day_time * 5,
+        DISEASE_WARNING_TIME_VARIANCE = total_day_time,
         DISEASE_CHANCE = .1,
 
         SALTLICK_CHECK_DIST = 20,

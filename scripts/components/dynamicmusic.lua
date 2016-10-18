@@ -34,13 +34,26 @@ local SEASON_DANGER_MUSIC =
 
 local TRIGGERED_DANGER_MUSIC =
 {
-    "dontstarve/music/music_epicfight_moonbase",
-    "dontstarve/music/music_epicfight_moonbase_b",
-}
+    moonbase =
+    {
+        "dontstarve/music/music_epicfight_moonbase",
+        "dontstarve/music/music_epicfight_moonbase_b",
+    },
 
-local TRIGGERED_CAVE_DANGER_MUSIC =
-{
-    "dontstarve/music/music_epicfight_toadboss",
+    toadstool =
+    {
+        "dontstarve/music/music_epicfight_toadboss",
+    },
+
+    shadowchess =
+    {
+        "dontstarve/music/music_epicfight_ruins",
+    },
+
+    default =
+    {
+        "dontstarve/music/music_epicfight_ruins",
+    },
 }
 
 --------------------------------------------------------------------------
@@ -158,7 +171,7 @@ local function StartTriggeredDanger(player, data)
     elseif _isenabled then
         StopBusy()
         StopDanger()
-        local music = data ~= nil and data.cave and TRIGGERED_CAVE_DANGER_MUSIC or TRIGGERED_DANGER_MUSIC
+        local music = data ~= nil and TRIGGERED_DANGER_MUSIC[data.name or "default"] or TRIGGERED_DANGER_MUSIC.default
         _soundemitter:PlaySound(music[level] or music[1], "danger")
         _dangertask = inst:DoTaskInTime(10, StopDanger, true)
         _triggeredlevel = level
@@ -174,6 +187,7 @@ local function CheckAction(player)
                 target:HasTag("bird") or
                 target:HasTag("butterfly") or
                 target:HasTag("shadow") or
+                target:HasTag("shadowchesspiece") or
                 target:HasTag("thorny") or
                 target:HasTag("smashable") or
                 target:HasTag("wall") or
@@ -202,10 +216,11 @@ local function OnAttacked(player, data)
         --false and not nil, pushed from player_classified
         (data.isattackedbydanger == true or
         --For a valid server side check, attacker must be non-nil
-        (data.attacker ~= nil and not (data.attacker:HasTag("shadow")
-                                       or data.attacker:HasTag("thorny")
-                                       or data.attacker:HasTag("smolder")
-                                      ))) then
+        (data.attacker ~= nil and
+        not (data.attacker:HasTag("shadow") or
+            data.attacker:HasTag("shadowchesspiece") or
+            data.attacker:HasTag("thorny") or
+            data.attacker:HasTag("smolder")))) then
 
         StartDanger(player)
     end

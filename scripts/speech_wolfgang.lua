@@ -654,7 +654,7 @@ return {
 			LOTS = "So many little mushy-rooms!",
 			SOME = "Little mushy-rooms is start to grow.",
 			EMPTY = "Is nothing.", -- tell the player to put a mushroom or spore into the farm to get things started
-			ROTTEN = "Log is need to be replaced.", -- tell the player to put a log into the farm to restore it
+			ROTTEN = "Dead log is need to be replaced.", -- tell the player to put a log into the farm to restore it
 			BURNT = "Log is not looking mighty!",
             SNOWCOVERED = "Mushy-rooms not mighty enough to fight snow!",
 		},
@@ -1693,6 +1693,11 @@ return {
         TRINKET_25 = "Smell like laundry.",
 		TRINKET_26 = "Is cup made of potato, I think.",
 		TRINKET_27 = "Is skinny and bendy, like clownman Wes.",
+        TRINKET_28 = "Junk from braingame!",
+        TRINKET_29 = "Junk from braingame!",
+        TRINKET_30 = "Junk from braingame!",
+        TRINKET_31 = "Junk from braingame!",
+        
 		TRUNKVEST_SUMMER = "Is warm fuzzy nose.",
 		TRUNKVEST_WINTER = "Cozy nosy!",
 		TRUNK_COOKED = "Is cooked nose.",

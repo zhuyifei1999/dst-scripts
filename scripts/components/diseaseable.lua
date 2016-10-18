@@ -135,13 +135,18 @@ local function DoFX(inst, self)
     self._fxtask = inst:DoTaskInTime(loops * 100 * FRAMES + 5 + math.random() * 3, DoFX, self)
 end
 
-local function DoSpread(inst, self)
+local function DoSpread(inst, self, ScheduleSpread)
     self._spreadtask = nil
-    self:Spread()
+    if inst:IsAsleep() then
+        --Offscreen; schedule short retry
+        ScheduleSpread(self)
+    else
+        self:Spread()
+    end
 end
 
 local function ScheduleSpread(self, delay)
-    self._spreadtask = self.inst:DoTaskInTime(delay or GetRandomWithVariance(TUNING.DISEASE_SPREAD_TIME, TUNING.DISEASE_SPREAD_TIME_VARIANCE), DoSpread, self)
+    self._spreadtask = self.inst:DoTaskInTime(delay or GetRandomWithVariance(TUNING.DISEASE_SPREAD_TIME, TUNING.DISEASE_SPREAD_TIME_VARIANCE), DoSpread, self, ScheduleSpread)
 end
 
 function Diseaseable:Disease()

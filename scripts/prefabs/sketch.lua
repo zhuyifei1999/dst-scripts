@@ -49,7 +49,6 @@ local function fn()
     --Sneak these into pristine state for optimization
     inst:AddTag("_named")
     inst:AddTag("sketch")
-    inst:AddTag("irreplaceable")
 
     inst:SetPrefabName("sketch")
 

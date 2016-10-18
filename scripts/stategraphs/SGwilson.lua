@@ -67,23 +67,28 @@ local function IsNearDanger(inst)
         --Danger if:
         -- being targetted
         -- OR near monster or pig that is neither player nor spider
+        -- ignore shadow monsters when not insane
         return FindEntity(inst, 10,
-                function(target)
-                    return (target.components.combat ~= nil and target.components.combat.target == inst)
-                        or (not (target:HasTag("player") or target:HasTag("spider"))
-                            and (target:HasTag("monster") or target:HasTag("pig")))
-                end,
-                nil, nil, { "monster", "pig", "_combat" }) ~= nil
+            function(target)
+                return (target.components.combat ~= nil and target.components.combat.target == inst)
+                    or ((target:HasTag("monster") or target:HasTag("pig")) and
+                        not (target:HasTag("player") or target:HasTag("spider")) and
+                        not (inst.components.sanity:IsSane() and target:HasTag("shadowcreature")))
+            end,
+            nil, nil, { "monster", "pig", "_combat" }) ~= nil
     end
     --Danger if:
     -- being targetted
     -- OR near monster that is not player
+    -- ignore shadow monsters when not insane
     return FindEntity(inst, 10,
-            function(target)
-                return (target.components.combat ~= nil and target.components.combat.target == inst)
-                    or (target:HasTag("monster") and not target:HasTag("player"))
-            end,
-            nil, nil, { "monster", "_combat" }) ~= nil
+        function(target)
+            return (target.components.combat ~= nil and target.components.combat.target == inst)
+                or (target:HasTag("monster") and
+                    not target:HasTag("player") and
+                    not (inst.components.sanity:IsSane() and target:HasTag("shadowcreature")))
+        end,
+        nil, nil, { "monster", "_combat" }) ~= nil
 end
 
 --V2C: This is for cleaning up interrupted states with legacy stuff, like

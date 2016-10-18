@@ -1694,6 +1694,10 @@ return {
         TRINKET_25 = "The strongman's wardrobe is brimming with them, judging from the odor.",
 		TRINKET_26 = "This was important to one very specific person once.",
 		TRINKET_27 = "Finally. My suits were getting wrinkles. Wrinkles!",
+		TRINKET_28 = "It is still beholden to the king.",
+        TRINKET_29 = "It is still beholden to the king.",
+        TRINKET_30 = "Not a pawn, but still a minion.",
+        TRINKET_31 = "Not a pawn, but still a minion.",
 
 		TRUNKVEST_SUMMER = "It's more of a fall vest.",
 		TRUNKVEST_WINTER = "It's so hard to look fashionable in the winter.",

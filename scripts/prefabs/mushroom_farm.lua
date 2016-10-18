@@ -213,7 +213,7 @@ local function accepttest(inst, item)
     if item == nil then
         return false
     elseif inst.remainingharvests == 0 then
-		if item.prefab == "log" then -- only logs for now because that is the recipe
+		if item.prefab == "livinglog" then -- only livinglog for now because that is the recipe
 			return true
 		end
 		return false, "MUSHROOMFARM_NEEDSLOG"

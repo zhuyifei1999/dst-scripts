@@ -93,6 +93,8 @@ local function onitemtaken(inst, picker, loot)
     inst.AnimState:ClearOverrideSymbol("swap_body")
 
     inst.components.prototyper.trees.SCULPTING = CalcSculptingTech("")
+
+    inst:RemoveTag("chess_moonevent")
 end
 
 local function giveitem(inst, itemname)
@@ -108,6 +110,14 @@ local function giveitem(inst, itemname)
 	inst.AnimState:OverrideSymbol(CalcSculptingSymbol(itemname), CalcSymbolFile(itemname), CalcItemSymbol(itemname))
 
     inst.components.prototyper.trees.SCULPTING = CalcSculptingTech(itemname)
+    
+    
+	if string.find(inst.components.pickable.product, "rook")
+		or string.find(inst.components.pickable.product, "bishop")
+		or string.find(inst.components.pickable.product, "knight") then
+
+        inst:AddTag("chess_moonevent")
+	end
 end
 
 local function ongivenitem(inst, giver, item)
@@ -218,6 +228,19 @@ local function onload(inst, data)
     end
 end
 
+local function DoChessMoonEventKnockOff(inst)
+    if inst:HasTag("chess_moonevent") and inst.components.pickable.caninteractwith then
+		local chesspiece = inst.components.lootdropper:SpawnLootPrefab(inst.components.pickable.product)
+		onitemtaken(inst)
+    end
+end
+    
+local function CheckChessMoonEventKnockOff(inst)
+	if TheWorld.state.isnewmoon then
+		DoChessMoonEventKnockOff(inst)
+	end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -292,6 +315,16 @@ local function fn()
     inst.CreateItem = CreateItem
 
     inst:ListenForEvent("onbuilt", onbuilt)
+
+	if not TheWorld:HasTag("cave") then
+		inst.OnEntityWake = CheckChessMoonEventKnockOff
+		inst.OnEntitySleep = CheckChessMoonEventKnockOff
+		inst:WatchWorldState("isnewmoon", CheckChessMoonEventKnockOff)
+		
+		inst:ListenForEvent("shadowchessroar", DoChessMoonEventKnockOff)
+	end
+
+
 
     return inst
 end

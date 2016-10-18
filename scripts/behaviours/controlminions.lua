@@ -33,6 +33,7 @@ local NO_TAGS =
     "INLIMBO",
     "_container",
     "irreplaceable",
+    "heavy",
     "lureplant",
     "eyeplant",
     "notarget",

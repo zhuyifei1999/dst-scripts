@@ -455,6 +455,7 @@ local function fn()
 
     inst.components.inspectable:RecordViews()
 
+    inst.components.locomotor.pathcaps = { ignorewalls = true }
     inst.components.locomotor.walkspeed = TUNING.DRAGONFLY_SPEED
 
     inst.components.rampingspawner.getspawnposfn = GetLavaePos

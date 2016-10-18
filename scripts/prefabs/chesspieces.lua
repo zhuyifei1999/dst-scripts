@@ -127,7 +127,6 @@ end
 local function OnShadowChessRoar(inst, forcebreak)
     inst.forcebreak = true
     StartStruggle(inst)
-    --inst.components.workable:Destroy(inst)
 end
 
 local function onsave(inst, data)
@@ -182,7 +181,6 @@ local function makepiece(pieceid, materialid)
         inst.AnimState:SetBuild("swap_chesspiece_"..PIECES[pieceid].name.."_marble")
         inst.AnimState:PlayAnimation("idle")
 
-        inst:AddTag("nonpotatable")
         inst:AddTag("heavy")
         if PIECES[pieceid].moonevent then
             inst:AddTag("chess_moonevent")
@@ -222,14 +220,16 @@ local function makepiece(pieceid, materialid)
         inst.OnLoad = onload
         inst.OnSave = onsave
 
-        if PIECES[pieceid].moonevent then
-            inst.OnEntityWake = CheckMorph
-            inst.OnEntitySleep = CheckMorph
-            inst:WatchWorldState("isnewmoon", CheckMorph)
-        end
+		if not TheWorld:HasTag("cave") then
+			if PIECES[pieceid].moonevent then
+				inst.OnEntityWake = CheckMorph
+				inst.OnEntitySleep = CheckMorph
+				inst:WatchWorldState("isnewmoon", CheckMorph)
+			end
 
-        inst:ListenForEvent("shadowchessroar", OnShadowChessRoar)
-
+			inst:ListenForEvent("shadowchessroar", OnShadowChessRoar)
+		end
+		
         inst.pieceid = pieceid
         if materialid then
             SetMaterial(inst, materialid)
