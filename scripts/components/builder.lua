@@ -166,11 +166,12 @@ function Builder:EvaluateTechTrees()
     end
 
     --add any character specific bonuses to your current tech levels.
-    if not prototyper_active  then
+    if not prototyper_active then
         self.accessible_tech_trees.SCIENCE = self.science_bonus
         self.accessible_tech_trees.MAGIC = self.magic_bonus
         self.accessible_tech_trees.ANCIENT = self.ancient_bonus
         self.accessible_tech_trees.SHADOW = self.shadow_bonus
+        self.accessible_tech_trees.CARTOGRAPHY = 0
     else
         self.accessible_tech_trees.SCIENCE = self.accessible_tech_trees.SCIENCE + self.science_bonus
         self.accessible_tech_trees.MAGIC = self.accessible_tech_trees.MAGIC + self.magic_bonus
@@ -444,7 +445,8 @@ function Builder:KnowsRecipe(recname)
         and (   (   recipe.level.SCIENCE <= self.science_bonus and
                     recipe.level.MAGIC <= self.magic_bonus and
                     recipe.level.ANCIENT <= self.ancient_bonus and
-                    recipe.level.SHADOW <= self.shadow_bonus or
+                    recipe.level.SHADOW <= self.shadow_bonus and
+                    recipe.level.CARTOGRAPHY <= 0 or
                     self.freebuildmode
                 ) and (
                     recipe.builder_tag == nil or

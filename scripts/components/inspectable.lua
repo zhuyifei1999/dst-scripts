@@ -31,7 +31,9 @@ function Inspectable:GetStatus(viewer)
         or (self.inst.components.health ~= nil and self.inst.components.health:IsDead() and "DEAD")
         or (self.inst.components.sleeper ~= nil and self.inst.components.sleeper:IsAsleep() and "SLEEPING")
         or (self.inst.components.burnable ~= nil and self.inst.components.burnable:IsBurning() and "BURNING")
-        or (self.inst.components.diseaseable ~= nil and self.inst.components.diseaseable:IsDiseased() and "DISEASED")
+        or (self.inst.components.diseaseable ~= nil
+            and ((self.inst.components.diseaseable:IsDiseased() and "DISEASED") or
+                (self.inst.components.diseaseable:IsBecomingDiseased() and "DISEASING")))
         or (self.inst.components.pickable ~= nil
             and ((self.inst.components.witherable ~= nil and self.inst.components.witherable:IsWithered() and "WITHERED") or
                 (self.inst.components.pickable:IsBarren() and "BARREN") or

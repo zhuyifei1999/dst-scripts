@@ -1,6 +1,10 @@
 return {
 	ACTIONFAIL =
 	{
+        REPAIR =
+        {
+            WRONGPIECE = "I could have told you that wouldn't fit.",
+        },
         BUILD =
         {
             MOUNTED = "Even with my long arms, I still can't reach.",
@@ -59,6 +63,9 @@ return {
             BUSY = "It's busy, currently.",
             ABIGAILHEART = "I had to try.",
             GHOSTHEART = "I don't think so. They might still be mad.",
+            NOTGEM = "Even The Amazing Maxwell couldn't wring magic from that.",
+            WRONGGEM = "That would be an amateurish misuse of its magic.",
+            NOTSTAFF = "Hm. No, that's not right.",
         },
         GIVETOPLAYER = 
         {
@@ -78,6 +85,7 @@ return {
         {
             KNOWN = "I am far too advanced for this.",
             CANTLEARN = "There's a lesson to be learned about tampering with secret knowledge.",
+            WRONGWORLD = "I seem to be in the wrong place to use this.",
         },
 	},
 	ACTIONFAIL_GENERIC = "That didn't work.",
@@ -616,6 +624,15 @@ return {
 		POND_ALGAE = "It's some algae.",
 		GREENSTAFF = "It is a focusing tool.",
 		POTTEDFERN = "How quaint.",
+		SENTRYWARD = "This is a conduit for strong revelatory magicks.",
+        MOONROCK_PIECES = "This might be bad.",
+        MOONBASE =
+        {
+            GENERIC = "I had thought these all destroyed eons ago.",
+            BROKEN = "Ruins of an ancient relic.",
+            STAFFED = "Something magic-y needs to happen, I think.",
+            WRONGSTAFF = "Waste of a good staff.",
+        },
 
 		THULECITE = "An exceedingly rare but useful material.",
 		ARMORRUINS = "Thulecite meshes so well with nightmare fuel.",
@@ -653,6 +670,8 @@ return {
 		YELLOWSTAFF = "With a bigger gem it would be so much more powerful.",
 		YELLOWGEM = "I can sense magic in it.",
 		ORANGEGEM = "This will be quite powerful with some fuel.",
+        OPALSTAFF = "The charge has made it incredibly powerful.",
+        OPALPRECIOUSGEM = "A sizable magic gem.",
 		TELEBASE = 
 		{
 			VALID = "That should do the trick.",
@@ -664,6 +683,7 @@ return {
 			GEMS = "The fuel needs a focus.",
 		},
 		STAFFLIGHT = "That should chase the shadows away.",
+        STAFFCOLDLIGHT = "An impressively condensed point of freezing magic.",
        	ANCIENT_ALTAR =
         {
         	WORKING = "Where are their gods now?",
@@ -893,6 +913,12 @@ return {
 		CARROT_COOKED = "A little more refined, at least.",
 		CARROT_PLANTED = "How mundane.",
 		CARROT_SEEDS = "Such labor is beneath me.",
+		CARTOGRAPHYDESK = 
+		{	
+			GENERIC = "Mapmaking is a soothing pastime. Methodical.",
+			BURNING = "Such directionless destruction.",
+			BURNT = "Useless.",
+		},
 		CAVE_FERN = "I'd like to step on it.",
 		CHARCOAL = "Nothing will steal my carbon!",
         CHESSJUNK1 = "There's a reason I never finished that.",
@@ -996,6 +1022,12 @@ return {
 		EGGPLANT = "Just another boring plant.",
 		EGGPLANT_COOKED = "A little more refined, at least.",
 		EGGPLANT_SEEDS = "Such labor is beneath me.",
+
+		ENDTABLE = 
+		{
+			BURNT = "That was uncalled for.",
+			GENERIC = "Purely decorative.",
+		},
 		ACORN = "A more outdoorsy type might be able to make something of this.",
         ACORN_SAPLING = "Huh, it seems to belong in the ground.",
 		EVERGREEN =
@@ -1017,6 +1049,7 @@ return {
 		FEATHER_CROW = "Black is the color of sleep.",
 		FEATHER_ROBIN = "Red is the color of fire.",
 		FEATHER_ROBIN_WINTER = "Grey is the color of pain.",
+		FEATHERPENCIL = "Not as elegant as a quill and inkwell, but it'll do.",
 		FEM_PUPPET = "Better her than me.",
 		FIREFLIES =
 		{
@@ -1166,6 +1199,7 @@ return {
 
 		MANDRAKESOUP = "There'll be no more crying out of you.",
 		MANDRAKE_COOKED = "Looks like I got the last meep.",
+		MAPSCROLL = "There's nothing to be gleaned from this.",
 		MARBLE = "It's strong stuff.",
 		MARBLEPILLAR = "I've always wondered who built those.",
 		MARBLETREE = "How whimsical.",
@@ -1350,6 +1384,32 @@ return {
 			DISEASED = "What has brought this blight upon my world?",
 			DISEASING = "Looks a little off, if you ask me.",
 		},
+		SCULPTURE_KNIGHTHEAD = "That looks... familiar...",
+		SCULPTURE_KNIGHTBODY = 
+		{
+			COVERED = "Waste of good marble if you ask me.",
+			UNCOVERED = "My creations! How rude.",
+			FINISHED = "Back as intended.",
+			READY = "We'll get you out in a tick, friend.",
+		},
+        SCULPTURE_BISHOPHEAD = "I've seen that head before... but never in marble.",
+		SCULPTURE_BISHOPBODY = 
+		{
+			COVERED = "Hmph. I was never a fan of the Grecian look.",
+			UNCOVERED = "Come now! I liked that one.",
+			FINISHED = "That looks much better.",
+			READY = "We'll get you out in a tick, friend.",
+		},
+        SCULPTURE_ROOKNOSE = "That's quite the schnozz.",
+		SCULPTURE_ROOKBODY = 
+		{
+			COVERED = "Some truly questionable taste in decor.",
+			UNCOVERED = "Why would anyone want to cover this up?",
+			FINISHED = "Doesn't that feel better now?",
+			READY = "We'll get you out in a tick, friend.",
+		},
+		GARGOYLE_HOUND = "Try and get me now. Ha!",
+        GARGOYLE_WEREPIG = "Not so tough.",
 		SEEDS = "I suppose these won't plant themselves.",
 		SEEDS_COOKED = "Broiled the life out of 'em.",
 		SEWING_KIT = "A fine and noble endeavor.",
@@ -1392,6 +1452,18 @@ return {
 			SLEEPING = "I don't want to wake that one.",
 		},
 		SPOILED_FOOD = "That used to be food until I wasted it.",
+        STAGEHAND =
+        {
+			AWAKE = "Hmph. Impressive sleight of hand.",
+			HIDING = "This must be the work of an unseen hand.",
+        },
+        STATUE_MARBLE = 
+        {
+        	GENERIC = "Hm. Stately.",
+        	TYPE1 = "Her tragedy does not define her.",
+        	TYPE2 = "She's still in there somewhere. I know it.",
+        	--TYPE3 = "",
+    	},
 		STATUEHARP = "Not my best work.",
 		STATUEMAXWELL = "It seems silly now...",
 		--Your hubris... Maxy... it was always your weakness...
@@ -1563,8 +1635,17 @@ return {
 		ACCOMPLISHMENT_SHRINE = "Even They couldn't build something so devious.",		
         REVIVER = "I'm not sure I really want to give this up.",
         LIFEINJECTOR = "Who would put this filth in their veins?",
-        MOONROCKNUGGET = "\"Moon\" rock.",
         ROCK_MOON = "\"Moon\" rock.",
+        MOONROCKNUGGET = "\"Moon\" rock.",
+        MOONROCKCRATER = "This will make a decent magical vessel.",
+
+        REDMOONEYE = "Its aura can be felt from anywhere. Quite useful.",
+        PURPLEMOONEYE = "A decent enough use of the gem's power, I suppose.",
+        GREENMOONEYE = "It's useful for keeping in contact with my... acquaintances.",
+        ORANGEMOONEYE = "I have a feeling of being watched, even from a considerable distance away.",
+        YELLOWMOONEYE = "A conveniently color-coded place marker.",
+        BLUEMOONEYE = "That reminds me, I must practice my cold glare tonight!",
+
         MULTIPLAYER_PORTAL = "Always did have a flair for the dramatic...",
 		--...Make your jokes...I'll be seeing you soon...
 	},

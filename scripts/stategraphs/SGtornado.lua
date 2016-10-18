@@ -72,7 +72,10 @@ local function destroystuff(inst)
                     TUNING.TORNADO_DAMAGE * TUNING.PVP_DAMAGE_MOD or
                     TUNING.TORNADO_DAMAGE
                 v.components.combat:GetAttacked(inst, damage, nil, "wind")
-                if inst.WINDSTAFF_CASTER ~= nil and inst.WINDSTAFF_CASTER:IsValid() then
+                if inst.WINDSTAFF_CASTER ~= nil and inst.WINDSTAFF_CASTER:IsValid() and
+                    not (v.components.follower ~= nil and
+                        v.components.follower.keepleaderonattacked and
+                        v.components.follower:GetLeader() == inst.WINDSTAFF_CASTER) then
                     v.components.combat:SuggestTarget(inst.WINDSTAFF_CASTER)
                 end
             elseif v.components.workable ~= nil and

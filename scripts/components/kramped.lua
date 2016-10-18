@@ -69,7 +69,7 @@ local function OnNaughtyAction(how_naughty, playerdata)
 		playerdata.threshold = TUNING.KRAMPUS_THRESHOLD + math.random(TUNING.KRAMPUS_THRESHOLD_VARIANCE)
 		playerdata.actions = 0
 
-		if TUNING.KRAMPUS_INCREASE_RAMP <= 1 then	-- KAJ 21-3-14:math.random can't be called with < 1. I am assuming that setting "never" in the tuning means to never spawn
+		if TUNING.KRAMPUS_INCREASE_RAMP < 1 then	-- KAJ 21-3-14:math.random can't be called with < 1. I am assuming that setting "never" in the tuning means to never spawn
 			return
 		end
 

@@ -22,7 +22,7 @@ local function StealAction(inst)
         local target = FindEntity(inst, SEE_DIST,
             CanSteal,
             { "_inventoryitem" }, --see entityreplica.lua
-            { "irreplaceable", "prey", "bird" })
+            { "irreplaceable", "heavy", "prey", "bird" })
         if target ~= nil then
             return BufferedAction(inst, target, ACTIONS.PICKUP)
         end

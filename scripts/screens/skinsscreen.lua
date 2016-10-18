@@ -34,7 +34,6 @@ local SkinsScreen = Class(Screen, function(self, profile)
 end)
 
 function SkinsScreen:DoInit()
-	STATS_ENABLE = true
 	TheFrontEnd:GetGraphicsOptions():DisableStencil()
 	TheFrontEnd:GetGraphicsOptions():DisableLightMapComponent()
 	
@@ -156,7 +155,7 @@ function SkinsScreen:OnItemSelect(type, item_type, item_id, itemimage)
 	local rarity = GetRarityForItem(type, item_type)
 	local nameStr = GetName(item_type)
 
-	self.details_panel.name:SetTruncatedString(nameStr, 200, 50, true)
+	self.details_panel.name:SetTruncatedString(nameStr, 220, 50, true)
 	self.details_panel.name:SetColour(unpack(SKIN_RARITY_COLORS[rarity]))
 	self.details_panel.description:SetString(STRINGS.SKIN_DESCRIPTIONS[item_type] or STRINGS.SKIN_DESCRIPTIONS["missing"])
  
@@ -234,7 +233,7 @@ function SkinsScreen:BuildDetailsPanel()
 	self.details_panel.image:SetScale(1.65)
 	
 	self.details_panel.name = self.details_panel:AddChild(Text(TALKINGFONT, 30, "name", {0, 0, 0, 1}))
-	self.details_panel.name:SetPosition(0, -7)
+	self.details_panel.name:SetPosition(1, -7)
 
     self.details_panel.upper_horizontal_line = self.details_panel:AddChild(Image("images/ui.xml", "line_horizontal_6.tex"))
     self.details_panel.upper_horizontal_line:SetScale(.55)

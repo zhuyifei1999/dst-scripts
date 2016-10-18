@@ -204,7 +204,7 @@ local function AnnoyLeader(inst)
     local m_pt = inst:GetPosition()
     local ents = TheSim:FindEntities(m_pt.x, m_pt.y, m_pt.z, 30,
         nil,
-        { "INLIMBO", "catchable", "fire", "irreplaceable" },
+        { "INLIMBO", "catchable", "fire", "irreplaceable", "heavy" },
         { "_inventoryitem", "_container" })
 
     --Can we hassle the player by taking items from stuff he has killed or worked?

@@ -204,7 +204,7 @@ function ValidateSpawnPrefabRequest(user_id, prefab_name, skin_base, clothing_bo
             validated_skin_base = skin_base
         elseif TheInventory:CheckClientOwnership(user_id, skin_base) then
             --check if the skin_base actually belongs to the prefab
-            if table.contains( PREFAB_SKINS[prefab_name], skin_base ) then
+            if table.contains( PREFAB_SKINS[prefab_name], skin_base ) and not Prefabs[skin_base].disabled then
                 validated_skin_base = skin_base
             end
         end
@@ -216,22 +216,19 @@ function ValidateSpawnPrefabRequest(user_id, prefab_name, skin_base, clothing_bo
         validated_prefab = DST_CHARACTERLIST[1]
     end
 
-    if clothing_body ~= "" and TheInventory:CheckClientOwnership(user_id, clothing_body) then
+    if clothing_body ~= "" and TheInventory:CheckClientOwnership(user_id, clothing_body) and CLOTHING[clothing_body] and not CLOTHING[clothing_body].disabled then
         validated_clothing_body = clothing_body 
     end
-
-    if clothing_hand ~= "" and TheInventory:CheckClientOwnership(user_id, clothing_hand) then
+    if clothing_hand ~= "" and TheInventory:CheckClientOwnership(user_id, clothing_hand) and CLOTHING[clothing_hand] and not CLOTHING[clothing_hand].disabled then
         validated_clothing_hand = clothing_hand 
     end
-
-    if clothing_legs ~= "" and TheInventory:CheckClientOwnership(user_id, clothing_legs) then
+    if clothing_legs ~= "" and TheInventory:CheckClientOwnership(user_id, clothing_legs) and CLOTHING[clothing_legs] and not CLOTHING[clothing_legs].disabled then
         validated_clothing_legs = clothing_legs 
     end
-
-    if clothing_feet ~= "" and TheInventory:CheckClientOwnership(user_id, clothing_feet) then
+    if clothing_feet ~= "" and TheInventory:CheckClientOwnership(user_id, clothing_feet) and CLOTHING[clothing_feet] and not CLOTHING[clothing_feet].disabled then
         validated_clothing_feet = clothing_feet 
     end
-
+	
     return validated_prefab, validated_skin_base, validated_clothing_body, validated_clothing_hand, validated_clothing_legs, validated_clothing_feet
 end
 
@@ -262,7 +259,7 @@ function SerializeUserSession(player, isnewspawn)
         --we don't care about references for player saves
         local playerinfo--[[, refs]] = player:GetSaveRecord()
         local data = DataDumper(playerinfo, nil, BRANCH ~= "dev")
-        TheNet:SerializeUserSession(player.userid, data, isnewspawn == true)
+        TheNet:SerializeUserSession(player.userid, data, isnewspawn == true, player.player_classified ~= nil and player.player_classified.entity or nil)
     end
 end
 
@@ -342,7 +339,7 @@ function DownloadMods( server_listing )
                     have_required_mods = false
                     local can_dl_mod = TheSim:QueueDownloadTempMod(mod.mod_name, mod.version)
                     if not can_dl_mod then
-                        print("Unable to download mod " .. mod.mod_name .. " from SteamWorkshop")
+                        print("Unable to download mod " .. mod.mod_name .. " from ModWorkshop")
                         needed_mods_in_workshop = false
                     end
                 end

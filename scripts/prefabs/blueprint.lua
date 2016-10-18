@@ -28,7 +28,7 @@ local function CanBlueprintRandomRecipe(recipe)
         return false
     end
     local hastech = false
-        for k, v in pairs(recipe.level) do
+    for k, v in pairs(recipe.level) do
         if v >= 10 then
             --Exclude TECH.LOST
             return false
@@ -46,10 +46,10 @@ local function CanBlueprintSpecificRecipe(recipe)
         return false
     end
     for k, v in pairs(recipe.level) do
-            if v > 0 then
-                return true
-            end
+        if v > 0 then
+            return true
         end
+    end
     --Exclude TECH.NONE
     return false
 end
@@ -211,7 +211,9 @@ local prefabs = {}
 
 table.insert(prefabs, Prefab("blueprint", MakeAnyBlueprint, assets))
 for k, v in pairs(RECIPETABS) do
-    table.insert(prefabs, Prefab(string.lower(v.str or "NONAME").."_blueprint", MakeAnyBlueprintFromTab(v), assets))
+    if not v.crafting_station then
+        table.insert(prefabs, Prefab(string.lower(v.str or "NONAME").."_blueprint", MakeAnyBlueprintFromTab(v), assets))
+    end
 end
 for k, v in pairs(AllRecipes) do
     if CanBlueprintSpecificRecipe(v) then

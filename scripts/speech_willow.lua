@@ -1,6 +1,10 @@
 return {
 	ACTIONFAIL =
 	{
+        REPAIR =
+        {
+            WRONGPIECE = "We carried it all this way and it's not even the right one!",
+        },
         BUILD =
         {
             MOUNTED = "I can't place anything from atop this big lout!",
@@ -50,7 +54,7 @@ return {
         {
             GENERIC = "Nah, too much effort.",
             BURNING = "That's way better than some dumb dresses!",
-            INUSE = "Stop hogging it, I wanna dressup too!",
+            INUSE = "Stop hogging it, I wanna dress up too!",
         },
         GIVE =
         {
@@ -59,6 +63,9 @@ return {
             BUSY = "It's busyyyy.",
             ABIGAILHEART = "Ugh, just come back already! Geez!",
             GHOSTHEART = "I'm not wasting this on them!",
+            NOTGEM = "I can cram it in there but I dunno if I could get it back out.",
+            WRONGGEM = "It's the wrong rock!",
+            NOTSTAFF = "I don't have to jam stuff into every hole I see!",
         },
         GIVETOPLAYER = 
         {
@@ -78,6 +85,7 @@ return {
         {
             KNOWN = "I knowwwww that already, geez!",
             CANTLEARN = "Ugh, whatever, I didn't wanna know anyway.",
+            WRONGWORLD = "What the... this map isn't right at all!",
         },
 	},
 	ACTIONFAIL_GENERIC = "I can'tttttt.",
@@ -363,8 +371,16 @@ return {
 		SPEAR_WATHGRITHR = "I prefer a flame, but to each her own.",
 		WATHGRITHRHAT = "It's got a name scratched on the inside... \"W\", uh...",
 		WAXWELLJOURNAL = "Would make a great bedtime story... for nightmares!",
-		MOONROCKNUGGET = "Just another rock to me.",
 		ROCK_MOON = "Just another rock to me.",
+		MOONROCKNUGGET = "Just another rock to me.",
+        MOONROCKCRATER = "Great. A rock with a hole in it.",
+
+        REDMOONEYE = "This one's got fire in its eye!",
+        PURPLEMOONEYE = "Some sort of weird rock.",
+        GREENMOONEYE = "A big dumb rock.",
+        ORANGEMOONEYE = "It's a rock. Ugh!",
+        YELLOWMOONEYE = "Another rock!",
+        BLUEMOONEYE = "That's not an eyeball! It's a rock!",
 
 		BEARGER_FUR = "It's fur all the way down.",
 		FURTUFT = "Black and white and fuzzy all over!",
@@ -643,6 +659,15 @@ return {
 		POND_ALGAE = "It must need a lot of water.",
 		GREENSTAFF = "It won't start a fire but I guess it's still useful.",
 		POTTEDFERN = "I'd rather burn them.",
+		SENTRYWARD = "Pfft. It'll burn like the rest.",
+        MOONROCK_PIECES = "Oh look! ROCKS! Ughhhhh!",
+        MOONBASE =
+        {
+            GENERIC = "It's expecting something from me.",
+            BROKEN = "Oh look, a bunch of smashed up rocks!",
+            STAFFED = "Hurry up already, stupid rock!",
+            WRONGSTAFF = "That's obviously completely wrong.",
+        },
 		TREEGUARD = "You'll burn like the rest!",
 		THULECITE = "I don't think it would burn.",
 		ARMORRUINS = "Human beings probably shouldn't wear this.",
@@ -672,6 +697,7 @@ return {
 		YELLOWAMULET = "It seems to absorb the darkness around it.",	--Emits light, player walks faster.
 		GREENAMULET = "I feel my mind opening when I wear it.",	--Reduce cost of crafting
 		MANDRAKE_COOKED = "The fire made this plant guy a lot quieter.",
+		MAPSCROLL = "Nothing's on it? I can burn it then, right?",
 		SLURPER = "Do they have little fires in their bellies?",
 		SLURPER_PELT = "Eeewwwww, it's still alive!",
 		SLURPERPELT = "Eeewwwww, it's still alive!",
@@ -683,6 +709,8 @@ return {
 		YELLOWSTAFF = "It's magical.",
 		YELLOWGEM = "It sparkles.",
 		ORANGEGEM = "It'll make your fingers tingle.",
+        OPALSTAFF = "Gotta hold it with my sleeve so my hands don't get cold.",
+        OPALPRECIOUSGEM = "It's glittery and mesmerizing, like a fire!",
 		ROCK = "It's, like, a rock.",
 
 		TELEBASE = 
@@ -696,6 +724,7 @@ return {
 			GEMS = "It's so empty!",
 		},
 		STAFFLIGHT = "It's so beautiful!",
+        STAFFCOLDLIGHT = "Boo! Hissss!",
 
         LIGHTER = "It's my lucky lighter!",
 
@@ -955,6 +984,12 @@ return {
 		CARROT_COOKED = "Still vegetabley, but better for having been in fire.",
 		CARROT_PLANTED = "Maybe its special carrot friend is in the ground.",
 		CARROT_SEEDS = "Seeds for a yucky orange vegetable.",
+		CARTOGRAPHYDESK = 
+		{	
+			GENERIC = "I guess I could show everyone where I've been.",
+			BURNING = "Yes!!",
+			BURNT = "Scouts don't need maps, anyway.",
+		},
 		CAVE_FERN = "Looks flammable.",
 		CHARCOAL = "Mmmm. Smells like fire.",
         CHESSJUNK1 = "Dead windup horsey.",
@@ -1049,6 +1084,12 @@ return {
 		EGGPLANT = "Definitely not a bird.",
 		EGGPLANT_COOKED = "Using fire on it made it a tastier eggplant.",
 		EGGPLANT_SEEDS = "Will these seeds make a plant or baby bird?",
+		
+		ENDTABLE = 
+		{
+			BURNT = "Alright, alright, so I was wrong about the hand!",
+			GENERIC = "I'm telling you, there's a monsterhand under that thing!",
+		},
 		STUFFEDEGGPLANT = "It's still not a bird, but it's sure stuffed like one!",
 		DUG_BERRYBUSH = "What's the matter, got no dirt?",
 		DUG_BERRYBUSH_JUICY = "What's the matter, got no dirt?",
@@ -1086,6 +1127,7 @@ return {
 		FEATHER_CROW = "Crow feather. It probably smells terrible on fire.",
 		FEATHER_ROBIN = "Redbird feather. It probably smells terrible on fire.",
 		FEATHER_ROBIN_WINTER = "Snowbird feather. It probably smells terrible on fire.",
+		FEATHERPENCIL = "So what does the feather do again?",
 		FEM_PUPPET = "She looks scared half to death.",
 		FIREFLIES =
 		{
@@ -1313,7 +1355,7 @@ return {
 		PUMPKINCOOKIE = "Cookies!!!",
 		PUMPKIN_COOKED = "Fire on the outside turned out pretty well.",
 		PUMPKIN_LANTERN = "Fire on the inside is amazing!",
-		PUMPKIN_SEEDS = "Seeds for fire's best vegetable-friend: the pumpkin.",
+		PUMPKIN_SEEDS = "Seeds for fire's best vegetable-friend... the pumpkin.",
 		PURPLEGEM = "Weird!",
 		RABBIT =
 		{
@@ -1402,6 +1444,32 @@ return {
 			DISEASED = "Burn the sick!",
 			DISEASING = "Blech. You smell.",
 		},
+		SCULPTURE_KNIGHTHEAD = "Great, now we've irritated some marble crime boss!",
+		SCULPTURE_KNIGHTBODY = 
+		{
+			COVERED = "It's a marble statue, I guess.",
+			UNCOVERED = "That thing looks terrible.",
+			FINISHED = "He didn't even say \"thank you\".",
+			READY = "Ew! It's wriggling!",
+		},
+        SCULPTURE_BISHOPHEAD = "Gross. I don't think that was supposed to come off.",
+		SCULPTURE_BISHOPBODY = 
+		{
+			COVERED = "Not burnable. Not interested.",
+			UNCOVERED = "The crank doesn't even turn!",
+			FINISHED = "Humpty Dumpty's back together again.",
+			READY = "Ew! It's wriggling!",
+		},
+        SCULPTURE_ROOKNOSE = "Ha, falling to pieces. Rookie mistake.",
+		SCULPTURE_ROOKBODY = 
+		{
+			COVERED = "Looks like a bunch of rubble to me.",
+			UNCOVERED = "What a creepy load of junk!",
+			FINISHED = "I'm more used to destroying things than fixing them.",
+			READY = "Ew! It's wriggling!",
+		},
+		GARGOYLE_HOUND = "Lookit this big dumb lawn ornament!",
+        GARGOYLE_WEREPIG = "At least it doesn't smell anymore.",
 		SEEDS = "Farming is boring.",
 		SEEDS_COOKED = "No good for farming now.",
 		SEWING_KIT = "But destruction is so much more fun!",
@@ -1449,6 +1517,18 @@ return {
 			SLEEPING = "Maybe I should just leave that one alone.",
 		},
 		SPOILED_FOOD = "At least it's still flammable.",
+        STAGEHAND =
+        {
+			AWAKE = "Gross! I told you we shoulda burned it!",
+			HIDING = "What's a weird table doing out here? Let's burn it!",
+        },
+        STATUE_MARBLE = 
+        {
+        	GENERIC = "It's an okay statue, I guess.",
+        	TYPE1 = "Yikes. I'd cover that up too if I were her.",
+        	TYPE2 = "She hasn't put her face on for the day yet.",
+        	TYPE3 = "A brazier would be nicer.",
+    	},
 		STATUEHARP = "Such a nice statue. Shame if something were to happen to it.",
 		STATUEMAXWELL = "A big stone nerd.",
 		STEELWOOL = "Make a spark, it'll still burn.",

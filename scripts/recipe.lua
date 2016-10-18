@@ -46,18 +46,20 @@ Recipe = Class(function(self, name, ingredients, tab, level, placer, min_spacing
     self.tab           = tab
 
     self.atlas         = (atlas and resolvefilepath(atlas)) or resolvefilepath("images/inventoryimages.xml")
-    self.image         = image or (name .. ".tex")
+    self.imagefn       = type(image) == "function" and image or nil
+    self.image         = self.imagefn == nil and image or (name .. ".tex")
 
     --self.lockedatlas   = (lockedatlas and resolvefilepath(lockedatlas)) or (atlas == nil and resolvefilepath("images/inventoryimages_inverse.xml")) or nil
     --self.lockedimage   = lockedimage or (name ..".tex")
 
     self.sortkey       = num
     self.rpc_id        = num --mods will set the rpc_id in SetModRPCID when called by AddRecipe()
-    self.level         = level or 0
+    self.level         = level or {}
     self.level.ANCIENT = self.level.ANCIENT or 0
     self.level.MAGIC   = self.level.MAGIC or 0
     self.level.SCIENCE = self.level.SCIENCE or 0
     self.level.SHADOW  = self.level.SHADOW or 0
+    self.level.CARTOGRAPHY = self.level.CARTOGRAPHY or 0
     self.placer        = placer
     self.min_spacing   = min_spacing or 3.2
 

@@ -118,6 +118,8 @@ end
 function ShowLoading()
 	if global_loading_widget then 
 		global_loading_widget:SetEnabled(true)
+
+		TheSim:StopAllSounds()
 	end
 end
 
@@ -315,8 +317,6 @@ local function PopulateWorld(savedata, profile)
 
         world.hideminimap = savedata.map.hideminimap
         world.topology = savedata.map.topology
-        world.prefabswapstatus = savedata.map.prefabswapstatus
-
         world.generated = savedata.map.generated
         world.meta = savedata.meta
         assert(savedata.map.topology.ids, "[MALFORMED SAVE DATA] Map missing topology information. This save file is too old, and is missing neccessary information.")

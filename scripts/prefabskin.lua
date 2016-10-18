@@ -119,6 +119,18 @@ function torch_init_fn(inst, build_name)
     inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
 end
 
+--------------------------------------------------------------------------
+--[[ Hat skin functions ]]
+--------------------------------------------------------------------------
+
+function hat_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "swap_hat")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
 
 --------------------------------------------------------------------------
 --[[ Bedroll skin functions ]]
@@ -141,6 +153,23 @@ end
 function cookpot_init_fn(inst, build_name)
     inst.AnimState:SetSkin(build_name, "cook_pot")
 end
+
+--------------------------------------------------------------------------
+--[[ Chest skin functions ]]
+--------------------------------------------------------------------------
+
+function chest_init_fn(inst, build_name)
+    inst.AnimState:SetSkin(build_name, "treasure_chest")
+end
+
+--------------------------------------------------------------------------
+--[[ Endtable skin functions ]]
+--------------------------------------------------------------------------
+
+function endtable_init_fn(inst, build_name)
+    inst.AnimState:SetSkin(build_name, "stagehand")
+end
+
 
 --------------------------------------------------------------------------
 --[[ Firepit skin functions ]]
@@ -168,11 +197,12 @@ function CreatePrefabSkin(name, info)
     prefab_skin.base_prefab         = info.base_prefab or ""
     prefab_skin.ui_preview          = info.ui_preview
     prefab_skin.tags                = info.tags or {}
-    prefab_skin.item_type           = info.item_type or "CHARACTER_SKIN"
+    prefab_skin.inheritance         = info.inheritance
     prefab_skin.init_fn             = info.init_fn
     prefab_skin.build_name          = info.build_name
     prefab_skin.rarity              = info.rarity
     prefab_skin.skins               = info.skins
+    prefab_skin.disabled            = info.disabled
 
     if info.torso_tuck_builds ~= nil then
         for _,base_skin in pairs(info.torso_tuck_builds) do

@@ -56,7 +56,12 @@ local function onequip(inst, owner)
     inst.components.fueled:StartConsuming()
 
     --take a percent of fuel next frame instead of this one, so we can remove the torch properly if it runs out at that point
-	inst:DoTaskInTime(0, onequipfueldelta)
+    inst:DoTaskInTime(0, onequipfueldelta)
+
+    if owner.components.maprevealable ~= nil then
+        owner.components.maprevealable:AddRevealSource(inst, "compassbearer")
+    end
+    owner:AddTag("compassbearer")
 end
 
 local function onunequip(inst, owner)
@@ -64,6 +69,11 @@ local function onunequip(inst, owner)
     owner.AnimState:Show("ARM_normal")
 
     inst.components.fueled:StopConsuming()
+
+    if owner.components.maprevealable ~= nil then
+        owner.components.maprevealable:RemoveRevealSource(inst)
+    end
+    owner:RemoveTag("compassbearer")
 end
 
 local function ondepleted(inst)

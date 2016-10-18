@@ -15,7 +15,21 @@ local prefabs =
     "bluegem",
 }
 
-local brain = require "brains/houndbrain"
+local gargoyles = 
+{
+    "gargoyle_houndatk",
+    "gargoyle_hounddeath",
+}
+local moonprefabs = {}
+for i, v in ipairs(gargoyles) do
+    table.insert(moonprefabs, v)
+end
+for i, v in ipairs(prefabs) do
+    table.insert(moonprefabs, v)
+end
+
+local brain = require("brains/houndbrain")
+local moonbrain = require("brains/moonbeastbrain")
 
 SetSharedLootTable( 'hound',
 {
@@ -46,7 +60,7 @@ local SLEEP_NEAR_HOME_DISTANCE = 10
 local SHARE_TARGET_DIST = 30
 local HOME_TELEPORT_DIST = 30
 
-local NO_TAGS = {"FX", "NOCLICK","DECOR","INLIMBO"}
+local NO_TAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO" }
 
 local function ShouldWakeUp(inst)
     return DefaultWakeTest(inst) or (inst.components.follower and inst.components.follower.leader and not inst.components.follower:IsNearLeader(WAKE_TO_FOLLOW_DISTANCE))
@@ -54,10 +68,10 @@ end
 
 local function ShouldSleep(inst)
     return inst:HasTag("pet_hound")
-    and not TheWorld.state.isday
-    and not (inst.components.combat and inst.components.combat.target)
-    and not (inst.components.burnable and inst.components.burnable:IsBurning())
-    and (not inst.components.homeseeker or inst:IsNear(inst.components.homeseeker.home, SLEEP_NEAR_HOME_DISTANCE))
+        and not TheWorld.state.isday
+        and not (inst.components.combat and inst.components.combat.target)
+        and not (inst.components.burnable and inst.components.burnable:IsBurning())
+        and (not inst.components.homeseeker or inst:IsNear(inst.components.homeseeker.home, SLEEP_NEAR_HOME_DISTANCE))
 end
 
 local function OnNewTarget(inst, data)
@@ -67,20 +81,44 @@ local function OnNewTarget(inst, data)
 end
 
 local function retargetfn(inst)
-    local dist = TUNING.HOUND_TARGET_DIST
-    if inst:HasTag("pet_hound") then
-        dist = TUNING.HOUND_FOLLOWER_TARGET_DIST
-    end
-    return FindEntity(inst, dist, function(guy)
-        return inst.components.combat:CanTarget(guy)
-    end,
-    nil,
-    {"wall","houndmound","hound","houndfriend"}
-    )
+    return FindEntity(
+            inst,
+            inst:HasTag("pet_hound") and TUNING.HOUND_FOLLOWER_TARGET_DIST or TUNING.HOUND_TARGET_DIST,
+            function(guy)
+                return inst.components.combat:CanTarget(guy)
+            end,
+            nil,
+            { "wall", "houndmound", "hound", "houndfriend" }
+        )
 end
 
 local function KeepTarget(inst, target)
     return inst.components.combat:CanTarget(target) and (not inst:HasTag("pet_hound") or inst:IsNear(target, TUNING.HOUND_FOLLOWER_TARGET_KEEP))
+end
+
+local function IsNearMoonBase(inst, dist)
+    local moonbase = inst.components.entitytracker:GetEntity("moonbase")
+    return moonbase == nil or inst:IsNear(moonbase, dist)
+end
+
+local function moon_retargetfn(inst)
+    return IsNearMoonBase(inst, TUNING.MOONHOUND_AGGRO_DIST)
+        and FindEntity(
+                inst,
+                TUNING.HOUND_FOLLOWER_TARGET_DIST,
+                function(guy)
+                    return inst.components.combat:CanTarget(guy)
+                end,
+                nil,
+                { "wall", "houndmound", "hound", "houndfriend", "moonbeast" }
+            )
+        or nil
+end
+
+local function moon_keeptargetfn(inst, target)
+    return IsNearMoonBase(inst, TUNING.MOONHOUND_RETURN_DIST)
+        and inst.components.combat:CanTarget(target)
+        and inst:IsNear(target, TUNING.HOUND_FOLLOWER_TARGET_KEEP)
 end
 
 local function OnAttacked(inst, data)
@@ -147,7 +185,42 @@ local function OnLoad(inst, data)
     end
 end
 
-local function fncommon(build, morphlist)
+local function OnClientFadeUpdate(inst)
+    inst._fadeval = math.max(0, inst._fadeval - FRAMES)
+    local k = 1 - inst._fadeval * inst._fadeval
+    inst.AnimState:OverrideMultColour(k, k, k, k)
+    if inst._fadeval <= 0 then
+        inst._fadetask:Cancel()
+        inst._fadetask = nil
+    end
+end
+
+local function OnMasterFadeUpdate(inst)
+    OnClientFadeUpdate(inst)
+    inst._fade:set_local(math.floor(7 * inst._fadeval + .5))
+    if inst._fadetask == nil then
+        inst:RemoveTag("NOCLICK")
+    end
+end
+
+local function OnFadeDirty(inst)
+    if inst._fadetask == nil then
+        inst._fadeval = inst._fade:value() / 7
+        inst._fadetask = inst:DoPeriodicTask(FRAMES, OnClientFadeUpdate)
+        OnClientFadeUpdate(inst)
+    end
+end
+
+local function FadeIn(inst)
+    inst._fadeval = 1
+    if inst._fadetask == nil then
+        inst._fadetask = inst:DoPeriodicTask(FRAMES, OnMasterFadeUpdate)
+        inst:AddTag("NOCLICK")
+        OnMasterFadeUpdate(inst)
+    end
+end
+
+local function fncommon(build, morphlist, custombrain, tag)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -167,13 +240,21 @@ local function fncommon(build, morphlist)
     inst:AddTag("hostile")
     inst:AddTag("hound")
 
+    if tag ~= nil then
+        inst:AddTag(tag)
+    end
+
     inst.AnimState:SetBank("hound")
     inst.AnimState:SetBuild(build)
     inst.AnimState:PlayAnimation("idle")
 
+    inst._fade = net_tinybyte(inst.GUID, "hound._fade", "fadedirty")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+        inst:ListenForEvent("fadedirty", OnFadeDirty)
+
         return inst
     end
 
@@ -181,7 +262,7 @@ local function fncommon(build, morphlist)
     inst.components.locomotor.runspeed = TUNING.HOUND_SPEED
     inst:SetStateGraph("SGhound")
 
-    inst:SetBrain(brain)
+    inst:SetBrain(custombrain or brain)
 
     inst:AddComponent("follower")
 
@@ -216,11 +297,16 @@ local function fncommon(build, morphlist)
     inst.components.sleeper:SetWakeTest(ShouldWakeUp)
     inst:ListenForEvent("newcombattarget", OnNewTarget)
 
-    MakeHauntableChangePrefab(inst, morphlist)
-    inst:ListenForEvent("spawnedfromhaunt", OnSpawnedFromHaunt)
+    if morphlist ~= nil then
+        MakeHauntableChangePrefab(inst, morphlist)
+        inst:ListenForEvent("spawnedfromhaunt", OnSpawnedFromHaunt)
+    else
+        MakeHauntablePanic(inst)
+    end
 
     inst:WatchWorldState("stopday", OnStopDay)
     inst.OnEntitySleep = OnEntitySleep
+    inst.FadeIn = FadeIn
 
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
@@ -244,7 +330,7 @@ local function fndefault()
 end
 
 local function PlayFireExplosionSound(inst)
-    inst.SoundEmitter:PlaySound("dontstarve/creatures/hound/firehound_explo", "explosion")
+    inst.SoundEmitter:PlaySound("dontstarve/creatures/hound/firehound_explo")
 end
 
 local function fnfire()
@@ -269,20 +355,20 @@ local function fnfire()
 end
 
 local function DoIceExplosion(inst)
-     if not inst.components.freezable then
-            MakeMediumFreezableCharacter(inst, "hound_body")
+    if inst.components.freezable == nil then
+        MakeMediumFreezableCharacter(inst, "hound_body")
+    end
+    inst.components.freezable:SpawnShatterFX()
+    inst:RemoveComponent("freezable")
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x, y, z, 4, { "freezable" }, NO_TAGS)
+    for i, v in pairs(ents) do
+        if v.components.freezable ~= nil then
+            v.components.freezable:AddColdness(2)
         end
-        inst.components.freezable:SpawnShatterFX()
-        inst:RemoveComponent("freezable")
-        local x,y,z = inst.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x, y, z, 4, {"freezable"}, NO_TAGS) 
-        for i,v in pairs(ents) do
-            if v.components.freezable then
-                v.components.freezable:AddColdness(2)
-            end
-        end
+    end
 
-    inst.SoundEmitter:PlaySound("dontstarve/creatures/hound/icehound_explo", "explosion")
+    inst.SoundEmitter:PlaySound("dontstarve/creatures/hound/icehound_explo")
 end
 
 local function fncold()
@@ -301,6 +387,54 @@ local function fncold()
     inst.components.lootdropper:SetChanceLootTable('hound_cold')
 
     inst:ListenForEvent("death", DoIceExplosion)
+
+    return inst
+end
+
+local function OnMoonPetrify(inst)
+    if not inst.components.health:IsDead() and (not inst.sg:HasStateTag("busy") or inst:IsAsleep()) then
+        local x, y, z = inst.Transform:GetWorldPosition()
+        local rot = inst.Transform:GetRotation()
+        inst:Remove()
+        local gargoyle = SpawnPrefab(gargoyles[math.random(#gargoyles)])
+        gargoyle.Transform:SetPosition(x, y, z)
+        gargoyle.Transform:SetRotation(rot)
+        gargoyle:Petrify()
+    end
+end
+
+local function OnMoonTransformed(inst, data)
+    if data.old.prefab ~= "hound" then
+        SpawnPrefab("small_puff").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    end
+    inst.sg:GoToState("taunt")
+end
+
+local function fnmoon()
+    local inst = fncommon("hound", nil, moonbrain, "moonbeast")
+
+    inst:SetPrefabNameOverride("hound")
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    MakeMediumFreezableCharacter(inst, "hound_body")
+    MakeMediumBurnableCharacter(inst, "hound_body")
+
+    inst.components.freezable:SetDefaultWearOffTime(TUNING.MOONHOUND_FREEZE_WEAR_OFF_TIME)
+
+    inst.components.combat:SetDefaultDamage(TUNING.MOONHOUND_DAMAGE)
+    inst.components.combat:SetAttackPeriod(TUNING.MOONHOUND_ATTACK_PERIOD)
+    inst.components.combat:SetRetargetFunction(3, moon_retargetfn)
+    inst.components.combat:SetKeepTargetFunction(moon_keeptargetfn)
+    inst.components.locomotor.runspeed = TUNING.MOONHOUND_SPEED
+    inst.components.health:SetMaxHealth(TUNING.MOONHOUND_HEALTH)
+
+    inst:AddComponent("entitytracker")
+
+    inst:ListenForEvent("moonpetrify", OnMoonPetrify)
+    inst:ListenForEvent("moontransformed", OnMoonTransformed)
 
     return inst
 end
@@ -333,4 +467,6 @@ end
 return Prefab("hound", fndefault, assets, prefabs),
         Prefab("firehound", fnfire, assets, prefabs),
         Prefab("icehound", fncold, assets, prefabs),
+        Prefab("moonhound", fnmoon, assets, moonprefabs),
+        --fx
         Prefab("houndfire", fnfiredrop, assets, prefabs)

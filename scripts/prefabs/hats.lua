@@ -13,12 +13,12 @@ local function MakeHat(name)
         local build = fname_override or fname
         
         local skin_build = inst:GetSkinBuild()
-		if skin_build ~= nil then
-			owner:PushEvent("equipskinneditem", inst:GetSkinName())
+        if skin_build ~= nil then
+            owner:PushEvent("equipskinneditem", inst:GetSkinName())
             owner.AnimState:OverrideItemSkinSymbol("swap_hat", skin_build, "swap_hat", inst.GUID, build)
-		else
-			owner.AnimState:OverrideSymbol("swap_hat", build, "swap_hat")
-		end
+        else
+            owner.AnimState:OverrideSymbol("swap_hat", build, "swap_hat")
+        end
         owner.AnimState:Show("HAT")
         owner.AnimState:Show("HAT_HAIR")
         owner.AnimState:Hide("HAIR_NOHAT")
@@ -37,7 +37,7 @@ local function MakeHat(name)
     local function onunequip(inst, owner)
         local skin_build = inst:GetSkinBuild()
         if skin_build ~= nil then
-			owner:PushEvent("unequipskinneditem", inst:GetSkinName())
+            owner:PushEvent("unequipskinneditem", inst:GetSkinName())
         end
 
         owner.AnimState:ClearOverrideSymbol("swap_hat")
@@ -57,7 +57,14 @@ local function MakeHat(name)
     end
 
     local function opentop_onequip(inst, owner)
-        owner.AnimState:OverrideSymbol("swap_hat", fname, "swap_hat")
+        local skin_build = inst:GetSkinBuild()
+        if skin_build ~= nil then
+            owner:PushEvent("equipskinneditem", inst:GetSkinName())
+            owner.AnimState:OverrideItemSkinSymbol("swap_hat", skin_build, "swap_hat", inst.GUID, fname)
+        else
+            owner.AnimState:OverrideSymbol("swap_hat", fname, "swap_hat")
+        end
+        
         owner.AnimState:Show("HAT")
         owner.AnimState:Hide("HAT_HAIR")
         owner.AnimState:Show("HAIR_NOHAT")
@@ -275,9 +282,11 @@ local function MakeHat(name)
         inst._task = inst:DoTaskInTime(TUNING.ARMOR_RUINSHAT_DURATION, ruinshat_unproc)
     end
 
-    local function tryproc(inst, owner)
-        if inst._task == nil and math.random() < TUNING.ARMOR_RUINSHAT_PROC_CHANCE then
-           ruinshat_proc(inst, owner)
+    local function tryproc(inst, owner, data)
+        if inst._task == nil and
+            not data.redirected and
+            math.random() < TUNING.ARMOR_RUINSHAT_PROC_CHANCE then
+            ruinshat_proc(inst, owner)
         end
     end
 
@@ -343,7 +352,7 @@ local function MakeHat(name)
         inst._fx = nil
         inst._task = nil
         inst._owner = nil
-        inst.procfn = function(owner) tryproc(inst, owner) end
+        inst.procfn = function(owner, data) tryproc(inst, owner, data) end
         inst.onattach = function(owner)
             if inst._owner ~= nil then
                 inst:RemoveEventCallback("attacked", inst.procfn, inst._owner)
@@ -369,31 +378,31 @@ local function MakeHat(name)
 
     local function feather_equip(inst, owner)
         onequip(inst, owner)
-		local attractor = owner.components.birdattractor
-		if attractor then
-			attractor.spawnmodifier:SetModifier(inst, TUNING.BIRD_SPAWN_MAXDELTA_FEATHERHAT, "maxbirds")
-			attractor.spawnmodifier:SetModifier(inst, TUNING.BIRD_SPAWN_DELAYDELTA_FEATHERHAT.MIN, "mindelay")
-			attractor.spawnmodifier:SetModifier(inst, TUNING.BIRD_SPAWN_DELAYDELTA_FEATHERHAT.MAX, "maxdelay")
-	        
-			local birdspawner = TheWorld.components.birdspawner
-			if birdspawner ~= nil then
-				birdspawner:ToggleUpdate(true)
-			end
-		end
+        local attractor = owner.components.birdattractor
+        if attractor then
+            attractor.spawnmodifier:SetModifier(inst, TUNING.BIRD_SPAWN_MAXDELTA_FEATHERHAT, "maxbirds")
+            attractor.spawnmodifier:SetModifier(inst, TUNING.BIRD_SPAWN_DELAYDELTA_FEATHERHAT.MIN, "mindelay")
+            attractor.spawnmodifier:SetModifier(inst, TUNING.BIRD_SPAWN_DELAYDELTA_FEATHERHAT.MAX, "maxdelay")
+            
+            local birdspawner = TheWorld.components.birdspawner
+            if birdspawner ~= nil then
+                birdspawner:ToggleUpdate(true)
+            end
+        end
     end
 
     local function feather_unequip(inst, owner)
         onunequip(inst, owner)
 
-		local attractor = owner.components.birdattractor
-		if attractor then
-			attractor.spawnmodifier:RemoveModifier(inst)
+        local attractor = owner.components.birdattractor
+        if attractor then
+            attractor.spawnmodifier:RemoveModifier(inst)
 
-			local birdspawner = TheWorld.components.birdspawner
-			if birdspawner ~= nil then
-				birdspawner:ToggleUpdate(true)
-			end
-		end
+            local birdspawner = TheWorld.components.birdspawner
+            if birdspawner ~= nil then
+                birdspawner:ToggleUpdate(true)
+            end
+        end
     end
 
     local function feather()

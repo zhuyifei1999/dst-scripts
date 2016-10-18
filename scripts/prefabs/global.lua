@@ -16,7 +16,7 @@ local assets =
     Asset("ANIM", "anim/scroll_arrow.zip"),
 
     Asset("ANIM", "anim/corner_dude.zip"),
-	
+
 	Asset("SHADER", "shaders/anim_bloom.ksh"),
     Asset("SHADER", "shaders/anim_bloom_ghost.ksh"),
 	Asset("SHADER", "shaders/road.ksh"),
@@ -93,7 +93,7 @@ local assets =
     Asset("ANIM", "anim/portal_scene_steamfxwest.zip"),
     Asset("ANIM", "anim/portal_scene_steamfxsouth.zip"),
     Asset("ANIM", "anim/cloud_build.zip"),
-	
+
 	--Asset("IMAGE", "images/river_bed.tex"),
 	--Asset("IMAGE", "images/water_river.tex"),
 	Asset("IMAGE", "images/pathnoise.tex"),
@@ -102,9 +102,6 @@ local assets =
 	Asset("IMAGE", "images/roadedge.tex"),
 	Asset("IMAGE", "images/roadcorner.tex"),
 	Asset("IMAGE", "images/roadendcap.tex"),
-	
-	Asset("ATLAS", "images/fx.xml"),
-	Asset("IMAGE", "images/fx.tex"),
 
 	Asset("IMAGE", "images/colour_cubes/identity_colourcube.tex"),
 
@@ -176,7 +173,7 @@ local assets =
     Asset("ANIM", "anim/skingift_popup.zip"),
     Asset("ATLAS", "images/giftpopup.xml"),
     Asset("IMAGE", "images/giftpopup.tex"),
-    
+
     --oft-used panel bgs
     Asset("ATLAS", "images/globalpanels2.xml"),
     Asset("IMAGE", "images/globalpanels2.tex"),

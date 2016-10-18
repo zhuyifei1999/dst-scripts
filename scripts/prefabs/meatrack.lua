@@ -129,6 +129,7 @@ local function fn()
     inst.AnimState:SetBank("meat_rack")
     inst.AnimState:SetBuild("meat_rack")
     inst.AnimState:PlayAnimation("idle_empty")
+    inst.AnimState:Hide("mouseover")
 
     MakeSnowCoveredPristine(inst)
 
@@ -168,4 +169,8 @@ local function fn()
 end
 
 return Prefab("meatrack", fn, assets, prefabs ),
-    MakePlacer("meatrack_placer", "meat_rack", "meat_rack", "idle_empty")
+    MakePlacer("meatrack_placer", "meat_rack", "meat_rack", "idle_empty",
+        nil, nil, nil, nil, nil, nil,
+        function(inst)
+            inst.AnimState:Hide("mouseover")
+        end)

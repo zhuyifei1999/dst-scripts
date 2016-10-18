@@ -2,22 +2,21 @@ require "class"
 require "map/terrain"
 require "mathutil"
 
+local PrefabSwaps = require("prefabswaps")
+
 -- Save characters in the save file
 local DENSITY_PRECISION = 1/10000
 
-
-function getFilteredSpawnWeight(list,weight,prefab)
-	local prefabswap_list = require"prefabswap_list"
+local function getFilteredSpawnWeight(list,weight,prefab)
 	local total = 0
-	local testList = deepcopy(list)
 
-	for i,weightList in pairs(testList)do
+	for i,weightList in pairs(list)do
 		if type(weightList) == "table" then
 			total = total + weightList.weight
 		else
 			local add = true
 			
-			for cat,catdata in pairs(prefabswap_list:getPrefabSwapsForWorldGen())do				
+			for cat,catdata in pairs(PrefabSwaps.GetBasePrefabSwaps())do
 				for swap,swapData in ipairs(catdata)do
 					if swapData.primary and prefab == i then
 						add = false -- remove it if the prefab is a primary, will be added in later
@@ -44,7 +43,7 @@ function getFilteredSpawnWeight(list,weight,prefab)
 	return  weight / total --getPercentFromWeigth(list,weight)
 end
 
-function recurseTable(dataTable, removed, fn)	
+local function recurseTable(dataTable, removed, fn)	
 	local deleteList = {}
 	local addList = {}
 
@@ -80,38 +79,26 @@ function recurseTable(dataTable, removed, fn)
 	return dataTable,removed
 end
 
-function filterPrefabsForGlobalSwaps(params, removed, prefabSwaps, prefabProxies)
+local function filterPrefabsForGlobalSwaps(params, removed)
 
 	--REMOVE PREFABS NOT USED IN THIS WORLD
 	local function removeUnusedPrefabs(testData, fn)
-		for k,v in pairs(prefabSwaps)do
-			for k1,v1 in ipairs(v)do
-				if v1.status == "inactive" then
-					for i,prefab in ipairs(v1.prefabs)do					
-						if testData == prefab then
-							return false,true
-						end
-					end
-				end
-			end
-		end
-		return false,false	
+        return false, PrefabSwaps.IsPrefabInactive(testData)
 	end
 
 	--CHANGE MARKED UP PREFABS TO THEIR ACTUAL PREFAB NAME
 	local function swapToActualPrefabs(testData, fn)
-		for k,v in pairs(prefabProxies)do
-			if testData == k then				
-				return v, true
-			end		
-		end
-		return false, false
+        local prefab = PrefabSwaps.ResolvePrefabProxy(testData)
+        if prefab ~= testData then
+            return prefab, true
+        end
+        return false, false
 	end
 
 	if type(params) == "table" then
 		params,removed = recurseTable(params, removed, removeUnusedPrefabs)
 		params,removed = recurseTable(params, removed, swapToActualPrefabs)
-	end	
+	end
 
 	return params, removed
 end
@@ -332,10 +319,7 @@ local function resolveswappableprefabs(table)
 	return tbl
 end
 
-function Node:PopulateVoronoi(spawnFn, entitiesOut, width, height, world_gen_choices, prefabDensities, prefabSwaps, prefabProxies)
-
-	local prefabSwapDensites = nil
-
+function Node:PopulateVoronoi(spawnFn, entitiesOut, width, height, world_gen_choices, prefabDensities)
 	if self.populated == true then
 		--table.insert(entitiesOut[prefab], save_data)
 		return
@@ -423,7 +407,7 @@ function Node:PopulateVoronoi(spawnFn, entitiesOut, width, height, world_gen_cho
 
 		local distributeprefabs = resolveswappableprefabs(self.data.terrain_contents.distributeprefabs)		
 		
-		distributeprefabs, removed = filterPrefabsForGlobalSwaps(distributeprefabs, removed, prefabSwaps, prefabProxies)
+		distributeprefabs, removed = filterPrefabsForGlobalSwaps(distributeprefabs, removed)
 
 		for current_pos_idx = current_pos_idx, #points_x  do
 			if math.random() < self.data.terrain_contents.distributepercent then
@@ -447,7 +431,7 @@ function Node:PopulateVoronoi(spawnFn, entitiesOut, width, height, world_gen_cho
 			removed[prefab] = getFilteredSpawnWeight(self.data.terrain_contents.distributeprefabs,v,prefab) *  self.data.terrain_contents.distributepercent
 		end
 
-		self:PopulateExtra(world_gen_choices, spawnFn, {points_type=points_type, points_x=points_x, points_y=points_y, idx_left=idx_left, entitiesOut=entitiesOut, width=width, height=height, prefab_list=prefab_list}, prefabSwaps)
+		self:PopulateExtra(world_gen_choices, spawnFn, {points_type=points_type, points_x=points_x, points_y=points_y, idx_left=idx_left, entitiesOut=entitiesOut, width=width, height=height, prefab_list=prefab_list})
 	end
 
  	prefabDensities[self.id] ={}
@@ -466,7 +450,7 @@ function Node:PopulateVoronoi(spawnFn, entitiesOut, width, height, world_gen_cho
 end
 
 
-function Node:PopulateChildren(spawnFn, entitiesOut, width, height, backgroundRoom, perTerrain, world_gen_choices, prefabDensities,prefabSwaps)
+function Node:PopulateChildren(spawnFn, entitiesOut, width, height, backgroundRoom, perTerrain, world_gen_choices, prefabDensities)
 	-- Fill in any background sites that we have generated
 
 	if self.children_populated == true then
@@ -524,7 +508,7 @@ function Node:PopulateChildren(spawnFn, entitiesOut, width, height, backgroundRo
 				end
 			end
 			
-			self:PopulateExtra(world_gen_choices, spawnFn, {points_type=points_type, points_x=points_x, points_y=points_y, idx_left=idx_left, entitiesOut=entitiesOut, width=width, height=height, prefab_list=prefab_list},prefabSwaps)
+			self:PopulateExtra(world_gen_choices, spawnFn, {points_type=points_type, points_x=points_x, points_y=points_y, idx_left=idx_left, entitiesOut=entitiesOut, width=width, height=height, prefab_list=prefab_list})
 
             prefabDensities[self.id] ={}
             for k,v in pairs(prefab_list) do
@@ -535,22 +519,7 @@ function Node:PopulateChildren(spawnFn, entitiesOut, width, height, backgroundRo
 
 end
 
-function Node:PopulateExtra(world_gen_choices, spawnFn, data, prefabSwaps)
-
-	-- create list of filtered out prefabs
-	local inactive = {}
-	if prefabSwaps then 
-		for k,v in pairs(prefabSwaps)do
-	        for i,set in ipairs(v)do
-	        	if set.status == "inactive" then
-					for t,prefab in ipairs(set.prefabs)do
-						inactive[prefab] = true
-					end        		
-	        	end
-	      	end
-	    end
-	end
-
+function Node:PopulateExtra(world_gen_choices, spawnFn, data)
 	-- We have a bunch of unused positions that we can use.
 	-- loop through anything > 'default' (ie 1)
 	-- add in % more
@@ -561,7 +530,7 @@ function Node:PopulateExtra(world_gen_choices, spawnFn, data, prefabSwaps)
 		for prefab,amt in pairs(world_gen_choices) do
 
 			--test if prefab should be used..
-			if not inactive[prefab] then
+			if not PrefabSwaps.IsPrefabInactive(prefab) then
 				if data.prefab_list[prefab] == nil then
 					-- TODO: Need a better way to increse items in areas where they dont usually generate
 					data.prefab_list[prefab] = math.random(1,2)

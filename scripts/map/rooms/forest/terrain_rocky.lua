@@ -12,7 +12,6 @@ AddRoom("BGChessRocky", {
 					                distributeprefabs=
 					                {
 										flint=0.5,
-										rock_petrified_tree = 2,
 										rock1=1,
 										rock2=1,
 										tallbirdnest=0.008,
@@ -29,7 +28,6 @@ AddRoom("BGRocky", {
 					                distributeprefabs=
 					                {
 										flint=0.5,
-										rock_petrified_tree = 2,
 										rock1=1,										
 										rock2=1,										
 										rock_ice=0.4,
@@ -47,12 +45,13 @@ AddRoom("Rocky", {
 									countprefabs=
 									{
 										meteorspawner = function() return math.random(1,2) end,
+										rock_moon = function() return math.random(1,2) - 1 end,
+										burntground_faded = function() return math.random(3,5) end,
 									},
 					                distributepercent = .1,
 					                distributeprefabs=
 					                {
 					                    rock1 = 2,
-					                    rock_petrified_tree = 6,
 					                    rock2 = 2,
 										rock_ice = 1,
 					                    tallbirdnest=.1,
@@ -70,8 +69,7 @@ AddRoom("RockyBuzzards", {
 					                distributepercent = .1,
 					                distributeprefabs=
 					                {
-					                	rock_petrified_tree = 6,
-					                    rock1 = 2,
+					                	rock1 = 2,
 					                    rock2 = 2,
 					                    buzzardspawner = .1,
 					                    blue_mushroom = .002,
@@ -87,8 +85,7 @@ AddRoom("GenericRockyNoThreat", {
 					                distributepercent = .1,
 					                distributeprefabs=
 					                {
-					                	rock_petrified_tree = 6,
-					                    rock1 = 2,
+					                	rock1 = 2,
 					                    rock2 = 2,
 					                    rock_ice = .75,
 					                    rocks = 1,
@@ -109,7 +106,6 @@ AddRoom("MolesvilleRocky", {
 									distributeprefabs =
 									{
 										marsh_bush = 0.2,
-										rock_petrified_tree = 3,
 										rock1 = 1,
 										rock2 = 1,
 										rock_ice = .3,

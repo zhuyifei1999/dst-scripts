@@ -346,7 +346,7 @@ function DressupPanel:MakeSpinner(slot)
 	spinner_group.glow:SetClickable(false)
 	spinner_group.glow:Hide()
 
-	spinner_group.spinner = spinner_group:AddChild(AnimSpinner( self:GetSkinOptionsForSlot(slot), spinner_width, nil, {font=NEWFONT_OUTLINE, size=22}, nil, nil, textures, true, 104, 50 ))
+	spinner_group.spinner = spinner_group:AddChild(AnimSpinner( self:GetSkinOptionsForSlot(slot), spinner_width, nil, {font=NEWFONT_OUTLINE, size=20}, nil, nil, textures, true, 104, 80 ))
 	spinner_group.spinner:SetAnim("frames_comp", "fr", "icon", "SWAP_ICON", true)
 	spinner_group.spinner.fganim:GetAnimState():Hide("frame")
 	spinner_group.spinner.fganim:GetAnimState():Hide("NEW")
@@ -355,7 +355,7 @@ function DressupPanel:MakeSpinner(slot)
 	spinner_group.spinner.text:SetHAlign(ANCHOR_LEFT)
     spinner_group.spinner.text:SetVAlign(ANCHOR_MIDDLE)
     spinner_group.spinner.text:EnableWordWrap( true )
-	spinner_group.spinner.text:SetPosition(30, 0)
+	spinner_group.spinner.text:SetPosition(30, 1)
 	spinner_group.spinner.fganim:SetScale(.55)
 	spinner_group.spinner.fganim:SetPosition(-52, 1)
 	spinner_group.spinner.background:ScaleToSize(spinner_width - 2, spinner_height - 6)
@@ -519,7 +519,7 @@ function DressupPanel:GetSkinOptionsForSlot(slot)
 			else
 				--print(self.skins_list[which].item or "?", "Got timestamp", self.skins_list[which].timestamp or "nil", dressup_timestamp)
 				local item = self.skins_list[which].item
-				if CLOTHING[item] == nil or CLOTHING[item].limited_to_prefab == nil or CLOTHING[item].limited_to_prefab == self.currentcharacter then --check if this clothing is available for this character
+				if (Prefabs[item] ~= nil and not Prefabs[item].disabled) or (CLOTHING[item] ~= nil and (CLOTHING[item].limited_to_prefab == nil or CLOTHING[item].limited_to_prefab == self.currentcharacter) and not CLOTHING[item].disabled) then --check if this clothing is available for this character and it's not disabled
 					local new_indicator = not self.skins_list[which].timestamp or (self.skins_list[which].timestamp > dressup_timestamp)
 					local rarity = GetRarityForItem(slot, item)
 					local colour = rarity and SKIN_RARITY_COLORS[rarity] or SKIN_RARITY_COLORS["Common"]

@@ -66,7 +66,6 @@ local prefabs =
     "caverain",
     "dropperweb",
     "hutch",
-    "petrify_announce",
 }
 
 local monsters =
@@ -158,7 +157,6 @@ local function master_postinit(inst)
     inst:AddComponent("forestresourcespawner") -- a cave version of this would be nice, but it serves it's purpose...
     inst:AddComponent("regrowthmanager")
     inst:AddComponent("desolationspawner")
-    inst:AddComponent("prefabswapmanager") 
 
     if METRICS_ENABLED then
         inst:AddComponent("worldoverseer")

@@ -5,7 +5,10 @@ local assets =
 
 local function OnBlocked(owner, data)
     owner.SoundEmitter:PlaySound("dontstarve/wilson/hit_scalemail")
-    if data.attacker ~= nil and data.attacker.components.burnable ~= nil and not data.attacker:HasTag("thorny") then
+    if data.attacker ~= nil and
+        data.attacker.components.burnable ~= nil and
+        not data.redirected and
+        not data.attacker:HasTag("thorny") then
         data.attacker.components.burnable:Ignite()
     end
 end

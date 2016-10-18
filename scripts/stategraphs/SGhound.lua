@@ -8,11 +8,18 @@ local actionhandlers =
 local events =
 {
     EventHandler("attacked", function(inst) if not inst.components.health:IsDead() and not inst.sg:HasStateTag("attack") then inst.sg:GoToState("hit") end end),
-    EventHandler("death", function(inst) inst.sg:GoToState("death") end),
+    EventHandler("death", function(inst) inst.sg:GoToState("death", inst.sg:HasStateTag("reanimating")) end),
     EventHandler("doattack", function(inst, data) if not inst.components.health:IsDead() and (inst.sg:HasStateTag("hit") or not inst.sg:HasStateTag("busy")) then inst.sg:GoToState("attack", data.target) end end),
     CommonHandlers.OnSleep(),
     CommonHandlers.OnLocomote(true, false),
     CommonHandlers.OnFreeze(),
+
+    --Moon hounds
+    EventHandler("workmoonbase", function(inst, data)
+        if data ~= nil and data.moonbase ~= nil and not (inst.components.health:IsDead() or inst.sg:HasStateTag("busy")) then
+            inst.sg:GoToState("workmoonbase", data.moonbase)
+        end
+    end),
 }
 
 local states =
@@ -121,12 +128,31 @@ local states =
         name = "death",
         tags = { "busy" },
 
-        onenter = function(inst)
+        onenter = function(inst, reanimating)
             inst.SoundEmitter:PlaySound("dontstarve/creatures/hound/death")
-            inst.AnimState:PlayAnimation("death")
+            if reanimating then
+                inst.AnimState:Pause()
+            else
+                inst.AnimState:PlayAnimation("death")
+            end
             inst.Physics:Stop()
-            RemovePhysicsColliders(inst)            
-            inst.components.lootdropper:DropLoot(Vector3(inst.Transform:GetWorldPosition()))            
+            RemovePhysicsColliders(inst)
+            inst.components.lootdropper:DropLoot(inst:GetPosition())
+        end,
+
+        timeline =
+        {
+            TimeEvent(TUNING.GARGOYLE_REANIMATE_DELAY, function(inst)
+                if not inst:IsInLimbo() then
+                    inst.AnimState:Resume()
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if not inst:IsInLimbo() then
+                inst.AnimState:Resume()
+            end
         end,
     },
 
@@ -137,6 +163,86 @@ local states =
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("sleep_loop", true)
+        end,
+    },
+
+    --Moon hound
+    State{
+        name = "workmoonbase",
+        tags = { "busy", "working" },
+
+        onenter = function(inst, moonbase)
+            inst.sg.statemem.moonbase = moonbase
+            inst.components.locomotor:Stop()
+            inst:ClearBufferedAction()
+            inst.AnimState:PlayAnimation("atk_pre")
+            inst.AnimState:PushAnimation("atk", false)
+        end,
+
+        timeline =
+        {
+            --TimeEvent(14 * FRAMES, function(inst)
+            --    inst.SoundEmitter:PlaySound("dontstarve/creatures/hound/attack")
+            --end),
+            TimeEvent(16 * FRAMES, function(inst)
+                local moonbase = inst.sg.statemem.moonbase
+                if moonbase ~= nil and
+                    moonbase.components.workable ~= nil and
+                    moonbase.components.workable:CanBeWorked() then
+                    moonbase.components.workable:WorkedBy(inst, 1)
+                    SpawnPrefab("mining_fx").Transform:SetPosition(moonbase.Transform:GetWorldPosition())
+                    inst.SoundEmitter:PlaySound("dontstarve/impacts/impact_stone_wall_sharp")
+                end
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                inst.components.combat:SetTarget(nil)
+                if math.random() < .333 then
+                    inst.sg:GoToState("taunt")
+                else
+                    inst.sg:GoToState("idle", "atk_pst")
+                end
+            end),
+        },
+    },
+
+    State{
+        name = "reanimate",
+        tags = { "busy", "reanimating" },
+
+        onenter = function(inst, data)
+            inst.sg.statemem.taunted = data.anim == "taunt"
+            inst.Physics:Stop()
+            inst.AnimState:PlayAnimation(data.anim)
+            inst.AnimState:Pause()
+            if data.time ~= nil then
+                inst.AnimState:SetTime(data.time)
+            end
+        end,
+
+        timeline =
+        {
+            TimeEvent(TUNING.GARGOYLE_REANIMATE_DELAY, function(inst)
+                if not inst:IsInLimbo() then
+                    inst.AnimState:Resume()
+                end
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                inst.sg:GoToState(inst.sg.statemem.taunted and "idle" or "taunt")
+            end),
+        },
+
+        onexit = function(inst)
+            if not inst:IsInLimbo() then
+                inst.AnimState:Resume()
+            end
         end,
     },
 }

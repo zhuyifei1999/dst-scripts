@@ -128,6 +128,7 @@ function Builder:SetTechTrees(techlevels)
         self.classified.magiclevel:set(techlevels.MAGIC or 0)
         self.classified.ancientlevel:set(techlevels.ANCIENT or 0)
         self.classified.shadowlevel:set(techlevels.SHADOW or 0)
+        self.classified.cartographylevel:set(techlevels.CARTOGRAPHY or 0)
     end
 end
 
@@ -218,7 +219,8 @@ function Builder:KnowsRecipe(recipename)
             and (   (   recipe.level.SCIENCE <= self.classified.sciencebonus:value() and
                         recipe.level.MAGIC <= self.classified.magicbonus:value() and
                         recipe.level.ANCIENT <= self.classified.ancientbonus:value() and
-                        recipe.level.SHADOW <= self.classified.shadowbonus:value() or
+                        recipe.level.SHADOW <= self.classified.shadowbonus:value() and
+                        recipe.level.CARTOGRAPHY <= 0 or
                         self.classified.isfreebuildmode:value()
                     ) and (
                         recipe.builder_tag == nil or

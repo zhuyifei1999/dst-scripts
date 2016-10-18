@@ -1,6 +1,10 @@
 return {
 	ACTIONFAIL =
 	{
+        REPAIR =
+        {
+            WRONGPIECE = "It will not stay in place!",
+        },
         BUILD =
         {
             MOUNTED = "I must first dismount from my mighty steed.",
@@ -49,6 +53,9 @@ return {
             BUSY = "I'll try once more when it's done.",
             ABIGAILHEART = "The girl's spirit cannot be returned.",
             GHOSTHEART = "The spirit cannot be returned.",
+            NOTGEM = "This object is not blessed with the power of the gods.",
+            WRONGGEM = "This gem was not chosen for this purpose.",
+            NOTSTAFF = "The gods may frown were I to do that.",
         },
         GIVETOPLAYER = 
         {
@@ -78,6 +85,7 @@ return {
         {
             KNOWN = "I already wield such knowledge.",
             CANTLEARN = "That knowledge is forbidden by the gods.",
+            WRONGWORLD = "This map is for some distant land...",
         },
 	},
 	ACTIONFAIL_GENERIC = "If I can't do it, it can't be done!",
@@ -351,6 +359,15 @@ return {
 		POND_ALGAE = "Ancient flora.",
 		GREENSTAFF = "Twirly green power.",
 		POTTEDFERN = "What are you meant to do with such a thing?",
+		SENTRYWARD = "May the secrets of this land be divulged by the gods.",
+        MOONROCK_PIECES = "It has faced Mani's wrath.",
+        MOONBASE =
+        {
+            GENERIC = "What dost thou want, altar?",
+            BROKEN = "Perhaps it crashed from the heavens.",
+            STAFFED = "Prepare for glorious battle!",
+            WRONGSTAFF = "This shall not please the gods.",
+        },
 
 		LIGHTER = "It lights the fires of mine heart!",
 		
@@ -381,13 +398,13 @@ return {
 		RUINSHAT = "A crown... that fights!",
 		NIGHTMARE_TIMEPIECE =
 		{
-		CALM = "Nothing stirs.",
-		WARN = "It's starting...",
-		WAXING = "The magic is heightening!",
-		STEADY = "The magic power holds steady.",
-		WANING = "It's starting to retreat!",
-		DAWN = "Barely any magic remains.",
-		NOMAGIC = "The magic slumbers far from here.",
+            CALM = "Nothing stirs.",
+            WARN = "It's starting...",
+            WAXING = "The magic is heightening!",
+            STEADY = "The magic power holds steady.",
+            WANING = "It's starting to retreat!",
+            DAWN = "Barely any magic remains.",
+            NOMAGIC = "The magic slumbers far from here.",
 		},
 		BISHOP_NIGHTMARE = "Be wary of his blasts!",
 		ROOK_NIGHTMARE = "You don't frighten me!",
@@ -403,15 +420,17 @@ return {
 		ORANGESTAFF = "A staff of magical movement.",
 		YELLOWAMULET = "A star, captured within an amulet.",
 		GREENAMULET = "Enhanced emerald crafting skills!",
-		
+
 		SLURPERPELT = "I do love furs.",	
 		SLURPER = "The fur foe thinks she's a hat!",
 		SLURPER_PELT = "I do love furs.",
 		ARMORSLURPER = "She ebbs the ache of hunger. Good fur.",
 		ORANGEAMULET = "Gathering has never been so easy.",
 		YELLOWSTAFF = "It summons the stars!",
-		YELLOWGEM = "A yellow beaut.",
+		YELLOWGEM = "A yellow beauty.",
 		ORANGEGEM = "A stone of orange.",
+        OPALSTAFF = "It weaves the cold from thin air!",
+        OPALPRECIOUSGEM = "The spoils of war!",
 		TELEBASE = 
 		{
 			VALID = "Prepare yourselves for the power of purple!",
@@ -423,7 +442,8 @@ return {
 			GEMS = "It's empty.",
 		},
 		STAFFLIGHT = "Behold! A gift from Wotan!",
-	
+        STAFFCOLDLIGHT = "Frigid as a frost giant's heart.",
+
         ANCIENT_ALTAR = "These crafts had better be good.",
 
         ANCIENT_ALTAR_BROKEN = "This one is not in working order.",
@@ -737,6 +757,12 @@ return {
 		CARROT_COOKED = "Sad cooked carrots.",
 		CARROT_PLANTED = "A wee root vegetable.",
 		CARROT_SEEDS = "Tiny nature bits.",
+		CARTOGRAPHYDESK = 
+		{	
+			GENERIC = "What legends might I find within these maps?",
+			BURNING = "Alas! My hunting excursions will go unregaled!",
+			BURNT = "I've no choice but to act out my directions now.",
+		},
 		CAVE_FERN = "Foliage from the dark ages.",
 		CHARCOAL = "Loot from Loge, the demigod.",
         CHESSJUNK1 = "It's only a pile of fallen warriors.",
@@ -852,6 +878,12 @@ return {
 		EGGPLANT = "Purple and bulbous.",
 		EGGPLANT_COOKED = "Food for the weak.",
 		EGGPLANT_SEEDS = "Tiny nature bits.",
+
+		ENDTABLE = 
+		{
+			BURNT = "It was no challenge at all.",
+			GENERIC = "There is no beast beneath.",
+		},
 		DECIDUOUSTREE = 
 		{
 			BURNING = "The wood's ablaze!",
@@ -890,6 +922,7 @@ return {
 		FEATHER_CROW = "A token from the ravens!",
 		FEATHER_ROBIN = "Red as my hair.",
 		FEATHER_ROBIN_WINTER = "Winter's feather.",
+		FEATHERPENCIL = "Perhaps I'll pen a saga of my journeys!",
 		FEM_PUPPET = "She looks unhappy upon her throne.",
 		FIREFLIES =
 		{
@@ -1069,6 +1102,7 @@ return {
 
 		MANDRAKESOUP = "A stew of magic!",
 		MANDRAKE_COOKED = "Grilled rutabaga.",
+		MAPSCROLL = "Mayhaps the ink is invisible!",
 		MARBLE = "The warrior stone!",
 		MARBLEPILLAR = "Fit for a palace!",
 		MARBLETREE = "Even the winds cannot knock this tree down.",
@@ -1333,6 +1367,32 @@ return {
 			DISEASED = "Disease festers within its soul.",
 			DISEASING = "It is weakening before mine eyes!",
 		},
+		SCULPTURE_KNIGHTHEAD = "Dost thou yearn for a body?",
+		SCULPTURE_KNIGHTBODY = 
+		{
+			COVERED = "An abandoned monument to the gods?",
+			UNCOVERED = "An icon of evil, surely!",
+			FINISHED = "Might we come to regret this action?",
+            READY = "The beast has been roused beneath!",
+		},
+        SCULPTURE_BISHOPHEAD = "A follower of Mimir, mayhaps?",
+		SCULPTURE_BISHOPBODY = 
+		{
+			COVERED = "More apt for the halls of Valhalla.",
+			UNCOVERED = "We've freed the figure slumbering in the stone.",
+			FINISHED = "Will this please the gods? Or anger them?",
+            READY = "The beast has been roused beneath!",
+		},
+        SCULPTURE_ROOKNOSE = "It has strayed from the warrior's path.",
+		SCULPTURE_ROOKBODY = 
+		{
+			COVERED = "Warriors are not concerned with decorative sculptures.",
+			UNCOVERED = "I fear we've unleashed a great evil.",
+			FINISHED = "Gods help us on Mani's night.",
+            READY = "The beast has been roused beneath!",
+		},
+        GARGOYLE_HOUND = "Shed your stone form and fight, beast!",
+        GARGOYLE_WEREPIG = "Do not cower behind your carapace of rock! Fight!",
 		TWIGGYTREE = 
 		{
 			BURNING = "The wood's ablaze!",
@@ -1389,6 +1449,18 @@ return {
 			SLEEPING = "It is cowardly to attack a sleeping enemy.",
 		},
 		SPOILED_FOOD = "Age has only made this food gross, not wise.",
+        STAGEHAND =
+        {
+			AWAKE = "Keep thy hand from out mine fires!",
+			HIDING = "Merely a table.",
+        },
+        STATUE_MARBLE = 
+        {
+            GENERIC = "Delicate appearance, but hard as stone. Admirable.",
+            TYPE1 = "What plagues you, fair maiden?",
+            --TYPE2 = "",
+            TYPE3 = "Tis a stone basin!",
+        },
 		STATUEHARP = "It must be Gunnar. The snakes took his head.",
 		STATUEMAXWELL = "The villain turns hero!",
 		STINGER = "The sword on the back of a bee.",
@@ -1573,8 +1645,16 @@ return {
 		SPEAR_WATHGRITHR = "My comrade in arms!",
         REVIVER = "Feel the passion inside!",
         LIFEINJECTOR = "This will return me to top form.",
-        MOONROCKNUGGET = "A gift from Mani.",
         ROCK_MOON = "A gift from Mani.",
+        MOONROCKNUGGET = "A gift from Mani.",
+        MOONROCKCRATER = "Mani's gift may have some use yet!",
+
+        REDMOONEYE = "Odin's eye, grant us wisdom!",
+        PURPLEMOONEYE = "Odin's eye guides our path.",
+        GREENMOONEYE = "Odin gave his eye that we might see.",
+        ORANGEMOONEYE = "May Odin guide us.",
+        YELLOWMOONEYE = "Odin, lend us your sight!",
+        BLUEMOONEYE = "Odin's eye!",
         --GOLDENMACHETE = "You shall be swung with pride.",
         --MACHETE = "A fine length of blade.",
         --MOWER = "A fine length of blade.",

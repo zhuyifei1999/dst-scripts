@@ -1,7 +1,11 @@
 return {
 	ACTIONFAIL =
 	{
-        BUILD =
+       	REPAIR =
+        {
+            WRONGPIECE = "That piece ain't right.",
+        },
+       	BUILD =
         {
             MOUNTED = "Not as tall as a moose, but still too high to place that.",
         },
@@ -50,6 +54,9 @@ return {
             BUSY = "I'll try again in a mo'.",
             ABIGAILHEART = "I'd never hear the end of it from 'Luce if I didn't try.",
             GHOSTHEART = "Not today.",
+            NOTGEM = "That doesn't look like a magic rock to me.",
+            WRONGGEM = "I don't think that one'll work here.",
+            NOTSTAFF = "Nah. Something long and thin goes there, but not this.",
         },
         GIVETOPLAYER = 
         {
@@ -79,6 +86,7 @@ return {
         {
             KNOWN = "I know that already, eh?",
             CANTLEARN = "Err... do you understand this one, 'Luce?",
+            WRONGWORLD = "I don't think I'm in the right place for this.",
         },
 	},
 	ACTIONFAIL_GENERIC = "Sorry, I can't do that.",
@@ -596,6 +604,15 @@ return {
 		POND_ALGAE = "Doesn't look edible.",
 		GREENSTAFF = "This'll help me dismantle stuff!",
 		POTTEDFERN = "I do love me some plant life.",
+		SENTRYWARD = "That's an odd looking tree.",
+        MOONROCK_PIECES = "That's in a pretty sorry state, eh?",
+        MOONBASE =
+        {
+            GENERIC = "I'd rather not muck with that if I can help it.",
+            BROKEN = "That'll need more than a roll of duct tape to fix.",
+            STAFFED = "I'm happy to just leave it there for now.",
+            WRONGSTAFF = "Looks a little off.",
+        },
 
 		THULECITE = "It's the wood of the caves!",
 		ARMORRUINS = "That'll stop the hurt.",
@@ -636,6 +653,8 @@ return {
 		YELLOWGEM = "I can see the stars in it.",
 		WATERMELON_SEEDS = "Maybe I could plant them?",
 		ORANGEGEM = "It's shimmering.",
+        OPALSTAFF = "Err, moon magic isn't really... my thing... Heh.",
+        OPALPRECIOUSGEM = "You're fond of it, aren'tcha Lucy?",
 		RELIC =
 		{
 			BROKEN = "I don't plan on fixin' that.",
@@ -652,6 +671,7 @@ return {
 			GEMS = "It'll need a gem.",
 		},
 		STAFFLIGHT = "Well ain't that something.",	
+        STAFFCOLDLIGHT = "At least it won't start a forest fire.",
 		LUCY = "I love Lucy!",
         ANCIENT_ALTAR =
         {
@@ -915,6 +935,12 @@ return {
 		CARROT_COOKED = "That's cooked rabbit food.",
 		CARROT_PLANTED = "I'm not one for vegetables, eh?",
 		CARROT_SEEDS = "Tiny carrots.",
+		CARTOGRAPHYDESK = 
+		{	
+			GENERIC = "Heh. Has a little compass and everything.",
+			BURNING = "Looks like the map ends here.",
+			BURNT = "Eh, I prefer to just wander around the woods anyway.",
+		},
 		CAVE_FERN = "Hey! It's a fern!",
 
 		CHARCOAL = "This makes me a bit sad.",
@@ -1021,6 +1047,12 @@ return {
 		EGGPLANT = "I bet the birds have something to do with this.",
 		EGGPLANT_COOKED = "Suspiciously birdy.",
 		EGGPLANT_SEEDS = "Hmmm. I'm not sure.",
+
+		ENDTABLE = 
+		{
+			BURNT = "A burnt wood table.",
+			GENERIC = "Such a beaut of a wood table shouldn't be hidden by a cloth.",
+		},
 		ACORN = "I should grow it and then chop it down!",
         ACORN_SAPLING = "Here comes a tree!",
 		EVERGREEN =
@@ -1042,6 +1074,7 @@ return {
 		FEATHER_CROW = "A gross feather.",
 		FEATHER_ROBIN = "A disgusting feather.",
 		FEATHER_ROBIN_WINTER = "A stupid feather.",
+		FEATHERPENCIL = "The bird murder wasn't even necessary. Heh.",
 		FEM_PUPPET = "She's trapped!",
 		FIREFLIES =
 		{
@@ -1195,6 +1228,7 @@ return {
 		MANDRAKE = "Sorry, little buddy.",
 		MANDRAKESOUP = "It's a tiring soup.",
 		MANDRAKE_COOKED = "Sorry!",
+		MAPSCROLL = "Is it still a map if nothing's on it?",
 		MARBLE = "Feels like a government building.",
 		MARBLEPILLAR = "Somebody must have built that.",
 		MARBLETREE = "Even Lucy can't chop that one down.",
@@ -1366,6 +1400,32 @@ return {
 			DISEASED = "It's caught a bit of a bug.",
 			DISEASING = "A poor excuse for wood.",
 		},
+		SCULPTURE_KNIGHTHEAD = "That's a heavy lookin' hoser.",
+		SCULPTURE_KNIGHTBODY = 
+		{
+			COVERED = "Once you've seen one weird statue, you've seen'em all.",
+			UNCOVERED = "Yikes. Put it back in.",
+			FINISHED = "Just needed a little duct tape.",
+			READY = "Is stone supposed to move like that?",
+		},
+        SCULPTURE_BISHOPHEAD = "That doesn't seem right.",
+		SCULPTURE_BISHOPBODY = 
+		{
+			COVERED = "I don't get art. Whattaya think Lucy?",
+			UNCOVERED = "Creepy.",
+			FINISHED = "Whose bright idea was it to fix this thing?",
+			READY = "Is stone supposed to move like that?",
+		},
+        SCULPTURE_ROOKNOSE = "Just a big hunk of marble, that.",
+		SCULPTURE_ROOKBODY = 
+		{
+			COVERED = "Just a big hunk of stone, as far as I'm concerned.",
+			UNCOVERED = "Looks a bit like one of them chargin' hosers.",
+			FINISHED = "As if I didn't have enough reasons to hate full moons.",
+			READY = "Is stone supposed to move like that?",
+		},
+		GARGOYLE_HOUND = "That's unfortunate there, buddy.",
+        GARGOYLE_WEREPIG = "Hmph. Maybe I don't got it so bad.",
 		SEEDS = "Not trees.",
 		SEEDS_COOKED = "We call this \"lumberjack surprise\".",
 		SEWING_KIT = "I'm pretty good at sewing.",
@@ -1409,6 +1469,18 @@ return {
 			DEAD = "Great!",
 		},
 		SPOILED_FOOD = "Aw, it's Diefenbakered.",
+        STAGEHAND =
+        {
+			AWAKE = "I really wish I hadn't seen that.",
+			HIDING = "Not my style.",
+        },
+        STATUE_MARBLE = 
+        {
+        	--GENERIC = "I prefer wood carvings.",
+        	TYPE1 = "She's a real tall one, eh?",
+        	TYPE2 = "I'm not sure I get it.",
+        	TYPE3 = "Could make a nice planter outta that.",
+    	},
 		STATUEHARP = "You lost your head, eh?",
 		STATUEMAXWELL = "I'm gonna make fun of him for this later, eh?",
 		STEELWOOL = "That'll put the shine back on yer axe.",
@@ -1579,8 +1651,16 @@ return {
 		ICESTAFF = "It reminds me of home.",
         REVIVER = "I need to share this with somebody!",
         LIFEINJECTOR = "This should cure those sniffles.",
-        MOONROCKNUGGET = "It's uh, a moon rock.",
         ROCK_MOON = "It's uh, a moon rock.",
+        MOONROCKNUGGET = "It's uh, a moon rock.",
+        MOONROCKCRATER = "I think it's missing something.",
+
+        REDMOONEYE = "A true woodsman knows his own way around the forest.",
+        PURPLEMOONEYE = "A pretty useful guide in this neck of the woods.",
+        GREENMOONEYE = "That should help everyone get the lay of the land.",
+        ORANGEMOONEYE = "Makes the hairs on the back of my neck stand up.",
+        YELLOWMOONEYE = "It's rude to stare.",
+        BLUEMOONEYE = "It sees all with the cold sight of the North.",
 	},
 	DESCRIBE_GENERIC = "What's that, eh?",
 	DESCRIBE_TOODARK = "It's too dark, eh!",
