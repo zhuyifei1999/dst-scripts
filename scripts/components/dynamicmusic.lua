@@ -40,16 +40,6 @@ local TRIGGERED_DANGER_MUSIC =
         "dontstarve/music/music_epicfight_moonbase_b",
     },
 
-    toadstool =
-    {
-        "dontstarve/music/music_epicfight_toadboss",
-    },
-
-    shadowchess =
-    {
-        "dontstarve/music/music_epicfight_ruins",
-    },
-
     default =
     {
         "dontstarve/music/music_epicfight_ruins",
@@ -187,7 +177,6 @@ local function CheckAction(player)
                 target:HasTag("bird") or
                 target:HasTag("butterfly") or
                 target:HasTag("shadow") or
-                target:HasTag("shadowchesspiece") or
                 target:HasTag("thorny") or
                 target:HasTag("smashable") or
                 target:HasTag("wall") or
@@ -216,11 +205,10 @@ local function OnAttacked(player, data)
         --false and not nil, pushed from player_classified
         (data.isattackedbydanger == true or
         --For a valid server side check, attacker must be non-nil
-        (data.attacker ~= nil and
-        not (data.attacker:HasTag("shadow") or
-            data.attacker:HasTag("shadowchesspiece") or
-            data.attacker:HasTag("thorny") or
-            data.attacker:HasTag("smolder")))) then
+        (data.attacker ~= nil and not (data.attacker:HasTag("shadow")
+                                       or data.attacker:HasTag("thorny")
+                                       or data.attacker:HasTag("smolder")
+                                      ))) then
 
         StartDanger(player)
     end

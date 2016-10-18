@@ -252,8 +252,8 @@ local function OnPhaseChanged(inst, phase)
     end
 end
 
-local function OnMoonPhaseChanged2(inst, data)
-    local moonphase = data.moonphase == "full" and "full_moon" or nil
+local function OnMoonPhaseChanged(inst, moonphase)
+    moonphase = moonphase == "full" and "full_moon" or nil
     if _fullmoonphase ~= moonphase then
         _fullmoonphase = moonphase
 
@@ -308,7 +308,7 @@ PostProcessor:SetDistortionRadii(0.5, 0.685)
 inst:ListenForEvent("playeractivated", OnPlayerActivated)
 inst:ListenForEvent("playerdeactivated", OnPlayerDeactivated)
 inst:ListenForEvent("phasechanged", OnPhaseChanged)
-inst:ListenForEvent("moonphasechanged2", OnMoonPhaseChanged2)
+inst:ListenForEvent("moonphasechanged", OnMoonPhaseChanged)
 if not _iscave then
     inst:ListenForEvent("seasontick", OnSeasonTick)
 end

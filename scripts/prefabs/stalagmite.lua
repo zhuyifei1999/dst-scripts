@@ -12,7 +12,6 @@ local prefabs =
     "goldnugget",
     "orangegem",
     "rock_break_fx",
-    "fossil_piece",
 }
 
 SetSharedLootTable( 'full_rock',
@@ -22,7 +21,6 @@ SetSharedLootTable( 'full_rock',
     {'rocks',       1.00},
     {'goldnugget',  1.00},
     {'flint',       1.00},
-    {'fossil_piece',0.05},
     {'goldnugget',  0.25},
     {'flint',       0.60},
     {'bluegem',     0.05},
@@ -35,7 +33,6 @@ SetSharedLootTable( 'med_rock',
     {'rocks',       1.00},
     {'flint',       1.00},
     {'goldnugget',  0.50},
-    {'fossil_piece',0.05},
     {'flint',       0.60},
 })
 
@@ -43,8 +40,7 @@ SetSharedLootTable( 'low_rock',
 {
     {'rocks',       1.00},
     {'flint',       1.00},
-    {'goldnugget',  0.50},
-    {'fossil_piece',0.05},
+    {'goldnugget',  0.25},
     {'flint',       0.30},
 })
 

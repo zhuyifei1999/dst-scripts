@@ -117,7 +117,7 @@ return {
         },
         {
           name = "",
-          type = "statue_marble_muse",
+          type = "statue_marble",
           shape = "rectangle",
           x = 236,
           y = 237,
@@ -128,7 +128,7 @@ return {
         },
         {
           name = "",
-          type = "statue_marble_pawn",
+          type = "statue_marble",
           shape = "rectangle",
           x = 19,
           y = 95,

@@ -12,7 +12,6 @@ local prefabs =
     "goldnugget",
     "yellowgem",
     "rock_break_fx",
-    "fossil_piece",
 }
 
 SetSharedLootTable( 'stalagmite_tall_full_rock',
@@ -21,7 +20,6 @@ SetSharedLootTable( 'stalagmite_tall_full_rock',
     {'rocks',       1.00},
     {'goldnugget',  1.00},
     {'flint',       1.00},
-    {'fossil_piece',0.05},
     {'goldnugget',  0.25},
     {'flint',       0.60},
     {'redgem',      0.05},
@@ -33,7 +31,6 @@ SetSharedLootTable( 'stalagmite_tall_med_rock',
     {'rocks',       1.00},
     {'rocks',       1.00},
     {'flint',       1.00},
-    {'fossil_piece',0.05},
     {'goldnugget',  0.15},
     {'flint',       0.60},
 })
@@ -42,7 +39,6 @@ SetSharedLootTable( 'stalagmite_tall_low_rock',
 {
     {'rocks',       1.00},
     {'flint',       1.00},
-    {'fossil_piece',0.05},
     {'goldnugget',  0.15},
     {'flint',       0.30},
 })

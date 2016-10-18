@@ -3,20 +3,7 @@ local assets =
     Asset("ANIM", "anim/trinkets.zip"),
 }
 
-
-local TRADEFOR = 
-{
-	[15] = {"chesspiece_bishop_sketch"},
-	[16] = {"chesspiece_bishop_sketch"},
-	[28] = {"chesspiece_rook_sketch"},
-	[29] = {"chesspiece_rook_sketch"},
-	[30] = {"chesspiece_knight_sketch"},
-	[31] = {"chesspiece_knight_sketch"},
-}
-
 local function MakeTrinket(num)
-	local prefabs = TRADEFOR[num]
-
     local function fn()
         local inst = CreateEntity()
 
@@ -47,8 +34,6 @@ local function MakeTrinket(num)
         inst:AddComponent("inventoryitem")
         inst:AddComponent("tradable")
         inst.components.tradable.goldvalue = TUNING.GOLD_VALUES.TRINKETS[num] or 3
-        inst.components.tradable.tradefor = TRADEFOR[num]
-        
 
         MakeHauntableLaunchAndSmash(inst)
 
@@ -57,7 +42,7 @@ local function MakeTrinket(num)
         return inst
     end
 
-    return Prefab("trinket_"..tostring(num), fn, assets, prefabs)
+    return Prefab("trinket_"..tostring(num), fn, assets)
 end
 
 local ret = {}

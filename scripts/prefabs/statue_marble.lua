@@ -1,9 +1,8 @@
 local assets =
 {
-    Asset("ANIM", "anim/statue_small_type1_build.zip"), -- muse 1
-    Asset("ANIM", "anim/statue_small_type2_build.zip"), -- muse 2
-    Asset("ANIM", "anim/statue_small_type3_build.zip"), -- urn
-    Asset("ANIM", "anim/statue_small_type4_build.zip"), -- pawn
+    Asset("ANIM", "anim/statue_small_type1_build.zip"),
+    Asset("ANIM", "anim/statue_small_type2_build.zip"),
+    Asset("ANIM", "anim/statue_small_type3_build.zip"),
     Asset("ANIM", "anim/statue_small.zip"),
    	Asset("MINIMAP_IMAGE", "statue_small"),
 }
@@ -13,20 +12,6 @@ local prefabs =
     "marble",
     "rock_break_fx",
 }
-
-local sketchloot = 
-{
-	"chesspiece_muse_sketch",
-	"chesspiece_muse_sketch",
-	"",
-	"chesspiece_pawn_sketch",
-}
-
-for i,v in ipairs(sketchloot) do
-	if v ~= "" then
-		table.insert(prefabs, v)
-	end
-end
 
 SetSharedLootTable( 'statue_marble',
 {
@@ -55,7 +40,7 @@ local function OnWorkLoad(inst)
 end
 
 local function setstatuetype(inst, typeid)
-    typeid = typeid or math.random(4)
+    typeid = typeid or math.random(3)
     if typeid ~= inst.typeid then
         inst.typeid = typeid
         inst.AnimState:OverrideSymbol("swap_statue", "statue_small_type"..tostring(typeid).."_build", "swap_statue")
@@ -64,13 +49,6 @@ end
 
 local function GetStatus(inst)
     return "TYPE"..tostring(inst.typeid)
-end
-
-
-local function lootsetfn(lootdropper)
-	if sketchloot[lootdropper.inst.typeid] ~= "" then
-	    lootdropper:SetLoot({ sketchloot[lootdropper.inst.typeid] })
-	end
 end
 
 local function onsave(inst, data)
@@ -111,7 +89,6 @@ local function fn()
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetChanceLootTable('statue_marble')
-	inst.components.lootdropper:SetLootSetupFn(lootsetfn)
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = GetStatus
@@ -135,21 +112,4 @@ local function fn()
     return inst
 end
 
-function specificfn(id)
-	return function()
-		local inst = fn()
-		
-		if not TheWorld.ismastersim then
-			return inst
-		end
-		
-		inst:SetPrefabName("statue_marble")
-		setstatuetype(inst, id)
-
-		return inst
-	end
-end
-
-return Prefab("statue_marble", fn, assets, prefabs),
-       Prefab("statue_marble_muse", specificfn(1), assets, prefabs),
-       Prefab("statue_marble_pawn", specificfn(4), assets, prefabs)
+return Prefab("statue_marble", fn, assets, prefabs)

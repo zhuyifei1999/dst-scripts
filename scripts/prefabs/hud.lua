@@ -20,7 +20,6 @@ local assets =
     Asset("ANIM", "anim/ui_piggyback_2x6.zip"),
     Asset("ANIM", "anim/ui_krampusbag_2x8.zip"),
     Asset("ANIM", "anim/ui_cookpot_1x4.zip"), 
-    Asset("ANIM", "anim/ui_lamp_1x4.zip"), 
     Asset("ANIM", "anim/ui_krampusbag_2x5.zip"),
     Asset("ANIM", "anim/ui_board_5x3.zip"),
 
@@ -67,8 +66,6 @@ local assets =
     Asset("INV_IMAGE", "half_health"),
     Asset("INV_IMAGE", "half_hunger"),
     Asset("INV_IMAGE", "half_sanity"),
-
-    Asset("INV_IMAGE", "sculpting_material"),
 
     Asset("SOUND", "sound/together.fsb"),
 }

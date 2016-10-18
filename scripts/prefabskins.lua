@@ -59,6 +59,7 @@ PREFAB_SKINS = {
 	{
 		"torch_rag",
 		"torch_shadow",
+		"torch_spooky",
 	},
 	treasurechest = 
 	{

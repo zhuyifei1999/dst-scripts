@@ -42,7 +42,6 @@ local UIClock = Class(Widget, function(self)
     self._cycles = nil
     self._phase = nil
     self._moonphase = nil
-    self._mooniswaxing = nil
     self._time = nil
 
     local basescale = 1
@@ -105,7 +104,7 @@ local UIClock = Class(Widget, function(self)
     self.inst:ListenForEvent("cycleschanged", function(inst, data) self:OnCyclesChanged(data) end, TheWorld)
     if not self._cave then
         self.inst:ListenForEvent("phasechanged", function(inst, data) self:OnPhaseChanged(data) end, TheWorld)
-        self.inst:ListenForEvent("moonphasechanged2", function(inst, data) self:OnMoonPhaseChanged2(data) end, TheWorld)
+        self.inst:ListenForEvent("moonphasechanged", function(inst, data) self:OnMoonPhaseChanged(data) end, TheWorld)
     end
     self.inst:ListenForEvent("clocktick", function(inst, data) self:OnClockTick(data) end, TheWorld)
 end)
@@ -133,12 +132,11 @@ function UIClock:ShowMoon()
     local moon_syms =
     {
         full = "moon_full",
-        quarter = self._mooniswaxing and "moon_quarter_wax" or "moon_quarter",
+        quarter = "moon_quarter",
         new = "moon_new",
-        threequarter = self._mooniswaxing and "moon_three_quarter_wax" or "moon_three_quarter",
-        half = self._mooniswaxing and "moon_half_wax" or "moon_half",
+        threequarter = "moon_three_quarter",
+        half = "moon_half",
     }
-
     self._moonanim:GetAnimState():OverrideSymbol("swap_moon", "moon_phases", moon_syms[self._moonphase] or "moon_full")
     if self._phase ~= nil then
         self._moonanim:GetAnimState():PlayAnimation("trans_out")
@@ -298,13 +296,12 @@ function UIClock:OnPhaseChanged(phase)
     self._phase = phase
 end
 
-function UIClock:OnMoonPhaseChanged2(data)
-    if self._moonphase == data.moonphase and self._mooniswaxing == data.waxing then
+function UIClock:OnMoonPhaseChanged(moonphase)
+    if self._moonphase == moonphase then
         return
     end
 
-    self._moonphase = data.moonphase
-    self._mooniswaxing = data.waxing
+    self._moonphase = moonphase
 
     if self._phase == "night" then
         self:ShowMoon()

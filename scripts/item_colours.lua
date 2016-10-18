@@ -199,6 +199,7 @@ ITEM_COLOURS =
 	tophat_derby = "",
 	torch_rag = "",
 	torch_shadow = "",
+	torch_spooky = "",
 	treasurechest_poshprint = "",
 	wathgrithr_autumn = "",
 	wathgrithr_deerclops = "",

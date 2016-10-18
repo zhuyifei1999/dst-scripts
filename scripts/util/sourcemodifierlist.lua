@@ -10,9 +10,9 @@ SourceModifierList = Class(function(self, inst, base_value, fn)
 
 	-- Private members
     self._modifiers = {}
-    self._modifier = base_value or 1
+    self._modifier = base_value
     
-    self._base = base_value or 1
+    self._base = base_value
     self._fn = fn or SourceModifierList.multiply
 end)
 

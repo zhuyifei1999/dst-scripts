@@ -15,9 +15,8 @@ local survival_together = {
 		},		
 		ordered_story_setpieces = {
 			"Sculptures_1",
-			"Maxwell5",
 		},
-		numrandom_set_pieces = 4,
+		numrandom_set_pieces = 5,
 		random_set_pieces = 
 		{
 			"Sculptures_2",
@@ -37,6 +36,7 @@ local survival_together = {
 			"Maxwell2",
 			"Maxwell3",
 			"Maxwell4",
+			"Maxwell5",
 			"Maxwell6",
 			"Maxwell7",
 			"Warzone_1",
@@ -82,30 +82,23 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 
             cactus = "never",
         },
-		ordered_story_setpieces = {
-			"Sculptures_1",
-			"Maxwell5",
-		},
-		numrandom_set_pieces = 4,
+		numrandom_set_pieces = 5,
 		random_set_pieces = 
 		{
-			"Sculptures_2",
-			"Sculptures_3",
-			"Sculptures_4",
-			"Sculptures_5",
 			"Chessy_1",
 			"Chessy_2",
 			"Chessy_3",
 			"Chessy_4",
 			"Chessy_5",
 			"Chessy_6",
-			--"ChessSpot1",
-			--"ChessSpot2",
-			--"ChessSpot3",
+			"ChessSpot1",
+			"ChessSpot2",
+			"ChessSpot3",
 			"Maxwell1",
 			"Maxwell2",
 			"Maxwell3",
 			"Maxwell4",
+			"Maxwell5",
 			"Maxwell6",
 			"Maxwell7",
 			"Warzone_1",
@@ -132,9 +125,8 @@ AddLevel(LEVELTYPE.SURVIVAL, {
         },
 		ordered_story_setpieces = {
 			"Sculptures_1",
-			"Maxwell5",
 		},
-		numrandom_set_pieces = 4,
+		numrandom_set_pieces = 5,
 		random_set_pieces = 
 		{
 			"Sculptures_2",
@@ -155,6 +147,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 			"Maxwell2",
 			"Maxwell3",
 			"Maxwell4",
+			"Maxwell5",
 			"Maxwell6",
 			"Maxwell7",
 			"Warzone_1",
@@ -180,11 +173,10 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 
             rabbits = "rare",
         },
+		numrandom_set_pieces = 5,
 		ordered_story_setpieces = {
 			"Sculptures_1",
-			"Maxwell5",
 		},
-		numrandom_set_pieces = 4,
 		random_set_pieces = 
 		{
 			"Sculptures_2",
@@ -204,6 +196,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 			"Maxwell2",
 			"Maxwell3",
 			"Maxwell4",
+			"Maxwell5",
 			"Maxwell6",
 			"Maxwell7",
 			"Warzone_1",
@@ -223,11 +216,10 @@ AddLevel(LEVELTYPE.SURVIVAL, {
             start_location = "darkness",
             day = "onlynight",
         },
+		numrandom_set_pieces = 5,
 		ordered_story_setpieces = {
 			"Sculptures_1",
-			"Maxwell5",
 		},
-		numrandom_set_pieces = 4,
 		random_set_pieces = 
 		{
 			"Sculptures_2",
@@ -247,6 +239,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 			"Maxwell2",
 			"Maxwell3",
 			"Maxwell4",
+			"Maxwell5",
 			"Maxwell6",
 			"Maxwell7",
 			"Warzone_1",

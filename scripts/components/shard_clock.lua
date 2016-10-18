@@ -31,7 +31,6 @@ end
 local _cycles = net_ushortint(inst.GUID, "shard_clock._cycles", "clockdirty")
 local _phase = net_tinybyte(inst.GUID, "shard_clock._phase", "clockdirty")
 local _moonphase = net_tinybyte(inst.GUID, "shard_clock._moonphase", "clockdirty")
-local _mooniswaxing = net_bool(inst.GUID, "shard_clock._mooniswaxing", "clockdirty")
 local _totaltimeinphase = net_float(inst.GUID, "shard_clock._totaltimeinphase", "clockdirty")
 local _remainingtimeinphase = net_float(inst.GUID, "shard_clock._remainingtimeinphase", "clockdirty")
 
@@ -64,11 +63,6 @@ local OnClockUpdate = _ismastershard and function(src, data)
         dirty = true
     end
 
-    if _mooniswaxing:value() ~= data.mooniswaxing then
-        _mooniswaxing:set(data.mooniswaxing)
-        dirty = true
-    end
-
     if _totaltimeinphase:value() ~= data.totaltimeinphase then
         _totaltimeinphase:set(data.totaltimeinphase)
         dirty = true
@@ -87,7 +81,6 @@ local OnClockDirty = not _ismastershard and function()
         segs = {},
         cycles = _cycles:value(),
         moonphase = _moonphase:value(),
-        mooniswaxing = _mooniswaxing:value(),
         phase = _phase:value(),
         totaltimeinphase = _totaltimeinphase:value(),
         remainingtimeinphase = _remainingtimeinphase:value(),

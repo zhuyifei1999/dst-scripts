@@ -493,6 +493,7 @@ AddRoom("RuinedGuarden", {
         },
         countprefabs= {
             
+            mushtree = function () return 3 + math.random(3) end,
             flower_cave = function () return 5 + math.random(3) end,
             gravestone = function () return 4 + math.random(4) end,
             mound = function () return 4 + math.random(4) end

@@ -23,22 +23,6 @@ local function ontradeforgold(inst, item)
         local sp = math.random() * 4 + 2
         nug.Physics:SetVel(sp * math.cos(angle), math.random() * 2 + 8, sp * math.sin(angle))
     end
-    
-    if item.components.tradable.tradefor ~= nil then
-	    for _,v in pairs(item.components.tradable.tradefor) do
-			local item = SpawnPrefab(v)
-			if item ~= nil then
-				local pt = Vector3(inst.Transform:GetWorldPosition()) + Vector3(0, 4.5, 0)
-
-				item.Transform:SetPosition(pt:Get())
-				local down = TheCamera:GetDownVec()
-				local angle = math.atan2(down.z, down.x) + (math.random() * 60 - 30) * DEGREES
-				--local angle = (math.random() * 60 - 30 - TUNING.CAM_ROT - 90) / 180 * PI
-				local sp = math.random() * 4 + 2
-				item.Physics:SetVel(sp * math.cos(angle), math.random() * 2 + 8, sp * math.sin(angle))
-			end
-	    end
-    end
 end
 
 local function onplayhappysound(inst)

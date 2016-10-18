@@ -25,7 +25,7 @@ local IngredientUI = Class(Widget, function(self, atlas, image, quantity, on_han
     if quantity ~= nil then
         self.quant = self:AddChild(Text(SMALLNUMBERFONT, JapaneseOnPS4() and 30 or 24))
         self.quant:SetPosition(7, -32, 0)
-        if not IsCharacterIngredient(recipe_type) then
+        if not table.contains(CHARACTER_INGREDIENT, recipe_type) then
             local builder = owner ~= nil and owner.replica.builder or nil
             if builder ~= nil then
                 quantity = RoundBiasedUp(quantity * builder:IngredientMod())

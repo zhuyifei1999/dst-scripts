@@ -27,7 +27,6 @@ local Builder = Class(function(self, inst)
     self.inst = inst
 
     self.recipes = {}
-    self.station_recipes = {}
     self.accessible_tech_trees = deepcopy(TECH.NONE)
     self.inst:StartUpdatingComponent(self)
     self.current_prototyper = nil
@@ -135,10 +134,8 @@ function Builder:EvaluateTechTrees()
     local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, TUNING.RESEARCH_MACHINE_DIST, { "prototyper" }, self.exclude_tags)
 
     local old_accessible_tech_trees = deepcopy(self.accessible_tech_trees or TECH.NONE)
-    local old_station_recipes = self.station_recipes
     local old_prototyper = self.current_prototyper
     self.current_prototyper = nil
-    self.station_recipes = {}
 
     local prototyper_active = false
     for i, v in ipairs(ents) do
@@ -147,18 +144,6 @@ function Builder:EvaluateTechTrees()
                 --activate the first machine in the list. This will be the one you're closest to.
                 v.components.prototyper:TurnOn(self.inst)
                 self.accessible_tech_trees = v.components.prototyper:GetTechTrees()
-                
-                if v.components.craftingstation ~= nil then
-                    local recs = v.components.craftingstation:GetRecipes(self.inst)
-                    for _, recname in ipairs(recs) do
-						local recipe = GetValidRecipe(recname)
-                        if recipe ~= nil and recipe.nounlock then
-                            --only nounlock recipes can be unlocked via crafting station
-                            self.station_recipes[recname] = true
-						end
-                    end
-				end                    
-
                 prototyper_active = true
                 self.current_prototyper = v
             else
@@ -187,12 +172,28 @@ function Builder:EvaluateTechTrees()
         self.accessible_tech_trees.ANCIENT = self.ancient_bonus
         self.accessible_tech_trees.SHADOW = self.shadow_bonus
         self.accessible_tech_trees.CARTOGRAPHY = 0
-        self.accessible_tech_trees.SCULPTING = 0
     else
         self.accessible_tech_trees.SCIENCE = self.accessible_tech_trees.SCIENCE + self.science_bonus
         self.accessible_tech_trees.MAGIC = self.accessible_tech_trees.MAGIC + self.magic_bonus
         self.accessible_tech_trees.ANCIENT = self.accessible_tech_trees.ANCIENT + self.ancient_bonus
         self.accessible_tech_trees.SHADOW = self.accessible_tech_trees.SHADOW + self.shadow_bonus
+    end
+
+    local trees_changed = false
+
+    for k,v in pairs(old_accessible_tech_trees) do
+        if v ~= self.accessible_tech_trees[k] then 
+            trees_changed = true
+            break
+        end
+    end
+    if not trees_changed then
+        for k,v in pairs(self.accessible_tech_trees) do
+            if v ~= old_accessible_tech_trees[k] then 
+                trees_changed = true
+                break
+            end
+        end
     end
 
     if old_prototyper ~= nil and
@@ -202,43 +203,8 @@ function Builder:EvaluateTechTrees()
         old_prototyper.components.prototyper:TurnOff(self.inst)
     end
 
-    local trees_changed = false
-
-    for recname, _ in pairs(self.station_recipes) do
-        if old_station_recipes[recname] then
-            old_station_recipes[recname] = nil
-        else
-            self.inst.replica.builder:AddRecipe(recname)
-            trees_changed = true
-        end
-    end
-
-    if next(old_station_recipes) ~= nil then
-        for recname, _ in pairs(old_station_recipes) do
-            self.inst.replica.builder:RemoveRecipe(recname)
-        end
-		trees_changed = true
-    end
-
-    if not trees_changed then
-        for k, v in pairs(old_accessible_tech_trees) do
-            if v ~= self.accessible_tech_trees[k] then 
-                trees_changed = true
-                break
-            end
-        end
-        if not trees_changed then
-            for k, v in pairs(self.accessible_tech_trees) do
-                if v ~= old_accessible_tech_trees[k] then 
-                    trees_changed = true
-                    break
-                end
-            end
-        end
-    end
-
     if trees_changed then
-        self.inst:PushEvent("techtreechange", { level = self.accessible_tech_trees })
+        self.inst:PushEvent("techtreechange", {level = self.accessible_tech_trees})
         self.inst.replica.builder:SetTechTrees(self.accessible_tech_trees)
     end
 end
@@ -356,15 +322,7 @@ function Builder:HasCharacterIngredient(ingredient)
             return penalty + ingredient.amount <= TUNING.MAXIMUM_SANITY_PENALTY, 1 - penalty
         end
     end
-    return false, 0
-end
-
-function Builder:HasTechIngredient(ingredient)
-    if IsTechIngredient(ingredient.type) and ingredient.type:sub(-9) == "_material" then
-        local level = self.accessible_tech_trees[ingredient.type:sub(1, -10):upper()] or 0
-        return level >= ingredient.amount, level
-    end
-    return false, 0
+    return false
 end
 
 function Builder:MakeRecipe(recipe, pt, rot, skin, onsuccess)
@@ -488,15 +446,13 @@ function Builder:KnowsRecipe(recname)
                     recipe.level.MAGIC <= self.magic_bonus and
                     recipe.level.ANCIENT <= self.ancient_bonus and
                     recipe.level.SHADOW <= self.shadow_bonus and
-                    recipe.level.CARTOGRAPHY <= 0 and
-                    recipe.level.SCULPTING <= 0 or
+                    recipe.level.CARTOGRAPHY <= 0 or
                     self.freebuildmode
                 ) and (
                     recipe.builder_tag == nil or
                     self.inst:HasTag(recipe.builder_tag)
                 ) or
-                table.contains(self.recipes, recname) or
-                self.station_recipes[recname]
+                table.contains(self.recipes, recname)
             )
 end
 
@@ -513,11 +469,6 @@ function Builder:CanBuild(recname)
     end
     for i, v in ipairs(recipe.character_ingredients) do
         if not self:HasCharacterIngredient(v) then
-            return false
-        end
-    end
-    for i, v in ipairs(recipe.tech_ingredients) do
-        if not self:HasTechIngredient(v) then
             return false
         end
     end

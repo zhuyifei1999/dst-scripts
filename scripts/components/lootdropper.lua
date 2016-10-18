@@ -91,35 +91,6 @@ function LootDropper:PickRandomLoot()
     end
 end
 
-function LootDropper:GetRecipeLoot(recipe)
-	local percent = 1
-	
-	local loots = {}
-
-	if self.inst.components.finiteuses then
-		percent = self.inst.components.finiteuses:GetPercent()
-	end
-
-	for k,v in ipairs(recipe.ingredients) do
-		local amt = math.ceil( (v.amount * TUNING.HAMMER_LOOT_PERCENT) * percent)
-		if self.inst:HasTag("burnt") then 
-			amt = math.ceil( (v.amount * TUNING.BURNT_HAMMER_LOOT_PERCENT) * percent)
-		end
-		for n = 1, amt do
-			if v.deconstruct then
-				local recipeloot = self:GetRecipeLoot(AllRecipes[v.type])
-				for k,v in ipairs(recipeloot) do
-					table.insert(loots, v)
-				end
-			else
-				table.insert(loots, v.type)
-			end
-		end
-	end
-
-	return loots
-end
-
 function LootDropper:GenerateLoot()
     local loots = {}
 
@@ -178,12 +149,23 @@ function LootDropper:GenerateLoot()
 		end
 	end
 	
-
 	local recipe = AllRecipes[self.inst.prefab]
+
 	if recipe then
-		local recipeloot = self:GetRecipeLoot(recipe)
-		for k,v in ipairs(recipeloot) do
-			table.insert(loots, v)
+		local percent = 1
+
+		if self.inst.components.finiteuses then
+			percent = self.inst.components.finiteuses:GetPercent()
+		end
+
+		for k,v in ipairs(recipe.ingredients) do
+			local amt = math.ceil( (v.amount * TUNING.HAMMER_LOOT_PERCENT) * percent)
+			if self.inst:HasTag("burnt") then 
+				amt = math.ceil( (v.amount * TUNING.BURNT_HAMMER_LOOT_PERCENT) * percent)
+			end
+			for n = 1, amt do
+				table.insert(loots, v.type)
+			end
 		end
 	end
     
@@ -258,7 +240,6 @@ function LootDropper:SpawnLootPrefab(lootprefab, pt)
                 end
             end
 
-		-- here? so we can run a full drop loot?
             self:FlingItem(loot, pt)
 
             return loot
@@ -290,7 +271,6 @@ function LootDropper:DropLoot(pt)
     end
     for k, v in pairs(prefabs) do
         self:SpawnLootPrefab(v, pt)
-        
     end
 end
 

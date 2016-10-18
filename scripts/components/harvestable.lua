@@ -73,7 +73,7 @@ end
 
 
 function Harvestable:GetDebugString()
-    local str = string.format("%d "..tostring(self.product).." grown", self.produce)
+    local str = string.format("%d "..self.product.." grown", self.produce)
     if self.targettime then
         str = str.." ("..tostring(self.targettime - GetTime())..")"
     end

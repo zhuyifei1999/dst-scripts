@@ -10,8 +10,6 @@ require "behaviours/panic"
 require "behaviours/chattynode"
 require "behaviours/leash"
 
-local BrainCommon = require "brains/braincommon"
-
 local MIN_FOLLOW_DIST = 2
 local TARGET_FOLLOW_DIST = 5
 local MAX_FOLLOW_DIST = 9
@@ -274,7 +272,6 @@ function PigBrain:OnStart()
     local root =
         PriorityNode(
         {
-            BrainCommon.PanicWhenScared(self.inst, .25, "PIG_TALK_PANICBOSS"),
             WhileNode( function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted",
                 ChattyNode(self.inst, "PIG_TALK_PANICHAUNT",
                     Panic(self.inst))),
@@ -297,7 +294,7 @@ function PigBrain:OnStart()
             ChattyNode(self.inst, "PIG_TALK_ATTEMPT_TRADE",
                 FaceEntity(self.inst, GetTraderFn, KeepTraderFn)),
             day,
-            night,
+            night
         }, .5)
 
     self.bt = BT(self.inst, root)

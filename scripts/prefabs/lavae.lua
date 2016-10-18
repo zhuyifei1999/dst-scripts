@@ -67,18 +67,12 @@ local function OnNewTarget(inst, data)
     end
     if data.target ~= nil and data.target:HasTag("player") then
         inst:ListenForEvent("death", inst._ontargetdeath, data.target)
-    end
+        end
 end
 
 local function OnEntitySleep(inst)
     if inst.reset then
         inst:Remove()
-    end
-end
-
-local function OnTimerDone(inst, data)
-    if data.name == "selfdestruct" then
-        inst.components.health:Kill()
     end
 end
 
@@ -111,7 +105,7 @@ local function fn()
     inst.Light:Enable(true)
 
     inst.entity:SetPristine()
-
+    
     if not TheWorld.ismastersim then
         return inst
     end
@@ -146,10 +140,6 @@ local function fn()
     inst.components.combat:SetRetargetFunction(3, RetargetFn)
 
     inst.components.locomotor.walkspeed = 5.5
-
-    inst:AddComponent("timer")
-    inst.components.timer:StartTimer("selfdestruct", TUNING.LAVAE_LIFESPAN)
-    inst:ListenForEvent("timerdone", OnTimerDone)
 
     inst.LockTargetFn = LockTarget
 

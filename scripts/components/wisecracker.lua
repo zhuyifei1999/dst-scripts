@@ -133,10 +133,6 @@ local Wisecracker = Class(function(self, inst)
     inst:ListenForEvent("digdiseasing", function(inst)
         inst.components.talker:Say(GetString(inst, "ANNOUNCE_DIG_DISEASE_WARNING"))
     end)
-
-    inst:ListenForEvent("toadstoolwarning", function(inst, data)
-        inst.components.talker:Say(GetString(inst, data.escaped and "ANNOUNCE_TOADESCAPED" or "ANNOUNCE_TOADESCAPING"))
-    end)
 end)
 
 function Wisecracker:OnUpdate(dt)

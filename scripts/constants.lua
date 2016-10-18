@@ -450,7 +450,6 @@ TECH =
         ANCIENT = 0,
         SHADOW = 0,
         CARTOGRAPHY = 0,
-        SCULPTING = 0,
     },
 
     SCIENCE_ONE = { SCIENCE = 1 },
@@ -467,9 +466,6 @@ TECH =
     SHADOW_TWO = { SHADOW = 3 },
 
     CARTOGRAPHY_TWO = { CARTOGRAPHY = 2 },
-
-    SCULPTING_ONE = { SCULPTING = 1 },
-    SCULPTING_TWO = { SCULPTING = 2 },
 
     LOST = { MAGIC = 10, SCIENCE = 10, ANCIENT = 10 },
 }
@@ -650,8 +646,7 @@ RECIPETABS =
 
     --Crafting stations
     ANCIENT =       { str = "ANCIENT",      sort = 10,  icon = "tab_crafting_table.tex",    crafting_station = true },
-    CARTOGRAPHY =   { str = "CARTOGRAPHY",  sort = 10,  icon = "tab_cartography.tex",       crafting_station = true },
-    SCULPTING =     { str = "SCULPTING",    sort = 10,  icon = "tab_sculpt.tex",            crafting_station = true },
+    CARTOGRAPHY =   { str = "CARTOGRAPHY",  sort = 10,  icon = "tab_cartography.tex",    crafting_station = true },
 }
 
 CUSTOM_RECIPETABS =
@@ -675,7 +670,7 @@ RENDERPASS =
 	DEFAULT = 2,
 }
 
-NUM_TRINKETS = 31
+NUM_TRINKETS = 27
 
 SEASONS =
 {
@@ -871,7 +866,6 @@ MATERIALS =
     MOONROCK = "moonrock",
     ICE = "ice",
     SCULPTURE = "sculpture",
-    FOSSIL = "fossil",
 }
 
 UPGRADETYPES =
@@ -992,13 +986,6 @@ CHARACTER_INGREDIENT =
 
 --Character ingredient amounts must be multiples of 5
 CHARACTER_INGREDIENT_SEG = 5
-
-TECH_INGREDIENT =
-{
-    --NOTE: Value is used as key for NAME string and inventory image
-    --NOTE: Must be name of the tech + "_material"
-    SCULPTING = "sculpting_material",
-}
 
 -- IngredientMod must be one of the following values
 INGREDIENT_MOD_LOOKUP =

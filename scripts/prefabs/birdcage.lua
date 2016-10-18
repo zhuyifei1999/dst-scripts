@@ -6,8 +6,7 @@ local assets =
 
     Asset("ANIM", "anim/crow_build.zip"),
     Asset("ANIM", "anim/robin_build.zip"),
-    Asset("ANIM", "anim/robin_winter_build.zip"),
-    Asset("ANIM", "anim/canary_build.zip"),
+    Asset("ANIM", "anim/robin_winter_build.zip"),   
 }
 
 local prefabs =
@@ -16,7 +15,6 @@ local prefabs =
     "crow",
     "robin",
     "robin_winter",
-    "canary",
     "guano",
 }
 
@@ -35,7 +33,6 @@ local CAGE_STATES =
     SKELETON = "_skeleton",
     EMPTY = "_empty",
     FULL = "_bird",
-    SICK = "_sick",
 }
 
 local function SetBirdType(inst, bird)
@@ -47,14 +44,16 @@ local function SetCageState(inst, state)
     inst.CAGE_STATE = state
 end
 
---Only use for hit and idle anims
-local function PlayStateAnim(inst, anim, loop)
-    inst.AnimState:PlayAnimation(anim..inst.CAGE_STATE, loop)
+local function GetCageState(inst)
+    return inst.CAGE_STATE
 end
 
---Only use for hit and idle anims
-local function PushStateAnim(inst, anim, loop)
-    inst.AnimState:PushAnimation(anim..inst.CAGE_STATE, loop)
+local function PlayStateAnim(inst, anim, push) --Only use for hit and idle anims
+    if push then
+        inst.AnimState:PushAnimation(anim..GetCageState(inst), true)
+    else
+        inst.AnimState:PlayAnimation(anim..GetCageState(inst))
+    end
 end
 
 local function GetBird(inst)
@@ -102,7 +101,7 @@ end
 
 local function ShouldAcceptItem(inst, item)
     local seed_name = string.lower(item.prefab .. "_seeds")
-
+    
     --Item should be:
     --Edible
         --Seeds
@@ -138,13 +137,13 @@ local function OnGetItem(inst, giver, item)
             or Prefabs[string.lower(item.prefab .. "_seeds")] ~= nil
         ) then
         --If the item is edible...
-        --Play some animations (peck, peck, peck, hop, idle)
+            --Play some animations (peck, peck, peck, hop, idle)
         inst.AnimState:PlayAnimation("peck")
         inst.AnimState:PushAnimation("peck")
         inst.AnimState:PushAnimation("peck")
         inst.AnimState:PushAnimation("hop")
-        PushStateAnim(inst, "idle", true)
-        --Digest Food in 60 frames.
+        inst:PlayStateAnim("idle", true)
+            --Digest Food in 60 frames.
         inst:DoTaskInTime(60 * FRAMES, DigestFood, item)
     end
 end
@@ -152,13 +151,9 @@ end
 local function OnRefuseItem(inst, item)
     --Play animation (flap, idle)
     inst.AnimState:PlayAnimation("flap")
-    PushStateAnim(inst, "idle", true)
+    inst:PlayStateAnim("idle", true)
     --Play sound (wingflap in cage)
     inst.SoundEmitter:PlaySound("dontstarve/birds/wingflap_cage")
-end
-
-local function DoPlaySound(inst, soundname)
-    inst.SoundEmitter:PlaySound(soundname)
 end
 
 local function DoAnimationTask(inst)
@@ -172,15 +167,15 @@ local function DoAnimationTask(inst)
         if rand < 0.75 then
             inst.AnimState:PlayAnimation("idle_bird3")
             --Flaps - 5, 15, 28, 99
-            inst:DoTaskInTime(5 * FRAMES, DoPlaySound, "dontstarve/birds/wingflap_cage")
-            inst:DoTaskInTime(15 * FRAMES, DoPlaySound, "dontstarve/birds/wingflap_cage")
-            inst:DoTaskInTime(28 * FRAMES, DoPlaySound, "dontstarve/birds/wingflap_cage")
-            inst:DoTaskInTime(99 * FRAMES, DoPlaySound, "dontstarve/birds/wingflap_cage")
+            inst:DoTaskInTime(5 * FRAMES, function() inst.SoundEmitter:PlaySound("dontstarve/birds/wingflap_cage") end)
+            inst:DoTaskInTime(15 * FRAMES, function() inst.SoundEmitter:PlaySound("dontstarve/birds/wingflap_cage") end)
+            inst:DoTaskInTime(28 * FRAMES, function() inst.SoundEmitter:PlaySound("dontstarve/birds/wingflap_cage") end)
+            inst:DoTaskInTime(99 * FRAMES, function() inst.SoundEmitter:PlaySound("dontstarve/birds/wingflap_cage") end)
             --Chirps - 4, 27, 42, 100
-            inst:DoTaskInTime(4 * FRAMES, DoPlaySound, bird.sounds.chirp)
-            inst:DoTaskInTime(27 * FRAMES, DoPlaySound, bird.sounds.chirp)
-            inst:DoTaskInTime(42 * FRAMES, DoPlaySound, bird.sounds.chirp)
-            inst:DoTaskInTime(100 * FRAMES, DoPlaySound, bird.sounds.chirp)
+            inst:DoTaskInTime(4 * FRAMES, function() inst.SoundEmitter:PlaySound(bird.sounds.chirp) end)
+            inst:DoTaskInTime(27 * FRAMES, function() inst.SoundEmitter:PlaySound(bird.sounds.chirp) end)
+            inst:DoTaskInTime(42 * FRAMES, function() inst.SoundEmitter:PlaySound(bird.sounds.chirp) end)
+            inst:DoTaskInTime(100 * FRAMES, function() inst.SoundEmitter:PlaySound(bird.sounds.chirp) end)
         end
     elseif hunger < 0.66 then
     --If you're hungry...
@@ -188,9 +183,9 @@ local function DoAnimationTask(inst)
         if rand < 0.5 then
             inst.AnimState:PlayAnimation("idle_bird2")
             --26, 81, 96
-            inst:DoTaskInTime(26 * FRAMES, DoPlaySound, bird.sounds.chirp)
-            inst:DoTaskInTime(81 * FRAMES, DoPlaySound, bird.sounds.chirp)
-            inst:DoTaskInTime(96 * FRAMES, DoPlaySound, bird.sounds.chirp)
+            inst:DoTaskInTime(26 * FRAMES, function() inst.SoundEmitter:PlaySound(bird.sounds.chirp) end)
+            inst:DoTaskInTime(81 * FRAMES, function() inst.SoundEmitter:PlaySound(bird.sounds.chirp) end)
+            inst:DoTaskInTime(96 * FRAMES, function() inst.SoundEmitter:PlaySound(bird.sounds.chirp) end)
         end
     else
     --If you're content...
@@ -208,13 +203,10 @@ local function DoAnimationTask(inst)
         end
     end
     --End with pushing "idle" animation
-    PushStateAnim(inst, "idle", true)
+    inst:PlayStateAnim("idle", true)
 end
 
 local function StartAnimationTask(inst)
-    if inst.AnimationTask ~= nil then
-        inst.AnimationTask:Cancel()
-    end
     inst.AnimationTask = inst:DoPeriodicTask(6, DoAnimationTask)
 end
 
@@ -248,7 +240,7 @@ end
 local function WakeUp(inst)
     if inst.components.occupiable:IsOccupied() then
         inst.AnimState:PlayAnimation("sleep_pst")
-        PushStateAnim(inst, "idle", true)
+        inst:PlayStateAnim("idle", true)
         StartAnimationTask(inst)
     end
 end
@@ -270,7 +262,7 @@ local function OnOccupied(inst, bird)
     inst.chirpsound = bird.sounds and bird.sounds.chirp
     inst.AnimState:PlayAnimation("flap")
     inst.SoundEmitter:PlaySound("dontstarve/birds/wingflap_cage")
-    PushStateAnim(inst, "idle", true)
+    inst:PlayStateAnim("idle", true)
 
     --Start the idling task
     StartAnimationTask(inst)
@@ -286,7 +278,7 @@ local function OnEmptied(inst, bird)
     inst.components.trader:Disable()
 
     --Refresh anim state.
-    PlayStateAnim(inst, "idle", false)
+    inst:PlayStateAnim("idle")
 
     --Stop the idling task
     StopAnimationTask(inst)
@@ -308,26 +300,25 @@ end
 
 local function OnWorked(inst, worker)
     --If there is a bird play the bird animations/ sound
-    PlayStateAnim(inst, "hit", false)
+    inst:PlayStateAnim("hit")
 
     if inst.components.occupiable and inst.components.occupiable:IsOccupied() then
         inst.AnimState:PushAnimation("flap")
         inst.SoundEmitter:PlaySound("dontstarve/birds/wingflap_cage")
     end
 
-    PushStateAnim(inst, "idle", true)
+    inst:PlayStateAnim("idle", true)
 end
 
 local function OnBuilt(inst)
     inst.AnimState:PlayAnimation("place")
-    PushStateAnim(inst, "idle", false)
+    inst:PlayStateAnim("idle", true)
     inst.SoundEmitter:PlaySound("dontstarve/common/birdcage_craft")
 end
 
 local function OnBirdRot(inst)
-    StopAnimationTask(inst)
     SetCageState(inst, CAGE_STATES.SKELETON)
-    PlayStateAnim(inst, "idle", false)
+    inst:PlayStateAnim("idle")
 
     inst:DoTaskInTime(0, function()
         local item = inst.components.inventory:GetItemInSlot(1)
@@ -338,51 +329,15 @@ local function OnBirdRot(inst)
 end
 
 local function OnBirdStarve(inst, bird)
-    StopAnimationTask(inst)
     SetCageState(inst, CAGE_STATES.DEAD)
-
+    
     inst.AnimState:PlayAnimation("death")
-    PushStateAnim(inst, "idle", false)
+    inst:PlayStateAnim("idle", true)
 
     --Put loot on "shelf"
     local loot = SpawnPrefab("smallmeat")
     inst.components.inventory:GiveItem(loot)
     inst.components.shelf:PutItemOnShelf(loot)
-end
-
-local function DoSickAnimationTask(inst)
-    inst.AnimState:PlayAnimation(math.random() < .5 and "idle_sick2" or "idle_sick3")
-    inst:DoTaskInTime(11 * FRAMES, DoPlaySound, "dontstarve/creatures/together/canary/cough")
-    PushStateAnim(inst, "idle", false)
-    inst.AnimationTask = inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() + math.random() * 2, DoSickAnimationTask)
-end
-
-local function StartSickAnimationTask(inst)
-    if inst.AnimationTask ~= nil then
-        inst.AnimationTask:Cancel()
-    end
-    inst.AnimationTask = inst:DoTaskInTime(math.random() * 2, DoSickAnimationTask)
-end
-
-local function OnBirdPoisoned(inst, data)
-    local pct = data.bird.components.perishable ~= nil and data.bird.components.perishable:GetPercent() or 1
-    data.bird:Remove()
-
-    SetCageState(inst, CAGE_STATES.SICK)
-
-    inst.AnimState:PlayAnimation("fall_sick")
-    PushStateAnim(inst, "idle", false)
-
-    local loot = SpawnPrefab(data.poisoned_prefab)
-    if loot ~= nil then
-        if loot.components.perishable ~= nil then
-            loot.components.perishable:SetPercent(loot.components.perishable:GetPercent() * pct)
-        end
-        inst.components.inventory:GiveItem(loot)
-        inst.components.shelf:PutItemOnShelf(loot)
-    end
-
-    StartSickAnimationTask(inst)
 end
 
 local function OnGetShelfItem(inst, item)
@@ -428,12 +383,7 @@ local function OnLoad(inst, data)
     if data and data.bird_type then
         SetBirdType(inst, data.bird_type)
     end
-    if inst.CAGE_STATE == CAGE_STATES.SICK then
-        PlayStateAnim(inst, "idle", false)
-        StartSickAnimationTask(inst)
-    else
-        PlayStateAnim(inst, "idle", true)
-    end
+    inst:PlayStateAnim("idle")
 end
 
 local function OnLoadPostPass(inst, ents, data)
@@ -461,7 +411,7 @@ local function GetStatus(inst)
             return "OCCUPIED"
         end
 
-    elseif inst.CAGE_STATE == CAGE_STATES.DEAD or inst.CAGE_STATE == CAGE_STATES.SICK then
+    elseif inst.CAGE_STATE == CAGE_STATES.DEAD then
         return "DEAD"
     elseif inst.CAGE_STATE == CAGE_STATES.SKELETON then
         return "SKELETON"
@@ -538,10 +488,7 @@ local function fn()
     inst:ListenForEvent("gotosleep", GoToSleep)
     inst:ListenForEvent("onwakeup", WakeUp)
 
-    if TheWorld.components.toadstoolspawner ~= nil then
-        inst:ListenForEvent("birdpoisoned", OnBirdPoisoned)
-    end
-
+    inst.PlayStateAnim = PlayStateAnim
     inst.CAGE_STATE = nil
     SetCageState(inst, CAGE_STATES.EMPTY)
 
