@@ -66,6 +66,11 @@ return {
             NOTGEM = "I don't think that will work there...",
             WRONGGEM = "I got it wrong... again...",
             NOTSTAFF = "That's not the right thing...",
+            MUSHROOMFARM_NEEDSSHROOM = "It doesn't need that. It needs a mushroom.",
+            MUSHROOMFARM_NEEDSLOG = "It doesn't need that. It needs a magic log.",
+            SLOTFULL = "There's no room...",
+            DUPLICATE = "Oh... my information's useless...",
+            NOTSCULPTABLE = "I think that's... wrong...",
         },
         GIVETOPLAYER = 
         {
@@ -145,6 +150,9 @@ return {
 	ANNOUNCE_ACCOMPLISHMENT_DONE = "This will be forgotten too, some day.",
 	ANNOUNCE_INSUFFICIENTFERTILIZER = "It could use a bit more.",
 	ANNOUNCE_LIGHTNING_DAMAGE_AVOIDED = "So close to death, yet so far.",
+	ANNOUNCE_TOADESCAPING = "I hope it doesn't try to escape...",
+	ANNOUNCE_TOADESCAPED = "It's gone. The earth swallowed it whole...",
+
 	ANNOUNCE_BEES = "Bees! Maybe I'm allergic!",
 	ANNOUNCE_DEERCLOPS = "That could be bad.",
 	ANNOUNCE_FREEDOM = "Freedom. Great.",
@@ -320,13 +328,13 @@ return {
     	},
 		WEBBERSKULL = "He's better this way.",
 
-		LAVA_POND_ROCK = "As cold and hard as my heart...",
-		LAVA_POND_ROCK2 = "As cold and hard as my heart...",
-		LAVA_POND_ROCK3 = "As cold and hard as my heart...",
-		LAVA_POND_ROCK4 = "As cold and hard as my heart...",
-		LAVA_POND_ROCK5 = "As cold and hard as my heart...",
-		LAVA_POND_ROCK6 = "As cold and hard as my heart...",
-		LAVA_POND_ROCK7 = "As cold and hard as my heart...",
+		LAVA_POND_ROCK = "It's... a rock... Sigh.",
+		LAVA_POND_ROCK2 = "It's... a rock... Sigh.",
+		LAVA_POND_ROCK3 = "It's... a rock... Sigh.",
+		LAVA_POND_ROCK4 = "It's... a rock... Sigh.",
+		LAVA_POND_ROCK5 = "It's... a rock... Sigh.",
+		LAVA_POND_ROCK6 = "It's... a rock... Sigh.",
+		LAVA_POND_ROCK7 = "It's... a rock... Sigh.",
 
 		MOLE =
 		{
@@ -625,6 +633,16 @@ return {
 			SOMEHONEY = "Toil on.",
 			BURNT = "Burnt honey.",
 		},
+		MUSHROOM_FARM =
+		{
+			STUFFED = "Completely teeming with life...",
+			LOTS = "It thrives... against all odds...",
+			SOME = "The beginnings of life...",
+			EMPTY = "Emptiness. The natural state of all things.", -- tell the player to put a mushroom or spore into the farm to get things started
+			ROTTEN = "Nothing escapes the pull of decay.", -- tell the player to put a log into the farm to restore it
+			BURNT = "It is no more.",
+			SNOWCOVERED = "A frigid cold bites at its heart.",
+		},
 		LIVINGTREE = "Can it never die?",
 		ICESTAFF = "A staff to freeze.",
 		WORMLIGHT = "There's a slight humming coming from it.",
@@ -655,6 +673,15 @@ return {
             BROKEN = "It's been ravaged by time.",
             STAFFED = "Perhaps it thirsts for a sacrifice. Where's Webber...",
             WRONGSTAFF = "That doesn't look right...",
+        },
+        MOONDIAL = 
+        {
+			GENERIC = "Does it reflect from the other side too, Abigail?",
+			NIGHT_NEW = "A new moon looms above us.",
+			NIGHT_WAX = "The moon waxes before us.",
+			NIGHT_FULL = "A full moon looms overhead. Watchful.",
+			NIGHT_WANE = "The moon is on the wane.",
+			CAVE = "Caves. The moon's one weakness.",
         },
 
 		THULECITE = "Its presence marks the edge of the unknown.",
@@ -731,69 +758,102 @@ return {
 		CAVE_BANANA_BURNT = "The death and suffering never ends.",
 		ROCKY = "What terrible sights they have seen.",
 
-		BLUEAMULET = "A familiar, chilling embrace.",
-		PURPLEAMULET = "It's oozing.",
-		TELESTAFF = "We could escape if it were more powerful.",
-		MONKEY = "Living without the burden of intelligence must be nice.",
-		MONKEYBARREL = "It's filthy.",
-		MONSTERLASAGNA = "Cooked evil is still evil. Even in lasagna.",
-		HOUNDSTOOTH= "Pulled out by the root.",
-		ARMORSNURTLESHELL= "A suit to hide from one's problems.",
-		BAT= "A creature of the night.",
-		BATBAT = "An enchanted weapon. How exciting!",
-		BATWING= "If only I could fly away.",
-		BATWING_COOKED= "They once held such great potential.",
-        BATCAVE= "They're just lurking in there...",
-		BEDROLL_FURRY= "For veiling oneself in the fuzzy skins of the fallen.",
-		BUNNYMAN= "What tormented inner lives they must have.",
-		FLOWER_CAVE= "It looks fragile.",
-		FLOWER_CAVE_DOUBLE= "It looks fragile.",
-		FLOWER_CAVE_TRIPLE= "It looks fragile.",
-		GUANO= "The inevitable byproduct of life.",
-		LANTERN= "Light the way, darkly.",
-		LIGHTBULB= "It's slowly burning out.",
-		MANRABBIT_TAIL= "It contains his fuzzy wuzzy essence.",
-		MUSHTREE_TALL=
-		{
+        BLUEAMULET = "A familiar, chilling embrace.",
+        PURPLEAMULET = "It's oozing.",
+        TELESTAFF = "We could escape if it were more powerful.",
+        MONKEY = "Living without the burden of intelligence must be nice.",
+        MONKEYBARREL = "It's filthy.",
+        MONSTERLASAGNA = "Cooked evil is still evil. Even in lasagna.",
+        HOUNDSTOOTH = "Pulled out by the root.",
+        ARMORSNURTLESHELL = "A suit to hide from one's problems.",
+        BAT = "A creature of the night.",
+        BATBAT = "An enchanted weapon. How exciting!",
+        BATWING = "If only I could fly away.",
+        BATWING_COOKED = "They once held such great potential.",
+        BATCAVE = "They're just lurking in there...",
+        BEDROLL_FURRY = "For veiling oneself in the fuzzy skins of the fallen.",
+        BUNNYMAN = "What tormented inner lives they must have.",
+        FLOWER_CAVE = "It looks fragile.",
+        FLOWER_CAVE_DOUBLE = "It looks fragile.",
+        FLOWER_CAVE_TRIPLE = "It looks fragile.",
+        GUANO = "The inevitable byproduct of life.",
+        LANTERN = "Light the way, darkly.",
+        LIGHTBULB = "It's slowly burning out.",
+        MANRABBIT_TAIL = "It contains his fuzzy wuzzy essence.",
+        MUSHROOMHAT = "If I'm lucky, it'll be poisonous.",
+        MUSHROOM_LIGHT2 =
+        {
+            ON = "Such a sickly fungal glow...",
+            OFF = "Let's turn it red as my heart's blood...",
+            BURNT = "Nothing good may last.",
+        },
+        MUSHROOM_LIGHT =
+        {
+            ON = "Abigail would have thought this was... pretty...",
+            OFF = "Oh look... A mushroom...",
+            BURNT = "Life goes on.",
+        },
+        MUSHROOMBOMB = "Death in mushroom form.",
+        SHROOM_SKIN = "A reminder of the death we wrought.",
+        TOADSTOOL_CAP =
+        {
+            EMPTY = "Just like the one in my heart.",
+            INGROUND = "Something has filled the void. In the ground, I mean.",
+            GENERIC = "Look how whimsical it is... We must kill it.",
+        },
+        TOADSTOOL =
+        {
+            GENERIC = "Just swallow us whole and end our misery.",
+            RAGE = "I think I'll be reunited with Abigail soon.",
+        },
+        MUSHROOMSPROUT =
+        {
+            GENERIC = "A death cap, surely.",
+            BURNT = "Death has released it.",
+        },
+        MUSHTREE_TALL =
+        {
             GENERIC = "These are some strange trees.",
             BLOOM = "It's trying so hard. Why?",
         },
-		MUSHTREE_MEDIUM={
+        MUSHTREE_MEDIUM =
+        {
             GENERIC = "It looks like a rotting hat.",
             BLOOM = "All its efforts fall on rocky soil.",
         },
-		MUSHTREE_SMALL={
+        MUSHTREE_SMALL =
+        {
             GENERIC = "Do little gnomes live in these?",
             BLOOM = "It has a glowing presence.",
         },
         MUSHTREE_TALL_WEBBED = "This one is frail and scorned. Like a friend.",
         SPORE_TALL = "Be free, little one!",
-        SPORE_MEDIUM = "Be free, little one!",
-        SPORE_SMALL = "Be free, little one!",
+        SPORE_MEDIUM = "Its life is short, but beautiful.",
+        SPORE_SMALL = "It has no concept of time, or loss.",
         SPORE_TALL_INV = "So many have perished. But this one is safe.",
         SPORE_MEDIUM_INV = "So many have perished. But this one is safe.",
         SPORE_SMALL_INV = "So many have perished. But this one is safe.",
-		SLURTLE="It is mindlessly chasing after rocks.",
-		SLURTLE_SHELLPIECES="Pieces of broken slurtle dreams.",
-		SLURTLEHAT= "It certainly didn't help the original owner.",
-		SLURTLEHOLE="The slurtles pop out when they outgrow it.",
-		SLURTLESLIME="It shimmers with slimy anticipation.",
-		SNURTLE="That one has a larger shell.",
-		SPIDER_HIDER="A cowardly spider.",
-		DIVININGRODSTART = "I could use that.",
-		SPIDER_SPITTER="It's chewing on something.",
-		TREASURECHEST_TRAP = "Every once in awhile, things go my way.",
-		BEEMINE_MAXWELL = "The furious creatures appreciate their freedom in retrospect.",
-		SPIDERHOLE="It is infested.",
-		SPIDERHOLE_ROCK ="It is infested.",
-		STALAGMITE="The earth gives up its bounty.",
-		STALAGMITE_FULL="The earth gives up its bounty.",
-		STALAGMITE_LOW="The earth gives up its bounty.",
-		STALAGMITE_MED="The earth gives up its bounty.",
-		STALAGMITE_TALL="The earth reaches up.",
-		STALAGMITE_TALL_FULL="The earth reaches up.",
-		STALAGMITE_TALL_LOW="The earth reaches up.",
-		STALAGMITE_TALL_MED="The earth reaches up.",
+        SLURTLE = "It is mindlessly chasing after rocks.",
+        SLURTLE_SHELLPIECES = "Pieces of broken slurtle dreams.",
+        SLURTLEHAT = "It certainly didn't help the original owner.",
+        SLURTLEHOLE ="The slurtles pop out when they outgrow it.",
+        SLURTLESLIME ="It shimmers with slimy anticipation.",
+        SNURTLE = "That one has a larger shell.",
+        SPIDER_HIDER = "A cowardly spider.",
+        DIVININGRODSTART = "I could use that.",
+        SPIDER_SPITTER = "It's chewing on something.",
+        TREASURECHEST_TRAP = "Every once in awhile, things go my way.",
+        BEEMINE_MAXWELL = "The furious creatures appreciate their freedom in retrospect.",
+        SPIDERHOLE = "It is infested.",
+        SPIDERHOLE_ROCK = "It is infested.",
+        STALAGMITE = "The earth gives up its bounty.",
+        STALAGMITE_FULL = "The earth gives up its bounty.",
+        STALAGMITE_LOW = "The earth gives up its bounty.",
+        STALAGMITE_MED = "The earth gives up its bounty.",
+        STALAGMITE_TALL = "The earth reaches up.",
+        STALAGMITE_TALL_FULL = "The earth reaches up.",
+        STALAGMITE_TALL_LOW = "The earth reaches up.",
+        STALAGMITE_TALL_MED = "The earth reaches up.",
 
 		TURF_CARPETFLOOR = "Some ground.",
 		TURF_CHECKERFLOOR = "Some ground.",
@@ -924,9 +984,15 @@ return {
 		BLOWDART_SLEEP = "Not the big sleep, just a temporary one.",
 		BLOWDART_PIPE = "Blow in one end, pain comes out the other.",
 		BLOWDART_FIRE = "Shall we set the world on fire?",
+		BLOWDART_YELLOW = "Airborne lightning and death.",
 		BLUEGEM = "Blue like... er... a sad bird?",
-		BLUEPRINT = "Whoever drew this is probably dead.",
-		BELL_BLUEPRINT = "Whoever drew this is probably dead.",
+		BLUEPRINT =
+		{ 
+            COMMON = "Whoever drew this is probably dead.",
+            RARE = "I'm surprised we didn't die trying to get this.",
+        },
+        SKETCH = "I think we could make what's drawn here...",
+		--BELL_BLUEPRINT = "Whoever drew this is probably six feet under.",
 		BLUE_CAP = "A fungus to preserve the monotony.",
 		BLUE_CAP_COOKED = "All is malleable.",
 		BLUE_MUSHROOM =
@@ -969,6 +1035,43 @@ return {
 		},
 		CAVE_FERN = "A touch of color in the darkness.",
 		CHARCOAL = "Cold, dead and black, just like my heart.",
+
+		CHESSPIECE_PAWN = 
+        {
+			GENERIC = "We are all but pawns in this game called \"life\".",
+		},
+        CHESSPIECE_ROOK = 
+        {
+			GENERIC = "A mere minion to something greater.",
+			STRUGGLE = "They're here.",
+		},
+        CHESSPIECE_KNIGHT = 
+        {
+			GENERIC = "Oh, if I could ride away into the night.",
+			STRUGGLE = "They're here.",
+		},
+        CHESSPIECE_BISHOP = 
+        {
+			GENERIC = "A piece, constrained to the board.",
+			STRUGGLE = "They're here.",
+		},
+        CHESSPIECE_MUSE = 
+        {
+			GENERIC = "She holds the true power, here.",
+			--STRUGGLE = "Something wicked this way comes.",
+		},
+        CHESSPIECE_FORMAL = 
+        {
+			GENERIC = "Alas, the king is but a figurehead, at best.",
+		},
+		CHESSPIECE_HORNUCOPIA = 
+        {
+			GENERIC = "A cold mockery.",
+		},
+        CHESSPIECE_PIPE = 
+        {
+			GENERIC = "A bubble, frozen in time, can never pop.",
+		},
         CHESSJUNK1 = "Cold, dead artificial life.",
         CHESSJUNK2 = "Cold, dead artificial life.",
         CHESSJUNK3 = "Cold, dead artificial life.",
@@ -984,6 +1087,12 @@ return {
 		CORN = "I could make a corny joke, but I'll refrain.",
 		CORN_COOKED = "This corn couldn't handle the heat.",
 		CORN_SEEDS = "The seed of life, so tiny in my hand.",
+		CANARY =
+		{
+			GENERIC = "Such a cheery yellow... I can't stand it.",
+			HELD = "You're at my mercy, bird.",
+		},
+		CANARY_POISONED = "Pestilence and death will soon claim you.",
 		CROW =
 		{
 			GENERIC = "Take thy beak from out my heart!",
@@ -1015,6 +1124,13 @@ return {
 			UNLOCKED = "What mysteries will be revealed!",
 		},
 		DRAGONFLY = "It's burning on the inside.",
+		DRAGONFLYFURNACE = 
+		{
+		    HAMMERED = "Pathetic.",
+			GENERIC = "Its teeth do not even gnash.", --no gems
+			NORMAL = "Burns hot... but not bright...", --one gem
+			HIGH = "No need to lean in and check if it's hot. I can feel it from here.", --two gems
+		},
 
 		HUTCH = "He is blissfully ignorant.",
         HUTCH_FISHBOWL =
@@ -1090,6 +1206,7 @@ return {
 		},
 		EYEPLANT = "They follow their master's every wish.",
 		FEATHERHAT = "Ca-caw!",
+		FEATHER_CANARY = "A canary feather, golden as the gilded cage.",
 		FEATHER_CROW = "A crow feather, black like eternal darkness.",
 		FEATHER_ROBIN = "A redbird feather, red like blood.",
 		FEATHER_ROBIN_WINTER = "A snowbird feather, white as the light at the end of the tunnel.",
@@ -1118,6 +1235,13 @@ return {
 		FLOWER_EVIL = "At least they're better than the other flowers.",
 		FOLIAGE = "Lead me to the Aarnivalkea.",
 		FOOTBALLHAT = "A dead thing for me to wear. Goody.",
+		FOSSIL_PIECE = "It is death, preserved.",
+        FOSSIL_STALKER =
+        {
+			GENERIC = "We must find more pieces.",
+			FUNNY = "Death has a sense of humor.",
+			COMPLETE = "What horrors have we resurrected here today?",
+        },
 		FROG =
 		{
 			DEAD = "Life is small and short.",
@@ -1401,6 +1525,19 @@ return {
 			DISEASED = "It's not long for this world...",
 			DISEASING = "It is on the precipice...",
 		},
+		SCARECROW = 
+   		{
+			GENERIC = "Who would want to scare crows away?",
+			BURNING = "Antagonizing crows is always bad luck.",
+			BURNT = "Now the crows will be at peace.",
+   		},
+   		SCULPTINGTABLE=
+        {
+            EMPTY = "That looks... f-fun...",
+            BLOCK = "Abigail... You be Death, I'll be the Sculptor...",
+            SCULPTURE = "Cleft from the stone.",
+            BURNT = "...I can't be disappointed... If I expect nothing...",
+        },
 		SCULPTURE_KNIGHTHEAD = "Off with his head! Heehee.",
 		SCULPTURE_KNIGHTBODY = 
 		{
@@ -1482,7 +1619,6 @@ return {
             GENERIC = "Cold, hard stone...",
             TYPE1 = "Each of us wear many masks...",
             TYPE2 = "A chilling thought... what if nothing's beneath the mask?",
-            --TYPE3 = "",
         },
 		STATUEHARP = "Maybe these statues will keep me company.",
 		STATUEMAXWELL = "Did it go as you planned?",
@@ -1565,6 +1701,10 @@ return {
         TRINKET_25 = "It smells of decay and death.",
 		TRINKET_26 = "That potato is as hollow as I am.",
 		TRINKET_27 = "Now at least the wardrobe can be organized.",
+		TRINKET_28 = "A horse! A horse! My castle for a horse!",
+        TRINKET_29 = "A horse! A horse! My castle for a horse!",
+        TRINKET_30 = "I'd rather have the castle...",
+        TRINKET_31 = "I'd rather have the castle...",
 
 		TRUNKVEST_SUMMER = "Skin to wear over your skin.",
 		TRUNKVEST_WINTER = "It may warm the body, but what of the spirit?",
@@ -1616,6 +1756,7 @@ return {
         WHIP = "It only provides the illusion of control.",
 		WINTERHAT = "It helps stave off the encroaching cold.",
 		REVIVER = "Choices matter.",
+		SHADOWHEART = "It beats with a sorrow to span the skies and plumb the darkest seas.",
         LIFEINJECTOR = "We were not meant to cheat death.",
 		WORMHOLE =
 		{

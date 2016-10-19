@@ -390,7 +390,7 @@ t = {
             end,
         },
         {
-            version = 4,
+            version = 4, -- ANR:A Little Fixer Upper
             fn = function(savedata)
                 if savedata == nil then
                     return
@@ -402,7 +402,55 @@ t = {
 					savedata.map.persistdata.retrofitforestmap_anr.retrofit_part1 = true
 				end
             end,
-        }
+        },
+        {
+            version = 4.1, -- ANR:Warts and All
+            fn = function(savedata)
+                if savedata == nil then
+                    return
+                end
+				if savedata.map ~= nil and savedata.map.prefab == "cave" and savedata.map.persistdata ~= nil then
+                    if savedata.map.persistdata.retrofitcavemap_anr == nil then
+						savedata.map.persistdata.retrofitcavemap_anr = {}
+					end
+					savedata.map.persistdata.retrofitcavemap_anr.retrofit_warts = true
+				end
+            end,
+        },
+        {
+            version = 4.2, -- ANR:Arts and Crafts
+            fn = function(savedata)
+                if savedata == nil then
+                    return
+                end
+				if savedata.map ~= nil and savedata.map.prefab == "cave" and savedata.map.persistdata ~= nil then
+                    if savedata.map.persistdata.retrofitcavemap_anr == nil then
+						savedata.map.persistdata.retrofitcavemap_anr = {}
+					end
+					savedata.map.persistdata.retrofitcavemap_anr.retrofit_artsandcrafts = true
+					
+				elseif savedata.map ~= nil and savedata.map.prefab == "forest" and savedata.map.persistdata ~= nil then
+                    if savedata.map.persistdata.retrofitforestmap_anr == nil then
+						savedata.map.persistdata.retrofitforestmap_anr = {}
+					end
+					savedata.map.persistdata.retrofitforestmap_anr.retrofit_artsandcrafts = true
+				end
+            end,
+        },
+        {
+            version = 4.3, -- ANR:Arts and Crafts 2
+            fn = function(savedata)
+                if savedata == nil then
+                    return
+                end
+                if savedata.map ~= nil and savedata.map.prefab == "forest" and savedata.map.persistdata ~= nil then
+                    if savedata.map.persistdata.retrofitforestmap_anr == nil then
+                        savedata.map.persistdata.retrofitforestmap_anr = {}
+                    end
+                    savedata.map.persistdata.retrofitforestmap_anr.retrofit_artsandcrafts2 = true
+                end
+            end,
+        },
     },
 }
 

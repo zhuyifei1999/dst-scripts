@@ -73,12 +73,15 @@ local function OnPhaseChanged(src, phase)
     SetVariable("isdusk", phase == "dusk", "dusk")
     SetVariable("isnight", phase == "night", "night")
     SetVariable("isfullmoon", phase == "night" and self.data.moonphase == "full", "fullmoon")
+    SetVariable("isnewmoon", phase == "night" and self.data.moonphase == "new", "newmoon")
     OnCavePhaseChanged(src, phase)
 end
 
-local function OnMoonPhaseChanged(src, moonphase)
-    SetVariable("moonphase", moonphase)
-    SetVariable("isfullmoon", self.data.isnight and moonphase == "full", "fullmoon")
+local function OnMoonPhaseChanged2(src, data)
+    SetVariable("iswaxingmoon", data.waxing)
+    SetVariable("moonphase", data.moonphase)
+    SetVariable("isfullmoon", self.data.isnight and data.moonphase == "full", "fullmoon")
+    SetVariable("isnewmoon", self.data.isnight and data.moonphase == "new", "newmoon")
 end
 
 local function OnNightmareClockTick(src, data)
@@ -166,7 +169,9 @@ self.data.isday = not _iscave
 self.data.isdusk = false
 self.data.isnight = _iscave
 self.data.moonphase = "new"
+self.data.iswaxingmoon = true
 self.data.isfullmoon = false
+self.data.isnewmoon = false
 
 --Cave clock
 self.data.cavephase = "day"
@@ -178,7 +183,7 @@ inst:ListenForEvent("clocktick", OnClockTick)
 inst:ListenForEvent("cycleschanged", OnCyclesChanged)
 inst:ListenForEvent("phasechanged", _iscave and OnCavePhaseChanged or OnPhaseChanged)
 if not _iscave then
-    inst:ListenForEvent("moonphasechanged", OnMoonPhaseChanged)
+    inst:ListenForEvent("moonphasechanged2", OnMoonPhaseChanged2)
 end
 
 --Nightmareclock

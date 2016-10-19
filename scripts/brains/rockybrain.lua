@@ -18,6 +18,7 @@ local MAX_FOLLOW_DIST = 10
 
 local DAMAGE_UNTIL_SHIELD = 200
 local AVOID_PROJECTILE_ATTACKS = true
+local HIDE_WHEN_SCARED = true
 local SHIELD_TIME = 5
 
 local function GetFaceTargetFn(inst)
@@ -53,20 +54,49 @@ local function EatFoodAction(inst)
     end
 end
 
+local function ScaredLoseLoyalty(self)
+    local t = GetTime()
+    if t >= self.scareendtime then
+        self.scaredelay = nil
+    elseif self.scaredelay == nil then
+        self.scaredelay = t + 3
+    elseif t >= self.scaredelay then
+        self.scaredelay = t + 3
+        if math.random() < .2 and
+            self.inst.components.follower ~= nil and
+            self.inst.components.follower:GetLoyaltyPercent() > 0 and
+            self.inst.components.follower:GetLeader() ~= nil then
+            self.inst.components.follower:SetLeader(nil)
+        end
+    end
+end
+
 local RockyBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
 
 function RockyBrain:OnStart()
+    if self.scareendtime == nil then
+        self.scareendtime = 0
+        self.inst:ListenForEvent("epicscare", function(inst, data)
+            self.scareendtime = math.max(self.scareendtime, data.duration + GetTime() + math.random())
+        end)
+    end
+
     local root = PriorityNode(
     {
-        UseShield(self.inst, DAMAGE_UNTIL_SHIELD, SHIELD_TIME, AVOID_PROJECTILE_ATTACKS),
-        WhileNode( function() return self.inst.components.hauntable ~= nil and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
+        ParallelNode{
+            LoopNode{
+                ActionNode(function() ScaredLoseLoyalty(self) end),
+            },
+            UseShield(self.inst, DAMAGE_UNTIL_SHIELD, SHIELD_TIME, AVOID_PROJECTILE_ATTACKS, HIDE_WHEN_SCARED),
+        },
+        WhileNode(function() return self.inst.components.hauntable ~= nil and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
         ChaseAndAttack(self.inst, SpringCombatMod(MAX_CHASE_TIME), SpringCombatMod(MAX_CHASE_DIST)),
         DoAction(self.inst, EatFoodAction),
         Follow(self.inst, function(inst) return inst.components.follower.leader end, MIN_FOLLOW_DIST, TARGET_FOLLOW_DIST, MAX_FOLLOW_DIST),
         FaceEntity(self.inst, GetFaceTargetFn, KeepFaceTargetFn),
-        Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("herd") end, WANDER_DIST)
+        Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("herd") end, WANDER_DIST),
     }, .25)
 
     self.bt = BT(self.inst, root)

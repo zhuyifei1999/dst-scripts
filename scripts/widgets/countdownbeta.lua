@@ -8,7 +8,7 @@ require "os"
 
 local klei_tz = 28800--The time zone offset for vancouver
 
-local CountdownBeta = Class(Widget, function(self, mode, image, update_name, release_date)
+local CountdownBeta = Class(Widget, function(self, owner, mode, image, update_name, release_date)
 	Widget._ctor(self, "Countdown")
 
 	if mode == "text" then
@@ -71,23 +71,25 @@ local CountdownBeta = Class(Widget, function(self, mode, image, update_name, rel
 			self.reveal_image:SetClickable(false)
 			self.reveal_image:SetTint(1,1,1,0)
 
-			--[[ -- Player portal
+			-- Player portal
 			self.smoke = self:AddChild(UIAnim())
 			self.smoke:SetScale(1.1)
 			self.inst:DoTaskInTime(1.3, function(inst)
 				self.smoke:GetAnimState():SetBuild("puff_spawning")
 				self.smoke:GetAnimState():SetBank("spawn_fx")
 				self.smoke:GetAnimState():PlayAnimation("tiny")
-				TheFrontEnd:GetSound():PlaySound("dontstarve/common/spawn/spawnportal_spawnplayer")
+				if TheFrontEnd:GetActiveScreen() == owner then
+					TheFrontEnd:GetSound():PlaySound("dontstarve/common/spawn/spawnportal_spawnplayer")
+				end
 
 				self.inst:DoTaskInTime(0.4, function(inst)
 					self.reveal_image:TintTo({r=1,g=1,b=1,a=0}, {r=1,g=1,b=1,a=1}, .5 )
 				end)
 			
 			end)
-			]]
-				
+			
 			-- Spore Cloud in/out
+			--[[
 			self.smoke = self:AddChild(UIAnim())
 			self.smoke:SetScale(.8)
 			self.smoke:SetPosition(0, -50, 0)
@@ -97,16 +99,21 @@ local CountdownBeta = Class(Widget, function(self, mode, image, update_name, rel
 				self.smoke:GetAnimState():PlayAnimation("sporecloud_overlay_pre")
 				self.smoke:GetAnimState():PushAnimation("sporecloud_overlay_pst", false)
 
-				TheFrontEnd:GetSound():PlaySound("dontstarve/creatures/together/toad_stool/infection_attack")
+				if TheFrontEnd:GetActiveScreen() == owner then
+					TheFrontEnd:GetSound():PlaySound("dontstarve/creatures/together/toad_stool/infection_attack")
+				end
 
 				self.inst:DoTaskInTime(25 * FRAMES, function(inst)
 					self.reveal_image:TintTo({r=1,g=1,b=1,a=0}, {r=1,g=1,b=1,a=1}, .5 )
 
 					self.inst:DoTaskInTime(5 * FRAMES, function(inst)
-						TheFrontEnd:GetSound():PlaySound("dontstarve/creatures/together/toad_stool/infection_post")
+						if TheFrontEnd:GetActiveScreen() == owner then
+							TheFrontEnd:GetSound():PlaySound("dontstarve/creatures/together/toad_stool/infection_post")
+						end
 					end)
 				end)
 			end)
+			]]
 			
 			
 		elseif mode == "released" then

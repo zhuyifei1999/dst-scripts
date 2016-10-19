@@ -1883,9 +1883,15 @@ local states =
         tags = { "doing", "busy" },
 
         onenter = function(inst)
+            inst.sg.statemem.heavy = inst.replica.inventory:IsHeavyLifting()
             inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("pickup")
-            inst.AnimState:PushAnimation("pickup_lag", false)
+            if inst.sg.statemem.heavy then
+                inst.AnimState:PlayAnimation("heavy_item_hat")
+                inst.AnimState:PushAnimation("heavy_item_hat_lag", false)
+            else
+                inst.AnimState:PlayAnimation("pickup")
+                inst.AnimState:PushAnimation("pickup_lag", false)
+            end
 
             inst:PerformPreviewBufferedAction()
             inst.sg:SetTimeout(TIMEOUT)
@@ -1897,14 +1903,14 @@ local states =
                     inst.sg:GoToState("idle", "noanim")
                 end
             elseif inst.bufferedaction == nil then
-                inst.AnimState:PlayAnimation("pickup_pst")
+                inst.AnimState:PlayAnimation(inst.sg.statemem.heavy and "heavy_item_hat_pst" or "pickup_pst")
                 inst.sg:GoToState("idle", true)
             end
         end,
 
         ontimeout = function(inst)
             inst:ClearBufferedAction()
-            inst.AnimState:PlayAnimation("pickup_pst")
+            inst.AnimState:PlayAnimation(inst.sg.statemem.heavy and "heavy_item_hat_pst" or "pickup_pst")
             inst.sg:GoToState("idle", true)
         end,
     },

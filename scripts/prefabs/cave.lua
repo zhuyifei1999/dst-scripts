@@ -66,6 +66,7 @@ local prefabs =
     "caverain",
     "dropperweb",
     "hutch",
+    "toadstool_cap",
 }
 
 local monsters =
@@ -149,9 +150,11 @@ local function master_postinit(inst)
     --Spawners
     inst:AddComponent("shadowcreaturespawner")
     inst:AddComponent("shadowhandspawner")
+    inst:AddComponent("toadstoolspawner")
 
     --gameplay
     inst:AddComponent("kramped")
+    inst:AddComponent("chessunlocks")
 
     --world management
     inst:AddComponent("forestresourcespawner") -- a cave version of this would be nice, but it serves it's purpose...
@@ -165,6 +168,9 @@ local function master_postinit(inst)
     --cave specifics
     inst:AddComponent("hounded")
     inst.components.hounded:SetSpawnData(wormspawn)
+
+	--anr update retrofitting
+    inst:AddComponent("retrofitcavemap_anr")
 
     -- inst:AddComponent("periodicthreat")
     -- local threats = require("periodicthreats")

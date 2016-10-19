@@ -374,16 +374,16 @@ function CraftTabs:DoUpdateRecipes()
             valid_tabs[v] = false
         end
 
-        if self.owner.replica.builder ~= nil then
-            local current_research_level = self.owner.replica.builder:GetTechTrees()
+        local builder = self.owner.replica.builder
+        if builder ~= nil then
+            local current_research_level = builder:GetTechTrees()
 
             for k, rec in pairs(AllRecipes) do
 
                 if IsRecipeValid(rec.name) then
                     local tab = self.tabbyfilter[rec.tab]
                     if tab ~= nil then
-                        local has_researched = self.owner.replica.builder:KnowsRecipe(rec.name)
-                        local builder = self.owner.replica.builder
+                        local has_researched = builder:KnowsRecipe(rec.name)
                         local can_learn = builder:CanLearn(rec.name)
                         local can_see = has_researched or (can_learn and CanPrototypeRecipe(rec.level, current_research_level))
                         local can_build = can_learn and builder:CanBuild(rec.name)
@@ -396,7 +396,14 @@ function CraftTabs:DoUpdateRecipes()
                             if buffered_build then
                                 tabs_to_alt_highlight[tab] = tabs_to_alt_highlight[tab] + 1
                             elseif can_build then
-                                tabs_to_highlight[tab] = tabs_to_highlight[tab] + 1
+                                if rec.nounlock then
+                                    --for crafting stations that unlock custom recipes
+                                    --by temporarily teaching them, we still want them
+                                    --to behave like nounlock crafting recipes.
+                                    tabs_to_overlay[tab] = tabs_to_overlay[tab] + 1
+                                else
+                                    tabs_to_highlight[tab] = tabs_to_highlight[tab] + 1
+                                end
                             end
                         elseif can_research then
                             tabs_to_overlay[tab] = tabs_to_overlay[tab] + 1

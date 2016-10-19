@@ -5619,8 +5619,9 @@ local states =
         tags = { "doing", "busy" },
 
         onenter = function(inst)
+            inst.sg.statemem.heavy = inst.components.inventory:IsHeavyLifting()
             inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("pickup")
+            inst.AnimState:PlayAnimation(inst.sg.statemem.heavy and "heavy_item_hat" or "pickup")
 
             inst.sg.statemem.action = inst.bufferedaction
         end,
@@ -5630,7 +5631,7 @@ local states =
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() and
                     not inst:PerformBufferedAction() then
-                    inst.AnimState:PlayAnimation("pickup_pst")
+                    inst.AnimState:PlayAnimation(inst.sg.statemem.heavy and "heavy_item_hat_pst" or "pickup_pst")
                     inst.sg:GoToState("idle", true)
                 end
             end),

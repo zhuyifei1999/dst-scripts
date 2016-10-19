@@ -1,9 +1,37 @@
+function PickRandomTrinket()
+    local chessunlocks = TheWorld.components.chessunlocks
+    local numlocked = chessunlocks ~= nil and chessunlocks:GetNumLockedTrinkets() or 0
+    if numlocked <= 0 then
+        return "trinket_"..tostring(math.random(NUM_TRINKETS))
+    elseif numlocked < NUM_TRINKETS then
+        local i = math.random(NUM_TRINKETS - numlocked)
+        local prefab = "trinket_"..tostring(i)
+        while chessunlocks:IsLocked(prefab) do
+            i = (i % NUM_TRINKETS) + 1
+            prefab = "trinket_"..tostring(i)
+        end
+        return prefab
+    end
+end
+
 local assets =
 {
     Asset("ANIM", "anim/trinkets.zip"),
 }
 
+local TRADEFOR =
+{
+    [15] = {"chesspiece_bishop_sketch"},
+    [16] = {"chesspiece_bishop_sketch"},
+    [28] = {"chesspiece_rook_sketch"},
+    [29] = {"chesspiece_rook_sketch"},
+    [30] = {"chesspiece_knight_sketch"},
+    [31] = {"chesspiece_knight_sketch"},
+}
+
 local function MakeTrinket(num)
+    local prefabs = TRADEFOR[num]
+
     local function fn()
         local inst = CreateEntity()
 
@@ -34,6 +62,8 @@ local function MakeTrinket(num)
         inst:AddComponent("inventoryitem")
         inst:AddComponent("tradable")
         inst.components.tradable.goldvalue = TUNING.GOLD_VALUES.TRINKETS[num] or 3
+        inst.components.tradable.tradefor = TRADEFOR[num]
+        
 
         MakeHauntableLaunchAndSmash(inst)
 
@@ -42,7 +72,7 @@ local function MakeTrinket(num)
         return inst
     end
 
-    return Prefab("trinket_"..tostring(num), fn, assets)
+    return Prefab("trinket_"..tostring(num), fn, assets, prefabs)
 end
 
 local ret = {}

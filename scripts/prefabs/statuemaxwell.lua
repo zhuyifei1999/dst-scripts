@@ -8,10 +8,12 @@ local prefabs =
 {
     "marble",
     "rock_break_fx",
+    "chesspiece_formal_sketch",
 }
 
 SetSharedLootTable('statue_maxwell',
 {
+    { 'chesspiece_formal_sketch', 1.00},
     { 'marble', 1.00 },
     { 'marble', 1.00 },
     { 'marble', 0.33 },

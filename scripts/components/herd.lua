@@ -27,6 +27,7 @@ local Herd = Class(function(self, inst)
     self.addmember = nil
 
     self.updatepos = true
+    self.updateposincombat = false
 
     self.task = self.inst:DoPeriodicTask(math.random() * 2 + 6, _OnUpdate, nil, self)
 
@@ -180,8 +181,7 @@ function Herd:OnUpdate()
                     or (self.membertag ~= nil and not k:HasTag(self.membertag)) then
                     table.insert(toremove, k)
                 elseif self.updatepos
-                    and k.components.combat ~= nil
-                    and k.components.combat.target == nil
+                    and ((k.components.combat ~= nil and k.components.combat.target == nil) or self.updateposincombat)
                     and self.inst:IsNear(k, self.updaterange) then
                     updatedPos = updatedPos ~= nil and updatedPos + k:GetPosition() or k:GetPosition()
                     validMembers = validMembers + 1

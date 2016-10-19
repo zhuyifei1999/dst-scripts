@@ -13,6 +13,7 @@ local Prototyper = Class(function(self, inst)
         ANCIENT = 0,
         SHADOW = 0,
         CARTOGRAPHY = 0,
+        SCULPTING = 0,
     }
 
     self.on = false
