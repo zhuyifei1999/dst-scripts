@@ -177,6 +177,8 @@ local LocoMotor = Class(function(self, inst)
     
     self.wasoncreep = false
     self.triggerscreep = true
+
+    --self.isupdating = nil
 end,
 nil,
 {
@@ -184,24 +186,27 @@ nil,
     externalspeedmultiplier = onexternalspeedmultiplier,
 })
 
---local function DozeOff(inst)
---  local locomotor = inst.components.locomotor
---  if locomotor then
---      locomotor:Stop()
---  end
---end
+function LocoMotor:StartUpdatingInternal()
+    self.isupdating = true
+    if not self.inst:IsAsleep() then
+        self.inst:StartUpdatingComponent(self)
+    end
+end
+
+function LocoMotor:StopUpdatingInternal()
+    self.isupdating = nil
+    self.inst:StopUpdatingComponent(self)
+end
 
 function LocoMotor:OnEntitySleep()
     self:Stop()
---      self.dozeOffTask = self.inst:DoTaskInTime(DOZE_OFF_TIME, DozeOff)
 end
 
---function LocoMotor:OnEntityWake()
---  if self.dozeOffTask then
---      self.dozeOffTask:Cancel()
---      self.dozeOffTask = nil
---  end
---end
+function LocoMotor:OnEntityWake()
+    if self.isupdating then
+        self.inst:StartUpdatingComponent(self)
+    end
+end
 
 function LocoMotor:OnRemoveFromEntity()
     if self.ismastersim then
@@ -338,14 +343,14 @@ function LocoMotor:WalkForward(direct)
     self.isrunning = false
     if direct then self.wantstomoveforward = true end
     self.inst.Physics:SetMotorVel(self:GetWalkSpeed(),0,0)
-    self.inst:StartUpdatingComponent(self)
+    self:StartUpdatingInternal()
 end
 
 function LocoMotor:RunForward(direct)
     self.isrunning = true
     if direct then self.wantstomoveforward = true end
     self.inst.Physics:SetMotorVel(self:GetRunSpeed(),0,0)
-    self.inst:StartUpdatingComponent(self)
+    self:StartUpdatingInternal()
 end
 
 function LocoMotor:Clear()
@@ -509,7 +514,7 @@ function LocoMotor:GoToEntity(inst, bufferedaction, run)
 
     self.wantstorun = run
     --self.arrive_step_dist = ARRIVE_STEP
-    self.inst:StartUpdatingComponent(self)
+    self:StartUpdatingInternal()
 end
 
 --V2C: Added overridedest for additional network controller support
@@ -535,7 +540,7 @@ function LocoMotor:GoToPoint(pt, bufferedaction, run, overridedest)
     end
     self.wantstomoveforward = true
     self:SetBufferedAction(bufferedaction)
-    self.inst:StartUpdatingComponent(self) 
+    self:StartUpdatingInternal()
 end
 
 
@@ -561,7 +566,7 @@ function LocoMotor:Stop(sgparams)
     self:StopMoving()
 
     self.inst:PushEvent("locomote", sgparams)
-    self.inst:StopUpdatingComponent(self)
+    self:StopUpdatingInternal()
 end
 
 function LocoMotor:WalkInDirection(direction, should_run)
@@ -580,7 +585,7 @@ function LocoMotor:WalkInDirection(direction, should_run)
         self:WalkForward()
     end
     self.inst:PushEvent("locomote")
-    self.inst:StartUpdatingComponent(self)
+    self:StartUpdatingInternal()
 end
 
 function LocoMotor:RunInDirection(direction, throttle)
@@ -604,7 +609,7 @@ function LocoMotor:RunInDirection(direction, throttle)
         self:RunForward()
     end
     self.inst:PushEvent("locomote")
-    self.inst:StartUpdatingComponent(self)
+    self:StartUpdatingInternal()
 end
 
 function LocoMotor:GetDebugString()
@@ -646,7 +651,7 @@ function LocoMotor:OnUpdate(dt)
     if not self.inst:IsValid() then
         Print(VERBOSITY.DEBUG, "OnUpdate INVALID", self.inst.prefab)
         self:ResetPath()
-        self.inst:StopUpdatingComponent(self)   
+        self:StopUpdatingInternal()
         return
     end
 
@@ -807,7 +812,7 @@ function LocoMotor:OnUpdate(dt)
         self.inst:PushEvent("locomote")
     elseif not self.wantstomoveforward and not self:WaitingForPathSearch() then
         self:ResetPath()
-        self.inst:StopUpdatingComponent(self)
+        self:StopUpdatingInternal()
     end
 
     local cur_speed = self.inst.Physics:GetMotorSpeed()

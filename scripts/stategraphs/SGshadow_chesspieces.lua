@@ -4,7 +4,61 @@ ShadowChessStates = {}
 ShadowChessFunctions = {}
 
 --------------------------------------------------------------------------
+local function FinishExtendedSound(inst, soundid)
+    inst.SoundEmitter:KillSound("sound_"..tostring(soundid))
+    inst.sg.mem.soundcache[soundid] = nil
+    if inst.sg.statemem.readytoremove and next(inst.sg.mem.soundcache) == nil then
+        inst:Remove()
+    end
+end
 
+local function PlayExtendedSound(inst, soundname)
+    if inst.sg.mem.soundcache == nil then
+        inst.sg.mem.soundcache = {}
+        inst.sg.mem.soundid = 0
+    else
+        inst.sg.mem.soundid = inst.sg.mem.soundid + 1
+    end
+    inst.sg.mem.soundcache[inst.sg.mem.soundid] = true
+    inst.SoundEmitter:PlaySound(inst.sounds[soundname], "sound_"..tostring(inst.sg.mem.soundid))
+    inst:DoTaskInTime(10, FinishExtendedSound, inst.sg.mem.soundid)
+end
+
+local function ExtendedSoundTimelineEvent(t, soundname)
+    return TimeEvent(t, function(inst)
+        PlayExtendedSound(inst, soundname)
+    end)
+end
+
+ShadowChessFunctions.PlayExtendedSound = PlayExtendedSound
+ShadowChessFunctions.ExtendedSoundTimelineEvent = ExtendedSoundTimelineEvent
+
+--------------------------------------------------------------------------
+ShadowChessEvents.OnAnimOverRemoveAfterSounds = function()
+    return EventHandler("animover", function(inst)
+        if inst.AnimState:AnimDone() then
+            if inst.sg.mem.soundcache == nil or next(inst.sg.mem.soundcache) == nil then
+                inst:Remove()
+            else
+                inst:Hide()
+                inst.sg.statemem.readytoremove = true
+            end
+        end
+    end)
+end
+
+--------------------------------------------------------------------------
+local function PlayDeathSound(inst)
+    inst.SoundEmitter:PlaySound(inst.sounds.death)
+end
+
+local function DeathSoundTimelineEvent(t)
+    return TimeEvent(t, PlayDeathSound)
+end
+
+ShadowChessFunctions.DeathSoundTimelineEvent = DeathSoundTimelineEvent
+
+--------------------------------------------------------------------------
 local LEVELUP_RADIUS = 25
 local AWAKEN_NEARBY_STATUES_RADIUS = 15
 
@@ -80,6 +134,11 @@ ShadowChessStates.AddIdle = function(states, idle_anim)
                 inst.AnimState:PlayAnimation(idle_anim, true)
             end
         end,
+
+        timeline =
+        {
+            ExtendedSoundTimelineEvent(0, "idle"),
+        },
     })
 end
 
@@ -129,17 +188,23 @@ ShadowChessStates.AddTaunt = function(states, anim, sound_frame, action_frame, b
 
         timeline =
         {
-            TimeEvent(sound_frame*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.taunt) end),
-            TimeEvent(action_frame*FRAMES, function(inst)
+            ExtendedSoundTimelineEvent(sound_frame * FRAMES, "taunt"),
+            TimeEvent(action_frame * FRAMES, function(inst)
                 AwakenNearbyStatues(inst)
                 TriggerEpicScare(inst)
             end),
-            TimeEvent(busyover_frame*FRAMES, function(inst) inst.sg:RemoveStateTag("busy") end),
+            TimeEvent(busyover_frame * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
         },
 
         events =
         {
-            EventHandler("animover", function(inst) if inst.AnimState:AnimDone() then inst.sg:GoToState("idle") end end),
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
         },
     })
 end
@@ -158,31 +223,39 @@ ShadowChessStates.AddHit = function(states, anim, sound_frame, busyover_frame)
 
         timeline =
         {
-            TimeEvent(sound_frame*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.hit) end),
-            TimeEvent(busyover_frame*FRAMES, function(inst) inst.sg:RemoveStateTag("busy") end),
+            ExtendedSoundTimelineEvent(sound_frame * FRAMES, "hit"),
+            TimeEvent(busyover_frame * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
         },
 
         events =
         {
-            EventHandler("animover", function(inst) if inst.AnimState:AnimDone() then inst.sg:GoToState("idle") end end),
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
         },
     })
 end
 
 --------------------------------------------------------------------------
 local function LevelUpAlliesTimelineEvent(frame)
-    return TimeEvent(frame*FRAMES, function(inst)
+    return TimeEvent(frame * FRAMES, function(inst)
         -- trigger all near by shadow chess pieces to level up
         local ents = inst:GetAllSCPInRange(LEVELUP_RADIUS)
         for i, v in ipairs(ents) do
-            v:PushEvent("levelup", {source=inst})
+            v:PushEvent("levelup", { source = inst })
         end
     end)
 end
 
 --------------------------------------------------------------------------
 ShadowChessStates.AddDeath = function(states, anim, action_frame, timeline)
-    timeline = timeline and JoinArrays(timeline, {LevelUpAlliesTimelineEvent(action_frame)}) or {LevelUpAlliesTimelineEvent(action_frame)}
+    timeline = timeline or {}
+    table.insert(timeline, ExtendedSoundTimelineEvent(0, "disappear"))
+    table.insert(timeline, LevelUpAlliesTimelineEvent(action_frame))
 
     table.insert(states, State
     {
@@ -194,15 +267,28 @@ ShadowChessStates.AddDeath = function(states, anim, action_frame, timeline)
             inst.Physics:Stop()
             RemovePhysicsColliders(inst)
             inst.components.lootdropper:DropLoot(inst:GetPosition())
+            inst:AddTag("NOCLICK")
+            inst.persists = false
         end,
 
         timeline = timeline,
+
+        events =
+        {
+            ShadowChessEvents.OnAnimOverRemoveAfterSounds(),
+        },
+
+        onexit = function(inst)
+            inst:RemoveTag("NOCLICK")
+        end,
     })
 end
 
 --------------------------------------------------------------------------
 ShadowChessStates.AddEvolvedDeath = function(states, anim, action_frame, timeline)
-    timeline = timeline and JoinArrays(timeline, {LevelUpAlliesTimelineEvent(action_frame)}) or {LevelUpAlliesTimelineEvent(action_frame)}
+    timeline = timeline or {}
+    table.insert(timeline, ExtendedSoundTimelineEvent(0, "die"))
+    table.insert(timeline, LevelUpAlliesTimelineEvent(action_frame))
 
     table.insert(states, State
     {
@@ -214,14 +300,28 @@ ShadowChessStates.AddEvolvedDeath = function(states, anim, action_frame, timelin
             inst.Physics:Stop()
             RemovePhysicsColliders(inst)
             inst.components.lootdropper:DropLoot(inst:GetPosition())
+            inst:AddTag("NOCLICK")
+            inst.persists = false
         end,
 
         timeline = timeline,
+
+        events =
+        {
+            ShadowChessEvents.OnAnimOverRemoveAfterSounds(),
+        },
+
+        onexit = function(inst)
+            inst:RemoveTag("NOCLICK")
+        end,
     })
 end
 
 --------------------------------------------------------------------------
-ShadowChessStates.AddDespawn = function(states, anim)
+ShadowChessStates.AddDespawn = function(states, anim, timeline)
+    timeline = timeline or {}
+    table.insert(timeline, ExtendedSoundTimelineEvent(0, "disappear"))
+
     table.insert(states, State
     {
         name = "despawn",
@@ -235,9 +335,11 @@ ShadowChessStates.AddDespawn = function(states, anim)
             inst.persists = false
         end,
 
+        timeline = timeline,
+
         events =
         {
-            EventHandler("animover", function(inst) if inst.AnimState:AnimDone() then inst:Remove() end end),
+            ShadowChessEvents.OnAnimOverRemoveAfterSounds(),
         },
 
         onexit = function(inst)

@@ -1,16 +1,17 @@
+
 function PickRandomTrinket()
     local chessunlocks = TheWorld.components.chessunlocks
     local numlocked = chessunlocks ~= nil and chessunlocks:GetNumLockedTrinkets() or 0
     if numlocked <= 0 then
         return "trinket_"..tostring(math.random(NUM_TRINKETS))
     elseif numlocked < NUM_TRINKETS then
-        local i = math.random(NUM_TRINKETS - numlocked)
-        local prefab = "trinket_"..tostring(i)
-        while chessunlocks:IsLocked(prefab) do
-            i = (i % NUM_TRINKETS) + 1
-            prefab = "trinket_"..tostring(i)
-        end
-        return prefab
+		local unlocked_trinkets = {}
+		for i = 1,NUM_TRINKETS do
+			if not chessunlocks:IsLocked("trinket_"..i) then
+				table.insert(unlocked_trinkets, i)
+			end
+		end
+        return "trinket_"..unlocked_trinkets[math.random(#unlocked_trinkets)]
     end
 end
 
@@ -64,6 +65,14 @@ local function MakeTrinket(num)
         inst.components.tradable.goldvalue = TUNING.GOLD_VALUES.TRINKETS[num] or 3
         inst.components.tradable.tradefor = TRADEFOR[num]
         
+        if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
+			if num >= 32 and num <= 37 then
+				inst.components.tradable.halloweencandyvalue = 4
+			end
+		else
+			inst:AddComponent("fuel")
+			inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL
+		end
 
         MakeHauntableLaunchAndSmash(inst)
 

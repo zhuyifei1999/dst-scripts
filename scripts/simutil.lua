@@ -310,3 +310,19 @@ function ErodeAway(inst, erode_time)
         inst:Remove()
     end)
 end
+
+function ApplySpecialEvent(event)
+	--print (" -- ApplySpecialEvent ", tostring(event))
+
+	if event == nil or event == "default" then
+		event = WORLD_SPECIAL_EVENT
+	end
+	
+	WORLD_SPECIAL_EVENT = event
+	
+	if event == SPECIAL_EVENTS.HALLOWED_NIGHTS then
+		TECH.HALLOWED_NIGHTS.SCIENCE = 0
+	else
+		TECH.HALLOWED_NIGHTS.SCIENCE = 10 -- lost tech level if not using the hallowed nights event
+	end
+end

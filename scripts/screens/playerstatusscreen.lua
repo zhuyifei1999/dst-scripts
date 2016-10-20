@@ -433,10 +433,6 @@ function PlayerStatusScreen:DoInit(ClientObjs)
         playerListing.age:SetPosition(-20,0,0)
         playerListing.age:SetHAlign(ANCHOR_MIDDLE)
 
-        playerListing.perf = playerListing:AddChild(Image("images/scoreboard.xml", PERF_CLIENT_UNKNOWN))
-        playerListing.perf:SetPosition(295, 4, 0)
-        playerListing.perf:SetScale(unpack(PERF_CLIENT_SCALE))
-
         playerListing.viewprofile = playerListing:AddChild(ImageButton("images/scoreboard.xml", "addfriend.tex", "addfriend.tex", "addfriend.tex", "addfriend.tex", nil, {1,1}, {0,0}))
         playerListing.viewprofile:SetPosition(120,3,0)
         playerListing.viewprofile:SetNormalScale(0.39)
@@ -563,6 +559,10 @@ function PlayerStatusScreen:DoInit(ClientObjs)
             self:OpenUserCommandPickerScreen(playerListing.userid)
         end)
 
+        playerListing.perf = playerListing:AddChild(Image("images/scoreboard.xml", PERF_CLIENT_UNKNOWN))
+        playerListing.perf:SetPosition(295, 4, 0)
+        playerListing.perf:SetScale(unpack(PERF_CLIENT_SCALE))
+
         playerListing.OnGainFocus = function()
             playerListing.highlight:Show()
         end
@@ -618,13 +618,18 @@ function PlayerStatusScreen:DoInit(ClientObjs)
         playerListing.ishost = client.performance ~= nil
 
         if client.performance ~= nil then
-            playerListing.perf:SetTexture("images/scoreboard.xml", PERF_HOST_LEVELS[math.min(client.performance + 1, #PERF_HOST_LEVELS)])
+			local perf_id = math.min(client.performance + 1, #PERF_HOST_LEVELS)
+            playerListing.perf:SetTexture("images/scoreboard.xml", PERF_HOST_LEVELS[perf_id])
             playerListing.perf:SetScale(unpack(PERF_HOST_SCALE))
+            playerListing.perf:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.PERF_HOST_LEVELS[perf_id])
         else
             if client.netscore ~= nil then
-                playerListing.perf:SetTexture("images/scoreboard.xml", PERF_CLIENT_LEVELS[math.min(client.netscore + 1, #PERF_CLIENT_LEVELS)])
+				local perf_id = math.min(client.netscore + 1, #PERF_CLIENT_LEVELS)
+                playerListing.perf:SetTexture("images/scoreboard.xml", PERF_CLIENT_LEVELS[perf_id])
+				playerListing.perf:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.PERF_CLIENT_LEVELS[perf_id])
             else
                 playerListing.perf:SetTexture("images/scoreboard.xml", PERF_CLIENT_UNKNOWN)
+				playerListing.perf:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.PERF_CLIENT_LEVEL_UNKNOWN)
             end
             playerListing.perf:SetScale(unpack(PERF_CLIENT_SCALE))
         end

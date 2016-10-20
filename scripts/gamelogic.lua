@@ -388,6 +388,8 @@ local function PopulateWorld(savedata, profile)
         local tuning_override = require("tuning_override")
         tuning_override.areaambientdefault(savedata.map.prefab)
 
+		ApplySpecialEvent(world.topology.overrides and world.topology.overrides.specialevent or nil)
+
         -- Check for map overrides
         if world.topology.overrides ~= nil and GetTableSize(world.topology.overrides) > 0 then
             for override,value in pairs(world.topology.overrides) do

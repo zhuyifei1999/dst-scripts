@@ -1275,6 +1275,12 @@ function Tune(overrides)
                 4, --[29] Black Rook
                 4, --[30] White Knight
                 4, --[31] Black Knight
+                0, --[32] Crystal Ball
+                0, --[33] Spider Ring
+                0, --[34] Hand / Monkey Paw?
+                0, --[35] Empty Potion Bottle
+                0, --[36] Vampire Teeth
+                0, --[37] Wooden Stake
             },
         },
 
@@ -2250,3 +2256,4 @@ function Tune(overrides)
 end
 
 Tune()
+

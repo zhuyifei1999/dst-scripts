@@ -927,6 +927,7 @@ return {
 			PICKED = "No berries left!",
 			DISEASED = "It's caught a bit of a bug.",
 			DISEASING = "Lookin' a bit down.",
+			BURNING = "Can't save it now.",
 		},
 		BERRYBUSH_JUICY =
 		{
@@ -936,6 +937,7 @@ return {
 			PICKED = "Eh, they'll be back.",
 			DISEASED = "It's caught a bit of a bug.",
 			DISEASING = "Lookin' a bit down.",
+			BURNING = "Can't save it now.",
 		},
 		BIRDCAGE =
 		{
@@ -1706,6 +1708,25 @@ return {
         TRINKET_29 = "That's, uh, the rook piece.",
         TRINKET_30 = "That one can only move one square at time.",
         TRINKET_31 = "That's the, uh, horse piece.",
+        TRINKET_32 = "I'd rather my future be a surprise.",
+        TRINKET_33 = "Creepy.",
+        TRINKET_34 = "That right there's a bad time waitin' to happen.",
+        TRINKET_35 = "Doesn't even have a label.",
+		TRINKET_36 = "More intimidating than beaver teeth.",
+		TRINKET_37 = "What a waste of wood, eh?",
+
+		HALLOWEENCANDY_1 = "Even the stick is delicious.",
+        HALLOWEENCANDY_2 = "Don't worry, I'll eat enough for the both of us, Lucy.",
+        HALLOWEENCANDY_3 = "Just a regular ol' cob of corn.",
+        HALLOWEENCANDY_4 = "Yeesh. That's a lot of candy legs.",
+        HALLOWEENCANDY_5 = "These ones don't puke. I like 'em.",
+        HALLOWEENCANDY_6 = "Not sure that's food, eh?",
+        HALLOWEENCANDY_7 = "Eh. I don't mind 'em.",
+        HALLOWEENCANDY_8 = "I'll tell you what it tastes like, Lucy.",
+        HALLOWEENCANDY_9 = "Not too bad, eh?",
+        HALLOWEENCANDY_10 = "I'll tell you what it tastes like, Lucy.",
+        HALLOWEENCANDY_11 = "Melts in your mouth, not in your hand.",
+        CANDYBAG = "That there bag could hold a whole heap of candy.",
 
 		TRUNKVEST_SUMMER = "Nice and breezy.",
 		TRUNKVEST_WINTER = "This could stand up to the winters back home, eh?",

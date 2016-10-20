@@ -953,6 +953,7 @@ return {
 			PICKED = "The wait begins.",
 			DISEASED = "It's not long for this world...",
 			DISEASING = "It is on the precipice...",
+			BURNING = "Its suffering will end soon.",
 		},
 		BERRYBUSH_JUICY =
 		{
@@ -962,6 +963,7 @@ return {
 			PICKED = "It's given all it had to give.",
 			DISEASED = "It's not long for this world...",
 			DISEASING = "It is on the precipice...",
+			BURNING = "Its suffering will end soon.",
 		},
 		BIRDCAGE =
 		{
@@ -1705,6 +1707,25 @@ return {
         TRINKET_29 = "A horse! A horse! My castle for a horse!",
         TRINKET_30 = "I'd rather have the castle...",
         TRINKET_31 = "I'd rather have the castle...",
+        TRINKET_32 = "When I gaze into the ball I see... nothing. Apropos.",
+        TRINKET_33 = "It's very fetching.",
+        TRINKET_34 = "Perhaps a curse could end our suffering.",
+        TRINKET_35 = "Neither half empty, nor half full.",
+		TRINKET_36 = "Now Webber and I can match.",
+		TRINKET_37 = "Drive it through my heart and be done.",
+
+		HALLOWEENCANDY_1 = "Oh... it's... g-good.",
+        HALLOWEENCANDY_2 = "The most delicious lie.",
+        HALLOWEENCANDY_3 = "Sigh. At least it's honest.",
+        HALLOWEENCANDY_4 = "Don't worry, Webber, it's just candy.",
+        HALLOWEENCANDY_5 = "Nine lives are not enough to save you from my hungry maw...",
+        HALLOWEENCANDY_6 = "Lumps of bitter sorrow.",
+        HALLOWEENCANDY_7 = "Life is a swirling abyss of suffering and disappointment.",
+        HALLOWEENCANDY_8 = "This is... fun...",
+        HALLOWEENCANDY_9 = "As perplexing as it is delicious.",
+        HALLOWEENCANDY_10 = "This is... fun...",
+        HALLOWEENCANDY_11 = "You have to bite their heads off first... heehee...",
+        CANDYBAG = "It's for putting nice things in...",
 
 		TRUNKVEST_SUMMER = "Skin to wear over your skin.",
 		TRUNKVEST_WINTER = "It may warm the body, but what of the spirit?",

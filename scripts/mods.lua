@@ -5,11 +5,11 @@ local ModWarningScreen = require "screens/modwarningscreen"
 
 MOD_API_VERSION = 10
 
-AddModReleaseID( "R01_ANR_PART1" )
-
 -----------------------------------------------------------------------------------------------
 -- Last Release ID added is the current
-if true or BRANCH == "staging" then
+AddModReleaseID( "R01_ANR_PART1" )
+
+if BRANCH == "staging" then
 	AddModReleaseID( "R02_ANR_WARTSANDALL" )
 	AddModReleaseID( "R03_ANR_ARTSANDCRAFTS" )
 end

@@ -59,6 +59,19 @@ local ExampleLayout =
 								},
 							scale = 1.5
 						},
+		["HalloweenPumpkins"] = 
+						{
+							type = LAYOUT.CIRCLE_RANDOM,
+							defs = 
+								{
+								 	unknown_plant = { "pumpkin" },
+								},
+							count = 
+								{
+									unknown_plant = 15,
+								},
+							scale = 1.5
+						},
 		["TreeFarm"] = 
 						{
 							type = LAYOUT.GRID,
@@ -237,6 +250,11 @@ local ExampleLayout =
             start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
             fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
             layout_position = LAYOUT_POSITION.CENTER,
+            
+			defs={
+				flower={IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) and "pumpkin_lantern" or "flower"},
+			},
+
         }),
 		["CaveStart"] = StaticLayout.Get("map/static_layouts/cave_start", {
             start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,

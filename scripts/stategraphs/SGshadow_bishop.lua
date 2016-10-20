@@ -70,6 +70,7 @@ local states =
                 inst.sg:AddStateTag("noattack")
                 inst.components.health:SetInvincible(true)
                 DoSwarmFX(inst)
+                inst.SoundEmitter:PlaySound(inst.sounds.attack, "attack")
             end),
         },
 
@@ -86,6 +87,7 @@ local states =
         onexit = function(inst)
             if not inst.sg.statemem.attack then
                 inst.components.health:SetInvincible(false)
+                inst.SoundEmitter:KillSound("attack")
             end
         end,
     },
@@ -145,6 +147,7 @@ local states =
             inst.sg.statemem.fxtask:Cancel()
             if not inst.sg.statemem.attack then
                 inst.components.health:SetInvincible(false)
+                inst.SoundEmitter:KillSound("attack")
             end
         end,
     },
@@ -192,6 +195,7 @@ local states =
             if not inst.sg.statemem.attack then
                 inst.components.health:SetInvincible(false)
             end
+            inst.SoundEmitter:KillSound("attack")
         end,
     },
 
@@ -208,6 +212,7 @@ local states =
             TimeEvent(21 * FRAMES, function(inst)
                 inst.sg:RemoveStateTag("noattack")
                 inst.sg:RemoveStateTag("busy")
+                inst.components.health:SetInvincible(false)
             end),
         },
 
@@ -230,9 +235,21 @@ ShadowChessStates.AddIdle(states, "idle_loop")
 ShadowChessStates.AddLevelUp(states, "transform", 22, 58, 95)
 ShadowChessStates.AddTaunt(states, "taunt", 3, 12, 47)
 ShadowChessStates.AddHit(states, "hit", 0, 14)
-ShadowChessStates.AddDeath(states, "disappear", 20, nil)
-ShadowChessStates.AddEvolvedDeath(states, "death", 25, nil)
-ShadowChessStates.AddDespawn(states, "disappear")
+ShadowChessStates.AddDeath(states, "disappear", 20,
+{
+    ShadowChessFunctions.DeathSoundTimelineEvent(19 * FRAMES),
+})
+ShadowChessStates.AddEvolvedDeath(states, "death", 25,
+{
+    ShadowChessFunctions.DeathSoundTimelineEvent(26 * FRAMES),
+    ShadowChessFunctions.DeathSoundTimelineEvent(38 * FRAMES),
+    ShadowChessFunctions.DeathSoundTimelineEvent(41 * FRAMES),
+    ShadowChessFunctions.DeathSoundTimelineEvent(55 * FRAMES),
+})
+ShadowChessStates.AddDespawn(states, "disappear",
+{
+    ShadowChessFunctions.DeathSoundTimelineEvent(19 * FRAMES),
+})
 
 CommonStates.AddWalkStates(states)
 

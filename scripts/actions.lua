@@ -964,6 +964,10 @@ ACTIONS.SLEEPIN.fn = function(act)
     end
 end
 
+ACTIONS.CHANGEIN.strfn = function(act)
+    return act.target ~= nil and act.target:HasTag("dressable") and "DRESSUP" or nil
+end
+
 ACTIONS.CHANGEIN.fn = function(act)
     if act.doer ~= nil and
         act.target ~= nil and

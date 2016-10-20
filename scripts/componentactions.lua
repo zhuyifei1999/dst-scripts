@@ -436,7 +436,7 @@ local COMPONENT_ACTIONS =
         end,
 
         repairer = function(inst, doer, target, actions, right)
-            if right then
+            if right and not (doer.replica.inventory ~= nil and doer.replica.inventory:IsHeavyLifting()) then
                 for k, v in pairs(MATERIALS) do
                     if target:HasTag("repairable_"..v) then
                         if (inst:HasTag("work_"..v) and target:HasTag("workrepairable"))

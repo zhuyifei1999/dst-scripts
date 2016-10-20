@@ -95,6 +95,10 @@ AddRoom("BGDeciduous", {
 					value = GROUND.DECIDUOUS,
 					tags = {"ExitPiece", "Chester_Eyebone"},
 					contents =  {
+					                countprefabs= {
+					                    pumpkin = function () return IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) and (0 + math.random(3)) or 0 end,
+					                },
+
 					                distributepercent = .2,
 					                distributeprefabs=
 					                {

@@ -174,7 +174,11 @@ STRINGS =
         GOHOME = "Go Home",
         DIG = "Dig",
         SLEEPIN = "Sleep",
-        CHANGEIN = "Use",
+        CHANGEIN =
+        {
+            GENERIC = "Use",
+            DRESSUP = "Dress Up",
+        },
         EQUIP = "Equip",
         TERRAFORM = "Dig",
         UNEQUIP =
@@ -769,6 +773,12 @@ STRINGS =
         TRINKET_29 = "Black Rook",
         TRINKET_30 = "White Knight",
         TRINKET_31 = "Black Knight",
+        TRINKET_32 = "Cubic Zirconia Ball", -- Crystal Ball
+        TRINKET_33 = "Spider Ring", -- Spider Ring
+        TRINKET_34 = "Monkey Paw", -- Hand / Monkey Paw?
+        TRINKET_35 = "Empty Elixir", -- Empty Potion Bottle
+        TRINKET_36 = "Faux Fangs", -- Vampire Teeth
+        TRINKET_37 = "Broken Stake", -- Wooden Stake
 
         CARROT_PLANTED = "Carrot",
         LEIF = "Treeguard",
@@ -1184,6 +1194,19 @@ STRINGS =
         SHADOW_ROOK = "Shadow Rook",
         SHADOW_KNIGHT = "Shadow Knight",
         SHADOW_BISHOP = "Shadow Bishop",
+        
+        HALLOWEENCANDY_1 = "Candy Apple",
+        HALLOWEENCANDY_2 = "Candy Corn",
+        HALLOWEENCANDY_3 = "Not-So-Candy Corn",
+        HALLOWEENCANDY_4 = "Gummy Spider",
+        HALLOWEENCANDY_5 = "Catcoon Candy",
+        HALLOWEENCANDY_6 = "\"Raisins\"",
+        HALLOWEENCANDY_7 = "Raisins",
+        HALLOWEENCANDY_8 = "Ghost Pop",
+        HALLOWEENCANDY_9 = "Jelly Worm",
+        HALLOWEENCANDY_10 = "Tentacle Lolli",
+        HALLOWEENCANDY_11 = "Choco Pigs",
+        CANDYBAG = "Candy Bag",
     },
 
     DIRECTIONS =
@@ -1423,6 +1446,8 @@ STRINGS =
         CHESSPIECE_FORMAL_BUILDER = "Behind every queen is a dapper king.",
         CHESSPIECE_HORNUCOPIA_BUILDER = "A sculpture for a starving artist.",
         CHESSPIECE_PIPE_BUILDER = "Put this on your wheel and sculpt it.",
+
+        CANDYBAG = "Only carries Hallowed Nights goodies.",
     },
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
@@ -2854,6 +2879,19 @@ STRINGS.UI =
         WILDERNESS = "Wilderness",
         ENDLESS = "Endless",
         EMPTY_SERVER = "The server is empty.",
+        PERF_HOST_LEVELS =
+        {
+			"Host Performance: Good",
+			"Host Performance: Okay",
+			"Host Performance: Bad",
+        },
+        PERF_CLIENT_LEVELS =
+        {
+			"Client Performance: Good",
+			"Client Performance: Okay",
+			"Client Performance: Bad",
+        },
+        PERF_CLIENT_LEVEL_UNKNOWN = "Client Performance: Unknown",
     },
 
     COMMANDSSCREEN =
@@ -3159,6 +3197,7 @@ STRINGS.UI =
         WILDFIRES = "Wildfires",
         TOUCHSTONE = "Touch Stones",
         BOONS = "Failed Survivors",
+        SPECIALEVENT = "Events",
 
         PREFABSWAPS = "Changing Resources",
         PREFABSWAPS_START = "Starting Resource Variety",
@@ -4487,6 +4526,8 @@ STRINGS.UI =
         PLUSSTART = "Plus",
         DARKSTART = "Dark",
         CAVESTART = "Caves",
+        
+        EVENT_HALLOWEDNIGHTS_2016 = "Hallowed Nights",
     },
     
     SAVELOAD = 

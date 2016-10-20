@@ -13,6 +13,14 @@ local images = {
     {atlas="images/bg_spiral_fill8.xml", tex="bg_image8.tex"},
 }
 
+if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
+	images = {
+		{atlas="images/bg_spiral_fill_halloween1.xml", tex="bg_image1.tex"},
+		{atlas="images/bg_spiral_fill_halloween2.xml", tex="bg_image2.tex"},
+		{atlas="images/bg_spiral_fill_halloween3.xml", tex="bg_image3.tex"},
+	}
+end
+
 local LoadingWidget = Class(Widget, function(self, imageRand)
     Widget._ctor(self, "LoadingWidget")
     self.initialized = false

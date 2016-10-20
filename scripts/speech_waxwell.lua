@@ -906,6 +906,7 @@ return {
 			PICKED = "And now we wait.",
 			DISEASED = "What has brought this blight upon my world?",
 			DISEASING = "Looks a little off, if you ask me.",
+			BURNING = "It better not start talking to me.",
 		},
 		BERRYBUSH_JUICY =
 		{
@@ -915,6 +916,7 @@ return {
 			PICKED = "I fear I'll have to wait.",
 			DISEASED = "What has brought this blight upon my world?",
 			DISEASING = "Looks a little off, if you ask me.",
+			BURNING = "It better not start talking to me.",
 		},
 		BIRDCAGE =
 		{
@@ -1698,6 +1700,25 @@ return {
         TRINKET_29 = "It is still beholden to the king.",
         TRINKET_30 = "Not a pawn, but still a minion.",
         TRINKET_31 = "Not a pawn, but still a minion.",
+        TRINKET_32 = "Amateur magic for children.",
+        TRINKET_33 = "The opposite of dapper.",
+        TRINKET_34 = "I'm done tampering with magical oddities, thank-you.",
+        TRINKET_35 = "I'm not in the habit of imbibing strange liquids.",
+		TRINKET_36 = "Permanently bared.",
+		TRINKET_37 = "I told you people, I am *not* a vampire!",
+
+		HALLOWEENCANDY_1 = "Oh good, it's solid candy. I feared something healthy had snuck in.",
+        HALLOWEENCANDY_2 = "Waxy, just like me.",
+        HALLOWEENCANDY_3 = "Who is making all this candy, exactly?",
+        HALLOWEENCANDY_4 = "Black licorice, my favorite.",
+        HALLOWEENCANDY_5 = "Almost endearing. Almost.",
+        HALLOWEENCANDY_6 = "A mystery I'm not keen on solving.",
+        HALLOWEENCANDY_7 = "I am much more disappointed than I thought I'd be.",
+        HALLOWEENCANDY_8 = "No one is above enjoying a good lollipop.",
+        HALLOWEENCANDY_9 = "How the tables have turned, worm.",
+        HALLOWEENCANDY_10 = "No one is above enjoying a good lollipop.",
+        HALLOWEENCANDY_11 = "Eating them makes me feel powerful.",
+        CANDYBAG = "That's our sugar-sack.",
 
 		TRUNKVEST_SUMMER = "It's more of a fall vest.",
 		TRUNKVEST_WINTER = "It's so hard to look fashionable in the winter.",

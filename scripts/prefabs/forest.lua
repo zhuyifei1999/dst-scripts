@@ -228,6 +228,7 @@ local function master_postinit(inst)
     inst:AddComponent("forestpetrification")
     inst:AddComponent("chessunlocks")
     inst:AddComponent("retrofitforestmap_anr")
+    inst:AddComponent("specialeventsetup")
 
     if METRICS_ENABLED then
         inst:AddComponent("worldoverseer")

@@ -936,6 +936,7 @@ return {
 			PICKED = "Eating part is gone.",
 			DISEASED = "Is weak. Sickly!",
 			DISEASING = "Is looking shrivelly.",
+            BURNING = "Ah! Is burning!",
 		},
 		BERRYBUSH_JUICY =
 		{
@@ -945,6 +946,7 @@ return {
 			PICKED = "Eating part is gone.",
 			DISEASED = "Is weak. Sickly!",
 			DISEASING = "Is looking shrivelly.",
+            BURNING = "Ah! Is burning!",
 		},
 		BIRDCAGE =
 		{
@@ -1697,6 +1699,25 @@ return {
         TRINKET_29 = "Junk from braingame!",
         TRINKET_30 = "Junk from braingame!",
         TRINKET_31 = "Junk from braingame!",
+        TRINKET_32 = "Wolfgang does not like spooky magics.",
+        TRINKET_33 = "Wolfgang not wear creepy finger-spider.",
+        TRINKET_34 = "Is soft, but spooky.",
+        TRINKET_35 = "Little potion make Wolfgang mighty?",
+        TRINKET_36 = "Gah! Do not scare Wolfgang!",
+        TRINKET_37 = "Stab-stick is useless now.",
+
+        HALLOWEENCANDY_1 = "Wolfgang eat many bushels!",
+        HALLOWEENCANDY_2 = "Little corns get stuck in Wolfgang's mighty moustache!",
+        HALLOWEENCANDY_3 = "Very bland. Reminds Wolfgang of back home candy!",
+        HALLOWEENCANDY_4 = "Wolfgang feel strong when mashing tiny spiders between teeth!",
+        HALLOWEENCANDY_5 = "Wolfgang not sure he has heart to eat.",
+        HALLOWEENCANDY_6 = "Maybe is chocolate?",
+        HALLOWEENCANDY_7 = "Little shrivelly sadlumps.",
+        HALLOWEENCANDY_8 = "Is tasty little treat!",
+        HALLOWEENCANDY_9 = "Is look yucky, but taste okay.",
+        HALLOWEENCANDY_10 = "Is tasty little treat!",
+        HALLOWEENCANDY_11 = "Little men of chocolate stand no chance against Wolfgang!",
+        CANDYBAG = "Is little bag for scary goodies!",
         
 		TRUNKVEST_SUMMER = "Is warm fuzzy nose.",
 		TRUNKVEST_WINTER = "Cozy nosy!",

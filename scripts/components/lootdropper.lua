@@ -283,7 +283,7 @@ function LootDropper:DropLoot(pt)
             --     while hammering AFTER burnt give back good ingredients.
             --     It *should* ALWAYS return ash based on certain types of
             --     ingredients (wood), but we'll let them have this one :O
-            elseif not isstructure then
+            elseif (not isstructure and not self.inst:HasTag("tree")) or self.inst:HasTag("hive") then -- because trees have specific burnt loot and "hive"s are structures...
                 prefabs[k] = "ash"
             end
         end

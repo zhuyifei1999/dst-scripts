@@ -708,6 +708,7 @@ return {
 			PICKED = "The fruits have been snatched.",
 			DISEASED = "Disease festers within its soul.",
 			DISEASING = "It is weakening before mine eyes!",
+            BURNING = "Consumed by passionate flame!",
 		},
 		BERRYBUSH_JUICY =
 		{
@@ -717,6 +718,7 @@ return {
 			PICKED = "The rabbit food is all gone.",
 			DISEASED = "Disease festers within its soul.",
 			DISEASING = "It is weakening before mine eyes!",
+            BURNING = "Consumed by passionate flame!",
 		},
 		BIRDCAGE =
 		{
@@ -1708,6 +1710,25 @@ return {
         TRINKET_29 = "Even the feeble can wage mighty battle upon the board.",
         TRINKET_30 = "Tis not a unicorn.",
         TRINKET_31 = "Tis not a unicorn.",
+        TRINKET_32 = "Reveal mine destiny, oh great fates!",
+        TRINKET_33 = "The creature has been forever imprisoned upon the ring.",
+        TRINKET_34 = "Begone, foul magic!",
+        TRINKET_35 = "Twas a poison, most assuredly.",
+        TRINKET_36 = "Evidence of the undead. Stay wary, my allies!",
+        TRINKET_37 = "For warding off Loki's minions.",
+
+        HALLOWEENCANDY_1 = "How sinister! I nearly mistook it for a true apple!",
+        HALLOWEENCANDY_2 = "A clever ruse. It is not corn at all.",
+        HALLOWEENCANDY_3 = "A confection to strike terror into any warrior's heart!",
+        HALLOWEENCANDY_4 = "Monsters, prepare to do battle with a Viking's teeth!",
+        HALLOWEENCANDY_5 = "The perfect treat!",
+        HALLOWEENCANDY_6 = "What have I done to anger the gods so?",
+        HALLOWEENCANDY_7 = "That monarch swine insults me.",
+        HALLOWEENCANDY_8 = "I shall uncover its secret center!",
+        HALLOWEENCANDY_9 = "The battle was mighty, yet in the end the worm was consumed!",
+        HALLOWEENCANDY_10 = "I shall uncover its secret center!",
+        HALLOWEENCANDY_11 = "Tis not meat, but tis close enough!",
+        CANDYBAG = "That we might carry our sweetest plunders!",
 
 		TRUNKVEST_SUMMER = "It will not suffice in the frozen wastes.",
 		TRUNKVEST_WINTER = "The warm pelt of a bested creature. A fine garment.",

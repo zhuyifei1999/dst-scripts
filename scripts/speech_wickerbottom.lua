@@ -1267,6 +1267,7 @@ return
             WITHERED = "Ardisia crenata don't do well in extreme heat.",
             DISEASED = "It's afflicted with an agrarian disease beyond my curing.",
             DISEASING = "Hm... The leaves are curling at the edges.",
+            BURNING = "Combustion!",
         },
 
         BERRYBUSH_JUICY =
@@ -1277,6 +1278,7 @@ return
             PICKED = "It will have to wait.",
             DISEASED = "It's afflicted with an agrarian disease beyond my curing.",
             DISEASING = "Hm... The leaves are curling at the edges.",
+            BURNING = "Combustion!",
         },
 
         DUG_GRASS = "It requires soil to grow.",
@@ -1497,6 +1499,25 @@ return
         TRINKET_29 = "Calling it a \"castle\" is plainly incorrect.",
         TRINKET_30 = "Knights are better pieces when they're active in the center.",
         TRINKET_31 = "In German it is referred to as the \"springer\".",
+        TRINKET_32 = "Oh, I got my hopes up for a nice crystal ball.",
+        TRINKET_33 = "A decorative arachnid adornment! How darling!",
+        TRINKET_34 = "The paw grants three wishes, with terribly ironic results. So the story goes.",
+        TRINKET_35 = "Odorless. I believe it may have been sugar water.",
+        TRINKET_36 = "Dunk those in boiling water before wearing them, dear.",
+        TRINKET_37 = "Luckily it is much too brittle to inflict any real damage.",
+
+        HALLOWEENCANDY_1 = "Remember to eat in moderation, children.",
+        HALLOWEENCANDY_2 = "Delightfully colored kernels of high fructose corn syrup.",
+        HALLOWEENCANDY_3 = "Hmm, well, at least there's a healthy option on the table.",
+        HALLOWEENCANDY_4 = "I was always a fan of black licorice, myself.",
+        HALLOWEENCANDY_5 = "It almost seems a shame to eat them.",
+        HALLOWEENCANDY_6 = "I'd prefer none of you eat these at all.",
+        HALLOWEENCANDY_7 = "I'll take the ones you don't want, dears.",
+        HALLOWEENCANDY_8 = "How darling!",
+        HALLOWEENCANDY_9 = "I had best not hear of any tummy aches later.",
+        HALLOWEENCANDY_10 = "How darling!",
+        HALLOWEENCANDY_11 = "I fear I've a terrible weakness for a spot of chocolate.",
+        CANDYBAG = "A festive bag for seasonal treats.",
 
         SKULLCHEST = "A container resembling a cranium.",
         PANDORASCHEST = "An artifact which may contain other artifacts.",

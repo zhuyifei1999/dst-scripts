@@ -357,6 +357,33 @@ params.minotaurchest = params.treasurechest
 params.dragonflychest = params.shadowchester
 
 --------------------------------------------------------------------------
+--[[ candybag ]]
+--------------------------------------------------------------------------
+
+params.candybag =
+{
+    widget =
+    {
+        slotpos = {},
+        animbank = "ui_krampusbag_2x8",
+        animbuild = "ui_krampusbag_2x8",
+        pos = Vector3(-5, -120, 0),
+    },
+    issidewidget = true,
+    type = "pack",
+}
+
+for y = 0, 6 do
+    table.insert(params.candybag.widget.slotpos, Vector3(-162, -75 * y + 240, 0))
+    table.insert(params.candybag.widget.slotpos, Vector3(-162 + 75, -75 * y + 240, 0))
+end
+
+function params.candybag.itemtestfn(container, item, slot)
+	return item:HasTag("halloweencandy") or (string.find(item.prefab, "trinket_") == 1)
+end
+
+
+--------------------------------------------------------------------------
 
 for k, v in pairs(params) do
     containers.MAXITEMSLOTS = math.max(containers.MAXITEMSLOTS, v.widget.slotpos ~= nil and #v.widget.slotpos or 0)

@@ -715,6 +715,7 @@ return {
 			PICKED = "Maybe they'll grow back?",
 			DISEASED = "It looks pretty sick.",
 			DISEASING = "Err, something's not right.",
+			BURNING = "It's very much on fire.",
 		},
 		BERRYBUSH_JUICY =
 		{
@@ -724,6 +725,7 @@ return {
 			PICKED = "The bush is working hard on the next batch.",
 			DISEASED = "It looks pretty sick.",
 			DISEASING = "Err, something's not right.",
+			BURNING = "It's very much on fire.",
 		},
 		BIGFOOT = "That is one biiig foot.",
 		BIRDCAGE =
@@ -1695,7 +1697,26 @@ return {
         TRINKET_29 = "How Machiavellian.",
         TRINKET_30 = "Honestly, he just leaves them out wherever.",
         TRINKET_31 = "Honestly, he just leaves them out wherever.",
-		
+        TRINKET_32 = "I know someone who'd have a ball with this!",
+        TRINKET_33 = "I hope this doesn't attract spiders.",
+        TRINKET_34 = "Let's make a wish. For science.",
+        TRINKET_35 = "Hard to find a good flask around here.",
+		TRINKET_36 = "I might need these after all that candy.",
+		TRINKET_37 = "I don't believe in the supernatural.",
+
+		HALLOWEENCANDY_1 = "The cavities are probably worth it, right?",
+        HALLOWEENCANDY_2 = "What corruption of science grew these?",
+        HALLOWEENCANDY_3 = "It's... corn.",
+        HALLOWEENCANDY_4 = "They wriggle on the way down.",
+        HALLOWEENCANDY_5 = "My teeth are going to have something to say about this tomorrow.",
+        HALLOWEENCANDY_6 = "I... don't think I'll be eating those.",
+        HALLOWEENCANDY_7 = "Everyone'll be raisin' a fuss over these.",
+        HALLOWEENCANDY_8 = "Only a sucker wouldn't love this.",
+        HALLOWEENCANDY_9 = "Sticks to your teeth.",
+        HALLOWEENCANDY_10 = "Only a sucker wouldn't love this.",
+        HALLOWEENCANDY_11 = "Much better tasting than the real thing.",
+        CANDYBAG = "It's some sort of delicious pocket dimension for sugary treats.",
+
 		BISHOP_CHARGE_HIT = "Ow!",
 		TRUNKVEST_SUMMER = "Wilderness casual.",
 		TRUNKVEST_WINTER = "Winter survival gear.",

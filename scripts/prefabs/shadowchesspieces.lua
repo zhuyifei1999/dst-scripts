@@ -193,7 +193,7 @@ local function OnMusicDirty(inst)
 end
 
 local function StartMusic(inst)
-    if not inst._music:value() then
+    if not (inst._music:value() or inst.components.health:IsDead()) then
         inst._music:set(true)
         OnMusicDirty(inst)
     end
@@ -209,22 +209,22 @@ end
 --------------------------------------------------------------------------
 
 local function QueueLevelUp(inst, source)
-	if source ~= nil and source:IsValid()
-			and inst.prefab ~= source.prefab 
-			and inst.level < 3
-			and source.level > GetTableSize(inst.levelupsource)			-- only level up if the source's level is equal or greater then this inst's level (test #inst.levelupsource because there may be some queued)
-			and not table.contains(inst.levelupsource, source.prefab) then
+    if source ~= nil and source:IsValid()
+            and inst.prefab ~= source.prefab 
+            and inst.level < 3
+            and source.level > GetTableSize(inst.levelupsource) -- only level up if the source's level is equal or greater then this inst's level (test #inst.levelupsource because there may be some queued)
+            and not table.contains(inst.levelupsource, source.prefab) then
 
-		table.insert(inst.levelupsource, source.prefab)
-		return true
-	end
+        table.insert(inst.levelupsource, source.prefab)
+        return true
+    end
 
-	return false
+    return false
 end
 
 local function WantsToLevelUp(inst)
-	local target_level = #inst.levelupsource + 1
-	return inst.level < target_level
+    local target_level = #inst.levelupsource + 1
+    return inst.level < target_level
 end
 
 --------------------------------------------------------------------------
@@ -258,9 +258,11 @@ local function commonlevelup(inst, overridelevel)
         if level > 1 then
             inst:AddTag("epic")
             StartMusic(inst)
+            inst.sounds.levelup = "dontstarve/sanity/transform/three"
         else
             inst:RemoveTag("epic")
             StopMusic(inst)
+            inst.sounds.levelup = "dontstarve/sanity/transform/two"
         end
 
         return level, scale
@@ -285,6 +287,8 @@ local function rooklevelup(inst, overridelevel)
         else
             inst.AnimState:ClearAllOverrideSymbols()
         end
+
+        inst.sounds.attack = "dontstarve/sanity/rook/attack_"..tostring(level)
     end
 end
 
@@ -309,6 +313,8 @@ local function knightlevelup(inst, overridelevel)
         else
             inst.AnimState:ClearAllOverrideSymbols()
         end
+
+        inst.sounds.attack = "dontstarve/sanity/knight/attack_"..tostring(level)
     end
 end
 
@@ -330,6 +336,8 @@ local function bishoplevelup(inst, overridelevel)
         else
             inst.AnimState:ClearAllOverrideSymbols()
         end
+
+        inst.sounds.attack = "dontstarve/sanity/bishop/attack_"..tostring(level)
     end
 end
 
@@ -339,21 +347,21 @@ local function onsave(inst, data)
     if inst.level > 1 then
         data.level = inst.level
     end
-    
+
     if next(inst.levelupsource) ~= nil then      -- dont write if the table is empty
-		data.levelupsource = inst.levelupsource
+        data.levelupsource = inst.levelupsource
     end
 end
 
 local function onpreload(inst, data)
-	inst.levelupsource = {}
-	
+    inst.levelupsource = {}
+
     if data ~= nil then
-		inst.levelupsource = data.levelupsource or {}
-		
-		if data.level ~= nil then
-			inst:LevelUp(data.level)
-		end
+        inst.levelupsource = data.levelupsource or {}
+
+        if data.level ~= nil then
+            inst:LevelUp(data.level)
+        end
     end
 end
 
@@ -379,21 +387,6 @@ local function OnEntitySleep(inst)
     end
     inst._despawntask = inst:DoTaskInTime(TUNING.SHADOW_CHESSPIECE_DESPAWN_TIME, OnDespawn)
 end
-
---------------------------------------------------------------------------
-
-local sounds =
-{
-    attack = "dontstarve/sanity/creature1/attack",
-    attack_grunt = "dontstarve/sanity/creature1/attack_grunt",
-    death = "dontstarve/sanity/creature1/die",
-    idle = "dontstarve/sanity/creature1/idle",
-    taunt = "dontstarve/sanity/creature1/taunt",
-    appear = "dontstarve/sanity/creature1/appear",
-    disappear = "dontstarve/sanity/creature1/dissappear",
-    levelup = "dontstarve/sanity/creature1/taunt",
-    hit = "dontstarve/sanity/creature1/dissappear",
-}
 
 --------------------------------------------------------------------------
 
@@ -442,7 +435,10 @@ local function commonfn(name, sixfaced)
     StartTracking(inst)
 
     inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
+
     inst:AddComponent("health")
+    inst.components.health.nofadeout = true
+
     inst:AddComponent("combat")
     inst.components.combat:SetRetargetFunction(3, retargetfn)
     inst.components.combat:SetKeepTargetFunction(keeptargetfn)
@@ -458,6 +454,7 @@ local function commonfn(name, sixfaced)
     inst.components.epicscare:SetRange(TUNING.SHADOW_CHESSPIECE_EPICSCARE_RANGE)
 
     inst:ListenForEvent("attacked", OnAttacked)
+    inst:ListenForEvent("death", StopMusic)
 
     inst.OnSave = onsave
     inst.OnPreLoad = onpreload
@@ -469,8 +466,13 @@ local function commonfn(name, sixfaced)
     inst.OnEntitySleep = OnEntitySleep
 
     inst.level = 1
-   	inst.levelupsource = {}
-    inst.sounds = sounds
+    inst.levelupsource = {}
+    inst.sounds =
+    {
+        --common sounds
+        death = "dontstarve/sanity/death_pop",
+        levelup = "dontstarve/sanity/transform/two",
+    }
 
     inst:SetStateGraph("SG"..name)
     inst:SetBrain(brains[name])
@@ -491,6 +493,15 @@ local function rookfn()
     inst.components.combat:SetAttackPeriod(TUNING.SHADOW_ROOK.ATTACK_PERIOD[1])
     inst.components.combat:SetRange(TUNING.SHADOW_ROOK.ATTACK_RANGE, TUNING.SHADOW_ROOK.HIT_RANGE)
 
+    inst.sounds.attack = "dontstarve/sanity/rook/attack_1"
+    inst.sounds.attack_grunt = "dontstarve/sanity/rook/attack_grunt"
+    inst.sounds.die = "dontstarve/sanity/rook/die"
+    inst.sounds.idle = "dontstarve/sanity/rook/idle"
+    inst.sounds.taunt = "dontstarve/sanity/rook/taunt"
+    inst.sounds.disappear = "dontstarve/sanity/rook/dissappear"
+    inst.sounds.hit = "dontstarve/sanity/rook/hit_response"
+    inst.sounds.teleport = "dontstarve/sanity/rook/teleport"
+
     inst.LevelUp = rooklevelup
 
     return inst
@@ -509,6 +520,14 @@ local function knightfn()
     inst.components.combat:SetAttackPeriod(TUNING.SHADOW_KNIGHT.ATTACK_PERIOD[1])
     inst.components.combat:SetRange(TUNING.SHADOW_KNIGHT.ATTACK_RANGE, TUNING.SHADOW_KNIGHT.ATTACK_RANGE_LONG)
 
+    inst.sounds.attack = "dontstarve/sanity/knight/attack_1"
+    inst.sounds.attack_grunt = "dontstarve/sanity/knight/attack_grunt"
+    inst.sounds.die = "dontstarve/sanity/knight/die"
+    inst.sounds.idle = "dontstarve/sanity/knight/idle"
+    inst.sounds.taunt = "dontstarve/sanity/knight/taunt"
+    inst.sounds.disappear = "dontstarve/sanity/knight/dissappear"
+    inst.sounds.hit = "dontstarve/sanity/knight/hit_response"
+
     inst.LevelUp = knightlevelup
 
     return inst
@@ -526,6 +545,13 @@ local function bishopfn()
     inst.components.combat:SetDefaultDamage(TUNING.SHADOW_BISHOP.DAMAGE[1])
     inst.components.combat:SetAttackPeriod(TUNING.SHADOW_BISHOP.ATTACK_PERIOD[1])
     inst.components.combat:SetRange(TUNING.SHADOW_BISHOP.ATTACK_RANGE[1], TUNING.SHADOW_BISHOP.HIT_RANGE)
+
+    inst.sounds.attack = "dontstarve/sanity/bishop/attack_1"
+    inst.sounds.die = "dontstarve/sanity/bishop/die"
+    inst.sounds.idle = "dontstarve/sanity/bishop/idle"
+    inst.sounds.taunt = "dontstarve/sanity/bishop/taunt"
+    inst.sounds.disappear = "dontstarve/sanity/bishop/dissappear"
+    inst.sounds.hit = "dontstarve/sanity/bishop/hit_response"
 
     inst.LevelUp = bishoplevelup
 

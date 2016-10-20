@@ -12,6 +12,8 @@ local STATES =
     ["buffering"] = { icon = "desync2.tex", blink = 7.5 },
     ["warning"] = { icon = "connectivity2.tex", blink = 5, scale = .75 },
     ["alert"] = { icon = "connectivity1.tex", blink = 7.5, scale = .75 },
+    ["hostwarning"] = { icon = "hostperf2.tex", blink = 5, scale = .75 },
+    ["hostalert"] = { icon = "hostperf1.tex", blink = 7.5, scale = .75 },
 }
 
 local Desync = Class(Widget, function(self, owner)
@@ -28,6 +30,7 @@ local Desync = Class(Widget, function(self, owner)
     self._state = nil
     self._perf = nil
     self._statedirty = false
+    self._showhostperf = nil
     self._step = 0
     self._blinkspeed = 10
     self._delay = SHOW_DELAY
@@ -39,6 +42,10 @@ local Desync = Class(Widget, function(self, owner)
     self.inst:ListenForEvent("desync_buffering", function() self:SetState("buffering") end, owner)
     self.inst:ListenForEvent("desync_resumed", function() self:SetState() end, owner)
 end)
+
+function Desync:ShowHostPerf(show)
+    self._showhostperf = show ~= false or nil
+end
 
 function Desync:OnUpdate(dt)
     if self._perfdelay > dt then
@@ -79,6 +86,33 @@ end
 
 function Desync:RefreshPerf()
     self._perfdelay = PERF_INTERVAL
+
+    if self._showhostperf then
+        local client_objs = TheNet:GetClientTable()
+        if client_objs ~= nil then
+            for i, v in ipairs(client_objs) do
+                if v.performance ~= nil then
+                    if v.performance > 0 then
+                        self:SetPerf(v.performance > 1 and "hostalert" or "hostwarning")
+                        return
+                    elseif v.userid == self.owner.userid and TheNet:GetServerIsClientHosted() then
+                        self:SetPerf()
+                        return
+                    end
+                elseif v.userid == self.owner.userid then
+                    self:SetPerf(
+                        v.netscore ~= nil and (
+                            (v.netscore > 1 and "alert") or
+                            (v.netscore == 1 and "warning")
+                        ) or nil
+                    )
+                    return
+                end
+            end
+        end
+        self:SetPerf()
+        return
+    end
 
     local client = TheNet:GetClientTableForUser(self.owner.userid)
     local perfscore = client ~= nil and (client.netscore --[[or client.performance]]) or -1

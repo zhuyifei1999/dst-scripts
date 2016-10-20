@@ -980,6 +980,7 @@ return {
 			PICKED = "But I want more berries!",
 			DISEASED = "Burn the sick!",
 			DISEASING = "Blech. You smell.",
+			BURNING = "Yes!! Burn!!",
 		},
 		BERRYBUSH_JUICY =
 		{
@@ -989,6 +990,7 @@ return {
 			PICKED = "Make mooooore!",
 			DISEASED = "Burn the sick!",
 			DISEASING = "Blech. You smell.",
+			BURNING = "Yes!! Burn!!",
 		},
 		BIRDCAGE =
 		{
@@ -1752,6 +1754,25 @@ return {
         TRINKET_29 = "Chess is for pompous dorks.",
         TRINKET_30 = "Probably the most boring game ever invented.",
         TRINKET_31 = "Probably the most boring game ever invented.",
+        TRINKET_32 = "Just a big dumb ball.",
+        TRINKET_33 = "Ewww! Who would ever wear that!",
+        TRINKET_34 = "Ughhh! That's so nasty!",
+        TRINKET_35 = "Hey Wes! Dare you to drink the last bit!",
+		TRINKET_36 = "Pfft, they're not even sharp.",
+		TRINKET_37 = "Looks like firewood to me.",
+
+		HALLOWEENCANDY_1 = "That's wayyyy better than a regular apple!",
+        HALLOWEENCANDY_2 = "Do people actually eat these or are they just a bad joke?",
+        HALLOWEENCANDY_3 = "Ewwww it's corn flavored!",
+        HALLOWEENCANDY_4 = "Eww! I hate black licorice!",
+        HALLOWEENCANDY_5 = "These are a meow-uthful.",
+        HALLOWEENCANDY_6 = "Hey Wolfgang, eat one and tell us what it is!",
+        HALLOWEENCANDY_7 = "Burn them!!!",
+        HALLOWEENCANDY_8 = "Yesssss! Lollipops!",
+        HALLOWEENCANDY_9 = "Why does something so yummy have to look so gross!",
+        HALLOWEENCANDY_10 = "Yesssss! Lollipops!",
+        HALLOWEENCANDY_11 = "I'm gonna need about a dozen of these.",
+        CANDYBAG = "I'm gonna stuff so much candy in there!",
 
 		LAVA_POND_ROCK = "Oh great, another stinkin' rock!",
 		LAVA_POND_ROCK2 = "Oh great, another stinkin' rock!",

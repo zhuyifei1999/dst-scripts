@@ -7,12 +7,21 @@ local function oncanuseaction(self, canuseaction)
     end
 end
 
+local function oncanbedressed(self, canbedressed)
+    if canbedressed then
+        self.inst:AddTag("dressable")
+    else
+        self.inst:RemoveTag("dressable")
+    end
+end
+
 local Wardrobe = Class(function(self, inst)
     self.inst = inst
 
     self.changers = {}
     self.canuseaction = true
     self.canbeshared = nil
+    self.canbedressed = nil
     self.range = 3
     self.changeindelay = 0
     self.onchangeinfn = nil
@@ -30,11 +39,16 @@ end,
 nil,
 {
     canuseaction = oncanuseaction,
+    canbedressed = oncanbedressed,
 })
 
 --Whether this is included in player action collection or not
 function Wardrobe:SetCanUseAction(canuseaction)
     self.canuseaction = canuseaction
+end
+
+function Wardrobe:SetCanBeDressed(canbedressed)
+    self.canbedressed = canbedressed
 end
 
 local function OnIgnite(inst)
@@ -188,7 +202,6 @@ end
 function Wardrobe:ApplySkins(doer, diff)
     if doer.components.skinner ~= nil then
         if diff.base ~= nil then
-			doer.components.skinner:ClearClothing("body")
 			if Prefabs[diff.base] ~= nil and not Prefabs[diff.base].disabled then
 				doer.components.skinner:SetSkinName(diff.base)
 			end
@@ -251,6 +264,7 @@ function Wardrobe:OnRemoveFromEntity()
     self:EndAllChanging()
     self.inst:RemoveEventCallback("onignite", OnIgnite)
     self.inst:RemoveTag("wardrobe")
+    self.inst:RemoveTag("dressable")
 end
 
 Wardrobe.OnRemoveEntity = Wardrobe.EndAllChanging
