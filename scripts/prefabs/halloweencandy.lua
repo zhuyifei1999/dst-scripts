@@ -3,6 +3,23 @@ local assets =
     Asset("ANIM", "anim/halloweencandy.zip"),
 }
 
+local candyinfo =
+{
+	{food=FOODTYPE.GOODIES, health=1, hunger=1, sanity=1},
+	{food=FOODTYPE.GOODIES, health=1, hunger=0, sanity=2},
+	{food=FOODTYPE.VEGGIE, health=1, hunger=2, sanity=0},
+	{food=FOODTYPE.GOODIES, health=1, hunger=1, sanity=1},
+	{food=FOODTYPE.GOODIES, health=1, hunger=1, sanity=1},
+	{food=FOODTYPE.VEGGIE, health=2, hunger=1, sanity=0},
+	{food=FOODTYPE.VEGGIE, health=2, hunger=0, sanity=1},
+	{food=FOODTYPE.GOODIES, health=1, hunger=0, sanity=2},
+	{food=FOODTYPE.GOODIES, health=1, hunger=2, sanity=0},
+	{food=FOODTYPE.GOODIES, health=2, hunger=0, sanity=1},
+	{food=FOODTYPE.GOODIES, health=2, hunger=1, sanity=0},
+}
+
+assert(#candyinfo == NUM_HALLOWEENCANDY)
+
 local function MakeCandy(num)
     local function fn()
         local inst = CreateEntity()
@@ -35,9 +52,10 @@ local function MakeCandy(num)
         inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
 		inst:AddComponent("edible")
-		inst.components.edible.hungervalue = (num % 3 == 0) and 0 or 1
-		inst.components.edible.healthvalue = (num % 3 == 1) and 0 or 1
-		inst.components.edible.sanityvalue = (num % 3 == 2) and 0 or 1
+		inst.components.edible.foodtype = candyinfo[num].food
+		inst.components.edible.hungervalue = candyinfo[num].hunger
+		inst.components.edible.healthvalue = candyinfo[num].health
+		inst.components.edible.sanityvalue = candyinfo[num].sanity
 
         MakeHauntableLaunch(inst)
 

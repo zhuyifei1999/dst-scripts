@@ -935,6 +935,7 @@ FOODTYPE =
     RAW = "RAW", -- things which some animals can eat off the ground, but players need to cook
     BURNT = "BURNT", --For lavae.
     ROUGHAGE = "ROUGHAGE",
+    GOODIES = "GOODIES",
 }
 
 FOODGROUP =
@@ -949,9 +950,10 @@ FOODGROUP =
             FOODTYPE.INSECT,
             FOODTYPE.SEEDS,
             FOODTYPE.GENERIC,
+            FOODTYPE.GOODIES,
         },
     },
-    WOODIE = 
+    WOODIE =
     {
         name = "WOODIE",
         types =
@@ -963,6 +965,7 @@ FOODGROUP =
             FOODTYPE.GENERIC,
             FOODTYPE.WOOD,
             FOODTYPE.ROUGHAGE,
+            FOODTYPE.GOODIES,
         },
     },
     BERRIES_AND_SEEDS =

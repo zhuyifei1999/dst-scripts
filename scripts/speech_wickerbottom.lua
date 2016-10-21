@@ -1478,7 +1478,7 @@ return
         TRINKET_8 = "It reminds me of my bathtub. I could use a long soak.",
         TRINKET_9 = "What a coincidence. My cardigan is missing a button!",
         TRINKET_10 = "I don't appreciate the insinuation, dear.",
-        TRINKET_11 = "Ah, it's a scale replica of that mischievous robot.",
+        TRINKET_11 = "Ah, it's a scale replica of that mischievous robot.", --Lying Robot
         TRINKET_12 = "A muscular hydrostat that's been sat near something hygroscopic.",
         TRINKET_13 = "What a positively, delightfully odd little lady.",
         TRINKET_14 = "I think it's quite lovely, despite the cracks left by age...",

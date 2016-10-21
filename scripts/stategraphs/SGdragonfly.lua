@@ -156,7 +156,7 @@ local states =
             if inst.enraged then
                 inst.AnimState:PlayAnimation("walk_angry")
                 if math.random() < .5 then
-                    nst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/angry")
+                    inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/angry")
                 end
             else
                 inst.AnimState:PlayAnimation("walk")

@@ -67,7 +67,7 @@ local function MakeTrinket(num)
         
         if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
 			if num >= 32 and num <= 37 then
-				inst.components.tradable.halloweencandyvalue = 4
+				inst.components.tradable.halloweencandyvalue = 5
 			end
 		else
 			inst:AddComponent("fuel")

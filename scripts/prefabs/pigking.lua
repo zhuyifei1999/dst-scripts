@@ -49,13 +49,13 @@ local function ontradeforgold(inst, item, giver)
 		local candytypes = { math.random(NUM_HALLOWEENCANDY), math.random(NUM_HALLOWEENCANDY), math.random(NUM_HALLOWEENCANDY) }
 
 		local numcandies = item.components.tradable.halloweencandyvalue or 1
-		numcandies = numcandies + math.random(2)
+		numcandies = numcandies + math.random(2) + 2
 
 		-- only people in costumes get a good amount of candy!		
 		if giver ~= nil and giver:IsValid() and giver.components.skinner ~= nil then
 			local costume = giver.components.skinner:GetClothing().base
 			if costume ~= nil and costume ~= "" and Prefabs[costume] ~= nil and table.contains(Prefabs[costume].tags, "COSTUME") then
-				numcandies = numcandies + math.random(4) + 1
+				numcandies = numcandies + math.random(4) + 2
 			end
 		end
 		
