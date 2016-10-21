@@ -122,7 +122,18 @@ return {
 		INVALID = "I would never.",
 		YUCKY = "I fear consuming that.",
 	},
-	
+    ANNOUNCE_ENCUMBERED =
+    {
+        "I must carry... my own burden...",
+        "I don't... need help...",
+        "Life... is a trial...",
+        "...huff...",
+        "Hhnnfg...",
+        "...Suffering...",
+        "I'm... okay...",
+        "Don't worry... Abby... I got it...",
+    },
+
 	ANNOUNCE_BECOMEGHOST = "oOoooooO!!",
 	ANNOUNCE_GHOSTDRAIN = "The ghosts... Want to play...",
 	ANNOUNCE_PETRIFED_TREES = "A wave of sadness just washed over me...?",

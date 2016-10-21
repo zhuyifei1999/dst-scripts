@@ -581,7 +581,7 @@ local function OnIsWardrobePopUpVisibleDirty(inst)
     if inst._parent ~= nil and inst._parent.HUD ~= nil then
         if not inst.iswardrobepopupvisible:value() then
             inst._parent.HUD:CloseWardrobeScreen()
-        elseif not inst._parent.HUD:OpenWardrobeScreen() then
+        elseif not inst._parent.HUD:OpenWardrobeScreen(inst.wardrobetarget:value()) then
             if not TheWorld.ismastersim then
                 SendRPCToServer(RPC.CloseWardrobe)
             else
@@ -711,8 +711,9 @@ local function EnableMapControls(inst, enable)
     OnPlayerHUDDirty(inst)
 end
 
-local function ShowWardrobePopUp(inst, show)
+local function ShowWardrobePopUp(inst, show, target)
     inst.iswardrobepopupvisible:set(show)
+    inst.wardrobetarget:set(target)
     OnIsWardrobePopUpVisibleDirty(inst)
 end
 
@@ -950,6 +951,7 @@ local function fn()
 
     --Wardrobe variables
     inst.iswardrobepopupvisible = net_bool(inst.GUID, "wardrobe.iswardrobepopupvisible", "iswardrobepopupvisibledirty")
+    inst.wardrobetarget = net_entity(inst.GUID, "wardrobe.wardrobetarget")
 
     --GiftReceiver variables
     inst.hasgift = net_bool(inst.GUID, "giftreceiver.hasgift", "giftsdirty")

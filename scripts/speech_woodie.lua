@@ -132,7 +132,20 @@ return {
 		INVALID = "I don't think my teeth could cut through that.",
 		YUCKY = "I'd rather chew on blubber balls.",
 	},
-	
+    ANNOUNCE_ENCUMBERED =
+    {
+        "Hnff...",
+        "No... Don't get up... Lucy...",
+        "Heavy... Eh...?",
+        "...oof...",
+        "I'll keep... lumberin' along...",
+        "No point... complainin'...",
+        "Work's... gotta get done...",
+        "Nothin' like... honest work...",
+        "I'm more of a chopper than a lifter...",
+        "Huff... huff...",
+    },
+
 	ANNOUNCE_BECOMEGHOST = "oOooOOOO!!",
 	ANNOUNCE_GHOSTDRAIN = "I'm goin', like, nutso over here...",
 
@@ -1677,43 +1690,43 @@ return {
 		TRAP_TEETH_MAXWELL = "That's not playing fair, eh?",
 		TREASURECHEST_TRAP = "Something is not quite right aboot that chest.",
 		MOOSE_NESTING_GROUND = "Where's the pyromaniac? This needs to burn.",
-		TRINKET_1 = "I used to play that game.",
-		TRINKET_2 = "Much kazoo about nothing.",
-		TRINKET_3 = "Reminds me of a story I heard once.",
-		TRINKET_4 = "Wolfgang would appreciate that moustache.",
-		TRINKET_5 = "It needs a robot arm, eh?",
-		TRINKET_6 = "They're not good any more, eh?",
-		TRINKET_7 = "'Might take it to the kid.",
-		TRINKET_8 = "Reminds me... gotta convince Willow to take a *real* bath.",
-		TRINKET_9 = "I just sew my clothing shut around me when I put it on.",
-		TRINKET_10 = "Choppers for old folks.",
-		TRINKET_11 = "Quiet, you!",
-		TRINKET_12 = "It's all withered.",
-		TRINKET_13 = "She looks friendly.",
-		TRINKET_14 = "Gaudy as all get-out.",
-        TRINKET_15 = "And here I am just a pawn, eh?",
-        TRINKET_16 = "And here I am just a pawn, eh?",
-        TRINKET_17 = "It needs to be straightened, eh?",
-        TRINKET_18 = "I would have liked this when I was a boy.",
-        TRINKET_19 = "It keeps falling over, eh?",
-        TRINKET_20 = "Wigfrid keeps using it to \"spar\" with me and Lucy. We're afraid.",
-        TRINKET_21 = "It belongs in a kitchen, not in the woods.",
-        TRINKET_22 = "I'd rather have some proper rope.",
-        TRINKET_23 = "Maxwell probably needs that for his fancy shoes.",
-        TRINKET_24 = "We should whip up some pumpkin cookies to put in it, eh?",
-        TRINKET_25 = "I already smell like pine and woodchips, according to Lucy.",
-		TRINKET_26 = "Genius! A cup for a proper woodsman.",
-		TRINKET_27 = "No point hanging clothes in the woods.",
-		TRINKET_28 = "That one moves diagonally, I think.",
-        TRINKET_29 = "That's, uh, the rook piece.",
-        TRINKET_30 = "That one can only move one square at time.",
-        TRINKET_31 = "That's the, uh, horse piece.",
-        TRINKET_32 = "I'd rather my future be a surprise.",
-        TRINKET_33 = "Creepy.",
-        TRINKET_34 = "That right there's a bad time waitin' to happen.",
-        TRINKET_35 = "Doesn't even have a label.",
-		TRINKET_36 = "More intimidating than beaver teeth.",
-		TRINKET_37 = "What a waste of wood, eh?",
+		TRINKET_1 = "I used to play that game.", --Melted Marbles
+		TRINKET_2 = "Much kazoo about nothing.", --Fake Kazoo
+		TRINKET_3 = "Reminds me of a story I heard once.", --Gord's Knot
+		TRINKET_4 = "Wolfgang would appreciate that moustache.", --Gnome
+		TRINKET_5 = "It needs a robot arm, eh?", --Toy Rocketship
+		TRINKET_6 = "They're not good any more, eh?", --Frazzle Wires
+		TRINKET_7 = "'Might take it to the kid.", --Ball and Cup
+		TRINKET_8 = "Reminds me... gotta convince Willow to take a *real* bath.", --Hardened Bung
+		TRINKET_9 = "I just sew my clothing shut around me when I put it on.", --Mismatched Buttons
+		TRINKET_10 = "Choppers for old folks.", --Dentures
+		TRINKET_11 = "Quiet, you!", --Lying Robot
+		TRINKET_12 = "It's all withered.", --Dessicated Tentacles
+		TRINKET_13 = "She looks friendly.", --Gnomette
+		TRINKET_14 = "Gaudy as all get-out.", --Leaky Teacup
+        TRINKET_15 = "And here I am just a pawn, eh?", --Pawn
+        TRINKET_16 = "And here I am just a pawn, eh?", --Pawn
+        TRINKET_17 = "It needs to be straightened, eh?", --Bent Spork
+        TRINKET_18 = "I would have liked this when I was a boy.", --Trojan Horse
+        TRINKET_19 = "It keeps falling over, eh?", --Unbalanced Top
+        TRINKET_20 = "Wigfrid keeps using it to \"spar\" with me and Lucy. We're afraid.", --Backscratcher
+        TRINKET_21 = "It belongs in a kitchen, not in the woods.", --Egg Beater
+        TRINKET_22 = "I'd rather have some proper rope.", --Frayed Yarn
+        TRINKET_23 = "Maxwell probably needs that for his fancy shoes.", --Shoehorn
+        TRINKET_24 = "We should whip up some pumpkin cookies to put in it, eh?", --Lucky Cat Jar
+        TRINKET_25 = "I already smell like pine and woodchips, according to Lucy.", --Air Unfreshener
+		TRINKET_26 = "Genius! A cup for a proper woodsman.", --Potato Cup
+		TRINKET_27 = "No point hanging clothes in the woods.", --Coat Hanger
+		TRINKET_28 = "That one moves diagonally, I think.", --Knight
+        TRINKET_29 = "That's, uh, the rook piece.", -- Knight
+        TRINKET_30 = "That one can only move one square at time.", --Rook
+        TRINKET_31 = "That's the, uh, horse piece.", --Rook
+        TRINKET_32 = "I'd rather my future be a surprise.", --Cubic Zirconia Ball
+        TRINKET_33 = "Creepy.", --Spider Ring
+        TRINKET_34 = "That right there's a bad time waitin' to happen.", --Monkey Paw
+        TRINKET_35 = "Doesn't even have a label.", --Empty Elixir
+		TRINKET_36 = "More intimidating than beaver teeth.", --Faux Fangs
+		TRINKET_37 = "What a waste of wood, eh?", --Broken Stake
 
 		HALLOWEENCANDY_1 = "Even the stick is delicious.",
         HALLOWEENCANDY_2 = "Don't worry, I'll eat enough for the both of us, Lucy.",

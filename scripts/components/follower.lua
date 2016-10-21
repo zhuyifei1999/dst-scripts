@@ -142,7 +142,7 @@ function Follower:GetLoyaltyPercent()
 end
 
 local function stopfollow(inst, self)
-    self:StopLeashing()
+    self:StopFollowing()
 end
 
 function Follower:AddLoyaltyTime(time)

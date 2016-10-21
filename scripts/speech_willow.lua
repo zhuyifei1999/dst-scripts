@@ -122,6 +122,21 @@ return {
 		INVALID = "How would I even eat that!",
 		YUCKY = "Eeeew, no way!",
 	},
+    ANNOUNCE_ENCUMBERED =
+    {
+        "Ughhh!",
+        "Why am I doing this...?!",
+        "Oooof!!",
+        "Unghhh!",
+        "There's... no way this is worth it!",
+        "My arms feel like they're on fire!",
+        "Ughhhh! I'm all sweaty!",
+        "This... is... the worst...",
+        "I can feel the burn... I hate it!",
+        "Exercise... sucks!",
+        "Hnnfhg!",
+    },
+
 	ANNOUNCE_NOSLEEPONFIRE = "It's just the collapsing that concerns me.",
 	ANNOUNCE_NODANGERSIESTA = "It's not time for a siesta, it's time for fighting!",
 	ANNOUNCE_NONIGHTSIESTA = "I couldn't get comfortable there.",

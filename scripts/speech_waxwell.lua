@@ -135,6 +135,18 @@ return {
 		INVALID = "I won't let that anywhere near my mouth.", 
 		YUCKY = "A civilized man does not eat such things.", 
 	},
+    ANNOUNCE_ENCUMBERED =
+    {
+        "Reduced... to this...",
+        "Huff... huff... huff...",
+        "...Peasant... work...",
+        "How... I've fallen...",
+        "Oh... my back...",
+        "I wasn't... built for this...",
+        "All my joints... are cracking!",
+        "I... was a king, you know..!",
+    },
+
 	ANNOUNCE_ENTER_DARK = "That smell... both nostalgic and terrifying!",
 	ANNOUNCE_ENTER_LIGHT = "Thank goodness for the light.",
 	ANNOUNCE_FREEDOM = "Freedom, at last!",

@@ -130,7 +130,20 @@ return {
 		INVALID = "Hahah! That's not food!",
 		YUCKY = "Stomach is not strong enough for that.",
 	},
-	
+    ANNOUNCE_ENCUMBERED =
+    {
+        "Is good... for muscles...",
+        "Lift... with legs...",
+        "Feel... good burn!",
+        "Raa! Huff!",
+        "Muscles... will be sore tomorrow!",
+        "Ha ha...! Weight... is nothing!",
+        "Little stone... cannot stop Wolfgang!",
+        "Hngh...!",
+        "Witness... Wolfgang strength!",
+        "Wolfgang is mighty...!",
+    },
+
 	ANNOUNCE_BECOMEGHOST = "oOooOOoo!!",
 	ANNOUNCE_GHOSTDRAIN = "They are coming... for Wolfgang!",
 	ANNOUNCE_PETRIFED_TREES = "Trees! Getting! STRONG!",
@@ -1668,43 +1681,43 @@ return {
 		TRAP = "No trap can hold me!",
 		TRAP_TEETH = "It bites bottoms from below!",
 		TRAP_TEETH_MAXWELL = "Whoever put this is bad fella!",
-		TRINKET_1 = "Glob of glass!",
-		TRINKET_2 = "Fake bless you.",
-		TRINKET_3 = "Is knot what Wolfgang expected.",
-		TRINKET_4 = "Ha ha! Is tiny man!",
-		TRINKET_5 = "What is do?",
-		TRINKET_6 = "Robot bits.",
-		TRINKET_7 = "Tiny torchlady Willow start firepits with toy! Very impressive.",
-		TRINKET_8 = "Hardened, like Wolfgang.",
-		TRINKET_9 = "Strong brainlady Wickerbottom maybe need for repair cardigans.",
-		TRINKET_10 = "Is pearly chompers!",
-		TRINKET_11 = "Angry metal friend WX would like this, yes!",
-		TRINKET_12 = "Yuck.",
-		TRINKET_13 = "Ah! Is scary Wendy girl! ...No, wait, is just toy.",
-		TRINKET_14 = "Beard will not like such pictures.",
-        TRINKET_15 = "Junk from braingame!",
-        TRINKET_16 = "Junk from braingame!",
-        TRINKET_17 = "Is still good!",
-        TRINKET_18 = "Wheeled horsey!",
-        TRINKET_19 = "Could give it a spin.",
-        TRINKET_20 = "Wolfgang's arms too thick to reach back.",
-        TRINKET_21 = "Is fun to crank.",
-        TRINKET_22 = "Will take to fragile man Maxwell. He always talk about \"pulling strings\".",
-        TRINKET_23 = "Wolfgang does not know which end to blow.",
-        TRINKET_24 = "Wolfgang does not like even fake cat.",
-        TRINKET_25 = "Smell like laundry.",
-		TRINKET_26 = "Is cup made of potato, I think.",
-		TRINKET_27 = "Is skinny and bendy, like clownman Wes.",
-        TRINKET_28 = "Junk from braingame!",
-        TRINKET_29 = "Junk from braingame!",
-        TRINKET_30 = "Junk from braingame!",
-        TRINKET_31 = "Junk from braingame!",
-        TRINKET_32 = "Wolfgang does not like spooky magics.",
-        TRINKET_33 = "Wolfgang not wear creepy finger-spider.",
-        TRINKET_34 = "Is soft, but spooky.",
-        TRINKET_35 = "Little potion make Wolfgang mighty?",
-        TRINKET_36 = "Gah! Do not scare Wolfgang!",
-        TRINKET_37 = "Stab-stick is useless now.",
+		TRINKET_1 = "Glob of glass!", --Melted Marbles
+		TRINKET_2 = "Fake bless you.", --Fake Kazoo
+		TRINKET_3 = "Is knot what Wolfgang expected.", --Gord's Knot
+		TRINKET_4 = "Ha ha! Is tiny man!", --Gnome
+		TRINKET_5 = "What is do?", --Toy Rocketship
+		TRINKET_6 = "Robot bits.", --Frazzled Wires
+		TRINKET_7 = "Tiny torchlady Willow start firepits with toy! Very impressive.", --Ball and Cup
+		TRINKET_8 = "Hardened, like Wolfgang.", --Hardened Bung
+		TRINKET_9 = "Strong brainlady Wickerbottom maybe need for repair cardigans.", --Mismatched Buttons
+		TRINKET_10 = "Is pearly chompers!", --Dentures
+		TRINKET_11 = "Angry metal friend WX would like this, yes!", --Lying Robot
+		TRINKET_12 = "Yuck.", --Dessicated Tentacle
+		TRINKET_13 = "Ah! Is scary Wendy girl! ...No, wait, is just toy.", --Gnomette
+		TRINKET_14 = "Beard will not like such pictures.", --Leaky Teacup
+        TRINKET_15 = "Junk from braingame!", --Pawn 
+        TRINKET_16 = "Junk from braingame!", --Pawn
+        TRINKET_17 = "Is still good!", --Bent Spork
+        TRINKET_18 = "Wheeled horsey!", --Trojan Horse
+        TRINKET_19 = "Could give it a spin.", --Unbalanced Top
+        TRINKET_20 = "Wolfgang's arms too thick to reach back.", --Backscratcher
+        TRINKET_21 = "Is fun to crank.", --Egg Beater
+        TRINKET_22 = "Will take to fragile man Maxwell. He always talk about \"pulling strings\".", --Frayed Yarn
+        TRINKET_23 = "Wolfgang does not know which end to blow.", --Shoehorn
+        TRINKET_24 = "Wolfgang does not like even fake cat.", --Lucky Cat Jar
+        TRINKET_25 = "Smell like laundry.", --Air Unfreshener
+		TRINKET_26 = "Is cup made of potato, I think.", --Potato Cup
+		TRINKET_27 = "Is skinny and bendy, like clownman Wes.", --Coat Hanger
+        TRINKET_28 = "Junk from braingame!", --Rook
+        TRINKET_29 = "Junk from braingame!", --Rook
+        TRINKET_30 = "Junk from braingame!", --Knight
+        TRINKET_31 = "Junk from braingame!", --Knight
+        TRINKET_32 = "Wolfgang does not like spooky magics.", --Cubic Zirconia Ball
+        TRINKET_33 = "Wolfgang not wear creepy finger-spider.", --Spider Ring
+        TRINKET_34 = "Is soft, but spooky.", --Monkey Paw
+        TRINKET_35 = "Little potion make Wolfgang mighty?", --Empty Elixir
+        TRINKET_36 = "Gah! Do not scare Wolfgang!", --Faux Fangs
+        TRINKET_37 = "Stab-stick is useless now.", --Broken Stake
 
         HALLOWEENCANDY_1 = "Wolfgang eat many bushels!",
         HALLOWEENCANDY_2 = "Little corns get stuck in Wolfgang's mighty moustache!",

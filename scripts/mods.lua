@@ -8,11 +8,9 @@ MOD_API_VERSION = 10
 -----------------------------------------------------------------------------------------------
 -- Last Release ID added is the current
 AddModReleaseID( "R01_ANR_PART1" )
+AddModReleaseID( "R02_ANR_WARTSANDALL" )
+AddModReleaseID( "R03_ANR_ARTSANDCRAFTS" )
 
-if BRANCH == "staging" then
-	AddModReleaseID( "R02_ANR_WARTSANDALL" )
-	AddModReleaseID( "R03_ANR_ARTSANDCRAFTS" )
-end
 -----------------------------------------------------------------------------------------------
 
 MOD_AVATAR_LOCATIONS = { Default = "images/avatars/" }

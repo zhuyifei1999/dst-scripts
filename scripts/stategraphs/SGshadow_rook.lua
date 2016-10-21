@@ -109,7 +109,7 @@ local states =
 
 ShadowChessStates.AddIdle(states, "idle_loop")
 ShadowChessStates.AddLevelUp(states, "transform", 20, 60, 88)
-ShadowChessStates.AddTaunt(states, "taunt", 5, 30, 45)
+ShadowChessStates.AddTaunt(states, "taunt", 7, 30, 45)
 ShadowChessStates.AddHit(states, "hit", 0, 14)
 ShadowChessStates.AddDeath(states, "disappear", 10)
 ShadowChessStates.AddEvolvedDeath(states, "death", 38,

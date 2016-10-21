@@ -121,7 +121,19 @@ return {
 		INVALID = "That doesn't look like food to us.",
 		YUCKY = "We can't, we won't, we refuse to eat that.",
 	},
-	
+    ANNOUNCE_ENCUMBERED =
+    {
+        "Ughh!",
+        "So heavy...!",
+        "Left foot... Right foot...",
+        "We... can do it!",
+        "Are... we there yet...",
+        "Chugga chugga chugga chugga...",
+        "Not enough... legs... to lift...",
+        "Hhhhfn!",
+        "Oof...!",
+    },
+
 	ANNOUNCE_BECOMEGHOST = "oOooOooO!!",
 	ANNOUNCE_GHOSTDRAIN = "We're becoming... even more monstrous!",
 	ANNOUNCE_PETRIFED_TREES = "The trees are yelling at us!!",
@@ -1669,21 +1681,21 @@ return {
 		TRINKET_1 = "We could still play with these, if we're extra creative.", --Melted Marbles
 		TRINKET_2 = "A voiceless instrument.", --Fake Kazoo
 		TRINKET_3 = "It won't come undone!", --Gord's Knot
-		TRINKET_4 = "It's watching us.",
-		TRINKET_5 = "Yay, a new toy!",
+		TRINKET_4 = "It's watching us.", --Gnome
+		TRINKET_5 = "Yay, a new toy!", --Toy Rocketship
 		TRINKET_6 = "Maybe we'll find a use for these.", --Frazzled Wires
-		TRINKET_7 = "Another toy!", 
+		TRINKET_7 = "Another toy!", --Ball and Cup
 		TRINKET_8 = "I miss bath toys.", --Rubber Bung
 		TRINKET_9 = "None of them match!", --Mismatched Buttons
 		TRINKET_10 = "Just like grandpa wears!", --Dentures
 		TRINKET_11 = "Beep boop!", --Lying Robot
 		TRINKET_12 = "Feels leathery.", --Dessicated Tentacle
-		TRINKET_13 = "It's watching us.", 
+		TRINKET_13 = "It's watching us.", --Gnomette
         TRINKET_14 = "We want some hot cocoa.", --Leaky Teacup
         TRINKET_15 = "We don't know how to play this game.", --Pawn
         TRINKET_16 = "We don't know how to play this game.", --Pawn
         TRINKET_17 = "Spork. Spork. Spork. Hahaha!", --Bent Spork
-        TRINKET_18 = "We like toys.",
+        TRINKET_18 = "We like toys.", --Trojan Horse
         TRINKET_19 = "This toy doesn't work very well.", --Unbalanced Top
         TRINKET_20 = "Can we dig in the dirt with this?", --Backscratcher
         TRINKET_21 = "Mom had one of these.", --Egg Beater
@@ -1693,10 +1705,10 @@ return {
         TRINKET_25 = "It's stinky.", --Air Unfreshener
 		TRINKET_26 = "You're our cuppy cup!", --Potato Cup
 		TRINKET_27 = "This is stupid.", --Coat Hanger
-		TRINKET_28 = "Maybe Maxwell will teach us how to play.",
-        TRINKET_29 = "Maybe Maxwell will teach us how to play.",
-        TRINKET_30 = "We can't follow the rules if we don't know them.",
-        TRINKET_31 = "We can't follow the rules if we don't know them.",
+		TRINKET_28 = "Maybe Maxwell will teach us how to play.", --Knight
+        TRINKET_29 = "Maybe Maxwell will teach us how to play.", --Knight
+        TRINKET_30 = "We can't follow the rules if we don't know them.", --Rook
+        TRINKET_31 = "We can't follow the rules if we don't know them.", --Rook
         TRINKET_32 = "It's not bouncy. What's the point?", --Cubic Zirconia Ball
         TRINKET_33 = "It's a friend for our finger!!", --Spider Ring
         TRINKET_34 = "The monkey probably needed that.", --Monkey Paw
@@ -1704,17 +1716,17 @@ return {
 		TRINKET_36 = "We've already got some, thanks.", --Faux Fangs
 		TRINKET_37 = "Maybe we should hide this before someone gets hurt.", --Broken Stake
 
-		HALLOWEENCANDY_1 = "Oh, Wendy! We'll trade you for your choco pigs!",
-        HALLOWEENCANDY_2 = "Haha ew! It's weird!",
-        HALLOWEENCANDY_3 = "Haha, that's not candy!",
-        HALLOWEENCANDY_4 = "We aren't totally comfortable with this.",
-        HALLOWEENCANDY_5 = "We forgot what good things tasted like!",
-        HALLOWEENCANDY_6 = "No worse than the other stuff we've eaten out here!",
-        HALLOWEENCANDY_7 = "Oh, Ms. Wicker! We saved these for you!",
-        HALLOWEENCANDY_8 = "Candy candy candy!",
-        HALLOWEENCANDY_9 = "Gummy worms, yummy worms!",
-        HALLOWEENCANDY_10 = "Candy candy candy!",
-        HALLOWEENCANDY_11 = "Mmm! Sweet revenge!",
+		HALLOWEENCANDY_1 = "Oh, Wendy! We'll trade you for your choco pigs!", --Candy Apple
+        HALLOWEENCANDY_2 = "Haha ew! It's weird!", --Candy Corn
+        HALLOWEENCANDY_3 = "Haha, that's not candy!", --Not-So-Candy Corn
+        HALLOWEENCANDY_4 = "We aren't totally comfortable with this.", --Gummy Spider
+        HALLOWEENCANDY_5 = "We forgot what good things tasted like!", --Catcoon Candy
+        HALLOWEENCANDY_6 = "No worse than the other stuff we've eaten out here!", --"Raisins"
+        HALLOWEENCANDY_7 = "Oh, Ms. Wicker! We saved these for you!", --Raisins
+        HALLOWEENCANDY_8 = "Candy candy candy!", --Ghost Pop
+        HALLOWEENCANDY_9 = "Gummy worms, yummy worms!", --Jelly Worm
+        HALLOWEENCANDY_10 = "Candy candy candy!", --Tentacle Lolli
+        HALLOWEENCANDY_11 = "Mmm! Sweet revenge!", --Choco Pigs
         CANDYBAG = "Treats, treats, treats!",
 
 		TRUNKVEST_SUMMER = "It's so puffy!",

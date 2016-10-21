@@ -120,6 +120,19 @@ return {
 		INVALID = "I can't eat that!",
 		YUCKY = "Putting that in my mouth would be disgusting!",
 	},
+    ANNOUNCE_ENCUMBERED =
+    {
+        "Huff... Pant...",
+        "I should have built... a lifting machine...",
+        "Lift... with your back...",
+        "This isn't... gentleman's... work...",
+        "For... science... oof!",
+        "Is this... messing up my hair?",
+        "Hngh...!",
+        "Pant... Pant...",
+        "This is the worst... experiment...",
+    },
+
 	ANNOUNCE_ENTER_DARK = "It's so dark!",
 	ANNOUNCE_ENTER_LIGHT = "I can see again!",
 	ANNOUNCE_FREEDOM = "I'm free! I'm finally free!",
@@ -1687,16 +1700,16 @@ return {
 		TRINKET_19 = "It doesn't spin very well.", --Unbalanced Top
 		TRINKET_20 = "Wigfrid keeps jumping out and hitting me with it?!", --Backscratcher
 		TRINKET_21 = "This egg beater is all bent out of shape.", --Egg Beater
-		TRINKET_22 = "I have a few theories about this string.", --Frayed String
+		TRINKET_22 = "I have a few theories about this string.", --Frayed Yarn
 		TRINKET_23 = "I can put my shoes on without help, thanks.", --Shoehorn
 		TRINKET_24 = "I think Wickerbottom had a cat.", --Lucky Cat Jar
 		TRINKET_25 = "It smells kind of stale.", --Air Unfreshener
 		TRINKET_26 = "Food and a cup! The ultimate survival container.", --Potato Cup
 		TRINKET_27 = "If you unwound it you could poke someone from really far away.", --Coat Hanger
-		TRINKET_28 = "How Machiavellian.", --Knight
-        TRINKET_29 = "How Machiavellian.", --Knight
-        TRINKET_30 = "Honestly, he just leaves them out wherever.", --Rook
-        TRINKET_31 = "Honestly, he just leaves them out wherever.", --Rook
+		TRINKET_28 = "How Machiavellian.", --Rook
+        TRINKET_29 = "How Machiavellian.", --Rook
+        TRINKET_30 = "Honestly, he just leaves them out wherever.", --Knight
+        TRINKET_31 = "Honestly, he just leaves them out wherever.", --Knight
         TRINKET_32 = "I know someone who'd have a ball with this!", --Cubic Zirconia Ball
         TRINKET_33 = "I hope this doesn't attract spiders.", --Spider Ring
         TRINKET_34 = "Let's make a wish. For science.", --Monkey Paw

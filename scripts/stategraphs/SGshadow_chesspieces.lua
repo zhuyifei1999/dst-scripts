@@ -135,10 +135,10 @@ ShadowChessStates.AddIdle = function(states, idle_anim)
             end
         end,
 
-        timeline =
+        --[[timeline =
         {
             ExtendedSoundTimelineEvent(0, "idle"),
-        },
+        },]]
     })
 end
 

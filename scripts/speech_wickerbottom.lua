@@ -1468,43 +1468,43 @@ return
         FEATHER_ROBIN_WINTER = "It looks like a feather of Cardinalis, but white.",
 		FEATHERPENCIL = "Oh, how I missed proper writing implements!",
 		
-        TRINKET_1 = "What a lovely set of bottle washers! Too bad they're all melted.",
-        TRINKET_2 = "A fake membranophone.",
-        TRINKET_3 = "Oh, I just love the bard.",
-        TRINKET_4 = "What a positively, delightfully odd little fellow.",
-        TRINKET_5 = "This spacecraft looks to have inadequate thermal controls.",
-        TRINKET_6 = "I do hope WX-78 is feeling alright.",
-        TRINKET_7 = "I think I'll keep this. I know someone who might like it.",
-        TRINKET_8 = "It reminds me of my bathtub. I could use a long soak.",
-        TRINKET_9 = "What a coincidence. My cardigan is missing a button!",
-        TRINKET_10 = "I don't appreciate the insinuation, dear.",
+        TRINKET_1 = "What a lovely set of bottle washers! Too bad they're all melted.", --Melted Marbles
+        TRINKET_2 = "A fake membranophone.", --Fake Kazoo
+        TRINKET_3 = "Oh, I just love the bard.", --Gord's Knot
+        TRINKET_4 = "What a positively, delightfully odd little fellow.", --Gnome
+        TRINKET_5 = "This spacecraft looks to have inadequate thermal controls.", --Toy Rocketship
+        TRINKET_6 = "I do hope WX-78 is feeling alright.", --Frazzled Wires
+        TRINKET_7 = "I think I'll keep this. I know someone who might like it.", --Ball and Cup
+        TRINKET_8 = "It reminds me of my bathtub. I could use a long soak.", --Rubber Bung
+        TRINKET_9 = "What a coincidence. My cardigan is missing a button!", --Mismatched Buttons
+        TRINKET_10 = "I don't appreciate the insinuation, dear.", --Dentures
         TRINKET_11 = "Ah, it's a scale replica of that mischievous robot.", --Lying Robot
-        TRINKET_12 = "A muscular hydrostat that's been sat near something hygroscopic.",
-        TRINKET_13 = "What a positively, delightfully odd little lady.",
-        TRINKET_14 = "I think it's quite lovely, despite the cracks left by age...",
-        TRINKET_15 = "In medieval chess, this piece was called the elephant.",
-        TRINKET_16 = "The groove in this piece symbolizes the bishop's ceremonial headwear.",
-        TRINKET_17 = "This would be a practical eating utensil if it weren't bent.",
-        TRINKET_18 = "Beware of Greeks bearing gifts.",
-        TRINKET_19 = "A good illustration of gyroscopic precession.",
-        TRINKET_20 = "An instrument of self-sufficiency.",
-        TRINKET_21 = "I have an excellent meringue recipe.",
-        TRINKET_22 = "My grandmother used to knit.",
-        TRINKET_23 = "It reminds me of home.",
-        TRINKET_24 = "What a positively adorable kitty cat. Sigh.",
-        TRINKET_25 = "What an unpleasant scent.",
-        TRINKET_26 = "It appears to be a primitive cup fashioned from a tuber.",
-        TRINKET_27 = "I miss the comforts of home.",
-        TRINKET_28 = "It was once called the \"tower\", long ago.",
-        TRINKET_29 = "Calling it a \"castle\" is plainly incorrect.",
-        TRINKET_30 = "Knights are better pieces when they're active in the center.",
-        TRINKET_31 = "In German it is referred to as the \"springer\".",
-        TRINKET_32 = "Oh, I got my hopes up for a nice crystal ball.",
-        TRINKET_33 = "A decorative arachnid adornment! How darling!",
-        TRINKET_34 = "The paw grants three wishes, with terribly ironic results. So the story goes.",
-        TRINKET_35 = "Odorless. I believe it may have been sugar water.",
-        TRINKET_36 = "Dunk those in boiling water before wearing them, dear.",
-        TRINKET_37 = "Luckily it is much too brittle to inflict any real damage.",
+        TRINKET_12 = "A muscular hydrostat that's been sat near something hygroscopic.", --Dessicated Tentacle
+        TRINKET_13 = "What a positively, delightfully odd little lady.", --Gnomette
+        TRINKET_14 = "I think it's quite lovely, despite the cracks left by age...", --Leaky Cup
+        TRINKET_15 = "In medieval chess, this piece was called the elephant.", --Bishop
+        TRINKET_16 = "The groove in this piece symbolizes the bishop's ceremonial headwear.", --Bishop
+        TRINKET_17 = "This would be a practical eating utensil if it weren't bent.", --Bent Spork
+        TRINKET_18 = "Beware of Greeks bearing gifts.", --Trojan Horse
+        TRINKET_19 = "A good illustration of gyroscopic precession.", --Unbalanced Top
+        TRINKET_20 = "An instrument of self-sufficiency.", --Backscratcher
+        TRINKET_21 = "I have an excellent meringue recipe.", --Egg Beater
+        TRINKET_22 = "My grandmother used to knit.", --Frayed String
+        TRINKET_23 = "It reminds me of home.", --Shoehorn
+        TRINKET_24 = "What a positively adorable kitty cat. Sigh.", --Lucky Cat Jar
+        TRINKET_25 = "What an unpleasant scent.", --Air Unfreshener
+        TRINKET_26 = "It appears to be a primitive cup fashioned from a tuber.", --Potato Cup
+        TRINKET_27 = "I miss the comforts of home.", --Coat Hanger
+        TRINKET_28 = "It was once called the \"tower\", long ago.", --Rook
+        TRINKET_29 = "Calling it a \"castle\" is plainly incorrect.", --Rook
+        TRINKET_30 = "Knights are better pieces when they're active in the center.", --Knight
+        TRINKET_31 = "In German it is referred to as the \"springer\".", --Knight
+        TRINKET_32 = "Oh, I got my hopes up for a nice crystal ball.", --Cubic Zirconia Ball
+        TRINKET_33 = "A decorative arachnid adornment! How darling!", --Spider Ring
+        TRINKET_34 = "The paw grants three wishes, with terribly ironic results. So the story goes.", --Monkey Paw
+        TRINKET_35 = "Odorless. I believe it may have been sugar water.", --Empty Elixir
+        TRINKET_36 = "Dunk those in boiling water before wearing them, dear.", --Faux Fangs
+        TRINKET_37 = "Luckily it is much too brittle to inflict any real damage.", --Broken Stake
 
         HALLOWEENCANDY_1 = "Remember to eat in moderation, children.",
         HALLOWEENCANDY_2 = "Delightfully colored kernels of high fructose corn syrup.",
@@ -1784,6 +1784,19 @@ return
         INVALID = "This cannot be consumed.",
         YUCKY = "Ingesting this would be ill-advised.",
     },
+    ANNOUNCE_ENCUMBERED =
+    {
+        "It's all in the legs.",
+        "Goodness...",
+        "Dear me...",
+        "I've got it, dear.",
+        "I'm more spry than I look!",
+        "You just need to know how to lift!",
+        "No sweat off my back! Ho ho!",
+        "How invigorating!",
+        "Gets the blood pumping!",
+    },
+
     ANNOUNCE_CANFIX = "\nI do believe I can repair this.",
     ANNOUNCE_ADVENTUREFAIL = "We must learn from our failures.",
     ANNOUNCE_COLD = "The ambient temperature is low.",

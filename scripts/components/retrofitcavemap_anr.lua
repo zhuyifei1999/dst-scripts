@@ -120,14 +120,11 @@ function self:OnSave()
 end
 
 function self:OnLoad(data)
-               print "HERE OnLoad"
-
     if data ~= nil then
 		retrofit_warts = data.retrofit_warts or false
 		self.retrofit_artsandcrafts = data.retrofit_artsandcrafts
     end
 end
-
 
 --------------------------------------------------------------------------
 end)

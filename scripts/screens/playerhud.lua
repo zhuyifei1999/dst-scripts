@@ -295,22 +295,36 @@ function PlayerHud:CloseItemManagerScreen()
     end
 end
 
-function PlayerHud:OpenWardrobeScreen()
+function PlayerHud:OpenWardrobeScreen(target)
     --Hack for holding offset when transitioning from giftitempopup to wardrobepopup
     TheCamera:PopScreenHOffset(self)
 
     if self.wardrobepopup ~= nil and self.wardrobepopup.inst:IsValid() then
         TheFrontEnd:PopScreen(self.wardrobepopup)
     end
-    self.wardrobepopup =
-        WardrobePopupScreen(
-            self.owner,
-            Profile,
-            nil,
-            false,
-            self.recentgifts ~= nil and self.recentgifts.item_types or nil,
-            self.recentgifts ~= nil and self.recentgifts.item_ids or nil
-        )
+
+    if target ~= nil then
+        self.wardrobepopup =
+            WardrobePopupScreen(
+                self.owner,
+                Profile,
+                nil,
+                false,
+                self.recentgifts ~= nil and self.recentgifts.item_types or nil,
+                self.recentgifts ~= nil and self.recentgifts.item_ids or nil
+            )
+    else
+        self.wardrobepopup =
+            WardrobePopupScreen(
+                self.owner,
+                Profile,
+                nil,
+                false,
+                self.recentgifts ~= nil and self.recentgifts.item_types or nil,
+                self.recentgifts ~= nil and self.recentgifts.item_ids or nil
+            )
+    end
+
     self:ClearRecentGifts()
     self:OpenScreenUnderPause(self.wardrobepopup)
     return true

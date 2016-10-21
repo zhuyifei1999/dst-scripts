@@ -15,6 +15,30 @@ local function onunequip(inst, owner)
     inst.components.container:Close(owner)
 end
 
+local function onburnt(inst)
+    if inst.components.container ~= nil then
+        inst.components.container:DropEverything()
+        inst.components.container:Close()
+        inst:RemoveComponent("container")
+    end
+
+    SpawnPrefab("ash").Transform:SetPosition(inst.Transform:GetWorldPosition())
+
+    inst:Remove()
+end
+
+local function onignite(inst)
+    if inst.components.container ~= nil then
+        inst.components.container.canbeopened = false
+    end
+end
+
+local function onextinguish(inst)
+    if inst.components.container ~= nil then
+        inst.components.container.canbeopened = true
+    end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -53,8 +77,13 @@ local function fn()
     inst:AddComponent("container")
     inst.components.container:WidgetSetup("candybag")
 
-    MakeHauntableLaunchAndDropFirstItem(inst)
+    MakeSmallBurnable(inst)
+    MakeSmallPropagator(inst)
+    inst.components.burnable:SetOnBurntFn(onburnt)
+    inst.components.burnable:SetOnIgniteFn(onignite)
+    inst.components.burnable:SetOnExtinguishFn(onextinguish)
 
+    MakeHauntableLaunchAndDropFirstItem(inst)
     return inst
 end
 

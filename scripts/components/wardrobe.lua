@@ -19,12 +19,14 @@ local Wardrobe = Class(function(self, inst)
     self.inst = inst
 
     self.changers = {}
+    self.enabled = true
     self.canuseaction = true
     self.canbeshared = nil
     self.canbedressed = nil
     self.range = 3
     self.changeindelay = 0
     self.onchangeinfn = nil
+    self.ondressupfn = nil
     self.onopenfn = nil
     self.onclosefn = nil
 
@@ -49,6 +51,10 @@ end
 
 function Wardrobe:SetCanBeDressed(canbedressed)
     self.canbedressed = canbedressed
+end
+
+function Wardrobe:Enable(enable)
+    self.enabled = enable ~= false
 end
 
 local function OnIgnite(inst)
@@ -89,7 +95,9 @@ function Wardrobe:SetChangeInDelay(delay)
 end
 
 function Wardrobe:CanBeginChanging(doer)
-    if self.changers[doer] or
+    if not self.enabled then
+        return false, "INUSE"
+    elseif self.changers[doer] or
         doer.sg == nil or
         (doer.sg:HasStateTag("busy") and doer.sg.currentstate.name ~= "opengift") then
         return false
@@ -114,9 +122,9 @@ function Wardrobe:BeginChanging(doer)
 
         if doer.sg.currentstate.name == "opengift" then
             doer.sg.statemem.isopeningwardrobe = true
-            doer.sg:GoToState("openwardrobe", true)
+            doer.sg:GoToState("openwardrobe", { openinggift = true, target = self.canbedressed and self.inst or nil })
         else
-            doer.sg:GoToState("openwardrobe")
+            doer.sg:GoToState("openwardrobe", { openinggift = false, target = self.canbedressed and self.inst or nil })
         end
 
         if wasclosed then
@@ -164,39 +172,74 @@ function Wardrobe:EndAllChanging()
     end
 end
 
-function Wardrobe:ActivateChanging(doer, skins)
-    if skins ~= nil and
-        next(skins) ~= nil and
-        doer.sg.currentstate.name == "openwardrobe" and
-        doer.components.skinner ~= nil then
-        local old = doer.components.skinner:GetClothing()
-        local diff =
-        {
-            base = skins.base ~= nil and skins.base ~= old.base and skins.base or nil,
-            body = skins.body ~= nil and skins.body ~= old.body and skins.body or nil,
-            hand = skins.hand ~= nil and skins.hand ~= old.hand and skins.hand or nil,
-            legs = skins.legs ~= nil and skins.legs ~= old.legs and skins.legs or nil,
-            feet = skins.feet ~= nil and skins.feet ~= old.feet and skins.feet or nil,
-        }
+local function DoTargetChanging(self, doer, skins)
+    local old = doer.components.skinner:GetClothing()
+    local diff =
+    {
+        base = skins.base ~= nil and skins.base ~= old.base and skins.base or nil,
+        body = skins.body ~= nil and skins.body ~= old.body and skins.body or nil,
+        hand = skins.hand ~= nil and skins.hand ~= old.hand and skins.hand or nil,
+        legs = skins.legs ~= nil and skins.legs ~= old.legs and skins.legs or nil,
+        feet = skins.feet ~= nil and skins.feet ~= old.feet and skins.feet or nil,
+    }
 
-        if next(diff) ~= nil then
-            doer.sg.statemem.ischanging = true
+    if next(diff) == nil then
+        return false
+    end
 
-            if self.canbeshared then
-                doer.sg:GoToState("changeoutsidewardrobe", function() self:ApplySkins(doer, diff) end)
-            else
-                self:ApplySkins(doer, diff)
+    doer.sg.statemem.ischanging = true
+    doer.sg:GoToState("dressupwardrobe", function()
+        if self.ondressupfn ~= nil then
+            self.ondressupfn(self.inst, function() self:ApplySkins(doer, diff) end)
+        else
+            self:ApplySkins(doer, diff)
+        end
+    end)
+    return true
+end
 
-                doer.sg:GoToState("changeinwardrobe", self.changeindelay)
+local function DoDoerChanging(self, doer, skins)
+    local old = doer.components.skinner:GetClothing()
+    local diff =
+    {
+        base = skins.base ~= nil and skins.base ~= old.base and skins.base or nil,
+        body = skins.body ~= nil and skins.body ~= old.body and skins.body or nil,
+        hand = skins.hand ~= nil and skins.hand ~= old.hand and skins.hand or nil,
+        legs = skins.legs ~= nil and skins.legs ~= old.legs and skins.legs or nil,
+        feet = skins.feet ~= nil and skins.feet ~= old.feet and skins.feet or nil,
+    }
 
-                if self.onchangeinfn ~= nil then
-                    self.onchangeinfn(self.inst)
-                end
-            end
-            return true
+    if next(diff) == nil then
+        return false
+    end
+
+    doer.sg.statemem.ischanging = true
+
+    if self.canbeshared then
+        doer.sg:GoToState("changeoutsidewardrobe", function() self:ApplySkins(doer, diff) end)
+    else
+        self:ApplySkins(doer, diff)
+
+        doer.sg:GoToState("changeinwardrobe", self.changeindelay)
+
+        if self.onchangeinfn ~= nil then
+            self.onchangeinfn(self.inst)
         end
     end
-    return false
+    return true
+end
+
+function Wardrobe:ActivateChanging(doer, skins)
+    if skins == nil or
+        next(skins) == nil or
+        doer.sg.currentstate.name ~= "openwardrobe" or
+        doer.components.skinner == nil then
+        return false
+    elseif self.canbedressed then
+        return DoTargetChanging(self, doer, skins)
+    else
+        return DoDoerChanging(self, doer, skins)
+    end
 end
 
 function Wardrobe:ApplySkins(doer, diff)

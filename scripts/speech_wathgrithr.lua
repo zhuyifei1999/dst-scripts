@@ -122,7 +122,18 @@ return {
 		INVALID = "This is not food befitting a warrior.",
 		YUCKY = "This food is not befitting a warrior.",
 	},
-	
+    ANNOUNCE_ENCUMBERED =
+    {
+        "Hff... Nothing can weigh a warrior down!",
+        "Huff... Huff...",
+        "Tis... nothing...",
+        "Heave... ho...!",
+        "Gnnngh...",
+        "Swift... as Sleipnir...",
+        "Strong... like Thor...",
+        "Enduring... like Freya...",
+    },
+
 	ANNOUNCE_BECOMEGHOST = "oOooOOOo!!",
 	ANNOUNCE_GHOSTDRAIN = "They're driving me mad...!",
 	ANNOUNCE_PETRIFED_TREES = "I sense Loki's mischievous hand in the shadows.",
@@ -1679,43 +1690,43 @@ return {
 		},
 		TREASURECHEST_TRAP = "I am always ready.",
 		TREECLUMP = "A dead end! I must stand and fight.",
-		TRINKET_1 = "Toys do not interest a great warrior such as I.",
-		TRINKET_2 = "Accompaniment for my ballad of triumphs.",
-		TRINKET_3 = "Even my spear cannot undo this knot.",
-		TRINKET_4 = "A small, peculiar man.",
-		TRINKET_5 = "Will it take me to Asgard?",
-		TRINKET_6 = "Useless technology.",
-		TRINKET_7 = "No time for games! I must train my new allies!",
-		TRINKET_8 = "It would make an okay weapon in a pinch.",
-		TRINKET_9 = "No decent armor could be made with these.",
-		TRINKET_10 = "A token of victory.",
-		TRINKET_11 = "A warrior encased in armor. I'm told its name is \"Hal.\"",
-		TRINKET_12 = "Remnants of Ms. Wicker's summons? Truly a fierce woman.",
-		TRINKET_13 = "A small, peculiar woman.",
-        TRINKET_14 = "Tea is a luxury that warriors cannot afford.",
-        TRINKET_15 = "A noble fighter.",
-        TRINKET_16 = "A noble fighter.",
-        TRINKET_17 = "A poor weapon.",
-        TRINKET_18 = "I must mentor the young one in battle strategy.",
-        TRINKET_19 = "A useless toy.",
-        TRINKET_20 = "Finally, a safe weapon with which to spar with my new allies.",
-        TRINKET_21 = "Cooking utensils do not interest me.",
-        TRINKET_22 = "It won't stand up to the rigors of battle.",
-        TRINKET_23 = "Not as useful as a battle horn.",
-        TRINKET_24 = "Grant me luck on the battlefield!",
-        TRINKET_25 = "Perhaps the stench will drive the enemy away.",
-		TRINKET_26 = "My allies will appreciate the survival training I've bestowed.",
-		TRINKET_27 = "This weak, flimsy wire reminds me... I must toughen Maxwell up!",
-        TRINKET_28 = "Even the feeble can wage mighty battle upon the board.",
-        TRINKET_29 = "Even the feeble can wage mighty battle upon the board.",
-        TRINKET_30 = "Tis not a unicorn.",
-        TRINKET_31 = "Tis not a unicorn.",
-        TRINKET_32 = "Reveal mine destiny, oh great fates!",
-        TRINKET_33 = "The creature has been forever imprisoned upon the ring.",
-        TRINKET_34 = "Begone, foul magic!",
-        TRINKET_35 = "Twas a poison, most assuredly.",
-        TRINKET_36 = "Evidence of the undead. Stay wary, my allies!",
-        TRINKET_37 = "For warding off Loki's minions.",
+		TRINKET_1 = "Toys do not interest a great warrior such as I.", --Melted Marbles
+		TRINKET_2 = "Accompaniment for my ballad of triumphs.", --Fake Kazoo
+		TRINKET_3 = "Even my spear cannot undo this knot.", --Gord's Knot
+		TRINKET_4 = "A small, peculiar man.", --Gnome
+		TRINKET_5 = "Will it take me to Asgard?", --Toy Rocketship
+		TRINKET_6 = "Useless technology.", --Frazzled Wires
+		TRINKET_7 = "No time for games! I must train my new allies!", --Ball and Cup
+		TRINKET_8 = "It would make an okay weapon in a pinch.", --Hardened Bung
+		TRINKET_9 = "No decent armor could be made with these.", --Mismatched Buttons
+		TRINKET_10 = "A token of victory.", --Dentures
+		TRINKET_11 = "A warrior encased in armor. I'm told its name is \"Hal.\"", --Lying Robot
+		TRINKET_12 = "Remnants of Ms. Wicker's summons? Truly a fierce woman.", --Dessicated Tentacle
+		TRINKET_13 = "A small, peculiar woman.", --Gnomette
+        TRINKET_14 = "Tea is a luxury that warriors cannot afford.", --Leaky Teacup
+        TRINKET_15 = "A noble fighter.", --Pawn
+        TRINKET_16 = "A noble fighter.", --Pawn
+        TRINKET_17 = "A poor weapon.", --Bent Spork
+        TRINKET_18 = "I must mentor the young one in battle strategy.", --Trojan Horse
+        TRINKET_19 = "A useless toy.", --Unbalanced Top
+        TRINKET_20 = "Finally, a safe weapon with which to spar with my new allies.", --Backscratcher
+        TRINKET_21 = "Cooking utensils do not interest me.", --Egg Beater
+        TRINKET_22 = "It won't stand up to the rigors of battle.", --Frayed Yarn
+        TRINKET_23 = "Not as useful as a battle horn.", --Shoehorn
+        TRINKET_24 = "Grant me luck on the battlefield!", --Lucky Cat Jar
+        TRINKET_25 = "Perhaps the stench will drive the enemy away.", --Air Freshener
+		TRINKET_26 = "My allies will appreciate the survival training I've bestowed.", --Potato Cup
+		TRINKET_27 = "This weak, flimsy wire reminds me... I must toughen Maxwell up!", --Coat Hanger
+        TRINKET_28 = "Even the feeble can wage mighty battle upon the board.", --Rook
+        TRINKET_29 = "Even the feeble can wage mighty battle upon the board.", --Rook
+        TRINKET_30 = "Tis not a unicorn.", --Knight
+        TRINKET_31 = "Tis not a unicorn.", --Knight
+        TRINKET_32 = "Reveal mine destiny, oh great fates!", --Cubic Zirconia Ball
+        TRINKET_33 = "The creature has been forever imprisoned upon the ring.", --Spider Ring
+        TRINKET_34 = "Begone, foul magic!", --Monkey Paw
+        TRINKET_35 = "Twas a poison, most assuredly.", --Empty Elixir
+        TRINKET_36 = "Evidence of the undead. Stay wary, my allies!", --Faux Fangs
+        TRINKET_37 = "For warding off Loki's minions.", --Broken Stake
 
         HALLOWEENCANDY_1 = "How sinister! I nearly mistook it for a true apple!",
         HALLOWEENCANDY_2 = "A clever ruse. It is not corn at all.",

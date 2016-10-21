@@ -5,17 +5,17 @@ local assets =
 
 local candyinfo =
 {
-	{food=FOODTYPE.GOODIES, health=1, hunger=1, sanity=1},
-	{food=FOODTYPE.GOODIES, health=1, hunger=0, sanity=2},
-	{food=FOODTYPE.VEGGIE, health=1, hunger=2, sanity=0},
-	{food=FOODTYPE.GOODIES, health=1, hunger=1, sanity=1},
-	{food=FOODTYPE.GOODIES, health=1, hunger=1, sanity=1},
-	{food=FOODTYPE.VEGGIE, health=2, hunger=1, sanity=0},
-	{food=FOODTYPE.VEGGIE, health=2, hunger=0, sanity=1},
-	{food=FOODTYPE.GOODIES, health=1, hunger=0, sanity=2},
-	{food=FOODTYPE.GOODIES, health=1, hunger=2, sanity=0},
-	{food=FOODTYPE.GOODIES, health=2, hunger=0, sanity=1},
-	{food=FOODTYPE.GOODIES, health=2, hunger=1, sanity=0},
+	{food=FOODTYPE.GOODIES, health=1, hunger=1, sanity=1}, -- Candy Apple
+	{food=FOODTYPE.GOODIES, health=1, hunger=0, sanity=2}, -- Candy Corn
+	{food=FOODTYPE.VEGGIE,  health=1, hunger=2, sanity=0}, -- Not-So-Candy Corn
+	{food=FOODTYPE.GOODIES, health=2, hunger=0, sanity=1}, -- Gummy Spider
+	{food=FOODTYPE.GOODIES, health=1, hunger=0, sanity=2}, -- Catcoon Candy
+	{food=FOODTYPE.VEGGIE,  health=2, hunger=1, sanity=0}, -- "Raisins"
+	{food=FOODTYPE.VEGGIE,  health=2, hunger=0, sanity=1}, -- Raisins
+	{food=FOODTYPE.GOODIES, health=1, hunger=0, sanity=2}, -- Ghost Pop
+	{food=FOODTYPE.GOODIES, health=1, hunger=2, sanity=0}, -- Jelly Worm
+	{food=FOODTYPE.GOODIES, health=2, hunger=0, sanity=1}, -- Tentacle Lolli
+	{food=FOODTYPE.GOODIES, health=1, hunger=1, sanity=1}, -- Choco Pigs
 }
 
 assert(#candyinfo == NUM_HALLOWEENCANDY)

@@ -1275,9 +1275,9 @@ local function ShowHUD(inst, show)
     end
 end
 
-local function ShowWardrobePopUp(inst, show)
+local function ShowWardrobePopUp(inst, show, target)
     if TheWorld.ismastersim then
-        inst.player_classified:ShowWardrobePopUp(show)
+        inst.player_classified:ShowWardrobePopUp(show, target)
     end
 end
 

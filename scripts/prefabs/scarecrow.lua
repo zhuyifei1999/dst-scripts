@@ -1,6 +1,5 @@
 require "prefabutil"
 
-
 local assets =
 {
     Asset("ANIM", "anim/scarecrow.zip"),
@@ -14,24 +13,24 @@ local prefabs =
 
 local numfaces =
 {
-	hit = 4,
-	scary = 10,
-	screaming = 3,
+    hit = 4,
+    scary = 10,
+    screaming = 3,
 }
 
 local function ChangeFace(inst, prefix)
-	if inst:HasTag("fire") then
-		prefix = "screaming"
-	end
-	prefix = prefix or "scary"
-	
-	local prev_face = inst.face or 1
-	inst.face = math.random(numfaces[prefix]-1)
-	if inst.face >= prev_face then
-		inst.face = inst.face + 1
-	end
-	
-	inst.AnimState:OverrideSymbol("swap_scarecrow_face", "swap_scarecrow_face", prefix.."face"..inst.face)
+    if inst:HasTag("fire") then
+        prefix = "screaming"
+    end
+    prefix = prefix or "scary"
+
+    local prev_face = inst.face or 1
+    inst.face = math.random(numfaces[prefix]-1)
+    if inst.face >= prev_face then
+        inst.face = inst.face + 1
+    end
+
+    inst.AnimState:OverrideSymbol("swap_scarecrow_face", "swap_scarecrow_face", prefix.."face"..inst.face)
 end
 
 local function onhammered(inst)
@@ -45,27 +44,29 @@ end
 local function onhit(inst)
     if not inst:HasTag("burnt") then
         inst.AnimState:PlayAnimation("hit")
+        inst.AnimState:PushAnimation("idle", false)
         ChangeFace(inst, "hit")
     end
 end
 
 local function onbuilt(inst)
     inst.AnimState:PlayAnimation("place")
+    inst.AnimState:PushAnimation("idle", false)
     inst.SoundEmitter:PlaySound("dontstarve/common/scarecrow_craft")
 end
 
 local function onburnt(inst)
-	DefaultBurntStructureFn(inst)
-	inst:RemoveTag("scarecrow")
+    DefaultBurntStructureFn(inst)
+    inst:RemoveTag("scarecrow")
 end
 
 local function onignite(inst)
-	DefaultBurnFn(inst)
-	ChangeFace(inst)
+    DefaultBurnFn(inst)
+    ChangeFace(inst)
 end
 
 local function onsave(inst, data)
-    if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
+    if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() or inst:HasTag("burnt") then
         data.burnt = true
     end
 end
