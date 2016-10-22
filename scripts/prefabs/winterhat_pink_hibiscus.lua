@@ -7,7 +7,7 @@ local assets =
 
 local base_prefab = "winterhat"
 
-local tags = {"STRAWHAT", "CRAFTABLE", "MERCH"}
+local tags = {"WINTERHAT", "CRAFTABLE", "MERCH"}
 
 local ui_preview =
 {

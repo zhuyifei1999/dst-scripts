@@ -118,8 +118,6 @@ end
 function ShowLoading()
 	if global_loading_widget then 
 		global_loading_widget:SetEnabled(true)
-
-		TheSim:StopAllSounds()
 	end
 end
 
@@ -389,6 +387,8 @@ local function PopulateWorld(savedata, profile)
         -- Force overrides for ambient
         local tuning_override = require("tuning_override")
         tuning_override.areaambientdefault(savedata.map.prefab)
+
+		ApplySpecialEvent(world.topology.overrides and world.topology.overrides.specialevent or nil)
 
         -- Check for map overrides
         if world.topology.overrides ~= nil and GetTableSize(world.topology.overrides) > 0 then

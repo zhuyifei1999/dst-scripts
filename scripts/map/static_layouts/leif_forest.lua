@@ -17,7 +17,7 @@ return {
       margin = 0,
       image = "../../../../tools/tiled/dont_starve/tiles.png",
       imagewidth = 512,
-      imageheight = 128,
+      imageheight = 384,
       properties = {},
       tiles = {}
     }
@@ -529,30 +529,6 @@ return {
         },
         {
           name = "",
-          type = "RandomTreeAndLeif",
-          shape = "rectangle",
-          x = 32,
-          y = 24,
-          width = 457,
-          height = 466,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "leif",
-          shape = "rectangle",
-          x = 412,
-          y = 131,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {
-            ["data.sleeping"] = "true"
-          }
-        },
-        {
-          name = "",
           type = "leif",
           shape = "rectangle",
           x = 273,
@@ -561,71 +537,7 @@ return {
           height = 0,
           visible = true,
           properties = {
-            ["data.sleeping"] = "true"
-          }
-        },
-        {
-          name = "",
-          type = "leif",
-          shape = "rectangle",
-          x = 133,
-          y = 121,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {
-            ["data.sleeping"] = "true"
-          }
-        },
-        {
-          name = "",
-          type = "leif",
-          shape = "rectangle",
-          x = 108,
-          y = 233,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {
-            ["data.sleeping"] = "true"
-          }
-        },
-        {
-          name = "",
-          type = "leif",
-          shape = "rectangle",
-          x = 259,
-          y = 276,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {
-            ["data.sleeping"] = "true"
-          }
-        },
-        {
-          name = "",
-          type = "leif",
-          shape = "rectangle",
-          x = 392,
-          y = 334,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {
-            ["data.sleeping"] = "true"
-          }
-        },
-        {
-          name = "",
-          type = "leif",
-          shape = "rectangle",
-          x = 391,
-          y = 429,
-          width = 0,
-          height = 0,
-          visible = true,
-          properties = {
+            ["data.hibernate"] = "true",
             ["data.sleeping"] = "true"
           }
         },
@@ -639,6 +551,7 @@ return {
           height = 0,
           visible = true,
           properties = {
+            ["data.hibernate"] = "true",
             ["data.sleeping"] = "true"
           }
         },
@@ -646,12 +559,13 @@ return {
           name = "",
           type = "leif",
           shape = "rectangle",
-          x = 118,
-          y = 362,
+          x = 395,
+          y = 129,
           width = 0,
           height = 0,
           visible = true,
           properties = {
+            ["data.hibernate"] = "true",
             ["data.sleeping"] = "true"
           }
         },
@@ -659,12 +573,97 @@ return {
           name = "",
           type = "leif",
           shape = "rectangle",
-          x = 438,
+          x = 425,
           y = 193,
           width = 0,
           height = 0,
           visible = true,
           properties = {
+            ["data.hibernate"] = "true",
+            ["data.sleeping"] = "true"
+          }
+        },
+        {
+          name = "",
+          type = "leif",
+          shape = "rectangle",
+          x = 387,
+          y = 335,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.hibernate"] = "true",
+            ["data.sleeping"] = "true"
+          }
+        },
+        {
+          name = "",
+          type = "leif",
+          shape = "rectangle",
+          x = 357,
+          y = 423,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.hibernate"] = "true",
+            ["data.sleeping"] = "true"
+          }
+        },
+        {
+          name = "",
+          type = "leif",
+          shape = "rectangle",
+          x = 237,
+          y = 276,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.hibernate"] = "true",
+            ["data.sleeping"] = "true"
+          }
+        },
+        {
+          name = "",
+          type = "leif",
+          shape = "rectangle",
+          x = 109,
+          y = 123,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.hibernate"] = "true",
+            ["data.sleeping"] = "true"
+          }
+        },
+        {
+          name = "",
+          type = "leif",
+          shape = "rectangle",
+          x = 86,
+          y = 238,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.hibernate"] = "true",
+            ["data.sleeping"] = "true"
+          }
+        },
+        {
+          name = "",
+          type = "leif",
+          shape = "rectangle",
+          x = 94,
+          y = 366,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["data.hibernate"] = "true",
             ["data.sleeping"] = "true"
           }
         }

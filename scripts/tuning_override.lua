@@ -48,7 +48,9 @@ return
     end,
 
     wormattacks = function(difficulty)
-        SetSpawnMode(TheWorld.components.hounded, difficulty)
+		if TheWorld:HasTag("cave") then
+	        SetSpawnMode(TheWorld.components.hounded, difficulty)
+	    end
     end,
 
     deerclops = function(difficulty)

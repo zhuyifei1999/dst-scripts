@@ -129,6 +129,7 @@ function Builder:SetTechTrees(techlevels)
         self.classified.ancientlevel:set(techlevels.ANCIENT or 0)
         self.classified.shadowlevel:set(techlevels.SHADOW or 0)
         self.classified.cartographylevel:set(techlevels.CARTOGRAPHY or 0)
+        self.classified.sculptinglevel:set(techlevels.SCULPTING or 0)
     end
 end
 
@@ -145,6 +146,12 @@ end
 function Builder:AddRecipe(recipename)
     if self.classified ~= nil and self.classified.recipes[recipename] ~= nil then
         self.classified.recipes[recipename]:set(true)
+    end
+end
+
+function Builder:RemoveRecipe(recipename)
+    if self.classified ~= nil and self.classified.recipes[recipename] ~= nil then
+        self.classified.recipes[recipename]:set(false)
     end
 end
 
@@ -210,6 +217,16 @@ function Builder:HasCharacterIngredient(ingredient)
     return false, 0
 end
 
+function Builder:HasTechIngredient(ingredient)
+    if self.inst.components.builder ~= nil then
+        return self.inst.components.builder:HasTechIngredient(ingredient)
+    elseif self.classified ~= nil and IsTechIngredient(ingredient.type) and ingredient.type:sub(-9) == "_material" then
+        local level = self.classified.techtrees[ingredient.type:sub(1, -10):upper()] or 0
+        return level >= ingredient.amount, level
+    end
+    return false, 0
+end
+
 function Builder:KnowsRecipe(recipename)
     if self.inst.components.builder ~= nil then
         return self.inst.components.builder:KnowsRecipe(recipename)
@@ -220,7 +237,8 @@ function Builder:KnowsRecipe(recipename)
                         recipe.level.MAGIC <= self.classified.magicbonus:value() and
                         recipe.level.ANCIENT <= self.classified.ancientbonus:value() and
                         recipe.level.SHADOW <= self.classified.shadowbonus:value() and
-                        recipe.level.CARTOGRAPHY <= 0 or
+                        recipe.level.CARTOGRAPHY <= 0 and
+                        recipe.level.SCULPTING <= 0 or
                         self.classified.isfreebuildmode:value()
                     ) and (
                         recipe.builder_tag == nil or
@@ -251,6 +269,11 @@ function Builder:CanBuild(recipename)
         end
         for i, v in ipairs(recipe.character_ingredients) do
             if not self:HasCharacterIngredient(v) then
+                return false
+            end
+        end
+        for i, v in ipairs(recipe.tech_ingredients) do
+            if not self:HasTechIngredient(v) then
                 return false
             end
         end

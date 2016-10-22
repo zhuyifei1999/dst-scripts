@@ -16,14 +16,14 @@ local function onchangein(inst)
         inst.AnimState:PushAnimation("closed", false)
         inst.SoundEmitter:PlaySound("dontstarve/common/wardrobe_active")
     end
-end 
+end
 
 local function onopen(inst)
     if not inst:HasTag("burnt") then
         inst.AnimState:PlayAnimation("open")
         inst.SoundEmitter:PlaySound("dontstarve/common/wardrobe_open")
     end
-end 
+end
 
 local function onclose(inst)
     if not inst:HasTag("burnt") then

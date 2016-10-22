@@ -44,7 +44,7 @@ end
 local function CheckMorph(inst)
     if inst.components.repairable == nil and
         inst.components.workable.workleft > TUNING.SCULPTURE_COVERED_WORK and
-        TheWorld.state.isfullmoon and
+        (TheWorld.state.isfullmoon or TheWorld.state.isnewmoon) and
         not inst:IsAsleep() and
         inst._reanimatetask == nil then
         StartStruggle(inst)
@@ -126,6 +126,12 @@ local function onworkload(inst)
     end
 end
 
+local function onshadowchessroar(inst)
+    if inst.components.repairable == nil and inst.components.workable.workleft > TUNING.SCULPTURE_COVERED_WORK then
+        inst:Reanimate(inst, true)
+    end
+end
+
 local function makesculpture(name, physics_radius, scale, second_piece_name)
     local assets =
     {
@@ -137,15 +143,21 @@ local function makesculpture(name, physics_radius, scale, second_piece_name)
     local prefabs =
     {
         "marble",
+        "gears",
+        "chesspiece_"..name.."_sketch",
+        "shadow_"..name,
     }
 
     if second_piece_name ~= nil then
         table.insert(prefabs, "sculpture_"..second_piece_name)
     end
 
-    local function Reanimate(inst)
+    local function Reanimate(inst, forceshadow)
         if inst._reanimatetask == nil then
             StopStruggle(inst)
+
+            TheWorld:PushEvent("ms_unlockchesspiece", name)
+            inst.components.lootdropper:SpawnLootPrefab("chesspiece_"..name.."_sketch")
 
             inst.components.workable:SetOnWorkCallback(nil)
             inst.components.workable:SetOnFinishCallback(nil)
@@ -158,7 +170,14 @@ local function makesculpture(name, physics_radius, scale, second_piece_name)
             inst.persists = false
             inst._reanimatetask = inst:DoTaskInTime(2, ErodeAway)
 
-            local creature = SpawnPrefab(name)
+            local creaturename = name
+            if TheWorld.state.isnewmoon or forceshadow then
+                creaturename = "shadow_"..creaturename
+                inst.components.lootdropper:SpawnLootPrefab("gears")
+                inst.components.lootdropper:SpawnLootPrefab("gears")
+            end
+
+            local creature = SpawnPrefab(creaturename)
             creature.Transform:SetPosition(inst.Transform:GetWorldPosition())
             creature.Transform:SetRotation(inst.Transform:GetRotation())
             creature.sg:GoToState("taunt")
@@ -201,6 +220,7 @@ local function makesculpture(name, physics_radius, scale, second_piece_name)
 
         inst:AddTag("statue")
         inst:AddTag("sculpture")
+        inst:AddTag("chess_moonevent")
 
         MakeObstaclePhysics(inst, physics_radius)
 
@@ -242,6 +262,10 @@ local function makesculpture(name, physics_radius, scale, second_piece_name)
         inst.OnEntitySleep = CheckMorph
 
         inst:WatchWorldState("isfullmoon", CheckMorph)
+        inst:WatchWorldState("isnewmoon", CheckMorph)
+        
+        inst:ListenForEvent("shadowchessroar", onshadowchessroar)
+
         inst.Reanimate = Reanimate
 
         return inst

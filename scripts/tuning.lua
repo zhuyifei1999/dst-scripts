@@ -274,6 +274,7 @@ function Tune(overrides)
         LITTLE_WALRUS_ATTACK_DIST = 15,
 
         PIPE_DART_DAMAGE = 100,
+        YELLOW_DART_DAMAGE = 60,
 
 	    PENGUIN_DAMAGE = 33,
 	    PENGUIN_HEALTH = 150,
@@ -445,6 +446,9 @@ function Tune(overrides)
         MUSHSPORE_MAX_DENSITY_RAD = 20,
         MUSHSPORE_DENSITY_CHECK_TIME = 15,
         MUSHSPORE_DENSITY_CHECK_VAR = 15,
+        
+        MUSHROOMHAT_SPORE_TIME = seg_time * 2,
+        MUSHROOMHAT_SLOW_HUNGER = 0.75,
 	    
 	    ICE_MINE = 3,
 	    ROCKS_MINE = 6,
@@ -815,6 +819,7 @@ function Tune(overrides)
                 ANCIENT = 0,
                 SHADOW = 0,
                 CARTOGRAPHY = 0,
+                SCULPTING = 0,
             },
 
             ALCHEMYMACHINE =
@@ -824,6 +829,7 @@ function Tune(overrides)
                 ANCIENT = 0,
                 SHADOW = 0,
                 CARTOGRAPHY = 0,
+                SCULPTING = 0,
             },
 
             PRESTIHATITATOR =
@@ -833,6 +839,7 @@ function Tune(overrides)
                 ANCIENT = 0,
                 SHADOW = 0,
                 CARTOGRAPHY = 0,
+                SCULPTING = 0,
             },
 
             SHADOWMANIPULATOR =
@@ -842,6 +849,7 @@ function Tune(overrides)
                 ANCIENT = 0,
                 SHADOW = 0,
                 CARTOGRAPHY = 0,
+                SCULPTING = 0,
             },
 
             ANCIENTALTAR_LOW =
@@ -851,6 +859,7 @@ function Tune(overrides)
                 ANCIENT = 2,
                 SHADOW = 0,
                 CARTOGRAPHY = 0,
+                SCULPTING = 0,
             },
 
             ANCIENTALTAR_HIGH =
@@ -860,6 +869,7 @@ function Tune(overrides)
                 ANCIENT = 4,
                 SHADOW = 0,
                 CARTOGRAPHY = 0,
+                SCULPTING = 0,
             },
 
             WAXWELLJOURNAL =
@@ -869,6 +879,7 @@ function Tune(overrides)
                 ANCIENT = 0,
                 SHADOW = 4,
                 CARTOGRAPHY = 0,
+                SCULPTING = 0,
             },
 
             CARTOGRAPHYDESK =
@@ -878,6 +889,17 @@ function Tune(overrides)
                 ANCIENT = 0,
                 SHADOW = 0,
                 CARTOGRAPHY = 2,
+                SCULPTING = 0,
+            },
+
+            SCULPTINGTABLE =
+            {
+                SCIENCE = 0,
+                MAGIC = 0,
+                ANCIENT = 0,
+                SHADOW = 0,
+                CARTOGRAPHY = 0,
+                SCULPTING = 1,
             },
         },
 
@@ -961,6 +983,47 @@ function Tune(overrides)
 
 	    SHADOWCREATURE_TARGET_DIST = 20,
 
+        SHADOW_CHESSPIECE_EPICSCARE_RANGE = 10,
+        SHADOW_CHESSPIECE_DESPAWN_TIME = 30,
+	
+		SHADOW_ROOK =
+		{
+			LEVELUP_SCALE = {1, 1.2, 1.6},
+			SPEED = 7,							-- levels are procedural
+			HEALTH = {1000, 4000, 10000},
+			DAMAGE = {45, 100, 165},
+			ATTACK_PERIOD = {6, 5.5, 5},
+			ATTACK_RANGE = 8,					-- levels are procedural
+            HIT_RANGE = 3.35,
+            RETARGET_DIST = 15,
+		},
+
+		SHADOW_KNIGHT =
+		{
+			LEVELUP_SCALE = {1, 1.7, 2.5},
+			SPEED = {7, 9, 12},
+			HEALTH = {900, 2700, 8100},
+			DAMAGE = {40, 90, 150},
+			ATTACK_PERIOD = {3, 2.5, 2},
+			ATTACK_RANGE = 2.3,				    -- levels are procedural
+			ATTACK_RANGE_LONG = 4.5,			-- levels are procedural
+            RETARGET_DIST = 15,
+		},
+
+		SHADOW_BISHOP =
+		{
+			LEVELUP_SCALE = {1, 1.6, 2.2},
+			SPEED = 3,							-- levels are procedural
+			HEALTH = {800, 2500, 7500},
+			DAMAGE = {20, 35, 60},
+			ATTACK_PERIOD = {15, 14, 12},
+			ATTACK_RANGE = {4, 6, 8},			-- levels are procedural
+            HIT_RANGE = 1.75,
+            ATTACK_TICK = .5,
+            ATTACK_START_TICK = .2,
+            RETARGET_DIST = 15,
+		},
+
 		FROSTY_BREATH = -5,
 
 	    SEEDS_GROW_TIME = day_time*6,
@@ -982,6 +1045,9 @@ function Tune(overrides)
 	    SPOILEDFOOD_SOILCYCLES = 2,
 	    SPOILEDFOOD_WITHEREDCYCLES = 0.5,
 	    
+	    MUSHROOMFARM_MAX_HARVESTS = 4,
+	    MUSHROOMFARM_FULL_GROW_TIME = total_day_time * 3.75,
+	    MUSHROOMFARM_SPAWN_SPORE_CHANCE = 0.50,
 	    
 	    
 	    FISHING_CATCH_CHANCE = 0.4,
@@ -1021,7 +1087,7 @@ function Tune(overrides)
 	    COLDFIREPIT_FUEL_MAX = (night_time+dusk_time)*2,
 	    COLDFIREPIT_FUEL_START = night_time+dusk_time,
 	    COLDFIREPIT_BONUS_MULT = 2,
-
+	    
 	    PIGTORCH_RAIN_RATE = 2,
 	    PIGTORCH_FUEL_MAX = night_time,
 	    
@@ -1099,6 +1165,7 @@ function Tune(overrides)
 	    BIRD_TRAP_CHANCE = 0.025,
 	    BIRD_HEALTH = 25*multiplayer_attack_modifier,
 	    BIRD_PERISH_TIME = total_day_time * 5,
+	    BIRD_CANARY_LURE_DISTANCE = 12,
 
 	    BUTTERFLY_SPAWN_TIME = 10*multiplayer_wildlife_respawn_modifier,
 	    BUTTERFLY_POP_CAP = 4,
@@ -1204,6 +1271,16 @@ function Tune(overrides)
                 2, --[25] Air Unfreshener
                 9, --[26] Potato Cup
                 4, --[27] Wire Hanger
+                4, --[28] White Rook
+                4, --[29] Black Rook
+                4, --[30] White Knight
+                4, --[31] Black Knight
+                0, --[32] Crystal Ball
+                0, --[33] Spider Ring
+                0, --[34] Hand / Monkey Paw?
+                0, --[35] Empty Potion Bottle
+                0, --[36] Vampire Teeth
+                0, --[37] Wooden Stake
             },
         },
 
@@ -1284,6 +1361,8 @@ function Tune(overrides)
 	    PERISH_COLD_FROZEN_MULT = 0, -- frozen things don't spoil in an ice box or if it's cold out
 	    PERISH_FROZEN_FIRE_MULT = 30, -- frozen things spoil very quickly if near a fire
 	    PERISH_FRIDGE_MULT = .5,
+	    PERISH_MUSHROOMLIGHT_MUSHROOM_MULT = 0.0, -- mushrooms are in poop so they can stay healthy
+	    PERISH_MUSHROOMLIGHT_BATTERY_MULT = 0.25, -- lights will have a slow burn
 	    PERISH_GROUND_MULT = 1.5,
 	    PERISH_WET_MULT = 1.3,
 	    PERISH_CAGE_MULT = 0.25,
@@ -1579,6 +1658,111 @@ function Tune(overrides)
 		MOSSLING_ATTACK_RANGE = 2,
 		MOSSLING_WALK_SPEED = 5,
 
+        TOADSTOOL_HEALTH = 52500,
+        TOADSTOOL_ATTACK_RANGE = 7,
+        TOADSTOOL_EPICSCARE_RANGE = 10,
+        TOADSTOOL_DEAGGRO_DIST = 25,
+        TOADSTOOL_AGGRO_DIST = 15,
+        TOADSTOOL_RESPAWN_TIME = total_day_time * 20,
+
+        --Base values b4 factoring in diminishing returns
+        TOADSTOOL_FREEZE_WEAR_OFF_TIME = 10,
+        TOADSTOOL_FREEZE_RESIST = 4,
+
+        --TOADSTOOL stats are scaled by level [0..3] and phase [1..3]
+        TOADSTOOL_SPEED_LVL =
+        {
+            [0] = .6,
+            [1] = .8,
+            [2] = 1.2,
+            [3] = 3.2,
+        },
+        TOADSTOOL_DAMAGE_LVL =
+        {
+            [0] = 100,
+            [1] = 120,
+            [2] = 150,
+            [3] = 250,
+        },
+        TOADSTOOL_ATTACK_PERIOD_LVL =
+        {
+            [0] = 3.5,
+            [1] = 3,
+            [2] = 2.5,
+            [3] = 2,
+        },
+        TOADSTOOL_ABSORPTION_LVL =
+        {
+            [0] = 0,
+            [1] = .2,
+            [2] = .4,
+            [3] = .8,
+        },
+        TOADSTOOL_HIT_RECOVERY_LVL =
+        {
+            [0] = 1,
+            [1] = 1.5,
+            [2] = 2,
+            [3] = 3,
+        },
+
+        TOADSTOOL_MUSHROOMBOMB_MIN_RANGE = 4,
+        TOADSTOOL_MUSHROOMBOMB_MAX_RANGE = 8.75,
+        TOADSTOOL_MUSHROOMBOMB_RADIUS = 3.5,
+        TOADSTOOL_MUSHROOMBOMB_CD = 5,
+        TOADSTOOL_MUSHROOMBOMB_COUNT_PHASE =
+        {
+            [1] = 4,
+            [2] = 5,
+            [3] = 6,
+        },
+        TOADSTOOL_MUSHROOMBOMB_VAR_LVL =
+        {
+            [0] = 0,
+            [1] = 1,
+            [2] = 2,
+            [3] = 3,
+        },
+        TOADSTOOL_MUSHROOMBOMB_CHAIN_LVL =
+        {
+            [0] = 1,
+            [1] = 2,
+            [2] = 3,
+            [3] = 5,
+        },
+
+        TOADSTOOL_SPOREBOMB_ATTACK_RANGE = 10,
+        TOADSTOOL_SPOREBOMB_HIT_RANGE = 14,
+        TOADSTOOL_SPOREBOMB_TIMER = 3.5,
+        TOADSTOOL_SPOREBOMB_TARGETS_PHASE =
+        {
+            [1] = 1,
+            [2] = 2,
+            [3] = 2,
+        },
+        TOADSTOOL_SPOREBOMB_CD_PHASE =
+        {
+            [1] = 14,
+            [2] = 10,
+            [3] = 10,
+        },
+
+        TOADSTOOL_SPORECLOUD_DAMAGE = 20,
+        TOADSTOOL_SPORECLOUD_ROT = .07,
+        TOADSTOOL_SPORECLOUD_RADIUS = 3.5,
+        TOADSTOOL_SPORECLOUD_TICK = 1,
+        TOADSTOOL_SPORECLOUD_LIFETIME = 60,
+
+        TOADSTOOL_MUSHROOMSPROUT_NUM = 8,
+        TOADSTOOL_MUSHROOMSPROUT_MIN_RANGE = 6,
+        TOADSTOOL_MUSHROOMSPROUT_MAX_RANGE = 10,
+        TOADSTOOL_MUSHROOMSPROUT_TICK = 2,
+        TOADSTOOL_MUSHROOMSPROUT_DURATION = 15,
+        TOADSTOOL_MUSHROOMSPROUT_CD = 45,
+
+        TOADSTOOL_POUND_CD = 20,
+        TOADSTOOL_ABILITY_INTRO_CD = 10,
+
 		DRAGONFLY_RESPAWN_TIME = total_day_time * 20,
 		DRAGONFLY_SPAWN_TIME = 1,
 
@@ -1619,6 +1803,7 @@ function Tune(overrides)
 		LAVAE_HIT_RANGE = 3,
 		LAVAE_ATTACK_RANGE = 6,
 		LAVAE_HUNGER_RATE = 50/total_day_time,
+		LAVAE_LIFESPAN = 30,
 
 	    LAVAE_HATCH_CRACK_TIME = 10,
 	    LAVAE_HATCH_TIME = total_day_time*2,
@@ -2071,3 +2256,4 @@ function Tune(overrides)
 end
 
 Tune()
+

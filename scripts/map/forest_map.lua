@@ -1,4 +1,5 @@
 local startlocations = require"map/startlocations"
+local tuning_override = require "tuning_override"
 
 local SKIP_GEN_CHECKS = false
 
@@ -226,6 +227,8 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
     if current_gen_params.wormhole_prefab ~= nil then
         story_gen_params.wormhole_prefab = current_gen_params.wormhole_prefab
     end
+
+	ApplySpecialEvent(tuning_override.specialevent)
 
     local min_size = 350
     if current_gen_params.world_size ~= nil then

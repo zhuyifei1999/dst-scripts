@@ -4,6 +4,8 @@ require "behaviours/doaction"
 require "behaviours/panic"
 require "behaviours/chattynode"
 
+local BrainCommon = require "brains/braincommon"
+
 local START_FACE_DIST = 6
 local KEEP_FACE_DIST = 8
 local GO_HOME_DIST = 10
@@ -69,6 +71,7 @@ end)
 function PigGuardBrain:OnStart()
     local root = PriorityNode(
     {
+        BrainCommon.PanicWhenScared(self.inst, .2, "PIG_TALK_PANICBOSS"),
         WhileNode(function() return self.inst.components.hauntable ~= nil and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
         WhileNode(function() return self.inst.components.health.takingfiredamage end, "OnFire", Panic(self.inst)),
         ChattyNode(self.inst, "PIG_GUARD_TALK_FIGHT",

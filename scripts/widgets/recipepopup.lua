@@ -317,27 +317,93 @@ function RecipePopup:Refresh()
         end
     end
 
+    self.name:SetString(STRINGS.NAMES[string.upper(self.recipe.name)])
+    self.desc:SetString(STRINGS.RECIPE_DESC[string.upper(self.recipe.name)])
+
+    for i, v in ipairs(self.ing) do
+        v:Kill()
+    end
+
+    self.ing = {}
+
+    local num =
+        (recipe.ingredients ~= nil and #recipe.ingredients or 0) +
+        (recipe.character_ingredients ~= nil and #recipe.character_ingredients or 0) +
+        (recipe.tech_ingredients ~= nil and #recipe.tech_ingredients or 0)
+    local w = 64
+    local div = 10
+    local half_div = div * .5
+    local offset = 315 --center
+    if num > 1 then
+        offset = offset - (w *.5 + half_div) * (num - 1)
+    end
+
+    local hint_tech_ingredient = nil
+
+    for i, v in ipairs(recipe.tech_ingredients) do
+        if v.type:sub(-9) == "_material" then
+            local has, level = builder:HasTechIngredient(v)
+            local ing = self.contents:AddChild(IngredientUI(v.atlas, v.type..".tex", nil, nil, has, STRINGS.NAMES[string.upper(v.type)], owner, v.type))
+            if num > 1 and #self.ing > 0 then
+                offset = offset + half_div
+            end
+            ing:SetPosition(Vector3(offset, self.skins_spinner ~= nil and 110 or 80, 0))
+            offset = offset + w + half_div
+            table.insert(self.ing, ing)
+            if not has and hint_tech_ingredient == nil then
+                hint_tech_ingredient = v.type:sub(1, -10):upper()
+            end
+        end
+    end
+
+    for i, v in ipairs(recipe.ingredients) do
+        local has, num_found = inventory:Has(v.type, RoundBiasedUp(v.amount * builder:IngredientMod()))
+        local ing = self.contents:AddChild(IngredientUI(v.atlas, v.type..".tex", v.amount, num_found, has, STRINGS.NAMES[string.upper(v.type)], owner, v.type))
+        if num > 1 and #self.ing > 0 then
+            offset = offset + half_div
+        end
+        ing:SetPosition(Vector3(offset, self.skins_spinner ~= nil and 110 or 80, 0))
+        offset = offset + w + half_div
+        table.insert(self.ing, ing)
+    end
+
+    for i, v in ipairs(recipe.character_ingredients) do
+        --#BDOIG - does this need to listen for deltas and change while menu is open?
+        --V2C: yes, but the entire craft tabs does. (will be added there)
+        local has, amount = builder:HasCharacterIngredient(v)
+        local ing = self.contents:AddChild(IngredientUI(v.atlas, v.type..".tex", v.amount, amount, has, STRINGS.NAMES[string.upper(v.type)], owner, v.type))
+        if num > 1 and #self.ing > 0 then
+            offset = offset + half_div
+        end
+        ing:SetPosition(Vector3(offset, self.skins_spinner ~= nil and 110 or 80, 0))
+        offset = offset + w + half_div
+        table.insert(self.ing, ing)
+    end
+
     local equippedBody = inventory:GetEquippedItem(EQUIPSLOTS.BODY)
     local showamulet = equippedBody and equippedBody.prefab == "greenamulet"
 
-    local controller_id = TheInput:GetControllerID()
-
-    if should_hint then
+    if should_hint or hint_tech_ingredient ~= nil then
         self.recipecost:Hide()
         self.button:Hide()
 
-        local hint_text =
-        {
-            ["SCIENCEMACHINE"] = STRINGS.UI.CRAFTING.NEEDSCIENCEMACHINE,
-            ["ALCHEMYMACHINE"] = STRINGS.UI.CRAFTING.NEEDALCHEMYENGINE,
-            ["SHADOWMANIPULATOR"] = STRINGS.UI.CRAFTING.NEEDSHADOWMANIPULATOR,
-            ["PRESTIHATITATOR"] = STRINGS.UI.CRAFTING.NEEDPRESTIHATITATOR,
-            ["CANTRESEARCH"] = STRINGS.UI.CRAFTING.CANTRESEARCH,
-            ["ANCIENTALTAR_HIGH"] = STRINGS.UI.CRAFTING.NEEDSANCIENT_FOUR,
-        }
-        local str = hint_text[GetHintTextForRecipe(owner, recipe)] or "Text not found."
+        local str
+        if should_hint then
+            local hint_text =
+            {
+                ["SCIENCEMACHINE"] = STRINGS.UI.CRAFTING.NEEDSCIENCEMACHINE,
+                ["ALCHEMYMACHINE"] = STRINGS.UI.CRAFTING.NEEDALCHEMYENGINE,
+                ["SHADOWMANIPULATOR"] = STRINGS.UI.CRAFTING.NEEDSHADOWMANIPULATOR,
+                ["PRESTIHATITATOR"] = STRINGS.UI.CRAFTING.NEEDPRESTIHATITATOR,
+                ["CANTRESEARCH"] = STRINGS.UI.CRAFTING.CANTRESEARCH,
+                ["ANCIENTALTAR_HIGH"] = STRINGS.UI.CRAFTING.NEEDSANCIENT_FOUR,
+            }
+            str = hint_text[GetHintTextForRecipe(owner, recipe)]
+        else
+            str = STRINGS.UI.CRAFTING.NEEDSTECH[hint_tech_ingredient]
+        end
         self.teaser:SetScale(TEASER_SCALE_TEXT)
-        self.teaser:SetString(str)
+        self.teaser:SetString(str or "Text not found.")
         self.teaser:Show()
         showamulet = false
     else
@@ -345,8 +411,10 @@ function RecipePopup:Refresh()
         self.recipecost:Hide()
 
         local buttonstr =
-            not (knows or recipe.nounlock) and STRINGS.UI.CRAFTING.PROTOTYPE or
-            (buffered and STRINGS.UI.CRAFTING.PLACE or STRINGS.UI.CRAFTING.BUILD)
+            (not (knows or recipe.nounlock) and STRINGS.UI.CRAFTING.PROTOTYPE) or
+            (buffered and STRINGS.UI.CRAFTING.PLACE) or
+            STRINGS.UI.CRAFTING.TABACTION[recipe.tab.str] or
+            STRINGS.UI.CRAFTING.BUILD
 
         if TheInput:ControllerAttached() then
             self.button:Hide()
@@ -354,7 +422,7 @@ function RecipePopup:Refresh()
 
             if can_build then
                 self.teaser:SetScale(TEASER_SCALE_BTN)
-                self.teaser:SetString(TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT).." "..buttonstr)
+                self.teaser:SetString(TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_ACCEPT).." "..buttonstr)
             else
                 self.teaser:SetScale(TEASER_SCALE_TEXT)
                 self.teaser:SetString(STRINGS.UI.CRAFTING.NEEDSTUFF)
@@ -377,60 +445,10 @@ function RecipePopup:Refresh()
         end
     end
 
-    if not showamulet then
-        self.amulet:Hide()
-    else
+    if showamulet then
         self.amulet:Show()
-    end
-
-    self.name:SetString(STRINGS.NAMES[string.upper(self.recipe.name)])
-    self.desc:SetString(STRINGS.RECIPE_DESC[string.upper(self.recipe.name)])
-
-    for i, v in ipairs(self.ing) do
-        v:Kill()
-    end
-
-    self.ing = {}
-
-    local num = (recipe.ingredients ~= nil and #recipe.ingredients or 0) + (recipe.character_ingredients ~= nil and #recipe.character_ingredients or 0)
-    local w = 64
-    local div = 10
-    local half_div = div * .5
-    local offset = 315 --center
-    if num > 1 then
-        offset = offset - (w *.5 + half_div) * (num - 1)
-    end
-
-    for i, v in ipairs(recipe.ingredients) do
-        local has, num_found = inventory:Has(v.type, RoundBiasedUp(v.amount * builder:IngredientMod()))
-        local ing = self.contents:AddChild(IngredientUI(v.atlas, v.type..".tex", v.amount, num_found, has, STRINGS.NAMES[string.upper(v.type)], owner))
-        if num > 1 and #self.ing > 0 then
-            offset = offset + half_div
-        end
-        if self.skins_spinner ~= nil then
-            ing:SetPosition(Vector3(offset, 110, 0))
-        else
-            ing:SetPosition(Vector3(offset, 80, 0))
-        end
-        offset = offset + w + half_div
-        table.insert(self.ing, ing)
-    end
-
-    for i, v in ipairs(recipe.character_ingredients) do
-        --#BDOIG - does this need to listen for deltas and change while menu is open?
-        --V2C: yes, but the entire craft tabs does. (will be added there)
-        local has, amount = builder:HasCharacterIngredient(v)
-        local ing = self.contents:AddChild(IngredientUI(v.atlas, v.type..".tex", v.amount, amount, has, STRINGS.NAMES[string.upper(v.type)], owner, v.type))
-        if num > 1 and #self.ing > 0 then
-            offset = offset + half_div
-        end
-        if self.skins_spinner ~= nil then
-            ing:SetPosition(Vector3(offset, 110, 0))
-        else
-            ing:SetPosition(Vector3(offset, 80, 0))
-        end
-        offset = offset + w + half_div
-        table.insert(self.ing, ing)
+    else
+        self.amulet:Hide()
     end
 
     -- update new tags

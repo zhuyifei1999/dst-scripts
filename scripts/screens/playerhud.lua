@@ -9,6 +9,7 @@ local FireOver = require "widgets/fireover"
 local BloodOver = require "widgets/bloodover"
 local BeefBloodOver = require "widgets/beefbloodover"
 local HeatOver = require "widgets/heatover"
+local FumeOver = require "widgets/fumeover"
 local easing = require("easing")
 
 local PauseScreen = nil
@@ -85,6 +86,7 @@ function PlayerHud:CreateOverlays(owner)
     self.iceover = self.overlayroot:AddChild(IceOver(owner))
     self.fireover = self.overlayroot:AddChild(FireOver(owner))
     self.heatover = self.overlayroot:AddChild(HeatOver(owner))
+    self.fumeover = self.overlayroot:AddChild(FumeOver(owner))
 
     self.clouds = self.under_root:AddChild(UIAnim())
     self.clouds:SetClickable(false)
@@ -293,22 +295,36 @@ function PlayerHud:CloseItemManagerScreen()
     end
 end
 
-function PlayerHud:OpenWardrobeScreen()
+function PlayerHud:OpenWardrobeScreen(target)
     --Hack for holding offset when transitioning from giftitempopup to wardrobepopup
     TheCamera:PopScreenHOffset(self)
 
     if self.wardrobepopup ~= nil and self.wardrobepopup.inst:IsValid() then
         TheFrontEnd:PopScreen(self.wardrobepopup)
     end
-    self.wardrobepopup =
-        WardrobePopupScreen(
-            self.owner,
-            Profile,
-            nil,
-            false,
-            self.recentgifts ~= nil and self.recentgifts.item_types or nil,
-            self.recentgifts ~= nil and self.recentgifts.item_ids or nil
-        )
+
+    if target ~= nil then
+        self.wardrobepopup =
+            WardrobePopupScreen(
+                self.owner,
+                Profile,
+                nil,
+                false,
+                self.recentgifts ~= nil and self.recentgifts.item_types or nil,
+                self.recentgifts ~= nil and self.recentgifts.item_ids or nil
+            )
+    else
+        self.wardrobepopup =
+            WardrobePopupScreen(
+                self.owner,
+                Profile,
+                nil,
+                false,
+                self.recentgifts ~= nil and self.recentgifts.item_types or nil,
+                self.recentgifts ~= nil and self.recentgifts.item_ids or nil
+            )
+    end
+
     self:ClearRecentGifts()
     self:OpenScreenUnderPause(self.wardrobepopup)
     return true

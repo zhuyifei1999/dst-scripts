@@ -6,6 +6,7 @@ local assets =
 
 local prefabs =
 {
+    "campfirefire",
     "endtable_blueprint",
 }
 
@@ -99,10 +100,14 @@ local function MakeStagehand(name)
             return inst
         end
 
-	    MakeSmallBurnable(inst, nil, nil, false, "swap_fire")
 	    MakeSmallPropagator(inst)
 		MakeHauntableWork(inst)
 	    MakeSnowCovered(inst)
+
+		inst:AddComponent("burnable")
+		inst.components.burnable:SetFXLevel(2)
+		inst.components.burnable:SetBurnTime(10)
+		inst.components.burnable:AddBurnFX("campfirefire", Vector3(0, 0, 0), "swap_fire")
 
 		inst:AddComponent("workable")
 		inst.components.workable:SetWorkAction(ACTIONS.HAMMER)

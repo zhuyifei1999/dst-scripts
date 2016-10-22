@@ -7,7 +7,7 @@ local actionhandlers =
 
 local events =
 {
-    EventHandler("attacked", function(inst) if not inst.components.health:IsDead() and not inst.sg:HasStateTag("attack") then inst.sg:GoToState("hit") end end),
+    EventHandler("attacked", function(inst) if not (inst.sg:HasStateTag("attack") or inst.sg:HasStateTag("hit") or inst.components.health:IsDead()) then inst.sg:GoToState("hit") end end),
     EventHandler("death", function(inst) inst.sg:GoToState("death") end),
     EventHandler("doattack", function(inst, data) if not inst.components.health:IsDead() and (inst.sg:HasStateTag("hit") or not inst.sg:HasStateTag("busy")) then inst.sg:GoToState("attack", data.target) end end),
     CommonHandlers.OnLocomote(false,true),
@@ -56,23 +56,22 @@ local states =
             inst.AnimState:PlayAnimation("disappear")
         end,
 
-        events=
+        events =
         {
 			EventHandler("animover", function(inst)
 				local max_tries = 4
 				for k = 1, max_tries do
 					local x, y, z = inst.Transform:GetWorldPosition()
 					local offset = 10
-					x = x + math.random(2 * offset) - offset          
+					x = x + math.random(2 * offset) - offset
 					z = z + math.random(2 * offset) - offset
 					if TheWorld.Map:IsPassableAtPoint(x, y, z) then
-						inst.Transform:SetPosition(x, y, z)
+						inst.Physics:Teleport(x, y, z)
 						break
 					end
 				end
 
 				inst.sg:GoToState("appear")
-                
 			end),
 			
         },

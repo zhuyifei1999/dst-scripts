@@ -17,6 +17,9 @@ Recipe("molehat", {Ingredient("mole", 2), Ingredient("transistor", 2), Ingredien
 Recipe("pumpkin_lantern", {Ingredient("pumpkin", 1), Ingredient("fireflies", 1)}, RECIPETABS.LIGHT, TECH.SCIENCE_TWO)
 Recipe("lantern", {Ingredient("twigs", 3), Ingredient("rope", 2), Ingredient("lightbulb", 2)}, RECIPETABS.LIGHT, TECH.SCIENCE_TWO)
 
+Recipe("mushroom_light", {Ingredient("shroom_skin", 1), Ingredient("fertilizer", 1, nil, true)}, RECIPETABS.LIGHT, TECH.LOST, "mushroom_light_placer", 1.5)
+Recipe("mushroom_light2", {Ingredient("shroom_skin", 1), Ingredient("fertilizer", 1, nil, true), Ingredient("boards", 1)}, RECIPETABS.LIGHT, TECH.LOST, "mushroom_light2_placer", 1.5)
+
 --STRUCTURES
 Recipe("spidereggsack", {Ingredient("silk", 12), Ingredient("spidergland", 6), Ingredient("papyrus", 6)}, RECIPETABS.TOWN, TECH.NONE, nil, nil, nil, nil, "spiderwhisperer")
 Recipe("treasurechest", {Ingredient("boards", 3)}, RECIPETABS.TOWN, TECH.SCIENCE_ONE, "treasurechest_placer",1)
@@ -33,6 +36,7 @@ Recipe("wardrobe", {Ingredient("boards", 4), Ingredient("cutgrass", 3)}, RECIPET
 Recipe("pighouse", {Ingredient("boards", 4), Ingredient("cutstone", 3), Ingredient("pigskin", 4)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO, "pighouse_placer")
 Recipe("rabbithouse", {Ingredient("boards", 4), Ingredient("carrot", 10), Ingredient("manrabbit_tail", 4)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO, "rabbithouse_placer")
 Recipe("birdcage", {Ingredient("papyrus", 2), Ingredient("goldnugget", 6), Ingredient("seeds", 2)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO, "birdcage_placer")
+Recipe("scarecrow", {Ingredient("pumpkin", 1), Ingredient("boards", 3), Ingredient("cutgrass", 3)}, RECIPETABS.TOWN, TECH.SCIENCE_ONE, "scarecrow_placer", 1.5)
 
 Recipe("turf_road", {Ingredient("turf_rocky", 1), Ingredient("boards", 1)}, RECIPETABS.TOWN,  TECH.SCIENCE_TWO)
 Recipe("turf_woodfloor", {Ingredient("boards", 1)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO)
@@ -44,12 +48,14 @@ Recipe("pottedfern", {Ingredient("foliage", 5), Ingredient("slurtle_shellpieces"
 Recipe("endtable", {Ingredient("marble", 2), Ingredient("boards", 2), Ingredient("turf_carpetfloor", 2)}, RECIPETABS.TOWN, TECH.LOST, "endtable_placer", 1.5)
 
 Recipe("dragonflychest", {Ingredient("dragon_scales", 1), Ingredient("boards", 4), Ingredient("goldnugget", 10)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO, "dragonflychest_placer", 1.5)
+Recipe("dragonflyfurnace", {Ingredient("dragon_scales", 1), Ingredient("redgem", 2), Ingredient("charcoal", 10)}, RECIPETABS.TOWN, TECH.LOST, "dragonflyfurnace_placer")
 
 
 --FARM
 Recipe("slow_farmplot", {Ingredient("cutgrass", 8),Ingredient("poop", 4),Ingredient("log", 4)}, RECIPETABS.FARM,  TECH.SCIENCE_ONE, "slow_farmplot_placer")
 Recipe("fast_farmplot", {Ingredient("cutgrass", 10),Ingredient("poop", 6),Ingredient("rocks", 4)}, RECIPETABS.FARM,  TECH.SCIENCE_TWO, "fast_farmplot_placer")
 Recipe("fertilizer", {Ingredient("poop",3), Ingredient("boneshard", 2), Ingredient("log", 4)}, RECIPETABS.FARM, TECH.SCIENCE_TWO)
+Recipe("mushroom_farm", {Ingredient("spoiled_food", 8),Ingredient("poop", 5),Ingredient("livinglog", 2)}, RECIPETABS.FARM, TECH.SCIENCE_ONE, "mushroom_farm_placer", 2.5)
 Recipe("beebox", {Ingredient("boards", 2),Ingredient("honeycomb", 1),Ingredient("bee", 4)}, RECIPETABS.FARM, TECH.SCIENCE_ONE, "beebox_placer")
 Recipe("meatrack", {Ingredient("twigs", 3),Ingredient("charcoal", 2), Ingredient("rope", 3)}, RECIPETABS.FARM, TECH.SCIENCE_ONE, "meatrack_placer")
 Recipe("cookpot", {Ingredient("cutstone", 3),Ingredient("charcoal", 6), Ingredient("twigs", 6)}, RECIPETABS.FARM,  TECH.SCIENCE_ONE, "cookpot_placer")
@@ -72,6 +78,7 @@ Recipe("balloons_empty", {Ingredient("waterballoon", 4)}, RECIPETABS.SURVIVAL, T
 Recipe("compass", {Ingredient("goldnugget", 1), Ingredient("flint", 1)}, RECIPETABS.SURVIVAL,  TECH.NONE)
 Recipe("heatrock", {Ingredient("rocks", 10),Ingredient("pickaxe", 1),Ingredient("flint", 3)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_TWO)
 Recipe("backpack", {Ingredient("cutgrass", 4), Ingredient("twigs", 4)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_ONE)
+Recipe("candybag", {Ingredient("cutgrass", 6)}, RECIPETABS.SURVIVAL, TECH.HALLOWED_NIGHTS)
 Recipe("piggyback", {Ingredient("pigskin", 4), Ingredient("silk", 6), Ingredient("rope", 2)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_TWO)
 Recipe("bedroll_straw", {Ingredient("cutgrass", 6), Ingredient("rope", 1)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_ONE)
 Recipe("bedroll_furry", {Ingredient("bedroll_straw", 1), Ingredient("manrabbit_tail", 2)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_TWO)
@@ -107,6 +114,7 @@ Recipe("researchlab2", {Ingredient("boards", 4),Ingredient("cutstone", 2), Ingre
 Recipe("transistor", {Ingredient("goldnugget", 2), Ingredient("cutstone", 1)}, RECIPETABS.SCIENCE, TECH.SCIENCE_ONE)
 --Recipe("diviningrod", {Ingredient("twigs", 1), Ingredient("nightmarefuel", 4), Ingredient("gears", 1)}, RECIPETABS.SCIENCE, TECH.SCIENCE_TWO)
 Recipe("cartographydesk", {Ingredient("compass", 1),Ingredient("boards", 4)}, RECIPETABS.SCIENCE, TECH.SCIENCE_ONE, "cartographydesk_placer")
+Recipe("sculptingtable", {Ingredient("cutstone", 2), Ingredient("boards", 2), Ingredient("twigs", 4) }, RECIPETABS.SCIENCE, TECH.SCIENCE_ONE, "sculptingtable_placer")
 Recipe("winterometer", {Ingredient("boards", 2), Ingredient("goldnugget", 2)}, RECIPETABS.SCIENCE,  TECH.SCIENCE_ONE, "winterometer_placer")
 Recipe("rainometer", {Ingredient("boards", 2), Ingredient("goldnugget", 2), Ingredient("rope",2)}, RECIPETABS.SCIENCE,  TECH.SCIENCE_ONE, "rainometer_placer")
 Recipe("gunpowder", {Ingredient("rottenegg", 1), Ingredient("charcoal", 1), Ingredient("nitre", 1)}, RECIPETABS.SCIENCE,  TECH.SCIENCE_TWO)
@@ -151,7 +159,8 @@ Recipe("telebase", {Ingredient("nightmarefuel", 4), Ingredient("livinglog", 4), 
         end
         return true
     end)
-Recipe("sentryward", {Ingredient("purplemooneye", 1), Ingredient("compass", 1), Ingredient("boards", 2)}, RECIPETABS.MAGIC, TECH.MAGIC_TWO, "sentryward_placer")
+Recipe("sentryward", {Ingredient("purplemooneye", 1), Ingredient("compass", 1), Ingredient("boards", 2)}, RECIPETABS.MAGIC, TECH.MAGIC_TWO, "sentryward_placer", 1.5)
+Recipe("moondial", {Ingredient("bluemooneye", 1), Ingredient("moonrocknugget", 2), Ingredient("ice", 2)}, RECIPETABS.MAGIC,  TECH.MAGIC_TWO, "moondial_placer")
 
 --REFINE
 Recipe("rope", {Ingredient("cutgrass", 3)}, RECIPETABS.REFINE,  TECH.SCIENCE_ONE)
@@ -177,6 +186,7 @@ Recipe("footballhat", {Ingredient("pigskin", 1), Ingredient("rope", 1)}, RECIPET
 Recipe("blowdart_sleep", {Ingredient("cutreeds", 2),Ingredient("stinger", 1),Ingredient("feather_crow", 1) }, RECIPETABS.WAR,  TECH.SCIENCE_ONE)
 Recipe("blowdart_fire", {Ingredient("cutreeds", 2),Ingredient("charcoal", 1),Ingredient("feather_robin", 1) }, RECIPETABS.WAR,  TECH.SCIENCE_ONE)
 Recipe("blowdart_pipe", {Ingredient("cutreeds", 2),Ingredient("houndstooth", 1),Ingredient("feather_robin_winter", 1) }, RECIPETABS.WAR,  TECH.SCIENCE_ONE)
+Recipe("blowdart_yellow", {Ingredient("cutreeds", 2),Ingredient("goldnugget", 1),Ingredient("feather_canary", 1) }, RECIPETABS.WAR,  TECH.SCIENCE_ONE)
 Recipe("boomerang", {Ingredient("boards", 1),Ingredient("silk", 1),Ingredient("charcoal", 1)}, RECIPETABS.WAR,  TECH.SCIENCE_TWO)
 Recipe("beemine", {Ingredient("boards", 1),Ingredient("bee", 4),Ingredient("flint", 1) }, RECIPETABS.WAR,  TECH.SCIENCE_ONE)
 Recipe("trap_teeth", {Ingredient("log", 1),Ingredient("rope", 1),Ingredient("houndstooth", 1)}, RECIPETABS.WAR,  TECH.SCIENCE_TWO)
@@ -210,6 +220,9 @@ Recipe("hawaiianshirt", {Ingredient("papyrus", 3), Ingredient("silk", 3), Ingred
 Recipe("cane", {Ingredient("goldnugget", 2), Ingredient("walrus_tusk", 1), Ingredient("twigs", 4)}, RECIPETABS.DRESS,  TECH.SCIENCE_TWO)
 Recipe("beargervest", {Ingredient("bearger_fur", 1), Ingredient("sweatervest", 1), Ingredient("rope", 2)}, RECIPETABS.DRESS,  TECH.SCIENCE_TWO)
 Recipe("eyebrellahat", {Ingredient("deerclops_eyeball", 1), Ingredient("twigs", 15), Ingredient("boneshard", 4)}, RECIPETABS.DRESS,  TECH.SCIENCE_TWO)
+Recipe("red_mushroomhat", {Ingredient("red_cap", 6)}, RECIPETABS.DRESS, TECH.LOST)
+Recipe("green_mushroomhat", {Ingredient("green_cap", 6)}, RECIPETABS.DRESS, TECH.LOST)
+Recipe("blue_mushroomhat", {Ingredient("blue_cap", 6)}, RECIPETABS.DRESS, TECH.LOST)
 
 
 ----GEMS----
@@ -238,7 +251,7 @@ Recipe("ruins_bat", {Ingredient("livinglog", 3), Ingredient("thulecite", 4), Ing
 Recipe("eyeturret_item", {Ingredient("deerclops_eyeball", 1), Ingredient("minotaurhorn", 1), Ingredient("thulecite", 5)}, RECIPETABS.ANCIENT, TECH.ANCIENT_FOUR, nil, nil, true)
 
 if ACCOMPLISHMENTS_ENABLED then
-	Recipe("accomplishment_shrine", {Ingredient("goldnugget", 10), Ingredient("cutstone", 1), Ingredient("gears", 6)}, RECIPETABS.SCIENCE, TECH.SCIENCE_TWO, "accomplishment_shrine_placer")
+    Recipe("accomplishment_shrine", {Ingredient("goldnugget", 10), Ingredient("cutstone", 1), Ingredient("gears", 6)}, RECIPETABS.SCIENCE, TECH.SCIENCE_TWO, "accomplishment_shrine_placer")
 end
 
 ----BOOK----
@@ -258,6 +271,16 @@ Recipe("shadowduelist_builder", {Ingredient("nightmarefuel", 2), Ingredient("spe
 
 ----CARTOGRAPHY----
 Recipe("mapscroll", {Ingredient("featherpencil", 1), Ingredient("papyrus", 1)}, RECIPETABS.CARTOGRAPHY, TECH.CARTOGRAPHY_TWO, nil, nil, true, nil, nil, nil, function() return TheWorld.worldprefab == "forest" and "mapscroll.tex" or ("mapscroll_"..TheWorld.worldprefab..".tex") end)
+
+----SCULPTING----
+Recipe("chesspiece_hornucopia_builder", {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("rocks", 2)}, RECIPETABS.SCULPTING, TECH.SCULPTING_ONE, nil, nil, true, nil, nil, nil, "chesspiece_hornucopia.tex")
+Recipe("chesspiece_pipe_builder", {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("rocks", 2)}, RECIPETABS.SCULPTING, TECH.SCULPTING_ONE, nil, nil, true, nil, nil, nil, "chesspiece_pipe.tex")
+Recipe("chesspiece_pawn_builder", {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("rocks", 2)}, RECIPETABS.SCULPTING, TECH.LOST, nil, nil, true, nil, nil, nil, "chesspiece_pawn.tex")
+Recipe("chesspiece_rook_builder", {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("rocks", 2)}, RECIPETABS.SCULPTING, TECH.LOST, nil, nil, true, nil, nil, nil, "chesspiece_rook.tex")
+Recipe("chesspiece_knight_builder", {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("rocks", 2)}, RECIPETABS.SCULPTING, TECH.LOST, nil, nil, true, nil, nil, nil, "chesspiece_knight.tex")
+Recipe("chesspiece_bishop_builder", {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("rocks", 2)}, RECIPETABS.SCULPTING, TECH.LOST, nil, nil, true, nil, nil, nil, "chesspiece_bishop.tex")
+Recipe("chesspiece_muse_builder", {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("rocks", 2)}, RECIPETABS.SCULPTING, TECH.LOST, nil, nil, true, nil, nil, nil, "chesspiece_muse.tex")
+Recipe("chesspiece_formal_builder", {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("rocks", 2)}, RECIPETABS.SCULPTING, TECH.LOST, nil, nil, true, nil, nil, nil, "chesspiece_formal.tex")
 
 
 ----UNCRAFTABLE----

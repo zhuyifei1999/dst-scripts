@@ -62,14 +62,8 @@ local function onfinishcallback(inst, worker)
         if worker.components.sanity ~= nil then
             worker.components.sanity:DoDelta(-TUNING.SANITY_SMALL)
         end
-        if not spawnghost(inst, .1)  then
-            local item = nil
-            if math.random() < .5 then
-                item = weighted_random_choice(LOOTS)
-            else
-                item = "trinket_"..tostring(math.random(NUM_TRINKETS))
-            end
-
+        if not spawnghost(inst, .1) then
+            local item = math.random() < .5 and PickRandomTrinket() or weighted_random_choice(LOOTS) or nil
             if item ~= nil then
                 inst.components.lootdropper:SpawnLootPrefab(item)
             end

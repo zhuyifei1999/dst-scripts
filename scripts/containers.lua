@@ -157,6 +157,53 @@ function params.cookpot.widget.buttoninfo.validfn(inst)
 end
 
 --------------------------------------------------------------------------
+--[[ mushroom_light ]]
+--------------------------------------------------------------------------
+
+params.mushroom_light =
+{
+    widget =
+    {
+        slotpos =
+        {
+            Vector3(0, 64 + 32 + 8 + 4, 0), 
+            Vector3(0, 32 + 4, 0),
+            Vector3(0, -(32 + 4), 0), 
+            Vector3(0, -(64 + 32 + 8 + 4), 0),
+        },
+        animbank = "ui_lamp_1x4",
+        animbuild = "ui_lamp_1x4",
+        pos = Vector3(200, 0, 0),
+        side_align_tip = 100,
+    },
+    acceptsstacks = false,
+    type = "cooker",
+}
+
+function params.mushroom_light.itemtestfn(container, item, slot)
+	if container.inst:HasTag("burnt") then
+		return false
+	end
+	
+	return item:HasTag("lightbattery")
+end
+
+--------------------------------------------------------------------------
+--[[ mushroom_light2 ]]
+--------------------------------------------------------------------------
+
+params.mushroom_light2 = deepcopy(params.mushroom_light)
+
+function params.mushroom_light2.itemtestfn(container, item, slot)
+	if container.inst:HasTag("burnt") then
+		return false
+	end
+	
+	return item:HasTag("lightbattery") or item:HasTag("spore")
+end
+
+
+--------------------------------------------------------------------------
 --[[ icebox ]]
 --------------------------------------------------------------------------
 
@@ -308,6 +355,33 @@ params.skullchest = params.treasurechest
 params.minotaurchest = params.treasurechest
 
 params.dragonflychest = params.shadowchester
+
+--------------------------------------------------------------------------
+--[[ candybag ]]
+--------------------------------------------------------------------------
+
+params.candybag =
+{
+    widget =
+    {
+        slotpos = {},
+        animbank = "ui_krampusbag_2x8",
+        animbuild = "ui_krampusbag_2x8",
+        pos = Vector3(-5, -120, 0),
+    },
+    issidewidget = true,
+    type = "pack",
+}
+
+for y = 0, 6 do
+    table.insert(params.candybag.widget.slotpos, Vector3(-162, -75 * y + 240, 0))
+    table.insert(params.candybag.widget.slotpos, Vector3(-162 + 75, -75 * y + 240, 0))
+end
+
+function params.candybag.itemtestfn(container, item, slot)
+	return item:HasTag("halloweencandy") or (string.find(item.prefab, "trinket_") == 1)
+end
+
 
 --------------------------------------------------------------------------
 

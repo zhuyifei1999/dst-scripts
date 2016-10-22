@@ -157,15 +157,13 @@ function SkinsScreen:OnItemSelect(type, item_type, item_id, itemimage)
 
 	self.details_panel.name:SetTruncatedString(nameStr, 220, 50, true)
 	self.details_panel.name:SetColour(unpack(SKIN_RARITY_COLORS[rarity]))
-	self.details_panel.description:SetString(STRINGS.SKIN_DESCRIPTIONS[item_type] or STRINGS.SKIN_DESCRIPTIONS["missing"])
- 
+    self.details_panel.description:SetMultilineTruncatedString(STRINGS.SKIN_DESCRIPTIONS[item_type] or STRINGS.SKIN_DESCRIPTIONS["missing"], 7, 180, 60, true)
+
 	self.details_panel.rarity:SetString(rarity.." Item")
 	self.details_panel.rarity:SetColour(unpack(SKIN_RARITY_COLORS[rarity]))
-	
 
-    
 	self.details_panel.set_info_btn.show_help = nil
-	
+
 	if IsItemInCollection(item_type) then
 		self.details_panel.set_title:Show()
 		
@@ -175,7 +173,7 @@ function SkinsScreen:OnItemSelect(type, item_type, item_id, itemimage)
 		else
 			self.details_panel.set_info_btn:Show()
 		end
-		
+
 		self.details_panel.rarity:SetPosition(0, RARITY_POS_SET)
 		
 		if IsItemIsReward(item_type) then
@@ -191,7 +189,7 @@ function SkinsScreen:OnItemSelect(type, item_type, item_id, itemimage)
 	else
 		self.details_panel.set_title:Hide()
 		self.details_panel.set_info_btn:Hide()
-	
+
 		self.details_panel.rarity:SetString(rarity.." Item")
 		self.details_panel.rarity:SetColour(unpack(SKIN_RARITY_COLORS[rarity]))
 		self.details_panel.rarity:SetPosition(0, RARITY_POS_LONE)
@@ -240,9 +238,7 @@ function SkinsScreen:BuildDetailsPanel()
     self.details_panel.upper_horizontal_line:SetPosition(0, -25, 0)
 
 	self.details_panel.description = self.details_panel:AddChild(Text(NEWFONT, 20, "lorem ipsum dolor sit amet", {0, 0, 0, 1}))
-	self.details_panel.description:SetRegionSize( 180, 150)
-	self.details_panel.description:EnableWordWrap(true)
-	self.details_panel.description:SetPosition(0, -100)
+    self.details_panel.description:SetPosition(0, -100)
 
 	self.details_panel.lower_horizontal_line = self.details_panel:AddChild(Image("images/ui.xml", "line_horizontal_6.tex"))
     self.details_panel.lower_horizontal_line:SetScale(.55)

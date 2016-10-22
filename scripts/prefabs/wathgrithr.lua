@@ -114,7 +114,7 @@ end
 local function master_init(inst)
     inst.talker_path_override = "dontstarve_DLC001/characters/"
 
-    inst.components.eater:SetDiet({ FOODGROUP.OMNI }, { FOODTYPE.MEAT })
+    inst.components.eater:SetDiet({ FOODGROUP.OMNI }, { FOODTYPE.MEAT, FOODTYPE.GOODIES })
 
     inst.components.health:SetMaxHealth(TUNING.WATHGRITHR_HEALTH)
     inst.components.hunger:SetMax(TUNING.WATHGRITHR_HUNGER)

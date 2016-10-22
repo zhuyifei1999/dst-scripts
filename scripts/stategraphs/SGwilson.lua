@@ -2580,9 +2580,9 @@ local states =
         name = "openwardrobe",
         tags = { "inwardrobe", "busy", "pausepredict" },
 
-        onenter = function(inst, isopeninggift)
-            inst.sg.statemem.isopeninggift = isopeninggift
-            if not isopeninggift then
+        onenter = function(inst, data)
+            inst.sg.statemem.isopeninggift = data.openinggift
+            if not inst.sg.statemem.isopeninggift then
                 inst.components.locomotor:Stop()
                 inst.components.locomotor:Clear()
                 inst:ClearBufferedAction()
@@ -2601,7 +2601,7 @@ local states =
             elseif inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:RemotePausePrediction()
             end
-            inst:ShowWardrobePopUp(true)
+            inst:ShowWardrobePopUp(true, data.target)
         end,
 
         events =
@@ -2744,6 +2744,60 @@ local states =
                 inst.sg.statemem.cb = nil
             end
             inst.AnimState:OverrideSymbol("shadow_hands", "shadow_hands", "shadow_hands")
+            --Cleanup from openwardobe state
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:EnableMapControls(true)
+                inst.components.playercontroller:Enable(true)
+            end
+            inst.components.inventory:Show()
+            inst:ShowActions(true)
+            if not inst.sg.statemem.isclosingwardrobe then
+                inst.sg.statemem.isclosingwardrobe = true
+                inst:PushEvent("ms_closewardrobe")
+            end
+        end,
+    },
+
+    State{
+        name = "dressupwardrobe",
+        tags = { "busy", "pausepredict", "nomorph" },
+
+        onenter = function(inst, cb)
+            inst.sg.statemem.cb = cb
+            inst.sg:SetTimeout(1)
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make")
+            inst.AnimState:PlayAnimation("build_pre")
+            inst.AnimState:PushAnimation("build_loop", true)
+
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:RemotePausePrediction()
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst.SoundEmitter:KillSound("make")
+            inst.AnimState:PlayAnimation("build_pst")
+            if inst.sg.statemem.cb ~= nil then
+                inst.sg.statemem.cb()
+                inst.sg.statemem.cb = nil
+            end
+        end,
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if inst.sg.statemem.cb ~= nil then
+                -- in case of interruption
+                inst.sg.statemem.cb()
+                inst.sg.statemem.cb = nil
+            end
             --Cleanup from openwardobe state
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:EnableMapControls(true)
@@ -3930,28 +3984,21 @@ local states =
             --heavy lifting
             TimeEvent(11 * FRAMES, function(inst)
                 if inst.sg.statemem.heavy then
-                    PlayFootstep(inst, nil, true)
+                    PlayFootstep(inst, inst.sg.mem.footsteps > 3 and .6 or 1, true)
                     DoFoleySounds(inst)
-                    if inst.sg.mem.footsteps > 3 then
-                        PlayFootstep(inst, .6, true)
-                    else
-                        inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
-                        PlayFootstep(inst, 1, true)
-                    end
-                    DoFoleySounds(inst)
+                    inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
                 end
             end),
             TimeEvent(36 * FRAMES, function(inst)
                 if inst.sg.statemem.heavy then
-                    PlayFootstep(inst, nil, true)
+                    PlayFootstep(inst, inst.sg.mem.footsteps > 3 and .6 or 1, true)
                     DoFoleySounds(inst)
-                    if inst.sg.mem.footsteps > 3 then
-                        PlayFootstep(inst, .6, true)
+                    if inst.sg.mem.footsteps > 12 then
+                        inst.sg.mem.footsteps = math.random(4, 6)
+                        inst:PushEvent("encumberedwalking")
                     else
                         inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
-                        PlayFootstep(inst, 1, true)
                     end
-                    DoFoleySounds(inst)
                 end
             end),
 
@@ -4081,7 +4128,7 @@ local states =
 
         timeline =
         {
-            TimeEvent(13*FRAMES, function(inst)
+            TimeEvent(13 * FRAMES, function(inst)
                 inst:PerformBufferedAction()
             end),
         },
@@ -5619,8 +5666,9 @@ local states =
         tags = { "doing", "busy" },
 
         onenter = function(inst)
+            inst.sg.statemem.heavy = inst.components.inventory:IsHeavyLifting()
             inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("pickup")
+            inst.AnimState:PlayAnimation(inst.sg.statemem.heavy and "heavy_item_hat" or "pickup")
 
             inst.sg.statemem.action = inst.bufferedaction
         end,
@@ -5630,7 +5678,7 @@ local states =
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() and
                     not inst:PerformBufferedAction() then
-                    inst.AnimState:PlayAnimation("pickup_pst")
+                    inst.AnimState:PlayAnimation(inst.sg.statemem.heavy and "heavy_item_hat_pst" or "pickup_pst")
                     inst.sg:GoToState("idle", true)
                 end
             end),

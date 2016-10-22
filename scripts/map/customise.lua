@@ -130,6 +130,12 @@ local complexity_descriptions = {
 	{ text = STRINGS.UI.SANDBOXMENU.SLIDEVERYCOMPLEX, data = "verycomplex" },	
 }
 
+local specialevent_descriptions = {
+	{ text = STRINGS.UI.SANDBOXMENU.SLIDENEVER, data = "none" },		
+	{ text = STRINGS.UI.SANDBOXMENU.SLIDEDEFAULT, data = "default" },		
+	{ text = STRINGS.UI.SANDBOXMENU.EVENT_HALLOWEDNIGHTS_2016, data = SPECIAL_EVENTS.HALLOWED_NIGHTS },	
+}
+
 -- TODO: Read this from the tasks.lua
 local yesno_descriptions = {
 	{ text = STRINGS.UI.SANDBOXMENU.YES, data = "default" },
@@ -248,6 +254,7 @@ local GROUP = {
 							["world_size"] = {value = "default", enable = false, image = "world_size.tex", desc = size_descriptions, order = 3}, 
 							["branching"] = {value = "default", enable = false, image = "world_branching.tex", desc = branching_descriptions, order = 4}, 
 							["loop"] = {value = "default", enable = false, image = "world_loop.tex", desc = loop_descriptions, order = 5}, 
+                            ["specialevent"] = {value = "default", enable = false, image = "events.tex", desc = specialevent_descriptions, order = 5.5, world={"forest"}},
 							["autumn"] = {value = "default", enable = true, image = "autumn.tex", desc = season_length_descriptions, master_controlled = true, order = 6},
 							["winter"] = {value = "default", enable = true, image = "winter.tex", desc = season_length_descriptions, master_controlled = true, order = 7},
 							["spring"] = {value = "default", enable = true, image = "spring.tex", desc = season_length_descriptions, master_controlled = true, order = 8},

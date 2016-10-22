@@ -849,6 +849,8 @@ local function DoActualRez(inst, source)
 
     inst.components.sheltered:Start()
 
+    inst.components.debuffable:Enable(true)
+
     --don't ignore sanity any more
     inst.components.sanity.ignore = false
 
@@ -1041,6 +1043,8 @@ local function OnMakePlayerGhost(inst, data)
 
     inst.components.sheltered:Stop()
 
+    inst.components.debuffable:Enable(false)
+
     inst.components.age:PauseAging()
 
     inst.components.health:SetCurrentHealth(TUNING.RESURRECT_HEALTH)
@@ -1230,6 +1234,8 @@ local function OnDespawn(inst)
     inst:OnWakeUp()
     --
 
+    inst.components.debuffable:Enable(false)
+
     inst.components.rider:ActualDismount()
 
     inst.components.inventory:DropEverythingWithTag("irreplaceable")
@@ -1269,9 +1275,9 @@ local function ShowHUD(inst, show)
     end
 end
 
-local function ShowWardrobePopUp(inst, show)
+local function ShowWardrobePopUp(inst, show, target)
     if TheWorld.ismastersim then
-        inst.player_classified:ShowWardrobePopUp(show)
+        inst.player_classified:ShowWardrobePopUp(show, target)
     end
 end
 
@@ -1648,6 +1654,9 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         --trader (from trader component) added to pristine state for optimization
         inst:AddTag("trader")
 
+        --debuffable (from debuffable component) added to pristine state for optimization
+        inst:AddTag("debuffable")
+
         --Sneak these into pristine state for optimization
         inst:AddTag("_health")
         inst:AddTag("_hunger")
@@ -1780,6 +1789,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.components.grue:SetSounds("dontstarve/charlie/warn","dontstarve/charlie/attack")
 
         inst:AddComponent("pinnable")
+        inst:AddComponent("debuffable")
+        inst.components.debuffable:SetFollowSymbol("headbase", 0, -200, 0)
 
         inst:AddComponent("grogginess")
         inst.components.grogginess:SetResistance(3)

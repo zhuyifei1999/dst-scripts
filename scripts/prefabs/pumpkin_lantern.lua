@@ -139,7 +139,7 @@ local function fn()
     inst:ListenForEvent("death", ondeath)
 
     inst:AddComponent("perishable")
-    inst.components.perishable:SetPerishTime(30 * TUNING.SEG_TIME)
+    inst.components.perishable:SetPerishTime(IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) and TUNING.PERISH_SUPERSLOW or TUNING.PERISH_MED)
     inst.components.perishable:SetOnPerishFn(onperish)
     inst.components.inventoryitem:SetOnDroppedFn(OnDropped)
     inst.components.inventoryitem:SetOnPutInInventoryFn(OnPutInInventory)

@@ -56,6 +56,11 @@ return {
             NOTGEM = "Not even mighty muscles can make fit!",
             WRONGGEM = "Little rock does not want to go there.",
             NOTSTAFF = "I do not think little platform would like that.",
+            MUSHROOMFARM_NEEDSSHROOM = "Is needing tiny mushy-room, I think.",
+            MUSHROOMFARM_NEEDSLOG = "Is needing tiny log with face.",
+            SLOTFULL = "Something is already put!",
+            DUPLICATE = "Little recipe is already in there!",
+            NOTSCULPTABLE = "Material is not mighty enough for strong statues!",
         },
         GIVETOPLAYER = 
         {
@@ -125,7 +130,20 @@ return {
 		INVALID = "Hahah! That's not food!",
 		YUCKY = "Stomach is not strong enough for that.",
 	},
-	
+    ANNOUNCE_ENCUMBERED =
+    {
+        "Is good... for muscles...",
+        "Lift... with legs...",
+        "Feel... good burn!",
+        "Raa! Huff!",
+        "Muscles... will be sore tomorrow!",
+        "Ha ha...! Weight... is nothing!",
+        "Little stone... cannot stop Wolfgang!",
+        "Hngh...!",
+        "Witness... Wolfgang strength!",
+        "Wolfgang is mighty...!",
+    },
+
 	ANNOUNCE_BECOMEGHOST = "oOooOOoo!!",
 	ANNOUNCE_GHOSTDRAIN = "They are coming... for Wolfgang!",
 	ANNOUNCE_PETRIFED_TREES = "Trees! Getting! STRONG!",
@@ -165,6 +183,9 @@ return {
 	ANNOUNCE_ACCOMPLISHMENT_DONE = "I have defeated the tiny arrow!",	
 	ANNOUNCE_INSUFFICIENTFERTILIZER = "Is not enough poop.",
 	ANNOUNCE_LIGHTNING_DAMAGE_AVOIDED = "Lightning is weak compared to Wolfgang clothes!",
+	ANNOUNCE_TOADESCAPING = "Is looking skittery!",
+	ANNOUNCE_TOADESCAPED = "Scary frog got scared and left.",
+
 	ANNOUNCE_NODANGERAFK = "Wolfgang will not abandon the fight!",
 	ANNOUNCE_NODANGERGIFT = "Fight is better than present!",
 	ANNOUNCE_NOMOUNTEDGIFT = "Wolfgang will fall if try to open on top of hair cow!",
@@ -640,6 +661,16 @@ return {
 			SOMEHONEY = "Bees are busy.",
 			BURNT = "Bees are burned.",
 		},
+		MUSHROOM_FARM =
+		{
+			STUFFED = "Is no more room for more mushy-rooms!",
+			LOTS = "So many little mushy-rooms!",
+			SOME = "Little mushy-rooms is start to grow.",
+			EMPTY = "Is nothing.", -- tell the player to put a mushroom or spore into the farm to get things started
+			ROTTEN = "Dead log is need to be replaced.", -- tell the player to put a log into the farm to restore it
+			BURNT = "Log is not looking mighty!",
+            SNOWCOVERED = "Mushy-rooms not mighty enough to fight snow!",
+		},
 		LIVINGTREE = "I do not like tree with eyes.",
 		ICESTAFF = "Frosted tip.",
 		WORMLIGHT = "Pretty light.",
@@ -670,6 +701,15 @@ return {
             BROKEN = "Tiny platform is broken!",
             STAFFED = "Is ready for good fight!",
            	WRONGSTAFF = "Feels wrong to Wolfgang.",
+        },
+        MOONDIAL = 
+        {
+            GENERIC = "Wolfgang see moon reflection, but not his mighty self!",
+            NIGHT_NEW = "Moon is hiding.",
+            NIGHT_WAX = "Tiny moon is get bigger!",
+            NIGHT_FULL = "Moon is very mighty!",
+            NIGHT_WANE = "Moon is get sleepy.",
+            CAVE = "Moon is shy in cave!",
         },
 
 		SLURPER = "No! No! Stay off head!",
@@ -722,62 +762,93 @@ return {
 		MONKEY = "Ugly monkey man!",
 		MONKEYBARREL = "This... thing. It smells not so good.",
 
-		HOUNDSTOOTH="Puppy tooth!",
-		ARMORSNURTLESHELL="Is sticky inside.",
-		BAT="Flying mousey!",
-		BATBAT = "This club makes me feel funny.",
-		BATWING="Is all hairy and gross",
-		BATWING_COOKED="Crispy!",
+        HOUNDSTOOTH = "Puppy tooth!",
+        ARMORSNURTLESHELL = "Is sticky inside.",
+        BAT = "Flying mousey!",
+        BATBAT = "This club makes me feel funny.",
+        BATWING = "Is all hairy and gross",
+        BATWING_COOKED = "Crispy!",
         BATCAVE = "It's the hidey hole for the flying mousies!",
-		BEDROLL_FURRY="So comfy!",
-		BUNNYMAN="Hello rabbit!",
-		FLOWER_CAVE="Is light plant.",
-		FLOWER_CAVE_DOUBLE="Is light plant.",
-		FLOWER_CAVE_TRIPLE="Is light plant.",
-		GUANO="More poop.",
-		LANTERN="It keeps me safe from dark.",
-		LIGHTBULB="Is food?",
-		MANRABBIT_TAIL="Puffy!",
-		MUSHTREE_TALL=
-		{
+        BEDROLL_FURRY="So comfy!",
+        BUNNYMAN = "Hello rabbit!",
+        FLOWER_CAVE = "Is light plant.",
+        FLOWER_CAVE_DOUBLE = "Is light plant.",
+        FLOWER_CAVE_TRIPLE = "Is light plant.",
+        GUANO = "More poop.",
+        LANTERN = "It keeps me safe from dark.",
+        LIGHTBULB = "Is food?",
+        MANRABBIT_TAIL = "Puffy!",
+        MUSHROOMHAT = "Is mushy-room... for head!",
+        MUSHROOM_LIGHT2 =
+        {
+            ON = "Tall mushy-room make very pretty light!",
+            OFF = "How Wolfgang turn on mushy-room light?",
+            BURNT = "No more little lights.",
+        },
+        MUSHROOM_LIGHT =
+        {
+            ON = "Is nice light. Soft.",
+            OFF = "Big mushy-room make little light, maybe.",
+            BURNT = "Little light burnt too bright?",
+        },
+        MUSHROOMBOMB = "Is dangerous mushy-boom!",
+        SHROOM_SKIN = "Is squishy yucky frogman skin!",
+        TOADSTOOL_CAP =
+        {
+            EMPTY = "Is little dirt hole.",
+            INGROUND = "Squishy thing in ground.",
+            GENERIC = "Tiny purple mushy-room is no threat to Wolfgang!",
+        },
+        TOADSTOOL =
+        {
+            GENERIC = "Bah! Frogman was hiding like coward!",
+            RAGE = "Frogman is very strong now!",
+        },
+        MUSHROOMSPROUT =
+        {
+            GENERIC = "Tall mushy-room looks very bad!",
+            BURNT = "Tall mushy-room is burnt now!",
+        },
+        MUSHTREE_TALL =
+        {
             GENERIC = "Big mushtree is big.",
             BLOOM = "Woah! It's even bigger!",
         },
-		MUSHTREE_MEDIUM=
-		{
+        MUSHTREE_MEDIUM =
+        {
             GENERIC = "Mushy bush.",
             BLOOM = "It's having fun!",
         },
-		MUSHTREE_SMALL=
-		{
+        MUSHTREE_SMALL =
+        {
             GENERIC = "Mushy shrub.",
             BLOOM = "Even smell is strong!",
         },
         MUSHTREE_TALL_WEBBED = "Aw, cheer up!",
-        SPORE_TALL = "Is tiny bug?",
-        SPORE_MEDIUM = "Is tiny bug?",
-        SPORE_SMALL = "Is tiny bug?",
+        SPORE_TALL = "Little blue bug has no wings.",
+        SPORE_MEDIUM = "Is tiny red bug?",
+        SPORE_SMALL = "Nice green bug. Wolfgang will not swat.",
         SPORE_TALL_INV = "I make it my pet.",
         SPORE_MEDIUM_INV = "I make it my pet.",
         SPORE_SMALL_INV = "I make it my pet.",
-		SLURTLE="Ha! You are slow!",
-		SLURTLE_SHELLPIECES="Is broken.",
-		SLURTLEHAT="Keeps head safe.",
-		SLURTLEHOLE="Hole full of slugs.",
-		SLURTLESLIME="Boom snot!",
-		SNURTLE="Spirally!",
-		SPIDER_HIDER="Is scared spider!",
-		SPIDER_SPITTER="Ptoo! Ptoo!",
-		SPIDERHOLE="Spiders everywhere.",
-		SPIDERHOLE_ROCK ="Spiders everywhere.",
-		STALAGMITE="Is pointy.",
-		STALAGMITE_FULL="Is pointy.",
-		STALAGMITE_LOW="Is pointy.",
-		STALAGMITE_MED="Is pointy.",
-		STALAGMITE_TALL="Rock, reaching for the roof.",
-		STALAGMITE_TALL_FULL="Rock, reaching for the roof.",
-		STALAGMITE_TALL_LOW="Rock, reaching for the roof.",
-		STALAGMITE_TALL_MED="Rock, reaching for the roof.",
+        SLURTLE = "Ha! You are slow!",
+        SLURTLE_SHELLPIECES = "Is broken.",
+        SLURTLEHAT = "Keeps head safe.",
+        SLURTLEHOLE = "Hole full of slugs.",
+        SLURTLESLIME = "Boom snot!",
+        SNURTLE = "Spirally!",
+        SPIDER_HIDER = "Is scared spider!",
+        SPIDER_SPITTER = "Ptoo! Ptoo!",
+        SPIDERHOLE = "Spiders everywhere.",
+        SPIDERHOLE_ROCK = "Spiders everywhere.",
+        STALAGMITE = "Is pointy.",
+        STALAGMITE_FULL = "Is pointy.",
+        STALAGMITE_LOW = "Is pointy.",
+        STALAGMITE_MED = "Is pointy.",
+        STALAGMITE_TALL = "Rock, reaching for the roof.",
+        STALAGMITE_TALL_FULL = "Rock, reaching for the roof.",
+        STALAGMITE_TALL_LOW = "Rock, reaching for the roof.",
+        STALAGMITE_TALL_MED = "Rock, reaching for the roof.",
 
 		TREASURECHEST_TRAP = "Raagh!",
 		TURF_CARPETFLOOR = "Step stones.",
@@ -878,6 +949,7 @@ return {
 			PICKED = "Eating part is gone.",
 			DISEASED = "Is weak. Sickly!",
 			DISEASING = "Is looking shrivelly.",
+            BURNING = "Ah! Is burning!",
 		},
 		BERRYBUSH_JUICY =
 		{
@@ -887,6 +959,7 @@ return {
 			PICKED = "Eating part is gone.",
 			DISEASED = "Is weak. Sickly!",
 			DISEASING = "Is looking shrivelly.",
+            BURNING = "Ah! Is burning!",
 		},
 		BIRDCAGE =
 		{
@@ -906,12 +979,18 @@ return {
 		BLOWDART_FIRE = "Careful, Wolfgang.",
 		BLOWDART_SLEEP = "Dart do sleeping to enemies.",
 		BLOWDART_PIPE = "Dart do pain to enemies.",
+		BLOWDART_YELLOW = "Do not know if Wolfgang should be allowed to have this.",
 		BLUEGEM = "Pretty rock.",
 		
 		SHADOWDIGGER = "Ha ha! Tiny men should dance for amusement!",
 
-		BLUEPRINT = "Pretty pictures!",
-		BELL_BLUEPRINT = "Pretty pictures!",
+		BLUEPRINT = 
+		{ 
+            COMMON = "Pretty pictures!",
+            RARE = "Very, very fancy pictures!",
+        },
+        SKETCH = "Picture will help Wolfgang carve nice rocks!",
+		--BELL_BLUEPRINT = "Blueprint. Footprint!",
 		BLUE_CAP = "Is good for tired muscles, I think.",
 		BLUE_CAP_COOKED = "Is not same.",
 		BLUE_MUSHROOM =
@@ -954,6 +1033,43 @@ return {
 		},
 		CAVE_FERN = "Pretty plant!",
 		CHARCOAL = "Is like holding tiny dead tree.",
+
+		CHESSPIECE_PAWN = 
+        {
+            GENERIC = "Little man is wearing little hat!",
+        },
+        CHESSPIECE_ROOK = 
+        {
+            GENERIC = "Does not look like castle to Wolfgang.",
+            STRUGGLE = "Wolfgang does not like moving statues!!",
+        },
+        CHESSPIECE_KNIGHT = 
+        {
+            GENERIC = "Is good horsey, Wolfgang thinks.",
+            STRUGGLE = "Wolfgang does not like moving statues!!",
+        },
+        CHESSPIECE_BISHOP = 
+        {
+            GENERIC = "Weak little rock man looks nice.",
+            STRUGGLE = "Wolfgang does not like moving statues!!",
+        },
+        CHESSPIECE_MUSE = 
+        {
+            GENERIC = "Faceless lady make Wolfgang uncomfortable.",
+            --STRUGGLE = "Scary statue is moving!!",
+        },
+        CHESSPIECE_FORMAL = 
+        {
+            GENERIC = "Looks very not-mighty.",
+        },
+        CHESSPIECE_HORNUCOPIA = 
+        {
+            GENERIC = "Why stone food hurt mouth?",
+        },
+        CHESSPIECE_PIPE = 
+        {
+            GENERIC = "Might be good for lifting!",
+        },
         CHESSJUNK1 = "Metal junk.",
         CHESSJUNK2 = "Metal junk.",
         CHESSJUNK3 = "Metal junk.",
@@ -969,6 +1085,12 @@ return {
 		CORN = "Is corn. What expect?",
 		CORN_COOKED = "Pop pop pop! Ha ha, funny corn.",
 		CORN_SEEDS = "Is seeds for grow corn.",
+		CANARY =
+		{
+			GENERIC = "Is small yellow bird!",
+			HELD = "Small bird fit easily in big Wolfgang hands.",
+		},
+        CANARY_POISONED = "Bird is okay?",
 		CROW =
 		{
 			GENERIC = "I do not like birds. Too fragile.",
@@ -1001,6 +1123,13 @@ return {
 		},
 		DIVININGRODSTART = "Is funny rod thing.",
 		DRAGONFLY = "I confuse... Is dragonfly, or dragon-fly?",
+		DRAGONFLYFURNACE = 
+		{
+		    HAMMERED = "Is very cute!",
+			GENERIC = "Scaly pot for making hotness.", --no gems
+			NORMAL = "Brainlady warned not to touch pot with bare hands.", --one gem
+			HIGH = "Wolfgang hope does not burn moustache.", --two gems
+		},
 
 		HUTCH = "You are creepy.",
         HUTCH_FISHBOWL =
@@ -1083,6 +1212,7 @@ return {
 		},
 		EYEPLANT = "They are not what they seem.",
 		FEATHERHAT = "Is silly hat of feather. Could make Wolfgang bird?",
+		FEATHER_CANARY = "Is feather of bird yellow.",
 		FEATHER_CROW = "Is feather of bird black.",
 		FEATHER_ROBIN = "Is feather of bird red.",
 		FEATHER_ROBIN_WINTER = "Is feather of bird white.",
@@ -1120,6 +1250,13 @@ return {
 		FLOWER_EVIL = "Is not potato.",
 		FOLIAGE = "Pretty plant is dead now.",
 		FOOTBALLHELMET = "Is hat for make tackling.",
+        FOSSIL_PIECE = "Is tiny bone!",
+        FOSSIL_STALKER =
+        {
+            GENERIC = "Is not look done yet.",
+            FUNNY = "Eh, maybe we take apart.",
+            COMPLETE = "Is look good! Mighty!",
+        },
 		FROG =
 		{
 			DEAD = "Is delicacy in my country.",
@@ -1396,6 +1533,19 @@ return {
 			DISEASED = "Is weak. Sickly!",
 			DISEASING = "Is look even more puny.",
 		},
+		SCARECROW = 
+   		{
+			GENERIC = "Ha! Is not man! Is straw!",
+			BURNING = "Little straw man is burning!",
+			BURNT = "Little straw man is dead.",
+   		},
+        SCULPTINGTABLE=
+        {
+            EMPTY = "Is table for rocks!",
+            BLOCK = "Is time for arts and crafts!",
+            SCULPTURE = "Does not compare to chiseled jaw of Wolfgang!",
+            BURNT = "Is burny bits.",
+        },
 		SCULPTURE_KNIGHTHEAD = "Everyone! Watch Wolfgang carry horse head!",
 		SCULPTURE_KNIGHTBODY = 
 		{
@@ -1475,7 +1625,6 @@ return {
         STATUE_MARBLE = 
         {
         	GENERIC = "Wolfgang does not know what to do with pretty statues.",
-        	--TYPE1 = "",
         	TYPE2 = "She seems like happy lady.",
         	TYPE3 = "Is manly spittoon?",
     	},
@@ -1532,33 +1681,57 @@ return {
 		TRAP = "No trap can hold me!",
 		TRAP_TEETH = "It bites bottoms from below!",
 		TRAP_TEETH_MAXWELL = "Whoever put this is bad fella!",
-		TRINKET_1 = "Glob of glass!",
-		TRINKET_2 = "Fake bless you.",
-		TRINKET_3 = "Is knot what Wolfgang expected.",
-		TRINKET_4 = "Ha ha! Is tiny man!",
-		TRINKET_5 = "What is do?",
-		TRINKET_6 = "Robot bits.",
-		TRINKET_7 = "Tiny torchlady Willow start firepits with toy! Very impressive.",
-		TRINKET_8 = "Hardened, like Wolfgang.",
-		TRINKET_9 = "Strong brainlady Wickerbottom maybe need for repair cardigans.",
-		TRINKET_10 = "Is pearly chompers!",
-		TRINKET_11 = "Angry metal friend WX would like this, yes!",
-		TRINKET_12 = "Yuck.",
-		TRINKET_13 = "Ah! Is scary Wendy girl! ...No, wait, is just toy.",
-		TRINKET_14 = "Beard will not like such pictures.",
-        TRINKET_15 = "Junk from braingame!",
-        TRINKET_16 = "Junk from braingame!",
-        TRINKET_17 = "Is still good!",
-        TRINKET_18 = "Wheeled horsey!",
-        TRINKET_19 = "Could give it a spin.",
-        TRINKET_20 = "Wolfgang's arms too thick to reach back.",
-        TRINKET_21 = "Is fun to crank.",
-        TRINKET_22 = "Will take to fragile man Maxwell. He always talk about \"pulling strings\".",
-        TRINKET_23 = "Wolfgang does not know which end to blow.",
-        TRINKET_24 = "Wolfgang does not like even fake cat.",
-        TRINKET_25 = "Smell like laundry.",
-		TRINKET_26 = "Is cup made of potato, I think.",
-		TRINKET_27 = "Is skinny and bendy, like clownman Wes.",
+		TRINKET_1 = "Glob of glass!", --Melted Marbles
+		TRINKET_2 = "Fake bless you.", --Fake Kazoo
+		TRINKET_3 = "Is knot what Wolfgang expected.", --Gord's Knot
+		TRINKET_4 = "Ha ha! Is tiny man!", --Gnome
+		TRINKET_5 = "What is do?", --Toy Rocketship
+		TRINKET_6 = "Robot bits.", --Frazzled Wires
+		TRINKET_7 = "Tiny torchlady Willow start firepits with toy! Very impressive.", --Ball and Cup
+		TRINKET_8 = "Hardened, like Wolfgang.", --Hardened Bung
+		TRINKET_9 = "Strong brainlady Wickerbottom maybe need for repair cardigans.", --Mismatched Buttons
+		TRINKET_10 = "Is pearly chompers!", --Dentures
+		TRINKET_11 = "Angry metal friend WX would like this, yes!", --Lying Robot
+		TRINKET_12 = "Yuck.", --Dessicated Tentacle
+		TRINKET_13 = "Ah! Is scary Wendy girl! ...No, wait, is just toy.", --Gnomette
+		TRINKET_14 = "Beard will not like such pictures.", --Leaky Teacup
+        TRINKET_15 = "Junk from braingame!", --Pawn 
+        TRINKET_16 = "Junk from braingame!", --Pawn
+        TRINKET_17 = "Is still good!", --Bent Spork
+        TRINKET_18 = "Wheeled horsey!", --Trojan Horse
+        TRINKET_19 = "Could give it a spin.", --Unbalanced Top
+        TRINKET_20 = "Wolfgang's arms too thick to reach back.", --Backscratcher
+        TRINKET_21 = "Is fun to crank.", --Egg Beater
+        TRINKET_22 = "Will take to fragile man Maxwell. He always talk about \"pulling strings\".", --Frayed Yarn
+        TRINKET_23 = "Wolfgang does not know which end to blow.", --Shoehorn
+        TRINKET_24 = "Wolfgang does not like even fake cat.", --Lucky Cat Jar
+        TRINKET_25 = "Smell like laundry.", --Air Unfreshener
+		TRINKET_26 = "Is cup made of potato, I think.", --Potato Cup
+		TRINKET_27 = "Is skinny and bendy, like clownman Wes.", --Coat Hanger
+        TRINKET_28 = "Junk from braingame!", --Rook
+        TRINKET_29 = "Junk from braingame!", --Rook
+        TRINKET_30 = "Junk from braingame!", --Knight
+        TRINKET_31 = "Junk from braingame!", --Knight
+        TRINKET_32 = "Wolfgang does not like spooky magics.", --Cubic Zirconia Ball
+        TRINKET_33 = "Wolfgang not wear creepy finger-spider.", --Spider Ring
+        TRINKET_34 = "Is soft, but spooky.", --Monkey Paw
+        TRINKET_35 = "Little potion make Wolfgang mighty?", --Empty Elixir
+        TRINKET_36 = "Gah! Do not scare Wolfgang!", --Faux Fangs
+        TRINKET_37 = "Stab-stick is useless now.", --Broken Stake
+
+        HALLOWEENCANDY_1 = "Wolfgang eat many bushels!",
+        HALLOWEENCANDY_2 = "Little corns get stuck in Wolfgang's mighty moustache!",
+        HALLOWEENCANDY_3 = "Very bland. Reminds Wolfgang of back home candy!",
+        HALLOWEENCANDY_4 = "Wolfgang feel strong when mashing tiny spiders between teeth!",
+        HALLOWEENCANDY_5 = "Wolfgang not sure he has heart to eat.",
+        HALLOWEENCANDY_6 = "Maybe is chocolate?",
+        HALLOWEENCANDY_7 = "Little shrivelly sadlumps.",
+        HALLOWEENCANDY_8 = "Is tasty little treat!",
+        HALLOWEENCANDY_9 = "Is look yucky, but taste okay.",
+        HALLOWEENCANDY_10 = "Is tasty little treat!",
+        HALLOWEENCANDY_11 = "Little men of chocolate stand no chance against Wolfgang!",
+        CANDYBAG = "Is little bag for scary goodies!",
+        
 		TRUNKVEST_SUMMER = "Is warm fuzzy nose.",
 		TRUNKVEST_WINTER = "Cozy nosy!",
 		TRUNK_COOKED = "Is cooked nose.",
@@ -1644,6 +1817,7 @@ return {
         YELLOWAMULET = "Is glowing yellow.",    
 		ACCOMPLISHMENT_SHRINE = "I will defeat you, tiny arrow!",                
         REVIVER = "Blib blup! Blib blup! Blib blup!",
+        SHADOWHEART = "Wolfgang is not shaking! Is manly flexing!!",
         LIFEINJECTOR = "EeeeEEeeEEE!!",
 	},
 	DESCRIBE_GENERIC = "What is this thing?",

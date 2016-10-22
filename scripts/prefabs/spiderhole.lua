@@ -14,6 +14,7 @@ local prefabs =
     "silk",
     "spidergland",
     "silk",
+    "fossil_piece",
 
     --fx
     "rock_break_fx",
@@ -24,6 +25,7 @@ SetSharedLootTable('spider_hole',
     {'rocks',       1.00},
     {'rocks',       1.00},
     {'silk',        1.00},
+    {'fossil_piece',1.00},
     {'spidergland', 0.25},
     {'silk',        0.50},
 })

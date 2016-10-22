@@ -136,7 +136,7 @@ ACTIONS =
     WRITE = Action(),
     ATTUNE = Action(),
     REMOTERESURRECT = Action({ rmb=false, ghost_valid=true, ghost_exclusive=true }),
-    MIGRATE = Action({ rmb=false, ghost_valid=true }),
+    MIGRATE = Action({ rmb=false, encumbered_valid = true, ghost_valid=true }),
     MOUNT = Action({ priority=1, rmb=true, encumbered_valid=true }),
     DISMOUNT = Action({ priority=1, instant=true, rmb=true, mount_valid=true, encumbered_valid=true }),
     SADDLE = Action({ priority=1 }),
@@ -962,6 +962,10 @@ ACTIONS.SLEEPIN.fn = function(act)
             return true
         end
     end
+end
+
+ACTIONS.CHANGEIN.strfn = function(act)
+    return act.target ~= nil and act.target:HasTag("dressable") and "DRESSUP" or nil
 end
 
 ACTIONS.CHANGEIN.fn = function(act)

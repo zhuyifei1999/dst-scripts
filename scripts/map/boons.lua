@@ -73,6 +73,38 @@ local Any = {
 		}),
 }
 
+if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then      
+	Any["Halloween1Boon"] = StaticLayout.Get("map/static_layouts/small_boon", {
+				areas = {
+					item_area = function() return {"candybag", "halloweencandy_1", "halloweencandy_2", "trinket_4"} end,	
+					resource_area = function() return PickSomeWithDups(math.random(2,4), {"trinket_4", "trinket_13"}) end, -- Gnome/Gnomette
+					},
+			})
+	Any["Halloween2Boon"] = StaticLayout.Get("map/static_layouts/small_boon", {
+				defs = { 
+					skeleton={"pumpkin_lantern"},
+					},
+				areas = {
+					item_area = function() return PickSomeWithDups(math.random(1,2), {"trinket_4", "trinket_13"}) end,							
+					resource_area = function() return PickSomeWithDups(1, {"trinket_4", "trinket_13"}) end, -- Gnome/Gnomette
+					},
+			})
+	Any["Halloween3Boon"] = StaticLayout.Get("map/static_layouts/small_boon", {
+				areas = {
+					-- TODO: trinket_9 is halloween trinket
+					item_area = function() return {"candybag", "halloweencandy_3", "halloweencandy_4", "halloweencandy_5", "halloweencandy_6"} end,							
+					resource_area = function() return PickSomeWithDups(math.random(2,4), {"torch", "halloweencandy_8", "trinket_9", "trinket_9", "trinket_9"}) end,
+					},
+			})
+	Any["Halloween4Boon"] = StaticLayout.Get("map/static_layouts/small_boon", {
+				areas = {
+					-- TODO: trinket_9 is halloween trinket
+					item_area = function() return {"trinket_4", "candybag", "trinket_9", "skeleton", "skeleton", "skeleton"} end,							
+					resource_area = function() return {"trinket_13", "trinket_9", "trinket_9", "halloweencandy_7", "skeleton", "skeleton"} end,
+					},
+			})
+end
+
 local Rare = {
 ------------------------------------------------------------------------------------------------------
 --			Level 4

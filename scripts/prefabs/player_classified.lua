@@ -98,6 +98,7 @@ local function OnAttacked(parent, data)
         data ~= nil and
         data.attacker ~= nil and
         not (data.attacker:HasTag("shadow") or
+            data.attacker:HasTag("shadowchesspiece") or
             data.attacker:HasTag("thorny") or
             data.attacker:HasTag("smolder"))
     )
@@ -380,6 +381,7 @@ local function OnTechTreesDirty(inst)
     inst.techtrees.ANCIENT = inst.ancientlevel:value()
     inst.techtrees.SHADOW = inst.shadowlevel:value()
     inst.techtrees.CARTOGRAPHY = inst.cartographylevel:value()
+    inst.techtrees.SCULPTING = inst.sculptinglevel:value()
     if inst._parent ~= nil then
         inst._parent:PushEvent("techtreechange", { level = inst.techtrees })
     end
@@ -579,7 +581,7 @@ local function OnIsWardrobePopUpVisibleDirty(inst)
     if inst._parent ~= nil and inst._parent.HUD ~= nil then
         if not inst.iswardrobepopupvisible:value() then
             inst._parent.HUD:CloseWardrobeScreen()
-        elseif not inst._parent.HUD:OpenWardrobeScreen() then
+        elseif not inst._parent.HUD:OpenWardrobeScreen(inst.wardrobetarget:value()) then
             if not TheWorld.ismastersim then
                 SendRPCToServer(RPC.CloseWardrobe)
             else
@@ -709,8 +711,9 @@ local function EnableMapControls(inst, enable)
     OnPlayerHUDDirty(inst)
 end
 
-local function ShowWardrobePopUp(inst, show)
+local function ShowWardrobePopUp(inst, show, target)
     inst.iswardrobepopupvisible:set(show)
+    inst.wardrobetarget:set(target)
     OnIsWardrobePopUpVisibleDirty(inst)
 end
 
@@ -922,6 +925,7 @@ local function fn()
     inst.ancientlevel = net_tinybyte(inst.GUID, "builder.accessible_tech_trees.ANCIENT", "techtreesdirty")
     inst.shadowlevel = net_tinybyte(inst.GUID, "builder.accessible_tech_trees.SHADOW", "techtreesdirty")
     inst.cartographylevel = net_tinybyte(inst.GUID, "builder.accessible_tech_trees.CARTOGRAPHY", "techtreesdirty")
+    inst.sculptinglevel = net_tinybyte(inst.GUID, "builder.accessible_tech_trees.SCULPTING", "techtreesdirty")
     inst.isfreebuildmode = net_bool(inst.GUID, "builder.freebuildmode", "recipesdirty")
     inst.recipes = {}
     inst.bufferedbuilds = {}
@@ -937,6 +941,7 @@ local function fn()
     inst.ancientlevel:set(inst.techtrees.ANCIENT)
     inst.shadowlevel:set(inst.techtrees.SHADOW)
     inst.cartographylevel:set(inst.techtrees.CARTOGRAPHY)
+    inst.sculptinglevel:set(inst.techtrees.SCULPTING)
 
     --MapExplorer variables
     inst.learnmapevent = net_event(inst.GUID, "MapExplorer.learnmap")
@@ -946,6 +951,7 @@ local function fn()
 
     --Wardrobe variables
     inst.iswardrobepopupvisible = net_bool(inst.GUID, "wardrobe.iswardrobepopupvisible", "iswardrobepopupvisibledirty")
+    inst.wardrobetarget = net_entity(inst.GUID, "wardrobe.wardrobetarget")
 
     --GiftReceiver variables
     inst.hasgift = net_bool(inst.GUID, "giftreceiver.hasgift", "giftsdirty")

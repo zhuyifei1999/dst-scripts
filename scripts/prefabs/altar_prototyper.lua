@@ -195,7 +195,10 @@ local function DoRandomThing(inst, pos, count, target)
                 if func ~= nil then
                     func(inst, item, doaction)
                 elseif item == "trinket" then
-                    SpawnCritter("trinket_"..tostring(math.random(NUM_TRINKETS)), pos + offset, player)
+                    local prefab = PickRandomTrinket()
+                    if prefab ~= nil then
+                        SpawnCritter(prefab, pos + offset, player)
+                    end
                 else
                     SpawnCritter(item, pos + offset, player)
                 end

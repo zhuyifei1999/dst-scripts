@@ -10,10 +10,10 @@ local Widget = require "widgets/widget"
 require "os"
 
 local ANR_BETA_COUNTDOWN_LAYOUT = BRANCH == "staging"
-local ANR_BETA_COUNTDOWN_DATE = {year = 2016, day = 22, month = 9, hour = 13}
-local ANR_BETA_COUNTDOWN_MODE = "reveal"                                         -- "text", "image", "reveal", "released"
-local ANR_BETA_COUNTDOWN_IMAGE = "silhouette_beta_2"                             -- "silhouette_beta_1"
-local ANR_BETA_COUNTDOWN_NAME = "\"Warts And All\""                              -- "\"A Little Fixer Upper\""
+local ANR_BETA_COUNTDOWN_DATE = {year = 2016, day = 3, month = 11, hour = 13}
+local ANR_BETA_COUNTDOWN_MODE = "image"											-- "text", "image", "reveal", "released"
+local ANR_BETA_COUNTDOWN_IMAGE = "silhouette_beta_4"			                -- "silhouette_beta_1", "silhouette_beta_2"
+local ANR_BETA_COUNTDOWN_NAME = nil												-- nil, "\"A Little Fixer Upper\"", "\"Warts And All\"", "\"Arts and Crafts\""
 
 local WorldGenScreen = require "screens/worldgenscreen"
 local PopupDialogScreen = require "screens/popupdialog"
@@ -296,7 +296,7 @@ function MultiplayerMainScreen:DoInit()
     end
 
 	if ANR_BETA_COUNTDOWN_LAYOUT then
-		self.beta_countdown = self.right_col:AddChild(CountdownBeta(ANR_BETA_COUNTDOWN_MODE, ANR_BETA_COUNTDOWN_IMAGE, ANR_BETA_COUNTDOWN_NAME, ANR_BETA_COUNTDOWN_DATE))
+		self.beta_countdown = self.right_col:AddChild(CountdownBeta(self, ANR_BETA_COUNTDOWN_MODE, ANR_BETA_COUNTDOWN_IMAGE, ANR_BETA_COUNTDOWN_NAME, ANR_BETA_COUNTDOWN_DATE))
 		self.beta_countdown:SetScale(.8)
 		self.beta_countdown:SetPosition(0, -150, 0)
 		
@@ -347,9 +347,23 @@ function MultiplayerMainScreen:UpdatePuppets()
     end
 
     for i,puppet in pairs(self.puppets) do
-        if players[i] then
-            puppet:InitSkins(players[i])
-        end
+		if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
+			local halloween_baseskins = {wilson="wilson_pigguard", willow="willow_dragonfly", wolfgang="wolfgang_walrus", wendy="wendy_lureplant", 
+										wx78="wx78_rhinorook", wickerbottom="wickerbottom_lightninggoat", woodie="woodie_treeguard", wes="wes_mandrake", 
+										waxwell="waxwell_krampus", wathgrithr="wathgrithr_deerclops", webber="webber_bat" }
+
+			local data = (players[i] and table.contains(DST_CHARACTERLIST, players[i].prefab)) and players[i] or { prefab=DST_CHARACTERLIST[math.random(#DST_CHARACTERLIST)], name="" }
+			data.base_skin = halloween_baseskins[data.prefab]
+			data.body_skin = nil
+			data.hand_skin = nil
+			data.legs_skin = nil
+			data.feet_skin = nil
+            puppet:InitSkins(data)
+		else
+            if players[i] then
+                puppet:InitSkins(players[i])
+            end
+		end
         puppet:SetTool(tools[i])
         puppet:SetTorso(torsos[i])
         puppet:SetHat(hats[i])

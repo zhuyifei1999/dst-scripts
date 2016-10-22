@@ -34,6 +34,7 @@ local prefabs =
     "feather_crow",
     "feather_robin",
     "feather_robin_winter",
+    "feather_canary",
     "trinket_3",
     "beefalowool",
     "rabbit",
@@ -63,6 +64,23 @@ local prefabs =
     "mosquito",
     "boneshard",
 }
+
+local CHESS_LOOT =
+{
+    "chesspiece_pawn_sketch",
+    "chesspiece_muse_sketch",
+    "chesspiece_formal_sketch",
+    "trinket_15", --bishop
+    "trinket_16", --bishop
+    "trinket_28", --rook
+    "trinket_29", --rook
+    "trinket_30", --knight
+    "trinket_31", --knight
+}
+
+for k, v in ipairs(CHESS_LOOT) do
+    table.insert(prefabs, v)
+end
 
 local SFX_COOLDOWN = 5
 
@@ -141,6 +159,7 @@ local function MakeLoot(inst)
         {chance = 0.33, item = "feather_crow"},
         {chance = 0.33, item = "feather_robin"},
         {chance = 0.33, item = "feather_robin_winter"},
+        {chance = 0.33, item = "feather_canary"},
         {chance = 1,    item = "trinket_3"},
         {chance = 1,    item = "beefalowool"},
         {chance = 0.1,  item = "rabbit"},
@@ -169,6 +188,16 @@ local function MakeLoot(inst)
         {chance = 1,    item = "gears"},
         {chance = 0.1,  item = "boneshard"},
     }
+
+    local chessunlocks = TheWorld.components.chessunlocks
+    if chessunlocks ~= nil then
+        for i, v in ipairs(CHESS_LOOT) do
+            if not chessunlocks:IsLocked(v) then
+                table.insert(possible_loot, { chance = .1, item = v })
+            end
+        end
+    end
+
     local totalchance = 0
     for m, n in ipairs(possible_loot) do
         totalchance = totalchance + n.chance
