@@ -251,7 +251,7 @@ Recipe("ruins_bat", {Ingredient("livinglog", 3), Ingredient("thulecite", 4), Ing
 Recipe("eyeturret_item", {Ingredient("deerclops_eyeball", 1), Ingredient("minotaurhorn", 1), Ingredient("thulecite", 5)}, RECIPETABS.ANCIENT, TECH.ANCIENT_FOUR, nil, nil, true)
 
 if ACCOMPLISHMENTS_ENABLED then
-	Recipe("accomplishment_shrine", {Ingredient("goldnugget", 10), Ingredient("cutstone", 1), Ingredient("gears", 6)}, RECIPETABS.SCIENCE, TECH.SCIENCE_TWO, "accomplishment_shrine_placer")
+    Recipe("accomplishment_shrine", {Ingredient("goldnugget", 10), Ingredient("cutstone", 1), Ingredient("gears", 6)}, RECIPETABS.SCIENCE, TECH.SCIENCE_TWO, "accomplishment_shrine_placer")
 end
 
 ----BOOK----
