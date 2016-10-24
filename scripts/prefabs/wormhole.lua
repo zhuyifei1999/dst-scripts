@@ -134,7 +134,6 @@ local function fn()
     inst.components.trader.onaccept = onaccept
     inst.components.trader.deleteitemonaccept = false
 
-
     return inst
 end
 

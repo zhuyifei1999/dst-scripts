@@ -3,7 +3,7 @@ local assets =
     Asset("ANIM", "anim/teleporter_worm.zip"),
     Asset("ANIM", "anim/teleporter_sickworm_build.zip"),
     Asset("SOUND", "sound/common.fsb"),
-	Asset("MINIMAP_IMAGE", "wormhole_sick"),
+    Asset("MINIMAP_IMAGE", "wormhole_sick"),
 }
 
 local function onsave(inst, data)
@@ -225,7 +225,6 @@ local function makewormhole(uses)
         inst.components.trader.acceptnontradable = true
         inst.components.trader.onaccept = onaccept
         inst.components.trader.deleteitemonaccept = false
-
 
         inst.OnSave = onsave
         inst.OnLoad = onload

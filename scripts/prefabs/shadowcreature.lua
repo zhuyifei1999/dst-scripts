@@ -116,6 +116,7 @@ local function MakeShadowCreature(data)
 
         inst:AddComponent("health")
         inst.components.health:SetMaxHealth(data.health)
+        inst.components.health.nofadeout = true
 
         inst.sanityreward = data.sanityreward
 

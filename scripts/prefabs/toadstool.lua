@@ -386,9 +386,18 @@ end
 local function RetargetFn(inst)
     UpdatePlayerTargets(inst)
 
-    local player = inst.components.grouptargeter:TryGetNewTarget()
-    if player ~= nil and player:IsNear(inst, TUNING.TOADSTOOL_ATTACK_RANGE) then
-        return player, true
+    local player = inst.components.combat.target
+    if player ~= nil and player:HasTag("player") then
+        local newplayer = inst.components.grouptargeter:TryGetNewTarget()
+        if newplayer ~= nil and newplayer:IsNear(inst, TUNING.TOADSTOOL_ATTACK_RANGE) then
+            return newplayer, true
+        elseif player:IsNear(inst, TUNING.TOADSTOOL_ATTACK_RANGE) then
+            return
+        elseif newplayer ~= nil then
+            player = newplayer
+        end
+    else
+        player = nil
     end
 
     local x, y, z = inst.Transform:GetWorldPosition()

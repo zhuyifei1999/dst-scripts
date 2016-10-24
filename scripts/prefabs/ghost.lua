@@ -41,6 +41,9 @@ local function fn()
     inst:AddTag("ghost")
     inst:AddTag("noauradamage")
 
+    --trader (from trader component) added to pristine state for optimization
+    inst:AddTag("trader")
+
     inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_howl_LP", "howl")
 
     inst.entity:SetPristine()

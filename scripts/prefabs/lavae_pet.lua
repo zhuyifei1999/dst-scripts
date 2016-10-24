@@ -99,6 +99,9 @@ local function fn()
     --cooker (from cooker component) added to pristine state for optimization
     inst:AddTag("cooker")
 
+    --trader (from trader component) added to pristine state for optimization
+    inst:AddTag("trader")
+
     inst.Light:SetRadius(1)
     inst.Light:SetFalloff(0.5)
     inst.Light:SetIntensity(0.75)

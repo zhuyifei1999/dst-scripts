@@ -1116,10 +1116,10 @@ local function GetPickupAction(target, tool)
         return ACTIONS.ACTIVATE
     elseif target.replica.inventoryitem ~= nil and
         target.replica.inventoryitem:CanBePickedUp() and
-        not (target:HasTag("catchable") or target:HasTag("fire")) then
-        return ACTIONS.PICKUP 
+        not (target:HasTag("heavy") or target:HasTag("fire") or target:HasTag("catchable")) then
+        return ACTIONS.PICKUP
     elseif target:HasTag("pickable") and not target:HasTag("fire") then
-        return ACTIONS.PICK 
+        return ACTIONS.PICK
     elseif target:HasTag("harvestable") then
         return ACTIONS.HARVEST
     elseif target:HasTag("readyforharvest") or
@@ -1152,7 +1152,7 @@ function PlayerController:IsDoingOrWorking()
 end
 
 local TARGET_EXCLUDE_TAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO" }
-local PICKUP_TARGET_EXCLUDE_TAGS = { "catchable", "mineactive", "heavy", "intense" }
+local PICKUP_TARGET_EXCLUDE_TAGS = { "catchable", "mineactive", "intense" }
 local HAUNT_TARGET_EXCLUDE_TAGS = { "haunted", "catchable" }
 for i, v in ipairs(TARGET_EXCLUDE_TAGS) do
     table.insert(PICKUP_TARGET_EXCLUDE_TAGS, v)

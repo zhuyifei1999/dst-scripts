@@ -118,6 +118,10 @@ local function fn()
     inst:AddTag("tentacle_pillar")
     inst:AddTag("rocky")
 
+    --trader, alltrader (from trader component) added to pristine state for optimization
+    inst:AddTag("trader")
+    inst:AddTag("alltrader")
+
     inst.MiniMapEntity:SetIcon("tentapillar.png")
 
     inst.AnimState:SetBank("tentaclepillar")
@@ -125,7 +129,6 @@ local function fn()
     inst.AnimState:PlayAnimation("idle_hole", true)
     inst.AnimState:SetLayer(LAYER_BACKGROUND)
     inst.AnimState:SetSortOrder(3)
-
 
     inst.entity:SetPristine()
 

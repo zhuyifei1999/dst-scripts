@@ -10,67 +10,65 @@ local prefabs =
 }
 
 for i = 1, NUM_HALLOWEENCANDY do
-	table.insert(prefabs, "halloweencandy_"..i)
+    table.insert(prefabs, "halloweencandy_"..i)
+end
+
+local function launchitem(item, angle)
+    local speed = math.random() * 4 + 2
+    angle = (angle + math.random() * 60 - 30) * DEGREES
+    item.Physics:SetVel(speed * math.cos(angle), math.random() * 2 + 8, speed * math.sin(angle))
 end
 
 local function ontradeforgold(inst, item, giver)
     inst.SoundEmitter:PlaySound("dontstarve/pig/PigKingThrowGold")
 
+    local x, y, z = inst.Transform:GetWorldPosition()
+    y = 4.5
+
+    local angle
+    if giver ~= nil and giver:IsValid() then
+        angle = 180 - giver:GetAngleToPoint(x, 0, z)
+    else
+        local down = TheCamera:GetDownVec()
+        angle = math.atan2(down.z, down.x) / DEGREES
+        giver = nil
+    end
+
     for k = 1, item.components.tradable.goldvalue do
         local nug = SpawnPrefab("goldnugget")
-        local pt = Vector3(inst.Transform:GetWorldPosition()) + Vector3(0, 4.5, 0)
-
-        nug.Transform:SetPosition(pt:Get())
-        local down = TheCamera:GetDownVec()
-        local angle = math.atan2(down.z, down.x) + (math.random() * 60 - 30) * DEGREES
-        --local angle = (math.random() * 60 - 30 - TUNING.CAM_ROT - 90) / 180 * PI
-        local sp = math.random() * 4 + 2
-        nug.Physics:SetVel(sp * math.cos(angle), math.random() * 2 + 8, sp * math.sin(angle))
+        nug.Transform:SetPosition(x, y, z)
+        launchitem(nug, angle)
     end
-    
+
     if item.components.tradable.tradefor ~= nil then
-	    for _,v in pairs(item.components.tradable.tradefor) do
-			local item = SpawnPrefab(v)
-			if item ~= nil then
-				local pt = Vector3(inst.Transform:GetWorldPosition()) + Vector3(0, 4.5, 0)
-
-				item.Transform:SetPosition(pt:Get())
-				local down = TheCamera:GetDownVec()
-				local angle = math.atan2(down.z, down.x) + (math.random() * 60 - 30) * DEGREES
-				--local angle = (math.random() * 60 - 30 - TUNING.CAM_ROT - 90) / 180 * PI
-				local sp = math.random() * 4 + 2
-				item.Physics:SetVel(sp * math.cos(angle), math.random() * 2 + 8, sp * math.sin(angle))
-			end
-	    end
+        for _, v in pairs(item.components.tradable.tradefor) do
+            local item = SpawnPrefab(v)
+            if item ~= nil then
+                item.Transform:SetPosition(x, y, z)
+                launchitem(item, angle)
+            end
+        end
     end
-    
+
     if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
-		-- pick out up to 3 types of candies to throw out
-		local candytypes = { math.random(NUM_HALLOWEENCANDY), math.random(NUM_HALLOWEENCANDY), math.random(NUM_HALLOWEENCANDY) }
+        -- pick out up to 3 types of candies to throw out
+        local candytypes = { math.random(NUM_HALLOWEENCANDY), math.random(NUM_HALLOWEENCANDY), math.random(NUM_HALLOWEENCANDY) }
+        local numcandies = (item.components.tradable.halloweencandyvalue or 1) + math.random(2) + 2
 
-		local numcandies = item.components.tradable.halloweencandyvalue or 1
-		numcandies = numcandies + math.random(2) + 2
+        -- only people in costumes get a good amount of candy!      
+        if giver ~= nil and giver.components.skinner ~= nil then
+            local costume = giver.components.skinner:GetClothing().base
+            if costume ~= nil and costume ~= "" and Prefabs[costume] ~= nil and table.contains(Prefabs[costume].tags, "COSTUME") then
+                numcandies = numcandies + math.random(4) + 2
+            end
+        end
 
-		-- only people in costumes get a good amount of candy!		
-		if giver ~= nil and giver:IsValid() and giver.components.skinner ~= nil then
-			local costume = giver.components.skinner:GetClothing().base
-			if costume ~= nil and costume ~= "" and Prefabs[costume] ~= nil and table.contains(Prefabs[costume].tags, "COSTUME") then
-				numcandies = numcandies + math.random(4) + 2
-			end
-		end
-		
-		for k = 1, numcandies do
-			local candy = SpawnPrefab("halloweencandy_"..GetRandomItem(candytypes))
-			local pt = Vector3(inst.Transform:GetWorldPosition()) + Vector3(0, 4.5, 0)
-
-			candy.Transform:SetPosition(pt:Get())
-			local down = TheCamera:GetDownVec()
-			local angle = math.atan2(down.z, down.x) + (math.random() * 60 - 30) * DEGREES
-			local sp = math.random() * 4 + 2
-			candy.Physics:SetVel(sp * math.cos(angle), math.random() * 2 + 8, sp * math.sin(angle))
-		end
-	end
-	
+        for k = 1, numcandies do
+            local candy = SpawnPrefab("halloweencandy_"..GetRandomItem(candytypes))
+            candy.Transform:SetPosition(x, y, z)
+            launchitem(candy, angle)
+        end
+    end    
 end
 
 local function onplayhappysound(inst)
@@ -83,8 +81,8 @@ local function onendhappytask(inst)
 end
 
 local function OnGetItemFromPlayer(inst, giver, item)
-	local is_event_item = IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) and item.components.tradable.halloweencandyvalue and item.components.tradable.halloweencandyvalue > 0
-	
+    local is_event_item = IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) and item.components.tradable.halloweencandyvalue and item.components.tradable.halloweencandyvalue > 0
+
     if item.components.tradable.goldvalue > 0 or is_event_item then
         inst.AnimState:PlayAnimation("cointoss")
         inst.AnimState:PushAnimation("happy")
@@ -107,7 +105,7 @@ local function OnRefuseItem(inst, giver, item)
 end
 
 local function AcceptTest(inst, item)
-	local is_event_item = IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) and item.components.tradable.halloweencandyvalue and item.components.tradable.halloweencandyvalue > 0
+    local is_event_item = IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) and item.components.tradable.halloweencandyvalue and item.components.tradable.halloweencandyvalue > 0
     return item.components.tradable.goldvalue > 0 or is_event_item
 end
 

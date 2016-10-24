@@ -108,17 +108,14 @@ end
 
 function GroupTargeter:TryGetNewTarget()
     --print("Trying to get a new target...")
-    local change_chance = math.random()
-
-    if change_chance < self.current_chance then
+    if math.random() < self.current_chance then
         self.current_chance = self.min_chance
         local target = self:SelectTarget()
         self:OnPickTarget(target)
         return target
     else
         --print("Failed to get new target!")
-        self.current_chance = self.current_chance + self.chance_delta
-        self.current_chance = math.clamp(self.current_chance, self.min_chance, self.max_chance)
+        self.current_chance = math.clamp(self.current_chance + self.chance_delta, self.min_chance, self.max_chance)
         --print("New chance to get a new target is...", self.current_chance)
         return nil
     end
@@ -134,7 +131,7 @@ function GroupTargeter:SelectTarget()
     for target, target_weight in pairs(self.targets) do
         --print(string.format("Checking %s in range %2.2f - %2.2f", target.prefab, weight, weight + target_weight))
         if selection_weight <= weight + target_weight and
-        selection_weight > weight then
+            selection_weight > weight then
             return target
         else
             weight = weight + target_weight

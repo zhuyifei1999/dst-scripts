@@ -138,9 +138,8 @@ return {
     ANNOUNCE_ENCUMBERED =
     {
         "Reduced... to this...",
-        "Huff... huff... huff...",
-        "...Peasant... work...",
-        "How... I've fallen...",
+        "Huff... huff...",
+        "This is... peasant... work...",
         "Oh... my back...",
         "I wasn't... built for this...",
         "All my joints... are cracking!",

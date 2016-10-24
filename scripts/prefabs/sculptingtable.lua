@@ -3,7 +3,7 @@ require "prefabutil"
 local assets =
 {
     Asset("ANIM", "anim/sculpting_station.zip"),
-	Asset("MINIMAP_IMAGE", "sculpting_station"),
+    Asset("MINIMAP_IMAGE", "sculpting_station"),
 }
 
 local prefabs =
@@ -14,12 +14,12 @@ local prefabs =
 
 local sculptable_materials =
 {
-	marble			= {swapfile="marble",			sysmbol="marble01",		material = "marble"},
-	cutstone		= {swapfile="cutstone",			sysmbol="cutstone01",	material = "stone"},
+    marble          = {swapfile="marble",           sysmbol="marble01",     material = "marble"},
+    cutstone        = {swapfile="cutstone",         sysmbol="cutstone01",   material = "stone"},
 }
 
 local function AddSketch(inst, sketch)
-	inst.components.craftingstation:LearnItem(sketch:GetSpecificSketchPrefab(), sketch:GetRecipeName())
+    inst.components.craftingstation:LearnItem(sketch:GetSpecificSketchPrefab(), sketch:GetRecipeName())
     inst.AnimState:PlayAnimation("hit")
     inst.SoundEmitter:PlaySound("dontstarve/common/together/moonbase/moonstaff_place")
 
@@ -49,13 +49,13 @@ end
 local function onhammered(inst, worker)
     inst.components.lootdropper:DropLoot()
     if inst.components.pickable.caninteractwith then
-		inst.components.lootdropper:SpawnLootPrefab(inst.components.pickable.product)
-	end
-	
-	for i,k in ipairs(inst.components.craftingstation:GetItems()) do
-		inst.components.lootdropper:SpawnLootPrefab(k)
-	end
-	
+        inst.components.lootdropper:SpawnLootPrefab(inst.components.pickable.product)
+    end
+
+    for i,k in ipairs(inst.components.craftingstation:GetItems()) do
+        inst.components.lootdropper:SpawnLootPrefab(k)
+    end
+
     local fx = SpawnPrefab("collapse_small")
     fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
     fx:SetMaterial("wood")
@@ -85,9 +85,9 @@ local function onitemtaken(inst, picker, loot)
         inst.SoundEmitter:PlaySound("dontstarve/common/together/moonbase/moonstaff_place")
     end
 
-	if loot ~= nil and picker ~= nil and sculptable_materials[loot.prefab] == nil then
-		picker.components.inventory:Equip(loot)
-	end
+    if loot ~= nil and picker ~= nil and sculptable_materials[loot.prefab] == nil then
+        picker.components.inventory:Equip(loot)
+    end
 
     inst.AnimState:ClearOverrideSymbol("cutstone01")
     inst.AnimState:ClearOverrideSymbol("swap_body")
@@ -98,8 +98,8 @@ local function onitemtaken(inst, picker, loot)
 end
 
 local function giveitem(inst, itemname)
-	inst.components.pickable:SetUp(itemname, 1000000)
-	inst.components.pickable:Pause()
+    inst.components.pickable:SetUp(itemname, 1000000)
+    inst.components.pickable:Pause()
     if not inst.components.pickable.caninteractwith then
         inst.components.pickable.caninteractwith = true
         inst.SoundEmitter:PlaySound("dontstarve/common/together/moonbase/moonstaff_place")
@@ -107,64 +107,81 @@ local function giveitem(inst, itemname)
 
     inst.AnimState:ClearOverrideSymbol("cutstone01")
     inst.AnimState:ClearOverrideSymbol("swap_body")
-	inst.AnimState:OverrideSymbol(CalcSculptingSymbol(itemname), CalcSymbolFile(itemname), CalcItemSymbol(itemname))
+    inst.AnimState:OverrideSymbol(CalcSculptingSymbol(itemname), CalcSymbolFile(itemname), CalcItemSymbol(itemname))
 
     inst.components.prototyper.trees.SCULPTING = CalcSculptingTech(itemname)
-    
-    
-	if string.find(inst.components.pickable.product, "rook")
-		or string.find(inst.components.pickable.product, "bishop")
-		or string.find(inst.components.pickable.product, "knight") then
+
+    if string.find(inst.components.pickable.product, "rook")
+        or string.find(inst.components.pickable.product, "bishop")
+        or string.find(inst.components.pickable.product, "knight") then
 
         inst:AddTag("chess_moonevent")
-	end
+    end
 end
 
 local function ongivenitem(inst, giver, item)
     if item:HasTag("sketch") then
-		AddSketch(inst, item)
-	else
-		giveitem(inst, item.prefab)
-	end
+        AddSketch(inst, item)
+    else
+        giveitem(inst, item.prefab)
+    end
 end
 
 local function abletoaccepttest(inst, item)
-	if item:HasTag("sketch") then
-		if inst.components.craftingstation:KnowsItem(item:GetSpecificSketchPrefab()) then
-			return false, "DUPLICATE"
-		end
-		
-		return true
-	end
+    if item:HasTag("sketch") then
+        if inst.components.craftingstation:KnowsItem(item:GetSpecificSketchPrefab()) then
+            return false, "DUPLICATE"
+        end
 
-	if inst.components.pickable.caninteractwith then 
-		return false, "SLOTFULL"
-	end
-	
-	for k,v in pairs(sculptable_materials) do
-		if k == item.prefab then
-			return true
-		end
-	end
-	return false, "NOTSCULPTABLE"
+        return true
+    end
+
+    if inst.components.pickable.caninteractwith then
+        return false, "SLOTFULL"
+    end
+
+    for k,v in pairs(sculptable_materials) do
+        if k == item.prefab then
+            return true
+        end
+    end
+    return false, "NOTSCULPTABLE"
+end
+
+local function onignite(inst)
+    if inst.components.trader ~= nil then
+        inst.components.trader:Disable()
+    end
+    DefaultBurnFn(inst)
+end
+
+local function onextinguish(inst)
+    if inst.components.trader ~= nil then
+        inst.components.trader:Enable()
+    end
+    DefaultExtinguishFn(inst)
 end
 
 local function onburnt(inst)
     if inst.components.pickable.caninteractwith then
-		inst.components.lootdropper:SpawnLootPrefab(inst.components.pickable.product)
-		onitemtaken(inst)
-	end
+        inst.components.lootdropper:SpawnLootPrefab(inst.components.pickable.product)
+        onitemtaken(inst)
+    end
 
-	for i,k in ipairs(inst.components.craftingstation:GetItems()) do
-		inst.components.lootdropper:SpawnLootPrefab(k)
-	end
-	inst.components.craftingstation:ForgetAllItems()
-	
-	DefaultBurntStructureFn(inst)
+    for i,k in ipairs(inst.components.craftingstation:GetItems()) do
+        inst.components.lootdropper:SpawnLootPrefab(k)
+    end
+    inst.components.craftingstation:ForgetAllItems()
+
+    if inst.components.trader ~= nil then
+        inst:RemoveComponent("trader")
+    end
+
+    DefaultBurntStructureFn(inst)
 end
 
 local function onremoveingredients(inst, doer, recipename)
-	onitemtaken(inst)
+    onitemtaken(inst)
 end
 
 local function onturnon(inst)
@@ -176,7 +193,7 @@ local function onturnon(inst)
         else
             inst.AnimState:PlayAnimation("proximity_loop", true)
         end
-        
+
         inst.SoundEmitter:PlaySound("dontstarve/common/together/sculpting_table/proximity_LP", "loop")
     end
 end
@@ -189,22 +206,22 @@ local function onturnoff(inst)
 end
 
 local function CreateItem(inst, item)
-	local base_ingredient = inst.components.pickable.caninteractwith and inst.components.pickable.product or nil
-	if base_ingredient ~= nil then
-		giveitem(inst, item.."_"..sculptable_materials[base_ingredient].material)
-		
-	    local fx = SpawnPrefab("collapse_small")
-	    local x, y, z = inst.Transform:GetWorldPosition()
-		fx.Transform:SetPosition(x, y + 1.2, z)
-		fx:SetMaterial("stone")
-	end
+    local base_ingredient = inst.components.pickable.caninteractwith and inst.components.pickable.product or nil
+    if base_ingredient ~= nil then
+        giveitem(inst, item.."_"..sculptable_materials[base_ingredient].material)
+
+        local fx = SpawnPrefab("collapse_small")
+        local x, y, z = inst.Transform:GetWorldPosition()
+        fx.Transform:SetPosition(x, y + 1.2, z)
+        fx:SetMaterial("stone")
+    end
 end
 
 local function getstatus(inst)
-	return inst:HasTag("burnt") and "BURNT"
-			or (not inst.components.pickable.caninteractwith) and "EMPTY"
-			or sculptable_materials[inst.components.pickable.product] ~= nil and "BLOCK"
-			or "SCULPTURE"
+    return inst:HasTag("burnt") and "BURNT"
+            or (not inst.components.pickable.caninteractwith) and "EMPTY"
+            or sculptable_materials[inst.components.pickable.product] ~= nil and "BLOCK"
+            or "SCULPTURE"
 end
 
 local function onsave(inst, data)
@@ -212,33 +229,32 @@ local function onsave(inst, data)
         data.burnt = true
     end
 
-	data.itemname = inst.components.pickable.caninteractwith and inst.components.pickable.product or nil
+    data.itemname = inst.components.pickable.caninteractwith and inst.components.pickable.product or nil
 end
 
 local function onload(inst, data)
     if data ~= nil then
-		if data.itemname then
-			giveitem(inst, data.itemname)
-		end
+        if data.itemname then
+            giveitem(inst, data.itemname)
+        end
 
-		if data.burnt then
-			inst.components.burnable.onburnt(inst)
-			inst.components.trader:Disable()
-		end
+        if data.burnt then
+            inst.components.burnable.onburnt(inst)
+        end
     end
 end
 
 local function DoChessMoonEventKnockOff(inst)
     if inst:HasTag("chess_moonevent") and inst.components.pickable.caninteractwith then
-		local chesspiece = inst.components.lootdropper:SpawnLootPrefab(inst.components.pickable.product)
-		onitemtaken(inst)
+        local chesspiece = inst.components.lootdropper:SpawnLootPrefab(inst.components.pickable.product)
+        onitemtaken(inst)
     end
 end
-    
+
 local function CheckChessMoonEventKnockOff(inst)
-	if TheWorld.state.isnewmoon then
-		DoChessMoonEventKnockOff(inst)
-	end
+    if TheWorld.state.isnewmoon then
+        DoChessMoonEventKnockOff(inst)
+    end
 end
 
 local function fn()
@@ -261,8 +277,11 @@ local function fn()
 
     inst:AddTag("prototyper")
     inst:AddTag("structure")
+
+    --trader, alltrader (from trader component) added to pristine state for optimization
     inst:AddTag("trader")
-    
+    inst:AddTag("alltrader")
+
     MakeSnowCoveredPristine(inst)
 
     inst.entity:SetPristine()
@@ -302,9 +321,10 @@ local function fn()
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
 
-
     MakeMediumBurnable(inst, nil, nil, true)
     inst.components.burnable:SetOnBurntFn(onburnt)
+    inst.components.burnable:SetOnIgniteFn(onignite)
+    inst.components.burnable:SetOnExtinguishFn(onextinguish)
 
     MakeSnowCovered(inst)
     MakeMediumPropagator(inst)
@@ -316,15 +336,13 @@ local function fn()
 
     inst:ListenForEvent("onbuilt", onbuilt)
 
-	if not TheWorld:HasTag("cave") then
-		inst.OnEntityWake = CheckChessMoonEventKnockOff
-		inst.OnEntitySleep = CheckChessMoonEventKnockOff
-		inst:WatchWorldState("isnewmoon", CheckChessMoonEventKnockOff)
-		
-		inst:ListenForEvent("shadowchessroar", DoChessMoonEventKnockOff)
-	end
+    if not TheWorld:HasTag("cave") then
+        inst.OnEntityWake = CheckChessMoonEventKnockOff
+        inst.OnEntitySleep = CheckChessMoonEventKnockOff
+        inst:WatchWorldState("isnewmoon", CheckChessMoonEventKnockOff)
 
-
+        inst:ListenForEvent("shadowchessroar", DoChessMoonEventKnockOff)
+    end
 
     return inst
 end

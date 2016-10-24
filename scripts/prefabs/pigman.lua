@@ -512,8 +512,10 @@ local function common(moonbeast)
     inst.AnimState:PlayAnimation("idle_loop")
     inst.AnimState:Hide("hat")
 
-    --trader (from trader component) added to pristine state for optimization
-    inst:AddTag("trader")
+    if not moonbeast then
+        --trader (from trader component) added to pristine state for optimization
+        inst:AddTag("trader")
+    end
 
     --Sneak these into pristine state for optimization
     inst:AddTag("_named")

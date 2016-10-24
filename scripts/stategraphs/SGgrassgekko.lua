@@ -1,27 +1,21 @@
 require("stategraphs/commonstates")
 
-local function getBuild(inst, tail)
-    return tail and "grassgecko" or "grassgecko_notail_build"
-end
-
---hiss_pre, vomit, swipe_pre
-
-local actionhandlers = 
+local actionhandlers =
 {
     ActionHandler(ACTIONS.GOHOME, "gohome"),
 }
 
-local events=
+local events =
 {
     CommonHandlers.OnSleep(),
     CommonHandlers.OnFreeze(),
     CommonHandlers.OnAttacked(true),
     CommonHandlers.OnDeath(),
     CommonHandlers.OnLocomote(false,true),
-    EventHandler("locomote", 
-        function(inst) 
+    EventHandler("locomote",
+        function(inst)
             if not inst.sg:HasStateTag("idle") and not inst.sg:HasStateTag("moving") then return end
-            
+
             local is_moving = inst.sg:HasStateTag("moving")
             local is_running = inst.sg:HasStateTag("running")
             local is_idling = inst.sg:HasStateTag("idle")
@@ -48,7 +42,7 @@ local events=
                     inst.sg:GoToState("walk_start")
                 end
             end
-        end),    
+        end),
 }
 
 local states=
@@ -66,7 +60,7 @@ local states=
             end
         end,
 
-        events = 
+        events =
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
         },
@@ -76,27 +70,27 @@ local states=
         name = "walk_start",
         tags = {"moving", "canrotate"},
 
-        onenter = function(inst) 
+        onenter = function(inst)
             inst.AnimState:PlayAnimation("walk_pre")
         end,
 
         events =
-        {   
-            EventHandler("animover", function(inst) inst.sg:GoToState("walk") end ),        
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("walk") end ),
         },
     },
-        
-    State{            
+
+    State{
         name = "walk",
         tags = {"moving", "canrotate"},
-        
-        onenter = function(inst) 
+
+        onenter = function(inst)
             inst.components.locomotor:WalkForward()
             inst.AnimState:PlayAnimation("walk_loop")
         end,
-        events=
-        {   
-            EventHandler("animover", function(inst) inst.sg:GoToState("walk") end ),        
+        events =
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("walk") end ),
         },
         timeline=
         {
@@ -105,49 +99,48 @@ local states=
             TimeEvent(15*FRAMES, function(inst) PlayFootstep(inst) end),
             TimeEvent(23*FRAMES, function(inst) PlayFootstep(inst) end),
         },
-    },      
-    
-    State{            
-        name = "walk_stop",
-        tags = {"canrotate"},
-        
-        onenter = function(inst) 
-            inst.components.locomotor:StopMoving()
-            inst.AnimState:PlayAnimation("walk_pst")			
-        end,
-
-        events=
-        {   
-            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),        
-        },
     },
 
+    State{
+        name = "walk_stop",
+        tags = {"canrotate"},
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("walk_pst")
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),
+        },
+    },
 
     State{
         name = "run_start",
         tags = {"moving", "canrotate"},
 
-        onenter = function(inst) 
+        onenter = function(inst)
             inst.AnimState:PlayAnimation("walk_pre")
         end,
 
         events =
-        {   
-            EventHandler("animover", function(inst) inst.sg:GoToState("run") end ),        
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("run") end ),
         },
     },
 
-    State{            
+    State{
         name = "scare",
         tags = {"moving", "canrotate","running"},
-        
-        onenter = function(inst) 
+
+        onenter = function(inst)
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("tail_off")
         end,
         events=
-        {   
-            EventHandler("animover", function(inst) inst.sg:GoToState("run") end ),        
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("run") end ),
         },
         timeline=
         {
@@ -155,29 +148,32 @@ local states=
 
             TimeEvent(4*FRAMES, function(inst)
                 if inst.hasTail then
-                    inst.components.lootdropper:SpawnLootPrefab("cutgrass") 
-                    inst.hasTail = false                    
+                    inst.components.lootdropper:SpawnLootPrefab("cutgrass")
+                    inst.hasTail = false
                     inst.components.timer:StartTimer("growTail", TUNING.GRASSGEKKO_REGROW_TIME )
-
-                    inst.AnimState:SetBuild( getBuild(inst,false))             
                 end
-            end),                    
+            end),
 
             TimeEvent(15*FRAMES, function(inst) inst.sg:GoToState("run") end),
         },
-    },  
-        
-    State{            
+        onexit = function(inst)
+            if not inst.hasTail then
+                inst.AnimState:Hide("tail")
+            end
+        end,
+    },
+
+    State{
         name = "run",
         tags = {"moving", "canrotate","running"},
-        
-        onenter = function(inst) 
+
+        onenter = function(inst)
             inst.components.locomotor:RunForward()
             inst.AnimState:PlayAnimation("run_loop")
-        end,          
+        end,
         events=
         {
-            EventHandler("animover", function(inst) inst.sg:GoToState("run") end ),        
+            EventHandler("animover", function(inst) inst.sg:GoToState("run") end ),
         },
         timeline=
         {
@@ -186,44 +182,42 @@ local states=
             TimeEvent(15*FRAMES, function(inst) PlayFootstep(inst) end),
             TimeEvent(23*FRAMES, function(inst) PlayFootstep(inst) end),
         },
-    },      
-    
-    State{            
+    },
+
+    State{
         name = "run_stop",
         tags = {"canrotate"},
-        
-        onenter = function(inst) 
+
+        onenter = function(inst)
             inst.components.locomotor:StopMoving()
-            inst.AnimState:PlayAnimation("run_pst")            
+            inst.AnimState:PlayAnimation("run_pst")
         end,
 
         events=
-        {   
-            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),        
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),
         },
-    },    
+    },
 
-
-    State{            
+    State{
         name = "regrow_tail",
         tags = {"busy"},
-        
-        onenter = function(inst) 
+
+        onenter = function(inst)
             inst.AnimState:PlayAnimation("tail_regrow")
             inst.tailGrowthPending = nil
-            inst.AnimState:SetBuild(getBuild(inst,true)) 
-            inst.hasTail = true            
+            inst.AnimState:Show("tail")
+            inst.hasTail = true
         end,
         events=
-        {   
-            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),        
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),
         },
         timeline=
         {
-            TimeEvent(5*FRAMES, function(inst)                  
+            TimeEvent(5*FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("dontstarve/creatures/together/grass_gekko/tail_regrow") 
             end),
-            
         },
     },
 
@@ -269,15 +263,15 @@ local states=
 
 CommonStates.AddCombatStates(states,
 {
-	hittimeline = {
-        TimeEvent(5*FRAMES, function(inst) inst.sg:GoToState("run") end),  
+    hittimeline = {
+        TimeEvent(5*FRAMES, function(inst) inst.sg:GoToState("run") end),
     },
 
-	deathtimeline =
-	{
+    deathtimeline =
+    {
         TimeEvent(3*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/grass_gekko/death") end),
         TimeEvent(9*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/grass_gekko/body_fall") end),
-	},
+    },
 })
 
 CommonStates.AddSleepStates(states,
@@ -295,14 +289,14 @@ CommonStates.AddSleepStates(states,
 
     waketimeline =
     {
-        TimeEvent(1*FRAMES, function(inst) 
-                if inst.components.locomotor:WantsToRun() then 
-                    inst.sg:GoToState("scare") 
+        TimeEvent(1*FRAMES, function(inst)
+                if inst.components.locomotor:WantsToRun() then
+                    inst.sg:GoToState("scare")
                 end
             end),
         TimeEvent(12*FRAMES, function(inst) inst.sg:GoToState("idle") end),
     },
 })
 CommonStates.AddFrozenStates(states)
-  
+
 return StateGraph("grassgekko", states, events, "idle", actionhandlers)

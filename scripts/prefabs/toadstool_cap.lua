@@ -49,11 +49,13 @@ local function onspawntoad(inst)
 end
 
 local function onworkfinished(inst)
-    inst.components.workable:SetWorkable(false)
-    if inst.AnimState:IsCurrentAnimation("mushroom_toad_hit") then
-        inst:ListenForEvent("animover", onspawntoad)
-    else
-        onspawntoad(inst)
+    if inst.components.workable.workable then
+        inst.components.workable:SetWorkable(false)
+        if inst.AnimState:IsCurrentAnimation("mushroom_toad_hit") then
+            inst:ListenForEvent("animover", onspawntoad)
+        else
+            onspawntoad(inst)
+        end
     end
 end
 

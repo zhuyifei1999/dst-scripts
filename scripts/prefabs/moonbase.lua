@@ -486,7 +486,7 @@ local function fn()
     MakeObstaclePhysics(inst, 1)
 
     --trader (from trader component) added to pristine state for optimization
-    inst:AddTag("trader")
+    --inst:AddTag("trader")
 
     inst:AddTag("moonbase")
 

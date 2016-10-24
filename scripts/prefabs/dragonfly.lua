@@ -255,7 +255,7 @@ local function RetargetFn(inst)
                 return inst.components.combat:CanTarget(guy)
             end,
             { "_combat" }, --see entityreplica.lua
-            { "prey", "smallcreature", "lavae" }
+            { "INLIMBO", "prey", "smallcreature", "lavae" }
         )
     end
 end

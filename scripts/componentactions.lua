@@ -141,7 +141,9 @@ local COMPONENT_ACTIONS =
             if right and
                 inst:HasTag("repairable_sculpture") and
                 doer.replica.inventory ~= nil and
-                doer.replica.inventory:IsHeavyLifting() then
+                doer.replica.inventory:IsHeavyLifting() and
+                not (doer.replica.rider ~= nil and
+                    doer.replica.rider:IsRiding()) then
                 local item = doer.replica.inventory:GetEquippedItem(EQUIPSLOTS.BODY)
                 if item ~= nil and item:HasTag("work_sculpture") then
                     table.insert(actions, ACTIONS.REPAIR)
@@ -184,7 +186,8 @@ local COMPONENT_ACTIONS =
         end,
 
         stewer = function(inst, doer, actions, right)
-            if not inst:HasTag("burnt") then
+            if not inst:HasTag("burnt") and
+                not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding()) then
                 if inst:HasTag("donecooking") then
                     table.insert(actions, ACTIONS.HARVEST)
                 elseif right and
@@ -258,7 +261,10 @@ local COMPONENT_ACTIONS =
         cookable = function(inst, doer, target, actions)
             if target:HasTag("cooker") and
                 not target:HasTag("fueldepleted") and
-                (not target:HasTag("dangerouscooker") or doer:HasTag("expertchef")) then
+                (not target:HasTag("dangerouscooker") or doer:HasTag("expertchef")) and
+                not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding() and
+                    not (target.replica.inventoryitem ~= nil and target.replica.inventoryitem:IsGrandOwner(doer)))
+                then
                 table.insert(actions, ACTIONS.COOK)
             end
         end,
@@ -270,7 +276,9 @@ local COMPONENT_ACTIONS =
                     target:HasTag("fire") or
                     target:HasTag("catchable")) then
                 local inventoryitem = target.replica.inventoryitem
-                if inventoryitem == nil or inventoryitem:IsHeld() or inventoryitem:CanBePickedUp() then
+                if not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding() and
+                        not (inventoryitem ~= nil and inventoryitem:IsGrandOwner(doer))) and
+                    (inventoryitem == nil or inventoryitem:IsHeld() or inventoryitem:CanBePickedUp()) then
                     table.insert(actions, ACTIONS.COOK)
                 end
             end
@@ -285,7 +293,10 @@ local COMPONENT_ACTIONS =
         end,
 
         edible = function(inst, doer, target, actions, right)
-            if right and not (target.replica.rider ~= nil and target.replica.rider:IsRiding()) then
+            if right and
+                not (target.replica.rider ~= nil and target.replica.rider:IsRiding()) and
+                not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding() and
+                    not (target.replica.inventoryitem ~= nil and target.replica.inventoryitem:IsGrandOwner(doer))) then
                 for k, v in pairs(FOODGROUP) do
                     if target:HasTag(v.name.."_eater") then
                         for i, v2 in ipairs(v.types) do
@@ -342,16 +353,15 @@ local COMPONENT_ACTIONS =
         end,
 
         fuel = function(inst, doer, target, actions)
-            for k, v in pairs(FUELTYPE) do
-                if inst:HasTag(v.."_fuel") then
-                    if target:HasTag(v.."_fueled") then
-                        if inst:GetIsWet() then
-                            table.insert(actions, ACTIONS.ADDWETFUEL)
-                        else
-                            table.insert(actions, ACTIONS.ADDFUEL)
+            if not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding())
+                or (target.replica.inventoryitem ~= nil and target.replica.inventoryitem:IsGrandOwner(doer)) then
+                for k, v in pairs(FUELTYPE) do
+                    if inst:HasTag(v.."_fuel") then
+                        if target:HasTag(v.."_fueled") then
+                            table.insert(actions, inst:GetIsWet() and ACTIONS.ADDWETFUEL or ACTIONS.ADDFUEL)
                         end
+                        return
                     end
-                    return
                 end
             end
         end,
@@ -388,10 +398,12 @@ local COMPONENT_ACTIONS =
                         ACTIONS.GIVEALLTOPLAYER or
                         ACTIONS.GIVETOPLAYER)
                 end
-            elseif target:HasTag("alltrader") then
-                table.insert(actions, ACTIONS.GIVE)
-            elseif inst.prefab == "reviver" and target:HasTag("ghost") then
-                table.insert(actions, ACTIONS.GIVE)
+            elseif not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding()) then
+                if target:HasTag("alltrader") then
+                    table.insert(actions, ACTIONS.GIVE)
+                elseif inst.prefab == "reviver" and target:HasTag("ghost") then
+                    table.insert(actions, ACTIONS.GIVE)
+                end
             end
         end,
 
@@ -436,7 +448,14 @@ local COMPONENT_ACTIONS =
         end,
 
         repairer = function(inst, doer, target, actions, right)
-            if right and not (doer.replica.inventory ~= nil and doer.replica.inventory:IsHeavyLifting()) then
+            if right then
+                if doer.replica.rider ~= nil and doer.replica.rider:IsRiding() then
+                    if not (target.replica.inventoryitem ~= nil and target.replica.inventoryitem:IsGrandOwner(doer)) then
+                        return
+                    end
+                elseif doer.replica.inventory ~= nil and doer.replica.inventory:IsHeavyLifting() then
+                    return
+                end
                 for k, v in pairs(MATERIALS) do
                     if target:HasTag("repairable_"..v) then
                         if (inst:HasTag("work_"..v) and target:HasTag("workrepairable"))
@@ -457,7 +476,9 @@ local COMPONENT_ACTIONS =
         end,
 
         sewing = function(inst, doer, target, actions)
-            if target:HasTag("needssewing") then
+            if target:HasTag("needssewing") and
+                not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding() and
+                    not (target.replica.inventoryitem ~= nil and target.replica.inventoryitem:IsGrandOwner(doer))) then
                 table.insert(actions, ACTIONS.SEW)
             end
         end,
@@ -512,7 +533,10 @@ local COMPONENT_ACTIONS =
         end,
 
         tradable = function(inst, doer, target, actions)
-            if target:HasTag("trader") and not (target:HasTag("player") or target:HasTag("ghost")) then
+            if target:HasTag("trader") and
+                not (target:HasTag("player") or target:HasTag("ghost")) and
+                not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding() and
+                    not (target.replica.inventoryitem ~= nil and target.replica.inventoryitem:IsGrandOwner(doer))) then
                 table.insert(actions, ACTIONS.GIVE)
             end
         end,
@@ -640,7 +664,9 @@ local COMPONENT_ACTIONS =
                     target:HasTag("fire") or
                     target:HasTag("catchable")) then
                 local inventoryitem = target.replica.inventoryitem
-                if inventoryitem == nil or inventoryitem:IsHeld() or inventoryitem:CanBePickedUp() then
+                if not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding() and
+                        not (inventoryitem ~= nil and inventoryitem:IsGrandOwner(doer))) and
+                    (inventoryitem == nil or inventoryitem:IsHeld() or inventoryitem:CanBePickedUp()) then
                     table.insert(actions, ACTIONS.COOK)
                 end
             end

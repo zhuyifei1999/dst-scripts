@@ -57,9 +57,8 @@ local function StartTracking(player, params, ent)
 
     ent:ListenForEvent("onremove", function()
         ent.spawnedforplayer = nil
-        if ent.sg.currentstate.name ~= "disappear" then
-            ent.sg:GoToState("disappear")
-        end
+        ent.persists = false
+        ent.wantstodespawn = true
     end, player)
 end
 
@@ -89,13 +88,14 @@ UpdateSpawn = function(player, params)
         --Remove random monsters until we reach our target population
         local toremove = {}
         for i, v in ipairs(params.ents) do
-            if v.sg.currentstate.name ~= "disappear" then
+            if not v.wantstodespawn then
                 table.insert(toremove, v)
             end
         end
         for i = #toremove, params.targetpop + 1, -1 do
             local ent = table.remove(toremove, math.random(i))
-            ent.sg:GoToState("disappear")
+            ent.persists = false
+            ent.wantstodespawn = true
         end
 
         --Don't reschedule spawning

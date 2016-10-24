@@ -12,18 +12,18 @@ local function onload(inst, data)
     if data ~= nil and data.recipetouse ~= nil then
         inst.recipetouse = data.recipetouse
         inst.components.teacher:SetRecipe(inst.recipetouse)
-        
+
         if data.is_rare then
-        	inst.is_rare = data.is_rare
-    	    inst.components.named:SetName(subfmt(STRINGS.NAMES.BLUEPRINT_RARE, {item=STRINGS.NAMES[string.upper(inst.recipetouse)]}))
-			inst.AnimState:SetBank("blueprint_rare")
-			inst.AnimState:SetBuild("blueprint_rare")
-		    inst.components.inventoryitem:ChangeImageName("blueprint_rare")
-			inst:RemoveComponent("burnable")
-			inst:RemoveComponent("propagator")
-	    else
-	        inst.components.named:SetName((STRINGS.NAMES[string.upper(inst.recipetouse)] or STRINGS.NAMES.UNKNOWN).." "..STRINGS.NAMES.BLUEPRINT)
-		end
+            inst.is_rare = data.is_rare
+            inst.components.named:SetName(subfmt(STRINGS.NAMES.BLUEPRINT_RARE, { item = STRINGS.NAMES[string.upper(inst.recipetouse)] or STRINGS.NAMES.UNKNOWN }))
+            inst.AnimState:SetBank("blueprint_rare")
+            inst.AnimState:SetBuild("blueprint_rare")
+            inst.components.inventoryitem:ChangeImageName("blueprint_rare")
+            inst:RemoveComponent("burnable")
+            inst:RemoveComponent("propagator")
+        else
+            inst.components.named:SetName((STRINGS.NAMES[string.upper(inst.recipetouse)] or STRINGS.NAMES.UNKNOWN).." "..STRINGS.NAMES.BLUEPRINT)
+        end
     end
 end
 
@@ -74,7 +74,7 @@ local function CanBlueprintSpecificRecipe(recipe)
 end
 
 local function OnHaunt(inst, haunter)
-    if (not inst.is_rare) and math.random() <= TUNING.HAUNT_CHANCE_HALF then
+    if not inst.is_rare and math.random() <= TUNING.HAUNT_CHANCE_HALF then
         local recipes = {}
         local old = inst.recipetouse ~= nil and GetValidRecipe(inst.recipetouse) or nil
         for k, v in pairs(AllRecipes) do
@@ -88,7 +88,7 @@ local function OnHaunt(inst, haunter)
             end
         end
         if #recipes > 0 then
-            inst.recipetouse = recipes[math.random(#recipes)].name or STRINGS.NAMES.UNKNOWN
+            inst.recipetouse = recipes[math.random(#recipes)].name or "unknown"
             inst.components.teacher:SetRecipe(inst.recipetouse)
             inst.components.named:SetName(STRINGS.NAMES[string.upper(inst.recipetouse)].." "..STRINGS.NAMES.BLUEPRINT)
             inst.components.hauntable.hauntvalue = TUNING.HAUNT_SMALL
@@ -122,13 +122,13 @@ local function fn(is_rare)
         return inst
     end
 
-	inst.is_rare = is_rare
+    inst.is_rare = is_rare
 
     --Remove these tags so that they can be added properly when replicating components below
     inst:RemoveTag("_named")
 
     inst:AddComponent("inspectable")
-	inst.components.inspectable.getstatus = getstatus
+    inst.components.inspectable.getstatus = getstatus
 
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem:ChangeImageName("blueprint")
@@ -140,15 +140,15 @@ local function fn(is_rare)
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL
 
-	if not is_rare then
-		MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
-		MakeSmallPropagator(inst)
-	else
-		inst.AnimState:SetBank("blueprint_rare")
-		inst.AnimState:SetBuild("blueprint_rare")
-	    inst.components.inventoryitem:ChangeImageName("blueprint_rare")
-	end
-	
+    if not is_rare then
+        MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
+        MakeSmallPropagator(inst)
+    else
+        inst.AnimState:SetBank("blueprint_rare")
+        inst.AnimState:SetBuild("blueprint_rare")
+        inst.components.inventoryitem:ChangeImageName("blueprint_rare")
+    end
+
     MakeHauntableLaunch(inst)
     AddHauntableCustomReaction(inst, OnHaunt, true, false, true)
 
@@ -182,7 +182,7 @@ local function MakeAnyBlueprint()
             end
         end
     end
-    inst.recipetouse = #recipes > 0 and recipes[math.random(#recipes)].name or STRINGS.NAMES.UNKNOWN
+    inst.recipetouse = #recipes > 0 and recipes[math.random(#recipes)].name or "unknown"
     inst.components.teacher:SetRecipe(inst.recipetouse)
     inst.components.named:SetName(STRINGS.NAMES[string.upper(inst.recipetouse)].." "..STRINGS.NAMES.BLUEPRINT)
     return inst
@@ -190,18 +190,18 @@ end
 
 local function MakeSpecificBlueprint(specific_item)
     return function()
-		local is_rare = false
+        local is_rare = false
 
         local r = GetValidRecipe(specific_item)
-		if r ~= nil then
-			for k, v in pairs(r.level) do
-				if v >= 10 then
-					is_rare = true
-					break
-				end
-			end
-		end
-    
+        if r ~= nil then
+            for k, v in pairs(r.level) do
+                if v >= 10 then
+                    is_rare = true
+                    break
+                end
+            end
+        end
+
         local inst = fn(is_rare)
 
         if not TheWorld.ismastersim then
@@ -209,13 +209,13 @@ local function MakeSpecificBlueprint(specific_item)
         end
 
         local r = GetValidRecipe(specific_item)
-        inst.recipetouse = r ~= nil and not r.nounlock and r.name or STRINGS.NAMES.UNKNOWN
+        inst.recipetouse = r ~= nil and not r.nounlock and r.name or "unknown"
         inst.components.teacher:SetRecipe(inst.recipetouse)
         if is_rare then
-	        inst.components.named:SetName(subfmt(STRINGS.NAMES.BLUEPRINT_RARE, {item=STRINGS.NAMES[string.upper(inst.recipetouse)]}))
-	    else
-			inst.components.named:SetName(STRINGS.NAMES[string.upper(inst.recipetouse)].." "..STRINGS.NAMES.BLUEPRINT)
-		end
+            inst.components.named:SetName(subfmt(STRINGS.NAMES.BLUEPRINT_RARE, { item = STRINGS.NAMES[string.upper(inst.recipetouse)] }))
+        else
+            inst.components.named:SetName(STRINGS.NAMES[string.upper(inst.recipetouse)].." "..STRINGS.NAMES.BLUEPRINT)
+        end
         return inst
     end
 end
@@ -245,7 +245,7 @@ local function MakeAnyBlueprintFromTab(recipetab)
                 end
             end
         end
-        inst.recipetouse = #recipes > 0 and recipes[math.random(#recipes)].name or STRINGS.NAMES.UNKNOWN
+        inst.recipetouse = #recipes > 0 and recipes[math.random(#recipes)].name or "unknown"
         inst.components.teacher:SetRecipe(inst.recipetouse)
         inst.components.named:SetName(STRINGS.NAMES[string.upper(inst.recipetouse)].." "..STRINGS.NAMES.BLUEPRINT)
         return inst

@@ -215,7 +215,7 @@ end
 -------------------------------------------------------------------------------
 
 local function yellowthrown(inst)
-    inst.AnimState:PlayAnimation("dart_red")
+    inst.AnimState:PlayAnimation("dart_yellow")
     inst:AddTag("NOCLICK")
     inst.persists = false
 end
@@ -231,7 +231,7 @@ local function yellowattack(inst, attacker, target)
 end
 
 local function yellow()
-    local inst = common("idle_red", { "firedart" })
+    local inst = common("idle_yellow")
 
     if not TheWorld.ismastersim then
         return inst

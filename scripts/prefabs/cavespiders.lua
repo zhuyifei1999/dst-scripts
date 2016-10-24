@@ -218,13 +218,16 @@ local function create_common(bank, build, tag)
     inst:AddTag("cavedweller")
     inst:AddTag("monster")
     inst:AddTag("hostile")
-    inst:AddTag("scarytoprey")    
-    inst:AddTag("canbetrapped")    
+    inst:AddTag("scarytoprey")
+    inst:AddTag("canbetrapped")
     inst:AddTag("smallcreature")
     inst:AddTag("spider")
     if tag ~= nil then
         inst:AddTag(tag)
     end
+
+    --trader (from trader component) added to pristine state for optimization
+    inst:AddTag("trader")
 
     inst.AnimState:SetBank(bank)
     inst.AnimState:SetBuild(build)
