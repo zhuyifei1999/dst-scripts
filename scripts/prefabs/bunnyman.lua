@@ -321,8 +321,6 @@ local function fn()
 
     inst.components.health:SetMaxHealth(TUNING.BUNNYMAN_HEALTH)
 
-    inst.components.trader:Enable()
-
     MakeHauntablePanic(inst, 5, nil, 5)
 
     inst:SetBrain(brain)

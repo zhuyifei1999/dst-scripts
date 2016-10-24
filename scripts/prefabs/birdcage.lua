@@ -490,8 +490,7 @@ local function fn()
     inst:AddTag("cage")
 
     --trader (from trader component) added to pristine state for optimization
-    inst:AddTag("trader")
-
+    --inst:AddTag("trader")
 
     MakeSnowCoveredPristine(inst)
 
@@ -522,7 +521,6 @@ local function fn()
     inst.components.trader:SetAcceptTest(ShouldAcceptItem)
     inst.components.trader.onaccept = OnGetItem
     inst.components.trader.onrefuse = OnRefuseItem
-
     inst.components.trader:Disable()
 
     inst:AddComponent("inventory")

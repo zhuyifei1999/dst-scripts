@@ -43,7 +43,7 @@ end)
 
 ACTIONS =
 {
-    REPAIR = Action({ encumbered_valid=true }),
+    REPAIR = Action({ mount_valid=true, encumbered_valid=true }),
     READ = Action({ mount_valid=true }),
     DROP = Action({ priority=-1, mount_valid=true, encumbered_valid=true }),
     TRAVEL = Action(),
@@ -54,15 +54,15 @@ ACTIONS =
     PICKUP = Action({ priority=1 }),
     MINE = Action(),
     DIG = Action({ rmb=true }),
-    GIVE = Action({ canforce=true, rangecheckfn=DefaultRangeCheck }),
+    GIVE = Action({ mount_valid=true, canforce=true, rangecheckfn=DefaultRangeCheck }),
     GIVETOPLAYER = Action({ priority=3, canforce=true, rangecheckfn=DefaultRangeCheck }),
     GIVEALLTOPLAYER = Action({ priority=3, canforce=true, rangecheckfn=DefaultRangeCheck }),
     FEEDPLAYER = Action({ priority=3, rmb=true, canforce=true, rangecheckfn=DefaultRangeCheck }),
-    COOK = Action({ priority=1 }),
+    COOK = Action({ priority=1, mount_valid=true }),
     FILL = Action(),
     DRY = Action(),
-    ADDFUEL = Action(),
-    ADDWETFUEL = Action(),
+    ADDFUEL = Action({ mount_valid=true }),
+    ADDWETFUEL = Action({ mount_valid=true }),
     LIGHT = Action({ priority=-4 }),
     EXTINGUISH = Action({ priority=0 }),
     LOOKAT = Action({ priority=-3, instant=true, ghost_valid=true, mount_valid=true, encumbered_valid=true }),
@@ -124,7 +124,7 @@ ACTIONS =
     STEALMOLEBAIT = Action({ rmb=false, distance=.75 }),
     MAKEMOLEHILL = Action({ priority=4, rmb=false, distance=0 }),
     MOLEPEEK = Action({ rmb=false, distance=1 }),
-    FEED = Action({ rmb=true }),
+    FEED = Action({ rmb=true, mount_valid=true }),
     UPGRADE = Action({ rmb=true }),
     HAIRBALL = Action({ rmb=false, distance=3 }),
     CATPLAYGROUND = Action({ rmb=false, distance=1 }),
@@ -267,7 +267,9 @@ ACTIONS.REPAIR.fn = function(act)
         local material
         if act.doer ~= nil and
             act.doer.components.inventory ~= nil and
-            act.doer.components.inventory:IsHeavyLifting() then
+            act.doer.components.inventory:IsHeavyLifting() and
+            not (act.doer.components.rider ~= nil and
+                act.doer.components.rider:IsRiding()) then
             material = act.doer.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY)
         else
             material = act.invobject
@@ -443,18 +445,40 @@ ACTIONS.CHECKTRAP.fn = function(act)
     end
 end
 
-ACTIONS.CHOP.fn = function(act)
-    if act.target.components.workable and act.target.components.workable.action == ACTIONS.CHOP then
-        local numworks = 1
-
-        if act.invobject and act.invobject.components.tool then
-            numworks = act.invobject.components.tool:GetEffectiveness(ACTIONS.CHOP)
-        elseif act.doer and act.doer.components.worker then
-            numworks = act.doer.components.worker:GetEffectiveness(ACTIONS.CHOP)
-        end
-        act.target.components.workable:WorkedBy(act.doer, numworks)
+local function DoToolWork(act, workaction)
+    if act.target.components.workable ~= nil and
+        act.target.components.workable:CanBeWorked() and
+        act.target.components.workable.action == workaction then
+        act.target.components.workable:WorkedBy(
+            act.doer,
+            (   act.invobject ~= nil and
+                act.invobject.components.tool ~= nil and
+                act.invobject.components.tool:GetEffectiveness(workaction)
+            ) or
+            (   act.doer ~= nil and
+                act.doer.components.worker ~= nil and
+                act.doer.components.worker:GetEffectiveness(workaction)
+            ) or
+            1
+        )
     end
     return true
+end
+
+ACTIONS.CHOP.fn = function(act)
+    return DoToolWork(act, ACTIONS.CHOP)
+end
+
+ACTIONS.MINE.fn = function(act)
+    return DoToolWork(act, ACTIONS.MINE)
+end
+
+ACTIONS.HAMMER.fn = function(act)
+    return DoToolWork(act, ACTIONS.HAMMER)
+end
+
+ACTIONS.DIG.fn = function(act)
+    return DoToolWork(act, ACTIONS.DIG)
 end
 
 ACTIONS.FERTILIZE.fn = function(act)
@@ -493,34 +517,6 @@ ACTIONS.MANUALEXTINGUISH.fn = function(act)
         act.target.components.burnable:Extinguish(true, TUNING.SMOTHERER_EXTINGUISH_HEAT_PERCENT, act.invobject)
         return true
     end
-end
-
-ACTIONS.MINE.fn = function(act)
-    if act.target.components.workable and act.target.components.workable.action == ACTIONS.MINE then
-        local numworks = 1
-
-        if act.invobject and act.invobject.components.tool then
-            numworks = act.invobject.components.tool:GetEffectiveness(ACTIONS.MINE)
-        elseif act.doer and act.doer.components.worker then
-            numworks = act.doer.components.worker:GetEffectiveness(ACTIONS.MINE)
-        end
-        act.target.components.workable:WorkedBy(act.doer, numworks)
-    end
-    return true
-end
-
-ACTIONS.HAMMER.fn = function(act)
-    if act.target.components.workable and act.target.components.workable.action == ACTIONS.HAMMER then
-        local numworks = 1
-
-        if act.invobject and act.invobject.components.tool then
-            numworks = act.invobject.components.tool:GetEffectiveness(ACTIONS.HAMMER)
-        elseif act.doer and act.doer.components.worker then
-            numworks = act.doer.components.worker:GetEffectiveness(ACTIONS.HAMMER)
-        end
-        act.target.components.workable:WorkedBy(act.doer, numworks)
-    end
-    return true
 end
 
 ACTIONS.NET.fn = function(act)
@@ -567,20 +563,6 @@ ACTIONS.REEL.strfn = function(act)
             return "CANCEL"
         end
     end
-end
-
-ACTIONS.DIG.fn = function(act)
-    if act.target.components.workable and act.target.components.workable.action == ACTIONS.DIG then
-        local numworks = 1
-
-        if act.invobject and act.invobject.components.tool then
-            numworks = act.invobject.components.tool:GetEffectiveness(ACTIONS.DIG)
-        elseif act.doer and act.doer.components.worker then
-            numworks = act.doer.components.worker:GetEffectiveness(ACTIONS.DIG)
-        end
-        act.target.components.workable:WorkedBy(act.doer, numworks)
-    end
-    return true
 end
 
 ACTIONS.PICK.fn = function(act)

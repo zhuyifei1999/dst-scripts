@@ -11,12 +11,10 @@ end
 --base class for imagebuttons and animbuttons. 
 local SkinAnnouncement = Class(Widget, function(self, font, size)
     Widget._ctor(self, "SkinAnnouncement")
-    
+
     self.root = self:AddChild(Widget("Root"))
 
     self.img_btn = self.root:AddChild(ImageButton())
-    
-    self.img_btn.text:SetVAlign(ANCHOR_TOP)
     self.img_btn.text:SetHAlign(ANCHOR_LEFT)
 
     self.skin_txt = self.img_btn:AddChild(Text(font or UIFONT, size or 30))
@@ -53,28 +51,25 @@ local SkinAnnouncement = Class(Widget, function(self, font, size)
 
     self.general_alpha = 1
 
-    local function ClickFunction()
-    	if self.skin_name == nil then
+    self.img_btn:SetOnClick(function()
+        if self.skin_name == nil then
             return
         end
-    	TheFrontEnd:PushScreen(SkinsItemPopUp(self.skin_name, self.user_name, self.user_colour))
-    	self:Hide()
-    end
-
-    self.img_btn:SetOnClick(ClickFunction)
+        TheFrontEnd:PushScreen(SkinsItemPopUp(self.skin_name, self.user_name, self.user_colour))
+        self:Hide()
+    end)
 
     -- Literally only used to identify skin announcements on the eventannouncer.lua
-    self.skin_announcement = true 
-
+    self.skin_announcement = true
 end)
 
-function SkinAnnouncement:OnUpdate(dt)  
+function SkinAnnouncement:OnUpdate(dt)
     self.lifetime = self.lifetime - dt
     if self.lifetime < 0 then
         local time_past_expiring = math.abs(self.lifetime)
         local alpha_fade = (self.fadetime - time_past_expiring) / self.fadetime
         self:SetGeneralAlpha(alpha_fade)
-        
+
         if (alpha_fade <= 0) then
             self:StopUpdating()
             self:Hide()
@@ -83,31 +78,31 @@ function SkinAnnouncement:OnUpdate(dt)
 end
 
 function SkinAnnouncement:OnGainFocus()
-	SkinAnnouncement._base.OnGainFocus(self)
-	self:SetGeneralSize(self.focus_size)
+    SkinAnnouncement._base.OnGainFocus(self)
+    self:SetGeneralSize(self.focus_size)
 end
 
 function SkinAnnouncement:OnLoseFocus()
-	SkinAnnouncement._base.OnLoseFocus(self)
-	self:SetGeneralSize(self.size)
+    SkinAnnouncement._base.OnLoseFocus(self)
+    self:SetGeneralSize(self.size)
 end
 
 -- Do we need those?
 function SkinAnnouncement:OnEnable()
-	self.img_btn:Enable()
-	self.skin_txt:Enable()
+    self.img_btn:Enable()
+    self.skin_txt:Enable()
 end
 
 function SkinAnnouncement:OnDisable()
-	self.img_btn:Disable()
-	self.skin_txt:Disable()
+    self.img_btn:Disable()
+    self.skin_txt:Disable()
 end
 
 function SkinAnnouncement:UpdateSkinTextPosition()
-	local w1, h1 = self.img_btn.text:GetRegionSize()
+    local w1, h1 = self.img_btn.text:GetRegionSize()
     local w2, h2 = self.skin_txt:GetRegionSize()
 
- 	self.skin_txt:SetPosition(w1/2 + w2/2, 0)
+    self.skin_txt:SetPosition(w1/2 + w2/2, 0)
 
     self.img_btn.image:SetPosition(w2/2, 0, 0)
     self.img_btn:ForceImageSize(w1 + w2, h1 + h2)
@@ -121,28 +116,28 @@ function SkinAnnouncement:UpdateSkinTextPosition()
 end
 
 function SkinAnnouncement:SetGeneralFont(font)
-	if not font then return end
+    if not font then return end
 
-	self.img_btn:SetFont(font)
-	self.skin_txt:SetFont(font)
+    self.img_btn:SetFont(font)
+    self.skin_txt:SetFont(font)
 
-	self:UpdateSkinTextPosition()
+    self:UpdateSkinTextPosition()
 end
 
 function SkinAnnouncement:SetGeneralSize(size)
-	if not size then return end
+    if not size then return end
 
-	self.img_btn:SetTextSize(size)
-	self.skin_txt:SetSize(size)
+    self.img_btn:SetTextSize(size)
+    self.skin_txt:SetSize(size)
 
-	self:UpdateSkinTextPosition()
+    self:UpdateSkinTextPosition()
 end
 
 function SkinAnnouncement:ClearText()
-	self.img_btn:SetText("")
-	self.skin_txt:SetString("")
+    self.img_btn:SetText("")
+    self.skin_txt:SetString("")
 
-	self:UpdateSkinTextPosition()
+    self:UpdateSkinTextPosition()
 end
 
 function SkinAnnouncement:GetText()
@@ -152,51 +147,42 @@ function SkinAnnouncement:GetText()
 end
 
 function SkinAnnouncement:SetSkinTextColour(r, g, b, a)
-
-	local skin_colour = {}
-	if type(r) == "number" then
-		skin_colour = {r,g,b,a}
-	else
-		skin_colour = r
-	end
-	
-	self.skin_txt:SetColour(skin_colour)
-	
+    self.skin_txt:SetColour(r, g, b, a)
 end
 
 function SkinAnnouncement:SetSkinText(text)
-	if not text then return end
-	self.skin_txt:SetString(text)
-	self:UpdateSkinTextPosition()
+    if not text then return end
+    self.skin_txt:SetString(text)
+    self:UpdateSkinTextPosition()
 end
 
 function SkinAnnouncement:SetMessageText(text)
-	if not text then return end
-	self.img_btn:SetText(text)
-	self:UpdateSkinTextPosition()
+    if not text then return end
+    self.img_btn:SetText(text)
+    self:UpdateSkinTextPosition()
 end
 
 function SkinAnnouncement:SetSkinAnnouncementInfo(user_name, user_colour, skin_name, alpha, lifetime, fadetime)
-	if not skin_name or not user_name then return end
-	
-	self.skin_name = skin_name
+    if not skin_name or not user_name then return end
+
+    self.skin_name = skin_name
     self.user_colour = user_colour
-	self.user_name = user_name
-	self:SetMessageText(string.format(STRINGS.UI.NOTIFICATION.NEW_SKIN_ANNOUNCEMENT, user_name))
+    self.user_name = user_name
+    self:SetMessageText(string.format(STRINGS.UI.NOTIFICATION.NEW_SKIN_ANNOUNCEMENT, user_name))
 
-	local skin_data
-	if CLOTHING[self.skin_name] ~= nil then
-		skin_data = CLOTHING[self.skin_name]
-	else
-		skin_data = Prefabs[skin_name]
-	end
+    local skin_data
+    if CLOTHING[self.skin_name] ~= nil then
+        skin_data = CLOTHING[self.skin_name]
+    else
+        skin_data = Prefabs[skin_name]
+    end
 
-	local rarity = "Common"
-	if skin_data.rarity ~= nil then
-		rarity = skin_data.rarity
-	end
+    local rarity = "Common"
+    if skin_data.rarity ~= nil then
+        rarity = skin_data.rarity
+    end
 
-	self:SetSkinTextColour(SKIN_RARITY_COLORS[rarity])
+    self:SetSkinTextColour(SKIN_RARITY_COLORS[rarity])
     self:SetSkinText(STRINGS.SKIN_NAMES[skin_name])
 
     self.lifetime = lifetime or 7
@@ -208,29 +194,29 @@ function SkinAnnouncement:SetSkinAnnouncementInfo(user_name, user_colour, skin_n
 end
 
 function SkinAnnouncement:CopyInfo(source)
-	if source == nil then
+    if source == nil then
         return
     end
-	self:SetSkinAnnouncementInfo(source.user_name, source.user_colour, source.skin_name, source.general_alpha, source.lifetime, source.fadetime)
+    self:SetSkinAnnouncementInfo(source.user_name, source.user_colour, source.skin_name, source.general_alpha, source.lifetime, source.fadetime)
 end
 
 function SkinAnnouncement:SetGeneralAlpha(alpha)
-	local skin_colour = self.skin_txt:GetColour()
-	skin_colour[4] = alpha
-	self:SetSkinTextColour(skin_colour)
+    local skin_colour = self.skin_txt:GetColour()
+    skin_colour[4] = alpha
+    self:SetSkinTextColour(skin_colour)
 
-	local msg_colour = self.img_btn.text:GetColour()
-	msg_colour[4] = alpha
-	self.img_btn.text:SetColour(msg_colour)
+    local msg_colour = self.img_btn.text:GetColour()
+    msg_colour[4] = alpha
+    self.img_btn.text:SetColour(msg_colour)
 
-	self.icon:SetTint(1,1,1, alpha)
+    self.icon:SetTint(1,1,1, alpha)
     self.icon.bg:SetTint(1,1,1, alpha)
 
     self.general_alpha = alpha
 end
 
 function SkinAnnouncement:GetTotalRegionSize()
-	local w1, h1 = self.img_btn.text:GetRegionSize()
+    local w1, h1 = self.img_btn.text:GetRegionSize()
     local w2, h2 = self.skin_txt:GetRegionSize()
 
     return w1 + w2, h1 + h2

@@ -547,6 +547,9 @@ local function beefalo()
     --bearded (from beard component) added to pristine state for optimization
     inst:AddTag("bearded")
 
+    --trader (from trader component) added to pristine state for optimization
+    inst:AddTag("trader")
+
     --herdmember (from herdmember component) added to pristine state for optimization
     inst:AddTag("herdmember")
 

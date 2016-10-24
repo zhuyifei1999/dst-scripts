@@ -139,7 +139,6 @@ return {
         "OBJECT EXCEEDS... CARRYING CAPACITY",
         "THIS IS... FLESHLING WORK...",
         "MENIAL LABOR... IS NOT FOR ROBOTS",
-        "...I HATE THIS",
         "I DO NOT... HAVE MUSCLES",
         "FLESHLINGS... WATCH YOUR SUPERIOR... AT WORK",
     },

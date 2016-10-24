@@ -134,6 +134,9 @@ local function fn()
     inst:AddTag("notraptrigger")
     inst:AddTag("abigail")
 
+    --trader (from trader component) added to pristine state for optimization
+    inst:AddTag("trader")
+
     MakeGhostPhysics(inst, 1, .5)
 
     inst.Light:SetIntensity(.6)

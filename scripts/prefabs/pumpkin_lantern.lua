@@ -141,6 +141,8 @@ local function fn()
     inst:AddComponent("perishable")
     inst.components.perishable:SetPerishTime(IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) and TUNING.PERISH_SUPERSLOW or TUNING.PERISH_MED)
     inst.components.perishable:SetOnPerishFn(onperish)
+    inst.components.perishable:StartPerishing()
+
     inst.components.inventoryitem:SetOnDroppedFn(OnDropped)
     inst.components.inventoryitem:SetOnPutInInventoryFn(OnPutInInventory)
 

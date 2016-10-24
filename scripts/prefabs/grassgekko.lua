@@ -2,11 +2,7 @@ local brain = require("brains/grassgekkobrain")
 
 local assets =
 {
-    Asset("ANIM", "anim/grassgecko_notail_build.zip"),
     Asset("ANIM", "anim/grassgecko.zip"),
-    --Asset("ANIM", "anim/grassgecko_disease.zip"),
-    --Asset("ANIM", "anim/grassgecko_notail_build_disease.zip"),
-    Asset("SOUND", "sound/catcoon.fsb"),
 }
 
 local prefabs =
@@ -16,7 +12,7 @@ local prefabs =
     "grassgekkoherd",
 }
 
-SetSharedLootTable( 'grassgekko',
+SetSharedLootTable('grassgekko',
 {
     {'plantmeat',        1.00},
     {'cutgrass',         0.75},
@@ -43,22 +39,6 @@ function GetRunAngle(inst, pt, hp)
     end
 
     return nil
-end
-
-local function OnAttacked(inst, data)
-    --[[
-    if data.attacker then
-
-        local pt = Point(inst.Transform:GetWorldPosition())
-        local hp = Point(data.attacker.Transform:GetWorldPosition())
-
-        local angle = GetRunAngle(inst, pt, hp)
-
-        if angle and not inst.sg or inst.sg:HasStateTag("canrotate") then
-            inst.Transform:SetRotation(angle)
-        end 
-    end
-    ]]
 end
 
 local function ontimerdone(inst, data)
@@ -88,6 +68,13 @@ local function WakeTest(inst)
         inst.nap_interval = math.random(TUNING.MIN_CATNAP_INTERVAL, TUNING.MAX_CATNAP_INTERVAL)
         inst.last_wake_time = GetTime()
         return true
+    end
+end
+
+local function OnLoad(inst, data)
+    if inst.components.timer:TimerExists("growTail") then
+        inst.hasTail = false
+        inst.AnimState:Hide("tail")
     end
 end
 
@@ -125,7 +112,6 @@ local function fn()
     inst:AddComponent("timer")
     inst.hasTail = true
     inst:ListenForEvent("timerdone", ontimerdone)
-    inst:ListenForEvent("attacked", OnAttacked)
 
     inst:AddComponent("inspectable")
 
@@ -134,7 +120,6 @@ local function fn()
 
     inst:AddComponent("combat")
     inst.components.combat:SetHurtSound("dontstarve/creatures/together/grass_gekko/hit")
-    --inst:ListenForEvent("attacked", OnAttacked)
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetChanceLootTable('grassgekko')
@@ -173,6 +158,8 @@ local function fn()
     inst:SetStateGraph("SGgrassgekko")
 
     MakeHauntablePanicAndIgnite(inst)
+
+    inst.OnLoad = OnLoad
 
     return inst
 end

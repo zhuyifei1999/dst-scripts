@@ -163,7 +163,7 @@ local function fn()
     inst.components.lootdropper:SetLoot(loot)
 
     inst:AddComponent("follower")
-    inst.components.follower.maxfollowtime = TUNING.PIG_LOYALTY_MAXTIME    
+    inst.components.follower.maxfollowtime = TUNING.PIG_LOYALTY_MAXTIME
 
     inst:AddComponent("scaler")
     inst.components.scaler.OnApplyScale = applyscale
@@ -191,9 +191,8 @@ local function fn()
     inst.components.trader:SetAcceptTest(ShouldAcceptItem)
     inst.components.trader.onaccept = OnGetItemFromPlayer
     inst.components.trader.onrefuse = OnRefuseItem
-    inst.components.trader:Enable()
     inst.components.trader.deleteitemonaccept = false
-    
+
     MakeHauntablePanic(inst)
     AddHauntableCustomReaction(inst, CustomOnHaunt, true, false, true)
 

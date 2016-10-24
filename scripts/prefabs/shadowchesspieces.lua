@@ -44,73 +44,6 @@ local PHYS_RADIUS =
 
 --------------------------------------------------------------------------
 
-local tracked = {}
-
-local function GetAllSCPInRangeSq(inst, rangesq)
-    local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = {}
-    for k, v in pairs(tracked) do
-        if k ~= inst and k:GetDistanceSqToPoint(x, y, z) < rangesq then
-            table.insert(ents, k)
-        end
-    end
-    return ents
-end
-
-local function GetAllSCPInRange(inst, range)
-    return GetAllSCPInRangeSq(inst, range * range)
-end
-
-local function IsNearSCP(inst, range)
-    local x, y, z = inst.Transform:GetWorldPosition()
-    local rangesq = range * range
-    for k, v in pairs(tracked) do
-        if k ~= inst and k:GetDistanceSqToPoint(x, y, z) < rangesq then
-            return true
-        end
-    end
-    return false
-end
-
-local function GetNearestSCP(inst)
-    local x, y, z = inst.Transform:GetWorldPosition()
-    local rangesq = math.huge
-    local closestEnt = nil
-    for k, v in pairs(tracked) do
-        if k ~= inst then
-            local distsq = k:GetDistanceSqToPoint(x, y, z)
-            if distsq < rangesq then
-                rangesq = distsq
-                closestEnt = k
-            end
-        end
-    end
-    return closestEnt, closestEnt ~= nil and rangesq or nil
-end
-
-local function GetDistanceSqToClosestSCP(inst)
-    local ent, distsq = GetNearestSCP(inst)
-    return distsq or math.huge
-end
-
-local function StopTracking(inst)
-    tracked[inst] = nil
-    inst.OnRemoveEntity = nil
-end
-
-local function StartTracking(inst)
-    tracked[inst] = true
-    inst:ListenForEvent("death", StopTracking)
-    inst.OnRemoveEntity = StopTracking
-    inst.GetAllSCPInRangeSq = GetAllSCPInRangeSq
-    inst.GetAllSCPInRange = GetAllSCPInRange
-    inst.IsNearSCP = IsNearSCP
-    inst.GetNearestSCP = GetNearestSCP
-    inst.GetDistanceSqToClosestSCP = GetDistanceSqToClosestSCP
-end
-
---------------------------------------------------------------------------
-
 local function lootsetfn(lootdropper)
     local loot = {}
 
@@ -140,11 +73,19 @@ SetSharedLootTable("shadow_chesspiece",
 --------------------------------------------------------------------------
 
 local function retargetfn(inst)
-    local rangesq = TUNING.SHADOWCREATURE_TARGET_DIST * TUNING.SHADOWCREATURE_TARGET_DIST
+    --retarget nearby players if current target is fleeing or not a player
+    local target = inst.components.combat.target
+    if target ~= nil then
+        local dist = TUNING[string.upper(inst.prefab)].RETARGET_DIST
+        if target:HasTag("player") and inst:IsNear(target, dist) or not inst:IsNearPlayer(dist, true) then
+            return
+        end
+        target = nil
+    end
+
     local x, y, z = inst.Transform:GetWorldPosition()
-    local players = FindPlayersInRangeSq(x, y, z, rangesq, true)
-    local target = nil
-    rangesq = math.huge
+    local players = FindPlayersInRange(x, y, z, TUNING.SHADOWCREATURE_TARGET_DIST, true)
+    local rangesq = math.huge
     for i, v in ipairs(players) do
         local distsq = v:GetDistanceSqToPoint(x, y, z)
         if distsq < rangesq and inst.components.combat:CanTarget(v) then
@@ -152,13 +93,7 @@ local function retargetfn(inst)
             target = v
         end
     end
-    return target
-end
-
-local function keeptargetfn(inst, target)
-    --retarget nearby players if current target is fleeing or not a player
-    local dist = TUNING[string.upper(inst.prefab)].RETARGET_DIST
-    return target:HasTag("player") and inst:IsNear(target, dist) or not inst:IsNearPlayer(dist, true)
+    return target, true
 end
 
 local function ShareTargetFn(dude)
@@ -432,8 +367,6 @@ local function commonfn(name, sixfaced)
         return inst
     end
 
-    StartTracking(inst)
-
     inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
 
     inst:AddComponent("health")
@@ -441,7 +374,6 @@ local function commonfn(name, sixfaced)
 
     inst:AddComponent("combat")
     inst.components.combat:SetRetargetFunction(3, retargetfn)
-    inst.components.combat:SetKeepTargetFunction(keeptargetfn)
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetChanceLootTable("shadow_chesspiece")

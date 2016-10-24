@@ -1794,7 +1794,7 @@ return
         "You just need to know how to lift!",
         "No sweat off my back! Ho ho!",
         "How invigorating!",
-        "Gets the blood pumping!",
+        "This gets the blood pumping!",
     },
 
     ANNOUNCE_CANFIX = "\nI do believe I can repair this.",

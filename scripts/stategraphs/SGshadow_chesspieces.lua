@@ -244,9 +244,12 @@ end
 local function LevelUpAlliesTimelineEvent(frame)
     return TimeEvent(frame * FRAMES, function(inst)
         -- trigger all near by shadow chess pieces to level up
-        local ents = inst:GetAllSCPInRange(LEVELUP_RADIUS)
+        local x, y, z = inst.Transform:GetWorldPosition()
+        local ents = TheSim:FindEntities(x, y, z, LEVELUP_RADIUS, { "shadowchesspiece" })
         for i, v in ipairs(ents) do
-            v:PushEvent("levelup", { source = inst })
+            if v ~= inst and not v.components.health:IsDead() then
+                v:PushEvent("levelup", { source = inst })
+            end
         end
     end)
 end
