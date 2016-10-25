@@ -779,7 +779,7 @@ local function DoActualRez(inst, source)
     -- inst.components.skinner:SetSkinMode("normal_skin")
 
     inst.AnimState:Hide("HAT")
-    inst.AnimState:Hide("HAT_HAIR")
+    inst.AnimState:Hide("HAIR_HAT")
     inst.AnimState:Show("HAIR_NOHAT")
     inst.AnimState:Show("HAIR")
     inst.AnimState:Show("HEAD")
@@ -1572,7 +1572,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 
         inst.AnimState:Hide("ARM_carry")
         inst.AnimState:Hide("HAT")
-        inst.AnimState:Hide("HAT_HAIR")
+        inst.AnimState:Hide("HAIR_HAT")
         inst.AnimState:Show("HAIR_NOHAT")
         inst.AnimState:Show("HAIR")
         inst.AnimState:Show("HEAD")

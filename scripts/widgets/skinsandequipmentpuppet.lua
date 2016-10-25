@@ -119,7 +119,7 @@ function SkinsAndEquipmentPuppet:SetHat(hat)
 	if hat ~= "" and not self.has_base then --only wear a hat when they don't have a base skin, show off the cool gear!
     	self.animstate:OverrideSymbol("swap_hat", hat, "swap_hat")
         self.animstate:Show("HAT")
-        self.animstate:Show("HAT_HAIR")
+        self.animstate:Show("HAIR_HAT")
         self.animstate:Hide("HAIR_NOHAT")
         self.animstate:Hide("HAIR")
 		self.animstate:Hide("HEAD")
