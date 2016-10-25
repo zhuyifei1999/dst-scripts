@@ -121,7 +121,7 @@ local function fn()
 
     MakeSnowCovered(inst)
     MakeHauntableWork(inst)
-
+    
     inst:ListenForEvent("onbuilt", onbuilt)
 
     inst.OnEntityWake = ChangeFace
