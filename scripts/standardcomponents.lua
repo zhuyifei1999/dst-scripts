@@ -123,7 +123,6 @@ function MakeSmallBurnable(inst, time, offset, structure, sym)
     inst.components.burnable:SetBurnTime(time or 10)
     inst.components.burnable:AddBurnFX(burnfx.generic, offset or Vector3(0, 0, 0), sym )
     inst.components.burnable:SetOnIgniteFn(DefaultBurnFn)
-    inst.components.burnable:SetOnBurntFn(DefaultBurntFn)
     inst.components.burnable:SetOnExtinguishFn(DefaultExtinguishFn)
     if structure then
         inst.components.burnable:SetOnBurntFn(DefaultBurntStructureFn)
@@ -139,7 +138,6 @@ function MakeMediumBurnable(inst, time, offset, structure)
     inst.components.burnable:SetBurnTime(time or 20)
     inst.components.burnable:AddBurnFX(burnfx.generic, offset or Vector3(0, 0, 0) )
     inst.components.burnable:SetOnIgniteFn(DefaultBurnFn)
-    inst.components.burnable:SetOnBurntFn(DefaultBurntFn)
     inst.components.burnable:SetOnExtinguishFn(DefaultExtinguishFn)
     if structure then
         inst.components.burnable:SetOnBurntFn(DefaultBurntStructureFn)
@@ -155,7 +153,6 @@ function MakeLargeBurnable(inst, time, offset, structure)
     inst.components.burnable:SetBurnTime(time or 30)
     inst.components.burnable:AddBurnFX(burnfx.generic, offset or Vector3(0, 0, 0) )
     inst.components.burnable:SetOnIgniteFn(DefaultBurnFn)
-    inst.components.burnable:SetOnBurntFn(DefaultBurntFn)
     inst.components.burnable:SetOnExtinguishFn(DefaultExtinguishFn)
     if structure then
         inst.components.burnable:SetOnBurntFn(DefaultBurntStructureFn)
@@ -166,7 +163,6 @@ function MakeLargeBurnable(inst, time, offset, structure)
 end
 
 function MakeSmallPropagator(inst)
-   
     inst:AddComponent("propagator")
     inst.components.propagator.acceptsheat = true
     inst.components.propagator:SetOnFlashPoint(DefaultIgniteFn)
@@ -174,13 +170,12 @@ function MakeSmallPropagator(inst)
     inst.components.propagator.decayrate = 0.5
     inst.components.propagator.propagaterange = 5
     inst.components.propagator.heatoutput = 5--8
-    
+
     inst.components.propagator.damagerange = 2
     inst.components.propagator.damages = true
 end
 
 function MakeMediumPropagator(inst)
-
     inst:AddComponent("propagator")
     inst.components.propagator.acceptsheat = true
     inst.components.propagator:SetOnFlashPoint(DefaultIgniteFn)
@@ -194,7 +189,6 @@ function MakeMediumPropagator(inst)
 end
 
 function MakeLargePropagator(inst)
-
     inst:AddComponent("propagator")
     inst.components.propagator.acceptsheat = true
     inst.components.propagator:SetOnFlashPoint(DefaultIgniteFn)

@@ -57,7 +57,7 @@ local function onhaunt(inst)
     return true
 end
 
-local function makestafflight(name, is_hot, anim, colour, idles)
+local function makestafflight(name, is_hot, anim, colour, idles, is_fx)
     local assets =
     {
         Asset("ANIM", "anim/"..anim..".zip"),
@@ -79,13 +79,11 @@ local function makestafflight(name, is_hot, anim, colour, idles)
         inst.entity:AddLight()
         inst.entity:AddNetwork()
 
-        MakeInventoryPhysics(inst)
-
         inst._ismastersim = TheWorld.ismastersim
         inst._pulseoffs = 0
         inst._pulsetime = net_float(inst.GUID, "_pulsetime", "pulsetimedirty")
 
-        inst:DoPeriodicTask(0.1, pulse_light)
+        inst:DoPeriodicTask(.1, pulse_light)
 
         inst.Light:SetColour(unpack(colour))
         inst.Light:Enable(false)
@@ -102,6 +100,19 @@ local function makestafflight(name, is_hot, anim, colour, idles)
         --HASHEATER (from heater component) added to pristine state for optimization
         inst:AddTag("HASHEATER")
 
+        if is_fx then
+            inst:AddTag("FX")
+
+            inst.Transform:SetScale(.92, .92, .92)
+
+            inst.AnimState:Hide("shadow")
+            inst.AnimState:SetFinalOffset(1)
+        else
+            MakeInventoryPhysics(inst)
+
+            inst.no_wet_prefix = true
+        end
+
         if is_hot then
             --cooker (from cooker component) added to pristine state for optimization
             inst:AddTag("cooker")
@@ -113,8 +124,6 @@ local function makestafflight(name, is_hot, anim, colour, idles)
             inst.SoundEmitter:PlaySound("dontstarve/common/staff_coldlight_LP", "staff_star_loop")
         end
 
-        inst.no_wet_prefix = true
-
         inst.entity:SetPristine()
 
         if not inst._ismastersim then
@@ -125,10 +134,10 @@ local function makestafflight(name, is_hot, anim, colour, idles)
         inst._pulsetime:set(inst:GetTimeAlive())
         inst._lastpulsesync = inst._pulsetime:value()
 
-        inst:AddComponent("inspectable")
-
         if is_hot then
-            inst:AddComponent("cooker")
+            if not is_fx then
+                inst:AddComponent("cooker")
+            end
 
             inst:AddComponent("propagator")
             inst.components.propagator.heatoutput = 15
@@ -144,18 +153,22 @@ local function makestafflight(name, is_hot, anim, colour, idles)
             inst.components.heater:SetThermics(false, true)
         end
 
-        inst.SoundEmitter:PlaySound("dontstarve/common/staff_star_create")
-
         inst:AddComponent("sanityaura")
         inst.components.sanityaura.aura = TUNING.SANITYAURA_SMALL
 
-        inst:AddComponent("hauntable")
-        inst.components.hauntable:SetHauntValue(TUNING.HAUNT_SMALL)
-        inst.components.hauntable:SetOnHauntFn(onhaunt)
+        if not is_fx then
+            inst:AddComponent("inspectable")
 
-        inst:AddComponent("timer")
-        inst.components.timer:StartTimer("extinguish", is_hot and TUNING.YELLOWSTAFF_STAR_DURATION or TUNING.OPALSTAFF_STAR_DURATION)
-        inst:ListenForEvent("timerdone", ontimer)
+            inst:AddComponent("hauntable")
+            inst.components.hauntable:SetHauntValue(TUNING.HAUNT_SMALL)
+            inst.components.hauntable:SetOnHauntFn(onhaunt)
+
+            inst:AddComponent("timer")
+            inst.components.timer:StartTimer("extinguish", is_hot and TUNING.YELLOWSTAFF_STAR_DURATION or TUNING.OPALSTAFF_STAR_DURATION)
+            inst:ListenForEvent("timerdone", ontimer)
+
+            inst.SoundEmitter:PlaySound("dontstarve/common/staff_star_create")
+        end
 
         if #idles > 1 then
             inst:ListenForEvent("animover", PlayRandomStarIdle)
@@ -167,5 +180,6 @@ local function makestafflight(name, is_hot, anim, colour, idles)
     return Prefab(name, fn, assets)
 end
 
-return makestafflight("stafflight", true, "star_hot", { 223 / 255, 208 / 255, 69 / 255 }, { "idle_loop" }),
-       makestafflight("staffcoldlight", false, "star_cold", { 64 / 255, 64 / 255, 208 / 255 }, { "idle_loop", "idle_loop2", "idle_loop3" })
+return makestafflight("stafflight", true, "star_hot", { 223 / 255, 208 / 255, 69 / 255 }, { "idle_loop" }, false),
+    makestafflight("staffcoldlight", false, "star_cold", { 64 / 255, 64 / 255, 208 / 255 }, { "idle_loop", "idle_loop2", "idle_loop3" }, false),
+    makestafflight("staffcoldlightfx", false, "star_cold", { 64 / 255, 64 / 255, 208 / 255 }, { "idle_loop", "idle_loop2", "idle_loop3" }, true)

@@ -189,7 +189,7 @@ local function lootsetfn(lootdropper)
 end
 
 local function onburnt(inst)
-    DefaultBurntFn(inst)
+    DefaultBurntStructureFn(inst)
     if inst.components.trader ~= nil then
         inst:RemoveComponent("trader")
     end

@@ -20,7 +20,7 @@ local function MakeHat(name)
             owner.AnimState:OverrideSymbol("swap_hat", build, "swap_hat")
         end
         owner.AnimState:Show("HAT")
-        owner.AnimState:Show("HAT_HAIR")
+        owner.AnimState:Show("HAIR_HAT")
         owner.AnimState:Hide("HAIR_NOHAT")
         owner.AnimState:Hide("HAIR")
 
@@ -42,7 +42,7 @@ local function MakeHat(name)
 
         owner.AnimState:ClearOverrideSymbol("swap_hat")
         owner.AnimState:Hide("HAT")
-        owner.AnimState:Hide("HAT_HAIR")
+        owner.AnimState:Hide("HAIR_HAT")
         owner.AnimState:Show("HAIR_NOHAT")
         owner.AnimState:Show("HAIR")
 
@@ -66,7 +66,7 @@ local function MakeHat(name)
         end
         
         owner.AnimState:Show("HAT")
-        owner.AnimState:Hide("HAT_HAIR")
+        owner.AnimState:Hide("HAIR_HAT")
         owner.AnimState:Show("HAIR_NOHAT")
         owner.AnimState:Show("HAIR")
         
@@ -292,7 +292,7 @@ local function MakeHat(name)
         owner.AnimState:ClearOverrideSymbol("swap_hat")
 
         owner.AnimState:Hide("HAT")
-        owner.AnimState:Hide("HAT_HAIR")
+        owner.AnimState:Hide("HAIR_HAT")
         owner.AnimState:Show("HAIR_NOHAT")
         owner.AnimState:Show("HAIR")
 
@@ -309,7 +309,7 @@ local function MakeHat(name)
 
         owner.AnimState:OverrideSymbol("swap_hat", fname, "swap_hat")
         owner.AnimState:Show("HAT")
-        owner.AnimState:Hide("HAT_HAIR")
+        owner.AnimState:Hide("HAIR_HAT")
         owner.AnimState:Show("HAIR_NOHAT")
         owner.AnimState:Show("HAIR")
 
@@ -718,7 +718,7 @@ local function MakeHat(name)
     local function onequipbush(inst, owner)
         owner.AnimState:OverrideSymbol("swap_hat", fname, "swap_hat")
         owner.AnimState:Show("HAT")
-        owner.AnimState:Show("HAT_HAIR")
+        owner.AnimState:Show("HAIR_HAT")
         owner.AnimState:Hide("HAIR_NOHAT")
         owner.AnimState:Hide("HAIR")
 
@@ -738,7 +738,7 @@ local function MakeHat(name)
         owner.AnimState:ClearOverrideSymbol("swap_hat")
 
         owner.AnimState:Hide("HAT")
-        owner.AnimState:Hide("HAT_HAIR")
+        owner.AnimState:Hide("HAIR_HAT")
         owner.AnimState:Show("HAIR_NOHAT")
         owner.AnimState:Show("HAIR")
 

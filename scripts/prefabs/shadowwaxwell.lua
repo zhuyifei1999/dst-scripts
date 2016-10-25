@@ -102,7 +102,7 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
             inst.AnimState:Hide("HAIR")
         else
             inst.AnimState:Hide("HAT")
-            inst.AnimState:Hide("HAT_HAIR")
+            inst.AnimState:Hide("HAIR_HAT")
         end
 
         inst:AddTag("scarytoprey")

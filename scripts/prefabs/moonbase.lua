@@ -12,6 +12,7 @@ local prefabs =
     "positronbeam_front",
     "positronbeam_back",
     "positronpulse",
+    "staffcoldlightfx",
 }
 
 local MIN_CHARGE_START_DELAY = 1
@@ -25,7 +26,9 @@ end
 local function StopLight(inst)
     inst._stoplighttask = nil
     inst.Light:Enable(false)
-    inst.AnimState:ClearBloomEffectHandle()
+    if inst._staffstar == nil then
+        inst.AnimState:ClearBloomEffectHandle()
+    end
 end
 
 local function StopFX(inst)
@@ -56,7 +59,9 @@ end
 local function StartLight(inst)
     inst._startlighttask = nil
     inst.Light:Enable(true)
-    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+    if inst._staffstar == nil then
+        inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+    end
 end
 
 local function StartFX(inst)
@@ -254,6 +259,26 @@ local function ItemTradeTest(inst, item)
     return true
 end
 
+local function ShowColdStar(inst)
+    if inst._staffstar == nil then
+        inst._staffstar = SpawnPrefab("staffcoldlightfx")
+        inst._staffstar.entity:SetParent(inst.entity)
+        if not inst.Light:IsEnabled() then
+            inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+        end
+    end
+end
+
+local function HideColdStar(inst)
+    if inst._staffstar ~= nil then
+        inst._staffstar:Remove()
+        inst._staffstar = nil
+        if not inst.Light:IsEnabled() then
+            inst.AnimState:ClearBloomEffectHandle()
+        end
+    end
+end
+
 --Not all staff prefabs match asset names!
 local STAFF_SYMBOLS =
 {
@@ -278,6 +303,12 @@ local function OnStaffGiven(inst, giver, item)
     inst.AnimState:OverrideSymbol("swap_staffs", "staffs", GetStaffSymbol(staffname))
     inst.SoundEmitter:PlaySound("dontstarve/common/together/moonbase/moonstaff_place")
 
+    if staffname == MORPHED_STAFF then
+        ShowColdStar(inst)
+    else
+        HideColdStar(inst)
+    end
+
     if type(item) == "table" then
         inst._staffuse = item.components.finiteuses ~= nil and item.components.finiteuses:GetUses() or nil
         item:Remove()
@@ -296,6 +327,8 @@ local function OnStaffTaken(inst, picker, loot)
 
     inst.AnimState:ClearOverrideSymbol("swap_staffs")
     inst.SoundEmitter:PlaySound("dontstarve/common/together/moonbase/moonstaff_place")
+
+    HideColdStar(inst)
 
     if inst._staffuse ~= nil then
         if loot ~= nil and loot.components.finiteuses ~= nil then
@@ -340,6 +373,8 @@ local function OnTimerDone(inst, data)
         inst.components.pickable.product = MORPHED_STAFF
         inst._staffuse = nil
         inst.AnimState:OverrideSymbol("swap_staffs", "staffs", GetStaffSymbol(MORPHED_STAFF))
+
+        ShowColdStar(inst)
 
         if inst._fxpulse ~= nil then
             inst._fxpulse:FinishFX()
