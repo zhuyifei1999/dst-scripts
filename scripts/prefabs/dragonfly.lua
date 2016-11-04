@@ -455,6 +455,8 @@ local function fn()
 
     inst.components.inspectable:RecordViews()
 
+    inst.components.locomotor:EnableGroundSpeedMultiplier(false)
+    inst.components.locomotor:SetTriggersCreep(false)
     inst.components.locomotor.pathcaps = { ignorewalls = true }
     inst.components.locomotor.walkspeed = TUNING.DRAGONFLY_SPEED
 

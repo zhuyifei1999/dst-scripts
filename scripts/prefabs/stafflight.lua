@@ -156,7 +156,9 @@ local function makestafflight(name, is_hot, anim, colour, idles, is_fx)
         inst:AddComponent("sanityaura")
         inst.components.sanityaura.aura = TUNING.SANITYAURA_SMALL
 
-        if not is_fx then
+        if is_fx then
+            inst.persists = false
+        else
             inst:AddComponent("inspectable")
 
             inst:AddComponent("hauntable")

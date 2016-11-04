@@ -57,6 +57,7 @@ AddIngredientValues({"berries_juicy"}, {fruit=.5}, true)
 AddIngredientValues({"durian"}, {fruit=1, monster=1}, true)
 
 AddIngredientValues({"honey", "honeycomb"}, {sweetener=1}, true)
+AddIngredientValues({"royal_jelly"}, {sweetener=3}, true)
 
 local veggies = {"carrot", "corn", "pumpkin", "eggplant", "cutlichen"}
 AddIngredientValues(veggies, {veggie=1}, true)

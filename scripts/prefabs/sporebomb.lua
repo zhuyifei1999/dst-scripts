@@ -71,7 +71,7 @@ local function OnDetached(inst)
     else
         x, y, z = inst.Transform:GetWorldPosition()
     end
-    
+
     local cloud = SpawnPrefab("sporecloud")
     cloud.Transform:SetPosition(x, 0, z)
     cloud:FadeInImmediately()

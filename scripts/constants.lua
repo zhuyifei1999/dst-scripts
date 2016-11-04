@@ -1,4 +1,5 @@
 require "util"
+local TechTree = require("techtree")
 
 PI = 3.14159
 DEGREES = PI/180
@@ -457,15 +458,7 @@ NUM_HALLOWEENCANDY = 11
 
 TECH =
 {
-	NONE =
-    {
-        SCIENCE = 0,
-        MAGIC = 0,
-        ANCIENT = 0,
-        SHADOW = 0,
-        CARTOGRAPHY = 0,
-        SCULPTING = 0,
-    },
+	NONE = TechTree.Create(),
 
     SCIENCE_ONE = { SCIENCE = 1 },
     SCIENCE_TWO = { SCIENCE = 2 },
@@ -485,7 +478,9 @@ TECH =
     SCULPTING_ONE = { SCULPTING = 1 },
     SCULPTING_TWO = { SCULPTING = 2 },
 
-	HALLOWED_NIGHTS = { SCIENCE = IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) and 0 or 10 },
+    ORPHANAGE_ONE = { ORPHANAGE = 1 },
+
+	HALLOWED_NIGHTS = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost ot 0
 	
     LOST = { MAGIC = 10, SCIENCE = 10, ANCIENT = 10 },
 }
@@ -668,6 +663,7 @@ RECIPETABS =
     ANCIENT =       { str = "ANCIENT",      sort = 10,  icon = "tab_crafting_table.tex",    crafting_station = true },
     CARTOGRAPHY =   { str = "CARTOGRAPHY",  sort = 10,  icon = "tab_cartography.tex",       crafting_station = true },
     SCULPTING =     { str = "SCULPTING",    sort = 10,  icon = "tab_sculpt.tex",            crafting_station = true },
+    ORPHANAGE =     { str = "ORPHANAGE",    sort = 10,  icon = "tab_orphanage.tex",         crafting_station = true },
 }
 
 CUSTOM_RECIPETABS =

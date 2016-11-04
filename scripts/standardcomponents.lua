@@ -298,6 +298,29 @@ function MakeCharacterPhysics(inst, mass, rad)
     phys:CollidesWith(COLLISION.GIANTS)
 end
 
+function MakeFlyingCharacterPhysics(inst, mass, rad)
+    local phys = inst.entity:AddPhysics()
+    phys:SetMass(mass)
+    phys:SetCapsule(rad, 1)
+    phys:SetFriction(0)
+    phys:SetDamping(5)
+    phys:SetCollisionGroup(COLLISION.FLYERS)
+    phys:ClearCollisionMask()
+    phys:CollidesWith(COLLISION.WORLD)
+    phys:CollidesWith(COLLISION.FLYERS)
+end
+
+function MakeTinyFlyingCharacterPhysics(inst, mass, rad)
+    local phys = inst.entity:AddPhysics()
+    phys:SetMass(mass)
+    phys:SetCapsule(rad, 1)
+    phys:SetFriction(0)
+    phys:SetDamping(5)
+    phys:SetCollisionGroup(COLLISION.FLYERS)
+    phys:ClearCollisionMask()
+    phys:CollidesWith(COLLISION.WORLD)
+end
+
 function MakeGiantCharacterPhysics(inst, mass, rad)
     local phys = inst.entity:AddPhysics()
     phys:SetMass(mass)

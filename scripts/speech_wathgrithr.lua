@@ -8,6 +8,7 @@ return {
         BUILD =
         {
             MOUNTED = "I must first dismount from my mighty steed.",
+            HASPET = "I can only command one beastie!",
         },
 		SHAVE =
 		{
@@ -48,6 +49,7 @@ return {
         },
         GIVE =
         {
+            GENERIC = "T'will not work.",
             DEAD = "They'll have better things in Valhalla.",
             SLEEPING = "Such sweet slumber... Maybe later.",
             BUSY = "I'll try once more when it's done.",
@@ -385,6 +387,7 @@ return {
             BROKEN = "Perhaps it crashed from the heavens.",
             STAFFED = "Prepare for glorious battle!",
             WRONGSTAFF = "This shall not please the gods.",
+            MOONSTAFF = "It feeds from the power of Mani!",
         },
         MOONDIAL = 
         {
@@ -664,7 +667,11 @@ return {
 		BEARGERVEST = "BEAR-SERKER!",
 		ICEPACK = "A backpack of the beast.",
 		BEARGER_FUR = "It fought bravely, but its hide is now forfeit.",
-		FURTUFT = "Fur from a large beastie.", 	
+		FURTUFT = "Fur from a large beastie.",
+        BEEQUEEN = "Your monarchy shall topple this day!",
+        BEEQUEENHIVE = "A land not of milk, but of honey.",
+        BEEQUEENHIVEGROWN = "A hive of winged warriors.",
+        BEEGUARD = "En guarde!", 	
 		BEE =
 		{
 			GENERIC = "Wee warriors! I don't know if I like them.",
@@ -907,6 +914,14 @@ return {
             HELD = "Freedom has been wrenched from thy grasp by mine own.",
         },
         CANARY_POISONED = "What plague has beseiged this innocent woodland creature?",
+       
+        CRITTERLAB = "Tis a peculiar boulder.",
+        CRITTER_GLOMLING = "A warrior's faithful companion!",
+        CRITTER_DRAGONLING = "By the unicorn! A dragon!",
+        CRITTER_LAMB = "I wouldst turn farmer for thee.",
+        CRITTER_PUPPY = "I shall defend this hound to the death.",
+        CRITTER_KITTEN = "She is a magnificent hunter!",
+
 		CROW =
 		{
 			GENERIC = "Raven friend!",
@@ -967,6 +982,7 @@ return {
 		},
 		LAVA_POND = "I shall not surrender to the fiery pits!",
 		LAVAE = "A fiery foe!",
+        LAVAE_COCOON = "The best allies are made in the heat of battle.",
 		LAVAE_PET = 
 		{
 			STARVING = "Its fires are dying out.",
@@ -1007,7 +1023,11 @@ return {
 		ENDTABLE = 
 		{
 			BURNT = "It was no challenge at all.",
-			GENERIC = "There is no beast beneath.",
+			GENERIC = "Tis a tribute to Freya's beauty.",
+            EMPTY = "There is no beast beneath.",
+            WILTED = "Their beauty fades.",
+            FRESHLIGHT = "The light burns bright.",
+            OLDLIGHT = "The light wanes.",
 		},
 		DECIDUOUSTREE = 
 		{
@@ -1237,6 +1257,9 @@ return {
 		MANDRAKE_COOKED = "Grilled rutabaga.",
 		MAPSCROLL = "Mayhaps the ink is invisible!",
 		MARBLE = "The warrior stone!",
+        MARBLEBEAN = "Fee fi fo fum!",
+        MARBLEBEAN_SAPLING = "How dost thou grow?",
+        MARBLESHRUB = "Tis a shrub of stone!",
 		MARBLEPILLAR = "Fit for a palace!",
 		MARBLETREE = "Even the winds cannot knock this tree down.",
 		MARSH_BUSH =
@@ -1480,6 +1503,8 @@ return {
         ROOK = "Chaaaarge!",
 		ROPE = "Strong enough to bind the sails of my longship.",
 		ROTTENEGG = "Ruined for eating, but primed for battle.",
+        ROYAL_JELLY = "To absorb the felled queen's power!",
+        JELLYBEAN = "The yield of an industrious candy farmer.",
         SADDLE_BASIC = "Now to find a faithful steed.",
         SADDLE_WAR = "I ride to victory or death!",
         SADDLE_RACE = "Oh to fly on the wings of Valkyrie!",
@@ -1773,6 +1798,10 @@ return {
 		WALL_WOOD_ITEM = "A mediocre fortification.",
 		WALL_MOONROCK = "Wholly impregnable, a worthy fortification!",
 		WALL_MOONROCK_ITEM = "Our fortress shall be impenetrable!",
+        FENCE = "Tis not my kind of fencing.",
+        FENCE_ITEM = "Not for fortification. Merely the farm.",
+        FENCE_GATE = "A tiny replica of Valhalla's gates.",
+        FENCE_GATE_ITEM = "Not for fortification. Merely the farm.",
 		WALRUS = "Those tusks could pierce even the finest armor.",
 		WALRUSHAT = "Highland filth!",
 		WALRUS_CAMP =

@@ -72,6 +72,7 @@ local function item_commonfn(bank, build, masterfn)
     inst.Light:Enable(true)
 
     inst:AddTag("lightbattery")
+    inst:AddTag("vasedecoration")
 
     inst.entity:SetPristine()
 
@@ -82,7 +83,7 @@ local function item_commonfn(bank, build, masterfn)
     inst:AddComponent("inspectable")
     inst:AddComponent("inventoryitem")
     inst:AddComponent("tradable")
-
+    inst:AddComponent("vasedecoration")
     inst:AddComponent("edible")
 
     inst:AddComponent("perishable")

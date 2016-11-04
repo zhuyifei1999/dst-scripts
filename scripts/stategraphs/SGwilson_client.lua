@@ -83,7 +83,7 @@ local actionhandlers =
             end
         end),
     ActionHandler(ACTIONS.FERTILIZE, "doshortaction"),
-	ActionHandler(ACTIONS.SMOTHER, "dolongaction"),
+    ActionHandler(ACTIONS.SMOTHER, "dolongaction"),
     ActionHandler(ACTIONS.MANUALEXTINGUISH, "dolongaction"),
     ActionHandler(ACTIONS.TRAVEL, "doshortaction"),
     ActionHandler(ACTIONS.LIGHT, "give"),
@@ -151,6 +151,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.GIVETOPLAYER, "give"),
     ActionHandler(ACTIONS.GIVEALLTOPLAYER, "give"),
     ActionHandler(ACTIONS.FEEDPLAYER, "give"),
+    ActionHandler(ACTIONS.DECORATEVASE, "dolongaction"),
     ActionHandler(ACTIONS.PLANT, "doshortaction"),
     ActionHandler(ACTIONS.HARVEST, "dolongaction"),
     ActionHandler(ACTIONS.PLAY, "play"),
@@ -191,6 +192,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.SADDLE, "doshortaction"),
     ActionHandler(ACTIONS.UNSADDLE, "unsaddle"),
     ActionHandler(ACTIONS.BRUSH, "dolongaction"),
+    ActionHandler(ACTIONS.ABANDON, "dolongaction"),
 }
 
 local events =

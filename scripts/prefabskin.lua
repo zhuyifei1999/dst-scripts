@@ -120,6 +120,19 @@ function torch_init_fn(inst, build_name)
 end
 
 --------------------------------------------------------------------------
+--[[ Spear skin functions ]]
+--------------------------------------------------------------------------
+
+function spear_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "swap_spear")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+
+--------------------------------------------------------------------------
 --[[ Hat skin functions ]]
 --------------------------------------------------------------------------
 

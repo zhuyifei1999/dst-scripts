@@ -74,14 +74,7 @@ function Combat:TargetIs(target)
 end
 
 function Combat:InCooldown()
-    if self.laststartattacktime then
-        local time_since_doattack = GetTime() - self.laststartattacktime
-        
-        if time_since_doattack < self.min_attack_period then
-            return true
-        end
-    end
-    return false
+    return self.laststartattacktime ~= nil and self.laststartattacktime + self.min_attack_period > GetTime()
 end
 
 function Combat:GetCooldown()

@@ -252,7 +252,7 @@ local ExampleLayout =
             layout_position = LAYOUT_POSITION.CENTER,
             
 			defs={
-				flower={IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) and "pumpkin_lantern" or "flower"},
+				welcomitem = IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) and {"pumpkin_lantern"} or {"flower"},
 			},
 
         }),

@@ -45,6 +45,16 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+        crittertraits = function(inst, doer, actions, right)
+            if right and
+                doer.replica.builder ~= nil and
+                doer.replica.builder:GetTechTrees().ORPHANAGE > 0 and
+                inst.replica.follower ~= nil and
+                inst.replica.follower:GetLeader() == doer then
+                table.insert(actions, ACTIONS.ABANDON)
+            end
+        end,
+
         crop = function(inst, doer, actions)
             if (inst:HasTag("readyforharvest") or inst:HasTag("withered")) and doer.replica.inventory ~= nil then
                 table.insert(actions, ACTIONS.HARVEST)
@@ -303,7 +313,8 @@ local COMPONENT_ACTIONS =
                             if inst:HasTag("edible_"..v2) then
                                 if target:HasTag("player") and (TheNet:GetPVPEnabled() or not (inst:HasTag("badfood") or inst:HasTag("spoiled"))) then
                                     table.insert(actions, ACTIONS.FEEDPLAYER)
-                                elseif target:HasTag("small_livestock") then
+                                elseif target:HasTag("small_livestock")
+                                    and (not target:HasTag("critter") or (target.replica.follower ~= nil and target.replica.follower:GetLeader() == doer)) then
                                     table.insert(actions, ACTIONS.FEED)
                                 end
                                 return
@@ -315,7 +326,8 @@ local COMPONENT_ACTIONS =
                     if inst:HasTag("edible_"..v) and target:HasTag(v.."_eater") then
                         if target:HasTag("player") and (TheNet:GetPVPEnabled() or not (inst:HasTag("badfood") or inst:HasTag("spoiled"))) then
                             table.insert(actions, ACTIONS.FEEDPLAYER)
-                        elseif target:HasTag("small_livestock") then
+                        elseif target:HasTag("small_livestock")
+                            and (not target:HasTag("critter") or (target.replica.follower ~= nil and target.replica.follower:GetLeader() == doer)) then
                             table.insert(actions, ACTIONS.FEED)
                         end
                         return
@@ -554,6 +566,16 @@ local COMPONENT_ACTIONS =
                     and target:HasTag(v.."_upgradeable") then
                     table.insert(actions, ACTIONS.UPGRADE)
                 end
+            end
+        end,
+
+        vasedecoration = function(inst, doer, target, actions)
+            if target:HasTag("vase") and
+                not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding() and
+                not (target.replica.inventoryitem ~= nil and target.replica.inventoryitem:IsGrandOwner(doer))) and
+                inst:HasTag("vasedecoration") then
+                
+                table.insert(actions, ACTIONS.DECORATEVASE)
             end
         end,
 

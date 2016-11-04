@@ -1,3 +1,7 @@
+local TechTree = require("techtree")
+
+--------------------------------------------------------------------------
+
 local Builder = Class(function(self, inst)
     self.inst = inst
 
@@ -124,12 +128,9 @@ end
 
 function Builder:SetTechTrees(techlevels)
     if self.classified ~= nil then
-        self.classified.sciencelevel:set(techlevels.SCIENCE or 0)
-        self.classified.magiclevel:set(techlevels.MAGIC or 0)
-        self.classified.ancientlevel:set(techlevels.ANCIENT or 0)
-        self.classified.shadowlevel:set(techlevels.SHADOW or 0)
-        self.classified.cartographylevel:set(techlevels.CARTOGRAPHY or 0)
-        self.classified.sculptinglevel:set(techlevels.SCULPTING or 0)
+        for i, v in ipairs(TechTree.AVAILABLE_TECH) do
+            self.classified[string.lower(v).."level"]:set(techlevels[v] or 0)
+        end
     end
 end
 
@@ -232,25 +233,24 @@ function Builder:KnowsRecipe(recipename)
         return self.inst.components.builder:KnowsRecipe(recipename)
     elseif self.classified ~= nil then
         local recipe = GetValidRecipe(recipename)
-        return recipe ~= nil
-            and (   (   recipe.level.SCIENCE <= self.classified.sciencebonus:value() and
-                        recipe.level.MAGIC <= self.classified.magicbonus:value() and
-                        recipe.level.ANCIENT <= self.classified.ancientbonus:value() and
-                        recipe.level.SHADOW <= self.classified.shadowbonus:value() and
-                        recipe.level.CARTOGRAPHY <= 0 and
-                        recipe.level.SCULPTING <= 0 or
-                        self.classified.isfreebuildmode:value()
-                    ) and (
-                        recipe.builder_tag == nil or
-                        self.inst:HasTag(recipe.builder_tag)
-                    ) or (
-                        self.classified.recipes[recipename] ~= nil and
-                        self.classified.recipes[recipename]:value()
-                    )
-                )
-    else
-        return false
+        if recipe ~= nil then
+            local has_tech = true
+            if not self.classified.isfreebuildmode:value() then
+                for i, v in ipairs(TechTree.AVAILABLE_TECH) do
+                    local bonus = self.classified[string.lower(v).."bonus"]
+                    if recipe.level[v] > (bonus ~= nil and bonus:value() or 0) then
+                        has_tech = false
+                        break
+                    end
+                end
+            end
+            return has_tech
+                and (recipe.builder_tag == nil or self.inst:HasTag(recipe.builder_tag))
+                or (self.classified.recipes[recipename] ~= nil and
+                    self.classified.recipes[recipename]:value())
+        end
     end
+    return false
 end
 
 function Builder:CanBuild(recipename)

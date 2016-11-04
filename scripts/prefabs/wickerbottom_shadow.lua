@@ -31,5 +31,7 @@ return CreatePrefabSkin("wickerbottom_shadow",
 	has_alternate_for_body = { "wickerbottom_shadow" },
 	has_alternate_for_skirt = { "wickerbottom_shadow" },
 
+	feet_cuff_size = { wickerbottom_formal = 3 },
+	
 	rarity = "Elegant",
 })

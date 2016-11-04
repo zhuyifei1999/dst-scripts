@@ -76,8 +76,8 @@ function SkinsPuppet:EmoteUpdate(dt)
 	end
 		
 	if self.animstate:AnimDone() then
-		self.animstate:PlayAnimation("idle", true)
         self.animstate:SetBank("corner_dude")
+		self.animstate:PlayAnimation("idle", true)
     end
 end
     
@@ -114,6 +114,14 @@ function SkinsPuppet:SetSkins(prefabname, base_skin, clothing_names, skip_change
 		self.time_to_change_emote = change_delay_time
 	else
 		self.queued_change_slot = ""
+	end
+	
+	if prefabname == "scarecrow" then
+        self.animstate:SetBank("scarecrow")
+		if self.scarecrow_pose == nil then
+			self.scarecrow_pose = string.format( "pose%s", tostring(math.random( 1, 7 )))
+		end
+		self.animstate:PlayAnimation( self.scarecrow_pose, true )
 	end
 	
 	self.last_skins.prefabname = prefabname

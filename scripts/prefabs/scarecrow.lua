@@ -4,6 +4,7 @@ local assets =
 {
     Asset("ANIM", "anim/scarecrow.zip"),
     Asset("ANIM", "anim/swap_scarecrow_face.zip"),
+    Asset("ANIM", "anim/shadow_skinchangefx.zip"),
 }
 
 local prefabs =
@@ -17,6 +18,19 @@ local numfaces =
     scary = 10,
     screaming = 3,
 }
+
+local function CancelDressup(inst)
+    if inst._dressuptask ~= nil then
+        inst._dressuptask:Cancel()
+        inst._dressuptask = nil
+        inst.components.wardrobe:Enable(true)
+        inst:RemoveTag("NOCLICK")
+    end
+end
+
+local function IsDressingUp(inst)
+    return inst._dressuptask ~= nil
+end
 
 local function ChangeFace(inst, prefix)
     if inst:HasTag("fire") then
@@ -42,7 +56,7 @@ local function onhammered(inst)
 end
 
 local function onhit(inst)
-    if not inst:HasTag("burnt") then
+    if not (IsDressingUp(inst) or inst:HasTag("burnt")) then
         inst.AnimState:PlayAnimation("hit")
         inst.AnimState:PushAnimation("idle", false)
         ChangeFace(inst, "hit")
@@ -57,12 +71,44 @@ end
 
 local function onburnt(inst)
     DefaultBurntStructureFn(inst)
+    CancelDressup(inst)
     inst:RemoveTag("scarecrow")
 end
 
 local function onignite(inst)
     DefaultBurnFn(inst)
     ChangeFace(inst)
+end
+
+local function ontransformend(inst)
+    inst._dressuptask = nil
+    inst.components.wardrobe:Enable(true)
+    inst:RemoveTag("NOCLICK")
+end
+
+local function ontransform(inst, cb)
+    inst._dressuptask = inst:DoTaskInTime(6 * FRAMES, ontransformend)
+    if cb ~= nil then
+        cb()
+    end
+end
+
+local function ondressup(inst, cb)
+    if not inst:HasTag("burnt") then
+        inst.AnimState:PlayAnimation("transform")
+        inst.AnimState:PushAnimation("idle", false)
+        inst.SoundEmitter:PlaySound("dontstarve/common/together/skin_change")
+        CancelDressup(inst)
+        inst._dressuptask = inst:DoTaskInTime(44 * FRAMES, ontransform, cb)
+        inst.components.wardrobe:Enable(false)
+        inst:AddTag("NOCLICK")
+    end
+end
+
+local function onopen(inst)
+    if not inst:HasTag("burnt") then
+        inst.SoundEmitter:PlaySound("dontstarve/common/wardrobe_open")
+    end
 end
 
 local function onsave(inst, data)
@@ -97,6 +143,10 @@ local function fn()
     inst.AnimState:SetBuild("scarecrow")
     inst.AnimState:PlayAnimation("idle")
 
+    inst.AnimState:OverrideSymbol("shadow_hands", "shadow_skinchangefx", "shadow_hands")
+    inst.AnimState:OverrideSymbol("shadow_ball", "shadow_skinchangefx", "shadow_ball")
+    inst.AnimState:OverrideSymbol("splode", "shadow_skinchangefx", "splode")
+
     MakeSnowCoveredPristine(inst)
 
     inst.entity:SetPristine()
@@ -114,6 +164,11 @@ local function fn()
     inst.components.workable:SetOnFinishCallback(onhammered)
     inst.components.workable:SetOnWorkCallback(onhit)
 
+    inst:AddComponent("wardrobe")
+    inst.components.wardrobe:SetCanBeDressed(true)
+    inst.components.wardrobe.ondressupfn = ondressup
+    inst.components.wardrobe.onopenfn = onopen
+
     MakeMediumBurnable(inst, nil, nil, true)
     inst.components.burnable.onburnt = onburnt
     inst.components.burnable:SetOnIgniteFn(onignite)
@@ -122,6 +177,10 @@ local function fn()
     MakeSnowCovered(inst)
     MakeHauntableWork(inst)
 
+	inst:AddComponent("skinner")
+    inst.components.skinner:SetupNonPlayerData()
+	--inst.UpdateScarecrowAvatarData = update_scarecrow_avatardata --Not yet setup
+	
     inst:ListenForEvent("onbuilt", onbuilt)
 
     inst.OnEntityWake = ChangeFace

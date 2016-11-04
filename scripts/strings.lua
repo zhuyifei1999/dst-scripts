@@ -127,6 +127,7 @@ STRINGS =
         GIVETOPLAYER = "Give",
         GIVEALLTOPLAYER = "Give All",
         FEEDPLAYER = "Feed",
+        DECORATEVASE = "Decorate",
         DROP = 
         {
             GENERIC = "Drop",
@@ -235,6 +236,8 @@ STRINGS =
             CLIMB = "Climb",
             ACCOMPLISH = "Wind",
             TOUCH = "Touch",
+            OPEN = "Open",
+            CLOSE = "Close",
         },
         JUMPIN =
         {
@@ -259,6 +262,11 @@ STRINGS =
         			EMERGENCY = "Emergency Mode",
         		  },
         USEITEM = "Use",
+        USEDOOR =
+        {
+			OPEN = "Open",
+			CLOSE = "Close",
+		},
         TAKEITEM = 
             {
                 GENERIC = "Take Item",
@@ -289,13 +297,12 @@ STRINGS =
         UNSADDLE = "Unsaddle",
         BRUSH = "Brush",
         DANCE = "Dance",
+        ABANDON = "Abandon",
     },
 
-	-- PC controls get hex ranges EE90xx to EE9Fxx
+    -- PC controls get hex ranges EE90xx to EE9Fxx
     LMB              = "\238\132\128",
     RMB              = "\238\132\129",
-    
-
 
     SELECT = "Select",
     DROPALL = "Drop All",
@@ -648,6 +655,9 @@ STRINGS =
         PINECONE_SAPLING = "Evergreen Sapling",
         TWIGGY_NUT = "Twiggy Tree Cone",
         TWIGGY_NUT_SAPLING = "Twiggy Sapling",
+        MARBLEBEAN = "Marble Bean",
+        MARBLEBEAN_SAPLING = "Marble Sprout",
+        MARBLESHRUB = "Marble Shrub",
         LUMPY_SAPLING = "Lumpy Sapling",
         SPIDEREGGSACK = "Spider Eggs",
         CHARCOAL = "Charcoal",
@@ -682,6 +692,10 @@ STRINGS =
         BEEHIVE = "Beehive",
         BEEBOX = "Bee Box",
         BEE = "Bee",
+        ROYAL_JELLY = "Royal Jelly",
+        JELLYBEAN1 = "Red Jellybeans", -- red
+        JELLYBEAN2 = "Yellow Jellybeans", -- yellow
+        JELLYBEAN3 = "Green Jellybeans", -- green
         DEVTOOL = "Dev Tool",
         KILLERBEE = "Killer Bee",
         WASPHIVE = "Killer Bee Hive",
@@ -834,6 +848,12 @@ STRINGS =
         WALL_RUINS = "Thulecite Wall",
         WALL_HAY = "Hay Wall",
         WALL_MOONROCK = "Moon Rock Wall",
+        
+        FENCE = "Wood Fence",
+        FENCE_ITEM = "Wood Fence",
+        FENCE_GATE = "Wood Gate",
+        FENCE_GATE_ITEM = "Wood Gate",
+        
         ANIMAL_TRACK = "Animal Track",
         DIRTPILE = "Suspicious Dirt Pile",
         KOALEFANT_SUMMER = "Koalefant",
@@ -1107,6 +1127,20 @@ STRINGS =
         STEELWOOL = "Steel Wool",
         PHLEGM = "Phlegm",
 
+        CRITTERLAB = "Rock Den",
+
+        CRITTER_LAMB = "Ewelet",
+        CRITTER_PUPPY = "Vargling",
+        CRITTER_KITTEN = "Kittycoon",
+        CRITTER_DRAGONLING = "Broodling",
+        CRITTER_GLOMLING = "Glomglom",
+
+        CRITTER_LAMB_BUILDER = "Ewelet",
+        CRITTER_PUPPY_BUILDER = "Vargling",
+        CRITTER_KITTEN_BUILDER = "Kittycoon",
+        CRITTER_DRAGONLING_BUILDER = "Broodling",
+        CRITTER_GLOMLING_BUILDER = "Glomglom",
+
         BEARGERVEST = "Hibearnation Vest",
         ARMORDRAGONFLY = "Scalemail",
         STAFF_TORNADO = "Weather Pain",
@@ -1120,7 +1154,7 @@ STRINGS =
 
         REVIVER = "Telltale Heart",
         SHADOWHEART = "Shadow Atrium",
-        
+
         SHADOWMETEOR = "Meteor",
 
         MOONROCKNUGGET = "Moon Rock",
@@ -1138,6 +1172,7 @@ STRINGS =
         LAVAE_EGG = "Lavae Egg",
         LAVAE_EGG_CRACKED = "Lavae Egg",
         LAVAE_TOOTH = "Lavae Tooth",
+        LAVAE_COCOON = "Chilled Lavae",
         LAVA_POND = "Magma",
         LAVA_POND_ROCK = "Rock",
 
@@ -1172,7 +1207,14 @@ STRINGS =
         MUSHROOMBOMB = "Boomshroom",
         MUSHROOMSPROUT = "Sporecap",
         SPORECLOUD = "Spore Cloud",
-        
+
+        BEEQUEEN = "Bee Queen",
+        BEEQUEENHIVE = "Honey Patch",
+        BEEQUEENHIVEGROWN = "Gigantic Beehive",
+        BEEGUARD = "Grumble Bee",
+        ROYAL_JELLY = "Royal Jelly",
+        JELLYBEAN = "Jellybeans",
+
         CHESSPIECE_PAWN = "Pawn Figure",
         CHESSPIECE_ROOK = "Rook Figure",
         CHESSPIECE_KNIGHT = "Knight Figure",
@@ -1194,7 +1236,7 @@ STRINGS =
         SHADOW_ROOK = "Shadow Rook",
         SHADOW_KNIGHT = "Shadow Knight",
         SHADOW_BISHOP = "Shadow Bishop",
-        
+
         HALLOWEENCANDY_1 = "Candy Apple",
         HALLOWEENCANDY_2 = "Candy Corn",
         HALLOWEENCANDY_3 = "Not-So-Candy Corn",
@@ -1220,10 +1262,9 @@ STRINGS =
         NW = "Northwest",
         SW = "Southwest",
     },
-    
-    RECIPE_DESC=
-    {
 
+    RECIPE_DESC =
+    {
         BOOK_BIRDS = "1000 species: habits, habitats, and calls.",
         BOOK_TENTACLES = "Let's learn about our subterranean friends!",
         BOOK_GARDENING = "On the care and feeding of plants.",
@@ -1272,6 +1313,7 @@ STRINGS =
         GOLDENSHOVEL = "Lasts longer, digs the same stuff.",
         GOLDENPITCHFORK = "Rearrange the whole world.",
         CUTSTONE = "Nicely squared rocks.",
+        MARBLEBEAN = "Grow a marble forest.",
         WINTEROMETER = "Measure ambient air temperature.",
         RAINOMETER = "Observe precipitation probabilities.",
         RESURRECTIONSTATUE = "Resurrect yourself via the power of meat.",
@@ -1344,6 +1386,8 @@ STRINGS =
         WALL_HAY_ITEM = "Hay wall segments. Not very sturdy.",
         WALL_MOONROCK_ITEM = "Walls for the lunar loony.",
         MOONROCKCRATER = "A rock for marking your territory.",
+        FENCE_ITEM = "Wood fence segments.",
+        FENCE_GATE_ITEM = "A gate for wood fencing.",
         TURF_WOODFLOOR = "High-quality laminate floorboards.",
         TURF_CHECKERFLOOR = "Nicely checkered marble tiles.",
         TURF_CARPETFLOOR = "Super soft. Smells like Beefalo.",
@@ -1446,6 +1490,12 @@ STRINGS =
         CHESSPIECE_FORMAL_BUILDER = "Behind every queen is a dapper king.",
         CHESSPIECE_HORNUCOPIA_BUILDER = "A sculpture for a starving artist.",
         CHESSPIECE_PIPE_BUILDER = "Put this on your wheel and sculpt it.",
+
+        CRITTER_GLOMLING_BUILDER = "Befriend a bouncy Glomglom.",
+        CRITTER_DRAGONLING_BUILDER = "Befriend a noble Broodling.",
+        CRITTER_KITTEN_BUILDER = "Befriend a clever Kittycoon.",
+        CRITTER_PUPPY_BUILDER = "Befriend a loyal Vargling.",
+        CRITTER_LAMB_BUILDER = "Befriend a fluffy Ewelet.",
 
         CANDYBAG = "Only carries Hallowed Nights goodies.",
     },
@@ -1732,7 +1782,8 @@ STRINGS =
         ANCIENT = "Ancient",
         SHADOW = "Shadow",
         CARTOGRAPHY = "Cartography",
-        SCULPTING = "Sculpt",
+        SCULPTING = "Sculptures",
+        ORPHANAGE = "Critters",
     },
 
     GREENAMULET_TOOLTIP = "Reduced Material Cost",
@@ -2023,6 +2074,7 @@ STRINGS.UI =
         {
             CARTOGRAPHY = "Scribe",
             SCULPTING = "Create",
+            ORPHANAGE = "Adopt",
         },
         NEEDSTUFF = "Find ingredients \nto craft!",
         BUILD = "Build",
@@ -2205,7 +2257,8 @@ STRINGS.UI =
         }
     },
 
-    INTENTION = {
+    INTENTION = 
+    {
         SOCIAL = "Social",
         COOPERATIVE = "Cooperative",
         COMPETITIVE = "Competitive",
@@ -2246,9 +2299,9 @@ STRINGS.UI =
         SIGNUPFAILTITLE="Something Went Wrong",
         SIGNUPFAIL="Looks like we had some trouble signing you up. Please try again later if you don't receive a confirmation email.",
         INVALIDEMAILTITLE= "Invalid Email", 
-        INVALIDEMAIL= "We aren't psychic! If you don't enter your email address, we won't be able to tell you about new stuff!",
+        INVALIDEMAIL= "If you don't enter your email address, we won't be able to tell you about new stuff!",
         INVALIDDATETITLE= "Invalid Date", 
-        INVALIDDATE= "We need your birthdate or ratings people might get mad at us for emailing you content not appropriate for your age.",
+        INVALIDDATE= "We need to know your birthdate in order to send age appropriate updates!",
         OK = "Ok",
         SUBSCRIBE = "Subscribe",
         CANCEL = "Cancel",
@@ -2361,7 +2414,7 @@ STRINGS.UI =
         NEWWORLDDESC = "This will erase your current world and any saved games in it. Continue?",
         RESETGAMEDESC = "This will reset your current world. Continue?",
         NEWGAMEDESC = "This will erase your current save. Continue?",
-        ADVGAMEDESC = "NOTE: This mode is still under development.\n\nFor experienced players only!\n\nYou've decided to bring the fight to Maxwell.\nCan you survive the increasingly harsh conditions he's created for you, and beat him at his own game?",
+        ADVGAMEDESC = "NOTE: This mode is still under development.\n\nFor experienced players only!\n\nYou've decided to bring the fight to Maxwell.\nCan you survive the increasingly harsh conditions he's created, and beat him at his own game?",
         NEWGAME = "Start a new game!",
         NEWGO = "Let's Go!",
         ASKQUIT = "Do you really want to quit?",
@@ -2392,8 +2445,8 @@ STRINGS.UI =
         PLAY_ON_STEAM = "PLAY ON STEAM TEXT",
         PLAY_ON_STEAM_DETAIL = "Mods! And Stuff. It is better.",
         LATER = "Not Now",
-        ADJUST_DISPLAY_HEADER = "Adjust Display Area.",
-        ADJUST_DISPLAY_TEXT = "Parts of the game may appear outside the edges of your screen. Do you want to check your display area now? If not, you can do this later in the Settings menu.",
+        ADJUST_DISPLAY_HEADER = "Adjust Display Area",
+        ADJUST_DISPLAY_TEXT = "Parts of the game may be cut off by the edges of your screen. Do you want to check your display area now? If not, you can do this later in Settings.",
 
         SCREECHER_DIALOG_TITLE = "Restart Required",
         SCREECHER_DIALOG_TEXT = "The Screecher mod requires the game to be restarted.",
@@ -2402,7 +2455,7 @@ STRINGS.UI =
         SCREECHER_NACL_OKAY = "Learn More",
 
         CANT_LOAD_TITLE = "Load Failed",
-        CANT_LOAD_ROG = "Reign of Giants is not installed. Unable to load",
+        CANT_LOAD_ROG = "Reign of Giants is not installed. Unable to load.",
 
         CONSOLE_EDITION_TEXT = "Console Edition",
 
@@ -2417,7 +2470,7 @@ STRINGS.UI =
         CANCELOFFLINE = "Cancel",
 
         VERSION_OUT_OF_DATE_TITLE = "Version Out of Date",
-        VERSION_OUT_OF_DATE_BODY = "Your game looks like it's on an old version. We recommend that you update to the latest version.",
+        VERSION_OUT_OF_DATE_BODY = "Your game looks like it's running an old version. We recommend that you update to the latest version.",
         VERSION_OUT_OF_DATE_PLAY = "Play Anyway",
         VERSION_OUT_OF_DATE_INSTRUCTIONS = "Instructions",
         VERSION_OUT_OF_DATE_CANCEL = "Cancel",
@@ -2505,7 +2558,7 @@ STRINGS.UI =
         START_AFK = "went away for a bit.",
         STOP_AFK = "has returned from their relaxing time away.",
         AFK_TITLE = "Taking A Breather",
-        AFK_BODY = "I get it. It's tough out there. Really. It is. You definitely shouldn't be embarrassed about this. You baby. Whenever you're ready to get back to actually playing the darn game, click below.",
+        AFK_BODY = "Make sure to stretch your legs! The deathly wilderness will still be here when you get back.",
         AFK_OK = "Return",
         ACTIVATE_RESURRECTION = "Activate Meat Effigy",
         INSPECT_SELF = "Inspect Self",
@@ -2672,7 +2725,8 @@ STRINGS.UI =
         RECEIVED = "You Received",
         ENABLED_TOAST_TOOLTIP = "Open",
         DISABLED_TOAST_TOOLTIP = "This requires more science!",
-        THANKS_POPUP_SECONDTITLE = {
+        THANKS_POPUP_SECONDTITLE = 
+        {
             EARLY_ACCESS = "Early\nAccess",
         },
     },
@@ -2690,9 +2744,9 @@ STRINGS.UI =
         BODY =
         {   
             DEFAULT = "You have received an alert. Don't let this happen again.",
-            SERVER_ERROR_BANNED_GAME =      "Your server will not be joinable until the name or description has been changed.  Repeated violations will result in a permanent ban.",
-            SERVER_ERROR_BANNED_GAME_NAME = "Your server will not be joinable until the name has been changed.  Repeated violations will result in a permanent ban.",
-            SERVER_ERROR_BANNED_GAME_DESC = "Your server will not be joinable until the description has been changed.  Repeated violations will result in a permanent ban.",
+            SERVER_ERROR_BANNED_GAME =      "Your server will not be joinable until the name or description has been changed. Repeated violations will result in a permanent ban.",
+            SERVER_ERROR_BANNED_GAME_NAME = "Your server will not be joinable until the name has been changed. Repeated violations will result in a permanent ban.",
+            SERVER_ERROR_BANNED_GAME_DESC = "Your server will not be joinable until the description has been changed. Repeated violations will result in a permanent ban.",
             DIRECT_JOIN_FAILED	          = "Something went wrong while trying to direct join a server.",
         },
         OK = "OK",
@@ -2704,10 +2758,10 @@ STRINGS.UI =
     	SUBMIT = "Submit",
     	CANCEL = "Cancel",
     	ACCEPTED = "Success: Code Accepted!",
-    	INVALID_CODE = "This code doesn't look right. Are you sure you entered it correctly?",
-    	ALREADY_REDEEMED = "Somebody has already redeemed this code. Maybe it was you?",
+    	INVALID_CODE = "That code wasn't quite right. Please try again.",
+    	ALREADY_REDEEMED = "This code has already been redeemed. Maybe by you?",
     	FAILED_TO_CONTACT = "Sorry, it looks like the server's not answering right now. Please try again later.",
-    	LEGALESE = "Delivery time variable due to temporal portal anomalies. Wilson is not responsible for emotional injuries caused by waiting. Gifts may result in bragging, unexpected delight, and/or enhanced gameplay experiences.",
+    	LEGALESE = "Delivery time may vary due to temporal portal anomalies. Wilson is not responsible for emotional injuries caused by waiting. Gifts may result in bragging, unexpected delight, and/or enhanced gameplay experiences.",
 	},
 
     NETWORKDISCONNECT =
@@ -2742,7 +2796,7 @@ STRINGS.UI =
             VERSION_HANDSHAKE_FAILED    = "Version Mismatch",
             ID_INCOMPATIBLE_PROTOCOL_VERSION = "Version Mismatch",
             ID_DST_INCOMPATIBLE_PROTOCOL_VERSION = "Version Mismatch",
-            FORCE_DISCONNECTION         = "Force Disconnection",
+            FORCE_DISCONNECTION = "Force Disconnection",
             INVALID_GAME_SESSION_TOKEN = "Could Not Connect",
             INVALID_CLIENT_TOKEN = "Invalid Client Token", 
             ID_DST_GAME_SESSION_AUTH_FAILED = "Authentication Failed",
@@ -2756,59 +2810,60 @@ STRINGS.UI =
             SERVER_MODS_WORKSHOP_FAILURE = "Disconnected Due To Missing Mods",
             SERVER_MODS_WORKSHOP_ACCESS_DENIED = "Disconnected Due To Missing Mods",
             ID_DST_SLOT_RESERVATION = "Slot Reserved",
-            ID_DST_DESTINATION_SERVER_NOT_AVAILABLE = "Server not available",            ID_DST_SERVER_IS_CLAN_ONLY = "Private Group",
-            ID_DST_SERVER_IS_CLAN_ONLY = "Not a member of the server's clan.",
-            ID_DST_SERVER_IS_LAN_ONLY = "Server only allows local connections.",
+            ID_DST_DESTINATION_SERVER_NOT_AVAILABLE = "Server not available",
+            ID_DST_SERVER_IS_CLAN_ONLY = "Private Group",
+            ID_DST_SERVER_IS_CLAN_ONLY = "Not a member of the server's clan",
+            ID_DST_SERVER_IS_LAN_ONLY = "Local Connection Server Only",
             ID_DST_DEDICATED_SERVER_STARTUP_FAILED = "Dedicated Server Failed To Start",
         },
         BODY =
         {   
-            DEFAULT = "You have been disconnected. We're not sure exactly why... Oh well!",
-            ID_NO_FREE_INCOMING_CONNECTIONS = "The server is full. Try again later once one of these miscreants has been consumed by the gaping maw of this game.",
-            ID_DST_NO_FREE_PLAYER_SLOTS = "The server is full. Try again later once one of these miscreants has been consumed by the gaping maw of this game.",
-            ID_CONNECTION_ATTEMPT_FAILED = "The server is not responding. If only yelling louder would help...",
-            ID_DST_DESTINATION_CONNECTION_ATTEMPT_FAILED = "The destination server is not responding. That's not very polite, is it?",
-            ID_INVALID_PASSWORD = "The password you entered was incorrect.\nAre you sure you're welcome in there?",
-            ID_CONNECTION_LOST = "You have lost connection to the server. Maybe it's for the best, you know? Then again, I'm just a dialog box--who am I to say?",
-            ID_DISCONNECTION_NOTIFICATION = "You have been disconnected from the server. Bye bye!",
-            ID_ALREADY_CONNECTED = "You are already connected to the server. Maybe share some of that cloning science with the lab, OK?",
-            ID_DST_LOGGED_IN_SOMEWHERE_ELSE = "Someone has just logged into this server using your account. We can't have clones running around--you'll have to go.",
-            ID_CONNECTION_BANNED = "You have been banned from this server. I guess that's that.",
-            ID_DST_USER_BANNED   = "You have been banned from this server. I guess that's that.",
-            ID_DST_USER_KICKED = "You have been kicked from this server. Well, you'll probably have more fun elsewhere anyways.",
-            ID_DST_IDLE_TIMEOUT = "You have lost connection to the server. Maybe it's for the best, you know? Then again, I'm just a dialog box--who am I to say?",
-            ID_DST_INCOMING_CONNECTIONS_DISABLED = "The server is not accepting new connections... but only temporarily.  Please wait a moment before trying again.",
+            DEFAULT = "You have been disconnected. We're not sure why... Sorry!",
+            ID_NO_FREE_INCOMING_CONNECTIONS = "The server is full.",
+            ID_DST_NO_FREE_PLAYER_SLOTS = "The server is full.",
+            ID_CONNECTION_ATTEMPT_FAILED = "The server is not responding. Please try again.",
+            ID_DST_DESTINATION_CONNECTION_ATTEMPT_FAILED = "The destination server is not responding. Please try again.",
+            ID_INVALID_PASSWORD = "Whoops! The password you entered was incorrect.",
+            ID_CONNECTION_LOST = "You have lost connection to the server.",
+            ID_DISCONNECTION_NOTIFICATION = "You have been disconnected from the server.",
+            ID_ALREADY_CONNECTED = "You are already connected to this server.",
+            ID_DST_LOGGED_IN_SOMEWHERE_ELSE = "This account has been logged in from another location.",
+            ID_CONNECTION_BANNED = "You have been banned from this server.",
+            ID_DST_USER_BANNED   = "You have been banned from this server.",
+            ID_DST_USER_KICKED = "You have been kicked from this server.",
+            ID_DST_IDLE_TIMEOUT = "You have lost connection to the server.",
+            ID_DST_INCOMING_CONNECTIONS_DISABLED = "The server is not accepting new connections temporarily. Please wait a moment and try again.",
             FAILED_TO_AUTOJOIN_LAN = "Unable to join a LAN server.\nAre you sure it exists?",
-            ID_DST_INITIALIZATION_FAILED = "Networking did not initialize properly. Don't get discouraged! Give it another whirl, yeah?",
-            ID_NAT_PUNCHTHROUGH_FAILED = "Unable to connect to the server. Look, I'll be honest. I'm pretty sure our programmers are actual wizards. I just write these things.",
-            ID_NAT_TARGET_NOT_CONNECTED = "Unable to connect to the server. Look, I'll be honest. I'm pretty sure our programmers are actual wizards. I just write these things.",
-            ID_NAT_TARGET_UNRESPONSIVE = "Unable to connect to the server. Look, I'll be honest. I'm pretty sure our programmers are actual wizards. I just write these things.",
-            ID_NAT_CONNECTION_TO_TARGET_LOST = "Unable to connect to the server. Look, I'll be honest. I'm pretty sure our programmers are actual wizards. I just write these things.",
-            VERSION_MISMATCH_OLD_SERVER = "The server is on an older version than you. Be a little patient and hopefully it'll catch up soon.",
-            VERSION_MISMATCH_OLD_CLIENT = "The server is on a newer version than you. Well, what are you doing just sitting there? Go and get the new version!",
-            VERSION_MISMATCH_PUBLIC_BETA = "The server is running a public beta world.\nWant to experience new content while its hot?\nYou can join too!",
-            VERSION_MISMATCH_ARNBETA = "The server is running the A New Reign Beta version.\nWant to experience new content while its hot?\nYou can join too!",
-            VERSION_HANDSHAKE_FAILED    = "The server is on a different version than you. Why can't we all just get along?",
-            ID_INCOMPATIBLE_PROTOCOL_VERSION = "The server has a different version than you do. No use crying over split versions! Just make sure everything's on the latest version.",
-            ID_DST_INCOMPATIBLE_PROTOCOL_VERSION = "The server has a different version than you do. No use crying over split versions! Just make sure everything's on the latest version.",
-            FORCE_DISCONNECTION         = "The connection has been forcibly closed by the engine. Vrooom vroom.",
-            E_BANNED = "Your account has been banned for violating the terms of use. This is no laughing matter.",
+            ID_DST_INITIALIZATION_FAILED = "Networking did not initialize properly. Please try again.",
+            ID_NAT_PUNCHTHROUGH_FAILED = "Unable to connect to the server.",
+            ID_NAT_TARGET_NOT_CONNECTED = "Unable to connect to the server.",
+            ID_NAT_TARGET_UNRESPONSIVE = "Unable to connect to the server.",
+            ID_NAT_CONNECTION_TO_TARGET_LOST = "Unable to connect to the server.",
+            VERSION_MISMATCH_OLD_SERVER = "This server is on an older version than you and cannot connect.",
+            VERSION_MISMATCH_OLD_CLIENT = "This server is on a newer version than you. Please download the latest update to connect.",
+            VERSION_MISMATCH_PUBLIC_BETA = "The server is running a public beta world. You'll need to opt into the beta to play on this server.",
+            VERSION_MISMATCH_ARNBETA = "The server is running the A New Reign Beta version. You'll need to opt into the beta to play on this server.",
+            VERSION_HANDSHAKE_FAILED    = "The server is on a different version than you. Please check that your game version is up-to-date.",
+            ID_INCOMPATIBLE_PROTOCOL_VERSION = "The server has a different version than you do. Please check that your game version is up-to-date.",
+            ID_DST_INCOMPATIBLE_PROTOCOL_VERSION = "The server has a different version than you do. Please check that your game version is up-to-date.",
+            FORCE_DISCONNECTION         = "The connection has been forcibly closed by the engine.",
+            E_BANNED = "Your account has been banned for violating the terms of use.",
             E_UPGRADE = "A new version is available. Please update Don't Starve Together.",
-            INVALID_CLIENT_TOKEN = "Hmmm, the token error. If this keeps happening, let us know in the forums. In the meantime, try again and it just might work.",
-            INVALID_GAME_SESSION_TOKEN = "Unable to reach the Klei server. That thing is sort of the gatekeeper to this whole \"online game\" business. Try again?",
-            ID_DST_GAME_SESSION_AUTH_FAILED = "Something fishy is going on... either we couldn't reach the Klei server or you're not who you say you are.",
-            ID_DST_USER_CONNECTION_FAILED = "We tried really hard to get you connected, but something went awry.",
-            ID_DST_FRIENDS_ONLY_SERVER = "Attempted to join a 'friends only' server, but you're not friends with the host. Friendship is not a transitive property.",
+            INVALID_CLIENT_TOKEN = "A token error occurred. Please try again.",
+            INVALID_GAME_SESSION_TOKEN = "Unable to reach the Klei server. Please try again.",
+            ID_DST_GAME_SESSION_AUTH_FAILED = "Authentication failed. Please try again.",
+            ID_DST_USER_CONNECTION_FAILED = "Something went awry while connecting. Please try again.",
+            ID_DST_FRIENDS_ONLY_SERVER = "Attempted to join a \"friends only\" server, but you're not friends with the host.",
             APP_OWNERSHIP_CHECK_FAILED = "Steam says you don't own the game. But you do... right?",
-            SERVER_MODS_NOT_ON_WORKSHOP = "You are missing mods. The mod required isn't on the Workshop. You will need to manually download mods that are not on the Workshop.",
-            SERVER_MODS_WORKSHOP_VERSION_MISMATCH = "The server is running mods with an old version. The server owner must update the mods so that new players can join.",
-            SERVER_MODS_WORKSHOP_FAILURE = "You failed to download the required mods from the Steam Workshop. Please try again.",
-            SERVER_MODS_WORKSHOP_ACCESS_DENIED = "You failed to download the required mods from the Steam Workshop because one or more are not visible to you.",
-            ID_DST_SLOT_RESERVATION = "Unable to join the server. The only unused slots are reserved. Try again later once one of these miscreants has been consumed by the gaping maw of this game.",
-		    ID_DST_SERVER_IS_CLAN_ONLY = "You have to be part of this server's steam group to connect to it. You could try visiting their group page and asking nicely to join?",
-            ID_DST_SERVER_IS_LAN_ONLY = "This server only allows joining from the same local network. You could run a really long cable from your computer... or the owner could change their server settings.",
-            ID_DST_DESTINATION_SERVER_NOT_AVAILABLE = "The server you were playing on is currently unavailable. Please try again later.",
-            ID_DST_DEDICATED_SERVER_STARTUP_FAILED = "There was some kind of trouble starting up the server. How odd.",
+            SERVER_MODS_NOT_ON_WORKSHOP = "This server requires mods that are not available on the Steam Workshop. You will need to manually download the missing mods.",
+            SERVER_MODS_WORKSHOP_VERSION_MISMATCH = "The server is running mods with an old version. The server owner must update the mods for new players to join.",
+            SERVER_MODS_WORKSHOP_FAILURE = "Download of the required mods from the Steam Workshop failed. Please try again.",
+            SERVER_MODS_WORKSHOP_ACCESS_DENIED = "Download of the required mods from the Steam Workshop failed because one or more mods is not visible to you.",
+            ID_DST_SLOT_RESERVATION = "Attempt to join server failed because remaining player slots are reserved. Please try again once a slot frees up.",
+		    ID_DST_SERVER_IS_CLAN_ONLY = "You must be a member of this server's Steam Group to connect.",
+            ID_DST_SERVER_IS_LAN_ONLY = "This server only allows players from their same local network.",
+            ID_DST_DESTINATION_SERVER_NOT_AVAILABLE = "The server you were playing on is unavailable. Please try again later.",
+            ID_DST_DEDICATED_SERVER_STARTUP_FAILED = "There was some sort of trouble starting the server. Please try again.",
 		},
 		OK = "OK",
     },
@@ -2817,7 +2872,7 @@ STRINGS.UI =
     {
         TITLE = "Paused",
         DST_TITLE = "Not Paused.",
-        DST_SUBTITLE = "Seriously. It's Not.",
+        DST_SUBTITLE = "(Seriously! It's not.)",
         SAVEANDQUITTITLE = "Save and return to main menu?",
         SAVEANDQUITBODY = "Don't worry. We'll wait here for you.",
         SAVEANDQUITYES = "I said quit!",
@@ -2871,7 +2926,7 @@ STRINGS.UI =
         KICKCONFIRM_TITLE = "Kick",
         KICKCONFIRM_BODY = "Are you sure you want to kick",
         BANCONFIRM_TITLE = "Ban",
-        BANCONFIRM_BODY = "Are you sure you want to kick and ban",
+        BANCONFIRM_BODY = "Are you sure you want to ban and kick",
         OK = "Do it!",
         CANCEL = "Cancel",
         MODSLISTPRE = "Mods:",
@@ -2945,69 +3000,81 @@ STRINGS.UI =
         BADTARGETFMT = "You can't run '%s' on %s.",
         NOTALLOWEDFMT = "You don't have permission to run '%s'.",
         MISSINGPARAMSFMT = "Missing parameters! Type /help %s for more info.",
-        BADUSERFMT = "No one on the server goes by '%s'. Maybe try running this from the scoreboard?",
+        BADUSERFMT = "There is no one on the server by the name of '%s'. Open the scoreboard to view all current players.",
     },
 
     BUILTINCOMMANDS =
     {
-        EMOTES = {
+        EMOTES = 
+        {
             PRETTYNAMEFMT = "%s emote",
             DESC = "Perform an emote!",
         },
-        HELP = {
+        HELP = 
+        {
             PRETTYNAME = "Command Help",
             DESC = "Get more info on commands.",
             OVERVIEW = "Type '/help commandname' for more info on a command.",
             AVAILABLE = "Available commands:",
             NOTFOUND = "Couldn't find a command called '%s'",
         },
-        EMOTE = {
+        EMOTE = 
+        {
             PRETTYNAME = "Emote",
             DESC = "Express your feelings!",
         },
-        BUG = {
+        BUG = 
+        {
             PRETTYNAME = "Report Bug",
             DESC = "Run this to report a problem with the game!",
         },
-        RESCUE = {
+        RESCUE = 
+        {
             PRETTYNAME = "Rescue Me!",
             DESC = "If you ever find yourself stuck in the ocean, /rescue will put you back on land.",
         },
-        KICK = {
+        KICK = 
+        {
             PRETTYNAME = "Kick",
             DESC = "Boot someone off the server.",
             VOTETITLEFMT = "Should we kick %s?",
             VOTENAMEFMT = "vote to kick %s",
         },
-        BAN = {
+        BAN = 
+        {
             PRETTYNAME = "Ban",
             DESC = "Boot someone off the server. 'seconds' param makes the ban temporary.",
         },
-        STOPVOTE = {
+        STOPVOTE = 
+        {
             PRETTYNAME = "Stop Vote",
             DESC = "Cancel a vote in progress if you don't like it!",
         },
-        ROLL = {
+        ROLL = 
+        {
             PRETTYNAME = "Dice Roll",
             DESC = "Random dice roll. 'dice' is 1D100 by default (a single roll of 1-100).",
         },
-        RESET = {
+        RESET = 
+        {
             PRETTYNAME = "Reset",
             DESC = "Restart the server from the last save.",
         },
-        ROLLBACK = {
+        ROLLBACK = 
+        {
             PRETTYNAME = "Rollback",
             DESC = "Rollback the server to a previous save.",
-            VOTETITLEFMT = "Should we roll back the world?",
+            VOTETITLEFMT = "Should we rollback this world?",
             VOTENAMEFMT = "vote to rollback the server",
-            VOTEPASSEDFMT = "Rolling back the server in 5 seconds...",
+            VOTEPASSEDFMT = "Rolling server back in 5 seconds...",
         },
-        REGENERATE = {
+        REGENERATE = 
+        {
             PRETTYNAME = "Regenerate World",
             DESC = "Destroy this world and start with a brand new one!",
             VOTETITLEFMT = "Should we regenerate the world?",
             VOTENAMEFMT = "vote to regenerate the world",
-            VOTEPASSEDFMT = "Regenerating the world in 5 seconds...",
+            VOTEPASSEDFMT = "Regenerating world in 5 seconds...",
         },
     },
 
@@ -3029,7 +3096,7 @@ STRINGS.UI =
         COMPATIBILITY_ALL = "Compatible with everything.",
         COMPATIBILITY_DS_ONLY = "Compatible with Don't Starve only.",
         COMPATIBILITY_ROG_ONLY = "Compatible with Reign of Giants only.",
-        COMPATIBILITY_NONE = "Compatible with nothing. I'm sure it's fine.",
+        COMPATIBILITY_NONE = "This mod has no compatibility with Don't Starve.",
         CONFIGUREMOD = "Configure Mod",
         UPDATEMOD = "Update Mod",
         UPDATINGMOD = "Updating...",
@@ -3052,8 +3119,8 @@ STRINGS.UI =
         },
         NO_MODS_TITLE = "No Mods Installed",
         NO_MODS_OK = "Show Me!",
-        NO_MODS = "You don't have any mods installed, but you can download some from the Steam Workshop.",--Klei forums.",
-        NO_MODS_TYPE = "You don't have any %s mods installed. You can download some from the Steam Workshop.",--Klei forums.",
+        NO_MODS = "You have no mods installed. Mods can be downloaded from the Steam Workshop.",--Klei forums.",
+        NO_MODS_TYPE = "You have no %s mods installed. Mods can be downloaded from the Steam Workshop.",--Klei forums.",
         NO_MODS_LINK = "Take me to the mods!",
         WORKSHOP = {
             UPDATE_TITLE = "Steam Workshop",
@@ -3070,8 +3137,8 @@ STRINGS.UI =
         RESTART_REQUIRED = "To enable or disable this mod, you will have to exit and restart the game.",
         RESTART = "Exit Now",
         MOD_WARNING_TITLE = "Mod Warning",
-        MOD_WARNING = "This is not a Steam Workshop mod. Players will need to download it themselves if you host a server.",
-        DST_COMPAT_WARNING = "This mod hasn't been tagged as compatible with Don't Starve Together. It is likely there will be issues.",
+        MOD_WARNING = "This is not a Steam Workshop mod. Players will need to download it manually if you host a server.",
+        DST_COMPAT_WARNING = "This mod hasn't been tagged as compatible with Don't Starve Together. It may cause issues with your game.",
         OK = "OK",
         MODPAGE = "Mod Page",
         MODTITLE = "Mods",
@@ -3110,7 +3177,7 @@ STRINGS.UI =
         BACKTITLE = "Discard Changes",
         BACKBODY = "Do you want to discard the changes you made to your world generation options?",
         INVALIDSEASONCOMBO_TITLE = "All Seasons Disabled",
-        INVALIDSEASONCOMBO_BODY = "You have set all of the seasons to the \"None\" option.\nTurn on at least one season to continue.",
+        INVALIDSEASONCOMBO_BODY = "You have set all seasons to \"None\".\nPlease turn on at least one season to continue.",
         OKAY = "Okay",
 
         PRESETLEVELS = {
@@ -3162,10 +3229,11 @@ STRINGS.UI =
             DST_CAVE = "Delve into the caves... together!",
             DST_CAVE_PLUS = "A darker, more arachnid-y cave experience.",
 
-            MOD_MISSING = "This preset came from a mod, but it looks like that mod isn't active right now!",
+            MOD_MISSING = "This preset came from a mod, but that mod isn't active right now!",
         },
 
-        TASKSETNAMES = {
+        TASKSETNAMES =
+        {
             DEFAULT = "Together",
             CLASSIC = "Classic",
             CAVE_DEFAULT = "Underground",
@@ -3177,7 +3245,7 @@ STRINGS.UI =
         MAX_PRESETS_EXCEEDED_BODY = "Only 5 custom presets allowed.\nChoose one to overwrite:",
         OVERWRITE = "Overwrite",
         UNKNOWN_PRESET = "Unknown Preset",
-        UNKNOWN_PRESET_DESC = "This game was started with some weird settings.",
+        UNKNOWN_PRESET_DESC = "This game was started with some settings we don't quite recognize.",
         REVERTCHANGES = "Revert Changes",
 
         TASK_SET = "World Gen: Biomes",            
@@ -3351,7 +3419,7 @@ STRINGS.UI =
         MODS_ICON_HOVER = "Modded",
         FILTER_RESET = "Reset Filters",
         MODS_HIDDEN_MISMATCH = "Unable to retrieve mod list due to a version mismatch.",
-        MODS_HIDDEN_LAN = "The mods list isn't visible over LAN.\nWhy don't you scooch over and ask your friend?",
+        MODS_HIDDEN_LAN = "The mods list isn't visible over LAN.\nWhy not scooch over and ask your friend?",
         OFFLINE_MODE_TITLE = "Offline",
         OFFLINE_MODE_BODY = "You are not logged in and can't play in online games.\nTry playing over LAN or restarting the game to log in.",
         OFFLINEWARNINGTITLE = "Offline World",
@@ -3409,7 +3477,8 @@ STRINGS.UI =
         INTENTION_FILTER = "Playstyle:",
         INTENTION_TITLE = "What's your playstyle?",
         INTENTION_BUTTON = "Choose Playstyle",
-        INTENTION_DESC = {
+        INTENTION_DESC = 
+        {
             SOCIAL = "You want to hang out, make friends, and play for fun. You don't care so much if you win or lose, as long as everyone's having a good time!",
             COOPERATIVE = "Teamwork is your guiding principal. It's not enough to just not starve, you have to not starve... Together!",
             COMPETITIVE = "You'll show your opponents exactly what you're made of by playing smarter, harder, faster and coming out on top!",
@@ -3505,7 +3574,7 @@ STRINGS.UI =
         INVALIDSERVERNAME_TITLE = "Missing Server Name",
         INVALIDSERVERNAME_BODY = "No one will be able to find you if you don't have a name!",
         INVALIDCLANSETTINGS_TITLE = "Bad Group ID",
-        INVALIDCLANSETTINGS_BODY = "You have to specify the steam group you belong to! Go back and check that number.",
+        INVALIDCLANSETTINGS_BODY = "You have to specify the Steam Group you belong to! Please verify the group number.",
         INVALIDINTENTIONSETTINGS_TITLE = "Missing Server Intention",
         INVALIDINTENTIONSETTINGS_BODY = "You forgot to choose a playstyle for your server!",
         INVALIDNEWHOST_TITLE = "Creating your first world?",
@@ -3572,7 +3641,7 @@ STRINGS.UI =
         TITLE_FAILEDEMAIL = "Email Not Validated",
         BODY = "It looks like this is your first time playing Don't Starve Together.\nPlease click below to create an account and start playing.",
         BODY_FAILEDEMAIL = "The email associated with your account has not been validated.\nPlease check your inbox for a validation request.\nIf you think your email was entered incorrectly,\nclick below to try again.",
-        BODY2 = "Account creation will temporarily minimize your game and open your web browser.\nIf it doesn't work, try enabling your Steam overlay.",
+        BODY2 = "Account creation will temporarily minimize your game and open your web browser.\nIf this doesn't work, try enabling your Steam overlay.",
         BODY2_FAILEDEMAIL = "Trying again will temporarily minimize your game and open your web browser.",
         CREATEBUTTON = "Create Account",
         FAILEDEMAILBUTTON = "Try Again",
@@ -3611,6 +3680,7 @@ STRINGS.UI =
         RANDOMCHAR_BUTTONHINT = "Random Character",
         INVITE_FRIEND = "Invite Friend",
         CUSTOMIZE = "Customize Your Character",
+        CUSTOMIZE_SCARECROW = "Customize Your Scarecrow",
         COMING = "Coming Soon!",
         OFFLINE = "Not Available Offline",
         LOADOUT_TITLE = "'s Loadout",
@@ -3702,8 +3772,8 @@ STRINGS.UI =
 		MARKET = "Steam",
         EQUIPPED = "Last one!",
         CHECK = "Warning!",
-        WARNING_SINGLE = "You won't be able to use an item if you give your last one away! Do you really want to trade this item?",
-        WARNING = "You won't be able to use an item if you give your last one away! Do you really want to trade these items?",
+        WARNING_SINGLE = "You won't be able to wear an item if you give your last one away! Do you really want to trade this item?",
+        WARNING = "You won't be able to wear an item if you give your last one away! Do you really want to trade these items?",
 		SERVER_ERROR_TITLE = "Error Trading Items",
 		SERVER_ERROR_BODY = "There was an error trading your items. Please login again to refresh your account inventory.",
 		OK = "OK",
@@ -3791,7 +3861,7 @@ STRINGS.UI =
             RESULT = 
             {
                 "Here ya go, one very fine <item>!",
-                "Look a' that, ya won a <item>. C'mon back any time, now.",
+                "Look a' that, ya won a <item>. C'mon back anytime, now.",
                 "There ya go, ya got this here <item>.",
             },
             RESULT_LUCKY = 

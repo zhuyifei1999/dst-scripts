@@ -8,6 +8,7 @@ return {
         BUILD =
         {
             MOUNTED = "I can't place that from this lofty position.",
+            HASPET = "I can only have one...",
         },
         MOUNT =
         {
@@ -58,6 +59,7 @@ return {
         },
         GIVE =
         {
+            GENERIC = "No... I can't...",
             DEAD = "They've no need of material possessions where they've gone.",
             SLEEPING = "Another time. It's enjoying a temporary death right now...",
             BUSY = "It's too busy to pay attention to me...",
@@ -684,6 +686,7 @@ return {
             BROKEN = "It's been ravaged by time.",
             STAFFED = "Perhaps it thirsts for a sacrifice. Where's Webber...",
             WRONGSTAFF = "That doesn't look right...",
+            MOONSTAFF = "Bathed in pale eternal light...",
         },
         MOONDIAL = 
         {
@@ -930,6 +933,10 @@ return {
 		BASALT = "Trying to break it would be pointless.",
 		BEARDHAIR = "That's just nasty.",
 		BEDROLL_STRAW = "Sleep is but a temporary death.",
+		BEEQUEEN = "As regal as she is ruthless...",
+		BEEQUEENHIVE = "The bees left their sweet mark upon the earth.",
+		BEEQUEENHIVEGROWN = "Dripping with enmity. And honey.",
+        BEEGUARD = "Their devotion knows no bounds.",
 		BEE =
 		{
 			GENERIC = "I'd steer clear of that stinger.",
@@ -1106,6 +1113,14 @@ return {
 			HELD = "You're at my mercy, bird.",
 		},
 		CANARY_POISONED = "Pestilence and death will soon claim you.",
+
+		CRITTERLAB = "Oh. The abyss is staring back at me...",
+        CRITTER_GLOMLING = "Its snuggles almost make me forget.",
+        CRITTER_DRAGONLING = "My, what big eyes you have.",
+		CRITTER_LAMB = "The softest creature in the hardest world.",
+        CRITTER_PUPPY = "Blissfully unaware of mortal troubles...",
+        CRITTER_KITTEN = "Cursed with nine lives. Poor thing.",
+
 		CROW =
 		{
 			GENERIC = "Take thy beak from out my heart!",
@@ -1159,6 +1174,7 @@ return {
 		},
 		LAVA_POND = "I could jump in and be done.",
 		LAVAE = "It burns with the fires of Hell.",
+		LAVAE_COCOON = "Cold-blooded.",
 		LAVAE_PET = 
 		{
 			STARVING = "He is approaching death.",
@@ -1199,7 +1215,11 @@ return {
 		ENDTABLE = 
 		{
 			BURNT = "Nothing lasts forever.",
-			GENERIC = "The shadow equivalent of taxidermy. I like it.",
+			GENERIC = "We pulled the flowers from their homes for our own amusement.",
+			EMPTY = "The shadow equivalent of taxidermy. I like it.",
+			WILTED = "I think it's lovelier this way...",
+			FRESHLIGHT = "It's illuminating... for now.",
+			OLDLIGHT = "It, too, will die.",
 		},
 		ACORN = "A tiny life, ensconced in brittle death.",
         ACORN_SAPLING = "A tree will grow soon.",
@@ -1363,8 +1383,11 @@ return {
 		COOKEDMANDRAKE = "It was a good death. You will be delicious.",
 
 		MARBLE = "Smooth and lifeless.",
+		MARBLEBEAN = "Cold... but not lifeless...",
+		MARBLEBEAN_SAPLING = "It cares nothing for the laws of this world...",
+        MARBLESHRUB = "Against all odds, it has flourished in life...",
 		MARBLEPILLAR = "Even stone can not withstand the constant pull of decay.",
-		MARBLETREE = "There is no beat of life within this cold tree.",
+		MARBLETREE = "Be ye alive or be ye dead?",
 		MARSH_BUSH =
 		{
 			BURNING = "Even thorns burn.",
@@ -1517,6 +1540,8 @@ return {
         ROOK = "A Rook? Or is it a Castle?",
 		ROPE = "That would be the easy way out of this place.",
 		ROTTENEGG = "The way of all things.",
+		ROYAL_JELLY = "We stole it out of the mouths of baby bees.",
+		JELLYBEAN = "Beans that shall never know life.",
 		SADDLE_RACE = "Too much whimsy gives me indigestion.",
         SADDLE_BASIC = "As if it wasn't already burdened by the yoke of life...",
         SADDLE_WAR = "Oh, how we bend creatures to our ill intent.",
@@ -1768,6 +1793,10 @@ return {
 		WALL_WOOD_ITEM = "Bundled logs.",
 		WALL_MOONROCK = "The moon... she whispers promises of protection to me.",
 		WALL_MOONROCK_ITEM = "This gift from above should not go to waste.",
+		FENCE = "Sort of like an emotional barrier. But wood.",
+        FENCE_ITEM = "We could use it to build a fence.",
+        FENCE_GATE = "Will it keep others in, or out?",
+        FENCE_GATE_ITEM = "We could use it to build a gate.",
 		WALRUS = "An old man of the sea.",
 		WALRUSHAT = "What feverish thoughts transpired beneath this?",
 		WALRUS_CAMP =

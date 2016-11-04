@@ -87,6 +87,8 @@ local ModConfigurationScreen = Class(Screen, function(self, modname, client_conf
 
 	self.dirty = false
 
+	self.options_scroll_list = self.optionspanel:AddChild(ScrollableList({}, 450, 350, 40, 10))
+
     self.optionwidgets = {}
 
 	local i = 1
@@ -157,7 +159,7 @@ local ModConfigurationScreen = Class(Screen, function(self, modname, client_conf
 	self.default_focus = self.optionwidgets[1]
 	self:HookupFocusMoves()
 	
-	self.options_scroll_list = self.optionspanel:AddChild(ScrollableList(self.optionwidgets, 450, 350, 40, 10))
+	self.options_scroll_list:SetList(self.optionwidgets)
 	if self.options_scroll_list.scroll_bar_line:IsVisible() then
 		self.options_scroll_list:SetPosition(0, 0)
 	else

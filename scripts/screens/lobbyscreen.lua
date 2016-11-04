@@ -171,8 +171,8 @@ local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, def
     --self.dressup_bg:SetTint(1, 1, 1, .3)
     --self.dressup_bg:SetClickable(false)
 
-    self.dressup = self.loadout_root:AddChild(DressupPanel(self, self.profile, function() self:SetPortraitImage() end, nil, nil, nil, true))
-    self.dressup:SetPosition(55, -80, 0)
+    self.dressup = self.loadout_root:AddChild(DressupPanel(self, self.profile, nil, function() self:SetPortraitImage() end, nil, nil, true))
+    self.dressup:SetPosition(RESOLUTION_X - 195, RESOLUTION_Y/2 + 25, 0)
     self.dressup:GetClothingOptions()
     self.dressup:SeparateAvatar()
 
@@ -513,6 +513,20 @@ function LobbyScreen:OnControl(control, down)
                 self:ScrollFwd(control)
                 return true
             end
+        elseif self.in_loadout then
+ 			if control == CONTROL_PREVVALUE then  -- r-stick left
+    			self.dressup:ScrollBack(control)
+				return true 
+			elseif control == CONTROL_NEXTVALUE then -- r-stick right
+				self.dressup:ScrollFwd(control)
+				return true
+			elseif control == CONTROL_SCROLLBACK then
+				self.dressup:ScrollBack(control)
+				return true
+			elseif control == CONTROL_SCROLLFWD then
+    			self.dressup:ScrollFwd(control)
+				return true
+			end
         end
     end
 

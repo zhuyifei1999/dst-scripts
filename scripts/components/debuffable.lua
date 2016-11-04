@@ -36,6 +36,18 @@ function Debuffable:Enable(enable)
     end
 end
 
+function Debuffable:RemoveOnDespawn()
+    local toremove = {}
+    for k, v in pairs(self.debuffs) do
+        if not (v.inst.components.debuff ~= nil and v.inst.components.debuff.keepondespawn) then
+            table.insert(toremove, k)
+        end
+    end
+    for i, v in ipairs(toremove) do
+        self:RemoveDebuff(v)
+    end
+end
+
 function Debuffable:SetFollowSymbol(symbol, x, y, z)
     self.followsymbol = symbol
     self.followoffset.x = x
@@ -50,6 +62,11 @@ end
 
 function Debuffable:HasDebuff(name)
     return self.debuffs[name] ~= nil
+end
+
+function Debuffable:GetDebuff(name)
+    local debuff = self.debuffs[name]
+    return debuff ~= nil and debuff.inst or nil
 end
 
 local function RegisterDebuff(self, name, ent)

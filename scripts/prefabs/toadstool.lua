@@ -37,7 +37,7 @@ local function AddSpecialLoot(inst)
     inst.components.lootdropper:AddChanceLoot(hat, 1.0)
 
     -- one mushroom light
-    inst.components.lootdropper:AddChanceLoot(math.random() < 0.1 and "mushroom_light2_blueprint" or "mushroom_light_blueprint", 1.0)
+    inst.components.lootdropper:AddChanceLoot(math.random() < 0.2 and "mushroom_light2_blueprint" or "mushroom_light_blueprint", 1.0)
 
     -- 2-3 spores
     local spores = PickSomeWithDups(3, { MUSHTREE_SPORE_RED, MUSHTREE_SPORE_GREEN, MUSHTREE_SPORE_BLUE })
@@ -137,6 +137,7 @@ local function FindSporeBombTargets(inst, preferredtargets)
                 not v.components.debuffable:HasDebuff("sporebomb") and
                 not (v.components.health ~= nil and
                     v.components.health:IsDead()) and
+                not v:HasTag("playerghost") and
                 v:IsNear(inst, TUNING.TOADSTOOL_SPOREBOMB_HIT_RANGE) then
                 table.insert(targets, v)
                 if #targets >= inst.sporebomb_targets then
@@ -148,7 +149,7 @@ local function FindSporeBombTargets(inst, preferredtargets)
 
     local newtargets = {}
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, TUNING.TOADSTOOL_SPOREBOMB_ATTACK_RANGE, { "debuffable" }, { "ghost", "shadow", "shadowminion", "noauradamage", "INLIMBO" })
+    local ents = TheSim:FindEntities(x, y, z, TUNING.TOADSTOOL_SPOREBOMB_ATTACK_RANGE, { "debuffable" }, { "ghost", "playerghost", "shadow", "shadowminion", "noauradamage", "INLIMBO" })
     for i, v in ipairs(ents) do
         if v.entity:IsVisible() and
             v.components.debuffable ~= nil and

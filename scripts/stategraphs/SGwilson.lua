@@ -348,6 +348,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.GIVETOPLAYER, "give"),
     ActionHandler(ACTIONS.GIVEALLTOPLAYER, "give"),
     ActionHandler(ACTIONS.FEEDPLAYER, "give"),
+    ActionHandler(ACTIONS.DECORATEVASE, "dolongaction"),
     ActionHandler(ACTIONS.PLANT, "doshortaction"),
     ActionHandler(ACTIONS.HARVEST, "dolongaction"),
     ActionHandler(ACTIONS.PLAY,
@@ -396,6 +397,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.SADDLE, "doshortaction"),
     ActionHandler(ACTIONS.UNSADDLE, "unsaddle"),
     ActionHandler(ACTIONS.BRUSH, "dolongaction"),
+    ActionHandler(ACTIONS.ABANDON, "dolongaction"),
 }
 
 local events =
@@ -2717,7 +2719,7 @@ local states =
         {
             -- gift_pst plays first and it is 20 frames long
             TimeEvent(20 * FRAMES, function(inst)
-                inst.SoundEmitter:PlaySound("dontstarve/HUD/Together_HUD/skin_change")
+                inst.SoundEmitter:PlaySound("dontstarve/common/together/skin_change")
             end),
             -- frame 42 of skin_change is where the character is completely hidden
             TimeEvent(62 * FRAMES, function(inst)

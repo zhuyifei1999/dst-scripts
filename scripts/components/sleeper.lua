@@ -34,6 +34,12 @@ end)
 
 function Sleeper:OnRemoveFromEntity()
     self.inst:RemoveTag("sleeper")
+    if self.testtask ~= nil then
+        self.testtask:Cancel()
+    end
+    if self.wearofftask ~= nil then
+        self.wearofftask:Cancel()
+    end
     self.inst:RemoveEventCallback("onignite", onattacked)
     self.inst:RemoveEventCallback("firedamage", onattacked)
     self.inst:RemoveEventCallback("attacked", onattacked)

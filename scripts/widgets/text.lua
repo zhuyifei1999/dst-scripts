@@ -90,6 +90,7 @@ end
 --  3) Use that number as an estimate for maxchars, or round up
 --     a little just in case dots aren't the smallest character
 function Text:SetTruncatedString(str, maxwidth, maxchars, ellipses)
+	str = str or ""
     str = str:match("^[^\n\v\f\r]*")
     if #str > 0 then
         if type(ellipses) ~= "string" then
@@ -128,6 +129,7 @@ end
 
 -- maxwidth can be a single number or an array of numbers if maxwidth is different per line
 function Text:SetMultilineTruncatedString(str, maxlines, maxwidth, maxcharsperline, ellipses)
+	str = str or ""
     local tempmaxwidth = type(maxwidth) == "table" and maxwidth[1] or maxwidth
     if maxlines <= 1 then
         self:SetTruncatedString(str, tempmaxwidth, maxcharsperline, ellipses)

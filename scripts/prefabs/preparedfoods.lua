@@ -9,6 +9,16 @@ local prefabs =
 }
 
 local function MakePreparedFood(data)
+    local foodprefabs = prefabs
+    if data.prefabs ~= nil then
+        foodprefabs = deepcopy(prefabs)
+        for i, v in ipairs(data.prefabs) do
+            if not table.contains(foodprefabs, v) then
+                table.insert(foodprefabs, v)
+            end
+        end
+    end
+
     local function fn()
         local inst = CreateEntity()
 
@@ -37,6 +47,7 @@ local function MakePreparedFood(data)
         inst.components.edible.sanityvalue = data.sanity or 0
         inst.components.edible.temperaturedelta = data.temperature or 0
         inst.components.edible.temperatureduration = data.temperatureduration or 0
+        inst.components.edible:SetOnEatenFn(data.oneatenfn)
 
         inst:AddComponent("inspectable")
         inst.wet_prefix = data.wet_prefix
@@ -84,7 +95,7 @@ local function MakePreparedFood(data)
         return inst
     end
 
-    return Prefab(data.name, fn, assets, prefabs)
+    return Prefab(data.name, fn, assets, foodprefabs)
 end
 
 local prefs = {}

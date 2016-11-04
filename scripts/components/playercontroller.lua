@@ -985,11 +985,9 @@ function PlayerController:GetAttackTarget(force_attack, force_target, isretarget
     end
 
     local x, y, z = self.inst.Transform:GetWorldPosition()
-    local rad = combat:GetAttackRangeWithWeapon()
-    if not self.directwalking then
-        --for autowalking
-        rad = rad + 6
-    end
+    local attackrange = combat:GetAttackRangeWithWeapon()
+    local rad = self.directwalking and attackrange or attackrange + 6
+    --"not self.directwalking" is autowalking
 
     --Beaver teeth counts as having a weapon
     local has_weapon = self.inst:HasTag("beaver")
@@ -1011,13 +1009,33 @@ function PlayerController:GetAttackTarget(force_attack, force_target, isretarget
     --To deal with entity collision boxes we need to pad the radius.
     --Only include combat targets for auto-targetting, not light/extinguish
     --See entityreplica.lua (re: "_combat" tag)
-    local nearby_ents = TheSim:FindEntities(x, y, z, rad + 5, { "_combat" })
+    local nearby_ents = TheSim:FindEntities(x, y, z, rad + 5, { "_combat" }, { "INLIMBO" })
+    local nearest_dist = math.huge
+    isretarget = false --reusing variable for flagging when we've found recent target
+    force_target = nil --reusing variable for our nearest target
     for i, v in ipairs(nearby_ents) do
         if ValidateAttackTarget(combat, v, force_attack, x, z, has_weapon, reach) and
             CanEntitySeeTarget(self.inst, v) then
-            return v
+            local dsq = self.inst:GetDistanceSqToInst(v)
+            local dist =
+                (dsq <= 0 and 0) or
+                (v.Physics ~= nil and math.max(0, math.sqrt(dsq) - v.Physics:GetRadius())) or
+                math.sqrt(dsq)
+            if not isretarget and combat:IsRecentTarget(v) then
+                if dist < attackrange + 1 then
+                    return v
+                end
+                isretarget = true
+            end
+            if dist < nearest_dist then
+                nearest_dist = dist
+                force_target = v
+            end
+        elseif not isretarget and combat:IsRecentTarget(v) then
+            isretarget = true
         end
     end
+    return force_target
 end
 
 function PlayerController:DoAttackButton(retarget)
@@ -1841,8 +1859,6 @@ local function UpdateControllerAttackTarget(self, dt, x, y, z, dirx, dirz)
 
     local min_rad = 4
     local max_rad = math.max(min_rad, combat:GetAttackRangeWithWeapon()) + 3
-    local min_rad_sq = min_rad * min_rad
-    local max_rad_sq = max_rad * max_rad
 
     --see entity_replica.lua for "_combat" tag
     local nearby_ents = TheSim:FindEntities(x, y, z, max_rad, { "_combat" }, TARGET_EXCLUDE_TAGS)
@@ -1872,15 +1888,21 @@ local function UpdateControllerAttackTarget(self, dt, x, y, z, dirx, dirz)
                 local x1, y1, z1 = v.Transform:GetWorldPosition()
                 local dx, dy, dz = x1 - x, y1 - y, z1 - z
                 local dsq = dx * dx + dy * dy + dz * dz
+                local dist =
+                    (dsq <= 0 and 0) or
+                    (v.Physics ~= nil and math.max(0, math.sqrt(dsq) - v.Physics:GetRadius())) or
+                    math.sqrt(dsq)
 
-                if dsq < max_rad_sq and CanEntitySeePoint(self.inst, x1, y1, z1) then
-                    local dist = dsq > 0 and math.sqrt(dsq) or 0
-                    local dot = dist > 0 and dx / dist * dirx + dz / dist * dirz or 0
+                if dist < max_rad and CanEntitySeePoint(self.inst, x1, y1, z1) then
+                    local dsqrt = dsq > 0 and math.sqrt(dsq) or 0
+                    local dot = dsqrt > 0 and dx / dsqrt * dirx + dz / dsqrt * dirz or 0
                     if dot > 0 or dist < min_rad then
-                        local score = dot + 1 - .5 * dsq / max_rad_sq
+                        local score = dot + 1 - .5 * dist / max_rad
 
                         if isally then
                             score = score * .25
+                        elseif v:HasTag("epic") then
+                            score = score * 5
                         elseif v:HasTag("monster") then
                             score = score * 4
                         end
@@ -1972,8 +1994,6 @@ local function UpdateControllerInteractionTarget(self, dt, x, y, z, dirx, dirz)
 
     local min_rad = 1.5
     local max_rad = 6
-    local min_rad_sq = min_rad * min_rad
-    local max_rad_sq = max_rad * max_rad
     local rad =
             self.controller_target ~= nil and
             math.max(min_rad, math.min(max_rad, math.sqrt(self.inst:GetDistanceSqToInst(self.controller_target)))) or
@@ -1997,22 +2017,26 @@ local function UpdateControllerInteractionTarget(self, dt, x, y, z, dirx, dirz)
             local x1, y1, z1 = v.Transform:GetWorldPosition()
             local dx, dy, dz = x1 - x, y1 - y, z1 - z
             local dsq = dx * dx + dy * dy + dz * dz
+            local dist =
+                (dsq <= 0 and 0) or
+                (v.Physics ~= nil and math.max(0, math.sqrt(dsq) - v.Physics:GetRadius())) or
+                math.sqrt(dsq)
 
-            if (dsq < min_rad_sq
-                or (dsq <= max_rad_sq
+            if (dist < min_rad
+                or (dist <= max_rad
                     and (v == self.controller_target or
                         v == self.controller_attack_target or
                         dx * dirx + dz * dirz > 0))) and
                 CanEntitySeePoint(self.inst, x1, y1, z1) then
 
-                local dist = dsq > 0 and math.sqrt(dsq) or 0
-                local dot = dist > 0 and dx / dist * dirx + dz / dist * dirz or 0
+                local dsqrt = dsq > 0 and math.sqrt(dsq) or 0
+                local dot = dsqrt > 0 and dx / dsqrt * dirx + dz / dsqrt * dirz or 0
 
                 --keep the angle component between [0..1]
                 local angle_component = (dot + 1) / 2
 
                 --distance doesn't matter when you're really close, and then attenuates down from 1 as you get farther away
-                local dist_component = dsq < min_rad_sq and 1 or min_rad_sq / dsq
+                local dist_component = dist <= min_rad and 1 or min_rad / dist
 
                 --for stuff that's *really* close - ie, just dropped
                 local add = dsq < .0625 --[[.25 * .25]] and 1 or 0
@@ -2026,6 +2050,8 @@ local function UpdateControllerInteractionTarget(self, dt, x, y, z, dirx, dirz)
                 --make it easier to haunt the portal for resurrection in endless mode
                 if v:HasTag("portal") then
                     score = score * (self.inst:HasTag("playerghost") and GetPortalRez(TheNet:GetServerGameMode()) and 1.1 or .9)
+                elseif v:HasTag("epic") then
+                    score = score * 1.1
                 end
 
                 --print(v, angle_component, dist_component, mult, add, score)
@@ -2066,6 +2092,14 @@ function PlayerController:UpdateControllerTargets(dt)
     local dirz = math.sin(heading_angle * DEGREES)
     UpdateControllerInteractionTarget(self, dt, x, y, z, dirx, dirz)
     UpdateControllerAttackTarget(self, dt, x, y, z, dirx, dirz)
+    if self.controller_attack_target ~= nil and
+        self.controller_target ~= nil and
+        self.controller_attack_target ~= self.controller_target and
+        self.inst:IsNear(self.controller_attack_target, 6) then
+        --Switch target to same as attack target if it's near
+        self.controller_target = self.controller_attack_target
+        self.controller_target_age = 0
+    end
 end
 
 function PlayerController:GetControllerTarget()

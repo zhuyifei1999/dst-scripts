@@ -454,7 +454,7 @@ end
 
 local function onbecamebeaver(inst)
     if inst.sg.currentstate.name ~= "reviver_rebirth" then
-        inst.components.skinner:ClearAllClothing(inst.AnimState)
+        inst.components.skinner:HideAllClothing(inst.AnimState)
         inst.AnimState:SetBank("werebeaver")
         inst.components.skinner:SetSkinMode("werebeaver_skin")
     end

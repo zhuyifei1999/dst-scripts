@@ -641,3 +641,166 @@ CommonStates.AddCombatStates = function(states, timelines, anims)
         timeline = timelines ~= nil and timelines.deathtimeline or nil,
     })
 end
+
+--------------------------------------------------------------------------
+--V2C: DST improved sleep states that support "nosleep" state tag
+
+local function onsleepex(inst)
+    inst.sg.mem.sleeping = true
+    if not (inst.sg:HasStateTag("nosleep") or inst.sg:HasStateTag("sleeping") or
+            (inst.components.health ~= nil and inst.components.health:IsDead())) then
+        inst.sg:GoToState("sleep")
+    end
+end
+
+local function onwakeex(inst)
+    inst.sg.mem.sleeping = false
+    if inst.sg:HasStateTag("sleeping") and not inst.sg:HasStateTag("nowake") and
+        not (inst.components.health ~= nil and inst.components.health:IsDead()) then
+        inst.sg.statemem.continuesleeping = true
+        inst.sg:GoToState("wake")
+    end
+end
+
+CommonHandlers.OnSleepEx = function()
+    return EventHandler("gotosleep", onsleepex)
+end
+
+CommonHandlers.OnWakeEx = function()
+    return EventHandler("onwakeup", onwakeex)
+end
+
+CommonHandlers.OnNoSleepAnimOver = function(nextstate)
+    return EventHandler("animover", function(inst)
+        if inst.AnimState:AnimDone() then
+            if inst.sg.mem.sleeping then
+                inst.sg:GoToState("sleep")
+            elseif type(nextstate) == "string" then
+                inst.sg:GoToState(nextstate)
+            elseif nextstate ~= nil then
+                nextstate(inst)
+            end
+        end
+    end)
+end
+
+CommonHandlers.OnNoSleepTimeEvent = function(t, fn)
+    return TimeEvent(t, function(inst)
+        if inst.sg.mem.sleeping and not (inst.components.health ~= nil and inst.components.health:IsDead()) then
+            inst.sg:GoToState("sleep")
+        elseif fn ~= nil then
+            fn(inst)
+        end
+    end)
+end
+
+local function sleepexonanimover(inst)
+    if inst.AnimState:AnimDone() then
+        inst.sg.statemem.continuesleeping = true
+        inst.sg:GoToState(inst.sg.mem.sleeping and "sleeping" or "wake")
+    end
+end
+
+local function sleepingexonanimover(inst)
+    if inst.AnimState:AnimDone() then
+        inst.sg.statemem.continuesleeping = true
+        inst.sg:GoToState("sleeping")
+    end
+end
+
+local function wakeexonanimover(inst)
+    if inst.AnimState:AnimDone() then
+        inst.sg:GoToState(inst.sg.mem.sleeping and "sleep" or "idle")
+    end
+end
+
+CommonStates.AddSleepExStates = function(states, timelines, fns)
+    table.insert(states, State
+    {
+        name = "sleep",
+        tags = { "busy", "sleeping", "nowake" },
+
+        onenter = function(inst)
+            if inst.components.locomotor ~= nil then
+                inst.components.locomotor:StopMoving()
+            end
+            inst.AnimState:PlayAnimation("sleep_pre")
+            if fns ~= nil and fns.onsleep ~= nil then
+                fns.onsleep(inst)
+            end
+        end,
+
+        timeline = timelines ~= nil and timelines.starttimeline or nil,
+
+        events =
+        {
+            EventHandler("animover", sleepexonanimover),
+        },
+
+        onexit = function(inst)
+            if not inst.sg.statemem.continuesleeping and inst.components.sleeper ~= nil and inst.components.sleeper:IsAsleep() then
+                inst.components.sleeper:WakeUp()
+            end
+            if fns ~= nil and fns.onexitsleep ~= nil then
+                fns.onexitsleep(inst)
+            end
+        end,
+    })
+
+    table.insert(states, State
+    {
+        name = "sleeping",
+        tags = { "busy", "sleeping" },
+
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("sleep_loop")
+            if fns ~= nil and fns.onsleeping ~= nil then
+                fns.onsleeping(inst)
+            end
+        end,
+
+        timeline = timelines ~= nil and timelines.sleeptimeline or nil,
+
+        events =
+        {
+            EventHandler("animover", sleepingexonanimover),
+        },
+
+        onexit = function(inst)
+            if not inst.sg.statemem.continuesleeping and inst.components.sleeper ~= nil and inst.components.sleeper:IsAsleep() then
+                inst.components.sleeper:WakeUp()
+            end
+            if fns ~= nil and fns.onexitsleeping ~= nil then
+                fns.onexitsleeping(inst)
+            end
+        end,
+    })
+
+    table.insert(states, State
+    {
+        name = "wake",
+        tags = { "busy", "waking", "nosleep" },
+
+        onenter = function(inst)
+            if inst.components.locomotor ~= nil then
+                inst.components.locomotor:StopMoving()
+            end
+            inst.AnimState:PlayAnimation("sleep_pst")
+            if inst.components.sleeper ~= nil and inst.components.sleeper:IsAsleep() then
+                inst.components.sleeper:WakeUp()
+            end
+            if fns ~= nil and fns.onwake ~= nil then
+                fns.onwake(inst)
+            end
+        end,
+
+        timeline = timelines ~= nil and timelines.waketimeline or nil,
+
+        events =
+        {
+            EventHandler("animover", wakeexonanimover),
+        },
+
+        onexit = fns ~= nil and fns.onexitwake or nil,
+    })
+end

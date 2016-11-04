@@ -1,5 +1,6 @@
-TUNING = {}
+local TechTree = require("techtree")
 
+TUNING = {}
 
 function Tune(overrides)
 	if overrides == nil then
@@ -118,6 +119,10 @@ function Tune(overrides)
         SADDLEHORN_USES = 10,
         BRUSH_USES = 75,
 
+        JELLYBEAN_DURATION = total_day_time * .25,
+        JELLYBEAN_TICK_RATE = 2,
+        JELLYBEAN_TICK_VALUE = 5,
+
 	    REDAMULET_USES = 20,
 	    REDAMULET_CONVERSION = 5,
 
@@ -146,6 +151,8 @@ function Tune(overrides)
 	    FISHING_MAXWAIT = 20,
 		
 		STAGEHAND_HITS_TO_GIVEUP = 86,
+		ENDTABLE_FLOWER_WILTTIME = total_day_time * 2.25,
+		ENDTABLE_LIGHT_UPDATE = seg_time * 0.75,
 
 		RESEARCH_MACHINE_DIST = 4,
 
@@ -242,7 +249,10 @@ function Tune(overrides)
 	    
 	    WILSON_WALK_SPEED = 4,
 	    WILSON_RUN_SPEED = 6,
-	    
+
+	    CRITTER_WALK_SPEED = 6,
+	    CRITTER_HUNGERTIME = total_day_time * 3.14159265359 * 0.75,
+
 	    PERD_SPAWNCHANCE = 0.1,
 	    PERD_DAMAGE = 20,
 	    PERD_HEALTH = 50,
@@ -449,7 +459,19 @@ function Tune(overrides)
         
         MUSHROOMHAT_SPORE_TIME = seg_time * 2,
         MUSHROOMHAT_SLOW_HUNGER = 0.75,
-	    
+
+	    MARBLESHRUB_MINE_SMALL = 6,  -- why are you even mining at this stage?
+	    MARBLESHRUB_MINE_NORMAL = 8, -- same as MARBLETREE_MINE
+	    MARBLESHRUB_MINE_TALL = 10,  -- same as MARBLEPILLAR_MINE
+	    MARBLESHRUB_MINE_OLD = 3,    -- you missed out...
+	    MARBLESHRUB_GROW_TIME =
+        {
+            {base=1.5*day_time, random=0.5*day_time},   --short
+            {base=2.0*day_time, random=0.5*day_time},   --normal
+            {base=2.0*day_time, random=0.5*day_time},   --tall
+            {base=1.5*day_time, random=0.5*day_time}    --old
+        },
+
 	    ICE_MINE = 3,
 	    ROCKS_MINE = 6,
 	    ROCKS_MINE_MED = 4,
@@ -671,12 +693,13 @@ function Tune(overrides)
 
 	    BEE_HEALTH = 100,
 	    BEE_DAMAGE = 10,
+        BEE_ATTACK_RANGE = .6,
 	    BEE_ATTACK_PERIOD = 2,
 	    BEE_TARGET_DIST = 8,
-	    
+
 	    BEEMINE_BEES = 4,
 	    BEEMINE_RADIUS = 3,
-	    
+
 	    SPIDERDEN_GROW_TIME = {day_time*8, day_time*8, day_time*20},
 	    SPIDERDEN_HEALTH = {50*5, 50*10, 50*20},
 	    SPIDERDEN_SPIDERS = {3, 6, 9},
@@ -686,7 +709,7 @@ function Tune(overrides)
 	    SPIDERDEN_SPIDER_TYPE = {"spider", "spider_warrior", "spider_warrior"},
 		SPIDERDEN_REGEN_TIME = 3*seg_time,
 		SPIDERDEN_RELEASE_TIME = 5,
-		
+
 		HOUNDMOUND_HOUNDS_MIN = 2,
 		HOUNDMOUND_HOUNDS_MAX = 3,
 		HOUNDMOUND_REGEN_TIME = seg_time * 6,
@@ -812,95 +835,47 @@ function Tune(overrides)
 
         PROTOTYPER_TREES =
         {
-            SCIENCEMACHINE =
-            {
+            SCIENCEMACHINE = TechTree.Create({
                 SCIENCE = 1,
                 MAGIC = 1,
-                ANCIENT = 0,
-                SHADOW = 0,
-                CARTOGRAPHY = 0,
-                SCULPTING = 0,
-            },
+            }),
 
-            ALCHEMYMACHINE =
-            {
+            ALCHEMYMACHINE = TechTree.Create({
                 SCIENCE = 2,
                 MAGIC = 1,
-                ANCIENT = 0,
-                SHADOW = 0,
-                CARTOGRAPHY = 0,
-                SCULPTING = 0,
-            },
+            }),
 
-            PRESTIHATITATOR =
-            {
-                SCIENCE = 0,
+            PRESTIHATITATOR = TechTree.Create({
                 MAGIC = 2,
-                ANCIENT = 0,
-                SHADOW = 0,
-                CARTOGRAPHY = 0,
-                SCULPTING = 0,
-            },
+            }),
 
-            SHADOWMANIPULATOR =
-            {
-                SCIENCE = 0,
+            SHADOWMANIPULATOR = TechTree.Create({
                 MAGIC = 3,
-                ANCIENT = 0,
-                SHADOW = 0,
-                CARTOGRAPHY = 0,
-                SCULPTING = 0,
-            },
+            }),
 
-            ANCIENTALTAR_LOW =
-            {
-                SCIENCE = 0,
-                MAGIC = 0,
+            ANCIENTALTAR_LOW = TechTree.Create({
                 ANCIENT = 2,
-                SHADOW = 0,
-                CARTOGRAPHY = 0,
-                SCULPTING = 0,
-            },
+            }),
 
-            ANCIENTALTAR_HIGH =
-            {
-                SCIENCE = 0,
-                MAGIC = 0,
+            ANCIENTALTAR_HIGH = TechTree.Create({
                 ANCIENT = 4,
-                SHADOW = 0,
-                CARTOGRAPHY = 0,
-                SCULPTING = 0,
-            },
+            }),
 
-            WAXWELLJOURNAL =
-            {
-                SCIENCE = 0,
-                MAGIC = 0,
-                ANCIENT = 0,
+            WAXWELLJOURNAL = TechTree.Create({
                 SHADOW = 4,
-                CARTOGRAPHY = 0,
-                SCULPTING = 0,
-            },
+            }),
 
-            CARTOGRAPHYDESK =
-            {
-                SCIENCE = 0,
-                MAGIC = 0,
-                ANCIENT = 0,
-                SHADOW = 0,
+            CARTOGRAPHYDESK = TechTree.Create({
                 CARTOGRAPHY = 2,
-                SCULPTING = 0,
-            },
+            }),
 
-            SCULPTINGTABLE =
-            {
-                SCIENCE = 0,
-                MAGIC = 0,
-                ANCIENT = 0,
-                SHADOW = 0,
-                CARTOGRAPHY = 0,
+            SCULPTINGTABLE = TechTree.Create({
                 SCULPTING = 1,
-            },
+            }),
+
+            CRITTERLAB = TechTree.Create({
+                ORPHANAGE = 1,
+            }),
         },
 
 	    RABBIT_HEALTH = 25*multiplayer_attack_modifier,
@@ -955,6 +930,7 @@ function Tune(overrides)
 		MOSQUITO_RUNSPEED = 12,
 		MOSQUITO_DAMAGE = 3,
 		MOSQUITO_HEALTH = 100,
+        MOSQUITO_ATTACK_RANGE = 1.75,
 		MOSQUITO_ATTACK_PERIOD = 7,
 		MOSQUITO_MAX_DRINKS = 4,
 		MOSQUITO_BURST_DAMAGE = 34,
@@ -1219,7 +1195,7 @@ function Tune(overrides)
 
 		ARMOR_SLURTLEHAT = wilson_health*5*multiplayer_armor_durability_modifier,
 		ARMOR_SLURTLEHAT_ABSORPTION = 0.9*multiplayer_armor_absorption_modifier,
-	    ARMOR_BEEHAT = wilson_health*5*multiplayer_armor_durability_modifier,
+	    ARMOR_BEEHAT = wilson_health*10*multiplayer_armor_durability_modifier,
 		ARMOR_BEEHAT_ABSORPTION = .8*multiplayer_armor_absorption_modifier,
 		ARMOR_SANITY = wilson_health * 5*multiplayer_armor_durability_modifier,
 		ARMOR_SANITY_ABSORPTION = .95*multiplayer_armor_absorption_modifier,
@@ -1763,6 +1739,40 @@ function Tune(overrides)
         TOADSTOOL_POUND_CD = 20,
         TOADSTOOL_ABILITY_INTRO_CD = 10,
 
+        BEEQUEEN_HEALTH = 16000,
+        BEEQUEEN_DAMAGE = 120,
+        BEEQUEEN_ATTACK_PERIOD = 2,
+        BEEQUEEN_ATTACK_RANGE = 4,
+        BEEQUEEN_HIT_RANGE = 6,
+        BEEQUEEN_SPEED = 4,
+        BEEQUEEN_NUM_GUARDS = 3,
+        BEEQUEEN_MIN_GUARDS_PER_SPAWN = 3,
+        BEEQUEEN_MAX_GUARDS_PER_SPAWN = 4,
+        BEEQUEEN_TOTAL_GUARDS = 6,
+        BEEQUEEN_CHASE_TO_RANGE = 8,
+
+        BEEQUEEN_AGGRO_DIST = 15,
+        BEEQUEEN_DEAGGRO_DIST = 60,
+
+        BEEQUEEN_MIN_RESPAWN_TIME = total_day_time * 5,
+        BEEQUEEN_MAX_RESPAWN_TIME = total_day_time * 10,
+
+        BEEQUEEN_EPICSCARE_RANGE = 10,
+
+        BEEQUEEN_SPAWNGUARDS_CD = { 18, 12, 12, 10 },
+
+        BEEQUEEN_FOCUSTARGET_CD = { 0, 0, 20, 16 },
+        BEEQUEEN_FOCUSTARGET_RANGE = 20,
+
+        BEEGUARD_HEALTH = 150,
+        BEEGUARD_DAMAGE = 15,
+        BEEGUARD_ATTACK_PERIOD = 2,
+        BEEGUARD_ATTACK_RANGE = 1.5,
+        BEEGUARD_SPEED = 3,
+        BEEGUARD_DASH_SPEED = 8,
+        BEEGUARD_GUARD_RANGE = 4,
+        BEEGUARD_AGGRO_DIST = 12,
+
 		DRAGONFLY_RESPAWN_TIME = total_day_time * 20,
 		DRAGONFLY_SPAWN_TIME = 1,
 
@@ -2256,4 +2266,3 @@ function Tune(overrides)
 end
 
 Tune()
-

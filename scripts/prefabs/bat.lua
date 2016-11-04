@@ -53,12 +53,8 @@ local function Retarget(inst)
 end
 
 local function KeepTarget(inst, target)
-    if (inst.components.teamattacker.inteam and not inst.components.teamattacker.teamleader:CanAttack())
-        or inst.components.teamattacker.orders == ORDERS.ATTACK then
-        return true
-    else
-        return false
-    end 
+    return (inst.components.teamattacker.inteam and not inst.components.teamattacker.teamleader:CanAttack())
+        or inst.components.teamattacker.orders == ORDERS.ATTACK
 end
 
 local function OnAttacked(inst, data)
@@ -76,7 +72,39 @@ local function OnAttacked(inst, data)
 end
 
 local function RememberLocation(inst)
-    inst.components.knownlocations:RememberLocation("home", Vector3(inst.Transform:GetWorldPosition()))
+    inst.components.knownlocations:RememberLocation("home", inst:GetPosition())
+end
+
+local function OnSleepGoHome(inst)
+    inst._hometask = nil
+    local home = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
+    if home ~= nil and home:IsValid() and home.components.childspawner ~= nil then
+        home.components.childspawner:GoHome(inst)
+    end
+end
+
+local function OnIsDay(inst, isday)
+    if isday then
+        if inst._hometask == nil then
+            inst._hometask = inst:DoTaskInTime(10 + math.random(), OnSleepGoHome)
+        end
+    elseif inst._hometask ~= nil then
+        inst._hometask:Cancel()
+        inst._hometask = nil
+    end
+end
+
+local function OnEntitySleep(inst)
+    inst:WatchWorldState("isday", OnIsDay)
+    OnIsDay(inst, TheWorld.state.isday)
+end
+
+local function OnEntityWake(inst)
+    inst:StopWatchingWorldState("isday", OnIsDay)
+    if inst._hometask ~= nil then
+        inst._hometask:Cancel()
+        inst._hometask = nil
+    end
 end
 
 local function fn()
@@ -168,6 +196,9 @@ local function fn()
     inst:ListenForEvent("attacked", OnAttacked)
 
     MakeHauntablePanic(inst)
+
+    inst.OnEntitySleep = OnEntitySleep
+    inst.OnEntityWake = OnEntityWake
 
     return inst
 end

@@ -91,8 +91,8 @@ function Health:SetInvincible(val)
     self.inst:PushEvent("invincibletoggle", { invincible = val })
 end
 
-function Health:ForceUpdateHUD()
-    self:DoDelta(0, false, nil, true, nil, true)
+function Health:ForceUpdateHUD(overtime)
+    self:DoDelta(0, overtime, nil, true, nil, true)
 end
 
 function Health:OnSave()
@@ -114,13 +114,13 @@ function Health:OnLoad(data)
     end
     if data.health ~= nil then
         self:SetVal(data.health, "file_load")
-        self:ForceUpdateHUD()
+        self:ForceUpdateHUD(true)
     elseif data.percent ~= nil then
         -- used for setpieces!
         -- SetPercent already calls ForceUpdateHUD
         self:SetPercent(data.percent, true, "file_load")
     elseif haspenalty then
-        self:ForceUpdateHUD()
+        self:ForceUpdateHUD(true)
     end
 end
 
@@ -225,7 +225,7 @@ end
 
 function Health:DeltaPenalty(delta)
     self:SetPenalty(self.penalty + delta)
-    self:ForceUpdateHUD() --handles capping health at max with penalty
+    self:ForceUpdateHUD(false) --handles capping health at max with penalty
 end
 
 function Health:GetPenaltyPercent()
@@ -255,7 +255,7 @@ end
 function Health:SetMaxHealth(amount)
     self.maxhealth = amount
     self.currenthealth = amount
-    self:ForceUpdateHUD() --handles capping health at max with penalty
+    self:ForceUpdateHUD(true) --handles capping health at max with penalty
 end
 
 function Health:SetMinHealth(amount)

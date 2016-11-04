@@ -1,4 +1,5 @@
 local TIMEOUT = 2
+local TechTree = require("techtree")
 
 --------------------------------------------------------------------------
 --Server interface
@@ -376,12 +377,9 @@ local function OnTemperatureDirty(inst)
 end
 
 local function OnTechTreesDirty(inst)
-    inst.techtrees.SCIENCE = inst.sciencelevel:value()
-    inst.techtrees.MAGIC = inst.magiclevel:value()
-    inst.techtrees.ANCIENT = inst.ancientlevel:value()
-    inst.techtrees.SHADOW = inst.shadowlevel:value()
-    inst.techtrees.CARTOGRAPHY = inst.cartographylevel:value()
-    inst.techtrees.SCULPTING = inst.sculptinglevel:value()
+    for i, v in ipairs(TechTree.AVAILABLE_TECH) do
+        inst.techtrees[v] = inst[string.lower(v).."level"]:value()
+    end
     if inst._parent ~= nil then
         inst._parent:PushEvent("techtreechange", { level = inst.techtrees })
     end
@@ -920,12 +918,11 @@ local function fn()
     inst.ancientbonus = net_tinybyte(inst.GUID, "builder.ancient_bonus")
     inst.shadowbonus = net_tinybyte(inst.GUID, "builder.shadow_bonus")
     inst.ingredientmod = net_tinybyte(inst.GUID, "builder.ingredientmod")
-    inst.sciencelevel = net_tinybyte(inst.GUID, "builder.accessible_tech_trees.SCIENCE", "techtreesdirty")
-    inst.magiclevel = net_tinybyte(inst.GUID, "builder.accessible_tech_trees.MAGIC", "techtreesdirty")
-    inst.ancientlevel = net_tinybyte(inst.GUID, "builder.accessible_tech_trees.ANCIENT", "techtreesdirty")
-    inst.shadowlevel = net_tinybyte(inst.GUID, "builder.accessible_tech_trees.SHADOW", "techtreesdirty")
-    inst.cartographylevel = net_tinybyte(inst.GUID, "builder.accessible_tech_trees.CARTOGRAPHY", "techtreesdirty")
-    inst.sculptinglevel = net_tinybyte(inst.GUID, "builder.accessible_tech_trees.SCULPTING", "techtreesdirty")
+    for i, v in ipairs(TechTree.AVAILABLE_TECH) do
+        local level = net_tinybyte(inst.GUID, "builder.accessible_tech_trees."..v, "techtreesdirty")
+        level:set(inst.techtrees[v])
+        inst[string.lower(v).."level"] = level
+    end
     inst.isfreebuildmode = net_bool(inst.GUID, "builder.freebuildmode", "recipesdirty")
     inst.recipes = {}
     inst.bufferedbuilds = {}
@@ -936,12 +933,6 @@ local function fn()
         end
     end
     inst.ingredientmod:set(INGREDIENT_MOD[1])
-    inst.sciencelevel:set(inst.techtrees.SCIENCE)
-    inst.magiclevel:set(inst.techtrees.MAGIC)
-    inst.ancientlevel:set(inst.techtrees.ANCIENT)
-    inst.shadowlevel:set(inst.techtrees.SHADOW)
-    inst.cartographylevel:set(inst.techtrees.CARTOGRAPHY)
-    inst.sculptinglevel:set(inst.techtrees.SCULPTING)
 
     --MapExplorer variables
     inst.learnmapevent = net_event(inst.GUID, "MapExplorer.learnmap")
