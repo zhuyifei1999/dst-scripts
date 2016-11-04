@@ -60,7 +60,7 @@ end
 
 local function OnDeath(inst)
     for k, v in pairs(inst.components.petleash:GetPets()) do
-        if v._killtask == nil then
+        if v:HasTag("shadowminion") and v._killtask == nil then
             v._killtask = v:DoTaskInTime(math.random(), KillPet)
         end
     end

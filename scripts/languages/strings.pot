@@ -68991,21 +68991,6 @@ msgctxt "STRINGS.NAMES.JELLYBEAN"
 msgid "Jellybeans"
 msgstr ""
 
-#. STRINGS.NAMES.JELLYBEAN1
-msgctxt "STRINGS.NAMES.JELLYBEAN1"
-msgid "Red Jellybeans"
-msgstr ""
-
-#. STRINGS.NAMES.JELLYBEAN2
-msgctxt "STRINGS.NAMES.JELLYBEAN2"
-msgid "Yellow Jellybeans"
-msgstr ""
-
-#. STRINGS.NAMES.JELLYBEAN3
-msgctxt "STRINGS.NAMES.JELLYBEAN3"
-msgid "Green Jellybeans"
-msgstr ""
-
 #. STRINGS.NAMES.KABOBS
 msgctxt "STRINGS.NAMES.KABOBS"
 msgid "Kabobs"

@@ -158,7 +158,7 @@ STRINGS =
         LOOKAT = "Examine",
         TALKTO = "Talk to",
         MINE = "Mine",
-        ATTACK = 
+        ATTACK =
         {
             GENERIC = "Attack",
             SMASHABLE = "Smash",
@@ -208,14 +208,14 @@ STRINGS =
             WALL = "Build Wall",
             TURRET = "Place",
         },
-        DEPLOY = 
+        DEPLOY =
         {
             GENERIC = "Plant",
             GROUNDTILE = "Place Ground",
             WALL = "Build Wall",
             TURRET = "Place",
         },
-        
+
         PLAY = "Play",
         NET = "Catch",
         CATCH = "Catch",
@@ -257,22 +257,23 @@ STRINGS =
         },
         TEACH = "Learn",
         TURNON = "Turn On",
-        TURNOFF = { 
-        			GENERIC = "Turn Off",
-        			EMERGENCY = "Emergency Mode",
-        		  },
+        TURNOFF =
+        {
+                    GENERIC = "Turn Off",
+                    EMERGENCY = "Emergency Mode",
+        },
         USEITEM = "Use",
         USEDOOR =
         {
-			OPEN = "Open",
-			CLOSE = "Close",
-		},
-        TAKEITEM = 
+            OPEN = "Open",
+            CLOSE = "Close",
+        },
+        TAKEITEM =
             {
                 GENERIC = "Take Item",
                 BIRDCAGE = "Muck Out",
             },
-        CASTSPELL = 
+        CASTSPELL =
             {   
                 GENERIC = "Cast Spell", --"Cast Spell on"
                 SCIENCE = "Use Gadget",
@@ -384,7 +385,7 @@ STRINGS =
         ICEBOX = "Ice Box",
         CARROT_SEEDS = "Carrot Seeds",
         CARTOGRAPHYDESK = "Cartography Desk",
-		PUMPKIN_SEEDS = "Pumpkin Seeds",
+        PUMPKIN_SEEDS = "Pumpkin Seeds",
         DRAGONFRUIT_SEEDS = "Dragon Fruit Seeds",
         POMEGRANATE_SEEDS = "Pomegranate Seeds",
         CORN_SEEDS = "Corn Seeds",
@@ -399,7 +400,7 @@ STRINGS =
         BIRD_EGG = "Egg",
         BIRD_EGG_COOKED = "Cooked Egg",
         ROTTENEGG = "Rotten Egg",
-        
+
         WINTEROMETER = "Thermal Measurer",
         RAINOMETER = "Rainometer",
         SPOILED_FOOD = "Rot",
@@ -429,7 +430,7 @@ STRINGS =
         BERRIES_JUICY_COOKED = "Roasted Juicy Berries",
         CAVE_ENTRANCE = "Plugged Sinkhole",
         CAVE_ENTRANCE_OPEN = "Sinkhole",
-        CAVE_ENTRANCE_OPEN_CAVE = "Deeper",  
+        CAVE_ENTRANCE_OPEN_CAVE = "Deeper",
         CAVE_ENTRANCE_RUINS = "Plugged Hole",
         MIGRATION_PORTAL = "Migration Portal",
         RABBITHOUSE = "Rabbit Hutch",
@@ -595,7 +596,7 @@ STRINGS =
         SIESTAHUT = "Siesta Lean-to",
         WARDROBE = "Wardrobe",
         PIGTORCH = "Pig Torch",
-        
+
         WILSON = "Wilson",
         WILLOW = "Willow",
         WENDY = "Wendy",
@@ -668,7 +669,7 @@ STRINGS =
         MANDRAKE = "Mandrake",
         COOKEDMANDRAKE = "Cooked Mandrake",
         REEDS = "Reeds",
-		MAPSCROLL = "Map Scroll",
+        MAPSCROLL = "Map Scroll",
         CUTREEDS = "Cut Reeds",
         MARSH_PLANT = "Plant",
         TUMBLEWEED = "Tumbleweed",
@@ -692,10 +693,6 @@ STRINGS =
         BEEHIVE = "Beehive",
         BEEBOX = "Bee Box",
         BEE = "Bee",
-        ROYAL_JELLY = "Royal Jelly",
-        JELLYBEAN1 = "Red Jellybeans", -- red
-        JELLYBEAN2 = "Yellow Jellybeans", -- yellow
-        JELLYBEAN3 = "Green Jellybeans", -- green
         DEVTOOL = "Dev Tool",
         KILLERBEE = "Killer Bee",
         WASPHIVE = "Killer Bee Hive",
@@ -727,7 +724,7 @@ STRINGS =
         FEATHER_ROBIN_WINTER = "Azure Feather",
         FEATHER_CANARY = "Saffron Feather",
         FEATHERPENCIL = "Feather Pencil",
-		BIRDTRAP = "Bird Trap",
+        BIRDTRAP = "Bird Trap",
         BLOWDART_SLEEP = "Sleep Dart",
         BLOWDART_FIRE = "Fire Dart",
         BLOWDART_PIPE = "Blow Dart",
@@ -735,7 +732,7 @@ STRINGS =
         BEEMINE = "Bee Mine",
         BEEMINE_MAXWELL = "Maxwell's Mosquito Trap",
         BIRDCAGE = "Birdcage",
-   		SCARECROW = "Friendly Scarecrow",
+        SCARECROW = "Friendly Scarecrow",
         SPIDERQUEEN = "Spider Queen",
         EARMUFFSHAT = "Rabbit Earmuffs",
         WINTERHAT = "Winter Hat",
@@ -748,14 +745,14 @@ STRINGS =
         SADDLE_BASIC = "Saddle",
         SADDLE_WAR = "War Saddle",
         SADDLE_RACE = "Glossamer Saddle",
-        
+
         TELEPORTATO_RING = "Ring Thing",
         TELEPORTATO_BOX = "Box Thing",
         TELEPORTATO_CRANK = "Crank Thing",
         TELEPORTATO_POTATO = "Metal Potato Thing",
         TELEPORTATO_BASE = "Wooden Thing",
         TELEPORTATO_CHECKMATE = "Wooden Thing",
-        
+
         TRINKET_1 = "Melty Marbles",
         TRINKET_2 = "Fake Kazoo",
         TRINKET_3 = "Gord's Knot",
@@ -836,7 +833,7 @@ STRINGS =
         SPIDERHAT = "Spiderhat",
         WORMHOLE = "Worm Hole",
         WORMHOLE_LIMITED_1 = "Sick Worm Hole",
-        
+
         WALL_WOOD_ITEM = "Wood Wall",
         WALL_STONE_ITEM = "Stone Wall",
         WALL_RUINS_ITEM = "Thulecite Wall",
@@ -848,12 +845,12 @@ STRINGS =
         WALL_RUINS = "Thulecite Wall",
         WALL_HAY = "Hay Wall",
         WALL_MOONROCK = "Moon Rock Wall",
-        
+
         FENCE = "Wood Fence",
         FENCE_ITEM = "Wood Fence",
         FENCE_GATE = "Wood Gate",
         FENCE_GATE_ITEM = "Wood Gate",
-        
+
         ANIMAL_TRACK = "Animal Track",
         DIRTPILE = "Suspicious Dirt Pile",
         KOALEFANT_SUMMER = "Koalefant",
@@ -865,7 +862,7 @@ STRINGS =
         TRUNKVEST_WINTER = "Puffy Vest",
         BOOMERANG = "Boomerang",
         BUSHHAT = "Bush Hat",
-        
+
         CRAWLINGHORROR = "Crawling Horror",
         TERRORBEAK = "Terrorbeak",
         CRAWLINGNIGHTMARE = "Crawling Nightmare",
@@ -874,7 +871,7 @@ STRINGS =
         NIGHTLIGHT = "Night Light",
         NIGHTSWORD = "Dark Sword",
         NIGHTSTICK = "Morning Star",
-        
+
         DEERCLOPS = "Deerclops",
         BLUEGEM = "Blue Gem",
 
@@ -895,7 +892,7 @@ STRINGS =
         NITRE = "Nitre",
         MAXWELLHEAD = "Maxwell's Head",
         DEADLYFEAST = "Deadly Feast",
-               
+
         SINKHOLE = "Basalt",
         BASALT = "Basalt",
         BASALT_PILLAR = "Basalt Pillar",
@@ -918,13 +915,13 @@ STRINGS =
         STATUE_MARBLE = "Marble Sculpture",
 
         SCULPTURE_KNIGHTHEAD = "Suspicious Marble",
-		SCULPTURE_KNIGHTBODY = "Marble Sculpture",
+        SCULPTURE_KNIGHTBODY = "Marble Sculpture",
         SCULPTURE_BISHOPHEAD = "Suspicious Marble",
-		SCULPTURE_BISHOPBODY = "Marble Sculpture",
+        SCULPTURE_BISHOPBODY = "Marble Sculpture",
         SCULPTURE_ROOKNOSE = "Suspicious Marble",
-		SCULPTURE_ROOKBODY = "Marble Sculpture",
+        SCULPTURE_ROOKBODY = "Marble Sculpture",
 
-		SCULPTINGTABLE = "Potter's Wheel",
+        SCULPTINGTABLE = "Potter's Wheel",
 
         GARGOYLE_HOUND = "Suspicious Moonrock",
         GARGOYLE_WEREPIG = "Suspicious Moonrock",
@@ -1114,7 +1111,7 @@ STRINGS =
 
         WATERMELON = "Watermelon",
         WATERMELON_COOKED = "Grilled Watermelon",
-        WATERMELONHAT = "Fashion Melon",        
+        WATERMELONHAT = "Fashion Melon",
         CATCOONHAT = "Cat Cap",
         CATCOON = "Catcoon",
         CATCOONDEN = "Hollow Stump",
