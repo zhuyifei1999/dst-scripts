@@ -1754,8 +1754,8 @@ function Tune(overrides)
         BEEQUEEN_AGGRO_DIST = 15,
         BEEQUEEN_DEAGGRO_DIST = 60,
 
-        BEEQUEEN_MIN_RESPAWN_TIME = total_day_time * 5,
-        BEEQUEEN_MAX_RESPAWN_TIME = total_day_time * 10,
+        BEEQUEEN_MIN_RESPAWN_TIME = total_day_time * 10,
+        BEEQUEEN_MAX_RESPAWN_TIME = total_day_time * 20,
 
         BEEQUEEN_EPICSCARE_RANGE = 10,
 

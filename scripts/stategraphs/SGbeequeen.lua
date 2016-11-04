@@ -355,6 +355,9 @@ local states =
                 if inst.persists then
                     inst.persists = false
                     inst.components.lootdropper:DropLoot(inst:GetPosition())
+                    if inst.hivebase ~= nil then
+                        inst.hivebase.queenkilled = true
+                    end
                 end
             end),
             TimeEvent(5, ErodeAway),

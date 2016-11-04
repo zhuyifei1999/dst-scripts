@@ -26,7 +26,19 @@ local MAX_WORK = 16
 local SPAWN_WORK_THRESHOLD = 12
 
 local function StartHiveGrowthTimer(inst)
-    inst.components.timer:StartTimer("hivegrowth", GetRandomMinMax(TUNING.BEEQUEEN_MIN_RESPAWN_TIME, TUNING.BEEQUEEN_MAX_RESPAWN_TIME))
+    if inst.queenkilled then
+        inst.components.timer:StartTimer("hivegrowth", GetRandomMinMax(TUNING.BEEQUEEN_MIN_RESPAWN_TIME, TUNING.BEEQUEEN_MAX_RESPAWN_TIME))
+        inst.queenkilled = false
+    else
+        inst.components.timer:StartTimer("shorthivegrowth", 10)
+    end
+    inst.queenkilled = false
+end
+
+local function StopHiveGrowthTimer(inst)
+    inst.components.timer:StopTimer("hivegrowth")
+    inst.components.timer:StopTimer("shorthivegrowth")
+    inst.queenkilled = false
 end
 
 local function OnQueenRemoved(queen)
@@ -36,6 +48,31 @@ local function OnQueenRemoved(queen)
             queen.hivebase.components.entitytracker:GetEntity("hive") == nil then
             StartHiveGrowthTimer(queen.hivebase)
         end
+    end
+end
+
+local function DoSpawnQueen(inst, worker, x1, y1, z1)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local hivebase = inst.hivebase
+    inst:Remove()
+
+    local queen = SpawnPrefab("beequeen")
+    queen.Transform:SetPosition(x, y, z)
+    queen:ForceFacePoint(x1, y1, z1)
+
+    if worker:IsValid() and
+        worker.components.health ~= nil and
+        not worker.components.health:IsDead() and
+        not worker:HasTag("playerghost") then
+        queen.components.combat:SetTarget(worker)
+    end
+
+    queen.sg:GoToState("emerge")
+    if hivebase ~= nil then
+        queen.hivebase = hivebase
+        StopHiveGrowthTimer(hivebase)
+        hivebase.components.entitytracker:TrackEntity("queen", queen)
+        hivebase:ListenForEvent("onremove", OnQueenRemoved, queen)
     end
 end
 
@@ -60,31 +97,8 @@ local function OnWorked(inst, worker, workleft)
         local spawnchance = workleft < SPAWN_WORK_THRESHOLD and math.min(.8, 1 - workleft / SPAWN_WORK_THRESHOLD) or 0
         if math.random() < spawnchance then
             inst.components.workable:SetWorkable(false)
-            local x1, y1, z1 = worker.Transform:GetWorldPosition()
-            inst:ListenForEvent("animover", function()
-                local x, y, z = inst.Transform:GetWorldPosition()
-                local hivebase = inst.hivebase
-                inst:Remove()
-
-                local queen = SpawnPrefab("beequeen")
-                queen.Transform:SetPosition(x, y, z)
-                queen:ForceFacePoint(x1, y1, z1)
-
-                if worker:IsValid() and
-                    worker.components.health ~= nil and
-                    not worker.components.health:IsDead() and
-                    not worker:HasTag("playerghost") then
-                    queen.components.combat:SetTarget(worker)
-                end
-
-                queen.sg:GoToState("emerge")
-                if hivebase ~= nil then
-                    queen.hivebase = hivebase
-                    hivebase.components.timer:StopTimer("hivegrowth")
-                    hivebase.components.entitytracker:TrackEntity("queen", queen)
-                    hivebase:ListenForEvent("onremove", OnQueenRemoved, queen)
-                end
-            end)
+            local x, y, z = worker.Transform:GetWorldPosition()
+            inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength(), DoSpawnQueen, worker, x, y, z)
             return
         end
 
@@ -133,6 +147,7 @@ local function OnHiveRemoved(hive)
             hive.hivebase.AnimState:PlayAnimation("grow")
             hive.hivebase.AnimState:PushAnimation("idle", false)
             hive.hivebase.Physics:SetActive(true)
+            hive.hivebase.MiniMapEntity:SetEnabled(true)
             hive.hivebase:RemoveTag("NOCLICK")
 
             if hive.hivebase.components.entitytracker:GetEntity("queen") == nil then
@@ -143,10 +158,11 @@ local function OnHiveRemoved(hive)
 end
 
 local function OnHiveGrowthTimer(inst, data)
-    if data.name == "hivegrowth" then
+    if data.name == "hivegrowth" or data.name == "shorthivegrowth" then
         inst.AnimState:PlayAnimation("shrink")
         inst.AnimState:PushAnimation("empty", false)
         inst.Physics:SetActive(false)
+        inst.MiniMapEntity:SetEnabled(false)
         inst:AddTag("NOCLICK")
 
         local hive = SpawnPrefab("beequeenhivegrown")
@@ -154,6 +170,9 @@ local function OnHiveGrowthTimer(inst, data)
         hive.AnimState:PlayAnimation("grow")
         hive.components.workable:SetWorkable(false)
         hive:ListenForEvent("animover", OnHiveGrowAnimOver)
+        if data.name == "shorthivegrowth" then
+            hive.components.workable:SetWorkLeft(1)
+        end
 
         hive.hivebase = inst
         inst.components.entitytracker:TrackEntity("hive", hive)
@@ -165,9 +184,10 @@ local function OnBaseLoadPostPass(inst, newents, data)
     local hive = inst.components.entitytracker:GetEntity("hive")
     if hive ~= nil then
         hive.hivebase = inst
-        inst.components.timer:StopTimer("hivegrowth")
+        StopHiveGrowthTimer(inst)
         inst.AnimState:PlayAnimation("empty")
         inst.Physics:SetActive(false)
+        inst.MiniMapEntity:SetEnabled(false)
         inst:AddTag("NOCLICK")
         inst:ListenForEvent("onremove", OnHiveRemoved, hive)
     end
@@ -175,9 +195,21 @@ local function OnBaseLoadPostPass(inst, newents, data)
     local queen = inst.components.entitytracker:GetEntity("queen")
     if queen ~= nil then
         queen.hivebase = inst
-        inst.components.timer:StopTimer("hivegrowth")
+        StopHiveGrowthTimer(inst)
         inst:ListenForEvent("onremove", OnQueenRemoved, queen)
     end
+end
+
+local function OnBaseLoad(inst, data)
+    if data ~= nil and data.queenkilled then
+        StopHiveGrowthTimer(inst)
+        inst.queenkilled = true
+        StartHiveGrowthTimer(inst)
+    end
+end
+
+local function OnBaseSave(inst, data)
+    data.queenkilled = inst.queenkilled or nil
 end
 
 local function fn()
@@ -261,12 +293,15 @@ local function base_fn()
     inst:AddComponent("inspectable")
 
     inst:AddComponent("timer")
-    StartHiveGrowthTimer(inst)
+    inst.queenkilled = false
+    inst.components.timer:StartTimer("hivegrowth", 10)
     inst:ListenForEvent("timerdone", OnHiveGrowthTimer)
 
     inst:AddComponent("entitytracker")
 
-    inst.LoadPostPass = OnBaseLoadPostPass
+    inst.OnLoadPostPass = OnBaseLoadPostPass
+    inst.OnLoad = OnBaseLoad
+    inst.OnSave = OnBaseSave
 
     return inst
 end
