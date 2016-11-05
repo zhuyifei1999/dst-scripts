@@ -250,6 +250,8 @@ local function fn()
     inst.components.workable:SetWorkLeft(MAX_WORK)
     inst.components.workable.savestate = true
 
+    MakeHauntableWork(inst)
+
     return inst
 end
 

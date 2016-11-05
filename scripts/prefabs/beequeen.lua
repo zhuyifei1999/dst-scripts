@@ -40,11 +40,6 @@ local brain = require("brains/beequeenbrain")
 
 local PHYS_RAD = 1.4
 
-local function RetargetFn(inst)
-    local player, distsq = inst:GetNearestPlayer()
-    return distsq ~= nil and distsq < 225 and player or nil
-end
-
 local function UpdatePlayerTargets(inst)
     local toadd = {}
     local toremove = {}
@@ -97,9 +92,9 @@ local function KeepTargetFn(inst, target)
 end
 
 local function OnAttacked(inst, data)
-    if inst.components.combat:HasTarget() and
-        inst.components.combat.target:HasTag("player") and
-        not inst.components.combat.target:IsNear(inst, TUNING.BEEQUEEN_AGGRO_DIST) then
+    if not (inst.components.combat:HasTarget() and
+            inst.components.combat.target:HasTag("player") and
+            inst.components.combat.target:IsNear(inst, TUNING.BEEQUEEN_AGGRO_DIST)) then
         inst.components.combat:SetTarget(data.attacker)
     end
     inst.components.commander:ShareTargetToAllSoldiers(data.attacker)
