@@ -372,6 +372,13 @@ local function OnTemperatureDirty(inst)
         elseif temperature < 0 then
             inst._parent:PushEvent("startfreezing")
         end
+        if oldtemperature > TUNING.OVERHEAT_TEMP then
+            if temperature <= TUNING.OVERHEAT_TEMP then
+                inst._parent:PushEvent("stopoverheating")
+            end
+        elseif temperature > TUNING.OVERHEAT_TEMP then
+            inst._parent:PushEvent("startoverheating")
+        end
         inst._parent:PushEvent("temperaturedelta", data)
     end
 end
