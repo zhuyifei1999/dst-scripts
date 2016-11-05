@@ -351,6 +351,14 @@ local function OnHealthTrigger(inst)
     inst.components.rampingspawner:Start() 
 end
 
+local function ShouldSleep(inst)
+    return false
+end
+
+local function ShouldWake(inst)
+    return true
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -450,6 +458,9 @@ local function fn()
     inst.components.combat:SetHurtSound("dontstarve_DLC001/creatures/dragonfly/hurt")
 
     inst.components.sleeper:SetResistance(4)
+    inst.components.sleeper:SetSleepTest(ShouldSleep)
+    inst.components.sleeper:SetWakeTest(ShouldWake)
+    inst.components.sleeper.diminishingreturns = true
 
     inst.components.lootdropper:SetChanceLootTable("dragonfly")
 

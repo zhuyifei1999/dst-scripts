@@ -10,7 +10,7 @@ local Widget = require "widgets/widget"
 require "os"
 
 local ANR_BETA_COUNTDOWN_LAYOUT = BRANCH == "staging"
-local ANR_BETA_COUNTDOWN_DATE = {year = 2016, day = 3, month = 11, hour = 13}
+local ANR_BETA_COUNTDOWN_DATE = {year = 2016, day = 3, month = 11, hour = 23}
 local ANR_BETA_COUNTDOWN_MODE = "released"										-- "text", "image", "reveal", "released"
 local ANR_BETA_COUNTDOWN_IMAGE = "silhouette_beta_4"			                -- "silhouette_beta_1", "silhouette_beta_2"
 local ANR_BETA_COUNTDOWN_NAME = "\"Cute Fuzzy Animals\""						-- nil, "\"A Little Fixer Upper\"", "\"Warts And All\"", "\"Arts and Crafts\""

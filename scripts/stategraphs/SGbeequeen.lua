@@ -229,6 +229,7 @@ local states =
         tags = { "busy", "nosleep", "nofreeze", "noattack" },
 
         onenter = function(inst)
+            StopFlapping(inst)
             inst.Transform:SetNoFaced()
             inst.components.locomotor:StopMoving()
             inst.components.health:SetInvincible(true)
@@ -242,6 +243,7 @@ local states =
             TimeEvent(4 * FRAMES, ShakeIfClose),
             TimeEvent(31 * FRAMES, DoScreech),
             TimeEvent(32 * FRAMES, DoScreechAlert),
+            TimeEvent(35 * FRAMES, StartFlapping),
             CommonHandlers.OnNoSleepTimeEvent(54 * FRAMES, function(inst)
                 inst.sg:RemoveStateTag("busy")
                 inst.sg:RemoveStateTag("nosleep")
@@ -256,6 +258,7 @@ local states =
         },
 
         onexit = function(inst)
+            RestoreFlapping(inst)
             inst.Transform:SetSixFaced()
             inst.components.health:SetInvincible(false)
         end,
@@ -449,7 +452,12 @@ local states =
         {
             TimeEvent(16 * FRAMES, function(inst)
                 inst.sg.mem.wantstospawnguards = nil
-                inst.components.timer:StartTimer("spawnguards_cd", inst.spawnguards_cd)
+                if inst.spawnguards_chain < inst.spawnguards_maxchain then
+                    inst.spawnguards_chain = inst.spawnguards_chain + 1
+                else
+                    inst.spawnguards_chain = 0
+                    inst.components.timer:StartTimer("spawnguards_cd", inst.spawnguards_cd)
+                end
 
                 local oldnum = inst.components.commander:GetNumSoldiers()
                 local x, y, z = inst.Transform:GetWorldPosition()

@@ -1511,7 +1511,7 @@ end
 
 function EntityScript:GetAdjective()
     if self:HasTag("small_livestock") then
-        return not self:HasTag("sickness")
+        return not (self:HasTag("critter") or self:HasTag("sickness"))
             and ((self:HasTag("stale") and STRINGS.UI.HUD.HUNGRY) or
                 (self:HasTag("spoiled") and STRINGS.UI.HUD.STARVING))
             or nil

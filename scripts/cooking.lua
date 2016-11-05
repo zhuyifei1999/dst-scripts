@@ -140,7 +140,10 @@ local function GetIngredientValues(prefablist)
 	return {tags = tags, names = prefabs}
 end
 
-
+local function GetRecipe(cooker, product)
+	local recipes = cookerrecipes[cooker] or {}
+	return recipes[product]
+end
 
 function GetCandidateRecipes(cooker, ingdata)
 
@@ -239,5 +242,5 @@ end
 --TestRecipes("cookpot", {"tallbirdegg","meat","carrot","meat"})
 
 
-return { CalculateRecipe = CalculateRecipe, IsCookingIngredient = IsCookingIngredient, recipes = cookerrecipes, ingredients=ingredients}
+return { CalculateRecipe = CalculateRecipe, IsCookingIngredient = IsCookingIngredient, recipes = cookerrecipes, ingredients = ingredients, GetRecipe = GetRecipe}
 

@@ -30,15 +30,15 @@ local function fn()
     end
 
     inst:AddComponent("edible")
-    inst.components.edible.healthvalue = TUNING.HEALING_MED
-    inst.components.edible.hungervalue = TUNING.CALORIES_MED
+    inst.components.edible.healthvalue = TUNING.HEALING_LARGE
+    inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
     inst.components.edible.sanityvalue = TUNING.SANITY_MED
 
     inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
     inst:AddComponent("perishable")
-    inst.components.perishable:SetPerishTime(TUNING.PERISH_SUPERSLOW)
+    inst.components.perishable:SetPerishTime(TUNING.PERISH_MED)
     inst.components.perishable:StartPerishing()
     inst.components.perishable.onperishreplacement = "spoiled_food"
 

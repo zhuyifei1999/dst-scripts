@@ -28,9 +28,10 @@ local FLOWER_SWAPS =
 
 local FLOWER_MAP =
 {
-	petals		= {flowerids={1, 2, 3, 4, 6, 10, 11, 12}},
-	lightbulb	= {flowerids={5, 7, 8}},
-	wormlight	= {flowerids={9}},
+	petals				= {flowerids={1, 2, 3, 4, 6, 10, 11, 12}},
+	lightbulb			= {flowerids={5, 7, 8}},
+	wormlight			= {flowerids={9}},
+	wormlight_lesser	= {flowerids={9}},
 }
 
 local function HasFreshFlowers(inst)

@@ -168,6 +168,7 @@ local function OnHiveGrowthTimer(inst, data)
         local hive = SpawnPrefab("beequeenhivegrown")
         hive.Transform:SetPosition(inst.Transform:GetWorldPosition())
         hive.AnimState:PlayAnimation("grow")
+        hive.SoundEmitter:PlaySound("dontstarve/common/mushroom_up")
         hive.components.workable:SetWorkable(false)
         hive:ListenForEvent("animover", OnHiveGrowAnimOver)
         if data.name == "shorthivegrowth" then

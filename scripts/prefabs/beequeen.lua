@@ -23,15 +23,14 @@ SetSharedLootTable( 'beequeen',
     {'royal_jelly',      1.00},
     {'royal_jelly',      1.00},
     {'royal_jelly',      0.50},
-    {'honeycomb',	     1.00},
-    {'honeycomb',	     0.50},
-    {'honey',		     1.00},
-    {'honey',		     1.00},
-    {'honey',		     1.00},
-    {'honey',		     0.50},
-    {'stinger',		     1.00},
+    {'honeycomb',        1.00},
+    {'honeycomb',        0.50},
+    {'honey',            1.00},
+    {'honey',            1.00},
+    {'honey',            1.00},
+    {'honey',            0.50},
+    {'stinger',          1.00},
 })
-
 
 --------------------------------------------------------------------------
 
@@ -115,6 +114,7 @@ local PHASE4_HEALTH = .25
 local function SetPhaseLevel(inst, phase)
     inst.focustarget_cd = TUNING.BEEQUEEN_FOCUSTARGET_CD[phase]
     inst.spawnguards_cd = TUNING.BEEQUEEN_SPAWNGUARDS_CD[phase]
+    inst.spawnguards_maxchain = TUNING.BEEQUEEN_SPAWNGUARDS_CHAIN[phase]
     inst.spawnguards_threshold = phase > 1 and TUNING.BEEQUEEN_TOTAL_GUARDS or 1
 end
 
@@ -156,6 +156,35 @@ end
 
 --------------------------------------------------------------------------
 
+local function OnEntitySleep(inst)
+    if inst._sleeptask ~= nil then
+        inst._sleeptask:Cancel()
+    end
+    inst._sleeptask = not inst.components.health:IsDead() and inst:DoTaskInTime(10, inst.Remove) or nil
+end
+
+local function OnEntityWake(inst)
+    if inst._sleeptask ~= nil then
+        inst._sleeptask:Cancel()
+        inst._sleeptask = nil
+    end
+end
+
+--------------------------------------------------------------------------
+
+local function PushMusic(inst)
+    if ThePlayer == nil then
+        inst._playingmusic = false
+    elseif ThePlayer:IsNear(inst, inst._playingmusic and 30 or 20) then
+        inst._playingmusic = true
+        ThePlayer:PushEvent("triggeredevent", { name = "beequeen" })
+    elseif inst._playingmusic and not ThePlayer:IsNear(inst, 40) then
+        inst._playingmusic = false
+    end
+end
+
+--------------------------------------------------------------------------
+
 local function fn()
     local inst = CreateEntity()
 
@@ -178,6 +207,7 @@ local function fn()
     inst.AnimState:PlayAnimation("idle_loop", true)
 
     inst:AddTag("epic")
+    inst:AddTag("bee")
     inst:AddTag("insect")
     inst:AddTag("monster")
     inst:AddTag("hostile")
@@ -186,6 +216,9 @@ local function fn()
     inst:AddTag("flying")
 
     inst.SoundEmitter:PlaySound("dontstarve/creatures/together/bee_queen/wings_LP", "flying")
+
+    inst._playingmusic = false
+    inst:DoPeriodicTask(1, PushMusic, 0)
 
     inst.entity:SetPristine()
 
@@ -203,6 +236,7 @@ local function fn()
     inst.components.sleeper:SetResistance(4)
     inst.components.sleeper:SetSleepTest(ShouldSleep)
     inst.components.sleeper:SetWakeTest(ShouldWake)
+    inst.components.sleeper.diminishingreturns = true
 
     inst:AddComponent("locomotor")
     inst.components.locomotor.pathcaps = { ignorewalls = true }
@@ -240,14 +274,18 @@ local function fn()
 
     MakeLargeBurnableCharacter(inst, "swap_fire")
     MakeHugeFreezableCharacter(inst, "hive_body")
+    inst.components.freezable.diminishingreturns = true
 
     inst:SetStateGraph("SGbeequeen")
     inst:SetBrain(brain)
 
     inst.hit_recovery = 1
+    inst.spawnguards_chain = 0
     SetPhaseLevel(inst, 1)
 
     inst.OnLoad = OnLoad
+    inst.OnEntitySleep = OnEntitySleep
+    inst.OnEntityWake = OnEntityWake
 
     inst:ListenForEvent("attacked", OnAttacked)
 

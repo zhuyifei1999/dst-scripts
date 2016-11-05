@@ -38,6 +38,7 @@ local function MakeCandy(num)
         inst:AddTag("molebait")
         inst:AddTag("cattoy")
         inst:AddTag("halloweencandy")
+        inst:AddTag("show_spoilage")
 
         inst.entity:SetPristine()
 

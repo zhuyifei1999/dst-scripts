@@ -68093,12 +68093,12 @@ msgstr ""
 
 #. STRINGS.NAMES.CRITTER_KITTEN
 msgctxt "STRINGS.NAMES.CRITTER_KITTEN"
-msgid "Kittycoon"
+msgid "Kittykit"
 msgstr ""
 
 #. STRINGS.NAMES.CRITTER_KITTEN_BUILDER
 msgctxt "STRINGS.NAMES.CRITTER_KITTEN_BUILDER"
-msgid "Kittycoon"
+msgid "Kittykit"
 msgstr ""
 
 #. STRINGS.NAMES.CRITTER_LAMB
@@ -72913,7 +72913,7 @@ msgstr ""
 
 #. STRINGS.RECIPE_DESC.CRITTER_KITTEN_BUILDER
 msgctxt "STRINGS.RECIPE_DESC.CRITTER_KITTEN_BUILDER"
-msgid "Befriend a clever Kittycoon."
+msgid "Befriend a clever Kittykit."
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.CRITTER_LAMB_BUILDER

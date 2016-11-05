@@ -42,15 +42,25 @@ local ItemTile = Class(Widget, function(self, invitem)
     self.wetness:Hide()
     self.wetness:SetClickable(false)
 
+    self.nonperishablefood = self:AddChild(UIAnim())
+    self.nonperishablefood:GetAnimState():SetBank("wet_meter")
+    self.nonperishablefood:GetAnimState():SetBuild("wet_meter")
+    self.nonperishablefood:GetAnimState():PlayAnimation("nonperishable")
+    self.nonperishablefood:Hide()
+    self.nonperishablefood:SetClickable(false)
+
     self.image = self:AddChild(Image(invitem.replica.inventoryitem:GetAtlas(), invitem.replica.inventoryitem:GetImage(), "default.tex"))
     --self.image:SetClickable(false)
 
-    if self.item.prefab == "spoiled_food" or self:HasSpoilage() then
+	local hasspoilage = self:HasSpoilage()
+    if self.item.prefab == "spoiled_food" or hasspoilage then
         self.bg:Show()
     end
-    
-    if self:HasSpoilage() then
+
+    if hasspoilage then
         self.spoilage:Show()
+    elseif self:IsNonPerishableFood() then
+		self.nonperishablefood:Show()
     end
 
     self.inst:ListenForEvent("imagechange",
@@ -309,6 +319,7 @@ function ItemTile:StartDrag()
         self.spoilage:Hide()
         self.wetness:Hide()
         self.bg:Hide()
+        self.nonperishablefood:Hide()
         self.image:SetClickable(false)
     end
 end
@@ -325,6 +336,15 @@ function ItemTile:HasSpoilage()
         end
     end
     return false
+end
+
+function ItemTile:IsNonPerishableFood() -- non-perishable items that are marked with "show_spoilage" tag will have a bright green backing
+    if self.item:HasTag("show_spoilage") then
+	    if not (self.item:HasTag("fresh") or self.item:HasTag("stale") or self.item:HasTag("spoiled")) then
+            return true
+		end
+	end	
+	return false
 end
 
 return ItemTile

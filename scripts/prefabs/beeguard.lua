@@ -51,12 +51,22 @@ local function EnableBuzz(inst, enable)
 end
 
 local function OnEntityWake(inst)
+    if inst._sleeptask ~= nil then
+        inst._sleeptask:Cancel()
+        inst._sleeptask = nil
+    end
+
     if inst.buzzing then
         inst.SoundEmitter:PlaySound(inst.sounds.buzz, "buzz")
     end
 end
 
 local function OnEntitySleep(inst)
+    if inst._sleeptask ~= nil then
+        inst._sleeptask:Cancel()
+    end
+    inst._sleeptask = not inst.components.health:IsDead() and inst:DoTaskInTime(10, inst.Remove) or nil
+
     inst.SoundEmitter:KillSound("buzz")
 end
 
@@ -91,7 +101,7 @@ local function KeepTargetFn(inst, target)
 end
 
 local function CanShareTarget(dude)
-    return dude:HasTag("bee") and not (dude:IsInLimbo() or dude.components.health:IsDead())
+    return dude:HasTag("bee") and not (dude:IsInLimbo() or dude.components.health:IsDead() or dude:HasTag("epic"))
 end
 
 local function OnAttacked(inst, data)

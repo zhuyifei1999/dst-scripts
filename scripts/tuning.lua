@@ -1641,10 +1641,6 @@ function Tune(overrides)
         TOADSTOOL_AGGRO_DIST = 15,
         TOADSTOOL_RESPAWN_TIME = total_day_time * 20,
 
-        --Base values b4 factoring in diminishing returns
-        TOADSTOOL_FREEZE_WEAR_OFF_TIME = 10,
-        TOADSTOOL_FREEZE_RESIST = 4,
-
         --TOADSTOOL stats are scaled by level [0..3] and phase [1..3]
         TOADSTOOL_SPEED_LVL =
         {
@@ -1759,7 +1755,8 @@ function Tune(overrides)
 
         BEEQUEEN_EPICSCARE_RANGE = 10,
 
-        BEEQUEEN_SPAWNGUARDS_CD = { 18, 12, 12, 10 },
+        BEEQUEEN_SPAWNGUARDS_CD = { 18, 16, 7, 12 },
+        BEEQUEEN_SPAWNGUARDS_CHAIN = { 0, 1, 0, 1 },
 
         BEEQUEEN_FOCUSTARGET_CD = { 0, 0, 20, 16 },
         BEEQUEEN_FOCUSTARGET_RANGE = 20,

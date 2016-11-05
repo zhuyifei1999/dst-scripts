@@ -33,6 +33,11 @@ local function MakePreparedFood(data)
         inst.AnimState:PlayAnimation(data.name, false)
 
         inst:AddTag("preparedfood")
+        if data.tags then
+            for i,v in pairs(data.tags) do
+                inst:AddTag(v)
+            end
+        end
 
         inst.entity:SetPristine()
 
@@ -57,17 +62,13 @@ local function MakePreparedFood(data)
         inst:AddComponent("stackable")
         inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
-        inst:AddComponent("perishable")
-        inst.components.perishable:SetPerishTime(data.perishtime or TUNING.PERISH_SLOW)
-        inst.components.perishable:StartPerishing()
-        inst.components.perishable.onperishreplacement = "spoiled_food"
-
-        if data.tags then
-            for i,v in pairs(data.tags) do
-                inst:AddTag(v)
-            end
-        end
-
+		if data.perishtime ~= nil and data.perishtime > 0 then
+			inst:AddComponent("perishable")
+			inst.components.perishable:SetPerishTime(data.perishtime)
+			inst.components.perishable:StartPerishing()
+			inst.components.perishable.onperishreplacement = "spoiled_food"
+		end
+		
         MakeSmallBurnable(inst)
         MakeSmallPropagator(inst)
         MakeHauntableLaunchAndPerish(inst)

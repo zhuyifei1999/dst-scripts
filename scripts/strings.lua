@@ -1128,13 +1128,13 @@ STRINGS =
 
         CRITTER_LAMB = "Ewelet",
         CRITTER_PUPPY = "Vargling",
-        CRITTER_KITTEN = "Kittycoon",
+        CRITTER_KITTEN = "Kittykit",
         CRITTER_DRAGONLING = "Broodling",
         CRITTER_GLOMLING = "Glomglom",
 
         CRITTER_LAMB_BUILDER = "Ewelet",
         CRITTER_PUPPY_BUILDER = "Vargling",
-        CRITTER_KITTEN_BUILDER = "Kittycoon",
+        CRITTER_KITTEN_BUILDER = "Kittykit",
         CRITTER_DRAGONLING_BUILDER = "Broodling",
         CRITTER_GLOMLING_BUILDER = "Glomglom",
 
@@ -1490,7 +1490,7 @@ STRINGS =
 
         CRITTER_GLOMLING_BUILDER = "Befriend a bouncy Glomglom.",
         CRITTER_DRAGONLING_BUILDER = "Befriend a noble Broodling.",
-        CRITTER_KITTEN_BUILDER = "Befriend a clever Kittycoon.",
+        CRITTER_KITTEN_BUILDER = "Befriend a clever Kittykit.",
         CRITTER_PUPPY_BUILDER = "Befriend a loyal Vargling.",
         CRITTER_LAMB_BUILDER = "Befriend a fluffy Ewelet.",
 

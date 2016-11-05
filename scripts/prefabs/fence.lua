@@ -74,7 +74,7 @@ local function keeptargetfn()
 end
 
 local function onhammered(inst, worker)
-    inst.components.lootdropper:SpawnLootPrefab("twigs")
+	inst.components.lootdropper:DropLoot()
 
     local fx = SpawnPrefab("collapse_small")
     fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
@@ -84,7 +84,7 @@ local function onhammered(inst, worker)
 end
 
 local function onworked(inst)
-	inst.AnimState:PlayAnimation(inst.isopen and "hit_open" or "hit")
+	inst.AnimState:PlayAnimation((inst._isopen and inst._isopen:value()) and "hit_open" or "hit")
 end
 
 local function onhit(inst, attacker, damage)
@@ -93,7 +93,7 @@ end
 
 -------------------------------------------------------------------------------
 local function OpenDoor(inst, skiptransition)
-	inst.isopen = true
+    inst._isopen:set(true)
 	clearobstacle(inst)
 
 	if not skiptransition then
@@ -104,7 +104,7 @@ local function OpenDoor(inst, skiptransition)
 end
 
 local function CloseDoor(inst, skiptransition)
-	inst.isopen = false
+    inst._isopen:set(false)
 	makeobstacle(inst)
 
 	if not skiptransition then
@@ -116,7 +116,7 @@ end
 
 local function ToggleDoor(inst)
 	inst.components.activatable.inactive = true
-	if inst.isopen then
+	if inst._isopen:value() then
 		CloseDoor(inst)
 	else
 		OpenDoor(inst)
@@ -124,7 +124,7 @@ local function ToggleDoor(inst)
 end
 
 local function getdooractionstring(inst)
-    return inst.isopen and "CLOSE" or "OPEN"
+    return inst._isopen:value() and "CLOSE" or "OPEN"
 end
 -------------------------------------------------------------------------------
 
@@ -133,7 +133,7 @@ local function onsave(inst, data)
 		data.rotation = inst.Transform:GetRotation()
 	end
 	
-	if inst.isopen then
+	if inst._isopen and inst._isopen:value() then
 		data.isopen = true
 	end
 end
@@ -144,7 +144,7 @@ local function onload(inst, data)
 			inst.isaligned = true
 	        inst.Transform:SetRotation(data.rotation)
 	    end
-   
+
   		if data.isopen then
 	        OpenDoor(inst, true)
 	    end
@@ -167,7 +167,7 @@ local function MakeWall(name, animdata, isdoor)
 
 		inst.Transform:SetEightFaced()
 
-		MakeObstaclePhysics(inst, .45)
+		MakeObstaclePhysics(inst, .5)
 		inst.Physics:SetDontRemoveOnSleep(true)
 
 		inst:AddTag("wall")
@@ -180,6 +180,7 @@ local function MakeWall(name, animdata, isdoor)
 
 		if isdoor then
 			inst.AnimState:SetFinalOffset(1)
+            inst._isopen = net_bool(inst.GUID, "fence_gate._open")
 		end
 
 		MakeSnowCoveredPristine(inst)
@@ -203,6 +204,11 @@ local function MakeWall(name, animdata, isdoor)
 
 		inst:AddComponent("inspectable")
 		inst:AddComponent("lootdropper")
+		if isdoor then
+		    inst.components.lootdropper:SetLoot({"boards", "boards", "rope"})
+		else
+		    inst.components.lootdropper:SetLoot({"twigs"})
+		end
 
 		inst:AddComponent("workable")
 		inst.components.workable:SetWorkAction(ACTIONS.HAMMER)

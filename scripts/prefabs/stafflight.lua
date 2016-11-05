@@ -11,6 +11,7 @@ local function kill_light(inst)
     inst:ListenForEvent("animover", kill_sound)
     inst:DoTaskInTime(1, inst.Remove) --originally 0.6, padded for network
     inst.persists = false
+    inst._killed = true
 end
 
 local function ontimer(inst, data)
@@ -65,7 +66,7 @@ local function makestafflight(name, is_hot, anim, colour, idles, is_fx)
 
     local PlayRandomStarIdle = #idles > 1 and function(inst)
         --Don't if we're extinguished
-        if inst.persists then
+        if not inst._killed then
             inst.AnimState:PlayAnimation(idles[math.random(#idles)])
         end
     end or nil
@@ -101,7 +102,8 @@ local function makestafflight(name, is_hot, anim, colour, idles, is_fx)
         inst:AddTag("HASHEATER")
 
         if is_fx then
-            inst:AddTag("FX")
+            --V2C: FX/NOCLICK will prevent sanity aura from working
+            --inst:AddTag("FX")
 
             inst.Transform:SetScale(.92, .92, .92)
 
