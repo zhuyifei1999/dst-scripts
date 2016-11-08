@@ -45,15 +45,6 @@ function PetLeash:IsFull()
     return self.numpets >= self.maxpets
 end
 
-function PetLeash:HasPetWithTag(tag)
-    for k, v in pairs(self.pets) do
-        if v:HasTag(tag) then
-            return true
-        end
-    end
-    return false
-end
-
 function PetLeash:GetPets()
     return self.pets
 end

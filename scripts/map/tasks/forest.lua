@@ -201,7 +201,6 @@ AddTask("Dig that rock", {
 		room_choices={
 			["Graveyard"] = 1,
 			["Rocky"] = function() return 1 + math.random(SIZE_VARIATION) end, 
-			["CritterDen"] = function() return 1 end, 
 			["Forest"] = function() return math.random(SIZE_VARIATION) end, 
 			["Clearing"] = function() return math.random(SIZE_VARIATION) end,
 		},
@@ -829,9 +828,8 @@ AddTask("Beeeees!", {
 		room_choices={
 			["BeeClearing"] = 1, 
 			--["Wormhole"] = 1,
-			["Forest"] = function() return math.random(SIZE_VARIATION)-1 end, 
-			["BeeQueenBee"] = 1,
-			["FlowerPatch"] = function() return math.random(SIZE_VARIATION) end,
+			["Forest"] = function() return math.random(SIZE_VARIATION) end, 
+			["FlowerPatch"] = function() return math.random(SIZE_VARIATION) end, 
 		},  
 		room_bg=GROUND.GRASS,
 		background_room="BGGrass",

@@ -18,8 +18,6 @@ local function fn()
 
     MakeDragonflyBait(inst, 3)
 
-	inst:AddTag("show_spoilage")
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

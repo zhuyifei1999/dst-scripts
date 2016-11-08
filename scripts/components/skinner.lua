@@ -11,14 +11,11 @@ local clothing_order = { "legs", "body", "feet", "hand" }
 function SetSkinMode( anim_state, prefab, base_skin, clothing_names, skintype, default_build )
 	skintype = skintype or "normal_skin"
 	default_build = default_build or ""
-	base_skin = base_skin or ""
 	
 	--print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 	--print(prefab, base_skin)
 	
-	if skintype ~= "NO_BASE" then
-		anim_state:SetSkin(base_skin, default_build)
-	end
+	anim_state:SetSkin(base_skin, default_build)
 	for _,sym in pairs(CLOTHING_SYMBOLS) do
 		anim_state:ClearOverrideSymbol(sym)
 	end
@@ -215,6 +212,19 @@ function SetSkinMode( anim_state, prefab, base_skin, clothing_names, skintype, d
 	end
 end
 
+function ClearClothing( anim_state, clothing_names )
+	for _,name in pairs(clothing_names) do
+		if name ~= nil and name ~= "" and CLOTHING[name] ~= nil then
+			for _,sym in pairs(CLOTHING[name].symbol_overrides) do
+				anim_state:ClearOverrideSymbol(sym)
+			end
+		end
+	end
+end
+
+function Skinner:ClearAllClothing(anim_state)
+	ClearClothing(anim_state, self.clothing)
+end
 
 function Skinner:SetSkinMode(skintype, default_build)
 	skintype = skintype or self.skintype
@@ -239,12 +249,6 @@ function Skinner:SetSkinMode(skintype, default_build)
 	self.inst.Network:SetPlayerSkin( self.skin_name or "", self.clothing["body"] or "", self.clothing["hand"] or "", self.clothing["legs"] or "", self.clothing["feet"] or "" )
 end
 
-function Skinner:SetupNonPlayerData()
-	self.skin_name = "NON_PLAYER"
-	self.skin_data = {}
-	self:SetSkinMode("NO_BASE")
-end
-
 function Skinner:SetSkinName(skin_name)
 	self.skin_name = skin_name
 	self.skin_data = {}
@@ -259,7 +263,7 @@ function Skinner:SetSkinName(skin_name)
 	self:SetSkinMode()
 end
 
-function Skinner:_InternalSetClothing( type, name, set_skin_mode )
+function Skinner:_InternalSetClothing( type, name )
 
 	if self.clothing[type] and self.clothing[type] ~= "" then
 		self.inst:PushEvent("unequipskinneditem", self.clothing[type])
@@ -271,9 +275,7 @@ function Skinner:_InternalSetClothing( type, name, set_skin_mode )
 		self.inst:PushEvent("equipskinneditem", name)
 	end
 	
-	if set_skin_mode then
-		self:SetSkinMode()
-	end
+	self:SetSkinMode()
 end
 
 function IsValidClothing( name )
@@ -282,7 +284,7 @@ end
 
 function Skinner:SetClothing( name )
 	if IsValidClothing(name) then
-		self:_InternalSetClothing( CLOTHING[name].type, name, true )
+		self:_InternalSetClothing( CLOTHING[name].type, name )
 	end
 end
 
@@ -296,30 +298,8 @@ function Skinner:GetClothing()
 	return temp_clothing
 end
 
-
-function ClearClothing( anim_state, clothing_names )
-	for _,name in pairs(clothing_names) do
-		if name ~= nil and name ~= "" and CLOTHING[name] ~= nil then
-			for _,sym in pairs(CLOTHING[name].symbol_overrides) do
-				anim_state:ClearOverrideSymbol(sym)
-			end
-		end
-	end
-end
-
-function Skinner:HideAllClothing(anim_state)
-	ClearClothing(anim_state, self.clothing)
-end
-
-function Skinner:ClearAllClothing()
-	for type,_ in pairs(self.clothing) do
-		self:_InternalSetClothing( type, "", false )
-	end
-	self:SetSkinMode()
-end
-
 function Skinner:ClearClothing(type)
-	self:_InternalSetClothing( type, "", true )
+	self:_InternalSetClothing( type, "" )
 end
 
 function Skinner:OnSave()
@@ -345,18 +325,15 @@ function Skinner:OnLoad(data)
         end
     end
 
-    if data.skin_name == "NON_PLAYER" then
-		self:SetupNonPlayerData()
-    else
-		local skin_name = self.inst.prefab.."_none"
-		if data.skin_name ~= nil and
-			data.skin_name ~= skin_name and
-			(not InGamePlay() or TheInventory:CheckClientOwnership(self.inst.userid, data.skin_name)) then
-			--load base skin (check that it hasn't been traded away)
-			skin_name = data.skin_name
-		end
-		self:SetSkinName(skin_name)
-	end
+    local skin_name = self.inst.prefab.."_none"
+    if data.skin_name ~= nil and
+        data.skin_name ~= skin_name and
+        (Prefabs[data.skin_name] and not Prefabs[data.skin_name].disabled) and
+        (not InGamePlay() or TheInventory:CheckClientOwnership(self.inst.userid, data.skin_name) ) then
+        --load base skin (check that it hasn't been traded away)
+        skin_name = data.skin_name
+    end
+    self:SetSkinName(skin_name)
 end
 
 return Skinner

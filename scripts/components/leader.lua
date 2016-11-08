@@ -2,9 +2,9 @@ local Leader = Class(function(self, inst)
     self.inst = inst
     self.followers = {}
     self.numfollowers = 0
-
+    
     self.inst:ListenForEvent("newcombattarget", function(inst, data) self:OnNewTarget(data.target) end)
-    self.inst:ListenForEvent("attacked", function(inst, data) self:OnAttacked(data.attacker) end)
+    self.inst:ListenForEvent("attacked", function(inst, data) self:OnAttacked(data.attacker) end)    
     self.inst:ListenForEvent("death", function(inst) self:RemoveAllFollowersOnDeath() end)
 end)
 
@@ -52,21 +52,21 @@ function Leader:RemoveFollower(follower, invalid)
             self.onremovefollower(self.inst, follower)
         end
 
-        if not invalid then
-            follower:PushEvent("stopfollowing", {leader = self.inst})
-            follower.components.follower:SetLeader(nil)
-        end
+		if not invalid then
+	        follower:PushEvent("stopfollowing", {leader = self.inst} )
+	        follower.components.follower:SetLeader(nil)
+		end
     end
 end
 
-function Leader:AddFollower(follower)
+function Leader:AddFollower(follower, keepondeath)
     if self.followers[follower] == nil and follower.components.follower then
         self.followers[follower] = true
         self.numfollowers = self.numfollowers + 1
         follower.components.follower:SetLeader(self.inst)
         follower:PushEvent("startfollowing", { leader = self.inst })
 
-        if not follower.components.follower.keepdeadleader then
+        if not keepondeath then
             local ondeath = function()
                 self:RemoveFollower(follower)
             end
@@ -76,10 +76,10 @@ function Leader:AddFollower(follower)
 
         self.inst:ListenForEvent("onremove", function(inst, data) self:RemoveFollower(follower, true) end, follower)
 
-        if self.inst:HasTag("player") and follower.prefab ~= nil then
-            ProfileStatsAdd("befriend_"..follower.prefab)
-        end
-    end
+	    if self.inst:HasTag("player") and follower.prefab ~= nil then
+		    ProfileStatsAdd("befriend_"..follower.prefab)
+	    end
+	end
 end
 
 function Leader:RemoveFollowersByTag(tag, validateremovefn)
@@ -119,6 +119,7 @@ function Leader:IsBeingFollowedBy(prefabName)
     return false
 end
 
+
 function Leader:OnSave()
     if self.inst:HasTag("player") then
         return
@@ -128,7 +129,7 @@ function Leader:OnSave()
     for k, v in pairs(self.followers) do
         table.insert(followers, k.GUID)
     end
-
+    
     if #followers > 0 then
         return { followers = followers }, followers
     end
@@ -149,7 +150,10 @@ function Leader:LoadPostPass(newents, savedata)
     end
 end
 
-Leader.OnRemoveEntity = Leader.RemoveAllFollowers
+function Leader:OnRemoveEntity()
+    --print("Leader:OnRemoveEntity")
+	self:RemoveAllFollowers()
+end
 
 function Leader:GetDebugString()
     return "followers:"..self.numfollowers

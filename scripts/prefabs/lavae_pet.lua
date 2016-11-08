@@ -12,13 +12,7 @@ local assets =
 local prefabs =
 {
     "lavae_move_fx",
-    "lavae_cocoon",
 }
-
-SetSharedLootTable( 'lavae_pet_frozen',
-{
-    {'lavae_cocoon',1.0},
-})
 
 local WAKE_TO_FOLLOW_DISTANCE = 14
 local SLEEP_NEAR_LEADER_DISTANCE = 7
@@ -136,7 +130,6 @@ local function fn()
     inst:AddComponent("eater")
     inst:AddComponent("inventory")
     inst:AddComponent("hunger")
-    inst:AddComponent("lootdropper")
 
     inst:SetStateGraph("SGlavae")
     inst:SetBrain(brain)
@@ -167,9 +160,6 @@ local function fn()
     inst.components.health.fire_damage_scale = 0
 
     inst.components.locomotor.walkspeed = 7.5
-
-	inst.NormalLootTable = ""
-	inst.FrozenLootTable = "lavae_pet_frozen"
 
     inst:ListenForEvent("hungerdelta", OnHungerDelta)
 

@@ -29,16 +29,6 @@ local twiggy_nut_prefabs =
     "twiggy_short",
 }
 
-local marblebean_assets =
-{
-    Asset("ANIM", "anim/marblebean.zip"),
-}
-
-local marblebean_prefabs =
-{
-    "marbleshrub_short",
-}
-
 local function growtree(inst)
     local tree = SpawnPrefab(inst.growprefab)
     if tree then
@@ -70,7 +60,7 @@ local function digup(inst, digger)
     inst:Remove()
 end
 
-local function sapling_fn(build, anim, growprefab, tag, fireproof)
+local function sapling_fn(build, anim, growprefab, tag)
     local function fn()
         local inst = CreateEntity()
 
@@ -83,9 +73,7 @@ local function sapling_fn(build, anim, growprefab, tag, fireproof)
         inst.AnimState:SetBuild(build)
         inst.AnimState:PlayAnimation(anim)
 
-		if not fireproof then
-            MakeDragonflyBait(inst, 3)
-        end
+        MakeDragonflyBait(inst, 3)
 
         inst:AddTag(tag)
 
@@ -111,17 +99,13 @@ local function sapling_fn(build, anim, growprefab, tag, fireproof)
         inst.components.workable:SetOnFinishCallback(digup)
         inst.components.workable:SetWorkLeft(1)
 
-		if not fireproof then
-			MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
-			inst:ListenForEvent("onignite", stopgrowing)
-			inst:ListenForEvent("onextinguish", startgrowing)
-			MakeSmallPropagator(inst)
+        MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
+        inst:ListenForEvent("onignite", stopgrowing)
+        inst:ListenForEvent("onextinguish", startgrowing)
+        MakeSmallPropagator(inst)
 
-			MakeHauntableIgnite(inst)
-		else
-			MakeHauntableWork(inst)
-		end
-				
+        MakeHauntableIgnite(inst)
+
         return inst
     end
     return fn
@@ -130,5 +114,4 @@ end
 return Prefab("pinecone_sapling", sapling_fn("pinecone", "idle_planted", "evergreen_short", "evergreen"), pinecone_assets, pinecone_prefabs),
     Prefab("lumpy_sapling", sapling_fn("pinecone", "idle_planted2", "evergreen_sparse_short", "evergreen_sparse"), pinecone_assets, pinecone_prefabs),
     Prefab("acorn_sapling", sapling_fn("acorn", "idle_planted", "deciduoustree", "deciduoustree"), acorn_assets, acorn_prefabs),
-    Prefab("twiggy_nut_sapling", sapling_fn("twiggy_nut", "idle_planted", "twiggy_short", "twiggytree"),  twiggy_nut_assets, twiggy_nut_prefabs),
-    Prefab("marblebean_sapling", sapling_fn("marblebean", "idle_planted", "marbleshrub_short", "marbleshrub", true),  marblebean_assets, marblebean_prefabs)
+    Prefab("twiggy_nut_sapling", sapling_fn("twiggy_nut", "idle_planted", "twiggy_short", "twiggytree"),  twiggy_nut_assets, twiggy_nut_prefabs)

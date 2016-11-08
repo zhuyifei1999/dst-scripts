@@ -179,36 +179,6 @@ AddRoom("Forest", {
 					                },
 					            }
 					})
-	-- Trees, some rocks
-AddRoom("CritterDen", {
-					colour={r=.5,g=0.6,b=.080,a=.10},
-					value = GROUND.GROUND_NOISE,
-					tags = {"Chester_Eyebone"},
-					contents =  {
-									countprefabs = {
-    										critterlab = 1,
-    									},
-					                distributepercent = .5,
-					                distributeprefabs =
-					                {
-										rock1 = .8,
-										rock2 = .1,										
-										flint = .1,
-                                        fireflies = 0.2,
-					                    grass = .05,
-					                    sapling = .8,
-										twiggytree = 0.8,
-										ground_twigs = 0.06,					                    
-					                    berrybush = .03,
-					                    berrybush_juicy = 0.015,
-					                    red_mushroom = .03,
-					                    green_mushroom = .02,
-					                    blue_mushroom = .002,
-										trees = {weight = 6, prefabs = {"evergreen", "evergreen_sparse"}},
-					                    grassgekko = 0.3,
-					                },
-					            }
-					})
 	-- Trees, very few rocks, very few molehills
 AddRoom("ForestMole", {
 					colour={r=.5,g=0.6,b=.080,a=.10},

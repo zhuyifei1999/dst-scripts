@@ -7,11 +7,22 @@ local TEMPLATES = require "widgets/templates"
 
 local SCREEN_OFFSET = -.285 * RESOLUTION_X
 
-local WardrobePopupScreen = Class(Screen, function(self, owner_player, profile, recent_item_types, recent_item_ids)
+local WardrobePopupScreen = Class(Screen, function(self, owner, profile, character, character_loadout_screen, recent_item_types, recent_item_ids)
 	Screen._ctor(self, "WardrobePopupScreen")
 
-    self.owner_player = owner_player
+    self.owner = owner --can be nil in FE, otherwise should be ThePlayer in HUD
 	self.profile = profile
+
+    if character_loadout_screen then
+        --darken everything behind the dialog
+        self.black = self:AddChild(Image("images/global.xml", "square.tex"))
+        self.black:SetVRegPoint(ANCHOR_MIDDLE)
+        self.black:SetHRegPoint(ANCHOR_MIDDLE)
+        self.black:SetVAnchor(ANCHOR_MIDDLE)
+        self.black:SetHAnchor(ANCHOR_MIDDLE)
+        self.black:SetScaleMode(SCALEMODE_FILLSCREEN)
+        self.black:SetTint(0,0,0,.75)
+    end
 
     --V2C: @liz
     -- recent_item_types and recent_item_ids are both tables of
@@ -32,18 +43,20 @@ local WardrobePopupScreen = Class(Screen, function(self, owner_player, profile, 
 	self.proot = self:AddChild(Widget("ROOT"))
     self.proot:SetVAnchor(ANCHOR_MIDDLE)
     self.proot:SetHAnchor(ANCHOR_MIDDLE)
+    --self.proot:SetPosition(-13,12,0)
     self.proot:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
     self.root = self.proot:AddChild(Widget("root"))
     self.root:SetPosition(-RESOLUTION_X/2, -RESOLUTION_Y/2, 0)
 
-    self.heroportrait = self.proot:AddChild(Image())
-    self.heroportrait:SetScale(.75)
-    self.heroportrait:SetPosition(-185, 30)
 
-    self.dressup = self.proot:AddChild(DressupPanel(self, profile, TheNet:GetClientTableForUser(self.owner_player.userid), function() self:SetPortrait() end, recent_item_types, recent_item_ids))
-    self.dressup:SetPosition(140, 30)
-    self.dressup:SetCurrentCharacter(self.owner_player.prefab)
+    self.heroportrait = self.root:AddChild(Image())
+    self.heroportrait:SetScale(.75)
+    self.heroportrait:SetPosition(475, 400)
+
+    self.dressup = self.root:AddChild(DressupPanel(self, profile, function() self:SetPortrait() end, character_loadout_screen, recent_item_types, recent_item_ids))
+    self.dressup:SetPosition(-250, 0)
+    self.dressup:SetCurrentCharacter(character or owner.prefab)
 
     self:SetPortrait()
 
@@ -73,13 +86,17 @@ local WardrobePopupScreen = Class(Screen, function(self, owner_player, profile, 
 	self.dressup:ReverseFocus()
 	self.menu.reverse = true
 
-    TheCamera:PushScreenHOffset(self, SCREEN_OFFSET)
+    if owner ~= nil then
+        TheCamera:PushScreenHOffset(self, SCREEN_OFFSET)
+    end
 
     self:DoFocusHookups()
 end)
 
 function WardrobePopupScreen:OnDestroy()
-    TheCamera:PushScreenHOffset(self, SCREEN_OFFSET)
+    if self.owner ~= nil then
+        TheCamera:PopScreenHOffset(self)
+    end
     self._base.OnDestroy(self)
 end
 
@@ -103,22 +120,6 @@ function WardrobePopupScreen:OnControl(control, down)
         TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
         return true
     end
-   
-	if down then
-	 	if control == CONTROL_PREVVALUE then  -- r-stick left
-	    	self.dressup:ScrollBack(control)
-			return true 
-		elseif control == CONTROL_NEXTVALUE then -- r-stick right
-			self.dressup:ScrollFwd(control)
-			return true
-		elseif control == CONTROL_SCROLLBACK then
-            self.dressup:ScrollBack(control)
-            return true
-        elseif control == CONTROL_SCROLLFWD then
-        	self.dressup:ScrollFwd(control)
-            return true
-        end
-	end
 end
 
 function WardrobePopupScreen:Cancel()
@@ -134,16 +135,17 @@ end
 function WardrobePopupScreen:Close()
 	-- Gets the current skin names (and sets them as the character default)
 	local skins = self.dressup:GetSkinsForGameStart()
-	
-    local data = {}
-    if TheNet:IsOnlineMode() then
-		data = skins
-    end
+    if self.owner ~= nil then
+        local data = {}
+        if TheNet:IsOnlineMode() then
+			data = skins
+        end
 
-    if not TheWorld.ismastersim then
-        SendRPCToServer(RPC.CloseWardrobe, data.base, data.body, data.hand, data.legs, data.feet)
-    elseif self.owner_player ~= nil then
-        self.owner_player:PushEvent("ms_closewardrobe", data)
+        if not TheWorld.ismastersim then
+            SendRPCToServer(RPC.CloseWardrobe, data.base, data.body, data.hand, data.legs, data.feet)
+        elseif self.owner ~= nil then
+            self.owner:PushEvent("ms_closewardrobe", data)
+        end
     end
 
     self.dressup:OnClose()

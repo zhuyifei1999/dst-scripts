@@ -1048,8 +1048,8 @@ local function OnMakePlayerGhost(inst, data)
     inst.components.age:PauseAging()
 
     inst.components.health:SetCurrentHealth(TUNING.RESURRECT_HEALTH)
-    inst.components.health:ForceUpdateHUD(true)
-    inst.components.health:SetInvincible(true)
+    inst.components.health:ForceUpdateHUD()
+    inst.components.health:SetInvincible(true) 
 
     inst.components.sanity:SetPercent(.5, true)
     inst.components.sanity.ignore = true
@@ -1234,7 +1234,7 @@ local function OnDespawn(inst)
     inst:OnWakeUp()
     --
 
-    inst.components.debuffable:RemoveOnDespawn()
+    inst.components.debuffable:Enable(false)
 
     inst.components.rider:ActualDismount()
 
@@ -1248,23 +1248,6 @@ local function OnDespawn(inst)
     inst.components.locomotor:Clear()
 end
 
---------------------------------------------------------------------------
---Pet stuff
---------------------------------------------------------------------------
-
-local function DoEffects(pet)
-    SpawnPrefab("spawn_fx_tiny").Transform:SetPosition(pet.Transform:GetWorldPosition())
-end
-
-local function OnSpawnPet(inst, pet)
-    --Delayed in case we need to relocate for migration spawning
-    pet:DoTaskInTime(0, DoEffects)
-end
-
-local function OnDespawnPet(inst, pet)
-    DoEffects(pet)
-    pet:Remove()
-end
 
 --------------------------------------------------------------------------
 --HUD/Camera/FE interface
@@ -1766,7 +1749,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst:AddComponent("sheltered")
 
         -------
-
+        
         inst:AddComponent("health")
         inst.components.health:SetMaxHealth(TUNING.WILSON_HEALTH)
         inst.components.health.nofadeout = true
@@ -1801,11 +1784,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst:AddComponent("leader")
         inst:AddComponent("age")
         inst:AddComponent("rider")
-
-        inst:AddComponent("petleash")
-        inst.components.petleash:SetMaxPets(1)
-        inst.components.petleash:SetOnSpawnFn(OnSpawnPet)
-        inst.components.petleash:SetOnDespawnFn(OnDespawnPet)
 
         inst:AddComponent("grue")
         inst.components.grue:SetSounds("dontstarve/charlie/warn","dontstarve/charlie/attack")

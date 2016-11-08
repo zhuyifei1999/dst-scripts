@@ -453,7 +453,6 @@ local function getstatus(inst)
     return (not IsFixed(inst) and "BROKEN")
         or (not inst.components.pickable.caninteractwith and "GENERIC")
         or (inst.components.pickable.product == KEY_STAFF and "STAFFED")
-        or (inst.components.pickable.product == MORPHED_STAFF and "MOONSTAFF")
         or "WRONGSTAFF"
 end
 

@@ -4,12 +4,12 @@ local Text = require "widgets/text"
 local Button = require "widgets/button"
 local ImageButton = require "widgets/imagebutton"
 local CharacterSelect = require "widgets/characterselect"
-local CharacterLoadoutPopupScreen = require "screens/characterloadoutpopup"
+local WardrobePopupScreen = require "screens/wardrobepopup"
 local Menu = require "widgets/menu"
 local TEMPLATES = require "widgets/templates"
 
-local CharacterLoadoutSelectScreen = Class(Screen, function(self, profile)
-	Screen._ctor(self, "CharacterLoadoutSelectScreen")
+local CharacterSelectScreen = Class(Screen, function(self, profile, character)
+	Screen._ctor(self, "CharacterSelectScreen")
 
 	
 	--darken everything behind the dialog
@@ -19,7 +19,7 @@ local CharacterLoadoutSelectScreen = Class(Screen, function(self, profile)
     self.black:SetVAnchor(ANCHOR_MIDDLE)
     self.black:SetHAnchor(ANCHOR_MIDDLE)
     self.black:SetScaleMode(SCALEMODE_FILLSCREEN)
-	self.black:SetTint(0,0,0,.75)
+	self.black:SetTint(0,0,0,.75)	
     
 	self.proot = self:AddChild(Widget("ROOT"))
     self.proot:SetVAnchor(ANCHOR_MIDDLE)
@@ -38,7 +38,7 @@ local CharacterLoadoutSelectScreen = Class(Screen, function(self, profile)
 	self.panel_bg:SetScale(.54, .74)
 	self.panel_bg:SetPosition(7, 12)
 
-	self.character_list = self.proot:AddChild(CharacterSelect(self, "wilson"))
+	self.character_list = self.proot:AddChild(CharacterSelect(self, character))
 
 	self.title = self.panel:AddChild(Text(BUTTONFONT, 36, STRINGS.UI.SKINSSCREEN.PICK, BLACK))
 	self.title:SetPosition(10, 245)
@@ -52,7 +52,7 @@ local CharacterLoadoutSelectScreen = Class(Screen, function(self, profile)
 	
 	table.insert(buttons, {text=STRINGS.UI.SKINSSCREEN.SELECT, cb=function() 
 						self:Hide()
-						TheFrontEnd:PushScreen(CharacterLoadoutPopupScreen(profile, self.character_list.herocharacter or "wilson")) end
+						TheFrontEnd:PushScreen(WardrobePopupScreen(nil, profile, self.character_list.herocharacter or character, true)) end
 						})
     
 	self.menu = self.proot:AddChild(Menu(buttons, button_w, true))
@@ -70,13 +70,13 @@ local CharacterLoadoutSelectScreen = Class(Screen, function(self, profile)
 
 end)
 
-function CharacterLoadoutSelectScreen:OnBecomeActive()
+function CharacterSelectScreen:OnBecomeActive()
 	Screen.OnBecomeActive(self)
 	self:Show()
 end
 
 
-function CharacterLoadoutSelectScreen:Close()
+function CharacterSelectScreen:Close()
     TheFrontEnd:PopScreen(self)
 end
 
@@ -85,9 +85,9 @@ local SCROLL_REPEAT_TIME = .15
 local MOUSE_SCROLL_REPEAT_TIME = 0
 local STICK_SCROLL_REPEAT_TIME = .25
 
-function CharacterLoadoutSelectScreen:OnControl(control, down)
+function CharacterSelectScreen:OnControl(control, down)
     
-    if CharacterLoadoutSelectScreen._base.OnControl(self, control, down) then return true end
+    if CharacterSelectScreen._base.OnControl(self, control, down) then return true end
 
     if not self.no_cancel and
     	not down and control == CONTROL_CANCEL then 
@@ -112,7 +112,7 @@ function CharacterLoadoutSelectScreen:OnControl(control, down)
 	end
 end
 
-function CharacterLoadoutSelectScreen:ScrollBack(control)
+function CharacterSelectScreen:ScrollBack(control)
 	if not self.character_list.repeat_time or self.character_list.repeat_time <= 0 then
        	self.character_list:Scroll(-1)
        	TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
@@ -124,7 +124,7 @@ function CharacterLoadoutSelectScreen:ScrollBack(control)
     end
 end
 
-function CharacterLoadoutSelectScreen:ScrollFwd(control)
+function CharacterSelectScreen:ScrollFwd(control)
 	if not self.character_list.repeat_time or self.character_list.repeat_time <= 0 then
         self.character_list:Scroll(1)
 		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
@@ -136,7 +136,7 @@ function CharacterLoadoutSelectScreen:ScrollFwd(control)
     end
 end
 
-function CharacterLoadoutSelectScreen:GetHelpText()
+function CharacterSelectScreen:GetHelpText()
 	local controller_id = TheInput:GetControllerID()
     local t = {}
     
@@ -149,4 +149,4 @@ function CharacterLoadoutSelectScreen:GetHelpText()
    	return table.concat(t, "  ")
 end
 
-return CharacterLoadoutSelectScreen
+return CharacterSelectScreen

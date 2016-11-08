@@ -45,11 +45,6 @@ local TRIGGERED_DANGER_MUSIC =
         "dontstarve/music/music_epicfight_toadboss",
     },
 
-    beequeen =
-    {
-        "dontstarve/music/music_epicfight_beequeen",
-    },
-
     shadowchess =
     {
         "dontstarve/music/music_epicfight_ruins",

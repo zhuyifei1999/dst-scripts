@@ -10,7 +10,7 @@ local TextEdit = require "widgets/textedit"
 local Widget = require "widgets/widget"
 local Menu = require "widgets/menu"
 local Puppet = require "widgets/skinspuppet"
-local CharacterLoadoutSelectScreen = require "screens/characterloadoutselectscreen"
+local CharacterSelectScreen = require "screens/characterselectscreen"
 local TradeScreen = require "screens/tradescreen"
 local TEMPLATES = require "widgets/templates"
 local SetPopupDialog = require "screens/setpopupdialog"
@@ -61,7 +61,7 @@ function SkinsScreen:DoInit()
     self.chest:SetScale(-.7, .7, .7)
     self.chest:SetPosition(100, -75)
 	self.loadout_button = self.fixed_root:AddChild(ImageButton("images/skinsscreen.xml", "loadout_button_active.tex", "loadout_button_hover.tex", "loadout_button_pressed.tex", "loadout_button_pressed.tex"))
-	self.loadout_button:SetOnClick(function() TheFrontEnd:PushScreen(CharacterLoadoutSelectScreen(self.profile)) end)
+	self.loadout_button:SetOnClick(function() TheFrontEnd:PushScreen(CharacterSelectScreen(self.profile, "wilson")) end)
 	self.loadout_button:SetScale(1.05)
 	self.loadout_button:SetPosition(500, -250)
    	
@@ -360,7 +360,7 @@ function SkinsScreen:OnControl(control, down)
 
     	if not down and control == CONTROL_PAUSE then
     		TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
-		        TheFrontEnd:PushScreen(CharacterLoadoutSelectScreen(self.profile))
+		        TheFrontEnd:PushScreen(CharacterSelectScreen(self.profile, "wilson"))
 		        TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
 		    end)
 			return true

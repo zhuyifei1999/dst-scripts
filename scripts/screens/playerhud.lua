@@ -27,7 +27,6 @@ local TargetIndicator = require "widgets/targetindicator"
 local EventAnnouncer = require "widgets/eventannouncer"
 local GiftItemPopUp = require "screens/giftitempopup"
 local WardrobePopupScreen = require "screens/wardrobepopup"
-local ScarecrowClothingPopupScreen = require "screens/scarecrowclothingpopup"
 local PlayerAvatarPopup = require "widgets/playeravatarpopup"
 
 local PlayerHud = Class(Screen, function(self)
@@ -306,19 +305,24 @@ function PlayerHud:OpenWardrobeScreen(target)
 
     if target ~= nil then
         self.wardrobepopup =
-			ScarecrowClothingPopupScreen(
-				target,
-				self.owner,
-				Profile
-			)
+            WardrobePopupScreen(
+                self.owner,
+                Profile,
+                nil,
+                false,
+                self.recentgifts ~= nil and self.recentgifts.item_types or nil,
+                self.recentgifts ~= nil and self.recentgifts.item_ids or nil
+            )
     else
         self.wardrobepopup =
-			WardrobePopupScreen(
-				self.owner,
-				Profile,
-				self.recentgifts ~= nil and self.recentgifts.item_types or nil,
-				self.recentgifts ~= nil and self.recentgifts.item_ids or nil
-			)
+            WardrobePopupScreen(
+                self.owner,
+                Profile,
+                nil,
+                false,
+                self.recentgifts ~= nil and self.recentgifts.item_types or nil,
+                self.recentgifts ~= nil and self.recentgifts.item_ids or nil
+            )
     end
 
     self:ClearRecentGifts()
@@ -574,7 +578,7 @@ end
 
 function PlayerHud:IsWardrobeScreenOpen()
     local active_screen = TheFrontEnd:GetActiveScreen()
-    return active_screen ~= nil and (active_screen.name == "WardrobePopupScreen" or active_screen.name == "ScarecrowClothingPopupScreen")
+    return active_screen ~= nil and active_screen.name == "WardrobePopupScreen"
 end
 
 function PlayerHud:IsPlayerAvatarPopUpOpen()

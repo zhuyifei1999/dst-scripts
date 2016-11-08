@@ -103,8 +103,6 @@ local prefabs =
     "rook",
     "bishop",
     "knight",
-    
-    "critterlab",
 
     "goldnugget",
     "crow",

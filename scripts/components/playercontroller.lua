@@ -985,9 +985,11 @@ function PlayerController:GetAttackTarget(force_attack, force_target, isretarget
     end
 
     local x, y, z = self.inst.Transform:GetWorldPosition()
-    local attackrange = combat:GetAttackRangeWithWeapon()
-    local rad = self.directwalking and attackrange or attackrange + 6
-    --"not self.directwalking" is autowalking
+    local rad = combat:GetAttackRangeWithWeapon()
+    if not self.directwalking then
+        --for autowalking
+        rad = rad + 6
+    end
 
     --Beaver teeth counts as having a weapon
     local has_weapon = self.inst:HasTag("beaver")
@@ -1009,33 +1011,13 @@ function PlayerController:GetAttackTarget(force_attack, force_target, isretarget
     --To deal with entity collision boxes we need to pad the radius.
     --Only include combat targets for auto-targetting, not light/extinguish
     --See entityreplica.lua (re: "_combat" tag)
-    local nearby_ents = TheSim:FindEntities(x, y, z, rad + 5, { "_combat" }, { "INLIMBO" })
-    local nearest_dist = math.huge
-    isretarget = false --reusing variable for flagging when we've found recent target
-    force_target = nil --reusing variable for our nearest target
+    local nearby_ents = TheSim:FindEntities(x, y, z, rad + 5, { "_combat" })
     for i, v in ipairs(nearby_ents) do
         if ValidateAttackTarget(combat, v, force_attack, x, z, has_weapon, reach) and
             CanEntitySeeTarget(self.inst, v) then
-            local dsq = self.inst:GetDistanceSqToInst(v)
-            local dist =
-                (dsq <= 0 and 0) or
-                (v.Physics ~= nil and math.max(0, math.sqrt(dsq) - v.Physics:GetRadius())) or
-                math.sqrt(dsq)
-            if not isretarget and combat:IsRecentTarget(v) then
-                if dist < attackrange + 1 then
-                    return v
-                end
-                isretarget = true
-            end
-            if dist < nearest_dist then
-                nearest_dist = dist
-                force_target = v
-            end
-        elseif not isretarget and combat:IsRecentTarget(v) then
-            isretarget = true
+            return v
         end
     end
-    return force_target
 end
 
 function PlayerController:DoAttackButton(retarget)
@@ -1170,7 +1152,7 @@ function PlayerController:IsDoingOrWorking()
 end
 
 local TARGET_EXCLUDE_TAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO" }
-local PICKUP_TARGET_EXCLUDE_TAGS = { "catchable", "mineactive", "intense", "wall" }
+local PICKUP_TARGET_EXCLUDE_TAGS = { "catchable", "mineactive", "intense" }
 local HAUNT_TARGET_EXCLUDE_TAGS = { "haunted", "catchable" }
 for i, v in ipairs(TARGET_EXCLUDE_TAGS) do
     table.insert(PICKUP_TARGET_EXCLUDE_TAGS, v)
@@ -1193,11 +1175,6 @@ function PlayerController:GetActionButtonAction(force_target)
             return buffaction
         end
 
-    elseif self.inst.replica.inventory:IsHeavyLifting()
-        and not (self.inst.replica.rider ~= nil and self.inst.replica.rider:IsRiding()) then
-        --hands are full!
-        return
-
     elseif not self:IsDoingOrWorking() then
         local force_target_distsq = force_target ~= nil and self.inst:GetDistanceSqToInst(force_target) or nil
 
@@ -1214,17 +1191,6 @@ function PlayerController:GetActionButtonAction(force_target)
                 return BufferedAction(self.inst, force_target, ACTIONS.HAUNT)
             end
             return
-        end
-
-        --open doors (first, but very small range)
-        if force_target == nil then
-            local target = FindEntity(self.inst, 2, nil, { "wall", "inactive" }, TARGET_EXCLUDE_TAGS)
-            if CanEntitySeeTarget(self.inst, target) then
-                return BufferedAction(self.inst, target, ACTIONS.ACTIVATE)
-            end
-        elseif force_target_distsq <= 4 and
-            force_target:HasTag("wall") and force_target:HasTag("inactive") then
-            return BufferedAction(self.inst, force_target, ACTIONS.ACTIVATE)
         end
 
         local tool = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
@@ -1915,8 +1881,6 @@ local function UpdateControllerAttackTarget(self, dt, x, y, z, dirx, dirz)
 
                         if isally then
                             score = score * .25
-                        elseif v:HasTag("epic") then
-                            score = score * 5
                         elseif v:HasTag("monster") then
                             score = score * 4
                         end

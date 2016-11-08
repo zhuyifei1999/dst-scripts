@@ -451,21 +451,6 @@ t = {
                 end
             end,
         },
-        {
-            version = 4.4, -- ANR: Cute Fuzzy Animals
-            fn = function(savedata)
-                if savedata == nil then
-                    return
-                end
-                if savedata.map ~= nil and savedata.map.prefab == "forest" and savedata.map.persistdata ~= nil then
-                    if savedata.map.persistdata.retrofitforestmap_anr == nil then
-                        savedata.map.persistdata.retrofitforestmap_anr = {}
-                    end
-                    savedata.map.persistdata.retrofitforestmap_anr.retrofit_cutefuzzyanimals = true
-                end
-            end,
-        },
-        
     },
 }
 

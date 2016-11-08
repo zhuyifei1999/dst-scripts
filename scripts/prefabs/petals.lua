@@ -51,8 +51,6 @@ local function fn()
     inst.AnimState:PlayAnimation("anim")
 
     inst:AddTag("cattoy")
-    inst:AddTag("vasedecoration")
-
     MakeDragonflyBait(inst, 3)
 
     inst.entity:SetPristine()
@@ -66,7 +64,7 @@ local function fn()
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
     inst:AddComponent("tradable")
-    inst:AddComponent("vasedecoration")
+
     inst:AddComponent("inspectable")
 
     inst:AddComponent("fuel")

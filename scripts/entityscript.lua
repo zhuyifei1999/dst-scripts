@@ -270,9 +270,6 @@ function EntityScript:GetSaveRecord()
     if self.skin_id then 
     	record.skin_id = self.skin_id
     end
-    if self.alt_skin_ids then
-		record.alt_skin_ids = self.alt_skin_ids
-	end
 
     local references = nil
     record.data, references = self:GetPersistData()
@@ -1256,7 +1253,11 @@ function EntityScript:PerformBufferedAction()
 end
 
 function EntityScript:GetBufferedAction()
-    return self.bufferedaction or (self.components.locomotor ~= nil and self.components.locomotor.bufferedaction) or nil
+    if self.bufferedaction then
+        return self.bufferedaction
+    elseif self.components.locomotor then
+        return self.components.locomotor.bufferedaction
+    end
 end
 
 function EntityScript:OnBuilt(builder)
@@ -1272,6 +1273,7 @@ function EntityScript:OnBuilt(builder)
 end
 
 function EntityScript:Remove()
+
     if self.parent then
         self.parent:RemoveChild(self)
     end
@@ -1511,7 +1513,7 @@ end
 
 function EntityScript:GetAdjective()
     if self:HasTag("small_livestock") then
-        return not (self:HasTag("critter") or self:HasTag("sickness"))
+        return not self:HasTag("sickness")
             and ((self:HasTag("stale") and STRINGS.UI.HUD.HUNGRY) or
                 (self:HasTag("spoiled") and STRINGS.UI.HUD.STARVING))
             or nil

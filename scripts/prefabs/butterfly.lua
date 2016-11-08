@@ -73,7 +73,10 @@ local function fn()
     inst.entity:AddNetwork()
 
     --Initialize physics
-    MakeTinyFlyingCharacterPhysics(inst, 1, .5)
+    MakeCharacterPhysics(inst, 1, .5)
+    inst.Physics:SetCollisionGroup(COLLISION.FLYERS)
+    inst.Physics:ClearCollisionMask()
+    inst.Physics:CollidesWith(COLLISION.WORLD)
 
     inst:AddTag("butterfly")
     inst:AddTag("flying")

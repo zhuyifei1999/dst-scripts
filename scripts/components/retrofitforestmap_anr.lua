@@ -141,29 +141,6 @@ function self:OnPostInit()
         inst:PushEvent("ms_unlockchesspiece", "muse")
         inst:PushEvent("ms_unlockchesspiece", "formal")
     end
-    
-	if self.retrofit_cutefuzzyanimals then
-		self.retrofit_cutefuzzyanimals = nil
-		
-		local missing_prefabs = {critterlab=true, beequeenhive=true}
-	    for k,v in pairs(Ents) do
-			if table.containskey(missing_prefabs, v.prefab) then
-				missing_prefabs[v.prefab] = nil
-
-				if next(missing_prefabs) == nil then
-					print ("Retrofitting for A New Reign: Cute Fuzzy Animals is not required.")
-					break
-				end
-			end
-		end
-
-		if next(missing_prefabs) ~= nil then
-			print ("Retrofitting for A New Reign: Cute Fuzzy Animals.")
-			for key,_ in pairs(missing_prefabs) do
-				RetrofitNewContentPrefab(inst, key, 2, 10)
-			end
-		end
-	end
 end
 
 --------------------------------------------------------------------------
@@ -179,7 +156,6 @@ function self:OnLoad(data)
 		retrofit_part1 = data.retrofit_part1 or false
 		self.retrofit_artsandcrafts = data.retrofit_artsandcrafts or false
         self.retrofit_artsandcrafts2 = data.retrofit_artsandcrafts2 or false
-        self.retrofit_cutefuzzyanimals = data.retrofit_cutefuzzyanimals or false
     end
 end
 

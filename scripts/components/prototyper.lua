@@ -1,4 +1,4 @@
-local TechTree = require("techtree")
+--Note: If you want to add a new tech tree you must also add it into the "NO_TECH" constant in constants.lua
 
 local Prototyper = Class(function(self, inst)
     self.inst = inst
@@ -6,7 +6,16 @@ local Prototyper = Class(function(self, inst)
     --V2C: Recommended to explicitly add tag to prefab pristine state
     inst:AddTag("prototyper")
 
-    self.trees = TechTree.Create()
+    self.trees =
+    {
+        SCIENCE = 0,
+        MAGIC = 0,
+        ANCIENT = 0,
+        SHADOW = 0,
+        CARTOGRAPHY = 0,
+        SCULPTING = 0,
+    }
+
     self.on = false
     self.onturnon = nil
     self.onturnoff = nil

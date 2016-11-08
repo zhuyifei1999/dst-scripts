@@ -197,10 +197,6 @@ function SpawnSaveRecord(saved, newents)
     local inst = SpawnPrefab(saved.prefab, saved.skinname, saved.skin_id)
 
     if inst then
-		if saved.alt_skin_ids then
-			inst.alt_skin_ids = saved.alt_skin_ids
-		end
-		
         inst.Transform:SetPosition(saved.x or 0, saved.y or 0, saved.z or 0)
         if not inst.entity:IsValid() then
             --print(string.format("SpawnSaveRecord [%s, %s] FAILED - entity invalid", tostring(saved.id), saved.prefab))

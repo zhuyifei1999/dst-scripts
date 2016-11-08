@@ -1,11 +1,15 @@
-local function DoSpawn(inst, self)
-    if self.task ~= nil then
-        self.task:Cancel()
-        self.task = nil
+
+local function DoSpawn(inst)
+    local spawner = inst.components.periodicspawner
+    if spawner then
+        if spawner.task ~= nil then
+            spawner.task:Cancel()
+            spawner.task = nil
+        end
+        spawner.target_time = nil
+        spawner:TrySpawn()
+        spawner:Start()
     end
-    self.target_time = nil
-    self:TrySpawn()
-    self:Start()
 end
 
 local PeriodicSpawner = Class(function(self, inst)
@@ -13,14 +17,14 @@ local PeriodicSpawner = Class(function(self, inst)
     self.basetime = 40
     self.randtime = 60
     self.prefab = nil
-
+    
     self.range = nil
     self.density = nil
     self.spacing = nil
-
+    
     self.onspawn = nil
     self.spawntest = nil
-
+    
     self.spawnoffscreen = false
 end)
 
@@ -113,8 +117,9 @@ end
 function PeriodicSpawner:Start()
     local t = self.basetime + math.random()*self.randtime
     self.target_time = GetTime() + t
-    self.task = self.inst:DoTaskInTime(t, DoSpawn, self)
+    self.task = self.inst:DoTaskInTime(t, DoSpawn)
 end
+
 
 function PeriodicSpawner:Stop()
     self.target_time = nil
@@ -125,37 +130,35 @@ function PeriodicSpawner:Stop()
 end
 
 function PeriodicSpawner:ForceNextSpawn()
-    DoSpawn(self.inst, self)
+    DoSpawn(self.inst)
 end
 
 --[[
 function PeriodicSpawner:OnEntitySleep()
-    self:Stop()
+	self:Stop()
 end
 
 function PeriodicSpawner:OnEntityWake()
-    self:Start()
+	self:Start()
 end
 --]]
 
 function PeriodicSpawner:LongUpdate(dt)
-    if self.target_time then
-        if self.task then
-            self.task:Cancel()
-            self.task = nil
-        end
-        local time_to_wait = self.target_time - GetTime() - dt
-
-        if time_to_wait <= 0 then
-            DoSpawn(self.inst, self)
-        else
-            self.target_time = GetTime() + time_to_wait
-            self.task = self.inst:DoTaskInTime(time_to_wait, DoSpawn, self)
-        end
-    end
+	if self.target_time then
+		if self.task then
+			self.task:Cancel()
+			self.task = nil
+		end
+		local time_to_wait = self.target_time - GetTime() - dt
+		
+		if time_to_wait <= 0 then
+			DoSpawn(self.inst)		
+		else
+			self.target_time = GetTime() + time_to_wait
+			self.task = self.inst:DoTaskInTime(time_to_wait, DoSpawn)
+		end
+	end
 end
-
-PeriodicSpawner.OnRemoveFromEntity = PeriodicSpawner.Stop
 
 function PeriodicSpawner:GetDebugString()
     return string.format("Next Spawn: %s prefab: %s", self.target_time and string.format("%.1f", self.target_time - GetTime()) or "never", tostring(self.prefab))

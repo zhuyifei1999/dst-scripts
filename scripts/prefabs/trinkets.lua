@@ -70,13 +70,12 @@ local function MakeTrinket(num)
         inst.components.tradable.goldvalue = TUNING.GOLD_VALUES.TRINKETS[num] or 3
         inst.components.tradable.tradefor = TRADEFOR[num]
         
-        if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
-			if num >= HALLOWEDNIGHTS_START and num <= HALLOWEDNIGHTS_END then
+		if num >= HALLOWEDNIGHTS_START and num <= HALLOWEDNIGHTS_END then
+	        if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
 				inst.components.tradable.halloweencandyvalue = 5
+			else
+				inst.components.tradable.goldvalue = 1 -- give people a reason to clean up all that hallowed nights litter!
 			end
-		else
-			inst:AddComponent("fuel")
-			inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL
 		end
 
         MakeHauntableLaunchAndSmash(inst)

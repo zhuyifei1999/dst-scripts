@@ -52,9 +52,6 @@ local function OnWorked(inst, worker)
 end
 
 local function OnDropped(inst)
-    if inst.buzzing and not inst:IsAsleep() then
-        inst.SoundEmitter:PlaySound(inst.sounds.buzz, "buzz")
-    end
     inst.sg:GoToState("catchbreath")
     if inst.components.workable ~= nil then
         inst.components.workable:SetWorkLeft(1)
@@ -83,30 +80,6 @@ local function OnPickedUp(inst)
     inst.sg:GoToState("idle")
     inst.SoundEmitter:KillSound("buzz")
     inst.SoundEmitter:KillAllSounds()
-end
-
-local function EnableBuzz(inst, enable)
-    if enable then
-        if not inst.buzzing then
-            inst.buzzing = true
-            if not (inst.components.inventoryitem:IsHeld() or inst:IsAsleep()) then
-                inst.SoundEmitter:PlaySound(inst.sounds.buzz, "buzz")
-            end
-        end
-    elseif inst.buzzing then
-        inst.buzzing = false
-        inst.SoundEmitter:KillSound("buzz")
-    end
-end
-
-local function OnWake(inst)
-    if inst.buzzing and not inst.components.inventoryitem:IsHeld() then
-        inst.SoundEmitter:PlaySound(inst.sounds.buzz, "buzz")
-    end
-end
-
-local function OnSleep(inst)
-    inst.SoundEmitter:KillSound("buzz")
 end
 
 local function KillerRetarget(inst)
@@ -141,7 +114,11 @@ local function commonfn(build, tags)
     inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
 
-    MakeFlyingCharacterPhysics(inst, 1, .5)
+    MakeCharacterPhysics(inst, 1, .5)
+    inst.Physics:SetCollisionGroup(COLLISION.FLYERS)
+    inst.Physics:ClearCollisionMask()
+    inst.Physics:CollidesWith(COLLISION.WORLD)
+    inst.Physics:CollidesWith(COLLISION.FLYERS)
 
     inst.DynamicShadow:SetSize(.8, .5)
     inst.Transform:SetFourFaced()
@@ -201,7 +178,6 @@ local function commonfn(build, tags)
 
     inst:AddComponent("health")
     inst:AddComponent("combat")
-    inst.components.combat:SetRange(TUNING.BEE_ATTACK_RANGE)
     inst.components.combat.hiteffectsymbol = "body"
     inst.components.combat:SetPlayerStunlock(PLAYERSTUNLOCK.RARELY)
 
@@ -225,16 +201,24 @@ local function commonfn(build, tags)
 
     MakeFeedableSmallLivestock(inst, TUNING.TOTAL_DAY_TIME*2, OnPickedUp, OnDropped)
 
-    inst.buzzing = true
-    inst.EnableBuzz = EnableBuzz
-    inst.OnEntityWake = OnWake
-    inst.OnEntitySleep = OnSleep
-
     return inst
 end
 
+-- local brainfn = loadfile("scripts/brains/beebrain.lua")
+-- assert(type(brainfn) == "function", brainfn)
+
 local workerbrain = require("brains/beebrain")
 local killerbrain = require("brains/killerbeebrain")
+
+local function OnWake(inst)
+    if not inst.components.inventoryitem:IsHeld() then
+        inst.SoundEmitter:PlaySound(inst.sounds.buzz, "buzz")
+    end
+end
+
+local function OnSleep(inst)
+    inst.SoundEmitter:KillSound("buzz")
+end
 
 local function workerbee()
     local inst = commonfn("bee_build", { "worker" })
@@ -254,6 +238,9 @@ local function workerbee()
     inst:AddComponent("pollinator")
     inst:SetBrain(workerbrain)
     inst.sounds = workersounds
+
+    inst.OnEntityWake = OnWake
+    inst.OnEntitySleep = OnSleep    
 
     MakeHauntableChangePrefab(inst, "killerbee")
 
@@ -279,6 +266,9 @@ local function killerbee()
     inst.components.combat:SetRetargetFunction(2, KillerRetarget)
     inst:SetBrain(killerbrain)
     inst.sounds = killersounds
+
+    inst.OnEntityWake = OnWake
+    inst.OnEntitySleep = OnSleep    
 
     MakeHauntablePanic(inst)
     inst:ListenForEvent("spawnedfromhaunt", OnSpawnedFromHaunt)

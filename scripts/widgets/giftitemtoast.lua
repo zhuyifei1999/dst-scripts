@@ -68,11 +68,9 @@ function GiftItemToast:UpdateElements()
                     function()
                         --check we're still opened, cuz we don't cancel MoveTo
                         if self.opened then
-                            --[[
-                            --V2C: sounds bad...
                             if self:IsVisible() then
                                 TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/skin_drop_slide_gift_BOTTOM_HIT")
-                            end]]
+                            end
                             -- Not checking :IsEnabled(), because that inherits parent properties
                             -- whereas we want to know if the immediate widget is enabled or not.
                             if self.tab_gift.enabled then

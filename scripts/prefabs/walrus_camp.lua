@@ -393,25 +393,18 @@ local function create()
 
     MakeObstaclePhysics(inst, 3)
 
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
     inst.AnimState:SetBank("walrus_house")
     inst.AnimState:SetBuild("walrus_house")
 
     inst.MiniMapEntity:SetIcon("igloo.png")
 
-    inst.Light:SetFalloff(1)
-    inst.Light:SetIntensity(.5)
-    inst.Light:SetRadius(2)
-    inst.Light:SetColour(180/255, 195/255, 50/255)
+    inst.data = { children = {} }
 
     --inst:AddTag("tent")
-
-    inst.entity:SetPristine()
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
-
-    inst.data = { children = {} }
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = GetStatus
@@ -419,6 +412,11 @@ local function create()
     inst:WatchWorldState("startday", OnStartDay)
 
     inst:ListenForEvent("onwenthome", OnWentHome)
+
+    inst.Light:SetFalloff(1)
+    inst.Light:SetIntensity(.5)
+    inst.Light:SetRadius(2)
+    inst.Light:SetColour(180/255, 195/255, 50/255)
 
     inst.data.lighton = not TheWorld.state.isday
     inst.Light:Enable(inst.data.lighton)

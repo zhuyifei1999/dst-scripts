@@ -88,6 +88,29 @@ local function DoPoundShake(inst)
 end
 
 --------------------------------------------------------------------------
+--"nosleep" helpers
+
+local function nosleep_gotosleep()
+    return EventHandler("gotosleep", function(inst)
+        inst.sg.statemem.sleeping = true
+    end)
+end
+
+local function nosleep_onwakeup()
+    return EventHandler("onwakeup", function(inst)
+        inst.sg.statemem.sleeping = false
+    end)
+end
+
+local function nosleep_animover(state)
+    return EventHandler("animover", function(inst)
+        if inst.AnimState:AnimDone() then
+            inst.sg:GoToState(inst.sg.statemem.sleeping and "sleep" or state)
+        end
+    end)
+end
+
+--------------------------------------------------------------------------
 
 local function ChooseAttack(inst)
     if not inst.components.timer:TimerExists("pound_cd") then
@@ -152,18 +175,18 @@ local events =
     CommonHandlers.OnLocomote(false, true),
     CommonHandlers.OnDeath(),
     CommonHandlers.OnFreeze(),
-    CommonHandlers.OnSleepEx(),
-    CommonHandlers.OnWakeEx(),
+    EventHandler("gotosleep", function(inst)
+        if not (inst.sg:HasStateTag("nosleep") or inst.components.health:IsDead()) then
+            inst.sg:GoToState(inst.sg:HasStateTag("sleeping") and "sleeping" or "sleep")
+        end
+    end),
     EventHandler("doattack", function(inst)
         if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) then
             ChooseAttack(inst)
         end
     end),
     EventHandler("attacked", function(inst)
-        if not inst.components.health:IsDead() and
-            (   not inst.sg:HasStateTag("busy") or
-                inst.sg:HasStateTag("caninterrupt")
-            ) and
+        if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) and
             (   inst.sg.mem.last_hit_time == nil or
                 inst.sg.mem.last_hit_time + inst.hit_recovery < GetTime()
             ) then
@@ -204,8 +227,6 @@ local states =
                 inst.sg:GoToState("roar")
             elseif inst.sg.mem.wantstoburrow then
                 inst.sg:GoToState("burrow")
-            elseif inst.sg.mem.sleeping then
-                inst.sg:GoToState("sleep")
             elseif inst.sg.mem.wantstochannel then
                 inst.sg:GoToState("channel_pre")
             else
@@ -291,7 +312,6 @@ local states =
             inst.AnimState:SetLightOverride(0)
             inst.DynamicShadow:Enable(false)
             inst.Light:Enable(false)
-            inst.sg.mem.wantstoroar = true
         end,
 
         timeline =
@@ -318,7 +338,9 @@ local states =
 
         events =
         {
-            CommonHandlers.OnNoSleepAnimOver("roar"),
+            nosleep_gotosleep(),
+            nosleep_onwakeup(),
+            nosleep_animover("roar"),
         },
 
         onexit = function(inst)
@@ -498,7 +520,9 @@ local states =
 
         events =
         {
-            CommonHandlers.OnNoSleepAnimOver("idle"),
+            nosleep_gotosleep(),
+            nosleep_onwakeup(),
+            nosleep_animover("idle"),
         },
     },
 
@@ -720,12 +744,18 @@ local states =
                     inst.sg.statemem.stopped = true
                 end
             end),
-            CommonHandlers.OnNoSleepAnimOver(function(inst)
-                if inst.sg.statemem.stopped then
-                    inst.sg:GoToState("channel_pst")
-                else
-                    inst.sg.statemem.continuechannel = true
-                    inst.sg:GoToState("channel")
+            nosleep_gotosleep(),
+            nosleep_onwakeup(),
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    if inst.sg.statemem.sleeping then
+                        inst.sg:GoToState("sleep")
+                    elseif inst.sg.statemem.stopped then
+                        inst.sg:GoToState("channel_pst")
+                    else
+                        inst.sg.statemem.continuechannel = true
+                        inst.sg:GoToState("channel")
+                    end
                 end
             end),
         },
@@ -796,16 +826,22 @@ local states =
                 inst:DoSporeBomb(inst.sg.statemem.targets)
                 inst.components.timer:StartTimer("sporebomb_cd", inst.sporebomb_cd)
             end),
-            CommonHandlers.OnNoSleepTimeEvent(43 * FRAMES, function(inst)
-                inst.sg:RemoveStateTag("busy")
-                inst.sg:RemoveStateTag("nosleep")
-                inst.sg:RemoveStateTag("nofreeze")
+            TimeEvent(43 * FRAMES, function(inst)
+                if inst.sg.statemem.sleeping and not inst.components.health:IsDead() then
+                    inst.sg:GoToState("sleep")
+                else
+                    inst.sg:RemoveStateTag("busy")
+                    inst.sg:RemoveStateTag("nosleep")
+                    inst.sg:RemoveStateTag("nofreeze")
+                end
             end),
         },
 
         events =
         {
-            CommonHandlers.OnNoSleepAnimOver("idle"),
+            nosleep_gotosleep(),
+            nosleep_onwakeup(),
+            nosleep_animover("idle"),
         },
 
         onexit = function(inst)
@@ -848,7 +884,9 @@ local states =
 
         events =
         {
-            CommonHandlers.OnNoSleepAnimOver("idle"),
+            nosleep_gotosleep(),
+            nosleep_onwakeup(),
+            nosleep_animover("idle"),
         },
     },
 
@@ -877,9 +915,11 @@ local states =
 
         events =
         {
+            nosleep_gotosleep(),
+            nosleep_onwakeup(),
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("pound")
+                    inst.sg:GoToState("pound", inst.sg.statemem.sleeping)
                 end
             end),
         },
@@ -889,8 +929,10 @@ local states =
         name = "pound",
         tags = { "attack", "busy", "pounding", "nosleep", "nofreeze" },
 
-        onenter = function(inst)
+        onenter = function(inst, sleeping)
+            inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("attack_pound_loop")
+            inst.sg.statemem.sleeping = sleeping
         end,
 
         timeline =
@@ -905,9 +947,11 @@ local states =
 
         events =
         {
+            nosleep_gotosleep(),
+            nosleep_onwakeup(),
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("pound_pst")
+                    inst.sg:GoToState("pound_pst", inst.sg.statemem.sleeping)
                 end
             end),
         },
@@ -919,20 +963,27 @@ local states =
 
         onenter = function(inst, sleeping)
             inst.AnimState:PlayAnimation("attack_pound_pst")
+            inst.sg.statemem.sleeping = sleeping
         end,
 
         timeline =
         {
-            CommonHandlers.OnNoSleepTimeEvent(5 * FRAMES, function(inst)
-                inst.sg:RemoveStateTag("busy")
-                inst.sg:RemoveStateTag("nosleep")
-                inst.sg:RemoveStateTag("nofreeze")
+            TimeEvent(5 * FRAMES, function(inst)
+                if inst.sg.statemem.sleeping and not inst.components.health:IsDead() then
+                    inst.sg:GoToState("sleep")
+                else
+                    inst.sg:RemoveStateTag("busy")
+                    inst.sg:RemoveStateTag("nosleep")
+                    inst.sg:RemoveStateTag("nofreeze")
+                end
             end),
         },
 
         events =
         {
-            CommonHandlers.OnNoSleepAnimOver("idle"),
+            nosleep_gotosleep(),
+            nosleep_onwakeup(),
+            nosleep_animover("idle"),
         },
     },
 }
@@ -961,13 +1012,10 @@ CommonStates.AddFrozenStates(states,
         end
     end
 )
-CommonStates.AddSleepExStates(states,
+CommonStates.AddSleepStates(states,
 {
     starttimeline =
     {
-        TimeEvent(45 * FRAMES, function(inst)
-            inst.sg:RemoveStateTag("caninterrupt")
-        end),
         TimeEvent(46 * FRAMES, function(inst)
             inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/bearger/step_stomp")
             ShakeIfClose(inst)
@@ -975,16 +1023,10 @@ CommonStates.AddSleepExStates(states,
     },
     waketimeline =
     {
-        CommonHandlers.OnNoSleepTimeEvent(45 * FRAMES, function(inst)
+        TimeEvent(45 * FRAMES, function(inst)
             inst.sg:RemoveStateTag("busy")
-            inst.sg:RemoveStateTag("nosleep")
         end),
-    },
-},
-{
-    onsleep = function(inst)
-        inst.sg:AddStateTag("caninterrupt")
-    end,
+    }
 })
 
 return StateGraph("SGtoadstool", states, events, "idle")

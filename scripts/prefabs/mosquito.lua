@@ -126,7 +126,11 @@ local function mosquito()
     inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
 
-    MakeFlyingCharacterPhysics(inst, 1, .5)
+    MakeCharacterPhysics(inst, 1, .5)
+    inst.Physics:SetCollisionGroup(COLLISION.FLYERS)
+    inst.Physics:ClearCollisionMask()
+    inst.Physics:CollidesWith(COLLISION.WORLD)
+    inst.Physics:CollidesWith(COLLISION.FLYERS)
 
     inst.DynamicShadow:SetSize(.8, .5)
     inst.Transform:SetFourFaced()
@@ -174,7 +178,7 @@ local function mosquito()
     ---------------------
 
     inst:AddComponent("lootdropper")
-    inst.components.lootdropper:SetChanceLootTable('mosquito')
+    inst.components.lootdropper:SetChanceLootTable('mosquito')  
 
     inst:AddComponent("tradable")
 
@@ -195,7 +199,6 @@ local function mosquito()
     inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "body"
     inst.components.combat:SetDefaultDamage(TUNING.MOSQUITO_DAMAGE)
-    inst.components.combat:SetRange(TUNING.MOSQUITO_ATTACK_RANGE)
     inst.components.combat:SetAttackPeriod(TUNING.MOSQUITO_ATTACK_PERIOD)
     inst.components.combat:SetRetargetFunction(2, KillerRetarget)
     inst.components.combat:SetPlayerStunlock(PLAYERSTUNLOCK.RARELY)

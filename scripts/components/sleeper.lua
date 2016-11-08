@@ -24,11 +24,7 @@ local Sleeper = Class(function(self, inst)
     self.sleepiness = 0
     self.wearofftime = 10
     self.hibernate = false
-
-    --these are for diminishing returns (mainly bosses), so nil for default
-    --self.diminishingreturns = false
-    --self.extraresist = 0
-    --self.diminishingtask = nil
+    --self.sleeptimemult = 1 --nil for default since 99% of stuff don't use this
 
     self.inst:ListenForEvent("onignite", onattacked)
     self.inst:ListenForEvent("firedamage", onattacked)
@@ -38,15 +34,6 @@ end)
 
 function Sleeper:OnRemoveFromEntity()
     self.inst:RemoveTag("sleeper")
-    if self.testtask ~= nil then
-        self.testtask:Cancel()
-    end
-    if self.wearofftask ~= nil then
-        self.wearofftask:Cancel()
-    end
-    if self.diminishingtask ~= nil then
-        self.diminishingtask:Cancel()
-    end
     self.inst:RemoveEventCallback("onignite", onattacked)
     self.inst:RemoveEventCallback("firedamage", onattacked)
     self.inst:RemoveEventCallback("attacked", onattacked)
@@ -194,6 +181,10 @@ function Sleeper:SetResistance(resist)
     self.resistance = resist
 end
 
+function Sleeper:SetSleepTimeMult(mult)
+    self.sleeptimemult = mult ~= 1 and mult or nil
+end
+
 function Sleeper:StartTesting(time)
     if self.isasleep then
         self:SetTest(ShouldWakeUp, time)
@@ -224,17 +215,14 @@ function Sleeper:GetTimeAsleep()
 end
 
 function Sleeper:GetDebugString()
-    return string.format("%s for %2.2f / %2.2f Sleepy: %d/%d -- Multiplier: %2.2f (Decay: %2.2f)",
+    return string.format("%s for %2.2f / %2.2f Sleepy: %d/%d",
             self.isasleep and "SLEEPING" or "AWAKE",
             self.isasleep and self:GetTimeAsleep() or self:GetTimeAwake(),
             self.lasttesttime + self.testtime - GetTime(),
             self.sleepiness,
-            self.resistance,
-            self:GetSleepTimeMultiplier(),
-            self.diminishingtask ~= nil and GetTaskRemaining(self.diminishingtask) or 0)
+            self.resistance)
 end
 
---V2C: not passing self because we also don't cancel this task on removal
 local function OnGoToSleep(inst, sleeptime)
     if inst.components.sleeper ~= nil then
         inst.components.sleeper:GoToSleep(sleeptime)
@@ -250,26 +238,6 @@ function Sleeper:AddSleepiness(sleepiness, sleeptime)
     elseif self.wearofftask == nil then
         self.wearofftask = self.inst:DoPeriodicTask(self.wearofftime, WearOff)
     end
-end
-
-local function DecayExtraResist(inst, self)
-    self:SetExtraResist(self.extraresist - .1)
-end
-
-function Sleeper:SetExtraResist(resist)
-    self.extraresist = math.clamp(resist, 0, 10)
-    if self.extraresist > 0 then
-        if self.diminishingtask == nil then
-            self.diminishingtask = self.inst:DoPeriodicTask(30, DecayExtraResist, nil, self)
-        end
-    elseif self.diminishingtask ~= nil then
-        self.diminishingtask:Cancel()
-        self.diminishingtask = nil
-    end
-end
-
-function Sleeper:GetSleepTimeMultiplier()
-    return self.extraresist ~= nil and math.max(.2, 1 - self.extraresist * .1) or 1
 end
 
 function Sleeper:GoToSleep(sleeptime)
@@ -296,12 +264,9 @@ function Sleeper:GoToSleep(sleeptime)
 
         if not wasasleep then
             self.inst:PushEvent("gotosleep")
-            if self.diminishingreturns then
-                self:SetExtraResist((self.extraresist or 0) + 1)
-            end
         end
 
-        self:SetWakeTest(self.waketestfn, sleeptime ~= nil and sleeptime * self:GetSleepTimeMultiplier() or sleeptime)
+        self:SetWakeTest(self.waketestfn, sleeptime ~= nil and self.sleeptimemult ~= nil and sleeptime * self.sleeptimemult or sleeptime)
     end
 end
 
@@ -331,19 +296,6 @@ function Sleeper:WakeUp()
 
         self.inst:PushEvent("onwakeup")
         self:SetSleepTest(self.sleeptestfn)
-    end
-end
-
-function Sleeper:OnSave()
-    return self.extraresist ~= nil
-        and self.extraresist > 0
-        and { extraresist = math.floor(self.extraresist * 10) * .1 }
-        or nil
-end
-
-function Sleeper:OnLoad(data)
-    if data.extraresist ~= nil then
-        self:SetExtraResist(data.extraresist)
     end
 end
 

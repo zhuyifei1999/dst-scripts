@@ -37,7 +37,7 @@ local function AddSpecialLoot(inst)
     inst.components.lootdropper:AddChanceLoot(hat, 1.0)
 
     -- one mushroom light
-    inst.components.lootdropper:AddChanceLoot(math.random() < 0.2 and "mushroom_light2_blueprint" or "mushroom_light_blueprint", 1.0)
+    inst.components.lootdropper:AddChanceLoot(math.random() < 0.1 and "mushroom_light2_blueprint" or "mushroom_light_blueprint", 1.0)
 
     -- 2-3 spores
     local spores = PickSomeWithDups(3, { MUSHTREE_SPORE_RED, MUSHTREE_SPORE_GREEN, MUSHTREE_SPORE_BLUE })
@@ -137,7 +137,6 @@ local function FindSporeBombTargets(inst, preferredtargets)
                 not v.components.debuffable:HasDebuff("sporebomb") and
                 not (v.components.health ~= nil and
                     v.components.health:IsDead()) and
-                not v:HasTag("playerghost") and
                 v:IsNear(inst, TUNING.TOADSTOOL_SPOREBOMB_HIT_RANGE) then
                 table.insert(targets, v)
                 if #targets >= inst.sporebomb_targets then
@@ -149,7 +148,7 @@ local function FindSporeBombTargets(inst, preferredtargets)
 
     local newtargets = {}
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, TUNING.TOADSTOOL_SPOREBOMB_ATTACK_RANGE, { "debuffable" }, { "ghost", "playerghost", "shadow", "shadowminion", "noauradamage", "INLIMBO" })
+    local ents = TheSim:FindEntities(x, y, z, TUNING.TOADSTOOL_SPOREBOMB_ATTACK_RANGE, { "debuffable" }, { "ghost", "shadow", "shadowminion", "noauradamage", "INLIMBO" })
     for i, v in ipairs(ents) do
         if v.entity:IsVisible() and
             v.components.debuffable ~= nil and
@@ -524,6 +523,68 @@ end
 
 --------------------------------------------------------------------------
 
+local function DecayFreezeResist(inst, SetFreezeExtraResist)
+    local new_resist = math.max(0, inst.freezable_extra_resist - .1)
+    local current_resist = inst.components.freezable.coldness - TUNING.TOADSTOOL_FREEZE_RESIST
+    if new_resist >= current_resist then
+        SetFreezeExtraResist(inst, new_resist)
+    elseif current_resist < inst.freezable_extra_resist then
+        SetFreezeExtraResist(inst, current_resist)
+    end
+end
+
+local function SetFreezeExtraResist(inst, resist)
+    inst.freezable_extra_resist = resist
+    inst.components.freezable:SetResistance(math.min(10, TUNING.TOADSTOOL_FREEZE_RESIST + resist))
+    inst.components.freezable:SetDefaultWearOffTime(math.max(1, TUNING.TOADSTOOL_FREEZE_WEAR_OFF_TIME - resist))
+    if resist > 0 then
+        if inst._freezeresisttask == nil then
+            inst._freezeresisttask = inst:DoPeriodicTask(30, DecayFreezeResist, nil, SetFreezeExtraResist)
+        end
+    elseif inst._freezeresisttask ~= nil then
+        inst._freezeresisttask:Cancel()
+        inst._freezeresisttask = nil
+    end
+end
+
+--Called whenever Freeze is triggered, whether I'm frozen already or not
+local function OnFreezeFn(inst)
+    if inst._freezeresisttask ~= nil then
+        --Restart decay timer
+        inst._freezeresisttask:Cancel()
+        inst._freezeresisttask = inst:DoPeriodicTask(30, DecayFreezeResist, nil, SetFreezeExtraResist)
+    end
+end
+
+--Triggered only if I wasn't already completely frozen
+local function OnFreeze(inst)
+    SetFreezeExtraResist(inst, math.min(10, inst.freezable_extra_resist + 1))
+end
+
+--------------------------------------------------------------------------
+
+local function DecaySleepResist(inst, SetSleepExtraResist)
+    SetSleepExtraResist(inst, math.max(0, inst.sleeper_extra_resist - .1))
+end
+
+local function SetSleepExtraResist(inst, resist)
+    inst.sleeper_extra_resist = resist
+    inst.components.sleeper:SetSleepTimeMult(math.max(.2, 1 - resist * .1))
+    if resist > 0 then
+        if inst._sleepresisttask == nil then
+            inst._sleepresisttask = inst:DoPeriodicTask(30, DecaySleepResist, nil, SetSleepExtraResist)
+        end
+    elseif inst._sleepresisttask ~= nil then
+        inst._sleepresisttask:Cancel()
+        inst._sleepresisttask = nil
+    end
+end
+
+--Triggered only if I wasn't already sleeping
+local function OnGoToSleep(inst)
+    SetSleepExtraResist(inst, math.min(10, inst.sleeper_extra_resist + 1))
+end
+
 local function ShouldSleep(inst)
     return false
 end
@@ -589,6 +650,8 @@ end
 
 local function OnSave(inst, data)
     data.engaged = inst.engaged or nil
+    data.freezeresist = inst.freezable_extra_resist > 0 and math.floor(inst.freezable_extra_resist * 10) * .1 or nil
+    data.sleepresist = inst.sleeper_extra_resist > 0 and math.floor(inst.sleeper_extra_resist * 10) * .1 or nil
     data.poundspeed = inst.pound_speed > 0 and math.floor(inst.pound_speed) or nil
 end
 
@@ -602,6 +665,12 @@ local function OnLoad(inst, data)
     )
 
     if data ~= nil then
+        if data.freezeresist ~= nil then
+            SetFreezeExtraResist(inst, math.max(0, data.freezeresist))
+        end
+        if data.sleepresist ~= nil then
+            SetSleepExtraResist(inst, math.max(0, data.sleepresist))
+        end
         if data.poundspeed ~= nil then
             inst.pound_speed = math.max(0, data.poundspeed)
         end
@@ -728,7 +797,8 @@ local function fn()
     inst.components.sleeper:SetResistance(4)
     inst.components.sleeper:SetSleepTest(ShouldSleep)
     inst.components.sleeper:SetWakeTest(ShouldWake)
-    inst.components.sleeper.diminishingreturns = true
+    inst.sleeper_extra_resist = 0
+    inst._sleepresisttask = nil
 
     inst:AddComponent("locomotor")
     inst.components.locomotor.pathcaps = { ignorewalls = true }
@@ -766,7 +836,11 @@ local function fn()
 
     MakeLargeBurnableCharacter(inst, "swap_fire")
     MakeHugeFreezableCharacter(inst, "toad_torso")
-    inst.components.freezable.diminishingreturns = true
+    inst.components.freezable:SetDefaultWearOffTime(TUNING.TOADSTOOL_FREEZE_WEAR_OFF_TIME)
+    inst.components.freezable:SetResistance(TUNING.TOADSTOOL_FREEZE_RESIST)
+    inst.components.freezable.onfreezefn = OnFreezeFn
+    inst.freezable_extra_resist = 0
+    inst._freezeresisttask = nil
 
     inst:SetStateGraph("SGtoadstool")
     inst:SetBrain(brain)
@@ -806,6 +880,8 @@ local function fn()
     inst:ListenForEvent("newstate", OnNewState)
     inst:ListenForEvent("attacked", OnAttacked)
     inst:ListenForEvent("fleewarning", OnFleeWarning)
+    inst:ListenForEvent("freeze", OnFreeze)
+    inst:ListenForEvent("gotosleep", OnGoToSleep)
 
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad

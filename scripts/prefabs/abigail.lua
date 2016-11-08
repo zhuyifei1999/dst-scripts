@@ -99,7 +99,7 @@ local function linktoplayer(inst, player)
     inst.persists = false
     inst._playerlink = player
     player.abigail = inst
-    player.components.leader:AddFollower(inst)
+    player.components.leader:AddFollower(inst, true)
     for k, v in pairs(player.abigail_flowers) do
         k:Refresh()
     end

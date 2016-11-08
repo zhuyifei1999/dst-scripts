@@ -1,5 +1,3 @@
-local TechTree = require("techtree")
-
 local function onsciencebonus(self, sciencebonus)
     self.inst.replica.builder:SetScienceBonus(sciencebonus)
 end
@@ -184,9 +182,12 @@ function Builder:EvaluateTechTrees()
 
     --add any character specific bonuses to your current tech levels.
     if not prototyper_active then
-        for i, v in ipairs(TechTree.AVAILABLE_TECH) do
-            self.accessible_tech_trees[v] = self[string.lower(v).."_bonus"] or 0
-        end
+        self.accessible_tech_trees.SCIENCE = self.science_bonus
+        self.accessible_tech_trees.MAGIC = self.magic_bonus
+        self.accessible_tech_trees.ANCIENT = self.ancient_bonus
+        self.accessible_tech_trees.SHADOW = self.shadow_bonus
+        self.accessible_tech_trees.CARTOGRAPHY = 0
+        self.accessible_tech_trees.SCULPTING = 0
     else
         self.accessible_tech_trees.SCIENCE = self.accessible_tech_trees.SCIENCE + self.science_bonus
         self.accessible_tech_trees.MAGIC = self.accessible_tech_trees.MAGIC + self.magic_bonus
@@ -390,12 +391,6 @@ function Builder:DoBuild(recname, pt, rotation, skin)
             self.inst.components.rider ~= nil and
             self.inst.components.rider:IsRiding() then
             return false, "MOUNTED"
-        elseif recipe.level.ORPHANAGE > 0 and (
-                self.inst.components.petleash == nil or
-                self.inst.components.petleash:IsFull() or
-                self.inst.components.petleash:HasPetWithTag("critter")
-            ) then
-            return false, "HASPET"
         end
 
         local wetlevel = self.buffered_builds[recname]
@@ -488,22 +483,21 @@ end
 
 function Builder:KnowsRecipe(recname)
     local recipe = GetValidRecipe(recname)
-    if recipe == nil then
-        return false
-    end
-    local has_tech = true
-    if not self.freebuildmode then
-        for i, v in ipairs(TechTree.AVAILABLE_TECH) do
-            if recipe.level[v] > (self[string.lower(v).."_bonus"] or 0) then
-                has_tech = false
-                break
-            end
-        end
-    end
-    return has_tech
-        and (recipe.builder_tag == nil or self.inst:HasTag(recipe.builder_tag))
-        or table.contains(self.recipes, recname)
-        or self.station_recipes[recname]
+    return recipe ~= nil
+        and (   (   recipe.level.SCIENCE <= self.science_bonus and
+                    recipe.level.MAGIC <= self.magic_bonus and
+                    recipe.level.ANCIENT <= self.ancient_bonus and
+                    recipe.level.SHADOW <= self.shadow_bonus and
+                    recipe.level.CARTOGRAPHY <= 0 and
+                    recipe.level.SCULPTING <= 0 or
+                    self.freebuildmode
+                ) and (
+                    recipe.builder_tag == nil or
+                    self.inst:HasTag(recipe.builder_tag)
+                ) or
+                table.contains(self.recipes, recname) or
+                self.station_recipes[recname]
+            )
 end
 
 function Builder:CanBuild(recname)

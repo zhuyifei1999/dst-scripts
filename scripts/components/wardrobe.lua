@@ -116,7 +116,7 @@ function Wardrobe:BeginChanging(doer)
         local wasclosed = next(self.changers) == nil
 
         self.changers[doer] = true
-		
+
         self.inst:ListenForEvent("onremove", self.onclosewardrobe, doer)
         self.inst:ListenForEvent("ms_closewardrobe", self.onclosewardrobe, doer)
 
@@ -173,12 +173,26 @@ function Wardrobe:EndAllChanging()
 end
 
 local function DoTargetChanging(self, doer, skins)
-	doer.sg.statemem.ischanging = true
+    local old = doer.components.skinner:GetClothing()
+    local diff =
+    {
+        base = skins.base ~= nil and skins.base ~= old.base and skins.base or nil,
+        body = skins.body ~= nil and skins.body ~= old.body and skins.body or nil,
+        hand = skins.hand ~= nil and skins.hand ~= old.hand and skins.hand or nil,
+        legs = skins.legs ~= nil and skins.legs ~= old.legs and skins.legs or nil,
+        feet = skins.feet ~= nil and skins.feet ~= old.feet and skins.feet or nil,
+    }
+
+    if next(diff) == nil then
+        return false
+    end
+
+    doer.sg.statemem.ischanging = true
     doer.sg:GoToState("dressupwardrobe", function()
         if self.ondressupfn ~= nil then
-            self.ondressupfn(self.inst, function() self:ApplyTargetSkins(self.inst, doer, skins) end)
+            self.ondressupfn(self.inst, function() self:ApplySkins(doer, diff) end)
         else
-            self:ApplyTargetSkins(self.inst, doer, skins)
+            self:ApplySkins(doer, diff)
         end
     end)
     return true
@@ -226,17 +240,6 @@ function Wardrobe:ActivateChanging(doer, skins)
     else
         return DoDoerChanging(self, doer, skins)
     end
-end
-
-function Wardrobe:ApplyTargetSkins(target, doer, skins)
-	if target.components.skinner ~= nil then
-		target.AnimState:AssignItemSkins( doer.userid, skins.body, skins.hand, skins.legs, skins.feet )
-		target.components.skinner:ClearAllClothing()
-		target.components.skinner:SetClothing(skins.body)
-		target.components.skinner:SetClothing(skins.hand)
-		target.components.skinner:SetClothing(skins.legs)
-		target.components.skinner:SetClothing(skins.feet)
-	end
 end
 
 function Wardrobe:ApplySkins(doer, diff)
