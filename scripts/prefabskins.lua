@@ -43,6 +43,10 @@ PREFAB_SKINS = {
 	{
 		"flowerhat_wreath",
 	},
+	spear = 
+	{
+		"spear_bee",
+	},
 	strawhat = 
 	{
 		"strawhat_floppy",

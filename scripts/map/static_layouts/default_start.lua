@@ -62,7 +62,7 @@ return {
       objects = {
         {
           name = "",
-          type = "flower",
+          type = "welcomitem",
           shape = "rectangle",
           x = 192,
           y = 80,
@@ -73,7 +73,7 @@ return {
         },
         {
           name = "",
-          type = "flower",
+          type = "welcomitem",
           shape = "rectangle",
           x = 128,
           y = 48,
@@ -84,7 +84,7 @@ return {
         },
         {
           name = "",
-          type = "flower",
+          type = "welcomitem",
           shape = "rectangle",
           x = 32,
           y = 144,

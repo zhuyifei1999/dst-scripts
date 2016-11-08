@@ -73711,6 +73711,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.none"
 msgid "Your usual look."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.spear_bee
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.spear_bee"
+msgid "It doesn't hit harder than a regular spear, although it certainly still stings."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.strawhat_floppy
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.strawhat_floppy"
 msgid "Be like a little British lady in your garden!"
@@ -74834,6 +74839,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.none
 msgctxt "STRINGS.SKIN_NAMES.none"
 msgid "Default"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.spear_bee
+msgctxt "STRINGS.SKIN_NAMES.spear_bee"
+msgid "Beeyonet"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.strawhat_floppy

@@ -228,7 +228,7 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
         story_gen_params.wormhole_prefab = current_gen_params.wormhole_prefab
     end
 
-	ApplySpecialEvent(tuning_override.specialevent)
+	ApplySpecialEvent(current_gen_params.specialevent)
 
     local min_size = 350
     if current_gen_params.world_size ~= nil then

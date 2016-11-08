@@ -84,8 +84,11 @@ local CountdownBeta = Class(Widget, function(self, owner, mode, image, update_na
 
 				self.inst:DoTaskInTime(0.4, function(inst)
 					self.reveal_image:TintTo({r=1,g=1,b=1,a=0}, {r=1,g=1,b=1,a=1}, .5 )
+					
+					if TheFrontEnd:GetActiveScreen() == owner then
+						TheFrontEnd:GetSound():PlaySound("dontstarve/creatures/spat/yell")
+					end
 				end)
-			
 			end)
 			
 			-- Spore Cloud in/out

@@ -5,7 +5,13 @@ local assets =
 }
 
 local function onequip(inst, owner)
-    owner.AnimState:OverrideSymbol("swap_object", "swap_spear", "swap_spear")
+    local skin_build = inst:GetSkinBuild()
+    if skin_build ~= nil then
+        owner:PushEvent("equipskinneditem", inst:GetSkinName())
+        owner.AnimState:OverrideItemSkinSymbol("swap_object", skin_build, "swap_spear", inst.GUID, "swap_spear")
+    else
+        owner.AnimState:OverrideSymbol("swap_object", "swap_spear", "swap_spear")
+    end
     owner.AnimState:Show("ARM_carry")
     owner.AnimState:Hide("ARM_normal")
 end
@@ -25,7 +31,7 @@ local function fn()
     MakeInventoryPhysics(inst)
 
     inst.AnimState:SetBank("spear")
-    inst.AnimState:SetBuild("spear")
+    inst.AnimState:SetBuild("swap_spear")
     inst.AnimState:PlayAnimation("idle")
 
     inst:AddTag("sharp")

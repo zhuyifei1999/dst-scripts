@@ -1,18 +1,23 @@
 
+local HALLOWEDNIGHTS_START = 32
+local HALLOWEDNIGHTS_END = 37
+
 function PickRandomTrinket()
     local chessunlocks = TheWorld.components.chessunlocks
-    local numlocked = chessunlocks ~= nil and chessunlocks:GetNumLockedTrinkets() or 0
-    if numlocked <= 0 then
-        return "trinket_"..tostring(math.random(NUM_TRINKETS))
-    elseif numlocked < NUM_TRINKETS then
-		local unlocked_trinkets = {}
-		for i = 1,NUM_TRINKETS do
-			if not chessunlocks:IsLocked("trinket_"..i) then
-				table.insert(unlocked_trinkets, i)
-			end
+
+	local has_locked_chess = chessunlocks ~= nil and (chessunlocks:GetNumLockedTrinkets() > 0)
+	local is_hallowednights = IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS)
+
+	local unlocked_trinkets = {}
+	for i = 1,NUM_TRINKETS do
+		if (not has_locked_chess or not chessunlocks:IsLocked("trinket_"..i))
+			and (is_hallowednights or not(i >= HALLOWEDNIGHTS_START and i <= HALLOWEDNIGHTS_END)) then
+
+			table.insert(unlocked_trinkets, i)
 		end
-        return "trinket_"..unlocked_trinkets[math.random(#unlocked_trinkets)]
     end
+
+    return "trinket_"..unlocked_trinkets[math.random(#unlocked_trinkets)]
 end
 
 local assets =
@@ -65,13 +70,12 @@ local function MakeTrinket(num)
         inst.components.tradable.goldvalue = TUNING.GOLD_VALUES.TRINKETS[num] or 3
         inst.components.tradable.tradefor = TRADEFOR[num]
         
-        if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
-			if num >= 32 and num <= 37 then
+		if num >= HALLOWEDNIGHTS_START and num <= HALLOWEDNIGHTS_END then
+	        if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
 				inst.components.tradable.halloweencandyvalue = 5
+			else
+				inst.components.tradable.goldvalue = 1 -- give people a reason to clean up all that hallowed nights litter!
 			end
-		else
-			inst:AddComponent("fuel")
-			inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL
 		end
 
         MakeHauntableLaunchAndSmash(inst)

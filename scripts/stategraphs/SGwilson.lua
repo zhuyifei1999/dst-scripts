@@ -2446,7 +2446,11 @@ local states =
             inst.components.locomotor:Clear()
             inst:ClearBufferedAction()
 
-            inst.AnimState:PlayAnimation(inst.components.inventory:IsHeavyLifting() and "heavy_refuseeat" or "refuseeat")
+            inst.AnimState:PlayAnimation(
+                (inst.components.rider ~= nil and inst.components.rider:IsRiding() and "dial_loop") or
+                (inst.components.inventory:IsHeavyLifting() and "heavy_refuseeat") or
+                "refuseeat"
+            )
 
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:RemotePausePrediction()

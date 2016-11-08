@@ -195,6 +195,7 @@ ITEM_COLOURS =
 	legs_skirt_plaid_green_pistachio = "green",
 	legs_tweed_knickerbocker_green_hunters = "green",
 	legs_tweed_knickerbocker_tan_grass = "tan",
+	spear_bee = "",
 	strawhat_floppy = "",
 	tophat_derby = "",
 	torch_rag = "",

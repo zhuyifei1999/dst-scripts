@@ -446,7 +446,7 @@ SPECIAL_EVENTS =
 	NONE = "none",
 	HALLOWED_NIGHTS = "hallowed_nights",
 }
-WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.HALLOWED_NIGHTS
+WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.NONE
 
 function IsSpecialEventActive(event)
 	--print(" -- WORLD_SPECIAL_EVENT is", WORLD_SPECIAL_EVENT)
@@ -485,7 +485,7 @@ TECH =
     SCULPTING_ONE = { SCULPTING = 1 },
     SCULPTING_TWO = { SCULPTING = 2 },
 
-	HALLOWED_NIGHTS = { SCIENCE = IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) and 0 or 10 },
+	HALLOWED_NIGHTS = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost ot 0
 	
     LOST = { MAGIC = 10, SCIENCE = 10, ANCIENT = 10 },
 }

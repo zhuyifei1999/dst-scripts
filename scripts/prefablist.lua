@@ -446,6 +446,7 @@ PREFABFILES = {
   "spawnlight_multiplayer",
   "spawnpoint_multiplayer",
   "spear",
+  "spear_bee",
   "spear_wathgrithr",
   "spider",
   "spider_web_spit",
