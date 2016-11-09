@@ -5,7 +5,7 @@ require "behaviours/leash"
 
 local PHYS_RAD = 1.4
 local FLEE_DELAY = 15
-local DODGE_DELAY = 6
+local DODGE_DELAY = 5
 local MAX_DODGE_TIME = 3
 local SEE_PLAYER_DIST = 20
 
@@ -16,6 +16,8 @@ local BeeQueenBrain = Class(Brain, function(self, inst)
     self._lastdisengaged = 0
     self._engaged = false
     self._shouldchase = false
+    self._dodgedest = nil
+    self._dodgetime = nil
 end)
 
 local function GetHomePos(inst)
@@ -89,78 +91,89 @@ local function ShouldChase(self)
     return distsq <= range * range
 end
 
-local function StartDodging(self)
-    self.dodgetime = nil
-    local homepos = GetHomePos(self.inst)
-    local pos = self.inst:GetPosition()
-    local dangerrangesq = TUNING.BEEQUEEN_CHASE_TO_RANGE * TUNING.BEEQUEEN_CHASE_TO_RANGE
-    local maxrangesq = TUNING.BEEQUEEN_DEAGGRO_DIST * TUNING.BEEQUEEN_DEAGGRO_DIST
-    local mindanger = math.huge
-    local mindangerpos = nil
-    for i = 10, 25, 5 do
-        local r = i + math.random() * 5
-        local normalize3 = 3 / r
-        local offset = FindWalkableOffset(pos, math.random() * 360, r, 8, true, true)
-        if offset ~= nil then
-            local x1, z1 = offset.x + pos.x, offset.z + pos.z
-            if distsq(homepos.x, homepos.z, x1, z1) < maxrangesq then
-                local danger =
-                    #FindPlayersInRangeSq(x1, 0, z1, dangerrangesq, true) +
-                    #FindPlayersInRangeSq(offset.x * normalize3, 0, offset.z * normalize3, 4, true)
-                if danger <= 0 then
-                    self.dest = Vector3(x1, 0, z1)
-                    return
-                elseif danger < mindanger then
-                    mindanger = danger
-                    mindangerpos = Vector3(x1, 0, z1)
+local function ShouldDodge(self)
+    if self._dodgedest ~= nil then
+        return true
+    end
+    local t = GetTime()
+    if self.inst.components.combat:GetLastAttackedTime() + DODGE_DELAY < t then
+        --Reset dodge timer
+        self._dodgetime = nil
+    elseif self._dodgetime == nil then
+        --Start dodge timer
+        self._dodgetime = t
+    elseif self._dodgetime + DODGE_DELAY < t then
+        --Find new dodge destination
+        local homepos = GetHomePos(self.inst)
+        local pos = self.inst:GetPosition()
+        local dangerrangesq = TUNING.BEEQUEEN_CHASE_TO_RANGE * TUNING.BEEQUEEN_CHASE_TO_RANGE
+        local maxrangesq = TUNING.BEEQUEEN_DEAGGRO_DIST * TUNING.BEEQUEEN_DEAGGRO_DIST
+        local mindanger = math.huge
+        local bestdest = Vector3()
+        for i = 10, 20, 5 do
+            local r = i + math.random() * 5
+            local offset = FindWalkableOffset(pos, math.random() * 360, r, 12, true, true)
+            if offset ~= nil then
+                local x, z = offset.x + pos.x, offset.z + pos.z
+                local nx, nz = offset.x / r, offset.z / r
+                local x1, z1 = nx * 2 + pos.x, nz * 2 + pos.z
+                local x2, z2 = nx * 4 + pos.x, nz * 4 + pos.z
+                if distsq(homepos.x, homepos.z, x, z) < maxrangesq then
+                    local danger = 0
+                    for i, v in ipairs(AllPlayers) do
+                        if not v:HasTag("playerghost") and v.entity:IsVisible() then
+                            local vx, vy, vz = v.Transform:GetWorldPosition()
+                            if distsq(vx, vz, x, z) < dangerrangesq then
+                                danger = danger + 1
+                            end
+                            if distsq(vx, vz, x1, z1) < 9 then
+                                danger = danger + 1
+                            end
+                            if distsq(vx, vz, x2, z2) < 9 then
+                                danger = danger + 1
+                            end
+                        end
+                    end
+                    if danger < mindanger then
+                        mindanger = danger
+                        bestdest.x, bestdest.z = x, z
+                        if danger <= 0 then
+                            break
+                        end
+                    end
                 end
             end
         end
+        if mindanger < math.huge then
+            self._dodgedest = bestdest
+            self._dodgetime = nil
+            self.inst.components.locomotor.walkspeed = TUNING.BEEQUEEN_DODGE_SPEED
+            self.inst.hit_recovery = TUNING.BEEQUEEN_DODGE_HIT_RECOVERY
+            return true
+        end
+        --Reset dodge timer to retry in half the time
+        self._dodgetime = t - DODGE_DELAY * .5
     end
-    self.dest = mindangerpos
-end
-
-local function ShouldStartDodging(self)
-    local t = GetTime()
-    if self.inst.components.combat:GetLastAttackedTime() + DODGE_DELAY < t then
-        self.dodgetime = nil
-    elseif self.dodgetime == nil then
-        self.dodgetime = t
-    elseif self.dodgetime + DODGE_DELAY < t then
-        return true
-    end
-    return false
-end
-
-local function ShouldDodge(self)
-    if self.dest == nil and ShouldStartDodging(self) then
-        StartDodging(self)
-    end
-    if self.dest ~= nil then
-        self.inst.components.locomotor.walkspeed = TUNING.BEEQUEEN_SPEED * 1.5
-        return true
-    end
-    self.inst.components.locomotor.walkspeed = TUNING.BEEQUEEN_SPEED
     return false
 end
 
 local function StopDodging(self)
-    self.dest = nil
+    self._dodgedest = nil
+    self.inst.components.locomotor.walkspeed = TUNING.BEEQUEEN_SPEED
+    self.inst.hit_recovery = TUNING.BEEQUEEN_HIT_RECOVERY
 end
 
 function BeeQueenBrain:OnStart()
     local root = PriorityNode(
     {
         WhileNode(function() return ShouldDodge(self) end, "Dodge",
-            ParallelNodeAny{
-                SequenceNode{
+            SequenceNode{
+                ParallelNodeAny{
                     WaitNode(MAX_DODGE_TIME),
-                    ActionNode(function() StopDodging(self) end),
+                    NotDecorator(FailIfSuccessDecorator(
+                        Leash(self.inst, function() return self._dodgedest end, 2, 2))),
                 },
-                PriorityNode({
-                    FailIfSuccessDecorator(Leash(self.inst, function() return self.dest end, 2, 2)),
-                    ActionNode(function() StopDodging(self) end),
-                }, .5),
+                ActionNode(function() StopDodging(self) end),
             }),
         WhileNode(function() return ShouldUseSpecialMove(self) end, "SpecialMoves",
             ActionNode(function() self.inst:PushEvent(self._act) end)),

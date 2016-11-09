@@ -274,7 +274,7 @@ local function fn()
     inst:SetStateGraph("SGbeequeen")
     inst:SetBrain(brain)
 
-    inst.hit_recovery = 2
+    inst.hit_recovery = TUNING.BEEQUEEN_HIT_RECOVERY
     inst.spawnguards_chain = 0
     SetPhaseLevel(inst, 1)
 

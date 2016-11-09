@@ -56,8 +56,7 @@ local function ShouldChase(self)
 end
 
 local function ShouldDodge(inst)
-    return inst._focustarget == nil
-        and inst.components.combat:HasTarget()
+    return inst.components.combat:HasTarget()
         and inst.components.combat:InCooldown()
 end
 
