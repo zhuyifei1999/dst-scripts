@@ -57,6 +57,7 @@ AddIngredientValues({"berries_juicy"}, {fruit=.5}, true)
 AddIngredientValues({"durian"}, {fruit=1, monster=1}, true)
 
 AddIngredientValues({"honey", "honeycomb"}, {sweetener=1}, true)
+AddIngredientValues({"royal_jelly"}, {sweetener=3}, true)
 
 local veggies = {"carrot", "corn", "pumpkin", "eggplant", "cutlichen"}
 AddIngredientValues(veggies, {veggie=1}, true)
@@ -139,7 +140,10 @@ local function GetIngredientValues(prefablist)
 	return {tags = tags, names = prefabs}
 end
 
-
+local function GetRecipe(cooker, product)
+	local recipes = cookerrecipes[cooker] or {}
+	return recipes[product]
+end
 
 function GetCandidateRecipes(cooker, ingdata)
 
@@ -238,5 +242,5 @@ end
 --TestRecipes("cookpot", {"tallbirdegg","meat","carrot","meat"})
 
 
-return { CalculateRecipe = CalculateRecipe, IsCookingIngredient = IsCookingIngredient, recipes = cookerrecipes, ingredients=ingredients}
+return { CalculateRecipe = CalculateRecipe, IsCookingIngredient = IsCookingIngredient, recipes = cookerrecipes, ingredients = ingredients, GetRecipe = GetRecipe}
 

@@ -35,82 +35,44 @@ end
 
 local function onspawnfn(inst, spawn)
     inst.AnimState:PlayAnimation("cough")
-    inst.SoundEmitter:PlaySound("dontstarve/cave/mushtree_tall_spore_fart")
     inst.AnimState:PushAnimation("idle_loop", true)
-
+    inst.SoundEmitter:PlaySound("dontstarve/cave/mushtree_tall_spore_fart")
     spawn.components.knownlocations:RememberLocation("home", inst:GetPosition())
 end
 
+local REMOVABLE =
+{
+    ["log"] = true,
+    ["blue_cap"] = true,
+    ["red_cap"] = true,
+    ["green_cap"] = true,
+    ["charcoal"] = true,
+}
+
 local function ontimerdone(inst, data)
     if data.name == "decay" then
-        -- before we disappear, clean up any crap left on the ground -- too
-        -- many objects is as bad for server health as too few!
-        local x,y,z = inst.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x,y,z,6)
-        local leftone = false
-        for k,ent in pairs(ents) do
-            if ent.prefab == "log"
-                or ent.prefab == "blue_cap"
-                or ent.prefab == "red_cap"
-                or ent.prefab == "green_cap"
-                or ent.prefab == "charcoal" then
-                if leftone then
-                    ent:Remove()
-                else
-                    leftone = true
+        if inst:IsAsleep() then
+            -- before we disappear, clean up any crap left on the ground
+            -- too many objects is as bad for server health as too few!
+            local x, y, z = inst.Transform:GetWorldPosition()
+            local ents = TheSim:FindEntities(x, y, z, 6, { "_inventoryitem" }, { "INLIMBO", "fire" })
+            -- leave at least one
+            if #ents > 1 then
+                table.remove(ents, 1)
+                for i, ent in ipairs(ents) do
+                    if REMOVABLE[ent.prefab] then
+                        ent:Remove()
+                    end
                 end
             end
         end
-
         inst:Remove()
     end
 end
 
-local function makestump(inst)
-    RemovePhysicsColliders(inst)
-    inst:AddTag("stump")
-    inst:RemoveTag("shelter")
-    inst:RemoveComponent("propagator")
-    inst:RemoveComponent("burnable")
-    MakeSmallPropagator(inst)
-    MakeSmallBurnable(inst)
-    inst.components.burnable:SetOnBurntFn(stump_burnt)
-    inst.components.growable:StopGrowing()
-    inst.components.periodicspawner:Stop()
-
-    inst.components.workable:SetWorkAction(ACTIONS.DIG)
-    inst.components.workable:SetOnWorkCallback(nil)
-    inst.components.workable:SetOnFinishCallback(dig_up_stump)
-    inst.components.workable:SetWorkLeft(1)
-    inst.AnimState:PlayAnimation("idle_stump")
-    inst.AnimState:ClearBloomEffectHandle()
-
-    inst.MiniMapEntity:SetIcon("mushroom_tree_stump.png")
-
-    inst.Light:Enable(false)
-
-    if inst.components.timer and not inst.components.timer:TimerExists("decay") then
-        inst.components.timer:StartTimer("decay", GetRandomWithVariance(TUNING.MUSHTREE_REGROWTH.DEAD_DECAY_TIME, TUNING.MUSHTREE_REGROWTH.DEAD_DECAY_TIME*0.5))
-    end
-
-end
-
-local function workcallback(inst, worker, workleft)
-    if not (worker ~= nil and worker:HasTag("playerghost")) then
-        inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_mushroom")
-    end
-    if workleft <= 0 then
-        inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")
-        makestump(inst)
-
-        inst.AnimState:PlayAnimation("fall")
-
-        inst.components.lootdropper:DropLoot(inst:GetPosition())
-        inst.AnimState:PushAnimation("idle_stump")
-
-    else
-        inst.AnimState:PlayAnimation("chop")
-        inst.AnimState:PushAnimation("idle_loop", true)
+local function DoGrowNextStage(inst)
+    if not inst:HasTag("stump") then
+        inst.components.growable:SetStage(inst.components.growable:GetNextStage())
     end
 end
 
@@ -126,9 +88,7 @@ local function DoGrow(inst, tostage, targetscale)
         inst.SoundEmitter:PlaySound("dontstarve/cave/mushtree_tall_shrink")
     end
     inst.AnimState:PushAnimation("idle_loop", true)
-    inst:DoTaskInTime(14*FRAMES, function()
-        inst.components.growable:SetStage(inst.components.growable:GetNextStage())
-    end)
+    inst:DoTaskInTime(14 * FRAMES, DoGrowNextStage)
 end
 
 local function GrowShort(inst)
@@ -144,22 +104,22 @@ local function GrowTall(inst)
 end
 
 local function SetShort(inst)
-    inst.Transform:SetScale(0.9,0.9,0.9)
+    inst.Transform:SetScale(.9, .9, .9)
 end
 
 local function SetNormal(inst)
-    inst.Transform:SetScale(1.0,1.0,1.0)
+    inst.Transform:SetScale(1, 1, 1)
 end
 
 local function SetTall(inst)
-    inst.Transform:SetScale(1.1,1.1,1.1)
+    inst.Transform:SetScale(1.1, 1.1, 1.1)
 end
 
 local growth_stages =
 {
-    {name="short", time = function(inst) return GetRandomWithVariance(TUNING.EVERGREEN_GROW_TIME[1].base, TUNING.EVERGREEN_GROW_TIME[1].random) end, fn = function(inst) SetShort(inst) end,  growfn = function(inst) GrowShort(inst) end , leifscale=.7 },
-    {name="normal", time = function(inst) return GetRandomWithVariance(TUNING.EVERGREEN_GROW_TIME[2].base, TUNING.EVERGREEN_GROW_TIME[2].random) end, fn = function(inst) SetNormal(inst) end, growfn = function(inst) GrowNormal(inst) end, leifscale=1 },
-    {name="tall", time = function(inst) return GetRandomWithVariance(TUNING.EVERGREEN_GROW_TIME[3].base, TUNING.EVERGREEN_GROW_TIME[3].random) end, fn = function(inst) SetTall(inst) end, growfn = function(inst) GrowTall(inst) end, leifscale=1.25 },
+    { name = "short", time = function(inst) return GetRandomWithVariance(TUNING.EVERGREEN_GROW_TIME[1].base, TUNING.EVERGREEN_GROW_TIME[1].random) end, fn = SetShort,  growfn = GrowShort , leifscale = .7 },
+    { name = "normal", time = function(inst) return GetRandomWithVariance(TUNING.EVERGREEN_GROW_TIME[2].base, TUNING.EVERGREEN_GROW_TIME[2].random) end, fn = SetNormal, growfn = GrowNormal, leifscale = 1 },
+    { name = "tall", time = function(inst) return GetRandomWithVariance(TUNING.EVERGREEN_GROW_TIME[3].base, TUNING.EVERGREEN_GROW_TIME[3].random) end, fn = SetTall, growfn = GrowTall, leifscale = 1.25 },
 }
 
 local data =
@@ -172,10 +132,10 @@ local data =
         bloom_build = "mushroom_tree_small_bloom",
         spore = "spore_small",
         icon = "mushroom_tree_small.png",
-        loot = {"log", "green_cap"},
+        loot = { "log", "green_cap" },
         work = TUNING.MUSHTREE_CHOPS_SMALL,
-        lightradius = 1.0,
-        lightcolour = {146/255, 225/255, 146/255},
+        lightradius = 1,
+        lightcolour = { 146/255, 225/255, 146/255 },
     },
     medium =
     { --Red
@@ -185,10 +145,10 @@ local data =
         bloom_build = "mushroom_tree_med_bloom",
         spore = "spore_medium",
         icon = "mushroom_tree_med.png",
-        loot = {"log", "red_cap"},
+        loot = { "log", "red_cap" },
         work = TUNING.MUSHTREE_CHOPS_MEDIUM,
         lightradius = 1.25,
-        lightcolour = {197/255, 126/255, 126/255},
+        lightcolour = { 197/255, 126/255, 126/255 },
     },
     tall =
     { --Blue
@@ -198,10 +158,10 @@ local data =
         bloom_build = "mushroom_tree_tall_bloom",
         spore = "spore_tall",
         icon = "mushroom_tree.png",
-        loot = {"log", "log", "blue_cap"},
+        loot = { "log", "log", "blue_cap" },
         work = TUNING.MUSHTREE_CHOPS_TALL,
         lightradius = 1.5,
-        lightcolour = {111/255, 111/255, 227/255},
+        lightcolour = { 111/255, 111/255, 227/255 },
         webbable = true,
     },
 }
@@ -212,26 +172,8 @@ local function onsave(inst, data)
     data.treestate = inst.treestate
 end
 
-local function onload(inst, data)
-    if data ~= nil then
-        if data.burnt then
-            if data.stump then
-                stump_burnt(inst)
-            else
-                tree_burnt(inst)
-            end
-        elseif data.stump then
-            makestump(inst)
-        elseif data.treestate == TREESTATES.NORMAL then
-            inst:Normal(true)
-        elseif data.treestate == TREESTATES.BLOOMING then
-            inst:Bloom(true)
-        end
-    end
-end
-
 local function CustomOnHaunt(inst, haunter)
-    if math.random() < TUNING.HAUNT_CHANCE_HALF then
+    if not inst:HasTag("stump") and math.random() < TUNING.HAUNT_CHANCE_HALF then
         inst.components.growable:DoGrowth()
         return true
     end
@@ -276,53 +218,195 @@ local function makeburntfx(name, data, bloom)
     end
 end
 
-local function maketree(name, data, state)
-
-    local function bloom_tree(inst, instant)
-        if not instant then
-            inst:DoTaskInTime(math.random() * 3 * TUNING.SEG_TIME, function()
-                inst.AnimState:PlayAnimation("change")
-                inst.SoundEmitter:PlaySound("dontstarve/cave/mushtree_tall_grow_3")
-                local swapbuild = nil
-                swapbuild = function()
-                    inst.AnimState:PushAnimation("idle_loop", true)
-                    inst.AnimState:SetBuild(data.bloom_build)
-                    inst.components.periodicspawner:ForceNextSpawn()
-                end
-                inst:DoTaskInTime(14*FRAMES, swapbuild)
-            end)
-        else
-            inst.AnimState:SetBuild(data.bloom_build)
+local function StartSpores(inst)
+    if inst._sporetime == nil then
+        inst._sporetime = -1
+        if not inst:IsAsleep() then
+            inst.components.periodicspawner:Start()
         end
-        inst.treestate = TREESTATES.BLOOMING
+    end
+end
+
+local function StopSpores(inst)
+    inst._sporetime = nil
+    inst.components.periodicspawner:Stop()
+end
+
+local function onentitysleep(inst)
+    if inst._sporetime ~= nil then
+        inst._sporetime = inst.components.periodicspawner.target_time or -1
+    end
+    inst.components.periodicspawner:Stop()
+end
+
+local function onentitywake(inst)
+    if inst._sporetime ~= nil then
         inst.components.periodicspawner:Start()
+        if inst._sporetime < 0 then
+            inst.components.periodicspawner:LongUpdate(math.random() * (inst.components.periodicspawner.target_time - GetTime()))
+        else
+            local target_time = inst.components.periodicspawner.target_time
+            if inst._sporetime < target_time then
+                if inst._sporetime <= GetTime() then
+                    inst.components.periodicspawner:ForceNextSpawn()
+                else
+                    inst.components.periodicspawner:LongUpdate(target_time - inst._sporetime)
+                end
+            end
+            inst._sporetime = -1
+        end
+    end
+end
+
+local function swapbuild(inst, treestate, build)
+    inst._changetask = nil
+    if not inst:HasTag("stump") then
+        inst.AnimState:SetBuild(build)
+        inst.treestate = treestate
+        if treestate == TREESTATES.BLOOMING then
+            StartSpores(inst)
+        else
+            StopSpores(inst)
+        end
+    end
+end
+
+local function forcespore(inst)
+    if inst._sporetime ~= nil and inst.treestate == TREESTATES.BLOOMING and not (inst:IsAsleep() or inst:HasTag("burnt")) then
+        inst.components.periodicspawner:ForceNextSpawn()
+    end
+end
+
+local function startchange(inst, treestate, build, soundname)
+    if inst:HasTag("stump") then
+        inst._changetask = nil
+    else
+        inst.AnimState:PlayAnimation("change")
+        inst.AnimState:PushAnimation("idle_loop", true)
+        inst.SoundEmitter:PlaySound(soundname)
+        inst._changetask = inst:DoTaskInTime(14 * FRAMES, swapbuild, treestate, build)
+        if treestate == TREESTATES.BLOOMING then
+            inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength(), forcespore)
+        end
+    end
+end
+
+local function maketree(name, data, state)
+    local function bloom_tree(inst, instant)
+        if inst._changetask ~= nil then
+            inst._changetask:Cancel()
+        end
+        if instant then
+            swapbuild(inst, TREESTATES.BLOOMING, data.bloom_build)
+        else
+            inst._changetask = inst:DoTaskInTime(math.random() * 3 * TUNING.SEG_TIME, startchange, TREESTATES.BLOOMING, data.bloom_build, "dontstarve/cave/mushtree_tall_grow_3")
+        end
     end
 
     local function normal_tree(inst, instant)
-        if not instant then
-            inst:DoTaskInTime(math.random() * 3 * TUNING.SEG_TIME, function()
-                inst.AnimState:PlayAnimation("change")
-                inst.SoundEmitter:PlaySound("dontstarve/cave/mushtree_tall_shrink")
-                local swapbuild = nil
-                swapbuild = function()
-                    inst.AnimState:PushAnimation("idle_loop", true)
-                    inst.AnimState:SetBuild(data.build)
-                end
-                inst:DoTaskInTime(14*FRAMES, swapbuild)
-            end)
-        else
-            inst.AnimState:SetBuild(data.build)
+        if inst._changetask ~= nil then
+            inst._changetask:Cancel()
         end
-        inst.treestate = TREESTATES.NORMAL
-        inst.components.periodicspawner:Stop()
+        if instant then
+            swapbuild(inst, TREESTATES.NORMAL, data.build)
+        else
+            inst._changetask = inst:DoTaskInTime(math.random() * 3 * TUNING.SEG_TIME, startchange, TREESTATES.NORMAL, data.build, "dontstarve/cave/mushtree_tall_shrink")
+        end
     end
 
-    local function onseasonchange(inst, season)
-        if not inst:HasTag("stump") then
-            if season == data.season and inst.treestate ~= TREESTATES.BLOOM then
-                bloom_tree(inst)
-            elseif season ~= data.season and inst.treestate ~= TREESTATES.NORMAL then
-                normal_tree(inst)
+    local function onisinseason(inst, isinseason)
+        if isinseason then
+            if inst.treestate ~= TREESTATES.BLOOMING then
+                bloom_tree(inst, false)
+            elseif inst._changetask ~= nil then
+                inst._changetask:Cancel()
+                inst._changetask = nil
+            end
+        elseif inst.treestate ~= TREESTATES.NORMAL then
+            normal_tree(inst, false)
+        elseif inst._changetask ~= nil then
+            inst._changetask:Cancel()
+            inst._changetask = nil
+        end
+    end
+
+    local function makestump(inst)
+        if inst:HasTag("stump") then
+            return
+        end
+
+        if inst._changetask ~= nil then
+            inst._changetask:Cancel()
+            inst._changetask = nil
+        end
+
+        RemovePhysicsColliders(inst)
+        inst:AddTag("stump")
+        inst:RemoveTag("shelter")
+        inst:RemoveComponent("propagator")
+        inst:RemoveComponent("burnable")
+        MakeSmallPropagator(inst)
+        MakeSmallBurnable(inst)
+        inst.components.burnable:SetOnBurntFn(stump_burnt)
+        inst.components.growable:StopGrowing()
+        StopSpores(inst)
+
+        inst.components.workable:SetWorkAction(ACTIONS.DIG)
+        inst.components.workable:SetOnWorkCallback(nil)
+        inst.components.workable:SetOnFinishCallback(dig_up_stump)
+        inst.components.workable:SetWorkLeft(1)
+        inst.AnimState:PlayAnimation("idle_stump")
+
+        inst.MiniMapEntity:SetIcon("mushroom_tree_stump.png")
+
+        inst.Light:Enable(false)
+
+        inst:StopWatchingWorldState("is"..data.season, onisinseason)
+        inst:ListenForEvent("timerdone", ontimerdone)
+
+        if not inst.components.timer:TimerExists("decay") then
+            inst.components.timer:StartTimer("decay", GetRandomWithVariance(TUNING.MUSHTREE_REGROWTH.DEAD_DECAY_TIME, TUNING.MUSHTREE_REGROWTH.DEAD_DECAY_TIME * .5))
+        end
+    end
+
+    local function workcallback(inst, worker, workleft)
+        if not (worker ~= nil and worker:HasTag("playerghost")) then
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_mushroom")
+        end
+        if workleft <= 0 then
+            inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")
+            makestump(inst)
+
+            inst.AnimState:PlayAnimation("fall")
+
+            inst.components.lootdropper:DropLoot(inst:GetPosition())
+            inst.AnimState:PushAnimation("idle_stump")
+        else
+            inst.AnimState:PlayAnimation("chop")
+            inst.AnimState:PushAnimation("idle_loop", true)
+        end
+    end
+
+    local function onload(inst, loaddata)
+        if loaddata ~= nil then
+            if loaddata.burnt then
+                if loaddata.stump then
+                    stump_burnt(inst)
+                else
+                    tree_burnt(inst)
+                end
+            elseif loaddata.stump then
+                makestump(inst)
+            elseif loaddata.treestate == TREESTATES.NORMAL then
+                normal_tree(inst, true)
+                if TheWorld.state.season == data.season then
+                    bloom_tree(inst, false)
+                end
+            elseif loaddata.treestate == TREESTATES.BLOOMING then
+                bloom_tree(inst, true)
+                if TheWorld.state.season ~= data.season then
+                    normal_tree(inst, false)
+                end
             end
         end
     end
@@ -391,8 +475,8 @@ local function maketree(name, data, state)
         inst:AddComponent("periodicspawner")
         inst.components.periodicspawner:SetPrefab(data.spore)
         inst.components.periodicspawner:SetOnSpawnFn(onspawnfn)
-        inst.components.periodicspawner:Stop()
         inst.components.periodicspawner:SetDensityInRange(TUNING.MUSHSPORE_MAX_DENSITY_RAD, TUNING.MUSHSPORE_MAX_DENSITY)
+        StopSpores(inst)
 
         inst:AddComponent("growable")
         inst.components.growable.stages = growth_stages
@@ -407,25 +491,28 @@ local function maketree(name, data, state)
         inst.components.plantregrowth:SetSearchTag("mushtree")
 
         inst:AddComponent("timer")
-        inst:ListenForEvent("timerdone", ontimerdone)
 
         MakeHauntableIgnite(inst)
         AddHauntableCustomReaction(inst, CustomOnHaunt)
 
-        --inst:AddComponent("transformer") this component isn't in DST yet.
-
-        --inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
-
         inst.treestate = TREESTATES.NORMAL
 
-        inst.Bloom = bloom_tree
-        inst.Normal = normal_tree
+        inst.OnEntitySleep = onentitysleep
+        inst.OnEntityWake = onentitywake
         inst.OnSave = onsave
         inst.OnLoad = onload
-        inst:WatchWorldState("season", onseasonchange)
 
         if state == "stump" then
             makestump(inst)
+        else
+            inst:WatchWorldState("is"..data.season, onisinseason)
+            if TheWorld.state.season == data.season then
+                if inst.treestate ~= TREESTATES.BLOOMING then
+                    bloom_tree(inst, true)
+                end
+            elseif inst.treestate ~= TREESTATES.NORMAL then
+                normal_tree(inst, true)
+            end
         end
 
         return inst

@@ -6,6 +6,14 @@ local function oninactive(self, inactive)
     end
 end
 
+local function onstandingaction(self, standingaction)
+    if standingaction then
+        self.inst:AddTag("standingactivation")
+    else
+        self.inst:RemoveTag("standingactivation")
+    end
+end
+
 local function onquickaction(self, quickaction)
     if quickaction then
         self.inst:AddTag("quickactivation")
@@ -18,11 +26,13 @@ local Activatable = Class(function(self, inst, activcb)
     self.inst = inst
     self.OnActivate = activcb
     self.inactive = true
+    self.standingaction = false
     self.quickaction = false
 end,
 nil,
 {
     inactive = oninactive,
+    standingaction = onstandingaction,
     quickaction = onquickaction,
 })
 

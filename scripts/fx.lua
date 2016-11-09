@@ -493,6 +493,36 @@ local fx =
         anim = "disease_tall",
         sound = "dontstarve/common/together/diseased/big",
     },]]
+    {
+        name = "bee_poof_big",
+        bank = "bee_poof",
+        build = "bee_poof",
+        anim = "anim",
+        sound = "dontstarve/common/deathpoof",
+        transform = Vector3(1.4, 1.4, 1.4),
+        fn = function(inst)
+            inst.AnimState:SetFinalOffset(1)
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/together/bee_queen/beeguard/puff", nil, .6)
+        end,
+    },
+    {
+        name = "bee_poof_small",
+        bank = "bee_poof",
+        build = "bee_poof",
+        anim = "anim",
+        sound = "dontstarve/common/deathpoof",
+        transform = Vector3(1.4, 1.4, 1.4),
+        fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
+    },
+    {
+        name = "honey_splash",
+        bank = "honey_splash",
+        build = "honey_splash",
+        anim = "anim",
+        nofaced = true,
+        transform = Vector3(1.4, 1.4, 1.4),
+        fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
+    },
 }
 
 if ACCOMPLISHMENTS_ENABLED then

@@ -385,7 +385,32 @@ local foods=
 		perishtime = TUNING.PERISH_MED,
 		sanity = 0,
 		cooktime = .5,
-	}
+	},
+
+	jellybean =
+	{
+		test = function(cooker, names, tags) return names.royal_jelly and not tags.inedible and not tags.monster end,
+		priority = 12,
+		foodtype = FOODTYPE.GOODIES,
+		health = TUNING.JELLYBEAN_TICK_VALUE,
+		hunger = 0,
+		perishtime = nil, -- not perishable
+		sanity = TUNING.SANITY_TINY,
+		cooktime = 2.5,
+		tags = {"honeyed"},
+		stacksize = 3,
+        prefabs = { "healthregenbuff" },
+        oneatenfn = function(inst, eater)
+            if eater.components.debuffable ~= nil and
+                not (eater.components.health ~= nil and
+                    eater.components.health:IsDead()) and
+                not eater:HasTag("playerghost") then
+                eater.components.debuffable:RemoveDebuff("healthregenbuff")
+                eater.components.debuffable:AddDebuff("healthregenbuff", "healthregenbuff")
+            end
+        end,
+	},
+
 }
 for k,v in pairs(foods) do
 	v.name = k

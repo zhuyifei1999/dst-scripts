@@ -14,15 +14,18 @@ require "skinsutils"
 
 local TEASER_SCALE_TEXT = 1
 local TEASER_SCALE_BTN = 1.5
+local TEASER_TEXT_WIDTH = 64 * 3 + 24
+local TEASER_BTN_WIDTH = TEASER_TEXT_WIDTH / TEASER_SCALE_BTN
+local TEXT_WIDTH = 64 * 3 + 30
 
 local testNewTag = false
 
 local RecipePopup = Class(Widget, function(self, horizontal)
     Widget._ctor(self, "Recipe Popup")
 
+    self.smallfonts = JapaneseOnPS4()
     self.horizontal = horizontal
     self:BuildNoSpinner(horizontal)
-    
 end)
 
 local function GetHintTextForRecipe(player, recipe)
@@ -118,24 +121,17 @@ function RecipePopup:BuildWithSpinner(horizontal)
 
     self.lines = self.contents:AddChild(Widget("separators"))
 
-    if JapaneseOnPS4() then
+    if self.smallfonts then
         self.name = self.contents:AddChild(Text(UIFONT, 40 * 0.8))
+        self.desc = self.contents:AddChild(Text(BODYTEXTFONT, 33 * 0.8))
+        self.desc:SetPosition(320, 20, 0)
     else
         self.name = self.contents:AddChild(Text(UIFONT, 40))
+        self.desc = self.contents:AddChild(Text(BODYTEXTFONT, 33))
+        self.desc:SetPosition(320, 25, 0)
     end
     self.name:SetPosition(320, 172, 0)
     self.name:SetHAlign(ANCHOR_MIDDLE)
-
-    if JapaneseOnPS4() then
-        self.desc = self.contents:AddChild(Text(BODYTEXTFONT, 33 * 0.8))
-        self.desc:SetPosition(320, 20, 0)
-        self.desc:SetRegionSize(64*3+30,90)
-    else
-        self.desc = self.contents:AddChild(Text(BODYTEXTFONT, 33))
-        self.desc:SetPosition(320, 25, 0)
-        self.desc:SetRegionSize(64*3+30,70)
-    end
-    self.desc:EnableWordWrap(true)
 
     -- create the background first so it displays under the lines
     self.spinner_bg = self.lines:AddChild(Image("images/hud.xml", "crafting_submenu_texture.tex"))
@@ -178,21 +174,12 @@ function RecipePopup:BuildWithSpinner(horizontal)
     self.lines.line_under_spinner:SetPosition(320, -120)
     self.lines.line_under_spinner:SetTint(unpack(BROWN))
 
-    self.recipecost = self.contents:AddChild(Text(NUMBERFONT, 40))
-    self.recipecost = self.contents:AddChild(Text(NUMBERFONT, 40))
-    self.recipecost:SetHAlign(ANCHOR_LEFT)
-    self.recipecost:SetRegionSize(80,50)
-    self.recipecost:SetPosition(420,-115,0)--(375, -115, 0)
-    self.recipecost:SetColour(255/255, 234/255,0/255, 1)
-
     self.amulet = self.contents:AddChild(Image( resolvefilepath("images/inventoryimages.xml"), "greenamulet.tex"))
     self.amulet:SetPosition(415, -155, 0)
     self.amulet:SetTooltip(STRINGS.GREENAMULET_TOOLTIP)
 
     self.teaser = self.contents:AddChild(Text(BODYTEXTFONT, 28))
-    self.teaser:SetPosition(325, -150, 0)
-    self.teaser:SetRegionSize(64*3+20,100)
-    self.teaser:EnableWordWrap(true)
+    self.teaser:SetPosition(320, -150, 0)
     self.teaser:Hide()
 end
 
@@ -226,30 +213,17 @@ function RecipePopup:BuildNoSpinner(horizontal)
     self.contents = self:AddChild(Widget(""))
     self.contents:SetPosition(-75,0,0)
 
-    if JapaneseOnPS4() then
+    if self.smallfonts then
         self.name = self.contents:AddChild(Text(UIFONT, 40 * 0.8))
+        self.desc = self.contents:AddChild(Text(BODYTEXTFONT, 33 * 0.8))
+        self.desc:SetPosition(320, -10, 0)
     else
         self.name = self.contents:AddChild(Text(UIFONT, 40))
+        self.desc = self.contents:AddChild(Text(BODYTEXTFONT, 33))
+        self.desc:SetPosition(320, -5, 0)
     end
     self.name:SetPosition(320, 142, 0)
     self.name:SetHAlign(ANCHOR_MIDDLE)
-    if JapaneseOnPS4() then
-        self.name:SetRegionSize(64*3+30,90)
-        self.name:EnableWordWrap(true)
-    else
-        self.name:SetRegionSize(64*3+30,70)
-    end
-
-    if JapaneseOnPS4() then
-        self.desc = self.contents:AddChild(Text(BODYTEXTFONT, 33 * 0.8))
-        self.desc:SetPosition(320, -10, 0)
-        self.desc:SetRegionSize(64*3+30,90)
-    else
-        self.desc = self.contents:AddChild(Text(BODYTEXTFONT, 33))
-        self.desc:SetPosition(320, -5, 0)
-        self.desc:SetRegionSize(64*3+30,70) 
-    end
-    self.desc:EnableWordWrap(true)
 
     self.ing = {}
 
@@ -262,20 +236,12 @@ function RecipePopup:BuildNoSpinner(horizontal)
                                 end
                             end)
 
-    self.recipecost = self.contents:AddChild(Text(NUMBERFONT, 40))
-    self.recipecost:SetHAlign(ANCHOR_LEFT)
-    self.recipecost:SetRegionSize(80,50)
-    self.recipecost:SetPosition(420,-115,0)--(375, -115, 0)
-    self.recipecost:SetColour(255/255, 234/255,0/255, 1)
-
     self.amulet = self.contents:AddChild(Image( resolvefilepath("images/inventoryimages.xml"), "greenamulet.tex"))
     self.amulet:SetPosition(415, -105, 0)
     self.amulet:SetTooltip(STRINGS.GREENAMULET_TOOLTIP)
 
     self.teaser = self.contents:AddChild(Text(BODYTEXTFONT, 28))
-    self.teaser:SetPosition(325, -100, 0)
-    self.teaser:SetRegionSize(64*3+20,100)
-    self.teaser:EnableWordWrap(true)
+    self.teaser:SetPosition(320, -100, 0)
     self.teaser:Hide()
 end
 
@@ -317,8 +283,8 @@ function RecipePopup:Refresh()
         end
     end
 
-    self.name:SetString(STRINGS.NAMES[string.upper(self.recipe.name)])
-    self.desc:SetString(STRINGS.RECIPE_DESC[string.upper(self.recipe.name)])
+    self.name:SetTruncatedString(STRINGS.NAMES[string.upper(self.recipe.name)], TEXT_WIDTH, self.smallfonts and 51 or 41, true)
+    self.desc:SetMultilineTruncatedString(STRINGS.RECIPE_DESC[string.upper(self.recipe.name)], 2, TEXT_WIDTH, self.smallfonts and 40 or 33, true)
 
     for i, v in ipairs(self.ing) do
         v:Kill()
@@ -384,7 +350,6 @@ function RecipePopup:Refresh()
     local showamulet = equippedBody and equippedBody.prefab == "greenamulet"
 
     if should_hint or hint_tech_ingredient ~= nil then
-        self.recipecost:Hide()
         self.button:Hide()
 
         local str
@@ -403,12 +368,11 @@ function RecipePopup:Refresh()
             str = STRINGS.UI.CRAFTING.NEEDSTECH[hint_tech_ingredient]
         end
         self.teaser:SetScale(TEASER_SCALE_TEXT)
-        self.teaser:SetString(str or "Text not found.")
+        self.teaser:SetMultilineTruncatedString(str, 3, TEASER_TEXT_WIDTH, 38, true)
         self.teaser:Show()
         showamulet = false
     else
         self.teaser:Hide()
-        self.recipecost:Hide()
 
         local buttonstr =
             (not (knows or recipe.nounlock) and STRINGS.UI.CRAFTING.PROTOTYPE) or
@@ -422,10 +386,10 @@ function RecipePopup:Refresh()
 
             if can_build then
                 self.teaser:SetScale(TEASER_SCALE_BTN)
-                self.teaser:SetString(TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_ACCEPT).." "..buttonstr)
+                self.teaser:SetTruncatedString(TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_ACCEPT).." "..buttonstr, TEASER_BTN_WIDTH, 26, true)
             else
                 self.teaser:SetScale(TEASER_SCALE_TEXT)
-                self.teaser:SetString(STRINGS.UI.CRAFTING.NEEDSTUFF)
+                self.teaser:SetMultilineTruncatedString(STRINGS.UI.CRAFTING.NEEDSTUFF, 3, TEASER_TEXT_WIDTH, 38, true)
             end
         else
             self.button:Show()
@@ -550,7 +514,6 @@ function RecipePopup:GetSkinOptions()
 end
 
 function RecipePopup:MakeSpinner()
-
     local spinner_group = Widget("spinner group")
 
     local textures = {

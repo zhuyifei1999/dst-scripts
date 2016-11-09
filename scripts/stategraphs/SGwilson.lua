@@ -287,9 +287,10 @@ local actionhandlers =
     ActionHandler(ACTIONS.ACTIVATE,
         function(inst, action)
             return action.target.components.activatable ~= nil
-                and (action.target.components.activatable.quickaction and
-                    "doshortaction" or
-                    "dolongaction")
+                and (   (action.target.components.activatable.standingaction and "dostandingaction") or
+                        (action.target.components.activatable.quickaction and "doshortaction") or
+                        "dolongaction"
+                    )
                 or nil
         end),
     ActionHandler(ACTIONS.PICK,
@@ -348,6 +349,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.GIVETOPLAYER, "give"),
     ActionHandler(ACTIONS.GIVEALLTOPLAYER, "give"),
     ActionHandler(ACTIONS.FEEDPLAYER, "give"),
+    ActionHandler(ACTIONS.DECORATEVASE, "dolongaction"),
     ActionHandler(ACTIONS.PLANT, "doshortaction"),
     ActionHandler(ACTIONS.HARVEST, "dolongaction"),
     ActionHandler(ACTIONS.PLAY,
@@ -396,6 +398,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.SADDLE, "doshortaction"),
     ActionHandler(ACTIONS.UNSADDLE, "unsaddle"),
     ActionHandler(ACTIONS.BRUSH, "dolongaction"),
+    ActionHandler(ACTIONS.ABANDON, "dolongaction"),
 }
 
 local events =
@@ -456,21 +459,28 @@ local events =
             elseif data.stimuli == "electric" and not inst.components.inventory:IsInsulated() then
                 inst.sg:GoToState("electrocute")
             else
-                local stunlock = data.attacker ~= nil and data.attacker.components.combat
-                        and data.attacker.components.combat.playerstunlock
-                local stunoffset = inst.laststuntime and GetTime() - inst.laststuntime or 999
-                if stunlock ~= nil
-                    and (stunlock == PLAYERSTUNLOCK.NEVER
-                         or (stunlock == PLAYERSTUNLOCK.RARELY and stunoffset < TUNING.STUNLOCK_TIMES.RARELY)
-                         or (stunlock == PLAYERSTUNLOCK.SOMETIMES and stunoffset < TUNING.STUNLOCK_TIMES.SOMETIMES)
-                         or (stunlock == PLAYERSTUNLOCK.OFTEN and stunoffset < TUNING.STUNLOCK_TIMES.OFTEN))
-                    and (not inst.sg:HasStateTag("idle") or inst.sg.timeinstate == 0) then -- gjans: we transition to idle for 1 frame after being hit, hence the timeinstate check
-
+                local t = GetTime()
+                local stunlock =
+                    data.attacker ~= nil and
+                    --V2C: skip stunlock protection when idle
+                    -- gjans: we transition to idle for 1 frame after being hit, hence the timeinstate check
+                    not (inst.sg:HasStateTag("idle") and inst.sg.timeinstate > 0) and
+                    data.attacker.components.combat ~= nil and
+                    data.attacker.components.combat.playerstunlock or
+                    nil
+                if stunlock ~= nil and
+                    t - (inst.sg.mem.laststuntime or 0) <
+                    (   (stunlock == PLAYERSTUNLOCK.NEVER and math.huge) or
+                        (stunlock == PLAYERSTUNLOCK.RARELY and TUNING.STUNLOCK_TIMES.RARELY) or
+                        (stunlock == PLAYERSTUNLOCK.SOMETIMES and TUNING.STUNLOCK_TIMES.SOMETIMES) or
+                        (stunlock == PLAYERSTUNLOCK.OFTEN and TUNING.STUNLOCK_TIMES.OFTEN) or
+                        0 --unsupported case
+                    ) then
                     -- don't go to full hit state, just play sounds
                     inst.SoundEmitter:PlaySound("dontstarve/wilson/hit")
                     DoHurtSound(inst)
                 else
-                    inst.laststuntime = GetTime()
+                    inst.sg.mem.laststuntime = t
                     inst.sg:GoToState("hit")
                 end
             end
@@ -2721,7 +2731,7 @@ local states =
         {
             -- gift_pst plays first and it is 20 frames long
             TimeEvent(20 * FRAMES, function(inst)
-                inst.SoundEmitter:PlaySound("dontstarve/HUD/Together_HUD/skin_change")
+                inst.SoundEmitter:PlaySound("dontstarve/common/together/skin_change")
             end),
             -- frame 42 of skin_change is where the character is completely hidden
             TimeEvent(62 * FRAMES, function(inst)
@@ -3018,6 +3028,42 @@ local states =
 
         ontimeout = function(inst)
             --pickup_pst should still be playing
+            inst.sg:GoToState("idle", true)
+        end,
+
+        onexit = function(inst)
+            if inst.bufferedaction == inst.sg.statemem.action then
+                inst:ClearBufferedAction()
+            end
+        end,
+    },
+
+    State
+    {
+        name = "dostandingaction",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("give")
+            inst.AnimState:PushAnimation("give_pst", false)
+
+            inst.sg.statemem.action = inst.bufferedaction
+            inst.sg:SetTimeout(15 * FRAMES)
+        end,
+
+        timeline =
+        {
+            TimeEvent(6 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+            TimeEvent(13 * FRAMES, function(inst)
+                inst:PerformBufferedAction()
+            end),
+        },
+
+        ontimeout = function(inst)
+            --give_pst should still be playing
             inst.sg:GoToState("idle", true)
         end,
 

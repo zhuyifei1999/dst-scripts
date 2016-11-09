@@ -15,13 +15,35 @@ function OnPhysicsCollision(guid1, guid2)
 end
 
 function Launch(inst, launcher, basespeed)
-    if inst and inst.Physics and launcher then
-        local hp = inst:GetPosition()
-        local pt = launcher:GetPosition()
-        local vel = (hp - pt):GetNormalized()
-        local speed = (basespeed or 5) + (math.random() * 2)
-        local angle = math.atan2(vel.z, vel.x) + (math.random() * 20 - 10) * DEGREES
-        inst.Physics:Teleport(hp.x, .1, hp.z)
-        inst.Physics:SetVel(math.cos(angle) * speed, 10, math.sin(angle) * speed)
+    if inst ~= nil and inst.Physics ~= nil and launcher ~= nil then
+        local x, y, z = inst.Transform:GetWorldPosition()
+        local x1, y1, z1 = launcher.Transform:GetWorldPosition()
+        local vx, vz = x - x1, z - z1
+        local spd = math.sqrt(vx * vx + vz * vz)
+        if spd ~= nil then
+            --normalize
+            vx, vz = vx / spd, vz / spd
+        end
+        local angle = math.atan2(vz, vx) + (math.random() * 20 - 10) * DEGREES
+        spd = (basespeed or 5) + math.random() * 2
+        inst.Physics:Teleport(x, .1, z)
+        inst.Physics:SetVel(math.cos(angle) * spd, 10, math.sin(angle) * spd)
+    end
+end
+
+function LaunchAt(inst, launcher, target, speedmult, startheight, startradius)
+    if inst ~= nil and inst.Physics ~= nil and launcher ~= nil then
+        local x, y, z = launcher.Transform:GetWorldPosition()
+        local angle
+        if target ~= nil then
+            angle = (150 + math.random() * 60 - target:GetAngleToPoint(x, 0, z)) * DEGREES
+        else
+            local down = TheCamera:GetDownVec()
+            angle = math.atan2(down.z, down.x) + (math.random() * 60 - 30) * DEGREES
+        end
+        local sina, cosa = math.sin(angle), math.cos(angle)
+        local spd = (math.random() * 2 + 1) * (speedmult or 1)
+        inst.Transform:SetPosition(x + (startradius or 0) * cosa, startheight or .1, z + (startradius or 0) * sina)
+        inst.Physics:SetVel(spd * cosa, math.random() * 2 + 4 + 2 * (speedmult or 1) , spd * sina)
     end
 end

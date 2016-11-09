@@ -1,128 +1,130 @@
 require("stategraphs/commonstates")
 
-local WALK_SPEED = 5
-
-local actionhandlers = 
+local actionhandlers =
 {
     ActionHandler(ACTIONS.GOHOME, "action"),
     ActionHandler(ACTIONS.POLLINATE, function(inst)
-		if inst.sg:HasStateTag("landed") then
-			return "pollinate"
-		else 
-			return "land"
-		end
+        return inst.sg:HasStateTag("landed") and "pollinate" or "land"
     end),
 }
 
-local events=
+local events =
 {
-    EventHandler("attacked", function(inst) if not inst.components.health:IsDead() then inst.sg:GoToState("hit") end end),
-    EventHandler("doattack", function(inst) if not inst.components.health:IsDead() and not inst.sg:HasStateTag("busy") then inst.sg:GoToState("attack") end end),
-    EventHandler("death", function(inst) inst.sg:GoToState("death") end),
-    CommonHandlers.OnSleep(),
-    CommonHandlers.OnFreeze(),
-    
-    EventHandler("locomote", function(inst) 
-        if not inst.sg:HasStateTag("busy") then
-			local is_moving = inst.sg:HasStateTag("moving")
-			local wants_to_move = inst.components.locomotor:WantsToMoveForward()
-			if not inst.sg:HasStateTag("attack") and is_moving ~= wants_to_move then
-				if wants_to_move then
-					inst.sg:GoToState("premoving")
-				else
-					inst.sg:GoToState("idle")
-				end
-			end
+    EventHandler("attacked", function(inst)
+        if not inst.components.health:IsDead() then
+            inst.sg:GoToState("hit")
         end
-    end),    
+    end),
+    EventHandler("doattack", function(inst)
+        if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) then
+            inst.sg:GoToState("attack")
+        end
+    end),
+    EventHandler("death", function(inst)
+        inst.sg:GoToState("death")
+    end),
+    CommonHandlers.OnSleepEx(),
+    CommonHandlers.OnWakeEx(),
+    CommonHandlers.OnFreeze(),
+    EventHandler("locomote", function(inst) 
+        if not (inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("attack")) and
+            inst.sg:HasStateTag("moving") ~= inst.components.locomotor:WantsToMoveForward() then
+            inst.sg:GoToState(inst.sg:HasStateTag("moving") and "idle" or "premoving")
+        end
+    end),
 }
 
+local function StartBuzz(inst)
+    inst:EnableBuzz(true)
+end
 
-local states=
+local function StopBuzz(inst)
+    inst:EnableBuzz(false)
+end
+
+local states =
 {
-    
-    
     State{
         name = "death",
-        tags = {"busy"},
-        
+        tags = { "busy" },
+
         onenter = function(inst)
-            inst.SoundEmitter:KillSound("buzz")
+            StopBuzz(inst)
             inst.SoundEmitter:PlaySound(inst.sounds.death)
             inst.AnimState:PlayAnimation("death")
             inst.Physics:Stop()
-            RemovePhysicsColliders(inst)            
-			if inst.components.lootdropper then
-				inst.components.lootdropper:DropLoot(Vector3(inst.Transform:GetWorldPosition()))            
-			end
+            RemovePhysicsColliders(inst)
+            if inst.components.lootdropper ~= nil then
+                inst.components.lootdropper:DropLoot(inst:GetPosition())
+            end
         end,
     },
 
     State{
         name = "action",
+
         onenter = function(inst, playanim)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("idle", true)
             inst:PerformBufferedAction()
         end,
-        events=
+
+        events =
         {
             EventHandler("animover", function (inst)
                 inst.sg:GoToState("idle")
             end),
         }
-    },    
-    
+    },
+
     State{
         name = "premoving",
-        tags = {"moving", "canrotate"},
-        
+        tags = { "moving", "canrotate" },
+
         onenter = function(inst)
-			inst.components.locomotor:WalkForward()
+            inst.components.locomotor:WalkForward()
             inst.AnimState:PlayAnimation("walk_pre")
         end,
-        
-        events=
+
+        events =
         {
-            EventHandler("animover", function(inst) inst.sg:GoToState("moving") end),
+            EventHandler("animover", function(inst)
+                inst.sg:GoToState("moving")
+            end),
         },
     },
-    
+
     State{
         name = "moving",
-        tags = {"moving", "canrotate"},
-        
+        tags = { "moving", "canrotate" },
+
         onenter = function(inst)
             inst.components.locomotor:WalkForward()
             if not inst.AnimState:IsCurrentAnimation("walk_loop") then
                 inst.AnimState:PushAnimation("walk_loop", true)
             end
-            inst.sg:SetTimeout(2.5+math.random())
+            inst.sg:SetTimeout(2.5 + math.random())
         end,
-        
+
         ontimeout = function(inst)
-            if (inst.components.combat and not inst.components.combat.target)
-               and not inst:GetBufferedAction() and
-               inst:HasTag("worker") then
-                inst.sg:GoToState("catchbreath")
-            else
-                inst.sg:GoToState("moving")
-            end
+            inst.sg:GoToState(
+                inst.components.combat ~= nil and
+                not inst.components.combat:HasTarget() and
+                not inst:GetBufferedAction() and
+                inst:HasTag("worker") and
+                "catchbreath" or
+                "moving"
+            )
         end,
-    },    
-    
-    
+    },
+
     State{
         name = "idle",
-        tags = {"idle", "canrotate"},
-        
+        tags = { "idle", "canrotate" },
+
         onenter = function(inst, start_anim)
             inst.Physics:Stop()
-            local animname = "idle"
-            if inst.components.combat and inst.components.combat.target or inst:HasTag("killer") then
-                animname = "idle_angry"
-            end
-            
+            local animname = (inst.components.combat ~= nil and inst.components.combat:HasTarget() or inst:HasTag("killer")) and "idle_angry" or "idle"
             if start_anim then
                 inst.AnimState:PlayAnimation(start_anim)
                 inst.AnimState:PushAnimation(animname, true)
@@ -131,172 +133,208 @@ local states=
             end
         end,
     },
-    
+
     State{
         name = "catchbreath",
-        tags = {"busy", "landed"},
-        
+        tags = { "busy", "landed" },
+
         onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("land")
             inst.AnimState:PushAnimation("land_idle", true)
-            inst.sg:SetTimeout(GetRandomWithVariance(4, 2) )
+            inst.sg:SetTimeout(GetRandomWithVariance(4, 2))
         end,
-        
-        timeline=
+
+        timeline =
         {
-            TimeEvent(20*FRAMES, function(inst)
-                inst.SoundEmitter:KillSound("buzz")
+            TimeEvent(20 * FRAMES, function(inst)
+                StopBuzz(inst)
                 inst.SoundEmitter:PlaySound("dontstarve/bee/bee_tired_LP", "tired")
             end),
         },
-        
+
         ontimeout = function(inst)
-            if not (inst.components.homeseeker and inst.components.homeseeker:HasHome() )
-               and inst.components.pollinator
-               and inst.components.pollinator:HasCollectedEnough()
-               and inst.components.pollinator:CheckFlowerDensity() then
+            if not (inst.components.homeseeker ~= nil and inst.components.homeseeker:HasHome()) and
+                inst.components.pollinator ~= nil and
+                inst.components.pollinator:HasCollectedEnough() and
+                inst.components.pollinator:CheckFlowerDensity() then
                 inst.components.pollinator:CreateFlower()
             end
+            inst.sg.statemem.takingoff = true
             inst.sg:GoToState("takeoff")
         end,
-        
+
         onexit = function(inst)
             inst.SoundEmitter:KillSound("tired")
+            if not inst.sg.statemem.takingoff then
+                --interrupted, restore sound
+                StartBuzz(inst)
+            end
         end,
     },
-    
-    
+
     State{
         name = "land",
-        tags = {"busy", "landing"},
-        
+        tags = { "busy", "landing" },
+
         onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("land")
         end,
-        
-        events=
+
+        events =
         {
             EventHandler("animover", function(inst)
-                inst.SoundEmitter:KillSound("buzz")
-                if inst.bufferedaction and inst.bufferedaction.action == ACTIONS.POLLINATE then
-					inst.sg:GoToState("pollinate")
-				else
-					inst.sg:GoToState("land_idle")
-				end
+                StopBuzz(inst)
+                inst.sg:GoToState(inst.bufferedaction ~= nil and inst.bufferedaction.action == ACTIONS.POLLINATE and "pollinate" or "land_idle")
             end),
         },
     },
-    
+
     State{
         name = "land_idle",
-        tags = {"busy", "landed"},
-        
+        tags = { "busy", "landed" },
+
         onenter = function(inst)
             inst.AnimState:PushAnimation("land_idle", true)
         end,
+
+        onexit = StartBuzz,
     },
-    
+
     State{
         name = "pollinate",
-        tags = {"busy", "landed"},
-        
+        tags = { "busy", "landed" },
+
         onenter = function(inst)
             inst.AnimState:PushAnimation("land_idle", true)
-            inst.sg:SetTimeout(GetRandomWithVariance(3, 1) )
+            inst.sg:SetTimeout(GetRandomWithVariance(3, 1))
         end,
-        
+
         ontimeout = function(inst)
             inst:PerformBufferedAction()
+            inst.sg.statemem.takingoff = true
             inst.sg:GoToState("takeoff")
         end,
+
+        onexit = function(inst)
+            if not inst.sg.statemem.takingoff then
+                StartBuzz(inst)
+            end
+        end,
     },
-    
+
     State{
         name = "takeoff",
-        tags = {"busy"},
-        
+        tags = { "busy" },
+
         onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("take_off")
             inst.SoundEmitter:PlaySound(inst.sounds.takeoff)
         end,
-        
+
         events =
         {
-            EventHandler("animover", function(inst) inst.SoundEmitter:PlaySound(inst.sounds.buzz, "buzz") inst.sg:GoToState("idle") end),
+            EventHandler("animover", function(inst)
+                inst.sg:GoToState("idle")
+            end),
         },
-        
+
+        onexit = StartBuzz,
     },
 
     State{
         name = "taunt",
-        tags = {"busy"},
-        
+        tags = { "busy" },
+
         onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("idle")
             inst.SoundEmitter:PlaySound(inst.sounds.takeoff)
         end,
-        
-        events=
+
+        events =
         {
-            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
+            EventHandler("animover", function(inst)
+                inst.sg:GoToState("idle")
+            end),
         },
-    },    
-    
+    },
+
     State{
         name = "attack",
-        tags = {"attack"},
-        
+        tags = { "attack" },
+
         onenter = function(inst, cb)
             inst.Physics:Stop()
             inst.components.combat:StartAttack()
             inst.AnimState:PlayAnimation("atk")
         end,
-        
-        timeline=
+
+        timeline =
         {
-            TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.attack) end),
-            TimeEvent(15*FRAMES, function(inst) inst.components.combat:DoAttack() end),
+            TimeEvent(10 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound(inst.sounds.attack)
+            end),
+            TimeEvent(15 * FRAMES, function(inst)
+                inst.components.combat:DoAttack()
+            end),
         },
-        
-        events=
+
+        events =
         {
-            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
+            EventHandler("animover", function(inst)
+                inst.sg:GoToState("idle")
+            end),
         },
     },
 
     State{
         name = "hit",
-        tags = {"busy"},
+        tags = { "busy" },
         
         onenter = function(inst)
             inst.SoundEmitter:PlaySound(inst.sounds.hit)
             inst.AnimState:PlayAnimation("hit")
             inst.Physics:Stop()            
         end,
-        
-        events=
+
+        events =
         {
-            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),
-        },        
-    },    
-    
+            EventHandler("animover", function(inst)
+                inst.sg:GoToState("idle")
+            end),
+        },
+    },
 }
-CommonStates.AddSleepStates(states,
+
+local function CleanupIfSleepInterrupted(inst)
+    if not inst.sg.statemem.continuesleeping then
+        StartBuzz(inst)
+    end
+end
+CommonStates.AddSleepExStates(states,
 {
-    starttimeline = 
+    starttimeline =
     {
-        TimeEvent(23*FRAMES, function(inst) inst.SoundEmitter:KillSound("buzz") end)
+        TimeEvent(23 * FRAMES, StopBuzz),
     },
-    waketimeline = 
+    waketimeline =
     {
-        TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.buzz, "buzz") end)
+        TimeEvent(1 * FRAMES, StartBuzz),
+        CommonHandlers.OnNoSleepTimeEvent(24 * FRAMES, function(inst)
+            inst.sg:RemoveStateTag("busy")
+            inst.sg:RemoveStateTag("nosleep")
+        end),
     },
+},
+{
+    onexitsleep = CleanupIfSleepInterrupted,
+    onexitsleeping = CleanupIfSleepInterrupted,
+    onexitwake = StartBuzz,
 })
-CommonStates.AddFrozenStates(states)
+
+CommonStates.AddFrozenStates(states, StopBuzz, StartBuzz)
 
 return StateGraph("bee", states, events, "idle", actionhandlers)
-

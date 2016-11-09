@@ -83,7 +83,7 @@ local actionhandlers =
             end
         end),
     ActionHandler(ACTIONS.FERTILIZE, "doshortaction"),
-	ActionHandler(ACTIONS.SMOTHER, "dolongaction"),
+    ActionHandler(ACTIONS.SMOTHER, "dolongaction"),
     ActionHandler(ACTIONS.MANUALEXTINGUISH, "dolongaction"),
     ActionHandler(ACTIONS.TRAVEL, "doshortaction"),
     ActionHandler(ACTIONS.LIGHT, "give"),
@@ -105,7 +105,9 @@ local actionhandlers =
     ActionHandler(ACTIONS.UPGRADE, "dolongaction"),
     ActionHandler(ACTIONS.ACTIVATE,
         function(inst, action)
-            return action.target:HasTag("quickactivation") and "doshortaction" or "dolongaction"
+            return (action.target:HasTag("standingactivation") and "dostandingaction")
+                or (action.target:HasTag("quickactivation") and "doshortaction")
+                or "dolongaction"
         end),
     ActionHandler(ACTIONS.PICK,
         function(inst, action)
@@ -151,6 +153,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.GIVETOPLAYER, "give"),
     ActionHandler(ACTIONS.GIVEALLTOPLAYER, "give"),
     ActionHandler(ACTIONS.FEEDPLAYER, "give"),
+    ActionHandler(ACTIONS.DECORATEVASE, "dolongaction"),
     ActionHandler(ACTIONS.PLANT, "doshortaction"),
     ActionHandler(ACTIONS.HARVEST, "dolongaction"),
     ActionHandler(ACTIONS.PLAY, "play"),
@@ -191,6 +194,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.SADDLE, "doshortaction"),
     ActionHandler(ACTIONS.UNSADDLE, "unsaddle"),
     ActionHandler(ACTIONS.BRUSH, "dolongaction"),
+    ActionHandler(ACTIONS.ABANDON, "dolongaction"),
 }
 
 local events =
@@ -1171,6 +1175,44 @@ local states =
         ontimeout = function(inst)
             inst:ClearBufferedAction()
             inst.AnimState:PlayAnimation("heavy_item_hat_pst")
+            inst.sg:GoToState("idle", true)
+        end,
+    },
+
+    State
+    {
+        name = "dostandingaction",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("give")
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        timeline =
+        {
+            TimeEvent(6 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.AnimState:PlayAnimation("give_pst")
+                inst.sg:GoToState("idle", true)
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.AnimState:PlayAnimation("give_pst")
             inst.sg:GoToState("idle", true)
         end,
     },

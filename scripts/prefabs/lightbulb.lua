@@ -33,6 +33,7 @@ local function fn()
     inst.Light:Enable(true)
 
     inst:AddTag("lightbattery")
+    inst:AddTag("vasedecoration")
 
     inst.entity:SetPristine()
 
@@ -44,7 +45,7 @@ local function fn()
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
     inst:AddComponent("tradable")
-
+    inst:AddComponent("vasedecoration")
     inst:AddComponent("inspectable")
 
     inst:AddComponent("fuel")

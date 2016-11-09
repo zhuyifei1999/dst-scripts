@@ -8,6 +8,7 @@ return {
         BUILD =
         {
             MOUNTED = "Hair-cow is too tall. I can't reach.",
+            HASPET = "Wolfgang has animal friend already!",
         },
 		SHAVE =
 		{
@@ -48,6 +49,7 @@ return {
         },
         GIVE =
         {
+            GENERIC = "Wolfgang does not think that goes there.",
             DEAD = "You know is dead, yes?",
             SLEEPING = "Is sleeping now!",
             BUSY = "The Mighty Wolfgang will try again soon!",
@@ -701,6 +703,7 @@ return {
             BROKEN = "Tiny platform is broken!",
             STAFFED = "Is ready for good fight!",
            	WRONGSTAFF = "Feels wrong to Wolfgang.",
+            MOONSTAFF = "Sickly little light is not run out.",
         },
         MOONDIAL = 
         {
@@ -914,6 +917,14 @@ return {
 		BASALT = "Is stronger even than me!",
 		BEARDHAIR = "Gross. These are not from my face.",
 		BEDROLL_STRAW = "Nap time!",
+        BEEQUEEN = "Is giant lady bee!",
+        BEEQUEENHIVE =
+        { 
+            GENERIC = "Sticky stompy patch of muck!",
+            GROWING = "Little hive is get bigger!",
+        },
+        BEEQUEENHIVEGROWN = "Wolfgang's mighty punches do nothing.",
+        BEEGUARD = "Busy buzzy needle men!",
 		BEE =
 		{
 			GENERIC = "Is fat and angry-looking.",
@@ -1091,6 +1102,14 @@ return {
 			HELD = "Small bird fit easily in big Wolfgang hands.",
 		},
         CANARY_POISONED = "Bird is okay?",
+
+        CRITTERLAB = "Wolfgang hear little noises inside.",
+        CRITTER_GLOMLING = "Flying bug friend!",
+        CRITTER_DRAGONLING = "Mighty pet! Very good!",
+        CRITTER_LAMB = "Is walking fluff!",
+        CRITTER_PUPPY = "I am call him Pupgang!",
+        CRITTER_KITTEN = "Small fur is Wolfgang's friend.",
+
 		CROW =
 		{
 			GENERIC = "I do not like birds. Too fragile.",
@@ -1145,6 +1164,7 @@ return {
 		},
 		LAVA_POND = "Is not time for swimming!",
 		LAVAE = "I must run!",
+        LAVAE_COCOON = "Maybe cold bug is friend?",
 		LAVAE_PET = 
 		{
 			STARVING = "Tiny baby is starving!",
@@ -1186,7 +1206,11 @@ return {
 		ENDTABLE = 
 		{
 			BURNT = "Is burny bits.",
-			GENERIC = "Puny table will not hold Wolfgang's weight.",
+			GENERIC = "Little flowers are weak, but look nice.",
+            EMPTY = "Puny table will not hold Wolfgang's weight.",
+            WILTED = "Little flowers are weaker than usual.",
+            FRESHLIGHT = "Wolfgang does not like dark.",
+            OLDLIGHT = "Please do not go out, little light.",
 		},
 		STUFFEDEGGPLANT = "Make yolk of other foods.",
 		GRASSGEKKO = 
@@ -1360,6 +1384,9 @@ return {
 		COOKEDMANDRAKE = "Little plant man is food?",
 		MANDRAKESOUP = "Little plant man is for make soup!",
 		MARBLE = "I can lift!",
+        MARBLEBEAN = "Brainlady says is not for eat.",
+        MARBLEBEAN_SAPLING = "Rock bush is growing!",
+        MARBLESHRUB = "Rock is strongest bush!",
 		MARBLEPILLAR = "Is too heavy to lift.",
 		MARBLETREE = "Do not try punch tree.",
 		MARSH_BUSH =
@@ -1513,6 +1540,8 @@ return {
         ROOK = "This one jumps the queen!",
 		ROPE = "Strong! Like me!",
 		ROTTENEGG = "Stinky!",
+        ROYAL_JELLY = "Sticky power goo!",
+        JELLYBEAN = "Little tiny taste beans.",
         SADDLE_BASIC = "Just need creature mighty enough to hold me!",
         SADDLE_WAR = "We ride like kings!",
         SADDLE_RACE = "Butterflies feel soft under Wolfgang's strong butt!",
@@ -1762,6 +1791,10 @@ return {
 		WALL_WOOD_ITEM = "Pokey sticks!",
 		WALL_MOONROCK = "Rock of moon protects Wolfgang.",
 		WALL_MOONROCK_ITEM = "Can build with power of moon!",
+        FENCE = "I do not like trapping little animals.",
+        FENCE_ITEM = "Wolfgang will help make fence!",
+        FENCE_GATE = "Is little flimsy swingboards.",
+        FENCE_GATE_ITEM = "Wolfgang will help make swingboards!",
 		WALRUS = "Ha ha. Is blubbery flubbery man.",
 		WALRUSHAT = "Sea cow man hat!",
 		WALRUS_CAMP =

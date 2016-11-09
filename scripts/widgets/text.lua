@@ -69,7 +69,6 @@ function Text:SetString(str)
 end
 
 function Text:GetString()
-    --print("Text:GetString()", self.inst.TextWidget:GetString())
     return self.inst.TextWidget:GetString() or ""
 end
 
@@ -90,8 +89,7 @@ end
 --  3) Use that number as an estimate for maxchars, or round up
 --     a little just in case dots aren't the smallest character
 function Text:SetTruncatedString(str, maxwidth, maxchars, ellipses)
-	str = str or ""
-    str = str:match("^[^\n\v\f\r]*")
+    str = str ~= nil and str:match("^[^\n\v\f\r]*") or ""
     if #str > 0 then
         if type(ellipses) ~= "string" then
             ellipses = ellipses and "..." or ""
@@ -129,7 +127,10 @@ end
 
 -- maxwidth can be a single number or an array of numbers if maxwidth is different per line
 function Text:SetMultilineTruncatedString(str, maxlines, maxwidth, maxcharsperline, ellipses)
-	str = str or ""
+    if str == nil or #str <= 0 then
+        self.inst.TextWidget:SetString("")
+        return
+    end
     local tempmaxwidth = type(maxwidth) == "table" and maxwidth[1] or maxwidth
     if maxlines <= 1 then
         self:SetTruncatedString(str, tempmaxwidth, maxcharsperline, ellipses)
@@ -165,7 +166,7 @@ function Text:SetMultilineTruncatedString(str, maxlines, maxwidth, maxcharsperli
                     end
                 end
                 self:SetMultilineTruncatedString(str, maxlines - 1, tempmaxwidth, maxcharsperline, ellipses)
-                self:SetString(line.."\n"..self:GetString())
+                self.inst.TextWidget:SetString(line.."\n"..(self.inst.TextWidget:GetString() or ""))
             end
         end
     end

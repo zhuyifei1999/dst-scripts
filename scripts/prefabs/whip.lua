@@ -31,6 +31,9 @@ local function supercrack(inst)
                 --and not v.sg:HasStateTag("busy")
                 then
 
+                if v.components.sleeper ~= nil then
+                    v.components.sleeper:WakeUp()
+                end
                 v.sg:GoToState("hit")
             end
         end

@@ -33,26 +33,34 @@ local function KillPet(pet)
     pet.components.health:Kill()
 end
 
-local function OnSpawn(inst, pet)
-    --Delayed in case we need to relocate for migration spawning
-    pet:DoTaskInTime(0, DoEffects)
+local function OnSpawnPet(inst, pet)
+    if pet:HasTag("shadowminion") then
+        --Delayed in case we need to relocate for migration spawning
+        pet:DoTaskInTime(0, DoEffects)
 
-    if not (inst.components.health:IsDead() or inst:HasTag("playerghost")) then
-        inst.components.sanity:AddSanityPenalty(pet, TUNING.SHADOWWAXWELL_SANITY_PENALTY[string.upper(pet.prefab)])
-        inst:ListenForEvent("onremove", inst._onpetlost, pet)
-    elseif pet._killtask == nil then
-        pet._killtask = pet:DoTaskInTime(math.random(), KillPet)
+        if not (inst.components.health:IsDead() or inst:HasTag("playerghost")) then
+            inst.components.sanity:AddSanityPenalty(pet, TUNING.SHADOWWAXWELL_SANITY_PENALTY[string.upper(pet.prefab)])
+            inst:ListenForEvent("onremove", inst._onpetlost, pet)
+        elseif pet._killtask == nil then
+            pet._killtask = pet:DoTaskInTime(math.random(), KillPet)
+        end
+    elseif inst._OnSpawnPet ~= nil then
+        inst:_OnSpawnPet(pet)
     end
 end
 
-local function OnDespawn(inst, pet)
-    DoEffects(pet)
-    pet:Remove()
+local function OnDespawnPet(inst, pet)
+    if pet:HasTag("shadowminion") then
+        DoEffects(pet)
+        pet:Remove()
+    elseif inst._OnDespawnPet ~= nil then
+        inst:_OnDespawnPet(pet)
+    end
 end
 
 local function OnDeath(inst)
     for k, v in pairs(inst.components.petleash:GetPets()) do
-        if v._killtask == nil then
+        if v:HasTag("shadowminion") and v._killtask == nil then
             v._killtask = v:DoTaskInTime(math.random(), KillPet)
         end
     end
@@ -69,10 +77,16 @@ end
 local function master_postinit(inst)
     inst:AddComponent("reader")
 
-    inst:AddComponent("petleash")
-    inst.components.petleash:SetOnSpawnFn(OnSpawn)
-    inst.components.petleash:SetOnDespawnFn(OnDespawn)
-    inst.components.petleash:SetMaxPets(4)
+    if inst.components.petleash ~= nil then
+        inst._OnSpawnPet = inst.components.petleash.onspawnfn
+        inst._OnDespawnPet = inst.components.petleash.ondespawnfn
+        inst.components.petleash:SetMaxPets(inst.components.petleash:GetMaxPets() + 4)
+    else
+        inst:AddComponent("petleash")
+        inst.components.petleash:SetMaxPets(4)
+    end
+    inst.components.petleash:SetOnSpawnFn(OnSpawnPet)
+    inst.components.petleash:SetOnDespawnFn(OnDespawnPet)
 
     inst.components.sanity.dapperness = TUNING.DAPPERNESS_LARGE
     inst.components.health:SetMaxHealth(TUNING.WILSON_HEALTH * .5)

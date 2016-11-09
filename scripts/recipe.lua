@@ -1,5 +1,6 @@
 require "class"
 require "util"
+local TechTree = require("techtree")
 
 Ingredient = Class(function(self, ingredienttype, amount, atlas, deconstruct)
     --Character ingredient multiples of 5 check only applies to
@@ -79,13 +80,7 @@ Recipe = Class(function(self, name, ingredients, tab, level, placer, min_spacing
 
     self.sortkey       = num
     self.rpc_id        = num --mods will set the rpc_id in SetModRPCID when called by AddRecipe()
-    self.level         = level or {}
-    self.level.ANCIENT = self.level.ANCIENT or 0
-    self.level.MAGIC   = self.level.MAGIC or 0
-    self.level.SCIENCE = self.level.SCIENCE or 0
-    self.level.SHADOW  = self.level.SHADOW or 0
-    self.level.CARTOGRAPHY = self.level.CARTOGRAPHY or 0
-    self.level.SCULPTING = self.level.SCULPTING or 0
+    self.level         = TechTree.Create(level)
     self.placer        = placer
     self.min_spacing   = min_spacing or 3.2
 

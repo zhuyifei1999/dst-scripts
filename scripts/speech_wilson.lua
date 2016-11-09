@@ -9,6 +9,7 @@ return {
         BUILD =
         {
             MOUNTED = "I can't place that from way up here.",
+            HASPET = "I've already got a pet.",
         },
 		SHAVE =
 		{
@@ -35,6 +36,7 @@ return {
         },
         GIVE =
         {
+            GENERIC = "That doesn't go there.",
             DEAD = "Maybe I'll just hold on to this.",
             SLEEPING = "Too unconscious to care.",
             BUSY = "I'll try again in a second.",
@@ -415,6 +417,7 @@ return {
             BROKEN = "It's all smashed up.",
             STAFFED = "Now what?",
             WRONGSTAFF = "I have a distinct feeling this isn't right.",
+            MOONSTAFF = "The stone lit it up somehow.",
         },
         MOONDIAL = 
         {
@@ -674,6 +677,14 @@ return {
 		ICEPACK = "The fur keeps the temperature inside stable.",
 		BEARGER_FUR = "A mat of thick fur.",
 		BEDROLL_STRAW = "Looks comfy, but it smells like mildew.",
+		BEEQUEEN = "Keep that stinger away from me!",
+		BEEQUEENHIVE = 
+		{
+			GENERIC = "It's too sticky to walk on.",
+			GROWING = "Was that there before?",
+		},
+        BEEQUEENHIVEGROWN = "How in science did it get so big?!",
+        BEEGUARD = "It's guarding the queen.",
 		BEE =
 		{
 			GENERIC = "To bee or not to bee.",
@@ -710,6 +721,7 @@ return {
             RIDER = "This fellow appears quite ridable.",
             PUDGY = "Hmmm, there may be too much food inside it.",
 		},
+
 		BEEFALOHAT = "That's a case of hat-hair waiting to happen.",
 		BEEFALOWOOL = "It smells like beefalo tears.",
 		BEEHAT = "Protects your skin, but squashes your meticulous coiffure.",
@@ -909,6 +921,14 @@ return {
 			HELD = "I'm not squishing you, am I?",
 		},
         CANARY_POISONED = "It's probably fine.",
+
+		CRITTERLAB = "Is there something in there?",
+        CRITTER_GLOMLING = "What an aerodynamical creature!",
+        CRITTER_DRAGONLING = "It's wyrmed its way into my heart.",
+		CRITTER_LAMB = "Much less mucusy than its momma.",
+        CRITTER_PUPPY = "Pretty cute for a lil monster!",
+        CRITTER_KITTEN = "You'd make a good lab assistant.",
+
 		CROW =
 		{
 			GENERIC = "Creepy!",
@@ -968,6 +988,7 @@ return {
 		},
 		LAVA_POND = "Magmificent!",
 		LAVAE = "Too hot to handle.",
+		LAVAE_COCOON = "Cooled off and chilled out.",
 		LAVAE_PET = 
 		{
 			STARVING = "Poor thing must be starving.",
@@ -1007,8 +1028,12 @@ return {
 		
 		ENDTABLE = 
 		{
-			BURNT = "A burnt flower in a burnt vase on a burnt table.",
+			BURNT = "A burnt vase on a burnt table.",
 			GENERIC = "A flower in a vase on a table.",
+			EMPTY = "I should put something in there.",
+			WILTED = "Not looking too fresh.",
+			FRESHLIGHT = "It's nice to have a little light.",
+			OLDLIGHT = "Did we remember to pick up new bulbs?", -- will be wilted soon, light radius will be very small at this point
 		},
 		DECIDUOUSTREE = 
 		{
@@ -1207,6 +1232,7 @@ return {
 			INACTIVE = "It's more of a pyramid than an obelisk.",
 		},
 		JAMMYPRESERVES = "Probably should have made a jar.",
+
 		KABOBS = "Lunch on a stick.",
 		KILLERBEE =
 		{
@@ -1253,6 +1279,9 @@ return {
 		MANDRAKE_COOKED = "It doesn't seem so strange anymore.",
 		MAPSCROLL = "A blank map. Doesn't seem very useful.",
 		MARBLE = "Fancy!",
+		MARBLEBEAN = "I traded the old family cow for it.",
+		MARBLEBEAN_SAPLING = "It looks carved.",
+        MARBLESHRUB = "Makes sense to me.",
 		MARBLEPILLAR = "I think I could use that.",
 		MARBLETREE = "I don't think an axe will cut it.",
 		MARSH_BUSH =
@@ -1495,6 +1524,8 @@ return {
         ROOK = "Storm the castle!",
 		ROPE = "Some short lengths of rope.",
 		ROTTENEGG = "Ew! It stinks!",
+		ROYAL_JELLY = "It infuses the eater with the power of science!",
+        JELLYBEAN = "One part jelly, one part bean.",
         SADDLE_BASIC = "That'll allow the mounting of some smelly animal.",
         SADDLE_RACE = "This saddle really flies!",
         SADDLE_WAR = "The only problem is the saddle sores.",
@@ -1761,6 +1792,10 @@ return {
 		WALL_WOOD_ITEM = "Pickets!",
 		WALL_MOONROCK = "Spacey and smooth!",
 		WALL_MOONROCK_ITEM = "Very light, but surprisingly tough.",
+		FENCE = "It's just a wood fence.",
+        FENCE_ITEM = "All we need to build a nice, sturdy fence.",
+        FENCE_GATE = "It opens. And closes sometimes, too.",
+        FENCE_GATE_ITEM = "All we need to build a nice, sturdy gate.",
 		WALRUS = "Walruses are natural predators.",
 		WALRUSHAT = "It's covered with walrus hairs.",
 		WALRUS_CAMP =

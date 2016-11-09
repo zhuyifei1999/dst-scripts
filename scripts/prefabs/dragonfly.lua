@@ -69,14 +69,6 @@ SetSharedLootTable('dragonfly',
     {'greengem',         0.50},
 })
 
-local function UpdateFreezeThreshold(inst)
-    inst.components.freezable:SetResistance(
-        TUNING.DRAGONFLY_FREEZE_THRESHOLD +
-        inst.freezable_extra_resist +
-        (inst.enraged and TUNING.DRAGONFLY_ENRAGED_FREEZE_BONUS or 0)
-    )
-end
-
 local function TransformNormal(inst)
     inst.AnimState:SetBuild("dragonfly_build")
     inst.enraged = false
@@ -86,7 +78,7 @@ local function TransformNormal(inst)
     inst.components.combat:SetAttackPeriod(TUNING.DRAGONFLY_ATTACK_PERIOD)
     inst.components.combat:SetRange(TUNING.DRAGONFLY_ATTACK_RANGE, TUNING.DRAGONFLY_HIT_RANGE)
 
-    UpdateFreezeThreshold(inst)
+    inst.components.freezable:SetResistance(TUNING.DRAGONFLY_FREEZE_THRESHOLD)
 
     inst.components.propagator:StopSpreading()
     inst.Light:Enable(false)
@@ -114,7 +106,7 @@ local function TransformFire(inst)
 
     inst.components.moisture:DoDelta(-inst.components.moisture:GetMoisture())
 
-    UpdateFreezeThreshold(inst)
+    inst.components.freezable:SetResistance(TUNING.DRAGONFLY_ENRAGED_FREEZE_THRESHOLD)
 
     if inst.reverttask ~= nil then
         inst.reverttask:Cancel()
@@ -181,7 +173,10 @@ local function SoftReset(inst)
 
     ResetLavae(inst)
     inst.playercombat = false
-    inst.freezable_extra_resist = 0
+    inst.components.freezable:UnFreeze()
+    inst.components.freezable:SetExtraResist(0)
+    inst.components.sleeper:WakeUp()
+    inst.components.sleeper:SetExtraResist(0)
     inst.components.health:SetCurrentHealth(inst.components.health.maxhealth)
     inst.components.rampingspawner:Stop()
     inst.components.rampingspawner:Reset()
@@ -306,7 +301,8 @@ local function KeepTargetFn(inst, target)
 end
 
 local function DoBreakOff(inst)
-    inst.components.lootdropper:SpawnLootPrefab("dragon_scales")
+    local player--[[, rangesq]] = inst:GetNearestPlayer()
+    LaunchAt(SpawnPrefab("dragon_scales"), inst, player, 1, 3, 1.5)
 end
 
 local function OnSave(inst, data)
@@ -341,14 +337,17 @@ local function OnAttacked(inst, data)
     end
 end
 
-local function OnFreeze(inst)
-    inst.freezable_extra_resist = inst.freezable_extra_resist + 2
-    UpdateFreezeThreshold(inst)
-end
-
 local function OnHealthTrigger(inst)
     inst:PushEvent("transform", { transformstate = "normal" })
     inst.components.rampingspawner:Start() 
+end
+
+local function ShouldSleep(inst)
+    return false
+end
+
+local function ShouldWake(inst)
+    return true
 end
 
 local function fn()
@@ -450,11 +449,16 @@ local function fn()
     inst.components.combat:SetHurtSound("dontstarve_DLC001/creatures/dragonfly/hurt")
 
     inst.components.sleeper:SetResistance(4)
+    inst.components.sleeper:SetSleepTest(ShouldSleep)
+    inst.components.sleeper:SetWakeTest(ShouldWake)
+    inst.components.sleeper.diminishingreturns = true
 
     inst.components.lootdropper:SetChanceLootTable("dragonfly")
 
     inst.components.inspectable:RecordViews()
 
+    inst.components.locomotor:EnableGroundSpeedMultiplier(false)
+    inst.components.locomotor:SetTriggersCreep(false)
     inst.components.locomotor.pathcaps = { ignorewalls = true }
     inst.components.locomotor.walkspeed = TUNING.DRAGONFLY_SPEED
 
@@ -471,7 +475,6 @@ local function fn()
         end
     end
 
-    inst:ListenForEvent("freeze", OnFreeze)
     inst:ListenForEvent("newcombattarget", OnNewTarget)
     inst:ListenForEvent("rampingspawner_spawn", OnLavaeSpawn)
     inst:ListenForEvent("rampingspawner_death", OnLavaeDeath)
@@ -490,12 +493,11 @@ local function fn()
     inst.TransformNormal = TransformNormal
     inst.can_ground_pound = false
     inst.last_hit_time = 0
-    inst.freezable_extra_resist = 0
 
     MakeHugeFreezableCharacter(inst)
     inst.components.freezable:SetResistance(TUNING.DRAGONFLY_FREEZE_THRESHOLD)
     inst.components.freezable.damagetobreak = TUNING.DRAGONFLY_FREEZE_RESIST
-    inst.components.freezable.onfreezefn = OnFreeze
+    inst.components.freezable.diminishingreturns = true
 
     MakeLargePropagator(inst)
     inst.components.propagator.decayrate = 0

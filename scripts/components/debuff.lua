@@ -4,6 +4,7 @@ local Debuff = Class(function(self, inst)
     self.target = nil
     self.onattachedfn = nil
     self.ondetachedfn = nil
+    --self.keepondespawn = nil
 end)
 
 function Debuff:SetAttachedFn(fn)

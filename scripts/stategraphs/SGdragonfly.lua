@@ -1,8 +1,7 @@
 require("stategraphs/commonstates")
 
-local function onattackedfn(inst, data)
-    if inst.components.health and not inst.components.health:IsDead()
-    and not inst.sg:HasStateTag("busy") then
+local function onattackedfn(inst)
+    if (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("caninterrupt")) and not inst.components.health:IsDead() then
         if inst.sg:HasStateTag("grounded") then
             inst.sg.statemem.knockdown = true
             inst.sg:GoToState("knockdown_hit")
@@ -13,34 +12,28 @@ local function onattackedfn(inst, data)
     end
 end
 
-local function onattackfn(inst, data)
-    if inst.components.health and not inst.components.health:IsDead()
-       and (inst.sg:HasStateTag("hit") or not inst.sg:HasStateTag("busy"))
-       and not inst.sg:HasStateTag("grounded") then
-        if inst.enraged and inst.can_ground_pound then
-            inst.sg:GoToState("pound_pre")
-        else
-            inst.sg:GoToState("attack")
-        end
+local function onattackfn(inst)
+    if (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("hit")) and
+        not (inst.sg:HasStateTag("grounded") or inst.components.health:IsDead()) then
+        inst.sg:GoToState(inst.enraged and inst.can_ground_pound and "pound_pre" or "attack")
     end
 end
 
-local function onsleepfn(inst)
-    if inst.components.health ~= nil and not inst.components.health:IsDead() and not inst.sg:HasStateTag("flight") then
-        inst.sg:GoToState(inst.sg:HasStateTag("sleeping") and "sleeping" or "sleep")
-    end
-end
-
-local function onstunnedfn(inst, data)
-    if inst.components.health and not inst.components.health:IsDead() then
+local function onstunnedfn(inst)
+    if not inst.components.health:IsDead() then
         inst.sg:GoToState("knockdown")
     end
 end
 
-local function onstunfinishedfn(inst, data)
-    if inst.components.health and not inst.components.health:IsDead() then
-        inst.sg.statemem.knockdown = true
-        inst.sg:GoToState("knockdown_pst")
+local function onstunfinishedfn(inst)
+    if inst.sg:HasStateTag("grounded") and not inst.components.health:IsDead() then
+        if inst.sg.mem.sleeping then
+            inst.sg.statemem.continuesleeping = true
+            inst.sg:GoToState("sleeping")
+        else
+            inst.sg.statemem.knockdown = true
+            inst.sg:GoToState("knockdown_pst")
+        end
     end
 end
 
@@ -48,31 +41,43 @@ local function ShakeIfClose(inst)
     ShakeAllCameras(CAMERASHAKE.FULL, .7, .02, .3, inst, 40)
 end
 
+local function onspawnlavae(inst)
+    if not inst.sg.mem.wantstospawn then
+        inst.sg.mem.wantstospawn = true
+        if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) then
+            inst.sg:GoToState("lavae")
+        end
+    end
+end
+
 local function transform(inst, data)
-    if inst.components.health and not inst.components.health:IsDead() and not
-    (inst.sg:HasStateTag("frozen") or inst.sg:HasStateTag("grounded") or inst.sg:HasStateTag("sleeping")) then
+    if not (inst.sg:HasStateTag("frozen") or
+            inst.sg:HasStateTag("grounded") or
+            inst.sg:HasStateTag("sleeping") or
+            inst.sg:HasStateTag("flight") or
+            inst.components.health:IsDead()) then
         inst.sg:GoToState("transform_"..data.transformstate)
     end
 end
 
-
 local actionhandlers =
 {
     ActionHandler(ACTIONS.GOHOME, "flyaway"),
-    ActionHandler(ACTIONS.SPAWN, "lavae"),
 }
 
 local events =
 {
-    CommonHandlers.OnLocomote(false,true),
+    CommonHandlers.OnLocomote(false, true),
     CommonHandlers.OnFreeze(),
     CommonHandlers.OnDeath(),
-    EventHandler("gotosleep", onsleepfn),
+    CommonHandlers.OnSleepEx(),
+    CommonHandlers.OnWakeEx(),
     EventHandler("doattack", onattackfn),
     EventHandler("attacked", onattackedfn),
     EventHandler("stunned", onstunnedfn),
     EventHandler("stun_finished", onstunfinishedfn),
-    EventHandler("transform", transform), 
+    EventHandler("spawnlavae", onspawnlavae),
+    EventHandler("transform", transform),
     --Because this comes from an event players can prevent it by having dragonfly 
     --in sleep/ freeze/ knockdown states when this is triggered.
 }
@@ -81,13 +86,14 @@ local states =
 {
     State{
         name = "idle",
-        tags = {"idle"},
+        tags = { "idle" },
 
         onenter = function(inst)
-            if inst.sg.mem.spawnaction ~= nil and inst.sg.mem.spawnaction == inst:GetBufferedAction() then
+            if inst.sg.mem.sleeping then
+                inst.sg:GoToState("sleep")
+            elseif inst.sg.mem.wantstospawn then
                 inst.sg:GoToState("lavae")
             else
-                inst.sg.mem.spawnaction = nil
                 inst.Physics:Stop()
                 inst.AnimState:PlayAnimation("idle", true)
             end
@@ -96,7 +102,7 @@ local states =
 
     State{
         name = "walk_start",
-        tags = {"moving", "canrotate"},
+        tags = { "moving", "canrotate" },
 
         onenter = function(inst)
             if inst.enraged then
@@ -126,13 +132,10 @@ local states =
 
     State{
         name = "hit",
-        tags = {"hit", "busy"},
+        tags = { "hit", "busy" },
 
         onenter = function(inst, cb)
-            if inst.components.locomotor then
-                inst.components.locomotor:StopMoving()
-            end
-
+            inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("hit")
             inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/blink")
         end,
@@ -149,7 +152,7 @@ local states =
 
     State{
         name = "walk",
-        tags = {"moving", "canrotate"},
+        tags = { "moving", "canrotate" },
 
         onenter = function(inst)
             inst.components.locomotor:WalkForward()
@@ -175,19 +178,11 @@ local states =
 
     State{
         name = "walk_stop",
-        tags = {"canrotate"},
+        tags = { "canrotate" },
 
         onenter = function(inst)
-            if inst.components.locomotor then
-                inst.components.locomotor:StopMoving()
-            end
-
-            --local should_softstop = false
-            --if should_softstop then
-            --  inst.AnimState:PushAnimation(inst.enraged and "walk_angry_pst" or "walk_pst", false)
-            --else
-                inst.AnimState:PlayAnimation(inst.enraged and "walk_angry_pst" or "walk_pst")
-            --end
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation(inst.enraged and "walk_angry_pst" or "walk_pst")
         end,
 
         events =
@@ -208,12 +203,10 @@ local states =
 
     State{
         name = "knockdown",
-        tags = {"busy"},
+        tags = { "busy", "nosleep" },
 
         onenter = function(inst)
-            if inst.components.locomotor then
-                inst.components.locomotor:StopMoving()
-            end
+            inst.components.locomotor:StopMoving()
             --Start tracking progress towards breakoff loot
             inst.AnimState:PlayAnimation("hit_large")
             inst.components.damagetracker:Start()
@@ -245,6 +238,10 @@ local states =
         onexit = function(inst)
             if inst.sg.statemem.knockdown then
                 inst.SoundEmitter:KillSound("flying")
+                if inst.enraged then
+                    inst:TransformNormal()
+                    inst.SoundEmitter:KillSound("fireflying")
+                end
             else
                 inst.components.damagetracker:Stop()
                 if not inst.SoundEmitter:PlayingSound("flying") then
@@ -256,13 +253,10 @@ local states =
 
     State{
         name = "knockdown_idle",
-        tags = {"grounded", "nointerrupt"},
-        --V2C: added nointerrupt due to whip supercrack hackiness!
+        tags = { "grounded", "nosleep" },
 
         onenter = function(inst)
-            if inst.components.locomotor then
-                inst.components.locomotor:StopMoving()
-            end
+            inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("sleep_loop")
         end,
 
@@ -279,7 +273,7 @@ local states =
         onexit = function(inst)
             if not inst.sg.statemem.knockdown then
                 inst.components.damagetracker:Stop()
-                if not inst.SoundEmitter:PlayingSound("flying") then
+                if not (inst.sg.statemem.continuesleeping or inst.SoundEmitter:PlayingSound("flying")) then
                     inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/fly", "flying")
                 end
             end
@@ -288,14 +282,10 @@ local states =
 
     State{
         name = "knockdown_hit",
-        tags = {"busy", "grounded", "nointerrupt"},
-        --V2C: added nointerrupt due to whip supercrack hackiness!
+        tags = { "busy", "grounded", "nosleep" },
 
         onenter = function(inst)
-            if inst.components.locomotor then
-                inst.components.locomotor:StopMoving()
-            end
-
+            inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("hit_ground")
         end,
 
@@ -312,7 +302,7 @@ local states =
         onexit = function(inst)
             if not inst.sg.statemem.knockdown then
                 inst.components.damagetracker:Stop()
-                if not inst.SoundEmitter:PlayingSound("flying") then
+                if not (inst.sg.statemem.continuesleeping or inst.SoundEmitter:PlayingSound("flying")) then
                     inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/fly", "flying")
                 end
             end
@@ -321,7 +311,7 @@ local states =
 
     State{
         name = "knockdown_pst",
-        tags = {"busy"},
+        tags = { "busy", "nosleep" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("sleep_pst")
@@ -329,19 +319,15 @@ local states =
             --Stop tracking progress towards breakoff loot
         end,
 
-        events =
-        {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end),
-        },
-
         timeline =
         {
             TimeEvent(16*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/blink") end),
             TimeEvent(26*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/fly", "flying") end),
+        },
+
+        events =
+        {
+            CommonHandlers.OnNoSleepAnimOver("idle"),
         },
 
         onexit = function(inst)
@@ -353,7 +339,7 @@ local states =
 
     State{
         name = "flyaway",
-        tags = {"flight", "busy", "nosleep", "nofreeze"},
+        tags = { "flight", "busy", "nosleep", "nofreeze" },
 
         onenter = function(inst)
             inst.Physics:Stop()
@@ -389,7 +375,7 @@ local states =
 
     State{
         name = "attack",
-        tags = {"attack", "busy", "canrotate"},
+        tags = { "attack", "busy", "canrotate" },
 
         onenter = function(inst)
             inst.components.combat:StartAttack()
@@ -425,7 +411,7 @@ local states =
 
     State{
         name = "transform_fire",
-        tags = {"busy"},
+        tags = { "busy" },
 
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
@@ -455,19 +441,11 @@ local states =
                 inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/firedup", "fireflying")
             end),
         },
-
-        onexit = function(inst)
-            if not inst.enraged then
-                --V2C: interrupted?
-                inst:TransformFire()
-                inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/firedup", "fireflying")
-            end
-        end,
     },  
 
     State{
         name = "transform_normal",
-        tags = {"busy"},
+        tags = { "busy" },
 
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
@@ -497,19 +475,11 @@ local states =
                 inst.SoundEmitter:KillSound("fireflying")
             end),
         },
-
-        onexit = function(inst)
-            if inst.enraged then
-                --V2C: interrupted?
-                inst:TransformNormal()
-                inst.SoundEmitter:KillSound("fireflying")
-            end
-        end,
     },
 
     State{
         name = "pound_pre",
-        tags = {"busy"},
+        tags = { "busy" },
 
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
@@ -536,7 +506,7 @@ local states =
 
     State{
         name = "pound",
-        tags = {"busy"},
+        tags = { "busy" },
 
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
@@ -581,7 +551,7 @@ local states =
 
     State{
         name = "pound_post",
-        tags = {"busy"},
+        tags = { "busy" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("taunt_pst")
@@ -604,28 +574,16 @@ local states =
 
     State{
         name = "lavae",
-        tags = {"busy"},
+        tags = { "busy" },
 
         onenter = function(inst)
-            inst.sg.mem.spawnaction = inst:GetBufferedAction()
             inst.Transform:SetTwoFaced()
-            if inst.components.locomotor then
-                inst.components.locomotor:StopMoving()
-            end
+            inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("vomit")
             inst.vomitfx = SpawnPrefab("vomitfire_fx")
             inst.vomitfx.Transform:SetPosition(inst.Transform:GetWorldPosition())
             inst.vomitfx.Transform:SetRotation(inst.Transform:GetRotation())
             inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/vomitrumble", "vomitrumble")
-        end,
-
-        onexit = function(inst)
-            inst.Transform:SetSixFaced()
-            if inst.vomitfx then
-                inst.vomitfx:Remove()
-            end
-            inst.vomitfx = nil
-            inst.SoundEmitter:KillSound("vomitrumble")
         end,
 
         events =
@@ -645,39 +603,32 @@ local states =
                 inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/vomit")
             end),
             TimeEvent(59*FRAMES, function(inst)
-                inst.sg.mem.spawnaction = nil
-                inst:PerformBufferedAction()
+                inst.sg.mem.wantstospawn = nil
+                inst.brain:OnSpawnLavae()
             end),
         },
+
+        onexit = function(inst)
+            inst.Transform:SetSixFaced()
+            if inst.vomitfx then
+                inst.vomitfx:Remove()
+            end
+            inst.vomitfx = nil
+            inst.SoundEmitter:KillSound("vomitrumble")
+        end,
     },
 
     State{
         name = "sleep",
-        tags = {"busy", "sleeping"},
+        tags = { "busy", "sleeping", "nowake", "caninterrupt" },
 
         onenter = function(inst)
-            if inst.components.locomotor then
-                inst.components.locomotor:StopMoving()
-            end
+            inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("land")
             inst.AnimState:PushAnimation("land_idle", false)
             inst.AnimState:PushAnimation("takeoff", false)
             inst.AnimState:PushAnimation("sleep_pre", false)
         end,
-
-        events =
-        {
-            EventHandler("animqueueover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg.statemem.sleeping = true
-                    inst.sg:GoToState("sleeping")
-                end
-            end),
-            EventHandler("onwakeup", function(inst)
-                inst.sg.statemem.sleeping = true
-                inst.sg:GoToState("wake")
-            end),
-        },
 
         timeline =
         {
@@ -697,21 +648,37 @@ local states =
             TimeEvent(202*FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/blink")
                 inst.SoundEmitter:KillSound("flying")
+                inst.sg:RemoveStateTag("caninterrupt")
             end),
             TimeEvent(203*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/land") end),
         },
 
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg.statemem.continuesleeping = true
+                    inst.sg:GoToState(inst.sg.mem.sleeping and "sleeping" or "wake")
+                end
+            end),
+        },
+
         onexit = function(inst)
-            if not (inst.sg.statemem.sleeping or inst.SoundEmitter:PlayingSound("flying")) then
+            if not inst.sg.statemem.continuesleeping then
                 --V2C: interrupted? bad! restore sound tho
-                inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/fly", "flying")
+                if not inst.SoundEmitter:PlayingSound("flying") then
+                    inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/fly", "flying")
+                end
+                if inst.components.sleeper ~= nil and inst.components.sleeper:IsAsleep() then
+                    inst.components.sleeper:WakeUp()
+                end
             end
         end,
     },
 
     State{
         name = "sleeping",
-        tags = {"busy", "sleeping"},
+        tags = { "busy", "sleeping" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("sleep_loop")
@@ -724,52 +691,52 @@ local states =
         {
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-                    inst.sg.statemem.sleeping = true
+                    inst.sg.statemem.continuesleeping = true
                     inst.sg:GoToState("sleeping")
                 end
-            end),
-            EventHandler("onwakeup", function(inst)
-                inst.SoundEmitter:KillSound("sleep")
-                inst.sg.statemem.sleeping = true
-                inst.sg:GoToState("wake")
             end),
         },
 
         onexit = function(inst)
-            if not inst.sg.statemem.sleeping then
+            if not inst.sg.statemem.continuesleeping then
                 --V2C: interrupted? bad! restore sound tho
                 inst.SoundEmitter:KillSound("sleep")
                 inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/fly", "flying")
+                if inst.components.sleeper ~= nil and inst.components.sleeper:IsAsleep() then
+                    inst.components.sleeper:WakeUp()
+                end
             end
         end,
     },
 
     State{
         name = "wake",
-        tags = {"busy", "waking"},
+        tags = { "busy", "waking", "nosleep" },
 
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("sleep_pst")
+            inst.SoundEmitter:KillSound("sleep")
+            inst.SoundEmitter:KillSound("flying")
             inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/wake")
-            if inst.components.sleeper and inst.components.sleeper:IsAsleep() then
+            if inst.components.sleeper ~= nil and inst.components.sleeper:IsAsleep() then
                 inst.components.sleeper:WakeUp()
             end
         end,
 
-        events =
-        {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end),
-        },
-
         timeline =
         {
             TimeEvent(16*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/blink") end),
-            TimeEvent(26*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/fly", "flying") end),
+            CommonHandlers.OnNoSleepTimeEvent(26 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/fly", "flying")
+                inst.sg:RemoveStateTag("busy")
+                inst.sg:RemoveStateTag("nosleep")
+            end),
+        },
+
+        events =
+        {
+            CommonHandlers.OnNoSleepAnimOver("idle"),
         },
 
         onexit = function(inst)
@@ -782,12 +749,10 @@ local states =
 
     State{
         name = "death",
-        tags = {"busy"},
+        tags = { "busy" },
 
         onenter = function(inst)
-            if inst.components.locomotor then
-                inst.components.locomotor:StopMoving()
-            end
+            inst.components.locomotor:StopMoving()
             inst.Light:Enable(false)
             inst.components.propagator:StopSpreading()
             inst.AnimState:PlayAnimation("death")
@@ -821,7 +786,7 @@ local states =
 
     State{
         name = "land",
-        tags = {"flight", "busy"},
+        tags = { "flight", "busy" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("walk_angry", true)
@@ -850,6 +815,17 @@ local states =
     },
 }
 
-CommonStates.AddFrozenStates(states)
+CommonStates.AddFrozenStates(states,
+    function(inst) --onoverridesymbols
+        inst.SoundEmitter:KillSound("flying")
+        if inst.enraged then
+            inst:TransformNormal()
+            inst.SoundEmitter:KillSound("fireflying")
+        end
+    end,
+    function(inst) --onclearsymbols
+        inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/fly", "flying")
+    end
+)
 
 return StateGraph("dragonfly", states, events, "idle", actionhandlers)

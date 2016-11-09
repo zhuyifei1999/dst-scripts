@@ -29,6 +29,16 @@ local twiggy_nut_prefabs =
     "twiggy_short",
 }
 
+local marblebean_assets =
+{
+    Asset("ANIM", "anim/marblebean.zip"),
+}
+
+local marblebean_prefabs =
+{
+    "marbleshrub_short",
+}
+
 local function growtree(inst)
     local tree = SpawnPrefab(inst.growprefab)
     if tree then
@@ -56,11 +66,11 @@ local function ontimerdone(inst, data)
 end
 
 local function digup(inst, digger)
-    inst.components.lootdropper:SpawnLootPrefab("twigs")
+    inst.components.lootdropper:DropLoot()
     inst:Remove()
 end
 
-local function sapling_fn(build, anim, growprefab, tag)
+local function sapling_fn(build, anim, growprefab, tag, fireproof, overrideloot)
     local function fn()
         local inst = CreateEntity()
 
@@ -73,7 +83,9 @@ local function sapling_fn(build, anim, growprefab, tag)
         inst.AnimState:SetBuild(build)
         inst.AnimState:PlayAnimation(anim)
 
-        MakeDragonflyBait(inst, 3)
+		if not fireproof then
+            MakeDragonflyBait(inst, 3)
+        end
 
         inst:AddTag(tag)
 
@@ -93,19 +105,24 @@ local function sapling_fn(build, anim, growprefab, tag)
         inst:AddComponent("inspectable")
 
         inst:AddComponent("lootdropper")
+        inst.components.lootdropper:SetLoot(overrideloot or {"twigs"})
 
         inst:AddComponent("workable")
         inst.components.workable:SetWorkAction(ACTIONS.DIG)
         inst.components.workable:SetOnFinishCallback(digup)
         inst.components.workable:SetWorkLeft(1)
 
-        MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
-        inst:ListenForEvent("onignite", stopgrowing)
-        inst:ListenForEvent("onextinguish", startgrowing)
-        MakeSmallPropagator(inst)
+		if not fireproof then
+			MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
+			inst:ListenForEvent("onignite", stopgrowing)
+			inst:ListenForEvent("onextinguish", startgrowing)
+			MakeSmallPropagator(inst)
 
-        MakeHauntableIgnite(inst)
-
+			MakeHauntableIgnite(inst)
+		else
+			MakeHauntableWork(inst)
+		end
+				
         return inst
     end
     return fn
@@ -114,4 +131,5 @@ end
 return Prefab("pinecone_sapling", sapling_fn("pinecone", "idle_planted", "evergreen_short", "evergreen"), pinecone_assets, pinecone_prefabs),
     Prefab("lumpy_sapling", sapling_fn("pinecone", "idle_planted2", "evergreen_sparse_short", "evergreen_sparse"), pinecone_assets, pinecone_prefabs),
     Prefab("acorn_sapling", sapling_fn("acorn", "idle_planted", "deciduoustree", "deciduoustree"), acorn_assets, acorn_prefabs),
-    Prefab("twiggy_nut_sapling", sapling_fn("twiggy_nut", "idle_planted", "twiggy_short", "twiggytree"),  twiggy_nut_assets, twiggy_nut_prefabs)
+    Prefab("twiggy_nut_sapling", sapling_fn("twiggy_nut", "idle_planted", "twiggy_short", "twiggytree"),  twiggy_nut_assets, twiggy_nut_prefabs),
+    Prefab("marblebean_sapling", sapling_fn("marblebean", "idle_planted", "marbleshrub_short", "marbleshrub", true, {"marblebean"}),  marblebean_assets, marblebean_prefabs)

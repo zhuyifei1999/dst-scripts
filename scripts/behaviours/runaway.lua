@@ -4,7 +4,7 @@ RunAway = Class(BehaviourNode, function(self, inst, hunterparams, see_dist, safe
     self.see_dist = see_dist
     if type(hunterparams) == "string" then
         self.huntertags = { hunterparams }
-        self.hunternotags = { "noclick" }
+        self.hunternotags = { "NOCLICK" }
     elseif type(hunterparams) == "table" then
         self.hunterfn = hunterparams.fn
         self.huntertags = hunterparams.tags

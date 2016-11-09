@@ -8,6 +8,7 @@ return {
         BUILD =
         {
             MOUNTED = "Even with my long arms, I still can't reach.",
+            HASPET = "One pet is enough responsibility.",
         },
 		SHAVE =
 		{
@@ -58,6 +59,7 @@ return {
         },
         GIVE =
         {
+            GENERIC = "I should think not.",
             DEAD = "The dead have no need of such things.",
             SLEEPING = "It's thoroughly unconscious.",
             BUSY = "It's busy, currently.",
@@ -651,6 +653,7 @@ return {
             BROKEN = "Ruins of an ancient relic.",
             STAFFED = "Something magic-y needs to happen, I think.",
             WRONGSTAFF = "Waste of a good staff.",
+            MOONSTAFF = "The staff is powered by the \"moon's\" energy.",
         },
 		MOONDIAL = 
         {
@@ -862,6 +865,14 @@ return {
 		BASALT = "I made a rock so heavy that even I can't lift it.",
 		BEARDHAIR = "Hirsute.",
 		BEDROLL_STRAW = "I don't like sleeping rough.",
+		BEEQUEEN = "I didn't make that one! Really!",
+		BEEQUEENHIVE = 
+		{
+			GENERIC = "I am not getting that on my shoes.",
+			GROWING = "Now what are those bees up to?",
+		},
+		BEEQUEENHIVEGROWN = "I don't see what all the buzz is about.",
+        BEEGUARD = "Keep your backside to yourself, madam!",
 		BEE =
 		{
 			GENERIC = "They work so hard, the fools.",
@@ -1058,6 +1069,12 @@ return {
 			HELD = "Bait.",
 		},
 		CANARY_POISONED = "You look atrocious.",
+		CRITTERLAB = "Am I being watched by that rock?",
+        CRITTER_GLOMLING = "You are much too trusting, friend.",
+        CRITTER_DRAGONLING = "Just like old times.",
+		CRITTER_LAMB = "Quit nibbling my coattails.",
+        CRITTER_PUPPY = "You're a slobbery little chap, aren't you?",
+        CRITTER_KITTEN = "A wholly agreeable animal.",
 		CROW =
 		{
 			GENERIC = "I don't know how they got here.",
@@ -1108,6 +1125,7 @@ return {
         },
 		
 		LAVAE = "Foul beast! Know your place!",
+		LAVAE_COCOON = "It's no threat in this state.",
 		LAVAE_PET = 
 		{
 			STARVING = "I think it's going to die!",
@@ -1155,6 +1173,10 @@ return {
 		{
 			BURNT = "That was uncalled for.",
 			GENERIC = "Purely decorative.",
+			EMPTY = "An empty vessel awaiting decoration or light.",
+			WILTED = "Every lovely flower must one day wilt.",
+			FRESHLIGHT = "A temporary reprieve from the shadow.",
+			OLDLIGHT = "I believe it is Wilson's turn to fetch bulbs.",
 		},
 		ACORN = "A more outdoorsy type might be able to make something of this.",
         ACORN_SAPLING = "Huh, it seems to belong in the ground.",
@@ -1337,6 +1359,9 @@ return {
 		MANDRAKE_COOKED = "Looks like I got the last meep.",
 		MAPSCROLL = "There's nothing to be gleaned from this.",
 		MARBLE = "It's strong stuff.",
+		MARBLEBEAN = "Let me guess, it grows a marble stalk?",
+		MARBLEBEAN_SAPLING = "Stone cold growth.",
+        MARBLESHRUB = "I've found a shrubbery.",
 		MARBLEPILLAR = "I've always wondered who built those.",
 		MARBLETREE = "How whimsical.",
 		MARSH_BUSH =
@@ -1500,6 +1525,8 @@ return {
         ROOK = "A castle for my home.",
 		ROPE = "You'd think this would have more uses.",
 		ROTTENEGG = "Disgusting. Why keep this around?",
+		ROYAL_JELLY = "Unsettlingly wobbly.",
+		JELLYBEAN = "I think there's seventeen in there.",
         SADDLE_BASIC = "But that means I'd have to touch the smelly thing.",
         SADDLE_WAR = "At least it affords some dignity to the rider.",
         SADDLE_RACE = "But is it fast enough to escape the judgmental stares?",
@@ -1784,6 +1811,10 @@ return {
 		WALL_RUINS_ITEM = "Pocket-sized wall pieces. Yup.",
 		WALL_MOONROCK = "I like to build walls between myself and the world.",
 		WALL_MOONROCK_ITEM = "Where should I put this?",
+		FENCE = "My life is one obstacle after another.",
+        FENCE_ITEM = "A fence for your pocket.",
+        FENCE_GATE = "When one gate closes...",
+        FENCE_GATE_ITEM = "A gate for your pocket.",
 		WALRUS = "Don't you recognize me?",
 		WALRUSHAT = "Made in Scotland.",
 		WALRUS_CAMP =
