@@ -173,7 +173,7 @@ local function SoftReset(inst)
 
     ResetLavae(inst)
     inst.playercombat = false
-    inst.components.freezable:UnFreeze()
+    inst.components.freezable:Unfreeze()
     inst.components.freezable:SetExtraResist(0)
     inst.components.sleeper:WakeUp()
     inst.components.sleeper:SetExtraResist(0)

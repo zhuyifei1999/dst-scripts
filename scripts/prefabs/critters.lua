@@ -81,15 +81,10 @@ end
 -------------------------------------------------------------------------------
 
 local function MakeCritter(name, animdata, face, diet, flying)
-    local assets =
-        animdata == "glomling" and
-        {
-            Asset("ANIM", "anim/glomling_basic.zip"),
-            Asset("ANIM", "anim/glomling_emotes.zip"),
-        } or
-        {
-            Asset("ANIM", "anim/"..animdata..".zip"),
-        }
+    local assets = {}
+    for _,v in pairs(animdata.assets) do
+        table.insert(assets, Asset("ANIM", "anim/"..v..".zip"))
+    end
 
     local function fn()
         local inst = CreateEntity()
@@ -112,8 +107,8 @@ local function MakeCritter(name, animdata, face, diet, flying)
 	        inst.Transform:SetEightFaced()
 		end
 		
-        inst.AnimState:SetBank(animdata)
-        inst.AnimState:SetBuild(animdata == "glomling" and "glomling_emotes" or animdata)
+        inst.AnimState:SetBank(animdata.bank)
+        inst.AnimState:SetBuild(animdata.build)
         inst.AnimState:PlayAnimation("idle_loop")
 
         if flying then
@@ -225,13 +220,13 @@ end
 
 local standard_diet = { FOODGROUP.OMNI }
 
-return MakeCritter("critter_lamb", "sheepington", 6, standard_diet, false),
+return MakeCritter("critter_lamb", {bank="sheepington", build="sheepington", assets={"sheepington"}}, 6, standard_diet, false),
        MakeBuilder("critter_lamb"),
-       MakeCritter("critter_puppy", "pupington", 4, standard_diet, false),
+       MakeCritter("critter_puppy", {bank="pupington", build="pupington", assets={"pupington"}}, 4, standard_diet, false),
        MakeBuilder("critter_puppy"),
-       MakeCritter("critter_kitten", "kittington", 6, standard_diet, false),
+       MakeCritter("critter_kitten", {bank="kittington", build="kittington", assets={"kittington"}}, 6, standard_diet, false),
        MakeBuilder("critter_kitten"),
-       MakeCritter("critter_dragonling", "dragonling", 6, standard_diet, true),
+       MakeCritter("critter_dragonling", {bank="dragonling", build="dragonling_build", assets={"dragonling_build", "dragonling_basic", "dragonling_emotes"}}, 6, standard_diet, true),
        MakeBuilder("critter_dragonling"),
-       MakeCritter("critter_glomling", "glomling", 6, standard_diet, true),
+       MakeCritter("critter_glomling", {bank="glomling", build="glomling_build", assets={"glomling_build", "glomling_basic", "glomling_emotes"}}, 6, standard_diet, true),
        MakeBuilder("critter_glomling")

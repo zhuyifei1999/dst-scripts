@@ -177,6 +177,7 @@ local function makefn(name, asset, animated, smashsound, rubble)
         inst:AddComponent("health")
         inst.components.health.nofadeout = true
         inst.components.health.canmurder = false
+        inst.components.health.canheal = false
         inst.components.health:SetMaxHealth(GetRandomWithVariance(90, 20))
         inst.components.health.ondelta = OnHealthDelta
 

@@ -227,6 +227,7 @@ local function MakeWall(name, animdata, isdoor)
         inst.components.health:SetAbsorptionAmount(1)
         inst.components.health:SetAbsorptionAmountFromPlayer(1)
 		inst.components.health.fire_damage_scale = 0
+        inst.components.health.canheal = false
 
         MakeMediumBurnable(inst)
         MakeMediumPropagator(inst)

@@ -250,12 +250,19 @@ local function FindMushroomSproutAngles(inst)
 end
 
 local function SproutLaunch(inst, launcher, basespeed)
-    local hp = inst:GetPosition()
-    local pt = launcher:GetPosition()
-    local vel = (hp - pt):GetNormalized()
+    local x0, y0, z0 = launcher.Transform:GetWorldPosition()
+    local x1, y1, z1 = inst.Transform:GetWorldPosition()
+    local dx, dz = x1 - x0, z1 - z0
+    local dsq = dx * dx + dz * dz
+    local angle
+    if dsq > 0 then
+        local dist = math.sqrt(dsq)
+        angle = math.atan2(dz / dist, dx / dist) + (math.random() * 20 - 10) * DEGREES
+    else
+        angle = 2 * PI * math.random()
+    end
     local speed = basespeed + math.random()
-    local angle = math.atan2(vel.z, vel.x) + (math.random() * 20 - 10) * DEGREES
-    inst.Physics:Teleport(hp.x, .1, hp.z)
+    inst.Physics:Teleport(x1, .1, z1)
     inst.Physics:SetVel(math.cos(angle) * speed, speed * 4 + math.random() * 2, math.sin(angle) * speed)
 end
 
@@ -282,21 +289,30 @@ local function DoMushroomSprout(inst, angles)
             pt.x = pt.x + offset.x
             pt.z = pt.z + offset.z
             if map:IsPassableAtPoint(pt:Get()) and
-                #TheSim:FindEntities(pt.x, 0, pt.z, min_spacing, nil, { "_inventoryitem", "playerskeleton", "NOBLOCK", "FX", "INLIMBO", "DECOR" }) <= 0 then
-                --destroy skeletons
-                local toremove = TheSim:FindEntities(pt.x, 0, pt.z, 1.2, { "playerskeleton", "HAMMER_workable" })
-                for i, v in ipairs(toremove) do
+                #TheSim:FindEntities(pt.x, 0, pt.z, min_spacing, nil, { "_inventoryitem", "playerskeleton", "flower", "DIG_workable", "NOBLOCK", "FX", "INLIMBO", "DECOR" }) <= 0 then
+                --destroy skeletons and diggables
+                for i, v in ipairs(TheSim:FindEntities(pt.x, 0, pt.z, 1.2, nil, nil, { "playerskeleton", "DIG_workable" })) do
                     v.components.workable:Destroy(inst)
                 end
 
-                toremove = TheSim:FindEntities(pt.x, 0, pt.z, 1, { "_inventoryitem" }, { "locomotor", "INLIMBO" })
+                local totoss = TheSim:FindEntities(pt.x, 0, pt.z, 1, { "_inventoryitem" }, { "locomotor", "INLIMBO" })
+
+                --toss flowers out of the way
+                for i, v in ipairs(TheSim:FindEntities(pt.x, 0, pt.z, 1, { "flower", "pickable" })) do
+                    local loot = v.components.pickable.product ~= nil and SpawnPrefab(v.components.pickable.product) or nil
+                    if loot ~= nil then
+                        loot.Transform:SetPosition(v.Transform:GetWorldPosition())
+                        table.insert(totoss, loot)
+                    end
+                    v:Remove()
+                end
 
                 local ent = SpawnPrefab("mushroomsprout")
                 ent.Transform:SetPosition(pt:Get())
                 ent:PushEvent("linktoadstool", inst)
 
                 --toss stuff out of the way
-                for i, v in ipairs(toremove) do
+                for i, v in ipairs(totoss) do
                     if v:IsValid() and not v.components.inventoryitem.nobounce and v.Physics ~= nil then
                         SproutLaunch(v, ent, 1.5)
                     end

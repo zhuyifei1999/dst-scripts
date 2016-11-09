@@ -178,7 +178,7 @@ local function OnWorked(inst, worker, workleft)
         inst.components.workable:SetWorkLeft(1)
     end
 
-    inst.SoundEmitter:PlaySound("dontstarve/bee/beehive_hit")
+    inst.SoundEmitter:PlaySound("dontstarve/creatures/together/bee_queen/hive_hit")
     inst.AnimState:PlayAnimation("large_hit")
     SpawnPrefab("honey_splash").Transform:SetPosition(inst.Transform:GetWorldPosition())
 
@@ -266,13 +266,13 @@ local function OnHiveShortGrowAnimOver(inst)
         inst.Physics:SetCapsule(PHYS_RAD_MED, 2)
         PushPhysRad(inst, 2)
         inst.AnimState:PlayAnimation("grow_small_to_medium")
-        inst.SoundEmitter:PlaySound("dontstarve/common/mushroom_up")
+        inst.SoundEmitter:PlaySound("dontstarve/creatures/together/bee_queen/hive_grow")
         return
     elseif inst.AnimState:IsCurrentAnimation("grow_small_to_medium") then
         inst.Physics:SetCapsule(PHYS_RAD_LRG, 2)
         PushPhysRad(inst, 3)
         inst.AnimState:PlayAnimation("grow_medium_to_large")
-        inst.SoundEmitter:PlaySound("dontstarve/common/mushroom_up")
+        inst.SoundEmitter:PlaySound("dontstarve/creatures/together/bee_queen/hive_grow")
         return
     elseif inst.AnimState:IsCurrentAnimation("grow_medium_to_large") then
         inst.AnimState:PlayAnimation("large")
@@ -286,14 +286,14 @@ local function OnHiveLongGrowAnimOver(inst)
         inst.Physics:SetCapsule(PHYS_RAD_MED, 2)
         PushPhysRad(inst, 2)
         inst.AnimState:PlayAnimation("grow_small_to_medium")
-        inst.SoundEmitter:PlaySound("dontstarve/common/mushroom_up")
+        inst.SoundEmitter:PlaySound("dontstarve/creatures/together/bee_queen/hive_grow")
         SetHoneyLevel(inst, 2, 4 * FRAMES)
         return
     elseif inst.AnimState:IsCurrentAnimation("grow_small_to_medium") then
         inst.Physics:SetCapsule(PHYS_RAD_LRG, 2)
         PushPhysRad(inst, 3)
         inst.AnimState:PlayAnimation("grow_medium_to_large")
-        inst.SoundEmitter:PlaySound("dontstarve/common/mushroom_up")
+        inst.SoundEmitter:PlaySound("dontstarve/creatures/together/bee_queen/hive_grow")
         SetHoneyLevel(inst, 3, 7 * FRAMES)
         return
     elseif inst.AnimState:IsCurrentAnimation("grow_medium_to_large") then
@@ -339,7 +339,7 @@ local function OnHiveGrowthTimer(inst, data)
                 hive:ListenForEvent("animover", OnHiveLongGrowAnimOver)
                 SetHoneyLevel(hive, 1)
             end
-            hive.SoundEmitter:PlaySound("dontstarve/common/mushroom_up")
+            hive.SoundEmitter:PlaySound("dontstarve/creatures/together/bee_queen/hive_grow")
             hive.components.workable:SetWorkable(false)
         end
 
@@ -352,7 +352,7 @@ local function OnHiveGrowthTimer(inst, data)
         else
             inst.AnimState:PlayAnimation("grow_hole_to_small")
             inst.AnimState:PushAnimation("small", false)
-            inst.SoundEmitter:PlaySound("dontstarve/common/mushroom_up")
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/together/bee_queen/hive_grow")
         end
         inst.AnimState:SetLayer(LAYER_WORLD)
         inst.AnimState:SetSortOrder(0)
@@ -366,7 +366,7 @@ local function OnHiveGrowthTimer(inst, data)
             inst.AnimState:PlayAnimation("grow_small_to_medium")
             inst.AnimState:PushAnimation("medium", false)
             SetHoneyLevel(inst, 2, 4 * FRAMES)
-            inst.SoundEmitter:PlaySound("dontstarve/common/mushroom_up")
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/together/bee_queen/hive_grow")
         end
         inst.AnimState:SetLayer(LAYER_WORLD)
         inst.AnimState:SetSortOrder(0)
