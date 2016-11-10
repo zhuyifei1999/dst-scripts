@@ -4,9 +4,10 @@ local assets =
 }
 
 local function OnUpdate(inst, x, y, z, rad)
-    local ents = TheSim:FindEntities(x, y, z, rad, { "locomotor" }, { "flying", "playerghost", "INLIMBO" })
-    for i, v in ipairs(ents) do
-        v.components.locomotor:PushTempGroundSpeedMultiplier(TUNING.BEEQUEEN_HONEYTRAIL_SPEED_PENALTY)
+    for i, v in ipairs(TheSim:FindEntities(x, y, z, rad, { "locomotor" }, { "flying", "playerghost", "INLIMBO" })) do
+        if v.components.locomotor ~= nil then
+            v.components.locomotor:PushTempGroundSpeedMultiplier(TUNING.BEEQUEEN_HONEYTRAIL_SPEED_PENALTY)
+        end
     end
 end
 
