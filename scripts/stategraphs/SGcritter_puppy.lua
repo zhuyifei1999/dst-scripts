@@ -41,7 +41,7 @@ local emotes =
 
 SGCritterStates.AddIdle(states, #emotes,
 	{
-        TimeEvent(7*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/pupington/pant") end),
+        --TimeEvent(7*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/pupington/pant") end),
 	})
 SGCritterStates.AddEmotes(states, emotes)
 SGCritterStates.AddEat(states, nil)
@@ -59,11 +59,14 @@ SGCritterStates.AddNuzzle(states, actionhandlers,
         
 CommonStates.AddWalkStates(states,
 	{
+		starttimeline = 
+		{
+	        TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/pupington/bark") end),
+		},
 		walktimeline =
 		{
 			TimeEvent(1*FRAMES, function(inst) PlayFootstep(inst, 0.25) end),
 			TimeEvent(4*FRAMES, function(inst) PlayFootstep(inst, 0.25) end),
-	        TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/pupington/bark") end),
 		},
 	}, nil, true)
 
@@ -72,6 +75,10 @@ CommonStates.AddSleepStates(states,
 			starttimeline = 
 			{
 				TimeEvent(6*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/pupington/growl") end),
+			},
+			sleeptimeline = 
+			{
+				TimeEvent(14*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/pupington/sleep") end),
 			},
 		})
 

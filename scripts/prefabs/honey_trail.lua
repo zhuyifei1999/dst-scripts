@@ -6,7 +6,7 @@ local assets =
 local function OnUpdate(inst, x, y, z, rad)
     for i, v in ipairs(TheSim:FindEntities(x, y, z, rad, { "locomotor" }, { "flying", "playerghost", "INLIMBO" })) do
         if v.components.locomotor ~= nil then
-            v.components.locomotor:PushTempGroundSpeedMultiplier(TUNING.BEEQUEEN_HONEYTRAIL_SPEED_PENALTY)
+            v.components.locomotor:PushTempGroundSpeedMultiplier(TUNING.BEEQUEEN_HONEYTRAIL_SPEED_PENALTY, GROUND.MUD)
         end
     end
 end
@@ -48,6 +48,7 @@ local function SetVariation(inst, rand, scale, duration)
 
         inst.trailname = "trail"..tostring(rand)
         inst.duration = duration
+        inst.SoundEmitter:PlaySound("dontstarve/creatures/together/bee_queen/honey_drip")
         inst.AnimState:PlayAnimation(inst.trailname.."_pre")
         inst:ListenForEvent("animover", OnAnimOver)
 
@@ -60,6 +61,7 @@ local function fn()
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
     inst:AddTag("FX")

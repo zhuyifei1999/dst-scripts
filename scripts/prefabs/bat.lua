@@ -141,9 +141,8 @@ local function fn()
     end
 
     inst:AddComponent("locomotor")
-    inst.components.locomotor:SetSlowMultiplier( 1 )
+    inst.components.locomotor:EnableGroundSpeedMultiplier(false)
     inst.components.locomotor:SetTriggersCreep(false)
-    inst.components.locomotor.pathcaps = { ignorecreep = true }
     inst.components.locomotor.walkspeed = TUNING.BAT_WALK_SPEED
 
     inst:SetStateGraph("SGbat")

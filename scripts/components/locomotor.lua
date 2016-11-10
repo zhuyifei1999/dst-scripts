@@ -172,6 +172,7 @@ local LocoMotor = Class(function(self, inst)
     self.enablegroundspeedmultiplier = true
     --self.tempgroundspeedmultiplier = nil
     --self.tempgroundspeedmulttime = nil
+    --self.tempgroundtile = nil
     self.isrunning = false
 
     self._externalspeedmultipliers = {}
@@ -305,6 +306,7 @@ function LocoMotor:EnableGroundSpeedMultiplier(enable)
         self.groundspeedmultiplier = 1
         self.tempgroundspeedmultiplier = nil
         self.tempgroundspeedmulttime = nil
+        self.tempgroundtile = nil
     end
 end
 
@@ -338,13 +340,14 @@ function LocoMotor:UpdateGroundSpeedMultiplier()
     end
 end
 
-function LocoMotor:PushTempGroundSpeedMultiplier(mult)
+function LocoMotor:PushTempGroundSpeedMultiplier(mult, tile)
     if self.enablegroundspeedmultiplier then
         local t = GetTime()
         if self.tempgroundspeedmultiplier == nil or
             t > self.tempgroundspeedmulttime or
-            mult < self.tempgroundspeedmultiplier then
+            mult <= self.tempgroundspeedmultiplier then
             self.tempgroundspeedmultiplier = mult
+            self.tempgroundtile = tile
         end
         self.tempgroundspeedmulttime = t
     end
@@ -357,6 +360,18 @@ function LocoMotor:TempGroundSpeedMultiplier()
         end
         self.tempgroundspeedmultiplier = nil
         self.tempgroundspeedmulttime = nil
+        self.tempgroundtile = nil
+    end
+end
+
+function LocoMotor:TempGroundTile()
+    if self.tempgroundtile ~= nil then
+        if self.tempgroundspeedmulttime + .034 > GetTime() then
+            return self.tempgroundtile
+        end
+        self.tempgroundspeedmultiplier = nil
+        self.tempgroundspeedmulttime = nil
+        self.tempgroundtile = nil
     end
 end
 

@@ -126,38 +126,51 @@ local function ShouldDodge(self)
         local maxrangesq = TUNING.BEEQUEEN_DEAGGRO_DIST * TUNING.BEEQUEEN_DEAGGRO_DIST
         local mindanger = math.huge
         local bestdest = Vector3()
+        local tests = {}
+        for i = 2, 6 do
+            table.insert(tests, { rsq = i * i })
+        end
         for i = 10, 20, 5 do
             local r = i + math.random() * 5
-            local offset = FindWalkableOffset(pos, math.random() * 360, r, 12, true, true)
-            if offset ~= nil then
-                local x, z = offset.x + pos.x, offset.z + pos.z
-                local nx, nz = offset.x / r, offset.z / r
-                local x1, z1 = nx * 2 + pos.x, nz * 2 + pos.z
-                local x2, z2 = nx * 4 + pos.x, nz * 4 + pos.z
-                if distsq(homepos.x, homepos.z, x, z) < maxrangesq then
-                    local danger = 0
-                    for i, v in ipairs(AllPlayers) do
-                        if not v:HasTag("playerghost") and v.entity:IsVisible() then
-                            local vx, vy, vz = v.Transform:GetWorldPosition()
-                            if distsq(vx, vz, x, z) < dangerrangesq then
-                                danger = danger + 1
-                            end
-                            if distsq(vx, vz, x1, z1) < 9 then
-                                danger = danger + 1
-                            end
-                            if distsq(vx, vz, x2, z2) < 9 then
-                                danger = danger + 1
+            local theta = 2 * PI * math.random()
+            local dtheta = PI * .25
+            for attempt = 1, 8 do
+                local offset = FindWalkableOffset(pos, theta, r, 1, true, true)
+                if offset ~= nil then
+                    local x, z = offset.x + pos.x, offset.z + pos.z
+                    if distsq(homepos.x, homepos.z, x, z) < maxrangesq then
+                        local nx, nz = offset.x / r, offset.z / r
+                        for j, test in ipairs(tests) do
+                            test.x = nx * (j - .5) + pos.x
+                            test.z = nz * (j - .5) + pos.z
+                        end
+                        local danger = 0
+                        for _, v in ipairs(AllPlayers) do
+                            if not v:HasTag("playerghost") and v.entity:IsVisible() then
+                                local vx, vy, vz = v.Transform:GetWorldPosition()
+                                if distsq(vx, vz, x, z) < dangerrangesq then
+                                    danger = danger + 1
+                                end
+                                for j, test in ipairs(tests) do
+                                    if distsq(vx, vz, test.x, test.z) < test.rsq then
+                                        danger = danger + 1
+                                    end
+                                end
                             end
                         end
-                    end
-                    if danger < mindanger then
-                        mindanger = danger
-                        bestdest.x, bestdest.z = x, z
-                        if danger <= 0 then
-                            break
+                        if danger < mindanger then
+                            mindanger = danger
+                            bestdest.x, bestdest.z = x, z
+                            if danger <= 0 then
+                                break
+                            end
                         end
                     end
                 end
+                theta = theta + dtheta
+            end
+            if mindanger <= 0 then
+                break
             end
         end
         if mindanger < math.huge then
@@ -165,7 +178,7 @@ local function ShouldDodge(self)
             self._dodgetime = nil
             self.inst.components.locomotor.walkspeed = TUNING.BEEQUEEN_DODGE_SPEED
             self.inst.hit_recovery = TUNING.BEEQUEEN_DODGE_HIT_RECOVERY
-            self.inst.sg.mem.last_hit_time = nil
+            self.inst.sg.mem.last_hit_time = GetTime()
             return true
         end
         --Reset dodge timer to retry in half the time

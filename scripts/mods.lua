@@ -10,6 +10,7 @@ MOD_API_VERSION = 10
 AddModReleaseID( "R01_ANR_PART1" )
 AddModReleaseID( "R02_ANR_WARTSANDALL" )
 AddModReleaseID( "R03_ANR_ARTSANDCRAFTS" )
+AddModReleaseID( "R04_ANR_CUTEFUZZYANIMALS" )
 
 -----------------------------------------------------------------------------------------------
 

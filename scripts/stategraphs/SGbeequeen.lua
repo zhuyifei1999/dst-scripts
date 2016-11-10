@@ -547,9 +547,9 @@ local states =
                             table.insert(players, k)
                         end
                     end
-                    local numtargets = math.max(1, math.floor(#soldiers / TUNING.BEEGUARD_SQUAD_SIZE))
+                    local maxtargets = math.max(1, math.floor(#soldiers / TUNING.BEEGUARD_SQUAD_SIZE))
                     local targets = {}
-                    for i = 1, numtargets do
+                    for i = 1, maxtargets do
                         if #players > 0 then
                             table.insert(targets, table.remove(players, math.random(#players)))
                         else
@@ -557,6 +557,17 @@ local states =
                                 table.insert(targets, inst.components.combat.target)
                             end
                             break
+                        end
+                    end
+                    if #targets < maxtargets then
+                        local x, y, z = inst.Transform:GetWorldPosition()
+                        for i, v in ipairs(TheSim:FindEntities(x, y, z, TUNING.BEEQUEEN_FOCUSTARGET_RANGE, { "_combat", "_health" }, { "INLIMBO", "player", "bee" })) do
+                            if v.components.combat.target == inst and not v.components.health:IsDead() then
+                                table.insert(targets, v)
+                                if #targets >= maxtargets then
+                                    break
+                                end
+                            end
                         end
                     end
                     if #targets > 1 then
