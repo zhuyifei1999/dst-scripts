@@ -233,6 +233,7 @@ PREFABFILES = {
   "heatrock",
   "homesign",
   "honey",
+  "honey_trail",
   "honeycomb",
   "horn",
   "hound",

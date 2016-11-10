@@ -57,7 +57,7 @@ end
 local function TryFocusTarget(inst)
     return inst.focustarget_cd > 0
         and inst.components.combat:HasTarget()
-        and inst.components.commander:GetNumSoldiers() > 0
+        and inst.components.commander:GetNumSoldiers() >= TUNING.BEEQUEEN_MIN_GUARDS_PER_SPAWN
         and not inst.components.timer:TimerExists("focustarget_cd")
         and "focustarget"
         or nil
@@ -91,6 +91,22 @@ local function ShouldChase(self)
     return distsq <= range * range
 end
 
+local function CalcDodgeMult(self)
+    local x, y, z = self.inst.Transform:GetWorldPosition()
+    local rangesq = TUNING.BEEQUEEN_ATTACK_RANGE + PHYS_RAD
+    rangesq = rangesq * rangesq
+    local found = false
+    for k, v in pairs(self.inst.components.grouptargeter:GetTargets()) do
+        if k:GetDistanceSqToPoint(x, y, z) < rangesq then
+            if found then
+                return .5
+            end
+            found = true
+        end
+    end
+    return 1
+end
+
 local function ShouldDodge(self)
     if self._dodgedest ~= nil then
         return true
@@ -102,7 +118,7 @@ local function ShouldDodge(self)
     elseif self._dodgetime == nil then
         --Start dodge timer
         self._dodgetime = t
-    elseif self._dodgetime + DODGE_DELAY < t then
+    elseif self._dodgetime + DODGE_DELAY * CalcDodgeMult(self) < t then
         --Find new dodge destination
         local homepos = GetHomePos(self.inst)
         local pos = self.inst:GetPosition()
@@ -149,6 +165,7 @@ local function ShouldDodge(self)
             self._dodgetime = nil
             self.inst.components.locomotor.walkspeed = TUNING.BEEQUEEN_DODGE_SPEED
             self.inst.hit_recovery = TUNING.BEEQUEEN_DODGE_HIT_RECOVERY
+            self.inst.sg.mem.last_hit_time = nil
             return true
         end
         --Reset dodge timer to retry in half the time

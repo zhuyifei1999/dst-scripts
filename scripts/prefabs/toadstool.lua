@@ -709,6 +709,7 @@ local function fn()
     inst.AnimState:SetLightOverride(.3)
 
     inst:AddTag("epic")
+    inst:AddTag("noepicmusic")
     inst:AddTag("monster")
     inst:AddTag("hostile")
     inst:AddTag("scarytoprey")

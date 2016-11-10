@@ -100,6 +100,7 @@ local function OnAttacked(parent, data)
         data.attacker ~= nil and
         not (data.attacker:HasTag("shadow") or
             data.attacker:HasTag("shadowchesspiece") or
+            data.attacker:HasTag("noepicmusic") or
             data.attacker:HasTag("thorny") or
             data.attacker:HasTag("smolder"))
     )

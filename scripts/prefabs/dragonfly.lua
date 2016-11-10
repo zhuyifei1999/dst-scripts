@@ -69,6 +69,41 @@ SetSharedLootTable('dragonfly',
     {'greengem',         0.50},
 })
 
+--------------------------------------------------------------------------
+
+local function PushMusic(inst)
+    if ThePlayer == nil or inst:HasTag("flight") then
+        inst._playingmusic = false
+    elseif ThePlayer:IsNear(inst, inst._playingmusic and 45 or 20) then
+        inst._playingmusic = true
+        ThePlayer:PushEvent("triggeredevent", { name = "dragonfly" })
+    elseif inst._playingmusic and not ThePlayer:IsNear(inst, 50) then
+        inst._playingmusic = false
+    end
+end
+
+local function OnIsEngagedDirty(inst)
+    if not inst._isengaged:value() then
+        if inst._musictask ~= nil then
+            inst._musictask:Cancel()
+            inst._musictask = nil
+        end
+        inst._playingmusic = false
+    elseif inst._musictask == nil then
+        inst._musictask = inst:DoPeriodicTask(1, PushMusic)
+        PushMusic(inst)
+    end
+end
+
+local function SetEngaged(inst, engaged)
+    if inst._isengaged:value() ~= engaged then
+        inst._isengaged:set(engaged)
+        OnIsEngagedDirty(inst)
+    end
+end
+
+--------------------------------------------------------------------------
+
 local function TransformNormal(inst)
     inst.AnimState:SetBuild("dragonfly_build")
     inst.enraged = false
@@ -172,7 +207,7 @@ local function SoftReset(inst)
     print(string.format("Dragonfly - Execute soft reset @ %2.2f", GetTime()))
 
     ResetLavae(inst)
-    inst.playercombat = false
+    SetEngaged(inst, false)
     inst.components.freezable:Unfreeze()
     inst.components.freezable:SetExtraResist(0)
     inst.components.sleeper:WakeUp()
@@ -232,6 +267,9 @@ local function OnNewTarget(inst, data)
     end
     if data.target ~= nil  then
         inst:ListenForEvent("death", inst._ontargetdeath, data.target)
+        if data.target:HasTag("player") then
+            SetEngaged(inst, true)
+        end
     end
 end
 
@@ -239,20 +277,19 @@ local function RetargetFn(inst)
     UpdatePlayerTargets(inst)
 
     if IsFightingPlayers(inst) then
-        inst.playercombat = true
         return inst.components.grouptargeter:TryGetNewTarget(), true
-    else
-        --Also needs to deal with other creatures in the world
-        return FindEntity(
-            inst,
-            TUNING.DRAGONFLY_AGGRO_DIST,
-            function(guy)
-                return inst.components.combat:CanTarget(guy)
-            end,
-            { "_combat" }, --see entityreplica.lua
-            { "INLIMBO", "prey", "smallcreature", "lavae" }
-        )
     end
+
+    --Also needs to deal with other creatures in the world
+    return FindEntity(
+        inst,
+        TUNING.DRAGONFLY_AGGRO_DIST,
+        function(guy)
+            return inst.components.combat:CanTarget(guy)
+        end,
+        { "_combat" }, --see entityreplica.lua
+        { "INLIMBO", "prey", "smallcreature", "lavae" }
+    )
 end
 
 local function GetLavaePos(inst)
@@ -307,12 +344,13 @@ end
 
 local function OnSave(inst, data)
     --Check if the dragonfly is in combat with players so we can reset.
-    data.playercombat = inst.playercombat or nil
+    data.playercombat = inst._isengaged:value() or nil
 end
 
 local function OnLoad(inst, data)
     --If the dragonfly was in combat when the game saved then we're going to reset the fight.
     if data.playercombat then
+        SetEngaged(inst, true)
         inst:DoTaskInTime(1, Reset)
     end
 end
@@ -370,6 +408,7 @@ local function fn()
     inst.AnimState:PlayAnimation("idle", true)
 
     inst:AddTag("epic")
+    inst:AddTag("noepicmusic")
     inst:AddTag("monster")
     inst:AddTag("hostile")
     inst:AddTag("dragonfly")
@@ -385,9 +424,15 @@ local function fn()
 
     inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/fly", "flying")
 
+    inst._isengaged = net_bool(inst.GUID, "dragonfly._engaged", "isengageddirty")
+    inst._playingmusic = false
+    inst._musictask = nil
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+        inst:ListenForEvent("isengageddirty", OnIsEngagedDirty)
+
         return inst
     end
 

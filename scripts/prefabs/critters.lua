@@ -224,7 +224,7 @@ return MakeCritter("critter_lamb", {bank="sheepington", build="sheepington", ass
        MakeBuilder("critter_lamb"),
        MakeCritter("critter_puppy", {bank="pupington", build="pupington", assets={"pupington"}}, 4, standard_diet, false),
        MakeBuilder("critter_puppy"),
-       MakeCritter("critter_kitten", {bank="kittington", build="kittington", assets={"kittington"}}, 6, standard_diet, false),
+       MakeCritter("critter_kitten", {bank="kittington", build="kittington_build", assets={"kittington_build", "kittington_basic", "kittington_emotes"}}, 6, standard_diet, false),
        MakeBuilder("critter_kitten"),
        MakeCritter("critter_dragonling", {bank="dragonling", build="dragonling_build", assets={"dragonling_build", "dragonling_basic", "dragonling_emotes"}}, 6, standard_diet, true),
        MakeBuilder("critter_dragonling"),

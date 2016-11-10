@@ -274,6 +274,7 @@ local states =
             inst.AnimState:PlayAnimation("walk_pre")
             inst.AnimState:PushAnimation("walk_loop")
             inst.DynamicShadow:Enable(false)
+            inst:StopHoney()
             inst.sg.statemem.vel = Vector3(math.random() * 4, 7 + math.random() * 2, 0)
         end,
 
@@ -294,6 +295,8 @@ local states =
         onexit = function(inst)
             --Should NOT happen!
             inst.components.health:SetInvincible(false)
+            inst.DynamicShadow:Enable(true)
+            inst:StartHoney()
         end,
     },
 
@@ -346,6 +349,7 @@ local states =
             inst.AnimState:PlayAnimation("death")
             inst:AddTag("NOCLICK")
             inst.SoundEmitter:KillSound("flying")
+            inst:StopHoney()
         end,
 
         timeline =
@@ -370,6 +374,7 @@ local states =
             --Should NOT happen!
             inst:RemoveTag("NOCLICK")
             inst.SoundEmitter:PlaySound("dontstarve/creatures/together/bee_queen/wings_LP", "flying")
+            inst:StartHoney()
         end,
     },
 
@@ -726,6 +731,7 @@ local states =
 local function CleanupIfSleepInterrupted(inst)
     if not inst.sg.statemem.continuesleeping then
         RestoreFlapping(inst)
+        inst:StartHoney()
     end
 end
 CommonStates.AddSleepExStates(states,
@@ -738,6 +744,7 @@ CommonStates.AddSleepExStates(states,
         end),
         TimeEvent(31 * FRAMES, function(inst)
             inst.SoundEmitter:PlaySound("dontstarve/bee/beehive_hit")
+            inst:StopHoney()
             ShakeIfClose(inst)
         end),
     },
@@ -762,14 +769,20 @@ CommonStates.AddSleepExStates(states,
     end,
     onwake = function(inst)
         StopFlapping(inst)
+        inst:StartHoney()
         inst.sg.mem.wantstoscreech = true
     end,
 })
 
+local function OnOverrideFrozenSymbols(inst)
+    StopFlapping(inst)
+    inst:StopHoney()
+end
 local function OnClearFrozenSymbols(inst)
     StartFlapping(inst)
+    inst:StartHoney()
     inst.sg.mem.wantstoscreech = true
 end
-CommonStates.AddFrozenStates(states, StopFlapping, OnClearFrozenSymbols)
+CommonStates.AddFrozenStates(states, OnOverrideFrozenSymbols, OnClearFrozenSymbols)
 
 return StateGraph("SGbeequeen", states, events, "idle")

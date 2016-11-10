@@ -47,7 +47,12 @@ local TRIGGERED_DANGER_MUSIC =
 
     beequeen =
     {
-        "dontstarve/music/music_epicfight_beequeen",
+        "dontstarve/music/music_epicfight_3",
+    },
+
+    dragonfly =
+    {
+        "dontstarve/music/music_epicfight_4",
     },
 
     shadowchess =
@@ -154,8 +159,9 @@ local function StartDanger(player)
         _extendtime = GetTime() + 10
     elseif _isenabled then
         StopBusy()
+        local x, y, z = player.Transform:GetWorldPosition()
         _soundemitter:PlaySound(
-            GetClosestInstWithTag("epic", player, 30) ~= nil
+            #TheSim:FindEntities(x, y, z, 30, { "epic" }, { "noepicmusic" }) > 0
             and ((_isruin and "dontstarve/music/music_epicfight_ruins") or
                 (_iscave and "dontstarve/music/music_epicfight_cave") or
                 (SEASON_EPICFIGHT_MUSIC[inst.state.season]))
@@ -193,6 +199,7 @@ local function CheckAction(player)
                 target:HasTag("butterfly") or
                 target:HasTag("shadow") or
                 target:HasTag("shadowchesspiece") or
+                target:HasTag("noepicmusic") or
                 target:HasTag("thorny") or
                 target:HasTag("smashable") or
                 target:HasTag("wall") or
@@ -224,6 +231,7 @@ local function OnAttacked(player, data)
         (data.attacker ~= nil and
         not (data.attacker:HasTag("shadow") or
             data.attacker:HasTag("shadowchesspiece") or
+            data.attacker:HasTag("noepicmusic") or
             data.attacker:HasTag("thorny") or
             data.attacker:HasTag("smolder")))) then
 

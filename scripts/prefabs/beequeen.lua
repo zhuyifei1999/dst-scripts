@@ -8,6 +8,7 @@ local assets =
 local prefabs =
 {
     "beeguard",
+    "honey_trail",
     "royal_jelly",
     "honeycomb",
     "honey",
@@ -33,10 +34,86 @@ SetSharedLootTable( 'beequeen',
 --------------------------------------------------------------------------
 
 local brain = require("brains/beequeenbrain")
+local PHYS_RAD = 1.4
 
 --------------------------------------------------------------------------
 
-local PHYS_RAD = 1.4
+local MAX_HONEY_VARIATIONS = 7
+local MAX_RECENT_HONEY = 4
+local HONEY_PERIOD = .2
+local HONEY_LEVELS =
+{
+    {
+        min_scale = .5,
+        max_scale = .8,
+        threshold = 8,
+        duration = 1.5,
+    },
+    {
+        min_scale = .5,
+        max_scale = 1.1,
+        threshold = 2,
+        duration = 2,
+    },
+    {
+        min_scale = 1,
+        max_scale = 1.3,
+        threshold = 1,
+        duration = 4,
+    },
+}
+
+local function PickHoney(inst)
+    local rand = table.remove(inst.availablehoney, math.random(#inst.availablehoney))
+    table.insert(inst.usedhoney, rand)
+    if #inst.usedhoney > MAX_RECENT_HONEY then
+        table.insert(inst.availablehoney, table.remove(inst.usedhoney, 1))
+    end
+    return rand
+end
+
+local function DoHoneyTrail(inst)
+    local level = HONEY_LEVELS[
+        (not inst.sg:HasStateTag("moving") and 1) or
+        (inst.components.locomotor.walkspeed <= TUNING.BEEQUEEN_SPEED and 2) or
+        3
+    ]
+
+    inst.honeycount = inst.honeycount + 1
+
+    if inst.honeythreshold > level.threshold then
+        inst.honeythreshold = level.threshold
+    end
+
+    if inst.honeycount >= inst.honeythreshold then
+        inst.honeycount = 0
+
+        if inst.honeythreshold < level.threshold then
+            inst.honeythreshold = math.ceil((inst.honeythreshold + level.threshold) * .5)
+        end
+
+        local fx = SpawnPrefab("honey_trail")
+        fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+        fx:SetVariation(PickHoney(inst), GetRandomMinMax(level.min_scale, level.max_scale), level.duration + math.random() * .5)
+    end
+end
+
+local function StartHoney(inst)
+    if inst.honeytask == nil then
+        inst.honeythreshold = HONEY_LEVELS[1].threshold
+        inst.honeycount = math.ceil(inst.honeythreshold * .5)
+        inst.honeytask = inst:DoPeriodicTask(HONEY_PERIOD, DoHoneyTrail, 0)
+    end
+end
+
+local function StopHoney(inst)
+    if inst.honeytask ~= nil then
+        inst.honeytask:Cancel()
+        inst.honeytask = nil
+    end
+end
+
+--------------------------------------------------------------------------
 
 local function UpdatePlayerTargets(inst)
     local toadd = {}
@@ -96,6 +173,14 @@ local function OnAttacked(inst, data)
         inst.components.combat:SetTarget(data.attacker)
     end
     inst.components.commander:ShareTargetToAllSoldiers(data.attacker)
+end
+
+local function OnAttackOther(inst, data)
+    if data.target ~= nil then
+        local fx = SpawnPrefab("honey_trail")
+        fx.Transform:SetPosition(data.target.Transform:GetWorldPosition())
+        fx:SetVariation(PickHoney(inst), GetRandomMinMax(1, 1.3), 4 + math.random() * .5)
+    end
 end
 
 --------------------------------------------------------------------------
@@ -166,7 +251,7 @@ end
 --------------------------------------------------------------------------
 
 local function PushMusic(inst)
-    if ThePlayer == nil then
+    if ThePlayer == nil or inst:HasTag("flight") then
         inst._playingmusic = false
     elseif ThePlayer:IsNear(inst, inst._playingmusic and 30 or 20) then
         inst._playingmusic = true
@@ -200,6 +285,7 @@ local function fn()
     inst.AnimState:PlayAnimation("idle_loop", true)
 
     inst:AddTag("epic")
+    inst:AddTag("noepicmusic")
     inst:AddTag("bee")
     inst:AddTag("insect")
     inst:AddTag("monster")
@@ -282,7 +368,20 @@ local function fn()
     inst.OnEntitySleep = OnEntitySleep
     inst.OnEntityWake = OnEntityWake
 
+    inst.StartHoney = StartHoney
+    inst.StopHoney = StopHoney
+    inst.honeytask = nil
+    inst.honeycount = 0
+    inst.honeythreshold = 0
+    inst.usedhoney = {}
+    inst.availablehoney = {}
+    for i = 1, MAX_HONEY_VARIATIONS do
+        table.insert(inst.availablehoney, i)
+    end
+    inst:StartHoney()
+
     inst:ListenForEvent("attacked", OnAttacked)
+    inst:ListenForEvent("onattackother", OnAttackOther)
 
     return inst
 end
