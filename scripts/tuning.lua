@@ -1740,7 +1740,6 @@ function Tune(overrides)
         BEEQUEEN_HIT_RANGE = 6,
         BEEQUEEN_SPEED = 4,
         BEEQUEEN_HIT_RECOVERY = 1,
-        BEEQUEEN_NUM_GUARDS = 3,
         BEEQUEEN_MIN_GUARDS_PER_SPAWN = 4,
         BEEQUEEN_MAX_GUARDS_PER_SPAWN = 5,
         BEEQUEEN_TOTAL_GUARDS = 8,
@@ -1772,6 +1771,7 @@ function Tune(overrides)
         BEEGUARD_GUARD_RANGE = 4,
         BEEGUARD_AGGRO_DIST = 12,
 
+        BEEGUARD_SQUAD_SIZE = 3,
         BEEGUARD_DASH_SPEED = 8,
         BEEGUARD_PUFFY_DAMAGE = 20,
         BEEGUARD_PUFFY_ATTACK_PERIOD = 1.5,

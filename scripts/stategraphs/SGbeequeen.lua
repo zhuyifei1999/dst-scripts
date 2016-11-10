@@ -547,8 +547,7 @@ local states =
                             table.insert(players, k)
                         end
                     end
-                    local groupsize = math.ceil(#soldiers * .5)
-                    local numtargets = groupsize >= TUNING.BEEQUEEN_MIN_GUARDS_PER_SPAWN and 2 or 1
+                    local numtargets = math.max(1, math.floor(#soldiers / TUNING.BEEGUARD_SQUAD_SIZE))
                     local targets = {}
                     for i = 1, numtargets do
                         if #players > 0 then
@@ -577,7 +576,8 @@ local states =
                         end
                         for i, v in ipairs(targets) do
                             table.sort(sorted, function(a, b) return a.scores[i] < b.scores[i] end)
-                            for i1 = 1, math.min(groupsize, #sorted) do
+                            local squadsize = math.max(#sorted / (#targets - i + 1))
+                            for i1 = 1, squadsize do
                                 table.remove(sorted, 1).inst:FocusTarget(v)
                             end
                         end
