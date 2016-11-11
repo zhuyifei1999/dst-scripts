@@ -185,6 +185,14 @@ local function OnAttackOther(inst, data)
     end
 end
 
+local function OnMissOther(inst)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local angle = -inst.Transform:GetRotation() * DEGREES
+    local fx = SpawnPrefab("honey_trail")
+    fx.Transform:SetPosition(x + TUNING.BEEQUEEN_ATTACK_RANGE * math.cos(angle), 0, z + TUNING.BEEQUEEN_ATTACK_RANGE * math.sin(angle))
+    fx:SetVariation(PickHoney(inst), GetRandomMinMax(1, 1.3), 4 + math.random() * .5)
+end
+
 --------------------------------------------------------------------------
 
 local PHASE2_HEALTH = .75
@@ -384,6 +392,7 @@ local function fn()
 
     inst:ListenForEvent("attacked", OnAttacked)
     inst:ListenForEvent("onattackother", OnAttackOther)
+    inst:ListenForEvent("onmissother", OnMissOther)
 
     return inst
 end

@@ -2456,20 +2456,37 @@ local states =
             inst.components.locomotor:Clear()
             inst:ClearBufferedAction()
 
-            inst.AnimState:PlayAnimation(
-                (inst.components.rider ~= nil and inst.components.rider:IsRiding() and "dial_loop") or
-                (inst.components.inventory:IsHeavyLifting() and "heavy_refuseeat") or
-                "refuseeat"
-            )
+            if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
+                inst.sg.statemem.talking = true
+                inst.AnimState:PlayAnimation("dial_loop")
+                DoTalkSound(inst)
+                inst.sg:SetTimeout(1.5 + math.random() * .5)
+            else
+                inst.AnimState:PlayAnimation(inst.components.inventory:IsHeavyLifting() and "heavy_refuseeat" or "refuseeat")
+                inst.sg:SetTimeout(22 * FRAMES)
+            end
 
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:RemotePausePrediction()
             end
-            inst.sg:SetTimeout(22 * FRAMES)
         end,
+
+        timeline =
+        {
+            TimeEvent(22 * FRAMES, function(inst)
+                if inst.sg.statemem.talking then
+                    inst.sg:RemoveStateTag("busy")
+                    inst.sg:RemoveStateTag("pausepredict")
+                end
+            end),
+        },
 
         ontimeout = function(inst)
             inst.sg:GoToState("idle", true)
+        end,
+
+        onexit = function(inst)
+            inst.SoundEmitter:KillSound("talk")
         end,
     },
 

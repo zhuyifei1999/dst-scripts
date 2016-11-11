@@ -5,7 +5,43 @@ local wall_prefabs =
     "collapse_small",
 }
 
-local fencebank = "fence"
+local function GetAnimName(inst, basename)
+	if inst.doorpairside == 2 then
+		basename = basename .. "right"
+	end
+	if (inst._isopen and inst._isopen:value()) then
+		basename = basename .. "_open"
+	end
+	return basename
+end
+
+-------------------------------------------------------------------------------
+-- Fence/Gate Alignment                              
+
+local function CalcRotationEnum(rot)
+	return ((math.floor(rot + 0.5) / 45) % 4)
+end
+
+local function CalcFacingAngle(rot)
+	return CalcRotationEnum(rot) * 45 
+end
+
+local function SetOrientation(inst, rotation)
+	rotation = CalcFacingAngle(rotation)
+
+	inst.Transform:SetRotation(rotation)
+	
+	if inst.builds.narrow then
+		local dir = math.floor(math.abs(rotation) + 0.5) / 45
+		if dir % 2 == 0 then
+			inst.AnimState:SetBuild(inst.builds.narrow)
+			inst.AnimState:SetBank(inst.builds.narrow)
+		else
+			inst.AnimState:SetBuild(inst.builds.wide)
+			inst.AnimState:SetBank(inst.builds.wide)
+		end
+	end
+end
 
 local function FixUpFenceOrientation(inst, deployed)
 	local x, y, z = inst.Transform:GetWorldPosition()
@@ -22,10 +58,14 @@ local function FixUpFenceOrientation(inst, deployed)
 			inst.isaligned = true
 			for i = 2, #neighbors do
 				local n = neighbors[i]
+				if n.isdoor and n.doorpairside == nil and inst.doorpairside == nil then
+					inst.doorpairside = (dir.x > 0 or (dir.x == 0 and dir.z == 1)) and 2 or 1
+					n.doorpairside = inst.doorpairside == 1 and 2 or 1
+					n.AnimState:PlayAnimation(GetAnimName(n, "idle"))
+				end
 				if (not n.isaligned) and n:HasTag("alignwall") then
-					n.Transform:SetRotation(rot + 90)
-					n.AnimState:PlayAnimation("idle")
 					n.isaligned = true
+					SetOrientation(n, rot)
 				end
 			end
 		end
@@ -33,9 +73,10 @@ local function FixUpFenceOrientation(inst, deployed)
 		rot = -TheCamera:GetHeadingTarget()
 	end
 	
-	inst.Transform:SetRotation(rot + 90)
-	inst.AnimState:PlayAnimation("idle")
+	SetOrientation(inst, rot)
+	inst.AnimState:PlayAnimation(GetAnimName(inst, "idle"))
 end
+-------------------------------------------------------------------------------
 
 local function OnIsPathFindingDirty(inst)
     if inst._ispathfinding:value() then
@@ -84,7 +125,8 @@ local function onhammered(inst, worker)
 end
 
 local function onworked(inst)
-	inst.AnimState:PlayAnimation((inst._isopen and inst._isopen:value()) and "hit_open" or "hit")
+	inst.AnimState:PlayAnimation(GetAnimName(inst, "hit"))
+	inst.AnimState:PushAnimation(GetAnimName(inst, "idle"), false)
 end
 
 local function onhit(inst, attacker, damage)
@@ -100,7 +142,7 @@ local function OpenDoor(inst, skiptransition)
 		inst.SoundEmitter:PlaySound("dontstarve/common/together/gate/open")
 	end
 	
-	inst.AnimState:PlayAnimation("idle_open")
+	inst.AnimState:PlayAnimation(GetAnimName(inst, "idle"))
 end
 
 local function CloseDoor(inst, skiptransition)
@@ -111,7 +153,7 @@ local function CloseDoor(inst, skiptransition)
 		inst.SoundEmitter:PlaySound("dontstarve/common/together/gate/close")
 	end
 	
-	inst.AnimState:PlayAnimation("idle")
+	inst.AnimState:PlayAnimation(GetAnimName(inst, "idle"))
 end
 
 local function ToggleDoor(inst)
@@ -129,9 +171,10 @@ end
 -------------------------------------------------------------------------------
 
 local function onsave(inst, data)
-	if inst.isaligned then
-		data.rotation = inst.Transform:GetRotation()
-	end
+	local rot = CalcRotationEnum(inst.Transform:GetRotation())
+	data.rot = rot > 0 and rot or nil
+	data.isaligned = inst.isaligned
+	data.doorpairside = inst.doorpairside
 	
 	if inst._isopen and inst._isopen:value() then
 		data.isopen = true
@@ -140,23 +183,36 @@ end
 
 local function onload(inst, data)
     if data ~= nil then
+		inst.doorpairside = data.doorpairside
+		inst.isaligned = data.isaligned
+
+		local rotation = 0
 		if data.rotation ~= nil then
+			-- updates save data to new format, safe to remove this when we go out of the beta branch
 			inst.isaligned = true
-	        inst.Transform:SetRotation(data.rotation)
+	        rotation = data.rotation - 90
+	    elseif data.rot ~= nil then
+		    rotation = data.rot*45
 	    end
+        SetOrientation(inst, rotation)
 
   		if data.isopen then
 	        OpenDoor(inst, true)
+	    elseif inst.doorpairside == 2 then
+        	inst.AnimState:PlayAnimation(GetAnimName(inst, "idle"))
 	    end
     end
 end
 
-local function MakeWall(name, animdata, isdoor)
+local function MakeWall(name, builds, isdoor)
 	local assets =
 	{
-		Asset("ANIM", "anim/"..animdata..".zip"),
+		Asset("ANIM", "anim/"..builds.wide..".zip"),
 	}
-
+	if builds.narrow then
+		table.insert(assets, Asset("ANIM", "anim/"..builds.narrow..".zip"))
+	end
+	
 	local function fn()
 		local inst = CreateEntity()
 
@@ -174,8 +230,8 @@ local function MakeWall(name, animdata, isdoor)
 		inst:AddTag("alignwall")
 		inst:AddTag("noauradamage")
 
-		inst.AnimState:SetBank(animdata)
-		inst.AnimState:SetBuild(animdata)
+		inst.AnimState:SetBank(builds.wide)
+		inst.AnimState:SetBuild(builds.wide)
 		inst.AnimState:PlayAnimation("idle")
 
 		if isdoor then
@@ -189,7 +245,7 @@ local function MakeWall(name, animdata, isdoor)
 		if isdoor then
 		    inst.GetActivateVerb = getdooractionstring
 		end
-
+		
 		inst._pfpos = nil
 		inst._ispathfinding = net_bool(inst.GUID, "_ispathfinding", "onispathfindingdirty")
 		makeobstacle(inst)
@@ -197,11 +253,14 @@ local function MakeWall(name, animdata, isdoor)
 		--but we don't to handle it until after our position is set
 		inst:DoTaskInTime(0, InitializePathFinding)
 
+		-----------------------------------------------------------------------
 		inst.entity:SetPristine()
-
 		if not TheWorld.ismastersim then
 			return inst
 		end
+
+		inst.isdoor = isdoor
+		inst.builds = builds
 
 		inst:AddComponent("inspectable")
 		inst:AddComponent("lootdropper")
@@ -266,8 +325,6 @@ local function MakeInvItem(name, placement, animdata)
 	}
 
 	local function ondeploywall(inst, pt, deployer)
-		--inst.SoundEmitter:PlaySound("dontstarve/creatures/spider/spider_egg_sack")
-
 		local wall = SpawnPrefab(placement) 
 		if wall ~= nil then 
 			local x = math.floor(pt.x) + .5
@@ -281,6 +338,8 @@ local function MakeInvItem(name, placement, animdata)
 			FixUpFenceOrientation(wall, true)
 
 			TheWorld.Pathfinder:AddWall(x, 0, z)
+
+			wall.SoundEmitter:PlaySound("dontstarve/common/place_structure_wood")
 		end
 	end
 
@@ -339,10 +398,21 @@ local function placerupdate(inst)
 	FixUpFenceOrientation(inst, false)
 end
 
-return MakeWall("fence", "fence", false),
-    MakeInvItem("fence_item", "fence", "fence"),
-    MakePlacer("fence_item_placer", "fence", "fence", "idle", nil, nil, true, nil, nil, "eight", function(inst) inst.components.placer.oncanbuild = placerupdate end),
+local function MakeWallPlacer(placer, builds, isdoor)
+	local placer = MakePlacer(placer, builds.wide, builds.wide, "idle", nil, nil, true, nil, nil, "eight", 
+		function(inst)
+			inst.components.placer.oncanbuild = placerupdate
+			inst.builds = builds
+			inst.isdoor = isdoor -- temp
+		end)
+	
+	return placer
+end
 
-	MakeWall("fence_gate", "fence_gate", true),
+return MakeWall("fence", {wide="fence", narrow="fence_thin"}, false),
+    MakeInvItem("fence_item", "fence", "fence"),
+    MakeWallPlacer("fence_item_placer", {wide="fence"}, false),
+
+	MakeWall("fence_gate", {wide="fence_gate", narrow="fence_gate"}, true),
     MakeInvItem("fence_gate_item", "fence_gate", "fence_gate"),
-    MakePlacer("fence_gate_item_placer", "fence_gate", "fence_gate", "idle", nil, nil, true, nil, nil, "eight", function(inst) inst.components.placer.oncanbuild = placerupdate end)
+    MakeWallPlacer("fence_gate_item_placer", {wide="fence_gate"}, true)
