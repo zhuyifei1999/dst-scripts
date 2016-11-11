@@ -285,6 +285,13 @@ local states =
         timeline =
         {
             TimeEvent(.3, function(inst)
+                if inst.sg.mem.focuscount ~= nil then
+                    inst.sg.mem.focuscount = nil
+                    inst.sg.mem.focustargets = nil
+                    for i, v in ipairs(inst.components.commander:GetAllSoldiers()) do
+                        v:FocusTarget(nil)
+                    end
+                end
                 inst.components.commander:PushEventToAllSoldiers("flee")
             end),
             TimeEvent(3.5, function(inst)
@@ -364,6 +371,15 @@ local states =
                     inst.components.lootdropper:DropLoot(inst:GetPosition())
                     if inst.hivebase ~= nil then
                         inst.hivebase.queenkilled = true
+                    end
+                end
+            end),
+            TimeEvent(3, function(inst)
+                if inst.sg.mem.focuscount ~= nil then
+                    inst.sg.mem.focuscount = nil
+                    inst.sg.mem.focustargets = nil
+                    for i, v in ipairs(inst.components.commander:GetAllSoldiers()) do
+                        v:FocusTarget(nil)
                     end
                 end
             end),

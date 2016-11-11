@@ -196,7 +196,7 @@ local function light_ontarget(inst, target)
         end
         inst.persists = false
     else
-        inst.persists = true
+        inst.persists = not target:HasTag("critter")
     end
 
     pushbloom(inst, target)

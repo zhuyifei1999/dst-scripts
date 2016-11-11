@@ -74,10 +74,10 @@ SetSharedLootTable('dragonfly',
 local function PushMusic(inst)
     if ThePlayer == nil or inst:HasTag("flight") then
         inst._playingmusic = false
-    elseif ThePlayer:IsNear(inst, inst._playingmusic and 45 or 20) then
+    elseif ThePlayer:IsNear(inst, inst._playingmusic and 50 or 20) then
         inst._playingmusic = true
         ThePlayer:PushEvent("triggeredevent", { name = "dragonfly" })
-    elseif inst._playingmusic and not ThePlayer:IsNear(inst, 50) then
+    elseif inst._playingmusic and not ThePlayer:IsNear(inst, 55) then
         inst._playingmusic = false
     end
 end

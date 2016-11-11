@@ -263,10 +263,10 @@ end
 local function PushMusic(inst)
     if ThePlayer == nil or inst:HasTag("flight") then
         inst._playingmusic = false
-    elseif ThePlayer:IsNear(inst, inst._playingmusic and 30 or 20) then
+    elseif ThePlayer:IsNear(inst, inst._playingmusic and 40 or 20) then
         inst._playingmusic = true
         ThePlayer:PushEvent("triggeredevent", { name = "beequeen" })
-    elseif inst._playingmusic and not ThePlayer:IsNear(inst, 40) then
+    elseif inst._playingmusic and not ThePlayer:IsNear(inst, 50) then
         inst._playingmusic = false
     end
 end

@@ -15,14 +15,14 @@ end
 
 local function ShouldSleep(inst)
     return (DefaultSleepTest(inst) 
-			or IsLeaderSleeping(inst))
-			and inst.components.follower:IsNearLeader(SLEEP_NEAR_LEADER_DISTANCE)
+            or IsLeaderSleeping(inst))
+            and inst.components.follower:IsNearLeader(SLEEP_NEAR_LEADER_DISTANCE)
 end
 
 local function oneat(inst, food)
     if food ~= nil then
         if food.components.edible.foodtype == FOODTYPE.GOODIES then
-			inst.sg.mem.queuethankyou = true
+            inst.sg.mem.queuethankyou = true
         end
     end
 
@@ -45,8 +45,8 @@ local function GetPeepChance(inst)
 end
 
 local function IsAffectionate(inst)
-	return (inst.components.perishable == nil or inst.components.perishable:GetPercent() > HUNGRY_PERIESH_PERCENT) -- no affection if hungry
-			or false
+    return (inst.components.perishable == nil or inst.components.perishable:GetPercent() > HUNGRY_PERIESH_PERCENT) -- no affection if hungry
+            or false
 end
 
 local CRITTER_AVOID_COMBAT_CHECK_RADIUS = 10
@@ -80,6 +80,30 @@ end
 
 -------------------------------------------------------------------------------
 
+local function OnSave(inst, data)
+    if inst.wormlight ~= nil then
+        data.wormlight = inst.wormlight:GetSaveRecord()
+    end
+end
+
+local function OnLoad(inst, data)
+    if data ~= nil and data.wormlight ~= nil and inst.wormlight == nil then
+        local wormlight = SpawnSaveRecord(data.wormlight)
+        if wormlight ~= nil and wormlight.components.spell ~= nil then
+            wormlight.components.spell:SetTarget(inst)
+            if wormlight:IsValid() then
+                if wormlight.components.spell.target == nil then
+                    wormlight:Remove()
+                else
+                    wormlight.components.spell:ResumeSpell()
+                end
+            end
+        end
+    end
+end
+
+-------------------------------------------------------------------------------
+
 local function MakeCritter(name, animdata, face, diet, flying)
     local assets = {}
     for _,v in pairs(animdata.assets) do
@@ -97,23 +121,23 @@ local function MakeCritter(name, animdata, face, diet, flying)
 
         inst.DynamicShadow:SetSize(2, .75)
 
-		if face == 2 then
-	        inst.Transform:SetTwoFaced()
-	    elseif face == 4 then
-	        inst.Transform:SetFourFaced()
-	    elseif face == 6 then
-	        inst.Transform:SetSixFaced()
-	    elseif face == 8 then
-	        inst.Transform:SetEightFaced()
-		end
-		
+        if face == 2 then
+            inst.Transform:SetTwoFaced()
+        elseif face == 4 then
+            inst.Transform:SetFourFaced()
+        elseif face == 6 then
+            inst.Transform:SetSixFaced()
+        elseif face == 8 then
+            inst.Transform:SetEightFaced()
+        end
+
         inst.AnimState:SetBank(animdata.bank)
         inst.AnimState:SetBuild(animdata.build)
         inst.AnimState:PlayAnimation("idle_loop")
 
         if flying then
             MakeFlyingCharacterPhysics(inst, 1, .5)
-			inst.Physics:CollidesWith(COLLISION.CHARACTERS)
+            inst.Physics:CollidesWith(COLLISION.CHARACTERS)
             inst:AddTag("flying")
         else
             MakeCharacterPhysics(inst, 1, .5)
@@ -169,6 +193,9 @@ local function MakeCritter(name, animdata, face, diet, flying)
 
         --MakeMediumFreezableCharacter(inst, "critters_body")
         --MakeHauntablePanic(inst)
+
+        inst.OnSave = OnSave
+        inst.OnLoad = OnLoad
 
         return inst
     end

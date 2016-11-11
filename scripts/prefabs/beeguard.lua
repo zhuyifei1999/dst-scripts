@@ -246,7 +246,7 @@ local function fn()
     inst:AddComponent("inspectable")
 
     inst:AddComponent("lootdropper")
-    inst.components.lootdropper:AddChanceLoot("stinger", 0.5)
+    inst.components.lootdropper:AddChanceLoot("stinger", 0.01)
 
     inst:AddComponent("sleeper")
     inst.components.sleeper:SetResistance(4)
