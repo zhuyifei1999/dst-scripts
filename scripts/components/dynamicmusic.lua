@@ -47,12 +47,12 @@ local TRIGGERED_DANGER_MUSIC =
 
     beequeen =
     {
-        "dontstarve/music/music_epicfight_3",
+        "dontstarve/music/music_epicfight_4",
     },
 
     dragonfly =
     {
-        "dontstarve/music/music_epicfight_4",
+        "dontstarve/music/music_epicfight_3",
     },
 
     shadowchess =
