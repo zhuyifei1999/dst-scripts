@@ -1764,7 +1764,7 @@ function Tune(overrides)
         BEEQUEEN_HONEYTRAIL_SPEED_PENALTY = .4,
 
         BEEGUARD_HEALTH = 180,
-        BEEGUARD_DAMAGE = 15,
+        BEEGUARD_DAMAGE = 30,
         BEEGUARD_ATTACK_PERIOD = 2,
         BEEGUARD_ATTACK_RANGE = 1.5,
         BEEGUARD_SPEED = 3,
@@ -1773,7 +1773,7 @@ function Tune(overrides)
 
         BEEGUARD_SQUAD_SIZE = 3,
         BEEGUARD_DASH_SPEED = 8,
-        BEEGUARD_PUFFY_DAMAGE = 20,
+        BEEGUARD_PUFFY_DAMAGE = 40,
         BEEGUARD_PUFFY_ATTACK_PERIOD = 1.5,
 
 		DRAGONFLY_RESPAWN_TIME = total_day_time * 20,

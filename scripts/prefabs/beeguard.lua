@@ -265,6 +265,7 @@ local function fn()
     inst:AddComponent("combat")
     inst.components.combat:SetDefaultDamage(TUNING.BEEGUARD_DAMAGE)
     inst.components.combat:SetAttackPeriod(TUNING.BEEGUARD_ATTACK_PERIOD)
+    inst.components.combat.playerdamagepercent = .5
     inst.components.combat:SetRange(TUNING.BEEGUARD_ATTACK_RANGE)
     inst.components.combat:SetRetargetFunction(2, RetargetFn)
     inst.components.combat:SetKeepTargetFunction(KeepTargetFn)

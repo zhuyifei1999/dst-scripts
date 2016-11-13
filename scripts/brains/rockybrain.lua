@@ -67,6 +67,9 @@ local function ScaredLoseLoyalty(self)
             self.inst.components.follower:GetLoyaltyPercent() > 0 and
             self.inst.components.follower:GetLeader() ~= nil then
             self.inst.components.follower:SetLeader(nil)
+            if self.inst.components.combat ~= nil then
+                self.inst.components.combat:SetTarget(nil)
+            end
         end
     end
 end
