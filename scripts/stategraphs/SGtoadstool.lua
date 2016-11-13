@@ -161,12 +161,8 @@ local events =
     end),
     EventHandler("attacked", function(inst)
         if not inst.components.health:IsDead() and
-            (   not inst.sg:HasStateTag("busy") or
-                inst.sg:HasStateTag("caninterrupt")
-            ) and
-            (   inst.sg.mem.last_hit_time == nil or
-                inst.sg.mem.last_hit_time + inst.hit_recovery < GetTime()
-            ) then
+            (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("caninterrupt")) and
+            (inst.sg.mem.last_hit_time or 0) + inst.hit_recovery < GetTime() then
             inst.sg:GoToState("hit")
         end
     end),

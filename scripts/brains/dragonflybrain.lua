@@ -20,6 +20,7 @@ local function ShouldResetFight(self)
             self.resetting = nil
         end
     end
+    self.inst.sg.mem.flyover = self.inst.reset
     return self.inst.reset
 end
 
@@ -45,7 +46,8 @@ local function ShouldSpawnFn(self)
         local target = #lavae_ponds > 0 and lavae_ponds[math.random(#lavae_ponds)] or self.inst
         self._spawnpos = target:GetPosition()
     end
-    return self._spawnpos ~= nil
+    self.inst.sg.mem.flyover = self._spawnpos ~= nil
+    return self.inst.sg.mem.flyover
 end
 
 function DragonflyBrain:OnSpawnLavae()

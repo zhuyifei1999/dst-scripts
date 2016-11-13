@@ -5,8 +5,7 @@ local function onattackedfn(inst)
         if inst.sg:HasStateTag("grounded") then
             inst.sg.statemem.knockdown = true
             inst.sg:GoToState("knockdown_hit")
-        elseif inst.last_hit_time + TUNING.DRAGONFLY_HIT_RECOVERY <= GetTime() then
-            inst.last_hit_time = GetTime()
+        elseif (inst.sg.mem.last_hit_time or 0) + TUNING.DRAGONFLY_HIT_RECOVERY <= GetTime() then
             inst.sg:GoToState("hit")
         end
     end
@@ -57,6 +56,26 @@ local function transform(inst, data)
             inst.sg:HasStateTag("flight") or
             inst.components.health:IsDead()) then
         inst.sg:GoToState("transform_"..data.transformstate)
+    end
+end
+
+local function SwitchToFlyOverPhysics(inst)
+    if not inst.sg.mem.flyoverphysics then
+        inst.sg.mem.flyoverphysics = true
+        inst.sg.mem.last_hit_time = GetTime()
+        inst.Physics:ClearCollisionMask()
+        inst.Physics:CollidesWith(COLLISION.WORLD)
+        inst.Physics:CollidesWith(COLLISION.GIANTS)
+    end
+end
+
+local function SwitchToCombatPhysics(inst)
+    if inst.sg.mem.flyoverphysics then
+        inst.sg.mem.flyoverphysics = false
+        inst.Physics:ClearCollisionMask()
+        inst.Physics:CollidesWith(COLLISION.WORLD)
+        inst.Physics:CollidesWith(COLLISION.CHARACTERS)
+        inst.Physics:CollidesWith(COLLISION.GIANTS)
     end
 end
 
@@ -111,6 +130,51 @@ local states =
             else
                 inst.AnimState:PlayAnimation("walk_pre")
             end
+            if inst.sg.mem.flyover then
+                SwitchToFlyOverPhysics(inst)
+            end
+            inst.components.locomotor:WalkForward()
+        end,
+
+        timeline =
+        {
+            TimeEvent(1*FRAMES, function(inst) if not inst.enraged then inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/blink") end end),
+            TimeEvent(2*FRAMES, function(inst) if inst.enraged then inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/blink") end end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg.statemem.walking = true
+                    inst.sg:GoToState("walk")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if not (inst.sg.statemem.walking and inst.sg.mem.flyover) then
+                SwitchToCombatPhysics(inst)
+            end
+        end,
+    },
+
+    State{
+        name = "walk",
+        tags = { "moving", "canrotate" },
+
+        onenter = function(inst)
+            if inst.enraged then
+                inst.AnimState:PlayAnimation("walk_angry")
+                if math.random() < .5 then
+                    inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/angry")
+                end
+            else
+                inst.AnimState:PlayAnimation("walk")
+            end
+            if inst.sg.mem.flyover then
+                SwitchToFlyOverPhysics(inst)
+            end
             inst.components.locomotor:WalkForward()
         end,
 
@@ -118,15 +182,41 @@ local states =
         {
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
+                    inst.sg.statemem.walking = true
                     inst.sg:GoToState("walk")
                 end
             end),
         },
 
+        onexit = function(inst)
+            if not (inst.sg.statemem.walking and inst.sg.mem.flyover) then
+                SwitchToCombatPhysics(inst)
+            end
+        end,
+    },
+
+    State{
+        name = "walk_stop",
+        tags = { "canrotate" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation(inst.enraged and "walk_angry_pst" or "walk_pst")
+        end,
+
         timeline =
         {
             TimeEvent(1*FRAMES, function(inst) if not inst.enraged then inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/blink") end end),
             TimeEvent(2*FRAMES, function(inst) if inst.enraged then inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/blink") end end),
+        },
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
         },
     },
 
@@ -135,6 +225,7 @@ local states =
         tags = { "hit", "busy" },
 
         onenter = function(inst, cb)
+            inst.sg.mem.last_hit_time = GetTime()
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("hit")
             inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/blink")
@@ -147,57 +238,6 @@ local states =
                     inst.sg:GoToState("idle")
                 end
             end),
-        },
-    },
-
-    State{
-        name = "walk",
-        tags = { "moving", "canrotate" },
-
-        onenter = function(inst)
-            inst.components.locomotor:WalkForward()
-            if inst.enraged then
-                inst.AnimState:PlayAnimation("walk_angry")
-                if math.random() < .5 then
-                    inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/angry")
-                end
-            else
-                inst.AnimState:PlayAnimation("walk")
-            end
-        end,
-
-        events =
-        {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("walk")
-                end
-            end),
-        },
-    },
-
-    State{
-        name = "walk_stop",
-        tags = { "canrotate" },
-
-        onenter = function(inst)
-            inst.components.locomotor:StopMoving()
-            inst.AnimState:PlayAnimation(inst.enraged and "walk_angry_pst" or "walk_pst")
-        end,
-
-        events =
-        {
-            EventHandler("animqueueover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end),
-        },
-
-        timeline =
-        {
-            TimeEvent(1*FRAMES, function(inst) if not inst.enraged then inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/blink") end end),
-            TimeEvent(2*FRAMES, function(inst) if inst.enraged then inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/blink") end end),
         },
     },
 

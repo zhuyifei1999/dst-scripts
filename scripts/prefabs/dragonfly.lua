@@ -537,7 +537,6 @@ local function fn()
     inst.TransformFire = TransformFire
     inst.TransformNormal = TransformNormal
     inst.can_ground_pound = false
-    inst.last_hit_time = 0
 
     MakeHugeFreezableCharacter(inst)
     inst.components.freezable:SetResistance(TUNING.DRAGONFLY_FREEZE_THRESHOLD)
