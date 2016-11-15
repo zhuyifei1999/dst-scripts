@@ -52,8 +52,8 @@ end
 function GetBuildForItem(type, name)
 	if type == "base" or type == "item" then 
 		local skinsData = Prefabs[name]
-		if skinsData and skinsData.ui_preview then
-			name = skinsData.ui_preview.build
+		if skinsData and skinsData.build_name then
+			name = skinsData.build_name
 		end
 		return name
 	elseif type == "misc" or type == "emote" then 
@@ -98,14 +98,7 @@ function GetTypeForItem(item)
 		type = EMOTE_ITEMS[itemName].type
 	else
 		local skinsData = Prefabs[itemName]
-
-		if skinsData then 
-			if table.contains(skinsData.tags, "CHARACTER") then 
-				type = "base"
-			else
-				type = "item"
-			end
-		end
+		type = skinsData.type
 	end
 
 	return type, itemName
@@ -117,9 +110,9 @@ function GetSortCategoryForItem(item)
 	if CLOTHING[item] then
 		category = CLOTHING[item].type
 	elseif MISC_ITEMS[item] then
-		category = MISC_ITEMS[itemName].type
+		category = MISC_ITEMS[item].type
 	elseif EMOTE_ITEMS[item] then
-		category = EMOTE_ITEMS[itemName].type
+		category = EMOTE_ITEMS[item].type
 	else
 		local skinsData = Prefabs[item]
 		category = skinsData.base_prefab
@@ -188,20 +181,13 @@ end
 
 
 function GetNameWithRarity(type, item)
-	local rarity = GetRarityForItem(type, item)
-
-	local nameStr = STRINGS.SKIN_NAMES[item] or STRINGS.SKIN_NAMES["missing"]
-	local alt = STRINGS.SKIN_NAMES[item.."_alt"]
-	if alt then 
-		nameStr = GetRandomItem({nameStr, alt})
-	end
-
-	return rarity.." "..nameStr
-
+	return GetRarityForItem(type, item) .. " " .. GetName(item)
 end
 
 function GetName(item)
-
+	if string.sub( item, -8 ) == "_builder" then
+		item = string.sub( item, 1, -9 )
+	end
 	local nameStr = STRINGS.SKIN_NAMES[item] or STRINGS.NAMES[string.upper(item)] 
 					or STRINGS.SKIN_NAMES["missing"]
 	local alt = STRINGS.SKIN_NAMES[item.."_alt"]
@@ -210,7 +196,6 @@ function GetName(item)
 	end
 
 	return nameStr
-
 end
 
 function IsSkinEntitlementReceived(entitlement)

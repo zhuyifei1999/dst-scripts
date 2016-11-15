@@ -1,19 +1,20 @@
 require("stategraphs/commonstates")
 require("stategraphs/SGcritter_common")
 
-local actionhandlers = 
+local actionhandlers =
 {
 }
 
-local events=
+local events =
 {
-	SGCritterEvents.OnGoToSleep(),
 	SGCritterEvents.OnEat(),
 
+    CommonHandlers.OnSleepEx(),
+    CommonHandlers.OnWakeEx(),
     CommonHandlers.OnLocomote(false,true),
 }
 
-local states=
+local states =
 {
 }
 
@@ -58,7 +59,7 @@ SGCritterStates.AddNuzzle(states, actionhandlers,
             TimeEvent(19*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/sheepington/grunt") end),
         })
 
-CommonStates.AddWalkStates(states, 
+SGCritterStates.AddWalkStates(states, 
 	{
 		walktimeline =
 		{
@@ -68,8 +69,8 @@ CommonStates.AddWalkStates(states,
 		{
 			TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/sheepington/walk") end),
 		},
-	}, nil, true)
-CommonStates.AddSleepStates(states,
+	}, true)
+CommonStates.AddSleepExStates(states,
 		{
 			starttimeline = 
 			{
@@ -77,11 +78,9 @@ CommonStates.AddSleepStates(states,
 			},
 			sleeptimeline = 
 			{
-				TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/sheepington/sleep") end),
 				TimeEvent(22*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/sheepington/sleep") end),
 				TimeEvent(57*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/sheepington/sleep") end),
 			},
 		})
 
 return StateGraph("SGcritter_lamb", states, events, "idle", actionhandlers)
-

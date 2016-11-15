@@ -4,6 +4,7 @@ local WAKE_TO_FOLLOW_DISTANCE = 6
 local SLEEP_NEAR_LEADER_DISTANCE = 5
 
 local HUNGRY_PERIESH_PERCENT = 0.5 -- matches stale tag
+local STARVING_PERIESH_PERCENT = 0.2 -- matches spoiked tag
 
 local function IsLeaderSleeping(inst)
     return inst.components.follower.leader and inst.components.follower.leader:HasTag("sleeping")
@@ -26,6 +27,14 @@ local function oneat(inst, food)
         end
     end
 
+	-- temp minigame around feeding, if fed at the right time, its max hunger goes up, if left too long, its max hunger goes down
+	local perish = inst.components.perishable:GetPercent()
+	if perish <= STARVING_PERIESH_PERCENT then
+		inst.components.perishable.perishtime = math.max(inst.components.perishable.perishtime - TUNING.CRITTER_HUNGERTIME_DELTA, TUNING.CRITTER_HUNGERTIME_MIN)
+	elseif perish <= HUNGRY_PERIESH_PERCENT then
+		inst.components.perishable.perishtime = math.min(inst.components.perishable.perishtime + TUNING.CRITTER_HUNGERTIME_DELTA, TUNING.CRITTER_HUNGERTIME_MAX)
+	end
+
     inst.components.perishable:SetPercent(1)
     inst.components.perishable:StartPerishing()
 end
@@ -35,7 +44,7 @@ local function GetPeepChance(inst)
     local hunger_percent = inst.components.perishable:GetPercent()
     if hunger_percent <= 0 then
         return 0.8
-    elseif hunger_percent < 0.2 then -- matches spoiled tag
+    elseif hunger_percent < STARVING_PERIESH_PERCENT then -- matches spoiled tag
         return (0.2 - inst.components.perishable:GetPercent()) * 2
     elseif hunger_percent < HUNGRY_PERIESH_PERCENT then
         return 0.025
@@ -104,7 +113,45 @@ end
 
 -------------------------------------------------------------------------------
 
-local function MakeCritter(name, animdata, face, diet, flying)
+local function OnClientFadeUpdate(inst)
+    inst._fadeval = math.max(0, inst._fadeval - 2 * FRAMES)
+    local k = inst._fadeval >= .6 and 0 or 1 - inst._fadeval * inst._fadeval / .36
+    inst.AnimState:OverrideMultColour(k, k, k, k)
+    if inst._fadeval <= 0 then
+        inst._fadetask:Cancel()
+        inst._fadetask = nil
+    end
+end
+
+local function OnMasterFadeUpdate(inst)
+    OnClientFadeUpdate(inst)
+    inst.DynamicShadow:Enable(inst._fadeval <= .8)
+    inst._fade:set_local(math.floor(7 * inst._fadeval + .5))
+    if inst._fadetask == nil then
+        inst:RemoveTag("NOCLICK")
+    end
+end
+
+local function OnFadeDirty(inst)
+    if inst._fadetask == nil then
+        inst._fadeval = inst._fade:value() / 7
+        inst._fadetask = inst:DoPeriodicTask(FRAMES, OnClientFadeUpdate)
+        OnClientFadeUpdate(inst)
+    end
+end
+
+local function FadeIn(inst)
+    inst._fadeval = 1
+    if inst._fadetask == nil then
+        inst._fadetask = inst:DoPeriodicTask(FRAMES, OnMasterFadeUpdate)
+        inst:AddTag("NOCLICK")
+    end
+    OnMasterFadeUpdate(inst)
+end
+
+-------------------------------------------------------------------------------
+
+local function MakeCritter(name, animdata, face, diet, flying, data)
     local assets = {}
     for _,v in pairs(animdata.assets) do
         table.insert(assets, Asset("ANIM", "anim/"..v..".zip"))
@@ -136,8 +183,19 @@ local function MakeCritter(name, animdata, face, diet, flying)
         inst.AnimState:PlayAnimation("idle_loop")
 
         if flying then
-            MakeFlyingCharacterPhysics(inst, 1, .5)
+            --We want to collide with players
+            --MakeFlyingCharacterPhysics(inst, 1, .5)
+            inst.entity:AddPhysics()
+            inst.Physics:SetMass(1)
+            inst.Physics:SetCapsule(.5, 1)
+            inst.Physics:SetFriction(0)
+            inst.Physics:SetDamping(5)
+            inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)
+            inst.Physics:ClearCollisionMask()
+            inst.Physics:CollidesWith(COLLISION.WORLD)
+            inst.Physics:CollidesWith(COLLISION.FLYERS)
             inst.Physics:CollidesWith(COLLISION.CHARACTERS)
+
             inst:AddTag("flying")
         else
             MakeCharacterPhysics(inst, 1, .5)
@@ -149,9 +207,17 @@ local function MakeCritter(name, animdata, face, diet, flying)
         inst:AddTag("noauradamage")
         inst:AddTag("small_livestock")
 
+        inst._fade = net_tinybyte(inst.GUID, "critters._fade", "fadedirty")
+
+        if data ~= nil and data.flyingsoundloop ~= nil then
+            inst.SoundEmitter:PlaySound(data.flyingsoundloop, "flying")
+        end
+
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
+            inst:ListenForEvent("fadedirty", OnFadeDirty)
+
             return inst
         end
 
@@ -184,6 +250,7 @@ local function MakeCritter(name, animdata, face, diet, flying)
         inst:AddComponent("locomotor")
         inst.components.locomotor:EnableGroundSpeedMultiplier(not flying)
         inst.components.locomotor:SetTriggersCreep(false)
+        inst.components.locomotor.softstop = true
         inst.components.locomotor.walkspeed = TUNING.CRITTER_WALK_SPEED
 
         inst:AddComponent("crittertraits")
@@ -194,6 +261,7 @@ local function MakeCritter(name, animdata, face, diet, flying)
         --MakeMediumFreezableCharacter(inst, "critters_body")
         --MakeHauntablePanic(inst)
 
+        inst.FadeIn = FadeIn
         inst.OnSave = OnSave
         inst.OnLoad = OnLoad
 
@@ -213,7 +281,7 @@ local function builder_onbuilt(inst, builder)
         pt.x = pt.x + offset.x
         pt.z = pt.z + offset.z
     end
-    builder.components.petleash:SpawnPetAt(pt.x, 0, pt.z, inst.pettype)
+    builder.components.petleash:SpawnPetAt(pt.x, 0, pt.z, inst.pettype, inst.skin_name)
     inst:Remove()
 end
 
@@ -247,13 +315,13 @@ end
 
 local standard_diet = { FOODGROUP.OMNI }
 
-return MakeCritter("critter_lamb", {bank="sheepington", build="sheepington", assets={"sheepington"}}, 6, standard_diet, false),
+return MakeCritter("critter_lamb", {bank="sheepington", build="sheepington_build", assets={"sheepington_build", "sheepington_basic", "sheepington_emotes"}}, 6, standard_diet, false),
        MakeBuilder("critter_lamb"),
-       MakeCritter("critter_puppy", {bank="pupington", build="pupington", assets={"pupington"}}, 4, standard_diet, false),
+       MakeCritter("critter_puppy", {bank="pupington", build="pupington_build", assets={"pupington_build", "pupington_basic", "pupington_emotes"}}, 4, standard_diet, false),
        MakeBuilder("critter_puppy"),
        MakeCritter("critter_kitten", {bank="kittington", build="kittington_build", assets={"kittington_build", "kittington_basic", "kittington_emotes"}}, 6, standard_diet, false),
        MakeBuilder("critter_kitten"),
-       MakeCritter("critter_dragonling", {bank="dragonling", build="dragonling_build", assets={"dragonling_build", "dragonling_basic", "dragonling_emotes"}}, 6, standard_diet, true),
+       MakeCritter("critter_dragonling", {bank="dragonling", build="dragonling_build", assets={"dragonling_build", "dragonling_basic", "dragonling_emotes"}}, 6, standard_diet, true, { flyingsoundloop = "dontstarve_DLC001/creatures/together/dragonling/fly_LP" }),
        MakeBuilder("critter_dragonling"),
-       MakeCritter("critter_glomling", {bank="glomling", build="glomling_build", assets={"glomling_build", "glomling_basic", "glomling_emotes"}}, 6, standard_diet, true),
+       MakeCritter("critter_glomling", {bank="glomling", build="glomling_build", assets={"glomling_build", "glomling_basic", "glomling_emotes"}}, 6, standard_diet, true, { flyingsoundloop = "dontstarve_DLC001/creatures/together/glomling/flap_LP" }),
        MakeBuilder("critter_glomling")

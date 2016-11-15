@@ -178,13 +178,13 @@ end
 local function StartTriggeredDanger(player, data)
     local level = math.max(1, math.floor(data ~= nil and data.level or 1))
     if _triggeredlevel == level then
-        _extendtime = GetTime() + 10
+        _extendtime = GetTime() + (data.duration or 10)
     elseif _isenabled then
         StopBusy()
         StopDanger()
         local music = data ~= nil and TRIGGERED_DANGER_MUSIC[data.name or "default"] or TRIGGERED_DANGER_MUSIC.default
         _soundemitter:PlaySound(music[level] or music[1], "danger")
-        _dangertask = inst:DoTaskInTime(10, StopDanger, true)
+        _dangertask = inst:DoTaskInTime(data.duration or 10, StopDanger, true)
         _triggeredlevel = level
         _extendtime = 0
     end

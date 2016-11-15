@@ -1,21 +1,36 @@
 require("stategraphs/commonstates")
 require("stategraphs/SGcritter_common")
 
-local actionhandlers = 
+local actionhandlers =
 {
 }
 
-local events=
+local events =
 {
-	SGCritterEvents.OnGoToSleep(),
 	SGCritterEvents.OnEat(),
 
+    CommonHandlers.OnSleepEx(),
+    CommonHandlers.OnWakeEx(),
     CommonHandlers.OnLocomote(false,true),
 }
 
-local states=
+local states =
 {
 }
+
+local function StartFlapping(inst)
+    inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/flap_LP", "flying")
+end
+
+local function RestoreFlapping(inst)
+    if not inst.SoundEmitter:PlayingSound("flying") then
+        StartFlapping(inst)
+    end
+end
+
+local function StopFlapping(inst)
+    inst.SoundEmitter:KillSound("flying")
+end
 
 local emotes =
 {
@@ -28,10 +43,16 @@ local emotes =
 	{ anim="emote2",
       timeline=
 		{
+            TimeEvent(7*FRAMES, StopFlapping),
 			TimeEvent(11*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_ground") end),
 			TimeEvent(13*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_ground") end),
 			TimeEvent(15*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/emote_2") end),
+            TimeEvent(68*FRAMES, StartFlapping),
 		},
+      fns=
+        {
+            onexit = RestoreFlapping,
+        },
 	},
 }
 
@@ -42,8 +63,15 @@ SGCritterStates.AddEat(states,
             TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_ground") end),
             TimeEvent(4*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_voice") end),
 
+            TimeEvent(22*FRAMES, StopFlapping),
+
             TimeEvent((26+8)*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/eat_loop") end),
             TimeEvent((26+22)*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/eat_loop") end),
+
+            TimeEvent(74*FRAMES, StartFlapping),
+        },
+        {
+            onexit = RestoreFlapping,
         })
 SGCritterStates.AddHungry(states,
         {
@@ -53,21 +81,48 @@ SGCritterStates.AddHungry(states,
         })
 SGCritterStates.AddNuzzle(states, actionhandlers,
 		{
-            TimeEvent(6*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_ground") end),
+            TimeEvent(6*FRAMES, function(inst)
+                StopFlapping(inst)
+                inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_ground")
+            end),
+            TimeEvent(53*FRAMES, StartFlapping),
+        },
+        {
+            onexit = RestoreFlapping,
         })
 
-CommonStates.AddWalkStates(states, nil, nil, true)
-CommonStates.AddSleepStates(states,
+SGCritterStates.AddWalkStates(states, nil, true)
+
+
+local function CleanupIfSleepInterrupted(inst)
+    if not inst.sg.statemem.continuesleeping then
+        RestoreFlapping(inst)
+    end
+end
+
+CommonStates.AddSleepExStates(states,
 		{
 			starttimeline = 
 			{
-				TimeEvent(30*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_ground") end),
+				TimeEvent(35*FRAMES, function(inst)
+                    StopFlapping(inst)
+                    inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_ground")
+                end),
 			},
 			sleeptimeline = 
 			{
 				TimeEvent(41*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/sleep_voice") end),
 			},
-		})
+            endtimeline =
+            {
+                TimeEvent(12 * FRAMES, StartFlapping),
+            },
+        },
+        {
+            onexitsleep = CleanupIfSleepInterrupted,
+            onexitsleeping = CleanupIfSleepInterrupted,
+            onexitwake = RestoreFlapping,
+            onwake = StopFlapping,
+        })
 
 return StateGraph("SGcritter_glomling", states, events, "idle", actionhandlers)
-

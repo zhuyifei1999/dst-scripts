@@ -156,7 +156,7 @@ function SkinsItemPopUp:SetItemDisplay()
     if CLOTHING[item_type] == nil then
         -- either a base skin or a craftable
         item_data = Prefabs[item_type]
-        self.spawn_portal:GetAnimState():OverrideSkinSymbol("SWAP_ICON", item_data.ui_preview.build, "SWAP_ICON")
+        self.spawn_portal:GetAnimState():OverrideSkinSymbol("SWAP_ICON", item_data.build_name, "SWAP_ICON")
 
     else
         item_data = CLOTHING[item_type]

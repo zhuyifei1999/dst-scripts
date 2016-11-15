@@ -39,6 +39,15 @@ function Commander:ShareTargetToAllSoldiers(target)
     end
 end
 
+function Commander:IsAnySoldierNotAlert()
+    for k, v in pairs(self.soldiers) do
+        if (k.components.sleeper ~= nil and k.components.sleeper:IsAsleep()) or
+            (k.components.freezable ~= nil and k.components.freezable:IsFrozen()) then
+            return true
+        end
+    end
+end
+
 function Commander:AlertAllSoldiers()
     for k, v in pairs(self.soldiers) do
         if k.components.freezable ~= nil and k.components.freezable:IsFrozen() then

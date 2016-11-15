@@ -538,8 +538,8 @@ function DressupPanel:GetSkinOptionsForSlot(slot)
 						local buildfile = item
 						if slot == "base" then 
 							local skinsData = Prefabs[item]
-							if skinsData and skinsData.ui_preview then 
-								buildfile = skinsData.ui_preview.build
+							if skinsData and skinsData.build_name then 
+								buildfile = skinsData.build_name
 							end
 						else
 							local clothing_data = CLOTHING[item]

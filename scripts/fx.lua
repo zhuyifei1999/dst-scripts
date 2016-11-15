@@ -332,6 +332,13 @@ local fx =
         sound = "dontstarve/common/spawn/spawnportal_spawnplayer",
     },]]
     {
+        name = "spawn_fx_small_high",
+        bank = "spawn_fx",
+        build = "puff_spawning",
+        anim = "small_high",
+        sound = "dontstarve/common/spawn/spawnportal_spawnplayer",
+    },
+    {
         name = "splash_snow_fx",
         bank = "splash",
         build = "splash_snow",

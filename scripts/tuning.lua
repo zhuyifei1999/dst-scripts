@@ -251,7 +251,11 @@ function Tune(overrides)
 	    WILSON_RUN_SPEED = 6,
 
 	    CRITTER_WALK_SPEED = 6,
-	    CRITTER_HUNGERTIME = total_day_time * 3.14159265359 * 0.75,
+	    CRITTER_HUNGERTIME = total_day_time * 3.25,
+	    CRITTER_HUNGERTIME_MIN = total_day_time * 2,
+	    CRITTER_HUNGERTIME_MAX = total_day_time * 4.5,
+	    CRITTER_HUNGERTIME_DELTA = seg_time * 4.0,
+	    CRITTER_EMOTE_DELAY = seg_time * 0.5,
 
 	    PERD_SPAWNCHANCE = 0.1,
 	    PERD_DAMAGE = 20,
@@ -1396,7 +1400,7 @@ function Tune(overrides)
 		WOODWALL_HEALTH = 200,
 		STONEWALL_HEALTH = 400,
 		RUINSWALL_HEALTH = 800,
-
+		
 		MOONROCKWALL_HEALTH = 600,
 		MOONROCKWALL_PLAYERDAMAGEMOD = .25,
 		MOONROCKWALL_WORK = 25,

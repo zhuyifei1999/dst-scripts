@@ -26,6 +26,29 @@ local function CalcFacingAngle(rot)
 	return CalcRotationEnum(rot) * 45 
 end
 
+local function FindPairedDoor(inst)
+	if inst.doorpairside == nil then
+		return nil
+	end
+	
+	local x, y, z = inst.Transform:GetWorldPosition()
+	
+	local rot = inst.Transform:GetRotation()
+	local search_x = -math.sin(rot / RADIANS) * 1.2
+	local search_y = math.cos(rot / RADIANS) * 1.2
+    
+    search_x = x + (inst.doorpairside == 2 and search_x or -search_x)
+    search_y = z + (inst.doorpairside == 2 and -search_y or search_y)
+    
+    local other_door = TheSim:FindEntities(search_x,0,search_y, 0.25, {"wall"})[1]
+	return (other_door and other_door.isdoor and other_door.doorpairside ~= inst.doorpairside) and other_door or nil
+end
+
+local function GetNeighbors(inst)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	return TheSim:FindEntities(x,0,z, 1.5, {"wall"})
+end
+
 local function SetOrientation(inst, rotation)
 	rotation = CalcFacingAngle(rotation)
 
@@ -44,28 +67,32 @@ local function SetOrientation(inst, rotation)
 end
 
 local function FixUpFenceOrientation(inst, deployed)
-	local x, y, z = inst.Transform:GetWorldPosition()
-	local neighbors = TheSim:FindEntities(x,0,z, 1.5, {"wall"})
+	local neighbors = GetNeighbors(inst)
 
 	local neighbor = neighbors[1] ~= inst and neighbors[1] or neighbors[2]
 	local rot = 0
 	
 	if neighbor ~= nil then
+		local x, y, z = inst.Transform:GetWorldPosition()
 		local dir = Vector3(x, 0, z) - Vector3(neighbor.Transform:GetWorldPosition())
 		rot = math.atan2(dir.x, dir.z) * RADIANS
 
-		if deployed then -- if deployed beside another wall, then mark this as isaligned. If the other wall is not aligned then align it
-			inst.isaligned = true
-			for i = 2, #neighbors do
+		if deployed then
+			for i = 1, #neighbors do
 				local n = neighbors[i]
-				if n.isdoor and n.doorpairside == nil and inst.doorpairside == nil then
-					inst.doorpairside = (dir.x > 0 or (dir.x == 0 and dir.z == 1)) and 2 or 1
-					n.doorpairside = inst.doorpairside == 1 and 2 or 1
-					n.AnimState:PlayAnimation(GetAnimName(n, "idle"))
-				end
-				if (not n.isaligned) and n:HasTag("alignwall") then
-					n.isaligned = true
-					SetOrientation(n, rot)
+				if n ~= inst then
+
+					local ndir = Vector3(x, 0, z) - Vector3(n.Transform:GetWorldPosition())
+					local nrot = math.atan2(ndir.x, ndir.z) * RADIANS
+
+					if n.isdoor and inst.isdoor and n.doorpairside == nil and inst.doorpairside == nil then
+						inst.doorpairside = (ndir.x > 0 or (ndir.x == 0 and ndir.z == 1)) and 2 or 1
+						n.doorpairside = inst.doorpairside == 1 and 2 or 1
+						n.AnimState:PlayAnimation(GetAnimName(n, "idle"))
+					end
+					if n:HasTag("alignwall") and #GetNeighbors(n) <= 2 then
+						SetOrientation(n, nrot)
+					end
 				end
 			end
 		end
@@ -135,6 +162,10 @@ end
 
 -------------------------------------------------------------------------------
 local function OpenDoor(inst, skiptransition)
+	if inst == nil then
+		return
+	end
+
     inst._isopen:set(true)
 	clearobstacle(inst)
 
@@ -146,6 +177,10 @@ local function OpenDoor(inst, skiptransition)
 end
 
 local function CloseDoor(inst, skiptransition)
+	if inst == nil then
+		return
+	end
+
     inst._isopen:set(false)
 	makeobstacle(inst)
 
@@ -158,10 +193,13 @@ end
 
 local function ToggleDoor(inst)
 	inst.components.activatable.inactive = true
+
 	if inst._isopen:value() then
 		CloseDoor(inst)
+		CloseDoor(FindPairedDoor(inst))
 	else
 		OpenDoor(inst)
+		OpenDoor(FindPairedDoor(inst))
 	end
 end
 
@@ -173,7 +211,6 @@ end
 local function onsave(inst, data)
 	local rot = CalcRotationEnum(inst.Transform:GetRotation())
 	data.rot = rot > 0 and rot or nil
-	data.isaligned = inst.isaligned
 	data.doorpairside = inst.doorpairside
 	
 	if inst._isopen and inst._isopen:value() then
@@ -184,12 +221,10 @@ end
 local function onload(inst, data)
     if data ~= nil then
 		inst.doorpairside = data.doorpairside
-		inst.isaligned = data.isaligned
 
 		local rotation = 0
 		if data.rotation ~= nil then
 			-- updates save data to new format, safe to remove this when we go out of the beta branch
-			inst.isaligned = true
 	        rotation = data.rotation - 90
 	    elseif data.rot ~= nil then
 		    rotation = data.rot*45
@@ -413,6 +448,6 @@ return MakeWall("fence", {wide="fence", narrow="fence_thin"}, false),
     MakeInvItem("fence_item", "fence", "fence"),
     MakeWallPlacer("fence_item_placer", {wide="fence"}, false),
 
-	MakeWall("fence_gate", {wide="fence_gate", narrow="fence_gate"}, true),
+	MakeWall("fence_gate", {wide="fence_gate", narrow="fence_gate_thin"}, true),
     MakeInvItem("fence_gate_item", "fence_gate", "fence_gate"),
     MakeWallPlacer("fence_gate_item_placer", {wide="fence_gate"}, true)

@@ -178,6 +178,7 @@ local prefabs =
     "spawn_fx_medium",
     "spawn_fx_small",
     "spawn_fx_tiny",
+    "spawn_fx_small_high",
 
     "migration_portal",
     "shard_network",

@@ -113,10 +113,11 @@ local states =
                 end
             end
             inst.AnimState:PlayAnimation("atk_side_loop_pre")
-            inst.AnimState:PushAnimation("atk_side_loop", false)
 
             inst.sg.statemem.task = inst:DoPeriodicTask(TUNING.SHADOW_BISHOP.ATTACK_TICK, DoSwarmAttack, TUNING.SHADOW_BISHOP.ATTACK_START_TICK)
             inst.sg.statemem.fxtask = inst:DoPeriodicTask(1.2, DoSwarmFX, .5)
+
+            inst.sg:SetTimeout(130 * FRAMES)
         end,
 
         onupdate = function(inst)
@@ -134,13 +135,19 @@ local states =
 
         events =
         {
-            EventHandler("animqueueover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg.statemem.attack = true
-                    inst.sg:GoToState("attack_loop_pst", inst.sg.statemem.target)
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() and inst.AnimState:IsCurrentAnimation("atk_side_loop_pre") then
+                    --V2C: 1) we don't push this anim coz it might make the pre anim loop on clients
+                    --     2) we loop this anim and use timeout so that it looks smoother on clients
+                    inst.AnimState:PlayAnimation("atk_side_loop", true)
                 end
             end),
         },
+
+        ontimeout = function(inst)
+            inst.sg.statemem.attack = true
+            inst.sg:GoToState("attack_loop_pst", inst.sg.statemem.target)
+        end,
 
         onexit = function(inst)
             inst.sg.statemem.task:Cancel()

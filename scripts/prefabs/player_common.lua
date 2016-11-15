@@ -1253,12 +1253,15 @@ end
 --------------------------------------------------------------------------
 
 local function DoEffects(pet)
-    SpawnPrefab("spawn_fx_tiny").Transform:SetPosition(pet.Transform:GetWorldPosition())
+    SpawnPrefab(pet:HasTag("flying") and "spawn_fx_small_high" or "spawn_fx_small").Transform:SetPosition(pet.Transform:GetWorldPosition())
 end
 
 local function OnSpawnPet(inst, pet)
     --Delayed in case we need to relocate for migration spawning
     pet:DoTaskInTime(0, DoEffects)
+    if pet.FadeIn ~= nil then
+        pet:FadeIn()
+    end
 end
 
 local function OnDespawnPet(inst, pet)

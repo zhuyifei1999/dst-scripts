@@ -74,6 +74,18 @@ local function OnBurnt(inst)
     inst.components.finiteuses:SetUses(0)
 end
 
+local function OnSave(inst, data)
+    if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() or inst:HasTag("burnt") then
+        data.burnt = true
+    end
+end
+
+local function OnLoad(inst, data)
+    if data ~= nil and data.burnt then
+        inst.components.burnable.onburnt(inst)
+    end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -125,6 +137,9 @@ local function fn()
     inst:ListenForEvent("burntup", OnBurnt)
     MakeSmallPropagator(inst)
     MakeHauntableLaunch(inst)
+
+    inst.OnSave = OnSave
+    inst.OnLoad = OnLoad
 
     return inst
 end

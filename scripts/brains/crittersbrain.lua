@@ -4,9 +4,11 @@ require "behaviours/faceentity"
 require "behaviours/panic"
 
 
-local MIN_FOLLOW_DIST = 0
-local TARGET_FOLLOW_DIST = 3
-local MAX_FOLLOW_DIST = 4
+local TARGET_FOLLOW_DIST = 4
+local MAX_FOLLOW_DIST = 4.5
+
+local TARGET_FLYING_FOLLOW_DIST = 3
+local MAX_FLYING_FOLLOW_DIST = 4
 
 local COMBAT_MIN_FOLLOW_DIST = 8
 local COMBAT_TARGET_FOLLOW_DIST = 12
@@ -36,6 +38,7 @@ local function LoveOwner(inst)
     return owner ~= nil
 		and not owner:HasTag("playerghost")
         and math.random() < 0.1
+        and (GetTime() - (inst.sg.mem.prevemotetime or 0))
         and BufferedAction(inst, owner, ACTIONS.NUZZLE)
         or nil
 end
@@ -62,8 +65,10 @@ function CritterBrain:OnStart()
 						Follow(self.inst, function() return self.inst.components.follower.leader end, COMBAT_MIN_FOLLOW_DIST, COMBAT_TARGET_FOLLOW_DIST, COMBAT_MAX_FOLLOW_DIST),
 						FaceEntity(self.inst, GetOwner, KeepFaceTargetFn),
 					}),
-				
-				Follow(self.inst, function() return self.inst.components.follower.leader end, MIN_FOLLOW_DIST, TARGET_FOLLOW_DIST, MAX_FOLLOW_DIST),
+                IfNode(function() return self.flying end, "FlyingFollow",
+                    Follow(self.inst, function() return self.inst.components.follower.leader end, 0, TARGET_FLYING_FOLLOW_DIST, MAX_FLYING_FOLLOW_DIST)),
+                IfNode(function() return not self.flying end, "GroundFollow",
+    				Follow(self.inst, function() return self.inst.components.follower.leader end, 0, TARGET_FOLLOW_DIST, MAX_FOLLOW_DIST)),
 		        FailIfRunningDecorator(FaceEntity(self.inst, GetOwner, KeepFaceTargetFn)),
 				WhileNode(function() return OwnerIsClose(self.inst) and self.inst:IsAffectionate() end, "Affection",
 					SequenceNode{
@@ -76,6 +81,10 @@ function CritterBrain:OnStart()
         Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("home") end, MAX_WANDER_DIST),
     }, .25)
     self.bt = BT(self.inst, root)
+end
+
+function CritterBrain:OnInitializationComplete()
+    self.flying = self.inst:HasTag("flying")
 end
 
 return CritterBrain

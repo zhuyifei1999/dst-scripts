@@ -74,10 +74,10 @@ SetSharedLootTable('dragonfly',
 local function PushMusic(inst)
     if ThePlayer == nil or inst:HasTag("flight") then
         inst._playingmusic = false
-    elseif ThePlayer:IsNear(inst, inst._playingmusic and 50 or 20) then
+    elseif ThePlayer:IsNear(inst, inst._playingmusic and 60 or 20) then
         inst._playingmusic = true
-        ThePlayer:PushEvent("triggeredevent", { name = "dragonfly" })
-    elseif inst._playingmusic and not ThePlayer:IsNear(inst, 55) then
+        ThePlayer:PushEvent("triggeredevent", { name = "dragonfly", duration = 15 })
+    elseif inst._playingmusic and not ThePlayer:IsNear(inst, 64) then
         inst._playingmusic = false
     end
 end
@@ -196,6 +196,11 @@ local function ResetLavae(inst)
     end
 end
 
+local function OnDeath(inst)
+    ResetLavae(inst)
+    SetEngaged(inst, false)
+end
+
 local function SoftReset(inst)
     inst.SoftResetTask = nil
     --Double check for nearby players & combat targets before reseting.
@@ -246,7 +251,6 @@ local function TrySoftReset(inst)
         inst.SoftResetTask = inst:DoTaskInTime(10, SoftReset)
     end 
 end
-
 
 local function OnTargetDeathTask(inst)
     inst._ontargetdeathtask = nil
@@ -526,7 +530,7 @@ local function fn()
     inst:ListenForEvent("moisturedelta", OnMoistureDelta)
     inst:ListenForEvent("timerdone", OnTimerDone)
     inst:ListenForEvent("attacked", OnAttacked)
-    inst:ListenForEvent("death", ResetLavae) --Get rid of lavaes.
+    inst:ListenForEvent("death", OnDeath) --Get rid of lavaes.
 
     -- Variables
 

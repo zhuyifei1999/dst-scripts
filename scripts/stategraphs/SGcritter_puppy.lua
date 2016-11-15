@@ -1,19 +1,20 @@
 require("stategraphs/commonstates")
 require("stategraphs/SGcritter_common")
 
-local actionhandlers = 
+local actionhandlers =
 {
 }
 
-local events=
+local events =
 {
-	SGCritterEvents.OnGoToSleep(),
 	SGCritterEvents.OnEat(),
 
+    CommonHandlers.OnSleepEx(),
+    CommonHandlers.OnWakeEx(),
     CommonHandlers.OnLocomote(false,true),
 }
 
-local states=
+local states =
 {
 }
 
@@ -57,7 +58,7 @@ SGCritterStates.AddNuzzle(states, actionhandlers,
             TimeEvent(36*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/pupington/sleep") end),
         })
         
-CommonStates.AddWalkStates(states,
+SGCritterStates.AddWalkStates(states,
 	{
 		starttimeline = 
 		{
@@ -68,9 +69,9 @@ CommonStates.AddWalkStates(states,
 			TimeEvent(1*FRAMES, function(inst) PlayFootstep(inst, 0.25) end),
 			TimeEvent(4*FRAMES, function(inst) PlayFootstep(inst, 0.25) end),
 		},
-	}, nil, true)
+	}, true)
 
-CommonStates.AddSleepStates(states,
+CommonStates.AddSleepExStates(states,
 		{
 			starttimeline = 
 			{
@@ -82,6 +83,4 @@ CommonStates.AddSleepStates(states,
 			},
 		})
 
-
 return StateGraph("SGcritter_puppy", states, events, "idle", actionhandlers)
-

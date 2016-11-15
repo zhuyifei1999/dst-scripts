@@ -76443,7 +76443,7 @@ msgstr ""
 
 #. STRINGS.SKIN_NAMES.spear_bee
 msgctxt "STRINGS.SKIN_NAMES.spear_bee"
-msgid "Beeyonet"
+msgid "Bumble Spear"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.strawhat_floppy

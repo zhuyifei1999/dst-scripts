@@ -599,7 +599,13 @@ function LocoMotor:Stop(sgparams)
     self.wantstomoveforward = false
     self.wantstorun = false
 
-    self:StopMoving()
+    if self.softstop and self.inst.sg ~= nil and self.inst.sg:HasStateTag("softstop") then
+        self.isrunning = false
+        --Let stategraph handle stopping physics
+        --self.inst.Physics:Stop()
+    else
+        self:StopMoving()
+    end
 
     self.inst:PushEvent("locomote", sgparams)
     self:StopUpdatingInternal()

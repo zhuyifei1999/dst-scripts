@@ -1,19 +1,20 @@
 require("stategraphs/commonstates")
 require("stategraphs/SGcritter_common")
 
-local actionhandlers = 
+local actionhandlers =
 {
 }
 
-local events=
+local events =
 {
-	SGCritterEvents.OnGoToSleep(),
 	SGCritterEvents.OnEat(),
 
+    CommonHandlers.OnSleepEx(),
+    CommonHandlers.OnWakeEx(),
     CommonHandlers.OnLocomote(false,true),
 }
 
-local states=
+local states =
 {
 }
 
@@ -37,18 +38,23 @@ local emotes =
 
 SGCritterStates.AddIdle(states, #emotes)
 SGCritterStates.AddEmotes(states, emotes)
-SGCritterStates.AddEat(states, nil)
+SGCritterStates.AddEat(states,
+        {
+            TimeEvent(5*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/kittington/eat_pre") end),
+            TimeEvent(21*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/kittington/eat") end),
+        })
 SGCritterStates.AddHungry(states,
         {
-            TimeEvent(3*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/kittington/yawn") end),
+            TimeEvent(23*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/kittington/disstress") end),
+            TimeEvent(43*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/kittington/disstress") end),
         })
 SGCritterStates.AddNuzzle(states, actionhandlers,
         {
             TimeEvent(12*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/kittington/emote_nuzzle") end),
         })
 
-CommonStates.AddWalkStates(states, nil, nil, true)
-CommonStates.AddSleepStates(states,
+SGCritterStates.AddWalkStates(states, nil, true)
+CommonStates.AddSleepExStates(states,
 		{
 			starttimeline = 
 			{
@@ -60,6 +66,4 @@ CommonStates.AddSleepStates(states,
 			},
 		})
 
-
 return StateGraph("SGcritter_kitten", states, events, "idle", actionhandlers)
-

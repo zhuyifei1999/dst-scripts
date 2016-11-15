@@ -1,19 +1,20 @@
 require("stategraphs/commonstates")
 require("stategraphs/SGcritter_common")
 
-local actionhandlers = 
+local actionhandlers =
 {
 }
 
-local events=
+local events =
 {
-	SGCritterEvents.OnGoToSleep(),
-	SGCritterEvents.OnEat(),
+    SGCritterEvents.OnEat(),
 
+    CommonHandlers.OnSleepEx(),
+    CommonHandlers.OnWakeEx(),
     CommonHandlers.OnLocomote(false,true),
 }
 
-local states=
+local states =
 {
 }
 
@@ -69,12 +70,35 @@ SGCritterStates.AddNuzzle(states, actionhandlers,
             TimeEvent(15*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/emote") end),
         })
 
-CommonStates.AddWalkStates(states, nil, nil, true)
-CommonStates.AddSleepStates(states,
+SGCritterStates.AddWalkStates(states, nil, true)
+
+
+local function StartFlapping(inst)
+    inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/fly_LP", "flying")
+end
+
+local function RestoreFlapping(inst)
+    if not inst.SoundEmitter:PlayingSound("flying") then
+        StartFlapping(inst)
+    end
+end
+
+local function StopFlapping(inst)
+    inst.SoundEmitter:KillSound("flying")
+end
+
+local function CleanupIfSleepInterrupted(inst)
+    if not inst.sg.statemem.continuesleeping then
+        RestoreFlapping(inst)
+    end
+end
+
+CommonStates.AddSleepExStates(states,
 		{
-			starttimeline = 
+			starttimeline =
 			{
 				TimeEvent(11*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/sleep_pre") end),
+                TimeEvent(44*FRAMES, StopFlapping),
 				TimeEvent(48*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/sleep") end),
 			},
 			sleeptimeline = 
@@ -85,9 +109,14 @@ CommonStates.AddSleepStates(states,
 			endtimeline = 
 			{
 				TimeEvent(2*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/blink") end),
+                TimeEvent(12*FRAMES, StartFlapping),
 			},
-		})
-
+		},
+        {
+            onexitsleep = CleanupIfSleepInterrupted,
+            onexitsleeping = CleanupIfSleepInterrupted,
+            onexitwake = RestoreFlapping,
+            onwake = StopFlapping,
+        })
 
 return StateGraph("SGcritter_dragonling", states, events, "idle", actionhandlers)
-

@@ -3,7 +3,6 @@ require "behaviours/faceentity"
 require "behaviours/wander"
 require "behaviours/leash"
 
-local PHYS_RAD = 1.4
 local FLEE_DELAY = 15
 local DODGE_DELAY = 5
 local MAX_DODGE_TIME = 3
@@ -37,6 +36,7 @@ local function TryScreech(self)
         self._lastengaged = GetTime()
         if not self._engaged and self._lastengaged - self._lastdisengaged > 2 then
             self._engaged = true
+            self.inst.sg.mem.wantstoalert = nil
             return "screech"
         end
     else
@@ -44,6 +44,12 @@ local function TryScreech(self)
         if self._engaged and self._lastdisengaged - self._lastengaged > 5 then
             self._engaged = false
         end
+    end
+    if self.inst.sg.mem.wantstoalert then
+        self.inst.sg.mem.wantstoalert = nil
+        return self.inst.components.commander:IsAnySoldierNotAlert()
+            and "screech"
+            or nil
     end
 end
 
@@ -73,13 +79,17 @@ local function ShouldUseSpecialMove(self)
 end
 
 local function ShouldChase(self)
+    local target = self.inst.components.combat.target
     if self.inst.focustarget_cd <= 0 then
-        return true
-    elseif self.inst.components.combat.target == nil or not self.inst.components.combat.target:IsValid() then
+        return not (self.inst.components.combat:InCooldown() and
+                    target ~= nil and
+                    target:IsValid() and
+                    target:IsNear(self.inst, target.Physics ~= nil and TUNING.BEEQUEEN_ATTACK_RANGE + target.Physics:GetRadius() or TUNING.BEEQUEEN_ATTACK_RANGE))
+    elseif target == nil or not target:IsValid() then
         self._shouldchase = false
         return false
     end
-    local distsq = self.inst:GetDistanceSqToInst(self.inst.components.combat.target)
+    local distsq = self.inst:GetDistanceSqToInst(target)
     local range = TUNING.BEEQUEEN_CHASE_TO_RANGE + (self._shouldchase and 0 or 3)
     self._shouldchase = distsq >= range * range
     if self._shouldchase then
@@ -87,17 +97,14 @@ local function ShouldChase(self)
     elseif self.inst.components.combat:InCooldown() then
         return false
     end
-    range = TUNING.BEEQUEEN_ATTACK_RANGE + PHYS_RAD
+    range = TUNING.BEEQUEEN_ATTACK_RANGE + (target.Physics ~= nil and 1 + target.Physics:GetRadius() or 1)
     return distsq <= range * range
 end
 
 local function CalcDodgeMult(self)
-    local x, y, z = self.inst.Transform:GetWorldPosition()
-    local rangesq = TUNING.BEEQUEEN_ATTACK_RANGE + PHYS_RAD
-    rangesq = rangesq * rangesq
     local found = false
     for k, v in pairs(self.inst.components.grouptargeter:GetTargets()) do
-        if k:GetDistanceSqToPoint(x, y, z) < rangesq then
+        if self.inst:IsNear(k, k.Physics ~= nil and TUNING.BEEQUEEN_ATTACK_RANGE + k.Physics:GetRadius() or TUNING.BEEQUEEN_ATTACK_RANGE) then
             if found then
                 return .5
             end
@@ -112,82 +119,89 @@ local function ShouldDodge(self)
         return true
     end
     local t = GetTime()
-    if self.inst.components.combat:GetLastAttackedTime() + DODGE_DELAY < t then
+    if self.inst.sg.mem.wantstododge then
+        --Override dodge timer once
+        self.inst.sg.mem.wantstododge = nil
+    elseif self.inst.components.combat:GetLastAttackedTime() + DODGE_DELAY < t then
         --Reset dodge timer
         self._dodgetime = nil
+        return false
     elseif self._dodgetime == nil then
         --Start dodge timer
         self._dodgetime = t
-    elseif self._dodgetime + DODGE_DELAY * CalcDodgeMult(self) < t then
-        --Find new dodge destination
-        local homepos = GetHomePos(self.inst)
-        local pos = self.inst:GetPosition()
-        local dangerrangesq = TUNING.BEEQUEEN_CHASE_TO_RANGE * TUNING.BEEQUEEN_CHASE_TO_RANGE
-        local maxrangesq = TUNING.BEEQUEEN_DEAGGRO_DIST * TUNING.BEEQUEEN_DEAGGRO_DIST
-        local mindanger = math.huge
-        local bestdest = Vector3()
-        local tests = {}
-        for i = 2, 6 do
-            table.insert(tests, { rsq = i * i })
-        end
-        for i = 10, 20, 5 do
-            local r = i + math.random() * 5
-            local theta = 2 * PI * math.random()
-            local dtheta = PI * .25
-            for attempt = 1, 8 do
-                local offset = FindWalkableOffset(pos, theta, r, 1, true, true)
-                if offset ~= nil then
-                    local x, z = offset.x + pos.x, offset.z + pos.z
-                    if distsq(homepos.x, homepos.z, x, z) < maxrangesq then
-                        local nx, nz = offset.x / r, offset.z / r
-                        for j, test in ipairs(tests) do
-                            test.x = nx * (j - .5) + pos.x
-                            test.z = nz * (j - .5) + pos.z
-                        end
-                        local danger = 0
-                        for _, v in ipairs(AllPlayers) do
-                            if not v:HasTag("playerghost") and v.entity:IsVisible() then
-                                local vx, vy, vz = v.Transform:GetWorldPosition()
-                                if distsq(vx, vz, x, z) < dangerrangesq then
+        return false
+    elseif self._dodgetime + DODGE_DELAY * CalcDodgeMult(self) >= t then
+        --Wait dodge timer
+        return false
+    end
+    --Find new dodge destination
+    local homepos = GetHomePos(self.inst)
+    local pos = self.inst:GetPosition()
+    local dangerrangesq = TUNING.BEEQUEEN_CHASE_TO_RANGE * TUNING.BEEQUEEN_CHASE_TO_RANGE
+    local maxrangesq = TUNING.BEEQUEEN_DEAGGRO_DIST * TUNING.BEEQUEEN_DEAGGRO_DIST
+    local mindanger = math.huge
+    local bestdest = Vector3()
+    local tests = {}
+    for i = 2, 6 do
+        table.insert(tests, { rsq = i * i })
+    end
+    for i = 10, 20, 5 do
+        local r = i + math.random() * 5
+        local theta = 2 * PI * math.random()
+        local dtheta = PI * .25
+        for attempt = 1, 8 do
+            local offset = FindWalkableOffset(pos, theta, r, 1, true, true)
+            if offset ~= nil then
+                local x, z = offset.x + pos.x, offset.z + pos.z
+                if distsq(homepos.x, homepos.z, x, z) < maxrangesq then
+                    local nx, nz = offset.x / r, offset.z / r
+                    for j, test in ipairs(tests) do
+                        test.x = nx * (j - .5) + pos.x
+                        test.z = nz * (j - .5) + pos.z
+                    end
+                    local danger = 0
+                    for _, v in ipairs(AllPlayers) do
+                        if not v:HasTag("playerghost") and v.entity:IsVisible() then
+                            local vx, vy, vz = v.Transform:GetWorldPosition()
+                            if distsq(vx, vz, x, z) < dangerrangesq then
+                                danger = danger + 1
+                            end
+                            for j, test in ipairs(tests) do
+                                if distsq(vx, vz, test.x, test.z) < test.rsq then
                                     danger = danger + 1
                                 end
-                                for j, test in ipairs(tests) do
-                                    if distsq(vx, vz, test.x, test.z) < test.rsq then
-                                        danger = danger + 1
-                                    end
-                                end
-                            end
-                        end
-                        if danger < mindanger then
-                            mindanger = danger
-                            bestdest.x, bestdest.z = x, z
-                            if danger <= 0 then
-                                break
                             end
                         end
                     end
+                    if danger < mindanger then
+                        mindanger = danger
+                        bestdest.x, bestdest.z = x, z
+                        if danger <= 0 then
+                            break
+                        end
+                    end
                 end
-                theta = theta + dtheta
             end
-            if mindanger <= 0 then
-                break
-            end
+            theta = theta + dtheta
         end
-        if mindanger < math.huge then
-            self._dodgedest = bestdest
-            self._dodgetime = nil
-            self.inst.components.locomotor.walkspeed = TUNING.BEEQUEEN_DODGE_SPEED
-            self.inst.hit_recovery = TUNING.BEEQUEEN_DODGE_HIT_RECOVERY
-            self.inst.sg.mem.last_hit_time = GetTime()
-            return true
+        if mindanger <= 0 then
+            break
         end
-        --Reset dodge timer to retry in half the time
-        self._dodgetime = t - DODGE_DELAY * .5
     end
+    if mindanger < math.huge then
+        self._dodgedest = bestdest
+        self._dodgetime = nil
+        self.inst.components.locomotor.walkspeed = TUNING.BEEQUEEN_DODGE_SPEED
+        self.inst.hit_recovery = TUNING.BEEQUEEN_DODGE_HIT_RECOVERY
+        self.inst.sg.mem.last_hit_time = t
+        return true
+    end
+    --Reset dodge timer to retry in half the time
+    self._dodgetime = t - DODGE_DELAY * .5
     return false
 end
 
-local function StopDodging(self)
+function BeeQueenBrain:OnStop()
     self._dodgedest = nil
     self.inst.components.locomotor.walkspeed = TUNING.BEEQUEEN_SPEED
     self.inst.hit_recovery = TUNING.BEEQUEEN_HIT_RECOVERY
@@ -203,7 +217,7 @@ function BeeQueenBrain:OnStart()
                     NotDecorator(FailIfSuccessDecorator(
                         Leash(self.inst, function() return self._dodgedest end, 2, 2))),
                 },
-                ActionNode(function() StopDodging(self) end),
+                ActionNode(function() self:OnStop() end),
             }),
         WhileNode(function() return ShouldUseSpecialMove(self) end, "SpecialMoves",
             ActionNode(function() self.inst:PushEvent(self._act) end)),

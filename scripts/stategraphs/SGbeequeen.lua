@@ -284,6 +284,7 @@ local states =
                 if inst.sg.mem.focuscount ~= nil then
                     inst.sg.mem.focuscount = nil
                     inst.sg.mem.focustargets = nil
+                    inst.components.sanityaura.aura = 0
                     for i, v in ipairs(inst.components.commander:GetAllSoldiers()) do
                         v:FocusTarget(nil)
                     end
@@ -297,6 +298,9 @@ local states =
 
         onexit = function(inst)
             --Should NOT happen!
+            if inst.sg.mem.focuscount ~= nil then
+                inst.components.sanityaura.aura = -TUNING.SANITYAURA_HUGE
+            end
             inst.components.health:SetInvincible(false)
             inst.DynamicShadow:Enable(true)
             inst:StartHoney()
@@ -360,6 +364,7 @@ local states =
             TimeEvent(14 * FRAMES, DoScreech),
             TimeEvent(15 * FRAMES, DoScreechAlert),
             TimeEvent(28 * FRAMES, function(inst)
+                inst.components.sanityaura.aura = 0
                 inst.SoundEmitter:PlaySound("dontstarve/bee/beehive_hit")
                 ShakeIfClose(inst)
                 if inst.persists then
@@ -384,6 +389,9 @@ local states =
 
         onexit = function(inst)
             --Should NOT happen!
+            if inst.sg.mem.focuscount ~= nil then
+                inst.components.sanityaura.aura = -TUNING.SANITYAURA_HUGE
+            end
             inst:RemoveTag("NOCLICK")
             inst.SoundEmitter:PlaySound("dontstarve/creatures/together/bee_queen/wings_LP", "flying")
             inst:StartHoney()
@@ -535,6 +543,7 @@ local states =
 
         onenter = function(inst)
             FaceTarget(inst)
+            inst.components.sanityaura.aura = -TUNING.SANITYAURA_HUGE
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("command2")
         end,
@@ -549,6 +558,7 @@ local states =
             TimeEvent(18 * FRAMES, function(inst)
                 inst.sg.mem.wantstofocustarget = nil
                 inst.sg.mem.focuscount = 0
+                inst.sg.mem.focustargets = nil
                 inst.components.timer:StartTimer("focustarget_cd", inst.focustarget_cd)
 
                 local soldiers = inst.components.commander:GetAllSoldiers()
@@ -604,12 +614,13 @@ local states =
                                 table.remove(sorted, 1).inst:FocusTarget(v)
                             end
                         end
+                        inst.sg.mem.focustargets = targets
                     elseif #targets > 0 then
                         for i, v in ipairs(soldiers) do
                             v:FocusTarget(targets[1])
                         end
+                        inst.sg.mem.focustargets = targets
                     end
-                    inst.sg.mem.focustargets = targets
                 end
             end),
             CommonHandlers.OnNoSleepTimeEvent(25 * FRAMES, function(inst)
@@ -623,6 +634,12 @@ local states =
         {
             CommonHandlers.OnNoSleepAnimOver("focustarget_loop"),
         },
+
+        onexit = function(inst)
+            if inst.sg.mem.focuscount == nil then
+                inst.components.sanityaura.aura = 0
+            end
+        end,
     },
 
     State{
@@ -631,6 +648,7 @@ local states =
 
         onenter = function(inst)
             FaceTarget(inst)
+            inst.components.sanityaura.aura = -TUNING.SANITYAURA_HUGE
             if inst.sg.mem.focuscount >= 3 or
                 inst.sg.mem.focustargets == nil or
                 inst.components.commander:GetNumSoldiers() <= 0 then
@@ -709,6 +727,7 @@ local states =
             inst.sg.mem.focustargets = nil
             if inst.components.commander:GetNumSoldiers() <= 0 then
                 inst.sg.statemem.ended = true
+                inst.components.sanityaura.aura = 0
                 inst.sg:GoToState("idle")
             else
                 inst.components.locomotor:StopMoving()
@@ -725,6 +744,7 @@ local states =
             end),
             TimeEvent(23 * FRAMES, function(inst)
                 inst.sg.statemem.ended = true
+                inst.components.sanityaura.aura = 0
                 for i, v in ipairs(inst.components.commander:GetAllSoldiers()) do
                     v:FocusTarget(nil)
                 end
@@ -743,6 +763,7 @@ local states =
 
         onexit = function(inst)
             if not inst.sg.statemem.ended then
+                inst.components.sanityaura.aura = 0
                 for i, v in ipairs(inst.components.commander:GetAllSoldiers()) do
                     v:FocusTarget(nil)
                 end
@@ -764,6 +785,7 @@ CommonStates.AddSleepExStates(states,
         TimeEvent(8 * FRAMES, StopFlapping),
         TimeEvent(28 * FRAMES, function(inst)
             inst.sg:RemoveStateTag("caninterrupt")
+            inst.components.sanityaura.aura = 0
         end),
         TimeEvent(31 * FRAMES, function(inst)
             inst.SoundEmitter:PlaySound("dontstarve/bee/beehive_hit")
@@ -786,6 +808,8 @@ CommonStates.AddSleepExStates(states,
     onexitwake = RestoreFlapping,
     onsleep = function(inst)
         inst.sg:AddStateTag("caninterrupt")
+        inst.sg.mem.wantstododge = true
+        inst.sg.mem.wantstoalert = true
     end,
     onsleeping = function(inst)
         inst.SoundEmitter:PlaySound("dontstarve/creatures/together/bee_queen/sleep")
@@ -793,18 +817,19 @@ CommonStates.AddSleepExStates(states,
     onwake = function(inst)
         StopFlapping(inst)
         inst:StartHoney()
-        inst.sg.mem.wantstoscreech = true
     end,
 })
 
 local function OnOverrideFrozenSymbols(inst)
+    inst.components.sanityaura.aura = 0
     StopFlapping(inst)
     inst:StopHoney()
+    inst.sg.mem.wantstododge = true
+    inst.sg.mem.wantstoalert = true
 end
 local function OnClearFrozenSymbols(inst)
     StartFlapping(inst)
     inst:StartHoney()
-    inst.sg.mem.wantstoscreech = true
 end
 CommonStates.AddFrozenStates(states, OnOverrideFrozenSymbols, OnClearFrozenSymbols)
 

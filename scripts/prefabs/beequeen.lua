@@ -36,7 +36,6 @@ SetSharedLootTable( 'beequeen',
 --------------------------------------------------------------------------
 
 local brain = require("brains/beequeenbrain")
-local PHYS_RAD = 1.4
 
 --------------------------------------------------------------------------
 
@@ -145,21 +144,29 @@ local function RetargetFn(inst)
     UpdatePlayerTargets(inst)
 
     local target = inst.components.combat.target
-    local range = TUNING.BEEQUEEN_AGGRO_DIST
+    local inrange = target ~= nil and inst:IsNear(target, target.Physics ~= nil and TUNING.BEEQUEEN_ATTACK_RANGE + target.Physics:GetRadius() or TUNING.BEEQUEEN_ATTACK_RANGE)
 
-    if target ~= nil then
-        local meleerange = TUNING.BEEQUEEN_ATTACK_RANGE + PHYS_RAD
-        if inst:IsNear(target, meleerange) then
-            range = meleerange
-        end
-        if target:HasTag("player") then
-            local newplayer = inst.components.grouptargeter:TryGetNewTarget()
-            return newplayer ~= nil and newplayer:IsNear(inst, range) and newplayer or nil, true
-        end
+    if target ~= nil and target:HasTag("player") then
+        local newplayer = inst.components.grouptargeter:TryGetNewTarget()
+        return newplayer ~= nil
+            and newplayer:IsNear(inst,
+                (not inrange and TUNING.BEEQUEEN_AGGRO_DIST) or
+                (newplayer.Physics ~= nil and TUNING.BEEQUEEN_ATTACK_RANGE + newplayer.Physics:GetRadius()) or
+                TUNING.BEEQUEEN_ATTACK_RANGE)
+            and newplayer
+            or nil,
+            true
     end
 
-    local x, y, z = inst.Transform:GetWorldPosition()
-    local nearplayers = FindPlayersInRange(x, y, z, range, true)
+    local nearplayers = {}
+    for k, v in pairs(inst.components.grouptargeter:GetTargets()) do
+        if inst:IsNear(k,
+            (not inrange and TUNING.BEEQUEEN_AGGRO_DIST) or
+            (k.Physics ~= nil and TUNING.BEEQUEEN_ATTACK_RANGE + k.Physics:GetRadius()) or
+            TUNING.BEEQUEEN_ATTACK_RANGE) then
+            table.insert(nearplayers, k)
+        end
+    end
     return #nearplayers > 0 and nearplayers[math.random(#nearplayers)] or nil, true
 end
 
@@ -169,9 +176,13 @@ local function KeepTargetFn(inst, target)
 end
 
 local function OnAttacked(inst, data)
-    if not (inst.components.combat:HasTarget() and
-            inst.components.combat.target:HasTag("player") and
-            inst.components.combat.target:IsNear(inst, TUNING.BEEQUEEN_AGGRO_DIST)) then
+    local target = inst.components.combat.target
+    if not (target ~= nil and
+            target:HasTag("player") and
+            target:IsNear(inst,
+                (inst.focustarget_cd <= 0 and TUNING.BEEQUEEN_AGGRO_DIST) or
+                (target.Physics ~= nil and TUNING.BEEQUEEN_ATTACK_RANGE + target.Physics:GetRadius()) or
+                TUNING.BEEQUEEN_ATTACK_RANGE)) then
         inst.components.combat:SetTarget(data.attacker)
     end
     inst.components.commander:ShareTargetToAllSoldiers(data.attacker)
@@ -288,7 +299,7 @@ local function fn()
 
     inst.DynamicShadow:SetSize(4, 2)
 
-    MakeFlyingGiantCharacterPhysics(inst, 500, PHYS_RAD)
+    MakeFlyingGiantCharacterPhysics(inst, 500, 1.4)
 
     inst.AnimState:SetBank("bee_queen")
     inst.AnimState:SetBuild("bee_queen_build")
@@ -357,6 +368,8 @@ local function fn()
     inst.components.commander:SetTrackingDistance(40)
 
     inst:AddComponent("timer")
+
+    inst:AddComponent("sanityaura")
 
     inst:AddComponent("epicscare")
     inst.components.epicscare:SetRange(TUNING.BEEQUEEN_EPICSCARE_RANGE)
