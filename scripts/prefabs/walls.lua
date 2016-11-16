@@ -109,8 +109,11 @@ function MakeWallType(data)
             wall.Physics:Teleport(x, 0, z)
             wall.Physics:SetCollides(true)
             inst.components.stackable:Get():Remove()
-
-            TheWorld.Pathfinder:AddWall(x, 0, z)
+            
+            local aligned_ents = TheSim:FindEntities(x, 0, z, 1.5, {"alignwall"})
+			for k, v in pairs(aligned_ents) do
+				v:PushEvent("refreshalignment")
+			end
 
             if data.buildsound ~= nil then
                 wall.SoundEmitter:PlaySound(data.buildsound)

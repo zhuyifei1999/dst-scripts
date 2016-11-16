@@ -1623,22 +1623,24 @@ function PlayerController:OnUpdate(dt)
                 nil
         end
 
-        if new_highlight ~= self.highlight_guy then
+        local new_highlight_guy = new_highlight ~= nil and new_highlight.highlightforward or new_highlight
+        if new_highlight_guy ~= self.highlight_guy then
             if self.highlight_guy ~= nil and self.highlight_guy:IsValid() and self.highlight_guy.components.highlight ~= nil then
                 self.highlight_guy.components.highlight:UnHighlight()
             end
-            self.highlight_guy = new_highlight
+            self.highlight_guy = new_highlight_guy
         end
 
-        if self.highlight_guy ~= nil and self.highlight_guy:IsValid() then
-            if self.highlight_guy.components.highlight == nil then
-                self.highlight_guy:AddComponent("highlight")
+        if new_highlight_guy ~= nil and new_highlight_guy:IsValid() then
+            if new_highlight_guy.components.highlight == nil then
+                new_highlight_guy:AddComponent("highlight")
             end
 
-            if self.highlight_guy:HasTag("burnt") then
-                self.highlight_guy.components.highlight:Highlight(.5, .5, .5)
+            --V2C: check tags on the original, not the forwarded
+            if new_highlight:HasTag("burnt") then
+                new_highlight_guy.components.highlight:Highlight(.5, .5, .5)
             else
-                self.highlight_guy.components.highlight:Highlight()
+                new_highlight_guy.components.highlight:Highlight()
             end
         else
             self.highlight_guy = nil
@@ -2477,10 +2479,11 @@ function PlayerController:DoAction(buffaction)
     end
 
     if self.handler ~= nil and buffaction.target ~= nil then
-        if buffaction.target.components.highlight == nil then
-            buffaction.target:AddComponent("highlight")
+        local highlight_guy = buffaction.target.highlightforward or buffaction.target
+        if highlight_guy.components.highlight == nil then
+            highlight_guy:AddComponent("highlight")
         end
-        buffaction.target.components.highlight:Flash(.2, .125, .1)
+        highlight_guy.components.highlight:Flash(.2, .125, .1)
     end
 
     --Clear any buffered attacks since we're starting a new action
@@ -2657,18 +2660,21 @@ function PlayerController:OnRightClick(down)
     if act == nil then
         self.inst.replica.inventory:ReturnActiveItem()
     else
+        if self.deployplacer ~= nil and act.action == ACTIONS.DEPLOY then
+            act.rotation = self.deployplacer.Transform:GetRotation()
+        end
         if not self.ismastersim then
             local position = TheInput:GetWorldPosition()
             local mouseover = TheInput:GetWorldEntityUnderMouse()
             local controlmods = self:EncodeControlMods()
             if self.locomotor == nil then
                 self.remote_controls[CONTROL_SECONDARY] = 0
-                SendRPCToServer(RPC.RightClick, act.action.code, position.x, position.z, mouseover, nil, controlmods, act.action.canforce, act.action.mod_name)
+                SendRPCToServer(RPC.RightClick, act.action.code, position.x, position.z, mouseover, act.rotation ~= 0 and act.rotation or nil, nil, controlmods, act.action.canforce, act.action.mod_name)
             elseif act.action ~= ACTIONS.WALKTO and self:CanLocomote() then
                 act.preview_cb = function()
                     self.remote_controls[CONTROL_SECONDARY] = 0
                     local isreleased = not TheInput:IsControlPressed(CONTROL_SECONDARY)
-                    SendRPCToServer(RPC.RightClick, act.action.code, position.x, position.z, mouseover, isreleased, controlmods, nil, act.action.mod_name)
+                    SendRPCToServer(RPC.RightClick, act.action.code, position.x, position.z, mouseover, act.rotation ~= 0 and act.rotation or nil, isreleased, controlmods, nil, act.action.mod_name)
                 end
             end
         end
@@ -2676,7 +2682,7 @@ function PlayerController:OnRightClick(down)
     end
 end
 
-function PlayerController:OnRemoteRightClick(actioncode, position, target, isreleased, controlmodscode, noforce, mod_name)
+function PlayerController:OnRemoteRightClick(actioncode, position, target, rotation, isreleased, controlmodscode, noforce, mod_name)
     if self.ismastersim and self:IsEnabled() and self.handler == nil then
         self.remote_controls[CONTROL_SECONDARY] = 0
         self:DecodeControlMods(controlmodscode)
@@ -2691,6 +2697,7 @@ function PlayerController:OnRemoteRightClick(actioncode, position, target, isrel
                 rmb.pos = self:GetRemotePredictPosition() or self.inst:GetPosition()
                 rmb.forced = true
             end
+            rmb.rotation = rotation or rmb.rotation
             self:DoAction(rmb)
         --elseif mod_name ~= nil then
             --print("Remote right click action failed: "..tostring(ACTION_MOD_IDS[mod_name][actioncode]))

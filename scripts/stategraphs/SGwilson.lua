@@ -3066,7 +3066,7 @@ local states =
             inst.AnimState:PushAnimation("give_pst", false)
 
             inst.sg.statemem.action = inst.bufferedaction
-            inst.sg:SetTimeout(15 * FRAMES)
+            inst.sg:SetTimeout(14 * FRAMES)
         end,
 
         timeline =
@@ -3074,7 +3074,7 @@ local states =
             TimeEvent(6 * FRAMES, function(inst)
                 inst.sg:RemoveStateTag("busy")
             end),
-            TimeEvent(13 * FRAMES, function(inst)
+            TimeEvent(12 * FRAMES, function(inst)
                 inst:PerformBufferedAction()
             end),
         },

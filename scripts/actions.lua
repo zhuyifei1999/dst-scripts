@@ -397,7 +397,7 @@ ACTIONS.DEPLOY.fn = function(act)
         local obj = (act.doer.components.inventory and act.doer.components.inventory:RemoveItem(act.invobject)) or 
         (act.doer.components.container and act.doer.components.container:RemoveItem(act.invobject))
         if obj then
-            if obj.components.deployable:Deploy(act.pos, act.doer) then
+            if obj.components.deployable:Deploy(act.pos, act.doer, act.rotation) then
                 return true
             else
                 act.doer.components.inventory:GiveItem(obj)
@@ -831,7 +831,7 @@ ACTIONS.GIVE.strfn = function(act)
 end
 
 ACTIONS.DECORATEVASE.fn = function(act)
-	if act.target ~= nil and act.target.components.vase ~= nil then
+	if act.target ~= nil and act.target.components.vase ~= nil and act.target.components.vase.enabled then
 		act.target.components.vase:Decorate(act.doer, act.invobject)
 		return true
 	end

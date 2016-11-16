@@ -206,6 +206,21 @@ end
 
 
 --------------------------------------------------------------------------
+--[[ Pet skin functions ]]
+--------------------------------------------------------------------------
+function critter_builder_init_fn(inst, skin_name)
+    inst.skin_name = skin_name
+end
+function pet_init_fn(inst, build_name, default_build)
+	if not TheWorld.ismastersim then
+        return
+    end
+    
+    inst.AnimState:SetSkin(build_name, default_build)
+end
+
+
+--------------------------------------------------------------------------
 
 function CreatePrefabSkin(name, info)
     local prefab_skin = Prefab(name, nil, info.assets, info.prefabs)

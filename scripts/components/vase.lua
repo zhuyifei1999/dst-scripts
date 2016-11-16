@@ -1,15 +1,37 @@
 
+local function onenabled(self, enabled)
+    if enabled then
+        self.inst:AddTag("vase")
+    else
+        self.inst:RemoveTag("vase")
+    end
+end
+
+
 local Vase = Class(function(self, inst)
     self.inst = inst
     self.deleteitemonaccept = true
-end)
+    self.enabled = true
+end,
+nil,
+{
+    enabled = onenabled,
+})
 
 function Vase:OnRemoveFromEntity()
     self.inst:RemoveTag("vase")
 end
 
+function Vase:Enable()
+    self.enabled = true
+end
+
+function Vase:Disable()
+    self.enabled = false
+end
+
 function Vase:Decorate(giver, item)
-	if item == nil then
+	if item == nil or not self.enabled then
 		return false
 	end
 	
@@ -31,7 +53,7 @@ function Vase:Decorate(giver, item)
 end
 
 function Vase:GetDebugString()
-    return ""
+    return "enabled: "..tostring(self.enabled)
 end
 
 return Vase

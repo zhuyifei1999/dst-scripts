@@ -145,8 +145,8 @@ local function ongetitem(inst, giver, item)
 end
 
 local function onignite(inst)
-    if inst.components.trader ~= nil then
-        inst.components.trader:Disable()
+    if inst.components.vase ~= nil then
+        inst.components.vase:Disable()
     end
     
     if inst.flowerid ~= nil then
@@ -157,16 +157,16 @@ local function onignite(inst)
 end
 
 local function onextinguish(inst)
-    if inst.components.trader ~= nil then
-        inst.components.trader:Enable()
+    if inst.components.vase ~= nil then
+        inst.components.vase:Enable()
     end
     DefaultExtinguishFn(inst)
 end
 
 local function onburnt(inst)
-    if inst.components.trader ~= nil then
-        inst:RemoveComponent("trader")
-    end
+	if inst.components.vase ~= nil then
+        inst:RemoveComponent("vase")
+	end
 
     if inst.flowerid ~= nil then
         inst.components.lootdropper:SpawnLootPrefab("ash")

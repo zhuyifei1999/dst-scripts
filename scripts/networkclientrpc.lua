@@ -56,11 +56,12 @@ local RPC_HANDLERS =
         end
     end,
 
-    RightClick = function(player, action, x, z, target, isreleased, controlmods, noforce, mod_name)
+    RightClick = function(player, action, x, z, target, rotation, isreleased, controlmods, noforce, mod_name)
         if not (checknumber(action) and
                 checknumber(x) and
                 checknumber(z) and
                 optentity(target) and
+                optnumber(rotation) and
                 optbool(isreleased) and
                 optnumber(controlmods) and
                 optbool(noforce) and
@@ -70,8 +71,8 @@ local RPC_HANDLERS =
         end
         local playercontroller = player.components.playercontroller
         if playercontroller ~= nil then
-            if IsPointInRange(player, x, z) then
-                playercontroller:OnRemoteRightClick(action, Vector3(x, 0, z), target, isreleased, controlmods, noforce, mod_name)
+            if IsPointInRange(player, x, z) and (rotation == nil or (rotation >= 0 and rotation <= 360)) then
+                playercontroller:OnRemoteRightClick(action, Vector3(x, 0, z), target, rotation, isreleased, controlmods, noforce, mod_name)
             else
                 print("Remote right click out of range")
             end
@@ -612,6 +613,28 @@ local RPC_HANDLERS =
         local container = srccontainer.components.container
         if container ~= nil then
             container:MoveItemFromHalfOfSlot(slot, destcontainer or player)
+        end
+    end,
+
+    DeployAtPoint = function(player, action, x, z, target, isreleased, controlmods, noforce, mod_name)
+        if not (checknumber(action) and
+                checknumber(x) and
+                checknumber(z) and
+                optentity(target) and
+                optbool(isreleased) and
+                optnumber(controlmods) and
+                optbool(noforce) and
+                optstring(mod_name)) then
+            printinvalid("RightClick", player)
+            return
+        end
+        local playercontroller = player.components.playercontroller
+        if playercontroller ~= nil then
+            if IsPointInRange(player, x, z) then
+                playercontroller:OnRemoteRightClick(action, Vector3(x, 0, z), target, isreleased, controlmods, noforce, mod_name)
+            else
+                print("Remote right click out of range")
+            end
         end
     end,
 

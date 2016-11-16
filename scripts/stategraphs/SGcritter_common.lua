@@ -232,16 +232,13 @@ SGCritterStates.AddWalkStates = function(states, timelines, softstop)
         onenter = function(inst)
             if softstop == true or (type(softstop) == "function" and softstop(inst)) then
                 inst.AnimState:PushAnimation("walk_pst", false)
-                if inst:HasTag("flying") or inst.AnimState:IsCurrentAnimation("walk_pst") then
+                if inst.AnimState:IsCurrentAnimation("walk_pst") then
                     inst.components.locomotor:StopMoving()
                 else
-                    local remaining = inst.AnimState:GetCurrentAnimationLength() - inst.AnimState:GetCurrentAnimationTime() - 2 * FRAMES
+                    local remaining = inst.AnimState:GetCurrentAnimationLength() - inst.AnimState:GetCurrentAnimationTime() - (inst:HasTag("flying") and 0 or 2 * FRAMES)
                     if remaining > 0 then
-                        local threshold = 8 * FRAMES
-                        if remaining > threshold then
-                            inst.sg.statemem.softstopping = true
-                            inst.components.locomotor:SetExternalSpeedMultiplier(inst, "softstop", threshold / remaining)
-                        end
+                        inst.sg.statemem.softstopmult = .9
+                        inst.components.locomotor:SetExternalSpeedMultiplier(inst, "softstop", inst.sg.statemem.softstopmult)
                         inst.components.locomotor:WalkForward()
                         inst.sg:SetTimeout(remaining)
                     else
@@ -256,8 +253,16 @@ SGCritterStates.AddWalkStates = function(states, timelines, softstop)
 
         timeline = timelines ~= nil and timelines.endtimeline or nil,
 
+        onupdate = function(inst)
+            if inst.sg.statemem.softstopmult ~= nil then
+                inst.sg.statemem.softstopmult = inst.sg.statemem.softstopmult * .9
+                inst.components.locomotor:SetExternalSpeedMultiplier(inst, "softstop", inst.sg.statemem.softstopmult)
+                inst.components.locomotor:WalkForward()
+            end
+        end,
+
         ontimeout = function(inst)
-            inst.sg.statemem.softstopping = false
+            inst.sg.statemem.softstopmult = nil
             inst.components.locomotor:RemoveExternalSpeedMultiplier(inst, "softstop")
             inst.components.locomotor:StopMoving()
         end,
@@ -272,7 +277,7 @@ SGCritterStates.AddWalkStates = function(states, timelines, softstop)
         },
 
         onexit = function(inst)
-            if inst.sg.statemem.softstopping then
+            if inst.sg.statemem.softstopmult ~= nil then
                 inst.components.locomotor:RemoveExternalSpeedMultiplier(inst, "softstop")
             end
         end,
