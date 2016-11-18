@@ -435,6 +435,7 @@ local function MakeWall(name, builds, isdoor)
         inst:AddTag("wall")
         inst:AddTag("alignwall")
         inst:AddTag("noauradamage")
+        inst:AddTag("nointerpolate")
 
         if isdoor then
             inst:AddTag("door")
@@ -557,6 +558,7 @@ local function MakeWallAnim(name, builds, isdoor)
         inst.AnimState:PlayAnimation("idle")
 
         inst:AddTag("FX")
+        inst:AddTag("nointerpolate")
 
         if isdoor then
             inst.AnimState:Hide("mouseover")

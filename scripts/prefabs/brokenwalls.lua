@@ -44,6 +44,7 @@ function MakeWallType(data)
         inst.Transform:SetEightFaced()
 
         inst:AddTag("wall")
+        inst:AddTag("nointerpolate")
 
         for k,v in ipairs(data.tags) do
             inst:AddTag(v)
