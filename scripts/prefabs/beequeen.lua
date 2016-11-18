@@ -176,16 +176,18 @@ local function KeepTargetFn(inst, target)
 end
 
 local function OnAttacked(inst, data)
-    local target = inst.components.combat.target
-    if not (target ~= nil and
-            target:HasTag("player") and
-            target:IsNear(inst,
-                (inst.focustarget_cd <= 0 and TUNING.BEEQUEEN_AGGRO_DIST) or
-                (target.Physics ~= nil and TUNING.BEEQUEEN_ATTACK_RANGE + target.Physics:GetRadius()) or
-                TUNING.BEEQUEEN_ATTACK_RANGE)) then
-        inst.components.combat:SetTarget(data.attacker)
+    if data.attacker ~= nil then
+        local target = inst.components.combat.target
+        if not (target ~= nil and
+                target:HasTag("player") and
+                target:IsNear(inst,
+                    (inst.focustarget_cd <= 0 and TUNING.BEEQUEEN_AGGRO_DIST) or
+                    (target.Physics ~= nil and TUNING.BEEQUEEN_ATTACK_RANGE + target.Physics:GetRadius()) or
+                    TUNING.BEEQUEEN_ATTACK_RANGE)) then
+            inst.components.combat:SetTarget(data.attacker)
+        end
+        inst.components.commander:ShareTargetToAllSoldiers(data.attacker)
     end
-    inst.components.commander:ShareTargetToAllSoldiers(data.attacker)
 end
 
 local function OnAttackOther(inst, data)

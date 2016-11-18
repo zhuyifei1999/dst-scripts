@@ -280,20 +280,27 @@ end
 local function RetargetFn(inst)
     UpdatePlayerTargets(inst)
 
-    if IsFightingPlayers(inst) then
-        return inst.components.grouptargeter:TryGetNewTarget(), true
+    local target = inst.components.combat.target
+    if target ~= nil and target:HasTag("player") then
+        local newplayer = inst.components.grouptargeter:TryGetNewTarget()
+        return newplayer ~= nil
+            and newplayer:IsNear(inst, TUNING.DRAGONFLY_AGGRO_DIST)
+            and newplayer
+            or nil,
+            true
     end
 
-    --Also needs to deal with other creatures in the world
-    return FindEntity(
-        inst,
-        TUNING.DRAGONFLY_AGGRO_DIST,
-        function(guy)
-            return inst.components.combat:CanTarget(guy)
-        end,
-        { "_combat" }, --see entityreplica.lua
-        { "INLIMBO", "prey", "smallcreature", "lavae" }
-    )
+    local inrange = target ~= nil and inst:IsNear(target, target.Physics ~= nil and TUNING.DRAGONFLY_ATTACK_RANGE + target.Physics:GetRadius() or TUNING.DRAGONFLY_ATTACK_RANGE)
+    local nearplayers = {}
+    for k, v in pairs(inst.components.grouptargeter:GetTargets()) do
+        if inst:IsNear(k,
+            (not inrange and TUNING.DRAGONFLY_AGGRO_DIST) or
+            (k.Physics ~= nil and TUNING.DRAGONFLY_ATTACK_RANGE + k.Physics:GetRadius()) or
+            TUNING.DRAGONFLY_ATTACK_RANGE) then
+            table.insert(nearplayers, k)
+        end
+    end
+    return #nearplayers > 0 and nearplayers[math.random(#nearplayers)] or nil, true
 end
 
 local function GetLavaePos(inst)
@@ -375,7 +382,12 @@ end
 
 local function OnAttacked(inst, data)
     if data.attacker ~= nil then
-        inst.components.combat:SuggestTarget(data.attacker)
+        local target = inst.components.combat.target
+        if not (target ~= nil and
+                target:HasTag("player") and
+                target:IsNear(inst, target.Physics ~= nil and TUNING.DRAGONFLY_ATTACK_RANGE + target.Physics:GetRadius() or TUNING.DRAGONFLY_ATTACK_RANGE)) then
+            inst.components.combat:SetTarget(data.attacker)
+        end
     end
 end
 
@@ -541,6 +553,7 @@ local function fn()
     inst.TransformFire = TransformFire
     inst.TransformNormal = TransformNormal
     inst.can_ground_pound = false
+    inst.hit_recovery = TUNING.DRAGONFLY_HIT_RECOVERY
 
     MakeHugeFreezableCharacter(inst)
     inst.components.freezable:SetResistance(TUNING.DRAGONFLY_FREEZE_THRESHOLD)

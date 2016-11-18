@@ -71,7 +71,7 @@ local RPC_HANDLERS =
         end
         local playercontroller = player.components.playercontroller
         if playercontroller ~= nil then
-            if IsPointInRange(player, x, z) and (rotation == nil or (rotation >= 0 and rotation <= 360)) then
+            if IsPointInRange(player, x, z) and (rotation == nil or (rotation > -360.1 and rotation < 360.1)) then
                 playercontroller:OnRemoteRightClick(action, Vector3(x, 0, z), target, rotation, isreleased, controlmods, noforce, mod_name)
             else
                 print("Remote right click out of range")

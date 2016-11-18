@@ -1113,7 +1113,7 @@ local function ValidateUnsaddler(target)
     return not target.replica.health:IsDead()
 end
 
-local function GetPickupAction(target, tool)
+local function GetPickupAction(inst, target, tool)
     if target:HasTag("smolder") then
         return ACTIONS.SMOTHER
     elseif tool ~= nil then
@@ -1131,7 +1131,7 @@ local function GetPickupAction(target, tool)
     elseif target:HasTag("minesprung") then
         return ACTIONS.RESETMINE
     elseif target:HasTag("inactive") then
-        return ACTIONS.ACTIVATE
+        return (not target:HasTag("wall") or inst:IsNear(target, 2.5)) and ACTIONS.ACTIVATE or nil
     elseif target.replica.inventoryitem ~= nil and
         target.replica.inventoryitem:CanBePickedUp() and
         not (target:HasTag("heavy") or target:HasTag("fire") or target:HasTag("catchable")) then
@@ -1170,7 +1170,7 @@ function PlayerController:IsDoingOrWorking()
 end
 
 local TARGET_EXCLUDE_TAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO" }
-local PICKUP_TARGET_EXCLUDE_TAGS = { "catchable", "mineactive", "intense", "wall" }
+local PICKUP_TARGET_EXCLUDE_TAGS = { "catchable", "mineactive", "intense" }
 local HAUNT_TARGET_EXCLUDE_TAGS = { "haunted", "catchable" }
 for i, v in ipairs(TARGET_EXCLUDE_TAGS) do
     table.insert(PICKUP_TARGET_EXCLUDE_TAGS, v)
@@ -1214,17 +1214,6 @@ function PlayerController:GetActionButtonAction(force_target)
                 return BufferedAction(self.inst, force_target, ACTIONS.HAUNT)
             end
             return
-        end
-
-        --open doors (first, but very small range)
-        if force_target == nil then
-            local target = FindEntity(self.inst, 2, nil, { "wall", "inactive" }, TARGET_EXCLUDE_TAGS)
-            if CanEntitySeeTarget(self.inst, target) then
-                return BufferedAction(self.inst, target, ACTIONS.ACTIVATE)
-            end
-        elseif force_target_distsq <= 4 and
-            force_target:HasTag("wall") and force_target:HasTag("inactive") then
-            return BufferedAction(self.inst, force_target, ACTIONS.ACTIVATE)
         end
 
         local tool = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
@@ -1297,14 +1286,14 @@ function PlayerController:GetActionButtonAction(force_target)
             local ents = TheSim:FindEntities(x, y, z, self.directwalking and 3 or 6, nil, PICKUP_TARGET_EXCLUDE_TAGS, pickup_tags)
             for i, v in ipairs(ents) do
                 if v ~= self.inst and v.entity:IsVisible() and CanEntitySeeTarget(self.inst, v) then
-                    local action = GetPickupAction(v, tool)
+                    local action = GetPickupAction(self.inst, v, tool)
                     if action ~= nil then
                         return BufferedAction(self.inst, v, action, action ~= ACTIONS.SMOTHER and tool or nil)
                     end
                 end
             end
         elseif force_target_distsq <= (self.directwalking and 9 or 36) then
-            local action = GetPickupAction(force_target, tool)
+            local action = GetPickupAction(self.inst, force_target, tool)
             if action ~= nil then
                 return BufferedAction(self.inst, force_target, action, action ~= ACTIONS.SMOTHER and tool or nil)
             end

@@ -3,8 +3,8 @@ local brain = require("brains/crittersbrain")
 local WAKE_TO_FOLLOW_DISTANCE = 6
 local SLEEP_NEAR_LEADER_DISTANCE = 5
 
-local HUNGRY_PERIESH_PERCENT = 0.5 -- matches stale tag
-local STARVING_PERIESH_PERCENT = 0.2 -- matches spoiked tag
+local HUNGRY_PERISH_PERCENT = 0.5 -- matches stale tag
+local STARVING_PERISH_PERCENT = 0.2 -- matches spoiked tag
 
 local function IsLeaderSleeping(inst)
     return inst.components.follower.leader and inst.components.follower.leader:HasTag("sleeping")
@@ -29,9 +29,9 @@ local function oneat(inst, food)
 
 	-- temp minigame around feeding, if fed at the right time, its max hunger goes up, if left too long, its max hunger goes down
 	local perish = inst.components.perishable:GetPercent()
-	if perish <= STARVING_PERIESH_PERCENT then
+	if perish <= STARVING_PERISH_PERCENT then
 		inst.components.perishable.perishtime = math.max(inst.components.perishable.perishtime - TUNING.CRITTER_HUNGERTIME_DELTA, TUNING.CRITTER_HUNGERTIME_MIN)
-	elseif perish <= HUNGRY_PERIESH_PERCENT then
+	elseif perish <= HUNGRY_PERISH_PERCENT then
 		inst.components.perishable.perishtime = math.min(inst.components.perishable.perishtime + TUNING.CRITTER_HUNGERTIME_DELTA, TUNING.CRITTER_HUNGERTIME_MAX)
 	end
 
@@ -44,9 +44,9 @@ local function GetPeepChance(inst)
     local hunger_percent = inst.components.perishable:GetPercent()
     if hunger_percent <= 0 then
         return 0.8
-    elseif hunger_percent < STARVING_PERIESH_PERCENT then -- matches spoiled tag
+    elseif hunger_percent < STARVING_PERISH_PERCENT then -- matches spoiled tag
         return (0.2 - inst.components.perishable:GetPercent()) * 2
-    elseif hunger_percent < HUNGRY_PERIESH_PERCENT then
+    elseif hunger_percent < HUNGRY_PERISH_PERCENT then
         return 0.025
     end
 
@@ -54,7 +54,7 @@ local function GetPeepChance(inst)
 end
 
 local function IsAffectionate(inst)
-    return (inst.components.perishable == nil or inst.components.perishable:GetPercent() > HUNGRY_PERIESH_PERCENT) -- no affection if hungry
+    return (inst.components.perishable == nil or inst.components.perishable:GetPercent() > HUNGRY_PERISH_PERCENT) -- no affection if hungry
             or false
 end
 
@@ -206,6 +206,7 @@ local function MakeCritter(name, animdata, face, diet, flying, data)
         inst:AddTag("notraptrigger")
         inst:AddTag("noauradamage")
         inst:AddTag("small_livestock")
+        inst:AddTag("NOBLOCK")
 
         inst._fade = net_tinybyte(inst.GUID, "critters._fade", "fadedirty")
 

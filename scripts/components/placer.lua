@@ -8,6 +8,7 @@ local Placer = Class(function(self, inst)
     self.testfn = nil
     self.radius = 1
     self.selected_pos = nil
+    self.onupdatetransform = nil
     self.oncanbuild = nil
     self.oncannotbuild = nil
     self.linked = {}
@@ -66,6 +67,10 @@ function Placer:OnUpdate(dt)
         for i, v in ipairs(self.linked) do
             v.Transform:SetRotation(rot)
         end
+    end
+
+    if self.onupdatetransform ~= nil then
+        self.onupdatetransform(self.inst)
     end
 
     self.can_build = self.testfn == nil or self.testfn(self.inst:GetPosition(), self.inst:GetRotation())

@@ -12,6 +12,10 @@ AddModReleaseID( "R02_ANR_WARTSANDALL" )
 AddModReleaseID( "R03_ANR_ARTSANDCRAFTS" )
 AddModReleaseID( "R04_ANR_CUTEFUZZYANIMALS" )
 
+if BRANCH == "staging" then
+	AddModReleaseID( "R05_ANR_HERDMENTALITY" )
+end
+
 -----------------------------------------------------------------------------------------------
 
 MOD_AVATAR_LOCATIONS = { Default = "images/avatars/" }

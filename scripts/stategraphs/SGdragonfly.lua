@@ -11,10 +11,16 @@ local function onattackedfn(inst)
     end
 end
 
+local function ChooseAttack(inst)
+    inst.sg:GoToState(inst.enraged and inst.can_ground_pound and "pound_pre" or "attack")
+    return true
+end
+
 local function onattackfn(inst)
-    if (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("hit")) and
-        not (inst.sg:HasStateTag("grounded") or inst.components.health:IsDead()) then
-        inst.sg:GoToState(inst.enraged and inst.can_ground_pound and "pound_pre" or "attack")
+    if not (inst.sg:HasStateTag("busy") or
+            inst.sg:HasStateTag("grounded") or
+            inst.components.health:IsDead()) then
+        ChooseAttack(inst)
     end
 end
 
@@ -63,6 +69,7 @@ local function SwitchToFlyOverPhysics(inst)
     if not inst.sg.mem.flyoverphysics then
         inst.sg.mem.flyoverphysics = true
         inst.sg.mem.last_hit_time = GetTime()
+        inst.hit_recovery = TUNING.DRAGONFLY_FLYING_HIT_RECOVERY
         inst.Physics:ClearCollisionMask()
         inst.Physics:CollidesWith(COLLISION.WORLD)
         inst.Physics:CollidesWith(COLLISION.GIANTS)
@@ -72,6 +79,7 @@ end
 local function SwitchToCombatPhysics(inst)
     if inst.sg.mem.flyoverphysics then
         inst.sg.mem.flyoverphysics = false
+        inst.hit_recovery = TUNING.DRAGONFLY_HIT_RECOVERY
         inst.Physics:ClearCollisionMask()
         inst.Physics:CollidesWith(COLLISION.WORLD)
         inst.Physics:CollidesWith(COLLISION.CHARACTERS)
@@ -231,10 +239,32 @@ local states =
             inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/blink")
         end,
 
+        timeline =
+        {
+            TimeEvent(9 * FRAMES, function(inst)
+                if inst.sg.statemem.doattack then
+                    if not inst.components.health:IsDead() and ChooseAttack(inst) then
+                        return
+                    end
+                    inst.sg.statemem.doattack = nil
+                end
+                inst.sg:RemoveStateTag("busy")
+            end),
+            TimeEvent(17 * FRAMES, function(inst)
+                inst.sg:AddStateTag("busy")
+            end),
+        },
+
         events =
         {
+            EventHandler("doattack", function(inst)
+                inst.sg.statemem.doattack = true
+            end),
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
+                    if inst.sg.statemem.doattack and ChooseAttack(inst) then
+                        return
+                    end
                     inst.sg:GoToState("idle")
                 end
             end),

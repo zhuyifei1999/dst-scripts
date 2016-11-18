@@ -10,10 +10,12 @@ function MakePlacer(name, bank, build, anim, onground, snap, metersnap, scale, f
 
         inst.entity:AddTransform()
         inst.entity:AddAnimState()
-        inst.AnimState:SetBank(bank)
-        inst.AnimState:SetBuild(build)
-        inst.AnimState:PlayAnimation(anim, true)
-        inst.AnimState:SetLightOverride(1)
+        if anim ~= nil then
+            inst.AnimState:SetBank(bank)
+            inst.AnimState:SetBuild(build)
+            inst.AnimState:PlayAnimation(anim, true)
+            inst.AnimState:SetLightOverride(1)
+        end
 
         if facing == "two" then
             inst.Transform:SetTwoFaced()

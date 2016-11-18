@@ -37,7 +37,7 @@ local function AddSpecialLoot(inst)
     inst.components.lootdropper:AddChanceLoot(hat, 1.0)
 
     -- one mushroom light
-    inst.components.lootdropper:AddChanceLoot(math.random() < 0.2 and "mushroom_light2_blueprint" or "mushroom_light_blueprint", 1.0)
+    inst.components.lootdropper:AddChanceLoot(math.random() < 0.33 and "mushroom_light2_blueprint" or "mushroom_light_blueprint", 1.0)
 
     -- 2-3 spores
     local spores = PickSomeWithDups(3, { MUSHTREE_SPORE_RED, MUSHTREE_SPORE_GREEN, MUSHTREE_SPORE_BLUE })
