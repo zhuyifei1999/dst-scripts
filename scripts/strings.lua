@@ -206,6 +206,8 @@ STRINGS =
             GENERIC = "Plant",
             GROUNDTILE = "Place Ground",
             WALL = "Build Wall",
+            FENCE = "Build Fence",
+            GATE = "Build Gate",
             TURRET = "Place",
         },
         DEPLOY =
@@ -213,6 +215,8 @@ STRINGS =
             GENERIC = "Plant",
             GROUNDTILE = "Place Ground",
             WALL = "Build Wall",
+            FENCE = "Build Fence",
+            GATE = "Build Gate",
             TURRET = "Place",
         },
 

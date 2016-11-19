@@ -30,7 +30,7 @@ end
 function Placer:GetDeployAction()
     if self.invobject ~= nil then
         self.selected_pos = self.inst:GetPosition()
-        local action = BufferedAction(self.builder, nil, ACTIONS.DEPLOY, self.invobject, self.selected_pos)
+        local action = BufferedAction(self.builder, nil, ACTIONS.DEPLOY, self.invobject, self.selected_pos, nil, nil, nil, self.inst.Transform:GetRotation())
         table.insert(action.onsuccess, function() self.selected_pos = nil end)
         return action
     end

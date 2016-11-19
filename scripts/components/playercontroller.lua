@@ -512,12 +512,12 @@ function PlayerController:DoControllerActionButton()
     elseif self.deployplacer ~= nil then
         if self.locomotor == nil then
             self.remote_controls[CONTROL_CONTROLLER_ACTION] = 0
-            SendRPCToServer(RPC.ControllerActionButtonDeploy, obj, act.pos.x, act.pos.z)
+            SendRPCToServer(RPC.ControllerActionButtonDeploy, obj, act.pos.x, act.pos.z, act.rotation ~= 0 and act.rotation or nil)
         elseif self:CanLocomote() then
             act.preview_cb = function()
                 self.remote_controls[CONTROL_CONTROLLER_ACTION] = 0
                 local isreleased = not TheInput:IsControlPressed(CONTROL_CONTROLLER_ACTION)
-                SendRPCToServer(RPC.ControllerActionButtonDeploy, obj, act.pos.x, act.pos.z, isreleased)
+                SendRPCToServer(RPC.ControllerActionButtonDeploy, obj, act.pos.x, act.pos.z, act.rotation ~= 0 and act.rotation or nil, isreleased)
             end
         end
     elseif self.locomotor == nil then
@@ -570,7 +570,7 @@ function PlayerController:OnRemoteControllerActionButton(actioncode, target, isr
     end
 end
 
-function PlayerController:OnRemoteControllerActionButtonDeploy(invobject, position, isreleased)
+function PlayerController:OnRemoteControllerActionButtonDeploy(invobject, position, rotation, isreleased)
     if self.ismastersim and self:IsEnabled() and self.handler == nil then
         self.inst.components.combat:SetTarget(nil)
 
@@ -578,7 +578,7 @@ function PlayerController:OnRemoteControllerActionButtonDeploy(invobject, positi
 
         if invobject.components.inventoryitem ~= nil and invobject.components.inventoryitem:GetGrandOwner() == self.inst then
             --Must match placer:GetDeployAction(), with an additional distance = 1 parameter
-            self:DoAction(BufferedAction(self.inst, nil, ACTIONS.DEPLOY, invobject, position, nil, 1))
+            self:DoAction(BufferedAction(self.inst, nil, ACTIONS.DEPLOY, invobject, position, nil, 1, nil, rotation or 0))
         --else
             --print("Remote controller action button deploy failed")
         end

@@ -585,7 +585,7 @@ local function MakeWallAnim(name, builds, isdoor)
 end
 
 -------------------------------------------------------------------------------
-local function MakeInvItem(name, placement, animdata)
+local function MakeInvItem(name, placement, animdata, isdoor)
     local assets =
     {
         Asset("ANIM", "anim/"..animdata..".zip"),
@@ -621,7 +621,7 @@ local function MakeInvItem(name, placement, animdata)
 
         MakeInventoryPhysics(inst)
 
-        inst:AddTag("wallbuilder")
+        inst:AddTag(isdoor and "gatebuilder" or "fencebuilder")
 
         inst.AnimState:SetBank(animdata)
         inst.AnimState:SetBuild(animdata)
@@ -710,10 +710,10 @@ local function MakeWallPlacer(placer, placement, builds, isdoor)
 end
 
 return MakeWall("fence", {wide="fence", narrow="fence_thin"}, false),
-    MakeInvItem("fence_item", "fence", "fence"),
+    MakeInvItem("fence_item", "fence", "fence", false),
     MakeWallPlacer("fence_item_placer", "fence", {wide="fence", narrow="fence_thin"}, false),
 
     MakeWall("fence_gate", {wide="fence_gate", narrow="fence_gate_thin"}, true),
     MakeWallAnim("fence_gate_anim", {wide="fence_gate", narrow="fence_gate_thin"}, true),
-    MakeInvItem("fence_gate_item", "fence_gate", "fence_gate"),
+    MakeInvItem("fence_gate_item", "fence_gate", "fence_gate", true),
     MakeWallPlacer("fence_gate_item_placer", "fence_gate", {wide="fence_gate", narrow="fence_gate_thin"}, true)

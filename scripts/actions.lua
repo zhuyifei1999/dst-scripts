@@ -410,6 +410,8 @@ ACTIONS.DEPLOY.strfn = function(act)
     return act.invobject ~= nil
         and (   (act.invobject:HasTag("groundtile") and "GROUNDTILE") or
                 (act.invobject:HasTag("wallbuilder") and "WALL") or
+                (act.invobject:HasTag("fencebuilder") and "FENCE") or
+                (act.invobject:HasTag("gatebuilder") and "GATE") or
                 (act.invobject:HasTag("eyeturret") and "TURRET")    )
         or nil
 end
