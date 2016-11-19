@@ -1663,10 +1663,12 @@ function PlayerController:OnUpdate(dt)
                 self.deployplacer = SpawnPrefab(placer_name)
                 if self.deployplacer ~= nil then
                     self.deployplacer.components.placer:SetBuilder(self.inst, nil, placer_item)
-                    self.deployplacer.components.placer.testfn = function(pt) 
+                    self.deployplacer.components.placer.testfn = function(pt)
+                        local mouseover = TheInput:GetWorldEntityUnderMouse()
                         return placer_item:IsValid() and
                             placer_item.replica.inventoryitem ~= nil and
-                            placer_item.replica.inventoryitem:CanDeploy(pt, TheInput:GetWorldEntityUnderMouse())
+                            placer_item.replica.inventoryitem:CanDeploy(pt, mouseover),
+                            mouseover ~= nil
                     end
                     self.deployplacer.components.placer:OnUpdate(0) --so that our position is accurate on the first frame
                 end

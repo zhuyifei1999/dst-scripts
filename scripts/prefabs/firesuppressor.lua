@@ -229,6 +229,45 @@ local function onbuilt(inst)
     inst.SoundEmitter:PlaySound("dontstarve_DLC001/common/firesupressor_craft")
 end
 
+--------------------------------------------------------------------------
+local PLACER_SCALE = 1.55
+
+local function OnEnableHelper(inst, enabled)
+    if enabled then
+        if inst.helper == nil then
+            inst.helper = CreateEntity()
+
+            --[[Non-networked entity]]
+            inst.helper.entity:SetCanSleep(false)
+            inst.helper.persists = false
+
+            inst.helper.entity:AddTransform()
+            inst.helper.entity:AddAnimState()
+
+            inst.helper:AddTag("NOCLICK")
+            inst.helper:AddTag("placer")
+
+            inst.helper.Transform:SetScale(PLACER_SCALE, PLACER_SCALE, PLACER_SCALE)
+
+            inst.helper.AnimState:SetBank("firefighter_placement")
+            inst.helper.AnimState:SetBuild("firefighter_placement")
+            inst.helper.AnimState:PlayAnimation("idle")
+            inst.helper.AnimState:SetLightOverride(1)
+            inst.helper.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+            inst.helper.AnimState:SetLayer(LAYER_BACKGROUND)
+            inst.helper.AnimState:SetSortOrder(1)
+            inst.helper.AnimState:SetAddColour(0, .2, .5, 0)
+
+            inst.helper.entity:SetParent(inst.entity)
+        end
+    elseif inst.helper ~= nil then
+        inst.helper:Remove()
+        inst.helper = nil
+    end
+end
+
+--------------------------------------------------------------------------
+
 local function fn()
     local inst = CreateEntity()
 
@@ -257,6 +296,9 @@ local function fn()
     inst.Light:SetFalloff(1)
     inst.Light:SetColour(unpack(WarningColours.green))
     inst.Light:Enable(false)
+
+    inst:AddComponent("deployhelper")
+    inst.components.deployhelper.onenablehelper = OnEnableHelper
 
     inst.entity:SetPristine()
 
@@ -396,8 +438,6 @@ local function glow_fn()
 
     return inst
 end
-
-local PLACER_SCALE = 1.55
 
 local function placer_postinit_fn(inst)
     --Show the flingo placer on top of the flingo range ground placer

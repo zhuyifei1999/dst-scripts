@@ -3,6 +3,14 @@ local assets =
     Asset("ANIM", "anim/gridplacer.zip"),
 }
 
+local function OnCanBuild(inst, mouse_blocked)
+    if mouse_blocked then
+        inst:Hide()
+    else
+        inst:Show()
+    end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -22,7 +30,7 @@ local function fn()
 
     inst:AddComponent("placer")
     inst.components.placer.snap_to_tile = true
-    inst.components.placer.oncanbuild = inst.Show
+    inst.components.placer.oncanbuild = OnCanBuild
     inst.components.placer.oncannotbuild = inst.Hide
 
     return inst

@@ -104,7 +104,6 @@ end
 
 local function lootsetfn(lootdropper)
 	local loot = lootdropper.inst.statedata.loot()
-	dumptable(loot)
     lootdropper:SetLoot(loot)
 end
 

@@ -5,6 +5,7 @@ local Placer = Class(function(self, inst)
     inst:AddTag("placer")
 
     self.can_build = false
+    self.mouse_blocked = false
     self.testfn = nil
     self.radius = 1
     self.selected_pos = nil
@@ -12,6 +13,7 @@ local Placer = Class(function(self, inst)
     self.oncanbuild = nil
     self.oncannotbuild = nil
     self.linked = {}
+    self.helperdelay = 0
 end)
 
 function Placer:SetBuilder(builder, recipe, invobject)
@@ -73,25 +75,62 @@ function Placer:OnUpdate(dt)
         self.onupdatetransform(self.inst)
     end
 
-    self.can_build = self.testfn == nil or self.testfn(self.inst:GetPosition(), self.inst:GetRotation())
+    if self.testfn ~= nil then
+        self.can_build, self.mouse_blocked = self.testfn(self.inst:GetPosition(), self.inst:GetRotation())
+    else
+        self.can_build = true
+        self.mouse_blocked = false
+    end
 
-    --self.inst.AnimState:SetMultColour(0, 0, 0, .5)
+    if self.helperdelay > dt then
+        self.helperdelay = self.helperdelay - dt
+    else
+        self.helperdelay = .15 - dt
+
+        local x, y, z = self.inst.Transform:GetWorldPosition()
+        local helpers = TheSim:FindEntities(x, y, z, 40, { "deployhelper" }, { "INLIMBO" })
+        for i, v in ipairs(helpers) do
+            v.components.deployhelper:StartHelper(.2)
+        end
+    end
 
     if self.can_build then
         if self.oncanbuild ~= nil then
-            self.oncanbuild(self.inst)
+            self.oncanbuild(self.inst, self.mouse_blocked)
+            return
+        end
+
+        if self.mouse_blocked then
+            self.inst:Hide()
+            for i, v in ipairs(self.linked) do
+                v:Hide()
+            end
         else
             self.inst.AnimState:SetAddColour(.25, .75, .25, 0)
+            self.inst:Show()
             for i, v in ipairs(self.linked) do
                 v.AnimState:SetAddColour(.25, .75, .25, 0)
+                v:Show()
             end
         end
-    elseif self.oncannotbuild ~= nil then
-        self.oncannotbuild(self.inst)
     else
-        self.inst.AnimState:SetAddColour(.75, .25, .25, 0)
-        for i, v in ipairs(self.linked) do
-            v.AnimState:SetAddColour(.75, .25, .25, 0)
+        if self.oncannotbuild ~= nil then
+            self.oncannotbuild(self.inst, self.mouse_blocked)
+            return
+        end
+
+        if self.mouse_blocked then
+            self.inst:Hide()
+            for i, v in ipairs(self.linked) do
+                v:Hide()
+            end
+        else
+            self.inst.AnimState:SetAddColour(.75, .25, .25, 0)
+            self.inst:Show()
+            for i, v in ipairs(self.linked) do
+                v.AnimState:SetAddColour(.75, .25, .25, 0)
+                v:Show()
+            end
         end
     end
 end

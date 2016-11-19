@@ -159,7 +159,7 @@ function SkinsScreen:OnItemSelect(type, item_type, item_id, itemimage)
 	self.details_panel.name:SetColour(unpack(SKIN_RARITY_COLORS[rarity]))
     self.details_panel.description:SetMultilineTruncatedString(STRINGS.SKIN_DESCRIPTIONS[item_type] or STRINGS.SKIN_DESCRIPTIONS["missing"], 7, 180, 60, true)
 
-	self.details_panel.rarity:SetString(rarity.." Item")
+	self.details_panel.rarity:SetString(STRINGS.UI.RARITY[rarity])
 	self.details_panel.rarity:SetColour(unpack(SKIN_RARITY_COLORS[rarity]))
 
 	self.details_panel.set_info_btn.show_help = nil
@@ -190,7 +190,7 @@ function SkinsScreen:OnItemSelect(type, item_type, item_id, itemimage)
 		self.details_panel.set_title:Hide()
 		self.details_panel.set_info_btn:Hide()
 
-		self.details_panel.rarity:SetString(rarity.." Item")
+		self.details_panel.rarity:SetString(STRINGS.UI.RARITY[rarity])
 		self.details_panel.rarity:SetColour(unpack(SKIN_RARITY_COLORS[rarity]))
 		self.details_panel.rarity:SetPosition(0, RARITY_POS_LONE)
 	end

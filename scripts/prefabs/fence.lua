@@ -94,11 +94,11 @@ local function FindPairedDoor(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
     local rot = inst.Transform:GetRotation()
 
-    local narrow = IsNarrow(inst)
     local swingright = IsSwingRight(inst)
+    local search_dist = IsNarrow(inst) and 1 or 1.4
 
-    local search_x = -math.sin(rot / RADIANS) * (narrow and 1 or 1.4)
-    local search_y = math.cos(rot / RADIANS) * (narrow and 1 or 1.4)
+    local search_x = -math.sin(rot / RADIANS) * search_dist
+    local search_y = math.cos(rot / RADIANS) * search_dist
 
     search_x = x + (swingright and search_x or -search_x)
     search_y = z + (swingright and -search_y or search_y)
@@ -125,7 +125,7 @@ local function SetOffset(inst, offset)
 end
 
 local function ApplyDoorOffset(inst)
-    SetOffset(inst, inst.offsetdoor and 0.45 or 0.05)
+    SetOffset(inst, inst.offsetdoor and 0.45 or 0)
 end
 
 local function SetOrientation(inst, rotation)
@@ -200,11 +200,12 @@ local function FixUpFenceOrientation(inst, deployedrotation) -- rotates the plac
         if inst.isdoor then
             local neighbor = neighbors[2]
             if neighbor ~= nil then
-                if neighbor:HasTag("door") then
+                if neighbor.isdoor then
                     SetIsSwingRight(inst, not IsSwingRight(neighbor))
                 else
-                    local dir = inst:GetPosition() - neighbor:GetPosition()
-                    local rot = math.atan2(dir.x, dir.z) * RADIANS
+                    local x, y, z = inst.Transform:GetWorldPosition()
+                    local x1, y1, z1 = neighbor.Transform:GetWorldPosition()
+                    local rot = math.atan2(x - x1, z - z1) * RADIANS
                     SetIsSwingRight(inst, CalcRotationEnum(deployedrotation, true) ~= CalcRotationEnum(rot, true))
                 end
             end
@@ -215,35 +216,34 @@ local function FixUpFenceOrientation(inst, deployedrotation) -- rotates the plac
     else
         local neighbor = neighbors[1]
         if neighbor ~= nil then
-            local dir = inst:GetPosition() - neighbor:GetPosition()
-            local rot = math.atan2(dir.x, dir.z) * RADIANS
-            local rot_to_neighbor = rot
-            local neighbor_is_door = neighbor:HasTag("door")
-
-            rot = CalcFacingAngle(rot, false)
+            local x, y, z = inst.Transform:GetWorldPosition()
+            local x1, y1, z1 = neighbor.Transform:GetWorldPosition()
+            local rot_to_neighbor = math.atan2(x - x1, z - z1) * RADIANS
+            local rot = CalcFacingAngle(rot_to_neighbor, inst.isdoor)
+            
             if inst.isdoor then
-                if neighbor_is_door then
-                    if CalcRotationEnum(neighbor.Transform:GetRotation(), true) >= 4 then
-                        rot = rot + 180
-                    end
+                if Vector3(x - x1, 0, z - z1):Dot(TheCamera:GetRightVec()) < 0 then
+                    rot = rot + 180
+                end
+                
+                if neighbor.isdoor then
+                    if CalcRotationEnum(neighbor.Transform:GetRotation(), false) == CalcRotationEnum(rot, false) then
+						rot = neighbor.Transform:GetRotation()
+					end
                     SetIsSwingRight(inst, not IsSwingRight(neighbor))
                 else
-                    if CalcRotationEnum(-TheCamera:GetHeadingTarget(), true) >= 4 then
-                        rot = rot + 180
-                    end
                     SetIsSwingRight(inst, CalcRotationEnum(rot, true) ~= CalcRotationEnum(rot_to_neighbor, true))
+
+					-- some extra fixup to handle the case when two doors are placed with opposite camera angles, but the found neighbour was a wall even though there is a door on the otherside
+					inst.Transform:SetRotation(rot)
+					local otherdoor = FindPairedDoor(inst)
+					if otherdoor ~= nil then
+						rot = otherdoor.Transform:GetRotation()
+						SetIsSwingRight(inst, not IsSwingRight(otherdoor))
+					end
                 end
             end
 
-            if inst.isdoor and not neighbor_is_door then
-                -- some extra fixup to handle the case when two doors are placed with opposite camera angles
-                inst.Transform:SetRotation(rot)
-                local otherdoor = FindPairedDoor(inst)
-                if otherdoor ~= nil then
-                    rot = otherdoor.Transform:GetRotation()
-                    SetIsSwingRight(inst, not IsSwingRight(otherdoor))
-                end
-            end
             SetOrientation(inst, rot)
 
             RefreshDoorOffset(inst, neighbors)
@@ -438,6 +438,7 @@ local function MakeWall(name, builds, isdoor)
         inst:AddTag("nointerpolate")
 
         if isdoor then
+            inst.isdoor = true
             inst:AddTag("door")
             inst._isopen = net_bool(inst.GUID, name.."._open", "doorstatedirty")
             inst._isswingright = net_bool(inst.GUID, name.."._swingright", "doorstatedirty")
@@ -468,7 +469,6 @@ local function MakeWall(name, builds, isdoor)
         end
 
         if isdoor then
-            inst.isdoor = true
             inst.dooranim = SpawnPrefab(name.."_anim")
             inst.dooranim.entity:SetParent(inst.entity)
             inst.highlightforward = inst.dooranim

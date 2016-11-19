@@ -3734,6 +3734,7 @@ STRINGS.UI =
         Elegant         = "Elegant", -- an extremely rare item (eg rabbit pack, GoH base skins)
         Timeless        = "Timeless", -- not used (yet)
         Loyal           = "Loyal", -- a special item that isn't tradeable
+        ProofOfPurchase = "Proof Of Purchase",
         Reward          = "Reward", -- a set bonus item
         Event			= "Event",
     },

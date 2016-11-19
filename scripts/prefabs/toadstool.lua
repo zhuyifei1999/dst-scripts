@@ -188,8 +188,19 @@ local function FindMushroomBombTargets(inst)
         table.insert(angles, i * delta + offset)
     end
 
+    --shorten range when mobbed by NPC
     local pt = inst:GetPosition()
-    local range = GetRandomMinMax(TUNING.TOADSTOOL_MUSHROOMBOMB_MIN_RANGE, TUNING.TOADSTOOL_MUSHROOMBOMB_MAX_RANGE)
+    local maxrange = TUNING.TOADSTOOL_MUSHROOMBOMB_MAX_RANGE
+    for i = 1, 2 do
+        local closerange = (TUNING.TOADSTOOL_MUSHROOMBOMB_MIN_RANGE + maxrange) * .5
+        local targets = TheSim:FindEntities(pt.x, 0, pt.z, closerange, { "_combat", "_health" }, { "player", "INLIMBO" })
+        if #targets < inst.components.grouptargeter.num_targets then
+            break
+        end
+        maxrange = closerange
+    end
+
+    local range = GetRandomMinMax(TUNING.TOADSTOOL_MUSHROOMBOMB_MIN_RANGE, maxrange)
     local targets = {}
     while #angles > 0 do
         local theta = table.remove(angles, math.random(#angles))

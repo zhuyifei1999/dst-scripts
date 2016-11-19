@@ -83756,6 +83756,11 @@ msgctxt "STRINGS.UI.RARITY.Loyal"
 msgid "Loyal"
 msgstr ""
 
+#. STRINGS.UI.RARITY.ProofOfPurchase
+msgctxt "STRINGS.UI.RARITY.ProofOfPurchase"
+msgid "Proof Of Purchase"
+msgstr ""
+
 #. STRINGS.UI.RARITY.Reward
 msgctxt "STRINGS.UI.RARITY.Reward"
 msgid "Reward"

@@ -33,9 +33,9 @@ function MakePlacer(name, bank, build, anim, onground, snap, metersnap, scale, f
         inst.components.placer.fixedcameraoffset = fixedcameraoffset
         inst.components.placer.onground = onground
 
-        scale = scale or 1
-
-        inst.Transform:SetScale(scale, scale, scale)
+        if scale ~= nil and scale ~= 1 then
+            inst.Transform:SetScale(scale, scale, scale)
+        end
 
         if onground then
             inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
