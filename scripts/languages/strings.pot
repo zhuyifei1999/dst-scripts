@@ -73268,7 +73268,7 @@ msgstr ""
 
 #. STRINGS.RECIPE_DESC.MUSHROOM_FARM
 msgctxt "STRINGS.RECIPE_DESC.MUSHROOM_FARM"
-msgid "Grow some growths."
+msgid "Grow mushrooms."
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.MUSHROOM_LIGHT
@@ -81691,6 +81691,11 @@ msgctxt "STRINGS.UI.MAINSCREEN.NOTIFY"
 msgid "News"
 msgstr ""
 
+#. STRINGS.UI.MAINSCREEN.OFFLINE
+msgctxt "STRINGS.UI.MAINSCREEN.OFFLINE"
+msgid "Offline"
+msgstr ""
+
 #. STRINGS.UI.MAINSCREEN.OFFLINEMODE
 msgctxt "STRINGS.UI.MAINSCREEN.OFFLINEMODE"
 msgid "Connection to Klei Failed"
@@ -81729,16 +81734,6 @@ msgstr ""
 #. STRINGS.UI.MAINSCREEN.PLAYOFFLINE
 msgctxt "STRINGS.UI.MAINSCREEN.PLAYOFFLINE"
 msgid "Play Offline"
-msgstr ""
-
-#. STRINGS.UI.MAINSCREEN.PLAY_ON_STEAM
-msgctxt "STRINGS.UI.MAINSCREEN.PLAY_ON_STEAM"
-msgid "PLAY ON STEAM TEXT"
-msgstr ""
-
-#. STRINGS.UI.MAINSCREEN.PLAY_ON_STEAM_DETAIL
-msgctxt "STRINGS.UI.MAINSCREEN.PLAY_ON_STEAM_DETAIL"
-msgid "Mods! And Stuff. It is better."
 msgstr ""
 
 #. STRINGS.UI.MAINSCREEN.QUIT
@@ -81846,11 +81841,6 @@ msgctxt "STRINGS.UI.MAINSCREEN.SLOT_4"
 msgid "4"
 msgstr ""
 
-#. STRINGS.UI.MAINSCREEN.STEAM
-msgctxt "STRINGS.UI.MAINSCREEN.STEAM"
-msgid "Steam: "
-msgstr ""
-
 #. STRINGS.UI.MAINSCREEN.STEAMOFFLINEMODE
 msgctxt "STRINGS.UI.MAINSCREEN.STEAMOFFLINEMODE"
 msgid "Connection to Steam Failed"
@@ -81859,16 +81849,6 @@ msgstr ""
 #. STRINGS.UI.MAINSCREEN.STEAMOFFLINEMODEDESC
 msgctxt "STRINGS.UI.MAINSCREEN.STEAMOFFLINEMODEDESC"
 msgid "Couldn't connect to Steam (scheduled maintenance or connectivity issues). Characters and worlds from online games will be unavailable. Play offline?"
-msgstr ""
-
-#. STRINGS.UI.MAINSCREEN.STEAM_OFFLINE
-msgctxt "STRINGS.UI.MAINSCREEN.STEAM_OFFLINE"
-msgid "Offline"
-msgstr ""
-
-#. STRINGS.UI.MAINSCREEN.STEAM_ONLINE
-msgctxt "STRINGS.UI.MAINSCREEN.STEAM_ONLINE"
-msgid "Online"
 msgstr ""
 
 #. STRINGS.UI.MAINSCREEN.SURE

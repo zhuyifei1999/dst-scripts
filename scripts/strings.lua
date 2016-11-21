@@ -1291,7 +1291,7 @@ STRINGS =
         HEATROCK = "Stores thermals for travel.",
         SLOW_FARMPLOT = "Grows seeds.",
         FAST_FARMPLOT = "Grows seeds a bit faster.",
-        MUSHROOM_FARM = "Grow some growths.",
+        MUSHROOM_FARM = "Grow mushrooms.",
         TENT = "Restores sanity, but costs time and hunger.",
         SIESTAHUT = "Escape the heat to restore sanity.",
         ROPE = "Tightly woven coils of usefulness.",
@@ -2444,8 +2444,6 @@ STRINGS.UI =
         DST_UPDATENAME = "Release",
         CONTROLS = "Controls",
 
-        PLAY_ON_STEAM = "PLAY ON STEAM TEXT",
-        PLAY_ON_STEAM_DETAIL = "Mods! And Stuff. It is better.",
         LATER = "Not Now",
         ADJUST_DISPLAY_HEADER = "Adjust Display Area",
         ADJUST_DISPLAY_TEXT = "Parts of the game may be cut off by the edges of your screen. Do you want to check your display area now? If not, you can do this later in Settings.",
@@ -2461,9 +2459,7 @@ STRINGS.UI =
 
         CONSOLE_EDITION_TEXT = "Console Edition",
 
-        STEAM = "Steam: ",
-        STEAM_ONLINE = "Online",
-        STEAM_OFFLINE = "Offline",
+        OFFLINE = "Offline",
         OFFLINEMODE = "Connection to Klei Failed",
         OFFLINEMODEDESC = "Could not connect to Klei's servers. Characters and worlds from online games will be unavailable. Continue and play offline?",
         STEAMOFFLINEMODE = "Connection to Steam Failed",

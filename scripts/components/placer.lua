@@ -1,3 +1,5 @@
+require("components/deployhelper")
+
 local Placer = Class(function(self, inst)
     self.inst = inst
 
@@ -13,7 +15,6 @@ local Placer = Class(function(self, inst)
     self.oncanbuild = nil
     self.oncannotbuild = nil
     self.linked = {}
-    self.helperdelay = 0
 end)
 
 function Placer:SetBuilder(builder, recipe, invobject)
@@ -82,17 +83,8 @@ function Placer:OnUpdate(dt)
         self.mouse_blocked = false
     end
 
-    if self.helperdelay > dt then
-        self.helperdelay = self.helperdelay - dt
-    else
-        self.helperdelay = .15 - dt
-
-        local x, y, z = self.inst.Transform:GetWorldPosition()
-        local helpers = TheSim:FindEntities(x, y, z, 40, { "deployhelper" }, { "INLIMBO" })
-        for i, v in ipairs(helpers) do
-            v.components.deployhelper:StartHelper(.2)
-        end
-    end
+    local x, y, z = self.inst.Transform:GetWorldPosition()
+    TriggerDeployHelpers(x, y, z, 64)
 
     if self.can_build then
         if self.oncanbuild ~= nil then

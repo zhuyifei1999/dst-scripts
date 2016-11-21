@@ -445,7 +445,7 @@ local function RetargetFn(inst)
                 and guy:GetDistanceSqToPoint(spawnpoint) < deaggro_dist_sq
         end,
         { "_combat" }, --see entityreplica.lua
-        { "INLIMBO", "prey"--[[, "smallcreature" <- the beeees... - _-" ]] }
+        { "INLIMBO", "prey", "companion"--[[, "smallcreature" <- the beeees... - _-" ]] }
     )
 
     if player ~= nil and

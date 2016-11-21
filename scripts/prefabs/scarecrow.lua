@@ -105,12 +105,6 @@ local function ondressup(inst, cb)
     end
 end
 
-local function onopen(inst)
-    if not inst:HasTag("burnt") then
-        inst.SoundEmitter:PlaySound("dontstarve/common/wardrobe_open")
-    end
-end
-
 local function onsave(inst, data)
     if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() or inst:HasTag("burnt") then
         data.burnt = true
@@ -167,7 +161,6 @@ local function fn()
     inst:AddComponent("wardrobe")
     inst.components.wardrobe:SetCanBeDressed(true)
     inst.components.wardrobe.ondressupfn = ondressup
-    inst.components.wardrobe.onopenfn = onopen
 
     MakeMediumBurnable(inst, nil, nil, true)
     inst.components.burnable.onburnt = onburnt

@@ -195,9 +195,11 @@ local function onsave(inst, data)
     if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
         data.burnt = true
     else
-		if inst.flowerid and inst.task then
+		if inst.flowerid then
 			data.flowerid = inst.flowerid
-			data.wilttime = GetTaskRemaining(inst.task)
+			if inst.task ~= nil then
+				data.wilttime = GetTaskRemaining(inst.task)
+			end
 		end
     end
 end

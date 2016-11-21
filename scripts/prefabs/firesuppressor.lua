@@ -297,8 +297,11 @@ local function fn()
     inst.Light:SetColour(unpack(WarningColours.green))
     inst.Light:Enable(false)
 
-    inst:AddComponent("deployhelper")
-    inst.components.deployhelper.onenablehelper = OnEnableHelper
+    --Dedicated server does not need deployhelper
+    if not TheNet:IsDedicated() then
+        inst:AddComponent("deployhelper")
+        inst.components.deployhelper.onenablehelper = OnEnableHelper
+    end
 
     inst.entity:SetPristine()
 
