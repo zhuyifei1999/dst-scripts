@@ -2448,12 +2448,6 @@ STRINGS.UI =
         ADJUST_DISPLAY_HEADER = "Adjust Display Area",
         ADJUST_DISPLAY_TEXT = "Parts of the game may be cut off by the edges of your screen. Do you want to check your display area now? If not, you can do this later in Settings.",
 
-        SCREECHER_DIALOG_TITLE = "Restart Required",
-        SCREECHER_DIALOG_TEXT = "The Screecher mod requires the game to be restarted.",
-        SCREECHER_NACL_DIALOG_TITLE = "The Screecher Is Waiting For You...",
-        SCREECHER_NACL_DIALOG_TEXT = "The Screecher requires a Steam or Stand-alone version of Don't Starve to play.",
-        SCREECHER_NACL_OKAY = "Learn More",
-
         CANT_LOAD_TITLE = "Load Failed",
         CANT_LOAD_ROG = "Reign of Giants is not installed. Unable to load.",
 
@@ -4024,7 +4018,7 @@ STRINGS.UI =
             [4] = "Vita Remote Play",
             [5] = "Generic Controller",
             [6] = "Touch Input",
-            [7] = "Steam",
+            [7] = "Steam Controller",
             [8] = "PS4 Controller", --for PC/OSX/Linux
             [9] = "Unknown",
             },
