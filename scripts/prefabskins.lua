@@ -27,11 +27,34 @@ PREFAB_SKINS = {
 	},
 	bedroll_furry = 
 	{
+		"bedroll_furry_quilt_blue_frost",
 		"bedroll_furry_quilt_white_ivory",
 	},
 	cookpot = 
 	{
 		"cookpot_survival",
+	},
+	critter_dragonling = 
+	{
+		"dragonling_wyvern",
+	},
+	critter_dragonling_builder = 
+	{
+		"dragonling_wyvern_builder",
+	},
+	critter_glomling = 
+	{
+		"glomling_beardeddragon",
+	},
+	critter_glomling_builder = 
+	{
+		"glomling_beardeddragon_builder",
+	},
+	endtable = 
+	{
+		"endtable_carpet",
+		"endtable_dragonfly",
+		"endtable_vintage",
 	},
 	firepit = 
 	{
@@ -67,7 +90,12 @@ PREFAB_SKINS = {
 	},
 	treasurechest = 
 	{
+		"treasurechest_carpetbag",
+		"treasurechest_posh",
 		"treasurechest_poshprint",
+		"treasurechest_steamertrunk",
+		"treasurechest_traincase",
+		"treasurechest_traveltrunk",
 	},
 	wathgrithr = 
 	{

@@ -12,15 +12,6 @@ local TEMPLATES = require "widgets/templates"
 local SkinsItemPopUp = Class(Screen, function(self, item_type, player_name, player_colour)
     Screen._ctor(self, "SkinsItemPopUp")
 
-    -- print ("########## COLORS ##########")
-    -- print (RGBToPercentColor(153, 204, 255))
-    -- print (RGBToPercentColor(0, 0, 255))
-    -- print (RGBToPercentColor(120, 0, 128))
-    -- print (RGBToPercentColor(255, 0, 255))
-    -- print (RGBToPercentColor(255, 0, 0))
-    -- print (RGBToPercentColor(255, 204, 0))
-    -- print (RGBToPercentColor(255, 204, 153))
-
     --darken everything behind the dialog
     self.black = self:AddChild(Image("images/global.xml", "square.tex"))
     self.black:SetVRegPoint(ANCHOR_MIDDLE)
@@ -47,15 +38,6 @@ local SkinsItemPopUp = Class(Screen, function(self, item_type, player_name, play
     self.bg:SetHRegPoint(ANCHOR_MIDDLE)
     self.bg:SetScale(.9,.65,.9)
    
-    -- local p = 180
-    -- local colors_r = {"Common", "Classy", "Spiffy", "Distinguished", "Elegant", "Timeless", "Loyal"}
-    
-    -- for i=1,#colors_r do
-    --     local nl = self.proot:AddChild(Text(TALKINGFONT, 55, colors_r[i], SKIN_RARITY_COLORS[colors_r[i]]))
-    --     nl:SetPosition(0, p, 0)
-    --     p = p - 65
-    -- end
-
     --Player's name, colored accordingly
     self.player_label = self.proot:AddChild(Text(TALKINGFONT, 55))--Text(BUTTONFONT, 55))
     self.player_label:SetTruncatedString(player_name, 400, 25, true)

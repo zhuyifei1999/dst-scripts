@@ -11,6 +11,6 @@ return CreatePrefabSkin("treasurechest_poshprint",
 	type = "item",
 	assets = assets,
 	build_name = "treasurechest_poshprint",
-	rarity = "Loyal",
+	rarity = "ProofOfPurchase",
 	init_fn = function(inst) treasurechest_init_fn(inst, "treasurechest_poshprint") end,
 })

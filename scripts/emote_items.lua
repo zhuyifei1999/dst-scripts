@@ -2,5 +2,41 @@
 
 EMOTE_ITEMS =
 {
+	emote_sleepy =
+	{
+		rarity = "Reward",
+		cmd_name = "sleepy",
+		skin_build = "emote_sleepy",
+		type = "emote",
+		data =
+		{
+			item_type = "emote_sleepy",
+			requires_validation = true,
+			anim = "emote_sleepy",
+			fx = false,
+			loop = false,
+			mounted = false,
+			sounddelay = 0.26666666666667,
+			soundoverride = "eye_rub_vo",
+		},
+	},
+	emote_yawn =
+	{
+		rarity = "Reward",
+		cmd_name = "yawn",
+		skin_build = "emote_yawn",
+		type = "emote",
+		data =
+		{
+			item_type = "emote_yawn",
+			requires_validation = true,
+			anim = "emote_yawn",
+			fx = false,
+			loop = false,
+			mounted = false,
+			sounddelay = 0.6,
+			soundoverride = "yawn",
+		},
+	},
 }
 

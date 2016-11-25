@@ -9,24 +9,37 @@ SKIN_RARITY_COLORS =
 	Elegant			= { 0.741, 0.275, 0.275, 1 }, -- BD4646 - an extremely rare item (eg rabbit pack, GoH base skins)
 	Timeless		= { 0.957, 0.769, 0.188, 1 }, -- F4C430 - not used
 	Loyal			= { 0.635, 0.769, 0.435, 1 }, -- A2C46F - a one-time giveaway (eg mini monument)
+	ProofOfPurchase = { 0.000, 0.478, 0.302, 1 }, -- 007A4D
 	Reward			= { 0.910, 0.592, 0.118, 1 }, -- E8971E - a set bonus reward
 	Event			= { 0.957, 0.769, 0.188, 1 }, -- F4C430 - an event item
 }
-
+--[[
+Common #B7D2D9
+Classy #415078
+Spiffy #68457C
+Distinguished #BA74A5
+Elegant #BD4646
+Timeless #F4C430
+Loyal #A2C46F
+ProofOfPurchase #007A4D
+Reward #E8971E
+Event #F4C430
+]]
 
 -- for use in sort functions
 -- return true if rarity1 should go first in the list
 local rarity_order =
 {
-	Loyal = 1,
-	Reward = 2,
-	Event = 3,
-	Timeless = 4,
-	Elegant = 5,
-	Distinguished = 6,
-	Spiffy = 7,
-	Classy = 8,
-	Common = 9
+	ProofOfPurchase = 1,
+	Loyal = 2,
+	Reward = 3,
+	Event = 4,
+	Timeless = 5,
+	Elegant = 6,
+	Distinguished = 7,
+	Spiffy = 8,
+	Classy = 9,
+	Common = 10
 }
 function CompareRarities(a, b)
 	local rarity1 = type(a) == "string" and a or a.rarity
@@ -43,7 +56,8 @@ function GetNextRarity(rarity)
 					  Elegant = "Timeless",
 					  Timeless = "Reward",
 					  Reward = "Loyal",
-					  Loyal = "Event",
+					  Loyal = "ProofOfPurchase",
+					  ProofOfPurchase = "Event",
 					 }
 
 	return rarities[rarity] or nil

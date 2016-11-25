@@ -12,6 +12,6 @@ return CreatePrefabSkin("backpack_deerclops",
 	type = "item",
 	assets = assets,
 	build_name = "swap_backpack_deerclops",
-	rarity = "Loyal",
+	rarity = "ProofOfPurchase",
 	init_fn = function(inst) backpack_init_fn(inst, "swap_backpack_deerclops") end,
 })

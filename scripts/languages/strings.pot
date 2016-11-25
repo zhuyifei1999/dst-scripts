@@ -73741,6 +73741,26 @@ msgctxt "STRINGS.SELECT"
 msgid "Select"
 msgstr ""
 
+#. STRINGS.SET_DESCRIPTIONS.emote_sleepy
+msgctxt "STRINGS.SET_DESCRIPTIONS.emote_sleepy"
+msgid "You look cozy from top to bottom. Sweet dreams, sleepy survivor!"
+msgstr ""
+
+#. STRINGS.SET_DESCRIPTIONS.emote_yawn
+msgctxt "STRINGS.SET_DESCRIPTIONS.emote_yawn"
+msgid "You are so ready for a nap. You've never been more ready for anything in your entire life."
+msgstr ""
+
+#. STRINGS.SET_NAMES.emote_sleepy
+msgctxt "STRINGS.SET_NAMES.emote_sleepy"
+msgid "Blue Sleepytime Ensemble"
+msgstr ""
+
+#. STRINGS.SET_NAMES.emote_yawn
+msgctxt "STRINGS.SET_NAMES.emote_yawn"
+msgid "Purple Jammies Ensemble"
+msgstr ""
+
 #. STRINGS.SHARD.MIGRATION_FAILED.DST_SHARD_DESTINATION_FULL
 msgctxt "STRINGS.SHARD.MIGRATION_FAILED.DST_SHARD_DESTINATION_FULL"
 msgid "[WIP] Destination is full!"
@@ -74571,6 +74591,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.backpack_spider"
 msgid "Wearing this backpack will let you make an arachnophobe's day a little bit worse. Or, you could ask yourself 'What would Willow do?' and burn it! Burn it with fire!"
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.bedroll_furry_quilt_blue_frost
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.bedroll_furry_quilt_blue_frost"
+msgid "Nothing says \"bedtime\" quite like a bunch of little fabric squares sewn into one bigger, 'high elevation blue' fabric square."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.bedroll_furry_quilt_white_ivory
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.bedroll_furry_quilt_white_ivory"
 msgid "Nothing says \"bedtime\" quite like a bunch of little fabric squares sewn into one bigger, 'houndbone white' fabric square."
@@ -74686,6 +74711,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_overalls_navy_ocean"
 msgid "These sturdy 'unsuitably blue' colored overalls are great for plumbing the depths."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.body_pj_blue_agean
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_pj_blue_agean"
+msgid "Don't worry if this 'high pH blue' colored pajama top is too big on you. That just makes it cuter."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.body_pj_purple_mauve
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_pj_purple_mauve"
 msgid "Don't worry if this 'snail mucus purple' colored pajama top is too big on you. That just makes it cuter."
@@ -74759,6 +74789,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.body_sleepgown_blue_ice
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_sleepgown_blue_ice"
 msgid "It might look a bit itchy, but this 'anthropomorphic feline blue' nightgown is actually the coziest thing in the world."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_sleepgown_purple_lavender
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_sleepgown_purple_lavender"
+msgid "It might look a bit itchy, but this 'peripeteia purple' nightgown is actually the coziest thing in the world."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_suspenders_pink_pearl
@@ -75046,6 +75081,41 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.cookpot_survival"
 msgid "This cooking pot looks kind of beaten up, but the food it cooks still tastes delicious."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.dragonling_wyvern
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.dragonling_wyvern"
+msgid "This pet's doofy lil dragon face inspires both fear and wuv."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.dragonling_wyvern_builder
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.dragonling_wyvern_builder"
+msgid "missing description"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.emote_sleepy
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.emote_sleepy"
+msgid "\"You are getting veeery /sleepy...\""
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.emote_yawn
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.emote_yawn"
+msgid "Just /yawn and everyone will know you're ready for an adorable nap!"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.endtable_carpet
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.endtable_carpet"
+msgid "A table that would be a truly elegant addition to any unkempt wilderness base."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.endtable_dragonfly
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.endtable_dragonfly"
+msgid "An endtable inspired by the most opulent of bloodthirsty monsters."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.endtable_vintage
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.endtable_vintage"
+msgid "A quaint decorative table that would make your grandmother proud."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.feet_bootie_black_scribble
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_bootie_black_scribble"
 msgid "A pair of 'scribble black' colored boot devices."
@@ -75144,6 +75214,16 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.flowerhat_wreath
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.flowerhat_wreath"
 msgid "Laurels ought rest on you, not the other way around."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.glomling_beardeddragon
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.glomling_beardeddragon"
+msgid "A pet as noble as he is huggable."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.glomling_beardeddragon_builder
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.glomling_beardeddragon_builder"
+msgid "missing description"
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.hand_beltedgloves_brown_beaver
@@ -75271,6 +75351,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_pants_basic_tan_cream"
 msgid "Wearing these 'no-tan-lines tan' colored pants won't help you survive... But you'll look great!"
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.legs_pj_blue_agean
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_pj_blue_agean"
+msgid "No striped pajama squid were harmed in the making of these 'high pH blue' colored naptime pants."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.legs_pj_purple_mauve
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.legs_pj_purple_mauve"
 msgid "No striped pajama squid were harmed in the making of these 'snail mucus purple' colored naptime pants."
@@ -75361,9 +75446,34 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.torch_spooky"
 msgid "Repel the dark these Hallowed Nights with a dreadful beacon of most Hallowed Light."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.treasurechest_carpetbag
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.treasurechest_carpetbag"
+msgid "This bag made from luxurious carpet is the height of modern fashion!"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.treasurechest_posh
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.treasurechest_posh"
+msgid "A chest worthy of storing your finest gems and treasures. Or, y'know, twigs and manure."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.treasurechest_poshprint
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.treasurechest_poshprint"
 msgid "No Chesters were harmed in the making of this chest... I think."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.treasurechest_steamertrunk
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.treasurechest_steamertrunk"
+msgid "NOTE: Doesn't steam."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.treasurechest_traincase
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.treasurechest_traincase"
+msgid "Organize your foraged scraps in class and style."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.treasurechest_traveltrunk
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.treasurechest_traveltrunk"
+msgid "Its travelling days may be over, but it'll always have the memories."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.wathgrithr_deerclops
@@ -75701,6 +75811,11 @@ msgctxt "STRINGS.SKIN_NAMES.backpack_spider"
 msgid "Spider Sack"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.bedroll_furry_quilt_blue_frost
+msgctxt "STRINGS.SKIN_NAMES.bedroll_furry_quilt_blue_frost"
+msgid "Patchwork Quilt"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.bedroll_furry_quilt_white_ivory
 msgctxt "STRINGS.SKIN_NAMES.bedroll_furry_quilt_white_ivory"
 msgid "Patchwork Quilt"
@@ -75816,6 +75931,11 @@ msgctxt "STRINGS.SKIN_NAMES.body_overalls_navy_ocean"
 msgid "Overalls"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.body_pj_blue_agean
+msgctxt "STRINGS.SKIN_NAMES.body_pj_blue_agean"
+msgid "Jammie Shirt"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.body_pj_purple_mauve
 msgctxt "STRINGS.SKIN_NAMES.body_pj_purple_mauve"
 msgid "Jammie Shirt"
@@ -75888,6 +76008,11 @@ msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_sleepgown_blue_ice
 msgctxt "STRINGS.SKIN_NAMES.body_sleepgown_blue_ice"
+msgid "Nightgown"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_sleepgown_purple_lavender
+msgctxt "STRINGS.SKIN_NAMES.body_sleepgown_purple_lavender"
 msgid "Nightgown"
 msgstr ""
 
@@ -76176,6 +76301,41 @@ msgctxt "STRINGS.SKIN_NAMES.cookpot_survival"
 msgid "Camping Crock Pot"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.dragonling_wyvern
+msgctxt "STRINGS.SKIN_NAMES.dragonling_wyvern"
+msgid "Wyvernling"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.dragonling_wyvern_builder
+msgctxt "STRINGS.SKIN_NAMES.dragonling_wyvern_builder"
+msgid "dragonling_wyvern_builder"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.emote_sleepy
+msgctxt "STRINGS.SKIN_NAMES.emote_sleepy"
+msgid "Sleepy Emote"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.emote_yawn
+msgctxt "STRINGS.SKIN_NAMES.emote_yawn"
+msgid "Yawn Emote"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.endtable_carpet
+msgctxt "STRINGS.SKIN_NAMES.endtable_carpet"
+msgid "Austere Endtable"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.endtable_dragonfly
+msgctxt "STRINGS.SKIN_NAMES.endtable_dragonfly"
+msgid "Dragonfly Endtable"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.endtable_vintage
+msgctxt "STRINGS.SKIN_NAMES.endtable_vintage"
+msgid "Antique Endtable"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.feet_bootie_black_scribble
 msgctxt "STRINGS.SKIN_NAMES.feet_bootie_black_scribble"
 msgid "Booties"
@@ -76274,6 +76434,16 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.flowerhat_wreath
 msgctxt "STRINGS.SKIN_NAMES.flowerhat_wreath"
 msgid "Thorned Laurel"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.glomling_beardeddragon
+msgctxt "STRINGS.SKIN_NAMES.glomling_beardeddragon"
+msgid "Bearded Dragon"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.glomling_beardeddragon_builder
+msgctxt "STRINGS.SKIN_NAMES.glomling_beardeddragon_builder"
+msgid "glomling_beardeddragon_builder"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.hand_beltedgloves_brown_beaver
@@ -76401,6 +76571,11 @@ msgctxt "STRINGS.SKIN_NAMES.legs_pants_basic_tan_cream"
 msgid "Pants"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.legs_pj_blue_agean
+msgctxt "STRINGS.SKIN_NAMES.legs_pj_blue_agean"
+msgid "Jammie Pants"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.legs_pj_purple_mauve
 msgctxt "STRINGS.SKIN_NAMES.legs_pj_purple_mauve"
 msgid "Jammie Pants"
@@ -76491,9 +76666,34 @@ msgctxt "STRINGS.SKIN_NAMES.torch_spooky"
 msgid "Hallowed Light"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.treasurechest_carpetbag
+msgctxt "STRINGS.SKIN_NAMES.treasurechest_carpetbag"
+msgid "Carpet Bag"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.treasurechest_posh
+msgctxt "STRINGS.SKIN_NAMES.treasurechest_posh"
+msgid "Treasured Chest"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.treasurechest_poshprint
 msgctxt "STRINGS.SKIN_NAMES.treasurechest_poshprint"
 msgid "Calico Chester Chest"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.treasurechest_steamertrunk
+msgctxt "STRINGS.SKIN_NAMES.treasurechest_steamertrunk"
+msgid "Steamer Trunk"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.treasurechest_traincase
+msgctxt "STRINGS.SKIN_NAMES.treasurechest_traincase"
+msgid "Train Case"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.treasurechest_traveltrunk
+msgctxt "STRINGS.SKIN_NAMES.treasurechest_traveltrunk"
+msgid "Traveller's Trunk"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.wathgrithr_deerclops
