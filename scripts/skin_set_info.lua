@@ -2,5 +2,17 @@
 
 return 
 {
+	emote_sleepy =
+	{
+		"body_pj_blue_agean",
+		"legs_pj_blue_agean",
+		"bedroll_furry_quilt_blue_frost",
+	},
+	emote_yawn =
+	{
+		"body_pj_purple_mauve",
+		"legs_pj_purple_mauve",
+		"bedroll_furry_quilt_white_ivory",
+	},
 }
 

@@ -98,7 +98,20 @@ local function PanicWhenScared(inst, loseloyaltychance, chatty)
         }
     end
 
-    return WhileNode(function() return GetTime() < scareendtime end, "PanicScared", panicscarednode)
+    local scared = false
+    return WhileNode(
+        function()
+            if (GetTime() < scareendtime) ~= scared then
+                if inst.components.combat ~= nil then
+                    inst.components.combat:SetTarget(nil)
+                end
+                scared = not scared
+            end
+            return scared
+        end,
+        "PanicScared",
+        panicscarednode
+    )
 end
 
 BrainCommon.PanicWhenScared = PanicWhenScared

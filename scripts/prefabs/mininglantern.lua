@@ -39,7 +39,9 @@ local function turnon(inst)
         inst.components.machine.ison = true
 
         inst.SoundEmitter:PlaySound("dontstarve/wilson/lantern_on")
-        inst.SoundEmitter:PlaySound("dontstarve/wilson/lantern_LP", "loop")
+        if not inst.SoundEmitter:PlayingSound("loop") then
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/lantern_LP", "loop")
+        end
 
         inst.components.inventoryitem:ChangeImageName("lantern_lit")
     end
@@ -125,7 +127,7 @@ local function nofuel(inst)
 end
 
 local function takefuel(inst)
-    if inst.components.equippable and inst.components.equippable:IsEquipped() then
+    if inst.components.equippable ~= nil and inst.components.equippable:IsEquipped() then
         turnon(inst)
     end
 end

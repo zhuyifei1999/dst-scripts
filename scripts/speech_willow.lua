@@ -8,6 +8,7 @@ return {
         BUILD =
         {
             MOUNTED = "I can't place anything from atop this big lout!",
+            HASPET = "I've already got one!",
         },
         SHAVE =
 		{
@@ -58,6 +59,7 @@ return {
         },
         GIVE =
         {
+            GENERIC = "Noooope!",
             DEAD = "They won't fully appreciate my gift.",
             SLEEPING = "Not right now. It's sleeping.",
             BUSY = "It's busyyyy.",
@@ -622,6 +624,10 @@ return {
 			GENERIC = "That could totally catch on fire.",
 			BURNT = "It did catch on fire!",
 		},
+		FENCE = "I'm not painting that.",
+        FENCE_ITEM = "No point just leaving it on the ground.",
+        FENCE_GATE = "I guess we could pen stuff in with it.",
+        FENCE_GATE_ITEM = "No point just leaving it on the ground.",
 		WARG = "You're a big mean jerk!",
 		WATERMELON = "I once knew a melon named Walter. He was a jerk.",
 		WATERMELON_COOKED = "Warm, sweet, juicy Walter.",
@@ -700,6 +706,7 @@ return {
             BROKEN = "Oh look, a bunch of smashed up rocks!",
             STAFFED = "Hurry up already, stupid rock!",
             WRONGSTAFF = "That's obviously completely wrong.",
+            MOONSTAFF = "Ughh! It's doing the exact opposite of burning!",
         },
         MOONDIAL = 
         {
@@ -960,6 +967,14 @@ return {
 		BASALT = "It's too hard to break!",
 		BEARDHAIR = "Clean up your gross hair guys! Ugh!",
 		BEDROLL_STRAW = "Musty.",
+		BEEQUEEN = "No amount of honey is worth THAT!",
+		BEEQUEENHIVE = 
+		{
+			GENERIC = "It all came from a bee's butt.",
+			GROWING = "Ew, burn it before it gets any bigger!",
+		},
+		BEEQUEENHIVEGROWN = "Dare you guys to smack it with a hammer.",
+        BEEGUARD = "Puffy flying jerk!",
 		BEE =
 		{
 			GENERIC = "It's fat, but that stinger looks dangerous.",
@@ -1134,6 +1149,14 @@ return {
 			HELD = "You still breathing? Just checking.",
 		},
 		CANARY_POISONED = "Is that infectious? We should burn it.",
+
+		CRITTERLAB = "Is there anything cute in there??",
+        CRITTER_GLOMLING = "Aww, I could just squish your gross lil face!",
+        CRITTER_DRAGONLING = "We were made for each other.",
+		CRITTER_LAMB = "Look at those creepy little eyes. Aww.",
+        CRITTER_PUPPY = "Hah, you don't even know you're smelly.",
+        CRITTER_KITTEN = "You're the perfect lapwarmer.",
+
 		CROW =
 		{
 			GENERIC = "I think it's waiting for me to die.",
@@ -1184,6 +1207,7 @@ return {
 		},
 		LAVA_POND = "Yes! Yessss!",
 		LAVAE = "Why can't we be friends?",
+		LAVAE_COCOON = "Aw, it lost its fiery personality.",
 		LAVAE_PET = 
 		{
 			STARVING = "I can see her ribs!",
@@ -1222,7 +1246,11 @@ return {
 		ENDTABLE = 
 		{
 			BURNT = "Alright, alright, so I was wrong about the hand!",
-			GENERIC = "I'm telling you, there's a monsterhand under that thing!",
+			GENERIC = "Just a bunch of dumb flowers.",
+			EMPTY = "I'm telling you, there's a monsterhand under that thing!",
+			WILTED = "Those need replacing.",
+			FRESHLIGHT = "Not as good as a fire, but at least we won't be in the dark.",
+			OLDLIGHT = "We're gonna be in the dark soon.",
 		},
 		STUFFEDEGGPLANT = "It's still not a bird, but it's sure stuffed like one!",
 		DUG_BERRYBUSH = "What's the matter, got no dirt?",
@@ -1405,6 +1433,9 @@ return {
 		COOKEDMANDRAKE = "The fire didn't get rid of its face. Gives me the willies.",
 		MANDRAKESOUP = "The face doesn't wash away!!",
 		MARBLE = "It's heavy!",
+		MARBLEBEAN = "I guess we just... plant it? In the dirt?",
+		MARBLEBEAN_SAPLING = "That makes no sense!",
+        MARBLESHRUB = "What sort of bush doesn't burn?!",
 		MARBLEPILLAR = "I wonder if the rest burnt down.",
 		MARBLETREE = "The worst kind of tree. The non-flammable kind.",
 		MARSH_BUSH =
@@ -1555,6 +1586,8 @@ return {
         ROOK = "It's a castle!",
         ROPE = "What should we tie up??!",
 		ROTTENEGG = "Ew! Why? Oh Why?!",
+		ROYAL_JELLY = "It's so sweet!",
+		JELLYBEAN = "Nothing better than a handful of jellybeans.",
         SADDLE_BASIC = "It's so uncomfortable.",
         SADDLE_RACE = "Was it worth it? I think it was worth it.",
         SADDLE_WAR = "I'm going to raze some villages!",

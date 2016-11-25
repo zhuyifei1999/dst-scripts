@@ -109,9 +109,7 @@ function MakeWallType(data)
             wall.Physics:Teleport(x, 0, z)
             wall.Physics:SetCollides(true)
             inst.components.stackable:Get():Remove()
-
-            TheWorld.Pathfinder:AddWall(x, 0, z)
-
+            
             if data.buildsound ~= nil then
                 wall.SoundEmitter:PlaySound(data.buildsound)
             end
@@ -223,6 +221,7 @@ function MakeWallType(data)
 
         inst:AddTag("wall")
         inst:AddTag("noauradamage")
+        inst:AddTag("nointerpolate")
 
         inst.AnimState:SetBank("wall")
         inst.AnimState:SetBuild("wall_"..data.name)

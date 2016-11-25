@@ -512,12 +512,12 @@ function PlayerController:DoControllerActionButton()
     elseif self.deployplacer ~= nil then
         if self.locomotor == nil then
             self.remote_controls[CONTROL_CONTROLLER_ACTION] = 0
-            SendRPCToServer(RPC.ControllerActionButtonDeploy, obj, act.pos.x, act.pos.z)
+            SendRPCToServer(RPC.ControllerActionButtonDeploy, obj, act.pos.x, act.pos.z, act.rotation ~= 0 and act.rotation or nil)
         elseif self:CanLocomote() then
             act.preview_cb = function()
                 self.remote_controls[CONTROL_CONTROLLER_ACTION] = 0
                 local isreleased = not TheInput:IsControlPressed(CONTROL_CONTROLLER_ACTION)
-                SendRPCToServer(RPC.ControllerActionButtonDeploy, obj, act.pos.x, act.pos.z, isreleased)
+                SendRPCToServer(RPC.ControllerActionButtonDeploy, obj, act.pos.x, act.pos.z, act.rotation ~= 0 and act.rotation or nil, isreleased)
             end
         end
     elseif self.locomotor == nil then
@@ -570,7 +570,7 @@ function PlayerController:OnRemoteControllerActionButton(actioncode, target, isr
     end
 end
 
-function PlayerController:OnRemoteControllerActionButtonDeploy(invobject, position, isreleased)
+function PlayerController:OnRemoteControllerActionButtonDeploy(invobject, position, rotation, isreleased)
     if self.ismastersim and self:IsEnabled() and self.handler == nil then
         self.inst.components.combat:SetTarget(nil)
 
@@ -578,7 +578,7 @@ function PlayerController:OnRemoteControllerActionButtonDeploy(invobject, positi
 
         if invobject.components.inventoryitem ~= nil and invobject.components.inventoryitem:GetGrandOwner() == self.inst then
             --Must match placer:GetDeployAction(), with an additional distance = 1 parameter
-            self:DoAction(BufferedAction(self.inst, nil, ACTIONS.DEPLOY, invobject, position, nil, 1))
+            self:DoAction(BufferedAction(self.inst, nil, ACTIONS.DEPLOY, invobject, position, nil, 1, nil, rotation or 0))
         --else
             --print("Remote controller action button deploy failed")
         end
@@ -985,11 +985,9 @@ function PlayerController:GetAttackTarget(force_attack, force_target, isretarget
     end
 
     local x, y, z = self.inst.Transform:GetWorldPosition()
-    local rad = combat:GetAttackRangeWithWeapon()
-    if not self.directwalking then
-        --for autowalking
-        rad = rad + 6
-    end
+    local attackrange = combat:GetAttackRangeWithWeapon()
+    local rad = self.directwalking and attackrange or attackrange + 6
+    --"not self.directwalking" is autowalking
 
     --Beaver teeth counts as having a weapon
     local has_weapon = self.inst:HasTag("beaver")
@@ -1011,13 +1009,33 @@ function PlayerController:GetAttackTarget(force_attack, force_target, isretarget
     --To deal with entity collision boxes we need to pad the radius.
     --Only include combat targets for auto-targetting, not light/extinguish
     --See entityreplica.lua (re: "_combat" tag)
-    local nearby_ents = TheSim:FindEntities(x, y, z, rad + 5, { "_combat" })
+    local nearby_ents = TheSim:FindEntities(x, y, z, rad + 5, { "_combat" }, { "INLIMBO" })
+    local nearest_dist = math.huge
+    isretarget = false --reusing variable for flagging when we've found recent target
+    force_target = nil --reusing variable for our nearest target
     for i, v in ipairs(nearby_ents) do
         if ValidateAttackTarget(combat, v, force_attack, x, z, has_weapon, reach) and
             CanEntitySeeTarget(self.inst, v) then
-            return v
+            local dsq = self.inst:GetDistanceSqToInst(v)
+            local dist =
+                (dsq <= 0 and 0) or
+                (v.Physics ~= nil and math.max(0, math.sqrt(dsq) - v.Physics:GetRadius())) or
+                math.sqrt(dsq)
+            if not isretarget and combat:IsRecentTarget(v) then
+                if dist < attackrange + .1 then
+                    return v
+                end
+                isretarget = true
+            end
+            if dist < nearest_dist then
+                nearest_dist = dist
+                force_target = v
+            end
+        elseif not isretarget and combat:IsRecentTarget(v) then
+            isretarget = true
         end
     end
+    return force_target
 end
 
 function PlayerController:DoAttackButton(retarget)
@@ -1095,7 +1113,7 @@ local function ValidateUnsaddler(target)
     return not target.replica.health:IsDead()
 end
 
-local function GetPickupAction(target, tool)
+local function GetPickupAction(inst, target, tool)
     if target:HasTag("smolder") then
         return ACTIONS.SMOTHER
     elseif tool ~= nil then
@@ -1113,7 +1131,7 @@ local function GetPickupAction(target, tool)
     elseif target:HasTag("minesprung") then
         return ACTIONS.RESETMINE
     elseif target:HasTag("inactive") then
-        return ACTIONS.ACTIVATE
+        return (not target:HasTag("wall") or inst:IsNear(target, 2.5)) and ACTIONS.ACTIVATE or nil
     elseif target.replica.inventoryitem ~= nil and
         target.replica.inventoryitem:CanBePickedUp() and
         not (target:HasTag("heavy") or target:HasTag("fire") or target:HasTag("catchable")) then
@@ -1174,6 +1192,11 @@ function PlayerController:GetActionButtonAction(force_target)
         if not usedefault or buffaction ~= nil then
             return buffaction
         end
+
+    elseif self.inst.replica.inventory:IsHeavyLifting()
+        and not (self.inst.replica.rider ~= nil and self.inst.replica.rider:IsRiding()) then
+        --hands are full!
+        return
 
     elseif not self:IsDoingOrWorking() then
         local force_target_distsq = force_target ~= nil and self.inst:GetDistanceSqToInst(force_target) or nil
@@ -1263,14 +1286,14 @@ function PlayerController:GetActionButtonAction(force_target)
             local ents = TheSim:FindEntities(x, y, z, self.directwalking and 3 or 6, nil, PICKUP_TARGET_EXCLUDE_TAGS, pickup_tags)
             for i, v in ipairs(ents) do
                 if v ~= self.inst and v.entity:IsVisible() and CanEntitySeeTarget(self.inst, v) then
-                    local action = GetPickupAction(v, tool)
+                    local action = GetPickupAction(self.inst, v, tool)
                     if action ~= nil then
                         return BufferedAction(self.inst, v, action, action ~= ACTIONS.SMOTHER and tool or nil)
                     end
                 end
             end
         elseif force_target_distsq <= (self.directwalking and 9 or 36) then
-            local action = GetPickupAction(force_target, tool)
+            local action = GetPickupAction(self.inst, force_target, tool)
             if action ~= nil then
                 return BufferedAction(self.inst, force_target, action, action ~= ACTIONS.SMOTHER and tool or nil)
             end
@@ -1589,22 +1612,24 @@ function PlayerController:OnUpdate(dt)
                 nil
         end
 
-        if new_highlight ~= self.highlight_guy then
+        local new_highlight_guy = new_highlight ~= nil and new_highlight.highlightforward or new_highlight
+        if new_highlight_guy ~= self.highlight_guy then
             if self.highlight_guy ~= nil and self.highlight_guy:IsValid() and self.highlight_guy.components.highlight ~= nil then
                 self.highlight_guy.components.highlight:UnHighlight()
             end
-            self.highlight_guy = new_highlight
+            self.highlight_guy = new_highlight_guy
         end
 
-        if self.highlight_guy ~= nil and self.highlight_guy:IsValid() then
-            if self.highlight_guy.components.highlight == nil then
-                self.highlight_guy:AddComponent("highlight")
+        if new_highlight_guy ~= nil and new_highlight_guy:IsValid() then
+            if new_highlight_guy.components.highlight == nil then
+                new_highlight_guy:AddComponent("highlight")
             end
 
-            if self.highlight_guy:HasTag("burnt") then
-                self.highlight_guy.components.highlight:Highlight(.5, .5, .5)
+            --V2C: check tags on the original, not the forwarded
+            if new_highlight:HasTag("burnt") then
+                new_highlight_guy.components.highlight:Highlight(.5, .5, .5)
             else
-                self.highlight_guy.components.highlight:Highlight()
+                new_highlight_guy.components.highlight:Highlight()
             end
         else
             self.highlight_guy = nil
@@ -1638,10 +1663,12 @@ function PlayerController:OnUpdate(dt)
                 self.deployplacer = SpawnPrefab(placer_name)
                 if self.deployplacer ~= nil then
                     self.deployplacer.components.placer:SetBuilder(self.inst, nil, placer_item)
-                    self.deployplacer.components.placer.testfn = function(pt) 
+                    self.deployplacer.components.placer.testfn = function(pt)
+                        local mouseover = TheInput:GetWorldEntityUnderMouse()
                         return placer_item:IsValid() and
                             placer_item.replica.inventoryitem ~= nil and
-                            placer_item.replica.inventoryitem:CanDeploy(pt, TheInput:GetWorldEntityUnderMouse())
+                            placer_item.replica.inventoryitem:CanDeploy(pt, mouseover),
+                            mouseover ~= nil
                     end
                     self.deployplacer.components.placer:OnUpdate(0) --so that our position is accurate on the first frame
                 end
@@ -1881,6 +1908,8 @@ local function UpdateControllerAttackTarget(self, dt, x, y, z, dirx, dirz)
 
                         if isally then
                             score = score * .25
+                        elseif v:HasTag("epic") then
+                            score = score * 5
                         elseif v:HasTag("monster") then
                             score = score * 4
                         end
@@ -2441,10 +2470,11 @@ function PlayerController:DoAction(buffaction)
     end
 
     if self.handler ~= nil and buffaction.target ~= nil then
-        if buffaction.target.components.highlight == nil then
-            buffaction.target:AddComponent("highlight")
+        local highlight_guy = buffaction.target.highlightforward or buffaction.target
+        if highlight_guy.components.highlight == nil then
+            highlight_guy:AddComponent("highlight")
         end
-        buffaction.target.components.highlight:Flash(.2, .125, .1)
+        highlight_guy.components.highlight:Flash(.2, .125, .1)
     end
 
     --Clear any buffered attacks since we're starting a new action
@@ -2621,18 +2651,21 @@ function PlayerController:OnRightClick(down)
     if act == nil then
         self.inst.replica.inventory:ReturnActiveItem()
     else
+        if self.deployplacer ~= nil and act.action == ACTIONS.DEPLOY then
+            act.rotation = self.deployplacer.Transform:GetRotation()
+        end
         if not self.ismastersim then
             local position = TheInput:GetWorldPosition()
             local mouseover = TheInput:GetWorldEntityUnderMouse()
             local controlmods = self:EncodeControlMods()
             if self.locomotor == nil then
                 self.remote_controls[CONTROL_SECONDARY] = 0
-                SendRPCToServer(RPC.RightClick, act.action.code, position.x, position.z, mouseover, nil, controlmods, act.action.canforce, act.action.mod_name)
+                SendRPCToServer(RPC.RightClick, act.action.code, position.x, position.z, mouseover, act.rotation ~= 0 and act.rotation or nil, nil, controlmods, act.action.canforce, act.action.mod_name)
             elseif act.action ~= ACTIONS.WALKTO and self:CanLocomote() then
                 act.preview_cb = function()
                     self.remote_controls[CONTROL_SECONDARY] = 0
                     local isreleased = not TheInput:IsControlPressed(CONTROL_SECONDARY)
-                    SendRPCToServer(RPC.RightClick, act.action.code, position.x, position.z, mouseover, isreleased, controlmods, nil, act.action.mod_name)
+                    SendRPCToServer(RPC.RightClick, act.action.code, position.x, position.z, mouseover, act.rotation ~= 0 and act.rotation or nil, isreleased, controlmods, nil, act.action.mod_name)
                 end
             end
         end
@@ -2640,7 +2673,7 @@ function PlayerController:OnRightClick(down)
     end
 end
 
-function PlayerController:OnRemoteRightClick(actioncode, position, target, isreleased, controlmodscode, noforce, mod_name)
+function PlayerController:OnRemoteRightClick(actioncode, position, target, rotation, isreleased, controlmodscode, noforce, mod_name)
     if self.ismastersim and self:IsEnabled() and self.handler == nil then
         self.remote_controls[CONTROL_SECONDARY] = 0
         self:DecodeControlMods(controlmodscode)
@@ -2655,6 +2688,7 @@ function PlayerController:OnRemoteRightClick(actioncode, position, target, isrel
                 rmb.pos = self:GetRemotePredictPosition() or self.inst:GetPosition()
                 rmb.forced = true
             end
+            rmb.rotation = rotation or rmb.rotation
             self:DoAction(rmb)
         --elseif mod_name ~= nil then
             --print("Remote right click action failed: "..tostring(ACTION_MOD_IDS[mod_name][actioncode]))

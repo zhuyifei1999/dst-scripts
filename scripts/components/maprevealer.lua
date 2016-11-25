@@ -29,7 +29,7 @@ local function OnRevealing(inst, self, delay, players)
     self:RevealMapToPlayer(player)
 
     if #players > 0 then
-        inst:DoTaskInTime(delay, OnRevealing, self, delay, players)
+        self.task = inst:DoTaskInTime(delay, OnRevealing, self, delay, players)
     else
         OnRestart(inst, self, delay)
     end

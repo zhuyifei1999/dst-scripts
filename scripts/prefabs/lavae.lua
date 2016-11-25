@@ -94,7 +94,22 @@ local function fn()
 
     inst.DynamicShadow:SetSize(2, 1)
     inst.Transform:SetSixFaced()
-    MakeCharacterPhysics(inst, 50, 0.5)
+
+    ----------------------------------------------------
+    --MakeCharacterPhysics(inst, 50, 0.5)
+    inst.entity:AddPhysics()
+    inst.Physics:SetMass(50)
+    inst.Physics:SetCapsule(.5, 1)
+    inst.Physics:SetFriction(0)
+    inst.Physics:SetDamping(5)
+    inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)
+    inst.Physics:ClearCollisionMask()
+    inst.Physics:CollidesWith(COLLISION.WORLD)
+    inst.Physics:CollidesWith(COLLISION.OBSTACLES)
+    inst.Physics:CollidesWith(COLLISION.SMALLOBSTACLES)
+    inst.Physics:CollidesWith(COLLISION.CHARACTERS)
+    --inst.Physics:CollidesWith(COLLISION.GIANTS)
+    ----------------------------------------------------
 
     inst.AnimState:SetBank("lavae")
     inst.AnimState:SetBuild("lavae")

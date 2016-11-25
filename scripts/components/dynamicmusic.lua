@@ -45,6 +45,16 @@ local TRIGGERED_DANGER_MUSIC =
         "dontstarve/music/music_epicfight_toadboss",
     },
 
+    beequeen =
+    {
+        "dontstarve/music/music_epicfight_4",
+    },
+
+    dragonfly =
+    {
+        "dontstarve/music/music_epicfight_3",
+    },
+
     shadowchess =
     {
         "dontstarve/music/music_epicfight_ruins",
@@ -149,8 +159,9 @@ local function StartDanger(player)
         _extendtime = GetTime() + 10
     elseif _isenabled then
         StopBusy()
+        local x, y, z = player.Transform:GetWorldPosition()
         _soundemitter:PlaySound(
-            GetClosestInstWithTag("epic", player, 30) ~= nil
+            #TheSim:FindEntities(x, y, z, 30, { "epic" }, { "noepicmusic" }) > 0
             and ((_isruin and "dontstarve/music/music_epicfight_ruins") or
                 (_iscave and "dontstarve/music/music_epicfight_cave") or
                 (SEASON_EPICFIGHT_MUSIC[inst.state.season]))
@@ -167,13 +178,13 @@ end
 local function StartTriggeredDanger(player, data)
     local level = math.max(1, math.floor(data ~= nil and data.level or 1))
     if _triggeredlevel == level then
-        _extendtime = GetTime() + 10
+        _extendtime = GetTime() + (data.duration or 10)
     elseif _isenabled then
         StopBusy()
         StopDanger()
         local music = data ~= nil and TRIGGERED_DANGER_MUSIC[data.name or "default"] or TRIGGERED_DANGER_MUSIC.default
         _soundemitter:PlaySound(music[level] or music[1], "danger")
-        _dangertask = inst:DoTaskInTime(10, StopDanger, true)
+        _dangertask = inst:DoTaskInTime(data.duration or 10, StopDanger, true)
         _triggeredlevel = level
         _extendtime = 0
     end
@@ -188,6 +199,7 @@ local function CheckAction(player)
                 target:HasTag("butterfly") or
                 target:HasTag("shadow") or
                 target:HasTag("shadowchesspiece") or
+                target:HasTag("noepicmusic") or
                 target:HasTag("thorny") or
                 target:HasTag("smashable") or
                 target:HasTag("wall") or
@@ -219,6 +231,7 @@ local function OnAttacked(player, data)
         (data.attacker ~= nil and
         not (data.attacker:HasTag("shadow") or
             data.attacker:HasTag("shadowchesspiece") or
+            data.attacker:HasTag("noepicmusic") or
             data.attacker:HasTag("thorny") or
             data.attacker:HasTag("smolder")))) then
 

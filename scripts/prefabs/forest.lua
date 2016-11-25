@@ -125,6 +125,7 @@ local prefabs =
     "shadow_rook",
     "shadow_knight",
     "shadow_bishop",
+    "beequeenhive",
 }
 
 local monsters =

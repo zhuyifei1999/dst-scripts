@@ -486,8 +486,8 @@ local function FadeIn(inst)
     if inst._fadetask == nil then
         inst._fadetask = inst:DoPeriodicTask(FRAMES, OnMasterFadeUpdate)
         inst:AddTag("NOCLICK")
-        OnMasterFadeUpdate(inst)
     end
+    OnMasterFadeUpdate(inst)
 end
 
 local function common(moonbeast)

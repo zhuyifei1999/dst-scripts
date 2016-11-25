@@ -56,11 +56,12 @@ local RPC_HANDLERS =
         end
     end,
 
-    RightClick = function(player, action, x, z, target, isreleased, controlmods, noforce, mod_name)
+    RightClick = function(player, action, x, z, target, rotation, isreleased, controlmods, noforce, mod_name)
         if not (checknumber(action) and
                 checknumber(x) and
                 checknumber(z) and
                 optentity(target) and
+                optnumber(rotation) and
                 optbool(isreleased) and
                 optnumber(controlmods) and
                 optbool(noforce) and
@@ -70,8 +71,8 @@ local RPC_HANDLERS =
         end
         local playercontroller = player.components.playercontroller
         if playercontroller ~= nil then
-            if IsPointInRange(player, x, z) then
-                playercontroller:OnRemoteRightClick(action, Vector3(x, 0, z), target, isreleased, controlmods, noforce, mod_name)
+            if IsPointInRange(player, x, z) and (rotation == nil or (rotation > -360.1 and rotation < 360.1)) then
+                playercontroller:OnRemoteRightClick(action, Vector3(x, 0, z), target, rotation, isreleased, controlmods, noforce, mod_name)
             else
                 print("Remote right click out of range")
             end
@@ -139,18 +140,19 @@ local RPC_HANDLERS =
         end
     end,
 
-    ControllerActionButtonDeploy = function(player, invobject, x, z, isreleased)
+    ControllerActionButtonDeploy = function(player, invobject, x, z, rotation, isreleased)
         if not (checkentity(invobject) and
                 checknumber(x) and
                 checknumber(z) and
+                optnumber(rotation) and
                 optbool(isreleased)) then
             printinvalid("ControllerActionButtonDeploy", player)
             return
         end
         local playercontroller = player.components.playercontroller
         if playercontroller ~= nil then
-            if IsPointInRange(player, x, z) then
-                playercontroller:OnRemoteControllerActionButtonDeploy(invobject, Vector3(x, 0, z), isreleased)
+            if IsPointInRange(player, x, z) and (rotation == nil or (rotation > -360.1 and rotation < 360.1)) then
+                playercontroller:OnRemoteControllerActionButtonDeploy(invobject, Vector3(x, 0, z), rotation, isreleased)
             else
                 print("Remote controller action button deploy out of range")
             end

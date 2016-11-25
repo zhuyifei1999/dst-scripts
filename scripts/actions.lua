@@ -58,6 +58,7 @@ ACTIONS =
     GIVETOPLAYER = Action({ priority=3, canforce=true, rangecheckfn=DefaultRangeCheck }),
     GIVEALLTOPLAYER = Action({ priority=3, canforce=true, rangecheckfn=DefaultRangeCheck }),
     FEEDPLAYER = Action({ priority=3, rmb=true, canforce=true, rangecheckfn=DefaultRangeCheck }),
+    DECORATEVASE = Action(),
     COOK = Action({ priority=1, mount_valid=true }),
     FILL = Action(),
     DRY = Action(),
@@ -82,7 +83,7 @@ ACTIONS =
     SHAVE = Action({ mount_valid=true }),
     STORE = Action(),
     RUMMAGE = Action({ priority=-1, mount_valid=true }),
-    DEPLOY = Action(),
+    DEPLOY = Action({ distance=1.1 }),
     PLAY = Action({ mount_valid=true }),
     CREATE = Action(),
     JOIN = Action(),
@@ -118,7 +119,6 @@ ACTIONS =
     TOGGLE_DEPLOY_MODE = Action({ priority=1, instant=true }),
     SUMMONGUARDIAN = Action({ rmb=false, distance=5 }),
     LAVASPIT = Action({ rmb=false, distance=2 }),
-    SPAWN = Action({ rmb=false, distance=5 }),
     HAUNT = Action({ rmb=false, mindistance=2, ghost_valid=true, ghost_exclusive=true, canforce=true, rangecheckfn=DefaultRangeCheck }),
     UNPIN = Action(),
     STEALMOLEBAIT = Action({ rmb=false, distance=.75 }),
@@ -142,6 +142,7 @@ ACTIONS =
     SADDLE = Action({ priority=1 }),
     UNSADDLE = Action({ priority=3, rmb=false }),
     BRUSH = Action({ priority=3, rmb=false }),
+    ABANDON = Action({ rmb=true }),
 }
 
 ACTION_IDS = {}
@@ -396,7 +397,7 @@ ACTIONS.DEPLOY.fn = function(act)
         local obj = (act.doer.components.inventory and act.doer.components.inventory:RemoveItem(act.invobject)) or 
         (act.doer.components.container and act.doer.components.container:RemoveItem(act.invobject))
         if obj then
-            if obj.components.deployable:Deploy(act.pos, act.doer) then
+            if obj.components.deployable:Deploy(act.pos, act.doer, act.rotation) then
                 return true
             else
                 act.doer.components.inventory:GiveItem(obj)
@@ -409,6 +410,8 @@ ACTIONS.DEPLOY.strfn = function(act)
     return act.invobject ~= nil
         and (   (act.invobject:HasTag("groundtile") and "GROUNDTILE") or
                 (act.invobject:HasTag("wallbuilder") and "WALL") or
+                (act.invobject:HasTag("fencebuilder") and "FENCE") or
+                (act.invobject:HasTag("gatebuilder") and "GATE") or
                 (act.invobject:HasTag("eyeturret") and "TURRET")    )
         or nil
 end
@@ -429,12 +432,6 @@ ACTIONS.LAVASPIT.fn = function(act)
         local offsetvec = Vector3(1.7 * math.cos( -facingangle ), -.3, 1.7 * math.sin( -facingangle ))
         spit.Transform:SetPosition(x+offsetvec.x, y+offsetvec.y, z+offsetvec.z)
         spit.Transform:SetRotation(act.doer.Transform:GetRotation())
-    end
-end
-
-ACTIONS.SPAWN.fn = function(act)
-    if act.doer and act.doer.components.rampingspawner then
-        act.doer.components.rampingspawner:SpawnEntity()
     end
 end
 
@@ -833,6 +830,13 @@ ACTIONS.GIVE.strfn = function(act)
         (act.target:HasTag("gemsocket") and "SOCKET") or
         (act.target:HasTag("altar") and (targ.state:value() and "READY" or "NOTREADY"))
     ) or nil
+end
+
+ACTIONS.DECORATEVASE.fn = function(act)
+	if act.target ~= nil and act.target.components.vase ~= nil and act.target.components.vase.enabled then
+		act.target.components.vase:Decorate(act.doer, act.invobject)
+		return true
+	end
 end
 
 ACTIONS.STORE.fn = function(act)
@@ -1535,6 +1539,20 @@ ACTIONS.BRUSH.fn = function(act)
         return false, "TARGETINCOMBAT"
     elseif act.target.components.brushable ~= nil then
         act.target.components.brushable:Brush(act.doer, act.invobject)
+        return true
+    end
+end
+
+ACTIONS.ABANDON.fn = function(act)
+    if act.doer.components.petleash ~= nil then
+        if not (act.doer.components.builder ~= nil and act.doer.components.builder.accessible_tech_trees.ORPHANAGE > 0) then
+            --we could've been in range but the pet was out of range
+            local x, y, z = act.doer.Transform:GetWorldPosition()
+            if #TheSim:FindEntities(x, y, z, 10, { "critterlab" }) <= 0 then
+                return false
+            end
+        end
+        act.doer.components.petleash:DespawnPet(act.target)
         return true
     end
 end

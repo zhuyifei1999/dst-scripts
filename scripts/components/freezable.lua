@@ -46,6 +46,11 @@ local Freezable = Class(function(self, inst)
     self.fxdata = {}
     --self.fxchildren = {}
 
+    --these are for diminishing returns (mainly bosses), so nil for default
+    --self.diminishingreturns = false
+    --self.extraresist = 0
+    --self.diminishingtask = nil
+
     self.inst:ListenForEvent("attacked", OnAttacked)
     self.inst:AddTag("freezable")
 end)
@@ -53,6 +58,12 @@ end)
 function Freezable:OnRemoveFromEntity()
     self.inst:RemoveEventCallback("attacked", OnAttacked)
     self.inst:RemoveTag("freezable")
+    if self.diminishingtask ~= nil then
+        self.diminishingtask:Cancel()
+    end
+    if self.wearofftask ~= nil then
+        self.wearofftask:Cancel()
+    end
 end
 
 function Freezable:SetResistance(resist)
@@ -106,7 +117,13 @@ function Freezable:IsThawing()
 end
 
 function Freezable:GetDebugString()
-    return string.format("%s: %d / %d", self.state, self.coldness, self.resistance)
+    return string.format("%s: %2.2f / %2.2f <- %2.2f + %2.2f (Decay: %2.2f)",
+        self.state,
+        self.coldness,
+        self:ResolveResistance(),
+        self.resistance,
+        self.extraresist or 0,
+        self.diminishingtask ~= nil and GetTaskRemaining(self.diminishingtask) or 0)
 end
 
 function Freezable:AddColdness(coldness, freezetime)
@@ -117,13 +134,16 @@ function Freezable:AddColdness(coldness, freezetime)
             self:Freeze(freezetime)
         elseif self.coldness <= 0 then
             --not possible?
-        elseif self.coldness < self.resistance then
-            self:StartWearingOff()
-        elseif self.inst.sg ~= nil and self.inst.sg:HasStateTag("nofreeze") then
-            self.coldness = self.resistance
-            self:StartWearingOff()
         else
-            self:Freeze(freezetime)
+            local resistance = self:ResolveResistance()
+            if self.coldness < resistance then
+                self:StartWearingOff()
+            elseif self.inst.sg ~= nil and self.inst.sg:HasStateTag("nofreeze") then
+                self.coldness = resistance
+                self:StartWearingOff()
+            else
+                self:Freeze(freezetime)
+            end
         end
     end
     self:UpdateTint()
@@ -133,25 +153,64 @@ function Freezable:StartWearingOff(wearofftime)
     if self.wearofftask ~= nil then
         self.wearofftask:Cancel()
     end
-    self.wearofftask = self.inst:DoTaskInTime(wearofftime or self.wearofftime, WearOff, self)
+    self.wearofftask = self.inst:DoTaskInTime(self:ResolveWearOffTime(wearofftime or self.wearofftime), WearOff, self)
 end
 
 function Freezable:UpdateTint()
     if self.inst.AnimState ~= nil then
-        if self:IsFrozen() or self.coldness >= self.resistance then
+        if self:IsFrozen() then
             self.inst.AnimState:SetAddColour(unpack(FREEZE_COLOUR))
-        elseif self.coldness <= 0 then
-            self.inst.AnimState:SetAddColour(0, 0, 0, 0)
         else
-            local percent = self.coldness / self.resistance
-            self.inst.AnimState:SetAddColour(
-                FREEZE_COLOUR[1] * percent,
-                FREEZE_COLOUR[2] * percent,
-                FREEZE_COLOUR[3] * percent,
-                FREEZE_COLOUR[4] * percent
-            )
+            local resistance = self:ResolveResistance()
+            if self.coldness >= resistance then
+                self.inst.AnimState:SetAddColour(unpack(FREEZE_COLOUR))
+            elseif self.coldness <= 0 then
+                self.inst.AnimState:SetAddColour(0, 0, 0, 0)
+            else
+                local percent = self.coldness / resistance
+                self.inst.AnimState:SetAddColour(
+                    FREEZE_COLOUR[1] * percent,
+                    FREEZE_COLOUR[2] * percent,
+                    FREEZE_COLOUR[3] * percent,
+                    FREEZE_COLOUR[4] * percent
+                )
+            end
         end
     end
+end
+
+local function DecayExtraResist(inst, self)
+    local new_resist = math.max(0, self.extraresist - .1)
+    local current_resist = self.coldness - self.resistance
+    if new_resist >= current_resist then
+        self:SetExtraResist(new_resist)
+    elseif current_resist < self.extraresist then
+        self:SetExtraResist(current_resist)
+    end
+end
+
+function Freezable:SetExtraResist(resist)
+    self.extraresist = math.clamp(resist, 0, self.resistance * 2.5)
+    if self.extraresist > 0 then
+        if self.diminishingtask == nil then
+            self.diminishingtask = self.inst:DoPeriodicTask(30, DecayExtraResist, nil, self)
+        end
+    elseif self.diminishingtask ~= nil then
+        self.diminishingtask:Cancel()
+        self.diminishingtask = nil
+    end
+end
+
+function Freezable:ResolveResistance()
+    return self.extraresist ~= nil
+        and math.min(self.resistance * 2.5, self.resistance + self.extraresist)
+        or self.resistance
+end
+
+function Freezable:ResolveWearOffTime(t)
+    return self.extraresist ~= nil
+        and t * math.clamp(1 - self.extraresist / (self.resistance * 2.5), .1, 1)
+        or t
 end
 
 --V2C: Calling this direclty isn't great; :AddColdness instead!
@@ -159,6 +218,12 @@ function Freezable:Freeze(freezetime)
     if self.inst.entity:IsVisible() and not (self.inst.components.health ~= nil and self.inst.components.health:IsDead()) then
         if self.onfreezefn ~= nil then
             self.onfreezefn(self.inst)
+        end
+
+        if self.diminishingtask ~= nil then
+            --Restart decay timer
+            self.diminishingtask:Cancel()
+            self.diminishingtask = self.inst:DoPeriodicTask(30, DecayExtraResist, nil, self)
         end
 
         local prevState = self.state
@@ -180,6 +245,9 @@ function Freezable:Freeze(freezetime)
 
         if self.state ~= prevState then
             self.inst:PushEvent("freeze")
+            if self.diminishingreturns then
+                self:SetExtraResist((self.extraresist or 0) + self.resistance * .25)
+            end
         end
     end
 end
@@ -211,7 +279,7 @@ function Freezable:Thaw(thawtime)
         self.state = states.THAWING
         self.coldness = 0
         self.inst:PushEvent("onthaw")
-        self:StartWearingOff(thawtime or self.wearofftime)
+        self:StartWearingOff(self:ResolveWearOffTime(thawtime or self.wearofftime))
     end
 end
 
@@ -220,6 +288,19 @@ function Freezable:Reset()
     self.state = states.NORMAL
     self.coldness = 0
     self:UpdateTint()
+end
+
+function Freezable:OnSave()
+    return self.extraresist ~= nil
+        and self.extraresist > 0
+        and { extraresist = math.floor(self.extraresist * 10) * .1 }
+        or nil
+end
+
+function Freezable:OnLoad(data)
+    if data.extraresist ~= nil then
+        self:SetExtraResist(data.extraresist)
+    end
 end
 
 return Freezable

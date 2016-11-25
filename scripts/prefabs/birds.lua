@@ -49,7 +49,7 @@ local function ChooseItem()
         "flint",
         "twigs",
         "twigs",
-        "grass",
+        "cutgrass",
     }
     return mercy_items[math.random(#mercy_items)]
 end
@@ -183,6 +183,11 @@ local function makebird(name, soundname)
         "smallmeat",
         "cookedsmallmeat",
         "feather_"..name,
+
+        --mercy items
+        "flint",
+        "twigs",
+        "cutgrass",
     }
 
     if name == "canary" then

@@ -111,7 +111,7 @@ local function ServerGetSpeedMultiplier(self)
             end
         end
     end
-    return mult * self.groundspeedmultiplier * self.throttle
+    return mult * (self:TempGroundSpeedMultiplier() or self.groundspeedmultiplier) * self.throttle
 end
 
 local function ClientGetSpeedMultiplier(self)
@@ -134,7 +134,7 @@ local function ClientGetSpeedMultiplier(self)
             end
         end
     end
-    return mult * self.groundspeedmultiplier * self.throttle
+    return mult * (self:TempGroundSpeedMultiplier() or self.groundspeedmultiplier) * self.throttle
 end
 
 local LocoMotor = Class(function(self, inst)
@@ -170,11 +170,14 @@ local LocoMotor = Class(function(self, inst)
 
     self.groundspeedmultiplier = 1.0
     self.enablegroundspeedmultiplier = true
+    --self.tempgroundspeedmultiplier = nil
+    --self.tempgroundspeedmulttime = nil
+    --self.tempgroundtile = nil
     self.isrunning = false
 
     self._externalspeedmultipliers = {}
     self.externalspeedmultiplier = 1
-    
+
     self.wasoncreep = false
     self.triggerscreep = true
 
@@ -301,6 +304,9 @@ function LocoMotor:EnableGroundSpeedMultiplier(enable)
     self.enablegroundspeedmultiplier = enable
     if not enable then
         self.groundspeedmultiplier = 1
+        self.tempgroundspeedmultiplier = nil
+        self.tempgroundspeedmulttime = nil
+        self.tempgroundtile = nil
     end
 end
 
@@ -313,29 +319,59 @@ function LocoMotor:GetRunSpeed()
 end
 
 function LocoMotor:UpdateGroundSpeedMultiplier()
-    self.groundspeedmultiplier = 1
     local ground = TheWorld
-    local oncreep = self.triggerscreep and ground.GroundCreep:OnCreep(self.inst.Transform:GetWorldPosition())
-    local x,y,z = self.inst.Transform:GetWorldPosition()
+    local x, y, z = self.inst.Transform:GetWorldPosition()
+    local oncreep = self.triggerscreep and ground.GroundCreep:OnCreep(x, y, z)
     if oncreep then
         -- if this ever needs to happen when self.enablegroundspeedmultiplier is set, need to move the check for self.enablegroundspeedmultiplier above
         if not self.wasoncreep then
-            local triggered = ground.GroundCreep:GetTriggeredCreepSpawners(x, y, z)
-            for _,v in ipairs(triggered) do
-                v:PushEvent("creepactivate", {target = self.inst})
+            for _, v in ipairs(ground.GroundCreep:GetTriggeredCreepSpawners(x, y, z)) do
+                v:PushEvent("creepactivate", { target = self.inst })
             end
             self.wasoncreep = true
         end
         self.groundspeedmultiplier = self.slowmultiplier
     else
         self.wasoncreep = false
-        if self:FasterOnRoad() then
-            --print(self.inst, "UpdateGroundSpeedMultiplier check road" )
-            if (RoadManager ~= nil and RoadManager:IsOnRoad(x, 0, z)) or
-                ground.Map:GetTileAtPoint(x, 0, z) == GROUND.ROAD then
-                self.groundspeedmultiplier = self.fastmultiplier
-            end
+        self.groundspeedmultiplier = self:FasterOnRoad() and (
+                (RoadManager ~= nil and RoadManager:IsOnRoad(x, 0, z)) or
+                ground.Map:GetTileAtPoint(x, 0, z) == GROUND.ROAD
+            ) and self.fastmultiplier or 1
+    end
+end
+
+function LocoMotor:PushTempGroundSpeedMultiplier(mult, tile)
+    if self.enablegroundspeedmultiplier then
+        local t = GetTime()
+        if self.tempgroundspeedmultiplier == nil or
+            t > self.tempgroundspeedmulttime or
+            mult <= self.tempgroundspeedmultiplier then
+            self.tempgroundspeedmultiplier = mult
+            self.tempgroundtile = tile
         end
+        self.tempgroundspeedmulttime = t
+    end
+end
+
+function LocoMotor:TempGroundSpeedMultiplier()
+    if self.tempgroundspeedmultiplier ~= nil then
+        if self.tempgroundspeedmulttime + .034 > GetTime() then
+            return self.tempgroundspeedmultiplier
+        end
+        self.tempgroundspeedmultiplier = nil
+        self.tempgroundspeedmulttime = nil
+        self.tempgroundtile = nil
+    end
+end
+
+function LocoMotor:TempGroundTile()
+    if self.tempgroundtile ~= nil then
+        if self.tempgroundspeedmulttime + .034 > GetTime() then
+            return self.tempgroundtile
+        end
+        self.tempgroundspeedmultiplier = nil
+        self.tempgroundspeedmulttime = nil
+        self.tempgroundtile = nil
     end
 end
 
@@ -563,7 +599,13 @@ function LocoMotor:Stop(sgparams)
     self.wantstomoveforward = false
     self.wantstorun = false
 
-    self:StopMoving()
+    if self.softstop and self.inst.sg ~= nil and self.inst.sg:HasStateTag("softstop") then
+        self.isrunning = false
+        --Let stategraph handle stopping physics
+        --self.inst.Physics:Stop()
+    else
+        self:StopMoving()
+    end
 
     self.inst:PushEvent("locomote", sgparams)
     self:StopUpdatingInternal()
@@ -656,11 +698,11 @@ function LocoMotor:OnUpdate(dt)
     end
 
     if self.enablegroundspeedmultiplier then
-        local x,y,z = self.inst.Transform:GetWorldPosition()
+        local x, y, z = self.inst.Transform:GetWorldPosition()
         local tx, ty = TheWorld.Map:GetTileCoordsAtPoint(x, 0, z)
         if tx ~= self.lastpos.x or ty ~= self.lastpos.y then
             self:UpdateGroundSpeedMultiplier()
-            self.lastpos = {x=tx,y=ty}
+            self.lastpos = { x = tx, y = ty }
         end
     end
 

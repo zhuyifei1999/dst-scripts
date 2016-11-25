@@ -18,19 +18,19 @@ local testNewTag = false
 
 local window_y_pos = RESOLUTION_Y-325
 
-local DressupPanel = Class(Widget, function(self, owner, profile, onChanged, useCollectionTime, recent_item_types, recent_item_ids, include_random_options)
-    self.owner = owner
-
+local DressupPanel = Class(Widget, function(self, owner_screen, profile, playerdata, onChanged, recent_item_types, recent_item_ids, include_random_options)
+    self.owner_screen = owner_screen
+    
     Widget._ctor(self, "DressupPanel")
 
     --print("DressupPanel constructor", self, owner, profile or "nil", onNextFn or "nil", onPrevFn or "nil")
     self.profile = profile
+    self.playerdata = playerdata
     self.include_random_options = include_random_options
     self:GetClothingOptions()
     self:GetSkinsList()
 	self.currentcharacter = "wilson"
 	
-    self.use_collection_time = useCollectionTime
     self.recent_item_types = recent_item_types
     -- ids can be ignored at least for now.
 
@@ -40,8 +40,6 @@ local DressupPanel = Class(Widget, function(self, owner, profile, onChanged, use
     local bg_scale = -.8
 
     self.root = self:AddChild(Widget("Root"))
-    self.root:SetPosition(RESOLUTION_X - 250, window_y_pos, 0)
-
 	if not TheNet:IsOnlineMode() then
 		self.bg_group = self.root:AddChild(TEMPLATES.CurlyWindow(10, 400, .6, .6, 39, -25))
 	   
@@ -52,7 +50,12 @@ local DressupPanel = Class(Widget, function(self, owner, profile, onChanged, use
 		self.dressup_hanger = self.bg_group:AddChild(Image("images/lobbyscreen.xml", "customization_coming_image_all.tex"))
 		self.dressup_hanger:SetScale(.66, .7)
 
-		local text1 = self.bg_group:AddChild(Text(TALKINGFONT, 30, STRINGS.UI.LOBBYSCREEN.CUSTOMIZE))
+		local text1 = nil
+		if owner_screen.name == "ScarecrowClothingPopupScreen" then
+			text1 = self.bg_group:AddChild(Text(TALKINGFONT, 30, STRINGS.UI.LOBBYSCREEN.CUSTOMIZE_SCARECROW))
+		else
+			text1 = self.bg_group:AddChild(Text(TALKINGFONT, 30, STRINGS.UI.LOBBYSCREEN.CUSTOMIZE))
+		end
 		text1:SetPosition(10,150) 
 		text1:SetHAlign(ANCHOR_MIDDLE)
 		text1:SetColour(unpack(GREY))
@@ -155,7 +158,9 @@ local DressupPanel = Class(Widget, function(self, owner, profile, onChanged, use
 		self.feet_spinner = self.spinners:AddChild(self:MakeSpinner("feet"))
 		self.feet_spinner:SetPosition(0, body_offset-4*option_height + spinner_offset)
 		self.feet_spinner.spinner:SetArrowScale(arrow_scale)
-
+		
+		self.all_spinners = { self.base_spinner, self.body_spinner, self.hand_spinner, self.legs_spinner, self.feet_spinner }
+		
 		self.lower_horizontal_line = self.outline:AddChild(Image("images/ui.xml", "line_horizontal_5.tex"))
     	self.lower_horizontal_line:SetScale(.19, .4)
     	self.lower_horizontal_line:SetPosition(10, body_offset-4*option_height, 0)
@@ -182,7 +187,6 @@ function DressupPanel:SeparateAvatar()
 		self.bg_group:Hide()
 		self.outline:Hide()
 
-		self.root:SetPosition(RESOLUTION_X - 250, window_y_pos + 75, 0)
 		self.puppet_group:SetPosition(-330, -450)
 		self.puppet_group:SetScale(2)
 
@@ -269,7 +273,7 @@ function DressupPanel:SeparateAvatar()
 	else
 		local title_height = 190
 
-		self.bg_group:SetPosition(8, 25, 0)
+		self.bg_group:SetPosition(8, -35, 0)
 
 
 		self.puppet_group = self.root:AddChild(Widget("puppet"))
@@ -468,7 +472,7 @@ function DressupPanel:GetSkinOptionsForSlot(slot)
 
 	local skin_options = {}
 
-	local dressup_timestamp = (self.use_collection_time and self.profile:GetCollectionTimestamp()) or self.profile:GetDressupTimestamp()
+	local dressup_timestamp = self.profile:GetDressupTimestamp()
 
 	local function IsInList(list, build)
 		for k,v in pairs(list) do 
@@ -534,8 +538,8 @@ function DressupPanel:GetSkinOptionsForSlot(slot)
 						local buildfile = item
 						if slot == "base" then 
 							local skinsData = Prefabs[item]
-							if skinsData and skinsData.ui_preview then 
-								buildfile = skinsData.ui_preview.build
+							if skinsData and skinsData.build_name then 
+								buildfile = skinsData.build_name
 							end
 						else
 							local clothing_data = CLOTHING[item]
@@ -635,8 +639,8 @@ function DressupPanel:UpdateSpinners()
 			self.feet_spinner.spinner:SetSelectedIndex(1)
 		end
 
-		if self.owner.SetPortraitImage then 
-			self.owner:SetPortraitImage(0)
+		if self.owner_screen.SetPortraitImage then 
+			self.owner_screen:SetPortraitImage(0)
 		end
 		return
 	else
@@ -679,9 +683,6 @@ function DressupPanel:Reset(set_spinner_to_new_item)
 	end
 	local savedSkinsForCharacter = self.profile:GetSkinsForCharacter(self.currentcharacter, savedBaseForCharacter)
 
-	-- self.owner is WardrobePopup, self.owner.owner is the player
-	local playerdata = self.owner.owner and TheNet:GetClientTableForUser(self.owner.owner.userid) or nil
-
 	local recent_item_type = self.recent_item_types and GetTypeForItem(self.recent_item_types[1]) or nil
 
 	--[[print("Updating spinners with ", self.currentcharacter)
@@ -694,8 +695,8 @@ function DressupPanel:Reset(set_spinner_to_new_item)
 
 		if set_spinner_to_new_item and recent_item_type and recent_item_type == "base" then 
 			self.base_spinner.spinner:SetSelectedIndex(self.base_spinner:GetIndexForSkin(self.recent_item_types[1]))
-		elseif playerdata then 
-			self.base_spinner.spinner:SetSelectedIndex(self.base_spinner:GetIndexForSkin(playerdata.base_skin or self.currentcharacter))
+		elseif self.playerdata then 
+			self.base_spinner.spinner:SetSelectedIndex(self.base_spinner:GetIndexForSkin(self.playerdata.base_skin or self.currentcharacter))
 		elseif savedSkinsForCharacter.base and savedSkinsForCharacter.base ~= "" then 
 			self.base_spinner.spinner:SetSelectedIndex(self.base_spinner:GetIndexForSkin(savedBaseForCharacter))
 		else
@@ -708,8 +709,8 @@ function DressupPanel:Reset(set_spinner_to_new_item)
 
 		if set_spinner_to_new_item and recent_item_type and recent_item_type == "body" then 
 			self.body_spinner.spinner:SetSelectedIndex(self.body_spinner:GetIndexForSkin(self.recent_item_types[1]))
-		elseif playerdata then 
-			self.body_spinner.spinner:SetSelectedIndex(self.body_spinner:GetIndexForSkin(playerdata.body_skin or "body_default1"))
+		elseif self.playerdata then 
+			self.body_spinner.spinner:SetSelectedIndex(self.body_spinner:GetIndexForSkin(self.playerdata.body_skin or "body_default1"))
 		elseif savedSkinsForCharacter.body and savedSkinsForCharacter.body ~= "" then 
 			self.body_spinner.spinner:SetSelectedIndex(self.body_spinner:GetIndexForSkin(savedSkinsForCharacter.body))
 		else
@@ -722,8 +723,8 @@ function DressupPanel:Reset(set_spinner_to_new_item)
 
 		if set_spinner_to_new_item and recent_item_type and recent_item_type == "hand" then 
 			self.hand_spinner.spinner:SetSelectedIndex(self.hand_spinner:GetIndexForSkin(self.recent_item_types[1]))
-		elseif playerdata then 
-			self.hand_spinner.spinner:SetSelectedIndex(self.hand_spinner:GetIndexForSkin(playerdata.hand_skin or "hand_default1"))
+		elseif self.playerdata then 
+			self.hand_spinner.spinner:SetSelectedIndex(self.hand_spinner:GetIndexForSkin(self.playerdata.hand_skin or "hand_default1"))
 		elseif  savedSkinsForCharacter.hand and savedSkinsForCharacter.hand ~= "" then 
 			self.hand_spinner.spinner:SetSelectedIndex(self.hand_spinner:GetIndexForSkin(savedSkinsForCharacter.hand))
 		else
@@ -736,8 +737,8 @@ function DressupPanel:Reset(set_spinner_to_new_item)
 
 		if set_spinner_to_new_item and recent_item_type and recent_item_type == "legs" then 
 			self.legs_spinner.spinner:SetSelectedIndex(self.legs_spinner:GetIndexForSkin(self.recent_item_types[1]))
-		elseif playerdata then 
-			self.legs_spinner.spinner:SetSelectedIndex(self.legs_spinner:GetIndexForSkin(playerdata.legs_skin or "legs_default1"))
+		elseif self.playerdata then 
+			self.legs_spinner.spinner:SetSelectedIndex(self.legs_spinner:GetIndexForSkin(self.playerdata.legs_skin or "legs_default1"))
 		elseif savedSkinsForCharacter.legs and savedSkinsForCharacter.legs ~= "" then 
 			self.legs_spinner.spinner:SetSelectedIndex(self.legs_spinner:GetIndexForSkin(savedSkinsForCharacter.legs))
 		else
@@ -750,8 +751,8 @@ function DressupPanel:Reset(set_spinner_to_new_item)
 
 		if set_spinner_to_new_item and recent_item_type and recent_item_type == "feet" then 
 			self.feet_spinner.spinner:SetSelectedIndex(self.feet_spinner:GetIndexForSkin(self.recent_item_types[1]))
-		elseif playerdata then 
-			self.feet_spinner.spinner:SetSelectedIndex(self.feet_spinner:GetIndexForSkin(playerdata.feet_skin or "feet_default1"))
+		elseif self.playerdata then 
+			self.feet_spinner.spinner:SetSelectedIndex(self.feet_spinner:GetIndexForSkin(self.playerdata.feet_skin or "feet_default1"))
 		elseif savedSkinsForCharacter.feet and savedSkinsForCharacter.feet ~= "" then 
 			self.feet_spinner.spinner:SetSelectedIndex(self.feet_spinner:GetIndexForSkin(savedSkinsForCharacter.feet))
 		else
@@ -1088,6 +1089,66 @@ end
 function DressupPanel:OnClose()
 	--print("Setting dressup timestamp from dressuppanel:OnClose", self.timestamp)
 	self.profile:SetDressupTimestamp(self.timestamp)
+end
+
+
+function DressupPanel:OnUpdate(dt)
+	if self.repeat_time > -.01 then
+        self.repeat_time = self.repeat_time - dt
+    end
+end
+
+--NOTE(Peter): Do we even need to do this repeat logic if it's already done at the control level in frontend.lua?
+local SCROLL_REPEAT_TIME = .15
+local MOUSE_SCROLL_REPEAT_TIME = 0
+local STICK_SCROLL_REPEAT_TIME = .25
+
+function DressupPanel:ScrollBack(control)
+	if self.all_spinners ~= nil then
+		if not self.repeat_time or self.repeat_time <= 0 then
+       		for _,spinner in pairs( self.all_spinners ) do
+       			if spinner.focus then
+       				local prev_index = spinner.spinner.selectedIndex
+	       			
+       				spinner.spinner.leftimage:onclick()
+	       			
+       				if spinner.spinner.selectedIndex ~= prev_index then
+						TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+					end
+       			end
+       		end
+	       	
+			self.repeat_time =
+				TheInput:GetControlIsMouseWheel(control)
+				and MOUSE_SCROLL_REPEAT_TIME
+				or (control == CONTROL_SCROLLBACK and SCROLL_REPEAT_TIME) 
+				or (control == CONTROL_PREVVALUE and STICK_SCROLL_REPEAT_TIME)
+		end
+	end
+end
+
+function DressupPanel:ScrollFwd(control)
+	if self.all_spinners ~= nil then
+		if not self.repeat_time or self.repeat_time <= 0 then
+			for _,spinner in pairs( self.all_spinners ) do
+       			if spinner.focus then
+					local prev_index = spinner.spinner.selectedIndex
+	       			
+       				spinner.spinner.rightimage:onclick()
+	       			
+       				if spinner.spinner.selectedIndex ~= prev_index then
+						TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+					end
+       			end
+       		end
+			
+			self.repeat_time =
+				TheInput:GetControlIsMouseWheel(control)
+				and MOUSE_SCROLL_REPEAT_TIME
+				or (control == CONTROL_SCROLLFWD and SCROLL_REPEAT_TIME) 
+				or (control == CONTROL_NEXTVALUE and STICK_SCROLL_REPEAT_TIME)
+		end
+	end
 end
 
 return DressupPanel

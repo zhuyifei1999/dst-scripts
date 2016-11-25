@@ -105,10 +105,10 @@ local function MakeFx(t)
             inst:DoTaskInTime(0, startfx, inst)
         end
 
-        if not t.twofaced then
-            inst.Transform:SetFourFaced()
-        else
+        if t.twofaced then
             inst.Transform:SetTwoFaced()
+        elseif not t.nofaced then
+            inst.Transform:SetFourFaced()
         end
 
         inst:AddTag("FX")

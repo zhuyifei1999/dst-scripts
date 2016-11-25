@@ -108,7 +108,7 @@ setstate = function(inst, state)
             inst.AnimState:SetLayer(LAYER_WORLD)
             inst.AnimState:SetSortOrder(0)
             inst.AnimState:PlayAnimation("inground")
-        elseif POPULATING then
+        elseif inst:IsAsleep() or POPULATING then
             inst.AnimState:SetLayer(LAYER_WORLD)
             inst.AnimState:SetSortOrder(0)
             ongrown(inst)

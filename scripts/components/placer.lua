@@ -1,3 +1,5 @@
+require("components/deployhelper")
+
 local Placer = Class(function(self, inst)
     self.inst = inst
 
@@ -5,9 +7,11 @@ local Placer = Class(function(self, inst)
     inst:AddTag("placer")
 
     self.can_build = false
+    self.mouse_blocked = false
     self.testfn = nil
     self.radius = 1
     self.selected_pos = nil
+    self.onupdatetransform = nil
     self.oncanbuild = nil
     self.oncannotbuild = nil
     self.linked = {}
@@ -27,7 +31,7 @@ end
 function Placer:GetDeployAction()
     if self.invobject ~= nil then
         self.selected_pos = self.inst:GetPosition()
-        local action = BufferedAction(self.builder, nil, ACTIONS.DEPLOY, self.invobject, self.selected_pos)
+        local action = BufferedAction(self.builder, nil, ACTIONS.DEPLOY, self.invobject, self.selected_pos, nil, nil, nil, self.inst.Transform:GetRotation())
         table.insert(action.onsuccess, function() self.selected_pos = nil end)
         return action
     end
@@ -68,25 +72,57 @@ function Placer:OnUpdate(dt)
         end
     end
 
-    self.can_build = self.testfn == nil or self.testfn(self.inst:GetPosition(), self.inst:GetRotation())
+    if self.onupdatetransform ~= nil then
+        self.onupdatetransform(self.inst)
+    end
 
-    --self.inst.AnimState:SetMultColour(0, 0, 0, .5)
+    if self.testfn ~= nil then
+        self.can_build, self.mouse_blocked = self.testfn(self.inst:GetPosition(), self.inst:GetRotation())
+    else
+        self.can_build = true
+        self.mouse_blocked = false
+    end
+
+    local x, y, z = self.inst.Transform:GetWorldPosition()
+    TriggerDeployHelpers(x, y, z, 64)
 
     if self.can_build then
         if self.oncanbuild ~= nil then
-            self.oncanbuild(self.inst)
+            self.oncanbuild(self.inst, self.mouse_blocked)
+            return
+        end
+
+        if self.mouse_blocked then
+            self.inst:Hide()
+            for i, v in ipairs(self.linked) do
+                v:Hide()
+            end
         else
             self.inst.AnimState:SetAddColour(.25, .75, .25, 0)
+            self.inst:Show()
             for i, v in ipairs(self.linked) do
                 v.AnimState:SetAddColour(.25, .75, .25, 0)
+                v:Show()
             end
         end
-    elseif self.oncannotbuild ~= nil then
-        self.oncannotbuild(self.inst)
     else
-        self.inst.AnimState:SetAddColour(.75, .25, .25, 0)
-        for i, v in ipairs(self.linked) do
-            v.AnimState:SetAddColour(.75, .25, .25, 0)
+        if self.oncannotbuild ~= nil then
+            self.oncannotbuild(self.inst, self.mouse_blocked)
+            return
+        end
+
+        if self.mouse_blocked then
+            self.inst:Hide()
+            for i, v in ipairs(self.linked) do
+                v:Hide()
+            end
+        else
+            self.inst.AnimState:SetAddColour(.75, .25, .25, 0)
+            self.inst:Show()
+            for i, v in ipairs(self.linked) do
+                v.AnimState:SetAddColour(.75, .25, .25, 0)
+                v:Show()
+            end
         end
     end
 end

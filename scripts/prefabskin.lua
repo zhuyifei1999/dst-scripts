@@ -19,7 +19,6 @@ SKIN_FX_PREFAB = {}
 --------------------------------------------------------------------------
 --[[ Backpack skin functions ]]
 --------------------------------------------------------------------------
-
 local function backpack_pickedup(inst)
     if inst.decay_task ~= nil then
         inst.decay_task:Cancel()
@@ -83,17 +82,13 @@ local function backpack_skin_load_fn(inst, data)
     end
 end
 
-function backpack_init_fn_no_decay(inst, build_name)
-    inst.AnimState:SetSkin(build_name, "swap_backpack")
-    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
-end
-
 function backpack_init_fn(inst, build_name)
     if not TheWorld.ismastersim then
         return
     end
 
-    backpack_init_fn_no_decay(inst, build_name)
+    inst.AnimState:SetSkin(build_name, "swap_backpack")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
 
     --Now add decay logic
     inst:ListenForEvent("ondropped", backpack_dropped)
@@ -109,7 +104,6 @@ end
 --------------------------------------------------------------------------
 --[[ Torch skin functions ]]
 --------------------------------------------------------------------------
-
 function torch_init_fn(inst, build_name)
     if not TheWorld.ismastersim then
         return
@@ -122,7 +116,6 @@ end
 --------------------------------------------------------------------------
 --[[ Spear skin functions ]]
 --------------------------------------------------------------------------
-
 function spear_init_fn(inst, build_name)
     if not TheWorld.ismastersim then
         return
@@ -135,7 +128,6 @@ end
 --------------------------------------------------------------------------
 --[[ Hat skin functions ]]
 --------------------------------------------------------------------------
-
 function hat_init_fn(inst, build_name)
     if not TheWorld.ismastersim then
         return
@@ -144,12 +136,15 @@ function hat_init_fn(inst, build_name)
     inst.AnimState:SetSkin(build_name, "swap_hat")
     inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
 end
+tophat_init_fn = hat_init_fn
+flowerhat_init_fn = hat_init_fn
+strawhat_init_fn = hat_init_fn
+winterhat_init_fn = hat_init_fn
 
 --------------------------------------------------------------------------
 --[[ Bedroll skin functions ]]
 --------------------------------------------------------------------------
-
-function bedroll_init_fn(inst, build_name)
+function bedroll_furry_init_fn(inst, build_name)
     if not TheWorld.ismastersim then
         return
     end
@@ -162,24 +157,33 @@ end
 --------------------------------------------------------------------------
 --[[ Crockpot skin functions ]]
 --------------------------------------------------------------------------
-
 function cookpot_init_fn(inst, build_name)
+    if inst.components.placer == nil and not TheWorld.ismastersim then
+        return
+    end
+
     inst.AnimState:SetSkin(build_name, "cook_pot")
 end
 
 --------------------------------------------------------------------------
 --[[ Chest skin functions ]]
 --------------------------------------------------------------------------
+function treasurechest_init_fn(inst, build_name)
+    if inst.components.placer == nil and not TheWorld.ismastersim then
+        return
+    end
 
-function chest_init_fn(inst, build_name)
     inst.AnimState:SetSkin(build_name, "treasure_chest")
 end
 
 --------------------------------------------------------------------------
 --[[ Endtable skin functions ]]
 --------------------------------------------------------------------------
-
 function endtable_init_fn(inst, build_name)
+    if inst.components.placer == nil and not TheWorld.ismastersim then
+        return
+    end
+
     inst.AnimState:SetSkin(build_name, "stagehand")
 end
 
@@ -187,7 +191,6 @@ end
 --------------------------------------------------------------------------
 --[[ Firepit skin functions ]]
 --------------------------------------------------------------------------
-
 function firepit_init_fn(inst, build_name, fxoffset)
     if inst.components.placer ~= nil then
         --Placers can run this on clients as well as servers
@@ -201,16 +204,30 @@ function firepit_init_fn(inst, build_name, fxoffset)
     inst.components.burnable:SetFXOffset(fxoffset)
 end
 
+
+--------------------------------------------------------------------------
+--[[ Pet skin functions ]]
+--------------------------------------------------------------------------
+function critter_builder_init_fn(inst, skin_name)
+    inst.skin_name = skin_name
+end
+function pet_init_fn(inst, build_name, default_build)
+	if not TheWorld.ismastersim then
+        return
+    end
+    
+    inst.AnimState:SetSkin(build_name, default_build)
+end
+
+
 --------------------------------------------------------------------------
 
 function CreatePrefabSkin(name, info)
     local prefab_skin = Prefab(name, nil, info.assets, info.prefabs)
     prefab_skin.is_skin = true
 
-    prefab_skin.base_prefab         = info.base_prefab or ""
-    prefab_skin.ui_preview          = info.ui_preview
-    prefab_skin.tags                = info.tags or {}
-    prefab_skin.inheritance         = info.inheritance
+    prefab_skin.base_prefab         = info.base_prefab
+    prefab_skin.type                = info.type
     prefab_skin.init_fn             = info.init_fn
     prefab_skin.build_name          = info.build_name
     prefab_skin.rarity              = info.rarity

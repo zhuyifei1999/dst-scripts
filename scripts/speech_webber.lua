@@ -8,6 +8,7 @@ return {
         BUILD =
         {
             MOUNTED = "All our arms can't quite reach from up here.",
+            HASPET = "I like the pet we've got.",
         },
 		SHAVE =
 		{
@@ -48,6 +49,7 @@ return {
         },
         GIVE =
         {
+            GENERIC = "Nope, don't think so!",
             DEAD = "Um. We should probably keep it.",
             SLEEPING = "Aww... It's sleepy-snoozy right now!",
             BUSY = "We can try again when it's finished.",
@@ -386,6 +388,7 @@ return {
             BROKEN = "It's broke.",
             STAFFED = "Something else needs to happen, right?",
             WRONGSTAFF = "I don't think it wanted that.",
+            MOONSTAFF = "Bright sticky stick!",
         },
         MOONDIAL = 
         {
@@ -677,6 +680,14 @@ return {
 		BEARGER_FUR = "It's so thick!",
 		FURTUFT = "Fluffy, and not from a spider.",		
 		BEDROLL_STRAW = "Musty but relaxing.",
+		BEEQUEEN = "Bees aren't our friends!",
+		BEEQUEENHIVE = 
+		{
+			GENERIC = "Not web. We can't walk on it.",
+			GROWING = "I wonder what the bees are making!",
+		},
+		BEEQUEENHIVEGROWN = "Oh, bother!",
+        BEEGUARD = "So fluffy but so mean!!",
 		BEE =
 		{
 			GENERIC = "Always Be Pollinating.",
@@ -912,6 +923,14 @@ return {
 			HELD = "Caught you!",
 		},
 		CANARY_POISONED = "Uh, are you feeling okay?",
+
+		CRITTERLAB = "It looks warm in there.",
+        CRITTER_GLOMLING = "He gives the fuzziest hugs.",
+        CRITTER_DRAGONLING = "She's a monster just like me!",
+		CRITTER_LAMB = "Father taught me how to take care of goats!",
+        CRITTER_PUPPY = "We're best friends.",
+        CRITTER_KITTEN = "You look like grandpa's cat!",
+
 		CROW =
 		{
 			GENERIC = "Oh, you look like you're having a grand time, flying about.",
@@ -972,6 +991,7 @@ return {
 		},
 		LAVA_POND = "Ouch! Burnies!",
 		LAVAE = "Sizzling hot!",
+		LAVAE_COCOON = "Being all froze up probably isn't comfy.",
 		LAVAE_PET = 
 		{
 			STARVING = "It looks starving!",
@@ -1012,7 +1032,11 @@ return {
 		ENDTABLE = 
 		{
 			BURNT = "Antiques are dumb, anyway.",
-			GENERIC = "Reminds me of antique shopping with mother.",
+			GENERIC = "Looks great!",
+			EMPTY = "Reminds me of antique shopping with mother.",
+			WILTED = "They look sad.",
+			FRESHLIGHT = "Nice and bright!",
+			OLDLIGHT = "It's gonna go out soon.",
 		},
 		DECIDUOUSTREE = 
 		{
@@ -1236,6 +1260,9 @@ return {
 		MANDRAKE_COOKED = "The meeping had to stop.",
 		MAPSCROLL = "There's nothing on it.",
 		MARBLE = "Maybe we should take up sculpting.",
+		MARBLEBEAN = "Bean there, done that!",
+		MARBLEBEAN_SAPLING = "You can plant anything in the ground!",
+        MARBLESHRUB = "That's a weird shape for a bush.",
 		MARBLEPILLAR = "Nothing lasts forever on its own.",
 		MARBLETREE = "I hope it doesn't fall on us.",
 		MARSH_BUSH =
@@ -1483,6 +1510,8 @@ return {
         ROOK = "Who made these things!?",
 		ROPE = "We could tie stuff up with this.",
 		ROTTENEGG = "Ew!",
+		ROYAL_JELLY = "It's goopy.",
+		JELLYBEAN = "Will they grow into candy beanstalks?",
 		SADDLE_RACE = "It's a saddle made out of spidersnacks!",
         SADDLE_BASIC = "We ride!",
         SADDLE_WAR = "We'll have lots of fun riding on this.",
@@ -1794,6 +1823,10 @@ return {
 		WALL_WOOD_ITEM = "They won't keep us safe if we keep holding them.",
 		WALL_MOONROCK = "We feel safe behind this wall... it makes us sleepy...",
 		WALL_MOONROCK_ITEM = "We thought \"moon\" meant something totally different!",
+		FENCE = "I don't think we can jump over that.",
+        FENCE_ITEM = "Let's build a fence!",
+        FENCE_GATE = "The hinges are a little squeaky.",
+        FENCE_GATE_ITEM = "Let's build a gate!",
 		WALRUS = "I don't think he wants to be friends with us.",
 		WALRUSHAT = "Reminds me of grandpa.",
 		WALRUS_CAMP =

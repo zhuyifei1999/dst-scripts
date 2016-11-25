@@ -179,6 +179,14 @@ CLOTHING =
 		rarity = "Spiffy",
 		legs_cuff_size = 2,
 	},
+	body_pj_blue_agean =
+	{
+		type = "body",
+		symbol_overrides = { "torso", "arm_upper", "arm_lower", "arm_lower_cuff", },
+		override_build = "body_pj_blue_agean",
+		torso_tuck = "untucked",
+		rarity = "Spiffy",
+	},
 	body_pj_purple_mauve =
 	{
 		type = "body",
@@ -295,6 +303,14 @@ CLOTHING =
 		type = "body",
 		symbol_overrides = { "torso", "torso_pelvis", "arm_upper", "skirt", },
 		override_build = "body_sleepgown_blue_ice",
+		torso_tuck = "skirt",
+		rarity = "Distinguished",
+	},
+	body_sleepgown_purple_lavender =
+	{
+		type = "body",
+		symbol_overrides = { "torso", "torso_pelvis", "arm_upper", "skirt", },
+		override_build = "body_sleepgown_purple_lavender",
 		torso_tuck = "skirt",
 		rarity = "Distinguished",
 	},
@@ -1023,6 +1039,15 @@ CLOTHING =
 		symbol_overrides = { "torso_pelvis", "leg", },
 		symbol_hides = { "skirt", },
 		override_build = "legs_pants_basic_tan_cream",
+		legs_cuff_size = 2,
+	},
+	legs_pj_blue_agean =
+	{
+		type = "legs",
+		symbol_overrides = { "torso_pelvis", "leg", },
+		symbol_hides = { "skirt", },
+		override_build = "legs_pj_blue_agean",
+		rarity = "Spiffy",
 		legs_cuff_size = 2,
 	},
 	legs_pj_purple_mauve =

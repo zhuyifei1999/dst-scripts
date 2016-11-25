@@ -26,7 +26,7 @@ local function OnAttacked(inst, data)
                 return false
             end
         end
-        return dude:HasTag("bee") and not dude.components.health:IsDead()
+        return dude:HasTag("bee") and not (dude:IsInLimbo() or dude.components.health:IsDead() or dude:HasTag("epic"))
     end, targetshares)
 end
 

@@ -9,6 +9,7 @@ return
         BUILD =
         {
             MOUNTED = "In this elevated position, I can't reach the ground.",
+            HASPET = "One domestic creature is enough for me.",
         },
         READ =
         {
@@ -64,6 +65,7 @@ return
         },
         GIVE =
         {
+            GENERIC = "I don't think so, dear.",
             DEAD = "That would be a waste.",
             SLEEPING = "It appears to be sleeping.",
             BUSY = "I'll try again when it's done.",
@@ -316,7 +318,7 @@ return
         CACTUS_MEAT_COOKED = "Delightfully devoid of spines.",
         TREEGUARD = "Fascinating... it's become bipedal!",
         CACTUS_MEAT = "I'm not sure it's been prepared properly.",
-        CACTUS_FLOWER = "Reminds me of Burrows. A favorite at the library.",
+        CACTUS_FLOWER = "Reminds me of Burroughs. A favorite at the library.",
         COLDFIRE =
         {
             GENERIC = "A rather strange, magical fire pit.",
@@ -522,7 +524,7 @@ return
             BURNING = "Hmm, now it reminds me of a very different famous book.",
             BURNT = "It used to be a wardrobe.",
         },
-        WARG = "That Canis will never be domesticated.",
+        WARG = "Domestication looks difficult, but I'm up to the challenge!",
         WATERMELON = "Citrullus lanatus.",
         WATERMELON_COOKED = "Beautifully grilled.",
         WATERMELONHAT = "That's certainly one thing you could do with a watermelon.",
@@ -599,6 +601,7 @@ return
             BROKEN = "Ancient debris. Perhaps it can be restored?",
             STAFFED = "Now we must be patient.",
             WRONGSTAFF = "Hmm... It seems the staves are not interchangeable.",
+            MOONSTAFF = "The magic of the stone appears to be inexhaustible.",
         },
         MOONDIAL = 
         {
@@ -845,6 +848,7 @@ return
         },
         LAVA_POND = "Molten rock. Best not to get too close.",
         LAVAE = "I believe it is a larval dragonfly.",
+        LAVAE_COCOON = "A domestication opportunity, I'd say.",
         LAVAE_PET = 
         {
             STARVING = "This creature requires sustenance immediately!",
@@ -879,8 +883,12 @@ return
        
         ENDTABLE = 
         {
-          BURNT = "Well, such as it is.",
-          GENERIC = "It's pleasant to see a little decor out here.",
+            BURNT = "Well, such as it is.",
+            GENERIC = "It's pleasant to see a little decor out here.",
+            EMPTY = "Ah, could use a doily, wouldn't you say?",
+            WILTED = "A pity. Shall we find replacements?",
+            FRESHLIGHT = "The more light to read by the better, in my opinion.",
+            OLDLIGHT = "It is Maxwell's turn to procure bulbs. I've it written down right here.",
         },
         WAFFLES = "Salutations, waffles.",
         WALL_WOOD_ITEM = "Deployable pickets.",
@@ -891,6 +899,10 @@ return
         WALL_RUINS = "A very secure wall.",
         WALL_MOONROCK = "A job well done.",
         WALL_MOONROCK_ITEM = "Fits comfortably in my pocket.",
+        FENCE = "A simply constructed fence.",
+        FENCE_ITEM = "All the components for a wooden fence.",
+        FENCE_GATE = "That is a wooden gate.",
+        FENCE_GATE_ITEM = "All the components for a wooden gate.",
         ADVENTURE_PORTAL = "That violates some pretty fundamental physical laws.",
         
         BIRDCAGE = 
@@ -1008,6 +1020,8 @@ return
         BIRD_EGG = "It is unfertilized.",
         BIRD_EGG_COOKED = "Just needs some toast.",
         ROTTENEGG = "How unappetizing.",
+        ROYAL_JELLY = "In the wild this might have produced more queens.",
+        JELLYBEAN = "Sweets, emulsified with beeswax.",
         HAMBAT = "This was perhaps not the most efficient use of resources.",
 
         TRAP_TEETH = "It's covered with a thin film of canine digestive fluid.",
@@ -1095,7 +1109,7 @@ return
         LITTLE_WALRUS = "The juvenile is not as aggressive.",
         WALRUS_TUSK = "This would be useful for scrimshaw.",
 
-        WARG = "That Canis will never be domesticated.",
+        WARG = "Domesticating this Canis will be an entertaining challenge.",
 
         SPIDERDEN = "Fascinating. These spiders have a communal hive.",
         RABBITHOLE = 
@@ -1117,6 +1131,14 @@ return
             HELD = "Serinus canaria. We ought never enter a cave without one.",
         },
         CANARY_POISONED = "Oh, dear.",
+
+        CRITTERLAB = "A perfect hollow for nesting animals.",
+        CRITTER_GLOMLING = "How do you maintain flight, dear?",
+        CRITTER_DRAGONLING = "What a darling Diptera juvenile!",
+        CRITTER_LAMB = "I could just squish that widdle face.",
+        CRITTER_PUPPY = "Who's the sweetest little Canis lupus?",
+        CRITTER_KITTEN = "Now it feels like home.",
+
         CROW = 
         {
             GENERIC = "Corvus brachyrhynchos.",
@@ -1217,7 +1239,14 @@ return
         BLUE_CAP_COOKED = "Chemistry has altered it.",
 
         MOOSE_NESTING_GROUND = "I should like to research its mating habits, someday.",
-
+        BEEQUEEN = "The workers ferociously protect her.",
+        BEEQUEENHIVE = 
+        {
+            GENERIC = "Thick Apis mellifera honeycomb.",
+            GROWING = "The Apis mellifera are constructing a new hive.",
+        },
+        BEEQUEENHIVEGROWN = "An Apis mellifera nest of unusual size.",
+        BEEGUARD = "Very angry Apis mellifera workers!",
         BEE = 
         {
             GENERIC = "Apis mellifera. Quite large!",
@@ -1698,6 +1727,9 @@ return
         MARBLEPILLAR = "It shows the touch of a Roman artisan. How amazing.",
         MARBLETREE = "Amazing. A tree made entirely of marble.",
         MARBLE = "A statuesque rock.",
+        MARBLEBEAN = "Marble growth is arboriculturally impossible.",
+        MARBLEBEAN_SAPLING = "I believe it's a perennial.",
+        MARBLESHRUB = "Not ideal for topiary.",
         SUNKBOAT = "A shipwreck, looks to be useless.",
         SWEATERVEST = "This vest screams \"stylish, but well-read.\".",
         TAFFY = "That's terrible for your teeth, dear.",

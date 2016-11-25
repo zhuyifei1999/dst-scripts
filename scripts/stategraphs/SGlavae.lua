@@ -281,7 +281,7 @@ local states =
 			inst.Physics:Stop()
 			inst.AnimState:PlayAnimation("death")
 			if inst.components.lootdropper then
-    			inst.components.lootdropper:SetChanceLootTable('lavae_lava')
+    			inst.components.lootdropper:SetChanceLootTable(inst.NormalLootTable or 'lavae_lava')
             	inst.components.lootdropper:DropLoot(Vector3(inst.Transform:GetWorldPosition()))  
         		inst.SoundEmitter:PlaySound("dontstarve/creatures/together/lavae/death")
 			end
@@ -341,7 +341,7 @@ local states =
             end
             inst.AnimState:PlayAnimation("shatter")
             if inst.components.lootdropper then
-	    		inst.components.lootdropper:SetChanceLootTable('lavae_frozen')
+	    		inst.components.lootdropper:SetChanceLootTable(inst.FrozenLootTable or 'lavae_frozen')
 	            inst.components.lootdropper:DropLoot(Vector3(inst.Transform:GetWorldPosition()))
             	inst.SoundEmitter:PlaySound("dontstarve/creatures/together/lavae/shatter")
             end

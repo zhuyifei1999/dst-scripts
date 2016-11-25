@@ -8,6 +8,7 @@ return {
        	BUILD =
         {
             MOUNTED = "Not as tall as a moose, but still too high to place that.",
+            HASPET = "I need to take care of the pet I have.",
         },
 		SHAVE =
 		{
@@ -49,6 +50,7 @@ return {
         },
         GIVE =
         {
+            GENERIC = "Nah, that ain't right.",
             DEAD = "I don't think they... um...",
             SLEEPING = "It's sleeping.",
             BUSY = "I'll try again in a mo'.",
@@ -633,6 +635,7 @@ return {
             BROKEN = "That'll need more than a roll of duct tape to fix.",
             STAFFED = "I'm happy to just leave it there for now.",
             WRONGSTAFF = "Looks a little off.",
+            MOONSTAFF = "That oughta keep us cool.",
         },
         MOONDIAL = 
         {
@@ -884,6 +887,14 @@ return {
 		BASALT = "That rock ain't going to move.",
 		BEARDHAIR = "My hair's not that colour. Not my beard, anyway.",
 		BEDROLL_STRAW = "I slept on worse back at the lumber camp.",
+		BEEQUEEN = "Bees got no business getting that big.",
+		BEEQUEENHIVE = 
+		{
+			GENERIC = "I'm not eating honey off the ground.",
+			GROWING = "The bees are planning something.",
+		},
+		BEEQUEENHIVEGROWN = "Nature is something else, eh?",
+        BEEGUARD = "Hopefully no one's allergic, eh?",
 		BEE =
 		{
 			GENERIC = "She's making the flowers grow.",
@@ -1081,6 +1092,14 @@ return {
 			HELD = "Want a peek at our prisoner, Lucy?",
 		},
 		CANARY_POISONED = "Diseased vermin.",
+
+		CRITTERLAB = "Anyone home?",
+        CRITTER_GLOMLING = "Charmingly chubby.",
+        CRITTER_DRAGONLING = "Don't start no forest fires now, buddy.",
+		CRITTER_LAMB = "Heh, it feels like a beard.",
+        CRITTER_PUPPY = "Man and robot's best friend.",
+        CRITTER_KITTEN = "Giving it pats is relaxing.",
+
 		CROW =
 		{
 			GENERIC = "He's planning something. I can tell.",
@@ -1131,6 +1150,7 @@ return {
         },
 
 		LAVAE = "Death by axe!",
+		LAVAE_COCOON = "Lil buddy cooled right off.",
 		LAVAE_PET = 
 		{
 			STARVING = "Skinnier than a blue heron's legs.",
@@ -1177,7 +1197,11 @@ return {
 		ENDTABLE = 
 		{
 			BURNT = "A burnt wood table.",
-			GENERIC = "Such a beaut of a wood table shouldn't be hidden by a cloth.",
+			GENERIC = "A little bit of nature makes everything nicer.",
+			EMPTY = "Such a beaut of a wood table shouldn't be hidden by a cloth.",
+			WILTED = "Well, that's that.",
+			FRESHLIGHT = "About time we brightened this place up, eh?",
+			OLDLIGHT = "We need bulbs, eh.",
 		},
 		ACORN = "I should grow it and then chop it down!",
         ACORN_SAPLING = "Here comes a tree!",
@@ -1364,6 +1388,9 @@ return {
 		MANDRAKE_COOKED = "Sorry!",
 		MAPSCROLL = "Is it still a map if nothing's on it?",
 		MARBLE = "Feels like a government building.",
+		MARBLEBEAN = "The magical fruit.",
+		MARBLEBEAN_SAPLING = "Well lookit that. It sprouted.",
+        MARBLESHRUB = "Defo can't chop that.",
 		MARBLEPILLAR = "Somebody must have built that.",
 		MARBLETREE = "Even Lucy can't chop that one down.",
 		MARSH_BUSH =
@@ -1514,6 +1541,8 @@ return {
         ROOK = "Hmm... does the rook move in a straight line? I forget.",
 		ROPE = "Good for holding stuff to other stuff.",
 		ROTTENEGG = "One less bird. Good.",
+		ROYAL_JELLY = "I'm majestic enough as is.",
+		JELLYBEAN = "You can barely taste the bean!",
         SADDLE_BASIC = "Yep, that'll get us there.",
         SADDLE_RACE = "Makes me feel like some sorta woodland nymph, eh?",
         SADDLE_WAR = "Makes me feel like a Mountie.",
@@ -1792,6 +1821,10 @@ return {
 		WALL_WOOD_ITEM = "I like the look of that!",
 		WALL_MOONROCK = "Looks nice'n'sturdy.",
 		WALL_MOONROCK_ITEM = "It's not much use like that.",
+		FENCE = "That's a good lookin' fence.",
+        FENCE_ITEM = "A good project for a lazy afternoon.",
+        FENCE_GATE = "Some nice woodwork there.",
+        FENCE_GATE_ITEM = "A good project for a lazy afternoon.",
 		WALRUS = "Oh no. Walruses again!",
 		WALRUSHAT = "My grandad wore a hat like that.",
 		WALRUS_CAMP =

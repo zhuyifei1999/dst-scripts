@@ -192,7 +192,7 @@ function GiftItemPopUp:RevealItem(idx)
             else
             	self.disable_use_now = false
             end
-            self.spawn_portal:GetAnimState():OverrideSkinSymbol("SWAP_ICON", skin_data.ui_preview.build, "SWAP_ICON")
+            self.spawn_portal:GetAnimState():OverrideSkinSymbol("SWAP_ICON", skin_data.build_name, "SWAP_ICON")
         end
     else
         skin_data = CLOTHING[item_name]

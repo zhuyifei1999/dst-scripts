@@ -10,7 +10,7 @@ local TextEdit = require "widgets/textedit"
 local Widget = require "widgets/widget"
 local Menu = require "widgets/menu"
 local Puppet = require "widgets/skinspuppet"
-local CharacterSelectScreen = require "screens/characterselectscreen"
+local CharacterLoadoutSelectScreen = require "screens/characterloadoutselectscreen"
 local TradeScreen = require "screens/tradescreen"
 local TEMPLATES = require "widgets/templates"
 local SetPopupDialog = require "screens/setpopupdialog"
@@ -61,7 +61,7 @@ function SkinsScreen:DoInit()
     self.chest:SetScale(-.7, .7, .7)
     self.chest:SetPosition(100, -75)
 	self.loadout_button = self.fixed_root:AddChild(ImageButton("images/skinsscreen.xml", "loadout_button_active.tex", "loadout_button_hover.tex", "loadout_button_pressed.tex", "loadout_button_pressed.tex"))
-	self.loadout_button:SetOnClick(function() TheFrontEnd:PushScreen(CharacterSelectScreen(self.profile, "wilson")) end)
+	self.loadout_button:SetOnClick(function() TheFrontEnd:PushScreen(CharacterLoadoutSelectScreen(self.profile)) end)
 	self.loadout_button:SetScale(1.05)
 	self.loadout_button:SetPosition(500, -250)
    	
@@ -159,7 +159,7 @@ function SkinsScreen:OnItemSelect(type, item_type, item_id, itemimage)
 	self.details_panel.name:SetColour(unpack(SKIN_RARITY_COLORS[rarity]))
     self.details_panel.description:SetMultilineTruncatedString(STRINGS.SKIN_DESCRIPTIONS[item_type] or STRINGS.SKIN_DESCRIPTIONS["missing"], 7, 180, 60, true)
 
-	self.details_panel.rarity:SetString(rarity.." Item")
+	self.details_panel.rarity:SetString(STRINGS.UI.RARITY[rarity])
 	self.details_panel.rarity:SetColour(unpack(SKIN_RARITY_COLORS[rarity]))
 
 	self.details_panel.set_info_btn.show_help = nil
@@ -190,7 +190,7 @@ function SkinsScreen:OnItemSelect(type, item_type, item_id, itemimage)
 		self.details_panel.set_title:Hide()
 		self.details_panel.set_info_btn:Hide()
 
-		self.details_panel.rarity:SetString(rarity.." Item")
+		self.details_panel.rarity:SetString(STRINGS.UI.RARITY[rarity])
 		self.details_panel.rarity:SetColour(unpack(SKIN_RARITY_COLORS[rarity]))
 		self.details_panel.rarity:SetPosition(0, RARITY_POS_LONE)
 	end
@@ -360,7 +360,7 @@ function SkinsScreen:OnControl(control, down)
 
     	if not down and control == CONTROL_PAUSE then
     		TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
-		        TheFrontEnd:PushScreen(CharacterSelectScreen(self.profile, "wilson"))
+		        TheFrontEnd:PushScreen(CharacterLoadoutSelectScreen(self.profile))
 		        TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
 		    end)
 			return true

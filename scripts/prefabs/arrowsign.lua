@@ -67,6 +67,7 @@ local function fn()
     MakeSnowCoveredPristine(inst)
 
     inst:AddTag("structure")
+    inst:AddTag("nointerpolate")
 
     --Sneak these into pristine state for optimization
     inst:AddTag("_writeable")
@@ -117,6 +118,8 @@ local function panelfn()
     inst.AnimState:PlayAnimation("idle")
 
     inst.Transform:SetEightFaced()
+
+    inst:AddTag("nointerpolate")
 
     MakeSnowCoveredPristine(inst)
 

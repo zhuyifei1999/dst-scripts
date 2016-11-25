@@ -35,6 +35,8 @@ local spore_to_cap =
     spore_small = "green_cap",
 }
 
+local FULLY_REPAIRED_WORKLEFT = 3
+
 local function DoMushroomOverrideSymbol(inst, product)
     inst.AnimState:OverrideSymbol("swap_mushroom", "mushroom_farm_"..(string.split(product, "_")[1]).."_build", "swap_mushroom")
 end
@@ -61,18 +63,19 @@ local function setlevel(inst, level, dotransition)
         if inst.anims.idle == level.idle then
             dotransition = false
         end
+        
         inst.anims.idle = level.idle
         inst.anims.hit = level.hit
 
-        if TheWorld.state.issnowcovered then
-            inst.components.trader:Disable()
-        elseif inst.components.harvestable:CanBeHarvested() then
-            inst.components.trader:Disable()
-        elseif inst.remainingharvests == 0 then
+        if inst.remainingharvests == 0 then
             inst.anims.idle = "expired"
             inst.components.trader:Enable()
             inst.components.harvestable:SetGrowTime(nil)
             inst.components.workable:SetWorkLeft(1)
+        elseif TheWorld.state.issnowcovered then
+            inst.components.trader:Disable()
+        elseif inst.components.harvestable:CanBeHarvested() then
+            inst.components.trader:Disable()
         else
             inst.components.trader:Enable()
             inst.components.harvestable:SetGrowTime(nil)
@@ -166,8 +169,8 @@ local function getstatus(inst)
         return nil
     end
 
-    return TheWorld.state.issnowcovered and "SNOWCOVERED"
-            or inst.remainingharvests == 0 and "ROTTEN"
+    return inst.remainingharvests == 0 and "ROTTEN"
+			or TheWorld.state.issnowcovered and "SNOWCOVERED"
             or inst.components.harvestable.produce == levels[1].amount and "STUFFED"
             or inst.components.harvestable.produce == levels[2].amount and "LOTS"
             or inst.components.harvestable:CanBeHarvested() and "SOME"
@@ -236,6 +239,7 @@ end
 local function onacceptitem(inst, giver, item)
     if inst.remainingharvests == 0 then
         inst.remainingharvests = TUNING.MUSHROOMFARM_MAX_HARVESTS
+        inst.components.workable:SetWorkLeft(FULLY_REPAIRED_WORKLEFT)
         updatelevel(inst)
     else
         StartGrowing(inst, item)
@@ -333,7 +337,7 @@ local function fn()
 
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
-    inst.components.workable:SetWorkLeft(3)
+    inst.components.workable:SetWorkLeft(FULLY_REPAIRED_WORKLEFT)
     inst.components.workable:SetOnFinishCallback(onhammered)
     inst.components.workable:SetOnWorkCallback(onhit)
 

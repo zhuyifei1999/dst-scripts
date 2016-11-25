@@ -40,6 +40,7 @@ rarityList["Elegant"] = true
 rarityList["Timeless"] = true
 rarityList["Reward"] = true
 rarityList["Loyal"] = true
+rarityList["ProofOfPurchase"] = true
 rarityList["Event"] = true
 
 local coloursList = {}

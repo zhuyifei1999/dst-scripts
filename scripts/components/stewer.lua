@@ -78,14 +78,13 @@ local function dostew(inst, self)
             self.onspoil(inst)
         end
     elseif self.product ~= nil then
-        local prep_perishtime = (cooking.recipes and cooking.recipes[inst.prefab]
-                and cooking.recipes[inst.prefab][self.product]
-                and cooking.recipes[inst.prefab][self.product].perishtime)
-                or TUNING.PERISH_SUPERFAST
-        local prod_spoil = self.product_spoilage or 1
-        self.spoiltime = prep_perishtime * prod_spoil
-        self.targettime =  GetTime() + self.spoiltime
-        self.task = self.inst:DoTaskInTime(self.spoiltime, dospoil, self)
+        local prep_perishtime = cooking.GetRecipe(inst.prefab, self.product).perishtime or 0
+        if prep_perishtime > 0 then
+			local prod_spoil = self.product_spoilage or 1
+			self.spoiltime = prep_perishtime * prod_spoil
+			self.targettime =  GetTime() + self.spoiltime
+			self.task = self.inst:DoTaskInTime(self.spoiltime, dospoil, self)
+		end
     end
 
     self.done = true
@@ -124,25 +123,33 @@ function Stewer:StartCooking()
             self.onstartcooking(self.inst)
         end
 
-        local spoilage_total = 0
-        local spoilage_n = 0
-        local ings = {}         
-        for k, v in pairs (self.inst.components.container.slots) do
-            table.insert(ings, v.prefab)
-            if v.components.perishable ~= nil then
-                spoilage_n = spoilage_n + 1
-                spoilage_total = spoilage_total + v.components.perishable:GetPercent()
-            end
-        end
-        self.product_spoilage = 1
-        if spoilage_total > 0 then
-            self.product_spoilage = spoilage_total / spoilage_n
-            self.product_spoilage = 1 - (1 - self.product_spoilage) * .5
-        end
-        
+		local ings = {}         
+		for k, v in pairs (self.inst.components.container.slots) do
+			table.insert(ings, v.prefab)
+		end
+
         local cooktime = 1
         self.product, cooktime = cooking.CalculateRecipe(self.inst.prefab, ings)
-        
+        local productperishtime = cooking.GetRecipe(self.inst.prefab, self.product).perishtime or 0
+
+        if productperishtime > 0 then
+			local spoilage_total = 0
+			local spoilage_n = 0
+			for k, v in pairs (self.inst.components.container.slots) do
+				if v.components.perishable ~= nil then
+					spoilage_n = spoilage_n + 1
+					spoilage_total = spoilage_total + v.components.perishable:GetPercent()
+				end
+			end
+			self.product_spoilage = 1
+			if spoilage_total > 0 then
+				self.product_spoilage = spoilage_total / spoilage_n
+				self.product_spoilage = 1 - (1 - self.product_spoilage) * .5
+			end
+		else
+			self.product_spoilage = nil
+		end
+		        
         cooktime = TUNING.BASE_COOK_TIME * cooktime
         self.targettime = GetTime() + cooktime
         if self.task ~= nil then
@@ -217,7 +224,7 @@ function Stewer:OnLoad(data)
                     self.oncontinuecooking(self.inst)
                 end
             end
-        elseif self.product ~= self.spoiledproduct then
+        elseif self.product ~= self.spoiledproduct and data.product_spoilage ~= nil then
             self.targettime = GetTime()
             self.task = self.inst:DoTaskInTime(0, dostew, self)
             if self.oncontinuecooking ~= nil then
@@ -256,6 +263,12 @@ function Stewer:Harvest(harvester)
             if harvester ~= nil and harvester.components.inventory ~= nil then
                 local loot = SpawnPrefab(self.product)
                 if loot ~= nil then
+					local recipe = cooking.GetRecipe(self.inst.prefab, self.product)
+					local stacksize = recipe and recipe.stacksize or 1
+					if stacksize > 1 then
+						loot.components.stackable:SetStackSize(stacksize)
+					end
+                
                     if self.spoiltime ~= nil and loot.components.perishable ~= nil then
                         local spoilpercent = self:GetTimeToSpoil() / self.spoiltime
                         loot.components.perishable:SetPercent(self.product_spoilage * spoilpercent)

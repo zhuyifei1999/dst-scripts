@@ -45,6 +45,15 @@ function PetLeash:IsFull()
     return self.numpets >= self.maxpets
 end
 
+function PetLeash:HasPetWithTag(tag)
+    for k, v in pairs(self.pets) do
+        if v:HasTag(tag) then
+            return true
+        end
+    end
+    return false
+end
+
 function PetLeash:GetPets()
     return self.pets
 end
@@ -64,13 +73,13 @@ local function LinkPet(self, pet)
     end
 end
 
-function PetLeash:SpawnPetAt(x, y, z, prefaboverride)
+function PetLeash:SpawnPetAt(x, y, z, prefaboverride, skin)
     local petprefab = prefaboverride or self.petprefab
     if self.numpets >= self.maxpets or petprefab == nil then
         return
     end
 
-    local pet = SpawnPrefab(petprefab)
+    local pet = SpawnPrefab(petprefab, skin, nil, self.inst.userid)
     if pet ~= nil then
         LinkPet(self, pet)
 

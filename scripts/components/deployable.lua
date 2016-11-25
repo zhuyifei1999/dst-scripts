@@ -64,13 +64,13 @@ function Deployable:CanDeploy(pt, mouseover)
     end
 end
 
-function Deployable:Deploy(pt, deployer)
+function Deployable:Deploy(pt, deployer, rot)
     if not self:CanDeploy(pt) then
         return
     end
     local prefab = self.inst.prefab
     if self.ondeploy ~= nil then
-        self.ondeploy(self.inst, pt, deployer)
+        self.ondeploy(self.inst, pt, deployer, rot or 0)
     end
     -- self.inst is removed during ondeploy
     deployer:PushEvent("deployitem", { prefab = prefab })

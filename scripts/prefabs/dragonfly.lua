@@ -69,13 +69,40 @@ SetSharedLootTable('dragonfly',
     {'greengem',         0.50},
 })
 
-local function UpdateFreezeThreshold(inst)
-    inst.components.freezable:SetResistance(
-        TUNING.DRAGONFLY_FREEZE_THRESHOLD +
-        inst.freezable_extra_resist +
-        (inst.enraged and TUNING.DRAGONFLY_ENRAGED_FREEZE_BONUS or 0)
-    )
+--------------------------------------------------------------------------
+
+local function PushMusic(inst)
+    if ThePlayer == nil or inst:HasTag("flight") then
+        inst._playingmusic = false
+    elseif ThePlayer:IsNear(inst, inst._playingmusic and 60 or 20) then
+        inst._playingmusic = true
+        ThePlayer:PushEvent("triggeredevent", { name = "dragonfly", duration = 15 })
+    elseif inst._playingmusic and not ThePlayer:IsNear(inst, 64) then
+        inst._playingmusic = false
+    end
 end
+
+local function OnIsEngagedDirty(inst)
+    if not inst._isengaged:value() then
+        if inst._musictask ~= nil then
+            inst._musictask:Cancel()
+            inst._musictask = nil
+        end
+        inst._playingmusic = false
+    elseif inst._musictask == nil then
+        inst._musictask = inst:DoPeriodicTask(1, PushMusic)
+        PushMusic(inst)
+    end
+end
+
+local function SetEngaged(inst, engaged)
+    if inst._isengaged:value() ~= engaged then
+        inst._isengaged:set(engaged)
+        OnIsEngagedDirty(inst)
+    end
+end
+
+--------------------------------------------------------------------------
 
 local function TransformNormal(inst)
     inst.AnimState:SetBuild("dragonfly_build")
@@ -86,7 +113,7 @@ local function TransformNormal(inst)
     inst.components.combat:SetAttackPeriod(TUNING.DRAGONFLY_ATTACK_PERIOD)
     inst.components.combat:SetRange(TUNING.DRAGONFLY_ATTACK_RANGE, TUNING.DRAGONFLY_HIT_RANGE)
 
-    UpdateFreezeThreshold(inst)
+    inst.components.freezable:SetResistance(TUNING.DRAGONFLY_FREEZE_THRESHOLD)
 
     inst.components.propagator:StopSpreading()
     inst.Light:Enable(false)
@@ -114,7 +141,7 @@ local function TransformFire(inst)
 
     inst.components.moisture:DoDelta(-inst.components.moisture:GetMoisture())
 
-    UpdateFreezeThreshold(inst)
+    inst.components.freezable:SetResistance(TUNING.DRAGONFLY_ENRAGED_FREEZE_THRESHOLD)
 
     if inst.reverttask ~= nil then
         inst.reverttask:Cancel()
@@ -169,6 +196,11 @@ local function ResetLavae(inst)
     end
 end
 
+local function OnDeath(inst)
+    ResetLavae(inst)
+    SetEngaged(inst, false)
+end
+
 local function SoftReset(inst)
     inst.SoftResetTask = nil
     --Double check for nearby players & combat targets before reseting.
@@ -180,8 +212,11 @@ local function SoftReset(inst)
     print(string.format("Dragonfly - Execute soft reset @ %2.2f", GetTime()))
 
     ResetLavae(inst)
-    inst.playercombat = false
-    inst.freezable_extra_resist = 0
+    SetEngaged(inst, false)
+    inst.components.freezable:Unfreeze()
+    inst.components.freezable:SetExtraResist(0)
+    inst.components.sleeper:WakeUp()
+    inst.components.sleeper:SetExtraResist(0)
     inst.components.health:SetCurrentHealth(inst.components.health.maxhealth)
     inst.components.rampingspawner:Stop()
     inst.components.rampingspawner:Reset()
@@ -217,7 +252,6 @@ local function TrySoftReset(inst)
     end 
 end
 
-
 local function OnTargetDeathTask(inst)
     inst._ontargetdeathtask = nil
     TryGetNewTarget(inst)
@@ -237,27 +271,36 @@ local function OnNewTarget(inst, data)
     end
     if data.target ~= nil  then
         inst:ListenForEvent("death", inst._ontargetdeath, data.target)
+        if data.target:HasTag("player") then
+            SetEngaged(inst, true)
+        end
     end
 end
 
 local function RetargetFn(inst)
     UpdatePlayerTargets(inst)
 
-    if IsFightingPlayers(inst) then
-        inst.playercombat = true
-        return inst.components.grouptargeter:TryGetNewTarget(), true
-    else
-        --Also needs to deal with other creatures in the world
-        return FindEntity(
-            inst,
-            TUNING.DRAGONFLY_AGGRO_DIST,
-            function(guy)
-                return inst.components.combat:CanTarget(guy)
-            end,
-            { "_combat" }, --see entityreplica.lua
-            { "INLIMBO", "prey", "smallcreature", "lavae" }
-        )
+    local target = inst.components.combat.target
+    if target ~= nil and target:HasTag("player") then
+        local newplayer = inst.components.grouptargeter:TryGetNewTarget()
+        return newplayer ~= nil
+            and newplayer:IsNear(inst, TUNING.DRAGONFLY_AGGRO_DIST)
+            and newplayer
+            or nil,
+            true
     end
+
+    local inrange = target ~= nil and inst:IsNear(target, target.Physics ~= nil and TUNING.DRAGONFLY_ATTACK_RANGE + target.Physics:GetRadius() or TUNING.DRAGONFLY_ATTACK_RANGE)
+    local nearplayers = {}
+    for k, v in pairs(inst.components.grouptargeter:GetTargets()) do
+        if inst:IsNear(k,
+            (not inrange and TUNING.DRAGONFLY_AGGRO_DIST) or
+            (k.Physics ~= nil and TUNING.DRAGONFLY_ATTACK_RANGE + k.Physics:GetRadius()) or
+            TUNING.DRAGONFLY_ATTACK_RANGE) then
+            table.insert(nearplayers, k)
+        end
+    end
+    return #nearplayers > 0 and nearplayers[math.random(#nearplayers)] or nil, true
 end
 
 local function GetLavaePos(inst)
@@ -306,17 +349,19 @@ local function KeepTargetFn(inst, target)
 end
 
 local function DoBreakOff(inst)
-    inst.components.lootdropper:SpawnLootPrefab("dragon_scales")
+    local player--[[, rangesq]] = inst:GetNearestPlayer()
+    LaunchAt(SpawnPrefab("dragon_scales"), inst, player, 1, 3, 1.5)
 end
 
 local function OnSave(inst, data)
     --Check if the dragonfly is in combat with players so we can reset.
-    data.playercombat = inst.playercombat or nil
+    data.playercombat = inst._isengaged:value() or nil
 end
 
 local function OnLoad(inst, data)
     --If the dragonfly was in combat when the game saved then we're going to reset the fight.
     if data.playercombat then
+        SetEngaged(inst, true)
         inst:DoTaskInTime(1, Reset)
     end
 end
@@ -337,18 +382,26 @@ end
 
 local function OnAttacked(inst, data)
     if data.attacker ~= nil then
-        inst.components.combat:SuggestTarget(data.attacker)
+        local target = inst.components.combat.target
+        if not (target ~= nil and
+                target:HasTag("player") and
+                target:IsNear(inst, target.Physics ~= nil and TUNING.DRAGONFLY_ATTACK_RANGE + target.Physics:GetRadius() or TUNING.DRAGONFLY_ATTACK_RANGE)) then
+            inst.components.combat:SetTarget(data.attacker)
+        end
     end
-end
-
-local function OnFreeze(inst)
-    inst.freezable_extra_resist = inst.freezable_extra_resist + 2
-    UpdateFreezeThreshold(inst)
 end
 
 local function OnHealthTrigger(inst)
     inst:PushEvent("transform", { transformstate = "normal" })
     inst.components.rampingspawner:Start() 
+end
+
+local function ShouldSleep(inst)
+    return false
+end
+
+local function ShouldWake(inst)
+    return true
 end
 
 local function fn()
@@ -371,6 +424,7 @@ local function fn()
     inst.AnimState:PlayAnimation("idle", true)
 
     inst:AddTag("epic")
+    inst:AddTag("noepicmusic")
     inst:AddTag("monster")
     inst:AddTag("hostile")
     inst:AddTag("dragonfly")
@@ -386,9 +440,15 @@ local function fn()
 
     inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/fly", "flying")
 
+    inst._isengaged = net_bool(inst.GUID, "dragonfly._engaged", "isengageddirty")
+    inst._playingmusic = false
+    inst._musictask = nil
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+        inst:ListenForEvent("isengageddirty", OnIsEngagedDirty)
+
         return inst
     end
 
@@ -450,11 +510,16 @@ local function fn()
     inst.components.combat:SetHurtSound("dontstarve_DLC001/creatures/dragonfly/hurt")
 
     inst.components.sleeper:SetResistance(4)
+    inst.components.sleeper:SetSleepTest(ShouldSleep)
+    inst.components.sleeper:SetWakeTest(ShouldWake)
+    inst.components.sleeper.diminishingreturns = true
 
     inst.components.lootdropper:SetChanceLootTable("dragonfly")
 
     inst.components.inspectable:RecordViews()
 
+    inst.components.locomotor:EnableGroundSpeedMultiplier(false)
+    inst.components.locomotor:SetTriggersCreep(false)
     inst.components.locomotor.pathcaps = { ignorewalls = true }
     inst.components.locomotor.walkspeed = TUNING.DRAGONFLY_SPEED
 
@@ -471,14 +536,13 @@ local function fn()
         end
     end
 
-    inst:ListenForEvent("freeze", OnFreeze)
     inst:ListenForEvent("newcombattarget", OnNewTarget)
     inst:ListenForEvent("rampingspawner_spawn", OnLavaeSpawn)
     inst:ListenForEvent("rampingspawner_death", OnLavaeDeath)
     inst:ListenForEvent("moisturedelta", OnMoistureDelta)
     inst:ListenForEvent("timerdone", OnTimerDone)
     inst:ListenForEvent("attacked", OnAttacked)
-    inst:ListenForEvent("death", ResetLavae) --Get rid of lavaes.
+    inst:ListenForEvent("death", OnDeath) --Get rid of lavaes.
 
     -- Variables
 
@@ -489,13 +553,12 @@ local function fn()
     inst.TransformFire = TransformFire
     inst.TransformNormal = TransformNormal
     inst.can_ground_pound = false
-    inst.last_hit_time = 0
-    inst.freezable_extra_resist = 0
+    inst.hit_recovery = TUNING.DRAGONFLY_HIT_RECOVERY
 
     MakeHugeFreezableCharacter(inst)
     inst.components.freezable:SetResistance(TUNING.DRAGONFLY_FREEZE_THRESHOLD)
     inst.components.freezable.damagetobreak = TUNING.DRAGONFLY_FREEZE_RESIST
-    inst.components.freezable.onfreezefn = OnFreeze
+    inst.components.freezable.diminishingreturns = true
 
     MakeLargePropagator(inst)
     inst.components.propagator.decayrate = 0

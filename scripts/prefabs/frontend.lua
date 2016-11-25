@@ -86,6 +86,17 @@ local assets =
 
     Asset("ANIM", "anim/puff_spawning.zip"),
     Asset("ANIM", "anim/sporecloud.zip"),
+    
+    
+    
+    --Asset("ANIM", "anim/crowgametile.zip"),
+    --Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_crow.zip"),
+    --Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_chevron_wrapper.zip"),
+    --Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_dotted_wrapper.zip"),
+    --Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_flower_wrapper.zip"),
+    --Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_foil_wrapper.zip"),
+    --Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_paper_wrapper.zip"),
+    --Asset("DYNAMIC_ANIM", "anim/dynamic/oddment_striped_wrapper.zip"),
 
     --Credits screen
     Asset("SOUND", "sound/gramaphone.fsb"),

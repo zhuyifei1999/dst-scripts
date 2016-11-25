@@ -9,6 +9,16 @@ local prefabs =
 }
 
 local function MakePreparedFood(data)
+    local foodprefabs = prefabs
+    if data.prefabs ~= nil then
+        foodprefabs = deepcopy(prefabs)
+        for i, v in ipairs(data.prefabs) do
+            if not table.contains(foodprefabs, v) then
+                table.insert(foodprefabs, v)
+            end
+        end
+    end
+
     local function fn()
         local inst = CreateEntity()
 
@@ -23,6 +33,11 @@ local function MakePreparedFood(data)
         inst.AnimState:PlayAnimation(data.name, false)
 
         inst:AddTag("preparedfood")
+        if data.tags then
+            for i,v in pairs(data.tags) do
+                inst:AddTag(v)
+            end
+        end
 
         inst.entity:SetPristine()
 
@@ -37,6 +52,7 @@ local function MakePreparedFood(data)
         inst.components.edible.sanityvalue = data.sanity or 0
         inst.components.edible.temperaturedelta = data.temperature or 0
         inst.components.edible.temperatureduration = data.temperatureduration or 0
+        inst.components.edible:SetOnEatenFn(data.oneatenfn)
 
         inst:AddComponent("inspectable")
         inst.wet_prefix = data.wet_prefix
@@ -46,17 +62,13 @@ local function MakePreparedFood(data)
         inst:AddComponent("stackable")
         inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
-        inst:AddComponent("perishable")
-        inst.components.perishable:SetPerishTime(data.perishtime or TUNING.PERISH_SLOW)
-        inst.components.perishable:StartPerishing()
-        inst.components.perishable.onperishreplacement = "spoiled_food"
-
-        if data.tags then
-            for i,v in pairs(data.tags) do
-                inst:AddTag(v)
-            end
-        end
-
+		if data.perishtime ~= nil and data.perishtime > 0 then
+			inst:AddComponent("perishable")
+			inst.components.perishable:SetPerishTime(data.perishtime)
+			inst.components.perishable:StartPerishing()
+			inst.components.perishable.onperishreplacement = "spoiled_food"
+		end
+		
         MakeSmallBurnable(inst)
         MakeSmallPropagator(inst)
         MakeHauntableLaunchAndPerish(inst)
@@ -84,7 +96,7 @@ local function MakePreparedFood(data)
         return inst
     end
 
-    return Prefab(data.name, fn, assets, prefabs)
+    return Prefab(data.name, fn, assets, foodprefabs)
 end
 
 local prefs = {}
