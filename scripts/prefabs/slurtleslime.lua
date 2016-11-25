@@ -39,8 +39,6 @@ local function fn()
 
     inst:AddTag("explosive")
 
-    MakeDragonflyBait(inst, 3)
-
     --[[
     inst.Light:SetFalloff(0.7)
     inst.Light:SetIntensity(.1)

@@ -300,8 +300,6 @@ local function capcommonfn(data)
     inst.AnimState:SetBuild("mushrooms")
     inst.AnimState:PlayAnimation(data.animname.."_cap")
 
-    MakeDragonflyBait(inst, 3)
-
     --cookable (from cookable component) added to pristine state for optimization
     inst:AddTag("cookable")
     inst:AddTag("mushroom")

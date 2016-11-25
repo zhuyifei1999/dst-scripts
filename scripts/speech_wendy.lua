@@ -37,6 +37,10 @@ return {
             GENERIC = "Must everything in life be hard?",
             INUSE = "I can come back later...",   
         },
+        DRAW =
+        {
+            NOIMAGE = "I draw better with references...",
+        },
         CHANGEIN =
         {
             GENERIC = "What's the point.",
@@ -93,6 +97,10 @@ return {
             KNOWN = "I already possess that knowledge...",
             CANTLEARN = "That knowledge is beyond me...",
             WRONGWORLD = "It's... not right...",
+        },
+        WRAPBUNDLE =
+        {
+            EMPTY = "I can't wrap nothingness...",
         },
 	},
 	ACTIONFAIL_GENERIC = "I can't do anything right.",
@@ -926,7 +934,12 @@ return {
 			REMAINS_THINGIE = "This was once some thing before it got burned...",
 		},
 		AXE = "An instrument for industry and murder.",
-		BABYBEEFALO = "Enjoy your youth. Soon you will learn the terrors of the real world.",
+		BABYBEEFALO = 
+		{
+			GENERIC = "Enjoy your youth. Soon you will learn the terrors of the real world.",
+		    --SLEEPING = "",
+        },
+		--BUNDLEWRAP = "",
 		BACKPACK = "A spacious sack to increase one's burden.",
 		BACONEGGS = "A balanced breakfast to start another miserable day.",
 		BANDAGE = "There's no salve for the pain of existence.",
@@ -961,6 +974,7 @@ return {
 		BEEFALOHAT = "To cover one's head.",
 		BEEFALOWOOL = "Somewhere, a beefalo is naked and cold.",
 		BEEHAT = "This will protect me from those happy buzzing sounds. Oh, and stings.",
+		--BEESWAX = "",
 		BEEHIVE = "A wretched hive of scum and pollen.",
 		BEEMINE = "They're still alive in there. Poor things.",
 		BERRIES = "These berries are tart.",
@@ -1134,6 +1148,11 @@ return {
 		CUTREEDS = "The blade has sentenced you to death.",
 		CUTSTONE = "The better to mark graves with.",
 		DEADLYFEAST = "This, a fitting final meal.",
+		--DEER = 
+		--{
+		--	GENERIC = "",
+		--	ANTLER = "",
+		--},
 		DEERCLOPS = "Death incarnate!",
 		DEERCLOPS_EYEBALL = "What terrors must it see.",
 		DEPLETED_GRASS =

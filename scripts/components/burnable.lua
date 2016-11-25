@@ -217,8 +217,6 @@ function Burnable:StartWildfire()
 end
 
 local function DoneBurning(inst, self)
-    RemoveDragonflyBait(inst)
-
     inst:PushEvent("onburnt")
 
     if self.onburnt ~= nil then
@@ -442,7 +440,6 @@ function Burnable:OnRemoveFromEntity()
     --self:StopSmoldering()
     --Extinguish() already calls StopSmoldering()
     self:Extinguish()
-    RemoveDragonflyBait(self.inst)
     if self.task ~= nil then
         self.task:Cancel()
         self.task = nil

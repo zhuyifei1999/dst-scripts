@@ -273,15 +273,15 @@ STRINGS =
             CLOSE = "Close",
         },
         TAKEITEM =
-            {
-                GENERIC = "Take Item",
-                BIRDCAGE = "Muck Out",
-            },
+        {
+            GENERIC = "Take Item",
+            BIRDCAGE = "Muck Out",
+        },
         CASTSPELL =
-            {   
-                GENERIC = "Cast Spell", --"Cast Spell on"
-                SCIENCE = "Use Gadget",
-            },
+        {
+            GENERIC = "Cast Spell", --"Cast Spell on"
+            SCIENCE = "Use Gadget",
+        },
         BLINK = "Telepoof",
         COMBINESTACK = "Combine Stack",
         BURY = "Bury",
@@ -292,7 +292,7 @@ STRINGS =
         UNPIN = "Unstick",
 
         TOSS = "Toss",
-        WRITE = "Write on",
+        WRITE = "Write On",
         ATTUNE = "Attune",
         MIGRATE = "Travel via",
         REMOTERESURRECT = "Resurrect",
@@ -303,11 +303,18 @@ STRINGS =
         BRUSH = "Brush",
         DANCE = "Dance",
         ABANDON = "Abandon",
+        PET = "Pet",
+        DRAW = "Draw On",
+        DRAWITEM = "Draw {item}",
+        BUNDLE = "Use",
+        BUNDLESTORE = "Store",
+        WRAPBUNDLE = "Wrap",
+        UNWRAP = "Unwrap",
     },
 
     -- PC controls get hex ranges EE90xx to EE9Fxx
-    LMB              = "\238\132\128",
-    RMB              = "\238\132\129",
+    LMB = "\238\132\128",
+    RMB = "\238\132\129",
 
     SELECT = "Select",
     DROPALL = "Drop All",
@@ -410,6 +417,8 @@ STRINGS =
         SPOILED_FOOD = "Rot",
         BERRIES = "Berries",
         BERRIES_JUICY = "Juicy Berries",
+        BUNDLE = "Bundled Supplies",
+        BUNDLEWRAP = "Bundling Wrap",
         BACKPACK = "Backpack",
         PIGGYBACK = "Piggyback",
         ICEPACK = "Insulated Pack",
@@ -564,6 +573,9 @@ STRINGS =
         DEPLETED_GRASS = "Grass",
         GRAVESTONE = "Headstone",
         HOMESIGN = "Sign",
+        MINISIGN = "Mini Sign",
+        MINISIGN_DRAWN = "{item} Sign",
+        MINISIGN_ITEM = "Mini Sign",
         ARROWSIGN_POST = "Directional Sign",
         ARROWSIGN_PANEL = "Directional Sign",
         MAXWELL = "Maxwell",
@@ -680,6 +692,7 @@ STRINGS =
         MARSH_BUSH = "Spiky Bush",
         BURNT_MARSH_BUSH = "Spiky Bush",
         PAPYRUS = "Papyrus",
+        WAXPAPER = "Wax Paper",
         MARSH_TREE = "Spiky Tree",
         PANFLUTE = "Pan Flute",
         BUGNET = "Bug Net",
@@ -694,6 +707,7 @@ STRINGS =
         FOSSIL_STALKER = "Odd Skeleton",
         HONEY = "Honey",
         HONEYCOMB = "Honeycomb",
+        BEESWAX = "Beeswax",
         BEEHIVE = "Beehive",
         BEEBOX = "Bee Box",
         BEE = "Bee",
@@ -1083,6 +1097,8 @@ STRINGS =
         GLOMMERFUEL = "Glommer's Goop",
         STATUEGLOMMER = "Glommer's Statue",
 
+        DEER = "No-Eyed Deer",
+
         CACTUS = "Cactus",
         CACTUS_MEAT = "Cactus Flesh",
         CACTUS_FLOWER = "Cactus Flower",
@@ -1216,6 +1232,7 @@ STRINGS =
         BEEGUARD = "Grumble Bee",
         ROYAL_JELLY = "Royal Jelly",
         JELLYBEAN = "Jellybeans",
+        HIVEHAT = "Bee Queen Hat",
 
         CHESSPIECE_PAWN = "Pawn Figure",
         CHESSPIECE_ROOK = "Rook Figure",
@@ -1321,6 +1338,7 @@ STRINGS =
         RESURRECTIONSTATUE = "Resurrect yourself via the power of meat.",
         BOARDS = "Like logs, but flatter.",
         RESEARCHLAB = "Unlock new crafting recipes!",
+        BUNDLEWRAP = "Part and parcel to bundling your stuff.",
         BACKPACK = "Carry more stuff.",
         PIGGYBACK = "Carries a lot, but slows you down.",
         ICEPACK = "Small capacity, but keeps stuff fresh.",
@@ -1330,12 +1348,14 @@ STRINGS =
         RESEARCHLAB4 = "Amplify the magical power of your top hat.",
         RAZOR = "Shave off your dirty beatnik beard.",
         PAPYRUS = "For writing things.",
+        WAXPAPER = "For wrapping things.",
         PANFLUTE = "Music to soothe savage beasts.",
         COOKPOT = "Make better food.",
         BUGNET = "Catch bugs.",
         SADDLEHORN = "Pry that saddle off.",
         BRUSH = "Relieve beefalo of their hair buildup.",
         SALTLICK = "Keep your livestock content.",
+        BEESWAX = "A useful preservative wax.",
         BEEBOX = "Store your own bees.",
         BEEHAT = "Protection against angry bees.",
         TREASURECHEST = "A sturdy container.",
@@ -1382,6 +1402,7 @@ STRINGS =
         PURPLEGEM = "By your colors combined!",
         HAMBAT = "It takes food to make food.",
         HOMESIGN = "Make your mark upon the world.",
+        MINISIGN_ITEM = "Draw on these with a Pencil.",
         ARROWSIGN_POST = "Point fingers at the world. Or signs.",
         WALL_WOOD_ITEM = "Wooden wall segments.",
         WALL_STONE_ITEM = "Stone wall segments.",
@@ -2555,6 +2576,14 @@ STRINGS.UI =
         ACTIVATE_RESURRECTION = "Activate Meat Effigy",
         INSPECT_SELF = "Inspect Self",
         OPENGIFT = "Activate",
+		CRITTER_TRAITS =
+		{
+			COMBAT			= "Scrappy",
+			WELLFED			= "Plump",
+			PLAYFUL			= "Peppy",
+			AFFECTIONATE	= "Darling",
+			CRAFTY			= "Crafty",
+		},
     },
     
     ACCOUNT=

@@ -3,6 +3,10 @@ local assets =
     Asset("ANIM", "anim/feather_pencil.zip"),
 }
 
+local function OnDrawFn(inst, target, image)
+    inst.components.stackable:Get():Remove()
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -40,6 +44,8 @@ local function fn()
 
     inst:AddComponent("inspectable")
     ----------------------
+    inst:AddComponent("drawingtool")
+    inst.components.drawingtool:SetOnDrawFn(OnDrawFn)
 
     return inst
 end

@@ -78,6 +78,10 @@ return {
             SLEEPING = "Such sweet slumber graces thy face... Maybe later.",
             BUSY = "I'll try once more when they're free.",
     	},
+        DRAW =
+        {
+            NOIMAGE = "The muses will not visit me if I do not place an item first.",
+        },
     	CHANGEIN =
         {
             GENERIC = "That's where I keep all my favorite furs and pelts.",
@@ -93,6 +97,10 @@ return {
             KNOWN = "I already wield such knowledge.",
             CANTLEARN = "That knowledge is forbidden by the gods.",
             WRONGWORLD = "This map is for some distant land...",
+        },
+        WRAPBUNDLE =
+        {
+            EMPTY = "I cannot wrap that which does not exist!",
         },
 	},
 	ACTIONFAIL_GENERIC = "If I can't do it, it can't be done!",
@@ -656,7 +664,12 @@ return {
 			REMAINS_THINGIE = "It's burnt. Gone.",
 		},
 		AXE = "To chop and destroy!",
-		BABYBEEFALO = "Mini beastie.",
+		BABYBEEFALO = 
+        {
+            GENERIC = "Mini beastie.",
+            SLEEPING = "The mini beast slumbers.",
+        },
+        BUNDLEWRAP = "",
 		BACKPACK = "A portable armory.",
 		BACONEGGS = "Pig and eggs!",
 		BANDAGE = "To heal even the deepest of battle wounds.",
@@ -715,6 +728,7 @@ return {
 		BEEFALOHAT = "That would suit me.",
 		BEEFALOWOOL = "I do love woolly things.",
 		BEEHAT = "A bee helm, of course.",
+        --BEESWAX = "",
 		BEEHIVE = "Always buzzing, always plotting.",
 		BEEMINE = "It sounds suspicious.",
 		BEEMINE_MAXWELL = "Watch your step!",
@@ -935,6 +949,11 @@ return {
 		CUTREEDS = "I cleaned all the bugs out! Then I ate them.",
 		CUTSTONE = "Solid stone!",
 		DEADLYFEAST = "A most potent dish.",
+        DEER = 
+        {
+            --GENERIC = "",
+            --ANTLER = "",
+        },
 		DEERCLOPS = "Rays will shine through my spear and poke out your eyeball!",
 		DEERCLOPS_EYEBALL = "Delicious! I should like to share it with my new allies.",
 		EYEBRELLAHAT = "Don't get rain in your eye!",

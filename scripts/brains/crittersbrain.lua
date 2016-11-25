@@ -7,23 +7,27 @@ require "behaviours/panic"
 local TARGET_FOLLOW_DIST = 4
 local MAX_FOLLOW_DIST = 4.5
 
-local COMBAT_MIN_FOLLOW_DIST = 8
-local COMBAT_TARGET_FOLLOW_DIST = 12
-local COMBAT_MAX_FOLLOW_DIST = 15
+local COMBAT_TOO_CLOSE_DIST = 5					-- distance for find enitities check
+local COMBAT_SAFE_TO_WATCH_FROM_DIST = 8		-- will run to this distance and watch if was too close
+local COMBAT_SAFE_TO_WATCH_FROM_MAX_DIST = 10	-- combat is quite far away now, better catch up
 
-local MAX_WANDER_DIST = 3
+local MAX_PLAYFUL_FIND_DIST = 4
+local MAX_PLAYFUL_KEEP_DIST_FROM_OWNER = 6
+local MAX_DOMINANTTRAIT_PLAYFUL_FIND_DIST = 6
+local MAX_DOMINANTTRAIT_PLAYFUL_KEEP_DIST_FROM_OWNER = 9
+local PLAYFUL_OFFSET = 2
 
 local function GetOwner(inst)
     return inst.components.follower.leader
 end
 
+local function KeepFaceTargetFn(inst, target)
+    return inst.components.follower.leader == target
+end
+
 local function OwnerIsClose(inst)
     local owner = GetOwner(inst)
     return owner ~= nil and owner:IsNear(inst, MAX_FOLLOW_DIST)
-end
-
-local function KeepFaceTargetFn(inst, target)
-    return inst.components.follower.leader == target
 end
 
 local function LoveOwner(inst)
@@ -34,33 +38,140 @@ local function LoveOwner(inst)
     local owner = GetOwner(inst)
     return owner ~= nil
 		and not owner:HasTag("playerghost")
-        and math.random() < 0.1
-        and (GetTime() - (inst.sg.mem.prevemotetime or 0))
+        and (GetTime() - (inst.sg.mem.prevnuzzletime or 0) > TUNING.CRITTER_NUZZLE_DELAY) 
+        and math.random() < 0.05
         and BufferedAction(inst, owner, ACTIONS.NUZZLE)
         or nil
 end
 
-local function IsNearCombat(inst)
-	return inst.AvoidCombatCheck and inst:AvoidCombatCheck()
+-------------------------------------------------------------------------------
+--  Play With Other Critters
+
+local function PlayWithPlaymate(self)
+    self.inst:PushEvent("critterplayful", {target=self.playfultarget})
 end
 
+local function FindPlaymate(self)
+	local owner = GetOwner(self.inst)
+
+	local is_playful = self.inst.components.crittertraits:IsDominantTrait("playful")
+	local max_dist_from_owner = is_playful and MAX_DOMINANTTRAIT_PLAYFUL_KEEP_DIST_FROM_OWNER or MAX_PLAYFUL_KEEP_DIST_FROM_OWNER
+	
+	local can_play = self.inst:IsPlayful() and self.inst:IsNear(owner, max_dist_from_owner)
+
+	-- Try to keep the current playmate
+	if self.playfultarget ~= nil and self.playfultarget:IsValid() and can_play then
+		return true
+	end
+
+	local find_dist = is_playful and MAX_DOMINANTTRAIT_PLAYFUL_FIND_DIST or MAX_PLAYFUL_FIND_DIST
+    
+    -- Find a new playmate
+	self.playfultarget = can_play and
+		not owner.components.locomotor:WantsToMoveForward() and
+		FindEntity(self.inst, find_dist, 
+			function(v)
+				return (v.IsPlayful == nil or v:IsPlayful()) and v:IsNear(owner, max_dist_from_owner)
+			end, nil, nil, self.inst.playmatetags)
+		or nil
+
+    return self.playfultarget ~= nil
+end
+
+-------------------------------------------------------------------------------
+--  Combat Avoidance
+
+local function _avoidtargetfn(self, target)
+	local owner = self.inst.components.follower.leader
+	
+	target = (target ~= nil and target:IsValid()) and target or nil
+	if target == nil then
+		return false
+	end
+	
+	-- Is target in combat with owner?
+    local target_combat = target.components.combat
+	if target_combat and target_combat:TargetIs(owner) then
+		return true
+	end
+
+	-- Is owner in combat with target?
+    local owner_combat = owner.components.combat
+    if owner_combat and 
+		(owner_combat:IsRecentTarget(target) or owner_combat.lastattacker == target) and 
+		owner:IsNear(target, COMBAT_SAFE_TO_WATCH_FROM_MAX_DIST) then
+		return true
+	end
+
+	--todo: target is in any combat and owner is in any combat. This will should prevent critters from moving into neighbouring fights
+	
+	return false
+end
+
+local function CombatAvoidanceFindEntityCheck(self)
+    return function(ent)
+            if _avoidtargetfn(self, ent) then
+				self.inst:PushEvent("critter_avoidcombat", {avoid=true})
+				self.runawayfrom = ent
+                return true
+            end
+            return false
+	    end
+end
+
+local function ValidateCombatAvoidance(self)
+	if self.runawayfrom == nil then
+		return false
+	end
+
+	if not self.runawayfrom:IsValid() then
+		self.inst:PushEvent("critter_avoidcombat", {avoid=false})
+		self.runawayfrom = nil
+		return false
+	end
+	
+	if not self.inst:IsNear(self.runawayfrom, COMBAT_SAFE_TO_WATCH_FROM_MAX_DIST) then
+		return false
+	end
+	
+	if not _avoidtargetfn(self, self.runawayfrom) then
+		self.inst:PushEvent("critter_avoidcombat", {avoid=false})
+		self.runawayfrom = nil
+		return false
+	end
+
+	return true
+end
+
+-------------------------------------------------------------------------------
+--  Brain
 
 local CritterBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
 
-
 function CritterBrain:OnStart()
-    local root = 
+	local root =
     PriorityNode({
-        --WhileNode( function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
-
         WhileNode( function() return self.inst.components.follower.leader end, "Has Owner",
-			PriorityNode{			
-				WhileNode( function() return IsNearCombat(self.inst) end, "Is Near Combat",
-					PriorityNode{
-						Follow(self.inst, function() return self.inst.components.follower.leader end, COMBAT_MIN_FOLLOW_DIST, COMBAT_TARGET_FOLLOW_DIST, COMBAT_MAX_FOLLOW_DIST),
-						FaceEntity(self.inst, GetOwner, KeepFaceTargetFn),
+			PriorityNode{
+
+				-- Combat Avoidance
+				PriorityNode{
+					RunAway(self.inst, {tags={"_combat", "_health"}, notags={"wall"}, fn=CombatAvoidanceFindEntityCheck(self)}, COMBAT_TOO_CLOSE_DIST, COMBAT_SAFE_TO_WATCH_FROM_DIST),
+					WhileNode( function() return ValidateCombatAvoidance(self) end, "Is Near Combat",
+						FaceEntity(self.inst, GetOwner, KeepFaceTargetFn)
+						),
+				},
+			
+				WhileNode(function() return FindPlaymate(self) end, "Playful",
+					SequenceNode{
+						WaitNode(6),
+						PriorityNode{
+							Leash(self.inst, function() return self.playfultarget:GetPosition() and nil end, PLAYFUL_OFFSET, PLAYFUL_OFFSET),
+							ActionNode(function() PlayWithPlaymate(self) end),
+							StandStill(self.inst),
+						},
 					}),
   				Follow(self.inst, function() return self.inst.components.follower.leader end, 0, TARGET_FOLLOW_DIST, MAX_FOLLOW_DIST),
 		        FailIfRunningDecorator(FaceEntity(self.inst, GetOwner, KeepFaceTargetFn)),
@@ -72,7 +183,7 @@ function CritterBrain:OnStart()
 				StandStill(self.inst),
 			}),
 
-        Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("home") end, MAX_WANDER_DIST),
+		StandStill(self.inst),
     }, .25)
     self.bt = BT(self.inst, root)
 end

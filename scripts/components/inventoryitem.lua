@@ -180,7 +180,19 @@ function InventoryItem:OnDropped(randomdir)
     local x, y, z = (self.owner or self.inst).Transform:GetWorldPosition()
 
     self:OnRemoved()
+    self:DoDropPhysics(x, y, z, randomdir)
 
+    if self.ondropfn ~= nil then
+        self.ondropfn(self.inst)
+    end
+    self.inst:PushEvent("ondropped")
+
+    if self.inst.components.propagator ~= nil then
+        self.inst.components.propagator:Delay(5)
+    end
+end
+
+function InventoryItem:DoDropPhysics(x, y, z, randomdir, speedmult)
     if self.inst.Physics ~= nil then
         local heavy = self.inst:HasTag("heavy")
         if not self.nobounce then
@@ -190,7 +202,7 @@ function InventoryItem:OnDropped(randomdir)
 
         -- convert x, y, z to velocity
         if randomdir then
-            local speed = (heavy and 1 or 2) + math.random()
+            local speed = ((heavy and 1 or 2) + math.random()) * (speedmult or 1)
             local angle = math.random() * 2 * PI
             x = speed * math.cos(angle)
             y = self.nobounce and 0 or speed * 3
@@ -203,15 +215,6 @@ function InventoryItem:OnDropped(randomdir)
         self.inst.Physics:SetVel(x, y, z)
     else
         self.inst.Transform:SetPosition(x, y, z)
-    end
-
-    if self.ondropfn ~= nil then
-        self.ondropfn(self.inst)
-    end
-    self.inst:PushEvent("ondropped")
-
-    if self.inst.components.propagator ~= nil then
-        self.inst.components.propagator:Delay(5)
     end
 end
 

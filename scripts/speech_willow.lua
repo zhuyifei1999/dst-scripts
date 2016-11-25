@@ -51,6 +51,10 @@ return {
         {
             NOHEALTH = "Ughhhh, nooo... I don't feel good.",
         },
+        DRAW =
+        {
+            NOIMAGE = "But what should I even draw??",
+        },
         CHANGEIN =
         {
             GENERIC = "Nah, too much effort.",
@@ -93,6 +97,10 @@ return {
             KNOWN = "I knowwwww that already, geez!",
             CANTLEARN = "Ugh, whatever, I didn't wanna know anyway.",
             WRONGWORLD = "What the... this map isn't right at all!",
+        },
+        WRAPBUNDLE =
+        {
+            EMPTY = "I'm not just gonna wrap air!",
         },
 	},
 	ACTIONFAIL_GENERIC = "I can'tttttt.",
@@ -961,6 +969,7 @@ return {
 			GENERIC = "Even the babies are ugly.",
 			SLEEPING = "WAKE UP!",
 		},
+		--BUNDLEWRAP = "",
 		BACKPACK = "You could fit like a million lighters in here.",
 		BACONEGGS = "The yellow mucus-y part is gross, but the bacon is great!",
 		BANDAGE = "Eww, no!",
@@ -998,6 +1007,7 @@ return {
 		BEEMINE = "Bees inside. Should've put some fire in there for good measure.",
 		BEEMINE_MAXWELL = "Mosquitoes inside. They don't sound happy.",
 		BEEHAT = "This will keep the pokeys off of me.",
+		--BEESWAX = "",
 		BERRIES = "Red berries taste the best.",
 		BERRIES_COOKED = "Red berries with fire somehow taste even better.",
         BERRIES_JUICY = "Mmm. They pop in your mouth.",
@@ -1166,6 +1176,11 @@ return {
 		CUTREEDS = "Cut reeds, ready for burning. Or maybe crafting.",
 		CUTSTONE = "Perfectly squared for maximum enjoyment.",
 		DEADLYFEAST = "Fire didn't cure this dish of being nasty.",
+		--DEER = 
+		--{
+		--	GENERIC = "",
+		--	ANTLER = "",
+		--},
 		DEERCLOPS = "Holy crap!",
 		DEERCLOPS_EYEBALL = "Stop staring at me!",
 		DIRTPILE = "Who just leaves dirt lying around in the forest?",

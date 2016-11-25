@@ -38,6 +38,10 @@ return
             GENERIC = "I've other things on my mind currently.",
             INUSE = "Be sure to sort by color and weight, dear.",   
         },
+        DRAW =
+        {
+            NOIMAGE = "An example of what I should diagram would be helpful.",
+        },
         CHANGEIN =
         {
             GENERIC = "I think I look pretty smart already.",
@@ -99,6 +103,10 @@ return
             KNOWN = "Please. That knowledge is child's play.",
             CANTLEARN = "A piece of knowledge I cannot grasp... Intriguing!",
             WRONGWORLD = "This map is for some other location.",
+        },
+        WRAPBUNDLE =
+        {
+            EMPTY = "I have to know what to wrap, dear.",
         },
     },
     ACTIONFAIL_GENERIC = "It seems I can't do that.",
@@ -946,7 +954,12 @@ return
             RIDER = "This one seems lean and athletic.",
             PUDGY = "Abundant nourishment has led to an amicable personality.",
         },
-        BABYBEEFALO = "Look at his widdle face! (Ahem!)",
+        BABYBEEFALO = 
+        {
+            GENERIC = "Look at his widdle face! (Ahem!)",
+            SLEEPING = "He's even more darling in sleep.",
+        },
+        --BUNDLEWRAP = "",
         MANDRAKE_ACTIVE = "Mandragora officinarum. But with a face.",
         MANDRAKE_PLANTED = "Mandragora officinarum.",
         MANDRAKE = "Mandragora officinarum. Deceased.",
@@ -1264,6 +1277,7 @@ return
         },
         MOSQUITOSACK = "The stomach of a Culicidae, brimming with blood.",
         BEEHAT = "Appropriate protective equipment is a must!",
+        --BEESWAX = "",
         BEEHIVE = "The natural home of the bee.",
         BEEMINE = "A dangerous mine filled with Antophila.",
         BEEMINE_MAXWELL = "A dangerous mine filled with Culicidae.",
@@ -1674,6 +1688,11 @@ return
         TRUNKVEST_WINTER = "Ample protection against the elements.",
         
         DEADLYFEAST = "I'm not sure that's good to eat.",
+        DEER = 
+        {
+            GENERIC = "It has shed its antler for the warmer months.",
+            ANTLER = "It's antler has grown in for winter.",
+        },
         DEERCLOPS = "Laurasiatheria!",
         REDGEM = "It is warm.",
         BLUEGEM = "It is cold.",

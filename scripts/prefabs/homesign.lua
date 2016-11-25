@@ -23,7 +23,7 @@ end
 local function onhit(inst, worker)
     if not inst:HasTag("burnt") then
         inst.AnimState:PlayAnimation("hit")
-        inst.AnimState:PushAnimation("idle")
+        inst.AnimState:PushAnimation("idle", false)
     end
 end
 
@@ -63,6 +63,7 @@ local function fn()
     MakeSnowCoveredPristine(inst)
 
     inst:AddTag("structure")
+    inst:AddTag("sign")
 
     --Sneak these into pristine state for optimization
     inst:AddTag("_writeable")

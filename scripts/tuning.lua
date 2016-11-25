@@ -254,8 +254,34 @@ function Tune(overrides)
 	    CRITTER_HUNGERTIME = total_day_time * 3.25,
 	    CRITTER_HUNGERTIME_MIN = total_day_time * 2,
 	    CRITTER_HUNGERTIME_MAX = total_day_time * 4.5,
-	    CRITTER_HUNGERTIME_DELTA = seg_time * 4.0,
-	    CRITTER_EMOTE_DELAY = seg_time * 0.5,
+	    CRITTER_HUNGERTIME_DELTA = total_day_time * 0.5,
+	    CRITTER_EMOTE_DELAY = seg_time,
+	    CRITTER_NUZZLE_DELAY = total_day_time * 0.5,
+		CRITTER_PLAYFUL_DELAY = seg_time * 0.4,
+	    CRITTER_COMBAT_LOOP_CHANCE = 0.33,
+	    CRITTER_WANTS_TO_BE_PET_TIME = seg_time * 0.5,
+
+		CRITTER_TRAITS =
+		{
+			COMBAT			= {inc=0.002, decay=1},
+			WELLFED			= {inc=5.00,  decay=2},
+			PLAYFUL			= {inc=0.20,  decay=1},
+			AFFECTIONATE	= {inc=1.00,  decay=2},
+			CRAFTY			= {inc=0.25,  decay=1},
+		},
+
+		CRITTER_TRAIT_DECAY_DELAY = seg_time,
+		CRITTER_TRAIT_INITIAL_DOMINATE_DELAY = total_day_time * 15,
+		CRITTER_TRAIT_DOMINATE_DELAY = total_day_time * 4,
+		CRITTER_TRAIT_DOMINATE_RETRY_DELAY = total_day_time * 2,
+		CRITTER_TRAIT_DOMINATE_DELAY_VARIANCE = seg_time * 4,
+
+		CRITTER_DOMINANTTRAIT_COMBAT_EMOTE_DELAY = seg_time * 0.25,
+		CRITTER_DOMINANTTRAIT_COMBAT_LOOP_CHANCE = 0.75,
+		CRITTER_DOMINANTTRAIN_AFFECTIONATE_EMOTE_DELAY = seg_time * 0.5,
+		CRITTER_DOMINANTTRAIN_PLAYFUL_DELAY = seg_time * 0.1,
+	    CRITTER_DOMINANTTRAIT_HUNGERTIME_MIN = total_day_time * 3.25,
+	    CRITTER_DOMINANTTRAIT_HUNGERTIME_MAX = total_day_time * 5.5,
 
 	    PERD_SPAWNCHANCE = 0.1,
 	    PERD_DAMAGE = 20,
@@ -373,6 +399,16 @@ function Tune(overrides)
 	    LIGHTNING_GOAT_FOLLOW_TIME = 30,
 	    LIGHTNING_GOAT_MATING_SEASON_BABYDELAY = total_day_time*1.5,
 	    LIGHTNING_GOAT_MATING_SEASON_BABYDELAY_VARIANCE = 0.5*total_day_time,
+
+	    DEER_DAMAGE = 25,
+        DEER_HEALTH = 350 * 2, -- harder for multiplayer
+	    DEER_ATTACK_RANGE = 3,
+	    DEER_ATTACK_PERIOD = 2,
+	    DEER_WALK_SPEED = 2.5,
+	    DEER_RUN_SPEED = 8,
+	    DEER_TARGET_DIST = 8,
+	    DEER_CHASE_DIST = 30,
+	    DEER_FOLLOW_TIME = 30,
 
 	    BUZZARD_DAMAGE = 15,
 	    BUZZARD_ATTACK_RANGE = 2,
@@ -1203,7 +1239,10 @@ function Tune(overrides)
 		ARMOR_SANITY_ABSORPTION = .95*multiplayer_armor_absorption_modifier,
 		ARMOR_SANITY_DMG_AS_SANITY = 0.10,
 
-	    
+        ARMOR_HIVEHAT = wilson_health*9*multiplayer_armor_durability_modifier,
+        ARMOR_HIVEHAT_ABSORPTION = .7*multiplayer_armor_absorption_modifier,
+        ARMOR_HIVEHAT_SANITY_ABSORPTION = .5,
+
 	    PANFLUTE_SLEEPTIME = 20,
 	    PANFLUTE_SLEEPRANGE = 15,
 	    PANFLUTE_USES = 10,
@@ -2262,6 +2301,7 @@ function Tune(overrides)
         SALTLICK_BEEFALO_USES = 2,
         SALTLICK_KOALEFANT_USES = 4,
         SALTLICK_LIGHTNINGGOAT_USES = 1,
+        SALTLICK_DEER_USES = 1,
 
         VOTE_PASSED_SQUELCH_TIME = 0,
         VOTE_FAILED_SQUELCH_TIME = 30,

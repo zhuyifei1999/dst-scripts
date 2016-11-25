@@ -82,6 +82,10 @@ return {
         {
             NOHEALTH = "We don't feel so good right now. Maybe later?",
         },
+        DRAW =
+        {
+            NOIMAGE = "But what should we draw?!",
+        },
         CHANGEIN =
         {
             GENERIC = "Not right now, we're comfy.",
@@ -93,6 +97,10 @@ return {
             KNOWN = "I'm pretty sure one of us knows that one.",
             CANTLEARN = "Ms. Wickerbottom will have to explain this one.",
             WRONGWORLD = "Is it upside down? Nope. It's just wrong.",
+        },
+        WRAPBUNDLE =
+        {
+            EMPTY = "But what should we wrap up?",
         },
 	},
 	ACTIONFAIL_GENERIC = "Mom told me never to do that.",
@@ -668,7 +676,13 @@ return {
 			REMAINS_THINGIE = "Whatever it was, it's gone back to the earth.",
 		},
 		AXE = "Chop and chop.",
-		BABYBEEFALO = "Get busy, child.",
+		BABYBEEFALO = 
+		{
+			GENERIC = "Get busy, child.",
+		    --SLEEPING = "",
+        },
+        BUNDLE = "That's one of my favorite things!",
+		BUNDLEWRAP = "Now we can cocoon things up for later!",
 		BACKPACK = "It's like a second abdomen we can store things in.",
 		BACONEGGS = "I'd rather have sugary cereal. Oh well.",
 		BANDAGE = "Bandages for booboos.",
@@ -727,6 +741,7 @@ return {
 		BEEFALOHAT = "The wearer will blend in perfectly.",
 		BEEFALOWOOL = "Thick fur.",
 		BEEHAT = "It's a face fortress!",
+		--BEESWAX = "",
 		BEEHIVE = "It's a hive of activity.",
 		BEEMINE = "Would you bee mine?",
 		BEEMINE_MAXWELL = "I just can't mosquito you.",
@@ -940,6 +955,11 @@ return {
 		CUTREEDS = "Reeds, web, what's the difference.",
 		CUTSTONE = "Squared rocks.",
 		DEADLYFEAST = "Scent of doom.",
+		--DEER = 
+		--{
+		--	GENERIC = "",
+		--	ANTLER = "",
+		--},
 		DEERCLOPS = "He might be able to digest me!",
 		DEERCLOPS_EYEBALL = "Yucktastic.",
 		EYEBRELLAHAT =	"Disturbing, but it'll keep us dry.",

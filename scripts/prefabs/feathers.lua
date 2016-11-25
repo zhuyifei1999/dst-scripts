@@ -19,7 +19,6 @@ local function makefeather(name)
         inst.AnimState:PlayAnimation("idle")
 
         inst:AddTag("cattoy")
-        MakeDragonflyBait(inst, 3)
 
         inst.entity:SetPristine()
 

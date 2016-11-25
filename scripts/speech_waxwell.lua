@@ -47,6 +47,10 @@ return {
         {
             TARGETINCOMBAT = "Perhaps I should take a step back.",
         },
+        DRAW =
+        {
+            NOIMAGE = "My memory isn't good enough to draw from it.",
+        },
         CHANGEIN =
         {
             GENERIC = "How could you improve on perfection?",
@@ -93,6 +97,10 @@ return {
             KNOWN = "I am far too advanced for this.",
             CANTLEARN = "There's a lesson to be learned about tampering with secret knowledge.",
             WRONGWORLD = "I seem to be in the wrong place to use this.",
+        },
+        WRAPBUNDLE =
+        {
+            EMPTY = "I don't know what to wrap.",
         },
 	},
 	ACTIONFAIL_GENERIC = "That didn't work.",
@@ -858,7 +866,13 @@ return {
 			REMAINS_THINGIE = "My trip through the portal made it unrecognizable.",
 		},
 		AXE = "Sometimes the direct approach is best.",
-		BABYBEEFALO = "They're even ugly as infants.",
+		BABYBEEFALO = 
+		{
+			GENERIC = "They're even ugly as infants.",
+		    --SLEEPING = "",
+        },
+        BUNDLE = "Nice and snug.",
+		--BUNDLEWRAP = "",
 		BACKPACK = "I wish there were porters around here.",
 		BACONEGGS = "Now that is a proper breakfast.",
 		BANDAGE = "Sticky and gooey and good for putting on booboos.",
@@ -912,6 +926,7 @@ return {
 		BEEFALOHAT = "How unfashionable.",
 		BEEFALOWOOL = "It smells like a barn.",
 		BEEHAT = "I'll wear it if I have to.",
+		--BEESWAX = "",
 		BEEHIVE = "Not the bees!",
 		BEEMINE = "They wait so patiently.",
 		BEEMINE_MAXWELL = "Maybe I shouldn't have put that there.",
@@ -1086,6 +1101,11 @@ return {
 		CUTREEDS = "I think I could build something useful from this.",
 		CUTSTONE = "The building blocks of civilization.",
 		DEADLYFEAST = "It smells... noxious.",
+		--DEER = 
+		--{
+		--	GENERIC = "",
+		--	ANTLER = "",
+		--},
 		DEERCLOPS = "Even I'm afraid of that guy.",
 		DEERCLOPS_EYEBALL = "Deerclops are so myopic.",
 		DEPLETED_GRASS =

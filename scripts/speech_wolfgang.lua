@@ -78,6 +78,10 @@ return {
             SLEEPING = "Friend is sleeping now!",
             BUSY = "Please give Mighty Wolfgang your attention!",
     	},
+        DRAW =
+        {
+            NOIMAGE = "Wolfgang no good at drawing pictures from head.",
+        },
     	CHANGEIN =
         {
             GENERIC = "Clothes only good for ripping with strong muscles!",
@@ -93,6 +97,10 @@ return {
             KNOWN = "Wolfgang already knows this!",
             CANTLEARN = "I do not get it.",
             WRONGWORLD = "Little paper is not for here!",
+        },
+        WRAPBUNDLE =
+        {
+            EMPTY = "Wolfgang has no little things to wrap!",
         },
 	},
 	ACTIONFAIL_GENERIC = "I am not mighty enough to do that.",
@@ -910,7 +918,12 @@ return {
 			REMAINS_THINGIE = "Is burned pieces of some thing. Is dead now...",
 		},
 		AXE = "Chop!",
-		BABYBEEFALO = "Baby hair-cow!",
+		BABYBEEFALO = 
+        {
+            GENERIC = "Baby hair-cow!",
+            SLEEPING = "Sleepy baby hair-cow!",
+        },
+        --BUNDLEWRAP = "",
 		BACKPACK = "Is for carry more thing.",
 		BACONEGGS = "Food has yolk! And meat! More strong!",
 		BANDAGE = "Can fix people!",
@@ -945,6 +958,7 @@ return {
 		BEEFALOHAT = "Is good hat!",
 		BEEFALOWOOL = "Clothes made of hair-cow.",
 		BEEHAT = "Is hat for to protect from stinger bees.",
+        --BEESWAX = "",
 		BEEHIVE = "Oh, beehive!",
 		BEEMINE = "Is ball full of angry bees.",
 		BEEMINE_MAXWELL = "Is ball full of angry bitebugs.",
@@ -1119,6 +1133,11 @@ return {
 		CUTREEDS = "Is clump of reeds.",
 		CUTSTONE = "Rock was crushed to make brick!",
 		DEADLYFEAST = "Look like evil food.",
+        --DEER = 
+        --{
+        --    GENERIC = "",
+        --    ANTLER = "",
+        --},
 		DEERCLOPS = "He looks mightier than me!",
 		DEERCLOPS_EYEBALL = "Yuck yuck yuck!",
 		DEPLETED_GRASS =

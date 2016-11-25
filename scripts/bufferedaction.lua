@@ -48,6 +48,7 @@ function BufferedAction:GetActionString()
     return self.doer ~= nil
         and self.doer.ActionStringOverride ~= nil
         and self.doer:ActionStringOverride(self)
+        or (self.action.stroverridefn ~= nil and self.action.stroverridefn(self))
         or GetActionString(self.action.id, self.action.strfn ~= nil and self.action.strfn(self) or nil)
         or nil
 end

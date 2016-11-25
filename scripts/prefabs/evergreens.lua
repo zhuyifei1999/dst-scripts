@@ -474,7 +474,6 @@ end
 local function make_stump(inst)
     inst:RemoveComponent("burnable")
     MakeSmallBurnable(inst)
-    MakeDragonflyBait(inst, 1)
     inst:RemoveComponent("propagator")
     MakeSmallPropagator(inst)
     inst:RemoveComponent("workable")
@@ -658,10 +657,8 @@ local function OnEntityWake(inst)
             if inst.components.burnable == nil then
                 if isstump then
                     MakeSmallBurnable(inst)
-                    MakeDragonflyBait(inst, 1)
                 else
                     MakeLargeBurnable(inst, TUNING.TREE_BURN_TIME)
-                    MakeDragonflyBait(inst, 1)
                     inst.components.burnable:SetFXLevel(5)
                     inst.components.burnable:SetOnBurntFn(tree_burnt)
                 end
@@ -902,7 +899,6 @@ local function tree(name, build, stage, data)
         inst:SetPrefabName(GetBuild(inst).prefab_name)
         inst:AddTag(GetBuild(inst).prefab_name) -- used by regrowth
 
-        MakeDragonflyBait(inst, 1)
         MakeSnowCoveredPristine(inst)
 
         inst.entity:SetPristine()

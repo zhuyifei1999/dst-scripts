@@ -72,6 +72,10 @@ return {
             SLEEPING = "Let them get some shut eye.",
             BUSY = "I've something for you when you've got a mo'.",
     	},
+    	DRAW =
+        {
+            NOIMAGE = "I won't get it right unless I have the item in front of me.",
+        },
     	CHANGEIN =
         {
             GENERIC = "Ouch. Do I not look skookum enough already?",
@@ -94,6 +98,10 @@ return {
             KNOWN = "I know that already, eh?",
             CANTLEARN = "Err... do you understand this one, 'Luce?",
             WRONGWORLD = "I don't think I'm in the right place for this.",
+        },
+        WRAPBUNDLE =
+        {
+            EMPTY = "I need some things to wrap first, eh?",
         },
 	},
 	ACTIONFAIL_GENERIC = "Sorry, I can't do that.",
@@ -880,7 +888,12 @@ return {
 			REMAINS_THINGIE = "Well that's a shame.",
 		},
 		AXE = "It's not as nice as Lucy.",
-		BABYBEEFALO = "A face only a mother could love.",
+		BABYBEEFALO = 
+		{
+			GENERIC = "A face only a mother could love.",
+		    --SLEEPING = "",
+        },
+		--BUNDLEWRAP = "",
 		BACKPACK = "That's a decent looking rucksack.",
 		BACONEGGS = "Awww. It's just front bacon.",
 		BANDAGE = "At least I didn't have to pay for it.",
@@ -934,7 +947,7 @@ return {
 		BEEFALOHAT = "Now I'm the king of the beefalo!",
 		BEEFALOWOOL = "It feels like my beard.",
 		BEEHAT = "That'll keep the bees out of yer eyes.",
-		
+		--BEESWAX = "",
 		BEEHIVE = "They're all comfy-cozy in there.",
 		
 		BEEMINE = "I don't know if the bees like this.",
@@ -1109,6 +1122,11 @@ return {
 		CUTREEDS = "Want to hear my loon call?",
 		CUTSTONE = "Part of the Canadian shield.",
 		DEADLYFEAST = "That doesn't smell quite right, eh.",
+		--DEER = 
+		--{
+		--	GENERIC = "",
+		--	ANTLER = "",
+		--},
 		DEERCLOPS = "That's a big moose!",
 		DEERCLOPS_EYEBALL = "Now what is this good for?",
 		DEPLETED_GRASS =

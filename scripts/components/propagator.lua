@@ -122,12 +122,12 @@ function Propagator:OnUpdate(dt)
             local isendothermic = self.inst.components.heater ~= nil and self.inst.components.heater:IsEndothermic()
 
             for i, v in ipairs(ents) do
-                if v:IsValid() and v.components.propagator ~= nil then
+                if v:IsValid() then
                     --3D distance
                     local dsq = distsq(pos, v:GetPosition())
 
                     if v ~= self.inst then
-                        if v.components.propagator.acceptsheat then
+                        if v.components.propagator ~= nil and v.components.propagator.acceptsheat then
                             local percent_heat = math.max(.1, 1 - dsq / prop_range_sq)
                             v.components.propagator:AddHeat(self.heatoutput * percent_heat * dt)
                         end
@@ -140,7 +140,7 @@ function Propagator:OnUpdate(dt)
                             end
                         end
 
-                        if not isendothermic and v:HasTag("frozen") then
+                        if not isendothermic and (v:HasTag("frozen") or v:HasTag("meltable")) then
                             v:PushEvent("firemelt")
                             v:AddTag("firemelt")
                         end

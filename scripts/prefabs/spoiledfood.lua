@@ -16,8 +16,6 @@ local function fn()
     inst.AnimState:SetBuild("spoiled_food")
     inst.AnimState:PlayAnimation("idle")
 
-    MakeDragonflyBait(inst, 3)
-
     inst:AddTag("icebox_valid")
 
     inst.entity:SetPristine()

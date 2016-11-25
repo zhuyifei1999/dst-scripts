@@ -13,9 +13,10 @@ local prefabs =
     "honeycomb",
     "honey",
     "stinger",
+    "hivehat",
 }
 
-SetSharedLootTable( 'beequeen',
+SetSharedLootTable('beequeen',
 {
     {'royal_jelly',      1.00},
     {'royal_jelly',      1.00},
@@ -31,6 +32,7 @@ SetSharedLootTable( 'beequeen',
     {'honey',            1.00},
     {'honey',            0.50},
     {'stinger',          1.00},
+    {'hivehat',          1.00},
 })
 
 --------------------------------------------------------------------------
