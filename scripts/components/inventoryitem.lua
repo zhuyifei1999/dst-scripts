@@ -172,7 +172,7 @@ function InventoryItem:OnRemoved()
     self:WakeLivingItem()
 end
 
-function InventoryItem:OnDropped(randomdir)
+function InventoryItem:OnDropped(randomdir, speedmult)
     if not self.inst:IsValid() then
         return
     end
@@ -180,7 +180,7 @@ function InventoryItem:OnDropped(randomdir)
     local x, y, z = (self.owner or self.inst).Transform:GetWorldPosition()
 
     self:OnRemoved()
-    self:DoDropPhysics(x, y, z, randomdir)
+    self:DoDropPhysics(x, y, z, randomdir, speedmult)
 
     if self.ondropfn ~= nil then
         self.ondropfn(self.inst)

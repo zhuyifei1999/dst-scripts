@@ -57,12 +57,13 @@ function Unwrappable:Unwrap(doer)
         for i, v in ipairs(self.itemdata) do
             local item = SpawnSaveRecord(v)
             if item ~= nil then
-                if item.components.inventoryitem ~= nil then
-                    item.components.inventoryitem:DoDropPhysics(pos.x, pos.y, pos.z, true, .5)
-                elseif item.Physics ~= nil then
+                if item.Physics ~= nil then
                     item.Physics:Teleport(pos:Get())
                 else
                     item.Transform:SetPosition(pos:Get())
+                end
+                if item.components.inventoryitem ~= nil then
+                    item.components.inventoryitem:OnDropped(true, .5)
                 end
             end
         end

@@ -31,6 +31,8 @@ self.inst = inst
 --------------------------------------------------------------------------
 --[[ Private Member Variables ]]
 --------------------------------------------------------------------------	
+local _spawners = {}
+
 local _activedeer = {}
 
 local _timetospawn = nil
@@ -54,57 +56,56 @@ local function AddDeer(deer)
 	self.inst:ListenForEvent("death", RemoveDeer, deer)        
 end
 
+local function OnRemoveSpawner(spawner)
+    for i, v in ipairs(_spawners) do
+        if v == spawner then
+            table.remove(_spawners, i)
+            return
+        end
+    end
+end
+
+local function OnRegisterDeerSpawningGround(inst, spawner)
+    for i, v in ipairs(_spawners) do
+        if v == spawner then
+            return
+        end
+    end
+
+    table.insert(_spawners, spawner)
+    inst:ListenForEvent("onremove", OnRemoveSpawner, spawner)
+end
+
+--------------------------------------------------------------------------
+--[[ Register events ]]
+--------------------------------------------------------------------------
+
+inst:ListenForEvent("ms_registerdeerspawningground", OnRegisterDeerSpawningGround)
+
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
-
-local function PickAttackTarget()
-    if #AllPlayers == 0 then
-        return nil
+local function FindHerdSpawningGroundPt()
+	if #_spawners == 0 then
+		if #AllPlayers == 0 then
+			return nil
+		end
+		
+		return AllPlayers[math.random(#AllPlayers)]:GetPosition()
     end
 
-	local _activeplayers = {}
-	for i, v in ipairs(AllPlayers) do
-		table.insert(_activeplayers, v)
+	_spawners = shuffleArray(_spawners)
+	for i,v in ipairs(_spawners) do
+	    if FindClosestPlayerToInst(v, HERD_SPAWN_DIST) == nil then
+			return v:GetPosition()
+	    end
 	end
 
-	local numStructures = 0
-	local loopCount = 0
-	local player = nil
-	while (numStructures <  STRUCTURES_PER_SPAWN) and (loopCount < (#_activeplayers + 3)) do 
-		local playeri = math.min(math.floor(easing.inQuint(math.random(), 1, #_activeplayers, 1)), #_activeplayers)
-		player = _activeplayers[playeri]
-		table.remove(_activeplayers, playeri)
-		table.insert(_activeplayers, player)
-
-		local x,y,z = player.Transform:GetWorldPosition()
-		local ents = TheSim:FindEntities(x,y,z, STRUCTURE_DIST, {"structure"}) 
-
-		numStructures = #ents
-		loopCount = loopCount + 1
-	end
-
-	print("Deer Herd picked target", player)
-	return player
-end
-
-local function FindHerdSummonLocation()
-	local target_player = PickAttackTarget()
-	if target_player == nil then
-		return nil
-	end
-	local pt = target_player:GetPosition()
-	
-	local offset = FindWalkableOffset(pt, math.random() * 2 * PI, HERD_SPAWN_DIST, 12, true)
-	if offset == nil then
-		return nil
-	end
-
-	return pt + offset
+	return _spawners[1]:GetPosition()
 end
 
 local function SummonHerd()
-	local loc = FindHerdSummonLocation()
+	local loc = FindHerdSpawningGroundPt()
 	if loc == nil then
 		if TheWorld.state.isautumn == true and TheWorld.state.remainingdaysinseason > (TheWorld.state.autumnlength * 0.5) then
 			_timetospawn = (1 + math.random()) * TUNING.TOTAL_DAY_TIME

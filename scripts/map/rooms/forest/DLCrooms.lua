@@ -97,6 +97,7 @@ AddRoom("BGDeciduous", {
 					contents =  {
 					                countprefabs= {
 					                    pumpkin = function () return IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) and (0 + math.random(3)) or 0 end,
+					                    deerspawningground = 1,
 					                },
 
 					                distributepercent = .2,
@@ -135,6 +136,10 @@ AddRoom("DeepDeciduous", {
 					value = GROUND.DECIDUOUS,
 					tags = {"ExitPiece", "Chester_Eyebone"},
 					contents =  {
+					                countprefabs =
+					                {
+					                    deerspawningground = 1,
+					                },
 					                distributepercent = .4,
 					                distributeprefabs=
 					                {

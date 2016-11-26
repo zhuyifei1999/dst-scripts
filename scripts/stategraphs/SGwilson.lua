@@ -1277,6 +1277,28 @@ local states =
 
         events =
         {
+            EventHandler("ontalk", function(inst)
+                if inst.sg.statemem.talktask ~= nil then
+                    inst.sg.statemem.talktask:Cancel()
+                    inst.sg.statemem.talktask = nil
+                    inst.SoundEmitter:KillSound("talk")
+                end
+                if DoTalkSound(inst) then
+                    inst.sg.statemem.talktask =
+                        inst:DoTaskInTime(1.5 + math.random() * .5,
+                            function()
+                                inst.SoundEmitter:KillSound("talk")
+                                inst.sg.statemem.talktask = nil
+                            end)
+                end
+            end),
+            EventHandler("donetalking", function(inst)
+                if inst.sg.statemem.talktalk ~= nil then
+                    inst.sg.statemem.talktask:Cancel()
+                    inst.sg.statemem.talktask = nil
+                    inst.SoundEmitter:KillSound("talk")
+                end
+            end),
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
                     if inst.sg.statemem.target == nil or
@@ -1285,21 +1307,33 @@ local states =
                             inst.sg.statemem.target:IsNear(inst, 6) and
                             inst.sg.statemem.target.components.inventory:EquipHasTag("regal")
                         ) then
-                        inst.sg:GoToState("bow_loop", inst.sg.statemem.target)
+                        inst.sg.statemem.bowing = true
+                        inst.sg:GoToState("bow_loop", { target = inst.sg.statemem.target, talktask = inst.sg.statemem.talktask })
                     else
                         inst.sg:GoToState("bow_pst")
                     end
                 end
             end),
         },
+
+        onexit = function(inst)
+            if not inst.sg.statemem.bowing and inst.sg.statemem.talktask ~= nil then
+                inst.sg.statemem.talktask:Cancel()
+                inst.sg.statemem.talktask = nil
+                inst.SoundEmitter:KillSound("talk")
+            end
+        end,
     },
 
     State{
         name = "bow_loop",
         tags = { "notalking", "idle", "canrotate" },
 
-        onenter = function(inst, target)
-            inst.sg.statemem.target = target
+        onenter = function(inst, data)
+            if data ~= nil then
+                inst.sg.statemem.target = data.target
+                inst.sg.statemem.talktask = data.talktask
+            end
             inst.AnimState:PlayAnimation("bow_loop", true)
         end,
 
@@ -1312,11 +1346,45 @@ local states =
                 inst.sg:GoToState("bow_pst")
             end
         end,
+
+        events =
+        {
+            EventHandler("ontalk", function(inst)
+                if inst.sg.statemem.talktask ~= nil then
+                    inst.sg.statemem.talktask:Cancel()
+                    inst.sg.statemem.talktask = nil
+                    inst.SoundEmitter:KillSound("talk")
+                end
+                if DoTalkSound(inst) then
+                    inst.sg.statemem.talktask =
+                        inst:DoTaskInTime(1.5 + math.random() * .5,
+                            function()
+                                inst.SoundEmitter:KillSound("talk")
+                                inst.sg.statemem.talktask = nil
+                            end)
+                end
+            end),
+            EventHandler("donetalking", function(inst)
+                if inst.sg.statemem.talktalk ~= nil then
+                    inst.sg.statemem.talktask:Cancel()
+                    inst.sg.statemem.talktask = nil
+                    inst.SoundEmitter:KillSound("talk")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if inst.sg.statemem.talktask ~= nil then
+                inst.sg.statemem.talktask:Cancel()
+                inst.sg.statemem.talktask = nil
+                inst.SoundEmitter:KillSound("talk")
+            end
+        end,
     },
 
     State{
         name = "bow_pst",
-        tags = { "notalking", "idle", "canrotate" },
+        tags = { "idle", "canrotate" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("bow_pst")

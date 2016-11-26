@@ -62,14 +62,18 @@ end
 local function OnDrawnFn(inst, image, src)
     if image ~= nil then
         inst.AnimState:OverrideSymbol("SWAP_SIGN", "images/inventoryimages.xml", image..".tex")
-        inst.components.drawable:SetCanDraw(false)
-        inst._imagename:set(src ~= nil and src:GetBasicDisplayName() or "")
+        if inst:HasTag("sign") then
+            inst.components.drawable:SetCanDraw(false)
+            inst._imagename:set(src ~= nil and (src.drawnameoverride or src:GetBasicDisplayName()) or "")
+        end
     else
         inst.AnimState:ClearOverrideSymbol("SWAP_SIGN")
-        if not (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
-            inst.components.drawable:SetCanDraw(true)
+        if inst:HasTag("sign") then
+            if not (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
+                inst.components.drawable:SetCanDraw(true)
+            end
+            inst._imagename:set("")
         end
-        inst._imagename:set("")
     end
 end
 
@@ -102,13 +106,24 @@ local function displaynamefn(inst)
 end
 
 local function OnSave(inst, data)
-    data.imagename = #inst._imagename:value() > 0 and inst._imagename:value() or nil
+    data.imagename =
+        inst.components.drawable:GetImage() ~= nil and
+        #inst._imagename:value() > 0 and
+        inst._imagename:value() ~= STRINGS.NAMES[string.upper(inst.components.drawable:GetImage())] and
+        inst._imagename:value() or
+        nil
 end
 
 local function OnLoad(inst, data)
-    if data ~= nil and data.imagename ~= nil and inst.components.drawable:GetImage() ~= nil then
-        inst._imagename:set(data.imagename)
-    end
+    inst._imagename:set(
+        inst.components.drawable:GetImage() ~= nil and (
+            data ~= nil and
+            data.imagename ~= nil and
+            #data.imagename > 0 and
+            data.imagename or
+            STRINGS.NAMES[string.upper(inst.components.drawable:GetImage())]
+        ) or ""
+    )
 end
 
 local function fn()
@@ -180,6 +195,7 @@ local function MakeItem(name, drawn)
 
         if drawn then
             inst.displaynamefn = displaynamefn
+            inst.drawnameoverride = STRINGS.NAMES.MINISIGN
             inst._imagename = net_string(inst.GUID, name.."._imagename")
             --Use planted inspect strings for drawn version
             inst:SetPrefabNameOverride("minisign")
@@ -196,6 +212,7 @@ local function MakeItem(name, drawn)
             inst.OnLoad = OnLoad
 
             inst:AddComponent("drawable")
+            inst.components.drawable:SetOnDrawnFn(OnDrawnFn)
             inst.components.drawable:SetCanDraw(false)
         else
             inst:AddComponent("stackable")

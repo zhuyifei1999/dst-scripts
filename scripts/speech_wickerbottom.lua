@@ -959,7 +959,8 @@ return
             GENERIC = "Look at his widdle face! (Ahem!)",
             SLEEPING = "He's even more darling in sleep.",
         },
-        --BUNDLEWRAP = "",
+        BUNDLE = "At least someone's bundled up out here.",
+        BUNDLEWRAP = "Antibacterial wrapping for food preservation.",
         MANDRAKE_ACTIVE = "Mandragora officinarum. But with a face.",
         MANDRAKE_PLANTED = "Mandragora officinarum.",
         MANDRAKE = "Mandragora officinarum. Deceased.",
@@ -1260,6 +1261,13 @@ return
         },
         BEEQUEENHIVEGROWN = "An Apis mellifera nest of unusual size.",
         BEEGUARD = "Very angry Apis mellifera workers!",
+        HIVEHAT = "It's exuding powerful pheromones.",
+        MINISIGN =
+        {
+            GENERIC = "An excellent diagram! Very accurate.",
+            UNDRAWN = "A drawn diagram might help keep things tidy.",
+        },
+        MINISIGN_ITEM = "Finally, a proper organizational tool.",
         BEE = 
         {
             GENERIC = "Apis mellifera. Quite large!",
@@ -1277,7 +1285,7 @@ return
         },
         MOSQUITOSACK = "The stomach of a Culicidae, brimming with blood.",
         BEEHAT = "Appropriate protective equipment is a must!",
-        --BEESWAX = "",
+        BEESWAX = "Naturally antibacterial. Could slow food decay if we use it properly.",
         BEEHIVE = "The natural home of the bee.",
         BEEMINE = "A dangerous mine filled with Antophila.",
         BEEMINE_MAXWELL = "A dangerous mine filled with Culicidae.",
@@ -1575,6 +1583,7 @@ return
             BURNING = "Combustion!",
         },
         PAPYRUS = "Thin sheets of cellulose and lignin.",
+        WAXPAPER = "Now we just require rope to secure it in place.",
         MARSH_TREE = 
         {
             GENERIC = "A mangal rhizophora.",

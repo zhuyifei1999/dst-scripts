@@ -32,7 +32,7 @@ local retrofit_part1 = false
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
 
-local function RetrofitNewContentPrefab(inst, prefab, min_space, dist_from_structures)
+local function RetrofitNewContentPrefab(inst, prefab, min_space, dist_from_structures, canplacefn)
 	local attempt = 1
 	local topology = TheWorld.topology
 
@@ -44,7 +44,8 @@ local function RetrofitNewContentPrefab(inst, prefab, min_space, dist_from_struc
 			local x = points_x[1]
 			local z = points_y[1]
 
-			if TheWorld.Map:CanPlacePrefabFilteredAtPoint(x, 0, z, prefab) then
+			canplacefn = canplacefn ~= nil and canplacefn or TheWorld.Map.CanPlacePrefabFilteredAtPoint
+			if canplacefn(x, 0, z, prefab) then
 				local ents = TheSim:FindEntities(x, 0, z, min_space)
 				if #ents == 0 then
 					if dist_from_structures ~= nil then
@@ -164,6 +165,33 @@ function self:OnPostInit()
 			end
 		end
 	end
+
+	
+	if self.retrofit_herdmentality then
+		self.retrofit_herdmentality = nil
+
+		local requires_retrofitting = true
+	    for k,v in pairs(Ents) do
+			if v ~= inst and v.prefab == "deerspawningground" then
+				print ("Retrofitting for A New Reign: Herd Mentality is not required.")
+				requires_retrofitting = false
+				break
+			end
+		end
+		
+		if requires_retrofitting then
+			local deciduousfn = function(x, y, z, prefab)
+					return TheWorld.Map:GetTileAtPoint(x, y, z) == GROUND.DECIDUOUS
+				end
+				
+			print ("Retrofitting for A New Reign: Herd Mentality.")
+			RetrofitNewContentPrefab(inst, "deerspawningground", 1, 10, deciduousfn)
+			RetrofitNewContentPrefab(inst, "deerspawningground", 1, 10, deciduousfn)
+			RetrofitNewContentPrefab(inst, "deerspawningground", 1, 10, deciduousfn)
+			RetrofitNewContentPrefab(inst, "deerspawningground", 1, 10, deciduousfn)
+		end
+
+	end
 end
 
 --------------------------------------------------------------------------
@@ -180,6 +208,7 @@ function self:OnLoad(data)
 		self.retrofit_artsandcrafts = data.retrofit_artsandcrafts or false
         self.retrofit_artsandcrafts2 = data.retrofit_artsandcrafts2 or false
         self.retrofit_cutefuzzyanimals = data.retrofit_cutefuzzyanimals or false
+        self.retrofit_herdmentality = data.retrofit_herdmentality or false
     end
 end
 

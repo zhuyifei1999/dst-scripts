@@ -8,8 +8,11 @@ local TARGET_FOLLOW_DIST = 4
 local MAX_FOLLOW_DIST = 4.5
 
 local COMBAT_TOO_CLOSE_DIST = 5					-- distance for find enitities check
+local COMBAT_TOO_CLOSE_DIST_SQ = COMBAT_TOO_CLOSE_DIST * COMBAT_TOO_CLOSE_DIST
 local COMBAT_SAFE_TO_WATCH_FROM_DIST = 8		-- will run to this distance and watch if was too close
 local COMBAT_SAFE_TO_WATCH_FROM_MAX_DIST = 10	-- combat is quite far away now, better catch up
+local COMBAT_SAFE_TO_WATCH_FROM_MAX_DIST_SQ = COMBAT_SAFE_TO_WATCH_FROM_MAX_DIST * COMBAT_SAFE_TO_WATCH_FROM_MAX_DIST
+local COMBAT_TIMEOUT = 6
 
 local MAX_PLAYFUL_FIND_DIST = 4
 local MAX_PLAYFUL_KEEP_DIST_FROM_OWNER = 6
@@ -82,30 +85,38 @@ end
 --  Combat Avoidance
 
 local function _avoidtargetfn(self, target)
-	local owner = self.inst.components.follower.leader
-	
-	target = (target ~= nil and target:IsValid()) and target or nil
-	if target == nil then
-		return false
-	end
-	
-	-- Is target in combat with owner?
+    if target == nil or not target:IsValid() then
+        return false
+    end
+
+    local owner = self.inst.components.follower.leader
+    local owner_combat = owner ~= nil and owner.components.combat or nil
     local target_combat = target.components.combat
-	if target_combat and target_combat:TargetIs(owner) then
-		return true
-	end
+    if owner_combat == nil or target_combat == nil then
+        return false
+    elseif target_combat:TargetIs(owner)
+        or (target.components.grouptargeter ~= nil and target.components.grouptargeter:IsTargeting(owner)) then
+        return true
+    end
 
-	-- Is owner in combat with target?
-    local owner_combat = owner.components.combat
-    if owner_combat and 
-		(owner_combat:IsRecentTarget(target) or owner_combat.lastattacker == target) and 
-		owner:IsNear(target, COMBAT_SAFE_TO_WATCH_FROM_MAX_DIST) then
-		return true
-	end
+    local distsq = owner:GetDistanceSqToInst(target)
+    if distsq >= COMBAT_SAFE_TO_WATCH_FROM_MAX_DIST_SQ then
+        -- Too far
+        return false
+    elseif distsq < COMBAT_TOO_CLOSE_DIST_SQ and target_combat:HasTarget() then
+        -- Too close to any combat
+        return true
+    end
 
-	--todo: target is in any combat and owner is in any combat. This will should prevent critters from moving into neighbouring fights
-	
-	return false
+    -- Is owner in combat with target?
+    -- Are owner and target both in any combat?
+    local t = GetTime()
+    return  (   (owner_combat:IsRecentTarget(target) or target_combat:HasTarget()) and
+                math.max(owner_combat.laststartattacktime, owner_combat.lastdoattacktime or 0) + COMBAT_TIMEOUT > t
+            ) or
+            (   owner_combat.lastattacker == target and
+                owner_combat:GetLastAttackedTime() + COMBAT_TIMEOUT > t
+            )
 end
 
 local function CombatAvoidanceFindEntityCheck(self)

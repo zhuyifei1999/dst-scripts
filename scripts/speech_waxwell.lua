@@ -869,10 +869,10 @@ return {
 		BABYBEEFALO = 
 		{
 			GENERIC = "They're even ugly as infants.",
-		    --SLEEPING = "",
+		    SLEEPING = "Seems we've a few hours of reprieve.",
         },
         BUNDLE = "Nice and snug.",
-		--BUNDLEWRAP = "",
+		BUNDLEWRAP = "I guess we could wrap a few things up.",
 		BACKPACK = "I wish there were porters around here.",
 		BACONEGGS = "Now that is a proper breakfast.",
 		BANDAGE = "Sticky and gooey and good for putting on booboos.",
@@ -887,6 +887,13 @@ return {
 		},
 		BEEQUEENHIVEGROWN = "I don't see what all the buzz is about.",
         BEEGUARD = "Keep your backside to yourself, madam!",
+        HIVEHAT = "Makes one feel like royalty.",
+        MINISIGN =
+        {
+            GENERIC = "It was drawn in a steady hand.",
+            UNDRAWN = "There's nothing on it, currently.",
+        },
+        MINISIGN_ITEM = "A sign is useless if it has nothing to mark.",
 		BEE =
 		{
 			GENERIC = "They work so hard, the fools.",
@@ -926,7 +933,7 @@ return {
 		BEEFALOHAT = "How unfashionable.",
 		BEEFALOWOOL = "It smells like a barn.",
 		BEEHAT = "I'll wear it if I have to.",
-		--BEESWAX = "",
+		BEESWAX = "I miss sealing a good letter.",
 		BEEHIVE = "Not the bees!",
 		BEEMINE = "They wait so patiently.",
 		BEEMINE_MAXWELL = "Maybe I shouldn't have put that there.",
@@ -1101,11 +1108,11 @@ return {
 		CUTREEDS = "I think I could build something useful from this.",
 		CUTSTONE = "The building blocks of civilization.",
 		DEADLYFEAST = "It smells... noxious.",
-		--DEER = 
-		--{
-		--	GENERIC = "",
-		--	ANTLER = "",
-		--},
+		DEER = 
+		{
+			GENERIC = "Well it's certainly not deer to me.",
+			ANTLER = "What a staggering sight!",
+		},
 		DEERCLOPS = "Even I'm afraid of that guy.",
 		DEERCLOPS_EYEBALL = "Deerclops are so myopic.",
 		DEPLETED_GRASS =
@@ -1437,6 +1444,7 @@ return {
 		PANDORASCHEST = "It's a trap.",
 		PANFLUTE = "I'm going to sing a song of madness.",
 		PAPYRUS = "A blank canvas.",
+		WAXPAPER = "My interest in this wax paper wanes....",
 		PENGUIN = "Nice tux.",
 		PERD = "It is addicted to fermented berries.",
 		PEROGIES = "They look superb.",

@@ -891,9 +891,10 @@ return {
 		BABYBEEFALO = 
 		{
 			GENERIC = "A face only a mother could love.",
-		    --SLEEPING = "",
+		    SLEEPING = "I enjoy sleeping outside, too.",
         },
-		--BUNDLEWRAP = "",
+        BUNDLE = "What's inside? Hope it's logs.",
+		BUNDLEWRAP = "The paper's brown. Like wood.",
 		BACKPACK = "That's a decent looking rucksack.",
 		BACONEGGS = "Awww. It's just front bacon.",
 		BANDAGE = "At least I didn't have to pay for it.",
@@ -908,6 +909,13 @@ return {
 		},
 		BEEQUEENHIVEGROWN = "Nature is something else, eh?",
         BEEGUARD = "Hopefully no one's allergic, eh?",
+        HIVEHAT = "Hmph. Real regal.",
+        MINISIGN =
+        {
+            GENERIC = "Is there anything wood can't do?",
+            UNDRAWN = "What is this... some sort of sign?",
+        },
+        MINISIGN_ITEM = "Good, sturdy wood.",
 		BEE =
 		{
 			GENERIC = "She's making the flowers grow.",
@@ -947,7 +955,7 @@ return {
 		BEEFALOHAT = "Now I'm the king of the beefalo!",
 		BEEFALOWOOL = "It feels like my beard.",
 		BEEHAT = "That'll keep the bees out of yer eyes.",
-		--BEESWAX = "",
+		BEESWAX = "Yeesh, that's waxy.",
 		BEEHIVE = "They're all comfy-cozy in there.",
 		
 		BEEMINE = "I don't know if the bees like this.",
@@ -1122,11 +1130,11 @@ return {
 		CUTREEDS = "Want to hear my loon call?",
 		CUTSTONE = "Part of the Canadian shield.",
 		DEADLYFEAST = "That doesn't smell quite right, eh.",
-		--DEER = 
-		--{
-		--	GENERIC = "",
-		--	ANTLER = "",
-		--},
+		DEER = 
+		{
+			GENERIC = "That's a creature of the woods, eh?",
+			ANTLER = "Something's different aboot you...",
+		},
 		DEERCLOPS = "That's a big moose!",
 		DEERCLOPS_EYEBALL = "Now what is this good for?",
 		DEPLETED_GRASS =
@@ -1458,6 +1466,7 @@ return {
 		PANDORASCHEST = "What's in the box?!",
 		PANFLUTE = "I only sing for Lucy.",
 		PAPYRUS = "I'd rather chop than write.",
+		WAXPAPER = "A good place to spit out your gum.",
 		PENGUIN = "Doesn't matter if you're from the Great White North. Still a bird.",
 		PERD = "More birds! Why is it always birds?",
 		PEROGIES = "I call them \"yum pockets\".",

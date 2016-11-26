@@ -669,7 +669,8 @@ return {
             GENERIC = "Mini beastie.",
             SLEEPING = "The mini beast slumbers.",
         },
-        BUNDLEWRAP = "",
+        BUNDLE = "Ready to take on an epic saga.",
+        BUNDLEWRAP = "That's a wrap.",
 		BACKPACK = "A portable armory.",
 		BACONEGGS = "Pig and eggs!",
 		BANDAGE = "To heal even the deepest of battle wounds.",
@@ -688,7 +689,14 @@ return {
             GROWING = "The bees are expanding their domain.",
         },
         BEEQUEENHIVEGROWN = "A hive of winged warriors.",
-        BEEGUARD = "En guarde!", 	
+        BEEGUARD = "En guarde!",
+        HIVEHAT = "Vikings do not wear horns.",
+        MINISIGN =
+        {
+            GENERIC = "The runes hath been drawn!",
+            UNDRAWN = "Tis blank as the cloudless sky.",
+        },
+        MINISIGN_ITEM = "A surface on which to inscribe ancient runes.", 	
 		BEE =
 		{
 			GENERIC = "Wee warriors! I don't know if I like them.",
@@ -728,7 +736,7 @@ return {
 		BEEFALOHAT = "That would suit me.",
 		BEEFALOWOOL = "I do love woolly things.",
 		BEEHAT = "A bee helm, of course.",
-        --BEESWAX = "",
+        BEESWAX = "The stuff of candlemakers.",
 		BEEHIVE = "Always buzzing, always plotting.",
 		BEEMINE = "It sounds suspicious.",
 		BEEMINE_MAXWELL = "Watch your step!",
@@ -951,8 +959,8 @@ return {
 		DEADLYFEAST = "A most potent dish.",
         DEER = 
         {
-            --GENERIC = "",
-            --ANTLER = "",
+            GENERIC = "The beauty of Freya dwells in all creatures!",
+            ANTLER = "Skadi has bestowed a gift on Freya's creature.",
         },
 		DEERCLOPS = "Rays will shine through my spear and poke out your eyeball!",
 		DEERCLOPS_EYEBALL = "Delicious! I should like to share it with my new allies.",
@@ -1364,6 +1372,7 @@ return {
 		PANDORASCHEST = "It contains a mystery.",
 		PANFLUTE = "I prefer to face my enemies awake.",
 		PAPYRUS = "May it carry forth the record of my saga.",
+        WAXPAPER = "Waxen to the touch.",
 		PHLEGM = "The secretions of a terrible beast!",
 		PENGUIN = "Birds of the sea, come from afar.",
 		PERD = "You cannot run forever!",

@@ -201,7 +201,12 @@ return {
 	ANNOUNCE_GHOSTDRAIN = "My humanity is about to start slipping away...",
 	ANNOUNCE_PETRIFED_TREES = "Did I just hear trees screaming?",
 
-    ANNOUNCE_ROYALTY = "Your majesty.",
+    ANNOUNCE_ROYALTY = 
+    {
+    	"Your majesty.",
+    	"Your highness.",
+    	"My liege!",
+    },
 
 	BATTLECRY =
 	{
@@ -681,7 +686,7 @@ return {
 			GENERIC = "Awwww. So cute!",
 		    SLEEPING = "Sweet dreams, smelly.",
         },
-        BUNDLE = "My supplies are in there!",
+        BUNDLE = "Our supplies are in there!",
         BUNDLEWRAP = "Wrapping things up should make them easier to carry.",
 		BACKPACK = "You could fit a whole lot of science in there.",
 		BACONEGGS = "The perfect breakfast for a man of science.",
@@ -701,7 +706,7 @@ return {
 		},
         BEEQUEENHIVEGROWN = "How in science did it get so big?!",
         BEEGUARD = "It's guarding the queen.",
-        HIVEHAT = "The world seems less a little crazy when you wear it.",
+        HIVEHAT = "The world seems less a little crazy when I wear it.",
         MINISIGN =
         {
             GENERIC = "I could draw better than that!",
@@ -964,7 +969,7 @@ return {
 		DEADLYFEAST = "A most potent dish.",
 		DEER = 
 		{
-			GENERIC = "Is it staring at me? ...No, maybe not.",
+			GENERIC = "Is it staring at me? ...No, I guess not.",
 			ANTLER = "What an impressive antler!",
 		},
 		DEERCLOPS = "It's enormous!!",

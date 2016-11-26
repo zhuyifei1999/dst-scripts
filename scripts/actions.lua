@@ -1576,7 +1576,7 @@ require("components/drawingtool")
 ACTIONS.DRAW.stroverridefn = function(act)
     local item = FindEntityToDraw(act.target, act.invobject)
     return item ~= nil
-        and subfmt(STRINGS.ACTIONS.DRAWITEM, { item = item:GetBasicDisplayName() })
+        and subfmt(STRINGS.ACTIONS.DRAWITEM, { item = item.drawnameoverride or item:GetBasicDisplayName() })
         or nil
 end
 

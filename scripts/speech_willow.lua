@@ -969,7 +969,8 @@ return {
 			GENERIC = "Even the babies are ugly.",
 			SLEEPING = "WAKE UP!",
 		},
-		--BUNDLEWRAP = "",
+		BUNDLE = "Now I can burn a bunch of things in one go!",
+		BUNDLEWRAP = "We could hide some gross things, I guess.",
 		BACKPACK = "You could fit like a million lighters in here.",
 		BACONEGGS = "The yellow mucus-y part is gross, but the bacon is great!",
 		BANDAGE = "Eww, no!",
@@ -984,6 +985,13 @@ return {
 		},
 		BEEQUEENHIVEGROWN = "Dare you guys to smack it with a hammer.",
         BEEGUARD = "Puffy flying jerk!",
+        HIVEHAT = "That bee's head looks kinda tasty, doesn't it?",
+        MINISIGN =
+        {
+            GENERIC = "Haha oh man, who drew THAT?",
+            UNDRAWN = "Looks kinda bare.",
+        },
+        MINISIGN_ITEM = "It's like a sign, but smaller.",
 		BEE =
 		{
 			GENERIC = "It's fat, but that stinger looks dangerous.",
@@ -1007,7 +1015,7 @@ return {
 		BEEMINE = "Bees inside. Should've put some fire in there for good measure.",
 		BEEMINE_MAXWELL = "Mosquitoes inside. They don't sound happy.",
 		BEEHAT = "This will keep the pokeys off of me.",
-		--BEESWAX = "",
+		BEESWAX = "That's none of my beeswax.",
 		BERRIES = "Red berries taste the best.",
 		BERRIES_COOKED = "Red berries with fire somehow taste even better.",
         BERRIES_JUICY = "Mmm. They pop in your mouth.",
@@ -1176,11 +1184,11 @@ return {
 		CUTREEDS = "Cut reeds, ready for burning. Or maybe crafting.",
 		CUTSTONE = "Perfectly squared for maximum enjoyment.",
 		DEADLYFEAST = "Fire didn't cure this dish of being nasty.",
-		--DEER = 
-		--{
-		--	GENERIC = "",
-		--	ANTLER = "",
-		--},
+		DEER = 
+		{
+			GENERIC = "I wish everyone'd stop fawning over that smelly thing!",
+			ANTLER = "Don't think that horn makes you special, deer.",
+		},
 		DEERCLOPS = "Holy crap!",
 		DEERCLOPS_EYEBALL = "Stop staring at me!",
 		DIRTPILE = "Who just leaves dirt lying around in the forest?",
@@ -1498,6 +1506,7 @@ return {
 		PANDORASCHEST = "Kind of tacky.",
 		PANFLUTE = "Music is boring.",
 		PAPYRUS = "I bet it'd burn!",
+		WAXPAPER = "Heh, we rubbed a bunch of paper in beeswax.",
 		PENGUIN = "Run away, tiny dancers.",
 		PERD = "Evil bird! Get away from those yummy berries!",
 		PEROGIES = "Tasty things, sealed with fire.",

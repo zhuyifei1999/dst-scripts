@@ -40,6 +40,7 @@ local prefabs =
     "adventure_portal",
     "resurrectionstone",
     "deer",
+    "deerspawningground",
     "deerclops",
     "gravestone",
     "flower",

@@ -143,6 +143,7 @@ PREFABFILES = {
   "deerclops",
   "deerclops_eyeball",
   "deerherd",
+  "deerspawningground",
   "dirtpile",
   "diseaseflies",
   "diviningrod",
