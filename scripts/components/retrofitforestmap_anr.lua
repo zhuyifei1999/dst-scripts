@@ -38,14 +38,14 @@ local function RetrofitNewContentPrefab(inst, prefab, min_space, dist_from_struc
 
 	while attempt <= MAX_PLACEMENT_ATTEMPTS do
 		local area =  topology.nodes[math.random(#topology.nodes)]
-        
+
 		local points_x, points_y = TheWorld.Map:GetRandomPointsForSite(area.x, area.y, area.poly, 1)
 		if #points_x == 1 and #points_y == 1 then
 			local x = points_x[1]
 			local z = points_y[1]
 
-			canplacefn = canplacefn ~= nil and canplacefn or TheWorld.Map.CanPlacePrefabFilteredAtPoint
-			if canplacefn(x, 0, z, prefab) then
+			if (canplacefn ~= nil and canplacefn(x, 0, z, prefab)) or
+                (canplacefn == nil and TheWorld.Map:CanPlacePrefabFilteredAtPoint(x, 0, z, prefab)) then
 				local ents = TheSim:FindEntities(x, 0, z, min_space)
 				if #ents == 0 then
 					if dist_from_structures ~= nil then
