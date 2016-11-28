@@ -215,6 +215,7 @@ return {
 		PREY = "I will destroy you!",
 		SPIDER = "I'm going to stomp you dead!",
 		SPIDER_WARRIOR = "Better you than me!",
+		DEER = "Die, doe!",
 	},
 	COMBAT_QUIT =
 	{

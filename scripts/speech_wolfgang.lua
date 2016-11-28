@@ -208,6 +208,7 @@ return {
 		PREY = "Stomp! Stomp! Stomp!",
 		SPIDER = "Die, evil scary bug!",
 		SPIDER_WARRIOR = "I am still stronger, scary bug!",
+        DEER = "I will make fight quick!",
 	},
 	COMBAT_QUIT =
 	{

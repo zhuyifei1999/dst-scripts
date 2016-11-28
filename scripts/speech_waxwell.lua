@@ -202,6 +202,7 @@ return {
 		PREY = "Sacrifice yourself for my comfort!",
 		SPIDER = "I'll not be made a fool of!",
 		SPIDER_WARRIOR = "You've forced my hand!",
+		DEER = "You do not belong in MY world!",
 	},
 	COMBAT_QUIT =
 	{

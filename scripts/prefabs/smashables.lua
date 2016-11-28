@@ -46,6 +46,10 @@ local function OnHit(inst)
     end
 end
 
+local function KeepTargetFn()
+    return false
+end
+
 local function MakeRelic(inst)
     if inst.components.repairable ~= nil then
         inst:RemoveComponent("repairable")
@@ -170,6 +174,7 @@ local function makefn(name, asset, animated, smashsound, rubble)
         inst.OnPreLoad = OnPreLoad
 
         inst:AddComponent("combat")
+        inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
         if animated then
             inst.components.combat.onhitfn = OnHit
         end

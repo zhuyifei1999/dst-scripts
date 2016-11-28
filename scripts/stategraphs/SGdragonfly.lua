@@ -636,7 +636,7 @@ local states =
             end),
         },
 
-        timeline=
+        timeline =
         {
             TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/blink") end),
         },
@@ -656,15 +656,6 @@ local states =
             inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/vomitrumble", "vomitrumble")
         end,
 
-        events =
-        {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end),
-        },
-
         timeline =
         {
             TimeEvent(2*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/blink") end),
@@ -674,7 +665,18 @@ local states =
             end),
             TimeEvent(59*FRAMES, function(inst)
                 inst.sg.mem.wantstospawn = nil
-                inst.brain:OnSpawnLavae()
+                if inst.brain ~= nil then
+                    inst.brain:OnSpawnLavae()
+                end
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
             end),
         },
 

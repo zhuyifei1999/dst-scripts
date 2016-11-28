@@ -537,6 +537,12 @@ end
 MakeFeedablePetPristine = MakeFeedableSmallLivestockPristine
 MakeFeedablePet = MakeFeedableSmallLivestock
 
+--Backward compatibility for mods
+--Dragonfly bait is not used in DST
+function MakeDragonflyBait() end
+MaybeMakeDragonflyBait = MakeDragonflyBait
+RemoveDragonflyBait = MakeDragonflyBait
+
 function MakeHauntableLaunch(inst, chance, speed, cooldown, haunt_value)
     if not inst.components.hauntable then inst:AddComponent("hauntable") end
     inst.components.hauntable.cooldown = cooldown or TUNING.HAUNT_COOLDOWN_SMALL

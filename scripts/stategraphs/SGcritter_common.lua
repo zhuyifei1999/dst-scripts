@@ -62,13 +62,13 @@ SGCritterStates.AddIdle = function(states, num_emotes, timeline)
 				local r = math.random()
 				if r <= inst:GetPeepChance() then
 					inst.sg:GoToState("hungry")
-				elseif r <= (inst.components.crittertraits:IsDominantTrait("affectionate") and 0.2 or 0.1) and 
-					(curtime - (inst.sg.mem.prevemotetime or 0) > (inst.components.crittertraits:IsDominantTrait("affectionate") and TUNING.CRITTER_DOMINANTTRAIN_AFFECTIONATE_EMOTE_DELAY or TUNING.CRITTER_EMOTE_DELAY)) then
+				elseif r <= (inst.components.crittertraits:IsDominantTrait("playful") and 0.2 or 0.1) and 
+					(curtime - (inst.sg.mem.prevemotetime or 0) > (inst.components.crittertraits:IsDominantTrait("playful") and TUNING.CRITTER_DOMINANTTRAIT_PLAYFUL_EMOTE_DELAY or TUNING.CRITTER_EMOTE_DELAY)) then
 					inst.sg.mem.prevemotetime = curtime
 					if inst.sg.mem.avoidingcombat then
 						inst.sg:GoToState("combat_pre")
 					else
-						local choice = math.random(inst.components.crittertraits:IsDominantTrait("affectionate") and (num_emotes + 1) or num_emotes) -- if super cute, then add a chance to play the cute emote instead of normal emotes
+						local choice = math.random(inst.components.crittertraits:IsDominantTrait("playful") and (num_emotes + 1) or num_emotes) -- if playful, then add a chance to play the cute emote instead of normal emotes
 						inst.sg:GoToState("emote_"..((choice <= num_emotes) and tostring(choice) or "cute"))
         			end
 
@@ -356,7 +356,7 @@ end
 --------------------------------------------------------------------------
 SGCritterStates.AddPlayWithOtherCritter = function(states, events, timeline)
 	table.insert(events, EventHandler("critterplayful", function(inst, data)
-		local playful_delay = inst.components.crittertraits:IsDominantTrait("playful") and TUNING.CRITTER_DOMINANTTRAIN_PLAYFUL_DELAY or TUNING.CRITTER_PLAYFUL_DELAY
+		local playful_delay = inst.components.crittertraits:IsDominantTrait("playful") and TUNING.CRITTER_DOMINANTTRAIT_PLAYFUL_WITHOTHER_DELAY or TUNING.CRITTER_PLAYFUL_DELAY
 		
 		if inst:IsPlayful() and data.target:IsValid() 
 	        and (GetTime() - (inst.sg.mem.prevplayfultime or 0) > playful_delay)

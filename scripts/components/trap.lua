@@ -96,19 +96,17 @@ function Trap:IsBaited()
     return self.isset and not self.issprung and self.bait ~= nil
 end
 
-function Trap:Reset()
+function Trap:Reset(sprung)
     self:StopUpdating()
     self.isset = false
-    self.issprung = false
+    self.issprung = sprung == true
     self.lootprefabs = nil
     self.bait = nil
     self.target = nil
     self:StopStarvation()
 end
 
-function Trap:Disarm()
-    self:Reset()
-end
+Trap.Disarm = Trap.Reset
 
 function Trap:Set()
     self:Reset()
@@ -151,7 +149,7 @@ end
 
 function Trap:OnTrappedStarve()
     if self.issprung then
-        self.inst:PushEvent("harvesttrap")
+        self.inst:PushEvent("harvesttrap", { sprung = true })
         if self.onharvest ~= nil then
             self.onharvest(self.inst)
         end
@@ -170,7 +168,7 @@ function Trap:OnTrappedStarve()
             end
         end
 
-        self:Reset()
+        self:Reset(true)
         self.inst.sg:GoToState("empty")
     end
 end

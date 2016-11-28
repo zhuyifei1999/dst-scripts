@@ -203,6 +203,7 @@ return {
 		PREY = "Die bravely, little foe!",
 		SPIDER = "Spider, meet my spear!",
 		SPIDER_WARRIOR = "Prepare to be slain!",
+        DEER = "I shall send you to the unicorn!",
 	},
 	COMBAT_QUIT =
 	{

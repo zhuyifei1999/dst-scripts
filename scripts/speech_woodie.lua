@@ -207,6 +207,7 @@ return {
 		PREY = "This here's the end for you!",
 		SPIDER = "For the North!",
 		SPIDER_WARRIOR = "Prepare for a choppin'!",
+		DEER = "Hunting season's open!",
 	},
 	COMBAT_QUIT =
 	{

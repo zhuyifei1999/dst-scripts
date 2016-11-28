@@ -71,7 +71,7 @@ end
 -------------------------------------------------------------------
 local function OnMigrate(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local buildings = TheSim:FindEntities(x, y, z, 30, { "wall", "structure" })
+    local buildings = TheSim:FindEntities(x, y, z, 30, nil, nil, { "wall", "structure" })
     if #buildings < 10 then
         inst:Remove()
     end

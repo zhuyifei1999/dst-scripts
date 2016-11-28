@@ -137,6 +137,7 @@ local function fn()
     inst.AnimState:SetBank("sign_mini")
     inst.AnimState:SetBuild("sign_mini")
     inst.AnimState:PlayAnimation("idle")
+    inst.AnimState:SetFinalOffset(1)
 
     inst:AddTag("sign")
 

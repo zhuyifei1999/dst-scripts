@@ -1700,7 +1700,7 @@ return
         DEER = 
         {
             GENERIC = "It has shed its antler for the warmer months.",
-            ANTLER = "It's antler has grown in for winter.",
+            ANTLER = "Its antler has grown in for winter.",
         },
         DEERCLOPS = "Laurasiatheria!",
         REDGEM = "It is warm.",
@@ -1824,6 +1824,7 @@ return
         PREY = "Just give up.",
         SPIDER = "Behave!",
         SPIDER_WARRIOR = "Respect your elders!",
+        DEER = "This will be easy.",
     },
 
     COMBAT_QUIT =

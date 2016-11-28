@@ -22,7 +22,7 @@ local function SpawnHound(inst)
 		local pt = inst:GetPosition()
 		for i = 1, num do
 			local hound = hounded:SummonSpawn(pt)
-			if hound ~= nil then
+			if hound ~= nil and hound.components.follower ~= nil then
 				hound.components.follower:SetLeader(inst)
 			end
 		end

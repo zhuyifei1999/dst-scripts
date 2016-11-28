@@ -216,6 +216,7 @@ return {
 		PREY = "Get over here!",
 		SPIDER = "Grrrrar!",
 		SPIDER_WARRIOR = "Ew, kill iiiit!",
+		DEER = "You're deer meat!",
 	},
 	COMBAT_QUIT =
 	{

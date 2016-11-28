@@ -169,7 +169,7 @@ function CritterBrain:OnStart()
 
 				-- Combat Avoidance
 				PriorityNode{
-					RunAway(self.inst, {tags={"_combat", "_health"}, notags={"wall"}, fn=CombatAvoidanceFindEntityCheck(self)}, COMBAT_TOO_CLOSE_DIST, COMBAT_SAFE_TO_WATCH_FROM_DIST),
+					RunAway(self.inst, {tags={"_combat", "_health"}, notags={"wall", "INLIMBO"}, fn=CombatAvoidanceFindEntityCheck(self)}, COMBAT_TOO_CLOSE_DIST, COMBAT_SAFE_TO_WATCH_FROM_DIST),
 					WhileNode( function() return ValidateCombatAvoidance(self) end, "Is Near Combat",
 						FaceEntity(self.inst, GetOwner, KeepFaceTargetFn)
 						),

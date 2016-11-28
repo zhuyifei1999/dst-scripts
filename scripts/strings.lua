@@ -2581,7 +2581,6 @@ STRINGS.UI =
 			COMBAT			= "Scrappy",
 			WELLFED			= "Plump",
 			PLAYFUL			= "Peppy",
-			AFFECTIONATE	= "Darling",
 			CRAFTY			= "Crafty",
 		},
     },

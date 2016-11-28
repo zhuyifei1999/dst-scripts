@@ -204,6 +204,7 @@ return {
 		PREY = "We will put you in our web!",
 		SPIDER = "Hey, wanna play?",
 		SPIDER_WARRIOR = "Why can't we just get along?!",
+		DEER = "Hopefully we're venomous!",
 	},
 	COMBAT_QUIT =
 	{
