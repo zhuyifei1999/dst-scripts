@@ -8,8 +8,6 @@ local actionhandlers =
 local events =
 {
 	SGCritterEvents.OnEat(),
-    SGCritterEvents.OnAvoidCombat(),
-	SGCritterEvents.OnTraitChanged(),
 
     CommonHandlers.OnSleepEx(),
     CommonHandlers.OnWakeEx(),
@@ -59,11 +57,7 @@ local emotes =
 }
 
 SGCritterStates.AddIdle(states, #emotes)
-SGCritterStates.AddRandomEmotes(states, emotes)
-SGCritterStates.AddEmote(states, "cute", nil)
-SGCritterStates.AddPetEmote(states, nil)
-SGCritterStates.AddCombatEmote(states, nil)
-SGCritterStates.AddPlayWithOtherCritter(states, events, nil)
+SGCritterStates.AddEmotes(states, emotes)
 SGCritterStates.AddEat(states,
         {
             TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_ground") end),

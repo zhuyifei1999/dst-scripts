@@ -306,8 +306,10 @@ function PlayerActionPicker:DoGetMouseActions(position, target)
         end
     end
 
-    local lmb = self:GetLeftClickActions(position, target)[1]
-    local rmb = self:GetRightClickActions(position, target)[1]
+    local leftActions = self:GetLeftClickActions(position, target)
+    local rightActions = self:GetRightClickActions(position, target)
+    local lmb = leftActions and leftActions[1]
+    local rmb = rightActions and rightActions[1]
 
     return lmb, rmb ~= nil and (lmb == nil or lmb.action ~= rmb.action) and rmb or nil
 end

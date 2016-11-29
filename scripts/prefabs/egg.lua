@@ -115,6 +115,7 @@ local function rottenfn()
 
     inst:AddTag("icebox_valid")
     inst:AddTag("cattoy")
+    MakeDragonflyBait(inst, 3)
 
     inst.entity:SetPristine()
 

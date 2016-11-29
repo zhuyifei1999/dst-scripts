@@ -301,9 +301,9 @@ local function PushMetricsEvent(event_id, player, values)
         end
     end
 
-    print("PUSH METRICS EVENT")
-    dumptable(sendstats)
-    print("^^^^^^^^^^^^^^^^^^")
+    --print("PUSH METRICS EVENT")
+    --dumptable(sendstats)
+    --print("^^^^^^^^^^^^^^^^^^")
     local jsonstats = json.encode(sendstats)
     TheSim:SendProfileStats(jsonstats)
 end

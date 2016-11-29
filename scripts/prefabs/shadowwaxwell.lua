@@ -107,7 +107,6 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
 
         inst:AddTag("scarytoprey")
         inst:AddTag("shadowminion")
-        inst:AddTag("NOBLOCK")
 
         inst:SetPrefabNameOverride("shadowwaxwell")
 

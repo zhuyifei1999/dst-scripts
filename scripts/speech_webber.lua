@@ -82,10 +82,6 @@ return {
         {
             NOHEALTH = "We don't feel so good right now. Maybe later?",
         },
-        DRAW =
-        {
-            NOIMAGE = "But what should we draw?!",
-        },
         CHANGEIN =
         {
             GENERIC = "Not right now, we're comfy.",
@@ -97,10 +93,6 @@ return {
             KNOWN = "I'm pretty sure one of us knows that one.",
             CANTLEARN = "Ms. Wickerbottom will have to explain this one.",
             WRONGWORLD = "Is it upside down? Nope. It's just wrong.",
-        },
-        WRAPBUNDLE =
-        {
-            EMPTY = "But what should we wrap up?",
         },
 	},
 	ACTIONFAIL_GENERIC = "Mom told me never to do that.",
@@ -204,7 +196,6 @@ return {
 		PREY = "We will put you in our web!",
 		SPIDER = "Hey, wanna play?",
 		SPIDER_WARRIOR = "Why can't we just get along?!",
-		DEER = "Hopefully we're venomous!",
 	},
 	COMBAT_QUIT =
 	{
@@ -677,13 +668,7 @@ return {
 			REMAINS_THINGIE = "Whatever it was, it's gone back to the earth.",
 		},
 		AXE = "Chop and chop.",
-		BABYBEEFALO = 
-		{
-			GENERIC = "Get busy, child.",
-		    SLEEPING = "That's the opposite of busy.",
-        },
-        BUNDLE = "That's one of my favorite things!",
-		BUNDLEWRAP = "Let's cocoon something for later!",
+		BABYBEEFALO = "Get busy, child.",
 		BACKPACK = "It's like a second abdomen we can store things in.",
 		BACONEGGS = "I'd rather have sugary cereal. Oh well.",
 		BANDAGE = "Bandages for booboos.",
@@ -703,13 +688,6 @@ return {
 		},
 		BEEQUEENHIVEGROWN = "Oh, bother!",
         BEEGUARD = "So fluffy but so mean!!",
-        HIVEHAT = "We could be part bee now too!",
-        MINISIGN =
-        {
-            GENERIC = "That looks nice!",
-            UNDRAWN = "Can someone lend us a pencil?",
-        },
-        MINISIGN_ITEM = "Let's build it!",
 		BEE =
 		{
 			GENERIC = "Always Be Pollinating.",
@@ -749,7 +727,6 @@ return {
 		BEEFALOHAT = "The wearer will blend in perfectly.",
 		BEEFALOWOOL = "Thick fur.",
 		BEEHAT = "It's a face fortress!",
-		BEESWAX = "This stuff gives me hives.",
 		BEEHIVE = "It's a hive of activity.",
 		BEEMINE = "Would you bee mine?",
 		BEEMINE_MAXWELL = "I just can't mosquito you.",
@@ -963,11 +940,6 @@ return {
 		CUTREEDS = "Reeds, web, what's the difference.",
 		CUTSTONE = "Squared rocks.",
 		DEADLYFEAST = "Scent of doom.",
-		DEER = 
-		{
-			GENERIC = "It looks soft.",
-			ANTLER = "Did you change your hair, deer? Looks good!",
-		},
 		DEERCLOPS = "He might be able to digest me!",
 		DEERCLOPS_EYEBALL = "Yucktastic.",
 		EYEBRELLAHAT =	"Disturbing, but it'll keep us dry.",
@@ -1377,7 +1349,6 @@ return {
 		ONEMANBAND = "We need to practice more.",
 		PANFLUTE = "A well constructed instrument.",
 		PAPYRUS = "We could do our homework.",
-		WAXPAPER = "Why have paper you can't draw on?",
 		PHLEGM = "It's a boogie!",
 		PENGUIN = "Where do they live the rest of the year?",
 		PERD = "Come back! I just want to eat you!",

@@ -37,10 +37,6 @@ return {
             GENERIC = "Must everything in life be hard?",
             INUSE = "I can come back later...",   
         },
-        DRAW =
-        {
-            NOIMAGE = "I draw better with references...",
-        },
         CHANGEIN =
         {
             GENERIC = "What's the point.",
@@ -97,10 +93,6 @@ return {
             KNOWN = "I already possess that knowledge...",
             CANTLEARN = "That knowledge is beyond me...",
             WRONGWORLD = "It's... not right...",
-        },
-        WRAPBUNDLE =
-        {
-            EMPTY = "I can't wrap nothingness...",
         },
 	},
 	ACTIONFAIL_GENERIC = "I can't do anything right.",
@@ -202,7 +194,6 @@ return {
 		PREY = "Suffer, worm!",
 		SPIDER = "I shall send you to the other side!",
 		SPIDER_WARRIOR = "I will be your end!",
-		DEER = "Your life is mine!",
 	},
 	COMBAT_QUIT =
 	{
@@ -935,13 +926,7 @@ return {
 			REMAINS_THINGIE = "This was once some thing before it got burned...",
 		},
 		AXE = "An instrument for industry and murder.",
-		BABYBEEFALO = 
-		{
-			GENERIC = "Enjoy your youth. Soon you will learn the terrors of the real world.",
-		    SLEEPING = "Don't wake up.",
-        },
-        BUNDLE = "I don't even remember what's within anymore...",
-		BUNDLEWRAP = "Abigail always helped me tie the bow.",
+		BABYBEEFALO = "Enjoy your youth. Soon you will learn the terrors of the real world.",
 		BACKPACK = "A spacious sack to increase one's burden.",
 		BACONEGGS = "A balanced breakfast to start another miserable day.",
 		BANDAGE = "There's no salve for the pain of existence.",
@@ -956,13 +941,6 @@ return {
 		},
 		BEEQUEENHIVEGROWN = "Dripping with enmity. And honey.",
         BEEGUARD = "Their devotion knows no bounds.",
-        HIVEHAT = "What dark machinations were once concocted beneath?",
-        MINISIGN =
-        {
-            GENERIC = "Such a striking likeness...",
-            UNDRAWN = "It is bare...",
-        },
-        MINISIGN_ITEM = "We must stick it in the cold, hard ground...",
 		BEE =
 		{
 			GENERIC = "I'd steer clear of that stinger.",
@@ -983,7 +961,6 @@ return {
 		BEEFALOHAT = "To cover one's head.",
 		BEEFALOWOOL = "Somewhere, a beefalo is naked and cold.",
 		BEEHAT = "This will protect me from those happy buzzing sounds. Oh, and stings.",
-		BEESWAX = "It's useless on its own, just like me.",
 		BEEHIVE = "A wretched hive of scum and pollen.",
 		BEEMINE = "They're still alive in there. Poor things.",
 		BERRIES = "These berries are tart.",
@@ -1157,11 +1134,6 @@ return {
 		CUTREEDS = "The blade has sentenced you to death.",
 		CUTSTONE = "The better to mark graves with.",
 		DEADLYFEAST = "This, a fitting final meal.",
-		DEER = 
-		{
-			GENERIC = "It lives in a constant state of fear.",
-			ANTLER = "That horn won't protect you.",
-		},
 		DEERCLOPS = "Death incarnate!",
 		DEERCLOPS_EYEBALL = "What terrors must it see.",
 		DEPLETED_GRASS =
@@ -1465,7 +1437,6 @@ return {
 		PANDORASCHEST = "Life is a gamble.",
 		PANFLUTE = "Music is the window to my empty soul.",
 		PAPYRUS = "For documenting my pain.",
-		WAXPAPER = "It feels so... nostalgic.",
 		PENGUIN = "All dressed up, but where to go?",
 		PERD = "Dumb bird! Stay away from the berries!",
 		PEROGIES = "A lovely little pouch of nutrients.",

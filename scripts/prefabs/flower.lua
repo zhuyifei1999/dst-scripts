@@ -94,6 +94,7 @@ local function fn()
 
     inst:AddTag("flower")
     inst:AddTag("cattoy")
+    MakeDragonflyBait(inst, 1)
 
     inst.entity:SetPristine()
 
@@ -137,17 +138,16 @@ local function fn()
 end
 
 function rosefn()
-    local inst = fn()
+	local inst = fn()
+	
+	if not TheWorld.ismastersim then
+		return inst
+	end
+	
+	inst:SetPrefabName("flower")
+	setflowertype(inst, ROSE_NAME)
 
-    inst:SetPrefabName("flower")
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
-
-    setflowertype(inst, ROSE_NAME)
-
-    return inst
+	return inst
 end
 
 return Prefab("flower", fn, assets, prefabs),

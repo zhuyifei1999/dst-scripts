@@ -38,10 +38,6 @@ return
             GENERIC = "I've other things on my mind currently.",
             INUSE = "Be sure to sort by color and weight, dear.",   
         },
-        DRAW =
-        {
-            NOIMAGE = "An example of what I should diagram would be helpful.",
-        },
         CHANGEIN =
         {
             GENERIC = "I think I look pretty smart already.",
@@ -103,10 +99,6 @@ return
             KNOWN = "Please. That knowledge is child's play.",
             CANTLEARN = "A piece of knowledge I cannot grasp... Intriguing!",
             WRONGWORLD = "This map is for some other location.",
-        },
-        WRAPBUNDLE =
-        {
-            EMPTY = "I have to know what to wrap, dear.",
         },
     },
     ACTIONFAIL_GENERIC = "It seems I can't do that.",
@@ -954,13 +946,7 @@ return
             RIDER = "This one seems lean and athletic.",
             PUDGY = "Abundant nourishment has led to an amicable personality.",
         },
-        BABYBEEFALO = 
-        {
-            GENERIC = "Look at his widdle face! (Ahem!)",
-            SLEEPING = "He's even more darling in sleep.",
-        },
-        BUNDLE = "At least someone's bundled up out here.",
-        BUNDLEWRAP = "Antibacterial wrapping for food preservation.",
+        BABYBEEFALO = "Look at his widdle face! (Ahem!)",
         MANDRAKE_ACTIVE = "Mandragora officinarum. But with a face.",
         MANDRAKE_PLANTED = "Mandragora officinarum.",
         MANDRAKE = "Mandragora officinarum. Deceased.",
@@ -1261,13 +1247,6 @@ return
         },
         BEEQUEENHIVEGROWN = "An Apis mellifera nest of unusual size.",
         BEEGUARD = "Very angry Apis mellifera workers!",
-        HIVEHAT = "It's exuding powerful pheromones.",
-        MINISIGN =
-        {
-            GENERIC = "An excellent diagram! Very accurate.",
-            UNDRAWN = "A drawn diagram might help keep things tidy.",
-        },
-        MINISIGN_ITEM = "Finally, a proper organizational tool.",
         BEE = 
         {
             GENERIC = "Apis mellifera. Quite large!",
@@ -1285,7 +1264,6 @@ return
         },
         MOSQUITOSACK = "The stomach of a Culicidae, brimming with blood.",
         BEEHAT = "Appropriate protective equipment is a must!",
-        BEESWAX = "Naturally antibacterial. Could slow food decay if we use it properly.",
         BEEHIVE = "The natural home of the bee.",
         BEEMINE = "A dangerous mine filled with Antophila.",
         BEEMINE_MAXWELL = "A dangerous mine filled with Culicidae.",
@@ -1583,7 +1561,6 @@ return
             BURNING = "Combustion!",
         },
         PAPYRUS = "Thin sheets of cellulose and lignin.",
-        WAXPAPER = "Now we just require rope to secure it in place.",
         MARSH_TREE = 
         {
             GENERIC = "A mangal rhizophora.",
@@ -1697,11 +1674,6 @@ return
         TRUNKVEST_WINTER = "Ample protection against the elements.",
         
         DEADLYFEAST = "I'm not sure that's good to eat.",
-        DEER = 
-        {
-            GENERIC = "It has shed its antler for the warmer months.",
-            ANTLER = "Its antler has grown in for winter.",
-        },
         DEERCLOPS = "Laurasiatheria!",
         REDGEM = "It is warm.",
         BLUEGEM = "It is cold.",
@@ -1824,7 +1796,6 @@ return
         PREY = "Just give up.",
         SPIDER = "Behave!",
         SPIDER_WARRIOR = "Respect your elders!",
-        DEER = "This will be easy.",
     },
 
     COMBAT_QUIT =

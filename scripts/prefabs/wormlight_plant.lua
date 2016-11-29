@@ -53,6 +53,8 @@ local function fn()
     inst.Light:SetColour(1,1,1)
     inst.Light:Enable(true)
 
+    MakeDragonflyBait(inst, 1)
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -85,3 +87,4 @@ local function fn()
 end
 
 return Prefab("wormlight_plant", fn, assets, prefabs)
+

@@ -550,14 +550,8 @@ function EntityScript:RemoveComponent(name)
     end
 end
 
-function EntityScript:GetBasicDisplayName()
-    return (self.displaynamefn ~= nil and self:displaynamefn())
-        or (self.nameoverride ~= nil and STRINGS.NAMES[string.upper(self.nameoverride)])
-        or self.name
-end
-
 function EntityScript:GetDisplayName()
-    local name = self:GetBasicDisplayName()
+    local name = (self.displaynamefn ~= nil and self:displaynamefn()) or (self.nameoverride and STRINGS.NAMES[string.upper(self.nameoverride)]) or self.name
 
     if self:HasTag("player") then
         --No adjectives for players
@@ -1516,14 +1510,8 @@ function EntityScript:SetPersistData(data, newents)
 end
 
 function EntityScript:GetAdjective()
-	if self:HasTag("critter") then
-		for k,_ in pairs(TUNING.CRITTER_TRAITS) do
-			if self:HasTag("trait_"..k) then
-				return STRINGS.UI.HUD.CRITTER_TRAITS[k]
-			end
-		end
-    elseif self:HasTag("small_livestock") then
-        return not self:HasTag("sickness")
+    if self:HasTag("small_livestock") then
+        return not (self:HasTag("critter") or self:HasTag("sickness"))
             and ((self:HasTag("stale") and STRINGS.UI.HUD.HUNGRY) or
                 (self:HasTag("spoiled") and STRINGS.UI.HUD.STARVING))
             or nil

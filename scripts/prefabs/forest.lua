@@ -39,8 +39,6 @@ local prefabs =
     "forest_network",
     "adventure_portal",
     "resurrectionstone",
-    "deer",
-    "deerspawningground",
     "deerclops",
     "gravestone",
     "flower",
@@ -216,7 +214,6 @@ local function master_postinit(inst)
     inst:AddComponent("kramped")
     inst:AddComponent("frograin")
     inst:AddComponent("penguinspawner")
-    inst:AddComponent("deerherdspawner")
     inst:AddComponent("deerclopsspawner")
     inst:AddComponent("beargerspawner")
     inst:AddComponent("moosespawner")

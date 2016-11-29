@@ -130,11 +130,6 @@ ACTIONS =
     CATPLAYGROUND = Action({ rmb=false, distance=1 }),
     CATPLAYAIR = Action({ rmb=false, distance=2 }),
     FAN = Action({ rmb=true, mount_valid=true }),
-    DRAW = Action(),
-    BUNDLE = Action({ rmb=true, priority=2 }),
-    BUNDLESTORE = Action({ instant=true }),
-    WRAPBUNDLE = Action({ instant=true }),
-    UNWRAP = Action({ rmb=true, priority=2 }),
 
     TOSS = Action({ rmb=true, distance=8, mount_valid=true }),
     NUZZLE = Action(),
@@ -148,7 +143,6 @@ ACTIONS =
     UNSADDLE = Action({ priority=3, rmb=false }),
     BRUSH = Action({ priority=3, rmb=false }),
     ABANDON = Action({ rmb=true }),
-    PET = Action(),
 }
 
 ACTION_IDS = {}
@@ -878,8 +872,6 @@ ACTIONS.STORE.fn = function(act)
     end
 end
 
-ACTIONS.BUNDLESTORE.fn = ACTIONS.STORE.fn
-
 ACTIONS.STORE.strfn = function(act)
     if act.target ~= nil then
         return (act.target.prefab == "cookpot" and "COOK")
@@ -1561,73 +1553,6 @@ ACTIONS.ABANDON.fn = function(act)
             end
         end
         act.doer.components.petleash:DespawnPet(act.target)
-        return true
-    end
-end
-
-ACTIONS.PET.fn = function(act)
-    if act.target ~= nil and act.doer.components.petleash ~= nil then
-        act.target.components.crittertraits:OnPet(act.doer)
-        return true
-    end
-end
-
-require("components/drawingtool")
-ACTIONS.DRAW.stroverridefn = function(act)
-    local item = FindEntityToDraw(act.target, act.invobject)
-    return item ~= nil
-        and subfmt(STRINGS.ACTIONS.DRAWITEM, { item = item.drawnameoverride or item:GetBasicDisplayName() })
-        or nil
-end
-
-ACTIONS.DRAW.fn = function(act)
-    if act.invobject ~= nil and
-        act.target ~= nil and
-        act.invobject.components.drawingtool ~= nil and
-        act.target.components.drawable ~= nil and
-        act.target.components.drawable:CanDraw() then
-        local image, src = act.invobject.components.drawingtool:GetImageToDraw(act.target)
-        if image == nil then
-            return false, "NOIMAGE"
-        end
-        act.invobject.components.drawingtool:Draw(act.target, image, src)
-        return true
-    end
-end
-
-ACTIONS.BUNDLE.fn = function(act)
-    local target = act.invobject or act.target
-    if target ~= nil and
-        act.doer ~= nil and
-        act.doer.components.bundler ~= nil and
-        act.doer.components.bundler:CanStartBundling() then
-        --Silent fail for bundling in the dark
-        if CanEntitySeeTarget(act.doer, act.doer) then
-            return act.doer.components.bundler:StartBundling(target)
-        end
-        return true
-    end
-end
-
-ACTIONS.WRAPBUNDLE.fn = function(act)
-    if act.doer ~= nil and
-        act.doer.components.bundler ~= nil and
-        act.doer.components.bundler:IsBundling(act.target) then
-        if act.target.components.container ~= nil and not act.target.components.container:IsEmpty() then
-            return act.doer.components.bundler:FinishBundling()
-        elseif act.doer.components.talker ~= nil then
-            act.doer.components.talker:Say(GetActionFailString(act.doer, "WRAPBUNDLE", "EMPTY"))
-        end
-        return true
-    end
-end
-
-ACTIONS.UNWRAP.fn = function(act)
-    local target = act.target or act.invobject
-    if target ~= nil and
-        target.components.unwrappable ~= nil and
-        target.components.unwrappable.canbeunwrapped then
-        target.components.unwrappable:Unwrap(act.doer)
         return true
     end
 end

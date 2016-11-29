@@ -20,12 +20,6 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-        bundlemaker = function(inst, doer, actions, right)
-            if right then
-                table.insert(actions, ACTIONS.BUNDLE)
-            end
-        end,
-
         catcher = function(inst, doer, actions)
             if inst:HasTag("cancatch") then
                 table.insert(actions, ACTIONS.CATCH)
@@ -41,12 +35,8 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-        container = function(inst, doer, actions, right)
-            if inst:HasTag("bundle") then
-                if right and inst.replica.container:IsOpenedBy(doer) then
-                    table.insert(actions, ACTIONS.WRAPBUNDLE)
-                end
-            elseif not inst:HasTag("burnt") and
+        container = function(inst, doer, actions)
+            if not inst:HasTag("burnt") and
                 inst.replica.container:CanBeOpened() and
                 doer.replica.inventory ~= nil and
                 not (doer.replica.rider ~= nil and
@@ -56,15 +46,12 @@ local COMPONENT_ACTIONS =
         end,
 
         crittertraits = function(inst, doer, actions, right)
-            if inst.replica.follower ~= nil and inst.replica.follower:GetLeader() == doer then
-                if right and
-                    doer.replica.builder ~= nil and
-                    doer.replica.builder:GetTechTrees().ORPHANAGE > 0 then
-                    table.insert(actions, ACTIONS.ABANDON)
-                else
-                    --V2C: @Scott: Should this always be available???
-                    table.insert(actions, ACTIONS.PET)
-                end
+            if right and
+                doer.replica.builder ~= nil and
+                doer.replica.builder:GetTechTrees().ORPHANAGE > 0 and
+                inst.replica.follower ~= nil and
+                inst.replica.follower:GetLeader() == doer then
+                table.insert(actions, ACTIONS.ABANDON)
             end
         end,
 
@@ -241,12 +228,6 @@ local COMPONENT_ACTIONS =
             end 
         end,
 
-        unwrappable = function(inst, doer, actions, right)
-            if right and inst:HasTag("unwrappable") then
-                table.insert(actions, ACTIONS.UNWRAP)
-            end
-        end,
-
         worldmigrator = function(inst, doer, actions)
             if inst:HasTag("migrator") then
                 table.insert(actions, ACTIONS.MIGRATE)
@@ -313,21 +294,16 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-        drawingtool = function(inst, doer, target, actions)
-            if target:HasTag("drawable") then
-                table.insert(actions, ACTIONS.DRAW)
-            end
-        end,
-
         dryable = function(inst, doer, target, actions)
-            if target:HasTag("candry") and inst:HasTag("dryable") and not target:HasTag("burnt") then
-                table.insert(actions, ACTIONS.DRY)
+            if not target:HasTag("burnt") then 
+                if target:HasTag("candry") and inst:HasTag("dryable") then
+                    table.insert(actions, ACTIONS.DRY)
+                end
             end
         end,
 
         edible = function(inst, doer, target, actions, right)
-            local iscritter = target:HasTag("critter")
-            if right or iscritter and
+            if right and
                 not (target.replica.rider ~= nil and target.replica.rider:IsRiding()) and
                 not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding() and
                     not (target.replica.inventoryitem ~= nil and target.replica.inventoryitem:IsGrandOwner(doer))) then
@@ -338,7 +314,7 @@ local COMPONENT_ACTIONS =
                                 if target:HasTag("player") and (TheNet:GetPVPEnabled() or not (inst:HasTag("badfood") or inst:HasTag("spoiled"))) then
                                     table.insert(actions, ACTIONS.FEEDPLAYER)
                                 elseif target:HasTag("small_livestock")
-                                    and (not iscritter or (target.replica.follower ~= nil and target.replica.follower:GetLeader() == doer)) then
+                                    and (not target:HasTag("critter") or (target.replica.follower ~= nil and target.replica.follower:GetLeader() == doer)) then
                                     table.insert(actions, ACTIONS.FEED)
                                 end
                                 return
@@ -351,7 +327,7 @@ local COMPONENT_ACTIONS =
                         if target:HasTag("player") and (TheNet:GetPVPEnabled() or not (inst:HasTag("badfood") or inst:HasTag("spoiled"))) then
                             table.insert(actions, ACTIONS.FEEDPLAYER)
                         elseif target:HasTag("small_livestock")
-                            and (not iscritter or (target.replica.follower ~= nil and target.replica.follower:GetLeader() == doer)) then
+                            and (not target:HasTag("critter") or (target.replica.follower ~= nil and target.replica.follower:GetLeader() == doer)) then
                             table.insert(actions, ACTIONS.FEED)
                         end
                         return
@@ -418,7 +394,7 @@ local COMPONENT_ACTIONS =
             if target.replica.container ~= nil and
                 target.replica.container:CanBeOpened() and
                 inst.replica.inventoryitem:IsGrandOwner(doer) then
-                table.insert(actions, target:HasTag("bundle") and ACTIONS.BUNDLESTORE or ACTIONS.STORE)
+                table.insert(actions, ACTIONS.STORE)
             elseif target:HasTag("playerghost") then
                 if inst.prefab == "reviver" then
                     table.insert(actions, ACTIONS.GIVETOPLAYER)
@@ -608,7 +584,7 @@ local COMPONENT_ACTIONS =
                 target.replica.container ~= nil and
                 target.replica.container:CanBeOpened() then
                 -- put weapons into chester, don't attack him unless forcing attack with key press
-                table.insert(actions, target:HasTag("bundle") and ACTIONS.BUNDLESTORE or ACTIONS.STORE)
+                table.insert(actions, ACTIONS.STORE)
             elseif not right and
                 doer.replica.combat ~= nil and
                 doer.replica.combat:CanTarget(target) and
@@ -795,12 +771,6 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-        bundlemaker = function(inst, doer, actions)
-            if doer.replica.inventory:GetActiveItem() ~= inst then
-                table.insert(actions, ACTIONS.BUNDLE)
-            end
-        end,
-
         container = function(inst, doer, actions)
             if not inst:HasTag("burnt") then
                 local container = inst.replica.container
@@ -956,12 +926,6 @@ local COMPONENT_ACTIONS =
         teacher = function(inst, doer, actions)
             if doer.replica.builder ~= nil then
                 table.insert(actions, ACTIONS.TEACH)
-            end
-        end,
-
-        unwrappable = function(inst, doer, actions, right)
-            if doer.replica.inventory:GetActiveItem() ~= inst and inst:HasTag("unwrappable") then
-                table.insert(actions, ACTIONS.UNWRAP)
             end
         end,
 

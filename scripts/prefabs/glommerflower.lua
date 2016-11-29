@@ -38,6 +38,7 @@ local function OnLoseChild(inst, child)
     inst.components.fuel.fuelvalue = TUNING.MED_LARGE_FUEL
     MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
     MakeSmallPropagator(inst)
+    MakeDragonflyBait(inst, 3)
 end
 
 local function getstatus(inst)

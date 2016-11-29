@@ -8,11 +8,12 @@ local assets =
 
 local function ondeploy(inst, pt)
     local lp = SpawnPrefab("lureplant")
-    if lp ~= nil then
-        lp.Transform:SetPosition(pt:Get())
+    if lp then
+        lp.Transform:SetPosition(pt.x, pt.y, pt.z) 
         inst.components.stackable:Get():Remove()
         lp.sg:GoToState("spawn")
-    end
+        MakeDragonflyBait(inst, 1)
+    end 
 end
 
 local function fn()
@@ -29,6 +30,8 @@ local function fn()
     inst.AnimState:SetBuild("eyeplant_bulb")
     inst.AnimState:PlayAnimation("idle")
 
+    MakeDragonflyBait(inst, 3)
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -36,7 +39,7 @@ local function fn()
     end
 
     inst:AddComponent("stackable")
-    inst.components.stackable.maxsize = TUNING.STACK_SIZE_LARGEITEM
+    inst.components.stackable.maxsize = TUNING.STACK_SIZE_LARGEITEM    
     inst:AddComponent("inspectable")
 
     inst:AddComponent("fuel")

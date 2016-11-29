@@ -17,6 +17,7 @@ local function fn()
     inst.AnimState:PlayAnimation("anim")
 
     inst:AddTag("cattoy")
+    MakeDragonflyBait(inst, 3)
 
     inst.entity:SetPristine()
 

@@ -25,7 +25,7 @@ end
 local function onhit(inst, worker)
     if not inst:HasTag("burnt") then
         inst.AnimState:PlayAnimation("hit")
-        inst.AnimState:PushAnimation("idle", false)
+        inst.AnimState:PushAnimation("idle")
     end
 end
 
@@ -67,7 +67,6 @@ local function fn()
     MakeSnowCoveredPristine(inst)
 
     inst:AddTag("structure")
-    inst:AddTag("sign")
     inst:AddTag("nointerpolate")
 
     --Sneak these into pristine state for optimization
@@ -121,7 +120,6 @@ local function panelfn()
     inst.Transform:SetEightFaced()
 
     inst:AddTag("nointerpolate")
-    inst:AddTag("sign")
 
     MakeSnowCoveredPristine(inst)
 

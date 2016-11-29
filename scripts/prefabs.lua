@@ -22,8 +22,7 @@ function Prefab:__tostring()
     return string.format("Prefab %s - %s", self.name, self.desc)
 end
 
-Asset = Class( function(self, type, file, param)
+Asset = Class( function(self, type, file)
     self.type = type
     self.file = file
-    self.param = param
 end)
