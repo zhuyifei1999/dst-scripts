@@ -530,12 +530,6 @@ local fx =
         transform = Vector3(1.4, 1.4, 1.4),
         fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
     },
-    {
-        name = "bundle_unwrap",
-        bank = "bundle",
-        build = "bundle",
-        anim = "unwrap",
-    },
 }
 
 if ACCOMPLISHMENTS_ENABLED then

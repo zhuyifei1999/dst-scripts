@@ -56,49 +56,58 @@ local MAX_RUNAWAY = MED_FOLLOW
 
 local KrampusBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
-	self.mytarget = nil
+    self.mytarget = nil
     self.greed = 2 + math.random(4)
 end)
 
 function KrampusBrain:SetTarget(target)
-	self.listenerfunc = function() self.mytarget = nil end
-	if target ~= self.target then
-		if self.mytarget then
-			self.inst:RemoveEventCallback("onremove", self.listenerfunc, self.mytarget)
-		end
-		if target then
-			self.inst:ListenForEvent("onremove", self.listenerfunc, target)
-		end
-	end
-	self.mytarget = target
+    if target ~= nil then
+        if not target:IsValid() then
+            target = nil
+        elseif self.listenerfunc == nil then
+            self.listenerfunc = function() self.mytarget = nil end
+        end
+    end
+    if target ~= self.target then
+        if self.mytarget ~= nil then
+            self.inst:RemoveEventCallback("onremove", self.listenerfunc, self.mytarget)
+        end
+        if target ~= nil then
+            self.inst:ListenForEvent("onremove", self.listenerfunc, target)
+        end
+        self.mytarget = target
+    end
+end
+
+function KrampusBrain:OnStop()
+    self:SetTarget(nil)
 end
 
 function KrampusBrain:OnStart()
-	self:SetTarget(self.inst.spawnedforplayer)
-    
+    self:SetTarget(self.inst.spawnedforplayer)
+
     local stealnode = PriorityNode(
-	{
-		DoAction(self.inst, function() return StealAction(self.inst) end, "steal", true ),        
-		DoAction(self.inst, function() return EmptyChest(self.inst) end, "emptychest", true )
-	}, 2)
+    {
+        DoAction(self.inst, function() return StealAction(self.inst) end, "steal", true ),        
+        DoAction(self.inst, function() return EmptyChest(self.inst) end, "emptychest", true )
+    }, 2)
 
     local root = PriorityNode(
     {
-    	WhileNode( function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
+        WhileNode( function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
         WhileNode( function() return self.inst.components.health.takingfiredamage end, "OnFire", Panic(self.inst)),
         ChaseAndAttack(self.inst, 100),
-		IfNode( function() return self.inst.components.inventory:NumItems() >= self.greed and not self.inst.sg:HasStateTag("busy") end, "donestealing",
-			ActionNode(function() self.inst.sg:GoToState("exit") return SUCCESS end, "leave" )),
-		MinPeriod(self.inst, 10, true,
-			stealnode),
+        IfNode( function() return self.inst.components.inventory:NumItems() >= self.greed and not self.inst.sg:HasStateTag("busy") end, "donestealing",
+            ActionNode(function() self.inst.sg:GoToState("exit") return SUCCESS end, "leave" )),
+        MinPeriod(self.inst, 10, true,
+            stealnode),
 
         RunAway(self.inst, "player", MIN_RUNAWAY, MAX_RUNAWAY),
-		Follow(self.inst, function() return self.mytarget end, MIN_FOLLOW, MED_FOLLOW, MAX_FOLLOW),	
+        Follow(self.inst, function() return self.mytarget end, MIN_FOLLOW, MED_FOLLOW, MAX_FOLLOW), 
         Wander(self.inst, function() local player = self.mytarget if player then return Vector3(player.Transform:GetWorldPosition()) end end, 20)
     }, 2)
-    
+
     self.bt = BT(self.inst, root)
-   
 end
 
 return KrampusBrain

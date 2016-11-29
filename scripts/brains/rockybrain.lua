@@ -78,12 +78,21 @@ local RockyBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
 
+function RockyBrain:OnStop()
+    if self.onepicscarefn ~= nil then
+        self.inst:RemoveEventCallback("epicscare", self.onepicscarefn)
+        self.onepicscarefn = nil
+        self.scareendtime = nil
+    end
+end
+
 function RockyBrain:OnStart()
     if self.scareendtime == nil then
         self.scareendtime = 0
-        self.inst:ListenForEvent("epicscare", function(inst, data)
+        self.onepicscarefn = function(inst, data)
             self.scareendtime = math.max(self.scareendtime, data.duration + GetTime() + math.random())
-        end)
+        end
+        self.inst:ListenForEvent("epicscare", self.onepicscarefn)
     end
 
     local root = PriorityNode(

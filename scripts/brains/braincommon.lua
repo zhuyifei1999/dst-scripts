@@ -20,7 +20,6 @@ local function FindSaltlick(inst)
         inst._brainsaltlick:HasTag("burnt") then
         local hadsaltlick = inst._brainsaltlick ~= nil
         inst._brainsaltlick = FindEntity(inst, TUNING.SALTLICK_CHECK_DIST, nil, { "saltlick" }, { "INLIMBO", "fire", "burnt" })
-        inst._brainsaltlickplaced = nil
         if inst._brainsaltlick ~= nil then
             if not hadsaltlick then
                 inst:ListenForEvent("saltlick_placed", OnSaltlickPlaced)
@@ -47,7 +46,7 @@ local function ShouldSeekSalt(inst)
 end
 
 local function AnchorToSaltlick(inst)
-    return WhileNode(
+    local node = WhileNode(
         function()
             return FindSaltlick(inst)
         end,
@@ -61,6 +60,19 @@ local function AnchorToSaltlick(inst)
             end,
             WanderFromSaltlickDistFn)
     )
+
+    local _OnStop = node.OnStop
+    node.OnStop = function()
+        if inst._brainsaltlick ~= nil then
+            inst:RemoveEventCallback("saltlick_placed", OnSaltlickPlaced)
+            inst._brainsaltlick = nil
+        end
+        if _OnStop ~= nil then
+            _OnStop(node)
+        end
+    end
+
+    return node
 end
 
 BrainCommon.ShouldSeekSalt = ShouldSeekSalt
@@ -70,10 +82,10 @@ BrainCommon.AnchorToSaltlick = AnchorToSaltlick
 
 local function PanicWhenScared(inst, loseloyaltychance, chatty)
     local scareendtime = 0
-
-    inst:ListenForEvent("epicscare", function(inst, data)
+    local function onepicscarefn(inst, data)
         scareendtime = math.max(scareendtime, data.duration + GetTime() + math.random())
-    end)
+    end
+    inst:ListenForEvent("epicscare", onepicscarefn)
 
     local panicscarednode = Panic(inst)
 
@@ -99,7 +111,7 @@ local function PanicWhenScared(inst, loseloyaltychance, chatty)
     end
 
     local scared = false
-    return WhileNode(
+    panicscarednode = WhileNode(
         function()
             if (GetTime() < scareendtime) ~= scared then
                 if inst.components.combat ~= nil then
@@ -112,6 +124,16 @@ local function PanicWhenScared(inst, loseloyaltychance, chatty)
         "PanicScared",
         panicscarednode
     )
+
+    local _OnStop = panicscarednode.OnStop
+    panicscarednode.OnStop = function()
+        inst:RemoveEventCallback("epicscare", onepicscarefn)
+        if _OnStop ~= nil then
+            _OnStop(panicscarednode)
+        end
+    end
+
+    return panicscarednode
 end
 
 BrainCommon.PanicWhenScared = PanicWhenScared

@@ -425,6 +425,7 @@ local function fn()
     inst.AnimState:PlayAnimation("move_loop", true)
 
     MakeCharacterPhysics(inst, .5, 1)
+    MakeDragonflyBait(inst, 1)
 
     inst.entity:SetPristine()
 

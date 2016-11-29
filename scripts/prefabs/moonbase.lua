@@ -525,6 +525,7 @@ local function fn()
     --inst:AddTag("trader")
 
     inst:AddTag("moonbase")
+    inst:AddTag("event_trigger")
 
     inst._music = net_tinybyte(inst.GUID, "moonbase._music", "musicdirty")
 

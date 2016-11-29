@@ -79,6 +79,7 @@ local function fn()
     inst.AnimState:PlayAnimation("idle", true)
 
     inst:AddTag("thorny")
+    MakeDragonflyBait(inst, 1)
 
     inst.entity:SetPristine()
 
@@ -132,6 +133,7 @@ local function burnt_fn()
 
     inst:AddTag("thorny")
     inst:AddTag("burnt")
+    MakeDragonflyBait(inst, 1)
 
     inst.GetActivateVerb = GetVerb
 

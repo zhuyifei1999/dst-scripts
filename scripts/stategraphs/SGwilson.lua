@@ -399,10 +399,6 @@ local actionhandlers =
     ActionHandler(ACTIONS.UNSADDLE, "unsaddle"),
     ActionHandler(ACTIONS.BRUSH, "dolongaction"),
     ActionHandler(ACTIONS.ABANDON, "dolongaction"),
-    ActionHandler(ACTIONS.PET, "dolongaction"),
-    ActionHandler(ACTIONS.DRAW, "dolongaction"),
-    ActionHandler(ACTIONS.BUNDLE, "bundle"),
-    ActionHandler(ACTIONS.UNWRAP, "dolongaction"),
 }
 
 local events =
@@ -1189,25 +1185,7 @@ local states =
         end,
 
         ontimeout = function(inst)
-            local royalty = nil
-            local mindistsq = 25
-            for i, v in ipairs(AllPlayers) do
-                if v ~= inst and
-                    not v:HasTag("playerghost") and
-                    v.entity:IsVisible() and
-                    v.components.inventory:EquipHasTag("regal") then
-                    local distsq = v:GetDistanceSqToInst(inst)
-                    if distsq < mindistsq then
-                        mindistsq = distsq
-                        royalty = v
-                    end
-                end
-            end
-            if royalty ~= nil then
-                inst.sg:GoToState("bow", royalty)
-            else
-                inst.sg:GoToState("funnyidle")
-            end
+            inst.sg:GoToState("funnyidle")
         end,
     },
 
@@ -1241,158 +1219,6 @@ local states =
         events =
         {
             EventHandler("animqueueover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end),
-        },
-    },
-
-    State{
-        name = "bow",
-        tags = { "notalking", "busy", "nopredict" },
-
-        onenter = function(inst, target)
-            if target ~= nil then
-                inst.sg.statemem.target = target
-                inst:ForceFacePoint(target.Transform:GetWorldPosition())
-            end
-            inst.AnimState:PlayAnimation("bow_pre")
-        end,
-
-        timeline =
-        {
-            TimeEvent(24 * FRAMES, function(inst)
-                if inst.sg.statemem.target ~= nil and
-                    inst.sg.statemem.target:IsValid() and
-                    inst.sg.statemem.target:IsNear(inst, 6) and
-                    inst.sg.statemem.target.components.inventory:EquipHasTag("regal") and
-                    inst.components.talker ~= nil then
-                    inst.components.talker:Say(GetString(inst, "ANNOUNCE_ROYALTY"))
-                else
-                    inst.sg.statemem.notalk = true
-                end
-            end),
-        },
-
-        events =
-        {
-            EventHandler("ontalk", function(inst)
-                if inst.sg.statemem.talktask ~= nil then
-                    inst.sg.statemem.talktask:Cancel()
-                    inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
-                end
-                if DoTalkSound(inst) then
-                    inst.sg.statemem.talktask =
-                        inst:DoTaskInTime(1.5 + math.random() * .5,
-                            function()
-                                inst.SoundEmitter:KillSound("talk")
-                                inst.sg.statemem.talktask = nil
-                            end)
-                end
-            end),
-            EventHandler("donetalking", function(inst)
-                if inst.sg.statemem.talktalk ~= nil then
-                    inst.sg.statemem.talktask:Cancel()
-                    inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
-                end
-            end),
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    if inst.sg.statemem.target == nil or
-                        (   not inst.sg.statemem.notalk and
-                            inst.sg.statemem.target:IsValid() and
-                            inst.sg.statemem.target:IsNear(inst, 6) and
-                            inst.sg.statemem.target.components.inventory:EquipHasTag("regal")
-                        ) then
-                        inst.sg.statemem.bowing = true
-                        inst.sg:GoToState("bow_loop", { target = inst.sg.statemem.target, talktask = inst.sg.statemem.talktask })
-                    else
-                        inst.sg:GoToState("bow_pst")
-                    end
-                end
-            end),
-        },
-
-        onexit = function(inst)
-            if not inst.sg.statemem.bowing and inst.sg.statemem.talktask ~= nil then
-                inst.sg.statemem.talktask:Cancel()
-                inst.sg.statemem.talktask = nil
-                inst.SoundEmitter:KillSound("talk")
-            end
-        end,
-    },
-
-    State{
-        name = "bow_loop",
-        tags = { "notalking", "idle", "canrotate" },
-
-        onenter = function(inst, data)
-            if data ~= nil then
-                inst.sg.statemem.target = data.target
-                inst.sg.statemem.talktask = data.talktask
-            end
-            inst.AnimState:PlayAnimation("bow_loop", true)
-        end,
-
-        onupdate = function(inst)
-            if inst.sg.statemem.target ~= nil and
-                not (   inst.sg.statemem.target:IsValid() and
-                        inst.sg.statemem.target:IsNear(inst, 6) and
-                        inst.sg.statemem.target.components.inventory:EquipHasTag("regal")
-                    ) then
-                inst.sg:GoToState("bow_pst")
-            end
-        end,
-
-        events =
-        {
-            EventHandler("ontalk", function(inst)
-                if inst.sg.statemem.talktask ~= nil then
-                    inst.sg.statemem.talktask:Cancel()
-                    inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
-                end
-                if DoTalkSound(inst) then
-                    inst.sg.statemem.talktask =
-                        inst:DoTaskInTime(1.5 + math.random() * .5,
-                            function()
-                                inst.SoundEmitter:KillSound("talk")
-                                inst.sg.statemem.talktask = nil
-                            end)
-                end
-            end),
-            EventHandler("donetalking", function(inst)
-                if inst.sg.statemem.talktalk ~= nil then
-                    inst.sg.statemem.talktask:Cancel()
-                    inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
-                end
-            end),
-        },
-
-        onexit = function(inst)
-            if inst.sg.statemem.talktask ~= nil then
-                inst.sg.statemem.talktask:Cancel()
-                inst.sg.statemem.talktask = nil
-                inst.SoundEmitter:KillSound("talk")
-            end
-        end,
-    },
-
-    State{
-        name = "bow_pst",
-        tags = { "idle", "canrotate" },
-
-        onenter = function(inst)
-            inst.AnimState:PlayAnimation("bow_pst")
-        end,
-
-        events =
-        {
-            EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
                     inst.sg:GoToState("idle")
                 end
@@ -1805,10 +1631,8 @@ local states =
                             SpawnPrefab("mining_fx").Transform:SetPosition(target.Transform:GetWorldPosition())
                             inst.SoundEmitter:PlaySound(target:HasTag("frozen") and "dontstarve_DLC001/common/iceboulder_hit" or "dontstarve/wilson/use_pick_rock")
                         elseif inst.sg.statemem.action.action == ACTIONS.HAMMER then
-                            inst.sg.statemem.rmb = true
                             inst.SoundEmitter:PlaySound("dontstarve/wilson/hit")
                         elseif inst.sg.statemem.action.action == ACTIONS.DIG then
-                            inst.sg.statemem.rmb = target:HasTag("sign")
                             SpawnPrefab("shovel_dirt").Transform:SetPosition(target.Transform:GetWorldPosition())
                         end
                     end
@@ -1826,7 +1650,8 @@ local states =
                     inst.components.playercontroller == nil then
                     return
                 end
-                if inst.sg.statemem.rmb then
+                local rmb = inst.sg.statemem.action.action == ACTIONS.HAMMER
+                if rmb then
                     if not inst.components.playercontroller:IsAnyOfControlsPressed(
                             CONTROL_SECONDARY,
                             CONTROL_CONTROLLER_ALTACTION) then
@@ -6122,120 +5947,6 @@ local states =
                 end
             end),
         },
-    },
-
-    State
-    {
-        name = "bundle",
-        tags = { "doing", "busy" },
-
-        onenter = function(inst)
-            inst.components.locomotor:Stop()
-            inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make")
-            inst.AnimState:PlayAnimation("wrap_pre")
-            inst.AnimState:PushAnimation("wrap_loop", true)
-            inst.sg:SetTimeout(.7)
-        end,
-
-        timeline =
-        {
-            TimeEvent(7 * FRAMES, function(inst)
-                inst.sg:RemoveStateTag("busy")
-            end),
-            TimeEvent(9 * FRAMES, function(inst)
-                inst:PerformBufferedAction()
-            end),
-        },
-
-        ontimeout = function(inst)
-            inst.SoundEmitter:KillSound("make")
-            inst.AnimState:PlayAnimation("wrap_pst")
-        end,
-
-        events =
-        {
-            EventHandler("animqueueover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end),
-        },
-
-        onexit = function(inst)
-            if not inst.sg.statemem.bundling then
-                inst.SoundEmitter:KillSound("make")
-            end
-        end,
-    },
-
-    State
-    {
-        name = "bundling",
-        tags = { "doing" },
-
-        onenter = function(inst)
-            inst.components.locomotor:Stop()
-            if not inst.SoundEmitter:PlayingSound("make") then
-                inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make")
-            end
-            if not inst.AnimState:IsCurrentAnimation("wrap_loop") then
-                inst.AnimState:PlayAnimation("wrap_loop", true)
-            end
-        end,
-
-        onupdate = function(inst)
-            if not CanEntitySeeTarget(inst, inst) then
-                inst.AnimState:PlayAnimation("wrap_pst")
-                inst.sg:GoToState("idle", true)
-            end
-        end,
-
-        onexit = function(inst)
-            if not inst.sg.statemem.bundling then
-                inst.SoundEmitter:KillSound("make")
-                inst.components.bundler:StopBundling()
-            end
-        end,
-    },
-
-    State
-    {
-        name = "bundle_pst",
-        tags = { "doing", "busy" },
-
-        onenter = function(inst)
-            inst.components.locomotor:Stop()
-            if not inst.SoundEmitter:PlayingSound("make") then
-                inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make")
-            end
-            if not inst.AnimState:IsCurrentAnimation("wrap_loop") then
-                inst.AnimState:PlayAnimation("wrap_loop", true)
-            end
-            inst.sg:SetTimeout(.7)
-        end,
-
-        ontimeout = function(inst)
-            inst.sg:RemoveStateTag("busy")
-            inst.AnimState:PlayAnimation("wrap_pst")
-            inst.sg.statemem.finished = true
-            inst.components.bundler:OnFinishBundling()
-        end,
-
-        events =
-        {
-            EventHandler("animqueueover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end),
-        },
-
-        onexit = function(inst)
-            inst.SoundEmitter:KillSound("make")
-            if not inst.sg.statemem.finished then
-                inst.components.bundler:StopBundling()
-            end
-        end,
     },
 }
 

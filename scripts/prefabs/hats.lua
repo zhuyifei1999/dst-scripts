@@ -226,7 +226,6 @@ local function MakeHat(name)
 
         inst:AddComponent("waterproofer")
         inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
-
         return inst
     end
 
@@ -290,12 +289,33 @@ local function MakeHat(name)
     end
 
     local function ruins_onunequip(inst, owner)
-        onunequip(inst, owner)
+        owner.AnimState:ClearOverrideSymbol("swap_hat")
+
+        owner.AnimState:Hide("HAT")
+        owner.AnimState:Hide("HAIR_HAT")
+        owner.AnimState:Show("HAIR_NOHAT")
+        owner.AnimState:Show("HAIR")
+
+        if owner:HasTag("player") then
+            owner.AnimState:Show("HEAD")
+            owner.AnimState:Hide("HEAD_HAT")
+        end
+
         inst.ondetach()
     end
 
     local function ruins_onequip(inst, owner)
-        opentop_onequip(inst, owner)
+        owner.AnimState:ClearOverrideSymbol("swap_hat")
+
+        owner.AnimState:OverrideSymbol("swap_hat", fname, "swap_hat")
+        owner.AnimState:Show("HAT")
+        owner.AnimState:Hide("HAIR_HAT")
+        owner.AnimState:Show("HAIR_NOHAT")
+        owner.AnimState:Show("HAIR")
+
+        owner.AnimState:Show("HEAD")
+        owner.AnimState:Hide("HEAD_HAT")
+
         inst.onattach(owner)
     end
 
@@ -695,7 +715,7 @@ local function MakeHat(name)
         end
     end
 
-    local function bush_onequip(inst, owner)
+    local function onequipbush(inst, owner)
         owner.AnimState:OverrideSymbol("swap_hat", fname, "swap_hat")
         owner.AnimState:Show("HAT")
         owner.AnimState:Show("HAIR_HAT")
@@ -714,7 +734,7 @@ local function MakeHat(name)
         inst:ListenForEvent("newstate", stopusingbush, owner)
     end
 
-    local function bush_onunequip(inst, owner)
+    local function onunequipbush(inst, owner)
         owner.AnimState:ClearOverrideSymbol("swap_hat")
 
         owner.AnimState:Hide("HAT")
@@ -734,7 +754,7 @@ local function MakeHat(name)
         inst:RemoveEventCallback("newstate", stopusingbush, owner)
     end
 
-    local function bush_onuse(inst)
+    local function onusebush(inst)
         local owner = inst.components.inventoryitem.owner
         if owner then
             owner.sg:GoToState("hide")
@@ -755,10 +775,10 @@ local function MakeHat(name)
         end
 
         inst:AddComponent("useableitem")
-        inst.components.useableitem:SetOnUseFn(bush_onuse)
+        inst.components.useableitem:SetOnUseFn(onusebush)
 
-        inst.components.equippable:SetOnEquip(bush_onequip)
-        inst.components.equippable:SetOnUnequip(bush_onunequip)
+        inst.components.equippable:SetOnEquip(onequipbush)
+        inst.components.equippable:SetOnUnequip(onunequipbush)
 
         return inst
     end
@@ -775,12 +795,12 @@ local function MakeHat(name)
         end
 
         inst.components.equippable.dapperness = TUNING.DAPPERNESS_TINY
-        inst.components.equippable:SetOnEquip(opentop_onequip)
 
         inst:AddComponent("perishable")
         inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
         inst.components.perishable:StartPerishing()
         inst.components.perishable:SetOnPerishFn(inst.Remove)
+        inst.components.equippable:SetOnEquip(opentop_onequip)
 
         MakeHauntableLaunchAndPerish(inst)
 
@@ -1188,48 +1208,6 @@ local function MakeHat(name)
         return inst
     end
 
-    local function hive_onunequip(inst, owner)
-        onunequip(inst, owner)
-
-        if owner ~= nil and owner.components.sanity ~= nil then
-            owner.components.sanity.neg_aura_absorb = 0
-        end
-    end
-
-    local function hive_onequip(inst, owner)
-        onequip(inst, owner)
-
-        if owner ~= nil and owner.components.sanity ~= nil then
-            owner.components.sanity.neg_aura_absorb = TUNING.ARMOR_HIVEHAT_SANITY_ABSORPTION
-        end
-    end
-
-    local function hive_custom_init(inst)
-        --waterproofer (from waterproofer component) added to pristine state for optimization
-        inst:AddTag("waterproofer")
-
-        inst:AddTag("regal")
-    end
-
-    local function hive()
-        local inst = simple(hive_custom_init)
-
-        if not TheWorld.ismastersim then
-            return inst
-        end
-
-        inst:AddComponent("armor")
-        inst.components.armor:InitCondition(TUNING.ARMOR_HIVEHAT, TUNING.ARMOR_HIVEHAT_ABSORPTION)
-
-        inst:AddComponent("waterproofer")
-        inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
-
-        inst.components.equippable:SetOnEquip(hive_onequip)
-        inst.components.equippable:SetOnUnequip(hive_onunequip)
-
-        return inst
-    end
-
     local fn = nil
     local assets = { Asset("ANIM", "anim/"..fname..".zip") }
     local prefabs = nil
@@ -1287,8 +1265,6 @@ local function MakeHat(name)
         fn = green_mushroom
     elseif name == "blue_mushroom" then
         fn = blue_mushroom
-    elseif name == "hive" then
-        fn = hive
     end
 
     return Prefab(prefabname, fn or default, assets, prefabs)
@@ -1344,5 +1320,4 @@ return  MakeHat("straw"),
         MakeHat("red_mushroom"),
         MakeHat("green_mushroom"),
         MakeHat("blue_mushroom"),
-        MakeHat("hive"),
         Prefab("minerhatlight", minerhatlightfn)

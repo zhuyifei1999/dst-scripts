@@ -61,13 +61,18 @@ local BEAVER_LMB_ACTIONS =
     "DIG",
 }
 
+local BEAVER_RMB_ACTIONS =
+{
+    "HAMMER",
+}
+
 local BEAVER_ACTION_TAGS = {}
 
 for i, v in ipairs(BEAVER_LMB_ACTIONS) do
     table.insert(BEAVER_ACTION_TAGS, v.."_workable")
 end
 
-local BEAVER_TARGET_EXCLUDE_TAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO", "catchable", "sign" }
+local BEAVER_TARGET_EXCLUDE_TAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO", "catchable" }
 
 local function CannotExamine(inst)
     return false
@@ -81,7 +86,7 @@ end
 local function GetBeaverAction(target)
     for i, v in ipairs(BEAVER_LMB_ACTIONS) do
         if target:HasTag(v.."_workable") then
-            return not target:HasTag("sign") and ACTIONS[v] or nil
+            return ACTIONS[v]
         end
     end
 end
@@ -117,9 +122,7 @@ local function LeftClickPicker(inst, target)
         end
         for i, v in ipairs(BEAVER_LMB_ACTIONS) do
             if target:HasTag(v.."_workable") then
-                return not target:HasTag("sign")
-                    and inst.components.playeractionpicker:SortActionList({ ACTIONS[v] }, target, nil)
-                    or nil
+                return inst.components.playeractionpicker:SortActionList({ ACTIONS[v] }, target, nil)
             end
         end
     end
@@ -132,12 +135,11 @@ local function RightClickPicker(inst, target)
                 return inst.components.playeractionpicker:SortActionList({ ACTIONS.EAT }, target, nil)
             end
         end
-        return (target:HasTag("HAMMER_workable") and
-                inst.components.playeractionpicker:SortActionList({ ACTIONS.HAMMER }, target, nil))
-            or (target:HasTag("DIG_workable") and
-                target:HasTag("sign") and
-                inst.components.playeractionpicker:SortActionList({ ACTIONS.DIG }, target, nil))
-            or nil
+        for i, v in ipairs(BEAVER_RMB_ACTIONS) do
+            if target:HasTag(v.."_workable") then
+                return inst.components.playeractionpicker:SortActionList({ ACTIONS[v] }, target, nil)
+            end
+        end
     end
 end
 

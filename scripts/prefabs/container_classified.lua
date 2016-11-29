@@ -104,23 +104,6 @@ local function GetItems(inst)
     return items
 end
 
-local function IsEmpty(inst)
-    if inst._itemspreview ~= nil then
-        for i, v in ipairs(inst._items) do
-            if inst._itemspreview[i] ~= nil then
-                return false
-            end
-        end
-    else
-        for i, v in ipairs(inst._items) do
-            if v:value() ~= nil then
-                return false
-            end
-        end
-    end
-    return true
-end
-
 local function IsFull(inst)
     if inst._itemspreview ~= nil then
         for i, v in ipairs(inst._items) do
@@ -667,7 +650,6 @@ local function fn()
         inst.IsHolding = IsHolding
         inst.GetItemInSlot = GetItemInSlot
         inst.GetItems = GetItems
-        inst.IsEmpty = IsEmpty
         inst.IsFull = IsFull
         inst.Has = Has
         inst.ReturnActiveItemToSlot = ReturnActiveItemToSlot

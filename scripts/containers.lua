@@ -139,7 +139,9 @@ params.cookpot =
 }
 
 function params.cookpot.itemtestfn(container, item, slot)
-    return not container.inst:HasTag("burnt") and cooking.IsCookingIngredient(item.prefab)
+	if not container.inst:HasTag("burnt") then 
+    	return cooking.IsCookingIngredient(item.prefab)
+    end
 end
 
 function params.cookpot.widget.buttoninfo.fn(inst)
@@ -152,50 +154,6 @@ end
 
 function params.cookpot.widget.buttoninfo.validfn(inst)
     return inst.replica.container ~= nil and inst.replica.container:IsFull()
-end
-
---------------------------------------------------------------------------
---[[ bundle_container ]]
---------------------------------------------------------------------------
-
-params.bundle_container =
-{
-    widget =
-    {
-        slotpos =
-        {
-            Vector3(-37.5, 32 + 4, 0), 
-            Vector3(37.4, 32 + 4, 0),
-            Vector3(-37.5, -(32 + 4), 0), 
-            Vector3(37.5, -(32 + 4), 0),
-        },
-        animbank = "ui_bundle_2x2",
-        animbuild = "ui_bundle_2x2",
-        pos = Vector3(200, 0, 0),
-        side_align_tip = 120,
-        buttoninfo =
-        {
-            text = STRINGS.ACTIONS.WRAPBUNDLE,
-            position = Vector3(0, -100, 0),
-        }
-    },
-    type = "cooker",
-}
-
-function params.bundle_container.itemtestfn(container, item, slot)
-    return not (item:HasTag("irreplaceable") or item:HasTag("_container") or item:HasTag("bundle"))
-end
-
-function params.bundle_container.widget.buttoninfo.fn(inst)
-    if inst.components.container ~= nil then
-        BufferedAction(inst.components.container.opener, inst, ACTIONS.WRAPBUNDLE):Do()
-    elseif inst.replica.container ~= nil and not inst.replica.container:IsBusy() then
-        SendRPCToServer(RPC.DoWidgetButtonAction, ACTIONS.WRAPBUNDLE.code, inst, ACTIONS.WRAPBUNDLE.mod_name)
-    end
-end
-
-function params.bundle_container.widget.buttoninfo.validfn(inst)
-    return inst.replica.container ~= nil and not inst.replica.container:IsEmpty()
 end
 
 --------------------------------------------------------------------------

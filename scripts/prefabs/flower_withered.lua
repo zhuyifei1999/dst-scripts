@@ -28,6 +28,8 @@ local function fn()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
+    MakeDragonflyBait(inst, 1)
+
     inst.AnimState:SetBank("withered_flowers")
     inst.AnimState:SetBuild("withered_flowers")
 

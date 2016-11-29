@@ -35,7 +35,7 @@ local function ShouldSleep(inst)
 end
 
 local function KeepTarget(inst, target)
-    return inst:IsNear(target, TUNING.KOALEFANT_CHASE_DIST)
+    return distsq(Vector3(target.Transform:GetWorldPosition()), Vector3(inst.Transform:GetWorldPosition())) < TUNING.KOALEFANT_CHASE_DIST * TUNING.KOALEFANT_CHASE_DIST
 end
 
 local function ShareTargetFn(dude)

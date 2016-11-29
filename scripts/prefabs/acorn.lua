@@ -53,10 +53,10 @@ local function OnLoad(inst, data)
 end
 
 local function fn()
-    local inst = CreateEntity()
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddSoundEmitter()
+	local inst = CreateEntity()
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddSoundEmitter()
     MakeInventoryPhysics(inst)
 
     inst.entity:AddNetwork()
@@ -67,14 +67,16 @@ local function fn()
 
     inst:AddTag("icebox_valid")
     inst:AddTag("cattoy")
-    inst:AddTag("show_spoilage")
+ 	inst:AddTag("show_spoilage")
 
     --cookable (from cookable component) added to pristine state for optimization
     inst:AddTag("cookable")
 
+ 	MakeDragonflyBait(inst, 3)
+
     inst.entity:SetPristine()
 
-    if not TheWorld.ismastersim then
+ 	if not TheWorld.ismastersim then
         return inst
     end
 
@@ -87,28 +89,28 @@ local function fn()
     inst.components.perishable:SetPerishTime(TUNING.PERISH_PRESERVED)
     inst.components.perishable:StartPerishing()
     inst.components.perishable.onperishreplacement = "spoiled_food"
-
+   
     inst:AddComponent("edible")
     inst.components.edible.hungervalue = TUNING.CALORIES_TINY
     inst.components.edible.healthvalue = TUNING.HEALING_TINY
     inst.components.edible.foodtype = FOODTYPE.RAW
 
     inst:AddComponent("stackable")
-    inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
+	inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
     inst:AddComponent("inspectable")
-
-    MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
+    
+	MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
     MakeSmallPropagator(inst)
-
+    
     inst:AddComponent("inventoryitem")
-
+    
     inst:AddComponent("deployable")
     inst.components.deployable:SetDeployMode(DEPLOYMODE.PLANT)
     inst.components.deployable.ondeploy = ondeploy
 
     MakeHauntableLaunchAndIgnite(inst)
-
+    
     inst.OnLoad = OnLoad
 
     return inst
@@ -128,7 +130,7 @@ local function cooked()
 
     inst.entity:SetPristine()
 
-    if not TheWorld.ismastersim then
+ 	if not TheWorld.ismastersim then
         return inst
     end
 
@@ -146,10 +148,10 @@ local function cooked()
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
     inst:AddComponent("inspectable")
-
+    
     MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
     MakeSmallPropagator(inst)
-
+    
     inst:AddComponent("inventoryitem")
 
     MakeHauntableLaunch(inst)
@@ -157,6 +159,8 @@ local function cooked()
     return inst
 end
 
-return Prefab("acorn", fn, assets, prefabs),
+return Prefab( "acorn", fn, assets, prefabs),
        Prefab("acorn_cooked", cooked, assets),
-       MakePlacer("acorn_placer", "acorn", "acorn", "idle_planted")
+	   MakePlacer( "acorn_placer", "acorn", "acorn", "idle_planted" ) 
+
+

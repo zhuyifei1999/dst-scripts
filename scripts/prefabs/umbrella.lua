@@ -58,7 +58,7 @@ local function onperish(inst)
     inst:Remove()
 end
 
-local function common_fn(name)
+local function common_fn(name, dragonflypriority)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -76,6 +76,10 @@ local function common_fn(name)
 
     --waterproofer (from waterproofer component) added to pristine state for optimization
     inst:AddTag("waterproofer")
+
+    if dragonflypriority ~= nil then
+        MakeDragonflyBait(inst, dragonflypriority)
+    end
 
     inst.entity:SetPristine()
 
@@ -97,7 +101,7 @@ local function common_fn(name)
 end
 
 local function grass()
-    local inst = common_fn("parasol")
+    local inst = common_fn("parasol", 3)
 
     if not TheWorld.ismastersim then
         return inst

@@ -447,6 +447,8 @@ local function fn()
 
     MakeObstaclePhysics(inst, PHYS_RAD_LRG)
 
+    inst:AddTag("event_trigger")
+
     inst.AnimState:SetBank("bee_queen_hive")
     inst.AnimState:SetBuild("bee_queen_hive")
     inst.AnimState:PlayAnimation("large")

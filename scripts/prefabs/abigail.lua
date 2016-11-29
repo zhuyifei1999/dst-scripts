@@ -133,7 +133,6 @@ local function fn()
     inst:AddTag("noauradamage")
     inst:AddTag("notraptrigger")
     inst:AddTag("abigail")
-    inst:AddTag("NOBLOCK")
 
     --trader (from trader component) added to pristine state for optimization
     inst:AddTag("trader")

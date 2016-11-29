@@ -1668,7 +1668,7 @@ function PlayerController:OnUpdate(dt)
                         return placer_item:IsValid() and
                             placer_item.replica.inventoryitem ~= nil and
                             placer_item.replica.inventoryitem:CanDeploy(pt, mouseover),
-                            mouseover ~= nil or TheInput:GetHUDEntityUnderMouse() ~= nil
+                            mouseover ~= nil
                     end
                     self.deployplacer.components.placer:OnUpdate(0) --so that our position is accurate on the first frame
                 end
@@ -2496,7 +2496,6 @@ function PlayerController:DoActionAutoEquip(buffaction)
         buffaction.action ~= ACTIONS.DROP and
         buffaction.action ~= ACTIONS.COMBINESTACK and
         buffaction.action ~= ACTIONS.STORE and
-        buffaction.action ~= ACTIONS.BUNDLESTORE and
         buffaction.action ~= ACTIONS.EQUIP and
         buffaction.action ~= ACTIONS.GIVETOPLAYER and
         buffaction.action ~= ACTIONS.GIVEALLTOPLAYER and
@@ -2771,7 +2770,7 @@ end
 local function ValidateItemUseAction(self, act, active_item, target)
     return act ~= nil and
         (active_item.replica.equippable == nil or not active_item:HasTag(act.action.id.."_tool")) and
-        ((act.action ~= ACTIONS.STORE and act.action ~= ACTIONS.BUNDLESTORE) or target.replica.inventoryitem == nil or not target.replica.inventoryitem:IsGrandOwner(self.inst)) and
+        (act.action ~= ACTIONS.STORE or target.replica.inventoryitem == nil or not target.replica.inventoryitem:IsGrandOwner(self.inst)) and
         act.action ~= ACTIONS.COMBINESTACK and
         act.action ~= ACTIONS.ATTACK and
         act or nil

@@ -76,6 +76,7 @@ local function addcone(name, spawn_prefab, bank, build, anim)
         inst.AnimState:PlayAnimation("idle")
 
         inst:AddTag("cattoy")
+        MakeDragonflyBait(inst, 3)
 
         inst.entity:SetPristine()
 

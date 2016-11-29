@@ -44,7 +44,6 @@ local Sanity = Class(function(self, inst)
     self.inducedinsanity_sources = nil
     self.night_drain_mult = 1
     self.neg_aura_mult = 1
-    self.neg_aura_absorb = 0
     self.dapperness_mult = 1
 
     self.penalty = 0
@@ -289,14 +288,14 @@ function Sanity:Recalc(dt)
     for i, v in ipairs(ents) do 
         if v.components.sanityaura ~= nil and v ~= self.inst then
             local aura_val = v.components.sanityaura:GetAura(self.inst) / math.max(1, self.inst:GetDistanceSqToInst(v))
-            aura_delta = aura_delta + (aura_val < 0 and (self.neg_aura_absorb > 0 and self.neg_aura_absorb * -aura_val or aura_val) * self.neg_aura_mult or aura_val)
+            aura_delta = aura_delta + (aura_val < 0 and aura_val * self.neg_aura_mult or aura_val)
         end
     end
 
     local mount = self.inst.components.rider:IsRiding() and self.inst.components.rider:GetMount() or nil
     if mount ~= nil and mount.components.sanityaura ~= nil then
         local aura_val = mount.components.sanityaura:GetAura(self.inst)
-        aura_delta = aura_delta + (aura_val < 0 and (self.neg_aura_absorb > 0 and self.neg_aura_absorb * -aura_val or aura_val) * self.neg_aura_mult or aura_val)
+        aura_delta = aura_delta + (aura_val < 0 and aura_val * self.neg_aura_mult or aura_val)
     end
 
     self:RecalcGhostDrain()

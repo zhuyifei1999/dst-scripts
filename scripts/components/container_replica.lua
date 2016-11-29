@@ -234,14 +234,6 @@ function Container:GetItems()
     end
 end
 
-function Container:IsEmpty()
-    if self.inst.components.container ~= nil then
-        return self.inst.components.container:IsEmpty()
-    else
-        return self.classified ~= nil and self.classified:IsEmpty()
-    end
-end
-
 function Container:IsFull()
     if self.inst.components.container ~= nil then
         return self.inst.components.container:IsFull()

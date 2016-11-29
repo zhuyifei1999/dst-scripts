@@ -10,15 +10,29 @@ UseShield = Class(BehaviourNode, function(self, inst, damageforshield, shieldtim
     self.projectileincoming = false
 
     if hidewhenscared then
-        self.inst:ListenForEvent("epicscare", function(inst, data)
-            self.scareendtime = math.max(self.scareendtime, data.duration + GetTime() + math.random())
-        end)
+        self.onepicscarefn = function(inst, data) self.scareendtime = math.max(self.scareendtime, data.duration + GetTime() + math.random()) end
+        self.inst:ListenForEvent("epicscare", self.onepicscarefn)
     end
-    self.inst:ListenForEvent("attacked", function(inst, data) self:OnAttacked(data.attacker, data.damage) end)
-    self.inst:ListenForEvent("hostileprojectile", function() self:OnAttacked(nil, 0, true) end)
-    self.inst:ListenForEvent("firedamage", function() self:OnAttacked() end)
-    self.inst:ListenForEvent("startfiredamage", function() self:OnAttacked() end)
+
+    self.onattackedfn = function(inst, data) self:OnAttacked(data.attacker, data.damage) end
+    self.onhostileprojectilefn = function() self:OnAttacked(nil, 0, true) end
+    self.onfiredamagefn = function() self:OnAttacked() end
+
+    self.inst:ListenForEvent("attacked", self.onattackedfn)
+    self.inst:ListenForEvent("hostileprojectile", self.onhostileprojectilefn)
+    self.inst:ListenForEvent("firedamage", self.onfiredamagefn)
+    self.inst:ListenForEvent("startfiredamage", self.onfiredamagefn)
 end)
+
+function UseShield:OnStop()
+    if self.onepicscarefn ~= nil then
+        self.inst:RemoveEventCallback("epicscare", self.onepicscarefn)
+    end
+    self.inst:RemoveEventCallback("attacked", self.onattackedfn)
+    self.inst:RemoveEventCallback("hostileprojectile", self.onhostileprojectilefn)
+    self.inst:RemoveEventCallback("firedamage", self.onfiredamagefn)
+    self.inst:RemoveEventCallback("startfiredamage", self.onfiredamagefn)
+end
 
 function UseShield:TimeToEmerge()
     local t = GetTime()

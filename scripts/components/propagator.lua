@@ -147,9 +147,15 @@ function Propagator:OnUpdate(dt)
                     end
 
                     if self.damages and
+                        --V2C: DST specific (DSV does not check this)--
+                        --Affects things with health but not burnable--
+                        v.components.propagator ~= nil and
+                        -----------------------------------------------
                         dsq < dmg_range_sq and
                         v.components.health ~= nil and
-                        v.components.health.vulnerabletoheatdamage then
+                        --V2C: vulnerabletoheatdamage isn't used, but we'll keep it in case
+                        --     for MOD support and make nil default to true to save memory.
+                        v.components.health.vulnerabletoheatdamage ~= false then
                         --V2C: Confirmed that distance scaling was intentionally removed as a design decision
                         --local percent_damage = math.min(.5, 1 - math.min(1, dsq / dmg_range_sq))
                         local percent_damage = self.source ~= nil and self.source:HasTag("player") and self.pvp_damagemod or 1
