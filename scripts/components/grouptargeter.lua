@@ -106,6 +106,10 @@ function GroupTargeter:GetTargets()
     return self.targets
 end
 
+function GroupTargeter:IsTargeting(target)
+    return target ~= nil and self.targets[target] ~= nil
+end
+
 function GroupTargeter:TryGetNewTarget()
     --print("Trying to get a new target...")
     if math.random() < self.current_chance then

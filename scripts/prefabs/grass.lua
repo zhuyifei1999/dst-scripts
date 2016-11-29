@@ -195,7 +195,7 @@ local function onmorphtimer(inst, data)
     if morphing or data.name == "morphrelay" then
         if morphing and canmorph(inst) then
             local x, y, z = inst.Transform:GetWorldPosition()
-            if #TheSim:FindEntities(x, y, z, 10, { "grassgekko" }) < 8 then
+            if #TheSim:FindEntities(x, y, z, TUNING.GRASSGEKKO_DENSITY_RANGE, { "grassgekko" }) < TUNING.GRASSGEKKO_MAX_DENSITY then
                 local gekko = SpawnPrefab("grassgekko")
                 gekko.Transform:SetPosition(x, y, z)
                 gekko.sg:GoToState("emerge")
@@ -266,8 +266,6 @@ local function grass(name, stage)
 
         --witherable (from witherable component) added to pristine state for optimization
         inst:AddTag("witherable")
-
-        MakeDragonflyBait(inst, 1)
 
         inst.entity:SetPristine()
 

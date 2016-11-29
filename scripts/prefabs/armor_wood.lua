@@ -4,7 +4,7 @@ local assets =
 }
 
 local function OnBlocked(owner) 
-    owner.SoundEmitter:PlaySound("dontstarve/wilson/hit_armour") 
+    owner.SoundEmitter:PlaySound("dontstarve/wilson/hit_armour")
 end
 
 local function onequip(inst, owner) 
@@ -31,7 +31,6 @@ local function fn()
     inst.AnimState:PlayAnimation("anim")
 
     inst:AddTag("wood")
-    MakeDragonflyBait(inst, 3)
 
     inst.foleysound = "dontstarve/movement/foley/logarmour"
 

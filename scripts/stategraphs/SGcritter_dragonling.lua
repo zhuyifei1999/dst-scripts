@@ -8,6 +8,8 @@ local actionhandlers =
 local events =
 {
     SGCritterEvents.OnEat(),
+    SGCritterEvents.OnAvoidCombat(),
+	SGCritterEvents.OnTraitChanged(),
 
     CommonHandlers.OnSleepEx(),
     CommonHandlers.OnWakeEx(),
@@ -32,8 +34,7 @@ local emotes =
       timeline=
 		{
 			TimeEvent(4*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/blink") end),
-			TimeEvent(9
-			*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/sleep_pre") end),
+			TimeEvent(9*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/sleep_pre") end),
 		},
 	},
 	{ anim="emote_flame",
@@ -46,7 +47,11 @@ local emotes =
 }
 
 SGCritterStates.AddIdle(states, #emotes)
-SGCritterStates.AddEmotes(states, emotes)
+SGCritterStates.AddRandomEmotes(states, emotes)
+SGCritterStates.AddEmote(states, "cute", nil)
+SGCritterStates.AddPetEmote(states, nil)
+SGCritterStates.AddCombatEmote(states, nil)
+SGCritterStates.AddPlayWithOtherCritter(states, events, nil)
 SGCritterStates.AddEat(states,
         {
             TimeEvent(12*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/eat_pre") end),
@@ -71,7 +76,6 @@ SGCritterStates.AddNuzzle(states, actionhandlers,
         })
 
 SGCritterStates.AddWalkStates(states, nil, true)
-
 
 local function StartFlapping(inst)
     inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/fly_LP", "flying")

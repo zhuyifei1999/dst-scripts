@@ -349,9 +349,9 @@ local function OnChangeLeaves(inst, monster, monsterout)
         inst:ListenForEvent("animover", GrowLeavesFn)
     end
     if GetBuild(inst).shelter then
-        if not inst:HasTag("shelter") then inst:AddTag("shelter") end
+        inst:AddTag("shelter")
     else
-        while inst:HasTag("shelter") do inst:RemoveTag("shelter") end
+        inst:RemoveTag("shelter")
     end
 end
 
@@ -638,9 +638,8 @@ end
 
 local function onburntchanges(inst)
     inst:RemoveComponent("growable")
-    while inst:HasTag("shelter") do inst:RemoveTag("shelter") end
-    while inst:HasTag("cattoyairborne") do inst:RemoveTag("cattoyairborne") end
-    inst:RemoveTag("dragonflybait")
+    inst:RemoveTag("shelter")
+    inst:RemoveTag("cattoyairborne")
     inst:RemoveTag("monster")
     inst.monster = false
 
@@ -657,7 +656,7 @@ local function onburntchanges(inst)
     if GetBuild(inst).drop_acorns then
         inst.components.lootdropper:AddChanceLoot("acorn", 0.1)
     end
-    
+
     if inst.components.workable then
         inst.components.workable:SetWorkLeft(1)
         inst.components.workable:SetOnWorkCallback(nil)
@@ -837,7 +836,7 @@ local function StartMonster(inst, force, starttimeoffset)
             inst.leaveschangetask = nil
         end
 
-        if not force then 
+        if not force then
             inst.components.growable:DoGrowth()
             inst:DoTaskInTime(12 * FRAMES, DoStartMonsterChangeLeaves)
         else
@@ -1098,7 +1097,7 @@ local function onload(inst, data)
             OnChangeLeaves(inst)
         else
             if inst.build == "barren" then
-                while inst:HasTag("shelter") do inst:RemoveTag("shelter") end
+                inst:RemoveTag("shelter")
                 inst.AnimState:Hide("mouseover")
             else
                 inst.AnimState:Show("mouseover")
@@ -1248,8 +1247,6 @@ local function makefn(build, stage, data)
         end
 
         inst:SetPrefabName(GetBuild(inst).prefab_name)
-
-        MakeDragonflyBait(inst, 1)
 
         MakeSnowCoveredPristine(inst)
 

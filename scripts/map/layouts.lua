@@ -742,6 +742,25 @@ local ExampleLayout =
 	}),
 
 	["BlueMushyStart"] = StaticLayout.Get("map.static_layouts/blue_mushy_entrance"),
+	
+	["DeerSpawningGround"] = 
+	{
+		type = LAYOUT.STATIC,
+		layout = 
+		{
+			deerspawningground = {{x=0, y=0}},
+		},
+	},
+	
+	["DeerSpawningGround2"] = 
+	{
+		type = LAYOUT.STATIC,
+		layout = 
+		{
+			deerspawningground = {{x=0, y=0}},
+		},
+	},
+	
 
 --------------------------------------------------------------------------------
 -- ANR - A New Reign

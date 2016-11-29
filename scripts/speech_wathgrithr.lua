@@ -78,6 +78,10 @@ return {
             SLEEPING = "Such sweet slumber graces thy face... Maybe later.",
             BUSY = "I'll try once more when they're free.",
     	},
+        DRAW =
+        {
+            NOIMAGE = "The muses will not visit me if I do not place an item first.",
+        },
     	CHANGEIN =
         {
             GENERIC = "That's where I keep all my favorite furs and pelts.",
@@ -93,6 +97,10 @@ return {
             KNOWN = "I already wield such knowledge.",
             CANTLEARN = "That knowledge is forbidden by the gods.",
             WRONGWORLD = "This map is for some distant land...",
+        },
+        WRAPBUNDLE =
+        {
+            EMPTY = "I cannot wrap that which does not exist!",
         },
 	},
 	ACTIONFAIL_GENERIC = "If I can't do it, it can't be done!",
@@ -195,6 +203,7 @@ return {
 		PREY = "Die bravely, little foe!",
 		SPIDER = "Spider, meet my spear!",
 		SPIDER_WARRIOR = "Prepare to be slain!",
+        DEER = "I shall send you to the unicorn!",
 	},
 	COMBAT_QUIT =
 	{
@@ -656,7 +665,13 @@ return {
 			REMAINS_THINGIE = "It's burnt. Gone.",
 		},
 		AXE = "To chop and destroy!",
-		BABYBEEFALO = "Mini beastie.",
+		BABYBEEFALO = 
+        {
+            GENERIC = "Mini beastie.",
+            SLEEPING = "The mini beast slumbers.",
+        },
+        BUNDLE = "Ready to take on an epic saga.",
+        BUNDLEWRAP = "That's a wrap.",
 		BACKPACK = "A portable armory.",
 		BACONEGGS = "Pig and eggs!",
 		BANDAGE = "To heal even the deepest of battle wounds.",
@@ -675,7 +690,14 @@ return {
             GROWING = "The bees are expanding their domain.",
         },
         BEEQUEENHIVEGROWN = "A hive of winged warriors.",
-        BEEGUARD = "En guarde!", 	
+        BEEGUARD = "En guarde!",
+        HIVEHAT = "Vikings do not wear horns.",
+        MINISIGN =
+        {
+            GENERIC = "The runes hath been drawn!",
+            UNDRAWN = "Tis blank as the cloudless sky.",
+        },
+        MINISIGN_ITEM = "A surface on which to inscribe ancient runes.", 	
 		BEE =
 		{
 			GENERIC = "Wee warriors! I don't know if I like them.",
@@ -715,6 +737,7 @@ return {
 		BEEFALOHAT = "That would suit me.",
 		BEEFALOWOOL = "I do love woolly things.",
 		BEEHAT = "A bee helm, of course.",
+        BEESWAX = "The stuff of candlemakers.",
 		BEEHIVE = "Always buzzing, always plotting.",
 		BEEMINE = "It sounds suspicious.",
 		BEEMINE_MAXWELL = "Watch your step!",
@@ -935,6 +958,11 @@ return {
 		CUTREEDS = "I cleaned all the bugs out! Then I ate them.",
 		CUTSTONE = "Solid stone!",
 		DEADLYFEAST = "A most potent dish.",
+        DEER = 
+        {
+            GENERIC = "The beauty of Freya dwells in all creatures!",
+            ANTLER = "Skadi has bestowed a gift on Freya's creature.",
+        },
 		DEERCLOPS = "Rays will shine through my spear and poke out your eyeball!",
 		DEERCLOPS_EYEBALL = "Delicious! I should like to share it with my new allies.",
 		EYEBRELLAHAT = "Don't get rain in your eye!",
@@ -1345,6 +1373,7 @@ return {
 		PANDORASCHEST = "It contains a mystery.",
 		PANFLUTE = "I prefer to face my enemies awake.",
 		PAPYRUS = "May it carry forth the record of my saga.",
+        WAXPAPER = "Waxen to the touch.",
 		PHLEGM = "The secretions of a terrible beast!",
 		PENGUIN = "Birds of the sea, come from afar.",
 		PERD = "You cannot run forever!",

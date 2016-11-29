@@ -78,6 +78,10 @@ return {
             SLEEPING = "Friend is sleeping now!",
             BUSY = "Please give Mighty Wolfgang your attention!",
     	},
+        DRAW =
+        {
+            NOIMAGE = "Wolfgang no good at drawing pictures from head.",
+        },
     	CHANGEIN =
         {
             GENERIC = "Clothes only good for ripping with strong muscles!",
@@ -93,6 +97,10 @@ return {
             KNOWN = "Wolfgang already knows this!",
             CANTLEARN = "I do not get it.",
             WRONGWORLD = "Little paper is not for here!",
+        },
+        WRAPBUNDLE =
+        {
+            EMPTY = "Wolfgang has no little things to wrap!",
         },
 	},
 	ACTIONFAIL_GENERIC = "I am not mighty enough to do that.",
@@ -200,6 +208,7 @@ return {
 		PREY = "Stomp! Stomp! Stomp!",
 		SPIDER = "Die, evil scary bug!",
 		SPIDER_WARRIOR = "I am still stronger, scary bug!",
+        DEER = "I will make fight quick!",
 	},
 	COMBAT_QUIT =
 	{
@@ -910,7 +919,13 @@ return {
 			REMAINS_THINGIE = "Is burned pieces of some thing. Is dead now...",
 		},
 		AXE = "Chop!",
-		BABYBEEFALO = "Baby hair-cow!",
+		BABYBEEFALO = 
+        {
+            GENERIC = "Baby hair-cow!",
+            SLEEPING = "Sleepy baby hair-cow!",
+        },
+        BUNDLE = "Is little surprise inside, maybe.",
+        BUNDLEWRAP = "Is for hiding goodies.",
 		BACKPACK = "Is for carry more thing.",
 		BACONEGGS = "Food has yolk! And meat! More strong!",
 		BANDAGE = "Can fix people!",
@@ -925,6 +940,13 @@ return {
         },
         BEEQUEENHIVEGROWN = "Wolfgang's mighty punches do nothing.",
         BEEGUARD = "Busy buzzy needle men!",
+        HIVEHAT = "Makes Wolfgang feel special.",
+        MINISIGN =
+        {
+            GENERIC = "Tiny picture is worth many, tinier words.",
+            UNDRAWN = "Sign needs little scribbles!",
+        },
+        MINISIGN_ITEM = "Wolfgang will help punch into ground!",
 		BEE =
 		{
 			GENERIC = "Is fat and angry-looking.",
@@ -945,6 +967,7 @@ return {
 		BEEFALOHAT = "Is good hat!",
 		BEEFALOWOOL = "Clothes made of hair-cow.",
 		BEEHAT = "Is hat for to protect from stinger bees.",
+        BEESWAX = "Bee goop is smell nice.",
 		BEEHIVE = "Oh, beehive!",
 		BEEMINE = "Is ball full of angry bees.",
 		BEEMINE_MAXWELL = "Is ball full of angry bitebugs.",
@@ -1119,6 +1142,11 @@ return {
 		CUTREEDS = "Is clump of reeds.",
 		CUTSTONE = "Rock was crushed to make brick!",
 		DEADLYFEAST = "Look like evil food.",
+        DEER = 
+        {
+            GENERIC = "Not very mighty. More fragile.",
+            ANTLER = "Fuzzy fragile beast got mightier.",
+        },
 		DEERCLOPS = "He looks mightier than me!",
 		DEERCLOPS_EYEBALL = "Yuck yuck yuck!",
 		DEPLETED_GRASS =
@@ -1434,6 +1462,7 @@ return {
 		PANDORASCHEST = "Fancy box!",
 		PANFLUTE = "You want Wolfgang play folk song?",
 		PAPYRUS = "Is like paper.",
+        WAXPAPER = "Strange paper not for make scribblemarks.",
 		PENGUIN = "Funny walking birds!",
 		PERD = "Dumb bird is take all berries!",
 		PEROGIES = "Wolfgang love pierogi!",

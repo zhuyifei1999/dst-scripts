@@ -1,19 +1,5 @@
-local assets =
-{
-    Asset("ANIM", "anim/nightmare_crack_ruins.zip"),
-    Asset("ANIM", "anim/nightmare_crack_upper.zip"),
-}
-
-local prefabs =
-{
-    "nightmarebeak",
-    "crawlingnightmare",
-    "nightmarefissurefx",
-    "upper_nightmarefissurefx",
-}
-
-local upperLightColour = {239/255, 194/255, 194/255}
-local lowerLightColour = {1,1,1}
+local upperLightColour = { 239/255, 194/255, 194/255 }
+local lowerLightColour = { 1, 1, 1 }
 local MAX_LIGHT_ON_FRAME = 15
 local MAX_LIGHT_OFF_FRAME = 10
 
@@ -62,50 +48,34 @@ local function fade_to(inst, rad, instant)
 end
 
 local function returnchildren(inst)
-    for k,child in pairs(inst.components.childspawner.childrenoutside) do
-        if child.components.combat then
+    for k, child in pairs(inst.components.childspawner.childrenoutside) do
+        if child.components.combat ~= nil then
             child.components.combat:SetTarget(nil)
         end
 
-        if child.components.lootdropper then
+        if child.components.lootdropper ~= nil then
             child.components.lootdropper:SetLoot({})
             child.components.lootdropper:SetChanceLootTable(nil)
         end
 
-        if child.components.health then
+        if child.components.health ~= nil then
             child.components.health:Kill()
         end
     end
 end
 
 local function spawnchildren(inst)
-    if inst.components.childspawner then
+    if inst.components.childspawner ~= nil then
         inst.components.childspawner:StartSpawning()
         inst.components.childspawner:StopRegen()
     end
 end
 
 local function killchildren(inst)
-    if inst.components.childspawner then
+    if inst.components.childspawner ~= nil then
         inst.components.childspawner:StopSpawning()
         inst.components.childspawner:StartRegen()
         returnchildren(inst)
-    end
-end
-
-local function dofx(inst)
-    local fx = SpawnPrefab("statue_transition")
-    if fx ~= nil then
-        fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
-        fx.Transform:SetScale(1, 1.5, 1)
-    end
-end
-
-local function spawnfx(inst)
-    if inst.fx == nil then
-        inst.fx = SpawnPrefab(inst.fxprefab)
-        local x, y, z = inst.Transform:GetWorldPosition()
-        inst.fx.Transform:SetPosition(x, -0.1, z)
     end
 end
 
@@ -115,162 +85,184 @@ local states =
         inst.SoundEmitter:KillSound("loop")
 
         RemovePhysicsColliders(inst)
-
         fade_to(inst, 0, instant)
-        if not instant then
-            inst.AnimState:PushAnimation("close_2")
-            inst.AnimState:PushAnimation("idle_closed")
 
-            inst.fx.AnimState:PushAnimation("close_2")
-            inst.fx.AnimState:PushAnimation("idle_closed")
-            inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_spawner_close")
-        else
+        if instant then
             inst.AnimState:PlayAnimation("idle_closed")
             inst.fx.AnimState:PlayAnimation("idle_closed")
+        else
+            inst.AnimState:PlayAnimation("close_2")
+            inst.AnimState:PushAnimation("idle_closed", false)
+            inst.fx.AnimState:PlayAnimation("close_2")
+            inst.fx.AnimState:PushAnimation("idle_closed", false)
+            inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_fissure_open_warning")
         end
-
 
         killchildren(inst)
     end,
 
     warn = function(inst, instant)
+        if not (inst:IsAsleep() or inst.SoundEmitter:PlayingSound("loop")) then
+            inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_fissure_open_LP", "loop")
+        end
 
         ChangeToObstaclePhysics(inst)
         fade_to(inst, 2, instant)
+
         inst.AnimState:PlayAnimation("open_1")
         inst.fx.AnimState:PlayAnimation("open_1")
-        inst.SoundEmitter:KillSound("loop")
-        inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_fissure_open_warning")
-        inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_fissure_open_LP", "loop")
+
+        if not instant then
+            inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_fissure_open_warning")
+        end
     end,
 
     wild = function(inst, instant)
+        if not (inst:IsAsleep() or inst.SoundEmitter:PlayingSound("loop")) then
+            inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_fissure_open_LP", "loop")
+        end
 
         ChangeToObstaclePhysics(inst)
         fade_to(inst, 5, instant)
-        inst.SoundEmitter:KillSound("loop")
-        inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_fissure_open")
-        inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_fissure_open_LP", "loop")
 
-
-        if not instant then
-            inst.AnimState:PlayAnimation("open_2")
-            inst.AnimState:PushAnimation("idle_open")
-
-            inst.fx.AnimState:PlayAnimation("open_2")
-            inst.fx.AnimState:PushAnimation("idle_open")
-            inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_spawner_open")
-        else
+        if instant then
             inst.AnimState:PlayAnimation("idle_open")
-
             inst.fx.AnimState:PlayAnimation("idle_open")
+        else
+            inst.AnimState:PlayAnimation("open_2")
+            inst.AnimState:PushAnimation("idle_open", false)
+            inst.fx.AnimState:PlayAnimation("open_2")
+            inst.fx.AnimState:PushAnimation("idle_open", false)
+            inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_fissure_open")
         end
 
         spawnchildren(inst)
     end,
 
     dawn = function(inst, instant)
+        if not (inst:IsAsleep() or inst.SoundEmitter:PlayingSound("loop")) then
+            inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_fissure_open_LP", "loop")
+        end
+
         ChangeToObstaclePhysics(inst)
         fade_to(inst, 2, instant)
-        inst.SoundEmitter:KillSound("loop")
-        inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_fissure_open")
-        inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_fissure_open_LP", "loop")
 
         inst.AnimState:PlayAnimation("close_1")
         inst.fx.AnimState:PlayAnimation("close_1")
 
-        inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_spawner_open")
+        if not instant then
+            inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_fissure_open")
+        end
 
         spawnchildren(inst)
-    end
+    end,
 }
 
+local function ShowPhaseState(inst, phase, instant)
+    inst._phasetask = nil
 
-local function OnPhaseChanged(inst, phase, instant)
-    local statefn = states[phase]
+    local fn = states[phase] or states.calm
+    fn(inst, instant)
+end
 
-    if statefn then
-        spawnfx(inst)
-        if instant then
-            statefn(inst, true)
-        else
-            inst:DoTaskInTime(math.random() * 2, statefn)
+local function OnNightmarePhaseChanged(inst, phase, instant)
+    if inst._phasetask ~= nil then
+        inst._phasetask:Cancel()
+    end
+    if instant or inst:IsAsleep() then
+        ShowPhaseState(inst, phase, true)
+    else
+        inst._phasetask = inst:DoTaskInTime(math.random() * 2, ShowPhaseState, phase)
+    end
+end
+
+local function OnEntitySleep(inst)
+    inst.SoundEmitter:KillSound("loop")
+    if inst._phasetask ~= nil then
+        inst._phasetask:Cancel()
+        ShowPhaseState(inst, TheWorld.state.nightmarephase, true)
+    end
+end
+
+local function OnEntityWake(inst)
+    if not (TheWorld.state.isnightmarecalm or inst.SoundEmitter:PlayingSound("loop")) then
+        inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_fissure_open_LP", "loop")
+    end
+end
+
+local function Make(name, build, lightcolour, fxname)
+    local assets =
+    {
+        Asset("ANIM", "anim/"..build..".zip"),
+    }
+
+    local prefabs =
+    {
+        "nightmarebeak",
+        "crawlingnightmare",
+        fxname,
+    }
+
+    local function fn()
+        local inst = CreateEntity()
+
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddSoundEmitter()
+        inst.entity:AddLight()
+        inst.entity:AddNetwork()
+
+        MakeObstaclePhysics(inst, 1)
+        RemovePhysicsColliders(inst)
+
+        inst.AnimState:SetBuild(build)
+        inst.AnimState:SetBank(build)
+        inst.AnimState:PlayAnimation("idle_closed")
+        inst.AnimState:SetFinalOffset(1) --on top of spawned .fx
+
+        inst.Light:SetRadius(0)
+        inst.Light:SetIntensity(.9)
+        inst.Light:SetFalloff(.9)
+        inst.Light:SetColour(unpack(lightcolour))
+        inst.Light:Enable(false)
+        inst.Light:EnableClientModulation(true)
+
+        inst._lightframe = net_smallbyte(inst.GUID, "fissure._lightframe", "lightdirty")
+        inst._lightradius0 = net_tinybyte(inst.GUID, "fissure._lightradius0", "lightdirty")
+        inst._lightradius1 = net_tinybyte(inst.GUID, "fissure._lightradius1", "lightdirty")
+        inst._lightmaxframe = MAX_LIGHT_OFF_FRAME
+        inst._lightframe:set(inst._lightmaxframe)
+        inst._lighttask = nil
+
+        inst.entity:SetPristine()
+
+        if not TheWorld.ismastersim then
+            inst:ListenForEvent("lightdirty", OnLightDirty)
+
+            return inst
         end
-    end
-end
 
-local function getsanityaura(inst)
-    if TheWorld.state.isnightmarewarn or TheWorld.state.isnightmaredawn then
-        return -TUNING.SANITY_SMALL
-    elseif TheWorld.state.isnightmarewild then
-        return -TUNING.SANITY_MED
-    end
+        inst.fx = SpawnPrefab(fxname)
+        inst.fx.entity:SetParent(inst.entity)
 
-    return 0
-end
+        inst:AddComponent("childspawner")
+        inst.components.childspawner:SetRegenPeriod(5)
+        inst.components.childspawner:SetSpawnPeriod(30)
+        inst.components.childspawner:SetMaxChildren(1)
+        inst.components.childspawner.childname = "crawlingnightmare"
+        inst.components.childspawner:SetRareChild("nightmarebeak", .35)
 
-local function commonfn(type, lightcolour, fxprefab)
-    local inst = CreateEntity()
+        inst:WatchWorldState("nightmarephase", OnNightmarePhaseChanged)
+        OnNightmarePhaseChanged(inst, TheWorld.state.nightmarephase, true)
 
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddSoundEmitter()
-    inst.entity:AddLight()
-    inst.entity:AddNetwork()
-
-    MakeObstaclePhysics(inst, 1.0)
-    RemovePhysicsColliders(inst)
-
-    inst.AnimState:SetBuild(type)
-    inst.AnimState:SetBank(type)
-    inst.AnimState:PlayAnimation("idle_closed")
-
-    inst.Light:SetRadius(0)
-    inst.Light:SetIntensity(.9)
-    inst.Light:SetFalloff(.9)
-    inst.Light:SetColour(unpack(lightcolour))
-    inst.Light:Enable(false)
-    inst.Light:EnableClientModulation(true)
-
-    inst._lightframe = net_smallbyte(inst.GUID, "fissure._lightframe", "lightdirty")
-    inst._lightradius0 = net_tinybyte(inst.GUID, "fissure._lightradius0", "lightdirty")
-    inst._lightradius1 = net_tinybyte(inst.GUID, "fissure._lightradius1", "lightdirty")
-    inst._lightmaxframe = MAX_LIGHT_OFF_FRAME
-    inst._lightframe:set(inst._lightmaxframe)
-    inst._lighttask = nil
-
-    inst.entity:SetPristine()
-
-    if not TheWorld.ismastersim then
-        inst:ListenForEvent("lightdirty", OnLightDirty)
+        inst.OnEntityWake = OnEntityWake
+        inst.OnEntitySleep = OnEntitySleep
 
         return inst
     end
 
-    inst:AddComponent("childspawner")
-    inst.components.childspawner:SetRegenPeriod(5)
-    inst.components.childspawner:SetSpawnPeriod(30)
-    inst.components.childspawner:SetMaxChildren(1)
-    inst.components.childspawner.childname = "crawlingnightmare"
-    inst.components.childspawner:SetRareChild("nightmarebeak", 0.35)
-
-    inst.fxprefab = fxprefab
-
-    inst:WatchWorldState("nightmarephase", OnPhaseChanged)
-    inst:DoTaskInTime(0, function()
-        OnPhaseChanged(inst, TheWorld.state.nightmarephase, true)
-    end)
-
-    return inst
+    return Prefab(name, fn, assets, prefabs)
 end
 
-local function upper()
-    return commonfn("nightmare_crack_upper", upperLightColour, "upper_nightmarefissurefx")
-end
-
-local function lower()
-    return commonfn("nightmare_crack_ruins", lowerLightColour, "nightmarefissurefx")
-end
-
-return Prefab("fissure", upper, assets, prefabs),
-       Prefab("fissure_lower", lower, assets, prefabs)
+return Make("fissure", "nightmare_crack_upper", upperLightColour, "upper_nightmarefissurefx"),
+    Make("fissure_lower", "nightmare_crack_ruins", lowerLightColour, "nightmarefissurefx")

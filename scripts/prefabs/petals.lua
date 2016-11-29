@@ -53,8 +53,6 @@ local function fn()
     inst:AddTag("cattoy")
     inst:AddTag("vasedecoration")
 
-    MakeDragonflyBait(inst, 3)
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

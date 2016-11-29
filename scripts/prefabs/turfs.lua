@@ -48,10 +48,9 @@ local function make_turf(data)
         inst.AnimState:PlayAnimation(data.anim)
 
         inst:AddTag("molebait")
-        MakeDragonflyBait(inst, 3)
 
         inst.entity:SetPristine()
-        
+
         if not TheWorld.ismastersim then
             return inst
         end
@@ -64,7 +63,7 @@ local function make_turf(data)
         inst.data = data
 
         inst:AddComponent("bait")
-        
+
         inst:AddComponent("fuel")
         inst.components.fuel.fuelvalue = TUNING.MED_FUEL
         MakeMediumBurnable(inst, TUNING.MED_BURNTIME)

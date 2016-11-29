@@ -195,6 +195,10 @@ local actionhandlers =
     ActionHandler(ACTIONS.UNSADDLE, "unsaddle"),
     ActionHandler(ACTIONS.BRUSH, "dolongaction"),
     ActionHandler(ACTIONS.ABANDON, "dolongaction"),
+    ActionHandler(ACTIONS.PET, "dolongaction"),
+    ActionHandler(ACTIONS.DRAW, "dolongaction"),
+    ActionHandler(ACTIONS.BUNDLE, "bundle"),
+    ActionHandler(ACTIONS.UNWRAP, "dolongaction"),
 }
 
 local events =
@@ -1954,6 +1958,50 @@ local states =
             inst:ClearBufferedAction()
             inst.AnimState:PlayAnimation(inst.sg.statemem.heavy and "heavy_item_hat_pst" or "pickup_pst")
             inst.sg:GoToState("idle", true)
+        end,
+    },
+
+    State
+    {
+        name = "bundle",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make_preview")
+            inst.AnimState:PlayAnimation("wrap_pre")
+            inst.AnimState:PushAnimation("wrap_loop", true)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        timeline =
+        {
+            TimeEvent(7 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.AnimState:PlayAnimation("wrap_pst")
+                inst.sg:GoToState("idle", true)
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.AnimState:PlayAnimation("wrap_pst")
+            inst.sg:GoToState("idle", true)
+        end,
+        
+        onexit = function(inst)
+            inst.SoundEmitter:KillSound("make_preview")
         end,
     },
 }

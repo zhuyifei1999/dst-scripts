@@ -1,12 +1,10 @@
-local assets =
-{
-	Asset("ANIM", "anim/rock_light_fx.zip"),
-    Asset("ANIM", "anim/nightmare_crack_ruins_fx.zip"),
-    Asset("ANIM", "anim/nightmare_crack_upper_fx.zip"),    
-}
+local function Make(name, bank)
+    local assets =
+    {
+        Asset("ANIM", "anim/"..bank..".zip"),
+    }
 
-local function Make(bank)
-    return function()
+    local function fn()
         local inst = CreateEntity()
 
         inst.entity:AddTransform()
@@ -15,7 +13,7 @@ local function Make(bank)
 
         inst.AnimState:SetBank(bank)
         inst.AnimState:SetBuild(bank)
-        inst.AnimState:PlayAnimation("idle_closed", false)
+        inst.AnimState:PlayAnimation("idle_closed")
 
         inst:AddTag("NOCLICK")
         inst:AddTag("FX")
@@ -30,8 +28,10 @@ local function Make(bank)
 
         return inst
     end
+
+    return Prefab(name, fn, assets)
 end
 
-return Prefab("nightmarelightfx", Make("rock_light_fx"), assets),
-    Prefab("nightmarefissurefx", Make("nightmare_crack_ruins_fx"), assets),
-    Prefab("upper_nightmarefissurefx", Make("nightmare_crack_upper_fx"), assets)
+return Make("nightmarelightfx", "rock_light_fx"),
+    Make("nightmarefissurefx", "nightmare_crack_ruins_fx"),
+    Make("upper_nightmarefissurefx", "nightmare_crack_upper_fx")

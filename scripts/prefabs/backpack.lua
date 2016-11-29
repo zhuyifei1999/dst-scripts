@@ -36,7 +36,6 @@ local function onburnt(inst)
     if inst.components.container ~= nil then
         inst.components.container:DropEverything()
         inst.components.container:Close()
-        inst:RemoveComponent("container")
     end
 
     SpawnPrefab("ash").Transform:SetPosition(inst.Transform:GetWorldPosition())

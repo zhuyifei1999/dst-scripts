@@ -17,14 +17,12 @@ local function onunequip(inst, owner)
 end
 
 local function onburnt(inst)
-    if inst.components.container then
+    if inst.components.container ~= nil then
         inst.components.container:DropEverything()
         inst.components.container:Close()
-        inst:RemoveComponent("container")
     end
 
-    local ash = SpawnPrefab("ash")
-    ash.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    SpawnPrefab("ash").Transform:SetPosition(inst.Transform:GetWorldPosition())
 
     inst:Remove()
 end
