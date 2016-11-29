@@ -10,43 +10,43 @@ local MAX_FOLLOW = 30
 
 local ShadowCreatureBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
-	self.mytarget = nil
+    self.mytarget = nil
 end)
 
 function ShadowCreatureBrain:SetTarget(target)
-	self.listenerfunc = function() self.mytarget = nil end
-	if target ~= self.target then
-		if self.mytarget then
-			self.inst:RemoveEventCallback("onremove", self.listenerfunc, self.mytarget)
-		end
-		if target then
-			self.inst:ListenForEvent("onremove", self.listenerfunc, target)
-		end
-	end
-	self.mytarget = target
+    if target ~= nil then
+        if not target:IsValid() then
+            target = nil
+        elseif self.listenerfunc == nil then
+            self.listenerfunc = function() self.mytarget = nil end
+        end
+    end
+    if target ~= self.target then
+        if self.mytarget ~= nil then
+            self.inst:RemoveEventCallback("onremove", self.listenerfunc, self.mytarget)
+        end
+        if target ~= nil then
+            self.inst:ListenForEvent("onremove", self.listenerfunc, target)
+        end
+        self.mytarget = target
+    end
+end
+
+function ShadowCreatureBrain:OnStop()
+    self:SetTarget(nil)
 end
 
 function ShadowCreatureBrain:OnStart()
-	-- The brain is restarted when we wake up. The player may be gone by then
-	if self.inst.spawnedforplayer and not self.inst.spawnedforplayer:IsValid() then
-		self.inst.spawnedforplayer = nil
-	end
-	self:SetTarget(self.inst.spawnedforplayer)
-		
+    -- The brain is restarted when we wake up. The player may be gone by then
+    self:SetTarget(self.inst.spawnedforplayer)
+
     local root = PriorityNode(
     {
         ChaseAndAttack(self.inst, 100),
-        Follow(self.inst, function() 
-							return self.mytarget 
-						end, MIN_FOLLOW, MED_FOLLOW, MAX_FOLLOW),
-        Wander(self.inst, function() 
-							local player = self.mytarget 
-							if player then 
-								return Vector3(player.Transform:GetWorldPosition()) 
-							end 
-						end, 20)
+        Follow(self.inst, function() return self.mytarget end, MIN_FOLLOW, MED_FOLLOW, MAX_FOLLOW),
+        Wander(self.inst, function() return self.mytarget ~= nil and self.mytarget:GetPosition() or nil end, 20),
     }, .25)
-    
+
     self.bt = BT(self.inst, root)
 end
 

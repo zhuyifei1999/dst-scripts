@@ -122,12 +122,12 @@ function Propagator:OnUpdate(dt)
             local isendothermic = self.inst.components.heater ~= nil and self.inst.components.heater:IsEndothermic()
 
             for i, v in ipairs(ents) do
-                if v:IsValid() and v.components.propagator ~= nil then
+                if v:IsValid() then
                     --3D distance
                     local dsq = distsq(pos, v:GetPosition())
 
                     if v ~= self.inst then
-                        if v.components.propagator.acceptsheat then
+                        if v.components.propagator ~= nil and v.components.propagator.acceptsheat then
                             local percent_heat = math.max(.1, 1 - dsq / prop_range_sq)
                             v.components.propagator:AddHeat(self.heatoutput * percent_heat * dt)
                         end
@@ -140,16 +140,22 @@ function Propagator:OnUpdate(dt)
                             end
                         end
 
-                        if not isendothermic and v:HasTag("frozen") then
+                        if not isendothermic and (v:HasTag("frozen") or v:HasTag("meltable")) then
                             v:PushEvent("firemelt")
                             v:AddTag("firemelt")
                         end
                     end
 
                     if self.damages and
+                        --V2C: DST specific (DSV does not check this)--
+                        --Affects things with health but not burnable--
+                        v.components.propagator ~= nil and
+                        -----------------------------------------------
                         dsq < dmg_range_sq and
                         v.components.health ~= nil and
-                        v.components.health.vulnerabletoheatdamage then
+                        --V2C: vulnerabletoheatdamage isn't used, but we'll keep it in case
+                        --     for MOD support and make nil default to true to save memory.
+                        v.components.health.vulnerabletoheatdamage ~= false then
                         --V2C: Confirmed that distance scaling was intentionally removed as a design decision
                         --local percent_damage = math.min(.5, 1 - math.min(1, dsq / dmg_range_sq))
                         local percent_damage = self.source ~= nil and self.source:HasTag("player") and self.pvp_damagemod or 1

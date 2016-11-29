@@ -50,7 +50,11 @@ local Health = Class(function(self, inst)
     self.currenthealth = self.maxhealth
     self.invincible = false
 
-    self.vulnerabletoheatdamage = true
+    --V2C: Not used at all, but who knows about MODs?
+    --     Save memory instead by making nil default to true
+    --self.vulnerabletoheatdamage = true
+    -----
+
     self.takingfiredamage = false
     self.takingfiredamagetime = 0
     self.fire_damage_scale = 1

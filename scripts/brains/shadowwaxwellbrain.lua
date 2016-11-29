@@ -61,8 +61,9 @@ local function FindEntityToWorkAction(inst, action, addtltags)
         local target = inst.sg.statemem.target
         if target ~= nil and
             target:IsValid() and
-            not target:IsInLimbo() and
-            not target:HasTag("NOCLICK") and
+            not (target:IsInLimbo() or
+                target:HasTag("NOCLICK") or
+                target:HasTag("event_trigger")) and
             target.components.workable ~= nil and
             target.components.workable:CanBeWorked() and
             target.components.workable:GetWorkAction() == action and
@@ -84,7 +85,7 @@ local function FindEntityToWorkAction(inst, action, addtltags)
         end
 
         --Find new target
-        target = FindEntity(leader, SEE_WORK_DIST, nil, { action.id.."_workable" }, { "fire", "smolder", "INLIMBO", "NOCLICK" }, addtltags)
+        target = FindEntity(leader, SEE_WORK_DIST, nil, { action.id.."_workable" }, { "fire", "smolder", "event_trigger", "INLIMBO", "NOCLICK" }, addtltags)
         return target ~= nil and BufferedAction(inst, target, action) or nil
     end
 end

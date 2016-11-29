@@ -184,6 +184,7 @@ local function makepiece(pieceid, materialid)
         inst:AddTag("heavy")
         if PIECES[pieceid].moonevent then
             inst:AddTag("chess_moonevent")
+            inst:AddTag("event_trigger")
         end
 
         inst:SetPrefabName("chesspiece_"..PIECES[pieceid].name)

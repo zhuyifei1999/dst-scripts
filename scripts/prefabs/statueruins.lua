@@ -19,6 +19,8 @@ local prefabs =
     "nightmarefuel",
     "collapse_small",
     "thulecite",
+    "statue_transition",
+    "statue_transition_2",
 }
 
 local gemlist =
@@ -131,10 +133,6 @@ local function OnWorkFinished(inst)--, worker)
 end
 
 local function ShowPhaseState(inst, phase, instant)
-    if inst.fading then --V2C: WOT?
-        return
-    end
-
     inst._phasetask = nil
 
     if phase == "wild" then

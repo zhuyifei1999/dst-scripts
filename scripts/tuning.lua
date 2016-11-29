@@ -2033,6 +2033,8 @@ function Tune(overrides)
         GRASSGEKKO_MORPH_DELAY = total_day_time * 25,
         GRASSGEKKO_MORPH_DELAY_VARIANCE = total_day_time * 5,
         GRASSGEKKO_MORPH_CHANCE = 1 / 100,
+        GRASSGEKKO_DENSITY_RANGE = 20,
+        GRASSGEKKO_MAX_DENSITY = 6,
 
 		FERTILIZER_USES = 10,
 

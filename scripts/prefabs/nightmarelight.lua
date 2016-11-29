@@ -5,6 +5,8 @@ local assets =
 
 local prefabs =
 {
+    "nightmarebeak",
+    "crawlingnightmare",
     "nightmarelightfx",
 }
 
@@ -56,51 +58,43 @@ local function fade_to(inst, rad, instant)
 end
 
 local function ReturnChildren(inst)
-    for k,child in pairs(inst.components.childspawner.childrenoutside) do
-        if child.components.combat then
+    for k, child in pairs(inst.components.childspawner.childrenoutside) do
+        if child.components.combat ~= nil then
             child.components.combat:SetTarget(nil)
         end
 
-        if child.components.lootdropper then
+        if child.components.lootdropper ~= nil then
             child.components.lootdropper:SetLoot({})
             child.components.lootdropper:SetChanceLootTable(nil)
         end
 
-        if child.components.health then
+        if child.components.health ~= nil then
             child.components.health:Kill()
         end
-    end
-end
-
-local function spawnfx(inst)
-    if not inst.fx then
-        inst.fx = SpawnPrefab("nightmarelightfx")
-        local pt = inst:GetPosition()
-        inst.fx.Transform:SetPosition(pt.x, -0.1, pt.z)
     end
 end
 
 local states =
 {
     calm = function(inst, instant)
-
         inst.SoundEmitter:KillSound("warnLP")
         inst.SoundEmitter:KillSound("nightmareLP")
 
+        inst.components.sanityaura.aura = 0
         fade_to(inst, 0, instant)
-        if not instant then
-            inst.AnimState:PushAnimation("close_2")
-            inst.AnimState:PushAnimation("idle_closed")
 
-            inst.fx.AnimState:PushAnimation("close_2")
-            inst.fx.AnimState:PushAnimation("idle_closed")
-            inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_spawner_close")
-        else
+        if instant then
             inst.AnimState:PlayAnimation("idle_closed")
             inst.fx.AnimState:PlayAnimation("idle_closed")
+        else
+            inst.AnimState:PlayAnimation("close_2")
+            inst.AnimState:PushAnimation("idle_closed", false)
+            inst.fx.AnimState:PlayAnimation("close_2")
+            inst.fx.AnimState:PushAnimation("idle_closed", false)
+            inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_spawner_close")
         end
 
-        if inst.components.childspawner then
+        if inst.components.childspawner ~= nil then
             inst.components.childspawner:StopSpawning()
             inst.components.childspawner:StartRegen()
             ReturnChildren(inst)
@@ -108,78 +102,105 @@ local states =
     end,
 
     warn = function(inst, instant)
+        inst.SoundEmitter:KillSound("nightmareLP")
+        if not (inst:IsAsleep() or inst.SoundEmitter:PlayingSound("warnLP")) then
+            inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_spawner_warning_LP", "warnLP")
+        end
+
+        inst.components.sanityaura.aura = -TUNING.SANITY_SMALL
         fade_to(inst, 3, instant)
 
         inst.AnimState:PlayAnimation("open_1")
         inst.fx.AnimState:PlayAnimation("open_1")
-        inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_spawner_open_warning")
-        inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_spawner_warning_LP", "warnLP")
+
+        if not instant then
+            inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_spawner_open_warning")
+        end
     end,
 
     wild = function(inst, instant)
         inst.SoundEmitter:KillSound("warnLP")
-        inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_spawner_open_LP", "nightmareLP")
-
-        fade_to(inst, 6, instant)
-        if not instant then
-            inst.AnimState:PlayAnimation("open_2")
-            inst.AnimState:PushAnimation("idle_open")
-
-            inst.fx.AnimState:PlayAnimation("open_2")
-            inst.fx.AnimState:PushAnimation("idle_open")
-            inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_spawner_open")
-        else
-            inst.AnimState:PlayAnimation("idle_open")
-
-            inst.fx.AnimState:PlayAnimation("idle_open")
+        if not (inst:IsAsleep() or inst.SoundEmitter:PlayingSound("nightmareLP")) then
+            inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_spawner_open_LP", "nightmareLP")
         end
 
-        if inst.components.childspawner then
+        inst.components.sanityaura.aura = -TUNING.SANITY_MED
+        fade_to(inst, 6, instant)
+
+        if instant then
+            inst.AnimState:PlayAnimation("idle_open")
+            inst.fx.AnimState:PlayAnimation("idle_open")
+        else
+            inst.AnimState:PlayAnimation("open_2")
+            inst.AnimState:PushAnimation("idle_open", false)
+            inst.fx.AnimState:PlayAnimation("open_2")
+            inst.fx.AnimState:PushAnimation("idle_open", false)
+            inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_spawner_open")
+        end
+
+        if inst.components.childspawner ~= nil then
             inst.components.childspawner:StartSpawning()
             inst.components.childspawner:StopRegen()
         end
     end,
 
-
     dawn = function(inst, instant)
-        inst.SoundEmitter:KillSound("nightmareLP")
+        inst.SoundEmitter:KillSound("warnLP")
+        if not (inst:IsAsleep() or inst.SoundEmitter:PlayingSound("nightmareLP")) then
+            inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_spawner_open_LP", "nightmareLP")
+        end
+
+        inst.components.sanityaura.aura = -TUNING.SANITY_SMALL
         fade_to(inst, 3, instant)
-        inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_spawner_close")
-        inst.SoundEmitter:KillSound("nightmareLP")
-        inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_spawner_open_LP", "nightmareLP")
 
         inst.AnimState:PlayAnimation("close_1")
         inst.fx.AnimState:PlayAnimation("close_1")
+        if not instant then
+            inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_spawner_open")
+        end
 
-        inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_spawner_open")
-
-        if inst.components.childspawner then
+        if inst.components.childspawner ~= nil then
             inst.components.childspawner:StartSpawning()
             inst.components.childspawner:StopRegen()
         end
-    end
+    end,
 }
 
-local function getsanityaura(inst)
-    if TheWorld.state.isnightmarewild then
-        return -TUNING.SANITY_MED
-    elseif TheWorld.state.isnightmarewarn or TheWorld.state.isnightmaredawn then
-        return -TUNING.SANITY_SMALL
+local function ShowPhaseState(inst, phase, instant)
+    inst._phasetask = nil
+
+    local fn = states[phase] or states.calm
+    fn(inst, instant)
+end
+
+local function OnNightmarePhaseChanged(inst, phase, instant)
+    if inst._phasetask ~= nil then
+        inst._phasetask:Cancel()
+    end
+    if instant or inst:IsAsleep() then
+        ShowPhaseState(inst, phase, true)
     else
-        return 0
+        inst._phasetask = inst:DoTaskInTime(math.random() * 2, ShowPhaseState, phase)
     end
 end
 
-local function changestate(inst, phase, instant)
-    spawnfx(inst)
-    local statefn = states[phase]
+local function OnEntitySleep(inst)
+    if inst._phasetask ~= nil then
+        inst._phasetask:Cancel()
+        ShowPhaseState(inst, TheWorld.state.nightmarephase, true)
+    end
+    inst.SoundEmitter:KillSound("warnLP")
+    inst.SoundEmitter:KillSound("nightmareLP")
+end
 
-    if statefn then
-        if instant then
-            statefn(inst, true)
-        else
-            inst:DoTaskInTime(math.random() * 2, statefn)
+local function OnEntityWake(inst)
+    if TheWorld.state.nightmarephase == "warn" then
+        if not inst.SoundEmitter:PlayingSound("warnLP") then
+            inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_spawner_warning_LP", "warnLP")
         end
+    elseif (TheWorld.state.nightmarephase == "wild" or TheWorld.state.nightmarephase == "dawn")
+        and not inst.SoundEmitter:PlayingSound("nigtmareLP") then
+        inst.SoundEmitter:PlaySound("dontstarve/cave/nightmare_spawner_open_LP", "nightmareLP")
     end
 end
 
@@ -198,6 +219,7 @@ local function fn()
     inst.AnimState:SetBuild("rock_light")
     inst.AnimState:SetBank("rock_light")
     inst.AnimState:PlayAnimation("idle_closed",false)
+    inst.AnimState:SetFinalOffset(1) --on top of spawned .fx
 
     inst.Light:SetRadius(0)
     inst.Light:SetIntensity(.9)
@@ -213,6 +235,8 @@ local function fn()
     inst._lightframe:set(inst._lightmaxframe)
     inst._lighttask = nil
 
+    MakeObstaclePhysics(inst, 1)
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -221,26 +245,25 @@ local function fn()
         return inst
     end
 
-    MakeObstaclePhysics(inst, 1)
+    inst.fx = SpawnPrefab("nightmarelightfx")
+    inst.fx.entity:SetParent(inst.entity)
 
     inst:AddComponent("sanityaura")
-    inst.components.sanityaura.aurafn = getsanityaura
 
     inst:AddComponent("childspawner")
     inst.components.childspawner:SetRegenPeriod(5)
     inst.components.childspawner:SetSpawnPeriod(30)
-    inst.components.childspawner:SetMaxChildren(math.random(1,2))
+    inst.components.childspawner:SetMaxChildren(math.random(2))
     inst.components.childspawner.childname = "crawlingnightmare"
-    inst.components.childspawner:SetRareChild("nightmarebeak", 0.35)
+    inst.components.childspawner:SetRareChild("nightmarebeak", .35)
 
     inst:AddComponent("inspectable")
 
-    inst.fade_to = fade_to
+    inst:WatchWorldState("nightmarephase", OnNightmarePhaseChanged)
+    OnNightmarePhaseChanged(inst, TheWorld.state.nightmarephase, true)
 
-    inst:WatchWorldState("nightmarephase", changestate)
-    inst:DoTaskInTime(0, function()
-        changestate(inst, TheWorld.state.nightmarephase, true)
-    end)
+    inst.OnEntityWake = OnEntityWake
+    inst.OnEntitySleep = OnEntitySleep
 
     return inst
 end

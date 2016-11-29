@@ -303,7 +303,8 @@ local COMPONENT_ACTIONS =
         end,
 
         edible = function(inst, doer, target, actions, right)
-            if right and
+            local iscritter = target:HasTag("critter")
+            if right or iscritter and
                 not (target.replica.rider ~= nil and target.replica.rider:IsRiding()) and
                 not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding() and
                     not (target.replica.inventoryitem ~= nil and target.replica.inventoryitem:IsGrandOwner(doer))) then
@@ -311,10 +312,17 @@ local COMPONENT_ACTIONS =
                     if target:HasTag(v.name.."_eater") then
                         for i, v2 in ipairs(v.types) do
                             if inst:HasTag("edible_"..v2) then
-                                if target:HasTag("player") and (TheNet:GetPVPEnabled() or not (inst:HasTag("badfood") or inst:HasTag("spoiled"))) then
-                                    table.insert(actions, ACTIONS.FEEDPLAYER)
+                                if iscritter then
+                                    if target.replica.follower ~= nil and target.replica.follower:GetLeader() == doer then
+                                        table.insert(actions, ACTIONS.FEED)
+                                    end
+                                elseif target:HasTag("player") then
+                                    if TheNet:GetPVPEnabled() or not (inst:HasTag("badfood") or inst:HasTag("spoiled")) then
+                                        table.insert(actions, ACTIONS.FEEDPLAYER)
+                                    end
                                 elseif target:HasTag("small_livestock")
-                                    and (not target:HasTag("critter") or (target.replica.follower ~= nil and target.replica.follower:GetLeader() == doer)) then
+                                    and target.replica.inventoryitem ~= nil
+                                    and target.replica.inventoryitem:IsHeld() then
                                     table.insert(actions, ACTIONS.FEED)
                                 end
                                 return
@@ -324,10 +332,17 @@ local COMPONENT_ACTIONS =
                 end
                 for k, v in pairs(FOODTYPE) do
                     if inst:HasTag("edible_"..v) and target:HasTag(v.."_eater") then
-                        if target:HasTag("player") and (TheNet:GetPVPEnabled() or not (inst:HasTag("badfood") or inst:HasTag("spoiled"))) then
-                            table.insert(actions, ACTIONS.FEEDPLAYER)
+                        if iscritter then
+                            if target.replica.follower ~= nil and target.replica.follower:GetLeader() == doer then
+                                table.insert(actions, ACTIONS.FEED)
+                            end
+                        elseif target:HasTag("player") then
+                            if TheNet:GetPVPEnabled() or not (inst:HasTag("badfood") or inst:HasTag("spoiled")) then
+                                table.insert(actions, ACTIONS.FEEDPLAYER)
+                            end
                         elseif target:HasTag("small_livestock")
-                            and (not target:HasTag("critter") or (target.replica.follower ~= nil and target.replica.follower:GetLeader() == doer)) then
+                            and target.replica.inventoryitem ~= nil
+                            and target.replica.inventoryitem:IsHeld() then
                             table.insert(actions, ACTIONS.FEED)
                         end
                         return

@@ -181,6 +181,8 @@ local function fn()
     inst.AnimState:SetLayer(LAYER_BACKGROUND)
     inst.AnimState:SetSortOrder(3)
 
+    inst:AddTag("event_trigger")
+
     --DO THE PHYSICS STUFF MANUALLY SO THAT WE CAN SHUT OFF THE BOSS COLLISION.
     --don't yell at me plz...
     --MakeObstaclePhysics(inst, .5)
