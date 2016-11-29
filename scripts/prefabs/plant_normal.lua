@@ -86,8 +86,6 @@ local function fn()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
-    MakeDragonflyBait(inst, 1)
-
     inst.AnimState:SetBank("plant_normal")
     inst.AnimState:SetBuild("plant_normal")
     inst.AnimState:PlayAnimation("grow")

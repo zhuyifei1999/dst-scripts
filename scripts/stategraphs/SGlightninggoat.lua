@@ -1,11 +1,6 @@
 require("stategraphs/commonstates")
 
-local actionhandlers = 
-{
-
-}
-
-local events=
+local events =
 {
     CommonHandlers.OnLocomote(false,true),
     CommonHandlers.OnSleep(),
@@ -21,11 +16,11 @@ local events=
 }
 
 local states=
-{   
-
-    State{        
+{
+    State{
         name = "idle",
-        tags = {"idle", "canrotate"},
+        tags = { "idle", "canrotate" },
+
         onenter = function(inst, playanim)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("idle_loop", true)
@@ -38,9 +33,9 @@ local states=
                     inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/lightninggoat/jacobshorn")
                 end
             end)
-        end,        
-      
-        ontimeout= function(inst)
+        end,
+
+        ontimeout = function(inst)
             inst.sg:GoToState("bleet")
         end,
 
@@ -51,37 +46,36 @@ local states=
             end
         end,
 
-        timeline = 
-        { 
-            TimeEvent(GetRandomWithVariance(8,3)*FRAMES, function(inst) 
+        timeline =
+        {
+            TimeEvent(GetRandomWithVariance(8,3)*FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/lightninggoat/chew")
             end),
-            TimeEvent(GetRandomWithVariance(33,3)*FRAMES, function(inst) 
+            TimeEvent(GetRandomWithVariance(33,3)*FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/lightninggoat/chew")
             end),
         },
     },
 
-
     State{
         name = "walk_start",
-        tags = {"moving", "canrotate"},
+        tags = { "moving", "canrotate" },
 
         onenter = function(inst) 
             inst.AnimState:PlayAnimation("walk_pre")
         end,
 
         events =
-        {   
-            EventHandler("animover", function(inst) inst.sg:GoToState("walk") end ),        
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("walk") end),
         },
     },
-        
-    State{            
+
+    State{
         name = "walk",
-        tags = {"moving", "canrotate"},
-        
-        onenter = function(inst) 
+        tags = { "moving", "canrotate" },
+
+        onenter = function(inst)
             inst.components.locomotor:WalkForward()
             inst.AnimState:PlayAnimation("walk")
             inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/lightninggoat/jump")
@@ -90,51 +84,49 @@ local states=
             end
         end,
 
-        timeline = 
-        { 
-            TimeEvent(2*FRAMES, function(inst) 
-                inst.components.locomotor:RunForward() 
+        timeline =
+        {
+            TimeEvent(2*FRAMES, function(inst)
+                inst.components.locomotor:RunForward()
             end),
-            TimeEvent(14*FRAMES, function(inst) 
+            TimeEvent(14*FRAMES, function(inst)
                 inst.components.locomotor:WalkForward()
             end),
         },
 
-        events=
-        {   
-            EventHandler("animover", function(inst) inst.sg:GoToState("walk") end ),        
+        events =
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("walk") end),
         },
-    },      
-    
-    State{            
+    },
+
+    State{
         name = "walk_stop",
-        tags = {"canrotate"},
-        
-        onenter = function(inst) 
-        inst.components.locomotor:StopMoving()
+        tags = { "canrotate" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("walk_pst", false)
         end,
 
-        events=
-        {   
-            
-            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end ),        
+        events =
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
         },
     },
 
     State{
         name = "taunt",
-        tags = {"busy"},
-        
+        tags = { "busy" },
+
         onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("taunt_pre")
             inst.AnimState:PushAnimation("taunt")
             inst.AnimState:PushAnimation("taunt_pst", false)
-
         end,
-        
-        timeline=
+
+        timeline =
         {
             TimeEvent(5*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/lightninggoat/taunt") end),
             TimeEvent(17*FRAMES, function(inst) if inst.charged then inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/lightninggoat/jacobshorn") end end),
@@ -144,8 +136,8 @@ local states=
             TimeEvent(71*FRAMES, function(inst) if inst.charged then inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/lightninggoat/jacobshorn") end end),
             TimeEvent(79*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/lightninggoat/hoof") end),
         },
-        
-        events=
+
+        events =
         {
             EventHandler("animqueueover", function(inst) inst.sg:GoToState("idle") end),
         },
@@ -153,14 +145,14 @@ local states=
 
     State{
         name = "bleet",
-        tags = {"idle"},
-        
+        tags = { "idle" },
+
         onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("bleet")
         end,
-        
-        timeline=
+
+        timeline =
         {
             TimeEvent(1*FRAMES, function(inst)
                 if inst.charged then
@@ -171,8 +163,8 @@ local states=
                 inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/lightninggoat/bleet")
             end)
         },
-        
-        events=
+
+        events =
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
         },
@@ -180,23 +172,23 @@ local states=
 
     State{
         name = "discharge",
-        tags = {"busy"},
-        
+        tags = { "busy" },
+
         onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("trans")
             inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/lightninggoat/shocked_electric")
         end,
-        
-        timeline=
+
+        timeline =
         {
-            TimeEvent(18*FRAMES, function(inst) 
-                inst.AnimState:Hide("fx") 
+            TimeEvent(18*FRAMES, function(inst)
+                inst.AnimState:Hide("fx")
                 inst.AnimState:SetBuild("lightning_goat_build")
-            end)
+            end),
         },
-        
-        events=
+
+        events =
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
         },
@@ -204,8 +196,8 @@ local states=
 
     State{
         name = "shocked",
-        tags = {"busy"},
-        
+        tags = { "busy" },
+
         onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("shock")
@@ -214,15 +206,15 @@ local states=
             inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/lightninggoat/shocked_bleet")
             inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/lightninggoat/jacobshorn")
         end,
-        
-        timeline=
+
+        timeline =
         {
-            TimeEvent(10*FRAMES, function(inst) 
+            TimeEvent(10*FRAMES, function(inst)
                 inst:PerformBufferedAction()
             end)
         },
-        
-        events=
+
+        events =
         {
             EventHandler("animqueueover", function(inst) inst.sg:GoToState("idle") end),
         },
@@ -231,7 +223,7 @@ local states=
 
 CommonStates.AddCombatStates(states,
 {
-    attacktimeline = 
+    attacktimeline =
     {
         TimeEvent(1*FRAMES, function(inst)
             if inst.charged then
@@ -250,10 +242,9 @@ CommonStates.AddCombatStates(states,
         end),
         TimeEvent(15*FRAMES, function(inst) inst.sg:RemoveStateTag("attack") end),
     },
-    deathtimeline = 
+    deathtimeline =
     {
         TimeEvent(0*FRAMES, function(inst)
-            inst:AddTag("dead")
             inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/lightninggoat/death")
         end),
         TimeEvent(3*FRAMES, function(inst)
@@ -270,7 +261,7 @@ CommonStates.AddCombatStates(states,
 CommonStates.AddFrozenStates(states)
 CommonStates.AddSleepStates(states,
 {
-    startsleeptimeline = 
+    startsleeptimeline =
     {
         TimeEvent(9*FRAMES, function(inst)
             if inst.charged then
@@ -278,12 +269,12 @@ CommonStates.AddSleepStates(states,
             end
         end),
     },
-    sleeptimeline = 
+    sleeptimeline =
     {
         TimeEvent(41*FRAMES, function(inst)
             inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/lightninggoat/sleep")
         end),
     },
 })
-    
-return StateGraph("lightninggoat", states, events, "idle", actionhandlers)
+
+return StateGraph("lightninggoat", states, events, "idle")

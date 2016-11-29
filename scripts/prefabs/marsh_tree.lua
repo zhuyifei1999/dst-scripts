@@ -1,7 +1,7 @@
 local assets =
 {
     Asset("ANIM", "anim/tree_marsh.zip"),
-	Asset("MINIMAP_IMAGE", "marshtree"),
+    Asset("MINIMAP_IMAGE", "marshtree"),
     Asset("MINIMAP_IMAGE", "marshtree_stump"),
     Asset("MINIMAP_IMAGE", "marshtree_burnt"),
 }
@@ -152,7 +152,6 @@ local function fn()
     inst.AnimState:SetBuild("tree_marsh")
     inst.AnimState:SetBank("marsh_tree")
 
-    MakeDragonflyBait(inst, 1)
     MakeSnowCoveredPristine(inst)
 
     inst.entity:SetPristine()

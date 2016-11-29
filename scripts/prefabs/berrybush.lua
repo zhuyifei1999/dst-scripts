@@ -308,7 +308,6 @@ local function createbush(name, inspectname, berryname, master_postinit)
         inst.AnimState:PlayAnimation("idle", true)
         setberries(inst, 1)
 
-        MakeDragonflyBait(inst, 1)
         MakeSnowCoveredPristine(inst)
 
         inst.entity:SetPristine()

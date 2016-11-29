@@ -47,6 +47,10 @@ return {
         {
             TARGETINCOMBAT = "Perhaps I should take a step back.",
         },
+        DRAW =
+        {
+            NOIMAGE = "My memory isn't good enough to draw from it.",
+        },
         CHANGEIN =
         {
             GENERIC = "How could you improve on perfection?",
@@ -93,6 +97,10 @@ return {
             KNOWN = "I am far too advanced for this.",
             CANTLEARN = "There's a lesson to be learned about tampering with secret knowledge.",
             WRONGWORLD = "I seem to be in the wrong place to use this.",
+        },
+        WRAPBUNDLE =
+        {
+            EMPTY = "I don't know what to wrap.",
         },
 	},
 	ACTIONFAIL_GENERIC = "That didn't work.",
@@ -194,6 +202,7 @@ return {
 		PREY = "Sacrifice yourself for my comfort!",
 		SPIDER = "I'll not be made a fool of!",
 		SPIDER_WARRIOR = "You've forced my hand!",
+		DEER = "You do not belong in MY world!",
 	},
 	COMBAT_QUIT =
 	{
@@ -858,7 +867,13 @@ return {
 			REMAINS_THINGIE = "My trip through the portal made it unrecognizable.",
 		},
 		AXE = "Sometimes the direct approach is best.",
-		BABYBEEFALO = "They're even ugly as infants.",
+		BABYBEEFALO = 
+		{
+			GENERIC = "They're even ugly as infants.",
+		    SLEEPING = "Seems we've a few hours of reprieve.",
+        },
+        BUNDLE = "Nice and snug.",
+		BUNDLEWRAP = "I guess we could wrap a few things up.",
 		BACKPACK = "I wish there were porters around here.",
 		BACONEGGS = "Now that is a proper breakfast.",
 		BANDAGE = "Sticky and gooey and good for putting on booboos.",
@@ -873,6 +888,13 @@ return {
 		},
 		BEEQUEENHIVEGROWN = "I don't see what all the buzz is about.",
         BEEGUARD = "Keep your backside to yourself, madam!",
+        HIVEHAT = "Makes one feel like royalty.",
+        MINISIGN =
+        {
+            GENERIC = "It was drawn in a steady hand.",
+            UNDRAWN = "There's nothing on it, currently.",
+        },
+        MINISIGN_ITEM = "A sign is useless if it has nothing to mark.",
 		BEE =
 		{
 			GENERIC = "They work so hard, the fools.",
@@ -912,6 +934,7 @@ return {
 		BEEFALOHAT = "How unfashionable.",
 		BEEFALOWOOL = "It smells like a barn.",
 		BEEHAT = "I'll wear it if I have to.",
+		BEESWAX = "I miss sealing a good letter.",
 		BEEHIVE = "Not the bees!",
 		BEEMINE = "They wait so patiently.",
 		BEEMINE_MAXWELL = "Maybe I shouldn't have put that there.",
@@ -1086,6 +1109,11 @@ return {
 		CUTREEDS = "I think I could build something useful from this.",
 		CUTSTONE = "The building blocks of civilization.",
 		DEADLYFEAST = "It smells... noxious.",
+		DEER = 
+		{
+			GENERIC = "Well it's certainly not deer to me.",
+			ANTLER = "What a staggering sight!",
+		},
 		DEERCLOPS = "Even I'm afraid of that guy.",
 		DEERCLOPS_EYEBALL = "Deerclops are so myopic.",
 		DEPLETED_GRASS =
@@ -1417,6 +1445,7 @@ return {
 		PANDORASCHEST = "It's a trap.",
 		PANFLUTE = "I'm going to sing a song of madness.",
 		PAPYRUS = "A blank canvas.",
+		WAXPAPER = "My interest in this wax paper wanes....",
 		PENGUIN = "Nice tux.",
 		PERD = "It is addicted to fermented berries.",
 		PEROGIES = "They look superb.",

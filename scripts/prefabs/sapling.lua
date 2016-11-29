@@ -151,7 +151,6 @@ local function fn()
     inst.AnimState:PlayAnimation("sway", true)
 
     inst:AddTag("renewable")
-    MakeDragonflyBait(inst, 1)
 
     --witherable (from witherable component) added to pristine state for optimization
     inst:AddTag("witherable")

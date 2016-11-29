@@ -39,8 +39,6 @@ local function make_plantable(data)
         inst.AnimState:SetBuild(data.build or data.name)
         inst.AnimState:PlayAnimation("dropped")
 
-        MakeDragonflyBait(inst, 3)
-
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then

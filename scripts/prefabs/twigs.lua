@@ -19,7 +19,6 @@ local function fn()
 
     inst:AddTag("cattoy")
     inst:AddTag("renewable")
-    MakeDragonflyBait(inst, 3)
 
     inst.entity:SetPristine()
 

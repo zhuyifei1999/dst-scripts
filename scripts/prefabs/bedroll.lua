@@ -80,7 +80,7 @@ local function onsleep(inst, sleeper)
 end
 
 local function onuse_straw(inst, sleeper)
-	sleeper.AnimState:OverrideSymbol("swap_bedroll", "swap_bedroll_straw", "bedroll_straw")
+    sleeper.AnimState:OverrideSymbol("swap_bedroll", "swap_bedroll_straw", "bedroll_straw")
 end
 
 local function onuse_furry(inst, sleeper)
@@ -88,7 +88,7 @@ local function onuse_furry(inst, sleeper)
     if skin_build ~= nil then
         sleeper.AnimState:OverrideItemSkinSymbol("swap_bedroll", skin_build, "bedroll_furry", inst.GUID, "swap_bedroll_furry")
     else
-		sleeper.AnimState:OverrideSymbol("swap_bedroll", "swap_bedroll_furry", "bedroll_furry")
+        sleeper.AnimState:OverrideSymbol("swap_bedroll", "swap_bedroll_furry", "bedroll_furry")
     end
 end
 
@@ -104,8 +104,6 @@ local function common_fn(bank, build)
     inst.AnimState:SetBank(bank)
     inst.AnimState:SetBuild(build)
     inst.AnimState:PlayAnimation("idle")
-
-    MakeDragonflyBait(inst, 3)
 
     inst.entity:SetPristine()
 

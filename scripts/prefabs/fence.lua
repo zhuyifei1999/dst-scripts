@@ -506,7 +506,6 @@ local function MakeWall(name, builds, isdoor)
         MakeMediumBurnable(inst)
         MakeMediumPropagator(inst)
         inst.components.burnable.flammability = .5
-        MakeDragonflyBait(inst, 3)
 
         MakeHauntableWork(inst)
 
@@ -648,8 +647,6 @@ local function MakeInvItem(name, placement, animdata, isdoor)
 
         inst:AddComponent("fuel")
         inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL
-
-        MakeDragonflyBait(inst, 3)
 
         MakeHauntableLaunch(inst)
 

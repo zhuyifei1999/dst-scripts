@@ -31,7 +31,6 @@ local function fn()
     inst.AnimState:PlayAnimation("anim")
 
     inst:AddTag("grass")
-    MakeDragonflyBait(inst, 3)
 
     inst.foleysound = "dontstarve/movement/foley/grassarmour"
 

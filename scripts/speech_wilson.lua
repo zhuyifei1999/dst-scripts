@@ -70,6 +70,10 @@ return {
             GENERIC = "I think it's fine as is.",
             INUSE = "There's only room for one scribbler.",
         },
+        DRAW =
+        {
+            NOIMAGE = "This'd be easier if I had the item in front of me.",
+        },
         CHANGEIN =
         {
             GENERIC = "I don't want to change right now.",
@@ -97,6 +101,10 @@ return {
 
             --MapRecorder/MapExplorer
             WRONGWORLD = "This map was made for some other place.",
+        },
+        WRAPBUNDLE =
+        {
+            EMPTY = "I need to have something to wrap.",
         },
 	},
 	ACTIONFAIL_GENERIC = "I can't do that.",
@@ -192,7 +200,14 @@ return {
 	ANNOUNCE_BECOMEGHOST = "oOooOooo!!",
 	ANNOUNCE_GHOSTDRAIN = "My humanity is about to start slipping away...",
 	ANNOUNCE_PETRIFED_TREES = "Did I just hear trees screaming?",
-	
+
+    ANNOUNCE_ROYALTY = 
+    {
+    	"Your majesty.",
+    	"Your highness.",
+    	"My liege!",
+    },
+
 	BATTLECRY =
 	{
 		GENERIC = "Go for the eyes!",
@@ -200,6 +215,7 @@ return {
 		PREY = "I will destroy you!",
 		SPIDER = "I'm going to stomp you dead!",
 		SPIDER_WARRIOR = "Better you than me!",
+		DEER = "Die, doe!",
 	},
 	COMBAT_QUIT =
 	{
@@ -666,7 +682,13 @@ return {
 			REMAINS_THINGIE = "There's a perfectly scientific explanation for that.",
 		},
 		AXE = "A trusty axe.",
-		BABYBEEFALO = "Awwww. So cute!",
+		BABYBEEFALO = 
+		{
+			GENERIC = "Awwww. So cute!",
+		    SLEEPING = "Sweet dreams, smelly.",
+        },
+        BUNDLE = "Our supplies are in there!",
+        BUNDLEWRAP = "Wrapping things up should make them easier to carry.",
 		BACKPACK = "You could fit a whole lot of science in there.",
 		BACONEGGS = "The perfect breakfast for a man of science.",
 		BANDAGE = "Seems sterile enough.",
@@ -685,6 +707,13 @@ return {
 		},
         BEEQUEENHIVEGROWN = "How in science did it get so big?!",
         BEEGUARD = "It's guarding the queen.",
+        HIVEHAT = "The world seems less a little crazy when I wear it.",
+        MINISIGN =
+        {
+            GENERIC = "I could draw better than that!",
+            UNDRAWN = "We should draw something on there.",
+        },
+        MINISIGN_ITEM = "It's not much use like this. We should place it.",
 		BEE =
 		{
 			GENERIC = "To bee or not to bee.",
@@ -725,6 +754,7 @@ return {
 		BEEFALOHAT = "That's a case of hat-hair waiting to happen.",
 		BEEFALOWOOL = "It smells like beefalo tears.",
 		BEEHAT = "Protects your skin, but squashes your meticulous coiffure.",
+        BEESWAX = "Beeswax is a scientifically proven preservative!",
 		BEEHIVE = "It's buzzing with activity.",
 		BEEMINE = "It buzzes when shaken.",
 		BEEMINE_MAXWELL = "Bottled mosquito rage!",
@@ -938,6 +968,11 @@ return {
 		CUTREEDS = "Cut reeds, ready for crafting and hobbying.",
 		CUTSTONE = "Seductively smooth.",
 		DEADLYFEAST = "A most potent dish.",
+		DEER = 
+		{
+			GENERIC = "Is it staring at me? ...No, I guess not.",
+			ANTLER = "What an impressive antler!",
+		},
 		DEERCLOPS = "It's enormous!!",
 		DEERCLOPS_EYEBALL = "This is really gross.",
 		EYEBRELLAHAT =	"It watches over the wearer.",
@@ -1365,6 +1400,7 @@ return {
 		PANDORASCHEST = "It may contain something fantastic! Or horrible.",
 		PANFLUTE = "To serenade the animals.",
 		PAPYRUS = "Some sheets of paper.",
+        WAXPAPER = "Some sheets of wax paper.",
 		PENGUIN = "Must be breeding season.",
 		PERD = "Stupid bird! Stay away from those berries!",
 		PEROGIES = "These turned out pretty good.",

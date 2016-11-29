@@ -21,20 +21,20 @@ local function ShouldSleep(inst)
 end
 
 local function oneat(inst, food)
-    if food ~= nil then
-        if food.components.edible.foodtype == FOODTYPE.GOODIES then
-            inst.sg.mem.queuethankyou = true
-        end
-    end
 
-	-- temp minigame around feeding, if fed at the right time, its max hunger goes up, if left too long, its max hunger goes down
+	-- minigame around feeding, if fed at the right time, its max hunger goes up, if left too long, its max hunger goes down
 	local perish = inst.components.perishable:GetPercent()
+	local is_wellfed = inst.components.crittertraits:IsDominantTrait("wellfed")
 	if perish <= STARVING_PERISH_PERCENT then
-		inst.components.perishable.perishtime = math.max(inst.components.perishable.perishtime - TUNING.CRITTER_HUNGERTIME_DELTA, TUNING.CRITTER_HUNGERTIME_MIN)
+		inst.components.perishable.perishtime = math.max(inst.components.perishable.perishtime - TUNING.CRITTER_HUNGERTIME_DELTA, is_wellfed and TUNING.CRITTER_DOMINANTTRAIT_HUNGERTIME_MIN or TUNING.CRITTER_HUNGERTIME_MIN)
 	elseif perish <= HUNGRY_PERISH_PERCENT then
-		inst.components.perishable.perishtime = math.min(inst.components.perishable.perishtime + TUNING.CRITTER_HUNGERTIME_DELTA, TUNING.CRITTER_HUNGERTIME_MAX)
+		inst.components.perishable.perishtime = math.min(inst.components.perishable.perishtime + TUNING.CRITTER_HUNGERTIME_DELTA, is_wellfed and TUNING.CRITTER_DOMINANTTRAIT_HUNGERTIME_MAX or TUNING.CRITTER_HUNGERTIME_MAX)
+	else
+		if is_wellfed and inst.components.perishable.perishtime < TUNING.CRITTER_DOMINANTTRAIT_HUNGERTIME_MIN then
+			inst.components.perishable.perishtime = TUNING.CRITTER_DOMINANTTRAIT_HUNGERTIME_MIN
+		end
 	end
-
+	
     inst.components.perishable:SetPercent(1)
     inst.components.perishable:StartPerishing()
 end
@@ -54,37 +54,16 @@ local function GetPeepChance(inst)
 end
 
 local function IsAffectionate(inst)
-    return (inst.components.perishable == nil or inst.components.perishable:GetPercent() > HUNGRY_PERISH_PERCENT) -- no affection if hungry
+    return (inst.components.perishable == nil or inst.components.perishable:GetPercent() > STARVING_PERISH_PERCENT)
             or false
 end
 
-local CRITTER_AVOID_COMBAT_CHECK_RADIUS = 10
-local CRITTER_AVOID_COMBAT_TIME = 10
-
-local function onfinishedavoidingcombat(inst)
-    inst._avoidcombattask = nil
+local function IsPlayful(inst)
+	return IsAffectionate(inst)
 end
 
-local function AvoidCombatCheck(inst)
-    if inst._avoidcombattask ~= nil then
-        return true
-    end
-
-    -- if any object around the player has a combat target then return true
-    local owner = inst.components.follower.leader
-    if owner then
-        local x,_,z = owner.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x, 0, z, CRITTER_AVOID_COMBAT_CHECK_RADIUS, {"_combat"}, {"wall"} )
-        for _,ent in pairs(ents) do
-            local combat = ent.components.combat
-            if combat and combat:HasTarget() then
-                inst._avoidcombattask = inst:DoTaskInTime(CRITTER_AVOID_COMBAT_TIME, onfinishedavoidingcombat) 
-                return true
-            end
-        end
-    end
-
-    return false
+local function IsSuperCute(inst)
+	return true
 end
 
 -------------------------------------------------------------------------------
@@ -151,11 +130,14 @@ end
 
 -------------------------------------------------------------------------------
 
-local function MakeCritter(name, animdata, face, diet, flying, data)
-    local assets = {}
-    for _,v in pairs(animdata.assets) do
-        table.insert(assets, Asset("ANIM", "anim/"..v..".zip"))
-    end
+local function MakeCritter(name, animname, face, diet, flying, data)
+    local assets =
+    {
+	    Asset("ANIM", "anim/"..animname.."_build.zip"),
+	    Asset("ANIM", "anim/"..animname.."_basic.zip"),
+	    Asset("ANIM", "anim/"..animname.."_emotes.zip"),
+	    Asset("ANIM", "anim/"..animname.."_emotes_wip.zip"),
+    }
 
     local function fn()
         local inst = CreateEntity()
@@ -178,8 +160,8 @@ local function MakeCritter(name, animdata, face, diet, flying, data)
             inst.Transform:SetEightFaced()
         end
 
-        inst.AnimState:SetBank(animdata.bank)
-        inst.AnimState:SetBuild(animdata.build)
+        inst.AnimState:SetBank(animname)
+        inst.AnimState:SetBuild(animname.."_build")
         inst.AnimState:PlayAnimation("idle_loop")
 
         if flying then
@@ -222,10 +204,18 @@ local function MakeCritter(name, animdata, face, diet, flying, data)
             return inst
         end
 
-        inst.GetPeepChance = GetPeepChance
-        inst.AvoidCombatCheck = AvoidCombatCheck
-        inst.IsAffectionate = IsAffectionate
+		inst.favoritefood = data.favoritefood
 
+        inst.GetPeepChance = GetPeepChance
+        inst.IsAffectionate = IsAffectionate
+        inst.IsSuperCute = IsSuperCute
+        inst.IsPlayful = IsPlayful
+        
+		inst.playmatetags = {"critter"}
+		if data ~= nil and data.playmatetags ~= nil then
+			inst.playmatetags = JoinArrays(inst.playmatetags, data.playmatetags)
+		end
+	
         inst:AddComponent("inspectable")
 
         inst:AddComponent("follower")
@@ -255,6 +245,7 @@ local function MakeCritter(name, animdata, face, diet, flying, data)
         inst.components.locomotor.walkspeed = TUNING.CRITTER_WALK_SPEED
 
         inst:AddComponent("crittertraits")
+        inst:AddComponent("timer")
 
         inst:SetBrain(brain)
         inst:SetStateGraph("SG"..name)
@@ -316,13 +307,13 @@ end
 
 local standard_diet = { FOODGROUP.OMNI }
 
-return MakeCritter("critter_lamb", {bank="sheepington", build="sheepington_build", assets={"sheepington_build", "sheepington_basic", "sheepington_emotes"}}, 6, standard_diet, false),
+return MakeCritter("critter_lamb", "sheepington", 6, standard_diet, false, {favoritefood="guacamole"}),
        MakeBuilder("critter_lamb"),
-       MakeCritter("critter_puppy", {bank="pupington", build="pupington_build", assets={"pupington_build", "pupington_basic", "pupington_emotes"}}, 4, standard_diet, false),
+       MakeCritter("critter_puppy", "pupington", 4, standard_diet, false, {favoritefood="monsterlasagna"}),
        MakeBuilder("critter_puppy"),
-       MakeCritter("critter_kitten", {bank="kittington", build="kittington_build", assets={"kittington_build", "kittington_basic", "kittington_emotes"}}, 6, standard_diet, false),
+       MakeCritter("critter_kitten", "kittington", 6, standard_diet, false, {favoritefood="fishsticks"}),
        MakeBuilder("critter_kitten"),
-       MakeCritter("critter_dragonling", {bank="dragonling", build="dragonling_build", assets={"dragonling_build", "dragonling_basic", "dragonling_emotes"}}, 6, standard_diet, true, { flyingsoundloop = "dontstarve_DLC001/creatures/together/dragonling/fly_LP" }),
+       MakeCritter("critter_dragonling", "dragonling", 6, standard_diet, true, {favoritefood="hotchili", flyingsoundloop="dontstarve_DLC001/creatures/together/dragonling/fly_LP"}),
        MakeBuilder("critter_dragonling"),
-       MakeCritter("critter_glomling", {bank="glomling", build="glomling_build", assets={"glomling_build", "glomling_basic", "glomling_emotes"}}, 6, standard_diet, true, { flyingsoundloop = "dontstarve_DLC001/creatures/together/glomling/flap_LP" }),
+       MakeCritter("critter_glomling", "glomling", 6, standard_diet, true, {favoritefood="taffy", playmatetags={"glommer"}, flyingsoundloop="dontstarve_DLC001/creatures/together/glomling/flap_LP"}),
        MakeBuilder("critter_glomling")

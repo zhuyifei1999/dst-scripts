@@ -83,10 +83,6 @@ local function sapling_fn(build, anim, growprefab, tag, fireproof, overrideloot)
         inst.AnimState:SetBuild(build)
         inst.AnimState:PlayAnimation(anim)
 
-		if not fireproof then
-            MakeDragonflyBait(inst, 3)
-        end
-
         inst:AddTag(tag)
 
         inst.entity:SetPristine()
@@ -112,17 +108,17 @@ local function sapling_fn(build, anim, growprefab, tag, fireproof, overrideloot)
         inst.components.workable:SetOnFinishCallback(digup)
         inst.components.workable:SetWorkLeft(1)
 
-		if not fireproof then
-			MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
-			inst:ListenForEvent("onignite", stopgrowing)
-			inst:ListenForEvent("onextinguish", startgrowing)
-			MakeSmallPropagator(inst)
+        if not fireproof then
+            MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
+            inst:ListenForEvent("onignite", stopgrowing)
+            inst:ListenForEvent("onextinguish", startgrowing)
+            MakeSmallPropagator(inst)
 
-			MakeHauntableIgnite(inst)
-		else
-			MakeHauntableWork(inst)
-		end
-				
+            MakeHauntableIgnite(inst)
+        else
+            MakeHauntableWork(inst)
+        end
+
         return inst
     end
     return fn

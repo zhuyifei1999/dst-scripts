@@ -105,11 +105,7 @@ function DefaultBurntStructureFn(inst)
     if inst.components.burnable then
         inst:RemoveComponent("burnable")
     end
-    inst:RemoveTag("dragonflybait_lowprio")
-    inst:RemoveTag("dragonflybait_medprio")
-    inst:RemoveTag("dragonflybait_highprio")
 end
-
 
 local burnfx = 
 {
@@ -126,7 +122,6 @@ function MakeSmallBurnable(inst, time, offset, structure, sym)
     inst.components.burnable:SetOnExtinguishFn(DefaultExtinguishFn)
     if structure then
         inst.components.burnable:SetOnBurntFn(DefaultBurntStructureFn)
-        MaybeMakeDragonflyBait(inst, 2)
     else
         inst.components.burnable:SetOnBurntFn(DefaultBurntFn)
     end
@@ -141,7 +136,6 @@ function MakeMediumBurnable(inst, time, offset, structure)
     inst.components.burnable:SetOnExtinguishFn(DefaultExtinguishFn)
     if structure then
         inst.components.burnable:SetOnBurntFn(DefaultBurntStructureFn)
-        MaybeMakeDragonflyBait(inst, 2)
     else
         inst.components.burnable:SetOnBurntFn(DefaultBurntFn)
     end
@@ -156,7 +150,6 @@ function MakeLargeBurnable(inst, time, offset, structure)
     inst.components.burnable:SetOnExtinguishFn(DefaultExtinguishFn)
     if structure then
         inst.components.burnable:SetOnBurntFn(DefaultBurntStructureFn)
-        MaybeMakeDragonflyBait(inst, 2)
     else
         inst.components.burnable:SetOnBurntFn(DefaultBurntFn)
     end
@@ -544,37 +537,11 @@ end
 MakeFeedablePetPristine = MakeFeedableSmallLivestockPristine
 MakeFeedablePet = MakeFeedableSmallLivestock
 
-local dragonprioritytag =
-{
-    "dragonflybait_lowprio",
-    "dragonflybait_medprio",
-    "dragonflybait_highprio",
-}
-function MakeDragonflyBait(inst, priority)
-    priority = priority or 1
-    if inst.dragonflypriority ~= priority then
-        if inst.dragonflypriority ~= nil then
-            inst:RemoveTag(dragonprioritytag[inst.dragonflypriority])
-        end
-        inst.dragonflypriority = priority
-        inst:AddTag(dragonprioritytag[priority])
-    end
-end
-
--- Used by the standard components above to only add the tags if it doesn't already have one
-function MaybeMakeDragonflyBait(inst, priority)
-    if inst.dragonflypriority == nil then
-        inst.dragonflypriority = priority or 1
-        inst:AddTag(dragonprioritytag[inst.dragonflypriority])
-    end
-end
-
-function RemoveDragonflyBait(inst)
-    if inst.dragonflypriority ~= nil then
-        inst:RemoveTag(dragonprioritytag[inst.dragonflypriority])
-        inst.dragonflypriority = nil
-    end
-end
+--Backward compatibility for mods
+--Dragonfly bait is not used in DST
+function MakeDragonflyBait() end
+MaybeMakeDragonflyBait = MakeDragonflyBait
+RemoveDragonflyBait = MakeDragonflyBait
 
 function MakeHauntableLaunch(inst, chance, speed, cooldown, haunt_value)
     if not inst.components.hauntable then inst:AddComponent("hauntable") end
