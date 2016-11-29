@@ -116,7 +116,7 @@ local function EquipWeapons(inst)
         meleeweapon.persists = false
         meleeweapon.components.inventoryitem:SetOnDroppedFn(meleeweapon.Remove)
         meleeweapon:AddComponent("equippable")
-        snotbomb:AddTag("meleeweapon")
+        meleeweapon:AddTag("meleeweapon")
 
         inst.components.inventory:GiveItem(meleeweapon)
         inst.weaponitems.meleeweapon = meleeweapon
@@ -209,14 +209,18 @@ local function fn()
     return inst
 end
 
-local function OnProjectileHit(inst, attacker, other)
+local function doprojectilehit(inst, attacker, other)
     inst.SoundEmitter:PlaySound(sounds.spit_hit)
     local x, y, z = inst.Transform:GetWorldPosition()
     SpawnPrefab("spat_splat_fx").Transform:SetPosition(x, 0, z)
 
+    if attacker ~= nil and not attacker:IsValid() then
+        attacker = nil
+    end
+
     -- stick whatever got actually hit by the projectile
     -- otherwise stick our target, if he was in splash radius
-    if other == nil then
+    if other == nil and attacker ~= nil then
         other = attacker.components.combat.target
         if other ~= nil and not (other:IsValid() and other:IsNear(inst, TUNING.SPAT_PHLEGM_RADIUS)) then
             other = nil
@@ -224,32 +228,40 @@ local function OnProjectileHit(inst, attacker, other)
     end
 
     if other ~= nil and other:IsValid() then
-        attacker.components.combat:DoAttack(other, inst.components.complexprojectile.owningweapon, inst)
+        if attacker ~= nil then
+            attacker.components.combat:DoAttack(other, inst.components.complexprojectile.owningweapon, inst)
+        end
+        if other.components.pinnable ~= nil then
+            other.components.pinnable:Stick()
+        end
+    end
+
+    return other
+end
+
+local function OnProjectileHit(inst, attacker, other)
+    doprojectilehit(inst, attacker, other)
+    inst:Remove()
+end
+
+local function oncollide(inst, other)
+    -- If there is a physics collision, try to do some damage to that thing.
+    -- This is so you can't hide forever behind walls etc.
+
+    local attacker = inst.components.complexprojectile.attacker
+    if other ~= doprojectilehit(inst, attacker) and
+        other ~= nil and
+        other:IsValid() and
+        other.components.combat ~= nil then
+        if attacker ~= nil and attacker:IsValid() then
+            attacker.components.combat:DoAttack(other, inst.components.complexprojectile.owningweapon, inst)
+        end
         if other.components.pinnable ~= nil then
             other.components.pinnable:Stick()
         end
     end
 
     inst:Remove()
-end
-
-local function oncollide(inst, other)
-    local attacker = inst.components.complexprojectile.attacker
-
-    OnProjectileHit(inst, attacker)
-    
-    -- If there is a physics collision, try to do some damage to that thing.
-    -- This is so you can't hide forever behind walls etc.
-
-    if other ~= nil and
-        other:IsValid() and
-        other.components.combat ~= nil and
-        not attacker.components.combat:TargetIs(other) then
-        attacker.components.combat:DoAttack(other, inst.components.complexprojectile.owningweapon, inst)
-        if other.components.pinnable ~= nil then
-            other.components.pinnable:Stick()
-        end
-    end
 end
 
 local function projectilefn()

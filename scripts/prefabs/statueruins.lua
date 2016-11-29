@@ -4,7 +4,7 @@ local assets =
     Asset("ANIM", "anim/statue_ruins_small_gem.zip"),
     Asset("ANIM", "anim/statue_ruins.zip"),
     Asset("ANIM", "anim/statue_ruins_gem.zip"),
-	Asset("MINIMAP_IMAGE", "statue_ruins"),
+    Asset("MINIMAP_IMAGE", "statue_ruins"),
 }
 
 local prefabs =
@@ -83,7 +83,7 @@ local function DoFx(inst)
     end
 end
 
-local function fade_to(inst, rad)
+local function fade_to(inst, rad, instant)
     rad = rad or 0
     if inst._lightradius1:value() ~= rad then
         local k = inst._lightframe:value() / inst._lightmaxframe
@@ -97,87 +97,105 @@ local function fade_to(inst, rad)
         end
         local maxframe = rad > 0 and MAX_LIGHT_ON_FRAME or MAX_LIGHT_OFF_FRAME
         inst._lightradius1:set(rad)
-        inst._lightframe:set(math.max(0, math.floor((radius - inst._lightradius0:value()) / (rad - inst._lightradius0:value()) * maxframe + .5)))
+        inst._lightframe:set(
+            instant and
+            (rad > 0 and MAX_LIGHT_ON_FRAME or MAX_LIGHT_OFF_FRAME) or
+            math.max(0, math.floor((radius - inst._lightradius0:value()) / (rad - inst._lightradius0:value()) * maxframe + .5))
+        )
         OnLightDirty(inst)
     end
 end
 
-local function ShowState(inst, phase, fromwork)
-    if inst.fading then
-        return
-    end
-
-    local suffix = ""
-    local workleft = inst.components.workable.workleft
-
-    if inst.small and not inst.SoundEmitter:PlayingSound("hoverloop") then
-        inst.SoundEmitter:PlaySound("dontstarve/common/floating_statue_hum", "hoverloop")
-    end
-    if inst.gemmed then
-        inst.AnimState:OverrideSymbol("swap_gem", inst.small and "statue_ruins_small_gem" or "statue_ruins_gem", inst.gemmed)
-    end
-
-    if phase ~= nil then
-        if phase == "warn" then
-            fade_to(inst, 2)
-        elseif phase == "wild" then
-            suffix = "_night"
-            fade_to(inst, 4)
-            inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
-            DoFx(inst)
-        elseif phase == "dawn" then
-            fade_to(inst, 2)
-            inst.AnimState:ClearBloomEffectHandle()
-            DoFx(inst)
-        elseif phase == "calm" then
-            fade_to(inst, 0)
-        end
-    elseif fromwork then
-        -- we don't actually have hit animations, we just play the animation
-    end
-
+local function ShowWorkState(inst, worker, workleft)
+    --NOTE: worker is nil when called from ShowPhaseState
     inst.AnimState:PlayAnimation(
-        ((workleft < TUNING.MARBLEPILLAR_MINE / 3 and "hit_low") or
-        (workleft < TUNING.MARBLEPILLAR_MINE * 2 / 3 and "hit_med") or
-        "idle_full")..suffix,
+        (   (workleft < TUNING.MARBLEPILLAR_MINE / 3 and "hit_low") or
+            (workleft < TUNING.MARBLEPILLAR_MINE * 2 / 3 and "hit_med") or
+            "idle_full"
+        )..(inst._suffix or ""),
         true
     )
 end
 
-local function OnWorked(inst, worked, workleft)
-    if workleft <= 0 then
-        inst.SoundEmitter:KillSound("hoverloop")
-        inst.components.lootdropper:DropLoot(inst:GetPosition())
-        local fx = SpawnAt("collapse_small", inst)
-        fx:SetMaterial("rock")
+local function OnWorkFinished(inst)--, worker)
+    inst.components.lootdropper:DropLoot(inst:GetPosition())
 
-        if TheWorld.state.isnightmarewild then
-            if math.random() <= 0.3 then
-                if math.random() <= 0.5 then
-                    SpawnAt("crawlingnightmare", inst)
-                else
-                    SpawnAt("nightmarebeak", inst)
-                end
+    local fx = SpawnAt("collapse_small", inst)
+    fx:SetMaterial("rock")
+
+    if TheWorld.state.isnightmarewild and math.random() <= .3 then
+        SpawnAt(math.random() < .5 and "nightmarebeak" or "crawlingnightmare", inst)
+    end
+
+    inst:Remove()
+end
+
+local function ShowPhaseState(inst, phase, instant)
+    if inst.fading then --V2C: WOT?
+        return
+    end
+
+    inst._phasetask = nil
+
+    if phase == "wild" then
+        fade_to(inst, 4, instant)
+
+        if inst._suffix == nil then
+            inst._suffix = "_night"
+            if not instant then
+                DoFx(inst)
             end
         end
 
-        inst:Remove()
+        inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
     else
-        ShowState(inst, nil, true)
+        fade_to(inst, (phase == "warn" or phase == "dawn") and 2 or 0, instant)
+
+        if inst._suffix ~= nil then
+            inst._suffix = nil
+            if not instant then
+                DoFx(inst)
+            end
+        end
+
+        inst.AnimState:ClearBloomEffectHandle()
+    end
+
+    ShowWorkState(inst, nil, inst.components.workable.workleft)
+end
+
+local function OnNightmarePhaseChanged(inst, phase, instant)
+    if inst._phasetask ~= nil then
+        inst._phasetask:Cancel()
+    end
+    if instant or inst:IsAsleep() then
+        ShowPhaseState(inst, phase, true)
+    else
+        inst._phasetask = inst:DoTaskInTime(math.random() * 2, ShowPhaseState, phase)
     end
 end
 
-local function OnPhaseChanged(inst, phase, instant)
-    if instant then
-        ShowState(inst, phase)
-    else
-        inst:DoTaskInTime(math.random() * 2, ShowState, phase)
+local function SetGemmed(inst, gem)
+    inst.gemmed = gem
+    inst.AnimState:OverrideSymbol("swap_gem", inst.small and "statue_ruins_small_gem" or "statue_ruins_gem", gem)
+    inst.components.lootdropper:SetLoot({ "thulecite", gem })
+    inst.components.lootdropper:AddChanceLoot("thulecite", .05)
+end
+
+local function OnEntitySleep(inst)
+    if inst.small then
+        inst.SoundEmitter:KillSound("hoverloop")
+    end
+    if inst._phasetask ~= nil then
+        inst._phasetask:Cancel()
+        ShowPhaseState(inst, TheWorld.state.nightmarephase, true)
     end
 end
 
-local function SetGemmedLoot(inst)
-    inst.components.lootdropper:SetLoot({ "thulecite", inst.gemmed })
-    inst.components.lootdropper:AddChanceLoot("thulecite", 0.05)
+local function OnEntityWake(inst)
+    if --[[inst.small and]] not inst.SoundEmitter:PlayingSound("hoverloop") then
+        inst.SoundEmitter:PlaySound("dontstarve/common/floating_statue_hum", "hoverloop")
+    end
 end
 
 local function onsave(inst, data)
@@ -186,8 +204,7 @@ end
 
 local function onload(inst, data)
     if data ~= nil and data.gem ~= nil then
-        inst.gemmed = data.gem
-        SetGemmedLoot(inst)
+        SetGemmed(inst, data.gem)
     end
 end
 
@@ -231,8 +248,7 @@ local function commonfn(small)
     inst._lightframe:set(inst._lightmaxframe)
     inst._lighttask = nil
 
-    --Sneak these into pristine state for optimization
-    inst:AddTag("_named")
+    inst:SetPrefabNameOverride("ancient_statue")
 
     inst.entity:SetPristine()
 
@@ -242,34 +258,30 @@ local function commonfn(small)
         return inst
     end
 
-    --Remove these tags so that they can be added properly when replicating components below
-    inst:RemoveTag("_named")
-
-    inst.small = small
-
     inst:AddComponent("inspectable")
-    inst.components.inspectable.nameoverride = "ANCIENT_STATUE"
-    inst:AddComponent("named")
-    inst.components.named:SetName(STRINGS.NAMES["ANCIENT_STATUE"])
 
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.MINE)
     inst.components.workable:SetWorkLeft(TUNING.MARBLEPILLAR_MINE)
-    inst.components.workable:SetOnWorkCallback(OnWorked)
+    inst.components.workable:SetOnWorkCallback(ShowWorkState)
+    inst.components.workable:SetOnFinishCallback(OnWorkFinished)
 
     inst:AddComponent("fader")
 
     inst:AddComponent("lootdropper")
 
-    inst:WatchWorldState("nightmarephase", OnPhaseChanged)
-    inst:DoTaskInTime(0, function()
-        OnPhaseChanged(inst, TheWorld.state.nightmarephase, true)
-    end)
+    inst:WatchWorldState("nightmarephase", OnNightmarePhaseChanged)
+    OnNightmarePhaseChanged(inst, TheWorld.state.nightmarephase, true)
 
     MakeHauntableWork(inst)
 
-    inst.OnSave = onsave
+    if small then
+        inst.small = true
+        inst.OnEntityWake = OnEntityWake
+    end
+    inst.OnEntitySleep = OnEntitySleep
     inst.OnLoad = onload
+    inst.OnSave = onsave
 
     return inst
 end
@@ -281,11 +293,7 @@ local function gem(small)
         return inst
     end
 
-    inst.gemmed = GetRandomItem(gemlist)
-
-    inst.AnimState:OverrideSymbol("swap_gem", small and "statue_ruins_small_gem" or "statue_ruins_gem", inst.gemmed)
-
-    SetGemmedLoot(inst)
+    SetGemmed(inst, GetRandomItem(gemlist), small)
 
     return inst
 end

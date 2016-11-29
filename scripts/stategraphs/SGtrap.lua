@@ -7,13 +7,13 @@ local events =
         end
     end),
     EventHandler("onpickup", function(inst)
-        if inst.components.trap then
+        if inst.components.trap ~= nil then
             inst.components.trap:Disarm()
         end
     end),
-    EventHandler("harvesttrap", function(inst)
-        if inst.components.trap then
-            inst.components.trap:Disarm()
+    EventHandler("harvesttrap", function(inst, data)
+        if inst.components.trap ~= nil then
+            inst.components.trap:Disarm(data ~= nil and data.sprung)
         end
     end),
 }

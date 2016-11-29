@@ -418,11 +418,7 @@ local states=
 			end
 		end,
 
-		onexit = function(inst)
-
-		end,
-
-		timeline=
+		timeline =
 		{
 			TimeEvent(5*FRAMES, function(inst) end),
 			TimeEvent(15*FRAMES, function(inst)
@@ -430,7 +426,9 @@ local states=
 				inst.sg:RemoveStateTag("busy")
 				inst.sg:AddStateTag("wantstoeat")
 				inst.last_eat_time = GetTime()
-				inst.brain:ForceUpdate()
+                if inst.brain ~= nil then
+                    inst.brain:ForceUpdate()
+                end
 			end),
 			TimeEvent(14*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/bearger/gulp") end),
 		},

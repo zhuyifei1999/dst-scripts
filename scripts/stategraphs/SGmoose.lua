@@ -186,7 +186,9 @@ local states=
 			TimeEvent(10*FRAMES, function(inst)
 				inst:PerformBufferedAction()
 				inst.sg:RemoveStateTag("busy")
-				inst.brain:ForceUpdate()
+                if inst.brain ~= nil then
+                    inst.brain:ForceUpdate()
+                end
 				inst.sg:AddStateTag("wantstoeat")
 			end),
 		},

@@ -352,7 +352,7 @@ function GetSortedSkinsList()
 							if a.item == b.item then 
 								return a.timestamp > b.timestamp
 							else
-								return GetSortCategoryForItem(a.item)..GetName(a.item) < GetSortCategoryForItem(b.item)..GetName(b.item)
+								return GetSortCategoryForItem(a.item)..GetName(a.item)..a.item < GetSortCategoryForItem(b.item)..GetName(b.item)..b.item
 							end
 						else 
 							return CompareRarities(a,b)
