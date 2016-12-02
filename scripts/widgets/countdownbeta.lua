@@ -8,6 +8,8 @@ require "os"
 
 local klei_tz = 28800--The time zone offset for vancouver
 
+local FLIP_SCALE = 1  -- set to -1 to flip
+
 local CountdownBeta = Class(Widget, function(self, owner, mode, image, update_name, release_date)
 	Widget._ctor(self, "Countdown")
 
@@ -30,7 +32,7 @@ local CountdownBeta = Class(Widget, function(self, owner, mode, image, update_na
 
 	elseif mode == "image" or mode == "reveal" or mode == "released" then
 		self.image = self:AddChild(Image("images/frontend.xml", image..".tex"))
-		self.image:SetScale(-1, 1, 1)
+		self.image:SetScale(FLIP_SCALE, 1, 1)
 		self.image:SetPosition(0, 90, 0)
 		self.image:SetClickable(false)
 
@@ -66,7 +68,7 @@ local CountdownBeta = Class(Widget, function(self, owner, mode, image, update_na
 			self.daysuntiltext:SetSize(25)
 
 			self.reveal_image = self:AddChild(Image("images/frontend.xml", image.."_reveal.tex"))
-			self.reveal_image:SetScale(-1, 1, 1)
+			self.reveal_image:SetScale(FLIP_SCALE, 1, 1)
 			self.reveal_image:SetPosition(0, 90, 0)
 			self.reveal_image:SetClickable(false)
 			self.reveal_image:SetTint(1,1,1,0)
@@ -129,7 +131,7 @@ local CountdownBeta = Class(Widget, function(self, owner, mode, image, update_na
 			self.daysuntiltext:SetString(update_name)
 
 			self.reveal_image = self:AddChild(Image("images/frontend.xml", image.."_reveal.tex"))
-			self.reveal_image:SetScale(-1, 1, 1)
+			self.reveal_image:SetScale(FLIP_SCALE, 1, 1)
 			self.reveal_image:SetPosition(0, 90, 0)
 			self.reveal_image:SetClickable(false)
 		end
@@ -162,7 +164,7 @@ function CountdownBeta:SetCountdownDate(date)
 	if not days_until and not days_since then return end
 	if days_until and days_since then
 		if days_until >= 1 then
-			self.days_until_string = string.format(STRINGS.UI.MAINSCREEN.NEXTUPDATEDAYS, math.ceil(days_until)) 
+			self.days_until_string = string.format(STRINGS.UI.MAINSCREEN.NEXTUPDATEDAYS, math.ceil(days_until)) .. "!"
 			--self.daysuntilanim:GetAnimState():PlayAnimation("about", true)
 		elseif days_until < 1 and days_until >= -1 and build_update_diff < 0 then
 			self.days_until_string = string.format(STRINGS.UI.MAINSCREEN.NEXTBUILDIMMINENT)
