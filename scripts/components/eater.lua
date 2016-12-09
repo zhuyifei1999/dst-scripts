@@ -211,7 +211,9 @@ function Eater:TestFood(food, testvalues)
 end
 
 function Eater:PrefersToEat(inst)
-    return self:TestFood(inst, self.preferseating)
+    --V2C: fruitcake hack. see how long this code stays untouched - _-"
+    return not (inst.prefab == "winter_food4" and self.inst:HasTag("player"))
+        and self:TestFood(inst, self.preferseating)
 end
 
 function Eater:CanEat(inst)

@@ -87,7 +87,11 @@ local actionhandlers =
     ActionHandler(ACTIONS.MANUALEXTINGUISH, "dolongaction"),
     ActionHandler(ACTIONS.TRAVEL, "doshortaction"),
     ActionHandler(ACTIONS.LIGHT, "give"),
-    ActionHandler(ACTIONS.UNLOCK, "give"),
+    ActionHandler(ACTIONS.UNLOCK, 
+		function(inst, action)
+			return action.target:HasTag("klaussacklock") and "dolongaction"
+					or "give"
+		end),
     ActionHandler(ACTIONS.TURNOFF, "give"),
     ActionHandler(ACTIONS.TURNON, "give"),
     ActionHandler(ACTIONS.ADDFUEL, "doshortaction"),

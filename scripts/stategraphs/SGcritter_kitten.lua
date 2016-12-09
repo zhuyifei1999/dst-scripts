@@ -40,10 +40,34 @@ local emotes =
 
 SGCritterStates.AddIdle(states, #emotes)
 SGCritterStates.AddRandomEmotes(states, emotes)
-SGCritterStates.AddEmote(states, "cute", nil)
-SGCritterStates.AddPetEmote(states, nil)
-SGCritterStates.AddCombatEmote(states, nil)
-SGCritterStates.AddPlayWithOtherCritter(states, events, nil)
+SGCritterStates.AddEmote(states, "cute", 
+		{
+			TimeEvent(7*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/kittington/emote") end),
+			TimeEvent(26*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/kittington/emote") end),
+		})
+SGCritterStates.AddPetEmote(states, 
+	{
+		TimeEvent(9*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/kittington/emote_nuzzle") end),
+	})
+SGCritterStates.AddCombatEmote(states,
+		{
+			loop =
+			{
+				TimeEvent(19*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/kittington/hiss") end),
+			},
+		})
+SGCritterStates.AddPlayWithOtherCritter(states, events,
+	{
+		active =
+		{
+			TimeEvent(9*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/kittington/pounce") end),
+			TimeEvent(20*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/kittington/pounce") end),
+			TimeEvent(28*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/kittington/pounce") end),
+			TimeEvent(36*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/kittington/pounce") end),
+			TimeEvent(48*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/kittington/pounce") end),
+			TimeEvent(60*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/kittington/pounce") end),
+		},
+	})
 SGCritterStates.AddEat(states,
         {
             TimeEvent(5*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/kittington/eat_pre") end),

@@ -189,6 +189,10 @@ function self:OnPostInit()
 			RetrofitNewContentPrefab(inst, "deerspawningground", 1, 10, deciduousfn)
 			RetrofitNewContentPrefab(inst, "deerspawningground", 1, 10, deciduousfn)
 			RetrofitNewContentPrefab(inst, "deerspawningground", 1, 10, deciduousfn)
+			RetrofitNewContentPrefab(inst, "deerspawningground", 1, 10, deciduousfn)
+			RetrofitNewContentPrefab(inst, "deerspawningground", 1, 10, deciduousfn)
+			RetrofitNewContentPrefab(inst, "deerspawningground", 1, 10, deciduousfn)
+			RetrofitNewContentPrefab(inst, "deerspawningground", 1, 10, deciduousfn)
 		end
 
 	end

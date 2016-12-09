@@ -653,6 +653,8 @@ return {
 		THULECITE_PIECES = "Several of these piles could be combined to form a bigger piece.",
 		POND_ALGAE = "It's some algae.",
 		GREENSTAFF = "It is a focusing tool.",
+		GIFT = "An elegantly wrapped social obligation.",
+        GIFTWRAP = "For wrapping odds and ends...",
 		POTTEDFERN = "How quaint.",
 		SENTRYWARD = "This is a conduit for strong revelatory magicks.",
         MOONROCK_PIECES = "This might be bad.",
@@ -1114,6 +1116,9 @@ return {
 			GENERIC = "Well it's certainly not deer to me.",
 			ANTLER = "What a staggering sight!",
 		},
+		DEER_ANTLER = "Filthy.",
+		DEER_GEMMED = "The gem imbues its attacks with a fearsome power.",
+		KLAUSSACKKEY = "Magic has done things to this beast's horn.",
 		DEERCLOPS = "Even I'm afraid of that guy.",
 		DEERCLOPS_EYEBALL = "Deerclops are so myopic.",
 		DEPLETED_GRASS =
@@ -1857,6 +1862,25 @@ return {
 		WATERBALLOON = "Do you have any idea how much this suit cost?",
 		WETGOOP = "How uncultured.",
 		WINTERHAT = "How disappointingly rustic.",
+
+		WINTER_TREE =
+        {
+			BURNT = "Can we turn our attentions back to survival now?",
+			BURNING = "It's a Winter's Feast miracle.",
+			CANDECORATE = "What a wretched thing.",
+			YOUNG = "Have we nothing better to do with our time?",
+        },
+        WINTER_TREESTAND = "How repulsively festive.",
+        WINTER_ORNAMENT = "Gaudy, like the rest of this shindig.",
+        WINTER_ORNAMENTLIGHT = "How frivolous.",
+        
+        WINTER_FOOD1 = "Stop looking at me, cookie fiend.", --gingerbread cookie
+        WINTER_FOOD2 = "Ah, celebrating freezing to death, I see.", --sugar cookie
+        WINTER_FOOD3 = "I don't even use a cane.", --candy cane
+        WINTER_FOOD4 = "It is unbound from time.", --fruitcake
+
+        KLAUS = "Charlie didn't make that one!",
+        KLAUS_SACK = "What goodies lie within?",
         WHIP = "Makes me feel like the master again.",
 		WORMHOLE =
 		{

@@ -298,6 +298,8 @@ local function fn()
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+        inst:ListenForEvent("fadedirty", OnFadeDirty)
+
         return inst
     end
 

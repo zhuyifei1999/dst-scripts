@@ -1109,3 +1109,13 @@ end
 function c_stopvote()
     TheNet:StopVote()
 end
+
+function c_spawndeerherd()
+	TheWorld.components.deerherdspawner:DebugSummonHerd()
+end
+
+function c_growantler()
+	if c_sel() ~= nil then
+		c_sel():PushEvent("timerdone", {name="growantler"})
+	end
+end

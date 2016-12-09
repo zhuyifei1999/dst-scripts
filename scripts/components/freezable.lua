@@ -126,7 +126,7 @@ function Freezable:GetDebugString()
         self.diminishingtask ~= nil and GetTaskRemaining(self.diminishingtask) or 0)
 end
 
-function Freezable:AddColdness(coldness, freezetime)
+function Freezable:AddColdness(coldness, freezetime, nofreeze)
     self.coldness = math.max(0, self.coldness + coldness)
     --V2C: when removing coldness, don't update freeze states here
     if coldness > 0 then
@@ -138,7 +138,7 @@ function Freezable:AddColdness(coldness, freezetime)
             local resistance = self:ResolveResistance()
             if self.coldness < resistance then
                 self:StartWearingOff()
-            elseif self.inst.sg ~= nil and self.inst.sg:HasStateTag("nofreeze") then
+            elseif self.inst.sg ~= nil and (nofreeze or self.inst.sg:HasStateTag("nofreeze")) then
                 self.coldness = resistance
                 self:StartWearingOff()
             else

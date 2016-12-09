@@ -104,6 +104,8 @@ local function addcone(name, spawn_prefab, bank, build, anim)
         inst.components.deployable:SetDeployMode(DEPLOYMODE.PLANT)
         inst.components.deployable.ondeploy = ondeploy
 
+		inst:AddComponent("winter_treeseed") -- for winters feast event to plant in winter_treestand
+
         -- This is left in for "save file upgrading", June 3 2015. We can remove it after some time.
         inst.OnLoad = OnLoad
 

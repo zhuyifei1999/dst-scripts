@@ -703,6 +703,8 @@ return {
 		THULECITE_PIECES = "Can smash together to make bigger piece!",
 		POND_ALGAE = "Plant is so small! Is funny to me.",
 		GREENSTAFF = "This stick has green gem in it.",
+        GIFT = "Is nice little present!",
+        GIFTWRAP = "Wolfgang needs help tying little bow.",
 		POTTEDFERN = "Wolfgang worry greenthumb is gangrene.",
 		SENTRYWARD = "Wolfgang thinks is full of secrets.",
         MOONROCK_PIECES = "Is little pieces from moon!",
@@ -1147,6 +1149,9 @@ return {
             GENERIC = "Not very mighty. More fragile.",
             ANTLER = "Fuzzy fragile beast got mightier.",
         },
+        DEER_ANTLER = "Is only mighty part of fragile beast.",
+        DEER_GEMMED = "You stand no chance in fight with Wolfgang!",
+        KLAUSSACKKEY = "Is very special antler!",
 		DEERCLOPS = "He looks mightier than me!",
 		DEERCLOPS_EYEBALL = "Yuck yuck yuck!",
 		DEPLETED_GRASS =
@@ -1843,7 +1848,25 @@ return {
 		WATERBALLOON = "Is very squishy-wobbly!",
 		WETGOOP = "Is not bad to eat, but is not good.",
         WHIP = "Good to floss teeth with.",
-		WINTERHAT = "It make ears happy in cold!",
+
+        WINTER_TREE =
+        {
+            BURNT = "Happy tree is burn now.",
+            --BURNING = "",
+            CANDECORATE = "Tree looks very happy!",
+            YOUNG = "Is growing.",
+        },
+        WINTER_TREESTAND = "Very nice little pot!",
+        WINTER_ORNAMENT = "Is so small in Wolfgang's hand.",
+        WINTER_ORNAMENTLIGHT = "Glass ball of twinkly light!",
+        
+        WINTER_FOOD1 = "Little man will crumble under my mighty teeth!", --gingerbread cookie
+        WINTER_FOOD2 = "Does Wolfgang have sugar in moustache?", --sugar cookie
+        WINTER_FOOD3 = "Little sugar stick.", --candy cane
+        WINTER_FOOD4 = "Wolfgang does not trust little fruit loaf.", --fruitcake
+        
+        KLAUS = "Wolfgang is not naughty! He is MIGHTY!",
+        KLAUS_SACK = "Something inside for Wolfgang, maybe?",
 		WORMHOLE =
 		{
 			GENERIC = "Like soft pillow, growing on ground.",

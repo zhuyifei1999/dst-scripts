@@ -600,6 +600,8 @@ return
         THULECITE_PIECES = "These could be combined to make a bigger piece.",
         POND_ALGAE = "It is a good thing this algae has no need for photosynthesis.",
         GREENSTAFF = "It appears to rewind time on an object.",
+        GIFT = "Oh goodness, how lovely!",
+        GIFTWRAP = "Wrapping presents is soothing work, isn't it?",
         POTTEDFERN = "A potted plant.",
 		SENTRYWARD = "Ah! A scrying orb.",
         MOONROCK_PIECES = "What a perplexing transformation.",
@@ -1099,6 +1101,25 @@ return
         WETGOOP = "Oh no. No, no, no. This won't do at all.",
         WHIP = "An instrument for developing pain compliance.",
         WINTERHAT = "I ought to teach the children how to pick up a stitch.",
+
+        WINTER_TREE =
+        {
+            BURNT = "Not to worry. We can still celebrate.",
+            BURNING = "Oh gracious, not again.",
+            CANDECORATE = "Lovely job on the tree, dears.",
+            YOUNG = "It'd surely snap under the weight of ornaments.",
+        },
+        WINTER_TREESTAND = "Let's grow a proper tree, shall we?",
+        WINTER_ORNAMENT = "Careful with it now, dear.",
+        WINTER_ORNAMENTLIGHT = "Electrical currents do have a certain appeal, don't they?",
+        
+        WINTER_FOOD1 = "What a delightful little individual.", --gingerbread cookie
+        WINTER_FOOD2 = "Just like holidays at the library!", --sugar cookie
+        WINTER_FOOD3 = "The perfect stir stick for hot cup of tea.", --candy cane
+        WINTER_FOOD4 = "An object with negligible temporal drag.", --fruitcake
+        
+        KLAUS = "It employs a powerful olfactory sense to locate prey.",
+        KLAUS_SACK = "How curious.",
         NIGHTMAREFUEL = "Ectoplasmic residue.",
         NIGHTLIGHT = "Curiously luminescent.",
         NIGHTSWORD = "Transdimensional weaponry.",
@@ -1702,7 +1723,10 @@ return
             GENERIC = "It has shed its antler for the warmer months.",
             ANTLER = "Its antler has grown in for winter.",
         },
-        DEERCLOPS = "Laurasiatheria!",
+        DEER_ANTLER = "It looks like a key, but it's quite brittle.",
+        DEER_GEMMED = "The poor creature has been forcibly fused to a magic gem.",
+        DEERCLOPS = "Laurasiatheria!",     
+        KLAUSSACKKEY = "Hmm. Quite a sturdy antler.",
         REDGEM = "It is warm.",
         BLUEGEM = "It is cold.",
         PURPLEGEM = "It gives off a strange aura.",

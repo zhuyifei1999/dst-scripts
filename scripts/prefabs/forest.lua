@@ -128,6 +128,7 @@ local prefabs =
     "shadow_knight",
     "shadow_bishop",
     "beequeenhive",
+    "klaus_sack",
 }
 
 local monsters =
@@ -217,6 +218,8 @@ local function master_postinit(inst)
     inst:AddComponent("frograin")
     inst:AddComponent("penguinspawner")
     inst:AddComponent("deerherdspawner")
+    inst:AddComponent("deerherding")
+    inst:AddComponent("klaussackspawner")
     inst:AddComponent("deerclopsspawner")
     inst:AddComponent("beargerspawner")
     inst:AddComponent("moosespawner")

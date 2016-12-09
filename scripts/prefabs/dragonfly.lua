@@ -83,15 +83,18 @@ local function PushMusic(inst)
 end
 
 local function OnIsEngagedDirty(inst)
-    if not inst._isengaged:value() then
-        if inst._musictask ~= nil then
-            inst._musictask:Cancel()
-            inst._musictask = nil
+    --Dedicated server does not need to trigger music
+    if not TheNet:IsDedicated() then
+        if not inst._isengaged:value() then
+            if inst._musictask ~= nil then
+                inst._musictask:Cancel()
+                inst._musictask = nil
+            end
+            inst._playingmusic = false
+        elseif inst._musictask == nil then
+            inst._musictask = inst:DoPeriodicTask(1, PushMusic)
+            PushMusic(inst)
         end
-        inst._playingmusic = false
-    elseif inst._musictask == nil then
-        inst._musictask = inst:DoPeriodicTask(1, PushMusic)
-        PushMusic(inst)
     end
 end
 

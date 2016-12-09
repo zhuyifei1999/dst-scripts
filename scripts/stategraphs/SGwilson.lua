@@ -263,7 +263,11 @@ local actionhandlers =
     ActionHandler(ACTIONS.MANUALEXTINGUISH, "dolongaction"),
     ActionHandler(ACTIONS.TRAVEL, "doshortaction"),
     ActionHandler(ACTIONS.LIGHT, "give"),
-    ActionHandler(ACTIONS.UNLOCK, "give"),
+    ActionHandler(ACTIONS.UNLOCK, 
+		function(inst, action)
+            return action.target.components.klaussacklock ~= nil and "dolongaction"
+					or "give"
+        end),
     ActionHandler(ACTIONS.TURNOFF, "give"),
     ActionHandler(ACTIONS.TURNON, "give"),
     ActionHandler(ACTIONS.ADDFUEL, "doshortaction"),
@@ -4652,7 +4656,7 @@ local states =
         name = "hit",
         tags = { "busy", "pausepredict" },
 
-        onenter = function(inst)
+        onenter = function(inst, frozen)
             ForceStopHeavyLifting(inst)
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
@@ -4662,11 +4666,11 @@ local states =
             inst.SoundEmitter:PlaySound("dontstarve/wilson/hit")
             DoHurtSound(inst)
 
-            local stun_frames = 6
+            local stun_frames = frozen and 10 or 6
             if inst.components.playercontroller ~= nil then
                 --Specify min frames of pause since "busy" tag may be
                 --removed too fast for our network update interval.
-                inst.components.playercontroller:RemotePausePrediction(stun_frames)
+                inst.components.playercontroller:RemotePausePrediction(stun_frames <= 7 and stun_frames or nil)
             end
             inst.sg:SetTimeout(stun_frames * FRAMES)
         end,
@@ -5313,12 +5317,12 @@ local states =
             stafflight:SetUp(colour, 1.9, .33)
         end,
 
-        timeline = 
+        timeline =
         {
-            TimeEvent(13*FRAMES, function(inst)
-                inst.SoundEmitter:PlaySound("dontstarve/wilson/use_gemstaff") 
+            TimeEvent(13 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/wilson/use_gemstaff")
             end),
-            TimeEvent(53*FRAMES, function(inst)
+            TimeEvent(53 * FRAMES, function(inst)
                 --V2C: NOTE! if we're teleporting ourself, we may be forced to exit state here!
                 inst:PerformBufferedAction()
             end),
@@ -5575,12 +5579,12 @@ local states =
             --     when freezable component tries to change state several
             --     times within one frame...
             if inst.components.freezable == nil then
-                inst.sg:GoToState("hit")
+                inst.sg:GoToState("hit", true)
             elseif inst.components.freezable:IsThawing() then
                 inst.sg.statemem.isstillfrozen = true
                 inst.sg:GoToState("thaw")
             elseif not inst.components.freezable:IsFrozen() then
-                inst.sg:GoToState("hit")
+                inst.sg:GoToState("hit", true)
             end
         end,
 
@@ -5591,7 +5595,7 @@ local states =
                 inst.sg:GoToState("thaw")
             end),
             EventHandler("unfreeze", function(inst)
-                inst.sg:GoToState("hit")
+                inst.sg:GoToState("hit", true)
             end),
         },
 
@@ -5630,7 +5634,7 @@ local states =
         events =
         {
             EventHandler("unfreeze", function(inst)
-                inst.sg:GoToState("hit")
+                inst.sg:GoToState("hit", true)
             end),
         },
 

@@ -65,6 +65,9 @@ local function OnDrawnFn(inst, image, src)
         if inst:HasTag("sign") then
             inst.components.drawable:SetCanDraw(false)
             inst._imagename:set(src ~= nil and (src.drawnameoverride or src:GetBasicDisplayName()) or "")
+            if src ~= nil then
+                inst.SoundEmitter:PlaySound("dontstarve/common/together/draw")
+            end
         end
     else
         inst.AnimState:ClearOverrideSymbol("SWAP_SIGN")

@@ -417,6 +417,8 @@ STRINGS =
         SPOILED_FOOD = "Rot",
         BERRIES = "Berries",
         BERRIES_JUICY = "Juicy Berries",
+        GIFT = "Gift",
+        GIFTWRAP = "Gift Wrap",
         BUNDLE = "Bundled Supplies",
         BUNDLEWRAP = "Bundling Wrap",
         BACKPACK = "Backpack",
@@ -1098,6 +1100,12 @@ STRINGS =
         STATUEGLOMMER = "Glommer's Statue",
 
         DEER = "No-Eyed Deer",
+        DEER_GEMMED = "No-Eyed Deer",
+        DEER_ANTLER = "Deer Antler",
+
+        KLAUS = "Klaus",
+        KLAUS_SACK = "Loot Stash",
+        KLAUSSACKKEY = "Stag Antler",
 
         CACTUS = "Cactus",
         CACTUS_MEAT = "Cactus Flesh",
@@ -1268,6 +1276,16 @@ STRINGS =
         HALLOWEENCANDY_10 = "Tentacle Lolli",
         HALLOWEENCANDY_11 = "Choco Pigs",
         CANDYBAG = "Candy Bag",
+
+        WINTER_TREESTAND = "Festive Tree Planter",
+        WINTER_TREE = "Winter's Feast Tree",
+        WINTER_ORNAMENT = "Festive Bauble",
+        WINTER_ORNAMENTLIGHT = "Festive Light",
+        
+        WINTER_FOOD1 = "Gingerbread Cookie",
+        WINTER_FOOD2 = "Sugar Cookie",
+        WINTER_FOOD3 = "Candy Cane",
+        WINTER_FOOD4 = "Eternal Fruitcake",
     },
 
     DIRECTIONS =
@@ -1338,6 +1356,7 @@ STRINGS =
         RESURRECTIONSTATUE = "Resurrect yourself via the power of meat.",
         BOARDS = "Like logs, but flatter.",
         RESEARCHLAB = "Unlock new crafting recipes!",
+        GIFTWRAP = "Wrap things up, nice and pretty!",
         BUNDLEWRAP = "Part and parcel to bundling your stuff.",
         BACKPACK = "Carry more stuff.",
         PIGGYBACK = "Carries a lot, but slows you down.",
@@ -1521,6 +1540,8 @@ STRINGS =
         CRITTER_LAMB_BUILDER = "Befriend a fluffy Ewelet.",
 
         CANDYBAG = "Only carries Hallowed Nights goodies.",
+        WINTER_TREESTAND = "Plant and decorate a Winter's Feast tree!",
+
     },
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
@@ -4619,6 +4640,7 @@ STRINGS.UI =
         CAVESTART = "Caves",
         
         EVENT_HALLOWEDNIGHTS_2016 = "Hallowed Nights",
+        EVENT_WINTERSFEAST_2016 = "Winters Feast",
     },
     
     SAVELOAD = 

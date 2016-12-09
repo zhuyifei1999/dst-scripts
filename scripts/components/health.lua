@@ -187,7 +187,7 @@ function Health:StartRegen(amount, period, interruptcurrentregen)
     -- We don't always do this just for backwards compatibility sake. While unlikely, it's possible some modder was previously relying on
     -- the fact that StartRegen didn't stop the existing task. If they want to continue using that behavior, they now just need to add
     -- a "false" flag as the last parameter of their StartRegen call. Generally, we want to restart the task, though.
-    if interruptcurrentregen == nil or interruptcurrentregen == true then
+    if interruptcurrentregen ~= false then
         self:StopRegen()
     end
 
@@ -327,10 +327,7 @@ function Health:DoDelta(amount, overtime, cause, ignore_invincible, afflicter, i
     elseif not ignore_invincible and (self.invincible or self.inst.is_teleporting == true) then
         return
     elseif amount < 0 and not ignore_absorb then
-        amount = amount - amount * self.absorb
-        if afflicter ~= nil and afflicter:HasTag("player") then
-            amount = amount - amount * self.playerabsorb
-        end
+        amount = amount - amount * (self.playerabsorb ~= 0 and afflicter ~= nil and afflicter:HasTag("player") and self.playerabsorb + self.absorb or self.absorb)
     end
 
     local old_percent = self:GetPercent()

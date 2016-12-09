@@ -729,10 +729,13 @@ local function fn()
 
     inst._fade = net_smallbyte(inst.GUID, "toadstool._fade", "fadedirty")
 
-    inst._playingmusic = false
-    inst:DoPeriodicTask(1, PushMusic, 0)
-
     inst.entity:SetPristine()
+
+    --Dedicated server does not need to trigger music
+    if not TheNet:IsDedicated() then
+        inst._playingmusic = false
+        inst:DoPeriodicTask(1, PushMusic, 0)
+    end
 
     if not TheWorld.ismastersim then
         inst:ListenForEvent("fadedirty", OnFadeDirty)

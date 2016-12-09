@@ -39,6 +39,14 @@ function Commander:ShareTargetToAllSoldiers(target)
     end
 end
 
+function Commander:DropAllSoldierTargets()
+    for k, v in pairs(self.soldiers) do
+        if k.components.combat ~= nil then
+            k.components.combat:SetTarget(nil)
+        end
+    end
+end
+
 function Commander:IsAnySoldierNotAlert()
     for k, v in pairs(self.soldiers) do
         if (k.components.sleeper ~= nil and k.components.sleeper:IsAsleep()) or

@@ -686,6 +686,8 @@ return {
 		THULECITE_PIECES = "Fragments of a powerful material.",
 		POND_ALGAE = "Some algae.",
 		GREENSTAFF = "I can see the power sparkling deep within.",
+		GIFT = "The only gift I desire is a swift end...",
+        GIFTWRAP = "Abby... how do I make the ribbon curly?",
 		POTTEDFERN = "Its growth is stunted by the limits of the pot.",
 		SENTRYWARD = "Grant us the power of sight...",
         MOONROCK_PIECES = "Now it will never decay...",
@@ -1162,6 +1164,9 @@ return {
 			GENERIC = "It lives in a constant state of fear.",
 			ANTLER = "That horn won't protect you.",
 		},
+		DEER_ANTLER = "We have grabbed life by its horn... though I wish we hadn't.",
+		DEER_GEMMED = "Some chains are physical...",
+		KLAUSSACKKEY = "The key to our prosperity...",
 		DEERCLOPS = "Death incarnate!",
 		DEERCLOPS_EYEBALL = "What terrors must it see.",
 		DEPLETED_GRASS =
@@ -1850,6 +1855,25 @@ return {
 		WETGOOP = "A miserable mess, just like life.",
         WHIP = "It only provides the illusion of control.",
 		WINTERHAT = "It helps stave off the encroaching cold.",
+
+		WINTER_TREE =
+        {
+			BURNT = "Death comes for all of us...",
+			--BURNING = "",
+			CANDECORATE = "Oh, joy.",
+			YOUNG = "It's not ready yet.",
+        },
+        WINTER_TREESTAND = "We can plant a Winter's Feast tree.",
+        WINTER_ORNAMENT = "Do you like this one, Abigail?",
+        WINTER_ORNAMENTLIGHT = "Bright lights... Cold nights...",
+        
+        WINTER_FOOD1 = "I'm going to eat you.", --gingerbread cookie
+        WINTER_FOOD2 = "Not nearly sweet enough to balance out this bitter world.", --sugar cookie
+        WINTER_FOOD3 = "If you eat it right... the end gets sharp...", --candy cane
+        WINTER_FOOD4 = "It is filled with chunks of evil.", --fruitcake
+        
+        KLAUS = "I see him when I'm sleeping...",
+        KLAUS_SACK = "Should we peek inside...?",
 		REVIVER = "Choices matter.",
 		SHADOWHEART = "It beats with a sorrow to span the skies and plumb the darkest seas.",
         LIFEINJECTOR = "We were not meant to cheat death.",

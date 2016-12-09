@@ -898,9 +898,14 @@ ACTIONS.PLANT.fn = function(act)
     if act.doer.components.inventory then
         local seed = act.doer.components.inventory:RemoveItem(act.invobject)
         if seed then
-            if act.target.components.grower:PlantItem(seed) then
+            if act.target.components.grower ~= nil and act.target.components.grower:PlantItem(seed) then
                 return true
-            else
+            elseif act.target:HasTag("winter_treestand") and
+				act.target.components.burnable ~= nil and not act.target.components.burnable:IsBurning() and not act.target.components.burnable:IsSmoldering() then
+				
+				act.target:PushEvent("plantwintertreeseed", {seed=seed})
+				return true
+			else
                 act.doer.components.inventory:GiveItem(seed)
             end
         end
@@ -1154,7 +1159,13 @@ ACTIONS.HEAL.fn = function(act)
 end
 
 ACTIONS.UNLOCK.fn = function(act)
-    if act.target.components.lock then
+	if act.target.components.klaussacklock then
+		local able, reason = act.target.components.klaussacklock:UseKey(act.invobject, act.doer)
+		if not able then
+			return false, reason
+		end
+		return true
+    elseif act.target.components.lock then
         if act.target.components.lock:IsLocked() then
             act.target.components.lock:Unlock(act.invobject, act.doer)
         --else

@@ -14,7 +14,7 @@ local ItemTile = Class(Widget, function(self, invitem)
     --on the item tile scaling
     self.isactivetile = false
     self.ispreviewing = false
-    self.ismoving = false
+    self.movinganim = nil
     self.ignore_stacksize_anim = nil
 
     -- NOT SURE WAHT YOU WANT HERE
@@ -64,19 +64,25 @@ local ItemTile = Class(Widget, function(self, invitem)
                 if self.ignore_stacksize_anim then
                     self:SetQuantity(data.stacksize)
                 elseif data.src_pos ~= nil then
+                    if self.movinganim ~= nil and not (self.movinganim.inst.components.uianim ~= nil and (self.movinganim.inst.components.uianim.pos_t or 0) > 0) then
+                        --cancel previous anim if it hasn't updated even once yet
+                        self.movinganim:Kill()
+                    end
                     local dest_pos = self:GetWorldPosition()
                     local im = Image(invitem.replica.inventoryitem:GetAtlas(), invitem.replica.inventoryitem:GetImage())
                     im:MoveTo(Vector3(TheSim:GetScreenPos(data.src_pos:Get())), dest_pos, .3, function()
                         --V2C: tile could be killed already if the user picked it
                         --     up with mouse cursor during the move to animation.
                         if self.inst:IsValid() then
-                            self.ismoving = false
+                            if self.movinganim == im then
+                                self.movinganim = nil
+                            end
                             self:SetQuantity(data.stacksize)
                             self:ScaleTo(self.basescale * 2, self.basescale, .25)
                         end
                         im:Kill()
                     end)
-                    self.ismoving = true
+                    self.movinganim = im
                 elseif not self.ispreviewing then
                     self:SetQuantity(data.stacksize)
                     self:ScaleTo(self.basescale * 2, self.basescale, .25)
@@ -147,7 +153,7 @@ function ItemTile:Refresh()
     self.ispreviewing = false
     self.ignore_stacksize_anim = nil
 
-    if not self.ismoving and self.item.replica.stackable ~= nil then
+    if self.movinganim == nil and self.item.replica.stackable ~= nil then
         self:SetQuantity(self.item.replica.stackable:StackSize())
     end
 

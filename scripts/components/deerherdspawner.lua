@@ -14,13 +14,14 @@ assert(TheWorld.ismastersim, "DeerHerdspawner should not exist on client")
 --[[ Private constants ]]
 --------------------------------------------------------------------------
 
-local STRUCTURE_DIST = 20
-local HERD_SPAWN_DIST = 40
-local STRUCTURES_PER_SPAWN = 4
+local HERD_SPAWN_DIST = 35
+local HERD_SPAWN_RADIUS = 4
 
-local HERD_SPAWN_SIZE = 8
+local HERD_SPAWN_SIZE = 5
 local HERD_SPAWN_SIZE_VARIANCE = 1
-local HERD_SPAWN_RADIUS = 10
+local HERD_OVERPOPULATION_SIZE = HERD_SPAWN_SIZE + HERD_SPAWN_SIZE_VARIANCE + 1
+
+
 
 --------------------------------------------------------------------------
 --[[ Public Member Variables ]]
@@ -36,7 +37,7 @@ local _spawners = {}
 local _activedeer = {}
 
 local _timetospawn = nil
-local _lastherdsummonday = 0 -- pretty sure i dont need this any more
+local _lastherdsummonday = -TUNING.NO_BOSS_TIME -- initialize the timer so it triggers in first autumn, even if its the starting season
 local _timetomigrate = nil
 
 --------------------------------------------------------------------------
@@ -85,57 +86,94 @@ inst:ListenForEvent("ms_registerdeerspawningground", OnRegisterDeerSpawningGroun
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
-local function FindHerdSpawningGroundPt()
-	if #_spawners == 0 then
-		if #AllPlayers == 0 then
-			return nil
-		end
-		
-		return AllPlayers[math.random(#AllPlayers)]:GetPosition()
+local function FindExistingHerd()
+    local numexistingdeer = 0
+    local existingherd = false
+    for k,v in pairs(_activedeer) do
+        numexistingdeer = numexistingdeer + 1
+        existingherd = existingherd or v
     end
+    
+	local spawnpt = nil
+	if existingherd then
+		spawnpt = TheWorld.components.deerherding.herdlocation
 
+		local notnearplayers = function(pt) 
+			local x, y, z = pt:Get()
+			return not IsAnyPlayerInRange(x, y, z, 35)
+		end
+
+		-- if there are no players near the existing herd, then spawn among them
+		-- otherwise, look for a location around the heard that is offscreen. They should spawn close enough to run up to the herd and join it.
+		if not notnearplayers(spawnpt) then
+			local result_offset = FindWalkableOffset(spawnpt, math.random() * 2 * PI, HERD_SPAWN_DIST, 8, true, false, notnearplayers) -- try avoiding walls
+			if result_offset == nil then
+				result_offset = FindWalkableOffset(spawnpt, math.random() * 2 * PI, HERD_SPAWN_DIST, 8, true, true, notnearplayers) -- ok don't try to avoid walls, but at least avoid water
+			end
+			if result_offset ~= nil then
+				spawnpt = spawnpt + result_offset
+			end
+		end
+	end
+
+	return numexistingdeer, spawnpt
+end
+
+local function FindHerdSpawningGroundPt()
 	_spawners = shuffleArray(_spawners)
 	for i,v in ipairs(_spawners) do
-	    if FindClosestPlayerToInst(v, HERD_SPAWN_DIST) == nil then
+	    if not v:IsNearPlayer(HERD_SPAWN_DIST) then
 			return v:GetPosition()
 	    end
 	end
 
-	return _spawners[1]:GetPosition()
+	return _spawners[1] and _spawners[1]:GetPosition() or nil
 end
 
 local function SummonHerd()
-	local loc = FindHerdSpawningGroundPt()
-	if loc == nil then
-		if TheWorld.state.isautumn == true and TheWorld.state.remainingdaysinseason > (TheWorld.state.autumnlength * 0.5) then
-			_timetospawn = (1 + math.random()) * TUNING.TOTAL_DAY_TIME
-		end
-
+	local existingsize, spawnpt = FindExistingHerd()
+	if existingsize >= HERD_OVERPOPULATION_SIZE then
 		return
 	end
 
-    --print("Spawn deer herd at:", loc.x, loc.z)
+	if spawnpt == nil then
+		spawnpt = FindHerdSpawningGroundPt()
+	end
 
-    local map = TheWorld.Map
-    local herd_target_size = GetRandomWithVariance(HERD_SPAWN_SIZE, HERD_SPAWN_SIZE_VARIANCE)
-    local num_spawned = 0
-    local i = 0
-    while num_spawned < herd_target_size and i < herd_target_size + 7 do
-		local var = Vector3(GetRandomWithVariance(0,HERD_SPAWN_RADIUS),0.0,GetRandomWithVariance(0,HERD_SPAWN_RADIUS))
-        local spawnPos = loc + Vector3(GetRandomWithVariance(0,HERD_SPAWN_RADIUS),0.0,GetRandomWithVariance(0,HERD_SPAWN_RADIUS))
-        i = i + 1
-        if map:IsAboveGroundAtPoint(spawnPos:Get()) then
-            num_spawned = num_spawned + 1
-            self.inst:DoTaskInTime(GetRandomWithVariance(1,1), self.SpawnDeer, spawnPos)
-        end
-    end
+	if spawnpt ~= nil then
+		local herd_target_size = GetRandomWithVariance(HERD_SPAWN_SIZE, HERD_SPAWN_SIZE_VARIANCE)
+		local num_spawned = 0
+		local i = 0
+		while num_spawned < herd_target_size and i < herd_target_size + 7 do
+			i = i + 1
+			local offset = FindWalkableOffset(spawnpt, math.random() * 2 * PI, HERD_SPAWN_RADIUS, 10, true, true)
+			if offset ~= nil then
+				local deerpos = spawnpt + offset
+				self:SpawnDeer(deerpos, spawnpt)
+				num_spawned = num_spawned + 1
+			end
+		end
+
+		if num_spawned > 0 then
+			inst.components.deerherding:Init(spawnpt, self)
+		else
+			spawnpt = nil -- flag to try again later
+		end
+	end
+
+	-- retry later
+	if spawnpt == nil then
+		if TheWorld.state.isautumn == true and TheWorld.state.remainingdaysinseason > (TheWorld.state.autumnlength * 0.5) then
+			_timetospawn = (1 + math.random()) * TUNING.TOTAL_DAY_TIME
+		end
+	end
 end
 
 local function QueueSummonHerd()
 	if TheWorld.state.isautumn == true and (TheWorld.state.cycles - _lastherdsummonday) > TheWorld.state.autumnlength then
 		_lastherdsummonday = TheWorld.state.cycles
 
-		local spawndelay = 0.2 * TheWorld.state.autumnlength * TUNING.TOTAL_DAY_TIME
+		local spawndelay = TheWorld.state.autumnlength * TUNING.TOTAL_DAY_TIME * (TheWorld.state.cycles == 0 and 0.5 or 0.2)
 		local spawnrandom = .33 * spawndelay
 		
 		_timetospawn = GetRandomWithVariance(spawndelay, spawnrandom)
@@ -165,28 +203,24 @@ local function MigrateHerd()
 	for k,_ in pairs(_activedeer) do
 		if k:IsValid() then
 			k:PushEvent("deerherdmigration")
-
-			self.inst:RemoveEventCallback("onremove", RemoveDeer, k)
-			self.inst:RemoveEventCallback("death", RemoveDeer, k)
 		end
 	end
-	_activedeer = {}
 end
-
 
 --------------------------------------------------------------------------
 --[[ Public member functions ]]
 --------------------------------------------------------------------------
 
-function self:SpawnDeer(pos, angle)
+function self:GetDeer()
+	return _activedeer
+end
+
+function self:SpawnDeer(pos, center)
     local deer = SpawnPrefab("deer")
     if deer then
-        --print("Spawn deer at", pos.x, pos.z, "angle:", tostring(angle))
-
         deer.Transform:SetPosition(pos:Get())
-        deer.Transform:SetRotation(angle or (math.random(360)-1))
-        --deer.sg:GoToState("appear")
-        
+        deer.Transform:SetRotation(math.random(360)-1)
+        deer.components.knownlocations:RememberLocation("herdoffset", pos - center)
         AddDeer(deer)
     end
 end
@@ -288,7 +322,7 @@ end
 
 -- TheWorld.components.deerherdspawner:DebugSummonHerd()
 function self:DebugSummonHerd(time)
-	_timetospawn = time or 5
+	_timetospawn = time or 1
 	_lastherdsummonday = TheWorld.state.cycles
 	self.inst:StartUpdatingComponent(self)
 end
@@ -299,5 +333,9 @@ end
 
 self:WatchWorldState("isautumn", QueueSummonHerd)
 self:WatchWorldState("iswinter", QueueHerdMigration)
+
+function self:OnPostInit()
+    QueueSummonHerd()
+end
 
 end)

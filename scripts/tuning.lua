@@ -403,11 +403,60 @@ function Tune(overrides)
         DEER_HEALTH = 350 * 2, -- harder for multiplayer
         DEER_ATTACK_RANGE = 3,
         DEER_ATTACK_PERIOD = 2,
+        DEER_ATTACKER_REMEMBER_DIST = 20,
         DEER_WALK_SPEED = 2.5,
         DEER_RUN_SPEED = 8,
-        DEER_TARGET_DIST = 8,
-        DEER_CHASE_DIST = 30,
-        DEER_FOLLOW_TIME = 30,
+
+        DEER_HERD_MOVE_DIST = 10,
+
+        DEER_GEMMED_DAMAGE = 50,
+        DEER_GEMMED_HEALTH = 1500,
+        DEER_GEMMED_AGGRO_DIST = 10,
+        DEER_GEMMED_FIRST_CAST_CD = 4,
+        DEER_GEMMED_CAST_RANGE = 12,
+        DEER_GEMMED_CAST_MAX_RANGE = 15,
+        DEER_GEMMED_MAX_SPELLS = 6,
+
+        DEER_ICE_BURN_PANIC_TIME = 10,
+        DEER_ICE_SPEED_PENALTY = .4,
+        DEER_ICE_TEMPERATURE = -2,
+        DEER_ICE_FATIGUE = .1,
+        DEER_ICE_FREEZE_LOCK_FRAMES = 30,
+        DEER_ICE_CAST_CD = 10,
+
+        DEER_FIRE_FREEZE_WEAR_OFF_TIME = 5,
+        DEER_FIRE_TEMPERATURE = 72, --must be higher than OVERHEAT_TEMP
+        DEER_FIRE_IGNITE_FRAMES = 30,
+        DEER_FIRE_CAST_CD = 8,
+
+        KLAUS_HEALTH = 10000,
+        KLAUS_HEALTH_REGEN = 25, --per second (only when not in combat)
+        KLAUS_HEALTH_REZ = .5,
+        KLAUS_DAMAGE = 75,
+        KLAUS_ATTACK_PERIOD = 3,
+        KLAUS_ATTACK_RANGE = 3,
+        KLAUS_HIT_RANGE = 4,
+        KLAUS_SPEED = 2.75,
+        KLAUS_HIT_RECOVERY = 1,
+
+        KLAUS_ENRAGE_SCALE = 1.4,
+
+        KLAUS_NAUGHTY_MIN_SPAWNS = 2,
+        KLAUS_NAUGHTY_MAX_SPAWNS = 6,
+
+        KLAUS_COMMAND_CD = 6,
+
+        KLAUS_CHOMP_CD = 6,
+        KLAUS_CHOMP_MIN_RANGE = 4.5,
+        KLAUS_CHOMP_RANGE = 7,
+        KLAUS_CHOMP_MAX_RANGE = 9, --for scaling
+        KLAUS_CHOMP_HIT_RANGE = 3.5,
+
+        KLAUS_AGGRO_DIST = 15,
+        KLAUS_DEAGGRO_DIST = 30,
+        KLAUS_EPICSCARE_RANGE = 10,
+
+		KLAUSSACK_RESPAWN_TIME = total_day_time * 20,
 
         BUZZARD_DAMAGE = 15,
         BUZZARD_ATTACK_RANGE = 2,
@@ -2306,6 +2355,31 @@ function Tune(overrides)
         VOTE_KICK_TIME = 10 * 60, --10min
 
         DICE_ROLL_COOLDOWN = 30,
+
+        WINTER_TREE_CHOP_SMALL = 5,  -- why are you doing this?
+        WINTER_TREE_CHOP_NORMAL = 10, -- but it's almost ready to decorate!
+        WINTER_TREE_CHOP_TALL = 15,  -- winters feast is over
+        WINTER_TREE_GROW_TIME =
+        {
+            {base=0, random=0}, --empty
+            {base=0.5*day_time, random=0.1*day_time}, --sapling
+            {base=1.0*day_time, random=0.2*day_time}, --short
+            {base=1.0*day_time, random=0.2*day_time}, --normal
+            {base=1.0*day_time, random=0.2*day_time}, --tall
+        },
+        
+        WINTERS_FEAST_TREE_DECOR_LOOT =
+        {
+			DEERCLOPS        = 1,
+			BEARGER          = 1,
+			DRAGONFLY        = 2,
+			MINOTAUR         = 1,
+			BEEQUEEN         = 2,
+			TOADSTOOL        = 2,
+			MOOSE            = 1, -- goose?
+        },
+
+        
     }
 end
 

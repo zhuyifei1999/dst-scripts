@@ -5,17 +5,17 @@ local assets =
 
 local candyinfo =
 {
-	{food=FOODTYPE.GOODIES, health=1, hunger=1, sanity=1}, -- Candy Apple
-	{food=FOODTYPE.GOODIES, health=1, hunger=0, sanity=2}, -- Candy Corn
-	{food=FOODTYPE.VEGGIE,  health=1, hunger=2, sanity=0}, -- Not-So-Candy Corn
-	{food=FOODTYPE.GOODIES, health=2, hunger=0, sanity=1}, -- Gummy Spider
-	{food=FOODTYPE.GOODIES, health=1, hunger=0, sanity=2}, -- Catcoon Candy
-	{food=FOODTYPE.VEGGIE,  health=2, hunger=1, sanity=0}, -- "Raisins"
-	{food=FOODTYPE.VEGGIE,  health=2, hunger=0, sanity=1}, -- Raisins
-	{food=FOODTYPE.GOODIES, health=1, hunger=0, sanity=2}, -- Ghost Pop
-	{food=FOODTYPE.GOODIES, health=1, hunger=2, sanity=0}, -- Jelly Worm
-	{food=FOODTYPE.GOODIES, health=2, hunger=0, sanity=1}, -- Tentacle Lolli
-	{food=FOODTYPE.GOODIES, health=1, hunger=1, sanity=1}, -- Choco Pigs
+    {food=FOODTYPE.GOODIES, health=1, hunger=1, sanity=1}, -- Candy Apple
+    {food=FOODTYPE.GOODIES, health=1, hunger=0, sanity=2}, -- Candy Corn
+    {food=FOODTYPE.VEGGIE,  health=1, hunger=2, sanity=0}, -- Not-So-Candy Corn
+    {food=FOODTYPE.GOODIES, health=2, hunger=0, sanity=1}, -- Gummy Spider
+    {food=FOODTYPE.GOODIES, health=1, hunger=0, sanity=2}, -- Catcoon Candy
+    {food=FOODTYPE.VEGGIE,  health=2, hunger=1, sanity=0}, -- "Raisins"
+    {food=FOODTYPE.VEGGIE,  health=2, hunger=0, sanity=1}, -- Raisins
+    {food=FOODTYPE.GOODIES, health=1, hunger=0, sanity=2}, -- Ghost Pop
+    {food=FOODTYPE.GOODIES, health=1, hunger=2, sanity=0}, -- Jelly Worm
+    {food=FOODTYPE.GOODIES, health=2, hunger=0, sanity=1}, -- Tentacle Lolli
+    {food=FOODTYPE.GOODIES, health=1, hunger=1, sanity=1}, -- Choco Pigs
 }
 
 assert(#candyinfo == NUM_HALLOWEENCANDY)
@@ -45,17 +45,18 @@ local function MakeCandy(num)
             return inst
         end
 
-        inst:AddComponent("inspectable")
-        inst:AddComponent("inventoryitem")
-        
+        inst:AddComponent("edible")
+        inst.components.edible.foodtype = candyinfo[num].food
+        inst.components.edible.hungervalue = candyinfo[num].hunger
+        inst.components.edible.healthvalue = candyinfo[num].health
+        inst.components.edible.sanityvalue = candyinfo[num].sanity
+
         inst:AddComponent("stackable")
         inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
-		inst:AddComponent("edible")
-		inst.components.edible.foodtype = candyinfo[num].food
-		inst.components.edible.hungervalue = candyinfo[num].hunger
-		inst.components.edible.healthvalue = candyinfo[num].health
-		inst.components.edible.sanityvalue = candyinfo[num].sanity
+        inst:AddComponent("tradable")
+        inst:AddComponent("inspectable")
+        inst:AddComponent("inventoryitem")
 
         MakeHauntableLaunch(inst)
 

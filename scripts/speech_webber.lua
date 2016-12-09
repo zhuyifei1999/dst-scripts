@@ -388,6 +388,8 @@ return {
 		THULECITE_PIECES = "Small bits of fancy rock.",
 		POND_ALGAE = "Just a normal pond plant.",
 		GREENSTAFF = "Magic taker-apart-er.",
+		GIFT = "Oh! What is it?!",
+        GIFTWRAP = "I want to give someone something nice!",
 		POTTEDFERN = "Mum would like this nice fern.",
 		SENTRYWARD = "Woah! I bet it sees so far!",
         MOONROCK_PIECES = "Oh... We don't like this!",
@@ -968,6 +970,9 @@ return {
 			GENERIC = "It looks soft.",
 			ANTLER = "Did you change your hair, deer? Looks good!",
 		},
+		DEER_ANTLER = "Haha, weird.",
+		DEER_GEMMED = "Don't hurt us and we won't hurt you!",
+		KLAUSSACKKEY = "I think maybe this goes somewhere.",
 		DEERCLOPS = "He might be able to digest me!",
 		DEERCLOPS_EYEBALL = "Yucktastic.",
 		EYEBRELLAHAT =	"Disturbing, but it'll keep us dry.",
@@ -1884,6 +1889,25 @@ return {
 			GENERIC = "How hot is it, Mr. Thermal Measurer?",
 			BURNT = "How come everything turns to ashes? It's sad.",
 		},
+
+		WINTER_TREE =
+        {
+			BURNT = "Aw... Why...",
+			BURNING = "Nooo! The tree!",
+			CANDECORATE = "Winter's Feast! It's Winter's Feast!",
+			YOUNG = "It still needs to grow some more.",
+        },
+        WINTER_TREESTAND = "It's just a boring planter without a tree.",
+        WINTER_ORNAMENT = "Can we get a boost? We can't reach the treetop.",
+        WINTER_ORNAMENTLIGHT = "We want to keep one for ourselves.",
+        
+        WINTER_FOOD1 = "I won't eat it. It's our friend now.", --gingerbread cookie
+        WINTER_FOOD2 = "Icy icy icing!", --sugar cookie
+        WINTER_FOOD3 = "Eat twenty candy canes! There's no candy shame!", --candy cane
+        WINTER_FOOD4 = "Yuck! What is that??", --fruitcake
+        
+        KLAUS = "That meanie imprisoned those deer!",
+        KLAUS_SACK = "Presents?!",
 		WORMHOLE =
 		{
 			GENERIC = "I think that thing is alive.",

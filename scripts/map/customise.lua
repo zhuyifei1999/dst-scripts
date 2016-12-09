@@ -134,6 +134,7 @@ local specialevent_descriptions = {
 	{ text = STRINGS.UI.SANDBOXMENU.SLIDENEVER, data = "none" },		
 	{ text = STRINGS.UI.SANDBOXMENU.SLIDEDEFAULT, data = "default" },		
 	{ text = STRINGS.UI.SANDBOXMENU.EVENT_HALLOWEDNIGHTS_2016, data = SPECIAL_EVENTS.HALLOWED_NIGHTS },	
+	{ text = STRINGS.UI.SANDBOXMENU.EVENT_WINTERSFEAST_2016, data = SPECIAL_EVENTS.WINTERS_FEAST },	
 }
 
 -- TODO: Read this from the tasks.lua

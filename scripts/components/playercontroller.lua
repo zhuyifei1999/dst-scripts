@@ -1594,6 +1594,7 @@ function PlayerController:OnUpdate(dt)
             self.controller_attack_target = nil
             self.controller_attack_target_ally_cd = nil
             self.LMBaction, self.RMBaction = self.inst.components.playeractionpicker:DoGetMouseActions()
+
             --If an action has a target, highlight the target.
             --If an action has no target and no pos, then it should
             --be an inventory action where doer is ourself and we are

@@ -139,7 +139,7 @@ params.cookpot =
 }
 
 function params.cookpot.itemtestfn(container, item, slot)
-    return not container.inst:HasTag("burnt") and cooking.IsCookingIngredient(item.prefab)
+    return cooking.IsCookingIngredient(item.prefab) and not container.inst:HasTag("burnt")
 end
 
 function params.cookpot.widget.buttoninfo.fn(inst)
@@ -223,11 +223,7 @@ params.mushroom_light =
 }
 
 function params.mushroom_light.itemtestfn(container, item, slot)
-	if container.inst:HasTag("burnt") then
-		return false
-	end
-	
-	return item:HasTag("lightbattery")
+    return item:HasTag("lightbattery") and not container.inst:HasTag("burnt")
 end
 
 --------------------------------------------------------------------------
@@ -237,13 +233,35 @@ end
 params.mushroom_light2 = deepcopy(params.mushroom_light)
 
 function params.mushroom_light2.itemtestfn(container, item, slot)
-	if container.inst:HasTag("burnt") then
-		return false
-	end
-	
-	return item:HasTag("lightbattery") or item:HasTag("spore")
+    return (item:HasTag("lightbattery") or item:HasTag("spore")) and not container.inst:HasTag("burnt")
 end
 
+--------------------------------------------------------------------------
+--[[ winter_tree ]]
+--------------------------------------------------------------------------
+
+params.winter_tree =
+{
+    widget =
+    {
+        slotpos = {},
+        animbank = "ui_backpack_2x4",
+        animbuild = "ui_backpack_2x4",
+        pos = Vector3(250, 0, 0),
+        side_align_tip = 100,
+    },
+    acceptsstacks = false,
+    type = "pack",
+}
+
+for y = 0, 3 do
+    table.insert(params.winter_tree.widget.slotpos, Vector3(-162, -75 * y + 114, 0))
+    table.insert(params.winter_tree.widget.slotpos, Vector3(-162 + 75, -75 * y + 114, 0))
+end
+
+function params.winter_tree.itemtestfn(container, item, slot)
+    return item:HasTag("winter_ornament") and not container.inst:HasTag("burnt")
+end
 
 --------------------------------------------------------------------------
 --[[ icebox ]]
@@ -421,9 +439,8 @@ for y = 0, 6 do
 end
 
 function params.candybag.itemtestfn(container, item, slot)
-	return item:HasTag("halloweencandy") or (string.find(item.prefab, "trinket_") == 1)
+    return item:HasTag("halloweencandy") or string.sub(item.prefab, 1, 8) == "trinket_"
 end
-
 
 --------------------------------------------------------------------------
 

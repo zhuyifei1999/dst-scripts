@@ -23,7 +23,7 @@ local function InitEnvelope()
 				{ 1, IntColour(255, 255, 255, 200) },
 			})
 
-		local max_scale = 1
+		local max_scale = 0.3
 		EnvelopeManager:AddVector2Envelope(
 			scale_envelope_name,
 			{
@@ -56,6 +56,7 @@ local function fn()
 	effect:SetColourEnvelope( 0, colour_envelope_name )
 	effect:SetScaleEnvelope( 0, scale_envelope_name )
 	effect:SetBlendMode( 0, BLENDMODE.Premultiplied )
+    effect:SetUVFrameSize( 0, 0.25, 1 )
 	effect:SetSortOrder( 0, 3 )
 	effect:SetAcceleration( 0, -1, -9.80, 1 )
 	effect:SetDragCoefficient( 0, 0.8 )
@@ -72,24 +73,48 @@ local function fn()
 
 	local bx, by, bz = 0, 20, 0
 	local emitter_shape = CreateBoxEmitter( bx, by, bz, bx + 20, by, bz + 20 )
-
-	local function emit_fn()
+	
+	local function emit_winter_fn()
 		local vx, vy, vz = 0, 0, 0
 		local lifetime = min_lifetime + (max_lifetime - min_lifetime) * UnitRand()
 		local px, py, pz = emitter_shape()
 
-		effect:AddParticle(
+		local uv_offset = math.random(0, 3) * 0.25
+		
+		effect:AddParticleUV(
 			0,
 			lifetime,			-- lifetime
 			px, py, pz,			-- position
-			vx, vy, vz			-- velocity
+			vx, vy, vz,			-- velocity
+            uv_offset, 0        -- uv offset
+		)
+	end
+	
+	local function emit_fn()
+		local vx, vy, vz = 0, 0, 0
+		local lifetime = min_lifetime + (max_lifetime - min_lifetime) * UnitRand()
+		local px, py, pz = emitter_shape()
+		
+		effect:AddParticleUV(
+			0,
+			lifetime,			-- lifetime
+			px, py, pz,			-- position
+			vx, vy, vz,			-- velocity
+            0, 0        -- uv offset
 		)
 	end
 
 	local function updateFunc()
-		while inst.num_particles_to_emit > 1 do
-			emit_fn(effect)
-			inst.num_particles_to_emit = inst.num_particles_to_emit - 1
+		if IsSpecialEventActive( SPECIAL_EVENTS.WINTERS_FEAST ) then
+			while inst.num_particles_to_emit > 1 do
+				emit_winter_fn(effect)
+				inst.num_particles_to_emit = inst.num_particles_to_emit - 1
+			end
+		else
+			while inst.num_particles_to_emit > 1 do
+				emit_fn(effect)
+				inst.num_particles_to_emit = inst.num_particles_to_emit - 1
+			end
 		end
 
 		inst.num_particles_to_emit = inst.num_particles_to_emit + inst.particles_per_tick

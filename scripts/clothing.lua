@@ -778,6 +778,24 @@ CLOTHING =
 		torso_tuck = "skirt",
 		rarity = "Distinguished",
 	},
+	body_yule_coat =
+	{
+		type = "body",
+		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "foot", "hand", "leg", "torso", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		override_build = "body_yule_coat",
+		torso_tuck = "untucked",
+		rarity = "Event",
+	},
+	body_yule_dress =
+	{
+		type = "body",
+		symbol_overrides = { "arm_lower", "arm_lower_cuff", "arm_upper", "foot", "hand", "leg", "skirt", "torso", "torso_pelvis", },
+		symbol_hides = { },
+		override_build = "body_yule_dress",
+		torso_tuck = "skirt",
+		rarity = "Event",
+	},
 	feet_bootie_black_scribble =
 	{
 		type = "feet",

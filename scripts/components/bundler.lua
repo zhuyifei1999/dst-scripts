@@ -116,7 +116,7 @@ function Bundler:OnFinishBundling()
                         table.insert(items, item)
                     end
                 end
-                wrapped.components.unwrappable:WrapItems(items)
+                wrapped.components.unwrappable:WrapItems(items, self.inst)
                 self.bundlinginst:Remove()
                 self.bundlinginst = nil
                 self.itemprefab = nil

@@ -29,7 +29,7 @@ function Unwrappable:SetOnUnwrappedFn(fn)
     self.onunwrappedfn = fn
 end
 
-function Unwrappable:WrapItems(items)
+function Unwrappable:WrapItems(items, doer)
     if #items > 0 then
         self.itemdata = {}
         for i, v in ipairs(items) do
@@ -37,7 +37,7 @@ function Unwrappable:WrapItems(items)
             table.insert(self.itemdata, data)
         end
         if self.onwrappedfn ~= nil then
-            self.onwrappedfn(self.inst, #self.itemdata)
+            self.onwrappedfn(self.inst, #self.itemdata, doer)
         end
     end
 end
@@ -70,7 +70,7 @@ function Unwrappable:Unwrap(doer)
         self.itemdata = nil
     end
     if self.onunwrappedfn ~= nil then
-        self.onunwrappedfn(self.inst, pos)
+        self.onunwrappedfn(self.inst, pos, doer)
     end
 end
 

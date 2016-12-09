@@ -387,6 +387,8 @@ return {
 		THULECITE_PIECES = "Looks like shiny popped corn.",
 		POND_ALGAE = "Ancient flora.",
 		GREENSTAFF = "Twirly green power.",
+        GIFT = "A gift! From... the gods?",
+        GIFTWRAP = "I must show my allies how much they are valued!",
 		POTTEDFERN = "What are you meant to do with such a thing?",
 		SENTRYWARD = "May the secrets of this land be divulged by the gods.",
         MOONROCK_PIECES = "It has faced Mani's wrath.",
@@ -963,6 +965,9 @@ return {
             GENERIC = "The beauty of Freya dwells in all creatures!",
             ANTLER = "Skadi has bestowed a gift on Freya's creature.",
         },
+        DEER_ANTLER = "The unicorn's horn, in the flesh!",
+        DEER_GEMMED = "Tis a magical woodland creature!",
+        KLAUSSACKKEY = "What wonders will you reveal?",
 		DEERCLOPS = "Rays will shine through my spear and poke out your eyeball!",
 		DEERCLOPS_EYEBALL = "Delicious! I should like to share it with my new allies.",
 		EYEBRELLAHAT = "Don't get rain in your eye!",
@@ -1862,6 +1867,25 @@ return {
 			GENERIC = "If only it measured the heat of battle.",
 			BURNT = "The measuring device has been slain by Loge.",
 		},
+
+        WINTER_TREE =
+        {
+            BURNT = "Its beauty lives on in our hearts.",
+            --BURNING = "",
+            CANDECORATE = "A majestic pine, worthy of celebration!",
+            YOUNG = "Grow strong, young one! It is your destiny!",
+        },
+        WINTER_TREESTAND = "It awaits a grand tree!",
+        WINTER_ORNAMENT = "A fragile beauty that must be protected.",
+        WINTER_ORNAMENTLIGHT = "Tis a light enchantment, trapped inside a glass ball.",
+        
+        WINTER_FOOD1 = "How dost I free you from the bread, man of ginger??", --gingerbread cookie
+        WINTER_FOOD2 = "Like a snowflake, it is a gift from the heavens!", --sugar cookie
+        WINTER_FOOD3 = "T'would look as divine on the tree as in mine mouth!", --candy cane
+        WINTER_FOOD4 = "Stay back, foul creation!", --fruitcake
+        
+        KLAUS = "I shall free thy deer this day!",
+        KLAUS_SACK = "A secret, kept under lock and key!",
 		WORMHOLE =
 		{
 			GENERIC = "Does it swallow those fallen in battle?",
@@ -1893,7 +1917,7 @@ return {
         --OBSIDIANMACHETE = "A tool for cutting. A tool for burning.",
 	},
 	DESCRIBE_GENERIC = "It is an artifact of this realm.",
-	DESCRIBE_TOODARK = "Too dark even for battle.",
+	DESCRIBE_TOODARK = "Too dark, even for battle.",
 	DESCRIBE_SMOLDERING = "Flames will soon consume it.",
 
 	EAT_FOOD =

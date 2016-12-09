@@ -1,71 +1,60 @@
-local assets =
-{
-    Asset("ANIM", "anim/bundle.zip"),
-}
-
-local assets_bundled =
-{
-    Asset("ANIM", "anim/bundle.zip"),
-    Asset("INV_IMAGE", "bundle_small"),
-    Asset("INV_IMAGE", "bundle_medium"),
-    Asset("INV_IMAGE", "bundle_large"),
-}
-
-local prefabs =
-{
-    "bundle",
-    "bundle_container",
-}
-
-local prefabs_bundled =
-{
-    "ash",
-    "bundle_unwrap",
-    "waxpaper",
-}
-
 local function OnStartBundling(inst)--, doer)
     inst.components.stackable:Get():Remove()
 end
 
-local function fn()
-    local inst = CreateEntity()
+local function MakeWrap(name, cheapfuel)
+    local assets =
+    {
+        Asset("ANIM", "anim/"..name..".zip"),
+    }
 
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddNetwork()
+    local prefabs =
+    {
+        name,
+        "bundle_container",
+    }
 
-    MakeInventoryPhysics(inst)
+    local function fn()
+        local inst = CreateEntity()
 
-    inst.AnimState:SetBank("bundle")
-    inst.AnimState:SetBuild("bundle")
-    inst.AnimState:PlayAnimation("idle")
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddNetwork()
 
-    inst.entity:SetPristine()
+        MakeInventoryPhysics(inst)
 
-    if not TheWorld.ismastersim then
+        inst.AnimState:SetBank(name)
+        inst.AnimState:SetBuild(name)
+        inst.AnimState:PlayAnimation("idle")
+
+        inst.entity:SetPristine()
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst:AddComponent("stackable")
+        inst.components.stackable.maxsize = TUNING.STACK_SIZE_MEDITEM
+
+        inst:AddComponent("inspectable")
+        inst:AddComponent("inventoryitem")
+
+        inst:AddComponent("bundlemaker")
+        inst.components.bundlemaker:SetBundlingPrefabs("bundle_container", name)
+        inst.components.bundlemaker:SetOnStartBundlingFn(OnStartBundling)
+
+        inst:AddComponent("fuel")
+        inst.components.fuel.fuelvalue = cheapfuel and TUNING.TINY_FUEL or TUNING.MED_FUEL
+
+        MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
+        MakeSmallPropagator(inst)
+        inst.components.propagator.flashpoint = 10 + math.random() * 5
+        MakeHauntableLaunchAndIgnite(inst)
+
         return inst
     end
 
-    inst:AddComponent("stackable")
-    inst.components.stackable.maxsize = TUNING.STACK_SIZE_MEDITEM
-
-    inst:AddComponent("inspectable")
-    inst:AddComponent("inventoryitem")
-
-    inst:AddComponent("bundlemaker")
-    inst.components.bundlemaker:SetBundlingPrefabs("bundle_container", "bundle")
-    inst.components.bundlemaker:SetOnStartBundlingFn(OnStartBundling)
-
-    inst:AddComponent("fuel")
-    inst.components.fuel.fuelvalue = TUNING.MED_FUEL
-
-    MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
-    MakeSmallPropagator(inst)
-    inst.components.propagator.flashpoint = 10 + math.random() * 5
-    MakeHauntableLaunchAndIgnite(inst)
-
-    return inst
+    return Prefab(name.."wrap", fn, assets, prefabs)
 end
 
 local function container_fn()
@@ -93,26 +82,6 @@ local function container_fn()
     return inst
 end
 
-local function OnWrapped(inst, num)
-    local sizename =
-        (num > 3 and "large") or
-        (num > 1 and "medium") or
-        "small"
-
-    inst.AnimState:PlayAnimation("idle_"..sizename)
-    inst.components.inventoryitem:ChangeImageName("bundle_"..sizename)
-end
-
-local function OnUnwrapped(inst, pos)
-    if inst.burnt then
-        SpawnPrefab("ash").Transform:SetPosition(pos:Get())
-    else
-        SpawnPrefab("waxpaper").Transform:SetPosition(pos:Get())
-        SpawnPrefab("bundle_unwrap").Transform:SetPosition(pos:Get())
-    end
-    inst:Remove()
-end
-
 local function onburnt(inst)
     inst.burnt = true
     inst.components.unwrappable:Unwrap()
@@ -126,51 +95,137 @@ local function onextinguish(inst)
     inst.components.unwrappable.canbeunwrapped = true
 end
 
-local function bundle_fn()
-    local inst = CreateEntity()
+local function MakeBundle(name, variations, loot)
+    local assets =
+    {
+        Asset("ANIM", "anim/"..name..".zip"),
+    }
 
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddNetwork()
+    if variations ~= nil then
+        for i = 1, variations do
+            table.insert(assets, Asset("INV_IMAGE", name.."_small"..tostring(i)))
+            table.insert(assets, Asset("INV_IMAGE", name.."_medium"..tostring(i)))
+            table.insert(assets, Asset("INV_IMAGE", name.."_large"..tostring(i)))
+        end
+    else
+        table.insert(assets, Asset("INV_IMAGE", name.."_small"))
+        table.insert(assets, Asset("INV_IMAGE", name.."_medium"))
+        table.insert(assets, Asset("INV_IMAGE", name.."_large"))
+    end
 
-    MakeInventoryPhysics(inst)
+    local prefabs =
+    {
+        "ash",
+        name.."_unwrap",
+    }
 
-    inst.AnimState:SetBank("bundle")
-    inst.AnimState:SetBuild("bundle")
-    inst.AnimState:PlayAnimation("idle_large")
+    if loot ~= nil then
+        for i, v in ipairs(loot) do
+            table.insert(prefabs, v)
+        end
+    end
 
-    inst:AddTag("bundle")
+    local function OnWrapped(inst, num, doer)
+        local suffix =
+            (num > 3 and "_large") or
+            (num > 1 and "_medium") or
+            "_small"
 
-    --unwrappable (from unwrappable component) added to pristine state for optimization
-    inst:AddTag("unwrappable")
+        if variations ~= nil then
+            if inst.variation == nil then
+                inst.variation = math.random(variations)
+            end
+            suffix = suffix..tostring(inst.variation)
+        end
 
-    inst.entity:SetPristine()
+        inst.AnimState:PlayAnimation("idle"..suffix)
+        inst.components.inventoryitem:ChangeImageName(name..suffix)
 
-    if not TheWorld.ismastersim then
+        if doer ~= nil and doer.SoundEmitter ~= nil then
+            doer.SoundEmitter:PlaySound("dontstarve/common/together/packaged")
+        end
+    end
+
+    local function OnUnwrapped(inst, pos, doer)
+        if inst.burnt then
+            SpawnPrefab("ash").Transform:SetPosition(pos:Get())
+        else
+            if loot ~= nil then
+                for i, v in ipairs(loot) do
+                    SpawnPrefab(v).Transform:SetPosition(pos:Get())
+                end
+            end
+            SpawnPrefab(name.."_unwrap").Transform:SetPosition(pos:Get())
+        end
+        if doer ~= nil and doer.SoundEmitter ~= nil then
+            doer.SoundEmitter:PlaySound("dontstarve/common/together/packaged")
+        end
+        inst:Remove()
+    end
+
+    local OnSave = variations ~= nil and function(inst, data)
+        data.variation = inst.variation
+    end or nil
+
+    local OnPreLoad = variations ~= nil and function(inst, data)
+        inst.variation = data.variation
+    end or nil
+
+    local function fn()
+        local inst = CreateEntity()
+
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddNetwork()
+
+        MakeInventoryPhysics(inst)
+
+        inst.AnimState:SetBank(name)
+        inst.AnimState:SetBuild(name)
+        inst.AnimState:PlayAnimation(variations ~= nil and "idle_large1" or "idle_large")
+
+        inst:AddTag("bundle")
+
+        --unwrappable (from unwrappable component) added to pristine state for optimization
+        inst:AddTag("unwrappable")
+
+        inst.entity:SetPristine()
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst:AddComponent("inspectable")
+
+        inst:AddComponent("inventoryitem")
+        inst.components.inventoryitem:ChangeImageName(name..(variations ~= nil and "_large1" or "_large"))
+
+        inst:AddComponent("unwrappable")
+        inst.components.unwrappable:SetOnWrappedFn(OnWrapped)
+        inst.components.unwrappable:SetOnUnwrappedFn(OnUnwrapped)
+
+        MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
+        MakeSmallPropagator(inst)
+        inst.components.propagator.flashpoint = 10 + math.random() * 5
+        inst.components.burnable:SetOnBurntFn(onburnt)
+        inst.components.burnable:SetOnIgniteFn(onignite)
+        inst.components.burnable:SetOnExtinguishFn(onextinguish)
+
+        MakeHauntableLaunchAndIgnite(inst)
+
+        inst.OnSave = OnSave
+        inst.OnPreLoad = OnPreLoad
+
         return inst
     end
 
-    inst:AddComponent("inspectable")
-
-    inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem:ChangeImageName("bundle_large")
-
-    inst:AddComponent("unwrappable")
-    inst.components.unwrappable:SetOnWrappedFn(OnWrapped)
-    inst.components.unwrappable:SetOnUnwrappedFn(OnUnwrapped)
-
-    MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
-    MakeSmallPropagator(inst)
-    inst.components.propagator.flashpoint = 10 + math.random() * 5
-    inst.components.burnable:SetOnBurntFn(onburnt)
-    inst.components.burnable:SetOnIgniteFn(onignite)
-    inst.components.burnable:SetOnExtinguishFn(onextinguish)
-
-    MakeHauntableLaunchAndIgnite(inst)
-
-    return inst
+    return Prefab(name, fn, assets, prefabs)
 end
 
-return Prefab("bundle", bundle_fn, assets_bundled, prefabs_bundled),
-    Prefab("bundlewrap", fn, assets, prefabs),
-    Prefab("bundle_container", container_fn)
+return Prefab("bundle_container", container_fn),
+    --"bundle", "bundlewrap"
+    MakeBundle("bundle", nil, { "waxpaper" }),
+    MakeWrap("bundle", false),
+    --"gift", "giftwrap"
+    MakeBundle("gift", 2),
+    MakeWrap("gift", true)

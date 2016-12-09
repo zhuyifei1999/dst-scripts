@@ -257,7 +257,7 @@ SGCritterStates.AddEmote = function(states, name, timeline)
 end
 
 --------------------------------------------------------------------------
-SGCritterStates.AddPetEmote = function(states, timeline)
+SGCritterStates.AddPetEmote = function(states, timeline, onexit)
     table.insert(states, State
     {
 		name = "emote_pet",
@@ -278,6 +278,8 @@ SGCritterStates.AddPetEmote = function(states, timeline)
 				end
 			end)
 		},
+		
+		onexit = onexit,
     })
 end
 
@@ -354,7 +356,7 @@ SGCritterStates.AddCombatEmote = function(states, timelines)
 end
 
 --------------------------------------------------------------------------
-SGCritterStates.AddPlayWithOtherCritter = function(states, events, timeline)
+SGCritterStates.AddPlayWithOtherCritter = function(states, events, timeline, onexit)
 	table.insert(events, EventHandler("critterplayful", function(inst, data)
 		local playful_delay = inst.components.crittertraits:IsDominantTrait("playful") and TUNING.CRITTER_DOMINANTTRAIT_PLAYFUL_WITHOTHER_DELAY or TUNING.CRITTER_PLAYFUL_DELAY
 		
@@ -394,14 +396,21 @@ SGCritterStates.AddPlayWithOtherCritter = function(states, events, timeline)
             
 			inst:PushEvent("oncritterplaying")
             
-			inst.AnimState:PlayAnimation(inst.sg.mem.playfulanim == 1 and "interact_active" or "interact_passive")
-
             if target ~= nil and target:IsValid() then
 				inst:ForceFacePoint(target:GetPosition())
 			end
+
+            if inst.sg.mem.playfulanim == nil or inst.sg.mem.playfulanim == 1 then
+				inst.AnimState:PlayAnimation("interact_active")
+			else
+				inst.sg:GoToState("playful2") 
+			end
+
 		end,
 
-		timeline = timeline,
+		timeline = timeline ~= nil and timeline.active or nil,
+
+        onexit = onexit ~= nil and onexit.active or nil,
 
 		events =
 		{
@@ -412,6 +421,30 @@ SGCritterStates.AddPlayWithOtherCritter = function(states, events, timeline)
 			end)
 		},
     })
+    
+    table.insert(states, State
+    {
+		name = "playful2",
+		tags = {"busy", "canrotate", "playful"},
+
+		onenter = function(inst, target)          
+			inst.AnimState:PlayAnimation("interact_passive")
+		end,
+
+		timeline = timeline ~= nil and timeline.passive or nil,
+
+        onexit = onexit ~= nil and onexit.inactive or nil,
+
+		events =
+		{
+			EventHandler("animover", function(inst) 
+                if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("idle") 
+				end
+			end)
+		},
+    })
+
 end
 
 --------------------------------------------------------------------------

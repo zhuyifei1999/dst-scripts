@@ -635,6 +635,8 @@ return {
 		THULECITE_PIECES = "It's not wood but it'll do.",
 		POND_ALGAE = "Doesn't look edible.",
 		GREENSTAFF = "This'll help me dismantle stuff!",
+		GIFT = "They're just as fun to give as they are to receive.",
+        GIFTWRAP = "Should we do something nice today, Lucy?",
 		POTTEDFERN = "I do love me some plant life.",
 		SENTRYWARD = "That's an odd looking tree.",
         MOONROCK_PIECES = "That's in a pretty sorry state, eh?",
@@ -1136,6 +1138,9 @@ return {
 			GENERIC = "That's a creature of the woods, eh?",
 			ANTLER = "Something's different aboot you...",
 		},
+		DEER_ANTLER = "Wish I still had a cabin I could mount these things in.",
+		DEER_GEMMED = "That ain't natural.",
+		KLAUSSACKKEY = "Gotta be some use for that.",
 		DEERCLOPS = "That's a big moose!",
 		DEERCLOPS_EYEBALL = "Now what is this good for?",
 		DEPLETED_GRASS =
@@ -1868,7 +1873,26 @@ return {
 		WETGOOP = "Better than some of the things I've eaten!",
         WHIP = "I hope that doesn't end up hurtin' any lil critters.",
 		WINTERHAT = "It's a nice toque, eh?",
-		
+
+		WINTER_TREE =
+        {
+			BURNT = "Too bad. Made the place feel real cozy.",
+			BURNING = "Such senseless violence.",
+			CANDECORATE = "Must... not chop...",
+			YOUNG = "All holidays should revolve around trees.",
+        },
+        WINTER_TREESTAND = "I'm sure I have an extra pine cone somewhere.",
+        WINTER_ORNAMENT = "For hanging on the unchopped tree with care.",
+        WINTER_ORNAMENTLIGHT = "What do you think, Lucy? Decorate, or chop?",
+        
+        WINTER_FOOD1 = "It's a gingerbread lumberjack.", --gingerbread cookie
+        WINTER_FOOD2 = "Always had a soft spot for a good holiday cookie.", --sugar cookie
+        WINTER_FOOD3 = "Satisfies the sweet tooth.", --candy cane
+        WINTER_FOOD4 = "That thing just ain't right.", --fruitcake
+
+        KLAUS = "Thing's got no eyes, eh?",
+        KLAUS_SACK = "Something good's in there, eh?",
+
 		SHADOWDIGGER = "Are your little buddies, uh... alive?",
 
 		WORMHOLE =

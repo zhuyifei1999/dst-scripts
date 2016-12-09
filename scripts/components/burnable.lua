@@ -265,11 +265,15 @@ function Burnable:Ignite(immediate, source)
             self.inst.components.propagator:StartSpreading(source)
         end
 
-        if self.task ~= nil then
-            self.task:Cancel()
-        end
-        self.task = self.burntime ~= nil and self.inst:DoTaskInTime(self.burntime, DoneBurning, self) or nil
+        self:ExtendBurning()
     end
+end
+
+function Burnable:ExtendBurning()
+    if self.task ~= nil then
+        self.task:Cancel()
+    end
+    self.task = self.burntime ~= nil and self.inst:DoTaskInTime(self.burntime, DoneBurning, self) or nil
 end
 
 function Burnable:LongUpdate(dt)

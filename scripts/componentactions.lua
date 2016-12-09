@@ -468,6 +468,16 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+		klaussackkey = function(inst, doer, target, actions)
+            if target:HasTag("klaussacklock") and
+                not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding() and
+                not (target.replica.inventoryitem ~= nil and target.replica.inventoryitem:IsGrandOwner(doer))) and
+                inst:HasTag("klaussackkey") then
+
+                table.insert(actions, ACTIONS.UNLOCK)
+            end
+        end,
+
         lighter = function(inst, doer, target, actions)
             if target:HasTag("canlight") and not (target:HasTag("fueldepleted") or target:HasTag("INLIMBO")) then
                 table.insert(actions, ACTIONS.LIGHT)
@@ -637,6 +647,12 @@ local COMPONENT_ACTIONS =
                     not (inst:HasTag("lighter") and (target:HasTag("canlight") or target:HasTag("nolight"))) then
                     table.insert(actions, ACTIONS.ATTACK)
                 end
+            end
+        end,
+        
+        winter_treeseed = function(inst, doer, target, actions)
+            if target:HasTag("winter_treestand") and not target:HasTag("fire") and not target:HasTag("smolder") then
+                table.insert(actions, ACTIONS.PLANT)
             end
         end,
     },

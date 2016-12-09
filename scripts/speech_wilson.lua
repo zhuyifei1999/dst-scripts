@@ -424,6 +424,8 @@ return {
 		THULECITE_PIECES = "It's some smaller chunks of Thulecite.",
 		POND_ALGAE = "Some algae by a pond.",
 		GREENSTAFF = "This will come in handy.",
+		GIFT = "Is that for me?",
+        GIFTWRAP = "That's a wrap!",
 		POTTEDFERN = "A fern in a pot.",
 		SENTRYWARD = "That's an entirely scientific mapping tool.",
         MOONROCK_PIECES = "I could probably break that.",
@@ -968,11 +970,13 @@ return {
 		CUTREEDS = "Cut reeds, ready for crafting and hobbying.",
 		CUTSTONE = "Seductively smooth.",
 		DEADLYFEAST = "A most potent dish.",
-		DEER = 
+		DEER =
 		{
 			GENERIC = "Is it staring at me? ...No, I guess not.",
 			ANTLER = "What an impressive antler!",
 		},
+        DEER_ANTLER = "Was that supposed to come off?",
+        DEER_GEMMED = "It's being controlled by that beast!",
 		DEERCLOPS = "It's enormous!!",
 		DEERCLOPS_EYEBALL = "This is really gross.",
 		EYEBRELLAHAT =	"It watches over the wearer.",
@@ -1861,6 +1865,26 @@ return {
 			GENERIC = "Mercurial.",
 			BURNT = "Its measuring days are over.",
 		},
+
+        WINTER_TREE =
+        {
+			BURNT = "That puts a damper on the festivities.",
+			--BURNING = "",
+			CANDECORATE = "Happy Winter's Feast!",
+			YOUNG = "It's almost Winter's Feast!",
+        },
+        WINTER_TREESTAND = "I need a pine cone for that.",
+        WINTER_ORNAMENT = "Every scientist appreciates a good bauble.",
+        WINTER_ORNAMENTLIGHT = "A tree's not complete without some electricity.",
+        
+        WINTER_FOOD1 = "The anatomy's not right, but I'll overlook it.", --gingerbread cookie
+        WINTER_FOOD2 = "I'm going to eat forty. For science.", --sugar cookie
+        WINTER_FOOD3 = "A Yuletide toothache waiting to happen.", --candy cane
+        WINTER_FOOD4 = "That experiment may have been a tiny bit unethical.", --fruitcake
+
+        KLAUS = "What on earth is that thing!",
+        KLAUS_SACK = "We should definitely open that.",
+		KLAUSSACKKEY = "It's really fancy for a deer antler.",
 		WORMHOLE =
 		{
 			GENERIC = "Soft and undulating.",
@@ -1893,6 +1917,7 @@ return {
         ORANGEMOONEYE = "No one could get lost with that thing looking out for them.",
         YELLOWMOONEYE = "That ought to show everyone the way.",
         BLUEMOONEYE = "It's always smart to keep an eye out.",
+        
 	},
 	DESCRIBE_GENERIC = "It's a... thing.",
 	DESCRIBE_TOODARK = "It's too dark to see!",

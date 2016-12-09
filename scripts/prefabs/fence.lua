@@ -497,7 +497,6 @@ local function MakeWall(name, builds, isdoor)
         inst:AddComponent("health")
         inst.components.health:SetMaxHealth(1)
         inst.components.health:SetAbsorptionAmount(1)
-        inst.components.health:SetAbsorptionAmountFromPlayer(1)
         inst.components.health.fire_damage_scale = 0
         inst.components.health.canheal = false
         inst.components.health.nofadeout = true

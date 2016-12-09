@@ -60,10 +60,48 @@ local emotes =
 
 SGCritterStates.AddIdle(states, #emotes)
 SGCritterStates.AddRandomEmotes(states, emotes)
-SGCritterStates.AddEmote(states, "cute", nil)
-SGCritterStates.AddPetEmote(states, nil)
-SGCritterStates.AddCombatEmote(states, nil)
-SGCritterStates.AddPlayWithOtherCritter(states, events, nil)
+SGCritterStates.AddEmote(states, "cute", 
+		{
+			TimeEvent(6*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_ground") end),
+			TimeEvent(7*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_voice") end),
+			TimeEvent(21*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_ground") end),
+			TimeEvent(21*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_voice") end),
+			TimeEvent(46*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_ground") end),
+			TimeEvent(47*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_voice") end),
+		})
+SGCritterStates.AddPetEmote(states, 
+	{
+		TimeEvent(9*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/emote_2") end),
+	})
+SGCritterStates.AddCombatEmote(states,
+		{
+			loop =
+			{
+				TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/emote_combat") end),
+				TimeEvent(11*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/emote_combat") end),
+			},
+			pst =
+			{
+				TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/emote_combat") end),
+			},
+		})
+SGCritterStates.AddPlayWithOtherCritter(states, events,
+		{
+			active =
+			{
+				TimeEvent(16*FRAMES, StopFlapping),
+				TimeEvent(24*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/pupington/clap") end),
+				TimeEvent(29*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/pupington/clap") end),
+				TimeEvent(36*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/pupington/clap") end),
+				TimeEvent(42*FRAMES, StartFlapping),
+			},
+		},
+		{
+			onexit =
+			{
+				 active = RestoreFlapping,
+			},
+		})
 SGCritterStates.AddEat(states,
         {
             TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/glomling/bounce_ground") end),

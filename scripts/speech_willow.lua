@@ -706,6 +706,8 @@ return {
 		POND = "This pond will definitely not ignite. How dull.",
 		POND_ALGAE = "It must need a lot of water.",
 		GREENSTAFF = "It won't start a fire but I guess it's still useful.",
+		GIFT = "It's for me right?!",
+        GIFTWRAP = "Ribbons burn real good!",
 		POTTEDFERN = "I'd rather burn them.",
 		SENTRYWARD = "Pfft. It'll burn like the rest.",
         MOONROCK_PIECES = "Oh look! ROCKS! Ughhhhh!",
@@ -1190,6 +1192,9 @@ return {
 			GENERIC = "I wish everyone'd stop fawning over that smelly thing!",
 			ANTLER = "Don't think that horn makes you special, deer.",
 		},
+		DEER_ANTLER = "It's a big, weird antler.",
+		DEER_GEMMED = "Marginally better smelling than most animals here.",
+		KLAUSSACKKEY = "Ha! I wouldn't wanna get smacked with that thing!",
 		DEERCLOPS = "Holy crap!",
 		DEERCLOPS_EYEBALL = "Stop staring at me!",
 		DIRTPILE = "Who just leaves dirt lying around in the forest?",
@@ -1890,6 +1895,25 @@ return {
 		WETGOOP = "How did it go wrong?! It was engulfed in fire and everything.",
         WHIP = "This means I'm the boss now.",
 		WINTERHAT = "It's not warm enough for my liking.",
+
+		WINTER_TREE =
+        {
+			BURNT = "Happy Winter's Feast, everybody.",
+			--BURNING = "Now we're celebrating!",
+			CANDECORATE = "Looks great!",
+			YOUNG = "It looks a little shrimpy.",
+        },
+        WINTER_TREESTAND = "Are we gonna grow a tree?",
+        WINTER_ORNAMENT = "Bibble-ty bauble-ty boo!",
+        WINTER_ORNAMENTLIGHT = "It's like a fire, but without the burning!",
+        
+        WINTER_FOOD1 = "Honestly, who DOESN'T eat the head first?", --gingerbread cookie
+        WINTER_FOOD2 = "Doesn't look to bad, considering!", --sugar cookie
+        WINTER_FOOD3 = "Gimme two of 'em and I can do a great MacTusk impression.", --candy cane
+        WINTER_FOOD4 = "Anyone else sense an overpowering stench of evil?", --fruitcake
+        
+        KLAUS = "A lump of coal would be really useful, actually!",
+        KLAUS_SACK = "Nothing says \"Open Me\" quite like a lock!!",
 		WORMHOLE =
 		{
 			GENERIC = "Poke it with a stick!",

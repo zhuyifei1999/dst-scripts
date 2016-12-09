@@ -48,10 +48,41 @@ local emotes =
 
 SGCritterStates.AddIdle(states, #emotes)
 SGCritterStates.AddRandomEmotes(states, emotes)
-SGCritterStates.AddEmote(states, "cute", nil)
-SGCritterStates.AddPetEmote(states, nil)
-SGCritterStates.AddCombatEmote(states, nil)
-SGCritterStates.AddPlayWithOtherCritter(states, events, nil)
+SGCritterStates.AddEmote(states, "cute", 
+		{
+			TimeEvent(4*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/blink") end),
+			TimeEvent(14*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/blink") end),
+			TimeEvent(24*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/swipe") end),
+			TimeEvent(42*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/blink") end),
+			TimeEvent(59*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/blink") end),
+		})
+SGCritterStates.AddCombatEmote(states,
+		{
+			pre =
+			{
+				TimeEvent(8*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/emote_combat") end),
+			},
+			loop =
+			{
+				TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/emote_combat_2") end),
+			},
+			pst =
+			{
+				TimeEvent(4*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/blink") end),
+			},
+		})
+SGCritterStates.AddPlayWithOtherCritter(states, events,
+	{
+		active =
+		{
+			TimeEvent(11*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/emote") end),
+			TimeEvent(33*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/emote") end),
+		},
+		passive = 
+		{
+			TimeEvent(57*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/blink") end),
+		},
+	})
 SGCritterStates.AddEat(states,
         {
             TimeEvent(12*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/eat_pre") end),
@@ -96,6 +127,15 @@ local function CleanupIfSleepInterrupted(inst)
         RestoreFlapping(inst)
     end
 end
+
+SGCritterStates.AddPetEmote(states, 
+		{
+			TimeEvent(3*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/blink") end),
+            TimeEvent(4*FRAMES, StopFlapping),
+			TimeEvent(7*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/emote") end),
+            TimeEvent(27*FRAMES, StartFlapping),
+		},
+        RestoreFlapping)
 
 CommonStates.AddSleepExStates(states,
 		{

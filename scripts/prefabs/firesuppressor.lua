@@ -215,7 +215,7 @@ end
 --V2C: Don't do this?
 --     I believe all the affected components save their protected state already
 --[[
-local function OnLoadPostPass(inst, data)
+local function OnLoadPostPass(inst)
     if not inst.components.fueled:IsEmpty() then
         inst.components.wateryprotection:SpreadProtection(inst, TUNING.FIRE_DETECTOR_RANGE, true)
     end
