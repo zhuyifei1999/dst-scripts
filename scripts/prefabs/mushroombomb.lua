@@ -99,7 +99,7 @@ local function Explode(inst)
     end
 
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, TUNING.TOADSTOOL_MUSHROOMBOMB_RADIUS, { "_health", "_combat" }, { "INLIMBO", "epic" })
+    local ents = TheSim:FindEntities(x, y, z, TUNING.TOADSTOOL_MUSHROOMBOMB_RADIUS, { "_health", "_combat" }, { "INLIMBO", "toadstool" })
     if #ents > 0 then
         local toadstool = inst.components.entitytracker:GetEntity("toadstool")
         local damage =

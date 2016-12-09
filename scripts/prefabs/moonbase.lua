@@ -139,6 +139,26 @@ local function StopMusic(inst)
     StartMusic(inst, 0)
 end
 
+local function ShowColdStar(inst)
+    if inst._staffstar == nil then
+        inst._staffstar = SpawnPrefab("staffcoldlightfx")
+        inst._staffstar.entity:SetParent(inst.entity)
+        if not inst.Light:IsEnabled() then
+            inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+        end
+    end
+end
+
+local function HideColdStar(inst)
+    if inst._staffstar ~= nil then
+        inst._staffstar:Remove()
+        inst._staffstar = nil
+        if not inst.Light:IsEnabled() then
+            inst.AnimState:ClearBloomEffectHandle()
+        end
+    end
+end
+
 local function IsInAnimState(inst, state)
     return inst.AnimState:IsCurrentAnimation(state)
         or inst.AnimState:IsCurrentAnimation("recharging_"..state)
@@ -170,6 +190,8 @@ local function ToggleMoonCharge(inst)
             inst.components.pickable.caninteractwith = false
 
             inst.AnimState:ClearOverrideSymbol("swap_staffs")
+
+            HideColdStar(inst)
 
             local staff = inst.components.lootdropper:SpawnLootPrefab(inst.components.pickable.product)
             if inst._staffuse ~= nil then
@@ -257,26 +279,6 @@ local function ItemTradeTest(inst, item)
         return false, "NOTSTAFF"
     end
     return true
-end
-
-local function ShowColdStar(inst)
-    if inst._staffstar == nil then
-        inst._staffstar = SpawnPrefab("staffcoldlightfx")
-        inst._staffstar.entity:SetParent(inst.entity)
-        if not inst.Light:IsEnabled() then
-            inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
-        end
-    end
-end
-
-local function HideColdStar(inst)
-    if inst._staffstar ~= nil then
-        inst._staffstar:Remove()
-        inst._staffstar = nil
-        if not inst.Light:IsEnabled() then
-            inst.AnimState:ClearBloomEffectHandle()
-        end
-    end
 end
 
 --Not all staff prefabs match asset names!

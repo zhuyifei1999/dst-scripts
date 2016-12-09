@@ -126,28 +126,27 @@ for k, v in pairs(FUELTYPE) do
 end
 
 local function OnUpdateIceCircle(inst, x, z)
-    inst._rad = inst._rad * .98 + ICE_CIRCLE_RADIUS * .02
-    inst._iceradius:set(inst._rad)
+    inst._rad:set(inst._rad:value() * .98 + ICE_CIRCLE_RADIUS * .02)
 
     if inst.fx ~= nil then
         inst.burstdelay = (inst.burstdelay or 6) - 1
         if inst.burstdelay < 0 then
             inst.burstdelay = math.random(5, 6)
-            DoBurst(inst, x, z, inst._rad - .7, inst._rad - .2)
+            DoBurst(inst, x, z, inst._rad:value() - .7, inst._rad:value() - .2)
         end
     end
 
     inst._track1 = inst._track2 or {}
     inst._track2 = {}
 
-    for i, v in ipairs(TheSim:FindEntities(x, 0, z, inst._rad, nil, NOTAGS, { "locomotor", "freezable", "fire", "smolder" })) do
+    for i, v in ipairs(TheSim:FindEntities(x, 0, z, inst._rad:value(), nil, NOTAGS, { "locomotor", "freezable", "fire", "smolder" })) do
         if v:IsValid() and not (v.components.health ~= nil and v.components.health:IsDead()) then            
             local gemresist = false
             if v.components.locomotor ~= nil then
                 if v:HasTag("deergemresistance") then
                     gemresist = true
                 else
-                    --v.components.locomotor:PushTempGroundSpeedMultiplier(TUNING.DEER_ICE_SPEED_PENALTY)
+                    v.components.locomotor:PushTempGroundSpeedMultiplier(TUNING.DEER_ICE_SPEED_PENALTY)
                 end
             end
             if v.components.burnable ~= nil and v.components.fueled == nil then
@@ -191,20 +190,28 @@ local function OnUpdateIceCircle(inst, x, z)
     end
 end
 
-local function OnUpdateIceSlow(inst)
-    if inst._iceradius:value() > 0 then
-        local x, y, z = inst.Transform:GetWorldPosition()
-        for i, v in ipairs(TheSim:FindEntities(x, y, z, inst._iceradius:value(), { "locomotor" }, { "deergemresistance", "flying", "playerghost", "INLIMBO" })) do
-            if v.components.locomotor ~= nil then
-                v.components.locomotor:PushTempGroundSpeedMultiplier(TUNING.DEER_ICE_SPEED_PENALTY)
-            end
+local function OnUpdateIceCircleClient(inst, x, z)
+    local rad = inst._rad:value()
+    if rad > 0 then
+        local player = ThePlayer
+        if player ~= nil and
+            player.components.locomotor ~= nil and
+            not player:HasTag("playerghost") and
+            player:GetDistanceSqToPoint(x, 0, z) < rad * rad then
+            player.components.locomotor:PushTempGroundSpeedMultiplier(TUNING.DEER_ICE_SPEED_PENALTY)
         end
     end
 end
 
+local function OnInitIceCircleClient(inst)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    inst:DoPeriodicTask(0, OnUpdateIceCircleClient, nil, x, z)
+    OnUpdateIceCircleClient(inst, x, z)
+end
+
 local function OnInitIceCircle(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
-    inst._rad = .25
+    inst._rad:set(.25)
     inst.task = inst:DoPeriodicTask(0, OnUpdateIceCircle, nil, x, z)
     OnUpdateIceCircle(inst, x, z)
 end
@@ -216,8 +223,11 @@ end
 local function deer_ice_circle_common_postinit(inst)
     inst:AddTag("deer_ice_circle")
 
-    inst._iceradius = net_float(inst.GUID, "deer_ice_circle")
-    inst:DoPeriodicTask(0, OnUpdateIceSlow)
+    inst._rad = net_float(inst.GUID, "deer_ice_circle._rad")
+
+    if not TheWorld.ismastersim then
+        inst:DoTaskInTime(0, OnInitIceCircleClient)
+    end
 end
 
 local function deer_ice_circle_master_postinit(inst)
@@ -227,7 +237,7 @@ end
 
 local function deer_ice_circle_onkillfx(inst, anim)
     inst:RemoveTag("deer_ice_circle")
-    inst._iceradius:set(0)
+    inst._rad:set(0)
 end
 
 --------------------------------------------------------------------------
