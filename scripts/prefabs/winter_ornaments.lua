@@ -57,8 +57,8 @@ end
 
 local function onpickup(inst, by)
 	if by ~= nil and by:HasTag("winter_tree") then
-		inst.ornamentlighton = false
 		if not inst.components.timer:TimerExists("blink") then
+			inst.ornamentlighton = false
 			updatelight(inst, {name="blink"})
 		end
 	else
@@ -102,7 +102,6 @@ local function MakeOrnament(ornamentid, lightdata)
 
 		inst.AnimState:SetBank("winter_ornaments")
 		inst.AnimState:SetBuild("winter_ornaments")
-		inst.AnimState:PlayAnimation(tostring(ornamentid))
 
 		inst:AddTag("winter_ornament")
         inst:AddTag("molebait")
@@ -121,8 +120,12 @@ local function MakeOrnament(ornamentid, lightdata)
 			inst.Light:Enable(false)
 
 		    inst:AddTag("lightbattery")
+			
+			inst.AnimState:PlayAnimation(tostring(ornamentid).."_on")
 		else
 			inst:SetPrefabNameOverride("winter_ornament")
+
+			inst.AnimState:PlayAnimation(tostring(ornamentid))
 		end
 
 		inst.entity:SetPristine()

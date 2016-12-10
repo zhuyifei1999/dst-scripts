@@ -38,6 +38,9 @@ local assets =
 	Asset("ATLAS", "images/frontend.xml"),
 	Asset("IMAGE", "images/frontend.tex"),
 
+	Asset("ATLAS", "images/anr_silhouettes.xml"),
+	Asset("IMAGE", "images/anr_silhouettes.tex"),
+
     Asset("ATLAS", "images/frontscreen.xml"),
     Asset("IMAGE", "images/frontscreen.tex"),
 

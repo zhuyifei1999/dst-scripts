@@ -9,6 +9,7 @@ local prefabs =
 {
     "pinecone_sapling",
     "twiggy_nut_sapling",
+    "winter_tree",
 }
 
 local function plant(inst, growtime)
@@ -58,7 +59,7 @@ end
 
 local cones = {}
 
-local function addcone(name, spawn_prefab, bank, build, anim)
+local function addcone(name, spawn_prefab, bank, build, anim, winter_tree)
     local function fn()
         local inst = CreateEntity()
 
@@ -104,8 +105,12 @@ local function addcone(name, spawn_prefab, bank, build, anim)
         inst.components.deployable:SetDeployMode(DEPLOYMODE.PLANT)
         inst.components.deployable.ondeploy = ondeploy
 
-		inst:AddComponent("winter_treeseed") -- for winters feast event to plant in winter_treestand
-
+		if winter_tree ~= nil then
+			-- for winters feast event to plant in winter_treestand
+			inst:AddComponent("winter_treeseed")
+			inst.components.winter_treeseed:SetTree(winter_tree)
+		end
+		
         -- This is left in for "save file upgrading", June 3 2015. We can remove it after some time.
         inst.OnLoad = OnLoad
 
@@ -116,7 +121,7 @@ local function addcone(name, spawn_prefab, bank, build, anim)
     table.insert(cones, MakePlacer(name.."_placer", bank, build, anim))
 end
 
-addcone("pinecone", "pinecone_sapling", "pinecone", "pinecone", "idle_planted")
-addcone("twiggy_nut", "twiggy_nut_sapling", "twiggy_nut", "twiggy_nut", "idle_planted")
+addcone("pinecone", "pinecone_sapling", "pinecone", "pinecone", "idle_planted", "winter_tree")
+addcone("twiggy_nut", "twiggy_nut_sapling", "twiggy_nut", "twiggy_nut", "idle_planted", nil)
 
 return unpack(cones)

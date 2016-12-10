@@ -341,6 +341,7 @@ local function Unchain(inst)
         inst.AnimState:Hide("swap_chain")
         inst.AnimState:Hide("swap_chain_lock")
         inst.components.sanityaura.aura = inst.enraged and -TUNING.SANITYAURA_HUGE or -TUNING.SANITYAURA_LARGE
+        inst.components.burnable.nocharring = false
         inst.DoFoleySounds = DoNothing
         inst._unchained:set(true)
         OnMusicDirty(inst)
@@ -548,6 +549,7 @@ local function fn()
     inst:AddComponent("knownlocations")
 
     MakeLargeBurnableCharacter(inst, "swap_fire")
+    inst.components.burnable.nocharring = true
     MakeLargeFreezableCharacter(inst, "swap_fire")
     inst.components.freezable:SetResistance(4)
     inst.components.freezable.diminishingreturns = true

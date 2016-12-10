@@ -247,11 +247,11 @@ params.winter_tree =
         slotpos = {},
         animbank = "ui_backpack_2x4",
         animbuild = "ui_backpack_2x4",
-        pos = Vector3(250, 0, 0),
+        pos = Vector3(275, 0, 0),
         side_align_tip = 100,
     },
     acceptsstacks = false,
-    type = "pack",
+    type = "cooker",
 }
 
 for y = 0, 3 do

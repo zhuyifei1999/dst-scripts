@@ -42,6 +42,11 @@ local function DoScratchSound(inst)
     inst.SoundEmitter:PlaySound("dontstarve/creatures/together/klaus/scratch")
 end
 
+local function DoBodyfall(inst)
+    inst.SoundEmitter:PlaySound("dontstarve/creatures/together/klaus/bodyfall")
+    ShakeIfClose(inst)
+end
+
 --------------------------------------------------------------------------
 
 local function DeerCanCast(deer)
@@ -277,15 +282,22 @@ local states =
         timeline =
         {
             TimeEvent(FRAMES, DoFoleySounds),
-            TimeEvent(3 * FRAMES, DoFootstep),
+            TimeEvent(3 * FRAMES, function(inst)
+                DoBodyfall(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/klaus/death")
+            end),
             TimeEvent(23 * FRAMES, DoFoleySounds),
             TimeEvent(25 * FRAMES, function(inst)
-                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/klaus/bodyfall")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/klaus/bodyfall_dirt")
                 ShakeIfClose(inst)
+                if inst.components.burnable:IsBurning() and inst.components.burnable.nocharring then
+                    inst.components.burnable:Extinguish()
+                end
             end),
             TimeEvent(27 * FRAMES, function(inst)
-                --Don't use DoFootstep or it may shake again
-                PlayFootstep(inst, .4)
+                if inst.enraged then
+                    inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/bearger/groundpound")
+                end
                 if inst:IsUnchained() and inst.persists then
                     inst.persists = false
                     inst.components.commander:DropAllSoldierTargets()
@@ -346,6 +358,7 @@ local states =
             TimeEvent(39 * FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("dontstarve/common/rebirth_amulet_poof")
             end),
+            TimeEvent(48 * FRAMES, DoBodyfall),
         },
 
         events =
@@ -380,14 +393,18 @@ local states =
         {
             TimeEvent(0, function(inst)
                 DoFoleySounds(inst, .3)
+                DoScratchSound(inst)
             end),
-            TimeEvent(5 * FRAMES, function(inst)
-                DoFootstep(inst, .4)
-            end),
+            TimeEvent(4 * FRAMES, DoBodyfall),
             TimeEvent(10 * FRAMES, function(inst)
                 DoFoleySounds(inst, .2)
             end),
             TimeEvent(23 * FRAMES, DoFoleySounds),
+            TimeEvent(25 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/klaus/lock_break")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/klaus/breath_out")
+            end),
+            TimeEvent(26 * FRAMES, DoFoleySounds),
         },
 
         events =
@@ -424,11 +441,23 @@ local states =
         timeline =
         {
             TimeEvent(0, DoFoleySounds),
+            TimeEvent(2 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/klaus/breath_in_fast")
+            end),
+            TimeEvent(9 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/klaus/breath_in_fast", nil, .75)
+            end),
             TimeEvent(12 * FRAMES, function(inst)
                 DoFoleySounds(inst, .5)
             end),
             TimeEvent(25 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/klaus/breath_in_fast", nil, .8)
+            end),
+            TimeEvent(25 * FRAMES, function(inst)
                 DoFoleySounds(inst, .7)
+            end),
+            TimeEvent(32 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/klaus/breath_in_fast")
             end),
             TimeEvent(43 * FRAMES, DoFoleySounds),
             TimeEvent(48 * FRAMES, function(inst)
@@ -581,7 +610,7 @@ local states =
         timeline =
         {
             TimeEvent(2 * FRAMES, function(inst)
-                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/klaus/attack_3")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/klaus/attack_3", nil, not inst.enraged and .8 or nil)
             end),
             TimeEvent(6 * FRAMES, DoChompShake),
             TimeEvent(7 * FRAMES, DoRoarAlert),
@@ -788,6 +817,7 @@ local states =
             end
             ReduceLaughing(inst, 1)
             inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/together/klaus/breath_out")
         end,
 
         timeline =
@@ -857,7 +887,7 @@ local states =
         timeline =
         {
             TimeEvent(6 * FRAMES, DoFoleySounds),
-            TimeEvent(9 * FRAMES, DoFootstep),
+            TimeEvent(9 * FRAMES, DoBodyfall),
         },
 
         events =
@@ -1048,9 +1078,7 @@ CommonStates.AddSleepExStates(states,
         TimeEvent(0, function(inst)
             DoFoleySounds(inst, .3)
         end),
-        TimeEvent(4 * FRAMES, function(inst)
-            DoFootstep(inst, .4)
-        end),
+        TimeEvent(3 * FRAMES, DoBodyfall),
         CommonHandlers.OnNoSleepTimeEvent(23 * FRAMES, function(inst)
             inst.sg:RemoveStateTag("busy")
             inst.sg:RemoveStateTag("nosleep")

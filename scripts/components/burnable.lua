@@ -50,6 +50,7 @@ local Burnable = Class(function(self, inst)
     self.canlight = true
 
     self.lightningimmune = false
+    --self.nocharring = false --default almost everything chars
 
     self.task = nil
     self.smolder_task = nil
@@ -234,7 +235,8 @@ local function DoneBurning(inst, self)
 end
 
 local function OnKilled(inst)
-    if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() and not inst:HasTag("player") then
+    local self = inst.components.burnable
+    if self ~= nil and self:IsBurning() and not self.nocharring then
         inst.AnimState:SetMultColour(.2, .2, .2, 1)
     end
 end

@@ -20,10 +20,12 @@ end
 
 local function DoFootstep(inst, volume)
     inst.SoundEmitter:PlaySound("dontstarve/creatures/together/deer/footstep", nil, volume)
+    PlayFootstep(inst, volume)
 end
 
 local function DoFootstepRun(inst, volume)
     inst.SoundEmitter:PlaySound("dontstarve/creatures/together/deer/footstep_run", nil, volume)
+    PlayFootstep(inst, volume)
 end
 
 --------------------------------------------------------------------------

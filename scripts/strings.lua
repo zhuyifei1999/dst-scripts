@@ -2749,11 +2749,13 @@ STRINGS.UI =
 
     ITEM_SCREEN =
     {
-        THANKS_POPUP_TITLE_DEFAULT ="Thanks for playing",
-        THANKS_POPUP_TITLE_ARG ="Pulvis et umbra sumus",
-        THANKS_POPUP_TITLE ="Thanks for playing",
-        THANKS_POPUP_TITLE_TWITCH ="Thanks for watching Twitch",
-        THANKS_POPUP_TITLE_STORE ="Enjoy your gift",
+        THANKS_POPUP_TITLE_DEFAULT = "Thanks for playing",
+        THANKS_POPUP_SWR = "Thank you for buying the ShipWrecked DLC",
+        THANKS_POPUP_ROGR = "Thank you for buying the Reign of Giants DLC",
+        THANKS_POPUP_TITLE_ARG = "Pulvis et umbra sumus",
+        THANKS_POPUP_TITLE = "Thanks for playing",
+        THANKS_POPUP_TITLE_TWITCH = "Thanks for watching Twitch",
+        THANKS_POPUP_TITLE_STORE = "Enjoy your gift",
         NORMAL_POPUP_TITLE = "received...",
         NEW_SKIN = "You got a skin for %s!",
         OK_BUTTON = "Close",

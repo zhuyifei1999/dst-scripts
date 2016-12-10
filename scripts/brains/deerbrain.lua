@@ -23,19 +23,21 @@ local START_ALERT_DIST = 6
 local KEEP_ALERT_DIST = 8
 
 local function ResetData(inst)
-	TheWorld.components.deerherding:SetHerdAlertTarget(inst, FindClosestPlayerToInst(inst, START_ALERT_DIST, true))
+    if TheWorld.components.deerherding ~= nil then
+       TheWorld.components.deerherding:SetHerdAlertTarget(inst, FindClosestPlayerToInst(inst, START_ALERT_DIST, true))
+    end
 end
 
 local function GetAlertTargetFn(inst)
-	if inst:IsValid() then
-		return TheWorld.components.deerherding:GetClosestHerdAlertTarget(inst)
-	end
+    if inst:IsValid() then
+        return TheWorld.components.deerherding:GetClosestHerdAlertTarget(inst)
+    end
 end
 
 local function KeepAlertTargetFn(inst, target)
-	if inst:IsValid() then
-		return TheWorld.components.deerherding:HerdHasAlertTarget()
-	end
+    if inst:IsValid() then
+        return TheWorld.components.deerherding:HerdHasAlertTarget()
+    end
 end
 
 local function GetNonHerdingFaceTargetFn(inst)
@@ -52,31 +54,30 @@ local function GetWanderDistFn(inst)
 end
 
 local function GetLocationInHerd(inst)
-	local herdpt = TheWorld.components.deerherding.herdlocation
-	local offset = inst.components.knownlocations:GetLocation("herdoffset")
-	return (herdpt and offset) and (herdpt + offset) or nil
-
+    local herdpt = TheWorld.components.deerherding.herdlocation
+    local offset = inst.components.knownlocations:GetLocation("herdoffset")
+    return (herdpt and offset) and (herdpt + offset) or nil
 end
 
 local function ShouldMoveAsHerd(self)
-	local herd_pt = GetLocationInHerd(self.inst)
-	return herd_pt and (self.inst:GetDistanceSqToPoint(herd_pt:Get()) > (TUNING.DEER_HERD_MOVE_DIST * 0.5))
+    local herd_pt = GetLocationInHerd(self.inst)
+    return herd_pt and (self.inst:GetDistanceSqToPoint(herd_pt:Get()) > (TUNING.DEER_HERD_MOVE_DIST * 0.5))
 end
 
 local function GetGrazingLocation(inst)
-	local herdpt = TheWorld.components.deerherding.herdlocation
-	local offset = inst.components.knownlocations:GetLocation("herdoffset")
-	return (herdpt and offset) and (herdpt + offset * 2) or nil
+    local herdpt = TheWorld.components.deerherding.herdlocation
+    local offset = inst.components.knownlocations:GetLocation("herdoffset")
+    return (herdpt and offset) and (herdpt + offset * 2) or nil
 end
 
 local function GetGrazingAngle(inst)
-	local offset = inst.components.knownlocations:GetLocation("herdoffset")
-	return GetRandomWithVariance(math.atan2(offset.z, offset.x), 66*DEGREES)
+    local offset = inst.components.knownlocations:GetLocation("herdoffset")
+    return GetRandomWithVariance(math.atan2(offset.z, offset.x), 66*DEGREES)
 end
 
 local function IsHerdGrazing(self)
-	return TheWorld.components.deerherding:IsGrazing()
-	-- todo: Ask TheWorld.components.deerherding if it is grazing
+    return TheWorld.components.deerherding:IsGrazing()
+    -- todo: Ask TheWorld.components.deerherding if it is grazing
 end
 
 local DeerBrain = Class(Brain, function(self, inst)
@@ -84,53 +85,50 @@ local DeerBrain = Class(Brain, function(self, inst)
 end)
 
 function DeerBrain:OnStart()
-	local solomentality = PriorityNode(
-	{
+    local solomentality = PriorityNode(
+    {
         WhileNode(function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
         WhileNode(function() return self.inst.components.combat:HasTarget() end, "Flee", 
-			PriorityNode{
-				AttackWall(self.inst),
-				RunAway(self.inst, {fn=function(guy) return self.inst.components.combat:TargetIs(guy) end, tags={"player"}}, TUNING.DEER_ATTACKER_REMEMBER_DIST, TUNING.DEER_ATTACKER_REMEMBER_DIST),
-			}),
+            PriorityNode{
+                AttackWall(self.inst),
+                RunAway(self.inst, {fn=function(guy) return self.inst.components.combat:TargetIs(guy) end, tags={"player"}}, TUNING.DEER_ATTACKER_REMEMBER_DIST, TUNING.DEER_ATTACKER_REMEMBER_DIST),
+            }),
         WhileNode(function() return self.inst.components.health.takingfiredamage end, "OnFire", Panic(self.inst)),
 
         FaceEntity(self.inst, GetNonHerdingFaceTargetFn, KeepNonHerdingFaceTargetFn),
-		BrainCommon.AnchorToSaltlick(self.inst),
+        BrainCommon.AnchorToSaltlick(self.inst),
         --Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("nonherdhome") end, GetWanderDistFn),
         Wander(self.inst),
         
-	})
+    })
 
-	local herdmentality = PriorityNode(
-	{
-		Leash(self.inst, GetLocationInHerd, HERD_KEEPUP_DIST, 5, true),
+    local herdmentality = PriorityNode(
+    {
+        Leash(self.inst, GetLocationInHerd, HERD_KEEPUP_DIST, 5, true),
         FaceEntity(self.inst, GetAlertTargetFn, KeepAlertTargetFn, 0.25),
         WhileNode(function() return IsHerdGrazing(self) end, "Grazing",
-			SequenceNode{
-				WaitNode(2),
-				Wander(self.inst, GetGrazingLocation, 2, nil, GetGrazingAngle),
-			}
-	    ),
-		Leash(self.inst, GetLocationInHerd, 2, 2, false)
-	})
+            SequenceNode{
+                WaitNode(2),
+                Wander(self.inst, GetGrazingLocation, 2, nil, GetGrazingAngle),
+            }
+        ),
+        Leash(self.inst, GetLocationInHerd, 2, 2, false)
+    })
 
     local root =
     PriorityNode(
     {
-		FailIfSuccessDecorator( ActionNode(function() ResetData(self.inst) end, "Reset Data") ),
+        FailIfSuccessDecorator(ActionNode(function() ResetData(self.inst) end, "Reset Data")),
 
-		WhileNode(function() return TheWorld.components.deerherding:IsActiveInHerd(self.inst) end, "Herd Mentality",
-			herdmentality
-		),
-		solomentality,
+        WhileNode(function() return TheWorld.components.deerherding ~= nil and TheWorld.components.deerherding:IsActiveInHerd(self.inst) end, "Herd Mentality",
+            herdmentality
+        ),
+        solomentality,
 
         StandStill(self.inst),
     },.25)
 
     self.bt = BT(self.inst, root)
-end
-
-function DeerBrain:OnInitializationComplete()
 end
 
 return DeerBrain

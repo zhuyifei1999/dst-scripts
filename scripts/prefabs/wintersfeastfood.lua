@@ -8,7 +8,7 @@ local foodinfo =
     {food=FOODTYPE.GOODIES, health=0,     hunger=3,  sanity=0, treeornament=true}, -- Gingerbread Cookies
     {food=FOODTYPE.GOODIES, health=0,     hunger=2,  sanity=2, treeornament=true}, -- Sugar Cookies
     {food=FOODTYPE.GOODIES, health=2,     hunger=0,  sanity=2, treeornament=true}, -- Candy Cane
-    {food=FOODTYPE.VEGGIE,  health=-2,    hunger=6,  sanity=-2, treeornament=false, tags={"monstermeat"}}, -- Fruitcake
+    {food=FOODTYPE.VEGGIE,  health=-2,    hunger=6,  sanity=-2, treeornament=false}, -- Fruitcake
 }
 
 assert(#foodinfo == NUM_WINTERFOOD)

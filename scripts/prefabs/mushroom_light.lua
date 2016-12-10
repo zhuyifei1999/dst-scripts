@@ -49,9 +49,9 @@ local function QueueSound(inst, delay, soundname)
     inst._soundtask = inst:DoTaskInTime(delay, OnQueuedSound, soundname)
 end
 
-local function IsRedSpore(item) return item.prefab == MUSHTREE_SPORE_RED end
-local function IsGreenSpore(item) return item.prefab == MUSHTREE_SPORE_GREEN end
-local function IsBlueSpore(item) return item.prefab == MUSHTREE_SPORE_BLUE end
+local function IsRedSpore(item) return item.prefab == MUSHTREE_SPORE_RED or item.prefab == "winter_ornament_light1" end
+local function IsGreenSpore(item) return item.prefab == MUSHTREE_SPORE_GREEN or item.prefab == "winter_ornament_light2" end
+local function IsBlueSpore(item) return item.prefab == MUSHTREE_SPORE_BLUE or item.prefab == "winter_ornament_light3" end
 
 local function UpdateLightState(inst)
     if inst:HasTag("burnt") then

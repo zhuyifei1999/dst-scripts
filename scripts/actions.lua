@@ -87,7 +87,7 @@ ACTIONS =
     PLAY = Action({ mount_valid=true }),
     CREATE = Action(),
     JOIN = Action(),
-    NET = Action({ priority=3, canforce=true, rangecheckfn=DefaultRangeCheck, mount_valid=true }),
+    NET = Action({ priority=3, canforce=true, rangecheckfn=DefaultRangeCheck }),
     CATCH = Action({ priority=3, distance=math.huge, mount_valid=true }),
     FISH = Action(),
     REEL = Action({ instant=true }),

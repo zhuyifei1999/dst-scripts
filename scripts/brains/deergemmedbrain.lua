@@ -10,6 +10,9 @@ local RESET_COMBAT_DELAY = 10
 local LOST_KEEPER_MIN_DELAY = .5
 local LOST_KEEPER_MAX_DELAY = 2
 
+--Not enslaved
+local MAX_CHASE_TIME = 6
+
 local DeerGemmedBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
     self._farfromkeeper = false
@@ -63,12 +66,13 @@ end
 
 local function ShouldChase(self)
     local keeper = GetKeeper(self.inst)
-    if keeper == nil or
-        (   keeper.IsUnchained ~= nil and
-            keeper:IsUnchained() and
-            keeper.components.health ~= nil and
-            keeper.components.health:IsDead()
-        ) then
+    if keeper == nil then
+        --Not enslaved; uses ChaseAndAttack with MAX_CHASE_TIME
+        return false
+    elseif keeper.IsUnchained ~= nil
+        and keeper:IsUnchained()
+        and keeper.components.health ~= nil
+        and keeper.components.health:IsDead() then
         return true
     end
     local target = self.inst.components.combat.target
@@ -104,6 +108,8 @@ function DeerGemmedBrain:OnStart()
                 Panic(self.inst),
             }, .5)),
         AttackWall(self.inst),
+        WhileNode(function() return GetKeeper(self.inst) == nil end, "NotEnslaved",
+            ChaseAndAttack(self.inst, MAX_CHASE_TIME)),
         WhileNode(function() return ShouldChase(self) end, "BreakFormation",
             ChaseAndAttack(self.inst)),
         WhileNode(function() return IsFarFromKeeper(self) end, "FarFromKeeper",

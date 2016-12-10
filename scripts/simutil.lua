@@ -223,6 +223,7 @@ end
 
 -- This function fans out a search from a starting position/direction and looks for a walkable
 -- position, and returns the valid offset, valid angle and whether the original angle was obstructed.
+-- starting_angle is in radians
 function FindWalkableOffset(position, start_angle, radius, attempts, check_los, ignore_walls, customcheckfn)
 	--print("FindWalkableOffset:")
 

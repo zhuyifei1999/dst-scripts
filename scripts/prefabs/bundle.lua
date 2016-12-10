@@ -168,7 +168,9 @@ local function MakeBundle(name, variations, loot)
     end or nil
 
     local OnPreLoad = variations ~= nil and function(inst, data)
-        inst.variation = data.variation
+        if data ~= nil then
+            inst.variation = data.variation
+        end
     end or nil
 
     local function fn()

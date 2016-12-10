@@ -838,6 +838,7 @@ local function DoActualRez(inst, source)
 
     MakeMediumBurnableCharacter(inst, "torso")
     inst.components.burnable:SetBurnTime(TUNING.PLAYER_BURN_TIME)
+    inst.components.burnable.nocharring = true
     MakeLargeFreezableCharacter(inst, "torso")
     inst.components.freezable:SetResistance(4)
     inst.components.freezable:SetDefaultWearOffTime(TUNING.PLAYER_FREEZE_WEAR_OFF_TIME)

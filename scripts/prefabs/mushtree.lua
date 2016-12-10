@@ -117,9 +117,9 @@ end
 
 local growth_stages =
 {
-    { name = "short", time = function(inst) return GetRandomWithVariance(TUNING.EVERGREEN_GROW_TIME[1].base, TUNING.EVERGREEN_GROW_TIME[1].random) end, fn = SetShort,  growfn = GrowShort , leifscale = .7 },
-    { name = "normal", time = function(inst) return GetRandomWithVariance(TUNING.EVERGREEN_GROW_TIME[2].base, TUNING.EVERGREEN_GROW_TIME[2].random) end, fn = SetNormal, growfn = GrowNormal, leifscale = 1 },
-    { name = "tall", time = function(inst) return GetRandomWithVariance(TUNING.EVERGREEN_GROW_TIME[3].base, TUNING.EVERGREEN_GROW_TIME[3].random) end, fn = SetTall, growfn = GrowTall, leifscale = 1.25 },
+    { name = "short", time = function(inst) return GetRandomWithVariance(TUNING.EVERGREEN_GROW_TIME[1].base, TUNING.EVERGREEN_GROW_TIME[1].random) end, fn = SetShort,  growfn = GrowShort },
+    { name = "normal", time = function(inst) return GetRandomWithVariance(TUNING.EVERGREEN_GROW_TIME[2].base, TUNING.EVERGREEN_GROW_TIME[2].random) end, fn = SetNormal, growfn = GrowNormal },
+    { name = "tall", time = function(inst) return GetRandomWithVariance(TUNING.EVERGREEN_GROW_TIME[3].base, TUNING.EVERGREEN_GROW_TIME[3].random) end, fn = SetTall, growfn = GrowTall },
 }
 
 local data =

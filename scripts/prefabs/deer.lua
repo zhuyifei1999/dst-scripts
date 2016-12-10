@@ -14,7 +14,7 @@ local unshackle_assets =
 local prefabs =
 {
     "meat",
-    "boneshared",
+    "boneshard",
     "deer_antler",
     "deer_growantler_fx",
 }
@@ -54,7 +54,7 @@ local function ShareTargetFn(dude)
     return dude:HasTag("deer") and not dude.components.health:IsDead()
 end
 
-local function onattacked(inst, data)
+local function OnAttacked(inst, data)
     inst.components.combat:SetTarget(data.attacker)
     inst.components.combat:ShareTarget(data.attacker, 12, ShareTargetFn, 3)
 end
@@ -278,16 +278,27 @@ local function OnNewTarget(inst, data)
     end
 end
 
+local function IsDeadKeeper(keeper)
+    return (keeper.IsUnchained == nil or keeper:IsUnchained())
+        and keeper.components.health ~= nil
+        and keeper.components.health:IsDead()
+end
+
 local function GemmedRetargetFn(inst)
     local keeper = inst.components.entitytracker:GetEntity("keeper")
     return keeper ~= nil
-        and not (keeper.IsUnchained ~= nil and
-                keeper:IsUnchained() and
-                keeper.components.health ~= nil and
-                keeper.components.health:IsDead())
+        and not IsDeadKeeper(keeper)
         and keeper.components.combat ~= nil
         and keeper.components.combat.target
         or nil
+end
+
+local function GemmedOnAttacked(inst, data)
+    local keeper = inst.components.entitytracker:GetEntity("keeper")
+    if keeper == nil or not IsDeadKeeper(keeper) then
+        inst.components.combat:SetTarget(data.attacker)
+        inst.components.combat:ShareTarget(data.attacker, 12, ShareTargetFn, 3)
+    end
 end
 
 local function SetEngaged(inst, engaged)
@@ -468,10 +479,12 @@ local function common_fn(gem)
     inst.components.combat:SetAttackPeriod(TUNING.DEER_ATTACK_PERIOD)
     inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
     inst.components.combat:SetHurtSound("dontstarve/creatures/together/deer/hit")
-    inst:ListenForEvent("attacked", onattacked)
     if gem ~= nil then
         inst.components.combat:SetRetargetFunction(3, GemmedRetargetFn)
+        inst:ListenForEvent("attacked", GemmedOnAttacked)
         SetEngaged(inst, false)
+    else
+        inst:ListenForEvent("attacked", OnAttacked)
     end
 
     inst:AddComponent("sleeper")
