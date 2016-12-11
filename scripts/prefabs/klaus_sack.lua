@@ -44,9 +44,9 @@ local giant_loot2 =
 
 local giant_loot3 =
 {
-    "bearger_fur", --2
-    "royal_jelly", --6
-    "goose_feather", --5
+    "bearger_fur",
+    "royal_jelly",
+    "goose_feather",
     "lavae_egg",
     "spiderhat",
 }
@@ -95,12 +95,17 @@ local function onuseklauskey(inst, key, doer)
         inst.SoundEmitter:PlaySound("dontstarve/creatures/together/klaus/lock_break")
 
         if IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
+            local rnd = math.random(3)
             local items =
             {
                 SpawnPrefab(GetRandomBasicWinterOrnament()),
-                SpawnPrefab(GetRandomBasicWinterOrnament()),
                 SpawnPrefab(GetRandomFancyWinterOrnament()),
                 SpawnPrefab(GetRandomLightWinterOrnament()),
+                SpawnPrefab(
+                    (rnd == 1 and GetRandomLightWinterOrnament()) or
+                    (rnd == 2 and GetRandomFancyWinterOrnament()) or
+                    GetRandomBasicWinterOrnament()
+                ),
             }
             DropBundle(inst, items)
 
@@ -136,14 +141,16 @@ local function onuseklauskey(inst, key, doer)
         FillItems(items, "charcoal")
         DropBundle(inst, items)
 
+        items = {}
         local i1 = math.random(#giant_loot3)
         local i2 = math.random(#giant_loot3 - 1)
-        DropBundle(inst, {
-            SpawnPrefab(giant_loot1[math.random(#giant_loot1)]),
-            SpawnPrefab(giant_loot2[math.random(#giant_loot2)]),
-            SpawnPrefab(giant_loot3[i1]),
-            SpawnPrefab(giant_loot3[i2 == i1 and i2 + 1 or i2]),
-        })
+        table.insert(items, SpawnPrefab(giant_loot1[math.random(#giant_loot1)]))
+        if math.random() < .5 then
+            table.insert(items, SpawnPrefab(giant_loot2[math.random(#giant_loot2)]))
+        end
+        table.insert(items, SpawnPrefab(giant_loot3[i1]))
+        table.insert(items, SpawnPrefab(giant_loot3[i2 == i1 and i2 + 1 or i2]))
+        DropBundle(inst, items)
 
         inst.persists = false
         inst:AddTag("NOCLICK")

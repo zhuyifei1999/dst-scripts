@@ -649,9 +649,9 @@ local COMPONENT_ACTIONS =
                 end
             end
         end,
-        
+
         winter_treeseed = function(inst, doer, target, actions)
-            if target:HasTag("winter_treestand") and not target:HasTag("fire") and not target:HasTag("smolder") then
+            if target:HasTag("winter_treestand") and not (target:HasTag("fire") or target:HasTag("smolder") or target:HasTag("burnt")) then
                 table.insert(actions, ACTIONS.PLANT)
             end
         end,

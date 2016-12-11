@@ -604,6 +604,7 @@ local function unshackle_fn()
     end
 
     DoChainSound(inst)
+    inst.SoundEmitter:PlaySound("dontstarve/creatures/together/klaus/lock_break")
 
     inst:AddTag("FX")
     inst:AddTag("NOCLICK")

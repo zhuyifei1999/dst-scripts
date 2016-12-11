@@ -12,17 +12,16 @@ local LootDropper = Class(function(self, inst)
 
     self.trappable = true
 
-	self.lootfn = nil
-
+    self.lootfn = nil
 end)
 
 LootTables = {}
 function SetSharedLootTable(name, table)
-	LootTables[name] = table
+    LootTables[name] = table
 end
 
 function LootDropper:SetChanceLootTable(name)
-	self.chanceloottable = name
+    self.chanceloottable = name
 end
 
 function LootDropper:SetLoot( loots )
@@ -33,47 +32,47 @@ function LootDropper:SetLoot( loots )
 end
 
 function LootDropper:SetLootSetupFn( fn )
-	self.lootsetupfn = fn
+    self.lootsetupfn = fn
 end
 
 function LootDropper:AddRandomLoot( prefab, weight)
     if not self.randomloot then
-		self.randomloot = {}
-		self.totalrandomweight = 0
-	end
-	
+        self.randomloot = {}
+        self.totalrandomweight = 0
+    end
+
     table.insert(self.randomloot, {prefab=prefab,weight=weight} )
     self.totalrandomweight = self.totalrandomweight + weight
 end
 
 -- This overrides the normal loot table while haunted
 function LootDropper:AddRandomHauntedLoot( prefab, weight)
-	if not self.randomhauntedloot then
-		self.randomhauntedloot = {}
-		self.totalhauntedrandomweight = 0
-	end
-	
+    if not self.randomhauntedloot then
+        self.randomhauntedloot = {}
+        self.totalhauntedrandomweight = 0
+    end
+
     table.insert(self.randomhauntedloot, {prefab=prefab,weight=weight} )
     self.totalhauntedrandomweight = self.totalhauntedrandomweight + weight
 end
 
 function LootDropper:AddChanceLoot( prefab, chance)
     if not self.chanceloot then
-		self.chanceloot = {}
-	end
+        self.chanceloot = {}
+    end
     table.insert(self.chanceloot, {prefab=prefab,chance=chance} )
 end
 
 function LootDropper:AddIfNotChanceLoot(prefab)
-	if not self.ifnotchanceloot then
-		self.ifnotchanceloot = {}
-	end
-	table.insert(self.ifnotchanceloot, {prefab=prefab})
+    if not self.ifnotchanceloot then
+        self.ifnotchanceloot = {}
+    end
+    table.insert(self.ifnotchanceloot, {prefab=prefab})
 end
 
 function LootDropper:PickRandomLoot()
-	if self.inst.components.hauntable and self.inst.components.hauntable.haunted and self.totalhauntedrandomweight and self.totalhauntedrandomweight > 0 and self.randomhauntedloot then
-		local rnd = math.random()*self.totalhauntedrandomweight
+    if self.inst.components.hauntable and self.inst.components.hauntable.haunted and self.totalhauntedrandomweight and self.totalhauntedrandomweight > 0 and self.randomhauntedloot then
+        local rnd = math.random()*self.totalhauntedrandomweight
         for k,v in pairs(self.randomhauntedloot) do
             rnd = rnd - v.weight
             if rnd <= 0 then
@@ -92,104 +91,101 @@ function LootDropper:PickRandomLoot()
 end
 
 function LootDropper:GetRecipeLoot(recipe)
-	local percent = 1
-	
-	local loots = {}
+    local percent = 1
 
-	if self.inst.components.finiteuses then
-		percent = self.inst.components.finiteuses:GetPercent()
-	end
+    local loots = {}
 
-	for k,v in ipairs(recipe.ingredients) do
-		local amt = math.ceil( (v.amount * TUNING.HAMMER_LOOT_PERCENT) * percent)
-		if self.inst:HasTag("burnt") then 
-			amt = math.ceil( (v.amount * TUNING.BURNT_HAMMER_LOOT_PERCENT) * percent)
-		end
-		for n = 1, amt do
-			if v.deconstruct then
-				local recipeloot = self:GetRecipeLoot(AllRecipes[v.type])
-				for k,v in ipairs(recipeloot) do
-					table.insert(loots, v)
-				end
-			else
-				table.insert(loots, v.type)
-			end
-		end
-	end
+    if self.inst.components.finiteuses then
+        percent = self.inst.components.finiteuses:GetPercent()
+    end
 
-	return loots
+    for k,v in ipairs(recipe.ingredients) do
+        local amt = math.ceil( (v.amount * TUNING.HAMMER_LOOT_PERCENT) * percent)
+        if self.inst:HasTag("burnt") then 
+            amt = math.ceil( (v.amount * TUNING.BURNT_HAMMER_LOOT_PERCENT) * percent)
+        end
+        for n = 1, amt do
+            if v.deconstruct then
+                local recipeloot = self:GetRecipeLoot(AllRecipes[v.type])
+                for k,v in ipairs(recipeloot) do
+                    table.insert(loots, v)
+                end
+            else
+                table.insert(loots, v.type)
+            end
+        end
+    end
+
+    return loots
 end
 
 function LootDropper:GenerateLoot()
     local loots = {}
 
-	if self.lootsetupfn then
-		self.lootsetupfn(self)
-	end
-    
+    if self.lootsetupfn then
+        self.lootsetupfn(self)
+    end
+
     if self.numrandomloot and math.random() <= (self.chancerandomloot or 1) then
-		for k = 1, self.numrandomloot do
-		    local loot = self:PickRandomLoot()
-		    if loot then
-			    table.insert(loots, loot)
-			end
-		end
-	end
-    
+        for k = 1, self.numrandomloot do
+            local loot = self:PickRandomLoot()
+            if loot then
+                table.insert(loots, loot)
+            end
+        end
+    end
+
     if self.chanceloot then
-		for k,v in pairs(self.chanceloot) do
+        for k,v in pairs(self.chanceloot) do
             if v.chance >= 1.0 then
                 table.insert(loots, v.prefab)
             elseif math.random() < v.chance then
-				table.insert(loots, v.prefab)
-				self.droppingchanceloot = true
-			end
-		end
-	end
+                table.insert(loots, v.prefab)
+                self.droppingchanceloot = true
+            end
+        end
+    end
 
     if self.chanceloottable then
-    	local loot_table = LootTables[self.chanceloottable]
-    	if loot_table then
-    		for i, entry in ipairs(loot_table) do
-    			local prefab = entry[1]
-    			local chance = entry[2]    			
+        local loot_table = LootTables[self.chanceloottable]
+        if loot_table then
+            for i, entry in ipairs(loot_table) do
+                local prefab = entry[1]
+                local chance = entry[2]
                 if chance >= 1.0 then
                     table.insert(loots, prefab)
                 elseif math.random() <= chance then
-					table.insert(loots, prefab)
-					self.droppingchanceloot = true
-				end
-			end
-		end
-	end
+                    table.insert(loots, prefab)
+                    self.droppingchanceloot = true
+                end
+            end
+        end
+    end
 
-	if not self.droppingchanceloot and self.ifnotchanceloot then
-		self.inst:PushEvent("ifnotchanceloot")
-		for k,v in pairs(self.ifnotchanceloot) do
-			table.insert(loots, v.prefab)
-		end
-	end
+    if not self.droppingchanceloot and self.ifnotchanceloot then
+        self.inst:PushEvent("ifnotchanceloot")
+        for k,v in pairs(self.ifnotchanceloot) do
+            table.insert(loots, v.prefab)
+        end
+    end
 
-
-    
     if self.loot then
-		for k,v in ipairs(self.loot) do
-			table.insert(loots, v)
-		end
-	end
-	
+        for k,v in ipairs(self.loot) do
+            table.insert(loots, v)
+        end
+    end
 
-	local recipe = AllRecipes[self.inst.prefab]
-	if recipe then
-		local recipeloot = self:GetRecipeLoot(recipe)
-		for k,v in ipairs(recipeloot) do
-			table.insert(loots, v)
-		end
-	end
-    
-	if self.inst:HasTag("burnt") and math.random() < .4 then
-		table.insert(loots, "charcoal") -- Add charcoal to loot for burnt structures
-	end
+    local recipe = AllRecipes[self.inst.prefab]
+    if recipe then
+        local recipeloot = self:GetRecipeLoot(recipe)
+        for k,v in ipairs(recipeloot) do
+            table.insert(loots, v)
+        end
+    end
+
+    if self.inst:HasTag("burnt") and math.random() < .4 then
+        table.insert(loots, "charcoal") -- Add charcoal to loot for burnt structures
+    end
 
     return loots
 end
@@ -258,7 +254,7 @@ function LootDropper:SpawnLootPrefab(lootprefab, pt)
                 end
             end
 
-		-- here? so we can run a full drop loot?
+        -- here? so we can run a full drop loot?
             self:FlingItem(loot, pt)
 
             return loot
@@ -290,25 +286,23 @@ function LootDropper:DropLoot(pt)
     end
     for k, v in pairs(prefabs) do
         self:SpawnLootPrefab(v, pt)
-        
     end
-    
-    if IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
-		local num_decor_loot = TUNING.WINTERS_FEAST_TREE_DECOR_LOOT[string.upper(self.inst.prefab)] or 0
-		local num_food_loot = 0
-		if num_decor_loot > 0 then
-			for i = 1, num_decor_loot do
-				self:SpawnLootPrefab(GetRandomBasicWinterOrnament(), pt)
-			end
-		elseif self.inst:HasTag("monster") or self.inst:HasTag("animal") then
-			local loot = math.random()
-			if loot < 0.005 then
-				self:SpawnLootPrefab(GetRandomBasicWinterOrnament(), pt)
-			elseif loot < 0.20 then
-				self:SpawnLootPrefab("winter_food"..math.random(NUM_WINTERFOOD), pt)
-			end
-		end
 
+    if IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
+        local prefabname = string.upper(self.inst.prefab)
+        local num_decor_loot = TUNING.WINTERS_FEAST_TREE_DECOR_LOOT[prefabname] or 0
+        if num_decor_loot > 0 then
+            for i = 1, num_decor_loot do
+                self:SpawnLootPrefab(GetRandomBasicWinterOrnament(), pt)
+            end
+        elseif not TUNING.WINTERS_FEAST_LOOT_EXCLUSION[prefabname] and (self.inst:HasTag("monster") or self.inst:HasTag("animal")) then
+            local loot = math.random()
+            if loot < 0.005 then
+                self:SpawnLootPrefab(GetRandomBasicWinterOrnament(), pt)
+            elseif loot < 0.20 then
+                self:SpawnLootPrefab("winter_food"..math.random(NUM_WINTERFOOD), pt)
+            end
+        end
     end
 end
 

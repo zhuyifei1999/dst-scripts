@@ -182,6 +182,7 @@ local function MakeMushroomLight(name, onlywhite, physics_rad)
 
         inst:AddTag("structure")
         inst:AddTag("fridge")
+        inst:AddTag("lamp")
 
         MakeSnowCoveredPristine(inst)
 

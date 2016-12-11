@@ -38,12 +38,11 @@ function Spawner:OnRemoveFromEntity()
     if self.spawnoffscreen then
         self.inst:RemoveEventCallback("entitysleep", OnEntitySleep)
     end
-    if self.child ~= nil then
+    if self.child ~= nil and self.child.parent ~= self.inst then
         --Child is outside, release it!
-        if self.child.parent ~= self.inst then
-            self.inst:RemoveEventCallback("ontrapped", self._onchildkilled, self.child)
-            self.inst:RemoveEventCallback("death", self._onchildkilled, self.child)
-        end
+        self.inst:RemoveEventCallback("ontrapped", self._onchildkilled, self.child)
+        self.inst:RemoveEventCallback("death", self._onchildkilled, self.child)
+        self.inst:RemoveEventCallback("detachchild", self._onchildkilled, self.child)
     end
     if self.task ~= nil then
         self.task:Cancel()
@@ -150,6 +149,7 @@ function Spawner:TakeOwnership(child)
     if self.child ~= child then
         self.inst:ListenForEvent("ontrapped", self._onchildkilled, child)
         self.inst:ListenForEvent("death", self._onchildkilled, child)
+        self.inst:ListenForEvent("detachchild", self._onchildkilled, child)
         if child.components.knownlocations ~= nil then
             child.components.knownlocations:RememberLocation("home", self.inst:GetPosition())
         end

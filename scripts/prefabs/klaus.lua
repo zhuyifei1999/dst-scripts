@@ -206,11 +206,9 @@ local function SummonHelpers(inst)
         table.sort(targets, NearToFar)
         local stock = TUNING.KLAUS_NAUGHTY_MAX_SPAWNS
         for i, v in ipairs(targets) do
-            local numspawns = math.min(TUNING.KLAUS_NAUGHTY_MIN_SPAWNS, math.ceil(stock / #targets))
+            local numspawns = stock > 0 and math.min(TUNING.KLAUS_NAUGHTY_MIN_SPAWNS, math.ceil(stock / #targets)) or 0
+            --Push event even if numspawns is 0
             TheWorld:PushEvent("ms_forcenaughtiness", { player = v.inst, numspawns = numspawns })
-            if stock <= numspawns then
-                break
-            end
             stock = stock - numspawns
         end
         return true

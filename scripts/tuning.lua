@@ -1424,8 +1424,6 @@ function Tune(overrides)
         PERISH_COLD_FROZEN_MULT = 0, -- frozen things don't spoil in an ice box or if it's cold out
         PERISH_FROZEN_FIRE_MULT = 30, -- frozen things spoil very quickly if near a fire
         PERISH_FRIDGE_MULT = .5,
-        PERISH_MUSHROOMLIGHT_MUSHROOM_MULT = 0.0, -- mushrooms are in poop so they can stay healthy
-        PERISH_MUSHROOMLIGHT_BATTERY_MULT = 0.25, -- lights will have a slow burn
         PERISH_GROUND_MULT = 1.5,
         PERISH_WET_MULT = 1.3,
         PERISH_CAGE_MULT = 0.25,
@@ -2367,19 +2365,23 @@ function Tune(overrides)
             {base=1.0*day_time, random=0.2*day_time}, --normal
             {base=1.0*day_time, random=0.2*day_time}, --tall
         },
-        
+
         WINTERS_FEAST_TREE_DECOR_LOOT =
         {
-			DEERCLOPS        = 1,
-			BEARGER          = 1,
-			DRAGONFLY        = 2,
-			MINOTAUR         = 1,
-			BEEQUEEN         = 2,
-			TOADSTOOL        = 2,
-			MOOSE            = 1, -- goose?
+            DEERCLOPS        = 1,
+            BEARGER          = 1,
+            DRAGONFLY        = 2,
+            MINOTAUR         = 1,
+            BEEQUEEN         = 2,
+            TOADSTOOL        = 2,
+            MOOSE            = 1, -- goose?
         },
 
-        
+        WINTERS_FEAST_LOOT_EXCLUSION =
+        {
+            BEEGUARD = true,
+            TENTACLE = true,
+        },
     }
 end
 

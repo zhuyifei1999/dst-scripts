@@ -147,7 +147,7 @@ local function OnPlayerLeft(src, player)
 end
 
 local function OnForceNaughtiness(src, data)
-    if data.player ~= nil and (data.numspawns or 0) > 0 then
+    if data.player ~= nil then
         local playerdata = _activeplayers[data.player]
         if playerdata ~= nil then
             --Reset existing naughtiness
@@ -155,7 +155,7 @@ local function OnForceNaughtiness(src, data)
             playerdata.actions = 0
         end
 
-        for i = 1, data.numspawns do
+        for i = 1, data.numspawns or 0 do
             local kramp = MakeAKrampusForPlayer(data.player)
             if kramp.components.combat ~= nil then
                 kramp.components.combat:SetTarget(data.player)

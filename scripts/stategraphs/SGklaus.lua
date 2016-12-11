@@ -940,8 +940,8 @@ local states =
         onenter = function(inst)
             inst.AnimState:PlayAnimation("transform_pst2")
             local x, y, z = inst.Transform:GetWorldPosition()
-            for i, v in ipairs(TheSim:FindEntities(x, y, z, 20, { "deergemresistance", "_health" }, { "epic", "deer", "INLIMBO" })) do
-                if not v.components.health:IsDead() then
+            for i, v in ipairs(TheSim:FindEntities(x, y, z, 30, { "deergemresistance", "_health", "_combat" }, { "epic", "deer", "INLIMBO" })) do
+                if not v.components.health:IsDead() and inst.components.grouptargeter:IsTargeting(v.components.combat.target) then
                     StartLaughing(inst)
                     break
                 end
