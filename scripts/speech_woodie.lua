@@ -17,6 +17,11 @@ return {
 			NOBITS = "It's already shorn, eh?",
             REFUSE = "I like my beard.",
 		},
+		UNLOCK =
+        {
+        	WRONGKEY = "That was the wrong key, eh?",
+        	KLAUS = "Now's not the time, eh?",
+        },
 		STORE =
 		{
 			GENERIC = "It's already packed tighter than a Toronto streetcar.",
@@ -132,6 +137,9 @@ return {
 	ANNOUNCE_SOAKED = "Better hold on tight, Lucy.",
 
 	ANNOUNCE_PETRIFED_TREES = "No! Not the wood!",
+	ANNOUNCE_KLAUS_ENRAGE = "I think it's time to run.",
+	ANNOUNCE_KLAUS_UNCHAINED = "You shoulda stayed down.",
+	ANNOUNCE_KLAUS_CALLFORHELP = "Monster hosers, incoming.",
 
 	ANNOUNCE_EAT =
 	{
@@ -199,7 +207,7 @@ return {
 	ANNOUNCE_NOWARDROBEONFIRE = "That's okay. I just need a good flannel, anyway.",
 	ANNOUNCE_RESEARCH = "Learnin' keeps your mind sharp. Like an axe.",
 	ANNOUNCE_UNIMPLEMENTED = "Ouch! That wasn't very polite.",
-	ANNOUNCE_WORMS = "Oh geez. I hope you're ready, 'Luce.",
+	ANNOUNCE_WORMS = "Oh geez. I hope you're ready, Lucy.",
 	BATTLECRY =
 	{
 		GENERIC = "Get over here, eh!",
@@ -1889,6 +1897,11 @@ return {
         WINTER_FOOD2 = "Always had a soft spot for a good holiday cookie.", --sugar cookie
         WINTER_FOOD3 = "Satisfies the sweet tooth.", --candy cane
         WINTER_FOOD4 = "That thing just ain't right.", --fruitcake
+        WINTER_FOOD5 = "All the taste and none of the splinters!", --yule log cake
+        WINTER_FOOD6 = "Hard to complain about this whole \"Feast\" business.", --plum pudding
+        WINTER_FOOD7 = "Doesn't fall far from the cider tree.", --apple cider
+        WINTER_FOOD8 = "Perfect for drinking next to a good fire, eh?", --hot cocoa
+        WINTER_FOOD9 = "Psst, Lucy. Do I have a 'nog moustache?", --eggnog
 
         KLAUS = "Thing's got no eyes, eh?",
         KLAUS_SACK = "Something good's in there, eh?",

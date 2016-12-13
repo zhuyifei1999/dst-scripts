@@ -1,85 +1,62 @@
-local prefabs = 
-{
-	"deer_antler1",
-	"deer_antler2",
-	"deer_antler3",
-}
-
-local function setantlertype(inst, antlertype)
-	inst.antlertype = antlertype
-	inst.AnimState:PlayAnimation("idle"..tostring(antlertype))
-	inst.components.inventoryitem:ChangeImageName("deer_antler"..tostring(antlertype))
-end
-
-local function onsave(inst, data)
-    data.antlertype = inst.antlertype
-end
-
-local function onload(inst, data)
-    setantlertype(inst, data ~= nil and data.antlertype or 1)
-end
-
 local function MakeAntler(antlertype, trueklaussackkey)
-	local assets =
-	{
-		Asset("ANIM", "anim/deer_antler.zip"),
-		Asset("INV_IMAGE", "deer_antler"..tostring(antlertype or 1)),
-	}
+    local assets = antlertype ~= nil and {
+        Asset("ANIM", "anim/deer_antler.zip"),
+    } or nil
 
-	local function fn()
-		local inst = CreateEntity()
+    local prefabs = antlertype == nil and {
+        "deer_antler1",
+        "deer_antler2",
+        "deer_antler3",
+    } or nil
 
-		inst.entity:AddTransform()
-		inst.entity:AddAnimState()
-		inst.entity:AddNetwork()
+    local function fn()
+        local inst = CreateEntity()
 
-		MakeInventoryPhysics(inst)
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddNetwork()
 
-		inst.AnimState:SetBank("deer_antler")
-		inst.AnimState:SetBuild("deer_antler")
-		inst.AnimState:PlayAnimation("idle"..tostring(antlertype or 1))
+        MakeInventoryPhysics(inst)
 
-		inst:AddTag("deerantler")
-		inst:AddTag("klaussackkey")
+        inst.AnimState:SetBank("deer_antler")
+        inst.AnimState:SetBuild("deer_antler")
+        inst.AnimState:PlayAnimation("idle"..tostring(antlertype or 1))
 
-		if trueklaussackkey then
-			inst:AddTag("trueklaussackkey")
-			inst:AddTag("irreplaceable")
-		else
-	        inst:SetPrefabName("deer_antler")
-		end
+        inst:AddTag("deerantler")
 
-		inst.entity:SetPristine()
-		
-		if not TheWorld.ismastersim then
-			return inst
-		end
+        --klaussackkey (from klaussackkey component) added to pristine state for optimization
+        inst:AddTag("klaussackkey")
 
-		inst:AddComponent("inspectable")
-		inst:AddComponent("inventoryitem")
-		inst:AddComponent("klaussackkey")
+        if trueklaussackkey then
+            inst:AddTag("irreplaceable")
+        else
+            if antlertype == nil then
+                inst:SetPrefabName("deer_antler1")
+            end
+            inst:SetPrefabNameOverride("deer_antler")
+        end
 
-		MakeHauntableLaunch(inst)
-		
-		if trueklaussackkey then
-			inst.components.inventoryitem:ChangeImageName("deer_antler"..tostring(antlertype))
-		else
-			inst.OnSave = onsave
-			inst.OnLoad = onload
+        inst.entity:SetPristine()
 
-			setantlertype(inst, antlertype or 1)
-		end
-		
-		return inst
-	end
+        if not TheWorld.ismastersim then
+            return inst
+        end
 
-	local prefabname = trueklaussackkey and "klaussackkey" or "deer_antler"..tostring(antlertype or "")
+        inst:AddComponent("inspectable")
+        inst:AddComponent("inventoryitem")
+        inst:AddComponent("klaussackkey")
+        inst.components.klaussackkey:SetTrueKey(trueklaussackkey)
 
-	return Prefab(prefabname, fn, assets, antlertype == nil and prefabs or nil)
+        MakeHauntableLaunch(inst)
+
+        return inst
+    end
+
+    return Prefab(trueklaussackkey and "klaussackkey" or "deer_antler"..tostring(antlertype or ""), fn, assets, prefabs)
 end
 
 return MakeAntler(),
-		MakeAntler(1),
-		MakeAntler(2),
-		MakeAntler(3),
-		MakeAntler(4, true)
+        MakeAntler(1),
+        MakeAntler(2),
+        MakeAntler(3),
+        MakeAntler(4, true)

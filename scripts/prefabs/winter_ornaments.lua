@@ -3,6 +3,8 @@ local assets =
     Asset("ANIM", "anim/winter_ornaments.zip"),
 }
 
+local BLINK_PERIOD = 1.2
+
 local NUM_BASIC_ORNAMENT = 8
 local NUM_FANCY_ORNAMENT = 4
 local NUM_LIGHT_ORNAMENT = 4
@@ -51,7 +53,7 @@ local function updatelight(inst, data)
             inst.AnimState:PlayAnimation(inst.winter_ornamentid .. (inst.ornamentlighton and "_on" or "_off"))
         end
         if not inst.components.timer:TimerExists("blink") then
-            inst.components.timer:StartTimer("blink", 1.2)
+            inst.components.timer:StartTimer("blink", BLINK_PERIOD)
         end
     end
 end
@@ -93,14 +95,69 @@ local function onentitysleep(inst)
     inst.components.timer:PauseTimer("blink")
 end
 
+local function ondepleted(inst)
+    inst.ornamentlighton = false
+    local owner = inst.components.inventoryitem:GetGrandOwner()
+    if owner ~= nil then
+        owner:PushEvent("updatelight", inst)
+    end
+    inst.Light:Enable(false)
+    inst.AnimState:PlayAnimation(inst.winter_ornamentid.."_off")
+    inst.components.timer:StopTimer("blink")
+    inst.components.fueled:StopConsuming()
+    inst.components.inventoryitem:SetOnDroppedFn(nil)
+    inst.components.inventoryitem:SetOnPutInInventoryFn(nil)
+    inst.OnEntitySleep = nil
+    inst.OnEntityWake = nil
+    inst.OnSave = nil
+    if inst.components.fuel ~= nil then
+        inst:RemoveComponent("fuel")
+    end
+end
+
 local function onsave(inst, data)
     data.ornamentlighton = inst.ornamentlighton
+
+    -------------------------------------------------------------------------
+    --V2C: #TODO #REMOVE temporary fix for previously stackable winter lights
+    if inst._unstack ~= nil and data.stackable == nil then
+        data.stackable = { stack = inst._unstack }
+    end
+    -------------------------------------------------------------------------
 end
 
 local function onload(inst, data)
-    if data ~= nil then
+    if inst.components.fueled:IsEmpty() then
+        ondepleted(inst)
+    elseif data ~= nil then
         inst.ornamentlighton = data.ornamentlighton
     end
+
+    -------------------------------------------------------------------------
+    --V2C: #TODO #REMOVE temporary fix for previously stackable winter lights
+    if inst.components.stackable == nil and
+        data ~= nil and
+        data.stackable ~= nil and
+        data.stackable.stack ~= nil and
+        data.stackable.stack > 1 then
+        inst._unstack = data.stackable.stack
+        inst:DoTaskInTime(0, function()
+            local x, y, z = inst.Transform:GetWorldPosition()
+            local fuel = inst.components.fueled ~= nil and inst.components.fueled.currentfuel or nil
+            for i = 2, inst._unstack do
+                local dupe = SpawnPrefab(inst.prefab)
+                if fuel ~= nil and dupe.components.fueled ~= nil then
+                    dupe.components.fueled:InitializeFuelLevel(fuel)
+                    if dupe.components.fueled:IsEmpty() then
+                        ondepleted(dupe)
+                    end
+                end
+                dupe.components.inventoryitem:DoDropPhysics(x, 0, z, true, .5)
+            end
+            inst._unstack = nil
+        end)
+    end
+    -------------------------------------------------------------------------
 end
 
 local function MakeOrnament(ornamentid, lightdata)
@@ -150,9 +207,6 @@ local function MakeOrnament(ornamentid, lightdata)
         inst:AddComponent("inspectable")
         inst:AddComponent("inventoryitem")
 
-        inst:AddComponent("stackable")
-        inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
-
         inst:AddComponent("tradable")
         inst.components.tradable.goldvalue = ORNAMENT_GOLD_VALUE[string.sub(ornamentid, 1, 5)] or 1
 
@@ -161,7 +215,7 @@ local function MakeOrnament(ornamentid, lightdata)
             inst.components.fueled.fueltype = FUELTYPE.USAGE
             inst.components.fueled.no_sewing = true
             inst.components.fueled:InitializeFuelLevel(160 * TUNING.TOTAL_DAY_TIME)
-            inst.components.fueled:SetDepletedFn(inst.Remove)
+            inst.components.fueled:SetDepletedFn(ondepleted)
             inst.components.fueled:StartConsuming()
 
             inst:AddComponent("timer")
@@ -179,8 +233,11 @@ local function MakeOrnament(ornamentid, lightdata)
             inst.OnSave = onsave
             inst.OnLoad = onload
 
-            inst.ornamentlighton = false
-            inst.components.timer:StartTimer("blink", 1.2)
+            inst.ornamentlighton = math.random() < .5
+            inst.components.timer:StartTimer("blink", math.random() * BLINK_PERIOD)
+        else
+            inst:AddComponent("stackable")
+            inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
         end
 
         ---------------------

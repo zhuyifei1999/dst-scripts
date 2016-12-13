@@ -22,6 +22,11 @@ return
             NOBITS = "It's already smooth, dear.",
             AWAKEBEEFALO = "I think he might object to that.",
         },
+        UNLOCK =
+        {
+            WRONGKEY = "That may have been the wrong implement.",
+            KLAUS = "The beast must first be defeated.",
+        },
         STORE =
         {
             GENERIC = "It's full to the brim, I'm afraid.",
@@ -118,6 +123,10 @@ return
     ANNOUNCE_NOMOUNTEDGIFT = "I do believe I should dismount first.",
     ANNOUNCE_NOWARDROBEONFIRE = "As you can plainly see, it is ablaze.",
     ANNOUNCE_WORMS = "Something nasty intends to rear its head.",
+
+    ANNOUNCE_KLAUS_ENRAGE = "No sense throwing one's life away. Fall back!",
+    ANNOUNCE_KLAUS_UNCHAINED = "Whatever enchantment restrained it has been undone.",
+    ANNOUNCE_KLAUS_CALLFORHELP = "Careful! It has summoned lesser Krampii.",
    
     DESCRIBE=
     {
@@ -1117,8 +1126,13 @@ return
         WINTER_FOOD2 = "Just like holidays at the library!", --sugar cookie
         WINTER_FOOD3 = "The perfect stir stick for hot cup of tea.", --candy cane
         WINTER_FOOD4 = "An object with negligible temporal drag.", --fruitcake
+        WINTER_FOOD5 = "Such expertly prepared raspberry filling!", --yule log cake
+        WINTER_FOOD6 = "\"Plum\" is a 17th century term for \"fruit\", dear.", --plum pudding
+        WINTER_FOOD7 = "Pair it with a good book and you've a cure for the winter blues.", --apple cider
+        WINTER_FOOD8 = "A small enchantment keeps it a pleasant temperature.", --hot cocoa
+        WINTER_FOOD9 = "I've always harbored a weakness for good 'nog.", --eggnog
         
-        KLAUS = "It employs a powerful olfactory sense to locate prey.",
+        KLAUS = "It uses its powerful olfactory sense to locate prey.",
         KLAUS_SACK = "How curious.",
         NIGHTMAREFUEL = "Ectoplasmic residue.",
         NIGHTLIGHT = "Curiously luminescent.",

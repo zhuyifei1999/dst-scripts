@@ -47,6 +47,7 @@ Recipe("turf_checkerfloor", {Ingredient("marble", 1)}, RECIPETABS.TOWN, TECH.SCI
 Recipe("turf_carpetfloor", {Ingredient("boards", 1), Ingredient("beefalowool", 1)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO)
 Recipe("turf_dragonfly", {Ingredient("dragon_scales", 1), Ingredient("cutstone", 2)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO, nil, nil, nil, 6)
 
+Recipe("winter_treestand", {Ingredient("poop", 2), Ingredient("boards", 1)}, RECIPETABS.TOWN, TECH.WINTERS_FEAST, "winter_treestand_placer")
 Recipe("pottedfern", {Ingredient("foliage", 5), Ingredient("slurtle_shellpieces", 1)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO, "pottedfern_placer", 0.9)
 Recipe("endtable", {Ingredient("marble", 2), Ingredient("boards", 2), Ingredient("turf_carpetfloor", 2)}, RECIPETABS.TOWN, TECH.LOST, "endtable_placer", 1.5)
 
@@ -55,7 +56,6 @@ Recipe("dragonflyfurnace", {Ingredient("dragon_scales", 1), Ingredient("redgem",
 
 
 --FARM
-Recipe("winter_treestand", {Ingredient("poop", 2), Ingredient("boards", 1)}, RECIPETABS.FARM, TECH.WINTERS_FEAST, "winter_treestand_placer")
 Recipe("slow_farmplot", {Ingredient("cutgrass", 8),Ingredient("poop", 4),Ingredient("log", 4)}, RECIPETABS.FARM,  TECH.SCIENCE_ONE, "slow_farmplot_placer")
 Recipe("fast_farmplot", {Ingredient("cutgrass", 10),Ingredient("poop", 6),Ingredient("rocks", 4)}, RECIPETABS.FARM,  TECH.SCIENCE_TWO, "fast_farmplot_placer")
 Recipe("fertilizer", {Ingredient("poop",3), Ingredient("boneshard", 2), Ingredient("log", 4)}, RECIPETABS.FARM, TECH.SCIENCE_TWO)

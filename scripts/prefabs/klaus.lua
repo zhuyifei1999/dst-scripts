@@ -168,13 +168,34 @@ end
 
 --------------------------------------------------------------------------
 
+local function AnnounceWarning(inst, player, strid)
+    if player:IsValid() and player.entity:IsVisible() and
+        not (player.components.health ~= nil and player.components.health:IsDead()) and
+        not player:HasTag("playerghost") and
+        player:IsNear(inst, 15) and
+        not inst.components.health:IsDead() and
+        player.components.talker ~= nil then
+        player.components.talker:Say(GetString(inst, strid))
+    end
+end
+
+local function PushWarning(inst, strid)
+    for k, v in pairs(inst.recentattackers) do
+        if k:IsValid() then
+            inst:DoTaskInTime(math.random(), AnnounceWarning, k, strid)
+        end
+    end
+end
+
+--------------------------------------------------------------------------
+
 local PHASE2_HEALTH = .5
 
 local function NearToFar(a, b)
     return a.distsq < b.distsq
 end
 
-local function SummonHelpers(inst)
+local function SummonHelpers(inst, warning)
     if inst.nohelpers then
         return false
     end
@@ -210,6 +231,9 @@ local function SummonHelpers(inst)
             --Push event even if numspawns is 0
             TheWorld:PushEvent("ms_forcenaughtiness", { player = v.inst, numspawns = numspawns })
             stock = stock - numspawns
+        end
+        if warning then
+            PushWarning(inst, "ANNOUNCE_KLAUS_CALLFORHELP")
         end
         return true
     end
@@ -334,7 +358,7 @@ local function IsUnchained(inst)
     return inst._unchained:value()
 end
 
-local function Unchain(inst)
+local function Unchain(inst, warning)
     if not inst._unchained:value() then
         inst.AnimState:Hide("swap_chain")
         inst.AnimState:Hide("swap_chain_lock")
@@ -343,10 +367,13 @@ local function Unchain(inst)
         inst.DoFoleySounds = DoNothing
         inst._unchained:set(true)
         OnMusicDirty(inst)
+        if warning then
+            PushWarning(inst, "ANNOUNCE_KLAUS_UNCHAINED")
+        end
     end
 end
 
-local function Enrage(inst)
+local function Enrage(inst, warning)
     if not inst.enraged then
         inst.enraged = true
         inst.nohelpers = nil --redundant when enraged
@@ -355,6 +382,9 @@ local function Enrage(inst)
         SetPhysicalScale(inst, TUNING.KLAUS_ENRAGE_SCALE)
         SetStatScale(inst, TUNING.KLAUS_ENRAGE_SCALE)
         inst.components.sanityaura.aura = inst:IsUnchained() and -TUNING.SANITYAURA_HUGE or -TUNING.SANITYAURA_LARGE
+        if warning then
+            PushWarning(inst, "ANNOUNCE_KLAUS_ENRAGE")
+        end
     end
 end
 

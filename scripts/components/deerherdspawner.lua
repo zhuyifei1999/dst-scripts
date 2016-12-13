@@ -37,7 +37,7 @@ local _spawners = {}
 local _activedeer = {}
 
 local _timetospawn = nil
-local _lastherdsummonday = -TUNING.NO_BOSS_TIME -- initialize the timer so it triggers in first autumn, even if its the starting season
+local _prevherdsummonday = -TUNING.NO_BOSS_TIME --initialize the timer so it triggers in first autumn, even if its the starting season
 local _timetomigrate = nil
 
 --------------------------------------------------------------------------
@@ -170,8 +170,8 @@ local function SummonHerd()
 end
 
 local function QueueSummonHerd()
-	if TheWorld.state.isautumn == true and (TheWorld.state.cycles - _lastherdsummonday) > TheWorld.state.autumnlength then
-		_lastherdsummonday = TheWorld.state.cycles
+	if TheWorld.state.isautumn == true and (TheWorld.state.cycles - _prevherdsummonday) > TheWorld.state.autumnlength then
+		_prevherdsummonday = TheWorld.state.cycles
 
 		local spawndelay = TheWorld.state.autumnlength * TUNING.TOTAL_DAY_TIME * (TheWorld.state.cycles == 0 and 0.5 or 0.2)
 		local spawnrandom = .33 * spawndelay
@@ -261,7 +261,7 @@ function self:OnSave()
 	local data = 
 	{
 		_timetospawn = _timetospawn,
-		_lastherdsummonday = _lastherdsummonday ~= 0 and _lastherdsummonday or nil,
+		_prevherdsummonday = _prevherdsummonday,
 		_timetomigrate = _timetomigrate,
 	}
 	
@@ -280,7 +280,10 @@ end
 
 function self:OnLoad(data)
 	if data ~= nil then
-		_lastherdsummonday = data._lastherdsummonday or 0
+		_prevherdsummonday = data._prevherdsummonday or 0
+		if data._lastherdsummonday ~= nil then
+			_prevherdsummonday = data._lastherdsummonday -- retrofitting
+		end
 		_timetospawn = data._timetospawn
 		_timetomigrate = data._timetomigrate
 	end
@@ -323,7 +326,7 @@ end
 -- TheWorld.components.deerherdspawner:DebugSummonHerd()
 function self:DebugSummonHerd(time)
 	_timetospawn = time or 1
-	_lastherdsummonday = TheWorld.state.cycles
+	_prevherdsummonday = TheWorld.state.cycles
 	self.inst:StartUpdatingComponent(self)
 end
 
@@ -335,7 +338,13 @@ self:WatchWorldState("isautumn", QueueSummonHerd)
 self:WatchWorldState("iswinter", QueueHerdMigration)
 
 function self:OnPostInit()
-    QueueSummonHerd()
+	if _prevherdsummonday < 0 and TheWorld.state.cycles == 0 and TheWorld.state.iswinter then
+		_prevherdsummonday = TheWorld.state.cycles
+		SummonHerd()
+		QueueHerdMigration()
+	else
+		QueueSummonHerd()
+	end
 end
 
 end)

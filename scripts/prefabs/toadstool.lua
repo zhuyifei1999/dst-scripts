@@ -508,8 +508,9 @@ local function AnnounceWarning(inst, player)
         not player:HasTag("playerghost") and
         not (inst.sg:HasStateTag("noattack") or
             inst.components.combat:HasTarget() or
-            inst.components.health:IsDead()) then
-        player:PushEvent("toadstoolwarning", { escaped = false })
+            inst.components.health:IsDead()) and
+        player.components.talker ~= nil then
+        player.components.talker:Say(GetString(inst, "ANNOUNCE_TOADESCAPING"))
     end
 end
 
@@ -530,8 +531,9 @@ end
 local function AnnounceEscaped(player)
     if player:IsValid() and player.entity:IsVisible() and
         not (player.components.health ~= nil and player.components.health:IsDead()) and
-        not player:HasTag("playerghost") then
-        player:PushEvent("toadstoolwarning", { escaped = true })
+        not player:HasTag("playerghost") and
+        player.components.talker ~= nil then
+        player.components.talker:Say(GetString(inst, "ANNOUNCE_TOADESCAPED"))
     end
 end
 

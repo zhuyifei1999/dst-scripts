@@ -16,6 +16,11 @@ return {
 			GENERIC = "Unshaveworthy.",
 			NOBITS = "But there's nothing to trim!",
 		},
+        UNLOCK =
+        {
+            WRONGKEY = "The true key must be out there somewhere.",
+            KLAUS = "Not when there is battle to be won!",
+        },
 		STORE =
 		{
 			GENERIC = "It is already brimming with goods.",
@@ -147,6 +152,9 @@ return {
 	ANNOUNCE_BECOMEGHOST = "oOooOOOo!!",
 	ANNOUNCE_GHOSTDRAIN = "They're driving me mad...!",
 	ANNOUNCE_PETRIFED_TREES = "I sense Loki's mischievous hand in the shadows.",
+    ANNOUNCE_KLAUS_ENRAGE = "RUN AWAY!",
+    ANNOUNCE_KLAUS_UNCHAINED = "Now the true battle begins!",
+    ANNOUNCE_KLAUS_CALLFORHELP = "Call thy hordes, they shan't protect thee!",
 
 	ANNOUNCE_ENTER_DARK = "And the curtain falls.",
 	ANNOUNCE_ENTER_LIGHT = "I step into the light!",
@@ -1871,7 +1879,7 @@ return {
         WINTER_TREE =
         {
             BURNT = "Its beauty lives on in our hearts.",
-            --BURNING = "",
+            BURNING = "Woe! Misery!",
             CANDECORATE = "A majestic pine, worthy of celebration!",
             YOUNG = "Grow strong, young one! It is your destiny!",
         },
@@ -1883,6 +1891,11 @@ return {
         WINTER_FOOD2 = "Like a snowflake, it is a gift from the heavens!", --sugar cookie
         WINTER_FOOD3 = "T'would look as divine on the tree as in mine mouth!", --candy cane
         WINTER_FOOD4 = "Stay back, foul creation!", --fruitcake
+        WINTER_FOOD5 = "We feast tonight!", --yule log cake
+        WINTER_FOOD6 = "Twas plucked straight from my nightmares!", --plum pudding
+        WINTER_FOOD7 = "Something so foul shall never pass my lips!", --apple cider
+        WINTER_FOOD8 = "Warms the soul.", --hot cocoa
+        WINTER_FOOD9 = "Imbibable eggs!", --eggnog
         
         KLAUS = "I shall free thy deer this day!",
         KLAUS_SACK = "A secret, kept under lock and key!",

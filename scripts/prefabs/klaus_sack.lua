@@ -49,6 +49,7 @@ local giant_loot3 =
     "goose_feather",
     "lavae_egg",
     "spiderhat",
+    "steelwool",
 }
 
 for i, v in ipairs(giant_loot1) do
@@ -89,7 +90,15 @@ local function FillItems(items, prefab)
 end
 
 local function onuseklauskey(inst, key, doer)
-    if key:HasTag("trueklaussackkey") then
+    if key.components.klaussackkey == nil then
+        return false
+    elseif key.components.klaussackkey.truekey then
+        if inst.components.entitytracker:GetEntity("klaus") ~= nil then
+            --klaus is already spawned
+            --announce danger?
+            return false, "KLAUS", false
+        end
+
         inst.AnimState:PlayAnimation("open")
         inst.SoundEmitter:PlaySound("dontstarve/creatures/together/klaus/chain_foley")
         inst.SoundEmitter:PlaySound("dontstarve/creatures/together/klaus/lock_break")
@@ -156,9 +165,9 @@ local function onuseklauskey(inst, key, doer)
         inst:AddTag("NOCLICK")
         inst:DoTaskInTime(1, ErodeAway)
 
-        return true
-    elseif key:HasTag("klaussackkey") then
-        inst.components.lootdropper:FlingItem(SpawnPrefab("boneshard"), doer:GetPosition())
+        return true, nil, true
+    else
+        LaunchAt(SpawnPrefab("boneshard"), inst, doer, .2, 1, 1)
 
         inst.AnimState:PlayAnimation("jiggle")
         inst.AnimState:PushAnimation("idle", false)
@@ -198,9 +207,18 @@ local function onuseklauskey(inst, key, doer)
             inst.components.entitytracker:TrackEntity("klaus", klaus)
             inst:ListenForEvent("dropkey", inst.OnDropKey, klaus)
         end
-        return true
+        return false, "WRONGKEY", true
     end
-    return false
+end
+
+local function OnSave(inst, data)
+    data.despawnday = inst.despawnday
+end
+
+local function OnLoad(inst, data)
+    if data ~= nil then
+        inst.despawnday = data.despawnday or 0
+    end
 end
 
 local function OnLoadPostPass(inst)
@@ -210,9 +228,33 @@ local function OnLoadPostPass(inst)
     end
 end
 
+--Also called from klaussackspawner
 local function OnDropKey(inst, key, klaus)
-    inst.components.entitytracker:ForgetEntity("key")
+    local oldkey = inst.components.entitytracker:GetEntity("key")
+    if oldkey ~= nil then
+        if klaus == nil then
+            return
+        end
+        inst.components.entitytracker:ForgetEntity("key")
+    end
     inst.components.entitytracker:TrackEntity("key", key)
+end
+
+local function validatesack(inst)
+    if not IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) and
+        TheWorld.state.cycles >= inst.despawnday and
+        inst.components.entitytracker:GetEntity("klaus") == nil and
+        inst.components.entitytracker:GetEntity("key") == nil then
+        inst:Remove()
+    end
+end
+
+local function OnInit(inst)
+    inst.OnEntityWake = validatesack
+    inst.OnEntitySleep = validatesack
+    if inst:IsAsleep() then
+        validatesack(inst)
+    end
 end
 
 local function fn()
@@ -256,9 +298,16 @@ local function fn()
 
     MakeHauntableWork(inst)
 
+    inst:DoTaskInTime(0, OnInit)
+
+    inst.despawnday = TheWorld.state.cycles + TheWorld.state.winterlength
+
     TheWorld:PushEvent("ms_registerklaussack", inst)
 
     inst.OnDropKey = function(klaus, key) OnDropKey(inst, key, klaus) end
+
+    inst.OnSave = OnSave
+    inst.OnLoad = OnLoad
     inst.OnLoadPostPass = OnLoadPostPass
 
     return inst

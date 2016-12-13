@@ -17,14 +17,13 @@ self.inst = inst
 local _spawners = {}
 local _sack = nil
 local _respawntask = nil
+local _spawnedthiswinter = false
 
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
 
 local function SpawnKlausSack()
-    --print ("klaussack SpawnKlausSack")
-
     local numstructsatspawn = {}
 
     local x,y,z = nil, nil, nil
@@ -73,7 +72,6 @@ end
 
 local function OnRespawnTimer()
     _respawntask = nil
-    --print ("klaussack OnRespawnTimer", tostring(_sack))
     if _sack == nil then
         SpawnKlausSack()
     end
@@ -82,14 +80,14 @@ end
 local function StartRespawnTimer(t)
     if _sack == nil or not _sack:IsValid() then
         StopRespawnTimer()
-        --print "klaussack StartRespawnTimer"
-        _respawntask = inst:DoTaskInTime(t or TUNING.KLAUSSACK_RESPAWN_TIME, OnRespawnTimer)
+        _respawntask = inst:DoTaskInTime(t, OnRespawnTimer)
     end
 end
 
 --------------------------------------------------------------------------
 --[[ Private event handlers ]]
 --------------------------------------------------------------------------
+
 local function OnRemoveSpawner(spawner)
     for i, v in ipairs(_spawners) do
         if v == spawner then
@@ -111,18 +109,33 @@ local function OnRegisterSackSpawningPt(inst, spawner)
 end
 
 local function OnUnregisterSack(sack)
-    --print ("klaussack OnUnregisterSack", sack)
     self.inst:RemoveEventCallback("onremove", OnUnregisterSack, sack)
     _sack = nil
-    StartRespawnTimer()
+
+    if IsSpecialEventActive( SPECIAL_EVENTS.WINTERS_FEAST ) then
+        StartRespawnTimer(TUNING.KLAUSSACK_EVENT_RESPAWN_TIME)
+    end
 end
 
 local function RegisterKlausSack(inst, sack)
     if _sack == nil or not _sack:IsValid() then
-        --print ("klaussack RegisterKlausSack", sack)
         _sack = sack
         inst:ListenForEvent("onremove", OnUnregisterSack, sack)
     end
+end
+
+local function RestoreKlausSackKey(inst, key)
+    if _sack ~= nil and _sack:IsValid() and _sack.OnDropKey ~= nil then
+        _sack.OnDropKey(nil, key)
+    end
+end
+
+local function QueueSack()
+    if _respawntask == nil and TheWorld.state.iswinter and not _spawnedthiswinter and (_sack == nil or not _sack:IsValid()) then
+        StartRespawnTimer(TUNING.KLAUSSACK_SPAWN_DELAY + math.random()*TUNING.KLAUSSACK_SPAWN_DELAY_VARIANCE)
+    end
+
+    _spawnedthiswinter = TheWorld.state.iswinter
 end
 
 --------------------------------------------------------------------------
@@ -132,16 +145,20 @@ end
 --Register events
 inst:ListenForEvent("ms_registerdeerspawningground", OnRegisterSackSpawningPt)
 inst:ListenForEvent("ms_registerklaussack", RegisterKlausSack)
+inst:ListenForEvent("ms_restoreklaussackkey", RestoreKlausSackKey)
+inst:WatchWorldState("iswinter", QueueSack)
 
 --------------------------------------------------------------------------
 --[[ Post initialization ]]
 --------------------------------------------------------------------------
 
 function self:OnPostInit()
-    if _sack == nil and _respawntask == nil then
-        local starting_delay = TheWorld.state.isautumn and (TheWorld.state.autumnlength + math.random(4)) or TUNING.NO_BOSS_TIME
-        --print ("klaussack OnPostInit:", TheWorld.state.isautumn, TheWorld.state.autumnlength)
-        StartRespawnTimer(starting_delay * TUNING.TOTAL_DAY_TIME)
+    if IsSpecialEventActive( SPECIAL_EVENTS.WINTERS_FEAST ) then
+        if _sack == nil and _respawntask == nil then
+            OnRespawnTimer() -- spawns on day 1 for winters feast event
+        end
+    else
+        QueueSack()
     end
 end
 
@@ -180,9 +197,9 @@ end
 function self:OnLoad(data)
     if data ~= nil and data.timetorespawn ~= nil then
         StartRespawnTimer(data.timetorespawn)
-    else
-        StopRespawnTimer()
     end
+
+    _spawnedthiswinter = TheWorld.state.iswinter
 end
 
 --------------------------------------------------------------------------
@@ -193,8 +210,10 @@ function self:GetDebugString()
     local s = ""
     if _sack ~= nil and _sack:IsValid() then
         s = "Klaus Sack is in the world."
+    elseif _respawntask ~= nil then
+        s = string.format("Spawning in %.2f (%.2f days)", GetTaskRemaining(_respawntask), GetTaskRemaining(_respawntask) / TUNING.TOTAL_DAY_TIME)
     else
-        s = string.format("Respawning in %.2f (%.2f days)", GetTaskRemaining(_respawntask), GetTaskRemaining(_respawntask) / TUNING.TOTAL_DAY_TIME)
+        s = "Waiting for winter."
     end
     return s
 end

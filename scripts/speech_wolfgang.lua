@@ -16,6 +16,11 @@ return {
 			GENERIC = "That cannot be shaved.",
 			NOBITS = "I cannot shave when there are no hairs.",
 		},
+        UNLOCK =
+        {
+            WRONGKEY = "Is not right key!",
+            KLAUS = "Later! Now we FIGHT!",
+        },
 		STORE =
 		{
 			GENERIC = "I will make it fit!",
@@ -157,6 +162,9 @@ return {
 	ANNOUNCE_BECOMEGHOST = "oOooOOoo!!",
 	ANNOUNCE_GHOSTDRAIN = "They are coming... for Wolfgang!",
 	ANNOUNCE_PETRIFED_TREES = "Trees! Getting! STRONG!",
+    ANNOUNCE_KLAUS_ENRAGE = "Wolfgang is sorry about little deer friends!",
+    ANNOUNCE_KLAUS_UNCHAINED = "Do not hold back! Wolfgang can take you!",
+    ANNOUNCE_KLAUS_CALLFORHELP = "Wimpy monster has called for help!",
 
 	ANNOUNCE_ENTER_DARK = "I cannot see! I am scared!",
 	ANNOUNCE_ENTER_LIGHT = "I can see again!",
@@ -1852,7 +1860,7 @@ return {
         WINTER_TREE =
         {
             BURNT = "Happy tree is burn now.",
-            --BURNING = "",
+            BURNING = "Tree is not fireproof!",
             CANDECORATE = "Tree looks very happy!",
             YOUNG = "Is growing.",
         },
@@ -1864,8 +1872,13 @@ return {
         WINTER_FOOD2 = "Does Wolfgang have sugar in moustache?", --sugar cookie
         WINTER_FOOD3 = "Little sugar stick.", --candy cane
         WINTER_FOOD4 = "Wolfgang does not trust little fruit loaf.", --fruitcake
+        WINTER_FOOD5 = "Ha! Wolfgang will eat log, just like beardman!", --yule log cake
+        WINTER_FOOD6 = "Tiny yummy cakething make strong Wolfgang.", --plum pudding
+        WINTER_FOOD7 = "Little fruit is sweet and tasty!", --apple cider
+        WINTER_FOOD8 = "Wolfgang likes feeling cozy.", --hot cocoa
+        WINTER_FOOD9 = "Is much protein inside, yes?", --eggnog
         
-        KLAUS = "Wolfgang is not naughty! He is MIGHTY!",
+        KLAUS = "If Wolfgang had no eyes, he would not see terrible beast!",
         KLAUS_SACK = "Something inside for Wolfgang, maybe?",
 		WORMHOLE =
 		{

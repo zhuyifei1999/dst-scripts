@@ -263,9 +263,9 @@ function Tune(overrides)
 
         CRITTER_TRAITS =
         {
-            COMBAT          = {inc=0.003, decay=1},
-            WELLFED         = {inc=0.66,  decay=1},
-            PLAYFUL         = {inc=0.20,  decay=1},
+            COMBAT          = {inc=0.003, decay=1.1},
+            WELLFED         = {inc=0.66,  decay=.9},
+            PLAYFUL         = {inc=0.22,  decay=.9},
             CRAFTY          = {inc=0.25,  decay=1},
         },
 
@@ -456,7 +456,9 @@ function Tune(overrides)
         KLAUS_DEAGGRO_DIST = 30,
         KLAUS_EPICSCARE_RANGE = 10,
 
-		KLAUSSACK_RESPAWN_TIME = total_day_time * 20,
+		KLAUSSACK_EVENT_RESPAWN_TIME = total_day_time * 20, -- winters feast event respawn time
+		KLAUSSACK_SPAWN_DELAY = total_day_time * 1,
+		KLAUSSACK_SPAWN_DELAY_VARIANCE = total_day_time * 2,
 
         BUZZARD_DAMAGE = 15,
         BUZZARD_ATTACK_RANGE = 2,
@@ -2380,6 +2382,7 @@ function Tune(overrides)
         WINTERS_FEAST_LOOT_EXCLUSION =
         {
             BEEGUARD = true,
+            FROG = true,
             TENTACLE = true,
         },
     }

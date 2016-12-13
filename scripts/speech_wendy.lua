@@ -21,6 +21,11 @@ return {
 			GENERIC = "I'm not taking a razor to that.",
 			NOBITS = "She's already lost everything.",
 		},
+		UNLOCK =
+        {
+        	WRONGKEY = "It remains locked, like my heart.",
+        	KLAUS = "Death would surely find me if I tried...",
+        },
 		WRITE =
         {
             GENERIC = "I... I can't.",
@@ -147,6 +152,9 @@ return {
 	ANNOUNCE_BECOMEGHOST = "oOoooooO!!",
 	ANNOUNCE_GHOSTDRAIN = "The ghosts... Want to play...",
 	ANNOUNCE_PETRIFED_TREES = "A wave of sadness just washed over me...?",
+	ANNOUNCE_KLAUS_ENRAGE = "Death walks among us.",
+	ANNOUNCE_KLAUS_UNCHAINED = "The beast returns unchained.",
+	ANNOUNCE_KLAUS_CALLFORHELP = "Your pleas will fall on deaf ears.",
 
 	ANNOUNCE_ENTER_DARK = "The darkness has swallowed me.",
 	ANNOUNCE_ENTER_LIGHT = "And there was light!",
@@ -1859,7 +1867,7 @@ return {
 		WINTER_TREE =
         {
 			BURNT = "Death comes for all of us...",
-			--BURNING = "",
+			BURNING = "Oh.",
 			CANDECORATE = "Oh, joy.",
 			YOUNG = "It's not ready yet.",
         },
@@ -1871,6 +1879,11 @@ return {
         WINTER_FOOD2 = "Not nearly sweet enough to balance out this bitter world.", --sugar cookie
         WINTER_FOOD3 = "If you eat it right... the end gets sharp...", --candy cane
         WINTER_FOOD4 = "It is filled with chunks of evil.", --fruitcake
+        WINTER_FOOD5 = "It tastes okay, but I've grown tired of logs...", --yule log cake
+        WINTER_FOOD6 = "I'm going to lick all the icing off...", --plum pudding
+        WINTER_FOOD7 = "I don't want Winter's Feast to end...", --apple cider
+        WINTER_FOOD8 = "I missed cocoa.", --hot cocoa
+        WINTER_FOOD9 = "So aggressively delicious. You can't help but feel better.", --eggnog
         
         KLAUS = "I see him when I'm sleeping...",
         KLAUS_SACK = "Should we peek inside...?",

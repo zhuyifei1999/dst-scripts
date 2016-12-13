@@ -157,7 +157,7 @@ local function OnForceNaughtiness(src, data)
 
         for i = 1, data.numspawns or 0 do
             local kramp = MakeAKrampusForPlayer(data.player)
-            if kramp.components.combat ~= nil then
+            if kramp ~= nil and kramp.components.combat ~= nil then
                 kramp.components.combat:SetTarget(data.player)
             end
         end

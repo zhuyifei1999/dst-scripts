@@ -16,6 +16,11 @@ return {
 			GENERIC = "Nu-uh.",
 			NOBITS = "It's already shaved!",
 		},
+		UNLOCK =
+        {
+        	WRONGKEY = "Darn thing won't work!",
+        	KLAUS = "But that big ugly thing is on my tail!",
+        },
 		STORE =
 		{
 			GENERIC = "It's full already.",
@@ -167,6 +172,9 @@ return {
 	ANNOUNCE_ACCOMPLISHMENT= "Move, arrow! MOVE!",
 	ANNOUNCE_ACCOMPLISHMENT_DONE = "I DID IT!",	
 	ANNOUNCE_PETRIFED_TREES = "Something weird is happening...!",
+	ANNOUNCE_KLAUS_ENRAGE = "I'm NOT fighting THAT.",
+	ANNOUNCE_KLAUS_UNCHAINED = "Why couldn't it just stay dead?!",
+	ANNOUNCE_KLAUS_CALLFORHELP = "Aww man, here come those weird goat things!",
 
 	ANNOUNCE_LIGHTFIRE =
 	{
@@ -1899,18 +1907,23 @@ return {
 		WINTER_TREE =
         {
 			BURNT = "Happy Winter's Feast, everybody.",
-			--BURNING = "Now we're celebrating!",
+			BURNING = "Now we're celebrating!",
 			CANDECORATE = "Looks great!",
-			YOUNG = "It looks a little shrimpy.",
+			YOUNG = "It's a bit shrimpy.",
         },
         WINTER_TREESTAND = "Are we gonna grow a tree?",
         WINTER_ORNAMENT = "Bibble-ty bauble-ty boo!",
         WINTER_ORNAMENTLIGHT = "It's like a fire, but without the burning!",
         
         WINTER_FOOD1 = "Honestly, who DOESN'T eat the head first?", --gingerbread cookie
-        WINTER_FOOD2 = "Doesn't look to bad, considering!", --sugar cookie
-        WINTER_FOOD3 = "Gimme two of 'em and I can do a great MacTusk impression.", --candy cane
-        WINTER_FOOD4 = "Anyone else sense an overpowering stench of evil?", --fruitcake
+        WINTER_FOOD2 = "Doesn't look too bad, considering!", --sugar cookie
+        WINTER_FOOD3 = "Gimme two of 'em and I can do a MacTusk impression.", --candy cane
+        WINTER_FOOD4 = "Anyone else sense the overpowering stench of evil?", --fruitcake
+        WINTER_FOOD5 = "A log for eating, not for burning.", --yule log cake
+        WINTER_FOOD6 = "I'm gonna totally stuff my face!!", --plum pudding
+        WINTER_FOOD7 = "Sure beats rainwater!", --apple cider
+        WINTER_FOOD8 = "I only like it when it's SCALDING.", --hot cocoa
+        WINTER_FOOD9 = "Who knew stuff from a bird's butt could be so tasty?", --eggnog
         
         KLAUS = "A lump of coal would be really useful, actually!",
         KLAUS_SACK = "Nothing says \"Open Me\" quite like a lock!!",

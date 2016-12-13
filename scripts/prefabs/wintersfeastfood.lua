@@ -5,7 +5,7 @@ local assets =
 
 local foodinfo =
 {
-    {food=FOODTYPE.GOODIES, health=0,     hunger=3,  sanity=0, treeornament=true}, -- Gingerbread Cookies
+    {food=FOODTYPE.GOODIES, health=0,     hunger=3,  sanity=1, treeornament=true}, -- Gingerbread Cookies
     {food=FOODTYPE.GOODIES, health=0,     hunger=2,  sanity=2, treeornament=true}, -- Sugar Cookies
     {food=FOODTYPE.GOODIES, health=2,     hunger=0,  sanity=2, treeornament=true}, -- Candy Cane
     {food=FOODTYPE.VEGGIE,  health=-2,    hunger=6,  sanity=-2, treeornament=false}, -- Fruitcake
@@ -54,6 +54,8 @@ local function MakeFood(num)
         inst.components.edible.hungervalue = foodinfo[num].hunger
         inst.components.edible.healthvalue = foodinfo[num].health
         inst.components.edible.sanityvalue = foodinfo[num].sanity
+        inst.components.edible.temperaturedelta = foodinfo[num].temperature or 0
+        inst.components.edible.temperatureduration = foodinfo[num].temperatureduration or 0
 
         inst:AddComponent("stackable")
         inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
@@ -67,7 +69,7 @@ local function MakeFood(num)
         return inst
     end
 
-    return Prefab("winter_food"..tostring(num), fn, assets, prefabs)
+    return Prefab("winter_food"..tostring(num), fn, assets)
 end
 
 local ret = {}

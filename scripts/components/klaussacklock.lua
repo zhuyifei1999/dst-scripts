@@ -20,17 +20,19 @@ function KlausSackLock:UseKey(key, doer)
         return false
     end
 
-    local success, fail_msg = self.onusekeyfn(self.inst, key, doer)
-    if not success then
-        return false, fail_msg
+    local success, fail_msg, consumed = self.onusekeyfn(self.inst, key, doer)
+    if consumed then
+        if key.components.stackable ~= nil then
+            key.components.stackable:Get():Remove()
+        else
+            key:Remove()
+        end
     end
 
-    if key.components.stackable ~= nil then
-        key.components.stackable:Get():Remove()
-    else
-        key:Remove()
+    if success then
+        return true
     end
-    return true
+    return false, fail_msg
 end
 
 return KlausSackLock

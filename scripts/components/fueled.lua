@@ -105,6 +105,7 @@ nil,
 })
 
 function Fueled:OnRemoveFromEntity()
+    self:StopConsuming()
     if self.fueltype ~= nil then
         self.inst:RemoveTag(self.fueltype == FUELTYPE.USAGE and "needssewing" or (self.fueltype.."_fueled"))
     end

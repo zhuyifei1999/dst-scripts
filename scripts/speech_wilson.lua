@@ -28,6 +28,11 @@ return {
 			GENERIC = "I can't do that.",
 			INUSE = "They're elbow deep in junk right now.",
 		},
+		UNLOCK =
+        {
+        	WRONGKEY = "Whoops! That wasn't right.",
+        	KLAUS = "I'm a little preoccupied!!",
+        },
         COOK =
         {
             GENERIC = "I can't cook right now.",
@@ -200,6 +205,9 @@ return {
 	ANNOUNCE_BECOMEGHOST = "oOooOooo!!",
 	ANNOUNCE_GHOSTDRAIN = "My humanity is about to start slipping away...",
 	ANNOUNCE_PETRIFED_TREES = "Did I just hear trees screaming?",
+	ANNOUNCE_KLAUS_ENRAGE = "There's no way to beat it now!!",
+	ANNOUNCE_KLAUS_UNCHAINED = "Its chains came off!",
+	ANNOUNCE_KLAUS_CALLFORHELP = "It called for help!",
 
     ANNOUNCE_ROYALTY = 
     {
@@ -1869,7 +1877,7 @@ return {
         WINTER_TREE =
         {
 			BURNT = "That puts a damper on the festivities.",
-			--BURNING = "",
+			BURNING = "That was a mistake, I think.",
 			CANDECORATE = "Happy Winter's Feast!",
 			YOUNG = "It's almost Winter's Feast!",
         },
@@ -1881,6 +1889,11 @@ return {
         WINTER_FOOD2 = "I'm going to eat forty. For science.", --sugar cookie
         WINTER_FOOD3 = "A Yuletide toothache waiting to happen.", --candy cane
         WINTER_FOOD4 = "That experiment may have been a tiny bit unethical.", --fruitcake
+        WINTER_FOOD5 = "It's nice to eat something other than berries for once.", --yule log cake
+        WINTER_FOOD6 = "I'm puddin' that straight in my mouth!", --plum pudding
+        WINTER_FOOD7 = "It's a hollowed apple filled with yummy juice.", --apple cider
+        WINTER_FOOD8 = "How does it stay warm? A thermodynamical mug?", --hot cocoa
+        WINTER_FOOD9 = "Can science explain why it tastes so good?", --eggnog
 
         KLAUS = "What on earth is that thing!",
         KLAUS_SACK = "We should definitely open that.",

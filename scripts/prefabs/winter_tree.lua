@@ -3,12 +3,6 @@ require "prefabs/winter_ornaments"
 -- forward delcaration
 local queuegifting
 
-local prefabs = GetAllWinterOrnamentPrefabs()
-table.insert(prefabs, "charcoal")
-table.insert(prefabs, "ash")
-table.insert(prefabs, "collapse_small")
-table.insert(prefabs, "gift")
-
 local statedata =
 {
     { -- empty
@@ -413,7 +407,9 @@ local function onworked(inst, worker, workleft)
     if workleft > 0 then
         inst.AnimState:PlayAnimation(inst.statedata.hitanim)
         PushSway(inst)
-
+        if not inst.components.container:IsEmpty() then
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/together/deer/bell")
+        end
         if not (worker ~= nil and worker:HasTag("playerghost")) then
             inst.SoundEmitter:PlaySound(
                 worker ~= nil and worker:HasTag("beaver") and
@@ -421,50 +417,47 @@ local function onworked(inst, worker, workleft)
                 "dontstarve/wilson/use_axe_tree"
             )
         end
-
-    else
-        if inst:HasTag("burnt") then
-            if inst.statedata.burntbreakanim ~= nil then
-                inst.AnimState:PlayAnimation(inst.statedata.burntbreakanim)
-                inst.SoundEmitter:PlaySound("dontstarve/forest/treeCrumble")
-                if not (worker ~= nil and worker:HasTag("playerghost")) then
-                    inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_tree")
-                end
-
-                inst.persists = false
-                inst:AddTag("NOCLICK")
-                inst:DoTaskInTime(1.5, ErodeAway)
-            else
-                inst.components.lootdropper:DropLoot()
-                local fx = SpawnPrefab("collapse_small")
-                fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
-                fx:SetMaterial("wood")
-                inst:Remove()
+    elseif inst:HasTag("burnt") then
+        if inst.statedata.burntbreakanim ~= nil then
+            inst.AnimState:PlayAnimation(inst.statedata.burntbreakanim)
+            inst.SoundEmitter:PlaySound("dontstarve/forest/treeCrumble")
+            if not (worker ~= nil and worker:HasTag("playerghost")) then
+                inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_tree")
             end
 
-            inst.components.lootdropper:DropLoot()
+            inst.persists = false
+            inst:AddTag("NOCLICK")
+            inst:DoTaskInTime(1.5, ErodeAway)
         else
+            inst.components.lootdropper:DropLoot()
             local fx = SpawnPrefab("collapse_small")
             fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
             fx:SetMaterial("wood")
+            inst:Remove()
+        end
 
-            inst.components.lootdropper:DropLoot()
-            if inst.components.container ~= nil then
-                inst.components.container:DropEverything()
-                inst.components.container:Close()
-            end
+        inst.components.lootdropper:DropLoot()
+    else
+        local fx = SpawnPrefab("collapse_small")
+        fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+        fx:SetMaterial("wood")
 
-            if inst.statedata.breakrightanim ~= nil then
-                inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")
+        inst.components.lootdropper:DropLoot()
+        if inst.components.container ~= nil then
+            inst.components.container:DropEverything()
+            inst.components.container:Close()
+        end
 
-                local worker_is_to_right = worker and ((worker:GetPosition() - inst:GetPosition()):Dot(TheCamera:GetRightVec()) > 0) or (math.random() > 0.5)
-                inst.AnimState:PlayAnimation(worker_is_to_right and inst.statedata.breakleftanim or inst.statedata.breakrightanim)
+        if inst.statedata.breakrightanim ~= nil then
+            inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")
 
-                inst:ListenForEvent("animover", inst.Remove)
-                inst.persists = false
-            else
-                inst:Remove()
-            end
+            local worker_is_to_right = worker and ((worker:GetPosition() - inst:GetPosition()):Dot(TheCamera:GetRightVec()) > 0) or (math.random() > 0.5)
+            inst.AnimState:PlayAnimation(worker_is_to_right and inst.statedata.breakleftanim or inst.statedata.breakrightanim)
+
+            inst:ListenForEvent("animover", inst.Remove)
+            inst.persists = false
+        else
+            inst:Remove()
         end
     end
 end
@@ -531,13 +524,30 @@ local function onentitysleep(inst)
     end
 end
 
-local function MakeWinterTree(treetype)
+local trees = {}
+
+local function AddWinterTree(treetype)
     local assets =
     {
-        Asset("ANIM", "anim/wintertree.zip"),
         Asset("ANIM", "anim/wintertree_build.zip"),
         Asset("ANIM", "anim/"..treetype.build..".zip"),
+        Asset("ANIM", "anim/"..treetype.bank..".zip"),
     }
+
+    local prefabs =
+    {
+        "charcoal",
+        "ash",
+        "collapse_small",
+        "gift",
+    }
+    table.insert(prefabs, treetype.seedprefab)
+    for i, v in ipairs(GetAllWinterOrnamentPrefabs()) do
+        table.insert(prefabs, v)
+    end
+    for i = 1, NUM_WINTERFOOD do
+        table.insert(prefabs, "winter_food"..i)
+    end
 
     local function fn()
         local inst = CreateEntity()
@@ -564,7 +574,8 @@ local function MakeWinterTree(treetype)
         MakeSnowCoveredPristine(inst)
         inst:AddTag("winter_tree")
         inst:AddTag("structure")
-        inst:AddTag("fridge")
+
+        inst:SetPrefabNameOverride("winter_tree")
 
         inst.entity:SetPristine()
 
@@ -619,16 +630,13 @@ local function MakeWinterTree(treetype)
         return inst
     end
 
-    return Prefab(treetype.name, fn, assets, prefabs)
+    table.insert(trees, Prefab(treetype.name, fn, assets, prefabs))
 end
 
-local treetype =
-{
+for i, v in ipairs({
     { name = "winter_tree", bank = "wintertree", build = "evergreen_new", seedprefab = "pinecone" },
-}
-
-for _, v in ipairs(treetype) do
-    table.insert(prefabs, v.seedprefab)
+}) do
+    AddWinterTree(v)
 end
 
-return MakeWinterTree(treetype[1])
+return unpack(trees)

@@ -374,7 +374,7 @@ local states =
         onexit = function(inst)
             if not inst.sg.statemem.resurrecting then
                 inst.components.health:SetPercent(TUNING.KLAUS_HEALTH_REZ)
-                inst:Unchain()
+                inst:Unchain(true)
                 inst:PauseMusic(false)
             end
         end,
@@ -420,7 +420,7 @@ local states =
             if not inst.sg.statemem.resurrected then
                 inst.components.health:SetPercent(TUNING.KLAUS_HEALTH_REZ)
             end
-            inst:Unchain()
+            inst:Unchain(true)
             inst:PauseMusic(false)
         end,
     },
@@ -876,7 +876,7 @@ local states =
             inst.sg.statemem.transition = inst.sg.mem.wantstotransition == "enrage" and "enrage" or transition
             if inst.sg.statemem.transition ~= nil then
                 inst.sg:AddStateTag(inst.sg.statemem.transition)
-                if inst.sg.statemem.transition == "callforhelp" and not inst:SummonHelpers() then
+                if inst.sg.statemem.transition == "callforhelp" and not inst:SummonHelpers(true) then
                     inst.sg.statemem.transition = nil
                     inst.sg:RemoveStateTag("callforhelp")
                 end
@@ -982,7 +982,7 @@ local states =
             TimeEvent(FRAMES, DoFoleySounds),
             TimeEvent(5 * FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("dontstarve/common/rebirth_amulet_poof")
-                inst:Enrage()
+                inst:Enrage(true)
                 DoFootstep(inst, .5)
             end),
             TimeEvent(6 * FRAMES, DoFoleySounds),
@@ -999,7 +999,7 @@ local states =
         },
 
         onexit = function(inst)
-            inst:Enrage()
+            inst:Enrage(true)
         end,
     },
 }

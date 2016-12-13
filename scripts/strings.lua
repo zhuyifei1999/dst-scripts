@@ -1286,6 +1286,11 @@ STRINGS =
         WINTER_FOOD2 = "Sugar Cookie",
         WINTER_FOOD3 = "Candy Cane",
         WINTER_FOOD4 = "Eternal Fruitcake",
+        WINTER_FOOD5 = "Chocolate Log Cake",
+        WINTER_FOOD6 = "Plum Pudding",
+        WINTER_FOOD7 = "Apple Cider",
+        WINTER_FOOD8 = "Hot Cocoa",
+        WINTER_FOOD9 = "Heavenly Eggnog",
     },
 
     DIRECTIONS =

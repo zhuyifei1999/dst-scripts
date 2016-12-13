@@ -32,6 +32,11 @@ return {
 			GENERIC = "Curses.",
 			INUSE = "I'm quite adept at waiting. I've had a lot of practice.",	
 		},
+		UNLOCK =
+        {
+        	WRONGKEY = "Blast! Wrong key.",
+        	KLAUS = "I'll not be done in by an overgrown Krampus.",
+        },
 		COOK =
         {
             GENERIC = "Nothing ever goes as planned.",
@@ -110,6 +115,10 @@ return {
     ANNOUNCE_BECOMEGHOST = "oOooooOO!!",
 	ANNOUNCE_GHOSTDRAIN = "They're whispering through the core of my mind...!",
 	ANNOUNCE_PETRIFED_TREES = "Oh, this should be good.",
+	ANNOUNCE_KLAUS_ENRAGE = "Time to beat a hasty retreat!",
+	ANNOUNCE_KLAUS_UNCHAINED = "Its true power has been unlocked!",
+	ANNOUNCE_KLAUS_CALLFORHELP = "The coward has summoned its minions.",
+
 	ANNOUNCE_NODANGERAFK = "I must be ever vigilant!",
 	ANNOUNCE_NODANGERGIFT = "That's a terrible idea right now.",
 	ANNOUNCE_NOMOUNTEDGIFT = "I'm not opening that on top of this thing.",
@@ -1865,9 +1874,9 @@ return {
 
 		WINTER_TREE =
         {
-			BURNT = "Can we turn our attentions back to survival now?",
+			BURNT = "That's that, it seems.",
 			BURNING = "It's a Winter's Feast miracle.",
-			CANDECORATE = "What a wretched thing.",
+			CANDECORATE = "How wretchedly jolly.",
 			YOUNG = "Have we nothing better to do with our time?",
         },
         WINTER_TREESTAND = "How repulsively festive.",
@@ -1875,12 +1884,17 @@ return {
         WINTER_ORNAMENTLIGHT = "How frivolous.",
         
         WINTER_FOOD1 = "Stop looking at me, cookie fiend.", --gingerbread cookie
-        WINTER_FOOD2 = "Ah, celebrating freezing to death, I see.", --sugar cookie
+        WINTER_FOOD2 = "We're celebrating freezing to death, I see.", --sugar cookie
         WINTER_FOOD3 = "I don't even use a cane.", --candy cane
         WINTER_FOOD4 = "It is unbound from time.", --fruitcake
+        WINTER_FOOD5 = "How, err... traditional.", --yule log cake
+        WINTER_FOOD6 = "It's extremely rich.", --plum pudding
+        WINTER_FOOD7 = "Glorified apple juice.", --apple cider
+        WINTER_FOOD8 = "Such a decadent beverage.", --hot cocoa
+        WINTER_FOOD9 = "My... favorite... she remembered.", --eggnog
 
-        KLAUS = "Charlie didn't make that one!",
-        KLAUS_SACK = "What goodies lie within?",
+        KLAUS = "My, what a magnificently horrific creature.",
+        KLAUS_SACK = "What dark treasures lie within?",
         WHIP = "Makes me feel like the master again.",
 		WORMHOLE =
 		{

@@ -16,6 +16,11 @@ return {
 			GENERIC = "It's not shaving time!",
 			NOBITS = "Clean as a whistle.",
 		},
+		UNLOCK =
+        {
+        	WRONGKEY = "That doesn't go there!",
+        	KLAUS = "It's too dangerous!",
+        },
 		STORE =
 		{
 			GENERIC = "All full!",
@@ -147,6 +152,9 @@ return {
 	ANNOUNCE_BECOMEGHOST = "oOooOooO!!",
 	ANNOUNCE_GHOSTDRAIN = "We're becoming... even more monstrous!",
 	ANNOUNCE_PETRIFED_TREES = "The trees are yelling at us!!",
+	ANNOUNCE_KLAUS_ENRAGE = "Ah! I'm sorry we killed your deer!!",
+	ANNOUNCE_KLAUS_UNCHAINED = "Its belly looks hungry!",
+	ANNOUNCE_KLAUS_CALLFORHELP = "Uh-oh, its got friends coming!",
 
 	ANNOUNCE_ENTER_DARK = "We can't see! I want my nightlight.",
 	ANNOUNCE_ENTER_LIGHT = "Phew, light!",
@@ -968,7 +976,7 @@ return {
 		DEER = 
 		{
 			GENERIC = "It looks soft.",
-			ANTLER = "Did you change your hair, deer? Looks good!",
+			ANTLER = "Did you change your hair? Looks good!",
 		},
 		DEER_ANTLER = "Haha, weird.",
 		DEER_GEMMED = "Don't hurt us and we won't hurt you!",
@@ -1905,6 +1913,11 @@ return {
         WINTER_FOOD2 = "Icy icy icing!", --sugar cookie
         WINTER_FOOD3 = "Eat twenty candy canes! There's no candy shame!", --candy cane
         WINTER_FOOD4 = "Yuck! What is that??", --fruitcake
+        WINTER_FOOD5 = "Haha, Wendy! Watch our Woodie impression!", --yule log cake
+        WINTER_FOOD6 = "Where are the plums?", --plum pudding
+        WINTER_FOOD7 = "Apple juice?! Yes!!", --apple cider
+        WINTER_FOOD8 = "It makes our claws and tummy so warm.", --hot cocoa
+        WINTER_FOOD9 = "It's really, really good!", --eggnog
         
         KLAUS = "That meanie imprisoned those deer!",
         KLAUS_SACK = "Presents?!",

@@ -2022,7 +2022,7 @@ local function UpdateControllerInteractionTarget(self, dt, x, y, z, dirx, dirz)
 
     for i, v in ipairs(nearby_ents) do
         --Only handle controller_target if it's the one we added at the front
-        if v ~= self.inst and (v ~= self.controller_target or i == 1) then
+        if v ~= self.inst and (v ~= self.controller_target or i == 1) and v.entity:IsVisible() then
             --Check distance including y value
             local x1, y1, z1 = v.Transform:GetWorldPosition()
             local dx, dy, dz = x1 - x, y1 - y, z1 - z

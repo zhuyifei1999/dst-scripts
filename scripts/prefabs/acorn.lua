@@ -54,12 +54,13 @@ end
 
 local function fn()
     local inst = CreateEntity()
+
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
-    MakeInventoryPhysics(inst)
-
     inst.entity:AddNetwork()
+
+    MakeInventoryPhysics(inst)
 
     inst.AnimState:SetBank("acorn")
     inst.AnimState:SetBuild("acorn")
@@ -116,11 +117,13 @@ end
 
 local function cooked()
     local inst = CreateEntity()
+
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
-    MakeInventoryPhysics(inst)
     inst.entity:AddNetwork()
+
+    MakeInventoryPhysics(inst)
 
     inst.AnimState:SetBank("acorn")
     inst.AnimState:SetBuild("acorn")
