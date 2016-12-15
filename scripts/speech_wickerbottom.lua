@@ -1118,10 +1118,15 @@ return
             CANDECORATE = "Lovely job on the tree, dears.",
             YOUNG = "It'd surely snap under the weight of ornaments.",
         },
-        WINTER_TREESTAND = "Let's grow a proper tree, shall we?",
+		WINTER_TREESTAND = 
+		{
+			GENERIC = "Let's grow a proper tree, shall we?",
+            BURNT = "Not to worry. We can still celebrate.",
+		},
         WINTER_ORNAMENT = "Careful with it now, dear.",
         WINTER_ORNAMENTLIGHT = "Electrical currents do have a certain appeal, don't they?",
-        
+        WINTER_ORNAMENTBOSS = "I'm of the opinion that one can never overdecorate.",
+
         WINTER_FOOD1 = "What a delightful little individual.", --gingerbread cookie
         WINTER_FOOD2 = "Just like holidays at the library!", --sugar cookie
         WINTER_FOOD3 = "The perfect stir stick for hot cup of tea.", --candy cane
@@ -1131,7 +1136,7 @@ return
         WINTER_FOOD7 = "Pair it with a good book and you've a cure for the winter blues.", --apple cider
         WINTER_FOOD8 = "A small enchantment keeps it a pleasant temperature.", --hot cocoa
         WINTER_FOOD9 = "I've always harbored a weakness for good 'nog.", --eggnog
-        
+
         KLAUS = "It uses its powerful olfactory sense to locate prey.",
         KLAUS_SACK = "How curious.",
         NIGHTMAREFUEL = "Ectoplasmic residue.",

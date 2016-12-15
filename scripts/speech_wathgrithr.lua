@@ -1883,10 +1883,15 @@ return {
             CANDECORATE = "A majestic pine, worthy of celebration!",
             YOUNG = "Grow strong, young one! It is your destiny!",
         },
-        WINTER_TREESTAND = "It awaits a grand tree!",
+		WINTER_TREESTAND = 
+		{
+			GENERIC = "It awaits a grand tree!",
+            BURNT = "Its beauty lives on in our hearts.",
+		},
         WINTER_ORNAMENT = "A fragile beauty that must be protected.",
         WINTER_ORNAMENTLIGHT = "Tis a light enchantment, trapped inside a glass ball.",
-        
+        WINTER_ORNAMENTBOSS = "Tis not a celebration without a good battle!",
+
         WINTER_FOOD1 = "How dost I free you from the bread, man of ginger??", --gingerbread cookie
         WINTER_FOOD2 = "Like a snowflake, it is a gift from the heavens!", --sugar cookie
         WINTER_FOOD3 = "T'would look as divine on the tree as in mine mouth!", --candy cane
@@ -1896,7 +1901,7 @@ return {
         WINTER_FOOD7 = "Something so foul shall never pass my lips!", --apple cider
         WINTER_FOOD8 = "Warms the soul.", --hot cocoa
         WINTER_FOOD9 = "Imbibable eggs!", --eggnog
-        
+
         KLAUS = "I shall free thy deer this day!",
         KLAUS_SACK = "A secret, kept under lock and key!",
 		WORMHOLE =

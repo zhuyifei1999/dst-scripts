@@ -63,10 +63,12 @@ end
 
 local function OnIgniteFn(inst)
     inst.SoundEmitter:PlaySound("dontstarve/creatures/slurtle/rattle", "rattle")
+    inst.persists = false
 end
 
 local function OnExtinguishFn(inst)
     inst.SoundEmitter:KillSound("rattle")
+    inst.persists = true
 end
 
 local function OnExplodeFn(inst)

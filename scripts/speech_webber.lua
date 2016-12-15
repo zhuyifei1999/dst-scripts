@@ -1898,17 +1898,22 @@ return {
 			BURNT = "How come everything turns to ashes? It's sad.",
 		},
 
-		WINTER_TREE =
+        WINTER_TREE =
         {
-			BURNT = "Aw... Why...",
-			BURNING = "Nooo! The tree!",
-			CANDECORATE = "Winter's Feast! It's Winter's Feast!",
-			YOUNG = "It still needs to grow some more.",
+            BURNT = "Aw... Why...",
+            BURNING = "Nooo! The tree!",
+            CANDECORATE = "Winter's Feast! It's Winter's Feast!",
+            YOUNG = "It still needs to grow some more.",
         },
-        WINTER_TREESTAND = "It's just a boring planter without a tree.",
+		WINTER_TREESTAND = 
+		{
+			GENERIC = "It's just a boring planter without a tree.",
+            BURNT = "Aw... Why...",
+		},
         WINTER_ORNAMENT = "Can we get a boost? We can't reach the treetop.",
         WINTER_ORNAMENTLIGHT = "We want to keep one for ourselves.",
-        
+        WINTER_ORNAMENTBOSS = "Wow, that one looks great!",
+
         WINTER_FOOD1 = "I won't eat it. It's our friend now.", --gingerbread cookie
         WINTER_FOOD2 = "Icy icy icing!", --sugar cookie
         WINTER_FOOD3 = "Eat twenty candy canes! There's no candy shame!", --candy cane
@@ -1918,7 +1923,7 @@ return {
         WINTER_FOOD7 = "Apple juice?! Yes!!", --apple cider
         WINTER_FOOD8 = "It makes our claws and tummy so warm.", --hot cocoa
         WINTER_FOOD9 = "It's really, really good!", --eggnog
-        
+
         KLAUS = "That meanie imprisoned those deer!",
         KLAUS_SACK = "Presents?!",
 		WORMHOLE =

@@ -85,7 +85,6 @@ local function ondropped(inst)
     turnon(inst)
 end
 
---
 local function onequip(inst, owner)
     owner.AnimState:Show("ARM_carry")
     owner.AnimState:Hide("ARM_normal")
@@ -126,7 +125,7 @@ local function nofuel(inst)
     turnoff(inst)
 end
 
-local function takefuel(inst)
+local function ontakefuel(inst)
     if inst.components.equippable ~= nil and inst.components.equippable:IsEquipped() then
         turnon(inst)
     end
@@ -196,23 +195,13 @@ local function fn()
     inst.components.fueled:InitializeFuelLevel(TUNING.LANTERN_LIGHTTIME)
     inst.components.fueled:SetDepletedFn(nofuel)
     inst.components.fueled:SetUpdateFn(fuelupdate)
-    inst.components.fueled.ontakefuelfn = takefuel
+    inst.components.fueled:SetTakeFuelFn(ontakefuel)
+    inst.components.fueled:SetFirstPeriod(TUNING.TURNON_FUELED_CONSUMPTION, TUNING.TURNON_FULL_FUELED_CONSUMPTION)
     inst.components.fueled.accepting = true
 
     inst._light = nil
 
     MakeHauntableLaunch(inst)
-    AddHauntableCustomReaction(inst, function(inst, haunter)
-        --#HAUNTFIX
-        --if math.random() <= TUNING.HAUNT_CHANCE_OFTEN then
-            --if inst.components.fueled and not inst.components.fueled:IsEmpty() then
-                --inst.components.fueled:MakeEmpty()
-                --inst.components.hauntable.hauntvalue = TUNING.HAUNT_TINY
-                --return true
-            --end
-        --end
-        return false
-    end, true, false, true)
 
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)

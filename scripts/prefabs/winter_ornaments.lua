@@ -17,7 +17,15 @@ local ORNAMENT_GOLD_VALUE =
 }
 
 function GetAllWinterOrnamentPrefabs()
-    local decor = {}
+    local decor =
+    {
+		"winter_ornament_boss_bearger",
+		"winter_ornament_boss_beequeen",
+		"winter_ornament_boss_deerclops",
+		"winter_ornament_boss_dragonfly",
+		"winter_ornament_boss_moose",
+		"winter_ornament_boss_toadstool",
+    }
     for i = 1, NUM_BASIC_ORNAMENT do
         table.insert(decor, "winter_ornament_plain" .. tostring(i))
     end
@@ -160,7 +168,7 @@ local function onload(inst, data)
     -------------------------------------------------------------------------
 end
 
-local function MakeOrnament(ornamentid, lightdata)
+local function MakeOrnament(ornamentid, overridename, lightdata)
     local function fn()
         local inst = CreateEntity()
 
@@ -179,9 +187,9 @@ local function MakeOrnament(ornamentid, lightdata)
 
         inst.winter_ornamentid = ornamentid
 
-        if lightdata then
-            inst:SetPrefabNameOverride("winter_ornamentlight")
+        inst:SetPrefabNameOverride(overridename)
 
+        if lightdata then
             inst.entity:AddLight()
             inst.Light:SetFalloff(0.7)
             inst.Light:SetIntensity(.5)
@@ -193,8 +201,6 @@ local function MakeOrnament(ornamentid, lightdata)
 
             inst.AnimState:PlayAnimation(tostring(ornamentid).."_on")
         else
-            inst:SetPrefabNameOverride("winter_ornament")
-
             inst.AnimState:PlayAnimation(tostring(ornamentid))
         end
 
@@ -251,15 +257,22 @@ end
 
 local ornament = {}
 for i = 1, NUM_BASIC_ORNAMENT do
-    table.insert(ornament, MakeOrnament("plain"..i))
+    table.insert(ornament, MakeOrnament("plain"..i, "winter_ornament"))
 end
 for i = 1, NUM_FANCY_ORNAMENT do
-    table.insert(ornament, MakeOrnament("fancy"..i))
+    table.insert(ornament, MakeOrnament("fancy"..i, "winter_ornament"))
 end
 
-table.insert(ornament, MakeOrnament("light1", {colour=Vector3(1,.1,.1)}))
-table.insert(ornament, MakeOrnament("light2", {colour=Vector3(.1,1,.1)}))
-table.insert(ornament, MakeOrnament("light3", {colour=Vector3(.5,.5,1)}))
-table.insert(ornament, MakeOrnament("light4", {colour=Vector3(1,1,1)}))
+table.insert(ornament, MakeOrnament("boss_bearger", "winter_ornamentboss"))
+table.insert(ornament, MakeOrnament("boss_beequeen", "winter_ornamentboss"))
+table.insert(ornament, MakeOrnament("boss_deerclops", "winter_ornamentboss"))
+table.insert(ornament, MakeOrnament("boss_dragonfly", "winter_ornamentboss"))
+table.insert(ornament, MakeOrnament("boss_moose", "winter_ornamentboss"))
+table.insert(ornament, MakeOrnament("boss_toadstool", "winter_ornamentboss"))
+
+table.insert(ornament, MakeOrnament("light1", "winter_ornamentlight", {colour=Vector3(1,.1,.1)}))
+table.insert(ornament, MakeOrnament("light2", "winter_ornamentlight", {colour=Vector3(.1,1,.1)}))
+table.insert(ornament, MakeOrnament("light3", "winter_ornamentlight", {colour=Vector3(.5,.5,1)}))
+table.insert(ornament, MakeOrnament("light4", "winter_ornamentlight", {colour=Vector3(1,1,1)}))
 
 return unpack(ornament)

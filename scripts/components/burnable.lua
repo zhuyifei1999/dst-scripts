@@ -254,11 +254,6 @@ function Burnable:Ignite(immediate, source)
             self.onignite(self.inst)
         end
 
-        if self.inst.components.explosive ~= nil then
-            --explosive on ignite
-            self.inst.components.explosive:OnIgnite()
-        end
-
         if self.inst.components.fueled ~= nil then
             self.inst.components.fueled:StartConsuming()
         end

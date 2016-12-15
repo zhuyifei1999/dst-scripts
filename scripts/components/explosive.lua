@@ -11,14 +11,6 @@ function Explosive:SetOnExplodeFn(fn)
     self.onexplodefn = fn
 end
 
-function Explosive:OnIgnite()
-    DefaultBurnFn(self.inst)
-end
-
-function Explosive:OnExtinguish()
-    DefaultExtinguishFn(self.inst)
-end
-
 function Explosive:OnBurnt()
     for i, v in ipairs(AllPlayers) do
         local distSq = v:GetDistanceSqToInst(self.inst)

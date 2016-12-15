@@ -1872,17 +1872,22 @@ return {
 		WETGOOP = "How uncultured.",
 		WINTERHAT = "How disappointingly rustic.",
 
-		WINTER_TREE =
+        WINTER_TREE =
         {
-			BURNT = "That's that, it seems.",
-			BURNING = "It's a Winter's Feast miracle.",
-			CANDECORATE = "How wretchedly jolly.",
-			YOUNG = "Have we nothing better to do with our time?",
+            BURNT = "That's that, it seems.",
+            BURNING = "It's a Winter's Feast miracle.",
+            CANDECORATE = "How wretchedly jolly.",
+            YOUNG = "Have we nothing better to do with our time?",
         },
-        WINTER_TREESTAND = "How repulsively festive.",
+		WINTER_TREESTAND = 
+		{
+			GENERIC = "How repulsively festive.",
+            BURNT = "That's that, it seems.",
+		},
         WINTER_ORNAMENT = "Gaudy, like the rest of this shindig.",
         WINTER_ORNAMENTLIGHT = "How frivolous.",
-        
+        WINTER_ORNAMENTBOSS = "What a thing to risk one's life for.",
+
         WINTER_FOOD1 = "Stop looking at me, cookie fiend.", --gingerbread cookie
         WINTER_FOOD2 = "We're celebrating freezing to death, I see.", --sugar cookie
         WINTER_FOOD3 = "I don't even use a cane.", --candy cane

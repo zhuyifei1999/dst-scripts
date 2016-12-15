@@ -13,6 +13,9 @@ local prefabs =
     "deer_red",
     "deer_blue",
     "staff_castinglight",
+
+    --winter loot
+    "winter_food3", --Candy Cane
 }
 
 local loot =
@@ -175,7 +178,7 @@ local function AnnounceWarning(inst, player, strid)
         player:IsNear(inst, 15) and
         not inst.components.health:IsDead() and
         player.components.talker ~= nil then
-        player.components.talker:Say(GetString(inst, strid))
+        player.components.talker:Say(GetString(player, strid))
     end
 end
 
@@ -536,6 +539,10 @@ local function fn()
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetLoot(loot)
+    if IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
+        inst.components.lootdropper:AddChanceLoot("winter_food3", 1)
+        inst.components.lootdropper:AddChanceLoot("winter_food3", 1)
+    end
 
     inst:AddComponent("sleeper")
     inst.components.sleeper:SetResistance(4)

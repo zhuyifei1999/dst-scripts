@@ -1864,17 +1864,22 @@ return {
         WHIP = "It only provides the illusion of control.",
 		WINTERHAT = "It helps stave off the encroaching cold.",
 
-		WINTER_TREE =
+        WINTER_TREE =
         {
-			BURNT = "Death comes for all of us...",
-			BURNING = "Oh.",
-			CANDECORATE = "Oh, joy.",
-			YOUNG = "It's not ready yet.",
+            BURNT = "Death comes for all of us...",
+            BURNING = "Oh.",
+            CANDECORATE = "Oh, joy.",
+            YOUNG = "It's not ready yet.",
         },
-        WINTER_TREESTAND = "We can plant a Winter's Feast tree.",
+		WINTER_TREESTAND = 
+		{
+			GENERIC = "We can plant a Winter's Feast tree.",
+            BURNT = "Death comes for all of us...",
+		},
         WINTER_ORNAMENT = "Do you like this one, Abigail?",
         WINTER_ORNAMENTLIGHT = "Bright lights... Cold nights...",
-        
+        WINTER_ORNAMENTBOSS = "This is one of my favorites.",
+
         WINTER_FOOD1 = "I'm going to eat you.", --gingerbread cookie
         WINTER_FOOD2 = "Not nearly sweet enough to balance out this bitter world.", --sugar cookie
         WINTER_FOOD3 = "If you eat it right... the end gets sharp...", --candy cane
@@ -1884,7 +1889,7 @@ return {
         WINTER_FOOD7 = "I don't want Winter's Feast to end...", --apple cider
         WINTER_FOOD8 = "I missed cocoa.", --hot cocoa
         WINTER_FOOD9 = "So aggressively delicious. You can't help but feel better.", --eggnog
-        
+
         KLAUS = "I see him when I'm sleeping...",
         KLAUS_SACK = "Should we peek inside...?",
 		REVIVER = "Choices matter.",

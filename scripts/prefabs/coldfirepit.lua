@@ -37,13 +37,26 @@ local function ontakefuel(inst)
     inst.SoundEmitter:PlaySound("dontstarve/common/fireAddFuel")
 end
 
+local function updatefuelrate(inst)
+    inst.components.fueled.rate = TheWorld.state.israining and 1 + TUNING.COLDFIREPIT_RAIN_RATE * TheWorld.state.precipitationrate or 1
+end
+
 local function onupdatefueled(inst)
-    local fueled = inst.components.fueled
+    if inst.components.burnable ~= nil and inst.components.fueled ~= nil then
+        updatefuelrate(inst)
+        inst.components.burnable:SetFXLevel(inst.components.fueled:GetCurrentSection(), inst.components.fueled:GetSectionPercent())
+    end
+end
 
-    fueled.rate = TheWorld.state.israining and 1 + TUNING.COLDFIREPIT_RAIN_RATE * TheWorld.state.precipitationrate or 1
-
-    if inst.components.burnable ~= nil then
-        inst.components.burnable:SetFXLevel(fueled:GetCurrentSection(), fueled:GetSectionPercent())
+local function onfuelchange(newsection, oldsection, inst)
+    if newsection <= 0 then
+        inst.components.burnable:Extinguish()
+    else
+        if not inst.components.burnable:IsBurning() then
+            updatefuelrate(inst)
+            inst.components.burnable:Ignite()
+        end
+        inst.components.burnable:SetFXLevel(newsection, inst.components.fueled:GetSectionPercent())
     end
 end
 
@@ -132,19 +145,9 @@ local function fn()
     inst.components.fueled.secondaryfueltype = FUELTYPE.CHEMICAL
     inst.components.fueled:SetSections(4)
     inst.components.fueled.bonusmult = TUNING.COLDFIREPIT_BONUS_MULT
-    inst.components.fueled.ontakefuelfn = ontakefuel
+    inst.components.fueled:SetTakeFuelFn(ontakefuel)
     inst.components.fueled:SetUpdateFn(onupdatefueled)
-    inst.components.fueled:SetSectionCallback(function(section)
-        if section == 0 then
-            inst.components.burnable:Extinguish()
-        else
-            if not inst.components.burnable:IsBurning() then
-                inst.components.burnable:Ignite()
-            end
-            inst.components.burnable:SetFXLevel(section, inst.components.fueled:GetSectionPercent())
-        end
-    end)
-
+    inst.components.fueled:SetSectionCallback(onfuelchange)
     inst.components.fueled:InitializeFuelLevel(TUNING.COLDFIREPIT_FUEL_START)
 
     -----------------------------

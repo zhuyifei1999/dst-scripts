@@ -456,7 +456,7 @@ function IsSpecialEventActive(event)
 end
 
 NUM_HALLOWEENCANDY = 11
-NUM_WINTERFOOD = 4
+NUM_WINTERFOOD = 9
 
 TECH =
 {

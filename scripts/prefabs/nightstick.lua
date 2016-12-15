@@ -15,12 +15,6 @@ local function onpocket(inst)
     inst.components.burnable:Extinguish()
 end
 
-local function onequipfueldelta(inst)
-    if inst.components.fueled.currentfuel < inst.components.fueled.maxfuel then
-        inst.components.fueled:DoDelta(-.01 * inst.components.fueled.maxfuel)
-    end
-end
-
 local function onequip(inst, owner)
     inst.components.burnable:Ignite()
     owner.AnimState:OverrideSymbol("swap_object", "swap_nightstick", "swap_nightstick")
@@ -35,9 +29,6 @@ local function onequip(inst, owner)
         inst.fire.entity:AddFollower()
         inst.fire.Follower:FollowSymbol(owner.GUID, "swap_object", 0, -110, 0)
     end
-
-    --take a percent of fuel next frame instead of this one, so we can remove the torch properly if it runs out at that point
-    inst:DoTaskInTime(0, onequipfueldelta)
 end
 
 local function onunequip(inst,owner)
@@ -52,8 +43,8 @@ local function onunequip(inst,owner)
     inst.SoundEmitter:KillSound("torch")
 end
 
-local function sectioncallback(newsection, oldsection, inst)
-    if newsection == 0 then
+local function onfuelchange(newsection, oldsection, inst)
+    if newsection <= 0 then
         --when we burn out
         if inst.components.burnable ~= nil then
             inst.components.burnable:Extinguish()
@@ -132,9 +123,10 @@ local function fn()
     -----------------------------------
 
     inst:AddComponent("fueled")
-    inst.components.fueled:SetSectionCallback(sectioncallback)
+    inst.components.fueled:SetSectionCallback(onfuelchange)
     inst.components.fueled:InitializeFuelLevel(TUNING.NIGHTSTICK_FUEL)
     inst.components.fueled:SetDepletedFn(inst.Remove)
+    inst.components.fueled:SetFirstPeriod(TUNING.TURNON_FUELED_CONSUMPTION, TUNING.TURNON_FULL_FUELED_CONSUMPTION)
 
     MakeHauntableLaunch(inst)
 

@@ -1904,17 +1904,22 @@ return {
         WHIP = "This means I'm the boss now.",
 		WINTERHAT = "It's not warm enough for my liking.",
 
-		WINTER_TREE =
+        WINTER_TREE =
         {
-			BURNT = "Happy Winter's Feast, everybody.",
-			BURNING = "Now we're celebrating!",
-			CANDECORATE = "Looks great!",
-			YOUNG = "It's a bit shrimpy.",
+            BURNT = "Happy Winter's Feast, everybody.",
+            BURNING = "Now we're celebrating!",
+            CANDECORATE = "Looks great!",
+            YOUNG = "It's a bit shrimpy.",
         },
-        WINTER_TREESTAND = "Are we gonna grow a tree?",
+		WINTER_TREESTAND = 
+		{
+			GENERIC = "Are we gonna grow a tree?",
+            BURNT = "Happy Winter's Feast, everybody.",
+		},
         WINTER_ORNAMENT = "Bibble-ty bauble-ty boo!",
         WINTER_ORNAMENTLIGHT = "It's like a fire, but without the burning!",
-        
+        WINTER_ORNAMENTBOSS = "Woah, shiny! Nice!",
+
         WINTER_FOOD1 = "Honestly, who DOESN'T eat the head first?", --gingerbread cookie
         WINTER_FOOD2 = "Doesn't look too bad, considering!", --sugar cookie
         WINTER_FOOD3 = "Gimme two of 'em and I can do a MacTusk impression.", --candy cane
@@ -1924,7 +1929,7 @@ return {
         WINTER_FOOD7 = "Sure beats rainwater!", --apple cider
         WINTER_FOOD8 = "I only like it when it's SCALDING.", --hot cocoa
         WINTER_FOOD9 = "Who knew stuff from a bird's butt could be so tasty?", --eggnog
-        
+
         KLAUS = "A lump of coal would be really useful, actually!",
         KLAUS_SACK = "Nothing says \"Open Me\" quite like a lock!!",
 		WORMHOLE =

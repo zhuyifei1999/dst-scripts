@@ -1876,15 +1876,20 @@ return {
 
         WINTER_TREE =
         {
-			BURNT = "That puts a damper on the festivities.",
-			BURNING = "That was a mistake, I think.",
-			CANDECORATE = "Happy Winter's Feast!",
-			YOUNG = "It's almost Winter's Feast!",
+            BURNT = "That puts a damper on the festivities.",
+            BURNING = "That was a mistake, I think.",
+            CANDECORATE = "Happy Winter's Feast!",
+            YOUNG = "It's almost Winter's Feast!",
         },
-        WINTER_TREESTAND = "I need a pine cone for that.",
+		WINTER_TREESTAND = 
+		{
+			GENERIC = "I need a pine cone for that.",
+            BURNT = "That puts a damper on the festivities.",
+		},
         WINTER_ORNAMENT = "Every scientist appreciates a good bauble.",
         WINTER_ORNAMENTLIGHT = "A tree's not complete without some electricity.",
-        
+        WINTER_ORNAMENTBOSS = "This one is especially impressive.",
+
         WINTER_FOOD1 = "The anatomy's not right, but I'll overlook it.", --gingerbread cookie
         WINTER_FOOD2 = "I'm going to eat forty. For science.", --sugar cookie
         WINTER_FOOD3 = "A Yuletide toothache waiting to happen.", --candy cane

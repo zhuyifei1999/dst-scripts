@@ -91,6 +91,8 @@ local Fueled = Class(function(self, inst)
     self.sections = 1
     self.sectionfn = nil
     self.period = 1
+    --self.firstperiod = nil
+    --self.firstperiodfull = nil
     self.bonusmult = 1
     self.depleted = nil
 end,
@@ -166,6 +168,10 @@ function Fueled:ChangeSection(amount)
     self:DoDelta((amount * fuelPerSection)-1)
 end
 
+function Fueled:SetTakeFuelFn(fn)
+    self.ontakefuelfn = fn
+end
+
 function Fueled:TakeFuelItem(item)
     if self:CanAcceptFuelItem(item) then
         local oldsection = self:GetCurrentSection()
@@ -178,7 +184,7 @@ function Fueled:TakeFuelItem(item)
         end
         item:Remove()
 
-        if self.ontakefuelfn then
+        if self.ontakefuelfn ~= nil then
             self.ontakefuelfn(self.inst)
         end
 
@@ -215,10 +221,26 @@ function Fueled:SetPercent(amount)
     self:DoDelta(target - self.currentfuel)
 end
 
+function Fueled:SetFirstPeriod(firstperiod, firstperiodfull)
+    self.firstperiod = firstperiod
+    self.firstperiodfull = firstperiodfull --optional
+end
+
+local function OnDoUpdate(inst, self, period)
+    self:DoUpdate(period)
+end
+
+local function OnDoFirstUpdate(inst, self, period)
+    self:DoUpdate(period)
+    self.task = self.inst:DoPeriodicTask(self.period, OnDoUpdate, nil, self, self.period)
+end
+
 function Fueled:StartConsuming()
     self.consuming = true
     if self.task == nil then
-        self.task = self.inst:DoPeriodicTask(self.period, function() self:DoUpdate(self.period) end)
+        self.task = self.firstperiod ~= nil and
+            self.inst:DoTaskInTime(0, OnDoFirstUpdate, self, self.currentfuel >= self.maxfuel and self.firstperiodfull or self.firstperiod) or
+            self.inst:DoPeriodicTask(self.period, OnDoUpdate, nil, self, self.period)
     end
 end
 

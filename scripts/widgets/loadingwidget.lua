@@ -2,24 +2,26 @@ local Widget = require "widgets/widget"
 local Text = require "widgets/text"
 local TEMPLATES = require "widgets/templates"
 
-local images = {
-    {atlas="images/bg_spiral_fill1.xml", tex="bg_image1.tex"},
-    {atlas="images/bg_spiral_fill2.xml", tex="bg_image2.tex"},
-    {atlas="images/bg_spiral_fill3.xml", tex="bg_image3.tex"},
-    {atlas="images/bg_spiral_fill4.xml", tex="bg_image4.tex"},
-    {atlas="images/bg_spiral_fill5.xml", tex="bg_image5.tex"},
-    {atlas="images/bg_spiral_fill6.xml", tex="bg_image6.tex"},
-    {atlas="images/bg_spiral_fill7.xml", tex="bg_image7.tex"},
-    {atlas="images/bg_spiral_fill8.xml", tex="bg_image8.tex"},
-}
-
-if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
-	images = {
-		{atlas="images/bg_spiral_fill_halloween1.xml", tex="bg_image1.tex"},
-		{atlas="images/bg_spiral_fill_halloween2.xml", tex="bg_image2.tex"},
-		{atlas="images/bg_spiral_fill_halloween3.xml", tex="bg_image3.tex"},
-	}
-end
+local images =
+    IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) and {
+        {atlas="images/bg_spiral_fill_halloween1.xml", tex="bg_image1.tex"},
+        {atlas="images/bg_spiral_fill_halloween2.xml", tex="bg_image2.tex"},
+        {atlas="images/bg_spiral_fill_halloween3.xml", tex="bg_image3.tex"},
+    }
+    or IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) and {
+        {atlas="images/bg_spiral_fill_christmas1.xml", tex="bg_image1.tex"},
+        {atlas="images/bg_spiral_fill_christmas2.xml", tex="bg_image2.tex"},
+    }
+    or {
+        {atlas="images/bg_spiral_fill1.xml", tex="bg_image1.tex"},
+        {atlas="images/bg_spiral_fill2.xml", tex="bg_image2.tex"},
+        {atlas="images/bg_spiral_fill3.xml", tex="bg_image3.tex"},
+        {atlas="images/bg_spiral_fill4.xml", tex="bg_image4.tex"},
+        {atlas="images/bg_spiral_fill5.xml", tex="bg_image5.tex"},
+        {atlas="images/bg_spiral_fill6.xml", tex="bg_image6.tex"},
+        {atlas="images/bg_spiral_fill7.xml", tex="bg_image7.tex"},
+        {atlas="images/bg_spiral_fill8.xml", tex="bg_image8.tex"},
+    }
 
 local LoadingWidget = Class(Widget, function(self, imageRand)
     Widget._ctor(self, "LoadingWidget")

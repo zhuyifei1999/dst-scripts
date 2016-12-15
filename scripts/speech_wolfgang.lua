@@ -1856,7 +1856,7 @@ return {
 		WATERBALLOON = "Is very squishy-wobbly!",
 		WETGOOP = "Is not bad to eat, but is not good.",
         WHIP = "Good to floss teeth with.",
-
+		WINTERHAT = "It make ears happy in cold!",
         WINTER_TREE =
         {
             BURNT = "Happy tree is burn now.",
@@ -1864,10 +1864,15 @@ return {
             CANDECORATE = "Tree looks very happy!",
             YOUNG = "Is growing.",
         },
-        WINTER_TREESTAND = "Very nice little pot!",
+		WINTER_TREESTAND = 
+		{
+			GENERIC = "Very nice little pot!",
+            BURNT = "Happy tree is burn now.",
+		},
         WINTER_ORNAMENT = "Is so small in Wolfgang's hand.",
         WINTER_ORNAMENTLIGHT = "Glass ball of twinkly light!",
-        
+        WINTER_ORNAMENTBOSS = "Pretty little token of mightiness!",
+
         WINTER_FOOD1 = "Little man will crumble under my mighty teeth!", --gingerbread cookie
         WINTER_FOOD2 = "Does Wolfgang have sugar in moustache?", --sugar cookie
         WINTER_FOOD3 = "Little sugar stick.", --candy cane
@@ -1877,7 +1882,7 @@ return {
         WINTER_FOOD7 = "Little fruit is sweet and tasty!", --apple cider
         WINTER_FOOD8 = "Wolfgang likes feeling cozy.", --hot cocoa
         WINTER_FOOD9 = "Is much protein inside, yes?", --eggnog
-        
+
         KLAUS = "If Wolfgang had no eyes, he would not see terrible beast!",
         KLAUS_SACK = "Something inside for Wolfgang, maybe?",
 		WORMHOLE =

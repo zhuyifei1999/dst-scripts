@@ -30,8 +30,7 @@ local Domesticatable = Class(function(self, inst)
     self.tendencies = {}
 
     self.decaytask = nil
-end
-)
+end)
 
 function Domesticatable:SetDomesticationTrigger(fn)
     self.domestication_triggerfn = fn

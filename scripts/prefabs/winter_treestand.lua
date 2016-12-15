@@ -26,9 +26,21 @@ local function onplanted(inst, data)
 end
 
 local function onbuilt(inst)
-    inst.SoundEmitter:PlaySound("dontstarve/common/salt_lick_craft") -- placeholder sound
+    inst.SoundEmitter:PlaySound("dontstarve/common/together/wintertree_place")
     inst.AnimState:PlayAnimation("place")
     inst.AnimState:PushAnimation("idle", false)
+end
+
+local function onsave(inst, data)
+    if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
+        data.burnt = true
+    end
+end
+
+local function onload(inst, data)
+    if data ~= nil and data.burnt then
+        inst.components.burnable.onburnt(inst)
+    end
 end
 
 local function fn()
@@ -69,6 +81,9 @@ local function fn()
     MakeMediumPropagator(inst)
     MakeHauntableWork(inst)
     MakeSnowCovered(inst)
+
+    inst.OnSave = onsave
+    inst.OnLoad = onload
 
     inst:ListenForEvent("onbuilt", onbuilt)
     inst:ListenForEvent("plantwintertreeseed", onplanted)

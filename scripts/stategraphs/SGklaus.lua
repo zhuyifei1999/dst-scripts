@@ -25,12 +25,12 @@ local function DoFoleySounds(inst, volume)
 end
 
 local function DoFootstep(inst, volume)
-    PlayFootstep(inst, volume)
+    inst.SoundEmitter:PlaySound("dontstarve/creatures/together/klaus/step", nil, volume)
     ShakeIfClose(inst)
 end
 
 local function DoLanding(inst)
-    PlayFootstep(inst)
+    inst.SoundEmitter:PlaySound("dontstarve/creatures/together/klaus/step")
     ShakeAllCameras(CAMERASHAKE.FULL, .5, .02, inst.enraged and .2 or .1, inst, 30)
 end
 
@@ -223,6 +223,7 @@ local states =
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("hit")
             inst.sg.mem.last_hit_time = GetTime()
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/together/klaus/hit")
         end,
 
         timeline =
@@ -817,7 +818,7 @@ local states =
             end
             ReduceLaughing(inst, 1)
             inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
-            inst.SoundEmitter:PlaySound("dontstarve/creatures/together/klaus/breath_out")
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/together/klaus/lol")
         end,
 
         timeline =

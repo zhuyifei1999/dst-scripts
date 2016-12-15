@@ -80,7 +80,7 @@ local builds =
         prefab_name="deciduoustree",
         normal_loot = {"log", "log"},
         short_loot = {"log"},
-    tall_loot = {"log", "log", "log", "acorn"},
+        tall_loot = {"log", "log", "log", "acorn"},
         drop_acorns=true,
         fx="orange_leaves",
         chopfx="orange_leaves_chop",
@@ -281,12 +281,12 @@ local function GrowLeavesFn(inst, monster, monsterout)
 
     inst.leaf_state = inst.target_leaf_state
     if inst.leaf_state == "barren" then
-        inst.AnimState:Hide("mouseover")
+        inst.AnimState:ClearOverrideSymbol("mouseover")
     else
         if inst.build == "barren" then
             inst.build = (inst.leaf_state == "normal") and "normal" or "red"
         end
-        inst.AnimState:Show("mouseover")
+        inst.AnimState:OverrideSymbol("mouseover", "tree_leaf_trunk_build", "toggle_mouseover")
     end
 
     if monster ~= true and monsterout ~= true then
@@ -1098,9 +1098,9 @@ local function onload(inst, data)
         else
             if inst.build == "barren" then
                 inst:RemoveTag("shelter")
-                inst.AnimState:Hide("mouseover")
+                inst.AnimState:ClearOverrideSymbol("mouseover")
             else
-                inst.AnimState:Show("mouseover")
+                inst.AnimState:OverrideSymbol("mouseover", "tree_leaf_trunk_build", "toggle_mouseover")
             end
             Sway(inst)
         end
@@ -1241,6 +1241,8 @@ local function makefn(build, stage, data)
         inst.build = build
         inst.AnimState:SetBank("tree_leaf")
         inst.AnimState:SetBuild("tree_leaf_trunk_build")
+
+        inst.AnimState:Hide("mouseover")
 
         if GetBuild(inst).leavesbuild ~= nil then
             inst.AnimState:OverrideSymbol("swap_leaves", GetBuild(inst).leavesbuild, "swap_leaves")

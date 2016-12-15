@@ -320,9 +320,14 @@ end
 ACTIONS.RUMMAGE.strfn = function(act)
     local targ = act.target or act.invobject
     return targ ~= nil
-        and targ.replica.container ~= nil
-        and targ.replica.container:IsOpenedBy(act.doer)
-        and "CLOSE"
+        and (   targ.replica.container ~= nil and
+                targ.replica.container:IsOpenedBy(act.doer) and
+                "CLOSE" or
+                (   act.target ~= nil and
+                    act.target:HasTag("winter_tree") and
+                    "DECORATE"
+                )
+            )
         or nil
 end
 
@@ -884,6 +889,7 @@ ACTIONS.STORE.strfn = function(act)
     if act.target ~= nil then
         return (act.target.prefab == "cookpot" and "COOK")
             or (act.target.prefab == "birdcage" and "IMPRISON")
+            or (act.target:HasTag("winter_tree") and "DECORATE")
             or nil
     end
 end
@@ -894,22 +900,27 @@ ACTIONS.BUILD.fn = function(act)
     end
 end
 
+ACTIONS.PLANT.strfn = function(act)
+    return act.target ~= nil and act.target:HasTag("winter_treestand") and "PLANTER" or nil
+end
+
 ACTIONS.PLANT.fn = function(act)
-    if act.doer.components.inventory then
+    if act.doer.components.inventory ~= nil then
         local seed = act.doer.components.inventory:RemoveItem(act.invobject)
-        if seed then
+        if seed ~= nil then
             if act.target.components.grower ~= nil and act.target.components.grower:PlantItem(seed) then
                 return true
-            elseif act.target:HasTag("winter_treestand") and
-				act.target.components.burnable ~= nil and not act.target.components.burnable:IsBurning() and not act.target.components.burnable:IsSmoldering() then
-				
-				act.target:PushEvent("plantwintertreeseed", {seed=seed})
-				return true
-			else
+            elseif act.target:HasTag("winter_treestand")
+                and act.target.components.burnable ~= nil
+                and not (act.target.components.burnable:IsBurning() or
+                        act.target.components.burnable:IsSmoldering()) then
+                act.target:PushEvent("plantwintertreeseed", { seed = seed })
+                return true
+            else
                 act.doer.components.inventory:GiveItem(seed)
             end
         end
-   end
+    end
 end
 
 ACTIONS.HARVEST.fn = function(act)

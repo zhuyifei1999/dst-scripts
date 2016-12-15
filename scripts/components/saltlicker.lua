@@ -1,7 +1,7 @@
 local _StopSeeking --forward declare
 
 local function _checkforsaltlick(inst, self)
-    local ent = FindEntity(inst, TUNING.SALTLICK_USE_DIST, nil, { "saltlick" }, { "INLIMBO", "fire", "burnt" })
+    local ent = FindEntity(inst, inst:IsAsleep() and TUNING.SALTLICK_CHECK_DIST * .75 or TUNING.SALTLICK_USE_DIST, nil, { "saltlick" }, { "INLIMBO", "fire", "burnt" })
     if ent ~= nil then
         if ent.components.finiteuses ~= nil then
             ent.components.finiteuses:Use(self.uses_per_lick)
@@ -45,7 +45,9 @@ end
 local function _ontimerdone(inst, data)
     if data.name == "salt" then
         local self = inst.components.saltlicker
-        if inst:IsInLimbo() then
+        if inst:IsInLimbo() or
+            (inst.components.sleeper ~= nil and inst.components.sleeper:IsAsleep()) or
+            (inst.components.freezable ~= nil and inst.components.freezable:IsFrozen()) then
             self:SetSalted(false)
         elseif not _checkforsaltlick(inst, self) then
             _StartSeeking(self)
@@ -68,14 +70,21 @@ local SaltLicker = Class(function(self, inst)
     self._task = nil
 end)
 
-local function OnEnterLimbo(inst)
+local function OnPause(inst)
     _StopSeeking(inst.components.saltlicker)
 end
 
-local function OnExitLimbo(inst)
-    if not inst.components.timer:TimerExists("salt") then
+local function TryUnpause(inst)
+    if not (inst:IsInLimbo() or
+            (inst.components.sleeper ~= nil and inst.components.sleeper:IsAsleep()) or
+            (inst.components.freezable ~= nil and inst.components.freezable:IsFrozen()) or
+            inst.components.timer:TimerExists("salt")) then
         _StartSeeking(inst.components.saltlicker)
     end
+end
+
+local function OnDeath(inst)
+    inst.components.saltlicker:Stop()
 end
 
 function SaltLicker:SetUp(uses_per_lick)
@@ -83,20 +92,30 @@ function SaltLicker:SetUp(uses_per_lick)
     self.uses_per_lick = uses_per_lick
     if uses_per_lick ~= nil then
         self.inst:ListenForEvent("timerdone", _ontimerdone)
-        self.inst:ListenForEvent("enterlimbo", OnEnterLimbo)
-        self.inst:ListenForEvent("exitlimbo", OnExitLimbo)
-        if not self.inst:IsInLimbo() then
-            OnExitLimbo(self.inst)
-        end
+        self.inst:ListenForEvent("enterlimbo", OnPause)
+        self.inst:ListenForEvent("exitlimbo", TryUnpause)
+        self.inst:ListenForEvent("gotosleep", OnPause)
+        self.inst:ListenForEvent("onwakeup", TryUnpause)
+        self.inst:ListenForEvent("freeze", OnPause)
+        self.inst:ListenForEvent("unfreeze", TryUnpause)
+        self.inst:ListenForEvent("death", OnDeath)
+        TryUnpause(self.inst)
     end
 end
 
 function SaltLicker:Stop()
     if self.uses_per_lick ~= nil then
         self.inst:RemoveEventCallback("timerdone", _ontimerdone)
-        self.inst:RemoveEventCallback("enterlimbo", OnEnterLimbo)
-        self.inst:RemoveEventCallback("exitlimbo", OnExitLimbo)
+        self.inst:RemoveEventCallback("enterlimbo", OnPause)
+        self.inst:RemoveEventCallback("exitlimbo", TryUnpause)
+        self.inst:RemoveEventCallback("gotosleep", OnPause)
+        self.inst:RemoveEventCallback("onwakeup", TryUnpause)
+        self.inst:RemoveEventCallback("freeze", OnPause)
+        self.inst:RemoveEventCallback("unfreeze", TryUnpause)
+        self.inst:RemoveEventCallback("death", OnDeath)
+        self.inst.components.timer:StopTimer("salt")
         _StopSeeking(self)
+        self:SetSalted(false)
         self.uses_per_lick = nil
     end
 end

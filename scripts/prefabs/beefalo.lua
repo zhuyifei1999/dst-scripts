@@ -482,19 +482,23 @@ local function OnSaddleChanged(inst, data)
     end
 end
 
-local function OnRefuseRider(inst, data)
-    inst:DoTaskInTime(0, function()
+local function _OnRefuseRider(inst)
+    if inst.components.sleeper:IsAsleep() and not inst.components.health:IsDead() then
         -- this needs to happen after the stategraph
         inst.components.sleeper:WakeUp()
-    end)
+    end
+end
+
+local function OnRefuseRider(inst, data)
+    inst:DoTaskInTime(0, _OnRefuseRider)
 end
 
 local function MountSleepTest(inst)
     return not inst.components.rideable:IsBeingRidden() and DefaultSleepTest(inst)
 end
 
-local function OnSaltChange(inst, data)
-    inst.components.domesticatable:PauseDomesticationDecay(data.salted)
+local function ToggleDomesticationDecay(inst)
+    inst.components.domesticatable:PauseDomesticationDecay(inst.components.saltlicker.salted or inst.components.sleeper:IsAsleep())
 end
 
 local function OnInit(inst)
@@ -512,13 +516,13 @@ local function OnSave(inst, data)
 end
 
 local function OnLoad(inst, data)
-    if data and data.tendency then
+    if data ~= nil and data.tendency ~= nil then
         inst.tendency = data.tendency
     end
 end
 
 local function GetDebugString(inst)
-    return string.format( "tendency %s nextbuck %.2f", inst.tendency, GetTaskRemaining(inst._bucktask) )
+    return string.format("tendency %s nextbuck %.2f", inst.tendency, GetTaskRemaining(inst._bucktask))
 end
 
 local function beefalo()
@@ -665,7 +669,9 @@ local function beefalo()
     inst:AddComponent("timer")
     inst:AddComponent("saltlicker")
     inst.components.saltlicker:SetUp(TUNING.SALTLICK_BEEFALO_USES)
-    inst:ListenForEvent("saltchange", OnSaltChange)
+    inst:ListenForEvent("saltchange", ToggleDomesticationDecay)
+    inst:ListenForEvent("gotosleep", ToggleDomesticationDecay)
+    inst:ListenForEvent("onwakeup", ToggleDomesticationDecay)
 
     inst.ApplyBuildOverrides = ApplyBuildOverrides
     inst.ClearBuildOverrides = ClearBuildOverrides

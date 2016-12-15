@@ -163,9 +163,11 @@ local function MakeHat(name)
 
         inst:AddComponent("armor")
         inst.components.armor:InitCondition(TUNING.ARMOR_BEEHAT, TUNING.ARMOR_BEEHAT_ABSORPTION)
-        inst.components.armor:SetTags({"bee"})
+        inst.components.armor:SetTags({ "bee" })
+
         inst:AddComponent("waterproofer")
         inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
+
         return inst
     end
 
@@ -183,10 +185,12 @@ local function MakeHat(name)
         inst:AddComponent("insulator")
         inst.components.insulator:SetInsulation(TUNING.INSULATION_SMALL)
         inst.components.equippable:SetOnEquip(opentop_onequip)
+
         inst:AddComponent("fueled")
         inst.components.fueled.fueltype = FUELTYPE.USAGE
         inst.components.fueled:InitializeFuelLevel(TUNING.EARMUFF_PERISHTIME)
         inst.components.fueled:SetDepletedFn(inst.Remove)
+
         return inst
     end
 
@@ -551,7 +555,8 @@ local function MakeHat(name)
         inst.components.fueled.fueltype = FUELTYPE.CAVE
         inst.components.fueled:InitializeFuelLevel(TUNING.MINERHAT_LIGHTTIME)
         inst.components.fueled:SetDepletedFn(miner_perish)
-        inst.components.fueled.ontakefuelfn = miner_takefuel
+        inst.components.fueled:SetTakeFuelFn(miner_takefuel)
+        inst.components.fueled:SetFirstPeriod(TUNING.TURNON_FUELED_CONSUMPTION, TUNING.TURNON_FULL_FUELED_CONSUMPTION)
         inst.components.fueled.accepting = true
 
         inst:AddComponent("waterproofer")
@@ -1083,6 +1088,7 @@ local function MakeHat(name)
         inst.components.fueled.fueltype = FUELTYPE.WORMLIGHT
         inst.components.fueled:InitializeFuelLevel(TUNING.MOLEHAT_PERISHTIME)
         inst.components.fueled:SetDepletedFn(mole_perish)
+        inst.components.fueled:SetFirstPeriod(TUNING.TURNON_FUELED_CONSUMPTION, TUNING.TURNON_FULL_FUELED_CONSUMPTION)
         inst.components.fueled.accepting = true
 
         return inst
@@ -1094,10 +1100,10 @@ local function MakeHat(name)
 
         inst.components.periodicspawner:Start()
 
-		if owner.components.hunger then
-			owner.components.hunger.burnratemodifiers:SetModifier(inst, TUNING.MUSHROOMHAT_SLOW_HUNGER)
-		end
-        
+        if owner.components.hunger ~= nil then
+            owner.components.hunger.burnratemodifiers:SetModifier(inst, TUNING.MUSHROOMHAT_SLOW_HUNGER)
+        end
+
     end
 
     local function mushroom_onunequip(inst, owner)
@@ -1105,10 +1111,10 @@ local function MakeHat(name)
         owner:RemoveTag("spoiler")
 
         inst.components.periodicspawner:Stop()
- 
- 		if owner.components.hunger then
-			owner.components.hunger.burnratemodifiers:RemoveModifier(inst)
-		end
+
+        if owner.components.hunger ~= nil then
+            owner.components.hunger.burnratemodifiers:RemoveModifier(inst)
+        end
     end
 
     local function mushroom_displaynamefn(inst)

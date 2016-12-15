@@ -327,7 +327,7 @@ local function fn()
 
     inst:AddComponent("fueled")
     inst.components.fueled:SetDepletedFn(OnFuelEmpty)
-    inst.components.fueled.ontakefuelfn = OnAddFuel
+    inst.components.fueled:SetTakeFuelFn(OnAddFuel)
     inst.components.fueled.accepting = true
     inst.components.fueled:SetSections(10)
     inst.components.fueled:SetSectionCallback(OnFuelSectionChange)

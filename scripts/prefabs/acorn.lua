@@ -9,6 +9,7 @@ local prefabs =
     "acorn_sapling",
     "acorn_cooked",
     "spoiled_food",
+    "winter_deciduoustree",
 }
 
 local function plant(inst, growtime)
@@ -107,6 +108,9 @@ local function fn()
     inst:AddComponent("deployable")
     inst.components.deployable:SetDeployMode(DEPLOYMODE.PLANT)
     inst.components.deployable.ondeploy = ondeploy
+
+    inst:AddComponent("winter_treeseed")
+    inst.components.winter_treeseed:SetTree("winter_deciduoustree")
 
     MakeHauntableLaunchAndIgnite(inst)
 

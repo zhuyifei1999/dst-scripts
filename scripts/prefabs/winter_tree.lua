@@ -6,6 +6,7 @@ local queuegifting
 local statedata =
 {
     { -- empty
+        name        = "empty",
         idleanim    = "idle",
         loot        = function(inst) return {inst.seedprefab, "boards", "poop"} end,
         burntloot   = function(inst) return {"boards", "poop"} end,
@@ -13,9 +14,10 @@ local statedata =
         burnfxlevel = 3,
     },
     { -- sapling
+        name        = "sapling",
         idleanim    = "idle_sapling",
         burntanim   = "burnt",
-        growsound   = "dontstarve/forest/treeGrow", 
+        growsound   = "dontstarve/forest/treeGrow",
         workleft    = 1,
         workaction  = "HAMMER",
         growsound   = "dontstarve/wilson/plant_tree",
@@ -24,6 +26,7 @@ local statedata =
         burnfxlevel = 3,
     },
     { -- short
+        name        = "short",
         idleanim    = "idle_short",
         sway1anim   = "sway1_loop_short",
         sway2anim   = "sway2_loop_short",
@@ -33,15 +36,17 @@ local statedata =
         burntbreakanim = "chop_burnt_short",
         burntanim   = "burnt_short",
         growanim    = "grow_sapling_to_short",
-        growsound   = "dontstarve/forest/treeGrow", 
+        growsound   = "dontstarve/forest/treeGrow",
         workleft    = TUNING.WINTER_TREE_CHOP_SMALL,
         workaction  = "CHOP",
         loot        = function(inst) return {"log", "boards", "poop"} end,
         burntloot   = function(inst) return {"charcoal", "boards", "poop"} end,
         burnfxlevel = 4,
         burntree    = true,
+        shelter     = true,
     },
     { -- normal
+        name        = "normal",
         idleanim    = "idle_normal",
         sway1anim   = "sway1_loop_normal",
         sway2anim   = "sway2_loop_normal",
@@ -51,15 +56,17 @@ local statedata =
         burntbreakanim = "chop_burnt_normal",
         burntanim   = "burnt_normal",
         growanim    = "grow_short_to_normal",
-        growsound   = "dontstarve/forest/treeGrow", 
+        growsound   = "dontstarve/forest/treeGrow",
         workleft    = TUNING.WINTER_TREE_CHOP_NORMAL,
         workaction  = "CHOP",
         loot        = function(inst) return {"log", "log", inst.seedprefab, "boards", "poop"} end,
         burntloot   = function(inst) return {"charcoal", "boards", "poop"} end,
         burnfxlevel = 4,
         burntree    = true,
+        shelter     = true,
     },
     { -- tall
+        name        = "tall",
         idleanim    = "idle_tall",
         sway1anim   = "sway1_loop_tall",
         sway2anim   = "sway2_loop_tall",
@@ -69,13 +76,14 @@ local statedata =
         burntbreakanim = "chop_burnt_tall",
         burntanim   = "burnt_tall",
         growanim    = "grow_normal_to_tall",
-        growsound   = "dontstarve/forest/treeGrow", 
+        growsound   = "dontstarve/forest/treeGrow",
         workleft    = TUNING.WINTER_TREE_CHOP_TALL,
         workaction  = "CHOP",
         loot        = function(inst) return {"log", "log", "log", inst.seedprefab, "boards", "poop"} end,
         burntloot   = function(inst) return {"charcoal", "charcoal", inst.seedprefab, "boards", "poop"} end,
         burnfxlevel = 4,
         burntree    = true,
+        shelter     = true,
     },
 }
 
@@ -89,11 +97,21 @@ local function PushSway(inst)
 end
 
 local function PlaySway(inst)
+    if inst.OnPlayAnim ~= nil then
+        inst:OnPlayAnim()
+    end
     if inst.statedata.sway1anim ~= nil then
         inst.AnimState:PlayAnimation(math.random() > .5 and inst.statedata.sway1anim or inst.statedata.sway2anim, true)
     else
         inst.AnimState:PlayAnimation(inst.statedata.idleanim, false)
     end
+end
+
+local function PlayAnim(inst, anim)
+    if inst.OnPlayAnim ~= nil then
+        inst:OnPlayAnim()
+    end
+    inst.AnimState:PlayAnimation(anim)
 end
 
 -------------------------------------------------------------------------------
@@ -172,17 +190,52 @@ end
 -------------------------------------------------------------------------------
 local GIFTING_PLAYER_RADIUS_SQ = 25*25
 
-local random_gift =
+local random_gift1 =
 {
     flint = 1,
     moonrocknugget = 1,
     silk = 1,
     nitre = 1,
     gears = .5,
-    bluegem = .5,
     compass = .5,
+
+    --gems
     redgem = .5,
+    bluegem = .5,
+    greengem = .1,
     orangegem = .1,
+    yellowgem = .1,
+
+    --hats
+    beefalohat = .5,
+    winterhat = .5,
+    earmuffshat = .5,
+    catcoonhat = .5,
+    molehat = .5,
+}
+
+local random_gift2 =
+{
+    gears = .5,
+
+    --gems
+    redgem = .5,
+    bluegem = .5,
+    greengem = .1,
+    orangegem = .1,
+    yellowgem = .1,
+
+    --hats
+    beefalohat = .5,
+    winterhat = .5,
+    earmuffshat = .5,
+    catcoonhat = .5,
+    molehat = .5,
+    walrushat = .5,
+
+    --special
+    cane = .1,
+    panflute = .1,
 }
 
 local function NobodySeesPoint(pt)
@@ -212,22 +265,23 @@ local function dogifting(inst)
             local days_since_last_gift = inst.previousgiftday == nil and 100 or (TheWorld.state.cycles - inst.previousgiftday)
             inst.previousgiftday = TheWorld.state.cycles
 
-            local num_ornaments = inst.components.container:NumItems()
+            local fully_decorated = inst.components.container:IsFull()
+            local random_gift_table = fully_decorated and random_gift2 or random_gift1
+            local ornament_gift_fn = fully_decorated and GetRandomFancyWinterOrnament or GetRandomBasicWinterOrnament
 
-            --print("dogifting! ", num_players, days_since_last_gift, TheWorld.state.cycles, num_ornaments)
+            --print("dogifting! ", num_players, days_since_last_gift, TheWorld.state.cycles, inst.components.container:NumItems())
 
             for _, player in ipairs(players) do
                 local loot = {}
                 if days_since_last_gift > 4 then
                     table.insert(loot, { prefab = "winter_food".. math.random(NUM_WINTERFOOD), stack = 4 })
                     table.insert(loot, { prefab = PickRandomTrinket() })
-                    table.insert(loot, { prefab = weighted_random_choice(random_gift) })
-
-                    if num_ornaments == inst.components.container:GetNumSlots() and math.random() < 0.10 then
-                        table.insert(loot, { prefab = GetRandomBasicWinterOrnament() })
+                    table.insert(loot, { prefab = weighted_random_choice(random_gift_table) })
+                    if math.random() < .25 then
+                        table.insert(loot, { prefab = ornament_gift_fn() })
                     end
                 else
-                    table.insert(loot, { prefab = "winter_food".. math.random(NUM_WINTERFOOD)})
+                    table.insert(loot, { prefab = "winter_food".. math.random(NUM_WINTERFOOD) })
                     table.insert(loot, { prefab = "charcoal" })
                 end
 
@@ -332,9 +386,11 @@ local function trygifting(inst)
 end
 
 queuegifting = function(inst)
-    if TheWorld.state.isnight and inst.components.container ~= nil and not inst.components.container:IsEmpty()  and inst.giftingtask == nil then
+    if TheWorld.state.isnight and
+        inst.components.container ~= nil and
+        not inst.components.container:IsEmpty() and
+        inst.giftingtask == nil then
         --print("queuegifting")
-
         inst.giftingtask = inst:DoTaskInTime(2, trygifting, inst)
     end
 end
@@ -351,7 +407,11 @@ local function SetGrowth(inst)
     inst.components.burnable:SetFXLevel(inst.statedata.burnfxlevel)
     inst.components.burnable:SetBurnTime(inst.statedata.burntree and TUNING.TREE_BURN_TIME or 20)
 
-    if new_size == #statedata then
+    if inst.canshelter and inst.statedata.shelter then
+        inst:AddTag("shelter")
+    end
+
+    if new_size >= #statedata then
         inst.components.container.canbeopened = true
         inst.components.growable:StopGrowing()
 
@@ -361,7 +421,7 @@ end
 
 local function DoGrow(inst)
     if inst.statedata.growanim ~= nil then
-        inst.AnimState:PlayAnimation(inst.statedata.growanim)
+        PlayAnim(inst, inst.statedata.growanim)
     end
     if inst.statedata.growsound ~= nil then
         inst.SoundEmitter:PlaySound(inst.statedata.growsound)
@@ -405,7 +465,7 @@ end
 
 local function onworked(inst, worker, workleft)
     if workleft > 0 then
-        inst.AnimState:PlayAnimation(inst.statedata.hitanim)
+        PlayAnim(inst, inst.statedata.hitanim)
         PushSway(inst)
         if not inst.components.container:IsEmpty() then
             inst.SoundEmitter:PlaySound("dontstarve/creatures/together/deer/bell")
@@ -417,9 +477,12 @@ local function onworked(inst, worker, workleft)
                 "dontstarve/wilson/use_axe_tree"
             )
         end
+        if inst.OnChop ~= nil then
+            inst:OnChop(worker, workleft)
+        end
     elseif inst:HasTag("burnt") then
         if inst.statedata.burntbreakanim ~= nil then
-            inst.AnimState:PlayAnimation(inst.statedata.burntbreakanim)
+            PlayAnim(inst, inst.statedata.burntbreakanim)
             inst.SoundEmitter:PlaySound("dontstarve/forest/treeCrumble")
             if not (worker ~= nil and worker:HasTag("playerghost")) then
                 inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_tree")
@@ -451,8 +514,12 @@ local function onworked(inst, worker, workleft)
         if inst.statedata.breakrightanim ~= nil then
             inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")
 
+            if inst.components.growable ~= nil then
+                inst.components.growable:StopGrowing()
+            end
+
             local worker_is_to_right = worker and ((worker:GetPosition() - inst:GetPosition()):Dot(TheCamera:GetRightVec()) > 0) or (math.random() > 0.5)
-            inst.AnimState:PlayAnimation(worker_is_to_right and inst.statedata.breakleftanim or inst.statedata.breakrightanim)
+            PlayAnim(inst, worker_is_to_right and inst.statedata.breakleftanim or inst.statedata.breakrightanim)
 
             inst:ListenForEvent("animover", inst.Remove)
             inst.persists = false
@@ -473,27 +540,18 @@ end
 local function onburnt(inst)
     DefaultBurntStructureFn(inst)
 
+    if inst.canshelter then
+        inst:RemoveTag("shelter")
+    end
+
     if inst.components.growable ~= nil then
         inst.components.growable:StopGrowing()
     end
 
-    inst.AnimState:PlayAnimation(inst.statedata.burntanim)
+    PlayAnim(inst, inst.statedata.burntanim)
 end
 
 -------------------------------------------------------------------------------
-local function onsave(inst, data)
-    if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() or inst:HasTag("burnt") then
-        data.burnt = true
-    end
-
-    data.previousgiftday = inst.previousgiftday
-end
-
-local function onload(inst, data)
-    if data ~= nil then
-        inst.previousgiftday = data.previousgiftday
-    end
-end
 
 local function onloadpostpass(inst, ents, data)
     inst.statedata = statedata[inst.components.growable.stage]
@@ -524,6 +582,161 @@ local function onentitysleep(inst)
     end
 end
 
+-------------------------------------------------------------------------------
+
+local DECIDUOUS_COLORFUL_COLORS =
+{
+    "red",
+    "orange",
+    "yellow",
+}
+local DECIDUOUS_COLORFUL_BUILDS = {}
+local DECIDUOUS_COLORFUL_FX = {}
+local DECIDUOUS_COLORFUL_IDS = {}
+for i, v in ipairs(DECIDUOUS_COLORFUL_COLORS) do
+    local build = "tree_leaf_"..v.."_build"
+    table.insert(DECIDUOUS_COLORFUL_BUILDS, build)
+    table.insert(DECIDUOUS_COLORFUL_FX, v.."_leaves")
+    DECIDUOUS_COLORFUL_IDS[build] = i
+end
+
+local function OnDropLeavesFX(inst)
+    inst._dropleavestask = nil
+    local x, y, z = inst.Transform:GetWorldPosition()
+    SpawnPrefab(inst._dropleavesfx).Transform:SetPosition(x, inst.components.growable.stage == 4 and y - .3 or y, z)
+    inst._dropleavesfx = nil
+end
+
+local function OnDropDedciduousLeaves(inst)
+    inst._droppingleaves = nil
+    if inst._dropleavestask ~= nil then
+        inst._dropleavestask:Cancel()
+        OnDropLeavesFX(inst)
+    end
+    inst:RemoveEventCallback("animover", OnDropDedciduousLeaves)
+    inst.AnimState:ClearOverrideSymbol("swap_leaves")
+    inst.AnimState:ClearOverrideSymbol("mouseover")
+end
+
+local function SetDeciduousLeaves(inst, build, immediate)
+    if inst.leaf_build ~= build then
+        if inst._droppingleaves then
+            OnDropDedciduousLeaves(inst)
+        end
+        if build ~= nil then
+            inst.AnimState:OverrideSymbol("swap_leaves", build, "swap_leaves")
+            if inst.leaf_build == nil then
+                inst.AnimState:OverrideSymbol("mouseover", "tree_leaf_trunk_build", "toggle_mouseover")
+                if not immediate and inst.components.growable.stage > 2 then
+                    PlayAnim(inst, "grow_leaves_"..inst.statedata.name)
+                    PushSway(inst)
+                    inst.SoundEmitter:PlaySound("dontstarve/forest/treeGrow")
+                end
+                inst.canshelter = true
+                if inst.statedata.shelter then
+                    inst:AddTag("shelter")
+                end
+            end
+            inst.leaf_id = DECIDUOUS_COLORFUL_IDS[build]
+        else
+            if not immediate and inst.components.growable.stage > 2 then
+                PlayAnim(inst, "drop_leaves_"..inst.statedata.name)
+                PushSway(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/forest/treeWilt")
+                inst._droppingleaves = true
+                inst._dropleavesfx = inst.leaf_id ~= nil and DECIDUOUS_COLORFUL_FX[inst.leaf_id] or "green_leaves"
+                inst._dropleavestask = inst:DoTaskInTime(11 * FRAMES, OnDropLeavesFX)
+                inst:ListenForEvent("animover", OnDropDedciduousLeaves)
+            else
+                inst.AnimState:ClearOverrideSymbol("swap_leaves")
+                inst.AnimState:ClearOverrideSymbol("mouseover")
+            end
+            inst.canshelter = false
+            if inst.statedata.shelter then
+                inst:RemoveTag("shelter")
+            end
+            inst.leaf_id = nil
+        end
+        inst.leaf_build = build
+    end
+end
+
+local function deciduous_seasonchanged(inst, season)
+    if inst.components.workable:CanBeWorked() then
+        SetDeciduousLeaves(inst,
+            (season == SEASONS.AUTUMN and DECIDUOUS_COLORFUL_BUILDS[math.random(#DECIDUOUS_COLORFUL_BUILDS)]) or
+            (season ~= SEASONS.WINTER and "tree_leaf_green_build") or
+            nil,
+            false
+        )
+    end
+end
+
+local function deciduous_common_postinit_fn(inst)
+    inst.AnimState:Hide("mouseover")
+    inst.AnimState:OverrideSymbol("swap_leaves", "tree_leaf_red_build", "swap_leaves")
+    inst.AnimState:OverrideSymbol("mouseover", "tree_leaf_trunk_build", "toggle_mouseover")
+    if TheWorld.ismastersim then
+        inst.leaf_build = "tree_leaf_red_build"
+        inst.leaf_id = DECIDUOUS_COLORFUL_IDS[inst.leaf_build]
+    end
+end
+
+local function deciduous_onextinguish(inst)
+    if not inst:HasTag("burnt") then
+        inst:WatchWorldState("season", deciduous_seasonchanged)
+        deciduous_seasonchanged(inst, TheWorld.state.season)
+    end
+end
+
+local function deciduous_onburnt(inst)
+    inst:StopWatchingWorldState("season", deciduous_seasonchanged)
+end
+
+local function deciduous_master_postinit_fn(inst)
+    inst:ListenForEvent("onignite", deciduous_onburnt)
+    inst:ListenForEvent("onextinguish", deciduous_onextinguish)
+    inst:ListenForEvent("burntup", deciduous_onburnt)
+    if not inst:HasTag("burnt") then
+        deciduous_onextinguish(inst)
+    end
+end
+
+local function deciduous_onsave(inst, data)
+    data.leaf = inst.leaf_id
+end
+
+local function deciduous_onload(inst, data)
+    if data ~= nil and data.leaf ~= nil then
+        local build = DECIDUOUS_COLORFUL_BUILDS[data.leaf]
+        if build ~= nil then
+            SetDeciduousLeaves(inst, build, true)
+        end
+    end
+end
+
+local function deciduous_onplayanim(inst)
+    if inst._droppingleaves then
+        OnDropDedciduousLeaves(inst)
+    end
+end
+
+local function deciduous_onchop(inst)
+    if inst.leaf_build ~= nil then
+        local x, y, z = inst.Transform:GetWorldPosition()
+        SpawnPrefab((inst.leaf_id ~= nil and DECIDUOUS_COLORFUL_FX[inst.leaf_id] or "green_leaves").."_chop").Transform:SetPosition(x, (inst.components.growable.stage == 4 and y - .3 or y) + math.random() * 2, z)
+    end
+end
+
+-------------------------------------------------------------------------------
+
+local function evergreen_onchop(inst)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    SpawnPrefab("pine_needles_chop").Transform:SetPosition(x, y + math.random() * 2, z)
+end
+
+-------------------------------------------------------------------------------
+
 local trees = {}
 
 local function AddWinterTree(treetype)
@@ -533,6 +746,11 @@ local function AddWinterTree(treetype)
         Asset("ANIM", "anim/"..treetype.build..".zip"),
         Asset("ANIM", "anim/"..treetype.bank..".zip"),
     }
+    if treetype.extrabuilds ~= nil then
+        for i, v in ipairs(treetype.extrabuilds) do
+            table.insert(assets, Asset("ANIM", "anim/"..v..".zip"))
+        end
+    end
 
     local prefabs =
     {
@@ -547,6 +765,41 @@ local function AddWinterTree(treetype)
     end
     for i = 1, NUM_WINTERFOOD do
         table.insert(prefabs, "winter_food"..i)
+    end
+    if treetype.extraprefabs ~= nil then
+        for i, v in ipairs(treetype.extraprefabs) do
+            table.insert(prefabs, v)
+        end
+    end
+    for k, v in pairs(random_gift1) do
+        table.insert(prefabs, k)
+    end
+    for k, v in pairs(random_gift2) do
+        if random_gift1[k] == nil then
+            table.insert(prefabs, k)
+        end
+    end
+
+    local function onsave(inst, data)
+        if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() or inst:HasTag("burnt") then
+            data.burnt = true
+        end
+
+        data.previousgiftday = inst.previousgiftday
+
+        if treetype.onsave ~= nil then
+            treetype.onsave(inst, data)
+        end
+    end
+
+    local function onload(inst, data)
+        if data ~= nil then
+            inst.previousgiftday = data.previousgiftday
+        end
+
+        if treetype.onload ~= nil then
+            treetype.onload(inst, data)
+        end
     end
 
     local function fn()
@@ -577,14 +830,22 @@ local function AddWinterTree(treetype)
 
         inst:SetPrefabNameOverride("winter_tree")
 
+        if treetype.common_postinit ~= nil then
+            treetype.common_postinit(inst)
+        end
+
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
             return inst
         end
 
+        inst.OnPlayAnim = treetype.onplayanim
+        inst.OnChop = treetype.onchop
+
         inst.statedata = statedata[1]
         inst.seedprefab = treetype.seedprefab
+        inst.canshelter = treetype.shelter
 
         inst:AddComponent("growable")
         inst.components.growable.stages = GROWTH_STAGES
@@ -627,6 +888,10 @@ local function AddWinterTree(treetype)
         inst.OnEntitySleep = onentitysleep
         inst.OnEntityWake = onentitywake
 
+        if treetype.master_postinit ~= nil then
+            treetype.master_postinit(inst)
+        end
+
         return inst
     end
 
@@ -634,7 +899,55 @@ local function AddWinterTree(treetype)
 end
 
 for i, v in ipairs({
-    { name = "winter_tree", bank = "wintertree", build = "evergreen_new", seedprefab = "pinecone" },
+    {
+        name = "winter_tree",
+        bank = "wintertree",
+        build = "evergreen_new",
+        seedprefab = "pinecone",
+        extraprefabs =
+        {
+            "pine_needles_chop",
+        },
+        shelter = true,
+        onchop = evergreen_onchop,
+    },
+    {
+        name = "winter_twiggytree",
+        bank = "wintertree_twiggy",
+        build = "twiggy_build",
+        seedprefab = "twiggy_nut",
+    },
+    {
+        name = "winter_deciduoustree",
+        bank = "wintertree_deciduous",
+        build = "tree_leaf_trunk_build",
+        seedprefab = "acorn",
+        extrabuilds =
+        {
+            "tree_leaf_green_build",
+            "tree_leaf_red_build",
+            "tree_leaf_orange_build",
+            "tree_leaf_yellow_build",
+        },
+        extraprefabs =
+        {
+            "green_leaves",
+            "green_leaves_chop",
+            "red_leaves",
+            "red_leaves_chop",
+            "orange_leaves",
+            "orange_leaves_chop",
+            "yellow_leaves",
+            "yellow_leaves_chop",
+        },
+        shelter = true, --dynamic
+        common_postinit = deciduous_common_postinit_fn,
+        master_postinit = deciduous_master_postinit_fn,
+        onsave = deciduous_onsave,
+        onload = deciduous_onload,
+        onplayanim = deciduous_onplayanim,
+        onchop = deciduous_onchop,
+    },
 }) do
     AddWinterTree(v)
 end

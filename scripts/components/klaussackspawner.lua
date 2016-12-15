@@ -28,14 +28,14 @@ local function SpawnKlausSack()
 
     local x,y,z = nil, nil, nil
     for i,v in ipairs(_spawners) do
-        x,y,z = TheWorld.Map:GetTileCenterPoint(v:GetPosition():Get())
-        if not IsAnyPlayerInRange(x, y, z, 35) then
-            local structs = TheSim:FindEntities(x,y,z, 5, {"structure"})
-            if #structs == 0 then
-                break
-            end
-            numstructsatspawn[v] = #structs
-        end
+        x,y,z = v.Transform:GetWorldPosition()
+	    if TheWorld.Map:IsPassableAtPoint(x, y, z) and not IsAnyPlayerInRange(x, y, z, 35) then
+			local structs = TheSim:FindEntities(x,y,z, 5, {"structure"})
+			if #structs == 0 then
+				break
+			end
+			numstructsatspawn[v] = #structs
+		end
         x = nil
     end
 
@@ -49,9 +49,15 @@ local function SpawnKlausSack()
         end 
     end
 
+    if x == nil and #_spawners > 0 then
+		local spawner = _spawners[math.random(#_spawners)]
+		x,y,z = spawner.Transform:GetWorldPosition()
+	end
+
     if x ~= nil then
+		x, y, z = TheWorld.Map:GetTileCenterPoint(x, y, z)
         local sack = SpawnPrefab("klaus_sack")
-        local structs = TheSim:FindEntities(x,y,z, 1, {"structure"})
+        local structs = TheSim:FindEntities(x,y,z, 2, {"structure"})
         for i,v in ipairs(structs) do
             if v.components.workable ~= nil then
                 v.components.workable:Destroy(sack)
@@ -74,7 +80,7 @@ local function OnRespawnTimer()
     _respawntask = nil
     if _sack == nil then
         SpawnKlausSack()
-    end
+	end
 end
 
 local function StartRespawnTimer(t)
@@ -104,8 +110,8 @@ local function OnRegisterSackSpawningPt(inst, spawner)
         end
     end
 
-    table.insert(_spawners, spawner)
-    inst:ListenForEvent("onremove", OnRemoveSpawner, spawner)
+	table.insert(_spawners, spawner)
+	inst:ListenForEvent("onremove", OnRemoveSpawner, spawner)
 end
 
 local function OnUnregisterSack(sack)

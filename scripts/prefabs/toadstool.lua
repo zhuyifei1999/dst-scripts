@@ -510,7 +510,7 @@ local function AnnounceWarning(inst, player)
             inst.components.combat:HasTarget() or
             inst.components.health:IsDead()) and
         player.components.talker ~= nil then
-        player.components.talker:Say(GetString(inst, "ANNOUNCE_TOADESCAPING"))
+        player.components.talker:Say(GetString(player, "ANNOUNCE_TOADESCAPING"))
     end
 end
 
@@ -533,7 +533,7 @@ local function AnnounceEscaped(player)
         not (player.components.health ~= nil and player.components.health:IsDead()) and
         not player:HasTag("playerghost") and
         player.components.talker ~= nil then
-        player.components.talker:Say(GetString(inst, "ANNOUNCE_TOADESCAPED"))
+        player.components.talker:Say(GetString(player, "ANNOUNCE_TOADESCAPED"))
     end
 end
 

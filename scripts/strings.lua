@@ -170,7 +170,11 @@ STRINGS =
         CHECKTRAP = "Check",
         BUILD = "Build",
         CRAFT = "Craft",
-        PLANT = "Plant",
+        PLANT =
+        {
+            GENERIC = "Plant",
+            PLANTER = "Put",
+        },
         HARVEST = "Harvest",
         GOHOME = "Go Home",
         DIG = "Dig",
@@ -195,11 +199,13 @@ STRINGS =
             GENERIC = "Store",
             COOK = "Cook",
             IMPRISON = "Imprison",
+            DECORATE = "Decorate",
         },
         RUMMAGE =
         {
             GENERIC = "Open",
             CLOSE = "Close",
+            DECORATE = "Decorate",
         },
         TOGGLE_DEPLOY_MODE =
         {
@@ -1281,7 +1287,8 @@ STRINGS =
         WINTER_TREE = "Winter's Feast Tree",
         WINTER_ORNAMENT = "Festive Bauble",
         WINTER_ORNAMENTLIGHT = "Festive Light",
-        
+        WINTER_ORNAMENTBOSS = "Magnificent Adornment",
+
         WINTER_FOOD1 = "Gingerbread Cookie",
         WINTER_FOOD2 = "Sugar Cookie",
         WINTER_FOOD3 = "Candy Cane",
@@ -3628,8 +3635,7 @@ STRINGS.UI =
         INVALIDNEWHOST_TITLE = "Creating your first world?",
         INVALIDNEWHOST_BODY = "We recommend trying the game alone in a private world while you learn the ropes and get the hang of not starving. But it's totally up to you!",
     },
-    
-    
+
     GAMEMODES =
     {
         SURVIVAL = "Survival",
@@ -3642,7 +3648,7 @@ STRINGS.UI =
         UNKNOWN = "Game Mode Unknown",
         UNKNOWN_DESCRIPTION = "We could not retrieve the details of this game mode.",
     },
-    
+
     SERVERADMINSCREEN =
     {
         BANNED_PLAYERS_HEADER = "Banned Players",
@@ -3715,9 +3721,9 @@ STRINGS.UI =
         INVITE = "Invite",
         PLAYERLIST = "Players",
         CHAT = "Chat",
-		RANDOMCHAR = "Random",        
-		PLAYER = "Player",
-		SKINS = "Skins",
+        RANDOMCHAR = "Random",
+        PLAYER = "Player",
+        SKINS = "Skins",
         SKINS_BASE = "HEAD",
         SKINS_BODY = "BODY", 
         SKINS_LEGS = "LEGS",
@@ -3734,48 +3740,48 @@ STRINGS.UI =
         LOADOUT_TITLE = "'s Loadout",
         SELECTION_TITLE = "Character Select",
     },
-	
-    SKINSSCREEN = 
-    {
-    	TITLE = "'s Collection",
-    	ALL = "All",
-    	CLOTHING = "Clothing",
-    	ITEMS = "Items",
-    	FILTERS = "Filters",
-    	NONE = "NONE",
-    	BASE = "BASE",
-    	BODY = "BODY",
-    	HAND = "HANDS",
-    	LEGS = "LEGS",
-    	FEET = "FEET",
-    	ITEM = "Craftables",
-    	SAVE = "Save Outfit",
-    	RESET = "Last Outfit",
-    	CLEAR = "Reset to Default",
-    	LOADOUT = "Loadout",
-    	SELECT = "Select",
-    	PICK = "Pick A Character",
-    	SORRY = "Sorry",
-    	OFFLINE = "Your item collection is not available in offline mode.",
-    	NEW = "NEW",
-    	TRADE = "Trade Inn",
-    	BACK = "Back",
-    	TRADE_TOOLTIP = "Trade all your unwanted items in for something new!",
-		NO_ITEMS_TITLE = "Nothing to see here",
-    	NO_ITEMS = "Start playing to earn items!",
-    	BONUS = "Reward",
-    	SET_PROGRESS = "Piece",
-    	SET_INFO = "Ensemble Info",
-	},
 
-	SETPOPUP =
-	{
-    	OK = "OK",
-    	REWARD = "Reward:"
-	},
-	
+    SKINSSCREEN =
+    {
+        TITLE = "'s Collection",
+        ALL = "All",
+        CLOTHING = "Clothing",
+        ITEMS = "Items",
+        FILTERS = "Filters",
+        NONE = "NONE",
+        BASE = "BASE",
+        BODY = "BODY",
+        HAND = "HANDS",
+        LEGS = "LEGS",
+        FEET = "FEET",
+        ITEM = "Craftables",
+        SAVE = "Save Outfit",
+        RESET = "Last Outfit",
+        CLEAR = "Reset to Default",
+        LOADOUT = "Loadout",
+        SELECT = "Select",
+        PICK = "Pick A Character",
+        SORRY = "Sorry",
+        OFFLINE = "Your item collection is not available in offline mode.",
+        NEW = "NEW",
+        TRADE = "Trade Inn",
+        BACK = "Back",
+        TRADE_TOOLTIP = "Trade all your unwanted items in for something new!",
+        NO_ITEMS_TITLE = "Nothing to see here",
+        NO_ITEMS = "Start playing to earn items!",
+        BONUS = "Reward",
+        SET_PROGRESS = "Piece",
+        SET_INFO = "Ensemble Info",
+    },
+
+    SETPOPUP =
+    {
+        OK = "OK",
+        REWARD = "Reward:"
+    },
+
     -- Rarity and colour tables are to allow translation of item properties. Keys are the names as returned by the item server.
-    RARITY = 
+    RARITY =
     {
         Common          = "Common", -- a common item (eg t-shirt, plain gloves)
         Classy          = "Classy", -- an uncommon item (eg dress shoes, checkered trousers)
@@ -3786,10 +3792,10 @@ STRINGS.UI =
         Loyal           = "Loyal", -- a special item that isn't tradeable
         ProofOfPurchase = "Proof Of Purchase",
         Reward          = "Reward", -- a set bonus item
-        Event			= "Event",
+        Event           = "Event",
     },
 
-    COLOUR = 
+    COLOUR =
     {
         Black = "Black",
         Blue = "Blue",
@@ -3807,25 +3813,25 @@ STRINGS.UI =
         Yellow = "Yellow",
     },
 
-	TRADESCREEN = 
-	{
-		TITLE = "Trade Inn",
-		RESET = "Reset",
-		TRADE = "Trade",
-		SELECT = "Select",
-		ACCEPT = "Accept",
-		CANCEL = "Cancel",
-		SELECT_TITLE = "Choose An Item To Swap",
-		REMOVE_ITEM = "Remove Item",
-		BACK = "Back",
-		MARKET = "Steam",
+    TRADESCREEN =
+    {
+        TITLE = "Trade Inn",
+        RESET = "Reset",
+        TRADE = "Trade",
+        SELECT = "Select",
+        ACCEPT = "Accept",
+        CANCEL = "Cancel",
+        SELECT_TITLE = "Choose An Item To Swap",
+        REMOVE_ITEM = "Remove Item",
+        BACK = "Back",
+        MARKET = "Steam",
         EQUIPPED = "Last one!",
         CHECK = "Warning!",
         WARNING_SINGLE = "You won't be able to wear an item if you give your last one away! Do you really want to trade this item?",
         WARNING = "You won't be able to wear an item if you give your last one away! Do you really want to trade these items?",
-		SERVER_ERROR_TITLE = "Error Trading Items",
-		SERVER_ERROR_BODY = "There was an error trading your items. Please login again to refresh your account inventory.",
-		OK = "OK",
+        SERVER_ERROR_TITLE = "Error Trading Items",
+        SERVER_ERROR_BODY = "There was an error trading your items. Please login again to refresh your account inventory.",
+        OK = "OK",
         SPECIALS_TITLE = "Specials",
         SPECIALS = "Specials",
         NOSPECIALS = "Unspecials",
@@ -3837,11 +3843,11 @@ STRINGS.UI =
         NEXT = "Next Special",
         PREV = "Prev. Special",
 
-	    BASE = "Head",
-		BODY = "Body",
-		HAND = "Hands",
-		LEGS = "Legs",
-		FEET = "Feet",
+        BASE = "Head",
+        BODY = "Body",
+        HAND = "Hands",
+        LEGS = "Legs",
+        FEET = "Feet",
 
         RECIPE_INGREDIENT_ITEM = "<number> <rarity> <colour><item><plural>",
         RECIPE_INGREDIENT_TAGS = "<number> <rarity> <tags>Item<plural>",
@@ -3849,89 +3855,89 @@ STRINGS.UI =
 
         RECIPE_TITLE = "Wanted: <rarity> Items",
         NO_RECIPES = "No offers",
-		
-		SKIN_COLLECTOR_SPEECH = 
-		{
+
+        SKIN_COLLECTOR_SPEECH =
+        {
             -- Old west fur trader.
-			START = 
+            START =
             {
                 "Ya got a heap 'o items? Want better items? Well, ya come to tha right place! Put 'em in that thar machine!",
                 "Got too many items? I can help ya with that problem! Stick 'em in my machine an' trade 'em for somethin' better!",
                 "Lookin' for new items? Trade in some old items and get a bran' new one of higher quality!",
                 "Lookin' to trade? Ya come to the right place. Put your items in tha machine to get somethin' better!",
             },
-			START_EMPTY = 
+            START_EMPTY =
             {
                 "C'mon back when ya got something ta trade!",
                 "Sorry, but I can't give ya something for nothing, ya know.",
                 "If ya find any items while you're adventuring around out there, ya can bring the ones ya don't need ta me.",
             },
-            SPECIALS = 
+            SPECIALS =
             {
                 "These're my special deals. Gimme the stuff I'm looking for and I'll give ya a better item in exchange.",
                 "I'm lookin' for some particular things right now. If ya can give 'em to me, I'll give ya a new one of higher quality.",
                 "The special deals are cheaper than tha normal ones, but ya gotta give me the exact things I'm lookin' for.",
             },
-            ADDMORE = 
+            ADDMORE =
             {
                 "Help a poor old trader out with a few more <rarity> items and I'll give ya a higher quality item in exchange. Guaranteed.",
                 "I'm gonna need a few more <rarity> items to make a trade. I gotta cover my overhead, ya know? But ya'll get a better item in exchange.",
                 "Tha's it, fill the machine on up with <rarity> items and ya'll get a higher quality item back out.",
                 "Tha's tha ticket. Just bang a few more a those <rarity> items in tha machine to get a better item!",
             },
-            ADDMORESPECIALS = 
+            ADDMORESPECIALS =
             {
                 "Ya got the rest of tha stuff I'm lookin' for? If not, come back in a few days an' there might be a new deal.",
                 "I just need tha rest of the items on tha list. Bang 'em on in tha machine an' it'll spit out a higher quality item for ya.",
             },
-            SPECIALRECIPE = 
+            SPECIALRECIPE =
             {
                 "If ya give me tha items on tha list, I'll give ya a higher quality item in exchange.",
                 "Take a look at tha list. Get me all tha things on it and I'll give ya a better item.",
                 "Ya got tha items on tha list? Stick 'em in there and ya'll get a better item out 'o tha machine.",
             },
-            TRADEAVAIL = 
+            TRADEAVAIL =
             {
                 "All right, kid. Give tha button a push to getcher item!",
                 "Just push tha button to start tha trade!",
                 "If ya wanna make tha trade, just push tha green button.",
             },
-            TRADE = 
+            TRADE =
             {   "It'll be here in a jiffy.",
                 "I bet ya can't wait to see what comes out!",
                 "It should be here real soon now.",
             },
-            WARNING = 
+            WARNING =
             {
                 "Slow down there, greenhorn. Are ya sure ya wanna gimme your last one 'o those? Ya won't be able ta use it anymore if ya do.",
                 "Wait jest a tick there. Tha's your last one o' those things. Ya won't be able to use it anymore if ya trade it away.",
                 "Ya ain't got no more o' those. Ya sure ya wanna get rid o' it? Not that I won't take it, o' course.",
             },
-            RESULT = 
+            RESULT =
             {
                 "Here ya go, one very fine <item>!",
                 "Look a' that, ya won a <item>. C'mon back anytime, now.",
                 "There ya go, ya got this here <item>.",
             },
-            RESULT_LUCKY = 
+            RESULT_LUCKY =
             {
                 "Hey, ya struck it rich! Look at that <item>. Ya must be extra lucky today.",
                 "Here ya go, one bran' new <item>. Jus' remember I can't afford to give ya items this good all tha time.",
                 "Well, I guess me & tha machine are feelin' gen'rous today. Ya won a <item>!",
                 "Ain't that just the koalefant's toenails! Ya got one very purty <item>.",
             },
-            JOYSTICK = 
+            JOYSTICK =
             {
                 "Ya can bang on that joystick all ya want but it won't do ya no good.",
                 "Don't ya go breakin' tha joystick, now. Ya don' need it anyhow.",
                 "Up, down, left, right, tha joystick don' do nothin'.",
             },
-            HAND = 
+            HAND =
             {
                 "Pleased ta meecha.",
                 "Pleasure doin' business with ya.",
             },
-            IDLE = 
+            IDLE =
             {
                 "Ya may not feel young, but I've been tradin' longer than ya been around, young pup.",
                 "I've always been a loner, me. Tha boss mostly lets me alone, which suits me fine.",
@@ -3939,11 +3945,11 @@ STRINGS.UI =
                 "My wagon's pulled by a nox. 'Es a good 'un, but 'e can't hold a candle to my old mule, Shadow.",
                 "Once, when I was but a young shaver... ah, but ya don' wanna listen to an old trader's stories.",
                 "What's a nox? Well, I don't know as I can rightly describe it. It's kinda like an ox, but not.",
-            }
-		}
-	},
+            },
+        },
+    },
 
-    MORGUESCREEN=
+    MORGUESCREEN =
     {
         HISTORY = "History",
         MORGUE = "Morgue",
@@ -3967,11 +3973,12 @@ STRINGS.UI =
         UNKNOWN_DAYS = "?",
     },
 
-    CONTROLSSCREEN=
+    CONTROLSSCREEN =
     {
         -- Must match the Control enum in DontStarveInputHandler.h
         -- Must match constants.lua CONTROLS_*
-        CONTROLS = {
+        CONTROLS =
+        {
             "Primary",
             "Secondary",
             "Do Attack",
@@ -4049,12 +4056,12 @@ STRINGS.UI =
 
         DEVICE_TITLE = "Controls",
         APPLY = "Apply",
-        RESET = "Reset Binds", 
-        CANCEL = "Cancel",  
+        RESET = "Reset Binds",
+        CANCEL = "Cancel",
         BACK = "Back",
-        CLOSE = "Close",    
-        YES = "Yes",        
-        NO = "No",      
+        CLOSE = "Close",
+        YES = "Yes",
+        NO = "No",
         CONTROL_SELECT = " -- Select new input -- ",
         DEFAULT_CONTROL_TEXT = "Default: %s",
         CHANGEBIND = "Change Bind",
@@ -4067,7 +4074,8 @@ STRINGS.UI =
         LOSE_CHANGES_BODY = "Do you want abandon your changes?",
         INVALID_CONTROL = "N/A",
         -- INPUT_NAMES corresponds to DeviceType enum in InputDefinitions.h
-        INPUT_NAMES = {
+        INPUT_NAMES =
+        {
             [1] = "Keyboard/Mouse",
             [2] = "Xbox Controller",
             [3] = "PS4 Controller", --for PS4
@@ -4077,168 +4085,171 @@ STRINGS.UI =
             [7] = "Steam Controller",
             [8] = "PS4 Controller", --for PC/OSX/Linux
             [9] = "Unknown",
-            },
+        },
 
-        INPUTS = { 
+        INPUTS =
+        {
             -- KeyBoardMouse
-            [1] = {                   
-                -- Keyboard buttons       
-                [0] = "Unknown",         
+            [1] =
+            {
+                -- Keyboard buttons
+                [0] = "Unknown",
                 [8] = "Backspace",
-                [9] = "Tab", -- KEY_TAB         
-                [12] = "Clear", -- KEY_CLEAR        
-                [13] = "Enter", -- KEY_RETURN       
-                [19] = "Pause", -- KEY_PAUSE        
-                [27] = "Esc", -- KEY_ESCAPE     
-                [32] = "Space", -- KEY_SPACE        
-                --[33] = "!", -- KEY_EXCLAIM        
-                --[34] = "", -- KEY_QUOTEDBL    
-                --[35] = "", -- KEY_HASH        
-                --[36] = "", -- KEY_DOLLAR      
-                --[38] = "", -- KEY_AMPERSAND   
-                [39] = "'", -- KEY_QUOTE        
-                --[40] = "", -- KEY_LEFTPAREN   
-                --[41] = "", -- KEY_RIGHTPAREN  
-                --[42] = "", -- KEY_ASTERISK    
-                --[43] = "", -- KEY_PLUS        
-                [44] = ",", -- KEY_COMMA        
-                [45] = "-", -- KEY_MINUS        
-                [46] = ".", -- KEY_PERIOD       
-                [47] = "/", -- KEY_SLASH        
-                [48] = "0", -- KEY_0            
-                [49] = "1", -- KEY_1            
-                [50] = "2", -- KEY_2            
-                [51] = "3", -- KEY_3            
-                [52] = "4", -- KEY_4            
-                [53] = "5", -- KEY_5            
-                [54] = "6", -- KEY_6            
-                [55] = "7", -- KEY_7            
-                [56] = "8", -- KEY_8            
-                [57] = "9", -- KEY_9            
-                --[58] = "", -- KEY_COLON       
+                [9] = "Tab", -- KEY_TAB
+                [12] = "Clear", -- KEY_CLEAR
+                [13] = "Enter", -- KEY_RETURN
+                [19] = "Pause", -- KEY_PAUSE
+                [27] = "Esc", -- KEY_ESCAPE
+                [32] = "Space", -- KEY_SPACE
+                --[33] = "!", -- KEY_EXCLAIM
+                --[34] = "", -- KEY_QUOTEDBL
+                --[35] = "", -- KEY_HASH
+                --[36] = "", -- KEY_DOLLAR
+                --[38] = "", -- KEY_AMPERSAND
+                [39] = "'", -- KEY_QUOTE
+                --[40] = "", -- KEY_LEFTPAREN
+                --[41] = "", -- KEY_RIGHTPAREN
+                --[42] = "", -- KEY_ASTERISK
+                --[43] = "", -- KEY_PLUS
+                [44] = ",", -- KEY_COMMA
+                [45] = "-", -- KEY_MINUS
+                [46] = ".", -- KEY_PERIOD
+                [47] = "/", -- KEY_SLASH
+                [48] = "0", -- KEY_0
+                [49] = "1", -- KEY_1
+                [50] = "2", -- KEY_2
+                [51] = "3", -- KEY_3
+                [52] = "4", -- KEY_4
+                [53] = "5", -- KEY_5
+                [54] = "6", -- KEY_6
+                [55] = "7", -- KEY_7
+                [56] = "8", -- KEY_8
+                [57] = "9", -- KEY_9
+                --[58] = "", -- KEY_COLON
                 [59] = "Semicolon", -- KEY_SEMICOLON        ;
-                [60] = "<", -- KEY_LESS     
+                [60] = "<", -- KEY_LESS
                 [61] = "Equals", -- KEY_EQUALS              =
-                [62] = ">", -- KEY_GREATER      
-                --[63] = "", -- KEY_QUESTION    
-                --[64] = "", -- KEY_AT      
-                    
+                [62] = ">", -- KEY_GREATER
+                --[63] = "", -- KEY_QUESTION
+                --[64] = "", -- KEY_AT
+
                 [91] = "Left Bracket", -- KEY_LEFTBRACKET   [
                 [92] = "Backslash", -- KEY_BACKSLASH        \\
                 [93] = "Right Bracket", -- KEY_RIGHTBRACKET [
-                --[94] = "", -- KEY_CARET       
-                --[95] = "", -- KEY_UNDERSCORE  
-                [96] = "`", -- KEY_BACKQUOTE    
-                [97] = "A", -- KEY_A            
-                [98] = "B", -- KEY_B            
-                [99] = "C", -- KEY_C            
-                [100] = "D", -- KEY_D           
-                [101] = "E", -- KEY_E           
-                [102] = "F", -- KEY_F           
-                [103] = "G", -- KEY_G           
-                [104] = "H", -- KEY_H           
-                [105] = "I", -- KEY_I           
-                [106] = "J", -- KEY_J           
-                [107] = "K", -- KEY_K           
-                [108] = "L", -- KEY_L           
-                [109] = "M", -- KEY_M           
-                [110] = "N", -- KEY_N           
-                [111] = "O", -- KEY_O           
-                [112] = "P", -- KEY_P           
-                [113] = "Q", -- KEY_Q           
-                [114] = "R", -- KEY_R           
-                [115] = "S", -- KEY_S           
-                [116] = "T", -- KEY_T           
-                [117] = "U", -- KEY_U           
-                [118] = "V", -- KEY_V           
-                [119] = "W", -- KEY_W           
-                [120] = "X", -- KEY_X           
-                [121] = "Y", -- KEY_Y           
-                [122] = "Z", -- KEY_Z           
-                [127] = "Delete", -- KEY_DELETE     
+                --[94] = "", -- KEY_CARET
+                --[95] = "", -- KEY_UNDERSCORE
+                [96] = "`", -- KEY_BACKQUOTE
+                [97] = "A", -- KEY_A
+                [98] = "B", -- KEY_B
+                [99] = "C", -- KEY_C
+                [100] = "D", -- KEY_D
+                [101] = "E", -- KEY_E
+                [102] = "F", -- KEY_F
+                [103] = "G", -- KEY_G
+                [104] = "H", -- KEY_H
+                [105] = "I", -- KEY_I
+                [106] = "J", -- KEY_J
+                [107] = "K", -- KEY_K
+                [108] = "L", -- KEY_L
+                [109] = "M", -- KEY_M
+                [110] = "N", -- KEY_N
+                [111] = "O", -- KEY_O
+                [112] = "P", -- KEY_P
+                [113] = "Q", -- KEY_Q
+                [114] = "R", -- KEY_R
+                [115] = "S", -- KEY_S
+                [116] = "T", -- KEY_T
+                [117] = "U", -- KEY_U
+                [118] = "V", -- KEY_V
+                [119] = "W", -- KEY_W
+                [120] = "X", -- KEY_X
+                [121] = "Y", -- KEY_Y
+                [122] = "Z", -- KEY_Z
+                [127] = "Delete", -- KEY_DELETE
 
-                [256] = "Num 0", -- KEY_KP0             
-                [257] = "Num 1", -- KEY_KP1             
-                [258] = "Num 2", -- KEY_KP2             
-                [259] = "Num 3", -- KEY_KP3             
-                [260] = "Num 4", -- KEY_KP4             
-                [261] = "Num 5", -- KEY_KP5             
-                [262] = "Num 6", -- KEY_KP6             
-                [263] = "Num 7", -- KEY_KP7             
-                [264] = "Num 8", -- KEY_KP8             
-                [265] = "Num 9", -- KEY_KP9             
-                [266] = "Num .", -- KEY_KP_PERIOD       
-                [267] = "Num /", -- KEY_KP_DIVIDE       
-                [268] = "Num *", -- KEY_KP_MULTIPLY     
-                [269] = "Num -", -- KEY_KP_MINUS        
-                [270] = "Num +", -- KEY_KP_PLUS         
-                [271] = "Num Enter", -- KEY_KP_ENTER        
-                --[272] = "", -- KEY_KP_EQUALS      
+                [256] = "Num 0", -- KEY_KP0
+                [257] = "Num 1", -- KEY_KP1
+                [258] = "Num 2", -- KEY_KP2
+                [259] = "Num 3", -- KEY_KP3
+                [260] = "Num 4", -- KEY_KP4
+                [261] = "Num 5", -- KEY_KP5
+                [262] = "Num 6", -- KEY_KP6
+                [263] = "Num 7", -- KEY_KP7
+                [264] = "Num 8", -- KEY_KP8
+                [265] = "Num 9", -- KEY_KP9
+                [266] = "Num .", -- KEY_KP_PERIOD
+                [267] = "Num /", -- KEY_KP_DIVIDE
+                [268] = "Num *", -- KEY_KP_MULTIPLY
+                [269] = "Num -", -- KEY_KP_MINUS
+                [270] = "Num +", -- KEY_KP_PLUS
+                [271] = "Num Enter", -- KEY_KP_ENTER
+                --[272] = "", -- KEY_KP_EQUALS
 
-                [273] = "Up", -- KEY_UP         
-                [274] = "Down", -- KEY_DOWN     
-                [275] = "Right", -- KEY_RIGHT       
-                [276] = "Left", -- KEY_LEFT     
-                [277] = "Insert", -- KEY_INSERT     
-                [278] = "Home", -- KEY_HOME     
-                [279] = "End", -- KEY_END           
-                [280] = "Page Up", -- KEY_PAGEUP        
-                [281] = "Page Down", -- KEY_PAGEDOWN    
-                           
-                [282] = "F1", -- KEY_F1         
-                [283] = "F2", -- KEY_F2         
-                [284] = "F3", -- KEY_F3         
-                [285] = "F4", -- KEY_F4         
-                [286] = "F5", -- KEY_F5         
-                [287] = "F6", -- KEY_F6         
-                [288] = "F7", -- KEY_F7         
-                [289] = "F8", -- KEY_F8         
-                [290] = "F9", -- KEY_F9         
-                [291] = "F10", -- KEY_F10           
-                [292] = "F11", -- KEY_F11           
-                [293] = "F12", -- KEY_F12           
-                [294] = "F13", -- KEY_F13           
-                [295] = "F14", -- KEY_F14           
-                [296] = "F15", -- KEY_F15           
-                           
-                [300] = "Num Lock", -- KEY_NUMLOCK      
-                [301] = "Caps Lock", -- KEY_CAPSLOCK    
-                [302] = "Scroll Lock", -- KEY_SCROLLOCK 
-                [303] = "Right Shift", -- KEY_RSHIFT        
-                [304] = "Left Shift", -- KEY_LSHIFT     
-                [305] = "Right Control", -- KEY_RCTRL       
-                [306] = "Left Control", -- KEY_LCTRL        
-                [307] = "Right Alt", -- KEY_RALT        
-                [308] = "Left Alt", -- KEY_LALT     
-                [309] = "Right Meta", -- KEY_RMETA      
-                [310] = "Left Meta", -- KEY_LMETA       
+                [273] = "Up", -- KEY_UP
+                [274] = "Down", -- KEY_DOWN
+                [275] = "Right", -- KEY_RIGHT
+                [276] = "Left", -- KEY_LEFT
+                [277] = "Insert", -- KEY_INSERT
+                [278] = "Home", -- KEY_HOME
+                [279] = "End", -- KEY_END
+                [280] = "Page Up", -- KEY_PAGEUP
+                [281] = "Page Down", -- KEY_PAGEDOWN
+
+                [282] = "F1", -- KEY_F1
+                [283] = "F2", -- KEY_F2
+                [284] = "F3", -- KEY_F3
+                [285] = "F4", -- KEY_F4
+                [286] = "F5", -- KEY_F5
+                [287] = "F6", -- KEY_F6
+                [288] = "F7", -- KEY_F7
+                [289] = "F8", -- KEY_F8
+                [290] = "F9", -- KEY_F9
+                [291] = "F10", -- KEY_F10
+                [292] = "F11", -- KEY_F11
+                [293] = "F12", -- KEY_F12
+                [294] = "F13", -- KEY_F13
+                [295] = "F14", -- KEY_F14
+                [296] = "F15", -- KEY_F15
+
+                [300] = "Num Lock", -- KEY_NUMLOCK
+                [301] = "Caps Lock", -- KEY_CAPSLOCK
+                [302] = "Scroll Lock", -- KEY_SCROLLOCK
+                [303] = "Right Shift", -- KEY_RSHIFT
+                [304] = "Left Shift", -- KEY_LSHIFT
+                [305] = "Right Control", -- KEY_RCTRL
+                [306] = "Left Control", -- KEY_LCTRL
+                [307] = "Right Alt", -- KEY_RALT
+                [308] = "Left Alt", -- KEY_LALT
+                [309] = "Right Meta", -- KEY_RMETA
+                [310] = "Left Meta", -- KEY_LMETA
                 [311] = "Left Windows", -- KEY_LSUPER       /**< Left "Windows" key */
                 [312] = "Right Windows", -- KEY_RSUPER      /**< Right "Windows" key */
                 [313] = "Mode", -- KEY_MODE         /**< "Alt Gr" key */
                 [314] = "Compose", -- KEY_COMPOSE       /**< Multi-key compose key */
 
-                [315] = "Help", -- KEY_HELP     
-                [316] = "Print Screen", -- KEY_PRINT        
-                --[317] = "", -- KEY_SYSREQ     
-                --[318] = "", -- KEY_BREAK      
-                [319] = "Menu", -- KEY_MENU     
+                [315] = "Help", -- KEY_HELP
+                [316] = "Print Screen", -- KEY_PRINT
+                --[317] = "", -- KEY_SYSREQ
+                --[318] = "", -- KEY_BREAK
+                [319] = "Menu", -- KEY_MENU
                 [320] = "Power", -- KEY_POWER       /**< Power Macintosh power key */
                 [321] = "Euro", -- KEY_EURO         /**< Some european keyboards */
                 [322] = "Undo", -- KEY_UNDO         /**< Atari keyboard has Undo */
-                
+
                 [400] = "Alt", -- KEY_ALT
                 [401] = "Control", -- KEY_CTRL
                 [402] = "Shift", -- KEY_SHIFT
-                
+
                 -- Mouse controls
                 [1000] = "Left Mouse Button",
                 [1001] = "Right Mouse Button",
                 [1002] = "Middle Mouse Button",
                 [1003] = "Mouse Scroll Up",
-                [1004] = "Mouse Scroll Down", 
+                [1004] = "Mouse Scroll Down",
             },
             -- Xbox360
-            [2] = { 
+            [2] =
+            {
                 -- Digital
                 "\238\128\143",--"DPad Up"
                 "\238\128\140",--"DPad Down"
@@ -4254,7 +4265,7 @@ STRINGS.UI =
                 "\238\128\129",--"Button B",
                 "\238\128\130",--"Button X",
                 "\238\128\131",--"Button Y",    
-                  
+
                 -- Analog          
                 "\238\128\146",--"Left Thumb Left",
                 "\238\128\147",--"Left Thumb Right",
@@ -4270,16 +4281,17 @@ STRINGS.UI =
                 "\238\128\139",--"Right Trigger",
             }, 
             -- Generic
-            [3] = { 
+            [3] =
+            {
                 -- Digital
                 "(Button %d)",
-                
+
                 -- Directional
                 "(DPad %d Up)",
                 "(DPad %d Down)",
                 "(DPad %d Left)",
                 "(DPad %d Right)",
-                
+
                 -- Analog
                 "(-X Axis)",
                 "(+X Axis)",
@@ -4299,12 +4311,13 @@ STRINGS.UI =
                 "(Slider 1)",
             },
             -- PS4
-            [4] = { 
+            [4] =
+            {
                 -- Digital
                 "\238\140\143",--"DPad Up",
                 "\238\140\140",--"DPad Down",
                 "\238\140\141",--"DPad Left",
-                "\238\140\142",--"DPad Right"        	
+                "\238\140\142",--"DPad Right"
                 "\238\140\132",--"Start",
                 "\238\140\133",--"Back",
                 "\238\140\134",--"Left Stick",
@@ -4315,7 +4328,7 @@ STRINGS.UI =
                 "\238\140\129",--"Button B",
                 "\238\140\130",--"Button X",
                 "\238\140\131",--"Button Y",
-                  
+
                 -- Analog          
                 "\238\140\146",--"Left Thumb Left",
                 "\238\140\147",--"Left Thumb Right",
@@ -4328,15 +4341,16 @@ STRINGS.UI =
                 "\238\140\136",--"Left Trigger",
                 "\238\140\136",--"Left Trigger",
                 "\238\140\139",--"Right Trigger",
-                "\238\140\139",--"Right Trigger", 
+                "\238\140\139",--"Right Trigger",
             },
             -- Vita Remote Play
-            [5] = { 
+            [5] =
+            {
                 -- Digital
                 "\238\140\143",--"DPad Up",
                 "\238\140\140",--"DPad Down",
                 "\238\140\141",--"DPad Left",
-                "\238\140\142",--"DPad Right"        	
+                "\238\140\142",--"DPad Right"
                 "\238\140\132",--"Start",
                 "\238\140\133",--"Back",
                 "\238\140\134",--"Left Stick",
@@ -4347,8 +4361,8 @@ STRINGS.UI =
                 "\238\140\129",--"Button B",
                 "\238\140\130",--"Button X",
                 "\238\140\131",--"Button Y",
-                  
-                -- Analog          
+
+                -- Analog
                 "\238\140\146",--"Left Thumb Left",
                 "\238\140\147",--"Left Thumb Right",
                 "\238\140\145",--"Left Thumb Down",
@@ -4360,15 +4374,17 @@ STRINGS.UI =
                 "\238\140\154",--"Left Trigger",
                 "\238\140\154",--"Left Trigger",
                 "\238\140\155",--"Right Trigger",
-                "\238\140\155",--"Right Trigger", 
+                "\238\140\155",--"Right Trigger",
             },
             -- Touch
-            [6] = {
+            [6] =
+            {
                 "Unknown",
                 " - No Bind - ",
             },
             -- Steam
-            [7] = {
+            [7] =
+            {
                 -- Digital
                 "\142",--"DPad Up"
                 "\139",--"DPad Down"
@@ -4388,7 +4404,7 @@ STRINGS.UI =
                 "\138",--"Right Trigger",
                 "Left Paddle",--"Left Paddle",
                 "Right Paddle",--"Right Paddle",
-                  
+
                 -- Analog
                 "\145",--"Left Thumb Left",
                 "\146",--"Left Thumb Right",
@@ -4400,7 +4416,8 @@ STRINGS.UI =
                 "\147",--"Right Touch Up",
             },
             -- DualShock4 on PC
-            [8] = {
+            [8] =
+            {
                 "\238\136\143",--"DPad Up"
                 "\238\136\140",--"DPad Down"
                 "\238\136\141",--"DPad Left",
@@ -4415,7 +4432,7 @@ STRINGS.UI =
                 "\238\136\129",--"Circle",
                 "\238\136\130",--"Square",
                 "\238\136\131",--"Triangle",    
-                  
+
                 -- Analog          
                 "\238\136\146",--"Left Thumb Left",
                 "\238\136\147",--"Left Thumb Right",
@@ -4431,12 +4448,14 @@ STRINGS.UI =
                 "\238\136\149",--"Right Thumb Down",
             },
             --Unknown
-            [9] = {
+            [9] =
+            {
                 "Unknown",
                 " - No Bind - ",
             },
         },
-        PS4 = {
+        PS4 =
+        {
             TOUCHPAD = "Map",
             OPTIONS = "Pause",
 
@@ -4462,7 +4481,7 @@ STRINGS.UI =
         },
     },
 
-    UNLOCKMAXWELL=
+    UNLOCKMAXWELL =
     {
         TITLE = "Take pity?",
         BODY1 = "The key looks like it will fit. You can free ",
@@ -4471,31 +4490,31 @@ STRINGS.UI =
         NO = "No",
     },
 
-    STARTADVENTURE=
+    STARTADVENTURE =
     {
-        TITLE="Doorway to Adventure!",
-        BODY="You are about to embark on a long, arduous expedition to locate Maxwell. You will need to survive five randomly generated worlds, each presenting you with a unique challenge.\n\nShould you die you will be transported safely back to this portal, but lose all your progress on the adventure.",
-        BODY_TEST="If you die during adventure mode, you will return back to this portal where you may restart the adventure.\n\nYou are about to embark on a long, arduous expedition to locate Maxwell. You will need to survive five randomly generated worlds, each presenting you with a unique challenge.",
-        YES="Let's Go!",
-        NO="Not Yet",
+        TITLE = "Doorway to Adventure!",
+        BODY = "You are about to embark on a long, arduous expedition to locate Maxwell. You will need to survive five randomly generated worlds, each presenting you with a unique challenge.\n\nShould you die you will be transported safely back to this portal, but lose all your progress on the adventure.",
+        BODY_TEST = "If you die during adventure mode, you will return back to this portal where you may restart the adventure.\n\nYou are about to embark on a long, arduous expedition to locate Maxwell. You will need to survive five randomly generated worlds, each presenting you with a unique challenge.",
+        YES = "Let's Go!",
+        NO = "Not Yet",
     },
 
-    ENDGAME=
+    ENDGAME =
     {
-        TITLE="The End.",
+        TITLE = "The End.",
         BODY1 = "And so the cycle continues. Will ",
         BODY2 = " ever escape?\n Perhaps %s, too, will tire of this wretched place, and use %s new powers to tempt the unsuspecting.\n\nThe mysterious beings that control this realm still lurk in the shadows, and new challenges will soon be revealed.\n\nUntil then,\n- The Don't Starve Team -",
-        YES= "For Science!",
+        YES = "For Science!",
     },
 
     GENDERSTRINGS =
     {
-        MALE = 
+        MALE =
         {
             ONE = "he",
             TWO = "his",
         },
-        FEMALE = 
+        FEMALE =
         {
             ONE = "she",
             TWO = "her",
@@ -4509,14 +4528,14 @@ STRINGS.UI =
         {
             ONE = "they",
             TWO = "their",
-        }
+        },
     },
 
     SANDBOXMENU =
     {
         TITLE = "World Customization",
         TITLEDETAIL = "",
-        
+
         EASY = "Not Easy",
         MEDIUM = "Quite Difficult",
         HARD = "Overly Taxing",
@@ -4637,7 +4656,7 @@ STRINGS.UI =
         NONE = "None",
         NONEAVAILABLE = "None Available",
         MODIFYTASKS = "Modify Tasks",
-        
+
         YES ="Yes",
         NO = "No",
 
@@ -4649,8 +4668,8 @@ STRINGS.UI =
         EVENT_HALLOWEDNIGHTS_2016 = "Hallowed Nights",
         EVENT_WINTERSFEAST_2016 = "Winters Feast",
     },
-    
-    SAVELOAD = 
+
+    SAVELOAD =
     {        
         SAVE_FAILED = "An error occurred while saving your data.",
         LOAD_FAILED = "An error occurred while loading your data.",
@@ -4664,10 +4683,10 @@ STRINGS.UI =
         YES = "Yes",
         NO = "No",
     },
-    
+
     QUITTINGTITLE = "Quitting!",
     QUITTING = "Packing up the science.",
-    
+
     TELEPORTTITLE = "Journey onwards?",
     TELEPORTBODY_SURVIVAL = "This will destroy your current world, but you will retain your inventory contents.",
     TELEPORTBODY_ADVENTURE = "This will REMOVE ALL YOUR ITEMS and destroy your current world. Only items placed in the machine will appear in the next world.",
@@ -4686,8 +4705,8 @@ STRINGS.CHARACTERS =
     WENDY = require "speech_wendy",
     WOODIE = require "speech_woodie",
     WICKERBOTTOM = require "speech_wickerbottom",
-	WATHGRITHR = require "speech_wathgrithr",
-	WEBBER = require "speech_webber",
+    WATHGRITHR = require "speech_wathgrithr",
+    WEBBER = require "speech_webber",
 }
 
 STRINGS.LUCY =
@@ -4727,13 +4746,13 @@ STRINGS.LUCY =
         "What if I get stolen?!",
     },
 
-    on_haunt = 
+    on_haunt =
     {
-    	"Ouch, that hurts.", 
-    	"ooOOoooOO to you too.", 
-    	"Now I'm a HAUNTED axe.",
-    	"I'm not scared of you, ghost!",
-    	"Boo who?",
+        "Ouch, that hurts.", 
+        "ooOOoooOO to you too.", 
+        "Now I'm a HAUNTED axe.",
+        "I'm not scared of you, ghost!",
+        "Boo who?",
         "I've seen scarier.",
         "You think I'm afraid of you?",
         "Do you worst, ghost.",
@@ -4752,9 +4771,9 @@ STRINGS.LUCY =
         "Pick on someone your own size!",
         "Hey!",
         "Jeez! Did I anger you in a past life?",
-    	"I'm white as a sheet.",
-    	"You're looking boo-tiful today.",
-	},
+        "I'm white as a sheet.",
+        "You're looking boo-tiful today.",
+    },
 
     in_container =
     {
@@ -4827,7 +4846,7 @@ STRINGS.LUCY =
         "Oh, you're just AXING for trouble!",
         "You can't have two Lucys!",
         "You can't have him! He's mine!",
-	},
+    },
 
     on_dropped =
     {
@@ -4965,15 +4984,15 @@ STRINGS.LUCY =
     },
 }
 
-STRINGS.MODS = 
+STRINGS.MODS =
 {
-	VERSIONING =
-	{
-		OUT_OF_DATE = "Mod \"%s\" is out of date. The server needs to get the latest version from the Steam Workshop so other users can join.",
-	},
+    VERSIONING =
+    {
+        OUT_OF_DATE = "Mod \"%s\" is out of date. The server needs to get the latest version from the Steam Workshop so other users can join.",
+    },
 }
 
-STRINGS.TAGS = 
+STRINGS.TAGS =
 {
     --V2C: Don't add beta branch tags here, since they should not be
     --     localized. Add to constants.lua BETA_SERVER_TAGS instead.
@@ -4990,7 +5009,7 @@ STRINGS.TAGS =
     },
 }
 
-STRINGS.SIGNS = 
+STRINGS.SIGNS =
 {
     ADJ_NOUN_FMT = "{adjective} {noun}",
     ADJ_NOUN_ADD_FMT = "{adjective} {noun} {addition}",
@@ -5010,7 +5029,7 @@ STRINGS.SIGNS =
 		"Totally",
 	},
 
-	ADJECTIVES = 
+	ADJECTIVES =
 	{
 		"Sunny",
 		"Danker",
@@ -5053,7 +5072,7 @@ STRINGS.SIGNS =
 	},
 
 	-- Indices match ground types in constants.lua
-	NOUNS = 
+	NOUNS =
 	{
 		[2] = {"Road", "Path"},
 		[3] = {"Crag", "Area", "Region", "Rocky Place"},

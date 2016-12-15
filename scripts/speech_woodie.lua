@@ -1882,17 +1882,22 @@ return {
         WHIP = "I hope that doesn't end up hurtin' any lil critters.",
 		WINTERHAT = "It's a nice toque, eh?",
 
-		WINTER_TREE =
+        WINTER_TREE =
         {
-			BURNT = "Too bad. Made the place feel real cozy.",
-			BURNING = "Such senseless violence.",
-			CANDECORATE = "Must... not chop...",
-			YOUNG = "All holidays should revolve around trees.",
+            BURNT = "Too bad. Made the place feel real cozy.",
+            BURNING = "Such senseless violence.",
+            CANDECORATE = "Must... not chop...",
+            YOUNG = "All holidays should revolve around trees.",
         },
-        WINTER_TREESTAND = "I'm sure I have an extra pine cone somewhere.",
+ 		WINTER_TREESTAND = 
+		{
+			GENERIC = "I'm sure I have an extra pine cone somewhere.",
+            BURNT =  "Too bad. Made the place feel real cozy.",
+		},
         WINTER_ORNAMENT = "For hanging on the unchopped tree with care.",
         WINTER_ORNAMENTLIGHT = "What do you think, Lucy? Decorate, or chop?",
-        
+        WINTER_ORNAMENTBOSS = "Y'know, I do believe that was worth it.",
+
         WINTER_FOOD1 = "It's a gingerbread lumberjack.", --gingerbread cookie
         WINTER_FOOD2 = "Always had a soft spot for a good holiday cookie.", --sugar cookie
         WINTER_FOOD3 = "Satisfies the sweet tooth.", --candy cane

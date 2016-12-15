@@ -90,7 +90,9 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
     for k, v in pairs(CUSTOM_RECIPETABS) do
         if v.owner_tag == nil or owner:HasTag(v.owner_tag) then
             table.insert(tabnames, v)
-            numtabslots = numtabslots + 1
+            if not v.crafting_station then
+                numtabslots = numtabslots + 1
+            end
         end
     end
 
@@ -361,7 +363,7 @@ end
 
 function CraftTabs:DoUpdateRecipes()
     if self.needtoupdate then
-        self.needtoupdate = false   
+        self.needtoupdate = false
         local tabs_to_highlight = {}
         local tabs_to_alt_highlight = {}
         local tabs_to_overlay = {}

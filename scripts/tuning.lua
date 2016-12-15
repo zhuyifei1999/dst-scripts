@@ -1115,6 +1115,9 @@ function Tune(overrides)
         FISHING_CATCH_CHANCE = 0.4,
         FISHING_LOSEROD_CHANCE = 0.4,
 
+        TURNON_FUELED_CONSUMPTION = .5,
+        TURNON_FULL_FUELED_CONSUMPTION = 1 / 60,
+
         WET_FUEL_PENALTY = 0.75,
 
         TINY_FUEL = seg_time*.25,
@@ -2370,13 +2373,13 @@ function Tune(overrides)
 
         WINTERS_FEAST_TREE_DECOR_LOOT =
         {
-            DEERCLOPS        = 1,
-            BEARGER          = 1,
-            DRAGONFLY        = 2,
-            MINOTAUR         = 1,
-            BEEQUEEN         = 2,
-            TOADSTOOL        = 2,
-            MOOSE            = 1, -- goose?
+            DEERCLOPS        = {basic=1, special=true},
+            BEARGER          = {basic=1, special=true},
+            DRAGONFLY        = {basic=2, special=true},
+            MINOTAUR         = {basic=1, special=false},
+            BEEQUEEN         = {basic=2, special=true},
+            TOADSTOOL        = {basic=2, special=true},
+            MOOSE            = {basic=1, special=true}, -- goose?
         },
 
         WINTERS_FEAST_LOOT_EXCLUSION =
@@ -2384,6 +2387,7 @@ function Tune(overrides)
             BEEGUARD = true,
             FROG = true,
             TENTACLE = true,
+            KLAUS = true,
         },
     }
 end

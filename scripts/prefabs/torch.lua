@@ -10,12 +10,6 @@ local prefabs =
     "torchfire",
 }
 
-local function onequipfueldelta(inst)
-    if inst.components.fueled.currentfuel < inst.components.fueled.maxfuel then
-        inst.components.fueled:DoDelta(-.01 * inst.components.fueled.maxfuel)
-    end
-end
-
 local function onequip(inst, owner)
     inst.components.burnable:Ignite()
 
@@ -45,9 +39,6 @@ local function onequip(inst, owner)
             table.insert(inst.fires, fx)
         end
     end
-
-    --take a percent of fuel next frame instead of this one, so we can remove the torch properly if it runs out at that point
-    inst:DoTaskInTime(0, onequipfueldelta)
 end
 
 local function onunequip(inst, owner)
@@ -93,6 +84,7 @@ local function onisraining(inst, israining)
     if inst.components.fueled ~= nil then
         if israining then
             inst.components.fueled:SetUpdateFn(onupdatefueledraining)
+            onupdatefueledraining(inst)
         else
             inst.components.fueled:SetUpdateFn()
             inst.components.fueled.rate = 1
@@ -100,8 +92,8 @@ local function onisraining(inst, israining)
     end
 end
 
-local function sectioncallback(newsection, oldsection, inst)
-    if newsection == 0 then
+local function onfuelchange(newsection, oldsection, inst)
+    if newsection <= 0 then
         --when we burn out
         if inst.components.burnable ~= nil then
             inst.components.burnable:Extinguish()
@@ -187,9 +179,10 @@ local function fn()
     -----------------------------------
 
     inst:AddComponent("fueled")
-    inst.components.fueled:SetSectionCallback(sectioncallback)
+    inst.components.fueled:SetSectionCallback(onfuelchange)
     inst.components.fueled:InitializeFuelLevel(TUNING.TORCH_FUEL)
     inst.components.fueled:SetDepletedFn(inst.Remove)
+    inst.components.fueled:SetFirstPeriod(TUNING.TURNON_FUELED_CONSUMPTION, TUNING.TURNON_FULL_FUELED_CONSUMPTION)
 
     inst:WatchWorldState("israining", onisraining)
     onisraining(inst, TheWorld.state.israining)

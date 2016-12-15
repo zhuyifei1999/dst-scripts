@@ -122,6 +122,6 @@ local function addcone(name, spawn_prefab, bank, build, anim, winter_tree)
 end
 
 addcone("pinecone", "pinecone_sapling", "pinecone", "pinecone", "idle_planted", "winter_tree")
-addcone("twiggy_nut", "twiggy_nut_sapling", "twiggy_nut", "twiggy_nut", "idle_planted")
+addcone("twiggy_nut", "twiggy_nut_sapling", "twiggy_nut", "twiggy_nut", "idle_planted", "winter_twiggytree")
 
 return unpack(cones)

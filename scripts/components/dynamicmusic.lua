@@ -204,6 +204,7 @@ local function CheckAction(player)
     if player:HasTag("attack") then
         local target = player.replica.combat:GetTarget()
         if target ~= nil and
+            target:HasTag("_combat") and
             not ((target:HasTag("prey") and not target:HasTag("hostile")) or
                 target:HasTag("bird") or
                 target:HasTag("butterfly") or

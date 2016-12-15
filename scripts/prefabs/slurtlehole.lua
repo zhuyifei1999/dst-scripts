@@ -73,10 +73,12 @@ local function OnIgniteFn(inst)
     if inst.components.childspawner ~= nil then
         inst.components.childspawner:ReleaseAllChildren()
     end
+    DefaultBurnFn(inst)
 end
 
 local function OnExtinguishFn(inst)
     inst.SoundEmitter:KillSound("hiss")
+    DefaultExtinguishFn(inst)
 end
 
 local function OnExplodeFn(inst)
