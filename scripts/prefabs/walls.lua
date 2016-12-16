@@ -171,8 +171,6 @@ function MakeWallType(data)
 
             inst:AddComponent("fuel")
             inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL
-
-            MakeDragonflyBait(inst, 3)
         end
 
         inst:AddComponent("deployable")

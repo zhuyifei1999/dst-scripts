@@ -14,7 +14,7 @@ local function OnBurn(inst)
     if inst.flies then
         inst.flies:Remove()
         inst.flies = nil
-    end   
+    end
 end
 
 local function FuelTaken(inst, taker)
@@ -51,8 +51,6 @@ local function fn()
     inst.AnimState:SetBuild("poop")
     inst.AnimState:PlayAnimation("dump")
     inst.AnimState:PushAnimation("idle")
-
-    MakeDragonflyBait(inst, 3)
 
     inst.entity:SetPristine()
 

@@ -10,12 +10,6 @@ local prefabs =
     "lighterfire",
 }
 
-local function onequipfueldelta(inst)
-    if inst.components.fueled.currentfuel < inst.components.fueled.maxfuel then
-        inst.components.fueled:DoDelta(-.01 * inst.components.fueled.maxfuel)
-    end
-end
-
 local function onequip(inst, owner)
     inst.components.burnable:Ignite()
     owner.AnimState:OverrideSymbol("swap_object", "swap_lighter", "swap_lighter")
@@ -32,8 +26,6 @@ local function onequip(inst, owner)
         inst.fire.entity:AddFollower()
         inst.fire.Follower:FollowSymbol(owner.GUID, "swap_object", 56, -40, 0)
     end
-
-    inst:DoTaskInTime(0, onequipfueldelta)
 end
 
 local function onunequip(inst,owner)
@@ -72,6 +64,7 @@ local function onisraining(inst, israining)
     if inst.components.fueled ~= nil then
         if israining then
             inst.components.fueled:SetUpdateFn(onupdatefueledraining)
+            onupdatefueledraining(inst)
         else
             inst.components.fueled:SetUpdateFn()
             inst.components.fueled.rate = 1
@@ -79,8 +72,8 @@ local function onisraining(inst, israining)
     end
 end
 
-local function sectioncallback(newsection, oldsection, inst)
-    if newsection == 0 then
+local function onfuelchange(newsection, oldsection, inst)
+    if newsection <= 0 then
         --when we burn out
         if inst.components.burnable ~= nil then
             inst.components.burnable:Extinguish()
@@ -178,9 +171,10 @@ local function fn()
     inst.components.burnable.fxprefab = nil
 
     inst:AddComponent("fueled")
-    inst.components.fueled:SetSectionCallback(sectioncallback)
+    inst.components.fueled:SetSectionCallback(onfuelchange)
     inst.components.fueled:InitializeFuelLevel(TUNING.LIGHTER_FUEL)
     inst.components.fueled:SetDepletedFn(inst.Remove)
+    inst.components.fueled:SetFirstPeriod(TUNING.TURNON_FUELED_CONSUMPTION, TUNING.TURNON_FULL_FUELED_CONSUMPTION)
 
     inst:WatchWorldState("israining", onisraining)
     onisraining(inst, TheWorld.state.israining)

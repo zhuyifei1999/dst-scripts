@@ -436,6 +436,7 @@ local states =
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("atk")
             inst.components.combat:StartAttack()
+            inst.sg.statemem.target = inst.components.combat.target
         end,
 
         timeline =
@@ -445,7 +446,7 @@ local states =
             end),
             TimeEvent(14 * FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("dontstarve/creatures/together/bee_queen/attack")
-                inst.components.combat:DoAttack()
+                inst.components.combat:DoAttack(inst.sg.statemem.target)
             end),
             CommonHandlers.OnNoSleepTimeEvent(23 * FRAMES, function(inst)
                 inst.sg:RemoveStateTag("busy")

@@ -30,25 +30,58 @@ PREFAB_SKINS = {
 		"bedroll_furry_quilt_blue_frost",
 		"bedroll_furry_quilt_white_ivory",
 	},
+	birdcage = 
+	{
+		"birdcage_ornamental",
+		"birdcage_pirate",
+	},
 	cookpot = 
 	{
 		"cookpot_survival",
 	},
 	critter_dragonling = 
 	{
+		"dragonling_winter",
 		"dragonling_wyvern",
 	},
 	critter_dragonling_builder = 
 	{
+		"dragonling_winter_builder",
 		"dragonling_wyvern_builder",
 	},
 	critter_glomling = 
 	{
 		"glomling_beardeddragon",
+		"glomling_winter",
 	},
 	critter_glomling_builder = 
 	{
 		"glomling_beardeddragon_builder",
+		"glomling_winter_builder",
+	},
+	critter_kitten = 
+	{
+		"kitten_winter",
+	},
+	critter_kitten_builder = 
+	{
+		"kitten_winter_builder",
+	},
+	critter_lamb = 
+	{
+		"lamb_winter",
+	},
+	critter_lamb_builder = 
+	{
+		"lamb_winter_builder",
+	},
+	critter_puppy = 
+	{
+		"puppy_winter",
+	},
+	critter_puppy_builder = 
+	{
+		"puppy_winter_builder",
 	},
 	endtable = 
 	{
@@ -64,6 +97,8 @@ PREFAB_SKINS = {
 	},
 	flowerhat = 
 	{
+		"flowerhat_holly_wreath",
+		"flowerhat_ribbon_wreath",
 		"flowerhat_wreath",
 	},
 	spear = 
@@ -81,6 +116,7 @@ PREFAB_SKINS = {
 		"hat_glommer_costume",
 		"hat_hutch_costume",
 		"tophat_derby",
+		"tophat_festive_bell_red_firehound",
 	},
 	torch = 
 	{
@@ -91,6 +127,7 @@ PREFAB_SKINS = {
 	treasurechest = 
 	{
 		"treasurechest_carpetbag",
+		"treasurechest_gingerbread",
 		"treasurechest_posh",
 		"treasurechest_poshprint",
 		"treasurechest_steamertrunk",
@@ -165,6 +202,8 @@ PREFAB_SKINS = {
 	{
 		"winterhat_black_davys",
 		"winterhat_pink_hibiscus",
+		"winterhat_plum_pudding",
+		"winterhat_stocking_cap_green_forest",
 	},
 	wolfgang = 
 	{

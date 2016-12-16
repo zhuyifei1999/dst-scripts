@@ -32,6 +32,11 @@ return {
 			GENERIC = "Curses.",
 			INUSE = "I'm quite adept at waiting. I've had a lot of practice.",	
 		},
+		UNLOCK =
+        {
+        	WRONGKEY = "Blast! Wrong key.",
+        	KLAUS = "I'll not be done in by an overgrown Krampus.",
+        },
 		COOK =
         {
             GENERIC = "Nothing ever goes as planned.",
@@ -46,6 +51,10 @@ return {
         SADDLE =
         {
             TARGETINCOMBAT = "Perhaps I should take a step back.",
+        },
+        DRAW =
+        {
+            NOIMAGE = "My memory isn't good enough to draw from it.",
         },
         CHANGEIN =
         {
@@ -94,6 +103,10 @@ return {
             CANTLEARN = "There's a lesson to be learned about tampering with secret knowledge.",
             WRONGWORLD = "I seem to be in the wrong place to use this.",
         },
+        WRAPBUNDLE =
+        {
+            EMPTY = "I don't know what to wrap.",
+        },
 	},
 	ACTIONFAIL_GENERIC = "That didn't work.",
 	ANNOUNCE_DIG_DISEASE_WARNING = "That takes care of that.",
@@ -102,6 +115,10 @@ return {
     ANNOUNCE_BECOMEGHOST = "oOooooOO!!",
 	ANNOUNCE_GHOSTDRAIN = "They're whispering through the core of my mind...!",
 	ANNOUNCE_PETRIFED_TREES = "Oh, this should be good.",
+	ANNOUNCE_KLAUS_ENRAGE = "Time to beat a hasty retreat!",
+	ANNOUNCE_KLAUS_UNCHAINED = "Its true power has been unlocked!",
+	ANNOUNCE_KLAUS_CALLFORHELP = "The coward has summoned its minions.",
+
 	ANNOUNCE_NODANGERAFK = "I must be ever vigilant!",
 	ANNOUNCE_NODANGERGIFT = "That's a terrible idea right now.",
 	ANNOUNCE_NOMOUNTEDGIFT = "I'm not opening that on top of this thing.",
@@ -194,6 +211,7 @@ return {
 		PREY = "Sacrifice yourself for my comfort!",
 		SPIDER = "I'll not be made a fool of!",
 		SPIDER_WARRIOR = "You've forced my hand!",
+		DEER = "You do not belong in MY world!",
 	},
 	COMBAT_QUIT =
 	{
@@ -644,6 +662,8 @@ return {
 		THULECITE_PIECES = "Several of these piles could be combined to form a bigger piece.",
 		POND_ALGAE = "It's some algae.",
 		GREENSTAFF = "It is a focusing tool.",
+		GIFT = "An elegantly wrapped social obligation.",
+        GIFTWRAP = "For wrapping odds and ends...",
 		POTTEDFERN = "How quaint.",
 		SENTRYWARD = "This is a conduit for strong revelatory magicks.",
         MOONROCK_PIECES = "This might be bad.",
@@ -858,7 +878,13 @@ return {
 			REMAINS_THINGIE = "My trip through the portal made it unrecognizable.",
 		},
 		AXE = "Sometimes the direct approach is best.",
-		BABYBEEFALO = "They're even ugly as infants.",
+		BABYBEEFALO = 
+		{
+			GENERIC = "They're even ugly as infants.",
+		    SLEEPING = "Seems we've a few hours of reprieve.",
+        },
+        BUNDLE = "Nice and snug.",
+		BUNDLEWRAP = "I guess we could wrap a few things up.",
 		BACKPACK = "I wish there were porters around here.",
 		BACONEGGS = "Now that is a proper breakfast.",
 		BANDAGE = "Sticky and gooey and good for putting on booboos.",
@@ -873,6 +899,13 @@ return {
 		},
 		BEEQUEENHIVEGROWN = "I don't see what all the buzz is about.",
         BEEGUARD = "Keep your backside to yourself, madam!",
+        HIVEHAT = "Makes one feel like royalty.",
+        MINISIGN =
+        {
+            GENERIC = "It was drawn in a steady hand.",
+            UNDRAWN = "There's nothing on it, currently.",
+        },
+        MINISIGN_ITEM = "A sign is useless if it has nothing to mark.",
 		BEE =
 		{
 			GENERIC = "They work so hard, the fools.",
@@ -912,6 +945,7 @@ return {
 		BEEFALOHAT = "How unfashionable.",
 		BEEFALOWOOL = "It smells like a barn.",
 		BEEHAT = "I'll wear it if I have to.",
+		BEESWAX = "I miss sealing a good letter.",
 		BEEHIVE = "Not the bees!",
 		BEEMINE = "They wait so patiently.",
 		BEEMINE_MAXWELL = "Maybe I shouldn't have put that there.",
@@ -1086,6 +1120,14 @@ return {
 		CUTREEDS = "I think I could build something useful from this.",
 		CUTSTONE = "The building blocks of civilization.",
 		DEADLYFEAST = "It smells... noxious.",
+		DEER = 
+		{
+			GENERIC = "Well it's certainly not deer to me.",
+			ANTLER = "What a staggering sight!",
+		},
+		DEER_ANTLER = "Filthy.",
+		DEER_GEMMED = "The gem imbues its attacks with a fearsome power.",
+		KLAUSSACKKEY = "Magic has done things to this beast's horn.",
 		DEERCLOPS = "Even I'm afraid of that guy.",
 		DEERCLOPS_EYEBALL = "Deerclops are so myopic.",
 		DEPLETED_GRASS =
@@ -1417,6 +1459,7 @@ return {
 		PANDORASCHEST = "It's a trap.",
 		PANFLUTE = "I'm going to sing a song of madness.",
 		PAPYRUS = "A blank canvas.",
+		WAXPAPER = "My interest in this wax paper wanes....",
 		PENGUIN = "Nice tux.",
 		PERD = "It is addicted to fermented berries.",
 		PEROGIES = "They look superb.",
@@ -1828,6 +1871,35 @@ return {
 		WATERBALLOON = "Do you have any idea how much this suit cost?",
 		WETGOOP = "How uncultured.",
 		WINTERHAT = "How disappointingly rustic.",
+
+        WINTER_TREE =
+        {
+            BURNT = "That's that, it seems.",
+            BURNING = "It's a Winter's Feast miracle.",
+            CANDECORATE = "How wretchedly jolly.",
+            YOUNG = "Have we nothing better to do with our time?",
+        },
+		WINTER_TREESTAND = 
+		{
+			GENERIC = "How repulsively festive.",
+            BURNT = "That's that, it seems.",
+		},
+        WINTER_ORNAMENT = "Gaudy, like the rest of this shindig.",
+        WINTER_ORNAMENTLIGHT = "How frivolous.",
+        WINTER_ORNAMENTBOSS = "What a thing to risk one's life for.",
+
+        WINTER_FOOD1 = "Stop looking at me, cookie fiend.", --gingerbread cookie
+        WINTER_FOOD2 = "We're celebrating freezing to death, I see.", --sugar cookie
+        WINTER_FOOD3 = "I don't even use a cane.", --candy cane
+        WINTER_FOOD4 = "It is unbound from time.", --fruitcake
+        WINTER_FOOD5 = "How, err... traditional.", --yule log cake
+        WINTER_FOOD6 = "It's extremely rich.", --plum pudding
+        WINTER_FOOD7 = "Glorified apple juice.", --apple cider
+        WINTER_FOOD8 = "Such a decadent beverage.", --hot cocoa
+        WINTER_FOOD9 = "My... favorite... she remembered.", --eggnog
+
+        KLAUS = "My, what a magnificently horrific creature.",
+        KLAUS_SACK = "What dark treasures lie within?",
         WHIP = "Makes me feel like the master again.",
 		WORMHOLE =
 		{

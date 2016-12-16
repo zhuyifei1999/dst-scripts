@@ -103,7 +103,6 @@ function GetTypeForItem(item)
 
 	--print("Getting type for ", itemName)
 
-
 	if CLOTHING[itemName] then 
 		type = CLOTHING[itemName].type
 	elseif MISC_ITEMS[itemName] then 
@@ -111,8 +110,9 @@ function GetTypeForItem(item)
 	elseif EMOTE_ITEMS[itemName] then 
 		type = EMOTE_ITEMS[itemName].type
 	else
-		local skinsData = Prefabs[itemName]
-		type = skinsData.type
+		if Prefabs[itemName] ~= nil then
+			type = Prefabs[itemName].type
+		end
 	end
 
 	return type, itemName

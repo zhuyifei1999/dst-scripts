@@ -28,6 +28,11 @@ return {
 			GENERIC = "I can't do that.",
 			INUSE = "They're elbow deep in junk right now.",
 		},
+		UNLOCK =
+        {
+        	WRONGKEY = "Whoops! That wasn't right.",
+        	KLAUS = "I'm a little preoccupied!!",
+        },
         COOK =
         {
             GENERIC = "I can't cook right now.",
@@ -70,6 +75,10 @@ return {
             GENERIC = "I think it's fine as is.",
             INUSE = "There's only room for one scribbler.",
         },
+        DRAW =
+        {
+            NOIMAGE = "This'd be easier if I had the item in front of me.",
+        },
         CHANGEIN =
         {
             GENERIC = "I don't want to change right now.",
@@ -97,6 +106,10 @@ return {
 
             --MapRecorder/MapExplorer
             WRONGWORLD = "This map was made for some other place.",
+        },
+        WRAPBUNDLE =
+        {
+            EMPTY = "I need to have something to wrap.",
         },
 	},
 	ACTIONFAIL_GENERIC = "I can't do that.",
@@ -192,7 +205,17 @@ return {
 	ANNOUNCE_BECOMEGHOST = "oOooOooo!!",
 	ANNOUNCE_GHOSTDRAIN = "My humanity is about to start slipping away...",
 	ANNOUNCE_PETRIFED_TREES = "Did I just hear trees screaming?",
-	
+	ANNOUNCE_KLAUS_ENRAGE = "There's no way to beat it now!!",
+	ANNOUNCE_KLAUS_UNCHAINED = "Its chains came off!",
+	ANNOUNCE_KLAUS_CALLFORHELP = "It called for help!",
+
+    ANNOUNCE_ROYALTY = 
+    {
+    	"Your majesty.",
+    	"Your highness.",
+    	"My liege!",
+    },
+
 	BATTLECRY =
 	{
 		GENERIC = "Go for the eyes!",
@@ -200,6 +223,7 @@ return {
 		PREY = "I will destroy you!",
 		SPIDER = "I'm going to stomp you dead!",
 		SPIDER_WARRIOR = "Better you than me!",
+		DEER = "Die, doe!",
 	},
 	COMBAT_QUIT =
 	{
@@ -408,6 +432,8 @@ return {
 		THULECITE_PIECES = "It's some smaller chunks of Thulecite.",
 		POND_ALGAE = "Some algae by a pond.",
 		GREENSTAFF = "This will come in handy.",
+		GIFT = "Is that for me?",
+        GIFTWRAP = "That's a wrap!",
 		POTTEDFERN = "A fern in a pot.",
 		SENTRYWARD = "That's an entirely scientific mapping tool.",
         MOONROCK_PIECES = "I could probably break that.",
@@ -666,7 +692,13 @@ return {
 			REMAINS_THINGIE = "There's a perfectly scientific explanation for that.",
 		},
 		AXE = "A trusty axe.",
-		BABYBEEFALO = "Awwww. So cute!",
+		BABYBEEFALO = 
+		{
+			GENERIC = "Awwww. So cute!",
+		    SLEEPING = "Sweet dreams, smelly.",
+        },
+        BUNDLE = "Our supplies are in there!",
+        BUNDLEWRAP = "Wrapping things up should make them easier to carry.",
 		BACKPACK = "You could fit a whole lot of science in there.",
 		BACONEGGS = "The perfect breakfast for a man of science.",
 		BANDAGE = "Seems sterile enough.",
@@ -685,6 +717,13 @@ return {
 		},
         BEEQUEENHIVEGROWN = "How in science did it get so big?!",
         BEEGUARD = "It's guarding the queen.",
+        HIVEHAT = "The world seems less a little crazy when I wear it.",
+        MINISIGN =
+        {
+            GENERIC = "I could draw better than that!",
+            UNDRAWN = "We should draw something on there.",
+        },
+        MINISIGN_ITEM = "It's not much use like this. We should place it.",
 		BEE =
 		{
 			GENERIC = "To bee or not to bee.",
@@ -725,6 +764,7 @@ return {
 		BEEFALOHAT = "That's a case of hat-hair waiting to happen.",
 		BEEFALOWOOL = "It smells like beefalo tears.",
 		BEEHAT = "Protects your skin, but squashes your meticulous coiffure.",
+        BEESWAX = "Beeswax is a scientifically proven preservative!",
 		BEEHIVE = "It's buzzing with activity.",
 		BEEMINE = "It buzzes when shaken.",
 		BEEMINE_MAXWELL = "Bottled mosquito rage!",
@@ -938,6 +978,13 @@ return {
 		CUTREEDS = "Cut reeds, ready for crafting and hobbying.",
 		CUTSTONE = "Seductively smooth.",
 		DEADLYFEAST = "A most potent dish.",
+		DEER =
+		{
+			GENERIC = "Is it staring at me? ...No, I guess not.",
+			ANTLER = "What an impressive antler!",
+		},
+        DEER_ANTLER = "Was that supposed to come off?",
+        DEER_GEMMED = "It's being controlled by that beast!",
 		DEERCLOPS = "It's enormous!!",
 		DEERCLOPS_EYEBALL = "This is really gross.",
 		EYEBRELLAHAT =	"It watches over the wearer.",
@@ -1365,6 +1412,7 @@ return {
 		PANDORASCHEST = "It may contain something fantastic! Or horrible.",
 		PANFLUTE = "To serenade the animals.",
 		PAPYRUS = "Some sheets of paper.",
+        WAXPAPER = "Some sheets of wax paper.",
 		PENGUIN = "Must be breeding season.",
 		PERD = "Stupid bird! Stay away from those berries!",
 		PEROGIES = "These turned out pretty good.",
@@ -1825,6 +1873,36 @@ return {
 			GENERIC = "Mercurial.",
 			BURNT = "Its measuring days are over.",
 		},
+
+        WINTER_TREE =
+        {
+            BURNT = "That puts a damper on the festivities.",
+            BURNING = "That was a mistake, I think.",
+            CANDECORATE = "Happy Winter's Feast!",
+            YOUNG = "It's almost Winter's Feast!",
+        },
+		WINTER_TREESTAND = 
+		{
+			GENERIC = "I need a pine cone for that.",
+            BURNT = "That puts a damper on the festivities.",
+		},
+        WINTER_ORNAMENT = "Every scientist appreciates a good bauble.",
+        WINTER_ORNAMENTLIGHT = "A tree's not complete without some electricity.",
+        WINTER_ORNAMENTBOSS = "This one is especially impressive.",
+
+        WINTER_FOOD1 = "The anatomy's not right, but I'll overlook it.", --gingerbread cookie
+        WINTER_FOOD2 = "I'm going to eat forty. For science.", --sugar cookie
+        WINTER_FOOD3 = "A Yuletide toothache waiting to happen.", --candy cane
+        WINTER_FOOD4 = "That experiment may have been a tiny bit unethical.", --fruitcake
+        WINTER_FOOD5 = "It's nice to eat something other than berries for once.", --yule log cake
+        WINTER_FOOD6 = "I'm puddin' that straight in my mouth!", --plum pudding
+        WINTER_FOOD7 = "It's a hollowed apple filled with yummy juice.", --apple cider
+        WINTER_FOOD8 = "How does it stay warm? A thermodynamical mug?", --hot cocoa
+        WINTER_FOOD9 = "Can science explain why it tastes so good?", --eggnog
+
+        KLAUS = "What on earth is that thing!",
+        KLAUS_SACK = "We should definitely open that.",
+		KLAUSSACKKEY = "It's really fancy for a deer antler.",
 		WORMHOLE =
 		{
 			GENERIC = "Soft and undulating.",
@@ -1857,6 +1935,7 @@ return {
         ORANGEMOONEYE = "No one could get lost with that thing looking out for them.",
         YELLOWMOONEYE = "That ought to show everyone the way.",
         BLUEMOONEYE = "It's always smart to keep an eye out.",
+        
 	},
 	DESCRIBE_GENERIC = "It's a... thing.",
 	DESCRIBE_TOODARK = "It's too dark to see!",

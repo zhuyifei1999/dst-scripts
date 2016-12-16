@@ -60,6 +60,13 @@ local TRIGGERED_DANGER_MUSIC =
         "dontstarve/music/music_epicfight_ruins",
     },
 
+    klaus =
+    {
+        "dontstarve/music/music_epicfight_5a",
+        "",
+        "dontstarve/music/music_epicfight_5b",
+    },
+
     default =
     {
         "dontstarve/music/music_epicfight_ruins",
@@ -183,7 +190,10 @@ local function StartTriggeredDanger(player, data)
         StopBusy()
         StopDanger()
         local music = data ~= nil and TRIGGERED_DANGER_MUSIC[data.name or "default"] or TRIGGERED_DANGER_MUSIC.default
-        _soundemitter:PlaySound(music[level] or music[1], "danger")
+        music = music[level] or music[1]
+        if #music > 0 then
+            _soundemitter:PlaySound(music, "danger")
+        end
         _dangertask = inst:DoTaskInTime(data.duration or 10, StopDanger, true)
         _triggeredlevel = level
         _extendtime = 0
@@ -194,6 +204,7 @@ local function CheckAction(player)
     if player:HasTag("attack") then
         local target = player.replica.combat:GetTarget()
         if target ~= nil and
+            target:HasTag("_combat") and
             not ((target:HasTag("prey") and not target:HasTag("hostile")) or
                 target:HasTag("bird") or
                 target:HasTag("butterfly") or

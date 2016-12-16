@@ -10,7 +10,7 @@ local prefabs =
     "character_fire",
     "explode_small",
     "lavalight",
-}    
+}
 
 local MAXWORK = 6
 local MEDIUM  = 4
@@ -85,13 +85,13 @@ local function SealUp(rock)
     rock.components.workable:SetWorkLeft(MAXWORK)
 end
 
-
 function ExplodeRock(rock)
     --print("Explode:",rock)
     if rock.components.workable.workleft < MAXWORK then
         rock.blastTask = rock:DoTaskInTime(GetRandomWithVariance(120,60), ExplodeRock)
         return
     end
+    rock.blastTask = nil
     local x,y,z = rock.Transform:GetWorldPosition()
 
     rock.exploding = true
@@ -101,6 +101,55 @@ function ExplodeRock(rock)
     rock.AnimState:PlayAnimation("low")
     DoShake(rock)
     rock:DoTaskInTime(5,SealUp)
+end
+
+--local function ontakefuel(inst)
+--    inst.SoundEmitter:PlaySound("dontstarve/common/fireAddFuel")
+--end
+
+local function onupdatefueled(inst)
+    if inst.components.burnable ~= nil and inst.components.fueled ~= nil then
+        --print("fuel Update:", inst.components.fueled:GetCurrentSection()," %=", inst.components.fueled:GetSectionPercent())
+        inst.components.burnable:SetFXLevel(inst.components.fueled:GetCurrentSection(), inst.components.fueled:GetSectionPercent())
+    end
+end
+
+local function onfuelchange(newsection, oldsection, inst)
+    --print(string.format("SectionCallback: old=%d, new=%d, perc=%f", oldsection, newsection, inst.components.fueled:GetSectionPercent()))
+    if newsection <= 0 then
+        inst.components.burnable:Extinguish() 
+        inst:DoTaskInTime(2, function(inst)
+                                 inst.components.workable:SetWorkLeft(MAXWORK)
+                                 SetWorkLevel( inst, MAXWORK )
+                                 --inst.AnimState:PlayAnimation("med_grow")
+                                 inst.components.burnable:SetFXLevel(0,0)
+                             end)
+    else
+        inst.components.burnable:SetFXLevel(newsection, inst.components.fueled:GetSectionPercent())
+        --if not inst.components.burnable:IsBurning() then
+        --    inst.components.burnable:Ignite()
+        --end
+        if newsection == 1 then
+            SetWorkLevel(inst, MEDIUM)
+            if oldsection == 2 then 
+                inst.components.workable:SetWorkLeft(MEDIUM)
+            end
+        elseif newsection == 2 then
+            inst.components.workable:SetWorkLeft(LOW)
+            SetWorkLevel(inst, LOW)
+        end
+    end
+    inst.prev = newsection
+end
+
+local SECTION_STATUS =
+{
+    [0] = "OUT",
+    [1] = "LOW",
+    [2] = "NORMAL",
+}
+local function GetStatus(inst)
+    return SECTION_STATUS[inst.components.fueled:GetCurrentSection()]
 end
 
 local function fn()
@@ -117,13 +166,13 @@ local function fn()
 
     inst.AnimState:SetBuild("rock_light")
     inst.AnimState:SetBank("rock_light")
-    inst.AnimState:PlayAnimation("full", false)
+    inst.AnimState:PlayAnimation("full")
+
     inst:AddTag("rocklight")
     inst:AddTag("structure")
     inst:AddTag("stone")
-  
+
     MakeObstaclePhysics(inst, 1)    
-    inst.Transform:SetScale(1, 1, 1)
 
     inst.entity:SetPristine()
 
@@ -158,59 +207,17 @@ local function fn()
     inst.components.fueled:SetSections(2)
     inst.components.fueled:InitializeFuelLevel(0)
     -- inst.components.fueled.bonusmult = TUNING.FIREPIT_BONUS_MULT
-    -- inst.components.fueled.ontakefuelfn = function() inst.SoundEmitter:PlaySound("dontstarve/common/fireAddFuel") end
-
-    inst.components.fueled:SetUpdateFn( function()
-        if inst.components.burnable and inst.components.fueled then
-            --print("fuel Update:", inst.components.fueled:GetCurrentSection()," %=", inst.components.fueled:GetSectionPercent())
-            inst.components.burnable:SetFXLevel(inst.components.fueled:GetCurrentSection(), inst.components.fueled:GetSectionPercent())
-        end
-    end)
-
-    inst.components.fueled:SetSectionCallback( function(section,oldsection)
-        --print(string.format("SectionCallback: old=%d, new=%d, perc=%f",oldsection, section, inst.components.fueled:GetSectionPercent()))
-        if section == 0 then
-            inst.components.burnable:Extinguish() 
-            inst:DoTaskInTime(2, function(inst)
-                                     inst.components.workable:SetWorkLeft(MAXWORK)
-                                     SetWorkLevel( inst, MAXWORK )
-                                     --inst.AnimState:PlayAnimation("med_grow")
-                                     inst.components.burnable:SetFXLevel(0,0)
-                                 end)
-        else
-            inst.components.burnable:SetFXLevel(section, inst.components.fueled:GetSectionPercent())
-            --if not inst.components.burnable:IsBurning() then
-            --    inst.components.burnable:Ignite()
-            --end
-            if section == 1 then
-                SetWorkLevel( inst, MEDIUM )
-                if oldsection == 2 then 
-                    inst.components.workable:SetWorkLeft(MEDIUM)
-                end
-            elseif section == 2 then
-                inst.components.workable:SetWorkLeft(LOW)
-                SetWorkLevel( inst, LOW )
-            end
-        end
-        inst.prev = section
-    end)
+    -- inst.components.fueled:SetTakeFuelFn(ontakefuel)
+    inst.components.fueled:SetUpdateFn(onupdatefueled)
+    inst.components.fueled:SetSectionCallback(onfuelchange)
 
     -----------------------------
     inst:AddComponent("inspectable")
-    inst.components.inspectable.getstatus = function(inst)
-        local sec = inst.components.fueled:GetCurrentSection()
-        --print("get rock status:",sec)
-        if sec == 0 then 
-            return "OUT"
-        elseif sec <= 2 then
-            local t = {"LOW","NORMAL","HIGH"}
-            return t[sec]
-        end
-    end
+    inst.components.inspectable.getstatus = GetStatus
 
     -----------------------------
 
-    inst.blastTask = inst:DoTaskInTime(GetRandomWithVariance(120,60), ExplodeRock)
+    inst.blastTask = inst:DoTaskInTime(GetRandomWithVariance(120, 60), ExplodeRock)
     inst.state = MAXWORK
 
     -----------------------------

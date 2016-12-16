@@ -8,6 +8,8 @@ local actionhandlers =
 local events =
 {
 	SGCritterEvents.OnEat(),
+    SGCritterEvents.OnAvoidCombat(),
+	SGCritterEvents.OnTraitChanged(),
 
     CommonHandlers.OnSleepEx(),
     CommonHandlers.OnWakeEx(),
@@ -43,7 +45,17 @@ local emotes =
 }
 
 SGCritterStates.AddIdle(states, #emotes)
-SGCritterStates.AddEmotes(states, emotes)
+SGCritterStates.AddRandomEmotes(states, emotes)
+SGCritterStates.AddEmote(states, "cute",
+        {
+            TimeEvent(28*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/sheepington/yell") end),
+        })
+SGCritterStates.AddPetEmote(states,
+        {
+            TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/sheepington/yell") end),
+        })
+SGCritterStates.AddCombatEmote(states, nil)
+SGCritterStates.AddPlayWithOtherCritter(states, events, nil)
 SGCritterStates.AddEat(states,
         {
             TimeEvent(6*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/sheepington/curious") end),

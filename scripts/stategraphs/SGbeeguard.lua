@@ -255,6 +255,7 @@ local states =
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("atk")
             inst.components.combat:StartAttack()
+            inst.sg.statemem.target = inst.components.combat.target
         end,
 
         timeline =
@@ -263,7 +264,7 @@ local states =
                 inst.SoundEmitter:PlaySound(inst.sounds.attack)
             end),
             TimeEvent(13 * FRAMES, function(inst)
-                inst.components.combat:DoAttack()
+                inst.components.combat:DoAttack(inst.sg.statemem.target)
             end),
             TimeEvent(21 * FRAMES, function(inst)
                 inst.sg:RemoveStateTag("busy")

@@ -17,7 +17,6 @@ local function fn()
     inst.AnimState:PlayAnimation("idle")
 
     inst:AddTag("molebait")
-    MakeDragonflyBait(inst, 3)
 
     inst.entity:SetPristine()
 
@@ -35,7 +34,7 @@ local function fn()
     inst.components.edible.foodtype = FOODTYPE.BURNT
     inst.components.edible.hungervalue = 20
     inst.components.edible.healthvalue = 20
-        
+
     inst:AddComponent("tradable")
 
     inst:AddComponent("bait")
@@ -45,7 +44,7 @@ local function fn()
 
     MakeHauntableLaunchAndIgnite(inst)
 
-    ---------------------       
+    ---------------------
 
     inst:AddComponent("inspectable")
 

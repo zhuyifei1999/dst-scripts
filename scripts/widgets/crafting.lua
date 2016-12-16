@@ -83,8 +83,8 @@ function Crafting:SetOrientation(horizontal)
             self.upbutton:SetPosition(0, -y, 0)
 
             y = dy + self.but_h / 1.5
-            self.downconnector:SetPosition(-71, 2 + y, 0)
-            self.upconnector:SetPosition(-71, 2 - y, 0)
+            self.downconnector:SetPosition(-71, y, 0)
+            self.upconnector:SetPosition(-71, 5 - y, 0)
 
             y = dy + self.but_h * .5
             self.downendcapbg:SetPosition(0, y, 0)

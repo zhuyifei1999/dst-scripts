@@ -508,8 +508,9 @@ local function AnnounceWarning(inst, player)
         not player:HasTag("playerghost") and
         not (inst.sg:HasStateTag("noattack") or
             inst.components.combat:HasTarget() or
-            inst.components.health:IsDead()) then
-        player:PushEvent("toadstoolwarning", { escaped = false })
+            inst.components.health:IsDead()) and
+        player.components.talker ~= nil then
+        player.components.talker:Say(GetString(player, "ANNOUNCE_TOADESCAPING"))
     end
 end
 
@@ -530,8 +531,9 @@ end
 local function AnnounceEscaped(player)
     if player:IsValid() and player.entity:IsVisible() and
         not (player.components.health ~= nil and player.components.health:IsDead()) and
-        not player:HasTag("playerghost") then
-        player:PushEvent("toadstoolwarning", { escaped = true })
+        not player:HasTag("playerghost") and
+        player.components.talker ~= nil then
+        player.components.talker:Say(GetString(player, "ANNOUNCE_TOADESCAPED"))
     end
 end
 
@@ -722,6 +724,7 @@ local function fn()
     inst:AddTag("epic")
     inst:AddTag("noepicmusic")
     inst:AddTag("monster")
+    inst:AddTag("toadstool")
     inst:AddTag("hostile")
     inst:AddTag("scarytoprey")
     inst:AddTag("largecreature")
@@ -729,10 +732,13 @@ local function fn()
 
     inst._fade = net_smallbyte(inst.GUID, "toadstool._fade", "fadedirty")
 
-    inst._playingmusic = false
-    inst:DoPeriodicTask(1, PushMusic, 0)
-
     inst.entity:SetPristine()
+
+    --Dedicated server does not need to trigger music
+    if not TheNet:IsDedicated() then
+        inst._playingmusic = false
+        inst:DoPeriodicTask(1, PushMusic, 0)
+    end
 
     if not TheWorld.ismastersim then
         inst:ListenForEvent("fadedirty", OnFadeDirty)

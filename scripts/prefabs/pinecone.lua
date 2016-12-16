@@ -1,22 +1,7 @@
 require "prefabutil"
-local assets =
-{
-    Asset("ANIM", "anim/pinecone.zip"),
-    Asset("ANIM", "anim/twiggy_nut.zip"),
-}
-
-local prefabs =
-{
-    "pinecone_sapling",
-    "twiggy_nut_sapling",
-}
 
 local function plant(inst, growtime)
-    local spawn_item = "pinecone_sapling"
-    if inst._spawn_prefab then
-        spawn_item = inst._spawn_prefab
-    end
-    local sapling = SpawnPrefab(spawn_item)
+    local sapling = SpawnPrefab(inst._spawn_prefab or "pinecone_sapling")
     sapling:StartGrowing()
     sapling.Transform:SetPosition(inst.Transform:GetWorldPosition())
     sapling.SoundEmitter:PlaySound("dontstarve/wilson/plant_tree")
@@ -58,11 +43,25 @@ end
 
 local cones = {}
 
-local function addcone(name, spawn_prefab, bank, build, anim)
+local function addcone(name, spawn_prefab, bank, build, anim, winter_tree)
+    local assets =
+    {
+        Asset("ANIM", "anim/"..build..".zip"),
+    }
+    if bank ~= build then
+        table.insert("ANIM", "anim/"..bank..".zip")
+    end
+
+    local prefabs =
+    {
+        spawn_prefab or "pinecone_sapling",
+    }
+    if winter_tree ~= nil then
+        table.insert(prefabs, winter_tree)
+    end
+
     local function fn()
         local inst = CreateEntity()
-
-        inst._spawn_prefab = spawn_prefab
 
         inst.entity:AddTransform()
         inst.entity:AddAnimState()
@@ -76,13 +75,14 @@ local function addcone(name, spawn_prefab, bank, build, anim)
         inst.AnimState:PlayAnimation("idle")
 
         inst:AddTag("cattoy")
-        MakeDragonflyBait(inst, 3)
 
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
             return inst
         end
+
+        inst._spawn_prefab = spawn_prefab
 
         inst:AddComponent("tradable")
 
@@ -105,6 +105,12 @@ local function addcone(name, spawn_prefab, bank, build, anim)
         inst.components.deployable:SetDeployMode(DEPLOYMODE.PLANT)
         inst.components.deployable.ondeploy = ondeploy
 
+        if winter_tree ~= nil then
+            -- for winters feast event to plant in winter_treestand
+            inst:AddComponent("winter_treeseed")
+            inst.components.winter_treeseed:SetTree(winter_tree)
+        end
+
         -- This is left in for "save file upgrading", June 3 2015. We can remove it after some time.
         inst.OnLoad = OnLoad
 
@@ -115,7 +121,7 @@ local function addcone(name, spawn_prefab, bank, build, anim)
     table.insert(cones, MakePlacer(name.."_placer", bank, build, anim))
 end
 
-addcone("pinecone", "pinecone_sapling", "pinecone", "pinecone", "idle_planted")
-addcone("twiggy_nut", "twiggy_nut_sapling", "twiggy_nut", "twiggy_nut", "idle_planted")
+addcone("pinecone", "pinecone_sapling", "pinecone", "pinecone", "idle_planted", "winter_tree")
+addcone("twiggy_nut", "twiggy_nut_sapling", "twiggy_nut", "twiggy_nut", "idle_planted", "winter_twiggytree")
 
 return unpack(cones)

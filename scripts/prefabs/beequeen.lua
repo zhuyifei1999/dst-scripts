@@ -13,9 +13,10 @@ local prefabs =
     "honeycomb",
     "honey",
     "stinger",
+    "hivehat",
 }
 
-SetSharedLootTable( 'beequeen',
+SetSharedLootTable('beequeen',
 {
     {'royal_jelly',      1.00},
     {'royal_jelly',      1.00},
@@ -31,6 +32,7 @@ SetSharedLootTable( 'beequeen',
     {'honey',            1.00},
     {'honey',            0.50},
     {'stinger',          1.00},
+    {'hivehat',          1.00},
 })
 
 --------------------------------------------------------------------------
@@ -319,10 +321,13 @@ local function fn()
 
     inst.SoundEmitter:PlaySound("dontstarve/creatures/together/bee_queen/wings_LP", "flying")
 
-    inst._playingmusic = false
-    inst:DoPeriodicTask(1, PushMusic, 0)
-
     inst.entity:SetPristine()
+
+    --Dedicated server does not need to trigger music
+    if not TheNet:IsDedicated() then
+        inst._playingmusic = false
+        inst:DoPeriodicTask(1, PushMusic, 0)
+    end
 
     if not TheWorld.ismastersim then
         return inst

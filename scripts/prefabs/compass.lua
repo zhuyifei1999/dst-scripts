@@ -42,21 +42,12 @@ local function GetStatus(inst, viewer)
 end
 ]]
 
-local function onequipfueldelta(inst)
-    if inst.components.fueled.currentfuel < inst.components.fueled.maxfuel then
-        inst.components.fueled:DoDelta(-inst.components.fueled.maxfuel*.01)
-    end
-end
-
 local function onequip(inst, owner)
     owner.AnimState:OverrideSymbol("swap_object", "swap_compass", "swap_compass")
     owner.AnimState:Show("ARM_carry")
     owner.AnimState:Hide("ARM_normal")
 
     inst.components.fueled:StartConsuming()
-
-    --take a percent of fuel next frame instead of this one, so we can remove the torch properly if it runs out at that point
-    inst:DoTaskInTime(0, onequipfueldelta)
 
     if owner.components.maprevealable ~= nil then
         owner.components.maprevealable:AddRevealSource(inst, "compassbearer")
@@ -128,6 +119,7 @@ local function fn()
     inst:AddComponent("fueled")
     inst.components.fueled:InitializeFuelLevel(TUNING.COMPASS_FUEL)
     inst.components.fueled:SetDepletedFn(ondepleted)
+    inst.components.fueled:SetFirstPeriod(TUNING.TURNON_FUELED_CONSUMPTION, TUNING.TURNON_FULL_FUELED_CONSUMPTION)
 
     inst:AddComponent("weapon")
     inst.components.weapon:SetDamage(TUNING.UNARMED_DAMAGE)

@@ -16,6 +16,11 @@ return {
 			GENERIC = "It's not shaving time!",
 			NOBITS = "Clean as a whistle.",
 		},
+		UNLOCK =
+        {
+        	WRONGKEY = "That doesn't go there!",
+        	KLAUS = "It's too dangerous!",
+        },
 		STORE =
 		{
 			GENERIC = "All full!",
@@ -82,6 +87,10 @@ return {
         {
             NOHEALTH = "We don't feel so good right now. Maybe later?",
         },
+        DRAW =
+        {
+            NOIMAGE = "But what should we draw?!",
+        },
         CHANGEIN =
         {
             GENERIC = "Not right now, we're comfy.",
@@ -93,6 +102,10 @@ return {
             KNOWN = "I'm pretty sure one of us knows that one.",
             CANTLEARN = "Ms. Wickerbottom will have to explain this one.",
             WRONGWORLD = "Is it upside down? Nope. It's just wrong.",
+        },
+        WRAPBUNDLE =
+        {
+            EMPTY = "But what should we wrap up?",
         },
 	},
 	ACTIONFAIL_GENERIC = "Mom told me never to do that.",
@@ -139,6 +152,9 @@ return {
 	ANNOUNCE_BECOMEGHOST = "oOooOooO!!",
 	ANNOUNCE_GHOSTDRAIN = "We're becoming... even more monstrous!",
 	ANNOUNCE_PETRIFED_TREES = "The trees are yelling at us!!",
+	ANNOUNCE_KLAUS_ENRAGE = "Ah! I'm sorry we killed your deer!!",
+	ANNOUNCE_KLAUS_UNCHAINED = "Its belly looks hungry!",
+	ANNOUNCE_KLAUS_CALLFORHELP = "Uh-oh, its got friends coming!",
 
 	ANNOUNCE_ENTER_DARK = "We can't see! I want my nightlight.",
 	ANNOUNCE_ENTER_LIGHT = "Phew, light!",
@@ -196,6 +212,7 @@ return {
 		PREY = "We will put you in our web!",
 		SPIDER = "Hey, wanna play?",
 		SPIDER_WARRIOR = "Why can't we just get along?!",
+		DEER = "Hopefully we're venomous!",
 	},
 	COMBAT_QUIT =
 	{
@@ -379,6 +396,8 @@ return {
 		THULECITE_PIECES = "Small bits of fancy rock.",
 		POND_ALGAE = "Just a normal pond plant.",
 		GREENSTAFF = "Magic taker-apart-er.",
+		GIFT = "Oh! What is it?!",
+        GIFTWRAP = "I want to give someone something nice!",
 		POTTEDFERN = "Mum would like this nice fern.",
 		SENTRYWARD = "Woah! I bet it sees so far!",
         MOONROCK_PIECES = "Oh... We don't like this!",
@@ -668,7 +687,13 @@ return {
 			REMAINS_THINGIE = "Whatever it was, it's gone back to the earth.",
 		},
 		AXE = "Chop and chop.",
-		BABYBEEFALO = "Get busy, child.",
+		BABYBEEFALO = 
+		{
+			GENERIC = "Get busy, child.",
+		    SLEEPING = "That's the opposite of busy.",
+        },
+        BUNDLE = "That's one of my favorite things!",
+		BUNDLEWRAP = "Let's cocoon something for later!",
 		BACKPACK = "It's like a second abdomen we can store things in.",
 		BACONEGGS = "I'd rather have sugary cereal. Oh well.",
 		BANDAGE = "Bandages for booboos.",
@@ -688,6 +713,13 @@ return {
 		},
 		BEEQUEENHIVEGROWN = "Oh, bother!",
         BEEGUARD = "So fluffy but so mean!!",
+        HIVEHAT = "We could be part bee now too!",
+        MINISIGN =
+        {
+            GENERIC = "That looks nice!",
+            UNDRAWN = "Can someone lend us a pencil?",
+        },
+        MINISIGN_ITEM = "Let's build it!",
 		BEE =
 		{
 			GENERIC = "Always Be Pollinating.",
@@ -727,6 +759,7 @@ return {
 		BEEFALOHAT = "The wearer will blend in perfectly.",
 		BEEFALOWOOL = "Thick fur.",
 		BEEHAT = "It's a face fortress!",
+		BEESWAX = "This stuff gives me hives.",
 		BEEHIVE = "It's a hive of activity.",
 		BEEMINE = "Would you bee mine?",
 		BEEMINE_MAXWELL = "I just can't mosquito you.",
@@ -940,6 +973,14 @@ return {
 		CUTREEDS = "Reeds, web, what's the difference.",
 		CUTSTONE = "Squared rocks.",
 		DEADLYFEAST = "Scent of doom.",
+		DEER = 
+		{
+			GENERIC = "It looks soft.",
+			ANTLER = "Did you change your hair? Looks good!",
+		},
+		DEER_ANTLER = "Haha, weird.",
+		DEER_GEMMED = "Don't hurt us and we won't hurt you!",
+		KLAUSSACKKEY = "I think maybe this goes somewhere.",
 		DEERCLOPS = "He might be able to digest me!",
 		DEERCLOPS_EYEBALL = "Yucktastic.",
 		EYEBRELLAHAT =	"Disturbing, but it'll keep us dry.",
@@ -1349,6 +1390,7 @@ return {
 		ONEMANBAND = "We need to practice more.",
 		PANFLUTE = "A well constructed instrument.",
 		PAPYRUS = "We could do our homework.",
+		WAXPAPER = "Why have paper you can't draw on?",
 		PHLEGM = "It's a boogie!",
 		PENGUIN = "Where do they live the rest of the year?",
 		PERD = "Come back! I just want to eat you!",
@@ -1855,6 +1897,35 @@ return {
 			GENERIC = "How hot is it, Mr. Thermal Measurer?",
 			BURNT = "How come everything turns to ashes? It's sad.",
 		},
+
+        WINTER_TREE =
+        {
+            BURNT = "Aw... Why...",
+            BURNING = "Nooo! The tree!",
+            CANDECORATE = "Winter's Feast! It's Winter's Feast!",
+            YOUNG = "It still needs to grow some more.",
+        },
+		WINTER_TREESTAND = 
+		{
+			GENERIC = "It's just a boring planter without a tree.",
+            BURNT = "Aw... Why...",
+		},
+        WINTER_ORNAMENT = "Can we get a boost? We can't reach the treetop.",
+        WINTER_ORNAMENTLIGHT = "We want to keep one for ourselves.",
+        WINTER_ORNAMENTBOSS = "Wow, that one looks great!",
+
+        WINTER_FOOD1 = "I won't eat it. It's our friend now.", --gingerbread cookie
+        WINTER_FOOD2 = "Icy icy icing!", --sugar cookie
+        WINTER_FOOD3 = "Eat twenty candy canes! There's no candy shame!", --candy cane
+        WINTER_FOOD4 = "Yuck! What is that??", --fruitcake
+        WINTER_FOOD5 = "Haha, Wendy! Watch our Woodie impression!", --yule log cake
+        WINTER_FOOD6 = "Where are the plums?", --plum pudding
+        WINTER_FOOD7 = "Apple juice?! Yes!!", --apple cider
+        WINTER_FOOD8 = "It makes our claws and tummy so warm.", --hot cocoa
+        WINTER_FOOD9 = "It's really, really good!", --eggnog
+
+        KLAUS = "That meanie imprisoned those deer!",
+        KLAUS_SACK = "Presents?!",
 		WORMHOLE =
 		{
 			GENERIC = "I think that thing is alive.",

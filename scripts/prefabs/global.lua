@@ -38,6 +38,9 @@ local assets =
 	Asset("ATLAS", "images/frontend.xml"),
 	Asset("IMAGE", "images/frontend.tex"),
 
+	Asset("ATLAS", "images/anr_silhouettes.xml"),
+	Asset("IMAGE", "images/anr_silhouettes.tex"),
+
     Asset("ATLAS", "images/frontscreen.xml"),
     Asset("IMAGE", "images/frontscreen.tex"),
 
@@ -72,6 +75,10 @@ local assets =
     Asset("ASSET_PKGREF", "images/bg_spiral_fill_halloween2.tex"),
     Asset("DYNAMIC_ATLAS", "images/bg_spiral_fill_halloween3.xml"),
     Asset("ASSET_PKGREF", "images/bg_spiral_fill_halloween3.tex"),
+    Asset("DYNAMIC_ATLAS", "images/bg_spiral_fill_christmas1.xml"),
+    Asset("ASSET_PKGREF", "images/bg_spiral_fill_christmas1.tex"),
+    Asset("DYNAMIC_ATLAS", "images/bg_spiral_fill_christmas2.xml"),
+    Asset("ASSET_PKGREF", "images/bg_spiral_fill_christmas2.tex"),
     Asset("ATLAS", "images/bg_vignette.xml"),
     Asset("IMAGE", "images/bg_vignette.tex"),
 

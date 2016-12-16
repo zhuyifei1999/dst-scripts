@@ -187,11 +187,6 @@ function DressupPanel:SeparateAvatar()
 		self.bg_group:Hide()
 		self.outline:Hide()
 
-		self.puppet_group:SetPosition(-330, -450)
-		self.puppet_group:SetScale(2)
-
-		self.underlines = self.root:AddChild(Widget("underlines"))
-
 		local body_offset = 35
 		local option_height = 55
 		local spinner_offset = 7
@@ -240,6 +235,7 @@ function DressupPanel:SeparateAvatar()
 		self.legs_spinner:EnableGlow()
 		self.feet_spinner:EnableGlow()
 
+		self.underlines = self.root:AddChild(Widget("underlines"))
 		self.underlines:SetPosition(0, .5*body_offset+5)
 
 		self.mid_horizontal_line0 = self.underlines:AddChild(Image("images/ui.xml", "line_horizontal_5.tex"))
@@ -275,9 +271,7 @@ function DressupPanel:SeparateAvatar()
 
 		self.bg_group:SetPosition(8, -35, 0)
 
-
 		self.puppet_group = self.root:AddChild(Widget("puppet"))
-		self.puppet_group:SetPosition(0, 0)
 
 		self.puppet = self.puppet_group:AddChild(Puppet())
 		self.puppet:SetPosition( 10, title_height - 70)
@@ -291,10 +285,10 @@ function DressupPanel:SeparateAvatar()
 		self.random_avatar:SetPosition(10, title_height )
 		self.random_avatar:SetScale(.34)
 		self.random_avatar:Hide()
-
-		self.puppet_group:SetPosition(-315, -300)
-		self.puppet_group:SetScale(1.5)
 	end
+	
+	self.puppet_group:SetPosition(-330, -450)
+	self.puppet_group:SetScale(2)
 end
 
 

@@ -10,12 +10,6 @@ local prefabs =
     "fan_wheel",
 }
 
-local function onequipfueldelta(inst)
-    if inst.components.fueled.currentfuel < inst.components.fueled.maxfuel then
-        inst.components.fueled:DoDelta(-inst.components.fueled.maxfuel*.01)
-    end
-end
-
 local function onremove(inst)
     if inst._wheel ~= nil then
         inst._wheel:Remove()
@@ -40,9 +34,6 @@ local function onequip(inst, owner)
     end
     inst._owner = owner
     inst:ListenForEvent("locomote", inst._onlocomote, owner)
-
-    --take a percent of fuel next frame instead of this one, so we can remove the torch properly if it runs out at that point
-    inst:DoTaskInTime(0, onequipfueldelta)
 end
 
 local function onunequip(inst, owner)
@@ -133,6 +124,7 @@ local function fn()
     inst:AddComponent("fueled")
     inst.components.fueled:InitializeFuelLevel(TUNING.MINIFAN_FUEL)
     inst.components.fueled:SetDepletedFn(ondepleted)
+    inst.components.fueled:SetFirstPeriod(TUNING.TURNON_FULL_FUELED_CONSUMPTION)
 
     MakeHauntableLaunch(inst)
 

@@ -65,6 +65,7 @@ local function fn()
     inst:AddTag("scarytoprey")
     inst:AddTag("monster")
     inst:AddTag("hostile")
+    inst:AddTag("deergemresistance")
 
     inst.AnimState:Hide("ARM")
     inst.AnimState:SetBank("krampus")

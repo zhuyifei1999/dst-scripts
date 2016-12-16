@@ -742,6 +742,25 @@ local ExampleLayout =
 	}),
 
 	["BlueMushyStart"] = StaticLayout.Get("map.static_layouts/blue_mushy_entrance"),
+	
+	["DeerSpawningGround"] = 
+	{
+		type = LAYOUT.STATIC,
+		layout = 
+		{
+			deerspawningground = {{x=0, y=0}},
+		},
+	},
+	
+	["DeerSpawningGround2"] = 
+	{
+		type = LAYOUT.STATIC,
+		layout = 
+		{
+			deerspawningground = {{x=0, y=0}},
+		},
+	},
+	
 
 --------------------------------------------------------------------------------
 -- ANR - A New Reign
@@ -749,8 +768,8 @@ local ExampleLayout =
 
 	["MoonbaseOne"] = StaticLayout.Get("map/static_layouts/moonbaseone",
 	{
-			start_mask = PLACE_MASK.IGNORE_BARREN_RESERVED,
-			fill_mask = PLACE_MASK.IGNORE_BARREN_RESERVED,
+			start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+			fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
 			layout_position = LAYOUT_POSITION.CENTER,
 			disable_transform = true
 	}),

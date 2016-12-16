@@ -139,9 +139,7 @@ params.cookpot =
 }
 
 function params.cookpot.itemtestfn(container, item, slot)
-	if not container.inst:HasTag("burnt") then 
-    	return cooking.IsCookingIngredient(item.prefab)
-    end
+    return cooking.IsCookingIngredient(item.prefab) and not container.inst:HasTag("burnt")
 end
 
 function params.cookpot.widget.buttoninfo.fn(inst)
@@ -154,6 +152,50 @@ end
 
 function params.cookpot.widget.buttoninfo.validfn(inst)
     return inst.replica.container ~= nil and inst.replica.container:IsFull()
+end
+
+--------------------------------------------------------------------------
+--[[ bundle_container ]]
+--------------------------------------------------------------------------
+
+params.bundle_container =
+{
+    widget =
+    {
+        slotpos =
+        {
+            Vector3(-37.5, 32 + 4, 0), 
+            Vector3(37.4, 32 + 4, 0),
+            Vector3(-37.5, -(32 + 4), 0), 
+            Vector3(37.5, -(32 + 4), 0),
+        },
+        animbank = "ui_bundle_2x2",
+        animbuild = "ui_bundle_2x2",
+        pos = Vector3(200, 0, 0),
+        side_align_tip = 120,
+        buttoninfo =
+        {
+            text = STRINGS.ACTIONS.WRAPBUNDLE,
+            position = Vector3(0, -100, 0),
+        }
+    },
+    type = "cooker",
+}
+
+function params.bundle_container.itemtestfn(container, item, slot)
+    return not (item:HasTag("irreplaceable") or item:HasTag("_container") or item:HasTag("bundle"))
+end
+
+function params.bundle_container.widget.buttoninfo.fn(inst)
+    if inst.components.container ~= nil then
+        BufferedAction(inst.components.container.opener, inst, ACTIONS.WRAPBUNDLE):Do()
+    elseif inst.replica.container ~= nil and not inst.replica.container:IsBusy() then
+        SendRPCToServer(RPC.DoWidgetButtonAction, ACTIONS.WRAPBUNDLE.code, inst, ACTIONS.WRAPBUNDLE.mod_name)
+    end
+end
+
+function params.bundle_container.widget.buttoninfo.validfn(inst)
+    return inst.replica.container ~= nil and not inst.replica.container:IsEmpty()
 end
 
 --------------------------------------------------------------------------
@@ -181,11 +223,7 @@ params.mushroom_light =
 }
 
 function params.mushroom_light.itemtestfn(container, item, slot)
-	if container.inst:HasTag("burnt") then
-		return false
-	end
-	
-	return item:HasTag("lightbattery")
+    return item:HasTag("lightbattery") and not container.inst:HasTag("burnt")
 end
 
 --------------------------------------------------------------------------
@@ -195,13 +233,38 @@ end
 params.mushroom_light2 = deepcopy(params.mushroom_light)
 
 function params.mushroom_light2.itemtestfn(container, item, slot)
-	if container.inst:HasTag("burnt") then
-		return false
-	end
-	
-	return item:HasTag("lightbattery") or item:HasTag("spore")
+    return (item:HasTag("lightbattery") or item:HasTag("spore")) and not container.inst:HasTag("burnt")
 end
 
+--------------------------------------------------------------------------
+--[[ winter_tree ]]
+--------------------------------------------------------------------------
+
+params.winter_tree =
+{
+    widget =
+    {
+        slotpos = {},
+        animbank = "ui_backpack_2x4",
+        animbuild = "ui_backpack_2x4",
+        pos = Vector3(275, 0, 0),
+        side_align_tip = 100,
+    },
+    acceptsstacks = false,
+    type = "cooker",
+}
+
+for y = 0, 3 do
+    table.insert(params.winter_tree.widget.slotpos, Vector3(-162, -75 * y + 114, 0))
+    table.insert(params.winter_tree.widget.slotpos, Vector3(-162 + 75, -75 * y + 114, 0))
+end
+
+function params.winter_tree.itemtestfn(container, item, slot)
+    return item:HasTag("winter_ornament") and not container.inst:HasTag("burnt")
+end
+
+params.winter_twiggytree = params.winter_tree
+params.winter_deciduoustree = params.winter_tree
 
 --------------------------------------------------------------------------
 --[[ icebox ]]
@@ -379,9 +442,8 @@ for y = 0, 6 do
 end
 
 function params.candybag.itemtestfn(container, item, slot)
-	return item:HasTag("halloweencandy") or (string.find(item.prefab, "trinket_") == 1)
+    return item:HasTag("halloweencandy") or string.sub(item.prefab, 1, 8) == "trinket_"
 end
-
 
 --------------------------------------------------------------------------
 

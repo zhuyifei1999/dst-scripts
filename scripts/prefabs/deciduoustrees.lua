@@ -80,7 +80,7 @@ local builds =
         prefab_name="deciduoustree",
         normal_loot = {"log", "log"},
         short_loot = {"log"},
-    tall_loot = {"log", "log", "log", "acorn"},
+        tall_loot = {"log", "log", "log", "acorn"},
         drop_acorns=true,
         fx="orange_leaves",
         chopfx="orange_leaves_chop",
@@ -281,12 +281,12 @@ local function GrowLeavesFn(inst, monster, monsterout)
 
     inst.leaf_state = inst.target_leaf_state
     if inst.leaf_state == "barren" then
-        inst.AnimState:Hide("mouseover")
+        inst.AnimState:ClearOverrideSymbol("mouseover")
     else
         if inst.build == "barren" then
             inst.build = (inst.leaf_state == "normal") and "normal" or "red"
         end
-        inst.AnimState:Show("mouseover")
+        inst.AnimState:OverrideSymbol("mouseover", "tree_leaf_trunk_build", "toggle_mouseover")
     end
 
     if monster ~= true and monsterout ~= true then
@@ -349,9 +349,9 @@ local function OnChangeLeaves(inst, monster, monsterout)
         inst:ListenForEvent("animover", GrowLeavesFn)
     end
     if GetBuild(inst).shelter then
-        if not inst:HasTag("shelter") then inst:AddTag("shelter") end
+        inst:AddTag("shelter")
     else
-        while inst:HasTag("shelter") do inst:RemoveTag("shelter") end
+        inst:RemoveTag("shelter")
     end
 end
 
@@ -441,10 +441,10 @@ end
 
 local growth_stages =
 {
-    {name="short", time = function(inst) return GetRandomWithVariance(TUNING.DECIDUOUS_GROW_TIME[1].base, TUNING.DECIDUOUS_GROW_TIME[1].random) end, fn = function(inst) SetShort(inst) end,  growfn = function(inst) GrowShort(inst) end},
-    {name="normal", time = function(inst) return GetRandomWithVariance(TUNING.DECIDUOUS_GROW_TIME[2].base, TUNING.DECIDUOUS_GROW_TIME[2].random) end, fn = function(inst) SetNormal(inst) end, growfn = function(inst) GrowNormal(inst) end},
-    {name="tall", time = function(inst) return GetRandomWithVariance(TUNING.DECIDUOUS_GROW_TIME[3].base, TUNING.DECIDUOUS_GROW_TIME[3].random) end, fn = function(inst) SetTall(inst) end, growfn = function(inst) GrowTall(inst) end},
-    --{name="old", time = function(inst) return GetRandomWithVariance(TUNING.DECIDUOUS_GROW_TIME[4].base, TUNING.DECIDUOUS_GROW_TIME[4].random) end, fn = function(inst) SetOld(inst) end, growfn = function(inst) GrowOld(inst) end },
+    { name = "short", time = function(inst) return GetRandomWithVariance(TUNING.DECIDUOUS_GROW_TIME[1].base, TUNING.DECIDUOUS_GROW_TIME[1].random) end, fn = SetShort, growfn = GrowShort },
+    { name = "normal", time = function(inst) return GetRandomWithVariance(TUNING.DECIDUOUS_GROW_TIME[2].base, TUNING.DECIDUOUS_GROW_TIME[2].random) end, fn = SetNormal, growfn = GrowNormal },
+    { name = "tall", time = function(inst) return GetRandomWithVariance(TUNING.DECIDUOUS_GROW_TIME[3].base, TUNING.DECIDUOUS_GROW_TIME[3].random) end, fn = SetTall, growfn = GrowTall },
+    --{ name = "old", time = function(inst) return GetRandomWithVariance(TUNING.DECIDUOUS_GROW_TIME[4].base, TUNING.DECIDUOUS_GROW_TIME[4].random) end, fn = SetOld, growfn = GrowOld },
 }
 
 local function chop_tree(inst, chopper, chops)
@@ -638,9 +638,8 @@ end
 
 local function onburntchanges(inst)
     inst:RemoveComponent("growable")
-    while inst:HasTag("shelter") do inst:RemoveTag("shelter") end
-    while inst:HasTag("cattoyairborne") do inst:RemoveTag("cattoyairborne") end
-    inst:RemoveTag("dragonflybait")
+    inst:RemoveTag("shelter")
+    inst:RemoveTag("cattoyairborne")
     inst:RemoveTag("monster")
     inst.monster = false
 
@@ -657,7 +656,7 @@ local function onburntchanges(inst)
     if GetBuild(inst).drop_acorns then
         inst.components.lootdropper:AddChanceLoot("acorn", 0.1)
     end
-    
+
     if inst.components.workable then
         inst.components.workable:SetWorkLeft(1)
         inst.components.workable:SetOnWorkCallback(nil)
@@ -837,7 +836,7 @@ local function StartMonster(inst, force, starttimeoffset)
             inst.leaveschangetask = nil
         end
 
-        if not force then 
+        if not force then
             inst.components.growable:DoGrowth()
             inst:DoTaskInTime(12 * FRAMES, DoStartMonsterChangeLeaves)
         else
@@ -1098,10 +1097,10 @@ local function onload(inst, data)
             OnChangeLeaves(inst)
         else
             if inst.build == "barren" then
-                while inst:HasTag("shelter") do inst:RemoveTag("shelter") end
-                inst.AnimState:Hide("mouseover")
+                inst:RemoveTag("shelter")
+                inst.AnimState:ClearOverrideSymbol("mouseover")
             else
-                inst.AnimState:Show("mouseover")
+                inst.AnimState:OverrideSymbol("mouseover", "tree_leaf_trunk_build", "toggle_mouseover")
             end
             Sway(inst)
         end
@@ -1243,13 +1242,13 @@ local function makefn(build, stage, data)
         inst.AnimState:SetBank("tree_leaf")
         inst.AnimState:SetBuild("tree_leaf_trunk_build")
 
+        inst.AnimState:Hide("mouseover")
+
         if GetBuild(inst).leavesbuild ~= nil then
             inst.AnimState:OverrideSymbol("swap_leaves", GetBuild(inst).leavesbuild, "swap_leaves")
         end
 
         inst:SetPrefabName(GetBuild(inst).prefab_name)
-
-        MakeDragonflyBait(inst, 1)
 
         MakeSnowCoveredPristine(inst)
 

@@ -23,6 +23,26 @@ GIFT_TYPE = {
         title=STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_TITLE,
         titleoffset={-70, 0, 0},
     },
+    ROGR = {
+        atlas="images/thankyou_item_popup_rog.xml",
+        image={"thankyou_ROG_1.tex", "thankyou_ROG_2.tex", "thankyou_ROG_3.tex", "thankyou_ROG_4.tex"},
+        title=STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_ROGR,
+        title_size = 40,
+        titleoffset={-90, 0, 0},
+    },
+    SW = {
+        atlas="images/thankyou_item_popup.xml",
+        image={"thankyou_shipwrecked.tex"},
+        title=STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_TITLE,
+        titleoffset={-140, 0, 0},
+    },
+    SWR = {
+        atlas="images/thankyou_item_popup.xml",
+        image={"thankyou_shipwrecked.tex"},
+        title=STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_SWR,
+        title_size = 40,
+        titleoffset={-135, 0, 0},
+    },
     TWITCH = {
         atlas="images/thankyou_item_popup.xml",
         image={"thankyou_twitch.tex"},
@@ -273,6 +293,7 @@ function ThankYouPopup:ChangeGift(offset)
 
 	local message = self.items[self.current_item].message
     self.title:SetString( (message ~= "" and message) or gifttype.title)
+    self.title:SetSize( gifttype.title_size or 60 )
     
     if gifttype.titleoffset ~= nil then
         self.title:SetPosition(

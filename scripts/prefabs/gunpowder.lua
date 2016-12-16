@@ -11,10 +11,12 @@ local prefabs =
 
 local function OnIgniteFn(inst)
     inst.SoundEmitter:PlaySound("dontstarve/common/blackpowder_fuse_LP", "hiss")
+    DefaultBurnFn(inst)
 end
 
 local function OnExtinguishFn(inst)
     inst.SoundEmitter:KillSound("hiss")
+    DefaultExtinguishFn(inst)
 end
 
 local function OnExplodeFn(inst)

@@ -17,6 +17,11 @@ return {
 			NOBITS = "It's already shorn, eh?",
             REFUSE = "I like my beard.",
 		},
+		UNLOCK =
+        {
+        	WRONGKEY = "That was the wrong key, eh?",
+        	KLAUS = "Now's not the time, eh?",
+        },
 		STORE =
 		{
 			GENERIC = "It's already packed tighter than a Toronto streetcar.",
@@ -72,6 +77,10 @@ return {
             SLEEPING = "Let them get some shut eye.",
             BUSY = "I've something for you when you've got a mo'.",
     	},
+    	DRAW =
+        {
+            NOIMAGE = "I won't get it right unless I have the item in front of me.",
+        },
     	CHANGEIN =
         {
             GENERIC = "Ouch. Do I not look skookum enough already?",
@@ -94,6 +103,10 @@ return {
             KNOWN = "I know that already, eh?",
             CANTLEARN = "Err... do you understand this one, 'Luce?",
             WRONGWORLD = "I don't think I'm in the right place for this.",
+        },
+        WRAPBUNDLE =
+        {
+            EMPTY = "I need some things to wrap first, eh?",
         },
 	},
 	ACTIONFAIL_GENERIC = "Sorry, I can't do that.",
@@ -124,6 +137,9 @@ return {
 	ANNOUNCE_SOAKED = "Better hold on tight, Lucy.",
 
 	ANNOUNCE_PETRIFED_TREES = "No! Not the wood!",
+	ANNOUNCE_KLAUS_ENRAGE = "I think it's time to run.",
+	ANNOUNCE_KLAUS_UNCHAINED = "You shoulda stayed down.",
+	ANNOUNCE_KLAUS_CALLFORHELP = "Monster hosers, incoming.",
 
 	ANNOUNCE_EAT =
 	{
@@ -191,7 +207,7 @@ return {
 	ANNOUNCE_NOWARDROBEONFIRE = "That's okay. I just need a good flannel, anyway.",
 	ANNOUNCE_RESEARCH = "Learnin' keeps your mind sharp. Like an axe.",
 	ANNOUNCE_UNIMPLEMENTED = "Ouch! That wasn't very polite.",
-	ANNOUNCE_WORMS = "Oh geez. I hope you're ready, 'Luce.",
+	ANNOUNCE_WORMS = "Oh geez. I hope you're ready, Lucy.",
 	BATTLECRY =
 	{
 		GENERIC = "Get over here, eh!",
@@ -199,6 +215,7 @@ return {
 		PREY = "This here's the end for you!",
 		SPIDER = "For the North!",
 		SPIDER_WARRIOR = "Prepare for a choppin'!",
+		DEER = "Hunting season's open!",
 	},
 	COMBAT_QUIT =
 	{
@@ -626,6 +643,8 @@ return {
 		THULECITE_PIECES = "It's not wood but it'll do.",
 		POND_ALGAE = "Doesn't look edible.",
 		GREENSTAFF = "This'll help me dismantle stuff!",
+		GIFT = "They're just as fun to give as they are to receive.",
+        GIFTWRAP = "Should we do something nice today, Lucy?",
 		POTTEDFERN = "I do love me some plant life.",
 		SENTRYWARD = "That's an odd looking tree.",
         MOONROCK_PIECES = "That's in a pretty sorry state, eh?",
@@ -880,7 +899,13 @@ return {
 			REMAINS_THINGIE = "Well that's a shame.",
 		},
 		AXE = "It's not as nice as Lucy.",
-		BABYBEEFALO = "A face only a mother could love.",
+		BABYBEEFALO = 
+		{
+			GENERIC = "A face only a mother could love.",
+		    SLEEPING = "I enjoy sleeping outside, too.",
+        },
+        BUNDLE = "What's inside? Hope it's logs.",
+		BUNDLEWRAP = "The paper's brown. Like wood.",
 		BACKPACK = "That's a decent looking rucksack.",
 		BACONEGGS = "Awww. It's just front bacon.",
 		BANDAGE = "At least I didn't have to pay for it.",
@@ -895,6 +920,13 @@ return {
 		},
 		BEEQUEENHIVEGROWN = "Nature is something else, eh?",
         BEEGUARD = "Hopefully no one's allergic, eh?",
+        HIVEHAT = "Hmph. Real regal.",
+        MINISIGN =
+        {
+            GENERIC = "Is there anything wood can't do?",
+            UNDRAWN = "What is this... some sort of sign?",
+        },
+        MINISIGN_ITEM = "Good, sturdy wood.",
 		BEE =
 		{
 			GENERIC = "She's making the flowers grow.",
@@ -934,7 +966,7 @@ return {
 		BEEFALOHAT = "Now I'm the king of the beefalo!",
 		BEEFALOWOOL = "It feels like my beard.",
 		BEEHAT = "That'll keep the bees out of yer eyes.",
-		
+		BEESWAX = "Yeesh, that's waxy.",
 		BEEHIVE = "They're all comfy-cozy in there.",
 		
 		BEEMINE = "I don't know if the bees like this.",
@@ -1109,6 +1141,14 @@ return {
 		CUTREEDS = "Want to hear my loon call?",
 		CUTSTONE = "Part of the Canadian shield.",
 		DEADLYFEAST = "That doesn't smell quite right, eh.",
+		DEER = 
+		{
+			GENERIC = "That's a creature of the woods, eh?",
+			ANTLER = "Something's different aboot you...",
+		},
+		DEER_ANTLER = "Wish I still had a cabin I could mount these things in.",
+		DEER_GEMMED = "That ain't natural.",
+		KLAUSSACKKEY = "Gotta be some use for that.",
 		DEERCLOPS = "That's a big moose!",
 		DEERCLOPS_EYEBALL = "Now what is this good for?",
 		DEPLETED_GRASS =
@@ -1440,6 +1480,7 @@ return {
 		PANDORASCHEST = "What's in the box?!",
 		PANFLUTE = "I only sing for Lucy.",
 		PAPYRUS = "I'd rather chop than write.",
+		WAXPAPER = "A good place to spit out your gum.",
 		PENGUIN = "Doesn't matter if you're from the Great White North. Still a bird.",
 		PERD = "More birds! Why is it always birds?",
 		PEROGIES = "I call them \"yum pockets\".",
@@ -1840,7 +1881,36 @@ return {
 		WETGOOP = "Better than some of the things I've eaten!",
         WHIP = "I hope that doesn't end up hurtin' any lil critters.",
 		WINTERHAT = "It's a nice toque, eh?",
-		
+
+        WINTER_TREE =
+        {
+            BURNT = "Too bad. Made the place feel real cozy.",
+            BURNING = "Such senseless violence.",
+            CANDECORATE = "Must... not chop...",
+            YOUNG = "All holidays should revolve around trees.",
+        },
+ 		WINTER_TREESTAND = 
+		{
+			GENERIC = "I'm sure I have an extra pine cone somewhere.",
+            BURNT =  "Too bad. Made the place feel real cozy.",
+		},
+        WINTER_ORNAMENT = "For hanging on the unchopped tree with care.",
+        WINTER_ORNAMENTLIGHT = "What do you think, Lucy? Decorate, or chop?",
+        WINTER_ORNAMENTBOSS = "Y'know, I do believe that was worth it.",
+
+        WINTER_FOOD1 = "It's a gingerbread lumberjack.", --gingerbread cookie
+        WINTER_FOOD2 = "Always had a soft spot for a good holiday cookie.", --sugar cookie
+        WINTER_FOOD3 = "Satisfies the sweet tooth.", --candy cane
+        WINTER_FOOD4 = "That thing just ain't right.", --fruitcake
+        WINTER_FOOD5 = "All the taste and none of the splinters!", --yule log cake
+        WINTER_FOOD6 = "Hard to complain about this whole \"Feast\" business.", --plum pudding
+        WINTER_FOOD7 = "Doesn't fall far from the cider tree.", --apple cider
+        WINTER_FOOD8 = "Perfect for drinking next to a good fire, eh?", --hot cocoa
+        WINTER_FOOD9 = "Psst, Lucy. Do I have a 'nog moustache?", --eggnog
+
+        KLAUS = "Thing's got no eyes, eh?",
+        KLAUS_SACK = "Something good's in there, eh?",
+
 		SHADOWDIGGER = "Are your little buddies, uh... alive?",
 
 		WORMHOLE =

@@ -26,6 +26,32 @@ local function validteleporttarget(inst)
     return true
 end
 
+--------------------------------------------------------------------------
+
+local TELEBASES = {}
+
+--Global
+function FindNearestActiveTelebase(x, y, z, range, minrange)
+    range = (range == nil and math.huge) or (range > 0 and range * range) or 0
+    minrange = math.min(range, minrange ~= nil and minrange > 0 and minrange * minrange or 0)
+    if minrange < range then
+        local mindistsq = math.huge
+        local nearest = nil
+        for k, v in pairs(TELEBASES) do
+            if validteleporttarget(k) then
+                local distsq = k:GetDistanceSqToPoint(x, y, z)
+                if distsq < mindistsq and distsq >= minrange and distsq < range then
+                    mindistsq = distsq
+                    nearest = k
+                end
+            end
+        end
+        return nearest
+    end
+end
+
+--------------------------------------------------------------------------
+
 local function getstatus(inst)
     return validteleporttarget(inst) and "VALID" or "GEMS"
 end
@@ -38,10 +64,11 @@ local telebase_parts =
     { part = "gemsocket", x = -0.8, z =  2.7 },
 }
 
-local function removesockets(inst)
+local function OnRemove(inst)
     for k, v in pairs(inst.components.objectspawner.objects) do
         v:Remove()
     end
+    TELEBASES[inst] = nil
 end
 
 local function ondestroyed(inst)
@@ -194,9 +221,13 @@ local function commonfn()
     inst:AddComponent("objectspawner")
     inst.components.objectspawner.onnewobjectfn = NewObject
 
+    inst:AddComponent("savedrotation")
+
     inst:ListenForEvent("onbuilt", OnBuilt)
 
-    inst:ListenForEvent("onremove", removesockets)
+    inst:ListenForEvent("onremove", OnRemove)
+
+    TELEBASES[inst] = true
 
     return inst
 end

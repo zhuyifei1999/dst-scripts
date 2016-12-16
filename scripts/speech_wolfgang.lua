@@ -16,6 +16,11 @@ return {
 			GENERIC = "That cannot be shaved.",
 			NOBITS = "I cannot shave when there are no hairs.",
 		},
+        UNLOCK =
+        {
+            WRONGKEY = "Is not right key!",
+            KLAUS = "Later! Now we FIGHT!",
+        },
 		STORE =
 		{
 			GENERIC = "I will make it fit!",
@@ -78,6 +83,10 @@ return {
             SLEEPING = "Friend is sleeping now!",
             BUSY = "Please give Mighty Wolfgang your attention!",
     	},
+        DRAW =
+        {
+            NOIMAGE = "Wolfgang no good at drawing pictures from head.",
+        },
     	CHANGEIN =
         {
             GENERIC = "Clothes only good for ripping with strong muscles!",
@@ -93,6 +102,10 @@ return {
             KNOWN = "Wolfgang already knows this!",
             CANTLEARN = "I do not get it.",
             WRONGWORLD = "Little paper is not for here!",
+        },
+        WRAPBUNDLE =
+        {
+            EMPTY = "Wolfgang has no little things to wrap!",
         },
 	},
 	ACTIONFAIL_GENERIC = "I am not mighty enough to do that.",
@@ -149,6 +162,9 @@ return {
 	ANNOUNCE_BECOMEGHOST = "oOooOOoo!!",
 	ANNOUNCE_GHOSTDRAIN = "They are coming... for Wolfgang!",
 	ANNOUNCE_PETRIFED_TREES = "Trees! Getting! STRONG!",
+    ANNOUNCE_KLAUS_ENRAGE = "Wolfgang is sorry about little deer friends!",
+    ANNOUNCE_KLAUS_UNCHAINED = "Do not hold back! Wolfgang can take you!",
+    ANNOUNCE_KLAUS_CALLFORHELP = "Wimpy monster has called for help!",
 
 	ANNOUNCE_ENTER_DARK = "I cannot see! I am scared!",
 	ANNOUNCE_ENTER_LIGHT = "I can see again!",
@@ -200,6 +216,7 @@ return {
 		PREY = "Stomp! Stomp! Stomp!",
 		SPIDER = "Die, evil scary bug!",
 		SPIDER_WARRIOR = "I am still stronger, scary bug!",
+        DEER = "I will make fight quick!",
 	},
 	COMBAT_QUIT =
 	{
@@ -694,6 +711,8 @@ return {
 		THULECITE_PIECES = "Can smash together to make bigger piece!",
 		POND_ALGAE = "Plant is so small! Is funny to me.",
 		GREENSTAFF = "This stick has green gem in it.",
+        GIFT = "Is nice little present!",
+        GIFTWRAP = "Wolfgang needs help tying little bow.",
 		POTTEDFERN = "Wolfgang worry greenthumb is gangrene.",
 		SENTRYWARD = "Wolfgang thinks is full of secrets.",
         MOONROCK_PIECES = "Is little pieces from moon!",
@@ -910,7 +929,13 @@ return {
 			REMAINS_THINGIE = "Is burned pieces of some thing. Is dead now...",
 		},
 		AXE = "Chop!",
-		BABYBEEFALO = "Baby hair-cow!",
+		BABYBEEFALO = 
+        {
+            GENERIC = "Baby hair-cow!",
+            SLEEPING = "Sleepy baby hair-cow!",
+        },
+        BUNDLE = "Is little surprise inside, maybe.",
+        BUNDLEWRAP = "Is for hiding goodies.",
 		BACKPACK = "Is for carry more thing.",
 		BACONEGGS = "Food has yolk! And meat! More strong!",
 		BANDAGE = "Can fix people!",
@@ -925,6 +950,13 @@ return {
         },
         BEEQUEENHIVEGROWN = "Wolfgang's mighty punches do nothing.",
         BEEGUARD = "Busy buzzy needle men!",
+        HIVEHAT = "Makes Wolfgang feel special.",
+        MINISIGN =
+        {
+            GENERIC = "Tiny picture is worth many, tinier words.",
+            UNDRAWN = "Sign needs little scribbles!",
+        },
+        MINISIGN_ITEM = "Wolfgang will help punch into ground!",
 		BEE =
 		{
 			GENERIC = "Is fat and angry-looking.",
@@ -945,6 +977,7 @@ return {
 		BEEFALOHAT = "Is good hat!",
 		BEEFALOWOOL = "Clothes made of hair-cow.",
 		BEEHAT = "Is hat for to protect from stinger bees.",
+        BEESWAX = "Bee goop is smell nice.",
 		BEEHIVE = "Oh, beehive!",
 		BEEMINE = "Is ball full of angry bees.",
 		BEEMINE_MAXWELL = "Is ball full of angry bitebugs.",
@@ -1119,6 +1152,14 @@ return {
 		CUTREEDS = "Is clump of reeds.",
 		CUTSTONE = "Rock was crushed to make brick!",
 		DEADLYFEAST = "Look like evil food.",
+        DEER = 
+        {
+            GENERIC = "Not very mighty. More fragile.",
+            ANTLER = "Fuzzy fragile beast got mightier.",
+        },
+        DEER_ANTLER = "Is only mighty part of fragile beast.",
+        DEER_GEMMED = "You stand no chance in fight with Wolfgang!",
+        KLAUSSACKKEY = "Is very special antler!",
 		DEERCLOPS = "He looks mightier than me!",
 		DEERCLOPS_EYEBALL = "Yuck yuck yuck!",
 		DEPLETED_GRASS =
@@ -1434,6 +1475,7 @@ return {
 		PANDORASCHEST = "Fancy box!",
 		PANFLUTE = "You want Wolfgang play folk song?",
 		PAPYRUS = "Is like paper.",
+        WAXPAPER = "Strange paper not for make scribblemarks.",
 		PENGUIN = "Funny walking birds!",
 		PERD = "Dumb bird is take all berries!",
 		PEROGIES = "Wolfgang love pierogi!",
@@ -1815,6 +1857,34 @@ return {
 		WETGOOP = "Is not bad to eat, but is not good.",
         WHIP = "Good to floss teeth with.",
 		WINTERHAT = "It make ears happy in cold!",
+        WINTER_TREE =
+        {
+            BURNT = "Happy tree is burn now.",
+            BURNING = "Tree is not fireproof!",
+            CANDECORATE = "Tree looks very happy!",
+            YOUNG = "Is growing.",
+        },
+		WINTER_TREESTAND = 
+		{
+			GENERIC = "Very nice little pot!",
+            BURNT = "Happy tree is burn now.",
+		},
+        WINTER_ORNAMENT = "Is so small in Wolfgang's hand.",
+        WINTER_ORNAMENTLIGHT = "Glass ball of twinkly light!",
+        WINTER_ORNAMENTBOSS = "Pretty little token of mightiness!",
+
+        WINTER_FOOD1 = "Little man will crumble under my mighty teeth!", --gingerbread cookie
+        WINTER_FOOD2 = "Does Wolfgang have sugar in moustache?", --sugar cookie
+        WINTER_FOOD3 = "Little sugar stick.", --candy cane
+        WINTER_FOOD4 = "Wolfgang does not trust little fruit loaf.", --fruitcake
+        WINTER_FOOD5 = "Ha! Wolfgang will eat log, just like beardman!", --yule log cake
+        WINTER_FOOD6 = "Tiny yummy cakething make strong Wolfgang.", --plum pudding
+        WINTER_FOOD7 = "Little fruit is sweet and tasty!", --apple cider
+        WINTER_FOOD8 = "Wolfgang likes feeling cozy.", --hot cocoa
+        WINTER_FOOD9 = "Is much protein inside, yes?", --eggnog
+
+        KLAUS = "If Wolfgang had no eyes, he would not see terrible beast!",
+        KLAUS_SACK = "Something inside for Wolfgang, maybe?",
 		WORMHOLE =
 		{
 			GENERIC = "Like soft pillow, growing on ground.",

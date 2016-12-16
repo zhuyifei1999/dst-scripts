@@ -219,6 +219,45 @@ function pet_init_fn(inst, build_name, default_build)
     inst.AnimState:SetSkin(build_name, default_build)
 end
 
+--------------------------------------------------------------------------
+--[[ Birdcage skin functions ]]
+--------------------------------------------------------------------------
+function birdcage_init_fn(inst, build_name)
+    if inst.components.placer == nil and not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "bird_cage")
+end
+
+--------------------------------------------------------------------------
+--[[ Mushroomlight skin functions ]]
+--------------------------------------------------------------------------
+function mushroom_light_init_fn(inst, build_name)
+    if inst.components.placer == nil and not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "mushroom_light")
+end
+function mushroom_light2_init_fn(inst, build_name)
+    if inst.components.placer == nil and not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "mushroom_light2")
+end
+
+--------------------------------------------------------------------------
+--[[ Lantern skin functions ]]
+--------------------------------------------------------------------------
+function lantern_init_fn(inst, build_name)
+    if inst.components.placer == nil and not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "lantern")
+end
 
 --------------------------------------------------------------------------
 

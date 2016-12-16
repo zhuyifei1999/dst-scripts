@@ -21,6 +21,11 @@ return {
 			GENERIC = "I'm not taking a razor to that.",
 			NOBITS = "She's already lost everything.",
 		},
+		UNLOCK =
+        {
+        	WRONGKEY = "It remains locked, like my heart.",
+        	KLAUS = "Death would surely find me if I tried...",
+        },
 		WRITE =
         {
             GENERIC = "I... I can't.",
@@ -36,6 +41,10 @@ return {
         {   
             GENERIC = "Must everything in life be hard?",
             INUSE = "I can come back later...",   
+        },
+        DRAW =
+        {
+            NOIMAGE = "I draw better with references...",
         },
         CHANGEIN =
         {
@@ -94,6 +103,10 @@ return {
             CANTLEARN = "That knowledge is beyond me...",
             WRONGWORLD = "It's... not right...",
         },
+        WRAPBUNDLE =
+        {
+            EMPTY = "I can't wrap nothingness...",
+        },
 	},
 	ACTIONFAIL_GENERIC = "I can't do anything right.",
 	ANNOUNCE_DIG_DISEASE_WARNING = "Your death has been delayed another day.",
@@ -139,6 +152,9 @@ return {
 	ANNOUNCE_BECOMEGHOST = "oOoooooO!!",
 	ANNOUNCE_GHOSTDRAIN = "The ghosts... Want to play...",
 	ANNOUNCE_PETRIFED_TREES = "A wave of sadness just washed over me...?",
+	ANNOUNCE_KLAUS_ENRAGE = "Death walks among us.",
+	ANNOUNCE_KLAUS_UNCHAINED = "The beast returns unchained.",
+	ANNOUNCE_KLAUS_CALLFORHELP = "Your pleas will fall on deaf ears.",
 
 	ANNOUNCE_ENTER_DARK = "The darkness has swallowed me.",
 	ANNOUNCE_ENTER_LIGHT = "And there was light!",
@@ -194,6 +210,7 @@ return {
 		PREY = "Suffer, worm!",
 		SPIDER = "I shall send you to the other side!",
 		SPIDER_WARRIOR = "I will be your end!",
+		DEER = "Your life is mine!",
 	},
 	COMBAT_QUIT =
 	{
@@ -677,6 +694,8 @@ return {
 		THULECITE_PIECES = "Fragments of a powerful material.",
 		POND_ALGAE = "Some algae.",
 		GREENSTAFF = "I can see the power sparkling deep within.",
+		GIFT = "The only gift I desire is a swift end...",
+        GIFTWRAP = "Abby... how do I make the ribbon curly?",
 		POTTEDFERN = "Its growth is stunted by the limits of the pot.",
 		SENTRYWARD = "Grant us the power of sight...",
         MOONROCK_PIECES = "Now it will never decay...",
@@ -926,7 +945,13 @@ return {
 			REMAINS_THINGIE = "This was once some thing before it got burned...",
 		},
 		AXE = "An instrument for industry and murder.",
-		BABYBEEFALO = "Enjoy your youth. Soon you will learn the terrors of the real world.",
+		BABYBEEFALO = 
+		{
+			GENERIC = "Enjoy your youth. Soon you will learn the terrors of the real world.",
+		    SLEEPING = "Don't wake up.",
+        },
+        BUNDLE = "I don't even remember what's within anymore...",
+		BUNDLEWRAP = "Abigail always helped me tie the bow.",
 		BACKPACK = "A spacious sack to increase one's burden.",
 		BACONEGGS = "A balanced breakfast to start another miserable day.",
 		BANDAGE = "There's no salve for the pain of existence.",
@@ -941,6 +966,13 @@ return {
 		},
 		BEEQUEENHIVEGROWN = "Dripping with enmity. And honey.",
         BEEGUARD = "Their devotion knows no bounds.",
+        HIVEHAT = "What dark machinations were once concocted beneath?",
+        MINISIGN =
+        {
+            GENERIC = "Such a striking likeness...",
+            UNDRAWN = "It is bare...",
+        },
+        MINISIGN_ITEM = "We must stick it in the cold, hard ground...",
 		BEE =
 		{
 			GENERIC = "I'd steer clear of that stinger.",
@@ -961,6 +993,7 @@ return {
 		BEEFALOHAT = "To cover one's head.",
 		BEEFALOWOOL = "Somewhere, a beefalo is naked and cold.",
 		BEEHAT = "This will protect me from those happy buzzing sounds. Oh, and stings.",
+		BEESWAX = "It's useless on its own, just like me.",
 		BEEHIVE = "A wretched hive of scum and pollen.",
 		BEEMINE = "They're still alive in there. Poor things.",
 		BERRIES = "These berries are tart.",
@@ -1134,6 +1167,14 @@ return {
 		CUTREEDS = "The blade has sentenced you to death.",
 		CUTSTONE = "The better to mark graves with.",
 		DEADLYFEAST = "This, a fitting final meal.",
+		DEER = 
+		{
+			GENERIC = "It lives in a constant state of fear.",
+			ANTLER = "That horn won't protect you.",
+		},
+		DEER_ANTLER = "We have grabbed life by its horn... though I wish we hadn't.",
+		DEER_GEMMED = "Some chains are physical...",
+		KLAUSSACKKEY = "The key to our prosperity...",
 		DEERCLOPS = "Death incarnate!",
 		DEERCLOPS_EYEBALL = "What terrors must it see.",
 		DEPLETED_GRASS =
@@ -1437,6 +1478,7 @@ return {
 		PANDORASCHEST = "Life is a gamble.",
 		PANFLUTE = "Music is the window to my empty soul.",
 		PAPYRUS = "For documenting my pain.",
+		WAXPAPER = "It feels so... nostalgic.",
 		PENGUIN = "All dressed up, but where to go?",
 		PERD = "Dumb bird! Stay away from the berries!",
 		PEROGIES = "A lovely little pouch of nutrients.",
@@ -1821,6 +1863,35 @@ return {
 		WETGOOP = "A miserable mess, just like life.",
         WHIP = "It only provides the illusion of control.",
 		WINTERHAT = "It helps stave off the encroaching cold.",
+
+        WINTER_TREE =
+        {
+            BURNT = "Death comes for all of us...",
+            BURNING = "Oh.",
+            CANDECORATE = "Oh, joy.",
+            YOUNG = "It's not ready yet.",
+        },
+		WINTER_TREESTAND = 
+		{
+			GENERIC = "We can plant a Winter's Feast tree.",
+            BURNT = "Death comes for all of us...",
+		},
+        WINTER_ORNAMENT = "Do you like this one, Abigail?",
+        WINTER_ORNAMENTLIGHT = "Bright lights... Cold nights...",
+        WINTER_ORNAMENTBOSS = "This is one of my favorites.",
+
+        WINTER_FOOD1 = "I'm going to eat you.", --gingerbread cookie
+        WINTER_FOOD2 = "Not nearly sweet enough to balance out this bitter world.", --sugar cookie
+        WINTER_FOOD3 = "If you eat it right... the end gets sharp...", --candy cane
+        WINTER_FOOD4 = "It is filled with chunks of evil.", --fruitcake
+        WINTER_FOOD5 = "It tastes okay, but I've grown tired of logs...", --yule log cake
+        WINTER_FOOD6 = "I'm going to lick all the icing off...", --plum pudding
+        WINTER_FOOD7 = "I don't want Winter's Feast to end...", --apple cider
+        WINTER_FOOD8 = "I missed cocoa.", --hot cocoa
+        WINTER_FOOD9 = "So aggressively delicious. You can't help but feel better.", --eggnog
+
+        KLAUS = "I see him when I'm sleeping...",
+        KLAUS_SACK = "Should we peek inside...?",
 		REVIVER = "Choices matter.",
 		SHADOWHEART = "It beats with a sorrow to span the skies and plumb the darkest seas.",
         LIFEINJECTOR = "We were not meant to cheat death.",

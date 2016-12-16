@@ -31,8 +31,6 @@ local function fn()
     inst.AnimState:SetBuild("livinglog")
     inst.AnimState:PlayAnimation("idle")
 
-    MakeDragonflyBait(inst, 3)
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

@@ -838,7 +838,9 @@ local function DoActualRez(inst, source)
 
     MakeMediumBurnableCharacter(inst, "torso")
     inst.components.burnable:SetBurnTime(TUNING.PLAYER_BURN_TIME)
-    MakeHugeFreezableCharacter(inst, "torso")
+    inst.components.burnable.nocharring = true
+    MakeLargeFreezableCharacter(inst, "torso")
+    inst.components.freezable:SetResistance(4)
     inst.components.freezable:SetDefaultWearOffTime(TUNING.PLAYER_FREEZE_WEAR_OFF_TIME)
 
     inst:AddComponent("grogginess")
@@ -1235,9 +1237,8 @@ local function OnDespawn(inst)
     --
 
     inst.components.debuffable:RemoveOnDespawn()
-
     inst.components.rider:ActualDismount()
-
+    inst.components.bundler:StopBundling()
     inst.components.inventory:DropEverythingWithTag("irreplaceable")
     inst.components.leader:RemoveAllFollowers()
 
@@ -1456,6 +1457,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 
         Asset("ANIM", "anim/shadow_hands.zip"),
 
+        Asset("ANIM", "anim/player_wrap_bundle.zip"),
         Asset("ANIM", "anim/player_wardrobe.zip"),
         Asset("ANIM", "anim/player_skin_change.zip"),
         Asset("ANIM", "anim/player_receive_gift.zip"),
@@ -1471,6 +1473,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_emotesxl.zip"),
         Asset("ANIM", "anim/player_emotes_dance0.zip"),
         Asset("ANIM", "anim/player_emotes.zip"),
+        Asset("ANIM", "anim/player_bow.zip"),
         Asset("ANIM", "anim/tears.zip"),
         Asset("ANIM", "anim/puff_spawning.zip"),
         Asset("ANIM", "anim/attune_fx.zip"),
@@ -1606,6 +1609,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.AnimState:AddOverrideBuild("player_hit_darkness")
         inst.AnimState:AddOverrideBuild("player_receive_gift")
         inst.AnimState:AddOverrideBuild("player_actions_uniqueitem")
+        inst.AnimState:AddOverrideBuild("player_wrap_bundle")
 
         inst.DynamicShadow:SetSize(1.3, .6)
 
@@ -1747,12 +1751,15 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         MakeMediumBurnableCharacter(inst, "torso")
         inst.components.burnable:SetBurnTime(TUNING.PLAYER_BURN_TIME)
 
-        MakeHugeFreezableCharacter(inst, "torso")
+        MakeLargeFreezableCharacter(inst, "torso")
+        inst.components.freezable:SetResistance(4)
         inst.components.freezable:SetDefaultWearOffTime(TUNING.PLAYER_FREEZE_WEAR_OFF_TIME)
 
         inst:AddComponent("inventory")
         --players handle inventory dropping manually in their stategraph
         inst.components.inventory:DisableDropOnDeath()
+
+        inst:AddComponent("bundler")
 
         -- Player labeling stuff
         inst:AddComponent("inspectable")

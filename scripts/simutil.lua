@@ -223,7 +223,8 @@ end
 
 -- This function fans out a search from a starting position/direction and looks for a walkable
 -- position, and returns the valid offset, valid angle and whether the original angle was obstructed.
-function FindWalkableOffset(position, start_angle, radius, attempts, check_los, ignore_walls)
+-- starting_angle is in radians
+function FindWalkableOffset(position, start_angle, radius, attempts, check_los, ignore_walls, customcheckfn)
 	--print("FindWalkableOffset:")
 
     if ignore_walls == nil then 
@@ -244,6 +245,12 @@ function FindWalkableOffset(position, start_angle, radius, attempts, check_los, 
 			--print("\tfailed, no clear path.")
 			return false
 		end
+
+		if customcheckfn and not customcheckfn(run_point) then
+			--print("\tfailed, customcheckfn said so.")
+			return false
+		end
+
 		--print("\tpassed.")
 		return true
 
@@ -324,5 +331,11 @@ function ApplySpecialEvent(event)
 		TECH.HALLOWED_NIGHTS.SCIENCE = 0
 	else
 		TECH.HALLOWED_NIGHTS.SCIENCE = 10 -- lost tech level if not using the hallowed nights event
+	end
+	
+	if event == SPECIAL_EVENTS.WINTERS_FEAST then
+		TECH.WINTERS_FEAST.SCIENCE = 0
+	else
+		TECH.WINTERS_FEAST.SCIENCE = 10 -- lost tech level if not using the winters feast event
 	end
 end

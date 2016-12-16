@@ -530,31 +530,18 @@ local fx =
         transform = Vector3(1.4, 1.4, 1.4),
         fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
     },
+    {
+        name = "bundle_unwrap",
+        bank = "bundle",
+        build = "bundle",
+        anim = "unwrap",
+    },
+    {
+        name = "gift_unwrap",
+        bank = "gift",
+        build = "gift",
+        anim = "unwrap",
+    },
 }
-
-if ACCOMPLISHMENTS_ENABLED then
-    table.insert(fx, {
-        name = "firework_fx",
-        bank = "firework",
-        build = "accomplishment_fireworks",
-        anim = "single_firework",
-        sound = "dontstarve/common/shrine/sadwork_fire",
-        sound2 = "dontstarve/common/shrine/sadwork_explo",
-        sounddelay2 = 26/30,
-        fn = function() TheWorld:PushEvent("screenflash", .65) end,
-        fntime = 26/30,
-    })
-    table.insert(fx, {
-        name = "multifirework_fx",
-        bank = "firework",
-        build = "accomplishment_fireworks",
-        anim = "multi_firework",
-        sound = "dontstarve/common/shrine/sadwork_fire",
-        sound2 = "dontstarve/common/shrine/firework_explo",
-        sounddelay2 = 26/30,
-        fn = function() TheWorld:PushEvent("screenflash", 1) end,
-        fntime = 26/30,
-    })
-end
 
 return fx

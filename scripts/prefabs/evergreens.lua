@@ -366,35 +366,35 @@ local function inspect_tree(inst)
 end
 
 local growth_stages = {}
-for build,data in pairs(builds) do
+for build, data in pairs(builds) do
     growth_stages[build] =
     {
         {
-            name="short",
+            name = "short",
             time = function(inst) return GetRandomWithVariance(data.grow_times[1].base, data.grow_times[1].random) end,
-            fn = function(inst) SetShort(inst) end,
-            growfn = function(inst) GrowShort(inst) end ,
-            leifscale=.7
+            fn = SetShort,
+            growfn = GrowShort,
+            leifscale = .7,
         },
         {
-            name="normal",
+            name = "normal",
             time = function(inst) return GetRandomWithVariance(data.grow_times[2].base, data.grow_times[2].random) end,
-            fn = function(inst) SetNormal(inst) end,
-            growfn = function(inst) GrowNormal(inst) end,
-            leifscale=1
+            fn = SetNormal,
+            growfn = GrowNormal,
+            leifscale = 1,
         },
         {
-            name="tall",
+            name = "tall",
             time = function(inst) return GetRandomWithVariance(data.grow_times[3].base, data.grow_times[3].random) end,
-            fn = function(inst) SetTall(inst) end,
-            growfn = function(inst) GrowTall(inst) end,
-            leifscale=1.25
+            fn = SetTall,
+            growfn = GrowTall,
+            leifscale = 1.25,
         },
         {
-            name="old",
+            name = "old",
             time = function(inst) return GetRandomWithVariance(data.grow_times[4].base, data.grow_times[4].random) end,
-            fn = function(inst) SetOld(inst) end,
-            growfn = function(inst) GrowOld(inst) end
+            fn = SetOld,
+            growfn = GrowOld,
         },
     }
 end
@@ -474,7 +474,6 @@ end
 local function make_stump(inst)
     inst:RemoveComponent("burnable")
     MakeSmallBurnable(inst)
-    MakeDragonflyBait(inst, 1)
     inst:RemoveComponent("propagator")
     MakeSmallPropagator(inst)
     inst:RemoveComponent("workable")
@@ -658,10 +657,8 @@ local function OnEntityWake(inst)
             if inst.components.burnable == nil then
                 if isstump then
                     MakeSmallBurnable(inst)
-                    MakeDragonflyBait(inst, 1)
                 else
                     MakeLargeBurnable(inst, TUNING.TREE_BURN_TIME)
-                    MakeDragonflyBait(inst, 1)
                     inst.components.burnable:SetFXLevel(5)
                     inst.components.burnable:SetOnBurntFn(tree_burnt)
                 end
@@ -902,7 +899,6 @@ local function tree(name, build, stage, data)
         inst:SetPrefabName(GetBuild(inst).prefab_name)
         inst:AddTag(GetBuild(inst).prefab_name) -- used by regrowth
 
-        MakeDragonflyBait(inst, 1)
         MakeSnowCoveredPristine(inst)
 
         inst.entity:SetPristine()

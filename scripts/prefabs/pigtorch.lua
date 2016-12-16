@@ -54,10 +54,23 @@ local function onisraining(inst, israining)
     if inst.components.fueled ~= nil then
         if israining then
             inst.components.fueled:SetUpdateFn(onupdatefueledraining)
+            onupdatefueledraining(inst)
         else
             inst.components.fueled:SetUpdateFn()
             inst.components.fueled.rate = 1
         end
+    end
+end
+
+local function onfuelchange(newsection, oldsection, inst)
+    if newsection <= 0 then
+        inst.components.burnable:Extinguish()
+    else
+        if not inst.components.burnable:IsBurning() then
+            inst.components.burnable:Ignite()
+        end
+
+        inst.components.burnable:SetFXLevel(newsection, inst.components.fueled:GetSectionPercent())
     end
 end
 
@@ -108,17 +121,7 @@ local function fn()
     inst.components.fueled.maxfuel = TUNING.PIGTORCH_FUEL_MAX
     inst.components.fueled:SetSections(3)
     inst.components.fueled.fueltype = FUELTYPE.PIGTORCH
-    inst.components.fueled:SetSectionCallback(function(section)
-        if section == 0 then
-            inst.components.burnable:Extinguish()
-        else
-            if not inst.components.burnable:IsBurning() then
-                inst.components.burnable:Ignite()
-            end
-
-            inst.components.burnable:SetFXLevel(section, inst.components.fueled:GetSectionPercent())
-        end
-    end)
+    inst.components.fueled:SetSectionCallback(onfuelchange)
     inst.components.fueled:InitializeFuelLevel(TUNING.PIGTORCH_FUEL_MAX)
 
     inst:WatchWorldState("israining", onisraining)

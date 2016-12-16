@@ -491,8 +491,8 @@ local function InsertPostInitFunctions(env, isworldgen)
 		return env.AddRecipe(...)
 	end
 	
-    env.AddRecipeTab = function( rec_str, rec_sort, rec_atlas, rec_icon, rec_owner_tag )
-		CUSTOM_RECIPETABS[rec_str] = { str = rec_str, sort = rec_sort, icon_atlas = rec_atlas, icon = rec_icon, owner_tag = rec_owner_tag }
+    env.AddRecipeTab = function( rec_str, rec_sort, rec_atlas, rec_icon, rec_owner_tag, rec_crafting_station )
+		CUSTOM_RECIPETABS[rec_str] = { str = rec_str, sort = rec_sort, icon_atlas = rec_atlas, icon = rec_icon, owner_tag = rec_owner_tag, crafting_station = rec_crafting_station }
 		STRINGS.TABS[rec_str] = rec_str
 		return CUSTOM_RECIPETABS[rec_str]
     end

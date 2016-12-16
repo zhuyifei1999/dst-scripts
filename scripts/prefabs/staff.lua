@@ -146,6 +146,8 @@ end
 
 ---------PURPLE STAFF---------
 
+require "prefabs/telebase"
+
 local function getrandomposition(caster)
     local ground = TheWorld
     local centers = {}
@@ -275,38 +277,12 @@ local function teleport_targets_sort_fn(a, b)
 end
 
 local function teleport_func(inst, target)
-    local mindistance = 1
-    local caster = inst.components.inventoryitem.owner
-    local tar = target or caster
-    if not caster then caster = tar end
-    local pt = tar:GetPosition()
-    -- Note! This returns closest first, so if you replace it, make sure you get the closest...
-    local ents = TheSim:FindEntities(pt.x,pt.y,pt.z, 9000, {"telebase"})
-
-    if #ents <= 0 then
-        --There's no bases, active or inactive. Teleport randomly.
-        teleport_start(tar, inst, caster)
-        return
+    local caster = inst.components.inventoryitem.owner or target
+    if target == nil then
+        target = caster
     end
-
-    local targets = {}
-    for k,v in pairs(ents) do
-        local v_pt = v:GetPosition()
-        if distsq(pt, v_pt) >= mindistance * mindistance then
-            table.insert(targets, {base = v, distance = distsq(pt, v_pt)}) 
-        end
-    end
-
-    table.sort(targets, teleport_targets_sort_fn)
-    for i = 1, #targets do
-        local teletarget = targets[i]
-        if teletarget.base and teletarget.base.canteleto(teletarget.base) then
-            teleport_start(tar, inst, caster, teletarget.base)
-            return
-        end
-    end
-
-    teleport_start(tar, inst, caster)
+    local x, y, z = target.Transform:GetWorldPosition()
+    teleport_start(target, inst, caster, FindNearestActiveTelebase(x, y, z, nil, 1))
 end
 
 local function onhauntpurple(inst)

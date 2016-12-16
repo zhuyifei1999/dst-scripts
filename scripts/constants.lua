@@ -442,23 +442,25 @@ GROUND =
 --	SALT_WATER_DEEP = 135,
 }
 
-SPECIAL_EVENTS = 
+SPECIAL_EVENTS =
 {
-	NONE = "none",
-	HALLOWED_NIGHTS = "hallowed_nights",
+    NONE = "none",
+    HALLOWED_NIGHTS = "hallowed_nights",
+    WINTERS_FEAST = "winters_feast",
 }
-WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.NONE
+WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.WINTERS_FEAST
 
 function IsSpecialEventActive(event)
-	--print(" -- WORLD_SPECIAL_EVENT is", WORLD_SPECIAL_EVENT)
-	return WORLD_SPECIAL_EVENT == event
+    --print(" -- WORLD_SPECIAL_EVENT is", WORLD_SPECIAL_EVENT)
+    return WORLD_SPECIAL_EVENT == event
 end
 
 NUM_HALLOWEENCANDY = 11
+NUM_WINTERFOOD = 9
 
 TECH =
 {
-	NONE = TechTree.Create(),
+    NONE = TechTree.Create(),
 
     SCIENCE_ONE = { SCIENCE = 1 },
     SCIENCE_TWO = { SCIENCE = 2 },
@@ -481,6 +483,7 @@ TECH =
     ORPHANAGE_ONE = { ORPHANAGE = 1 },
 
 	HALLOWED_NIGHTS = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost ot 0
+	WINTERS_FEAST = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost ot 0
 	
     LOST = { MAGIC = 10, SCIENCE = 10, ANCIENT = 10 },
 }

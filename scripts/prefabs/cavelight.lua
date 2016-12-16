@@ -148,7 +148,7 @@ end
 
 local function OnFullMoon(inst)
     if TheWorld.state.iscavenight then
-        OnPhase(inst, "fullmoon")
+        OnCavePhase(inst, "night")
     end
 end
 

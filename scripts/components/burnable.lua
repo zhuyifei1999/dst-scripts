@@ -50,6 +50,7 @@ local Burnable = Class(function(self, inst)
     self.canlight = true
 
     self.lightningimmune = false
+    --self.nocharring = false --default almost everything chars
 
     self.task = nil
     self.smolder_task = nil
@@ -217,8 +218,6 @@ function Burnable:StartWildfire()
 end
 
 local function DoneBurning(inst, self)
-    RemoveDragonflyBait(inst)
-
     inst:PushEvent("onburnt")
 
     if self.onburnt ~= nil then
@@ -236,7 +235,8 @@ local function DoneBurning(inst, self)
 end
 
 local function OnKilled(inst)
-    if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() and not inst:HasTag("player") then
+    local self = inst.components.burnable
+    if self ~= nil and self:IsBurning() and not self.nocharring then
         inst.AnimState:SetMultColour(.2, .2, .2, 1)
     end
 end
@@ -254,11 +254,6 @@ function Burnable:Ignite(immediate, source)
             self.onignite(self.inst)
         end
 
-        if self.inst.components.explosive ~= nil then
-            --explosive on ignite
-            self.inst.components.explosive:OnIgnite()
-        end
-
         if self.inst.components.fueled ~= nil then
             self.inst.components.fueled:StartConsuming()
         end
@@ -267,11 +262,15 @@ function Burnable:Ignite(immediate, source)
             self.inst.components.propagator:StartSpreading(source)
         end
 
-        if self.task ~= nil then
-            self.task:Cancel()
-        end
-        self.task = self.burntime ~= nil and self.inst:DoTaskInTime(self.burntime, DoneBurning, self) or nil
+        self:ExtendBurning()
     end
+end
+
+function Burnable:ExtendBurning()
+    if self.task ~= nil then
+        self.task:Cancel()
+    end
+    self.task = self.burntime ~= nil and self.inst:DoTaskInTime(self.burntime, DoneBurning, self) or nil
 end
 
 function Burnable:LongUpdate(dt)
@@ -442,7 +441,6 @@ function Burnable:OnRemoveFromEntity()
     --self:StopSmoldering()
     --Extinguish() already calls StopSmoldering()
     self:Extinguish()
-    RemoveDragonflyBait(self.inst)
     if self.task ~= nil then
         self.task:Cancel()
         self.task = nil

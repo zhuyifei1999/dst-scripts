@@ -163,9 +163,11 @@ local function MakeHat(name)
 
         inst:AddComponent("armor")
         inst.components.armor:InitCondition(TUNING.ARMOR_BEEHAT, TUNING.ARMOR_BEEHAT_ABSORPTION)
-        inst.components.armor:SetTags({"bee"})
+        inst.components.armor:SetTags({ "bee" })
+
         inst:AddComponent("waterproofer")
         inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
+
         return inst
     end
 
@@ -183,10 +185,12 @@ local function MakeHat(name)
         inst:AddComponent("insulator")
         inst.components.insulator:SetInsulation(TUNING.INSULATION_SMALL)
         inst.components.equippable:SetOnEquip(opentop_onequip)
+
         inst:AddComponent("fueled")
         inst.components.fueled.fueltype = FUELTYPE.USAGE
         inst.components.fueled:InitializeFuelLevel(TUNING.EARMUFF_PERISHTIME)
         inst.components.fueled:SetDepletedFn(inst.Remove)
+
         return inst
     end
 
@@ -226,6 +230,7 @@ local function MakeHat(name)
 
         inst:AddComponent("waterproofer")
         inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
+
         return inst
     end
 
@@ -289,33 +294,12 @@ local function MakeHat(name)
     end
 
     local function ruins_onunequip(inst, owner)
-        owner.AnimState:ClearOverrideSymbol("swap_hat")
-
-        owner.AnimState:Hide("HAT")
-        owner.AnimState:Hide("HAIR_HAT")
-        owner.AnimState:Show("HAIR_NOHAT")
-        owner.AnimState:Show("HAIR")
-
-        if owner:HasTag("player") then
-            owner.AnimState:Show("HEAD")
-            owner.AnimState:Hide("HEAD_HAT")
-        end
-
+        onunequip(inst, owner)
         inst.ondetach()
     end
 
     local function ruins_onequip(inst, owner)
-        owner.AnimState:ClearOverrideSymbol("swap_hat")
-
-        owner.AnimState:OverrideSymbol("swap_hat", fname, "swap_hat")
-        owner.AnimState:Show("HAT")
-        owner.AnimState:Hide("HAIR_HAT")
-        owner.AnimState:Show("HAIR_NOHAT")
-        owner.AnimState:Show("HAIR")
-
-        owner.AnimState:Show("HEAD")
-        owner.AnimState:Hide("HEAD_HAT")
-
+        opentop_onequip(inst, owner)
         inst.onattach(owner)
     end
 
@@ -571,7 +555,8 @@ local function MakeHat(name)
         inst.components.fueled.fueltype = FUELTYPE.CAVE
         inst.components.fueled:InitializeFuelLevel(TUNING.MINERHAT_LIGHTTIME)
         inst.components.fueled:SetDepletedFn(miner_perish)
-        inst.components.fueled.ontakefuelfn = miner_takefuel
+        inst.components.fueled:SetTakeFuelFn(miner_takefuel)
+        inst.components.fueled:SetFirstPeriod(TUNING.TURNON_FUELED_CONSUMPTION, TUNING.TURNON_FULL_FUELED_CONSUMPTION)
         inst.components.fueled.accepting = true
 
         inst:AddComponent("waterproofer")
@@ -715,7 +700,7 @@ local function MakeHat(name)
         end
     end
 
-    local function onequipbush(inst, owner)
+    local function bush_onequip(inst, owner)
         owner.AnimState:OverrideSymbol("swap_hat", fname, "swap_hat")
         owner.AnimState:Show("HAT")
         owner.AnimState:Show("HAIR_HAT")
@@ -734,7 +719,7 @@ local function MakeHat(name)
         inst:ListenForEvent("newstate", stopusingbush, owner)
     end
 
-    local function onunequipbush(inst, owner)
+    local function bush_onunequip(inst, owner)
         owner.AnimState:ClearOverrideSymbol("swap_hat")
 
         owner.AnimState:Hide("HAT")
@@ -754,7 +739,7 @@ local function MakeHat(name)
         inst:RemoveEventCallback("newstate", stopusingbush, owner)
     end
 
-    local function onusebush(inst)
+    local function bush_onuse(inst)
         local owner = inst.components.inventoryitem.owner
         if owner then
             owner.sg:GoToState("hide")
@@ -775,10 +760,10 @@ local function MakeHat(name)
         end
 
         inst:AddComponent("useableitem")
-        inst.components.useableitem:SetOnUseFn(onusebush)
+        inst.components.useableitem:SetOnUseFn(bush_onuse)
 
-        inst.components.equippable:SetOnEquip(onequipbush)
-        inst.components.equippable:SetOnUnequip(onunequipbush)
+        inst.components.equippable:SetOnEquip(bush_onequip)
+        inst.components.equippable:SetOnUnequip(bush_onunequip)
 
         return inst
     end
@@ -795,12 +780,12 @@ local function MakeHat(name)
         end
 
         inst.components.equippable.dapperness = TUNING.DAPPERNESS_TINY
+        inst.components.equippable:SetOnEquip(opentop_onequip)
 
         inst:AddComponent("perishable")
         inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
         inst.components.perishable:StartPerishing()
         inst.components.perishable:SetOnPerishFn(inst.Remove)
-        inst.components.equippable:SetOnEquip(opentop_onequip)
 
         MakeHauntableLaunchAndPerish(inst)
 
@@ -1103,6 +1088,7 @@ local function MakeHat(name)
         inst.components.fueled.fueltype = FUELTYPE.WORMLIGHT
         inst.components.fueled:InitializeFuelLevel(TUNING.MOLEHAT_PERISHTIME)
         inst.components.fueled:SetDepletedFn(mole_perish)
+        inst.components.fueled:SetFirstPeriod(TUNING.TURNON_FUELED_CONSUMPTION, TUNING.TURNON_FULL_FUELED_CONSUMPTION)
         inst.components.fueled.accepting = true
 
         return inst
@@ -1114,10 +1100,10 @@ local function MakeHat(name)
 
         inst.components.periodicspawner:Start()
 
-		if owner.components.hunger then
-			owner.components.hunger.burnratemodifiers:SetModifier(inst, TUNING.MUSHROOMHAT_SLOW_HUNGER)
-		end
-        
+        if owner.components.hunger ~= nil then
+            owner.components.hunger.burnratemodifiers:SetModifier(inst, TUNING.MUSHROOMHAT_SLOW_HUNGER)
+        end
+
     end
 
     local function mushroom_onunequip(inst, owner)
@@ -1125,10 +1111,10 @@ local function MakeHat(name)
         owner:RemoveTag("spoiler")
 
         inst.components.periodicspawner:Stop()
- 
- 		if owner.components.hunger then
-			owner.components.hunger.burnratemodifiers:RemoveModifier(inst)
-		end
+
+        if owner.components.hunger ~= nil then
+            owner.components.hunger.burnratemodifiers:RemoveModifier(inst)
+        end
     end
 
     local function mushroom_displaynamefn(inst)
@@ -1208,6 +1194,48 @@ local function MakeHat(name)
         return inst
     end
 
+    local function hive_onunequip(inst, owner)
+        onunequip(inst, owner)
+
+        if owner ~= nil and owner.components.sanity ~= nil then
+            owner.components.sanity.neg_aura_absorb = 0
+        end
+    end
+
+    local function hive_onequip(inst, owner)
+        onequip(inst, owner)
+
+        if owner ~= nil and owner.components.sanity ~= nil then
+            owner.components.sanity.neg_aura_absorb = TUNING.ARMOR_HIVEHAT_SANITY_ABSORPTION
+        end
+    end
+
+    local function hive_custom_init(inst)
+        --waterproofer (from waterproofer component) added to pristine state for optimization
+        inst:AddTag("waterproofer")
+
+        inst:AddTag("regal")
+    end
+
+    local function hive()
+        local inst = simple(hive_custom_init)
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst:AddComponent("armor")
+        inst.components.armor:InitCondition(TUNING.ARMOR_HIVEHAT, TUNING.ARMOR_HIVEHAT_ABSORPTION)
+
+        inst:AddComponent("waterproofer")
+        inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
+
+        inst.components.equippable:SetOnEquip(hive_onequip)
+        inst.components.equippable:SetOnUnequip(hive_onunequip)
+
+        return inst
+    end
+
     local fn = nil
     local assets = { Asset("ANIM", "anim/"..fname..".zip") }
     local prefabs = nil
@@ -1265,6 +1293,8 @@ local function MakeHat(name)
         fn = green_mushroom
     elseif name == "blue_mushroom" then
         fn = blue_mushroom
+    elseif name == "hive" then
+        fn = hive
     end
 
     return Prefab(prefabname, fn or default, assets, prefabs)
@@ -1320,4 +1350,5 @@ return  MakeHat("straw"),
         MakeHat("red_mushroom"),
         MakeHat("green_mushroom"),
         MakeHat("blue_mushroom"),
+        MakeHat("hive"),
         Prefab("minerhatlight", minerhatlightfn)

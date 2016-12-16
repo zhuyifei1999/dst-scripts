@@ -11,6 +11,16 @@ local function OnUpdate(inst, x, y, z, rad)
     end
 end
 
+local function OnUpdateClient(inst, x, y, z, rad)
+    local player = ThePlayer
+    if player ~= nil and
+        player.components.locomotor ~= nil and
+        not player:HasTag("playerghost") and
+        player:GetDistanceSqToPoint(x, 0, z) < rad * rad then
+        player.components.locomotor:PushTempGroundSpeedMultiplier(TUNING.BEEQUEEN_HONEYTRAIL_SPEED_PENALTY, GROUND.MUD)
+    end
+end
+
 local function OnIsFadingDirty(inst)
     if inst._isfading:value() then
         inst.task:Cancel()
@@ -38,8 +48,9 @@ local function OnInit(inst, scale)
         scale = inst.Transform:GetScale()
     end
     inst.task:Cancel()
-    inst.task = inst:DoPeriodicTask(0, OnUpdate, nil, x, y, z, scale)
-    OnUpdate(inst, x, y, z, scale)
+    local onupdatefn = TheWorld.ismastersim and OnUpdate or OnUpdateClient
+    inst.task = inst:DoPeriodicTask(0, onupdatefn, nil, x, y, z, scale)
+    onupdatefn(inst, x, y, z, scale)
 end
 
 local function SetVariation(inst, rand, scale, duration)

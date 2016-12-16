@@ -1594,6 +1594,7 @@ function PlayerController:OnUpdate(dt)
             self.controller_attack_target = nil
             self.controller_attack_target_ally_cd = nil
             self.LMBaction, self.RMBaction = self.inst.components.playeractionpicker:DoGetMouseActions()
+
             --If an action has a target, highlight the target.
             --If an action has no target and no pos, then it should
             --be an inventory action where doer is ourself and we are
@@ -1668,7 +1669,7 @@ function PlayerController:OnUpdate(dt)
                         return placer_item:IsValid() and
                             placer_item.replica.inventoryitem ~= nil and
                             placer_item.replica.inventoryitem:CanDeploy(pt, mouseover),
-                            mouseover ~= nil
+                            mouseover ~= nil or TheInput:GetHUDEntityUnderMouse() ~= nil
                     end
                     self.deployplacer.components.placer:OnUpdate(0) --so that our position is accurate on the first frame
                 end
@@ -2021,7 +2022,7 @@ local function UpdateControllerInteractionTarget(self, dt, x, y, z, dirx, dirz)
 
     for i, v in ipairs(nearby_ents) do
         --Only handle controller_target if it's the one we added at the front
-        if v ~= self.inst and (v ~= self.controller_target or i == 1) then
+        if v ~= self.inst and (v ~= self.controller_target or i == 1) and v.entity:IsVisible() then
             --Check distance including y value
             local x1, y1, z1 = v.Transform:GetWorldPosition()
             local dx, dy, dz = x1 - x, y1 - y, z1 - z
@@ -2496,6 +2497,7 @@ function PlayerController:DoActionAutoEquip(buffaction)
         buffaction.action ~= ACTIONS.DROP and
         buffaction.action ~= ACTIONS.COMBINESTACK and
         buffaction.action ~= ACTIONS.STORE and
+        buffaction.action ~= ACTIONS.BUNDLESTORE and
         buffaction.action ~= ACTIONS.EQUIP and
         buffaction.action ~= ACTIONS.GIVETOPLAYER and
         buffaction.action ~= ACTIONS.GIVEALLTOPLAYER and
@@ -2770,7 +2772,7 @@ end
 local function ValidateItemUseAction(self, act, active_item, target)
     return act ~= nil and
         (active_item.replica.equippable == nil or not active_item:HasTag(act.action.id.."_tool")) and
-        (act.action ~= ACTIONS.STORE or target.replica.inventoryitem == nil or not target.replica.inventoryitem:IsGrandOwner(self.inst)) and
+        ((act.action ~= ACTIONS.STORE and act.action ~= ACTIONS.BUNDLESTORE) or target.replica.inventoryitem == nil or not target.replica.inventoryitem:IsGrandOwner(self.inst)) and
         act.action ~= ACTIONS.COMBINESTACK and
         act.action ~= ACTIONS.ATTACK and
         act or nil

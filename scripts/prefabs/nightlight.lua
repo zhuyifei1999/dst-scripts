@@ -33,12 +33,6 @@ local function CalcSanityAura(inst, observer)
     return lightRadius > 0 and observer:IsNear(inst, .5 * lightRadius) and -.05 or 0
 end
 
-local function onbuilt(inst)
-    inst.SoundEmitter:PlaySound("dontstarve/common/nightmareAddFuel")
-    inst.AnimState:PlayAnimation("place")
-    inst.AnimState:PushAnimation("idle", false)
-end
-
 local function ontakefuel(inst)
     inst.SoundEmitter:PlaySound("dontstarve/common/nightmareAddFuel")
 end
@@ -47,6 +41,24 @@ local function onupdatefueled(inst)
     if inst.components.burnable ~= nil then
         inst.components.burnable:SetFXLevel(inst.components.fueled:GetCurrentSection(), inst.components.fueled:GetSectionPercent())
     end
+end
+
+local function onfuelchange(newsection, oldsection, inst)
+    if newsection <= 0 then
+        inst.components.burnable:Extinguish()
+    else
+        if not inst.components.burnable:IsBurning() then
+            inst.components.burnable:Ignite()
+        end
+
+        inst.components.burnable:SetFXLevel(newsection, inst.components.fueled:GetSectionPercent())
+    end
+end
+
+local function onbuilt(inst)
+    inst.SoundEmitter:PlaySound("dontstarve/common/nightmareAddFuel")
+    inst.AnimState:PlayAnimation("place")
+    inst.AnimState:PushAnimation("idle", false)
 end
 
 local function OnHaunt(inst, haunter)
@@ -117,21 +129,9 @@ local function fn()
     inst.components.fueled.accepting = true
     inst.components.fueled.fueltype = FUELTYPE.NIGHTMARE
     inst.components.fueled:SetSections(4)
-    inst.components.fueled.ontakefuelfn = ontakefuel
+    inst.components.fueled:SetTakeFuelFn(ontakefuel)
     inst.components.fueled:SetUpdateFn(onupdatefueled)
-
-    inst.components.fueled:SetSectionCallback(function(section)
-        if section == 0 then
-            inst.components.burnable:Extinguish()
-        else
-            if not inst.components.burnable:IsBurning() then
-                inst.components.burnable:Ignite()
-            end
-
-            inst.components.burnable:SetFXLevel(section, inst.components.fueled:GetSectionPercent())
-        end
-    end)
-
+    inst.components.fueled:SetSectionCallback(onfuelchange)
     inst.components.fueled:InitializeFuelLevel(TUNING.NIGHTLIGHT_FUEL_START)
 
     -----------------------------

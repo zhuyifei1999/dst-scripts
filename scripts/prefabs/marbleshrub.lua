@@ -139,7 +139,7 @@ local function onload(inst, data)
 	end
 end
 
-local function onloadpostpass(inst, data)
+local function onloadpostpass(inst)
     inst.statedata = statedata[inst.components.growable.stage]
 end
 

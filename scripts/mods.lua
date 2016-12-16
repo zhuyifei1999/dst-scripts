@@ -11,9 +11,10 @@ AddModReleaseID( "R01_ANR_PART1" )
 AddModReleaseID( "R02_ANR_WARTSANDALL" )
 AddModReleaseID( "R03_ANR_ARTSANDCRAFTS" )
 AddModReleaseID( "R04_ANR_CUTEFUZZYANIMALS" )
+AddModReleaseID( "R05_ANR_HERDMENTALITY" )
 
 if BRANCH == "staging" then
-	AddModReleaseID( "R05_ANR_HERDMENTALITY" )
+	--AddModReleaseID( "R05_ANR_HERDMENTALITY" )
 end
 
 -----------------------------------------------------------------------------------------------

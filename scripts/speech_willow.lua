@@ -16,6 +16,11 @@ return {
 			GENERIC = "Nu-uh.",
 			NOBITS = "It's already shaved!",
 		},
+		UNLOCK =
+        {
+        	WRONGKEY = "Darn thing won't work!",
+        	KLAUS = "But that big ugly thing is on my tail!",
+        },
 		STORE =
 		{
 			GENERIC = "It's full already.",
@@ -50,6 +55,10 @@ return {
         ATTUNE =
         {
             NOHEALTH = "Ughhhh, nooo... I don't feel good.",
+        },
+        DRAW =
+        {
+            NOIMAGE = "But what should I even draw??",
         },
         CHANGEIN =
         {
@@ -93,6 +102,10 @@ return {
             KNOWN = "I knowwwww that already, geez!",
             CANTLEARN = "Ugh, whatever, I didn't wanna know anyway.",
             WRONGWORLD = "What the... this map isn't right at all!",
+        },
+        WRAPBUNDLE =
+        {
+            EMPTY = "I'm not just gonna wrap air!",
         },
 	},
 	ACTIONFAIL_GENERIC = "I can'tttttt.",
@@ -159,6 +172,9 @@ return {
 	ANNOUNCE_ACCOMPLISHMENT= "Move, arrow! MOVE!",
 	ANNOUNCE_ACCOMPLISHMENT_DONE = "I DID IT!",	
 	ANNOUNCE_PETRIFED_TREES = "Something weird is happening...!",
+	ANNOUNCE_KLAUS_ENRAGE = "I'm NOT fighting THAT.",
+	ANNOUNCE_KLAUS_UNCHAINED = "Why couldn't it just stay dead?!",
+	ANNOUNCE_KLAUS_CALLFORHELP = "Aww man, here come those weird goat things!",
 
 	ANNOUNCE_LIGHTFIRE =
 	{
@@ -208,6 +224,7 @@ return {
 		PREY = "Get over here!",
 		SPIDER = "Grrrrar!",
 		SPIDER_WARRIOR = "Ew, kill iiiit!",
+		DEER = "You're deer meat!",
 	},
 	COMBAT_QUIT =
 	{
@@ -697,6 +714,8 @@ return {
 		POND = "This pond will definitely not ignite. How dull.",
 		POND_ALGAE = "It must need a lot of water.",
 		GREENSTAFF = "It won't start a fire but I guess it's still useful.",
+		GIFT = "It's for me right?!",
+        GIFTWRAP = "Ribbons burn real good!",
 		POTTEDFERN = "I'd rather burn them.",
 		SENTRYWARD = "Pfft. It'll burn like the rest.",
         MOONROCK_PIECES = "Oh look! ROCKS! Ughhhhh!",
@@ -961,6 +980,8 @@ return {
 			GENERIC = "Even the babies are ugly.",
 			SLEEPING = "WAKE UP!",
 		},
+		BUNDLE = "Now I can burn a bunch of things in one go!",
+		BUNDLEWRAP = "We could hide some gross things, I guess.",
 		BACKPACK = "You could fit like a million lighters in here.",
 		BACONEGGS = "The yellow mucus-y part is gross, but the bacon is great!",
 		BANDAGE = "Eww, no!",
@@ -975,6 +996,13 @@ return {
 		},
 		BEEQUEENHIVEGROWN = "Dare you guys to smack it with a hammer.",
         BEEGUARD = "Puffy flying jerk!",
+        HIVEHAT = "That bee's head looks kinda tasty, doesn't it?",
+        MINISIGN =
+        {
+            GENERIC = "Haha oh man, who drew THAT?",
+            UNDRAWN = "Looks kinda bare.",
+        },
+        MINISIGN_ITEM = "It's like a sign, but smaller.",
 		BEE =
 		{
 			GENERIC = "It's fat, but that stinger looks dangerous.",
@@ -998,6 +1026,7 @@ return {
 		BEEMINE = "Bees inside. Should've put some fire in there for good measure.",
 		BEEMINE_MAXWELL = "Mosquitoes inside. They don't sound happy.",
 		BEEHAT = "This will keep the pokeys off of me.",
+		BEESWAX = "That's none of my beeswax.",
 		BERRIES = "Red berries taste the best.",
 		BERRIES_COOKED = "Red berries with fire somehow taste even better.",
         BERRIES_JUICY = "Mmm. They pop in your mouth.",
@@ -1166,6 +1195,14 @@ return {
 		CUTREEDS = "Cut reeds, ready for burning. Or maybe crafting.",
 		CUTSTONE = "Perfectly squared for maximum enjoyment.",
 		DEADLYFEAST = "Fire didn't cure this dish of being nasty.",
+		DEER = 
+		{
+			GENERIC = "I wish everyone'd stop fawning over that smelly thing!",
+			ANTLER = "Don't think that horn makes you special, deer.",
+		},
+		DEER_ANTLER = "It's a big, weird antler.",
+		DEER_GEMMED = "Marginally better smelling than most animals here.",
+		KLAUSSACKKEY = "Ha! I wouldn't wanna get smacked with that thing!",
 		DEERCLOPS = "Holy crap!",
 		DEERCLOPS_EYEBALL = "Stop staring at me!",
 		DIRTPILE = "Who just leaves dirt lying around in the forest?",
@@ -1483,6 +1520,7 @@ return {
 		PANDORASCHEST = "Kind of tacky.",
 		PANFLUTE = "Music is boring.",
 		PAPYRUS = "I bet it'd burn!",
+		WAXPAPER = "Heh, we rubbed a bunch of paper in beeswax.",
 		PENGUIN = "Run away, tiny dancers.",
 		PERD = "Evil bird! Get away from those yummy berries!",
 		PEROGIES = "Tasty things, sealed with fire.",
@@ -1865,6 +1903,35 @@ return {
 		WETGOOP = "How did it go wrong?! It was engulfed in fire and everything.",
         WHIP = "This means I'm the boss now.",
 		WINTERHAT = "It's not warm enough for my liking.",
+
+        WINTER_TREE =
+        {
+            BURNT = "Happy Winter's Feast, everybody.",
+            BURNING = "Now we're celebrating!",
+            CANDECORATE = "Looks great!",
+            YOUNG = "It's a bit shrimpy.",
+        },
+		WINTER_TREESTAND = 
+		{
+			GENERIC = "Are we gonna grow a tree?",
+            BURNT = "Happy Winter's Feast, everybody.",
+		},
+        WINTER_ORNAMENT = "Bibble-ty bauble-ty boo!",
+        WINTER_ORNAMENTLIGHT = "It's like a fire, but without the burning!",
+        WINTER_ORNAMENTBOSS = "Woah, shiny! Nice!",
+
+        WINTER_FOOD1 = "Honestly, who DOESN'T eat the head first?", --gingerbread cookie
+        WINTER_FOOD2 = "Doesn't look too bad, considering!", --sugar cookie
+        WINTER_FOOD3 = "Gimme two of 'em and I can do a MacTusk impression.", --candy cane
+        WINTER_FOOD4 = "Anyone else sense the overpowering stench of evil?", --fruitcake
+        WINTER_FOOD5 = "A log for eating, not for burning.", --yule log cake
+        WINTER_FOOD6 = "I'm gonna totally stuff my face!!", --plum pudding
+        WINTER_FOOD7 = "Sure beats rainwater!", --apple cider
+        WINTER_FOOD8 = "I only like it when it's SCALDING.", --hot cocoa
+        WINTER_FOOD9 = "Who knew stuff from a bird's butt could be so tasty?", --eggnog
+
+        KLAUS = "A lump of coal would be really useful, actually!",
+        KLAUS_SACK = "Nothing says \"Open Me\" quite like a lock!!",
 		WORMHOLE =
 		{
 			GENERIC = "Poke it with a stick!",

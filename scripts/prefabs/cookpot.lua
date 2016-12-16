@@ -32,12 +32,16 @@ end
 
 local function onhit(inst, worker)
     if not inst:HasTag("burnt") then
-        inst.AnimState:PlayAnimation("hit_empty")
-        inst.AnimState:PushAnimation(
-            (inst.components.stewer:IsCooking() and "cooking_loop") or
-            (inst.components.stewer:IsDone() and "idle_full") or
-            "idle_empty"
-        )
+        if inst.components.stewer:IsCooking() then
+            inst.AnimState:PlayAnimation("hit_cooking")
+            inst.AnimState:PushAnimation("cooking_loop", true)
+        elseif inst.components.stewer:IsDone() then
+            inst.AnimState:PlayAnimation("hit_full")
+            inst.AnimState:PushAnimation("idle_full", false)
+        else
+            inst.AnimState:PlayAnimation("hit_empty")
+            inst.AnimState:PushAnimation("idle_empty", false)
+        end
     end
 end
 
@@ -92,7 +96,7 @@ end
 local function donecookfn(inst)
     if not inst:HasTag("burnt") then
         inst.AnimState:PlayAnimation("cooking_pst")
-        inst.AnimState:PushAnimation("idle_full")
+        inst.AnimState:PushAnimation("idle_full", false)
         ShowProduct(inst)
         inst.SoundEmitter:KillSound("snd")
         inst.SoundEmitter:PlaySound("dontstarve/common/cookingpot_finish")
@@ -138,7 +142,7 @@ end
 
 local function onbuilt(inst)
     inst.AnimState:PlayAnimation("place")
-    inst.AnimState:PushAnimation("idle_empty")
+    inst.AnimState:PushAnimation("idle_empty", false)
     inst.SoundEmitter:PlaySound("dontstarve/common/cook_pot_craft")
 end
 

@@ -22,6 +22,11 @@ return
             NOBITS = "It's already smooth, dear.",
             AWAKEBEEFALO = "I think he might object to that.",
         },
+        UNLOCK =
+        {
+            WRONGKEY = "That may have been the wrong implement.",
+            KLAUS = "The beast must first be defeated.",
+        },
         STORE =
         {
             GENERIC = "It's full to the brim, I'm afraid.",
@@ -37,6 +42,10 @@ return
         {   
             GENERIC = "I've other things on my mind currently.",
             INUSE = "Be sure to sort by color and weight, dear.",   
+        },
+        DRAW =
+        {
+            NOIMAGE = "An example of what I should diagram would be helpful.",
         },
         CHANGEIN =
         {
@@ -100,6 +109,10 @@ return
             CANTLEARN = "A piece of knowledge I cannot grasp... Intriguing!",
             WRONGWORLD = "This map is for some other location.",
         },
+        WRAPBUNDLE =
+        {
+            EMPTY = "I have to know what to wrap, dear.",
+        },
     },
     ACTIONFAIL_GENERIC = "It seems I can't do that.",
     ANNOUNCE_DIG_DISEASE_WARNING = "Caught it just in time. The roots were nearly rotten.",
@@ -110,6 +123,10 @@ return
     ANNOUNCE_NOMOUNTEDGIFT = "I do believe I should dismount first.",
     ANNOUNCE_NOWARDROBEONFIRE = "As you can plainly see, it is ablaze.",
     ANNOUNCE_WORMS = "Something nasty intends to rear its head.",
+
+    ANNOUNCE_KLAUS_ENRAGE = "No sense throwing one's life away. Fall back!",
+    ANNOUNCE_KLAUS_UNCHAINED = "Whatever enchantment restrained it has been undone.",
+    ANNOUNCE_KLAUS_CALLFORHELP = "Careful! It has summoned lesser Krampii.",
    
     DESCRIBE=
     {
@@ -592,6 +609,8 @@ return
         THULECITE_PIECES = "These could be combined to make a bigger piece.",
         POND_ALGAE = "It is a good thing this algae has no need for photosynthesis.",
         GREENSTAFF = "It appears to rewind time on an object.",
+        GIFT = "Oh goodness, how lovely!",
+        GIFTWRAP = "Wrapping presents is soothing work, isn't it?",
         POTTEDFERN = "A potted plant.",
 		SENTRYWARD = "Ah! A scrying orb.",
         MOONROCK_PIECES = "What a perplexing transformation.",
@@ -946,7 +965,13 @@ return
             RIDER = "This one seems lean and athletic.",
             PUDGY = "Abundant nourishment has led to an amicable personality.",
         },
-        BABYBEEFALO = "Look at his widdle face! (Ahem!)",
+        BABYBEEFALO = 
+        {
+            GENERIC = "Look at his widdle face! (Ahem!)",
+            SLEEPING = "He's even more darling in sleep.",
+        },
+        BUNDLE = "At least someone's bundled up out here.",
+        BUNDLEWRAP = "Antibacterial wrapping for food preservation.",
         MANDRAKE_ACTIVE = "Mandragora officinarum. But with a face.",
         MANDRAKE_PLANTED = "Mandragora officinarum.",
         MANDRAKE = "Mandragora officinarum. Deceased.",
@@ -1085,6 +1110,35 @@ return
         WETGOOP = "Oh no. No, no, no. This won't do at all.",
         WHIP = "An instrument for developing pain compliance.",
         WINTERHAT = "I ought to teach the children how to pick up a stitch.",
+
+        WINTER_TREE =
+        {
+            BURNT = "Not to worry. We can still celebrate.",
+            BURNING = "Oh gracious, not again.",
+            CANDECORATE = "Lovely job on the tree, dears.",
+            YOUNG = "It'd surely snap under the weight of ornaments.",
+        },
+		WINTER_TREESTAND = 
+		{
+			GENERIC = "Let's grow a proper tree, shall we?",
+            BURNT = "Not to worry. We can still celebrate.",
+		},
+        WINTER_ORNAMENT = "Careful with it now, dear.",
+        WINTER_ORNAMENTLIGHT = "Electrical currents do have a certain appeal, don't they?",
+        WINTER_ORNAMENTBOSS = "I'm of the opinion that one can never overdecorate.",
+
+        WINTER_FOOD1 = "What a delightful little individual.", --gingerbread cookie
+        WINTER_FOOD2 = "Just like holidays at the library!", --sugar cookie
+        WINTER_FOOD3 = "The perfect stir stick for hot cup of tea.", --candy cane
+        WINTER_FOOD4 = "An object with negligible temporal drag.", --fruitcake
+        WINTER_FOOD5 = "Such expertly prepared raspberry filling!", --yule log cake
+        WINTER_FOOD6 = "\"Plum\" is a 17th century term for \"fruit\", dear.", --plum pudding
+        WINTER_FOOD7 = "Pair it with a good book and you've a cure for the winter blues.", --apple cider
+        WINTER_FOOD8 = "A small enchantment keeps it a pleasant temperature.", --hot cocoa
+        WINTER_FOOD9 = "I've always harbored a weakness for good 'nog.", --eggnog
+
+        KLAUS = "It uses its powerful olfactory sense to locate prey.",
+        KLAUS_SACK = "How curious.",
         NIGHTMAREFUEL = "Ectoplasmic residue.",
         NIGHTLIGHT = "Curiously luminescent.",
         NIGHTSWORD = "Transdimensional weaponry.",
@@ -1247,6 +1301,13 @@ return
         },
         BEEQUEENHIVEGROWN = "An Apis mellifera nest of unusual size.",
         BEEGUARD = "Very angry Apis mellifera workers!",
+        HIVEHAT = "It's exuding powerful pheromones.",
+        MINISIGN =
+        {
+            GENERIC = "An excellent diagram! Very accurate.",
+            UNDRAWN = "A drawn diagram might help keep things tidy.",
+        },
+        MINISIGN_ITEM = "Finally, a proper organizational tool.",
         BEE = 
         {
             GENERIC = "Apis mellifera. Quite large!",
@@ -1264,6 +1325,7 @@ return
         },
         MOSQUITOSACK = "The stomach of a Culicidae, brimming with blood.",
         BEEHAT = "Appropriate protective equipment is a must!",
+        BEESWAX = "Naturally antibacterial. Could slow food decay if we use it properly.",
         BEEHIVE = "The natural home of the bee.",
         BEEMINE = "A dangerous mine filled with Antophila.",
         BEEMINE_MAXWELL = "A dangerous mine filled with Culicidae.",
@@ -1561,6 +1623,7 @@ return
             BURNING = "Combustion!",
         },
         PAPYRUS = "Thin sheets of cellulose and lignin.",
+        WAXPAPER = "Now we just require rope to secure it in place.",
         MARSH_TREE = 
         {
             GENERIC = "A mangal rhizophora.",
@@ -1674,7 +1737,15 @@ return
         TRUNKVEST_WINTER = "Ample protection against the elements.",
         
         DEADLYFEAST = "I'm not sure that's good to eat.",
-        DEERCLOPS = "Laurasiatheria!",
+        DEER = 
+        {
+            GENERIC = "It has shed its antler for the warmer months.",
+            ANTLER = "Its antler has grown in for winter.",
+        },
+        DEER_ANTLER = "It looks like a key, but it's quite brittle.",
+        DEER_GEMMED = "The poor creature has been forcibly fused to a magic gem.",
+        DEERCLOPS = "Laurasiatheria!",     
+        KLAUSSACKKEY = "Hmm. Quite a sturdy antler.",
         REDGEM = "It is warm.",
         BLUEGEM = "It is cold.",
         PURPLEGEM = "It gives off a strange aura.",
@@ -1796,6 +1867,7 @@ return
         PREY = "Just give up.",
         SPIDER = "Behave!",
         SPIDER_WARRIOR = "Respect your elders!",
+        DEER = "This will be easy.",
     },
 
     COMBAT_QUIT =
