@@ -465,20 +465,23 @@ end
 
 local function onworked(inst, worker, workleft)
     if workleft > 0 then
-        PlayAnim(inst, inst.statedata.hitanim)
-        PushSway(inst)
-        if not inst.components.container:IsEmpty() then
-            inst.SoundEmitter:PlaySound("dontstarve/creatures/together/deer/bell")
-        end
-        if not (worker ~= nil and worker:HasTag("playerghost")) then
-            inst.SoundEmitter:PlaySound(
-                worker ~= nil and worker:HasTag("beaver") and
-                "dontstarve/characters/woodie/beaver_chop_tree" or
-                "dontstarve/wilson/use_axe_tree"
-            )
-        end
-        if inst.OnChop ~= nil then
-            inst:OnChop(worker, workleft)
+        --Beaver can reach here when it's hammer instead of chop
+        if inst.statedata.hitanim ~= nil then
+            PlayAnim(inst, inst.statedata.hitanim)
+            PushSway(inst)
+            if not inst.components.container:IsEmpty() then
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/deer/bell")
+            end
+            if not (worker ~= nil and worker:HasTag("playerghost")) then
+                inst.SoundEmitter:PlaySound(
+                    worker ~= nil and worker:HasTag("beaver") and
+                    "dontstarve/characters/woodie/beaver_chop_tree" or
+                    "dontstarve/wilson/use_axe_tree"
+                )
+            end
+            if inst.OnChop ~= nil then
+                inst:OnChop(worker, workleft)
+            end
         end
     elseif inst:HasTag("burnt") then
         if inst.statedata.burntbreakanim ~= nil then
