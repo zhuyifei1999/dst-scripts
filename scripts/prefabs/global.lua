@@ -88,11 +88,6 @@ local assets =
     Asset("ATLAS", "images/fepanel_fills.xml"),
     Asset("IMAGE", "images/fepanel_fills.tex"),
 
-    Asset("ATLAS", "images/thankyou_item_popup.xml"),
-    Asset("IMAGE", "images/thankyou_item_popup.tex"),
-    Asset("ATLAS", "images/thankyou_item_popup_rog.xml"),
-    Asset("IMAGE", "images/thankyou_item_popup_rog.tex"),
-
     Asset("ATLAS", "images/bg_animated_portal.xml"),
     Asset("IMAGE", "images/bg_animated_portal.tex"),
 
