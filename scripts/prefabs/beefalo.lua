@@ -289,31 +289,32 @@ end
 local function SetTendency(inst, changedomestication)
     -- tendency is locked in after we become domesticated
     local tendencychanged = false
+    local oldtendency = inst.tendency
     if not inst.components.domesticatable:IsDomesticated() then
-        local oldtentency = inst.tendency
         local tendencysum = 0
         local maxtendency = nil
         local maxtendencyval = 0
-        for k,v in pairs(inst.components.domesticatable.tendencies) do
+        for k, v in pairs(inst.components.domesticatable.tendencies) do
             tendencysum = tendencysum + v
             if v > maxtendencyval then
                 maxtendencyval = v
                 maxtendency = k
             end
         end
-        inst.tendency = (tendencysum < 0.1 or maxtendencyval < tendencysum * 0.5) and TENDENCY.DEFAULT or maxtendency
-        tendencychanged = inst.tendency ~= oldtentency
+        inst.tendency = (tendencysum < .1 or maxtendencyval * 2 < tendencysum) and TENDENCY.DEFAULT or maxtendency
+        tendencychanged = inst.tendency ~= oldtendency
     end
 
-    if changedomestication ~= nil then
-        if tendencies[inst.tendency].customactivatefn ~= nil and changedomestication == "domestication" then
+    if changedomestication == "domestication" then
+        if tendencies[inst.tendency].customactivatefn ~= nil then
             tendencies[inst.tendency].customactivatefn(inst)
-        elseif tendencies[inst.tendency].customdeactivatefn ~= nil and changedomestication == "feral" then
-            tendencies[inst.tendency].customdeactivatefn(inst)
         end
+    elseif changedomestication == "feral"
+        and tendencies[oldtendency].customdeactivatefn ~= nil then
+        tendencies[oldtendency].customdeactivatefn(inst)
     end
 
-    if tendencychanged == true or changedomestication ~= nil then
+    if tendencychanged or changedomestication ~= nil then
         if inst.components.domesticatable:IsDomesticated() then
             inst.components.domesticatable:SetMinObedience(TUNING.BEEFALO_MIN_DOMESTICATED_OBEDIENCE[inst.tendency])
 

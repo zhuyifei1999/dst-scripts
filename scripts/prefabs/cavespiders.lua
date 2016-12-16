@@ -117,10 +117,12 @@ local function keeptargetfn(inst, target)
 end
 
 local function BasicWakeCheck(inst)
-    return (inst.components.combat ~= nil and inst.components.combat.target ~= nil)
+    return inst.components.combat:HasTarget()
         or (inst.components.homeseeker ~= nil and inst.components.homeseeker:HasHome())
-        or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning())
-        or (inst.components.follower ~= nil and inst.components.follower.leader)
+        or inst.components.burnable:IsBurning()
+        or inst.components.freezable:IsFrozen()
+        or inst.components.health.takingfiredamage
+        or inst.components.follower:GetLeader() ~= nil
 end
 
 local function ShouldSleep(inst)
