@@ -863,7 +863,7 @@ local function AddWinterTree(treetype)
         inst.components.workable:SetOnWorkCallback(onworked)
 
         inst:AddComponent("container")
-        inst.components.container:WidgetSetup("winter_tree")
+        inst.components.container:WidgetSetup(treetype.name)
         inst.components.container.canbeopened = false
 
         inst:AddComponent("timer")

@@ -263,6 +263,9 @@ function params.winter_tree.itemtestfn(container, item, slot)
     return item:HasTag("winter_ornament") and not container.inst:HasTag("burnt")
 end
 
+params.winter_twiggytree = params.winter_tree
+params.winter_deciduoustree = params.winter_tree
+
 --------------------------------------------------------------------------
 --[[ icebox ]]
 --------------------------------------------------------------------------
