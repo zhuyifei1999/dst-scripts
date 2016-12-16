@@ -269,8 +269,8 @@ STRINGS =
         TURNON = "Turn On",
         TURNOFF =
         {
-                    GENERIC = "Turn Off",
-                    EMERGENCY = "Emergency Mode",
+            GENERIC = "Turn Off",
+            EMERGENCY = "Emergency Mode",
         },
         USEITEM = "Use",
         USEDOOR =
@@ -1495,7 +1495,7 @@ STRINGS =
         MOLEHAT = "Grants the wearer Smell-E-Vision.",
         ICEHAT = "Science, on the rocks.",
         TRANSISTOR = "Science away! Bzzzt!",
-        
+
         WATERMELONHAT = "Refreshing, but sticky.",
 
         EYEBRELLAHAT = "An eye on the sky keeps you dry.",
@@ -1506,14 +1506,14 @@ STRINGS =
         SADDLE_WAR = "A throne for the boss of the battlefield.",
         SADDLE_RACE = "Offsets the time spent making it. Maybe.",
 
-		SCULPTINGTABLE = "Marble will be like clay in your hands!",
+        SCULPTINGTABLE = "Marble will be like clay in your hands!",
 
         BELL = "This isn't just any bell.",
 
         CATCOONHAT = "For those who value warmth over friends.",
 
         FEATHERPENCIL = "Yes, the feather IS necessary.",
-		MAPSCROLL = "Show everyone what you've seen!",
+        MAPSCROLL = "Show everyone what you've seen!",
 
         REVIVER = "Ghastly revival of a ghostly friend.",
         ABIGAIL_FLOWER = "A magical keepsake.",
@@ -1553,7 +1553,6 @@ STRINGS =
 
         CANDYBAG = "Only carries Hallowed Nights goodies.",
         WINTER_TREESTAND = "Plant and decorate a Winter's Feast tree!",
-
     },
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
@@ -1570,7 +1569,7 @@ STRINGS =
     --  {"I left you a little something...","I don't think it will help you though.", "You know what I like about nighttime?", "All the spiders."},
     --  },      
 
-    MAXWELL_SANDBOXINTROS = 
+    MAXWELL_SANDBOXINTROS =
     {
         ONE = "Say pal, you don't look so good.",
         TWO = "You'd better find something to eat before night comes!",       
@@ -1627,12 +1626,12 @@ STRINGS =
             TWO = "You found me. Now, what are you going to do?",
             TELEPORTFAIL = "Don't you think I've tried that?",
             TELEPORTFAIL2 = "This is the end of the line. We have no escape.",
-            COMBATFAIL = 
+            COMBATFAIL =
             {
                 "Where would be the sport in that?",
                 "Who do you think allowed you to make that?",
             },
-            CONVERSATION = 
+            CONVERSATION =
             {
                 "Is this what you were expecting?",
                 "Forgive me if I don't get up.",
@@ -1659,7 +1658,6 @@ STRINGS =
                 "..."
             }
         },
-
     },
 
     MAXWELL_ADVENTURE_HEAD =
@@ -1671,17 +1669,17 @@ STRINGS =
         LEVEL_6 =
         {
             ONE = "We're not so different, you and I.",
-            TWO = 
+            TWO =
             {
                 ONE = "That's why I brought you here.",
                 TWO = "That's why I brought all of them here.",
             },
-            THREE =   
+            THREE =
             {
                 ONE = "Oh, did you think you were the first?",
                 TWO = "HA!",
             },
-            FOUR = 
+            FOUR =
             {
                 ONE = "It's just that...",
                 TWO = "I've become accustomed to winning.",
@@ -1719,39 +1717,37 @@ STRINGS =
     --ITEM DESCRIPTIONS
     DESCRIBE_NULL = "MISSING DESCRIPTION STRING",
 
+    PIG_TALK_FOLLOWWILSON = { "YOU FRIEND", "I LOVE FRIEND", "YOU IS GOOD", "I FOLLOW!" },
+    PIG_TALK_FIND_LIGHT = { "SCARY", "NO LIKE DARK", "WHERE IS SUN?", "STAY NEAR FIRE", "FIRE IS GOOD" },
+    PIG_TALK_LOOKATWILSON = { "WHO ARE YOU?", "YOU NOT PIG", "UGLY MONKEY PERSON", "YOU HAS MEAT?" },
+    PIG_TALK_RUNAWAY_WILSON = { "TOO CLOSE!", "STAY AWAY!", "YOU BACK OFF!", "THAT MY SPACE." },
+    PIG_TALK_FIGHT = { "I KILL NOW!", "YOU GO SMASH!", "RAAAWR!" },
+    PIG_TALK_RUN_FROM_SPIDER = { "SPIDER BAD!", "NO LIKE SPIDER!", "SCARY SPIDER!" },
+    PIG_TALK_HELP_CHOP_WOOD = { "KILL TREE!", "SMASH MEAN TREE!", "I PUNCH TREE!" },
+    PIG_TALK_ATTEMPT_TRADE = { "WHAT YOU GOT?", "BETTER BE GOOD." },
+    PIG_TALK_PANIC = { "NOOOOO!", "TOO DARK! TOO DARK!", "AAAAAAAAAH!!" },
+    PIG_TALK_PANICFIRE = { "HOT HOT HOT!", "OWWWWW!", "IT BURNS!" },
+    PIG_TALK_PANICHOUSEFIRE = { "HOUSE BURNS!", "MY STUFF!", "AAAH! FIRE!", "PANIC!" },
+    PIG_TALK_PANICBOSS = { "AHHHH", "UH OH!", "ME SCARED", "BAD!", "OHHH!" },
+    PIG_TALK_PANICHAUNT = { "SPOOKY!", "AAAAH!!", "A GHOST! A GHOST!" },
+    PIG_TALK_FIND_MEAT = { "ME HUNGRY!", "YUM!", "I EAT FOOD!", "TIME FOR FOOD!" },
+    PIG_TALK_EAT_MEAT = { "NOM NOM NOM", "YUM!" },
+    PIG_TALK_GO_HOME = { "HOME TIME!", "HOME! HOME!" },
+    PIG_TALK_RESCUE = { "I HELP YOU!", "OOH! OOH!", "ME HELP!" },
+    PIG_GUARD_TALK_TORCH = { "TORCH GET LOW", "MAKE TORCH BRIGHT", "MORE BURNING" },
+    PIG_GUARD_TALK_FIGHT = { "FOR KING!", "DEFEND!", "SAVE KING!" },
+    PIG_GUARD_TALK_GOHOME = { "MUST DEFEND!", "I PROTECT", "KING! KING!" },
+    PIG_GUARD_TALK_LOOKATWILSON = { "YOU LEAVE NOW", "YOU GO AWAY", "YOU NO STAY" },
 
-    PIG_TALK_FOLLOWWILSON = {"YOU FRIEND", "I LOVE FRIEND", "YOU IS GOOD", "I FOLLOW!"},
-    PIG_TALK_FIND_LIGHT = {"SCARY", "NO LIKE DARK", "WHERE IS SUN?", "STAY NEAR FIRE", "FIRE IS GOOD"},
-    PIG_TALK_LOOKATWILSON = {"WHO ARE YOU?", "YOU NOT PIG", "UGLY MONKEY PERSON", "YOU HAS MEAT?"},
-    PIG_TALK_RUNAWAY_WILSON = {"TOO CLOSE!", "STAY AWAY!", "YOU BACK OFF!", "THAT MY SPACE."},
-    PIG_TALK_FIGHT = {"I KILL NOW!", "YOU GO SMASH!", "RAAAWR!"},
-    PIG_TALK_RUN_FROM_SPIDER = {"SPIDER BAD!", "NO LIKE SPIDER!", "SCARY SPIDER!"},
-    PIG_TALK_HELP_CHOP_WOOD = {"KILL TREE!", "SMASH MEAN TREE!", "I PUNCH TREE!"},
-    PIG_TALK_ATTEMPT_TRADE = {"WHAT YOU GOT?", "BETTER BE GOOD."},
-    PIG_TALK_PANIC = {"NOOOOO!", "TOO DARK! TOO DARK!", "AAAAAAAAAH!!"},
-    PIG_TALK_PANICFIRE = {"HOT HOT HOT!", "OWWWWW!", "IT BURNS!"},
-    PIG_TALK_PANICHOUSEFIRE = {"HOUSE BURNS!", "MY STUFF!", "AAAH! FIRE!", "PANIC!"},
-    PIG_TALK_PANICBOSS = {"AHHHH", "UH OH!", "ME SCARED", "BAD!", "OHHH!"},
-    PIG_TALK_PANICHAUNT = {"SPOOKY!", "AAAAH!!", "A GHOST! A GHOST!"},
-    PIG_TALK_FIND_MEAT = {"ME HUNGRY!", "YUM!", "I EAT FOOD!", "TIME FOR FOOD!"},
-    PIG_TALK_EAT_MEAT = {"NOM NOM NOM", "YUM!"},
-    PIG_TALK_GO_HOME = {"HOME TIME!", "HOME! HOME!"},
-    PIG_TALK_RESCUE = {"I HELP YOU!", "OOH! OOH!", "ME HELP!"},
-    PIG_GUARD_TALK_TORCH = {"TORCH GET LOW", "MAKE TORCH BRIGHT", "MORE BURNING"},
-    PIG_GUARD_TALK_FIGHT = {"FOR KING!", "DEFEND!", "SAVE KING!"},
-    PIG_GUARD_TALK_GOHOME = {"MUST DEFEND!", "I PROTECT", "KING! KING!"},
-    PIG_GUARD_TALK_LOOKATWILSON = {"YOU LEAVE NOW", "YOU GO AWAY", "YOU NO STAY"},
-    
-
-    RABBIT_BATTLECRY = {"HOP!", "KILL!", "DIE!"},
-    RABBIT_MEAT_BATTLECRY = {"MEAT!", "UNCLEAN!", "MURDERER!", "REVENGE!", "MONSTER!"},
-    RABBIT_GIVEUP = {"DONE.", "LATER."},
-    RABBIT_RETREAT = {"AWAY!", "HURT!", "HOME!", "RUN!"},
-    RABBIT_RESCUE = {"KILL!", "FIGHT!", "BITE!", "PUNCH!"},
-    RABBIT_PANICFIRE = {"EEEH!", "OOH!", "AAAH!"},
-    RABBIT_PANICHOUSEFIRE = {"HOME!", "FIRE!", "BURNING!"},
-    RABBIT_PANICHAUNT = {"SCARED!", "AAAH!!", "OHH!", "GHOST!"},
-    RABBIT_PANICBOSS = {"RUN!", "AHHH!", "IT MAD", "EHHH!"},
+    RABBIT_BATTLECRY = { "HOP!", "KILL!", "DIE!" },
+    RABBIT_MEAT_BATTLECRY = { "MEAT!", "UNCLEAN!", "MURDERER!", "REVENGE!", "MONSTER!" },
+    RABBIT_GIVEUP = { "DONE.", "LATER." },
+    RABBIT_RETREAT = { "AWAY!", "HURT!", "HOME!", "RUN!" },
+    RABBIT_RESCUE = { "KILL!", "FIGHT!", "BITE!", "PUNCH!" },
+    RABBIT_PANICFIRE = { "EEEH!", "OOH!", "AAAH!" },
+    RABBIT_PANICHOUSEFIRE = { "HOME!", "FIRE!", "BURNING!" },
+    RABBIT_PANICHAUNT = { "SCARED!", "AAAH!!", "OHH!", "GHOST!" },
+    RABBIT_PANICBOSS = { "RUN!", "AHHH!", "IT MAD", "EHHH!" },
 
     EPITAPHS =
     {
@@ -1921,7 +1917,7 @@ STRINGS.BUNNYMANNAMES =
     "Lutetium",
 }
 
-STRINGS.PIGNAMES=
+STRINGS.PIGNAMES =
 {
     --emperors
     "Augustus",
@@ -2203,7 +2199,7 @@ STRINGS.UI =
         ALTGAMES =
         {
             TITLE = "Linux and OSX ports by Alternative Games",
-            NAMES = 
+            NAMES =
             {
                 "Turo Lamminen",
                 "Tuomas Narvainen",
@@ -2215,7 +2211,7 @@ STRINGS.UI =
         EXTRA_THANKS = "Ophir Lupu\nKo Kim\nColt McAnlis",
         EXTRA_THANKS_2 = "Pieter Wycoff\nMatthew Nickerson\nAnna Sweet",
         SONY_THANKS = "Shane Bettenhausen\nAdam Boyes\nBrian Silva\nNick Suttner",
-        
+
         BABEL =
         {
             TITLE = "Babel",
@@ -2223,18 +2219,18 @@ STRINGS.UI =
             {
                 "Guillaume Langlois",
                 "Danny Labrie",
-                "Dominic Knowles",          
+                "Dominic Knowles",
                 "Marc Kent",
                 "Jeff LeGresley",
             },
-            NAMES2=
+            NAMES2 =
             {
                 "Jon Morrell",
                 "JP Bergevin",
                 "Mike Holdaway",
                 "Jonas Miller",
                 "Katri Luotonen",
-            }           
+            },
         },
         THANKS = "And a very special thanks to all our supporters who braved the challenge of the \"Early-Access\nBeta\". You are too numerous to name - our amazing moderators, the wonderful artists, musicians,\nlivestreamers, to all who made a Let's Play video and everybody who chimed in to let us know\nexactly what you think. Your encouragement, passion and support has been amazing.\n\nDon't Starve Together is truly a better game because of all of you.",
 
@@ -2243,12 +2239,12 @@ STRINGS.UI =
         FACEBOOK = "The Facebooks",
         TWITTER = "The Twitters",
     },
-    
-    WORLDGEN=
+
+    WORLDGEN =
     {
         TITLE = "GENERATING WORLD",
         CAVETITLE = "CARVING OUT CAVE",
-        VERBS = 
+        VERBS =
         {
             "Wrangling",
             "Generating",
@@ -2273,7 +2269,7 @@ STRINGS.UI =
             "Enchanting",
             "Solving",
         },
-        NOUNS=
+        NOUNS =
         {
             "trees...",
             "pathos...",
@@ -2309,11 +2305,11 @@ STRINGS.UI =
             "unspeakable things...",
             "primal instincts...",
             "terrible darkness...",
-            "a touch of magic...",     
-        }
+            "a touch of magic...",
+        },
     },
 
-    INTENTION = 
+    INTENTION =
     {
         SOCIAL = "Social",
         COOPERATIVE = "Cooperative",
@@ -2322,12 +2318,13 @@ STRINGS.UI =
         ANY = "Any",
     },
 
-    CONSOLESCREEN=
+    CONSOLESCREEN =
     {
         REMOTEEXECUTE = "Remote:",
     },
 
-    BUGREPORTSCREEN = {
+    BUGREPORTSCREEN =
+    {
         YES = "Yes",
         NO = "No",
         OK = "OK",
@@ -2342,11 +2339,11 @@ STRINGS.UI =
         SUBMIT_FAILURE_TEXT = "There was a problem uploading your files.",
 
         DESCRIPTION_LABEL = "Please enter a description of your issue.",
-    	SUBMIT = "Submit",
+        SUBMIT = "Submit",
         SUBMITTING_TEXT = "Submitting files, please wait",
     },
 
-    EMAILSCREEN=
+    EMAILSCREEN =
     {
         SIGNUPSUBMITTITLE="Sending...",
         SIGNUPSUBMIT="Please wait a moment while we sign you up.",
@@ -2381,7 +2378,7 @@ STRINGS.UI =
         DAY = "D",
         YEAR = "YYYY",
     },
-    
+
     MAINSCREEN =
     {
         NOTIFY = "News",
@@ -2550,7 +2547,7 @@ STRINGS.UI =
 
         LOGIN = "Login",
     },
-    
+
     HUD =
     {
         MAP = "Show Map\n",
@@ -2609,16 +2606,16 @@ STRINGS.UI =
         ACTIVATE_RESURRECTION = "Activate Meat Effigy",
         INSPECT_SELF = "Inspect Self",
         OPENGIFT = "Activate",
-		CRITTER_TRAITS =
-		{
-			COMBAT			= "Scrappy",
-			WELLFED			= "Plump",
-			PLAYFUL			= "Peppy",
-			CRAFTY			= "Crafty",
-		},
+        CRITTER_TRAITS =
+        {
+            COMBAT = "Scrappy",
+            WELLFED = "Plump",
+            PLAYFUL = "Peppy",
+            CRAFTY = "Crafty",
+        },
     },
-    
-    ACCOUNT=
+
+    ACCOUNT =
     {
         LOGIN = "Login",
         CREATE = "Create",
@@ -2630,10 +2627,10 @@ STRINGS.UI =
         PASSWORD = "Password",
         EMAIL = "Email",
         LINKSTEAMACCOUNT = "Link Steam Account",
-        LOGINWITHSTEAM   = "Login With Steam"
+        LOGINWITHSTEAM = "Login With Steam",
     },
-    
-    BROADCASTING=
+
+    BROADCASTING =
     {
         YES = "Yes",
         NO = "No",
@@ -2648,7 +2645,7 @@ STRINGS.UI =
         ACCEPTGRAPHICSBODY = "Do you wish to accept these changes?",
         REVERT = "Revert Changes",
         CLOSE = "Close",
-        
+
         BROADCASTINGENABLED = "Broadcasting Enabled",
         FRAMERATE = "Frame Rate",
         BANDWIDTH = "Bandwidth",
@@ -2668,24 +2665,25 @@ STRINGS.UI =
         STOPSTREAM= "Stop Stream",
         HELP= "Help",
     },
-    
-    PLAYER_AVATAR = 
+
+    PLAYER_AVATAR =
     {
         AGE_SURVIVED = "Survived",
         AGE_DAY = "Day",
         AGE_DAYS = "Days",
-    	CLOSE = "Close",
-    	STEAM = "View Steam Profile",
-    	CHOOSING = "is choosing their character",
-	},
+        CLOSE = "Close",
+        STEAM = "View Steam Profile",
+        CHOOSING = "is choosing their character",
+    },
 
-	WARDROBE_POPUP = 
-	{
-		RESET = "Reset Outfit",
-		SET = "Confirm Outfit",
-		CANCEL = "Cancel",
-	},
-    OPTIONS=
+    WARDROBE_POPUP =
+    {
+        RESET = "Reset Outfit",
+        SET = "Confirm Outfit",
+        CANCEL = "Cancel",
+    },
+
+    OPTIONS =
     {
         SETTINGS = "Settings",
         CONTROLS = "Controls",
@@ -2735,7 +2733,7 @@ STRINGS.UI =
         ACTION = "Action",
     },
 
-    NOTIFICATION = 
+    NOTIFICATION =
     {
         LOADING = "Loading",
         LOGIN = "Logging in",
@@ -2780,12 +2778,12 @@ STRINGS.UI =
         RECEIVED = "You Received",
         ENABLED_TOAST_TOOLTIP = "Open",
         DISABLED_TOAST_TOOLTIP = "This requires more science!",
-        THANKS_POPUP_SECONDTITLE = 
+        THANKS_POPUP_SECONDTITLE =
         {
             EARLY_ACCESS = "Early\nAccess",
         },
     },
-    
+
     POPUPDIALOG =
     {
         TITLE =
@@ -2794,30 +2792,30 @@ STRINGS.UI =
             SERVER_ERROR_BANNED_GAME      = "Terms of Service Violation",
             SERVER_ERROR_BANNED_GAME_NAME = "Terms of Service Violation - Name",
             SERVER_ERROR_BANNED_GAME_DESC = "Terms of Service Violation - Description",
-            DIRECT_JOIN_FAILED	          = "Failed to Direct Join Game",
+            DIRECT_JOIN_FAILED            = "Failed to Direct Join Game",
         },
         BODY =
-        {   
+        {
             DEFAULT = "You have received an alert. Don't let this happen again.",
-            SERVER_ERROR_BANNED_GAME =      "Your server will not be joinable until the name or description has been changed. Repeated violations will result in a permanent ban.",
+            SERVER_ERROR_BANNED_GAME      = "Your server will not be joinable until the name or description has been changed. Repeated violations will result in a permanent ban.",
             SERVER_ERROR_BANNED_GAME_NAME = "Your server will not be joinable until the name has been changed. Repeated violations will result in a permanent ban.",
             SERVER_ERROR_BANNED_GAME_DESC = "Your server will not be joinable until the description has been changed. Repeated violations will result in a permanent ban.",
-            DIRECT_JOIN_FAILED	          = "Something went wrong while trying to direct join a server.",
+            DIRECT_JOIN_FAILED            = "Something went wrong while trying to direct join a server.",
         },
         OK = "OK",
     },
-    
-    REDEEMDIALOG = 
+
+    REDEEMDIALOG =
     {
-    	TITLE = "Enter Your Code",
-    	SUBMIT = "Submit",
-    	CANCEL = "Cancel",
-    	ACCEPTED = "Success: Code Accepted!",
-    	INVALID_CODE = "That code wasn't quite right. Please try again.",
-    	ALREADY_REDEEMED = "This code has already been redeemed. Maybe by you?",
-    	FAILED_TO_CONTACT = "Sorry, it looks like the server's not answering right now. Please try again later.",
-    	LEGALESE = "Delivery time may vary due to temporal portal anomalies. Wilson is not responsible for emotional injuries caused by waiting. Gifts may result in bragging, unexpected delight, and/or enhanced gameplay experiences.",
-	},
+        TITLE = "Enter Your Code",
+        SUBMIT = "Submit",
+        CANCEL = "Cancel",
+        ACCEPTED = "Success: Code Accepted!",
+        INVALID_CODE = "That code wasn't quite right. Please try again.",
+        ALREADY_REDEEMED = "This code has already been redeemed. Maybe by you?",
+        FAILED_TO_CONTACT = "Sorry, it looks like the server's not answering right now. Please try again later.",
+        LEGALESE = "Delivery time may vary due to temporal portal anomalies. Wilson is not responsible for emotional injuries caused by waiting. Gifts may result in bragging, unexpected delight, and/or enhanced gameplay experiences.",
+    },
 
     NETWORKDISCONNECT =
     {
@@ -2872,7 +2870,7 @@ STRINGS.UI =
             ID_DST_DEDICATED_SERVER_STARTUP_FAILED = "Dedicated Server Failed To Start",
         },
         BODY =
-        {   
+        {
             DEFAULT = "You have been disconnected. We're not sure why... Sorry!",
             ID_NO_FREE_INCOMING_CONNECTIONS = "The server is full.",
             ID_DST_NO_FREE_PLAYER_SLOTS = "The server is full.",
@@ -2915,14 +2913,14 @@ STRINGS.UI =
             SERVER_MODS_WORKSHOP_FAILURE = "Download of the required mods from the Steam Workshop failed. Please try again.",
             SERVER_MODS_WORKSHOP_ACCESS_DENIED = "Download of the required mods from the Steam Workshop failed because one or more mods is not visible to you.",
             ID_DST_SLOT_RESERVATION = "Attempt to join server failed because remaining player slots are reserved. Please try again once a slot frees up.",
-		    ID_DST_SERVER_IS_CLAN_ONLY = "You must be a member of this server's Steam Group to connect.",
+            ID_DST_SERVER_IS_CLAN_ONLY = "You must be a member of this server's Steam Group to connect.",
             ID_DST_SERVER_IS_LAN_ONLY = "This server only allows players from their same local network.",
             ID_DST_DESTINATION_SERVER_NOT_AVAILABLE = "The server you were playing on is unavailable. Please try again later.",
             ID_DST_DEDICATED_SERVER_STARTUP_FAILED = "There was some sort of trouble starting the server. Please try again.",
-		},
-		OK = "OK",
+        },
+        OK = "OK",
     },
-    
+
     PAUSEMENU =
     {
         TITLE = "Paused",
@@ -2991,15 +2989,15 @@ STRINGS.UI =
         EMPTY_SERVER = "The server is empty.",
         PERF_HOST_LEVELS =
         {
-			"Host Performance: Good",
-			"Host Performance: Okay",
-			"Host Performance: Bad",
+            "Host Performance: Good",
+            "Host Performance: Okay",
+            "Host Performance: Bad",
         },
         PERF_CLIENT_LEVELS =
         {
-			"Client Performance: Good",
-			"Client Performance: Okay",
-			"Client Performance: Bad",
+            "Client Performance: Good",
+            "Client Performance: Okay",
+            "Client Performance: Bad",
         },
         PERF_CLIENT_LEVEL_UNKNOWN = "Client Performance: Unknown",
     },
@@ -3060,12 +3058,12 @@ STRINGS.UI =
 
     BUILTINCOMMANDS =
     {
-        EMOTES = 
+        EMOTES =
         {
             PRETTYNAMEFMT = "%s emote",
             DESC = "Perform an emote!",
         },
-        HELP = 
+        HELP =
         {
             PRETTYNAME = "Command Help",
             DESC = "Get more info on commands.",
@@ -3073,49 +3071,49 @@ STRINGS.UI =
             AVAILABLE = "Available commands:",
             NOTFOUND = "Couldn't find a command called '%s'",
         },
-        EMOTE = 
+        EMOTE =
         {
             PRETTYNAME = "Emote",
             DESC = "Express your feelings!",
         },
-        BUG = 
+        BUG =
         {
             PRETTYNAME = "Report Bug",
             DESC = "Run this to report a problem with the game!",
         },
-        RESCUE = 
+        RESCUE =
         {
             PRETTYNAME = "Rescue Me!",
             DESC = "If you ever find yourself stuck in the ocean, /rescue will put you back on land.",
         },
-        KICK = 
+        KICK =
         {
             PRETTYNAME = "Kick",
             DESC = "Boot someone off the server.",
             VOTETITLEFMT = "Should we kick %s?",
             VOTENAMEFMT = "vote to kick %s",
         },
-        BAN = 
+        BAN =
         {
             PRETTYNAME = "Ban",
             DESC = "Boot someone off the server. 'seconds' param makes the ban temporary.",
         },
-        STOPVOTE = 
+        STOPVOTE =
         {
             PRETTYNAME = "Stop Vote",
             DESC = "Cancel a vote in progress if you don't like it!",
         },
-        ROLL = 
+        ROLL =
         {
             PRETTYNAME = "Dice Roll",
             DESC = "Random dice roll. 'dice' is 1D100 by default (a single roll of 1-100).",
         },
-        RESET = 
+        RESET =
         {
             PRETTYNAME = "Reset",
             DESC = "Restart the server from the last save.",
         },
-        ROLLBACK = 
+        ROLLBACK =
         {
             PRETTYNAME = "Rollback",
             DESC = "Rollback the server to a previous save.",
@@ -3123,7 +3121,7 @@ STRINGS.UI =
             VOTENAMEFMT = "vote to rollback the server",
             VOTEPASSEDFMT = "Rolling server back in 5 seconds...",
         },
-        REGENERATE = 
+        REGENERATE =
         {
             PRETTYNAME = "Regenerate World",
             DESC = "Destroy this world and start with a brand new one!",
@@ -3133,7 +3131,8 @@ STRINGS.UI =
         },
     },
 
-    MODSSCREEN = {
+    MODSSCREEN =
+    {
         APPLY = "Apply",
         CANCEL = "Cancel",
         BACK = "Back",
@@ -3167,7 +3166,8 @@ STRINGS.UI =
         WORKING_NORMALLY = "This mod is enabled.",
         DISABLED_MANUAL = "This mod is disabled.",
         DISABLED_ERROR = "Crashed! Disabled.",
-        STATUS = {
+        STATUS =
+        {
             WORKING_NORMALLY = "Enabled",
             DISABLED_MANUAL = "Disabled",
             DISABLED_ERROR = "Crashed!",
@@ -3177,7 +3177,8 @@ STRINGS.UI =
         NO_MODS = "You have no mods installed. Mods can be downloaded from the Steam Workshop.",--Klei forums.",
         NO_MODS_TYPE = "You have no %s mods installed. Mods can be downloaded from the Steam Workshop.",--Klei forums.",
         NO_MODS_LINK = "Take me to the mods!",
-        WORKSHOP = {
+        WORKSHOP =
+        {
             UPDATE_TITLE = "Steam Workshop",
             STATE_LIST = "Checking Workshop subscriptions...",
             STATE_DETAILS = "Verifying mod details...",
@@ -3209,13 +3210,13 @@ STRINGS.UI =
         UPDATEALL_TITLE = "Update All Mod Workshop Data",
         UPDATEALL_BODY = "Are you sure you want to update all your subscribed mods?",
         VIEW_AND_CONFIGURE = "Mod can be viewed and configured.",
-        OUT_OF_DATE = "Mods Out of Date:",      
+        OUT_OF_DATE = "Mods Out of Date:",
         CANCEL_TITLE = "Lose Changes?",
         CANCEL_BODY = "Do you want to abandon your changes?",
         NOCONFIG = "No Configurations",
         MORE_MODS = "Steam Workshop",
     },
-    
+
     CUSTOMIZATIONSCREEN =
     {
         APPLY = "Apply",
@@ -3235,7 +3236,8 @@ STRINGS.UI =
         INVALIDSEASONCOMBO_BODY = "You have set all seasons to \"None\".\nPlease turn on at least one season to continue.",
         OKAY = "Okay",
 
-        PRESETLEVELS = {
+        PRESETLEVELS =
+        {
             -- indexed titles left in place for backwards compatibility with mods...
                 "Default", 
                 "Together Plus",             -- Bootstrap the start
@@ -3260,8 +3262,9 @@ STRINGS.UI =
 
             MOD_MISSING = "<MOD MISSING>",
         },
-                
-        PRESETLEVELDESC = {
+
+        PRESETLEVELDESC =
+        {
             -- indexed titles left in place for backwards compatibility with mods...
                 "The standard Don't Starve experience.",
                 "A quicker start in a harsher world.",
@@ -3303,7 +3306,7 @@ STRINGS.UI =
         UNKNOWN_PRESET_DESC = "This game was started with some settings we don't quite recognize.",
         REVERTCHANGES = "Revert Changes",
 
-        TASK_SET = "World Gen: Biomes",            
+        TASK_SET = "World Gen: Biomes",
         START_LOCATION = "World Gen: Spawn Area",
         WORLD_SIZE = "World Gen: Size",
         BRANCHING = "World Gen: Branches",
@@ -3398,7 +3401,7 @@ STRINGS.UI =
         EARTHQUAKES = "Earthquakes",
         CAVELIGHT = "Sinkhole Lights",
     },
-    
+
     SERVERLISTINGSCREEN =
     {
         SERVER_LIST_TITLE = "Servers",
@@ -3479,7 +3482,7 @@ STRINGS.UI =
         OFFLINE_MODE_BODY = "You are not logged in and can't play in online games.\nTry playing over LAN or restarting the game to log in.",
         OFFLINEWARNINGTITLE = "Offline World",
         OFFLINEMODEBODYJOIN = "Are you sure you want to join an offline world? You will not be able to receive or use Collection Items in this world.",
-        
+
         CHAR_AGE_1 = "Survived ",
         CHAR_AGE_2 = " Day",
         CHAR_AGE_3 = " Days",
@@ -3492,13 +3495,13 @@ STRINGS.UI =
         GROUP_NONE = "No group",
         VIEWGROUP = "View Group Profile",
         SERVERACTIONS = "Server Actions...",
-        SEASONS = 
-            {
-                SUMMER = "Summer",
-                WINTER = "Winter",
-                SPRING = "Spring",
-                AUTUMN = "Autumn",
-            },
+        SEASONS =
+        {
+            SUMMER = "Summer",
+            WINTER = "Winter",
+            SPRING = "Spring",
+            AUTUMN = "Autumn",
+        },
         SEASONFILTER = "Season:",
         EARLY_SEASON_1 = "Early ",
         EARLY_SEASON_2 = "",
@@ -3507,11 +3510,11 @@ STRINGS.UI =
         UNKNOWN_SEASON = "Season Unknown",
         UNKNOWN = "Unknown",
         PHASES = 
-            {
-                DAY = "Daytime",
-                DUSK = "Dusk",
-                NIGHT = "Night",
-            },
+        {
+            DAY = "Daytime",
+            DUSK = "Dusk",
+            NIGHT = "Night",
+        },
         UNKNOWN_PHASE = "???",
         DAYDESC = "Day ",--", Day ",
         OUT_OF = "of",
@@ -3532,7 +3535,7 @@ STRINGS.UI =
         INTENTION_FILTER = "Playstyle:",
         INTENTION_TITLE = "What's your playstyle?",
         INTENTION_BUTTON = "Choose Playstyle",
-        INTENTION_DESC = 
+        INTENTION_DESC =
         {
             SOCIAL = "You want to hang out, make friends, and play for fun. You don't care so much if you win or lose, as long as everyone's having a good time!",
             COOPERATIVE = "Teamwork is your guiding principal. It's not enough to just not starve, you have to not starve... Together!",
@@ -3559,7 +3562,8 @@ STRINGS.UI =
         SERVERNAME = "Name:",
         SERVERPASSWORD = "Password:",
         SERVERDESC = "Description:",
-        PRIVACY = {
+        PRIVACY =
+        {
             PUBLIC = "Public",
             FRIENDS = "Friends Only",
             LOCAL = "Local Only",
@@ -3568,7 +3572,8 @@ STRINGS.UI =
         INTENTION_LABEL = "Server Playstyle:",
         INTENTION_TITLE = "What's your server's playstyle?",
         INTENTION_BUTTON = "Set Intention",
-        INTENTION_DESC = {
+        INTENTION_DESC =
+        {
             SOCIAL = "This server is a place for friendly chatter, a relaxed playstyle, and getting to know people. Everyone's welcome here!",
             COOPERATIVE = "Surviving's more fun when you do it as a team. On this server we want to work together and do our best to tame the hostile world.",
             COMPETITIVE = "This server is the perfect arena for a fair fight. Everyone needs a place to prove who's the best at surviving, fighting, building, or... whatever.",
@@ -3660,15 +3665,15 @@ STRINGS.UI =
         EMPTY_SLOT_TITLE = "Empty Slot",
         CLEAR_PLAYERS = "Unban\nAll",
         CLEAR_PLAYERS_HELPTEXT = "Unban All",
-        UNDO_PLAYERS = "Undo All",        
+        UNDO_PLAYERS = "Undo All",
         PLAYER_DETAILS = "View Details",
         --PLAYER_PROFILE = "View Profile",
         PLAYER_DELETE = "Unban",
         APPLY = "Apply",
         CANCEL = "Cancel",
         BACK = "Back",
-        YES = "Yes",        
-        NO = "No",      
+        YES = "Yes",
+        NO = "No",
         UNKNOWN = "Unknown",
         BANNED = "Banned on ",
         UNKNOWN_DATE = "????-??-??",
@@ -3705,7 +3710,7 @@ STRINGS.UI =
         BAD_BUTTON = "OK",
     },
 
-    LOBBYSCREEN=
+    LOBBYSCREEN =
     {
         SELECT = "Go!",
         APPLY = "Apply",
@@ -3777,7 +3782,7 @@ STRINGS.UI =
     SETPOPUP =
     {
         OK = "OK",
-        REWARD = "Reward:"
+        REWARD = "Reward:",
     },
 
     -- Rarity and colour tables are to allow translation of item properties. Keys are the names as returned by the item server.
@@ -4266,7 +4271,7 @@ STRINGS.UI =
                 "\238\128\130",--"Button X",
                 "\238\128\131",--"Button Y",    
 
-                -- Analog          
+                -- Analog
                 "\238\128\146",--"Left Thumb Left",
                 "\238\128\147",--"Left Thumb Right",
                 "\238\128\145",--"Left Thumb Down",
@@ -4279,7 +4284,7 @@ STRINGS.UI =
                 "\238\128\136",--"Left Trigger",
                 "\238\128\139",--"Right Trigger",
                 "\238\128\139",--"Right Trigger",
-            }, 
+            },
             -- Generic
             [3] =
             {
@@ -4329,7 +4334,7 @@ STRINGS.UI =
                 "\238\140\130",--"Button X",
                 "\238\140\131",--"Button Y",
 
-                -- Analog          
+                -- Analog
                 "\238\140\146",--"Left Thumb Left",
                 "\238\140\147",--"Left Thumb Right",
                 "\238\140\145",--"Left Thumb Down",
@@ -4433,7 +4438,7 @@ STRINGS.UI =
                 "\238\136\130",--"Square",
                 "\238\136\131",--"Triangle",    
 
-                -- Analog          
+                -- Analog
                 "\238\136\146",--"Left Thumb Left",
                 "\238\136\147",--"Left Thumb Right",
                 "\238\136\144",--"Left Thumb Up",
@@ -4551,13 +4556,15 @@ STRINGS.UI =
         REMOVELEVEL = "Remove %s",
         REMOVELEVEL_WARNING = "Do you want to remove %s from this server?",
 
-        LOCATIONTABNAME = {
+        LOCATIONTABNAME =
+        {
             FOREST = "Forest",
             CAVE = "Caves",
             UNKNOWN = "???",
         },
 
-        LOCATION = {
+        LOCATION =
+        {
             FOREST = "Forest",
             CAVE = "Cave",
             UNKNOWN = "Some",
@@ -4635,24 +4642,25 @@ STRINGS.UI =
 
         USEPRESETS = "Presets",
         USEPRESETS_LOCATION = "%s Presets",
-        CHAPTERS = {
-                "Chapter 1 of 5",
-                "Chapter 2 of 5",
-                "Chapter 3 of 5",
-                "Chapter 4 of 5",
-                "Chapter 5 of 5",
-                "Epilogue",
+        CHAPTERS =
+        {
+            "Chapter 1 of 5",
+            "Chapter 2 of 5",
+            "Chapter 3 of 5",
+            "Chapter 4 of 5",
+            "Chapter 5 of 5",
+            "Epilogue",
         },
-        ADVENTURELEVELS = {
-                "A Cold Reception", 
-                "The King of Winter", 
-                "The Game is Afoot", 
-                "Archipelago",
-                "Two Worlds", 
-                "Darkness", 
-
-                "Checkmate",
-                },
+        ADVENTURELEVELS =
+        {
+            "A Cold Reception",
+            "The King of Winter",
+            "The Game is Afoot",
+            "Archipelago",
+            "Two Worlds",
+            "Darkness",
+            "Checkmate",
+        },
         NONE = "None",
         NONEAVAILABLE = "None Available",
         MODIFYTASKS = "Modify Tasks",
@@ -4664,20 +4672,20 @@ STRINGS.UI =
         PLUSSTART = "Plus",
         DARKSTART = "Dark",
         CAVESTART = "Caves",
-        
+
         EVENT_HALLOWEDNIGHTS_2016 = "Hallowed Nights",
         EVENT_WINTERSFEAST_2016 = "Winters Feast",
     },
 
     SAVELOAD =
-    {        
+    {
         SAVE_FAILED = "An error occurred while saving your data.",
         LOAD_FAILED = "An error occurred while loading your data.",
-        DELETE_FAILED = "An error occurred while deleting your data.",	    
+        DELETE_FAILED = "An error occurred while deleting your data.",
         DATA_DAMAGED = "Oh no! Your save data has become corrupt and cannot be used.",
         DISABLE_AUTOSAVE = "Are you sure you want to\ndisable the auto-save feature?",
-        
-        OVERWRITE = "Overwrite",	    
+
+        OVERWRITE = "Overwrite",
         RETRY = "Retry",
         CANCEL = "Cancel",
         YES = "Yes",
@@ -5016,123 +5024,123 @@ STRINGS.SIGNS =
     QUANT_ADJ_NOUN_FMT = "{quantifier} {adjective} {noun}",
     QUANT_ADJ_NOUN_ADD_FMT = "{quantifier} {adjective} {noun} {addition}",
 
-	QUANTIFIERS =
-	{
-		"Really",
-		"Very",
-		"Quite",
-		"Very Very",
-		"Extremely",
-		"Moderately",
-		"Minimally",
-		"Sort of",
-		"Totally",
-	},
+    QUANTIFIERS =
+    {
+        "Really",
+        "Very",
+        "Quite",
+        "Very Very",
+        "Extremely",
+        "Moderately",
+        "Minimally",
+        "Sort of",
+        "Totally",
+    },
 
-	ADJECTIVES =
-	{
-		"Sunny",
-		"Danker",
-		"Dark",
-		"Morose",
-		"Morbid",
-		"Awful",
-		"Horrible",
-		"Perfectly Normal",
-		"Ordinary",
-		"Perilous",
-		"Dangerous",
-		"Hazardous",
-		"Creepy",
-		"Empty",
-		"Lonely",
-		"Wet",
-		"Dry",
-		"Huge",
-		"Small",
-		"Little",
-		"Picturesque",
-		"Hideous",
-		"Dreary",
-		"Repulsive",
-		"Boring",
-		"Good",
-		"Striking",
-		"Uninteresting",
-		"Fascinating",
-		"Magnificent",
-		"Soulless",
-		"Echoing",
-		"Sleepy",
-		"Smelly",
-		"Mediocre",
-		"Awesome",
-		"Brilliant",
-		"Excellent",
-	},
+    ADJECTIVES =
+    {
+        "Sunny",
+        "Danker",
+        "Dark",
+        "Morose",
+        "Morbid",
+        "Awful",
+        "Horrible",
+        "Perfectly Normal",
+        "Ordinary",
+        "Perilous",
+        "Dangerous",
+        "Hazardous",
+        "Creepy",
+        "Empty",
+        "Lonely",
+        "Wet",
+        "Dry",
+        "Huge",
+        "Small",
+        "Little",
+        "Picturesque",
+        "Hideous",
+        "Dreary",
+        "Repulsive",
+        "Boring",
+        "Good",
+        "Striking",
+        "Uninteresting",
+        "Fascinating",
+        "Magnificent",
+        "Soulless",
+        "Echoing",
+        "Sleepy",
+        "Smelly",
+        "Mediocre",
+        "Awesome",
+        "Brilliant",
+        "Excellent",
+    },
 
-	-- Indices match ground types in constants.lua
-	NOUNS =
-	{
-		[2] = {"Road", "Path"},
-		[3] = {"Crag", "Area", "Region", "Rocky Place"},
-		[4] = {"Patch", "Turf", "Area", "Tract"},
-		[5] = {"Savannah", "Grassland", "Prairie"},
-		[6] = {"Field", "Pasture", "Meadow", "Garden"},
-		[7] = {"Forest", "Woods", "Thicket", "Grove"},
-		[8] = {"Marsh", "Swamp", "Bog", "Fen"},
-		[9] = {"Web", "Cobweb"},
-		[10] = {"Place", "Corner", "Spot", "Base", "Hidey-Hole"},
-		[11] = {"Place", "Corner", "Spot", "Base", "Hidey-Hole", "Carpet", "Rug"},
-		[12] = {"Place", "Corner", "Spot", "Base", "Checkerboard", "Zone"},
+    -- Indices match ground types in constants.lua
+    NOUNS =
+    {
+        [2] = { "Road", "Path" },
+        [3] = { "Crag", "Area", "Region", "Rocky Place" },
+        [4] = { "Patch", "Turf", "Area", "Tract" },
+        [5] = { "Savannah", "Grassland", "Prairie" },
+        [6] = { "Field", "Pasture", "Meadow", "Garden" },
+        [7] = { "Forest", "Woods", "Thicket", "Grove" },
+        [8] = { "Marsh", "Swamp", "Bog", "Fen" },
+        [9] = { "Web", "Cobweb" },
+        [10] = { "Place", "Corner", "Spot", "Base", "Hidey-Hole" },
+        [11] = { "Place", "Corner", "Spot", "Base", "Hidey-Hole", "Carpet", "Rug" },
+        [12] = { "Place", "Corner", "Spot", "Base", "Checkerboard", "Zone" },
 
-		[13] = {"Cave"},
-		[14] = {"Cave"},
-		[15] = {"Cave"},
-	    [16] = {"Cave"},
-	    [17] = {"Cave"},
-	    [18] = {"Cave"},
-	    [19] = {"Cave"},
-	    [20] = {"Cave"},
-	    [21] = {"Cave"},
-	    [22] = {"Cave"},
-	    [23] = {"Cave"},
-		[24] = {"Cave"},
-		[25] = {"Cave"},
+        [13] = { "Cave" },
+        [14] = { "Cave" },
+        [15] = { "Cave" },
+        [16] = { "Cave" },
+        [17] = { "Cave" },
+        [18] = { "Cave" },
+        [19] = { "Cave" },
+        [20] = { "Cave" },
+        [21] = { "Cave" },
+        [22] = { "Cave" },
+        [23] = { "Cave" },
+        [24] = { "Cave" },
+        [25] = { "Cave" },
 
-		[30] = {"Forest", "Woods", "Thicket", "Grove"},
+        [30] = { "Forest", "Woods", "Thicket", "Grove" },
 
-		[31] = {"Desert", "Badlands", "Flats"},
+        [31] = { "Desert", "Badlands", "Flats" },
 
-		[32] = {"Place", "Corner", "Spot", "Base", "Hidey-Hole", "Zone", "Scale"},
-	},
+        [32] = { "Place", "Corner", "Spot", "Base", "Hidey-Hole", "Zone", "Scale" },
+    },
 
-	DEFAULT_NOUNS = 
-	{
-		"Spot", 
-		"Area", 
-		"Region",
-		"Point",
-		"Locality",
-		"Site"
-	},
+    DEFAULT_NOUNS =
+    {
+        "Spot",
+        "Area",
+        "Region",
+        "Point",
+        "Locality",
+        "Site"
+    },
 
-	ADDITIONS = 
-	{
-		"of Perilousness",
-		"of Horribleness",
-		"of Loneliness",
-		"of Sorrow",
-		"of Danger",
-		"of Hunger",
-		"of Shadows",
-		"infested with Monsters",
-		"crawling with Horrors",
-		"of Happiness",
-		"of Dreariness",
-		"of Death",
-		"full of Bees",
-	},
+    ADDITIONS =
+    {
+        "of Perilousness",
+        "of Horribleness",
+        "of Loneliness",
+        "of Sorrow",
+        "of Danger",
+        "of Hunger",
+        "of Shadows",
+        "infested with Monsters",
+        "crawling with Horrors",
+        "of Happiness",
+        "of Dreariness",
+        "of Death",
+        "full of Bees",
+    },
 }
 
 STRINGS.MAPRECORDER =
@@ -5158,7 +5166,7 @@ STRINGS.SHARD =
         DST_SHARD_DESTINATION_FULL = "[WIP] Destination is full!",
         -- If there were an error while sending the migration data, migration is canceled
         DST_SHARD_MIGRATION_CANCELLED = "[WIP] Migration canceled",
-    }   
+    },
 }
 
 ----------------------------------------------------------------------------
