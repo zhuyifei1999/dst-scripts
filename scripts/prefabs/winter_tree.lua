@@ -188,7 +188,7 @@ local function AddDecor(inst, data)
 end
 
 -------------------------------------------------------------------------------
-local GIFTING_PLAYER_RADIUS_SQ = 25*25
+local GIFTING_PLAYER_RADIUS_SQ = 25 * 25
 
 local random_gift1 =
 {
@@ -198,6 +198,7 @@ local random_gift1 =
     nitre = 1,
     gears = .5,
     compass = .5,
+    sewing_kit = .5,
 
     --gems
     redgem = .5,
@@ -216,14 +217,15 @@ local random_gift1 =
 
 local random_gift2 =
 {
-    gears = .5,
+    gears = .4,
+    sewing_kit = .4,
 
     --gems
-    redgem = .5,
-    bluegem = .5,
-    greengem = .1,
-    orangegem = .1,
-    yellowgem = .1,
+    redgem = .2,
+    bluegem = .2,
+    greengem = .2,
+    orangegem = .2,
+    yellowgem = .2,
 
     --hats
     beefalohat = .5,
@@ -484,6 +486,8 @@ local function onworked(inst, worker, workleft)
             end
         end
     elseif inst:HasTag("burnt") then
+        inst.components.lootdropper:DropLoot()
+
         if inst.statedata.burntbreakanim ~= nil then
             PlayAnim(inst, inst.statedata.burntbreakanim)
             inst.SoundEmitter:PlaySound("dontstarve/forest/treeCrumble")
@@ -495,14 +499,11 @@ local function onworked(inst, worker, workleft)
             inst:AddTag("NOCLICK")
             inst:DoTaskInTime(1.5, ErodeAway)
         else
-            inst.components.lootdropper:DropLoot()
             local fx = SpawnPrefab("collapse_small")
             fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
             fx:SetMaterial("wood")
             inst:Remove()
         end
-
-        inst.components.lootdropper:DropLoot()
     else
         local fx = SpawnPrefab("collapse_small")
         fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
