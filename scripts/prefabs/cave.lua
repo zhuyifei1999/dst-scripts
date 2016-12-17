@@ -169,7 +169,7 @@ local function master_postinit(inst)
     inst:AddComponent("hounded")
     inst.components.hounded:SetSpawnData(wormspawn)
 
-    --anr update retrofitting
+	--anr update retrofitting
     inst:AddComponent("retrofitcavemap_anr")
 
     -- inst:AddComponent("periodicthreat")
