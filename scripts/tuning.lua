@@ -456,9 +456,9 @@ function Tune(overrides)
         KLAUS_DEAGGRO_DIST = 30,
         KLAUS_EPICSCARE_RANGE = 10,
 
-		KLAUSSACK_EVENT_RESPAWN_TIME = total_day_time * 20, -- winters feast event respawn time
-		KLAUSSACK_SPAWN_DELAY = total_day_time * 1,
-		KLAUSSACK_SPAWN_DELAY_VARIANCE = total_day_time * 2,
+        KLAUSSACK_EVENT_RESPAWN_TIME = total_day_time * 20, -- winters feast event respawn time
+        KLAUSSACK_SPAWN_DELAY = total_day_time * 1,
+        KLAUSSACK_SPAWN_DELAY_VARIANCE = total_day_time * 2,
 
         BUZZARD_DAMAGE = 15,
         BUZZARD_ATTACK_RANGE = 2,
@@ -577,7 +577,8 @@ function Tune(overrides)
         BEEFALO_HEALTH = 500 * 2, -- harder for multiplayer
         BEEFALO_HEALTH_REGEN_PERIOD = 10,
         BEEFALO_HEALTH_REGEN = (500*2)/(total_day_time*3)*10,
-        BEEFALO_DAMAGE = {
+        BEEFALO_DAMAGE =
+        {
             DEFAULT = 34,
             RIDER = 25,
             ORNERY = 50,
@@ -593,7 +594,8 @@ function Tune(overrides)
         BEEFALO_HUNGER = (calories_per_day*4)/0.8, -- so a 0.8 fullness lasts a day
         BEEFALO_HUNGER_RATE = (calories_per_day*4)/total_day_time,
         BEEFALO_WALK_SPEED = 1.0,
-        BEEFALO_RUN_SPEED = {
+        BEEFALO_RUN_SPEED =
+        {
             DEFAULT = 7,
             RIDER = 8.0,
             ORNERY = 7.0,
@@ -606,7 +608,8 @@ function Tune(overrides)
         BEEFALO_MIN_BUCK_TIME = 50,
         BEEFALO_MAX_BUCK_TIME = 800,
         BEEFALO_BUCK_TIME_VARIANCE = 3,
-        BEEFALO_MIN_DOMESTICATED_OBEDIENCE = {
+        BEEFALO_MIN_DOMESTICATED_OBEDIENCE =
+        {
             DEFAULT = 0.8,
             ORNERY = 0.45,
             RIDER = 0.95,
@@ -973,7 +976,7 @@ function Tune(overrides)
         FROG_ATTACK_PERIOD = 1,
         FROG_TARGET_DIST = 4,
 
-        HOUND_SPECIAL_CHANCE = 
+        HOUND_SPECIAL_CHANCE =
         {
             {minday=0, chance=0},
             {minday=15, chance=.1},
@@ -1685,7 +1688,7 @@ function Tune(overrides)
         ROCKY_SPAWN_DELAY = 4*total_day_time,
         ROCKY_SPAWN_VAR = 0,
 
-        ROCKY_DAMAGE = 75,  
+        ROCKY_DAMAGE = 75,
         ROCKY_HEALTH = 1500 * 2, -- harder for multiplayer
         ROCKY_WALK_SPEED = 2,
         ROCKY_MAX_SCALE = 1.2,

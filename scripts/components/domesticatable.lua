@@ -32,6 +32,11 @@ local Domesticatable = Class(function(self, inst)
     self.decaytask = nil
 end)
 
+function Domesticatable:OnRemoveFromEntity()
+    self:CancelTask()
+    self.inst:RemoveTag("domesticatable")
+end
+
 function Domesticatable:SetDomesticationTrigger(fn)
     self.domestication_triggerfn = fn
 end
@@ -51,7 +56,6 @@ function Domesticatable:Validate()
         self:CancelTask()
         return false
     end
-
     return true
 end
 
@@ -85,8 +89,26 @@ local function CalculateLoss(currenttime, lastgaintime)
     return TUNING.BEEFALO_DOMESTICATION_LOSE_DOMESTICATION * ratio
 end
 
-local function UpdateDomestication(inst)
-    local self = inst.components.domesticatable
+local function DoDeltaObedience(self, delta)
+    local old = self.obedience
+    self.obedience = math.max(math.min(self.obedience + delta, self.maxobedience), self.minobedience)
+    if old ~= self.obedience then
+        self.inst:PushEvent("obediencedelta", { old = old, new = self.obedience })
+        return true
+    end
+end
+
+local function DoDeltaDomestication(self, delta)
+    local old = self.domestication
+    self.domestication = math.max(math.min(self.domestication + delta, 1), 0)
+    self.maxobedience = 1
+    if old ~= self.domestication then
+        self.inst:PushEvent("domesticationdelta", { old = old, new = self.domestication })
+        return true
+    end
+end
+
+local function UpdateDomestication(inst, self)
     if not self.domesticationdecaypaused then
         for k,v in pairs(self.tendencies) do
             self.tendencies[k] = math.max(v + FEEDBACK_DECAY_RATE * DECAY_TASK_PERIOD, 0)
@@ -94,13 +116,13 @@ local function UpdateDomestication(inst)
     end
 
     -- obedience still decays even if domestication decay is paused
-    self:DeltaObedience(OBEDIENCE_DECAY_RATE * DECAY_TASK_PERIOD)
+    DoDeltaObedience(self, OBEDIENCE_DECAY_RATE * DECAY_TASK_PERIOD)
 
     if self.domestication_triggerfn(inst) then
-        self:DeltaDomestication(TUNING.BEEFALO_DOMESTICATION_GAIN_DOMESTICATION * DECAY_TASK_PERIOD)
         self.lastdomesticationgain = GetTime()
+        DoDeltaDomestication(self, TUNING.BEEFALO_DOMESTICATION_GAIN_DOMESTICATION * DECAY_TASK_PERIOD)
     elseif not self.domesticationdecaypaused then
-        self:DeltaDomestication(CalculateLoss(GetTime(), self.lastdomesticationgain) * DECAY_TASK_PERIOD)
+        DoDeltaDomestication(self, CalculateLoss(GetTime(), self.lastdomesticationgain) * DECAY_TASK_PERIOD)
     end
 
     self:CheckForChanges()
@@ -108,32 +130,20 @@ local function UpdateDomestication(inst)
 end
 
 function Domesticatable:DeltaObedience(delta)
-    local old = self.obedience
-    self.obedience = math.max(math.min(self.obedience + delta, self.maxobedience), self.minobedience)
-    if old ~= self.obedience then
-        self.inst:PushEvent("obediencedelta", {old=old, new=self.obedience})
+    if DoDeltaObedience(self, delta) then
+        self:CheckAndStartTask()
     end
-    self:CheckAndStartTask()
 end
 
 function Domesticatable:DeltaDomestication(delta)
-    local old = self.domestication
-    self.domestication = math.max(math.min(self.domestication + delta, 1), 0)
-
-    self.maxobedience = 1
-
-    if old ~= self.domestication then
-        self.inst:PushEvent("domesticationdelta", {old=old, new=self.domestication})
+    if DoDeltaDomestication(self, delta) then
+        self:CheckForChanges()
         self:CheckAndStartTask()
     end
 end
 
 function Domesticatable:DeltaTendency(tendency, delta)
-    if self.tendencies[tendency] == nil then
-        self.tendencies[tendency] = delta
-    else
-        self.tendencies[tendency] = self.tendencies[tendency] + delta
-    end
+    self.tendencies[tendency] = (self.tendencies[tendency] or 0) + delta
 end
 
 function Domesticatable:PauseDomesticationDecay(pause)
@@ -154,13 +164,9 @@ function Domesticatable:CancelTask()
 end
 
 function Domesticatable:CheckAndStartTask()
-    if not self:Validate() then
-        return
+    if self:Validate() and self.decaytask == nil then
+        self.decaytask = self.inst:DoPeriodicTask(DECAY_TASK_PERIOD, UpdateDomestication, 0, self)
     end
-    if self.decaytask ~= nil then
-        return
-    end
-    self.decaytask = self.inst:DoPeriodicTask(DECAY_TASK_PERIOD, UpdateDomestication, 0)
 end
 
 function Domesticatable:SetDomesticated(domesticated)

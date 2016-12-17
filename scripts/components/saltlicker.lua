@@ -1,7 +1,7 @@
 local _StopSeeking --forward declare
 
-local function _checkforsaltlick(inst, self)
-    local ent = FindEntity(inst, inst:IsAsleep() and TUNING.SALTLICK_CHECK_DIST * .75 or TUNING.SALTLICK_USE_DIST, nil, { "saltlick" }, { "INLIMBO", "fire", "burnt" })
+local function _checkforsaltlick(inst, self, resalt)
+    local ent = FindEntity(inst, (resalt or inst:IsAsleep()) and TUNING.SALTLICK_CHECK_DIST * .75 or TUNING.SALTLICK_USE_DIST, nil, { "saltlick" }, { "INLIMBO", "fire", "burnt" })
     if ent ~= nil then
         if ent.components.finiteuses ~= nil then
             ent.components.finiteuses:Use(self.uses_per_lick)
@@ -49,7 +49,7 @@ local function _ontimerdone(inst, data)
             (inst.components.sleeper ~= nil and inst.components.sleeper:IsAsleep()) or
             (inst.components.freezable ~= nil and inst.components.freezable:IsFrozen()) then
             self:SetSalted(false)
-        elseif not _checkforsaltlick(inst, self) then
+        elseif not _checkforsaltlick(inst, self, true) then
             _StartSeeking(self)
             self:SetSalted(false)
         end

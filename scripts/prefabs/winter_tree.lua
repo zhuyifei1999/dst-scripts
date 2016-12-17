@@ -812,10 +812,10 @@ local function AddWinterTree(treetype)
         inst.entity:AddAnimState()  
         inst.entity:AddSoundEmitter()
         inst.entity:AddMiniMapEntity()
-        inst.entity:AddNetwork()
         inst.entity:AddLight()
+        inst.entity:AddNetwork()
 
-        MakeObstaclePhysics(inst, 0.5)
+        MakeObstaclePhysics(inst, .5)
 
         inst.MiniMapEntity:SetIcon(treetype.name..".png")
         inst.MiniMapEntity:SetPriority(-1)
@@ -828,8 +828,10 @@ local function AddWinterTree(treetype)
         inst.Light:Enable(false)
 
         MakeSnowCoveredPristine(inst)
+
         inst:AddTag("winter_tree")
         inst:AddTag("structure")
+        inst:AddTag("event_trigger")
 
         inst:SetPrefabNameOverride("winter_tree")
 

@@ -30,10 +30,12 @@ local function trygrowth(inst)
         inst.components.crop:DoGrow(TUNING.TOTAL_DAY_TIME * 3, true)
     end
 
-    if inst.components.growable ~= nil and inst:HasTag("tree") and not inst:HasTag("stump") then
+    if inst.components.growable ~= nil and
+        (inst:HasTag("tree") or inst:HasTag("winter_tree")) and
+        not inst:HasTag("stump") then
         inst.components.growable:DoGrowth()
     end
-    
+
     if inst.components.harvestable ~= nil and inst.components.harvestable:CanBeHarvested() and inst:HasTag("mushroom_farm") then
         inst.components.harvestable:Grow()
     end
@@ -52,7 +54,6 @@ local book_defs =
 
             reader:StartThread(function()
                 for k = 1, numtentacles do
-                
                     local theta = math.random() * 2 * PI
                     local radius = math.random(3, 8)
 
