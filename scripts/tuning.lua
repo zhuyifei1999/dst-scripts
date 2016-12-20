@@ -263,9 +263,9 @@ function Tune(overrides)
 
         CRITTER_TRAITS =
         {
-            COMBAT          = {inc=0.003, decay=1.1},
-            WELLFED         = {inc=0.66,  decay=.9},
-            PLAYFUL         = {inc=0.22,  decay=.9},
+            COMBAT          = {inc=0.003, decay=1.2},
+            WELLFED         = {inc=0.70,  decay=.85},
+            PLAYFUL         = {inc=0.30,  decay=.8},
             CRAFTY          = {inc=0.25,  decay=1},
         },
 

@@ -2,7 +2,7 @@
 local Stats = require("stats")
 
 local TRAIT_MAX = 40
-local TRAIT_MIN = -12
+local TRAIT_MIN = -6
 local DECAY_TICK_RATE = TUNING.CRITTER_TRAIT_DECAY_DELAY / TUNING.TOTAL_DAY_TIME
 
 

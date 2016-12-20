@@ -437,6 +437,8 @@ local function common_fn(gem)
         end
         inst:AddTag("deergemresistance")
         inst:SetPrefabNameOverride("deer_gemmed")
+
+        inst:AddComponent("spawnfader")
     else
         inst.AnimState:Hide("swap_antler")
         inst.AnimState:Hide("CHAIN")

@@ -1261,8 +1261,8 @@ end
 local function OnSpawnPet(inst, pet)
     --Delayed in case we need to relocate for migration spawning
     pet:DoTaskInTime(0, DoEffects)
-    if pet.FadeIn ~= nil then
-        pet:FadeIn()
+    if pet.components.spawnfader ~= nil then
+        pet.components.spawnfader:FadeIn()
     end
 end
 

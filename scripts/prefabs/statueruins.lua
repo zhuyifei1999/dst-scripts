@@ -264,8 +264,6 @@ local function commonfn(small)
     inst.components.workable:SetOnWorkCallback(ShowWorkState)
     inst.components.workable:SetOnFinishCallback(OnWorkFinished)
 
-    inst:AddComponent("fader")
-
     inst:AddComponent("lootdropper")
 
     inst:WatchWorldState("nightmarephase", OnNightmarePhaseChanged)

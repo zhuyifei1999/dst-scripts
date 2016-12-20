@@ -87,6 +87,22 @@ CLOTHING =
 		torso_tuck = "untucked",
 		rarity = "Distinguished",
 	},
+	body_dress_flouncy_tan_cream =
+	{
+		type = "body",
+		symbol_overrides = { "arm_lower_cuff", "arm_upper", "torso", "torso_pelvis", "skirt", "foot", },
+		override_build = "body_dress_flouncy_tan_cream",
+		torso_tuck = "skirt",
+		rarity = "Distinguished",
+	},
+	body_dress_yachtsuit_white_pure =
+	{
+		type = "body",
+		symbol_overrides = { "arm_upper", "torso", "torso_pelvis", "skirt", "leg", "foot", },
+		override_build = "body_dress_yachtsuit_white_pure",
+		torso_tuck = "skirt",
+		rarity = "Distinguished",
+	},
 	body_expo_letterman_yellow_beige =
 	{
 		type = "body",
@@ -146,6 +162,22 @@ CLOTHING =
 		symbol_overrides = { "torso", "arm_upper", "torso_pelvis", "leg", "foot", "tail", },
 		symbol_hides = { "skirt", },
 		override_build = "body_hutch_costume",
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+	},
+	body_jacket_shearling_orange_salmon =
+	{
+		type = "body",
+		symbol_overrides = { "arm_lower", "arm_upper", "torso", },
+		override_build = "body_jacket_shearling_orange_salmon",
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+	},
+	body_jacket_toggle_navy_phthalo =
+	{
+		type = "body",
+		symbol_overrides = { "arm_lower", "arm_upper", "torso", },
+		override_build = "body_jacket_toggle_navy_phthalo",
 		torso_tuck = "untucked",
 		rarity = "Distinguished",
 	},
@@ -377,6 +409,15 @@ CLOTHING =
 		override_build = "body_sweatervest_red_firehound",
 		torso_tuck = "untucked",
 		rarity = "Classy",
+	},
+	body_tanktop_tiecollar_yellow_goldenrod =
+	{
+		type = "body",
+		symbol_overrides = { "torso", },
+		symbol_hides = { "arm_upper", },
+		override_build = "body_tanktop_tiecollar_yellow_goldenrod",
+		torso_tuck = "untucked",
+		rarity = "Spiffy",
 	},
 	body_toga_white_pure =
 	{
