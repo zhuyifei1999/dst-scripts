@@ -160,7 +160,7 @@ local function DoSpawn(inst, self)
             creature.components.entitytracker:TrackEntity("moonbase", inst)
             creature.Transform:SetPosition(pos.x + offset.x, 0, pos.z + offset.z)
             creature:ForceFacePoint(pos)
-            creature:FadeIn()
+            creature.components.spawnfader:FadeIn()
             if maxwavespawn > 1 then
                 maxwavespawn = maxwavespawn - 1
             else

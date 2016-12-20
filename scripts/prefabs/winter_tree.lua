@@ -388,10 +388,12 @@ local function trygifting(inst)
 end
 
 queuegifting = function(inst)
-    if TheWorld.state.isnight and
+    if IsSpecialEventActive( SPECIAL_EVENTS.WINTERS_FEAST ) and 
+		TheWorld.state.isnight and
         inst.components.container ~= nil and
         not inst.components.container:IsEmpty() and
         inst.giftingtask == nil then
+        
         --print("queuegifting")
         inst.giftingtask = inst:DoTaskInTime(2, trygifting, inst)
     end

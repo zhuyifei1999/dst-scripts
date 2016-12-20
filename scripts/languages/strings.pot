@@ -526,9 +526,14 @@ msgctxt "STRINGS.ACTIONS.SEW"
 msgid "Sew"
 msgstr ""
 
-#. STRINGS.ACTIONS.SHAVE
-msgctxt "STRINGS.ACTIONS.SHAVE"
+#. STRINGS.ACTIONS.SHAVE.GENERIC
+msgctxt "STRINGS.ACTIONS.SHAVE.GENERIC"
 msgid "Shave"
+msgstr ""
+
+#. STRINGS.ACTIONS.SHAVE.SELF
+msgctxt "STRINGS.ACTIONS.SHAVE.SELF"
+msgid "Shave Self"
 msgstr ""
 
 #. STRINGS.ACTIONS.SLEEPIN
@@ -77101,6 +77106,16 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_chester_costume"
 msgid "Don't worry, that's faux-Chester fur."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.body_dress_flouncy_tan_cream
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_dress_flouncy_tan_cream"
+msgid "Flouncy, bouncy, and so much fun!"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_dress_yachtsuit_white_pure
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_dress_yachtsuit_white_pure"
+msgid "\"Yacht not included.\""
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.body_expo_letterman_yellow_beige
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_expo_letterman_yellow_beige"
 msgid "Run from ghosts and eat copious amounts in style in this slick Letterman Jacket!"
@@ -77139,6 +77154,16 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.body_hutch_costume
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_hutch_costume"
 msgid "The perfect look for going underground and undercover."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_jacket_shearling_orange_salmon
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_jacket_shearling_orange_salmon"
+msgid "The floofy collar of this 'fishy tincture orange' coat won't keep you any warmer, but it looks incredible!"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_jacket_toggle_navy_phthalo
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_jacket_toggle_navy_phthalo"
+msgid "This is one of those jackets where the pockets are just decorative. Oh well, at least it looks nice."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_overalls_black_scribble
@@ -77279,6 +77304,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.body_sweatervest_red_firehound
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_sweatervest_red_firehound"
 msgid "A 'firehound red' colored vest made of the finest beefalo wool. Unfortunately, it's not actually warm."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_tanktop_tiecollar_yellow_goldenrod
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tanktop_tiecollar_yellow_goldenrod"
+msgid "This 'downright neighborly yellow' top just screams \"springtime\"! Seriously. Please make it stop screaming."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_toga_white_pure
@@ -78421,6 +78451,16 @@ msgctxt "STRINGS.SKIN_NAMES.body_chester_costume"
 msgid "Cheeky Chester Costume"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.body_dress_flouncy_tan_cream
+msgctxt "STRINGS.SKIN_NAMES.body_dress_flouncy_tan_cream"
+msgid "Flouncy Dress"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_dress_yachtsuit_white_pure
+msgctxt "STRINGS.SKIN_NAMES.body_dress_yachtsuit_white_pure"
+msgid "Yachtsuit Dress"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.body_expo_letterman_yellow_beige
 msgctxt "STRINGS.SKIN_NAMES.body_expo_letterman_yellow_beige"
 msgid "Letterman Jacket"
@@ -78459,6 +78499,16 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.body_hutch_costume
 msgctxt "STRINGS.SKIN_NAMES.body_hutch_costume"
 msgid "Hutch Disguise"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_jacket_shearling_orange_salmon
+msgctxt "STRINGS.SKIN_NAMES.body_jacket_shearling_orange_salmon"
+msgid "Shearling Coat"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_jacket_toggle_navy_phthalo
+msgctxt "STRINGS.SKIN_NAMES.body_jacket_toggle_navy_phthalo"
+msgid "Toggle Jacket"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_overalls_black_scribble
@@ -78599,6 +78649,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.body_sweatervest_red_firehound
 msgctxt "STRINGS.SKIN_NAMES.body_sweatervest_red_firehound"
 msgid "Sweater Vest"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_tanktop_tiecollar_yellow_goldenrod
+msgctxt "STRINGS.SKIN_NAMES.body_tanktop_tiecollar_yellow_goldenrod"
+msgid "Sleeveless Blouse"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_toga_white_pure

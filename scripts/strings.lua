@@ -192,7 +192,11 @@ STRINGS =
             HEAVY = "Drop",
         },
         RESEARCH = "Research",
-        SHAVE = "Shave",
+        SHAVE =
+        {
+            GENERIC = "Shave",
+            SELF = "Shave Self",
+        },
         DRY = "Dry",
         STORE = 
         {

@@ -68,12 +68,6 @@ for i, v in ipairs(GetAllWinterOrnamentPrefabs()) do
     table.insert(prefabs, v)
 end
 
-local KLAUS_SPAWN_DIST_FROM_PLAYER = 25
-
-local function NotNearPlayers(pt) 
-    return not IsAnyPlayerInRange(pt.x, pt.y, pt.z, KLAUS_SPAWN_DIST_FROM_PLAYER)
-end
-
 local function DropBundle(inst, items)
     local bundle = SpawnPrefab(IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) and "gift" or "bundle")
     bundle.components.unwrappable:WrapItems(items)
@@ -180,29 +174,36 @@ local function onuseklauskey(inst, key, doer)
             --already got the right key
             --announce that this isn't the right key
         else
+            --Find spawn point far away, preferrably not near players
             local pos = inst:GetPosition()
-            local spawnpt = Vector3(pos.x, 0, pos.z)
+            local minplayers = math.huge
+            local spawnx, spawnz
+            FindWalkableOffset(pos,
+                math.random() * 2 * PI, 33, 16, true, true,
+                function(pt)
+                    local count = #FindPlayersInRangeSq(pt.x, pt.y, pt.z, 625)
+                    if count < minplayers then
+                        minplayers = count
+                        spawnx, spawnz = pt.x, pt.z
+                        return count <= 0
+                    end
+                    return false
+                end)
 
-            -- look for a location around the sack that is offscreen.
-            -- if no valid locations, then look for a location off screen, centered on the player who tried to open the sack.
-            local result_offset = FindWalkableOffset(spawnpt, math.random() * 2 * PI, (KLAUS_SPAWN_DIST_FROM_PLAYER + 8), 8, true, true, NotNearPlayers) -- +8 because the players arent standing on top of the sack
-            if result_offset ~= nil then
-                spawnpt.x = spawnpt.x + result_offset.x
-                spawnpt.z = spawnpt.z + result_offset.z
-            elseif doer ~= nil and doer:IsValid() then
-                local doerpos = doer:GetPosition()
-                result_offset = FindWalkableOffset(doerpos, math.random() * 2 * PI, (KLAUS_SPAWN_DIST_FROM_PLAYER + 8), 8, true, true, NotNearPlayers)
-                if result_offset ~= nil then
-                    spawnpt.x = doerpos.x + result_offset.x
-                    spawnpt.z = doerpos.z + result_offset.z
+            if spawnx == nil then
+                --No spawn point (with or without players), so try closer
+                local offset = FindWalkableOffset(pos, math.random() * 2 * PI, 3, 8, false, true)
+                if offset ~= nil then
+                    spawnx, spawnz = pos.x + offset.x, pos.z + offset.z
                 end
             end
 
             local klaus = SpawnPrefab("klaus")
-            klaus.Transform:SetPosition(spawnpt:Get())
+            klaus.Transform:SetPosition(spawnx or pos.x, 0, spawnz or pos.z)
             klaus:SpawnDeer()
             -- override the spawn point so klaus comes to his sack
             klaus.components.knownlocations:RememberLocation("spawnpoint", pos, false)
+            klaus.components.spawnfader:FadeIn()
 
             inst.components.entitytracker:TrackEntity("klaus", klaus)
             inst:ListenForEvent("dropkey", inst.OnDropKey, klaus)

@@ -118,7 +118,6 @@ ACTIONS =
     COMBINESTACK = Action({ mount_valid=true }),
     TOGGLE_DEPLOY_MODE = Action({ priority=1, instant=true }),
     SUMMONGUARDIAN = Action({ rmb=false, distance=5 }),
-    LAVASPIT = Action({ rmb=false, distance=2 }),
     HAUNT = Action({ rmb=false, mindistance=2, ghost_valid=true, ghost_exclusive=true, canforce=true, rangecheckfn=DefaultRangeCheck }),
     UNPIN = Action(),
     STEALMOLEBAIT = Action({ rmb=false, distance=.75 }),
@@ -432,17 +431,6 @@ ACTIONS.TOGGLE_DEPLOY_MODE.strfn = ACTIONS.DEPLOY.strfn
 ACTIONS.SUMMONGUARDIAN.fn = function(act)
     if act.doer and act.target and act.target.components.guardian then
         act.target.components.guardian:Call()
-    end
-end
-
-ACTIONS.LAVASPIT.fn = function(act)
-    if act.doer then
-        local spit = SpawnPrefab("lavaspit")
-        local x,y,z = act.doer.Transform:GetWorldPosition()
-        local facingangle = act.doer.Transform:GetRotation() *DEGREES
-        local offsetvec = Vector3(1.7 * math.cos( -facingangle ), -.3, 1.7 * math.sin( -facingangle ))
-        spit.Transform:SetPosition(x+offsetvec.x, y+offsetvec.y, z+offsetvec.z)
-        spit.Transform:SetRotation(act.doer.Transform:GetRotation())
     end
 end
 
@@ -996,6 +984,13 @@ ACTIONS.CHANGEIN.fn = function(act)
     end
 end
 
+ACTIONS.SHAVE.strfn = function(act)
+    return (act.target == nil or act.target == act.doer)
+        and TheInput:ControllerAttached()
+        and "SELF"
+        or nil
+end
+
 ACTIONS.SHAVE.fn = function(act)
     if act.invobject ~= nil and act.invobject.components.shaver ~= nil then
         local shavee = act.target or act.doer
@@ -1156,7 +1151,10 @@ ACTIONS.MURDER.fn = function(act)
 end
 
 ACTIONS.HEAL.strfn = function(act)
-    return (act.target == nil or act.target == act.doer) and "SELF" or nil
+    return (act.target == nil or act.target == act.doer)
+        and TheInput:ControllerAttached()
+        and "SELF"
+        or nil
 end
 
 ACTIONS.HEAL.fn = function(act)

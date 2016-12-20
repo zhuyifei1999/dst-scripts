@@ -274,15 +274,12 @@ local function SetEngaged(inst, engaged)
     end
 end
 
-local function CalcOffset(inst, rot)
-    local theta = rot * DEGREES
-    return inst.deer_dist * math.sin(theta), inst.deer_dist * math.cos(theta)
-end
-
 local function UpdateDeerOffsets(inst)
     if inst.components.commander:GetNumSoldiers() > 0 then
         local deers = inst.components.commander:GetAllSoldiers()
-        local xoffs, zoffs = CalcOffset(inst, inst.Transform:GetRotation())
+        local theta = inst.Transform:GetRotation() * DEGREES
+        local xoffs = inst.deer_dist * math.sin(theta)
+        local zoffs = inst.deer_dist * math.cos(theta)
         local x, y, z = inst.Transform:GetWorldPosition()
         local x1, z1 = x - xoffs, z - zoffs
         x, z = x + xoffs, z + zoffs
@@ -303,18 +300,24 @@ local function UpdateDeerOffsets(inst)
 end
 
 local function SpawnDeer(inst)
-    local x, y, z = inst.Transform:GetWorldPosition()
+    local pos = inst:GetPosition()
     local rot = inst.Transform:GetRotation()
-    local xoffs, zoffs = CalcOffset(inst, rot)
+    local theta = (rot - 90) * DEGREES
+    local offset =
+        FindWalkableOffset(pos, theta, inst.deer_dist, 5, true, false) or
+        FindWalkableOffset(pos, theta, inst.deer_dist * .5, 5, true, false) or
+        Vector3(0, 0, 0)
 
     local deer = SpawnPrefab("deer_red")
     deer.Transform:SetRotation(rot)
-    deer.Transform:SetPosition(x + xoffs, 0, z + zoffs)
+    deer.Transform:SetPosition(pos.x + offset.x, 0, pos.z + offset.z)
+    deer.components.spawnfader:FadeIn()
     inst.components.commander:AddSoldier(deer)
 
     deer = SpawnPrefab("deer_blue")
     deer.Transform:SetRotation(rot)
-    deer.Transform:SetPosition(x - xoffs, 0, z - zoffs)
+    deer.Transform:SetPosition(pos.x - offset.x, 0, pos.z - offset.z)
+    deer.components.spawnfader:FadeIn()
     inst.components.commander:AddSoldier(deer)
 end
 
@@ -522,6 +525,8 @@ local function fn()
     inst._playingmusic = false
     inst._musictask = nil
     OnMusicDirty(inst)
+
+    inst:AddComponent("spawnfader")
 
     inst.entity:SetPristine()
 
