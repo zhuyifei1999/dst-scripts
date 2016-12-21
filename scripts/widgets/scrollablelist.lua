@@ -306,7 +306,7 @@ function ScrollableList:LayOutStaticWidgets(yInitial, skipFixUp, focusChildren)
         local nextYPos = self.height/2 - (arrow_button_size * .5) + self.yInitial
 
         local numShown = 0
-        for i, v in ipairs(self.static_widgets) do                   
+        for i, v in ipairs(self.static_widgets) do
             v:SetPosition(-self.width/2 + self.x_offset, nextYPos)
             nextYPos = nextYPos - self.item_height - self.item_padding
 

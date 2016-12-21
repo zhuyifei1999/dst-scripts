@@ -84,20 +84,25 @@ function SnapshotTab:MakeSnapshotsMenu()
             if not widget:IsEnabled() then return end
             Widget.OnLoseFocus(self)
             widget.state_bg:Hide()
+            if widget.o_pos ~= nil then
+                widget:SetPosition(widget.o_pos)
+                widget.o_pos = nil
+            end
         end
 
-        widget.clickoffset = Vector3(0,-3,0)
         widget.OnControl = function(self, control, down)
             if not widget:IsEnabled() then return false end
             if widget.empty then return false end
 
             if control == CONTROL_ACCEPT then
-                if down then 
-                    widget.o_pos = widget:GetLocalPosition()
-                    widget:SetPosition(widget.o_pos + widget.clickoffset)
+                if down then
+                    if widget.o_pos == nil then
+                        widget.o_pos = widget:GetLocalPosition()
+                        widget:SetPosition(widget.o_pos + widget.clickoffset)
+                    end
                 else
-                    if widget.o_pos then 
-                        widget:SetPosition(widget.o_pos) 
+                    if widget.o_pos ~= nil then
+                        widget:SetPosition(widget.o_pos)
                         widget.o_pos = nil
                     end
                     screen:OnClickSnapshot(index)

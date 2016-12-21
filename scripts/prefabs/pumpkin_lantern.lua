@@ -207,6 +207,7 @@ local function fn()
     inst.Light:SetRadius(FADE_RADIUS)
     inst.Light:SetColour(200/255, 100/255, 170/255)
     inst.Light:Enable(false)
+    inst.Light:EnableClientModulation(true)
 
     inst.AnimState:SetBank("pumpkin")
     inst.AnimState:SetBuild("pumpkin_lantern")

@@ -404,6 +404,10 @@ function ModsTab:UpdateForWorkshop( force_refresh )
 			opt.OnLoseFocus =
 				function()
 					opt.state_bg:Hide()
+                    if opt.o_pos ~= nil then
+                        opt:SetPosition(opt.o_pos)
+                        opt.o_pos = nil
+                    end
 				end
 
 			opt.StartClick = function()
@@ -431,15 +435,17 @@ function ModsTab:UpdateForWorkshop( force_refresh )
 					if Widget.OnControl(opt, control, down) then return true end
 					if down then 
 						if control == CONTROL_ACCEPT or (control == CONTROL_INSPECT and TheInput:ControllerAttached()) then
-							opt.o_pos = opt:GetLocalPosition()
-							opt:SetPosition(opt.o_pos + opt.clickoffset)
+                            if opt.o_pos == nil then
+                                opt.o_pos = opt:GetLocalPosition()
+                                opt:SetPosition(opt.o_pos + opt.clickoffset)
+                            end
 							if control == CONTROL_ACCEPT then
 								opt.StartClick()
 							end
 						end
 					else
-						if opt.o_pos then 
-							opt:SetPosition(opt.o_pos) 
+						if opt.o_pos ~= nil then
+							opt:SetPosition(opt.o_pos)
 							opt.o_pos = nil
 						end
 						if control == CONTROL_ACCEPT then
@@ -527,6 +533,10 @@ function ModsTab:UpdateForWorkshop( force_refresh )
 			opt.OnLoseFocus =
 				function()
 					opt.state_bg:Hide()
+                    if opt.o_pos ~= nil then
+                        opt:SetPosition(opt.o_pos)
+                        opt.o_pos = nil
+                    end
 				end
 	            
 			opt.StartClick = function()
@@ -554,15 +564,17 @@ function ModsTab:UpdateForWorkshop( force_refresh )
 					if Widget.OnControl(opt, control, down) then return true end
 					if down then 
 						if control == CONTROL_ACCEPT or (control == CONTROL_INSPECT and TheInput:ControllerAttached()) then
-							opt.o_pos = opt:GetLocalPosition()
-							opt:SetPosition(opt.o_pos + opt.clickoffset)
+                            if opt.o_pos == nil then
+                                opt.o_pos = opt:GetLocalPosition()
+                                opt:SetPosition(opt.o_pos + opt.clickoffset)
+                            end
 							if control == CONTROL_ACCEPT then
 								opt.StartClick()
 							end
 						end
 					else
-						if opt.o_pos then 
-							opt:SetPosition(opt.o_pos) 
+						if opt.o_pos ~= nil then
+							opt:SetPosition(opt.o_pos)
 							opt.o_pos = nil
 						end
 						if control == CONTROL_ACCEPT then

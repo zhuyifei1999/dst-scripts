@@ -169,12 +169,12 @@ function MultiplayerMainScreen:DoInit()
 
     self.motd.button.OnGainFocus =
 		function()
-    		self.motd.button._base:OnGainFocus()
+    		self.motd.button._base.OnGainFocus(self.motd.button)
     		self.motd.button.image:SetTexture(self.motd.button.atlas, self.motd.button.image_focus)
 		end
 	self.motd.button.OnLoseFocus =
 		function()
-    		self.motd.button._base:OnLoseFocus()
+    		self.motd.button._base.OnLoseFocus(self.motd.button)
 			if not self.motd.motdimage.focus then
     			self.motd.button.image:SetTexture(self.motd.button.atlas, self.motd.button.image_normal)
     		end
@@ -316,6 +316,16 @@ function MultiplayerMainScreen:DoInit()
 
     self.menu:SetFocus(#self.menu.items)
 
+    if IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
+        self.snowfall = self:AddChild(TEMPLATES.Snowfall())
+        self.snowfall:SetVAnchor(ANCHOR_TOP)
+        self.snowfall:SetHAnchor(ANCHOR_MIDDLE)
+        self.snowfall:SetScaleMode(SCALEMODE_PROPORTIONAL)
+        if self.fg ~= nil then
+            self.fg.snowfall = self.snowfall
+        end
+    end
+
     --V2C: This is so the first time we become active will trigger OnShow to UpdatePuppets
     self:Hide()
 end
@@ -405,6 +415,9 @@ function MultiplayerMainScreen:OnShow()
     self.fg.character_root:SetCanFadeAlpha(false)
     self.fg.character_root:Show()
     self:UpdatePuppets()
+    if self.snowfall ~= nil then
+        self.snowfall:StartSnowfall()
+    end
 end
 
 function MultiplayerMainScreen:OnHide()
@@ -417,6 +430,9 @@ function MultiplayerMainScreen:OnHide()
             puppet.fadetask = nil
         end
         puppet:Hide()
+    end
+    if self.snowfall ~= nil then
+        self.snowfall:StopSnowfall()
     end
 end
 
@@ -564,7 +580,7 @@ function MultiplayerMainScreen:UnlockEverything()
 end
 
 local function OnMovieDone()
-    TheFrontEnd:GetSound():PlaySound("dontstarve/music/music_FE", "FEMusic")
+    TheFrontEnd:GetSound():PlaySound(FE_MUSIC, "FEMusic")
     TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_idle_vines", "FEPortalSFX")
     TheFrontEnd:Fade(FADE_IN, 2)
 end
