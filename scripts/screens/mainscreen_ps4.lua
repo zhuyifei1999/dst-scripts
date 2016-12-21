@@ -157,7 +157,7 @@ end
 
 function MainScreen:Refresh()
 	self:MainMenu()
-	TheFrontEnd:GetSound():PlaySound("dontstarve/music/music_FE", "FEMusic")
+	TheFrontEnd:GetSound():PlaySound(FE_MUSIC, "FEMusic")
     TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_idle_vines", "FEPortalSFX")
 end
 
@@ -253,7 +253,7 @@ function MainScreen:OnUpdate(dt)
         TheFrontEnd:PushScreen(
             MovieDialog("movies/forbidden_knowledge.mp4",
                 function()
-                    TheFrontEnd:GetSound():PlaySound("dontstarve/music/music_FE", "FEMusic")
+                    TheFrontEnd:GetSound():PlaySound(FE_MUSIC, "FEMusic")
                     TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_idle_vines", "FEPortalSFX")
                     self:CheckStorage()
                 end
@@ -261,7 +261,7 @@ function MainScreen:OnUpdate(dt)
         )
         self.music_playing = true
     elseif not self.music_playing then
-        TheFrontEnd:GetSound():PlaySound("dontstarve/music/music_FE", "FEMusic")
+        TheFrontEnd:GetSound():PlaySound(FE_MUSIC, "FEMusic")
         TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_idle_vines", "FEPortalSFX")
         self.music_playing = true
         self:CheckStorage()

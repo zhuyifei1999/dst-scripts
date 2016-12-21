@@ -753,7 +753,7 @@ function PlayerController:DoControllerAttackButton(target)
             end
         end
         --V2C: controller attacks still happen even with no valid target
-        if target == nil and self.inst:HasTag("playerghost") then
+        if target == nil and (self.inst:HasTag("playerghost") or self.inst.replica.inventory:IsHeavyLifting()) then
             --Except for player ghosts!
             return
         end
@@ -954,7 +954,7 @@ local function ValidateAttackTarget(combat, target, force_attack, x, z, has_weap
 end
 
 function PlayerController:GetAttackTarget(force_attack, force_target, isretarget)
-    if self.inst:HasTag("playerghost") then
+    if self.inst:HasTag("playerghost") or self.inst.replica.inventory:IsHeavyLifting() then
         return
     end
 
@@ -1844,7 +1844,7 @@ function PlayerController:OnUpdate(dt)
 end
 
 local function UpdateControllerAttackTarget(self, dt, x, y, z, dirx, dirz)
-    if self.inst:HasTag("playerghost") then
+    if self.inst:HasTag("playerghost") or self.inst.replica.inventory:IsHeavyLifting() then
         self.controller_attack_target = nil
         self.controller_attack_target_ally_cd = nil
         return

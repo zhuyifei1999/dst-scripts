@@ -69,18 +69,22 @@ TEMPLATES = {
         bg.anim_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
         if not InGamePlay() then
-            bg.anim_root.smoke = bg.anim_root:AddChild(TEMPLATES.BackgroundSmoke())
+            if IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
+                bg.EnableSmoke = function() end
+            else
+                bg.anim_root.smoke = bg.anim_root:AddChild(TEMPLATES.BackgroundSmoke())
 
-            bg.EnableSmoke = function(bg, enable)
-                if enable then
-                    bg.anim_root.smoke:Show()
-                else
-                    bg.anim_root.smoke:Hide()
+                bg.EnableSmoke = function(bg, enable)
+                    if enable then
+                        bg.anim_root.smoke:Show()
+                    else
+                        bg.anim_root.smoke:Hide()
+                    end
                 end
-            end
 
-            if TheSim:IsNetbookMode() or TheFrontEnd:GetGraphicsOptions():IsSmallTexturesMode() then
-                bg:EnableSmoke(false)
+                if TheSim:IsNetbookMode() or TheFrontEnd:GetGraphicsOptions():IsSmallTexturesMode() then
+                    bg:EnableSmoke(false)
+                end
             end
         end
 
@@ -222,7 +226,7 @@ TEMPLATES = {
         if not InGamePlay() then
             fg.smoke_south = fg:AddChild(TEMPLATES.ForegroundSmokeSouth())
 
-            fg.EnableSmoke = function(bg, enable)
+            fg.EnableSmoke = function(fg, enable)
                 if enable then
                     fg.smoke_inside:Show()
                     fg.smoke_west:Show()
@@ -233,6 +237,9 @@ TEMPLATES = {
                     fg.smoke_west:Hide()
                     fg.smoke_east:Hide()
                     fg.smoke_south:Hide()
+                end
+                if fg.snowfall ~= nil then
+                    fg.snowfall:EnableSnowfall(enable)
                 end
             end
 
@@ -1181,7 +1188,143 @@ TEMPLATES = {
         end
 
         return widg
+    end,
 
+    -------------------
+    -------------------
+    -- Snowfall --
+    -------------------
+    -------------------
+    -- Main menu snowfall
+    Snowfall = function()
+        local num_wintersnow = 4
+        local num_specialsnow = 5
+        local max_snowflake_size = 20
+        local max_snowball_size = 5
+        local padding = max_snowflake_size * .5
+        local fade_y_threshold = -2 / 3 * RESOLUTION_Y
+        local remove_y_threshold = -RESOLUTION_Y - padding
+        local superprettycounter = math.random(20, 30)
+        local snowflake_pool = {}
+
+        local function OnUpdateSnowflake(snowflake, dt)
+            local pos = snowflake:GetPosition()
+            if pos.y > remove_y_threshold then
+                if pos.y < fade_y_threshold then
+                    snowflake.alpha = snowflake.alpha - .01
+                    if snowflake.alpha <= 0 then
+                        snowflake:Recycle()
+                        return
+                    end
+                    snowflake:SetTint(1, 1, 1, snowflake.alpha)
+                end
+                snowflake.xt = snowflake.xt + dt
+                snowflake:UpdatePosition(snowflake.x0 + math.sin(snowflake.xt * snowflake.xtspeed) * snowflake.xdist, pos.y - snowflake.speed)
+                if snowflake.rotspeed ~= 0 then
+                    snowflake.rot = snowflake.rot + snowflake.rotspeed
+                    snowflake:SetRotation(snowflake.rot)
+                end
+            else
+                snowflake:Recycle()
+            end
+        end
+
+        local function RecycleSnowflake(snowflake)
+            if not snowflake.recycled then
+                table.insert(snowflake_pool, snowflake)
+                snowflake.recycled = true
+                snowflake:Hide()
+                snowflake:StopUpdating()
+            end
+        end
+
+        local function CreateSnowFlake(x, y)
+            local snowflake = #snowflake_pool > 0 and table.remove(snowflake_pool) or Image()
+            local ispretty = math.random() < .1
+            if not ispretty then
+                snowflake:SetTexture("images/frontscreen.xml", "snow.tex")
+            elseif superprettycounter > 1 then
+                superprettycounter = superprettycounter - 1
+                snowflake:SetTexture("images/frontscreen.xml", "wintersnow"..tostring(math.random(num_wintersnow))..".tex")
+            else
+                superprettycounter = math.random(20, 30)
+                snowflake:SetTexture("images/frontscreen.xml", "specialsnow"..tostring(math.random(num_specialsnow))..".tex")
+            end
+
+            snowflake.size = math.random()
+            snowflake.size = (1 + snowflake.size * snowflake.size) * (ispretty and max_snowflake_size or max_snowball_size)
+            snowflake.alpha = .4 + math.random() * .7
+            snowflake.speed = math.random()
+            snowflake.speed = .5 + snowflake.speed * snowflake.speed * 1.5
+            snowflake.rot = 0
+            snowflake.rotspeed = ispretty and (.5 + math.random() * .5) * (math.random() < .5 and 1 or -1) or 0
+            snowflake.xtspeed = .5 + math.random()
+            snowflake.xt = math.random() * snowflake.xtspeed
+            snowflake.xdist = math.random()
+            snowflake.xdist = snowflake.xdist * snowflake.xdist * 50
+            snowflake.x0 = x
+
+            if snowflake.recycled then
+                snowflake.recycled = false
+                snowflake:Show()
+            else
+                snowflake.OnUpdate = OnUpdateSnowflake
+                snowflake.Recycle = RecycleSnowflake
+                snowflake:SetClickable(false)
+            end
+
+            snowflake:SetPosition(x, y)
+            snowflake:SetSize(snowflake.size, snowflake.size)
+            snowflake:SetTint(1, 1, 1, snowflake.alpha)
+            snowflake:StartUpdating()
+
+            return snowflake
+        end
+
+        local widg = Widget("Snowfall")
+        widg.OnUpdate = function(widg)
+            if math.random() < .5 then
+                widg:AddChild(CreateSnowFlake((math.random() - .5) * (RESOLUTION_X + max_snowflake_size), padding))
+            end
+        end
+        widg.EnableSnowfall = function(widg, enable)
+            widg._disabled = not enable
+            if not enable then
+                widg:StopUpdating()
+                widg:KillAllChildren()
+            elseif widg._started then
+                widg:StartUpdating()
+                for k, v in pairs(widg.children) do
+                    if not v.recycled then
+                        v:StartUpdating()
+                    end
+                end
+            end
+        end
+        widg.StartSnowfall = function(widg)
+            widg._started = true
+            if not widg._disabled then
+                widg:StartUpdating()
+                for k, v in pairs(widg.children) do
+                    if not v.recycled then
+                        v:StartUpdating()
+                    end
+                end
+            end
+        end
+        widg.StopSnowfall = function(widg)
+            widg._started = false
+            widg:StopUpdating()
+            for k, v in pairs(widg.children) do
+                v:StopUpdating()
+            end
+        end
+
+        if TheSim:IsNetbookMode() or TheFrontEnd:GetGraphicsOptions():IsSmallTexturesMode() then
+            widg:EnableSnowfall(false)
+        end
+
+        return widg
     end,
 }
 

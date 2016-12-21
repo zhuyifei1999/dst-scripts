@@ -455,6 +455,8 @@ function IsSpecialEventActive(event)
     return WORLD_SPECIAL_EVENT == event
 end
 
+FE_MUSIC = "dontstarve/music/music_FE_WF" --"dontstarve/music/music_FE"
+
 NUM_HALLOWEENCANDY = 11
 NUM_WINTERFOOD = 9
 

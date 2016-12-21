@@ -419,7 +419,7 @@ function MainScreen:OnBecomeActive()
 end
 
 local function OnMovieDone()
-    TheFrontEnd:GetSound():PlaySound("dontstarve/music/music_FE", "FEMusic")
+    TheFrontEnd:GetSound():PlaySound(FE_MUSIC, "FEMusic")
     TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_idle_vines", "FEPortalSFX")
     TheFrontEnd:Fade(FADE_IN, 2)
 end
@@ -429,7 +429,7 @@ function MainScreen:OnUpdate(dt)
         TheFrontEnd:PushScreen(MovieDialog("movies/intro.ogv", OnMovieDone))
         self.music_playing = true
     elseif not self.music_playing then
-        TheFrontEnd:GetSound():PlaySound("dontstarve/music/music_FE", "FEMusic")
+        TheFrontEnd:GetSound():PlaySound(FE_MUSIC, "FEMusic")
         TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_idle_vines", "FEPortalSFX")
         self.music_playing = true
     end

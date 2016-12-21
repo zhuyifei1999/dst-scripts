@@ -35,7 +35,7 @@ local _spawners = {}
 local _activedeer = {}
 
 local _timetospawn = nil
-local _prevherdsummonday = -TUNING.NO_BOSS_TIME --initialize the timer so it triggers in first autumn, even if its the starting season
+local _prevherdsummonday = -200 --initialize the timer to a very negative number so it triggers in first autumn, even if its the starting season
 local _timetomigrate = nil
 
 --------------------------------------------------------------------------

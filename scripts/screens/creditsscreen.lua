@@ -196,7 +196,7 @@ function CreditsScreen:OnBecomeInactive()
     CreditsScreen._base.OnBecomeInactive(self)
 
     TheFrontEnd:GetSound():KillSound("creditsscreenmusic")
-    TheFrontEnd:GetSound():PlaySound("dontstarve/music/music_FE", "FEMusic")
+    TheFrontEnd:GetSound():PlaySound(FE_MUSIC, "FEMusic")
     TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_idle_vines", "FEPortalSFX")
 end
 
