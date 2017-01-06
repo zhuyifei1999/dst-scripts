@@ -448,14 +448,15 @@ SPECIAL_EVENTS =
     HALLOWED_NIGHTS = "hallowed_nights",
     WINTERS_FEAST = "winters_feast",
 }
-WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.WINTERS_FEAST
+WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.NONE
 
 function IsSpecialEventActive(event)
     --print(" -- WORLD_SPECIAL_EVENT is", WORLD_SPECIAL_EVENT)
     return WORLD_SPECIAL_EVENT == event
 end
 
-FE_MUSIC = "dontstarve/music/music_FE_WF" --"dontstarve/music/music_FE"
+--winter's feast carol: "dontstarve/music/music_FE_WF"
+FE_MUSIC = "dontstarve/music/music_FE"
 
 NUM_HALLOWEENCANDY = 11
 NUM_WINTERFOOD = 9
