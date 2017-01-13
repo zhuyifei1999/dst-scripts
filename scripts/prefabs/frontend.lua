@@ -13,6 +13,12 @@ local assets =
     Asset("IMAGE", "images/customisation.tex"),
     Asset("ATLAS", "images/customisation.xml"),
 
+    Asset("DYNAMIC_ATLAS", "images/anr_silhouettes.xml"),
+    Asset("ASSET_PKGREF", "images/anr_silhouettes.tex"),
+
+    Asset("ATLAS", "images/frontscreen.xml"),
+    Asset("IMAGE", "images/frontscreen.tex"),
+        
     -- Asset("ANIM", "anim/portrait_frame.zip"), -- Not currently used, but likely to come back
 
     Asset("ANIM", "anim/build_status.zip"),
@@ -95,6 +101,11 @@ local assets =
 
     --Credits screen
     Asset("SOUND", "sound/gramaphone.fsb"),
+
+    --FE Music
+    Asset("PKGREF", "sound/music_frontend.fsb"),
+    Asset("PKGREF", "sound/music_frontend_winters_feast.fsb"),
+    Asset("PKGREF", "sound/music_frontend_yotg.fsb"),
 
     Asset("PKGREF", "movies/intro.ogv"),
 }

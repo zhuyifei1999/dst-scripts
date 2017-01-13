@@ -38,18 +38,9 @@ local assets =
 	Asset("ATLAS", "images/frontend.xml"),
 	Asset("IMAGE", "images/frontend.tex"),
 
-	Asset("ATLAS", "images/anr_silhouettes.xml"),
-	Asset("IMAGE", "images/anr_silhouettes.tex"),
-
-    Asset("ATLAS", "images/frontscreen.xml"),
-    Asset("IMAGE", "images/frontscreen.tex"),
-
+	--Note(Peter):try moving this to the frontend prefab
     Asset("ATLAS", "images/fg_trees.xml"),
     Asset("IMAGE", "images/fg_trees.tex"),
-
-    --V2C: moved to frontend
-    --Asset("ATLAS", "images/bg_plain.xml"),
-    --Asset("IMAGE", "images/bg_plain.tex"),
 
     Asset("ATLAS", "images/bg_spiral.xml"),
     Asset("IMAGE", "images/bg_spiral.tex"),

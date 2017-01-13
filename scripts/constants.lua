@@ -447,16 +447,42 @@ SPECIAL_EVENTS =
     NONE = "none",
     HALLOWED_NIGHTS = "hallowed_nights",
     WINTERS_FEAST = "winters_feast",
+    YOTG = "year_of_the_gobbler",
 }
-WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.NONE
+WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.YOTG
+
+--Used in preloadsounds.lua
+---------------------------------------------------------
+-- Reminder: update asset dependencies in frontend.lua --
+---------------------------------------------------------
+SPECIAL_EVENT_MUSIC =
+{
+    --winter's feast carol
+    [SPECIAL_EVENTS.WINTERS_FEAST] =
+    {
+        bank = "music_frontend_winters_feast.fsb",
+        sound = "dontstarve/music/music_FE_WF",
+    },
+
+    --year of the gobbler
+    [SPECIAL_EVENTS.YOTG] =
+    {
+        bank = "music_frontend_yotg.fsb",
+        sound = "dontstarve/music/music_FE_yotg",
+    },
+}
 
 function IsSpecialEventActive(event)
-    --print(" -- WORLD_SPECIAL_EVENT is", WORLD_SPECIAL_EVENT)
     return WORLD_SPECIAL_EVENT == event
 end
 
---winter's feast carol: "dontstarve/music/music_FE_WF"
-FE_MUSIC = "dontstarve/music/music_FE"
+--default:
+--  bank = "music_frontend.fsb"
+--  sound = "dontstarve/music/music_FE"
+FE_MUSIC =
+    SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT] ~= nil and
+    SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT].sound or
+    "dontstarve/music/music_FE"
 
 NUM_HALLOWEENCANDY = 11
 NUM_WINTERFOOD = 9
@@ -484,53 +510,55 @@ TECH =
     SCULPTING_TWO = { SCULPTING = 2 },
 
     ORPHANAGE_ONE = { ORPHANAGE = 1 },
+    PERDOFFERING_ONE = { PERDOFFERING = 1 },
 
-	HALLOWED_NIGHTS = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost ot 0
-	WINTERS_FEAST = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost ot 0
-	
+    HALLOWED_NIGHTS = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
+    WINTERS_FEAST = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
+    YOTG = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
+
     LOST = { MAGIC = 10, SCIENCE = 10, ANCIENT = 10 },
 }
 
 -- See cell_data.h
 NODE_TYPE =
 {
-	Default = 0, 
-	Blank = 1, 
-	Background = 2, 
-	Random = 3, 
-	Blocker = 4, 
-	Room = 5,
+    Default = 0,
+    Blank = 1,
+    Background = 2,
+    Random = 3,
+    Blocker = 4,
+    Room = 5,
     BackgroundRoom = 6,
 }
 
 -- See cell_data.h
 NODE_INTERNAL_CONNECTION_TYPE =
 {
-	EdgeCentroid = 0, 
-	EdgeSite = 1, 
-	EdgeEdgeDirect = 2, 
-	EdgeEdgeLeft = 3, 
-	EdgeEdgeRight = 4, 
-	EdgeData = 5,
+    EdgeCentroid = 0,
+    EdgeSite = 1,
+    EdgeEdgeDirect = 2,
+    EdgeEdgeLeft = 3,
+    EdgeEdgeRight = 4,
+    EdgeData = 5,
 }
 
 CA_SEED_MODE =
 {
-	SEED_RANDOM = 0,
-	SEED_CENTROID = 1,
-	SEED_SITE = 2,
-	SEED_WALLS = 3
+    SEED_RANDOM = 0,
+    SEED_CENTROID = 1,
+    SEED_SITE = 2,
+    SEED_WALLS = 3,
 }
 
 -- See maze.h
 MAZE_TYPE =
 {
-	MAZE_DFS_4WAY_META = 0,
-	MAZE_DFS_4WAY = 1,
-	MAZE_DFS_8WAY = 2,
-	MAZE_GROWINGTREE_4WAY = 3,
-	MAZE_GROWINGTREE_8WAY = 4,
-	MAZE_GROWINGTREE_4WAY_INV = 5,
+    MAZE_DFS_4WAY_META = 0,
+    MAZE_DFS_4WAY = 1,
+    MAZE_DFS_8WAY = 2,
+    MAZE_GROWINGTREE_4WAY = 3,
+    MAZE_GROWINGTREE_8WAY = 4,
+    MAZE_GROWINGTREE_4WAY_INV = 5,
 }
 
 -- NORTH	1
@@ -670,6 +698,7 @@ RECIPETABS =
     CARTOGRAPHY =   { str = "CARTOGRAPHY",  sort = 10,  icon = "tab_cartography.tex",       crafting_station = true },
     SCULPTING =     { str = "SCULPTING",    sort = 10,  icon = "tab_sculpt.tex",            crafting_station = true },
     ORPHANAGE =     { str = "ORPHANAGE",    sort = 10,  icon = "tab_orphanage.tex",         crafting_station = true },
+    PERDOFFERING =  { str = "PERDOFFERING", sort = 10,  icon = "tab_perd_offering.tex",     crafting_station = true },
 }
 
 CUSTOM_RECIPETABS =

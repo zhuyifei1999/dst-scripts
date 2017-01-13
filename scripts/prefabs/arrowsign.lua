@@ -2,7 +2,8 @@ local assets =
 {
     Asset("ANIM", "anim/sign_arrow_post.zip"),
     Asset("ANIM", "anim/sign_arrow_panel.zip"),
-	Asset("MINIMAP_IMAGE", "sign"),
+    Asset("ANIM", "anim/ui_board_5x3.zip"),
+    Asset("MINIMAP_IMAGE", "sign"),
 }
 
 local prefabs =

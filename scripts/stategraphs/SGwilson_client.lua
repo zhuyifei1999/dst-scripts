@@ -87,11 +87,8 @@ local actionhandlers =
     ActionHandler(ACTIONS.MANUALEXTINGUISH, "dolongaction"),
     ActionHandler(ACTIONS.TRAVEL, "doshortaction"),
     ActionHandler(ACTIONS.LIGHT, "give"),
-    ActionHandler(ACTIONS.UNLOCK, 
-		function(inst, action)
-			return action.target:HasTag("klaussacklock") and "dolongaction"
-					or "give"
-		end),
+    ActionHandler(ACTIONS.UNLOCK, "give"),
+    ActionHandler(ACTIONS.USEKLAUSSACKKEY, "dolongaction"),
     ActionHandler(ACTIONS.TURNOFF, "give"),
     ActionHandler(ACTIONS.TURNON, "give"),
     ActionHandler(ACTIONS.ADDFUEL, "doshortaction"),
@@ -161,6 +158,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.PLANT, "doshortaction"),
     ActionHandler(ACTIONS.HARVEST, "dolongaction"),
     ActionHandler(ACTIONS.PLAY, "play"),
+    ActionHandler(ACTIONS.FAN, "use_fan"),
     ActionHandler(ACTIONS.JUMPIN, "jumpin"),
     ActionHandler(ACTIONS.DRY, "doshortaction"),
     ActionHandler(ACTIONS.CASTSPELL,
@@ -1479,6 +1477,42 @@ local states =
         tags = { "doing", "playing" },
 
         onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("action_uniqueitem_pre")
+            inst.AnimState:PushAnimation("action_uniqueitem_lag", false)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    State
+    {
+        name = "use_fan",
+        tags = { "doing" },
+
+        onenter = function(inst)
+            local invobject = nil
+            if inst.bufferedaction ~= nil and
+                inst.bufferedaction.invobject ~= nil and
+                inst.bufferedaction.invobject:HasTag("channelingfan") then
+                inst.sg:AddStateTag("busy")
+            end
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("action_uniqueitem_pre")
             inst.AnimState:PushAnimation("action_uniqueitem_lag", false)

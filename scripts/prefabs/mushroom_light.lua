@@ -158,7 +158,7 @@ local function MakeMushroomLight(name, onlywhite, physics_rad)
     local assets =
     {
         Asset("ANIM", "anim/"..name..".zip"),
-        Asset("SOUND", "sound/wilson.fsb"),
+        Asset("ANIM", "anim/ui_lamp_1x4.zip"),
     }
 
     local function fn()

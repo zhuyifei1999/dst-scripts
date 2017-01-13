@@ -64,7 +64,7 @@ local function MakeHat(name)
         else
             owner.AnimState:OverrideSymbol("swap_hat", fname, "swap_hat")
         end
-        
+
         owner.AnimState:Show("HAT")
         owner.AnimState:Hide("HAIR_HAT")
         owner.AnimState:Show("HAIR_NOHAT")
@@ -1236,6 +1236,88 @@ local function MakeHat(name)
         return inst
     end
 
+    local function dragon_ondancing(inst)
+        local score = 0
+        local pieces = {}
+        for i, v in ipairs(AllPlayers) do
+            if v.sg:HasStateTag("dragondance") and inst:IsNear(v, 4) then
+                local piece =
+                    (v.sg:HasStateTag("dragonhead") and "head") or
+                    (v.sg:HasStateTag("dragonbody") and "body") or
+                    (v.sg:HasStateTag("dragontail") and "tail") or
+                    nil
+                if piece ~= nil and not pieces[piece] then
+                    score = score + 1
+                    if score >= 3 then
+                        break
+                    end
+                    pieces[piece] = true
+                end
+            end
+        end
+        inst.components.equippable.dapperness = TUNING.DAPPERNESS_LARGE * score
+    end
+
+    local function dragon_startdancing(inst, doer, data)
+        if not (doer.components.rider ~= nil and doer.components.rider:IsRiding()) then
+            if inst.dancetask == nil then
+                inst.dancetask = inst:DoPeriodicTask(1, dragon_ondancing)
+            end
+            inst.components.fueled:StartConsuming()
+            return {
+                anim = inst.prefab == "dragonheadhat" and
+                    { "hatdance2_pre", "hatdance2_loop" } or
+                    { "hatdance_pre", "hatdance_loop" },
+                loop = true,
+                fx = false,
+                tags = { "nodangle", "dragondance", string.sub(inst.prefab, 1, -4) },
+            }
+        end
+    end
+
+    local function dragon_stopdancing(inst, doer)
+        inst.components.fueled:StopConsuming()
+        inst.components.equippable.dapperness = 0
+        if inst.dancetask ~= nil then
+            inst.dancetask:Cancel()
+            inst.dancetask = nil
+        end
+    end
+
+    local function dragon_equip(inst, owner)
+        onequip(inst, owner)
+        dragon_stopdancing(inst, owner)
+    end
+
+    local function dragon_unequip(inst, owner)
+        onunequip(inst, owner)
+        dragon_stopdancing(inst, owner)
+        if owner.sg ~= nil and owner.sg:HasStateTag("dragondance") then
+            owner.sg:GoToState("idle")
+        end
+    end
+
+    local function dragon()
+        local inst = simple()
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst:AddComponent("fueled")
+        inst.components.fueled.fueltype = FUELTYPE.USAGE
+        inst.components.fueled:InitializeFuelLevel(TUNING.DRAGONHAT_PERISHTIME)
+        inst.components.fueled:SetDepletedFn(inst.Remove)
+
+        inst.components.equippable:SetOnEquip(dragon_equip)
+        inst.components.equippable:SetOnUnequip(dragon_unequip)
+
+        inst.OnStartDancing = dragon_startdancing
+        inst.OnStopDancing = dragon_stopdancing
+
+        return inst
+    end
+
     local fn = nil
     local assets = { Asset("ANIM", "anim/"..fname..".zip") }
     local prefabs = nil
@@ -1295,6 +1377,12 @@ local function MakeHat(name)
         fn = blue_mushroom
     elseif name == "hive" then
         fn = hive
+    elseif name == "dragonhead" then
+        fn = dragon
+    elseif name == "dragonbody" then
+        fn = dragon
+    elseif name == "dragontail" then
+        fn = dragon
     end
 
     return Prefab(prefabname, fn or default, assets, prefabs)
@@ -1351,4 +1439,7 @@ return  MakeHat("straw"),
         MakeHat("green_mushroom"),
         MakeHat("blue_mushroom"),
         MakeHat("hive"),
+        MakeHat("dragonhead"),
+        MakeHat("dragonbody"),
+        MakeHat("dragontail"),
         Prefab("minerhatlight", minerhatlightfn)

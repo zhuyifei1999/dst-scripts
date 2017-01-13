@@ -31,7 +31,7 @@ local CountdownBeta = Class(Widget, function(self, owner, mode, image, update_na
 		end
 
 	elseif mode == "image" or mode == "reveal" or mode == "released" then
-		self.image = self:AddChild(Image("images/anr_silhouettes.xml", image..".tex"))
+		self.image = self:AddChild(Image("images/anr_silhouettes.xml", image..(mode == "released" and "_reveal" or "")..".tex"))
 		self.image:SetScale(FLIP_SCALE, 1, 1)
 		self.image:SetPosition(0, 90, 0)
 		self.image:SetClickable(false)
@@ -129,11 +129,6 @@ local CountdownBeta = Class(Widget, function(self, owner, mode, image, update_na
 			self.daysuntiltext:SetPosition(0, -28, 0)
 			self.daysuntiltext:SetSize(25)
 			self.daysuntiltext:SetString(update_name)
-
-			self.reveal_image = self:AddChild(Image("images/anr_silhouettes.xml", image.."_reveal.tex"))
-			self.reveal_image:SetScale(FLIP_SCALE, 1, 1)
-			self.reveal_image:SetPosition(0, 90, 0)
-			self.reveal_image:SetClickable(false)
 		end
 		
 	end

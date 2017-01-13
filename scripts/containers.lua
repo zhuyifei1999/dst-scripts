@@ -372,13 +372,13 @@ params.teleportato_base =
         animbuild = "ui_cookpot_1x4",
         pos = Vector3(0, 0, 0),
         side_align_tip = 100,
-        type = "cooker",
         buttoninfo =
         {
             text = STRINGS.ACTIONS.ACTIVATE.GENERIC,
             position = Vector3(0, -165, 0),
         },
     },
+    type = "cooker",
 }
 
 function params.teleportato_base.itemtestfn(container, item, slot)

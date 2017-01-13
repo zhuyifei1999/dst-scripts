@@ -39,7 +39,7 @@ local function onturnoff(inst)
 end
 
 local function onsave(inst, data)
-    if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
+    if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() or inst:HasTag("burnt") then
         data.burnt = true
     end
 end
@@ -86,8 +86,10 @@ local function fn()
     inst.AnimState:SetBuild("cartography_desk")
     inst.AnimState:PlayAnimation("idle")
 
-    inst:AddTag("prototyper")
     inst:AddTag("structure")
+
+    --prototyper (from prototyper component) added to pristine state for optimization
+    inst:AddTag("prototyper")
 
     MakeSnowCoveredPristine(inst)
 
@@ -126,4 +128,4 @@ local function fn()
 end
 
 return Prefab("cartographydesk", fn, assets, prefabs),
-    MakePlacer("common/cartographydesk_placer", "cartography_desk", "cartography_desk", "idle")
+    MakePlacer("cartographydesk_placer", "cartography_desk", "cartography_desk", "idle")

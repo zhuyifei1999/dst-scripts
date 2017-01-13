@@ -28,7 +28,7 @@ return {
 			GENERIC = "I can't do that.",
 			INUSE = "They're elbow deep in junk right now.",
 		},
-		UNLOCK =
+		USEKLAUSSACKKEY =
         {
         	WRONGKEY = "Whoops! That wasn't right.",
         	KLAUS = "I'm a little preoccupied!!",
@@ -968,6 +968,7 @@ return {
 		CRITTER_LAMB = "Much less mucusy than its momma.",
         CRITTER_PUPPY = "Pretty cute for a lil monster!",
         CRITTER_KITTEN = "You'd make a good lab assistant.",
+        CRITTER_PERDLING = "My feathered friend.",
 
 		CROW =
 		{
@@ -1793,10 +1794,10 @@ return {
         TRINKET_33 = "I hope this doesn't attract spiders.", --Spider Ring
         TRINKET_34 = "Let's make a wish. For science.", --Monkey Paw
         TRINKET_35 = "Hard to find a good flask around here.", --Empty Elixir
-		TRINKET_36 = "I might need these after all that candy.", --Faux fangs
-		TRINKET_37 = "I don't believe in the supernatural.", --Broken Stake
+        TRINKET_36 = "I might need these after all that candy.", --Faux fangs
+        TRINKET_37 = "I don't believe in the supernatural.", --Broken Stake
 
-		HALLOWEENCANDY_1 = "The cavities are probably worth it, right?",
+        HALLOWEENCANDY_1 = "The cavities are probably worth it, right?",
         HALLOWEENCANDY_2 = "What corruption of science grew these?",
         HALLOWEENCANDY_3 = "It's... corn.",
         HALLOWEENCANDY_4 = "They wriggle on the way down.",
@@ -1808,6 +1809,21 @@ return {
         HALLOWEENCANDY_10 = "Only a sucker wouldn't love this.",
         HALLOWEENCANDY_11 = "Much better tasting than the real thing.",
         CANDYBAG = "It's some sort of delicious pocket dimension for sugary treats.",
+
+        DRAGONHEADHAT = "So who gets to be the head?",
+        DRAGONBODYHAT = "I'm middling on this middle piece.",
+        DRAGONTAILHAT = "Someone has to bring up the rear.",
+        PERDSHRINE =
+        {
+            GENERIC = "I feel like it wants something.",
+            EMPTY = "I've got to plant something there.",
+            BURNT = "That won't do at all.",
+        },
+        REDLANTERN = "This lantern feels more special than the others.",
+        LUCKY_GOLDNUGGET = "What a lucky find!",
+        FIRECRACKERS = "Filled with explosion science!",
+        PERDFAN = "It's inordinately large.",
+        REDPOUCH = "Is there something inside that?",
 
 		BISHOP_CHARGE_HIT = "Ow!",
 		TRUNKVEST_SUMMER = "Wilderness casual.",

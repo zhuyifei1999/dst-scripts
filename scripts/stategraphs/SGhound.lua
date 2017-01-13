@@ -14,6 +14,16 @@ local events =
     CommonHandlers.OnLocomote(true, false),
     CommonHandlers.OnFreeze(),
 
+    EventHandler("startle", function(inst)
+        if not (inst.sg:HasStateTag("startled") or inst.components.health:IsDead() or inst.components.freezable:IsFrozen()) then
+            if inst.components.sleeper:IsAsleep() then
+                inst.components.sleeper:WakeUp()
+            end
+            inst.components.combat:SetTarget(nil)
+            inst.sg:GoToState("startle")
+        end
+    end),
+
     --Moon hounds
     EventHandler("workmoonbase", function(inst, data)
         if data ~= nil and data.moonbase ~= nil and not (inst.components.health:IsDead() or inst.sg:HasStateTag("busy")) then
@@ -92,7 +102,7 @@ local states =
         name = "hit",
         tags = { "busy", "hit" },
 
-        onenter = function(inst, cb)
+        onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("hit")
         end,
@@ -104,10 +114,27 @@ local states =
     },
 
     State{
+        name = "startle",
+        tags = { "busy", "startled" },
+
+        onenter = function(inst)
+            inst.Physics:Stop()
+            inst.AnimState:PlayAnimation("scared_pre")
+            inst.AnimState:PushAnimation("scared_loop", true)
+            inst.SoundEmitter:PlaySound(inst.components.combat.hurtsound)
+            inst.sg:SetTimeout(.8 + .3 * math.random())
+        end,
+
+        ontimeout = function(inst)
+            inst.sg:GoToState("idle", "scared_pst")
+        end,
+    },
+
+    State{
         name = "taunt",
         tags = { "busy" },
 
-        onenter = function(inst, cb)
+        onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("taunt")
         end,

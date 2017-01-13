@@ -542,6 +542,12 @@ local fx =
         build = "gift",
         anim = "unwrap",
     },
+    {
+        name = "redpouch_unwrap",
+        bank = "redpouch",
+        build = "redpouch",
+        anim = "unwrap",
+    },
 }
 
 return fx

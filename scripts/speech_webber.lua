@@ -16,7 +16,7 @@ return {
 			GENERIC = "It's not shaving time!",
 			NOBITS = "Clean as a whistle.",
 		},
-		UNLOCK =
+		USEKLAUSSACKKEY =
         {
         	WRONGKEY = "That doesn't go there!",
         	KLAUS = "It's too dangerous!",
@@ -963,6 +963,7 @@ return {
 		CRITTER_LAMB = "Father taught me how to take care of goats!",
         CRITTER_PUPPY = "We're best friends.",
         CRITTER_KITTEN = "You look like grandpa's cat!",
+        CRITTER_PERDLING = "Gobble gobble!",
 
 		CROW =
 		{
@@ -1784,10 +1785,10 @@ return {
         TRINKET_33 = "It's a friend for our finger!!", --Spider Ring
         TRINKET_34 = "The monkey probably needed that.", --Monkey Paw
         TRINKET_35 = "I kinda wanna drink what's left, but he won't let me.", --Empty Elixir
-		TRINKET_36 = "We've already got some, thanks.", --Faux Fangs
-		TRINKET_37 = "Maybe we should hide this before someone gets hurt.", --Broken Stake
+        TRINKET_36 = "We've already got some, thanks.", --Faux Fangs
+        TRINKET_37 = "Maybe we should hide this before someone gets hurt.", --Broken Stake
 
-		HALLOWEENCANDY_1 = "Oh, Wendy! We'll trade you for your choco pigs!", --Candy Apple
+        HALLOWEENCANDY_1 = "Oh, Wendy! We'll trade you for your choco pigs!", --Candy Apple
         HALLOWEENCANDY_2 = "Haha ew! It's weird!", --Candy Corn
         HALLOWEENCANDY_3 = "Haha, that's not candy!", --Not-So-Candy Corn
         HALLOWEENCANDY_4 = "We aren't totally comfortable with this.", --Gummy Spider
@@ -1799,6 +1800,21 @@ return {
         HALLOWEENCANDY_10 = "Candy candy candy!", --Tentacle Lolli
         HALLOWEENCANDY_11 = "Mmm! Sweet revenge!", --Choco Pigs
         CANDYBAG = "Treats, treats, treats!",
+
+        DRAGONHEADHAT = "The front part's sort of scary.",
+        DRAGONBODYHAT = "I'm not sure I want to be in *another* belly.",
+        DRAGONTAILHAT = "We like the tail!",
+        PERDSHRINE =
+        {
+            GENERIC = "We wanna give it something!",
+            EMPTY = "The pot's empty.",
+            BURNT = "The fire destroyed it.",
+        },
+        REDLANTERN = "Our own personal night light!",
+        LUCKY_GOLDNUGGET = "So shiny!",
+        FIRECRACKERS = "Don't worry Ms. Wicker, we'll be careful.",
+        PERDFAN = "It's so big!!",
+        REDPOUCH = "Thanks birds!",
 
 		TRUNKVEST_SUMMER = "It's so puffy!",
 		TRUNKVEST_WINTER = "You're always supposed to wear a jacket!",

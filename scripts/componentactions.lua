@@ -474,7 +474,7 @@ local COMPONENT_ACTIONS =
                 not (target.replica.inventoryitem ~= nil and target.replica.inventoryitem:IsGrandOwner(doer))) and
                 inst:HasTag("klaussackkey") then
 
-                table.insert(actions, ACTIONS.UNLOCK)
+                table.insert(actions, ACTIONS.USEKLAUSSACKKEY)
             end
         end,
 

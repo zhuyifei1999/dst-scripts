@@ -660,7 +660,7 @@ TEMPLATES = {
     -----------------
     -- To be added as a child of the root. onclick should be whatever cancel/back fn is appropriate for your screen.
     BackButton = function(onclick, txt, txt_offset, shadow_offset, scale)
-        local btn = ImageButton("images/frontscreen.xml", "turnarrow_icon.tex", "turnarrow_icon_over.tex", nil, nil, nil, {1,1}, {0,0})
+        local btn = ImageButton("images/frontend.xml", "turnarrow_icon.tex", "turnarrow_icon_over.tex", nil, nil, nil, {1,1}, {0,0})
         btn:SetPosition(-RESOLUTION_X*.4 - 10, -RESOLUTION_Y*.5 + BACK_BUTTON_Y)
 
         btn.scale = scale or 1

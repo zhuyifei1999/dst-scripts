@@ -32,7 +32,7 @@ return {
 			GENERIC = "Curses.",
 			INUSE = "I'm quite adept at waiting. I've had a lot of practice.",	
 		},
-		UNLOCK =
+		USEKLAUSSACKKEY =
         {
         	WRONGKEY = "Blast! Wrong key.",
         	KLAUS = "I'll not be done in by an overgrown Krampus.",
@@ -1109,6 +1109,8 @@ return {
 		CRITTER_LAMB = "Quit nibbling my coattails.",
         CRITTER_PUPPY = "You're a slobbery little chap, aren't you?",
         CRITTER_KITTEN = "A wholly agreeable animal.",
+        CRITTER_PERDLING = "You're as fowl as I am!",
+
 		CROW =
 		{
 			GENERIC = "I don't know how they got here.",
@@ -1786,10 +1788,10 @@ return {
         TRINKET_33 = "The opposite of dapper.", --Spider Ring
         TRINKET_34 = "I'm done tampering with magical oddities, thank-you.", --Monkey Paw 
         TRINKET_35 = "I'm not in the habit of imbibing strange liquids.", --Empty Elixir
-		TRINKET_36 = "Permanently bared.", --Faux Fangs
-		TRINKET_37 = "I told you people, I am *not* a vampire!", --Broken Stake
+        TRINKET_36 = "Permanently bared.", --Faux Fangs
+        TRINKET_37 = "I told you people, I am *not* a vampire!", --Broken Stake
 
-		HALLOWEENCANDY_1 = "Oh good, it's solid candy. I feared something healthy had snuck in.",
+        HALLOWEENCANDY_1 = "Oh good, it's solid candy. I feared something healthy had snuck in.",
         HALLOWEENCANDY_2 = "Waxy, just like me.",
         HALLOWEENCANDY_3 = "Who is making all this candy, exactly?",
         HALLOWEENCANDY_4 = "Black licorice, my favorite.",
@@ -1801,6 +1803,21 @@ return {
         HALLOWEENCANDY_10 = "No one is above enjoying a good lollipop.",
         HALLOWEENCANDY_11 = "Eating them makes me feel powerful.",
         CANDYBAG = "That's our sugar-sack.",
+
+        DRAGONHEADHAT = "Quite formidable looking.",
+        DRAGONBODYHAT = "I'm no middleman.",
+        DRAGONTAILHAT = "The back end of a terrible beast.",
+        PERDSHRINE =
+        {
+            GENERIC = "It seems my fortune's changing.",
+            EMPTY = "Something else seems to be required.",
+            BURNT = "It's no use to anyone now.",
+        },
+        REDLANTERN = "Not having a light would certainly be unlucky.",
+        LUCKY_GOLDNUGGET = "Gold's gold as far as I'm concerned.",
+        FIRECRACKERS = "Great for magic tricks.",
+        PERDFAN = "Now I'll have no problem keeping my cool.",
+        REDPOUCH = "Why did that bird have this?",
 
 		TRUNKVEST_SUMMER = "It's more of a fall vest.",
 		TRUNKVEST_WINTER = "It's so hard to look fashionable in the winter.",

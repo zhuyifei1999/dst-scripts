@@ -217,7 +217,7 @@ function SkinsScreen:BuildDetailsPanel()
 	
     self.details_panel:SetPosition(-400, -0, 0)
 
-    self.details_panel.shadow = self.details_panel:AddChild(Image("images/frontscreen.xml", "char_shadow.tex"))
+    self.details_panel.shadow = self.details_panel:AddChild(Image("images/frontend.xml", "char_shadow.tex"))
 	self.details_panel.shadow:SetPosition(0, 45)
 	self.details_panel.shadow:SetScale(.8)
 

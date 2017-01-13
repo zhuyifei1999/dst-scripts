@@ -99,7 +99,15 @@ end
 local brain = require("brains/tornadobrain")
 
 local function ontornadolifetime(inst)
+    inst.task = nil
     inst.sg:GoToState("despawn")
+end
+
+local function SetDuration(inst, duration)
+    if inst.task ~= nil then
+        inst.task:Cancel()
+    end
+    inst.task = inst:DoTaskInTime(duration, ontornadolifetime)
 end
 
 local function tornado_fn()
@@ -127,8 +135,6 @@ local function tornado_fn()
         return inst
     end
 
-    inst:DoTaskInTime(TUNING.TORNADO_LIFETIME, ontornadolifetime)
-
     inst:AddComponent("knownlocations")
 
     inst:AddComponent("locomotor")
@@ -140,6 +146,9 @@ local function tornado_fn()
 
     inst.WINDSTAFF_CASTER = nil
     inst.persists = false
+
+    inst.SetDuration = SetDuration
+    inst:SetDuration(TUNING.TORNADO_LIFETIME)
 
     return inst
 end

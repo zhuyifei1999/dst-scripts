@@ -64,8 +64,8 @@ local function fn()
     inst:AddComponent("equippable")
     inst.components.equippable.equipslot = EQUIPSLOTS.BODY
 
-    inst.components.equippable:SetOnEquip( onequip )
-    inst.components.equippable:SetOnUnequip( onunequip )
+    inst.components.equippable:SetOnEquip(onequip)
+    inst.components.equippable:SetOnUnequip(onunequip)
 
     inst:AddComponent("container")
     inst.components.container:WidgetSetup("icepack")

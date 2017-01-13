@@ -95,7 +95,7 @@ local DressupPanel = Class(Widget, function(self, owner_screen, profile, playerd
 		self.puppet:SetScale(1.75)
 		self.puppet:SetClickable(false)
 
-		self.shadow = self.puppet_group:AddChild(Image("images/frontscreen.xml", "char_shadow.tex"))
+		self.shadow = self.puppet_group:AddChild(Image("images/frontend.xml", "char_shadow.tex"))
 	    self.shadow:SetPosition(8, title_height - 75)
 	    self.shadow:SetScale(.3)
 
@@ -277,7 +277,7 @@ function DressupPanel:SeparateAvatar()
 		self.puppet:SetPosition( 10, title_height - 70)
 		self.puppet:SetScale(1.75)
 
-		self.shadow = self.puppet_group:AddChild(Image("images/frontscreen.xml", "char_shadow.tex"))
+		self.shadow = self.puppet_group:AddChild(Image("images/frontend.xml", "char_shadow.tex"))
 	    self.shadow:SetPosition(8, title_height - 75)
 	    self.shadow:SetScale(.3)
 
@@ -321,7 +321,7 @@ function DressupPanel:MakeSpinner(slot)
 	--bg:SetSize(52, 52)
 	--bg:SetPosition(-39, 42, 0)
 
-	--[[spinner_group.shadow = spinner_group:AddChild(Image("images/frontscreen.xml", "char_shadow.tex"))
+	--[[spinner_group.shadow = spinner_group:AddChild(Image("images/frontend.xml", "char_shadow.tex"))
     spinner_group.shadow:SetPosition(10, 21)
 
     if slot == "base" then 

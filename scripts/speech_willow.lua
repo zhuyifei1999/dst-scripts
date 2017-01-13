@@ -16,7 +16,7 @@ return {
 			GENERIC = "Nu-uh.",
 			NOBITS = "It's already shaved!",
 		},
-		UNLOCK =
+		USEKLAUSSACKKEY =
         {
         	WRONGKEY = "Darn thing won't work!",
         	KLAUS = "But that big ugly thing is on my tail!",
@@ -1185,6 +1185,7 @@ return {
 		CRITTER_LAMB = "Look at those creepy little eyes. Aww.",
         CRITTER_PUPPY = "Hah, you don't even know you're smelly.",
         CRITTER_KITTEN = "You're the perfect lapwarmer.",
+        CRITTER_PERDLING = "I could just eat you up.",
 
 		CROW =
 		{
@@ -1844,10 +1845,10 @@ return {
         TRINKET_33 = "Ewww! Who would ever wear that!", --Spider Ring
         TRINKET_34 = "Ughhh! That's so nasty!", --Monkey Paw
         TRINKET_35 = "Hey Wes! Dare you to drink the last bit!", --Empty Elixir
-		TRINKET_36 = "Pfft, they're not even sharp.", --Faux Fangs
-		TRINKET_37 = "Looks like firewood to me.", --Broken Stake
+        TRINKET_36 = "Pfft, they're not even sharp.", --Faux Fangs
+        TRINKET_37 = "Looks like firewood to me.", --Broken Stake
 
-		HALLOWEENCANDY_1 = "That's wayyyy better than a regular apple!",
+        HALLOWEENCANDY_1 = "That's wayyyy better than a regular apple!",
         HALLOWEENCANDY_2 = "Do people actually eat these or are they just a bad joke?",
         HALLOWEENCANDY_3 = "Ewwww it's corn flavored!",
         HALLOWEENCANDY_4 = "Eww! I hate black licorice!",
@@ -1859,6 +1860,21 @@ return {
         HALLOWEENCANDY_10 = "Yesssss! Lollipops!",
         HALLOWEENCANDY_11 = "I'm gonna need about a dozen of these.",
         CANDYBAG = "I'm gonna stuff so much candy in there!",
+
+        DRAGONHEADHAT = "Sooo ferocious!",
+        DRAGONBODYHAT = "Aww, I always get caught in the middle!",
+        DRAGONTAILHAT = "I wanna be the caboose!",
+        PERDSHRINE =
+        {
+            GENERIC = "I don't even like gobblers!",
+            EMPTY = "What do we have to do now?",
+            BURNT = "Well, that's burned now.",
+        },
+        REDLANTERN = "Anything with a fire in it is okay by me.",
+        LUCKY_GOLDNUGGET = "I don't think I'm supposed to spend this.",
+        FIRECRACKERS = "Light'em up!",
+        PERDFAN = "It's a big ol' fan.",
+        REDPOUCH = "What a great color!",
 
 		LAVA_POND_ROCK = "Oh great, another stinkin' rock!",
 		LAVA_POND_ROCK2 = "Oh great, another stinkin' rock!",

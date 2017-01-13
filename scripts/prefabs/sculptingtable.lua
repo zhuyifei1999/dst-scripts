@@ -275,12 +275,14 @@ local function fn()
     inst.AnimState:SetBuild("sculpting_station")
     inst.AnimState:PlayAnimation("idle")
 
-    inst:AddTag("prototyper")
     inst:AddTag("structure")
 
     --trader, alltrader (from trader component) added to pristine state for optimization
     inst:AddTag("trader")
     inst:AddTag("alltrader")
+
+    --prototyper (from prototyper component) added to pristine state for optimization
+    inst:AddTag("prototyper")
 
     MakeSnowCoveredPristine(inst)
 
@@ -348,4 +350,4 @@ local function fn()
 end
 
 return Prefab("sculptingtable", fn, assets, prefabs),
-    MakePlacer("common/sculptingtable_placer", "sculpting_station", "sculpting_station", "idle")
+    MakePlacer("sculptingtable_placer", "sculpting_station", "sculpting_station", "idle")

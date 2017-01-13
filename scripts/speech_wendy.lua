@@ -21,7 +21,7 @@ return {
 			GENERIC = "I'm not taking a razor to that.",
 			NOBITS = "She's already lost everything.",
 		},
-		UNLOCK =
+		USEKLAUSSACKKEY =
         {
         	WRONGKEY = "It remains locked, like my heart.",
         	KLAUS = "Death would surely find me if I tried...",
@@ -1157,6 +1157,7 @@ return {
 		CRITTER_LAMB = "The softest creature in the hardest world.",
         CRITTER_PUPPY = "Blissfully unaware of mortal troubles...",
         CRITTER_KITTEN = "Cursed with nine lives. Poor thing.",
+        CRITTER_PERDLING = "It's so happy.",
 
 		CROW =
 		{
@@ -1794,10 +1795,10 @@ return {
         TRINKET_33 = "It's very fetching.", --Spider Ring
         TRINKET_34 = "Perhaps a curse could end our suffering.", --Monkey Paw
         TRINKET_35 = "Neither half empty, nor half full.", --Empty Elixir
-		TRINKET_36 = "Now Webber and I can match.", --Faux Fangs
-		TRINKET_37 = "Drive it through my heart and be done.", --Broken Stake
+        TRINKET_36 = "Now Webber and I can match.", --Faux Fangs
+        TRINKET_37 = "Drive it through my heart and be done.", --Broken Stake
 
-		HALLOWEENCANDY_1 = "Oh... it's... g-good.",
+        HALLOWEENCANDY_1 = "Oh... it's... g-good.",
         HALLOWEENCANDY_2 = "The most delicious lie.",
         HALLOWEENCANDY_3 = "Sigh. At least it's honest.",
         HALLOWEENCANDY_4 = "Don't worry, Webber, it's just candy.",
@@ -1809,6 +1810,21 @@ return {
         HALLOWEENCANDY_10 = "This is... fun...",
         HALLOWEENCANDY_11 = "You have to bite their heads off first... heehee...",
         CANDYBAG = "It's for putting nice things in...",
+
+        DRAGONHEADHAT = "What big eyes you have.",
+        DRAGONBODYHAT = "The belly of the beast.",
+        DRAGONTAILHAT = "That's just a tall tail.",
+        PERDSHRINE =
+        {
+            GENERIC = "It hungers for a sacrifice.",
+            EMPTY = "It's empty...",
+            BURNT = "Black like my heart.",
+        },
+        REDLANTERN = "A light to guide me.",
+        LUCKY_GOLDNUGGET = "Luck has long since abandoned me...",
+        FIRECRACKERS = "It needs only a light.",
+        PERDFAN = "It's... surprisingly soft.",
+        REDPOUCH = "What lies within?",
 
 		TRUNKVEST_SUMMER = "Skin to wear over your skin.",
 		TRUNKVEST_WINTER = "It may warm the body, but what of the spirit?",

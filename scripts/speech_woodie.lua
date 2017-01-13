@@ -17,7 +17,7 @@ return {
 			NOBITS = "It's already shorn, eh?",
             REFUSE = "I like my beard.",
 		},
-		UNLOCK =
+		USEKLAUSSACKKEY =
         {
         	WRONGKEY = "That was the wrong key, eh?",
         	KLAUS = "Now's not the time, eh?",
@@ -1131,6 +1131,7 @@ return {
 		CRITTER_LAMB = "Heh, it feels like a beard.",
         CRITTER_PUPPY = "Man and robot's best friend.",
         CRITTER_KITTEN = "Giving it pats is relaxing.",
+        CRITTER_PERDLING = "Look, it's not you. It's me.",
 
 		CROW =
 		{
@@ -1795,10 +1796,10 @@ return {
         TRINKET_33 = "Creepy.", --Spider Ring
         TRINKET_34 = "That right there's a bad time waitin' to happen.", --Monkey Paw
         TRINKET_35 = "Doesn't even have a label.", --Empty Elixir
-		TRINKET_36 = "More intimidating than beaver teeth.", --Faux Fangs
-		TRINKET_37 = "What a waste of wood, eh?", --Broken Stake
+        TRINKET_36 = "More intimidating than beaver teeth.", --Faux Fangs
+        TRINKET_37 = "What a waste of wood, eh?", --Broken Stake
 
-		HALLOWEENCANDY_1 = "Even the stick is delicious.",
+        HALLOWEENCANDY_1 = "Even the stick is delicious.",
         HALLOWEENCANDY_2 = "Don't worry, I'll eat enough for the both of us, Lucy.",
         HALLOWEENCANDY_3 = "Just a regular ol' cob of corn.",
         HALLOWEENCANDY_4 = "Yeesh. That's a lot of candy legs.",
@@ -1810,6 +1811,21 @@ return {
         HALLOWEENCANDY_10 = "I'll tell you what it tastes like, Lucy.",
         HALLOWEENCANDY_11 = "Melts in your mouth, not in your hand.",
         CANDYBAG = "That there bag could hold a whole heap of candy.",
+
+        DRAGONHEADHAT = "That's a sight, eh?",
+        DRAGONBODYHAT = "Nice needlework.",
+        DRAGONTAILHAT = "Well, somebody's gotta do it.",
+        PERDSHRINE =
+        {
+            GENERIC = "I'm not giving anything to those birds!",
+            EMPTY = "Could use a touch of green.",
+            BURNT = "It's all burnt up.",
+        },
+        REDLANTERN = "This little light of mine.",
+        LUCKY_GOLDNUGGET = "I could use a bit of luck.",
+        FIRECRACKERS = "Let's not set them off in the forest.",
+        PERDFAN = "It had to be birds, didn't it?",
+        REDPOUCH = "It's Lucy-colour.",
 
 		TRUNKVEST_SUMMER = "Nice and breezy.",
 		TRUNKVEST_WINTER = "This could stand up to the winters back home, eh?",

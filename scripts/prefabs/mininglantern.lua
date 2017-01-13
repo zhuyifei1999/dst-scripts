@@ -6,6 +6,11 @@ local assets =
     Asset("INV_IMAGE", "lantern_lit"),
 }
 
+local prefabs =
+{
+    "lanternlight",
+}
+
 local function fuelupdate(inst)
     if inst._light ~= nil then
         local fuelpercent = inst.components.fueled:GetPercent()
@@ -32,7 +37,6 @@ local function turnon(inst)
         inst.AnimState:PlayAnimation("idle_on")
 
         if owner ~= nil and inst.components.equippable:IsEquipped() then
-            owner.AnimState:OverrideSymbol("swap_object", "swap_lantern", "swap_lantern_on")
             owner.AnimState:Show("LANTERN_OVERLAY")
         end
 
@@ -62,7 +66,6 @@ local function turnoff(inst)
     inst.AnimState:PlayAnimation("idle_off")
 
     if inst.components.equippable:IsEquipped() then
-        inst.components.inventoryitem.owner.AnimState:OverrideSymbol("swap_object", "swap_lantern", "swap_lantern_off")
         inst.components.inventoryitem.owner.AnimState:Hide("LANTERN_OVERLAY")
     end
 
@@ -88,16 +91,15 @@ end
 local function onequip(inst, owner)
     owner.AnimState:Show("ARM_carry")
     owner.AnimState:Hide("ARM_normal")
+    owner.AnimState:OverrideSymbol("swap_object", "swap_lantern", "swap_lantern")
     owner.AnimState:OverrideSymbol("lantern_overlay", "swap_lantern", "lantern_overlay")
-    
+
     if inst.components.fueled:IsEmpty() then
-        owner.AnimState:OverrideSymbol("swap_object", "swap_lantern", "swap_lantern_off")
-        owner.AnimState:Hide("LANTERN_OVERLAY") 
+        owner.AnimState:Hide("LANTERN_OVERLAY")
     else
-        owner.AnimState:OverrideSymbol("swap_object", "swap_lantern", "swap_lantern_on")
-        owner.AnimState:Show("LANTERN_OVERLAY") 
+        owner.AnimState:Show("LANTERN_OVERLAY")
+        turnon(inst)
     end
-    turnon(inst)
 end
 
 local function onunequip(inst, owner)
@@ -211,5 +213,5 @@ local function fn()
     return inst
 end
 
-return Prefab("lantern", fn, assets),
+return Prefab("lantern", fn, assets, prefabs),
     Prefab("lanternlight", lanternlightfn)

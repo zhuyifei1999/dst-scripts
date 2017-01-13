@@ -111,6 +111,7 @@ function Translator:ConvertEscapeCharactersToString(str)
 	local newstr = string.gsub(str, "\n", "\\n")
 	newstr = string.gsub(newstr, "\r", "\\r")
 	newstr = string.gsub(newstr, "\"", "\\\"")
+	newstr = string.gsub(newstr, "\\", "\\\\")
 	
 	return newstr
 end
@@ -119,6 +120,7 @@ function Translator:ConvertEscapeCharactersToRaw(str)
 	local newstr = string.gsub(str, "\\n", "\n")
 	newstr = string.gsub(newstr, "\\r", "\r")
 	newstr = string.gsub(newstr, "\\\"", "\"")
+	newstr = string.gsub(newstr, "\\\\", "\\")
 	
 	return newstr
 end

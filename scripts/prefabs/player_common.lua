@@ -1474,6 +1474,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_emotesxl.zip"),
         Asset("ANIM", "anim/player_emotes_dance0.zip"),
         Asset("ANIM", "anim/player_emotes.zip"),
+        Asset("ANIM", "anim/player_hatdance.zip"),
         Asset("ANIM", "anim/player_bow.zip"),
         Asset("ANIM", "anim/tears.zip"),
         Asset("ANIM", "anim/puff_spawning.zip"),

@@ -319,23 +319,17 @@ function ErodeAway(inst, erode_time)
 end
 
 function ApplySpecialEvent(event)
-	--print (" -- ApplySpecialEvent ", tostring(event))
+    if event ~= nil and event ~= "default" then
+        WORLD_SPECIAL_EVENT = event
+    end
 
-	if event == nil or event == "default" then
-		event = WORLD_SPECIAL_EVENT
-	end
-	
-	WORLD_SPECIAL_EVENT = event
-	
-	if event == SPECIAL_EVENTS.HALLOWED_NIGHTS then
-		TECH.HALLOWED_NIGHTS.SCIENCE = 0
-	else
-		TECH.HALLOWED_NIGHTS.SCIENCE = 10 -- lost tech level if not using the hallowed nights event
-	end
-	
-	if event == SPECIAL_EVENTS.WINTERS_FEAST then
-		TECH.WINTERS_FEAST.SCIENCE = 0
-	else
-		TECH.WINTERS_FEAST.SCIENCE = 10 -- lost tech level if not using the winters feast event
-	end
+    --LOST tech level when event is not active
+    for k, v in pairs(SPECIAL_EVENTS) do
+        if v ~= SPECIAL_EVENTS.NONE then
+            local tech = TECH[k]
+            if tech ~= nil then
+                tech.SCIENCE = v == WORLD_SPECIAL_EVENT and 0 or 10
+            end
+        end
+    end
 end

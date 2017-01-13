@@ -272,6 +272,8 @@ return MakeCritter("critter_lamb", "sheepington", 6, standard_diet, false, {favo
        MakeBuilder("critter_puppy"),
        MakeCritter("critter_kitten", "kittington", 6, standard_diet, false, {favoritefood="fishsticks"}),
        MakeBuilder("critter_kitten"),
+       MakeCritter("critter_perdling", "perdling", 4, standard_diet, false, {favoritefood="trailmix"}),
+       MakeBuilder("critter_perdling"),
        MakeCritter("critter_dragonling", "dragonling", 6, standard_diet, true, {favoritefood="hotchili", flyingsoundloop="dontstarve_DLC001/creatures/together/dragonling/fly_LP"}),
        MakeBuilder("critter_dragonling"),
        MakeCritter("critter_glomling", "glomling", 6, standard_diet, true, {favoritefood="taffy", playmatetags={"glommer"}, flyingsoundloop="dontstarve_DLC001/creatures/together/glomling/flap_LP"}),

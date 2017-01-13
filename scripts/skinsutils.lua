@@ -12,6 +12,7 @@ SKIN_RARITY_COLORS =
 	ProofOfPurchase = { 0.000, 0.478, 0.302, 1 }, -- 007A4D
 	Reward			= { 0.910, 0.592, 0.118, 1 }, -- E8971E - a set bonus reward
 	Event			= { 0.957, 0.769, 0.188, 1 }, -- F4C430 - an event item
+	-- #40E0D0 reserved skin colour
 }
 --[[
 Common #B7D2D9
@@ -24,6 +25,7 @@ Loyal #A2C46F
 ProofOfPurchase #007A4D
 Reward #E8971E
 Event #F4C430
+#40E0D0 reserved skin colour
 ]]
 
 -- for use in sort functions

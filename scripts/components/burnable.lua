@@ -365,7 +365,7 @@ function Burnable:SpawnFX(immediate)
 
     local fxoffset = self.fxoffset or Vector3(0, 0, 0)
     for k, v in pairs(self.fxdata) do
-        local fx = SpawnPrefab(v.prefab)
+        local fx = v.prefab ~= nil and SpawnPrefab(v.prefab) or nil
         if fx ~= nil then
             fx.Transform:SetScale(self.inst.Transform:GetScale())
             local xoffs, yoffs, zoffs = v.x + fxoffset.x, v.y + fxoffset.y, v.z + fxoffset.z

@@ -931,7 +931,7 @@ AddGameDebugKey(KEY_H, function()
                     end
                 end
             end
-        elseif c_sel().components.herd ~= nil then
+        elseif c_sel() ~= nil and c_sel().components.herd ~= nil then
             c_select(next(c_sel().components.herd.members))
         end
     end

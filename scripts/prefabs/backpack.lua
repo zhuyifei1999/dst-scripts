@@ -2,19 +2,20 @@ local assets =
 {
     Asset("ANIM", "anim/backpack.zip"),
     Asset("ANIM", "anim/swap_backpack.zip"),
+    Asset("ANIM", "anim/ui_backpack_2x4.zip"),
 }
 
 local function onequip(inst, owner)
-	local skin_build = inst:GetSkinBuild()
-	if skin_build ~= nil then
+    local skin_build = inst:GetSkinBuild()
+    if skin_build ~= nil then
         owner:PushEvent("equipskinneditem", inst:GetSkinName())
-		owner.AnimState:OverrideItemSkinSymbol("backpack", skin_build, "backpack", inst.GUID, "swap_backpack" )
-		owner.AnimState:OverrideItemSkinSymbol("swap_body", skin_build, "swap_body", inst.GUID, "swap_backpack" )
-	else
-		owner.AnimState:OverrideSymbol("backpack", "swap_backpack", "backpack")
-		owner.AnimState:OverrideSymbol("swap_body", "swap_backpack", "swap_body")
-	end
-    
+        owner.AnimState:OverrideItemSkinSymbol("backpack", skin_build, "backpack", inst.GUID, "swap_backpack" )
+        owner.AnimState:OverrideItemSkinSymbol("swap_body", skin_build, "swap_body", inst.GUID, "swap_backpack" )
+    else
+        owner.AnimState:OverrideSymbol("backpack", "swap_backpack", "backpack")
+        owner.AnimState:OverrideSymbol("swap_body", "swap_backpack", "swap_body")
+    end
+
     if inst.components.container ~= nil then
         inst.components.container:Open(owner)
     end

@@ -8,6 +8,7 @@ local assets =
 local prefabs =
 {
     "drumstick",
+    "redpouch",
 }
 
 local brain = require "brains/perdbrain"
@@ -39,6 +40,55 @@ local function OnLoadPostPass(inst, newents, data)
     end
 end
 
+--------------------------------------------------------------------------
+--[[ For special event ]]
+--------------------------------------------------------------------------
+
+local function OnAttacked(inst)
+    local tochain = {}
+    local x, y, z = inst.Transform:GetWorldPosition()
+    for i, v in ipairs(TheSim:FindEntities(x, y, z, 14, { "perd" })) do
+        if v.seekshrine then
+            v.seekshrine = nil
+            inst:RemoveEventCallback("attacked", OnAttacked)
+            if v ~= inst then
+                table.insert(tochain, v)
+            end
+        end
+    end
+    for i, v in ipairs(tochain) do
+        OnAttacked(v)
+    end
+end
+
+local function OnEat(inst, food)
+    --eat off the ground, not picked berries
+    if food.components.inventoryitem ~= nil and
+        not food.components.inventoryitem:IsHeld() and
+        not inst.components.timer:TimerExists("offeringcooldown") then
+        inst.sg.statemem.dropoffering = true
+        if not inst.seekshrine then
+            inst.seekshrine = true
+            inst:ListenForEvent("attacked", OnAttacked)
+        end
+    end
+end
+
+local function lootsetfn(lootdropper)
+    if not lootdropper.inst.components.timer:TimerExists("offeringcooldown") then
+        lootdropper:AddChanceLoot("redpouch", .1)
+    end
+end
+
+local function DropOffering(inst)
+    if not inst.components.timer:TimerExists("offeringcooldown") then
+        inst.components.timer:StartTimer("offeringcooldown", TUNING.TOTAL_DAY_TIME)
+        LaunchAt(SpawnPrefab("redpouch"), inst, inst:GetNearestPlayer(true) or inst:GetNearestPlayer(), .5, 1, .5)
+    end
+end
+
+--------------------------------------------------------------------------
+
 local function fn()
     local inst = CreateEntity()
 
@@ -59,6 +109,9 @@ local function fn()
 
     inst:AddTag("character")
     inst:AddTag("berrythief")
+    if IsSpecialEventActive(SPECIAL_EVENTS.YOTG) then
+        inst:AddTag("perd")
+    end
 
     inst.entity:SetPristine()
 
@@ -104,6 +157,18 @@ local function fn()
 
     inst.OnSave = OnSave
     inst.OnLoadPostPass = OnLoadPostPass
+
+    if IsSpecialEventActive(SPECIAL_EVENTS.YOTG) then
+        inst:AddComponent("timer")
+
+        inst.components.eater:SetOnEatFn(OnEat)
+        inst.components.lootdropper:SetLootSetupFn(lootsetfn)
+
+        inst.DropOffering = DropOffering
+
+        inst.seekshrine = true
+        inst:ListenForEvent("attacked", OnAttacked)
+    end
 
     return inst
 end
