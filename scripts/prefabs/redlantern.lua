@@ -11,7 +11,7 @@ local prefabs =
     "redlanternbody",
 }
 
-local LIGHT_RADIUS = 2
+local LIGHT_RADIUS = 1.2
 local LIGHT_COLOUR = Vector3(200 / 255, 100 / 255, 100 / 255)
 local LIGHT_INTENSITY = .8
 local LIGHT_FALLOFF = .5
@@ -25,28 +25,31 @@ local function OnUpdateFlicker(inst, starttime)
     inst.Light:SetColour(LIGHT_COLOUR.x + flicker, LIGHT_COLOUR.y + flicker, LIGHT_COLOUR.z + flicker)
 end
 
+local function onremovelight(light)
+    light._lantern._light = nil
+end
+
 local function turnon(inst)
     if not inst.components.fueled:IsEmpty() then
-        if inst.components.fueled ~= nil then
-            inst.components.fueled:StartConsuming()
-        end
+        inst.components.fueled:StartConsuming()
 
-        local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner or nil
-
-        if inst._light == nil or not inst._light:IsValid() then
+        if inst._light == nil then
             inst._light = SpawnPrefab("redlanternlight")
+            inst._light._lantern = inst
+            inst:ListenForEvent("onremove", onremovelight, inst._light)
         end
-        inst._light.entity:SetParent((owner or inst).entity)
+        inst._light.entity:SetParent((inst._body or inst.components.inventoryitem.owner or inst).entity)
 
         inst.AnimState:Show("LIGHT")
 
-        if inst._lantern ~= nil then
-            inst._lantern.AnimState:Show("LIGHT")
+        if inst._body ~= nil then
+            inst._body.AnimState:Show("LIGHT")
         end
 
-        if not (inst._lantern ~= nil and inst._lantern.entity:IsVisible()) and
-            owner ~= nil and inst.components.equippable:IsEquipped() then
-            owner.AnimState:Show("LANTERN_OVERLAY")
+        if not (inst._body ~= nil and inst._body.entity:IsVisible()) and
+            inst.components.equippable:IsEquipped() and
+            inst.components.inventoryitem.owner ~= nil then
+            inst.components.inventoryitem.owner.AnimState:Show("LANTERN_OVERLAY")
         end
 
         inst.components.inventoryitem:ChangeImageName("redlantern_lit")
@@ -54,21 +57,16 @@ local function turnon(inst)
 end
 
 local function turnoff(inst)
-    if inst.components.fueled ~= nil then
-        inst.components.fueled:StopConsuming()
-    end
+    inst.components.fueled:StopConsuming()
 
     if inst._light ~= nil then
-        if inst._light:IsValid() then
-            inst._light:Remove()
-        end
-        inst._light = nil
+        inst._light:Remove()
     end
 
     inst.AnimState:Hide("LIGHT")
 
-    if inst._lantern ~= nil then
-        inst._lantern.AnimState:Hide("LIGHT")
+    if inst._body ~= nil then
+        inst._body.AnimState:Hide("LIGHT")
     end
 
     if inst.components.equippable:IsEquipped() then
@@ -79,8 +77,11 @@ local function turnoff(inst)
 end
 
 local function OnRemove(inst)
-    if inst._light ~= nil and inst._light:IsValid() then
+    if inst._light ~= nil then
         inst._light:Remove()
+    end
+    if inst._body ~= nil then
+        inst._body:Remove()
     end
 end
 
@@ -89,25 +90,22 @@ local function ondropped(inst)
     turnon(inst)
 end
 
-local function onremove(inst)
-    if inst._lantern ~= nil then
-        inst._lantern:Remove()
-        inst._lantern = nil
-    end
-end
-
 local function ToggleOverrideSymbols(inst, owner)
     if owner.sg:HasStateTag("nodangle") or (owner.components.rider ~= nil and owner.components.rider:IsRiding()) then
         owner.AnimState:OverrideSymbol("swap_object", "swap_redlantern", "swap_redlantern")
         if not inst.components.fueled:IsEmpty() then
             owner.AnimState:Show("LANTERN_OVERLAY")
         end
-        inst._lantern:Hide()
+        inst._body:Hide()
     else
         owner.AnimState:OverrideSymbol("swap_object", "swap_redlantern", "swap_redlantern_stick")
         owner.AnimState:Hide("LANTERN_OVERLAY")
-        inst._lantern:Show()
+        inst._body:Show()
     end
+end
+
+local function onremovebody(body)
+    body._lantern._body = nil
 end
 
 local function onequip(inst, owner)
@@ -115,22 +113,24 @@ local function onequip(inst, owner)
     owner.AnimState:Hide("ARM_normal")
     owner.AnimState:OverrideSymbol("lantern_overlay", "swap_redlantern", "redlantern_overlay")
 
-    inst._lantern = SpawnPrefab("redlanternbody")
-    inst._lantern.entity:SetParent(owner.entity)
-    inst._lantern.entity:AddFollower()
-    inst._lantern.Follower:FollowSymbol(owner.GUID, "swap_object", 68, -126, 0)
-    inst._lantern:ListenForEvent("onremove", onremove, inst)
-    inst._lantern:ListenForEvent("newstate", function(owner, data)
+    inst._body = SpawnPrefab("redlanternbody")
+    inst._body._lantern = inst
+    inst:ListenForEvent("onremove", onremovebody, inst._body)
+
+    inst._body.entity:SetParent(owner.entity)
+    inst._body.entity:AddFollower()
+    inst._body.Follower:FollowSymbol(owner.GUID, "swap_object", 68, -126, 0)
+    inst._body:ListenForEvent("newstate", function(owner, data)
         ToggleOverrideSymbols(inst, owner)
     end, owner)
 
     ToggleOverrideSymbols(inst, owner)
 
     if inst.components.fueled:IsEmpty() then
-        inst._lantern.AnimState:Hide("LIGHT")
+        inst._body.AnimState:Hide("LIGHT")
         owner.AnimState:Hide("LANTERN_OVERLAY")
     else
-        if inst._lantern.entity:IsVisible() then
+        if inst._body.entity:IsVisible() then
             owner.AnimState:Hide("LANTERN_OVERLAY")
         else
             owner.AnimState:Show("LANTERN_OVERLAY")
@@ -140,12 +140,15 @@ local function onequip(inst, owner)
 end
 
 local function onunequip(inst, owner)
-    if inst._lantern ~= nil then
-        if inst._lantern.entity:IsVisible() then
+    if inst._body ~= nil then
+        if inst._body.entity:IsVisible() then
+            --need to see the lantern when animating putting away the object
             owner.AnimState:OverrideSymbol("swap_object", "swap_redlantern", "swap_redlantern")
         end
-        inst._lantern:Remove()
-        inst._lantern = nil
+        if inst._light ~= nil then
+            inst._light.entity:SetParent((inst.components.inventoryitem.owner or inst).entity)
+        end
+        inst._body:Remove()
     end
 
     owner.AnimState:Hide("ARM_carry")
@@ -155,21 +158,36 @@ local function onunequip(inst, owner)
 end
 
 local function nofuel(inst)
-    local equippable = inst.components.equippable
-    if equippable ~= nil and equippable:IsEquipped() then
-        local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner or nil
-        if owner ~= nil then
-            local data =
-            {
-                prefab = inst.prefab,
-                equipslot = equippable.equipslot,
-            }
-            turnoff(inst)
-            owner:PushEvent("torchranout", data)
-            return
-        end
+    if inst.components.equippable:IsEquipped() and inst.components.inventoryitem.owner ~= nil then
+        local data =
+        {
+            prefab = inst.prefab,
+            equipslot = inst.components.equippable.equipslot,
+        }
+        turnoff(inst)
+        inst.components.inventoryitem.owner:PushEvent("torchranout", data)
+    else
+        turnoff(inst)
     end
-    turnoff(inst)
+end
+
+local function onupdatefueledraining(inst)
+    local owner = inst.components.inventoryitem.owner
+    inst.components.fueled.rate =
+        owner ~= nil and
+        owner.components.sheltered ~= nil and
+        owner.components.sheltered.sheltered and
+        1 or 1 + TUNING.REDLANTERN_RAIN_RATE * TheWorld.state.precipitationrate
+end
+
+local function onisraining(inst, israining)
+    if israining then
+        inst.components.fueled:SetUpdateFn(onupdatefueledraining)
+        onupdatefueledraining(inst)
+    else
+        inst.components.fueled:SetUpdateFn()
+        inst.components.fueled.rate = 1
+    end
 end
 
 local function lanternlightfn()
@@ -241,6 +259,9 @@ local function fn()
 
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL -- so people can toss depleted lanterns into a firepit
+
+    inst:WatchWorldState("israining", onisraining)
+    onisraining(inst, TheWorld.state.israining)
 
     MakeSmallBurnable(inst, TUNING.TINY_BURNTIME)
     MakeSmallPropagator(inst)

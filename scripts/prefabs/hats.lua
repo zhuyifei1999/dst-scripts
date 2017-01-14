@@ -1236,26 +1236,47 @@ local function MakeHat(name)
         return inst
     end
 
-    local function dragon_ondancing(inst)
-        local score = 0
-        local pieces = {}
-        for i, v in ipairs(AllPlayers) do
-            if v.sg:HasStateTag("dragondance") and inst:IsNear(v, 4) then
+    local function dragon_countpieces(node, dancers, pieces, count)
+        local nodes = {}
+        for i = #dancers, 1, -1 do
+            local dancer = dancers[i]
+            if dancer:IsNear(node, 2) then
+                table.remove(dancers, i)
                 local piece =
-                    (v.sg:HasStateTag("dragonhead") and "head") or
-                    (v.sg:HasStateTag("dragonbody") and "body") or
-                    (v.sg:HasStateTag("dragontail") and "tail") or
+                    (dancer.sg:HasStateTag("dragonhead") and "head") or
+                    (dancer.sg:HasStateTag("dragonbody") and "body") or
+                    (dancer.sg:HasStateTag("dragontail") and "tail") or
                     nil
-                if piece ~= nil and not pieces[piece] then
-                    score = score + 1
-                    if score >= 3 then
-                        break
+                if piece ~= nil then
+                    if not pieces[piece] then
+                        count = count + 1
+                        if count >= 3 then
+                            return count
+                        end
+                        pieces[piece] = true
                     end
-                    pieces[piece] = true
+                    table.insert(nodes, dancer)
                 end
             end
         end
-        inst.components.equippable.dapperness = TUNING.DAPPERNESS_LARGE * score
+        for i, v in ipairs(nodes) do
+            count = dragon_countpieces(v, dancers, pieces, count)
+            if count >= 3 then
+                return count
+            end
+        end
+        return count
+    end
+
+    local function dragon_ondancing(inst)
+        local pieces = {}
+        local dancers = {}
+        for i, v in ipairs(AllPlayers) do
+            if v.sg:HasStateTag("dragondance") then
+                table.insert(dancers, v)
+            end
+        end
+        inst.components.equippable.dapperness = TUNING.DAPPERNESS_LARGE * dragon_countpieces(inst, dancers, pieces, 0)
     end
 
     local function dragon_startdancing(inst, doer, data)

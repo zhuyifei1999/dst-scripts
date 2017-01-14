@@ -20,16 +20,20 @@ local function fuelupdate(inst)
     end
 end
 
+local function onremovelight(light)
+    light._lantern._light = nil
+end
+
 local function turnon(inst)
     if not inst.components.fueled:IsEmpty() then
-        if inst.components.fueled ~= nil then
-            inst.components.fueled:StartConsuming()
-        end
+        inst.components.fueled:StartConsuming()
 
-        local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner or nil
+        local owner = inst.components.inventoryitem.owner
 
-        if inst._light == nil or not inst._light:IsValid() then
+        if inst._light == nil then
             inst._light = SpawnPrefab("lanternlight")
+            inst._light._lantern = inst
+            inst:ListenForEvent("onremove", onremovelight, inst._light)
             fuelupdate(inst)
         end
         inst._light.entity:SetParent((owner or inst).entity)
@@ -52,15 +56,10 @@ local function turnon(inst)
 end
 
 local function turnoff(inst)
-    if inst.components.fueled ~= nil then
-        inst.components.fueled:StopConsuming()
-    end
+    inst.components.fueled:StopConsuming()
 
     if inst._light ~= nil then
-        if inst._light:IsValid() then
-            inst._light:Remove()
-        end
-        inst._light = nil
+        inst._light:Remove()
     end
 
     inst.AnimState:PlayAnimation("idle_off")
@@ -78,7 +77,7 @@ local function turnoff(inst)
 end
 
 local function OnRemove(inst)
-    if inst._light ~= nil and inst._light:IsValid() then
+    if inst._light ~= nil then
         inst._light:Remove()
     end
 end
@@ -110,25 +109,21 @@ local function onunequip(inst, owner)
 end
 
 local function nofuel(inst)
-    local equippable = inst.components.equippable
-    if equippable ~= nil and equippable:IsEquipped() then
-        local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner or nil
-        if owner ~= nil then
-            local data =
-            {
-                prefab = inst.prefab,
-                equipslot = equippable.equipslot,
-            }
-            turnoff(inst)
-            owner:PushEvent("torchranout", data)
-            return
-        end
+    if inst.components.equippable:IsEquipped() and inst.components.inventoryitem.owner ~= nil then
+        local data =
+        {
+            prefab = inst.prefab,
+            equipslot = inst.components.equippable.equipslot,
+        }
+        turnoff(inst)
+        inst.components.inventoryitem.owner:PushEvent("torchranout", data)
+    else
+        turnoff(inst)
     end
-    turnoff(inst)
 end
 
 local function ontakefuel(inst)
-    if inst.components.equippable ~= nil and inst.components.equippable:IsEquipped() then
+    if inst.components.equippable:IsEquipped() then
         turnon(inst)
     end
 end

@@ -85,6 +85,7 @@ SGCritterStates.AddWalkStates(states,
         walktimeline =
         {
             TimeEvent(2*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/perdling/walk") end),
+            TimeEvent(15*FRAMES, PlayFootstep),
         },
     }, true)
 
