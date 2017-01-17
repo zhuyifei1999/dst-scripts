@@ -79,6 +79,7 @@ local function luckyfn()
     inst.components.edible.foodtype = FOODTYPE.ELEMENTAL
     inst.components.edible.hungervalue = 2
     inst:AddComponent("tradable")
+    inst.components.tradable.goldvalue = 1
 
     inst:AddComponent("inspectable")
 

@@ -49,6 +49,7 @@ local function StartExploding(inst, count)
 end
 
 local function StartFuse(inst)
+    inst.starttask = nil
     inst:RemoveComponent("burnable")
 
     inst.AnimState:PlayAnimation("burn")
@@ -64,12 +65,14 @@ local function OnIgniteFn(inst)
     if inst.starttask == nil then
         inst.starttask = inst:DoTaskInTime(0, StartFuse)
     end
+    inst.components.inventoryitem.canbepickedup = false
 end
 
 local function OnExtinguishFn(inst)
     if inst.starttask ~= nil then
         inst.starttask:Cancel()
         inst.starttask = nil
+        inst.components.inventoryitem.canbepickedup = true
     end
 end
 

@@ -155,7 +155,7 @@ local function onbuilt(inst)
 
     inst.AnimState:PlayAnimation("place")
     inst.AnimState:PushAnimation("idle", false)
-    inst.SoundEmitter:PlaySound("dontstarve/common/winter_meter_craft")
+    inst.SoundEmitter:PlaySound("dontstarve/common/together/perd_shrine_place")
 end
 
 local function onsave(inst, data)

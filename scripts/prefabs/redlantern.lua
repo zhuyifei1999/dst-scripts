@@ -113,6 +113,9 @@ local function onequip(inst, owner)
     owner.AnimState:Hide("ARM_normal")
     owner.AnimState:OverrideSymbol("lantern_overlay", "swap_redlantern", "redlantern_overlay")
 
+    if inst._body ~= nil then
+        inst._body:Remove()
+    end
     inst._body = SpawnPrefab("redlanternbody")
     inst._body._lantern = inst
     inst:ListenForEvent("onremove", onremovebody, inst._body)
@@ -125,6 +128,10 @@ local function onequip(inst, owner)
     end, owner)
 
     ToggleOverrideSymbols(inst, owner)
+
+    if owner.components.bloomer ~= nil then
+        owner.components.bloomer:AttachChild(inst._body)
+    end
 
     if inst.components.fueled:IsEmpty() then
         inst._body.AnimState:Hide("LIGHT")

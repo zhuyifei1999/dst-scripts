@@ -2399,7 +2399,7 @@ function Tune(overrides)
 
         FIRECRACKERS_STARTLE_RANGE = 10,
         REDLANTERN_LIGHTTIME = total_day_time * 12,
-        REDLANTERN_RAIN_RATE = 1.2,
+        REDLANTERN_RAIN_RATE = .25,
         PERDFAN_USES = 9, --tornado costs 2 charges
         PERDFAN_TORNADO_LIFETIME = 2,
         DRAGONHAT_PERISHTIME = total_day_time, --only consumes while dancing
