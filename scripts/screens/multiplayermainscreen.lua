@@ -10,10 +10,10 @@ local Widget = require "widgets/widget"
 require "os"
 
 local ANR_BETA_COUNTDOWN_LAYOUT = BRANCH == "staging" or BRANCH == "dev"
-local ANR_BETA_COUNTDOWN_DATE = nil --{year = 2016, day = 8, month = 12, hour = 23}
-local ANR_BETA_COUNTDOWN_MODE = "released" -- "text", "image", "reveal", "released"
-local ANR_BETA_COUNTDOWN_IMAGE = "silhouette_beta_6c" -- "silhouette_beta_1", "silhouette_beta_2"
-local ANR_BETA_COUNTDOWN_NAME = "\"Year of the Gobbler\"" -- nil or "\"Update Name\""
+local ANR_BETA_COUNTDOWN_DATE = {year = 2017, day = 2, month = 2, hour = 23}    -- nil, {year = 2016, day = 8, month = 12, hour = 23}
+local ANR_BETA_COUNTDOWN_MODE = "image"                                         -- "text", "image", "reveal", "released"
+local ANR_BETA_COUNTDOWN_IMAGE = "silhouette_beta_7"                            -- "silhouette_beta_1", "silhouette_beta_2"
+local ANR_BETA_COUNTDOWN_NAME = nil                                             -- nil or "\"Update Name\""
 
 local WorldGenScreen = require "screens/worldgenscreen"
 local PopupDialogScreen = require "screens/popupdialog"
