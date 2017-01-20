@@ -87,7 +87,7 @@ function CharacterSelect:BuildCharactersList(additionalCharacters)
    										self:SetPortrait()
    									end)
 
-    --self.portrait_shadow = self.panel:AddChild(Image("images/frontscreen.xml", "char_shadow.tex"))
+    --self.portrait_shadow = self.panel:AddChild(Image("images/frontend.xml", "char_shadow.tex"))
 	--self.portrait_shadow:SetPosition(0, -110)
 	--self.portrait_shadow:SetScale(1.2)
 

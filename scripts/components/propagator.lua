@@ -13,6 +13,10 @@ local Propagator = Class(function(self, inst)
     self.pvp_damagemod = TUNING.PVP_DAMAGE_MOD or 1 -- players shouldn't hurt other players very much, even with fire
 
     self.acceptsheat = false
+    --We need a separate internal flag since acceptsheat is
+    --used as a public property for configuring propagator.
+    --self.pauseheating = nil
+
     self.spreading = false
     self.delay = nil
 end)
@@ -70,7 +74,7 @@ function Propagator:StopSpreading(reset, heatpct)
     self.spreading = false
     if reset then
         self.currentheat = heatpct ~= nil and heatpct * self.flashpoint or 0
-        self.acceptsheat = true
+        self.pauseheating = nil
     end
 end
 
@@ -95,7 +99,7 @@ function Propagator:AddHeat(amount)
     self.currentheat = self.currentheat + amount * self:GetHeatResistance()
 
     if self.currentheat > self.flashpoint then
-        self.acceptsheat = false
+        self.pauseheating = true
         if self.onflashpoint ~= nil then
             self.onflashpoint(self.inst)
         end
@@ -103,7 +107,7 @@ function Propagator:AddHeat(amount)
 end
 
 function Propagator:Flash()
-    if self.acceptsheat and self.delay == nil then
+    if self.acceptsheat and not self.pauseheating and self.delay == nil then
         self:AddHeat(self.flashpoint + 1)
     end
 end
@@ -127,7 +131,9 @@ function Propagator:OnUpdate(dt)
                     local dsq = distsq(pos, v:GetPosition())
 
                     if v ~= self.inst then
-                        if v.components.propagator ~= nil and v.components.propagator.acceptsheat then
+                        if v.components.propagator ~= nil and
+                            v.components.propagator.acceptsheat and
+                            not v.components.propagator.pauseheating then
                             local percent_heat = math.max(.1, 1 - dsq / prop_range_sq)
                             v.components.propagator:AddHeat(self.heatoutput * percent_heat * dt)
                         end
@@ -181,7 +187,7 @@ function Propagator:OnUpdate(dt)
 end
 
 function Propagator:GetDebugString()
-    return string.format("range: %.2f output: %.2f heatresistance: %.2f flashpoint: %.2f delay: %s -- spreading: %s acceptsheat: %s currentheat: %s", self.propagaterange, self.heatoutput, self:GetHeatResistance(), self.flashpoint, tostring(self.delay ~= nil), tostring(self.spreading), tostring(self.acceptsheat), tostring(self.currentheat))
+    return string.format("range: %.2f output: %.2f heatresistance: %.2f flashpoint: %.2f delay: %s -- spreading: %s acceptsheat: %s currentheat: %s", self.propagaterange, self.heatoutput, self:GetHeatResistance(), self.flashpoint, tostring(self.delay ~= nil), tostring(self.spreading), tostring(self.acceptsheat)..(self.pauseheating and " (paused)" or ""), tostring(self.currentheat))
 end
 
 return Propagator

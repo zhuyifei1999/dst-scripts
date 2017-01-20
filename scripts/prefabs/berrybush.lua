@@ -113,7 +113,8 @@ local function onpickedfn(inst, picker)
             end
         end
     end
-    if not picker:HasTag("berrythief") and math.random() < TUNING.PERD_SPAWNCHANCE then
+    if not picker:HasTag("berrythief") and
+        math.random() < (IsSpecialEventActive(SPECIAL_EVENTS.YOTG) and TUNING.YOTG_PERD_SPAWNCHANCE or TUNING.PERD_SPAWNCHANCE) then
         inst:DoTaskInTime(3 + math.random() * 3, spawnperd)
     end
 end
@@ -352,6 +353,10 @@ local function createbush(name, inspectname, berryname, master_postinit)
 
         inst.OnPreLoad = OnPreLoad
         inst.MakeDiseaseable = makediseaseable
+
+        if IsSpecialEventActive(SPECIAL_EVENTS.YOTG) then
+            inst:ListenForEvent("spawnperd", spawnperd)
+        end
 
         return inst
     end

@@ -125,16 +125,17 @@ local loop_descriptions = {
 local complexity_descriptions = {
 	{ text = STRINGS.UI.SANDBOXMENU.SLIDEVERYSIMPLE, data = "verysimple" },
 	{ text = STRINGS.UI.SANDBOXMENU.SLIDESIMPLE, data = "simple" },
-	{ text = STRINGS.UI.SANDBOXMENU.SLIDEDEFAULT, data = "default" },	
-	{ text = STRINGS.UI.SANDBOXMENU.SLIDECOMPLEX, data = "complex" },	
-	{ text = STRINGS.UI.SANDBOXMENU.SLIDEVERYCOMPLEX, data = "verycomplex" },	
+	{ text = STRINGS.UI.SANDBOXMENU.SLIDEDEFAULT, data = "default" },
+	{ text = STRINGS.UI.SANDBOXMENU.SLIDECOMPLEX, data = "complex" },
+	{ text = STRINGS.UI.SANDBOXMENU.SLIDEVERYCOMPLEX, data = "verycomplex" },
 }
 
 local specialevent_descriptions = {
-	{ text = STRINGS.UI.SANDBOXMENU.SLIDENEVER, data = "none" },		
-	{ text = STRINGS.UI.SANDBOXMENU.SLIDEDEFAULT, data = "default" },		
-	{ text = STRINGS.UI.SANDBOXMENU.EVENT_HALLOWEDNIGHTS_2016, data = SPECIAL_EVENTS.HALLOWED_NIGHTS },	
-	{ text = STRINGS.UI.SANDBOXMENU.EVENT_WINTERSFEAST_2016, data = SPECIAL_EVENTS.WINTERS_FEAST },	
+	{ text = STRINGS.UI.SANDBOXMENU.SLIDENEVER, data = "none" },
+	{ text = STRINGS.UI.SANDBOXMENU.SLIDEDEFAULT, data = "default" },
+	{ text = STRINGS.UI.SANDBOXMENU.EVENT_HALLOWEDNIGHTS_2016, data = SPECIAL_EVENTS.HALLOWED_NIGHTS },
+	{ text = STRINGS.UI.SANDBOXMENU.EVENT_WINTERSFEAST_2016, data = SPECIAL_EVENTS.WINTERS_FEAST },
+	{ text = STRINGS.UI.SANDBOXMENU.EVENT_YEAR_OF_THE_GOBBLER_2017, data = SPECIAL_EVENTS.YOTG },
 }
 
 -- TODO: Read this from the tasks.lua

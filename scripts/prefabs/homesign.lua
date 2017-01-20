@@ -1,6 +1,7 @@
 local assets =
 {
     Asset("ANIM", "anim/sign_home.zip"),
+    Asset("ANIM", "anim/ui_board_5x3.zip"),
     Asset("MINIMAP_IMAGE", "sign"),
 }
 

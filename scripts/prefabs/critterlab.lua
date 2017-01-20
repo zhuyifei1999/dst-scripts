@@ -42,8 +42,10 @@ local function fn()
     inst.AnimState:SetBuild("critterlab")
     inst.AnimState:PlayAnimation("idle")
 
-    inst:AddTag("prototyper")
     inst:AddTag("critterlab")
+
+    --prototyper (from prototyper component) added to pristine state for optimization
+    inst:AddTag("prototyper")
 
     MakeSnowCoveredPristine(inst)
 

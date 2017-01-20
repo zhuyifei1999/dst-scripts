@@ -173,10 +173,12 @@ local function createmachine(level, name, soundprefix, techtree, giftsound)
         inst.AnimState:SetBuild(name)
         inst.AnimState:PlayAnimation("idle")
 
-        inst:AddTag("prototyper")
         inst:AddTag("giftmachine")
         inst:AddTag("structure")
         inst:AddTag("level"..level)
+
+        --prototyper (from prototyper component) added to pristine state for optimization
+        inst:AddTag("prototyper")
 
         MakeSnowCoveredPristine(inst)
 
@@ -232,5 +234,5 @@ end
 --Using old prefab names
 return createmachine(1, "researchlab", "lvl1", TUNING.PROTOTYPER_TREES.SCIENCEMACHINE, "science"),
     createmachine(2, "researchlab2", "lvl2", TUNING.PROTOTYPER_TREES.ALCHEMYMACHINE, "alchemy"),
-    MakePlacer("common/researchlab_placer", "researchlab", "researchlab", "idle" ),
-    MakePlacer("common/researchlab2_placer", "researchlab2", "researchlab2", "idle")
+    MakePlacer("researchlab_placer", "researchlab", "researchlab", "idle" ),
+    MakePlacer("researchlab2_placer", "researchlab2", "researchlab2", "idle")

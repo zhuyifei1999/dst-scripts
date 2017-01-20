@@ -269,6 +269,7 @@ STRINGS =
             GENERIC = "Unlock",
             LOCK = "Lock",
         },
+        USEKLAUSSACKKEY = "Unlock",
         TEACH = "Learn",
         TURNON = "Turn On",
         TURNOFF =
@@ -427,6 +428,7 @@ STRINGS =
         SPOILED_FOOD = "Rot",
         BERRIES = "Berries",
         BERRIES_JUICY = "Juicy Berries",
+        REDPOUCH = "Red Pouch",
         GIFT = "Gift",
         GIFTWRAP = "Gift Wrap",
         BUNDLE = "Bundled Supplies",
@@ -775,6 +777,15 @@ STRINGS =
         SADDLE_BASIC = "Saddle",
         SADDLE_WAR = "War Saddle",
         SADDLE_RACE = "Glossamer Saddle",
+
+        DRAGONHEADHAT = "Lucky Beast Head",
+        DRAGONBODYHAT = "Lucky Beast Body",
+        DRAGONTAILHAT = "Lucky Beast Tail",
+        PERDSHRINE = "Gobbler Shrine",
+        REDLANTERN = "Red Lantern",
+        LUCKY_GOLDNUGGET = "Lucky Gold Nugget",
+        FIRECRACKERS = "Red Firecrackers",
+        PERDFAN = "Lucky Fan",
 
         TELEPORTATO_RING = "Ring Thing",
         TELEPORTATO_BOX = "Box Thing",
@@ -1167,12 +1178,14 @@ STRINGS =
         CRITTER_LAMB = "Ewelet",
         CRITTER_PUPPY = "Vargling",
         CRITTER_KITTEN = "Kittykit",
+        CRITTER_PERDLING = "Giblet",
         CRITTER_DRAGONLING = "Broodling",
         CRITTER_GLOMLING = "Glomglom",
 
         CRITTER_LAMB_BUILDER = "Ewelet",
         CRITTER_PUPPY_BUILDER = "Vargling",
         CRITTER_KITTEN_BUILDER = "Kittykit",
+        CRITTER_PERDLING_BUILDER = "Giblet",
         CRITTER_DRAGONLING_BUILDER = "Broodling",
         CRITTER_GLOMLING_BUILDER = "Glomglom",
 
@@ -1510,6 +1523,14 @@ STRINGS =
         SADDLE_WAR = "A throne for the boss of the battlefield.",
         SADDLE_RACE = "Offsets the time spent making it. Maybe.",
 
+        DRAGONHEADHAT = "The front end of a beast costume.",
+        DRAGONBODYHAT = "The middle bit of a beast costume.",
+        DRAGONTAILHAT = "The caboose of a beast costume.",
+        PERDSHRINE = "Make offerings to the majestic Gobbler.",
+        REDLANTERN = "A fortuitous lantern to light your way.",
+        FIRECRACKERS = "Celebrate with a BANG!",
+        PERDFAN = "Extra lucky, extra large.",
+
         SCULPTINGTABLE = "Marble will be like clay in your hands!",
 
         BELL = "This isn't just any bell.",
@@ -1551,6 +1572,7 @@ STRINGS =
 
         CRITTER_GLOMLING_BUILDER = "Befriend a bouncy Glomglom.",
         CRITTER_DRAGONLING_BUILDER = "Befriend a noble Broodling.",
+        CRITTER_PERDLING_BUILDER = "Befriend a hoppy Giblet.",
         CRITTER_KITTEN_BUILDER = "Befriend a clever Kittykit.",
         CRITTER_PUPPY_BUILDER = "Befriend a loyal Vargling.",
         CRITTER_LAMB_BUILDER = "Befriend a fluffy Ewelet.",
@@ -1840,6 +1862,7 @@ STRINGS =
         CARTOGRAPHY = "Cartography",
         SCULPTING = "Sculptures",
         ORPHANAGE = "Critters",
+        PERDOFFERING = "Offerings",
     },
 
     GREENAMULET_TOOLTIP = "Reduced Material Cost",
@@ -2131,6 +2154,7 @@ STRINGS.UI =
             CARTOGRAPHY = "Scribe",
             SCULPTING = "Create",
             ORPHANAGE = "Adopt",
+            PERDOFFERING = "Offer",
         },
         NEEDSTUFF = "Find ingredients \nto craft!",
         BUILD = "Build",
@@ -2764,6 +2788,7 @@ STRINGS.UI =
     ITEM_SCREEN =
     {
         THANKS_POPUP_TITLE_DEFAULT = "Thanks for playing",
+        THANKS_POPUP_LUNAR = "Thanks for playing during the\nYear of the Gobbler event",
         THANKS_POPUP_SWR = "Thank you for buying the ShipWrecked DLC",
         THANKS_POPUP_ROGR = "Thank you for buying the Reign of Giants DLC",
         THANKS_POPUP_TITLE_ARG = "Pulvis et umbra sumus",
@@ -3382,10 +3407,10 @@ STRINGS.UI =
         LIEFS = "Treeguards",
         MANDRAKE = "Mandrakes",
         DECIDUOUSMONSTER = "Poison Birchnut Trees",
-        KRAMPUS = "Krampusse",
+        KRAMPUS = "Krampii",
         BEARGER = "Bearger",
         DEERCLOPS = "Deerclops",
-        GOOSEMOOSE = "???",
+        GOOSEMOOSE = "Meese/Geese",
         DRAGONFLY = "Dragonfly",
         BATS = "Bats",
         FISSURE = "Nightmare Fissures",
@@ -4679,6 +4704,7 @@ STRINGS.UI =
 
         EVENT_HALLOWEDNIGHTS_2016 = "Hallowed Nights",
         EVENT_WINTERSFEAST_2016 = "Winters Feast",
+        EVENT_YEAR_OF_THE_GOBBLER_2017 = "Year of the Gobbler",
     },
 
     SAVELOAD =

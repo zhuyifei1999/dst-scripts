@@ -9,6 +9,7 @@ local AVAILABLE_TECH =
     "CARTOGRAPHY",
     "SCULPTING",
     "ORPHANAGE", --teehee
+    "PERDOFFERING",
 }
 
 local function Create(t)
@@ -22,5 +23,5 @@ end
 return
 {
     AVAILABLE_TECH = AVAILABLE_TECH,
-    Create = Create,    
+    Create = Create,
 }

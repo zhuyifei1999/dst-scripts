@@ -105,6 +105,7 @@ ACTIONS =
     HEAL = Action({ mount_valid=true }),
     INVESTIGATE = Action(),
     UNLOCK = Action(),
+    USEKLAUSSACKKEY = Action(),
     TEACH = Action(),
     TURNON = Action({ priority=2 }),
     TURNOFF = Action({ priority=2 }),
@@ -1168,19 +1169,23 @@ ACTIONS.HEAL.fn = function(act)
 end
 
 ACTIONS.UNLOCK.fn = function(act)
-	if act.target.components.klaussacklock then
-		local able, reason = act.target.components.klaussacklock:UseKey(act.invobject, act.doer)
-		if not able then
-			return false, reason
-		end
-		return true
-    elseif act.target.components.lock then
+	if act.target.components.lock then
         if act.target.components.lock:IsLocked() then
             act.target.components.lock:Unlock(act.invobject, act.doer)
         --else
             --act.target.components.lock:Lock(act.doer)
         end
         return true
+    end
+end
+
+ACTIONS.USEKLAUSSACKKEY.fn = function(act)
+	if act.target.components.klaussacklock then
+		local able, reason = act.target.components.klaussacklock:UseKey(act.invobject, act.doer)
+		if not able then
+			return false, reason
+		end
+		return true
     end
 end
 
@@ -1432,9 +1437,8 @@ ACTIONS.CATPLAYAIR.fn = function(act)
 end
 
 ACTIONS.FAN.fn = function(act)
-    if act.invobject and act.invobject.components.fan then
-        local target = act.target or act.doer
-        return act.invobject.components.fan:Fan(target)
+    if act.invobject ~= nil and act.invobject.components.fan ~= nil then
+        return act.invobject.components.fan:Fan(act.target or act.doer)
     end
 end
 

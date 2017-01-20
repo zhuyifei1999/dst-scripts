@@ -263,11 +263,8 @@ local actionhandlers =
     ActionHandler(ACTIONS.MANUALEXTINGUISH, "dolongaction"),
     ActionHandler(ACTIONS.TRAVEL, "doshortaction"),
     ActionHandler(ACTIONS.LIGHT, "give"),
-    ActionHandler(ACTIONS.UNLOCK, 
-		function(inst, action)
-            return action.target.components.klaussacklock ~= nil and "dolongaction"
-					or "give"
-        end),
+    ActionHandler(ACTIONS.UNLOCK, "give"),
+    ActionHandler(ACTIONS.USEKLAUSSACKKEY, "dolongaction"),
     ActionHandler(ACTIONS.TURNOFF, "give"),
     ActionHandler(ACTIONS.TURNON, "give"),
     ActionHandler(ACTIONS.ADDFUEL, "doshortaction"),
@@ -707,11 +704,11 @@ local statue_symbols =
     "swap_grown"
 }
 
-local states = 
+local states =
 {
     State{
         name = "wakeup",
-        tags = { "busy", "waking", "nomorph" },
+        tags = { "busy", "waking", "nomorph", "nodangle" },
 
         onenter = function(inst)
             if inst.components.playercontroller ~= nil then
@@ -782,7 +779,7 @@ local states =
 
     State{
         name = "powerdown",
-        tags = { "busy", "pausepredict", "nomorph" },
+        tags = { "busy", "pausepredict", "nomorph", "nodangle" },
 
         onenter = function(inst)
             ForceStopHeavyLifting(inst)
@@ -1866,7 +1863,7 @@ local states =
 
     State{
         name = "hide",
-        tags = { "hiding", "notalking", "notarget", "nomorph", "busy", "nopredict" },
+        tags = { "hiding", "notalking", "notarget", "nomorph", "busy", "nopredict", "nodangle" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
@@ -2278,7 +2275,6 @@ local states =
 
     State{
         name = "fishing_pst",
-        tags = {},
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
@@ -2428,7 +2424,7 @@ local states =
 
     State{
         name = "eat",
-        tags = { "busy" },
+        tags = { "busy", "nodangle" },
 
         onenter = function(inst, foodinfo)
             inst.components.locomotor:Stop()
@@ -2671,7 +2667,7 @@ local states =
 
     State{
         name = "opengift",
-        tags = { "busy", "pausepredict" },
+        tags = { "busy", "pausepredict", "nodangle" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
@@ -2905,7 +2901,7 @@ local states =
 
     State{
         name = "changeoutsidewardrobe",
-        tags = { "busy", "pausepredict", "nomorph" },
+        tags = { "busy", "pausepredict", "nomorph", "nodangle" },
 
         onenter = function(inst, cb)
             inst.sg.statemem.cb = cb
@@ -2970,7 +2966,7 @@ local states =
 
     State{
         name = "dressupwardrobe",
-        tags = { "busy", "pausepredict", "nomorph" },
+        tags = { "busy", "pausepredict", "nomorph", "nodangle" },
 
         onenter = function(inst, cb)
             inst.sg.statemem.cb = cb
@@ -3309,7 +3305,7 @@ local states =
     State
     {
         name = "dolongaction",
-        tags = { "doing", "busy" },
+        tags = { "doing", "busy", "nodangle" },
 
         onenter = function(inst, timeout)
             local targ = inst:GetBufferedAction() and inst:GetBufferedAction().target or nil
@@ -3458,7 +3454,7 @@ local states =
 
     State{
         name = "makeballoon",
-        tags = { "doing", "busy" },
+        tags = { "doing", "busy", "nodangle" },
 
         onenter = function(inst, timeout)
             inst.sg.statemem.action = inst.bufferedaction
@@ -3502,7 +3498,7 @@ local states =
 
     State{
         name = "shave",
-        tags = { "doing", "shaving" },
+        tags = { "doing", "shaving", "nodangle" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
@@ -4116,8 +4112,12 @@ local states =
         tags = { "moving", "running", "canrotate", "autopredict" },
 
         onenter = function(inst)
-            inst.sg.statemem.riding = inst.components.rider ~= nil and inst.components.rider:IsRiding()
-            inst.sg.statemem.heavy = not inst.sg.statemem.riding and inst.components.inventory:IsHeavyLifting()
+            if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
+                inst.sg.statemem.riding = true
+                inst.sg:AddStateTag("nodangle")
+            elseif inst.components.inventory:IsHeavyLifting() then
+                inst.sg.statemem.heavy = true
+            end
 
             inst.components.locomotor:RunForward()
             inst.AnimState:PlayAnimation(
@@ -4181,8 +4181,12 @@ local states =
         tags = { "moving", "running", "canrotate", "autopredict" },
 
         onenter = function(inst) 
-            inst.sg.statemem.riding = inst.components.rider ~= nil and inst.components.rider:IsRiding()
-            inst.sg.statemem.heavy = not inst.sg.statemem.riding and inst.components.inventory:IsHeavyLifting()
+            if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
+                inst.sg.statemem.riding = true
+                inst.sg:AddStateTag("nodangle")
+            elseif inst.components.inventory:IsHeavyLifting() then
+                inst.sg.statemem.heavy = true
+            end
 
             inst.components.locomotor:RunForward()
 
@@ -4276,15 +4280,15 @@ local states =
         tags = { "canrotate", "idle", "autopredict" },
 
         onenter = function(inst)
-            local riding = inst.components.rider ~= nil and inst.components.rider:IsRiding()
-            local heavy = not riding and inst.components.inventory:IsHeavyLifting()
-
             inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation(
-                (heavy and "heavy_walk_pst") or
-                (inst:HasTag("groggy") and "idle_walk_pst") or
-                "run_pst"
-            )
+            if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
+                inst.sg:AddStateTag("nodangle")
+                inst.AnimState:PlayAnimation(inst:HasTag("groggy") and "idle_walk_pst" or "run_pst")
+            elseif inst.components.inventory:IsHeavyLifting() then
+                inst.AnimState:PlayAnimation("heavy_walk_pst")
+            else
+                inst.AnimState:PlayAnimation(inst:HasTag("groggy") and "idle_walk_pst" or "run_pst")
+            end
         end,
 
         events =
@@ -4318,7 +4322,7 @@ local states =
 
     State{
         name = "item_in",
-        tags = { "idle" },
+        tags = { "idle", "nodangle" },
 
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
@@ -4345,7 +4349,7 @@ local states =
 
     State{
         name = "item_out",
-        tags = { "idle" },
+        tags = { "idle", "nodangle" },
 
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
@@ -5457,6 +5461,23 @@ local states =
             if data.tags ~= nil then
                 for i, v in ipairs(data.tags) do
                     inst.sg:AddStateTag(v)
+                    if v == "dancing" then
+                        local hat = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD)
+                        if hat ~= nil and hat.OnStartDancing ~= nil then
+                            local newdata = hat:OnStartDancing(inst, data)
+                            if newdata ~= nil then
+                                inst.sg.statemem.dancinghat = hat
+                                data = newdata
+                            end
+                        end
+                    end
+                end
+                if inst.sg.statemem.dancinghat ~= nil and data.tags ~= nil then
+                    for i, v in ipairs(data.tags) do
+                        if not inst.sg:HasStateTag(v) then
+                            inst.sg:AddStateTag(v)
+                        end
+                    end
                 end
             end
 
@@ -5547,12 +5568,17 @@ local states =
                 inst:SetCameraZoomed(false)
                 inst:ShowHUD(true)
             end
+            if inst.sg.statemem.dancinghat ~= nil and
+                inst.sg.statemem.dancinghat == inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD) and
+                inst.sg.statemem.dancinghat.OnStopDancing ~= nil then
+                inst.sg.statemem.dancinghat:OnStopDancing(inst)
+            end
         end,
     },
 
     State{
         name = "frozen",
-        tags = { "busy", "frozen", "nopredict" },
+        tags = { "busy", "frozen", "nopredict", "nodangle" },
         
         onenter = function(inst)
             if inst.components.pinnable ~= nil and inst.components.pinnable:IsStuck() then
@@ -5613,7 +5639,7 @@ local states =
 
     State{
         name = "thaw",
-        tags = { "busy", "thawing", "nopredict" },
+        tags = { "busy", "thawing", "nopredict", "nodangle" },
 
         onenter = function(inst) 
             inst.components.locomotor:Stop()
@@ -5652,7 +5678,7 @@ local states =
     State{
         name = "pinned_pre",
         tags = { "busy", "pinned", "nopredict" },
-        
+
         onenter = function(inst)
             if inst.components.freezable ~= nil and inst.components.freezable:IsFrozen() then
                 inst.components.freezable:Unfreeze()
@@ -5819,26 +5845,60 @@ local states =
 
     State{
         name = "use_fan",
-        tags = { "doing", "nopredict" },
+        tags = { "doing" },
 
         onenter = function(inst)
+            local invobject = nil
+            if inst.bufferedaction ~= nil then
+                invobject = inst.bufferedaction.invobject
+                if invobject ~= nil and invobject.components.fan ~= nil and invobject.components.fan:IsChanneling() then
+                    inst.sg.statemem.item = invobject
+                    inst.sg.statemem.target = inst.bufferedaction.target or inst.bufferedaction.doer
+                    inst.sg:AddStateTag("busy")
+                end
+            end
             inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("fan")
-            inst.AnimState:OverrideSymbol("fan01", "fan", "fan01") 
+            inst.AnimState:PlayAnimation("action_uniqueitem_pre")
+            inst.AnimState:PushAnimation("fan", false)
+            inst.AnimState:OverrideSymbol(
+                "fan01",
+                "fan",
+                invobject ~= nil and
+                invobject.components.fan ~= nil and
+                invobject.components.fan.overridesymbol or
+                "swap_fan"
+            )
             inst.AnimState:Show("ARM_normal")
-            inst.components.inventory:ReturnActiveActionItem(inst.bufferedaction ~= nil and inst.bufferedaction.invobject or nil)
+            inst.components.inventory:ReturnActiveActionItem(invobject)
         end,
 
         timeline =
         {
-            TimeEvent(70*FRAMES, function(inst)
+            TimeEvent(30 * FRAMES, function(inst)
+                if inst.sg.statemem.item ~= nil and
+                    inst.sg.statemem.item:IsValid() and
+                    inst.sg.statemem.item.components.fan ~= nil then
+                    inst.sg.statemem.item.components.fan:Channel(inst.sg.statemem.target ~= nil and inst.sg.statemem.target:IsValid() and inst.sg.statemem.target or inst)
+                end
+            end),
+            TimeEvent(50 * FRAMES, function(inst)
+                if inst.sg.statemem.item ~= nil and
+                    inst.sg.statemem.item:IsValid() and
+                    inst.sg.statemem.item.components.fan ~= nil then
+                    inst.sg.statemem.item.components.fan:Channel(inst.sg.statemem.target ~= nil and inst.sg.statemem.target:IsValid() and inst.sg.statemem.target or inst)
+                end
+            end),
+            TimeEvent(70 * FRAMES, function(inst)
+                if inst.sg.statemem.item ~= nil then
+                    inst.sg:RemoveStateTag("busy")
+                end
                 inst:PerformBufferedAction()
             end),
         },
 
         events =
         {
-            EventHandler("animover", function(inst)
+            EventHandler("animqueueover", function(inst)
                 if inst.AnimState:AnimDone() then
                     inst.sg:GoToState("idle")
                 end
@@ -5847,7 +5907,7 @@ local states =
 
         onexit = function(inst)
             if inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) then
-                inst.AnimState:Show("ARM_carry") 
+                inst.AnimState:Show("ARM_carry")
                 inst.AnimState:Hide("ARM_normal")
             end
         end,
@@ -6100,7 +6160,7 @@ local states =
 
     State{
         name = "bucked_post",
-        tags = { "busy", "pausepredict", "nomorph" },
+        tags = { "busy", "pausepredict", "nomorph", "nodangle" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("bucked")
@@ -6131,7 +6191,7 @@ local states =
     State
     {
         name = "bundle",
-        tags = { "doing", "busy" },
+        tags = { "doing", "busy", "nodangle" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
@@ -6175,7 +6235,7 @@ local states =
     State
     {
         name = "bundling",
-        tags = { "doing" },
+        tags = { "doing", "nodangle" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
@@ -6205,7 +6265,7 @@ local states =
     State
     {
         name = "bundle_pst",
-        tags = { "doing", "busy" },
+        tags = { "doing", "busy", "nodangle" },
 
         onenter = function(inst)
             inst.components.locomotor:Stop()

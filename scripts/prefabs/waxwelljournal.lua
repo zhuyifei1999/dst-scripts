@@ -170,8 +170,10 @@ local function fn()
     inst.AnimState:SetBuild("book_maxwell")
     inst.AnimState:PlayAnimation("idle")
 
-    inst:AddTag("prototyper")
     inst:AddTag("shadowmagic")
+
+    --prototyper (from prototyper component) added to pristine state for optimization
+    inst:AddTag("prototyper")
 
     inst.entity:SetPristine()
 

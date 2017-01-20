@@ -18,15 +18,20 @@ local function MakeExplosion(data)
 
         inst.Transform:SetFromProxy(proxy.GUID)
 
+        if data ~= nil and data.scale ~= nil then
+            inst.Transform:SetScale(data.scale, data.scale, data.scale)
+        end
+
         inst.AnimState:SetBank("explode")
         inst.AnimState:SetBuild("explode")
-        inst.AnimState:PlayAnimation("small")
+        inst.AnimState:PlayAnimation(data ~= nil and data.anim or "small")
         inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
         inst.AnimState:SetLightOverride(1)
 
-        inst.SoundEmitter:PlaySound("dontstarve/common/blackpowder_explo")
-        if data ~= nil and data.sound ~= nil then
-            inst.SoundEmitter:PlaySound(data.sound)
+        if data ~= nil and type(data.sound) == "function" then
+            data.sound(inst)
+        else
+            inst.SoundEmitter:PlaySound(data ~= nil and data.sound or "dontstarve/common/blackpowder_explo")
         end
 
         inst:ListenForEvent("animover", inst.Remove)
@@ -64,15 +69,27 @@ local function MakeExplosion(data)
     return fn
 end
 
-local extras = {
-    slurtle = {
+local extras =
+{
+    slurtle =
+    {
         sound = "dontstarve/creatures/slurtle/explode",
     },
-    slurtlehole = {
+    slurtlehole =
+    {
         sound = "dontstarve/creatures/slurtle/mound_explode",
+    },
+    firecrackers =
+    {
+        anim = "small_firecrackers",
+        sound = function(inst)
+            inst.SoundEmitter:PlaySoundWithParams("dontstarve/common/together/fire_cracker", { start = math.random() })
+        end,
+        scale = .5,
     },
 }
 
 return Prefab("explode_small", MakeExplosion(), assets),
-        Prefab("explode_small_slurtle", MakeExplosion(extras.slurtle), assets),
-        Prefab("explode_small_slurtlehole", MakeExplosion(extras.slurtlehole), assets)
+    Prefab("explode_small_slurtle", MakeExplosion(extras.slurtle), assets),
+    Prefab("explode_small_slurtlehole", MakeExplosion(extras.slurtlehole), assets),
+    Prefab("explode_firecrackers", MakeExplosion(extras.firecrackers), assets)

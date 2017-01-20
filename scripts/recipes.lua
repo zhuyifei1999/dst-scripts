@@ -48,6 +48,7 @@ Recipe("turf_carpetfloor", {Ingredient("boards", 1), Ingredient("beefalowool", 1
 Recipe("turf_dragonfly", {Ingredient("dragon_scales", 1), Ingredient("cutstone", 2)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO, nil, nil, nil, 6)
 
 Recipe("winter_treestand", {Ingredient("poop", 2), Ingredient("boards", 1)}, RECIPETABS.TOWN, TECH.WINTERS_FEAST, "winter_treestand_placer")
+Recipe("perdshrine", {Ingredient("goldnugget", 8), Ingredient("boards", 2)}, RECIPETABS.TOWN, TECH.YOTG, "perdshrine_placer")
 Recipe("pottedfern", {Ingredient("foliage", 5), Ingredient("slurtle_shellpieces", 1)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO, "pottedfern_placer", 0.9)
 Recipe("endtable", {Ingredient("marble", 2), Ingredient("boards", 2), Ingredient("turf_carpetfloor", 2)}, RECIPETABS.TOWN, TECH.LOST, "endtable_placer", 1.5)
 
@@ -291,8 +292,17 @@ Recipe("chesspiece_formal_builder", {Ingredient(TECH_INGREDIENT.SCULPTING, 2), I
 Recipe("critter_kitten_builder", {Ingredient("coontail", 1), Ingredient("fishsticks", 1)}, RECIPETABS.ORPHANAGE, TECH.ORPHANAGE_ONE, nil, nil, true)
 Recipe("critter_puppy_builder", {Ingredient("houndstooth", 4), Ingredient("monsterlasagna", 1)}, RECIPETABS.ORPHANAGE, TECH.ORPHANAGE_ONE, nil, nil, true)
 Recipe("critter_lamb_builder", {Ingredient("steelwool", 1), Ingredient("guacamole", 1)}, RECIPETABS.ORPHANAGE, TECH.ORPHANAGE_ONE, nil, nil, true)
+Recipe("critter_perdling_builder", {Ingredient("featherhat", 1), Ingredient("trailmix", 1)}, RECIPETABS.ORPHANAGE, TECH.ORPHANAGE_ONE, nil, nil, true)
 Recipe("critter_dragonling_builder", {Ingredient("lavae_cocoon", 1), Ingredient("hotchili", 1)}, RECIPETABS.ORPHANAGE, TECH.ORPHANAGE_ONE, nil, nil, true)
 Recipe("critter_glomling_builder", {Ingredient("glommerfuel", 1), Ingredient("taffy", 1)}, RECIPETABS.ORPHANAGE, TECH.ORPHANAGE_ONE, nil, nil, true)
+
+----PERDSHRINE-----
+Recipe("firecrackers", {Ingredient("lucky_goldnugget", 1)}, RECIPETABS.PERDOFFERING, TECH.PERDOFFERING_ONE, nil, nil, true, 3)
+Recipe("redlantern", {Ingredient("lucky_goldnugget", 3)}, RECIPETABS.PERDOFFERING, TECH.PERDOFFERING_ONE, nil, nil, true)
+Recipe("perdfan", {Ingredient("lucky_goldnugget", 3)}, RECIPETABS.PERDOFFERING, TECH.PERDOFFERING_ONE, nil, nil, true)
+Recipe("dragonheadhat", {Ingredient("lucky_goldnugget", 8)}, RECIPETABS.PERDOFFERING, TECH.PERDOFFERING_ONE, nil, nil, true)
+Recipe("dragonbodyhat", {Ingredient("lucky_goldnugget", 8)}, RECIPETABS.PERDOFFERING, TECH.PERDOFFERING_ONE, nil, nil, true)
+Recipe("dragontailhat", {Ingredient("lucky_goldnugget", 8)}, RECIPETABS.PERDOFFERING, TECH.PERDOFFERING_ONE, nil, nil, true)
 
 ----UNCRAFTABLE----
 --NOTE: These recipes are not supposed to be craftable!

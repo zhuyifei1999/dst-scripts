@@ -89,4 +89,13 @@ function PreloadSounds()
 		PreloadSoundList(DLCSounds)
 	end
 	PreloadSoundList(MainSounds)
+
+    --NOTE: special event music is specified in constants.lua
+    --      but preloadsounds.lua is loaded first, so we only
+    --      access the constants within function calls.
+    PreloadSoundList({
+        SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT] ~= nil and
+        SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT].bank or
+        "music_frontend.fsb",
+    })
 end

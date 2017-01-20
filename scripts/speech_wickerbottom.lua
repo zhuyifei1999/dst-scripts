@@ -22,7 +22,7 @@ return
             NOBITS = "It's already smooth, dear.",
             AWAKEBEEFALO = "I think he might object to that.",
         },
-        UNLOCK =
+        USEKLAUSSACKKEY =
         {
             WRONGKEY = "That may have been the wrong implement.",
             KLAUS = "The beast must first be defeated.",
@@ -323,7 +323,7 @@ return
         PIGTENT = "Filthy.",
         MANDRAKE_COOKED = "Mandragora officinarum, cooked in the name of discovery.",
         MAPSCROLL = "The potential of the blank page is paralyzing for some.",
-		BOAT = "Where did this vessel come from?",
+        BOAT = "Where did this vessel come from?",
         BURNT_MARSH_BUSH = "Reduced to ash.",
         BONESHARD = "Remnants of a life well lived.",
         BUZZARD = "Cathartes, of course.",
@@ -612,7 +612,7 @@ return
         GIFT = "Oh goodness, how lovely!",
         GIFTWRAP = "Wrapping presents is soothing work, isn't it?",
         POTTEDFERN = "A potted plant.",
-		SENTRYWARD = "Ah! A scrying orb.",
+        SENTRYWARD = "Ah! A scrying orb.",
         MOONROCK_PIECES = "What a perplexing transformation.",
         MOONBASE =
         {
@@ -1017,12 +1017,12 @@ return
         CARROT_PLANTED = "Daucus carota is a root vegetable.",
         CARROT_SEEDS = "Seed of Daucus carota.",
         CARTOGRAPHYDESK = 
-		{	
-			GENERIC = "Ah! A proper desk! Just look at the finish on that wood!",
+        {   
+            GENERIC = "Ah! A proper desk! Just look at the finish on that wood!",
             BURNING = "Can we have nothing decent?",
-			BURNT = "The destruction of knowledge is such a difficult thing to stomach.",
-		},
-		BERRIES = "Some Ardisia crenata berries, I think.",
+            BURNT = "The destruction of knowledge is such a difficult thing to stomach.",
+        },
+        BERRIES = "Some Ardisia crenata berries, I think.",
         BERRIES_COOKED = "Roasted Ardisia crenata, just in case.",
         BERRIES_JUICY = "A variant of Ardisia crenata berries. Good hydration.",
         BERRIES_JUICY_COOKED = "Spoilage is a constant threat.",
@@ -1118,11 +1118,11 @@ return
             CANDECORATE = "Lovely job on the tree, dears.",
             YOUNG = "It'd surely snap under the weight of ornaments.",
         },
-		WINTER_TREESTAND = 
-		{
-			GENERIC = "Let's grow a proper tree, shall we?",
+        WINTER_TREESTAND = 
+        {
+            GENERIC = "Let's grow a proper tree, shall we?",
             BURNT = "Not to worry. We can still celebrate.",
-		},
+        },
         WINTER_ORNAMENT = "Careful with it now, dear.",
         WINTER_ORNAMENTLIGHT = "Electrical currents do have a certain appeal, don't they?",
         WINTER_ORNAMENTBOSS = "I'm of the opinion that one can never overdecorate.",
@@ -1192,6 +1192,7 @@ return
         CRITTER_LAMB = "I could just squish that widdle face.",
         CRITTER_PUPPY = "Who's the sweetest little Canis lupus?",
         CRITTER_KITTEN = "Now it feels like home.",
+        CRITTER_PERDLING = "What a handsome poult you are!",
 
         CROW = 
         {
@@ -1242,8 +1243,8 @@ return
         GEARS = "Various cogs and wheels.",
         STAGEHAND =
         {
-			AWAKE = "That was an underhanded trick!",
-			HIDING = "Something devious is lurking in the shadows.",
+            AWAKE = "That was an underhanded trick!",
+            HIDING = "Something devious is lurking in the shadows.",
         },
         STATUE_MARBLE = 
         {
@@ -1400,29 +1401,29 @@ return
             BURNT = "What a shame. It was a lovely addition.",
         },
         SCULPTURE_KNIGHTHEAD = "You have to lift with your knees, dear.",
-		SCULPTURE_KNIGHTBODY = 
-		{
-			COVERED = "Very tasteful.",
-			UNCOVERED = "They say every block of stone has a statue inside.",
-			FINISHED = "The structure is whole once again.",
+        SCULPTURE_KNIGHTBODY = 
+        {
+            COVERED = "Very tasteful.",
+            UNCOVERED = "They say every block of stone has a statue inside.",
+            FINISHED = "The structure is whole once again.",
             READY = "Something is stirring within.",
-		},
+        },
         SCULPTURE_BISHOPHEAD = "I can lift it. I'm more spry than I look.",
-		SCULPTURE_BISHOPBODY = 
-		{
-			COVERED = "There's an almost animalistic ferocity in the chiselwork.",
-			UNCOVERED = "So this is what was lurking inside.",
-			FINISHED = "An excellent repair job.",
+        SCULPTURE_BISHOPBODY = 
+        {
+            COVERED = "There's an almost animalistic ferocity in the chiselwork.",
+            UNCOVERED = "So this is what was lurking inside.",
+            FINISHED = "An excellent repair job.",
             READY = "Something is stirring within.",
-		},
+        },
         SCULPTURE_ROOKNOSE = "That's a thrown out back waiting to happen.",
-		SCULPTURE_ROOKBODY = 
-		{
-			COVERED = "I feel a light dusting of magic. Odd.",
-			UNCOVERED = "What an awful state it's in!",
-			FINISHED = "We may want to keep an eye on this.",
+        SCULPTURE_ROOKBODY = 
+        {
+            COVERED = "I feel a light dusting of magic. Odd.",
+            UNCOVERED = "What an awful state it's in!",
+            FINISHED = "We may want to keep an eye on this.",
             READY = "Something is stirring within.",
-		},
+        },
         GARGOYLE_HOUND = "Completely petrified as a result of lunar exposure.",
         GARGOYLE_WEREPIG = "Lunar light catalyzes a strange reaction in its skin.",
         TWIGGYTREE =
@@ -1557,8 +1558,8 @@ return
         FEATHER_CROW = "Feather of Corvus.",
         FEATHER_ROBIN = "Feather of Cardinalis.",
         FEATHER_ROBIN_WINTER = "It looks like a feather of Cardinalis, but white.",
-		FEATHERPENCIL = "Oh, how I missed proper writing implements!",
-		
+        FEATHERPENCIL = "Oh, how I missed proper writing implements!",
+        
         TRINKET_1 = "What a lovely set of bottle washers! Too bad they're all melted.", --Melted Marbles
         TRINKET_2 = "A fake membranophone.", --Fake Kazoo
         TRINKET_3 = "Oh, I just love the bard.", --Gord's Knot
@@ -1609,6 +1610,21 @@ return
         HALLOWEENCANDY_10 = "How darling!",
         HALLOWEENCANDY_11 = "I fear I've a terrible weakness for a spot of chocolate.",
         CANDYBAG = "A festive bag for seasonal treats.",
+
+        DRAGONHEADHAT = "This is the head to the dragon costume.",
+        DRAGONBODYHAT = "The longer the dragon, the better the luck.",
+        DRAGONTAILHAT = "This is the back of the dragon costume.",
+        PERDSHRINE = 
+        {
+            GENERIC = "The native Meleagris flock to it.",
+            EMPTY = "A bush must be placed to attract the Meleagris.",
+            BURNT = "A carbonized structure.",
+        },
+        REDLANTERN = "What a colorful little lantern.",
+        LUCKY_GOLDNUGGET = "Such a curious shape.",
+        FIRECRACKERS = "A little too noisy for my liking.",
+        PERDFAN = "It's quite lovely.",
+        REDPOUCH = "The vibrant red hue is a sign of good luck.",
 
         SKULLCHEST = "A container resembling a cranium.",
         PANDORASCHEST = "An artifact which may contain other artifacts.",

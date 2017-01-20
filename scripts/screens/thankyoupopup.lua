@@ -73,7 +73,12 @@ GIFT_TYPE = {
         title=STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_TITLE_ARG,
         titleoffset={0, -20, 0},
     },
-    
+    LUNAR = {
+        atlas="images/thankyou_item_event.xml",
+        image={"thankyou_lunar.tex"},
+        title=STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_LUNAR,
+        titleoffset={0, -30, 0},
+    },
 }
 
 TRANSITION_DURATION = 0.9

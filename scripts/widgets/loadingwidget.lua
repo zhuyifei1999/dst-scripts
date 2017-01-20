@@ -12,6 +12,10 @@ local images =
         {atlas="images/bg_spiral_fill_christmas1.xml", tex="bg_image1.tex"},
         {atlas="images/bg_spiral_fill_christmas2.xml", tex="bg_image2.tex"},
     }
+    or IsSpecialEventActive(SPECIAL_EVENTS.YOTG) and {
+        {atlas="images/bg_spiral_fill_yotg1.xml", tex="bg_image1.tex"},
+        {atlas="images/bg_spiral_fill_yotg2.xml", tex="bg_image2.tex"},
+    }
     or {
         {atlas="images/bg_spiral_fill1.xml", tex="bg_image1.tex"},
         {atlas="images/bg_spiral_fill2.xml", tex="bg_image2.tex"},

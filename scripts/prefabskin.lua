@@ -140,6 +140,7 @@ tophat_init_fn = hat_init_fn
 flowerhat_init_fn = hat_init_fn
 strawhat_init_fn = hat_init_fn
 winterhat_init_fn = hat_init_fn
+catcoonhat_init_fn = hat_init_fn
 
 --------------------------------------------------------------------------
 --[[ Bedroll skin functions ]]

@@ -125,13 +125,6 @@ end
 
 local function onsave(inst, data)
     data.ornamentlighton = inst.ornamentlighton
-
-    -------------------------------------------------------------------------
-    --V2C: #TODO #REMOVE temporary fix for previously stackable winter lights
-    if inst._unstack ~= nil and data.stackable == nil then
-        data.stackable = { stack = inst._unstack }
-    end
-    -------------------------------------------------------------------------
 end
 
 local function onload(inst, data)
@@ -140,32 +133,6 @@ local function onload(inst, data)
     elseif data ~= nil then
         inst.ornamentlighton = data.ornamentlighton
     end
-
-    -------------------------------------------------------------------------
-    --V2C: #TODO #REMOVE temporary fix for previously stackable winter lights
-    if inst.components.stackable == nil and
-        data ~= nil and
-        data.stackable ~= nil and
-        data.stackable.stack ~= nil and
-        data.stackable.stack > 1 then
-        inst._unstack = data.stackable.stack
-        inst:DoTaskInTime(0, function()
-            local x, y, z = inst.Transform:GetWorldPosition()
-            local fuel = inst.components.fueled ~= nil and inst.components.fueled.currentfuel or nil
-            for i = 2, inst._unstack do
-                local dupe = SpawnPrefab(inst.prefab)
-                if fuel ~= nil and dupe.components.fueled ~= nil then
-                    dupe.components.fueled:InitializeFuelLevel(fuel)
-                    if dupe.components.fueled:IsEmpty() then
-                        ondepleted(dupe)
-                    end
-                end
-                dupe.components.inventoryitem:DoDropPhysics(x, 0, z, true, .5)
-            end
-            inst._unstack = nil
-        end)
-    end
-    -------------------------------------------------------------------------
 end
 
 local function MakeOrnament(ornamentid, overridename, lightdata)

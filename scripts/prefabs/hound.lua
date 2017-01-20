@@ -204,6 +204,7 @@ local function fncommon(build, morphlist, custombrain, tag)
     inst:AddTag("monster")
     inst:AddTag("hostile")
     inst:AddTag("hound")
+    inst:AddTag("canbestartled")
 
     if tag ~= nil then
         inst:AddTag(tag)

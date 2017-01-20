@@ -135,7 +135,7 @@ function MainScreen:DoInit()
         self:OnLoginButton(true)
     end)
 
-    self.exit_button = self.fixed_root:AddChild(ImageButton("images/frontscreen.xml", "turnarrow_icon.tex", "turnarrow_icon_over.tex", nil, nil, nil, {1,1}, {0,0}))
+    self.exit_button = self.fixed_root:AddChild(ImageButton("images/frontend.xml", "turnarrow_icon.tex", "turnarrow_icon_over.tex", nil, nil, nil, {1,1}, {0,0}))
     self.exit_button:SetPosition(-RESOLUTION_X*.4, -RESOLUTION_Y*.5 + BACK_BUTTON_Y)
     self.exit_button.image:SetPosition(-53, 2)
     self.exit_button.image:SetScale(.7)

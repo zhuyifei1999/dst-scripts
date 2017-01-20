@@ -35,6 +35,11 @@ PREFAB_SKINS = {
 		"birdcage_ornamental",
 		"birdcage_pirate",
 	},
+	catcoonhat = 
+	{
+		"catcoonhat_trapper_rooster",
+		"catcoonhat_trapperup_rooster",
+	},
 	cookpot = 
 	{
 		"cookpot_survival",
@@ -74,6 +79,14 @@ PREFAB_SKINS = {
 	critter_lamb_builder = 
 	{
 		"lamb_winter_builder",
+	},
+	critter_perdling = 
+	{
+		"perdling_rooster",
+	},
+	critter_perdling_builder = 
+	{
+		"perdling_rooster_builder",
 	},
 	critter_puppy = 
 	{
@@ -203,6 +216,7 @@ PREFAB_SKINS = {
 		"winterhat_black_davys",
 		"winterhat_pink_hibiscus",
 		"winterhat_plum_pudding",
+		"winterhat_rooster",
 		"winterhat_stocking_cap_green_forest",
 	},
 	wolfgang = 

@@ -89,7 +89,7 @@ function PlayerAvatarPopup:SetPlayer(player_name, data, show_net_profile)
         self.puppet:SetPosition(left_column+10, 95)
         self.puppet:SetScale(1.8)
 
-        self.shadow = self.proot:AddChild(Image("images/frontscreen.xml", "char_shadow.tex"))
+        self.shadow = self.proot:AddChild(Image("images/frontend.xml", "char_shadow.tex"))
         self.shadow:SetPosition(left_column+8, 90)
         self.shadow:SetScale(.35)
 
@@ -393,7 +393,7 @@ function PlayerAvatarPopup:CreateSkinWidgetForSlot()
     image_group._text:SetHAlign(ANCHOR_LEFT)
     image_group._text:SetVAlign(ANCHOR_MIDDLE)
 
-    --[[local shadow = image_group:AddChild(Image("images/frontscreen.xml", "char_shadow.tex"))
+    --[[local shadow = image_group:AddChild(Image("images/frontend.xml", "char_shadow.tex"))
 
     if slot == "base" then
         shadow:SetPosition(0, 18)

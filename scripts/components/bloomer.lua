@@ -1,6 +1,7 @@
 local Bloomer = Class(function(self, inst)
     self.inst = inst
     self.bloomstack = {}
+    self.children = {}
 end)
 
 function Bloomer:OnRemoveFromEntity()
@@ -9,10 +10,49 @@ function Bloomer:OnRemoveFromEntity()
             self.inst:RemoveEventCallback("onremove", v.onremove, v.source)
         end
     end
+    for k, v in pairs(self.children) do
+        self.inst:RemoveEventCallback("onremove", v, k)
+    end
+end
+
+function Bloomer:AttachChild(child)
+    if self.children[child] == nil then
+        self.children[child] = function(child)
+            self.children[child] = nil
+        end
+        self.inst:ListenForEvent("onremove", self.children[child], child)
+        local fx = self:GetCurrentFX()
+        if fx ~= nil then
+            child.AnimState:SetBloomEffectHandle(fx)
+        else
+            child.AnimState:ClearBloomEffectHandle()
+        end
+    end
+end
+
+function Bloomer:DetachChild(child)
+    if self.children[child] ~= nil then
+        self.inst:RemoveEventCallback("onremove", self.children[child], child)
+        self.children[child] = nil
+    end
 end
 
 function Bloomer:GetCurrentFX()
     return #self.bloomstack > 0 and self.bloomstack[#self.bloomstack].fx or nil
+end
+
+function Bloomer:OnSetBloomEffectHandle(fx)
+    self.inst.AnimState:SetBloomEffectHandle(fx)
+    for k, v in pairs(self.children) do
+        k.AnimState:SetBloomEffectHandle(fx)
+    end
+end
+
+function Bloomer:OnClearBloomEffectHandle()
+    self.inst.AnimState:ClearBloomEffectHandle()
+    for k, v in pairs(self.children) do
+        k.AnimState:ClearBloomEffectHandle()
+    end
 end
 
 function Bloomer:PushBloom(source, fx, priority)
@@ -45,7 +85,7 @@ function Bloomer:PushBloom(source, fx, priority)
                 table.insert(self.bloomstack, i, bloom)
                 local newfx = self:GetCurrentFX()
                 if newfx ~= oldfx then
-                    self.inst.AnimState:SetBloomEffectHandle(newfx)
+                    self:OnSetBloomEffectHandle(newfx)
                 end
                 return
             end
@@ -53,7 +93,7 @@ function Bloomer:PushBloom(source, fx, priority)
 
         table.insert(self.bloomstack, bloom)
         if fx ~= oldfx then
-            self.inst.AnimState:SetBloomEffectHandle(fx)
+            self:OnSetBloomEffectHandle(fx)
         end
     end
 end
@@ -69,9 +109,9 @@ function Bloomer:PopBloom(source)
                 table.remove(self.bloomstack, i)
                 local newfx = self:GetCurrentFX()
                 if newfx == nil then
-                    self.inst.AnimState:ClearBloomEffectHandle()
+                    self:OnClearBloomEffectHandle()
                 elseif newfx ~= oldfx then
-                    self.inst.AnimState:SetBloomEffectHandle(newfx)
+                    self:OnSetBloomEffectHandle(newfx)
                 end
                 return
             end

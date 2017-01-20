@@ -18,6 +18,13 @@ local function oncangoincontainer(self, cangoincontainer)
     self.inst.replica.inventoryitem:SetCanGoInContainer(cangoincontainer)
 end
 
+local function OnStackSizeChange(inst, data)
+    local self = inst.components.inventoryitem
+    if self.owner ~= nil then
+        self.owner:PushEvent("stacksizechange", { item = inst, src_pos = data.src_pos, stacksize = data.stacksize, oldstacksize = data.oldstacksize })
+    end
+end
+
 local InventoryItem = Class(function(self, inst)
     self.inst = inst
 
@@ -28,17 +35,13 @@ local InventoryItem = Class(function(self, inst)
     self.isnew = true
     self.nobounce = false
     self.cangoincontainer = true
-    self.inst:ListenForEvent("stacksizechange", 
-        function(inst, data)
-            if self.owner then
-                self.owner:PushEvent("stacksizechange", { item = self.inst, src_pos = data.src_pos, stacksize = data.stacksize, oldstacksize = data.oldstacksize })
-            end
-    end)
     self.keepondeath = false
     self.atlasname = nil
     self.imagename = nil
     self.onactiveitemfn = nil
     self.trappable = true
+
+    self.inst:ListenForEvent("stacksizechange", OnStackSizeChange)
 
     if self.inst.components.waterproofer == nil then
         self:EnableMoisture(true)
@@ -55,6 +58,7 @@ nil,
 
 function InventoryItem:OnRemoveFromEntity()
     self:EnableMoisture(false)
+    self.inst:RemoveEventCallback("stacksizechange", OnStackSizeChange)
 end
 
 --Provided specifically for waterproofer component
