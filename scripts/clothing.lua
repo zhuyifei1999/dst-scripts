@@ -87,6 +87,33 @@ CLOTHING =
 		torso_tuck = "untucked",
 		rarity = "Distinguished",
 	},
+	body_coatdress_red_higgsbury =
+	{
+		type = "body",
+		symbol_overrides = { "arm_lower", "arm_upper", "foot", "leg", "skirt", "torso", "torso_pelvis", },
+		symbol_hides = { },
+		override_build = "body_coatdress_red_higgsbury",
+		torso_tuck = "skirt",
+		rarity = "Spiffy",
+	},
+	body_dancer_dragon =
+	{
+		type = "body",
+		symbol_overrides = { "arm_lower_cuff", "foot", "leg", "torso", "torso_pelvis", },
+		symbol_hides = { "arm_upper", "skirt", },
+		override_build = "body_dancer_dragon",
+		torso_tuck = "untucked",
+		rarity = "Event",
+	},
+	body_dancer_lion =
+	{
+		type = "body",
+		symbol_overrides = { "arm_lower", "arm_lower_cuff", "arm_upper", "foot", "leg", "torso", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		override_build = "body_dancer_lion",
+		torso_tuck = "untucked",
+		rarity = "Event",
+	},
 	body_dress_flouncy_tan_cream =
 	{
 		type = "body",
@@ -181,6 +208,15 @@ CLOTHING =
 		torso_tuck = "untucked",
 		rarity = "Distinguished",
 	},
+	body_outerwear_quilted_red_cardinal =
+	{
+		type = "body",
+		symbol_overrides = { "arm_lower", "arm_lower_cuff", "arm_upper", "foot", "leg", "skirt", "torso", "torso_pelvis", },
+		symbol_hides = { },
+		override_build = "body_outerwear_quilted_red_cardinal",
+		torso_tuck = "skirt",
+		rarity = "Spiffy",
+	},
 	body_overalls_black_scribble =
 	{
 		type = "body",
@@ -226,6 +262,16 @@ CLOTHING =
 		override_build = "body_pj_purple_mauve",
 		torso_tuck = "untucked",
 		rarity = "Spiffy",
+	},
+	body_pj_silk_teal_jade =
+	{
+		type = "body",
+		symbol_overrides = { "arm_lower", "arm_lower_cuff", "arm_upper", "leg", "torso", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		override_build = "body_pj_silk_teal_jade",
+		torso_tuck = "untucked",
+		rarity = "Event",
+		legs_cuff_size = 5,
 	},
 	body_polo_blue_denim =
 	{
@@ -329,6 +375,16 @@ CLOTHING =
 		torso_tuck = "skirt",
 		rarity = "Distinguished",
 		legs_cuff_size = 5,
+	},
+	body_silkbrocade_coat_green_laurel =
+	{
+		type = "body",
+		symbol_overrides = { "arm_lower", "arm_lower_cuff", "arm_upper", "leg", "skirt", "torso", "torso_pelvis", },
+		symbol_hides = { },
+		override_build = "body_silkbrocade_coat_green_laurel",
+		torso_tuck = "skirt",
+		rarity = "Event",
+		legs_cuff_size = 2,
 	},
 	body_sleepgown_blue_ice =
 	{
@@ -911,6 +967,14 @@ CLOTHING =
 		override_build = "feet_sandals_blue_catcoon",
 		rarity = "Classy",
 		feet_cuff_size = 5,
+	},
+	feet_slippers_rooster_white_pure =
+	{
+		type = "feet",
+		symbol_overrides = { "foot", },
+		override_build = "feet_slippers_rooster_white_pure",
+		rarity = "Event",
+		feet_cuff_size = 3,
 	},
 	feet_sneakers_blue_catcoon =
 	{

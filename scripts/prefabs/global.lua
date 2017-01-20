@@ -70,6 +70,10 @@ local assets =
     Asset("ASSET_PKGREF", "images/bg_spiral_fill_christmas1.tex"),
     Asset("DYNAMIC_ATLAS", "images/bg_spiral_fill_christmas2.xml"),
     Asset("ASSET_PKGREF", "images/bg_spiral_fill_christmas2.tex"),
+    Asset("DYNAMIC_ATLAS", "images/bg_spiral_fill_yotg1.xml"),
+    Asset("ASSET_PKGREF", "images/bg_spiral_fill_yotg1.tex"),
+    Asset("DYNAMIC_ATLAS", "images/bg_spiral_fill_yotg2.xml"),
+    Asset("ASSET_PKGREF", "images/bg_spiral_fill_yotg2.tex"),
     Asset("ATLAS", "images/bg_vignette.xml"),
     Asset("IMAGE", "images/bg_vignette.tex"),
 

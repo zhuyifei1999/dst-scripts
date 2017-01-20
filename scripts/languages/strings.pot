@@ -77806,6 +77806,21 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_chester_costume"
 msgid "Don't worry, that's faux-Chester fur."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.body_coatdress_red_higgsbury
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_coatdress_red_higgsbury"
+msgid "A cute and snuggly coat dress in 'Higgsbury red'."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_dancer_dragon
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_dancer_dragon"
+msgid "All ready for a spectacular performance!"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_dancer_lion
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_dancer_lion"
+msgid "The perfect outfit for a dance or two."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.body_dress_flouncy_tan_cream
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_dress_flouncy_tan_cream"
 msgid "Flouncy, bouncy, and so much fun!"
@@ -77866,6 +77881,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_jacket_toggle_navy_phthalo"
 msgid "This is one of those jackets where the pockets are just decorative. Oh well, at least it looks nice."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.body_outerwear_quilted_red_cardinal
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_outerwear_quilted_red_cardinal"
+msgid "A majestic quilted outfit with just the right amount of poofiness."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.body_overalls_black_scribble
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_overalls_black_scribble"
 msgid "These sturdy 'scribble black' colored overalls are great for plumbing the depths."
@@ -77889,6 +77909,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.body_pj_purple_mauve
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_pj_purple_mauve"
 msgid "Don't worry if this 'snail mucus purple' colored pajama top is too big on you. That just makes it cuter."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_pj_silk_teal_jade
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_pj_silk_teal_jade"
+msgid "Luxurious PJs in a handsome 'doydoy teal'."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_polo_blue_denim
@@ -77954,6 +77979,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.body_silk_loungewear_white_marble
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_silk_loungewear_white_marble"
 msgid "Bathe under the new moon in comfort and luxury with this silk 'marble white' colored loungewear."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_silkbrocade_coat_green_laurel
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_silkbrocade_coat_green_laurel"
+msgid "A silken brocade coat in a lovely 'willful green' shade."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_sleepgown_blue_ice
@@ -78261,6 +78291,16 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_yule_dress"
 msgid "A dashing frock for dashing through the snow!"
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.catcoonhat_trapper_rooster
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.catcoonhat_trapper_rooster"
+msgid "This trapper hat is soft and cozy, but the ends don't seem to tie up anymore."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.catcoonhat_trapperup_rooster
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.catcoonhat_trapperup_rooster"
+msgid "This trapper hat appears to have been permanently tied up. Luckily it looks stylish that way."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.cookpot_survival
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.cookpot_survival"
 msgid "This cooking pot looks kind of beaten up, but the food it cooks still tastes delicious."
@@ -78359,6 +78399,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.feet_sandals_blue_catcoon
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_sandals_blue_catcoon"
 msgid "A pair of 'catcoon blue' colored sandals, with socks (for extra fashion)."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.feet_slippers_rooster_white_pure
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.feet_slippers_rooster_white_pure"
+msgid "Slip your feet into some fluffy, comfy chicken slippers."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.feet_sneakers_blue_catcoon
@@ -78651,6 +78696,16 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.none"
 msgid "Your usual look."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.perdling_rooster
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.perdling_rooster"
+msgid "If you wanted a bouncy rooster companion by your side, then you're in cluck!"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.perdling_rooster_builder
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.perdling_rooster_builder"
+msgid "missing description"
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.puppy_winter
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.puppy_winter"
 msgid "Looks like this adorable little lump grew his winter coat in. Good boy, Vargling!"
@@ -78906,6 +78961,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.winterhat_plum_pudding"
 msgid "This plum pudding hat contains no plums. Just a bunch of raisins."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.winterhat_rooster
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.winterhat_rooster"
+msgid "This winter hat is strangely reminiscent of a small feathered friend."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.winterhat_stocking_cap_green_forest
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.winterhat_stocking_cap_green_forest"
 msgid "One might wear this 'forest guardian green' winter hat on a cozy night around a campfire. Or, hey, they might not."
@@ -79151,6 +79211,21 @@ msgctxt "STRINGS.SKIN_NAMES.body_chester_costume"
 msgid "Cheeky Chester Costume"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.body_coatdress_red_higgsbury
+msgctxt "STRINGS.SKIN_NAMES.body_coatdress_red_higgsbury"
+msgid "Dainty Coatdress"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_dancer_dragon
+msgctxt "STRINGS.SKIN_NAMES.body_dancer_dragon"
+msgid "Lucky Beast Outfit"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_dancer_lion
+msgctxt "STRINGS.SKIN_NAMES.body_dancer_lion"
+msgid "Lucky Beast Attire"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.body_dress_flouncy_tan_cream
 msgctxt "STRINGS.SKIN_NAMES.body_dress_flouncy_tan_cream"
 msgid "Flouncy Dress"
@@ -79211,6 +79286,11 @@ msgctxt "STRINGS.SKIN_NAMES.body_jacket_toggle_navy_phthalo"
 msgid "Toggle Jacket"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.body_outerwear_quilted_red_cardinal
+msgctxt "STRINGS.SKIN_NAMES.body_outerwear_quilted_red_cardinal"
+msgid "Quilted Outerwear"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.body_overalls_black_scribble
 msgctxt "STRINGS.SKIN_NAMES.body_overalls_black_scribble"
 msgid "Overalls"
@@ -79234,6 +79314,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.body_pj_purple_mauve
 msgctxt "STRINGS.SKIN_NAMES.body_pj_purple_mauve"
 msgid "Jammie Shirt"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_pj_silk_teal_jade
+msgctxt "STRINGS.SKIN_NAMES.body_pj_silk_teal_jade"
+msgid "Silk Pajamas"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_polo_blue_denim
@@ -79299,6 +79384,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.body_silk_loungewear_white_marble
 msgctxt "STRINGS.SKIN_NAMES.body_silk_loungewear_white_marble"
 msgid "Silk Loungewear"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_silkbrocade_coat_green_laurel
+msgctxt "STRINGS.SKIN_NAMES.body_silkbrocade_coat_green_laurel"
+msgid "Silk Brocade Coat"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_sleepgown_blue_ice
@@ -79606,6 +79696,16 @@ msgctxt "STRINGS.SKIN_NAMES.body_yule_dress"
 msgid "Yuletide Frock"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.catcoonhat_trapper_rooster
+msgctxt "STRINGS.SKIN_NAMES.catcoonhat_trapper_rooster"
+msgid "Trapper Hat"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.catcoonhat_trapperup_rooster
+msgctxt "STRINGS.SKIN_NAMES.catcoonhat_trapperup_rooster"
+msgid "Tied Trapper Hat"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.cookpot_survival
 msgctxt "STRINGS.SKIN_NAMES.cookpot_survival"
 msgid "Camping Crock Pot"
@@ -79704,6 +79804,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.feet_sandals_blue_catcoon
 msgctxt "STRINGS.SKIN_NAMES.feet_sandals_blue_catcoon"
 msgid "Sandals"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.feet_slippers_rooster_white_pure
+msgctxt "STRINGS.SKIN_NAMES.feet_slippers_rooster_white_pure"
+msgid "Clucky Slippers"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.feet_sneakers_blue_catcoon
@@ -79996,6 +80101,16 @@ msgctxt "STRINGS.SKIN_NAMES.none"
 msgid "Default"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.perdling_rooster
+msgctxt "STRINGS.SKIN_NAMES.perdling_rooster"
+msgid "Rooslet"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.perdling_rooster_builder
+msgctxt "STRINGS.SKIN_NAMES.perdling_rooster_builder"
+msgid "perdling_rooster_builder"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.puppy_winter
 msgctxt "STRINGS.SKIN_NAMES.puppy_winter"
 msgid "Arctic Vargling"
@@ -80249,6 +80364,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.winterhat_plum_pudding
 msgctxt "STRINGS.SKIN_NAMES.winterhat_plum_pudding"
 msgid "Plum Pudding Cap"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.winterhat_rooster
+msgctxt "STRINGS.SKIN_NAMES.winterhat_rooster"
+msgid "Clucky Winter Hat"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.winterhat_stocking_cap_green_forest
@@ -84639,6 +84759,11 @@ msgstr ""
 #. STRINGS.UI.ITEM_SCREEN.RECEIVED
 msgctxt "STRINGS.UI.ITEM_SCREEN.RECEIVED"
 msgid "You Received"
+msgstr ""
+
+#. STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_LUNAR
+msgctxt "STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_LUNAR"
+msgid "Thanks for playing during the\nYear of the Gobbler event"
 msgstr ""
 
 #. STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_ROGR

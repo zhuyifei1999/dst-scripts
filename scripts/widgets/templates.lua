@@ -208,6 +208,11 @@ TEMPLATES = {
     AnimatedPortalForeground = function()
         local fg = Widget("foreground")
 
+        if IsSpecialEventActive(SPECIAL_EVENTS.YOTG) and not InGamePlay() then
+            fg.perds_back = fg:AddChild(TEMPLATES.ForegroundPerdBack())
+            fg.perds_back:SetCanFadeAlpha(false)
+        end
+
         fg.plate = fg:AddChild(TEMPLATES.ForegroundPlate())
 
         if not InGamePlay() then
@@ -245,6 +250,11 @@ TEMPLATES = {
 
             if TheSim:IsNetbookMode() or TheFrontEnd:GetGraphicsOptions():IsSmallTexturesMode() then
                 fg:EnableSmoke(false)
+            end
+
+            if IsSpecialEventActive(SPECIAL_EVENTS.YOTG) then
+                fg.perds = fg:AddChild(TEMPLATES.ForegroundPerdFront(fg.perds_back))
+                fg.perds:SetCanFadeAlpha(false)
             end
         end
 
@@ -453,6 +463,107 @@ TEMPLATES = {
 
         root:StartUpdating()
         root:OnUpdate()
+
+        return root
+    end,
+
+    -------------
+    -------------
+    -- FE Perd --
+    -------------
+    -------------
+    -- Main menu perd for event
+    ForegroundPerdFront = function(back)
+        local root = Widget("fg_perd_front")
+        root:SetVAnchor(ANCHOR_MIDDLE)
+        root:SetHAnchor(ANCHOR_MIDDLE)
+        root:SetScaleMode(SCALEMODE_PROPORTIONAL)
+
+        local perd = root:AddChild(UIAnim())
+        perd:GetAnimState():SetBuild("frontend_perd")
+        perd:GetAnimState():SetBank("frontend_perd")
+        perd:GetAnimState():Hide("back")
+        perd:GetAnimState():PlayAnimation("empty")
+
+        --V2C: Source anim was done on a 1820 x 1024 stage
+        perd:SetScale(RESOLUTION_Y / 1024)
+
+        local spawntask = nil
+        local runtask = nil
+        local anims = { 2, 3, 4 }
+
+        local function DoRunSound(_, period, remaining)
+            TheFrontEnd:GetSound():PlaySound("dontstarve/creatures/perd/run")
+            runtask = remaining > 1 and perd.inst:DoTaskInTime(period, DoRunSound, period, remaining - 1) or nil
+        end
+
+        local function OnSpawnPerd()
+            local anim = #anims > 3 and table.remove(anims, math.random(2)) or 1
+            table.insert(anims, anim)
+            if runtask ~= nil then
+                runtask:Cancel()
+                runtask = nil
+            end
+            if anim == 1 then
+                perd:GetAnimState():PlayAnimation("perd1_fe")
+                TheFrontEnd:GetSound():PlaySound("dontstarve/creatures/perd/gobble")
+            elseif anim == 2 then
+                back.perd:GetAnimState():PlayAnimation("perd2_fe")
+                DoRunSound(nil, 16 * FRAMES, 5)
+            elseif anim == 3 then
+                back.perd:GetAnimState():PlayAnimation("perd3_fe")
+                TheFrontEnd:GetSound():PlaySound("dontstarve/creatures/perd/scream")
+            else
+                perd:GetAnimState():PlayAnimation("perd4_fe")
+                back.perd:GetAnimState():PlayAnimation("perd4_fe")
+                DoRunSound(nil, 16 * FRAMES, 4)
+            end
+            spawntask = perd.inst:DoTaskInTime(4.5 + math.random() * 1.5, OnSpawnPerd)
+        end
+
+        root.StartPerds = function()
+            if spawntask == nil then
+                spawntask = perd.inst:DoTaskInTime(4, OnSpawnPerd)
+                root:Show()
+                back:Show()
+            end
+        end
+
+        root.StopPerds = function()
+            if spawntask ~= nil then
+                spawntask:Cancel()
+                spawntask = nil
+                perd:GetAnimState():PlayAnimation("empty")
+                back.perd:GetAnimState():PlayAnimation("empty")
+                root:Hide()
+                back:Hide()
+            end
+            if runtask ~= nil then
+                runtask:Cancel()
+                runtask = nil
+            end
+        end
+
+        root:Hide()
+        back:Hide()
+
+        return root
+    end,
+
+    ForegroundPerdBack = function()
+        local root = Widget("fg_perd_back")
+        root:SetVAnchor(ANCHOR_MIDDLE)
+        root:SetHAnchor(ANCHOR_MIDDLE)
+        root:SetScaleMode(SCALEMODE_PROPORTIONAL)
+
+        root.perd = root:AddChild(UIAnim())
+        root.perd:GetAnimState():SetBuild("frontend_perd")
+        root.perd:GetAnimState():SetBank("frontend_perd")
+        root.perd:GetAnimState():Hide("front")
+        root.perd:GetAnimState():PlayAnimation("empty")
+
+        --V2C: Source anim was done on a 1820 x 1024 stage
+        root.perd:SetScale(RESOLUTION_Y / 1024)
 
         return root
     end,
@@ -1190,11 +1301,11 @@ TEMPLATES = {
         return widg
     end,
 
-    -------------------
-    -------------------
+    --------------
+    --------------
     -- Snowfall --
-    -------------------
-    -------------------
+    --------------
+    --------------
     -- Main menu snowfall
     Snowfall = function()
         local num_wintersnow = 4

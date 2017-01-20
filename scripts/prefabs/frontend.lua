@@ -13,12 +13,16 @@ local assets =
     Asset("IMAGE", "images/customisation.tex"),
     Asset("ATLAS", "images/customisation.xml"),
 
+    --BETA
     Asset("DYNAMIC_ATLAS", "images/anr_silhouettes.xml"),
     Asset("ASSET_PKGREF", "images/anr_silhouettes.tex"),
 
+    --Events
+    Asset("DYNAMIC_ANIM", "anim/dynamic/frontend_perd.zip"),
+
     Asset("ATLAS", "images/frontscreen.xml"),
     Asset("IMAGE", "images/frontscreen.tex"),
-        
+
     -- Asset("ANIM", "anim/portrait_frame.zip"), -- Not currently used, but likely to come back
 
     Asset("ANIM", "anim/build_status.zip"),

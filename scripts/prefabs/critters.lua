@@ -98,7 +98,7 @@ local function MakeCritter(name, animname, face, diet, flying, data)
 	    Asset("ANIM", "anim/"..animname.."_build.zip"),
 	    Asset("ANIM", "anim/"..animname.."_basic.zip"),
 	    Asset("ANIM", "anim/"..animname.."_emotes.zip"),
-	    Asset("ANIM", "anim/"..animname.."_emotes_wip.zip"),
+	    Asset("ANIM", "anim/"..animname.."_traits.zip"),
     }
 
     local function fn()

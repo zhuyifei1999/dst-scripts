@@ -418,6 +418,9 @@ function MultiplayerMainScreen:OnShow()
     if self.snowfall ~= nil then
         self.snowfall:StartSnowfall()
     end
+    if self.fg.perds ~= nil then
+        self.fg.perds:StartPerds()
+    end
 end
 
 function MultiplayerMainScreen:OnHide()
@@ -433,6 +436,9 @@ function MultiplayerMainScreen:OnHide()
     end
     if self.snowfall ~= nil then
         self.snowfall:StopSnowfall()
+    end
+    if self.fg.perds ~= nil then
+        self.fg.perds:StopPerds()
     end
 end
 
@@ -907,11 +913,13 @@ function MultiplayerMainScreen:FinishedFadeIn()
 			table.insert(items, {item=item.item_type, item_id=item.item_id, gifttype="EARLY_ACCESS"})
 		elseif item.item_type == "torch_shadow" then
 			table.insert(items, {item=item.item_type, item_id=item.item_id, gifttype="ARG"})
+		elseif item.item_type == "winterhat_rooster" then
+			table.insert(items, {item=item.item_type, item_id=item.item_id, gifttype="LUNAR"})
 		else
 			table.insert(items, {item=item.item_type, item_id=item.item_id, gifttype="DEFAULT"})
 		end
 	end
-
+	
     if #items > 0 then
         local thankyou_popup = ThankYouPopup(items)
         TheFrontEnd:PushScreen(thankyou_popup)
