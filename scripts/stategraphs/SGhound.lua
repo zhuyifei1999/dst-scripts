@@ -15,7 +15,9 @@ local events =
     CommonHandlers.OnFreeze(),
 
     EventHandler("startle", function(inst)
-        if not (inst.sg:HasStateTag("startled") or inst.components.health:IsDead() or inst.components.freezable:IsFrozen()) then
+        if not (inst.sg:HasStateTag("startled") or
+                inst.components.health:IsDead() or
+                (inst.components.freezable ~= nil and inst.components.freezable:IsFrozen())) then
             if inst.components.sleeper:IsAsleep() then
                 inst.components.sleeper:WakeUp()
             end
