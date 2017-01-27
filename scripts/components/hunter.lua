@@ -319,7 +319,7 @@ OnUpdateHunt = function(inst, hunt)
 end
 
 local function GetAlternateBeastChance()
-    local day = GetTime()/TUNING.TOTAL_DAY_TIME
+    local day = TheWorld.state.cycles
     local chance = Lerp(TUNING.HUNT_ALTERNATE_BEAST_CHANCE_MIN, TUNING.HUNT_ALTERNATE_BEAST_CHANCE_MAX, day/100)
     return math.clamp(chance, TUNING.HUNT_ALTERNATE_BEAST_CHANCE_MIN, TUNING.HUNT_ALTERNATE_BEAST_CHANCE_MAX)
 end

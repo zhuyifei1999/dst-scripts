@@ -82,7 +82,6 @@ local CountdownBeta = Class(Widget, function(self, owner, mode, image, update_na
 				self.smoke:GetAnimState():PlayAnimation("tiny")
 				if TheFrontEnd:GetActiveScreen() == owner then
 					TheFrontEnd:GetSound():PlaySound("dontstarve/common/spawn/spawnportal_spawnplayer")
-					TheFrontEnd:GetSound():PlaySound("dontstarve/common/together/silhouette_beta_3_reveal")
 				end
 
 				self.inst:DoTaskInTime(0.4, function(inst)
