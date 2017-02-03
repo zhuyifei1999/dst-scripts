@@ -32,6 +32,16 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+        channelable = function(inst, doer, actions, right)
+            if right and inst:HasTag("channelable") then
+                if not inst:HasTag("channeled") then
+                    table.insert(actions, ACTIONS.STARTCHANNELING)
+                elseif doer:HasTag("channeling") then
+                    table.insert(actions, ACTIONS.STOPCHANNELING)
+                end
+            end
+        end,
+
         combat = function(inst, doer, actions, right)
             if not right and
                 doer:CanDoAction(ACTIONS.ATTACK) and
@@ -95,8 +105,8 @@ local COMPONENT_ACTIONS =
         inspectable = function(inst, doer, actions)
             if inst ~= doer and
                 (doer.CanExamine == nil or doer:CanExamine()) and
-                (doer.sg == nil or (doer.sg:HasStateTag("idle") and not doer.sg:HasStateTag("moving"))) and
-                doer:HasTag("idle") and not doer:HasTag("moving") then
+                (doer.sg == nil or (doer.sg:HasStateTag("idle") and not doer.sg:HasStateTag("moving") or doer.sg:HasStateTag("channeling"))) and
+                (doer:HasTag("idle") and not doer:HasTag("moving") or doer:HasTag("channeling")) then
                 --Check state graph as well in case there is movement prediction
                 table.insert(actions, ACTIONS.LOOKAT)
             end
@@ -229,9 +239,13 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-        teleporter = function(inst, doer, actions)
+        teleporter = function(inst, doer, actions, right)
             if inst:HasTag("teleporter") then
-                table.insert(actions, ACTIONS.JUMPIN)
+                if not inst:HasTag("townportal") then
+                    table.insert(actions, ACTIONS.JUMPIN)
+                elseif right and not doer:HasTag("channeling") then
+                    table.insert(actions, ACTIONS.TELEPORT)
+                end
             end
         end,
 
@@ -986,6 +1000,12 @@ local COMPONENT_ACTIONS =
         teacher = function(inst, doer, actions)
             if doer.replica.builder ~= nil then
                 table.insert(actions, ACTIONS.TEACH)
+            end
+        end,
+
+        teleporter = function(inst, doer, actions)
+            if inst:HasTag("teleporter") and not doer:HasTag("channeling") then
+                table.insert(actions, ACTIONS.TELEPORT)
             end
         end,
 

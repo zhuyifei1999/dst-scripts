@@ -73,7 +73,7 @@ SGCritterStates.AddEat(states,
     })
 SGCritterStates.AddHungry(states,
     {
-        TimeEvent(12*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.skinname == "perdling_rooster" and "dontstarve/creatures/together/rooster/distress_long" or "dontstarve/creatures/together/perdling/distress_long") end),
+        TimeEvent(12*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.skin_hungry_sound or "dontstarve/creatures/together/perdling/distress_long") end),
     })
 SGCritterStates.AddNuzzle(states, actionhandlers,
     {

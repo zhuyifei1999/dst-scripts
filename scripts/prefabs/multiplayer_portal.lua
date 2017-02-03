@@ -40,7 +40,7 @@ local function fn()
     inst.AnimState:SetBuild("portal_stone")
     inst.AnimState:PlayAnimation("idle_loop", true)
 
-    inst:AddTag("portal")
+    inst.deploy_spacing = 2
 
     inst.GetActivateVerb = GetVerb
 

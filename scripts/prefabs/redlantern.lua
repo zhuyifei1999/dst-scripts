@@ -197,6 +197,12 @@ local function onisraining(inst, israining)
     end
 end
 
+local function OnLoad(inst, data)
+    if inst.components.fueled:IsEmpty() then
+        nofuel(inst)
+    end
+end
+
 local function lanternlightfn()
     local inst = CreateEntity()
 
@@ -275,6 +281,7 @@ local function fn()
     MakeHauntableLaunch(inst)
 
     inst.OnRemoveEntity = OnRemove
+    inst.OnLoad = OnLoad
 
     inst._light = nil
     turnon(inst)

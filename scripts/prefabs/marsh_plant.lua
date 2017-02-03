@@ -14,7 +14,7 @@ local function fn(bank, build)
 
         inst.AnimState:SetBank(bank)
         inst.AnimState:SetBuild(build)
-        inst.AnimState:PlayAnimation("idle")
+        inst.AnimState:PlayAnimation("idle", true)
 
         inst.entity:SetPristine()
 

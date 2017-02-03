@@ -250,6 +250,8 @@ function CreateStringsPOTv2(filename, root, tbl_dta, tbl_lkp)
 	local file = io.open(filename, "w")
 
 	--Add file format info
+    file:write("msgid \"\"\n")
+    file:write("msgstr \"\"\n")
 	file:write("\"Application: Dont' Starve\\n\"")
 	file:write("\n")
 	file:write("\"POT Version: 2.0\\n\"")

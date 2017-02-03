@@ -273,6 +273,7 @@ local function rock_ice_fn()
 
     inst.MiniMapEntity:SetIcon("iceboulder.png")
 
+    inst:AddTag("antlion_sinkhole_blocker")
     inst:AddTag("frozen")
     MakeSnowCoveredPristine(inst)
 

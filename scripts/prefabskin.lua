@@ -219,6 +219,14 @@ function pet_init_fn(inst, build_name, default_build)
     
     inst.AnimState:SetSkin(build_name, default_build)
 end
+function perdling_init_fn(inst, build_name, default_build, hungry_sound)
+	if not TheWorld.ismastersim then
+        return
+    end
+    
+    inst.AnimState:SetSkin(build_name, default_build)
+    inst.skin_hungry_sound = hungry_sound
+end
 
 --------------------------------------------------------------------------
 --[[ Birdcage skin functions ]]
@@ -258,6 +266,18 @@ function lantern_init_fn(inst, build_name)
     end
 
     inst.AnimState:SetSkin(build_name, "lantern")
+end
+
+--------------------------------------------------------------------------
+--[[ Reviver skin functions ]]
+--------------------------------------------------------------------------
+function reviver_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "bloodpump")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
 end
 
 --------------------------------------------------------------------------

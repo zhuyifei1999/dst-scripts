@@ -422,6 +422,8 @@ local function onbecamehuman(inst)
     inst.components.talker:StopIgnoringAll("becamebeaver")
     inst.components.catcher:SetEnabled(true)
     inst.components.debuffable:SetFollowSymbol("headbase", 0, -200, 0)
+    inst.components.stormwatcher:SetSandstormSpeedMultiplier(TUNING.SANDSTORM_SPEED_MOD)
+    inst.components.carefulwalker:SetCarefulWalkingSpeedMultiplier(TUNING.CAREFUL_SPEED_MOD)
 
     if inst.components.inspectable.getstatus == BeaverGetStatus then
         inst.components.inspectable.getstatus = inst._getstatus
@@ -474,6 +476,8 @@ local function onbecamebeaver(inst)
     inst.components.talker:IgnoreAll("becamebeaver")
     inst.components.catcher:SetEnabled(false)
     inst.components.debuffable:SetFollowSymbol("torso", 0, -280, 0)
+    inst.components.stormwatcher:SetSandstormSpeedMultiplier(1)
+    inst.components.carefulwalker:SetCarefulWalkingSpeedMultiplier(1)
 
     if inst.components.inspectable.getstatus ~= BeaverGetStatus then
         inst._getstatus = inst.components.inspectable.getstatus

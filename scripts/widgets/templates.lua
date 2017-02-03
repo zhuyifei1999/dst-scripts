@@ -453,7 +453,6 @@ TEMPLATES = {
                 root.right:SetScale(scalex, scaley)
             elseif vbars then
                 local w, h = root.top:GetSize()
-                local qq = scrnh * aspect
                 local scalex = RESOLUTION_X / w
                 local scaley = (scrnh * aspect / scrnw - 1) * .5 * RESOLUTION_Y / h
                 root.top:SetScale(scalex, scaley)

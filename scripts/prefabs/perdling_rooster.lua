@@ -12,5 +12,5 @@ return CreatePrefabSkin("perdling_rooster",
 	assets = assets,
 	build_name = "perdling_rooster",
 	rarity = "Elegant",
-	init_fn = function(inst) pet_init_fn(inst, "perdling_rooster", "perdling_build" ) end,
+	init_fn = function(inst) perdling_init_fn(inst, "perdling_rooster", "perdling_build", "dontstarve/creatures/together/rooster/distress_long" ) end,
 })

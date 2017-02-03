@@ -1,4 +1,5 @@
 local easing = require("easing")
+local SourceModifierList = require("util/sourcemodifierlist")
 
 local function onmax(self, max)
     self.inst.replica.sanity:SetMax(max)
@@ -40,6 +41,7 @@ local Sanity = Class(function(self, inst)
     self.sane = true
     self.fxtime = 0
     self.dapperness = 0
+	self.externalmodifiers = SourceModifierList(self.inst, 0, SourceModifierList.additive)
     self.inducedinsanity = nil
     self.inducedinsanity_sources = nil
     self.night_drain_mult = 1
@@ -258,7 +260,7 @@ function Sanity:RecalcGhostDrain()
 end
 
 function Sanity:Recalc(dt)
-    local total_dapperness = self.dapperness or 0
+    local total_dapperness = self.dapperness
     for k, v in pairs(self.inst.components.inventory.equipslots) do
         if v.components.equippable ~= nil then
             total_dapperness = total_dapperness + v.components.equippable:GetDapperness(self.inst)
@@ -302,7 +304,7 @@ function Sanity:Recalc(dt)
     self:RecalcGhostDrain()
     local ghost_delta = TUNING.SANITY_GHOST_PLAYER_DRAIN * self.ghost_drain_mult
 
-    self.rate = dapper_delta + moisture_delta + light_delta + aura_delta + ghost_delta
+    self.rate = dapper_delta + moisture_delta + light_delta + aura_delta + ghost_delta + self.externalmodifiers:Get()
 
     if self.custom_rate_fn ~= nil then
         self.rate = self.rate + self.custom_rate_fn(self.inst)

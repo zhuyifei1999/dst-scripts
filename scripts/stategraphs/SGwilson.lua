@@ -201,6 +201,32 @@ local function GetUnequipState(inst, data)
         or "item_in"
 end
 
+local function ConfigureRunState(inst)
+    if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
+        inst.sg.statemem.riding = true
+        inst.sg.statemem.groggy = inst:HasTag("groggy")
+        inst.sg:AddStateTag("nodangle")
+    elseif inst.components.inventory:IsHeavyLifting() then
+        inst.sg.statemem.heavy = true
+    elseif inst:HasTag("beaver") then
+        inst.sg.statemem.groggy = inst:HasTag("groggy")
+    elseif inst:GetSandstormLevel() >= TUNING.SANDSTORM_FULL_LEVEL and not inst.components.playervision:HasGoggleVision() then
+        inst.sg.statemem.sandstorm = true
+    elseif inst:HasTag("groggy") then
+        inst.sg.statemem.groggy = true
+    elseif inst:IsCarefulWalking() then
+        inst.sg.statemem.careful = true
+    end
+end
+
+local function GetRunStateAnim(inst)
+    return (inst.sg.statemem.heavy and "heavy_walk")
+        or (inst.sg.statemem.sandstorm and "sand_walk")
+        or (inst.sg.statemem.groggy and "idle_walk")
+        or (inst.sg.statemem.careful and "careful_walk")
+        or "run"
+end
+
 local actionhandlers =
 {
     ActionHandler(ACTIONS.CHOP,
@@ -364,6 +390,11 @@ local actionhandlers =
         end),
     ActionHandler(ACTIONS.FAN, "use_fan"),
     ActionHandler(ACTIONS.JUMPIN, "jumpin_pre"),
+    ActionHandler(ACTIONS.TELEPORT, 
+        function(inst, action)
+            return (action.invobject ~= nil and "dolongaction")
+                or "give"
+        end),
     ActionHandler(ACTIONS.DRY, "doshortaction"),
     ActionHandler(ACTIONS.CASTSPELL,
         function(inst, action)
@@ -404,6 +435,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.DRAW, "dolongaction"),
     ActionHandler(ACTIONS.BUNDLE, "bundle"),
     ActionHandler(ACTIONS.UNWRAP, "dolongaction"),
+    ActionHandler(ACTIONS.STARTCHANNELING, "startchanneling"),
 }
 
 local events =
@@ -507,7 +539,7 @@ local events =
             if inst.sg:HasStateTag("idle") or inst.sg:HasStateTag("moving") then
                 inst.sg:GoToState("heavylifting_item_hat")
             end
-        elseif inst.sg:HasStateTag("idle") and not inst:HasTag("beaver") then
+        elseif (inst.sg:HasStateTag("idle") or inst.sg:HasStateTag("channeling")) and not inst:HasTag("beaver") then
             inst.sg:GoToState(data.eslot == EQUIPSLOTS.HANDS and "item_out" or "item_hat")
         end
     end),
@@ -522,7 +554,7 @@ local events =
             if inst.sg:HasStateTag("idle") or inst.sg:HasStateTag("moving") then
                 inst.sg:GoToState("heavylifting_item_hat")
             end
-        elseif inst.sg:HasStateTag("idle") then
+        elseif inst.sg:HasStateTag("idle") or inst.sg:HasStateTag("channeling") then
             inst.sg:GoToState(GetUnequipState(inst, data))
         end
     end),
@@ -1129,6 +1161,8 @@ local states =
             inst.components.locomotor:Stop()
             inst.components.locomotor:Clear()
 
+            inst.sg.statemem.ignoresandstorm = true
+
             if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
                 inst.sg:GoToState("mounted_idle", pushanim)
                 return
@@ -1154,21 +1188,34 @@ local states =
             elseif inst.components.inventory:IsHeavyLifting() then
                 table.insert(anims, "heavy_idle")
                 dofunny = false
-            elseif not inst.components.sanity:IsSane() then
-                table.insert(anims, "idle_sanity_pre")
-                table.insert(anims, "idle_sanity_loop")
-            elseif inst.components.temperature:IsFreezing() then
-                table.insert(anims, "idle_shiver_pre")
-                table.insert(anims, "idle_shiver_loop")
-            elseif inst.components.temperature:IsOverheating() then
-                table.insert(anims, "idle_hot_pre")
-                table.insert(anims, "idle_hot_loop")
-                dofunny = false
-            elseif inst:HasTag("groggy") then
-                table.insert(anims, "idle_groggy_pre")
-                table.insert(anims, "idle_groggy")
             else
-                table.insert(anims, "idle_loop")
+                inst.sg.statemem.ignoresandstorm = false
+                if inst:GetSandstormLevel() >= TUNING.SANDSTORM_FULL_LEVEL
+                    and not inst.components.playervision:HasGoggleVision() then
+                    if not (inst.AnimState:IsCurrentAnimation("sand_walk_pst") or
+                            inst.AnimState:IsCurrentAnimation("sand_walk") or
+                            inst.AnimState:IsCurrentAnimation("sand_walk_pre")) then
+                        table.insert(anims, "sand_idle_pre")
+                    end
+                    table.insert(anims, "sand_idle_loop")
+                    inst.sg.statemem.sandstorm = true
+                    dofunny = false
+                elseif not inst.components.sanity:IsSane() then
+                    table.insert(anims, "idle_sanity_pre")
+                    table.insert(anims, "idle_sanity_loop")
+                elseif inst.components.temperature:IsFreezing() then
+                    table.insert(anims, "idle_shiver_pre")
+                    table.insert(anims, "idle_shiver_loop")
+                elseif inst.components.temperature:IsOverheating() then
+                    table.insert(anims, "idle_hot_pre")
+                    table.insert(anims, "idle_hot_loop")
+                    dofunny = false
+                elseif inst:HasTag("groggy") then
+                    table.insert(anims, "idle_groggy_pre")
+                    table.insert(anims, "idle_groggy")
+                else
+                    table.insert(anims, "idle_loop")
+                end
             end
 
             if pushanim then
@@ -1188,6 +1235,21 @@ local states =
                 inst.sg:SetTimeout(math.random() * 4 + 2)
             end
         end,
+
+        events =
+        {
+            EventHandler("sandstormlevel", function(inst, data)
+                if not inst.sg.statemem.ignoresandstorm then
+                    if data.level < TUNING.SANDSTORM_FULL_LEVEL then
+                        if inst.sg.statemem.sandstorm then
+                            inst.sg:GoToState("idle")
+                        end
+                    elseif not (inst.sg.statemem.sandstorm or inst.components.playervision:HasGoggleVision()) then
+                        inst.sg:GoToState("idle")
+                    end
+                end
+            end),
+        },
 
         ontimeout = function(inst)
             local royalty = nil
@@ -1412,14 +1474,36 @@ local states =
                 return
             end
 
-            if pushanim then
-                inst.AnimState:PushAnimation("idle_loop", true)
+            if inst:GetSandstormLevel() >= TUNING.SANDSTORM_FULL_LEVEL and not inst.components.playervision:HasGoggleVision() then
+                if pushanim then
+                    inst.AnimState:PushAnimation("sand_idle_pre")
+                else
+                    inst.AnimState:PlayAnimation("sand_idle_pre")
+                end
+                inst.AnimState:PushAnimation("sand_idle_loop", true)
+                inst.sg.statemem.sandstorm = true
             else
-                inst.AnimState:PlayAnimation("idle_loop", true)
+                if pushanim then
+                    inst.AnimState:PushAnimation("idle_loop", true)
+                else
+                    inst.AnimState:PlayAnimation("idle_loop", true)
+                end
+                inst.sg:SetTimeout(2 + math.random() * 8)
             end
-
-            inst.sg:SetTimeout(2 + math.random() * 8)
         end,
+
+        events =
+        {
+            EventHandler("sandstormlevel", function(inst, data)
+                if data.level < TUNING.SANDSTORM_FULL_LEVEL then
+                    if inst.sg.statemem.sandstorm then
+                        inst.sg:GoToState("mounted_idle")
+                    end
+                elseif not (inst.sg.statemem.sandstorm or inst.components.playervision:HasGoggleVision()) then
+                    inst.sg:GoToState("mounted_idle")
+                end
+            end),
+        },
 
         ontimeout = function(inst)
             local mount = inst.components.rider ~= nil and inst.components.rider:GetMount() or nil
@@ -4112,20 +4196,9 @@ local states =
         tags = { "moving", "running", "canrotate", "autopredict" },
 
         onenter = function(inst)
-            if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
-                inst.sg.statemem.riding = true
-                inst.sg:AddStateTag("nodangle")
-            elseif inst.components.inventory:IsHeavyLifting() then
-                inst.sg.statemem.heavy = true
-            end
-
+            ConfigureRunState(inst)
             inst.components.locomotor:RunForward()
-            inst.AnimState:PlayAnimation(
-                (inst.sg.statemem.heavy and "heavy_walk_pre") or
-                (inst:HasTag("groggy") and "idle_walk_pre") or
-                "run_pre"
-            )
-
+            inst.AnimState:PlayAnimation(GetRunStateAnim(inst).."_pre")
             inst.sg.mem.footsteps = 0
         end,
 
@@ -4181,19 +4254,13 @@ local states =
         tags = { "moving", "running", "canrotate", "autopredict" },
 
         onenter = function(inst) 
-            if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
-                inst.sg.statemem.riding = true
-                inst.sg:AddStateTag("nodangle")
-            elseif inst.components.inventory:IsHeavyLifting() then
-                inst.sg.statemem.heavy = true
-            end
-
+            ConfigureRunState(inst)
             inst.components.locomotor:RunForward()
 
-            local anim =
-                (inst.sg.statemem.heavy and "heavy_walk") or
-                (inst:HasTag("groggy") and "idle_walk") or
-                "run_loop"
+            local anim = GetRunStateAnim(inst)
+            if anim == "run" then
+                anim = "run_loop"
+            end
             if not inst.AnimState:IsCurrentAnimation(anim) then
                 inst.AnimState:PlayAnimation(anim, true)
             end
@@ -4270,6 +4337,47 @@ local states =
             end),
         },
 
+        events =
+        {
+            EventHandler("gogglevision", function(inst, data)
+                if data.enabled then
+                    if inst.sg.statemem.sandstorm then
+                        inst.sg:GoToState("run")
+                    end
+                elseif not (inst.sg.statemem.riding or
+                            inst.sg.statemem.heavy or
+                            inst.sg.statemem.sandstorm or
+                            inst:GetSandstormLevel() < TUNING.SANDSTORM_FULL_LEVEL) then
+                    inst.sg:GoToState("run")
+                end
+            end),
+            EventHandler("sandstormlevel", function(inst, data)
+                if data.level < TUNING.SANDSTORM_FULL_LEVEL then
+                    if inst.sg.statemem.sandstorm then
+                        inst.sg:GoToState("run")
+                    end
+                elseif not (inst.sg.statemem.riding or
+                            inst.sg.statemem.heavy or
+                            inst.sg.statemem.sandstorm or
+                            inst.components.playervision:HasGoggleVision()) then
+                    inst.sg:GoToState("run")
+                end
+            end),
+            EventHandler("carefulwalking", function(inst, data)
+                if not data.careful then
+                    if inst.sg.statemem.careful then
+                        inst.sg:GoToState("run")
+                    end
+                elseif not (inst.sg.statemem.riding or
+                            inst.sg.statemem.heavy or
+                            inst.sg.statemem.sandstorm or
+                            inst.sg.statemem.groggy or
+                            inst.sg.statemem.careful) then
+                    inst.sg:GoToState("run")
+                end
+            end),
+        },
+
         ontimeout = function(inst)
             inst.sg:GoToState("run")
         end,
@@ -4280,15 +4388,9 @@ local states =
         tags = { "canrotate", "idle", "autopredict" },
 
         onenter = function(inst)
+            ConfigureRunState(inst)
             inst.components.locomotor:Stop()
-            if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
-                inst.sg:AddStateTag("nodangle")
-                inst.AnimState:PlayAnimation(inst:HasTag("groggy") and "idle_walk_pst" or "run_pst")
-            elseif inst.components.inventory:IsHeavyLifting() then
-                inst.AnimState:PlayAnimation("heavy_walk_pst")
-            else
-                inst.AnimState:PlayAnimation(inst:HasTag("groggy") and "idle_walk_pst" or "run_pst")
-            end
+            inst.AnimState:PlayAnimation(GetRunStateAnim(inst).."_pst")
         end,
 
         events =
@@ -5126,6 +5228,8 @@ local states =
             end
 
             inst.Physics:SetMotorVel(inst.sg.statemem.speed * .5, 0, 0)
+
+            inst.sg.statemem.teleportarrivestate = "jumpout"
         end,
 
         timeline =
@@ -5277,6 +5381,153 @@ local states =
             end),
             TimeEvent(18 * FRAMES, function(inst)
                 inst.Physics:Stop()
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if inst.sg.statemem.isphysicstoggle then
+                ToggleOnPhysics(inst)
+            end
+        end,
+    },
+
+    State{
+        name = "entertownportal",
+        tags = { "doing", "busy", "nopredict", "nomorph" },
+
+        onenter = function(inst, data)
+            ToggleOffPhysics(inst)
+            inst.Physics:Stop()
+            inst.components.locomotor:Stop()
+
+            inst.sg.statemem.target = data.teleporter
+            inst.sg.statemem.teleportarrivestate = "exittownportal_pre"
+
+            inst.AnimState:PlayAnimation("townportal_enter_pre")
+			inst.SoundEmitter:PlaySound("dontstarve/common/together/teleport_sand/in")
+        end,
+
+        timeline =
+        {
+            TimeEvent(8 * FRAMES, function(inst)
+                inst.sg.statemem.isteleporting = true
+
+                inst.components.health:SetInvincible(true)
+                if inst.components.playercontroller ~= nil then
+                    inst.components.playercontroller:Enable(false)
+                end
+                inst.DynamicShadow:Enable(false)
+            end),
+        },
+        
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+					local x, y, z = inst.Transform:GetWorldPosition()
+                    if inst.sg.statemem.target ~= nil and inst.sg.statemem.target.components.teleporter ~= nil
+                        and inst.sg.statemem.target.components.teleporter:Activate(inst) then
+
+                        inst:Hide()
+                        
+                        local fx = SpawnPrefab("townportalsandcoffin_fx")
+                        fx.Transform:SetPosition(x, y, z)
+			            fx.Transform:SetRotation(inst.Transform:GetRotation())
+                    else
+                        inst.sg:GoToState("exittownportal")
+                    end
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if inst.sg.statemem.isphysicstoggle then
+                ToggleOnPhysics(inst)
+            end
+
+            if inst.sg.statemem.isteleporting then
+                inst.components.health:SetInvincible(false)
+                if inst.components.playercontroller ~= nil then
+                    inst.components.playercontroller:Enable(true)
+                end
+                inst:Show()
+                inst.DynamicShadow:Enable(true)
+            end
+        end,
+    },
+
+    State{
+        name = "exittownportal_pre",
+        tags = { "doing", "busy", "nopredict", "nomorph" },
+
+        onenter = function(inst)
+            ToggleOffPhysics(inst)
+            inst.components.locomotor:Stop()
+
+            inst.AnimState:PlayAnimation("townportal_exit_pre")
+			inst.SoundEmitter:PlaySound("dontstarve/common/together/teleport_sand/in")
+
+            inst.components.health:SetInvincible(true)
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:Enable(false)
+            end
+            inst.DynamicShadow:Enable(false)
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("exittownportal")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if inst.sg.statemem.isphysicstoggle then
+                ToggleOnPhysics(inst)
+            end
+
+            inst.components.health:SetInvincible(false)
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:Enable(true)
+            end
+            inst.DynamicShadow:Enable(true)
+        end,
+    },
+
+    State{
+        name = "exittownportal",
+        tags = { "doing", "busy", "nopredict", "nomorph" },
+
+        onenter = function(inst)
+            ToggleOffPhysics(inst)
+            inst.components.locomotor:Stop()
+
+            inst.AnimState:PlayAnimation("townportal_exit_pst")
+
+            local fx = SpawnPrefab("townportalsandcoffin_fx")
+            fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+            fx.Transform:SetRotation(inst.Transform:GetRotation())
+        end,
+
+        timeline =
+        {
+            TimeEvent(18 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+                
+                if inst.sg.statemem.isphysicstoggle then
+                    ToggleOnPhysics(inst)
+                end
             end),
         },
 
@@ -6300,6 +6551,129 @@ local states =
                 inst.components.bundler:StopBundling()
             end
         end,
+    },
+
+    State
+    {
+        name = "startchanneling",
+        tags = { "doing", "busy", "prechanneling", "nodangle" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("channel_pre")
+            inst.AnimState:PushAnimation("channel_loop", true)
+            inst.sg:SetTimeout(.7)
+        end,
+
+        timeline =
+        {
+            TimeEvent(7 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+            TimeEvent(9 * FRAMES, function(inst)
+                inst:PerformBufferedAction()
+            end),
+        },
+
+        ontimeout = function(inst)
+            inst.AnimState:PlayAnimation("channel_pst")
+        end,
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
+
+    State
+    {
+        name = "channeling",
+        tags = { "doing", "channeling", "nodangle" },
+
+        onenter = function(inst, target)
+            inst:AddTag("channeling")
+            inst.components.locomotor:Stop()
+            if not inst.AnimState:IsCurrentAnimation("channel_loop") then
+                inst.AnimState:PlayAnimation("channel_loop", true)
+            end
+            inst.sg.statemem.target = target
+        end,
+
+        onupdate = function(inst)
+            if not CanEntitySeeTarget(inst, inst.sg.statemem.target) then
+                inst.sg:GoToState("stopchanneling")
+            end
+        end,
+
+        events =
+        {
+            EventHandler("ontalk", function(inst)
+                if not (inst.AnimState:IsCurrentAnimation("channel_dial_loop") or inst:HasTag("mime")) then
+                    inst.AnimState:PlayAnimation("channel_dial_loop", true)
+                end
+                if inst.sg.statemem.talktask ~= nil then
+                    inst.sg.statemem.talktask:Cancel()
+                    inst.sg.statemem.talktask = nil
+                    inst.SoundEmitter:KillSound("talk")
+                end
+                if DoTalkSound(inst) then
+                    inst.sg.statemem.talktask =
+                        inst:DoTaskInTime(1.5 + math.random() * .5,
+                            function()
+                                inst.SoundEmitter:KillSound("talk")
+                                inst.sg.statemem.talktask = nil
+                            end)
+                end
+            end),
+            EventHandler("donetalking", function(inst)
+                if not inst.AnimState:IsCurrentAnimation("channel_loop") then
+                    inst.AnimState:PlayAnimation("channel_loop", true)
+                end
+                if inst.sg.statemem.talktalk ~= nil then
+                    inst.sg.statemem.talktask:Cancel()
+                    inst.sg.statemem.talktask = nil
+                    inst.SoundEmitter:KillSound("talk")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            inst:RemoveTag("channeling")
+            if inst.sg.statemem.talktask ~= nil then
+                inst.sg.statemem.talktask:Cancel()
+                inst.sg.statemem.talktask = nil
+                inst.SoundEmitter:KillSound("talk")
+            end
+            if not inst.sg.statemem.stopchanneling and
+                inst.sg.statemem.target ~= nil and
+                inst.sg.statemem.target:IsValid() and
+                inst.sg.statemem.target.components.channelable ~= nil then
+                inst.sg.statemem.target.components.channelable:StopChanneling(true)
+            end
+        end,
+    },
+
+    State
+    {
+        name = "stopchanneling",
+        tags = { "idle", "nodangle" },
+
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("channel_pst")
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
     },
 }
 

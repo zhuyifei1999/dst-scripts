@@ -14,6 +14,10 @@ local Teleporter = Class(function(self, inst)
     self.offset = 2
     self.enabled = true
     self.numteleporting = 0
+    self.saveenabled = true
+    
+    self.travelcameratime = 3
+    self.travelarrivetime = 4
 end,
 nil,
 {
@@ -87,10 +91,11 @@ end
 function Teleporter:Teleport(obj)
     if self.targetTeleporter ~= nil then
         local target_x, target_y, target_z = self.targetTeleporter.Transform:GetWorldPosition()
-        if self.offset ~= 0 then
+        local offset = self.targetTeleporter.components.teleporter ~= nil and self.targetTeleporter.components.teleporter.offset or 0
+        if offset ~= 0 then
             local angle = math.random() * 2 * PI
-            target_x = target_x + math.cos(angle) * self.offset
-            target_z = target_z - math.sin(angle) * self.offset
+            target_x = target_x + math.cos(angle) * offset
+            target_z = target_z - math.sin(angle) * offset
         end
         if obj.Physics ~= nil then
             obj.Physics:Teleport(target_x, target_y, target_z)
@@ -168,8 +173,8 @@ local function ondoerarrive(inst, self, doer)
     --      this is not a task or event handler on the doer.
     if not doer:IsValid() then
         doer = nil
-    elseif doer.sg.currentstate.name == "jumpin" then
-        doer.sg:GoToState("jumpout")
+    elseif doer.sg.statemem.teleportarrivestate ~= nil then
+        doer.sg:GoToState(doer.sg.statemem.teleportarrivestate)
     end
     self.numteleporting = self.numteleporting - 1
     self:PushDoneTeleporting(doer)
@@ -177,8 +182,8 @@ end
 
 function Teleporter:ReceivePlayer(doer)
     doer:ScreenFade(false)
-    self.inst:DoTaskInTime(3, oncameraarrive, doer)
-    self.inst:DoTaskInTime(4, ondoerarrive, self, doer)
+    self.inst:DoTaskInTime(self.travelcameratime, oncameraarrive, doer)
+    self.inst:DoTaskInTime(self.travelarrivetime, ondoerarrive, self, doer)
 end
 
 function Teleporter:Target(otherTeleporter)
@@ -190,7 +195,7 @@ function Teleporter:SetEnabled(enabled)
 end
 
 function Teleporter:OnSave()
-    if self.targetTeleporter ~= nil then
+    if self.saveenabled and self.targetTeleporter ~= nil then
         return { target = self.targetTeleporter.GUID }, { self.targetTeleporter.GUID }
     end
 end
@@ -202,6 +207,10 @@ function Teleporter:LoadPostPass(newents, savedata)
             self.targetTeleporter = targEnt.entity
         end
     end
+end
+
+function Teleporter:GetDebugString()
+	return "Enabled: " .. (self.enabled and "T" or "F") .. " Target:" .. tostring(self.targetTeleporter)
 end
 
 return Teleporter

@@ -47,6 +47,12 @@ local function OnEquipChanged(inst)
             inst:PushEvent("nightvision", self.nightvision)
         end
     end
+    if self.gogglevision == not inst.replica.inventory:EquipHasTag("goggles") then
+        self.gogglevision = not self.gogglevision
+        if not self.forcegogglevision then
+            inst:PushEvent("gogglevision", { enabled = self.gogglevision })
+        end
+    end
 end
 
 local function OnInit(inst, self)
@@ -65,6 +71,10 @@ local function OnInit(inst, self)
     OnEquipChanged(inst)
 end
 
+local function OnAreaChanged(inst, data)
+    inst.components.playervision:SetNightmareVision(data.tags ~= nil and table.contains(data.tags, "Nightmare"))
+end
+
 local PlayerVision = Class(function(self, inst)
     self.inst = inst
 
@@ -72,11 +82,14 @@ local PlayerVision = Class(function(self, inst)
     self.nightmarevision = false
     self.nightvision = false
     self.forcenightvision = false
+    self.gogglevision = false
+    self.forcegogglevision = false
     self.overridecctable = nil
     self.currentcctable = nil
     self.currentccphasefn = nil
 
     inst:DoTaskInTime(0, OnInit, self)
+    inst:ListenForEvent("changearea", OnAreaChanged)
 end)
 
 function PlayerVision:HasGhostVision()
@@ -89,6 +102,10 @@ end
 
 function PlayerVision:HasNightVision()
     return self.nightvision or self.forcenightvision
+end
+
+function PlayerVision:HasGoggleVision()
+    return self.gogglevision or self.forcegogglevision
 end
 
 function PlayerVision:GetCCPhaseFn()
@@ -142,6 +159,15 @@ function PlayerVision:ForceNightVision(force)
         if not self.nightvision then
             self:UpdateCCTable()
             self.inst:PushEvent("nightvision", self.forcenightvision)
+        end
+    end
+end
+
+function PlayerVision:ForceGoggleVision(force)
+    if not self.forcegogglevision ~= not force then
+        self.forcegogglevision = force == true
+        if not self.gogglevision then
+            self.inst:PushEvent("gogglevision", { enabled = self.forcegogglevision })
         end
     end
 end
