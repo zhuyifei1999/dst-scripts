@@ -21,11 +21,11 @@ local events =
 {
     EventHandler("onaccepttribute", function(inst, data)
         if not inst.sg:HasStateTag("busy") then
-			if inst:HasRewardToGive() then
-				inst.sg:GoToState("trinketribute")
-			else
-				inst.sg:GoToState("rocktribute", data)
-			end
+            if inst:HasRewardToGive() then
+                inst.sg:GoToState("trinketribute")
+            else
+                inst.sg:GoToState("rocktribute", data)
+            end
         end
     end),
     EventHandler("onrefusetribute", function(inst, data) 
@@ -34,221 +34,243 @@ local events =
         end
     end),
     EventHandler("antlion_leaveworld", function(inst, data) 
-		inst.sg.mem.queueleaveworld = true
+        inst.sg.mem.queueleaveworld = true
         if not inst.sg:HasStateTag("busy") then
             inst.sg:GoToState("leaveworld", data)
         end
     end),
     EventHandler("onsinkholesstarted", function(inst, data) 
-		inst.sg.mem.causingsinkholes = true
+        inst.sg.mem.causingsinkholes = true
         if not inst.sg:HasStateTag("busy") then
             inst.sg:GoToState("sinkhole_pre", data)
         end
     end),
     EventHandler("onsinkholesfinished", function(inst, data) 
-		inst.sg.mem.causingsinkholes = false
+        inst.sg.mem.causingsinkholes = false
     end),
 }
 
 local states =
 {
-	State
-	{
-		name = "idle",
-		tags = {"idle"},
+    State
+    {
+        name = "idle",
+        tags = { "idle" },
 
-		onenter = function(inst, loopcount)
-			loopcount = (loopcount or 0) + 1
+        onenter = function(inst, loopcount)
+            loopcount = (loopcount or 0) + 1
 
-			inst.Physics:Stop()
-			
-			if inst:HasRewardToGive() then
-				inst.sg:GoToState("awardtribute")
-			elseif inst.sg.mem.queueleaveworld then
-				inst.sg:GoToState("leaveworld")
-			elseif inst.sg.mem.causingsinkholes then
-				inst.sg:GoToState("sinkhole_pre")
-			elseif loopcount > 5 and math.random() < 0.5 then
-				if inst:GetRageLevel() == 3 then
-					inst.sg:GoToState("idle_unhappy")
-				else
-					inst.AnimState:PlayAnimation("lookaround")
-				end
-			else
-				inst.sg.statemem.loopcount = loopcount
-				inst.AnimState:PlayAnimation("idle")
-			end
-		end,
+            inst.Physics:Stop()
 
-		events = 
-		{
-			EventHandler("animover", function(inst) 
-				inst.sg:GoToState("idle", inst.sg.statemem.loopcount) 
-			end)
-		},
-	},
+            if inst:HasRewardToGive() then
+                inst.sg:GoToState("awardtribute")
+            elseif inst.sg.mem.queueleaveworld then
+                inst.sg:GoToState("leaveworld")
+            elseif inst.sg.mem.causingsinkholes then
+                inst.sg:GoToState("sinkhole_pre")
+            elseif loopcount > 5 and math.random() < 0.5 then
+                if inst:GetRageLevel() == 3 then
+                    inst.sg:GoToState("idle_unhappy")
+                else
+                    inst.AnimState:PlayAnimation("lookaround")
+                end
+            else
+                inst.sg.statemem.loopcount = loopcount
+                inst.AnimState:PlayAnimation("idle")
+            end
+        end,
 
-	State
-	{
-		name = "idle_unhappy",
-		tags = {"idle"},
+        events =
+        {
+            EventHandler("animover", function(inst)
+                inst.sg:GoToState("idle", inst.sg.statemem.loopcount)
+            end),
+        },
+    },
 
-		onenter = function(inst, loopcount)
-			inst.AnimState:PlayAnimation("taunt")
-		end,
+    State
+    {
+        name = "idle_unhappy",
+        tags = { "idle" },
+
+        onenter = function(inst, loopcount)
+            inst.AnimState:PlayAnimation("taunt")
+        end,
 
         timeline =
         {
-			TimeEvent(7*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/taunt") end),
+            TimeEvent(7*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/taunt") end),
         },
 
-		events = 
-		{
-            EventHandler("animover", function(inst) if inst.AnimState:AnimDone() then inst.sg:GoToState("idle") end end),
-		},
-	},
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
 
+    State
+    {
+        name = "rocktribute",
+        tags = { "busy" },
 
-	State
-	{
-		name = "rocktribute",
-		tags = {"busy"},
+        onenter = function(inst, data)
+            inst.AnimState:PlayAnimation("eat")
+            inst.sg.statemem.tributepercent = data ~= nil and data.tributepercent or 0
+        end,
 
-		onenter = function(inst, data)
-			inst.AnimState:PlayAnimation("eat")
-			inst.sg.statemem.tributepercent = data ~= nil and data.tributepercent or 0
-		end,
-        
         timeline =
         {
-			TimeEvent(12*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/eat") end),
-			TimeEvent(36*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/eat") end),
-			TimeEvent(71*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/swallow") end),
+            TimeEvent(12*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/eat") end),
+            TimeEvent(36*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/eat") end),
+            TimeEvent(71*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/swallow") end),
         },
 
-		events = 
-		{
-            EventHandler("animover", function(inst) 
-				if inst.AnimState:AnimDone() then 
-					local level = 
-					inst.sg:GoToState(inst:GetRageLevel() == 1 and "hightributeresponse" or "idle")
-				end
-			end),
-		},
-	},
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState(inst:GetRageLevel() == 1 and "hightributeresponse" or "idle")
+                end
+            end),
+        },
+    },
 
-	State
-	{
-		name = "lowtributeresponse",
-		tags = {"busy"},
+    State
+    {
+        name = "lowtributeresponse",
+        tags = { "busy" },
 
-		onenter = function(inst, data)
-			inst.AnimState:PlayAnimation("taunt")
-		end,
-        
+        onenter = function(inst, data)
+            inst.AnimState:PlayAnimation("taunt")
+        end,
+
         timeline =
         {
-			TimeEvent(7*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/taunt") end),
+            TimeEvent(7*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/taunt") end),
         },
 
-		events = 
-		{
-            EventHandler("animover", function(inst) if inst.AnimState:AnimDone() then inst.sg:GoToState("idle") end end),
-		},
-	},
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
 
-	State
-	{
-		name = "hightributeresponse",
-		tags = {"busy"},
+    State
+    {
+        name = "hightributeresponse",
+        tags = { "busy" },
 
-		onenter = function(inst, data)
-			inst.AnimState:PlayAnimation("full_pre")
-			inst.AnimState:PushAnimation("full_loop", false)
-			inst.AnimState:PushAnimation("full_pst", false)
-		end,
-        
+        onenter = function(inst, data)
+            inst.AnimState:PlayAnimation("full_pre")
+            inst.AnimState:PushAnimation("full_loop", false)
+            inst.AnimState:PushAnimation("full_pst", false)
+        end,
+
         timeline =
         {
-			TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/purr") end),
-			TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/rub") end),
-			TimeEvent(16*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/rub") end),
-			TimeEvent(30*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/rub") end),
-			TimeEvent(46*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/rub") end),
+            TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/purr") end),
+            TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/rub") end),
+            TimeEvent(16*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/rub") end),
+            TimeEvent(30*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/rub") end),
+            TimeEvent(46*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/rub") end),
         },
 
-		events = 
-		{
-            EventHandler("animqueueover", function(inst) if inst.AnimState:AnimDone() then inst.sg:GoToState("idle") end end),
-		},
-	},
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
 
-	State
-	{
-		name = "refusetribute",
-		tags = {"busy"},
+    State
+    {
+        name = "refusetribute",
+        tags = { "busy" },
 
-		onenter = function(inst)
-			inst.AnimState:PlayAnimation("unimpressed")
-		end,
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("unimpressed")
+        end,
 
         timeline =
         {
-			TimeEvent(54*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/unimpressed") end),
+            TimeEvent(54*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/unimpressed") end),
         },
 
-		events = 
-		{
-            EventHandler("animover", function(inst) if inst.AnimState:AnimDone() then inst.sg:GoToState("idle") end end),
-		},
-	},
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
 
-	State
-	{
-		name = "awardtribute",
-		tags = {"busy"},
+    State
+    {
+        name = "awardtribute",
+        tags = { "busy" },
 
-		onenter = function(inst)
-			inst.AnimState:PlayAnimation("spit")
-		end,
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("spit")
+        end,
 
         timeline =
         {
-			TimeEvent(40*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/spit") end),
-			TimeEvent(23*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/attack_pre") end),
+            TimeEvent(40*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/spit") end),
+            TimeEvent(23*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/attack_pre") end),
             TimeEvent(26*FRAMES, function(inst) inst:GiveReward() end),
-			TimeEvent(60*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/unimpressed") end),
+            TimeEvent(60*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/unimpressed") end),
         },
 
-		events = 
-		{
-            EventHandler("animover", function(inst) if inst.AnimState:AnimDone() then inst.sg:GoToState("idle") end end),
-		},
-	},
-	
-	State
-	{
-		name = "trinketribute",
-		tags = {"busy"},
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
 
-		onenter = function(inst)
-			inst.AnimState:PlayAnimation("eat_talisman")
-			inst.AnimState:PushAnimation("spit_talisman", false)
-		end,
+    State
+    {
+        name = "trinketribute",
+        tags = { "busy" },
+
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("eat_talisman")
+            inst.AnimState:PushAnimation("spit_talisman", false)
+        end,
 
         timeline =
         {
-			TimeEvent(21*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/swallow") end),
-			TimeEvent(44*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/unimpressed") end),
+            TimeEvent(21*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/swallow") end),
+            TimeEvent(44*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/unimpressed") end),
             TimeEvent(80*FRAMES, function(inst) inst:GiveReward() end),
-			TimeEvent(80*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/spit") end),
+            TimeEvent(80*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/spit") end),
         },
 
-		events = 
-		{
-            EventHandler("animover", function(inst) if inst.AnimState:AnimDone() then inst.sg:GoToState("idle") end end),
-		},
-	},
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
 
     State
     {
@@ -291,7 +313,7 @@ local states =
 
         timeline =
         {
-            TimeEvent(2 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/enter") end),
+            TimeEvent(2*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/enter") end),
         },
 
         events =
@@ -324,8 +346,8 @@ local states =
 
         timeline =
         {
-            TimeEvent(28 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/enter") end),
-            TimeEvent(35 * FRAMES, function(inst)
+            TimeEvent(28*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/enter") end),
+            TimeEvent(35*FRAMES, function(inst)
                 inst.Physics:SetActive(false)
             end),
         },
@@ -345,86 +367,82 @@ local states =
         end,
     },
 
-	State
-	{
-		name = "sinkhole_pre",
-		tags = {"busy", "attack"},
+    State
+    {
+        name = "sinkhole_pre",
+        tags = { "busy", "attack" },
 
-		onenter = function(inst)
-			inst.AnimState:PlayAnimation("cast_pre")
-		end,
-
-        timeline =
-        {
-			TimeEvent(8*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/cast_pre") end),
-			TimeEvent(29*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/ground_break") end),
-			TimeEvent(29*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/cast_pre") end),
-        },
-
-		events = 
-		{
-            EventHandler("animover", function(inst)
-				if inst.AnimState:AnimDone() then 
-					inst.sg:GoToState(inst.sg.mem.causingsinkholes and "sinkhole_loop" or "sinkhole_pst")
-				end
-			end),
-		},
-	},
-
-	State
-	{
-		name = "sinkhole_loop",
-		tags = {"busy", "attack"},
-
-		onenter = function(inst, lastloop)
-			inst.AnimState:PlayAnimation("cast_loop_actve")
-			inst.sg.statemem.lastloop = lastloop
-		end,
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("cast_pre")
+        end,
 
         timeline =
         {
-			TimeEvent(28*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/cast_pre") end),
-			TimeEvent(28*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/ground_break") end),
-			TimeEvent(69*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/cast_pre") end),
-			TimeEvent(69*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/ground_break") end),
+            TimeEvent(8*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/cast_pre") end),
+            TimeEvent(29*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/ground_break") end),
+            TimeEvent(29*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/cast_pre") end),
         },
 
-		events = 
-		{
+        events =
+        {
             EventHandler("animover", function(inst)
-				if inst.AnimState:AnimDone() then 
-					if inst.sg.statemem.lastloop then
-						inst.sg:GoToState("sinkhole_pst")
-					else
-						inst.sg:GoToState("sinkhole_loop", inst.sg.mem.causingsinkholes ~= true)
-					end
-				end
-			end),
-		},
-	},
+                if inst.AnimState:AnimDone() then 
+                    inst.sg:GoToState(inst.sg.mem.causingsinkholes and "sinkhole_loop" or "sinkhole_pst")
+                end
+            end),
+        },
+    },
 
-	State
-	{
-		name = "sinkhole_pst",
-		tags = {"busy", "attack"},
+    State
+    {
+        name = "sinkhole_loop",
+        tags = { "busy", "attack" },
 
-		onenter = function(inst)
-			inst.AnimState:PlayAnimation("cast_pst")
-		end,
+        onenter = function(inst, lastloop)
+            inst.AnimState:PlayAnimation("cast_loop_active")
+            inst.sg.statemem.lastloop = lastloop
+        end,
 
         timeline =
         {
+            TimeEvent(28*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/cast_pre") end),
+            TimeEvent(28*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/ground_break") end),
+            TimeEvent(69*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/cast_pre") end),
+            TimeEvent(69*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/ground_break") end),
         },
 
-		events =
-		{
+        events = 
+        {
             EventHandler("animover", function(inst)
-				if inst.AnimState:AnimDone() then 
-					inst.sg:GoToState("idle")
-				end
-			end),
-		},
-	},
+                if inst.AnimState:AnimDone() then
+                    if inst.sg.statemem.lastloop then
+                        inst.sg:GoToState("sinkhole_pst")
+                    else
+                        inst.sg:GoToState("sinkhole_loop", inst.sg.mem.causingsinkholes ~= true)
+                    end
+                end
+            end),
+        },
+    },
+
+    State
+    {
+        name = "sinkhole_pst",
+        tags = { "busy", "attack" },
+
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("cast_pst")
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
 }
-  
+
 return StateGraph("antlion", states, events, "idle")

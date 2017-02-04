@@ -396,8 +396,8 @@ return {
 		ANTLION = 
 		{
 			GENERIC = "Have you no pride?",
-			VERYHAPPY = "We've placated her for now.",
-			UNHAPPY = "She's going to wreak havoc on my world.",
+			VERYHAPPY = "We've placated it for now.",
+			UNHAPPY = "It's going to wreak havoc on my world.",
 		},
 		ANTLIONTRINKET = "I'll cross it off my bucket list.",
 		ABIGAIL_FLOWER =
@@ -1490,11 +1490,7 @@ return {
 		NIGHTSWORD = "Snicker-snack!",
 		NITRE = "One third of the way there...",
 		ONEMANBAND = "It has a good beat, and you can dance to it.",
-		OASISLAKE = 
-		{
-			GENERIC = "Didn't think I'd ever come back here.",
-			EMPTY = "That's a lot of sand.",
-		},
+		OASISLAKE = "Didn't think I'd ever come back here.",
 		PANDORASCHEST = "It's a trap.",
 		PANFLUTE = "I'm going to sing a song of madness.",
 		PAPYRUS = "A blank canvas.",

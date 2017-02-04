@@ -125,8 +125,8 @@ return {
     ANNOUNCE_ANTLION_TRIBUTE =
     {
         "A gift, that you may not devour us.",
-        "A tribute for thee, great lioness!",
-        "O great lioness, we pay tribute this day!",
+        "A tribute for thee, great lion!",
+        "O great lion, we pay tribute this day!",
     },
     ANNOUNCE_CHARLIE = "Show yourself!",
     ANNOUNCE_CHARLIE_ATTACK = "Coward!",
@@ -444,9 +444,9 @@ return {
         LIGHTER = "It lights the fires of mine heart!",
         ANTLION = 
         {
-            GENERIC = "Tis the mighty lioness!",
-            VERYHAPPY = "The lioness smiles upon us.",
-            UNHAPPY = "We've incurred her wrath!",
+            GENERIC = "Tis the mighty lion!",
+            VERYHAPPY = "The lion smiles upon us.",
+            UNHAPPY = "We've incurred its wrath!",
         },
         ANTLIONTRINKET = "A fitting tribute!",
         ABIGAIL_FLOWER = 
@@ -1416,11 +1416,7 @@ return {
         NIGHTSWORD = "It takes a brave warrior to wield this sword.",
         NITRE = "It contains explosive components.",
         ONEMANBAND = "Sing with me! We are the guardians of Asgard!",
-        OASISLAKE = 
-        {
-            GENERIC = "Perhaps a sword-wielding maiden lies beneath.",
-            EMPTY = "Naught but sand.",
-        },
+        OASISLAKE = "Perhaps a sword-wielding maiden lies beneath.",
         PANDORASCHEST = "It contains a mystery.",
         PANFLUTE = "I prefer to face my enemies awake.",
         PAPYRUS = "May it carry forth the record of my saga.",

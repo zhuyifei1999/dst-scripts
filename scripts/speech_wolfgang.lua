@@ -1505,11 +1505,7 @@ return {
         NIGHTSWORD = "Is real? Is not real? Is sharp!",
         NITRE = "Is rock, but different.",
         ONEMANBAND = "Is big and loud. I like!",
-        OASISLAKE = 
-        {
-            GENERIC = "Splishes and splashes.",
-            EMPTY = "Is pit of sand.",
-        },
+        OASISLAKE = "Splishes and splashes.",
         PANDORASCHEST = "Fancy box!",
         PANFLUTE = "You want Wolfgang play folk song?",
         PAPYRUS = "Is like paper.",

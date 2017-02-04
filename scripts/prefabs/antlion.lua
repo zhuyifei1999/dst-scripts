@@ -128,6 +128,7 @@ local function fn()
 
     inst:AddTag("antlion")
     inst:AddTag("trader")
+    inst:AddTag("antlion_sinkhole_blocker")
 
     inst.entity:SetPristine()
 

@@ -393,7 +393,7 @@ return {
 		ANTLION = 
 		{
 			GENERIC = "They grow'em big out here, eh?",
-			VERYHAPPY = "She seems agreeable.",
+			VERYHAPPY = "It seems agreeable.",
 			UNHAPPY = "That critter's in a real bad mood.",
 		},
 		ANTLIONTRINKET = "Could give it to some sandy hoser.",
@@ -1510,11 +1510,7 @@ return {
 		NIGHTSWORD = "Nightmares can't hurt ya!",
 		NITRE = "It's how we built the railway.",
 		ONEMANBAND = "I stand on guard for thee!",
-		OASISLAKE = 
-		{
-			GENERIC = "That's a whole lotta wet.",
-			EMPTY = "Better not be quicksand, eh?",
-		},
+		OASISLAKE = "That's a whole lotta wet.",
 		PANDORASCHEST = "What's in the box?!",
 		PANFLUTE = "I only sing for Lucy.",
 		PAPYRUS = "I'd rather chop than write.",

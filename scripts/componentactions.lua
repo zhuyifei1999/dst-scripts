@@ -1111,21 +1111,20 @@ function EntityScript:UnregisterComponentActions(name)
                 if self.actionreplica ~= nil then
                     self.actionreplica.actioncomponents:set(self.actioncomponents)
                 end
-                return
+                break
             end
         end
-    else
-        for modname,modtable in pairs(MOD_ACTION_COMPONENT_IDS) do
-            id = modtable[name]
-            if id ~= nil then
-                for i, v in ipairs(self.modactioncomponents[modname]) do
-                    if v == id then
-                        table.remove(self.modactioncomponents[modname], i)
-                        if self.actionreplica ~= nil then
-                            self.actionreplica.modactioncomponents[modname]:set(self.modactioncomponents[modname])
-                        end
-                        return
+    end
+    for modname,modtable in pairs(MOD_ACTION_COMPONENT_IDS) do
+        id = modtable[name]
+        if id ~= nil then
+            for i, v in ipairs(self.modactioncomponents[modname]) do
+                if v == id then
+                    table.remove(self.modactioncomponents[modname], i)
+                    if self.actionreplica ~= nil then
+                        self.actionreplica.modactioncomponents[modname]:set(self.modactioncomponents[modname])
                     end
+                    break
                 end
             end
         end
@@ -1199,17 +1198,16 @@ function EntityScript:HasActionComponent(name)
                 return true
             end
         end
-    else
-        for modname,modtable in pairs(MOD_ACTION_COMPONENT_IDS) do
-            id = modtable[name]
-            if id ~= nil then
-                for i, v in ipairs(self.modactioncomponents[modname]) do
-                    if v == id then
-                        return true
-                    end
+    end
+    for modname,modtable in pairs(MOD_ACTION_COMPONENT_IDS) do
+        id = modtable[name]
+        if id ~= nil then
+            for i, v in ipairs(self.modactioncomponents[modname]) do
+                if v == id then
+                    return true
                 end
             end
         end
-    end
+    end        
     return false
 end

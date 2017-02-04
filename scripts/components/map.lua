@@ -37,8 +37,13 @@ function Map:CanPlantAtPoint(x, y, z)
 end
 
 local DEPLOY_IGNORE_TAGS = { "NOBLOCK", "player", "FX", "INLIMBO", "DECOR" }
---NOTE: this is the max of all entities that have custom deploy_spacing
-local DEPLOY_EXTRA_SPACING = 6
+
+--NOTE: this is the max of all entities that have custom deploy_extra_spacing
+--      see EntityScript:SetDeployExtraSpacing(spacing)
+local DEPLOY_EXTRA_SPACING = 0
+function Map:RegisterDeployExtraSpacing(spacing)
+    DEPLOY_EXTRA_SPACING = math.max(spacing, DEPLOY_EXTRA_SPACING)
+end
 
 local function CanDeployAtPoint(pt, inst)
     local min_spacing = inst.replica.inventoryitem ~= nil and inst.replica.inventoryitem:DeploySpacingRadius() or DEPLOYSPACING_RADIUS[DEPLOYSPACING.DEFAULT]
@@ -51,7 +56,7 @@ local function CanDeployAtPoint(pt, inst)
             v.components.placer == nil and
             v.entity:GetParent() == nil and
             --FindEntities range check is <=, but we want <
-            v:GetDistanceSqToPoint(pt:Get()) < (v.deploy_spacing ~= nil and math.max(v.deploy_spacing * v.deploy_spacing, min_spacing_sq) or min_spacing_sq) then
+            v:GetDistanceSqToPoint(pt:Get()) < (v.deploy_extra_spacing ~= nil and math.max(v.deploy_extra_spacing * v.deploy_extra_spacing, min_spacing_sq) or min_spacing_sq) then
             return false
         end
     end
@@ -80,7 +85,7 @@ function Map:CanDeployWallAtPoint(pt, inst)
             v.entity:GetParent() == nil then
             --FindEntities range check is <=, but we want <
             local min_spacing_sq = v:HasTag("wall") and .1 or 1
-            if v:GetDistanceSqToPoint(pt:Get()) < (v.deploy_spacing ~= nil and math.max(v.deploy_spacing * v.deploy_spacing, min_spacing_sq) or min_spacing_sq) then
+            if v:GetDistanceSqToPoint(pt:Get()) < (v.deploy_extra_spacing ~= nil and math.max(v.deploy_extra_spacing * v.deploy_extra_spacing, min_spacing_sq) or min_spacing_sq) then
                 return false
             end
         end
@@ -143,7 +148,7 @@ function Map:CanDeployRecipeAtPoint(pt, recipe, rot)
             v.entity:GetParent() == nil then
             --FindEntities range check is <=, but we want <
             local v_spacing = min_spacing + (pad_spacing > 0 and padding[v.prefab] or 0)
-            if v:GetDistanceSqToPoint(pt:Get()) < (v.deploy_spacing ~= nil and math.max(v.deploy_spacing * v.deploy_spacing, v_spacing * v_spacing) or v_spacing * v_spacing) then
+            if v:GetDistanceSqToPoint(pt:Get()) < (v.deploy_extra_spacing ~= nil and math.max(v.deploy_extra_spacing * v.deploy_extra_spacing, v_spacing * v_spacing) or v_spacing * v_spacing) then
                 return false
             end
         end

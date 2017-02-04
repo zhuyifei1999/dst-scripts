@@ -1,29 +1,53 @@
 local assets =
 {
     Asset("ANIM", "anim/townportaltalisman.zip"),
-	Asset("INV_IMAGE", "townportaltalisman_active"),
+    Asset("INV_IMAGE", "townportaltalisman_active"),
 }
 
-local prefabs =
-{
-}
+local function DoRiseAnims(inst)
+    inst.AnimState:PlayAnimation("active_rise")
+    inst.AnimState:PushAnimation("active_loop")
+end
+
+local function DoFallAnims(inst)
+    inst.AnimState:PlayAnimation("active_fall")
+    inst.AnimState:PushAnimation("inactive", false)
+end
 
 local function OnLinkTownPortals(inst, other)
-	inst.components.teleporter:Target(other)
+    inst.components.teleporter:Target(other)
 
-	if other ~= nil then
-		inst.AnimState:PlayAnimation("active_pre")
-		inst.AnimState:PushAnimation("active_loop")
-	    inst.components.inventoryitem:ChangeImageName("townportaltalisman_active")
-		if not inst.components.inventoryitem:IsHeld() then
-			inst.SoundEmitter:PlaySound("dontstarve/common/together/town_portal/talisman_active", "active")	
-		end
-	else
-		inst.AnimState:PlayAnimation("active_pst")
-		inst.AnimState:PushAnimation("inactive", false)
-	    inst.components.inventoryitem:ChangeImageName("townportaltalisman")
-		inst.SoundEmitter:KillSound("active")
-	end
+    if inst.animtask ~= nil then
+        inst.animtask:Cancel()
+        inst.animtask = nil
+    end
+
+    if other ~= nil then
+        inst.components.inventoryitem:ChangeImageName("townportaltalisman_active")
+        if inst.components.inventoryitem:IsHeld() then
+            inst.AnimState:PlayAnimation("active_loop", true)
+        else
+            if inst.AnimState:IsCurrentAnimation("active_shake2") then
+                inst.AnimState:PlayAnimation("active_loop", true)
+                inst.AnimState:SetTime(math.random() * inst.AnimState:GetCurrentAnimationLength())
+            else
+                inst.AnimState:PlayAnimation("active_shake", true)
+                inst.animtask = inst:DoTaskInTime(.2 + math.random() * .4, DoRiseAnims)
+            end
+            inst.SoundEmitter:PlaySound("dontstarve/common/together/town_portal/talisman_active", "active") 
+        end
+    else
+        inst.components.inventoryitem:ChangeImageName("townportaltalisman")
+        if inst.components.inventoryitem:IsHeld() then
+            inst.AnimState:PlayAnimation("inactive")
+        elseif inst.AnimState:IsCurrentAnimation("active_shake") then
+            inst.AnimState:PlayAnimation("inactive")
+        else
+            inst.AnimState:PlayAnimation("active_shake2", true)
+            inst.animtask = inst:DoTaskInTime(.3 + math.random() * .3, DoFallAnims)
+        end
+        inst.SoundEmitter:KillSound("active")
+    end
 end
 
 local function OnStartTeleporting(inst, doer)
@@ -35,23 +59,31 @@ local function OnStartTeleporting(inst, doer)
             doer.components.sanity:DoDelta(-TUNING.SANITY_HUGE)
         end
     end
-    
+
     inst.components.stackable:Get():Remove()
 end
 
-local function OnDropped(inst)
-	if inst:HasTag("teleporter") then
-		inst.AnimState:PlayAnimation("active_loop", true)
-		inst.SoundEmitter:PlaySound("dontstarve/common/together/town_portal/talisman_active", "active")	
-	else
-		inst.AnimState:PlayAnimation("inactive", false)
-		inst.SoundEmitter:KillSound("active")
-	end
+local function topocket(inst)
+    if inst.animtask ~= nil then
+        inst.animtask:Cancel()
+        inst.animtask = nil
+        if inst.components.teleporter:IsActive() then
+            inst.AnimState:PlayAnimation("active_loop", true)
+        else
+            inst.AnimState:PlayAnimation("inactive")
+        end
+    end
+    inst.SoundEmitter:KillSound("active")
+end
+
+local function toground(inst)
+    if inst.components.teleporter:IsActive() then
+        inst.SoundEmitter:PlaySound("dontstarve/common/together/town_portal/talisman_active", "active") 
+    end
 end
 
 local function GetStatus(inst)
-    return inst:HasTag("teleporter") and "ACTIVE"
-			or nil
+    return inst.components.teleporter:IsActive() and "ACTIVE" or nil
 end
 
 local function fn()
@@ -97,12 +129,12 @@ local function fn()
 
     -----------------------------
     inst:ListenForEvent("linktownportals", OnLinkTownPortals)
-    inst:ListenForEvent("ondropped", OnDropped)
-    
+    inst:ListenForEvent("onputininventory", topocket)
+    inst:ListenForEvent("ondropped", toground)
 
-	TheWorld:PushEvent("ms_registertownportal", inst)
+    TheWorld:PushEvent("ms_registertownportal", inst)
 
     return inst
 end
 
-return Prefab("townportaltalisman", fn, assets, prefabs)
+return Prefab("townportaltalisman", fn, assets)

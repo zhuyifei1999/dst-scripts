@@ -207,7 +207,7 @@ return {
 	{
         "A gift...",
         "We pay tribute, this day...",
-        "Her bloodlust is temporarily quenched.",
+        "Its bloodlust is temporarily quenched.",
 	},
 	ANNOUNCE_WET = "Even wetter than when I cry myself to sleep.",
 	ANNOUNCE_WETTER = "An eternity of moisture and sorrow.",
@@ -794,7 +794,7 @@ return {
 		ANTLION = 
 		{
 			GENERIC = "Do you know any riddles?",
-			VERYHAPPY = "The gifts made her happier...",
+			VERYHAPPY = "The gifts made it happier...",
 			UNHAPPY = "A deep rage brews within...",
 		},
 		ANTLIONTRINKET = "If only I could kick it.",
@@ -1508,11 +1508,7 @@ return {
 		NIGHTSWORD = "Dreams come to a point. A sharp one.",
 		NITRE = "Herein lies the folly of man.",
 		ONEMANBAND = "I used to take joy in instruments such as these.",
-		OASISLAKE = 
-		{
-			GENERIC = "A place to drown my sorrows.",
-			EMPTY = "Without water there can be no life.",
-		},
+		OASISLAKE = "A place to drown my sorrows.",
 		PANDORASCHEST = "Life is a gamble.",
 		PANFLUTE = "Music is the window to my empty soul.",
 		PAPYRUS = "For documenting my pain.",

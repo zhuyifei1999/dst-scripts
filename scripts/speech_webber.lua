@@ -123,7 +123,7 @@ return {
 	ANNOUNCE_ANTLION_TRIBUTE =
 	{
         "For you!",
-        "Maybe she'll be happier now.",
+        "Maybe it'll be happier now.",
         "I hope you like our tribute!",
 	},
 	ANNOUNCE_CRAFTING_FAIL = "We're missing something.",
@@ -448,7 +448,7 @@ return {
 		{
 			GENERIC = "You're fuzzy. We like that.",
 			VERYHAPPY = "It's always nice to have more bug friends.",
-			UNHAPPY = "I think she's upset.",
+			UNHAPPY = "I think it's upset.",
 		},
 		ANTLIONTRINKET = "Sand castles!!",
 		ABIGAIL_FLOWER =
@@ -1421,11 +1421,7 @@ return {
 		NIGHTSWORD = "Are you seeing this too?",
 		NITRE = "What are we supposed to do with this?",
 		ONEMANBAND = "We need to practice more.",
-		OASISLAKE = 
-		{
-			GENERIC = "That's a pretty lake!",
-			EMPTY = "It takes forever to get sand out of our fur.",
-		},
+		OASISLAKE = "That's a pretty lake!",
 		PANFLUTE = "A well constructed instrument.",
 		PAPYRUS = "We could do our homework.",
 		WAXPAPER = "Why have paper you can't draw on?",

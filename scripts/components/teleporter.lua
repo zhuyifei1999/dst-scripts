@@ -15,7 +15,7 @@ local Teleporter = Class(function(self, inst)
     self.enabled = true
     self.numteleporting = 0
     self.saveenabled = true
-    
+
     self.travelcameratime = 3
     self.travelarrivetime = 4
 end,
@@ -29,8 +29,12 @@ function Teleporter:OnRemoveFromEntity()
     self.inst:RemoveTag("teleporter")
 end
 
+function Teleporter:IsActive()
+    return self.enabled and self.targetTeleporter ~= nil
+end
+
 function Teleporter:Activate(doer)
-    if self.targetTeleporter == nil or not self.enabled then
+    if not self:IsActive() then
         return false
     end
 
@@ -210,7 +214,7 @@ function Teleporter:LoadPostPass(newents, savedata)
 end
 
 function Teleporter:GetDebugString()
-	return "Enabled: " .. (self.enabled and "T" or "F") .. " Target:" .. tostring(self.targetTeleporter)
+    return "Enabled: "..(self.enabled and "T" or "F").." Target:"..tostring(self.targetTeleporter)
 end
 
 return Teleporter

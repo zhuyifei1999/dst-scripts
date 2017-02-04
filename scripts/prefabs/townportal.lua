@@ -127,7 +127,10 @@ local function init(inst)
 end
 
 local function GetStatus(inst)
-    return (inst.components.channelable:IsChanneling() or inst:HasTag("teleporter")) and "ACTIVE" or nil
+    return (inst.components.channelable:IsChanneling() or
+            inst.components.teleporter:IsActive())
+        and "ACTIVE"
+        or nil
 end
 
 local function fn()

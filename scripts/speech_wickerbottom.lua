@@ -122,7 +122,7 @@ return
     ANNOUNCE_ANTLION_TRIBUTE =
     {
         "For you, great Panthera auropunctata.",
-        "She ought to be more docile now.",
+        "It ought to be more docile now.",
         "The great Panthera auropunctata is tamed.",
     },
     ANNOUNCE_NODANGERAFK = "Were I to lose focus now I'd be sure to sustain bodily injury.",
@@ -306,7 +306,7 @@ return
         ANTLION = 
         {
             GENERIC  = "Ah. You must be behind all the seismic activity.",
-            VERYHAPPY = "She has been mollified with tributes.",
+            VERYHAPPY = "It has been mollified with tributes.",
             UNHAPPY = "Panthera auropunctata is looking irritable.",
         },
         ANTLIONTRINKET = "It appears to be a child's plaything.",
@@ -1272,11 +1272,7 @@ return
         BUGNET = "The tool of entomologists",
         PANFLUTE = "Hollow reeds with harmonic resonance.",
         ONEMANBAND = "An impressive improvement to the traditional pipe and tabor.",
-        OASISLAKE = 
-        {
-            GENERIC = "It could support a small ecosystem.",
-            EMPTY = "A small body of water was once contained here.",
-        },
+        OASISLAKE = "It could support a small ecosystem.",
         BIRDTRAP = "A simple clap-trap for birds.",
         GEARS = "Various cogs and wheels.",
         STAGEHAND =

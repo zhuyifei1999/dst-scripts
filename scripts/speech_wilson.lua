@@ -1442,11 +1442,7 @@ return {
 		NIGHTSWORD = "Why would anyone make this? It's terrifying.",
 		NITRE = "I'm not a geologist.",
 		ONEMANBAND = "We should add a beefalo bell.",
-		OASISLAKE = 
-		{
-			GENERIC = "Is that a mirage?",
-			EMPTY = "It's a giant sand pit.",
-		},
+		OASISLAKE = "Is that a mirage?",
 		PANDORASCHEST = "It may contain something fantastic! Or horrible.",
 		PANFLUTE = "To serenade the animals.",
 		PAPYRUS = "Some sheets of paper.",

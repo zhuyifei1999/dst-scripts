@@ -1550,11 +1550,7 @@ return {
 		NIGHTSWORD = "It's like dreams that can hurt real things!",
 		NITRE = "There are tiny explosions trapped inside.",
 		ONEMANBAND = "I can do the pyrotechnics too!",
-		OASISLAKE = 
-		{
-			GENERIC = "It's a bunch of water.",
-			EMPTY = "All dried up.",
-		},
+		OASISLAKE = "It's a bunch of water.",
 		PANDORASCHEST = "Kind of tacky.",
 		PANFLUTE = "Music is boring.",
 		PAPYRUS = "I bet it'd burn!",
