@@ -4,14 +4,30 @@ local assets =
     Asset("INV_IMAGE", "townportaltalisman_active"),
 }
 
+local function DoActiveAnim(inst)
+    inst.onanimqueueover = nil
+    inst:RemoveEventCallback("animqueueover", DoActiveAnim)
+    inst.AnimState:PlayAnimation("active_loop", true)
+end
+
 local function DoRiseAnims(inst)
+    inst.animtask = nil
+    inst.onanimqueueover = DoActiveAnim
+    inst:ListenForEvent("animqueueover", DoActiveAnim)
     inst.AnimState:PlayAnimation("active_rise")
-    inst.AnimState:PushAnimation("active_loop")
+end
+
+local function DoInactiveAnim(inst)
+    inst.onanimqueueover = nil
+    inst:RemoveEventCallback("animqueueover", DoInactiveAnim)
+    inst.AnimState:PlayAnimation("inactive")
 end
 
 local function DoFallAnims(inst)
+    inst.animtask = nil
+    inst.onanimqueueover = DoInactiveAnim
+    inst:ListenForEvent("animqueueover", DoInactiveAnim)
     inst.AnimState:PlayAnimation("active_fall")
-    inst.AnimState:PushAnimation("inactive", false)
 end
 
 local function OnLinkTownPortals(inst, other)
@@ -20,16 +36,24 @@ local function OnLinkTownPortals(inst, other)
     if inst.animtask ~= nil then
         inst.animtask:Cancel()
         inst.animtask = nil
+    elseif inst.onanimqueueover ~= nil then
+        inst:RemoveEventCallback("animqueueover", inst.onanimqueueover)
+        inst.onanimqueueover = nil
     end
 
     if other ~= nil then
         inst.components.inventoryitem:ChangeImageName("townportaltalisman_active")
         if inst.components.inventoryitem:IsHeld() then
             inst.AnimState:PlayAnimation("active_loop", true)
+            inst.AnimState:SetTime(math.random() * inst.AnimState:GetCurrentAnimationLength())
         else
             if inst.AnimState:IsCurrentAnimation("active_shake2") then
                 inst.AnimState:PlayAnimation("active_loop", true)
                 inst.AnimState:SetTime(math.random() * inst.AnimState:GetCurrentAnimationLength())
+            elseif inst.AnimState:IsCurrentAnimation("active_fall") then
+                inst.onanimqueueover = DoActiveAnim
+                inst:ListenForEvent("animqueueover", DoActiveAnim)
+                inst.AnimState:PushAnimation("active_rise", false)
             else
                 inst.AnimState:PlayAnimation("active_shake", true)
                 inst.animtask = inst:DoTaskInTime(.2 + math.random() * .4, DoRiseAnims)
@@ -38,10 +62,12 @@ local function OnLinkTownPortals(inst, other)
         end
     else
         inst.components.inventoryitem:ChangeImageName("townportaltalisman")
-        if inst.components.inventoryitem:IsHeld() then
+        if inst.components.inventoryitem:IsHeld() or inst.AnimState:IsCurrentAnimation("active_shake") then
             inst.AnimState:PlayAnimation("inactive")
-        elseif inst.AnimState:IsCurrentAnimation("active_shake") then
-            inst.AnimState:PlayAnimation("inactive")
+        elseif inst.AnimState:IsCurrentAnimation("active_rise") then
+            inst.onanimqueueover = DoInactiveAnim
+            inst:ListenForEvent("animqueueover", DoInactiveAnim)
+            inst.AnimState:PushAnimation("active_fall", false)
         else
             inst.AnimState:PlayAnimation("active_shake2", true)
             inst.animtask = inst:DoTaskInTime(.3 + math.random() * .3, DoFallAnims)
@@ -64,16 +90,24 @@ local function OnStartTeleporting(inst, doer)
 end
 
 local function topocket(inst)
+    inst.SoundEmitter:KillSound("active")
+
     if inst.animtask ~= nil then
         inst.animtask:Cancel()
         inst.animtask = nil
-        if inst.components.teleporter:IsActive() then
-            inst.AnimState:PlayAnimation("active_loop", true)
-        else
-            inst.AnimState:PlayAnimation("inactive")
-        end
+    elseif inst.onanimqueueover ~= nil then
+        inst:RemoveEventCallback("animqueueover", inst.onanimqueueover)
+        inst.onanimqueueover = nil
+    else
+        return
     end
-    inst.SoundEmitter:KillSound("active")
+
+    if inst.components.teleporter:IsActive() then
+        inst.AnimState:PlayAnimation("active_loop", true)
+        inst.AnimState:SetTime(math.random() * inst.AnimState:GetCurrentAnimationLength())
+    else
+        inst.AnimState:PlayAnimation("inactive")
+    end
 end
 
 local function toground(inst)

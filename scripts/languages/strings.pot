@@ -71433,6 +71433,11 @@ msgctxt "STRINGS.NAMES.ANTLIONTRINKET"
 msgid "Beach Toy"
 msgstr ""
 
+#. STRINGS.NAMES.ANTLION_SINKHOLE
+msgctxt "STRINGS.NAMES.ANTLION_SINKHOLE"
+msgid "Sinkhole"
+msgstr ""
+
 #. STRINGS.NAMES.ARMORDRAGONFLY
 msgctxt "STRINGS.NAMES.ARMORDRAGONFLY"
 msgid "Scalemail"
@@ -84436,6 +84441,16 @@ msgstr ""
 #. STRINGS.UI.CREDITS.NAMES.45
 msgctxt "STRINGS.UI.CREDITS.NAMES.45"
 msgid "Michael Rodriguez"
+msgstr ""
+
+#. STRINGS.UI.CREDITS.NAMES.46
+msgctxt "STRINGS.UI.CREDITS.NAMES.46"
+msgid "Ragnar Guidote"
+msgstr ""
+
+#. STRINGS.UI.CREDITS.NAMES.47
+msgctxt "STRINGS.UI.CREDITS.NAMES.47"
+msgid "Erica Pitt"
 msgstr ""
 
 #. STRINGS.UI.CREDITS.NAMES.5

@@ -27,16 +27,16 @@ end
 
 local function AcceptTest(inst, item)
     return ((item.components.tradable.rocktribute ~= nil and item.components.tradable.rocktribute > 0) 
-				or (item.components.tradable.goldvalue ~= nil and item.components.tradable.goldvalue > 0))
-			and not item:HasTag("meat")
-			and inst.pendingrewarditem == nil
+                or (item.components.tradable.goldvalue ~= nil and item.components.tradable.goldvalue > 0))
+            and not item:HasTag("meat")
+            and inst.pendingrewarditem == nil
 end
 
 local function OnGivenItem(inst, giver, item)
-	inst.pendingrewarditem = (item.prefab == "antliontrinket" and "townportal_blueprint") or 
+    inst.pendingrewarditem = (item.prefab == "antliontrinket" and "townportal_blueprint") or 
                              (item.components.tradable.goldvalue > 0 and "townportaltalisman") or
                              nil
-	inst.tributer = giver
+    inst.tributer = giver
 
     local rage_calming = (item.components.tradable.rocktribute ~= nil and item.components.tradable.rocktribute or math.ceil(item.components.tradable.goldvalue / 3)) * TUNING.ANTLION_TRIBUTE_TO_RAGE_TIME
     inst.maxragetime = math.min(inst.maxragetime + rage_calming, TUNING.ANTLION_RAGE_TIME_MAX)
@@ -50,16 +50,16 @@ local function OnGivenItem(inst, giver, item)
     end
     inst.components.sinkholespawner:StopSinkholes()
 
-	inst:PushEvent("onaccepttribute", {tributepercent = (timeleft or 0)/TUNING.ANTLION_RAGE_TIME_MAX})
+    inst:PushEvent("onaccepttribute", {tributepercent = (timeleft or 0)/TUNING.ANTLION_RAGE_TIME_MAX})
 
-	if giver ~= nil and giver.components.talker ~= nil and (GetTime() - (inst.timesincelasttalker or -TUNING.ANTLION_TRIBUTER_TALKER_TIME)) > TUNING.ANTLION_TRIBUTER_TALKER_TIME then
-		inst.timesincelasttalker = GetTime()
-		giver.components.talker:Say(GetString(giver, "ANNOUNCE_ANTLION_TRIBUTE"))
-	end
+    if giver ~= nil and giver.components.talker ~= nil and (GetTime() - (inst.timesincelasttalker or -TUNING.ANTLION_TRIBUTER_TALKER_TIME)) > TUNING.ANTLION_TRIBUTER_TALKER_TIME then
+        inst.timesincelasttalker = GetTime()
+        giver.components.talker:Say(GetString(giver, "ANNOUNCE_ANTLION_TRIBUTE"))
+    end
 end
 
 local function OnRefuseItem(inst, giver, item)
-	inst:PushEvent("onrefusetribute")
+    inst:PushEvent("onrefusetribute")
 end
 
 -- c_sel():PushEvent("timerdone", {name="rage"})
@@ -73,24 +73,24 @@ local function ontimerdone(inst, data)
 end
 
 local function HasRewardToGive(inst)
-	return inst.pendingrewarditem ~= nil
+    return inst.pendingrewarditem ~= nil
 end
 
 local function GiveReward(inst)
-	LaunchAt(SpawnPrefab(inst.pendingrewarditem), inst, (inst.tributer ~= nil and inst.tributer:IsValid()) and inst.tributer or nil, 2, 1.5, 1)
-	inst.pendingrewarditem = nil
-	inst.tributer = nil
+    LaunchAt(SpawnPrefab(inst.pendingrewarditem), inst, (inst.tributer ~= nil and inst.tributer:IsValid()) and inst.tributer or nil, 1, 2, 1)
+    inst.pendingrewarditem = nil
+    inst.tributer = nil
 end
 
 local function GetRageLevel(inst)
-	local ragetimepercent = (inst.components.timer:GetTimeLeft("rage") or 0) / TUNING.ANTLION_RAGE_TIME_MAX
+    local ragetimepercent = (inst.components.timer:GetTimeLeft("rage") or 0) / TUNING.ANTLION_RAGE_TIME_MAX
     return (ragetimepercent <= TUNING.ANTLION_RAGE_TIME_UNHAPPY_PERCENT and 3) or
            (ragetimepercent <= TUNING.ANTLION_RAGE_TIME_HAPPY_PERCENT and 2) or
            1
 end
 
 local function getstatus(inst)
-	local level = GetRageLevel(inst)
+    local level = GetRageLevel(inst)
     return (level == 1 and "VERYHAPPY") or
            (level == 3 and "UNHAPPY") or
            nil
@@ -153,9 +153,9 @@ local function fn()
     inst:AddComponent("sinkholespawner")
     inst:AddComponent("lootdropper")
 
-	inst.GiveReward = GiveReward
-	inst.HasRewardToGive = HasRewardToGive
-	inst.GetRageLevel = GetRageLevel
+    inst.GiveReward = GiveReward
+    inst.HasRewardToGive = HasRewardToGive
+    inst.GetRageLevel = GetRageLevel
 
     inst:SetStateGraph("SGantlion")
 

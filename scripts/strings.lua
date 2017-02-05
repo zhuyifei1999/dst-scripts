@@ -1067,6 +1067,7 @@ STRINGS =
         GOGGLESHAT = "Fashion Goggles",
         DESERTHAT = "Desert Goggles",
         ANTLION = "Antlion",
+        ANTLION_SINKHOLE = "Sinkhole",
         MOONBASE = "Moon Stone",
         MOONDIAL = "Moon Dial",
         MOONROCK_PIECES = "Moon Rubble",
@@ -2247,6 +2248,8 @@ STRINGS.UI =
             "May Wa Leng",
             "Will Turnbull",
             "Michael Rodriguez",
+            "Ragnar Guidote",
+            "Erica Pitt",
         },
 
         ALTGAMES =
