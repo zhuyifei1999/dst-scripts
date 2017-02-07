@@ -91,6 +91,9 @@ local function donextcollapse(inst)
         if v.components.workable ~= nil and v.components.workable:CanBeWorked() then
             if isfinalstage then
                 v.components.workable:Destroy(inst)
+                if v:IsValid() and v:HasTag("stump") then
+                    v:Remove()
+                end
             else
                 v.components.workable:WorkedBy(inst, 1)
             end

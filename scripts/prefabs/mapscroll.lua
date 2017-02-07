@@ -72,7 +72,7 @@ local function fn()
 
     MakeHauntableLaunch(inst)
 
-    inst.OnBuilt = OnBuilt
+    inst.OnBuiltFn = OnBuilt
 
     return inst
 end

@@ -77,9 +77,7 @@ local function OnShedAntler(inst, other)
         inst:SetAntlered(nil, false)
 
         SpawnPrefab("collapse_small").Transform:SetPosition(other.Transform:GetWorldPosition())
-        if not other:HasTag("burnt") then
-			other.components.workable:WorkedBy(inst, 0)
-		end
+        other.components.workable:WorkedBy(inst)
     end
 end
 

@@ -21,6 +21,15 @@ local function DoMountedFoleySounds(inst)
     end
 end
 
+local function DoRunSounds(inst)
+    if inst.sg.mem.footsteps > 3 then
+        PlayFootstep(inst, .6, true)
+    else
+        inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
+        PlayFootstep(inst, 1, true)
+    end
+end
+
 local function DoHurtSound(inst)
     if inst.hurtsoundoverride ~= nil then
         inst.SoundEmitter:PlaySound(inst.hurtsoundoverride)
@@ -4257,6 +4266,13 @@ local states =
             ConfigureRunState(inst)
             inst.components.locomotor:RunForward()
 
+            inst.sg.statemem.normal = not (
+                inst.sg.statemem.riding or
+                inst.sg.statemem.heavy or
+                inst.sg.statemem.groggy or
+                inst.sg.statemem.careful
+            )
+
             local anim = GetRunStateAnim(inst)
             if anim == "run" then
                 anim = "run_loop"
@@ -4276,24 +4292,43 @@ local states =
         {
             --unmounted
             TimeEvent(7 * FRAMES, function(inst)
-                if not (inst.sg.statemem.riding or inst.sg.statemem.heavy) then
-                    if inst.sg.mem.footsteps > 3 then
-                        PlayFootstep(inst, .6, true)
-                    else
-                        inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
-                        PlayFootstep(inst, 1, true)
-                    end
+                if inst.sg.statemem.normal then
+                    DoRunSounds(inst)
                     DoFoleySounds(inst)
                 end
             end),
             TimeEvent(15 * FRAMES, function(inst)
-                if not (inst.sg.statemem.riding or inst.sg.statemem.heavy) then
-                    if inst.sg.mem.footsteps > 3 then
-                        PlayFootstep(inst, .6, true)
-                    else
-                        inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
-                        PlayFootstep(inst, 1, true)
-                    end
+                if inst.sg.statemem.normal then
+                    DoRunSounds(inst)
+                    DoFoleySounds(inst)
+                end
+            end),
+
+            --careful
+            --Frame 11 shared with heavy lifting below
+            --[[TimeEvent(11 * FRAMES, function(inst)
+                if inst.sg.statemem.careful then
+                    DoRunSounds(inst)
+                    DoFoleySounds(inst)
+                end
+            end),]]
+            TimeEvent(26 * FRAMES, function(inst)
+                if inst.sg.statemem.careful then
+                    DoRunSounds(inst)
+                    DoFoleySounds(inst)
+                end
+            end),
+
+            --groggy
+            TimeEvent(1 * FRAMES, function(inst)
+                if inst.sg.statemem.groggy then
+                    DoRunSounds(inst)
+                    DoFoleySounds(inst)
+                end
+            end),
+            TimeEvent(12 * FRAMES, function(inst)
+                if inst.sg.statemem.groggy then
+                    DoRunSounds(inst)
                     DoFoleySounds(inst)
                 end
             end),
@@ -4304,6 +4339,9 @@ local states =
                     PlayFootstep(inst, inst.sg.mem.footsteps > 3 and .6 or 1, true)
                     DoFoleySounds(inst)
                     inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
+                elseif inst.sg.statemem.careful then
+                    DoRunSounds(inst)
+                    DoFoleySounds(inst)
                 end
             end),
             TimeEvent(36 * FRAMES, function(inst)
@@ -4327,12 +4365,7 @@ local states =
             end),
             TimeEvent(5 * FRAMES, function(inst)
                 if inst.sg.statemem.riding then
-                    if inst.sg.mem.footsteps > 3 then
-                        PlayFootstep(inst, .6, true)
-                    else
-                        inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
-                        PlayFootstep(inst, 1, true)
-                    end
+                    DoRunSounds(inst)
                 end
             end),
         },
@@ -5086,7 +5119,7 @@ local states =
         name = "reviver_rebirth",
         tags = { "busy", "reviver_rebirth", "pausepredict", "silentmorph" },
 
-        onenter = function(inst)
+        onenter = function(inst, reviver)
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:Enable(false)
                 inst.components.playercontroller:RemotePausePrediction()
@@ -5100,20 +5133,27 @@ local states =
             inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_get_bloodpump")
             inst.AnimState:SetBank("ghost")
             if inst:HasTag("beaver") then
-				inst.components.skinner:SetSkinMode("ghost_werebeaver_skin")
-			else
-				inst.components.skinner:SetSkinMode("ghost_skin")
-			end
+                inst.components.skinner:SetSkinMode("ghost_werebeaver_skin")
+            else
+                inst.components.skinner:SetSkinMode("ghost_skin")
+            end
             inst.AnimState:PlayAnimation("shudder")
             inst.AnimState:PushAnimation("hit", false)
             inst.AnimState:PushAnimation("transform", false)
             inst.components.health:SetInvincible(true)
             inst:ShowHUD(false)
             inst:SetCameraDistance(14)
+
+            inst.sg.statemem.reviver = reviver
         end,
 
         timeline =
         {
+            TimeEvent(10 * FRAMES, function(inst)
+                if inst.sg.statemem.reviver ~= nil and inst.sg.statemem.reviver.reviver_rebirth_fx ~= nil then
+                    SpawnPrefab(inst.sg.statemem.reviver.reviver_rebirth_fx).entity:SetParent(inst.entity)
+                end
+            end),
             TimeEvent(88 * FRAMES, function(inst)
                 inst.DynamicShadow:Enable(true)
                 if inst:HasTag("beaver") then
@@ -5129,6 +5169,11 @@ local states =
             TimeEvent(96 * FRAMES, function(inst) 
                 inst.components.bloomer:PopBloom("playerghostbloom")
                 inst.AnimState:SetLightOverride(0)
+            end),
+            TimeEvent(100 * FRAMES, function(inst)
+                if inst.sg.statemem.reviver.reviver_revived_fx ~= nil then
+                    SpawnPrefab(inst.sg.statemem.reviver.reviver_revived_fx).entity:SetParent(inst.entity)
+                end
             end),
         },
 

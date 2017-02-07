@@ -2,6 +2,9 @@
 -- Commands:
 --   c_spawn ""
 --   c_sel().sg:GoToState("animation name")
+
+-- Notes:
+--   Every time you add a new AudioPrefab(), you must run updateprefabs.bat
 -------------------------------------------------------------------------------
 
 
@@ -15,16 +18,48 @@ local audioprefabs = {}
 local audio_test_prefab_dep = {}
 local stategraphs = {}
 
-local function AudioSG(prefab, sgaudio, idle)
+local function AudioSG(prefab, sgdata, idle)
 	local states = {}
-	for k, v in pairs(sgaudio) do
-		table.insert(states, State{ name=k, onenter=function(inst) inst.AnimState:PlayAnimation(k) end, timeline=v })
+	for k, v in pairs(sgdata) do
+
+		local timeline = {}
+		for sg_k, sg_v in pairs(v) do
+			print (" - :", type(sg_k), type(sg_v))
+		
+			if type(sg_k) ~= "string" then
+				table.insert(timeline, sg_v)
+			end
+		end
+
+
+		local state = State{ name=k, onenter=function(inst, data) inst.AnimState:PlayAnimation(k) inst.sg.statemem.data = data end, timeline=timeline }
+		if v.next ~= nil then
+			local function onanimover(inst)
+				if inst.AnimState:AnimDone() then 
+					local nextstate = v.next
+					local loopcount = inst.sg.statemem.data and (inst.sg.statemem.data.loopcount or 0) or 0
+					if v.loop ~= nil and v.loop > 0 and loopcount < v.loop then
+						loopcount = loopcount + 1
+						nextstate = k
+					end
+											
+					local data = {}
+					data.loopcount = (loopcount > 0) and loopcount or nil
+					
+					inst.sg:GoToState(nextstate, (next(data) ~= nil and data or nil))
+				end
+			end
+			state.events.animover = EventHandler("animover", onanimover)
+		end
+		
+		
+		table.insert(states, state)
 	end
 
 	return StateGraph("SGAudio"..prefab, states, {}, idle ~= nil and idle or "idle")
 end
 
-local function AudioPrefab(prefab, artassets, bank, build, sgaudio, defaultstate)
+local function AudioPrefab(prefab, artassets, bank, build, sgdata, defaultstate)
 	defaultstate = defaultstate ~= nil and defaultstate or "idle"
 	
 	local assets = {}
@@ -44,7 +79,7 @@ local function AudioPrefab(prefab, artassets, bank, build, sgaudio, defaultstate
 
 		local sgname = "SGAudio"..prefab
 		if stategraphs[sgname] == nil then
-			stategraphs[sgname] = AudioSG(prefab, sgaudio)
+			stategraphs[sgname] = AudioSG(prefab, sgdata)
 		end
 		inst.sg = StateGraphInstance(stategraphs[sgname], inst)
 		SGManager:AddInstance(inst.sg)
@@ -63,7 +98,6 @@ end
 -------------------------------------------------------------------------------
 ----  ADD AUDIO TEST PREFABS BELOW THIS
 -------------------------------------------------------------------------------
-
 
 AudioPrefab("audio_antlion", {"antlion_build", "antlion_basic", "antlion_action"}, "antlion", "antlion_build",
 {
@@ -137,7 +171,27 @@ AudioPrefab("audio_antlion", {"antlion_build", "antlion_basic", "antlion_action"
     },
 })
 
-AudioPrefab("audio_md", {"moondial", "moondial_build", "moondial_waning_build"}, "moondial", "moondial_build",
+
+
+-------------------------------------------------------------------------------
+----  ADD AUDIO TEST PREFABS ABOVE THIS
+-------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+----  EXAMPLES
+-------------------------------------------------------------------------------
+
+AudioPrefab("audio_ex_simple", {"antlion_build", "antlion_basic", "antlion_action"}, "antlion", "antlion_build",
+{
+	idle = {
+    },
+    death = {
+		TimeEvent(6*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/death") end),
+		TimeEvent(33*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/bodyfall_death") end),
+    },
+})
+
+AudioPrefab("audio_ex_object_with_no_idle_anim", {"moondial", "moondial_build", "moondial_waning_build"}, "moondial", "moondial_build",
 {
 	hit_threequarter = {
 		TimeEvent(9*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/moondial/water_movement") end),
@@ -145,8 +199,27 @@ AudioPrefab("audio_md", {"moondial", "moondial_build", "moondial_waning_build"},
 }, "hit_threequarter")
 
 
--------------------------------------------------------------------------------
-----  ADD AUDIO TEST PREFABS ABOVE THIS
+AudioPrefab("audio_ex_sequencing_and_looping_anim", {"antlion_build", "antlion_basic", "antlion_action"}, "antlion", "antlion_build",
+{
+	idle = {
+		next = "idle",
+    },
+    cast_pre = {
+		TimeEvent(29*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/ground_break") end),
+		TimeEvent(8*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/cast_pre") end),
+		next = "cast_loop_active",
+    },
+    cast_loop_active = {
+		TimeEvent(8*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/cast_pre") end),
+		loop = 1,
+		next = "cast_pst",
+    },
+    cast_pst = {
+		next = "idle",
+    },
+})
+
+
 -------------------------------------------------------------------------------
 ----  MORE TEMPLATE CODE BELOW
 -------------------------------------------------------------------------------

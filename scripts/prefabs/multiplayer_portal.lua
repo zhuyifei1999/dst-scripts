@@ -1,15 +1,12 @@
 local assets =
 {
     Asset("ANIM", "anim/portal_stone.zip"),
-	Asset("MINIMAP_IMAGE", "portal_dst"),
+    Asset("MINIMAP_IMAGE", "portal_dst"),
 }
 
 local function GetVerb()
     return STRINGS.ACTIONS.ACTIVATE.GENERIC
 end
-
---local function OnActivate(inst)
---end
 
 local function OnRezPlayer(inst)
     inst.sg:GoToState("spawn_pre")
@@ -21,7 +18,7 @@ local function fn()
     inst.entity:AddTransform()
 
     local gamemode = TheNet:GetServerGameMode()
-    if not GetIsSpawnModeFixed( gamemode ) then
+    if not GetIsSpawnModeFixed(gamemode) then
         inst.entity:Hide()
         inst:DoTaskInTime(0, inst.Remove)
         return inst
@@ -39,6 +36,8 @@ local function fn()
     inst.AnimState:SetBank("portal_dst")
     inst.AnimState:SetBuild("portal_stone")
     inst.AnimState:PlayAnimation("idle_loop", true)
+
+    inst:AddTag("antlion_sinkhole_blocker")
 
     inst:SetDeployExtraSpacing(2)
 

@@ -128,8 +128,6 @@ local function TryFillLake(inst, skipanim, OnSandstormChanged)
     end
 
     inst.components.fishable:Unfreeze()
-    SpawnOasisBugs(inst)
-    SpawnSucculents(inst)
 
     inst.Physics:CollidesWith(COLLISION.CHARACTERS)
     inst.Physics:CollidesWith(COLLISION.GIANTS)
@@ -147,11 +145,17 @@ local function OnSandstormChanged(inst, active, skipanim)
         if inst.driedup then
             TryFillLake(inst, skipanim, OnSandstormChanged)
         end
+        if inst.regrowth then
+            inst.regrowth = false
+            SpawnOasisBugs(inst)
+            SpawnSucculents(inst)
+        end
     elseif not inst.driedup then
         inst:WatchWorldState("iswet", OnIsWet)
         OnIsWetChanged(inst, TheWorld.state.iswet, skipanim)
 
         inst.driedup = true
+        inst.regrowth = true
 
         inst.components.fishable:Freeze()
 
@@ -167,6 +171,16 @@ local function OnInit(inst)
     inst.task = nil
     inst:ListenForEvent("ms_sandstormchanged", function(src, data) OnSandstormChanged(inst, data) end, TheWorld)
     OnSandstormChanged(inst, TheWorld.components.sandstorms ~= nil and TheWorld.components.sandstorms:IsSandstormActive(), true)
+end
+
+local function OnSave(inst, data)
+    if not inst.regrowth then
+        data.regrowth = false
+    end
+end
+
+local function OnLoad(inst, data)
+    inst.regrowth = data == nil or data.regrowth ~= false
 end
 
 local function GetFish(inst)
@@ -223,9 +237,13 @@ local function fn()
 
     inst.isdamp = false
     inst.driedup = false
+    inst.regrowth = false
 
     TheWorld:PushEvent("ms_registeroasis", inst)
     inst.task = inst:DoTaskInTime(0, OnInit)
+
+    inst.OnSave = OnSave
+    inst.OnLoad = OnLoad
 
     return inst
 end

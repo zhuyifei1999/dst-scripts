@@ -159,7 +159,6 @@ local function fn()
     inst:AddTag("chewable") -- by werebeaver
     inst:AddTag("hive")
     inst:AddTag("beehive")
-    inst:AddTag("antlion_sinkhole_blocker")
 
     MakeSnowCoveredPristine(inst)
 

@@ -166,7 +166,7 @@ local function OnGetItem(inst, giver, item)
         item:PushEvent("usereviver", { user = giver })
         giver.hasRevivedPlayer = true
         item:Remove()
-        inst:PushEvent("respawnfromghost")
+        inst:PushEvent("respawnfromghost", { source = item })
 
         inst.components.health:DeltaPenalty(TUNING.REVIVE_HEALTH_PENALTY)
         giver.components.sanity:DoDelta(TUNING.REVIVE_OTHER_SANITY_BONUS)
@@ -760,7 +760,7 @@ local function OnPlayerDeath(inst, data)
     end
 end
 
-local function DoActualRez(inst, source)
+local function DoActualRez(inst, source, item)
     inst.player_classified.MapExplorer:EnableUpdate(true)
 
     local x, y, z
@@ -820,7 +820,7 @@ local function DoActualRez(inst, source)
             inst.sg:GoToState("portal_rez")
         end
     else -- Telltale Heart
-        inst.sg:GoToState("reviver_rebirth")
+        inst.sg:GoToState("reviver_rebirth", item)
     end
  
     --Default to electrocute light values
@@ -955,6 +955,8 @@ local function OnRespawnFromGhost(inst, data)
         inst:DoTaskInTime(0, DoActualRez)
     elseif inst.sg.currentstate.name == "remoteresurrect" then
         inst:DoTaskInTime(0, DoMoveToRezSource, data.source, 24 * FRAMES)
+    elseif data.source.prefab == "reviver" then
+        inst:DoTaskInTime(0, DoActualRez, nil, data.source)
     elseif data.source.prefab == "amulet"
         or data.source.prefab == "resurrectionstone"
         or data.source.prefab == "resurrectionstatue"

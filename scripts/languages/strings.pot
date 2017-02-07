@@ -1400,7 +1400,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.ANNOUNCE_ANTLION_TRIBUTE.3
 msgctxt "STRINGS.CHARACTERS.GENERIC.ANNOUNCE_ANTLION_TRIBUTE.3"
-msgid "That'll appease her, for now..."
+msgid "That'll appease it, for now..."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.ANNOUNCE_BECOMEGHOST

@@ -131,7 +131,7 @@ return {
 	{
         "Allow me to pay tribute.",
         "A tribute for you, great Antlion.",
-        "That'll appease her, for now...",
+        "That'll appease it, for now...",
 	},
 	ANNOUNCE_DUSK = "It's getting late. It will be dark soon.",
 	ANNOUNCE_EAT =

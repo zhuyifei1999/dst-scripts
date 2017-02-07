@@ -233,7 +233,7 @@ function self:GetSpawnPoint(pt)
         local spawnpoint = pt + offset
         return _map:IsPassableAtPoint(spawnpoint:Get()) and 
                not _groundcreep:OnCreep(spawnpoint:Get()) and 
-               #(TheSim:FindEntities(spawnpoint.x, 0, spawnpoint.z, 2, { "birdblocker" })) == 0
+               #(TheSim:FindEntities(spawnpoint.x, 0, spawnpoint.z, 4, { "birdblocker" })) == 0
     end
 
     local theta = math.random() * 2 * PI

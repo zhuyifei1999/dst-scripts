@@ -2,11 +2,11 @@ AddTask("Badlands", {
 		locks={LOCKS.ADVANCED_COMBAT,LOCKS.MONSTERS_DEFEATED,LOCKS.TIER4},
 		keys_given={KEYS.HOUNDS,KEYS.TIER5, KEYS.ROCKS},
 		room_choices={
-			["Lightning"] = 1,
-			["Badlands"] = 3,
-			["HoundyBadlands"] = 2,
+			["DragonflyArena"] = 1,
+			["Badlands"] = 2,
+			["HoundyBadlands"] = function() return (math.random() < 0.33) and 2 or 1 end,
 			["BarePlain"] = 1,
-			["BuzzardyBadlands"] = 2,
+			["BuzzardyBadlands"] = function() return (math.random() < 0.5) and 2 or 1 end,
 		},
 		room_bg=GROUND.DIRT,
 		background_room="BGBadlands",
@@ -39,19 +39,3 @@ AddTask("Lightning Bluff", {
 		background_room="BGLightningBluff",
 		colour={r=.05,g=.5,b=.05,a=1},
 	})
-
-AddTask("BadlandsANR", {
-		locks={LOCKS.ADVANCED_COMBAT,LOCKS.MONSTERS_DEFEATED,LOCKS.TIER4},
-		keys_given={KEYS.HOUNDS,KEYS.TIER5, KEYS.ROCKS},
-		room_choices={
-			["Badlands"] = 2,
-			["DragonflyArena"] = 1,
-			["HoundyBadlands"] = function() return (math.random() < 0.33) and 2 or 1 end,
-			["BarePlain"] = 1,
-			["BuzzardyBadlands"] = function() return (math.random() < 0.5) and 2 or 1 end,
-		},
-		room_bg=GROUND.DIRT,
-		background_room="BGBadlands",
-		colour={r=1,g=0.6,b=1,a=1},
-	})
-
