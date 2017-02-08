@@ -5171,7 +5171,7 @@ local states =
                 inst.AnimState:SetLightOverride(0)
             end),
             TimeEvent(100 * FRAMES, function(inst)
-                if inst.sg.statemem.reviver.reviver_revived_fx ~= nil then
+                if inst.sg.statemem.reviver ~= nil and inst.sg.statemem.reviver.reviver_revived_fx ~= nil then
                     SpawnPrefab(inst.sg.statemem.reviver.reviver_revived_fx).entity:SetParent(inst.entity)
                 end
             end),
