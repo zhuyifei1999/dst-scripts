@@ -4,10 +4,17 @@ local assets =
     Asset("MINIMAP_IMAGE", "townportalactive"),
 }
 
+local fx_assets =
+{
+    Asset("ANIM", "anim/teleport_sand_fx.zip"),
+    Asset("ANIM", "anim/sand_splash_fx.zip"),
+}
+
 local prefabs =
 {
     "collapse_small",
     "globalmapicon",
+    "townportalsandcoffin_fx",
 }
 
 local function OnStartChanneling(inst, channeler)
@@ -202,7 +209,18 @@ local function fn()
     return inst
 end
 
-local function townportalsandcoffin_fx()
+local function KillFX(inst)
+    if inst.killtask ~= nil then
+        inst.killtask:Cancel()
+        inst.killtask = nil
+        inst.Physics:SetActive(false)
+        inst.SoundEmitter:PlaySound("dontstarve/common/together/teleport_sand/out")
+        inst.AnimState:PlayAnimation("portal_out")
+        inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() + .5, inst.Remove)
+    end
+end
+
+local function fx_fn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -210,11 +228,12 @@ local function townportalsandcoffin_fx()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
-    inst.Transform:SetFourFaced()
+    MakeObstaclePhysics(inst, .5)
 
-    inst.AnimState:SetBuild("player_townportal")
-    inst.AnimState:SetBank("wilson")
-    inst.AnimState:PlayAnimation("townportal_enter_pst")
+    inst.AnimState:SetBank("teleport_sand_fx")
+    inst.AnimState:SetBuild("teleport_sand_fx")
+    inst.AnimState:OverrideSymbol("sand_splash", "sand_splash_fx", "sand_splash")
+    inst.AnimState:PlayAnimation("portal_in")
 
     inst:AddTag("NOCLICK")
     inst:AddTag("FX")
@@ -225,15 +244,15 @@ local function townportalsandcoffin_fx()
         return inst
     end
 
-    inst.SoundEmitter:PlaySound("dontstarve/common/together/teleport_sand/out")
+    inst.SoundEmitter:PlaySound("dontstarve/common/together/teleport_sand/in")
 
     inst.persists = false
-
-    inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() + .5, inst.Remove)
+    inst.KillFX = KillFX
+    inst.killtask = inst:DoTaskInTime(35 * FRAMES, KillFX)
 
     return inst
 end
 
 return Prefab("townportal", fn, assets, prefabs),
     MakePlacer("townportal_placer", "townportal", "townportal", "idle"),
-    Prefab("townportalsandcoffin_fx", townportalsandcoffin_fx, assets)
+    Prefab("townportalsandcoffin_fx", fx_fn, fx_assets)

@@ -5001,6 +5001,15 @@ local states =
             inst.components.health:SetInvincible(true)
             inst:ShowHUD(false)
             inst:SetCameraDistance(14)
+
+            local item = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY)
+            if item ~= nil and item.prefab == "amulet" then
+                item = inst.components.inventory:RemoveItem(item)
+                if item ~= nil then
+                    item:Remove()
+                    inst.sg.statemem.usedamulet = true
+                end
+            end
         end,
 
         timeline =
@@ -5035,12 +5044,8 @@ local states =
         },
 
         onexit = function(inst)
-            local item = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY)
-            if item ~= nil and item.prefab == "amulet" then
-                item = inst.components.inventory:RemoveItem(item)
-                if item ~= nil then
-                    item:Remove()
-                end
+            if inst.sg.statemem.usedamulet and inst.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY) == nil then
+                inst.AnimState:ClearOverrideSymbol("swap_body")
             end
             inst:ShowHUD(true)
             inst:SetCameraDistance()
@@ -5119,7 +5124,7 @@ local states =
         name = "reviver_rebirth",
         tags = { "busy", "reviver_rebirth", "pausepredict", "silentmorph" },
 
-        onenter = function(inst, reviver)
+        onenter = function(inst)
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:Enable(false)
                 inst.components.playercontroller:RemotePausePrediction()
@@ -5143,17 +5148,10 @@ local states =
             inst.components.health:SetInvincible(true)
             inst:ShowHUD(false)
             inst:SetCameraDistance(14)
-
-            inst.sg.statemem.reviver = reviver
         end,
 
         timeline =
         {
-            TimeEvent(10 * FRAMES, function(inst)
-                if inst.sg.statemem.reviver ~= nil and inst.sg.statemem.reviver.reviver_rebirth_fx ~= nil then
-                    SpawnPrefab(inst.sg.statemem.reviver.reviver_rebirth_fx).entity:SetParent(inst.entity)
-                end
-            end),
             TimeEvent(88 * FRAMES, function(inst)
                 inst.DynamicShadow:Enable(true)
                 if inst:HasTag("beaver") then
@@ -5169,11 +5167,6 @@ local states =
             TimeEvent(96 * FRAMES, function(inst) 
                 inst.components.bloomer:PopBloom("playerghostbloom")
                 inst.AnimState:SetLightOverride(0)
-            end),
-            TimeEvent(100 * FRAMES, function(inst)
-                if inst.sg.statemem.reviver ~= nil and inst.sg.statemem.reviver.reviver_revived_fx ~= nil then
-                    SpawnPrefab(inst.sg.statemem.reviver.reviver_revived_fx).entity:SetParent(inst.entity)
-                end
             end),
         },
 
@@ -5327,8 +5320,9 @@ local states =
         {
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-                    if inst.sg.statemem.target ~= nil and inst.sg.statemem.target.components.teleporter ~= nil
-                        and inst.sg.statemem.target.components.teleporter:Activate(inst) then
+                    if inst.sg.statemem.target ~= nil and
+                        inst.sg.statemem.target.components.teleporter ~= nil and
+                        inst.sg.statemem.target.components.teleporter:Activate(inst) then
                         inst.sg.statemem.isteleporting = true
                         inst.components.health:SetInvincible(true)
                         if inst.components.playercontroller ~= nil then
@@ -5447,7 +5441,7 @@ local states =
 
     State{
         name = "entertownportal",
-        tags = { "doing", "busy", "nopredict", "nomorph" },
+        tags = { "doing", "busy", "nopredict", "nomorph", "nodangle" },
 
         onenter = function(inst, data)
             ToggleOffPhysics(inst)
@@ -5458,43 +5452,39 @@ local states =
             inst.sg.statemem.teleportarrivestate = "exittownportal_pre"
 
             inst.AnimState:PlayAnimation("townportal_enter_pre")
-			inst.SoundEmitter:PlaySound("dontstarve/common/together/teleport_sand/in")
+
+            inst.sg.statemem.fx = SpawnPrefab("townportalsandcoffin_fx")
+            inst.sg.statemem.fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
         end,
 
         timeline =
         {
             TimeEvent(8 * FRAMES, function(inst)
                 inst.sg.statemem.isteleporting = true
-
                 inst.components.health:SetInvincible(true)
                 if inst.components.playercontroller ~= nil then
                     inst.components.playercontroller:Enable(false)
                 end
                 inst.DynamicShadow:Enable(false)
             end),
-        },
-        
-        events =
-        {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-					local x, y, z = inst.Transform:GetWorldPosition()
-                    if inst.sg.statemem.target ~= nil and inst.sg.statemem.target.components.teleporter ~= nil
-                        and inst.sg.statemem.target.components.teleporter:Activate(inst) then
-
-                        inst:Hide()
-                        
-                        local fx = SpawnPrefab("townportalsandcoffin_fx")
-                        fx.Transform:SetPosition(x, y, z)
-			            fx.Transform:SetRotation(inst.Transform:GetRotation())
-                    else
-                        inst.sg:GoToState("exittownportal")
-                    end
+            TimeEvent(18 * FRAMES, function(inst)
+                inst:Hide()
+            end),
+            TimeEvent(26 * FRAMES, function(inst)
+                if inst.sg.statemem.target ~= nil and
+                    inst.sg.statemem.target.components.teleporter ~= nil and
+                    inst.sg.statemem.target.components.teleporter:Activate(inst) then
+                    inst:Hide()
+                    inst.sg.statemem.fx:KillFX()
+                else
+                    inst.sg:GoToState("exittownportal")
                 end
             end),
         },
 
         onexit = function(inst)
+            inst.sg.statemem.fx:KillFX()
+
             if inst.sg.statemem.isphysicstoggle then
                 ToggleOnPhysics(inst)
             end
@@ -5512,36 +5502,37 @@ local states =
 
     State{
         name = "exittownportal_pre",
-        tags = { "doing", "busy", "nopredict", "nomorph" },
+        tags = { "doing", "busy", "nopredict", "nomorph", "nodangle" },
 
         onenter = function(inst)
             ToggleOffPhysics(inst)
             inst.components.locomotor:Stop()
 
-            inst.AnimState:PlayAnimation("townportal_exit_pre")
-			inst.SoundEmitter:PlaySound("dontstarve/common/together/teleport_sand/in")
+            inst.sg.statemem.fx = SpawnPrefab("townportalsandcoffin_fx")
+            inst.sg.statemem.fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
 
+            inst:Hide()
             inst.components.health:SetInvincible(true)
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:Enable(false)
             end
             inst.DynamicShadow:Enable(false)
+
+            inst.sg:SetTimeout(32 * FRAMES)
         end,
 
-        events =
-        {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("exittownportal")
-                end
-            end),
-        },
+        ontimeout = function(inst)
+            inst.sg:GoToState("exittownportal")
+        end,
 
         onexit = function(inst)
+            inst.sg.statemem.fx:KillFX()
+
             if inst.sg.statemem.isphysicstoggle then
                 ToggleOnPhysics(inst)
             end
 
+            inst:Show()
             inst.components.health:SetInvincible(false)
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:Enable(true)
@@ -5552,27 +5543,25 @@ local states =
 
     State{
         name = "exittownportal",
-        tags = { "doing", "busy", "nopredict", "nomorph" },
+        tags = { "doing", "busy", "nopredict", "nomorph", "nodangle" },
 
         onenter = function(inst)
             ToggleOffPhysics(inst)
             inst.components.locomotor:Stop()
 
             inst.AnimState:PlayAnimation("townportal_exit_pst")
-
-            local fx = SpawnPrefab("townportalsandcoffin_fx")
-            fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
-            fx.Transform:SetRotation(inst.Transform:GetRotation())
         end,
 
         timeline =
         {
             TimeEvent(18 * FRAMES, function(inst)
-                inst.sg:RemoveStateTag("busy")
-                
                 if inst.sg.statemem.isphysicstoggle then
                     ToggleOnPhysics(inst)
                 end
+            end),
+            TimeEvent(26 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+                inst.sg:RemoveStateTag("nopredict")
             end),
         },
 

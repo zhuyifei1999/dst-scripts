@@ -3,6 +3,7 @@ local assets =
     Asset("ANIM", "anim/antlion_build.zip"),
     Asset("ANIM", "anim/antlion_basic.zip"),
     Asset("ANIM", "anim/antlion_action.zip"),
+    Asset("ANIM", "anim/sand_splash_fx.zip"),
 }
 
 local prefabs =
@@ -119,6 +120,7 @@ local function fn()
 
     inst.AnimState:SetBank("antlion")
     inst.AnimState:SetBuild("antlion_build")
+    inst.AnimState:OverrideSymbol("sand_splash", "sand_splash_fx", "sand_splash")
     inst.AnimState:PlayAnimation("idle", true)
 
     inst.MiniMapEntity:SetIcon("antlion.png")

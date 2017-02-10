@@ -51,6 +51,30 @@ local function UpdateSinkholeRepair(inst)
     end
 end
 
+local COLLAPSIBLE_WORK_ACTIONS =
+{
+    CHOP = true,
+    DIG = true,
+    HAMMER = true,
+    MINE = true,
+}
+local COLLAPSIBLE_TAGS = { "_combat", "pickable" }
+for k, v in pairs(COLLAPSIBLE_WORK_ACTIONS) do
+    table.insert(COLLAPSIBLE_TAGS, k.."_workable")
+end
+local NON_COLLAPSIBLE_TAGS = { "flying", "bird", "ghost", "playerghost", "FX", "NOCLICK", "DECOR", "INLIMBO" }
+local NON_COLLAPSIBLE_TAGS_FIRST = { "flying", "bird", "ghost", "locomotor", "FX", "NOCLICK", "DECOR", "INLIMBO" }
+
+local function SmallLaunch(inst, launcher, basespeed)
+    local hp = inst:GetPosition()
+    local pt = launcher:GetPosition()
+    local vel = (hp - pt):GetNormalized()
+    local speed = basespeed * .5 + math.random()
+    local angle = math.atan2(vel.z, vel.x) + (math.random() * 20 - 10) * DEGREES
+    inst.Physics:Teleport(hp.x, .1, hp.z)
+    inst.Physics:SetVel(math.cos(angle) * speed, 3 * speed + math.random(), math.sin(angle) * speed)
+end
+
 local function donextcollapse(inst)
     inst.collapsestage = inst.collapsestage + 1
 
@@ -86,38 +110,45 @@ local function donextcollapse(inst)
     inst.SoundEmitter:PlaySoundWithParams("dontstarve/creatures/together/antlion/sfx/ground_break", {size=math.pow(inst.collapsestage/NUM_CRACKING_STAGES, 2)})
 
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, TUNING.ANTLION_SINKHOLE.RADIUS + 1, nil, {"flying", "bird"})
-    for i,v in ipairs(ents) do
-        if v.components.workable ~= nil and v.components.workable:CanBeWorked() then
-            if isfinalstage then
-                v.components.workable:Destroy(inst)
-                if v:IsValid() and v:HasTag("stump") then
-                    v:Remove()
+    local ents = TheSim:FindEntities(x, 0, z, TUNING.ANTLION_SINKHOLE.RADIUS + 1, nil, inst.collapsestage > 1 and NON_COLLAPSIBLE_TAGS or NON_COLLAPSIBLE_TAGS_FIRST, COLLAPSIBLE_TAGS)
+    for i, v in ipairs(ents) do
+        if v:IsValid() then
+            if v.components.workable ~= nil and
+                v.components.workable:CanBeWorked() and
+                COLLAPSIBLE_WORK_ACTIONS[v.components.workable:GetWorkAction().id] then
+                if isfinalstage then
+                    v.components.workable:Destroy(inst)
+                    if v:IsValid() and v:HasTag("stump") then
+                        v:Remove()
+                    end
+                else
+                    if v.components.workable:GetWorkAction() == ACTIONS.MINE then
+                        SpawnPrefab(v:HasTag("frozen") and "mining_ice_fx" or "mining_fx").Transform:SetPosition(v.Transform:GetWorldPosition())
+                    end
+                    v.components.workable:WorkedBy(inst, 1)
                 end
-            else
-                v.components.workable:WorkedBy(inst, 1)
-            end
-        elseif v.components.pickable ~= nil then
-            if v.components.pickable:CanBePicked() then
+            elseif v.components.pickable ~= nil
+                and v.components.pickable:CanBePicked() then
                 local num = v.components.pickable.numtoharvest or 1
                 local product = v.components.pickable.product
-                local pt = v:GetPosition()
+                local x1, y1, z1 = v.Transform:GetWorldPosition()
                 v.components.pickable:Pick(inst) -- only calling this to trigger callbacks on the object
-                if product and num then
+                if product ~= nil and num > 0 then
                     for i = 1, num do
-                        local loot = SpawnPrefab(product)
-                        loot.Transform:SetPosition(pt:Get())
-                        Launch(loot, inst, 0)
+                        SpawnPrefab(product).Transform:SetPosition(x1, 0, z1)
                     end
                 end
+            elseif v.components.combat ~= nil
+                and v.components.health ~= nil
+                and not v.components.health:IsDead() then
+                v.components.combat:GetAttacked(inst, TUNING.ANTLION_SINKHOLE.DAMAGE)
             end
-        elseif v:IsValid() and
-            v.components.combat ~= nil and
-            v.components.health ~= nil and
-            (inst.collapsestage > 1 or (not v:HasTag("player") and not v:HasTag("smallcreature"))) and
-            not v.components.health:IsDead() then
-
-            v.components.combat:GetAttacked(inst, TUNING.ANTLION_SINKHOLE.DAMAGE)
+        end
+    end
+    local totoss = TheSim:FindEntities(x, 0, z, TUNING.ANTLION_SINKHOLE.RADIUS, { "_inventoryitem" }, { "locomotor", "INLIMBO" })
+    for i, v in ipairs(totoss) do
+        if not v.components.inventoryitem.nobounce and v.Physics ~= nil then
+            SmallLaunch(v, inst, 1.5)
         end
     end
 end

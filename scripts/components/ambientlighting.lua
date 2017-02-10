@@ -8,15 +8,18 @@ return Class(function(self, inst)
 --[[ Constants ]]
 --------------------------------------------------------------------------
 
-local NORMAL_COLOURS = {
+local NORMAL_COLOURS =
+{
     PHASE_COLOURS =
     {
-        default = {
+        default =
+        {
             day = { colour = Point(255 / 255, 230 / 255, 158 / 255), time = 4 },
             dusk = { colour = Point(150 / 255, 150 / 255, 150 / 255), time = 6 },
             night = { colour = Point(0 / 255, 0 / 255, 0 / 255), time = 8 },
         },
-        spring = {
+        spring =
+        {
             day = { colour = Point(255 / 255, 244 / 255, 213 / 255), time = 4 },
             dusk = { colour = Point(171 / 255, 146 / 255, 147 / 255), time = 6 },
             night = { colour = Point(0 / 255, 0 / 255, 0 / 255), time = 8 },
@@ -26,11 +29,13 @@ local NORMAL_COLOURS = {
     FULL_MOON_COLOUR = { colour = Point(84 / 255, 122 / 255, 156 / 255), time = 8 },
     CAVE_COLOUR = { colour = Point(0 / 255, 0 / 255, 0 / 255), time = 2 },
 }
-    
-local NIGHTVISION_COLOURS = {
+
+local NIGHTVISION_COLOURS =
+{
     PHASE_COLOURS =
     {
-        default = {
+        default =
+        {
             day = { colour = Point(200 / 255, 200 / 255, 200 / 255), time = 4 },
             dusk = { colour = Point(120 / 255, 120 / 255, 120 / 255), time = 6 },
             night = { colour = Point(200 / 255, 200 / 255, 200 / 255), time = 8 },
@@ -52,6 +57,8 @@ self.inst = inst
 local _iscave = inst:HasTag("cave")
 local _season = "autumn"
 local _phase = "day"
+local _moonphase = "new"
+local _isfullmoon = false
 local _updating = false
 local _realcolour = {
     remainingtimeinlerp = 0,
@@ -117,7 +124,7 @@ end
 
 local function ComputeTargetColour(targetsettings, timeoverride)
     local col = _iscave and targetsettings.currentcolourset.CAVE_COLOUR
-                or TheWorld.state.isfullmoon and targetsettings.currentcolourset.FULL_MOON_COLOUR
+                or _isfullmoon and targetsettings.currentcolourset.FULL_MOON_COLOUR
                 or targetsettings.currentcolourset.PHASE_COLOURS[_season] and targetsettings.currentcolourset.PHASE_COLOURS[_season][_phase]
                 or targetsettings.currentcolourset.PHASE_COLOURS.default[_phase]
     if col == nil then
@@ -137,17 +144,24 @@ local function ComputeTargetColour(targetsettings, timeoverride)
     Start()
 end
 
-
 --------------------------------------------------------------------------
 --[[ Private event handlers ]]
 --------------------------------------------------------------------------
 
 local function OnPhaseChanged(src, phase)
     _phase = phase
+    _isfullmoon = phase == "night" and _moonphase == "full"
 
     ComputeTargetColour(_realcolour)
     ComputeTargetColour(_overridecolour)
     PushCurrentColour()
+end
+
+local function OnMoonPhaseChanged2(src, data)
+    _moonphase = data.moonphase
+    if _phase == "night" and _isfullmoon ~= (data.moonphase == "full") then
+        OnPhaseChanged(src, _phase)
+    end
 end
 
 local function OnWeatherTick(src, data)
@@ -203,6 +217,7 @@ PushCurrentColour()
 
 --Register events
 inst:ListenForEvent("phasechanged", OnPhaseChanged)
+inst:ListenForEvent("moonphasechanged2", OnMoonPhaseChanged2)
 inst:ListenForEvent("weathertick", OnWeatherTick)
 inst:ListenForEvent("screenflash", OnScreenFlash)
 if not _iscave then

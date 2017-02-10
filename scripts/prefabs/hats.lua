@@ -69,7 +69,7 @@ local function MakeHat(name)
         owner.AnimState:Hide("HAIR_HAT")
         owner.AnimState:Show("HAIR_NOHAT")
         owner.AnimState:Show("HAIR")
-        
+
         owner.AnimState:Show("HEAD")
         owner.AnimState:Hide("HEAD_HAT")
 

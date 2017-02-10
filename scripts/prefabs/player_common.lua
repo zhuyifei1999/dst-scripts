@@ -774,7 +774,7 @@ local function DoActualRez(inst, source, item)
     if diefx and x and y and z then
         diefx.Transform:SetPosition(x, y, z)
     end
-	
+
     -- inst.AnimState:SetBank("wilson")
     -- inst.components.skinner:SetSkinMode("normal_skin")
 
@@ -801,7 +801,7 @@ local function DoActualRez(inst, source, item)
         inst.components.skinner:SetSkinMode("normal_skin") -- restore skin
         inst.components.bloomer:PopBloom("playerghostbloom")
         inst.AnimState:SetLightOverride(0)
-        
+
         source:PushEvent("activateresurrection", inst)
 
         if source.prefab == "amulet" then
@@ -1544,7 +1544,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         "shock_fx",
         "splash",
         "globalmapicon",
-        "townportalsandcoffin_fx",
 
         -- Player specific classified prefabs
         "player_classified",

@@ -21,7 +21,6 @@ local lightstates =
 }
 
 local function onmoonphasechagned(inst, phase)
-
     if (TheWorld.state.iswaxingmoon and TheWorld.state.moonphase ~= "new") or TheWorld.state.moonphase == "full" then
         inst.AnimState:ClearOverrideSymbol("reflection_quarter")
         inst.AnimState:ClearOverrideSymbol("reflection_half")

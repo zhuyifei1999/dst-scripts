@@ -85618,6 +85618,11 @@ msgctxt "STRINGS.UI.HELP.ENTER_TEXT"
 msgid "Enter Text"
 msgstr ""
 
+#. STRINGS.UI.HELP.NEXT
+msgctxt "STRINGS.UI.HELP.NEXT"
+msgid "Next"
+msgstr ""
+
 #. STRINGS.UI.HELP.NEXTPAGE
 msgctxt "STRINGS.UI.HELP.NEXTPAGE"
 msgid "Next Page"
@@ -85626,6 +85631,11 @@ msgstr ""
 #. STRINGS.UI.HELP.NEXTVALUE
 msgctxt "STRINGS.UI.HELP.NEXTVALUE"
 msgid "Next Value"
+msgstr ""
+
+#. STRINGS.UI.HELP.PREV
+msgctxt "STRINGS.UI.HELP.PREV"
+msgid "Previous"
 msgstr ""
 
 #. STRINGS.UI.HELP.PREVPAGE

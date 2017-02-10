@@ -19,6 +19,10 @@ EMOTE_ITEMS =
 			sounddelay = 0.26666666666667,
 			soundoverride = "eye_rub_vo",
 		},
+		aliases =
+		{
+			"eyerub",
+		},
 	},
 	emote_yawn =
 	{

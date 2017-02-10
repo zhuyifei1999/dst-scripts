@@ -61,8 +61,6 @@ local function ConvertToGlow(inst)
     inst.persists = false
 
     inst.reviver_beat_fx = nil
-    inst.reviver_rebirth_fx = nil
-    inst.reviver_revived_fx = nil
     inst.OnBuiltFn = nil
     inst.OnSave = nil
     inst.OnLoad = nil

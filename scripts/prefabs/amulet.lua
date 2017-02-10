@@ -23,7 +23,9 @@ local function onequip_red(inst, owner)
 end
 
 local function onunequip_red(inst, owner)
-    owner.AnimState:ClearOverrideSymbol("swap_body")
+    if owner.sg == nil or owner.sg.currentstate.name ~= "amulet_rebirth" then
+        owner.AnimState:ClearOverrideSymbol("swap_body")
+    end
     if inst.task ~= nil then
         inst.task:Cancel()
         inst.task = nil
