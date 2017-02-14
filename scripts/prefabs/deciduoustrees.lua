@@ -697,7 +697,7 @@ end
 
 local function OnAcornTask(inst)
     inst.acorntask = nil
-    inst.components.lootdropper:DropLoot(inst:GetPosition() + (math.random() < .5 and TheCamera:GetRightVec() or -TheCamera:GetRightVec()))
+    inst.components.lootdropper:DropLoot(math.random() < .5 and inst:GetPosition() + TheCamera:GetRightVec() or inst:GetPosition() - TheCamera:GetRightVec())
 end
 
 local function tree_burnt(inst)

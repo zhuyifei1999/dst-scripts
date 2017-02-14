@@ -154,11 +154,10 @@ end
 
 local function OnGetItem(inst, giver, item)
     if item ~= nil and item.prefab == "reviver" and inst:HasTag("playerghost") then
-        inst.reviver = giver
         item:PushEvent("usereviver", { user = giver })
         giver.hasRevivedPlayer = true
         item:Remove()
-        inst:PushEvent("respawnfromghost", { source = item })
+        inst:PushEvent("respawnfromghost", { source = item, user = giver })
 
         inst.components.health:DeltaPenalty(TUNING.REVIVE_HEALTH_PENALTY)
         giver.components.sanity:DoDelta(TUNING.REVIVE_OTHER_SANITY_BONUS)
@@ -968,8 +967,8 @@ local function OnRespawnFromGhost(inst, data)
     end
 
     inst.rezsource =
-        (data ~= nil and data.source ~= nil and data.source.name) or
-        (inst.reviver ~= nil and inst.reviver:GetDisplayName()) or
+        (data ~= nil and data.source ~= nil and data.source.prefab ~= "reviver" and data.source.name) or
+        (data.user ~= nil and data.user:GetDisplayName()) or
         STRINGS.NAMES.SHENANIGANS
 
     inst.remoterezsource =
