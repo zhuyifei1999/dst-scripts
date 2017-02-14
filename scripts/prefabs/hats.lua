@@ -1339,53 +1339,6 @@ local function MakeHat(name)
         return inst
     end
 
-    local function desert_custom_init(inst)
-        --waterproofer (from waterproofer component) added to pristine state for optimization
-        inst:AddTag("waterproofer")
-
-        inst:AddTag("goggles")
-    end
-
-    local function desert()
-        local inst = simple(desert_custom_init)
-
-        if not TheWorld.ismastersim then
-            return inst
-        end
-
-        inst.components.equippable.dapperness = TUNING.DAPPERNESS_MED
-
-        inst:AddComponent("fueled")
-        inst.components.fueled.fueltype = FUELTYPE.USAGE
-        inst.components.fueled:InitializeFuelLevel(TUNING.GOGGLES_PERISHTIME)
-        inst.components.fueled:SetDepletedFn(--[[generic_perish]]inst.Remove)
-
-        inst:AddComponent("waterproofer")
-        inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
-
-        return inst
-    end
-
-    --NOTE: goggleshat do NOT provide "goggles" tag benefits because you do not
-    --      actually wear them over your eyes, and they're just for style -_ -"
-    local function goggles()
-        local inst = simple()
-
-        if not TheWorld.ismastersim then
-            return inst
-        end
-
-        inst.components.equippable.dapperness = TUNING.DAPPERNESS_MED
-        inst.components.equippable:SetOnEquip(opentop_onequip)
-
-        inst:AddComponent("fueled")
-        inst.components.fueled.fueltype = FUELTYPE.USAGE
-        inst.components.fueled:InitializeFuelLevel(TUNING.GOGGLES_PERISHTIME)
-        inst.components.fueled:SetDepletedFn(--[[generic_perish]]inst.Remove)
-
-        return inst
-    end
-
     local fn = nil
     local assets = { Asset("ANIM", "anim/"..fname..".zip") }
     local prefabs = nil
@@ -1451,10 +1404,6 @@ local function MakeHat(name)
         fn = dragon
     elseif name == "dragontail" then
         fn = dragon
-    elseif name == "desert" then
-        fn = desert
-    elseif name == "goggles" then
-        fn = goggles
     end
 
     return Prefab(prefabname, fn or default, assets, prefabs)
@@ -1514,6 +1463,4 @@ return  MakeHat("straw"),
         MakeHat("dragonhead"),
         MakeHat("dragonbody"),
         MakeHat("dragontail"),
-        MakeHat("desert"),
-        MakeHat("goggles"),
         Prefab("minerhatlight", minerhatlightfn)

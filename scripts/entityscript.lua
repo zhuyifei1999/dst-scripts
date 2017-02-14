@@ -627,15 +627,6 @@ function EntityScript:SetPrefabNameOverride(nameoverride)
     self.nameoverride = nameoverride
 end
 
-function EntityScript:SetDeployExtraSpacing(spacing)
-    --Extra spacing required when deploying other entities near this one.
-    self.deploy_extra_spacing = spacing
-    if spacing ~= nil then
-        --see components/map.lua
-        TheWorld.Map:RegisterDeployExtraSpacing(spacing)
-    end
-end
-
 function EntityScript:SpawnChild(name)
     if self.prefabs then
         assert(self.prefabs, "no prefabs registered for this entity ".. name)

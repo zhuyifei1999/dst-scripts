@@ -231,9 +231,7 @@ function self:GetSpawnPoint(pt)
     --We have to use custom test function because birds can't land on creep
     local function TestSpawnPoint(offset)
         local spawnpoint = pt + offset
-        return _map:IsPassableAtPoint(spawnpoint:Get()) and 
-               not _groundcreep:OnCreep(spawnpoint:Get()) and 
-               #(TheSim:FindEntities(spawnpoint.x, 0, spawnpoint.z, 4, { "birdblocker" })) == 0
+        return _map:IsPassableAtPoint(spawnpoint:Get()) and not _groundcreep:OnCreep(spawnpoint:Get())
     end
 
     local theta = math.random() * 2 * PI

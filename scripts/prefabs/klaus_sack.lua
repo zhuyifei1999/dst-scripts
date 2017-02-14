@@ -283,8 +283,6 @@ local function fn()
     --klaussacklock (from klaussacklock component) added to pristine state for optimization
     inst:AddTag("klaussacklock")
 
-    inst:AddTag("antlion_sinkhole_blocker")
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

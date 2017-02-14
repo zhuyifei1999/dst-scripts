@@ -44,9 +44,7 @@ local function fn()
     inst:AddComponent("edible")
     inst.components.edible.foodtype = FOODTYPE.ELEMENTAL
     inst.components.edible.hungervalue = 1
-
     inst:AddComponent("tradable")
-    inst.components.tradable.rocktribute = 1
 
     inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
