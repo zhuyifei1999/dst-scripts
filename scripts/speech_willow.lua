@@ -117,13 +117,6 @@ return {
 	ANNOUNCE_CHARLIE = "I'm not afraid of you!",
 	ANNOUNCE_CHARLIE_ATTACK = "OUCH! You jerk!",
 	ANNOUNCE_COLD = "The cold! It burns!",
-	ANNOUNCE_ANTLION_SINKHOLE = "The ground's cracking!",
-	ANNOUNCE_ANTLION_TRIBUTE =
-	{
-        "Hey, I gotcha something!",
-        "Dinnertime!",
-        "Great Antlion! Take this tribute, or whatever.",
-	},
 	ANNOUNCE_HOT = "The heat is too intense!",
 	ANNOUNCE_DUSK = "Night is coming. I need fire!",
 	ANNOUNCE_ENTER_DARK = "Where'd I put my lighter!?",
@@ -201,7 +194,6 @@ return {
     ANNOUNCE_FAN_OUT = "Stupid thing broke!",
     ANNOUNCE_COMPASS_OUT = "Arrgh the needle is stuck!",
 	ANNOUNCE_WORMHOLE = "I'll have to burn these clothes!",
-	ANNOUNCE_TOWNPORTALTELEPORT = "Didja miss me?! Haha!",
 	ANNOUNCE_TRAP_WENT_OFF = "Aah!",
     ANNOUNCE_CRAFTING_FAIL = "I'm missing something.",
     ANNOUNCE_QUAKE = "That sound probably doesn't mean good things.",
@@ -217,7 +209,6 @@ return {
     ANNOUNCE_KNOCKEDOUT = "Argh, my little head!",
     ANNOUNCE_LOWRESEARCH = "Boo, that was boring.",
     ANNOUNCE_DEERCLOPS = "That sounded like a big mean monster man!",
-    ANNOUNCE_CAVEIN = "I better protect my head!",
     ANNOUNCE_MOSQUITOS = "Get away, you bloodsucking jerks!",
     ANNOUNCE_NODAYSLEEP = "Who would go inside when there's a great ball of fire in the sky?",
     ANNOUNCE_INSUFFICIENTFERTILIZER = "It looks slightly happier.",
@@ -400,13 +391,7 @@ return {
 		BEARGER = "Whoa! Niiiice bear...",
 		BEARGERVEST = "It's like swimming in fur.",
 		ICEPACK = "Fuzzy backpack!",
-		ANTLION = 
-		{
-			GENERIC = "What do you want?!",
-			VERYHAPPY = "You're in a good mood.",
-			UNHAPPY = "There's gonna be tremors in our future.",
-		},
-		ANTLIONTRINKET = "Buncha junk.",
+		
 		ABIGAIL_FLOWER = 
 		{
 			GENERIC = "Looks flammable.",
@@ -732,22 +717,7 @@ return {
 		GIFT = "It's for me right?!",
         GIFTWRAP = "Ribbons burn real good!",
 		POTTEDFERN = "I'd rather burn them.",
-		SUCCULENT_POTTED = "We're keeping it.",
-        SUCCULENT_PLANT = "It's a small, unburned plant.",
-        SUCCULENT_PICKED = "It's been picked.",
 		SENTRYWARD = "Pfft. It'll burn like the rest.",
-		TOWNPORTAL =
-        {
-			GENERIC = "Magic stuff.",
-			ACTIVE = "Walking's for suckers.",
-		},
-        TOWNPORTALTALISMAN = 
-        {
-			GENERIC = "Yuck. It smells like sulfur.",
-			ACTIVE = "I didn't wanna walk, anyway.",
-		},
-		WETPAPER = "I can think of a real quick way to dry it.",
-		WETPOUCH = "There's something inside.",
         MOONROCK_PIECES = "Oh look! ROCKS! Ughhhhh!",
         MOONBASE =
         {
@@ -1297,8 +1267,6 @@ return {
 		{
 			GENERIC = "What a sorry looking piece of... grass?",
 		},
-		GOGGLESHAT = "What a great look!",
-        DESERTHAT = "Not very stylish.",
 		DRAGONFRUIT = "It looks sort of like a fire!",
 		DRAGONFRUIT_COOKED = "It looks more like a fruit that's been in a fire now.",
 		DRAGONFRUIT_SEEDS = "Seeds for that fire-looking fruit.",
@@ -1550,7 +1518,6 @@ return {
 		NIGHTSWORD = "It's like dreams that can hurt real things!",
 		NITRE = "There are tiny explosions trapped inside.",
 		ONEMANBAND = "I can do the pyrotechnics too!",
-		OASISLAKE = "It's a bunch of water.",
 		PANDORASCHEST = "Kind of tacky.",
 		PANFLUTE = "Music is boring.",
 		PAPYRUS = "I bet it'd burn!",
@@ -1654,11 +1621,6 @@ return {
 			LOW = "The lava is cooling.",
 			NORMAL = "A pool of fire!",
 		},
-		CAVEIN_BOULDER =
-        {
-            GENERIC = "Let's just smash it up.",
-            RAISED = "I can't get up there!",
-        },
 		ROCKS = "What's the point of collecting these again?",
         ROOK = "It's a castle!",
         ROPE = "What should we tie up??!",

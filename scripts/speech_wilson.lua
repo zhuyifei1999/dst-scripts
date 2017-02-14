@@ -125,14 +125,6 @@ return {
 	ANNOUNCE_HOT = "Need... ice... or... shade!",
 	ANNOUNCE_CRAFTING_FAIL = "I'm missing a couple key ingredients.",
 	ANNOUNCE_DEERCLOPS = "That sounded big!",
-	ANNOUNCE_CAVEIN = "The ceiling is destabilizing!",
-	ANNOUNCE_ANTLION_SINKHOLE = "The ground is destabilizing!",
-	ANNOUNCE_ANTLION_TRIBUTE =
-	{
-        "Allow me to pay tribute.",
-        "A tribute for you, great Antlion.",
-        "That'll appease it, for now...",
-	},
 	ANNOUNCE_DUSK = "It's getting late. It will be dark soon.",
 	ANNOUNCE_EAT =
 	{
@@ -196,7 +188,6 @@ return {
 	ANNOUNCE_TRAP_WENT_OFF = "Oops.",
 	ANNOUNCE_UNIMPLEMENTED = "OW! I don't think it's ready yet.",
 	ANNOUNCE_WORMHOLE = "That was not a sane thing to do.",
-	ANNOUNCE_TOWNPORTALTELEPORT = "I'm not sure that was science.",
 	ANNOUNCE_CANFIX = "\nI think I can fix this!",
 	ANNOUNCE_ACCOMPLISHMENT = "I feel so accomplished!",
 	ANNOUNCE_ACCOMPLISHMENT_DONE = "If only my friends could see me now...",	
@@ -245,13 +236,7 @@ return {
 	DESCRIBE =
 	{
 		MULTIPLAYER_PORTAL = "This ought to be a scientific impossibility.",
-		ANTLION = 
-		{
-			GENERIC = "It wants something from me.",
-			VERYHAPPY = "I think we're on good terms.",
-			UNHAPPY = "It looks mad.",
-		},
-		ANTLIONTRINKET = "Someone might be interested in this.",
+
 		ABIGAIL_FLOWER = 
 		{ 
 			GENERIC ="It's hauntingly beautiful.",
@@ -450,22 +435,7 @@ return {
 		GIFT = "Is that for me?",
         GIFTWRAP = "That's a wrap!",
 		POTTEDFERN = "A fern in a pot.",
-        SUCCULENT_POTTED = "A succulent in a pot.",
-		SUCCULENT_PLANT = "Aloe there.",
-		SUCCULENT_PICKED = "I could eat that, but I'd rather not.",
 		SENTRYWARD = "That's an entirely scientific mapping tool.",
-        TOWNPORTAL =
-        {
-			GENERIC = "This pyramid controls the sands.",
-			ACTIVE = "Ready for departiculation.",
-		},
-        TOWNPORTALTALISMAN = 
-        {
-			GENERIC = "A mini departiculator.",
-			ACTIVE = "A more sane person would walk.",
-		},
-        WETPAPER = "I hope it dries off soon.",
-        WETPOUCH = "This package is barely holding together.",
         MOONROCK_PIECES = "I could probably break that.",
         MOONBASE =
         {
@@ -1023,8 +993,6 @@ return {
 		{
 			GENERIC = "It's probably a tuft of grass.",
 		},
-        GOGGLESHAT = "What a stylish pair of goggles.",
-        DESERTHAT = "Quality eye protection.",
 		DEVTOOL = "It smells of bacon!",
 		DEVTOOL_NODEV = "I'm not strong enough to wield it.",
 		DIRTPILE = "It's a pile of dirt... or IS it?",
@@ -1442,7 +1410,6 @@ return {
 		NIGHTSWORD = "Why would anyone make this? It's terrifying.",
 		NITRE = "I'm not a geologist.",
 		ONEMANBAND = "We should add a beefalo bell.",
-		OASISLAKE = "Is that a mirage?",
 		PANDORASCHEST = "It may contain something fantastic! Or horrible.",
 		PANFLUTE = "To serenade the animals.",
 		PAPYRUS = "Some sheets of paper.",
@@ -1591,11 +1558,6 @@ return {
 			LOW = "The lava's crusting over.",
 			NORMAL = "Nice and comfy.",
 		},
-        CAVEIN_BOULDER =
-        {
-            GENERIC = "I think I can lift this one.",
-            RAISED = "It's out of reach.",
-        },
 		ROCK = "It wouldn't fit in my pocket.",
 		PETRIFIED_TREE = "It looks scared stiff.",
 		ROCK_PETRIFIED_TREE = "It looks scared stiff.",
@@ -1989,6 +1951,7 @@ return {
         ORANGEMOONEYE = "No one could get lost with that thing looking out for them.",
         YELLOWMOONEYE = "That ought to show everyone the way.",
         BLUEMOONEYE = "It's always smart to keep an eye out.",
+        
 	},
 	DESCRIBE_GENERIC = "It's a... thing.",
 	DESCRIBE_TOODARK = "It's too dark to see!",

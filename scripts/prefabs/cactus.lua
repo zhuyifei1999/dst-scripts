@@ -1,7 +1,6 @@
 local assets =
 {
     Asset("ANIM", "anim/cactus.zip"),
-    Asset("ANIM", "anim/oasis_cactus.zip"),
     Asset("ANIM", "anim/cactus_flower.zip"),
 }
 
@@ -35,7 +34,7 @@ local function onpickedfn(inst, picker)
                 if loot.components.inventoryitem ~= nil then
                     loot.components.inventoryitem:InheritMoisture(TheWorld.state.wetness, TheWorld.state.iswet)
                 end
-                picker.components.inventory:GiveItem(loot, nil, inst:GetPosition())
+                picker.components.inventory:GiveItem(loot, nil, Vector3(TheSim:GetScreenPos(inst.Transform:GetWorldPosition())))
             end
         end
     end
@@ -80,57 +79,51 @@ local function OnEntityWake(inst)
     end
 end
 
-local function MakeCactus(name)
-	local function cactusfn()
-		local inst = CreateEntity()
+local function cactusfn()
+    local inst = CreateEntity()
 
-		inst.entity:AddTransform()
-		inst.entity:AddAnimState()
-		inst.entity:AddMiniMapEntity()
-		inst.entity:AddNetwork()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddMiniMapEntity()
+    inst.entity:AddNetwork()
 
-		inst.MiniMapEntity:SetIcon(name..".png")
+    inst.MiniMapEntity:SetIcon("cactus.png")
 
-		inst.AnimState:SetBuild(name)
-		inst.AnimState:SetBank(name)
-		inst.AnimState:PlayAnimation("idle", true)
+    inst.AnimState:SetBuild("cactus")
+    inst.AnimState:SetBank("cactus")
+    inst.AnimState:PlayAnimation("idle", true)
 
-		inst:AddTag("thorny")
+    inst:AddTag("thorny")
 
-		MakeObstaclePhysics(inst, .3)
+    MakeObstaclePhysics(inst, .3)
 
-        inst:SetPrefabNameOverride("cactus")
+    inst.entity:SetPristine()
 
-		inst.entity:SetPristine()
+    if not TheWorld.ismastersim then
+        return inst
+    end
 
-		if not TheWorld.ismastersim then
-			return inst
-		end
+    inst.AnimState:SetTime(math.random()*2)
 
-		inst.AnimState:SetTime(math.random()*2)
+    inst:AddComponent("pickable")
+    inst.components.pickable.picksound = "dontstarve/wilson/harvest_sticks"
 
-		inst:AddComponent("pickable")
-		inst.components.pickable.picksound = "dontstarve/wilson/harvest_sticks"
+    inst.components.pickable:SetUp("cactus_meat", TUNING.CACTUS_REGROW_TIME)
+    inst.components.pickable.onregenfn = onregenfn
+    inst.components.pickable.onpickedfn = onpickedfn
+    inst.components.pickable.makeemptyfn = makeemptyfn
+    inst.components.pickable.ontransplantfn = ontransplantfn
 
-		inst.components.pickable:SetUp("cactus_meat", TUNING.CACTUS_REGROW_TIME)
-		inst.components.pickable.onregenfn = onregenfn
-		inst.components.pickable.onpickedfn = onpickedfn
-		inst.components.pickable.makeemptyfn = makeemptyfn
-		inst.components.pickable.ontransplantfn = ontransplantfn
+    inst:AddComponent("inspectable")
 
-		inst:AddComponent("inspectable")
+    MakeLargeBurnable(inst)
+    MakeMediumPropagator(inst)
 
-		MakeLargeBurnable(inst)
-		MakeMediumPropagator(inst)
+    inst.OnEntityWake = OnEntityWake
 
-		inst.OnEntityWake = OnEntityWake
+    MakeHauntableIgnite(inst)
 
-		MakeHauntableIgnite(inst)
-
-		return inst
-	end
-	
-	return Prefab(name, cactusfn, assets, prefabs)
+    return inst
 end
 
 local function cactusflowerfn()
@@ -177,6 +170,5 @@ local function cactusflowerfn()
     return inst
 end
 
-return MakeCactus("cactus"),
-    MakeCactus("oasis_cactus"),
+return Prefab("cactus", cactusfn, assets, prefabs),
     Prefab("cactus_flower", cactusflowerfn, assets)

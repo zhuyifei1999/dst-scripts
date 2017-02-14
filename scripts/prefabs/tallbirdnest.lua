@@ -151,8 +151,6 @@ local function fn()
     inst.AnimState:SetBank("egg")
     inst.AnimState:PlayAnimation("eggnest", false)
 
-    inst:AddTag("antlion_sinkhole_blocker")
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

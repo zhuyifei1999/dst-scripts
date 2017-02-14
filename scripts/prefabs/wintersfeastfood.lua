@@ -33,6 +33,7 @@ local function MakeFood(num)
         inst.AnimState:SetBuild("winter_ornaments")
         inst.AnimState:PlayAnimation("food"..tostring(num))
 
+        inst:AddTag("molebait")
         inst:AddTag("cattoy")
         inst:AddTag("wintersfeastfood")
 

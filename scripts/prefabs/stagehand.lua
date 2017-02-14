@@ -10,7 +10,7 @@ local prefabs =
     "endtable_blueprint",
 }
 
-local brain = require("brains/stagehandbrain")
+local brain = require( "brains/stagehandbrain")
 
 SetSharedLootTable('stagehand_creature',
 {
@@ -18,111 +18,123 @@ SetSharedLootTable('stagehand_creature',
 })
 
 local function onworked(inst, worker)
-    -- make sure it never runs out of work to do
-    inst.components.workable:SetWorkLeft(TUNING.STAGEHAND_HITS_TO_GIVEUP)
+	-- make sure it never runs out of work to do
+	inst.components.workable:SetWorkLeft(TUNING.STAGEHAND_HITS_TO_GIVEUP)
 end
 
 local function getstatus(inst)
-    return inst.sg:HasStateTag("hiding") and "HIDING" or "AWAKE"
+    return (inst.sg:HasStateTag("hiding") and "HIDING")
+		or "AWAKE"
 end
 
 local function CanStandUp(inst)
-    -- if not in light or off screen (off screen is so it doesnt get stuck forever on things like firefly/pighouse light), then it can stand up and walk around
-    return (not inst.LightWatcher:IsInLight()) or (TheWorld.state.isnight and (not TheWorld.state.isfullmoon) and not inst:IsNearPlayer(30))
+	-- if not in light or off screen (off screen is so it doesnt get stuck forever on things like firefly/pighouse light), then it can stand up and walk around
+	return (not inst.LightWatcher:IsInLight()) or (TheWorld.state.isnight and (not TheWorld.state.isfullmoon) and not inst:IsNearPlayer(30))
 end
 
 local sounds =
 {
-    hit         = "dontstarve/creatures/together/stagehand/hit",
-    awake_pre   = "dontstarve/creatures/together/stagehand/awake_pre",
-    footstep    = "dontstarve/creatures/together/stagehand/footstep",
+    hit              = "dontstarve/creatures/together/stagehand/hit",
+	awake_pre        = "dontstarve/creatures/together/stagehand/awake_pre",
+	footstep         = "dontstarve/creatures/together/stagehand/footstep",
 }
 
 local function ChangePhysics(inst, is_standing)
-    if is_standing then
-        if inst:HasTag("blocker") then
-            inst:RemoveTag("blocker")
-            inst.Physics:SetMass(100)
-            inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)
-            inst.Physics:CollidesWith(COLLISION.WORLD)
-        end
-    elseif not inst:HasTag("blocker") then
-        inst:AddTag("blocker")
-        inst.Physics:SetMass(0)
-        inst.Physics:SetCollisionGroup(COLLISION.OBSTACLES)
-        inst.Physics:ClearCollisionMask()
-        inst.Physics:CollidesWith(COLLISION.ITEMS)
-        inst.Physics:CollidesWith(COLLISION.OBSTACLES)
-        inst.Physics:CollidesWith(COLLISION.SMALLOBSTACLES)
-        inst.Physics:CollidesWith(COLLISION.CHARACTERS)
-        inst.Physics:CollidesWith(COLLISION.GIANTS)
-    end
+	local phys = inst.Physics
+
+	if is_standing then
+		inst:RemoveTag("blocker")
+
+		phys:SetMass(100)
+		phys:SetFriction(0)
+		phys:SetDamping(5)
+		phys:SetCollisionGroup(COLLISION.CHARACTERS)
+		phys:ClearCollisionMask()
+		phys:CollidesWith(COLLISION.WORLD)
+	else
+		inst:AddTag("blocker")
+	    
+		local phys = inst.entity:AddPhysics()
+		phys:SetMass(0) 
+		phys:SetCollisionGroup(COLLISION.OBSTACLES)
+		phys:ClearCollisionMask()
+	end
+
+	phys:CollidesWith(COLLISION.ITEMS)
+	phys:CollidesWith(COLLISION.OBSTACLES)
+	phys:CollidesWith(COLLISION.SMALLOBSTACLES)
+	phys:CollidesWith(COLLISION.CHARACTERS)
+	phys:CollidesWith(COLLISION.GIANTS)
 end
 
-local function fn()
-    local inst = CreateEntity()
+local function MakeStagehand(name)
 
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddSoundEmitter()
-    inst.entity:AddLightWatcher()
-    inst.entity:AddPhysics()
-    inst.entity:AddNetwork()
+    local function fn()
+        local inst = CreateEntity()
 
-    inst.Transform:SetFourFaced()
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddSoundEmitter()
+        inst.entity:AddNetwork()
+	    inst.entity:AddLightWatcher()
 
-    inst.Physics:SetCapsule(.5, 1)
-    inst.Physics:SetFriction(0)
-    inst.Physics:SetDamping(5)
-    ChangePhysics(inst, false)
+        inst.Transform:SetFourFaced()
 
-    inst.AnimState:SetBank("stagehand")
-    inst.AnimState:SetBuild("stagehand")
-    inst.AnimState:PlayAnimation("idle")
+        local phys = inst.entity:AddPhysics()
+        phys:SetCapsule(0.5, 1)
+		phys:SetFriction(0)
+		phys:SetDamping(5)
+        ChangePhysics(inst, false)
+        
+        inst.AnimState:SetBank(name)
+        inst.AnimState:SetBuild(name)
+        inst.AnimState:PlayAnimation("idle")
 
-    inst:AddTag("notraptrigger")
-    inst:AddTag("antlion_sinkhole_blocker")
+        inst:AddTag("notraptrigger")
 
-    MakeSnowCoveredPristine(inst)
+	    MakeSnowCoveredPristine(inst)
 
-    inst.entity:SetPristine()
+        inst.entity:SetPristine()
 
-    if not TheWorld.ismastersim then
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+	    MakeSmallPropagator(inst)
+		MakeHauntableWork(inst)
+	    MakeSnowCovered(inst)
+
+		inst:AddComponent("burnable")
+		inst.components.burnable:SetFXLevel(2)
+		inst.components.burnable:SetBurnTime(10)
+		inst.components.burnable:AddBurnFX("campfirefire", Vector3(0, 0, 0), "swap_fire")
+
+		inst:AddComponent("workable")
+		inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
+		inst.components.workable:SetWorkLeft(TUNING.STAGEHAND_HITS_TO_GIVEUP)
+		--inst.components.workable:SetOnFinishCallback(onhammered)
+		inst.components.workable:SetOnWorkCallback(onworked)
+
+        inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
+        inst.components.locomotor.walkspeed = 8
+        inst.sounds = sounds
+
+		inst.CanStandUp = CanStandUp
+		inst.ChangePhysics = ChangePhysics
+
+        inst:SetStateGraph("SGstagehand")
+        inst:SetBrain(brain)
+
+	    inst:AddComponent("inspectable")
+        inst.components.inspectable.getstatus = getstatus
+
+        inst:AddComponent("lootdropper")
+        inst.components.lootdropper:SetChanceLootTable('stagehand_creature')
+
         return inst
     end
 
-    MakeSmallPropagator(inst)
-    MakeHauntableWork(inst)
-    MakeSnowCovered(inst)
-
-    inst:AddComponent("burnable")
-    inst.components.burnable:SetFXLevel(2)
-    inst.components.burnable:SetBurnTime(10)
-    inst.components.burnable:AddBurnFX("campfirefire", Vector3(0, 0, 0), "swap_fire")
-
-    inst:AddComponent("workable")
-    inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
-    inst.components.workable:SetWorkLeft(TUNING.STAGEHAND_HITS_TO_GIVEUP)
-    --inst.components.workable:SetOnFinishCallback(onhammered)
-    inst.components.workable:SetOnWorkCallback(onworked)
-
-    inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
-    inst.components.locomotor.walkspeed = 8
-    inst.sounds = sounds
-
-    inst.CanStandUp = CanStandUp
-    inst.ChangePhysics = ChangePhysics
-
-    inst:SetStateGraph("SGstagehand")
-    inst:SetBrain(brain)
-
-    inst:AddComponent("inspectable")
-    inst.components.inspectable.getstatus = getstatus
-
-    inst:AddComponent("lootdropper")
-    inst.components.lootdropper:SetChanceLootTable('stagehand_creature')
-
-    return inst
+    return Prefab(name, fn, assets, prefabs)
 end
 
-return Prefab("stagehand", fn, assets, prefabs)
+return MakeStagehand("stagehand")

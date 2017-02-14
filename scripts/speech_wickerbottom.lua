@@ -118,13 +118,6 @@ return
     ANNOUNCE_DIG_DISEASE_WARNING = "Caught it just in time. The roots were nearly rotten.",
     ANNOUNCE_PICK_DISEASE_WARNING = "This plant is exhibiting concerning signs.",
     ANNOUNCE_MOUNT_LOWHEALTH = "My mount requires attention of the medical variety.",
-    ANNOUNCE_ANTLION_SINKHOLE = "The ground will soon give way.",
-    ANNOUNCE_ANTLION_TRIBUTE =
-    {
-        "For you, great Panthera auropunctata.",
-        "It ought to be more docile now.",
-        "The great Panthera auropunctata is tamed.",
-    },
     ANNOUNCE_NODANGERAFK = "Were I to lose focus now I'd be sure to sustain bodily injury.",
     ANNOUNCE_NODANGERGIFT = "Presents are not a top survival priority at this moment.",
     ANNOUNCE_NOMOUNTEDGIFT = "I do believe I should dismount first.",
@@ -303,13 +296,7 @@ return
         TURF_BADLANDS = "The ground. You step on it.",
 
         LIGHTER = "Ah, a mechanical tool for fire starting. How useful.",
-        ANTLION = 
-        {
-            GENERIC  = "Ah. You must be behind all the seismic activity.",
-            VERYHAPPY = "It has been mollified with tributes.",
-            UNHAPPY = "Panthera auropunctata is looking irritable.",
-        },
-        ANTLIONTRINKET = "It appears to be a child's plaything.",
+        
         ABIGAIL_FLOWER =
         {
             GENERIC = "Ah... I'm not familiar with this strain of flower.",
@@ -625,22 +612,7 @@ return
         GIFT = "Oh goodness, how lovely!",
         GIFTWRAP = "Wrapping presents is soothing work, isn't it?",
         POTTEDFERN = "A potted plant.",
-        SUCCULENT_POTTED = "I wonder how my garden is doing without me.",
-        SUCCULENT_PLANT = "Uniquely adapted to arid climates.",
-        SUCCULENT_PICKED = "It will wither if not replanted.",
         SENTRYWARD = "Ah! A scrying orb.",
-        TOWNPORTAL =
-        {
-            GENERIC = "It deconstructs the subject and reconstitutes them elsewhere.",
-            ACTIVE = "The path is open.",
-        },
-        TOWNPORTALTALISMAN = 
-        {
-			GENERIC = "A bezoar formed in the gut of a large beast.",
-			ACTIVE = "The bezoar's magic has been activated.",
-		},
-        WETPAPER = "This may prove useful.",
-        WETPOUCH = "Perhaps something useful lies inside?",
         MOONROCK_PIECES = "What a perplexing transformation.",
         MOONBASE =
         {
@@ -1091,11 +1063,6 @@ return
             LOW = "The cooling process has begun.",
             NORMAL = "Much too hot to touch.",
         },
-        CAVEIN_BOULDER =
-        {
-            GENERIC = "It looks as though it can be moved.",
-            RAISED = "We must clear the surrounding boulders first.",
-        },
         ROCK = "A large sedimentary rock.",
         PIGKING = "He appears to be the leader of the village.",
         RATATOUILLE = "Nicoise, so nutritious!",
@@ -1272,7 +1239,6 @@ return
         BUGNET = "The tool of entomologists",
         PANFLUTE = "Hollow reeds with harmonic resonance.",
         ONEMANBAND = "An impressive improvement to the traditional pipe and tabor.",
-        OASISLAKE = "It could support a small ecosystem.",
         BIRDTRAP = "A simple clap-trap for birds.",
         GEARS = "Various cogs and wheels.",
         STAGEHAND =
@@ -1809,8 +1775,6 @@ return
         {
             GENERIC = "A tuft of a graminoid.",
         },
-        GOGGLESHAT = "I can't imagine these improving visibility.",
-        DESERTHAT = "Much more effective than reading glasses.",
         BASALT = "Material of great density!",
         HOUNDMOUND = "Those bones are foreboding.",
         MERM = "A piscean biped!",
@@ -1994,7 +1958,6 @@ return
     ANNOUNCE_CRAFTING_FAIL = "I can't make that now.",
 
     ANNOUNCE_WORMHOLE = "A detailed lesson in biology!",
-    ANNOUNCE_TOWNPORTALTELEPORT = "Goodness! That's one way to travel.",
 
     ANNOUNCE_HUNT_LOST_TRAIL = "The trail is no longer distinguishable.",
     ANNOUNCE_HUNT_LOST_TRAIL_SPRING = "The trail's been washed away by the precipitation.",
@@ -2017,7 +1980,6 @@ return
     ANNOUNCE_KNOCKEDOUT = "Oof, that's one way to get some rest, I suppose.",
     ANNOUNCE_LOWRESEARCH = "Not a great resource, but there were useful bits.",
     ANNOUNCE_DEERCLOPS = "That sounds quite large!",
-    ANNOUNCE_CAVEIN = "The rocks above will soon give way.",
     ANNOUNCE_MOSQUITOS = "Cursed bloodsuckers!",
     ANNOUNCE_NODAYSLEEP = "I can hardly get to sleep at night, nevermind during the day.", 
     ANNOUNCE_INSUFFICIENTFERTILIZER = "It needs just a touch more fecal assistance, I'd say.",

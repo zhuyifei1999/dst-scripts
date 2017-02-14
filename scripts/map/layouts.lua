@@ -743,24 +743,22 @@ local ExampleLayout =
 
 	["BlueMushyStart"] = StaticLayout.Get("map.static_layouts/blue_mushy_entrance"),
 	
-	["AntlionSpawningGround"] = 
+	["DeerSpawningGround"] = 
 	{
 		type = LAYOUT.STATIC,
 		layout = 
 		{
-			antlion_spawner = {{x=0, y=0}},
+			deerspawningground = {{x=0, y=0}},
 		},
-		ground_types = {GROUND.DESERT_DIRT, GROUND.DIRT},
-		ground =
-			{
-				{1, 2, 1, 2},
-				{1, 1, 1, 2},
-				{1, 1, 1, 1},
-				{2, 1, 2, 1},
-			},
-		start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
-		fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
-		layout_position = LAYOUT_POSITION.CENTER,
+	},
+	
+	["DeerSpawningGround2"] = 
+	{
+		type = LAYOUT.STATIC,
+		layout = 
+		{
+			deerspawningground = {{x=0, y=0}},
+		},
 	},
 	
 
@@ -807,13 +805,6 @@ local ExampleLayout =
 		},
 	}),
 
-	["Oasis"] = StaticLayout.Get("map/static_layouts/oasis",
-	{
-		start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
-		fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
-		layout_position = LAYOUT_POSITION.CENTER,
-		disable_transform = true
-	}),
 }
 
 return {Layouts = ExampleLayout}
