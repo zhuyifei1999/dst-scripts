@@ -129,6 +129,10 @@ local prefabs =
     "shadow_bishop",
     "beequeenhive",
     "klaus_sack",
+    "antlion_spawner",
+    "oasislake",
+    "succulent_plant",
+    "audio_test_prefab",
 }
 
 local monsters =
@@ -236,6 +240,8 @@ local function master_postinit(inst)
     inst:AddComponent("chessunlocks")
     inst:AddComponent("retrofitforestmap_anr")
     inst:AddComponent("specialeventsetup")
+    inst:AddComponent("townportalregistry")
+    inst:AddComponent("sandstorms")
 
     if METRICS_ENABLED then
         inst:AddComponent("worldoverseer")

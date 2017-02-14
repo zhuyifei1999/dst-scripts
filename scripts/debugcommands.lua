@@ -204,3 +204,7 @@ function d_cycle_clothing()
         end)
 
 end
+
+function d_sinkhole()
+	c_spawn("antlion_sinkhole"):PushEvent("startcollapse")
+end

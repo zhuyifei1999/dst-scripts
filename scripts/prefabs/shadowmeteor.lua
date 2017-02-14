@@ -12,7 +12,15 @@ local prefabs =
     "meteorwarning",
     "burntground",
     "splash_ocean",
+    "ground_chunks_breaking",
     "rock_moon",
+    "rocks",
+    "flint",
+    "moonrocknugget",
+    "rock_flintless",
+    "rock_flintless_med",
+    "rock_flintless_low",
+    "rock1",
 }
 
 local SMASHABLE_WORK_ACTIONS =
@@ -71,7 +79,7 @@ local function onexplode(inst)
             --     also, don't dig up spawners
             if v:IsValid() and not v:IsInLimbo() then
                 if v.components.workable ~= nil then
-                    if v.sg == nil or not v.sg:HasStateTag("busy") then
+                    if v.components.workable:CanBeWorked() and not (v.sg ~= nil and v.sg:HasStateTag("busy")) then
                         local work_action = v.components.workable:GetWorkAction()
                         --V2C: nil action for campfires
                         if (work_action == nil or SMASHABLE_WORK_ACTIONS[work_action.id]) and
@@ -93,10 +101,8 @@ local function onexplode(inst)
                     if (inst.peripheral or math.random() <= TUNING.METEOR_SMASH_INVITEM_CHANCE)
                         and not v:HasTag("irreplaceable")  then
 
-                        inst.SoundEmitter:PlaySound("dontstarve/common/stone_drop")
-                        local x1, y1, z1 = v.Transform:GetWorldPosition()
-                        local breaking = SpawnPrefab("ground_chunks_breaking") --spawn break effect
-                        breaking.Transform:SetPosition(x1, 0, z1)
+                        local vx, vy, vz = v.Transform:GetWorldPosition()
+                        SpawnPrefab("ground_chunks_breaking").Transform:SetPosition(vx, 0, vz)
                         v:Remove()
                     else
                         Launch(v, inst, TUNING.LAUNCH_SPEED_SMALL)

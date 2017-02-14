@@ -135,6 +135,10 @@ local function OnActionFailed(parent)
     SetDirty(parent.player_classified.isperformactionsuccess, false)
 end
 
+local function OnCarefulWalking(parent, data)
+    parent.player_classified.iscarefulwalking:set(data.careful)
+end
+
 local function OnWormholeTravel(parent, wormholetype)
     SetDirty(parent.player_classified.wormholetravelevent, wormholetype)
 end
@@ -471,6 +475,12 @@ local function OnPausePredictionFramesDirty(inst)
     end
 end
 
+local function OnIsCarefulWalkingDirty(inst)
+    if inst._parent ~= nil then
+        inst._parent:PushEvent("carefulwalking", { careful = inst.iscarefulwalking:value() })
+    end
+end
+
 local function OnPlayerCameraShake(inst)
     if inst._parent ~= nil and inst._parent.HUD ~= nil then
         TheCamera:Shake(
@@ -497,6 +507,12 @@ end
 --------------------------------------------------------------------------
 --Common interface
 --------------------------------------------------------------------------
+
+local function OnSandstormLevelDirty(inst)
+    if inst._parent ~= nil then
+        inst._parent:PushEvent("sandstormlevel", { level = inst.sandstormlevel:value() / 7 })
+    end
+end
 
 local function OnBuildEvent(inst)
     if inst._parent ~= nil and TheFocalPoint.entity:GetParent() == inst._parent then
@@ -746,6 +762,7 @@ local function RegisterNetListeners(inst)
         inst:ListenForEvent("repair", OnRepairSuccess, inst._parent)
         inst:ListenForEvent("performaction", OnPerformAction, inst._parent)
         inst:ListenForEvent("actionfailed", OnActionFailed, inst._parent)
+        inst:ListenForEvent("carefulwalking", OnCarefulWalking, inst._parent)
         inst:ListenForEvent("wormholetravel", OnWormholeTravel, inst._parent)
         inst:ListenForEvent("makefriend", OnMakeFriend, inst._parent)
         inst:ListenForEvent("feedincontainer", OnFeedInContainer, inst._parent)
@@ -772,6 +789,7 @@ local function RegisterNetListeners(inst)
         inst:ListenForEvent("bufferedbuildsdirty", OnBufferedBuildsDirty)
         inst:ListenForEvent("isperformactionsuccessdirty", OnIsPerformActionSuccessDirty)
         inst:ListenForEvent("pausepredictionframesdirty", OnPausePredictionFramesDirty)
+        inst:ListenForEvent("iscarefulwalkingdirty", OnIsCarefulWalkingDirty)
         inst:ListenForEvent("isghostmodedirty", OnGhostModeDirty)
         inst:ListenForEvent("playerhuddirty", OnPlayerHUDDirty)
         inst:ListenForEvent("playercamerashake", OnPlayerCameraShake)
@@ -793,6 +811,7 @@ local function RegisterNetListeners(inst)
         end
     end
 
+    inst:ListenForEvent("sandstormleveldirty", OnSandstormLevelDirty)
     inst:ListenForEvent("builder.build", OnBuildEvent)
     inst:ListenForEvent("builder.damaged", OnBuilderDamagedEvent)
     inst:ListenForEvent("builder.learnrecipe", OnLearnRecipeEvent)
@@ -807,6 +826,7 @@ local function RegisterNetListeners(inst)
     inst:ListenForEvent("leader.makefriend", OnMakeFriendEvent)
     inst:ListenForEvent("eater.feedincontainer", OnFeedInContainerEvent)
     inst:ListenForEvent("morguedirty", OnMorgueDirty)
+    OnSandstormLevelDirty(inst)
     OnGiftsDirty(inst)
     OnMountHurtDirty(inst)
     OnGhostModeDirty(inst)
@@ -881,6 +901,9 @@ local function fn()
     inst.maxmoisture = net_ushortint(inst.GUID, "moisture.maxmoisture")
     inst.moistureratescale = net_tinybyte(inst.GUID, "moisture.ratescale", "moisturedirty")
     inst.maxmoisture:set(100)
+
+    --StormWatcher variables
+    inst.sandstormlevel = net_tinybyte(inst.GUID, "stormwatcher.sandstormlevel", "sandstormleveldirty")
 
     --PlayerController variables
     inst._pausepredictiontask = nil
@@ -993,6 +1016,9 @@ local function fn()
     inst.externalspeedmultiplier = net_float(inst.GUID, "locomotor.externalspeedmultiplier")
     inst.runspeed:set(TUNING.WILSON_RUN_SPEED)
     inst.externalspeedmultiplier:set(1)
+
+    --CarefulWalking variables
+    inst.iscarefulwalking = net_bool(inst.GUID, "carefulwalking.careful", "iscarefulwalkingdirty")
 
     --Morgue variables
     inst.isdeathbypk = net_bool(inst.GUID, "morgue.isdeathbypk", "morguedirty")

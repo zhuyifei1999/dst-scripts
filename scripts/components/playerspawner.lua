@@ -260,6 +260,9 @@ function self:SpawnAtLocation(inst, player, x, y, z, isloading)
 
     print(string.format("Spawning player at: [%s] (%2.2f, %2.2f, %2.2f)", isloading and "Load" or MODES[_mode], x, y, z))
     player.Physics:Teleport(x, y, z)
+    if player.components.areaaware ~= nil then
+        player.components.areaaware:UpdatePosition(x, y, z)
+    end
 
     -- Spawn a light if it's dark
     if not inst.state.isday and #TheSim:FindEntities(x, y, z, 4, { "spawnlight" }) <= 0 then

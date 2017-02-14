@@ -101,5 +101,5 @@ local states =
     
 }
 
-return StateGraph("shadow_bishop", states, events, "idle", actionhandlers)
+return StateGraph("moondial", states, events, "idle", actionhandlers)
 
