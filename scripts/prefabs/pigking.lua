@@ -148,6 +148,8 @@ local function fn()
     --trader (from trader component) added to pristine state for optimization
     inst:AddTag("trader")
 
+    inst:AddTag("antlion_sinkhole_blocker")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

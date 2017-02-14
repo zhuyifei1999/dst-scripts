@@ -125,6 +125,13 @@ return {
 	ANNOUNCE_WORMS = "Oh dear. I know what's making that sound.",
     ANNOUNCE_NOSLEEPONFIRE = "That might not be the best idea.",
 	ANNOUNCE_NODANGERSIESTA = "They're hot on my heels!",
+	ANNOUNCE_ANTLION_SINKHOLE = "My world is crumbling!",
+	ANNOUNCE_ANTLION_TRIBUTE =
+	{
+        "May this tribute sate the beast.",
+        "Does this entertain you, beast?",
+        "What a chore.",
+	},
 	ANNOUNCE_NONIGHTSIESTA = "It's sleep time, not siesta time.",
 	ANNOUNCE_NONIGHTSIESTA_CAVE = "It's a bit creepy out for that.",
 	ANNOUNCE_NOHUNGERSIESTA = "Traditionally, a siesta comes after eating, not before.",
@@ -144,6 +151,7 @@ return {
 	ANNOUNCE_HOT = "My heart can't stand the heat!",
 	ANNOUNCE_CRAFTING_FAIL = "Er... I can't do that.",
 	ANNOUNCE_DEERCLOPS = "I hear one of them coming.",
+	ANNOUNCE_CAVEIN = "The ceiling is going to collapse!",
 	ANNOUNCE_DUSK = "It'll be dark soon. Charlie will be waking up.",
 	ANNOUNCE_EAT =
 	{
@@ -193,6 +201,7 @@ return {
 	ANNOUNCE_TRAP_WENT_OFF = "Ack!",
 	ANNOUNCE_UNIMPLEMENTED = "Hmm, not quite done.",
 	ANNOUNCE_WORMHOLE = "Yech. It's horrible in there.",
+	ANNOUNCE_TOWNPORTALTELEPORT = "It's about time.",
 	ANNOUNCE_CANFIX = "\nI think I can fix this!",
 	ANNOUNCE_NOSANITY = "I have the worst headache!",
 	ANNOUNCE_NOFUEL = "I need some nightmare fuel.",
@@ -384,7 +393,13 @@ return {
 		--OBSIDIANMACHETE = "This seems like a dangerous thing to farm with.",
 		--BOOK_METEOR = "Reading strange books has always worked out for me before.",
 		LIGHTER = "It does the job, I suppose.",
-		
+		ANTLION = 
+		{
+			GENERIC = "Have you no pride?",
+			VERYHAPPY = "We've placated it for now.",
+			UNHAPPY = "It's going to wreak havoc on my world.",
+		},
+		ANTLIONTRINKET = "I'll cross it off my bucket list.",
 		ABIGAIL_FLOWER =
 		{
 			GENERIC = "Hm? What a familiar presence.",
@@ -665,7 +680,22 @@ return {
 		GIFT = "An elegantly wrapped social obligation.",
         GIFTWRAP = "For wrapping odds and ends...",
 		POTTEDFERN = "How quaint.",
+		SUCCULENT_POTTED = "You're hard to kill. I respect that.",
+        SUCCULENT_PLANT = "Doesn't look that succulent to me.",
+        SUCCULENT_PICKED = "It didn't put up much of a fight.",
 		SENTRYWARD = "This is a conduit for strong revelatory magicks.",
+		TOWNPORTAL =
+        {
+			GENERIC = "Walking gets tiresome, you know.",
+			ACTIVE = "The magic beckons!",
+		},
+        TOWNPORTALTALISMAN = 
+        {
+			GENERIC = "An impure orange gem.",
+			ACTIVE = "The magic beckons!",
+		},
+		WETPAPER = "It's absorbent, at any rate.",
+		WETPOUCH = "There's something inside it.",
         MOONROCK_PIECES = "This might be bad.",
         MOONBASE =
         {
@@ -1136,6 +1166,8 @@ return {
 		{
 			GENERIC = "That's not doing anyone any good.",
 		},
+		GOGGLESHAT = "Not my sort of fashion.",
+        DESERTHAT = "Function over form.",
 		DIRTPILE = "That looks out-of-place.",
 		DIVININGROD =
 		{
@@ -1458,6 +1490,7 @@ return {
 		NIGHTSWORD = "Snicker-snack!",
 		NITRE = "One third of the way there...",
 		ONEMANBAND = "It has a good beat, and you can dance to it.",
+		OASISLAKE = "Didn't think I'd ever come back here.",
 		PANDORASCHEST = "It's a trap.",
 		PANFLUTE = "I'm going to sing a song of madness.",
 		PAPYRUS = "A blank canvas.",
@@ -1565,6 +1598,11 @@ return {
 			LOW = "The fires are cooling.",
 			NORMAL = "It's hot.",
 		},
+		CAVEIN_BOULDER =
+        {
+            GENERIC = "Well it's not going to move itself.",
+            RAISED = "We must deal with the others first.",
+        },
 		ROCK = "It's a rock.",
 		ROCKS = "Hmmm. Now what do I do with them?",
         ROOK = "A castle for my home.",

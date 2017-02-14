@@ -107,7 +107,7 @@ function DefaultBurntStructureFn(inst)
     end
 end
 
-local burnfx = 
+local burnfx =
 {
     character = "character_fire",
     generic = "fire",
@@ -224,7 +224,7 @@ function MakeLargeBurnableCharacter(inst, sym, offset)
     inst.components.propagator.acceptsheat = false
 end
 
-local shatterfx = 
+local shatterfx =
 {
     character = "shatter",
 }
@@ -381,7 +381,7 @@ function ChangeToObstaclePhysics(inst)
     local phys = inst.Physics
     phys:SetCollisionGroup(COLLISION.OBSTACLES)
     phys:ClearCollisionMask()
-    phys:SetMass(0) 
+    phys:SetMass(0)
     --phys:CollidesWith(COLLISION.GROUND)
     phys:CollidesWith(COLLISION.ITEMS)
     phys:CollidesWith(COLLISION.CHARACTERS)
@@ -403,7 +403,7 @@ function MakeObstaclePhysics(inst, rad, height)
     local phys = inst.entity:AddPhysics()
     --this is lame. Bullet wants 0 mass for static objects, 
     -- for for some reason it is slow when we do that
-    
+
     -- Doesnt seem to slow anything down now.
     phys:SetMass(0) 
     phys:SetCapsule(rad,height)
@@ -418,11 +418,11 @@ function MakeSmallObstaclePhysics(inst, rad, height)
     height = height or 2
     inst:AddTag("blocker")
     local phys = inst.entity:AddPhysics()
-    --this is lame. Bullet wants 0 mass for static objects, 
+    --this is lame. Bullet wants 0 mass for static objects,
     -- for for some reason it is slow when we do that
-    
+
     -- Doesnt seem to slow anything down now.
-    phys:SetMass(0) 
+    phys:SetMass(0)
     phys:SetCapsule(rad,height)
     phys:SetCollisionGroup(COLLISION.SMALLOBSTACLES)
     phys:ClearCollisionMask()
@@ -461,7 +461,7 @@ function MakeSnowCovered(inst)
     if not inst:HasTag("SnowCovered") then
         MakeSnowCoveredPristine(inst)
     end
-    
+
     if TheWorld.state.issnowcovered then
         inst.AnimState:Show("snow")
     else
@@ -1002,27 +1002,27 @@ end
 
 function AddHauntableDropItemOrWork(inst)
     if not inst.components.hauntable then inst:AddComponent("hauntable") end
-	inst.components.hauntable.cooldown = TUNING.HAUNT_COOLDOWN_SMALL
+    inst.components.hauntable.cooldown = TUNING.HAUNT_COOLDOWN_SMALL
     inst.components.hauntable:SetOnHauntFn(function(inst, haunter)
-		local ret = false
+        local ret = false
         --#HAUNTFIX
-		--if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
-			--if inst.components.container then
-				--local item = inst.components.container:FindItem(function(item) return not item:HasTag("nosteal") end)
-				--if item then
-					--inst.components.container:DropItem(item)
-					--inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
-					--ret = true
-				--end
-			--end
-		--end
-		--if math.random() <= TUNING.HAUNT_CHANCE_VERYRARE then
-			--if inst.components.workable then
-				--inst.components.workable:WorkedBy(haunter, 1)
-				--inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
-				--ret = true
-			--end
-		--end
-		return ret
-	end)
+        --if math.random() <= TUNING.HAUNT_CHANCE_OCCASIONAL then
+            --if inst.components.container then
+                --local item = inst.components.container:FindItem(function(item) return not item:HasTag("nosteal") end)
+                --if item then
+                    --inst.components.container:DropItem(item)
+                    --inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
+                    --ret = true
+                --end
+            --end
+        --end
+        --if math.random() <= TUNING.HAUNT_CHANCE_VERYRARE then
+            --if inst.components.workable then
+                --inst.components.workable:WorkedBy(haunter, 1)
+                --inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
+                --ret = true
+            --end
+        --end
+        return ret
+    end)
 end
