@@ -208,7 +208,7 @@ local function PushSway(inst, monster, monsterpost, skippre)
     elseif inst.monster then
         inst.sg:GoToState("gnash_idle")
     else
-        inst.AnimState:PushAnimation(math.random < .5 and inst.anims.sway1 or inst.anims.sway2, true)
+        inst.AnimState:PushAnimation(math.random() < .5 and inst.anims.sway1 or inst.anims.sway2, true)
     end
 end
 
