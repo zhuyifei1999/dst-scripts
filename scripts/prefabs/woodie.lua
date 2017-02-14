@@ -530,6 +530,9 @@ local function onbecameghost(inst)
     end
 
     inst.components.beaverness:StopTimeEffect()
+    if inst.components.beaverness:GetPercent() < TUNING.WOODIE_TRANSFORM_TO_BEAVER then
+        inst.components.beaverness:SetPercent(TUNING.WOODIE_TRANSFORM_TO_BEAVER)
+    end
 
     if inst._wasnomorph ~= nil then
         inst._wasnomorph = nil

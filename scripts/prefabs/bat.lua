@@ -71,10 +71,6 @@ local function OnAttacked(inst, data)
     end
 end
 
-local function RememberLocation(inst)
-    inst.components.knownlocations:RememberLocation("home", inst:GetPosition())
-end
-
 local function OnSleepGoHome(inst)
     inst._hometask = nil
     local home = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
@@ -94,16 +90,32 @@ local function OnIsDay(inst, isday)
     end
 end
 
-local function OnEntitySleep(inst)
-    inst:WatchWorldState("isday", OnIsDay)
-    OnIsDay(inst, TheWorld.state.isday)
-end
-
-local function OnEntityWake(inst)
+local function StopWatchingDay(inst)
     inst:StopWatchingWorldState("isday", OnIsDay)
     if inst._hometask ~= nil then
         inst._hometask:Cancel()
         inst._hometask = nil
+    end
+end
+
+local function StartWatchingDay(inst)
+    inst:WatchWorldState("isday", OnIsDay)
+    OnIsDay(inst, TheWorld.state.isday)
+end
+
+local function OnEntitySleep(inst)
+    inst:ListenForEvent("enterlimbo", StopWatchingDay)
+    inst:ListenForEvent("exitlimbo", StartWatchingDay)
+    if not inst:IsInLimbo() then
+        StartWatchingDay(inst)
+    end
+end
+
+local function OnEntityWake(inst)
+    inst:RemoveEventCallback("enterlimbo", StopWatchingDay)
+    inst:RemoveEventCallback("exitlimbo", StartWatchingDay)
+    if not inst:IsInLimbo() then
+        StopWatchingDay(inst)
     end
 end
 
@@ -119,10 +131,9 @@ local function fn()
     MakeGhostPhysics(inst, 1, .5)
 
     inst.DynamicShadow:SetSize(1.5, .75)
-    inst.Transform:SetFourFaced()
 
-    local scaleFactor = 0.75
-    inst.Transform:SetScale(scaleFactor, scaleFactor, scaleFactor)
+    inst.Transform:SetFourFaced()
+    inst.Transform:SetScale(.75, .75, .75)
 
     inst.AnimState:SetBank("bat")
     inst.AnimState:SetBuild("bat_basic")
@@ -184,7 +195,6 @@ local function fn()
     inst:AddComponent("inspectable")
 
     inst:AddComponent("knownlocations")
-    inst:DoTaskInTime(1*FRAMES, RememberLocation)
 
     MakeMediumBurnableCharacter(inst, "bat_body")
     MakeMediumFreezableCharacter(inst, "bat_body")

@@ -10,10 +10,10 @@ local Widget = require "widgets/widget"
 require "os"
 
 local ANR_BETA_COUNTDOWN_LAYOUT = BRANCH == "staging" or BRANCH == "dev"
-local ANR_BETA_COUNTDOWN_DATE = nil --{year = 2016, day = 8, month = 12, hour = 23}
-local ANR_BETA_COUNTDOWN_MODE = "released" -- "text", "image", "reveal", "released"
-local ANR_BETA_COUNTDOWN_IMAGE = "silhouette_beta_6c" -- "silhouette_beta_1", "silhouette_beta_2"
-local ANR_BETA_COUNTDOWN_NAME = "\"Year of the Gobbler\"" -- nil or "\"Update Name\""
+local ANR_BETA_COUNTDOWN_DATE = {year = 2017, day = 2, month = 2, hour = 23}    -- nil, {year = 2016, day = 8, month = 12, hour = 23}
+local ANR_BETA_COUNTDOWN_MODE = "reveal"                                        -- "text", "image", "reveal", "released"
+local ANR_BETA_COUNTDOWN_IMAGE = "silhouette_beta_7"                            -- "silhouette_beta_1", "silhouette_beta_2"
+local ANR_BETA_COUNTDOWN_NAME = "\"Against The Grain\""                         -- nil or "\"Update Name\""
 
 local WorldGenScreen = require "screens/worldgenscreen"
 local PopupDialogScreen = require "screens/popupdialog"
@@ -42,6 +42,7 @@ local ThankYouPopup = require "screens/thankyoupopup"
 
 local Stats = require("stats")
 
+local SkinGifts = require("skin_gifts")
 
 
 local rcol = RESOLUTION_X/2 -170
@@ -909,15 +910,7 @@ function MultiplayerMainScreen:FinishedFadeIn()
 	local items = {} -- early access thank you gifts
     local entitlement_items = TheInventory:GetUnopenedEntitlementItems()
 	for _,item in pairs(entitlement_items) do
-		if item.item_type == "firepit_hole" then
-			table.insert(items, {item=item.item_type, item_id=item.item_id, gifttype="EARLY_ACCESS"})
-		elseif item.item_type == "torch_shadow" then
-			table.insert(items, {item=item.item_type, item_id=item.item_id, gifttype="ARG"})
-		elseif item.item_type == "winterhat_rooster" then
-			table.insert(items, {item=item.item_type, item_id=item.item_id, gifttype="LUNAR"})
-		else
-			table.insert(items, {item=item.item_type, item_id=item.item_id, gifttype="DEFAULT"})
-		end
+		table.insert(items, { item = item.item_type, item_id = item.item_id, gifttype = SkinGifts.types[item.item_type] or "DEFAULT" })
 	end
 	
     if #items > 0 then

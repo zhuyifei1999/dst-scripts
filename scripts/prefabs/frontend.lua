@@ -94,7 +94,6 @@ local assets =
     Asset("ANIM", "anim/chest_bg.zip"),
 
     Asset("ANIM", "anim/puff_spawning.zip"),
-    Asset("ANIM", "anim/sporecloud.zip"),
 
     Asset("DYNAMIC_ATLAS", "images/thankyou_item_popup.xml"),
     Asset("ASSET_PKGREF", "images/thankyou_item_popup.tex"),

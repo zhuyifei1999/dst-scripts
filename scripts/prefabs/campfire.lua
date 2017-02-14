@@ -114,6 +114,7 @@ local function fn()
     --inst.AnimState:SetRayTestOnBB(true)
 
     inst:AddTag("campfire")
+    inst:AddTag("iceblocker")
 
     --cooker (from cooker component) added to pristine state for optimization
     inst:AddTag("cooker")

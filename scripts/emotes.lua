@@ -78,6 +78,7 @@ local function CreateEmoteCommand(emotedef)
                 player:PushEvent("emote", emotedef.data)
             end
         end,
+        displayname = emotedef.displayname
     }
 end
 

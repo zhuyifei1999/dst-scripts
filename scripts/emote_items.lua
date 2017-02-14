@@ -19,6 +19,25 @@ EMOTE_ITEMS =
 			sounddelay = 0.26666666666667,
 			soundoverride = "eye_rub_vo",
 		},
+		aliases =
+		{
+			"eyerub",
+		},
+	},
+	emote_swoon =
+	{
+		rarity = "Loyal",
+		cmd_name = "swoon",
+		skin_build = "emote_swoon",
+		type = "emote",
+		data =
+		{
+			item_type = "emote_swoon",
+			requires_validation = true,
+			anim = "emote_swoon",
+			fx = false,
+			loop = false,
+		},
 	},
 	emote_yawn =
 	{

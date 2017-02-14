@@ -82,12 +82,8 @@ local function OnModActionComponentsDirty(inst, modname)
     if inst.modactioncomponents == nil then
         inst.modactioncomponents = {}
     end
-    if inst.modactioncomponents[modname] == nil then
-        inst.modactioncomponents[modname] = {}
-    end
     inst.modactioncomponents[modname] = inst.actionreplica.modactioncomponents[modname]:value()
 end
-
 
 local function SerializeInherentActions(inst)
     if inst.actionreplica ~= nil then

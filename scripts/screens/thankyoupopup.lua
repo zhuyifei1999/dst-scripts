@@ -7,6 +7,8 @@ local Widget = require "widgets/widget"
 local UIAnim = require "widgets/uianim"
 local TEMPLATES = require "widgets/templates"
 
+local SkinGifts = require("skin_gifts")
+
 require "skinsutils"
 
 GIFT_TYPE = {
@@ -65,18 +67,6 @@ GIFT_TYPE = {
         atlas="images/thankyou_item_event.xml",
         image={"thankyou_winter.tex"},
         title=STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_TITLE_DEFAULT,
-        titleoffset={0, -30, 0},
-    },
-    ARG = {
-        atlas="images/thankyou_item_popup.xml",
-        image={"thankyou_gift.tex"},
-        title=STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_TITLE_ARG,
-        titleoffset={0, -20, 0},
-    },
-    LUNAR = {
-        atlas="images/thankyou_item_event.xml",
-        image={"thankyou_lunar.tex"},
-        title=STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_LUNAR,
         titleoffset={0, -30, 0},
     },
 }
@@ -205,6 +195,11 @@ local ThankYouPopup = Class(Screen, function(self, items, callbackfn)
     self.revealed_items = {}
     self.current_item = 1
 
+    self.can_open = false;
+    self.can_close = false;
+	self.can_right = false;
+	self.can_left = false;
+	
     self:EvaluateButtons()
     self:ChangeGift(0)
     
@@ -242,7 +237,11 @@ function ThankYouPopup:OnUpdate(dt)
     -- We just navigated to an unrevealed skin
     elseif self.spawn_portal:GetAnimState():IsCurrentAnimation("idle") and self.transitioning then
         self.transitioning = false
-        self.open_btn:Show()
+        if TheInput:ControllerAttached() then
+            self.can_open = true
+        else
+            self.open_btn:Show()
+        end
         TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/player_recieves_gift_idle", "gift_idle")
     end
 end
@@ -270,23 +269,35 @@ function ThankYouPopup:EvaluateButtons()
         revealed_items_size = revealed_items_size + 1
     end
 
-    if revealed_items_size == #self.items then
-        self.close_btn:Show()
+    if revealed_items_size == #self.items and not self.transitioning then
+        if TheInput:ControllerAttached() then
+            self.can_close = true
+        else
+            self.close_btn:Show()
+        end
     end
 
     if #self.items == 1 then
         self.right_btn:Hide()
         self.left_btn:Hide()
+		self.can_right = false;
+		self.can_left = false;
     else
         if self.current_item == #self.items then
             self.right_btn:Hide()
             self.left_btn:Show()
+			self.can_right = false;
+			self.can_left = true;
         elseif self.current_item == 1 then
             self.right_btn:Show()
             self.left_btn:Hide()
+			self.can_right = true;
+			self.can_left = false;
         else
             self.right_btn:Show()
             self.left_btn:Show()
+			self.can_right = true;
+			self.can_left = true;
         end
     end
 end
@@ -297,8 +308,8 @@ function ThankYouPopup:ChangeGift(offset)
 
     self.item_name:Hide()
     self.upper_banner_text:Hide()
-    
-    local gifttype = GIFT_TYPE[self.items[self.current_item].gifttype or "DEFAULT"] or GIFT_TYPE["DEFAULT"]
+    local gt = self.items[self.current_item].gifttype
+    local gifttype = GIFT_TYPE[gt] or SkinGifts.popupdata[gt] or GIFT_TYPE["DEFAULT"]
     local backgroundimage = type(gifttype.image) == "table" and gifttype.image[math.random(#gifttype.image)] or gifttype.image
     self.bg:SetTexture(gifttype.atlas, backgroundimage)
 
@@ -329,6 +340,10 @@ function ThankYouPopup:ChangeGift(offset)
         self.spawn_portal:GetAnimState():PushAnimation("idle", true)
         self.open_btn:Hide()
         self.close_btn:Hide()
+        
+		self.can_open = false;
+		self.can_close = false;
+    
     else -- Already opened item
         local build = GetBuildForItem(GetTypeForItem(self.items[self.current_item].item), self.items[self.current_item].item)
         self.spawn_portal:GetAnimState():OverrideSkinSymbol("SWAP_ICON", build, "SWAP_ICON")
@@ -337,6 +352,9 @@ function ThankYouPopup:ChangeGift(offset)
         self.spawn_portal:GetAnimState():PushAnimation("skin_loop", true)
         self.close_btn:Hide()
         self.open_btn:Hide()
+        
+		self.can_open = false;
+		self.can_close = false;
     end
 
     self.transitioning = true
@@ -346,6 +364,7 @@ end
 
 -- Plays the closing animation
 function ThankYouPopup:GoAway()
+    self.can_close = false
 	TheFrontEnd:GetSound():KillSound("gift_idle")
 	TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/player_receives_gift_animation_skinout")
     self.spawn_portal:GetAnimState():PlayAnimation("skin_out")
@@ -360,6 +379,7 @@ end
 
 -- Plays the open gift animation
 function ThankYouPopup:OpenGift()
+    self.can_open = false
     self.open_btn:Hide()
     self.right_btn:Hide()
     self.left_btn:Hide()
@@ -383,6 +403,47 @@ function ThankYouPopup:OnControl(control, down)
     if ThankYouPopup._base.OnControl(self,control, down) then 
         return true 
     end
+    
+    if TheInput:ControllerAttached() then
+		if not down and control == CONTROL_ACCEPT then
+			if self.can_open then
+				self:OpenGift()
+			elseif self.can_close then
+				self:GoAway()
+			end
+		end
+		
+		if self.can_left and control == CONTROL_SCROLLBACK then
+            self:ChangeGift(-1)
+            return true
+        elseif self.can_right and control == CONTROL_SCROLLFWD then
+        	self:ChangeGift(1)
+            return true
+       	end
+	end
+end
+
+function ThankYouPopup:GetHelpText()
+	local controller_id = TheInput:GetControllerID()
+	local t = {}
+
+	if self.can_open then
+    	table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT) .. " " .. STRINGS.UI.ITEM_SCREEN.OPEN_BUTTON)
+    elseif self.can_close then
+		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT) .. " " .. STRINGS.UI.ITEM_SCREEN.OK_BUTTON)
+    end
+    
+    if self.can_left then
+		if self.can_right then
+			table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_SCROLLBACK, false, false) .. "/" .. TheInput:GetLocalizedControl(controller_id, CONTROL_SCROLLFWD, false, false) .. " " .. STRINGS.UI.HELP.CHANGEPAGE)
+		else
+			table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_SCROLLBACK, false, false) .. " " .. STRINGS.UI.HELP.PREV)
+		end
+	elseif self.can_right then
+		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_SCROLLFWD, false, false) .. " " .. STRINGS.UI.HELP.NEXT)
+	end
+    
+    return table.concat(t, "  ")
 end
 
 return ThankYouPopup

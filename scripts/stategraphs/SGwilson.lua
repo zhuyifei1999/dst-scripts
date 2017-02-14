@@ -4866,6 +4866,15 @@ local states =
             inst.components.health:SetInvincible(true)
             inst:ShowHUD(false)
             inst:SetCameraDistance(14)
+
+            local item = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY)
+            if item ~= nil and item.prefab == "amulet" then
+                item = inst.components.inventory:RemoveItem(item)
+                if item ~= nil then
+                    item:Remove()
+                    inst.sg.statemem.usedamulet = true
+                end
+            end
         end,
 
         timeline =
@@ -4900,12 +4909,8 @@ local states =
         },
 
         onexit = function(inst)
-            local item = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY)
-            if item ~= nil and item.prefab == "amulet" then
-                item = inst.components.inventory:RemoveItem(item)
-                if item ~= nil then
-                    item:Remove()
-                end
+            if inst.sg.statemem.usedamulet and inst.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY) == nil then
+                inst.AnimState:ClearOverrideSymbol("swap_body")
             end
             inst:ShowHUD(true)
             inst:SetCameraDistance()
@@ -4998,10 +5003,10 @@ local states =
             inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_get_bloodpump")
             inst.AnimState:SetBank("ghost")
             if inst:HasTag("beaver") then
-				inst.components.skinner:SetSkinMode("ghost_werebeaver_skin")
-			else
-				inst.components.skinner:SetSkinMode("ghost_skin")
-			end
+                inst.components.skinner:SetSkinMode("ghost_werebeaver_skin")
+            else
+                inst.components.skinner:SetSkinMode("ghost_skin")
+            end
             inst.AnimState:PlayAnimation("shudder")
             inst.AnimState:PushAnimation("hit", false)
             inst.AnimState:PushAnimation("transform", false)

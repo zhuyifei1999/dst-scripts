@@ -35,6 +35,9 @@ local Eater = Class(function(self, inst)
     self.healthabsorption = 1
     self.hungerabsorption = 1
     self.sanityabsorption = 1
+
+    --set to false to disable cached tags
+    --self.cacheedibletags = nil
 end,
 nil,
 {
@@ -105,6 +108,10 @@ function Eater:DoFoodEffects(food)
 end
 
 function Eater:GetEdibleTags()
+    if self.cacheedibletags then
+        return self.cacheedibletags
+    end
+
     local tags = {}
     for i, v in ipairs(self.caneat) do
         if type(v) == "table" then
@@ -114,6 +121,10 @@ function Eater:GetEdibleTags()
         else
             table.insert(tags, "edible_"..v)
         end
+    end
+
+    if self.cacheedibletags ~= false then
+        self.cacheedibletags = tags
     end
     return tags
 end

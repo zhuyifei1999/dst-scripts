@@ -111,6 +111,7 @@ local clothing_assets =
 	Asset("DYNAMIC_ANIM", "anim/dynamic/body_yule_coat.zip"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/body_yule_dress.zip"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/emote_sleepy.zip"),
+	Asset("DYNAMIC_ANIM", "anim/dynamic/emote_swoon.zip"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/emote_yawn.zip"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/feet_bootie_black_scribble.zip"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/feet_bunnyslippers_purple_mauve.zip"),

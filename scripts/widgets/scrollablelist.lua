@@ -13,9 +13,10 @@ local DRAG_SCROLL_X_THRESHOLD = 150
 
 -- ScrollableList expects a table of pre-constructed items to be handed in as the "items" param OR
 -- for the "items" table to be a normalized table of data where each table entry is the data that will be handed as the parameters to the supplied function for "updatefn"
-local ScrollableList = Class(Widget, function(self, items, listwidth, listheight, itemheight, itempadding, updatefn, widgetstoupdate, widgetXOffset, always_show_static, starting_offset, yInit, bar_width_scale_factor)
+local ScrollableList = Class(Widget, function(self, items, listwidth, listheight, itemheight, itempadding, updatefn, widgetstoupdate, widgetXOffset, always_show_static, starting_offset, yInit, bar_width_scale_factor, bar_height_scale_factor)
     Widget._ctor(self, "ScrollBar")
     bar_width_scale_factor = bar_width_scale_factor or 1
+    bar_height_scale_factor = bar_height_scale_factor or 1
 
     self.height = listheight
     self.width = listwidth
@@ -137,6 +138,7 @@ local ScrollableList = Class(Widget, function(self, items, listwidth, listheight
 
     --self.position_marker:MoveToBack()
     self.scroll_bar_line:MoveToBack()
+    self.scroll_bar_container:SetScale(1, bar_height_scale_factor)
 
     self:DoFocusHookups()
 

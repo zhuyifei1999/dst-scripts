@@ -1,3 +1,5 @@
+msgid ""
+msgstr ""
 "Application: Dont' Starve\n"
 "POT Version: 2.0\n"
 
@@ -78331,6 +78333,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.emote_sleepy"
 msgid "\"You are getting veeery /sleepy...\""
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.emote_swoon
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.emote_swoon"
+msgid "A deep /swoon is not for the faint of heart."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.emote_yawn
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.emote_yawn"
 msgid "Just /yawn and everyone will know you're ready for an adorable nap!"
@@ -78714,6 +78721,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.puppy_winter_builder
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.puppy_winter_builder"
 msgid "missing description"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.reviver_cupid
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.reviver_cupid"
+msgid "The slings and arrows of fate have taken their toll on this poor, afflicted heart."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.spear_bee
@@ -79736,6 +79748,11 @@ msgctxt "STRINGS.SKIN_NAMES.emote_sleepy"
 msgid "Sleepy Emote"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.emote_swoon
+msgctxt "STRINGS.SKIN_NAMES.emote_swoon"
+msgid "Swoon Emote"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.emote_yawn
 msgctxt "STRINGS.SKIN_NAMES.emote_yawn"
 msgid "Yawn Emote"
@@ -80119,6 +80136,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.puppy_winter_builder
 msgctxt "STRINGS.SKIN_NAMES.puppy_winter_builder"
 msgid "puppy_winter_builder"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.reviver_cupid
+msgctxt "STRINGS.SKIN_NAMES.reviver_cupid"
+msgid "Cherub's Heart"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.spear_bee
@@ -80774,6 +80796,21 @@ msgstr ""
 #. STRINGS.TAGS.VOTE
 msgctxt "STRINGS.TAGS.VOTE"
 msgid "vote"
+msgstr ""
+
+#. STRINGS.THANKS_POPUP.ARG
+msgctxt "STRINGS.THANKS_POPUP.ARG"
+msgid "Pulvis et umbra sumus"
+msgstr ""
+
+#. STRINGS.THANKS_POPUP.CUPID
+msgctxt "STRINGS.THANKS_POPUP.CUPID"
+msgid "Happy Valentine's Day\nfrom your friends at Klei"
+msgstr ""
+
+#. STRINGS.THANKS_POPUP.LUNAR
+msgctxt "STRINGS.THANKS_POPUP.LUNAR"
+msgid "Thanks for playing during the\nYear of the Gobbler event"
 msgstr ""
 
 #. STRINGS.TRADEMOD
@@ -84291,6 +84328,11 @@ msgctxt "STRINGS.UI.HELP.ENTER_TEXT"
 msgid "Enter Text"
 msgstr ""
 
+#. STRINGS.UI.HELP.NEXT
+msgctxt "STRINGS.UI.HELP.NEXT"
+msgid "Next"
+msgstr ""
+
 #. STRINGS.UI.HELP.NEXTPAGE
 msgctxt "STRINGS.UI.HELP.NEXTPAGE"
 msgid "Next Page"
@@ -84299,6 +84341,11 @@ msgstr ""
 #. STRINGS.UI.HELP.NEXTVALUE
 msgctxt "STRINGS.UI.HELP.NEXTVALUE"
 msgid "Next Value"
+msgstr ""
+
+#. STRINGS.UI.HELP.PREV
+msgctxt "STRINGS.UI.HELP.PREV"
+msgid "Previous"
 msgstr ""
 
 #. STRINGS.UI.HELP.PREVPAGE
@@ -84761,11 +84808,6 @@ msgctxt "STRINGS.UI.ITEM_SCREEN.RECEIVED"
 msgid "You Received"
 msgstr ""
 
-#. STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_LUNAR
-msgctxt "STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_LUNAR"
-msgid "Thanks for playing during the\nYear of the Gobbler event"
-msgstr ""
-
 #. STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_ROGR
 msgctxt "STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_ROGR"
 msgid "Thank you for buying the Reign of Giants DLC"
@@ -84784,11 +84826,6 @@ msgstr ""
 #. STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_TITLE
 msgctxt "STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_TITLE"
 msgid "Thanks for playing"
-msgstr ""
-
-#. STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_TITLE_ARG
-msgctxt "STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_TITLE_ARG"
-msgid "Pulvis et umbra sumus"
 msgstr ""
 
 #. STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_TITLE_DEFAULT

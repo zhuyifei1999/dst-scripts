@@ -43,7 +43,7 @@ AddUserCommand("help", {
             local command = UserCommands.GetCommandFromName(params.commandname)
             if command ~= nil and (command.hasaccessfn == nil or command.hasaccessfn(command, caller)) then
                 local call = command.name
-                local params = deepcopy(command.params)
+                local params = deepcopy(command.displayparams or command.params)
                 for i,param in ipairs(params) do
                     if command.paramsoptional ~= nil and command.paramsoptional[i] == true then
                         params[i] = "["..param.."]"
@@ -51,8 +51,8 @@ AddUserCommand("help", {
                         params[i] = param
                     end
                 end
-                table.insert(s, ResolveCommandStringProperty(command, "prettyname", command.name))
-                table.insert(s, string.format("/%s %s", command.name, table.concat(params, " ")))
+                table.insert(s, ResolveCommandStringProperty(command, "prettyname", command.displayname or command.name))
+                table.insert(s, string.format("/%s %s", command.displayname or command.name, table.concat(params, " ")))
                 table.insert(s, ResolveCommandStringProperty(command, "desc", ""))
             else
                 table.insert(s, string.format(STRINGS.UI.BUILTINCOMMANDS.HELP.NOTFOUND, params.commandname))

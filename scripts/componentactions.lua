@@ -1035,18 +1035,32 @@ local MOD_COMPONENT_ACTIONS = {}
 local MOD_ACTION_COMPONENT_NAMES = {}
 local MOD_ACTION_COMPONENT_IDS = {}
 
+local function ModComponentWarning(self, modname)
+    print("ERROR: Mod component actions are out of sync for mod "..(modname or "unknown")..". This is likely a result of your mod's calls to AddComponentAction not happening on both the server and the client.")
+    print("self.modactioncomponents is\n"..(dumptable(self.modactioncomponents) or ""))
+    print("MOD_COMPONENT_ACTIONS is\n"..(dumptable(MOD_COMPONENT_ACTIONS) or ""))
+end
+
+local function CheckModComponentActions(self, modname)
+    return MOD_COMPONENT_ACTIONS[modname] or ModComponentWarning(self, modname)
+end
+
+local function CheckModComponentNames(self, modname)
+    return MOD_ACTION_COMPONENT_NAMES[modname] or ModComponentWarning(self, modname)
+end
+
+local function CheckModComponentIds(self, modname)
+    return MOD_ACTION_COMPONENT_IDS[modname] or ModComponentWarning(self, modname)
+end
+
 function AddComponentAction(actiontype, component, fn, modname)
-    --ensure this mod is setup in the tables
     if MOD_COMPONENT_ACTIONS[modname] == nil then
-        MOD_COMPONENT_ACTIONS[modname] = {}
+        MOD_COMPONENT_ACTIONS[modname] = { [actiontype] = {} }
         MOD_ACTION_COMPONENT_NAMES[modname] = {}
         MOD_ACTION_COMPONENT_IDS[modname] = {}
-    end
-
-    if MOD_COMPONENT_ACTIONS[modname][actiontype] == nil then
+    elseif MOD_COMPONENT_ACTIONS[modname][actiontype] == nil then
         MOD_COMPONENT_ACTIONS[modname][actiontype] = {}
     end
-
     MOD_COMPONENT_ACTIONS[modname][actiontype][component] = fn
     table.insert(MOD_ACTION_COMPONENT_NAMES[modname], component)
     MOD_ACTION_COMPONENT_IDS[modname][component] = #MOD_ACTION_COMPONENT_NAMES[modname]
@@ -1060,21 +1074,15 @@ function EntityScript:RegisterComponentActions(name)
             self.actionreplica.actioncomponents:set(self.actioncomponents)
         end
     end
-
-    for modname,modtable in pairs(MOD_ACTION_COMPONENT_IDS) do
-        id = modtable[name]
+    for modname, idmap in pairs(MOD_ACTION_COMPONENT_IDS) do
+        id = idmap[name]
         if id ~= nil then
-            --found this component in this mod's table
             if self.modactioncomponents == nil then
-                self.modactioncomponents = {}
-                --print("on ", self, " adding self.modactioncomponents")
-            end
-            if self.modactioncomponents[modname] == nil then
+                self.modactioncomponents = { [modname] = {} }
+            elseif self.modactioncomponents[modname] == nil then
                 self.modactioncomponents[modname] = {}
-                --print("on ", self, " adding self.modactioncomponents[",modname,"]")
             end
-            --print("Adding to self.modactioncomponents[",modname,"] ",id)
-            table.insert( self.modactioncomponents[modname], id )
+            table.insert(self.modactioncomponents[modname], id)
             if self.actionreplica ~= nil then
                 self.actionreplica.modactioncomponents[modname]:set(self.modactioncomponents[modname])
             end
@@ -1091,58 +1099,51 @@ function EntityScript:UnregisterComponentActions(name)
                 if self.actionreplica ~= nil then
                     self.actionreplica.actioncomponents:set(self.actioncomponents)
                 end
-                return
+                break
             end
         end
-    else
-        for modname,modtable in pairs(MOD_ACTION_COMPONENT_IDS) do
-            id = modtable[name]
-            if id ~= nil then
-                for i, v in ipairs(self.modactioncomponents[modname]) do
-                    if v == id then
-                        table.remove(self.modactioncomponents[modname], i)
-                        if self.actionreplica ~= nil then
-                            self.actionreplica.modactioncomponents[modname]:set(self.modactioncomponents[modname])
-                        end
-                        return
+    end
+    if self.modactioncomponents ~= nil then
+        for modname, cmplist in pairs(self.modactioncomponents) do
+            id = CheckModComponentIds(self, modname)[name]
+            for i, v in ipairs(cmplist) do
+                if v == id then
+                    table.remove(cmplist, i)
+                    if self.actionreplica ~= nil then
+                        self.actionreplica.modactioncomponents[modname]:set(cmplist)
                     end
+                    break
                 end
             end
         end
     end
 end
 
-function EntityScript:CollectActions(type, ...)
-    local t = COMPONENT_ACTIONS[type]
-    if t ~= nil then
-        for i, v in ipairs(self.actioncomponents) do
-            local collector = t[ACTION_COMPONENT_NAMES[v]]
-            if collector ~= nil then
-                collector(self, ...)
-            end
+function EntityScript:CollectActions(actiontype, ...)
+    local t = COMPONENT_ACTIONS[actiontype]
+    if t == nil then
+        print("Action type", actiontype, "doesn't exist in the table of component actions. Is your component name correct in AddComponentAction?")
+        return
+    end
+    for i, v in ipairs(self.actioncomponents) do
+        local collector = t[ACTION_COMPONENT_NAMES[v]]
+        if collector ~= nil then
+            collector(self, ...)
         end
-        if self.modactioncomponents ~= nil then
-            --print("EntityScript:CollectActions on ", self)
-            for modname,modtable in pairs(self.modactioncomponents) do
-                --print("modname ",modname, #modtable)
-                if MOD_COMPONENT_ACTIONS[modname] == nil then
-                    print( "ERROR: Mod component actions are out of sync for mod " .. (modname or "unknown") .. ". This is likely a result of your mod's calls to AddComponentAction not happening on both the server and the client." )
-                    print( "self.modactioncomponents is\n" .. (dumptable(self.modactioncomponents) or "") )
-                    print( "MOD_COMPONENT_ACTIONS is\n" .. (dumptable(MOD_COMPONENT_ACTIONS) or "") )
-                end
-                t = MOD_COMPONENT_ACTIONS[modname][type]
-                if t ~= nil then
-                    for i, v in ipairs(modtable) do
-                        local collector = t[MOD_ACTION_COMPONENT_NAMES[modname][v]]
-                        if collector ~= nil then
-                            collector(self, ...)
-                        end
+    end
+    if self.modactioncomponents ~= nil then
+        for modname, cmplist in pairs(self.modactioncomponents) do
+            t = CheckModComponentActions(self, modname)[actiontype]
+            if t ~= nil then
+                local namemap = CheckModComponentNames(self, modname)
+                for i, v in ipairs(cmplist) do
+                    local collector = t[namemap[v]]
+                    if collector ~= nil then
+                        collector(self, ...)
                     end
                 end
             end
         end
-    else
-        print("Type ",type," doesn't exist in the table of component actions. Is your component name correct in AddComponentAction?")
     end
 end
 
@@ -1157,18 +1158,21 @@ function EntityScript:IsActionValid(action, right)
             return true
         end
     end
-
     if self.modactioncomponents ~= nil then
-        for modname,modtable in ipairs(self.modactioncomponents) do
-            t = MOD_COMPONENT_ACTIONS[modname][type]
-            for i, v in ipairs(modtable) do
-                local vaildator = t[MOD_ACTION_COMPONENT_NAMES[modname][v]]
-                if vaildator ~= nil and vaildator(self, action, right) then
-                    return true
+        for modname, cmplist in pairs(self.modactioncomponents) do
+            t = CheckModComponentActions(self, modname).ISVALID
+            if t ~= nil then
+                local namemap = CheckModComponentNames(self, modname)
+                for i, v in ipairs(cmplist) do
+                    local vaildator = t[namemap[v]]
+                    if vaildator ~= nil and vaildator(self, action, right) then
+                        return true
+                    end
                 end
             end
         end
     end
+    return false
 end
 
 function EntityScript:HasActionComponent(name)
@@ -1179,11 +1183,12 @@ function EntityScript:HasActionComponent(name)
                 return true
             end
         end
-    else
-        for modname,modtable in pairs(MOD_ACTION_COMPONENT_IDS) do
-            id = modtable[name]
+    end
+    if self.modactioncomponents ~= nil then
+        for modname, cmplist in pairs(self.modactioncomponents) do
+            id = CheckModComponentIds(self, modname)[name]
             if id ~= nil then
-                for i, v in ipairs(self.modactioncomponents[modname]) do
+                for i, v in ipairs(cmplist) do
                     if v == id then
                         return true
                     end

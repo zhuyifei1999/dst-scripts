@@ -77,7 +77,7 @@ local function OnShedAntler(inst, other)
         inst:SetAntlered(nil, false)
 
         SpawnPrefab("collapse_small").Transform:SetPosition(other.Transform:GetWorldPosition())
-        other.components.workable:WorkedBy(inst, 0)
+        other.components.workable:WorkedBy(inst)
     end
 end
 
@@ -109,6 +109,7 @@ local function setantlered(inst, antler, animate)
     end
 end
 
+-- c_sel():PushEvent("timerdone", {name="growantler"})
 local function ontimerdone(inst, data)
     if data ~= nil then
         if data.name == "growantler" then
