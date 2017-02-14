@@ -268,6 +268,50 @@ function lantern_init_fn(inst, build_name)
 end
 
 --------------------------------------------------------------------------
+--[[ Reviver skin functions ]]
+--------------------------------------------------------------------------
+local function reviver_onsave(inst, data)
+    if inst.glowfx ~= nil then
+        data.glow = inst.glowfx:GetSaveRecord()
+        data.glow.x, data.glow.y, data.glow.z = nil, nil, nil
+    end
+end
+
+local function reviver_onload(inst, data)
+    if data ~= nil and data.glow ~= nil and inst.glowfx == nil then
+        inst.glowfx = SpawnSaveRecord(data.glow)
+        if inst.glowfx ~= nil then
+            inst.glowfx:ConvertToGlow()
+            inst.glowfx.entity:SetParent(inst.entity)
+            inst.highlightchildren = { inst.glowfx }
+        end
+    end
+end
+
+function reviver_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "bloodpump")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+
+    local skin_fx = SKIN_FX_PREFAB[build_name]
+    if skin_fx ~= nil then
+        inst.reviver_beat_fx = skin_fx[1]
+    end
+
+    inst.OnBuiltFn = function(inst, builder)
+        inst.glowfx = SpawnPrefab("reviver", build_name, nil, builder.userid):ConvertToGlow()
+        inst.glowfx.entity:SetParent(inst.entity)
+        inst.highlightchildren = { inst.glowfx }
+    end
+
+    inst.OnSave = reviver_onsave
+    inst.OnLoad = reviver_onload
+end
+
+--------------------------------------------------------------------------
 
 function CreatePrefabSkin(name, info)
     local prefab_skin = Prefab(name, nil, info.assets, info.prefabs)

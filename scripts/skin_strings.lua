@@ -43,6 +43,7 @@ STRINGS.SKIN_QUOTES =
 	wx78_shadow = "NOW THE OUTSIDE MATCHES THE INSIDE. EVIL.",
 	wx78_survivor = "RUSTED AND BUSTED.",
 }
+
 STRINGS.SKIN_NAMES =
 {
 	backpack_basic_blue_catcoon = "Backpack",
@@ -186,6 +187,7 @@ STRINGS.SKIN_NAMES =
 	dragonling_wyvern = "Wyvernling",
 	dragonling_wyvern_builder = "dragonling_wyvern_builder",
 	emote_sleepy = "Sleepy Emote",
+	emote_swoon = "Swoon Emote",
 	emote_yawn = "Yawn Emote",
 	endtable_carpet = "Austere Endtable",
 	endtable_dragonfly = "Dragonfly Endtable",
@@ -263,6 +265,7 @@ STRINGS.SKIN_NAMES =
 	perdling_rooster_builder = "perdling_rooster_builder",
 	puppy_winter = "Arctic Vargling",
 	puppy_winter_builder = "puppy_winter_builder",
+	reviver_cupid = "Cherub's Heart",
 	spear_bee = "Bumble Spear",
 	strawhat_floppy = "Floppy Straw Hat",
 	tophat_derby = "Bowler Hat",
@@ -327,7 +330,6 @@ STRINGS.SKIN_NAMES =
 	wx78_shadow = "The Triumphant",
 	wx78_survivor = "The Survivor",
 }
-
 
 STRINGS.SKIN_DESCRIPTIONS =
 {
@@ -472,6 +474,7 @@ STRINGS.SKIN_DESCRIPTIONS =
 	dragonling_wyvern = "This pet's doofy lil dragon face inspires both fear and wuv.",
 	dragonling_wyvern_builder = "missing description",
 	emote_sleepy = "\"You are getting veeery /sleepy...\"",
+	emote_swoon = "A deep /swoon is not for the faint of heart.",
 	emote_yawn = "Just /yawn and everyone will know you're ready for an adorable nap!",
 	endtable_carpet = "A table that would be a truly elegant addition to any unkempt wilderness base.",
 	endtable_dragonfly = "An endtable inspired by the most opulent of bloodthirsty monsters.",
@@ -549,6 +552,7 @@ STRINGS.SKIN_DESCRIPTIONS =
 	perdling_rooster_builder = "missing description",
 	puppy_winter = "Looks like this adorable little lump grew his winter coat in. Good boy, Vargling!",
 	puppy_winter_builder = "missing description",
+	reviver_cupid = "The slings and arrows of fate have taken their toll on this poor, afflicted heart.",
 	spear_bee = "It doesn't hit harder than a regular spear, although it certainly still stings.",
 	strawhat_floppy = "Be like a little British lady in your garden!",
 	tophat_derby = "Demonstrate your impeccable style with this dapper bowler hat.",
@@ -613,13 +617,23 @@ STRINGS.SKIN_DESCRIPTIONS =
 	wx78_shadow = "This robot was evil before. Now they're double evil.",
 	wx78_survivor = "Exposure to the elements causes corrosion.",
 }
+
 STRINGS.SET_NAMES =
 {
 	emote_sleepy = "Blue Sleepytime Ensemble",
 	emote_yawn = "Purple Jammies Ensemble",
 }
+
 STRINGS.SET_DESCRIPTIONS =
 {
 	emote_sleepy = "You look cozy from top to bottom. Sweet dreams, sleepy survivor!",
 	emote_yawn = "You are so ready for a nap. You've never been more ready for anything in your entire life.",
 }
+
+STRINGS.THANKS_POPUP =
+{
+	ARG = "Pulvis et umbra sumus",
+	CUPID = "Happy Valentine's Day\nfrom your friends at Klei",
+	LUNAR = "Thanks for playing during the\nYear of the Gobbler event",
+}
+

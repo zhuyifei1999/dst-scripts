@@ -114,6 +114,10 @@ PREFAB_SKINS = {
 		"flowerhat_ribbon_wreath",
 		"flowerhat_wreath",
 	},
+	reviver = 
+	{
+		"reviver_cupid",
+	},
 	spear = 
 	{
 		"spear_bee",

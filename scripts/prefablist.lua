@@ -446,6 +446,8 @@ PREFABFILES = {
   "resurrectionstone",
   "reticule",
   "reviver",
+  "reviver_cupid",
+  "reviver_cupid_beat_fx",
   "rock_break_fx",
   "rock_ice",
   "rock_light",

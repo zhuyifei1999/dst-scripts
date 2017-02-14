@@ -42,6 +42,7 @@ local ThankYouPopup = require "screens/thankyoupopup"
 
 local Stats = require("stats")
 
+local SkinGifts = require("skin_gifts")
 
 
 local rcol = RESOLUTION_X/2 -170
@@ -909,17 +910,9 @@ function MultiplayerMainScreen:FinishedFadeIn()
 	local items = {} -- early access thank you gifts
     local entitlement_items = TheInventory:GetUnopenedEntitlementItems()
 	for _,item in pairs(entitlement_items) do
-		if item.item_type == "firepit_hole" then
-			table.insert(items, {item=item.item_type, item_id=item.item_id, gifttype="EARLY_ACCESS"})
-		elseif item.item_type == "torch_shadow" then
-			table.insert(items, {item=item.item_type, item_id=item.item_id, gifttype="ARG"})
-		elseif item.item_type == "winterhat_rooster" then
-			table.insert(items, {item=item.item_type, item_id=item.item_id, gifttype="LUNAR"})
-		else
-			table.insert(items, {item=item.item_type, item_id=item.item_id, gifttype="DEFAULT"})
-		end
+		table.insert(items, { item = item.item_type, item_id = item.item_id, gifttype = SkinGifts.types[item.item_type] or "DEFAULT" })
 	end
-			
+	
     if #items > 0 then
         local thankyou_popup = ThankYouPopup(items)
         TheFrontEnd:PushScreen(thankyou_popup)

@@ -504,6 +504,11 @@ local events =
                 inst.sg:GoToState("hit_darkness")
             elseif data.stimuli == "electric" and not inst.components.inventory:IsInsulated() then
                 inst.sg:GoToState("electrocute")
+            elseif data.attacker ~= nil
+                and data.attacker:HasTag("groundspike")
+                and not (inst.components.rider ~= nil and inst.components.rider:IsRiding())
+                and not inst:HasTag("beaver") then
+                inst.sg:GoToState("hit_spike", data.attacker)
             else
                 local t = GetTime()
                 local stunlock =
@@ -4841,6 +4846,35 @@ local states =
             end
 
             inst.sg:SetTimeout(24 * FRAMES)
+        end,
+
+        ontimeout = function(inst)
+            inst.sg:GoToState("idle", true)
+        end,
+    },
+
+    State{
+        name = "hit_spike",
+        tags = { "busy", "pausepredict" },
+
+        onenter = function(inst, spike)
+            ForceStopHeavyLifting(inst)
+            inst.components.locomotor:Stop()
+            inst:ClearBufferedAction()
+
+            if spike ~= nil then
+                inst:ForceFacePoint(spike.Transform:GetWorldPosition())
+            end
+            inst.AnimState:PlayAnimation("hit_spike_"..(spike ~= nil and spike.spikesize or "short"))
+
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/hit")
+            DoHurtSound(inst)
+
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:RemotePausePrediction()
+            end
+
+            inst.sg:SetTimeout(15 * FRAMES)
         end,
 
         ontimeout = function(inst)

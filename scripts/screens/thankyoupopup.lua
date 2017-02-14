@@ -7,6 +7,8 @@ local Widget = require "widgets/widget"
 local UIAnim = require "widgets/uianim"
 local TEMPLATES = require "widgets/templates"
 
+local SkinGifts = require("skin_gifts")
+
 require "skinsutils"
 
 GIFT_TYPE = {
@@ -65,18 +67,6 @@ GIFT_TYPE = {
         atlas="images/thankyou_item_event.xml",
         image={"thankyou_winter.tex"},
         title=STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_TITLE_DEFAULT,
-        titleoffset={0, -30, 0},
-    },
-    ARG = {
-        atlas="images/thankyou_item_popup.xml",
-        image={"thankyou_gift.tex"},
-        title=STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_TITLE_ARG,
-        titleoffset={0, -20, 0},
-    },
-    LUNAR = {
-        atlas="images/thankyou_item_event.xml",
-        image={"thankyou_lunar.tex"},
-        title=STRINGS.UI.ITEM_SCREEN.THANKS_POPUP_LUNAR,
         titleoffset={0, -30, 0},
     },
 }
@@ -318,8 +308,8 @@ function ThankYouPopup:ChangeGift(offset)
 
     self.item_name:Hide()
     self.upper_banner_text:Hide()
-    
-    local gifttype = GIFT_TYPE[self.items[self.current_item].gifttype or "DEFAULT"] or GIFT_TYPE["DEFAULT"]
+    local gt = self.items[self.current_item].gifttype
+    local gifttype = GIFT_TYPE[gt] or SkinGifts.popupdata[gt] or GIFT_TYPE["DEFAULT"]
     local backgroundimage = type(gifttype.image) == "table" and gifttype.image[math.random(#gifttype.image)] or gifttype.image
     self.bg:SetTexture(gifttype.atlas, backgroundimage)
 

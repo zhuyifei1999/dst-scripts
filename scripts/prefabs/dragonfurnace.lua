@@ -111,11 +111,13 @@ local function fn()
 
     inst:AddTag("structure")
     inst:AddTag("wildfireprotected")
-    inst:AddTag("HASHEATER")
     inst:AddTag("iceblocker")
 
     --cooker (from cooker component) added to pristine state for optimization
     inst:AddTag("cooker")
+
+    --HASHEATER (from heater component) added to pristine state for optimization
+    inst:AddTag("HASHEATER")
 
     inst.SoundEmitter:PlaySound("dontstarve/common/together/dragonfly_furnace/fire_LP", "loop")
 

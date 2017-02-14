@@ -24,6 +24,21 @@ EMOTE_ITEMS =
 			"eyerub",
 		},
 	},
+	emote_swoon =
+	{
+		rarity = "Loyal",
+		cmd_name = "swoon",
+		skin_build = "emote_swoon",
+		type = "emote",
+		data =
+		{
+			item_type = "emote_swoon",
+			requires_validation = true,
+			anim = "emote_swoon",
+			fx = false,
+			loop = false,
+		},
+	},
 	emote_yawn =
 	{
 		rarity = "Reward",

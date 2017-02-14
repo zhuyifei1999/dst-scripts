@@ -442,14 +442,14 @@ local function GetCommandNames()
     for mod,modcommands in pairs(modusercommands) do
         for hash,command in pairs(modcommands) do
             if command.aliasfor == nil then
-                table.insert(ret, command.name)
+                table.insert(ret, command.displayname or command.name)
             end
         end
     end
     for hash,command in pairs(usercommands) do
         if command.aliasfor == nil and
             (command.requires_item_type == nil or TheInventory:CheckOwnershipGetLatest(command.requires_item_type)) then
-            table.insert(ret, command.name)
+            table.insert(ret, command.displayname or command.name)
         end
     end
 

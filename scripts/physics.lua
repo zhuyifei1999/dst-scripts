@@ -43,7 +43,7 @@ function LaunchAt(inst, launcher, target, speedmult, startheight, startradius)
         end
         local sina, cosa = math.sin(angle), math.cos(angle)
         local spd = (math.random() * 2 + 1) * (speedmult or 1)
-        inst.Transform:SetPosition(x + (startradius or 0) * cosa, startheight or .1, z + (startradius or 0) * sina)
+        inst.Physics:Teleport(x + (startradius or 0) * cosa, startheight or .1, z + (startradius or 0) * sina)
         inst.Physics:SetVel(spd * cosa, math.random() * 2 + 4 + 2 * (speedmult or 1) , spd * sina)
     end
 end

@@ -1451,6 +1451,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_slurtle_armor.zip"),
         Asset("ANIM", "anim/player_staff.zip"),
         Asset("ANIM", "anim/player_hit_darkness.zip"),
+        Asset("ANIM", "anim/player_hit_spike.zip"),
 
         Asset("ANIM", "anim/player_frozen.zip"),
         Asset("ANIM", "anim/player_shock.zip"),

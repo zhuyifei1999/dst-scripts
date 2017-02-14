@@ -449,7 +449,7 @@ SPECIAL_EVENTS =
     WINTERS_FEAST = "winters_feast",
     YOTG = "year_of_the_gobbler",
 }
-WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.YOTG
+WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.NONE
 
 --Used in preloadsounds.lua
 ---------------------------------------------------------

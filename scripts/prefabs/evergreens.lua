@@ -195,11 +195,11 @@ local function OnBurnt(inst, immediate)
         inst:RemoveComponent("propagator")
         inst:RemoveComponent("growable")
         inst:RemoveComponent("hauntable")
-        if inst.components.petrifiable ~= nil then
-            inst:RemoveComponent("petrifiable")
+        --#DISEASE if inst.components.petrifiable ~= nil then
+        inst:RemoveComponent("petrifiable")
         --#DISEASE elseif inst.components.diseaseable ~= nil then
         --#DISEASE     inst:RemoveComponent("diseaseable")
-        end
+        --#DISEASE end
         inst:RemoveTag("shelter")
         MakeHauntableWork(inst)
 
@@ -275,8 +275,8 @@ local function SetShort(inst)
     inst.components.lootdropper:SetLoot(GetBuild(inst).short_loot)
 
     if inst.build ~= "twiggy" then
-	    inst:AddTag("shelter")
-	end
+        inst:AddTag("shelter")
+    end
 
     Sway(inst)
 end
@@ -298,8 +298,8 @@ local function SetNormal(inst)
     inst.components.lootdropper:SetLoot(GetBuild(inst).normal_loot)
 
     if inst.build ~= "twiggy" then
-	    inst:AddTag("shelter")
-	end
+        inst:AddTag("shelter")
+    end
 
     Sway(inst)
 end
@@ -319,8 +319,8 @@ local function SetTall(inst)
     inst.components.lootdropper:SetLoot(GetBuild(inst).tall_loot)
 
     if inst.build ~= "twiggy" then
-	    inst:AddTag("shelter")
-	end
+        inst:AddTag("shelter")
+    end
 
     Sway(inst)
 end
@@ -643,6 +643,12 @@ local function OnEntitySleep(inst)
     inst:RemoveComponent("propagator")
     inst:RemoveComponent("inspectable")
     if doBurnt then
+        inst:RemoveComponent("growable")
+        --#DISEASE if inst.components.petrifiable ~= nil then
+        inst:RemoveComponent("petrifiable")
+        --#DISEASE elseif inst.components.diseaseable ~= nil then
+        --#DISEASE     inst:RemoveComponent("diseaseable")
+        --#DISEASE end
         inst:AddTag("burnt")
     end
 end

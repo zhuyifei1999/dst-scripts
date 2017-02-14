@@ -9,6 +9,8 @@ local prefabs =
     "sinkhole_spawn_fx_1",
     "sinkhole_spawn_fx_2",
     "sinkhole_spawn_fx_3",
+    "mining_ice_fx",
+    "mining_fx",
 }
 
 local NUM_CRACKING_STAGES = 3
