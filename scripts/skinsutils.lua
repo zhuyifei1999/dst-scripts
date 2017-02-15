@@ -65,26 +65,21 @@ function GetNextRarity(rarity)
 	return rarities[rarity] or nil
 end
 
-function GetBuildForItem(type, name)
-	if type == "base" or type == "item" then 
-		local skinsData = Prefabs[name]
-		if skinsData and skinsData.build_name then
-			name = skinsData.build_name
-		end
-		return name
-	elseif type == "misc" or type == "emote" then 
-		local skinsData = MISC_ITEMS[name]
-		if skinsData and skinsData.skin_build then 
-			name = skinsData.skin_build
-		end
+function GetBuildForItem(name)
+	if CLOTHING[name] then
+		name = name
+	elseif MISC_ITEMS[name] then
+		name = MISC_ITEMS[name].skin_build
+	elseif EMOTE_ITEMS[name] then
+		name = EMOTE_ITEMS[name].skin_build
 	else
-		--for now assume that clothing build matches the item name
-		return name
+		if Prefabs[name] ~= nil then
+			name = Prefabs[name].build_name
+		end
 	end
-
+	
 	return name
 end
-
 
 function IsItemId(name)
 	if Prefabs[name] then 
@@ -95,6 +90,45 @@ function IsItemId(name)
 		return true
 	end
 	return false
+end
+
+function GetSkinData(item)
+	local skin_data = {}
+	
+	if CLOTHING[item] then 
+		skin_data = CLOTHING[item]
+	elseif MISC_ITEMS[item] then 
+		skin_data = MISC_ITEMS[item]
+	elseif EMOTE_ITEMS[item] then 
+		skin_data = EMOTE_ITEMS[item]
+	else
+		if Prefabs[item] ~= nil then
+			skin_data = Prefabs[item]
+		end
+	end
+	return skin_data
+end
+
+function GetRarityForItem(item)
+	local rarity = "Common"
+
+	if CLOTHING[item] then 
+		rarity = CLOTHING[item].rarity
+	elseif MISC_ITEMS[item] then 
+		rarity = MISC_ITEMS[item].rarity
+	elseif EMOTE_ITEMS[item] then 
+		rarity = EMOTE_ITEMS[item].rarity
+	else
+		if Prefabs[item] ~= nil then
+			rarity = Prefabs[item].rarity
+		end
+	end
+	
+	if not rarity then 
+		rarity = "Common"
+	end
+	
+	return rarity
 end
 
 
@@ -169,35 +203,6 @@ function GetColourFromColourTag(c) --UNTESTED!!!
 end
 function GetColourTagFromColour(c)
 	return string.upper(c)
-end
-
-
-function GetRarityForItem(type, item)
-	local rarity = "Common"
-
-	if type == "base" or type == "item" then 
-		local skinsData = Prefabs[item]
-		if skinsData then 
-			rarity = skinsData.rarity
-		end
-	elseif CLOTHING[item] then 
-		rarity = CLOTHING[item].rarity
-	elseif MISC_ITEMS[item] then 
-		rarity = MISC_ITEMS[item].rarity
-	elseif EMOTE_ITEMS[item] then 
-		rarity = EMOTE_ITEMS[item].rarity
-	end
-
-	if not rarity then 
-		rarity = "Common"
-	end
-
-	return rarity
-end
-
-
-function GetNameWithRarity(type, item)
-	return GetRarityForItem(type, item) .. " " .. GetName(item)
 end
 
 function GetName(item)
@@ -290,7 +295,7 @@ function UpdateSkinGrid(list_widget, data, screen)
 		list_widget:Show()
 
 		if screen.show_hover_text then
-			local rarity = GetRarityForItem(data.type, data.item)
+			local rarity = GetRarityForItem(data.item)
 			local hover_text = rarity .. "\n" .. GetName(data.item)
 			list_widget:SetHoverText( hover_text, { font = NEWFONT_OUTLINE, size = 20, offset_x = 0, offset_y = 60, colour = {1,1,1,1}})
 			if list_widget.focus then --make sure we force the hover text to appear on the default focused item
@@ -330,7 +335,7 @@ function GetSortedSkinsList()
 
 	for k,v in ipairs(templist) do 
 		local type, item = GetTypeForItem(v.item_type)
-		local rarity = GetRarityForItem(type, item)
+		local rarity = GetRarityForItem(item)
 
 		--if type ~= "unknown" then
 

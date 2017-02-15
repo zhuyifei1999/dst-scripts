@@ -6,7 +6,6 @@ local Text = require "widgets/text"
 
 local UserCommands = require("usercommands")
 
-local CHAT_INPUT_MAX_LENGTH = 150
 local CHAT_INPUT_HISTORY = {}
 
 local ChatInputScreen = Class(Screen, function(self, whisper)
@@ -117,7 +116,7 @@ function ChatInputScreen:Run()
     elseif string.sub(chat_string, 1, 1) == "/" then
         --Process slash commands:
         UserCommands.RunTextUserCommand(string.sub(chat_string, 2), ThePlayer, false)
-    else
+    elseif chat_string:utf8len() <= MAX_CHAT_INPUT_LENGTH then
         --Default to sending regular chat
         TheNet:Say(chat_string, self.whisper)
     end
@@ -205,7 +204,7 @@ function ChatInputScreen:DoInit()
     self.chat_edit.OnTextEntered = function() self:OnTextEntered() end
     self.chat_edit:SetPassControlToScreen(CONTROL_CANCEL, true)
     self.chat_edit:SetPassControlToScreen(CONTROL_MENU_MISC_2, true) -- toggle between say and whisper
-    self.chat_edit:SetTextLengthLimit(CHAT_INPUT_MAX_LENGTH)
+    self.chat_edit:SetTextLengthLimit(MAX_CHAT_INPUT_LENGTH)
     self.chat_edit:EnableWordWrap(false)
     --self.chat_edit:EnableWhitespaceWrap(true)
     self.chat_edit:EnableRegionSizeLimit(true)

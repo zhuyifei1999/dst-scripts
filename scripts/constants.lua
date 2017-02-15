@@ -1127,6 +1127,7 @@ BROWN = {97/255, 73/255, 46/255, 255/255}
 RED = {.7, .1, .1, 1}
 DARKGREY = {.12, .12, .12, 1}
 
+MAX_CHAT_INPUT_LENGTH = 150
 MAX_WRITEABLE_LENGTH = 200
 
 --Bit flags, currently supports up to 8

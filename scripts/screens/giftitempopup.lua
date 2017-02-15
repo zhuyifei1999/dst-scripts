@@ -180,24 +180,17 @@ function GiftItemPopUp:RevealItem(idx)
 
     item_name = string.gsub(item_name, "swap_", "")
 
-    local skin_data
-    if CLOTHING[item_name] == nil then
-        -- either a base skin or a craftable
-        skin_data = Prefabs[item_name]
-        if skin_data then
-            if table.contains(skin_data.tags, "CRAFTABLE") then 
-            	self.disable_use_now = true
-            elseif string.find( item_name, self.owner.prefab ) == nil then
-            	self.disable_use_now = true
-            else
-            	self.disable_use_now = false
-            end
-            self.spawn_portal:GetAnimState():OverrideSkinSymbol("SWAP_ICON", skin_data.build_name, "SWAP_ICON")
+    local skin_data = GetSkinData(item_name)
+    if skin_data then
+        if table.contains(skin_data.tags, "CRAFTABLE") then 
+        	self.disable_use_now = true
+        elseif string.find( item_name, self.owner.prefab ) == nil then
+        	self.disable_use_now = true
+        else
+        	self.disable_use_now = false
         end
-    else
-        skin_data = CLOTHING[item_name]
-        self.spawn_portal:GetAnimState():OverrideSkinSymbol("SWAP_ICON", item_name, "SWAP_ICON")
     end
+    self.spawn_portal:GetAnimState():OverrideSkinSymbol("SWAP_ICON", GetBuildForItem(item_name), "SWAP_ICON")
 
     self.spawn_portal:GetAnimState():PlayAnimation("activate") -- Box comes in
     TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/player_receives_gift_animation_spin")

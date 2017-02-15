@@ -94,7 +94,7 @@ local SetPopupDialog = Class(Screen, function(self, set_item_type)
 		self.input_item_imagetext[i].text:SetString(STRINGS.SKIN_NAMES[input_item_type])
 		
 		self.input_item_imagetext[i].icon:SetItem(type, input_item_type, nil, nil)
-		self.input_item_imagetext[i].icon:SetItemRarity(GetRarityForItem(type,input_item_type))
+		self.input_item_imagetext[i].icon:SetItemRarity(GetRarityForItem(input_item_type))
 		
     	i = i + 1
     	item_y = item_y - LINE_HEIGHT
@@ -127,7 +127,7 @@ local SetPopupDialog = Class(Screen, function(self, set_item_type)
 	
 	local reward_type = GetTypeForItem(set_item_type)
 	self.reward.icon:SetItem(reward_type, set_item_type, nil, nil)
-	self.reward.icon:SetItemRarity(GetRarityForItem(reward_type,set_item_type))
+	self.reward.icon:SetItemRarity(GetRarityForItem(set_item_type))
 	
 
     local buttons =

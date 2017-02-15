@@ -1,295 +1,283 @@
-local function SpawnEndMeteors(maxmeteors)
-	maxmeteors = maxmeteors or 7
-	local nummeteor = math.random(1,maxmeteors)
-	for i,v in ipairs(AllPlayers) do
-		for k = 1, nummeteor do
-			if v and v:IsValid() then
-				v:DoTaskInTime(((1 * math.random()) + .33) * k * .5, function() 
-			        local pt = v:GetPosition()
-			        local theta = math.random() * 2 * PI
-					local radius = 0
-					if v:HasTag("playerghost") then --spread the meteors more once the player is a ghost
-						radius = math.random(k+1, 10+(k*2))
-					else
-						radius = math.random(k-1, 5+(k*2))
-					end
-			        local offset = FindWalkableOffset(pt, theta, radius, 12, true)
-			        if offset then
-			        	pt = pt + offset
-			        end
-			        local meteor = SpawnPrefab("shadowmeteor")
-			        meteor.Transform:SetPosition(pt:Get())
-		        end)
-		    end
-	    end
-	end
+--[[
+local function DoSpawnMeteor(target, n)
+    local pt = target:GetPosition()
+    local theta = math.random() * 2 * PI
+    --spread the meteors more once the player is a ghost
+    local radius = target:HasTag("playerghost") and math.random(n + 1, 10 + n * 2) or math.random(n - 1, 5 + n * 2)
+    local offset = FindWalkableOffset(pt, theta, radius, 12, true)
+    if offset ~= nil then
+        pt.x = pt.x + offset.x
+        pt.z = pt.z + offset.z
+    end
+    SpawnPrefab("shadowmeteor").Transform:SetPosition(pt.x, 0, pt.z)
 end
 
+local function SpawnEndMeteors(maxmeteors)
+    for n = 1, math.random(maxmeteors or 7) do
+        for i, v in ipairs(AllPlayers) do
+            v:DoTaskInTime((math.random() + .33) * n * .5, DoSpawnMeteor, n)
+        end
+    end
+end
 
 local function SpawnEndHounds()
-	local numhounds = math.random(1,3)
-	for i,v in ipairs(AllPlayers) do
-		for k = 1, numhounds do
-			TheWorld.components.hounded:ForceReleaseSpawn(v)
-		end
-	end
+    for n = 1, math.random(3) do
+        for i, v in ipairs(AllPlayers) do
+            TheWorld.components.hounded:ForceReleaseSpawn(v)
+        end
+    end
 end
+]]
 
 --this is an update that always runs on wall time (not sim time)
 function WallUpdate(dt)
-	if AUTOSPAWN_MASTER_SLAVE then 
-		SpawnSecondInstance()
-	end
+    if AUTOSPAWN_MASTER_SLAVE then 
+        SpawnSecondInstance()
+    end
 
-	--TheSim:ProfilerPush("LuaWallUpdate")
+    --TheSim:ProfilerPush("LuaWallUpdate")
 
-	TheSim:ProfilerPush("RPC queue")
+    TheSim:ProfilerPush("RPC queue")
     HandleRPCQueue()
-	TheSim:ProfilerPop()
+    TheSim:ProfilerPop()
 
     HandleUserCmdQueue()
 
-	if TheFocalPoint ~= nil then
-		TheSim:SetActiveAreaCenterpoint(TheFocalPoint.Transform:GetWorldPosition())
+    if TheFocalPoint ~= nil then
+        TheSim:SetActiveAreaCenterpoint(TheFocalPoint.Transform:GetWorldPosition())
     else
         TheSim:SetActiveAreaCenterpoint(0, 0, 0)
-	end
+    end
 
-	TheSim:ProfilerPush("updating wall components")
-    for k,v in pairs(WallUpdatingEnts) do
+    TheSim:ProfilerPush("updating wall components")
+    for k, v in pairs(WallUpdatingEnts) do
         if v.wallupdatecomponents then
             for cmp in pairs(v.wallupdatecomponents) do
                 if cmp.OnWallUpdate then
-                    cmp:OnWallUpdate( dt )
+                    cmp:OnWallUpdate(dt)
                 end
             end
         end
     end
-	for k,v in pairs(NewWallUpdatingEnts) do
-		WallUpdatingEnts[k] = v
-		NewWallUpdatingEnts[k] = nil
+    if next(NewWallUpdatingEnts) ~= nil then
+        for k, v in pairs(NewWallUpdatingEnts) do
+            WallUpdatingEnts[k] = v
+        end
+        NewWallUpdatingEnts = {}
     end
-	TheSim:ProfilerPop()
+    TheSim:ProfilerPop()
 
-	TheSim:ProfilerPush("mixer")
+    TheSim:ProfilerPush("mixer")
     TheMixer:Update(dt)
-	TheSim:ProfilerPop()
+    TheSim:ProfilerPop()
 
-	if not IsSimPaused() then
-		TheSim:ProfilerPush("camera")
-		TheCamera:Update(dt)
-		TheSim:ProfilerPop()
-	end
-
-	CheckForUpsellTimeout(dt)
-
-	TheSim:ProfilerPush("input")
-	if not SimTearingDown then
-	    TheInput:OnUpdate()
-	end
-	TheSim:ProfilerPop()
-
-	TheSim:ProfilerPush("fe")
-    if global_error_widget == nil then
-        TheFrontEnd:Update(dt)
-    else
-        global_error_widget:OnUpdate(dt)
+    if not IsSimPaused() then
+        TheSim:ProfilerPush("camera")
+        TheCamera:Update(dt)
+        TheSim:ProfilerPop()
     end
-	TheSim:ProfilerPop()
 
-	--TheSim:ProfilerPop()
+    CheckForUpsellTimeout(dt)
 
-	-- Server termination script
-	-- Only runs if the SERVER_TERMINATION_TIMER constant has been overriden (which we do with the pax demo)
-	if SERVER_TERMINATION_TIMER > 0 and TheNet:GetIsServer() then
-		local original_time = SERVER_TERMINATION_TIMER
-		SERVER_TERMINATION_TIMER = SERVER_TERMINATION_TIMER - dt
+    TheSim:ProfilerPush("input")
+    if not SimTearingDown then
+        TheInput:OnUpdate()
+    end
+    TheSim:ProfilerPop()
 
-		if SERVER_TERMINATION_TIMER <= 60 and original_time % 5 <= 0.02 and SERVER_TERMINATION_TIMER > 0 then
-			SpawnEndHounds()
-		end
-		if SERVER_TERMINATION_TIMER <= 30 and original_time % 2 <= 0.02 and SERVER_TERMINATION_TIMER > 0 then
-			SpawnEndMeteors()
-		end
+    TheSim:ProfilerPush("fe")
+    if global_error_widget then
+        global_error_widget:OnUpdate(dt)
+    else
+        TheFrontEnd:Update(dt)
+    end
+    TheSim:ProfilerPop()
 
-		if SERVER_TERMINATION_TIMER <= 0 then
-			TheSim:Quit()
-		elseif SERVER_TERMINATION_TIMER <= 30 and original_time > 30 then
-			TheNet:Announce( "The sky is falling!", nil )
-		elseif SERVER_TERMINATION_TIMER <= 60 and original_time > 60 then
-			TheNet:Announce( "Let slip the dogs of war!", nil )
-		elseif SERVER_TERMINATION_TIMER <= 120 and original_time > 120 then
-			TheNet:Announce( "End times are almost here.", nil )
-		elseif SERVER_TERMINATION_TIMER <= 180 and original_time > 180 then
-			TheNet:Announce( "End times are coming.", nil )
-		end
-	end
+    --TheSim:ProfilerPop()
+
+    -- Server termination script
+    -- Only runs if the SERVER_TERMINATION_TIMER constant has been overriden (which we do with the pax demo)
+    --[[
+    if SERVER_TERMINATION_TIMER > 0 and TheNet:GetIsServer() then
+        if SERVER_TERMINATION_TIMER <= dt then
+            SERVER_TERMINATION_TIMER = 0
+            TheSim:Quit()
+            return
+        end
+
+        local original_time = SERVER_TERMINATION_TIMER
+        SERVER_TERMINATION_TIMER = SERVER_TERMINATION_TIMER - dt
+
+        if SERVER_TERMINATION_TIMER <= 60 and original_time % 5 <= .02 then
+            SpawnEndHounds()
+        end
+        if SERVER_TERMINATION_TIMER <= 30 and original_time % 2 <= .02 then
+            SpawnEndMeteors()
+        end
+
+        if SERVER_TERMINATION_TIMER <= 30 and original_time > 30 then
+            TheNet:Announce("The sky is falling!")
+        elseif SERVER_TERMINATION_TIMER <= 60 and original_time > 60 then
+            TheNet:Announce("Let slip the dogs of war!")
+        elseif SERVER_TERMINATION_TIMER <= 120 and original_time > 120 then
+            TheNet:Announce("End times are almost here.")
+        elseif SERVER_TERMINATION_TIMER <= 180 and original_time > 180 then
+            TheNet:Announce("End times are coming.")
+        end
+    end
+    ]]
 end
 
 function PostUpdate(dt)
-	--TheSim:ProfilerPush("LuaPostUpdate")
-	EmitterManager:PostUpdate()
-	--TheSim:ProfilerPop()
+    --TheSim:ProfilerPush("LuaPostUpdate")
+    EmitterManager:PostUpdate()
+    --TheSim:ProfilerPop()
 end
-
 
 local StaticComponentLongUpdates = {}
 function RegisterStaticComponentLongUpdate(classname, fn)
-	StaticComponentLongUpdates[classname] = fn
+    StaticComponentLongUpdates[classname] = fn
 end
-
 
 local StaticComponentUpdates = {}
 function RegisterStaticComponentUpdate(classname, fn)
-	StaticComponentUpdates[classname] = fn
+    StaticComponentUpdates[classname] = fn
 end
-
 
 local last_tick_seen = -1
 --This is where the magic happens
 function Update(dt)
     HandleClassInstanceTracking()
-	--TheSim:ProfilerPush("LuaUpdate")
-	CheckDemoTimeout()
+    --TheSim:ProfilerPush("LuaUpdate")
+    CheckDemoTimeout()
 
-    if PLATFORM == "NACL" then
-        AccumulatedStatsHeartbeat(dt)
+    if IsSimPaused() then
+        --TheSim:ProfilerPop()
+        return
     end
 
-    if not IsSimPaused() then
-		local tick = TheSim:GetTick()
-		if tick > last_tick_seen then
-			TickRPCQueue()
+    local tick = TheSim:GetTick()
+    if tick <= last_tick_seen then
+        print("Saw this before")
+        --TheSim:ProfilerPop()
+        return
+    end
 
-			TheSim:ProfilerPush("scheduler")
-			for i = last_tick_seen +1, tick do
-				RunScheduler(i)
-			end
-			TheSim:ProfilerPop()
+    TickRPCQueue()
 
-			if SimShuttingDown then
-			    return
-			end
+    TheSim:ProfilerPush("scheduler")
+    for i = last_tick_seen + 1, tick do
+        RunScheduler(i)
+    end
+    TheSim:ProfilerPop()
 
-			TheSim:ProfilerPush("static components")
-			for k,v in pairs(StaticComponentUpdates) do
-				v(dt)
-			end
-			TheSim:ProfilerPop()
+    if SimShuttingDown then
+        --TheSim:ProfilerPop()
+        return
+    end
 
-			TheSim:ProfilerPush("updating components")
-			for k,v in pairs(UpdatingEnts) do
-				--TheSim:ProfilerPush(v.prefab)
-				if v.updatecomponents then
-					for cmp in pairs(v.updatecomponents) do
-						--TheSim:ProfilerPush(v:GetComponentName(cmp))
-						if cmp.OnUpdate and not StopUpdatingComponents[cmp] then
-							cmp:OnUpdate(dt)
-						end
-						--TheSim:ProfilerPop()
-					end
-				end
-				--TheSim:ProfilerPop()
-			end
+    TheSim:ProfilerPush("static components")
+    for k, v in pairs(StaticComponentUpdates) do
+        v(dt)
+    end
+    TheSim:ProfilerPop()
 
-			for k,v in pairs(NewUpdatingEnts) do
-				UpdatingEnts[k] = v
-			end
-			NewUpdatingEnts = {}
+    TheSim:ProfilerPush("updating components")
+    for k, v in pairs(UpdatingEnts) do
+        --TheSim:ProfilerPush(v.prefab)
+        if v.updatecomponents then
+            for cmp in pairs(v.updatecomponents) do
+                --TheSim:ProfilerPush(v:GetComponentName(cmp))
+                if cmp.OnUpdate and not StopUpdatingComponents[cmp] then
+                    cmp:OnUpdate(dt)
+                end
+                --TheSim:ProfilerPop()
+            end
+        end
+        --TheSim:ProfilerPop()
+    end
 
-			for k,v in pairs(StopUpdatingComponents) do
-				v:StopUpdatingComponent_Deferred(k)
-			end
-			StopUpdatingComponents = {}
+    if next(NewUpdatingEnts) ~= nil then
+        for k, v in pairs(NewUpdatingEnts) do
+            UpdatingEnts[k] = v
+        end
+        NewUpdatingEnts = {}
+    end
 
-			TheSim:ProfilerPop()
+    if next(StopUpdatingComponents) ~= nil then
+        for k, v in pairs(StopUpdatingComponents) do
+            v:StopUpdatingComponent_Deferred(k)
+        end
+        StopUpdatingComponents = {}
+    end
 
-			for i = last_tick_seen + 1, tick do
-				TheSim:ProfilerPush("LuaSG")
-				SGManager:Update(i)
-				TheSim:ProfilerPop()
+    TheSim:ProfilerPop()
 
-				TheSim:ProfilerPush("LuaBrain")
-				BrainManager:Update(i)
-				TheSim:ProfilerPop()
-			end
-		else
-			print ("Saw this before")
-		end
-		last_tick_seen = tick
-	end
+    for i = last_tick_seen + 1, tick do
+        TheSim:ProfilerPush("LuaSG")
+        SGManager:Update(i)
+        TheSim:ProfilerPop()
 
+        TheSim:ProfilerPush("LuaBrain")
+        BrainManager:Update(i)
+        TheSim:ProfilerPop()
+    end
+
+    last_tick_seen = tick
     --TheSim:ProfilerPop()
 end
 
 --this is for advancing the sim long periods of time (to skip nights, come back from caves, etc)
 function LongUpdate(dt, ignore_player)
-	--print ("LONG UPDATE", dt, ignore_player)
-	local function doupdate(dt)
-		for k,v in pairs(StaticComponentLongUpdates) do
-			v(dt)
-		end
+    --print("LONG UPDATE", dt, ignore_player)
 
-		for i,v in ipairs(AllPlayers) do
-			if ignore_player then
-				if v.components.beard then
-					v.components.beard.pause = true
-				end
+    for k, v in pairs(StaticComponentLongUpdates) do
+        v(dt)
+    end
 
-				if v.components.beaverness then
-					v.components.beaverness.ignoremoon = true
-				end
-			end
-		end
+    if ignore_player then
+        for i, v in ipairs(AllPlayers) do
+            if v.components.beard then
+                v.components.beard.pause = true
+            end
+        end
 
+        for k, v in pairs(Ents) do
+            local should_ignore = false
 
-		for k,v in pairs(Ents) do
+            if v.components.inventoryitem ~= nil then
+                local grand_owner = v.components.inventoryitem:GetGrandOwner()
+                if grand_owner ~= nil and
+                    (   grand_owner:HasTag("player") or
+                        (   grand_owner.components.container and
+                            grand_owner.components.follower and
+                            grand_owner.components.follower:GetLeader() and
+                            grand_owner.components.follower:GetLeader():HasTag("player")
+                        )
+                    ) then
+                    should_ignore = true
+                end
+            end
 
-			local should_ignore = false
-			if ignore_player then
+            if not (    should_ignore or
+                        v:HasTag("player") or
+                        (   v.components.follower and
+                            v.components.follower:GetLeader() and
+                            v.components.follower:GetLeader():HasTag("player")
+                        )
+                    ) then
+                v:LongUpdate(dt)
+            end
+        end
 
-				if v.components.inventoryitem then
-					local grand_owner = v.components.inventoryitem:GetGrandOwner()
-                    if grand_owner ~= nil then
-                        if grand_owner:HasTag("player") then
-                            should_ignore = true
-                        elseif grand_owner.prefab == "chester"
-                            or grand_owner.prefab == "hutch" then
-                            local leader = grand_owner.components.follower.leader
-                            if leader ~= nil and leader:HasTag("player") then
-                                should_ignore = true
-                            end
-                        end
-                    end
-				end
-
-				if v.components.follower and v.components.follower.leader and v.components.follower.leader:HasTag("player") then
-					should_ignore = true
-				end
-
-				if v:HasTag("player") then
-					should_ignore = true
-				end
-			end
-				
-			if not should_ignore then
-				v:LongUpdate(dt)
-			end
-			
-		end	
-
-		for i,v in ipairs(AllPlayers) do
-			if v.components.beard then
-				v.components.beard.pause = nil
-			end
-
-			if v.components.beaverness then
-				v.components.beaverness.ignoremoon = nil
-			end
-		end
-
-	end
-
-	doupdate(dt)
-
+        for i, v in ipairs(AllPlayers) do
+            if v.components.beard then
+                v.components.beard.pause = nil
+            end
+        end
+    else
+        for k, v in pairs(Ents) do
+            v:LongUpdate(dt)
+        end
+    end
 end

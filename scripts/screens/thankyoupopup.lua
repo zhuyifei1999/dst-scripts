@@ -252,8 +252,7 @@ function ThankYouPopup:SetSkinName()
     local skin_name = string.lower(self.items[self.current_item].item)
     local name_string = GetName(skin_name) 
 
-    local itemtype = GetTypeForItem(skin_name)
-    local rarity = GetRarityForItem(itemtype, skin_name)
+    local rarity = GetRarityForItem(skin_name)
     self.item_name:SetColour(SKIN_RARITY_COLORS[rarity])
     self.item_name:SetString(name_string or skin_name or "bad item name")
     --self.banner:Show()
@@ -345,7 +344,7 @@ function ThankYouPopup:ChangeGift(offset)
 		self.can_close = false;
     
     else -- Already opened item
-        local build = GetBuildForItem(GetTypeForItem(self.items[self.current_item].item), self.items[self.current_item].item)
+        local build = GetBuildForItem(self.items[self.current_item].item)
         self.spawn_portal:GetAnimState():OverrideSkinSymbol("SWAP_ICON", build, "SWAP_ICON")
         TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/player_receives_gift_animation_spin")
         self.spawn_portal:GetAnimState():PlayAnimation("skin_in")
@@ -385,7 +384,7 @@ function ThankYouPopup:OpenGift()
     self.left_btn:Hide()
 
     local skin_name = self.items[self.current_item].item
-    local build = GetBuildForItem(GetTypeForItem(skin_name), skin_name)
+    local build = GetBuildForItem(skin_name)
 
     self.spawn_portal:GetAnimState():OverrideSkinSymbol("SWAP_ICON", build, "SWAP_ICON")
 

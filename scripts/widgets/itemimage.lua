@@ -90,9 +90,9 @@ function ItemImage:SetItem(type, name, item_id, timestamp)
 	self.name = name
 	self.item_id = item_id
 
-	self.rarity = GetRarityForItem( type, name )
+	self.rarity = GetRarityForItem( name )
 	
-	name = GetBuildForItem(self.type, self.name) 
+	name = GetBuildForItem(self.name) 
 	
 
 	if self.frame and name ~= "" then 

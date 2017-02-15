@@ -418,7 +418,7 @@ function PlayerAvatarPopup:CreateSkinWidgetForSlot()
 end
 
 function PlayerAvatarPopup:UpdateSkinWidgetForSlot(image_group, slot, name)
-    local rarity = GetRarityForItem(slot, name)
+    local rarity = GetRarityForItem(name)
     image_group._text:SetColour(unpack(SKIN_RARITY_COLORS[rarity]))
 
     local namestr = string.match(name, "_none") and "none" or name -- This version uses "Willow" for "willow_none": string.gsub(name, "_none", "")
@@ -473,7 +473,7 @@ function PlayerAvatarPopup:UpdateEquipWidgetForSlot(image_group, slot, equipdata
     local name = equipdata ~= nil and equipdata[EquipSlot.ToID(slot)] or nil
     name = name ~= nil and #name > 0 and name or "none"
 
-    local rarity = GetRarityForItem("item", name)
+    local rarity = GetRarityForItem(name)
 
     image_group._text:SetColour(unpack(SKIN_RARITY_COLORS[rarity]))
     image_group._text:SetMultilineTruncatedString(GetName(name), 2, text_width, 25, true)

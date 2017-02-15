@@ -134,21 +134,9 @@ function SkinsItemPopUp:SetItemDisplay()
     self.skin_name:SetString(item_name)
     self.skin_description:SetString(item_description)
 
-    local item_data
-    if CLOTHING[item_type] == nil then
-        -- either a base skin or a craftable
-        item_data = Prefabs[item_type]
-        self.spawn_portal:GetAnimState():OverrideSkinSymbol("SWAP_ICON", item_data.build_name, "SWAP_ICON")
+	self.spawn_portal:GetAnimState():OverrideSkinSymbol("SWAP_ICON", GetBuildForItem(item_type), "SWAP_ICON")
 
-    else
-        item_data = CLOTHING[item_type]
-        self.spawn_portal:GetAnimState():OverrideSkinSymbol("SWAP_ICON", item_type, "SWAP_ICON")
-    end
-
-    local rarity = "Common"
-    if item_data ~= nil and item_data.rarity ~= nil then
-        rarity = item_data.rarity
-    end
+	local rarity = GetRarityForItem(item_type)
 
     self.skin_name:SetColour(SKIN_RARITY_COLORS[rarity])
     self.rarity_label:SetColour(SKIN_RARITY_COLORS[rarity])
