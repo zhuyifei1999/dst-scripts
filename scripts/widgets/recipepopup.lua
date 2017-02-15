@@ -485,7 +485,7 @@ function RecipePopup:GetSkinOptions()
         for which = 1, #self.skins_list do
             local image_name = self.skins_list[which].item
 
-            local rarity = GetRarityForItem("item", image_name)
+            local rarity = GetRarityForItem(image_name)
             local colour = rarity and SKIN_RARITY_COLORS[rarity] or SKIN_RARITY_COLORS["Common"]
             local text_name = GetName(image_name) or STRINGS.SKIN_NAMES["missing"]
             local new_indicator = not self.skins_list[which].timestamp or (self.skins_list[which].timestamp > recipe_timestamp)

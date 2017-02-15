@@ -124,7 +124,7 @@ local CountdownBeta = Class(Widget, function(self, owner, mode, image, update_na
 			self.title2:SetClickable(false)
 			self.title2:SetString(STRINGS.UI.MAINSCREEN.UPDATERELEASED)
 
-			self.title:SetPosition(0, 26, 0)
+			self.title:SetPosition(0, 28, 0)
 			self.daysuntiltext:SetPosition(0, -28, 0)
 			self.daysuntiltext:SetSize(25)
 			self.daysuntiltext:SetString(update_name)

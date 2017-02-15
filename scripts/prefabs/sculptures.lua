@@ -221,7 +221,6 @@ local function makesculpture(name, physics_radius, scale, second_piece_name)
         inst:AddTag("statue")
         inst:AddTag("sculpture")
         inst:AddTag("chess_moonevent")
-        inst:AddTag("antlion_sinkhole_blocker")
 
         MakeObstaclePhysics(inst, physics_radius)
 

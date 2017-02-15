@@ -453,7 +453,6 @@ function TradeScreen:FinishReset(move_items)
 		for i=1,MAX_TRADE_ITEMS do 
 			if self.frames_single[i].name then
 				self.moving_items_list[i] = TEMPLATES.MovingItem( self.frames_single[i].name,
-														self.frames_single[i].type,
 														i,
 														self.frames_single[i]:GetWorldPosition(),
 														self.popup.page_list.right_button:GetWorldPosition(),
@@ -544,9 +543,9 @@ function TradeScreen:Trade(done_warning)
 		        widg.frame:GetAnimState():SetBuild("frames_comp") -- use the animation file as the build, then override it
 		        widg.frame:GetAnimState():SetBank("fr") -- top level symbol from frames_comp
 
-		        local rarity = GetRarityForItem(self.frames_single[i].type, self.frames_single[i].name)
+		        local rarity = GetRarityForItem(self.frames_single[i].name)
 
-		        widg.frame:GetAnimState():OverrideSkinSymbol("SWAP_ICON",  GetBuildForItem(self.frames_single[i].type, self.frames_single[i].name), "SWAP_ICON")
+		        widg.frame:GetAnimState():OverrideSkinSymbol("SWAP_ICON",  GetBuildForItem(self.frames_single[i].name), "SWAP_ICON")
 		        widg.frame:GetAnimState():OverrideSymbol("SWAP_frameBG", "frame_BG", rarity)
 
 		        widg.frame:GetAnimState():PlayAnimation("icon", true)
@@ -589,7 +588,7 @@ function TradeScreen:Trade(done_warning)
 
 
 	-- TODO: stop hard-coding the rarity to the next one up. We should really read it out of the recipes file.
-	local rarity = GetRarityForItem(self.frames_single[1].type, self.frames_single[1].name)
+	local rarity = GetRarityForItem(self.frames_single[1].name)
 	self.expected_rarity = GetNextRarity(rarity)
 
 
@@ -665,11 +664,10 @@ function TradeScreen:FinishTrade()
 end
 
 function TradeScreen:GiveItem(item)	
-	local item_type = GetTypeForItem(item)
-	local name = GetBuildForItem(item_type, item)
+	local name = GetBuildForItem(item)
 
 	-- Need to store a reference to this so we can start it moving when the player clicks
-	self.moving_gift_item = TEMPLATES.MovingItem(name, item_type, self.current_num_trade_items, self.claw_machine_bg:GetWorldPosition(), 
+	self.moving_gift_item = TEMPLATES.MovingItem(name, self.current_num_trade_items, self.claw_machine_bg:GetWorldPosition(), 
 											self.popup.page_list.right_button:GetWorldPosition(), 1 * self.fixed_root:GetScale().x, .5 * self.fixed_root:GetScale().x)
 
 	table.insert(self.moving_items_list, self.moving_gift_item)
@@ -677,7 +675,7 @@ function TradeScreen:GiveItem(item)
 	self.gift_name = item
 	
 	self.claw_machine:GetAnimState():OverrideSkinSymbol("SWAP_ICON", name, "SWAP_ICON")
-	self.claw_machine:GetAnimState():OverrideSymbol("SWAP_frameBG", "frame_BG", GetRarityForItem(item_type, item))
+	self.claw_machine:GetAnimState():OverrideSymbol("SWAP_frameBG", "frame_BG", GetRarityForItem(item))
 	self:PlayMachineAnim("skin_in", false)
 	self:PushMachineAnim("idle_skin", true)
 
@@ -704,8 +702,7 @@ function TradeScreen:DisplayItemName(gift)
 	self.item_name_displayed = true
 
 	local name_string = GetName(gift) 
-	local item_type = GetTypeForItem(gift)
-	local rarity = GetRarityForItem(item_type, gift)
+	local rarity = GetRarityForItem(gift)
 	self.item_name:SetTruncatedString(name_string, 330, 35, true)
 	self.item_name:SetColour(SKIN_RARITY_COLORS[rarity])
 	self.item_name:Show()
@@ -789,8 +786,7 @@ function TradeScreen:RemoveSelectedItem(number)
 		if self.frames_single[number].focus then
 			start_scale = .78
 		end
-		local moving_item = TEMPLATES.MovingItem(self.frames_single[number].name, 
-													self.frames_single[number].type,
+		local moving_item = TEMPLATES.MovingItem(self.frames_single[number].name,
 													number,
 													self.frames_single[number]:GetWorldPosition(),
 													self.popup.page_list.right_button:GetWorldPosition(),
@@ -831,7 +827,7 @@ function TradeScreen:StartAddSelectedItem(item, start_pos)
 		local slot = self.frames_single[empty_slot]
 		--print("Slot position is ", slot:GetPosition(), slot:GetWorldPosition())
 
-		local moving_item = TEMPLATES.MovingItem(item.item, item.type, empty_slot,
+		local moving_item = TEMPLATES.MovingItem(item.item, empty_slot,
 												start_pos,
 												slot:GetWorldPosition(), 
 												.56 *  self.fixed_root:GetScale().x, 
@@ -860,7 +856,7 @@ end
 -- This is called once the item reaches the empty slot
 function TradeScreen:AddSelectedItem(item)
 	if item and item.item and item.target_index then
-		local rarity = GetRarityForItem(item.type, item.item)
+		local rarity = GetRarityForItem(item.item)
 		
 		self.selected_items[item.target_index] = item
 		self.frames_single[item.target_index]:SetItem( item.type, item.item, 0) --Swap item
@@ -1067,7 +1063,7 @@ function TradeScreen:RefreshMachineTilesState()
 	for i=1,MAX_TRADE_ITEMS do
 		local item = self.selected_items[i]
 		if not self.machine_in_use and item ~= nil then 
-			local rarity = GetRarityForItem(item.type, item.item)
+			local rarity = GetRarityForItem(item.item)
 			local hover_text = rarity .. "\n" .. GetName(item.item)
 
 			local y_offset = 50

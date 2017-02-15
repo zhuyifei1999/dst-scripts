@@ -345,7 +345,7 @@ function LobbyScreen:MakeTextEntryBox(parent)
     chatbox.bg_outline:SetPosition((box_size * .5) - 100 + 24 + nudgex, 7 + nudgey, 0)
     chatbox.textbox:SetFocusedImage( chatbox.bg_outline, "images/textboxes.xml", "textbox2_small_grey.tex", "textbox2_small_gold.tex", "textbox2_small_gold_greyfill.tex" )
 
-    chatbox.textbox:SetTextLengthLimit( 200 )
+    chatbox.textbox:SetTextLengthLimit(MAX_CHAT_INPUT_LENGTH)
     chatbox.textbox:EnableWordWrap(false)
     chatbox.textbox:EnableScrollEditWindow(true)
     chatbox.textbox:SetHelpTextEdit("")
@@ -357,7 +357,7 @@ function LobbyScreen:MakeTextEntryBox(parent)
     chatbox.textbox.OnTextEntered = function()
         local chat_string = self.chatbox.textbox:GetString()
         chat_string = chat_string ~= nil and chat_string:match("^%s*(.-%S)%s*$") or ""
-        if chat_string ~= "" then
+        if chat_string ~= "" and chat_string:utf8len() <= MAX_CHAT_INPUT_LENGTH then
             TheNet:Say(chat_string)
             TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/chat_send")
         end

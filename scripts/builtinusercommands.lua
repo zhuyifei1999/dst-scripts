@@ -86,7 +86,7 @@ AddUserCommand("emote", {
             (command.hasaccessfn == nil or
             command.hasaccessfn(command, caller)) then
             UserCommands.RunUserCommand(params.emotename, {}, caller, false)
-        else
+        elseif trailing:utf8len() <= MAX_CHAT_INPUT_LENGTH then
             --NOTE: whitespace already trimmed in all params
             TheNet:Say(trailing:len() > 0 and (params.emotename.." "..trailing) or params.emotename, true, true)
         end

@@ -15,7 +15,7 @@ end
 function GetBasicRecipeMatch(selections)
 	local rarity = nil
 	for _,item in pairs(selections) do
-		rarity = GetRarityForItem(item.type, item.item)
+		rarity = GetRarityForItem(item.item)
 		break
 	end
 	

@@ -52,31 +52,28 @@ local function CheckValidWildfireStarter(obj)
 end
 
 local function LightFireForPlayer(player, rescheduleFn)
-    if _worldstate.isday and
-        _worldstate.temperature > _tempthreshold and
-        not _worldstate.israining and
-        not (_world.components.sandstorms ~= nil and
-            _world.components.sandstorms:IsInSandstorm(player)) and
-        math.random() <= _chance then
-
-        local x, y, z = player.Transform:GetWorldPosition()
-        local firestarters = TheSim:FindEntities(x, y, z, _radius, nil, _excludetags)
-        if #firestarters > 0 then
-            local highprio = {}
-            local lowprio = {}
-            for i, v in ipairs(firestarters) do
-                if v.components.burnable ~= nil then
-                    table.insert(v:HasTag("wildfirepriority") and highprio or lowprio, v)
+    if _worldstate.temperature > _tempthreshold and _worldstate.isday and not _worldstate.israining then
+        local rnd = math.random()
+        if rnd <= _chance then
+            local x, y, z = player.Transform:GetWorldPosition()
+            local firestarters = TheSim:FindEntities(x, y, z, _radius, nil, _excludetags)
+            if #firestarters > 0 then
+                local highprio = {}
+                local lowprio = {}
+                for i, v in ipairs(firestarters) do
+                    if v.components.burnable ~= nil then
+                        table.insert(v:HasTag("wildfirepriority") and highprio or lowprio, v)
+                    end
                 end
-            end
-            firestarters = #highprio > 0 and highprio or lowprio
-            while #firestarters > 0 do
-                local i = math.random(#firestarters)
-                if CheckValidWildfireStarter(firestarters[i]) then
-                    firestarters[i].components.burnable:StartWildfire()
-                    break
-                else
-                    table.remove(firestarters, i)
+                firestarters = #highprio > 0 and highprio or lowprio
+                while #firestarters > 0 do
+                    local i = math.random(#firestarters)
+                    if CheckValidWildfireStarter(firestarters[i]) then
+                        firestarters[i].components.burnable:StartWildfire()
+                        break
+                    else
+                        table.remove(firestarters, i)
+                    end
                 end
             end
         end

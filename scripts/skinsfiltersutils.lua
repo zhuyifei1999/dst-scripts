@@ -99,7 +99,7 @@ function ApplyFilters(full_skins_list, filters)
 					if filter_type == "type" and skin_item.type ~= filter_value then
 						matches_filters = false
 						break
-					elseif filter_type == "rarity" and GetRarityForItem(skin_item.type, skin_item.item) ~= filter_value then
+					elseif filter_type == "rarity" and GetRarityForItem(skin_item.item) ~= filter_value then
 						matches_filters = false
 						break
 					elseif filter_type == "item" and skin_item.item ~= filter_value then 

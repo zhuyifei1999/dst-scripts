@@ -453,6 +453,7 @@ TEMPLATES = {
                 root.right:SetScale(scalex, scaley)
             elseif vbars then
                 local w, h = root.top:GetSize()
+                local qq = scrnh * aspect
                 local scalex = RESOLUTION_X / w
                 local scaley = (scrnh * aspect / scrnw - 1) * .5 * RESOLUTION_Y / h
                 root.top:SetScale(scalex, scaley)
@@ -1216,7 +1217,7 @@ TEMPLATES = {
     -----------------------
     -----------------------
     -- An item image for the inventory screens that moves 
-    MovingItem = function(name, type, slot_index, src_pos, dest_pos, start_scale, end_scale)
+    MovingItem = function(name, slot_index, src_pos, dest_pos, start_scale, end_scale)
 
         local widg = UIAnim()
        
@@ -1227,9 +1228,9 @@ TEMPLATES = {
         widg:GetAnimState():SetBuild("frames_comp") -- use the animation file as the build, then override it
         widg:GetAnimState():SetBank("fr") -- top level symbol from frames_comp
 
-        local rarity = GetRarityForItem(type, name)
+        local rarity = GetRarityForItem(name)
 
-        widg:GetAnimState():OverrideSkinSymbol("SWAP_ICON", GetBuildForItem(type, name), "SWAP_ICON")
+        widg:GetAnimState():OverrideSkinSymbol("SWAP_ICON", GetBuildForItem(name), "SWAP_ICON")
         widg:GetAnimState():OverrideSymbol("SWAP_frameBG", "frame_BG", rarity)
 
         widg:GetAnimState():PlayAnimation("icon", true)

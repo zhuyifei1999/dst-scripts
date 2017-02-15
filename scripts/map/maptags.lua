@@ -5,7 +5,6 @@ local function MakeTags()
 			["Chester_Eyebone"] = true,
 			["Hutch_Fishbowl"] = true,
 			["StagehandGarden"] = true,
-			["SandstormOasis"] = true,
 		}
 		
 	local map_tags = 
@@ -89,11 +88,6 @@ local function MakeTags()
 			["Mist"] = function(tagdata)
                             return "TAG", "Mist"
                         end,
-                        
-            ["sandstorm"] =			function(tagdata)
-										return "TAG", "sandstorm" 
-									end,
-
 		}
 	return {Tag = map_tags, TagData = map_data }
 end

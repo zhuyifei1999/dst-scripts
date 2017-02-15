@@ -115,6 +115,9 @@ function Networking_RollAnnouncement(userid, name, prefab, colour, rolls, max)
 end
 
 function Networking_Say(guid, userid, name, prefab, message, colour, whisper, isemote)
+    if message ~= nil and message:utf8len() > MAX_CHAT_INPUT_LENGTH then
+        return
+    end
     local entity = Ents[guid]
     if not isemote and entity ~= nil and entity.components.talker ~= nil then
         entity.components.talker:Say(not entity:HasTag("mime") and message or "", nil, nil, nil, true, colour)

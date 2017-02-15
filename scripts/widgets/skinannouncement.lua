@@ -170,17 +170,7 @@ function SkinAnnouncement:SetSkinAnnouncementInfo(user_name, user_colour, skin_n
     self.user_name = user_name
     self:SetMessageText(string.format(STRINGS.UI.NOTIFICATION.NEW_SKIN_ANNOUNCEMENT, user_name))
 
-    local skin_data
-    if CLOTHING[self.skin_name] ~= nil then
-        skin_data = CLOTHING[self.skin_name]
-    else
-        skin_data = Prefabs[skin_name]
-    end
-
-    local rarity = "Common"
-    if skin_data.rarity ~= nil then
-        rarity = skin_data.rarity
-    end
+    local rarity = GetRarityForItem(self.skin_name)
 
     self:SetSkinTextColour(SKIN_RARITY_COLORS[rarity])
     self:SetSkinText(STRINGS.SKIN_NAMES[skin_name])

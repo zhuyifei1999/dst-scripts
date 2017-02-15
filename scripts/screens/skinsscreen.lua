@@ -136,7 +136,7 @@ function SkinsScreen:OnItemSelect(type, item_type, item_id, itemimage)
 
 	self.dressup_hanger:Hide()
 
-	local buildfile = GetBuildForItem(type, item_type) 
+	local buildfile = GetBuildForItem(item_type) 
 
 	if type == "base"  then 
 		self.details_panel.shadow:SetScale(.4)
@@ -152,7 +152,7 @@ function SkinsScreen:OnItemSelect(type, item_type, item_id, itemimage)
 
 	self.details_panel.image:GetAnimState():OverrideSkinSymbol("SWAP_ICON", buildfile, "SWAP_ICON")
 
-	local rarity = GetRarityForItem(type, item_type)
+	local rarity = GetRarityForItem(item_type)
 	local nameStr = GetName(item_type)
 
 	self.details_panel.name:SetTruncatedString(nameStr, 220, 50, true)
