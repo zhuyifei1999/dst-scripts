@@ -67,6 +67,8 @@ local prefabs =
     "dropperweb",
     "hutch",
     "toadstool_cap",
+    "cavein_boulder",
+    "cavein_debris",
 }
 
 local monsters =
@@ -153,8 +155,10 @@ local function master_postinit(inst)
     inst:AddComponent("toadstoolspawner")
 
     --gameplay
+    inst:AddComponent("caveins")
     inst:AddComponent("kramped")
     inst:AddComponent("chessunlocks")
+    inst:AddComponent("townportalregistry")
 
     --world management
     inst:AddComponent("forestresourcespawner") -- a cave version of this would be nice, but it serves it's purpose...

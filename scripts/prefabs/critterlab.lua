@@ -43,6 +43,7 @@ local function fn()
     inst.AnimState:PlayAnimation("idle")
 
     inst:AddTag("critterlab")
+    inst:AddTag("antlion_sinkhole_blocker")
 
     --prototyper (from prototyper component) added to pristine state for optimization
     inst:AddTag("prototyper")
