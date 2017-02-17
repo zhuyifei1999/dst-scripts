@@ -128,6 +128,7 @@ local UserCommandPickerScreen = Class(Screen, function(self, owner, targetuserid
         top = top - CANCEL_OFFSET - BUTTON_HEIGHT
     end
 
+    self.force_focus_button = nil
     self:RefreshButtons()
 end)
 
@@ -167,6 +168,8 @@ function UserCommandPickerScreen:RefreshButtons()
     local worldvoter = TheWorld.net ~= nil and TheWorld.net.components.worldvoter or nil
     local playervoter = self.owner.components.playervoter
 
+	-- we only want to force the focus to be set the first time we find an active widget, not on every refresh
+    local force_focus = false
     for i,button in ipairs(self.buttons) do
         local action = nil
         for i,act in ipairs(self.actions) do
@@ -181,7 +184,11 @@ function UserCommandPickerScreen:RefreshButtons()
                 --we know canstart is false, but we want the reason
                 local canstart, reason = UserCommands.CanUserStartCommand(action.commandname, self.owner, self.targetuserid)
                 button:SetHoverText(reason ~= nil and STRINGS.UI.PLAYERSTATUSSCREEN.COMMANDCANNOTSTART[reason] or "")
-                button:Select()
+                if TheInput:ControllerAttached() then
+                    button:Disable()
+                else
+                    button:Select()
+                end
             elseif action.exectype == COMMAND_RESULT.DENY then
                 if worldvoter == nil or playervoter == nil or not worldvoter:IsEnabled() then
                     --technically we should never get here (expected COMMAND_RESULT.INVALID)
@@ -194,12 +201,30 @@ function UserCommandPickerScreen:RefreshButtons()
                     local canstart, reason = UserCommands.CanUserStartVote(action.commandname, self.owner, self.targetuserid)
                     button:SetHoverText(reason ~= nil and STRINGS.UI.PLAYERSTATUSSCREEN.VOTECANNOTSTART[reason] or "")
                 end
-                button:Select()
+                if TheInput:ControllerAttached() then
+                    button:Disable()
+                else
+                    button:Select()
+                end
             else
                 button:ClearHoverText()
-                button:Unselect()
+                if TheInput:ControllerAttached() then                    
+                    button:Enable()
+					-- this is the first active widget we've come across so set it as focus
+                    if nil == self.force_focus_button then
+                        self.force_focus_button = button
+                        force_focus = true
+                    end
+                else
+                    button:Unselect()
+                end
             end
         end
+    end
+
+	-- force the focus if necessary
+    if force_focus and nil ~= self.force_focus_button then
+        self.force_focus_button:SetFocus()
     end
 end
 

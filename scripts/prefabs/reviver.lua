@@ -51,8 +51,10 @@ local function ConvertToGlow(inst)
     inst.AnimState:SetLightOverride(.3)
     inst.AnimState:SetFinalOffset(1)
 
+    inst:AddTag("FX")
+
     inst:RemoveComponent("inventoryitem")
-    inst:RemoveComponent("inventoryitem")
+    inst:RemoveComponent("inspectable")
     inst:RemoveComponent("tradable")
     inst:RemoveComponent("hauntable")
 
