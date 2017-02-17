@@ -107,6 +107,8 @@ local function fn(bank, build, anim, minimap, isbackground)
         inst.AnimState:SetSortOrder(3)
     end
 
+    inst:AddTag("antlion_sinkhole_blocker")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

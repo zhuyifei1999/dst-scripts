@@ -302,6 +302,7 @@ local function blue()
     inst.components.fueled.fueltype = FUELTYPE.MAGIC
     inst.components.fueled:InitializeFuelLevel(TUNING.BLUEAMULET_FUEL)
     inst.components.fueled:SetDepletedFn(inst.Remove)
+    inst.components.fueled:SetFirstPeriod(TUNING.TURNON_FUELED_CONSUMPTION, TUNING.TURNON_FULL_FUELED_CONSUMPTION)
 
     MakeHauntableLaunch(inst)
     AddHauntableCustomReaction(inst, OnHauntBlue, true, nil, true)
@@ -320,11 +321,12 @@ local function purple()
     inst.components.fueled.fueltype = FUELTYPE.MAGIC
     inst.components.fueled:InitializeFuelLevel(TUNING.PURPLEAMULET_FUEL)
     inst.components.fueled:SetDepletedFn(inst.Remove)
+    inst.components.fueled:SetFirstPeriod(TUNING.TURNON_FUELED_CONSUMPTION, TUNING.TURNON_FULL_FUELED_CONSUMPTION)
 
     inst.components.equippable:SetOnEquip(onequip_purple)
     inst.components.equippable:SetOnUnequip(onunequip_purple)
 
-    inst.components.equippable.dapperness = -TUNING.DAPPERNESS_MED    
+    inst.components.equippable.dapperness = -TUNING.DAPPERNESS_MED
 
     MakeHauntableLaunch(inst)
 
@@ -390,6 +392,7 @@ local function yellow()
     inst.components.fueled.fueltype = FUELTYPE.NIGHTMARE
     inst.components.fueled:InitializeFuelLevel(TUNING.YELLOWAMULET_FUEL)
     inst.components.fueled:SetDepletedFn(inst.Remove)
+    inst.components.fueled:SetFirstPeriod(TUNING.TURNON_FUELED_CONSUMPTION, TUNING.TURNON_FULL_FUELED_CONSUMPTION)
     inst.components.fueled.accepting = true
 
     MakeHauntableLaunch(inst)

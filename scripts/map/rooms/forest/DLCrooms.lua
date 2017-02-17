@@ -55,6 +55,23 @@ AddRoom("Badlands", {
 									},
 					            }
 					})
+					
+AddRoom("DragonflyArena", {
+					colour={r=0.3,g=0.2,b=0.1,a=0.3},
+					value = GROUND.DIRT_NOISE,
+					contents =  {
+									countstaticlayouts={["DragonflyArena"]=1}, -- using a static layout because this can force it to be in the center of the room
+									distributepercent = 0.1,
+									distributeprefabs =
+									{
+										rock_flintless = .8,
+										marsh_bush = 0.25,
+										marsh_tree = 0.75,
+										cactus = .7,
+										houndbone = .6,
+									},
+					            }
+					})
 
 AddRoom("HoundyBadlands", {
 					colour={r=0.3,g=0.2,b=0.1,a=0.3},
@@ -306,30 +323,70 @@ AddRoom("PondyGrass", {
 
 					})
 
---[[
-	-----Badlands-----
-	Background Badlands
-	Lightning
-	Badlands
-	Hound
-	Bone
-	Graveyard?
-	Buzzardy
+AddRoom("BGLightningBluff", {
+					colour={r=0.3,g=0.2,b=0.1,a=0.3},
+					value = GROUND.DIRT_NOISE,
+					tags = {"RoadPoison", "sandstorm"},
+					contents =  {
+									distributepercent = 0.06,
+									distributeprefabs =
+									{
+										marsh_bush = 0.15,
+										rock_flintless = .5,
+										houndbone = 0.2,
+										oasis_cactus = 0.2,
+										buzzardspawner = .05,
+									},
+					            }
+					})
 
-		--Lightning Goat
-		--Cactus
-		--Buzzard
-		--Spiked Bush
-		--Tumble Weeds
+AddRoom("LightningBluffAntlion", {
+					colour={r=0.3,g=0.2,b=0.1,a=0.3},
+					value = GROUND.DIRT_NOISE,
+					tags = {"RoadPoison", "sandstorm"},
+					contents =  {
+									countstaticlayouts={["AntlionSpawningGround"]=1}, -- using a static layout because this can force it to be in the center of the room
+									distributepercent = 0.1,
+									distributeprefabs =
+									{
+										marsh_bush = .66,
+										oasis_cactus = 0.1,
+										houndbone = .5,
+									},
+					            }
+					})
 
-	-----Deciduous-----
-	Background Decid Forest
-	Decid Forest
-	Dense Decid Forest
+AddRoom("LightningBluffOasis", {
+					colour={r=0.3,g=0.2,b=0.1,a=0.3},
+					value = GROUND.DIRT_NOISE,
+					tags = {"RoadPoison", "sandstorm"},
+					contents =  {
+									countstaticlayouts={["Oasis"]=1}, -- using a static layout because this can force it to be in the center of the room
+									distributepercent = 0.06,
+									distributeprefabs =
+									{
+										marsh_bush = 0.15,
+										houndbone = 0.2,
+										oasis_cactus = 0.02,
+										buzzardspawner = .05,
+									},
+					            }
+					})
 
-		--Catcoons
-		--Decid Trees
-		--Twigs
-		--Grass
-		--Rabbits/ Moles
---]]
+AddRoom("LightningBluffLightning", {
+					colour={r=0.3,g=0.2,b=0.1,a=0.3},
+					value = GROUND.DIRT_NOISE,
+					tags = {"RoadPoison", "sandstorm"},
+					contents =  {
+					                countprefabs= {
+					                    lightninggoat = function () return 2 + math.random(4) end,
+					                },
+									distributepercent = 0.08,
+									distributeprefabs =
+									{
+										marsh_bush = .8,
+										oasis_cactus = 0.8,
+									},
+								}
+					})
+
