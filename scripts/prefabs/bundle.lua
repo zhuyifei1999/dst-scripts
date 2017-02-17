@@ -108,7 +108,7 @@ local function onextinguish(inst)
     inst.components.unwrappable.canbeunwrapped = true
 end
 
-local function MakeBundle(name, onesize, variations, loot, tossloot, setupdata)
+local function MakeBundle(name, onesize, variations, loot, tossloot)
     local assets =
     {
         Asset("ANIM", "anim/"..name..".zip"),
@@ -170,11 +170,8 @@ local function MakeBundle(name, onesize, variations, loot, tossloot, setupdata)
         if inst.burnt then
             SpawnPrefab("ash").Transform:SetPosition(pos:Get())
         else
-            local loottable = (setupdata ~= nil and setupdata.lootfn ~= nil) and setupdata.lootfn(inst, doer) or loot
-            if loottable ~= nil then
-                local moisture = inst.components.inventoryitem:GetMoisture()
-                local iswet = inst.components.inventoryitem:IsWet()
-                for i, v in ipairs(loottable) do
+            if loot ~= nil then
+                for i, v in ipairs(loot) do
                     local item = SpawnPrefab(v)
                     if item ~= nil then
                         if item.Physics ~= nil then
@@ -182,11 +179,8 @@ local function MakeBundle(name, onesize, variations, loot, tossloot, setupdata)
                         else
                             item.Transform:SetPosition(pos:Get())
                         end
-                        if item.components.inventoryitem ~= nil then
-                            item.components.inventoryitem:InheritMoisture(moisture, iswet)
-                            if tossloot then
-                                item.components.inventoryitem:OnDropped(true, .5)
-                            end
+                        if tossloot and item.components.inventoryitem ~= nil then
+                            item.components.inventoryitem:OnDropped(true, .5)
                         end
                     end
                 end
@@ -231,10 +225,6 @@ local function MakeBundle(name, onesize, variations, loot, tossloot, setupdata)
         --unwrappable (from unwrappable component) added to pristine state for optimization
         inst:AddTag("unwrappable")
 
-        if setupdata ~= nil and setupdata.common_postinit ~= nil then
-            setupdata.common_postinit(inst, setupdata)
-        end
-
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
@@ -265,10 +255,6 @@ local function MakeBundle(name, onesize, variations, loot, tossloot, setupdata)
 
         MakeHauntableLaunchAndIgnite(inst)
 
-        if setupdata ~= nil and setupdata.master_postinit ~= nil then
-            setupdata.master_postinit(inst, setupdata)
-        end
-
         inst.OnSave = OnSave
         inst.OnPreLoad = OnPreLoad
 
@@ -278,64 +264,6 @@ local function MakeBundle(name, onesize, variations, loot, tossloot, setupdata)
     return Prefab(name, fn, assets, prefabs)
 end
 
-local redpouch =
-{
-    master_postinit = function(inst, setupdata)
-        inst.wet_prefix = STRINGS.WET_PREFIX.POUCH
-    end,
-}
-
-local wetpouch =
-{
-    loottable =
-    {
-        goggleshat_blueprint = 0,
-        deserthat_blueprint = 0,
-        succulent_potted_blueprint = 0,
-        antliontrinket = 0,
-        trinket_1 = 1, -- marbles
-        trinket_3 = 1, -- knot
-        trinket_8 = 1, -- plug
-        trinket_9 = 1, -- buttons
-        trinket_26 = .1, -- potatocup
-        TOOLS_blueprint = .05,
-        LIGHT_blueprint = .05,
-        SURVIVAL_blueprint = .05,
-        FARM_blueprint = .05,
-        SCIENCE_blueprint = .05,
-        REFINE_blueprint = .05,
-        DRESS_blueprint = .05,
-    },
-
-    UpdateLootBlueprint = function(loottable, doer)
-        local builder = doer ~= nil and doer.components.builder or nil
-        loottable["goggleshat_blueprint"] = (builder ~= nil and not builder:KnowsRecipe("goggleshat")) and 1 or 0.1
-        loottable["deserthat_blueprint"] = (builder ~= nil and not builder:KnowsRecipe("deserthat") and builder:KnowsRecipe("goggleshat")) and 1 or 0.1
-        loottable["succulent_potted_blueprint"] = (builder ~= nil and not builder:KnowsRecipe("succulent_potted")) and 1 or 0.1
-        loottable["antliontrinket"] = (builder ~= nil and builder:KnowsRecipe("deserthat")) and .8 or 0.1
-    end,
-    
-    lootfn = function(inst, doer)
-        inst.setupdata.UpdateLootBlueprint(inst.setupdata.loottable, doer)
-
-        local total = 0
-        for _,v in pairs(inst.setupdata.loottable) do
-            total = total + v
-        end
-        --print ("TOTOAL:", total)
-        --for k,v in pairs(inst.setupdata.loottable) do print(" - ", tostring(v/total), k) end
-
-        return {weighted_random_choice(inst.setupdata.loottable)}
-    end,
-
-    master_postinit = function(inst, setupdata)
-        inst.build = "wetpouch"
-        inst.setupdata = setupdata
-        inst.wet_prefix = STRINGS.WET_PREFIX.POUCH
-        inst.components.inventoryitem:InheritMoisture(100, true)
-    end,
-}
-
 return MakeContainer("bundle_container", "ui_bundle_2x2"),
     --"bundle", "bundlewrap"
     MakeBundle("bundle", false, nil, { "waxpaper" }),
@@ -344,5 +272,4 @@ return MakeContainer("bundle_container", "ui_bundle_2x2"),
     MakeBundle("gift", false, 2),
     MakeWrap("gift", "bundle_container", nil, true),
     --"redpouch"
-    MakeBundle("redpouch", true, nil, { "lucky_goldnugget" }, true, redpouch),
-    MakeBundle("wetpouch", true, nil, table.invert(wetpouch.loottable), false, wetpouch)
+    MakeBundle("redpouch", true, nil, { "lucky_goldnugget" }, true)

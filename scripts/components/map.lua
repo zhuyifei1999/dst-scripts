@@ -37,18 +37,13 @@ function Map:CanPlantAtPoint(x, y, z)
 end
 
 local DEPLOY_IGNORE_TAGS = { "NOBLOCK", "player", "FX", "INLIMBO", "DECOR" }
-
---NOTE: this is the max of all entities that have custom deploy_extra_spacing
---      see EntityScript:SetDeployExtraSpacing(spacing)
-local DEPLOY_EXTRA_SPACING = 0
-function Map:RegisterDeployExtraSpacing(spacing)
-    DEPLOY_EXTRA_SPACING = math.max(spacing, DEPLOY_EXTRA_SPACING)
-end
+local DEPLOY_PORTAL_SPACING = 2
+local DEPLOY_PORTAL_SPACING_SQ = DEPLOY_PORTAL_SPACING * DEPLOY_PORTAL_SPACING
 
 local function CanDeployAtPoint(pt, inst)
     local min_spacing = inst.replica.inventoryitem ~= nil and inst.replica.inventoryitem:DeploySpacingRadius() or DEPLOYSPACING_RADIUS[DEPLOYSPACING.DEFAULT]
     local min_spacing_sq = min_spacing * min_spacing
-    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, math.max(DEPLOY_EXTRA_SPACING, min_spacing), nil, DEPLOY_IGNORE_TAGS)
+    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, math.max(DEPLOY_PORTAL_SPACING, min_spacing), nil, DEPLOY_IGNORE_TAGS)
     for k, v in pairs(ents) do
         if v ~= inst and
             v.entity:IsValid() and
@@ -56,7 +51,7 @@ local function CanDeployAtPoint(pt, inst)
             v.components.placer == nil and
             v.entity:GetParent() == nil and
             --FindEntities range check is <=, but we want <
-            v:GetDistanceSqToPoint(pt:Get()) < (v.deploy_extra_spacing ~= nil and math.max(v.deploy_extra_spacing * v.deploy_extra_spacing, min_spacing_sq) or min_spacing_sq) then
+            v:GetDistanceSqToPoint(pt:Get()) < (v:HasTag("portal") and math.max(DEPLOY_PORTAL_SPACING_SQ, min_spacing_sq) or min_spacing_sq) then
             return false
         end
     end
@@ -76,7 +71,7 @@ function Map:CanDeployWallAtPoint(pt, inst)
     if not self:IsPassableAtPoint(pt:Get()) then
         return false
     end
-    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, math.max(DEPLOY_EXTRA_SPACING, 1), nil, DEPLOY_IGNORE_TAGS)
+    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, math.max(DEPLOY_PORTAL_SPACING, 1), nil, DEPLOY_IGNORE_TAGS)
     for k, v in pairs(ents) do
         if v ~= inst and
             v.entity:IsValid() and
@@ -85,7 +80,7 @@ function Map:CanDeployWallAtPoint(pt, inst)
             v.entity:GetParent() == nil then
             --FindEntities range check is <=, but we want <
             local min_spacing_sq = v:HasTag("wall") and .1 or 1
-            if v:GetDistanceSqToPoint(pt:Get()) < (v.deploy_extra_spacing ~= nil and math.max(v.deploy_extra_spacing * v.deploy_extra_spacing, min_spacing_sq) or min_spacing_sq) then
+            if v:GetDistanceSqToPoint(pt:Get()) < (v:HasTag("portal") and math.max(DEPLOY_PORTAL_SPACING_SQ, min_spacing_sq) or min_spacing_sq) then
                 return false
             end
         end
@@ -140,7 +135,7 @@ function Map:CanDeployRecipeAtPoint(pt, recipe, rot)
         end
     end
 
-    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, math.max(DEPLOY_EXTRA_SPACING, min_spacing + pad_spacing), nil, DEPLOY_IGNORE_TAGS)
+    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, math.max(DEPLOY_PORTAL_SPACING, min_spacing + pad_spacing), nil, DEPLOY_IGNORE_TAGS)
     for k, v in pairs(ents) do
         if v.entity:IsValid() and
             v.entity:IsVisible() and
@@ -148,7 +143,7 @@ function Map:CanDeployRecipeAtPoint(pt, recipe, rot)
             v.entity:GetParent() == nil then
             --FindEntities range check is <=, but we want <
             local v_spacing = min_spacing + (pad_spacing > 0 and padding[v.prefab] or 0)
-            if v:GetDistanceSqToPoint(pt:Get()) < (v.deploy_extra_spacing ~= nil and math.max(v.deploy_extra_spacing * v.deploy_extra_spacing, v_spacing * v_spacing) or v_spacing * v_spacing) then
+            if v:GetDistanceSqToPoint(pt:Get()) < (v:HasTag("portal") and math.max(DEPLOY_PORTAL_SPACING_SQ, v_spacing * v_spacing) or v_spacing * v_spacing) then
                 return false
             end
         end

@@ -46,7 +46,7 @@ local function SpawnTurf(turf, pt)
     end
 end
 
-function Terraformer:Terraform(pt, spawnturf)
+function Terraformer:Terraform(pt)
     local world = TheWorld
     local map = world.Map
 
@@ -65,10 +65,7 @@ function Terraformer:Terraform(pt, spawnturf)
     minimap:RebuildLayer(original_tile_type, x, y)
     minimap:RebuildLayer(GROUND.DIRT, x, y)
 
-	if spawnturf then
-	    SpawnTurf(GROUND_TURFS[original_tile_type], pt)
-	end
-	
+    SpawnTurf(GROUND_TURFS[original_tile_type], pt)
     return true
 end
 

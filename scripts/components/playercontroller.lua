@@ -1369,8 +1369,8 @@ function PlayerController:GetInspectButtonAction(target)
     return target ~= nil and
         target:HasTag("inspectable") and
         (self.inst.CanExamine == nil or self.inst:CanExamine()) and
-        (self.inst.sg == nil or self.inst.sg:HasStateTag("moving") or self.inst.sg:HasStateTag("idle") or self.inst.sg:HasStateTag("channeling")) and
-        (self.inst:HasTag("moving") or self.inst:HasTag("idle") or self.inst:HasTag("channeling")) and
+        (self.inst.sg == nil or self.inst.sg:HasStateTag("moving") or self.inst.sg:HasStateTag("idle")) and
+        (self.inst:HasTag("moving") or self.inst:HasTag("idle")) and
         BufferedAction(self.inst, target, ACTIONS.LOOKAT) or
         nil
 end

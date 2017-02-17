@@ -110,10 +110,6 @@ local Wisecracker = Class(function(self, inst)
         inst.components.talker:Say(GetString(inst, "ANNOUNCE_WORMHOLE"))
     end)
 
-    inst:ListenForEvent("townportalteleport", function(inst, data)
-        inst.components.talker:Say(GetString(inst, "ANNOUNCE_TOWNPORTALTELEPORT"))
-    end)
-
     inst:ListenForEvent("huntlosttrail", function(inst, data)
         inst.components.talker:Say(GetString(inst, data.washedaway and "ANNOUNCE_HUNT_LOST_TRAIL_SPRING" or "ANNOUNCE_HUNT_LOST_TRAIL"))
     end)
