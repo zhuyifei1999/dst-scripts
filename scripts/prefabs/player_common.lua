@@ -967,8 +967,10 @@ local function OnRespawnFromGhost(inst, data)
     end
 
     inst.rezsource =
-        (data ~= nil and data.source ~= nil and data.source.prefab ~= "reviver" and data.source.name) or
-        (data.user ~= nil and data.user:GetDisplayName()) or
+        data ~= nil and (
+            (data.source ~= nil and data.source.prefab ~= "reviver" and data.source.name) or
+            (data.user ~= nil and data.user:GetDisplayName())
+        ) or
         STRINGS.NAMES.SHENANIGANS
 
     inst.remoterezsource =

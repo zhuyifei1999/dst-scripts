@@ -1186,5 +1186,5 @@ end
 function CalcDiminishingReturns(current, basedelta)
     local dampen = 3 * basedelta / (current + 3 * basedelta)
     local dcharge = dampen * basedelta * .5 * (1 + math.random() * dampen)
-    return current + basedelta
+    return current + dcharge
 end
