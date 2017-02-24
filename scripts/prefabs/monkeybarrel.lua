@@ -1,8 +1,11 @@
+require "prefabutil"
+local RuinsRespawner = require "prefabs/ruinsrespawner"
+
 local assets =
 {
     Asset("ANIM", "anim/monkey_barrel.zip"),
     Asset("SOUND", "sound/monkey.fsb"),
-	Asset("MINIMAP_IMAGE", "monkey_barrel"),
+    Asset("SCRIPT", "scripts/prefabs/ruinsrespawner.lua"),
 }
 
 local prefabs =
@@ -11,9 +14,10 @@ local prefabs =
     "poop",
     "cave_banana",
     "collapse_small",
+    "monkeybarrel_spawner",
 }
 
-SetSharedLootTable( 'monkey_barrel',
+SetSharedLootTable('monkey_barrel',
 {
     {'poop',        1.0},
     {'poop',        1.0},
@@ -134,7 +138,7 @@ local function fn()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
-    inst.MiniMapEntity:SetIcon("monkey_barrel.png")
+    inst.MiniMapEntity:SetIcon("monkeybarrel.png")
 
     MakeObstaclePhysics(inst, 1)
 
@@ -197,4 +201,5 @@ local function fn()
     return inst
 end
 
-return Prefab("monkeybarrel", fn, assets, prefabs)
+return Prefab("monkeybarrel", fn, assets, prefabs),
+    RuinsRespawner("monkeybarrel")

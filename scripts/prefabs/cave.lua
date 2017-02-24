@@ -69,6 +69,15 @@ local prefabs =
     "toadstool_cap",
     "cavein_boulder",
     "cavein_debris",
+    "pillar_atrium",
+    "atrium_light",
+    "atrium_gate",
+    "atrium_statue",
+    "atrium_statue_facing",
+    "atrium_fence",
+    "atrium_fence_lockable",
+    "atrium_rubble",
+    "atrium_idol",
 }
 
 local monsters =

@@ -3,9 +3,6 @@ require("components/deployhelper")
 local Placer = Class(function(self, inst)
     self.inst = inst
 
-    inst:AddTag("NOCLICK")
-    inst:AddTag("placer")
-
     self.can_build = false
     self.mouse_blocked = false
     self.testfn = nil

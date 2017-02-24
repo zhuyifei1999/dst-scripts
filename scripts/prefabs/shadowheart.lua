@@ -46,9 +46,10 @@ local function fn()
 
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem:SetOnDroppedFn(ondropped)
-    inst.components.inventoryitem:SetOnPickupFn(onpickup)
+    inst.components.inventoryitem:SetOnPutInInventoryFn(onpickup)
 
     inst:AddComponent("inspectable")
+    inst:AddComponent("tradable")
 
     MakeHauntableLaunch(inst)
 

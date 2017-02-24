@@ -55,21 +55,23 @@ return {
             SLOTFULL = "We already put something there.",
             DUPLICATE = "We already know that one.",
             NOTSCULPTABLE = "Not even science could make that into a sculpture.",
+            NOTATRIUMKEY = "It's not quite the right shape.",
+            CANTSHADOWREVIVE = "It won't resurrect.",
         },
         GIVETOPLAYER =
         {
-        	FULL = "Your pockets are too full!",
+            FULL = "Your pockets are too full!",
             DEAD = "Maybe I'll just hold on to this.",
             SLEEPING = "Too unconscious to care.",
             BUSY = "I'll try again in a second.",
-    	},
-    	GIVEALLTOPLAYER =
+        },
+        GIVEALLTOPLAYER =
         {
-        	FULL = "Your pockets are too full!",
+            FULL = "Your pockets are too full!",
             DEAD = "Maybe I'll just hold on to this.",
             SLEEPING = "Too unconscious to care.",
             BUSY = "I'll try again in a second.",
-    	},
+        },
         WRITE =
         {
             GENERIC = "I think it's fine as is.",
@@ -155,7 +157,8 @@ return {
         "Pant... Pant...",
         "This is the worst... experiment...",
     },
-
+    
+    ANNOUNCE_SNARED = "Sharp! Sharp bones!!",
 	ANNOUNCE_ENTER_DARK = "It's so dark!",
 	ANNOUNCE_ENTER_LIGHT = "I can see again!",
 	ANNOUNCE_FREEDOM = "I'm free! I'm finally free!",
@@ -252,6 +255,10 @@ return {
 			UNHAPPY = "It looks mad.",
 		},
 		ANTLIONTRINKET = "Someone might be interested in this.",
+		SANDSPIKE = "I could've been skewered!",
+        SANDBLOCK = "It's so gritty!",
+        GLASSSPIKE = "Memories of the time I wasn't skewered.",
+        GLASSBLOCK = "That's science for you.",
 		ABIGAIL_FLOWER = 
 		{ 
 			GENERIC ="It's hauntingly beautiful.",
@@ -1223,6 +1230,7 @@ return {
 			FUNNY = "My scientific instincts say this isn't quite right.",
 			COMPLETE = "It's alive! Oh wait, no, it's not.",
         },
+        STALKER = "The skeleton fused with the shadows!",
 		FROG =
 		{
 			DEAD = "He's croaked.",
@@ -1968,6 +1976,26 @@ return {
 		ICESTAFF = "It's cold to the touch.",
 		REVIVER = "The beating of this hideous heart will bring a ghost back to life!",
 		SHADOWHEART = "The power of science must have reanimated it...",
+        ATRIUM_RUBBLE = 
+        {
+			LINE_1 = "It depicts an old civilization. The people look hungry and scared.",
+			LINE_2 = "This tablet is too worn to make out.",
+			LINE_3 = "Something dark creeps over the city and its people.",
+			LINE_4 = "The people are shedding their skins. They look different underneath.",
+			LINE_5 = "It shows a massive, technologically advanced city.",
+		},
+        ATRIUM_STATUE = "It doesn't seem fully real.",
+        ATRIUM_LIGHT = 
+        {
+			ON = "A truly unsettling light.",
+			OFF = "Something must power it.",
+		},
+        ATRIUM_GATE =
+        {
+			ON = "The light reveals some text: \"Come Back Next Update.\"",
+			OFF = "The essential components are still intact.",
+        },
+        ATRIUM_KEY = "There is power emanating from it.",
 		LIFEINJECTOR = "A scientific breakthrough! The cure!",
 		SKELETON_PLAYER =
 		{

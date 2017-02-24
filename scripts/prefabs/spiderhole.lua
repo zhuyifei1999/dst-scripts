@@ -26,6 +26,7 @@ SetSharedLootTable('spider_hole',
     {'rocks',       1.00},
     {'silk',        1.00},
     {'fossil_piece',1.00},
+    {'fossil_piece',0.50},
     {'spidergland', 0.25},
     {'silk',        0.50},
 })

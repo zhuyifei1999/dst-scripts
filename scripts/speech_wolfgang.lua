@@ -68,6 +68,7 @@ return {
             SLOTFULL = "Something is already put!",
             DUPLICATE = "Little recipe is already in there!",
             NOTSCULPTABLE = "Material is not mighty enough for strong statues!",
+            CANTSHADOWREVIVE = "Is not working.",
         },
         GIVETOPLAYER = 
         {
@@ -173,6 +174,7 @@ return {
     ANNOUNCE_KLAUS_UNCHAINED = "Do not hold back! Wolfgang can take you!",
     ANNOUNCE_KLAUS_CALLFORHELP = "Wimpy monster has called for help!",
 
+    ANNOUNCE_SNARED = "Wolfgang does not like bones!",
     ANNOUNCE_ENTER_DARK = "I cannot see! I am scared!",
     ANNOUNCE_ENTER_LIGHT = "I can see again!",
     ANNOUNCE_HOUNDS = "I hear puppies!",
@@ -532,6 +534,10 @@ return {
             UNHAPPY = "Monster is looking very scary!",
         },
         ANTLIONTRINKET = "Is not for head.",
+        SANDSPIKE = "Spike is made of sand!",
+        SANDBLOCK = "Is very sandy.",
+        GLASSSPIKE = "Spike is glass now.",
+        GLASSBLOCK = "Wolfgang could crush little castle.",
         ABIGAIL_FLOWER = 
         {
             GENERIC = "Is pretty.",
@@ -1355,6 +1361,7 @@ return {
             FUNNY = "Eh, maybe we take apart.",
             COMPLETE = "Is look good! Mighty!",
         },
+        STALKER = "Skeleton should not be walking!",
         FROG =
         {
             DEAD = "Is delicacy in my country.",
@@ -1975,6 +1982,26 @@ return {
         ACCOMPLISHMENT_SHRINE = "I will defeat you, tiny arrow!",                
         REVIVER = "Blib blup! Blib blup! Blib blup!",
         SHADOWHEART = "Wolfgang is not shaking! Is manly flexing!!",
+        ATRIUM_RUBBLE = 
+        {
+            LINE_1 = "Is picture of many sad, weak people.",
+            LINE_2 = "Cannot tell what was picture of.",
+            LINE_3 = "In picture darkness covers sad, weak people.",
+            LINE_4 = "Monsters is bursting out of them!",
+            LINE_5 = "Is picture of very pretty place.",
+        },
+        ATRIUM_STATUE = "Statue make Wolfgang's tummy do flip.",
+        ATRIUM_LIGHT = 
+        {
+            ON = "This light is scarier than the dark.",
+            OFF = "Is place for light.",
+        },
+        ATRIUM_GATE =
+        {
+            ON = "The light reveals ancient text: \"Come Back Next Update.\"",
+            OFF = "Is very old thing.",
+        },
+        ATRIUM_KEY = "Little key is for make door.",
         LIFEINJECTOR = "EeeeEEeeEEE!!",
     },
     DESCRIBE_GENERIC = "What is this thing?",

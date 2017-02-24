@@ -1,4 +1,5 @@
 require "prefabutil"
+
 local assets =
 {
     Asset("ANIM", "anim/acorn.zip"),

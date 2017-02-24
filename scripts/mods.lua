@@ -15,6 +15,7 @@ AddModReleaseID( "R05_ANR_HERDMENTALITY" )
 
 if BRANCH == "staging" then
     AddModReleaseID( "R06_ANR_AGAINSTTHEGRAIN" )
+    AddModReleaseID( "R07_ANR_HEARTOFTHERUINS" )
 end
 
 -----------------------------------------------------------------------------------------------

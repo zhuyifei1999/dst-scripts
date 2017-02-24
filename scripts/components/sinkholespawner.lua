@@ -219,7 +219,7 @@ function SinkholeSpawner:OnUpdate(dt)
 
     if #self.targets <= 0 then
         self.inst:StopUpdatingComponent(self)
-		self.inst:PushEvent("onsinkholesfinished")
+        self.inst:PushEvent("onsinkholesfinished")
     end
 end
 
@@ -264,7 +264,7 @@ function SinkholeSpawner:OnLoad(data)
 
         if #self.targets > 0 then
             self.inst:StartUpdatingComponent(self)
-			self.inst:PushEvent("onsinkholesstarted")
+            self.inst:PushEvent("onsinkholesstarted")
         end
     end
 end

@@ -82,6 +82,7 @@ return {
             SLOTFULL = "There's no room...",
             DUPLICATE = "Oh... my information's useless...",
             NOTSCULPTABLE = "I think that's... wrong...",
+            CANTSHADOWREVIVE = "It has no will to live.",
         },
         GIVETOPLAYER = 
         {
@@ -156,6 +157,7 @@ return {
 	ANNOUNCE_KLAUS_UNCHAINED = "The beast returns unchained.",
 	ANNOUNCE_KLAUS_CALLFORHELP = "Your pleas will fall on deaf ears.",
 
+	ANNOUNCE_SNARED = "I am caged!",
 	ANNOUNCE_ENTER_DARK = "The darkness has swallowed me.",
 	ANNOUNCE_ENTER_LIGHT = "And there was light!",
 	ANNOUNCE_HOUNDS = "The hounds are baying.",
@@ -798,6 +800,10 @@ return {
 			UNHAPPY = "A deep rage brews within...",
 		},
 		ANTLIONTRINKET = "If only I could kick it.",
+		SANDSPIKE = "Aim for my heart...",
+        SANDBLOCK = "Mockery of a spoiled childhood.",
+        GLASSSPIKE = "My warped reflection stares back at me with malice.",
+        GLASSBLOCK = "A moment frozen in time.",
 		ABIGAIL_FLOWER = 
 		{ 
 			GENERIC ="It's still so pretty.",
@@ -1353,6 +1359,7 @@ return {
 			FUNNY = "Death has a sense of humor.",
 			COMPLETE = "What horrors have we resurrected here today?",
         },
+        STALKER = "Not even death is permanent.",
 		FROG =
 		{
 			DEAD = "Life is small and short.",
@@ -1948,6 +1955,26 @@ return {
         KLAUS_SACK = "Should we peek inside...?",
 		REVIVER = "Choices matter.",
 		SHADOWHEART = "It beats with a sorrow to span the skies and plumb the darkest seas.",
+		ATRIUM_RUBBLE = 
+        {
+			LINE_1 = "A people struck by famine and sorrow.",
+			LINE_2 = "A piece of their story, lost to time.",
+			LINE_3 = "They are consumed by darkness.",
+			LINE_4 = "Then, rebirth.",
+			LINE_5 = "Finally, a city, full of life.",
+		},
+        ATRIUM_STATUE = "A tortured soul.",
+        ATRIUM_LIGHT = 
+        {
+			ON = "A deathly light dances across the room.",
+			OFF = "There is no light to be found.",
+		},
+        ATRIUM_GATE =
+        {
+			ON = "The light reveals ancient text: \"Come Back Next Update.\"",
+			OFF = "A beacon of hope left unlit... How fitting.",
+        },
+        ATRIUM_KEY = "I think I know where it goes...",
         LIFEINJECTOR = "We were not meant to cheat death.",
 		WORMHOLE =
 		{

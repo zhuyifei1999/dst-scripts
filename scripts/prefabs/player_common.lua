@@ -1620,7 +1620,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.AnimState:AddOverrideBuild("player_receive_gift")
         inst.AnimState:AddOverrideBuild("player_actions_uniqueitem")
         inst.AnimState:AddOverrideBuild("player_wrap_bundle")
-        inst.AnimState:AddOverrideBuild("player_townportal")
 
         inst.DynamicShadow:SetSize(1.3, .6)
 

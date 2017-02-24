@@ -99,7 +99,7 @@ local function onload(inst, data)
     end
 end
 
-local function chest(style)
+local function chest(style, indestructible, custom_postinit)
     return function()
         local inst = CreateEntity()
 
@@ -131,30 +131,76 @@ local function chest(style)
         inst.components.container.onopenfn = onopen
         inst.components.container.onclosefn = onclose
 
-        inst:AddComponent("lootdropper")
-        inst:AddComponent("workable")
-        inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
-        inst.components.workable:SetWorkLeft(2)
-        inst.components.workable:SetOnFinishCallback(onhammered)
-        inst.components.workable:SetOnWorkCallback(onhit) 
-
+		if not indestructible then
+			inst:AddComponent("lootdropper")
+			inst:AddComponent("workable")
+			inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
+			inst.components.workable:SetWorkLeft(2)
+			inst.components.workable:SetOnFinishCallback(onhammered)
+			inst.components.workable:SetOnWorkCallback(onhit) 
+		end
+		
         AddHauntableDropItemOrWork(inst)
 
         inst:ListenForEvent("onbuilt", onbuilt)
         MakeSnowCovered(inst)   
 
-        MakeSmallBurnable(inst, nil, nil, true)
-        MakeMediumPropagator(inst)
-
+		if not indestructible then
+			MakeSmallBurnable(inst, nil, nil, true)
+			MakeMediumPropagator(inst)
+		end
+		
         inst.OnSave = onsave 
         inst.OnLoad = onload
+
+		if custom_postinit ~= nil then
+			custom_postinit(inst)
+		end
 
         return inst
     end
 end
 
+local function pandora_custom_postinit(inst)
+	local function OnResetRuins()
+		if inst.components.scenariorunner == nil then
+			inst.components.container:Close()
+			inst.components.container:DestroyContents()
+
+			inst:AddComponent("scenariorunner")
+			inst.components.scenariorunner:SetScript("chest_labyrinth")
+		    inst.components.scenariorunner:Run()
+		end
+	end
+	
+	inst:ListenForEvent("resetruins", OnResetRuins, TheWorld)
+end
+
+local function minotuar_custom_postinit(inst)
+	inst:ListenForEvent("resetruins", 
+		function() 
+			inst.components.container:Close()
+			inst.components.container:DestroyContents()
+
+		    local x, y, z = inst.Transform:GetWorldPosition()
+		    local fx = SpawnPrefab("statue_transition_2")
+			if fx ~= nil then
+				fx.Transform:SetPosition(x, y, z)
+				fx.Transform:SetScale(1, 2, 1)
+			end
+
+			fx = SpawnPrefab("statue_transition")
+			if fx ~= nil then
+				fx.Transform:SetPosition(x, y, z)
+				fx.Transform:SetScale(1, 1.5, 1)
+			end
+
+			inst:Remove()
+		end, TheWorld)
+end
+
 return Prefab("treasurechest", chest("treasure_chest"), assets, prefabs),
     MakePlacer("treasurechest_placer", "chest", "treasure_chest", "closed"),
-    Prefab("pandoraschest", chest("pandoras_chest"), assets, prefabs),
+    Prefab("pandoraschest", chest("pandoras_chest", true, pandora_custom_postinit), assets, prefabs),
     Prefab("skullchest", chest("skull_chest"), assets, prefabs),
-    Prefab("minotaurchest", chest("minotaur_chest"), assets, prefabs)
+    Prefab("minotaurchest", chest("minotaur_chest", true, minotuar_custom_postinit), assets, prefabs)

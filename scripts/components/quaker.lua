@@ -220,9 +220,7 @@ local _GroundDetectionUpdate = _ismastersim and function(debris, override_densit
                         debris.components.inventoryitem.canbepickedup = true
                     end
                 end
-                if debris.OnStopFalling ~= nil then
-                    debris:OnStopFalling()
-                end
+                debris:PushEvent("stopfalling")
             elseif debris:GetTimeAlive() < 1.5 then
                 --should be our first bounce
                 debris:DoTaskInTime(softbounce and .4 or .6, _BreakDebris)
@@ -250,9 +248,7 @@ local _GroundDetectionUpdate = _ismastersim and function(debris, override_densit
                 debris.components.inventoryitem.canbepickedup = true
             end
         end
-        if debris.OnStopFalling ~= nil then
-            debris:OnStopFalling()
-        end
+        debris:PushEvent("stopfalling")
     elseif debris.prefab == "mole" or debris.prefab == "rabbit" then
         --failsafe
         debris:PushEvent("detachchild")
@@ -292,10 +288,7 @@ local SpawnDebris = _ismastersim and function(spawn_point, override_prefab, over
             UpdateShadowSize(debris.shadow, 35)
 
             debris.updatetask = debris:DoPeriodicTask(FRAMES, _GroundDetectionUpdate, nil, override_density)
-
-            if debris.OnStartFalling ~= nil then
-                debris:OnStartFalling()
-            end
+            debris:PushEvent("startfalling")
         end
         return debris
     end

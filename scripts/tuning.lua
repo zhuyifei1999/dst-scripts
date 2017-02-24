@@ -2362,6 +2362,17 @@ function Tune(overrides)
         SALTLICK_LIGHTNINGGOAT_USES = 1,
         SALTLICK_DEER_USES = 1,
 
+        ANTLION_HEALTH = 6000,
+        ANTLION_MAX_ATTACK_PERIOD = 4,
+        ANTLION_MIN_ATTACK_PERIOD = 2,
+        ANTLION_SPEED_UP = -.2,
+        ANTLION_SLOW_DOWN = .4,
+        ANTLION_CAST_RANGE = 15,
+        ANTLION_CAST_MAX_RANGE = 20,
+        ANTLION_WALL_CD = 20,
+        ANTLION_HIT_RECOVERY = 1,
+        ANTLION_EAT_HEALING = 200,
+
         ANTLION_SINKHOLE_WORKTOREPAIR = 3,
         ANTLION_SINKHOLE =
         {
@@ -2406,10 +2417,58 @@ function Tune(overrides)
         SANDSTORM_VISION_RANGE_SQ = 25,
         SANDSTORM_SPEED_MOD = .4,
 
+        SANDSPIKE =
+        {
+            HEALTH =
+            {
+                SHORT = 25,
+                MED = 65,
+                TALL = 100,
+                BLOCK = 250,
+            },
+            DAMAGE =
+            {
+                SHORT = 100,
+                MED = 150,
+                TALL = 200,
+                BLOCK = 0,
+            },
+            LIFETIME =
+            {
+                SHORT = { 6, 7 },
+                MED = { 7, 8 },
+                TALL = { 8, 10 },
+                BLOCK = { 15, 16 },
+            },
+        },
+
         OASISLAKE_MAX_FISH = 15,
         OASISLAKE_FISH_RESPAWN_TIME = seg_time*3,
 
         CAREFUL_SPEED_MOD = .3,
+
+        STALKER_HEALTH = 4000,
+        STALKER_DAMAGE = 200,
+        STALKER_ATTACK_PERIOD = 4,
+        STALKER_ATTACK_RANGE = 2.4,
+        STALKER_HIT_RANGE = 3.8,
+        STALKER_AOE_RANGE = 2,
+        STALKER_AOE_SCALE = .8,
+        STALKER_SPEED = 4.2,
+        STALKER_HIT_RECOVERY = 1,
+
+        STALKER_SNARE_RANGE = 12,
+        STALKER_SNARE_MAX_RANGE = 15,
+        STALKER_SNARE_TIME = 6,
+        STALKER_SNARE_TIME_VARIANCE = .5,
+        STALKER_MAX_SNARES = 6,
+        STALKER_SNARE_CD = 10,
+        STALKER_FIRST_SNARE_CD = 5,
+
+        STALKER_AGGRO_DIST = 15,
+        STALKER_KEEP_AGGRO_DIST = 9,
+        STALKER_DEAGGRO_DIST = 30,
+        STALKER_EPICSCARE_RANGE = 10,
 
         VOTE_PASSED_SQUELCH_TIME = 0,
         VOTE_FAILED_SQUELCH_TIME = 30,

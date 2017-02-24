@@ -32,44 +32,288 @@ local retrofit_warts = false
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
 
-local function RetrofitNewCaveContentPrefab(inst, prefab, min_space, dist_from_structures)
+local function RetrofitNewCaveContentPrefab(inst, prefab, min_space, dist_from_structures, nightmare)
 	local attempt = 1
 	local topology = TheWorld.topology
 
-	while attempt <= MAX_PLACEMENT_ATTEMPTS do
-		local area =  topology.nodes[math.random(#topology.nodes)]
-        
-        if not table.contains(area.tags, "Nightmare") then
-			local points_x, points_y = TheWorld.Map:GetRandomPointsForSite(area.x, area.y, area.poly, 1)
-			if #points_x == 1 and #points_y == 1 then
-				local x = points_x[1]
-				local z = points_y[1]
+	local ret = nil
 
-				if TheWorld.Map:CanPlacePrefabFilteredAtPoint(x, 0, z, prefab) and
-					TheWorld.Map:CanPlacePrefabFilteredAtPoint(x + min_space, 0, z, prefab) and
-					TheWorld.Map:CanPlacePrefabFilteredAtPoint(x, 0, z + min_space, prefab) and
-					TheWorld.Map:CanPlacePrefabFilteredAtPoint(x - min_space, 0, z, prefab) and
-					TheWorld.Map:CanPlacePrefabFilteredAtPoint(x, 0, z - min_space, prefab) then
+	nightmare = nightmare or false
+
+	local searchnodes = {}
+	for k = 1, #topology.nodes do
+		if (nightmare == table.contains(topology.nodes[k].tags, "Nightmare")) and not table.contains(topology.nodes[k].tags, "Atrium") then
+			table.insert(searchnodes, k)
+		end
+	end
+	
+	while attempt <= MAX_PLACEMENT_ATTEMPTS do
+		local searchnode = searchnodes[math.random(#searchnodes)]
+		local area =  topology.nodes[searchnode]
+        
+		local points_x, points_y = TheWorld.Map:GetRandomPointsForSite(area.x, area.y, area.poly, 1)
+		if #points_x == 1 and #points_y == 1 then
+			local x = points_x[1]
+			local z = points_y[1]
+
+			if TheWorld.Map:CanPlacePrefabFilteredAtPoint(x, 0, z, prefab) and
+				TheWorld.Map:CanPlacePrefabFilteredAtPoint(x + min_space, 0, z, prefab) and
+				TheWorld.Map:CanPlacePrefabFilteredAtPoint(x, 0, z + min_space, prefab) and
+				TheWorld.Map:CanPlacePrefabFilteredAtPoint(x - min_space, 0, z, prefab) and
+				TheWorld.Map:CanPlacePrefabFilteredAtPoint(x, 0, z - min_space, prefab) then
+				
+				local ents = TheSim:FindEntities(x, 0, z, min_space)
+				if #ents == 0 then
+					if dist_from_structures ~= nil then
+						ents = TheSim:FindEntities(x, 0, z, dist_from_structures, {"structure"} )
+					end
 					
-					local ents = TheSim:FindEntities(x, 0, z, min_space)
 					if #ents == 0 then
-						if dist_from_structures ~= nil then
-							ents = TheSim:FindEntities(x, 0, z, dist_from_structures, {"structure"} )
-						end
-						
-						if #ents == 0 then
-							local e = SpawnPrefab(prefab)
-							e.Transform:SetPosition(x, 0, z)
-							break
-						end
+						ret = SpawnPrefab(prefab)
+						ret.Transform:SetPosition(x, 0, z)
+						break
 					end
 				end
 			end
 		end
 		attempt = attempt + 1
 	end
-	print ("Retrofitting world for " .. prefab .. ": " .. (attempt < MAX_PLACEMENT_ATTEMPTS and ("Success after "..attempt.." attempts.") or "Failed."))
-	return attempt < MAX_PLACEMENT_ATTEMPTS
+	print ("Retrofitting world for " .. prefab .. ": " .. (attempt < MAX_PLACEMENT_ATTEMPTS and ("Success after "..attempt.." attempts.") or ("Failed to find a valid tile in "..#searchnodes.." nodes.")))
+	return attempt < MAX_PLACEMENT_ATTEMPTS, ret
+end
+
+--------------------------------------------------------------------------
+--[[ Private Heart of the Ruins functions ]]
+--------------------------------------------------------------------------
+
+local function HeartOfTheRuinsAtriumRetrofitting(inst)
+	local obj_layout = require("map/object_layout")
+	local entities = {}
+	
+	local map_width, map_height = TheWorld.Map:GetSize()
+
+	local add_fn = {fn=function(prefab, points_x, points_y, current_pos_idx, entitiesOut, width, height, prefab_list, prefab_data, rand_offset) 
+				local x = (points_x[current_pos_idx] - width/2.0)*TILE_SCALE
+				local y = (points_y[current_pos_idx] - height/2.0)*TILE_SCALE
+				x = math.floor(x*100)/100.0
+				y = math.floor(y*100)/100.0
+				if prefab == "wormhole_MARKER" then
+					local p1 = SpawnPrefab("tentacle_pillar")
+					p1.Transform:SetPosition(x, 0, y)
+
+					local _,p2 = RetrofitNewCaveContentPrefab(inst, "tentacle_pillar", 3, 20)
+					while p2 == nil do
+						_, p2 = RetrofitNewCaveContentPrefab(inst, "tentacle_pillar", 3, 5)
+					end
+					
+					p1.components.teleporter:Target(p2)
+					p2.components.teleporter:Target(p1)
+				else
+					SpawnPrefab(prefab).Transform:SetPosition(x, 0, y)
+				end
+			end,
+			args={entitiesOut=entities, width=map_width, height=map_height, rand_offset = false, debug_prefab_list=nil}
+		}
+
+
+	local top, left = 8, 8	
+	local area_size = 6*8
+	
+	local function isvalidarea(_left, _top)
+		for x = 0, 5*8 do
+			for y = 0, 5*8 do
+				if TheWorld.Map:GetTile(_left + x, _top + y) ~= GROUND.IMPASSABLE then
+					return false
+				end
+			end
+		end
+		return true
+	end
+
+	local foundarea = false
+	
+	for x = 0, 5 do
+		for y = 0, 5 do
+			if (x == 0 or x == 5) or (y == 0 or y == 5) then
+				left = 8 + (x > 0 and ((x * (map_width / 5)) - area_size - 16) or 0)
+				top  = 8 + (y > 0 and ((y * (map_height / 5)) - area_size - 16) or 0)
+				if isvalidarea(left, top) then
+					foundarea = true
+					break
+				end
+			end
+		end
+		if foundarea then
+			break
+		end
+	end			
+	
+	print (" isvalidarea ", foundarea, left, top )
+
+	if foundarea then
+		local maze = {	{ "SINGLE_NORTH",	"L_EAST",		"SINGLE_NORTH",	"L_EAST" },
+						{ "L_NORTH",		"FOUR_WAY",		"TUNNEL_NS",	"THREE_WAY_E" },
+						{ "L_SOUTH",		"TUNNEL_EW",	"SINGLE_EAST",	"TUNNEL_EW" },
+						{ "",				"SINGLE_WEST",	"L_WEST",		"THREE_WAY_S" } }
+
+		for x = 1, 4 do
+			for y = 1, 4 do
+				if maze[x][y] ~= "" then
+					obj_layout.Place({left + (x*8), top + (y*8)}, maze[x][y], add_fn, {"atrium_hallway", "atrium_hallway_two"}, TheWorld.Map)
+				end
+			end
+		end
+		
+		obj_layout.Place({left + (3*8), top }, "SINGLE_NORTH", add_fn, {"atrium_end"}, TheWorld.Map)
+		obj_layout.Place({left + (4*8), top + (5*8)}, "SINGLE_SOUTH", add_fn, {"atrium_start"}, TheWorld.Map)
+		
+		
+		inst.components.retrofitcavemap_anr.requiresreset = true
+
+		print ("Retrofitting for A New Reign: Heart of the Ruins - Successfully added atruim into the world.")
+	else
+		print ("Retrofitting for A New Reign: Heart of the Ruins - FAILED! Could not find anywhere to add the atruim into the world.")
+	end
+end
+
+local function HeartOfTheRuinsRuinsRetrofitting(inst)
+	local function AddRuinsRespawner(prefab, spawnerprefab)
+		local count = 0
+		spawnerprefab = spawnerprefab or prefab
+		for _, v in pairs(Ents) do
+			if v ~= inst and v.prefab == prefab then
+				local respawner = SpawnPrefab(spawnerprefab.."_spawner")
+				respawner.Transform:SetPosition(v.Transform:GetWorldPosition())
+				if prefab == spawnerprefab then
+					respawner.components.objectspawner:TakeOwnership(v)
+				else
+					respawner.resetruins = false
+				end
+				count = count + 1
+			end
+		end	
+		
+		if count == 0 then
+			print ("Retrofitting for A New Reign: Heart of the Ruins - Could not find any "..spawnerprefab.." to add respawners for.")
+		else
+			print ("Retrofitting for A New Reign: Heart of the Ruins - Added "..count.." respawners for "..spawnerprefab.."." )
+		end
+		
+		return count
+	end
+
+	local function RepopNear(count, spawnerprefab, target, radius, repop)
+		if count < repop then
+			local targets = {}
+			for _, v in pairs(Ents) do
+				if v.prefab == target then
+					table.insert(targets, v)
+				end
+			end
+			
+			if #targets > 0 then
+				targets = shuffleArray(targets)
+				local num_spawned = 0 
+				for i = 1, (repop-count) do
+					local pt = targets[math.random(#targets)]:GetPosition()
+					local offset = FindWalkableOffset(pt, math.random(360), radius, 12, true, true)
+					if offset ~= nil then
+						local respawner = SpawnPrefab(spawnerprefab.."_spawner")
+						respawner.Transform:SetPosition((pt+offset):Get())
+						respawner.resetruins = false
+						num_spawned = num_spawned + 1
+					end
+				end
+				if num_spawned == 0 then
+					print ("Retrofitting for A New Reign: Heart of the Ruins -   Could not find anywhere to added "..spawnerprefab.."_spawner.")
+				else
+					print ("Retrofitting for A New Reign: Heart of the Ruins -   Added "..num_spawned.." respawners for "..spawnerprefab.." near "..target.."." )
+				end
+			else
+				print ("Retrofitting for A New Reign: Heart of the Ruins -   Could not find any "..target.." to add "..spawnerprefab.."_spawner near.")
+			end
+		end
+	end
+	
+	local function RepopRandom(count, spawnerprefab, repop)
+		if count < repop then
+			print ("Retrofitting for A New Reign: Heart of the Ruins - Adding "..(repop-count).." new "..spawnerprefab.." to repopulate the ruins." )
+			for i = count, (repop-1) do
+				local _, respawner = RetrofitNewCaveContentPrefab(inst, spawnerprefab.."_spawner", 1, 1, true)
+				if respawner ~= nil then
+					respawner.resetruins = false
+					count = count + 1
+				end
+			end
+		end
+
+		return count
+	end
+
+	RepopNear(AddRuinsRespawner("bishop_nightmare"), "bishop_nightmare", "nightmarelight", 6, 15)
+	RepopNear(AddRuinsRespawner("knight_nightmare"), "knight_nightmare", "nightmarelight", 6, 15)
+	RepopNear(AddRuinsRespawner("rook_nightmare"), "rook_nightmare", "nightmarelight", 6, 15)
+
+	RepopRandom( AddRuinsRespawner("monkeybarrel"), "monkeybarrel", 35)
+	RepopRandom( AddRuinsRespawner("slurper"), "slurper", 20)
+	RepopRandom( AddRuinsRespawner("worm"), "worm", 15)
+	
+	local minotaur_respawner = true
+	if AddRuinsRespawner("minotaur") == 0 then
+		if AddRuinsRespawner("minotaurchest", "minotaur") == 0 then
+			minotaur_respawner = false
+			for k,v in ipairs(TheWorld.topology.ids) do
+				if string.find(v, "RuinedGuarden") then
+					local node = TheWorld.topology.nodes[k]
+					local respawner = SpawnPrefab("minotaur_spawner")
+					respawner.Transform:SetPosition(node.cent[1], 0, node.cent[2])
+					respawner.resetruins = false
+					minotaur_respawner = true
+					print ("Retrofitting for A New Reign: Heart of the Ruins - Added worst case respawner for the minotaur." )
+				end
+			end
+		end
+	end
+	if minotaur_respawner == false then
+		print ("Retrofitting for A New Reign: Heart of the Ruins - Could not find anywhere to add the minotaur respawern the world.")
+	end
+
+end
+
+function self:ClearRuins()
+	local function RemoveAllRuinsRespawner(prefab)
+		local toremove = {}
+		for _, v in pairs(Ents) do
+			if v.prefab == prefab then
+				table.insert(toremove, v)
+			end
+		end	
+		print ("Retrofitting for A New Reign: Heart of the Ruins - Removing "..tostring(#toremove).." "..prefab.."." )
+		prefab = prefab .. "_spawner"
+		for _, v in pairs(Ents) do
+			if v.prefab == prefab then
+				table.insert(toremove, v)
+			end
+		end	
+
+		print ("Retrofitting for A New Reign: Heart of the Ruins - Removing "..tostring(#toremove).." "..prefab.." respawners." )
+
+		for _, v in ipairs(toremove) do
+			v:Remove()
+		end	
+	end
+	RemoveAllRuinsRespawner("bishop_nightmare")
+	RemoveAllRuinsRespawner("knight_nightmare")
+	RemoveAllRuinsRespawner("rook_nightmare")
+	RemoveAllRuinsRespawner("monkeybarrel")
+	RemoveAllRuinsRespawner("slurper")
+	RemoveAllRuinsRespawner("worm")
+	RemoveAllRuinsRespawner("minotaur")
+end
+
+function self:Ruins()
+
+	HeartOfTheRuinsRuinsRetrofitting(inst)
 end
 
 --------------------------------------------------------------------------
@@ -78,18 +322,20 @@ end
 
 function self:OnPostInit()
 	if retrofit_warts then
-		print ("Retrofitting for A New Reign: Warts And All.")
+		print ("Retrofitting for A New Reign: Warts and All.")
 		local success = false
 		success = RetrofitNewCaveContentPrefab(inst, "toadstool_cap", 7, 40) or success
 		success = RetrofitNewCaveContentPrefab(inst, "toadstool_cap", 7, 40) or success
 		success = RetrofitNewCaveContentPrefab(inst, "toadstool_cap", 7, 40) or success
 		while not success do
-			print ("Retrofitting for A New Reign: Warts And All. - Trying really hard to find a spot for Toadstool.")
+			print ("Retrofitting for A New Reign: Warts and All. - Trying really hard to find a spot for Toadstool.")
 			success = RetrofitNewCaveContentPrefab(inst, "toadstool_cap", 4, 40)
 		end
 	end
 
 	if self.retrofit_artsandcrafts then
+		self.retrofit_artsandcrafts = nil
+		
 		local count = 10
 	    for k,v in pairs(Ents) do
 			if v ~= inst and v.prefab == "spiderhole" then
@@ -109,6 +355,26 @@ function self:OnPostInit()
 			print ("Retrofitting for A New Reign: Arts and Crafts is not required.")
 		end
 	end
+	
+	if self.retrofit_heartoftheruins then
+		self.retrofit_heartoftheruins = nil
+		
+		print ("Retrofitting for A New Reign: Heart of the Ruins.")
+		HeartOfTheRuinsAtriumRetrofitting(inst)
+		HeartOfTheRuinsRuinsRetrofitting(inst)
+	end	
+
+	if inst.components.retrofitcavemap_anr.requiresreset then
+		-- not quite working in all cases...
+		
+		--print ("Retrofitting for A New Reign. Savefile retrofitting requires the server to be restarted to fully take effect.")
+		--print ("Retrofitting for A New Reign. Restarting caves in 40 seconds.")
+		
+		--inst:DoTaskInTime(30, function() TheNet:SendWorldSaveRequestToMaster() TheNet:Announce("Caves will reload in 10 seconds") end)
+		--inst:DoTaskInTime(35, function() TheNet:Announce("Caves will reload in 5 seconds") end)
+		--inst:DoTaskInTime(40, function() StartNextInstance({ reset_action = RESET_ACTION.LOAD_SLOT, save_slot = SaveGameIndex:GetCurrentSaveSlot() }) end)
+	end
+
 end
 
 --------------------------------------------------------------------------
@@ -123,6 +389,7 @@ function self:OnLoad(data)
     if data ~= nil then
 		retrofit_warts = data.retrofit_warts or false
 		self.retrofit_artsandcrafts = data.retrofit_artsandcrafts
+		self.retrofit_heartoftheruins = data.retrofit_heartoftheruins
     end
 end
 

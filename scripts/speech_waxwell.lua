@@ -82,6 +82,7 @@ return {
             SLOTFULL = "Occupied.",
             DUPLICATE = "That can already be made here.",
             NOTSCULPTABLE = "That is certainly not for sculpting with.",
+            CANTSHADOWREVIVE = "It refuses to bend to my will.",
         },
         GIVETOPLAYER = 
         {
@@ -173,6 +174,7 @@ return {
         "I... was a king, you know..!",
     },
 
+    ANNOUNCE_SNARED = "How dare you!",
 	ANNOUNCE_ENTER_DARK = "That smell... both nostalgic and terrifying!",
 	ANNOUNCE_ENTER_LIGHT = "Thank goodness for the light.",
 	ANNOUNCE_FREEDOM = "Freedom, at last!",
@@ -400,6 +402,10 @@ return {
 			UNHAPPY = "It's going to wreak havoc on my world.",
 		},
 		ANTLIONTRINKET = "I'll cross it off my bucket list.",
+		SANDSPIKE = "That was quite impolite.",
+        SANDBLOCK = "Impressive.",
+        GLASSSPIKE = "I hope I'm not so transparent.",
+        GLASSBLOCK = "Not the castle I had in mind for myself.",
 		ABIGAIL_FLOWER =
 		{
 			GENERIC = "Hm? What a familiar presence.",
@@ -1317,6 +1323,7 @@ return {
 			FUNNY = "It will be the laughingstock of the demon community.",
 			COMPLETE = "Was it wise to unleash this upon the world?",
         },
+        STALKER = "There is no limit to the power of shadows.",
 		FROG =
 		{
 			DEAD = "It croaked.",
@@ -1965,6 +1972,26 @@ return {
 		ACCOMPLISHMENT_SHRINE = "Even They couldn't build something so devious.",		
         REVIVER = "I'm not sure I really want to give this up.",
         SHADOWHEART = "A pulse of malice and betrayal beats within.",
+        ATRIUM_RUBBLE = 
+        {
+			LINE_1 = "A picture of the city, before the fuel.",
+			LINE_2 = "We all know what happens next.",
+			LINE_3 = "They gained such an enviable power...",
+			LINE_4 = "I know why you led me back here.",
+			LINE_5 = "But it won't work.",
+		},
+        ATRIUM_STATUE = "There's a dreamlike quality to the material.",
+        ATRIUM_LIGHT = 
+        {
+			ON = "It feeds off the nightmare.",
+			OFF = "No fuel, no power.",
+		},
+        ATRIUM_GATE =
+        {
+			ON = "The light reveals ancient text: \"Come Back Next Update.\"",
+			OFF = "It lacks a key.",
+        },
+        ATRIUM_KEY = "It's strange to see it.",
         LIFEINJECTOR = "Who would put this filth in their veins?",
         ROCK_MOON = "\"Moon\" rock.",
         MOONROCKNUGGET = "\"Moon\" rock.",

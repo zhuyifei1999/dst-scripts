@@ -1,4 +1,5 @@
 require "prefabutil"
+
 local easing = require("easing")
 
 local assets =
@@ -244,6 +245,7 @@ local function OnEnableHelper(inst, enabled)
             inst.helper.entity:AddTransform()
             inst.helper.entity:AddAnimState()
 
+            inst.helper:AddTag("FX")
             inst.helper:AddTag("NOCLICK")
             inst.helper:AddTag("placer")
 
@@ -454,6 +456,7 @@ local function placer_postinit_fn(inst)
     placer2.entity:AddTransform()
     placer2.entity:AddAnimState()
 
+    placer2:AddTag("FX")
     placer2:AddTag("NOCLICK")
     placer2:AddTag("placer")
 

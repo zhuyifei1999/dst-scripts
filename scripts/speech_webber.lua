@@ -68,6 +68,7 @@ return {
             SLOTFULL = "Mom said to always finish my plate before seconds.",
             DUPLICATE = "We don't need two!",
             NOTSCULPTABLE = "Eight legs isn't nearly enough to sculpt with THAT.",
+            CANTSHADOWREVIVE = "It's not waking up.",
         },
         GIVETOPLAYER = 
         {
@@ -164,6 +165,7 @@ return {
 	ANNOUNCE_KLAUS_UNCHAINED = "Its belly looks hungry!",
 	ANNOUNCE_KLAUS_CALLFORHELP = "Uh-oh, its got friends coming!",
 
+	ANNOUNCE_SNARED = "Hey! Meanie!",
 	ANNOUNCE_ENTER_DARK = "We can't see! I want my nightlight.",
 	ANNOUNCE_ENTER_LIGHT = "Phew, light!",
 	ANNOUNCE_FREEDOM = "We made it!",
@@ -451,6 +453,10 @@ return {
 			UNHAPPY = "I think it's upset.",
 		},
 		ANTLIONTRINKET = "Sand castles!!",
+		SANDSPIKE = "Ouchie!",
+        SANDBLOCK = "Not like this!!",
+        GLASSSPIKE = "Careful, it's fragile.",
+        GLASSBLOCK = "We think it's great and we love it.",
 		ABIGAIL_FLOWER =
 		{
 			GENERIC = "Pretty petals!",
@@ -1208,6 +1214,7 @@ return {
 			FUNNY = "Maybe we shouldn't play with bones.",
 			COMPLETE = "That looks real good!",
         },
+        STALKER = "I don't think it's friendly.",
 		FROG =
 		{
 			DEAD = "A hop too far.",
@@ -1991,6 +1998,26 @@ return {
 		ICESTAFF = "It makes me feel funny.",
         REVIVER = "I think it loves me.",
         SHADOWHEART = "Why does it make me feel so bad?",
+        ATRIUM_RUBBLE = 
+        {
+			LINE_1 = "It's a picture of some bug people.",
+			LINE_2 = "This picture's all messed up.",
+			LINE_3 = "There's a lot of black goop in this picture.",
+			LINE_4 = "A picture of bug people escaping their bug outsides!",
+			LINE_5 = "A picture of a city. It looks like a nice place to live.",
+		},
+        ATRIUM_STATUE = "They look sick.",
+        ATRIUM_LIGHT = 
+        {
+			ON = "We don't like it.",
+			OFF = "No light.",
+		},
+        ATRIUM_GATE =
+        {
+			ON = "The light reveals ancient text: \"Come Back Next Update.\"",
+			OFF = "We need another piece to turn it on.",
+        },
+        ATRIUM_KEY = "This key is REALLY old.",
         LIFEINJECTOR = "I hate taking my medicine!",
 	},
 	DESCRIBE_GENERIC = "Can we play with it?",

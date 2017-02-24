@@ -89,8 +89,10 @@ local function IsHolding(inst, item, checkcontainer)
 end
 
 local function GetItemInSlot(inst, slot)
-    return inst._itemspreview ~= nil and inst._itemspreview[slot] or
-        (inst._items[slot] ~= nil and inst._items[slot]:value() or nil)
+    if inst._itemspreview ~= nil then
+        return inst._itemspreview[slot]
+    end
+    return inst._items[slot] ~= nil and inst._items[slot]:value() or nil
 end
 
 local function GetItems(inst)

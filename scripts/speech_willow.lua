@@ -82,6 +82,7 @@ return {
             SLOTFULL = "Naw, can't make it fit.",
             DUPLICATE = "Awww, we already know that one!",
             NOTSCULPTABLE = "I'd like to see someone try to sculpt with that!",
+            CANTSHADOWREVIVE = "It's not working.",
         },
         GIVETOPLAYER = 
         {
@@ -127,6 +128,7 @@ return {
 	ANNOUNCE_HOT = "The heat is too intense!",
 	ANNOUNCE_DUSK = "Night is coming. I need fire!",
 	ANNOUNCE_ENTER_DARK = "Where'd I put my lighter!?",
+	ANNOUNCE_SNARED = "Gross, ew! Bones!",
 	ANNOUNCE_ENTER_LIGHT = "Oh, I can see! I thought I'd gone blind.",
 	ANNOUNCE_INV_FULL = "I can only carry so much!!",
 	ANNOUNCE_NODANGERAFK = "I'm not leaving now!",
@@ -406,6 +408,10 @@ return {
 			VERYHAPPY = "You're in a good mood.",
 			UNHAPPY = "There's gonna be tremors in our future.",
 		},
+		SANDSPIKE = "Burn it!",
+        SANDBLOCK = "Buuurn!",
+        GLASSSPIKE = "I can't believe that worked!",
+        GLASSBLOCK = "See? Fire solves everything.",
 		ANTLIONTRINKET = "Buncha junk.",
 		ABIGAIL_FLOWER = 
 		{
@@ -1404,6 +1410,7 @@ return {
 			FUNNY = "That looks absolutely ridiculous.",
 			COMPLETE = "Looks passable.",
         },
+        STALKER = "I brought you back so I could beat you up!",
 		FROG =
 		{
 			DEAD = "Showed him!",
@@ -1995,6 +2002,26 @@ return {
 		ACCOMPLISHMENT_SHRINE = "I hate that arrow!",        		
         REVIVER = "I expected it to be blacker.",
         SHADOWHEART = "Oh, ewww! Who would ever touch that?!",
+        ATRIUM_RUBBLE = 
+        {
+			LINE_1 = "It's got a picture of some gross looking people.",
+			LINE_2 = "Can't tell what that was a picture of.",
+			LINE_3 = "I think someone spilled ink on this picture.",
+			LINE_4 = "Oh, gross! The people're losing their skin in this one!",
+			LINE_5 = "It's just a picture of a city.",
+		},
+        ATRIUM_STATUE = "Eerily lifelike.",
+        ATRIUM_LIGHT = 
+        {
+			ON = "It's somehow even creepier when it's on.",
+			OFF = "Ew, creepy.",
+		},
+        ATRIUM_GATE =
+        {
+			ON = "The light reveals ancient text: \"Come Back Next Update.\"",
+			OFF = "Why would anyone want to live down here?",
+        },
+        ATRIUM_KEY = "The horns make it really easy to turn.",
         LIFEINJECTOR = "Don't you dare stick that in me!",
 	},
 	DESCRIBE_GENERIC = "I have no idea what that is!",

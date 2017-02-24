@@ -27,6 +27,15 @@ local function DoMountedFoleySounds(inst)
     end
 end
 
+local function DoRunSounds(inst)
+    if inst.sg.mem.footsteps > 3 then
+        PlayFootstep(inst, .6, true)
+    else
+        inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
+        PlayFootstep(inst, 1, true)
+    end
+end
+
 local function DoMountSound(inst, mount, sound)
     if mount ~= nil and mount.sounds ~= nil then
         inst.SoundEmitter:PlaySound(mount.sounds[sound], nil, nil, true)
@@ -40,13 +49,19 @@ local function ConfigureRunState(inst)
     elseif inst.replica.inventory:IsHeavyLifting() then
         inst.sg.statemem.heavy = true
     elseif inst:HasTag("beaver") then
-        inst.sg.statemem.groggy = inst:HasTag("groggy")
+        if inst:HasTag("groggy") then
+            inst.sg.statemem.groggy = true
+        else
+            inst.sg.statemem.normal = true
+        end
     elseif inst:GetSandstormLevel() >= TUNING.SANDSTORM_FULL_LEVEL and not inst.components.playervision:HasGoggleVision() then
         inst.sg.statemem.sandstorm = true
     elseif inst:HasTag("groggy") then
         inst.sg.statemem.groggy = true
     elseif inst:IsCarefulWalking() then
         inst.sg.statemem.careful = true
+    else
+        inst.sg.statemem.normal = true
     end
 end
 
@@ -259,7 +274,7 @@ local events =
     end),
 }
 
-local states = 
+local states =
 {
     State
     {
@@ -319,7 +334,7 @@ local states =
     {
         name = "run_start",
         tags = { "moving", "running", "canrotate" },
-        
+
         onenter = function(inst)
             ConfigureRunState(inst)
             inst.components.locomotor:RunForward()
@@ -350,7 +365,7 @@ local states =
 
             --unmounted
             TimeEvent(4 * FRAMES, function(inst)
-                if not (inst.sg.statemem.riding or inst.sg.statemem.heavy) then
+                if inst.sg.statemem.normal then
                     PlayFootstep(inst, nil, true)
                     DoFoleySounds(inst)
                 end
@@ -402,48 +417,77 @@ local states =
         {
             --unmounted
             TimeEvent(7 * FRAMES, function(inst)
-                if not (inst.sg.statemem.riding or inst.sg.statemem.heavy) then
-                    if inst.sg.mem.footsteps > 3 then
-                        PlayFootstep(inst, .6, true)
-                    else
-                        inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
-                        PlayFootstep(inst, 1, true)
-                    end
+                if inst.sg.statemem.normal then
+                    DoRunSounds(inst)
                     DoFoleySounds(inst)
                 end
             end),
             TimeEvent(15 * FRAMES, function(inst)
-                if not (inst.sg.statemem.riding or inst.sg.statemem.heavy) then
-                    if inst.sg.mem.footsteps > 3 then
-                        PlayFootstep(inst, .6, true)
-                    else
-                        inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
-                        PlayFootstep(inst, 1, true)
-                    end
+                if inst.sg.statemem.normal then
+                    DoRunSounds(inst)
+                    DoFoleySounds(inst)
+                end
+            end),
+
+            --careful
+            --Frame 11 shared with heavy lifting below
+            --[[TimeEvent(11 * FRAMES, function(inst)
+                if inst.sg.statemem.careful then
+                    DoRunSounds(inst)
+                    DoFoleySounds(inst)
+                end
+            end),]]
+            TimeEvent(26 * FRAMES, function(inst)
+                if inst.sg.statemem.careful then
+                    DoRunSounds(inst)
+                    DoFoleySounds(inst)
+                end
+            end),
+
+            --sandstorm
+            --Frame 12 shared with groggy below
+            --[[TimeEvent(12 * FRAMES, function(inst)
+                if inst.sg.statemem.sandstorm then
+                    DoRunSounds(inst)
+                    DoFoleySounds(inst)
+                end
+            end),]]
+            TimeEvent(23 * FRAMES, function(inst)
+                if inst.sg.statemem.sandstorm then
+                    DoRunSounds(inst)
+                    DoFoleySounds(inst)
+                end
+            end),
+
+            --groggy
+            TimeEvent(1 * FRAMES, function(inst)
+                if inst.sg.statemem.groggy then
+                    DoRunSounds(inst)
+                    DoFoleySounds(inst)
+                end
+            end),
+            TimeEvent(12 * FRAMES, function(inst)
+                if inst.sg.statemem.groggy or
+                    inst.sg.statemem.sandstorm then
+                    DoRunSounds(inst)
                     DoFoleySounds(inst)
                 end
             end),
 
             --heavy lifting
             TimeEvent(11 * FRAMES, function(inst)
-                if inst.sg.statemem.heavy then
-                    if inst.sg.mem.footsteps > 3 then
-                        PlayFootstep(inst, .6, true)
-                    else
-                        inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
-                        PlayFootstep(inst, 1, true)
-                    end
+                if inst.sg.statemem.heavy or
+                    inst.sg.statemem.sandstorm or
+                    inst.sg.statemem.careful then
+                    DoRunSounds(inst)
                     DoFoleySounds(inst)
                 end
             end),
             TimeEvent(36 * FRAMES, function(inst)
-                if inst.sg.statemem.heavy then
-                    if inst.sg.mem.footsteps > 3 then
-                        PlayFootstep(inst, .6, true)
-                    else
-                        inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
-                        PlayFootstep(inst, 1, true)
-                    end
+                if inst.sg.statemem.heavy or
+                    inst.sg.statemem.sandstorm or
+                    inst.sg.statemem.careful then
+                    DoRunSounds(inst)
                     DoFoleySounds(inst)
                 end
             end),
@@ -456,12 +500,7 @@ local states =
             end),
             TimeEvent(5 * FRAMES, function(inst)
                 if inst.sg.statemem.riding then
-                    if inst.sg.mem.footsteps > 3 then
-                        PlayFootstep(inst, .6, true)
-                    else
-                        inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
-                        PlayFootstep(inst, 1, true)
-                    end
+                    DoRunSounds(inst)
                 end
             end),
         },
@@ -1337,7 +1376,7 @@ local states =
             inst.AnimState:PlayAnimation("build_pst")
             inst.sg:GoToState("idle", true)
         end,
-        
+
         onexit = function(inst)
             inst.SoundEmitter:KillSound("make_preview")
         end,
@@ -1464,7 +1503,7 @@ local states =
             inst.AnimState:PlayAnimation("build_pst")
             inst.sg:GoToState("idle", true)
         end,
-        
+
         onexit = function(inst)
             inst.SoundEmitter:KillSound("make_preview")
         end,
@@ -2074,12 +2113,12 @@ local states =
             inst.AnimState:PlayAnimation("wrap_pst")
             inst.sg:GoToState("idle", true)
         end,
-        
+
         onexit = function(inst)
             inst.SoundEmitter:KillSound("make_preview")
         end,
     },
-    
+
     State
     {
         name = "startchanneling",

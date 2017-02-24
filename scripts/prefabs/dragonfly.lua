@@ -1,6 +1,6 @@
 local brain = require("brains/dragonflybrain")
 
-local assets = 
+local assets =
 {
     Asset("ANIM", "anim/dragonfly_build.zip"),
     Asset("ANIM", "anim/dragonfly_fire_build.zip"),
@@ -36,24 +36,24 @@ SetSharedLootTable('dragonfly',
     {'dragon_scales',             1.00},
     {'dragonflyfurnace_blueprint',1.00},
     {'lavae_egg',                 0.33},
-    
+
     {'meat',             1.00},
     {'meat',             1.00},
     {'meat',             1.00},
     {'meat',             1.00},
     {'meat',             1.00},
     {'meat',             1.00},
-    
+
     {'goldnugget',       1.00},
     {'goldnugget',       1.00},
     {'goldnugget',       1.00},
     {'goldnugget',       1.00},
-    
+
     {'goldnugget',       0.50},
     {'goldnugget',       0.50},
     {'goldnugget',       0.50},
     {'goldnugget',       0.50},
-    
+
     {'redgem',           1.00},
     {'bluegem',          1.00},
     {'purplegem',        1.00},
@@ -252,7 +252,7 @@ local function TrySoftReset(inst)
     if inst.SoftResetTask == nil then
         print(string.format("Dragonfly - Start soft reset task @ %2.2f", GetTime()))
         inst.SoftResetTask = inst:DoTaskInTime(10, SoftReset)
-    end 
+    end
 end
 
 local function OnTargetDeathTask(inst)

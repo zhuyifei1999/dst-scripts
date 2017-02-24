@@ -579,6 +579,20 @@ local fx =
         anim = "anim",
         fn = function(inst) inst.entity:AddSoundEmitter():PlaySoundWithParams("dontstarve/creatures/together/antlion/sfx/ground_break", { size = 0 }) end,
     },
+    {
+        name = "glass_fx",
+        bank = "mining_fx",
+        build = "mining_ice_fx",
+        anim = "anim",
+        sound = "dontstarve/creatures/together/antlion/sfx/glass_break",
+    },
+    {
+        name = "erode_ash",
+        bank = "erode_ash",
+        build = "erode_ash",
+        anim = "idle",
+        sound = "dontstarve/common/dust_blowaway",
+    },
 }
 
 return fx

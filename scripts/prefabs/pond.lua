@@ -139,6 +139,8 @@ local function commonfn(pondtype)
 
     inst.no_wet_prefix = true
 
+    inst:SetDeployExtraSpacing(2)
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

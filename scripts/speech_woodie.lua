@@ -69,6 +69,7 @@ return {
             SLOTFULL = "I should probably use what's up there first.",
             DUPLICATE = "No sense having two of the same recipe.",
             NOTSCULPTABLE = "I'd prefer wood, personally.",
+            CANTSHADOWREVIVE = "Didn't work. Probably for the best.",
         },
         GIVETOPLAYER = 
         {
@@ -175,6 +176,7 @@ return {
 	ANNOUNCE_BECOMEGHOST = "oOooOOOO!!",
 	ANNOUNCE_GHOSTDRAIN = "I'm goin', like, nutso over here...",
 
+	ANNOUNCE_SNARED = "You'll have to do better than that.",
 	ANNOUNCE_ENTER_DARK = "Who turned out the lights?",
 	ANNOUNCE_ENTER_LIGHT = "Brilliance!",
 	ANNOUNCE_FREEDOM = "I got out!",
@@ -397,6 +399,10 @@ return {
 			UNHAPPY = "That critter's in a real bad mood.",
 		},
 		ANTLIONTRINKET = "Could give it to some sandy hoser.",
+		SANDSPIKE = "That's something else, eh?",
+        SANDBLOCK = "Some good craftsmanship.",
+        GLASSSPIKE = "I wonder if it chops.",
+        GLASSBLOCK = "Well it ain't wood.",
 		ABIGAIL_FLOWER = 
 		{
 			GENERIC = "It's a flower? I guess.",
@@ -1339,6 +1345,7 @@ return {
 			FUNNY = "Eh... Should we try again, Lucy?",
 			COMPLETE = "One hundred percent assembled beastie.",
         },
+        STALKER = "It's a walking anatomy lesson.",
 		FROG =
 		{
 			DEAD = "Ex-frog.",
@@ -1979,6 +1986,26 @@ return {
 		ICESTAFF = "It reminds me of home.",
         REVIVER = "I need to share this with somebody!",
         SHADOWHEART = "Yeesh. Don't get that near me.",
+        ATRIUM_RUBBLE = 
+        {
+			LINE_1 = "It's an old drawing of strange creatures.",
+			LINE_2 = "Nothin' of interest left here.",
+			LINE_3 = "Black muck is covering everything in this drawing.",
+			LINE_4 = "Don't look at this one, Lucy.",
+			LINE_5 = "Looks like a bustling city.",
+		},
+        ATRIUM_STATUE = "Was it supposed to be holding something?",
+        ATRIUM_LIGHT = 
+        {
+			ON = "What a nightmare.",
+			OFF = "Gotta be a way to turn it on.",
+		},
+        ATRIUM_GATE =
+        {
+			ON = "The light reveals ancient text: \"Come Back Next Update.\"",
+			OFF = "Where d'you think it goes, Lucy?",
+        },
+        ATRIUM_KEY = "Got it from that big bony hoser.",
         LIFEINJECTOR = "This should cure those sniffles.",
         ROCK_MOON = "It's uh, a moon rock.",
         MOONROCKNUGGET = "It's uh, a moon rock.",

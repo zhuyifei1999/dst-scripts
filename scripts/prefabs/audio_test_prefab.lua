@@ -59,7 +59,7 @@ local function AudioSG(prefab, sgdata, idle)
 	return StateGraph("SGAudio"..prefab, states, {}, idle ~= nil and idle or "idle")
 end
 
-local function AudioPrefab(prefab, artassets, bank, build, sgdata, defaultstate)
+local function AudioPrefab(prefab, artassets, bank, build, sgdata, defaultstate, faced)
 	defaultstate = defaultstate ~= nil and defaultstate or "idle"
 	
 	local assets = {}
@@ -76,6 +76,10 @@ local function AudioPrefab(prefab, artassets, bank, build, sgdata, defaultstate)
 		inst.AnimState:SetBank(bank)
 		inst.AnimState:SetBuild(build)
 		inst.AnimState:PlayAnimation(defaultstate)
+
+		if faced == "four" then
+			inst.Transform:SetFourFaced()
+		end
 
 		local sgname = "SGAudio"..prefab
 		if stategraphs[sgname] == nil then
@@ -99,34 +103,64 @@ end
 ----  ADD AUDIO TEST PREFABS BELOW THIS
 -------------------------------------------------------------------------------
 
-AudioPrefab("audio_antlion", {"antlion_build", "antlion_basic", "antlion_action"}, "antlion", "antlion_build",
+AudioPrefab("audio_stalker", {"stalker_basic", "stalker_action"}, "stalker", --[["stalker_basic"]] "stalker_action",
 {
-	idle = {
---TimeEvent(9*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/common/together/moondial/water_movement") end),
+	idle_loop = {
+		TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/in") end),
+		TimeEvent(26*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/out") end),
+		next = "idle_loop",
     },
-	enter = {
-		TimeEvent(2*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/enter") end),
+	walk_loop = {
+		TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/footstep") end),
+		TimeEvent(15*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/footstep") end),
+		TimeEvent(32*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/footstep") end),
     },
-    out = {
-		TimeEvent(28*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/enter") end),
+    attack1_pbaoe = {
+		TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/attack1_pbaoe_pre") end),
+		TimeEvent(24*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/attack1_pbaoe") end),    
     },
 	taunt = {
-		TimeEvent(7*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/taunt") end),
+		TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/taunt") end),
+ 
     },
-    attack_pre = {
-		TimeEvent(7*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/attack_pre") end),
+    attack_down = {
+		TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/attack_swipe") end),
     },
-    attack = {
-		TimeEvent(2*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/attack") end),
+    hit_down = {
+		TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/hit") end),
     },
-    hit = {
-		TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/hit") end),
+    death2_down = {
+		TimeEvent(5*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death_walk") end),
+		TimeEvent(22*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/bone_drop") end),
+		TimeEvent(40*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/bone_drop") end),
+		TimeEvent(56*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/bone_drop") end),
+		TimeEvent(69*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/bone_drop") end),
     },
     death = {
-		TimeEvent(6*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/death") end),
-		TimeEvent(33*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/bodyfall_death") end),
+		TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death") end),
+		TimeEvent(15*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death_pop") end),
+		TimeEvent(17*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death_pop") end),
+		TimeEvent(21*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death_pop") end),
+		TimeEvent(24*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death_pop") end),
+		TimeEvent(27*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death_pop") end),
+		TimeEvent(30*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death_pop") end),
+		TimeEvent(30*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death_bone_drop") end),
     },
+}, "idle_loop", "four")
+
+AudioPrefab("audio_antlion", {"antlion_build", "antlion_basic", "antlion_action"}, "antlion", "antlion_build",
+{
+
+	idle = {
+	--TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/in") end),
+	--TimeEvent(26*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/out") end),
+    },
+
     sleep_pre = {
+		TimeEvent(40*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/bodyfall_sleep") end),
+		TimeEvent(30*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/unimpressed") end),
+    },
+    sleep = {
 		TimeEvent(44*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/bodyfall_sleep") end),
 		TimeEvent(30*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/unimpressed") end),
     },
@@ -143,6 +177,9 @@ AudioPrefab("audio_antlion", {"antlion_build", "antlion_basic", "antlion_action"
     },
     eat_post = {
 		TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/swallow") end),
+	},
+    cast_sandcastle = {
+		TimeEvent(9*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/attack_pre") end),
     },
     spit = {
 		TimeEvent(40*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/spit") end),
@@ -168,7 +205,22 @@ AudioPrefab("audio_antlion", {"antlion_build", "antlion_basic", "antlion_action"
 		TimeEvent(16*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/rub") end),
 		TimeEvent(30*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/rub") end),
 		TimeEvent(46*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/rub") end),
-    },
+	},
+    hit = {
+		TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/hit") end),
+	},
+    death = {
+		TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/death") end),
+		TimeEvent(40*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/bodyfall_death") end),
+	},
+	sleep = {
+		TimeEvent(7*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sleep_in") end),
+		TimeEvent(40*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sleep_out") end),
+	},
+
+    taunt = {
+		TimeEvent(7*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/taunt") end),
+	},
 })
 
 

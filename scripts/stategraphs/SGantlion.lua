@@ -1,5 +1,13 @@
 require("stategraphs/commonstates")
 
+local function ShakeIfClose(inst)
+    ShakeAllCameras(CAMERASHAKE.FULL, .5, .02, .15, inst, 30)
+end
+
+local function ShakeCasting(inst)
+    ShakeAllCameras(CAMERASHAKE.VERTICAL, .3, .02, 1, inst, 30)
+end
+
 local function SproutLaunch(inst, launcher, basespeed)
     local x0, y0, z0 = launcher.Transform:GetWorldPosition()
     local x1, y1, z1 = inst.Transform:GetWorldPosition()
@@ -17,31 +25,108 @@ local function SproutLaunch(inst, launcher, basespeed)
     inst.Physics:SetVel(math.cos(angle) * speed, speed * 4 + math.random() * 2, math.sin(angle) * speed)
 end
 
+local function CanGoToActionState(inst)
+    if not inst.sg:HasStateTag("busy") or
+        inst.sg:HasStateTag("caninterrupt") or
+        inst.sg:HasStateTag("frozen") or
+        inst.sg:HasStateTag("thawing") then
+        --Just break out of freezing! This is bonus support...
+        --Nothing should freeze it normally outside of combat.
+        inst.components.freezable:Unfreeze()
+        return true
+    end
+    --Force wake up to perform queued action.
+    inst.components.sleeper:WakeUp()
+    return false
+end
+
+local function TryActionState(inst)
+    if inst:HasRewardToGive() then
+        inst.sg:GoToState("trinkettribute")
+    elseif inst.sg.mem.queueleaveworld then
+        inst.sg:GoToState("leaveworld")
+    elseif inst.sg.mem.wantstofightdata ~= nil then
+        inst.sg:GoToState("fighttribute", inst.sg.mem.wantstofightdata)
+    elseif inst.sg.mem.causingsinkholes then
+        inst.sg:GoToState("sinkhole_pre")
+    else
+        return false
+    end
+    return true
+end
+
+local function _OnNoSleepEvent(event, nextstate)
+    return EventHandler(event, function(inst)
+        if inst.AnimState:AnimDone() then
+            if TryActionState(inst) then
+                return
+            elseif inst.sg.mem.sleeping then
+                inst.sg:GoToState("sleep")
+            elseif type(nextstate) == "string" then
+                inst.sg:GoToState(nextstate)
+            elseif nextstate ~= nil then
+                nextstate(inst)
+            end
+        end
+    end)
+end
+
+local function _OnNoSleepAnimOver(nextstate)
+    return _OnNoSleepEvent("animover", nextstate)
+end
+
+local function _OnNoSleepAnimQueueOver(nextstate)
+    return _OnNoSleepEvent("animqueueover", nextstate)
+end
+
+local function _OnNoSleepTimeEvent(t, fn)
+    return TimeEvent(t, function(inst)
+        if TryActionState(inst) then
+            return
+        elseif inst.sg.mem.sleeping then
+            inst.sg:GoToState("sleep")
+        elseif fn ~= nil then
+            fn(inst)
+        end
+    end)
+end
+
 local events =
 {
+    CommonHandlers.OnFreezeEx(),
+    CommonHandlers.OnSleepEx(),
+    CommonHandlers.OnWakeEx(),
+    EventHandler("onacceptfighttribute", function(inst, data)
+        --set this always, used by prefab
+        inst.sg.mem.wantstofightdata = { target = data.tributer, trigger = data.trigger }
+        if CanGoToActionState(inst) then
+            inst.sg:GoToState("fighttribute", inst.sg.mem.wantstofightdata)
+        end
+    end),
     EventHandler("onaccepttribute", function(inst, data)
-        if not inst.sg:HasStateTag("busy") then
+        if CanGoToActionState(inst) then
             if inst:HasRewardToGive() then
-                inst.sg:GoToState("trinketribute")
+                inst.sg:GoToState("trinkettribute")
             else
                 inst.sg:GoToState("rocktribute", data)
             end
         end
     end),
-    EventHandler("onrefusetribute", function(inst, data) 
-        if not inst.sg:HasStateTag("busy") then
+    EventHandler("onrefusetribute", function(inst, data)
+        if CanGoToActionState(inst) then
             inst.sg:GoToState("refusetribute", data)
         end
     end),
-    EventHandler("antlion_leaveworld", function(inst, data) 
-        inst.sg.mem.queueleaveworld = true
+    EventHandler("antlion_leaveworld", function(inst, data)
         if not inst.sg:HasStateTag("busy") then
             inst.sg:GoToState("leaveworld", data)
+        else
+            inst.sg.mem.queueleaveworld = true
         end
     end),
     EventHandler("onsinkholesstarted", function(inst, data) 
         inst.sg.mem.causingsinkholes = true
-        if not inst.sg:HasStateTag("busy") then
+        if CanGoToActionState(inst) then
             inst.sg:GoToState("sinkhole_pre", data)
         end
     end),
@@ -60,30 +145,24 @@ local states =
         onenter = function(inst, loopcount)
             loopcount = (loopcount or 0) + 1
 
-            inst.Physics:Stop()
-
-            if inst:HasRewardToGive() then
-                inst.sg:GoToState("awardtribute")
-            elseif inst.sg.mem.queueleaveworld then
-                inst.sg:GoToState("leaveworld")
-            elseif inst.sg.mem.causingsinkholes then
-                inst.sg:GoToState("sinkhole_pre")
-            elseif loopcount > 5 and math.random() < 0.5 then
-                if inst:GetRageLevel() == 3 then
-                    inst.sg:GoToState("idle_unhappy")
-                else
-                    inst.AnimState:PlayAnimation("lookaround")
-                end
-            else
+            if TryActionState(inst) then
+                return
+            elseif loopcount <= 5 or math.random() < .5 then
                 inst.sg.statemem.loopcount = loopcount
                 inst.AnimState:PlayAnimation("idle")
+            elseif inst:GetRageLevel() < 3 then
+                inst.AnimState:PlayAnimation("lookaround")
+            else
+                inst.sg:GoToState("idle_unhappy")
             end
         end,
 
         events =
         {
             EventHandler("animover", function(inst)
-                inst.sg:GoToState("idle", inst.sg.statemem.loopcount)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle", inst.sg.statemem.loopcount)
+                end
             end),
         },
     },
@@ -99,7 +178,7 @@ local states =
 
         timeline =
         {
-            TimeEvent(7*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/taunt") end),
+            TimeEvent(7 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/taunt") end),
         },
 
         events =
@@ -115,7 +194,7 @@ local states =
     State
     {
         name = "rocktribute",
-        tags = { "busy" },
+        tags = { "busy", "nosleep", "nofreeze" },
 
         onenter = function(inst, data)
             inst.AnimState:PlayAnimation("eat")
@@ -124,41 +203,20 @@ local states =
 
         timeline =
         {
-            TimeEvent(12*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/eat") end),
-            TimeEvent(36*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/eat") end),
-            TimeEvent(71*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/swallow") end),
-        },
-
-        events =
-        {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState(inst:GetRageLevel() == 1 and "hightributeresponse" or "idle")
-                end
+            TimeEvent(12 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/eat") end),
+            TimeEvent(36 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/eat") end),
+            TimeEvent(71 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/swallow") end),
+            _OnNoSleepTimeEvent(85 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+                inst.sg:RemoveStateTag("nosleep")
+                inst.sg:RemoveStateTag("nofreeze")
             end),
         },
-    },
-
-    State
-    {
-        name = "lowtributeresponse",
-        tags = { "busy" },
-
-        onenter = function(inst, data)
-            inst.AnimState:PlayAnimation("taunt")
-        end,
-
-        timeline =
-        {
-            TimeEvent(7*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/taunt") end),
-        },
 
         events =
         {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
+            _OnNoSleepAnimOver(function(inst)
+                inst.sg:GoToState(inst:GetRageLevel() <= 1 and "hightributeresponse" or "idle")
             end),
         },
     },
@@ -168,7 +226,7 @@ local states =
         name = "hightributeresponse",
         tags = { "busy" },
 
-        onenter = function(inst, data)
+        onenter = function(inst)
             inst.AnimState:PlayAnimation("full_pre")
             inst.AnimState:PushAnimation("full_loop", false)
             inst.AnimState:PushAnimation("full_pst", false)
@@ -176,11 +234,16 @@ local states =
 
         timeline =
         {
-            TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/purr") end),
-            TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/rub") end),
-            TimeEvent(16*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/rub") end),
-            TimeEvent(30*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/rub") end),
-            TimeEvent(46*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/rub") end),
+            TimeEvent(0, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/purr")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/rub")
+            end),
+            TimeEvent(16 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/rub") end),
+            TimeEvent(30 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/rub") end),
+            TimeEvent(46 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/rub") end),
+            TimeEvent(76 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
         },
 
         events =
@@ -196,7 +259,7 @@ local states =
     State
     {
         name = "refusetribute",
-        tags = { "busy" },
+        tags = { "busy", "nosleep", "nofreeze" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("unimpressed")
@@ -204,50 +267,24 @@ local states =
 
         timeline =
         {
-            TimeEvent(54*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/unimpressed") end),
+            _OnNoSleepTimeEvent(48 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+                inst.sg:RemoveStateTag("nosleep")
+                inst.sg:RemoveStateTag("nofreeze")
+            end),
+            TimeEvent(54 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/unimpressed") end),
         },
 
         events =
         {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end),
+            _OnNoSleepAnimOver("idle"),
         },
     },
 
     State
     {
-        name = "awardtribute",
-        tags = { "busy" },
-
-        onenter = function(inst)
-            inst.AnimState:PlayAnimation("spit")
-        end,
-
-        timeline =
-        {
-            TimeEvent(40*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/spit") end),
-            TimeEvent(23*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/attack_pre") end),
-            TimeEvent(26*FRAMES, function(inst) inst:GiveReward() end),
-            TimeEvent(60*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/unimpressed") end),
-        },
-
-        events =
-        {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end),
-        },
-    },
-
-    State
-    {
-        name = "trinketribute",
-        tags = { "busy" },
+        name = "trinkettribute",
+        tags = { "busy", "nosleep", "nofreeze" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("eat_talisman")
@@ -256,18 +293,48 @@ local states =
 
         timeline =
         {
-            TimeEvent(21*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/swallow") end),
-            TimeEvent(44*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/unimpressed") end),
-            TimeEvent(80*FRAMES, function(inst) inst:GiveReward() end),
-            TimeEvent(80*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/spit") end),
+            TimeEvent(21 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/swallow") end),
+            TimeEvent(44 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/unimpressed") end),
+            TimeEvent(80 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/spit")
+                inst:GiveReward()
+            end),
+            _OnNoSleepTimeEvent(98 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+                inst.sg:RemoveStateTag("nosleep")
+                inst.sg:RemoveStateTag("nofreeze")
+            end),
         },
 
         events =
         {
-            EventHandler("animqueueover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
+            _OnNoSleepAnimQueueOver("idle"),
+        },
+    },
+
+    State{
+        name = "fighttribute",
+        tags = { "busy", "nosleep", "nofreeze" },
+
+        onenter = function(inst, data)
+            inst.AnimState:PlayAnimation("eat_talisman")
+            if data ~= nil then
+                inst.sg.statemem.target = data.target
+                inst.sg.statemem.trigger = data.trigger
+            end
+        end,
+
+        timeline =
+        {
+            TimeEvent(21 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/swallow") end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                inst.components.sleeper:WakeUp()
+                inst.components.freezable:Unfreeze()
+                inst:StartCombat(inst.sg.statemem.target, inst.sg.statemem.trigger)
             end),
         },
     },
@@ -275,7 +342,7 @@ local states =
     State
     {
         name = "enterworld",
-        tags = { "busy" },
+        tags = { "busy", "nosleep", "nofreeze" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("enter")
@@ -313,16 +380,12 @@ local states =
 
         timeline =
         {
-            TimeEvent(2*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/enter") end),
+            TimeEvent(0 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/break_spike") end),
         },
 
         events =
         {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end),
+            _OnNoSleepAnimOver("idle"),
         },
 
         onexit = function(inst)
@@ -338,7 +401,7 @@ local states =
     State
     {
         name = "leaveworld",
-        tags = { "busy" },
+        tags = { "busy", "nosleep", "nofreeze" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("out")
@@ -346,8 +409,8 @@ local states =
 
         timeline =
         {
-            TimeEvent(28*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/enter") end),
-            TimeEvent(35*FRAMES, function(inst)
+            TimeEvent(28 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/break_spike") end),
+            TimeEvent(35 * FRAMES, function(inst)
                 inst.Physics:SetActive(false)
             end),
         },
@@ -370,7 +433,7 @@ local states =
     State
     {
         name = "sinkhole_pre",
-        tags = { "busy", "attack" },
+        tags = { "busy", "attack", "nosleep", "nofreeze" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("cast_pre")
@@ -378,15 +441,18 @@ local states =
 
         timeline =
         {
-            TimeEvent(8*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/cast_pre") end),
-            TimeEvent(29*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/ground_break") end),
-            TimeEvent(29*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/cast_pre") end),
+            TimeEvent(8 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/cast_pre") end),
+            TimeEvent(29 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/ground_break")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/cast_pre")
+            end),
+            TimeEvent(32 * FRAMES, ShakeCasting),
         },
 
         events =
         {
             EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then 
+                if inst.AnimState:AnimDone() then
                     inst.sg:GoToState(inst.sg.mem.causingsinkholes and "sinkhole_loop" or "sinkhole_pst")
                 end
             end),
@@ -396,7 +462,7 @@ local states =
     State
     {
         name = "sinkhole_loop",
-        tags = { "busy", "attack" },
+        tags = { "busy", "attack", "nosleep", "nofreeze" },
 
         onenter = function(inst, lastloop)
             inst.AnimState:PlayAnimation("cast_loop_active")
@@ -405,20 +471,26 @@ local states =
 
         timeline =
         {
-            TimeEvent(28*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/cast_pre") end),
-            TimeEvent(28*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/ground_break") end),
-            TimeEvent(69*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/cast_pre") end),
-            TimeEvent(69*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/ground_break") end),
+            TimeEvent(28 * FRAMES, function(inst)
+                ShakeCasting(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/cast_pre")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/ground_break")
+            end),
+            TimeEvent(69 * FRAMES, function(inst)
+                ShakeCasting(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/cast_pre")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/ground_break")
+            end),
         },
 
-        events = 
+        events =
         {
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
                     if inst.sg.statemem.lastloop then
                         inst.sg:GoToState("sinkhole_pst")
                     else
-                        inst.sg:GoToState("sinkhole_loop", inst.sg.mem.causingsinkholes ~= true)
+                        inst.sg:GoToState("sinkhole_loop", not inst.sg.mem.causingsinkholes)
                     end
                 end
             end),
@@ -428,11 +500,42 @@ local states =
     State
     {
         name = "sinkhole_pst",
-        tags = { "busy", "attack" },
+        tags = { "busy", "attack", "nosleep", "nofreeze" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("cast_pst")
         end,
+
+        timeline =
+        {
+            _OnNoSleepTimeEvent(10 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+                inst.sg:RemoveStateTag("nosleep")
+                inst.sg:RemoveStateTag("nofreeze")
+            end),
+        },
+
+        events =
+        {
+            _OnNoSleepAnimOver("idle"),
+        },
+    },
+
+    --For unfreezing
+    State{
+        name = "hit",
+        tags = { "busy" },
+
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("hit")
+        end,
+
+        timeline =
+        {
+            TimeEvent(14 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
 
         events =
         {
@@ -444,5 +547,36 @@ local states =
         },
     },
 }
+
+CommonStates.AddSleepExStates(states,
+{
+    starttimeline =
+    {
+        TimeEvent(45 * FRAMES, function(inst)
+            inst.sg:RemoveStateTag("caninterrupt")
+        end),
+        TimeEvent(46 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/bodyfall_death") end),
+        TimeEvent(48 * FRAMES, ShakeIfClose),
+    },
+    sleeptimeline =
+    {
+        TimeEvent(7 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sleep_in") end),
+        TimeEvent(40 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sleep_out") end),
+    },
+    waketimeline =
+    {
+        CommonHandlers.OnNoSleepTimeEvent(23 * FRAMES, function(inst)
+            inst.sg:RemoveStateTag("busy")
+            inst.sg:RemoveStateTag("nosleep")
+        end),
+    },
+},
+{
+    onsleep = function(inst)
+        inst.sg:AddStateTag("caninterrupt")
+    end,
+})
+
+CommonStates.AddFrozenStates(states)
 
 return StateGraph("antlion", states, events, "idle")

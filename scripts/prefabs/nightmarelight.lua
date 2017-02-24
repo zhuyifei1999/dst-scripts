@@ -268,4 +268,17 @@ local function fn()
     return inst
 end
 
-return Prefab("nightmarelight", fn, assets, prefabs)
+local function idolfn()
+	local inst = fn()
+	
+	inst:SetPrefabNameOverride("nightmarelight")
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+	
+	return inst
+end
+
+return Prefab("nightmarelight", fn, assets, prefabs),
+	Prefab("atrium_idol", idolfn, assets, prefabs)

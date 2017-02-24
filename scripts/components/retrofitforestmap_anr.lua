@@ -96,7 +96,7 @@ local function RetrofitAgainstTheGrain(area)
 		return nil
 	end
 
-	print ("Retrofitting for Against The Grain: Trying to retrofit "..area..".")
+	print ("Retrofitting for Against the Grain: Trying to retrofit "..area..".")
 
 	local node_indices = {}
 	local candidtates = {}
@@ -114,11 +114,11 @@ local function RetrofitAgainstTheGrain(area)
 		end
 	end
 	if #node_indices == 0 then
-		print ("Retrofitting for Against The Grain: "..area.." task was not added to the world.")
+		print ("Retrofitting for Against the Grain: "..area.." task was not added to the world.")
 		return false
 	end
 	if #candidtates < 2 then
-		print ("Retrofitting for Against The Grain: "..area.." is too small to retrofit.")
+		print ("Retrofitting for Against the Grain: "..area.." is too small to retrofit.")
 		return false
 	end
 	
@@ -136,19 +136,19 @@ local function RetrofitAgainstTheGrain(area)
 		table.insert(candidtates, 1, lake_candidate)
 	end
 
-	print ("Retrofitting for Against The Grain: " .. tostring(#node_indices) .. " nodes, " .. tostring(#candidtates) .. " canidates, ".. tostring(#shortlist).." short listed.")
+	print ("Retrofitting for Against the Grain: " .. tostring(#node_indices) .. " nodes, " .. tostring(#candidtates) .. " canidates, ".. tostring(#shortlist).." short listed.")
 	
 	local antlion_pt, lake_pt = FindAreas(shortlist)
 	if antlion_pt == nil then
-		print "Retrofitting for Against The Grain: All nodes have structures."
+		print "Retrofitting for Against the Grain: All nodes have structures."
 		antlion_pt, lake_pt = FindAreas(candidtates)
 	end
 	if antlion_pt == nil then
-		print "Retrofitting for Against The Grain: Failed to find a location for the antlion and oasis lake."
+		print "Retrofitting for Against the Grain: Failed to find a location for the antlion and oasis lake."
 		return
 	end
 
-	print ("Retrofitting for Against The Grain: "..area.." will be retorfitted to include Lightning Bluff.")
+	print ("Retrofitting for Against the Grain: "..area.." will be retorfitted to include Lightning Bluff.")
 
 	-- Add standstorm node tag to all of the oasis
 	for k,v in ipairs(node_indices) do
@@ -156,13 +156,13 @@ local function RetrofitAgainstTheGrain(area)
 			table.insert(TheWorld.topology.nodes[v].tags, "sandstorm")
 		end
 	end
-	print "Retrofitting for Against The Grain: Sandstorm enabled."
+	print "Retrofitting for Against the Grain: Sandstorm enabled."
 
 	-- Add the Antlion Spawner
 	local ents = TheSim:FindEntities(antlion_pt.x, 0, antlion_pt.z, 2, nil, {"irreplaceable", "playerghost", "ghost", "flying", "player", "character", "animal", "monster", "giant"})
 	for _,ent in ipairs(ents) do
 		if ent.brain == nil then
-			print ("Retrofitting for Against The Grain: Warning - Removing object, " .. tostring(ent) .. " to make way for the antlion.")
+			print ("Retrofitting for Against the Grain: Warning - Removing object, " .. tostring(ent) .. " to make way for the antlion.")
 			if ent.components.workable ~= nil then
 				ent.components.workable:Destroy(ent)
 			end
@@ -172,13 +172,13 @@ local function RetrofitAgainstTheGrain(area)
 		end
 	end
 	SpawnPrefab("antlion_spawner").Transform:SetPosition(antlion_pt:Get())
-	print "Retrofitting for Against The Grain: Added Antlion Spawner."
+	print "Retrofitting for Against the Grain: Added Antlion Spawner."
 
 	-- Add the Oasis Lake and clearout the area around it
 	local lake_ents = TheSim:FindEntities(lake_pt.x, 0, lake_pt.z, 6, nil, {"irreplaceable", "playerghost", "ghost", "flying", "player", "character", "animal", "monster", "giant"})
 	for _,ent in ipairs(lake_ents) do
 		if ent.brain == nil then
-			print ("Retrofitting for Against The Grain: Warning - Removing object, " .. tostring(ent) .. " to make way for the oasis lake.")
+			print ("Retrofitting for Against the Grain: Warning - Removing object, " .. tostring(ent) .. " to make way for the oasis lake.")
 			if ent.components.workable ~= nil then
 				ent.components.workable:Destroy(ent)
 			end
@@ -189,11 +189,11 @@ local function RetrofitAgainstTheGrain(area)
 	end
 	local oasis_ponds = TheSim:FindEntities(lake_pt.x, 0, lake_pt.z, 50, {"watersource"}, {})
 	for _,ent in ipairs(oasis_ponds) do
-		print ("Retrofitting for Against The Grain: Removing pond, " .. tostring(ent) .. " to make way for the oasis lake.")
+		print ("Retrofitting for Against the Grain: Removing pond, " .. tostring(ent) .. " to make way for the oasis lake.")
 		ent:Remove()
 	end
 	SpawnPrefab("oasislake").Transform:SetPosition(lake_pt:Get())
-	print "Retrofitting for Against The Grain: Added Oasis Lake."
+	print "Retrofitting for Against the Grain: Added Oasis Lake."
 	
 	-- Convert cactus to oasis_cactus
 	if area == "Oasis" then
@@ -210,10 +210,10 @@ local function RetrofitAgainstTheGrain(area)
 				end
 			end
 		end
-		print ("Retrofitting for Against The Grain: Converted " .. tostring(num_cactus) .. " cactus objects to oasis_cactus.")
+		print ("Retrofitting for Against the Grain: Converted " .. tostring(num_cactus) .. " cactus objects to oasis_cactus.")
 	end
 	
-	print ("Retrofitting for Against The Grain: "..area.." has been retrofitted to include Lightning Bluff.")
+	print ("Retrofitting for Against the Grain: "..area.." has been retrofitted to include Lightning Bluff.")
 	return true
 end
 
@@ -356,7 +356,7 @@ function self:OnPostInit()
 		local requires_retrofitting = true
 	    for k,v in pairs(Ents) do
 			if v.prefab == "antlion_spawner" then
-				print ("Retrofitting for A New Reign: Against The Grain is not required.")
+				print ("Retrofitting for A New Reign: Against the Grain is not required.")
 				requires_retrofitting = false
 				break
 			end
@@ -365,7 +365,7 @@ function self:OnPostInit()
 		if requires_retrofitting then
 			if not RetrofitAgainstTheGrain("Oasis") then
 				if not RetrofitAgainstTheGrain("Badlands") then
-					print "Retrofitting for Against The Grain: FAILED!"
+					print "Retrofitting for Against the Grain: FAILED!"
 				end
 			end
 		end

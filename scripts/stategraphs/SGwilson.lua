@@ -218,13 +218,19 @@ local function ConfigureRunState(inst)
     elseif inst.components.inventory:IsHeavyLifting() then
         inst.sg.statemem.heavy = true
     elseif inst:HasTag("beaver") then
-        inst.sg.statemem.groggy = inst:HasTag("groggy")
+        if inst:HasTag("groggy") then
+            inst.sg.statemem.groggy = true
+        else
+            inst.sg.statemem.normal = true
+        end
     elseif inst:GetSandstormLevel() >= TUNING.SANDSTORM_FULL_LEVEL and not inst.components.playervision:HasGoggleVision() then
         inst.sg.statemem.sandstorm = true
     elseif inst:HasTag("groggy") then
         inst.sg.statemem.groggy = true
     elseif inst:IsCarefulWalking() then
         inst.sg.statemem.careful = true
+    else
+        inst.sg.statemem.normal = true
     end
 end
 
@@ -496,6 +502,11 @@ local events =
                     inst.sg.statemem.iswaking = true
                     inst.sg:GoToState("wakeup")
                 end
+            elseif data.attacker ~= nil
+                and data.attacker:HasTag("groundspike")
+                and not (inst.components.rider ~= nil and inst.components.rider:IsRiding())
+                and not inst:HasTag("beaver") then
+                inst.sg:GoToState("hit_spike", data.attacker)
             elseif inst.sg:HasStateTag("shell") then
                 inst.sg:GoToState("shell_hit")
             elseif inst:HasTag("pinned") then
@@ -504,11 +515,6 @@ local events =
                 inst.sg:GoToState("hit_darkness")
             elseif data.stimuli == "electric" and not inst.components.inventory:IsInsulated() then
                 inst.sg:GoToState("electrocute")
-            elseif data.attacker ~= nil
-                and data.attacker:HasTag("groundspike")
-                and not (inst.components.rider ~= nil and inst.components.rider:IsRiding())
-                and not inst:HasTag("beaver") then
-                inst.sg:GoToState("hit_spike", data.attacker)
             else
                 local t = GetTime()
                 local stunlock =
@@ -535,6 +541,12 @@ local events =
                     inst.sg:GoToState("hit")
                 end
             end
+        end
+    end),
+
+    EventHandler("snared", function(inst)
+        if not inst.components.health:IsDead() then
+            inst.sg:GoToState("startle", true)
         end
     end),
 
@@ -1049,13 +1061,13 @@ local states =
 
         timeline =
         {
-            TimeEvent(16*FRAMES, function(inst) 
+            TimeEvent(16*FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("dontstarve/common/dropwood")
             end),
-            TimeEvent(45*FRAMES, function(inst) 
+            TimeEvent(45*FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("dontstarve/common/dropwood")
             end),
-            TimeEvent(92*FRAMES, function(inst) 
+            TimeEvent(92*FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("dontstarve/common/rebirth")
             end),
         },
@@ -1303,7 +1315,7 @@ local states =
                 inst.AnimState:PushAnimation("idle_hot_pst", false)
             elseif inst.components.hunger:GetPercent() < TUNING.HUNGRY_THRESH then
                 inst.AnimState:PlayAnimation("hungry")
-                inst.SoundEmitter:PlaySound("dontstarve/wilson/hungry")    
+                inst.SoundEmitter:PlaySound("dontstarve/wilson/hungry")
             elseif inst.components.sanity:GetPercent() < .5 then
                 inst.AnimState:PlayAnimation("idle_inaction_sanity")
             elseif inst:HasTag("groggy") then
@@ -1640,9 +1652,9 @@ local states =
             ----------------------------------------------
             --Woodcutter chop
 
-            TimeEvent(2 * FRAMES, function(inst) 
+            TimeEvent(2 * FRAMES, function(inst)
                 if inst.sg.statemem.iswoodcutter then
-                    inst:PerformBufferedAction() 
+                    inst:PerformBufferedAction()
                 end
             end),
 
@@ -1711,7 +1723,7 @@ local states =
                 end
             end),
 
-            TimeEvent(16 * FRAMES, function(inst) 
+            TimeEvent(16 * FRAMES, function(inst)
                 if not inst.sg.statemem.iswoodcutter then
                     inst.sg:RemoveStateTag("chopping")
                 end
@@ -1918,7 +1930,7 @@ local states =
             TimeEvent(7 * FRAMES, function(inst)
                 inst.sg:RemoveStateTag("gnawing")
             end),
-            
+
             TimeEvent(8 * FRAMES, function(inst)
                 if inst.sg.statemem.action == nil or
                     inst.sg.statemem.action.action == nil or
@@ -2265,7 +2277,7 @@ local states =
             EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-                    inst.AnimState:PlayAnimation("shovel_pst") 
+                    inst.AnimState:PlayAnimation("shovel_pst")
                     inst.sg:GoToState("idle", true)
                 end
             end),
@@ -2450,7 +2462,7 @@ local states =
             inst.AnimState:PlayAnimation("fish_catch")
             --print("Using ", build, " to swap out fish01")
             inst.AnimState:OverrideSymbol("fish01", build, "fish01")
-            
+
             -- inst.AnimState:OverrideSymbol("fish_body", build, "fish_body")
             -- inst.AnimState:OverrideSymbol("fish_eye", build, "fish_eye")
             -- inst.AnimState:OverrideSymbol("fish_fin", build, "fish_fin")
@@ -3548,7 +3560,7 @@ local states =
                 inst:ClearBufferedAction()
             end
         end,
-    },    
+    },
 
     State{
         name = "makeballoon",
@@ -3574,7 +3586,7 @@ local states =
         ontimeout = function(inst)
             inst.SoundEmitter:KillSound("make")
             inst.AnimState:PlayAnimation("build_pst")
-            inst:PerformBufferedAction()        
+            inst:PerformBufferedAction()
         end,
 
         events =
@@ -3621,7 +3633,7 @@ local states =
             end
 
             inst.SoundEmitter:PlaySound("dontstarve/wilson/shave_LP", "shave")
-            
+
             inst.AnimState:PlayAnimation("build_pre")
             inst.AnimState:PushAnimation("build_loop", true)
 
@@ -3705,26 +3717,23 @@ local states =
             inst.AnimState:PlayAnimation("idle_onemanband1_pst")
             inst.AnimState:PushAnimation("idle_onemanband2_pre")
             inst.AnimState:PushAnimation("idle_onemanband2_loop")
-            inst.AnimState:PushAnimation("idle_onemanband2_pst", false)  
-            inst.SoundEmitter:PlaySound("dontstarve/wilson/onemanband") 
+            inst.AnimState:PushAnimation("idle_onemanband2_pst", false)
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/onemanband")
         end,
 
         timeline =
         {
             TimeEvent(20*FRAMES, function( inst )
-                inst.SoundEmitter:PlaySound("dontstarve/wilson/onemanband")                
+                inst.SoundEmitter:PlaySound("dontstarve/wilson/onemanband")
             end),
-
             TimeEvent(25*FRAMES, function( inst )
-                inst.SoundEmitter:PlaySound("dontstarve/wilson/onemanband")                
+                inst.SoundEmitter:PlaySound("dontstarve/wilson/onemanband")
             end),
-
             TimeEvent(30*FRAMES, function( inst )
-                inst.SoundEmitter:PlaySound("dontstarve/wilson/onemanband")                
+                inst.SoundEmitter:PlaySound("dontstarve/wilson/onemanband")
             end),
-
             TimeEvent(35*FRAMES, function( inst )
-                inst.SoundEmitter:PlaySound("dontstarve/wilson/onemanband")                
+                inst.SoundEmitter:PlaySound("dontstarve/wilson/onemanband")
             end),
         },
 
@@ -3775,7 +3784,7 @@ local states =
         onexit = function(inst)
             inst.SoundEmitter:KillSound("flute")
             if inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) then
-                inst.AnimState:Show("ARM_carry") 
+                inst.AnimState:Show("ARM_carry")
                 inst.AnimState:Hide("ARM_normal")
             end
         end,
@@ -3790,7 +3799,7 @@ local states =
             inst.AnimState:PlayAnimation("action_uniqueitem_pre")
             inst.AnimState:PushAnimation("horn", false)
             inst.AnimState:OverrideSymbol("horn01", "horn", "horn01")
-            --inst.AnimState:Hide("ARM_carry") 
+            --inst.AnimState:Hide("ARM_carry")
             inst.AnimState:Show("ARM_normal")
             inst.components.inventory:ReturnActiveActionItem(inst.bufferedaction ~= nil and inst.bufferedaction.invobject or nil)
         end,
@@ -3814,7 +3823,7 @@ local states =
 
         onexit = function(inst)
             if inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) then
-                inst.AnimState:Show("ARM_carry") 
+                inst.AnimState:Show("ARM_carry")
                 inst.AnimState:Hide("ARM_normal")
             end
         end,
@@ -3823,12 +3832,12 @@ local states =
     State{
         name = "play_bell",
         tags = { "doing", "playing" },
-        
+
         onenter = function(inst)
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("bell")
             inst.AnimState:OverrideSymbol("bell01", "bell", "bell01")
-            --inst.AnimState:Hide("ARM_carry") 
+            --inst.AnimState:Hide("ARM_carry")
             inst.AnimState:Show("ARM_normal")
             inst.components.inventory:ReturnActiveActionItem(inst.bufferedaction ~= nil and inst.bufferedaction.invobject or nil)
         end,
@@ -3855,7 +3864,7 @@ local states =
 
         onexit = function(inst)
             if inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) then
-                inst.AnimState:Show("ARM_carry") 
+                inst.AnimState:Show("ARM_carry")
                 inst.AnimState:Hide("ARM_normal")
             end
         end,
@@ -3873,7 +3882,7 @@ local states =
             --inst.AnimState:OverrideSymbol("book_open", "player_actions_uniqueitem", "book_open")
             --inst.AnimState:OverrideSymbol("book_closed", "player_actions_uniqueitem", "book_closed")
             --inst.AnimState:OverrideSymbol("book_open_pages", "player_actions_uniqueitem", "book_open_pages")
-            --inst.AnimState:Hide("ARM_carry") 
+            --inst.AnimState:Hide("ARM_carry")
             inst.AnimState:Show("ARM_normal")
             inst.components.inventory:ReturnActiveActionItem(inst.bufferedaction ~= nil and (inst.bufferedaction.target or inst.bufferedaction.invobject) or nil)
         end,
@@ -3914,7 +3923,7 @@ local states =
 
         onexit = function(inst)
             if inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) then
-                inst.AnimState:Show("ARM_carry") 
+                inst.AnimState:Show("ARM_carry")
                 inst.AnimState:Hide("ARM_normal")
             end
             if inst.sg.statemem.book_fx then
@@ -3922,7 +3931,7 @@ local states =
                 inst.sg.statemem.book_fx = nil
             end
         end,
-    },    
+    },
 
     State{
         name = "blowdart",
@@ -4239,7 +4248,7 @@ local states =
 
             --unmounted
             TimeEvent(4 * FRAMES, function(inst)
-                if not (inst.sg.statemem.riding or inst.sg.statemem.heavy) then
+                if inst.sg.statemem.normal then
                     PlayFootstep(inst, nil, true)
                     DoFoleySounds(inst)
                 end
@@ -4270,13 +4279,6 @@ local states =
         onenter = function(inst) 
             ConfigureRunState(inst)
             inst.components.locomotor:RunForward()
-
-            inst.sg.statemem.normal = not (
-                inst.sg.statemem.riding or
-                inst.sg.statemem.heavy or
-                inst.sg.statemem.groggy or
-                inst.sg.statemem.careful
-            )
 
             local anim = GetRunStateAnim(inst)
             if anim == "run" then
@@ -4324,6 +4326,21 @@ local states =
                 end
             end),
 
+            --sandstorm
+            --Frame 12 shared with groggy below
+            --[[TimeEvent(12 * FRAMES, function(inst)
+                if inst.sg.statemem.sandstorm then
+                    DoRunSounds(inst)
+                    DoFoleySounds(inst)
+                end
+            end),]]
+            TimeEvent(23 * FRAMES, function(inst)
+                if inst.sg.statemem.sandstorm then
+                    DoRunSounds(inst)
+                    DoFoleySounds(inst)
+                end
+            end),
+
             --groggy
             TimeEvent(1 * FRAMES, function(inst)
                 if inst.sg.statemem.groggy then
@@ -4332,7 +4349,8 @@ local states =
                 end
             end),
             TimeEvent(12 * FRAMES, function(inst)
-                if inst.sg.statemem.groggy then
+                if inst.sg.statemem.groggy or
+                    inst.sg.statemem.sandstorm then
                     DoRunSounds(inst)
                     DoFoleySounds(inst)
                 end
@@ -4344,7 +4362,8 @@ local states =
                     PlayFootstep(inst, inst.sg.mem.footsteps > 3 and .6 or 1, true)
                     DoFoleySounds(inst)
                     inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
-                elseif inst.sg.statemem.careful then
+                elseif inst.sg.statemem.sandstorm
+                    or inst.sg.statemem.careful then
                     DoRunSounds(inst)
                     DoFoleySounds(inst)
                 end
@@ -4568,7 +4587,7 @@ local states =
 
         timeline =
         {
-            TimeEvent(20 * FRAMES, function(inst) 
+            TimeEvent(20 * FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("dontstarve/wilson/use_bedroll")
             end),
         },
@@ -4591,7 +4610,7 @@ local states =
                         inst.sg.statemem.iswaking = true
                         inst.sg:GoToState("wakeup")
                     elseif inst:GetBufferedAction() then
-                        inst:PerformBufferedAction() 
+                        inst:PerformBufferedAction()
                         if inst.components.playercontroller ~= nil then
                             inst.components.playercontroller:Enable(true)
                         end
@@ -4855,7 +4874,7 @@ local states =
 
     State{
         name = "hit_spike",
-        tags = { "busy", "pausepredict" },
+        tags = { "busy", "nopredict" },
 
         onenter = function(inst, spike)
             ForceStopHeavyLifting(inst)
@@ -4870,11 +4889,39 @@ local states =
             inst.SoundEmitter:PlaySound("dontstarve/wilson/hit")
             DoHurtSound(inst)
 
-            if inst.components.playercontroller ~= nil then
-                inst.components.playercontroller:RemotePausePrediction()
+            inst.sg:SetTimeout(15 * FRAMES)
+        end,
+
+        ontimeout = function(inst)
+            inst.sg:GoToState("idle", true)
+        end,
+    },
+
+    State{
+        name = "startle",
+        tags = { "busy" },
+
+        onenter = function(inst, snap)
+            if snap then
+                inst.sg:AddStateTag("nopredict")
+            else
+                inst.sg:AddStateTag("pausepredict")
+                if inst.components.playercontroller ~= nil then
+                    inst.components.playercontroller:RemotePausePrediction()
+                end
             end
 
-            inst.sg:SetTimeout(15 * FRAMES)
+            ClearStatusAilments(inst)
+            ForceStopHeavyLifting(inst)
+            inst.components.locomotor:Stop()
+            inst:ClearBufferedAction()
+
+            inst.AnimState:PlayAnimation("distress_pre")
+            inst.AnimState:PushAnimation("distress_pst", false)
+
+            DoHurtSound(inst)
+
+            inst.sg:SetTimeout(9 * FRAMES)
         end,
 
         ontimeout = function(inst)
@@ -4890,8 +4937,8 @@ local states =
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("hit")
             inst.SoundEmitter:PlaySound("dontstarve/wilson/use_break")
-            inst.AnimState:Hide("ARM_carry") 
-            inst.AnimState:Show("ARM_normal") 
+            inst.AnimState:Hide("ARM_carry")
+            inst.AnimState:Show("ARM_normal")
             SpawnPrefab("brokentool").Transform:SetPosition(inst.Transform:GetWorldPosition())
             inst.sg.statemem.tool = tool
 
@@ -4918,7 +4965,7 @@ local states =
             end
 
             if inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) then
-                inst.AnimState:Show("ARM_carry") 
+                inst.AnimState:Show("ARM_carry")
                 inst.AnimState:Hide("ARM_normal")
             end
         end,
@@ -4931,8 +4978,8 @@ local states =
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("hit")
             inst.SoundEmitter:PlaySound("dontstarve/common/tool_slip")
-            inst.AnimState:Hide("ARM_carry") 
-            inst.AnimState:Show("ARM_normal") 
+            inst.AnimState:Hide("ARM_carry")
+            inst.AnimState:Show("ARM_normal")
             local splash = SpawnPrefab("splash")
             splash.entity:SetParent(inst.entity)
             splash.entity:AddFollower()
@@ -6046,7 +6093,7 @@ local states =
     State{
         name = "pinned",
         tags = { "busy", "pinned", "nopredict" },
-        
+
         onenter = function(inst)
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
@@ -6128,7 +6175,7 @@ local states =
     State{
         name = "breakfree",
         tags = { "busy", "nopredict" },
-        
+
         onenter = function(inst)
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
@@ -6456,7 +6503,7 @@ local states =
 
         timeline =
         {
-            TimeEvent(14 * FRAMES, function(inst) 
+            TimeEvent(14 * FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("dontstarve/beefalo/saddle/dismount")
             end),
         },

@@ -7,6 +7,7 @@ local function OnTimerDone(inst, data)
     if data.name == "spawndelay" then
         inst:RemoveEventCallback("timerdone", OnTimerDone)
         local antlion = SpawnPrefab("antlion")
+        inst.components.entitytracker:TrackEntity("antlion", antlion)
         antlion.Transform:SetPosition(inst.Transform:GetWorldPosition())
         antlion.sg:GoToState("enterworld")
     end
@@ -16,9 +17,11 @@ local function OnSandstormChanged(inst, active)
     if active then
         if not inst.spawned then
             inst.spawned = true
-            inst:ListenForEvent("timerdone", OnTimerDone)
             inst.components.timer:StopTimer("spawndelay")
-            inst.components.timer:StartTimer("spawndelay", GetRandomMinMax(10, 20))
+            if inst.components.entitytracker:GetEntity("antlion") == nil then
+                inst:ListenForEvent("timerdone", OnTimerDone)
+                inst.components.timer:StartTimer("spawndelay", GetRandomMinMax(10, 20))
+            end
         end
     elseif inst.spawned then
         inst.spawned = nil
@@ -62,6 +65,7 @@ local function fn()
     inst:AddTag("CLASSIFIED")
 
     inst:AddComponent("timer")
+    inst:AddComponent("entitytracker")
 
     inst:DoTaskInTime(0, OnInit)
 

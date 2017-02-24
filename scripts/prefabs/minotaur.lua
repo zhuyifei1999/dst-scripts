@@ -1,9 +1,12 @@
+local RuinsRespawner = require "prefabs/ruinsrespawner"
+
 local assets =
 {
     Asset("ANIM", "anim/rook.zip"),
     Asset("ANIM", "anim/rook_build.zip"),
     Asset("ANIM", "anim/rook_rhino.zip"),
     Asset("SOUND", "sound/chess.fsb"),
+    Asset("SCRIPT", "scripts/prefabs/ruinsrespawner.lua"),
 }
 
 local prefabs =
@@ -11,6 +14,7 @@ local prefabs =
     "meat",
     "minotaurhorn",
     "collapse_small",
+    "minotaur_spawner",
 }
 
 local brain = require "brains/minotaurbrain"
@@ -240,4 +244,5 @@ local function fn()
     return inst
 end
 
-return Prefab("minotaur", fn, assets, prefabs)
+return Prefab("minotaur", fn, assets, prefabs),
+    RuinsRespawner("minotaur")

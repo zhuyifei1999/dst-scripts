@@ -88,6 +88,7 @@ return
             SLOTFULL = "Let's finish what's on our plate first, shall we?",
             DUPLICATE = "We've already taken note of this recipe.",
             NOTSCULPTABLE = "No one ought to sculpt with that, dear.",
+            CANTSHADOWREVIVE = "Conditions are not right.",
         },
         GIVETOPLAYER = 
         {
@@ -310,6 +311,10 @@ return
             UNHAPPY = "Panthera auropunctata is looking irritable.",
         },
         ANTLIONTRINKET = "It appears to be a child's plaything.",
+        SANDSPIKE = "Panthera auropunctata is misbehaving today.",
+        SANDBLOCK = "Quite a phenomenal talent!",
+        GLASSSPIKE = "Careful, it's sharp.",
+        GLASSBLOCK = "I always loved glass sculptures.",
         ABIGAIL_FLOWER =
         {
             GENERIC = "Ah... I'm not familiar with this strain of flower.",
@@ -834,6 +839,7 @@ return
             FUNNY = "Paleontological incompetence has produced a sad excuse for a creature.",
             COMPLETE = "Oh! A specimen fit for a museum!",
         },
+        STALKER = "A mistake in need of correcting.",
         POWCAKE = "The crowning achievement of the agricultural-industrial complex.",
         CAVE_ENTRANCE = "The placement of that rock looks intentional.",
         CAVE_ENTRANCE_RUINS = "The passage has been obstructed.",
@@ -1900,6 +1906,26 @@ return
         ACCOMPLISHMENT_SHRINE = "I feel a compulsive urge to activate it, again and again.",        
         REVIVER = "This provides a corporeal anchor for the ectoplasmic configuration.",
         SHADOWHEART = "This... This is no child's magic.",
+        ATRIUM_RUBBLE = 
+        {
+            LINE_1 = "An ancient mural of a non-mammalian civilization.",
+            LINE_2 = "This mural panel is too eroded to decipher.",
+            LINE_3 = "A dark shadow, or perhaps a substance, overtakes the civilization.",
+            LINE_4 = "The citizens molt from their exoskeletons in this panel.",
+            LINE_5 = "The city appears exponentially more prosperous.",
+        },
+        ATRIUM_STATUE = "It refuses to comply with this world's laws.",
+        ATRIUM_LIGHT = 
+        {
+            ON = "Indeed. It gained power from the key.",
+            OFF = "I suspect it is powered by that horrible fuel.",
+        },
+        ATRIUM_GATE =
+        {
+            ON = "The light reveals ancient text: \"Come Back Next Update.\"",
+            OFF = "Now where might that lead?",
+        },
+        ATRIUM_KEY = "The key to that old gateway.",
         LIFEINJECTOR = "The mold appears to have medicinal properties.",
    },
 
@@ -1989,6 +2015,7 @@ return
 
     ANNOUNCE_ENTER_LIGHT = "It is bright enough to see.",
     ANNOUNCE_ENTER_DARK = "I am in the dark.",
+    ANNOUNCE_SNARED = "You can't hold me for long, dear.",
     ANNOUNCE_INV_FULL = "I can't carry anything more.",
 
     ANNOUNCE_CRAFTING_FAIL = "I can't make that now.",

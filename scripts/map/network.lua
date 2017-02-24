@@ -51,6 +51,11 @@ Graph = Class(function(self, id, args)
     self.wormholeprefab = nil
 
     self.required_prefabs = {}
+    if args.required_prefabs ~= nil then
+        for i,prefab in ipairs(args.required_prefabs) do
+            self:AddRequiredPrefab(prefab)
+        end
+    end
 end)
 
 ------------------------------------------------------------------------------------------

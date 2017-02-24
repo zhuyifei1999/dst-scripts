@@ -415,7 +415,6 @@ function MakeObstaclePhysics(inst, rad, height)
 end
 
 function MakeSmallObstaclePhysics(inst, rad, height)
-    height = height or 2
     inst:AddTag("blocker")
     local phys = inst.entity:AddPhysics()
     --this is lame. Bullet wants 0 mass for static objects,
@@ -423,7 +422,44 @@ function MakeSmallObstaclePhysics(inst, rad, height)
 
     -- Doesnt seem to slow anything down now.
     phys:SetMass(0)
-    phys:SetCapsule(rad,height)
+    phys:SetCapsule(rad, height or 2)
+    phys:SetCollisionGroup(COLLISION.SMALLOBSTACLES)
+    phys:ClearCollisionMask()
+    phys:CollidesWith(COLLISION.ITEMS)
+    phys:CollidesWith(COLLISION.CHARACTERS)
+end
+
+--Heavy obstacles can be heavy lifted, changing to inventoryitem.
+--Use this by pairing it with the heavyobstaclephysics component.
+function MakeHeavyObstaclePhysics(inst, rad, height)
+    inst:AddTag("blocker")
+    local phys = inst.entity:AddPhysics()
+    --inventory physics
+    phys:SetFriction(.1)
+    phys:SetDamping(0)
+    phys:SetRestitution(0)
+    --obstacle physics
+    phys:SetMass(0)
+    phys:SetCapsule(rad, height or 2)
+    phys:SetCollisionGroup(COLLISION.OBSTACLES)
+    phys:ClearCollisionMask()
+    phys:CollidesWith(COLLISION.ITEMS)
+    phys:CollidesWith(COLLISION.CHARACTERS)
+    phys:CollidesWith(COLLISION.GIANTS)
+end
+
+--Heavy obstacles can be heavy lifted, changing to inventoryitem.
+--Use this by pairing it with the heavyobstaclephysics component.
+function MakeSmallHeavyObstaclePhysics(inst, rad, height)
+    inst:AddTag("blocker")
+    local phys = inst.entity:AddPhysics()
+    --inventory physics
+    phys:SetFriction(.1)
+    phys:SetDamping(0)
+    phys:SetRestitution(0)
+    --obstacle physics
+    phys:SetMass(0)
+    phys:SetCapsule(rad, height or 2)
     phys:SetCollisionGroup(COLLISION.SMALLOBSTACLES)
     phys:ClearCollisionMask()
     phys:CollidesWith(COLLISION.ITEMS)

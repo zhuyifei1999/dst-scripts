@@ -16,6 +16,7 @@ local function fn()
 
     inst:AddTag("FX")
     inst:AddTag("NOCLICK")
+    inst:AddTag("placer")
     --[[Non-networked entity]]
     inst.persists = false
 

@@ -68,6 +68,7 @@ return {
             SLOTFULL = "One material at a time!",
             DUPLICATE = "We have already conquered this knowledge.",
             NOTSCULPTABLE = "That material is not befitting a work of art.",
+            CANTSHADOWREVIVE = "T'will not raise from death, it seems.",
         },
         GIVETOPLAYER = 
         {
@@ -164,6 +165,7 @@ return {
     ANNOUNCE_KLAUS_UNCHAINED = "Now the true battle begins!",
     ANNOUNCE_KLAUS_CALLFORHELP = "Call thy hordes, they shan't protect thee!",
 
+    ANNOUNCE_SNARED = "No cage can hold me!",
     ANNOUNCE_ENTER_DARK = "And the curtain falls.",
     ANNOUNCE_ENTER_LIGHT = "I step into the light!",
     ANNOUNCE_FREEDOM = "Freedom! The saga continues!",
@@ -449,6 +451,10 @@ return {
             UNHAPPY = "We've incurred its wrath!",
         },
         ANTLIONTRINKET = "A fitting tribute!",
+        SANDSPIKE = "The earth itself dares to fight me!",
+        SANDBLOCK = "Tis a castle of sand!",
+        GLASSSPIKE = "Twas forged in flame.",
+        GLASSBLOCK = "Such beauty!",
         ABIGAIL_FLOWER = 
         {
             GENERIC = "For me?",
@@ -1203,6 +1209,7 @@ return {
             FUNNY = "Tis not as majestic as I once pictured.",
             COMPLETE = "It looks as though it might roam the earth any moment!",
         },
+        STALKER = "It lives to battle once more!",
         FROG =
         {
             DEAD = "You're a bit slimy for Valhalla.",
@@ -1972,6 +1979,26 @@ return {
         SPEAR_WATHGRITHR = "My comrade in arms!",
         REVIVER = "Feel the passion inside!",
         SHADOWHEART = "Blackest hearts. Darkest omens.",
+        ATRIUM_RUBBLE = 
+        {
+            LINE_1 = "Tis a portrait of an ancient people. They live in wretchedness.",
+            LINE_2 = "There is no painting here. Only stone.",
+            LINE_3 = "A great evil sweeps across the land.",
+            LINE_4 = "Many of the people are cleaved in two!",
+            LINE_5 = "A glittering city, blessed by the gods.",
+        },
+        ATRIUM_STATUE = "I doth smell their fear!",
+        ATRIUM_LIGHT = 
+        {
+            ON = "An unholy flame.",
+            OFF = "An ancient basin to house flames.",
+        },
+        ATRIUM_GATE =
+        {
+            ON = "The light reveals ancient text: \"Come Back Next Update.\"",
+            OFF = "Tis the Bifrost!",
+        },
+        ATRIUM_KEY = "Heimdallr's key to the Bifrost.",
         LIFEINJECTOR = "This will return me to top form.",
         ROCK_MOON = "A gift from Mani.",
         MOONROCKNUGGET = "A gift from Mani.",

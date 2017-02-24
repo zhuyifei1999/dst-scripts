@@ -86,6 +86,10 @@ local function MakeTags()
                             return "TAG", "Nightmare"
                         end, 
                         
+            ["Atrium"] = function(tagdata)
+                            return "TAG", "Atrium"
+                        end, 
+                        
 			["Mist"] = function(tagdata)
                             return "TAG", "Mist"
                         end,

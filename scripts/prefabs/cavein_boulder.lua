@@ -66,9 +66,9 @@ local function UpdateIcon(inst)
     end
     if inst.fallingtask ~= nil then
         SetIconEnabled(inst, false)
-    elseif inst.raised or inst.physicsstate == PHYSICS_STATE.ITEM then
+    elseif inst.raised or inst.components.heavyobstaclephysics:IsItem() then
         SetIconEnabled(inst, true)
-    elseif inst.formed or inst.physicsstate == PHYSICS_STATE.FALLING then
+    elseif inst.formed or inst.components.heavyobstaclephysics:IsFalling() then
         SetIconEnabled(inst, false)
     else
         local x, y, z = inst.Transform:GetWorldPosition()
@@ -118,7 +118,7 @@ local function OnWorked(inst, worker)
 end
 
 local function UpdateActions(inst)
-    inst.components.inventoryitem.canbepickedup = not inst.raised and inst.physicsstate ~= PHYSICS_STATE.FALLING and inst.fallingtask == nil
+    inst.components.inventoryitem.canbepickedup = not inst.raised and not inst.components.heavyobstaclephysics:IsFalling() and inst.fallingtask == nil
     inst.components.workable:SetWorkable(not inst.raised and inst.fallingtask == nil)
 end
 
@@ -422,7 +422,7 @@ local function CreateFormation(boulders)
         if v.formed then
             local x1, y1, z1 = v.Transform:GetWorldPosition()
             for i2, v2 in ipairs(TheSim:FindEntities(x1, 0, z1, OVERLAP_RADIUS, { "boulder", "heavy" }, { "INLIMBO" })) do
-                if not v2.formed and v2.physicsstate ~= PHYSICS_STATE.FALLING then
+                if not (v2.formed or (v2.components.heavyobstaclephysics ~= nil and v2.components.heavyobstaclephysics:IsFalling())) then
                     v2:Remove()
                 end
             end
@@ -437,7 +437,7 @@ local function TryFormationAt(x, y, z)
         if v.prefab == "cavein_boulder" and
             not (v.formed or
                 v.raised or
-                v.physicsstate == PHYSICS_STATE.FALLING) then
+                (v.components.heavyobstaclephysics ~= nil and v.components.heavyobstaclephysics:IsFalling())) then
             table.insert(boulders, v)
             if #boulders >= 5 then
                 CreateFormation(boulders)
@@ -450,114 +450,24 @@ end
 --------------------------------------------------------------------------
 --Physics stuff
 
-local function SetCapsule(inst, size)
-    if inst.capsulesize ~= size then
-        inst.capsulesize = size
-        inst.Physics:SetCapsule(size, 2)
-    end
-end
-
-local function SetPhysicsState(inst, state)
-    inst.physicsstate = state
+local function OnPhysicsStateChanged(inst, state)
     UpdateIcon(inst)
     UpdateActions(inst)
 end
 
-local function CancelObstacleTask(inst)
-    if inst.task ~= nil then
-        inst.task:Cancel()
-        inst.task = nil
-        inst.ischaracterpassthrough = nil
-    end
-end
-
-local function ChangeToItem(inst)
+local function OnChangeToItem(inst)
     SetFormed(inst, false)
     SetRaised(inst, false)
-    CancelObstacleTask(inst)
     CancelWobbleTask(inst)
     CancelFallingTask(inst)
     if not inst.AnimState:IsCurrentAnimation("idle") then
         inst.AnimState:PlayAnimation("idle")
-    end
-    if inst.physicsstate ~= PHYSICS_STATE.ITEM then
-        if inst.physicsstate ~= PHYSICS_STATE.FALLING then
-            SetCapsule(inst, PHYSICS_RADIUS)
-            inst.Physics:SetMass(1)
-            inst.Physics:SetDamping(0) --might have been changed by quaker
-            inst.Physics:SetCollisionGroup(COLLISION.ITEMS)
-            inst.Physics:ClearCollisionMask()
-        end
-        inst.Physics:CollidesWith(COLLISION.WORLD)
-        inst.Physics:CollidesWith(COLLISION.OBSTACLES)
-        inst.Physics:CollidesWith(COLLISION.SMALLOBSTACLES)
-        SetPhysicsState(inst, PHYSICS_STATE.ITEM)
-    end
-end
-
-local function OnUpdateObstacleSize(inst)
-    local x, y, z = inst.Transform:GetWorldPosition()
-    local mindist = math.huge
-    for i, v in ipairs(TheSim:FindEntities(x, y, z, 2, { "character", "locomotor" }, { "INLIMBO", "NOCLICK" })) do
-        if v.entity:IsVisible() then
-            local d = v:GetDistanceSqToPoint(x, y, z)
-            d = d > 0 and (v.Physics ~= nil and math.sqrt(d) - v.Physics:GetRadius() or math.sqrt(d)) or 0
-            if d < mindist then
-                if d <= 0 then
-                    mindist = 0
-                    break
-                end
-                mindist = d
-            end
-        end
-    end
-    local size = math.clamp(mindist, 0, PHYSICS_RADIUS)
-    if size > 0 then
-        SetCapsule(inst, size)
-        if inst.ischaracterpassthrough then
-            inst.ischaracterpassthrough = nil
-            inst.Physics:CollidesWith(COLLISION.CHARACTERS)
-        end
-        if size >= PHYSICS_RADIUS then
-            CancelObstacleTask(inst)
-        end
-    end
-end
-
-local function OnChangeToObstacle(inst)
-    inst.Physics:SetMass(0)
-    inst.Physics:SetCollisionGroup(COLLISION.OBSTACLES)
-    inst.Physics:ClearCollisionMask()
-    inst.Physics:CollidesWith(COLLISION.ITEMS)
-    inst.Physics:CollidesWith(COLLISION.GIANTS)
-    SetPhysicsState(inst, PHYSICS_STATE.OBSTACLE)
-    inst.ischaracterpassthrough = true
-    inst.task = inst:DoPeriodicTask(.5, OnUpdateObstacleSize)
-    OnUpdateObstacleSize(inst)
-    inst.Physics:Teleport(inst.Transform:GetWorldPosition())
-end
-
-local function ChangeToObstacle(inst)
-    CancelObstacleTask(inst)
-    if inst.physicsstate ~= PHYSICS_STATE.OBSTACLE then
-        inst.task = inst:DoTaskInTime(.5, OnChangeToObstacle)
     end
 end
 
 local function OnStartFalling(inst)
     SetFormed(inst, false)
     SetRaised(inst, false)
-    CancelObstacleTask(inst)
-    if inst.physicsstate ~= PHYSICS_STATE.FALLING then
-        if inst.physicsstate ~= PHYSICS_STATE.ITEM then
-            SetCapsule(inst, PHYSICS_RADIUS)
-            inst.Physics:SetMass(1)
-            inst.Physics:SetDamping(0) --might have been changed by quaker
-            inst.Physics:SetCollisionGroup(COLLISION.ITEMS)
-        end
-        inst.Physics:ClearCollisionMask()
-        SetPhysicsState(inst, PHYSICS_STATE.FALLING)
-    end
 end
 
 local function OnStopFalling(inst)
@@ -582,8 +492,6 @@ local function OnStopFalling(inst)
             end
             inst.Physics:Teleport(x, 0, z)
         end
-        CancelObstacleTask(inst)
-        OnChangeToObstacle(inst)
     end
 end
 
@@ -648,19 +556,7 @@ local function fn()
     inst:AddTag("boulder")
     inst:AddTag("caveindebris")
 
-    --inventory physics
-    inst.Physics:SetFriction(.1)
-    inst.Physics:SetDamping(0)
-    inst.Physics:SetRestitution(0)
-    --obstacle physics
-    inst:AddTag("blocker")
-    inst.Physics:SetMass(0)
-    inst.Physics:SetCapsule(PHYSICS_RADIUS, 2)
-    inst.Physics:SetCollisionGroup(COLLISION.OBSTACLES)
-    inst.Physics:ClearCollisionMask()
-    inst.Physics:CollidesWith(COLLISION.ITEMS)
-    inst.Physics:CollidesWith(COLLISION.CHARACTERS)
-    inst.Physics:CollidesWith(COLLISION.GIANTS)
+    MakeHeavyObstaclePhysics(inst, PHYSICS_RADIUS)
 
     inst.entity:SetPristine()
 
@@ -668,8 +564,13 @@ local function fn()
         return inst
     end
 
-    inst.capsulesize = PHYSICS_RADIUS
-    inst.physicsstate = PHYSICS_STATE.OBSTACLE
+    inst:AddComponent("heavyobstaclephysics")
+    inst.components.heavyobstaclephysics:SetRadius(PHYSICS_RADIUS)
+    inst.components.heavyobstaclephysics:AddFallingStates()
+    inst.components.heavyobstaclephysics:SetOnPhysicsStateChangedFn(OnPhysicsStateChanged)
+    inst.components.heavyobstaclephysics:SetOnChangeToItemFn(OnChangeToItem)
+    inst.components.heavyobstaclephysics:SetOnStartFallingFn(OnStartFalling)
+    inst.components.heavyobstaclephysics:SetOnStopFallingFn(OnStopFalling)
 
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = GetStatus
@@ -679,8 +580,6 @@ local function fn()
 
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem.cangoincontainer = false
-    inst.components.inventoryitem:SetOnPutInInventoryFn(ChangeToItem)
-    inst.components.inventoryitem:SetOnDroppedFn(ChangeToObstacle)
 
     inst:AddComponent("equippable")
     inst.components.equippable.equipslot = EQUIPSLOTS.BODY

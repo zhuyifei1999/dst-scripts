@@ -727,8 +727,10 @@ STRINGS =
         FISHINGROD = "Fishing Rod",
         FISH = "Fish",
         FISH_COOKED = "Cooked Fish",
-        FOSSIL_PIECE = "Fossil Fragment",
+        FOSSIL_PIECE = "Fossil Fragments",
         FOSSIL_STALKER = "Odd Skeleton",
+        FOSSILSPIKE = "Fossil Cage",
+        STALKER = "Reanimated Skeleton",
         HONEY = "Honey",
         HONEYCOMB = "Honeycomb",
         BEESWAX = "Beeswax",
@@ -1068,6 +1070,10 @@ STRINGS =
         DESERTHAT = "Desert Goggles",
         ANTLION = "Antlion",
         ANTLION_SINKHOLE = "Sinkhole",
+        SANDSPIKE = "Sand Spike",
+        SANDBLOCK = "Sand Castle",
+        GLASSSPIKE = "Glass Spike",
+        GLASSBLOCK = "Glass Castle",
         MOONBASE = "Moon Stone",
         MOONDIAL = "Moon Dial",
         MOONROCK_PIECES = "Moon Rubble",
@@ -1223,7 +1229,13 @@ STRINGS =
         SADDLE_WAR = "War Saddle",
 
         REVIVER = "Telltale Heart",
+        
         SHADOWHEART = "Shadow Atrium",
+        ATRIUM_RUBBLE = "Ancient Mural",
+        ATRIUM_STATUE = "Ancient Statue",
+        ATRIUM_LIGHT = "Ancient Beacon",
+        ATRIUM_GATE = "Ancient Gateway",
+        ATRIUM_KEY = "Ancient Key",
 
         SHADOWMETEOR = "Meteor",
 
@@ -1769,6 +1781,7 @@ STRINGS =
     --ITEM DESCRIPTIONS
     DESCRIBE_NULL = "MISSING DESCRIPTION STRING",
 
+    --NOTE: Limit to 7 strings per table! (Using net_tinybyte for NPC chatter)
     PIG_TALK_FOLLOWWILSON = { "YOU FRIEND", "I LOVE FRIEND", "YOU IS GOOD", "I FOLLOW!" },
     PIG_TALK_FIND_LIGHT = { "SCARY", "NO LIKE DARK", "WHERE IS SUN?", "STAY NEAR FIRE", "FIRE IS GOOD" },
     PIG_TALK_LOOKATWILSON = { "WHO ARE YOU?", "YOU NOT PIG", "UGLY MONKEY PERSON", "YOU HAS MEAT?" },
@@ -1791,6 +1804,7 @@ STRINGS =
     PIG_GUARD_TALK_GOHOME = { "MUST DEFEND!", "I PROTECT", "KING! KING!" },
     PIG_GUARD_TALK_LOOKATWILSON = { "YOU LEAVE NOW", "YOU GO AWAY", "YOU NO STAY" },
 
+    --NOTE: Limit to 7 strings per table! (Using net_tinybyte for NPC chatter)
     RABBIT_BATTLECRY = { "HOP!", "KILL!", "DIE!" },
     RABBIT_MEAT_BATTLECRY = { "MEAT!", "UNCLEAN!", "MURDERER!", "REVENGE!", "MONSTER!" },
     RABBIT_GIVEUP = { "DONE.", "LATER." },
@@ -1800,6 +1814,11 @@ STRINGS =
     RABBIT_PANICHOUSEFIRE = { "HOME!", "FIRE!", "BURNING!" },
     RABBIT_PANICHAUNT = { "SCARED!", "AAAH!!", "OHH!", "GHOST!" },
     RABBIT_PANICBOSS = { "RUN!", "AHHH!", "IT MAD", "EHHH!" },
+
+
+    --NOTE: Limit to 7 strings per table! (Using net_tinybyte for NPC chatter)
+    STALKER_BATTLECRY = { "Huurgh...", "...(growl)...", "...gruuuugh...", "Hrrgh...", "...grraaugh...", "...(rumble)...", "...gruh..." },
+    STALKER_PLAYER_BATTLECRY = { "Huurgh...", "...gruuuugh...", "...grraaugh...", "...(gurgle)...", "...(crunch)...", "...Y-yy...", "...W-wwh..." },
 
     EPITAPHS =
     {

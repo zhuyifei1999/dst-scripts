@@ -143,7 +143,11 @@ local function donextcollapse(inst)
             elseif v.components.combat ~= nil
                 and v.components.health ~= nil
                 and not v.components.health:IsDead() then
-                v.components.combat:GetAttacked(inst, TUNING.ANTLION_SINKHOLE.DAMAGE)
+                if isfinalstage and v.components.locomotor == nil then
+                    v.components.health:Kill()
+                elseif v.components.combat:CanBeAttacked() then
+                    v.components.combat:GetAttacked(inst, TUNING.ANTLION_SINKHOLE.DAMAGE)
+                end
             end
         end
     end
