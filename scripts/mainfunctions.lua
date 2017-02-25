@@ -950,13 +950,6 @@ end
 function Shutdown()
     SimShuttingDown = true
 
-    for i, v in ipairs(AllPlayers) do
-        if v and v.components.talker then -- Make sure talker shuts down before we unload the character
-            print("Shutdown: shutting up talker")
-            v.components.talker:ShutUp()
-        end
-    end
-
     Print(VERBOSITY.DEBUG, 'Ending the sim now!')
 
     UnloadFonts()
