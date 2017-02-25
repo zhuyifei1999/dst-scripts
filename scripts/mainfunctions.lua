@@ -898,11 +898,6 @@ function StartNextInstance(in_params)
     params.load_screen_image = global_loading_widget.image_random
 
     if LOADED_CHARACTER then
-        for i, v in ipairs(AllPlayers) do
-            if v and v.components.talker then -- Make sure talker shuts down before we unload the character
-                v.components.talker:ShutUp()
-            end
-        end
         TheSim:UnloadPrefabs(LOADED_CHARACTER) 
         LOADED_CHARACTER = nil
     end

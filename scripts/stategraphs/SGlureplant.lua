@@ -37,7 +37,7 @@ local states =
         {
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState(math.random < .1 and "taunt" or "idleout")
+                    inst.sg:GoToState(math.random() < .1 and "taunt" or "idleout")
                 end
             end),
         },
