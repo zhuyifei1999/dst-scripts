@@ -10,6 +10,7 @@ local prefabs =
     "stalker",
 }
 
+local NUM_FORMS = 3
 local MAX_MOUND_SIZE = 8
 local MOUND_WRONG_START_SIZE = 5
 
@@ -41,19 +42,25 @@ local function OnAccept(inst, giver, item)
         stalker.Transform:SetPosition(x, y, z)
         stalker.Transform:SetRotation(rot)
         stalker.sg:GoToState("resurrect")
+
+        giver.components.sanity:DoDelta(TUNING.REVIVE_SHADOW_SANITY_PENALTY)
     end
 end
 
 local function UpdateFossileMound(inst, size, checkforwrong)
-    if checkforwrong and inst.moundsize < MOUND_WRONG_START_SIZE and size >= MOUND_WRONG_START_SIZE then
-        inst.wrong = math.random() < .5
+    if size < MOUND_WRONG_START_SIZE then
+        --reset case, not really used tho
+        inst.form = 1
+    elseif checkforwrong and inst.moundsize < MOUND_WRONG_START_SIZE then
+        --double chance of form 1 (correct form)
+        inst.form = math.max(1, math.random(0, NUM_FORMS))
     end
 
     inst.moundsize = size
     inst.components.workable:SetWorkLeft(size)
-    inst.AnimState:PlayAnimation(inst.wrong and size >= MOUND_WRONG_START_SIZE and ("wrong"..tostring(inst.moundsize)) or tostring(inst.moundsize))
+    inst.AnimState:PlayAnimation(tostring(inst.form).."_"..tostring(inst.moundsize))
 
-    if not inst.wrong and size >= MAX_MOUND_SIZE then
+    if inst.form == 1 and size >= MAX_MOUND_SIZE then
         inst.components.trader:Enable()
     else
         inst.components.trader:Disable()
@@ -85,19 +92,20 @@ end
 
 local function getstatus(inst)
     return inst.moundsize >= MAX_MOUND_SIZE
-        and (inst.wrong and "FUNNY" or "COMPLETE")
+        and (inst.form > 1 and "FUNNY" or "COMPLETE")
         or nil
 end
 
 local function onsave(inst, data)
-    data.moundsize = inst.moundsize
-    data.wrong = inst.wrong
+    data.moundsize = inst.moundsize > 1 and inst.moundsize or nil
+    data.form = inst.form > 1 and inst.form or nil
 end
 
 local function onload(inst, data)
     if data ~= nil then
-        inst.wrong = data.wrong
-        UpdateFossileMound(inst, data.moundsize, false)
+        --backward compatibility for data.wrong
+        inst.form = math.clamp(data.form or (data.wrong and 2 or 1), 1, NUM_FORMS)
+        UpdateFossileMound(inst, math.clamp(data.moundsize or 1, 1, MAX_MOUND_SIZE), false)
     end
 end
 
@@ -114,7 +122,7 @@ local function makemound(name)
 
         inst.AnimState:SetBank(name)
         inst.AnimState:SetBuild(name)
-        inst.AnimState:PlayAnimation("1")
+        inst.AnimState:PlayAnimation("1_1")
 
         inst:AddTag("structure")
         --MakeSnowCoveredPristine(inst)
@@ -154,6 +162,7 @@ local function makemound(name)
         MakeHauntableWork(inst)
         --MakeSnowCovered(inst)
 
+        inst.form = 1
         UpdateFossileMound(inst, 1)
 
         inst.OnSave = onsave

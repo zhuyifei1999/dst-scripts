@@ -12,7 +12,7 @@ local prefabs =
 {
     "slurper_pelt",
     "slurperlight",
-    "slurper_spawner",
+    "slurper_ruinsrespawner_inst",
 }
 
 local brain = require "brains/slurperbrain"

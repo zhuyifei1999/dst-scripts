@@ -14,7 +14,7 @@ local prefabs =
     "meat",
     "minotaurhorn",
     "collapse_small",
-    "minotaur_spawner",
+    "minotaur_ruinsrespawner_inst",
 }
 
 local brain = require "brains/minotaurbrain"

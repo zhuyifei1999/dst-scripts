@@ -14,7 +14,7 @@ local prefabs =
     "poop",
     "cave_banana",
     "collapse_small",
-    "monkeybarrel_spawner",
+    "monkeybarrel_ruinsrespawner_inst",
 }
 
 SetSharedLootTable('monkey_barrel',

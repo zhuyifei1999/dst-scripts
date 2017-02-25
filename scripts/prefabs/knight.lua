@@ -21,7 +21,7 @@ local prefabs_nightmare =
     "gears",
     "thulecite_pieces",
     "nightmarefuel",
-    "knight_nightmare_spawner",
+    "knight_nightmare_ruinsrespawner_inst",
 }
 
 local brain = require "brains/knightbrain"

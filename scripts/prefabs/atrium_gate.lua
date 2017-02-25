@@ -32,7 +32,7 @@ end
 local function ItemTradeTest(inst, item)
     if item == nil then
         return false
-    elseif not item.prefab == "atrium_key" then
+    elseif item.prefab ~= "atrium_key" then
         return false, "NOTATRIUMKEY"
     end
     return true
@@ -118,7 +118,6 @@ local function fn()
     inst.components.trader:SetAbleToAcceptTest(ItemTradeTest)
     inst.components.trader.deleteitemonaccept = true
     inst.components.trader.onaccept = OnKeyGiven
-    --inst.components.trader:Disable()
 
     MakeHauntableWork(inst)
 

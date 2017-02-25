@@ -20,21 +20,15 @@ end
 
 --------------------------------------------------------------------------
 
-local function BlinkHigh(inst)
-    inst.AnimState:SetAddColour(1, 1, 1, 0)
+local function SetBlinkLevel(inst, level)
+    inst.AnimState:SetAddColour(level, level, level, 0)
+    inst.AnimState:SetLightOverride(math.min(1, (inst.sg.statemem.baselightoverride or 0) + level))
 end
 
-local function BlinkMed(inst)
-    inst.AnimState:SetAddColour(.3, .3, .3, 0)
-end
-
-local function BlinkLow(inst)
-    inst.AnimState:SetAddColour(.2, .2, .2, 0)
-end
-
-local function BlinkOff(inst)
-    inst.AnimState:SetAddColour(0, 0, 0, 0)
-end
+local function BlinkHigh(inst) SetBlinkLevel(inst, 1) end
+local function BlinkMed(inst) SetBlinkLevel(inst, .3) end
+local function BlinkLow(inst) SetBlinkLevel(inst, .2) end
+local function BlinkOff(inst) SetBlinkLevel(inst, 0) end
 
 --------------------------------------------------------------------------
 
@@ -110,10 +104,13 @@ local states =
             inst.Transform:SetNoFaced()
             inst.AnimState:PlayAnimation("enter")
             inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_get_bloodpump")
+            inst.sg.statemem.baselightoverride = .1
         end,
 
         timeline =
         {
+            TimeEvent(0 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/enter") end),
+
             TimeEvent(18 * FRAMES, BlinkLow),
             TimeEvent(19 * FRAMES, BlinkOff),
 
@@ -121,7 +118,6 @@ local states =
             TimeEvent(30 * FRAMES, function(inst)
                 BlinkOff(inst)
                 ShakeIfClose(inst)
-                inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_use_bloodpump")
             end),
 
             TimeEvent(31 * FRAMES, BlinkMed),
@@ -138,10 +134,11 @@ local states =
             TimeEvent(42 * FRAMES, function(inst)
                 BlinkMed(inst)
                 ShakeIfClose(inst)
-                inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_use_bloodpump", nil, .3)
             end),
             TimeEvent(43 * FRAMES, BlinkLow),
             TimeEvent(44 * FRAMES, BlinkOff),
+
+            TimeEvent(47 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/head") end),
 
             TimeEvent(50 * FRAMES, BlinkMed),
             TimeEvent(51 * FRAMES, BlinkLow),
@@ -154,14 +151,33 @@ local states =
             TimeEvent(57 * FRAMES, function(inst)
                 BlinkHigh(inst)
                 ShakeIfClose(inst)
-                inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_use_bloodpump")
             end),
             TimeEvent(58 * FRAMES, BlinkOff),
 
             TimeEvent(60 * FRAMES, BlinkMed),
             TimeEvent(61 * FRAMES, BlinkLow),
             TimeEvent(62 * FRAMES, BlinkOff),
+
+            TimeEvent(63 * FRAMES, function(inst)
+                inst.sg.statemem.baselightoverride = 0
+                inst.sg.statemem.fadeout = .2
+            end),
         },
+
+        onupdate = function(inst)
+            if inst.sg.statemem.fadeout ~= nil then
+                if inst.sg.statemem.fadeout > .02 then
+                    inst.sg.statemem.fadeout = inst.sg.statemem.fadeout - .02
+                    inst.AnimState:SetLightOverride(inst.sg.statemem.fadeout)
+                else
+                    inst.sg.statemem.fadeout = nil
+                    inst.AnimState:SetLightOverride(0)
+                end
+            elseif inst.sg.statemem.baselightoverride < .2 then
+                inst.sg.statemem.baselightoverride = math.min(.2, inst.sg.statemem.baselightoverride + .01)
+                inst.AnimState:SetLightOverride(inst.sg.statemem.baselightoverride)
+            end
+        end,
 
         events =
         {
@@ -175,6 +191,7 @@ local states =
         onexit = function(inst)
             inst.Transform:SetFourFaced()
             inst.components.health:SetInvincible(false)
+            inst.sg.statemem.baselightoverride = nil
             BlinkOff(inst)
         end,
     },
@@ -253,6 +270,7 @@ local states =
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("hit")
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/hit")
             inst.sg.mem.last_hit_time = GetTime()
         end,
 

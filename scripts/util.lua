@@ -20,11 +20,13 @@ end
 function DebugSpawn(prefab)
     if TheSim ~= nil and TheInput ~= nil then
         TheSim:LoadPrefabs({ prefab })
-        local inst = SpawnPrefab(prefab)
-        if inst ~= nil then
-            inst.Transform:SetPosition(ConsoleWorldPosition():Get())
-            return inst
-        end
+        if not Prefabs[prefab].is_skin then
+			local inst = SpawnPrefab(prefab)
+			if inst ~= nil then
+				inst.Transform:SetPosition(ConsoleWorldPosition():Get())
+				return inst
+			end
+		end
     end
 end
 

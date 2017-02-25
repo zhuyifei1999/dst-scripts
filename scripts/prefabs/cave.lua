@@ -75,7 +75,6 @@ local prefabs =
     "atrium_statue",
     "atrium_statue_facing",
     "atrium_fence",
-    "atrium_fence_lockable",
     "atrium_rubble",
     "atrium_idol",
 }

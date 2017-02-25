@@ -23,7 +23,7 @@ local prefabs_nightmare =
     "thulecite_pieces",
     "nightmarefuel",
     "collapse_small",
-    "rook_nightmare_spawner",
+    "rook_nightmare_ruinsrespawner_inst",
 }
 
 local brain = require "brains/rookbrain"

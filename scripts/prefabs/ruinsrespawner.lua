@@ -39,7 +39,6 @@ local function MakeRuinsRespawner(obj)
         inst:AddTag("CLASSIFIED")
 
         inst.spawnprefab = obj
-        inst.resetruins = true
 
         inst:AddComponent("objectspawner")
         inst.components.objectspawner.onnewobjectfn = onnewobjectfn
@@ -49,15 +48,24 @@ local function MakeRuinsRespawner(obj)
             tryspawn(inst)
         end, TheWorld)
 
-        inst:DoTaskInTime(0, tryspawn)
-
         inst.OnSave = onsave
         inst.OnLoad = onload
 
         return inst
     end
 
-    return Prefab(obj.."_spawner", fn, nil, { obj })
+	local function worldgenfn()
+		local inst = fn()
+
+		inst:SetPrefabName(obj.."_ruinsrespawner_inst")
+		
+        inst.resetruins = true
+		inst:DoTaskInTime(0, tryspawn)
+
+		return inst
+	end
+
+    return Prefab(obj.."_ruinsrespawner_inst", fn, nil, { obj, obj.."_spawner" }), Prefab(obj.."_spawner", worldgenfn, nil, { obj })
 end
 
 return MakeRuinsRespawner

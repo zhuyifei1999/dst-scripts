@@ -25,7 +25,7 @@ local prefabs_nightmare =
     "purplegem",
     "nightmarefuel",
     "thulecite_pieces",
-    "bishop_nightmare_spawner",
+    "bishop_nightmare_ruinsrespawner_inst",
 }
 
 local brain = require "brains/bishopbrain"

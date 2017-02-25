@@ -276,7 +276,6 @@ local function StartCombat(inst, target, trigger)
         inst.components.combat:SetRetargetFunction(3, RetargetFn)
         inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
         inst.components.combat.hiteffectsymbol = "body"
-        inst.components.combat:SetHurtSound("dontstarve/creatures/together/antlion/hit")
 
         inst:AddComponent("health")
         inst.components.health:SetMaxHealth(TUNING.ANTLION_HEALTH)
@@ -287,7 +286,7 @@ local function StartCombat(inst, target, trigger)
 
         MakeLargeBurnableCharacter(inst, "body")
 
-        inst:SetStateGraph("SGAntlion_angry")
+        inst:SetStateGraph("SGantlion_angry")
 
         --After loading, replacing an empty brain with a new
         --one doesn't automatically restart itself properly.
@@ -349,7 +348,7 @@ local function StopCombat(inst)
         inst:RemoveTag("scarytoprey")
 
         inst:SetBrain(nil)
-        inst:SetStateGraph("SGAntlion")
+        inst:SetStateGraph("SGantlion")
 
         inst:RemoveComponent("burnable")
         inst:RemoveComponent("propagator")

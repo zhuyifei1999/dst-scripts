@@ -43,17 +43,20 @@ local function onworked(inst)
 end
 
 local function onworkfinished(inst)
-    local fx = SpawnPrefab("collapse_small")
-    fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
-    fx:SetMaterial("pot")
-    inst:Remove()
+    inst:AddTag("NOCLICK")
+    inst.Physics:SetActive(false)
+    inst.OnEntitySleep = nil
+    inst.OnEntityWake = nil
+    inst:ListenForEvent("animover", ErodeAway)
+    inst.AnimState:PlayAnimation(inst.animname.."_glass_break")
+    inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/glass_break")
 end
 
 local function Sparkle(inst)
     if inst.sparkletask ~= nil then
         inst.sparkletask:Cancel()
     end
-    if inst:IsAsleep() then
+    if inst:IsAsleep() or inst.components.workable.workleft <= 0 then
         inst.sparkletask = nil
     else
         inst.sparkletask = inst:DoTaskInTime(4 + math.random() * 5, Sparkle)
@@ -80,6 +83,7 @@ local function MakeSpikeFn(shape, size)
 
         inst.entity:AddTransform()
         inst.entity:AddAnimState()
+        inst.entity:AddSoundEmitter()
         inst.entity:AddNetwork()
 
         if shape == "spike" then

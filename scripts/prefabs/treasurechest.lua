@@ -94,7 +94,7 @@ local function onsave(inst, data)
 end
 
 local function onload(inst, data)
-    if data ~= nil and data.burnt then
+    if data ~= nil and data.burnt and inst.components.burnable ~= nil then
         inst.components.burnable.onburnt(inst)
     end
 end

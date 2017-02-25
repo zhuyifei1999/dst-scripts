@@ -81,12 +81,21 @@ function GetBuildForItem(name)
 	return name
 end
 
+function IsClothingItem(name)
+	if CLOTHING[name] then 
+		return true
+	end
+	return false
+end
+
 function IsItemId(name)
-	if Prefabs[name] then 
+	if Prefabs[name] then
 		return true
-	elseif MISC_ITEMS[name] then 
+	elseif MISC_ITEMS[name] then
 		return true
-	elseif CLOTHING[name] then 
+	elseif CLOTHING[name] then
+		return true
+	elseif EMOTE_ITEMS[name] then
 		return true
 	end
 	return false

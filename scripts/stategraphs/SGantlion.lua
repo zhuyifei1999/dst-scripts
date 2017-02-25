@@ -528,6 +528,7 @@ local states =
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("hit")
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/hit")
         end,
 
         timeline =

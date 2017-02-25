@@ -39,12 +39,12 @@ local function OnDoneTalking(inst)
         inst.talktask:Cancel()
         inst.talktask = nil
     end
-    --inst.SoundEmitter:KillSound("talk")
+    inst.SoundEmitter:KillSound("talk")
 end
 
 local function OnTalk(inst)
     OnDoneTalking(inst)
-    --inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/talk_LP", "talk")
+    inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/talk_LP", "talk")
     inst.talktask = inst:DoTaskInTime(1.5 + math.random() * .5, OnDoneTalking)
 end
 
@@ -386,7 +386,7 @@ local function fn()
     inst:AddTag("scarytoprey")
     inst:AddTag("largecreature")
     inst:AddTag("stalker")
-    inst:AddTag("shadowancient")
+    inst:AddTag("fossil")
 
     inst:AddComponent("talker")
     inst.components.talker.fontsize = 40
@@ -433,7 +433,6 @@ local function fn()
     inst.components.combat.hiteffectsymbol = "torso"
     inst.components.combat.battlecryinterval = 10
     inst.components.combat.GetBattleCryString = battlecry
-    inst.components.combat:SetHurtSound("dontstarve/creatures/together/stalker/hit")
 
     inst:AddComponent("grouptargeter")
 

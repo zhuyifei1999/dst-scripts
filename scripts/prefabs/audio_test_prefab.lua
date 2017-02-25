@@ -121,10 +121,20 @@ AudioPrefab("audio_stalker", {"stalker_basic", "stalker_action"}, "stalker", --[
     },
 	taunt = {
 		TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/taunt") end),
+    },
+	taunt = {
+		TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/taunt") end),
  
     },
     attack_down = {
 		TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/attack_swipe") end),
+		TimeEvent(12*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/head") end),
+		TimeEvent(47*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/head") end),
+	},
+    enter = {
+		---TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/music/stalker_enter_music") end),
+		TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/enter") end),
+		TimeEvent(47*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/head") end),
     },
     hit_down = {
 		TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/hit") end),

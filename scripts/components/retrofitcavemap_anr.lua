@@ -182,7 +182,7 @@ local function HeartOfTheRuinsRuinsRetrofitting(inst)
 		spawnerprefab = spawnerprefab or prefab
 		for _, v in pairs(Ents) do
 			if v ~= inst and v.prefab == prefab then
-				local respawner = SpawnPrefab(spawnerprefab.."_spawner")
+				local respawner = SpawnPrefab(spawnerprefab.."_ruinsrespawner_inst")
 				respawner.Transform:SetPosition(v.Transform:GetWorldPosition())
 				if prefab == spawnerprefab then
 					respawner.components.objectspawner:TakeOwnership(v)
@@ -218,19 +218,19 @@ local function HeartOfTheRuinsRuinsRetrofitting(inst)
 					local pt = targets[math.random(#targets)]:GetPosition()
 					local offset = FindWalkableOffset(pt, math.random(360), radius, 12, true, true)
 					if offset ~= nil then
-						local respawner = SpawnPrefab(spawnerprefab.."_spawner")
+						local respawner = SpawnPrefab(spawnerprefab.."_ruinsrespawner_inst")
 						respawner.Transform:SetPosition((pt+offset):Get())
 						respawner.resetruins = false
 						num_spawned = num_spawned + 1
 					end
 				end
 				if num_spawned == 0 then
-					print ("Retrofitting for A New Reign: Heart of the Ruins -   Could not find anywhere to added "..spawnerprefab.."_spawner.")
+					print ("Retrofitting for A New Reign: Heart of the Ruins -   Could not find anywhere to added "..spawnerprefab.."_ruinsrespawner_inst.")
 				else
 					print ("Retrofitting for A New Reign: Heart of the Ruins -   Added "..num_spawned.." respawners for "..spawnerprefab.." near "..target.."." )
 				end
 			else
-				print ("Retrofitting for A New Reign: Heart of the Ruins -   Could not find any "..target.." to add "..spawnerprefab.."_spawner near.")
+				print ("Retrofitting for A New Reign: Heart of the Ruins -   Could not find any "..target.." to add "..spawnerprefab.."_ruinsrespawner_inst near.")
 			end
 		end
 	end
@@ -239,7 +239,7 @@ local function HeartOfTheRuinsRuinsRetrofitting(inst)
 		if count < repop then
 			print ("Retrofitting for A New Reign: Heart of the Ruins - Adding "..(repop-count).." new "..spawnerprefab.." to repopulate the ruins." )
 			for i = count, (repop-1) do
-				local _, respawner = RetrofitNewCaveContentPrefab(inst, spawnerprefab.."_spawner", 1, 1, true)
+				local _, respawner = RetrofitNewCaveContentPrefab(inst, spawnerprefab.."_ruinsrespawner_inst", 1, 1, true)
 				if respawner ~= nil then
 					respawner.resetruins = false
 					count = count + 1
@@ -250,13 +250,13 @@ local function HeartOfTheRuinsRuinsRetrofitting(inst)
 		return count
 	end
 
-	RepopNear(AddRuinsRespawner("bishop_nightmare"), "bishop_nightmare", "nightmarelight", 6, 15)
-	RepopNear(AddRuinsRespawner("knight_nightmare"), "knight_nightmare", "nightmarelight", 6, 15)
-	RepopNear(AddRuinsRespawner("rook_nightmare"), "rook_nightmare", "nightmarelight", 6, 15)
+	RepopNear(AddRuinsRespawner("bishop_nightmare"), "bishop_nightmare", "nightmarelight", 6, 8)
+	RepopNear(AddRuinsRespawner("knight_nightmare"), "knight_nightmare", "nightmarelight", 6, 8)
+	RepopNear(AddRuinsRespawner("rook_nightmare"), "rook_nightmare", "nightmarelight", 6, 5)
 
-	RepopRandom( AddRuinsRespawner("monkeybarrel"), "monkeybarrel", 35)
-	RepopRandom( AddRuinsRespawner("slurper"), "slurper", 20)
-	RepopRandom( AddRuinsRespawner("worm"), "worm", 15)
+	RepopRandom( AddRuinsRespawner("monkeybarrel"), "monkeybarrel", 15)
+	RepopRandom( AddRuinsRespawner("slurper"), "slurper", 10)
+	RepopRandom( AddRuinsRespawner("worm"), "worm", 7)
 	
 	local minotaur_respawner = true
 	if AddRuinsRespawner("minotaur") == 0 then
@@ -265,7 +265,7 @@ local function HeartOfTheRuinsRuinsRetrofitting(inst)
 			for k,v in ipairs(TheWorld.topology.ids) do
 				if string.find(v, "RuinedGuarden") then
 					local node = TheWorld.topology.nodes[k]
-					local respawner = SpawnPrefab("minotaur_spawner")
+					local respawner = SpawnPrefab("minotaur_ruinsrespawner_inst")
 					respawner.Transform:SetPosition(node.cent[1], 0, node.cent[2])
 					respawner.resetruins = false
 					minotaur_respawner = true
@@ -280,6 +280,49 @@ local function HeartOfTheRuinsRuinsRetrofitting(inst)
 
 end
 
+local function HeartOfTheRuinsRuinsRetrofittingRespawnerFix(inst, first_hotr_retrofit)
+	if first_hotr_retrofit then
+		return -- this step is not needed
+	end
+	
+	local function NoSpawnOnLoadAndReduce(prefab, cap)
+		local remove_spawners = {}
+		local count = 0
+		local spawner_prefab = prefab.."_ruinsrespawner_inst"
+		for _, v in pairs(Ents) do
+			if v.prefab == spawner_prefab then
+				v.resetruins = nil
+				
+				count = count + 1
+				if count > cap then
+					table.insert(remove_spawners, v)
+				end
+			end
+		end	
+		
+		if #remove_spawners > 0 then
+			print ("Retrofitting for A New Reign: Heart of the Ruins + Respawn Fix: Reducing from " .. count .. " to " .. cap .. " " .. prefab .. "'s.")
+
+			inst:DoTaskInTime(0, function()
+				for _,v in ipairs(remove_spawners) do 
+					if v.components.objectspawner ~= nil and (#v.components.objectspawner.objects == 1) then
+						v.components.objectspawner.objects[1]:Remove()
+					end
+					v:Remove()
+				end
+			end)
+		end
+	end
+	
+	NoSpawnOnLoadAndReduce("bishop_nightmare", 10)
+	NoSpawnOnLoadAndReduce("knight_nightmare", 14)
+	NoSpawnOnLoadAndReduce("rook_nightmare", 5)
+	NoSpawnOnLoadAndReduce("monkeybarrel", 20)
+	NoSpawnOnLoadAndReduce("slurper", 10)
+	NoSpawnOnLoadAndReduce("worm", 7)
+	NoSpawnOnLoadAndReduce("minotaur", 1)
+end
+
 function self:ClearRuins()
 	local function RemoveAllRuinsRespawner(prefab)
 		local toremove = {}
@@ -289,7 +332,7 @@ function self:ClearRuins()
 			end
 		end	
 		print ("Retrofitting for A New Reign: Heart of the Ruins - Removing "..tostring(#toremove).." "..prefab.."." )
-		prefab = prefab .. "_spawner"
+		prefab = prefab .. "_ruinsrespawner_inst"
 		for _, v in pairs(Ents) do
 			if v.prefab == prefab then
 				table.insert(toremove, v)
@@ -309,11 +352,6 @@ function self:ClearRuins()
 	RemoveAllRuinsRespawner("slurper")
 	RemoveAllRuinsRespawner("worm")
 	RemoveAllRuinsRespawner("minotaur")
-end
-
-function self:Ruins()
-
-	HeartOfTheRuinsRuinsRetrofitting(inst)
 end
 
 --------------------------------------------------------------------------
@@ -355,7 +393,8 @@ function self:OnPostInit()
 			print ("Retrofitting for A New Reign: Arts and Crafts is not required.")
 		end
 	end
-	
+
+	local first_hotr_retrofit = self.retrofit_heartoftheruins ~= nil
 	if self.retrofit_heartoftheruins then
 		self.retrofit_heartoftheruins = nil
 		
@@ -363,16 +402,26 @@ function self:OnPostInit()
 		HeartOfTheRuinsAtriumRetrofitting(inst)
 		HeartOfTheRuinsRuinsRetrofitting(inst)
 	end	
+	
+	if self.retrofit_heartoftheruins_respawnerfix then
+		self.retrofit_heartoftheruins_respawnerfix = nil
+		HeartOfTheRuinsRuinsRetrofittingRespawnerFix(inst, first_hotr_retrofit)
+	end
 
 	if inst.components.retrofitcavemap_anr.requiresreset then
 		-- not quite working in all cases...
-		
-		--print ("Retrofitting for A New Reign. Savefile retrofitting requires the server to be restarted to fully take effect.")
-		--print ("Retrofitting for A New Reign. Restarting caves in 40 seconds.")
-		
-		--inst:DoTaskInTime(30, function() TheNet:SendWorldSaveRequestToMaster() TheNet:Announce("Caves will reload in 10 seconds") end)
-		--inst:DoTaskInTime(35, function() TheNet:Announce("Caves will reload in 5 seconds") end)
-		--inst:DoTaskInTime(40, function() StartNextInstance({ reset_action = RESET_ACTION.LOAD_SLOT, save_slot = SaveGameIndex:GetCurrentSaveSlot() }) end)
+
+		print ("Retrofitting for A New Reign. Savefile retrofitting requires the server to be restarted to fully take effect.")
+		print ("Retrofitting for A New Reign. Restarting caves in 40 seconds.")
+
+        inst:DoTaskInTime(5, function() TheNet:Announce("World will reload in 35 seconds to complete retrofitting.") end)
+        inst:DoTaskInTime(10, function() TheNet:Announce("World will reload in 30 seconds to complete retrofitting.") end)
+        inst:DoTaskInTime(15, function() TheNet:Announce("World will reload in 25 seconds to complete retrofitting.") end)
+        inst:DoTaskInTime(20, function() TheNet:Announce("World will reload in 20 seconds to complete retrofitting.") end)
+        inst:DoTaskInTime(25, function() TheNet:Announce("World will reload in 15 seconds to complete retrofitting.") end)
+		inst:DoTaskInTime(30, function() TheWorld:PushEvent("ms_save") TheNet:Announce("World will reload in 10 seconds to complete retrofitting.") end)
+		inst:DoTaskInTime(35, function() TheNet:Announce("World will reload in 5 seconds to complete retrofitting.") end)
+		inst:DoTaskInTime(40, function() TheNet:SendWorldRollbackRequestToServer(0) end)
 	end
 
 end
@@ -390,6 +439,7 @@ function self:OnLoad(data)
 		retrofit_warts = data.retrofit_warts or false
 		self.retrofit_artsandcrafts = data.retrofit_artsandcrafts
 		self.retrofit_heartoftheruins = data.retrofit_heartoftheruins
+		self.retrofit_heartoftheruins_respawnerfix = data.retrofit_heartoftheruins_respawnerfix
     end
 end
 

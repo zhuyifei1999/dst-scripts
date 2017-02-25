@@ -17,7 +17,6 @@ self.inst = inst
 local _sandstormactive = false
 local _issummer = false
 local _iswet = false
-local _isicy = false
 local _oases = {} -- the oases are repireves from the sandstorm
 
 --------------------------------------------------------------------------
@@ -25,7 +24,7 @@ local _oases = {} -- the oases are repireves from the sandstorm
 --------------------------------------------------------------------------
 
 local function ShouldActivateSandstorm()
-    return _issummer and not (_iswet or _isicy)
+    return _issummer and not _iswet
 end
 
 local function ToggleSandstorm()
@@ -45,8 +44,7 @@ local function OnSeasonTick(src, data)
 end
 
 local function OnWeatherTick(src, data)
-    _iswet = data.wetness > 0
-    _isicy = data.snowlevel > 0
+    _iswet = data.wetness > 0 or data.snowlevel > 0
     ToggleSandstorm()
 end
 
@@ -149,8 +147,9 @@ function self:IsSandstormActive()
 end
 
 function self:RetrofitCheckIfWorldContainsOasis()
-	return next(_oases) ~= nil
+    return next(_oases) ~= nil
 end
+
 --------------------------------------------------------------------------
 --[[ End ]]
 --------------------------------------------------------------------------

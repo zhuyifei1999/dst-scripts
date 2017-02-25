@@ -25,7 +25,7 @@ local prefabs =
 {
     "monstermeat",
     "wormlight",
-    "worm_spawner",
+    "worm_ruinsrespawner_inst",
 }
 
 local brain = require("brains/wormbrain")

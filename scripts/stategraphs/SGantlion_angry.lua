@@ -186,6 +186,7 @@ local states =
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("hit")
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/hit")
             inst.sg.mem.last_hit_time = GetTime()
         end,
 

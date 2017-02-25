@@ -584,7 +584,7 @@ local fx =
         bank = "mining_fx",
         build = "mining_ice_fx",
         anim = "anim",
-        sound = "dontstarve/creatures/together/antlion/sfx/glass_break",
+        sound = "dontstarve/creatures/together/antlion/sfx/sand_to_glass",
     },
     {
         name = "erode_ash",

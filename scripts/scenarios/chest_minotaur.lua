@@ -61,6 +61,7 @@ local function OnCreate(inst, scenariorunner)
 		},
 	}
 
+	chestfunctions.AddChestItems(inst, {{item = "atrium_key"}})
 	chestfunctions.AddChestItems(inst, items)
 end
 
