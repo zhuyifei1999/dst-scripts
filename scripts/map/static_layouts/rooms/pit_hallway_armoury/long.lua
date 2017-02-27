@@ -78,7 +78,7 @@ return {
       objects = {
         {
           name = "",
-          type = "knight_nightmare_spawner",
+          type = "knight_nightmare",
           shape = "rectangle",
           x = 192,
           y = 160,

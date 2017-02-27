@@ -481,52 +481,6 @@ t = {
             end,
         },
         
-        {
-            version = 4.6, -- ANR: Against the Grain
-            fn = function(savedata)
-                if savedata == nil then
-                    return
-                end
-                if savedata.map ~= nil and savedata.map.prefab == "forest" and savedata.map.persistdata ~= nil then
-                    if savedata.map.persistdata.retrofitforestmap_anr == nil then
-                        savedata.map.persistdata.retrofitforestmap_anr = {}
-                    end
-                    savedata.map.persistdata.retrofitforestmap_anr.retrofit_againstthegrain = true
-                end
-            end,
-        },
-
-        {
-            version = 4.71, -- ANR: Heart of the Ruins
-            fn = function(savedata)
-                if savedata == nil then
-                    return
-                end
-				if savedata.map ~= nil and savedata.map.prefab == "cave" and savedata.map.persistdata ~= nil then
-                    if savedata.map.persistdata.retrofitcavemap_anr == nil then
-						savedata.map.persistdata.retrofitcavemap_anr = {}
-					end
-
-					savedata.map.persistdata.retrofitcavemap_anr.retrofit_heartoftheruins = true
-				end
-            end,
-        },
- 
-        {
-            version = 4.72, -- ANR: Heart of the Ruins - fix for ruinsrespawners
-            fn = function(savedata)
-                if savedata == nil then
-                    return
-                end
-				if savedata.map ~= nil and savedata.map.prefab == "cave" and savedata.map.persistdata ~= nil then
-                    if savedata.map.persistdata.retrofitcavemap_anr == nil then
-						savedata.map.persistdata.retrofitcavemap_anr = {}
-					end
-
-					savedata.map.persistdata.retrofitcavemap_anr.retrofit_heartoftheruins_respawnerfix = true
-				end
-            end,
-        },
     },
 }
 

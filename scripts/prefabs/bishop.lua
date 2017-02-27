@@ -1,5 +1,4 @@
-local clockwork_common = require "prefabs/clockwork_common"
-local RuinsRespawner = require "prefabs/ruinsrespawner"
+local clockwork_common = require"prefabs/clockwork_common"
 
 local assets =
 {
@@ -8,7 +7,6 @@ local assets =
     Asset("ANIM", "anim/bishop_nightmare.zip"),
     Asset("SOUND", "sound/chess.fsb"),
     Asset("SCRIPT", "scripts/prefabs/clockwork_common.lua"),
-    Asset("SCRIPT", "scripts/prefabs/ruinsrespawner.lua"),
 }
 
 local prefabs =
@@ -25,7 +23,6 @@ local prefabs_nightmare =
     "purplegem",
     "nightmarefuel",
     "thulecite_pieces",
-    "bishop_nightmare_ruinsrespawner_inst",
 }
 
 local brain = require "brains/bishopbrain"
@@ -195,5 +192,4 @@ local function bishop_nightmare_fn()
 end
 
 return Prefab("bishop", bishop_fn, assets, prefabs),
-    Prefab("bishop_nightmare", bishop_nightmare_fn, assets, prefabs_nightmare),
-    RuinsRespawner("bishop_nightmare")
+    Prefab("bishop_nightmare", bishop_nightmare_fn, assets, prefabs_nightmare)

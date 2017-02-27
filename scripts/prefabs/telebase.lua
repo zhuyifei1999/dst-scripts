@@ -1,5 +1,3 @@
-require "prefabutil"
-
 local assets =
 {
     Asset("ANIM", "anim/staff_purple_base_ground.zip"),
@@ -146,9 +144,8 @@ end
 local function createplacerpart()
     local inst = CreateEntity()
 
-    inst:AddTag("FX")
-    inst:AddTag("NOCLICK")
     inst:AddTag("placer")
+    inst:AddTag("NOCLICK")
     --[[Non-networked entity]]
     inst.entity:SetCanSleep(false)
     inst.persists = false

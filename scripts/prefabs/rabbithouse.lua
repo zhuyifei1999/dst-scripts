@@ -1,4 +1,5 @@
 require "prefabutil"
+require "recipes"
 
 local assets =
 {

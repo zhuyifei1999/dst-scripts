@@ -548,51 +548,6 @@ local fx =
         build = "redpouch",
         anim = "unwrap",
     },
-    {
-        name = "wetpouch_unwrap",
-        bank = "wetpouch",
-        build = "wetpouch",
-        anim = "unwrap",
-    },
-    {
-        name = "sinkhole_spawn_fx_1",
-        bank = "sinkhole_spawn_fx",
-        build = "sinkhole_spawn_fx",
-        anim = "idle1",
-    },
-    {
-        name = "sinkhole_spawn_fx_2",
-        bank = "sinkhole_spawn_fx",
-        build = "sinkhole_spawn_fx",
-        anim = "idle2",
-    },
-    {
-        name = "sinkhole_spawn_fx_3",
-        bank = "sinkhole_spawn_fx",
-        build = "sinkhole_spawn_fx",
-        anim = "idle3",
-    },
-    {
-        name = "cavein_debris",
-        bank = "cavein_debris_fx",
-        build = "cavein_debris_fx",
-        anim = "anim",
-        fn = function(inst) inst.entity:AddSoundEmitter():PlaySoundWithParams("dontstarve/creatures/together/antlion/sfx/ground_break", { size = 0 }) end,
-    },
-    {
-        name = "glass_fx",
-        bank = "mining_fx",
-        build = "mining_ice_fx",
-        anim = "anim",
-        sound = "dontstarve/creatures/together/antlion/sfx/sand_to_glass",
-    },
-    {
-        name = "erode_ash",
-        bank = "erode_ash",
-        build = "erode_ash",
-        anim = "idle",
-        sound = "dontstarve/common/dust_blowaway",
-    },
 }
 
 return fx

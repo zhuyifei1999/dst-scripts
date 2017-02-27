@@ -1,7 +1,6 @@
 local MakeWorldNetwork = require("prefabs/world_network")
 
-local assets =
-{
+local assets = {
     Asset("SCRIPT", "scripts/prefabs/world_network.lua"),
 }
 

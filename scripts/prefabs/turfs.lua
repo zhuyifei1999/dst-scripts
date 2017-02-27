@@ -1,3 +1,5 @@
+require "prefabutil"
+
 local function ondeploy(inst, pt, deployer)
     if deployer and deployer.SoundEmitter then
         deployer.SoundEmitter:PlaySound("dontstarve/wilson/dig")

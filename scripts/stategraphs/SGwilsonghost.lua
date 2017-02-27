@@ -396,7 +396,6 @@ local states =
             --inst.AnimState:PlayAnimation("dissipate")
 
             inst.sg.statemem.target = data.teleporter
-            inst.sg.statemem.teleportarrivestate = "jumpout"
 
             inst.sg.statemem.target:PushEvent("starttravelsound", inst)
             if inst.sg.statemem.target ~= nil and inst.sg.statemem.target.components.teleporter ~= nil

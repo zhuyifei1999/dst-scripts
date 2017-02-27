@@ -28,8 +28,8 @@ end
 
 local function WantsToLeave(inst)
     return not inst.components.combat:HasTarget()
-        and inst:IsSated()
-        and inst:GetTimeAlive() >= 120
+    and inst:IsSated()
+    and inst:GetTimeAlive() >= 120
 end
 
 local function CalcSanityAura(inst)
@@ -37,27 +37,21 @@ local function CalcSanityAura(inst)
 end
 
 local function FindBaseToAttack(inst, target)
+    --print("Deerclops finding base to attack")
     local structure = GetClosestInstWithTag("structure", target, 40)
-    if structure ~= nil then
-        inst.components.knownlocations:RememberLocation("targetbase", structure:GetPosition())
+    if structure then
+        local targetPos = Vector3(structure.Transform:GetWorldPosition() )
+        inst.components.knownlocations:RememberLocation("targetbase", targetPos)
         inst.AnimState:ClearOverrideSymbol("deerclops_head")
     end
 end
 
 local function RetargetFn(inst)
-    local range = inst.Physics:GetRadius() + 8
-    return FindEntity(
-            inst,
-            TARGET_DIST,
-            function(guy)
-                return inst.components.combat:CanTarget(guy)
-                    and (   guy.components.combat:TargetIs(inst) or
-                            guy:IsNear(inst, range)
-                        )
-            end,
-            { "_combat" },
-            { "prey", "smallcreature", "INLIMBO" }
-        )
+    --print("Deerclops retarget", debugstack())
+    return FindEntity(inst, TARGET_DIST, function(guy)
+        return inst.components.combat:CanTarget(guy)
+               and (guy.components.combat.target == inst or (inst:GetPosition():Dist(guy:GetPosition()) <= (inst.Physics:GetRadius() + 8)))
+    end, nil, {"prey", "smallcreature"})
 end
 
 local function KeepTargetFn(inst, target)

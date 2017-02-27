@@ -31,7 +31,6 @@ local function fn()
 
     inst:AddComponent("shard_clock")
     inst:AddComponent("shard_seasons")
-    inst:AddComponent("shard_sinkholes")
     inst:AddComponent("shard_players")
     inst:AddComponent("shard_worldreset")
     inst:AddComponent("shard_worldvoter")

@@ -47,16 +47,6 @@ GROUND_FLOORING =
     [GROUND.SCALE] = true,
 }
 
-local function OnlyAllow(approved)
-	local filter = {}
-	for _,v in pairs(GROUND) do
-		if not table.contains(approved, v) then
-			table.insert(filter, v)
-		end
-	end
-	return filter
-end
-
 -- These items will not spawn on a terrain tile of the types in the list provided
 local TERRAIN_FILTER=
 	{
@@ -145,11 +135,8 @@ local TERRAIN_FILTER=
 		critterlab =		{GROUND.ROAD, GROUND.GRASS, GROUND.FOREST, GROUND.SAVANNA, GROUND.MARSH },
 		deerspawningground= {GROUND.ROAD, GROUND.WOODFLOOR, GROUND.SCALE, GROUND.CARPET, GROUND.CHECKER, GROUND.SAVANNA, GROUND.MARSH },
 
-		toadstool_cap =		OnlyAllow({GROUND.ROCKY}),
+		toadstool_cap =		{GROUND.ROCKY},
 
-		monkeybarrel_spawner =		OnlyAllow({GROUND.MUD, GROUND.CAVE_NOISE}),
-		slurper_spawner =			OnlyAllow({GROUND.MUD, GROUND.CAVE_NOISE}),
-		worm_spawner =				OnlyAllow({GROUND.TILES, GROUND.TILES_GLOW, GROUND.TRIM, GROUND.TRIM_GLOW, GROUND.CAVE, GROUND.MUD, GROUND.CAVE_NOISE}),
 	}
 
 TERRAIN_FILTER.Print = function (filter)

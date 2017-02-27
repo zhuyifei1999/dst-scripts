@@ -130,7 +130,6 @@ local function fn()
     inst.MiniMapEntity:SetIcon("pond_lava.png")
 
     inst:AddTag("lava")
-    inst:AddTag("antlion_sinkhole_blocker")
 
     --cooker (from cooker component) added to pristine state for optimization
     inst:AddTag("cooker")
@@ -142,8 +141,6 @@ local function fn()
     inst.Light:SetColour(235 / 255, 121 / 255, 12 / 255)
 
     inst.no_wet_prefix = true
-
-    inst:SetDeployExtraSpacing(2)
 
     inst.entity:SetPristine()
 

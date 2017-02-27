@@ -67,11 +67,6 @@ local TRIGGERED_DANGER_MUSIC =
         "dontstarve/music/music_epicfight_5b",
     },
 
-    antlion =
-    {
-        "dontstarve/music/music_epicfight_antlion",
-    },
-
     default =
     {
         "dontstarve/music/music_epicfight_ruins",
@@ -86,7 +81,8 @@ local TRIGGERED_DANGER_MUSIC =
 self.inst = inst
 
 --Private
-local _iscave = inst:HasTag("cave")
+local _isruin = inst:HasTag("ruin")
+local _iscave = _isruin or inst:HasTag("cave")
 local _isenabled = true
 local _busytask = nil
 local _dangertask = nil
@@ -100,11 +96,6 @@ local _activatedplayer = nil --cached for activation/deactivation only, NOT for 
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
-
-local function IsInRuins(player)
-    return player.components.areaaware ~= nil
-        and player.components.areaaware:CurrentlyInTag("Nightmare")
-end
 
 local function StopBusy(inst, istimeout)
     if _busytask ~= nil then
@@ -124,7 +115,7 @@ local function StopBusy(inst, istimeout)
     end
 end
 
-local function StartBusy(player)
+local function StartBusy()
     if not (_iscave or _isday) then
         return
     elseif _busytask ~= nil then
@@ -134,7 +125,7 @@ local function StartBusy(player)
             _isbusydirty = false
             _soundemitter:KillSound("busy")
             _soundemitter:PlaySound(
-                (IsInRuins(player) and "dontstarve/music/music_work_ruins") or
+                (_isruin and "dontstarve/music/music_work_ruins") or
                 (_iscave and "dontstarve/music/music_work_cave") or
                 (SEASON_BUSY_MUSIC[inst.state.season]),
                 "busy")
@@ -178,10 +169,10 @@ local function StartDanger(player)
         local x, y, z = player.Transform:GetWorldPosition()
         _soundemitter:PlaySound(
             #TheSim:FindEntities(x, y, z, 30, { "epic" }, { "noepicmusic" }) > 0
-            and ((IsInRuins(player) and "dontstarve/music/music_epicfight_ruins") or
+            and ((_isruin and "dontstarve/music/music_epicfight_ruins") or
                 (_iscave and "dontstarve/music/music_epicfight_cave") or
                 (SEASON_EPICFIGHT_MUSIC[inst.state.season]))
-            or ((IsInRuins(player) and "dontstarve/music/music_danger_ruins") or
+            or ((_isruin and "dontstarve/music/music_danger_ruins") or
                 (_iscave and "dontstarve/music/music_danger_cave") or
                 (SEASON_DANGER_MUSIC[inst.state.season])),
             "danger")
@@ -238,7 +229,7 @@ local function CheckAction(player)
         end
     end
     if player:HasTag("working") then
-        StartBusy(player)
+        StartBusy()
     end
 end
 

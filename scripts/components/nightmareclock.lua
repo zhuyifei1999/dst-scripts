@@ -50,9 +50,6 @@ local _ismastersim = _world.ismastersim
 local _phasedirty = true
 local _activatedplayer = nil
 
---Master simulation
-local _lockedphase = nil
-
 --Network
 local _segs = {}
 for i, v in ipairs(PHASE_NAMES) do
@@ -66,19 +63,13 @@ local _remainingtimeinphase = net_float(inst.GUID, "nightmareclock._remainingtim
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
 
-local function GetLocalAmbientPhase()
-    return _activatedplayer.components.areaaware ~= nil
-        and _activatedplayer.components.areaaware:CurrentlyInTag("Nightmare")
-        and PHASE_NAMES[_phase:value()]
-        or "calm"
-end
-
 local function UpdateAmbientSounds()
     if _activatedplayer == nil then
         return
     end
 
-    local phase = GetLocalAmbientPhase()
+    local phase = _activatedplayer.components.areaaware and _activatedplayer.components.areaaware:CurrentlyInTag("Nightmare") and PHASE_NAMES[_phase:value()] or "calm"
+
     local param = SOUNDS[phase].param
     if param > 0 and not _world.SoundEmitter:PlayingSound("nightmare_loop") then
         _world.SoundEmitter:PlaySound("dontstarve/cave/nightmare", "nightmare_loop")
@@ -94,7 +85,8 @@ local function UpdateWorldSounds()
         return
     end
 
-    local phase = GetLocalAmbientPhase()
+    local phase = _activatedplayer.components.areaaware and _activatedplayer.components.areaaware:CurrentlyInTag("Nightmare") and PHASE_NAMES[_phase:value()] or "calm"
+
     local sound = SOUNDS[phase].sound
     if sound ~= nil then
         _world.SoundEmitter:PlaySound(sound)
@@ -126,8 +118,9 @@ local function OnPlayerDeactivated(src, player)
     end
 end
 
+
 local function SetDefaultLengths()
-    for i, v in ipairs(_segs) do
+    for i,v in ipairs(_segs) do
         v:set(TUNING.NIGHTMARE_SEGS[string.upper(PHASE_NAMES[i])] or 0)
     end
 end
@@ -150,11 +143,8 @@ local OnSetSegs = _ismastersim and function(src, lengths)
 end or nil
 
 local OnSetPhase = _ismastersim and function(src, phase)
-    if _lockedphase ~= nil then
-        return
-    end
     phase = PHASES[phase]
-    if phase ~= nil then
+    if phase then
         _phase:set(phase)
         local resulttime = _segs[_phase:value()]:value() * TUNING.SEG_TIME + math.random() * TUNING.NIGHTMARE_SEG_VARIATION * TUNING.SEG_TIME
         _totaltimeinphase:set(resulttime)
@@ -164,32 +154,16 @@ local OnSetPhase = _ismastersim and function(src, phase)
 end or nil
 
 local OnNextPhase = _ismastersim and function()
-    if _lockedphase ~= nil then
-        return
-    end
     _remainingtimeinphase:set(0)
     self:LongUpdate(0)
 end or nil
 
 local OnNextCycle = _ismastersim and function()
-    if _lockedphase ~= nil then
-        return
-    end
     _phase:set(#PHASE_NAMES)
     _remainingtimeinphase:set(0)
     self:LongUpdate(0)
 end or nil
 
-local OnLockNightmarePhase = _ismastersim and function(src, phase)
-    _lockedphase = PHASES[phase]
-    if _lockedphase ~= nil then
-        _phase:set(_lockedphase)
-        local resulttime = _segs[_phase:value()]:value() * TUNING.SEG_TIME + math.random() * TUNING.NIGHTMARE_SEG_VARIATION * TUNING.SEG_TIME
-        _totaltimeinphase:set(resulttime)
-        _remainingtimeinphase:set(0)
-    end
-    self:LongUpdate(0)
-end or nil
 
 --------------------------------------------------------------------------
 --[[ Initialization ]]
@@ -212,7 +186,6 @@ if _ismastersim then
     inst:ListenForEvent("ms_setnightmarephase", OnSetPhase, _world)
     inst:ListenForEvent("ms_nextnightmarephase", OnNextPhase, _world)
     inst:ListenForEvent("ms_nextnightmarecycle", OnNextCycle, _world)
-    inst:ListenForEvent("ms_locknightmarephase", OnLockNightmarePhase, _world)
 end
 
 inst:StartUpdatingComponent(self)
@@ -233,18 +206,16 @@ function self:OnUpdate(dt)
         --Advance to next phase
         _remainingtimeinphase:set_local(0)
 
-        if _lockedphase == nil then
-            while _remainingtimeinphase:value() <= 0 do
-                _phase:set((_phase:value() % #PHASE_NAMES) + 1)
-                local resulttime = _segs[_phase:value()]:value() * TUNING.SEG_TIME + math.random() * TUNING.NIGHTMARE_SEG_VARIATION * TUNING.SEG_TIME
-                _totaltimeinphase:set(resulttime)
-                _remainingtimeinphase:set(_totaltimeinphase:value())
-            end
+        while _remainingtimeinphase:value() <= 0 do
+            _phase:set((_phase:value() % #PHASE_NAMES) + 1)
+            local resulttime = _segs[_phase:value()]:value() * TUNING.SEG_TIME + math.random() * TUNING.NIGHTMARE_SEG_VARIATION * TUNING.SEG_TIME
+            _totaltimeinphase:set(resulttime)
+            _remainingtimeinphase:set(_totaltimeinphase:value())
+        end
 
-            if remainingtimeinphase < 0 then
-                self:OnUpdate(-remainingtimeinphase)
-                return
-            end
+        if remainingtimeinphase < 0 then
+            self:OnUpdate(-remainingtimeinphase)
+            return
         end
     else
         --Clients and slaves must wait at end of phase for a server sync
@@ -283,7 +254,6 @@ if _ismastersim then function self:OnSave()
         phase = PHASE_NAMES[_phase:value()],
         totaltimeinphase = _totaltimeinphase:value(),
         remainingtimeinphase = _remainingtimeinphase:value(),
-        lockedphase = _lockedphase ~= nil and PHASE_NAMES[_lockedphase] or nil,
     }
 
     for i, v in ipairs(_segs) do
@@ -311,7 +281,6 @@ if _ismastersim then function self:OnLoad(data)
 
     _totaltimeinphase:set(data.totaltimeinphase or _segs[_phase:value()]:value() * TUNING.SEG_TIME)
     _remainingtimeinphase:set(math.min(data.remainingtimeinphase or _totaltimeinphase:value(), _totaltimeinphase:value()))
-    _lockedphase = data.lockedphase ~= nil and PHASES[data.lockedphase] or nil
 end end
 
 --------------------------------------------------------------------------
@@ -321,6 +290,7 @@ end end
 function self:GetDebugString()
     return string.format("%s: %2.2f ", PHASE_NAMES[_phase:value()], _remainingtimeinphase:value())
 end
+
 
 --------------------------------------------------------------------------
 --[[ End ]]

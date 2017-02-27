@@ -140,14 +140,6 @@ local function GetMoistureRateScale(inst)
     end
 end
 
-local function GetSandstormLevel(inst)
-    return inst.player_classified ~= nil and inst.player_classified.sandstormlevel:value() / 7 or 0
-end
-
-local function IsCarefulWalking(inst)
-    return inst.player_classified ~= nil and inst.player_classified.iscarefulwalking:value()
-end
-
 local function ShouldKnockout(inst)
     return DefaultKnockoutTest(inst) and not inst.sg:HasStateTag("yawn")
 end
@@ -619,6 +611,14 @@ local function OnSetOwner(inst)
         RemoveActivePlayerComponents(inst)
         DeactivateHUD(inst)
         DeactivatePlayer(inst)
+    end
+end
+
+local function OnChangeArea(inst, area)
+    if area.tags and table.contains(area.tags, "Nightmare") then
+        inst.components.playervision:SetNightmareVision(true)
+    else
+        inst.components.playervision:SetNightmareVision(false)
     end
 end
 
@@ -1332,9 +1332,9 @@ local function SnapCamera(inst)
     end
 end
 
-local function ShakeCamera(inst, mode, duration, speed, scale, source_or_pt, maxDist)
-    if source_or_pt ~= nil and maxDist ~= nil then
-        local distSq = source_or_pt.entity ~= nil and inst:GetDistanceSqToInst(source_or_pt) or inst:GetDistanceSqToPoint(source_or_pt:Get())
+local function ShakeCamera(inst, mode, duration, speed, scale, source, maxDist)
+    if source ~= nil and maxDist ~= nil then
+        local distSq = inst:GetDistanceSqToInst(source)
         local k = math.max(0, math.min(1, distSq / (maxDist * maxDist)))
         scale = easing.outQuad(k, scale, -scale, 1)
     end
@@ -1452,7 +1452,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_slurtle_armor.zip"),
         Asset("ANIM", "anim/player_staff.zip"),
         Asset("ANIM", "anim/player_hit_darkness.zip"),
-        Asset("ANIM", "anim/player_hit_spike.zip"),
 
         Asset("ANIM", "anim/player_frozen.zip"),
         Asset("ANIM", "anim/player_shock.zip"),
@@ -1467,8 +1466,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_skin_change.zip"),
         Asset("ANIM", "anim/player_receive_gift.zip"),
         Asset("ANIM", "anim/shadow_skinchangefx.zip"),
-        Asset("ANIM", "anim/player_townportal.zip"),
-        Asset("ANIM", "anim/player_channel.zip"),
 
         Asset("SOUND", "sound/sfx.fsb"),
         Asset("SOUND", "sound/wilson.fsb"),
@@ -1479,7 +1476,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_knockedout.zip"),
         Asset("ANIM", "anim/player_emotesxl.zip"),
         Asset("ANIM", "anim/player_emotes_dance0.zip"),
-        Asset("ANIM", "anim/player_emotes_sit.zip"),
         Asset("ANIM", "anim/player_emotes.zip"),
         Asset("ANIM", "anim/player_hatdance.zip"),
         Asset("ANIM", "anim/player_bow.zip"),
@@ -1493,8 +1489,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_encumbered.zip"),
         Asset("ANIM", "anim/player_encumbered_jump.zip"),
 
-        Asset("ANIM", "anim/player_sandstorm.zip"),
-        Asset("ANIM", "anim/player_tiptoe.zip"),
+        Asset("ANIM", "anim/fish01.zip"),   --These are used for the fishing animations.
+        Asset("ANIM", "anim/eel01.zip"),
 
         Asset("ANIM", "anim/corner_dude.zip"),
 
@@ -1513,7 +1509,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_mount_frozen.zip"),
         Asset("ANIM", "anim/player_mount_groggy.zip"),
         Asset("ANIM", "anim/player_mount_encumbered.zip"),
-        Asset("ANIM", "anim/player_mount_sandstorm.zip"),
         Asset("ANIM", "anim/player_mount_hit_darkness.zip"),
         Asset("ANIM", "anim/player_mount_emotes.zip"),
         Asset("ANIM", "anim/player_mount_emotes_dance0.zip"),
@@ -1657,8 +1652,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.GetMoisture = GetMoisture -- Didn't want to make moisture a networked component
         inst.GetMaxMoisture = GetMaxMoisture -- Didn't want to make moisture a networked component
         inst.GetMoistureRateScale = GetMoistureRateScale -- Didn't want to make moisture a networked component
-        inst.GetSandstormLevel = GetSandstormLevel -- Didn't want to make stormwatcher a networked component
-        inst.IsCarefulWalking = IsCarefulWalking -- Didn't want to make carefulwalking a networked component
         inst.EnableMovementPrediction = EnableMovementPrediction
         inst.ShakeCamera = ShakeCamera
         inst.SetGhostMode = SetGhostMode
@@ -1679,8 +1672,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 
         inst:AddComponent("playervision")
         inst:AddComponent("areaaware")
-        inst.components.areaaware:SetUpdateDist(2)
-        
+        inst:ListenForEvent("changearea", OnChangeArea)
         inst:AddComponent("attuner")
         --attuner server listeners are not registered until after "ms_playerjoined" has been pushed
 
@@ -1788,8 +1780,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 
         inst:AddComponent("moisture")
         inst:AddComponent("sheltered")
-        inst:AddComponent("stormwatcher")
-        inst:AddComponent("carefulwalker")
 
         -------
 

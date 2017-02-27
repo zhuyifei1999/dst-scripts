@@ -12,20 +12,16 @@
     Spawn a dirt mound that must be dug up to get loot?
 ]]
 
-local RuinsRespawner = require "prefabs/ruinsrespawner"
-
 local assets =
 {
     Asset("ANIM", "anim/worm.zip"),
     Asset("SOUND", "sound/worm.fsb"),
-    Asset("SCRIPT", "scripts/prefabs/ruinsrespawner.lua"),
 }
 
 local prefabs =
 {
     "monstermeat",
     "wormlight",
-    "worm_ruinsrespawner_inst",
 }
 
 local brain = require("brains/wormbrain")
@@ -318,5 +314,4 @@ local function fn()
     return inst
 end
 
-return Prefab("worm", fn, assets, prefabs),
-    RuinsRespawner("worm")
+return Prefab("worm", fn, assets, prefabs)

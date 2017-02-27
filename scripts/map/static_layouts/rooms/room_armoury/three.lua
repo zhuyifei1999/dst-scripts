@@ -100,7 +100,7 @@ return {
         },
         {
           name = "",
-          type = "rook_nightmare_spawner",
+          type = "rook_nightmare",
           shape = "rectangle",
           x = 400,
           y = 240,

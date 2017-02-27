@@ -358,9 +358,8 @@ local function placerdecor(level)
             for item_name, item_offsets in pairs(item_info) do
                 for j, offset in ipairs(item_offsets) do
                     local item_inst = SpawnPrefab(item_name)
-                    item_inst:AddTag("FX")
-                    item_inst:AddTag("NOCLICK") --not all decor pieces come with NOCLICK by default
                     item_inst:AddTag("placer")
+                    item_inst:AddTag("NOCLICK") --not all decor pieces come with NOCLICK by default
                     item_inst.entity:SetCanSleep(false)
                     item_inst.entity:SetParent(inst.entity)
                     item_inst.Transform:SetPosition(unpack(offset))

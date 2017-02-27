@@ -834,7 +834,7 @@ function self:OnUpdate(dt)
 
     --Update pollen
     if _hasfx then
-        if _season ~= "summer" or (ThePlayer ~= nil and _world.components.sandstorms ~= nil and _world.components.sandstorms:IsInSandstorm(ThePlayer)) then
+        if _season ~= "summer" then
             _pollenfx.particles_per_tick = 0
         elseif _seasonprogress < .2 then
             local ramp = _seasonprogress / .2
@@ -977,7 +977,7 @@ function self:GetDebugString()
     if _ismastersim then
         table.insert(str, string.format("lightning:%2.2f", _nextlightningtime))
     end
-
+    
     return table.concat(str, ", ")
 end
 
@@ -986,3 +986,4 @@ end
 --------------------------------------------------------------------------
 
 end)
+

@@ -27,50 +27,10 @@ local function DoMountedFoleySounds(inst)
     end
 end
 
-local function DoRunSounds(inst)
-    if inst.sg.mem.footsteps > 3 then
-        PlayFootstep(inst, .6, true)
-    else
-        inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
-        PlayFootstep(inst, 1, true)
-    end
-end
-
 local function DoMountSound(inst, mount, sound)
     if mount ~= nil and mount.sounds ~= nil then
         inst.SoundEmitter:PlaySound(mount.sounds[sound], nil, nil, true)
     end
-end
-
-local function ConfigureRunState(inst)
-    if inst.replica.rider ~= nil and inst.replica.rider:IsRiding() then
-        inst.sg.statemem.riding = true
-        inst.sg.statemem.groggy = inst:HasTag("groggy")
-    elseif inst.replica.inventory:IsHeavyLifting() then
-        inst.sg.statemem.heavy = true
-    elseif inst:HasTag("beaver") then
-        if inst:HasTag("groggy") then
-            inst.sg.statemem.groggy = true
-        else
-            inst.sg.statemem.normal = true
-        end
-    elseif inst:GetSandstormLevel() >= TUNING.SANDSTORM_FULL_LEVEL and not inst.components.playervision:HasGoggleVision() then
-        inst.sg.statemem.sandstorm = true
-    elseif inst:HasTag("groggy") then
-        inst.sg.statemem.groggy = true
-    elseif inst:IsCarefulWalking() then
-        inst.sg.statemem.careful = true
-    else
-        inst.sg.statemem.normal = true
-    end
-end
-
-local function GetRunStateAnim(inst)
-    return (inst.sg.statemem.heavy and "heavy_walk")
-        or (inst.sg.statemem.sandstorm and "sand_walk")
-        or (inst.sg.statemem.groggy and "idle_walk")
-        or (inst.sg.statemem.careful and "careful_walk")
-        or "run"
 end
 
 local actionhandlers =
@@ -198,13 +158,8 @@ local actionhandlers =
     ActionHandler(ACTIONS.PLANT, "doshortaction"),
     ActionHandler(ACTIONS.HARVEST, "dolongaction"),
     ActionHandler(ACTIONS.PLAY, "play"),
-    ActionHandler(ACTIONS.JUMPIN, "jumpin"),
-    ActionHandler(ACTIONS.TELEPORT,
-        function(inst, action)
-            return (action.invobject ~= nil and "dolongaction")
-                or "give"
-        end),
     ActionHandler(ACTIONS.FAN, "use_fan"),
+    ActionHandler(ACTIONS.JUMPIN, "jumpin"),
     ActionHandler(ACTIONS.DRY, "doshortaction"),
     ActionHandler(ACTIONS.CASTSPELL,
         function(inst, action)
@@ -246,7 +201,6 @@ local actionhandlers =
     ActionHandler(ACTIONS.DRAW, "dolongaction"),
     ActionHandler(ACTIONS.BUNDLE, "bundle"),
     ActionHandler(ACTIONS.UNWRAP, "dolongaction"),
-    ActionHandler(ACTIONS.STARTCHANNELING, "startchanneling"),
 }
 
 local events =
@@ -274,7 +228,7 @@ local events =
     end),
 }
 
-local states =
+local states = 
 {
     State
     {
@@ -296,26 +250,46 @@ local states =
                 return
             end
 
-            --V2C: Only predict looped anims. For idles with a pre, stick with
-            --     "idle_loop" and wait for server to trigger the custom anims
-            local anim =
-                (inst.replica.rider ~= nil and inst.replica.rider:IsRiding() and "idle_loop") or
-                (inst:HasTag("beaver") and "idle_loop") or
-                (inst.replica.inventory ~= nil and inst.replica.inventory:IsHeavyLifting() and "heavy_idle") or
-                (   inst:GetSandstormLevel() >= TUNING.SANDSTORM_FULL_LEVEL and
-                    not inst.components.playervision:HasGoggleVision() and
-                    (   inst.AnimState:IsCurrentAnimation("sand_walk_pst") or
-                        inst.AnimState:IsCurrentAnimation("sand_walk") or
-                        inst.AnimState:IsCurrentAnimation("sand_walk_pre")
-                    ) and
-                    "sand_idle_loop"
-                ) or
-                "idle_loop"
+            local anims = {}
+
+            if inst.replica.rider ~= nil and inst.replica.rider:IsRiding() then
+                table.insert(anims, "idle_loop")
+            elseif inst:HasTag("beaver") then
+                if inst:HasTag("groggy") then
+                    table.insert(anims, "idle_groggy_pre")
+                    table.insert(anims, "idle_groggy")
+                else
+                    table.insert(anims, "idle_loop")
+                end
+            elseif inst.replica.inventory ~= nil and inst.replica.inventory:IsHeavyLifting() then
+                table.insert(anims, "heavy_idle")
+            elseif inst.replica.sanity ~= nil and not inst.replica.sanity:IsSane() then
+                table.insert(anims, "idle_sanity_pre")
+                table.insert(anims, "idle_sanity_loop")
+            elseif inst.IsFreezing ~= nil and inst:IsFreezing() then
+                table.insert(anims, "idle_shiver_pre")
+                table.insert(anims, "idle_shiver_loop")
+            elseif inst.IsOverheating ~= nil and inst:IsOverheating() then
+                table.insert(anims, "idle_hot_pre")
+                table.insert(anims, "idle_hot_loop")
+            elseif inst:HasTag("groggy") then
+                table.insert(anims, "idle_groggy_pre")
+                table.insert(anims, "idle_groggy")
+            else
+                table.insert(anims, "idle_loop")
+            end
 
             if pushanim then
-                inst.AnimState:PushAnimation(anim, true)
+                for i, v in ipairs(anims) do
+                    inst.AnimState:PushAnimation(v, i == #anims)
+                end
             else
-                inst.AnimState:PlayAnimation(anim, true)
+                inst.AnimState:PlayAnimation(anims[1], #anims == 1)
+                for i, v in ipairs(anims) do
+                    if i > 1 then
+                        inst.AnimState:PushAnimation(v, i == #anims)
+                    end
+                end
             end
         end,
 
@@ -334,11 +308,18 @@ local states =
     {
         name = "run_start",
         tags = { "moving", "running", "canrotate" },
-
+        
         onenter = function(inst)
-            ConfigureRunState(inst)
+            inst.sg.statemem.riding = inst.replica.rider ~= nil and inst.replica.rider:IsRiding()
+            inst.sg.statemem.heavy = not inst.sg.statemem.riding and inst.replica.inventory:IsHeavyLifting()
+
             inst.components.locomotor:RunForward()
-            inst.AnimState:PlayAnimation(GetRunStateAnim(inst).."_pre")
+            inst.AnimState:PlayAnimation(
+                (inst.sg.statemem.heavy and "heavy_walk_pre") or
+                (inst:HasTag("groggy") and "idle_walk_pre") or
+                "run_pre"
+            )
+
             inst.sg.mem.footsteps = 0
         end,
 
@@ -365,7 +346,7 @@ local states =
 
             --unmounted
             TimeEvent(4 * FRAMES, function(inst)
-                if inst.sg.statemem.normal then
+                if not (inst.sg.statemem.riding or inst.sg.statemem.heavy) then
                     PlayFootstep(inst, nil, true)
                     DoFoleySounds(inst)
                 end
@@ -395,13 +376,15 @@ local states =
         tags = { "moving", "running", "canrotate" },
 
         onenter = function(inst)
-            ConfigureRunState(inst)
+            inst.sg.statemem.riding = inst.replica.rider ~= nil and inst.replica.rider:IsRiding()
+            inst.sg.statemem.heavy = not inst.sg.statemem.riding and inst.replica.inventory:IsHeavyLifting()
+
             inst.components.locomotor:RunForward()
 
-            local anim = GetRunStateAnim(inst)
-            if anim == "run" then
-                anim = "run_loop"
-            end
+            local anim =
+                (inst.sg.statemem.heavy and "heavy_walk") or
+                (inst:HasTag("groggy") and "idle_walk") or
+                "run_loop"
             if not inst.AnimState:IsCurrentAnimation(anim) then
                 inst.AnimState:PlayAnimation(anim, true)
             end
@@ -417,77 +400,48 @@ local states =
         {
             --unmounted
             TimeEvent(7 * FRAMES, function(inst)
-                if inst.sg.statemem.normal then
-                    DoRunSounds(inst)
+                if not (inst.sg.statemem.riding or inst.sg.statemem.heavy) then
+                    if inst.sg.mem.footsteps > 3 then
+                        PlayFootstep(inst, .6, true)
+                    else
+                        inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
+                        PlayFootstep(inst, 1, true)
+                    end
                     DoFoleySounds(inst)
                 end
             end),
             TimeEvent(15 * FRAMES, function(inst)
-                if inst.sg.statemem.normal then
-                    DoRunSounds(inst)
-                    DoFoleySounds(inst)
-                end
-            end),
-
-            --careful
-            --Frame 11 shared with heavy lifting below
-            --[[TimeEvent(11 * FRAMES, function(inst)
-                if inst.sg.statemem.careful then
-                    DoRunSounds(inst)
-                    DoFoleySounds(inst)
-                end
-            end),]]
-            TimeEvent(26 * FRAMES, function(inst)
-                if inst.sg.statemem.careful then
-                    DoRunSounds(inst)
-                    DoFoleySounds(inst)
-                end
-            end),
-
-            --sandstorm
-            --Frame 12 shared with groggy below
-            --[[TimeEvent(12 * FRAMES, function(inst)
-                if inst.sg.statemem.sandstorm then
-                    DoRunSounds(inst)
-                    DoFoleySounds(inst)
-                end
-            end),]]
-            TimeEvent(23 * FRAMES, function(inst)
-                if inst.sg.statemem.sandstorm then
-                    DoRunSounds(inst)
-                    DoFoleySounds(inst)
-                end
-            end),
-
-            --groggy
-            TimeEvent(1 * FRAMES, function(inst)
-                if inst.sg.statemem.groggy then
-                    DoRunSounds(inst)
-                    DoFoleySounds(inst)
-                end
-            end),
-            TimeEvent(12 * FRAMES, function(inst)
-                if inst.sg.statemem.groggy or
-                    inst.sg.statemem.sandstorm then
-                    DoRunSounds(inst)
+                if not (inst.sg.statemem.riding or inst.sg.statemem.heavy) then
+                    if inst.sg.mem.footsteps > 3 then
+                        PlayFootstep(inst, .6, true)
+                    else
+                        inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
+                        PlayFootstep(inst, 1, true)
+                    end
                     DoFoleySounds(inst)
                 end
             end),
 
             --heavy lifting
             TimeEvent(11 * FRAMES, function(inst)
-                if inst.sg.statemem.heavy or
-                    inst.sg.statemem.sandstorm or
-                    inst.sg.statemem.careful then
-                    DoRunSounds(inst)
+                if inst.sg.statemem.heavy then
+                    if inst.sg.mem.footsteps > 3 then
+                        PlayFootstep(inst, .6, true)
+                    else
+                        inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
+                        PlayFootstep(inst, 1, true)
+                    end
                     DoFoleySounds(inst)
                 end
             end),
             TimeEvent(36 * FRAMES, function(inst)
-                if inst.sg.statemem.heavy or
-                    inst.sg.statemem.sandstorm or
-                    inst.sg.statemem.careful then
-                    DoRunSounds(inst)
+                if inst.sg.statemem.heavy then
+                    if inst.sg.mem.footsteps > 3 then
+                        PlayFootstep(inst, .6, true)
+                    else
+                        inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
+                        PlayFootstep(inst, 1, true)
+                    end
                     DoFoleySounds(inst)
                 end
             end),
@@ -500,48 +454,12 @@ local states =
             end),
             TimeEvent(5 * FRAMES, function(inst)
                 if inst.sg.statemem.riding then
-                    DoRunSounds(inst)
-                end
-            end),
-        },
-
-        events =
-        {
-            EventHandler("gogglevision", function(inst, data)
-                if data.enabled then
-                    if inst.sg.statemem.sandstorm then
-                        inst.sg:GoToState("run")
+                    if inst.sg.mem.footsteps > 3 then
+                        PlayFootstep(inst, .6, true)
+                    else
+                        inst.sg.mem.footsteps = inst.sg.mem.footsteps + 1
+                        PlayFootstep(inst, 1, true)
                     end
-                elseif not (inst.sg.statemem.riding or
-                            inst.sg.statemem.heavy or
-                            inst.sg.statemem.sandstorm or
-                            inst:GetSandstormLevel() < TUNING.SANDSTORM_FULL_LEVEL) then
-                    inst.sg:GoToState("run")
-                end
-            end),
-            EventHandler("sandstormlevel", function(inst, data)
-                if data.level < TUNING.SANDSTORM_FULL_LEVEL then
-                    if inst.sg.statemem.sandstorm then
-                        inst.sg:GoToState("run")
-                    end
-                elseif not (inst.sg.statemem.riding or
-                            inst.sg.statemem.heavy or
-                            inst.sg.statemem.sandstorm or
-                            inst.components.playervision:HasGoggleVision()) then
-                    inst.sg:GoToState("run")
-                end
-            end),
-            EventHandler("carefulwalking", function(inst, data)
-                if not data.careful then
-                    if inst.sg.statemem.careful then
-                        inst.sg:GoToState("run")
-                    end
-                elseif not (inst.sg.statemem.riding or
-                            inst.sg.statemem.heavy or
-                            inst.sg.statemem.sandstorm or
-                            inst.sg.statemem.groggy or
-                            inst.sg.statemem.careful) then
-                    inst.sg:GoToState("run")
                 end
             end),
         },
@@ -557,9 +475,15 @@ local states =
         tags = { "canrotate", "idle" },
 
         onenter = function(inst)
-            ConfigureRunState(inst)
+            local riding = inst.replica.rider ~= nil and inst.replica.rider:IsRiding()
+            local heavy = not riding and inst.replica.inventory:IsHeavyLifting()
+
             inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation(GetRunStateAnim(inst).."_pst")
+            inst.AnimState:PlayAnimation(
+                (heavy and "heavy_walk_pst") or
+                (inst:HasTag("groggy") and "idle_walk_pst") or
+                "run_pst"
+            )
         end,
 
         events =
@@ -1376,7 +1300,7 @@ local states =
             inst.AnimState:PlayAnimation("build_pst")
             inst.sg:GoToState("idle", true)
         end,
-
+        
         onexit = function(inst)
             inst.SoundEmitter:KillSound("make_preview")
         end,
@@ -1503,7 +1427,7 @@ local states =
             inst.AnimState:PlayAnimation("build_pst")
             inst.sg:GoToState("idle", true)
         end,
-
+        
         onexit = function(inst)
             inst.SoundEmitter:KillSound("make_preview")
         end,
@@ -2113,48 +2037,9 @@ local states =
             inst.AnimState:PlayAnimation("wrap_pst")
             inst.sg:GoToState("idle", true)
         end,
-
+        
         onexit = function(inst)
             inst.SoundEmitter:KillSound("make_preview")
-        end,
-    },
-
-    State
-    {
-        name = "startchanneling",
-        tags = { "doing", "busy", "prechanneling" },
-
-        onenter = function(inst)
-            inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("channel_pre")
-            inst.AnimState:PushAnimation("channel_loop", true)
-
-            inst:PerformPreviewBufferedAction()
-            inst.sg:SetTimeout(TIMEOUT)
-        end,
-
-        timeline =
-        {
-            TimeEvent(7 * FRAMES, function(inst)
-                inst.sg:RemoveStateTag("busy")
-            end),
-        },
-
-        onupdate = function(inst)
-            if inst:HasTag("doing") then
-                if inst.entity:FlattenMovementPrediction() then
-                    inst.sg:GoToState("idle", "noanim")
-                end
-            elseif inst.bufferedaction == nil then
-                inst.AnimState:PlayAnimation("channel_pst")
-                inst.sg:GoToState("idle", true)
-            end
-        end,
-
-        ontimeout = function(inst)
-            inst:ClearBufferedAction()
-            inst.AnimState:PlayAnimation("channel_pst")
-            inst.sg:GoToState("idle", true)
         end,
     },
 }

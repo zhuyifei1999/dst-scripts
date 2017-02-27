@@ -1,3 +1,5 @@
+require "prefabutil"
+
 local assets =
 {
     Asset("ANIM", "anim/bee_queen_hive.zip"),
@@ -446,7 +448,6 @@ local function fn()
     MakeObstaclePhysics(inst, PHYS_RAD_LRG)
 
     inst:AddTag("event_trigger")
-    inst:AddTag("antlion_sinkhole_blocker")
 
     inst.AnimState:SetBank("bee_queen_hive")
     inst.AnimState:SetBuild("bee_queen_hive")

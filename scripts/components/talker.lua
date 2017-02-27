@@ -143,9 +143,6 @@ local function sayfn(self, script, nobroadcast, colour)
             self.widget:Hide()
         end
         Sleep(line.duration)
-        if not self.inst:IsValid() or (self.widget ~= nil and not self.widget.inst:IsValid()) then
-            return
-        end
     end
 
     if self.widget ~= nil then

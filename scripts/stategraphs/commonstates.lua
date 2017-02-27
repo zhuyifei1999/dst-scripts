@@ -36,19 +36,6 @@ CommonHandlers.OnFreeze = function()
 end
 
 --------------------------------------------------------------------------
---V2C: DST improved to support freezable entities with no health component
-
-local function onfreezeex(inst)
-    if not (inst.components.health ~= nil and inst.components.health:IsDead()) then
-        inst.sg:GoToState("frozen")
-    end
-end
-
-CommonHandlers.OnFreezeEx = function()
-    return EventHandler("freeze", onfreezeex)
-end
-
---------------------------------------------------------------------------
 local function onattacked(inst, data)
     if inst.components.health ~= nil and not inst.components.health:IsDead()
         and (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("frozen")) then
@@ -358,7 +345,8 @@ CommonStates.AddWalkStates = function(states, timelines, anims, softstop)
 
         onenter = function(inst)
             inst.components.locomotor:WalkForward()
-            inst.AnimState:PlayAnimation(get_loco_anim(inst, anims ~= nil and anims.walk or nil, "walk_loop"), true)
+            local anim_to_play = get_loco_anim(inst, anims ~= nil and anims.walk or nil, "walk_loop")
+            inst.AnimState:PlayAnimation(anim_to_play, true)
             inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
         end,
 

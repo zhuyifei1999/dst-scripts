@@ -60,20 +60,22 @@ local book_defs =
                     -- we have to special case this one because birds can't land on creep
                     local result_offset = FindValidPositionByFan(theta, radius, 12, function(offset)
                         local pos = pt + offset
-                        --NOTE: The first search includes invisible entities
-                        return #TheSim:FindEntities(pos.x, 0, pos.z, 1, nil, { "INLIMBO", "FX" }) <= 0
-                            and TheWorld.Map:IsDeployPointClear(pos, nil, 1)
+                        local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, 1)
+                        return next(ents) == nil
                     end)
 
                     if result_offset ~= nil then
-                        local x, z = pt.x + result_offset.x, pt.z + result_offset.z
+                        local pos = pt + result_offset
                         local tentacle = SpawnPrefab("tentacle")
-                        tentacle.Transform:SetPosition(x, 0, z)
-                        tentacle.sg:GoToState("attack_pre")
+
+                        tentacle.Transform:SetPosition(pos:Get())
+
+                        ShakeAllCameras(CAMERASHAKE.FULL, .2, .02, .25, reader, 40)
 
                         --need a better effect
-                        SpawnPrefab("splash_ocean").Transform:SetPosition(x, 0, z)
-                        ShakeAllCameras(CAMERASHAKE.FULL, .2, .02, .25, reader, 40)
+                        SpawnPrefab("splash_ocean").Transform:SetPosition(pos:Get())
+                        --PlayFX((pt + result_offset), "splash", "splash_ocean", "idle")
+                        tentacle.sg:GoToState("attack_pre")
                     end
 
                     Sleep(.33)

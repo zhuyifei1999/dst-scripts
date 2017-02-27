@@ -35,8 +35,14 @@ local function SetPhysicalScale(inst, scale)
     inst.Transform:SetScale(xformscale, xformscale, xformscale)
     inst.DynamicShadow:SetSize(3.5 * scale, 1.5 * scale)
     if scale > 1 then
-        inst.Physics:SetMass(1000 * scale)
+        inst.Physics:SetMass(100 * scale)
         inst.Physics:SetCapsule(1.2 * scale, 1)
+        inst.Physics:SetCollisionGroup(COLLISION.GIANTS)
+        inst.Physics:ClearCollisionMask()
+        inst.Physics:CollidesWith(COLLISION.WORLD)
+        inst.Physics:CollidesWith(COLLISION.OBSTACLES)
+        inst.Physics:CollidesWith(COLLISION.CHARACTERS)
+        inst.Physics:CollidesWith(COLLISION.GIANTS)
     end
 end
 
@@ -457,6 +463,9 @@ local function OnDestroyOther(inst, other)
         other.components.workable.action ~= ACTIONS.NET and
         not inst.recentlycharged[other] then
         SpawnPrefab("collapse_small").Transform:SetPosition(other.Transform:GetWorldPosition())
+        if other.components.lootdropper ~= nil and (other:HasTag("tree") or other:HasTag("boulder")) then
+            other.components.lootdropper:SetLoot({})
+        end
         other.components.workable:Destroy(inst)
         if other:IsValid() and other.components.workable ~= nil and other.components.workable:CanBeWorked() then
             inst.recentlycharged[other] = true
@@ -490,7 +499,7 @@ local function fn()
     inst.entity:AddNetwork()
 
     inst.Transform:SetSixFaced()
-    MakeGiantCharacterPhysics(inst, 1000, 1.2)
+    MakeCharacterPhysics(inst, 100, 1.2)
     SetPhysicalScale(inst, 1)
 
     inst.AnimState:SetBank("klaus")

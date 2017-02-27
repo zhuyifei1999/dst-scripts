@@ -1,43 +1,42 @@
 local assets =
 {
-    Asset("ANIM", "anim/nightmaresword.zip"),
-    Asset("ANIM", "anim/swap_nightmaresword.zip"),
+	Asset("ANIM", "anim/nightmaresword.zip"),
+	Asset("ANIM", "anim/swap_nightmaresword.zip"),
+    
 }
 
 local function onequip(inst, owner)
     owner.AnimState:OverrideSymbol("swap_object", "swap_nightmaresword", "swap_nightmaresword")
-    owner.AnimState:Show("ARM_carry")
-    owner.AnimState:Hide("ARM_normal")
+    owner.AnimState:Show("ARM_carry") 
+    owner.AnimState:Hide("ARM_normal") 
 end
 
-local function onunequip(inst, owner)
-    owner.AnimState:Hide("ARM_carry")
-    owner.AnimState:Show("ARM_normal")
+local function onunequip(inst, owner) 
+    owner.AnimState:Hide("ARM_carry") 
+    owner.AnimState:Show("ARM_normal") 
 end
 
 local function fn()
-    local inst = CreateEntity()
+	local inst = CreateEntity()
 
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
-
-    inst.AnimState:SetBank("nightmaresword")
-    inst.AnimState:SetBuild("nightmaresword")
-    inst.AnimState:PlayAnimation("idle")
-    inst.AnimState:SetMultColour(1, 1, 1, .6)
-
-    inst:AddTag("shadow")
-    inst:AddTag("sharp")
-
-    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
 
+    inst.AnimState:SetBank("nightmaresword")
+    inst.AnimState:SetBuild("nightmaresword")
+    inst.AnimState:PlayAnimation("idle")
+    inst.AnimState:SetMultColour(1, 1, 1, 0.6)
+    
+    inst:AddTag("shadow")
+    inst:AddTag("sharp")
+    
     inst:AddComponent("weapon")
     inst.components.weapon:SetDamage(TUNING.NIGHTSWORD_DAMAGE)
 

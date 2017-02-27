@@ -68,7 +68,6 @@ return {
             SLOTFULL = "One material at a time!",
             DUPLICATE = "We have already conquered this knowledge.",
             NOTSCULPTABLE = "That material is not befitting a work of art.",
-            CANTSHADOWREVIVE = "T'will not raise from death, it seems.",
         },
         GIVETOPLAYER = 
         {
@@ -122,20 +121,12 @@ return {
     ANNOUNCE_ADVENTUREFAIL = "Back to the Otherworld, victory shall be mine!",
     ANNOUNCE_BEES = "Back, wee speared creatures!",
     ANNOUNCE_BOOMERANG = "Urg! I must master the curved weapon.",
-    ANNOUNCE_ANTLION_SINKHOLE = "The earth rebels against us!",
-    ANNOUNCE_ANTLION_TRIBUTE =
-    {
-        "A gift, that you may not devour us.",
-        "A tribute for thee, great lion!",
-        "O great lion, we pay tribute this day!",
-    },
     ANNOUNCE_CHARLIE = "Show yourself!",
     ANNOUNCE_CHARLIE_ATTACK = "Coward!",
     ANNOUNCE_COLD = "Brrr! Where are my furs!",
     ANNOUNCE_HOT = "The hot sun tires me.",
     ANNOUNCE_CRAFTING_FAIL = "I lack the provisions.",
     ANNOUNCE_DEERCLOPS = "A worthy foe approaches.",
-    ANNOUNCE_CAVEIN = "Rocks shall rain from on high!",
     ANNOUNCE_DUSK = "The sun is setting, darkness waits nearby.",
     ANNOUNCE_EAT =
     {
@@ -165,7 +156,6 @@ return {
     ANNOUNCE_KLAUS_UNCHAINED = "Now the true battle begins!",
     ANNOUNCE_KLAUS_CALLFORHELP = "Call thy hordes, they shan't protect thee!",
 
-    ANNOUNCE_SNARED = "No cage can hold me!",
     ANNOUNCE_ENTER_DARK = "And the curtain falls.",
     ANNOUNCE_ENTER_LIGHT = "I step into the light!",
     ANNOUNCE_FREEDOM = "Freedom! The saga continues!",
@@ -200,7 +190,6 @@ return {
     ANNOUNCE_TRAP_WENT_OFF = "That wasn't part of the plan.",
     ANNOUNCE_UNIMPLEMENTED = "It is not of this world.",
     ANNOUNCE_WORMHOLE = "That was a sloppy adventure.",
-    ANNOUNCE_TOWNPORTALTELEPORT = "Fear not! I have arrived!",
     ANNOUNCE_CANFIX = "\nI can repair this.",
     ANNOUNCE_ACCOMPLISHMENT = "May I return to battle now?",
     ANNOUNCE_ACCOMPLISHMENT_DONE = "Victory! Alright, let us away.",    
@@ -409,22 +398,7 @@ return {
         GIFT = "A gift! From... the gods?",
         GIFTWRAP = "I must show my allies how much they are valued!",
         POTTEDFERN = "What are you meant to do with such a thing?",
-        SUCCULENT_POTTED = "A feast for mine eyes!",
-        SUCCULENT_PLANT = "Hearty greenery.",
-        SUCCULENT_PICKED = "Tis not foodstuff.",
         SENTRYWARD = "May the secrets of this land be divulged by the gods.",
-        TOWNPORTAL =
-        {
-            GENERIC = "To save my allies the journey.",
-            ACTIVE = "By the power of the sand!",
-        },
-        TOWNPORTALTALISMAN = 
-        {
-            GENERIC = "A present from the mighty lioness!",
-            ACTIVE = "I shall desert this foul place!",
-        },
-        WETPAPER = "Tis drenched.",
-        WETPOUCH = "A treasure lies within!",
         MOONROCK_PIECES = "It has faced Mani's wrath.",
         MOONBASE =
         {
@@ -444,17 +418,7 @@ return {
             CAVE = "Mani cannot see us here.",
         },
         LIGHTER = "It lights the fires of mine heart!",
-        ANTLION = 
-        {
-            GENERIC = "Tis the mighty lion!",
-            VERYHAPPY = "The lion smiles upon us.",
-            UNHAPPY = "We've incurred its wrath!",
-        },
-        ANTLIONTRINKET = "A fitting tribute!",
-        SANDSPIKE = "The earth itself dares to fight me!",
-        SANDBLOCK = "Tis a castle of sand!",
-        GLASSSPIKE = "Twas forged in flame.",
-        GLASSBLOCK = "Such beauty!",
+        
         ABIGAIL_FLOWER = 
         {
             GENERIC = "For me?",
@@ -986,7 +950,7 @@ return {
             GENERIC = "Oh sweet songbird, sing me thy tune!",
             HELD = "Freedom has been wrenched from thy grasp by mine own.",
         },
-        CANARY_POISONED = "What plague has besieged this innocent woodland creature?",
+        CANARY_POISONED = "What plague has beseiged this innocent woodland creature?",
        
         CRITTERLAB = "Tis a peculiar boulder.",
         CRITTER_GLOMLING = "A warrior's faithful companion!",
@@ -1020,8 +984,6 @@ return {
         {
             GENERIC = "It's probably a tuft of grass.",
         },
-        GOGGLESHAT = "T'would be no help in battle.",
-        DESERTHAT = "Tis no helm.",
         DEVTOOL = "It smells of bacon!",
         DEVTOOL_NODEV = "I'm not strong enough to wield it.",
         DIRTPILE = "A small hill of earth.",
@@ -1209,7 +1171,6 @@ return {
             FUNNY = "Tis not as majestic as I once pictured.",
             COMPLETE = "It looks as though it might roam the earth any moment!",
         },
-        STALKER = "It lives to battle once more!",
         FROG =
         {
             DEAD = "You're a bit slimy for Valhalla.",
@@ -1423,7 +1384,6 @@ return {
         NIGHTSWORD = "It takes a brave warrior to wield this sword.",
         NITRE = "It contains explosive components.",
         ONEMANBAND = "Sing with me! We are the guardians of Asgard!",
-        OASISLAKE = "Perhaps a sword-wielding maiden lies beneath.",
         PANDORASCHEST = "It contains a mystery.",
         PANFLUTE = "I prefer to face my enemies awake.",
         PAPYRUS = "May it carry forth the record of my saga.",
@@ -1576,11 +1536,6 @@ return {
             OUT = "Looks delicate.",
             LOW = "The lava crust is reforming.",
             NORMAL = "Beautiful light!",
-        },
-        CAVEIN_BOULDER =
-        {
-            GENERIC = "A feat of strength in the making.",
-            RAISED = "I will clear the way!",
         },
         ROCK = "Smash!",
         MOOSE_NESTING_GROUND = "A nest of adorable villainy.",
@@ -1979,26 +1934,6 @@ return {
         SPEAR_WATHGRITHR = "My comrade in arms!",
         REVIVER = "Feel the passion inside!",
         SHADOWHEART = "Blackest hearts. Darkest omens.",
-        ATRIUM_RUBBLE = 
-        {
-            LINE_1 = "Tis a portrait of an ancient people. They live in wretchedness.",
-            LINE_2 = "There is no painting here. Only stone.",
-            LINE_3 = "A great evil sweeps across the land.",
-            LINE_4 = "Many of the people are cleaved in two!",
-            LINE_5 = "A glittering city, blessed by the gods.",
-        },
-        ATRIUM_STATUE = "I doth smell their fear!",
-        ATRIUM_LIGHT = 
-        {
-            ON = "An unholy flame.",
-            OFF = "An ancient basin to house flames.",
-        },
-        ATRIUM_GATE =
-        {
-            ON = "The light reveals ancient text: \"Come Back Next Update.\"",
-            OFF = "Tis the Bifrost!",
-        },
-        ATRIUM_KEY = "Heimdallr's key to the Bifrost.",
         LIFEINJECTOR = "This will return me to top form.",
         ROCK_MOON = "A gift from Mani.",
         MOONROCKNUGGET = "A gift from Mani.",

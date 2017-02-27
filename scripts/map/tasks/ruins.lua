@@ -44,8 +44,8 @@ AddTask("Residential", {
     entrance_room = "RuinedCityEntrance",
     room_choices =
     {
-        ["Vacant"] = 3,
-        --["LightHut"] = 1,
+        ["Vacant"] = 2,
+        ["LightHut"] = 1,
         ["PitRoom"] = 2,
     },
     room_bg = GROUND.TILES,
@@ -62,7 +62,7 @@ AddTask("MilitaryPits", {
     entrance_room = "MilitaryEntrance",
     room_choices =
     {
-        ["MilitaryMaze"] = 3,
+        ["MilitaryMaze"] = 1,
         ["Barracks"] = 3,
     },
     room_bg = GROUND.TILES,
@@ -111,7 +111,7 @@ AddTask("TheLabyrinth", {
     room_tags = {"Nightmare"},
     entrance_room="LabyrinthEntrance",
     room_choices={
-        ["Labyrinth"] = function() return 4+math.random(2) end,
+        ["Labyrinth"] = function() return 3+math.random(3) end,
         ["RuinedGuarden"] = 1,
     },
     room_bg=GROUND.IMPASSABLE,
@@ -213,21 +213,4 @@ AddTask("Residential3", {
     room_bg = GROUND.TILES,
     background_room="BGWilds",
     colour={r=1,g=0,b=0.6,a=1},
-})
-
-AddTask("AtriumMaze", {
-    locks={LOCKS.TIER3, LOCKS.RUINS},
-    keys_given= {},
-    room_tags = {"Atrium", "Nightmare"},
-    required_prefabs = {"atrium_gate"},
-    entrance_room = "AtriumMazeEntrance",
-    room_choices =
-    {
-        ["AtriumMazeRooms"] = 8,
-    },
-    room_bg = GROUND.TILES,
-    maze_tiles = {rooms = {"atrium_hallway", "atrium_hallway_two", "atrium_hallway_three"}, bosses = {"atrium_hallway_three"}, special = {start={"atrium_start"}, finish={"atrium_end"}}, bridge_ground=GROUND.FAKE_GROUND},
-    background_room="AtriumMazeRooms", 
-    make_loop = true,
-    colour={r=0.6,g=0.6,b=0.0,a=1},
 })

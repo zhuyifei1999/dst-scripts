@@ -258,11 +258,6 @@ STRINGS =
             GENERIC = "Jump In",
             HAUNT = "Haunt",
         },
-        TELEPORT =
-        {
-            GENERIC = "Use",
-            TOWNPORTAL = "Touch",
-        },
         MURDER = "Murder",
         HEAL =
         {
@@ -326,8 +321,6 @@ STRINGS =
         BUNDLESTORE = "Store",
         WRAPBUNDLE = "Wrap",
         UNWRAP = "Unwrap",
-        STARTCHANNELING = "Touch",
-        STOPCHANNELING = "Stop Channeling",
     },
 
     -- PC controls get hex ranges EE90xx to EE9Fxx
@@ -355,7 +348,6 @@ STRINGS =
         FUEL = "Water-Logged",
         TOOL = "Slippery",
         FOOD = "Soggy",
-        POUCH = "Soggy",
         WETGOOP = "Very",
     },
 
@@ -608,10 +600,8 @@ STRINGS =
         POND = "Pond",
         POND_MOS = "Pond",
         POND_CAVE = "Pond",
-        OASISLAKE = "Lake",
         RABBIT = "Rabbit",
         RABBITHOLE = "Rabbit Hole",
-        CAVEIN_BOULDER = "Boulder",
         ROCK1 = "Boulder",
         ROCK2 = "Boulder",
         ROCK_MOON = "Boulder",
@@ -727,10 +717,8 @@ STRINGS =
         FISHINGROD = "Fishing Rod",
         FISH = "Fish",
         FISH_COOKED = "Cooked Fish",
-        FOSSIL_PIECE = "Fossil Fragments",
+        FOSSIL_PIECE = "Fossil Fragment",
         FOSSIL_STALKER = "Odd Skeleton",
-        FOSSILSPIKE = "Fossil Cage",
-        STALKER = "Reanimated Skeleton",
         HONEY = "Honey",
         HONEYCOMB = "Honeycomb",
         BEESWAX = "Beeswax",
@@ -843,7 +831,6 @@ STRINGS =
         TRINKET_35 = "Empty Elixir", -- Empty Potion Bottle
         TRINKET_36 = "Faux Fangs", -- Vampire Teeth
         TRINKET_37 = "Broken Stake", -- Wooden Stake
-        ANTLIONTRINKET = "Beach Toy", --bucket and shovel
 
         CARROT_PLANTED = "Carrot",
         LEIF = "Treeguard",
@@ -1058,22 +1045,7 @@ STRINGS =
         THULECITE_PIECES = "Thulecite Fragments",
         RUINSHAT = "Thulecite Crown",
         POTTEDFERN = "Potted Fern",
-        SUCCULENT_POTTED = "Potted Succulent",
-        SUCCULENT_PLANT = "Succulent",
-        SUCCULENT_PICKED = "Succulent",
         SENTRYWARD = "Ocuvigil",
-        TOWNPORTAL = "The Lazy Deserter",
-        TOWNPORTALTALISMAN = "Desert Stone",
-        WETPAPER = "Paper",
-        WETPOUCH = "Crumpled Package",
-        GOGGLESHAT = "Fashion Goggles",
-        DESERTHAT = "Desert Goggles",
-        ANTLION = "Antlion",
-        ANTLION_SINKHOLE = "Sinkhole",
-        SANDSPIKE = "Sand Spike",
-        SANDBLOCK = "Sand Castle",
-        GLASSSPIKE = "Glass Spike",
-        GLASSBLOCK = "Glass Castle",
         MOONBASE = "Moon Stone",
         MOONDIAL = "Moon Dial",
         MOONROCK_PIECES = "Moon Rubble",
@@ -1229,13 +1201,7 @@ STRINGS =
         SADDLE_WAR = "War Saddle",
 
         REVIVER = "Telltale Heart",
-        
         SHADOWHEART = "Shadow Atrium",
-        ATRIUM_RUBBLE = "Ancient Mural",
-        ATRIUM_STATUE = "Ancient Statue",
-        ATRIUM_LIGHT = "Ancient Beacon",
-        ATRIUM_GATE = "Ancient Gateway",
-        ATRIUM_KEY = "Ancient Key",
 
         SHADOWMETEOR = "Meteor",
 
@@ -1529,10 +1495,8 @@ STRINGS =
         ACCOMPLISHMENT_SHRINE = "Prove your worth as a human being.",
         WALL_RUINS_ITEM = "These walls will take quite a beating.",
         POTTEDFERN = "Make a pot and stick a fern inside.",
-        SUCCULENT_POTTED = "A pretty succulent jammed in a pot.",
         ENDTABLE = "A decorative table.",
         SENTRYWARD = "The cartographer's most valuable weapon.",
-        TOWNPORTAL = "Gather your friends with sand power.",
         MOONDIAL = "Track the phases of the moon!",
         THULECITE = "Combine tiny bits into a big chunk.",
         RUINSHAT = "Complete with ancient force field!",
@@ -1572,8 +1536,6 @@ STRINGS =
         BELL = "This isn't just any bell.",
 
         CATCOONHAT = "For those who value warmth over friends.",
-        GOGGLESHAT = "Decorative goggles you can oggle.",
-        DESERTHAT = "Keeps the sand out of your eyes.",
 
         FEATHERPENCIL = "Yes, the feather IS necessary.",
         MAPSCROLL = "Show everyone what you've seen!",
@@ -1781,7 +1743,6 @@ STRINGS =
     --ITEM DESCRIPTIONS
     DESCRIBE_NULL = "MISSING DESCRIPTION STRING",
 
-    --NOTE: Limit to 7 strings per table! (Using net_tinybyte for NPC chatter)
     PIG_TALK_FOLLOWWILSON = { "YOU FRIEND", "I LOVE FRIEND", "YOU IS GOOD", "I FOLLOW!" },
     PIG_TALK_FIND_LIGHT = { "SCARY", "NO LIKE DARK", "WHERE IS SUN?", "STAY NEAR FIRE", "FIRE IS GOOD" },
     PIG_TALK_LOOKATWILSON = { "WHO ARE YOU?", "YOU NOT PIG", "UGLY MONKEY PERSON", "YOU HAS MEAT?" },
@@ -1804,7 +1765,6 @@ STRINGS =
     PIG_GUARD_TALK_GOHOME = { "MUST DEFEND!", "I PROTECT", "KING! KING!" },
     PIG_GUARD_TALK_LOOKATWILSON = { "YOU LEAVE NOW", "YOU GO AWAY", "YOU NO STAY" },
 
-    --NOTE: Limit to 7 strings per table! (Using net_tinybyte for NPC chatter)
     RABBIT_BATTLECRY = { "HOP!", "KILL!", "DIE!" },
     RABBIT_MEAT_BATTLECRY = { "MEAT!", "UNCLEAN!", "MURDERER!", "REVENGE!", "MONSTER!" },
     RABBIT_GIVEUP = { "DONE.", "LATER." },
@@ -1814,11 +1774,6 @@ STRINGS =
     RABBIT_PANICHOUSEFIRE = { "HOME!", "FIRE!", "BURNING!" },
     RABBIT_PANICHAUNT = { "SCARED!", "AAAH!!", "OHH!", "GHOST!" },
     RABBIT_PANICBOSS = { "RUN!", "AHHH!", "IT MAD", "EHHH!" },
-
-
-    --NOTE: Limit to 7 strings per table! (Using net_tinybyte for NPC chatter)
-    STALKER_BATTLECRY = { "Huurgh...", "...(growl)...", "...gruuuugh...", "Hrrgh...", "...grraaugh...", "...(rumble)...", "...gruh..." },
-    STALKER_PLAYER_BATTLECRY = { "Huurgh...", "...gruuuugh...", "...grraaugh...", "...(gurgle)...", "...(crunch)...", "...Y-yy...", "...W-wwh..." },
 
     EPITAPHS =
     {
@@ -2269,8 +2224,6 @@ STRINGS.UI =
             "May Wa Leng",
             "Will Turnbull",
             "Michael Rodriguez",
-            "Ragnar Guidote",
-            "Erica Pitt",
         },
 
         ALTGAMES =
@@ -3459,7 +3412,6 @@ STRINGS.UI =
         DEERCLOPS = "Deerclops",
         GOOSEMOOSE = "Meese/Geese",
         DRAGONFLY = "Dragonfly",
-        ANTLIONTRIBUTE = "Antlion Tribute",
         BATS = "Bats",
         FISSURE = "Nightmare Fissures",
         WORMATTACKS = "Cave Worm Attacks",
@@ -4750,7 +4702,6 @@ STRINGS.UI =
         DARKSTART = "Dark",
         CAVESTART = "Caves",
 
-		EVENT_DEFAULT = "Auto",
         EVENT_HALLOWEDNIGHTS_2016 = "Hallowed Nights",
         EVENT_WINTERSFEAST_2016 = "Winters Feast",
         EVENT_YEAR_OF_THE_GOBBLER_2017 = "Year of the Gobbler",

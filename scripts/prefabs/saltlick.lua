@@ -1,7 +1,6 @@
 require "prefabutil"
 
-local assets =
-{
+local assets = {
     Asset("ANIM", "anim/salt_lick.zip"),
 }
 

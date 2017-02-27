@@ -1,3 +1,9 @@
+require "prefabutil"
+local brain = require "brains/chesterbrain"
+
+local WAKE_TO_FOLLOW_DISTANCE = 14
+local SLEEP_NEAR_LEADER_DISTANCE = 7
+
 local assets =
 {
     Asset("ANIM", "anim/ui_chester_shadow_3x4.zip"),
@@ -23,8 +29,6 @@ local prefabs =
     "globalmapiconunderfog",
 }
 
-local brain = require "brains/chesterbrain"
-
 local sounds =
 {
     hurt = "dontstarve/creatures/chester/hurt",
@@ -36,9 +40,6 @@ local sounds =
     boing = "dontstarve/creatures/chester/boing",
     lick = "dontstarve/creatures/chester/lick",
 }
-
-local WAKE_TO_FOLLOW_DISTANCE = 14
-local SLEEP_NEAR_LEADER_DISTANCE = 7
 
 local function ShouldWakeUp(inst)
     return DefaultWakeTest(inst) or not inst.components.follower:IsNearLeader(WAKE_TO_FOLLOW_DISTANCE)

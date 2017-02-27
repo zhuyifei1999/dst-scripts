@@ -122,17 +122,13 @@ local function GetActiveItem(inst)
 end
 
 local function GetItemInSlot(inst, slot)
-    if inst._itemspreview ~= nil then
-        return inst._itemspreview[slot]
-    end
-    return inst._items[slot] ~= nil and inst._items[slot]:value() or nil
+    return inst._itemspreview ~= nil and inst._itemspreview[slot] or
+        (inst._items[slot] ~= nil and inst._items[slot]:value() or nil)
 end
 
 local function GetEquippedItem(inst, eslot)
-    if inst._equipspreview ~= nil then
-        return inst._equipspreview[eslot]
-    end
-    return inst._equips[eslot] ~= nil and inst._equips[eslot]:value() or nil
+    return inst._equipspreview ~= nil and inst._equipspreview[eslot] or
+        (inst._equips[eslot] ~= nil and inst._equips[eslot]:value() or nil)
 end
 
 local function GetItems(inst)

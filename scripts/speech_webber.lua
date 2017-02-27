@@ -68,7 +68,6 @@ return {
             SLOTFULL = "Mom said to always finish my plate before seconds.",
             DUPLICATE = "We don't need two!",
             NOTSCULPTABLE = "Eight legs isn't nearly enough to sculpt with THAT.",
-            CANTSHADOWREVIVE = "It's not waking up.",
         },
         GIVETOPLAYER = 
         {
@@ -120,16 +119,8 @@ return {
 	ANNOUNCE_CHARLIE_ATTACK = "Aah! Monsters in the dark!",
 	ANNOUNCE_COLD = "Brrr... spider hair isn't very warm.",
 	ANNOUNCE_HOT = "Hot as heck!",
-	ANNOUNCE_ANTLION_SINKHOLE = "The ground's giving way!",
-	ANNOUNCE_ANTLION_TRIBUTE =
-	{
-        "For you!",
-        "Maybe it'll be happier now.",
-        "I hope you like our tribute!",
-	},
 	ANNOUNCE_CRAFTING_FAIL = "We're missing something.",
 	ANNOUNCE_DEERCLOPS = "That sounded like a big meanie.",
-	ANNOUNCE_CAVEIN = "I think the sky is falling!",
 	ANNOUNCE_DUSK = "Almost time for bed.",
 	ANNOUNCE_NODANGERAFK = "Can't! There's scary-biteys about!",
 	ANNOUNCE_NODANGERGIFT = "We'll open it later as a celebration of surviving this!",
@@ -165,7 +156,6 @@ return {
 	ANNOUNCE_KLAUS_UNCHAINED = "Its belly looks hungry!",
 	ANNOUNCE_KLAUS_CALLFORHELP = "Uh-oh, its got friends coming!",
 
-	ANNOUNCE_SNARED = "Hey! Meanie!",
 	ANNOUNCE_ENTER_DARK = "We can't see! I want my nightlight.",
 	ANNOUNCE_ENTER_LIGHT = "Phew, light!",
 	ANNOUNCE_FREEDOM = "We made it!",
@@ -201,7 +191,6 @@ return {
 	ANNOUNCE_TRAP_WENT_OFF = "Eek!",
 	ANNOUNCE_UNIMPLEMENTED = "Gah! It needs more time.",
 	ANNOUNCE_WORMHOLE = "That was a scary hole!",
-	ANNOUNCE_TOWNPORTALTELEPORT = "We're here!",
 	ANNOUNCE_CANFIX = "\nWe can repair it.",
 	ANNOUNCE_ACCOMPLISHMENT = "We're so capable!",
 	ANNOUNCE_ACCOMPLISHMENT_DONE = "We're a super hero!",	
@@ -410,22 +399,7 @@ return {
 		GIFT = "Oh! What is it?!",
         GIFTWRAP = "I want to give someone something nice!",
 		POTTEDFERN = "Mum would like this nice fern.",
-		SUCCULENT_POTTED = "I wonder if mum's ever seen one.",
-        SUCCULENT_PLANT = "We think it's a cactus.",
-        SUCCULENT_PICKED = "It got picked.",
 		SENTRYWARD = "Woah! I bet it sees so far!",
-		TOWNPORTAL =
-        {
-			GENERIC = "Floaty and weird.",
-			ACTIVE = "I hope no one gets a headache.",
-		},
-        TOWNPORTALTALISMAN = 
-        {
-			GENERIC = "We didn't know rocks could smell.",
-			ACTIVE = "I think it's ready!",
-		},
-		WETPAPER = "It'll probably dry off soon. Maybe.",
-		WETPOUCH = "We hope the stuff inside didn't get smushed.",
         MOONROCK_PIECES = "Oh... We don't like this!",
         MOONBASE =
         {
@@ -446,17 +420,7 @@ return {
         },
 
 		LIGHTER = "Lighter than what?",
-		ANTLION = 
-		{
-			GENERIC = "You're fuzzy. We like that.",
-			VERYHAPPY = "It's always nice to have more bug friends.",
-			UNHAPPY = "I think it's upset.",
-		},
-		ANTLIONTRINKET = "Sand castles!!",
-		SANDSPIKE = "Ouchie!",
-        SANDBLOCK = "Not like this!!",
-        GLASSSPIKE = "Careful, it's fragile.",
-        GLASSBLOCK = "We think it's great and we love it.",
+		
 		ABIGAIL_FLOWER =
 		{
 			GENERIC = "Pretty petals!",
@@ -1025,8 +989,6 @@ return {
 		{
 			GENERIC = "It was once grass.",
 		},
-		GOGGLESHAT = "We wish it had eight lenses.",
-        DESERTHAT = "It covers our biggest eyes, anyway.",
 		DEVTOOL = "Axe me a question!",
 		DEVTOOL_NODEV = "I can't wield that.",
 		DIRTPILE = "A pile of dirt. I bet it's hiding something.",
@@ -1214,7 +1176,6 @@ return {
 			FUNNY = "Maybe we shouldn't play with bones.",
 			COMPLETE = "That looks real good!",
         },
-        STALKER = "I don't think it's friendly.",
 		FROG =
 		{
 			DEAD = "A hop too far.",
@@ -1428,7 +1389,6 @@ return {
 		NIGHTSWORD = "Are you seeing this too?",
 		NITRE = "What are we supposed to do with this?",
 		ONEMANBAND = "We need to practice more.",
-		OASISLAKE = "That's a pretty lake!",
 		PANFLUTE = "A well constructed instrument.",
 		PAPYRUS = "We could do our homework.",
 		WAXPAPER = "Why have paper you can't draw on?",
@@ -1582,11 +1542,6 @@ return {
 			NORMAL = "Cozy!",
 			OUT = "It looks like it might break.",
 		},
-		CAVEIN_BOULDER =
-        {
-            GENERIC = "We'll need to mine it down, I guess.",
-            RAISED = "Gotta get rid of the other boulders first.",
-        },
 		ROCK_ICE = 
 		{
 			GENERIC = "Ice can be useful.",
@@ -1998,26 +1953,6 @@ return {
 		ICESTAFF = "It makes me feel funny.",
         REVIVER = "I think it loves me.",
         SHADOWHEART = "Why does it make me feel so bad?",
-        ATRIUM_RUBBLE = 
-        {
-			LINE_1 = "It's a picture of some bug people.",
-			LINE_2 = "This picture's all messed up.",
-			LINE_3 = "There's a lot of black goop in this picture.",
-			LINE_4 = "A picture of bug people escaping their bug outsides!",
-			LINE_5 = "A picture of a city. It looks like a nice place to live.",
-		},
-        ATRIUM_STATUE = "They look sick.",
-        ATRIUM_LIGHT = 
-        {
-			ON = "We don't like it.",
-			OFF = "No light.",
-		},
-        ATRIUM_GATE =
-        {
-			ON = "The light reveals ancient text: \"Come Back Next Update.\"",
-			OFF = "We need another piece to turn it on.",
-        },
-        ATRIUM_KEY = "This key is REALLY old.",
         LIFEINJECTOR = "I hate taking my medicine!",
 	},
 	DESCRIBE_GENERIC = "Can we play with it?",

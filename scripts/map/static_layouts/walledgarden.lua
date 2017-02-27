@@ -86,7 +86,7 @@ return {
       objects = {
         {
           name = "",
-          type = "minotaur_spawner",
+          type = "minotaur",
           shape = "rectangle",
           x = 320,
           y = 320,

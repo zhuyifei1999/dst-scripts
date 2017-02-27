@@ -108,16 +108,16 @@ local TRANSLATE_TO_PREFABS = {
     ["fissure"] =           {"fissure", "fissure_lower"},
     ["fern"] =              {"cave_fern"},
     ["flower_cave"] =       {"flower_cave", "flower_cave_double", "flower_cave_triple"},
-    ["slurper"] =           {"slurper", "slurper_spawner"},
+    ["slurper"] =           {"slurper"},
     ["cavelight"] =         {"cavelight", "cavelight_small", "cavelight_tiny"},
     ["bunnymen"] =          {"rabbithouse"},
     ["wormlights"] =        {"wormlight_plant"},
-    ["worms"] =             {"worm_spawner"},
+    ["worms"] =             {"worm"},
     ["slurtles"] =          {"slurtlehole"},
     ["rocky"] =             {"rocky"},
     ["lichen"] =            {"lichen"},
     ["banana"] =            {"cave_banana_tree"},
-    ["monkey"] =            {"monkeybarrel_spawner"}, 
+    ["monkey"] =            {"monkeybarrel"}, 
 }
 
 local TRANSLATE_AND_OVERRIDE = { --These are entities that should be translated to prefabs for world gen but also have a postinit override to do
@@ -400,7 +400,7 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
 						local x = (xs[idx]+1.5 - map_width/2.0)*TILE_SCALE --gjans: note the +1.5 instead of +0.5... RunMaze points are in a strange position.
 						local y = (ys[idx]+1.5 - map_height/2.0)*TILE_SCALE
 						--WorldSim:ReserveTile(xs[idx], ys[idx]) --gjans: This reseves the wrong tile, something wrong with the points returned by RunMaze.
-						--print(task.." Labyrinth Point of Interest:",xs[idx], ys[idx], x, y)
+						--print(task.." Labryth Point of Interest:",xs[idx], ys[idx], x, y)
 
 						if entities[prefab] == nil then
 							entities[prefab] = {}
@@ -439,71 +439,41 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
 	 		local xs, ys, types = WorldSim:GetPointsForMetaMaze(nodes)
 			
 			if xs ~= nil and #xs >0 then
-				local choices = topology_save.root:GetNodeById(task).maze_tiles
+				local closest = Vector3(9999999999, 9999999999, 0)
+				local task_node = topology_save.root:GetNodeById(task)
+				local choices = task_node.maze_tiles
 				local c_x, c_y = WorldSim:GetSiteCentroid(topology_save.GlobalTags["MazeEntrance"][task][1])
 				local centroid = Vector3(c_x, c_y, 0)
-
-				local distances = {}
 				for idx = 1,#xs do
-					table.insert(distances, {idx=idx, dist=(centroid - Vector3(xs[idx], ys[idx], 0)):LengthSq()})
-				end
-				table.sort(distances, function(a,b) return a.dist < b.dist end)
-				
-				if choices.special ~= nil then
-					local ends = {}
-					for _,d in ipairs(distances) do
-						local maze_room = math.abs(types[d.idx])
-						if maze_room == 1 or maze_room == 2 or maze_room == 4 or maze_room == 8 then
-							table.insert(ends, d.idx)
-						end
-					end
+					local current = Vector3(xs[idx], ys[idx], 0)
 
-					for idx = 1,#xs do
-						if idx == ends[1] or idx == ends[#ends] then
-							-- skip
-						elseif types[idx] > 0 then
-							obj_layout.Place({xs[idx], ys[idx]}, MAZE_CELL_EXITS_INV[types[idx] ], add_fn, choices.rooms)
-						else
-							obj_layout.Place({xs[idx], ys[idx]}, MAZE_CELL_EXITS_INV[-types[idx] ], add_fn, choices.bosses)
-						end
-					end
-					
-					local idx = ends[1]
-					obj_layout.Place({xs[idx], ys[idx]}, MAZE_CELL_EXITS_INV[math.abs(types[idx])], add_fn, choices.special.start)
-					idx = ends[#ends]
-					obj_layout.Place({xs[idx], ys[idx]}, MAZE_CELL_EXITS_INV[math.abs(types[idx])], add_fn, choices.special.finish)
+					local diff = centroid - current
+					local best = centroid - closest
 
-				else
-					types[distances[1].idx] = MAZE_CELL_EXITS.FOUR_WAY
-					for idx = 1,#xs do
-						if types[idx] > 0 then
-							obj_layout.Place({xs[idx], ys[idx]}, MAZE_CELL_EXITS_INV[types[idx] ], add_fn, choices.rooms)
-						else
-							obj_layout.Place({xs[idx], ys[idx]}, MAZE_CELL_EXITS_INV[-types[idx] ], add_fn, choices.bosses)
-						end
+					if diff:Length() < best:Length() then
+						closest = current
+					end 
+
+					if types[idx] > 0 then			
+						obj_layout.Place({xs[idx], ys[idx]}, MAZE_CELL_EXITS_INV[types[idx] ], add_fn, choices.rooms)
+					elseif types[idx] < 0 then
+						--print(task.." Maze Room of Interest:",xs[idx], ys[idx])
+						obj_layout.Place({xs[idx], ys[idx]}, MAZE_CELL_EXITS_INV[-types[idx] ], add_fn, choices.bosses)
+					else
+						print("ERROR Type:",types[idx], MAZE_CELL_EXITS_INV[types[idx] ])
 					end
 				end
-				
-                -- The maze can cut itself off from land at the edge, so draw a little road to attempt to bring it together.
+				obj_layout.Place({closest.x, closest.y}, "FOUR_WAY", add_fn, choices.rooms)
+
+                -- The maze can cut itself off from land at the edge, so draw a little road to bring it together.
                 for i,node in ipairs(topology_save.GlobalTags["MazeEntrance"][task]) do 
                     local entrance_node = topology_save.root:GetNodeById(node)
                     for id, edge in pairs(entrance_node.edges) do
                         if edge.node1.data.type ~= NODE_TYPE.Blank and edge.node2.data.type ~= NODE_TYPE.Blank then
-                            WorldSim:DrawCellLine( edge.node1.id, edge.node2.id, NODE_INTERNAL_CONNECTION_TYPE.EdgeSite, choices.bridge_ground or GROUND.BRICK, nil, true) 
-                            
-                            -- If the maze is force disconnected then double make sure that the maze is connected with the fake ground
-                            local othernode = edge.node1 == entrance_node and edge.node2 or edge.node1
-                            if table.contains(othernode.data.tags, "ForceDisconnected") then
-								for id, edge in pairs(othernode.edges) do
-									if edge.node1.data.type ~= NODE_TYPE.Blank and edge.node2.data.type ~= NODE_TYPE.Blank then
-										WorldSim:DrawCellLine( edge.node1.id, edge.node2.id, NODE_INTERNAL_CONNECTION_TYPE.EdgeSite, GROUND.FAKE_GROUND, nil, true) 
-									end
-								end
-                            end
+                            WorldSim:DrawCellLine( edge.node1.id, edge.node2.id, NODE_INTERNAL_CONNECTION_TYPE.EdgeSite, GROUND.BRICK)
                         end
                     end
                 end
-
 			end
 		end
     end
@@ -577,8 +547,6 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
     end
 
     for prefab,count in pairs(double_check) do
-		print ("Checking Required Prefab " .. prefab .. " has at least " .. count .. " instances (" .. (entities[prefab] ~= nil and #entities[prefab] or 0) .. " found).")
-		
         if entities[prefab] == nil or #entities[prefab] < count then
             print(string.format("PANIC: missing required prefab [%s]! Expected %d, got %d", prefab, count, entities[prefab] == nil and 0 or #entities[prefab]))
             if SKIP_GEN_CHECKS == false then

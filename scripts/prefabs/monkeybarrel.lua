@@ -1,11 +1,7 @@
-require "prefabutil"
-local RuinsRespawner = require "prefabs/ruinsrespawner"
-
 local assets =
 {
     Asset("ANIM", "anim/monkey_barrel.zip"),
     Asset("SOUND", "sound/monkey.fsb"),
-    Asset("SCRIPT", "scripts/prefabs/ruinsrespawner.lua"),
 }
 
 local prefabs =
@@ -14,7 +10,6 @@ local prefabs =
     "poop",
     "cave_banana",
     "collapse_small",
-    "monkeybarrel_ruinsrespawner_inst",
 }
 
 SetSharedLootTable('monkey_barrel',
@@ -201,5 +196,4 @@ local function fn()
     return inst
 end
 
-return Prefab("monkeybarrel", fn, assets, prefabs),
-    RuinsRespawner("monkeybarrel")
+return Prefab("monkeybarrel", fn, assets, prefabs)

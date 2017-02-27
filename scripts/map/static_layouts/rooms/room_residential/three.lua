@@ -155,7 +155,7 @@ return {
         },
         {
           name = "",
-          type = "monkeybarrel_spawner",
+          type = "monkeybarrel",
           shape = "rectangle",
           x = 182,
           y = 307,

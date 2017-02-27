@@ -326,22 +326,6 @@ local function OnChangeLeaves(inst, monster, monsterout)
     end
 end
 
-local function OnSeasonChange(inst, targetSeason)
-    if targetSeason == SEASONS.AUTUMN then
-        inst.target_leaf_state = "colorful"
-    elseif targetSeason == SEASONS.WINTER then
-        inst.target_leaf_state = "barren"
-    else --SPRING AND SUMMER
-        inst.target_leaf_state = "normal"
-    end
-
-    if inst.target_leaf_state ~= inst.leaf_state then
-        local time = math.random(TUNING.MIN_LEAF_CHANGE_TIME, TUNING.MAX_LEAF_CHANGE_TIME)
-        inst.targetleaveschangetime = GetTime() + time
-        inst.leaveschangetask = inst:DoTaskInTime(time, OnChangeLeaves)
-    end
-end
-
 local function ChangeSizeFn(inst)
     inst:RemoveEventCallback("animover", ChangeSizeFn)
     if inst.components.growable ~= nil then
@@ -1059,22 +1043,19 @@ local function onload(inst, data)
     end
 end
 
-local function ValidateLeaves(inst)
-    if not (inst.monster or inst:HasTag("stump") or inst:HasTag("burnt")) then 
-        --print("Validating leaves", TheWorld.state.remainingdaysinseason, TheWorld.state.season)
-        if TheWorld.state.isautumn then
+local function OnSeasonChanged(inst, season)
+    if not (inst.monster or inst:HasTag("stump") or inst:HasTag("burnt")) then
+        if season == SEASONS.AUTUMN then
             if inst.leaf_state ~= "colorful" then
                 inst.target_leaf_state = "colorful"
-                --print(inst, "fixing leaves for autumn", inst.leaf_state, inst.target_leaf_state)
                 if inst.leaveschangetask ~= nil then
                     inst.leaveschangetask:Cancel()
                 end
                 OnChangeLeaves(inst)
             end
-        elseif TheWorld.state.iswinter then
+        elseif season == SEASONS.WINTER then
             if inst.leaf_state ~= "barren" then
                 inst.target_leaf_state = "barren"
-                --print(inst, "fixing leaves for winter", inst.leaf_state, inst.target_leaf_state)
                 if inst.leaveschangetask ~= nil then
                     inst.leaveschangetask:Cancel()
                 end
@@ -1082,7 +1063,6 @@ local function ValidateLeaves(inst)
             end
         elseif inst.leaf_state ~= "normal" then
             inst.target_leaf_state = "normal"
-            --print(inst, "fixing leaves for spring/summer", inst.leaf_state, inst.target_leaf_state)
             if inst.leaveschangetask ~= nil then
                 inst.leaveschangetask:Cancel()
             end
@@ -1091,8 +1071,26 @@ local function ValidateLeaves(inst)
     end
 end
 
-local function OnDayEnd(inst, data)
-    --print("OnDayEnd", TheWorld.state.season, TheWorld.state.autumnlength, TheWorld.state.elapseddaysinseason, TheWorld.state.remainingdaysinseason, TheWorld.state.seasonprogress)
+local function ChangeToSeason(inst, targetSeason)
+    inst.target_leaf_state =
+        (targetSeason == SEASONS.AUTUMN and "colorful") or
+        (targetSeason == SEASONS.WINTER and "barren") or
+        "normal"
+
+    if inst.leaveschangetask ~= nil then
+        inst.leaveschangetask:Cancel()
+    end
+    if inst.target_leaf_state ~= inst.leaf_state then
+        local time = math.random(TUNING.MIN_LEAF_CHANGE_TIME, TUNING.MAX_LEAF_CHANGE_TIME)
+        inst.targetleaveschangetime = GetTime() + time
+        inst.leaveschangetask = inst:DoTaskInTime(time, OnChangeLeaves)
+    else
+        inst.targetleaveschangetime = nil
+        inst.leaveschangetask = nil
+    end
+end
+
+local function OnCyclesChanged(inst, cycles)
     if inst.leaveschangetask ~= nil or TheWorld.state.remainingdaysinseason > 3 then
         return
     end
@@ -1114,21 +1112,21 @@ local function OnDayEnd(inst, data)
             [SEASONS.SUMMER] = "summerlength"
         }
         if TheWorld.state[seasonlengths[targetSeason]] > 0 then
-            OnSeasonChange(inst, targetSeason)
+            ChangeToSeason(inst, targetSeason)
         else
             targetSeason = nextSeason[targetSeason]
             while targetSeason ~= currentSeason and TheWorld.state[seasonlengths[targetSeason]] <= 0 do
                 targetSeason = nextSeason[targetSeason]
             end
             if targetSeason ~= currentSeason and TheWorld.state[seasonlengths[targetSeason]] > 0 then
-                OnSeasonChange(inst, targetSeason)
+                ChangeToSeason(inst, targetSeason)
             end
         end
     end
 end
 
 -- Set up leaf state at start of game
-local function OnSeasonStart(inst)
+local function OnInitSeason(inst)
     if not (inst.monster or inst:HasTag("stump") or inst:HasTag("burnt")) then
         inst.target_leaf_state =
             (TheWorld.state.isautumn and "colorful") or
@@ -1279,8 +1277,8 @@ local function makefn(build, stage, data)
         -- Haunt effects more or less the same as evergreens
         inst.components.hauntable:SetOnHauntFn(OnHaunt)
 
-        inst:WatchWorldState("cycles", OnDayEnd)
-        inst:WatchWorldState("season", ValidateLeaves)
+        inst:WatchWorldState("cycles", OnCyclesChanged)
+        inst:WatchWorldState("season", OnSeasonChanged)
 
         inst.leaf_state = "normal"
 
@@ -1313,13 +1311,13 @@ local function makefn(build, stage, data)
         else
             --When POPULATING, season won't be valid yet at this point,
             --but we want this immediate for all later spawns.
-            OnSeasonStart(inst)
+            OnInitSeason(inst)
             inst.AnimState:SetTime(math.random() * 2)
             if data == "burnt" then
                 OnBurnt(inst, true)
             elseif POPULATING then
                 --Redo this after season is valid
-                inst:DoTaskInTime(0, OnSeasonStart)
+                inst:DoTaskInTime(0, OnInitSeason)
             end
         end
 

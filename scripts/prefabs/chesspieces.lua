@@ -19,8 +19,6 @@ local MATERIALS =
     {name="stone",      prefab="cutstone"},
 }
 
-local PHYSICS_RADIUS = .45
-
 local function GetBuildName(pieceid, materialid)
     local build = "swap_chesspiece_" .. PIECES[pieceid].name
 
@@ -177,7 +175,7 @@ local function makepiece(pieceid, materialid)
         inst.entity:AddSoundEmitter()
         inst.entity:AddNetwork()
 
-        MakeHeavyObstaclePhysics(inst, PHYSICS_RADIUS)
+        MakeInventoryPhysics(inst)
 
         inst.AnimState:SetBank("chesspiece")
         inst.AnimState:SetBuild("swap_chesspiece_"..PIECES[pieceid].name.."_marble")
@@ -196,9 +194,6 @@ local function makepiece(pieceid, materialid)
         if not TheWorld.ismastersim then
             return inst
         end
-
-        inst:AddComponent("heavyobstaclephysics")
-        inst.components.heavyobstaclephysics:SetRadius(PHYSICS_RADIUS)
 
         inst:AddComponent("inspectable")
         inst.components.inspectable.getstatus = getstatus

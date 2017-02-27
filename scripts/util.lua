@@ -1190,24 +1190,3 @@ function CalcDiminishingReturns(current, basedelta)
     local dcharge = dampen * basedelta * .5 * (1 + math.random() * dampen)
     return current + dcharge
 end
-
-function Dist2dSq(p1, p2) 
-	local dx = p1.x - p2.x
-	local dy = p1.y - p2.y
-	return dx*dx + dy*dy
-end
-
-function DistPointToSegment2dSq(p, v1, v2) 
-	local l2 = Dist2dSq(v1, v2)
-	if (l2 == 0) then
-		return Dist2dSq(p, v1)
-	end
-	local t = ((p.x - v1.x) * (v2.x - v1.x) + (p.y - v1.y) * (v2.y - v1.y)) / l2
-	if (t < 0) then
-		return Dist2dSq(p, v1)
-	end
-	if (t > 1) then
-		return Dist2dSq(p, v2)
-	end
-	return Dist2dSq(p, {x = v1.x + t * (v2.x - v1.x), y =v1.y + t * (v2.y - v1.y)});
-end

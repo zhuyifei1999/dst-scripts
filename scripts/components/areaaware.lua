@@ -3,15 +3,13 @@ local AreaAware = Class(function(self, inst)
     self.current_area = -1
     self.current_area_data = nil
     self.lastpt = Vector3(-9999,0,-9999)
-	self.updatedistsq = 16 --4*4
 
     self.inst:StartUpdatingComponent(self)
 end)
 
 function AreaAware:UpdatePosition(x, y, z)
-    self.lastpt.x, self.lastpt.z = x, z
 
-    if not TheWorld.Map:IsPassableAtPoint(x, 0, z) then
+    if not TheWorld.Map:IsPassableAtPoint(x, y, z) then
         return
     end
 
@@ -33,14 +31,11 @@ function AreaAware:UpdatePosition(x, y, z)
 end
 
 function AreaAware:OnUpdate(dt)
-    local x, y, z = self.inst.Transform:GetWorldPosition()
-    if distsq(x, z, self.lastpt.x, self.lastpt.z) > self.updatedistsq then
-        self:UpdatePosition(x, 0, z)
+    local pt = self.inst:GetPosition()
+    if pt:DistSq(self.lastpt) > 4*4 then
+        self:UpdatePosition(pt:Get())
+        self.lastpt = pt
     end
-end
-
-function AreaAware:SetUpdateDist(dist)
-	self.updatedistsq = dist*dist
 end
 
 function AreaAware:GetCurrentArea()
