@@ -14,7 +14,7 @@ local function fn()
 
     inst.AnimState:SetBank("bone_shards")
     inst.AnimState:SetBuild("bone_shards")
-    inst.AnimState:PlayAnimation("idle", false)
+    inst.AnimState:PlayAnimation("idle")
 
     inst.entity:SetPristine()
 
@@ -24,7 +24,6 @@ local function fn()
 
     inst:AddComponent("inspectable")
     inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem.atlasname = "images/inventoryimages.xml"
 
     inst:AddComponent("stackable")
 

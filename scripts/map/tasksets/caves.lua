@@ -37,6 +37,7 @@ AddTaskSet("cave_default", {
         "Sacred",
         "TheLabyrinth",
         "SacredAltar",
+        "AtriumMaze",
     },
     numoptionaltasks = 8,
     optionaltasks = {
@@ -74,7 +75,7 @@ AddTaskSet("cave_default", {
         "CaveExitTask10",
     },
     set_pieces = { -- if you add or remove tasks, don't forget to update this list!
-        ["TentaclePillar"] = { count = 10, tasks= {
+        ["TentaclePillar"] = { count = 11, tasks= { -- Note: An odd number because AtriumMaze contains one
             "MudWorld", "MudCave", "MudLights", "MudPit", "BigBatCave", "RockyLand", "RedForest", "GreenForest", "BlueForest", "SpillagmiteCaverns", "SwampySinkhole", "CaveSwamp", "UndergroundForest", "PleasantSinkhole", "FungalNoiseForest", "FungalNoiseMeadow", "BatCloister", "RabbitTown", "RabbitCity", "SpiderLand", "RabbitSpiderWar",
         } },
         ["ResurrectionStone"] = { count = 2, tasks={

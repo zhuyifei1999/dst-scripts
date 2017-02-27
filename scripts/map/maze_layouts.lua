@@ -52,6 +52,28 @@ local function GetLayoutsForType( name )
 	return layouts
 end
 
+local function GetSpecialLayoutsForType( name )
+	local layouts = 
+		{
+			["SINGLE_NORTH"] = 	StaticLayout.Get("map/static_layouts/rooms/"..name.."/"..name,	{
+				force_rotation = LAYOUT_ROTATION.NORTH}),
+			["SINGLE_EAST"] = 	StaticLayout.Get("map/static_layouts/rooms/"..name.."/"..name,	{
+				force_rotation = LAYOUT_ROTATION.EAST}),
+			["SINGLE_SOUTH"] = 	StaticLayout.Get("map/static_layouts/rooms/"..name.."/"..name,	{
+				force_rotation = LAYOUT_ROTATION.SOUTH}),
+			["SINGLE_WEST"] = 	StaticLayout.Get("map/static_layouts/rooms/"..name.."/"..name,	{
+				force_rotation = LAYOUT_ROTATION.WEST}),
+		}
+
+    for k,v in pairs(layouts) do
+        v.start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED
+        v.fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED
+        v.areas = ruins_areas
+    end
+	return layouts
+end
+
+
 return {
 		Layouts = GetLayoutsForType("room"),
 		AllLayouts = {
@@ -70,5 +92,11 @@ return {
 			["pit_hallway_armoury"] = GetLayoutsForType("pit_hallway_armoury"),
 			["pit_room_armoury"] = GetLayoutsForType("pit_room_armoury"),
 			["pit_room_armoury_two"] = GetLayoutsForType("pit_room_armoury_two"),
+			["atrium_hallway"] = GetLayoutsForType("atrium_hallway"),
+			["atrium_hallway_two"] = GetLayoutsForType("atrium_hallway_two"),
+			["atrium_hallway_three"] = GetLayoutsForType("atrium_hallway_three"),
+			["atrium_end"] = GetSpecialLayoutsForType("atrium_end"),
+			["atrium_start"] = GetSpecialLayoutsForType("atrium_start"),
+			
 		},
 	}

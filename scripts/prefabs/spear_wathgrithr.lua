@@ -45,13 +45,11 @@ local function fn()
     inst:AddComponent("finiteuses")
     inst.components.finiteuses:SetMaxUses(TUNING.WATHGRITHR_SPEAR_USES)
     inst.components.finiteuses:SetUses(TUNING.WATHGRITHR_SPEAR_USES)
-
     inst.components.finiteuses:SetOnFinished(inst.Remove)
 
     inst:AddComponent("inspectable")
 
     inst:AddComponent("inventoryitem")
-    --inst.components.inventoryitem.atlasname = "images/inventoryimages.xml"
 
     inst:AddComponent("equippable")
     inst.components.equippable:SetOnEquip(onequip)

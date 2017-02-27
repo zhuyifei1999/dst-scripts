@@ -3,8 +3,7 @@ local assets =
 {
     Asset("ANIM", "anim/bernie.zip"),
     Asset("ANIM", "anim/bernie_build.zip"),
-	Asset("INV_IMAGE", "bernie_dead" ),
-	Asset("INV_IMAGE", "bernie_inactive" ),
+    Asset("INV_IMAGE", "bernie_dead"),
 }
 
 local prefabs =

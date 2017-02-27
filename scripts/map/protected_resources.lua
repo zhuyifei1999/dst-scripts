@@ -51,7 +51,7 @@ local Cave = {
 local Mud = {
     ["lures_and_worms"] = StaticLayout.Get("map/static_layouts/lures_and_worms", {
         areas = {
-            lures = function() return JoinArrays(PickSomeWithDups(10, {"wormlight_plant"}), PickSomeWithDups(3, {"worm"})) end,
+            lures = function() return JoinArrays(PickSomeWithDups(10, {"wormlight_plant"}), PickSomeWithDups(3, {"worm_spawner"})) end,
         },
     }),
 }

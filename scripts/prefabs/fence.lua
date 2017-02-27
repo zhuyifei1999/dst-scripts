@@ -676,9 +676,9 @@ local function MakeWallPlacer(placer, placement, builds, isdoor)
         inst.AnimState:Hide("mouseover")
         inst.AnimState:SetLightOverride(1)
 
-        inst:AddTag("FX")
-        inst:AddTag("placer")
+        inst:AddTag("CLASSIFIED")
         inst:AddTag("NOCLICK")
+        inst:AddTag("placer")
         --[[Non-networked entity]]
         inst.entity:SetCanSleep(false)
         inst.persists = false

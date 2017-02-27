@@ -251,7 +251,7 @@ AddGameDebugKey(KEY_F4, function()
         cutgrass = 20,
         flint = 20,
         rocks = 40,
-        logs = 40,
+        log = 40,
         spear = 2,
         armorwood = 2,
         footballhat = 1,

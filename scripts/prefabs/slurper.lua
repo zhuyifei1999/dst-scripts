@@ -1,17 +1,21 @@
-local brain = require "brains/slurperbrain"
+local RuinsRespawner = require "prefabs/ruinsrespawner"
 
 local assets =
 {
     Asset("ANIM", "anim/slurper_basic.zip"),
     Asset("ANIM", "anim/hat_slurper.zip"),
     Asset("SOUND", "sound/slurper.fsb"),
+    Asset("SCRIPT", "scripts/prefabs/ruinsrespawner.lua"),
 }
 
 local prefabs =
 {
     "slurper_pelt",
     "slurperlight",
+    "slurper_ruinsrespawner_inst",
 }
+
+local brain = require "brains/slurperbrain"
 
 SetSharedLootTable('slurper',
 {
@@ -392,4 +396,5 @@ local function lightfn()
 end
 
 return Prefab("slurper", fn, assets, prefabs),
-    Prefab("slurperlight", lightfn)
+    Prefab("slurperlight", lightfn),
+    RuinsRespawner("slurper")

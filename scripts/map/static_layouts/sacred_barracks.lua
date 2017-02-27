@@ -449,7 +449,7 @@ return {
         },
         {
           name = "",
-          type = "rook_nightmare",
+          type = "rook_nightmare_spawner",
           shape = "rectangle",
           x = 208,
           y = 304,
@@ -460,7 +460,7 @@ return {
         },
         {
           name = "",
-          type = "rook_nightmare",
+          type = "rook_nightmare_spawner",
           shape = "rectangle",
           x = 480,
           y = 368,
@@ -471,7 +471,7 @@ return {
         },
         {
           name = "",
-          type = "bishop_nightmare",
+          type = "bishop_nightmare_spawner",
           shape = "rectangle",
           x = 432,
           y = 176,

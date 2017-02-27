@@ -82,6 +82,8 @@ return {
             SLOTFULL = "There's no room...",
             DUPLICATE = "Oh... my information's useless...",
             NOTSCULPTABLE = "I think that's... wrong...",
+            CANTSHADOWREVIVE = "It has no will to live.",
+            WRONGSHADOWFORM = "These bones are grimly misassembled...",
         },
         GIVETOPLAYER = 
         {
@@ -156,6 +158,7 @@ return {
 	ANNOUNCE_KLAUS_UNCHAINED = "The beast returns unchained.",
 	ANNOUNCE_KLAUS_CALLFORHELP = "Your pleas will fall on deaf ears.",
 
+	ANNOUNCE_SNARED = "I am caged!",
 	ANNOUNCE_ENTER_DARK = "The darkness has swallowed me.",
 	ANNOUNCE_ENTER_LIGHT = "And there was light!",
 	ANNOUNCE_HOUNDS = "The hounds are baying.",
@@ -174,6 +177,7 @@ return {
     ANNOUNCE_COMPASS_OUT = "It feels the force of the earth no more.",
 	ANNOUNCE_TRAP_WENT_OFF = "Oh, goodness.",
 	ANNOUNCE_WORMHOLE = "I emerge into this world once more.",
+	ANNOUNCE_TOWNPORTALTELEPORT = "Did I die?",
 	ANNOUNCE_CANFIX = "\nUnlike my heart, this could be mended.",
 	ANNOUNCE_ACCOMPLISHMENT = "All of this is transient.",
 	ANNOUNCE_ACCOMPLISHMENT_DONE = "This will be forgotten too, some day.",
@@ -184,6 +188,7 @@ return {
 
 	ANNOUNCE_BEES = "Bees! Maybe I'm allergic!",
 	ANNOUNCE_DEERCLOPS = "That could be bad.",
+	ANNOUNCE_CAVEIN = "We're going to be crushed...",
 	ANNOUNCE_FREEDOM = "Freedom. Great.",
 	ANNOUNCE_HIGHRESEARCH = "I have seen the void and it is deep and dark.",
 	ANNOUNCE_LOWRESEARCH = "Pithy knowledge...",
@@ -200,6 +205,13 @@ return {
 	ANNOUNCE_BURNT = "Ow! Fires of Hell!",
 	ANNOUNCE_TOOL_SLIP = "Oh well, I didn't need it anyways.",
 	ANNOUNCE_DAMP = "Soggy and sad.",
+	ANNOUNCE_ANTLION_SINKHOLE = "The ground crumbles beneath me.",
+	ANNOUNCE_ANTLION_TRIBUTE =
+	{
+        "A gift...",
+        "We pay tribute, this day...",
+        "Its bloodlust is temporarily quenched.",
+	},
 	ANNOUNCE_WET = "Even wetter than when I cry myself to sleep.",
 	ANNOUNCE_WETTER = "An eternity of moisture and sorrow.",
 	ANNOUNCE_SOAKED = "A veritable apocalypse of water.",
@@ -697,7 +709,22 @@ return {
 		GIFT = "The only gift I desire is a swift end...",
         GIFTWRAP = "Abby... how do I make the ribbon curly?",
 		POTTEDFERN = "Its growth is stunted by the limits of the pot.",
+		SUCCULENT_POTTED = "This gilded cage is ceramic.",
+        SUCCULENT_PLANT = "Life is resilient.",
+        SUCCULENT_PICKED = "Plucked from the safety of its desert home.",
 		SENTRYWARD = "Grant us the power of sight...",
+		TOWNPORTAL =
+        {
+			GENERIC = "For when I don't want to be alone...",
+			ACTIVE = "The way is clear.",
+		},
+        TOWNPORTALTALISMAN = 
+        {
+			GENERIC = "It came from the belly of the sphinx.",
+			ACTIVE = "Take me far from here.",
+		},
+		WETPAPER = "Yuck.",
+		WETPOUCH = "It came from the depths.",
         MOONROCK_PIECES = "Now it will never decay...",
         MOONBASE =
         {
@@ -767,7 +794,17 @@ return {
 		},
 		STAFFLIGHT = "I can almost make out a tiny solar system.",
         STAFFCOLDLIGHT = "Stars die like everything else...",
-		
+		ANTLION = 
+		{
+			GENERIC = "Do you know any riddles?",
+			VERYHAPPY = "The gifts made it happier...",
+			UNHAPPY = "A deep rage brews within...",
+		},
+		ANTLIONTRINKET = "If only I could kick it.",
+		SANDSPIKE = "Aim for my heart...",
+        SANDBLOCK = "Mockery of a spoiled childhood.",
+        GLASSSPIKE = "My warped reflection stares back at me with malice.",
+        GLASSBLOCK = "A moment frozen in time.",
 		ABIGAIL_FLOWER = 
 		{ 
 			GENERIC ="It's still so pretty.",
@@ -1182,6 +1219,8 @@ return {
 		{
 			GENERIC = "The remains of a tuft of grass.",
 		},
+		GOGGLESHAT = "They're just for show.",
+        DESERTHAT = "Now no one can tell when I'm crying.",
 		DIRTPILE = "Oh look. More dirt.",
 		DIVININGROD =
 		{
@@ -1321,6 +1360,7 @@ return {
 			FUNNY = "Death has a sense of humor.",
 			COMPLETE = "What horrors have we resurrected here today?",
         },
+        STALKER = "Not even death is permanent.",
 		FROG =
 		{
 			DEAD = "Life is small and short.",
@@ -1476,6 +1516,7 @@ return {
 		NIGHTSWORD = "Dreams come to a point. A sharp one.",
 		NITRE = "Herein lies the folly of man.",
 		ONEMANBAND = "I used to take joy in instruments such as these.",
+		OASISLAKE = "A place to drown my sorrows.",
 		PANDORASCHEST = "Life is a gamble.",
 		PANFLUTE = "Music is the window to my empty soul.",
 		PAPYRUS = "For documenting my pain.",
@@ -1582,6 +1623,11 @@ return {
 			LOW = "The shadows encroach.",
 			NORMAL = "The lava's on fire.",
 		},
+		CAVEIN_BOULDER =
+        {
+            GENERIC = "Call me Sisyphus.",
+            RAISED = "So close, yet so far away.",
+        },
 		ROCK = "Even that is not permanent.",
 		ROCKS = "Some small rocks.",
         ROOK = "A Rook? Or is it a Castle?",
@@ -1910,6 +1956,26 @@ return {
         KLAUS_SACK = "Should we peek inside...?",
 		REVIVER = "Choices matter.",
 		SHADOWHEART = "It beats with a sorrow to span the skies and plumb the darkest seas.",
+		ATRIUM_RUBBLE = 
+        {
+			LINE_1 = "A people struck by famine and sorrow.",
+			LINE_2 = "A piece of their story, lost to time.",
+			LINE_3 = "They are consumed by darkness.",
+			LINE_4 = "Then, rebirth.",
+			LINE_5 = "Finally, a city, full of life.",
+		},
+        ATRIUM_STATUE = "A tortured soul.",
+        ATRIUM_LIGHT = 
+        {
+			ON = "A deathly light dances across the room.",
+			OFF = "There is no light to be found.",
+		},
+        ATRIUM_GATE =
+        {
+			ON = "The light reveals ancient text: \"Come Back Next Update.\"",
+			OFF = "A beacon of hope left unlit... How fitting.",
+        },
+        ATRIUM_KEY = "I think I know where it goes...",
         LIFEINJECTOR = "We were not meant to cheat death.",
 		WORMHOLE =
 		{

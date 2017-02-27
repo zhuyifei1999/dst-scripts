@@ -99,6 +99,7 @@ ACTIONS =
     HAMMER = Action({ priority=3 }),
     TERRAFORM = Action(),
     JUMPIN = Action({ ghost_valid=true, encumbered_valid=true }),
+    TELEPORT = Action({ rmb=true, distance=2 }),
     RESETMINE = Action({ priority=3 }),
     ACTIVATE = Action(),
     MURDER = Action({ priority=0, mount_valid=true }),
@@ -135,6 +136,8 @@ ACTIONS =
     BUNDLESTORE = Action({ instant=true }),
     WRAPBUNDLE = Action({ instant=true }),
     UNWRAP = Action({ rmb=true, priority=2 }),
+    STARTCHANNELING = Action({ distance=2.1 }),
+    STOPCHANNELING = Action({ instant=true, distance=2.1 }),
 
     TOSS = Action({ rmb=true, distance=8, mount_valid=true }),
     NUZZLE = Action(),
@@ -1019,7 +1022,7 @@ end
 
 ACTIONS.TERRAFORM.fn = function(act)
     if act.invobject ~= nil and act.invobject.components.terraformer ~= nil then
-        return act.invobject.components.terraformer:Terraform(act.pos)
+        return act.invobject.components.terraformer:Terraform(act.pos, true)
     end
 end
 
@@ -1079,9 +1082,26 @@ ACTIONS.JUMPIN.strfn = function(act)
 end
 
 ACTIONS.JUMPIN.fn = function(act)
-    if act.doer ~= nil and act.doer.sg ~= nil and act.doer.sg.currentstate.name == "jumpin_pre" then
-        act.doer.sg:GoToState("jumpin", { teleporter = act.target })
-        return true
+    if act.doer ~= nil and act.doer.sg ~= nil then
+		if act.doer.sg.currentstate.name == "jumpin_pre" then
+			act.doer.sg:GoToState("jumpin", { teleporter = act.target })
+	        return true
+	    end
+    end
+end
+
+ACTIONS.TELEPORT.strfn = function(act)
+    return (act.target ~= nil and "TOWNPORTAL")
+		or nil
+end
+
+ACTIONS.TELEPORT.fn = function(act)
+    if act.doer ~= nil and act.doer.sg ~= nil then
+		local teleporter = act.target ~= nil and act.target or act.invobject
+		if teleporter ~= nil and teleporter:HasTag("teleporter") then
+			act.doer.sg:GoToState("entertownportal", { teleporter=teleporter })
+	        return true
+	    end
     end
 end
 
@@ -1617,6 +1637,19 @@ ACTIONS.DRAW.fn = function(act)
         act.invobject.components.drawingtool:Draw(act.target, image, src)
         return true
     end
+end
+
+ACTIONS.STARTCHANNELING.fn = function(act)
+    local target = act.target
+	return target ~= nil and target.components.channelable:StartChanneling(act.doer)
+end
+
+ACTIONS.STOPCHANNELING.fn = function(act)
+    local target = act.target
+	if target ~= nil then
+		target.components.channelable:StopChanneling(true)
+	end
+	return true
 end
 
 ACTIONS.BUNDLE.fn = function(act)

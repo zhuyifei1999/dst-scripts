@@ -100,7 +100,7 @@ return {
         },
         {
           name = "",
-          type = "knight_nightmare",
+          type = "knight_nightmare_spawner",
           shape = "rectangle",
           x = 383,
           y = 137,
@@ -111,7 +111,7 @@ return {
         },
         {
           name = "",
-          type = "bishop_nightmare",
+          type = "bishop_nightmare_spawner",
           shape = "rectangle",
           x = 385,
           y = 370,

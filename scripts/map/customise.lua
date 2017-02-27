@@ -132,7 +132,7 @@ local complexity_descriptions = {
 
 local specialevent_descriptions = {
 	{ text = STRINGS.UI.SANDBOXMENU.SLIDENEVER, data = "none" },
-	{ text = STRINGS.UI.SANDBOXMENU.SLIDEDEFAULT, data = "default" },
+	{ text = STRINGS.UI.SANDBOXMENU.EVENT_DEFAULT, data = "default" },
 	{ text = STRINGS.UI.SANDBOXMENU.EVENT_HALLOWEDNIGHTS_2016, data = SPECIAL_EVENTS.HALLOWED_NIGHTS },
 	{ text = STRINGS.UI.SANDBOXMENU.EVENT_WINTERSFEAST_2016, data = SPECIAL_EVENTS.WINTERS_FEAST },
 	{ text = STRINGS.UI.SANDBOXMENU.EVENT_YEAR_OF_THE_GOBBLER_2017, data = SPECIAL_EVENTS.YOTG },
@@ -167,6 +167,7 @@ local GROUP = {
 							["deerclops"] = {value = "default", enable = false, image = "deerclops.tex", order = 13, world={"forest"}},
 							["goosemoose"] = {value = "default", enable = false, image = "goosemoose.tex", order = 14, world={"forest"}},
 							["dragonfly"] = {value = "default", enable = false, image = "dragonfly.tex", order = 15, world={"forest"}},
+							["antliontribute"] = {value = "default", enable = false, image = "antlion_tribute.tex", order = 16, world={"forest"}},
 							["bats"] = {value = "default", enable = false, image = "bats.tex", order = 16, world={"cave"}},
 							["fissure"] = {value = "default", enable = false, image = "fissure.tex", order = 17, world={"cave"}},
 							["wormattacks"] = {value = "default", enable = false, image = "wormattacks.tex", order = 18, world={"cave"}}, 

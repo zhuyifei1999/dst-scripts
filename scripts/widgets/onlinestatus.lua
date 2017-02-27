@@ -25,6 +25,7 @@ local OnlineStatus = Class(Widget, function(self)
 end)
 
 function OnlineStatus:OnUpdate()
+	TheSim:ProfilerPush("OnlineStatus")
     if TheFrontEnd:GetIsOfflineMode() or not TheSim:IsLoggedOn() then
         self.text:SetString(STRINGS.UI.MAINSCREEN.OFFLINE)
         self.textshadow:SetString(STRINGS.UI.MAINSCREEN.OFFLINE)
@@ -32,6 +33,7 @@ function OnlineStatus:OnUpdate()
         self.text:Show()
         self.textshadow:Show()
     end
+	TheSim:ProfilerPop()
 end
 
 return OnlineStatus

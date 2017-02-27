@@ -7,11 +7,47 @@ local prefabs =
 {
     "fossil_piece_clean",
     "collapse_small",
+    "stalker",
 }
 
 local NUM_FORMS = 3
 local MAX_MOUND_SIZE = 8
 local MOUND_WRONG_START_SIZE = 5
+
+local function ItemTradeTest(inst, item, giver)
+    if item == nil or item.prefab ~= "shadowheart" or
+        giver == nil or giver.components.areaaware == nil then
+        return false
+    elseif inst.form ~= 1 then
+        return false, "WRONGSHADOWFORM"
+    end
+
+    --TODO: temporary fail for WIP stalker forms
+    if not TheWorld:HasTag("cave") then
+        return false, "CANTSHADOWREVIVE"
+    end
+    if giver.components.areaaware:CurrentlyInTag("Atrium") then
+        return false, "CANTSHADOWREVIVE"
+    end
+    --
+
+    return true
+end
+
+local function OnAccept(inst, giver, item)
+    if item.prefab == "shadowheart" then
+        local x, y, z = inst.Transform:GetWorldPosition()
+        local rot = inst.Transform:GetRotation()
+        inst:Remove()
+
+        local stalker = SpawnPrefab("stalker")
+        stalker.Transform:SetPosition(x, y, z)
+        stalker.Transform:SetRotation(rot)
+        stalker.sg:GoToState("resurrect")
+
+        giver.components.sanity:DoDelta(TUNING.REVIVE_SHADOW_SANITY_PENALTY)
+    end
+end
 
 local function UpdateFossileMound(inst, size, checkforwrong)
     if size < MOUND_WRONG_START_SIZE then
@@ -25,6 +61,12 @@ local function UpdateFossileMound(inst, size, checkforwrong)
     inst.moundsize = size
     inst.components.workable:SetWorkLeft(size)
     inst.AnimState:PlayAnimation(tostring(inst.form).."_"..tostring(inst.moundsize))
+
+    if size >= MAX_MOUND_SIZE then
+        inst.components.trader:Enable()
+    else
+        inst.components.trader:Disable()
+    end
 end
 
 local function lootsetfn(lootdropper)
@@ -86,6 +128,10 @@ local function makemound(name)
 
         inst:AddTag("structure")
 
+        --trader (from trader component) added to pristine state for optimization
+        --inst:AddTag("trader")
+        --Trader will be disabled by default constructor
+
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
@@ -109,6 +155,10 @@ local function makemound(name)
         inst.components.repairable.repairmaterial = MATERIALS.FOSSIL
         inst.components.repairable.onrepaired = onrepaired
         inst.components.repairable.noannounce = true
+
+        inst:AddComponent("trader")
+        inst.components.trader:SetAbleToAcceptTest(ItemTradeTest)
+        inst.components.trader.onaccept = OnAccept
 
         MakeHauntableWork(inst)
 

@@ -1,3 +1,5 @@
+require "prefabutil"
+
 local assets =
 {
     Asset("ANIM", "anim/butterfly_basic.zip"),

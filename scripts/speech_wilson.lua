@@ -55,21 +55,24 @@ return {
             SLOTFULL = "We already put something there.",
             DUPLICATE = "We already know that one.",
             NOTSCULPTABLE = "Not even science could make that into a sculpture.",
+            NOTATRIUMKEY = "It's not quite the right shape.",
+            CANTSHADOWREVIVE = "It won't resurrect.",
+            WRONGSHADOWFORM = "It's not put together right.",
         },
         GIVETOPLAYER =
         {
-        	FULL = "Your pockets are too full!",
+            FULL = "Your pockets are too full!",
             DEAD = "Maybe I'll just hold on to this.",
             SLEEPING = "Too unconscious to care.",
             BUSY = "I'll try again in a second.",
-    	},
-    	GIVEALLTOPLAYER =
+        },
+        GIVEALLTOPLAYER =
         {
-        	FULL = "Your pockets are too full!",
+            FULL = "Your pockets are too full!",
             DEAD = "Maybe I'll just hold on to this.",
             SLEEPING = "Too unconscious to care.",
             BUSY = "I'll try again in a second.",
-    	},
+        },
         WRITE =
         {
             GENERIC = "I think it's fine as is.",
@@ -125,6 +128,14 @@ return {
 	ANNOUNCE_HOT = "Need... ice... or... shade!",
 	ANNOUNCE_CRAFTING_FAIL = "I'm missing a couple key ingredients.",
 	ANNOUNCE_DEERCLOPS = "That sounded big!",
+	ANNOUNCE_CAVEIN = "The ceiling is destabilizing!",
+	ANNOUNCE_ANTLION_SINKHOLE = "The ground is destabilizing!",
+	ANNOUNCE_ANTLION_TRIBUTE =
+	{
+        "Allow me to pay tribute.",
+        "A tribute for you, great Antlion.",
+        "That'll appease it, for now...",
+	},
 	ANNOUNCE_DUSK = "It's getting late. It will be dark soon.",
 	ANNOUNCE_EAT =
 	{
@@ -147,7 +158,8 @@ return {
         "Pant... Pant...",
         "This is the worst... experiment...",
     },
-
+    
+    ANNOUNCE_SNARED = "Sharp! Sharp bones!!",
 	ANNOUNCE_ENTER_DARK = "It's so dark!",
 	ANNOUNCE_ENTER_LIGHT = "I can see again!",
 	ANNOUNCE_FREEDOM = "I'm free! I'm finally free!",
@@ -188,6 +200,7 @@ return {
 	ANNOUNCE_TRAP_WENT_OFF = "Oops.",
 	ANNOUNCE_UNIMPLEMENTED = "OW! I don't think it's ready yet.",
 	ANNOUNCE_WORMHOLE = "That was not a sane thing to do.",
+	ANNOUNCE_TOWNPORTALTELEPORT = "I'm not sure that was science.",
 	ANNOUNCE_CANFIX = "\nI think I can fix this!",
 	ANNOUNCE_ACCOMPLISHMENT = "I feel so accomplished!",
 	ANNOUNCE_ACCOMPLISHMENT_DONE = "If only my friends could see me now...",	
@@ -236,7 +249,17 @@ return {
 	DESCRIBE =
 	{
 		MULTIPLAYER_PORTAL = "This ought to be a scientific impossibility.",
-
+		ANTLION = 
+		{
+			GENERIC = "It wants something from me.",
+			VERYHAPPY = "I think we're on good terms.",
+			UNHAPPY = "It looks mad.",
+		},
+		ANTLIONTRINKET = "Someone might be interested in this.",
+		SANDSPIKE = "I could've been skewered!",
+        SANDBLOCK = "It's so gritty!",
+        GLASSSPIKE = "Memories of the time I wasn't skewered.",
+        GLASSBLOCK = "That's science for you.",
 		ABIGAIL_FLOWER = 
 		{ 
 			GENERIC ="It's hauntingly beautiful.",
@@ -435,7 +458,22 @@ return {
 		GIFT = "Is that for me?",
         GIFTWRAP = "That's a wrap!",
 		POTTEDFERN = "A fern in a pot.",
+        SUCCULENT_POTTED = "A succulent in a pot.",
+		SUCCULENT_PLANT = "Aloe there.",
+		SUCCULENT_PICKED = "I could eat that, but I'd rather not.",
 		SENTRYWARD = "That's an entirely scientific mapping tool.",
+        TOWNPORTAL =
+        {
+			GENERIC = "This pyramid controls the sands.",
+			ACTIVE = "Ready for departiculation.",
+		},
+        TOWNPORTALTALISMAN = 
+        {
+			GENERIC = "A mini departiculator.",
+			ACTIVE = "A more sane person would walk.",
+		},
+        WETPAPER = "I hope it dries off soon.",
+        WETPOUCH = "This package is barely holding together.",
         MOONROCK_PIECES = "I could probably break that.",
         MOONBASE =
         {
@@ -993,6 +1031,8 @@ return {
 		{
 			GENERIC = "It's probably a tuft of grass.",
 		},
+        GOGGLESHAT = "What a stylish pair of goggles.",
+        DESERTHAT = "Quality eye protection.",
 		DEVTOOL = "It smells of bacon!",
 		DEVTOOL_NODEV = "I'm not strong enough to wield it.",
 		DIRTPILE = "It's a pile of dirt... or IS it?",
@@ -1191,6 +1231,7 @@ return {
 			FUNNY = "My scientific instincts say this isn't quite right.",
 			COMPLETE = "It's alive! Oh wait, no, it's not.",
         },
+        STALKER = "The skeleton fused with the shadows!",
 		FROG =
 		{
 			DEAD = "He's croaked.",
@@ -1410,6 +1451,7 @@ return {
 		NIGHTSWORD = "Why would anyone make this? It's terrifying.",
 		NITRE = "I'm not a geologist.",
 		ONEMANBAND = "We should add a beefalo bell.",
+		OASISLAKE = "Is that a mirage?",
 		PANDORASCHEST = "It may contain something fantastic! Or horrible.",
 		PANFLUTE = "To serenade the animals.",
 		PAPYRUS = "Some sheets of paper.",
@@ -1558,6 +1600,11 @@ return {
 			LOW = "The lava's crusting over.",
 			NORMAL = "Nice and comfy.",
 		},
+        CAVEIN_BOULDER =
+        {
+            GENERIC = "I think I can lift this one.",
+            RAISED = "It's out of reach.",
+        },
 		ROCK = "It wouldn't fit in my pocket.",
 		PETRIFIED_TREE = "It looks scared stiff.",
 		ROCK_PETRIFIED_TREE = "It looks scared stiff.",
@@ -1930,6 +1977,26 @@ return {
 		ICESTAFF = "It's cold to the touch.",
 		REVIVER = "The beating of this hideous heart will bring a ghost back to life!",
 		SHADOWHEART = "The power of science must have reanimated it...",
+        ATRIUM_RUBBLE = 
+        {
+			LINE_1 = "It depicts an old civilization. The people look hungry and scared.",
+			LINE_2 = "This tablet is too worn to make out.",
+			LINE_3 = "Something dark creeps over the city and its people.",
+			LINE_4 = "The people are shedding their skins. They look different underneath.",
+			LINE_5 = "It shows a massive, technologically advanced city.",
+		},
+        ATRIUM_STATUE = "It doesn't seem fully real.",
+        ATRIUM_LIGHT = 
+        {
+			ON = "A truly unsettling light.",
+			OFF = "Something must power it.",
+		},
+        ATRIUM_GATE =
+        {
+			ON = "The light reveals some text: \"Come Back Next Update.\"",
+			OFF = "The essential components are still intact.",
+        },
+        ATRIUM_KEY = "There is power emanating from it.",
 		LIFEINJECTOR = "A scientific breakthrough! The cure!",
 		SKELETON_PLAYER =
 		{
@@ -1951,7 +2018,6 @@ return {
         ORANGEMOONEYE = "No one could get lost with that thing looking out for them.",
         YELLOWMOONEYE = "That ought to show everyone the way.",
         BLUEMOONEYE = "It's always smart to keep an eye out.",
-        
 	},
 	DESCRIBE_GENERIC = "It's a... thing.",
 	DESCRIBE_TOODARK = "It's too dark to see!",

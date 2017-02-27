@@ -56,6 +56,10 @@ local Wisecracker = Class(function(self, inst)
         end
     end)
 
+    inst:ListenForEvent("snared", function(inst)
+        inst.components.talker:Say(GetString(inst, "ANNOUNCE_SNARED"))
+    end)
+
     inst:ListenForEvent("insufficientfertilizer", function(inst, data)
         inst.components.talker:Say(GetString(inst, "ANNOUNCE_INSUFFICIENTFERTILIZER"))
     end)
@@ -108,6 +112,10 @@ local Wisecracker = Class(function(self, inst)
 
     inst:ListenForEvent("wormholespit", function(inst, data)
         inst.components.talker:Say(GetString(inst, "ANNOUNCE_WORMHOLE"))
+    end)
+
+    inst:ListenForEvent("townportalteleport", function(inst, data)
+        inst.components.talker:Say(GetString(inst, "ANNOUNCE_TOWNPORTALTELEPORT"))
     end)
 
     inst:ListenForEvent("huntlosttrail", function(inst, data)
