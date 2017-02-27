@@ -15,14 +15,12 @@ self.inst = inst
 
 --Private
 local _world = TheWorld
-local _ismastersim = _world.ismastersim
-
 local _activeplayers = {}
 local _scheduledtasks = {}
-local _worldstate = _world.state
-local _map = _world.Map
-local _tempthreshold = TUNING.WILDFIRE_THRESHOLD
-local _retrytime = TUNING.WILDFIRE_RETRY_TIME
+local _issummer = false
+local _isday = true
+local _iswet = false
+local _ishot = TUNING.STARTING_TEMP > TUNING.WILDFIRE_THRESHOLD
 local _chance = TUNING.WILDFIRE_CHANCE
 local _radius = 25
 local _updating = false
@@ -31,6 +29,10 @@ local _excludetags = { "wildfireprotected", "fire", "burnt", "player", "companio
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
+
+local function ShouldActivateWildfires()
+    return _issummer and _isday and _ishot and not _iswet and _chance > 0
+end
 
 local function CheckValidWildfireStarter(obj)
     if not obj:IsValid() or
@@ -52,43 +54,40 @@ local function CheckValidWildfireStarter(obj)
 end
 
 local function LightFireForPlayer(player, rescheduleFn)
-    if _worldstate.temperature > _tempthreshold and _worldstate.isday and not _worldstate.israining then
-        local rnd = math.random()
-        if rnd <= _chance then
-            local x, y, z = player.Transform:GetWorldPosition()
-            local firestarters = TheSim:FindEntities(x, y, z, _radius, nil, _excludetags)
-            if #firestarters > 0 then
-                local highprio = {}
-                local lowprio = {}
-                for i, v in ipairs(firestarters) do
-                    if v.components.burnable ~= nil then
-                        table.insert(v:HasTag("wildfirepriority") and highprio or lowprio, v)
-                    end
+    _scheduledtasks[player] = nil
+
+    if math.random() <= _chance and
+        not (_world.components.sandstorms ~= nil and
+            _world.components.sandstorms:IsInSandstorm(player)) then
+        local x, y, z = player.Transform:GetWorldPosition()
+        local firestarters = TheSim:FindEntities(x, y, z, _radius, nil, _excludetags)
+        if #firestarters > 0 then
+            local highprio = {}
+            local lowprio = {}
+            for i, v in ipairs(firestarters) do
+                if v.components.burnable ~= nil then
+                    table.insert(v:HasTag("wildfirepriority") and highprio or lowprio, v)
                 end
-                firestarters = #highprio > 0 and highprio or lowprio
-                while #firestarters > 0 do
-                    local i = math.random(#firestarters)
-                    if CheckValidWildfireStarter(firestarters[i]) then
-                        firestarters[i].components.burnable:StartWildfire()
-                        break
-                    else
-                        table.remove(firestarters, i)
-                    end
+            end
+            firestarters = #highprio > 0 and highprio or lowprio
+            while #firestarters > 0 do
+                local i = math.random(#firestarters)
+                if CheckValidWildfireStarter(firestarters[i]) then
+                    firestarters[i].components.burnable:StartWildfire()
+                    break
+                else
+                    table.remove(firestarters, i)
                 end
             end
         end
     end
 
-    if _scheduledtasks[player] ~= nil then
-        _scheduledtasks[player]:Cancel()
-        _scheduledtasks[player] = nil
-    end
     rescheduleFn(player)
 end
 
-local function ScheduleSpawn(player, initialspawn)
-    if _scheduledtasks[player] == nil and _retrytime ~= nil then
-        _scheduledtasks[player] = player:DoTaskInTime(_retrytime, LightFireForPlayer, ScheduleSpawn)
+local function ScheduleSpawn(player)
+    if _scheduledtasks[player] == nil then
+        _scheduledtasks[player] = player:DoTaskInTime(TUNING.WILDFIRE_RETRY_TIME, LightFireForPlayer, ScheduleSpawn)
     end
 end
 
@@ -99,19 +98,12 @@ local function CancelSpawn(player)
     end
 end
 
-local function ToggleUpdate(force)
-    if _worldstate.issummer and -- wildfires only start in the summer, when it's hot enough and not raining
-        _worldstate.temperature > _tempthreshold and 
-        not _worldstate.israining then
+local function ToggleUpdate()
+    if ShouldActivateWildfires() then
         if not _updating then
             _updating = true
             for i, v in ipairs(_activeplayers) do
-                ScheduleSpawn(v, true)
-            end
-        elseif force then
-            for i, v in ipairs(_activeplayers) do
-                CancelSpawn(v)
-                ScheduleSpawn(v, true)
+                ScheduleSpawn(v)
             end
         end
     elseif _updating then
@@ -126,11 +118,39 @@ end
 --[[ Private event handlers ]]
 --------------------------------------------------------------------------
 
-local function OnStateChange(inst, data)
+local function OnSeasonTick(inst, data)
+    _issummer = data.season == SEASONS.SUMMER
     ToggleUpdate()
 end
 
-local function OnPlayerJoined(src, player)
+local function OnWeatherTick(inst, data)
+    _iswet = data.wetness > 0 or data.snowlevel > 0
+    ToggleUpdate()
+end
+
+local function OnTemperatureTick(inst, temperature)
+    _ishot = temperature > TUNING.WILDFIRE_THRESHOLD
+    ToggleUpdate()
+end
+
+local function OnPhaseChanged(inst, phase)
+    _isday = phase == "day"
+    ToggleUpdate()
+end
+
+local function OnSetWildfireChance(inst, chance)
+    _chance = chance
+    ToggleUpdate()
+end
+
+local function ForceWildfireForPlayer(inst, player)
+    if ShouldActivateWildfires() then
+        CancelSpawn(player)
+        LightFireForPlayer(player, ScheduleSpawn)
+    end
+end
+
+local function OnPlayerJoined(inst, player)
     for i, v in ipairs(_activeplayers) do
         if v == player then
             return
@@ -138,11 +158,11 @@ local function OnPlayerJoined(src, player)
     end
     table.insert(_activeplayers, player)
     if _updating then
-        ScheduleSpawn(player, true)
+        ScheduleSpawn(player)
     end
 end
 
-local function OnPlayerLeft(src, player)
+local function OnPlayerLeft(inst, player)
     for i, v in ipairs(_activeplayers) do
         if v == player then
             CancelSpawn(player)
@@ -150,14 +170,6 @@ local function OnPlayerLeft(src, player)
             return
         end
     end
-end
-
-local function OnSetWildfireChance(src, chance)
-    _chance = chance
-end
-
-local function ForceWildfireForPlayer(src, player)
-    LightFireForPlayer(player, ScheduleSpawn)
 end
 
 --------------------------------------------------------------------------
@@ -170,43 +182,36 @@ for i, v in ipairs(AllPlayers) do
 end
 
 --Register events
-inst:WatchWorldState("temperature", OnStateChange)
-inst:WatchWorldState("israining", OnStateChange)
-inst:WatchWorldState("issummer", OnStateChange)
---inst:ListenForEvent("seasontick", ToggleUpdate, _world)
-inst:ListenForEvent("ms_playerjoined", OnPlayerJoined, _world)
-inst:ListenForEvent("ms_playerleft", OnPlayerLeft, _world)
-
-inst:ListenForEvent("ms_setwildfirechance", OnSetWildfireChance, _world)
-inst:ListenForEvent("ms_lightwildfireforplayer", ForceWildfireForPlayer, _world)
-
-ToggleUpdate(true)
+inst:ListenForEvent("weathertick", OnWeatherTick)
+inst:ListenForEvent("seasontick", OnSeasonTick)
+inst:ListenForEvent("temperaturetick", OnTemperatureTick)
+inst:ListenForEvent("phasechanged", OnPhaseChanged)
+inst:ListenForEvent("ms_setwildfirechance", OnSetWildfireChance)
+inst:ListenForEvent("ms_lightwildfireforplayer", ForceWildfireForPlayer)
+inst:ListenForEvent("ms_playerjoined", OnPlayerJoined)
+inst:ListenForEvent("ms_playerleft", OnPlayerLeft)
 
 --------------------------------------------------------------------------
 --[[ Save/Load ]]
 --------------------------------------------------------------------------
 
-if _ismastersim then function self:OnSave()
+function self:OnSave()
     return
     {
-        tempthreshold = _tempthreshold,
-        retrytime = _retrytime,
         chance = _chance,
     }
-end end
+end
 
-if _ismastersim then function self:OnLoad(data)
-    _tempthreshold = data.tempthreshold or _tempthreshold
-    _retrytime = data.retrytime or _retrytime
+function self:OnLoad(data)
     _chance = data.chance or _chance
-end end
+end
 
 --------------------------------------------------------------------------
 --[[ Debug ]]
 --------------------------------------------------------------------------
 
 function self:GetDebugString()
-    return string.format("Wildfires: updating:%s,  retry time %2.2f, temperature %s, issummer %s ", tostring(_updating), _retrytime, _worldstate.temperature, tostring(_worldstate.issummer))
+    return _updating and "Active" or "Inactive"
 end
 
 --------------------------------------------------------------------------

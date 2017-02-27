@@ -237,7 +237,7 @@ end
 
 local function OnEntityWake(inst)
     inst.SoundEmitter:PlaySound("dontstarve/creatures/eyeplant/eye_central_idle", "loop")
-    adjustIdleSound(inst, inst.components.minionspawner.numminions/inst.components.minionspawner.maxminions)
+    adjustIdleSound(inst, inst.components.minionspawner.numminions / inst.components.minionspawner.maxminions)
 end
 
 local function OnEntitySleep(inst)
@@ -250,7 +250,9 @@ local function OnStartFireDamage(inst)
 end
 
 local function OnMinionChange(inst)
-    adjustIdleSound(inst, inst.components.minionspawner.numminions / inst.components.minionspawner.maxminions)
+    if not inst:IsAsleep() then
+        adjustIdleSound(inst, inst.components.minionspawner.numminions / inst.components.minionspawner.maxminions)
+    end
 end
 
 local function OnHaunt(inst)
@@ -320,9 +322,6 @@ local function fn()
     inst:SetStateGraph("SGlureplant")
 
     inst:ListenForEvent("startfiredamage", OnStartFireDamage)
-
-    inst.SoundEmitter:PlaySound("dontstarve/creatures/eyeplant/eye_central_idle", "loop")
-    adjustIdleSound(inst, inst.components.minionspawner.numminions/inst.components.minionspawner.maxminions)
 
     inst:ListenForEvent("freshspawn", FreshSpawn)
     inst:ListenForEvent("minionchange", OnMinionChange)

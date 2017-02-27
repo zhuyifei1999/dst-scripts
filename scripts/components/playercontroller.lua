@@ -753,7 +753,11 @@ function PlayerController:DoControllerAttackButton(target)
             end
         end
         --V2C: controller attacks still happen even with no valid target
-        if target == nil and (self.inst:HasTag("playerghost") or self.inst.replica.inventory:IsHeavyLifting()) then
+        if target == nil and (
+            self.directwalking or
+            self.inst:HasTag("playerghost") or
+            self.inst.replica.inventory:IsHeavyLifting()
+        ) then
             --Except for player ghosts!
             return
         end

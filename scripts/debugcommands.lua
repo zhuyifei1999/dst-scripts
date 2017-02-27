@@ -161,17 +161,17 @@ end
 ------------ skins functions --------------------
 ---------------------------------------------------
 
-local TEST_ITEM_NAME = "backpack_bat"
-function d_test_skins_popup()
+local TEST_ITEM_NAME = "feet_bootie_black_scribble"
+function d_test_skins_popup(param)
 	local SkinsItemPopUp = require "screens/skinsitempopup"
-	TheFrontEnd:PushScreen( SkinsItemPopUp(TEST_ITEM_NAME, "Peter", {1.0, 0.2, 0.6, 1.0}) )
+	TheFrontEnd:PushScreen( SkinsItemPopUp(param or TEST_ITEM_NAME, "Peter", {1.0, 0.2, 0.6, 1.0}) )
 end
-function d_test_skins_annouce()
-	ThePlayer.HUD.eventannouncer:ShowSkinAnnouncement("Peter", {1.0, 0.2, 0.6, 1.0}, TEST_ITEM_NAME)
+function d_test_skins_annouce(param)
+	ThePlayer.HUD.eventannouncer:ShowSkinAnnouncement("Peter", {1.0, 0.2, 0.6, 1.0}, param or TEST_ITEM_NAME)
 end
-function d_test_skins_gift()
+function d_test_skins_gift(param)
 	local GiftItemPopUp = require "screens/giftitempopup"
-	TheFrontEnd:PushScreen( GiftItemPopUp(ThePlayer, { TEST_ITEM_NAME }, { 0 }) )
+	TheFrontEnd:PushScreen( GiftItemPopUp(ThePlayer, { param or TEST_ITEM_NAME }, { 0 }) )
 end
 
 function d_skin_mode(mode)

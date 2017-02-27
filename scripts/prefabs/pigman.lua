@@ -61,7 +61,7 @@ local function OnGetItemFromPlayer(inst, giver, item)
         if item.components.edible.foodtype == FOODTYPE.MEAT or item.components.edible.foodtype == FOODTYPE.HORRIBLE then
             if inst.components.combat:TargetIs(giver) then
                 inst.components.combat:SetTarget(nil)
-            elseif giver.components.leader ~= nil and not inst:HasTag("guard") then
+            elseif giver.components.leader ~= nil and not (inst:HasTag("guard") or giver:HasTag("monster")) then
                 giver:PushEvent("makefriend")
                 giver.components.leader:AddFollower(inst)
                 inst.components.follower:AddLoyaltyTime(item.components.edible:GetHunger() * TUNING.PIG_LOYALTY_PER_HUNGER)

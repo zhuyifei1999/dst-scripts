@@ -9,31 +9,33 @@ local prefabs =
     "collapse_small",
 }
 
+local NUM_FORMS = 3
 local MAX_MOUND_SIZE = 8
 local MOUND_WRONG_START_SIZE = 5
 
 local function UpdateFossileMound(inst, size, checkforwrong)
-    if checkforwrong then
-        if inst.moundsize < MOUND_WRONG_START_SIZE and size >= MOUND_WRONG_START_SIZE then
-            inst.wrong = math.random() < 0.5
-        end
+    if size < MOUND_WRONG_START_SIZE then
+        --reset case, not really used tho
+        inst.form = 1
+    elseif checkforwrong and inst.moundsize < MOUND_WRONG_START_SIZE then
+        --double chance of form 1 (correct form)
+        inst.form = math.max(1, math.random(0, NUM_FORMS))
     end
 
     inst.moundsize = size
     inst.components.workable:SetWorkLeft(size)
-    inst.AnimState:PlayAnimation(((size >= MOUND_WRONG_START_SIZE and inst.wrong) and "wrong" or "")..inst.moundsize)
+    inst.AnimState:PlayAnimation(tostring(inst.form).."_"..tostring(inst.moundsize))
 end
 
 local function lootsetfn(lootdropper)
     local loot = {}
-    for i= 1,lootdropper.inst.moundsize do
+    for i = 1, lootdropper.inst.moundsize do
         table.insert(loot, "fossil_piece_clean")
     end
     lootdropper:SetLoot(loot)
 end
 
 local function onworked(inst)
-
     local pos = inst:GetPosition()
     local fx = SpawnPrefab("collapse_small")
     fx.Transform:SetPosition(pos:Get())
@@ -44,28 +46,26 @@ local function onworked(inst)
 end
 
 local function onrepaired(inst)
-    local size = inst.moundsize + 1
-    UpdateFossileMound(inst, size, true)
+    UpdateFossileMound(inst, inst.moundsize + 1, true)
     inst.SoundEmitter:PlaySound("dontstarve/creatures/together/fossil/repair")
 end
 
 local function getstatus(inst)
-    if inst.moundsize == MAX_MOUND_SIZE then
-        return inst.wrong and "FUNNY" or "COMPLETE"
-    end
-
-    return "GENERIC"
+    return inst.moundsize >= MAX_MOUND_SIZE
+        and (inst.form > 1 and "FUNNY" or "COMPLETE")
+        or nil
 end
 
 local function onsave(inst, data)
-    data.moundsize = inst.moundsize
-    data.wrong = inst.wrong
+    data.moundsize = inst.moundsize > 1 and inst.moundsize or nil
+    data.form = inst.form > 1 and inst.form or nil
 end
 
 local function onload(inst, data)
     if data ~= nil then
-        inst.wrong = data.wrong
-        UpdateFossileMound(inst, data.moundsize, false)
+        --backward compatibility for data.wrong
+        inst.form = math.clamp(data.form or (data.wrong and 2 or 1), 1, NUM_FORMS)
+        UpdateFossileMound(inst, math.clamp(data.moundsize or 1, 1, MAX_MOUND_SIZE), false)
     end
 end
 
@@ -82,10 +82,9 @@ local function makemound(name)
 
         inst.AnimState:SetBank(name)
         inst.AnimState:SetBuild(name)
-        inst.AnimState:PlayAnimation("1")
+        inst.AnimState:PlayAnimation("1_1")
 
         inst:AddTag("structure")
-        --MakeSnowCoveredPristine(inst)
 
         inst.entity:SetPristine()
 
@@ -112,8 +111,8 @@ local function makemound(name)
         inst.components.repairable.noannounce = true
 
         MakeHauntableWork(inst)
-        --MakeSnowCovered(inst)
 
+        inst.form = 1
         UpdateFossileMound(inst, 1)
 
         inst.OnSave = onsave

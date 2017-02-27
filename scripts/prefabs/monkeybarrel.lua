@@ -2,7 +2,6 @@ local assets =
 {
     Asset("ANIM", "anim/monkey_barrel.zip"),
     Asset("SOUND", "sound/monkey.fsb"),
-	Asset("MINIMAP_IMAGE", "monkey_barrel"),
 }
 
 local prefabs =
@@ -13,7 +12,7 @@ local prefabs =
     "collapse_small",
 }
 
-SetSharedLootTable( 'monkey_barrel',
+SetSharedLootTable('monkey_barrel',
 {
     {'poop',        1.0},
     {'poop',        1.0},
@@ -134,7 +133,7 @@ local function fn()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
-    inst.MiniMapEntity:SetIcon("monkey_barrel.png")
+    inst.MiniMapEntity:SetIcon("monkeybarrel.png")
 
     MakeObstaclePhysics(inst, 1)
 

@@ -180,15 +180,10 @@ function GiftItemPopUp:RevealItem(idx)
 
     item_name = string.gsub(item_name, "swap_", "")
 
-    local skin_data = GetSkinData(item_name)
-    if skin_data then
-        if table.contains(skin_data.tags, "CRAFTABLE") then 
-        	self.disable_use_now = true
-        elseif string.find( item_name, self.owner.prefab ) == nil then
-        	self.disable_use_now = true
-        else
-        	self.disable_use_now = false
-        end
+    local skin_data = GetSkinData(item_name)    
+    self.disable_use_now = true
+    if IsClothingItem( item_name ) or (skin_data and skin_data.type == "base" and string.find( item_name, self.owner.prefab ) ~= nil ) then
+		self.disable_use_now = false
     end
     self.spawn_portal:GetAnimState():OverrideSkinSymbol("SWAP_ICON", GetBuildForItem(item_name), "SWAP_ICON")
 
