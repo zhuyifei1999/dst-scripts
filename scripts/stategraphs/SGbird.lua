@@ -96,7 +96,7 @@ local states =
             inst.AnimState:PlayAnimation("death")
             inst.Physics:Stop()
             RemovePhysicsColliders(inst)
-            inst.components.lootdropper:DropLoot(insg:GetPosition())
+            inst.components.lootdropper:DropLoot(inst:GetPosition())
         end,
     },
 
