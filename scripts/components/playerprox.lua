@@ -168,8 +168,16 @@ function PlayerProx:Stop()
     end
 end
 
-PlayerProx.OnEntityWake = PlayerProx.Schedule
-PlayerProx.OnEntitySleep = PlayerProx.Stop
+function PlayerProx:OnEntityWake()
+    self:Schedule()
+    self:ForceUpdate()
+end
+
+function PlayerProx:OnEntitySleep()
+    self:ForceUpdate()
+    self:Stop()
+end
+
 PlayerProx.OnRemoveEntity = PlayerProx.Stop
 PlayerProx.OnRemoveFromEntity = PlayerProx.Stop
 

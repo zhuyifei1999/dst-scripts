@@ -14,10 +14,9 @@ local function OnDoneTeleporting(inst, obj)
         inst.closetask:Cancel()
     end
     inst.closetask = inst:DoTaskInTime(1.5, function()
-        if inst.components.teleporter.numteleporting == 0 then
-            if not inst.components.playerprox:IsPlayerClose() then
-                inst.sg:GoToState("closing")
-            end
+        if inst.components.teleporter.numteleporting <= 0 and
+            not inst.components.playerprox:IsPlayerClose() then
+            inst.sg:GoToState("closing")
         end
     end)
 
@@ -119,8 +118,6 @@ local function fn()
     inst.components.playerprox:SetDist(4, 5)
     inst.components.playerprox.onnear = onnear
     inst.components.playerprox.onfar = onfar
-
-    inst.teleporting = nil
 
     inst:AddComponent("teleporter")
     inst.components.teleporter.onActivate = OnActivate

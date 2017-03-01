@@ -1,7 +1,10 @@
+local RuinsRespawner = require "prefabs/ruinsrespawner"
+
 local assets =
 {
     Asset("ANIM", "anim/crafting_table.zip"),
 	Asset("MINIMAP_IMAGE", "tab_crafting_table"),
+    Asset("SCRIPT", "scripts/prefabs/ruinsrespawner.lua"),
 }
 
 local prefabs =
@@ -38,6 +41,8 @@ local prefabs =
     "crawlingnightmare",
     "nightmarebeak",
     "collapse_small",
+    "ancient_altar_broken_ruinsrespawner_inst",
+    "ancient_altar_ruinsrespawner_inst",
 }
 
 for k = 1, NUM_TRINKETS do
@@ -459,5 +464,14 @@ local function broken_fn()
     return inst
 end
 
+local function onruinsrespawn(inst, respawner)
+	if not respawner:IsAsleep() then
+		-- todo: add fx
+	end
+end
+
 return Prefab("ancient_altar", complete_fn, assets, prefabs),
-    Prefab("ancient_altar_broken", broken_fn, assets, prefabs)
+    Prefab("ancient_altar_broken", broken_fn, assets, prefabs),
+    RuinsRespawner.Inst("ancient_altar", onruinsrespawn), RuinsRespawner.WorldGen("ancient_altar", onruinsrespawn),
+    RuinsRespawner.Inst("ancient_altar_broken", onruinsrespawn), RuinsRespawner.WorldGen("ancient_altar_broken", onruinsrespawn)
+

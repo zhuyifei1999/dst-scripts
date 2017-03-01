@@ -163,6 +163,8 @@ end
 
 local function pandora_custom_postinit(inst)
 	local function OnResetRuins()
+		local was_open = inst.components.container:IsOpen()
+
 		if inst.components.scenariorunner == nil then
 			inst.components.container:Close()
 			inst.components.container:DestroyContents()
@@ -170,6 +172,16 @@ local function pandora_custom_postinit(inst)
 			inst:AddComponent("scenariorunner")
 			inst.components.scenariorunner:SetScript("chest_labyrinth")
 		    inst.components.scenariorunner:Run()
+
+		end
+
+		if not inst:IsAsleep() then
+			if not was_open then
+				inst.AnimState:PlayAnimation("hit")
+				inst.AnimState:PushAnimation("closed", false)
+			end
+		
+			SpawnPrefab("statue_transition").Transform:SetPosition(inst.Transform:GetWorldPosition())
 		end
 	end
 	
@@ -180,21 +192,14 @@ local function minotuar_custom_postinit(inst)
 	inst:ListenForEvent("resetruins", 
 		function() 
 			inst.components.container:Close()
-			inst.components.container:DestroyContents()
+			inst.components.container:DropEverything()
 
-		    local x, y, z = inst.Transform:GetWorldPosition()
-		    local fx = SpawnPrefab("statue_transition_2")
-			if fx ~= nil then
-				fx.Transform:SetPosition(x, y, z)
-				fx.Transform:SetScale(1, 2, 1)
+			if not inst:IsAsleep() then
+				local fx = SpawnPrefab("collapse_small")
+				fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+				fx:SetMaterial("wood")
 			end
-
-			fx = SpawnPrefab("statue_transition")
-			if fx ~= nil then
-				fx.Transform:SetPosition(x, y, z)
-				fx.Transform:SetScale(1, 1.5, 1)
-			end
-
+			
 			inst:Remove()
 		end, TheWorld)
 end

@@ -1770,13 +1770,7 @@ return {
 			PARTIAL = "It is still incomplete.",
 		},
 
-		LAVA_POND_ROCK = "With each day I get a little boulder.",
-		LAVA_POND_ROCK2 = "With each day I get a little boulder.",
-		LAVA_POND_ROCK3 = "With each day I get a little boulder.",
-		LAVA_POND_ROCK4 = "With each day I get a little boulder.",
-		LAVA_POND_ROCK5 = "With each day I get a little boulder.",
-		LAVA_POND_ROCK6 = "With each day I get a little boulder.",
-		LAVA_POND_ROCK7 = "With each day I get a little boulder.",
+        LAVA_POND_ROCK = "With each day I get a little boulder.",
 
 		TELEPORTATO_BOX = "This is a box full of sadness and woe.",
 		TELEPORTATO_CRANK = "This is used to agitate the humors.",

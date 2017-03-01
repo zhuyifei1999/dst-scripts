@@ -886,7 +886,7 @@ STRINGS =
         GUACAMOLE = "Guacamole",
         SPIDERHAT = "Spiderhat",
         WORMHOLE = "Worm Hole",
-        WORMHOLE_LIMITED_1 = "Sick Worm Hole",
+        WORMHOLE_LIMITED = "Sick Worm Hole",
 
         WALL_WOOD_ITEM = "Wood Wall",
         WALL_STONE_ITEM = "Stone Wall",

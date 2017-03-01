@@ -359,14 +359,8 @@ return {
             GENERIC = "Is so cuddly!",
         },
         BERNIE_ACTIVE = "Is so brave!",
-        
+
         LAVA_POND_ROCK = "Is just small rock.",
-        LAVA_POND_ROCK2 = "Is just small rock.",
-        LAVA_POND_ROCK3 = "Is just small rock.",
-        LAVA_POND_ROCK4 = "Is just small rock.",
-        LAVA_POND_ROCK5 = "Is just small rock.",
-        LAVA_POND_ROCK6 = "Is just small rock.",
-        LAVA_POND_ROCK7 = "Is just small rock.",
         --BOOK_METEOR = "Book make very hot rain.",
 
         GLOMMER = "Why you follow, weird bug?",

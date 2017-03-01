@@ -1922,13 +1922,7 @@ return {
         PERDFAN = "It's a big ol' fan.",
         REDPOUCH = "What a great color!",
 
-		LAVA_POND_ROCK = "Oh great, another stinkin' rock!",
-		LAVA_POND_ROCK2 = "Oh great, another stinkin' rock!",
-		LAVA_POND_ROCK3 = "Oh great, another stinkin' rock!",
-		LAVA_POND_ROCK4 = "Oh great, another stinkin' rock!",
-		LAVA_POND_ROCK5 = "Oh great, another stinkin' rock!",
-		LAVA_POND_ROCK6 = "Oh great, another stinkin' rock!",
-		LAVA_POND_ROCK7 = "Oh great, another stinkin' rock!",
+        LAVA_POND_ROCK = "Oh great, another stinkin' rock!",
 
 		TRUNKVEST_SUMMER = "Now my friend will never leave.",
 		TRUNKVEST_WINTER = "Not as warm as a good fire, but still pretty good!",

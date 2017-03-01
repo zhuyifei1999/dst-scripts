@@ -370,13 +370,7 @@ return {
     	},
 		WEBBERSKULL = "He's better this way.",
 
-		LAVA_POND_ROCK = "It's... a rock... Sigh.",
-		LAVA_POND_ROCK2 = "It's... a rock... Sigh.",
-		LAVA_POND_ROCK3 = "It's... a rock... Sigh.",
-		LAVA_POND_ROCK4 = "It's... a rock... Sigh.",
-		LAVA_POND_ROCK5 = "It's... a rock... Sigh.",
-		LAVA_POND_ROCK6 = "It's... a rock... Sigh.",
-		LAVA_POND_ROCK7 = "It's... a rock... Sigh.",
+        LAVA_POND_ROCK = "It's... a rock... Sigh.",
 
 		MOLE =
 		{

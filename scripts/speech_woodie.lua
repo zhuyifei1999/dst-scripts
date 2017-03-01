@@ -385,12 +385,6 @@ return {
 		TURF_BADLANDS = "Just some ground, eh?",
 
 		LAVA_POND_ROCK = "Boulder-dash.",
-		LAVA_POND_ROCK2 = "Boulder-dash.",
-		LAVA_POND_ROCK3 = "Boulder-dash.",
-		LAVA_POND_ROCK4 = "Boulder-dash.",
-		LAVA_POND_ROCK5 = "Boulder-dash.",
-		LAVA_POND_ROCK6 = "Boulder-dash.",
-		LAVA_POND_ROCK7 = "Boulder-dash.",
 
 		LIGHTER = "Keep it away from the trees!",
 		ANTLION = 

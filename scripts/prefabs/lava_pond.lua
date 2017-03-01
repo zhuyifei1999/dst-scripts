@@ -1,12 +1,6 @@
 local assets =
 {
     Asset("ANIM", "anim/lava_tile.zip"),
-	Asset("MINIMAP_IMAGE", "pond_lava"),
-}
-
-local prefabs =
-{
-    "lava_pond_rock",
 }
 
 local rock_assets =
@@ -14,16 +8,7 @@ local rock_assets =
     Asset("ANIM", "anim/scorched_rock.zip"),
 }
 
-local rocktypes =
-{
-    "",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-}
+local NUM_ROCK_TYPES = 7
 
 local function makerock(rocktype)
     local function fn()
@@ -37,7 +22,9 @@ local function makerock(rocktype)
         inst.AnimState:SetBuild("scorched_rock")
         inst.AnimState:PlayAnimation("idle"..rocktype)
 
-        inst.name = STRINGS.NAMES.LAVA_POND_ROCK
+        if rocktype:len() > 0 then
+            inst:SetPrefabNameOverride("lava_pond_rock")
+        end
 
         inst.entity:SetPristine()
 
@@ -61,9 +48,10 @@ local function SpawnRocks(inst)
         inst.rocks = {}
         for i = 1, math.random(2, 4) do
             local theta = math.random() * 2 * PI
+            local rocktype = math.random(NUM_ROCK_TYPES)
             table.insert(inst.rocks,
             {
-                rocktype = rocktypes[math.random(#rocktypes)],
+                rocktype = rocktype > 1 and tostring(rocktype) or "",
                 offset =
                 {
                     math.sin(theta) * 2.1 + math.random() * .3,
@@ -127,7 +115,7 @@ local function fn()
     inst.AnimState:SetLayer(LAYER_BACKGROUND)
     inst.AnimState:SetSortOrder(3)
 
-    inst.MiniMapEntity:SetIcon("pond_lava.png")
+    inst.MiniMapEntity:SetIcon("lava_pond.png")
 
     inst:AddTag("lava")
     inst:AddTag("antlion_sinkhole_blocker")
@@ -177,8 +165,12 @@ local function fn()
     return inst
 end
 
-local prefabs = { Prefab("lava_pond", fn, assets, prefabs) }
-for i, v in ipairs(rocktypes) do
-    table.insert(prefabs, makerock(v))
+local ret = { makerock("") }
+local prefabs = { "lava_pond_rock" }
+for i = 2, NUM_ROCK_TYPES do
+    table.insert(ret, makerock(tostring(i)))
+    table.insert(prefabs, "lava_pond_rock"..tostring(i))
 end
-return unpack(prefabs)
+table.insert(ret, Prefab("lava_pond", fn, assets, prefabs))
+prefabs = nil
+return unpack(ret)

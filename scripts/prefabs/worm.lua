@@ -318,5 +318,9 @@ local function fn()
     return inst
 end
 
+local function onruinsrespawn(inst)
+	inst.sg:GoToState("lure_enter") 
+end
+
 return Prefab("worm", fn, assets, prefabs),
-    RuinsRespawner("worm")
+    RuinsRespawner.Inst("worm", onruinsrespawn), RuinsRespawner.WorldGen("worm", onruinsrespawn)

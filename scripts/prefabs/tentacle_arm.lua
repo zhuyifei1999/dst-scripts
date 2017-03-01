@@ -11,48 +11,63 @@ local prefabs =
     "monstermeat",
 }
 
+local ARM_SCALE = .95
+
+local function IsAlive(guy)
+    return not guy.components.health:IsDead()
+end
+
 local function retargetfn(inst)
-    return FindEntity(inst, TUNING.TENTACLE_PILLAR_ARM_ATTACK_DIST, function(guy) 
-        if not guy.components.health:IsDead() then
-            return (not (guy.prefab == inst.prefab))
-        end
-    end,
-    {"_combat","_health"},-- see entityscript.lua
-    {"prey"},
-    {"character","monster","animal"}
-    )
+    return FindEntity(inst,
+            TUNING.TENTACLE_PILLAR_ARM_ATTACK_DIST,
+            IsAlive,
+            { "_combat", "_health" },-- see entityscript.lua
+            { "tentacle_pillar_arm", "tentacle_pillar", "prey", "INLIMBO" },
+            { "character", "monster", "animal" }
+        )
 end
 
 local function Emerge(inst)
-    if inst.retracted == true then
+    if inst.retracted then
         inst.retracted = false
         inst:PushEvent("emerge")
     end
 end
 
 local function Retract(inst)
-    if inst.retracted == false then
+    if not inst.retracted then
         inst.retracted = true
         inst:PushEvent("retract")
     end
 end
 
-local function onfar(inst)
-    Retract(inst)
-end
-
-local function onnear(inst)
-    Emerge(inst)
-end
-
-local function shouldKeepTarget(inst, target)
-    if target and target:IsValid() and target.components.health and not target.components.health:IsDead() then
-        local distsq = target:GetDistanceSqToInst(inst)
-        
-        return distsq < TUNING.TENTACLE_PILLAR_ARM_STOPATTACK_DIST*TUNING.TENTACLE_PILLAR_ARM_STOPATTACK_DIST
+local function OnFullRetreat(inst)
+    if inst:IsAsleep() then
+        inst:Remove()
     else
-        return false
+        inst.retreat = true
     end
+end
+
+local function OnEntitySleep(inst)
+    if inst.retreat and inst.sleeptask == nil then
+        inst.sleeptask = inst:DoTaskInTime(1, inst.Remove)
+    end
+end
+
+local function OnEntityWake(inst)
+    if inst.sleeptask ~= nil then
+        inst.sleeptask:Cancel()
+        inst.sleeptask = nil
+    end
+end
+
+local function ShouldKeepTarget(inst, target)
+    return target ~= nil
+        and target:IsValid()
+        and target.components.health ~= nil
+        and not target.components.health:IsDead()
+        and target:IsNear(inst, TUNING.TENTACLE_PILLAR_ARM_STOPATTACK_DIST)
 end
 
 local function OnHit(inst, attacker, damage) 
@@ -66,8 +81,9 @@ local function OnHit(inst, attacker, damage)
 end
 
 local function CustomOnHaunt(inst, haunter)
-    if math.random() < TUNING.HAUNT_CHANCE_HALF then
-        inst.components.health:SetPercent(0)
+    if math.random() < TUNING.HAUNT_CHANCE_HALF and
+        not inst.components.health:IsDead() then
+        inst.components.health:Kill()
         return true
     end
     return false
@@ -82,19 +98,19 @@ local function fn()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
-    inst.Physics:SetCylinder(0.6,2)
+    inst.Physics:SetCylinder(.6, 2)
 
-    local ARM_SCALE = 0.95
     inst.Transform:SetScale(ARM_SCALE, ARM_SCALE, ARM_SCALE)
 
     inst.AnimState:SetBank("tentacle_arm")
-    inst.AnimState:SetScale(ARM_SCALE,ARM_SCALE)
+    inst.AnimState:SetScale(ARM_SCALE, ARM_SCALE)
     inst.AnimState:SetBuild("tentacle_arm_build")
     inst.AnimState:PlayAnimation("breach_pre")
     -- inst.AnimState:SetMultColour(.2, 1, .2, 1.0)
 
     inst:AddTag("monster")
     inst:AddTag("hostile")
+    inst:AddTag("tentacle_pillar_arm")
     inst:AddTag("wet")
 
     inst.entity:SetPristine()
@@ -112,8 +128,8 @@ local function fn()
     inst.components.combat:SetRange(TUNING.TENTACLE_PILLAR_ARM_ATTACK_DIST)
     inst.components.combat:SetDefaultDamage(TUNING.TENTACLE_PILLAR_ARM_DAMAGE)
     inst.components.combat:SetAttackPeriod(TUNING.TENTACLE_PILLAR_ARM_ATTACK_PERIOD)
-    inst.components.combat:SetRetargetFunction(GetRandomWithVariance(1, 0.5), retargetfn)
-    inst.components.combat:SetKeepTargetFunction(shouldKeepTarget)
+    inst.components.combat:SetRetargetFunction(GetRandomWithVariance(1, .5), retargetfn)
+    inst.components.combat:SetKeepTargetFunction(ShouldKeepTarget)
     inst.components.combat:SetOnHit(OnHit)
     inst.components.combat:SetPlayerStunlock(PLAYERSTUNLOCK.OFTEN)
 
@@ -121,23 +137,26 @@ local function fn()
 
     inst:AddComponent("playerprox")
     inst.components.playerprox:SetDist(6, 15)
-    inst.components.playerprox:SetOnPlayerNear(onnear)
-    inst.components.playerprox:SetOnPlayerFar(onfar)
+    inst.components.playerprox:SetOnPlayerNear(Emerge)
+    inst.components.playerprox:SetOnPlayerFar(Retract)
+    inst.components.playerprox:SetPlayerAliveMode(inst.components.playerprox.AliveModes.AliveOnly)
 
     inst:AddComponent("sanityaura")
     inst.components.sanityaura.aura = -TUNING.SANITYAURA_MED
 
     inst:AddComponent("inspectable")
-    inst:AddComponent("lootdropper")
-    -- inst.components.lootdropper:SetLoot({"monstermeat", "monstermeat"})
-    -- inst.components.lootdropper:AddChanceLoot("tentaclespike", 0.5)
-    -- inst.components.lootdropper:AddChanceLoot("tentaclespots", 0.2)
 
     AddHauntableCustomReaction(inst, CustomOnHaunt)
 
     inst.retracted = true
     inst.Emerge = Emerge
     inst.Retract = Retract
+
+    inst.sleeptask = nil
+    inst.OnEntitySleep = OnEntitySleep
+    inst.OnEntityWake = OnEntityWake
+
+    inst:ListenForEvent("full_retreat", OnFullRetreat)
 
     inst:SetStateGraph("SGtentacle_arm")
 

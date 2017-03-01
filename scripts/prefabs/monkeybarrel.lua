@@ -201,5 +201,12 @@ local function fn()
     return inst
 end
 
+local function onruinsrespawn(inst, respawner)
+	if not respawner:IsAsleep() then
+		inst.AnimState:PlayAnimation("shake")
+		inst.AnimState:PushAnimation("idle")
+	end
+end
+
 return Prefab("monkeybarrel", fn, assets, prefabs),
-    RuinsRespawner("monkeybarrel")
+    RuinsRespawner.Inst("monkeybarrel", onruinsrespawn), RuinsRespawner.WorldGen("monkeybarrel", onruinsrespawn)

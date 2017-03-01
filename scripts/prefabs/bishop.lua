@@ -194,6 +194,12 @@ local function bishop_nightmare_fn()
     return inst
 end
 
+local function onruinsrespawn(inst, respawner)
+	if not respawner:IsAsleep() then
+		-- todo: add fx
+	end
+end
+
 return Prefab("bishop", bishop_fn, assets, prefabs),
     Prefab("bishop_nightmare", bishop_nightmare_fn, assets, prefabs_nightmare),
-    RuinsRespawner("bishop_nightmare")
+    RuinsRespawner.Inst("bishop_nightmare", onruinsrespawn), RuinsRespawner.WorldGen("bishop_nightmare", onruinsrespawn)

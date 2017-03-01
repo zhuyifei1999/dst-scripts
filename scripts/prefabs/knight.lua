@@ -164,6 +164,12 @@ local function nightmarefn()
     return inst
 end
 
+local function onruinsrespawn(inst, respawner)
+	if not respawner:IsAsleep() then
+		-- todo: add fx
+	end
+end
+
 return Prefab("knight", fn, assets, prefabs),
     Prefab("knight_nightmare", nightmarefn, assets, prefabs_nightmare),
-    RuinsRespawner("knight_nightmare")
+    RuinsRespawner.Inst("knight_nightmare", onruinsrespawn), RuinsRespawner.WorldGen("knight_nightmare", onruinsrespawn)

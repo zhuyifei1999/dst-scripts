@@ -398,15 +398,14 @@ function ChangeToInventoryPhysics(inst)
 end
 
 function MakeObstaclePhysics(inst, rad, height)
-    height = height or 2
     inst:AddTag("blocker")
     local phys = inst.entity:AddPhysics()
     --this is lame. Bullet wants 0 mass for static objects, 
     -- for for some reason it is slow when we do that
 
     -- Doesnt seem to slow anything down now.
-    phys:SetMass(0) 
-    phys:SetCapsule(rad,height)
+    phys:SetMass(0)
+    phys:SetCapsule(rad, height or 2)
     phys:SetCollisionGroup(COLLISION.OBSTACLES)
     phys:ClearCollisionMask()
     phys:CollidesWith(COLLISION.ITEMS)

@@ -348,12 +348,6 @@ return {
         },
 
         LAVA_POND_ROCK = "Stone belched forth by the earth's fiery heart!",
-        LAVA_POND_ROCK2 = "Stone belched forth by the earth's fiery heart!",
-        LAVA_POND_ROCK3 = "Stone belched forth by the earth's fiery heart!",
-        LAVA_POND_ROCK4 = "Stone belched forth by the earth's fiery heart!",
-        LAVA_POND_ROCK5 = "Stone belched forth by the earth's fiery heart!",
-        LAVA_POND_ROCK6 = "Stone belched forth by the earth's fiery heart!",
-        LAVA_POND_ROCK7 = "Stone belched forth by the earth's fiery heart!",
 
         MULTIPLAYER_PORTAL = "It makes me long for the stage!",
         BERNIE_INACTIVE =

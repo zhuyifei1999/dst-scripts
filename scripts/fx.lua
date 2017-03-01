@@ -249,6 +249,15 @@ local fx =
         tintalpha = 0.6,
     },
     {
+        name = "slurper_respawn",
+        bank = "die_fx",
+        build = "die",
+        anim = "small",
+        sound = "dontstarve/common/deathpoof",
+        tint = Vector3(0, 0, 0),
+        tintalpha = 1.0,
+    },
+    {
         name = "shadow_despawn",
         bank = "statue_ruins_fx",
         build = "statue_ruins_fx",

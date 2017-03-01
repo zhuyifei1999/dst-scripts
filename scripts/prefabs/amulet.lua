@@ -129,7 +129,7 @@ local function pickup(inst, owner)
             if v.components.trap ~= nil and v.components.trap:IsSprung() then
                 v.components.trap:Harvest(owner)
             else
-                owner.components.inventory:GiveItem(v)
+                owner.components.inventory:GiveItem(v, nil, v:GetPosition())
             end
             return
         end

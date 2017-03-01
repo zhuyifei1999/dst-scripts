@@ -395,6 +395,12 @@ local function lightfn()
     return inst
 end
 
+local function onruinsrespawn(inst, respawner)
+	if not respawner:IsAsleep() then
+		SpawnPrefab("slurper_respawn").Transform:SetPosition(inst.Transform:GetWorldPosition())
+	end
+end
+
 return Prefab("slurper", fn, assets, prefabs),
     Prefab("slurperlight", lightfn),
-    RuinsRespawner("slurper")
+    RuinsRespawner.Inst("slurper", onruinsrespawn), RuinsRespawner.WorldGen("slurper", onruinsrespawn)

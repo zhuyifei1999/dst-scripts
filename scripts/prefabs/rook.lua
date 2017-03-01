@@ -237,6 +237,12 @@ local function rook_nightmare_fn()
     return inst
 end
 
+local function onruinsrespawn(inst, respawner)
+	if not respawner:IsAsleep() then
+		-- todo: add fx
+	end
+end
+
 return Prefab("rook", rook_fn, assets, prefabs),
     Prefab("rook_nightmare", rook_nightmare_fn, assets, prefabs_nightmare),
-    RuinsRespawner("rook_nightmare")
+    RuinsRespawner.Inst("rook_nightmare", onruinsrespawn), RuinsRespawner.WorldGen("rook_nightmare", onruinsrespawn)

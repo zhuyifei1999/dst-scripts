@@ -244,5 +244,9 @@ local function fn()
     return inst
 end
 
+local function onruinsrespawn(inst)
+
+end
+
 return Prefab("minotaur", fn, assets, prefabs),
-    RuinsRespawner("minotaur")
+    RuinsRespawner.Inst("minotaur", onruinsrespawn), RuinsRespawner.WorldGen("minotaur", onruinsrespawn)

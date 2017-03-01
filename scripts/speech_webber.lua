@@ -356,13 +356,7 @@ return {
 		},
 		BERNIE_ACTIVE = "That teddy bear is moving!",
 
-		LAVA_POND_ROCK = "Wow! A rock!",
-		LAVA_POND_ROCK2 = "Wow! A rock!",
-		LAVA_POND_ROCK3 = "Wow! A rock!",
-		LAVA_POND_ROCK4 = "Wow! A rock!",
-		LAVA_POND_ROCK5 = "Wow! A rock!",
-		LAVA_POND_ROCK6 = "Wow! A rock!",
-		LAVA_POND_ROCK7 = "Wow! A rock!",
+        LAVA_POND_ROCK = "Wow! A rock!",
 
         GLOMMER = "Nice eyes.",
         GLOMMERFLOWER = 

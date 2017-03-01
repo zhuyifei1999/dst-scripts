@@ -111,7 +111,7 @@ return {
         },
         {
           name = "",
-          type = "ancient_altar_broken",
+          type = "ancient_altar_broken_spawner",
           shape = "rectangle",
           x = 256,
           y = 208,

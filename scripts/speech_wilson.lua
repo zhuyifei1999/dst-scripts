@@ -418,13 +418,7 @@ return {
 			EMPTY = "I broke it. For science.",
 		},
 
-		LAVA_POND_ROCK = "As gneiss a place as any.",
-		LAVA_POND_ROCK2 = "As gneiss a place as any.",
-		LAVA_POND_ROCK3 = "As gneiss a place as any.",
-		LAVA_POND_ROCK4 = "As gneiss a place as any.",
-		LAVA_POND_ROCK5 = "As gneiss a place as any.",
-		LAVA_POND_ROCK6 = "As gneiss a place as any.",
-		LAVA_POND_ROCK7 = "As gneiss a place as any.",
+        LAVA_POND_ROCK = "As gneiss a place as any.",
 
 		WEBBERSKULL = "Poor little guy. He deserves a proper funeral.",
 		WORMLIGHT = "Looks delicious.",

@@ -176,32 +176,31 @@ local function HeartOfTheRuinsAtriumRetrofitting(inst)
 	end
 end
 
-local function HeartOfTheRuinsRuinsRetrofitting(inst)
-	local function AddRuinsRespawner(prefab, spawnerprefab)
-		local count = 0
-		spawnerprefab = spawnerprefab or prefab
-		for _, v in pairs(Ents) do
-			if v ~= inst and v.prefab == prefab then
-				local respawner = SpawnPrefab(spawnerprefab.."_ruinsrespawner_inst")
-				respawner.Transform:SetPosition(v.Transform:GetWorldPosition())
-				if prefab == spawnerprefab then
-					respawner.components.objectspawner:TakeOwnership(v)
-				else
-					respawner.resetruins = false
-				end
-				count = count + 1
-			end
-		end	
-		
-		if count == 0 then
-			print ("Retrofitting for A New Reign: Heart of the Ruins - Could not find any "..spawnerprefab.." to add respawners for.")
-		else
-			print ("Retrofitting for A New Reign: Heart of the Ruins - Added "..count.." respawners for "..spawnerprefab.."." )
-		end
-		
-		return count
-	end
 
+local function AddRuinsRespawner(prefab, spawnerprefab)
+	local count = 0
+	spawnerprefab = spawnerprefab or prefab
+	for _, v in pairs(Ents) do
+		if v ~= inst and v.prefab == prefab then
+			local respawner = SpawnPrefab(spawnerprefab.."_ruinsrespawner_inst")
+			respawner.Transform:SetPosition(v.Transform:GetWorldPosition())
+			if prefab == spawnerprefab then
+				respawner.components.objectspawner:TakeOwnership(v)
+			end
+			count = count + 1
+		end
+	end	
+	
+	if count == 0 then
+		print ("Retrofitting for A New Reign: Heart of the Ruins - Could not find any "..spawnerprefab.." to add respawners for.")
+	else
+		print ("Retrofitting for A New Reign: Heart of the Ruins - Added "..count.." respawners for "..spawnerprefab.."." )
+	end
+	
+	return count
+end
+
+local function HeartOfTheRuinsRuinsRetrofitting(inst)
 	local function RepopNear(count, spawnerprefab, target, radius, repop)
 		if count < repop then
 			local targets = {}
@@ -220,7 +219,6 @@ local function HeartOfTheRuinsRuinsRetrofitting(inst)
 					if offset ~= nil then
 						local respawner = SpawnPrefab(spawnerprefab.."_ruinsrespawner_inst")
 						respawner.Transform:SetPosition((pt+offset):Get())
-						respawner.resetruins = false
 						num_spawned = num_spawned + 1
 					end
 				end
@@ -241,7 +239,6 @@ local function HeartOfTheRuinsRuinsRetrofitting(inst)
 			for i = count, (repop-1) do
 				local _, respawner = RetrofitNewCaveContentPrefab(inst, spawnerprefab.."_ruinsrespawner_inst", 1, 1, true)
 				if respawner ~= nil then
-					respawner.resetruins = false
 					count = count + 1
 				end
 			end
@@ -267,7 +264,6 @@ local function HeartOfTheRuinsRuinsRetrofitting(inst)
 					local node = TheWorld.topology.nodes[k]
 					local respawner = SpawnPrefab("minotaur_ruinsrespawner_inst")
 					respawner.Transform:SetPosition(node.cent[1], 0, node.cent[2])
-					respawner.resetruins = false
 					minotaur_respawner = true
 					print ("Retrofitting for A New Reign: Heart of the Ruins - Added worst case respawner for the minotaur." )
 				end
@@ -322,6 +318,27 @@ local function HeartOfTheRuinsRuinsRetrofittingRespawnerFix(inst, first_hotr_ret
 	NoSpawnOnLoadAndReduce("worm", 7)
 	NoSpawnOnLoadAndReduce("minotaur", 1)
 end
+
+local function HeartOfTheRuinsRuinsRetrofittingAltar(inst, first_hotr_retrofit)
+	AddRuinsRespawner("ancient_altar_broken")
+	AddRuinsRespawner("ancient_altar")
+	
+	for k,v in ipairs(TheWorld.topology.ids) do
+		if string.sub(v, -string.len("Altar")) == "Altar" then
+			local node = TheWorld.topology.nodes[k]
+			
+			if TheWorld.Map:IsAboveGroundAtPoint(node.x, 0, node.y) then
+				local altars = TheSim:FindEntities(node.x, 0, node.y, 32, {"altar"})
+				if #altars == 0 then
+					local respawner = SpawnPrefab("ancient_altar_broken_ruinsrespawner_inst")
+					respawner.Transform:SetPosition(node.x, 0, node.y)
+					print ("Retrofitting for A New Reign: Heart of the Ruins + Altar Respawner - Added respawner to " .. v .. " for missing ancient_altar_broken.")
+				end
+			end
+		end
+	end	
+end
+
 
 function self:ClearRuins()
 	local function RemoveAllRuinsRespawner(prefab)
@@ -407,7 +424,16 @@ function self:OnPostInit()
 		self.retrofit_heartoftheruins_respawnerfix = nil
 		HeartOfTheRuinsRuinsRetrofittingRespawnerFix(inst, first_hotr_retrofit)
 	end
-
+	
+	if self.retrofit_heartoftheruins_altars then
+		self.retrofit_heartoftheruins_altars = nil
+		
+		print ("Retrofitting for A New Reign: Heart of the Ruins + Altar Respawner" )
+		HeartOfTheRuinsRuinsRetrofittingAltar(inst)
+	end	
+	
+	
+	---------------------------------------------------------------------------
 	if inst.components.retrofitcavemap_anr.requiresreset then
 		-- not quite working in all cases...
 
@@ -440,6 +466,7 @@ function self:OnLoad(data)
 		self.retrofit_artsandcrafts = data.retrofit_artsandcrafts
 		self.retrofit_heartoftheruins = data.retrofit_heartoftheruins
 		self.retrofit_heartoftheruins_respawnerfix = data.retrofit_heartoftheruins_respawnerfix
+		self.retrofit_heartoftheruins_altars = data.retrofit_heartoftheruins_altars
     end
 end
 

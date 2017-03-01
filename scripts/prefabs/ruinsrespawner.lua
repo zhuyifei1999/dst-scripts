@@ -13,7 +13,12 @@ local function tryspawn(inst)
             end
         end
 
-        inst.components.objectspawner:SpawnObject(inst.spawnprefab).Transform:SetPosition(x, y, z)
+        local obj = inst.components.objectspawner:SpawnObject(inst.spawnprefab)
+        obj.Transform:SetPosition(x, y, z)
+  		if inst.onrespawnfn ~= nil then
+			inst.onrespawnfn(obj, inst)
+		end
+
     end
 
     inst.resetruins = nil
@@ -29,33 +34,41 @@ local function onload(inst, data)
     end
 end
 
-local function MakeRuinsRespawner(obj)
-    local function fn()
-        local inst = CreateEntity()
+local function MakeFn(obj, onrespawnfn)
+	local fn = function()
+		local inst = CreateEntity()
 
-        inst.entity:AddTransform()
-        --[[Non-networked entity]]
+		inst.entity:AddTransform()
+		--[[Non-networked entity]]
 
-        inst:AddTag("CLASSIFIED")
+		inst:AddTag("CLASSIFIED")
 
-        inst.spawnprefab = obj
+		inst.spawnprefab = obj
+		inst.onrespawnfn = onrespawnfn
 
-        inst:AddComponent("objectspawner")
-        inst.components.objectspawner.onnewobjectfn = onnewobjectfn
+		inst:AddComponent("objectspawner")
+		inst.components.objectspawner.onnewobjectfn = onnewobjectfn
 
-        inst:ListenForEvent("resetruins", function()
-            inst.resetruins = true
-            tryspawn(inst)
-        end, TheWorld)
+		inst:ListenForEvent("resetruins", function()
+			inst.resetruins = true
+			tryspawn(inst)
+		end, TheWorld)
 
-        inst.OnSave = onsave
-        inst.OnLoad = onload
+		inst.OnSave = onsave
+		inst.OnLoad = onload
 
-        return inst
-    end
+		return inst
+	end
+	return fn
+end
 
+local function MakeRuinsRespawnerInst(obj, onrespawnfn)
+	return Prefab(obj.."_ruinsrespawner_inst", MakeFn(obj, onrespawnfn), nil, { obj, obj.."_spawner" })
+end
+
+local function MakeRuinsRespawnerWorldGen(obj, onrespawnfn)
 	local function worldgenfn()
-		local inst = fn()
+		local inst = MakeFn(obj, onrespawnfn)()
 
 		inst:SetPrefabName(obj.."_ruinsrespawner_inst")
 		
@@ -65,7 +78,7 @@ local function MakeRuinsRespawner(obj)
 		return inst
 	end
 
-    return Prefab(obj.."_ruinsrespawner_inst", fn, nil, { obj, obj.."_spawner" }), Prefab(obj.."_spawner", worldgenfn, nil, { obj })
+	return Prefab(obj.."_spawner", worldgenfn, nil, { obj })
 end
 
-return MakeRuinsRespawner
+return {Inst = MakeRuinsRespawnerInst, WorldGen = MakeRuinsRespawnerWorldGen}
