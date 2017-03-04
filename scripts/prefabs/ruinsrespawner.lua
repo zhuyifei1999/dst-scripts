@@ -51,7 +51,7 @@ local function MakeFn(obj, onrespawnfn)
 
 		inst:ListenForEvent("resetruins", function()
 			inst.resetruins = true
-			tryspawn(inst)
+			inst:DoTaskInTime(math.random()*0.75, function() tryspawn(inst) end)
 		end, TheWorld)
 
 		inst.OnSave = onsave

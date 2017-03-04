@@ -308,9 +308,15 @@ local function SpawnDeer(inst)
     deer.components.spawnfader:FadeIn()
     inst.components.commander:AddSoldier(deer)
 
+    theta = (rot + 90) * DEGREES
+    offset =
+        FindWalkableOffset(pos, theta, inst.deer_dist, 5, true, false) or
+        FindWalkableOffset(pos, theta, inst.deer_dist * .5, 5, true, false) or
+        Vector3(0, 0, 0)
+
     deer = SpawnPrefab("deer_blue")
     deer.Transform:SetRotation(rot)
-    deer.Transform:SetPosition(pos.x - offset.x, 0, pos.z - offset.z)
+    deer.Transform:SetPosition(pos.x + offset.x, 0, pos.z + offset.z)
     deer.components.spawnfader:FadeIn()
     inst.components.commander:AddSoldier(deer)
 end

@@ -579,8 +579,6 @@ return {
         BEDROLL_FURRY = "It's so warm and comfy.",
         BUNNYMAN = "I am filled with an irresistible urge to do science.",
         FLOWER_CAVE = "Science makes it glow.",
-        FLOWER_CAVE_DOUBLE = "Science makes it glow.",
-        FLOWER_CAVE_TRIPLE = "Science makes it glow.",
         GUANO = "Another flavor of poop.",
         LANTERN = "A more civilized light.",
         LIGHTBULB = "It's strangely tasty looking.",
@@ -632,12 +630,21 @@ return {
             BLOOM = "It's trying to reproduce.",
         },
         MUSHTREE_TALL_WEBBED = "The spiders thought this one was important.",
-        SPORE_TALL = "It's just drifting around.",
-        SPORE_MEDIUM = "Hasn't a care in the world.",
-        SPORE_SMALL = "That's a sight for spore eyes.",
-        SPORE_TALL_INV = "I'll keep a little light in my pocket.",
-        SPORE_MEDIUM_INV = "I'll keep a little light in my pocket.",
-        SPORE_SMALL_INV = "I'll keep a little light in my pocket.",
+        SPORE_TALL =
+        {
+            GENERIC = "It's just drifting around.",
+            HELD = "I'll keep a little light in my pocket.",
+        },
+        SPORE_MEDIUM =
+        {
+            GENERIC = "Hasn't a care in the world.",
+            HELD = "I'll keep a little light in my pocket.",
+        },
+        SPORE_SMALL =
+        {
+            GENERIC = "That's a sight for spore eyes.",
+            HELD = "I'll keep a little light in my pocket.",
+        },
         RABBITHOUSE =
         {
             GENERIC = "That's not a real carrot.",
@@ -654,13 +661,7 @@ return {
         SPIDERHOLE = "It's encrusted with old webbing.",
         SPIDERHOLE_ROCK = "It's encrusted with old webbing.",
         STALAGMITE = "Looks like a rock to me.",
-        STALAGMITE_FULL = "Looks like a rock to me.",
-        STALAGMITE_LOW = "Looks like a rock to me.",
-        STALAGMITE_MED = "Looks like a rock to me.",
         STALAGMITE_TALL = "Rocks, rocks, rocks, rocks...",
-        STALAGMITE_TALL_FULL = "Rocks, rocks, rocks, rocks...",
-        STALAGMITE_TALL_LOW = "Rocks, rocks, rocks, rocks...",
-        STALAGMITE_TALL_MED = "Rocks, rocks, rocks, rocks...",
         TREASURECHEST_TRAP = "How convenient!",
 
         TURF_CARPETFLOOR = "It's surprisingly scratchy.",

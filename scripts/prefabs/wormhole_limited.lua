@@ -19,21 +19,25 @@ local function OnDoneTeleporting(inst, obj)
         inst.closetask:Cancel()
     end
     inst.closetask = inst:DoTaskInTime(1.5, function()
-        if inst.components.teleporter.numteleporting <= 0 then
+        if not inst.components.teleporter:IsBusy() then
             if inst.usesleft <= 0 then
-                local other = inst.components.teleporter.targetTeleporter
-                if other ~= nil then
-                    if other:IsAsleep() then
-                        other:Remove()
-                    else
-                        other.persists = false
-                        other.sg:GoToState("death")
-                    end
-                end
-                if inst:IsAsleep() then
-                    inst:Remove()
+                if inst.components.teleporter:IsTargetBusy() then
+                    inst.sg:GoToState("closing")
                 else
-                    inst.sg:GoToState("death")
+                    local other = inst.components.teleporter.targetTeleporter
+                    if other ~= nil then
+                        if other:IsAsleep() then
+                            other:Remove()
+                        else
+                            other.persists = false
+                            other.sg:GoToState("death")
+                        end
+                    end
+                    if inst:IsAsleep() then
+                        inst:Remove()
+                    else
+                        inst.sg:GoToState("death")
+                    end
                 end
             elseif not inst.components.playerprox:IsPlayerClose() then
                 inst.sg:GoToState("closing")
@@ -93,54 +97,16 @@ local function OnActivateByOther(inst, source, doer)
 end
 
 local function onnear(inst)
-    if inst.components.teleporter.targetTeleporter ~= nil and not inst.sg:HasStateTag("open") then
+    if inst.components.teleporter:IsActive() and not inst.sg:HasStateTag("open") then
         inst.sg:GoToState("opening")
     end
 end
 
 local function onfar(inst)
-    if inst.components.teleporter.numteleporting == 0 and inst.sg:HasStateTag("open") then
+    if not inst.components.teleporter:IsBusy() and inst.sg:HasStateTag("open") then
         inst.sg:GoToState("closing")
     end
 end
-
---[[local function onitemarrive(other, item)
-    if not item:IsValid() then
-        return
-    end
-
-    other:RemoveChild(item)
-    item:ReturnToScene()
-
-    if item.Transform ~= nil then
-        local x, y, z = item.Transform:GetWorldPosition()
-        local angle = math.random() * 2 * PI
-        if item.Physics ~= nil then
-            item.Physics:Stop()
-            if item:IsAsleep() then
-                local radius = 2 + math.random() * .5
-                item.Physics:Teleport(
-                    x + math.cos(angle) * radius,
-                    0,
-                    z - math.sin(angle) * radius)
-            else
-                local bounce = item.components.inventoryitem ~= nil and not item.components.inventoryitem.nobounce
-                local speed = (bounce and 3 or 4) + math.random() * .5
-                item.Physics:Teleport(x, 0, z)
-                item.Physics:SetVel(
-                    speed * math.cos(angle),
-                    bounce and speed * 3 or 0,
-                    speed * math.sin(angle))
-            end
-        else
-            local radius = 2 + math.random() * .5
-            item.Transform:SetPosition(
-                x + math.cos(angle) * radius,
-                0,
-                z - math.sin(angle) * radius)
-        end
-    end
-end]]
 
 local function onaccept(inst, giver, item)
     ProfileStatsSet("wormhole_ltd_accept_item", item.prefab)

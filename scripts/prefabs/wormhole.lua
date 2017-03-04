@@ -14,8 +14,8 @@ local function OnDoneTeleporting(inst, obj)
         inst.closetask:Cancel()
     end
     inst.closetask = inst:DoTaskInTime(1.5, function()
-        if inst.components.teleporter.numteleporting <= 0 and
-            not inst.components.playerprox:IsPlayerClose() then
+        if not (inst.components.teleporter:IsBusy() or
+                inst.components.playerprox:IsPlayerClose()) then
             inst.sg:GoToState("closing")
         end
     end)
@@ -54,13 +54,13 @@ local function OnActivateByOther(inst, source, doer)
 end
 
 local function onnear(inst)
-    if inst.components.teleporter.targetTeleporter ~= nil and not inst.sg:HasStateTag("open") then
+    if inst.components.teleporter:IsActive() and not inst.sg:HasStateTag("open") then
         inst.sg:GoToState("opening")
     end
 end
 
 local function onfar(inst)
-    if inst.components.teleporter.numteleporting == 0 and inst.sg:HasStateTag("open") then
+    if not inst.components.teleporter:IsBusy() and inst.sg:HasStateTag("open") then
         inst.sg:GoToState("closing")
     end
 end

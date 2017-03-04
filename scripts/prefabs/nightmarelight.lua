@@ -280,5 +280,4 @@ local function idolfn()
 	return inst
 end
 
-return Prefab("nightmarelight", fn, assets, prefabs),
-	Prefab("atrium_idol", idolfn, assets, prefabs)
+return Prefab("nightmarelight", fn, assets, prefabs)

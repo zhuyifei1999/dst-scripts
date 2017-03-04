@@ -398,6 +398,7 @@ end
 local function onruinsrespawn(inst, respawner)
 	if not respawner:IsAsleep() then
 		SpawnPrefab("slurper_respawn").Transform:SetPosition(inst.Transform:GetWorldPosition())
+		inst.sg:GoToState("ruinsrespawn")
 	end
 end
 

@@ -889,7 +889,7 @@ end
 
 function StartNextInstance(in_params)
     if TheNet:GetIsServer() then
-        NotifyLoadingState( LoadingStates.Loading )
+        NotifyLoadingState(LoadingStates.Loading)
     end
 
     local params = in_params or {}
@@ -898,7 +898,7 @@ function StartNextInstance(in_params)
     params.load_screen_image = global_loading_widget.image_random
 
     if LOADED_CHARACTER then
-        TheSim:UnloadPrefabs(LOADED_CHARACTER) 
+        TheSim:UnloadPrefabs(LOADED_CHARACTER)
         LOADED_CHARACTER = nil
     end
 

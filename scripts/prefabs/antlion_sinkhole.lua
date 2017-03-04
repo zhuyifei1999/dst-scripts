@@ -14,43 +14,58 @@ local prefabs =
 }
 
 local NUM_CRACKING_STAGES = 3
-local COLLAPSE_STAGE_DURATION = 0.9
+local COLLAPSE_STAGE_DURATION = 1
 
 local function UpdateOverrideSymbols(inst, state)
     if state == NUM_CRACKING_STAGES then
         inst.AnimState:ClearOverrideSymbol("cracks1")
-        inst.components.unevenground:Enable()
+        if inst.components.unevenground ~= nil then
+	        inst.components.unevenground:Enable()
+	    end
     else
         inst.AnimState:OverrideSymbol("cracks1", "antlion_sinkhole", "cracks_pre"..tostring(state))
-        inst.components.unevenground:Disable()
+        if inst.components.unevenground ~= nil then
+	        inst.components.unevenground:Disable()
+	    end
     end
 end
 
-local function UpdateSinkholeRepair(inst)
-    if inst.collapsetask == nil then
-        local age = (TheWorld.state.cycles + TheWorld.state.time) - inst.creationtime
-        if age < TUNING.ANTLION_SINKHOLE.LIFETIME_FIRST_REPAIR then
-            UpdateOverrideSymbols(inst, 3)
-        elseif age < TUNING.ANTLION_SINKHOLE.LIFETIME_SECOND_REPAIR then
-            UpdateOverrideSymbols(inst, 2)
-        elseif age < TUNING.ANTLION_SINKHOLE.LIFETIME_FINAL_REPAIR then
-            UpdateOverrideSymbols(inst, 1)
-        else
-            --V2C: can reach here from OnEntityWake, but components will
-            --     also finish triggering their OnEntityWake after we're
-            --     removed. Normally we'd queue the remove for one frame
-            --     but... we can get away with it this way here.
-            --[[
-                --This would be the safe way
-                inst.components.unevenground:Disable()
-                inst.persists = false
-                inst:Hide()
-                inst:DoTaskInTime(0, inst.Remove)
-            ]]
-            inst.components.unevenground:Disable()
-            inst:Remove()
+local function SpawnFx(inst, stage, scale)
+    local dir = math.random()*PI*2
+    local num = 7
+    local radius = 1.6
+    SpawnPrefab("sinkhole_spawn_fx_"..math.random(3)).Transform:SetPosition(inst:GetPosition():Get())
+    for i = 1, num do
+        local function spawnit(inst)
+            local dust=SpawnPrefab("sinkhole_spawn_fx_"..math.random(3))
+            dust.Transform:SetPosition((inst:GetPosition() + Vector3(math.cos(dir)*radius*(1+math.random()*0.1), 0, -math.sin(dir))*radius*(1+math.random()*0.1)):Get())
+            local scale = scale + math.random() * .2
+            dust.Transform:SetScale(scale * (i%2==0 and -1 or 1), scale, scale)
+            dir = dir + ((2*PI) / num)
         end
+        spawnit(inst)
     end
+
+    inst.SoundEmitter:PlaySoundWithParams("dontstarve/creatures/together/antlion/sfx/ground_break", {size=math.pow(stage/NUM_CRACKING_STAGES, 2)})
+end
+
+-- c_sel():PushEvent("timerdone", {name = "nextrepair"})
+local function OnTimerDone(inst, data)
+	if data ~= nil and data.name == "nextrepair" then
+		inst.remainingrepairs = inst.remainingrepairs - 1
+		if inst.remainingrepairs <= 0 then
+			inst.components.unevenground:Disable()
+			inst.persists = false
+			ErodeAway(inst)
+		else
+			UpdateOverrideSymbols(inst, inst.remainingrepairs)
+			inst.components.timer:StartTimer("nextrepair", TUNING.ANTLION_SINKHOLE.REPAIR_TIME[inst.remainingrepairs] + (math.random() * TUNING.ANTLION_SINKHOLE.REPAIR_TIME_VARIANCE))
+		end
+
+		if inst:IsAsleep() == false then
+			SpawnFx(inst, inst.remainingrepairs, 0.45)
+		end
+	end
 end
 
 local COLLAPSIBLE_WORK_ACTIONS =
@@ -88,28 +103,15 @@ local function donextcollapse(inst)
 
         inst:RemoveTag("scarytoprey")
         ShakeAllCameras(CAMERASHAKE.FULL, COLLAPSE_STAGE_DURATION, .03, .15, inst, TUNING.ANTLION_SINKHOLE.RADIUS*6)
+        inst.remainingrepairs = NUM_CRACKING_STAGES
+		inst.components.timer:StartTimer("nextrepair", TUNING.ANTLION_SINKHOLE.REPAIR_TIME[NUM_CRACKING_STAGES] + (math.random() * TUNING.ANTLION_SINKHOLE.REPAIR_TIME_VARIANCE))
     else
         ShakeAllCameras(CAMERASHAKE.FULL, COLLAPSE_STAGE_DURATION, .015, .15, inst, TUNING.ANTLION_SINKHOLE.RADIUS*4)
     end
 
     UpdateOverrideSymbols(inst, inst.collapsestage)
 
-    local dir = math.random()*PI*2
-    local num = 7
-    local radius = 1.6
-    SpawnPrefab("sinkhole_spawn_fx_"..math.random(3)).Transform:SetPosition(inst:GetPosition():Get())
-    for i = 1, num do
-        local function spawnit(inst)
-            local dust=SpawnPrefab("sinkhole_spawn_fx_"..math.random(3))
-            dust.Transform:SetPosition((inst:GetPosition() + Vector3(math.cos(dir)*radius*(1+math.random()*0.1), 0, -math.sin(dir))*radius*(1+math.random()*0.1)):Get())
-            local scale = .8 + math.random() * .5
-            dust.Transform:SetScale(scale * (i%2==0 and -1 or 1), scale, scale)
-            dir = dir + ((2*PI) / num)
-        end
-        spawnit(inst)
-    end
-
-    inst.SoundEmitter:PlaySoundWithParams("dontstarve/creatures/together/antlion/sfx/ground_break", {size=math.pow(inst.collapsestage/NUM_CRACKING_STAGES, 2)})
+	SpawnFx(inst, inst.collapsestage, 0.8)
 
     local x, y, z = inst.Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x, 0, z, TUNING.ANTLION_SINKHOLE.RADIUS + 1, nil, inst.collapsestage > 1 and NON_COLLAPSIBLE_TAGS or NON_COLLAPSIBLE_TAGS_FIRST, COLLAPSIBLE_TAGS)
@@ -161,7 +163,6 @@ end
 
 local function onstartcollapse(inst)
     inst.collapsestage = 0
-    inst.creationtime = (TheWorld.state.cycles + TheWorld.state.time) - math.random() * TUNING.ANTLION_SINKHOLE.LIFETIME_VARIANCE
 
     inst:AddTag("scarytoprey")
 
@@ -172,22 +173,34 @@ end
 -------------------------------------------------------------------------------
 
 local function OnSave(inst, data)
-    data.creationtime = inst.creationtime
-
+	data.creationtime = inst.creationtime
+	
     if inst.collapsetask ~= nil then
         data.collapsestage = inst.collapsestage
+    else
+		data.remainingrepairs = inst.remainingrepairs
     end
 end
 
 local function OnLoad(inst, data)
-    inst.creationtime = data ~= nil and data.creationtime or 0
-
-    if data ~= nil and data.collapsestage then
-        inst.collapsestage = data.collapsestage
-        UpdateOverrideSymbols(inst, inst.collapsestage)
-        inst.collapsetask = inst:DoPeriodicTask(COLLAPSE_STAGE_DURATION, donextcollapse)
-    else
-        UpdateSinkholeRepair(inst)
+    if data ~= nil then
+		if data.collapsestage ~= nil then
+			inst.collapsestage = data.collapsestage
+			UpdateOverrideSymbols(inst, inst.collapsestage)
+			inst.collapsetask = inst:DoPeriodicTask(COLLAPSE_STAGE_DURATION, donextcollapse)
+		elseif data.remainingrepairs ~= nil then
+			inst.remainingrepairs = data.remainingrepairs
+			UpdateOverrideSymbols(inst, inst.remainingrepairs)
+		elseif data.creationtime ~= nil then
+			-- Retrofitting to use the new timer component
+			inst.remainingrepairs = math.clamp(math.ceil(((TheWorld.state.cycles + TheWorld.state.time) - data.creationtime) / 30), 1, 3)
+			UpdateOverrideSymbols(inst, inst.remainingrepairs)
+			inst:DoTaskInTime(0, function() 
+				if not inst.components.timer:TimerExists("nextrepair") then 
+					inst.components.timer:StartTimer("nextrepair", TUNING.ANTLION_SINKHOLE.REPAIR_TIME[inst.remainingrepairs]) 
+				end
+			end)
+		end
     end
 end
 
@@ -208,7 +221,7 @@ local function fn()
     inst.AnimState:PlayAnimation("idle")
     inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
     inst.AnimState:SetLayer(LAYER_BACKGROUND)
-    inst.AnimState:SetSortOrder(3)
+    inst.AnimState:SetSortOrder(2)
 
     inst.MiniMapEntity:SetIcon("sinkhole.png")
 
@@ -226,16 +239,14 @@ local function fn()
         return inst
     end
 
+	inst:AddComponent("timer")
+    inst:ListenForEvent("timerdone", OnTimerDone)
+
     inst:AddComponent("unevenground")
     inst.components.unevenground.radius = TUNING.ANTLION_SINKHOLE.UNEVENGROUND_RADIUS
 
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
-
-    inst.OnEntitySleep = UpdateSinkholeRepair
-    inst.OnEntityWake = UpdateSinkholeRepair
-
-    inst.creationtime = 0
 
     inst:ListenForEvent("startcollapse", onstartcollapse)
 

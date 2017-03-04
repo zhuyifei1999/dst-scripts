@@ -389,11 +389,8 @@ STRINGS =
         SPORE_TALL = "Blue Spore",
         SPORE_MEDIUM = "Red Spore",
         SPORE_SMALL = "Green Spore",
-        SPORE_TALL_INV = "Blue Spore",
-        SPORE_MEDIUM_INV = "Red Spore",
-        SPORE_SMALL_INV = "Green Spore",
-        SPIDER_HIDER="Cave Spider",
-        SPIDER_SPITTER="Spitter",
+        SPIDER_HIDER = "Cave Spider",
+        SPIDER_SPITTER = "Spitter",
         SEWING_KIT = "Sewing Kit",
         RED_MUSHROOM = "Red Mushroom",
         RED_CAP = "Red Cap",
@@ -1012,10 +1009,9 @@ STRINGS =
         LANTERN = "Lantern",
         POWCAKE = "Powdercake",
         FLOWER_CAVE = "Light Flower",
-        FLOWER_CAVE_DOUBLE = "Light Flower",
-        FLOWER_CAVE_TRIPLE = "Light Flower",
         LIGHTBULB = "Light Bulb",
         STALAGMITE = "Stalagmite",
+        STALAGMITE_TALL = "Stalagmite",
 
         SPIDERHOLE = "Spilagmite",
        -- SPIDERHOLE_ROCK = "Spilagmite",
@@ -1236,6 +1232,7 @@ STRINGS =
         ATRIUM_LIGHT = "Ancient Beacon",
         ATRIUM_GATE = "Ancient Gateway",
         ATRIUM_KEY = "Ancient Key",
+        ATRIUM_OVERGROWTH = "Ancient Marker",
 
         SHADOWMETEOR = "Meteor",
 

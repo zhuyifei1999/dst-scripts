@@ -16,6 +16,7 @@ local assets =
 local prefabs =
 {
     "collapse_small",
+    "pandorachest_reset",
 }
 
 local chests =
@@ -179,9 +180,10 @@ local function pandora_custom_postinit(inst)
 			if not was_open then
 				inst.AnimState:PlayAnimation("hit")
 				inst.AnimState:PushAnimation("closed", false)
+				inst.SoundEmitter:PlaySound("dontstarve/common/together/chest_retrap")
 			end
 		
-			SpawnPrefab("statue_transition").Transform:SetPosition(inst.Transform:GetWorldPosition())
+			SpawnPrefab("pandorachest_reset").Transform:SetPosition(inst.Transform:GetWorldPosition())
 		end
 	end
 	

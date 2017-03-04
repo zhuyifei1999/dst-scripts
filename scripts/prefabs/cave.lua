@@ -76,7 +76,8 @@ local prefabs =
     "atrium_statue_facing",
     "atrium_fence",
     "atrium_rubble",
-    "atrium_idol",
+    "atrium_idol", -- deprecated
+    "atrium_overgrowth",
 }
 
 local monsters =

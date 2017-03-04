@@ -258,6 +258,15 @@ local fx =
         tintalpha = 1.0,
     },
     {
+        name = "pandorachest_reset",
+        bank = "attune_fx",
+        build = "attune_fx",
+        anim = "attune_in",
+        --sound = "dontstarve/maxwell/shadowmax_despawn",
+        tint = Vector3(0, 0, 0),
+        tintalpha = 0.6,
+    },
+    {
         name = "shadow_despawn",
         bank = "statue_ruins_fx",
         build = "statue_ruins_fx",

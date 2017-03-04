@@ -256,7 +256,9 @@ local function HeartOfTheRuinsRuinsRetrofitting(inst)
 	RepopRandom( AddRuinsRespawner("worm"), "worm", 7)
 	
 	local minotaur_respawner = true
+	local minotaur_is_dead = false
 	if AddRuinsRespawner("minotaur") == 0 then
+		minotaur_is_dead = true
 		if AddRuinsRespawner("minotaurchest", "minotaur") == 0 then
 			minotaur_respawner = false
 			for k,v in ipairs(TheWorld.topology.ids) do
@@ -272,6 +274,22 @@ local function HeartOfTheRuinsRuinsRetrofitting(inst)
 	end
 	if minotaur_respawner == false then
 		print ("Retrofitting for A New Reign: Heart of the Ruins - Could not find anywhere to add the minotaur respawern the world.")
+	else
+		if minotaur_is_dead then
+			for _, v in pairs(Ents) do
+				if v.prefab == "minotaur_ruinsrespawner_inst" then
+					local offset =
+						FindWalkableOffset(v:GetPosition(), 0, 2, 8, true, true) or
+						FindWalkableOffset(v:GetPosition(), 0, 4, 16, true, true) or
+						Vector3(0, 0, 0)
+
+						SpawnPrefab("atrium_key").Transform:SetPosition((v:GetPosition() + offset):Get())
+						print ("Retrofitting for A New Reign: Heart of the Ruins - Added atrium_key to world." )
+				end
+			end
+		else
+			print ("Retrofitting for A New Reign: Heart of the Ruins - Added minotaur is alive so atrium_key does not require retrofitting." )
+		end
 	end
 
 end
@@ -337,38 +355,6 @@ local function HeartOfTheRuinsRuinsRetrofittingAltar(inst, first_hotr_retrofit)
 			end
 		end
 	end	
-end
-
-
-function self:ClearRuins()
-	local function RemoveAllRuinsRespawner(prefab)
-		local toremove = {}
-		for _, v in pairs(Ents) do
-			if v.prefab == prefab then
-				table.insert(toremove, v)
-			end
-		end	
-		print ("Retrofitting for A New Reign: Heart of the Ruins - Removing "..tostring(#toremove).." "..prefab.."." )
-		prefab = prefab .. "_ruinsrespawner_inst"
-		for _, v in pairs(Ents) do
-			if v.prefab == prefab then
-				table.insert(toremove, v)
-			end
-		end	
-
-		print ("Retrofitting for A New Reign: Heart of the Ruins - Removing "..tostring(#toremove).." "..prefab.." respawners." )
-
-		for _, v in ipairs(toremove) do
-			v:Remove()
-		end	
-	end
-	RemoveAllRuinsRespawner("bishop_nightmare")
-	RemoveAllRuinsRespawner("knight_nightmare")
-	RemoveAllRuinsRespawner("rook_nightmare")
-	RemoveAllRuinsRespawner("monkeybarrel")
-	RemoveAllRuinsRespawner("slurper")
-	RemoveAllRuinsRespawner("worm")
-	RemoveAllRuinsRespawner("minotaur")
 end
 
 --------------------------------------------------------------------------

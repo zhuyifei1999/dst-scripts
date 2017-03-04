@@ -41,6 +41,7 @@ local prefabs =
     "crawlingnightmare",
     "nightmarebeak",
     "collapse_small",
+    "collapse_big",
     "ancient_altar_broken_ruinsrespawner_inst",
     "ancient_altar_ruinsrespawner_inst",
 }
@@ -466,12 +467,29 @@ end
 
 local function onruinsrespawn(inst, respawner)
 	if not respawner:IsAsleep() then
-		-- todo: add fx
+		inst.AnimState:PlayAnimation("spawn")
+		inst.AnimState:PushAnimation("idle_full", false)
+
+		local fx = SpawnPrefab("collapse_big")
+		fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+		fx:SetMaterial("stone")
+	end
+end
+
+local function onruinsrespawn_broken(inst, respawner)
+	if not respawner:IsAsleep() then
+		inst.AnimState:PlayAnimation("spawn_broken")
+		inst.AnimState:PushAnimation("idle_broken", false)
+
+		local fx = SpawnPrefab("collapse_small")
+		fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+		fx:SetMaterial("stone")
+		fx.Transform:SetScale(1.5, 1.5, 1.5)
 	end
 end
 
 return Prefab("ancient_altar", complete_fn, assets, prefabs),
     Prefab("ancient_altar_broken", broken_fn, assets, prefabs),
     RuinsRespawner.Inst("ancient_altar", onruinsrespawn), RuinsRespawner.WorldGen("ancient_altar", onruinsrespawn),
-    RuinsRespawner.Inst("ancient_altar_broken", onruinsrespawn), RuinsRespawner.WorldGen("ancient_altar_broken", onruinsrespawn)
+    RuinsRespawner.Inst("ancient_altar_broken", onruinsrespawn_broken), RuinsRespawner.WorldGen("ancient_altar_broken", onruinsrespawn_broken)
 

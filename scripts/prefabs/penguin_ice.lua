@@ -14,6 +14,9 @@ local function UpdateFade(inst, dframes)
         elseif inst.fadetask ~= nil then
             inst.fadetask:Cancel()
             inst.fadetask = nil
+            if inst.queueremove then
+				inst:Remove()
+            end
         end
     elseif inst.fadeval:value() > 0 then
         inst.fadeval:set_local(inst.fadeval:value() - (dframes or 0))
@@ -96,6 +99,14 @@ local function CreateIceFX()
     return inst
 end
 
+local function QueueRemove(inst)
+	if inst:IsAsleep() or (inst.fadetask == nil and inst.isfaded:value()) then
+		inst:Remove()
+	else
+		inst.queueremove = true
+	end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -127,6 +138,8 @@ local function fn()
     end
 
     inst:DoTaskInTime(0, OnInit)
+
+	inst.QueueRemove = QueueRemove
 
     -- penguin spawner administers the ice fields
     inst.persists = false

@@ -10,7 +10,8 @@ local prefabs =
     "tentacle_pillar",
 }
 
-local function DoEmerge(inst, other)
+local function DoEmerge(inst)
+    local other = inst.components.teleporter.targetTeleporter
     local x, y, z = inst.Transform:GetWorldPosition()
 
     inst:Remove()
@@ -22,17 +23,16 @@ local function DoEmerge(inst, other)
         inst.components.teleporter:Target(other)
         other.components.teleporter:Target(inst)
         if other.prefab == "tentacle_pillar_hole" then
-            DoEmerge(other, inst)
+            DoEmerge(other)
         end
     end
 end
 
 local function TryEmerge(inst)
-    local other = inst.components.teleporter.targetTeleporter
-    if (other == nil or other.components.teleporter.numteleporting <= 0) and
-        inst.components.teleporter.numteleporting <= 0 and
+    if not (inst.components.teleporter:IsBusy() or
+            inst.components.teleporter:IsTargetBusy()) and
         inst.emergetime <= GetTime() then
-        DoEmerge(inst, other)        
+        DoEmerge(inst)
     end
 end
 

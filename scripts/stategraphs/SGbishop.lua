@@ -60,7 +60,27 @@ local states=
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
         },
-    }
+    },
+
+    State{  name = "ruinsrespawn",
+        tags = {"busy"},
+        
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("spawn")
+	        inst.components.sleeper.isasleep = true
+	        inst.components.sleeper:GoToSleep(.1)
+        end,
+        
+        timeline =
+        {
+    		TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.soundpath .. "liedown") end ),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("sleeping") end),
+        },
+    },
 }
 
 CommonStates.AddWalkStates(states,

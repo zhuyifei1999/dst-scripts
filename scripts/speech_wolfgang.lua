@@ -825,8 +825,6 @@ return {
         BEDROLL_FURRY="So comfy!",
         BUNNYMAN = "Hello rabbit!",
         FLOWER_CAVE = "Is light plant.",
-        FLOWER_CAVE_DOUBLE = "Is light plant.",
-        FLOWER_CAVE_TRIPLE = "Is light plant.",
         GUANO = "More poop.",
         LANTERN = "It keeps me safe from dark.",
         LIGHTBULB = "Is food?",
@@ -878,12 +876,21 @@ return {
             BLOOM = "Even smell is strong!",
         },
         MUSHTREE_TALL_WEBBED = "Aw, cheer up!",
-        SPORE_TALL = "Little blue bug has no wings.",
-        SPORE_MEDIUM = "Is tiny red bug?",
-        SPORE_SMALL = "Nice green bug. Wolfgang will not swat.",
-        SPORE_TALL_INV = "I make it my pet.",
-        SPORE_MEDIUM_INV = "I make it my pet.",
-        SPORE_SMALL_INV = "I make it my pet.",
+        SPORE_TALL =
+        {
+            GENERIC = "Little blue bug has no wings.",
+            HELD = "I make it my pet.",
+        },
+        SPORE_MEDIUM =
+        {
+            GENERIC = "Is tiny red bug?",
+            HELD = "I make it my pet.",
+        },
+        SPORE_SMALL =
+        {
+            GENERIC = "Nice green bug. Wolfgang will not swat.",
+            HELD = "I make it my pet.",
+        },
         SLURTLE = "Ha! You are slow!",
         SLURTLE_SHELLPIECES = "Is broken.",
         SLURTLEHAT = "Keeps head safe.",
@@ -895,13 +902,7 @@ return {
         SPIDERHOLE = "Spiders everywhere.",
         SPIDERHOLE_ROCK = "Spiders everywhere.",
         STALAGMITE = "Is pointy.",
-        STALAGMITE_FULL = "Is pointy.",
-        STALAGMITE_LOW = "Is pointy.",
-        STALAGMITE_MED = "Is pointy.",
         STALAGMITE_TALL = "Rock, reaching for the roof.",
-        STALAGMITE_TALL_FULL = "Rock, reaching for the roof.",
-        STALAGMITE_TALL_LOW = "Rock, reaching for the roof.",
-        STALAGMITE_TALL_MED = "Rock, reaching for the roof.",
 
         TREASURECHEST_TRAP = "Raagh!",
         TURF_CARPETFLOOR = "Step stones.",

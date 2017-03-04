@@ -724,8 +724,6 @@ return
         BEDROLL_FURRY = "I'm not sleeping on the ground.",
         BUNNYMAN = "A sentient lagomorph.",
         FLOWER_CAVE = "You could read by that light.",
-        FLOWER_CAVE_DOUBLE = "You could read by that light.",
-        FLOWER_CAVE_TRIPLE = "You could read by that light.",
         GUANO = "More metabolic byproduct.",
         LANTERN = "A refuelable light source.",
         LIGHTBULB = "Is this animal or vegetable?",
@@ -777,12 +775,21 @@ return
             BLOOM = "The light is caused by a chemical reaction.",
         },
         MUSHTREE_TALL_WEBBED = "This relationship appears symbiotic.",
-        SPORE_TALL = "A soft blue carrier of genetic information.",
-        SPORE_MEDIUM = "A bright red carrier of genetic information.",
-        SPORE_SMALL = "A lovely green carrier of genetic information.",
-        SPORE_TALL_INV = "I'm a carrier of a carrier of genetic information.",
-        SPORE_MEDIUM_INV = "I'm a carrier of a carrier of genetic information.",
-        SPORE_SMALL_INV = "I'm a carrier of a carrier of genetic information.",
+        SPORE_TALL =
+        {
+            GENERIC = "A soft blue carrier of genetic information.",
+            HELD = "I'm a carrier of a carrier of genetic information.",
+        },
+        SPORE_MEDIUM =
+        {
+            GENERIC = "A bright red carrier of genetic information.",
+            HELD = "I'm a carrier of a carrier of genetic information.",
+        },
+        SPORE_SMALL =
+        {
+            GENERIC = "A lovely green carrier of genetic information.",
+            HELD = "I'm a carrier of a carrier of genetic information.",
+        },
         SLURTLE = "A mineral-devouring gastropod.",
         SLURTLE_SHELLPIECES = "Pieces of the broken.",
         SLURTLEHAT = "It provides protection.",
@@ -795,13 +802,7 @@ return
         SPIDERHOLE_ROCK = "This is the source of the spider infestation.",
         STALAGMITE = "A strange rock formation.",
         TREECLUMP = "The flora grows thick here.",
-        STALAGMITE_FULL = "A strange rock formation.",
-        STALAGMITE_LOW = "A strange rock formation.",
-        STALAGMITE_MED = "A strange rock formation.",
         STALAGMITE_TALL = "Another stalagmite.",
-        STALAGMITE_TALL_FULL = "Another stalagmite.",
-        STALAGMITE_TALL_LOW = "Another stalagmite.",
-        STALAGMITE_TALL_MED = "Another stalagmite.",
 
         TURF_DESERTDIRT = "The ground. You step on it.",
         TURF_FUNGUS_GREEN = "The ground. You step on it.",

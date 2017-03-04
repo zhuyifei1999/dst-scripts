@@ -273,7 +273,7 @@ local function fn()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
-    MakeObstaclePhysics(inst, 1)
+    MakeObstaclePhysics(inst, .7)
 
     inst:AddTag("lureplant")
     inst:AddTag("hostile")

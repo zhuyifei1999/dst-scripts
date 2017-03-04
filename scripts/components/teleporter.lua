@@ -14,10 +14,13 @@ local Teleporter = Class(function(self, inst)
     self.offset = 2
     self.enabled = true
     self.numteleporting = 0
+    self.teleportees = {}
     self.saveenabled = true
 
     self.travelcameratime = 3
     self.travelarrivetime = 4
+
+    self._onremoveteleportee = function(doer) self:UnregisterTeleportee(doer) end
 end,
 nil,
 {
@@ -33,6 +36,29 @@ function Teleporter:IsActive()
     return self.enabled and self.targetTeleporter ~= nil
 end
 
+function Teleporter:IsBusy()
+    return self.numteleporting > 0 or next(self.teleportees) ~= nil
+end
+
+function Teleporter:IsTargetBusy()
+    return self.targetTeleporter ~= nil and self.targetTeleporter.components.teleporter:IsBusy()
+end
+
+--Notifies ahead of time that someone will try to teleport soon
+function Teleporter:RegisterTeleportee(doer)
+    if not self.teleportees[doer] then
+        self.teleportees[doer] = true
+        self.inst:ListenForEvent("onremove", self._onremoveteleportee, doer)
+    end
+end
+
+function Teleporter:UnregisterTeleportee(doer)
+    if self.teleportees[doer] then
+        self.teleportees[doer] = nil
+        self.inst:RemoveEventCallback("onremove", self._onremoveteleportee, doer)
+    end
+end
+
 function Teleporter:Activate(doer)
     if not self:IsActive() then
         return false
@@ -42,21 +68,21 @@ function Teleporter:Activate(doer)
         self.onActivate(self.inst, doer)
     end
 
-    local targetTeleporter = self.targetTeleporter.components.teleporter
-    if targetTeleporter ~= nil
-        and targetTeleporter.onActivateByOther ~= nil then
-        targetTeleporter.onActivateByOther(self.targetTeleporter, self.inst, doer)
-        targetTeleporter.numteleporting = targetTeleporter.numteleporting + 1
+    if self.targetTeleporter.components.teleporter ~= nil then
+        if self.targetTeleporter.components.teleporter.onActivateByOther ~= nil then
+            self.targetTeleporter.components.teleporter.onActivateByOther(self.targetTeleporter, self.inst, doer)
+        end
+        self.targetTeleporter.components.teleporter.numteleporting = self.targetTeleporter.components.teleporter.numteleporting + 1
     end
 
     self:Teleport(doer)
 
-    if self.targetTeleporter.components.teleporter ~= nil and doer.components.inventoryitem ~= nil then
-        self.targetTeleporter.components.teleporter:ReceiveItem(doer)
-    end
-
-    if self.targetTeleporter.components.teleporter ~= nil and doer:HasTag("player") then
-        self.targetTeleporter.components.teleporter:ReceivePlayer(doer)
+    if self.targetTeleporter.components.teleporter ~= nil then
+        if doer:HasTag("player") then
+            self.targetTeleporter.components.teleporter:ReceivePlayer(doer)
+        elseif doer.components.inventoryitem ~= nil then
+            self.targetTeleporter.components.teleporter:ReceiveItem(doer)
+        end
     end
 
     if doer.components.leader ~= nil then

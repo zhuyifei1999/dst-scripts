@@ -6,13 +6,17 @@ local assets =
     Asset("SOUND", "sound/spider.fsb"),
 }
 
+local prefabs =
+{
+    "spiderden",
+}
+
 local function ondeploy(inst, pt)
     inst.SoundEmitter:PlaySound("dontstarve/creatures/spider/spider_egg_sack")
     local tree = SpawnPrefab("spiderden")
     if tree ~= nil then
         tree.Transform:SetPosition(pt:Get())
         inst.components.stackable:Get():Remove()
-        inst:RemoveComponent("hauntable")
     end
 end
 
@@ -66,5 +70,5 @@ local function fn()
     return inst
 end
 
-return Prefab("spidereggsack", fn, assets),
+return Prefab("spidereggsack", fn, assets, prefabs),
     MakePlacer("spidereggsack_placer", "spider_cocoon", "spider_cocoon", "cocoon_small")

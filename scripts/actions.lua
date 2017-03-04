@@ -1082,26 +1082,38 @@ ACTIONS.JUMPIN.strfn = function(act)
 end
 
 ACTIONS.JUMPIN.fn = function(act)
-    if act.doer ~= nil and act.doer.sg ~= nil then
-		if act.doer.sg.currentstate.name == "jumpin_pre" then
-			act.doer.sg:GoToState("jumpin", { teleporter = act.target })
-	        return true
-	    end
+    if act.doer ~= nil and
+        act.doer.sg ~= nil and
+        act.doer.sg.currentstate.name == "jumpin_pre" then
+        if act.target ~= nil and
+            act.target.components.teleporter ~= nil and
+            act.target.components.teleporter:IsActive() then
+            act.doer.sg:GoToState("jumpin", { teleporter = act.target })
+            return true
+        end
+        act.doer.sg:GoToState("idle")
     end
 end
 
 ACTIONS.TELEPORT.strfn = function(act)
-    return (act.target ~= nil and "TOWNPORTAL")
-		or nil
+    return act.target ~= nil and "TOWNPORTAL" or nil
 end
 
 ACTIONS.TELEPORT.fn = function(act)
     if act.doer ~= nil and act.doer.sg ~= nil then
-		local teleporter = act.target ~= nil and act.target or act.invobject
-		if teleporter ~= nil and teleporter:HasTag("teleporter") then
-			act.doer.sg:GoToState("entertownportal", { teleporter=teleporter })
-	        return true
-	    end
+        local teleporter
+        if act.invobject ~= nil then
+            if act.doer.sg.currentstate.name == "dolongaction" then
+                teleporter = act.invobject
+            end
+        elseif act.target ~= nil
+            and act.doer.sg.currentstate.name == "give" then
+            teleporter = act.target
+        end
+        if teleporter ~= nil and teleporter:HasTag("teleporter") then
+            act.doer.sg:GoToState("entertownportal", { teleporter = teleporter })
+            return true
+        end
     end
 end
 

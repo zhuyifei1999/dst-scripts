@@ -838,8 +838,6 @@ return {
         BEDROLL_FURRY = "For veiling oneself in the fuzzy skins of the fallen.",
         BUNNYMAN = "What tormented inner lives they must have.",
         FLOWER_CAVE = "It looks fragile.",
-        FLOWER_CAVE_DOUBLE = "It looks fragile.",
-        FLOWER_CAVE_TRIPLE = "It looks fragile.",
         GUANO = "The inevitable byproduct of life.",
         LANTERN = "Light the way, darkly.",
         LIGHTBULB = "It's slowly burning out.",
@@ -891,12 +889,21 @@ return {
             BLOOM = "It has a glowing presence.",
         },
         MUSHTREE_TALL_WEBBED = "This one is frail and scorned. Like a friend.",
-        SPORE_TALL = "Be free, little one!",
-        SPORE_MEDIUM = "Its life is short, but beautiful.",
-        SPORE_SMALL = "It has no concept of time, or loss.",
-        SPORE_TALL_INV = "So many have perished. But this one is safe.",
-        SPORE_MEDIUM_INV = "So many have perished. But this one is safe.",
-        SPORE_SMALL_INV = "So many have perished. But this one is safe.",
+        SPORE_TALL =
+        {
+            GENERIC = "Be free, little one!",
+            HELD = "So many have perished. But this one is safe.",
+        },
+        SPORE_MEDIUM =
+        {
+            GENERIC = "Its life is short, but beautiful.",
+            HELD = "So many have perished. But this one is safe.",
+        },
+        SPORE_SMALL =
+        {
+            GENERIC = "It has no concept of time, or loss.",
+            HELD = "So many have perished. But this one is safe.",
+        },
         SLURTLE = "It is mindlessly chasing after rocks.",
         SLURTLE_SHELLPIECES = "Pieces of broken slurtle dreams.",
         SLURTLEHAT = "It certainly didn't help the original owner.",
@@ -911,13 +918,7 @@ return {
         SPIDERHOLE = "It is infested.",
         SPIDERHOLE_ROCK = "It is infested.",
         STALAGMITE = "The earth gives up its bounty.",
-        STALAGMITE_FULL = "The earth gives up its bounty.",
-        STALAGMITE_LOW = "The earth gives up its bounty.",
-        STALAGMITE_MED = "The earth gives up its bounty.",
         STALAGMITE_TALL = "The earth reaches up.",
-        STALAGMITE_TALL_FULL = "The earth reaches up.",
-        STALAGMITE_TALL_LOW = "The earth reaches up.",
-        STALAGMITE_TALL_MED = "The earth reaches up.",
 
 		TURF_CARPETFLOOR = "Some ground.",
 		TURF_CHECKERFLOOR = "Some ground.",

@@ -239,7 +239,7 @@ end
 
 local function onruinsrespawn(inst, respawner)
 	if not respawner:IsAsleep() then
-		-- todo: add fx
+		inst.sg:GoToState("ruinsrespawn")
 	end
 end
 

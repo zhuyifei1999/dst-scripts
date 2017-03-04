@@ -32,10 +32,22 @@ local function BlinkOff(inst) SetBlinkLevel(inst, 0) end
 
 --------------------------------------------------------------------------
 
+local function DoTrail(inst)
+    if inst.foreststalker then
+        inst:DoTrail()
+    end
+end
+
+--------------------------------------------------------------------------
+
 local events =
 {
     CommonHandlers.OnLocomote(false, true),
-    CommonHandlers.OnDeath(),
+    EventHandler("death", function(inst)
+        if not inst.sg:HasStateTag("delaydeath") then
+            inst.sg:GoToState(inst.foreststalker and "death2" or "death")
+        end
+    end),
     EventHandler("doattack", function(inst)
         if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) then
             inst.sg:GoToState("attack")
@@ -61,6 +73,27 @@ local events =
             inst.sg.mem.wantstoroar = true
         end
     end),
+    EventHandler("flinch", function(inst)
+        inst.sg.mem.wantstoflinch = true
+        if not (inst.sg:HasStateTag("flinching") or inst.components.health:IsDead()) and
+            (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("caninterrupt")) then
+            inst.sg:GoToState("flinch")
+        end
+    end),
+    EventHandler("skullache", function(inst)
+        if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) then
+            inst.sg:GoToState("skullache")
+        else
+            inst.sg.mem.wantstoskullache = true
+        end
+    end),
+    EventHandler("fallapart", function(inst)
+        if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) then
+            inst.sg:GoToState("fallapart")
+        else
+            inst.sg.mem.wantstofallapart = true
+        end
+    end),
 }
 
 local states =
@@ -70,7 +103,15 @@ local states =
         tags = { "idle", "canrotate" },
 
         onenter = function(inst)
-            if inst.sg.mem.wantstoroar then
+            if inst.foreststalker and inst.components.health:IsDead() then
+                inst.sg:GoToState("death2")
+            elseif inst.sg.mem.wantstoflinch then
+                inst.sg:GoToState("flinch")
+            elseif inst.sg.mem.wantstoskullache then
+                inst.sg:GoToState("skullache")
+            elseif inst.sg.mem.wantstofallapart then
+                inst.sg:GoToState("fallapart")
+            elseif inst.sg.mem.wantstoroar then
                 inst.sg:GoToState("taunt")
             else
                 inst.Physics:Stop()
@@ -105,6 +146,9 @@ local states =
             inst.AnimState:PlayAnimation("enter")
             inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_get_bloodpump")
             inst.sg.statemem.baselightoverride = .1
+            if inst.foreststalker then
+                inst:StopBlooming()
+            end
         end,
 
         timeline =
@@ -162,6 +206,12 @@ local states =
                 inst.sg.statemem.baselightoverride = 0
                 inst.sg.statemem.fadeout = .2
             end),
+
+            TimeEvent(67 * FRAMES, function(inst)
+                if inst.foreststalker then
+                    inst:StartBlooming()
+                end
+            end),
         },
 
         onupdate = function(inst)
@@ -193,6 +243,9 @@ local states =
             inst.components.health:SetInvincible(false)
             inst.sg.statemem.baselightoverride = nil
             BlinkOff(inst)
+            if inst.foreststalker then
+                inst:StartBlooming()
+            end
         end,
     },
 
@@ -235,7 +288,9 @@ local states =
         timeline =
         {
             TimeEvent(0 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/footstep") end),
+            TimeEvent(1 * FRAMES, DoTrail),
             TimeEvent(15 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/footstep") end),
+            TimeEvent(18 * FRAMES, DoTrail),
             TimeEvent(32 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/footstep") end),
         },
 
@@ -252,6 +307,11 @@ local states =
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("walk_pst")
         end,
+
+        timeline =
+        {
+            TimeEvent(1 * FRAMES, DoTrail),
+        },
 
         events =
         {
@@ -343,8 +403,10 @@ local states =
             TimeEvent(21 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death_pop") end),
             TimeEvent(24 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death_pop") end),
             TimeEvent(27 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death_pop") end),
-            TimeEvent(30 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death_pop") end),
-            TimeEvent(30 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death_bone_drop") end),
+            TimeEvent(30 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death_pop")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death_bone_drop")
+            end),
             TimeEvent(55 * FRAMES, function(inst)
                 if inst.persists then
                     inst.persists = false
@@ -358,6 +420,67 @@ local states =
         onexit = function(inst)
             --Should NOT happen!
             inst:RemoveTag("NOCLICK")
+        end,
+    },
+
+    State{
+        name = "death2",
+        tags = { "busy", "movingdeath" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("death2")
+            inst:AddTag("NOCLICK")
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death")
+        end,
+
+        timeline =
+        {
+            TimeEvent(5 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death_walk") end),
+            TimeEvent(13 * FRAMES, function(inst)
+                inst.components.locomotor.walkspeed = 2.2
+                inst.components.locomotor:WalkForward()
+            end),
+            TimeEvent(20 * FRAMES, DoTrail),
+            TimeEvent(21.5 * FRAMES, ShakeIfClose),
+            TimeEvent(22 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/bone_drop")
+                inst.components.locomotor.walkspeed = 2
+                inst.components.locomotor:WalkForward()
+            end),
+            TimeEvent(38 * FRAMES, DoTrail),
+            TimeEvent(39.5 * FRAMES, ShakeIfClose),
+            TimeEvent(40 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/bone_drop")
+                inst.components.locomotor.walkspeed = 1.5
+                inst.components.locomotor:WalkForward()
+            end),
+            TimeEvent(54 * FRAMES, DoTrail),
+            TimeEvent(55 * FRAMES, function(inst)
+                if inst.persists then
+                    inst.persists = false
+                    inst.components.lootdropper:DropLoot(inst:GetPosition())
+                end
+            end),
+            TimeEvent(55.5 * FRAMES, ShakeDeath),
+            TimeEvent(56 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/bone_drop")
+                inst.components.locomotor.walkspeed = 1
+                inst.components.locomotor:WalkForward()
+            end),
+            TimeEvent(68.5 * FRAMES, ShakeIfClose),
+            TimeEvent(69 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/bone_drop")
+                inst.components.locomotor:StopMoving()
+                inst:StopBlooming()
+            end),
+            TimeEvent(5, ErodeAway),
+        },
+
+        onexit = function(inst)
+            --Should NOT happen!
+            inst:RemoveTag("NOCLICK")
+            inst.components.locomotor.walkspeed = TUNING.STALKER_SPEED
         end,
     },
 
@@ -466,6 +589,142 @@ local states =
                 end
             end),
         },
+    },
+
+    State{
+        name = "flinch",
+        tags = { "busy", "flinch", "delaydeath" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("taunt2_pre")
+            inst.sg.mem.wantstoflinch = nil
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("flinch_loop")
+                end
+            end),
+        },
+    },
+
+    State{
+        name = "flinch_loop",
+        tags = { "busy", "flinch", "delaydeath" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            if not inst.AnimState:IsCurrentAnimation("taunt2_loop") then
+                inst.AnimState:PlayAnimation("taunt2_loop", true)
+            end
+            inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
+        end,
+
+        timeline =
+        {
+            --TimeEvent(10 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/hurt") end),
+            TimeEvent(12 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/out") end),
+            TimeEvent(24 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/in") end),
+        },
+
+        ontimeout = function(inst)
+            if inst.sg.mem.wantstoflinch and not inst.components.health:IsDead() then
+                inst.sg:GoToState("flinch_loop")
+            else
+                inst.AnimState:PushAnimation("taunt2_pst", false)
+            end
+        end,
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState(inst.components.health:IsDead() and "death2" or "idle")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            inst.sg.mem.wantstoflinch = nil
+        end,
+    },
+
+    State{
+        name = "skullache",
+        tags = { "busy", "skullache", "delaydeath" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("taunt3_pre")
+            inst.AnimState:PushAnimation("taunt3_loop", false)
+            inst.AnimState:PushAnimation("taunt3_pst", false)
+            --pre: 8 frames
+            --loop: 40 frames
+            --pst: 18 frames
+        end,
+
+        timeline =
+        {
+            TimeEvent(4 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/taunt")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/head")
+            end),
+            TimeEvent(25 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/head") end),
+            TimeEvent(47 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/head") end),
+            TimeEvent(68 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            inst.sg.mem.wantstoskullache = nil
+        end,
+    },
+
+    State{
+        name = "fallapart",
+        tags = { "busy", "fallapart", "delaydeath" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("taunt1")
+        end,
+
+        timeline =
+        {
+            TimeEvent(8 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/bone_drop") end),
+            TimeEvent(10 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/out") end),
+            TimeEvent(12 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/bone_drop") end),
+            --TimeEvent(19 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/hurt") end),
+            TimeEvent(23 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/bone_drop") end),
+            TimeEvent(46 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/in") end),
+            TimeEvent(50 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/arm") end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            inst.sg.mem.wantstofallapart = nil
+        end,
     },
 }
 

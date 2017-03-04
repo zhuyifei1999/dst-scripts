@@ -1539,6 +1539,7 @@ function Tune(overrides)
         SANITYAURA_MED = 100/(seg_time*5),
         SANITYAURA_LARGE = 100/(seg_time*2),
         SANITYAURA_HUGE = 100/(seg_time*.5),
+        SANITYAURA_SUPERHUGE = 100/(seg_time*.25),
 
         DAPPERNESS_TINY = 100/(day_time*15),
         DAPPERNESS_SMALL = 100/(day_time*10),
@@ -2397,10 +2398,13 @@ function Tune(overrides)
 
             DAMAGE = 30,
             
-            LIFETIME_VARIANCE = 3,
-            LIFETIME_FIRST_REPAIR = 21,
-            LIFETIME_SECOND_REPAIR = 26,
-            LIFETIME_FINAL_REPAIR = 30,
+            REPAIR_TIME_VARIANCE = 1 * total_day_time,
+            REPAIR_TIME = -- Note: these times are used from last to first
+            {
+				4 * total_day_time,
+				5 * total_day_time,
+				21 * total_day_time,
+            },
         },
 
         ANTLION_RAGE_TIME_INITIAL = 4.2 * total_day_time,
@@ -2470,6 +2474,8 @@ function Tune(overrides)
         STALKER_KEEP_AGGRO_DIST = 9,
         STALKER_DEAGGRO_DIST = 30,
         STALKER_EPICSCARE_RANGE = 10,
+
+        STALKER_BLOOM_DECAY = 5,
 
         VOTE_PASSED_SQUELCH_TIME = 0,
         VOTE_FAILED_SQUELCH_TIME = 30,

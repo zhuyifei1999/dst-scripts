@@ -8,6 +8,7 @@ local prefabs =
     "fossil_piece_clean",
     "collapse_small",
     "stalker",
+    "stalker_forest",
 }
 
 local NUM_FORMS = 3
@@ -20,12 +21,11 @@ local function ItemTradeTest(inst, item, giver)
         return false
     elseif inst.form ~= 1 then
         return false, "WRONGSHADOWFORM"
+    elseif not TheWorld.state.isnight then
+        return false, "CANTSHADOWREVIVE"
     end
 
     --TODO: temporary fail for WIP stalker forms
-    if not TheWorld:HasTag("cave") then
-        return false, "CANTSHADOWREVIVE"
-    end
     if giver.components.areaaware:CurrentlyInTag("Atrium") then
         return false, "CANTSHADOWREVIVE"
     end
@@ -40,7 +40,7 @@ local function OnAccept(inst, giver, item)
         local rot = inst.Transform:GetRotation()
         inst:Remove()
 
-        local stalker = SpawnPrefab("stalker")
+        local stalker = SpawnPrefab(TheWorld:HasTag("cave") and "stalker" or "stalker_forest")
         stalker.Transform:SetPosition(x, y, z)
         stalker.Transform:SetRotation(rot)
         stalker.sg:GoToState("resurrect")

@@ -267,7 +267,7 @@ return {
         },
         {
           name = "",
-          type = "atrium_idol",
+          type = "atrium_overgrowth",
           shape = "rectangle",
           x = 144,
           y = 80,
@@ -278,7 +278,7 @@ return {
         },
         {
           name = "",
-          type = "atrium_idol",
+          type = "atrium_overgrowth",
           shape = "rectangle",
           x = 144,
           y = 432,

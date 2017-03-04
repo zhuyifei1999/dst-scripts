@@ -46,7 +46,10 @@ local Grue = Class(function(self, inst)
 
     self.soundevent = nil
     self.warndelay = 1
-    self.started = false
+    --self.resistance = nil
+    self.level = nil
+    --self.nextHitTime = nil
+    --self.nextSoundTime = nil
     self.immunity = {}
 
     self.inittask = inst:DoTaskInTime(0, OnInit, self)
@@ -76,11 +79,11 @@ function Grue:CheckForStart()
 end
 
 function Grue:Start()
-    if not self.started and self:CheckForStart() then
-        self.started = true
+    if self.level == nil and self:CheckForStart() then
+        self.level = 0
         self.inst:StartUpdatingComponent(self) 
         self.nextHitTime = 5 + math.random() * 5
-        self.nextSoundTime = self.nextHitTime* (.4 + math.random() * .4)
+        self.nextSoundTime = self.nextHitTime * (.4 + math.random() * .4)
     end
 end
 
@@ -90,10 +93,14 @@ function Grue:SetSounds(warn, attack)
 end
 
 function Grue:Stop()
-    if self.started then
-        self.started = false
+    if self.level ~= nil then
+        self.level = nil
         self.inst:StopUpdatingComponent(self)
     end
+end
+
+function Grue:SetResistance(resistance)
+    self.resistance = resistance
 end
 
 function Grue:AddImmunity(source)
@@ -134,18 +141,21 @@ function Grue:OnUpdate(dt)
     end
 
     if self.nextHitTime ~= nil and self.nextHitTime <= 0 then
-        self.nextHitTime = self.nextHitTime - dt
-        self.nextSoundTime = self.nextSoundTime - dt
-        self.inst.components.combat:GetAttacked(nil, TUNING.GRUEDAMAGE, nil, "darkness")
-        self.inst.components.sanity:DoDelta(-TUNING.SANITY_MEDLARGE)
-
+        self.level = self.level + 1
         self.nextHitTime = 5 + math.random() * 6
         self.nextSoundTime = self.nextHitTime * (.4 + math.random() * .4)
+
         if self.soundattack ~= nil then
             self.inst.SoundEmitter:PlaySound(self.soundattack)
         end
 
-        self.inst:PushEvent("attackedbygrue")
+        if self.level > (self.resistance or 0) then
+            self.inst.components.combat:GetAttacked(nil, TUNING.GRUEDAMAGE, nil, "darkness")
+            self.inst.components.sanity:DoDelta(-TUNING.SANITY_MEDLARGE)
+            self.inst:PushEvent("attackedbygrue")
+        else
+            self.inst:PushEvent("resistedgrue")
+        end
     end
 end
 

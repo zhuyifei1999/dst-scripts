@@ -578,8 +578,6 @@ return {
         BEDROLL_FURRY = "I miss being able to properly feel a nice bedroll.",
         BUNNYMAN = "Hop along, lil bunny.",
         FLOWER_CAVE = "Oooh, a glowing ball of flower!",
-        FLOWER_CAVE_DOUBLE = "Oooh, a glowing ball of flower!",
-        FLOWER_CAVE_TRIPLE = "Oooh, a glowing ball of flower!",
         GUANO = "Bat doodoo.",
         LANTERN = "The sun's trapped in there.",
         LIGHTBULB = "Bright and delicious.",
@@ -631,12 +629,21 @@ return {
             BLOOM = "It's all round and squishy now!",
         },
         MUSHTREE_TALL_WEBBED = "This one looks friendly!",
-        SPORE_TALL = "Blue! That's our favorite color!",
-        SPORE_MEDIUM = "Our favorite color! Red!",
-        SPORE_SMALL = "That's green, our favoritest color!",
-        SPORE_TALL_INV = "If we eat it we'll turn to water!",
-        SPORE_MEDIUM_INV = "If we stare at it we'll turn to stone!",
-        SPORE_SMALL_INV = "If we lick it we'll turn to wood!",
+        SPORE_TALL =
+        {
+            GENERIC = "Blue! That's our favorite color!",
+            HELD = "If we eat it we'll turn to water!",
+        },
+        SPORE_MEDIUM =
+        {
+            GENERIC = "Our favorite color! Red!",
+            HELD = "If we stare at it we'll turn to stone!",
+        },
+        SPORE_SMALL =
+        {
+            GENERIC = "That's green, our favoritest color!",
+            HELD = "If we lick it we'll turn to wood!",
+        },
         RABBITHOUSE =
         {
             GENERIC = "Just like grandpa said, \"You live in what you eat.\"",
@@ -657,13 +664,7 @@ return {
         WATERMELON_SEEDS = "If we eat these will they grow inside us?",
         SPIDERHOLE_ROCK = "We could stand to live there.",
         STALAGMITE = "Rocks, underground?! Shocking.",
-        STALAGMITE_FULL = "Rocks, underground?! Shocking.",
-        STALAGMITE_LOW = "Rocks, underground?! Shocking.",
-        STALAGMITE_MED = "Rocks, underground?! Shocking.",
         STALAGMITE_TALL = "Pointy rocks, underground?! Simply stunning.",
-        STALAGMITE_TALL_FULL = "Pointy rocks, underground?! Simply stunning.",
-        STALAGMITE_TALL_LOW = "Pointy rocks, underground?! Simply stunning.",
-        STALAGMITE_TALL_MED = "Pointy rocks, underground?! Simply stunning.",
 
 		TURF_CARPETFLOOR = "Soft like our body.",
 		TURF_CHECKERFLOOR = "Our feet go click-clack on this.",

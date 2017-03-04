@@ -232,7 +232,7 @@ local function RememberKnownLocation(inst)
 end
 
 local function CheckAutoRemove(inst)
-    if not TheWorld.state.iswinter or TheWorld.state.remainingdaysinseason < 3 then
+    if inst.colonyNum == nil or not TheWorld.state.iswinter or TheWorld.state.remainingdaysinseason < 3 then
         inst:Remove()
     end
 end

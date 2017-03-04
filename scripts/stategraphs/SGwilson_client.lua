@@ -161,7 +161,10 @@ local actionhandlers =
             return action.invobject ~= nil and "bedroll" or "tent"
         end),
     ActionHandler(ACTIONS.TAKEITEM, "dolongaction"),
-    ActionHandler(ACTIONS.BUILD, "dolongaction"),
+    ActionHandler(ACTIONS.BUILD,
+        function(inst)--, action)
+            return inst:HasTag("fastbuilder") and "domediumaction" or "dolongaction"
+        end),
     ActionHandler(ACTIONS.SHAVE, "shave"),
     ActionHandler(ACTIONS.COOK, "dolongaction"),
     ActionHandler(ACTIONS.FILL, "dolongaction"),
@@ -201,8 +204,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.JUMPIN, "jumpin"),
     ActionHandler(ACTIONS.TELEPORT,
         function(inst, action)
-            return (action.invobject ~= nil and "dolongaction")
-                or "give"
+            return action.invobject ~= nil and "dolongaction" or "give"
         end),
     ActionHandler(ACTIONS.FAN, "use_fan"),
     ActionHandler(ACTIONS.DRY, "doshortaction"),
@@ -1335,6 +1337,15 @@ local states =
             inst:ClearBufferedAction()
             inst.AnimState:PlayAnimation("pickup_pst")
             inst.sg:GoToState("idle", true)
+        end,
+    },
+
+    State
+    {
+        name = "domediumaction",
+
+        onenter = function(inst)
+            inst.sg:GoToState("dolongaction")
         end,
     },
 

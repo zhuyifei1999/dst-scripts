@@ -799,8 +799,6 @@ return {
         BEDROLL_FURRY = "At least they're good for something.",
         BUNNYMAN = "It reminds me of my old act.",
         FLOWER_CAVE = "It's so dark down here.",
-        FLOWER_CAVE_DOUBLE = "It's so dark down here.",
-        FLOWER_CAVE_TRIPLE = "It's so dark down here.",
         GUANO = "Disgusting!",
         LANTERN = "I hope it keeps Them away.",
         LIGHTBULB = "It will run out eventually.",
@@ -853,12 +851,21 @@ return {
             BLOOM = "Oh fine, do what you like.",
         },
         MUSHTREE_TALL_WEBBED = "Could it get any less appealing?",
-        SPORE_TALL = "How can a seed be so cheerful?",
-        SPORE_MEDIUM = "Magical red, and yet it holds no power of use to me.",
-        SPORE_SMALL = "Hateful, ambulatory whimsy.",
-        SPORE_TALL_INV = "I hope it doesn't stain my jacket.",
-        SPORE_MEDIUM_INV = "I hope it doesn't stain my jacket.",
-        SPORE_SMALL_INV = "I hope it doesn't stain my jacket.",
+        SPORE_TALL =
+        {
+            GENERIC = "How can a seed be so cheerful?",
+            HELD = "I hope it doesn't stain my jacket.",
+        },
+        SPORE_MEDIUM =
+        {
+            GENERIC = "Magical red, and yet it holds no power of use to me.",
+            HELD = "I hope it doesn't stain my jacket.",
+        },
+        SPORE_SMALL =
+        {
+            GENERIC = "Hateful, ambulatory whimsy.",
+            HELD = "I hope it doesn't stain my jacket.",
+        },
         SLURTLE = "I don't remember those...",
         SLURTLE_SHELLPIECES = "Some cracks can't be mended.",
         SLURTLEHAT = "This will keep me standing, if I need to fight.",
@@ -870,25 +877,19 @@ return {
         SPIDERHOLE = "How did that get down here?",
         SPIDERHOLE_ROCK = "How did that get down here?",
         STALAGMITE = "Rocks. How dull.",
-        STALAGMITE_FULL = "Rocks. How dull.",
-        STALAGMITE_LOW = "Rocks. How dull.",
-        STALAGMITE_MED = "Rocks. How dull.",
         STALAGMITE_TALL = "Stalagmite. How dull.",
-        STALAGMITE_TALL_FULL = "Stalagmite. How dull.",
-        STALAGMITE_TALL_LOW = "Stalagmite. How dull.",
-        STALAGMITE_TALL_MED = "Stalagmite. How dull.",
 
-		POWCAKE = "What foul manifestation of evil is this?",
-		CAVE_ENTRANCE = "I plugged it a long time ago.",
-		CAVE_ENTRANCE_RUINS = "Probably shouldn't venture any deeper.",
-        
-        CAVE_ENTRANCE_OPEN = 
+        POWCAKE = "What foul manifestation of evil is this?",
+        CAVE_ENTRANCE = "I plugged it a long time ago.",
+        CAVE_ENTRANCE_RUINS = "Probably shouldn't venture any deeper.",
+
+        CAVE_ENTRANCE_OPEN =
         {
             GENERIC = "That was not a good idea!",
             OPEN = "Off to plunder the depths.",
             FULL = "When it's less claustrophobic, perhaps.",
         },
-        CAVE_EXIT = 
+        CAVE_EXIT =
         {
             GENERIC = "Get me out of here!",
             OPEN = "Onward to the next thing.",

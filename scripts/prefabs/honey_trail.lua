@@ -101,4 +101,4 @@ local function fn()
     return inst
 end
 
-return Prefab("honey_trail", fn, assets, prefabs)
+return Prefab("honey_trail", fn, assets)

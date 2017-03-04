@@ -872,8 +872,6 @@ return {
         BEDROLL_FURRY = "It's too frilly.",
         BUNNYMAN = "Ugh. They look so stupid.",
         FLOWER_CAVE = "It's burning inside.",
-        FLOWER_CAVE_DOUBLE = "It's burning inside.",
-        FLOWER_CAVE_TRIPLE = "It's burning inside.",
         GRASSGEKKO =
         {
             GENERIC = "Ew.",
@@ -930,12 +928,21 @@ return {
             BLOOM = "Ew, I don't want to get too close.",
         },
         MUSHTREE_TALL_WEBBED = "That one got what it deserves.",
-        SPORE_TALL = "It's like colorful sparks!",
-        SPORE_MEDIUM = "It's like floating fire!",
-        SPORE_SMALL = "It has no idea where it's going.",
-        SPORE_TALL_INV = "It feels flammable.",
-        SPORE_MEDIUM_INV = "It feels flammable.",
-        SPORE_SMALL_INV = "It feels flammable.",
+        SPORE_TALL =
+        {
+            GENERIC = "It's like colorful sparks!",
+            HELD = "It feels flammable.",
+        },
+        SPORE_MEDIUM =
+        {
+            GENERIC = "It's like floating fire!",
+            HELD = "It feels flammable.",
+        },
+        SPORE_SMALL =
+        {
+            GENERIC = "It has no idea where it's going.",
+            HELD = "It feels flammable.",
+        },
         SLURTLE = "I want to blow it up!",
         SLURTLE_SHELLPIECES = "Heh. It broke.",
         SLURTLEHAT = "It's perfectly head-shaped.",
@@ -946,13 +953,7 @@ return {
         SPIDER_SPITTER = "Get over here!",
         SPIDERHOLE = "It's full of spiders.",
         STALAGMITE = "Rocks are boring.",
-        STALAGMITE_FULL = "Rocks are boring.",
-        STALAGMITE_LOW = "Rocks are boring.",
-        STALAGMITE_MED = "Rocks are boring.",
         STALAGMITE_TALL = "More boring rocks.",
-        STALAGMITE_TALL_FULL = "More boring rocks.",
-        STALAGMITE_TALL_LOW = "More boring rocks.",
-        STALAGMITE_TALL_MED = "More boring rocks.",
 
 		TURF_CARPETFLOOR = "The ground is boring.",
 		TURF_CHECKERFLOOR = "The ground is boring.",

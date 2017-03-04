@@ -325,6 +325,20 @@ local states =
             },
         },
 
+    State{  
+			name = "ruinsrespawn",
+			tags = {"idle"},
+	        
+			onenter = function(inst)
+				inst.AnimState:PlayAnimation("spawn")
+			end,
+
+			events =
+			{
+				EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
+			},
+		},
+
 }
 
 CommonStates.AddSleepStates(states,

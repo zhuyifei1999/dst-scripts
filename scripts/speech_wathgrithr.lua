@@ -560,8 +560,6 @@ return {
         BEDROLL_FURRY = "A luxury fur bed!",
         BUNNYMAN = "I want to eat you.",
         FLOWER_CAVE = "And it lit up the night, upon the darkest hour.",
-        FLOWER_CAVE_DOUBLE = "And it lit up the night, upon the darkest hour.",
-        FLOWER_CAVE_TRIPLE = "And it lit up the night, upon the darkest hour.",
         GUANO = "Hmm, dark wing turds.",
         LANTERN = "A lantern to hold back the night.",
         LIGHTBULB = "Glow!",
@@ -613,12 +611,21 @@ return {
             BLOOM = "I'll fight alongside you any day!",
         },
         MUSHTREE_TALL_WEBBED = "This mushroom needs to be retired.",
-        SPORE_TALL = "At peace, benevolent river spirit.",
-        SPORE_MEDIUM = "At peace, benevolent flame spirit.",
-        SPORE_SMALL = "At peace, benevolent forest spirit.",
-        SPORE_TALL_INV = "I'll direct this light where I please.",
-        SPORE_MEDIUM_INV = "I'll direct this light where I please.",
-        SPORE_SMALL_INV = "I'll direct this light where I please.",
+        SPORE_TALL =
+        {
+            GENERIC = "At peace, benevolent river spirit.",
+            HELD = "I'll direct this light where I please.",
+        },
+        SPORE_MEDIUM =
+        {
+            GENERIC = "At peace, benevolent flame spirit.",
+            HELD = "I'll direct this light where I please.",
+        },
+        SPORE_SMALL =
+        {
+            GENERIC = "At peace, benevolent forest spirit.",
+            HELD = "I'll direct this light where I please.",
+        },
         RABBITHOUSE =
         {
             GENERIC = "What's to be done with a carrot that big?",
@@ -636,13 +643,7 @@ return {
         SPIDERHOLE = "Webbing. Never a good sign.",
         SPIDERHOLE_ROCK = "Webbing. Never a good sign.",
         STALAGMITE = "Cave boulder.",
-        STALAGMITE_FULL = "Cave boulder.",
-        STALAGMITE_LOW = "Cave boulder.",
-        STALAGMITE_MED = "Cave boulder.",
         STALAGMITE_TALL = "A pointy rock of sorts.",
-        STALAGMITE_TALL_FULL = "A pointy rock of sorts.",
-        STALAGMITE_TALL_LOW = "A pointy rock of sorts.",
-        STALAGMITE_TALL_MED = "A pointy rock of sorts.",
 
         TURF_CARPETFLOOR = "It soaks up the blood of battle.",
         TURF_CHECKERFLOOR = "Fancy floor.",

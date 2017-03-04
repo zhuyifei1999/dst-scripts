@@ -1,7 +1,7 @@
 local stalagmite_tall_assets =
 {
     Asset("ANIM", "anim/rock_stalagmite_tall.zip"),
-	Asset("MINIMAP_IMAGE", "stalagmite_tall"), --shared with other numbered prefabs
+    Asset("MINIMAP_IMAGE", "stalagmite_tall"), --shared with other numbered prefabs
 }
 
 local prefabs =
@@ -15,7 +15,7 @@ local prefabs =
     "fossil_piece",
 }
 
-SetSharedLootTable( 'stalagmite_tall_full_rock',
+SetSharedLootTable('stalagmite_tall_full_rock',
 {
     {'rocks',       1.00},
     {'rocks',       1.00},
@@ -28,7 +28,7 @@ SetSharedLootTable( 'stalagmite_tall_full_rock',
     {'log',         0.05},
 })
 
-SetSharedLootTable( 'stalagmite_tall_med_rock',
+SetSharedLootTable('stalagmite_tall_med_rock',
 {
     {'rocks',       1.00},
     {'rocks',       1.00},
@@ -38,7 +38,7 @@ SetSharedLootTable( 'stalagmite_tall_med_rock',
     {'flint',       0.60},
 })
 
-SetSharedLootTable( 'stalagmite_tall_low_rock',
+SetSharedLootTable('stalagmite_tall_low_rock',
 {
     {'rocks',       1.00},
     {'flint',       1.00},
@@ -78,17 +78,13 @@ local function commonfn(anim)
     inst.AnimState:SetBank("rock_stalagmite_tall")
     inst.AnimState:SetBuild("rock_stalagmite_tall")
 
-    --Sneak these into pristine state for optimization
-    inst:AddTag("_named")
+    inst:SetPrefabNameOverride("stalagmite_tall")
 
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
-
-    --Remove these tags so that they can be added properly when replicating components below
-    inst:RemoveTag("_named")
 
     inst.type = "_"..tostring(math.random(2)) -- left or right handed rock
     inst.AnimState:PlayAnimation(anim..inst.type)
@@ -99,10 +95,6 @@ local function commonfn(anim)
     inst:AddComponent("lootdropper") 
 
     inst:AddComponent("inspectable")
-    inst.components.inspectable.nameoverride = "stalagmite_tall"
-
-    inst:AddComponent("named")
-    inst.components.named:SetName(STRINGS.NAMES["STALAGMITE"])
 
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.MINE)

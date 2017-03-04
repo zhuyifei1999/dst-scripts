@@ -359,7 +359,10 @@ local actionhandlers =
 
     ActionHandler(ACTIONS.TAKEITEM, "dolongaction"),
 
-    ActionHandler(ACTIONS.BUILD, "dolongaction"),
+    ActionHandler(ACTIONS.BUILD,
+        function(inst)--, action)
+            return inst:HasTag("fastbuilder") and "domediumaction" or "dolongaction"
+        end),
     ActionHandler(ACTIONS.SHAVE, "shave"),
     ActionHandler(ACTIONS.COOK, "dolongaction"),
     ActionHandler(ACTIONS.FILL, "dolongaction"),
@@ -407,8 +410,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.JUMPIN, "jumpin_pre"),
     ActionHandler(ACTIONS.TELEPORT, 
         function(inst, action)
-            return (action.invobject ~= nil and "dolongaction")
-                or "give"
+            return action.invobject ~= nil and "dolongaction" or "give"
         end),
     ActionHandler(ACTIONS.DRY, "doshortaction"),
     ActionHandler(ACTIONS.CASTSPELL,
@@ -3414,6 +3416,15 @@ local states =
 
     State
     {
+        name = "domediumaction",
+
+        onenter = function(inst)
+            inst.sg:GoToState("dolongaction", .5)
+        end,
+    },
+
+    State
+    {
         name = "dolongaction",
         tags = { "doing", "busy", "nodangle" },
 
@@ -5319,6 +5330,10 @@ local states =
             inst.sg.statemem.target = data.teleporter
             inst.sg.statemem.heavy = inst.components.inventory:IsHeavyLifting()
 
+            if data.teleporter ~= nil and data.teleporter.components.teleporter ~= nil then
+                data.teleporter.components.teleporter:RegisterTeleportee(inst)
+            end
+
             inst.AnimState:PlayAnimation(inst.sg.statemem.heavy and "heavy_jump" or "jump", false)
 
             local pos = data ~= nil and data.teleporter and data.teleporter:GetPosition() or nil
@@ -5385,7 +5400,11 @@ local states =
 
                 -- this is just hacked in here to make the sound play BEFORE the player hits the wormhole
                 if inst.sg.statemem.target ~= nil then
-                    inst.sg.statemem.target:PushEvent("starttravelsound", inst)
+                    if inst.sg.statemem.target:IsValid() then
+                        inst.sg.statemem.target:PushEvent("starttravelsound", inst)
+                    else
+                        inst.sg.statemem.target = nil
+                    end
                 end
             end),
 
@@ -5402,18 +5421,22 @@ local states =
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
                     if inst.sg.statemem.target ~= nil and
-                        inst.sg.statemem.target.components.teleporter ~= nil and
-                        inst.sg.statemem.target.components.teleporter:Activate(inst) then
-                        inst.sg.statemem.isteleporting = true
-                        inst.components.health:SetInvincible(true)
-                        if inst.components.playercontroller ~= nil then
-                            inst.components.playercontroller:Enable(false)
+                        inst.sg.statemem.target:IsValid() and
+                        inst.sg.statemem.target.components.teleporter ~= nil then
+                        --Unregister first before actually teleporting
+                        inst.sg.statemem.target.components.teleporter:UnregisterTeleportee(inst)
+                        if inst.sg.statemem.target.components.teleporter:Activate(inst) then
+                            inst.sg.statemem.isteleporting = true
+                            inst.components.health:SetInvincible(true)
+                            if inst.components.playercontroller ~= nil then
+                                inst.components.playercontroller:Enable(false)
+                            end
+                            inst:Hide()
+                            inst.DynamicShadow:Enable(false)
+                            return
                         end
-                        inst:Hide()
-                        inst.DynamicShadow:Enable(false)
-                    else
-                        inst.sg:GoToState("jumpout")
                     end
+                    inst.sg:GoToState("jumpout")
                 end
             end),
         },
@@ -5430,6 +5453,10 @@ local states =
                 end
                 inst:Show()
                 inst.DynamicShadow:Enable(true)
+            elseif inst.sg.statemem.target ~= nil
+                and inst.sg.statemem.target:IsValid()
+                and inst.sg.statemem.target.components.teleporter ~= nil then
+                inst.sg.statemem.target.components.teleporter:UnregisterTeleportee(inst)
             end
         end,
     },

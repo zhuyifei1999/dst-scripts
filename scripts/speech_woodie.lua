@@ -800,8 +800,6 @@ return {
         BEDROLL_FURRY = "I love camping.",
         BUNNYMAN = "He looks friendly enough.",
         FLOWER_CAVE = "Shiny!",
-        FLOWER_CAVE_DOUBLE = "Shiny!",
-        FLOWER_CAVE_TRIPLE = "Shiny!",
         GUANO = "It stinks less than the other kind.",
         LANTERN = "Well that's enlightening, eh?",
         LIGHTBULB = "It looks chewy.",
@@ -853,12 +851,21 @@ return {
             BLOOM = "Well, I can't cut it down now...",
         },
         MUSHTREE_TALL_WEBBED = "This one needs pruning, at least.",
-        SPORE_TALL = "A flying green pinecone!",
-        SPORE_MEDIUM = "A floating red pinecone!",
-        SPORE_SMALL = "We've been visited by a forest sprite, Lucy!",
-        SPORE_TALL_INV = "One day this might be a tree.",
-        SPORE_MEDIUM_INV = "One day this might be a tree.",
-        SPORE_SMALL_INV = "One day this might be a tree.",
+        SPORE_TALL =
+        {
+            GENERIC = "A flying green pinecone!",
+            HELD = "One day this might be a tree.",
+        },
+        SPORE_MEDIUM =
+        {
+            GENERIC = "A floating red pinecone!",
+            HELD = "One day this might be a tree.",
+        },
+        SPORE_SMALL =
+        {
+            GENERIC = "We've been visited by a forest sprite, Lucy!",
+            HELD = "One day this might be a tree.",
+        },
         SLURTLE = "He's just misunderstood.",
         SLURTLE_SHELLPIECES = "His home is broken now. Oh.",
         SLURTLEHAT = "That could sure keep a noggin safe.",
@@ -869,13 +876,7 @@ return {
         SPIDER_SPITTER = "Spitting is rude!",
         SPIDERHOLE = "I should skedaddle before they come out of there.",
         STALAGMITE = "I'm not too interested in rocks.",
-        STALAGMITE_FULL = "I'm not too interested in rocks.",
-        STALAGMITE_LOW = "I'm not too interested in rocks.",
-        STALAGMITE_MED = "I'm not too interested in rocks.",
         STALAGMITE_TALL = "I'm not too interested in rocks.",
-        STALAGMITE_TALL_FULL = "I'm not too interested in rocks.",
-        STALAGMITE_TALL_LOW = "I'm not too interested in rocks.",
-        STALAGMITE_TALL_MED = "I'm not too interested in rocks.",
 
 		TURF_CARPETFLOOR = "Some ground.",
 		TURF_CHECKERFLOOR = "Some ground.",
@@ -894,7 +895,6 @@ return {
 		TURF_UNDERROCK="Rocks. Bleh.",	
 		TURF_MUD="At least you don't have to clean it.",
 
-		
 		POWCAKE = "I like the ones made with real sugar better.",
         CAVE_ENTRANCE = "It's all bunged up.",
         CAVE_ENTRANCE_RUINS = "It's all bunged up.",

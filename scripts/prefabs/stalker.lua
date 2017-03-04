@@ -1,4 +1,4 @@
-local assets =
+local assets_cave =
 {
     Asset("ANIM", "anim/stalker_basic.zip"),
     Asset("ANIM", "anim/stalker_action.zip"),
@@ -6,11 +6,30 @@ local assets =
     Asset("ANIM", "anim/stalker_cave_build.zip"),
 }
 
-local prefabs =
+local assets_forest =
+{
+    Asset("ANIM", "anim/stalker_forest.zip"),
+    Asset("ANIM", "anim/stalker_shadow_build.zip"),
+    Asset("ANIM", "anim/stalker_forest_build.zip"),
+}
+
+local prefabs_cave =
 {
     "shadowheart",
     "fossil_piece_clean",
     "fossilspike",
+    "nightmarefuel",
+}
+
+local prefabs_forest =
+{
+    "shadowheart",
+    "fossil_piece_clean",
+    "nightmarefuel",
+    "stalker_bulb",
+    "stalker_berry",
+    "stalker_fern",
+    "damp_trail",
 }
 
 local brain = require("brains/stalkerbrain")
@@ -26,10 +45,6 @@ SetSharedLootTable('stalker',
     {"fossil_piece_clean",  1.00},
     {"fossil_piece_clean",  1.00},
     {"fossil_piece_clean",  1.00},
-    {"nightmarefuel",       1.00},
-    {"nightmarefuel",       1.00},
-    {"nightmarefuel",       0.50},
-    {"nightmarefuel",       0.50},
 })
 
 --------------------------------------------------------------------------
@@ -155,6 +170,10 @@ local function OnAttacked(inst, data)
             inst.components.combat:SetTarget(data.attacker)
         end
     end
+end
+
+local function DoNotKeepTargetFn()
+    return false
 end
 
 --------------------------------------------------------------------------
@@ -326,6 +345,117 @@ end
 
 --------------------------------------------------------------------------
 
+local MAX_TRAIL_VARIATIONS = 7
+local MAX_RECENT_TRAILS = 4
+local TRAIL_MIN_SCALE = 1
+local TRAIL_MAX_SCALE = 1.6
+
+local function PickTrail(inst)
+    local rand = table.remove(inst.availabletrails, math.random(#inst.availabletrails))
+    table.insert(inst.usedtrails, rand)
+    if #inst.usedtrails > MAX_RECENT_TRAILS then
+        table.insert(inst.availabletrails, table.remove(inst.usedtrails, 1))
+    end
+    return rand
+end
+
+local function RefreshTrail(inst, fx)
+    if fx:IsValid() then
+        fx:Refresh()
+    else
+        inst._trailtask:Cancel()
+        inst._trailtask = nil
+    end
+end
+
+local function DoTrail(inst)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    if inst.sg:HasStateTag("moving") then
+        local theta = -inst.Transform:GetRotation() * DEGREES
+        x = x + math.cos(theta)
+        z = z + math.sin(theta)
+    end
+    local fx = SpawnPrefab("damp_trail")
+    fx.Transform:SetPosition(x, 0, z)
+    fx:SetVariation(PickTrail(inst), GetRandomMinMax(TRAIL_MIN_SCALE, TRAIL_MAX_SCALE), TUNING.STALKER_BLOOM_DECAY)
+    if inst._trailtask ~= nil then
+        inst._trailtask:Cancel()
+    end
+    inst._trailtask = inst:DoPeriodicTask(TUNING.STALKER_BLOOM_DECAY * .5, RefreshTrail, nil, fx)
+end
+
+local BLOOM_CHOICES =
+{
+    ["stalker_bulb"] = .5,
+    ["stalker_bulb_double"] = .5,
+    ["stalker_berry"] = 1,
+    ["stalker_fern"] = 8,
+}
+
+local function DoPlantBloom(inst)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local map = TheWorld.Map
+    local offset = FindValidPositionByFan(
+        math.random() * 2 * PI,
+        math.random() * 3,
+        8,
+        function(offset)
+            local x1 = x + offset.x
+            local z1 = z + offset.z
+            return map:IsPassableAtPoint(x1, 0, z1)
+                and map:IsDeployPointClear(Vector3(x1, 0, z1), nil, 1)
+                and #TheSim:FindEntities(x1, 0, z1, 2.5, { "stalkerbloom" }) < 4
+        end
+    )
+
+    if offset ~= nil then
+        SpawnPrefab(weighted_random_choice(BLOOM_CHOICES)).Transform:SetPosition(x + offset.x, 0, z + offset.z)
+    end
+end
+
+local function OnStartBlooming(inst)
+    DoTrail(inst)
+    inst._bloomtask = inst:DoPeriodicTask(3 * FRAMES, DoPlantBloom, 2 * FRAMES)
+end
+
+local function StartBlooming(inst)
+    if inst._bloomtask == nil then
+        inst._bloomtask = inst:DoTaskInTime(0, OnStartBlooming)
+    end
+end
+
+local function StopBlooming(inst)
+    if inst._bloomtask ~= nil then
+        inst._bloomtask:Cancel()
+        inst._bloomtask = nil
+    end
+    if inst._trailtask ~= nil then
+        inst._trailtask:Cancel()
+        inst._trailtask = nil
+    end
+end
+
+local function OnDecay(inst)
+    if not inst.components.health:IsDead() then
+        --No chance fuel drops if decayed due to daylight
+        inst.components.lootdropper:SetLoot(nil)
+        inst.components.health:Kill()
+    end
+end
+
+local function OnIsNight(inst, isnight)
+    if isnight then
+        if inst._decaytask ~= nil then
+            inst._decaytask:Cancel()
+            inst._decaytask = nil
+        end
+    elseif inst._decaytask == nil then
+        inst._decaytask = inst:DoTaskInTime(2 + math.random(), OnDecay)
+    end
+end
+
+--------------------------------------------------------------------------
+
 local function ClearRecentlyCharged(inst, other)
     inst.recentlycharged[other] = nil
 end
@@ -360,7 +490,7 @@ end
 
 --------------------------------------------------------------------------
 
-local function fn()
+local function common_fn(bank, build, shadowsize, canfight)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -371,13 +501,13 @@ local function fn()
 
     inst.Transform:SetFourFaced()
 
-    inst.DynamicShadow:SetSize(4, 2)
+    inst.DynamicShadow:SetSize(unpack(shadowsize))
 
     MakeGiantCharacterPhysics(inst, 1000, .75)
 
-    inst.AnimState:SetBank("stalker")
+    inst.AnimState:SetBank(bank)
     inst.AnimState:SetBuild("stalker_shadow_build")
-    inst.AnimState:AddOverrideBuild("stalker_cave_build")
+    inst.AnimState:AddOverrideBuild(build)
     inst.AnimState:PlayAnimation("idle", true)
 
     inst:AddTag("epic")
@@ -388,13 +518,15 @@ local function fn()
     inst:AddTag("stalker")
     inst:AddTag("fossil")
 
-    inst:AddComponent("talker")
-    inst.components.talker.fontsize = 40
-    inst.components.talker.font = TALKINGFONT
-    inst.components.talker.colour = Vector3(238 / 255, 69 / 255, 105 / 255)
-    inst.components.talker.offset = Vector3(0, -700, 0)
-    inst.components.talker.symbol = "fossil_chest"
-    inst.components.talker:MakeChatter()
+    if canfight then
+        inst:AddComponent("talker")
+        inst.components.talker.fontsize = 40
+        inst.components.talker.font = TALKINGFONT
+        inst.components.talker.colour = Vector3(238 / 255, 69 / 255, 105 / 255)
+        inst.components.talker.offset = Vector3(0, -700, 0)
+        inst.components.talker.symbol = "fossil_chest"
+        inst.components.talker:MakeChatter()
+    end
 
     inst.entity:SetPristine()
 
@@ -419,10 +551,37 @@ local function fn()
     inst.components.health:SetMaxHealth(TUNING.STALKER_HEALTH)
     inst.components.health.nofadeout = true
 
+    inst:AddComponent("sanityaura")
+    inst.components.sanityaura.aura = -TUNING.SANITYAURA_HUGE
+
+    inst:AddComponent("combat")
+    inst.components.combat.hiteffectsymbol = "torso"
+
+    inst.canfight = canfight --Need this b4 setting brain
+    inst:SetStateGraph("SGstalker")
+    inst:SetBrain(brain)
+
+    inst:ListenForEvent("ontalk", OnTalk)
+    inst:ListenForEvent("donetalking", OnDoneTalking)
+
+    return inst
+end
+
+local function cave_fn()
+    local inst = common_fn("stalker", "stalker_cave_build", { 4, 2 }, true)
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.components.lootdropper:AddChanceLoot("nightmarefuel", 1)
+    inst.components.lootdropper:AddChanceLoot("nightmarefuel", 1)
+    inst.components.lootdropper:AddChanceLoot("nightmarefuel", .5)
+    inst.components.lootdropper:AddChanceLoot("nightmarefuel", .5)
+
     inst:AddComponent("healthtrigger")
     inst.components.healthtrigger:AddTrigger(PHASE2_HEALTH, EnterPhase2Trigger)
 
-    inst:AddComponent("combat")
     inst.components.combat:SetDefaultDamage(TUNING.STALKER_DAMAGE)
     inst.components.combat:SetAttackPeriod(TUNING.STALKER_ATTACK_PERIOD)
     inst.components.combat.playerdamagepercent = .5
@@ -430,7 +589,6 @@ local function fn()
     inst.components.combat:SetAreaDamage(TUNING.STALKER_AOE_RANGE, TUNING.STALKER_AOE_SCALE)
     inst.components.combat:SetRetargetFunction(3, RetargetFn)
     inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
-    inst.components.combat.hiteffectsymbol = "torso"
     inst.components.combat.battlecryinterval = 10
     inst.components.combat.GetBattleCryString = battlecry
 
@@ -438,25 +596,51 @@ local function fn()
 
     inst:AddComponent("timer")
 
-    inst:AddComponent("sanityaura")
-    inst.components.sanityaura.aura = -TUNING.SANITYAURA_HUGE
-
     inst:AddComponent("epicscare")
     inst.components.epicscare:SetRange(TUNING.STALKER_EPICSCARE_RANGE)
-
-    inst:SetStateGraph("SGstalker")
-    inst:SetBrain(brain)
 
     inst.SetEngaged = SetEngaged
     inst.FindSnareTargets = FindSnareTargets
     inst.SpawnSnares = SpawnSnares
 
-    inst:ListenForEvent("ontalk", OnTalk)
-    inst:ListenForEvent("donetalking", OnDoneTalking)
     inst:ListenForEvent("attacked", OnAttacked)
+
     SetEngaged(inst, false)
 
     return inst
 end
 
-return Prefab("stalker", fn, assets, prefabs)
+local function forest_fn()
+    local inst = common_fn("stalker_forest", "stalker_forest_build", { 5, 3 })
+
+    inst:SetPrefabNameOverride("stalker")
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.foreststalker = true
+
+    inst.components.lootdropper:AddChanceLoot("nightmarefuel", .5)
+
+    inst.components.combat:SetKeepTargetFunction(DoNotKeepTargetFn)
+
+    inst.usedtrails = {}
+    inst.availabletrails = {}
+    for i = 1, MAX_TRAIL_VARIATIONS do
+        table.insert(inst.availabletrails, i)
+    end
+
+    inst.DoTrail = DoTrail
+    inst.StartBlooming = StartBlooming
+    inst.StopBlooming = StopBlooming
+    StartBlooming(inst)
+
+    inst:WatchWorldState("isnight", OnIsNight)
+    OnIsNight(inst, TheWorld.state.isnight)
+
+    return inst
+end
+
+return Prefab("stalker", cave_fn, assets_cave, prefabs_cave),
+    Prefab("stalker_forest", forest_fn, assets_forest, prefabs_forest)
