@@ -71770,7 +71770,7 @@ msgstr ""
 
 #. STRINGS.NAMES.ATRIUM_OVERGROWTH
 msgctxt "STRINGS.NAMES.ATRIUM_OVERGROWTH"
-msgid "Ancient Marker"
+msgid "Ancient Obelisk"
 msgstr ""
 
 #. STRINGS.NAMES.ATRIUM_RUBBLE

@@ -1225,14 +1225,14 @@ STRINGS =
         SADDLE_WAR = "War Saddle",
 
         REVIVER = "Telltale Heart",
-        
+
         SHADOWHEART = "Shadow Atrium",
         ATRIUM_RUBBLE = "Ancient Mural",
         ATRIUM_STATUE = "Ancient Statue",
         ATRIUM_LIGHT = "Ancient Beacon",
         ATRIUM_GATE = "Ancient Gateway",
         ATRIUM_KEY = "Ancient Key",
-        ATRIUM_OVERGROWTH = "Ancient Marker",
+        ATRIUM_OVERGROWTH = "Ancient Obelisk",
 
         SHADOWMETEOR = "Meteor",
 

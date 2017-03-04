@@ -418,13 +418,19 @@ local function OnStartBlooming(inst)
     inst._bloomtask = inst:DoPeriodicTask(3 * FRAMES, DoPlantBloom, 2 * FRAMES)
 end
 
-local function StartBlooming(inst)
+local function _StartBlooming(inst)
     if inst._bloomtask == nil then
         inst._bloomtask = inst:DoTaskInTime(0, OnStartBlooming)
     end
 end
 
-local function StopBlooming(inst)
+local function OnEntityWake(inst)
+    if inst._blooming then
+        _StartBlooming(inst)
+    end
+end
+
+local function OnEntitySleep(inst)
     if inst._bloomtask ~= nil then
         inst._bloomtask:Cancel()
         inst._bloomtask = nil
@@ -432,6 +438,22 @@ local function StopBlooming(inst)
     if inst._trailtask ~= nil then
         inst._trailtask:Cancel()
         inst._trailtask = nil
+    end
+end
+
+local function StartBlooming(inst)
+    if not inst._blooming then
+        inst._blooming = true
+        if not inst:IsAsleep() then
+            _StartBlooming(inst)
+        end
+    end
+end
+
+local function StopBlooming(inst)
+    if inst._blooming then
+        inst._blooming = false
+        OnEntitySleep(inst)
     end
 end
 
@@ -631,9 +653,12 @@ local function forest_fn()
         table.insert(inst.availabletrails, i)
     end
 
+    inst._blooming = false
     inst.DoTrail = DoTrail
     inst.StartBlooming = StartBlooming
     inst.StopBlooming = StopBlooming
+    inst.OnEntityWake = OnEntityWake
+    inst.OnEntitySleep = OnEntitySleep
     StartBlooming(inst)
 
     inst:WatchWorldState("isnight", OnIsNight)
