@@ -1326,6 +1326,8 @@ return {
 			COMPLETE = "Was it wise to unleash this upon the world?",
         },
         STALKER = "There is no limit to the power of shadows.",
+        THURIBLE = "Curious. It smells like roses.",
+        ATRIUM_OVERGROWTH = "I can't believe I've forgotten how to read this.",
 		FROG =
 		{
 			DEAD = "It croaked.",
@@ -1681,6 +1683,7 @@ return {
 		SEEDS = "I suppose these won't plant themselves.",
 		SEEDS_COOKED = "Broiled the life out of 'em.",
 		SEWING_KIT = "A fine and noble endeavor.",
+		SEWING_TAPE = "Alas, the wilderness is tough on a tailor made suit.",
 		SHOVEL = "This is some real advanced technology.",
 		SILK = "Despite its origin, it could make some fine garments.",
 		SKELETON = "Ha! I remember that one.",

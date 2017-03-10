@@ -1540,7 +1540,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         "attune_in_fx",
         "attune_ghost_in_fx",
         "staff_castinglight",
-        "hauntfx",
         "emote_fx",
         "tears",
         "shock_fx",

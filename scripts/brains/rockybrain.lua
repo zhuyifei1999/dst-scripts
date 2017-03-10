@@ -46,7 +46,7 @@ local function EatFoodAction(inst)
         end
     end
 
-    local target = FindEntity(inst, 15, CanPickup, { "edible_ELEMENTAL", "_inventoryitem" }, { "INLIMBO", "fire", "catchable" })
+    local target = FindEntity(inst, 15, CanPickup, { "edible_ELEMENTAL", "_inventoryitem" }, { "INLIMBO", "fire", "catchable", "outofreach" })
     if target ~= nil then
         local ba = BufferedAction(inst, target, ACTIONS.PICKUP)
         ba.distance = 1.5

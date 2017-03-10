@@ -122,6 +122,31 @@ local function TryBeginGreetingState(inst)
     return false
 end
 
+local function ShouldWaitForHeavyLifter(inst, target)
+    if target ~= nil and
+        target.components.inventory:IsHeavyLifting() and
+        inst.components.rideable.canride then
+        --Check if target is heavy lifting towards me
+        --(dot product between target's facing and target to me > 0)
+        local x, y, z = target.Transform:GetWorldPosition()
+        local x1, y1, z1 = inst.Transform:GetWorldPosition()
+        local dx = x1 - x
+        local dz = z1 - z
+        if dx * dx + dz * dz < MAX_FOLLOW_DIST * MAX_FOLLOW_DIST then
+            local theta = -target.Transform:GetRotation() * DEGREES
+            --local dx1 = math.cos(theta)
+            --local dz1 = math.sin(theta)
+            return dx * math.cos(theta) + dz * math.sin(theta) > 0
+        end
+    end
+    return false
+end
+
+local function GetWaitForHeavyLifter(inst)
+    local target = GetGreetTarget(inst)
+    return ShouldWaitForHeavyLifter(inst, target) and target or nil
+end
+
 local function InState(inst, state)
     if inst._startgreettime == nil then
         inst._startgreettime = -1000000
@@ -167,7 +192,8 @@ function BeefaloBrain:OnStart()
         -- waiting for feeder
         WhileNode(function() return InState(self.inst, LOITERING) end, "Loitering", PriorityNode{
             WhileNode(function() return GetLoiterTarget(self.inst) ~= nil end, "Anyone nearby?", PriorityNode{
-                FailIfSuccessDecorator( ActionNode(function() TryBeginLoiterState(self.inst) end, "Reset Loiter Time") ),
+                FailIfSuccessDecorator(ActionNode(function() TryBeginLoiterState(self.inst) end, "Reset Loiter Time")),
+                FaceEntity(self.inst, GetWaitForHeavyLifter, ShouldWaitForHeavyLifter),
                 Follow(self.inst, GetGreetTarget, MIN_FOLLOW_DIST, TARGET_FOLLOW_DIST, MAX_FOLLOW_DIST, false),
                 Wander(self.inst, function() return GetGreetTargetPosition(self.inst) end, TARGET_LOITER_DIST)
             }),

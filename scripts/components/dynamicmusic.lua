@@ -194,7 +194,7 @@ end
 local function StartTriggeredDanger(player, data)
     local level = math.max(1, math.floor(data ~= nil and data.level or 1))
     if _triggeredlevel == level then
-        _extendtime = GetTime() + (data.duration or 10)
+        _extendtime = math.max(_extendtime, GetTime() + (data.duration or 10))
     elseif _isenabled then
         StopBusy()
         StopDanger()

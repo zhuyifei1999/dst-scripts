@@ -334,7 +334,7 @@ return {
 		WES = 
 		{
 			GENERIC = "Hi %s!",
-			ATTACKER = "That mime punch was really convincing, %s! Haha, ow!",
+			ATTACKER = "That mime punch was really convincing! Haha, ow!",
 			MURDERER = "Your actions speak louder than words! Murderer!",
 			REVIVER = "Who do ghosts call? %s!",
 			GHOST = "%s, just tell me whatcha need and I'll get it for you. Heheheh!",
@@ -1413,6 +1413,8 @@ return {
 			COMPLETE = "Looks passable.",
         },
         STALKER = "I brought you back so I could beat you up!",
+        THURIBLE = "It smells like burnt hair!",
+        ATRIUM_OVERGROWTH = "It's in some other language.",
 		FROG =
 		{
 			DEAD = "Showed him!",
@@ -1747,6 +1749,7 @@ return {
 		SEEDS = "Farming is boring.",
 		SEEDS_COOKED = "No good for farming now.",
 		SEWING_KIT = "But destruction is so much more fun!",
+		SEWING_TAPE = "For when you get bored of wrecking stuff.",
 		SHOVEL = "Not great for fighting.",
 		SILK = "Mmmmmm. Smooth.",
 		INSPECTSELF = "Why didn't anyone tell me I had ashes on my face?",

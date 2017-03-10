@@ -102,6 +102,11 @@ local function SetEngaged(inst, engaged)
     if inst._isengaged:value() ~= engaged then
         inst._isengaged:set(engaged)
         OnIsEngagedDirty(inst)
+
+        local home = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
+        if home ~= nil then
+            home:PushEvent("dragonflyengaged", { engaged = engaged, dragonfly = inst })
+        end
     end
 end
 
@@ -361,10 +366,21 @@ local function OnSave(inst, data)
     data.playercombat = inst._isengaged:value() or nil
 end
 
+--delayed until homeseeker is initialized (from dragonfly_spawner)
+local function OnInitEngaged(inst)
+    if inst._isengaged:value() then
+        local home = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
+        if home ~= nil then
+            home:PushEvent("dragonflyengaged", { engaged = true, dragonfly = inst })
+        end
+    end
+end
+
 local function OnLoad(inst, data)
     --If the dragonfly was in combat when the game saved then we're going to reset the fight.
     if data.playercombat then
         SetEngaged(inst, true)
+        inst:DoTaskInTime(0, OnInitEngaged)
         inst:DoTaskInTime(1, Reset)
     end
 end
@@ -443,7 +459,7 @@ local function fn()
 
     inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/fly", "flying")
 
-    inst._isengaged = net_bool(inst.GUID, "dragonfly._engaged", "isengageddirty")
+    inst._isengaged = net_bool(inst.GUID, "dragonfly._isengaged", "isengageddirty")
     inst._playingmusic = false
     inst._musictask = nil
 

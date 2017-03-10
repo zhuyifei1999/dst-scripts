@@ -246,10 +246,6 @@ local function master_postinit(inst)
     if METRICS_ENABLED then
         inst:AddComponent("worldoverseer")
     end
-
-    -- inst:AddComponent("periodicthreat")
-    -- local threats = require"periodicthreats"
-    -- inst.components.periodicthreat:AddThreat("WORM", threats["WORM"])
 end
 
 return MakeWorld("forest", prefabs, assets, common_postinit, master_postinit, {"forest"})

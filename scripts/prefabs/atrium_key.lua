@@ -9,7 +9,10 @@ local function fn()
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
+    inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
+
+    inst.MiniMapEntity:SetIcon("atrium_key.png")
 
     MakeInventoryPhysics(inst)
 
@@ -28,7 +31,7 @@ local function fn()
 
     inst:AddComponent("inventoryitem")
     inst:AddComponent("inspectable")
-    
+
     inst:AddComponent("tradable")
 
     MakeHauntableLaunch(inst)

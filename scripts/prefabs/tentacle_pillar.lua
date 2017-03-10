@@ -91,7 +91,8 @@ local function SpawnArms(inst, attacker)
                 pillarLoc = pillars[1]:GetPosition()
             end
             if map:IsAboveGroundAtPoint(x, 0, z) and
-                distsq(x, z, pillarLoc.x, pillarLoc.z) > 8 then
+                distsq(x, z, pillarLoc.x, pillarLoc.z) > 8 and
+                not map:IsPointNearHole(Vector3(x, 0, z)) then
                 local arm = SpawnPrefab("tentacle_pillar_arm")
                 StartTrackingArm(inst, arm)
                 arm.Transform:SetPosition(x, 0, z)

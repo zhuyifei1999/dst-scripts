@@ -5,7 +5,9 @@ local BlinkStaff = Class(function(self, inst)
 end)
 
 function BlinkStaff:SpawnEffect(inst)
-    SpawnPrefab("small_puff").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    local x, y, z = inst.Transform:GetWorldPosition()
+    SpawnPrefab("sand_puff_large_back").Transform:SetPosition(x, y - .1, z)
+    SpawnPrefab("sand_puff_large_front").Transform:SetPosition(x, y, z)
 end
 
 local function OnBlinked(caster, self, pt)
@@ -22,7 +24,7 @@ local function OnBlinked(caster, self, pt)
 end
 
 function BlinkStaff:Blink(pt, caster)
-    if not TheWorld.Map:IsAboveGroundAtPoint(pt:Get()) then
+    if not TheWorld.Map:IsAboveGroundAtPoint(pt:Get()) or TheWorld.Map:IsPointNearHole(pt) then
         return false
     end
 
@@ -40,7 +42,7 @@ function BlinkStaff:Blink(pt, caster)
         caster.components.health:SetInvincible(true)
     end
 
-    self.blinktask = caster:DoTaskInTime(0.25, OnBlinked, self, pt)
+    self.blinktask = caster:DoTaskInTime(.25, OnBlinked, self, pt)
 
     if self.onblinkfn ~= nil then
         self.onblinkfn(self.inst, pt, caster)

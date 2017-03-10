@@ -262,6 +262,17 @@ return {
           height = 0,
           visible = true,
           properties = {}
+        },
+        {
+          name = "",
+          type = "cave_hole",
+          shape = "rectangle",
+          x = 181,
+          y = 312,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
         }
       }
     }

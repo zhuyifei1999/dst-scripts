@@ -240,7 +240,17 @@ local random_gift2 =
     panflute = .1,
 }
 
+--V2C: function pasted here for searching
+--[[
+local function NoHoles(pt)
+    return not TheWorld.Map:IsPointNearHole(pt)
+end
+]]
+
 local function NobodySeesPoint(pt)
+    if TheWorld.Map:IsPointNearHole(pt) then
+        return false
+    end
     for i, v in ipairs(AllPlayers) do
         if CanEntitySeePoint(v, pt.x, pt.y, pt.z) then
             return false

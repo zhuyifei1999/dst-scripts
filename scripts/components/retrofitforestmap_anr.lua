@@ -370,6 +370,29 @@ function self:OnPostInit()
 			end
 		end
 	end
+	
+	if self.retrofit_penguinice then
+		self.retrofit_penguinice = nil
+		local count = 0
+	    for k,v in pairs(Ents) do
+			if v.prefab == "rock_ice" then
+				local x, y, z = v.Transform:GetWorldPosition()
+				local ents = TheSim:FindEntities(x, y, z, 15.1)
+				for _,ent in ipairs(ents) do
+					if ent.prefab == "penguin_ice" then
+						v.remove_on_dryup = true
+						count = count + 1
+						break
+					end
+				end
+			end
+		end
+		
+		if count ~= 0 then
+			print ("Retrofitting for Pengull spawned Mini Glaciers: Converted " .. count .. " Mini Glaciers near pengull colonies to be remove on dry up.")
+		end
+		
+	end
 end
 
 --------------------------------------------------------------------------
@@ -388,6 +411,7 @@ function self:OnLoad(data)
         self.retrofit_cutefuzzyanimals = data.retrofit_cutefuzzyanimals or false
         self.retrofit_herdmentality = data.retrofit_herdmentality or false
         self.retrofit_againstthegrain = data.retrofit_againstthegrain or false
+        self.retrofit_penguinice = data.retrofit_penguinice or false
     end
 end
 

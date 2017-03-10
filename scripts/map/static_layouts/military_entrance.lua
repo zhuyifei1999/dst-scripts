@@ -138,6 +138,17 @@ return {
           height = 0,
           visible = true,
           properties = {}
+        },
+        {
+          name = "",
+          type = "cave_hole_area",
+          shape = "rectangle",
+          x = 391,
+          y = 180,
+          width = 157,
+          height = 274,
+          visible = true,
+          properties = {}
         }
       }
     }

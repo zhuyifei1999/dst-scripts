@@ -1679,6 +1679,8 @@ function Tune(overrides)
         SEWINGKIT_USES = 5,
         SEWINGKIT_REPAIR_VALUE = total_day_time*5,
 
+        SEWING_TAPE_REPAIR_VALUE = total_day_time*5,
+
         RABBIT_CARROT_LOYALTY = seg_time*8,
         RABBIT_POLITENESS_LOYALTY_BONUS = seg_time * 4,
         BUNNYMAN_DAMAGE = 40,
@@ -2476,6 +2478,8 @@ function Tune(overrides)
         STALKER_EPICSCARE_RANGE = 10,
 
         STALKER_BLOOM_DECAY = 5,
+
+        THURIBLE_FUEL_MAX = (night_time + dusk_time) * 3,
 
         VOTE_PASSED_SQUELCH_TIME = 0,
         VOTE_FAILED_SQUELCH_TIME = 30,

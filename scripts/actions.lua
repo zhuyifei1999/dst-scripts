@@ -290,6 +290,12 @@ ACTIONS.REPAIR.fn = function(act)
     end
 end
 
+ACTIONS.SEW.strfn = function(act)
+    return act.invobject ~= nil
+        and (act.invobject:HasTag("tape") and "PATCH")
+        or nil
+end
+
 ACTIONS.SEW.fn = function(act)
     if act.target ~= nil and
         act.invobject ~= nil and

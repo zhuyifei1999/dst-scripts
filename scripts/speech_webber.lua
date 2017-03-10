@@ -1211,6 +1211,8 @@ return {
 			COMPLETE = "That looks real good!",
         },
         STALKER = "I don't think it's friendly.",
+        THURIBLE = "It gets really hot.",
+        ATRIUM_OVERGROWTH = "We never learned those letters.",
 		FROG =
 		{
 			DEAD = "A hop too far.",
@@ -1658,6 +1660,7 @@ return {
 		SEEDS = "A small life trapped within. My sympathies.",
 		SEEDS_COOKED = "Their growing days are over.",
 		SEWING_KIT = "Mum used to handle all of our sewing.",
+		SEWING_TAPE = "It's sticky, like a web.",
 		SHOVEL = "Maybe we can tunnel our way out?",
 		SILK = "It's so smooth!",
 		SKELETON = "Hello? Are you alright?",

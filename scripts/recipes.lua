@@ -84,7 +84,7 @@ Recipe("balloons_empty", {Ingredient("waterballoon", 4)}, RECIPETABS.SURVIVAL, T
 Recipe("compass", {Ingredient("goldnugget", 1), Ingredient("flint", 1)}, RECIPETABS.SURVIVAL,  TECH.NONE)
 Recipe("heatrock", {Ingredient("rocks", 10),Ingredient("pickaxe", 1), Ingredient("flint", 3)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_TWO)
 Recipe("giftwrap", {Ingredient("papyrus", 1), Ingredient("petals", 1)}, RECIPETABS.SURVIVAL, TECH.WINTERS_FEAST, nil, nil, nil, 4)
-Recipe("bundlewrap", {Ingredient("waxpaper", 1), Ingredient("rope", 1)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_ONE)
+Recipe("bundlewrap", {Ingredient("waxpaper", 1), Ingredient("rope", 1)}, RECIPETABS.SURVIVAL, TECH.LOST)
 Recipe("backpack", {Ingredient("cutgrass", 4), Ingredient("twigs", 4)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_ONE)
 Recipe("candybag", {Ingredient("cutgrass", 6)}, RECIPETABS.SURVIVAL, TECH.HALLOWED_NIGHTS)
 Recipe("piggyback", {Ingredient("pigskin", 4), Ingredient("silk", 6), Ingredient("rope", 2)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_TWO)

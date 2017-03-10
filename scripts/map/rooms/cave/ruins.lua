@@ -127,6 +127,10 @@ bgwilds = {
     value = GROUND.MUD,
     tags = {"Hutch_Fishbowl"},    
     contents =  {
+        countprefabs=
+        {
+            cave_hole = function() return math.random(2) - 1 end,
+        },
         distributepercent = 0.15,
         distributeprefabs=
         {
@@ -179,6 +183,10 @@ AddRoom("RuinedCity", {-- Maze used to define room connectivity
     tags = {"Maze", "Nightmare"},
     internal_type = NODE_INTERNAL_CONNECTION_TYPE.EdgeCentroid,
     contents =  {
+        countprefabs=
+        {
+            cave_hole = function() return math.random() < 0.25 and 1 or 0 end,
+        },
         distributepercent = 0.09,
         distributeprefabs=
         {
@@ -381,6 +389,11 @@ bgsacred = {
     value = GROUND.BRICK,
     tags = {"Nightmare"},
     contents =  {
+        countprefabs=
+        {
+            cave_hole = 1,
+        },
+
         distributepercent = 0.03,
         distributeprefabs=
         {
@@ -507,6 +520,10 @@ AddRoom("AtriumMazeEntrance", {
     value = GROUND.MUD,
     tags = {"MazeEntrance", "RoadPoison", "Hutch_Fishbowl"},
     contents =  {
+        countprefabs=
+        {
+            cave_hole = 1,
+        },
         distributepercent = .2,
         distributeprefabs=
         {

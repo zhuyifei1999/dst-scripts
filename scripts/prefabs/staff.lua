@@ -12,6 +12,10 @@ local prefabs =
     "stafflight",
     "staffcoldlight",
     "cutgrass",
+    "sand_puff_large_front",
+    "sand_puff_large_back",
+    "splash_ocean",
+    "collapse_small",
 }
 
 ---------RED STAFF---------
@@ -306,15 +310,22 @@ local function onblink(staff, pos, caster)
     staff.components.finiteuses:Use(1) 
 end
 
+local function NoHoles(pt)
+    return not TheWorld.Map:IsPointNearHole(pt)
+end
+
 local function blinkstaff_reticuletargetfn()
     local player = ThePlayer
     local rotation = player.Transform:GetRotation() * DEGREES
     local pos = player:GetPosition()
     for r = 13, 1, -1 do
         local numtries = 2 * PI * r
-        local pt = FindWalkableOffset(pos, rotation, r, numtries)
-        if pt ~= nil then
-            return pt + pos
+        local offset = FindWalkableOffset(pos, rotation, r, numtries, false, true, NoHoles)
+        if offset ~= nil then
+            pos.x = pos.x + offset.x
+            pos.y = 0
+            pos.z = pos.z + offset.z
+            return pos
         end
     end
 end
@@ -325,11 +336,15 @@ local function onhauntorange(inst)
         if target ~= nil then
             local pos = target:GetPosition()
             local start_angle = math.random() * 2 * PI
-            local offset = FindWalkableOffset(pos, start_angle, math.random(8, 12), 60, false, true)
-            local pt = pos + offset
-            inst.components.blinkstaff:Blink(pt, target)
-            inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
-            return true
+            local offset = FindWalkableOffset(pos, start_angle, math.random(8, 12), 16, false, true, NoHoles)
+            if offset ~= nil then
+                pos.x = pos.x + offset.x
+                pos.y = 0
+                pos.z = pos.z + offset.z
+                inst.components.blinkstaff:Blink(pos, target)
+                inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
+                return true
+            end
         end
     end
     return false
@@ -528,7 +543,7 @@ local function onhauntlight(inst)
     if math.random() <= TUNING.HAUNT_CHANCE_RARE then
         local pos = inst:GetPosition()
         local start_angle = math.random() * 2 * PI
-        local offset = FindWalkableOffset(pos, start_angle, math.random(3, 12), 60, false, true)
+        local offset = FindWalkableOffset(pos, start_angle, math.random(3, 12), 60, false, true, NoHoles)
         if offset ~= nil then
             createlight(inst, nil, pos + offset)
             inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE

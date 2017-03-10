@@ -1,136 +1,120 @@
-local smoke_texture = "fx/smoke.tex"
-local shader = "shaders/vfx_particle.ksh"
+local MakeTorchFire = require("prefabs/torchfire_common")
 
-local colour_envelope_name_smoke = "torch_spooky_colourenvelope_smoke"
-local scale_envelope_name_smoke = "torch_spooky_scaleenvelope_smoke"
+local SMOKE_TEXTURE = "fx/smoke.tex"
+
+local SHADER = "shaders/vfx_particle.ksh"
+
+local COLOUR_ENVELOPE_NAME_SMOKE = "torch_spooky_colourenvelope_smoke"
+local SCALE_ENVELOPE_NAME_SMOKE = "torch_spooky_scaleenvelope_smoke"
 
 local assets =
 {
-    Asset( "IMAGE", smoke_texture ),
-    Asset( "SHADER", shader ),
+    Asset("IMAGE", SMOKE_TEXTURE),
+    Asset("SHADER", SHADER),
 }
 
+--------------------------------------------------------------------------
 
-local function IntColour( r, g, b, a )
-    return { r / 255.0, g / 255.0, b / 255.0, a / 255.0 }
+local function IntColour(r, g, b, a)
+    return { r / 255, g / 255, b / 255, a / 255 }
 end
 
-local init = false
 local function InitEnvelope()
-    if EnvelopeManager and not init then
-        init = true
-        EnvelopeManager:AddColourEnvelope(
-            colour_envelope_name_smoke,
-            {
-				{ 0,    IntColour( 30, 22, 15, 0 ) },
-				{ .3,   IntColour( 20, 18, 15, 100 ) },
-				{ .52,  IntColour( 15, 15, 15, 20 ) },
-                { 1,    IntColour( 15, 15, 15, 0 ) },
-            } )
+    EnvelopeManager:AddColourEnvelope(
+        COLOUR_ENVELOPE_NAME_SMOKE,
+        {
+            { 0,    IntColour(30, 22, 15, 0) },
+            { .3,   IntColour(20, 18, 15, 100) },
+            { .52,  IntColour(15, 15, 15, 20) },
+            { 1,    IntColour(15, 15, 15, 0) },
+        }
+    )
 
-        local smoke_max_scale = 2.5
-        EnvelopeManager:AddVector2Envelope(
-            scale_envelope_name_smoke,
-            {
-                { 0,    { smoke_max_scale * 0.4, smoke_max_scale * 0.4} },
-				{ .50,  { smoke_max_scale * 0.6, smoke_max_scale * 0.6} },
-				{ .65,  { smoke_max_scale * 0.9, smoke_max_scale * 0.9} },
-                { 1,    { smoke_max_scale, smoke_max_scale} },
-            } )
-	end
+    local smoke_max_scale = 2.5
+    EnvelopeManager:AddVector2Envelope(
+        SCALE_ENVELOPE_NAME_SMOKE,
+        {
+            { 0,    { smoke_max_scale * .4, smoke_max_scale * .4 } },
+            { .50,  { smoke_max_scale * .6, smoke_max_scale * .6 } },
+            { .65,  { smoke_max_scale * .9, smoke_max_scale * .9 } },
+            { 1,    { smoke_max_scale, smoke_max_scale } },
+        }
+    )
+
+    InitEnvelope = nil
+    IntColour = nil
 end
 
-local smoke_max_lifetime = 1.1
-local fire_max_lifetime = 0.9
+--------------------------------------------------------------------------
 
-local function fn()
-    local inst = CreateEntity()
+local SMOKE_MAX_LIFETIME = 1.1
+local FIRE_MAX_LIFETIME = .9
 
-    inst.entity:AddTransform()
-    inst.entity:AddLight()
-    inst.entity:AddNetwork()
+local function emit_smoke_fn(effect, sphere_emitter)
+    --SMOKE
+    local vx, vy, vz = .01 * UnitRand(), .08 + .02 * UnitRand(), .01 * UnitRand()
+    local lifetime = SMOKE_MAX_LIFETIME * (.9 + UnitRand() * .1)
+    local px, py, pz = sphere_emitter()
+    local uv_offset = math.random(0, 3) * .25
 
-    InitEnvelope()
+    effect:AddParticleUV(
+        0,
+        lifetime,           -- lifetime
+        px, py + .2, pz,    -- position
+        vx, vy, vz,         -- velocity
+        uv_offset, 0        -- uv offset
+    )
+end
+
+--------------------------------------------------------------------------
+
+local function common_postinit(inst)
+    --Dedicated server does not need to spawn local particle fx
+    if TheNet:IsDedicated() then
+        return
+    elseif InitEnvelope ~= nil then
+        InitEnvelope()
+    end
+
+    -----------------------------------------------------
 
     local effect = inst.entity:AddVFXEffect()
-    effect:InitEmitters( 1 )
-    
+    effect:InitEmitters(1)
+
     --SMOKE
-    effect:SetRenderResources( 0, smoke_texture, shader )
-    effect:SetMaxNumParticles( 0, 128 )
-    effect:SetMaxLifetime( 0, smoke_max_lifetime )
-    effect:SetColourEnvelope( 0, colour_envelope_name_smoke )
-    effect:SetScaleEnvelope( 0, scale_envelope_name_smoke )
-    effect:SetBlendMode( 0, BLENDMODE.Premultiplied )
-    effect:EnableBloomPass( 0, true )
-    effect:SetUVFrameSize( 0, 0.25, 1 )
-    effect:SetSortOrder( 0, 0 )
-    effect:SetSortOffset( 0, 1 )
-    effect:SetRadius( 0, 3 ) --only needed on a single emitter
-    
-    inst.fx_offset = -125
+    effect:SetRenderResources(0, SMOKE_TEXTURE, SHADER)
+    effect:SetMaxNumParticles(0, 128)
+    effect:SetMaxLifetime(0, SMOKE_MAX_LIFETIME)
+    effect:SetColourEnvelope(0, COLOUR_ENVELOPE_NAME_SMOKE)
+    effect:SetScaleEnvelope(0, SCALE_ENVELOPE_NAME_SMOKE)
+    effect:SetBlendMode(0, BLENDMODE.Premultiplied)
+    effect:EnableBloomPass(0, true)
+    effect:SetUVFrameSize(0, .25, 1)
+    effect:SetSortOrder(0, 0)
+    effect:SetSortOffset(0, 1)
+    effect:SetRadius(0, 3) --only needed on a single emitter
 
     -----------------------------------------------------
     local tick_time = TheSim:GetTickTime()
-    
+
     local smoke_desired_pps = 80
     local smoke_particles_per_tick = smoke_desired_pps * tick_time
     local smoke_num_particles_to_emit = -50 --start delay
-    
-    local sphere_emitter = CreateSphereEmitter(0.05)
 
-    
-    local function emit_smoke_fn()
-		--SMOKE
-        local vx, vy, vz = 0.01 * UnitRand(), 0, 0.01 * UnitRand()
-        vy = vy + 0.08 + 0.02 * UnitRand()
-        local lifetime = smoke_max_lifetime * (0.9 + UnitRand() * 0.1)
-        local px, py, pz = sphere_emitter()
-		py = py + 0.2
+    local sphere_emitter = CreateSphereEmitter(.05)
 
-		local uv_offset = math.random(0, 3) * 0.25
-
-        effect:AddParticleUV(
-            0,
-            lifetime,           -- lifetime
-            px, py, pz,         -- position
-            vx, vy, vz,         -- velocity
-            uv_offset, 0        -- uv offset
-        )       
-    end
-    
-    
-    local function updateFunc()
-		--SMOKE
+    EmitterManager:AddEmitter(inst, nil, function()
+        --SMOKE
         while smoke_num_particles_to_emit > 1 do
-            emit_smoke_fn()
+            emit_smoke_fn(effect, sphere_emitter)
             smoke_num_particles_to_emit = smoke_num_particles_to_emit - 1
         end
         smoke_num_particles_to_emit = smoke_num_particles_to_emit + smoke_particles_per_tick
-    end
-
-    EmitterManager:AddEmitter(inst, nil, updateFunc)
-	
-	
-	
-    inst:AddTag("FX")
-    inst:AddTag("playerlight")
-
-    inst.Light:Enable(true)
-    inst.Light:SetIntensity(.75)
-    inst.Light:SetColour(197 / 255, 197 / 255, 50 / 255)
-    inst.Light:SetFalloff(0.5)
-    inst.Light:SetRadius(2)
-
-    inst.entity:SetPristine()
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
-
-    inst.persists = false
-
-    return inst
+    end)
 end
 
-return Prefab("torchfire_spooky", fn, assets)
+local function master_postinit(inst)
+    inst.fx_offset = -125
+end
+
+return MakeTorchFire("torchfire_spooky", assets, nil, common_postinit, master_postinit)

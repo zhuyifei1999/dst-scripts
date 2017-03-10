@@ -1356,6 +1356,8 @@ return {
 			COMPLETE = "What horrors have we resurrected here today?",
         },
         STALKER = "Not even death is permanent.",
+        THURIBLE = "An ember that burns with the stuff of nightmares.",
+        ATRIUM_OVERGROWTH = "Scrawlings of a tongue lost to time.",
 		FROG =
 		{
 			DEAD = "Life is small and short.",
@@ -1693,6 +1695,7 @@ return {
 		SEEDS = "Life, or at least the promise of it.",
 		SEEDS_COOKED = "The fire has toasted their life away.",
 		SEWING_KIT = "Another implement for staving off the inevitable decay.",
+		SEWING_TAPE = "It doesn't mend the hole... merely masks it.",
 		SHOVEL = "What terrible secrets might be uncovered with this?",
 		SILK = "So slippery and fine.",
 		SKELETON = "I envy your escape.",

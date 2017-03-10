@@ -102,7 +102,7 @@ local function EatFoodAction(inst)
 
     --Get the stuff around you and store it in ents
     local pt = inst:GetPosition()
-    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, SEE_FOOD_DIST)  
+    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, SEE_FOOD_DIST, nil, {"outofreach"})  
 
 
     --If you're not wearing a hat, look for a hat to wear!

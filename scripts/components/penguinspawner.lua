@@ -280,6 +280,7 @@ local function EstablishColony(loc)
                         
                         local icerock = SpawnPrefab("rock_ice")
                         icerock.Transform:SetPosition(pos.x + offset.x, pos.y + offset.y, pos.z + offset.z)
+                        icerock.remove_on_dryup = true
                     end
                 end
                 placement_attempts = placement_attempts + 1

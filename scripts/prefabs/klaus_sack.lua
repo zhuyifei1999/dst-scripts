@@ -30,6 +30,7 @@ local giant_loot1 =
     "dragon_scales",
     "hivehat",
     "shroom_skin",
+    "mandrake",
 }
 
 local giant_loot2 =
@@ -41,6 +42,7 @@ local giant_loot2 =
     "mushroom_light2_blueprint",
     "mushroom_light_blueprint",
     "townportal_blueprint",
+    "bundlewrap_blueprint",
 }
 
 local giant_loot3 =

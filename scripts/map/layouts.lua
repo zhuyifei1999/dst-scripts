@@ -664,6 +664,10 @@ local ExampleLayout =
 			layout_position = LAYOUT_POSITION.CENTER
 		}),
 	["MilitaryEntrance"] = StaticLayout.Get("map/static_layouts/military_entrance", {			
+			areas = 
+			{
+				cave_hole_area = function(area) return {"cave_hole"} end,
+			},
 			start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
 			fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
 			layout_position = LAYOUT_POSITION.CENTER}),

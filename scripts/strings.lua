@@ -116,7 +116,11 @@ STRINGS =
         GNAW = "Gnaw",
         READ = "Read",
         MAKEBALLOON = "Inflate",
-        SEW = "Sew",
+        SEW =
+        {
+            GENERIC = "Sew",
+            PATCH = "Patch",
+        },
         GIVE =
         {
             GENERIC  = "Give",
@@ -392,6 +396,7 @@ STRINGS =
         SPIDER_HIDER = "Cave Spider",
         SPIDER_SPITTER = "Spitter",
         SEWING_KIT = "Sewing Kit",
+        SEWING_TAPE = "Trusty Tape",
         RED_MUSHROOM = "Red Mushroom",
         RED_CAP = "Red Cap",
         RED_CAP_COOKED = "Cooked Red Cap",
@@ -728,6 +733,7 @@ STRINGS =
         FOSSIL_STALKER = "Odd Skeleton",
         FOSSILSPIKE = "Fossil Cage",
         STALKER = "Reanimated Skeleton",
+        THURIBLE = "Shadow Thurible",
         HONEY = "Honey",
         HONEYCOMB = "Honeycomb",
         BEESWAX = "Beeswax",
@@ -1496,6 +1502,7 @@ STRINGS =
         TURF_ROAD = "Build your own road to nowhere.",
         TURF_DRAGONFLY = "Quell the spread of fire.",
         SEWING_KIT = "Fix up degraded clothing items.",
+        SEWING_TAPE = "Patch up degraded clothing items.",
         NIGHTLIGHT = "Light the night with your dreams.",
         NIGHTSWORD = "Lucid dreaming damage.",
         NIGHTSTICK = "Morning light for a nighttime fight.",

@@ -116,12 +116,11 @@ local function pickup(inst, owner)
             owner.components.inventory:CanAcceptCount(v, 1) > 0 then
 
             --Amulet will only ever pick up items one at a time. Even from stacks.
-            local fx = SpawnPrefab("small_puff")
-            fx.Transform:SetPosition(v.Transform:GetWorldPosition())
-            fx.Transform:SetScale(.5, .5, .5)
+            SpawnPrefab("sand_puff").Transform:SetPosition(v.Transform:GetWorldPosition())
 
             inst.components.finiteuses:Use(1)
 
+            local v_pos = v:GetPosition()
             if v.components.stackable ~= nil then
                 v = v.components.stackable:Get()
             end
@@ -129,7 +128,7 @@ local function pickup(inst, owner)
             if v.components.trap ~= nil and v.components.trap:IsSprung() then
                 v.components.trap:Harvest(owner)
             else
-                owner.components.inventory:GiveItem(v, nil, v:GetPosition())
+                owner.components.inventory:GiveItem(v, nil, v_pos)
             end
             return
         end
@@ -431,7 +430,7 @@ end
 return Prefab("amulet", red, assets),
     Prefab("blueamulet", blue, assets),
     Prefab("purpleamulet", purple, assets),
-    Prefab("orangeamulet", orange, assets),
+    Prefab("orangeamulet", orange, assets, {"sand_puff"}),
     Prefab("greenamulet", green, assets),
     Prefab("yellowamulet", yellow, assets, { "yellowamuletlight" }),
     Prefab("yellowamuletlight", yellowlightfn)

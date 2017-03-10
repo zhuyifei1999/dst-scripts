@@ -17,11 +17,14 @@ local function fn()
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
+	inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
     inst.AnimState:SetBuild("atrium_overgrowth")
     inst.AnimState:SetBank("atrium_overgrowth")
     inst.AnimState:PlayAnimation("idle")
+
+	inst.MiniMapEntity:SetIcon("atrium_overgrowth.png")
 
     MakeObstaclePhysics(inst, 1.5)
 

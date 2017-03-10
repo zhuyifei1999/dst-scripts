@@ -28,7 +28,7 @@ local STAGES = {
         animation = "dryup",
         showrock = false,
         work = -1,
-        remove = true,
+        isdriedup = true,
     },
     {
         name = "empty",
@@ -84,8 +84,8 @@ local function OnStageDirty(inst)
             if stagedata.name == "empty" then
                 inst._puddle.AnimState:PushAnimation("idle", true)
             end
-            
-			if ismelt and not inst:IsAsleep() and not stagedata.remove then
+                        
+			if ismelt and not inst:IsAsleep() and not stagedata.isdriedup then
 				local fx = SpawnPrefab("ice_splash")
 				fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
 				fx.AnimState:PlayAnimation(stagedata.animation)
@@ -121,19 +121,32 @@ local function SetStage(inst, stage, source)
         else
             return
         end
+        
+		if inst.stage == "dryup" then
+			local x, y, z = inst.Transform:GetWorldPosition()
+			if #(TheSim:FindEntities(x, y, z, 1.1, nil, {"locomotor", "FX"})) > 0 then
+				return
+			end
+		end        
     end
-    -- otherwise just set the stage to the target!
 
+    -- otherwise just set the stage to the target!
     inst.stage = STAGES[targetstage].name
     SerializeStage(inst, targetstage, source)
 
-	if STAGES[targetstage].remove then
-		inst.presists = false
-		if inst:IsAsleep() then
-			inst:Remove()
-		else
-			inst:DoTaskInTime(2, inst.Remove)
+	if STAGES[targetstage].isdriedup then
+		if inst.remove_on_dryup then
+			inst.presists = false
+			if inst:IsAsleep() then
+				inst:Remove()
+			else
+				inst:DoTaskInTime(2, inst.Remove)
+			end
 		end
+
+		inst:AddTag("CLASSIFIED")
+	elseif currentstage ~= nil and STAGES[currentstage].isdriedup then
+		inst:RemoveTag("CLASSIFIED")
 	end
 
     if STAGES[targetstage].showrock then
@@ -249,9 +262,12 @@ end
 
 local function onsave(inst, data)
     data.stage = inst.stage
+    data.remove_on_dryup = inst.remove_on_dryup
 end
 
 local function onload(inst, data)
+    inst.remove_on_dryup = data ~= nil and data.remove_on_dryup or nil
+
     if data ~= nil and data.stage ~= nil then
         while inst.stage ~= data.stage do
             SetStage(inst, data.stage)
@@ -346,6 +362,8 @@ local function rock_ice_fn()
     inst.threshold1 = Lerp(.4,.6,math.random())
     inst.threshold2 = Lerp(.65,.85,math.random())
     inst.threshold3 = Lerp(.9,1.1,math.random())
+
+	inst.remove_on_dryup = nil
 
     inst:ListenForEvent("firemelt", StartFireMelt)
     inst:ListenForEvent("stopfiremelt", StopFireMelt)

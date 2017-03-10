@@ -11,6 +11,26 @@ local prefabs =
     "lanternlight",
 }
 
+local function DoTurnOffSound(inst, owner)
+    inst._soundtask = nil
+    (owner ~= nil and owner:IsValid() and owner.SoundEmitter or inst.SoundEmitter):PlaySound("dontstarve/wilson/lantern_off")
+end
+
+local function PlayTurnOffSound(inst)
+    if inst._soundtask == nil and inst:GetTimeAlive() > 0 then
+        inst._soundtask = inst:DoTaskInTime(0, DoTurnOffSound, inst.components.inventoryitem.owner)
+    end
+end
+
+local function PlayTurnOnSound(inst)
+    if inst._soundtask ~= nil then
+        inst._soundtask:Cancel()
+        inst._soundtask = nil
+    elseif not POPULATING then
+        inst._light.SoundEmitter:PlaySound("dontstarve/wilson/lantern_on")
+    end
+end
+
 local function fuelupdate(inst)
     if inst._light ~= nil then
         local fuelpercent = inst.components.fueled:GetPercent()
@@ -52,6 +72,7 @@ local function turnon(inst)
             inst._light._lantern = inst
             inst:ListenForEvent("onremove", onremovelight, inst._light)
             fuelupdate(inst)
+            PlayTurnOnSound(inst)
         end
         inst._light.entity:SetParent((owner or inst).entity)
 
@@ -62,11 +83,6 @@ local function turnon(inst)
         end
 
         inst.components.machine.ison = true
-
-        inst.SoundEmitter:PlaySound("dontstarve/wilson/lantern_on")
-        if not inst.SoundEmitter:PlayingSound("loop") then
-            inst.SoundEmitter:PlaySound("dontstarve/wilson/lantern_LP", "loop")
-        end
 
         inst.components.inventoryitem:ChangeImageName("lantern_lit")
     end
@@ -79,6 +95,7 @@ local function turnoff(inst)
 
     if inst._light ~= nil then
         inst._light:Remove()
+        PlayTurnOffSound(inst)
     end
 
     inst.AnimState:PlayAnimation("idle_off")
@@ -89,15 +106,15 @@ local function turnoff(inst)
 
     inst.components.machine.ison = false
 
-    inst.SoundEmitter:KillSound("loop")
-    inst.SoundEmitter:PlaySound("dontstarve/wilson/lantern_off")
-
     inst.components.inventoryitem:ChangeImageName("lantern")
 end
 
 local function OnRemove(inst)
     if inst._light ~= nil then
         inst._light:Remove()
+    end
+    if inst._soundtask ~= nil then
+        inst._soundtask:Cancel()
     end
 end
 
@@ -151,11 +168,26 @@ local function ontakefuel(inst)
     end
 end
 
+--------------------------------------------------------------------------
+
+local function OnLightWake(inst)
+    if not inst.SoundEmitter:PlayingSound("loop") then
+        inst.SoundEmitter:PlaySound("dontstarve/wilson/lantern_LP", "loop")
+    end
+end
+
+local function OnLightSleep(inst)
+    inst.SoundEmitter:KillSound("loop")
+end
+
+--------------------------------------------------------------------------
+
 local function lanternlightfn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
     inst.entity:AddLight()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
     inst:AddTag("FX")
@@ -169,6 +201,9 @@ local function lanternlightfn()
     end
 
     inst.persists = false
+
+    inst.OnEntityWake = OnLightWake
+    inst.OnEntitySleep = OnLightSleep
 
     return inst
 end

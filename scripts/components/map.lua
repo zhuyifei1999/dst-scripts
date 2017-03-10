@@ -45,12 +45,21 @@ function Map:RegisterDeployExtraSpacing(spacing)
     DEPLOY_EXTRA_SPACING = math.max(spacing, DEPLOY_EXTRA_SPACING)
 end
 
+function Map:IsPointNearHole(pt, range)
+    range = range or .5
+    for i, v in ipairs(TheSim:FindEntities(pt.x, 0, pt.z, DEPLOY_EXTRA_SPACING + range, { "groundhole" })) do
+        local radius = v.Physics:GetRadius() + range
+        if v:GetDistanceSqToPoint(pt) < radius * radius then
+            return true
+        end
+    end
+    return false
+end
+
 function Map:IsDeployPointClear(pt, inst, min_spacing)
     local min_spacing_sq = min_spacing * min_spacing
-    local ents = TheSim:FindEntities(pt.x, 0, pt.z, math.max(DEPLOY_EXTRA_SPACING, min_spacing), nil, DEPLOY_IGNORE_TAGS)
-    for k, v in pairs(ents) do
+    for i, v in ipairs(TheSim:FindEntities(pt.x, 0, pt.z, math.max(DEPLOY_EXTRA_SPACING, min_spacing), nil, DEPLOY_IGNORE_TAGS)) do
         if v ~= inst and
-            v.entity:IsValid() and
             v.entity:IsVisible() and
             v.components.placer == nil and
             v.entity:GetParent() == nil and
@@ -89,7 +98,7 @@ function Map:CanPlacePrefabFilteredAtPoint(x, y, z, prefab)
     end
 
     if terrain.filter[prefab] ~= nil then
-        for i,v in ipairs(terrain.filter[prefab]) do
+        for i, v in ipairs(terrain.filter[prefab]) do
             if tile == v then
                 -- can't grow on this terrain
                 return false

@@ -90,8 +90,9 @@ local function SpawnHand(player, params)
         local result_offset = FindValidPositionByFan(angle, radius, 12, function(offset)
             local x1 = x + offset.x
             local z1 = z + offset.z
-            return TheSim:GetLightAtPoint(x1, 0, z1) <= TUNING.DARK_SPAWNCUTOFF and
-                _map:IsPassableAtPoint(x1, 0, z1)
+            return TheSim:GetLightAtPoint(x1, 0, z1) <= TUNING.DARK_SPAWNCUTOFF
+                and _map:IsPassableAtPoint(x1, 0, z1)
+                and not _map:IsPointNearHole(Vector3(x1, 0, z1))
         end)
         if result_offset ~= nil then
             local ent = SpawnPrefab("shadowhand")

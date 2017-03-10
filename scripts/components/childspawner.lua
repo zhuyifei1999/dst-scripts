@@ -386,6 +386,10 @@ function ChildSpawner:LoadPostPass(newents, savedata)
     end
 end
 
+local function NoHoles(pt)
+    return not TheWorld.Map:IsPointNearHole(pt)
+end
+
 -- This should only be called interally
 function ChildSpawner:DoSpawnChild(target, prefab, radius)
     local pos = self.inst:GetPosition()
@@ -394,22 +398,21 @@ function ChildSpawner:DoSpawnChild(target, prefab, radius)
     if self.inst.Physics then
         rad = rad + self.inst.Physics:GetRadius()
     end
-    local offset = FindWalkableOffset(pos, start_angle, rad, 8, false)
+    local offset = FindWalkableOffset(pos, start_angle, rad, 8, false, true, NoHoles)
     if offset == nil then
         return
     end
 
-    pos = pos + offset
-
-    local childtospawn = prefab or self.childname
-
-    if self.rarechild and math.random() < self.rarechildchance then
-        childtospawn = self.rarechild
-    end
-
-    local child = SpawnPrefab(childtospawn)
+    local child =
+        SpawnPrefab(
+            self.rarechild ~= nil and
+            math.random() < self.rarechildchance and
+            self.rarechild or
+            prefab or
+            self.childname
+        )
     if child ~= nil then
-        child.Transform:SetPosition(pos:Get())
+        child.Transform:SetPosition(pos.x + offset.x, 0, pos.z + offset.z)
         if target ~= nil and child.components.combat ~= nil then
             child.components.combat:SetTarget(target)
         end

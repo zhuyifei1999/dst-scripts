@@ -1358,6 +1358,8 @@ return {
             COMPLETE = "Is look good! Mighty!",
         },
         STALKER = "Skeleton should not be walking!",
+        THURIBLE = "Is for monster control.",
+        ATRIUM_OVERGROWTH = "Wolfgang cannot read.",
         FROG =
         {
             DEAD = "Is delicacy in my country.",
@@ -1688,6 +1690,7 @@ return {
         SEEDS = "Too small to eat.",
         SEEDS_COOKED = "Fire make bigger, can eat now.",
         SEWING_KIT = "Is pokey!",
+        SEWING_TAPE = "Is sticky and good for mending!",
         SHOVEL = "Dirt spoon!",
         SILK = "Is too fancy.",
         SKELETON = "Not enough muscle.",

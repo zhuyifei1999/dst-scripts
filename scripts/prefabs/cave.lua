@@ -78,6 +78,7 @@ local prefabs =
     "atrium_rubble",
     "atrium_idol", -- deprecated
     "atrium_overgrowth",
+    "cave_hole",
 }
 
 local monsters =
@@ -184,10 +185,6 @@ local function master_postinit(inst)
 
     --anr update retrofitting
     inst:AddComponent("retrofitcavemap_anr")
-
-    -- inst:AddComponent("periodicthreat")
-    -- local threats = require("periodicthreats")
-    -- inst.components.periodicthreat:AddThreat("WORM", threats["WORM"])
 
     return inst
 end

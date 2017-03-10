@@ -19,6 +19,7 @@ local function fn()
 	inst.entity:AddTransform()
 	inst.entity:AddAnimState()
     inst.entity:AddLight()
+	inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
     MakeObstaclePhysics(inst, .45)
@@ -26,6 +27,8 @@ local function fn()
     inst.AnimState:SetBank("atrium_light")
     inst.AnimState:SetBuild("atrium_light")
     inst.AnimState:PlayAnimation("idle", true)
+
+	inst.MiniMapEntity:SetIcon("atrium_light.png")
 
     inst.Light:Enable(false)
     inst.Light:SetRadius(8.0)

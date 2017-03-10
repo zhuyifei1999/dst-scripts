@@ -2,6 +2,12 @@ local function onnewobjectfn(inst, obj)
     inst:ListenForEvent("onremove", function(obj)
         RemoveByValue(inst.components.objectspawner.objects, obj)
     end, obj)
+    
+    if inst.listenforprefabsawp then
+		inst:ListenForEvent("onprefabswaped", function(_, data)
+			inst.components.objectspawner:TakeOwnership(data.newobj)
+		end, obj)
+    end
 end
 
 local function tryspawn(inst)
@@ -34,7 +40,7 @@ local function onload(inst, data)
     end
 end
 
-local function MakeFn(obj, onrespawnfn)
+local function MakeFn(obj, onrespawnfn, data)
 	local fn = function()
 		local inst = CreateEntity()
 
@@ -57,18 +63,20 @@ local function MakeFn(obj, onrespawnfn)
 		inst.OnSave = onsave
 		inst.OnLoad = onload
 
+		inst.listenforprefabsawp = data ~= nil and data.listenforprefabsawp or nil
+
 		return inst
 	end
 	return fn
 end
 
-local function MakeRuinsRespawnerInst(obj, onrespawnfn)
-	return Prefab(obj.."_ruinsrespawner_inst", MakeFn(obj, onrespawnfn), nil, { obj, obj.."_spawner" })
+local function MakeRuinsRespawnerInst(obj, onrespawnfn, data)
+	return Prefab(obj.."_ruinsrespawner_inst", MakeFn(obj, onrespawnfn, data), nil, { obj, obj.."_spawner" })
 end
 
-local function MakeRuinsRespawnerWorldGen(obj, onrespawnfn)
+local function MakeRuinsRespawnerWorldGen(obj, onrespawnfn, data)
 	local function worldgenfn()
-		local inst = MakeFn(obj, onrespawnfn)()
+		local inst = MakeFn(obj, onrespawnfn, data)()
 
 		inst:SetPrefabName(obj.."_ruinsrespawner_inst")
 		

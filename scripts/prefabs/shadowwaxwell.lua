@@ -152,11 +152,15 @@ end
 
 --------------------------------------------------------------------------
 
+local function NoHoles(pt)
+    return not TheWorld.Map:IsPointNearHole(pt)
+end
+
 local function onbuilt(inst, builder)
     local theta = math.random() * 2 * PI
     local pt = builder:GetPosition()
     local radius = math.random(3, 6)
-    local offset = FindWalkableOffset(pt, theta, radius, 12, true)
+    local offset = FindWalkableOffset(pt, theta, radius, 12, true, true, NoHoles)
     if offset ~= nil then
         pt.x = pt.x + offset.x
         pt.z = pt.z + offset.z

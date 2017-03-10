@@ -674,13 +674,13 @@ local COMPONENT_ACTIONS =
     POINT = --args: inst, doer, pos, actions, right
     {
         blinkstaff = function(inst, doer, pos, actions, right)
-            if right and TheWorld.Map:IsAboveGroundAtPoint(pos:Get()) then
+            if right and TheWorld.Map:IsAboveGroundAtPoint(pos:Get()) and not TheWorld.Map:IsPointNearHole(pos) then
                 table.insert(actions, ACTIONS.BLINK)
             end
         end,
 
-        complexprojectile = function(inst, doer, target, actions, right)
-            if right then
+        complexprojectile = function(inst, doer, pos, actions, right)
+            if right and not TheWorld.Map:IsPointNearHole(pos) then
                 table.insert(actions, ACTIONS.TOSS)
             end
         end,
@@ -699,7 +699,8 @@ local COMPONENT_ACTIONS =
 
         spellcaster = function(inst, doer, pos, actions, right)
             if right and inst:HasTag("castonpoint") and
-                TheWorld.Map:IsAboveGroundAtPoint(pos:Get()) then
+                TheWorld.Map:IsAboveGroundAtPoint(pos:Get()) and
+                not TheWorld.Map:IsPointNearHole(pos) then
                 table.insert(actions, ACTIONS.CASTSPELL)
             end
         end,
@@ -720,7 +721,10 @@ local COMPONENT_ACTIONS =
         end,
 
         complexprojectile = function(inst, doer, target, actions, right)
-            if right then
+            if right and
+                not (doer.components.playercontroller ~= nil and
+                    doer.components.playercontroller.isclientcontrollerattached) and
+                not TheWorld.Map:IsPointNearHole(target:GetPosition()) then
                 table.insert(actions, ACTIONS.TOSS)
             end
         end,

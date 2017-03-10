@@ -16,15 +16,16 @@ local assets_forest =
 local prefabs_cave =
 {
     "shadowheart",
-    "fossil_piece_clean",
+    "fossil_piece",
     "fossilspike",
     "nightmarefuel",
+    "thurible",
 }
 
 local prefabs_forest =
 {
     "shadowheart",
-    "fossil_piece_clean",
+    "fossil_piece",
     "nightmarefuel",
     "stalker_bulb",
     "stalker_berry",
@@ -36,15 +37,15 @@ local brain = require("brains/stalkerbrain")
 
 SetSharedLootTable('stalker',
 {
-    {"shadowheart",         1.00},
-    {"fossil_piece_clean",  1.00},
-    {"fossil_piece_clean",  1.00},
-    {"fossil_piece_clean",  1.00},
-    {"fossil_piece_clean",  1.00},
-    {"fossil_piece_clean",  1.00},
-    {"fossil_piece_clean",  1.00},
-    {"fossil_piece_clean",  1.00},
-    {"fossil_piece_clean",  1.00},
+    {"shadowheart",     1.00},
+    {"fossil_piece",    1.00},
+    {"fossil_piece",    1.00},
+    {"fossil_piece",    1.00},
+    {"fossil_piece",    1.00},
+    {"fossil_piece",    1.00},
+    {"fossil_piece",    1.00},
+    {"fossil_piece",    1.00},
+    {"fossil_piece",    1.00},
 })
 
 --------------------------------------------------------------------------
@@ -268,7 +269,7 @@ local function SpawnSnare(inst, x, z, r, num, target)
     for theta = math.random() * dtheta, PI * 2, dtheta do
         local x1 = x + r * math.cos(theta)
         local z1 = z + r * math.sin(theta)
-        if map:IsPassableAtPoint(x1, 0, z1) then
+        if map:IsPassableAtPoint(x1, 0, z1) and not map:IsPointNearHole(Vector3(x1, 0, z1)) then
             local spike = SpawnPrefab("fossilspike")
             spike.Transform:SetPosition(x1, 0, z1)
 

@@ -174,6 +174,10 @@ local function OnRegisterMigrationPortal(inst, portal)
     inst:ListenForEvent("onremove", UnregisterMigrationPortal, portal)
 end
 
+local function NoHoles(pt)
+    return not TheWorld.Map:IsPointNearHole(pt)
+end
+
 local function GetDestinationPortalLocation(player)
     local portal = nil
     if player.migration.worldid ~= nil and player.migration.portalid ~= nil then
@@ -191,7 +195,7 @@ local function GetDestinationPortalLocation(player)
         local pos = portal:GetPosition()
         local start_angle = math.random() * PI * 2
         local rad = portal.Physics ~= nil and portal.Physics:GetRadius() + .5 or .5
-        local offset = FindWalkableOffset(pos, start_angle, rad, 8, false)
+        local offset = FindWalkableOffset(pos, start_angle, rad, 8, false, true, NoHoles)
 
         --V2C: Do this after caching physical values, since it might remove itself
         --     and spawn in a new "opened" version, making "portal" invalid.

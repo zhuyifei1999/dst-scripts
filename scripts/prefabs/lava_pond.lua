@@ -96,6 +96,52 @@ local function OnCollide(inst, other)
     end
 end
 
+--------------------------------------------------------------------------
+
+local function PushMusic(inst)
+    if ThePlayer == nil then
+        inst._playingmusic = false
+    elseif ThePlayer:IsNear(inst, inst._playingmusic and 30 or 20) then
+        inst._playingmusic = true
+        ThePlayer:PushEvent("triggeredevent", { name = "dragonfly" })
+    elseif inst._playingmusic and not ThePlayer:IsNear(inst, 40) then
+        inst._playingmusic = false
+    end
+end
+
+local function OnIsEngagedDirty(inst)
+    --Dedicated server does not need to trigger music
+    if not TheNet:IsDedicated() then
+        if not inst._isengaged:value() then
+            if inst._musictask ~= nil then
+                inst._musictask:Cancel()
+                inst._musictask = nil
+            end
+            inst._playingmusic = false
+        elseif inst._musictask == nil then
+            inst._musictask = inst:DoPeriodicTask(1, PushMusic, math.random())
+            PushMusic(inst)
+        end
+    end
+end
+
+local function OnDragonflyEngaged(inst, data)
+    local engaged = data.engaged and data.dragonfly ~= nil
+    if inst._isengaged:value() ~= engaged then
+        inst._isengaged:set(engaged)
+        OnIsEngagedDirty(inst)
+    end
+end
+
+--------------------------------------------------------------------------
+
+local function OnInit(inst)
+    inst:ListenForEvent("dragonflyengaged", OnDragonflyEngaged)
+    TheWorld:PushEvent("ms_registerlavapond", inst)
+end
+
+--------------------------------------------------------------------------
+
 local function fn()
     local inst = CreateEntity()
 
@@ -129,6 +175,10 @@ local function fn()
     inst.Light:SetIntensity(0.66)
     inst.Light:SetColour(235 / 255, 121 / 255, 12 / 255)
 
+    inst._isengaged = net_bool(inst.GUID, "lava_pond._isengaged", "isengageddirty")
+    inst._playingmusic = false
+    inst._musictask = nil
+
     inst.no_wet_prefix = true
 
     inst:SetDeployExtraSpacing(2)
@@ -136,6 +186,8 @@ local function fn()
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+        inst:ListenForEvent("isengageddirty", OnIsEngagedDirty)
+
         return inst
     end
 
@@ -161,6 +213,9 @@ local function fn()
 
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
+
+    --Delay registration until after our position is set
+    inst:DoTaskInTime(0, OnInit)
 
     return inst
 end

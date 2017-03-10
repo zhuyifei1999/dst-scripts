@@ -16,9 +16,7 @@ local function onequip(inst, owner)
     owner.AnimState:Show("ARM_carry")
     owner.AnimState:Hide("ARM_normal")
 
-    inst.SoundEmitter:PlaySound("dontstarve/wilson/lighter_LP", "torch")
-    inst.SoundEmitter:PlaySound("dontstarve/wilson/lighter_on")
-    inst.SoundEmitter:SetParameter("torch", "intensity", 1)
+    owner.SoundEmitter:PlaySound("dontstarve/wilson/lighter_on")
 
     if inst.fire == nil then
         inst.fire = SpawnPrefab("lighterfire")
@@ -37,8 +35,7 @@ local function onunequip(inst,owner)
     inst.components.burnable:Extinguish()
     owner.AnimState:Hide("ARM_carry")
     owner.AnimState:Show("ARM_normal")
-    inst.SoundEmitter:KillSound("torch")
-    inst.SoundEmitter:PlaySound("dontstarve/wilson/lighter_off")
+    owner.SoundEmitter:PlaySound("dontstarve/wilson/lighter_off")
 end
 
 local function onpocket(inst, owner)

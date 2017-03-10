@@ -476,26 +476,26 @@ local function MakeHat(name)
                 inst._light.entity:SetParent(owner.entity)
             end
             inst.components.fueled:StartConsuming()
-            inst.SoundEmitter:PlaySound("dontstarve/common/minerhatAddFuel")
+            local soundemitter = owner ~= nil and owner.SoundEmitter or inst.SoundEmitter
+            soundemitter:PlaySound("dontstarve/common/minerhatAddFuel")
         elseif owner ~= nil then
             onequip(inst, owner, "hat_miner_off")
         end
     end
 
     local function miner_turnoff(inst)
-        if inst.components.equippable ~= nil and inst.components.equippable:IsEquipped() then
-            local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner or nil
-            if owner ~= nil then
-                onequip(inst, owner, "hat_miner_off")
-            end
+        local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner or nil
+        if owner ~= nil and inst.components.equippable ~= nil and inst.components.equippable:IsEquipped() then
+            onequip(inst, owner, "hat_miner_off")
         end
         inst.components.fueled:StopConsuming()
-        inst.SoundEmitter:PlaySound("dontstarve/common/minerhatOut")
         if inst._light ~= nil then
             if inst._light:IsValid() then
                 inst._light:Remove()
             end
             inst._light = nil
+            local soundemitter = owner ~= nil and owner.SoundEmitter or inst.SoundEmitter
+            soundemitter:PlaySound("dontstarve/common/minerhatOut")
         end
     end
 

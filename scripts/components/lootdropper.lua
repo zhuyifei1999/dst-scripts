@@ -192,7 +192,7 @@ end
 
 local function SplashOceanLoot(loot, cb)
     if not (loot.components.inventoryitem ~= nil and loot.components.inventoryitem:IsHeld()) and
-        not loot:IsOnValidGround() then
+        (not loot:IsOnValidGround() or TheWorld.Map:IsPointNearHole(loot:GetPosition())) then
         SpawnPrefab("splash_ocean").Transform:SetPosition(loot.Transform:GetWorldPosition())
         if loot:HasTag("irreplaceable") then
             loot.Transform:SetPosition(FindSafeSpawnLocation(loot.Transform:GetWorldPosition()))

@@ -5,7 +5,7 @@ local assets =
 
 local prefabs =
 {
-    "fossil_piece_clean",
+    "fossil_piece",
     "collapse_small",
     "stalker",
     "stalker_forest",
@@ -72,7 +72,7 @@ end
 local function lootsetfn(lootdropper)
     local loot = {}
     for i = 1, lootdropper.inst.moundsize do
-        table.insert(loot, "fossil_piece_clean")
+        table.insert(loot, "fossil_piece")
     end
     lootdropper:SetLoot(loot)
 end

@@ -238,15 +238,17 @@ local function GetWaveAmounts()
 	end
 end
 
+local function NoHoles(pt)
+    return not TheWorld.Map:IsPointNearHole(pt)
+end
+
 local function GetSpawnPoint(pt)
-
-    local theta = math.random() * 2 * PI
-    local radius = SPAWN_DIST
-
-	local offset = FindWalkableOffset(pt, theta, radius, 12, true)
-	if offset then
-		return pt+offset
-	end
+    local offset = FindWalkableOffset(pt, math.random() * 2 * PI, SPAWN_DIST, 12, true, true, NoHoles)
+    if offset ~= nil then
+        offset.x = offset.x + pt.x
+        offset.z = offset.z + pt.z
+        return offset
+    end
 end
 
 local function GetSpecialSpawnChance()

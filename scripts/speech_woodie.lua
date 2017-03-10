@@ -1341,6 +1341,8 @@ return {
 			COMPLETE = "One hundred percent assembled beastie.",
         },
         STALKER = "It's a walking anatomy lesson.",
+        THURIBLE = "Someone's trying to give us a leg up.",
+        ATRIUM_OVERGROWTH = "It probably said something important. Oh well.",
 		FROG =
 		{
 			DEAD = "Ex-frog.",
@@ -1687,6 +1689,7 @@ return {
 		SEEDS = "Not trees.",
 		SEEDS_COOKED = "We call this \"lumberjack surprise\".",
 		SEWING_KIT = "I'm pretty good at sewing.",
+		SEWING_TAPE = "Makes me feel right at home.",
 		SHOVEL = "Dig a hole. Plant a tree!",
 		SILK = "Spiders give me the willies.",
 		SKELETON = "Sorry, friend.",

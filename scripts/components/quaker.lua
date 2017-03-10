@@ -305,8 +305,11 @@ local GetSpawnPoint = _ismastersim and function(pt, rad, minrad)
     minrad = minrad ~= nil and minrad > 0 and minrad * minrad or nil
 
     local result_offset = FindValidPositionByFan(theta, radius, 12, function(offset)
-        return _world.Map:IsAboveGroundAtPoint(pt.x + offset.x, 0, pt.z + offset.z)
+        local x = pt.x + offset.x
+        local z = pt.z + offset.z
+        return _world.Map:IsAboveGroundAtPoint(x, 0, z)
             and (minrad == nil or offset.x * offset.x + offset.z * offset.z >= minrad)
+            and not _world.Map:IsPointNearHole(Vector3(x, 0, z))
     end)
 
     return result_offset ~= nil and pt + result_offset or nil

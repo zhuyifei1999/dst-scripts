@@ -284,7 +284,7 @@ return {
         WILLOW = 
         {
             GENERIC = "Greetings, %s, the Inflammable!",
-            ATTACKER = "Should it come to blows, I wish only that the best maiden triumph.",
+            ATTACKER = "Should it come to blows, may the best maiden triumph.",
             MURDERER = "My spear was forged in passionate fires, %s!",
             REVIVER = "%s has a noble heart.",
             GHOST = "A heart shall wrench %s back from the jaws of death!",
@@ -332,9 +332,9 @@ return {
         {
             GENERIC = "Blessings upon you, spiderchild %s!",
             ATTACKER = "There's a new hunger in %s's eyes.",
-            MURDERER = "I've felled greater monsters than you, %s! Let us fight!",
+            MURDERER = "I've felled greater monsters than you, %s!",
             REVIVER = "%s's spirit burns brighter than Sol.",
-            GHOST = "May you return with the swiftness of Sleipnir, many-legged one.",
+            GHOST = "Return with Sleipnir's swiftness, many-legged one.",
             FIRESTARTER = "His flames are as open as his heart.",
         },
         WATHGRITHR = 
@@ -343,7 +343,7 @@ return {
             ATTACKER = "%s is tempting fate.",
             MURDERER = "There can be only one!",
             REVIVER = "%s, the perfect warrior!",
-            GHOST = "You'll not away to Valhalla without me, %s. A heart!",
+            GHOST = "You'll not away to Valhalla yet, %s. A heart!",
             FIRESTARTER = "A fellow Viking, forged in flames!",
         },
 
@@ -415,7 +415,7 @@ return {
         },
         TOWNPORTALTALISMAN = 
         {
-            GENERIC = "A present from the mighty lioness!",
+            GENERIC = "A present from the mighty lion!",
             ACTIVE = "I shall desert this foul place!",
         },
         WETPAPER = "Tis drenched.",
@@ -1206,6 +1206,8 @@ return {
             COMPLETE = "It looks as though it might roam the earth any moment!",
         },
         STALKER = "It lives to battle once more!",
+        THURIBLE = "Tis Loki's frost giant lure.",
+        ATRIUM_OVERGROWTH = "The writings of the gods t'were not meant for us.",
         FROG =
         {
             DEAD = "You're a bit slimy for Valhalla.",
@@ -1667,6 +1669,7 @@ return {
         SEEDS = "Tiny nature bits.",
         SEEDS_COOKED = "Tiny nature bits, cooked to death.",
         SEWING_KIT = "I am no seamstress, but repairs are sometimes necessary.",
+        SEWING_TAPE = "That my armor might be repaired!",
         SHOVEL = "I'd prefer a ship burial, though this might have its uses.",
         SILK = "Useful for binding, and for remembering victories past.",
         SKELETON = "Rest easy in Valhalla.",

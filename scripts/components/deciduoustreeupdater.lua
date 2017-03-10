@@ -119,6 +119,10 @@ local function GetBuild(inst)
 	return build
 end
 
+local function NoHoles(pt)
+    return not TheWorld.Map:IsPointNearHole(pt)
+end
+
 function DeciduousTreeUpdater:OnUpdate(dt)
 	
 	if not self.inst then 
@@ -157,7 +161,7 @@ function DeciduousTreeUpdater:OnUpdate(dt)
     		elseif self.passive_drakes_spawned < self.num_passive_drakes then
         		local passdrake = SpawnPrefab("birchnutdrake")
     			local passdrakeangle = math.random(360)
-    			local passoffset = FindWalkableOffset(self.inst:GetPosition(), passdrakeangle*DEGREES, math.random(2,TUNING.DECID_MONSTER_TARGET_DIST*1.5), 30, false, false)
+    			local passoffset = FindWalkableOffset(self.inst:GetPosition(), passdrakeangle*DEGREES, math.random(2,TUNING.DECID_MONSTER_TARGET_DIST*1.5), 30, false, false, NoHoles)
     			local xp,yp,zp = self.inst.Transform:GetWorldPosition()
     			passdrake.Transform:SetPosition(xp + passoffset.x, yp + passoffset.y, zp + passoffset.z)
     			passdrake.range = TUNING.DECID_MONSTER_TARGET_DIST * 4
@@ -235,7 +239,7 @@ function DeciduousTreeUpdater:OnUpdate(dt)
 	            			local minang = (dtu.sectorsize * (dtu.numdrakes - 1)) >= 0 and (dtu.sectorsize * (dtu.numdrakes - 1)) or 0
                 			local maxang = (dtu.sectorsize * dtu.numdrakes) <= 360 and (dtu.sectorsize * dtu.numdrakes) or 360
 			                local drakeangle = math.random(minang, maxang)
-	            			local offset = FindWalkableOffset(inst:GetPosition(), drakeangle*DEGREES, math.random(2,TUNING.DECID_MONSTER_TARGET_DIST), 30, false, false)
+	            			local offset = FindWalkableOffset(inst:GetPosition(), drakeangle*DEGREES, math.random(2,TUNING.DECID_MONSTER_TARGET_DIST), 30, false, false, NoHoles)
 	            			local x,y,z = inst.Transform:GetWorldPosition()
 	            			drake.Transform:SetPosition(x + offset.x, y + offset.y, z + offset.z)
 	            			drake.target = dtu.monster_target and dtu.monster_target or dtu.last_monster_target
@@ -275,7 +279,7 @@ function DeciduousTreeUpdater:SpawnIgniteWave()
     			local minang = (dtu.ignitesectorsize * (dtu.ignitenumdrakes - 1)) >= 0 and (dtu.ignitesectorsize * (dtu.ignitenumdrakes - 1)) or 0
     			local maxang = (dtu.ignitesectorsize * dtu.ignitenumdrakes) <= 360 and (dtu.ignitesectorsize * dtu.ignitenumdrakes) or 360
                 local drakeangle = math.random(minang, maxang)
-    			local offset = FindWalkableOffset(inst:GetPosition(), drakeangle*DEGREES, math.random(2,TUNING.DECID_MONSTER_TARGET_DIST), 30, false, false)
+    			local offset = FindWalkableOffset(inst:GetPosition(), drakeangle*DEGREES, math.random(2,TUNING.DECID_MONSTER_TARGET_DIST), 30, false, false, NoHoles)
     			local x,y,z = inst.Transform:GetWorldPosition()
     			drake.Transform:SetPosition(x + offset.x, y + offset.y, z + offset.z)
     			drake.target = dtu.monster_target and dtu.monster_target or dtu.last_monster_target

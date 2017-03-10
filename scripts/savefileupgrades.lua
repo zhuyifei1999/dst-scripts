@@ -544,6 +544,22 @@ t = {
             end,
         },
 
+        {
+            version = 4.731, -- ANR: Penguin Ice
+            fn = function(savedata)
+                if savedata == nil then
+                    return
+                end
+                if savedata.map ~= nil and savedata.map.prefab == "forest" and savedata.map.persistdata ~= nil then
+                    if savedata.map.persistdata.retrofitforestmap_anr == nil then
+                        savedata.map.persistdata.retrofitforestmap_anr = {}
+                    end
+                    savedata.map.persistdata.retrofitforestmap_anr.retrofit_penguinice = true
+                end
+            end,
+        },
+
+
     },
 }
 

@@ -149,6 +149,17 @@ return {
           height = 475,
           visible = true,
           properties = {}
+        },
+        {
+          name = "",
+          type = "cave_hole",
+          shape = "rectangle",
+          x = 592,
+          y = 448,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
         }
       }
     }

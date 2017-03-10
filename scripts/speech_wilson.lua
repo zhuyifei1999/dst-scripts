@@ -1227,6 +1227,8 @@ return {
 			COMPLETE = "It's alive! Oh wait, no, it's not.",
         },
         STALKER = "The skeleton fused with the shadows!",
+        THURIBLE = "It smells like chemicals.",
+        ATRIUM_OVERGROWTH = "I don't recognize any of these symbols.",
 		FROG =
 		{
 			DEAD = "He's croaked.",
@@ -1679,6 +1681,7 @@ return {
 		SEEDS = "Each one is a tiny mystery.",
 		SEEDS_COOKED = "That cooked the life right out of 'em!",
 		SEWING_KIT = "Darn it! Darn it all to heck!",
+		SEWING_TAPE = "For making some much needed repairs.",
 		SHOVEL = "There's a lot going on underground.",
 		SILK = "It comes from a spider's butt.",
 		SKELETON = "Better you than me.",

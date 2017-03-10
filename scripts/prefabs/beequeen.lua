@@ -14,6 +14,7 @@ local prefabs =
     "honey",
     "stinger",
     "hivehat",
+    "bundlewrap_blueprint",
 }
 
 SetSharedLootTable('beequeen',
@@ -33,6 +34,7 @@ SetSharedLootTable('beequeen',
     {'honey',            0.50},
     {'stinger',          1.00},
     {'hivehat',          1.00},
+    {'bundlewrap_blueprint', 1.00},
 })
 
 --------------------------------------------------------------------------

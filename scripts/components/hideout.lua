@@ -16,7 +16,6 @@ local Hideout = Class(function(self, inst)
 
     self.spawnoffscreen = false
 
-
     -- possible other features:
     -- max occupants
     -- restrict occupants by tag
@@ -33,15 +32,19 @@ end
 function Hideout:OnUpdate(dt)
     self.timetonextspawn = self.timetonextspawn - dt
     if self:CanRelease() and self.timetonextspawn < 0 then
-        self.timetonextspawn = self.spawnperiod + (math.random()*2-1)*self.spawnvariance
+        self.timetonextspawn = self.spawnperiod + (math.random() * 2 - 1) * self.spawnvariance
         self:ReleaseChild()
     end
 end
 
+local function _OnUpdate(inst, self, dt)
+    self:OnUpdate(dt)
+end
+
 function Hideout:StartUpdate()
     if self.task == nil then
-        local dt = math.min(self.spawnperiod-self.spawnvariance, 5 + math.random()*5)
-        self.task = self.inst:DoPeriodicTask(dt, function() self:OnUpdate(dt) end)
+        local dt = math.min(self.spawnperiod - self.spawnvariance, 5 + math.random() * 5)
+        self.task = self.inst:DoPeriodicTask(dt, _OnUpdate, nil, self, dt)
     end
 end
 
@@ -80,7 +83,7 @@ function Hideout:OnSave()
     local data = {}
     data.storedcreatures = {}
 
-    for _,creature in pairs(self.storedcreatures) do
+    for _, creature in pairs(self.storedcreatures) do
         table.insert(references,creature.GUID)
         table.insert(data.storedcreatures,creature.GUID)
     end
@@ -109,36 +112,34 @@ function Hideout:LoadPostPass(newents, data)
     end
 end
 
+local function NoHoles(pt)
+    return not TheWorld.Map:IsPointNearHole(pt)
+end
+
 -- This should only be called internally
 function Hideout:DoReleaseChild(target, child, radius)
     if child == nil or self.storedcreatures[child] == nil then
         return
     end
 
-    local pos = Vector3(self.inst.Transform:GetWorldPosition())
-    local start_angle = math.random()*PI*2
-    local rad = radius or 0.5
-    if self.inst.Physics then
-        rad = rad + self.inst.Physics:GetRadius()
-    end
-    local offset = FindWalkableOffset(pos, start_angle, rad, 8, false)
+    local pos = self.inst:GetPosition()
+    local rad = (radius or .5) + (self.inst.Physics ~= nil and self.inst.Physics:GetRadius() or 0)
+    local offset = FindWalkableOffset(pos, math.random() * PI * 2, rad, 8, false, true, NoHoles)
     if offset == nil then
         return
     end
 
-    pos = pos + offset
-
     child:ReturnToScene()
-    child.Transform:SetPosition(pos:Get())
-    if child.components.brain then
+    child.Transform:SetPosition(pos.x + offset.x, pos.y, pos.z + offset.z)
+    if child.components.brain ~= nil then
         BrainManager:Wake(child)
     end
 
-    if target and child.components.combat then
+    if target ~= nil and child.components.combat ~= nil then
         child.components.combat:SetTarget(target)
     end
 
-    if self.onspawned then
+    if self.onspawned ~= nil then
         self.onspawned(self.inst, child)
     end
 
