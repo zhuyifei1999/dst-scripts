@@ -3,9 +3,9 @@ local tasks = require ("map/tasks")
 local startlocations = require ("map/startlocations")
 local Levels = require("map/levels")
 
-local freqency_descriptions
+local frequency_descriptions
 if PLATFORM ~= "PS4" then
-	freqency_descriptions = {
+	frequency_descriptions = {
 		{ text = STRINGS.UI.SANDBOXMENU.SLIDENEVER, data = "never" },
 		{ text = STRINGS.UI.SANDBOXMENU.SLIDERARE, data = "rare" },
 		{ text = STRINGS.UI.SANDBOXMENU.SLIDEDEFAULT, data = "default" },
@@ -13,7 +13,7 @@ if PLATFORM ~= "PS4" then
 		{ text = STRINGS.UI.SANDBOXMENU.SLIDEALWAYS, data = "always" },
 	}
 else
-	freqency_descriptions = {
+	frequency_descriptions = {
 		{ text = STRINGS.UI.SANDBOXMENU.SLIDENEVER, data = "never" },
 		{ text = STRINGS.UI.SANDBOXMENU.SLIDERARE, data = "rare" },
 		{ text = STRINGS.UI.SANDBOXMENU.SLIDEDEFAULT, data = "default" }
@@ -148,7 +148,7 @@ local GROUP = {
 	["monsters"] = 	{	-- These guys come after you	
 						order = 5,
 						text = STRINGS.UI.SANDBOXMENU.CHOICEMONSTERS, 
-						desc = freqency_descriptions,
+						desc = frequency_descriptions,
 						enable = false,
 						items={
 							["spiders"] = {value = "default", enable = false, image = "spiders.tex", order = 1, world={"forest"}}, 
@@ -177,7 +177,7 @@ local GROUP = {
 	["animals"] =  	{	-- These guys live and let live
 						order= 4,
 						text = STRINGS.UI.SANDBOXMENU.CHOICEANIMALS, 
-						desc = freqency_descriptions,
+						desc = frequency_descriptions,
 						enable = false,
 						items={
 							-- ["mandrake"] = {value = "default", enable = false, image = "mandrake.tex", order = 1},
@@ -210,7 +210,7 @@ local GROUP = {
 	["resources"] = {
 						order= 2,
 						text = STRINGS.UI.SANDBOXMENU.CHOICERESOURCES, 
-						desc = freqency_descriptions,
+						desc = frequency_descriptions,
 						enable = false,
 						items={
 							["flowers"] = {value = "default", enable = false, image = "flowers.tex", order = 1, world={"forest"}},
@@ -234,7 +234,7 @@ local GROUP = {
 	["unprepared"] ={
 						order= 3,
 						text = STRINGS.UI.SANDBOXMENU.CHOICEFOOD, 
-						desc = freqency_descriptions,
+						desc = frequency_descriptions,
 						enable = true,
 						items={
 							["berrybush"] = {value = "default", enable = true, image = "berrybush.tex", order = 1}, 
@@ -264,13 +264,13 @@ local GROUP = {
 							["summer"] = {value = "default", enable = true, image = "summer.tex", desc = season_length_descriptions, master_controlled = true, order = 9},
 							["season_start"] = {value = "default", enable = false, image = "season_start.tex", desc = season_start_descriptions, master_controlled = true, order = 10}, 
 							["day"] = {value = "default", enable = false, image = "day.tex", desc = day_descriptions, master_controlled = true, order = 11}, 
-							["weather"] = {value = "default", enable = false, image = "rain.tex", desc = freqency_descriptions, order = 13}, 
-							["lightning"] = {value = "default", enable = false, image = "lightning.tex", desc = freqency_descriptions, order = 14, world={"forest"}}, 
-							["earthquakes"] = {value = "default", enable = false, image = "earthquakes.tex", desc = freqency_descriptions, order = 14, world={"cave"}}, 
-							["frograin"] = {value = "default", enable = false, image = "frog_rain.tex", desc = freqency_descriptions, order = 15, world={"forest"}}, 
-							["wildfires"] = {value = "default", enable = false, image = "smoke.tex", desc = freqency_descriptions, order = 16, world={"forest"}}, 
-							["touchstone"] = {value = "default", enable = false, image = "resurrection.tex", desc = freqency_descriptions, order = 17}, 
-							["boons"] = {value = "default", enable = false, image = "skeletons.tex", desc = freqency_descriptions, order = 18}, 
+							["weather"] = {value = "default", enable = false, image = "rain.tex", desc = frequency_descriptions, order = 13}, 
+							["lightning"] = {value = "default", enable = false, image = "lightning.tex", desc = frequency_descriptions, order = 14, world={"forest"}}, 
+							["earthquakes"] = {value = "default", enable = false, image = "earthquakes.tex", desc = frequency_descriptions, order = 14, world={"cave"}}, 
+							["frograin"] = {value = "default", enable = false, image = "frog_rain.tex", desc = frequency_descriptions, order = 15, world={"forest"}}, 
+							["wildfires"] = {value = "default", enable = false, image = "smoke.tex", desc = frequency_descriptions, order = 16, world={"forest"}}, 
+							["touchstone"] = {value = "default", enable = false, image = "resurrection.tex", desc = frequency_descriptions, order = 17}, 
+							["boons"] = {value = "default", enable = false, image = "skeletons.tex", desc = frequency_descriptions, order = 18}, 
 							["regrowth"] = {value = "default", enable = false, image = "regrowth.tex", desc = speed_descriptions, order = 17}, 						
 							["cavelight"] = {value = "default", enable = false, image = "cavelight.tex", desc = speed_descriptions, order = 18, world={"cave"}},							
                             ["disease_delay"] = {value = "default", enable = false, image = "berrybush_diseased.tex", desc = disease_descriptions, order = 19},

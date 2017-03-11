@@ -210,7 +210,6 @@ end
 
 local function master_postinit(inst)
     --Spawners
-    --inst:AddComponent("flowerspawner")
     inst:AddComponent("birdspawner")
     inst:AddComponent("butterflyspawner")
     inst:AddComponent("hounded")

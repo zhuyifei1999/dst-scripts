@@ -213,7 +213,25 @@ return
     end,
 
     flowers = function(difficulty)
-        SetSpawnMode(TheWorld.components.flowerspawner, difficulty)
+        local tuning_vars =
+        {
+            never = { FLOWER_REGROWTH_TIME_MULT = 0 },
+            rare = { FLOWER_REGROWTH_TIME_MULT = .5 },
+            often = { FLOWER_REGROWTH_TIME_MULT = 1.5 },
+            always = { FLOWER_REGROWTH_TIME_MULT = 3 },
+        }
+        OverrideTuningVariables(tuning_vars[difficulty])
+    end,
+
+    flower_cave = function(difficulty)
+        local tuning_vars =
+        {
+            never = { FLOWER_CAVE_REGROWTH_TIME_MULT = 0 },
+            rare = { FLOWER_CAVE_REGROWTH_TIME_MULT = .5 },
+            often = { FLOWER_CAVE_REGROWTH_TIME_MULT = 1.5 },
+            always = { FLOWER_CAVE_REGROWTH_TIME_MULT = 3 },
+        }
+        OverrideTuningVariables(tuning_vars[difficulty])
     end,
 
     birds = function(difficulty)

@@ -37,6 +37,7 @@ end
 local function turnon(inst)
     if not inst.components.fueled:IsEmpty() then
         inst.components.fueled:StartConsuming()
+        inst:AddTag("shadowlure")
 
         if inst._body ~= nil or not inst.components.inventoryitem:IsHeld() then
             if inst._smoke == nil then
@@ -62,6 +63,7 @@ end
 
 local function turnoff(inst)
     inst.components.fueled:StopConsuming()
+    inst:RemoveTag("shadowlure")
 
     if inst._smoke ~= nil then
         inst._smoke:Remove()

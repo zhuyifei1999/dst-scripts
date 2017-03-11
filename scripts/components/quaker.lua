@@ -425,8 +425,13 @@ end or nil
 
 -- Was forward declared
 SetNextQuake = _ismastersim and function(data, overridetime)
-    --print("RESCHEDULE QUAKE")
-    local nexttime = overridetime or (type(data.nextquake) == "function" and data.nextquake()*_frequencymultiplier) or data.nextquake*_frequencymultiplier
+    if _frequencymultiplier <= 0 then
+        --should not get here yo!
+        ClearTask()
+        return
+    end
+
+    local nexttime = overridetime or (type(data.nextquake) == "function" and data.nextquake() or data.nextquake) / _frequencymultiplier
     UpdateTask(nexttime, WarnQuake, data)
     _state = QUAKESTATE.WAITING
 end or nil

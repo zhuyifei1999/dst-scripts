@@ -2284,9 +2284,11 @@ function Tune(overrides)
 
         CARROT_REGROWTH_TIME = day_time * 20,
         FLOWER_REGROWTH_TIME = 30,
+        FLOWER_REGROWTH_TIME_MULT = 1,
         FLOWER_WITHER_IN_CAVE_LIGHT = 0.05,
         RABBITHOLE_REGROWTH_TIME = total_day_time * 5,
         FLOWER_CAVE_REGROWTH_TIME = total_day_time * 5,
+        FLOWER_CAVE_REGROWTH_TIME_MULT = 1,
 
         EVERGREEN_REGROWTH = {
             OFFSPRING_TIME = total_day_time * 5,

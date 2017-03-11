@@ -22,7 +22,9 @@ local prefabs =
 local function OnStartChanneling(inst, channeler)
     inst.AnimState:PlayAnimation("turn_on")
     inst.AnimState:PushAnimation("idle_on_loop")
-    inst.SoundEmitter:PlaySound("dontstarve/common/together/town_portal/idle", "active")
+    if not inst.SoundEmitter:PlayingSound("active") then
+        inst.SoundEmitter:PlaySound("dontstarve/common/together/town_portal/idle", "active")
+    end
     TheWorld:PushEvent("townportalactivated", inst)
 
     inst.MiniMapEntity:SetIcon("townportalactive.png")
@@ -68,7 +70,9 @@ local function OnLinkTownPortals(inst, other)
     if other ~= nil then
         inst.AnimState:PlayAnimation("turn_on")
         inst.AnimState:PushAnimation("idle_on_loop")
-        inst.SoundEmitter:PlaySound("dontstarve/common/together/town_portal/idle", "active")
+        if not inst.SoundEmitter:PlayingSound("active") then
+            inst.SoundEmitter:PlaySound("dontstarve/common/together/town_portal/idle", "active")
+        end
     else
         inst.AnimState:PlayAnimation("turn_off")
         inst.AnimState:PushAnimation("idle_off")
@@ -124,7 +128,9 @@ local function onbuilt(inst)
     if inst.components.teleporter.targetTeleporter ~= nil then
         inst.AnimState:PushAnimation("turn_on", false)
         inst.AnimState:PushAnimation("idle_on_loop")
-        inst.SoundEmitter:PlaySound("dontstarve/common/together/town_portal/idle", "active")
+        if not inst.SoundEmitter:PlayingSound("active") then
+            inst.SoundEmitter:PlaySound("dontstarve/common/together/town_portal/idle", "active")
+        end
     end
 end
 
@@ -189,7 +195,7 @@ local function fn()
 
     inst:AddComponent("teleporter")
     inst.components.teleporter.onActivate = OnStartTeleporting
-    inst.components.teleporter.offset = 1
+    inst.components.teleporter.offset = 2
     inst.components.teleporter.saveenabled = false
     inst.components.teleporter.travelcameratime = 2.9
     inst.components.teleporter.travelarrivetime = 2.8

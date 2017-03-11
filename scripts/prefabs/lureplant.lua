@@ -15,6 +15,26 @@ local prefabs =
 
 local brain = require "brains/lureplantbrain"
 
+local VALID_TILE_TYPES =
+{
+    [GROUND.DIRT] = true,
+    [GROUND.SAVANNA] = true,
+    [GROUND.GRASS] = true,
+    [GROUND.FOREST] = true,
+    [GROUND.MARSH] = true,
+
+    -- CAVES
+    [GROUND.CAVE] = true,
+    [GROUND.FUNGUS] = true,
+    [GROUND.SINKHOLE] = true,
+    [GROUND.MUD] = true,
+    [GROUND.FUNGUSRED] = true,
+    [GROUND.FUNGUSGREEN] = true,
+
+    --EXPANDED FLOOR TILES
+    [GROUND.DECIDUOUS] = true,
+}
+
 function adjustIdleSound(inst, vol)
     inst.SoundEmitter:SetParameter("loop", "size", vol)
 end
@@ -314,7 +334,7 @@ local function fn()
 
     inst:AddComponent("minionspawner")
     inst.components.minionspawner.onminionattacked = HideBait
-    inst.components.minionspawner.validtiletypes = {4,5,6,7,8,13,14,15,17,30,24,25}
+    inst.components.minionspawner.validtiletypes = VALID_TILE_TYPES
 
     inst:AddComponent("digester")
     inst.components.digester.itemstodigestfn = CanDigest

@@ -1,8 +1,11 @@
 require "behaviours/chaseandattack"
+require "behaviours/findclosest"
 require "behaviours/wander"
 
 local SKULLACHE_CD = 18
 local FALLAPART_CD = 11
+local SEE_LURE_DIST = 20
+local SAFE_LURE_DIST = 5
 
 local StalkerBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
@@ -29,6 +32,7 @@ function StalkerBrain:OnStart()
             WhileNode(function() return ShouldSnare(self) end, "FossilSnare",
                 ActionNode(function() self.inst:PushEvent("fossilsnare", { targets = self.snaretargets }) end)),
             ChaseAndAttack(self.inst),
+            FindClosest(self.inst, SEE_LURE_DIST, SAFE_LURE_DIST, { "shadowlure" }),
             Wander(self.inst),
         }, .5)
     else
@@ -61,6 +65,7 @@ function StalkerBrain:OnStart()
                 end,
                 "FallApart",
                 ActionNode(function() self.inst:PushEvent("fallapart") end)),
+            FindClosest(self.inst, SEE_LURE_DIST, SAFE_LURE_DIST, { "shadowlure" }),
             Wander(self.inst),
         }, .5)
     end

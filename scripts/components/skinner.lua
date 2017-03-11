@@ -34,6 +34,8 @@ function SetSkinMode( anim_state, prefab, base_skin, clothing_names, skintype, d
 		local torso_build = nil
 		local pelvis_build = nil
 		local skirt_build = nil
+		local leg_build = base_skin --for boot switching, default to the base skin
+		local foot_build = base_skin --for boot switching, default to the base skin
 		
 		local hidden_symbols = {}
 		
@@ -100,6 +102,8 @@ function SetSkinMode( anim_state, prefab, base_skin, clothing_names, skintype, d
 							if sym == "torso" then torso_build = CLOTHING[name].override_build end
 							if sym == "torso_pelvis" then pelvis_build = CLOTHING[name].override_build end
 							if sym == "skirt" then skirt_build = CLOTHING[name].override_build end
+							if sym == "leg" then leg_build = CLOTHING[name].override_build end
+							if sym == "foot" then foot_build = CLOTHING[name].override_build end
 							
 							local src_sym = sym
 							if src_symbols then
@@ -174,6 +178,11 @@ function SetSkinMode( anim_state, prefab, base_skin, clothing_names, skintype, d
 				wide = true
 				anim_state:OverrideSkinSymbol("skirt", base_skin, "skirt_wide")
 			end
+		end
+		
+		local use_leg_boot = (CLOTHING[leg_build] and CLOTHING[leg_build].has_leg_boot) or HAS_LEG_BOOT[leg_build]
+		if leg_build == foot_build and use_leg_boot then
+			anim_state:OverrideSkinSymbol("leg", leg_build, "leg_boot" )
 		end
 		
 		

@@ -117,15 +117,31 @@ function Teleporter:Activate(doer)
     return true
 end
 
+local function NoHoles(pt)
+    return not TheWorld.Map:IsPointNearHole(pt)
+end
+
+local function NoPlayersOrHoles(pt)
+    return not (IsAnyPlayerInRange(pt.x, 0, pt.z, 2) or TheWorld.Map:IsPointNearHole(pt))
+end
+
 -- You probably don't want this, call Activate instead.
 function Teleporter:Teleport(obj)
     if self.targetTeleporter ~= nil then
         local target_x, target_y, target_z = self.targetTeleporter.Transform:GetWorldPosition()
         local offset = self.targetTeleporter.components.teleporter ~= nil and self.targetTeleporter.components.teleporter.offset or 0
         if offset ~= 0 then
+            local pt = Vector3(target_x, target_y, target_z)
             local angle = math.random() * 2 * PI
-            target_x = target_x + math.cos(angle) * offset
-            target_z = target_z - math.sin(angle) * offset
+            offset =
+                FindWalkableOffset(pt, angle, offset, 8, true, false, NoPlayersOrHoles) or
+                FindWalkableOffset(pt, angle, offset * .5, 6, true, false, NoPlayersOrHoles) or
+                FindWalkableOffset(pt, angle, offset, 8, true, false, Holes) or
+                FindWalkableOffset(pt, angle, offset * .5, 6, true, false, Holes)
+            if offset ~= nil then
+                target_x = target_x + offset.x
+                target_z = target_z + offset.z
+            end
         end
         if obj.Physics ~= nil then
             obj.Physics:Teleport(target_x, target_y, target_z)
