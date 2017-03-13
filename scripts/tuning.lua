@@ -2482,6 +2482,7 @@ function Tune(overrides)
         STALKER_BLOOM_DECAY = 5,
 
         THURIBLE_FUEL_MAX = (night_time + dusk_time) * 3,
+        THURIBLE_AOE_RANGE = 6,
 
         VOTE_PASSED_SQUELCH_TIME = 0,
         VOTE_FAILED_SQUELCH_TIME = 30,

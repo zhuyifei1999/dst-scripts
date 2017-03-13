@@ -136,8 +136,8 @@ function Teleporter:Teleport(obj)
             offset =
                 FindWalkableOffset(pt, angle, offset, 8, true, false, NoPlayersOrHoles) or
                 FindWalkableOffset(pt, angle, offset * .5, 6, true, false, NoPlayersOrHoles) or
-                FindWalkableOffset(pt, angle, offset, 8, true, false, Holes) or
-                FindWalkableOffset(pt, angle, offset * .5, 6, true, false, Holes)
+                FindWalkableOffset(pt, angle, offset, 8, true, false, NoHoles) or
+                FindWalkableOffset(pt, angle, offset * .5, 6, true, false, NoHoles)
             if offset ~= nil then
                 target_x = target_x + offset.x
                 target_z = target_z + offset.z

@@ -19,12 +19,34 @@ local prefabs =
     "townportalsandcoffin_fx",
 }
 
+local function OnEntityWake(inst)
+    if inst.playingsound and not (inst:IsAsleep() or inst.SoundEmitter:PlayingSound("active")) then
+        inst.SoundEmitter:PlaySound("dontstarve/common/together/town_portal/talisman_active", "active")
+    end
+end
+
+local function OnEntitySleep(inst)
+    inst.SoundEmitter:KillSound("active")
+end
+
+local function StartSoundLoop(inst)
+    if not inst.playingsound then
+        inst.playingsound = true
+        OnEntityWake(inst)
+    end
+end
+
+local function StopSoundLoop(inst)
+    if inst.playingsound then
+        inst.playingsound = nil
+        inst.SoundEmitter:KillSound("active")
+    end
+end
+
 local function OnStartChanneling(inst, channeler)
     inst.AnimState:PlayAnimation("turn_on")
     inst.AnimState:PushAnimation("idle_on_loop")
-    if not inst.SoundEmitter:PlayingSound("active") then
-        inst.SoundEmitter:PlaySound("dontstarve/common/together/town_portal/idle", "active")
-    end
+    StartSoundLoop(inst)
     TheWorld:PushEvent("townportalactivated", inst)
 
     inst.MiniMapEntity:SetIcon("townportalactive.png")
@@ -70,13 +92,11 @@ local function OnLinkTownPortals(inst, other)
     if other ~= nil then
         inst.AnimState:PlayAnimation("turn_on")
         inst.AnimState:PushAnimation("idle_on_loop")
-        if not inst.SoundEmitter:PlayingSound("active") then
-            inst.SoundEmitter:PlaySound("dontstarve/common/together/town_portal/idle", "active")
-        end
+        StartSoundLoop(inst)
     else
         inst.AnimState:PlayAnimation("turn_off")
         inst.AnimState:PushAnimation("idle_off")
-        inst.SoundEmitter:KillSound("active")
+        StopSoundLoop(inst)
     end
 end
 
@@ -128,9 +148,7 @@ local function onbuilt(inst)
     if inst.components.teleporter.targetTeleporter ~= nil then
         inst.AnimState:PushAnimation("turn_on", false)
         inst.AnimState:PushAnimation("idle_on_loop")
-        if not inst.SoundEmitter:PlayingSound("active") then
-            inst.SoundEmitter:PlaySound("dontstarve/common/together/town_portal/idle", "active")
-        end
+        StartSoundLoop(inst)
     end
 end
 
@@ -213,6 +231,9 @@ local function fn()
     TheWorld:PushEvent("ms_registertownportal", inst)
 
     inst:DoTaskInTime(0, init)
+
+    inst.OnEntityWake = OnEntityWake
+    inst.OnEntitySleep = OnEntitySleep
 
     return inst
 end

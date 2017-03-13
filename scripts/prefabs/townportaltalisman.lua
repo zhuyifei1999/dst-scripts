@@ -4,6 +4,30 @@ local assets =
     Asset("INV_IMAGE", "townportaltalisman_active"),
 }
 
+local function OnEntityWake(inst)
+    if inst.playingsound and not (inst:IsInLimbo() or inst:IsAsleep() or inst.SoundEmitter:PlayingSound("active")) then
+        inst.SoundEmitter:PlaySound("dontstarve/common/together/town_portal/talisman_active", "active")
+    end
+end
+
+local function OnEntitySleep(inst)
+    inst.SoundEmitter:KillSound("active")
+end
+
+local function StartSoundLoop(inst)
+    if not inst.playingsound then
+        inst.playingsound = true
+        OnEntityWake(inst)
+    end
+end
+
+local function StopSoundLoop(inst)
+    if inst.playingsound then
+        inst.playingsound = nil
+        inst.SoundEmitter:KillSound("active")
+    end
+end
+
 local function DoActiveAnim(inst)
     inst.onanimqueueover = nil
     inst:RemoveEventCallback("animqueueover", DoActiveAnim)
@@ -58,8 +82,8 @@ local function OnLinkTownPortals(inst, other)
                 inst.AnimState:PlayAnimation("active_shake", true)
                 inst.animtask = inst:DoTaskInTime(.2 + math.random() * .4, DoRiseAnims)
             end
-            inst.SoundEmitter:PlaySound("dontstarve/common/together/town_portal/talisman_active", "active") 
         end
+        StartSoundLoop(inst)
     else
         inst.components.inventoryitem:ChangeImageName("townportaltalisman")
         if inst.components.inventoryitem:IsHeld() or inst.AnimState:IsCurrentAnimation("active_shake") then
@@ -72,7 +96,7 @@ local function OnLinkTownPortals(inst, other)
             inst.AnimState:PlayAnimation("active_shake2", true)
             inst.animtask = inst:DoTaskInTime(.3 + math.random() * .3, DoFallAnims)
         end
-        inst.SoundEmitter:KillSound("active")
+        StopSoundLoop(inst)
     end
 end
 
@@ -90,8 +114,6 @@ local function OnStartTeleporting(inst, doer)
 end
 
 local function topocket(inst)
-    inst.SoundEmitter:KillSound("active")
-
     if inst.animtask ~= nil then
         inst.animtask:Cancel()
         inst.animtask = nil
@@ -107,12 +129,6 @@ local function topocket(inst)
         inst.AnimState:SetTime(math.random() * inst.AnimState:GetCurrentAnimationLength())
     else
         inst.AnimState:PlayAnimation("inactive")
-    end
-end
-
-local function toground(inst)
-    if inst.components.teleporter:IsActive() then
-        inst.SoundEmitter:PlaySound("dontstarve/common/together/town_portal/talisman_active", "active") 
     end
 end
 
@@ -164,9 +180,13 @@ local function fn()
     -----------------------------
     inst:ListenForEvent("linktownportals", OnLinkTownPortals)
     inst:ListenForEvent("onputininventory", topocket)
-    inst:ListenForEvent("ondropped", toground)
 
     TheWorld:PushEvent("ms_registertownportal", inst)
+
+    inst.OnEntityWake = OnEntityWake
+    inst.OnEntitySleep = OnEntitySleep
+    inst:ListenForEvent("exitlimbo", OnEntityWake)
+    inst:ListenForEvent("enterlimbo", OnEntitySleep)
 
     return inst
 end

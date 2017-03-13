@@ -192,6 +192,7 @@ local function fn()
     inst.AnimState:SetFinalOffset(1)
 
     inst:AddTag("shadowlure")
+    inst:AddTag("nopunch")
 
     inst.entity:SetPristine()
 

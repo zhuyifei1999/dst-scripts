@@ -42,7 +42,10 @@ local function RetrofitNewCaveContentPrefab(inst, prefab, min_space, dist_from_s
 
 	local searchnodes = {}
 	for k = 1, #topology.nodes do
-		if (nightmare == table.contains(topology.nodes[k].tags, "Nightmare")) and not table.contains(topology.nodes[k].tags, "Atrium") then
+		if (nightmare == table.contains(topology.nodes[k].tags, "Nightmare")) 
+			and not table.contains(topology.nodes[k].tags, "Atrium") 
+			and not string.find(topology.ids[k], "RuinedGuarden") then
+
 			table.insert(searchnodes, k)
 		end
 	end
@@ -148,8 +151,6 @@ local function HeartOfTheRuinsAtriumRetrofitting(inst)
 		end
 	end			
 	
-	print (" isvalidarea ", foundarea, left, top )
-
 	if foundarea then
 		local maze = {	{ "SINGLE_NORTH",	"L_EAST",		"SINGLE_NORTH",	"L_EAST" },
 						{ "L_NORTH",		"FOUR_WAY",		"TUNNEL_NS",	"THREE_WAY_E" },
@@ -337,7 +338,7 @@ local function HeartOfTheRuinsRuinsRetrofittingRespawnerFix(inst, first_hotr_ret
 	NoSpawnOnLoadAndReduce("minotaur", 1)
 end
 
-local function HeartOfTheRuinsRuinsRetrofittingAltar(inst, first_hotr_retrofit)
+local function HeartOfTheRuinsRuinsRetrofittingAltar(inst)
 	AddRuinsRespawner("ancient_altar_broken")
 	AddRuinsRespawner("ancient_altar")
 	
@@ -355,6 +356,24 @@ local function HeartOfTheRuinsRuinsRetrofittingAltar(inst, first_hotr_retrofit)
 			end
 		end
 	end	
+end
+
+local function HeartOfTheRuinsRuinsRetrofittingCaveHoles(inst)
+	local count = 8
+	for _,v in pairs(Ents) do
+		if v.prefab == "cave_hole" then
+			count = count - 1
+		end
+	end
+	
+	if count <= 0 then
+		print ("Retrofitting for A New Reign: Heart of the Ruins + Cave Holes - Not Required!")
+	else
+		for i = 0, count do
+			RetrofitNewCaveContentPrefab(inst, "cave_hole", 4, 20, true)
+		end
+	end
+
 end
 
 --------------------------------------------------------------------------
@@ -418,6 +437,13 @@ function self:OnPostInit()
 		HeartOfTheRuinsRuinsRetrofittingAltar(inst)
 	end	
 	
+	if self.retrofit_heartoftheruins_caveholes then
+		self.retrofit_heartoftheruins_caveholes = nil
+		
+		print ("Retrofitting for A New Reign: Heart of the Ruins + Cave Holes" )
+		HeartOfTheRuinsRuinsRetrofittingCaveHoles(inst)
+	end	
+	
 	
 	---------------------------------------------------------------------------
 	if inst.components.retrofitcavemap_anr.requiresreset then
@@ -453,6 +479,7 @@ function self:OnLoad(data)
 		self.retrofit_heartoftheruins = data.retrofit_heartoftheruins
 		self.retrofit_heartoftheruins_respawnerfix = data.retrofit_heartoftheruins_respawnerfix
 		self.retrofit_heartoftheruins_altars = data.retrofit_heartoftheruins_altars
+		self.retrofit_heartoftheruins_caveholes = data.retrofit_heartoftheruins_caveholes
     end
 end
 

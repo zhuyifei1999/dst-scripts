@@ -66,6 +66,10 @@ end
 
 --------------------------------------------------------------------------
 
+local function IsNearShadowLure(target)
+    return GetClosestInstWithTag("shadowlure", target, TUNING.THURIBLE_AOE_RANGE) ~= nil
+end
+
 local function UpdatePlayerTargets(inst)
     local toadd = {}
     local toremove = {}
@@ -75,10 +79,12 @@ local function UpdatePlayerTargets(inst)
         toremove[k] = true
     end
     for i, v in ipairs(FindPlayersInRange(x, y, z, TUNING.STALKER_DEAGGRO_DIST, true)) do
-        if toremove[v] then
-            toremove[v] = nil
-        else
-            table.insert(toadd, v)
+        if not IsNearShadowLure(v) then
+            if toremove[v] then
+                toremove[v] = nil
+            else
+                table.insert(toadd, v)
+            end
         end
     end
 
@@ -147,7 +153,7 @@ local function RetargetFn(inst)
                     )
         end,
         { "_combat" }, --see entityreplica.lua
-        { "INLIMBO", "prey", "companion", "smallcreature" }
+        { "INLIMBO", "prey", "companion", "smallcreature", "player" }
     )
 
     return creature ~= nil
@@ -160,10 +166,26 @@ end
 local function KeepTargetFn(inst, target)
     return inst.components.combat:CanTarget(target)
         and inst:IsNear(target, TUNING.STALKER_DEAGGRO_DIST)
+        and not (   inst._recentattackers[target] == nil and
+                    target:HasTag("player") and
+                    IsNearShadowLure(target)    )
+end
+
+local function ClearRecentAttacker(inst, attacker)
+    if inst._recentattackers[attacker] ~= nil then
+        inst._recentattackers[attacker]:Cancel()
+        inst._recentattackers[attacker] = nil
+    end
 end
 
 local function OnAttacked(inst, data)
     if data.attacker ~= nil then
+        if data.attacker:HasTag("player") then
+            if inst._recentattackers[data.attacker] ~= nil then
+                inst._recentattackers[data.attacker]:Cancel()
+            end
+            inst._recentattackers[data.attacker] = inst:DoTaskInTime(6, ClearRecentAttacker, data.attacker)
+        end
         local target = inst.components.combat.target
         if not (target ~= nil and
                 target:HasTag("player") and
@@ -240,9 +262,11 @@ local function FindSnareTargets(inst)
     for i, v in ipairs(ents) do
         if not (v.components.health ~= nil and v.components.health:IsDead()) then
             if v:HasTag("player") then
-                table.insert(targets, priorityindex, v)
-                priorityindex = priorityindex + 1
-                priorityindex2 = priorityindex2 + 1
+                if not IsNearShadowLure(v) then
+                    table.insert(targets, priorityindex, v)
+                    priorityindex = priorityindex + 1
+                    priorityindex2 = priorityindex2 + 1
+                end
             elseif v.components.combat:TargetIs(inst) then
                 table.insert(targets, priorityindex2, v)
                 priorityindex2 = priorityindex2 + 1
@@ -626,6 +650,7 @@ local function cave_fn()
     inst.FindSnareTargets = FindSnareTargets
     inst.SpawnSnares = SpawnSnares
 
+    inst._recentattackers = {}
     inst:ListenForEvent("attacked", OnAttacked)
 
     SetEngaged(inst, false)
