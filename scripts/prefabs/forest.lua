@@ -132,7 +132,6 @@ local prefabs =
     "antlion_spawner",
     "oasislake",
     "succulent_plant",
-    "audio_test_prefab",
 }
 
 local monsters =

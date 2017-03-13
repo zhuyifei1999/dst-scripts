@@ -30,7 +30,6 @@ PREFABFILES = {
   "atrium_rubble",
   "atrium_statue",
   "attunable_classified",
-  "audio_test_prefab",
   "axe",
   "axe_pickaxe",
   "babybeefalo",

@@ -43,13 +43,18 @@ local function RetrofitNewCaveContentPrefab(inst, prefab, min_space, dist_from_s
 	local searchnodes = {}
 	for k = 1, #topology.nodes do
 		if (nightmare == table.contains(topology.nodes[k].tags, "Nightmare")) 
-			and not table.contains(topology.nodes[k].tags, "Atrium") 
-			and not string.find(topology.ids[k], "RuinedGuarden") then
+			and (not table.contains(topology.nodes[k].tags, "Atrium"))
+			and (not string.find(topology.ids[k], "RuinedGuarden")) then
 
 			table.insert(searchnodes, k)
 		end
 	end
-	
+
+	if #searchnodes == 0 then
+		print ("Retrofitting world for " .. prefab .. " FAILED: Could not find any " .. (nightmare and "Ruins" or "Caves") .. " nodes to spawn in.")
+		return
+	end
+
 	while attempt <= MAX_PLACEMENT_ATTEMPTS do
 		local searchnode = searchnodes[math.random(#searchnodes)]
 		local area =  topology.nodes[searchnode]

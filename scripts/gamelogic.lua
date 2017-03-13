@@ -19,6 +19,7 @@ local Stats = require("stats")
 -- globals
 chestfunctions = require("scenarios/chestfunctions")
 
+local DEBUG_MODE = BRANCH == "dev"
 local LOAD_UPFRONT_MODE = PLATFORM == "PS4"
 
 local MainScreen = nil
@@ -134,14 +135,13 @@ function HideCancelTip()
 end
 
 local function LoadAssets(asset_set)
-	
-	if LOAD_UPFRONT_MODE then 
+	if LOAD_UPFRONT_MODE then
         ModManager:RegisterPrefabs()
-        return 
+        return
     end
-	
+
 	ShowLoading()
-		
+
 	assert(asset_set)
 	Settings.current_asset_set = asset_set
 
@@ -155,12 +155,12 @@ local function LoadAssets(asset_set)
 	local load_frontend = Settings.reset_action == nil
 	local in_backend = Settings.last_reset_action ~= nil
 	local in_frontend = not in_backend
-	
+
 	KeepAlive()
 
 	if Settings.current_asset_set == "FRONTEND" then
 		if Settings.last_asset_set == "FRONTEND" then
-			print( "\tFE assets already loaded" )			
+			print("\tFE assets already loaded")
 			for i,file in ipairs(PREFABFILES) do -- required from prefablist.lua
 				LoadPrefabFile("prefabs/"..file)
 			end
@@ -170,6 +170,9 @@ local function LoadAssets(asset_set)
 				print("\tUnload BE")
 				TheSim:UnloadPrefabs(RECIPE_PREFABS)
 				TheSim:UnloadPrefabs(BACKEND_PREFABS)
+                if DEBUG_MODE then
+                    TheSim:UnloadPrefabs({ "audio_test_prefab " })
+                end
 				print("\tUnload BE done")
 			else
 				--print("No assets to unload because we have no previous asset set ")
@@ -189,47 +192,57 @@ local function LoadAssets(asset_set)
 			TheSystemService:SetStalling(true)
 			TheSim:LoadPrefabs(FRONTEND_PREFABS)
 
-			TheSystemService:SetStalling(false)	
-			print("\tLoad FE: done")	
+			TheSystemService:SetStalling(false)
+			print("\tLoad FE: done")
 		end
 	else
 		if Settings.last_asset_set == "BACKEND" then
-			print( "\tBE assets already loaded" )			
+			print("\tBE assets already loaded")
 			RegisterAllDLC()
 			for i,file in ipairs(PREFABFILES) do -- required from prefablist.lua
 				LoadPrefabFile("prefabs/"..file)
 			end
+            if DEBUG_MODE then
+                LoadPrefabFile("prefabs/audio_test_prefab")
+            end
+
 			ModManager:RegisterPrefabs()
 		else
 			print("\tUnload FE")
 			TheSim:UnloadPrefabs(FRONTEND_PREFABS)
 			print("\tUnload FE done")
 			KeepAlive()
-			
+
 			TheSystemService:SetStalling(true)
 			TheSim:UnregisterAllPrefabs()
 			RegisterAllDLC()
 			for i,file in ipairs(PREFABFILES) do -- required from prefablist.lua
 				LoadPrefabFile("prefabs/"..file)
 			end
+            if DEBUG_MODE then
+                LoadPrefabFile("prefabs/audio_test_prefab")
+            end
 			InitAllDLC()
 			ModManager:RegisterPrefabs()
 			TheSystemService:SetStalling(false)
 			KeepAlive()
 
-			print ("\tLOAD BE")
+			print("\tLOAD BE")
 			TheSystemService:SetStalling(true)
 			TheSim:LoadPrefabs(BACKEND_PREFABS)
+            if DEBUG_MODE then
+                TheSim:LoadPrefabs({ "audio_test_prefab" })
+            end
 			TheSystemService:SetStalling(false)
 			KeepAlive()
 			TheSystemService:SetStalling(true)
 			TheSim:LoadPrefabs(RECIPE_PREFABS)
 			TheSystemService:SetStalling(false)
-			print ("\tLOAD BE: done")
+			print("\tLOAD BE: done")
 			KeepAlive()
 		end
 	end
-	
+
 	Settings.last_asset_set = Settings.current_asset_set
 end
 
