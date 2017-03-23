@@ -85,8 +85,8 @@ local function fn()
     inst.entity:AddNetwork()
 
     inst.entity:AddPhysics() -- no collision, this is just for buffered actions
-    inst.Physics:SetSphere(1)
     inst.Physics:ClearCollisionMask()
+    inst.Physics:SetSphere(1)
 
     inst.MiniMapEntity:SetIcon("wormhole.png")
 

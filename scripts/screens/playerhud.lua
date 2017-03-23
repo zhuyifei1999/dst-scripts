@@ -12,6 +12,7 @@ local HeatOver = require "widgets/heatover"
 local FumeOver = require "widgets/fumeover"
 local SandOver = require "widgets/sandover"
 local SandDustOver = require "widgets/sanddustover"
+local MindControlOver = require "widgets/mindcontrolover"
 local GogglesOver = require "widgets/gogglesover"
 local easing = require("easing")
 
@@ -90,6 +91,8 @@ function PlayerHud:CreateOverlays(owner)
     self.storm_root = self.over_root:AddChild(Widget("storm_root"))
     self.storm_overlays = self.storm_root:AddChild(Widget("storm_overlays"))
     self.sanddustover = self.storm_overlays:AddChild(SandDustOver(owner))
+
+    self.mindcontrolover = self.over_root:AddChild(MindControlOver(owner))
 
     self.sandover = self.overlayroot:AddChild(SandOver(owner, self.sanddustover))
     self.gogglesover = self.overlayroot:AddChild(GogglesOver(owner, self.storm_overlays))

@@ -9,11 +9,17 @@ local prefabs =
     "collapse_small",
     "stalker",
     "stalker_forest",
+    "stalker_atrium",
 }
 
 local NUM_FORMS = 3
 local MAX_MOUND_SIZE = 8
 local MOUND_WRONG_START_SIZE = 5
+local ATRIUM_RANGE = 8.5
+
+local function ActiveStargate(gate)
+    return gate:IsWaitingForStalker()
+end
 
 local function ItemTradeTest(inst, item, giver)
     if item == nil or item.prefab ~= "shadowheart" or
@@ -23,24 +29,39 @@ local function ItemTradeTest(inst, item, giver)
         return false, "WRONGSHADOWFORM"
     elseif not TheWorld.state.isnight then
         return false, "CANTSHADOWREVIVE"
-    end
-
-    --TODO: temporary fail for WIP stalker forms
-    if giver.components.areaaware:CurrentlyInTag("Atrium") then
+    elseif giver.components.areaaware:CurrentlyInTag("Atrium")
+        and (   FindEntity(inst, ATRIUM_RANGE, ActiveStargate, { "stargate" }) == nil or
+                GetClosestInstWithTag("stalker", inst, 40) ~= nil   ) then
         return false, "CANTSHADOWREVIVE"
     end
-    --
 
     return true
 end
 
 local function OnAccept(inst, giver, item)
     if item.prefab == "shadowheart" then
+        local stalker
+        if not TheWorld:HasTag("cave") then
+            stalker = SpawnPrefab("stalker_forest")
+        elseif not giver.components.areaaware:CurrentlyInTag("Atrium") then
+            stalker = SpawnPrefab("stalker")
+        else
+            local stargate = FindEntity(inst, ATRIUM_RANGE, ActiveStargate, { "stargate" })
+            if stargate ~= nil then
+                stalker = SpawnPrefab("stalker_atrium")
+                -- override the spawn point so stalker stays around the gate
+                stalker.components.entitytracker:TrackEntity("stargate", stargate)
+                stargate:TrackStalker(stalker)
+            else
+                --should not be possible
+                stalker = SpawnPrefab("stalker")
+            end
+        end
+
         local x, y, z = inst.Transform:GetWorldPosition()
         local rot = inst.Transform:GetRotation()
         inst:Remove()
 
-        local stalker = SpawnPrefab(TheWorld:HasTag("cave") and "stalker" or "stalker_forest")
         stalker.Transform:SetPosition(x, y, z)
         stalker.Transform:SetRotation(rot)
         stalker.sg:GoToState("resurrect")

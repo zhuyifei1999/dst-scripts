@@ -100,6 +100,8 @@ function Level:ChooseTasks(taskdefinitions)
 		modfn(task_set_data)
 	end
 	
+    assert(task_set_data ~= nil, ("TaskSet '" .. tostring(task_set) .. "' has no data! If preset '".. tostring(self.id) .. "' was created with mods enabled, please enable the mods."))
+
 	for k, v in pairs(task_set_data) do
 		self[k] = v
 	end

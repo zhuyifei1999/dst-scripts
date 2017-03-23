@@ -8,6 +8,7 @@ local function OnTimerDone(inst, data)
         inst:RemoveEventCallback("timerdone", OnTimerDone)
         local antlion = SpawnPrefab("antlion")
         inst.components.entitytracker:TrackEntity("antlion", antlion)
+        inst:ListenForEvent("death", inst._onantliondeath, antlion)
         antlion.Transform:SetPosition(inst.Transform:GetWorldPosition())
         antlion.sg:GoToState("enterworld")
     end
@@ -15,7 +16,7 @@ end
 
 local function OnSandstormChanged(inst, active)
     if active then
-        if not inst.spawned then
+        if not (inst.spawned or inst.killed) then
             inst.spawned = true
             inst.components.timer:StopTimer("spawndelay")
             if inst.components.entitytracker:GetEntity("antlion") == nil then
@@ -30,16 +31,27 @@ local function OnSandstormChanged(inst, active)
     end
 end
 
+local function OnStopSummer(inst)
+    inst.killed = nil
+end
+
 local function OnInit(inst)
+    inst:WatchWorldState("stopsummer", OnStopSummer)
     inst:ListenForEvent("ms_sandstormchanged", function(src, data) OnSandstormChanged(inst, data) end, TheWorld)
+    if not TheWorld.state.issummer then
+        OnStopSummer(inst)
+    end
     OnSandstormChanged(inst, TheWorld.components.sandstorms ~= nil and TheWorld.components.sandstorms:IsSandstormActive())
 end
 
 local function OnSave(inst, data)
     data.spawned = inst.spawned or nil
+    data.killed = inst.killed or nil
 end
 
 local function OnLoad(inst, data)
+    inst.killed = data ~= nil and data.killed or nil
+
     if data ~= nil and data.spawned then
         if not inst.spawned then
             inst.spawned = true
@@ -53,6 +65,13 @@ local function OnLoad(inst, data)
             inst:RemoveEventCallback("timerdone", OnTimerDone)
         end
         inst.components.timer:StopTimer("spawndelay")
+    end
+end
+
+local function OnLoadPostPass(inst)--, ents, data)
+    local antlion = inst.components.entitytracker:GetEntity("antlion")
+    if antlion ~= nil then
+        inst:ListenForEvent("death", inst._onantliondeath, antlion)
     end
 end
 
@@ -71,6 +90,14 @@ local function fn()
 
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
+    inst.OnLoadPostPass = OnLoadPostPass
+
+    inst._onantliondeath = function(antlion)
+        if inst.components.entitytracker:GetEntity("antlion") == antlion then
+            inst.killed = true
+            inst.components.entitytracker:ForgetEntity("antlion")
+        end
+    end
 
     return inst
 end

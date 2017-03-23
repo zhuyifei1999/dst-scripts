@@ -158,6 +158,13 @@ return {
         "Strong... like Thor...",
         "Enduring... like Freya...",
     },
+    ANNOUNCE_ATRIUM_DESTABILIZING = 
+    {
+        "The beasts shalt soon reemerge!",
+        "The gods are angered!",
+        "There is danger on the wind!",
+    },
+    ANNOUNCE_RUINS_RESET = "I will fight my way out!",
 
     ANNOUNCE_BECOMEGHOST = "oOooOOOo!!",
     ANNOUNCE_GHOSTDRAIN = "They're driving me mad...!",
@@ -346,7 +353,7 @@ return {
             GHOST = "You'll not away to Valhalla yet, %s. A heart!",
             FIRESTARTER = "A fellow Viking, forged in flames!",
         },
-
+        
         LAVA_POND_ROCK = "Stone belched forth by the earth's fiery heart!",
 
         MULTIPLAYER_PORTAL = "It makes me long for the stage!",
@@ -1206,6 +1213,8 @@ return {
             COMPLETE = "It looks as though it might roam the earth any moment!",
         },
         STALKER = "It lives to battle once more!",
+        STALKER_ATRIUM = "Tis no mindless beast!",
+        STALKER_MINION = "A fiend woven from the night!",
         THURIBLE = "Tis Loki's frost giant lure.",
         ATRIUM_OVERGROWTH = "The writings of the gods t'were not meant for us.",
         FROG =
@@ -1994,8 +2003,11 @@ return {
         },
         ATRIUM_GATE =
         {
-            ON = "The light reveals ancient text: \"Come Back Next Update.\"",
+            ON = "A light to guide the way!",
             OFF = "Tis the Bifrost!",
+            CHARGING = "Soon it will open the path!",
+            DESTABILIZING = "Trickery! The Bifrost was of Loki!",
+            COOLDOWN = "It shan't work again for some time.",
         },
         ATRIUM_KEY = "Heimdallr's key to the Bifrost.",
         LIFEINJECTOR = "This will return me to top form.",

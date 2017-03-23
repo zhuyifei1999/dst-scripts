@@ -382,7 +382,6 @@ local function fn()
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
-    inst.entity:AddPhysics()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 

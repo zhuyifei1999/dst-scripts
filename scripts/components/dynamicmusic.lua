@@ -72,6 +72,13 @@ local TRIGGERED_DANGER_MUSIC =
         "dontstarve/music/music_epicfight_antlion",
     },
 
+    stalker =
+    {
+        "dontstarve/music/music_epicfight_stalker",
+        "dontstarve/music/music_epicfight_stalker_b",
+        "",
+    },
+
     default =
     {
         "dontstarve/music/music_epicfight_ruins",

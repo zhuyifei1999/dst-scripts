@@ -206,8 +206,10 @@ end
 local function GetUnequipState(inst, data)
     return (inst:HasTag("beaver") and "item_in")
         or (data.eslot ~= EQUIPSLOTS.HANDS and "item_hat")
-        or (data.slip and "tool_slip")
-        or "item_in"
+        or (not data.slip and "item_in")
+        or (data.item ~= nil and data.item:IsValid() and "tool_slip")
+        or "toolbroke"
+        , data.item
 end
 
 local function ConfigureRunState(inst)
@@ -549,6 +551,18 @@ local events =
     EventHandler("snared", function(inst)
         if not inst.components.health:IsDead() then
             inst.sg:GoToState("startle", true)
+        end
+    end),
+
+    EventHandler("repelled", function(inst, data)
+        if not inst.components.health:IsDead() then
+            inst.sg:GoToState("repelled", data)
+        end
+    end),
+
+    EventHandler("mindcontrolled", function(inst)
+        if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) then
+            inst.sg:GoToState("mindcontrolled")
         end
     end),
 
@@ -4941,6 +4955,159 @@ local states =
     },
 
     State{
+        name = "repelled",
+        tags = { "busy", "nopredict" },
+
+        onenter = function(inst, data)
+            ClearStatusAilments(inst)
+            ForceStopHeavyLifting(inst)
+            inst.components.locomotor:Stop()
+            inst:ClearBufferedAction()
+
+            inst.AnimState:PlayAnimation("distress_pre")
+            inst.AnimState:PushAnimation("distress_pst", false)
+
+            DoHurtSound(inst)
+
+            if data ~= nil and data.radius ~= nil and data.repeller ~= nil and data.repeller:IsValid() then
+                local x, y, z = data.repeller.Transform:GetWorldPosition()
+                local distsq = inst:GetDistanceSqToPoint(x, y, z)
+                local rangesq = data.radius * data.radius
+                if distsq < rangesq then
+                    if distsq > 0 then
+                        inst:ForceFacePoint(x, y, z)
+                    end
+                    local k = .5 * distsq / rangesq - 1
+                    inst.sg.statemem.speed = 25 * k
+                    inst.sg.statemem.dspeed = 2
+                    inst.Physics:SetMotorVel(inst.sg.statemem.speed, 0, 0)
+                end
+            end
+
+            inst.sg:SetTimeout(9 * FRAMES)
+        end,
+
+        onupdate = function(inst)
+            if inst.sg.statemem.speed ~= nil then
+                inst.sg.statemem.speed = inst.sg.statemem.speed + inst.sg.statemem.dspeed
+                if inst.sg.statemem.speed < 0 then
+                    inst.sg.statemem.dspeed = inst.sg.statemem.dspeed + .25
+                    inst.Physics:SetMotorVel(inst.sg.statemem.speed, 0, 0)
+                else
+                    inst.sg.statemem.speed = nil
+                    inst.sg.statemem.dspeed = nil
+                    inst.Physics:Stop()
+                end
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst.sg:GoToState("idle", true)
+        end,
+
+        onexit = function(inst)
+            if inst.sg.statemem.speed ~= nil then
+                inst.Physics:Stop()
+            end
+        end,
+    },
+
+    State{
+        name = "mindcontrolled",
+        tags = { "busy", "pausepredict" },
+
+        onenter = function(inst)
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:Enable(false)
+                inst.components.playercontroller:RemotePausePrediction()
+            end
+            inst.components.inventory:Hide()
+
+            ClearStatusAilments(inst)
+            ForceStopHeavyLifting(inst)
+            inst.components.locomotor:Stop()
+            inst:ClearBufferedAction()
+
+            inst.AnimState:PlayAnimation("mindcontrol_pre")
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg.statemem.mindcontrolled = true
+                    inst.sg:GoToState("mindcontrolled_loop")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if not inst.sg.statemem.mindcontrolled then
+                if inst.components.playercontroller ~= nil then
+                    inst.components.playercontroller:Enable(true)
+                end
+                inst.components.inventory:Show()
+            end
+        end,
+    },
+
+    State{
+        name = "mindcontrolled_loop",
+        tags = { "busy", "pausepredict" },
+
+        onenter = function(inst)
+            if not inst.AnimState:IsCurrentAnimation("mindcontrol_loop") then
+                inst.AnimState:PlayAnimation("mindcontrol_loop", true)
+            end
+            inst.sg:SetTimeout(3 * FRAMES)
+        end,
+
+        events =
+        {
+            EventHandler("mindcontrolled", function(inst)
+                inst.sg.statemem.mindcontrolled = true
+                inst.sg:GoToState("mindcontrolled_loop")
+            end),
+        },
+
+        ontimeout = function(inst)
+            inst.sg:GoToState("mindcontrolled_pst")
+        end,
+
+        onexit = function(inst)
+            if not inst.sg.statemem.mindcontrolled then
+                if inst.components.playercontroller ~= nil then
+                    inst.components.playercontroller:Enable(true)
+                end
+                inst.components.inventory:Show()
+            end
+        end,
+    },
+
+    State{
+        name = "mindcontrolled_pst",
+        tags = { "busy", "pausepredict" },
+
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("mindcontrol_pst")
+
+            --Should be coming from "mindcontrolled" state
+            --[[
+            local stun_frames = 6
+            if inst.components.playercontroller ~= nil then
+                --Specify min frames of pause since "busy" tag may be
+                --removed too fast for our network update interval.
+                inst.components.playercontroller:RemotePausePrediction(stun_frames)
+            end]]
+            inst.sg:SetTimeout(6 * FRAMES)
+        end,
+
+        ontimeout = function(inst)
+            inst.sg:GoToState("idle", true)
+        end,
+    },
+
+    State{
         name = "toolbroke",
         tags = { "busy", "pausepredict" },
 
@@ -4950,8 +5117,10 @@ local states =
             inst.SoundEmitter:PlaySound("dontstarve/wilson/use_break")
             inst.AnimState:Hide("ARM_carry")
             inst.AnimState:Show("ARM_normal")
+
             SpawnPrefab("brokentool").Transform:SetPosition(inst.Transform:GetWorldPosition())
-            inst.sg.statemem.tool = tool
+
+            inst.sg.statemem.toolname = tool ~= nil and tool.prefab or nil
 
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:RemotePausePrediction()
@@ -4968,11 +5137,13 @@ local states =
         },
 
         onexit = function(inst)
-            local sameTool = inst.components.inventory:FindItem(function(item)
-                return item.prefab == inst.sg.statemem.tool.prefab
-            end)
-            if sameTool then
-                inst.components.inventory:Equip(sameTool)
+            if inst.sg.statemem.toolname ~= nil then
+                local sameTool = inst.components.inventory:FindItem(function(item)
+                    return item.prefab == inst.sg.statemem.toolname
+                end)
+                if sameTool ~= nil then
+                    inst.components.inventory:Equip(sameTool)
+                end
             end
 
             if inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) then
@@ -4985,16 +5156,22 @@ local states =
     State{
         name = "tool_slip",
         tags = { "busy", "pausepredict" },
-        onenter = function(inst, tool)
+
+        onenter = function(inst)
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("hit")
             inst.SoundEmitter:PlaySound("dontstarve/common/tool_slip")
             inst.AnimState:Hide("ARM_carry")
             inst.AnimState:Show("ARM_normal")
+
             local splash = SpawnPrefab("splash")
             splash.entity:SetParent(inst.entity)
             splash.entity:AddFollower()
             splash.Follower:FollowSymbol(inst.GUID, "swap_object", 0, 0, 0)
+
+            if inst.components.talker ~= nil then
+                inst.components.talker:Say(GetString(inst, "ANNOUNCE_TOOL_SLIP"))
+            end
 
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:RemotePausePrediction()

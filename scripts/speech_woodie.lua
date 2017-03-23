@@ -173,6 +173,13 @@ return {
         "I'm more of a chopper than a lifter...",
         "Huff... huff...",
     },
+    ANNOUNCE_ATRIUM_DESTABILIZING = 
+    {
+        "We better hightail it out of here.",
+        "Let's skedaddle!",
+        "There'll be trouble if we don't leave.",
+    },
+    ANNOUNCE_RUINS_RESET = "All that hard work gone to waste.",
 
 	ANNOUNCE_BECOMEGHOST = "oOooOOOO!!",
 	ANNOUNCE_GHOSTDRAIN = "I'm goin', like, nutso over here...",
@@ -1341,6 +1348,8 @@ return {
 			COMPLETE = "One hundred percent assembled beastie.",
         },
         STALKER = "It's a walking anatomy lesson.",
+        STALKER_ATRIUM = "That fuel stuff's gone to its head.",
+        STALKER_MINION = "Ain't no reason for that to exist.",
         THURIBLE = "Someone's trying to give us a leg up.",
         ATRIUM_OVERGROWTH = "It probably said something important. Oh well.",
 		FROG =
@@ -2000,8 +2009,11 @@ return {
 		},
         ATRIUM_GATE =
         {
-			ON = "The light reveals ancient text: \"Come Back Next Update.\"",
+			ON = "That oughta do it.",
 			OFF = "Where d'you think it goes, Lucy?",
+			CHARGING = "It's soaking up energy, hey?",
+			DESTABILIZING = "That'd be my cue to leave.",
+			COOLDOWN = "Don't wanna overdo it.",
         },
         ATRIUM_KEY = "Got it from that big bony hoser.",
         LIFEINJECTOR = "This should cure those sniffles.",

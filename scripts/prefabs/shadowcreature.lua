@@ -18,7 +18,7 @@ local function retargetfn(inst)
 end
 
 local function onkilledbyother(inst, attacker)
-    if attacker and attacker.components.sanity then
+    if attacker ~= nil and attacker.components.sanity ~= nil then
         attacker.components.sanity:DoDelta(inst.sanityreward or TUNING.SANITY_SMALL)
     end
 end
@@ -30,7 +30,7 @@ SetSharedLootTable("shadow_creature",
 })
 
 local function CalcSanityAura(inst, observer)
-    return inst.components.combat.target ~= nil 
+    return inst.components.combat:HasTarget()
         and observer.components.sanity:IsCrazy()
         and -TUNING.SANITYAURA_LARGE
         or 0
@@ -50,7 +50,6 @@ local function OnNewCombatTarget(inst, data)
 end
 
 local function MakeShadowCreature(data)
-
     local assets =
     {
         Asset("ANIM", "anim/"..data.build..".zip"),
@@ -72,7 +71,6 @@ local function MakeShadowCreature(data)
 
         inst.entity:AddTransform()
         inst.entity:AddAnimState()
-        inst.entity:AddPhysics()
         inst.entity:AddSoundEmitter()
         inst.entity:AddNetwork()
 
@@ -92,8 +90,8 @@ local function MakeShadowCreature(data)
 
         inst.AnimState:SetBank(data.bank)
         inst.AnimState:SetBuild(data.build)
-        inst.AnimState:PlayAnimation("idle_loop")
-        inst.AnimState:SetMultColour(1, 1, 1, 0.5)
+        inst.AnimState:PlayAnimation("idle_loop", true)
+        inst.AnimState:SetMultColour(1, 1, 1, .5)
 
         -- this is purely view related
         inst:AddComponent("transparentonsanity")

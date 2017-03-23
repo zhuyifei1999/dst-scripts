@@ -172,24 +172,6 @@ local function OnGetItem(inst, giver, item)
     end
 end
 
-local function DropItem(inst, target, item)
-    inst.components.inventory:Unequip(EQUIPSLOTS.HANDS, true) 
-    inst.components.inventory:DropItem(item)
-    if item.Physics then
-        local x, y, z = item:GetPosition():Get()
-        y = .3
-        item.Physics:Teleport(x,y,z)
-
-        local hp = target:GetPosition()
-        local pt = inst:GetPosition()
-        local vel = (hp - pt):GetNormalized()     
-        local speed = 3 + (math.random() * 2)
-        local angle = -math.atan2(vel.z, vel.x) + (math.random() * 20 - 10) * DEGREES
-        item.Physics:SetVel(math.cos(angle) * speed, 10, math.sin(angle) * speed)
-    end
-    inst.components.talker:Say(GetString(inst, "ANNOUNCE_TOOL_SLIP"))
-end
-
 local function DropWetTool(inst, data)
     --Tool slip.
     if inst.components.moisture:GetSegs() < 4 then
@@ -197,9 +179,26 @@ local function DropWetTool(inst, data)
     end
 
     local tool = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-    if tool ~= nil and tool:GetIsWet() and math.random() < easing.inSine(TheWorld.state.wetness, 0, 0.15, inst.components.moisture:GetMaxMoisture()) then
-        DropItem(inst, data.target, tool)
+    if tool ~= nil and tool:GetIsWet() and math.random() < easing.inSine(TheWorld.state.wetness, 0, .15, inst.components.moisture:GetMaxMoisture()) then
+        inst.components.inventory:Unequip(EQUIPSLOTS.HANDS, true)
+        inst.components.inventory:DropItem(tool)
+        if tool.Physics ~= nil then
+            local x, y, z = tool.Transform:GetWorldPosition()
+            tool.Physics:Teleport(x, .3, z)
+
+            local angle = (math.random() * 20 - 10) * DEGREES
+            if data.target ~= nil and data.target:IsValid() then
+                local x1, y1, z1 = inst.Transform:GetWorldPosition()
+                x, y, z = data.target.Transform:GetWorldPosition()
+                angle = angle + (x1 == x and z1 == z and math.random() * 2 * PI or math.atan2(z1 - z, x1 - x))
+            else
+                angle = angle + math.random() * 2 * PI
+            end
+            local speed = 3 + math.random() * 2
+            tool.Physics:SetVel(math.cos(angle) * speed, 10, math.sin(angle) * speed)
+        end
         --Lock out from picking up for a while?
+        --V2C: no need, the stategraph goes into busy state
     end
 end
 
@@ -298,10 +297,6 @@ local function OnWontEatFood(inst, data)
     end
 end
 
-local function OnWork(inst, data)
-    DropWetTool(inst, data)
-end
-
 --------------------------------------------------------------------------
 --Temperamental events
 --------------------------------------------------------------------------
@@ -361,7 +356,7 @@ local function RegisterMasterEventListeners(inst)
     --Speech events
     inst:ListenForEvent("actionfailed", OnActionFailed)
     inst:ListenForEvent("wonteatfood", OnWontEatFood)
-    inst:ListenForEvent("working", OnWork)
+    inst:ListenForEvent("working", DropWetTool)
 
     --Temperamental events
     inst:ListenForEvent("onstartedfire", OnStartedFire)

@@ -46,12 +46,13 @@ local function common_fn(bank, build, anim, tag, isinventoryitem)
     else
         inst.entity:AddPhysics()
         inst.Physics:SetMass(1)
-        inst.Physics:SetCapsule(0.2, 0.2)
         inst.Physics:SetFriction(0)
         inst.Physics:SetDamping(0)
         inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)
         inst.Physics:ClearCollisionMask()
         inst.Physics:CollidesWith(COLLISION.WORLD)
+        inst.Physics:SetCapsule(0.2, 0.2)
+        inst.Physics:SetDontRemoveOnSleep(true) -- so the object can land and put out the fire, also an optimization due to how this moves through the world
     end
 
     if tag ~= nil then

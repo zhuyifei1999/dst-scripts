@@ -10,8 +10,20 @@ local function ShakeRoar(inst)
     ShakeAllCameras(CAMERASHAKE.FULL, 1.2, .03, .7, inst, 30)
 end
 
-local function ShakeSnare(inst)
+local function ShakeSummonRoar(inst)
+    ShakeAllCameras(CAMERASHAKE.FULL, .7, .03, .4, inst, 30)
+end
+
+local function ShakeSummon(inst)
+    ShakeAllCameras(CAMERASHAKE.VERTICAL, .5, .02, .2, inst, 30)
+end
+
+local function ShakePound(inst)
     ShakeAllCameras(CAMERASHAKE.VERTICAL, .5, .03, .7, inst, 30)
+end
+
+local function ShakeMindControl(inst)
+    ShakeAllCameras(CAMERASHAKE.FULL, 2, .04, .075, inst, 30)
 end
 
 local function ShakeDeath(inst)
@@ -40,12 +52,75 @@ end
 
 --------------------------------------------------------------------------
 
+local MAIN_SHIELD_CD = 1.2
+local function PickShield(inst)
+    local t = GetTime()
+    if (inst.sg.mem.lastshieldtime or 0) + .2 >= t then
+        return
+    end
+
+    inst.sg.mem.lastshieldtime = t
+
+    --variation 3 or 4 is the main shield
+    local dt = t - (inst.sg.mem.lastmainshield or 0)
+    if dt >= MAIN_SHIELD_CD then
+        inst.sg.mem.lastmainshield = t
+        return math.random(3, 4)
+    end
+
+    local rnd = math.random()
+    if rnd < dt / MAIN_SHIELD_CD then
+        inst.sg.mem.lastmainshield = t
+        return math.random(3, 4)
+    end
+
+    return rnd < dt / (MAIN_SHIELD_CD * 2) + .5 and 2 or 1
+end
+
+--------------------------------------------------------------------------
+
+local function StartMindControlSound(inst)
+    if inst.sg.mem.mindcontrolsoundtask ~= nil then
+        inst.sg.mem.mindcontrolsoundtask:Cancel()
+        inst.sg.mem.mindcontrolsoundtask = nil
+        inst.SoundEmitter:KillSound("mindcontrol")
+    end
+    if not inst.SoundEmitter:PlayingSound("mindcontrol") then
+        inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/mindcontrol_LP", "mindcontrol")
+    end
+end
+
+local function OnMindControlSoundFaded(inst)
+    inst.sg.mem.mindcontrolsoundtask = nil
+    inst.SoundEmitter:KillSound("mindcontrol")
+end
+
+local function StopMindControlSound(inst)
+    if inst.sg.mem.mindcontrolsoundtask == nil and inst.SoundEmitter:PlayingSound("mindcontrol") then
+        inst.SoundEmitter:SetVolume("mindcontrol", 0)
+        inst.sg.mem.mindcontrolsoundtask = inst:DoTaskInTime(10, OnMindControlSoundFaded)
+    end
+end
+
+--------------------------------------------------------------------------
+
+local function ShouldReturnToGate(inst)
+    return inst.returntogate and not inst.components.combat:HasTarget()
+end
+
+--------------------------------------------------------------------------
+
 local events =
 {
     CommonHandlers.OnLocomote(false, true),
     EventHandler("death", function(inst)
         if not inst.sg:HasStateTag("delaydeath") then
-            inst.sg:GoToState(inst.foreststalker and "death2" or "death")
+            if inst.atriumstalker then
+                inst:DespawnChannelers()
+                inst.sg:GoToState(inst:IsAtriumDecay() and "death" or "death3")
+            else
+                inst.sg:GoToState(inst.foreststalker and "death2" or "death")
+            end
         end
     end),
     EventHandler("doattack", function(inst)
@@ -59,11 +134,50 @@ local events =
             inst.sg:GoToState("snare", data.targets)
         end
     end),
-    EventHandler("attacked", function(inst)
-        if not inst.components.health:IsDead() and
-            (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("caninterrupt")) and
-            (inst.sg.mem.last_hit_time or 0) + TUNING.STALKER_HIT_RECOVERY < GetTime() then
-            inst.sg:GoToState("hit")
+    EventHandler("fossilspikes", function(inst)
+        if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) then
+            inst.sg:GoToState("spikes")
+        end
+    end),
+    EventHandler("shadowchannelers", function(inst)
+        if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) then
+            inst.sg:GoToState("summon_channelers_pre")
+        end
+    end),
+    EventHandler("fossilminions", function(inst)
+        if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) then
+            inst.sg:GoToState("summon_minions_pre")
+        end
+    end),
+    EventHandler("fossilfeast", function(inst)
+        if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) then
+            inst.sg:GoToState("eat_pre")
+        end
+    end),
+    EventHandler("mindcontrol", function(inst)
+        if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) then
+            inst.sg:GoToState("mindcontrol_pre")
+        end
+    end),
+    EventHandler("attacked", function(inst, data)
+        if not inst.components.health:IsDead() then
+            if inst.hasshield then
+                local shieldtype = PickShield(inst)
+                if shieldtype ~= nil then
+                    local fx = SpawnPrefab("stalker_shield"..tostring(shieldtype))
+                    fx.entity:SetParent(inst.entity)
+                    if math.random() < .5 then
+                        fx.AnimState:SetScale(-2.36, 2.36, 2.36)
+                    end
+                end
+            end
+            if (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("caninterrupt")) and
+                (inst.hasshield or (inst.sg.mem.last_hit_time or 0) + TUNING.STALKER_HIT_RECOVERY < GetTime()) then
+                if inst.hasshield and data.attacker ~= nil and data.attacker:IsValid() then
+                    inst:ForceFacePoint(data.attacker.Transform:GetWorldPosition())
+                end
+                inst.sg:GoToState("hit", inst.hasshield)
+            end
         end
     end),
     EventHandler("roar", function(inst)
@@ -113,6 +227,8 @@ local states =
                 inst.sg:GoToState("fallapart")
             elseif inst.sg.mem.wantstoroar then
                 inst.sg:GoToState("taunt")
+            elseif ShouldReturnToGate(inst) then
+                inst.sg:GoToState("idle_gate")
             else
                 inst.Physics:Stop()
                 inst.AnimState:PlayAnimation("idle")
@@ -327,34 +443,41 @@ local states =
         name = "hit",
         tags = { "hit", "busy" },
 
-        onenter = function(inst)
+        onenter = function(inst, shielded)
             inst.components.locomotor:StopMoving()
-            inst.AnimState:PlayAnimation("hit")
-            inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/hit")
-            inst.sg.mem.last_hit_time = GetTime()
+            if shielded then
+                inst.AnimState:PlayAnimation("shield")
+                inst.sg:SetTimeout(18 * FRAMES)
+            else
+                inst.AnimState:PlayAnimation("hit")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/hit")
+                inst.sg:SetTimeout(16 * FRAMES)
+                inst.sg.mem.last_hit_time = GetTime()
+            end
         end,
 
-        timeline =
-        {
-            TimeEvent(16 * FRAMES, function(inst)
-                if not inst.components.health:IsDead() then
-                    if inst.sg.statemem.dosnare then
-                        local targets = inst:FindSnareTargets()
-                        if targets ~= nil then
-                            inst.sg:GoToState("snare", targets)
-                            return
-                        end
-                    end
-                    if inst.sg.statemem.doattack then
-                        inst.sg:GoToState("attack")
+        ontimeout = function(inst)
+            if not inst.components.health:IsDead() then
+                if inst.sg.statemem.dosnare then
+                    local targets = inst:FindSnareTargets()
+                    if targets ~= nil then
+                        inst.sg:GoToState("snare", targets)
                         return
                     end
                 end
-                inst.sg.statemem.doattack = nil
-                inst.sg.statemem.dosnare = nil
-                inst.sg:RemoveStateTag("busy")
-            end),
-        },
+                if inst.sg.statemem.dospikes then
+                    inst.sg:GoToState("spikes")
+                    return
+                elseif inst.sg.statemem.doattack then
+                    inst.sg:GoToState("attack")
+                    return
+                end
+            end
+            inst.sg.statemem.doattack = nil
+            inst.sg.statemem.dosnare = nil
+            inst.sg.statemem.dospikes = nil
+            inst.sg:RemoveStateTag("busy")
+        end,
 
         events =
         {
@@ -363,6 +486,9 @@ local states =
             end),
             EventHandler("fossilsnare", function(inst)
                 inst.sg.statemem.dosnare = true
+            end),
+            EventHandler("fossilspikes", function(inst)
+                inst.sg.statemem.dospikes = true
             end),
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
@@ -374,7 +500,10 @@ local states =
                                 return 
                             end
                         end
-                        if inst.sg.statemem.doattack then
+                        if inst.sg.statemem.dospikes then
+                            inst.sg:GoToState("spikes")
+                            return
+                        elseif inst.sg.statemem.doattack then
                             inst.sg:GoToState("attack")
                             return
                         end
@@ -485,6 +614,70 @@ local states =
     },
 
     State{
+        name = "death3",
+        tags = { "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("death3")
+            inst:AddTag("NOCLICK")
+        end,
+
+        timeline =
+        {
+            TimeEvent(0, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/swell") end),
+            TimeEvent(6 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/whip") end),
+            TimeEvent(15 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/whip_snap") end),
+            TimeEvent(30 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/whip_snap") end),
+            TimeEvent(42 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/pianohits_1") end),
+            TimeEvent(45 * FRAMES, ShakeIfClose),
+            TimeEvent(46 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/orchhits") end),
+            TimeEvent(55 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/stretch") end),
+            TimeEvent(73 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/whip") end),
+            TimeEvent(85 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/whip_snap") end),
+            TimeEvent(108 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/pianohits_1") end),
+            TimeEvent(110 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/whip") end),
+            TimeEvent(111 * FRAMES, ShakeIfClose),
+            TimeEvent(116 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/orchhits") end),
+            TimeEvent(132 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/whip_snap") end),
+            TimeEvent(135 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/whip_snap")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/fwump")
+            end),
+            TimeEvent(138 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/pianohits_1") end),
+            TimeEvent(152 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/pianohits_2") end),
+            TimeEvent(155 * FRAMES, ShakeDeath),
+            TimeEvent(168 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/stretch") end),
+            TimeEvent(170 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/taunt_short") end),
+            TimeEvent(185 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/whip_snap")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death")
+            end),
+            TimeEvent(190 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/transform") end),
+            TimeEvent(194 * FRAMES, function(inst)
+                inst.DynamicShadow:Enable(false)
+                ShakeIfClose(inst)
+            end),
+            TimeEvent(300 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/charlie/attack_low") end),
+            TimeEvent(303 * FRAMES, ShakeIfClose),
+            TimeEvent(304 * FRAMES, function(inst)
+                if inst.persists then
+                    inst.persists = false
+                    local pos = inst:GetPosition()
+                    SpawnPrefab("flower_rose").Transform:SetPosition(pos:Get())
+                    inst.components.lootdropper:DropLoot(pos)
+                end
+            end),
+            TimeEvent(15, ErodeAway),
+        },
+
+        onexit = function(inst)
+            --Should NOT happen!
+            inst:RemoveTag("NOCLICK")
+        end,
+    },
+
+    State{
         name = "taunt",
         tags = { "busy", "roar" },
 
@@ -561,7 +754,7 @@ local states =
             inst.AnimState:PlayAnimation("attack1")
             --V2C: don't trigger attack cooldown
             --inst.components.combat:StartAttack()
-            inst.components.timer:StartTimer("snare_cd", TUNING.STALKER_SNARE_CD)
+            inst:StartAbility("snare")
             inst.sg.statemem.targets = targets
         end,
 
@@ -570,13 +763,473 @@ local states =
             TimeEvent(0 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/attack1_pbaoe_pre") end),
             TimeEvent(24 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/attack1_pbaoe") end),
             TimeEvent(25.5 * FRAMES, function(inst)
-                ShakeSnare(inst)
+                ShakePound(inst)
                 inst.components.combat:DoAreaAttack(inst, 3.5, nil, nil, nil, { "INLIMBO", "notarget", "invisible", "noattack", "flight", "playerghost", "shadow", "shadowchesspiece", "shadowcreature" })
                 if inst.sg.statemem.targets ~= nil then
                     inst:SpawnSnares(inst.sg.statemem.targets)
                 end
             end),
             TimeEvent(39 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
+
+    State{
+        name = "spikes",
+        tags = { "attack", "busy", "spikes" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("spike")
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/attack1_pbaoe_pre")
+            --V2C: don't trigger attack cooldown
+            --inst.components.combat:StartAttack()
+            inst:StartAbility("spikes")
+        end,
+
+        timeline =
+        {
+            TimeEvent(6 * FRAMES, function(inst)
+                inst:SpawnSpikes()
+            end),
+            TimeEvent(8 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/out") end),
+            TimeEvent(12 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/in") end),
+            TimeEvent(30 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/laugh")
+                inst.components.epicscare:Scare(5)
+            end),
+            TimeEvent(48 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/taunt_short", nil, .6) end),
+            TimeEvent(50 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/attack1_pbaoe") end),
+            TimeEvent(51 * FRAMES, function(inst)
+                ShakePound(inst)
+                inst.components.combat:DoAreaAttack(inst, 3.5, nil, nil, nil, { "INLIMBO", "notarget", "invisible", "noattack", "flight", "playerghost", "shadow", "shadowchesspiece", "shadowcreature" })
+            end),
+            TimeEvent(61 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
+
+    State{
+        name = "summon_channelers_pre",
+        tags = { "busy", "summoning" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("taunt3_pre")
+            inst.sg.statemem.count = 2
+            --V2C: don't trigger attack cooldown
+            --inst.components.combat:StartAttack()
+            inst:StartAbility("channelers")
+        end,
+
+        events =
+        {
+            EventHandler("attacked", function(inst)
+                inst.sg.statemem.count = inst.sg.statemem.count - 1
+            end),
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst:SpawnChannelers()
+                    inst.sg:GoToState("summon_channelers_loop", inst.sg.statemem.count)
+                end
+            end),
+        },
+    },
+
+    State{
+        name = "summon_channelers_loop",
+        tags = { "busy", "summoning" },
+
+        onenter = function(inst, count)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("taunt3_loop")
+            inst.sg.statemem.count = count or 0
+        end,
+
+        timeline =
+        {
+            TimeEvent(8 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/taunt_short") end),
+            TimeEvent(11 * FRAMES, ShakeSummonRoar),
+            TimeEvent(12 * FRAMES, function(inst)
+                inst.components.epicscare:Scare(5)
+            end),
+            TimeEvent(29 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/taunt_short") end),
+            TimeEvent(34 * FRAMES, ShakeSummonRoar),
+            TimeEvent(35 * FRAMES, function(inst)
+                inst.components.epicscare:Scare(5)
+            end),
+        },
+
+        events =
+        {
+            EventHandler("attacked", function(inst)
+                inst.sg.statemem.count = inst.sg.statemem.count - 1
+            end),
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    if inst.sg.statemem.count > 1 then
+                        inst.sg:GoToState("summon_channelers_loop", inst.sg.statemem.count - 1)
+                    else
+                        inst.sg:GoToState("summon_channelers_pst")
+                    end
+                end
+            end),
+        },
+    },
+
+    State{
+        name = "summon_channelers_pst",
+        tags = { "busy", "summoning" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("taunt3_pst")
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
+
+    State{
+        name = "summon_minions_pre",
+        tags = { "busy", "summoning" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("summon_pre")
+            inst.sg.statemem.count = 6
+            --V2C: don't trigger attack cooldown
+            --inst.components.combat:StartAttack()
+            inst:StartAbility("minions")
+        end,
+
+        events =
+        {
+            EventHandler("attacked", function(inst)
+                inst.sg.statemem.count = inst.sg.statemem.count - 1
+            end),
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst:SpawnMinions()
+                    inst.sg:GoToState("summon_minions_loop", inst.sg.statemem.count)
+                end
+            end),
+        },
+    },
+
+    State{
+        name = "summon_minions_loop",
+        tags = { "busy", "summoning" },
+
+        onenter = function(inst, count)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("summon_loop")
+            inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/summon")
+            inst.sg.statemem.count = count or 0
+        end,
+
+        timeline =
+        {
+            TimeEvent(4 * FRAMES, ShakeSummon),
+            TimeEvent(5 * FRAMES, function(inst)
+                inst.components.epicscare:Scare(5)
+            end),
+        },
+
+        events =
+        {
+            EventHandler("attacked", function(inst)
+                inst.sg.statemem.count = inst.sg.statemem.count - 1
+            end),
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    if inst.sg.statemem.count > 1 then
+                        inst.sg:GoToState("summon_minions_loop", inst.sg.statemem.count - 1)
+                    else
+                        inst.sg:GoToState("summon_minion_pst")
+                    end
+                end
+            end),
+        },
+    },
+
+    State{
+        name = "summon_minion_pst",
+        tags = { "busy", "summoning" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("summon_pst")
+        end,
+
+        timeline =
+        {
+            TimeEvent(7 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
+
+    State{
+        name = "eat_pre",
+        tags = { "busy", "feasting" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("taunt2_pre")
+            inst.sg.statemem.data =
+            {
+                side = math.random() < .5,
+                resist = 3,
+            }
+        end,
+
+        events =
+        {
+            EventHandler("attacked", function(inst)
+                if not inst.hasshield then
+                    inst.sg.statemem.data.resist = inst.sg.statemem.data.resist - 1
+                end
+            end),
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("eat_idle", inst.sg.statemem.data)
+                end
+            end),
+        },
+    },
+
+    State{
+        name = "eat_idle",
+        tags = { "busy", "feasting" },
+
+        onenter = function(inst, data)
+            local ishurt = inst.components.health:IsHurt()
+            if ishurt and #inst:FindMinions() > 0 then
+                data.idle = 0
+                inst.sg:GoToState("eat_loop", data)
+                return
+            elseif data.idle ~= nil and (not ishurt or data.idle > 6 or data.resist <= 0 or #inst:FindMinions(5) <= 0) then
+                inst.sg:GoToState("eat_pst")
+                return
+            end
+
+            data.idle = (data.idle or 0) + 1
+            inst.sg.statemem.data = data
+
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("taunt2_loop1")
+        end,
+
+        timeline =
+        {
+            TimeEvent(2 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/in") end),
+            TimeEvent(12 * FRAMES, function(inst)
+                inst.components.epicscare:Scare(5)
+            end),
+            TimeEvent(18 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/out") end),
+        },
+
+        events =
+        {
+            EventHandler("attacked", function(inst)
+                if not inst.hasshield then
+                    inst.sg.statemem.data.resist = inst.sg.statemem.data.resist - 1
+                end
+            end),
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("eat_idle", inst.sg.statemem.data)
+                end
+            end),
+        },
+    },
+
+    State{
+        name = "eat_loop",
+        tags = { "busy", "feasting" },
+
+        onenter = function(inst, data)
+            inst.components.locomotor:StopMoving()
+            data.side = not data.side
+            inst.sg.statemem.data = data
+            inst.AnimState:PlayAnimation(data.side and "taunt2_loop2" or "taunt2_loop3")
+        end,
+
+        timeline =
+        {
+            TimeEvent(9 * FRAMES, function(inst)
+                if inst:EatMinions() > 0 then
+                    inst.AnimState:Show("FX_EAT")
+                else
+                    inst.AnimState:Hide("FX_EAT")
+                end
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/taunt_short")
+            end),
+            TimeEvent(11.5 * FRAMES, ShakeIfClose),
+            TimeEvent(12.5 * FRAMES, function(inst)
+                inst.components.epicscare:Scare(5)
+            end),
+            TimeEvent(21 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/out") end),
+        },
+
+        events =
+        {
+            EventHandler("attacked", function(inst)
+                if not inst.hasshield then
+                    inst.sg.statemem.data.resist = inst.sg.statemem.data.resist - 1
+                end
+            end),
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("eat_idle", inst.sg.statemem.data)
+                end
+            end),
+        },
+    },
+
+    State{
+        name = "eat_pst",
+        tags = { "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("taunt2_pst")
+        end,
+
+        timeline =
+        {
+            TimeEvent(8 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
+
+    State{
+        name = "mindcontrol_pre",
+        tags = { "busy", "mindcontrol" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("control_pre")
+            inst.sg.statemem.count = 4
+            --V2C: don't trigger attack cooldown
+            --inst.components.combat:StartAttack()
+            inst:StartAbility("mindcontrol")
+        end,
+
+        events =
+        {
+            --[[EventHandler("attacked", function(inst)
+                inst.sg.statemem.count = inst.sg.statemem.count - 1
+            end),]]
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("mindcontrol_loop", inst.sg.statemem.count)
+                end
+            end),
+        },
+    },
+
+    State{
+        name = "mindcontrol_loop",
+        tags = { "busy", "mindcontrol" },
+
+        onenter = function(inst, count)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("control_loop")
+            StartMindControlSound(inst)
+            inst.sg.statemem.count = inst:MindControl() > 0 and count or 0
+            ShakeMindControl(inst)
+            inst.components.epicscare:Scare(5)
+        end,
+
+        onupdate = function(inst)
+            if inst:MindControl() <= 0 then
+                inst.sg.statemem.count = 0
+            end
+        end,
+
+        events =
+        {
+            --[[EventHandler("attacked", function(inst)
+                inst.sg.statemem.count = inst.sg.statemem.count - 1
+            end),]]
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    if inst.sg.statemem.count > 1 then
+                        inst.sg.statemem.continue = true
+                        inst.sg:GoToState("mindcontrol_loop", inst.sg.statemem.count - 1)
+                    else
+                        inst.sg:GoToState("mindcontrol_pst")
+                    end
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if not inst.sg.statemem.continue then
+                StopMindControlSound(inst)
+            end
+        end,
+    },
+
+    State{
+        name = "mindcontrol_pst",
+        tags = { "busy", "mindcontrol" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("control_pst")
+        end,
+
+        timeline =
+        {
+            TimeEvent(8 * FRAMES, function(inst)
                 inst.sg:RemoveStateTag("busy")
             end),
         },
@@ -724,6 +1377,92 @@ local states =
 
         onexit = function(inst)
             inst.sg.mem.wantstofallapart = nil
+        end,
+    },
+
+    State{
+        name = "idle_gate",
+        tags = { "idle" },
+
+        onenter = function(inst)
+            inst.Physics:Stop()
+            inst.Transform:SetSixFaced()
+            inst.AnimState:PlayAnimation("gate_pre")
+            local stargate = inst.components.entitytracker:GetEntity("stargate")
+            if stargate ~= nil then
+                inst:ForceFacePoint(stargate.Transform:GetWorldPosition())
+            end
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg.statemem.idlegate = true
+                    inst.sg:GoToState("idle_gate_loop")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if not inst.sg.statemem.idlegate then
+                inst.Transform:SetFourFaced()
+            end
+        end,
+    },
+
+    State{
+        name = "idle_gate_loop",
+        tags = { "idle" },
+
+        onenter = function(inst)
+            inst.Physics:Stop()
+            inst.AnimState:PlayAnimation("gate_loop")
+        end,
+
+        timeline =
+        {
+            TimeEvent(0 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/in") end),
+            TimeEvent(17 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/out") end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg.statemem.idlegate = true
+                    inst.sg:GoToState(ShouldReturnToGate(inst) and "idle_gate_loop" or "idle_gate_pst")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if not inst.sg.statemem.idlegate then
+                inst.Transform:SetFourFaced()
+            end
+        end,
+    },
+
+    State{
+        name = "idle_gate_pst",
+        tags = { "idle" },
+
+        onenter = function(inst)
+            inst.Physics:Stop()
+            inst.AnimState:PlayAnimation("gate_pst")
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            inst.Transform:SetFourFaced()
         end,
     },
 }

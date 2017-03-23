@@ -130,7 +130,8 @@ local function donextcollapse(inst)
                     v.components.workable:WorkedBy(inst, 1)
                 end
             elseif v.components.pickable ~= nil
-                and v.components.pickable:CanBePicked() then
+                and v.components.pickable:CanBePicked()
+                and not v:HasTag("intense") then
                 local num = v.components.pickable.numtoharvest or 1
                 local product = v.components.pickable.product
                 local x1, y1, z1 = v.Transform:GetWorldPosition()

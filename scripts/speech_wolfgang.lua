@@ -167,6 +167,13 @@ return {
         "Witness... Wolfgang strength!",
         "Wolfgang is mighty...!",
     },
+    ANNOUNCE_ATRIUM_DESTABILIZING = 
+    {
+        "Monsters is coming!",
+        "Wolfgang wants out of cave!",
+        "Wolfgang does not like dark cave.",
+    },
+    ANNOUNCE_RUINS_RESET = "Monsters is back!",
 
     ANNOUNCE_BECOMEGHOST = "oOooOOoo!!",
     ANNOUNCE_GHOSTDRAIN = "They are coming... for Wolfgang!",
@@ -1358,6 +1365,8 @@ return {
             COMPLETE = "Is look good! Mighty!",
         },
         STALKER = "Skeleton should not be walking!",
+        STALKER_ATRIUM = "Scary man!",
+        STALKER_MINION = "I do not like it!",
         THURIBLE = "Is for monster control.",
         ATRIUM_OVERGROWTH = "Wolfgang cannot read.",
         FROG =
@@ -1997,8 +2006,11 @@ return {
         },
         ATRIUM_GATE =
         {
-            ON = "The light reveals ancient text: \"Come Back Next Update.\"",
+            ON = "Little lights is on now.",
             OFF = "Is very old thing.",
+            CHARGING = "Looks very scary now!",
+            DESTABILIZING = "Is going to blow!",
+            COOLDOWN = "Is needing to recharge.",
         },
         ATRIUM_KEY = "Little key is for make door.",
         LIFEINJECTOR = "EeeeEEeeEEE!!",

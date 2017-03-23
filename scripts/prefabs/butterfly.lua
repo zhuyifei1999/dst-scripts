@@ -9,7 +9,7 @@ local prefabs =
 {
     "butterflywings",
     "butter",
-    "flower",
+    "planted_flower",
 }
 
 local brain = require "brains/butterflybrain"
@@ -56,7 +56,7 @@ local function CanDeploy(inst)
 end
 
 local function OnDeploy(inst, pt) 
-    local flower = SpawnPrefab("flower")
+    local flower = SpawnPrefab("planted_flower")
     if flower then
         flower:PushEvent("growfrombutterfly")
         flower.Transform:SetPosition(pt:Get())

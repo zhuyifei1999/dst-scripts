@@ -14,6 +14,7 @@ local assets =
     Asset("IMAGE", "images/fx3.tex"),
 
     Asset("ANIM", "anim/sand_over.zip"),
+    Asset("ANIM", "anim/mind_control_overlay.zip"),
 
     Asset("ANIM", "anim/clock_transitions.zip"),
     Asset("ANIM", "anim/moon_phases_clock.zip"),

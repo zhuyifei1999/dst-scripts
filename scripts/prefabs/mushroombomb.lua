@@ -272,12 +272,12 @@ local function projectile_fn()
 
     inst.entity:AddPhysics()
     inst.Physics:SetMass(1)
-    inst.Physics:SetCapsule(.2, .2)
     inst.Physics:SetFriction(0)
     inst.Physics:SetDamping(0)
     inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)
     inst.Physics:ClearCollisionMask()
     inst.Physics:CollidesWith(COLLISION.WORLD)
+    inst.Physics:SetCapsule(.2, .2)
 
     inst.AnimState:SetBank("mushroombomb")
     inst.AnimState:SetBuild("mushroombomb")

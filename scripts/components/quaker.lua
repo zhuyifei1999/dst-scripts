@@ -5,6 +5,12 @@
 return Class(function(self, inst)
 
 --------------------------------------------------------------------------
+--[[ Dependencies ]]
+--------------------------------------------------------------------------
+
+local SourceModifierList = require("util/sourcemodifierlist")
+
+--------------------------------------------------------------------------
 --[[ Constants ]]
 --------------------------------------------------------------------------
 
@@ -48,6 +54,7 @@ local _debrispersecond = 1 -- how much junk falls
 local _mammalsremaining = 0
 local _task = nil
 local _frequencymultiplier = 1
+local _pausesources = SourceModifierList(inst, false, SourceModifierList.boolean)
 
 local _quakedata = nil -- populated through configuration
 
@@ -377,7 +384,6 @@ end or nil
 
 -- was forward declared
 EndQuake = _ismastersim and function(inst, continue)
-    --print("ENDING QUAKE")
     CancelDrops()
 
     _quakesoundintensity:set(0)
@@ -389,7 +395,6 @@ EndQuake = _ismastersim and function(inst, continue)
 end or nil
 
 local StartQuake = _ismastersim and function(inst, data, overridetime)
-    --print("STARTING QUAKE")
     _quakesoundintensity:set(2)
 
     _debrispersecond = type(data.debrispersecond) == "function" and data.debrispersecond() or data.debrispersecond
@@ -406,15 +411,20 @@ local StartQuake = _ismastersim and function(inst, data, overridetime)
     _state = QUAKESTATE.QUAKING
 end or nil
 
-local WarnQuake = _ismastersim and function(inst, data, overridetime)
-    --print("WARNING QUAKE")
-    inst:DoTaskInTime(1, function()
-        for i, v in ipairs(_activeplayers) do
-            v:DoTaskInTime(math.random() * 2, _DoWarningSpeech)
-        end
-        inst:PushEvent("warnquake")
-    end)
+local DoWarnQuake = _ismastersim and function()
+    for i, v in ipairs(_activeplayers) do
+        v:DoTaskInTime(math.random() * 2, _DoWarningSpeech)
+    end
+    inst:PushEvent("warnquake")
+end or nil
 
+local WarnQuake = _ismastersim and function(inst, data, overridetime)
+    if _pausesources:Get() then
+        SetNextQuake(_quakedata)
+        return
+    end
+
+    inst:DoTaskInTime(1, DoWarnQuake)
     _quakesoundintensity:set(1)
 
     local warntime = overridetime or (type(data.warningtime) == "function" and data.warningtime()) or data.warningtime
@@ -510,7 +520,7 @@ local OnForceQuake = _ismastersim and function(src, data)
     return true
 end or nil
 
-local OnPlayerJoined = _ismastersim and function (src, player)
+local OnPlayerJoined = _ismastersim and function(src, player)
     for i, v in ipairs(_activeplayers) do
         if v == player then
             return
@@ -522,7 +532,7 @@ local OnPlayerJoined = _ismastersim and function (src, player)
     end
 end or nil
 
-local OnPlayerLeft = _ismastersim and function (src, player)
+local OnPlayerLeft = _ismastersim and function(src, player)
     for i, v in ipairs(_activeplayers) do
         if v == player then
             CancelDropForPlayer(player)
@@ -532,12 +542,24 @@ local OnPlayerLeft = _ismastersim and function (src, player)
     end
 end or nil
 
-local OnFrequencyMultiplier = _ismastersim and function (src, multiplier)
+local OnFrequencyMultiplier = _ismastersim and function(src, multiplier)
     _frequencymultiplier = multiplier
     if _frequencymultiplier > 0 and _quakedata ~= nil then
         SetNextQuake(_quakedata)
     else
         ClearTask()
+    end
+end or nil
+
+local OnPauseQuakes = _ismastersim and function(src, data)
+    if data ~= nil and data.source ~= nil then
+        _pausesources:SetModifier(data.source, true, data.reason)
+    end
+end or nil
+
+local OnUnpauseQuakes = _ismastersim and function(src, data)
+    if data ~= nil and data.source ~= nil then
+        _pausesources:RemoveModifier(data.source, data.reason)
     end
 end or nil
 
@@ -583,6 +605,9 @@ if _ismastersim then
     inst:ListenForEvent("ms_quakefrequencymultiplier", OnFrequencyMultiplier, _world)
 
     inst:ListenForEvent("explosion", OnExplosion, _world)
+
+    inst:ListenForEvent("pausequakes", OnPauseQuakes, _world)
+    inst:ListenForEvent("unpausequakes", OnUnpauseQuakes, _world)
 end
 
 -- Default configuration

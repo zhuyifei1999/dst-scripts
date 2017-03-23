@@ -166,7 +166,7 @@ function d_test_skins_popup(param)
 	local SkinsItemPopUp = require "screens/skinsitempopup"
 	TheFrontEnd:PushScreen( SkinsItemPopUp(param or TEST_ITEM_NAME, "Peter", {1.0, 0.2, 0.6, 1.0}) )
 end
-function d_test_skins_annouce(param)
+function d_test_skins_announce(param)
 	ThePlayer.HUD.eventannouncer:ShowSkinAnnouncement("Peter", {1.0, 0.2, 0.6, 1.0}, param or TEST_ITEM_NAME)
 end
 function d_test_skins_gift(param)
@@ -215,4 +215,16 @@ end
 
 function d_sinkhole()
 	c_spawn("antlion_sinkhole"):PushEvent("startcollapse")
+end
+
+function d_stalkersetup()
+	local mound = c_spawn("fossil_stalker")
+	--mound.components.workable:SetWorkLeft(mound.components.workable.maxwork - 1)
+	for i = 1, (mound.components.workable.maxwork - 1) do
+		mound.form = 1
+		mound.components.repairable.onrepaired(mound)
+	end
+	
+	c_give "shadowheart"
+	c_give "atrium_key"
 end

@@ -50,7 +50,7 @@ local function fn()
 	inst.AnimState:SetBuild("atrium_rubble")
 	inst.AnimState:PlayAnimation("idle1")
 
-    MakeObstaclePhysics(inst, 0.66)
+    MakeObstaclePhysics(inst, 0.5)
 
 	inst.MiniMapEntity:SetIcon("atrium_rubble.png")
 

@@ -62,10 +62,6 @@ local states =
             inst.AnimState:PlayAnimation("run_pre")
         end,
 
-        onupdate = function(inst)
-            inst.components.locomotor:RunForward()
-        end,
-
         events =
         {
             EventHandler("animover", function(inst)
@@ -93,10 +89,6 @@ local states =
                 inst.AnimState:PlayAnimation("run_loop", true)
             end
             inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
-        end,
-
-        onupdate = function(inst)
-            inst.components.locomotor:RunForward()
         end,
 
         timeline =

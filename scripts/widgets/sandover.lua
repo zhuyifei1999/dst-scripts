@@ -1,6 +1,5 @@
 local Widget = require "widgets/widget"
 local UIAnim = require "widgets/uianim"
-local TEMPLATES = require "widgets/templates"
 
 local BGCOLOR = { 156/255, 132/255, 75/255, 255/255 }
 

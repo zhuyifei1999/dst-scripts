@@ -257,6 +257,11 @@ local function tinyfn()
     return common_fn(.2)
 end
 
+local function atriumfn()
+    return common_fn(.6)
+end
+
 return Prefab("cavelight", normalfn, assets),
        Prefab("cavelight_small", smallfn, assets),
-       Prefab("cavelight_tiny", tinyfn, assets)
+       Prefab("cavelight_tiny", tinyfn, assets),
+       Prefab("cavelight_atrium", atriumfn, assets)

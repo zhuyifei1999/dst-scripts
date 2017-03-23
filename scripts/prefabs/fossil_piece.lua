@@ -99,5 +99,5 @@ function cleanfn()
 end
 
 return Prefab("fossil_piece", fn, assets, prefabs),
-       MakePlacer("fossil_piece_placer", "fossil_piece", "fossil_piece", "idle"),
+       MakePlacer("fossil_piece_placer", "fossil_stalker", "fossil_stalker", "1_1"),
        Prefab("fossil_piece_clean", cleanfn, assets, prefabs)

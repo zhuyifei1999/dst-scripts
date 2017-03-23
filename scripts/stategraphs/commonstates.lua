@@ -311,7 +311,7 @@ CommonStates.AddRunStates = function(states, timelines, anims, softstop)
 
         events =
         {
-            EventHandler("animover", idleonanimover),
+            EventHandler("animqueueover", idleonanimover),
         },
     })
 end
@@ -385,7 +385,7 @@ CommonStates.AddWalkStates = function(states, timelines, anims, softstop)
 
         events =
         {
-            EventHandler("animover", idleonanimover),
+            EventHandler("animqueueover", idleonanimover),
         },
     })
 end

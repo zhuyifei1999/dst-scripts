@@ -56,16 +56,20 @@ function Map:IsPointNearHole(pt, range)
     return false
 end
 
-function Map:IsDeployPointClear(pt, inst, min_spacing)
-    local min_spacing_sq = min_spacing * min_spacing
+function Map:IsDeployPointClear(pt, inst, min_spacing, min_spacing_sq_fn)
+    local min_spacing_sq = min_spacing_sq_fn == nil and min_spacing * min_spacing or nil
     for i, v in ipairs(TheSim:FindEntities(pt.x, 0, pt.z, math.max(DEPLOY_EXTRA_SPACING, min_spacing), nil, DEPLOY_IGNORE_TAGS)) do
         if v ~= inst and
             v.entity:IsVisible() and
             v.components.placer == nil and
-            v.entity:GetParent() == nil and
+            v.entity:GetParent() == nil then
             --FindEntities range check is <=, but we want <
-            v:GetDistanceSqToPoint(pt.x, 0, pt.z) < (v.deploy_extra_spacing ~= nil and math.max(v.deploy_extra_spacing * v.deploy_extra_spacing, min_spacing_sq) or min_spacing_sq) then
-            return false
+            if min_spacing_sq_fn ~= nil then
+                min_spacing_sq = min_spacing_sq_fn(v)
+            end
+            if v:GetDistanceSqToPoint(pt.x, 0, pt.z) < (v.deploy_extra_spacing ~= nil and math.max(v.deploy_extra_spacing * v.deploy_extra_spacing, min_spacing_sq) or min_spacing_sq) then
+                return false
+            end
         end
     end
     return true
@@ -82,13 +86,13 @@ function Map:CanDeployPlantAtPoint(pt, inst)
         and self:IsDeployPointClear(pt, inst, inst.replica.inventoryitem ~= nil and inst.replica.inventoryitem:DeploySpacingRadius() or DEPLOYSPACING_RADIUS[DEPLOYSPACING.DEFAULT])
 end
 
-local function CalculateWallSpacing(other)
+local function CalculateWallSpacingSq(other)
     return other:HasTag("wall") and .1 or 1
 end
 
 function Map:CanDeployWallAtPoint(pt, inst)
     return self:IsPassableAtPoint(pt:Get())
-        and self:IsDeployPointClear(pt, inst, 1, CalculateWallSpacing)
+        and self:IsDeployPointClear(pt, inst, 1, CalculateWallSpacingSq)
 end
 
 function Map:CanPlacePrefabFilteredAtPoint(x, y, z, prefab)

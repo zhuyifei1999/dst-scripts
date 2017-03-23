@@ -7,7 +7,7 @@ SKIN_RARITY_COLORS =
 	Spiffy			= { 0.408, 0.271, 0.486, 1 }, -- 68457C - a rare item (eg Trenchcoat)
 	Distinguished	= { 0.729, 0.455, 0.647, 1 }, -- BA74A5 - a very rare item (eg Tuxedo)
 	Elegant			= { 0.741, 0.275, 0.275, 1 }, -- BD4646 - an extremely rare item (eg rabbit pack, GoH base skins)
-	Timeless		= { 0.957, 0.769, 0.188, 1 }, -- F4C430 - not used
+	Timeless		= { 0.424, 0.757, 0.482, 1 }, -- 6CC17B - not used
 	Loyal			= { 0.635, 0.769, 0.435, 1 }, -- A2C46F - a one-time giveaway (eg mini monument)
 	ProofOfPurchase = { 0.000, 0.478, 0.302, 1 }, -- 007A4D
 	Reward			= { 0.910, 0.592, 0.118, 1 }, -- E8971E - a set bonus reward
@@ -20,7 +20,7 @@ Classy #415078
 Spiffy #68457C
 Distinguished #BA74A5
 Elegant #BD4646
-Timeless #F4C430
+Timeless #6CC17B
 Loyal #A2C46F
 ProofOfPurchase #007A4D
 Reward #E8971E
@@ -33,10 +33,10 @@ Event #F4C430
 local rarity_order =
 {
 	ProofOfPurchase = 1,
-	Loyal = 2,
-	Reward = 3,
-	Event = 4,
-	Timeless = 5,
+	Timeless = 2,
+	Loyal = 3,
+	Reward = 4,
+	Event = 5,
 	Elegant = 6,
 	Distinguished = 7,
 	Spiffy = 8,
@@ -51,15 +51,16 @@ function CompareRarities(a, b)
 end
 
 function GetNextRarity(rarity)
+	--just used by the tradescreen
 	local rarities = {Common = "Classy",
 					  Classy = "Spiffy",
 					  Spiffy = "Distinguished",
 					  Distinguished = "Elegant",
-					  Elegant = "Timeless",
-					  Timeless = "Reward",
+					  Elegant = "Event",
+					  Event = "Reward",
 					  Reward = "Loyal",
-					  Loyal = "ProofOfPurchase",
-					  ProofOfPurchase = "Event",
+					  Loyal = "Timeless",
+					  Timeless = "ProofOfPurchase"
 					 }
 
 	return rarities[rarity] or nil

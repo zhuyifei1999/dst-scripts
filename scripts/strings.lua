@@ -733,6 +733,9 @@ STRINGS =
         FOSSIL_STALKER = "Odd Skeleton",
         FOSSILSPIKE = "Fossil Cage",
         STALKER = "Reanimated Skeleton",
+        STALKER_ATRIUM = "Ancient Fuelweaver",
+        STALKER_MINION = "Woven Shadow",
+        SHADOWCHANNELER = "Unseen Hand",
         THURIBLE = "Shadow Thurible",
         HONEY = "Honey",
         HONEYCOMB = "Honeycomb",
@@ -1819,10 +1822,31 @@ STRINGS =
     RABBIT_PANICHAUNT = { "SCARED!", "AAAH!!", "OHH!", "GHOST!" },
     RABBIT_PANICBOSS = { "RUN!", "AHHH!", "IT MAD", "EHHH!" },
 
-
     --NOTE: Limit to 7 strings per table! (Using net_tinybyte for NPC chatter)
     STALKER_BATTLECRY = { "Huurgh...", "...(growl)...", "...gruuuugh...", "Hrrgh...", "...grraaugh...", "...(rumble)...", "...gruh..." },
     STALKER_PLAYER_BATTLECRY = { "Huurgh...", "...gruuuugh...", "...grraaugh...", "...(gurgle)...", "...(crunch)...", "...Y-yy...", "...W-wwh..." },
+
+    --NOTE: Limit to 7 strings per table! (Using net_tinybyte for NPC chatter)
+    STALKER_ATRIUM_BATTLECRY = 
+    {
+        "A pity.",
+        "You will not suffer.",
+        "It must be this way.",
+        "My world... threadbare.",
+        "My city... in tatters...",
+        "This will be quick.",
+        "How we've fallen."
+    },
+    STALKER_ATRIUM_PLAYER_BATTLECRY =
+    {
+        "You will fall as we did.",
+        "This is for the best.",
+        "You will be unraveled.",
+        "They are coming. It cannot be stopped.",
+        "This world's fabric is frayed and torn.",
+        "They are unfathomable.",
+        "I will save you."
+    },
 
     EPITAPHS =
     {
@@ -2679,6 +2703,7 @@ STRINGS.UI =
         GHOST_DEATH_ANNOUNCEMENT_ROBOT = "lost all of their humanity and is gone forever.",
         GHOST_DEATH_ANNOUNCEMENT_DEFAULT = "lost all of their humanity and is gone forever.",
         REZ_ANNOUNCEMENT = "was resurrected by",
+        REPORT_RESULT_ANNOUCEMENT = "blank",
         START_AFK = "went away for a bit.",
         STOP_AFK = "has returned from their relaxing time away.",
         AFK_TITLE = "Taking A Breather",

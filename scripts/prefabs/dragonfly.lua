@@ -71,6 +71,24 @@ SetSharedLootTable('dragonfly',
 
 --------------------------------------------------------------------------
 
+local function ForceDespawn(inst)
+    inst:Reset()
+    inst:DoDespawn()
+end
+
+local function ToggleDespawnOffscreen(inst)
+    if inst._isengaged:value() and inst:IsAsleep() then
+        if inst.sleeptask == nil then
+            inst.sleeptask = inst:DoTaskInTime(10, ForceDespawn)
+        end
+    elseif inst.sleeptask ~= nil then
+        inst.sleeptask:Cancel()
+        inst.sleeptask = nil
+    end
+end
+
+--------------------------------------------------------------------------
+
 local function PushMusic(inst)
     if ThePlayer == nil or inst:HasTag("flight") then
         inst._playingmusic = false
@@ -102,6 +120,7 @@ local function SetEngaged(inst, engaged)
     if inst._isengaged:value() ~= engaged then
         inst._isengaged:set(engaged)
         OnIsEngagedDirty(inst)
+        ToggleDespawnOffscreen(inst)
 
         local home = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
         if home ~= nil then
@@ -567,6 +586,8 @@ local function fn()
 
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad -- Reset fight if in combat with players.
+    inst.OnEntitySleep = ToggleDespawnOffscreen
+    inst.OnEntityWake = ToggleDespawnOffscreen
     inst.Reset = Reset
     inst.DoDespawn = DoDespawn
     inst.TransformFire = TransformFire

@@ -263,23 +263,22 @@ function MakeHugeFreezableCharacter(inst, sym, offset)
 end
 
 function MakeInventoryPhysics(inst)
-    local phys = inst.entity:AddPhysics()
-    phys:SetSphere(.5)
-    phys:SetMass(1)
-    phys:SetFriction(.1)
-    phys:SetDamping(0)
-    phys:SetRestitution(.5)
-    phys:SetCollisionGroup(COLLISION.ITEMS)
-    phys:ClearCollisionMask()
-    phys:CollidesWith(COLLISION.WORLD)
-    phys:CollidesWith(COLLISION.OBSTACLES)
-    phys:CollidesWith(COLLISION.SMALLOBSTACLES)
+	local phys = inst.entity:AddPhysics()
+	phys:SetMass(1)
+	phys:SetFriction(.1)
+	phys:SetDamping(0)
+	phys:SetRestitution(.5)
+	phys:SetCollisionGroup(COLLISION.ITEMS)
+	phys:ClearCollisionMask()
+	phys:CollidesWith(COLLISION.WORLD)
+	phys:CollidesWith(COLLISION.OBSTACLES)
+	phys:CollidesWith(COLLISION.SMALLOBSTACLES)
+	phys:SetSphere(.5)
 end
 
 function MakeCharacterPhysics(inst, mass, rad)
     local phys = inst.entity:AddPhysics()
     phys:SetMass(mass)
-    phys:SetCapsule(rad, 1)
     phys:SetFriction(0)
     phys:SetDamping(5)
     phys:SetCollisionGroup(COLLISION.CHARACTERS)
@@ -289,35 +288,35 @@ function MakeCharacterPhysics(inst, mass, rad)
     phys:CollidesWith(COLLISION.SMALLOBSTACLES)
     phys:CollidesWith(COLLISION.CHARACTERS)
     phys:CollidesWith(COLLISION.GIANTS)
+    phys:SetCapsule(rad, 1)
 end
 
 function MakeFlyingCharacterPhysics(inst, mass, rad)
     local phys = inst.entity:AddPhysics()
     phys:SetMass(mass)
-    phys:SetCapsule(rad, 1)
     phys:SetFriction(0)
     phys:SetDamping(5)
     phys:SetCollisionGroup(COLLISION.FLYERS)
     phys:ClearCollisionMask()
     phys:CollidesWith(COLLISION.WORLD)
     phys:CollidesWith(COLLISION.FLYERS)
+    phys:SetCapsule(rad, 1)
 end
 
 function MakeTinyFlyingCharacterPhysics(inst, mass, rad)
     local phys = inst.entity:AddPhysics()
     phys:SetMass(mass)
-    phys:SetCapsule(rad, 1)
     phys:SetFriction(0)
     phys:SetDamping(5)
     phys:SetCollisionGroup(COLLISION.FLYERS)
     phys:ClearCollisionMask()
     phys:CollidesWith(COLLISION.WORLD)
+    phys:SetCapsule(rad, 1)
 end
 
 function MakeGiantCharacterPhysics(inst, mass, rad)
     local phys = inst.entity:AddPhysics()
     phys:SetMass(mass)
-    phys:SetCapsule(rad, 1)
     phys:SetFriction(0)
     phys:SetDamping(5)
     phys:SetCollisionGroup(COLLISION.GIANTS)
@@ -326,12 +325,12 @@ function MakeGiantCharacterPhysics(inst, mass, rad)
     phys:CollidesWith(COLLISION.OBSTACLES)
     phys:CollidesWith(COLLISION.CHARACTERS)
     phys:CollidesWith(COLLISION.GIANTS)
+    phys:SetCapsule(rad, 1)
 end
 
 function MakeFlyingGiantCharacterPhysics(inst, mass, rad)
     local phys = inst.entity:AddPhysics()
     phys:SetMass(mass)
-    phys:SetCapsule(rad, 1)
     phys:SetFriction(0)
     phys:SetDamping(5)
     phys:SetCollisionGroup(COLLISION.GIANTS)
@@ -340,12 +339,12 @@ function MakeFlyingGiantCharacterPhysics(inst, mass, rad)
     --phys:CollidesWith(COLLISION.OBSTACLES)
     phys:CollidesWith(COLLISION.CHARACTERS)
     phys:CollidesWith(COLLISION.GIANTS)
+    phys:SetCapsule(rad, 1)
 end
 
 function MakeGhostPhysics(inst, mass, rad)
     local phys = inst.entity:AddPhysics()
     phys:SetMass(mass)
-    phys:SetCapsule(rad, 1)
     phys:SetFriction(0)
     phys:SetDamping(5)
     phys:SetCollisionGroup(COLLISION.CHARACTERS)
@@ -354,6 +353,7 @@ function MakeGhostPhysics(inst, mass, rad)
     --phys:CollidesWith(COLLISION.OBSTACLES)
     phys:CollidesWith(COLLISION.CHARACTERS)
     phys:CollidesWith(COLLISION.GIANTS)
+    phys:SetCapsule(rad, 1)
 end
 
 function ChangeToGhostPhysics(inst)
@@ -400,32 +400,24 @@ end
 function MakeObstaclePhysics(inst, rad, height)
     inst:AddTag("blocker")
     local phys = inst.entity:AddPhysics()
-    --this is lame. Bullet wants 0 mass for static objects, 
-    -- for for some reason it is slow when we do that
-
-    -- Doesnt seem to slow anything down now.
-    phys:SetMass(0)
-    phys:SetCapsule(rad, height or 2)
+    phys:SetMass(0) --Bullet wants 0 mass for static objects
     phys:SetCollisionGroup(COLLISION.OBSTACLES)
     phys:ClearCollisionMask()
     phys:CollidesWith(COLLISION.ITEMS)
     phys:CollidesWith(COLLISION.CHARACTERS)
     phys:CollidesWith(COLLISION.GIANTS)
+    phys:SetCapsule(rad, height or 2)
 end
 
 function MakeSmallObstaclePhysics(inst, rad, height)
     inst:AddTag("blocker")
     local phys = inst.entity:AddPhysics()
-    --this is lame. Bullet wants 0 mass for static objects,
-    -- for for some reason it is slow when we do that
-
-    -- Doesnt seem to slow anything down now.
-    phys:SetMass(0)
-    phys:SetCapsule(rad, height or 2)
+    phys:SetMass(0) --Bullet wants 0 mass for static objects
     phys:SetCollisionGroup(COLLISION.SMALLOBSTACLES)
     phys:ClearCollisionMask()
     phys:CollidesWith(COLLISION.ITEMS)
     phys:CollidesWith(COLLISION.CHARACTERS)
+    phys:SetCapsule(rad, height or 2)
 end
 
 --Heavy obstacles can be heavy lifted, changing to inventoryitem.
@@ -439,12 +431,12 @@ function MakeHeavyObstaclePhysics(inst, rad, height)
     phys:SetRestitution(0)
     --obstacle physics
     phys:SetMass(0)
-    phys:SetCapsule(rad, height or 2)
     phys:SetCollisionGroup(COLLISION.OBSTACLES)
     phys:ClearCollisionMask()
     phys:CollidesWith(COLLISION.ITEMS)
     phys:CollidesWith(COLLISION.CHARACTERS)
     phys:CollidesWith(COLLISION.GIANTS)
+    phys:SetCapsule(rad, height or 2)
 end
 
 --Heavy obstacles can be heavy lifted, changing to inventoryitem.
@@ -458,11 +450,11 @@ function MakeSmallHeavyObstaclePhysics(inst, rad, height)
     phys:SetRestitution(0)
     --obstacle physics
     phys:SetMass(0)
-    phys:SetCapsule(rad, height or 2)
     phys:SetCollisionGroup(COLLISION.SMALLOBSTACLES)
     phys:ClearCollisionMask()
     phys:CollidesWith(COLLISION.ITEMS)
     phys:CollidesWith(COLLISION.CHARACTERS)
+    phys:SetCapsule(rad, height or 2)
 end
 
 function RemovePhysicsColliders(inst)

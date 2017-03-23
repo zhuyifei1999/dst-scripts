@@ -26,7 +26,6 @@ local RADIUS =
 }
 
 local DAMAGE_RADIUS_PADDING = .5
-local DESTROY_RADIUS_PADDING = .5
 local GLASS_TIME = 24 * FRAMES
 
 local function KeepTargetFn()
@@ -78,7 +77,7 @@ local COLLAPSIBLE_TAGS = { "_combat", "pickable" }
 for k, v in pairs(COLLAPSIBLE_WORK_ACTIONS) do
     table.insert(COLLAPSIBLE_TAGS, k.."_workable")
 end
-local NON_COLLAPSIBLE_TAGS = { "antlion", "groundspike", "flying", "ghost", "playerghost", "FX", "NOCLICK", "DECOR", "INLIMBO" }
+local NON_COLLAPSIBLE_TAGS = { "antlion", "groundspike", "flying", "shadow", "ghost", "playerghost", "FX", "NOCLICK", "DECOR", "INLIMBO" }
 
 local function DoBreak(inst)
     inst.task = nil
@@ -104,7 +103,7 @@ local function DoDamage(inst, OnIgnite)
 
     local isblock = inst.animname == "block"
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, 0, z, inst.spikeradius + DESTROY_RADIUS_PADDING, nil, NON_COLLAPSIBLE_TAGS, COLLAPSIBLE_TAGS)
+    local ents = TheSim:FindEntities(x, 0, z, inst.spikeradius + DAMAGE_RADIUS_PADDING, nil, NON_COLLAPSIBLE_TAGS, COLLAPSIBLE_TAGS)
     for i, v in ipairs(ents) do
         if v:IsValid() then
             if v.components.workable ~= nil and
@@ -115,7 +114,8 @@ local function DoDamage(inst, OnIgnite)
                     v:Remove()
                 end
             elseif v.components.pickable ~= nil
-                and v.components.pickable:CanBePicked() then
+                and v.components.pickable:CanBePicked()
+                and not v:HasTag("intense") then
                 local num = v.components.pickable.numtoharvest or 1
                 local product = v.components.pickable.product
                 local x1, y1, z1 = v.Transform:GetWorldPosition()
@@ -138,7 +138,7 @@ local function DoDamage(inst, OnIgnite)
         end
     end
 
-    local totoss = TheSim:FindEntities(x, 0, z, inst.spikeradius + DESTROY_RADIUS_PADDING, { "_inventoryitem" }, { "locomotor", "INLIMBO" })
+    local totoss = TheSim:FindEntities(x, 0, z, inst.spikeradius + DAMAGE_RADIUS_PADDING, { "_inventoryitem" }, { "locomotor", "INLIMBO" })
     for i, v in ipairs(totoss) do
         if not v.components.inventoryitem.nobounce and v.Physics ~= nil and v.Physics:IsActive() then
             if isblock then
@@ -250,7 +250,6 @@ local function MakeSpikeFn(shape, size)
         inst.AnimState:SetSortOrder(3)
 
         inst.Physics:SetMass(999999)
-        inst.Physics:SetCapsule(inst.spikeradius, 2)
         inst.Physics:SetCollisionGroup(COLLISION.OBSTACLES)
         inst.Physics:ClearCollisionMask()
         inst.Physics:CollidesWith(COLLISION.ITEMS)
@@ -258,6 +257,7 @@ local function MakeSpikeFn(shape, size)
         inst.Physics:CollidesWith(COLLISION.GIANTS)
         inst.Physics:CollidesWith(COLLISION.WORLD)
         inst.Physics:SetActive(false)
+        inst.Physics:SetCapsule(inst.spikeradius, 2)
 
         inst:AddTag("notarget")
         inst:AddTag("hostile")

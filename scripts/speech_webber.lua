@@ -158,6 +158,13 @@ return {
         "Hhhhfn!",
         "Oof...!",
     },
+    ANNOUNCE_ATRIUM_DESTABILIZING = 
+    {
+        "That gateway did something weird.",
+        "Something's happening.",
+        "Let's get out of here.",
+    },
+    ANNOUNCE_RUINS_RESET = "Everything's back!",
 
 	ANNOUNCE_BECOMEGHOST = "oOooOooO!!",
 	ANNOUNCE_GHOSTDRAIN = "We're becoming... even more monstrous!",
@@ -1211,6 +1218,8 @@ return {
 			COMPLETE = "That looks real good!",
         },
         STALKER = "I don't think it's friendly.",
+        STALKER_ATRIUM = "We'll defend ourselves if we have to.",
+        STALKER_MINION = "Creepy!",
         THURIBLE = "It gets really hot.",
         ATRIUM_OVERGROWTH = "We never learned those letters.",
 		FROG =
@@ -2013,8 +2022,11 @@ return {
 		},
         ATRIUM_GATE =
         {
-			ON = "The light reveals ancient text: \"Come Back Next Update.\"",
+			ON = "Does this mean we get to go home?",
 			OFF = "We need another piece to turn it on.",
+			CHARGING = "What's it doing?",
+            DESTABILIZING = "It looks like it's gonna blow up!",
+            COOLDOWN = "It wasn't a way home, anyway.",
         },
         ATRIUM_KEY = "This key is REALLY old.",
         LIFEINJECTOR = "I hate taking my medicine!",

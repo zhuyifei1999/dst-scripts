@@ -8,7 +8,7 @@ local assets =
 local prefabs =
 {
     "abigail",
-    "flower",
+    "planted_flower",
     "small_puff",
 }
 
@@ -45,7 +45,7 @@ end
 local function dodecay(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
     inst:Remove()
-    SpawnPrefab("flower").Transform:SetPosition(x, y, z)
+    local flower = SpawnPrefab("planted_flower").Transform:SetPosition(x, y, z)
     SpawnPrefab("small_puff").Transform:SetPosition(x, y, z)
 end
 

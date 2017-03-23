@@ -12,6 +12,7 @@ local TransparentOnSanity = Class(function(self, inst)
     self.inst = inst
     self.offset = math.random()
     self.osc_speed = .25 + math.random() * 2
+    self.osc_amp = .25 --amplitude
     self.alpha = 0
     self.most_alpha = .4
     self.target_alpha = nil
@@ -31,7 +32,7 @@ function TransparentOnSanity:OnUpdate(dt)
         self.target_alpha =
             (1 - player.replica.sanity:GetPercent()) *  --insanity factor
             self.most_alpha *                           --max alpha value
-            (.75 + .25 * math.sin(self.offset * self.osc_speed)) --variance
+            (1 + self.osc_amp * (math.sin(self.offset * self.osc_speed) - 1)) --variance
     end
 
     if self.alpha ~= self.target_alpha then

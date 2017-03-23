@@ -161,6 +161,13 @@ return {
         "Exercise... sucks!",
         "Hnnfhg!",
     },
+    ANNOUNCE_ATRIUM_DESTABILIZING = 
+    {
+        "I probably shouldn't be here.",
+        "This seems dangerous!",
+        "What was that?!",
+    },
+    ANNOUNCE_RUINS_RESET = "Aw, everything I killed is back!",
 
 	ANNOUNCE_NOSLEEPONFIRE = "It's just the collapsing that concerns me.",
 	ANNOUNCE_NODANGERSIESTA = "It's not time for a siesta, it's time for fighting!",
@@ -1413,6 +1420,8 @@ return {
 			COMPLETE = "Looks passable.",
         },
         STALKER = "I brought you back so I could beat you up!",
+        STALKER_ATRIUM = "It's just bones and shadow.",
+        STALKER_MINION = "Yuck, it's barely even alive.",
         THURIBLE = "It smells like burnt hair!",
         ATRIUM_OVERGROWTH = "It's in some other language.",
 		FROG =
@@ -2017,8 +2026,11 @@ return {
 		},
         ATRIUM_GATE =
         {
-			ON = "The light reveals ancient text: \"Come Back Next Update.\"",
+			ON = "It lit up!",
 			OFF = "Why would anyone want to live down here?",
+			CHARGING = "Something weird's going on.",
+            DESTABILIZING = "Is it gonna explode?!",
+            COOLDOWN = "I'll come back another time.",
         },
         ATRIUM_KEY = "The horns make it really easy to turn.",
         LIFEINJECTOR = "Don't you dare stick that in me!",

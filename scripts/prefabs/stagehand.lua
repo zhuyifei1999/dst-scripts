@@ -71,10 +71,10 @@ local function fn()
 
     inst.Transform:SetFourFaced()
 
-    inst.Physics:SetCapsule(.5, 1)
     inst.Physics:SetFriction(0)
     inst.Physics:SetDamping(5)
     ChangePhysics(inst, false)
+    inst.Physics:SetCapsule(.5, 1)
 
     inst.AnimState:SetBank("stagehand")
     inst.AnimState:SetBuild("stagehand")

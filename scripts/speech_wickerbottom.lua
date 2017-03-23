@@ -842,6 +842,8 @@ return
             COMPLETE = "Oh! A specimen fit for a museum!",
         },
         STALKER = "A mistake in need of correcting.",
+        STALKER_ATRIUM = "We could have learned much from each other.",
+        STALKER_MINION = "The weaver's twisted creation.",
         THURIBLE = "We were its intended recipient.",
         ATRIUM_OVERGROWTH = "It would take much too long to decipher.",
         POWCAKE = "The crowning achievement of the agricultural-industrial complex.",
@@ -1921,8 +1923,11 @@ return
         },
         ATRIUM_GATE =
         {
-            ON = "The light reveals ancient text: \"Come Back Next Update.\"",
+            ON = "That's taken care of.",
             OFF = "Now where might that lead?",
+            CHARGING = "It is storing power.",
+            DESTABILIZING = "We'd best not be around when it goes off.",
+            COOLDOWN = "We must be patient.",
         },
         ATRIUM_KEY = "The key to that old gateway.",
         LIFEINJECTOR = "The mold appears to have medicinal properties.",
@@ -1977,6 +1982,13 @@ return
         "How invigorating!",
         "This gets the blood pumping!",
     },
+    ANNOUNCE_ATRIUM_DESTABILIZING = 
+    {
+        "I do believe it's time to go.",
+        "It's dangerous to be here.",
+        "Goodness gracious!",
+    },
+    ANNOUNCE_RUINS_RESET = "Careful, the monsters are back.",
 
     ANNOUNCE_CANFIX = "\nI do believe I can repair this.",
     ANNOUNCE_ADVENTUREFAIL = "We must learn from our failures.",

@@ -151,14 +151,20 @@ return {
         "Huff... Pant...",
         "I should have built... a lifting machine...",
         "Lift... with your back...",
-        "This isn't... gentleman's... work...",
+        "This isn't... gentleman's work...",
         "For... science... oof!",
         "Is this... messing up my hair?",
         "Hngh...!",
         "Pant... Pant...",
         "This is the worst... experiment...",
     },
-    
+    ANNOUNCE_ATRIUM_DESTABILIZING = 
+    {
+		"I think it's time to leave!",
+		"What's that?!",
+		"It's not safe here.",
+	},
+    ANNOUNCE_RUINS_RESET = "All the monsters came back!",
     ANNOUNCE_SNARED = "Sharp! Sharp bones!!",
 	ANNOUNCE_ENTER_DARK = "It's so dark!",
 	ANNOUNCE_ENTER_LIGHT = "I can see again!",
@@ -1227,6 +1233,8 @@ return {
 			COMPLETE = "It's alive! Oh wait, no, it's not.",
         },
         STALKER = "The skeleton fused with the shadows!",
+        STALKER_ATRIUM = "Why'd it have to be so big?",
+        STALKER_MINION = "Anklebiters!",
         THURIBLE = "It smells like chemicals.",
         ATRIUM_OVERGROWTH = "I don't recognize any of these symbols.",
 		FROG =
@@ -1991,8 +1999,11 @@ return {
 		},
         ATRIUM_GATE =
         {
-			ON = "The light reveals some text: \"Come Back Next Update.\"",
+			ON = "Back in working order.",
 			OFF = "The essential components are still intact.",
+			CHARGING = "It's gaining power.",
+			DESTABILIZING = "The gateway is destabilizing.",
+			COOLDOWN = "It needs time to recover. Me too.",
         },
         ATRIUM_KEY = "There is power emanating from it.",
 		LIFEINJECTOR = "A scientific breakthrough! The cure!",

@@ -174,6 +174,13 @@ return {
         "All my joints... are cracking!",
         "I... was a king, you know..!",
     },
+    ANNOUNCE_ATRIUM_DESTABILIZING = 
+    {
+        "Dark magics are returning.",
+        "Here we go again.",
+        "The power's growing.",
+    },
+    ANNOUNCE_RUINS_RESET = "The cycle begins again.",
 
     ANNOUNCE_SNARED = "How dare you!",
 	ANNOUNCE_ENTER_DARK = "That smell... both nostalgic and terrifying!",
@@ -1326,6 +1333,8 @@ return {
 			COMPLETE = "Was it wise to unleash this upon the world?",
         },
         STALKER = "There is no limit to the power of shadows.",
+        STALKER_ATRIUM = "The Atrium's power restored his mind.",
+        STALKER_MINION = "A being of living fuel.",
         THURIBLE = "Curious. It smells like roses.",
         ATRIUM_OVERGROWTH = "I can't believe I've forgotten how to read this.",
 		FROG =
@@ -1987,8 +1996,11 @@ return {
 		},
         ATRIUM_GATE =
         {
-			ON = "The light reveals ancient text: \"Come Back Next Update.\"",
+			ON = "This is a most wretched idea.",
 			OFF = "It lacks a key.",
+			CHARGING = "It is feeding off the dark energy.",
+            DESTABILIZING = "Now we've gone and done it.",
+            COOLDOWN = "Best not to overuse this power.",
         },
         ATRIUM_KEY = "It's strange to see it.",
         LIFEINJECTOR = "Who would put this filth in their veins?",

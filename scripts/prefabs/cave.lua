@@ -11,6 +11,7 @@ local prefabs =
     "cavelight",
     "cavelight_small",
     "cavelight_tiny",
+    "cavelight_atrium",
     "flower_cave",
     "ancient_altar",
     "ancient_altar_broken",

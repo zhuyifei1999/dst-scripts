@@ -150,6 +150,13 @@ return {
         "I'm... okay...",
         "Don't worry... Abby... I got it...",
     },
+    ANNOUNCE_ATRIUM_DESTABILIZING = 
+    {
+        "The dead shall rise.",
+        "The beasts are coming.",
+        "Death is coming for us.",
+    },
+    ANNOUNCE_RUINS_RESET = "The dead are risen.",
 
 	ANNOUNCE_BECOMEGHOST = "oOoooooO!!",
 	ANNOUNCE_GHOSTDRAIN = "The ghosts... Want to play...",
@@ -1356,6 +1363,8 @@ return {
 			COMPLETE = "What horrors have we resurrected here today?",
         },
         STALKER = "Not even death is permanent.",
+        STALKER_ATRIUM = "Do you mourn, too?",
+        STALKER_MINION = "Death would be a kindness.",
         THURIBLE = "An ember that burns with the stuff of nightmares.",
         ATRIUM_OVERGROWTH = "Scrawlings of a tongue lost to time.",
 		FROG =
@@ -1970,8 +1979,11 @@ return {
 		},
         ATRIUM_GATE =
         {
-			ON = "The light reveals ancient text: \"Come Back Next Update.\"",
+			ON = "Hope springs infernal.",
 			OFF = "A beacon of hope left unlit... How fitting.",
+			CHARGING = "Take us far from here.",
+            DESTABILIZING = "Oh well. I hope it's a quick death.",
+            COOLDOWN = "We can't do that again for awhile.",
         },
         ATRIUM_KEY = "I think I know where it goes...",
         LIFEINJECTOR = "We were not meant to cheat death.",

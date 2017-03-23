@@ -80,6 +80,7 @@ function Commander:AddSoldier(ent)
         self.inst:ListenForEvent("death", self._onremove, ent)
         self.numsoldiers = self.numsoldiers + 1
         self:StartTrackingDistance()
+        self.inst:PushEvent("soldierschanged")
         ent:PushEvent("gotcommander", { commander = self.inst })
     end
 end
@@ -93,6 +94,7 @@ function Commander:RemoveSoldier(ent)
         if self.numsoldiers <= 0 then
             self:StopTrackingDistance()
         end
+        self.inst:PushEvent("soldierschanged")
         ent:PushEvent("lostcommander", { commander = self.inst })
     end
 end

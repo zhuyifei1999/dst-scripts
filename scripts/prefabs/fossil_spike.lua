@@ -12,7 +12,6 @@ local prefabs =
 local NUM_VARIATIONS = 7
 local PHYSICS_RADIUS = .2
 local DAMAGE_RADIUS_PADDING = .5
-local DESTROY_RADIUS_PADDING = .5
 
 local function KeepTargetFn()
     return false
@@ -58,11 +57,11 @@ local COLLAPSIBLE_TAGS = { "_combat", "pickable" }
 for k, v in pairs(COLLAPSIBLE_WORK_ACTIONS) do
     table.insert(COLLAPSIBLE_TAGS, k.."_workable")
 end
-local NON_COLLAPSIBLE_TAGS = { "stalker", "flying", "ghost", "playerghost", "FX", "NOCLICK", "DECOR", "INLIMBO" }
+local NON_COLLAPSIBLE_TAGS = { "stalker", "flying", "shadow", "ghost", "playerghost", "FX", "NOCLICK", "DECOR", "INLIMBO" }
 
 local function DoDamage(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, 0, z, PHYSICS_RADIUS + DESTROY_RADIUS_PADDING, nil, NON_COLLAPSIBLE_TAGS, COLLAPSIBLE_TAGS)
+    local ents = TheSim:FindEntities(x, 0, z, PHYSICS_RADIUS + DAMAGE_RADIUS_PADDING, nil, NON_COLLAPSIBLE_TAGS, COLLAPSIBLE_TAGS)
     for i, v in ipairs(ents) do
         if v:IsValid() then
             if v.components.workable ~= nil and
@@ -73,7 +72,8 @@ local function DoDamage(inst)
                     v:Remove()
                 end
             elseif v.components.pickable ~= nil
-                and v.components.pickable:CanBePicked() then
+                and v.components.pickable:CanBePicked()
+                and not v:HasTag("intense") then
                 local num = v.components.pickable.numtoharvest or 1
                 local product = v.components.pickable.product
                 local x1, y1, z1 = v.Transform:GetWorldPosition()
@@ -95,7 +95,7 @@ local function DoDamage(inst)
         end
     end
 
-    local totoss = TheSim:FindEntities(x, 0, z, PHYSICS_RADIUS + DESTROY_RADIUS_PADDING, { "_inventoryitem" }, { "locomotor", "INLIMBO" })
+    local totoss = TheSim:FindEntities(x, 0, z, PHYSICS_RADIUS + DAMAGE_RADIUS_PADDING, { "_inventoryitem" }, { "locomotor", "INLIMBO" })
     for i, v in ipairs(totoss) do
         if not v.components.inventoryitem.nobounce and v.Physics ~= nil and v.Physics:IsActive() then
             SpikeLaunch(v, inst, .8 + PHYSICS_RADIUS, PHYSICS_RADIUS * .4, PHYSICS_RADIUS + v.Physics:GetRadius())
@@ -183,12 +183,12 @@ local function fn()
     inst.AnimState:SetFinalOffset(1)
 
     inst.Physics:SetMass(99999)
-    inst.Physics:SetCapsule(PHYSICS_RADIUS, 2)
     inst.Physics:SetCollisionGroup(COLLISION.SMALLOBSTACLES)
     inst.Physics:ClearCollisionMask()
     inst.Physics:CollidesWith(COLLISION.ITEMS)
     inst.Physics:CollidesWith(COLLISION.CHARACTERS)
     inst.Physics:CollidesWith(COLLISION.WORLD)
+    inst.Physics:SetCapsule(PHYSICS_RADIUS, 2)
 
     inst:AddTag("notarget")
     inst:AddTag("groundspike")

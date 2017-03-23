@@ -541,7 +541,6 @@ local function fn()
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
-    inst.entity:AddPhysics()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 

@@ -2,7 +2,7 @@
 
 local assets =
 {
-	Asset("DYNAMIC_ANIM", "anim/dynamic/swap_torch_rag.zip"),
+	Asset("DYNAMIC_ANIM", "anim/dynamic/torch_rag.zip"),
 }
 
 return CreatePrefabSkin("torch_rag",
@@ -10,9 +10,9 @@ return CreatePrefabSkin("torch_rag",
 	base_prefab = "torch",
 	type = "item",
 	assets = assets,
-	build_name = "swap_torch_rag",
+	build_name = "torch_rag",
 	rarity = "Elegant",
 	prefabs = { "torchfire_rag", },
-	init_fn = function(inst) torch_init_fn(inst, "swap_torch_rag") end,
+	init_fn = function(inst) torch_init_fn(inst, "torch_rag") end,
 	fx_prefab = { "torchfire_rag", },
 })

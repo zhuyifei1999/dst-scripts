@@ -330,7 +330,6 @@ local function commonfn(name, sixfaced)
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
-    inst.entity:AddPhysics()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 

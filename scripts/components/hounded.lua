@@ -7,6 +7,12 @@ return Class(function(self, inst)
 assert(TheWorld.ismastersim, "Hounded should not exist on client")
 
 --------------------------------------------------------------------------
+--[[ Dependencies ]]
+--------------------------------------------------------------------------
+
+local SourceModifierList = require("util/sourcemodifierlist")
+
+--------------------------------------------------------------------------
 --[[ Constants ]]
 --------------------------------------------------------------------------
 
@@ -43,6 +49,7 @@ local _warnduration = 30
 local _attackplanned = false
 local _timetonextwarningsound = 0
 local _announcewarningsoundinterval = 4
+local _pausesources = SourceModifierList(inst, false, SourceModifierList.boolean)
 
 --Configure this data using hounded:SetSpawnData
 local _spawndata =
@@ -301,10 +308,8 @@ local function SummonSpawn(pt)
 end
 
 local function ReleaseSpawn(target)
-	local pt = Vector3(target.Transform:GetWorldPosition())
-
-	local spawn = SummonSpawn(pt)
-	if spawn then
+	local spawn = SummonSpawn(target:GetPosition())
+	if spawn ~= nil then
 		spawn.components.combat:SuggestTarget(target)
 		return true
 	end
@@ -314,7 +319,7 @@ end
 
 local function RemovePendingSpawns(player)
     if _spawninfo ~= nil then
-    	for i,spawninforec in ipairs(_spawninfo) do
+    	for i, spawninforec in ipairs(_spawninfo) do
     		if spawninforec.player == player then
     			table.remove(_spawninfo, i)
     			return
@@ -346,6 +351,18 @@ local function OnPlayerLeft(src, player)
     end
 end
 
+local function OnPauseHounded(src, data)
+    if data ~= nil and data.source ~= nil then
+        _pausesources:SetModifier(data.source, true, data.reason)
+    end
+end
+
+local function OnUnpauseHounded(src, data)
+    if data ~= nil and data.source ~= nil then
+        _pausesources:RemoveModifier(data.source, data.reason)
+    end
+end
+
 --------------------------------------------------------------------------
 --[[ Initialization ]]
 --------------------------------------------------------------------------
@@ -356,8 +373,11 @@ for i, v in ipairs(AllPlayers) do
 end
 
 --Register events
-inst:ListenForEvent("ms_playerjoined", OnPlayerJoined, TheWorld)
-inst:ListenForEvent("ms_playerleft", OnPlayerLeft, TheWorld)
+inst:ListenForEvent("ms_playerjoined", OnPlayerJoined)
+inst:ListenForEvent("ms_playerleft", OnPlayerLeft)
+
+inst:ListenForEvent("pausehounded", OnPauseHounded)
+inst:ListenForEvent("unpausehounded", OnUnpauseHounded)
 
 self.inst:StartUpdatingComponent(self)
 PlanNextAttack()
@@ -469,18 +489,25 @@ function self:OnUpdate(dt)
 		return
 	end
 
-	_timetoattack = _timetoattack - dt
+    _timetoattack = _timetoattack - dt
 
-	if _timetoattack < 0 then
+    if _pausesources:Get() then
+        _warning = false
+
+        if _timetoattack < 0 then
+            _spawninfo = nil
+            PlanNextAttack()
+        end
+	elseif _timetoattack < 0 then
+        _warning = false
+
 		-- Okay, it's hound-day, get number of dogs for each player
-		if not _spawninfo then
+		if _spawninfo == nil then
 			GetWaveAmounts()
 		end
 
-		_warning = false
-
 		local playersdone = {}
-		for i,spawninforec in ipairs(_spawninfo) do
+		for i, spawninforec in ipairs(_spawninfo) do
 			spawninforec.timetonext = spawninforec.timetonext - dt
 			if spawninforec.spawnstorelease > 0 and spawninforec.timetonext < 0 then
 				-- hounds can attack anyone in the group, even new players.
@@ -508,15 +535,13 @@ function self:OnUpdate(dt)
 		for i,v in ipairs(playersdone) do
 			table.remove(_spawninfo, v)
 		end
-		if #_spawninfo == 0 then
+		if #_spawninfo <= 0 then
 			_spawninfo = nil
 			PlanNextAttack()
 		end
-	else
-		if not _warning and _timetoattack < _warnduration then
-			_warning = true
-			_timetonextwarningsound = 0
-		end
+	elseif not _warning and _timetoattack < _warnduration then
+		_warning = true
+		_timetonextwarningsound = 0
 	end
 
     if _warning then
@@ -540,10 +565,9 @@ function self:OnUpdate(dt)
 end
 
 function self:LongUpdate(dt)
-	self:OnUpdate(dt)
+    self:OnUpdate(dt)
 end
 
---self.LongUpdate = self.OnUdpate
 --------------------------------------------------------------------------
 --[[ Save/Load ]]
 --------------------------------------------------------------------------
@@ -595,6 +619,5 @@ function self:GetDebugString()
 		return s
 	end
 end
-
 
 end)
