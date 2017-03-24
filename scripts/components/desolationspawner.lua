@@ -110,28 +110,24 @@ local function PopulateAreaData(prefab)
         return
     end
 
-    for area,densities in pairs(_world.generated.densities) do
+    for area, densities in pairs(_world.generated.densities) do
         if densities[prefab] ~= nil then
-            local index = nil
-            for i,v in ipairs(_world.topology.ids) do
+            for i, v in ipairs(_world.topology.ids) do
                 if v == area then
-                    index = i
+                    if _areadata[i] == nil then
+                        _areadata[i] = {}
+                    end
+                    if _areadata[i][prefab] == nil then
+                        _areadata[i][prefab] =
+                        {
+                            denstiy = densities[prefab],
+                            regrowtime = _internaltimes[prefab] + math.random() * _replacementdata[prefab].regrowtime, -- initial offset is randomized
+                        }
+                    -- else this was already populated by Load
+                    end
                     break
                 end
             end
-
-            if _areadata[index] == nil then
-                _areadata[index] = {}
-            end
-
-            if _areadata[index][prefab] == nil then
-                _areadata[index][prefab] = {
-                    denstiy = densities[prefab],
-                    regrowtime = _internaltimes[prefab] + math.random() * _replacementdata[prefab].regrowtime, -- initial offset is randomized
-                }
-            -- else this was already populated by Load
-            end
-
         end
     end
 end

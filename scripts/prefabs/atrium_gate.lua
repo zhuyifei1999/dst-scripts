@@ -29,7 +29,7 @@ local function OnCameraFocusDirty(inst)
             inst._camerafocusvalue = TUNING.ATRIUM_GATE_DESTABILIZE_DELAY + 3
             inst._camerafocustask = inst:DoPeriodicTask(0, OnFocusCamera)
         end
-    elseif _camerafocustask ~= nil then
+    elseif inst._camerafocustask ~= nil then
         inst._camerafocustask:Cancel()
         inst._camerafocustask = nil
     end
