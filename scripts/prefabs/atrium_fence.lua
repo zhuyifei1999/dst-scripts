@@ -129,8 +129,6 @@ local function fn()
     inst.closingtask = nil
     inst.openingtask = nil
 
-    MakeHauntableWork(inst)
-
 	inst.OnSave = OnSave
 	inst.OnLoad = OnLoad
 

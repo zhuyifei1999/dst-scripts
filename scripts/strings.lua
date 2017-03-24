@@ -1847,6 +1847,50 @@ STRINGS =
         "They are unfathomable.",
         "I will save you."
     },
+    STALKER_ATRIUM_SUMMON_MINIONS =
+    {
+        "Be woven.",
+        "How long have I slumbered?",
+        "Let the fuel take shape.",
+        "I will not be defeated so easily.",
+        "I will make you understand.",
+        "Let us end it.",
+        "You will rip apart at the seams.",
+    },
+    STALKER_ATRIUM_SUMMON_CHANNELERS =
+    {
+        "I will stop this.",
+        "You cannot win.",
+        "Lend me your power, one last time.",
+        "You cannot hurt me.",
+        "Protect me.",
+        "You have been betrayed.",
+        "I must do this. For your sake.",
+    },
+    STALKER_ATRIUM_USEGATE =
+    {
+        "I will save us.",
+        "Curse Their name!",
+        "It cannot end like this.",
+        "I was wrong.",
+        "Return them to me!",
+        "Why?",
+        "Metheus...",
+    },
+    STALKER_ATRIUM_DECAYCRY =
+    {
+        "Please...",
+    },
+    STALKER_ATRIUM_DEATHCRY =
+    {
+        "Fools!",
+        "Who are you?",
+        "Release me, shade!",
+        "You are not Them...",
+        "Are you so easily deceived? Ha...",
+        "You deserve this.",
+        "You've made your choice.",
+    },
 
     EPITAPHS =
     {

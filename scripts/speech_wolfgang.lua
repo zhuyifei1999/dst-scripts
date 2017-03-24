@@ -183,6 +183,7 @@ return {
     ANNOUNCE_KLAUS_CALLFORHELP = "Wimpy monster has called for help!",
 
     ANNOUNCE_SNARED = "Wolfgang does not like bones!",
+    ANNOUNCE_REPELLED = "Strong bubble protects beast!",
     ANNOUNCE_ENTER_DARK = "I cannot see! I am scared!",
     ANNOUNCE_ENTER_LIGHT = "I can see again!",
     ANNOUNCE_HOUNDS = "I hear puppies!",
@@ -194,6 +195,7 @@ return {
     ANNOUNCE_PECKED = "What I do to deserve this?",
     ANNOUNCE_TORCH_OUT = "Oh no! The light is gone!",
     ANNOUNCE_FAN_OUT = "Tiny fan is broken!",
+    ANNOUNCE_THURIBLE_OUT = "Swingy burnies has gone out!",
     ANNOUNCE_COMPASS_OUT = "Little needle broke off!",
     ANNOUNCE_WORMHOLE = "It makes me feel alive!",
     ANNOUNCE_TOWNPORTALTELEPORT = "Wolfgang is here!",

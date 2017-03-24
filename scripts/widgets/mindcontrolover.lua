@@ -29,9 +29,13 @@ local MindControlOver = Class(UIAnim, function(self, owner)
     end
 end)
 
-local function PopLevel(inst, self)
-    self.task = nil
-    self:PushLevel(0)
+local function PopLevel(inst, self, delay)
+    if delay > 0 then
+        self.task = inst:DoTaskInTime(0, PopLevel, self, delay - 1)
+    else
+        self.task = nil
+        self:PushLevel(0)
+    end
 end
 
 function MindControlOver:PushLevel(level)
@@ -67,7 +71,7 @@ function MindControlOver:PushLevel(level)
         self.task = nil
     end
     if self.targetlevel > 0 then
-        self.task = self.inst:DoTaskInTime(3 * FRAMES, PopLevel, self)
+        self.task = self.inst:DoTaskInTime(0, PopLevel, self, 1)
     end
 end
 

@@ -56,6 +56,16 @@ local Wisecracker = Class(function(self, inst)
         inst.components.talker:Say(GetString(inst, "ANNOUNCE_SNARED"))
     end)
 
+    inst:ListenForEvent("repelled", function(inst, data)
+        if data ~= nil and data.repeller ~= nil and data.repeller.entity:IsVisible() then
+            local t = GetTime()
+            if t >= (self._repeltime or 0) then
+                self._repeltime = t + 5
+                inst.components.talker:Say(GetString(inst, "ANNOUNCE_REPELLED"))
+            end
+        end
+    end)
+
     inst:ListenForEvent("insufficientfertilizer", function(inst, data)
         inst.components.talker:Say(GetString(inst, "ANNOUNCE_INSUFFICIENTFERTILIZER"))
     end)

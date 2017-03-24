@@ -174,6 +174,7 @@ return {
     ANNOUNCE_KLAUS_CALLFORHELP = "Call thy hordes, they shan't protect thee!",
 
     ANNOUNCE_SNARED = "No cage can hold me!",
+    ANNOUNCE_REPELLED = "Foul magics block mine blows!",
     ANNOUNCE_ENTER_DARK = "And the curtain falls.",
     ANNOUNCE_ENTER_LIGHT = "I step into the light!",
     ANNOUNCE_FREEDOM = "Freedom! The saga continues!",
@@ -204,6 +205,7 @@ return {
     ANNOUNCE_THORNS = "Arg, I've been poked!",
     ANNOUNCE_TORCH_OUT = "My light is quenched!",
     ANNOUNCE_FAN_OUT = "I've lost another fan!",
+    ANNOUNCE_THURIBLE_OUT = "Alas, it is no more.",
     ANNOUNCE_COMPASS_OUT = "I fear I'm going to lose my way!",
     ANNOUNCE_TRAP_WENT_OFF = "That wasn't part of the plan.",
     ANNOUNCE_UNIMPLEMENTED = "It is not of this world.",

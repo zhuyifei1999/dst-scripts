@@ -349,7 +349,7 @@ local states =
         {
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
+                    inst.sg:GoToState(inst.atriumstalker and "taunt" or "idle")
                 end
             end),
         },
@@ -523,6 +523,9 @@ local states =
             inst.AnimState:PlayAnimation("death")
             inst:AddTag("NOCLICK")
             inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death")
+            if inst.atriumstalker then
+                inst:BattleChatter("decaycry", true)
+            end
         end,
 
         timeline =
@@ -621,6 +624,13 @@ local states =
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("death3")
             inst:AddTag("NOCLICK")
+
+            local fx = SpawnPrefab("stalker_shield")
+            fx.entity:SetParent(inst.entity)
+            fx:Hide()
+
+            inst:EnableCameraFocus(true)
+            inst.sg:SetTimeout(TUNING.ATRIUM_GATE_DESTABILIZE_DELAY - 3 * FRAMES)
         end,
 
         timeline =
@@ -649,6 +659,9 @@ local states =
             TimeEvent(155 * FRAMES, ShakeDeath),
             TimeEvent(168 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/stretch") end),
             TimeEvent(170 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/taunt_short") end),
+            TimeEvent(179 * FRAMES, function(inst)
+                inst:BattleChatter("deathcry", true)
+            end),
             TimeEvent(185 * FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/whip_snap")
                 inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death")
@@ -671,9 +684,14 @@ local states =
             TimeEvent(15, ErodeAway),
         },
 
+        ontimeout = function(inst)
+            inst:EnableCameraFocus(false)
+        end,
+
         onexit = function(inst)
             --Should NOT happen!
             inst:RemoveTag("NOCLICK")
+            inst:EnableCameraFocus(false)
         end,
     },
 
@@ -850,6 +868,7 @@ local states =
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
                     inst:SpawnChannelers()
+                    inst:BattleChatter("summon_channelers")
                     inst.sg:GoToState("summon_channelers_loop", inst.sg.statemem.count)
                 end
             end),
@@ -937,6 +956,7 @@ local states =
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
                     inst:SpawnMinions()
+                    inst:BattleChatter("summon_minions")
                     inst.sg:GoToState("summon_minions_loop", inst.sg.statemem.count)
                 end
             end),
@@ -1382,7 +1402,7 @@ local states =
 
     State{
         name = "idle_gate",
-        tags = { "idle" },
+        tags = { "busy", "caninterrupt" },
 
         onenter = function(inst)
             inst.Physics:Stop()
@@ -1399,6 +1419,7 @@ local states =
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
                     inst.sg.statemem.idlegate = true
+                    inst:BattleChatter("usegate")
                     inst.sg:GoToState("idle_gate_loop")
                 end
             end),
@@ -1413,7 +1434,7 @@ local states =
 
     State{
         name = "idle_gate_loop",
-        tags = { "idle" },
+        tags = { "busy", "caninterrupt" },
 
         onenter = function(inst)
             inst.Physics:Stop()
@@ -1445,12 +1466,19 @@ local states =
 
     State{
         name = "idle_gate_pst",
-        tags = { "idle" },
+        tags = { "busy", "caninterrupt" },
 
         onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("gate_pst")
         end,
+
+        timeline =
+        {
+            TimeEvent(12 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
 
         events =
         {

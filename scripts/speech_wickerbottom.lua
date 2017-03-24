@@ -1997,6 +1997,7 @@ return
     ANNOUNCE_HUNGRY = "Librarian needs food.",
     ANNOUNCE_TORCH_OUT = "I need another light.",
     ANNOUNCE_FAN_OUT = "This fragile device has decayed.",
+    ANNOUNCE_THURIBLE_OUT = "That's that.",
     ANNOUNCE_COMPASS_OUT = "My compass has become demagnetized.",
     ANNOUNCE_DUSK = "Night will be here soon.",
 
@@ -2027,6 +2028,7 @@ return
     ANNOUNCE_ENTER_LIGHT = "It is bright enough to see.",
     ANNOUNCE_ENTER_DARK = "I am in the dark.",
     ANNOUNCE_SNARED = "You can't hold me for long, dear.",
+    ANNOUNCE_REPELLED = "There's magic at work here.",
     ANNOUNCE_INV_FULL = "I can't carry anything more.",
 
     ANNOUNCE_CRAFTING_FAIL = "I can't make that now.",

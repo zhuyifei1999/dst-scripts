@@ -166,6 +166,7 @@ return {
 	ANNOUNCE_KLAUS_CALLFORHELP = "Your pleas will fall on deaf ears.",
 
 	ANNOUNCE_SNARED = "I am caged!",
+	ANNOUNCE_REPELLED = "It has spirits to protect it...",
 	ANNOUNCE_ENTER_DARK = "The darkness has swallowed me.",
 	ANNOUNCE_ENTER_LIGHT = "And there was light!",
 	ANNOUNCE_HOUNDS = "The hounds are baying.",
@@ -181,6 +182,7 @@ return {
 	ANNOUNCE_THORNS = "Ow! Prickly, like me.",
 	ANNOUNCE_TORCH_OUT = "Darkness has returned!",
     ANNOUNCE_FAN_OUT = "The fan has breathed its last.",
+    ANNOUNCE_THURIBLE_OUT = "A blessing in disguise.",
     ANNOUNCE_COMPASS_OUT = "It feels the force of the earth no more.",
 	ANNOUNCE_TRAP_WENT_OFF = "Oh, goodness.",
 	ANNOUNCE_WORMHOLE = "I emerge into this world once more.",

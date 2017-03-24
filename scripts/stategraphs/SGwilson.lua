@@ -4927,12 +4927,15 @@ local states =
         tags = { "busy" },
 
         onenter = function(inst, snap)
+            local beaver = inst:HasTag("beaver")
+            local stun_frames = beaver and 6 or 9
+
             if snap then
                 inst.sg:AddStateTag("nopredict")
             else
                 inst.sg:AddStateTag("pausepredict")
                 if inst.components.playercontroller ~= nil then
-                    inst.components.playercontroller:RemotePausePrediction()
+                    inst.components.playercontroller:RemotePausePrediction(stun_frames <= 7 and stun_frames or nil)
                 end
             end
 
@@ -4941,12 +4944,16 @@ local states =
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
 
-            inst.AnimState:PlayAnimation("distress_pre")
-            inst.AnimState:PushAnimation("distress_pst", false)
+            if beaver then
+                inst.AnimState:PlayAnimation("hit")
+            else
+                inst.AnimState:PlayAnimation("distress_pre")
+                inst.AnimState:PushAnimation("distress_pst", false)
+            end
 
             DoHurtSound(inst)
 
-            inst.sg:SetTimeout(9 * FRAMES)
+            inst.sg:SetTimeout(stun_frames * FRAMES)
         end,
 
         ontimeout = function(inst)
@@ -4964,8 +4971,12 @@ local states =
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
 
-            inst.AnimState:PlayAnimation("distress_pre")
-            inst.AnimState:PushAnimation("distress_pst", false)
+            if inst:HasTag("beaver") then
+                inst.AnimState:PlayAnimation("hit")
+            else
+                inst.AnimState:PlayAnimation("distress_pre")
+                inst.AnimState:PushAnimation("distress_pst", false)
+            end
 
             DoHurtSound(inst)
 
@@ -5014,7 +5025,7 @@ local states =
 
     State{
         name = "mindcontrolled",
-        tags = { "busy", "pausepredict" },
+        tags = { "busy", "pausepredict", "nodangle" },
 
         onenter = function(inst)
             if inst.components.playercontroller ~= nil then
@@ -5053,7 +5064,7 @@ local states =
 
     State{
         name = "mindcontrolled_loop",
-        tags = { "busy", "pausepredict" },
+        tags = { "busy", "pausepredict", "nodangle" },
 
         onenter = function(inst)
             if not inst.AnimState:IsCurrentAnimation("mindcontrol_loop") then
@@ -5086,7 +5097,7 @@ local states =
 
     State{
         name = "mindcontrolled_pst",
-        tags = { "busy", "pausepredict" },
+        tags = { "busy", "pausepredict", "nodangle" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("mindcontrol_pst")

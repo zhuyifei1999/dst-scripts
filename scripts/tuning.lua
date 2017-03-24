@@ -2487,8 +2487,8 @@ function Tune(overrides)
         STALKER_ATRIUM_ATTACK_PERIOD = 3,
 
         FOSSIL_SPIKE_DAMAGE = 100,
-        STALKER_SPIKES_CD = 10,
-        STALKER_FIRST_SPIKES_CD = 5,
+        STALKER_SPIKES_CD = 8,
+        STALKER_FIRST_SPIKES_CD = 4,
 
         STALKER_CHANNELERS_COUNT = 6,
         STALKER_CHANNELERS_CD = 20,
@@ -2509,7 +2509,7 @@ function Tune(overrides)
         THURIBLE_FUEL_MAX = (night_time + dusk_time) * 3,
         THURIBLE_AOE_RANGE = 6,
 
-		ATRIUM_GATE_DESTABILIZE_DELAY = 15,
+        ATRIUM_GATE_DESTABILIZE_DELAY = 12,
         ATRIUM_GATE_DESTABILIZE_TIME = seg_time * 8,
         ATRIUM_GATE_DESTABILIZE_WARNING_TIME = seg_time * 0.55,
         ATRIUM_GATE_DESTABILIZE_INITIAL_WARNING_DELAY = 2, -- this is the time after ATRIUM_GATE_DESTABILIZE_DELAY that the first pulse will happen

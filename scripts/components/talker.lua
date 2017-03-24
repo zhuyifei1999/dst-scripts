@@ -31,7 +31,7 @@ local function OnChatterDirty(inst)
             local str = stringtable[self.chatter.strid:value()]
             if str ~= nil then
                 local t = self.chatter.strtime:value()
-                self:Say(str, t > 0 and t or nil, nil, nil, true)
+                self:Say(str, t > 0 and t or nil, self.chatter.forcetext:value(), self.chatter.forcetext:value(), true)
                 return
             end
         end
@@ -47,6 +47,7 @@ function Talker:MakeChatter()
             strtbl = net_string(self.inst.GUID, "talker.chatter.strtbl", "chatterdirty"),
             strid = net_tinybyte(self.inst.GUID, "talker.chatter.strid", "chatterdirty"),
             strtime = net_tinybyte(self.inst.GUID, "talker.chatter.strtime"),
+            forcetext = net_bool(self.inst.GUID, "talker.chatter.forcetext"),
         }
         if not TheWorld.ismastersim then
             self.inst:ListenForEvent("chatterdirty", OnChatterDirty)
@@ -59,13 +60,15 @@ local function OnCancelChatter(inst, self)
     self.chatter.strtbl:set_local("")
 end
 
-function Talker:Chatter(strtbl, strid, time)
+--NOTE: forcetext chatter translates to noanim + force say
+function Talker:Chatter(strtbl, strid, time, forcetext)
     if self.chatter ~= nil and TheWorld.ismastersim then
         self.chatter.strtbl:set(strtbl)
         --force at least the id dirty, so that it's possible to repeat strings
         self.chatter.strid:set_local(strid)
         self.chatter.strid:set(strid)
         self.chatter.strtime:set(time or 0)
+        self.chatter.forcetext:set(forcetext == true)
         if self.chatter.task ~= nil then
             self.chatter.task:Cancel()
         end

@@ -14,7 +14,11 @@ local COMBAT_FEAST_DELAY = 3
 local CHECK_MINIONS_PERIOD = 2
 local DEFENSIVE_HEALTH_TRIGGER = 2 / 3
 
-local IDLE_GATE_DELAY = 10
+local RESET_COMBAT_DELAY = 10
+
+local LOITER_GATE_DIST = 5.5
+local LOITER_GATE_RANGE = 1.5
+
 local IDLE_GATE_TIME = 10
 local IDLE_GATE_MAX_DIST = 4
 local IDLE_GATE_DIST = 3
@@ -145,7 +149,7 @@ local function GetLoiterStargatePos(inst)
             return Vector3(x, 0, z)
         end
         local dx, dz = x1 - x, z1 - z
-        local normalize = 6 / math.sqrt(dx * dx + dz * dz)
+        local normalize = LOITER_GATE_DIST / math.sqrt(dx * dx + dz * dz)
         return Vector3(x + dx * normalize, 0, z + dz * normalize)
     end
 end
@@ -181,8 +185,11 @@ function StalkerBrain:OnStart()
             StalkerChaseAndAttack(self.inst, GetStargate),
             SequenceNode{
                 ParallelNodeAny{
-                    WaitNode(IDLE_GATE_DELAY),
-                    Wander(self.inst, GetLoiterStargatePos, 2),
+                    SequenceNode{
+                        WaitNode(RESET_COMBAT_DELAY),
+                        ActionNode(function() self.inst:SetEngaged(false) end),
+                    },
+                    Wander(self.inst, GetLoiterStargatePos, LOITER_GATE_RANGE),
                 },
                 Leash(self.inst, GetStargatePos, IDLE_GATE_MAX_DIST, IDLE_GATE_DIST),
                 ParallelNode{
@@ -203,8 +210,16 @@ function StalkerBrain:OnStart()
                     self.abilitydata = nil
                 end)),
             ChaseAndAttack(self.inst),
-            FindClosest(self.inst, SEE_LURE_DIST, SAFE_LURE_DIST, { "shadowlure" }),
-            Wander(self.inst),
+            ParallelNode{
+                SequenceNode{
+                    WaitNode(RESET_COMBAT_DELAY),
+                    ActionNode(function() self.inst:SetEngaged(false) end),
+                },
+                PriorityNode({
+                    FindClosest(self.inst, SEE_LURE_DIST, SAFE_LURE_DIST, { "shadowlure" }),
+                    Wander(self.inst),
+                }, .5),
+            },
         }, .5)
     else
         local t = GetTime()

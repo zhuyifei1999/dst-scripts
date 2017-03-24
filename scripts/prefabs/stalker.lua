@@ -87,6 +87,36 @@ end
 
 --------------------------------------------------------------------------
 
+local function OnFocusCamera(inst)
+    local player = TheFocalPoint.entity:GetParent()
+    if player ~= nil then
+        TheFocalPoint:PushTempFocus(inst, 6, 12, 5)
+        TheFocalPoint:PushTempFocus(player, math.huge, math.huge, 5)
+    end
+end
+
+local function OnCameraFocusDirty(inst)
+    if inst._camerafocus:value() then
+        if inst._camerafocustask == nil then
+            inst._camerafocustask = inst:DoPeriodicTask(0, OnFocusCamera)
+        end
+    elseif inst._camerafocustask ~= nil then
+        inst._camerafocustask:Cancel()
+        inst._camerafocustask = nil
+    end
+end
+
+local function EnableCameraFocus(inst, enable)
+    if enable ~= inst._camerafocus:value() then
+        inst._camerafocus:set(enable)
+        if not TheNet:IsDedicated() then
+            OnCameraFocusDirty(inst)
+        end
+    end
+end
+
+--------------------------------------------------------------------------
+
 local function PushMusic(inst, level)
     if ThePlayer == nil then
         inst._playingmusic = false
@@ -311,6 +341,9 @@ end
 local function OnNewTarget(inst, data)
     if data.target ~= nil then
         inst:SetEngaged(true)
+        if inst.atriumstalker then
+            inst:PushEvent("roar")
+        end
     end
 end
 
@@ -372,6 +405,17 @@ local function AtriumBattleCry(combat, target)
         "STALKER_ATRIUM_PLAYER_BATTLECRY" or
         "STALKER_ATRIUM_BATTLECRY"
     return strtbl, math.random(#STRINGS[strtbl])
+end
+
+--For searching:
+-- STRINGS.STALKER_ATRIUM_SUMMON_MINIONS
+-- STRINGS.STALKER_ATRIUM_SUMMON_CHANNELERS
+-- STRINGS.STALKER_ATRIUM_USEGATE
+-- STRINGS.STALKER_ATRIUM_DECAYCRY
+-- STRINGS.STALKER_ATRIUM_DEATHCRY
+local function AtriumBattleChatter(inst, id, forcetext)
+    local strtbl = "STALKER_ATRIUM_"..string.upper(id)
+    inst.components.talker:Chatter(strtbl, math.random(#STRINGS[strtbl]), 2, forcetext)
 end
 
 local function StartAbility(inst, ability)
@@ -1197,6 +1241,8 @@ local function common_fn(bank, build, shadowsize, canfight, atriumstalker)
     if atriumstalker then
         inst:AddTag("noepicmusic")
 
+        inst._camerafocus = net_bool(inst.GUID, "stalker._camerafocus", "camerafocusdirty")
+        inst._camerafocustask = nil
         inst._music = net_tinybyte(inst.GUID, "stalker._music", "musicdirty")
         inst._playingmusic = false
         inst._musictask = nil
@@ -1217,6 +1263,7 @@ local function common_fn(bank, build, shadowsize, canfight, atriumstalker)
 
     if not TheWorld.ismastersim then
         if atriumstalker then
+            inst:ListenForEvent("camerafocusdirty", OnCameraFocusDirty)
             inst:ListenForEvent("musicdirty", OnMusicDirty)
         end
 
@@ -1360,6 +1407,8 @@ local function atrium_fn()
 
     inst.components.health.redirect = nodmgshielded
 
+    inst.EnableCameraFocus = EnableCameraFocus
+    inst.BattleChatter = AtriumBattleChatter
     inst.IsNearAtrium = IsNearAtrium
     inst.OnLostAtrium = OnLostAtrium
     inst.IsAtriumDecay = CheckAtriumDecay

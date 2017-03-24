@@ -13,11 +13,42 @@ local prefabs =
 	"atrium_gate_explodesfx",
 }
 
-local TEMP_SFX_LOOP = "dontstarve/creatures/together/stalker/talk_LP"
+--------------------------------------------------------------------------
+
+local function OnFocusCamera(inst)
+    if inst._camerafocusvalue > FRAMES then
+        inst._camerafocusvalue = inst._camerafocusvalue - FRAMES
+        local k = math.min(1, inst._camerafocusvalue) / 1
+        TheFocalPoint:PushTempFocus(inst, 10 * k, 16 * k, 4)
+    end
+end
+
+local function OnCameraFocusDirty(inst)
+    if inst._camerafocus:value() then
+        if inst._camerafocustask == nil then
+            inst._camerafocusvalue = TUNING.ATRIUM_GATE_DESTABILIZE_DELAY + 3
+            inst._camerafocustask = inst:DoPeriodicTask(0, OnFocusCamera)
+        end
+    elseif _camerafocustask ~= nil then
+        inst._camerafocustask:Cancel()
+        inst._camerafocustask = nil
+    end
+end
+
+local function EnableCameraFocus(inst, enable)
+    if enable ~= inst._camerafocus:value() then
+        inst._camerafocus:set(enable)
+        if not TheNet:IsDedicated() then
+            OnCameraFocusDirty(inst)
+        end
+    end
+end
+
+--------------------------------------------------------------------------
 
 local EXPLOTION_ANIM_LENG = 86*FRAMES
 
-local ATRIUM_ARENA_SIZE = 15
+local ATRIUM_ARENA_SIZE = 14.55
 local function IsObjectInAtriumArena(inst, obj)
     if obj then
 		local obj_x, _, obj_z = obj.Transform:GetWorldPosition()
@@ -131,6 +162,7 @@ local function StartDestabilizing(inst, onload)
     inst.components.trader:Disable()
     inst.components.pickable.caninteractwith = false
 	inst:RemoveTag("intense")
+    EnableCameraFocus(inst, true)
 
 	if not inst.components.timer:TimerExists("destabilizing") then
 		inst.components.timer:StartTimer("destabilizing", TUNING.ATRIUM_GATE_DESTABILIZE_TIME)
@@ -164,6 +196,7 @@ local function OnQueueDestabilize(inst, onload)
     inst.components.trader:Disable()
     inst.components.pickable.caninteractwith = false
 	inst:RemoveTag("intense")
+    EnableCameraFocus(inst, true)
 
 	if inst.components.timer:TimerExists("destabilizedelay") then
 		inst.components.timer:StopTimer("destabilizedelay")
@@ -186,6 +219,7 @@ local function Destabilize(inst, failed)
 end
 
 local function OnDestabilizeExplode(inst)
+    EnableCameraFocus(inst, false)
 	inst.AnimState:PlayAnimation("overload_pst", false)
 	SpawnPrefab("atrium_gate_explodesfx").Transform:SetPosition(inst.Transform:GetWorldPosition())
 	HideFx(inst)
@@ -210,6 +244,7 @@ local function StartCooldown(inst, immediate)
 		OnDestabilizeExplode(inst)
 	end
 
+    EnableCameraFocus(inst, false)
 	inst:RemoveTag("intense")
     inst.components.pickable.caninteractwith = false
 	inst.components.trader:Disable()
@@ -218,12 +253,12 @@ local function StartCooldown(inst, immediate)
 
 	if immediate then
 		inst.AnimState:PlayAnimation("cooldown", true)
-		--inst.SoundEmitter:PlaySound(TEMP_SFX_LOOP, "loop")
+		inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/cooldown_LP", "loop")
 	else
 		inst:DoTaskInTime(EXPLOTION_ANIM_LENG, function() 
 			if inst.components.timer:TimerExists("cooldown") then 
 				inst.AnimState:PlayAnimation("cooldown", true)
-				--inst.SoundEmitter:PlaySound(TEMP_SFX_LOOP, "loop")
+				inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/cooldown_LP", "loop")
 			end
 		end)
 	end
@@ -238,12 +273,13 @@ local function OnTrackStalker(inst, stalker)
         inst:ListenForEvent("onremove", inst._onremovestalker, stalker)
         inst:ListenForEvent("death", inst._onstalkerdeath, stalker)
 		inst:AddTag("intense")
+        EnableCameraFocus(inst, false)
 		ShowFx(inst, "idle")
 		inst.AnimState:PlayAnimation("idle_fight", true)
 		inst.SoundEmitter:KillSound("loop")
 		inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/active_LP", "loop")
     else
-        --cleanup bad state, shouldn't reach here normallym
+        --cleanup bad state, shouldn't reach here normally
         --but possible with corrupt or tampering save data
         inst.components.entitytracker:ForgetEntity("stalker")
     end
@@ -340,12 +376,6 @@ local function OnRemove(inst)
     TheWorld.Pathfinder:RemoveWall(x + 0.5, 0, z + 0.5)
 end
 
-local function TestFx(inst, gateanim, fxanim)
-	ShowFx(inst, fxanim)
-	inst.AnimState:PlayAnimation(gateanim.."_pre")
-	inst.AnimState:PushAnimation(gateanim.."_loop")
-end
-
 local function fn()
 	local inst = CreateEntity()
 
@@ -373,6 +403,9 @@ local function fn()
 	inst:AddTag("gemsocket") -- for "Socket" action string
 	inst:AddTag("stargate")
 
+    inst._camerafocus = net_bool(inst.GUID, "atrium_gate._camerafocus", "camerafocusdirty")
+    inst._camerafocustask = nil
+
     --Dedicated server does not need to spawn the flooring
     if not TheNet:IsDedicated() then
     	SpawnPrefab("atrium_floor").entity:SetParent(inst.entity)
@@ -384,6 +417,8 @@ local function fn()
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+        inst:ListenForEvent("camerafocusdirty", OnCameraFocusDirty)
+
         return inst
     end
 
@@ -437,7 +472,6 @@ local function fn()
         end
     end
 
-	inst.TestFx = TestFx
 	inst.StartCooldown = StartCooldown
 
     return inst

@@ -94,6 +94,33 @@ end
 --[[ Private Heart of the Ruins functions ]]
 --------------------------------------------------------------------------
 
+local function AddAtriumWorldTopolopy(left, top)
+	local index = #TheWorld.topology.ids
+	TheWorld.topology.ids[index] = "AtriumMaze:0:AtriumMazeRooms"
+	TheWorld.topology.story_depths[index] = 0
+
+	local size = 4 * 8 * 6
+
+	local node = {}
+	node.area = size * size
+	node.c = 1 -- colour index
+	node.cent = {left + (size / 2), top + (size / 2)}
+	node.neighbours = {}
+	node.poly = { {left, top},
+				  {left + size, top},
+				  {left + size, top + size},
+				  {left, top + size}
+				}
+	node.tags  = {"Atrium", "Nightmare"}
+	node.type = 0
+	node.x = node.cent[1]
+	node.y = node.cent[2]
+	
+	node.validedges = {}
+	
+	TheWorld.topology.nodes[index] = node
+end
+
 local function HeartOfTheRuinsAtriumRetrofitting(inst)
 	local obj_layout = require("map/object_layout")
 	local entities = {}
@@ -139,12 +166,11 @@ local function HeartOfTheRuinsAtriumRetrofitting(inst)
 	end
 
 	local foundarea = false
-	
-	for x = 0, 5 do
-		for y = 0, 5 do
-			if (x == 0 or x == 5) or (y == 0 or y == 5) then
-				left = 8 + (x > 0 and ((x * (map_width / 5)) - area_size - 16) or 0)
-				top  = 8 + (y > 0 and ((y * (map_height / 5)) - area_size - 16) or 0)
+	for x = 0, 6 do
+		for y = 0, 6 do
+			if (x == 0 or x == 6) or (y == 0 or y == 6) then
+				left = 8 + (x > 0 and ((x * (map_width / 6)) - area_size - 16) or 0)
+				top  = 8 + (y > 0 and ((y * (map_height / 6)) - area_size - 16) or 0)
 				if isvalidarea(left, top) then
 					foundarea = true
 					break
@@ -173,6 +199,7 @@ local function HeartOfTheRuinsAtriumRetrofitting(inst)
 		obj_layout.Place({left + (3*8), top }, "SINGLE_NORTH", add_fn, {"atrium_end"}, TheWorld.Map)
 		obj_layout.Place({left + (4*8), top + (5*8)}, "SINGLE_SOUTH", add_fn, {"atrium_start"}, TheWorld.Map)
 		
+		AddAtriumWorldTopolopy((left * 4) - (map_width * 0.5 * 4), (top* 4) - (map_height * 0.5 * 4))
 		
 		inst.components.retrofitcavemap_anr.requiresreset = true
 
@@ -381,6 +408,34 @@ local function HeartOfTheRuinsRuinsRetrofittingCaveHoles(inst)
 
 end
 
+local function HeartOfTheRuinsRuinsRetrofitting_RepositionAtriumGate(inst)
+	local function trypoint(pt1, pt2)
+		local dir = pt2 - pt1
+		if (math.abs(dir.x) < 1) or (math.abs(dir.z) < 1) then
+			return pt1 + (dir * 0.5)
+		end
+	end
+	
+	local x, y, z = inst.Transform:GetWorldPosition()
+	local pts = {}
+	local ents = TheSim:FindEntities(x, y, z, 25)
+	for _, ent in ipairs(ents) do
+		if ent.prefab == "atrium_light" then
+			if TheWorld.Map:GetTileAtPoint(ent.Transform:GetWorldPosition()) == GROUND.BRICK then
+				table.insert(pts, ent:GetPosition())
+			end
+		end
+	end
+	if #pts == 3 then
+		local pt = trypoint(pts[1], pts[2]) or trypoint(pts[1], pts[3]) or trypoint(pts[2], pts[3])
+		print ("Retrofitting for A New Reign: Heart of the Ruins + Old Atrium Fixup: Moving gateway from " .. tostring(inst:GetPosition()) .. " to " .. tostring(pt))
+		inst.Transform:SetPosition(pt:Get())
+	else
+		print ("Retrofitting for A New Reign: Heart of the Ruins + Old Atrium Fixup: Failed to adjust the Atrium Gateway's position at.")
+	end
+
+end
+
 --------------------------------------------------------------------------
 --[[ Post initialization ]]
 --------------------------------------------------------------------------
@@ -449,7 +504,45 @@ function self:OnPostInit()
 		HeartOfTheRuinsRuinsRetrofittingCaveHoles(inst)
 	end	
 	
+	if self.retrofit_heartoftheruins_oldatriumfixup then
+		self.retrofit_heartoftheruins_oldatriumfixup = nil
 	
+		print ("Retrofitting for A New Reign: Heart of the Ruins + Old Atrium Fixup")
+
+		local gates = {}
+		for _,v in pairs(Ents) do
+			if v.prefab == "atrium_gate" and TheWorld.Map:GetTileAtPoint(v.Transform:GetWorldPosition()) == GROUND.BRICK then
+				HeartOfTheRuinsRuinsRetrofitting_RepositionAtriumGate(v)
+				table.insert(gates, v)
+			end
+		end
+
+		local needsatriumnodedata = true
+		for k,v in ipairs(TheWorld.topology.ids) do
+			if string.find(v, "AtriumMaze") then
+				needsatriumnodedata = false
+				break
+			end
+		end
+
+		if needsatriumnodedata then
+			for k, gate in ipairs(gates) do
+				local pos = gate:GetPosition()
+				if (not TheWorld.Map:IsAboveGroundAtPoint(pos.x - 16, 0, pos.z)) and
+					(not TheWorld.Map:IsAboveGroundAtPoint(pos.x + 16, 0, pos.z)) and
+					(not TheWorld.Map:IsAboveGroundAtPoint(pos.x, 0, pos.z - 16)) then
+				
+					AddAtriumWorldTopolopy(pos.x - (4*8*2.5), pos.z - 16)
+					print ("Retrofitting for A New Reign: Heart of the Ruins + Old Atrium Fixup: Converted the retrofitted atrium to have valid topology.")
+					break
+				end
+			end
+		else
+			print ("Retrofitting for A New Reign: Heart of the Ruins + Old Atrium Fixup: Atrium already has valid topology.")
+		end
+
+	end
+
 	---------------------------------------------------------------------------
 	if inst.components.retrofitcavemap_anr.requiresreset then
 		-- not quite working in all cases...
@@ -466,7 +559,6 @@ function self:OnPostInit()
 		inst:DoTaskInTime(35, function() TheNet:Announce("World will reload in 5 seconds to complete retrofitting.") end)
 		inst:DoTaskInTime(40, function() TheNet:SendWorldRollbackRequestToServer(0) end)
 	end
-
 end
 
 --------------------------------------------------------------------------
@@ -485,6 +577,7 @@ function self:OnLoad(data)
 		self.retrofit_heartoftheruins_respawnerfix = data.retrofit_heartoftheruins_respawnerfix
 		self.retrofit_heartoftheruins_altars = data.retrofit_heartoftheruins_altars
 		self.retrofit_heartoftheruins_caveholes = data.retrofit_heartoftheruins_caveholes
+		self.retrofit_heartoftheruins_oldatriumfixup = data.retrofit_heartoftheruins_oldatriumfixup
     end
 end
 

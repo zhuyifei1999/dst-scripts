@@ -185,6 +185,7 @@ return {
 	ANNOUNCE_GHOSTDRAIN = "I'm goin', like, nutso over here...",
 
 	ANNOUNCE_SNARED = "You'll have to do better than that.",
+	ANNOUNCE_REPELLED = "That's just impolite, eh.",
 	ANNOUNCE_ENTER_DARK = "Who turned out the lights?",
 	ANNOUNCE_ENTER_LIGHT = "Brilliance!",
 	ANNOUNCE_FREEDOM = "I got out!",
@@ -205,6 +206,7 @@ return {
 	ANNOUNCE_THORNS = "Ouch!",
 	ANNOUNCE_TORCH_OUT = "My light ran out!",
     ANNOUNCE_FAN_OUT = "I guess I'll just have to suffer now.",
+    ANNOUNCE_THURIBLE_OUT = "No more luring, I guess.",
     ANNOUNCE_COMPASS_OUT = "I'll always have the North in my heart.",
 	ANNOUNCE_TRAP_WENT_OFF = "Oops!",
 	ANNOUNCE_WORMHOLE = "It was gross in there!",

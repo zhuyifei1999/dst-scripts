@@ -104,12 +104,12 @@ local function fn()
 
     inst.entity:AddPhysics()
     inst.Physics:SetMass(0)
-    inst.Physics:SetCylinder(2.75, 6)
     inst.Physics:SetCollisionGroup(COLLISION.OBSTACLES)
     inst.Physics:ClearCollisionMask()
     inst.Physics:CollidesWith(COLLISION.ITEMS)
     inst.Physics:CollidesWith(COLLISION.CHARACTERS)
     inst.Physics:CollidesWith(COLLISION.GIANTS)
+    inst.Physics:SetCylinder(2.75, 6)
 
     inst.AnimState:SetBank("cave_hole")
     inst.AnimState:SetBuild("cave_hole")

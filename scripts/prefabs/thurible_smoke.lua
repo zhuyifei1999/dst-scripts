@@ -19,8 +19,7 @@ local assets =
 
 local function OnEntityWake(inst)
     if not inst.SoundEmitter:PlayingSound("loop") then
-        inst.SoundEmitter:PlaySound("dontstarve/common/nightlight", "loop")
-        inst.SoundEmitter:SetParameter("loop", "intensity", .1)
+        inst.SoundEmitter:PlaySound("dontstarve/common/together/thurible_LP", "loop")
     end
 end
 

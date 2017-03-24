@@ -14,11 +14,14 @@ local function fn()
 	inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
-    MakeObstaclePhysics(inst, 2.35)
+    MakeObstaclePhysics(inst, 2.5)
+    inst.Physics:SetCylinder(2.35, 6)
 
     inst.AnimState:SetBank("pillar_atrium")
     inst.AnimState:SetBuild("pillar_atrium")
     inst.AnimState:PlayAnimation("idle", true)
+
+    inst:AddTag("groundhole")
 
     inst.entity:SetPristine()
 

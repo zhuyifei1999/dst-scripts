@@ -183,6 +183,7 @@ return {
     ANNOUNCE_RUINS_RESET = "The cycle begins again.",
 
     ANNOUNCE_SNARED = "How dare you!",
+    ANNOUNCE_REPELLED = "What trickery is this!",
 	ANNOUNCE_ENTER_DARK = "That smell... both nostalgic and terrifying!",
 	ANNOUNCE_ENTER_LIGHT = "Thank goodness for the light.",
 	ANNOUNCE_FREEDOM = "Freedom, at last!",
@@ -207,6 +208,7 @@ return {
 	ANNOUNCE_THORNS = "I scratched my arms up doing that.",
 	ANNOUNCE_TORCH_OUT = "Curses. Another light down.",
     ANNOUNCE_FAN_OUT = "There goes my respite.",
+    ANNOUNCE_THURIBLE_OUT = "A shame.",
     ANNOUNCE_COMPASS_OUT = "The compass has fallen to pieces.",
 	ANNOUNCE_TRAP_WENT_OFF = "Ack!",
 	ANNOUNCE_UNIMPLEMENTED = "Hmm, not quite done.",

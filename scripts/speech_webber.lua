@@ -174,6 +174,7 @@ return {
 	ANNOUNCE_KLAUS_CALLFORHELP = "Uh-oh, its got friends coming!",
 
 	ANNOUNCE_SNARED = "Hey! Meanie!",
+	ANNOUNCE_REPELLED = "We can't hit it.",
 	ANNOUNCE_ENTER_DARK = "We can't see! I want my nightlight.",
 	ANNOUNCE_ENTER_LIGHT = "Phew, light!",
 	ANNOUNCE_FREEDOM = "We made it!",
@@ -205,6 +206,7 @@ return {
 	ANNOUNCE_BURNT = "Jeepers, that was hot!",
 	ANNOUNCE_TORCH_OUT = "Waah, our light went out!",
     ANNOUNCE_FAN_OUT = "Aaw, the twirly is gone.",
+    ANNOUNCE_THURIBLE_OUT = "Aw, there goes our lure.",
     ANNOUNCE_COMPASS_OUT = "Uh oh, I broke it.",
 	ANNOUNCE_TRAP_WENT_OFF = "Eek!",
 	ANNOUNCE_UNIMPLEMENTED = "Gah! It needs more time.",
