@@ -53,7 +53,7 @@ local function OnResistDamage(inst)--, damage)
     inst.components.resistance:SetOnResistDamageFn(nil)
 
     inst.components.fueled:DoDelta(-TUNING.MED_FUEL)
-    if not inst.disabled then
+    if inst.components.cooldown.onchargedfn ~= nil then
         inst.components.cooldown:StartCharging()
     end
 end
@@ -69,18 +69,24 @@ local function ShouldResistFn(inst)
 end
 
 local function OnChargedFn(inst)
+    if inst.task ~= nil then
+        inst.task:Cancel()
+        inst.task = nil
+        inst.components.resistance:SetOnResistDamageFn(OnResistDamage)
+    end
     inst.components.resistance:AddResistance("_combat")
 end
 
 local function nofuel(inst)
-    if inst.components.equippable:IsEquipped() then
-        inst.disabled = true
-    end
+    inst.components.cooldown.onchargedfn = nil
+    inst.components.cooldown:FinishCharging()
 end
 
 local function ontakefuel(inst)
-    if inst.disabled and inst.components.equippable:IsEquipped() and not inst.components.fueled:IsEmpty() then
-        inst.disabled = nil
+    if inst.components.equippable:IsEquipped() and
+        not inst.components.fueled:IsEmpty() and
+        inst.components.cooldown.onchargedfn == nil then
+        inst.components.cooldown.onchargedfn = OnChargedFn
         inst.components.cooldown:StartCharging(TUNING.ARMOR_SKELETON_FIRST_COOLDOWN)
     end
 end
@@ -88,19 +94,21 @@ end
 local function onequip(inst, owner)
     owner.AnimState:OverrideSymbol("swap_body", "armor_skeleton", "swap_body")
     inst.lastmainshield = 0
-    inst.components.cooldown.onchargedfn = OnChargedFn
-    if inst.components.fueled:IsEmpty() then
-        inst.disabled = true
-    else
-        inst.components.cooldown:StartCharging(TUNING.ARMOR_SKELETON_FIRST_COOLDOWN)
+    if not inst.components.fueled:IsEmpty() then
+        inst.components.cooldown.onchargedfn = OnChargedFn
+        inst.components.cooldown:StartCharging(math.max(TUNING.ARMOR_SKELETON_FIRST_COOLDOWN, inst.components.cooldown:GetTimeToCharged()))
     end
 end
 
 local function onunequip(inst, owner)
     owner.AnimState:ClearOverrideSymbol("swap_body")
     inst.components.cooldown.onchargedfn = nil
-    inst.components.cooldown:FinishCharging()
-    inst.disabled = nil
+    if inst.task ~= nil then
+        inst.task:Cancel()
+        inst.task = nil
+        inst.components.resistance:SetOnResistDamageFn(OnResistDamage)
+    end
+    inst.components.resistance:RemoveResistance("_combat")
 end
 
 local function fn()

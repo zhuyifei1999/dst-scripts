@@ -51,7 +51,7 @@ function Resistance:GetDebugString()
     for k, v in pairs(self.tags) do
         str = str ~= nil and (", "..v) or v
     end
-    return "Resists: "..str
+    return "Resists: "..(str or "")
 end
 
 return Resistance
