@@ -32,12 +32,6 @@ SetSharedLootTable("cavein_boulder",
 local NUM_VARIATIONS = 8
 
 local PHYSICS_RADIUS = .75
-local PHYSICS_STATE =
-{
-    ITEM = 0,
-    OBSTACLE = 1,
-    FALLING = 2,
-}
 
 local PLAYER_OVERLAP_RADIUS = 1
 local OVERLAP_RADIUS = 1
@@ -596,8 +590,6 @@ local function fn()
     inst.OnSave = OnSave
     inst.OnPreLoad = OnPreLoad
     inst.OnLoadPostPass = OnLoadPostPass
-    inst.OnStartFalling = OnStartFalling
-    inst.OnStopFalling = OnStopFalling
 
     SetVariation(inst, math.random(NUM_VARIATIONS))
 

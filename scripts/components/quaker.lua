@@ -268,6 +268,10 @@ end or nil
 
 -- /debris methods
 
+local OnRemoveDebris = _ismastersim and function(debris)
+    debris.shadow:Remove()
+end or nil
+
 local SpawnDebris = _ismastersim and function(spawn_point, override_prefab, override_density)
     local prefab = override_prefab or GetDebris()
     if prefab ~= nil then
@@ -290,7 +294,7 @@ local SpawnDebris = _ismastersim and function(spawn_point, override_prefab, over
             debris.Physics:Teleport(spawn_point.x, 35, spawn_point.z)
 
             debris.shadow = SpawnPrefab("warningshadow")
-            debris.shadow:ListenForEvent("onremove", function() debris.shadow:Remove() end, debris)
+            debris.shadow:ListenForEvent("onremove", OnRemoveDebris, debris)
             debris.shadow.Transform:SetPosition(spawn_point.x, 0, spawn_point.z)
             UpdateShadowSize(debris.shadow, 35)
 

@@ -134,6 +134,7 @@ local function OnStartFalling(inst)
             inst.Physics:SetMass(1)
             inst.Physics:SetDamping(0) --might have been changed by quaker
             inst.Physics:SetCollisionGroup(COLLISION.ITEMS)
+            inst.Physics:Teleport(inst.Transform:GetWorldPosition()) --force physics to wakeup
         end
         inst.Physics:ClearCollisionMask()
         SetPhysicsState(self, PHYSICS_STATE.FALLING)
