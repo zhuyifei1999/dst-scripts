@@ -137,7 +137,7 @@ end
 
 function Trap:OnUpdate(dt)
     if self.isset then
-        local guy = FindEntity(self.inst, self.range, CheckTrappable, { self.targettag }, { "INLIMBO" })
+        local guy = FindEntity(self.inst, self.range, CheckTrappable, { self.targettag }, { "INLIMBO", "untrappable" })
         if guy ~= nil then
             self.target = guy
             self:StopUpdating()

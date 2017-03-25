@@ -733,6 +733,7 @@ return {
         
 		THULECITE = "An exceedingly rare but useful material.",
 		ARMORRUINS = "Thulecite meshes so well with nightmare fuel.",
+		ARMORSKELETON = "Like all things, it craves the fuel.",
 		RUINS_BAT = "The fuel runs deep in this.",
 		RUINSHAT = "Fuel must flow.",
 		NIGHTMARE_TIMEPIECE = --Keeps track of the nightmare cycle

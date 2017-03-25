@@ -8,15 +8,16 @@
 SourceModifierList = Class(function(self, inst, base_value, fn)
     self.inst = inst
 
-	-- Private members
+    -- Private members
     self._modifiers = {}
     if base_value ~= nil then
         self._modifier = base_value
+        self._base = base_value
     else
         self._modifier = 1
+        self._base = 1
     end
     
-    self._base = base_value or 1
     self._fn = fn or SourceModifierList.multiply
 end)
 

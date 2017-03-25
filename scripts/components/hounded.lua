@@ -95,12 +95,11 @@ local _spawninfo = nil
 --------------------------------------------------------------------------
 
 local function GetAveragePlayerAgeInDays()
-	local sum = 0
-	for i,v in ipairs(_activeplayers) do
-		sum = sum + v.components.age:GetAgeInDays()
-	end
-	local average = sum / #_activeplayers
-	return average
+    local sum = 0
+    for i, v in ipairs(_activeplayers) do
+        sum = sum + v.components.age:GetAgeInDays()
+    end
+    return sum > 0 and sum / #_activeplayers or 0
 end
 
 local function CalcEscalationLevel()
@@ -131,20 +130,12 @@ local function CalcEscalationLevel()
 end
 
 local function CalcPlayerAttackSize(player)
-	local day = player.components.age:GetAgeInDays()
-	local attacksize = 0
-	if day < 10 then
-		attacksize = _spawndata.attack_levels.intro.numspawns()
-	elseif day < 25 then
-		attacksize = _spawndata.attack_levels.light.numspawns()
-	elseif day < 50 then
-		attacksize = _spawndata.attack_levels.med.numspawns()
-	elseif day < 100 then
-		attacksize = _spawndata.attack_levels.heavy.numspawns()
-	else
-		attacksize = _spawndata.attack_levels.crazy.numspawns()
-	end
-	return attacksize
+    local day = player.components.age:GetAgeInDays()
+    return (day < 10 and _spawndata.attack_levels.intro.numspawns())
+        or (day < 25 and _spawndata.attack_levels.light.numspawns())
+        or (day < 50 and _spawndata.attack_levels.med.numspawns())
+        or (day < 100 and _spawndata.attack_levels.heavy.numspawns())
+        or _spawndata.attack_levels.crazy.numspawns()
 end
 
 local function PlanNextAttack()
@@ -153,7 +144,7 @@ local function PlanNextAttack()
 		return
 	end
 	-- if there are no players then try again later
-	if #_activeplayers == 0 then
+	if #_activeplayers <= 0 then
 		_attackplanned = false
 		self.inst:DoTaskInTime(1, PlanNextAttack)
 		return
@@ -183,8 +174,8 @@ local function GetWaveAmounts()
 	-- the numbers aren't overwhelming
 	local groupindex = {}
 	local nextgroup = 1
-	for i,playerA in ipairs(_activeplayers) do
-		for j,playerB in ipairs(_activeplayers) do
+	for i, playerA in ipairs(_activeplayers) do
+		for j, playerB in ipairs(_activeplayers) do
 			if i == 1 and j == 1 then
 				groupindex[playerA] = 1
 				nextgroup = 2
@@ -208,21 +199,23 @@ local function GetWaveAmounts()
 
 	-- calculate the hound attack for each player
 	_spawninfo = {}
-	for player,group in pairs(groupindex) do
+	for player, group in pairs(groupindex) do
 		local playerAge = player.components.age:GetAge()
-		local attackdelaybase, attackdelayvariance =  _attackdelayfn()
+		local attackdelaybase, attackdelayvariance = _attackdelayfn()
 
 		-- amount of hounds relative to our age
-		local spawnsToRelease = CalcPlayerAttackSize(player)
-		local playerInGame = GetTime() - player.components.age.spawntime
-
 		-- if we never saw a warning or have lived shorter than the minimum wave delay then don't spawn hounds to us
-		if playerInGame <= _warnduration or playerAge < attackdelaybase then
-			spawnsToRelease = 0
-		end
+        local playerInGame = GetTime() - player.components.age.spawntime
+		local spawnsToRelease = playerInGame > _warnduration and playerAge >= attackdelaybase and CalcPlayerAttackSize(player) or 0
 
 		if _spawninfo[group] == nil then
-			_spawninfo[group] = {players = {player}, spawnstorelease = spawnsToRelease, timetonext = 0, totalplayerage=playerAge}
+			_spawninfo[group] =
+            {
+                players = { player },
+                spawnstorelease = spawnsToRelease,
+                timetonext = 0,
+                totalplayerage = playerAge,
+            }
 		else
 			table.insert(_spawninfo[group].players, player)
 			_spawninfo[group].spawnstorelease = _spawninfo[group].spawnstorelease + spawnsToRelease
@@ -238,7 +231,7 @@ local function GetWaveAmounts()
 
 		-- pow the number of hounds by a fractional exponent, to stave off huge groups
 		-- e.g. hounds ^ 1/1.1 for three players
-		local groupexp = 1.0 / (ZERO_EXP + (EXP_PER_PLAYER * #info.players))
+		local groupexp = 1 / (ZERO_EXP + (EXP_PER_PLAYER * #info.players))
 		info.spawnstorelease = RoundBiasedDown(math.pow(info.spawnstorelease, groupexp))
 
 		info.averageplayerage = info.totalplayerage / #info.players
@@ -277,12 +270,8 @@ local function GetSpecialSpawnChance()
 end
 
 local function SummonSpawn(pt)
-	assert(pt)
-
 	local spawn_pt = GetSpawnPoint(pt)
-
-	if spawn_pt then
-
+	if spawn_pt ~= nil then
 		local prefab = _spawndata.base_prefab
 		local special_spawn_chance = GetSpecialSpawnChance()
 
@@ -295,7 +284,7 @@ local function SummonSpawn(pt)
 		end
 
 		local spawn = SpawnPrefab(prefab)
-		if spawn then
+		if spawn ~= nil then
 			spawn.Physics:Teleport(spawn_pt:Get())
 			spawn:FacePoint(pt)
             if spawn.components.spawnfader ~= nil then
@@ -308,23 +297,28 @@ local function SummonSpawn(pt)
 end
 
 local function ReleaseSpawn(target)
-	local spawn = SummonSpawn(target:GetPosition())
-	if spawn ~= nil then
-		spawn.components.combat:SuggestTarget(target)
-		return true
-	end
-
-	return false
+    local spawn = SummonSpawn(target:GetPosition())
+    if spawn ~= nil then
+        spawn.components.combat:SuggestTarget(target)
+        return true
+    end
+    return false
 end
 
 local function RemovePendingSpawns(player)
     if _spawninfo ~= nil then
-    	for i, spawninforec in ipairs(_spawninfo) do
-    		if spawninforec.player == player then
-    			table.remove(_spawninfo, i)
-    			return
-    		end
-    	end
+        for i, spawninforec in ipairs(_spawninfo) do
+            for j, v in ipairs(spawninforec.players) do
+                if v == player then
+                    if #spawninforec.players > 1 then
+                        table.remove(spawninforec.players, j)
+                    else
+                        table.remove(_spawninfo, i)
+                    end
+                    return
+                end
+            end
+        end
     end
 end
 
@@ -442,16 +436,14 @@ end
 
 -- Releases a hound near and attacking 'target'
 function self:ForceReleaseSpawn(target)
-	if target then
+	if target ~= nil then
 		ReleaseSpawn(target)
 	end
 end
 
 -- Creates a hound near 'pt'
 function self:SummonSpawn(pt)
-	if pt then
-		return SummonSpawn(pt)
-	end
+    return pt ~= nil and SummonSpawn(pt) or nil
 end
 
 -- Spawns the next wave for debugging
@@ -491,14 +483,14 @@ function self:OnUpdate(dt)
 
     _timetoattack = _timetoattack - dt
 
-    if _pausesources:Get() then
-        _warning = false
-
+    if _pausesources:Get() and not _warning and (_timetoattack >= 0 or _spawninfo == nil) then
         if _timetoattack < 0 then
-            _spawninfo = nil
             PlanNextAttack()
         end
-	elseif _timetoattack < 0 then
+        return
+    end
+
+    if _timetoattack < 0 then
         _warning = false
 
 		-- Okay, it's hound-day, get number of dogs for each player
@@ -506,7 +498,7 @@ function self:OnUpdate(dt)
 			GetWaveAmounts()
 		end
 
-		local playersdone = {}
+		local groupsdone = {}
 		for i, spawninforec in ipairs(_spawninfo) do
 			spawninforec.timetonext = spawninforec.timetonext - dt
 			if spawninforec.spawnstorelease > 0 and spawninforec.timetonext < 0 then
@@ -529,10 +521,10 @@ function self:OnUpdate(dt)
 
 			end
 			if spawninforec.spawnstorelease <= 0 then
-				table.insert(playersdone,i)
+				table.insert(groupsdone, 1, i)
 			end
 		end
-		for i,v in ipairs(playersdone) do
+		for i, v in ipairs(groupsdone) do
 			table.remove(_spawninfo, v)
 		end
 		if #_spawninfo <= 0 then
@@ -564,9 +556,7 @@ function self:OnUpdate(dt)
     end
 end
 
-function self:LongUpdate(dt)
-    self:OnUpdate(dt)
-end
+self.LongUpdate = self.OnUpdate
 
 --------------------------------------------------------------------------
 --[[ Save/Load ]]
@@ -606,18 +596,19 @@ end
 --------------------------------------------------------------------------
 
 function self:GetDebugString()
-	if _timetoattack > 0 then
-		return string.format("%s spawns are coming in %2.2f", _warning and "WARNING" or "WAITING",   _timetoattack)
-	else
-		local s = "ATTACKING\n"
-		for i, spawninforec in ipairs(_spawninfo) do
-			s = s..tostring(spawninforec.player).." - spawns left:"..tostring(spawninforec.spawnstorelease).." next spawn:"..tostring(spawninforec.timetonext)
-			if i ~= #_activeplayers then
-				s = s.."\n"
-			end
-		end
-		return s
-	end
+    if _timetoattack > 0 then
+        return string.format("%s spawns are coming in %2.2f", (_warning and "WARNING") or (_pausesources:Get() and "BLOCKED") or "WAITING", _timetoattack)
+    end
+
+    local s = "ATTACKING"
+    for i, spawninforec in ipairs(_spawninfo) do
+        s = s.."\n{"
+        for j, player in ipairs(spawninforec.players) do
+            s = s..(j > 1 and "," or "")..tostring(player)
+        end
+        s = s.."} - spawns left:"..tostring(spawninforec.spawnstorelease).." next spawn:"..tostring(spawninforec.timetonext)
+    end
+    return s
 end
 
 end)

@@ -83,13 +83,8 @@ ShadowChessFunctions.TriggerEpicScare = TriggerEpicScare
 
 --------------------------------------------------------------------------
 local function levelup(inst, data)
-    if not inst.components.health:IsDead()then
-        local queued = inst:QueueLevelUp(data.source)
-        if queued then
-            if not inst.sg:HasStateTag("busy") then 
-                inst.sg:GoToState("levelup")
-            end
-        end
+    if not (inst.components.health:IsDead() or inst.sg:HasStateTag("busy")) and inst:WantsToLevelUp() then
+        inst.sg:GoToState("levelup")
     end
 end
 
@@ -106,7 +101,6 @@ ShadowChessEvents.OnDeath = function()
     return EventHandler("death", ondeath)
 end
 
-
 --------------------------------------------------------------------------
 local function ondespawn(inst, data)
     if not inst.components.health:IsDead() then
@@ -117,7 +111,6 @@ end
 ShadowChessEvents.OnDespawn = function()
     return EventHandler("despawn", ondespawn)
 end
-
 
 --------------------------------------------------------------------------
 ShadowChessStates.AddIdle = function(states, idle_anim)
@@ -244,12 +237,17 @@ end
 local function LevelUpAlliesTimelineEvent(frame)
     return TimeEvent(frame * FRAMES, function(inst)
         -- trigger all near by shadow chess pieces to level up
-        local x, y, z = inst.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x, y, z, LEVELUP_RADIUS, { "shadowchesspiece" })
+        local pos = inst:GetPosition()
+        local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, LEVELUP_RADIUS, { "shadowchesspiece" })
         for i, v in ipairs(ents) do
             if v ~= inst and not v.components.health:IsDead() then
                 v:PushEvent("levelup", { source = inst })
             end
+        end
+
+        if inst.persists then
+            inst.persists = false
+            inst.components.lootdropper:DropLoot(pos)
         end
     end)
 end
@@ -269,9 +267,7 @@ ShadowChessStates.AddDeath = function(states, anim, action_frame, timeline)
             inst.AnimState:PlayAnimation(anim)
             inst.Physics:Stop()
             RemovePhysicsColliders(inst)
-            inst.components.lootdropper:DropLoot(inst:GetPosition())
             inst:AddTag("NOCLICK")
-            inst.persists = false
         end,
 
         timeline = timeline,
@@ -302,9 +298,7 @@ ShadowChessStates.AddEvolvedDeath = function(states, anim, action_frame, timelin
             inst.AnimState:PlayAnimation(anim)
             inst.Physics:Stop()
             RemovePhysicsColliders(inst)
-            inst.components.lootdropper:DropLoot(inst:GetPosition())
             inst:AddTag("NOCLICK")
-            inst.persists = false
         end,
 
         timeline = timeline,

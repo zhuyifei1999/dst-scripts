@@ -501,6 +501,7 @@ return {
 		--BOOK_METEOR = "The foreword just says \"Hope you like dragoons.\"",
 		THULECITE = "I wonder where this is from?",
 		ARMORRUINS = "It's oddly light.",
+		ARMORSKELETON = "No bones about it.",
 		RUINS_BAT = "It has quite a heft to it.",
 		RUINSHAT = "How's my hair?",
 		NIGHTMARE_TIMEPIECE =

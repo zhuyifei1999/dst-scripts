@@ -54,7 +54,7 @@ end
 local function StartRepel(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
     local creatures = {}
-    for i, v in ipairs(TheSim:FindEntities(x, y, z, REPEL_RADIUS, { "locomotor" }, { "fossil", "playerghost", "INLIMBO" })) do
+    for i, v in ipairs(TheSim:FindEntities(x, y, z, REPEL_RADIUS, { "locomotor" }, { "fossil", "shadow", "playerghost", "INLIMBO" })) do
         if v:IsValid() and v.entity:IsVisible() and not (v.components.health ~= nil and v.components.health:IsDead()) then
             if v:HasTag("player") then
                 v:PushEvent("repelled", { repeller = inst, radius = REPEL_RADIUS })

@@ -58,6 +58,7 @@ local function fn()
     inst:AddTag("small_livestock")
     inst:AddTag("show_spoilage")
     inst:AddTag("sickness")
+    inst:AddTag("untrappable")
 
     inst.Transform:SetTwoFaced()
 

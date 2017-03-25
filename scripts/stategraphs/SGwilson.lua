@@ -4899,7 +4899,7 @@ local states =
 
     State{
         name = "hit_spike",
-        tags = { "busy", "nopredict" },
+        tags = { "busy", "nopredict", "nomorph" },
 
         onenter = function(inst, spike)
             ForceStopHeavyLifting(inst)
@@ -4927,8 +4927,8 @@ local states =
         tags = { "busy" },
 
         onenter = function(inst, snap)
-            local beaver = inst:HasTag("beaver")
-            local stun_frames = beaver and 6 or 9
+            local usehit = inst.components.rider ~= nil and inst.components.rider:IsRiding() or inst:HasTag("beaver")
+            local stun_frames = usehit and 6 or 9
 
             if snap then
                 inst.sg:AddStateTag("nopredict")
@@ -4944,7 +4944,7 @@ local states =
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
 
-            if beaver then
+            if usehit then
                 inst.AnimState:PlayAnimation("hit")
             else
                 inst.AnimState:PlayAnimation("distress_pre")
@@ -4963,7 +4963,7 @@ local states =
 
     State{
         name = "repelled",
-        tags = { "busy", "nopredict" },
+        tags = { "busy", "nopredict", "nomorph" },
 
         onenter = function(inst, data)
             ClearStatusAilments(inst)
@@ -4971,7 +4971,7 @@ local states =
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
 
-            if inst:HasTag("beaver") then
+            if inst.components.rider ~= nil and inst.components.rider:IsRiding() or inst:HasTag("beaver") then
                 inst.AnimState:PlayAnimation("hit")
             else
                 inst.AnimState:PlayAnimation("distress_pre")
@@ -5025,7 +5025,7 @@ local states =
 
     State{
         name = "mindcontrolled",
-        tags = { "busy", "pausepredict", "nodangle" },
+        tags = { "busy", "pausepredict", "nomorph", "nodangle" },
 
         onenter = function(inst)
             if inst.components.playercontroller ~= nil then
@@ -5033,26 +5033,47 @@ local states =
                 inst.components.playercontroller:RemotePausePrediction()
             end
             inst.components.inventory:Hide()
+            inst:PushEvent("ms_closepopups")
 
             ClearStatusAilments(inst)
             ForceStopHeavyLifting(inst)
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
 
-            inst.AnimState:PlayAnimation("mindcontrol_pre")
+            if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
+                inst.sg:AddStateTag("dismounting")
+                inst.AnimState:PlayAnimation("fall_off")
+                inst.SoundEmitter:PlaySound("dontstarve/beefalo/saddle/dismount")
+            else
+                inst.AnimState:PlayAnimation("mindcontrol_pre")
+            end
         end,
 
         events =
         {
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-                    inst.sg.statemem.mindcontrolled = true
-                    inst.sg:GoToState("mindcontrolled_loop")
+                    if inst.sg:HasStateTag("dismounting") then
+                        inst.sg:RemoveStateTag("dismounting")
+                        if inst.components.rider ~= nil then
+                            inst.components.rider:ActualDismount()
+                        end
+                        inst.AnimState:PlayAnimation("mindcontrol_pre")
+                    else
+                        inst.sg.statemem.mindcontrolled = true
+                        inst.sg:GoToState("mindcontrolled_loop")
+                    end
                 end
             end),
         },
 
         onexit = function(inst)
+            if inst.sg:HasStateTag("dismounting") then
+                --interrupted
+                if inst.components.rider ~= nil then
+                    inst.components.rider:ActualDismount()
+                end
+            end
             if not inst.sg.statemem.mindcontrolled then
                 if inst.components.playercontroller ~= nil then
                     inst.components.playercontroller:Enable(true)
@@ -5064,7 +5085,7 @@ local states =
 
     State{
         name = "mindcontrolled_loop",
-        tags = { "busy", "pausepredict", "nodangle" },
+        tags = { "busy", "pausepredict", "nomorph", "nodangle" },
 
         onenter = function(inst)
             if not inst.AnimState:IsCurrentAnimation("mindcontrol_loop") then
@@ -5097,7 +5118,7 @@ local states =
 
     State{
         name = "mindcontrolled_pst",
-        tags = { "busy", "pausepredict", "nodangle" },
+        tags = { "busy", "pausepredict", "nomorph", "nodangle" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("mindcontrol_pst")

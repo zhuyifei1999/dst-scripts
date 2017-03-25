@@ -294,7 +294,7 @@ end
 
 local function DoAreaSpoil(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, inst.components.aura.radius, nil, nil, { "fresh", "stale", "spoiled" })
+    local ents = TheSim:FindEntities(x, y, z, inst.components.aura.radius, nil, { "small_livestock" }, { "fresh", "stale", "spoiled" })
     for i, v in ipairs(ents) do
         TryPerish(v)
     end

@@ -16,6 +16,7 @@ PREFABFILES = {
   "armor_marble",
   "armor_ruins",
   "armor_sanity",
+  "armor_skeleton",
   "armor_slurper",
   "armor_snurtleshell",
   "armor_wood",

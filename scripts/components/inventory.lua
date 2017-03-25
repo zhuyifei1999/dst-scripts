@@ -253,7 +253,10 @@ function Inventory:ApplyDamage(damage, attacker, weapon)
     --check resistance and specialised armor
     local absorbers = {}
     for k, v in pairs(self.equipslots) do
-        if v.components.resistance ~= nil and v.components.resistance:HasResistance(attacker, weapon) then
+        if v.components.resistance ~= nil and
+            v.components.resistance:HasResistance(attacker, weapon) and
+            v.components.resistance:ShouldResistDamage() then
+            v.components.resistance:ResistDamage(damage)
             return 0
         elseif v.components.armor ~= nil then
             absorbers[v.components.armor] = v.components.armor:GetAbsorption(attacker, weapon)

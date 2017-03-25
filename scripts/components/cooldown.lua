@@ -43,6 +43,12 @@ function Cooldown:StartCharging(time)
     end
 end
 
+function Cooldown:FinishCharging()
+    if self.cooldown_deadline ~= nil then
+        donecharging(self.inst, self)
+    end
+end
+
 function Cooldown:GetTimeToCharged()
     return self.cooldown_deadline ~= nil and self.cooldown_deadline - GetTime() or 0
 end
@@ -52,7 +58,7 @@ function Cooldown:IsCharged()
 end
 
 function Cooldown:IsCharging()
-    return not self.charged and self.cooldown_duration ~= nil
+    return not self.charged and self.cooldown_deadline ~= nil
 end
 
 function Cooldown:OnSave()
@@ -69,10 +75,11 @@ end
 function Cooldown:LongUpdate(dt)
     if self.cooldown_deadline ~= nil then
         self.cooldown_deadline = self.cooldown_deadline - dt
-        if self.cooldown_deadline < GetTime() then
+        local t = GetTime()
+        if self.cooldown_deadline < t then
             donecharging(self.inst, self)
         else
-            self:StartCharging(self.cooldown_deadline - GetTime())
+            self:StartCharging(self.cooldown_deadline - t)
         end
     end
 end

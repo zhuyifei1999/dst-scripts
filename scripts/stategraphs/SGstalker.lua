@@ -166,7 +166,7 @@ local events =
                 if shieldtype ~= nil then
                     local fx = SpawnPrefab("stalker_shield"..tostring(shieldtype))
                     fx.entity:SetParent(inst.entity)
-                    if math.random() < .5 then
+                    if shieldtype < 3 and math.random() < .5 then
                         fx.AnimState:SetScale(-2.36, 2.36, 2.36)
                     end
                 end

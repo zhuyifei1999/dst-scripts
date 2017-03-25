@@ -52,6 +52,7 @@ local prefabs_atrium =
     "mindcontroller",
     "nightmarefuel",
     "thurible",
+    "armorskeleton",
     "flower_rose",
 }
 
@@ -90,7 +91,9 @@ end
 local function OnFocusCamera(inst)
     local player = TheFocalPoint.entity:GetParent()
     if player ~= nil then
-        TheFocalPoint:PushTempFocus(inst, 6, 12, 5)
+        TheFocalPoint:PushTempFocus(inst, 6, 12, 6)
+        --Also push a priority 5 focus to block the gate (priority 4)
+        --from grabbing focus in case we are out of range of stalker.
         TheFocalPoint:PushTempFocus(player, math.huge, math.huge, 5)
     end
 end
@@ -923,6 +926,7 @@ local function AtriumLootFn(lootdropper)
         lootdropper:AddChanceLoot("shadowheart", 1)
     else
         lootdropper:AddChanceLoot("thurible", 1)
+        lootdropper:AddChanceLoot("armorskeleton", 1)
         lootdropper:AddChanceLoot("nightmarefuel", 1)
         lootdropper:AddChanceLoot("nightmarefuel", 1)
         lootdropper:AddChanceLoot("nightmarefuel", 1)

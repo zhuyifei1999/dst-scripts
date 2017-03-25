@@ -143,23 +143,25 @@ end
 
 --------------------------------------------------------------------------
 
-local function QueueLevelUp(inst, source)
-    if source ~= nil and source:IsValid()
-            and inst.prefab ~= source.prefab 
-            and inst.level < 3
-            and source.level > GetTableSize(inst.levelupsource) -- only level up if the source's level is equal or greater then this inst's level (test #inst.levelupsource because there may be some queued)
-            and not table.contains(inst.levelupsource, source.prefab) then
-
-        table.insert(inst.levelupsource, source.prefab)
-        return true
+local function OnLevelUp(inst, data)
+    if inst.level < 3 and
+        data ~= nil and
+        data.source ~= nil and
+        data.source.prefab ~= inst.prefab and
+        -- only level up if the source's level is equal or greater then this inst's level
+        -- (test #inst.levelupsource because there may be some queued)
+        data.source.level > #inst.levelupsource and
+        not table.contains(inst.levelupsource, data.source.prefab) then
+        table.insert(inst.levelupsource, data.source.prefab)
     end
-
-    return false
 end
 
 local function WantsToLevelUp(inst)
-    local target_level = #inst.levelupsource + 1
-    return inst.level < target_level
+    return inst.level < #inst.levelupsource + 1
+end
+
+local function nodmglevelingup(inst, amount, overtime, cause, ignore_invincible, afflicter, ignore_absorb)
+    return WantsToLevelUp(inst) and amount <= 0 and not ignore_absorb
 end
 
 --------------------------------------------------------------------------
@@ -279,21 +281,20 @@ end
 --------------------------------------------------------------------------
 
 local function onsave(inst, data)
-    if inst.level > 1 then
-        data.level = inst.level
-    end
-
-    if next(inst.levelupsource) ~= nil then      -- dont write if the table is empty
-        data.levelupsource = inst.levelupsource
-    end
+    data.level = inst.level > 1 and inst.level or nil
+    data.levelupsource = #inst.levelupsource > 0 and inst.levelupsource or nil
 end
 
 local function onpreload(inst, data)
-    inst.levelupsource = {}
-
+    while #inst.levelupsource > 0 do
+        table.remove(inst.levelupsource)
+    end
     if data ~= nil then
-        inst.levelupsource = data.levelupsource or {}
-
+        if data.levelupsource ~= nil then
+            for i, v in ipairs(data.levelupsource) do
+                table.insert(inst.levelupsource, v)
+            end
+        end
         if data.level ~= nil then
             inst:LevelUp(data.level)
         end
@@ -373,6 +374,7 @@ local function commonfn(name, sixfaced)
 
     inst:AddComponent("combat")
     inst.components.combat:SetRetargetFunction(3, retargetfn)
+    inst.components.health.redirect = nodmglevelingup
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetChanceLootTable("shadow_chesspiece")
@@ -386,11 +388,11 @@ local function commonfn(name, sixfaced)
 
     inst:ListenForEvent("attacked", OnAttacked)
     inst:ListenForEvent("death", StopMusic)
+    inst:ListenForEvent("levelup", OnLevelUp)
 
     inst.OnSave = onsave
     inst.OnPreLoad = onpreload
 
-    inst.QueueLevelUp = QueueLevelUp
     inst.WantsToLevelUp = WantsToLevelUp
 
     inst.OnEntityWake = OnEntityWake

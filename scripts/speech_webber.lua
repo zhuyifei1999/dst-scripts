@@ -500,6 +500,7 @@ return {
 		--GOLDENMACHETE = "What a beautiful blade!",
 		THULECITE = "Fancy rocks!",
 		ARMORRUINS = "Nice and lightweight.",
+		ARMORSKELETON = "Rattle rattle.",
 		RUINS_BAT = "We will, we will, smash you!",
 		RUINSHAT = "And now we are king.",
 

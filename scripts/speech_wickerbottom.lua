@@ -1878,6 +1878,7 @@ return
         },
  
         ARMORRUINS = "A hardy Thulecite armor.",
+        ARMORSKELETON = "Now it's an exoskeleton. Ho ho!",
         BISHOP_NIGHTMARE = "Such exhilaratingly complex technology.",
         GREENAMULET = "Works almost as a magical binding agent.", --Reduce cost of crafting
         GREENGEM = "Chromium impurities have colored this gem green.",

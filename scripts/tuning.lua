@@ -1303,6 +1303,9 @@ function Tune(overrides)
         ARMOR_HIVEHAT_ABSORPTION = .7*multiplayer_armor_absorption_modifier,
         ARMOR_HIVEHAT_SANITY_ABSORPTION = .5,
 
+        ARMOR_SKELETON_COOLDOWN = 5,
+        ARMOR_SKELETON_FIRST_COOLDOWN = 1,
+
         PANFLUTE_SLEEPTIME = 20,
         PANFLUTE_SLEEPRANGE = 15,
         PANFLUTE_USES = 10,

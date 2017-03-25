@@ -165,7 +165,9 @@ end
 
 local function ontakefuel(inst)
     if inst.components.equippable:IsEquipped() or not inst.components.inventoryitem:IsHeld() then
-        inst.SoundEmitter:PlaySound("dontstarve/common/nightmareAddFuel")
+        local owner = inst.components.inventoryitem:GetOwner()
+        local soundemitter = owner ~= nil and owner:IsValid() and owner.SoundEmitter or inst.SoundEmitter
+        soundemitter:PlaySound("dontstarve/common/nightmareAddFuel")
         turnon(inst)
     end
 end

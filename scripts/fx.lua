@@ -1,3 +1,11 @@
+local function FinalOffset1(inst)
+    inst.AnimState:SetFinalOffset(1)
+end
+
+local function FinalOffset2(inst)
+    inst.AnimState:SetFinalOffset(2)
+end
+
 local fx =
 {
     {
@@ -39,7 +47,7 @@ local fx =
         bank = "splash",
         build = "splash",
         anim = "splash",
-        fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
+        fn = FinalOffset1,
     },
     {
         name = "frogsplash",
@@ -47,7 +55,7 @@ local fx =
         build = "splash",
         anim = "splash",
         sound = "dontstarve/frog/splash",
-        fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
+        fn = FinalOffset1,
     },
     {
         name = "waterballoon_splash",
@@ -333,7 +341,7 @@ local fx =
         build = "emote_fx",
         anim = "emote_fx",
         autorotate = true,
-        fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
+        fn = FinalOffset1,
     },
     {
         name = "tears",
@@ -341,7 +349,7 @@ local fx =
         build = "tears",
         anim = "tears_fx",
         autorotate = true,
-        fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
+        fn = FinalOffset1,
     },
     {
         name = "spawn_fx_tiny",
@@ -426,7 +434,7 @@ local fx =
         anim = "shock",
         sound = "dontstarve_DLC001/common/shocked",
         autorotate = true,
-        fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
+        fn = FinalOffset1,
     },
     {
         name = "groundpound_fx",
@@ -566,7 +574,7 @@ local fx =
         anim = "anim",
         sound = "dontstarve/common/deathpoof",
         transform = Vector3(1.4, 1.4, 1.4),
-        fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
+        fn = FinalOffset1,
     },
     {
         name = "honey_splash",
@@ -575,7 +583,7 @@ local fx =
         anim = "anim",
         nofaced = true,
         transform = Vector3(1.4, 1.4, 1.4),
-        fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
+        fn = FinalOffset1,
     },
     {
         name = "bundle_unwrap",
@@ -641,5 +649,22 @@ local fx =
         sound = "dontstarve/common/dust_blowaway",
     },
 }
+
+for j = 0, 3, 3 do
+    for i = 1, 3 do
+        table.insert(fx, {
+            name = "shadow_shield"..tostring(j + i),
+            bank = "stalker_shield",
+            build = "stalker_shield",
+            anim = "idle"..tostring(i),
+            sound = "dontstarve/creatures/together/stalker/shield",
+            transform = j > 0 and Vector3(-1, 1, 1) or nil,
+            fn = FinalOffset2,
+        })
+    end
+end
+
+FinalOffset1 = nil
+FinalOffset2 = nil
 
 return fx

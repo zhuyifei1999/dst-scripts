@@ -107,7 +107,7 @@ ACTIONS =
     INVESTIGATE = Action(),
     UNLOCK = Action(),
     USEKLAUSSACKKEY = Action(),
-    TEACH = Action(),
+    TEACH = Action({ mount_valid=true }),
     TURNON = Action({ priority=2 }),
     TURNOFF = Action({ priority=2 }),
     SEW = Action({ mount_valid=true }),

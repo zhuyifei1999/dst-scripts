@@ -576,7 +576,7 @@ t = {
         },
 
         {
-            version = 4.75, -- ANR: Heart of the Ruins - atrium fixup for gate position and world node
+            version = 4.751, -- ANR: Heart of the Ruins - atrium fixup for gate position and world node
             fn = function(savedata)
                 if savedata == nil then
                     return

@@ -431,7 +431,7 @@ local function HeartOfTheRuinsRuinsRetrofitting_RepositionAtriumGate(inst)
 		print ("Retrofitting for A New Reign: Heart of the Ruins + Old Atrium Fixup: Moving gateway from " .. tostring(inst:GetPosition()) .. " to " .. tostring(pt))
 		inst.Transform:SetPosition(pt:Get())
 	else
-		print ("Retrofitting for A New Reign: Heart of the Ruins + Old Atrium Fixup: Failed to adjust the Atrium Gateway's position at.")
+		print ("Retrofitting for A New Reign: Heart of the Ruins + Old Atrium Fixup: Failed to adjust the Atrium Gateway's position.")
 	end
 
 end
@@ -509,14 +509,6 @@ function self:OnPostInit()
 	
 		print ("Retrofitting for A New Reign: Heart of the Ruins + Old Atrium Fixup")
 
-		local gates = {}
-		for _,v in pairs(Ents) do
-			if v.prefab == "atrium_gate" and TheWorld.Map:GetTileAtPoint(v.Transform:GetWorldPosition()) == GROUND.BRICK then
-				HeartOfTheRuinsRuinsRetrofitting_RepositionAtriumGate(v)
-				table.insert(gates, v)
-			end
-		end
-
 		local needsatriumnodedata = true
 		for k,v in ipairs(TheWorld.topology.ids) do
 			if string.find(v, "AtriumMaze") then
@@ -525,17 +517,33 @@ function self:OnPostInit()
 			end
 		end
 
-		if needsatriumnodedata then
+		local gates = {}
+		for _,v in pairs(Ents) do
+			if v.prefab == "atrium_gate" and TheWorld.Map:GetTileAtPoint(v.Transform:GetWorldPosition()) == GROUND.BRICK then
+				HeartOfTheRuinsRuinsRetrofitting_RepositionAtriumGate(v)
+				
+				-- check if this gate is not located in an existing node, if its not then we know the atrium zone needs node data
+				if needsatriumnodedata then
+					local isinthevoid = true
+					local x, _, z = v.Transform:GetWorldPosition()
+				    for i, node in ipairs(TheWorld.topology.nodes) do
+						if TheSim:WorldPointInPoly(x, z, node.poly) then
+							isinthevoid = false
+							break
+						end
+					end
+					if isinthevoid then
+						table.insert(gates, v)
+					end
+				end
+			end
+		end
+
+		if #gates > 0 then
 			for k, gate in ipairs(gates) do
 				local pos = gate:GetPosition()
-				if (not TheWorld.Map:IsAboveGroundAtPoint(pos.x - 16, 0, pos.z)) and
-					(not TheWorld.Map:IsAboveGroundAtPoint(pos.x + 16, 0, pos.z)) and
-					(not TheWorld.Map:IsAboveGroundAtPoint(pos.x, 0, pos.z - 16)) then
-				
-					AddAtriumWorldTopolopy(pos.x - (4*8*2.5), pos.z - 16)
-					print ("Retrofitting for A New Reign: Heart of the Ruins + Old Atrium Fixup: Converted the retrofitted atrium to have valid topology.")
-					break
-				end
+				AddAtriumWorldTopolopy(pos.x - (4*8*2.5), pos.z - 16)
+				print ("Retrofitting for A New Reign: Heart of the Ruins + Old Atrium Fixup: Converted the retrofitted atrium to have valid topology.")
 			end
 		else
 			print ("Retrofitting for A New Reign: Heart of the Ruins + Old Atrium Fixup: Atrium already has valid topology.")
