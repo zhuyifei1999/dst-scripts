@@ -88,7 +88,7 @@ end
 
 --------------------------------------------------------------------------
 
-local function OnFocusCamera(inst)
+--[[local function OnFocusCamera(inst)
     local player = TheFocalPoint.entity:GetParent()
     if player ~= nil then
         TheFocalPoint:PushTempFocus(inst, 6, 12, 6)
@@ -116,7 +116,7 @@ local function EnableCameraFocus(inst, enable)
             OnCameraFocusDirty(inst)
         end
     end
-end
+end]]
 
 --------------------------------------------------------------------------
 
@@ -857,7 +857,7 @@ end
 
 --------------------------------------------------------------------------
 
-local function CanMindControl(inst, guy, inatrium)
+local function IsValidMindControlTarget(inst, guy, inatrium)
     if inatrium then
         if not inst:IsNearAtrium(guy) then
             return false
@@ -865,20 +865,32 @@ local function CanMindControl(inst, guy, inatrium)
     elseif not inst:IsNear(guy, TUNING.STALKER_MINDCONTROL_RANGE) then
         return false
     end
-    return guy.components.sanity:IsCrazy()
-        and not (guy.components.health:IsDead() or guy:HasTag("playerghost"))
+    return not (guy.components.health:IsDead() or guy:HasTag("playerghost"))
         and guy.components.debuffable:IsEnabled()
         and guy.entity:IsVisible()
 end
 
+local function IsCrazyGuy(guy)
+    local sanity = guy ~= nil and guy.replica.sanity or nil
+    return sanity ~= nil and sanity:GetPercentNetworked() <= (guy:HasTag("dappereffects") and TUNING.DAPPER_BEARDLING_SANITY or TUNING.BEARDLING_SANITY)
+end
+
 local function HasMindControlTarget(inst)
+    local insanecount = 0
+    local sanecount = 0
     local inatrium = inst.atriumstalker and inst:IsNearAtrium()
     for i, v in ipairs(AllPlayers) do
-        if CanMindControl(inst, v, inatrium) then
-            return true
+        if IsValidMindControlTarget(inst, v, inatrium) then
+            --Use fully crazy check for initiating mind control
+            --Use IsCrazyGuy check for effect to actually stick
+            if v.components.sanity:IsCrazy() then
+                insanecount = insanecount + 1
+            else
+                sanecount = sanecount + 1
+            end
         end
     end
-    return false
+    return insanecount >= math.ceil((insanecount + sanecount) / 3)
 end
 
 local function MindControl(inst)
@@ -887,7 +899,7 @@ local function MindControl(inst)
     local count = 0
     local inatrium = inst.atriumstalker and inst:IsNearAtrium()
     for i, v in ipairs(AllPlayers) do
-        if CanMindControl(inst, v, inatrium) then
+        if IsValidMindControlTarget(inst, v, inatrium) and IsCrazyGuy(v) then
             count = count + 1
             local debuff = v.components.debuffable:GetDebuff("mindcontroller")
             if debuff ~= nil then
@@ -1245,8 +1257,8 @@ local function common_fn(bank, build, shadowsize, canfight, atriumstalker)
     if atriumstalker then
         inst:AddTag("noepicmusic")
 
-        inst._camerafocus = net_bool(inst.GUID, "stalker._camerafocus", "camerafocusdirty")
-        inst._camerafocustask = nil
+        --inst._camerafocus = net_bool(inst.GUID, "stalker._camerafocus", "camerafocusdirty")
+        --inst._camerafocustask = nil
         inst._music = net_tinybyte(inst.GUID, "stalker._music", "musicdirty")
         inst._playingmusic = false
         inst._musictask = nil
@@ -1267,7 +1279,7 @@ local function common_fn(bank, build, shadowsize, canfight, atriumstalker)
 
     if not TheWorld.ismastersim then
         if atriumstalker then
-            inst:ListenForEvent("camerafocusdirty", OnCameraFocusDirty)
+            --inst:ListenForEvent("camerafocusdirty", OnCameraFocusDirty)
             inst:ListenForEvent("musicdirty", OnMusicDirty)
         end
 
@@ -1411,7 +1423,7 @@ local function atrium_fn()
 
     inst.components.health.redirect = nodmgshielded
 
-    inst.EnableCameraFocus = EnableCameraFocus
+    --inst.EnableCameraFocus = EnableCameraFocus
     inst.BattleChatter = AtriumBattleChatter
     inst.IsNearAtrium = IsNearAtrium
     inst.OnLostAtrium = OnLostAtrium

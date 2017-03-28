@@ -93,6 +93,7 @@ local function commonfn(bank, build, radius)
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddLight()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
     inst.Light:SetFalloff(FADE_FALLOFF)
@@ -121,6 +122,8 @@ local function commonfn(bank, build, radius)
 
         return inst
     end
+
+    inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/flowergrow")
 
     local color = .75 + math.random() * .25
     inst.AnimState:SetMultColour(color, color, color, 1)

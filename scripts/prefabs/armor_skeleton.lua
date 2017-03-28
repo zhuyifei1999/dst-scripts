@@ -126,7 +126,7 @@ local function fn()
 
     inst:AddTag("fossil")
 
-    inst.foleysound = "dontstarve/movement/foley/marblearmour"
+    inst.foleysound = "dontstarve/movement/foley/bone"
 
     inst.entity:SetPristine()
 

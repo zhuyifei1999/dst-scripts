@@ -497,8 +497,6 @@ STRINGS =
         TURF_DESERTDIRT = "Sandy Turf",
         TURF_DECIDUOUS = "Deciduous Turf",
 
-        TURF_WEBBING = "Sticky Webbing",
-
         COOKPOT = "Crock Pot",
         DUG_GRASS = "Grass Tuft",
         DUG_SAPLING = "Sapling",

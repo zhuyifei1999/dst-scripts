@@ -247,18 +247,17 @@ local function LoadAssets(asset_set)
 end
 
 function GetTimePlaying()
-	if not start_game_time then
-		return 0
-	end
-	return GetTime() - start_game_time 
+    return start_game_time ~= nil and GetTime() - start_game_time or 0
 end
 
-local deprecated = { turf_webbing = true }
-local replace = { 
-				farmplot = "slow_farmplot", farmplot2 = "fast_farmplot", 
-				farmplot3 = "fast_farmplot", sinkhole= "cave_entrance",
-				cave_stairs= "cave_entrance"
-			}
+local replace =
+{ 
+    ["farmplot"] = "slow_farmplot",
+    ["farmplot2"] = "fast_farmplot",
+    ["farmplot3"] = "fast_farmplot",
+    ["sinkhole"] = "cave_entrance",
+    ["cave_stairs"] = "cave_entrance",
+}
 
 POPULATING = false
 local function PopulateWorld(savedata, profile)
@@ -425,15 +424,13 @@ local function PopulateWorld(savedata, profile)
         --instantiate all the dudes
         local newents = {}
         for prefab, ents in pairs(savedata.ents) do
-			local prefab = replace[prefab] or prefab
-       		if not deprecated[prefab] then
-                for k,v in ipairs(ents) do
-                    v.prefab = v.prefab or prefab -- prefab field is stripped out when entities are saved in global entity collections, so put it back
-					SpawnSaveRecord(v, newents)
-				end
-			end
+            prefab = replace[prefab] or prefab
+            for i, v in ipairs(ents) do
+                v.prefab = v.prefab or prefab -- prefab field is stripped out when entities are saved in global entity collections, so put it back
+                SpawnSaveRecord(v, newents)
+            end
         end
-    
+
         --post pass in neccessary to hook up references
         for k, v in pairs(newents) do
             v.entity:LoadPostPass(newents, v.data)
@@ -450,22 +447,21 @@ local function PopulateWorld(savedata, profile)
 		--Record mod information
 		ModManager:SetModRecords(savedata.mods or {})
         SetSuper(savedata.super)
-        
+
         --Start checking if the server's mods are up to date
         ModManager:StartVersionChecking()
 		ReconstructTopology(world.topology)
     else
-        Print(VERBOSITY.ERROR, "[MALFORMED SAVE DATA] PopulateWorld complete" )
+        Print(VERBOSITY.ERROR, "[MALFORMED SAVE DATA] PopulateWorld complete")
         TheSystemService:SetStalling(false)
         POPULATING = false
         return
     end
 
-	Print(VERBOSITY.DEBUG, "[FINISHED LOADING SAVED GAME] PopulateWorld complete" )
+	Print(VERBOSITY.DEBUG, "[FINISHED LOADING SAVED GAME] PopulateWorld complete")
 	TheSystemService:SetStalling(false)
 	POPULATING = false
 end
-
 
 local function DrawDebugGraph(graph)
 	-- debug draw of new map gen

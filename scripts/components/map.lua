@@ -1,5 +1,19 @@
 require "map/terrain"
 
+--NOTE: this is the max of all entities that have custom deploy_extra_spacing
+--      see EntityScript:SetDeployExtraSpacing(spacing)
+local DEPLOY_EXTRA_SPACING = 0
+function Map:RegisterDeployExtraSpacing(spacing)
+    DEPLOY_EXTRA_SPACING = math.max(spacing, DEPLOY_EXTRA_SPACING)
+end
+
+--NOTE: this is the max of all entities that have custom terraform_extra_spacing
+--      see EntityScript:SetTerraformExtraSpacing(spacing)
+local TERRAFORM_EXTRA_SPACING = 0
+function Map:RegisterTerraformExtraSpacing(spacing)
+    TERRAFORM_EXTRA_SPACING = math.max(spacing, TERRAFORM_EXTRA_SPACING)
+end
+
 function Map:IsPassableAtPoint(x, y, z)
     local tile = self:GetTileAtPoint(x, y, z)
     return tile ~= GROUND.IMPASSABLE and
@@ -15,10 +29,20 @@ end
 
 function Map:CanTerraformAtPoint(x, y, z)
     local tile = self:GetTileAtPoint(x, y, z)
-    return tile ~= GROUND.DIRT and
-        tile < GROUND.UNDERGROUND and
-        tile ~= GROUND.IMPASSABLE and
-        tile ~= GROUND.INVALID
+    if tile == GROUND.DIRT or
+        tile >= GROUND.UNDERGROUND or
+        tile == GROUND.IMPASSABLE or
+        tile == GROUND.INVALID then
+        return false
+    elseif TERRAFORM_EXTRA_SPACING > 0 then
+        for i, v in ipairs(TheSim:FindEntities(x, 0, z, TERRAFORM_EXTRA_SPACING, { "terraformblocker" }, { "INLIMBO" })) do
+            if v.entity:IsVisible() and
+                v:GetDistanceSqToPoint(x, 0, z) < v.terraform_extra_spacing * v.terraform_extra_spacing then
+                return false
+            end
+        end
+    end
+    return true
 end
 
 function Map:CanPlaceTurfAtPoint(x, y, z)
@@ -37,13 +61,6 @@ function Map:CanPlantAtPoint(x, y, z)
 end
 
 local DEPLOY_IGNORE_TAGS = { "NOBLOCK", "player", "FX", "INLIMBO", "DECOR" }
-
---NOTE: this is the max of all entities that have custom deploy_extra_spacing
---      see EntityScript:SetDeployExtraSpacing(spacing)
-local DEPLOY_EXTRA_SPACING = 0
-function Map:RegisterDeployExtraSpacing(spacing)
-    DEPLOY_EXTRA_SPACING = math.max(spacing, DEPLOY_EXTRA_SPACING)
-end
 
 function Map:IsPointNearHole(pt, range)
     range = range or .5

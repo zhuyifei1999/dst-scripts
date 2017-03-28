@@ -636,6 +636,18 @@ function EntityScript:SetDeployExtraSpacing(spacing)
     end
 end
 
+function EntityScript:SetTerraformExtraSpacing(spacing)
+    --Extra spacing around entity that connot be terraformed.
+    self.terraform_extra_spacing = spacing
+    if spacing ~= nil then
+        self:AddTag("terraformblocker")
+        --see components/map.lua
+        TheWorld.Map:RegisterTerraformExtraSpacing(spacing)
+    else
+        self:RemoveTag("terraformblocker")
+    end
+end
+
 function EntityScript:SpawnChild(name)
     if self.prefabs then
         assert(self.prefabs, "no prefabs registered for this entity ".. name)

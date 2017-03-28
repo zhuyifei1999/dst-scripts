@@ -39,6 +39,7 @@ local function fn()
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
     inst.AnimState:SetBank("forest_fern")
@@ -54,6 +55,8 @@ local function fn()
     if not TheWorld.ismastersim then
         return inst
     end
+
+    inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/flowergrow")
 
     inst.variation = math.random(NUM_VARIATIONS)
     if inst.variation > 1 then

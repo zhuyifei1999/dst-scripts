@@ -15,7 +15,7 @@ local prefabs =
 
 --------------------------------------------------------------------------
 
-local function OnFocusCamera(inst)
+--[[local function OnFocusCamera(inst)
     if inst._camerafocusvalue > FRAMES then
         inst._camerafocusvalue = inst._camerafocusvalue - FRAMES
         local k = math.min(1, inst._camerafocusvalue) / 1
@@ -42,24 +42,25 @@ local function EnableCameraFocus(inst, enable)
             OnCameraFocusDirty(inst)
         end
     end
-end
+end]]
 
 --------------------------------------------------------------------------
 
-local EXPLOTION_ANIM_LENG = 86*FRAMES
-
+local EXPLOSION_ANIM_LEN = 86 * FRAMES
 local ATRIUM_ARENA_SIZE = 14.55
+
 local function IsObjectInAtriumArena(inst, obj)
-    if obj then
-		local obj_x, _, obj_z = obj.Transform:GetWorldPosition()
-		local inst_x, _, inst_z = inst.Transform:GetWorldPosition()
-		return (math.abs(obj_x - inst_x) <= ATRIUM_ARENA_SIZE) and (math.abs(obj_z - inst_z) <= ATRIUM_ARENA_SIZE)
+    if obj == nil then
+        return false
     end
-    return false
+    local obj_x, _, obj_z = obj.Transform:GetWorldPosition()
+    local inst_x, _, inst_z = inst.Transform:GetWorldPosition()
+    return math.abs(obj_x - inst_x) < ATRIUM_ARENA_SIZE
+        and math.abs(obj_z - inst_z) < ATRIUM_ARENA_SIZE
 end
 
 local function IsDestabilizing(inst)
-	return inst.components.timer:TimerExists("destabilizing")
+    return inst.components.timer:TimerExists("destabilizing")
 end
 
 local function ShowFx(inst, state)
@@ -73,7 +74,7 @@ end
 
 local function HideFx(inst)
     if inst._gatefx ~= nil then
-	    inst._gatefx:EndFx()
+        inst._gatefx:EndFx()
         inst._gatefx = nil
     end
 end
@@ -162,7 +163,7 @@ local function StartDestabilizing(inst, onload)
     inst.components.trader:Disable()
     inst.components.pickable.caninteractwith = false
 	inst:RemoveTag("intense")
-    EnableCameraFocus(inst, true)
+    --EnableCameraFocus(inst, true)
 
 	if not inst.components.timer:TimerExists("destabilizing") then
 		inst.components.timer:StartTimer("destabilizing", TUNING.ATRIUM_GATE_DESTABILIZE_TIME)
@@ -196,7 +197,7 @@ local function OnQueueDestabilize(inst, onload)
     inst.components.trader:Disable()
     inst.components.pickable.caninteractwith = false
 	inst:RemoveTag("intense")
-    EnableCameraFocus(inst, true)
+    --EnableCameraFocus(inst, true)
 
 	if inst.components.timer:TimerExists("destabilizedelay") then
 		inst.components.timer:StopTimer("destabilizedelay")
@@ -219,7 +220,7 @@ local function Destabilize(inst, failed)
 end
 
 local function OnDestabilizeExplode(inst)
-    EnableCameraFocus(inst, false)
+    --EnableCameraFocus(inst, false)
 	inst.AnimState:PlayAnimation("overload_pst", false)
 	SpawnPrefab("atrium_gate_explodesfx").Transform:SetPosition(inst.Transform:GetWorldPosition())
 	HideFx(inst)
@@ -244,7 +245,7 @@ local function StartCooldown(inst, immediate)
 		OnDestabilizeExplode(inst)
 	end
 
-    EnableCameraFocus(inst, false)
+    --EnableCameraFocus(inst, false)
 	inst:RemoveTag("intense")
     inst.components.pickable.caninteractwith = false
 	inst.components.trader:Disable()
@@ -255,7 +256,7 @@ local function StartCooldown(inst, immediate)
 		inst.AnimState:PlayAnimation("cooldown", true)
 		inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/cooldown_LP", "loop")
 	else
-		inst:DoTaskInTime(EXPLOTION_ANIM_LENG, function() 
+		inst:DoTaskInTime(EXPLOSION_ANIM_LEN, function() 
 			if inst.components.timer:TimerExists("cooldown") then 
 				inst.AnimState:PlayAnimation("cooldown", true)
 				inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/cooldown_LP", "loop")
@@ -273,7 +274,7 @@ local function OnTrackStalker(inst, stalker)
         inst:ListenForEvent("onremove", inst._onremovestalker, stalker)
         inst:ListenForEvent("death", inst._onstalkerdeath, stalker)
 		inst:AddTag("intense")
-        EnableCameraFocus(inst, false)
+        --EnableCameraFocus(inst, false)
 		ShowFx(inst, "idle")
 		inst.AnimState:PlayAnimation("idle_fight", true)
 		inst.SoundEmitter:KillSound("loop")
@@ -376,6 +377,43 @@ local function OnRemove(inst)
     TheWorld.Pathfinder:RemoveWall(x + 0.5, 0, z + 0.5)
 end
 
+--------------------------------------------------------------------------
+
+local TERRAFORM_BLOCKER_RADIUS = math.ceil(ATRIUM_ARENA_SIZE / 3)
+
+local function CreateTerraformBlocker(parent)
+    local inst = CreateEntity()
+
+    inst:AddTag("FX")
+    --[[Non-networked entity]]
+    inst.entity:SetCanSleep(false)
+    inst.persists = false
+
+    inst.entity:AddTransform()
+
+    inst:SetTerraformExtraSpacing(TERRAFORM_BLOCKER_RADIUS)
+
+    return inst
+end
+
+local function AddTerraformBlockers(inst)
+    local diameter = 2 * TERRAFORM_BLOCKER_RADIUS
+    local rowoffset = 3 * TERRAFORM_BLOCKER_RADIUS
+    for row = -rowoffset, rowoffset, diameter do
+        for col = -diameter, diameter, diameter do
+            local blocker = CreateTerraformBlocker(inst)
+            blocker.entity:SetParent(inst.entity)
+            blocker.Transform:SetPosition(row, 0, col)
+
+            blocker = CreateTerraformBlocker(inst)
+            blocker.entity:SetParent(inst.entity)
+            blocker.Transform:SetPosition(col, 0, row)
+        end
+    end
+end
+
+--------------------------------------------------------------------------
+
 local function fn()
 	local inst = CreateEntity()
 
@@ -403,13 +441,16 @@ local function fn()
 	inst:AddTag("gemsocket") -- for "Socket" action string
 	inst:AddTag("stargate")
 
-    inst._camerafocus = net_bool(inst.GUID, "atrium_gate._camerafocus", "camerafocusdirty")
-    inst._camerafocustask = nil
+    --inst._camerafocus = net_bool(inst.GUID, "atrium_gate._camerafocus", "camerafocusdirty")
+    --inst._camerafocustask = nil
 
     --Dedicated server does not need to spawn the flooring
     if not TheNet:IsDedicated() then
     	SpawnPrefab("atrium_floor").entity:SetParent(inst.entity)
     end
+
+    --Dedicated servers need this too
+    AddTerraformBlockers(inst)
 
     inst:DoTaskInTime(0, InitializePathFinding)
     inst.OnRemoveEntity = OnRemove
@@ -417,7 +458,7 @@ local function fn()
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
-        inst:ListenForEvent("camerafocusdirty", OnCameraFocusDirty)
+        --inst:ListenForEvent("camerafocusdirty", OnCameraFocusDirty)
 
         return inst
     end

@@ -12,7 +12,6 @@ local SAFE_LURE_DIST = 5
 
 local COMBAT_FEAST_DELAY = 3
 local CHECK_MINIONS_PERIOD = 2
-local DEFENSIVE_HEALTH_TRIGGER = 2 / 3
 
 local RESET_COMBAT_DELAY = 10
 
@@ -31,6 +30,7 @@ local StalkerBrain = Class(Brain, function(self, inst)
     self.hasfeast = nil
     self.hasminions = nil
     self.checkminionstime = nil
+    self.wantstospikes = nil
 end)
 
 local function GetStargatePos(inst)
@@ -43,7 +43,7 @@ local function GetStargate(inst)
 end
 
 local function IsDefensive(self)
-    return self.inst.components.health:GetPercent() < DEFENSIVE_HEALTH_TRIGGER
+    return self.inst.components.health.currenthealth < TUNING.STALKER_ATRIUM_PHASE2_HEALTH
 end
 
 local function CheckMinions(self)
@@ -74,6 +74,7 @@ local function ShouldSpikes(self)
             if stargate == nil or self.inst:IsNear(stargate, 8) then
                 local x, y, z = (stargate or self.inst).Transform:GetWorldPosition()
                 if #TheSim:FindEntities(x, y, z, 8, { "_combat", "_health" }, { "fossil", "playerghost", "shadow", "INLIMBO" }) > 0 then
+                    self.wantstospikes = true
                     return true
                 end
             end
@@ -96,7 +97,7 @@ local function ShouldSummonMinions(self)
 end
 
 local function ShouldMindControl(self)
-    if not self.inst.components.timer:TimerExists("mindcontrol_cd") then
+    if IsDefensive(self) and not self.inst.components.timer:TimerExists("mindcontrol_cd") then
         if self.inst:HasMindControlTarget() then
             return true
         end
@@ -126,11 +127,13 @@ local function ShouldCombatFeast(self)
 end
 
 local function ShouldUseAbility(self)
-    self.inst.returntogate = nil
+    local wantstospikes = self.wantstospikes
+    self.wantstospikes = nil
     self.hasfeast = nil
+    self.inst.returntogate = nil
     self.abilityname = self.inst.components.combat:HasTarget() and (
         (ShouldMindControl(self) and "mindcontrol") or
-        (ShouldSnare(self) and "fossilsnare") or
+        (not wantstospikes and ShouldSnare(self) and "fossilsnare") or
         (ShouldSummonChannelers(self) and "shadowchannelers") or
         (ShouldCombatFeast(self) and "fossilfeast") or
         CheckMinions(self) or

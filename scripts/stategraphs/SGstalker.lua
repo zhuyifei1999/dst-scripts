@@ -622,26 +622,58 @@ local states =
 
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
-            inst.AnimState:PlayAnimation("death3")
+            inst.AnimState:PlayAnimation("death3_pre")
             inst:AddTag("NOCLICK")
 
-            local fx = SpawnPrefab("stalker_shield")
-            fx.entity:SetParent(inst.entity)
-            fx:Hide()
+            --inst:EnableCameraFocus(true)
+        end,
 
-            inst:EnableCameraFocus(true)
-            inst.sg:SetTimeout(TUNING.ATRIUM_GATE_DESTABILIZE_DELAY - 3 * FRAMES)
+        timeline =
+        {
+            TimeEvent(FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death_pop") end),
+            TimeEvent(3 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death_pop") end),
+            TimeEvent(7 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death_pop") end),
+            TimeEvent(10 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death_pop") end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg.statemem.death = true
+                    inst.sg:GoToState("death3_pst")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if not inst.sg.statemem.death then
+                --Should NOT happen!
+                inst:RemoveTag("NOCLICK")
+                --inst:EnableCameraFocus(false)
+            end
+        end,
+    },
+
+    State{
+        name = "death3_pst",
+        tags = { "busy" },
+
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("death3")
+
+            --inst.sg:SetTimeout(TUNING.ATRIUM_GATE_DESTABILIZE_DELAY - 3 * FRAMES - 12 * FRAMES)
         end,
 
         timeline =
         {
             TimeEvent(0, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/swell") end),
+            TimeEvent(FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death_pop") end),
             TimeEvent(6 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/whip") end),
             TimeEvent(15 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/whip_snap") end),
-            TimeEvent(30 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/whip_snap") end),
-            TimeEvent(42 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/pianohits_1") end),
-            TimeEvent(45 * FRAMES, ShakeIfClose),
-            TimeEvent(46 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/orchhits") end),
+            TimeEvent(41 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/pianohits_1") end),
+            TimeEvent(44 * FRAMES, ShakeIfClose),
+            TimeEvent(49 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/orchhits") end),
             TimeEvent(55 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/stretch") end),
             TimeEvent(73 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/whip") end),
             TimeEvent(85 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/death3/whip_snap") end),
@@ -684,14 +716,14 @@ local states =
             TimeEvent(15, ErodeAway),
         },
 
-        ontimeout = function(inst)
+        --[[ontimeout = function(inst)
             inst:EnableCameraFocus(false)
-        end,
+        end,]]
 
         onexit = function(inst)
             --Should NOT happen!
             inst:RemoveTag("NOCLICK")
-            inst:EnableCameraFocus(false)
+            --inst:EnableCameraFocus(false)
         end,
     },
 

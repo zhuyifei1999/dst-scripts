@@ -76468,11 +76468,6 @@ msgctxt "STRINGS.NAMES.TURF_UNDERROCK"
 msgid "Cave Rock Turf"
 msgstr ""
 
-#. STRINGS.NAMES.TURF_WEBBING
-msgctxt "STRINGS.NAMES.TURF_WEBBING"
-msgid "Sticky Webbing"
-msgstr ""
-
 #. STRINGS.NAMES.TURF_WOODFLOOR
 msgctxt "STRINGS.NAMES.TURF_WOODFLOOR"
 msgid "Wooden Flooring"

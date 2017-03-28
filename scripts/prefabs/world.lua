@@ -121,7 +121,6 @@ local prefabs =
     "turf_rocky",
     "turf_marsh",
     "turf_savanna",
-    "turf_dirt",
     "turf_forest",
     "turf_grass",
     "turf_cave",

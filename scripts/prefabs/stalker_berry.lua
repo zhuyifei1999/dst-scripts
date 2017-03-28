@@ -89,6 +89,7 @@ local function fn()
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddLight()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
     inst.Light:SetFalloff(FADE_FALLOFF)
@@ -116,6 +117,8 @@ local function fn()
 
         return inst
     end
+
+    inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/flowergrow")
 
     inst:AddComponent("pickable")
     inst.components.pickable.picksound = "dontstarve/wilson/pickup_reeds"

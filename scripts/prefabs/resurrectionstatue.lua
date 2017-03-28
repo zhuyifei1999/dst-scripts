@@ -73,7 +73,7 @@ end
 
 local function onlink(inst, player, isloading)
     if not isloading then
-        inst.SoundEmitter:PlaySound("dontstarve/cave/meat_effigy_attune_on")
+        inst.SoundEmitter:PlaySound("dontstarve/common/together/meat_effigy_attune/on")
         inst.AnimState:PlayAnimation("attune_on")
         inst.AnimState:PushAnimation("idle", false)
     end
@@ -81,7 +81,7 @@ end
 
 local function onunlink(inst, player, isloading)
     if not (isloading or inst.AnimState:IsCurrentAnimation("attune_on")) then
-        inst.SoundEmitter:PlaySound("dontstarve/cave/meat_effigy_attune_off")
+        inst.SoundEmitter:PlaySound("dontstarve/common/together/meat_effigy_attune/off")
         inst.AnimState:PlayAnimation("attune_off")
         inst.AnimState:PushAnimation("idle", false)
     end
@@ -89,7 +89,7 @@ end
 
 local function PlayAttuneSound(inst)
     if inst.AnimState:IsCurrentAnimation("place") or inst.AnimState:IsCurrentAnimation("attune_on") then
-        inst.SoundEmitter:PlaySound("dontstarve/cave/meat_effigy_attune_on")
+        inst.SoundEmitter:PlaySound("dontstarve/common/together/meat_effigy_attune/on")
     end
 end
 
