@@ -248,6 +248,8 @@ local function fn()
     inst.fx = SpawnPrefab("nightmarelightfx")
     inst.fx.entity:SetParent(inst.entity)
 
+    inst.highlightchildren = { inst.fx }
+
     inst:AddComponent("sanityaura")
 
     inst:AddComponent("childspawner")
@@ -266,18 +268,6 @@ local function fn()
     inst.OnEntitySleep = OnEntitySleep
 
     return inst
-end
-
-local function idolfn()
-	local inst = fn()
-	
-	inst:SetPrefabNameOverride("nightmarelight")
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
-	
-	return inst
 end
 
 return Prefab("nightmarelight", fn, assets, prefabs)

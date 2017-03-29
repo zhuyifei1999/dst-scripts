@@ -1,8 +1,15 @@
-local function Make(name, bank)
+local function Make(name, bank, mouseparent)
     local assets =
     {
         Asset("ANIM", "anim/"..bank..".zip"),
     }
+
+    local OnEntityReplicated = mouseparent ~= nil and function(inst)
+        local parent = inst.entity:GetParent()
+        if parent ~= nil and parent.prefab == mouseparent then
+            parent.highlightchildren = { inst }
+        end
+    end or nil
 
     local function fn()
         local inst = CreateEntity()
@@ -15,12 +22,15 @@ local function Make(name, bank)
         inst.AnimState:SetBuild(bank)
         inst.AnimState:PlayAnimation("idle_closed")
 
+        --"FX" will catch mouseover, "DECOR" will not
+        inst:AddTag(mouseparent ~= nil and "DECOR" or "FX")
         inst:AddTag("NOCLICK")
-        inst:AddTag("FX")
 
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
+            inst.OnEntityReplicated = OnEntityReplicated
+
             return inst
         end
 
@@ -32,6 +42,6 @@ local function Make(name, bank)
     return Prefab(name, fn, assets)
 end
 
-return Make("nightmarelightfx", "rock_light_fx"),
+return Make("nightmarelightfx", "rock_light_fx", "nightmarelight"),
     Make("nightmarefissurefx", "nightmare_crack_ruins_fx"),
     Make("upper_nightmarefissurefx", "nightmare_crack_upper_fx")
