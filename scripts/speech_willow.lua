@@ -119,7 +119,12 @@ return {
 	ANNOUNCE_CHARLIE = "I'm not afraid of you!",
 	ANNOUNCE_CHARLIE_ATTACK = "OUCH! You jerk!",
 	ANNOUNCE_COLD = "The cold! It burns!",
-	ANNOUNCE_ANTLION_SINKHOLE = "The ground's cracking!",
+	ANNOUNCE_ANTLION_SINKHOLE = 
+	{
+		"The ground's cracking!",
+		"Tread carefully!",
+		"Earthquake!",
+	},
 	ANNOUNCE_ANTLION_TRIBUTE =
 	{
         "Hey, I gotcha something!",
@@ -1761,7 +1766,7 @@ return {
 		SEEDS = "Farming is boring.",
 		SEEDS_COOKED = "No good for farming now.",
 		SEWING_KIT = "But destruction is so much more fun!",
-		SEWING_TAPE = "For when you get bored of wrecking stuff.",
+		SEWING_TAPE = "At least something around here can hold it together.",
 		SHOVEL = "Not great for fighting.",
 		SILK = "Mmmmmm. Smooth.",
 		INSPECTSELF = "Why didn't anyone tell me I had ashes on my face?",

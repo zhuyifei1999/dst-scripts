@@ -120,7 +120,12 @@ return
     ANNOUNCE_DIG_DISEASE_WARNING = "Caught it just in time. The roots were nearly rotten.",
     ANNOUNCE_PICK_DISEASE_WARNING = "This plant is exhibiting concerning signs.",
     ANNOUNCE_MOUNT_LOWHEALTH = "My mount requires attention of the medical variety.",
-    ANNOUNCE_ANTLION_SINKHOLE = "The ground will soon give way.",
+    ANNOUNCE_ANTLION_SINKHOLE = 
+    {
+        "The ground will soon give way.",
+        "Not the work of tectonic plates.",
+        "A six on the Richter scale.",
+    },
     ANNOUNCE_ANTLION_TRIBUTE =
     {
         "For you, great Panthera auropunctata.",
@@ -1127,7 +1132,7 @@ return
         PHLEGM = "The congealed mucus retains its sticky texture.",
         PICKAXE = "A specialized axe for chipping away at rocks.",
         SEWING_KIT = "A simple implement for domestic tasks.",
-        SEWING_TAPE = "A high grade adhesive, good for repairs.",
+        SEWING_TAPE = "A high grade adhesive, good for small mends.",
         SHOVEL = "It's a shovel. Surely you've seen one before?",
         PITCHFORK = "Its design is effective at loosening earth.",
         ROCKS = "A handful of assorted rocks.",

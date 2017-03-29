@@ -243,6 +243,9 @@ local function NoHoles(pt)
 end
 
 local function GetSpawnPoint(pt)
+    if not TheWorld.Map:IsAboveGroundAtPoint(pt:Get()) then
+        pt = FindNearbyLand(pt, 1) or pt
+    end
     local offset = FindWalkableOffset(pt, math.random() * 2 * PI, SPAWN_DIST, 12, true, true, NoHoles)
     if offset ~= nil then
         offset.x = offset.x + pt.x
@@ -252,48 +255,35 @@ local function GetSpawnPoint(pt)
 end
 
 local function GetSpecialSpawnChance()
-	local day = GetAveragePlayerAgeInDays()
-	local chance = 0
-	for k,v in ipairs(TUNING.HOUND_SPECIAL_CHANCE) do
-	    if day > v.minday then
-	        chance = v.chance
-	    elseif day <= v.minday then
-	        return chance
-	    end
-	end
-
-	if TheWorld.state.issummer then
-		chance = chance * 1.5
-	end
-
-	return chance
+    local day = GetAveragePlayerAgeInDays()
+    local chance = 0
+    for i, v in ipairs(TUNING.HOUND_SPECIAL_CHANCE) do
+        if day > v.minday then
+            chance = v.chance
+        elseif day <= v.minday then
+            return chance
+        end
+    end
+    return TheWorld.state.issummer and chance * 1.5 or chance
 end
 
 local function SummonSpawn(pt)
-	local spawn_pt = GetSpawnPoint(pt)
-	if spawn_pt ~= nil then
-		local prefab = _spawndata.base_prefab
-		local special_spawn_chance = GetSpecialSpawnChance()
-
-		if math.random() < special_spawn_chance then
-		    if TheWorld.state.iswinter or TheWorld.state.isspring then
-		        prefab = _spawndata.winter_prefab
-		    else
-			    prefab = _spawndata.summer_prefab
-			end
-		end
-
-		local spawn = SpawnPrefab(prefab)
-		if spawn ~= nil then
-			spawn.Physics:Teleport(spawn_pt:Get())
-			spawn:FacePoint(pt)
+    local spawn_pt = GetSpawnPoint(pt)
+    if spawn_pt ~= nil then
+        local spawn = SpawnPrefab(
+            (math.random() >= GetSpecialSpawnChance() and _spawndata.base_prefab) or
+            ((TheWorld.state.iswinter or TheWorld.state.isspring) and _spawndata.winter_prefab) or
+            _spawndata.summer_prefab
+        )
+        if spawn ~= nil then
+            spawn.Physics:Teleport(spawn_pt:Get())
+            spawn:FacePoint(pt)
             if spawn.components.spawnfader ~= nil then
                 spawn.components.spawnfader:FadeIn()
             end
-
-			return spawn
-		end
-	end
+            return spawn
+        end
+    end
 end
 
 local function ReleaseSpawn(target)

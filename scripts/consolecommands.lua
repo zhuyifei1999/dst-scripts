@@ -1109,7 +1109,3 @@ end
 function c_stopvote()
     TheNet:StopVote()
 end
-
-function c_resetruins()
-	TheWorld:PushEvent("resetruins")
-end

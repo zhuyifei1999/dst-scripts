@@ -8,6 +8,7 @@ local assets =
     Asset("ANIM", "anim/statue_ruins.zip"),
     Asset("ANIM", "anim/statue_ruins_gem.zip"),
     Asset("MINIMAP_IMAGE", "statue_ruins"),
+    Asset("SCRIPT", "scripts/prefabs/ruinsrespawner.lua"),
 }
 
 local prefabs =

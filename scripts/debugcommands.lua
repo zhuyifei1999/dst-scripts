@@ -228,3 +228,7 @@ function d_stalkersetup()
 	c_give "shadowheart"
 	c_give "atrium_key"
 end
+
+function d_resetruins()
+	TheWorld:PushEvent("resetruins")
+end

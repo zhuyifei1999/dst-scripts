@@ -127,7 +127,12 @@ return {
 	ANNOUNCE_WORMS = "Oh dear. I know what's making that sound.",
     ANNOUNCE_NOSLEEPONFIRE = "That might not be the best idea.",
 	ANNOUNCE_NODANGERSIESTA = "They're hot on my heels!",
-	ANNOUNCE_ANTLION_SINKHOLE = "My world is crumbling!",
+	ANNOUNCE_ANTLION_SINKHOLE = 
+	{
+		"My world is crumbling!",
+		"I am attacked by my own world!",
+		"An earthquake!",
+	},
 	ANNOUNCE_ANTLION_TRIBUTE =
 	{
         "May this tribute sate the beast.",
@@ -1695,7 +1700,7 @@ return {
 		SEEDS = "I suppose these won't plant themselves.",
 		SEEDS_COOKED = "Broiled the life out of 'em.",
 		SEWING_KIT = "A fine and noble endeavor.",
-		SEWING_TAPE = "Alas, the wilderness is tough on a tailor made suit.",
+		SEWING_TAPE = "The wilderness is tough on a tailor made suit.",
 		SHOVEL = "This is some real advanced technology.",
 		SILK = "Despite its origin, it could make some fine garments.",
 		SKELETON = "Ha! I remember that one.",

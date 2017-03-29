@@ -120,7 +120,12 @@ return {
     ANNOUNCE_MIGHTYTONORMAL="I need to fill my mighty belly again!",
     ANNOUNCE_NOSLEEPONFIRE = "Is too hot for sleeping.",
     ANNOUNCE_NODANGERSIESTA = "I prefer fighting to napping!",
-    ANNOUNCE_ANTLION_SINKHOLE = "Ground is crumble beneath might of Wolfgang!",
+    ANNOUNCE_ANTLION_SINKHOLE = 
+    {
+        "Ground is crumble beneath might of Wolfgang!",
+        "Wolfgang broke the ground!",
+        "That rumble is not stomach!",
+    },
     ANNOUNCE_ANTLION_TRIBUTE =
     {
         "Please do not eat me.",

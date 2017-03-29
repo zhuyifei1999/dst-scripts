@@ -59,10 +59,8 @@ local function TestForRegrow(x, y, z, prefab, searchtags)
         return false
     end
 
-    local tile = _map:GetTileAtPoint(x,y,z)
     if not (_map:CanPlantAtPoint(x, y, z) and
-            _map:CanPlacePrefabFilteredAtPoint(x,y,z, prefab))
-        or tile == GROUND.ROAD
+            _map:CanPlacePrefabFilteredAtPoint(x, y, z, prefab))
         or (RoadManager ~= nil and RoadManager:IsOnRoad(x, 0, z)) then
         -- Not ground we can grow on
         return false

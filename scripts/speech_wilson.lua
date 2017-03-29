@@ -129,7 +129,12 @@ return {
 	ANNOUNCE_CRAFTING_FAIL = "I'm missing a couple key ingredients.",
 	ANNOUNCE_DEERCLOPS = "That sounded big!",
 	ANNOUNCE_CAVEIN = "The ceiling is destabilizing!",
-	ANNOUNCE_ANTLION_SINKHOLE = "The ground is destabilizing!",
+	ANNOUNCE_ANTLION_SINKHOLE = 
+	{
+		"The ground is destabilizing!",
+		"A tremor!",
+		"Terrible terralogical waves!",
+	},
 	ANNOUNCE_ANTLION_TRIBUTE =
 	{
         "Allow me to pay tribute.",
@@ -1692,7 +1697,7 @@ return {
 		SEEDS = "Each one is a tiny mystery.",
 		SEEDS_COOKED = "That cooked the life right out of 'em!",
 		SEWING_KIT = "Darn it! Darn it all to heck!",
-		SEWING_TAPE = "For making some much needed repairs.",
+		SEWING_TAPE = "Good for mending.",
 		SHOVEL = "There's a lot going on underground.",
 		SILK = "It comes from a spider's butt.",
 		SKELETON = "Better you than me.",

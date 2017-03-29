@@ -123,7 +123,12 @@ return {
     ANNOUNCE_ADVENTUREFAIL = "Back to the Otherworld, victory shall be mine!",
     ANNOUNCE_BEES = "Back, wee speared creatures!",
     ANNOUNCE_BOOMERANG = "Urg! I must master the curved weapon.",
-    ANNOUNCE_ANTLION_SINKHOLE = "The earth rebels against us!",
+    ANNOUNCE_ANTLION_SINKHOLE = 
+    {
+        "The earth rebels against us!",
+        "Tis the footsteps of a giant!",
+        "What plagues you, mother Gaia?",
+    },
     ANNOUNCE_ANTLION_TRIBUTE =
     {
         "A gift, that you may not devour us.",
@@ -1681,7 +1686,7 @@ return {
         SEEDS = "Tiny nature bits.",
         SEEDS_COOKED = "Tiny nature bits, cooked to death.",
         SEWING_KIT = "I am no seamstress, but repairs are sometimes necessary.",
-        SEWING_TAPE = "That my armor might be repaired!",
+        SEWING_TAPE = "Luckily I need be no seamstress with this!",
         SHOVEL = "I'd prefer a ship burial, though this might have its uses.",
         SILK = "Useful for binding, and for remembering victories past.",
         SKELETON = "Rest easy in Valhalla.",

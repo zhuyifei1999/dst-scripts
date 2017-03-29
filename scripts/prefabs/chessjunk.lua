@@ -5,6 +5,7 @@ local assets =
 {
     Asset("ANIM", "anim/chessmonster_ruins.zip"),
 	Asset("MINIMAP_IMAGE", "chessjunk"),
+    Asset("SCRIPT", "scripts/prefabs/ruinsrespawner.lua"),
 }
 
 local prefabs =

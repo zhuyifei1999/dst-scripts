@@ -122,7 +122,12 @@ return {
 	ANNOUNCE_CHARLIE_ATTACK = "Yeouch! That was rough!",
 	ANNOUNCE_COLD = "It's a bit chilly out here!",
 	ANNOUNCE_HOT = "It's so hot out here!",
-	ANNOUNCE_ANTLION_SINKHOLE = "Pothole incoming.",
+	ANNOUNCE_ANTLION_SINKHOLE = 
+	{
+		"Pothole incoming.",
+		"Take cover!",
+		"Dangerous 'round here.",
+	},
 	ANNOUNCE_ANTLION_TRIBUTE =
 	{
         "Maybe put the sinkholes on pause, eh?",

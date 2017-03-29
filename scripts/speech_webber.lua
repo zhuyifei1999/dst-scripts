@@ -121,7 +121,12 @@ return {
 	ANNOUNCE_CHARLIE_ATTACK = "Aah! Monsters in the dark!",
 	ANNOUNCE_COLD = "Brrr... spider hair isn't very warm.",
 	ANNOUNCE_HOT = "Hot as heck!",
-	ANNOUNCE_ANTLION_SINKHOLE = "The ground's giving way!",
+	ANNOUNCE_ANTLION_SINKHOLE = 
+	{
+		"The ground's giving way!",
+		"It's rumble-y!",
+		"What's that?",
+	},
 	ANNOUNCE_ANTLION_TRIBUTE =
 	{
         "For you!",

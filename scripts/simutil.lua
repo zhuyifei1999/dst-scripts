@@ -114,12 +114,15 @@ function FindSafeSpawnLocation(x, y, z)
     end
 end
 
-function FindNearbyLand(position)
-    local finaloffset = FindValidPositionByFan(0, 8, 8, function(offset)
-        local run_point = position+offset
-        return TheWorld.Map:IsAboveGroundAtPoint(run_point.x, run_point.y, run_point.z)
+function FindNearbyLand(position, range)
+    local finaloffset = FindValidPositionByFan(0, range or 8, 8, function(offset)
+        return TheWorld.Map:IsAboveGroundAtPoint(position.x + offset.x, 0, position.z + offset.z)
     end)
-    return finaloffset ~= nil and position + finaloffset or nil
+    if finaloffset ~= nil then
+        finaloffset.x = finaloffset.x + position.x
+        finaloffset.z = finaloffset.z + position.z
+        return finaloffset
+    end
 end
 
 function GetRandomInstWithTag(tag, inst, radius)

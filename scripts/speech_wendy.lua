@@ -214,7 +214,12 @@ return {
 	ANNOUNCE_BURNT = "Ow! Fires of Hell!",
 	ANNOUNCE_TOOL_SLIP = "Oh well, I didn't need it anyways.",
 	ANNOUNCE_DAMP = "Soggy and sad.",
-	ANNOUNCE_ANTLION_SINKHOLE = "The ground crumbles beneath me.",
+	ANNOUNCE_ANTLION_SINKHOLE = 
+	{
+		"Oh, now what?",
+		"The ground crumbles beneath me.",
+		"May the earth swallow me whole.",
+	},
 	ANNOUNCE_ANTLION_TRIBUTE =
 	{
         "A gift...",

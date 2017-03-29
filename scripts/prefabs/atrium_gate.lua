@@ -208,8 +208,6 @@ local function StartDestabilizing(inst, onload)
 
 	if not onload then
 		TheWorld:PushEvent("atriumpowered", false)
-        TheWorld:PushEvent("unpausequakes", { source = inst })
-        TheWorld:PushEvent("unpausehounded", { source = inst })
 		inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/shadow_pulse")
 	end
 
@@ -291,6 +289,8 @@ local function StartCooldown(inst, immediate)
 	inst.components.trader:Disable()
 	inst.SoundEmitter:KillSound("loop")
 	TheWorld:PushEvent("ms_locknightmarephase", nil)
+    TheWorld:PushEvent("unpausequakes", { source = inst })
+    TheWorld:PushEvent("unpausehounded", { source = inst })
 
 	if immediate then
 		inst.AnimState:PlayAnimation("cooldown", true)

@@ -32,6 +32,25 @@ SetSharedLootTable('minotaur',
     {"minotaurhorn",1.00},
 })
 
+local chest_loot = 
+{
+	{item = {"armorruins", "ruinshat"}, count = 1},
+	{item = {"ruins_bat", "orangestaff", "yellowstaff"}, count = 1},
+	{item = {"firestaff", "icestaff", "telestaff", "multitool_axe_pickaxe"}, count = 1},
+	{item = {"thulecite"}, count = {5, 12}},
+	{item = {"thulecite_pieces"}, count = {12, 36}},
+	{item = {"redgem", "bluegem", "purplegem"}, count = {3, 5}},
+	{item = {"yellowgem", "orangegem", "greengem"}, count = {1, 3}},
+	{item = {"nightmarefuel"}, count = {5, 8}},
+	{item = {"gears"}, count = {3, 6}},
+}
+
+for _,v in ipairs(chest_loot) do
+	for _,item in ipairs(v.item) do
+		table.insert(prefabs, item)
+	end
+end
+
 local SLEEP_DIST_FROMHOME_SQ = 20 * 20
 local SLEEP_DIST_FROMTHREAT = 40
 local MAX_CHASEAWAY_DIST_SQ = 40 * 40
@@ -137,13 +156,33 @@ local function oncollide(inst, other)
     inst:DoTaskInTime(2 * FRAMES, onothercollide, other)
 end
 
+local function setupchestloot(chest)
+	chest.components.container:GiveItem(SpawnPrefab("atrium_key"))
+
+	local loot_keys = {} 
+	for i,_ in ipairs(chest_loot) do table.insert(loot_keys,i) end
+	loot_keys = PickSome(math.floor(math.pow(math.random()*1.9, 2)) + 2, loot_keys)
+	
+	for _,i in ipairs(loot_keys) do
+		local loot = chest_loot[i]
+		local item = SpawnPrefab(loot.item[math.random(#loot.item)])
+		if item ~= nil then
+			if type(loot.count) == "table" and item.components.stackable ~= nil then
+				item.components.stackable:SetStackSize(math.random(loot.count[1], loot.count[2]))
+			end
+			chest.components.container:GiveItem( item )
+		end
+	end
+end
+
 local function dospawnchest(inst)
     inst.SoundEmitter:PlaySound("dontstarve/common/ghost_spawn")
 
     local chest = SpawnPrefab("minotaurchest")
     local x, y, z = inst.Transform:GetWorldPosition()
     chest.Transform:SetPosition(x, 0, z)
-
+	setupchestloot(chest)
+	
     local fx = SpawnPrefab("statue_transition_2")
     if fx ~= nil then
         fx.Transform:SetPosition(x, y, z)
@@ -155,10 +194,6 @@ local function dospawnchest(inst)
         fx.Transform:SetPosition(x, y, z)
         fx.Transform:SetScale(1, 1.5, 1)
     end
-
-    chest:AddComponent("scenariorunner")
-    chest.components.scenariorunner:SetScript("chest_minotaur")
-    chest.components.scenariorunner:Run()
 end
 
 local function spawnchest(inst)

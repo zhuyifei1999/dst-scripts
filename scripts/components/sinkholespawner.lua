@@ -78,6 +78,9 @@ function SinkholeSpawner:UpdateTarget(targetinfo)
     end
 end
 
+-- c_sel().components.sinkholespawner:StartSinkholes()
+
+local WARNING_RADIUS = 3.5
 function SinkholeSpawner:DoTargetWarning(targetinfo)
     if targetinfo.warnings == nil then
         targetinfo.warnings = TUNING.ANTLION_SINKHOLE.NUM_WARNINGS
@@ -87,7 +90,12 @@ function SinkholeSpawner:DoTargetWarning(targetinfo)
             --Handle locally
             ShakeAllCameras(CAMERASHAKE.SIDE, TUNING.ANTLION_SINKHOLE.WARNING_DELAY, .04, .05, targetinfo.pos, 6)
 
-            if targetinfo.warnings == TUNING.ANTLION_SINKHOLE.NUM_WARNINGS and targetinfo.player ~= nil then
+			for i = 1, math.ceil((TUNING.ANTLION_SINKHOLE.NUM_WARNINGS - (targetinfo.warnings or 0) + 1) / 3.2) do
+				local fxpt = targetinfo.pos + Vector3((math.random() * (WARNING_RADIUS*2)) - WARNING_RADIUS, 0, (math.random() * (WARNING_RADIUS*2)) - WARNING_RADIUS)
+				local rocks = SpawnPrefab("sinkhole_warn_fx_"..math.random(3)).Transform:SetPosition(fxpt:Get())
+			end
+
+            if ((targetinfo.warnings or 0) % 4 == 0) and targetinfo.player ~= nil and targetinfo.player:IsValid() then
                 targetinfo.player.components.talker:Say(GetString(targetinfo.player, "ANNOUNCE_ANTLION_SINKHOLE"))
             end
         end

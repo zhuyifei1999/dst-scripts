@@ -2394,9 +2394,9 @@ function Tune(overrides)
             WAVE_ATTACK_DELAY_VARIANCE = 1,
             WAVE_MERGE_ATTACKS_DIST_SQ = math.pow(4 * 3, 2), -- 4 == TILE_SCALE
 
-            NUM_WARNINGS = 3,
-            WARNING_DELAY = 5,
-            WARNING_DELAY_VARIANCE = 1,
+            NUM_WARNINGS = 12,
+            WARNING_DELAY = 1,
+            WARNING_DELAY_VARIANCE = .3,
 
             ATTACK_SEQUENCE_INITIAL_DELAY = 1 * total_day_time,
             ATTACK_SEQUENCE_INITIAL_DELAY_VARIANCE = 1 * total_day_time,
