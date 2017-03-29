@@ -625,7 +625,7 @@ local states =
             inst.AnimState:PlayAnimation("death3_pre")
             inst:AddTag("NOCLICK")
 
-            --inst:EnableCameraFocus(true)
+            inst:EnableCameraFocus(true)
         end,
 
         timeline =
@@ -650,7 +650,7 @@ local states =
             if not inst.sg.statemem.death then
                 --Should NOT happen!
                 inst:RemoveTag("NOCLICK")
-                --inst:EnableCameraFocus(false)
+                inst:EnableCameraFocus(false)
             end
         end,
     },
@@ -662,7 +662,9 @@ local states =
         onenter = function(inst)
             inst.AnimState:PlayAnimation("death3")
 
-            --inst.sg:SetTimeout(TUNING.ATRIUM_GATE_DESTABILIZE_DELAY - 3 * FRAMES - 12 * FRAMES)
+            --12 frames from "death3_pre" animation
+            --3 frames buffer
+            inst.sg:SetTimeout(TUNING.ATRIUM_GATE_DESTABILIZE_DELAY - 15 * FRAMES)
         end,
 
         timeline =
@@ -716,14 +718,14 @@ local states =
             TimeEvent(15, ErodeAway),
         },
 
-        --[[ontimeout = function(inst)
+        ontimeout = function(inst)
             inst:EnableCameraFocus(false)
-        end,]]
+        end,
 
         onexit = function(inst)
             --Should NOT happen!
             inst:RemoveTag("NOCLICK")
-            --inst:EnableCameraFocus(false)
+            inst:EnableCameraFocus(false)
         end,
     },
 
@@ -989,7 +991,7 @@ local states =
                 if inst.AnimState:AnimDone() then
                     inst:SpawnMinions()
                     inst:BattleChatter("summon_minions")
-                    inst.sg:GoToState("summon_minions_loop", inst.sg.statemem.count)
+                    inst.sg:GoToState("summon_minions_loop", { count = inst.sg.statemem.count })
                 end
             end),
         },
@@ -999,11 +1001,11 @@ local states =
         name = "summon_minions_loop",
         tags = { "busy", "summoning" },
 
-        onenter = function(inst, count)
+        onenter = function(inst, data)
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("summon_loop")
             inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/summon")
-            inst.sg.statemem.count = count or 0
+            inst.sg.statemem.data = data or { count = 0 }
         end,
 
         timeline =
@@ -1017,12 +1019,14 @@ local states =
         events =
         {
             EventHandler("attacked", function(inst)
-                inst.sg.statemem.count = inst.sg.statemem.count - 1
+                inst.sg.statemem.data.count = inst.sg.statemem.data.count - 1
             end),
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-                    if inst.sg.statemem.count > 1 then
-                        inst.sg:GoToState("summon_minions_loop", inst.sg.statemem.count - 1)
+                    if inst.sg.statemem.data.count > 1 or not inst.sg.statemem.data.looped then
+                        inst.sg.statemem.data.count = inst.sg.statemem.data.count - 1
+                        inst.sg.statemem.data.looped = true
+                        inst.sg:GoToState("summon_minions_loop", inst.sg.statemem.data)
                     else
                         inst.sg:GoToState("summon_minion_pst")
                     end

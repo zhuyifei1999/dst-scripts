@@ -75,8 +75,8 @@ local function UpdateFossileMound(inst, size, checkforwrong)
         --reset case, not really used tho
         inst.form = 1
     elseif checkforwrong and inst.moundsize < MOUND_WRONG_START_SIZE then
-        --double chance of form 1 (correct form)
-        inst.form = math.max(1, math.random(0, NUM_FORMS))
+        --3/5 chance of form 1 (correct form)
+        inst.form = math.max(1, math.random(-1, NUM_FORMS))
     end
 
     inst.moundsize = size

@@ -1,28 +1,6 @@
-require("stategraphs/commonstates")
-require("stategraphs/SGshadow_chesspieces")
+local ShadowChess = require("stategraphs/SGshadow_chesspieces")
 
-local events =
-{
-    EventHandler("attacked", function(inst)
-        if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) then
-            inst.sg:GoToState("hit")
-        end
-    end),
-    EventHandler("doattack", function(inst, data)
-        if not (inst.sg:HasStateTag("busy") or
-                inst.sg:HasStateTag("attack") or
-                inst.sg:HasStateTag("taunt") or
-                inst.sg:HasStateTag("levelup") or
-                inst.components.health:IsDead()) then
-            inst.sg:GoToState("attack", data.target)
-        end
-    end),
-
-    ShadowChessEvents.LevelUp(),
-    ShadowChessEvents.OnDeath(),
-	ShadowChessEvents.OnDespawn(),
-    CommonHandlers.OnLocomote(false, true),
-}
+--See SGshadow_chesspieces.lua for CommonEventList
 
 local SWARM_PERIOD = .5
 local SWARM_START_DELAY = .25
@@ -238,26 +216,26 @@ local states =
     },
 }
 
-ShadowChessStates.AddIdle(states, "idle_loop")
-ShadowChessStates.AddLevelUp(states, "transform", 22, 58, 95)
-ShadowChessStates.AddTaunt(states, "taunt", 3, 12, 47)
-ShadowChessStates.AddHit(states, "hit", 0, 14)
-ShadowChessStates.AddDeath(states, "disappear", 20,
+ShadowChess.States.AddIdle(states, "idle_loop")
+ShadowChess.States.AddLevelUp(states, "transform", 22, 58, 95)
+ShadowChess.States.AddTaunt(states, "taunt", 3, 12, 47)
+ShadowChess.States.AddHit(states, "hit", 0, 14)
+ShadowChess.States.AddDeath(states, "disappear", 20,
 {
-    ShadowChessFunctions.DeathSoundTimelineEvent(19 * FRAMES),
+    ShadowChess.Functions.DeathSoundTimelineEvent(19 * FRAMES),
 })
-ShadowChessStates.AddEvolvedDeath(states, "death", 25,
+ShadowChess.States.AddEvolvedDeath(states, "death", 25,
 {
-    ShadowChessFunctions.DeathSoundTimelineEvent(26 * FRAMES),
-    ShadowChessFunctions.DeathSoundTimelineEvent(38 * FRAMES),
-    ShadowChessFunctions.DeathSoundTimelineEvent(41 * FRAMES),
-    ShadowChessFunctions.DeathSoundTimelineEvent(55 * FRAMES),
+    ShadowChess.Functions.DeathSoundTimelineEvent(26 * FRAMES),
+    ShadowChess.Functions.DeathSoundTimelineEvent(38 * FRAMES),
+    ShadowChess.Functions.DeathSoundTimelineEvent(41 * FRAMES),
+    ShadowChess.Functions.DeathSoundTimelineEvent(55 * FRAMES),
 })
-ShadowChessStates.AddDespawn(states, "disappear",
+ShadowChess.States.AddDespawn(states, "disappear",
 {
-    ShadowChessFunctions.DeathSoundTimelineEvent(19 * FRAMES),
+    ShadowChess.Functions.DeathSoundTimelineEvent(19 * FRAMES),
 })
 
 CommonStates.AddWalkStates(states)
 
-return StateGraph("shadow_bishop", states, events, "idle")
+return StateGraph("shadow_bishop", states, ShadowChess.CommonEventList, "idle")

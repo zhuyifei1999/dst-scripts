@@ -80,6 +80,7 @@ local prefabs =
     "atrium_idol", -- deprecated
     "atrium_overgrowth",
     "cave_hole",
+    "chessjunk",
 }
 
 local monsters =

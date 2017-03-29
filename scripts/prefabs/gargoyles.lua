@@ -111,8 +111,9 @@ local function makegargoyle(data)
         if moonbase ~= nil and moonbase:IsValid() then
             creature.components.entitytracker:TrackEntity("moonbase", moonbase)
         end
-        creature.sg:GoToState("reanimate", { anim = data.reanimate_anim, time = data.reanimate_time })
-        if data.petrify_anim == "death" then
+        local dead = data.petrify_anim == "death"
+        creature.sg:GoToState("reanimate", { anim = data.reanimate_anim, time = data.reanimate_time, dead = dead })
+        if dead then
             creature.components.health:Kill()
         end
     end

@@ -78,7 +78,7 @@ return {
       objects = {
         {
           name = "",
-          type = "chessjunk1",
+          type = "chessjunk_spawner",
           shape = "rectangle",
           x = 114,
           y = 129,
@@ -89,7 +89,7 @@ return {
         },
         {
           name = "",
-          type = "chessjunk2",
+          type = "chessjunk_spawner",
           shape = "rectangle",
           x = 337,
           y = 150,
@@ -111,7 +111,7 @@ return {
         },
         {
           name = "",
-          type = "ruins_statue_head",
+          type = "ruins_statue_head_spawner",
           shape = "rectangle",
           x = 208,
           y = 304,

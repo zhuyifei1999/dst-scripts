@@ -86,11 +86,10 @@ local function golden()
     end
 
     inst.components.finiteuses:SetConsumption(ACTIONS.DIG, 1 / TUNING.GOLDENTOOLFACTOR)
-    inst.components.finiteuses:SetConsumption(ACTIONS.TERRAFORM, .125 / TUNING.GOLDENTOOLFACTOR)
     inst.components.weapon.attackwear = 1 / TUNING.GOLDENTOOLFACTOR
-    
+
     inst.components.equippable:SetOnEquip(onequipgold)
-    
+
     return inst
 end
 

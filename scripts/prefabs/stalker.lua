@@ -88,10 +88,10 @@ end
 
 --------------------------------------------------------------------------
 
---[[local function OnFocusCamera(inst)
+local function OnFocusCamera(inst)
     local player = TheFocalPoint.entity:GetParent()
     if player ~= nil then
-        TheFocalPoint:PushTempFocus(inst, 6, 12, 6)
+        TheFocalPoint:PushTempFocus(inst, 6, 22, 6)
         --Also push a priority 5 focus to block the gate (priority 4)
         --from grabbing focus in case we are out of range of stalker.
         TheFocalPoint:PushTempFocus(player, math.huge, math.huge, 5)
@@ -116,7 +116,7 @@ local function EnableCameraFocus(inst, enable)
             OnCameraFocusDirty(inst)
         end
     end
-end]]
+end
 
 --------------------------------------------------------------------------
 
@@ -966,7 +966,9 @@ local function OnAtriumOffscreenDeath(inst)
         inst.persists = false
         local pos = inst:GetPosition()
         if not inst.atriumdecay then
-            SpawnPrefab("flower_rose").Transform:SetPosition(pos:Get())
+            local flower = SpawnPrefab("flower_rose")
+            flower.Transform:SetPosition(pos:Get())
+            flower.planted = true
         end
         inst.components.lootdropper:DropLoot(pos)
     end
@@ -1257,8 +1259,8 @@ local function common_fn(bank, build, shadowsize, canfight, atriumstalker)
     if atriumstalker then
         inst:AddTag("noepicmusic")
 
-        --inst._camerafocus = net_bool(inst.GUID, "stalker._camerafocus", "camerafocusdirty")
-        --inst._camerafocustask = nil
+        inst._camerafocus = net_bool(inst.GUID, "stalker._camerafocus", "camerafocusdirty")
+        inst._camerafocustask = nil
         inst._music = net_tinybyte(inst.GUID, "stalker._music", "musicdirty")
         inst._playingmusic = false
         inst._musictask = nil
@@ -1279,7 +1281,7 @@ local function common_fn(bank, build, shadowsize, canfight, atriumstalker)
 
     if not TheWorld.ismastersim then
         if atriumstalker then
-            --inst:ListenForEvent("camerafocusdirty", OnCameraFocusDirty)
+            inst:ListenForEvent("camerafocusdirty", OnCameraFocusDirty)
             inst:ListenForEvent("musicdirty", OnMusicDirty)
         end
 
@@ -1423,7 +1425,7 @@ local function atrium_fn()
 
     inst.components.health.redirect = nodmgshielded
 
-    --inst.EnableCameraFocus = EnableCameraFocus
+    inst.EnableCameraFocus = EnableCameraFocus
     inst.BattleChatter = AtriumBattleChatter
     inst.IsNearAtrium = IsNearAtrium
     inst.OnLostAtrium = OnLostAtrium

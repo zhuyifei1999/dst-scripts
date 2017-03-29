@@ -355,7 +355,7 @@ return {
             GHOST = "You'll not away to Valhalla yet, %s. A heart!",
             FIRESTARTER = "A fellow Viking, forged in flames!",
         },
-        
+
         LAVA_POND_ROCK = "Stone belched forth by the earth's fiery heart!",
 
         MULTIPLAYER_PORTAL = "It makes me long for the stage!",

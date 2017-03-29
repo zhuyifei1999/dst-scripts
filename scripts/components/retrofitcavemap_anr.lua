@@ -436,6 +436,17 @@ local function HeartOfTheRuinsRuinsRetrofitting_RepositionAtriumGate(inst)
 
 end
 
+local function HeartOfTheRuinsRuinsRetrofitting_StatueChessRespawners(inst)
+	AddRuinsRespawner("chessjunk1", "chessjunk")
+	AddRuinsRespawner("chessjunk2", "chessjunk")
+	AddRuinsRespawner("chessjunk3", "chessjunk")
+	
+	AddRuinsRespawner("ruins_statue_head")
+	AddRuinsRespawner("ruins_statue_head_nogem")
+	AddRuinsRespawner("ruins_statue_mage")
+	AddRuinsRespawner("ruins_statue_mage_nogem")
+end
+
 --------------------------------------------------------------------------
 --[[ Post initialization ]]
 --------------------------------------------------------------------------
@@ -551,6 +562,16 @@ function self:OnPostInit()
 
 	end
 
+	if self.retrofit_heartoftheruins_statuechessrespawners then
+		self.retrofit_heartoftheruins_statuechessrespawners = nil
+	
+		print ("Retrofitting for A New Reign: Heart of the Ruins + Statue and Broken Clockwork Respawners")
+		HeartOfTheRuinsRuinsRetrofitting_StatueChessRespawners(inst)
+
+	end
+	
+
+
 	---------------------------------------------------------------------------
 	if inst.components.retrofitcavemap_anr.requiresreset then
 		-- not quite working in all cases...
@@ -586,6 +607,7 @@ function self:OnLoad(data)
 		self.retrofit_heartoftheruins_altars = data.retrofit_heartoftheruins_altars
 		self.retrofit_heartoftheruins_caveholes = data.retrofit_heartoftheruins_caveholes
 		self.retrofit_heartoftheruins_oldatriumfixup = data.retrofit_heartoftheruins_oldatriumfixup
+		self.retrofit_heartoftheruins_statuechessrespawners = data.retrofit_heartoftheruins_statuechessrespawners
     end
 end
 

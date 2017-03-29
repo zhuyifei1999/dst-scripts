@@ -476,17 +476,13 @@ local function common(moonbeast)
     inst.AnimState:PlayAnimation("idle_loop")
     inst.AnimState:Hide("hat")
 
-    if not moonbeast then
-        --trader (from trader component) added to pristine state for optimization
-        inst:AddTag("trader")
-    end
-
     --Sneak these into pristine state for optimization
     inst:AddTag("_named")
 
     if moonbeast then
         inst:AddTag("werepig")
         inst:AddTag("moonbeast")
+        inst:AddTag("hostile")
         inst.AnimState:SetBuild("werepig_build")
         --Since we override prefab name, we will need to use the higher
         --priority displaynamefn to return us back plain old .name LOL!
@@ -495,6 +491,9 @@ local function common(moonbeast)
 
         inst:AddComponent("spawnfader")
     else
+        --trader (from trader component) added to pristine state for optimization
+        inst:AddTag("trader")
+
         inst:AddComponent("talker")
         inst.components.talker.fontsize = 35
         inst.components.talker.font = TALKINGFONT

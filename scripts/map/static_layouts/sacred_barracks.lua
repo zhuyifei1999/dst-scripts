@@ -416,7 +416,7 @@ return {
         },
         {
           name = "",
-          type = "chessjunk1",
+          type = "chessjunk_spawner",
           shape = "rectangle",
           x = 256,
           y = 192,
@@ -427,7 +427,7 @@ return {
         },
         {
           name = "",
-          type = "chessjunk2",
+          type = "chessjunk_spawner",
           shape = "rectangle",
           x = 160,
           y = 416,
@@ -438,7 +438,7 @@ return {
         },
         {
           name = "",
-          type = "chessjunk3",
+          type = "chessjunk_spawner",
           shape = "rectangle",
           x = 352,
           y = 288,
@@ -482,7 +482,7 @@ return {
         },
         {
           name = "",
-          type = "ruins_statue_head",
+          type = "ruins_statue_head_spawner",
           shape = "rectangle",
           x = 128,
           y = 130,
@@ -493,7 +493,7 @@ return {
         },
         {
           name = "",
-          type = "ruins_statue_head",
+          type = "ruins_statue_head_spawner",
           shape = "rectangle",
           x = 511,
           y = 128,
@@ -504,7 +504,7 @@ return {
         },
         {
           name = "",
-          type = "ruins_statue_head_nogem",
+          type = "ruins_statue_head_nogem_spawner",
           shape = "rectangle",
           x = 510,
           y = 510,
@@ -515,7 +515,7 @@ return {
         },
         {
           name = "",
-          type = "ruins_statue_head",
+          type = "ruins_statue_head_spawner",
           shape = "rectangle",
           x = 129,
           y = 510,
@@ -526,7 +526,7 @@ return {
         },
         {
           name = "",
-          type = "ruins_statue_mage",
+          type = "ruins_statue_mage_spawner",
           shape = "rectangle",
           x = 321,
           y = 320,

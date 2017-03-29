@@ -13,13 +13,29 @@ local prefabs =
 	"atrium_gate_explodesfx",
 }
 
+local EXPLOSION_ANIM_LEN = 86 * FRAMES
+
 --------------------------------------------------------------------------
 
---[[local function OnFocusCamera(inst)
+local ATRIUM_ARENA_SIZE = 14.55
+
+local function IsObjectInAtriumArena(inst, obj)
+    if obj == nil then
+        return false
+    end
+    local obj_x, _, obj_z = obj.Transform:GetWorldPosition()
+    local inst_x, _, inst_z = inst.Transform:GetWorldPosition()
+    return math.abs(obj_x - inst_x) < ATRIUM_ARENA_SIZE
+        and math.abs(obj_z - inst_z) < ATRIUM_ARENA_SIZE
+end
+
+--------------------------------------------------------------------------
+
+local function OnFocusCamera(inst)
     if inst._camerafocusvalue > FRAMES then
         inst._camerafocusvalue = inst._camerafocusvalue - FRAMES
         local k = math.min(1, inst._camerafocusvalue) / 1
-        TheFocalPoint:PushTempFocus(inst, 10 * k, 16 * k, 4)
+        TheFocalPoint:PushTempFocus(inst, 10 * k, 28 * k, 4)
     end
 end
 
@@ -42,22 +58,42 @@ local function EnableCameraFocus(inst, enable)
             OnCameraFocusDirty(inst)
         end
     end
-end]]
+end
 
 --------------------------------------------------------------------------
 
-local EXPLOSION_ANIM_LEN = 86 * FRAMES
-local ATRIUM_ARENA_SIZE = 14.55
+local SUPPRESS_SHADOWS_RANGE = math.ceil(ATRIUM_ARENA_SIZE + 5)
 
-local function IsObjectInAtriumArena(inst, obj)
-    if obj == nil then
-        return false
+local function OnSuppressShadows(inst, x, z, range)
+    for i, v in ipairs(TheSim:FindEntities(x, 0, z, range, { "_health" }, nil, { "stalkerminion", "shadowcreature" })) do
+        if not v.components.health:IsDead() then
+            local x1, y1, z1 = v.Transform:GetWorldPosition()
+            if math.abs(x1 - x) < SUPPRESS_SHADOWS_RANGE and
+                math.abs(z1 - z) < SUPPRESS_SHADOWS_RANGE then
+                if v.components.lootdropper ~= nil then
+                    v.components.lootdropper:SetLoot(nil)
+                end
+                v.components.health:Kill()
+            end
+        end
     end
-    local obj_x, _, obj_z = obj.Transform:GetWorldPosition()
-    local inst_x, _, inst_z = inst.Transform:GetWorldPosition()
-    return math.abs(obj_x - inst_x) < ATRIUM_ARENA_SIZE
-        and math.abs(obj_z - inst_z) < ATRIUM_ARENA_SIZE
 end
+
+local function EnableShadowSuppression(inst, enable)
+    if enable then
+        if inst._shadowsuppressiontask == nil then
+            local x, y, z = inst.Transform:GetWorldPosition()
+            local range = math.sqrt(SUPPRESS_SHADOWS_RANGE * SUPPRESS_SHADOWS_RANGE * 2)
+            inst._shadowsuppressiontask = inst:DoPeriodicTask(1, OnSuppressShadows, nil, x, z, range)
+            OnSuppressShadows(inst, x, z, range)
+        end
+    elseif inst._shadowsuppressiontask ~= nil then
+        inst._shadowsuppressiontask:Cancel()
+        inst._shadowsuppressiontask = nil
+    end
+end
+
+--------------------------------------------------------------------------
 
 local function IsDestabilizing(inst)
     return inst.components.timer:TimerExists("destabilizing")
@@ -163,7 +199,8 @@ local function StartDestabilizing(inst, onload)
     inst.components.trader:Disable()
     inst.components.pickable.caninteractwith = false
 	inst:RemoveTag("intense")
-    --EnableCameraFocus(inst, true)
+    EnableCameraFocus(inst, true)
+    EnableShadowSuppression(inst, true)
 
 	if not inst.components.timer:TimerExists("destabilizing") then
 		inst.components.timer:StartTimer("destabilizing", TUNING.ATRIUM_GATE_DESTABILIZE_TIME)
@@ -197,7 +234,8 @@ local function OnQueueDestabilize(inst, onload)
     inst.components.trader:Disable()
     inst.components.pickable.caninteractwith = false
 	inst:RemoveTag("intense")
-    --EnableCameraFocus(inst, true)
+    EnableCameraFocus(inst, true)
+    EnableShadowSuppression(inst, true)
 
 	if inst.components.timer:TimerExists("destabilizedelay") then
 		inst.components.timer:StopTimer("destabilizedelay")
@@ -220,7 +258,8 @@ local function Destabilize(inst, failed)
 end
 
 local function OnDestabilizeExplode(inst)
-    --EnableCameraFocus(inst, false)
+    EnableCameraFocus(inst, false)
+    EnableShadowSuppression(inst, false)
 	inst.AnimState:PlayAnimation("overload_pst", false)
 	SpawnPrefab("atrium_gate_explodesfx").Transform:SetPosition(inst.Transform:GetWorldPosition())
 	HideFx(inst)
@@ -245,7 +284,8 @@ local function StartCooldown(inst, immediate)
 		OnDestabilizeExplode(inst)
 	end
 
-    --EnableCameraFocus(inst, false)
+    EnableCameraFocus(inst, false)
+    EnableShadowSuppression(inst, false)
 	inst:RemoveTag("intense")
     inst.components.pickable.caninteractwith = false
 	inst.components.trader:Disable()
@@ -274,7 +314,8 @@ local function OnTrackStalker(inst, stalker)
         inst:ListenForEvent("onremove", inst._onremovestalker, stalker)
         inst:ListenForEvent("death", inst._onstalkerdeath, stalker)
 		inst:AddTag("intense")
-        --EnableCameraFocus(inst, false)
+        EnableCameraFocus(inst, false)
+        EnableShadowSuppression(inst, false)
 		ShowFx(inst, "idle")
 		inst.AnimState:PlayAnimation("idle_fight", true)
 		inst.SoundEmitter:KillSound("loop")
@@ -441,8 +482,8 @@ local function fn()
 	inst:AddTag("gemsocket") -- for "Socket" action string
 	inst:AddTag("stargate")
 
-    --inst._camerafocus = net_bool(inst.GUID, "atrium_gate._camerafocus", "camerafocusdirty")
-    --inst._camerafocustask = nil
+    inst._camerafocus = net_bool(inst.GUID, "atrium_gate._camerafocus", "camerafocusdirty")
+    inst._camerafocustask = nil
 
     --Dedicated server does not need to spawn the flooring
     if not TheNet:IsDedicated() then
@@ -458,7 +499,7 @@ local function fn()
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
-        --inst:ListenForEvent("camerafocusdirty", OnCameraFocusDirty)
+        inst:ListenForEvent("camerafocusdirty", OnCameraFocusDirty)
 
         return inst
     end

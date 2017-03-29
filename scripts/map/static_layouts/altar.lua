@@ -116,7 +116,7 @@ return {
         },
         {
           name = "",
-          type = "chessjunk2",
+          type = "chessjunk_spawner",
           shape = "rectangle",
           x = 559,
           y = 191,
@@ -138,7 +138,7 @@ return {
         },
         {
           name = "",
-          type = "chessjunk1",
+          type = "chessjunk_spawner",
           shape = "rectangle",
           x = 183,
           y = 577,

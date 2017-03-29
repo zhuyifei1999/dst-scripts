@@ -130,7 +130,7 @@ return {
         },
         {
           name = "",
-          type = "ruins_statue_mage",
+          type = "ruins_statue_mage_spawner",
           shape = "rectangle",
           x = 320,
           y = 320,

@@ -1,8 +1,8 @@
 local assets =
 {
     Asset("ANIM", "anim/abigail_flower.zip"),
-	Asset("INV_IMAGE", "abigail_flower2" ),
-	Asset("INV_IMAGE", "abigail_flower_haunted" ),
+    Asset("INV_IMAGE", "abigail_flower2"),
+    Asset("INV_IMAGE", "abigail_flower_haunted"),
 }
 
 local prefabs =
@@ -10,22 +10,19 @@ local prefabs =
     "abigail",
     "planted_flower",
     "small_puff",
+    "petals",
 }
 
 local function getstatus(inst)
     if inst._chargestate == 3 then
-        return inst.components.inventoryitem.owner ~= nil and
-            "HAUNTED_POCKET" or "HAUNTED_GROUND"
+        return inst.components.inventoryitem.owner ~= nil
+            and "HAUNTED_POCKET"
+            or "HAUNTED_GROUND"
     end
-
     local time_charge = inst.components.cooldown:GetTimeToCharged()
-    if time_charge < TUNING.TOTAL_DAY_TIME * .5 then
-        return "SOON"
-    elseif time_charge < TUNING.TOTAL_DAY_TIME * 2 then
-        return "MEDIUM"
-    else
-        return "LONG"
-    end
+    return (time_charge < TUNING.TOTAL_DAY_TIME * .5 and "SOON")
+        or (time_charge < TUNING.TOTAL_DAY_TIME * 2 and "MEDIUM")
+        or "LONG"
 end
 
 local function activate(inst)
@@ -43,10 +40,18 @@ local function IsValidLink(inst, player)
 end
 
 local function dodecay(inst)
-    local x, y, z = inst.Transform:GetWorldPosition()
+    local pos = inst:GetPosition()
+    pos.y = 0
+    if TheWorld.Map:IsDeployPointClear(pos, inst, 1) then
+        SpawnPrefab("planted_flower").Transform:SetPosition(pos:Get())
+    else
+        inst:AddComponent("lootdropper")
+        inst.components.lootdropper:SpawnLootPrefab("petals", pos)
+    end
+    if not inst:IsAsleep() then
+        SpawnPrefab("small_puff").Transform:SetPosition(pos:Get())
+    end
     inst:Remove()
-    local flower = SpawnPrefab("planted_flower").Transform:SetPosition(x, y, z)
-    SpawnPrefab("small_puff").Transform:SetPosition(x, y, z)
 end
 
 local function startdecay(inst)
@@ -277,16 +282,16 @@ local function fn()
 
     inst:AddComponent("inventoryitem")
     -----------------------------------
-    
+
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = getstatus
 
     inst:AddComponent("cooldown")
-    inst.components.cooldown.cooldown_duration = TUNING.TOTAL_DAY_TIME + math.random()*TUNING.TOTAL_DAY_TIME*2
+    inst.components.cooldown.cooldown_duration = TUNING.TOTAL_DAY_TIME * (1 + math.random() * 2)
     inst.components.cooldown.onchargedfn = updatestate
     inst.components.cooldown.startchargingfn = updatestate
     inst.components.cooldown:StartCharging()
-    
+
     inst:WatchWorldState("phase", updatestate)
     updatestate(inst)
     startdecay(inst)

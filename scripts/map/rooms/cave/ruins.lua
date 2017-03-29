@@ -302,9 +302,7 @@ AddRoom("Barracks",{
         distributepercent = 0.03,
         distributeprefabs=
         {
-            chessjunk1 = .1,
-            chessjunk2 = .1,
-            chessjunk3 = .1,
+            chessjunk_spawner = .3,
 
             nightmarelight = 1,
 
@@ -397,19 +395,17 @@ bgsacred = {
         distributepercent = 0.03,
         distributeprefabs=
         {
-            chessjunk1 = .1,
-            chessjunk2 = .1,
-            chessjunk3 = .1,
+            chessjunk_spawner = .3,
 
             nightmarelight = 1,
 
             pillar_ruins = 0.5,
 
-            ruins_statue_head = .1,
-            ruins_statue_head_nogem = .2,
+            ruins_statue_head_spawner = .1,
+            ruins_statue_head_nogem_spawner = .2,
 
-            ruins_statue_mage =.1,
-            ruins_statue_mage_nogem = .2,
+            ruins_statue_mage_spawner =.1,
+            ruins_statue_mage_nogem_spawner = .2,
 
             rook_nightmare_spawner = .07,
             bishop_nightmare_spawner = .07,
@@ -480,9 +476,7 @@ AddRoom("Labyrinth", {-- Not a real Labyrinth.. more of a maze really.
             ruins_rubble_chair = 0.1,
             ruins_rubble_table = 0.1,
 
-            chessjunk1 = 0.01,
-            chessjunk2 = 0.01,
-            chessjunk3 = 0.01,
+            chessjunk_spawner = 0.03,
 
             rook_nightmare_spawner = 0.01,
             bishop_nightmare_spawner = 0.01,

@@ -78,7 +78,7 @@ return {
       objects = {
         {
           name = "",
-          type = "ruins_statue_mage",
+          type = "ruins_statue_mage_spawner",
           shape = "rectangle",
           x = 96,
           y = 176,
@@ -89,7 +89,7 @@ return {
         },
         {
           name = "",
-          type = "ruins_statue_head_nogem",
+          type = "ruins_statue_head_nogem_spawner",
           shape = "rectangle",
           x = 97,
           y = 350,
