@@ -1,6 +1,6 @@
 local function onnewobjectfn(inst, obj)
     inst:ListenForEvent("onremove", function(obj)
-        RemoveByValue(inst.components.objectspawner.objects, obj)
+        table.removearrayvalue(inst.components.objectspawner.objects, obj)
     end, obj)
     
     if inst.listenforprefabsawp then

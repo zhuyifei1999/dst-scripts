@@ -649,7 +649,7 @@ local function OnRemoveEntity(inst)
         end
     end
 
-    RemoveByValue(AllPlayers, inst)
+    table.removearrayvalue(AllPlayers, inst)
 
     -- "playerexited" is available on both server and client.
     -- - On clients, this is pushed whenever a player entity is removed

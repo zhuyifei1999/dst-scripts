@@ -78,8 +78,6 @@ function SinkholeSpawner:UpdateTarget(targetinfo)
     end
 end
 
--- c_sel().components.sinkholespawner:StartSinkholes()
-
 local WARNING_RADIUS = 3.5
 function SinkholeSpawner:DoTargetWarning(targetinfo)
     if targetinfo.warnings == nil then

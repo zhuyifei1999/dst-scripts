@@ -154,7 +154,7 @@ local function fn()
     end, TheWorld)
 
     inst._onremoveobj = function(obj)
-        RemoveByValue(inst.components.objectspawner.objects, obj)
+        table.removearrayvalue(inst.components.objectspawner.objects, obj)
     end
 
     inst._onpickupobj = function(obj)

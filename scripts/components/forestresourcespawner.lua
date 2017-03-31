@@ -135,7 +135,7 @@ local function UnregisterSpawnPoint(spawnpt)
     if spawnpt == nil then
         return
     end
-    RemoveByValue(_spawnpts, spawnpt)
+    table.removearrayvalue(_spawnpts, spawnpt)
 end
 
 local function OnRegisterSpawnPoint(inst, spawnpt)

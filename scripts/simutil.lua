@@ -115,7 +115,7 @@ function FindSafeSpawnLocation(x, y, z)
 end
 
 function FindNearbyLand(position, range)
-    local finaloffset = FindValidPositionByFan(0, range or 8, 8, function(offset)
+    local finaloffset = FindValidPositionByFan(math.random() * 2 * PI, range or 8, 8, function(offset)
         return TheWorld.Map:IsAboveGroundAtPoint(position.x + offset.x, 0, position.z + offset.z)
     end)
     if finaloffset ~= nil then

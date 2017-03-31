@@ -103,14 +103,15 @@ local function ShowFx(inst, state)
     if inst._gatefx == nil then
         inst._gatefx = SpawnPrefab("atrium_gate_activatedfx")
         inst._gatefx.entity:SetParent(inst.entity)
+        table.insert(inst.highlightchildren, inst._gatefx)
     end
-    
-    inst._gatefx:SetFx(state)
+
+    inst._gatefx:SetFX(state)
 end
 
 local function HideFx(inst)
     if inst._gatefx ~= nil then
-        inst._gatefx:EndFx()
+        inst._gatefx:KillFX()
         inst._gatefx = nil
     end
 end
@@ -211,7 +212,7 @@ local function StartDestabilizing(inst, onload)
 		inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/shadow_pulse")
 	end
 
-	ShowFx(inst, "overload", onload)
+	ShowFx(inst, "overload")
 	inst.Light:Enable(true)
 	inst.SoundEmitter:KillSound("loop")
     inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/destabilize_LP", "loop")
@@ -495,6 +496,8 @@ local function fn()
 
     inst:DoTaskInTime(0, InitializePathFinding)
     inst.OnRemoveEntity = OnRemove
+
+    inst.highlightchildren = {}
 
     inst.entity:SetPristine()
 

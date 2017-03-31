@@ -161,7 +161,7 @@ local function setupchestloot(chest)
 
 	local loot_keys = {} 
 	for i,_ in ipairs(chest_loot) do table.insert(loot_keys,i) end
-	loot_keys = PickSome(math.floor(math.pow(math.random()*1.9, 2)) + 2, loot_keys)
+	loot_keys = PickSome(math.random(3,6), loot_keys)
 	
 	for _,i in ipairs(loot_keys) do
 		local loot = chest_loot[i]
@@ -182,7 +182,7 @@ local function dospawnchest(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
     chest.Transform:SetPosition(x, 0, z)
 	setupchestloot(chest)
-	
+		
     local fx = SpawnPrefab("statue_transition_2")
     if fx ~= nil then
         fx.Transform:SetPosition(x, y, z)

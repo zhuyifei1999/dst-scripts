@@ -141,8 +141,8 @@ local function UnregisterSpawnPoint(spawnpt)
     elseif _masterpt == spawnpt then
         _masterpt = nil
     end
-    RemoveByValue(_openpts, spawnpt)
-    RemoveByValue(_usedpts, spawnpt)
+    table.removearrayvalue(_openpts, spawnpt)
+    table.removearrayvalue(_usedpts, spawnpt)
 end
 
 local function OnRegisterSpawnPoint(inst, spawnpt)
@@ -161,7 +161,7 @@ end
 local function UnregisterMigrationPortal(portal)
     if portal == nil then return end
     --print("Unregistering portal["..tostring(portal.components.worldmigrator.id).."]")
-    RemoveByValue(ShardPortals, portal)
+    table.removearrayvalue(ShardPortals, portal)
 end
 
 local function OnRegisterMigrationPortal(inst, portal)

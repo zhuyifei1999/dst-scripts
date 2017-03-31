@@ -36,7 +36,7 @@ local _fires = {}
 
 local function StopTracking(ent, fireguid)
     if _fires[fireguid] ~= nil then
-        RemoveByValue(_fires[fireguid], ent)
+        table.removearrayvalue(_fires[fireguid], ent)
         if #_fires[fireguid] <= 0 then
             _fires[fireguid] = nil
         end
@@ -99,7 +99,7 @@ local function SpawnHand(player, params)
             ent.Transform:SetPosition(x + result_offset.x, 0, z + result_offset.z)
             ent:SetTargetFire(fire)
             table.insert(params.ents, ent)
-            player:ListenForEvent("onremove", function() RemoveByValue(params.ents, ent) end, ent)
+            player:ListenForEvent("onremove", function(ent) table.removearrayvalue(params.ents, ent) end, ent)
             StartTracking(ent, fire.GUID)
             if #params.ents >= count then
                 break

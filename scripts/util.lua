@@ -132,8 +132,26 @@ function table.invert(t)
     return invt
 end
 
+function table.removearrayvalue(t, lookup_value)
+    for i, v in ipairs(t) do
+        if v == lookup_value then
+            table.remove(t, i)
+            return v
+        end
+    end
+end
+
+function table.removetablevalue(t, lookup_value)
+    for k, v in pairs(t) do
+        if v == lookup_value then
+            t[k] = nil
+            return v
+        end
+    end
+end
+
 function table.reverselookup(t, lookup_value)
-    for k,v in pairs(t) do
+    for k, v in pairs(t) do
         if v == lookup_value then
             return k
         end
@@ -155,12 +173,13 @@ function GetFlattenedSparse(tab)
 end
 
 -- RemoveByValue only applies to array-type tables
+-- Removes all instances of the value from the table
+-- See table.removearrayvalue above
 function RemoveByValue(t, value)
-    if t then
-        for i,v in ipairs(t) do 
-            while v == value do
+    if t ~= nil then
+        for i = #t, 1, -1 do
+            if t[i] == value then
                 table.remove(t, i)
-                v = t[i]
             end
         end
     end
