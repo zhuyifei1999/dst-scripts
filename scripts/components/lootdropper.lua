@@ -191,15 +191,19 @@ function LootDropper:GenerateLoot()
 end
 
 local function SplashOceanLoot(loot, cb)
-    if not (loot.components.inventoryitem ~= nil and loot.components.inventoryitem:IsHeld()) and
-        (not loot:IsOnValidGround() or TheWorld.Map:IsPointNearHole(loot:GetPosition())) then
-        SpawnPrefab("splash_ocean").Transform:SetPosition(loot.Transform:GetWorldPosition())
-        if loot:HasTag("irreplaceable") then
-            loot.Transform:SetPosition(FindSafeSpawnLocation(loot.Transform:GetWorldPosition()))
-        else
-            loot:Remove()
+    if loot.components.inventoryitem == nil or not loot.components.inventoryitem:IsHeld() then
+        local x, y, z = loot.Transform:GetWorldPosition()
+        if not loot:IsOnValidGround() or TheWorld.Map:IsPointNearHole(Vector3(x, 0, z)) then
+            SpawnPrefab("splash_ocean").Transform:SetPosition(x, y, z)
+            if loot:HasTag("irreplaceable") then
+                loot.Transform:SetPosition(FindSafeSpawnLocation(x, y, z))
+            else
+                loot:Remove()
+            end
+            return
         end
-    elseif cb ~= nil then
+    end
+    if cb ~= nil then
         cb(loot)
     end
 end

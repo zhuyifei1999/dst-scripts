@@ -140,6 +140,13 @@ local _GroundDetectionUpdate = _ismastersim and function(debris, override_densit
         if not debris:IsOnValidGround() then
             debris:PushEvent("detachchild")
             debris:Remove()
+        elseif _world.Map:IsPointNearHole(Vector3(x, 0, z)) then
+            if debris.prefab == "mole" or debris.prefab == "rabbit" then
+                debris:PushEvent("detachchild")
+                debris:Remove()
+            else
+                _BreakDebris(debris)
+            end
         else
             --PlayFallingSound(debris)
 

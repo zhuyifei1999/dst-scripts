@@ -43,5 +43,5 @@ local function Make(name, bank, mouseparent)
 end
 
 return Make("nightmarelightfx", "rock_light_fx", "nightmarelight"),
-    Make("nightmarefissurefx", "nightmare_crack_ruins_fx"),
-    Make("upper_nightmarefissurefx", "nightmare_crack_upper_fx")
+    Make("nightmarefissurefx", "nightmare_crack_ruins_fx", "fissure_lower"),
+    Make("upper_nightmarefissurefx", "nightmare_crack_upper_fx", "fissure")

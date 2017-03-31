@@ -38,6 +38,7 @@ end
 local function OnShieldOver(inst, OnResistDamage)
     inst.task = nil
     inst.components.resistance:RemoveResistance("_combat")
+    inst.components.resistance:RemoveResistance("explosive")
     inst.components.resistance:SetOnResistDamageFn(OnResistDamage)
 end
 
@@ -75,6 +76,7 @@ local function OnChargedFn(inst)
         inst.components.resistance:SetOnResistDamageFn(OnResistDamage)
     end
     inst.components.resistance:AddResistance("_combat")
+    inst.components.resistance:AddResistance("explosive")
 end
 
 local function nofuel(inst)
@@ -109,6 +111,7 @@ local function onunequip(inst, owner)
         inst.components.resistance:SetOnResistDamageFn(OnResistDamage)
     end
     inst.components.resistance:RemoveResistance("_combat")
+    inst.components.resistance:RemoveResistance("explosive")
 end
 
 local function fn()

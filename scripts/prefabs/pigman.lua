@@ -473,7 +473,7 @@ local function common(moonbeast)
     inst:AddTag("pig")
     inst:AddTag("scarytoprey")
     inst.AnimState:SetBank("pigman")
-    inst.AnimState:PlayAnimation("idle_loop")
+    inst.AnimState:PlayAnimation("idle_loop", true)
     inst.AnimState:Hide("hat")
 
     --Sneak these into pristine state for optimization

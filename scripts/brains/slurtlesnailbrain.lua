@@ -45,31 +45,27 @@ local function ShouldRunAway(guy)
 end
 
 local function EatFoodAction(inst)
-
-    local target = nil
-
     if inst.sg:HasStateTag("busy") then
         return
+    elseif inst.components.inventory ~= nil and inst.components.eater ~= nil then
+        local target = inst.components.inventory:FindItem(function(item) return inst.components.eater:CanEat(item) end)
+        if target ~= nil then
+            return BufferedAction(inst, target, ACTIONS.EAT)
+        end
     end
 
-    if inst.components.inventory and inst.components.eater then
-        target = inst.components.inventory:FindItem(function(item) return inst.components.eater:CanEat(item) end)
-        if target then return BufferedAction(inst,target,ACTIONS.EAT) end
-    end
-
-    if not target then
-        target = FindEntity(inst, 30, function(item)
-            if item:GetTimeAlive() < 8 then return false end
-            if not item:IsOnValidGround() then
-                return false
-            end
-            return inst.components.eater:CanEat(item)
-
-            end)
-    end
-
-    if target then
-        return BufferedAction(inst,target,ACTIONS.PICKUP)
+    local target = FindEntity(inst,
+        30,
+        function(item)
+            return item:GetTimeAlive() >= 8
+                and item:IsOnValidGround()
+                and inst.components.eater:CanEat(item)
+        end,
+        nil,
+        { "outofreach" }
+    )
+    if target ~= nil then
+        return BufferedAction(inst, target, ACTIONS.PICKUP)
     end
 end
 
@@ -78,7 +74,7 @@ local function StealFoodAction(inst)
         return
     end
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, SEE_FOOD_DIST, nil, { "playerghost", "fire", "burnt", "INLIMBO" }, { "player", "_container" })
+    local ents = TheSim:FindEntities(x, y, z, SEE_FOOD_DIST, nil, { "playerghost", "fire", "burnt", "INLIMBO", "outofreach" }, { "player", "_container" })
 
     for i, v in ipairs(ents) do
         --go through player inv and find valid food

@@ -116,7 +116,9 @@ end
 
 function FindNearbyLand(position, range)
     local finaloffset = FindValidPositionByFan(math.random() * 2 * PI, range or 8, 8, function(offset)
-        return TheWorld.Map:IsAboveGroundAtPoint(position.x + offset.x, 0, position.z + offset.z)
+        local x, z = position.x + offset.x, position.z + offset.z
+        return TheWorld.Map:IsAboveGroundAtPoint(x, 0, z)
+            and not TheWorld.Map:IsPointNearHole(Vector3(x, 0, z))
     end)
     if finaloffset ~= nil then
         finaloffset.x = finaloffset.x + position.x

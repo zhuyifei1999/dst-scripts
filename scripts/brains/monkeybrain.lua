@@ -35,37 +35,26 @@ local function ShouldRunFn(inst, hunter)
 end
 
 local function GetPoop(inst)
-    local target = nil
-
     if inst.sg:HasStateTag("busy") then
         return
     end
-    target = FindEntity(inst, SEE_FOOD_DIST, function(item)    
-    
-    if not item:IsOnValidGround() then
-        return false
-    end
-    if item.prefab ~= "poop" then
-        return false
-    end
-    if not item.components.inventoryitem or (item.components.inventoryitem and item.components.inventoryitem:IsHeld()) then 
-        return false
-    end
-    if distsq(inst.components.combat.target:GetPosition(), item:GetPosition()) < RUN_AWAY_DIST * RUN_AWAY_DIST then
-        return false
-    end
-    
-    return true
-    
-    end)
 
-    if target then
-        return BufferedAction(inst,target,ACTIONS.PICKUP)
-    end
+    local target = FindEntity(inst,
+        SEE_FOOD_DIST,
+        function(item)
+            return item.prefab == "poop"
+                and (item.components.inventoryitem == nil or not item.components.inventoryitem:IsHeld())
+                and not item:IsNear(inst.components.combat.target, RUN_AWAY_DIST)
+                and item:IsOnValidGround()
+        end,
+        nil,
+        { "outofreach" }
+    )
 
+    return target ~= nil and BufferedAction(inst, target, ACTIONS.PICKUP) or nil
 end
 
-local ValidFoodsToPick = 
+local ValidFoodsToPick =
 {
     "berries",
     "cave_banana",
@@ -83,112 +72,86 @@ local function ItemIsInList(item, list)
     end
 end
 
+local function SetCurious(inst)
+    inst.curious = true
+end
+
 local function EatFoodAction(inst)
-
-    local target = nil
-
-    if inst.sg:HasStateTag("busy") or 
-    (inst.components.eater:TimeSinceLastEating() and inst.components.eater:TimeSinceLastEating() < TIME_BETWEEN_EATING) or
-    (inst.components.inventory and inst.components.inventory:IsFull()) or
-    math.random() < 0.75 then
+    if inst.sg:HasStateTag("busy") or
+        (inst.components.eater:TimeSinceLastEating() ~= nil and inst.components.eater:TimeSinceLastEating() < TIME_BETWEEN_EATING) or
+        (inst.components.inventory ~= nil and inst.components.inventory:IsFull()) or
+        math.random() < .75 then
         return
-    end
-
-    if inst.components.inventory and inst.components.eater then
-
-        target = inst.components.inventory:FindItem(function(item) return inst.components.eater:CanEat(item) end)
-        if target then return BufferedAction(inst,target,ACTIONS.EAT) end
+    elseif inst.components.inventory ~= nil and inst.components.eater ~= nil then
+        local target = inst.components.inventory:FindItem(function(item) return inst.components.eater:CanEat(item) end)
+        if target ~= nil then
+            return BufferedAction(inst, target, ACTIONS.EAT)
+        end
     end
 
     --Get the stuff around you and store it in ents
-    local pt = inst:GetPosition()
-    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, SEE_FOOD_DIST, nil, {"outofreach"})  
-
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x, y, z, SEE_FOOD_DIST, nil, { "outofreach" })
 
     --If you're not wearing a hat, look for a hat to wear!
-    if not target then
-        for k,item in pairs(ents) do
-            if item:IsOnValidGround() and 
-             item.components.equippable and 
-             item.components.equippable.equipslot == EQUIPSLOTS.HEAD and
-             (inst.components.inventory and not inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD)) and
-             (item.components.inventoryitem and not (item.components.inventoryitem:IsHeld() or not item.components.inventoryitem.canbepickedup)) then
-                target = item
-                break
+    if inst.components.inventory ~= nil and inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD) == nil then
+        for i, item in ipairs(ents) do
+            if item.components.equippable ~= nil and
+                item.components.equippable.equipslot == EQUIPSLOTS.HEAD and
+                item.components.inventoryitem ~= nil and
+                item.components.inventoryitem.canbepickedup and
+                not item.components.inventoryitem:IsHeld() and
+                item:IsOnValidGround() then
+                return BufferedAction(inst, item, ACTIONS.PICKUP)
             end
         end
-    end
-
-    if target then
-        --Alright, yeah! That's - no that's a pretty good job!
-        return BufferedAction(inst,target,ACTIONS.PICKUP)
     end
 
     --Look for food on the ground, pick it up
-    if not target then
-        for k,item in pairs(ents) do
-            if item:GetTimeAlive() > 8 and item:IsOnValidGround() and inst.components.eater:CanEat(item) and not (item.components.inventoryitem and item.components.inventoryitem:IsHeld()) then
-                target = item
-                break
-            end
+    for i, item in ipairs(ents) do
+        if item:GetTimeAlive() > 8 and
+            item.components.inventoryitem ~= nil and
+            item.components.inventoryitem.canbepickedup and
+            not item.components.inventoryitem:IsHeld() and
+            inst.components.eater:CanEat(item) and
+            item:IsOnValidGround() then
+            return BufferedAction(inst, item, ACTIONS.PICKUP)
         end
-    end
-
-    if target then
-        return BufferedAction(inst,target,ACTIONS.PICKUP)
     end
 
     --Look for harvestable items, pick them.
-    if not target then
-        for k,item in pairs(ents) do
-            if item.components.pickable and item.components.pickable.caninteractwith and item.components.pickable:CanBePicked()
-            and (ItemIsInList(item.components.pickable.product, ValidFoodsToPick) or item.prefab == "worm") then
-                target = item
-                break
-            end
+    for i, item in ipairs(ents) do
+        if item.components.pickable ~= nil and
+            item.components.pickable.caninteractwith and
+            item.components.pickable:CanBePicked() and
+            (item.prefab == "worm" or ItemIsInList(item.components.pickable.product, ValidFoodsToPick)) then
+            return BufferedAction(inst, item, ACTIONS.PICK)
         end
-    end
-
-    if target then
-        return BufferedAction(inst, target, ACTIONS.PICK)
     end
 
     --Look for crops items, harvest them.
-    if not target then
-        for k,item in pairs(ents) do
-            if item.components.crop and item.components.crop:IsReadyForHarvest() then
-                target = item
-                break
-            end
+    for i, item in ipairs(ents) do
+        if item.components.crop ~= nil and
+            item.components.crop:IsReadyForHarvest() then
+            return BufferedAction(inst, item, ACTIONS.HARVEST)
         end
     end
 
-    if target then
-        return BufferedAction(inst, target, ACTIONS.HARVEST)
-    end
-
-    if not inst.curious or inst.components.combat.target then
+    if not inst.curious or inst.components.combat:HasTarget() then
         return
     end
 
     ---At the very end, look for a random item to pick up and do that.
-    if not target then
-
-        for k,item in pairs(ents) do
-            if item:IsOnValidGround() and item.components.inventoryitem and item.components.inventoryitem.canbepickedup and not
-                item.components.inventoryitem:IsHeld() then
-                target = item
-                break
-            end
+    for i, item in ipairs(ents) do
+        if item.components.inventoryitem ~= nil and
+            item.components.inventoryitem.canbepickedup and
+            not item.components.inventoryitem:IsHeld() and
+            item:IsOnValidGround() then
+            inst.curious = false
+            inst:DoTaskInTime(10, SetCurious)
+            return BufferedAction(inst, item, ACTIONS.PICKUP)
         end
     end
-
-    if target then
-        inst.curious = false
-        inst:DoTaskInTime(10, function() inst.curious = true end)
-        return BufferedAction(inst,target,ACTIONS.PICKUP)
-    end
-
 end
 
 local function OnLootingCooldown(inst)
