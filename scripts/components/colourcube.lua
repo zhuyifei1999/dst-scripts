@@ -102,6 +102,10 @@ local _colourmodifier = nil
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
 
+local function ShouldSkipBlend()
+    return _activatedplayer == nil or TheFrontEnd:GetFadeLevel() >= 1
+end
+
 local function GetCCPhase()
     return (_overridephase and _overridephase.fn and _overridephase.fn())
         or (_iscave and "night")
@@ -155,6 +159,11 @@ local function Blend(time)
         --Same target, but hasn't ticked yet, so switch to the faster time
         _remainingblendtime = time
         _totalblendtime = time
+    end
+
+    if _remainingblendtime > 0 and ShouldSkipBlend() then
+        _remainingblendtime = 0
+        PostProcessor:SetColourCubeLerp(0, 1)
     end
 end
 
@@ -323,7 +332,7 @@ inst:StartUpdatingComponent(self)
 
 function self:OnUpdate(dt)
     if _overridecc == nil then
-        if _remainingblendtime > dt then
+        if _remainingblendtime > dt and not ShouldSkipBlend() then
             _remainingblendtime = _remainingblendtime - dt
             PostProcessor:SetColourCubeLerp(0, 1 - _remainingblendtime / _totalblendtime)
         elseif _remainingblendtime > 0 then

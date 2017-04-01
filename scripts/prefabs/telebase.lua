@@ -73,12 +73,16 @@ local function OnRemove(inst)
     TELEBASES[inst] = nil
 end
 
-local function ondestroyed(inst)
+local function dropgems(inst)
     for k, v in pairs(inst.components.objectspawner.objects) do
         if v.components.pickable ~= nil and v.components.pickable.caninteractwith then
-            inst.components.lootdropper:AddChanceLoot("purplegem", 1)   
+            inst.components.lootdropper:SpawnLootPrefab("purplegem")   
         end
     end
+end
+
+local function ondestroyed(inst)
+	dropgems(inst)
     inst.components.lootdropper:DropLoot()
     local fx = SpawnPrefab("collapse_small")
     fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
@@ -227,6 +231,7 @@ local function commonfn()
     inst:AddComponent("savedrotation")
 
     inst:ListenForEvent("onbuilt", OnBuilt)
+    inst:ListenForEvent("ondeconstrcutstructure", dropgems)
 
     inst:ListenForEvent("onremove", OnRemove)
 

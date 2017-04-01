@@ -606,9 +606,10 @@ function Combat:GetWeapon()
         local item = self.inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
         return item ~= nil
             and item.components.weapon ~= nil
-            and (item:HasTag("projectile") or
+            and (item.components.projectile ~= nil or
                 not (self.inst.components.rider ~= nil and
-                    self.inst.components.rider:IsRiding()))
+                    self.inst.components.rider:IsRiding()) or
+                item:HasTag("rangedweapon"))
             and item
             or nil
     end

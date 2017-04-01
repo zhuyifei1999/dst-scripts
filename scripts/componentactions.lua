@@ -650,7 +650,7 @@ local COMPONENT_ACTIONS =
             elseif not right and
                 doer.replica.combat ~= nil and
                 doer.replica.combat:CanTarget(target) and
-                (inst:HasTag("projectile") or not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding())) then
+                (inst:HasTag("projectile") or inst:HasTag("rangedweapon") or not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding())) then
                 if target.replica.combat == nil then
                     -- lighting or extinguishing fires
                     table.insert(actions, ACTIONS.ATTACK)
@@ -809,7 +809,7 @@ local COMPONENT_ACTIONS =
         weapon = function(inst, doer, target, actions, right)
             if not right
                 and doer.replica.combat ~= nil
-                and (inst:HasTag("projectile") or not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding())) then
+                and (inst:HasTag("projectile") or inst:HasTag("rangedweapon") or not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding())) then
                 if doer.replica.combat:CanExtinguishTarget(target, inst) or
                     doer.replica.combat:CanLightTarget(target, inst) then
                     table.insert(actions, ACTIONS.ATTACK)

@@ -1723,8 +1723,13 @@ local states =
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("atk_pre")
-            inst.AnimState:PushAnimation("atk_lag", false)
+            if inst.replica.rider ~= nil and inst.replica.rider:IsRiding() then
+                inst.AnimState:PlayAnimation("player_atk_pre")
+                inst.AnimState:PushAnimation("player_atk_lag", false)
+            else
+                inst.AnimState:PlayAnimation("atk_pre")
+                inst.AnimState:PushAnimation("atk_lag", false)
+            end
 
             inst:PerformPreviewBufferedAction()
             inst.sg:SetTimeout(TIMEOUT)
@@ -1753,8 +1758,13 @@ local states =
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("atk_pre")
-            inst.AnimState:PushAnimation("atk_lag", false)
+            if inst.replica.rider ~= nil and inst.replica.rider:IsRiding() then
+                inst.AnimState:PlayAnimation("player_atk_pre")
+                inst.AnimState:PushAnimation("player_atk_lag", false)
+            else
+                inst.AnimState:PlayAnimation("atk_pre")
+                inst.AnimState:PushAnimation("atk_lag", false)
+            end
 
             inst:PerformPreviewBufferedAction()
             inst.sg:SetTimeout(TIMEOUT)
@@ -1822,11 +1832,25 @@ local states =
             local equip = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
             local rider = inst.replica.rider
             if rider ~= nil and rider:IsRiding() then
-                inst.AnimState:PlayAnimation("atk_pre")
-                inst.AnimState:PushAnimation("atk", false)
-                DoMountSound(inst, rider:GetMount(), "angry")
-                if cooldown > 0 then
-                    cooldown = math.max(cooldown, 16 * FRAMES)
+                if equip ~= nil and (equip:HasTag("rangedweapon") or equip:HasTag("projectile")) then
+                    inst.AnimState:PlayAnimation("player_atk_pre")
+                    inst.AnimState:PushAnimation("player_atk", false)
+                    inst.SoundEmitter:PlaySound(
+                        (equip:HasTag("icestaff") and "dontstarve/wilson/attack_icestaff") or
+                        (equip:HasTag("firestaff") and "dontstarve/wilson/attack_firestaff") or
+                        "dontstarve/wilson/attack_weapon",
+                        nil, nil, true
+                    )
+                    if cooldown > 0 then
+                        cooldown = math.max(cooldown, 13 * FRAMES)
+                    end
+                else
+                    inst.AnimState:PlayAnimation("atk_pre")
+                    inst.AnimState:PushAnimation("atk", false)
+                    DoMountSound(inst, rider:GetMount(), "angry")
+                    if cooldown > 0 then
+                        cooldown = math.max(cooldown, 16 * FRAMES)
+                    end
                 end
             elseif equip ~= nil and equip:HasTag("whip") then
                 inst.AnimState:PlayAnimation("whip_pre")

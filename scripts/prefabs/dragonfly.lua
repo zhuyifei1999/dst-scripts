@@ -77,7 +77,7 @@ local function ForceDespawn(inst)
 end
 
 local function ToggleDespawnOffscreen(inst)
-    if inst._isengaged:value() and inst:IsAsleep() then
+    if inst:IsAsleep() then
         if inst.sleeptask == nil then
             inst.sleeptask = inst:DoTaskInTime(10, ForceDespawn)
         end

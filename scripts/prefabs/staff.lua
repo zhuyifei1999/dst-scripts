@@ -500,6 +500,20 @@ local function destroystructure(staff, target)
         target.components.trap:Harvest()
     end
 
+    if target.components.dryer ~= nil then
+        target.components.dryer:DropItem()
+    end
+
+    if target.components.harvestable ~= nil then
+        target.components.harvestable:Harvest()
+    end
+
+    if target.components.stewer ~= nil then
+        target.components.stewer:Harvest()
+    end
+
+   	target:PushEvent("ondeconstrcutstructure", caster)
+
     if target.components.stackable ~= nil then
         --if it's stackable we only want to destroy one of them.
         target.components.stackable:Get():Remove()
@@ -630,7 +644,7 @@ end
 ---------COLOUR SPECIFIC CONSTRUCTIONS---------
 
 local function red()
-    local inst = commonfn("red", { "firestaff", "rangedfireweapon", "rangedlighter" })
+    local inst = commonfn("red", { "firestaff", "rangedweapon", "rangedlighter" })
 
     if not TheWorld.ismastersim then
         return inst
@@ -652,7 +666,7 @@ local function red()
 end
 
 local function blue()
-    local inst = commonfn("blue", { "icestaff", "extinguisher" })
+    local inst = commonfn("blue", { "icestaff", "rangedweapon", "extinguisher" })
 
     if not TheWorld.ismastersim then
         return inst

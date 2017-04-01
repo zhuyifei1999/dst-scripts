@@ -11,6 +11,10 @@ local function AbleToAcceptTest(inst, item)
     return false, item.prefab == "reviver" and "GHOSTHEART" or nil
 end
 
+local function OnDeath(inst)
+    inst.components.aura:Enable(false)
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -80,6 +84,8 @@ local function fn()
     --Added so you can attempt to give hearts to trigger flavour text when the action fails
     inst:AddComponent("trader")
     inst.components.trader:SetAbleToAcceptTest(AbleToAcceptTest)
+
+    inst:ListenForEvent("death", OnDeath)
 
     ------------------
 

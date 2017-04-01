@@ -54,8 +54,6 @@ local function fn()
     inst.AnimState:SetBuild("fossil_piece")
     SetFossilType(inst, 1)
 
-    inst:AddTag("quakedebris")
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

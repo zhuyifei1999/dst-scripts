@@ -260,21 +260,23 @@ function Stewer:Harvest(harvester)
         end
 
         if self.product ~= nil then
-            if harvester ~= nil and harvester.components.inventory ~= nil then
-                local loot = SpawnPrefab(self.product)
-                if loot ~= nil then
-					local recipe = cooking.GetRecipe(self.inst.prefab, self.product)
-					local stacksize = recipe and recipe.stacksize or 1
-					if stacksize > 1 then
-						loot.components.stackable:SetStackSize(stacksize)
-					end
-                
-                    if self.spoiltime ~= nil and loot.components.perishable ~= nil then
-                        local spoilpercent = self:GetTimeToSpoil() / self.spoiltime
-                        loot.components.perishable:SetPercent(self.product_spoilage * spoilpercent)
-                        loot.components.perishable:StartPerishing()
-                    end
+            local loot = SpawnPrefab(self.product)
+            if loot ~= nil then
+				local recipe = cooking.GetRecipe(self.inst.prefab, self.product)
+				local stacksize = recipe and recipe.stacksize or 1
+				if stacksize > 1 then
+					loot.components.stackable:SetStackSize(stacksize)
+				end
+            
+                if self.spoiltime ~= nil and loot.components.perishable ~= nil then
+                    local spoilpercent = self:GetTimeToSpoil() / self.spoiltime
+                    loot.components.perishable:SetPercent(self.product_spoilage * spoilpercent)
+                    loot.components.perishable:StartPerishing()
+                end
+                if harvester ~= nil and harvester.components.inventory ~= nil then
                     harvester.components.inventory:GiveItem(loot, nil, self.inst:GetPosition())
+                else
+                    LaunchAt(loot, self.inst, nil, 1, 1)
                 end
             end
             self.product = nil

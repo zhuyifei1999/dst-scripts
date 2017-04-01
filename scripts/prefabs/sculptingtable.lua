@@ -46,8 +46,7 @@ local function CalcSculptingTech(itemname)
     return sculptable_materials[itemname] ~= nil and TECH.SCULPTING_TWO.SCULPTING or TECH.SCULPTING_ONE.SCULPTING
 end
 
-local function onhammered(inst, worker)
-    inst.components.lootdropper:DropLoot()
+local function dropitems(inst)
     if inst.components.pickable.caninteractwith then
         inst.components.lootdropper:SpawnLootPrefab(inst.components.pickable.product)
     end
@@ -55,7 +54,12 @@ local function onhammered(inst, worker)
     for i,k in ipairs(inst.components.craftingstation:GetItems()) do
         inst.components.lootdropper:SpawnLootPrefab(k)
     end
+end
 
+local function onhammered(inst, worker)
+    inst.components.lootdropper:DropLoot()
+    dropitems(inst)
+    
     local fx = SpawnPrefab("collapse_small")
     fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
     fx:SetMaterial("wood")
@@ -337,6 +341,7 @@ local function fn()
     inst.CreateItem = CreateItem
 
     inst:ListenForEvent("onbuilt", onbuilt)
+	inst:ListenForEvent("ondeconstrcutstructure", dropitems)
 
     if not TheWorld:HasTag("cave") then
         inst.OnEntityWake = CheckChessMoonEventKnockOff

@@ -41,6 +41,7 @@ local function fn()
     inst.AnimState:SetBuild("monkey_projectile")
     inst.AnimState:PlayAnimation("idle")
 
+    --projectile (from projectile component) added to pristine state for optimization
     inst:AddTag("projectile")
 
     inst.entity:SetPristine()

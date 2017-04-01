@@ -168,6 +168,7 @@ local function pandora_custom_postinit(inst)
 
 		if inst.components.scenariorunner == nil then
 			inst.components.container:Close()
+			inst.components.container:DropEverythingWithTag("irreplaceable")
 			inst.components.container:DestroyContents()
 
 			inst:AddComponent("scenariorunner")

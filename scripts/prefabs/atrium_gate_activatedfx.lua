@@ -11,7 +11,7 @@ local function SetFX(inst, anim)
             inst.AnimState:PushAnimation(inst.anim.."_pst", false)
             inst.AnimState:PushAnimation(anim.."_pre", false)
         else
-            inst.AnimState:PlayAnimation(anim.."pre")
+            inst.AnimState:PlayAnimation(anim.."_pre")
         end
         inst.AnimState:PushAnimation(anim.."_loop", true)
 

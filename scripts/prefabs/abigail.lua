@@ -32,6 +32,10 @@ local function OnAttacked(inst, data)
     end
 end
 
+local function OnDeath(inst)
+    inst.components.aura:Enable(false)
+end
+
 local function auratest(inst, target)
     if target == inst._playerlink then
         return false
@@ -195,6 +199,7 @@ local function fn()
     inst.components.follower.keepdeadleader = true
 
     inst:ListenForEvent("attacked", OnAttacked)
+    inst:ListenForEvent("death", OnDeath)
 
     inst:WatchWorldState("phase", updatedamage)
 

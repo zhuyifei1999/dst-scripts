@@ -121,7 +121,7 @@ local states =
             inst.Physics:SetMotorVel(0,-10+math.random()*2,0)
             local pt = Point(inst.Transform:GetWorldPosition())
 
-            if pt.y <= .1 then
+            if pt.y <= .1 or inst:IsAsleep() then
                 pt.y = 0
                 inst.Physics:Stop()
                 inst.Physics:Teleport(pt.x,pt.y,pt.z)

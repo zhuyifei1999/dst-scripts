@@ -15,7 +15,7 @@ end
 
 local function DoMountedFoleySounds(inst)
     DoEquipmentFoleySounds(inst)
-    local saddle = inst.components.rider ~= nil and inst.components.rider:GetSaddle() or nil
+    local saddle = inst.components.rider:GetSaddle()
     if saddle ~= nil and saddle.mounted_foleysound ~= nil then
         inst.SoundEmitter:PlaySound(saddle.mounted_foleysound, nil, nil, true)
     end
@@ -164,7 +164,7 @@ end
 local function DoEmoteFX(inst, prefab)
     local fx = SpawnPrefab(prefab)
     if fx ~= nil then
-        if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
+        if inst.components.rider:IsRiding() then
             fx.Transform:SetSixFaced()
         end
         fx.entity:SetParent(inst.entity)
@@ -213,7 +213,7 @@ local function GetUnequipState(inst, data)
 end
 
 local function ConfigureRunState(inst)
-    if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
+    if inst.components.rider:IsRiding() then
         inst.sg.statemem.riding = true
         inst.sg.statemem.groggy = inst:HasTag("groggy")
         inst.sg:AddStateTag("nodangle")
@@ -322,7 +322,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.DROP,
         function(inst)
             return inst.components.inventory:IsHeavyLifting()
-                and not (inst.components.rider ~= nil and inst.components.rider:IsRiding())
+                and not inst.components.rider:IsRiding()
                 and "heavylifting_drop"
                 or "doshortaction"
         end),
@@ -508,7 +508,7 @@ local events =
                 end
             elseif data.attacker ~= nil
                 and data.attacker:HasTag("groundspike")
-                and not (inst.components.rider ~= nil and inst.components.rider:IsRiding())
+                and not inst.components.rider:IsRiding()
                 and not inst:HasTag("beaver") then
                 inst.sg:GoToState("hit_spike", data.attacker)
             elseif inst.sg:HasStateTag("shell") then
@@ -577,7 +577,7 @@ local events =
         if data.eslot == EQUIPSLOTS.BODY and data.item ~= nil and data.item:HasTag("heavy") then
             inst.sg:GoToState("heavylifting_start")
         elseif inst.components.inventory:IsHeavyLifting()
-            and not (inst.components.rider ~= nil and inst.components.rider:IsRiding()) then
+            and not inst.components.rider:IsRiding() then
             if inst.sg:HasStateTag("idle") or inst.sg:HasStateTag("moving") then
                 inst.sg:GoToState("heavylifting_item_hat")
             end
@@ -592,7 +592,7 @@ local events =
                 inst.sg:GoToState("heavylifting_stop")
             end
         elseif inst.components.inventory:IsHeavyLifting()
-            and not (inst.components.rider ~= nil and inst.components.rider:IsRiding()) then
+            and not inst.components.rider:IsRiding() then
             if inst.sg:HasStateTag("idle") or inst.sg:HasStateTag("moving") then
                 inst.sg:GoToState("heavylifting_item_hat")
             end
@@ -717,7 +717,7 @@ local events =
                     inst.sg:HasStateTag("nopredict") or
                     inst.sg:HasStateTag("sleeping"))
                 and not inst.components.inventory:IsHeavyLifting()
-                and (data.mounted or not (inst.components.rider ~= nil and inst.components.rider:IsRiding()))
+                and (data.mounted or not inst.components.rider:IsRiding())
                 and (data.beaver or not inst:HasTag("beaver"))
                 and (not data.requires_validation or TheInventory:CheckClientOwnership(inst.userid, data.item_type)) then
                 inst.sg:GoToState("emote", data)
@@ -754,13 +754,13 @@ local events =
         end),
     EventHandler("dismount",
         function(inst)
-            if not inst.sg:HasStateTag("dismounting") and inst.components.rider ~= nil and inst.components.rider:IsRiding() then
+            if not inst.sg:HasStateTag("dismounting") and inst.components.rider:IsRiding() then
                 inst.sg:GoToState("dismount")
             end
         end),
     EventHandler("bucked",
         function(inst, data)
-            if not inst.sg:HasStateTag("dismounting") and inst.components.rider ~= nil and inst.components.rider:IsRiding() then
+            if not inst.sg:HasStateTag("dismounting") and inst.components.rider:IsRiding() then
                 inst.sg:GoToState(data.gentle and "falloff" or "bucked")
             end
         end),
@@ -882,7 +882,7 @@ local states =
         onenter = function(inst)
             inst.Physics:Stop()
 
-            if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
+            if inst.components.rider:IsRiding() then
                 inst.sg:AddStateTag("dismounting")
                 ForceStopHeavyLifting(inst)
                 inst.AnimState:PlayAnimation("fall_off")
@@ -908,9 +908,7 @@ local states =
                 if inst.AnimState:AnimDone() then
                     if inst.sg:HasStateTag("dismounting") then
                         inst.sg:RemoveStateTag("dismounting")
-                        if inst.components.rider ~= nil then
-                            inst.components.rider:ActualDismount()
-                        end
+                        inst.components.rider:ActualDismount()
                         inst:SetCameraDistance(14)
                         inst.AnimState:PlayAnimation("transform_pre")
                         inst.components.inventory:DropEquipped(true)
@@ -930,9 +928,7 @@ local states =
         onexit = function(inst)
             if inst.sg:HasStateTag("dismounting") then
                 --interrupted
-                if inst.components.rider ~= nil then
-                    inst.components.rider:ActualDismount()
-                end
+                inst.components.rider:ActualDismount()
             elseif inst.sg:HasStateTag("transform") then
                 --interrupted
                 inst:SetCameraDistance()
@@ -997,7 +993,7 @@ local states =
             inst:ClearBufferedAction()
 
             inst.fx = SpawnPrefab("shock_fx")
-            if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
+            if inst.components.rider:IsRiding() then
                 inst.fx.Transform:SetSixFaced()
             end
             inst.fx.entity:SetParent(inst.entity)
@@ -1128,7 +1124,7 @@ local states =
             inst.components.locomotor:Clear()
             inst:ClearBufferedAction()
 
-            if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
+            if inst.components.rider:IsRiding() then
                 DoMountSound(inst, inst.components.rider:GetMount(), "yell")
                 inst.AnimState:PlayAnimation("fall_off")
                 inst.sg:AddStateTag("dismounting")
@@ -1170,9 +1166,7 @@ local states =
                 if inst.AnimState:AnimDone() then
                     if inst.sg:HasStateTag("dismounting") then
                         inst.sg:RemoveStateTag("dismounting")
-                        if inst.components.rider ~= nil then
-                            inst.components.rider:ActualDismount()
-                        end
+                        inst.components.rider:ActualDismount()
 
                         inst.SoundEmitter:PlaySound("dontstarve/wilson/death")
 
@@ -1205,7 +1199,7 @@ local states =
 
             inst.sg.statemem.ignoresandstorm = true
 
-            if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
+            if inst.components.rider:IsRiding() then
                 inst.sg:GoToState("mounted_idle", pushanim)
                 return
             end
@@ -1548,7 +1542,7 @@ local states =
         },
 
         ontimeout = function(inst)
-            local mount = inst.components.rider ~= nil and inst.components.rider:GetMount() or nil
+            local mount = inst.components.rider:GetMount()
             if mount == nil then
                 inst.sg:GoToState("idle")
             elseif mount.components.hunger == nil then
@@ -1600,9 +1594,7 @@ local states =
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("bellow")
-            if inst.components.rider ~= nil then
-                DoMountSound(inst, inst.components.rider:GetMount(), "grunt")
-            end
+            DoMountSound(inst, inst.components.rider:GetMount(), "grunt")
         end,
 
         events =
@@ -2576,7 +2568,7 @@ local states =
             end
 
             if inst.components.inventory:IsHeavyLifting() and
-                not (inst.components.rider ~= nil and inst.components.rider:IsRiding()) then
+                not inst.components.rider:IsRiding() then
                 inst.AnimState:PlayAnimation("heavy_eat")
             else
                 inst.AnimState:PlayAnimation("eat_pre")
@@ -2652,7 +2644,7 @@ local states =
             end
 
             if inst.components.inventory:IsHeavyLifting() and
-                not (inst.components.rider ~= nil and inst.components.rider:IsRiding()) then
+                not inst.components.rider:IsRiding() then
                 inst.AnimState:PlayAnimation("heavy_quick_eat")
             else
                 inst.AnimState:PlayAnimation("quick_eat_pre")
@@ -2757,7 +2749,7 @@ local states =
             inst.components.locomotor:Clear()
             inst:ClearBufferedAction()
 
-            if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
+            if inst.components.rider:IsRiding() then
                 inst.sg.statemem.talking = true
                 inst.AnimState:PlayAnimation("dial_loop")
                 DoTalkSound(inst)
@@ -2802,7 +2794,7 @@ local states =
 
             local failstr =
                 (IsNearDanger(inst) and "ANNOUNCE_NODANGERGIFT") or
-                (inst.components.rider ~= nil and inst.components.rider:IsRiding() and "ANNOUNCE_NOMOUNTEDGIFT") or
+                (inst.components.rider:IsRiding() and "ANNOUNCE_NOMOUNTEDGIFT") or
                 nil
 
             if failstr ~= nil then
@@ -3152,7 +3144,7 @@ local states =
             if not noanim then
                 inst.AnimState:PlayAnimation(
                     inst.components.inventory:IsHeavyLifting() and
-                    not (inst.components.rider ~= nil and inst.components.rider:IsRiding()) and
+                    not inst.components.rider:IsRiding() and
                     "heavy_dial_loop" or
                     "dial_loop",
                     true)
@@ -3497,7 +3489,7 @@ local states =
             local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
             inst.components.locomotor:Stop()
             local cooldown
-            if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
+            if inst.components.rider:IsRiding() then
                 inst.AnimState:PlayAnimation("atk_pre")
                 inst.AnimState:PushAnimation("atk", false)
                 DoMountSound(inst, inst.components.rider:GetMount(), "angry")
@@ -3915,7 +3907,7 @@ local states =
         timeline =
         {
             TimeEvent(0, function(inst)
-                local fxtoplay = inst.components.rider ~= nil and inst.components.rider:IsRiding() and "book_fx_mount" or "book_fx"
+                local fxtoplay = inst.components.rider:IsRiding() and "book_fx_mount" or "book_fx"
                 local fx = SpawnPrefab(fxtoplay)
                 fx.entity:SetParent(inst.entity)
                 fx.Transform:SetPosition(0, 0.2, 0)
@@ -4142,11 +4134,23 @@ local states =
             inst.components.combat:StartAttack()
             inst.components.locomotor:Stop()
             local cooldown = inst.components.combat.min_attack_period + .5 * FRAMES
-            if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
-                inst.AnimState:PlayAnimation("atk_pre")
-                inst.AnimState:PushAnimation("atk", false)
-                DoMountSound(inst, inst.components.rider:GetMount(), "angry", true)
-                cooldown = math.max(cooldown, 16 * FRAMES)
+            if inst.components.rider:IsRiding() then
+                if equip ~= nil and (equip.components.projectile ~= nil or equip:HasTag("rangedweapon")) then
+                    inst.AnimState:PlayAnimation("player_atk_pre")
+                    inst.AnimState:PushAnimation("player_atk", false)
+                    inst.SoundEmitter:PlaySound(
+                        (equip:HasTag("icestaff") and "dontstarve/wilson/attack_icestaff") or
+                        (equip:HasTag("firestaff") and "dontstarve/wilson/attack_firestaff") or
+                        "dontstarve/wilson/attack_weapon",
+                        nil, nil, true
+                    )
+                    cooldown = math.max(cooldown, 13 * FRAMES)
+                else
+                    inst.AnimState:PlayAnimation("atk_pre")
+                    inst.AnimState:PushAnimation("atk", false)
+                    DoMountSound(inst, inst.components.rider:GetMount(), "angry", true)
+                    cooldown = math.max(cooldown, 16 * FRAMES)
+                end
             elseif equip ~= nil and equip:HasTag("whip") then
                 inst.AnimState:PlayAnimation("whip_pre")
                 inst.AnimState:PushAnimation("whip", false)
@@ -4771,7 +4775,7 @@ local states =
 
             inst.sg.statemem.isinsomniac = inst:HasTag("insomniac")
 
-            if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
+            if inst.components.rider:IsRiding() then
                 inst.sg:AddStateTag("dismounting")
                 inst.AnimState:PlayAnimation("fall_off")
                 inst.SoundEmitter:PlaySound("dontstarve/beefalo/saddle/dismount")
@@ -4813,9 +4817,7 @@ local states =
                 if inst.AnimState:AnimDone() then
                     if inst.sg:HasStateTag("dismounting") then
                         inst.sg:RemoveStateTag("dismounting")
-                        if inst.components.rider ~= nil then
-                            inst.components.rider:ActualDismount()
-                        end
+                        inst.components.rider:ActualDismount()
                         inst.AnimState:PlayAnimation(inst.sg.statemem.isinsomniac and "insomniac_dozy" or "dozy")
                     elseif inst.sg.statemem.cometo then
                         inst.sg.statemem.iswaking = true
@@ -4829,7 +4831,7 @@ local states =
         },
 
         onexit = function(inst)
-            if inst.sg:HasStateTag("dismounting") and inst.components.rider ~= nil then
+            if inst.sg:HasStateTag("dismounting") then
                 --Interrupted
                 inst.components.rider:ActualDismount()
             end
@@ -4927,7 +4929,7 @@ local states =
         tags = { "busy" },
 
         onenter = function(inst, snap)
-            local usehit = inst.components.rider ~= nil and inst.components.rider:IsRiding() or inst:HasTag("beaver")
+            local usehit = inst.components.rider:IsRiding() or inst:HasTag("beaver")
             local stun_frames = usehit and 6 or 9
 
             if snap then
@@ -4971,7 +4973,7 @@ local states =
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
 
-            if inst.components.rider ~= nil and inst.components.rider:IsRiding() or inst:HasTag("beaver") then
+            if inst.components.rider:IsRiding() or inst:HasTag("beaver") then
                 inst.AnimState:PlayAnimation("hit")
             else
                 inst.AnimState:PlayAnimation("distress_pre")
@@ -5040,7 +5042,7 @@ local states =
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
 
-            if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
+            if inst.components.rider:IsRiding() then
                 inst.sg:AddStateTag("dismounting")
                 inst.AnimState:PlayAnimation("fall_off")
                 inst.SoundEmitter:PlaySound("dontstarve/beefalo/saddle/dismount")
@@ -5055,9 +5057,7 @@ local states =
                 if inst.AnimState:AnimDone() then
                     if inst.sg:HasStateTag("dismounting") then
                         inst.sg:RemoveStateTag("dismounting")
-                        if inst.components.rider ~= nil then
-                            inst.components.rider:ActualDismount()
-                        end
+                        inst.components.rider:ActualDismount()
                         inst.AnimState:PlayAnimation("mindcontrol_pre")
                     else
                         inst.sg.statemem.mindcontrolled = true
@@ -5070,9 +5070,7 @@ local states =
         onexit = function(inst)
             if inst.sg:HasStateTag("dismounting") then
                 --interrupted
-                if inst.components.rider ~= nil then
-                    inst.components.rider:ActualDismount()
-                end
+                inst.components.rider:ActualDismount()
             end
             if not inst.sg.statemem.mindcontrolled then
                 if inst.components.playercontroller ~= nil then
@@ -5914,7 +5912,7 @@ local states =
             local staff = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
             local colour = staff ~= nil and staff.fxcolour or { 1, 1, 1 }
 
-            inst.stafffx = SpawnPrefab(inst.components.rider ~= nil and inst.components.rider:IsRiding() and "staffcastfx_mount" or "staffcastfx")
+            inst.stafffx = SpawnPrefab(inst.components.rider:IsRiding() and "staffcastfx_mount" or "staffcastfx")
             inst.stafffx.entity:SetParent(inst.entity)
             inst.stafffx:SetUp(colour)
 
@@ -5962,8 +5960,13 @@ local states =
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("atk_pre") 
-            inst.AnimState:PushAnimation("atk", false)
+            if inst.components.rider:IsRiding() then
+                inst.AnimState:PlayAnimation("player_atk_pre")
+                inst.AnimState:PushAnimation("player_atk", false)
+            else
+                inst.AnimState:PlayAnimation("atk_pre")
+                inst.AnimState:PushAnimation("atk", false)
+            end
             inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_weapon")
         end,
 
@@ -5990,8 +5993,13 @@ local states =
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("atk_pre")
-            inst.AnimState:PushAnimation("atk", false)
+            if inst.components.rider:IsRiding() then
+                inst.AnimState:PlayAnimation("player_atk_pre")
+                inst.AnimState:PushAnimation("player_atk", false)
+            else
+                inst.AnimState:PlayAnimation("atk_pre")
+                inst.AnimState:PushAnimation("atk", false)
+            end
             inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_weapon")
         end,
 
@@ -6019,9 +6027,7 @@ local states =
         onenter = function(inst)
             ClearStatusAilments(inst)
 
-            if inst.components.rider ~= nil then
-                inst.components.rider:ActualDismount()
-            end
+            inst.components.rider:ActualDismount()
 
             inst.components.locomotor:Stop()
             inst.components.health:SetInvincible(true)
@@ -6678,9 +6684,7 @@ local states =
         },
 
         onexit = function(inst)
-            if inst.components.rider ~= nil then
-                inst.components.rider:ActualDismount()
-            end
+            inst.components.rider:ActualDismount()
         end,
     },
 
@@ -6711,9 +6715,7 @@ local states =
         },
 
         onexit = function(inst)
-            if inst.components.rider ~= nil then
-                inst.components.rider:ActualDismount()
-            end
+            inst.components.rider:ActualDismount()
         end,
     },
 
@@ -6728,9 +6730,7 @@ local states =
 
             inst.AnimState:PlayAnimation("buck")
 
-            if inst.components.rider ~= nil then
-                DoMountSound(inst, inst.components.rider:GetMount(), "yell")
-            end
+            DoMountSound(inst, inst.components.rider:GetMount(), "yell")
 
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:RemotePausePrediction()
@@ -6754,9 +6754,7 @@ local states =
         },
 
         onexit = function(inst)
-            if inst.components.rider ~= nil then
-                inst.components.rider:ActualDismount()
-            end
+            inst.components.rider:ActualDismount()
         end,
     },
 

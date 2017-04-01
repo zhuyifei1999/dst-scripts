@@ -34,6 +34,7 @@ local function fn()
     inst.AnimState:SetBuild("eyeball_turret_attack")
     inst.AnimState:PlayAnimation("idle")
 
+    --projectile (from projectile component) added to pristine state for optimization
     inst:AddTag("projectile")
 
     inst.entity:SetPristine()

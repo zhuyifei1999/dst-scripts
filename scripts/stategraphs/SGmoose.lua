@@ -280,7 +280,7 @@ local states=
 		onupdate= function(inst)
 			inst.Physics:SetMotorVelOverride(0,-15,0)
 			local pt = Point(inst.Transform:GetWorldPosition())
-			if pt.y < 2 then
+			if pt.y < 2 or inst:IsAsleep() then
 				inst.Physics:ClearMotorVelOverride()
 				pt.y = 0
 				inst.Physics:Stop()

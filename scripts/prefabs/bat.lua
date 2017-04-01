@@ -119,6 +119,13 @@ local function OnEntityWake(inst)
     end
 end
 
+local function OnPreLoad(inst, data)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	if y > 0 then
+		inst.Transform:SetPosition(x, 0, z)
+	end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -208,6 +215,7 @@ local function fn()
 
     inst.OnEntitySleep = OnEntitySleep
     inst.OnEntityWake = OnEntityWake
+    inst.OnPreLoad = OnPreLoad
 
     return inst
 end

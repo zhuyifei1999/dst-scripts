@@ -145,6 +145,8 @@ local function MakeCritter(name, animname, face, diet, flying, data)
             MakeCharacterPhysics(inst, 1, .5)
         end
 
+		inst.Physics:SetDontRemoveOnSleep(true) -- critters dont really go do entitysleep as it triggers a teleport to near the owner, so no point in hitting the physics engine.
+
         inst:AddTag("critter")
         inst:AddTag("companion")
         inst:AddTag("notraptrigger")

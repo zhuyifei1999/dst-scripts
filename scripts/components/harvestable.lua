@@ -119,18 +119,25 @@ function Harvestable:Harvest(picker)
         if self.onharvestfn ~= nil then
             self.onharvestfn(self.inst, picker, produce)
         end
-
-        if picker.components.inventory ~= nil and self.product ~= nil then
-            picker:PushEvent("harvestsomething", { object = self.inst })
-            for i = 1, produce, 1 do
-                local loot = SpawnPrefab(self.product)
-                if loot ~= nil then
-                    if loot.components.inventoryitem ~= nil then
-                        loot.components.inventoryitem:InheritMoisture(TheWorld.state.wetness, TheWorld.state.iswet)
-                    end
-                    picker.components.inventory:GiveItem(loot)
-                end
-            end
+		
+		if self.product ~= nil then
+			if picker ~= nil and picker.components.inventory ~= nil then
+				picker:PushEvent("harvestsomething", { object = self.inst })
+			end
+			
+			for i = 1, produce, 1 do
+				local loot = SpawnPrefab(self.product)
+				if loot ~= nil then
+					if loot.components.inventoryitem ~= nil then
+						loot.components.inventoryitem:InheritMoisture(TheWorld.state.wetness, TheWorld.state.iswet)
+					end
+					if picker ~= nil and picker.components.inventory ~= nil then
+						picker.components.inventory:GiveItem(loot)
+					else
+						LaunchAt(loot, self.inst, nil, 1, 1)
+					end
+				end
+			end
         end
         self:StartGrowing()
         return true

@@ -26,6 +26,9 @@ local Projectile = Class(function(self, inst)
     self.oncaught = nil
 
     self.stimuli = nil
+
+    --V2C: Recommended to explicitly add tag to prefab pristine state
+    inst:AddTag("projectile")
 end,
 nil,
 {
@@ -34,6 +37,7 @@ nil,
 })
 
 function Projectile:OnRemoveFromEntity()
+    self.inst:RemoveTag("projectile")
     self.inst:RemoveTag("catchable")
     if self.dozeOffTask ~= nil then
         self.dozeOffTask:Cancel()

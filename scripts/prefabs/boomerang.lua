@@ -88,8 +88,10 @@ local function fn()
     inst.AnimState:PlayAnimation("idle")
     inst.AnimState:SetRayTestOnBB(true)
 
-    inst:AddTag("projectile")
     inst:AddTag("thrown")
+
+    --projectile (from projectile component) added to pristine state for optimization
+    inst:AddTag("projectile")
 
     inst.entity:SetPristine()
 

@@ -431,7 +431,7 @@ function PlayerHud:SetMainCharacter(maincharacter)
         self.inst:ListenForEvent("gosane", function() self:GoSane() end, self.owner)
         self.inst:ListenForEvent("goinsane", function() self:GoInsane() end, self.owner)
 
-        if self.owner.replica.sanity ~= nil and not self.owner.replica.sanity:IsSane() then
+        if self.owner.replica.sanity ~= nil and self.owner.replica.sanity:IsCrazy() then
             self:GoInsane()
         end
         self.controls.crafttabs:UpdateRecipes()
