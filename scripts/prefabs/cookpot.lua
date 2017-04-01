@@ -24,7 +24,9 @@ local function onhammered(inst, worker)
     if not inst:HasTag("burnt") and inst.components.stewer.product ~= nil and inst.components.stewer:IsDone() then
         inst.components.lootdropper:AddChanceLoot(inst.components.stewer.product, 1)
     end
-    inst.components.container:DropEverything()
+    if inst.components.container ~= nil then
+        inst.components.container:DropEverything()
+    end
     inst.components.lootdropper:DropLoot()
     local fx = SpawnPrefab("collapse_small")
     fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
