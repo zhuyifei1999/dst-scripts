@@ -11,7 +11,7 @@ local assets =
     Asset("ANIM", "anim/tree_leaf_yellow_build.zip"), --autumn leaves build
     Asset("ANIM", "anim/tree_leaf_poison_build.zip"), --poison leaves build
     Asset("SOUND", "sound/forest.fsb"),
-    Asset("SOUND", "sound/decidous.fsb"),
+    Asset("SOUND", "sound/deciduous.fsb"),
     Asset("MINIMAP_IMAGE", "tree_leaf"),
     Asset("MINIMAP_IMAGE", "tree_leaf_burnt"),
     Asset("MINIMAP_IMAGE", "tree_leaf_stump"),
@@ -419,7 +419,7 @@ local function chop_tree(inst, chopper, chops)
     inst.AnimState:PlayAnimation(inst.anims.chop)
 
     if inst.monster then
-        inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/hurt_chop")
+        inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/deciduous/hurt_chop")
         inst.sg:GoToState("chop_pst")
     else
         PushSway(inst)
@@ -535,7 +535,7 @@ local function chop_down_tree(inst, chopper)
     end
 
     if inst.monster then
-        inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/death")
+        inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/deciduous/death")
         inst.sg:GoToState("empty")
         inst.components.lootdropper:AddChanceLoot("livinglog", TUNING.DECID_MONSTER_ADDITIONAL_LOOT_CHANCE)
         inst.components.lootdropper:AddChanceLoot("nightmarefuel", TUNING.DECID_MONSTER_ADDITIONAL_LOOT_CHANCE)
@@ -734,8 +734,8 @@ local function DoStartMonster(inst, starttimeoffset)
     end
     inst.AnimState:SetBank("tree_leaf_monster")
     inst.AnimState:PlayAnimation("transform_in")
-    inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/transform_in")
-    inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/transform_voice")
+    inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/deciduous/transform_in")
+    inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/deciduous/transform_voice")
     SpawnLeafFX(inst, 7 * FRAMES)
     local leavesbuild = GetBuild(inst).leavesbuild
     if leavesbuild ~= nil then
@@ -817,7 +817,7 @@ local function StopMonster(inst)
         inst:RemoveComponent("combat")
         if not (inst:HasTag("stump") or inst:HasTag("burnt")) then
             inst.AnimState:PlayAnimation("transform_out")
-            inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/transform_out")
+            inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/deciduous/transform_out")
             SpawnLeafFX(inst, 8 * FRAMES)
             inst.sg:GoToState("empty")
         end

@@ -157,9 +157,9 @@ local function ShareTargetFn(dude)
 end
 
 local function OnAttacked(inst, data)
-
-    if not inst.components.teamattacker then return end
-    --print("OnAttacked")
+    if inst.components.teamattacker == nil then
+        return
+    end
 
     if not inst.components.teamattacker.inteam and not inst.components.teamattacker:SearchForTeam() then
         --print("MakeTeam")
@@ -167,7 +167,7 @@ local function OnAttacked(inst, data)
     end
 
     if inst.components.teamattacker.inteam and not inst.components.teamattacker.teamleader:CanAttack() then
-        local attacker = data and data.attacker
+        local attacker = data ~= nil and data.attacker or nil
         --print(inst,"OnAttack:settarget",attacker)
         inst.components.combat:SetTarget(attacker)
         inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, ShareTargetFn, MAX_TARGET_SHARES)

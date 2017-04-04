@@ -42,6 +42,10 @@ function Unwrappable:WrapItems(items, doer)
     end
 end
 
+local function NoHoles(pt)
+    return not TheWorld.Map:IsPointNearHole(pt)
+end
+
 function Unwrappable:Unwrap(doer)
     local pos = self.inst:GetPosition()
     pos.y = 0
@@ -49,10 +53,14 @@ function Unwrappable:Unwrap(doer)
         if doer ~= nil and
             self.inst.components.inventoryitem ~= nil and
             self.inst.components.inventoryitem:GetGrandOwner() == doer then
-            local x, y, z = doer.Transform:GetWorldPosition()
-            local rot = -doer.Transform:GetRotation() * DEGREES
-            pos.x = x + math.cos(rot)
-            pos.z = z + math.sin(rot)
+            local doerpos = doer:GetPosition()
+            local offset = FindWalkableOffset(doerpos, doer.Transform:GetRotation() * DEGREES, 1, 8, false, true, NoHoles)
+            if offset ~= nil then
+                pos.x = doerpos.x + offset.x
+                pos.z = doerpos.z + offset.z
+            else
+                pos.x, pos.z = doerpos.x, doerpos.z
+            end
         end
         for i, v in ipairs(self.itemdata) do
             local item = SpawnSaveRecord(v)

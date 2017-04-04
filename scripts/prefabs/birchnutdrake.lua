@@ -123,7 +123,7 @@ local function fn()
     inst.components.combat:SetAttackPeriod(2)
     inst.components.combat:SetRetargetFunction(1, RetargetFn)
     inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
-    inst.components.combat:SetHurtSound("dontstarve_DLC001/creatures/decidous/drake_hit")
+    inst.components.combat:SetHurtSound("dontstarve_DLC001/creatures/deciduous/drake_hit")
     inst:ListenForEvent("attacked", OnAttacked)
     inst:DoTaskInTime(5, inst.ListenForEvent, "losttarget", OnLostTarget)
 

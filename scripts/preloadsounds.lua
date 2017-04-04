@@ -6,7 +6,7 @@ local DLCSounds =
 	"bearger.fsb",
 	"buzzard.fsb",
 	"catcoon.fsb",
-	"decidous.fsb",
+	"deciduous.fsb",
 	"DLC_music.fsb",
 	"dontstarve_DLC001.fev",
 	"dragonfly.fsb",

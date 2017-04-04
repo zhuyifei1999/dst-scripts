@@ -39,7 +39,7 @@ local states=
         onenter = function(inst, push)
             if inst.monster then
                 inst.AnimState:PushAnimation(inst.anims.swayaggro, false)
-                inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/angry")
+                inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/deciduous/angry")
             else
                 inst.sg:GoToState("empty")
             end
@@ -117,7 +117,7 @@ local states=
         onenter = function(inst)
             if inst.monster then
                 if math.random() < .4 then
-                    inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/rustle")
+                    inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/deciduous/rustle")
                 end
                 inst.AnimState:PushAnimation(inst.anims.swayaggroloop, false)
             else
@@ -157,7 +157,7 @@ local states=
         name = "burning",
         tags = {"busy", "burning"},
         onenter = function(inst)
-            inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/hurt_fire")
+            inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/deciduous/hurt_fire")
             inst.AnimState:PlayAnimation("sway_loop_agro", false)
         end,
         events=

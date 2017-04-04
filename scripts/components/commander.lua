@@ -102,8 +102,11 @@ end
 function Commander:SetTrackingDistance(dist)
     if self.trackingdist ~= dist then
         self.trackingdist = dist
-        self:StopTrackingDistance()
-        self:StartTrackingDistance()
+        if dist > 0 then
+            self:StartTrackingDistance()
+        else
+            self:StopTrackingDistance()
+        end
     end
 end
 

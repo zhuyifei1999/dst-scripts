@@ -63,7 +63,7 @@ local states =
 
 		timeline =
 		{
-			TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/drake_pop_small") end),
+			TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/deciduous/drake_pop_small") end),
 		},
 
 		events =
@@ -108,7 +108,7 @@ local states =
 
 		timeline =
 		{
-			TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/drake_pop_large") end),
+			TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/deciduous/drake_pop_large") end),
 		},
 
 		events =
@@ -128,13 +128,13 @@ local states =
 			inst.Physics:Stop()
 			inst.Physics:SetMass(99999)
 			inst.AnimState:PushAnimation("exit", false)
-			inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/drake_jump")
-			inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/drake_run_voice")
+			inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/deciduous/drake_jump")
+			inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/deciduous/drake_run_voice")
 		end,
 
 		timeline =
 		{
-			TimeEvent(15*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/drake_intoground") end),
+			TimeEvent(15*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/deciduous/drake_intoground") end),
 			TimeEvent(20*FRAMES, function(inst) RemovePhysicsColliders(inst) end),
 		},
 
@@ -156,7 +156,7 @@ local states =
             inst.components.locomotor:EnableGroundSpeedMultiplier(false)
             inst.components.combat:StartAttack()
             inst.AnimState:PlayAnimation("atk")
-            inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/drake_jump")
+            inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/deciduous/drake_jump")
             inst.sg.statemem.target = target
         end,
 
@@ -170,7 +170,7 @@ local states =
             TimeEvent(3*FRAMES, function(inst) inst.Physics:SetMotorVelOverride(5,0,0) end),
             TimeEvent(12*FRAMES, function(inst)
             	inst.components.combat:DoAttack(inst.sg.statemem.target)
-            	inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/drake_attack")
+            	inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/deciduous/drake_attack")
             end),
             TimeEvent(25*FRAMES,
 				function(inst)
@@ -193,9 +193,9 @@ CommonStates.AddCombatStates(states,
 	hittimeline = {},
 	attacktimeline =
 	{
-		TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/drake_jump") end),
+		TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/deciduous/drake_jump") end),
 		TimeEvent(12*FRAMES, function(inst)
-			inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/drake_attack")
+			inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/deciduous/drake_attack")
 			inst.components.combat:DoAttack(inst.sg.statemem.target)
 		end)
 	},
@@ -203,7 +203,7 @@ CommonStates.AddCombatStates(states,
 	{
 		TimeEvent(1*FRAMES, function(inst)
 			RemovePhysicsColliders(inst)
-			inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/drake_die")
+			inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/deciduous/drake_die")
 		end),
 	},
 })
@@ -212,8 +212,8 @@ CommonStates.AddWalkStates(states,
 	starttimeline = {},
 	walktimeline =
 	{
-		TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/drake_run_voice") end),
-		TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/drake_run_rustle") end),
+		TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/deciduous/drake_run_voice") end),
+		TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/deciduous/drake_run_rustle") end),
 	},
 	endtimeline = {},
 })
