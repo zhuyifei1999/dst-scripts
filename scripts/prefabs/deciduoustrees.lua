@@ -519,15 +519,16 @@ local function chop_down_tree(inst, chopper)
             local ents = TheSim:FindEntities(x, y, z, 30, { "birchnut" }, { "fire", "stump", "burnt", "monster", "FX", "NOCLICK", "DECOR", "INLIMBO" })
             local max_monsters_to_spawn = math.random(3, 4)
             for i, v in ipairs(ents) do
-                if v:IsValid() and v.leaf_state ~= "barren" and not v.monster and v.monster_start_task == nil and v.monster_stop_task == nil then
-                    if v.monster_start_task ~= nil then
-                        v.monster_start_task:Cancel()
-                    end
+                if v.leaf_state ~= "barren" and
+                    not v.monster and
+                    v.monster_start_task == nil and
+                    v.monster_stop_task == nil and
+                    v.domonsterstop_task == nil then
                     v.monster_start_task = v:DoTaskInTime(math.random(1, 4), delayed_start_monster)
-                    max_monsters_to_spawn = max_monsters_to_spawn - 1
-                    if max_monsters_to_spawn <= 0 then
+                    if max_monsters_to_spawn <= 1 then
                         break
                     end
+                    max_monsters_to_spawn = max_monsters_to_spawn - 1
                 end
             end
         end
@@ -538,13 +539,11 @@ local function chop_down_tree(inst, chopper)
         inst.sg:GoToState("empty")
         inst.components.lootdropper:AddChanceLoot("livinglog", TUNING.DECID_MONSTER_ADDITIONAL_LOOT_CHANCE)
         inst.components.lootdropper:AddChanceLoot("nightmarefuel", TUNING.DECID_MONSTER_ADDITIONAL_LOOT_CHANCE)
-        if inst.components.deciduoustreeupdater ~= nil then
-            inst.components.deciduoustreeupdater:StopMonster()
-        end
         if inst.monster_stop_task ~= nil then
             inst.monster_stop_task:Cancel()
             inst.monster_stop_task = nil
         end
+        inst:RemoveComponent("deciduoustreeupdater")
         inst:RemoveComponent("combat")
     end
 
@@ -639,10 +638,7 @@ end
 local function _OnBurnt2(inst)
     if inst.monster then
         inst.monster = false
-        if inst.components.deciduoustreeupdater ~= nil then 
-            inst.components.deciduoustreeupdater:StopMonster()
-            inst:RemoveComponent("deciduoustreeupdater")
-        end
+        inst:RemoveComponent("deciduoustreeupdater")
         inst:RemoveComponent("combat")
         inst.sg:GoToState("empty")
         inst.AnimState:SetBank("tree_leaf")
@@ -657,10 +653,7 @@ local function OnBurnt(inst, immediate)
     if immediate then
         if inst.monster then
             inst.monster = false
-            if inst.components.deciduoustreeupdater ~= nil then 
-                inst.components.deciduoustreeupdater:StopMonster()
-                inst:RemoveComponent("deciduoustreeupdater")
-            end
+            inst:RemoveComponent("deciduoustreeupdater")
             inst:RemoveComponent("combat")
             inst.sg:GoToState("empty")
             inst.AnimState:SetBank("tree_leaf")
@@ -756,7 +749,9 @@ local function DoStartMonster(inst, starttimeoffset)
         inst.AnimState:ClearOverrideSymbol("eye")
         inst.AnimState:ClearOverrideSymbol("mouth")
     end
-    inst:AddComponent("combat")
+    if inst.components.combat == nil then
+        inst:AddComponent("combat")
+    end
     if inst.components.deciduoustreeupdater == nil then
         inst:AddComponent("deciduoustreeupdater")
     end
@@ -792,6 +787,7 @@ local function StartMonster(inst, force, starttimeoffset)
 end
 
 local function DoStopMonster(inst)
+    inst.domonsterstop_task = nil
     inst.AnimState:ClearOverrideSymbol("eye")
     inst.AnimState:ClearOverrideSymbol("mouth")
     if not inst:HasTag("stump") then
@@ -817,18 +813,18 @@ local function StopMonster(inst)
         inst.monster = false
         inst.monster_start_time = nil
         inst.monster_duration = nil
-        if inst.components.deciduoustreeupdater ~= nil then
-            inst.components.deciduoustreeupdater:StopMonster()
-        end
-        inst:RemoveComponent("combat")
         inst:RemoveComponent("deciduoustreeupdater")
+        inst:RemoveComponent("combat")
         if not (inst:HasTag("stump") or inst:HasTag("burnt")) then
             inst.AnimState:PlayAnimation("transform_out")
             inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/decidous/transform_out")
             SpawnLeafFX(inst, 8 * FRAMES)
             inst.sg:GoToState("empty")
         end
-        inst:DoTaskInTime(16 * FRAMES, DoStopMonster)
+        if inst.domonsterstop_task ~= nil then
+            inst.domonsterstop_task:Cancel()
+        end
+        inst.domonsterstop_task = inst:DoTaskInTime(16 * FRAMES, DoStopMonster)
     end
 end
 
@@ -856,7 +852,6 @@ local function OnEntitySleep(inst)
     inst:RemoveComponent("burnable")
     inst:RemoveComponent("propagator")
     inst:RemoveComponent("inspectable")
-    inst:RemoveComponent("deciduoustreeupdater")
 end
 
 local function OnEntityWake(inst)
@@ -881,10 +876,6 @@ local function OnEntityWake(inst)
             if inst.components.propagator == nil then
                 MakeMediumPropagator(inst)
             end
-
-            if inst.components.deciduoustreeupdater == nil then
-                inst:AddComponent("deciduoustreeupdater")
-            end
         end
     end
 
@@ -898,13 +889,8 @@ local function OnEntityWake(inst)
             inst.monster = false
             inst.monster_start_time = nil
             inst.monster_duration = nil
-            if inst.components.deciduoustreeupdater ~= nil then
-                inst.components.deciduoustreeupdater:StopMonster()
-                inst:RemoveComponent("deciduoustreeupdater")
-            end
-            if inst.components.combat ~= nil then
-                inst:RemoveComponent("combat")
-            end
+            inst:RemoveComponent("deciduoustreeupdater")
+            inst:RemoveComponent("combat")
         end
     end
 
@@ -979,11 +965,8 @@ local function onload(inst, data)
                 inst.components.growable:DoGrowth()
                 inst:DoTaskInTime(12 * FRAMES, OnChangeLeaves, false)
             end
-            if inst.components.deciduoustreeupdater ~= nil then 
-                inst.components.deciduoustreeupdater:StopMonster()
-                inst:RemoveComponent("deciduoustreeupdater")
-            end
-            if inst.components.combat then inst:RemoveComponent("combat") end
+            inst:RemoveComponent("deciduoustreeupdater")
+            inst:RemoveComponent("combat")
             inst.sg:GoToState("empty")
         end
 
@@ -1248,7 +1231,6 @@ local function makefn(build, stage, data)
 
         inst:AddComponent("lootdropper")
 
-        inst:AddComponent("deciduoustreeupdater")
         inst:ListenForEvent("sway", onsway)
 
         inst.lastleaffxtime = 0

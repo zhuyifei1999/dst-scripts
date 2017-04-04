@@ -194,10 +194,12 @@ local function commonlevelup(inst, overridelevel)
         
         if level > 1 then
             inst:AddTag("epic")
+            inst:AddTag("noepicmusic")
             StartMusic(inst)
             inst.sounds.levelup = "dontstarve/sanity/transform/three"
         else
             inst:RemoveTag("epic")
+            inst:RemoveTag("noepicmusic")
             StopMusic(inst)
             inst.sounds.levelup = "dontstarve/sanity/transform/two"
         end

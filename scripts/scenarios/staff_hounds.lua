@@ -1,9 +1,8 @@
 local function settrap_hounds(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, 20)
     local staff_hounds = {}
-    for k,v in pairs(ents) do
-        if v and v.sg and v:HasTag("hound") then
+    for i, v in ipairs(TheSim:FindEntities(x, y, z, 20, { "hound" }, { "pet_hound", "INLIMBO" })) do
+        if v ~= nil and v.sg ~= nil then
             v.components.sleeper.hibernate = true
             v.sg:GoToState("forcesleep")
             table.insert(staff_hounds, v)
@@ -12,14 +11,33 @@ local function settrap_hounds(inst)
     return staff_hounds
 end
 
+local function IsValidHound(hound)
+    return hound:IsValid()
+        and not hound:IsInLimbo()
+        and not (hound.components.health ~= nil and hound.components.health:IsDead())
+        and hound.entity:IsVisible()
+end
+
+local function WakeHound(inst, hound)
+    if IsValidHound(hound) and hound.sg ~= nil and hound.sg:HasState("wake") then
+        hound.sg:GoToState("wake")
+    end
+end
+
 local function TriggerTrap(inst, scenariorunner, data, hounds)
     --Here we wake the dogs up if they exist then stop waiting to spring the trap.
     local player = data.player
-    if player and player.components.sanity then player.components.sanity:DoDelta(-TUNING.SANITY_HUGE) end
+    if player ~= nil and player.components.sanity ~= nil then
+        player.components.sanity:DoDelta(-TUNING.SANITY_HUGE)
+    end
     TheWorld:PushEvent("ms_forceprecipitation", true)
-    for wakeup = 1, #hounds do
-        if hounds[wakeup].components.sleeper then hounds[wakeup].components.sleeper.hibernate = false end
-        inst:DoTaskInTime(math.random(1,3), function() if hounds[wakeup] and hounds[wakeup].sg then hounds[wakeup].sg:GoToState("wake") end end)
+    for i, v in ipairs(hounds) do
+        if IsValidHound(v) then
+            if v.components.sleeper ~= nil then
+                v.components.sleeper.hibernate = false
+            end
+            inst:DoTaskInTime(math.random(1, 3), WakeHound, v)
+        end
     end
     scenariorunner:ClearScenario()
 end
@@ -38,7 +56,7 @@ local function OnLoad(inst, scenariorunner)
 end
 
 local function OnDestroy(inst)
-    if inst.scene_putininventoryfn then
+    if inst.scene_putininventoryfn ~= nil then
         inst:RemoveEventCallback("onputininventory", inst.scene_putininventoryfn)
         inst.scene_putininventoryfn = nil
     end

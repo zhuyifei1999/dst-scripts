@@ -239,8 +239,8 @@ local function RetargetFn(inst)
                         guy:IsNear(inst, TUNING.STALKER_KEEP_AGGRO_DIST)
                     )
         end,
-        { "_combat" }, --see entityreplica.lua
-        { "INLIMBO", "prey", "companion", "smallcreature", "player" }
+        { "_combat", "locomotor" }, --see entityreplica.lua
+        { "INLIMBO", "prey", "companion", "player" }
     )
 
     return creature ~= nil

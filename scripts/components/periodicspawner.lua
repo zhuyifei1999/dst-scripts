@@ -103,10 +103,10 @@ function PeriodicSpawner:TrySpawn(prefab)
     end
 
     local inst = SpawnPrefab(prefab)
+    inst.Transform:SetPosition(x, y, z)
     if self.onspawn ~= nil then
         self.onspawn(self.inst, inst)
     end
-    inst.Transform:SetPosition(x, y, z)
     return true
 end
 

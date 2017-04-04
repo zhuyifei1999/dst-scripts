@@ -32,6 +32,7 @@ local Trap = Class(function(self, inst)
     self.onharvest = nil
     self.onbaited = nil
     self.onspring = nil
+    self.task = nil
 
     self.inst:AddComponent("timer")
     self.inst:ListenForEvent("timerdone", OnTimerDone)
@@ -44,6 +45,9 @@ nil,
 })
 
 function Trap:OnRemoveFromEntity()
+    self:StopUpdating()
+    self.inst:RemoveEventCallback("timerdone", OnTimerDone)
+    self.inst:RemoveComponent("timer")
     self.inst:RemoveTag("canbait")
     self.inst:RemoveTag("trapsprung")
 end
@@ -57,27 +61,23 @@ function Trap:SetOnSpringFn(fn)
 end
 
 function Trap:GetDebugString()
-    local str = nil
-    if self.isset then 
-        str = "SET! "
-    elseif self.issprung then
-        str = "SPRUNG! "
-    else 
-        str = "IDLE! "
+    local str =
+        (self.isset and "SET!") or
+        (self.issprung and "SPRUNG!") or
+        "IDLE!"
+
+    if self.bait ~= nil then
+        str = str.." Bait:"..tostring(self.bait)
     end
 
-    if self.bait then
-        str = str.."Bait:"..tostring(self.bait).." "
+    if self.target ~= nil then
+        str = str.." Target:"..tostring(self.target)
     end
 
-    if self.target then
-        str = str.."Target:"..tostring(self.target).." "
-    end
-
-    if self.lootprefabs and #self.lootprefabs > 0 then
-        str = str.."Loot: "
-        for k,v in pairs(self.lootprefabs) do
-            str = str .. v.." "
+    if self.lootprefabs ~= nil and #self.lootprefabs > 0 then
+        str = str.." Loot:"
+        for i, v in ipairs(self.lootprefabs) do
+            str = str.." "..v
         end
     end
 
@@ -115,7 +115,7 @@ function Trap:Set()
 end
 
 function Trap:StopUpdating()
-    if self.task then
+    if self.task ~= nil then
         self.task:Cancel()
         self.task = nil
     end
@@ -127,7 +127,22 @@ end
 
 function Trap:StartUpdate()
     if self.task == nil then
-        self.task = self.inst:DoPeriodicTask(self.checkperiod, _OnUpdate, nil, self)
+        self.task = self.inst:DoPeriodicTask(self.checkperiod, _OnUpdate, (.5 + math.random() * .5) * self.checkperiod, self)
+    end
+end
+
+function Trap:OnEntitySleep()
+    if self.task ~= nil then
+        self.task:Cancel()
+        self.task = self.inst:DoPeriodicTask(self.checkperiod * 10, _OnUpdate, nil, self)
+    end
+end
+
+function Trap:OnEntityWake()
+    if self.task ~= nil then
+        self.task:Cancel()
+        self.task = nil
+        self:StartUpdate()
     end
 end
 

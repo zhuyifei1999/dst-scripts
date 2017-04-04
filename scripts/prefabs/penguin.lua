@@ -164,9 +164,6 @@ local function OnAttacked(inst, data)
     if not inst.components.teamattacker.inteam and not inst.components.teamattacker:SearchForTeam() then
         --print("MakeTeam")
         MakeTeam(inst, data.attacker)
-    elseif inst.components.teamattacker.teamleader then    
-        inst.components.teamattacker.teamleader:BroadcastDistress()   --Ask for  help!
-        --print("ASK FOR HELP!")
     end
 
     if inst.components.teamattacker.inteam and not inst.components.teamattacker.teamleader:CanAttack() then
@@ -176,31 +173,6 @@ local function OnAttacked(inst, data)
         inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, ShareTargetFn, MAX_TARGET_SHARES)
     end
 end
-
-local function OnThrown(inst, data)
-
-    --print("OnThrow",data.attacker)
-    if not inst.components.teamattacker or
-       data.target ~= inst then
-        return
-    end
-
-    if not inst.components.teamattacker.inteam and not inst.components.teamattacker:SearchForTeam() then
-        --print("MakeTeam",data.attacker)
-        MakeTeam(inst, data.attacker)
-    elseif inst.components.teamattacker.teamleader then    
-        inst.components.teamattacker.teamleader:BroadcastDistress()   --Ask for  help!
-        --print("ASK FOR HELP!")
-    end
-
-    if inst.components.teamattacker.inteam and not inst.components.teamattacker.teamleader:CanAttack() then
-        local attacker = data.attacker
-        --print(inst,"OnAttack:settarget",attacker)
-        inst.components.combat:SetTarget(attacker)
-        inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, ShareTargetFn, MAX_TARGET_SHARES)
-    end
-end
-
 
 local function OnEnterMood(inst)
     inst.nesting = true
@@ -345,7 +317,6 @@ local function fn()
     inst.components.inventory.acceptsstacks = false
 
     inst:ListenForEvent("attacked", OnAttacked)
-    inst:ListenForEvent("hostileprojectile", OnThrown)
 
     MakeHauntablePanic(inst)
 

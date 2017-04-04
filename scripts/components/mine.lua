@@ -55,6 +55,7 @@ local Mine = Class(function(self, inst)
     self.target = nil
     self.inactive = true
     self.issprung = false
+    self.testtask = nil
 
     self.alignment = "player"
     self.inst:ListenForEvent("onputininventory", OnPutInInventory)
@@ -115,13 +116,28 @@ function Mine:StartTesting()
     if self.testtask ~= nil then
         self.testtask:Cancel()
     end
-    self.testtask = self.inst:DoPeriodicTask(1 + math.random(), MineTest, math.random(.9, 1), self)
+    self.testtask = self.inst:DoPeriodicTask(1 + math.random(), MineTest, .9 + math.random() * .1, self)
 end
 
 function Mine:StopTesting()
     if self.testtask ~= nil then
         self.testtask:Cancel()
         self.testtask = nil
+    end
+end
+
+function Mine:OnEntitySleep()
+    if self.testtask ~= nil then
+        self.testtask:Cancel()
+        self.testtask = self.inst:DoPeriodicTask(10, MineTest, nil, self)
+    end
+end
+
+function Mine:OnEntityWake()
+    if self.testtask ~= nil then
+        self.testtask:Cancel()
+        self.testtask = nil
+        self:StartTesting()
     end
 end
 
@@ -169,7 +185,5 @@ function Mine:OnLoad(data)
         self:Reset()
     end
 end
-
-Mine.OnRemoveEntity = Mine.StopTesting
 
 return Mine

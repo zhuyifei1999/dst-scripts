@@ -5155,16 +5155,12 @@ local states =
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:RemotePausePrediction()
             end
+            inst.sg:SetTimeout(10 * FRAMES)
         end,
 
-        events =
-        {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end),
-        },
+        ontimeout = function(inst)
+            inst.sg:GoToState("idle", true)
+        end,
 
         onexit = function(inst)
             if inst.sg.statemem.toolname ~= nil then
@@ -5206,16 +5202,12 @@ local states =
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:RemotePausePrediction()
             end
+            inst.sg:SetTimeout(10 * FRAMES)
         end,
 
-        events =
-        {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end),
-        },
+        ontimeout = function(inst)
+            inst.sg:GoToState("idle", true)
+        end,
     },
 
     State{
@@ -5227,29 +5219,24 @@ local states =
 
             inst.AnimState:PlayAnimation("hit")
             inst.SoundEmitter:PlaySound("dontstarve/wilson/use_armour_break")
-            inst.sg.statemem.armor = armor
+
+            if armor ~= nil then
+                local sameArmor = inst.components.inventory:FindItem(function(item)
+                    return item.prefab == armor.prefab
+                end)
+                if sameArmor ~= nil then
+                    inst.components.inventory:Equip(sameArmor)
+                end
+            end
 
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:RemotePausePrediction()
             end
+            inst.sg:SetTimeout(10 * FRAMES)
         end,
 
-        events =
-        {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end),
-        },
-
-        onexit = function(inst)
-            local sameArmor = inst.components.inventory:FindItem(function(item)
-                return item.prefab == inst.sg.statemem.armor.prefab
-            end)
-            if sameArmor then
-                inst.components.inventory:Equip(sameArmor)
-            end
+        ontimeout = function(inst)
+            inst.sg:GoToState("idle", true)
         end,
     },
 

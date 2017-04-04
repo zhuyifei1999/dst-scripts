@@ -104,7 +104,7 @@ end
 function table.containskey(table, key)
     if table == nil then return false end
 
-    for k, value in pairs (table) do
+    for k, value in pairs(table) do
         if k == key then
             return true
         end
@@ -113,12 +113,12 @@ function table.containskey(table, key)
 end
 
 -- only for indexed tables!
-function table.reverse ( tab )
+function table.reverse(tab)
     local size = #tab
     local newTable = {}
  
-    for i,v in ipairs ( tab ) do
-        newTable[size-i] = v
+    for i,v in ipairs(tab) do
+        newTable[size-i+1] = v
     end
  
     return newTable

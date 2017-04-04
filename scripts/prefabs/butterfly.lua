@@ -84,6 +84,9 @@ local function fn()
     inst:AddTag("cattoyairborne")
     inst:AddTag("wildfireprotected")
 
+    --pollinator (from pollinator component) added to pristine state for optimization
+    inst:AddTag("pollinator")
+
     inst.Transform:SetTwoFaced()
 
     inst.AnimState:SetBuild("butterfly_basic")

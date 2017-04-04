@@ -1150,7 +1150,7 @@ local function MakeHat(name)
         inst:AddComponent("periodicspawner")
         inst.components.periodicspawner:SetPrefab(spore_prefab)
         inst.components.periodicspawner:SetRandomTimes(TUNING.MUSHROOMHAT_SPORE_TIME, 1, true)
-        --inst.components.periodicspawner:SetOnSpawnFn(onspawnfn) -- maybe we should add a spaw animation to the hat?
+        --inst.components.periodicspawner:SetOnSpawnFn(onspawnfn) -- maybe we should add a spawn animation to the hat?
 
         inst:AddComponent("insulator")
         inst.components.insulator:SetSummer()

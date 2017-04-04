@@ -78610,7 +78610,7 @@ msgstr ""
 
 #. STRINGS.RECIPE_DESC.EYETURRET_ITEM
 msgctxt "STRINGS.RECIPE_DESC.EYETURRET_ITEM"
-msgid "Keep the nasties away. By killing them."
+msgid "Keep nasties away. By killing them."
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.FAST_FARMPLOT
@@ -78860,7 +78860,7 @@ msgstr ""
 
 #. STRINGS.RECIPE_DESC.MUSHROOM_FARM
 msgctxt "STRINGS.RECIPE_DESC.MUSHROOM_FARM"
-msgid "Grow mushrooms."
+msgid "Grows mushrooms."
 msgstr ""
 
 #. STRINGS.RECIPE_DESC.MUSHROOM_LIGHT

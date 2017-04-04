@@ -100,6 +100,7 @@ local _dangertask = nil
 local _triggeredlevel = nil
 local _isday = nil
 local _isbusydirty = nil
+local _isbusyruins = nil
 local _extendtime = nil
 local _soundemitter = nil
 local _activatedplayer = nil --cached for activation/deactivation only, NOT for logic use
@@ -140,11 +141,16 @@ local function StartBusy(player)
         if _isbusydirty then
             _isbusydirty = false
             _soundemitter:KillSound("busy")
-            _soundemitter:PlaySound(
-                (IsInRuins(player) and "dontstarve/music/music_work_ruins") or
-                (_iscave and "dontstarve/music/music_work_cave") or
-                (SEASON_BUSY_MUSIC[inst.state.season]),
-                "busy")
+            if _iscave then
+                _isbusyruins = IsInRuins(player)
+                _soundemitter:PlaySound(_isbusyruins and "dontstarve/music/music_work_ruins" or "dontstarve/music/music_work_cave", "busy")
+            else
+                _soundemitter:PlaySound(SEASON_BUSY_MUSIC[inst.state.season], "busy")
+            end
+        elseif _iscave and _isbusyruins ~= IsInRuins(player) then
+            _isbusyruins = not _isbusyruins
+            _soundemitter:KillSound("busy")
+            _soundemitter:PlaySound(_isbusyruins and "dontstarve/music/music_work_ruins" or "dontstarve/music/music_work_cave", "busy")
         end
         _soundemitter:SetParameter("busy", "intensity", 1)
         _busytask = inst:DoTaskInTime(15, StopBusy, true)

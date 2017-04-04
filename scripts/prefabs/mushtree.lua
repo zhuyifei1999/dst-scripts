@@ -37,7 +37,15 @@ local function onspawnfn(inst, spawn)
     inst.AnimState:PlayAnimation("cough")
     inst.AnimState:PushAnimation("idle_loop", true)
     inst.SoundEmitter:PlaySound("dontstarve/cave/mushtree_tall_spore_fart")
-    spawn.components.knownlocations:RememberLocation("home", inst:GetPosition())
+    local pos = inst:GetPosition()
+    spawn.components.knownlocations:RememberLocation("home", pos)
+    local radius = spawn.Physics ~= nil and spawn.Physics:GetRadius() + inst.Physics:GetRadius() or inst.Physics:GetRadius()
+    local offset = FindWalkableOffset(pos, math.random() * 2 * PI, radius, 8)
+    if offset ~= nil then
+        spawn.Physics:Teleport(pos.x + offset.x, 0, pos.z + offset.z)
+    else
+        spawn.Transform:SetPosition(pos.x, 0, pos.z)
+    end
 end
 
 local REMOVABLE =

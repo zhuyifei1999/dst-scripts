@@ -172,8 +172,6 @@ function Rider:ActualDismount()
 
     self.inst.components.pinnable.canbepinned = true
 
-    self.inst:RemoveComponent("periodicspawner")
-
     self.mount.components.rideable:SetRider(nil)
 
     self.inst:RemoveChild(self.mount)

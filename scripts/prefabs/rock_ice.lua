@@ -100,24 +100,26 @@ local function SerializeStage(inst, stageindex, source)
     OnStageDirty(inst)
 end
 
-local function SetStage(inst, stage, source)
+local function SetStage(inst, stage, source, snap_to_stage)
     if stage == inst.stage then
         return
     end
-
-    local target_workleft = TUNING.ICE_MINE
 
     local currentstage = STAGE_INDICES[inst.stage]
     local targetstage = STAGE_INDICES[stage]
     if (source == "melt" or source == "work") then
         if currentstage and currentstage > targetstage then
-            targetstage = currentstage - 1
+			if not snap_to_stage then
+				targetstage = currentstage - 1
+			end
         else
             return
         end
     elseif source == "grow" then
         if currentstage and currentstage < targetstage then
-            targetstage = currentstage + 1
+			if not snap_to_stage then
+	            targetstage = currentstage + 1
+	        end
         else
             return
         end
@@ -167,10 +169,12 @@ local function SetStage(inst, stage, source)
 
     if inst.components.workable ~= nil then
         if source == "work" then
-            local pt = inst:GetPosition()
-            for i = 1, math.random(STAGES[currentstage].icecount) do
-                inst.components.lootdropper:SpawnLootPrefab("ice", pt)
-            end
+			for i = currentstage, targetstage+1, -1 do
+				local pt = inst:GetPosition()
+				for i = 1, math.random(STAGES[i].icecount) do
+					inst.components.lootdropper:SpawnLootPrefab("ice", pt)
+				end
+			end
         end
         if STAGES[targetstage].work < 0 then
             inst.components.workable:SetWorkable(false)
@@ -182,7 +186,8 @@ end
 
 local function OnWorked(inst, worker, workleft)
     if workleft <= 0 then
-        SetStage(inst, "empty", "work")
+		local snap_to_stage = not worker:HasTag("character")
+        SetStage(inst, "empty", "work", snap_to_stage)
         if inst.stage == "empty" then
             inst.SoundEmitter:PlaySound("dontstarve_DLC001/common/iceboulder_smash")
         end

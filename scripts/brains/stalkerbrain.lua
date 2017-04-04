@@ -170,6 +170,14 @@ local function KeepIdleStargate(inst)
     return true
 end
 
+local function GetShadowLure(inst)
+    return GetClosestInstWithTag("shadowlure", inst, SAFE_LURE_DIST)
+end
+
+local function KeepShadowLure(inst, target)
+    return inst:IsNear(target, SAFE_LURE_DIST)
+end
+
 function StalkerBrain:OnStart()
     local root
 
@@ -219,7 +227,10 @@ function StalkerBrain:OnStart()
                     ActionNode(function() self.inst:SetEngaged(false) end),
                 },
                 PriorityNode({
-                    FindClosest(self.inst, SEE_LURE_DIST, SAFE_LURE_DIST, { "shadowlure" }),
+                    SequenceNode{
+                        FindClosest(self.inst, SEE_LURE_DIST, SAFE_LURE_DIST, { "shadowlure" }),
+                        FaceEntity(self.inst, GetShadowLure, KeepShadowLure),
+                    },
                     Wander(self.inst),
                 }, .5),
             },
@@ -254,7 +265,10 @@ function StalkerBrain:OnStart()
                 end,
                 "FallApart",
                 ActionNode(function() self.inst:PushEvent("fallapart") end)),
-            FindClosest(self.inst, SEE_LURE_DIST, SAFE_LURE_DIST, { "shadowlure" }),
+            SequenceNode{
+                FindClosest(self.inst, SEE_LURE_DIST, SAFE_LURE_DIST, { "shadowlure" }),
+                FaceEntity(self.inst, GetShadowLure, KeepShadowLure),
+            },
             Wander(self.inst),
         }, .5)
     end

@@ -5,11 +5,13 @@ local Pollinator = Class(function(self, inst)
     self.maxdensity = 4
     self.collectcount = 5
     self.target = nil
-    self.inst:AddTag("pollinator")
+
+    --V2C: Recommended to explicitly add tag to prefab pristine state
+    inst:AddTag("pollinator")
 end)
 
-function Pollinator:GetDebugString()
-    return string.format("flowers: %d, cancreate: %s", #self.flowers, tostring(self:HasCollectedEnough() ) )
+function Pollinator:OnRemoveFromEntity()
+    self.inst:RemoveTag("pollinator")
 end
 
 function Pollinator:Pollinate(flower)
@@ -20,7 +22,7 @@ function Pollinator:Pollinate(flower)
 end
 
 function Pollinator:CanPollinate(flower)
-	return flower and flower:HasTag("flower") and not table.contains(self.flowers, flower)
+    return flower ~= nil and flower:HasTag("flower") and not table.contains(self.flowers, flower)
 end
 
 function Pollinator:HasCollectedEnough()
@@ -29,8 +31,9 @@ end
 
 function Pollinator:CreateFlower()
     if self:HasCollectedEnough() then
-		local parentFlower = GetRandomItem(self.flowers)
-		local flower = SpawnPrefab(parentFlower.prefab)
+        local parentFlower = GetRandomItem(self.flowers)
+        local flower = SpawnPrefab(parentFlower.prefab)
+        flower.planted = true
         flower.Transform:SetPosition(self.inst.Transform:GetWorldPosition())
         self.flowers = {}
     end
@@ -40,6 +43,10 @@ function Pollinator:CheckFlowerDensity()
     local x,y,z = self.inst.Transform:GetWorldPosition()
     local nearbyflowers = TheSim:FindEntities(x,y,z, self.distance, "flower")
     return #nearbyflowers < self.maxdensity
+end
+
+function Pollinator:GetDebugString()
+    return string.format("flowers: %d, cancreate: %s", #self.flowers, tostring(self:HasCollectedEnough()))
 end
 
 return Pollinator
