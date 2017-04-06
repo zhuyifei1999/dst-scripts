@@ -6,21 +6,45 @@ local assets =
 local prefabs =
 {
     "poop",
+    "splash_ocean",
 }
+
+local function SplashOceanPoop(poop)
+    if not poop.components.inventoryitem:IsHeld() then
+        local x, y, z = poop.Transform:GetWorldPosition()
+        if not poop:IsOnValidGround() or TheWorld.Map:IsPointNearHole(Vector3(x, 0, z)) then
+            SpawnPrefab("splash_ocean").Transform:SetPosition(x, y, z)
+            poop:Remove()
+        end
+    end
+end
+
+local function SpawnPoop(inst, owner, target)
+    local poop = SpawnPrefab("poop")
+    poop.SoundEmitter:PlaySound("dontstarve/creatures/monkey/poopsplat")
+    if target ~= nil and target:IsValid() then
+        LaunchAt(poop, target, owner ~= nil and owner:IsValid() and owner or inst)
+    else
+        poop.Transform:SetPosition(inst.Transform:GetWorldPosition())
+        if poop:IsAsleep() then
+            SplashOceanPoop(poop)
+        else
+            poop:DoTaskInTime(8 * FRAMES, SplashOceanPoop)
+        end
+    end
+end
 
 local function OnHit(inst, owner, target)
     if target.components.sanity ~= nil then
         target.components.sanity:DoDelta(-TUNING.SANITY_SMALL)
     end
-    SpawnPrefab("poop").Transform:SetPosition(inst.Transform:GetWorldPosition())
-    inst.SoundEmitter:PlaySound("dontstarve/creatures/monkey/poopsplat")
-    target:PushEvent("attacked", {attacker = owner, damage = 0})
+    SpawnPoop(inst, owner, target)
+    target:PushEvent("attacked", { attacker = owner, damage = 0 })
     inst:Remove()
 end
 
 local function OnMiss(inst, owner, target)
-    SpawnPrefab("poop").Transform:SetPosition(inst.Transform:GetWorldPosition())
-    inst.SoundEmitter:PlaySound("dontstarve/creatures/monkey/poopsplat")
+    SpawnPoop(inst, owner, nil)
     inst:Remove()
 end
 

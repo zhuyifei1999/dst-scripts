@@ -7,16 +7,16 @@ MOD_API_VERSION = 10
 
 -----------------------------------------------------------------------------------------------
 -- Last Release ID added is the current
+-- This is to allow modders to cleanly support features/prefabs that are currently in beta, without crashing when running on the live branch. 
+-- When the release id goes to the live branch, no changes will need to be made to the mod.
+-- Test 'if CurrentRelease.GreaterOrEqualTo("R##_ANR_XXX") then' to see if a feature supported on the branch the player currently running.
 AddModReleaseID( "R01_ANR_PART1" )
 AddModReleaseID( "R02_ANR_WARTSANDALL" )
 AddModReleaseID( "R03_ANR_ARTSANDCRAFTS" )
 AddModReleaseID( "R04_ANR_CUTEFUZZYANIMALS" )
 AddModReleaseID( "R05_ANR_HERDMENTALITY" )
-
-if BRANCH == "staging" then
-    AddModReleaseID( "R06_ANR_AGAINSTTHEGRAIN" )
-    AddModReleaseID( "R07_ANR_HEARTOFTHERUINS" )
-end
+AddModReleaseID( "R06_ANR_AGAINSTTHEGRAIN" )
+AddModReleaseID( "R07_ANR_HEARTOFTHERUINS" )
 
 -----------------------------------------------------------------------------------------------
 

@@ -23,7 +23,6 @@ PREFABFILES = {
   "arrowsign",
   "ash",
   "atrium_fence",
-  "atrium_floor",
   "atrium_gate",
   "atrium_gate_activatedfx",
   "atrium_gate_pulsesfx",

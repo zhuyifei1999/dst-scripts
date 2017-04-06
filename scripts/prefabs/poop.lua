@@ -11,17 +11,14 @@ local prefabs =
 
 local function OnBurn(inst)
     DefaultBurnFn(inst)
-    if inst.flies then
+    if inst.flies ~= nil then
         inst.flies:Remove()
         inst.flies = nil
     end
 end
 
 local function FuelTaken(inst, taker)
-    local cloud = SpawnPrefab("poopcloud")
-    if cloud then
-        cloud.Transform:SetPosition(taker.Transform:GetWorldPosition())
-    end
+    SpawnPrefab("poopcloud").Transform:SetPosition(taker.Transform:GetWorldPosition())
 end
 
 local function OnDropped(inst)
@@ -50,13 +47,14 @@ local function fn()
     inst.AnimState:SetBank("poop")
     inst.AnimState:SetBuild("poop")
     inst.AnimState:PlayAnimation("dump")
-    inst.AnimState:PushAnimation("idle")
 
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
+
+    inst.AnimState:PushAnimation("idle", false)
 
     inst:AddComponent("inspectable")
 

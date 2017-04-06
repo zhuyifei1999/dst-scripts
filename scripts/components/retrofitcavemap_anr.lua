@@ -306,7 +306,8 @@ local function HeartOfTheRuinsRuinsRetrofitting(inst)
 		end
 	end
 	if minotaur_respawner == false then
-		print ("Retrofitting for A New Reign: Heart of the Ruins - Could not find anywhere to add the minotaur respawern the world.")
+		print ("Retrofitting for A New Reign: Heart of the Ruins - CRITICAL FAILURE - Could not find anywhere to add the Ancient Guardian respawern the world!")
+		print ("Retrofitting for A New Reign: Heart of the Ruins - CRITICAL FAILURE - Could not find anywhere to add the Ancient Key!")
 	else
 		if minotaur_is_dead then
 			for _, v in pairs(Ents) do

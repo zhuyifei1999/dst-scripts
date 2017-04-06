@@ -1,16 +1,16 @@
 local assets =
 {
-	Asset("ANIM", "anim/atrium_gate.zip"),
+    Asset("ANIM", "anim/atrium_gate.zip"),
+    Asset("ANIM", "anim/atrium_floor.zip"),
     Asset("MINIMAP_IMAGE", "atrium_gate_active"),
 }
 
-local prefabs = 
+local prefabs =
 {
-	"atrium_key",
-	"atrium_floor",
-	"atrium_gate_activatedfx",
-	"atrium_gate_pulsesfx",
-	"atrium_gate_explodesfx",
+    "atrium_key",
+    "atrium_gate_activatedfx",
+    "atrium_gate_pulsesfx",
+    "atrium_gate_explodesfx",
 }
 
 local EXPLOSION_ANIM_LEN = 86 * FRAMES
@@ -144,192 +144,209 @@ local function OnKeyGiven(inst, giver)
     inst.AnimState:PlayAnimation("idle_active")
     inst.MiniMapEntity:SetIcon("atrium_gate_active.png")
 
-	TheWorld:PushEvent("atriumpowered", true)
-	TheWorld:PushEvent("ms_locknightmarephase", "wild")
+    TheWorld:PushEvent("atriumpowered", true)
+    TheWorld:PushEvent("ms_locknightmarephase", "wild")
     TheWorld:PushEvent("pausequakes", { source = inst })
     TheWorld:PushEvent("pausehounded", { source = inst })
 
-	if giver ~= nil then
-		inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/key_in")
+    if giver ~= nil then
+        inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/key_in")
 
---		if giver.components.talker ~= nil then
---			giver.components.talker:Say(GetString(giver, "ANNOUNCE_GATE_ON"))
---		end
-	end
+--      if giver.components.talker ~= nil then
+--          giver.components.talker:Say(GetString(giver, "ANNOUNCE_GATE_ON"))
+--      end
+    end
 end
 
 local function OnKeyTaken(inst)
     --Disable picking, enable trading.
     inst.components.trader:Enable()
     inst.components.pickable.caninteractwith = false
-	inst:RemoveTag("intense")
+    inst:RemoveTag("intense")
 
-	inst.SoundEmitter:KillSound("loop")
+    inst.SoundEmitter:KillSound("loop")
 
     inst.AnimState:PlayAnimation("idle")
     inst.MiniMapEntity:SetIcon("atrium_gate.png")
     HideFx(inst)
 
-	TheWorld:PushEvent("atriumpowered", false)
-	TheWorld:PushEvent("ms_locknightmarephase", nil)
+    TheWorld:PushEvent("atriumpowered", false)
+    TheWorld:PushEvent("ms_locknightmarephase", nil)
     TheWorld:PushEvent("unpausequakes", { source = inst })
     TheWorld:PushEvent("unpausehounded", { source = inst })
 end
 
-local function OnDestabilizingPulse(inst)
-	inst.talkertick = inst.talkertick and (inst.talkertick + 1) or 0
-	
-	if not IsDestabilizing(inst) then
-		inst.destabilizingnotificationtask:Cancel()
-		inst.destabilizingnotificationtask = nil
-		return
-	end
+local function DoPlayerWarning(inst, player)
+    if player:IsValid() then
+        player.components.talker:Say(GetString(player, "ANNOUNCE_ATRIUM_DESTABILIZING"))
+    end
+end
 
-	for i,player in ipairs(AllPlayers) do
-		if player:IsValid() and player.components.areaaware:CurrentlyInTag("Nightmare") then
-			if not IsObjectInAtriumArena(inst, player) then
-				player:ShakeCamera(CAMERASHAKE.SIDE, 1, 0.02, .25)
-				if (inst.talkertick % 2) == (i%2) then
-					inst:DoTaskInTime(1, function() player.components.talker:Say(GetString(player, "ANNOUNCE_ATRIUM_DESTABILIZING")) end)
-				end
-			else
-				player:ShakeCamera(CAMERASHAKE.SIDE, 2, 0.06, .25)
-				inst:DoTaskInTime(1, function() player.components.talker:Say(GetString(player, "ANNOUNCE_ATRIUM_DESTABILIZING")) end)
-			end
-		end
-	end
-	
-	SpawnPrefab("atrium_gate_pulsesfx").Transform:SetPosition(inst.Transform:GetWorldPosition())
-	
-	inst.AnimState:PlayAnimation("overload_pulse")
-	inst.AnimState:PushAnimation("overload_loop")
+local function OnDestabilizingPulse(inst)
+    inst.talkertick = inst.talkertick ~= nil and inst.talkertick + 1 or 0
+
+    if not IsDestabilizing(inst) then
+        inst.destabilizingnotificationtask:Cancel()
+        inst.destabilizingnotificationtask = nil
+        return
+    end
+
+    for i, player in ipairs(AllPlayers) do
+        if player.components.areaaware:CurrentlyInTag("Nightmare") then
+            if not IsObjectInAtriumArena(inst, player) then
+                player:ShakeCamera(CAMERASHAKE.SIDE, 1, .02, .25)
+                if (inst.talkertick % 2) == (i % 2) then
+                    inst:DoTaskInTime(1, DoPlayerWarning, player)
+                end
+            else
+                player:ShakeCamera(CAMERASHAKE.SIDE, 2, .06, .25)
+                inst:DoTaskInTime(1, DoPlayerWarning, player)
+            end
+        end
+    end
+
+    SpawnPrefab("atrium_gate_pulsesfx").Transform:SetPosition(inst.Transform:GetWorldPosition())
+
+    inst.AnimState:PlayAnimation("overload_pulse")
+    inst.AnimState:PushAnimation("overload_loop")
 end
 
 local function StartDestabilizing(inst, onload)
     inst.components.trader:Disable()
     inst.components.pickable.caninteractwith = false
-	inst:RemoveTag("intense")
+    inst:RemoveTag("intense")
     SetCameraFocus(inst, 2)
     EnableShadowSuppression(inst, true)
 
-	if not inst.components.timer:TimerExists("destabilizing") then
-		inst.components.timer:StartTimer("destabilizing", TUNING.ATRIUM_GATE_DESTABILIZE_TIME)
-	end
+    if not inst.components.timer:TimerExists("destabilizing") then
+        inst.components.timer:StartTimer("destabilizing", TUNING.ATRIUM_GATE_DESTABILIZE_TIME)
+    end
 
-	if not onload then
-		TheWorld:PushEvent("atriumpowered", false)
-		inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/shadow_pulse")
-	end
+    if not onload then
+        TheWorld:PushEvent("atriumpowered", false)
+        inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/shadow_pulse")
+    end
 
-	ShowFx(inst, "overload")
-	inst.Light:Enable(true)
-	inst.SoundEmitter:KillSound("loop")
+    ShowFx(inst, "overload")
+    if inst._disablelighttask ~= nil then
+        inst._disablelighttask:Cancel()
+        inst._disablelighttask = nil
+    end
+    inst.Light:Enable(true)
+    inst.SoundEmitter:KillSound("loop")
     inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/destabilize_LP", "loop")
-	inst.AnimState:PlayAnimation("overload_pre")
-	inst.AnimState:PushAnimation("overload_loop", true)
+    inst.AnimState:PlayAnimation("overload_pre")
+    inst.AnimState:PushAnimation("overload_loop", true)
 
-	inst.destabilizingnotificationtask = inst:DoPeriodicTask(TUNING.ATRIUM_GATE_DESTABILIZE_WARNING_TIME, OnDestabilizingPulse, TUNING.ATRIUM_GATE_DESTABILIZE_WARNING_INITIAL_TIME)
+    inst.destabilizingnotificationtask = inst:DoPeriodicTask(TUNING.ATRIUM_GATE_DESTABILIZE_WARNING_TIME, OnDestabilizingPulse, TUNING.ATRIUM_GATE_DESTABILIZE_WARNING_INITIAL_TIME)
 end
 
 local function OnQueueDestabilize(inst, onload)
-	if onload then
-		ShowFx(inst, "idle")
-		inst.AnimState:PlayAnimation("idle_fight", true)
-		inst.SoundEmitter:KillSound("loop")
-		inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/active_LP", "loop")
-	end
+    if onload then
+        ShowFx(inst, "idle")
+        inst.AnimState:PlayAnimation("idle_fight", true)
+        inst.SoundEmitter:KillSound("loop")
+        inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/active_LP", "loop")
+    end
 
     inst.components.trader:Disable()
     inst.components.pickable.caninteractwith = false
-	inst:RemoveTag("intense")
+    inst:RemoveTag("intense")
     SetCameraFocus(inst, 1)
     EnableShadowSuppression(inst, true)
 
-	if inst.components.timer:TimerExists("destabilizedelay") then
-		inst.components.timer:StopTimer("destabilizedelay")
-	end
+    if inst.components.timer:TimerExists("destabilizedelay") then
+        inst.components.timer:StopTimer("destabilizedelay")
+    end
 
-	inst.components.timer:StartTimer("destabilizedelay", TUNING.ATRIUM_GATE_DESTABILIZE_DELAY)
+    inst.components.timer:StartTimer("destabilizedelay", TUNING.ATRIUM_GATE_DESTABILIZE_DELAY)
 end
 
 local function Destabilize(inst, failed)
-	if inst.components.pickable.caninteractwith then
-		if not failed then
-			OnQueueDestabilize(inst)
-		else
-			local key = SpawnPrefab("atrium_key")
-			LaunchAt(key, inst, nil, 1.5, 1, 1)
-			
-			OnKeyTaken(inst)
-		end
-	end
+    if inst.components.pickable.caninteractwith then
+        if not failed then
+            OnQueueDestabilize(inst)
+        else
+            local key = SpawnPrefab("atrium_key")
+            LaunchAt(key, inst, nil, 1.5, 1, 1)
+
+            OnKeyTaken(inst)
+        end
+    end
+end
+
+local function DisableLight(inst)
+    inst._disablelighttask = nil
+    inst.Light:Enable(false)
 end
 
 local function OnDestabilizeExplode(inst)
     SetCameraFocus(inst, 0)
     EnableShadowSuppression(inst, false)
-	inst.AnimState:PlayAnimation("overload_pst", false)
-	SpawnPrefab("atrium_gate_explodesfx").Transform:SetPosition(inst.Transform:GetWorldPosition())
-	HideFx(inst)
-	inst:DoTaskInTime(1.75, function() inst.Light:Enable(false) end)
-	
-	inst:StartCooldown(false)
+    inst.AnimState:PlayAnimation("overload_pst", false)
+    SpawnPrefab("atrium_gate_explodesfx").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    HideFx(inst)
+    if inst._disablelighttask ~= nil then
+        inst._disablelighttask:Cancel()
+    end
+    inst._disablelighttask = inst:DoTaskInTime(1.75, DisableLight)
 
-	TheWorld:PushEvent("resetruins")
+    inst:StartCooldown(false)
 
-	for _,player in ipairs(AllPlayers) do
-		if player:IsValid() then
-			player.components.talker:Say(GetString(player, "ANNOUNCE_RUINS_RESET"))
-			player:ShakeCamera(CAMERASHAKE.SIDE, 2, 0.06, .25)
-		end
-	end
+    TheWorld:PushEvent("resetruins")
 
+    for _, player in ipairs(AllPlayers) do
+        player.components.talker:Say(GetString(player, "ANNOUNCE_RUINS_RESET"))
+        player:ShakeCamera(CAMERASHAKE.SIDE, 2, .06, .25)
+    end
+end
+
+local function OnCooldown(inst)
+    if inst.components.timer:TimerExists("cooldown") then 
+        inst.AnimState:PlayAnimation("cooldown", true)
+        inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/cooldown_LP", "loop")
+    end
 end
 
 local function StartCooldown(inst, immediate)
-	if inst.components.timer:TimerExists("destabilizing") then
-		inst.components.timer:StopTimer("destabilizing")
-		OnDestabilizeExplode(inst)
-	end
+    if inst.components.timer:TimerExists("destabilizing") then
+        inst.components.timer:StopTimer("destabilizing")
+        OnDestabilizeExplode(inst)
+    end
 
     SetCameraFocus(inst, 0)
     EnableShadowSuppression(inst, false)
-	inst:RemoveTag("intense")
+    inst:RemoveTag("intense")
     inst.components.pickable.caninteractwith = false
-	inst.components.trader:Disable()
-	inst.SoundEmitter:KillSound("loop")
-	TheWorld:PushEvent("ms_locknightmarephase", nil)
+    inst.components.trader:Disable()
+    inst.SoundEmitter:KillSound("loop")
+    TheWorld:PushEvent("ms_locknightmarephase", nil)
     TheWorld:PushEvent("unpausequakes", { source = inst })
     TheWorld:PushEvent("unpausehounded", { source = inst })
 
-	if immediate then
-		inst.AnimState:PlayAnimation("cooldown", true)
-		inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/cooldown_LP", "loop")
-	else
-		inst:DoTaskInTime(EXPLOSION_ANIM_LEN, function() 
-			if inst.components.timer:TimerExists("cooldown") then 
-				inst.AnimState:PlayAnimation("cooldown", true)
-				inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/cooldown_LP", "loop")
-			end
-		end)
-	end
+    if immediate then
+        inst.AnimState:PlayAnimation("cooldown", true)
+        inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/cooldown_LP", "loop")
+    else
+        inst:DoTaskInTime(EXPLOSION_ANIM_LEN, OnCooldown)
+    end
 
-	if not inst.components.timer:TimerExists("cooldown") then
-		inst.components.timer:StartTimer("cooldown", TUNING.ATRIUM_GATE_COOLDOWN)
-	end
+    if not inst.components.timer:TimerExists("cooldown") then
+        inst.components.timer:StartTimer("cooldown", TUNING.ATRIUM_GATE_COOLDOWN)
+    end
 end
 
 local function OnTrackStalker(inst, stalker)
     if stalker.components.health ~= nil and not stalker.components.health:IsDead() then
         inst:ListenForEvent("onremove", inst._onremovestalker, stalker)
         inst:ListenForEvent("death", inst._onstalkerdeath, stalker)
-		inst:AddTag("intense")
+        inst:AddTag("intense")
         SetCameraFocus(inst, 0)
         EnableShadowSuppression(inst, false)
-		ShowFx(inst, "idle")
-		inst.AnimState:PlayAnimation("idle_fight", true)
-		inst.SoundEmitter:KillSound("loop")
-		inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/active_LP", "loop")
+        ShowFx(inst, "idle")
+        inst.AnimState:PlayAnimation("idle_fight", true)
+        inst.SoundEmitter:KillSound("loop")
+        inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/active_LP", "loop")
     else
         --cleanup bad state, shouldn't reach here normally
         --but possible with corrupt or tampering save data
@@ -348,35 +365,35 @@ local function TrackStalker(inst, stalker)
         inst.components.entitytracker:TrackEntity("stalker", stalker)
 
         if not inst.components.pickable.caninteractwith then
-	        OnKeyGiven(inst)
-	    end
+            OnKeyGiven(inst)
+        end
 
         OnTrackStalker(inst, stalker)
     end
 end
 
 local function ontimer(inst, data)
-	if data.name == "destabilizedelay" then
-		StartDestabilizing(inst)
-	elseif data.name == "destabilizing" then
-		OnDestabilizeExplode(inst)
-	elseif data.name == "cooldown" then
-		inst.AnimState:PlayAnimation("idle")
-		inst.components.trader:Enable()
-	    inst.SoundEmitter:KillSound("loop")
-	end
+    if data.name == "destabilizedelay" then
+        StartDestabilizing(inst)
+    elseif data.name == "destabilizing" then
+        OnDestabilizeExplode(inst)
+    elseif data.name == "cooldown" then
+        inst.AnimState:PlayAnimation("idle")
+        inst.components.trader:Enable()
+        inst.SoundEmitter:KillSound("loop")
+    end
 end
 
 local function getstatus(inst)
-    return (IsDestabilizing(inst) and "DESTABILIZING") or
-			(inst.components.timer:TimerExists("cooldown") and "COOLDOWN") or
-			((inst:HasTag("intense") or inst.components.timer:TimerExists("destabilizedelay")) and "CHARGING") or
-			(inst.components.pickable.caninteractwith and "ON") or
-			"OFF"
+    return (IsDestabilizing(inst) and "DESTABILIZING")
+        or (inst.components.timer:TimerExists("cooldown") and "COOLDOWN")
+        or ((inst:HasTag("intense") or inst.components.timer:TimerExists("destabilizedelay")) and "CHARGING")
+        or (inst.components.pickable.caninteractwith and "ON")
+        or "OFF"
 end
 
 local function IsWaitingForStalker(inst)
-	return getstatus(inst) == "ON"
+    return getstatus(inst) == "ON"
 end
 
 local function OnEntitySleep(inst)
@@ -394,10 +411,10 @@ local function OnEntityWake(inst)
 end
 
 local function OnLoadPostPass(inst, ents, data)
-	if IsDestabilizing(inst) then
-		StartDestabilizing(inst, true)
-	elseif inst.components.timer:TimerExists("cooldown") then
-		StartCooldown(inst, true)
+    if IsDestabilizing(inst) then
+        StartDestabilizing(inst, true)
+    elseif inst.components.timer:TimerExists("cooldown") then
+        StartCooldown(inst, true)
     elseif inst.components.pickable.caninteractwith or inst.components.timer:TimerExists("destabilizedelay") then
         OnKeyGiven(inst)
 
@@ -405,15 +422,15 @@ local function OnLoadPostPass(inst, ents, data)
         if stalker ~= nil then
             OnTrackStalker(inst, stalker)
         end
-        
+
         if inst.components.timer:TimerExists("destabilizedelay") then
-			OnQueueDestabilize(inst, true)
-		end    
+            OnQueueDestabilize(inst, true)
+        end
     end
 end
 
 local function InitializePathFinding(inst)
-	local x, _, z = inst.Transform:GetWorldPosition()
+    local x, _, z = inst.Transform:GetWorldPosition()
     TheWorld.Pathfinder:AddWall(x - 0.5, 0, z - 0.5)
     TheWorld.Pathfinder:AddWall(x - 0.5, 0, z + 0.5)
     TheWorld.Pathfinder:AddWall(x + 0.5, 0, z - 0.5)
@@ -421,7 +438,7 @@ local function InitializePathFinding(inst)
 end
 
 local function OnRemove(inst)
-	local x, _, z = inst.Transform:GetWorldPosition()
+    local x, _, z = inst.Transform:GetWorldPosition()
     TheWorld.Pathfinder:RemoveWall(x - 0.5, 0, z - 0.5)
     TheWorld.Pathfinder:RemoveWall(x - 0.5, 0, z + 0.5)
     TheWorld.Pathfinder:RemoveWall(x + 0.5, 0, z - 0.5)
@@ -465,11 +482,34 @@ end
 
 --------------------------------------------------------------------------
 
-local function fn()
-	local inst = CreateEntity()
+local function CreateFloor()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
+    inst:AddTag("DECOR")
+    inst:AddTag("NOCLICK")
+    --[[Non-networked entity]]
+    inst.persists = false
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+
+    inst.AnimState:SetBank("atrium_floor")
+    inst.AnimState:SetBuild("atrium_floor")
+    inst.AnimState:PlayAnimation("idle_active")
+    inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+    inst.AnimState:SetLayer(LAYER_BACKGROUND)
+    inst.AnimState:SetSortOrder(2)
+
+    return inst
+end
+
+--------------------------------------------------------------------------
+
+local function fn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddLight()
@@ -489,15 +529,15 @@ local function fn()
 
     inst.MiniMapEntity:SetIcon("atrium_gate.png")
 
-	inst:AddTag("gemsocket") -- for "Socket" action string
-	inst:AddTag("stargate")
+    inst:AddTag("gemsocket") -- for "Socket" action string
+    inst:AddTag("stargate")
 
     inst._camerafocus = net_tinybyte(inst.GUID, "atrium_gate._camerafocus", "camerafocusdirty")
     inst._camerafocustask = nil
 
     --Dedicated server does not need to spawn the flooring
     if not TheNet:IsDedicated() then
-    	SpawnPrefab("atrium_floor").entity:SetParent(inst.entity)
+        CreateFloor().entity:SetParent(inst.entity)
     end
 
     --Dedicated servers need this too
@@ -527,11 +567,11 @@ local function fn()
     inst.components.trader:SetAbleToAcceptTest(ItemTradeTest)
     inst.components.trader.deleteitemonaccept = true
     inst.components.trader.onaccept = OnKeyGiven
-    
+
     inst:AddComponent("timer")
     inst:ListenForEvent("timerdone", ontimer)
 
-	inst:AddComponent("entitytracker")
+    inst:AddComponent("entitytracker")
 
     MakeHauntableWork(inst)
 
@@ -542,11 +582,11 @@ local function fn()
 
     inst.TrackStalker = TrackStalker
     inst.IsWaitingForStalker = IsWaitingForStalker
-    
+
     inst.Destabilize = Destabilize
     inst.StartCooldown = StartCooldown
 
-	inst.IsObjectInAtriumArena = IsObjectInAtriumArena
+    inst.IsObjectInAtriumArena = IsObjectInAtriumArena
 
     inst._onremovestalker = function(stalker)
         local current = inst.components.entitytracker:GetEntity("stalker")
@@ -566,7 +606,7 @@ local function fn()
         end
     end
 
-	inst.StartCooldown = StartCooldown
+    inst.StartCooldown = StartCooldown
 
     return inst
 end

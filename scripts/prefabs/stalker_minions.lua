@@ -152,6 +152,7 @@ end
 
 local function MakeMinion(name, data, prefabs)
     local assets = data ~= nil and {
+        Asset("ANIM", "anim/stalker_shadow_build.zip"),
         Asset("ANIM", "anim/"..data.build..".zip"),
     } or nil
 
@@ -178,6 +179,9 @@ local function MakeMinion(name, data, prefabs)
 
         inst.AnimState:SetBank(params.bank)
         inst.AnimState:SetBuild(params.build)
+        inst.AnimState:OverrideSymbol("fx_flames", "stalker_shadow_build", "fx_flames")
+        inst.AnimState:OverrideSymbol("shield_minion", "stalker_shadow_build", "shield_minion")
+        inst.AnimState:OverrideSymbol("fx_dark_minion", "stalker_shadow_build", "fx_dark_minion")
         inst.AnimState:PlayAnimation("idle", true)
 
         inst:AddTag("monster")

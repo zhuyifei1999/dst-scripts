@@ -85,25 +85,22 @@ local function MakeShield(name, num, prefabs)
 
         inst:AddTag("FX")
 
+        local n = num or math.random(4)
+
         inst.AnimState:SetBank("stalker_shield")
         inst.AnimState:SetBuild("stalker_shield")
-        inst.AnimState:PlayAnimation("idle"..tostring(math.min(3, num or 3)))
+        inst.AnimState:PlayAnimation("idle"..tostring(math.min(3, n)))
         inst.AnimState:SetFinalOffset(2)
-        inst.AnimState:SetScale(num == 4 and -2.36 or 2.36, 2.36, 2.36)
+        inst.AnimState:SetScale(n == 4 and -2.36 or 2.36, 2.36, 2.36)
+
+        if num == nil then
+            inst:SetPrefabName(name..tostring(n))
+        end
 
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
             return inst
-        end
-
-        if num == nil then
-            local n = math.random(4)
-            if n < 3 then
-                inst.AnimState:PlayAnimation("idle"..tostring(n))
-            elseif n > 3 then
-                inst.AnimState:SetScale(-2.36, 2.36, 2.36)
-            end
         end
 
         inst.SoundEmitter:PlaySound("dontstarve/creatures/together/stalker/shield")
