@@ -1,6 +1,6 @@
 local assets =
 {
-    Asset("ANIM", "anim/pillar_atrium.zip"),
+	Asset("ANIM", "anim/pillar_atrium.zip")
 }
 
 local function OnPoweredFn(inst, ispowered)
@@ -8,10 +8,10 @@ local function OnPoweredFn(inst, ispowered)
 end
 
 local function fn()
-    local inst = CreateEntity()
+	local inst = CreateEntity()
 
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
     MakeObstaclePhysics(inst, 2.5)
@@ -29,7 +29,7 @@ local function fn()
         return inst
     end
 
-    inst:ListenForEvent("atriumpowered", function(_, ispowered) OnPoweredFn(inst, ispowered) end, TheWorld)
+	inst:ListenForEvent("atriumpowered", function(_, ispowered) OnPoweredFn(inst, ispowered) end, TheWorld)
 
     return inst
 end

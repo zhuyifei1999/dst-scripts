@@ -4,7 +4,12 @@ local assets =
     Asset("ANIM", "anim/atrium_fence.zip"),
 }
 
+local prefabs =
+{
+}
+
 local NUM_SHAPES = 5
+
 local NEAR_DIST_SQ = 7 * 7
 local FAR_DIST_SQ = 8 * 8
 
@@ -42,57 +47,59 @@ end
 
 local function setclosed(inst)
     if not inst.closed and inst.closingtask == nil then
-        if inst.openingtask ~= nil then
-            inst.openingtask:Cancel()
-            inst.openingtask = nil
-        end
+		if inst.openingtask ~= nil then
+			inst.openingtask:Cancel()
+			inst.openingtask = nil
+		end
 
-        inst.closingtask = inst:DoTaskInTime(math.random(), transitionclosed)
-    end
+		inst.closingtask = inst:DoTaskInTime(math.random(), transitionclosed) 
+	end
 end
 
 local function setopened(inst)
     if inst.closed and inst.openingtask == nil then
-        if inst.closingtask ~= nil then
-            inst.closingtask:Cancel()
-            inst.closingtask = nil
-        end
+		if inst.closingtask ~= nil then
+			inst.closingtask:Cancel()
+			inst.closingtask = nil
+		end
 
-        inst.openingtask = inst:DoTaskInTime(math.random(), transitionopened)
-    end
+		inst.openingtask = inst:DoTaskInTime(math.random(), transitionopened)
+	end
 end
 
 local function onupdate(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
     if inst.closed then
-        if not inst.locked and IsAnyPlayerInRangeSq(x, y, z, NEAR_DIST_SQ) then
-            setopened(inst)
-        end
-    elseif inst.locked or not IsAnyPlayerInRangeSq(x, y, z, FAR_DIST_SQ) then
-        setclosed(inst)
-    end
+		if not inst.locked and IsAnyPlayerInRangeSq(x, y, z, NEAR_DIST_SQ) then
+			setopened(inst)
+		end
+	else
+		if inst.locked or not IsAnyPlayerInRangeSq(x, y, z, FAR_DIST_SQ) then
+			setclosed(inst)
+		end
+	end
 end
 
 local function OnPoweredFn(inst, ispowered)
-    if inst.locked == nil or inst.locked ~= ispowered then
-        inst.locked = ispowered
+	if inst.locked == nil or inst.locked ~= ispowered then
+		inst.locked = ispowered
 
-        if inst.closed then
-            inst.AnimState:PushAnimation("idle"..tostring(inst.fenceid)..(inst.locked and "_active" or ""), false)
-        end
+		if inst.closed then
+			inst.AnimState:PushAnimation("idle"..tostring(inst.fenceid)..(inst.locked and "_active" or ""), false)
+		end
 
-        onupdate(inst)
-    end
+		onupdate(inst)
+	end
 end
 
 local function OnSave(inst, data)
-    data.fenceid = inst.fenceid
+	data.fenceid = inst.fenceid
 end
 
 local function OnLoad(inst, data)
-    if data ~= nil and data.fenceid ~= nil then
-        inst.fenceid = data.fenceid
-    end
+	if data ~= nil and data.fenceid ~= nil then
+		inst.fenceid = data.fenceid
+	end
 end
 
 local function fn()
@@ -117,19 +124,19 @@ local function fn()
         return inst
     end
 
-    inst.fenceid = math.random(NUM_SHAPES)
+	inst.fenceid = math.random(NUM_SHAPES)
     inst.closed = false
     inst.closingtask = nil
     inst.openingtask = nil
 
-    inst.OnSave = OnSave
-    inst.OnLoad = OnLoad
+	inst.OnSave = OnSave
+	inst.OnLoad = OnLoad
 
-    inst:ListenForEvent("atriumpowered", function(_, ispowered) OnPoweredFn(inst, ispowered) end, TheWorld)
+	inst:ListenForEvent("atriumpowered", function(_, ispowered) OnPoweredFn(inst, ispowered) end, TheWorld)
 
-    inst:DoPeriodicTask(.2, onupdate, math.random() * .2)
+    inst:DoPeriodicTask(.2, onupdate, math.random()*.2)
 
     return inst
 end
 
-return Prefab("atrium_fence", fn, assets)
+return Prefab("atrium_fence", fn, assets, prefabs)
