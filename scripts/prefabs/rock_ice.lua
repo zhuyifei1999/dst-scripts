@@ -24,6 +24,13 @@ end
 
 local STAGES = {
     {
+        name = "dryup",
+        animation = "dryup",
+        showrock = false,
+        work = -1,
+        isdriedup = true,
+    },
+    {
         name = "empty",
         animation = "melted",
         showrock = false,
@@ -58,16 +65,12 @@ for i, v in ipairs(STAGES) do
 end
 
 local function DeserializeStage(inst)
-    if inst._stage:value() > 3 then
-        return inst._stage:value() - 3, true
-    else
-        return inst._stage:value() + 1, false
-    end
+    return inst._stage:value() + 1 -- back to 1-based index
 end
 
 local function OnStageDirty(inst)
-    local stageindex, ismelt = DeserializeStage(inst)
-    local stagedata = STAGES[stageindex]
+    local ismelt = inst._ismelt:value()
+    local stagedata = STAGES[DeserializeStage(inst)]
     if stagedata ~= nil then
         if stagedata.showrock then
             inst.name = STRINGS.NAMES.ROCK_ICE
@@ -81,48 +84,72 @@ local function OnStageDirty(inst)
             if stagedata.name == "empty" then
                 inst._puddle.AnimState:PushAnimation("idle", true)
             end
-            if ismelt and not inst:IsAsleep() then
-                local fx = SpawnPrefab("ice_splash")
-                fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
-                fx.AnimState:PlayAnimation(stagedata.animation)
-            end
+                        
+			if ismelt and not inst:IsAsleep() and not stagedata.isdriedup then
+				local fx = SpawnPrefab("ice_splash")
+				fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+				fx.AnimState:PlayAnimation(stagedata.animation)
+			end
         end
     end
 end
 
 local function SerializeStage(inst, stageindex, source)
-    -- index is normally [1,4]
-    -- if "melt" then serialize to [4,7], otherwise [0,3]
-    inst._stage:set(source == "melt" and stageindex + 3 or stageindex - 1)
+    inst._ismelt:set(source == "melt")
+    inst._stage:set(stageindex - 1) -- convert to 0-based index
     OnStageDirty(inst)
 end
 
-local function SetStage(inst, stage, source)
+local function SetStage(inst, stage, source, snap_to_stage)
     if stage == inst.stage then
         return
     end
-
-    local target_workleft = TUNING.ICE_MINE
 
     local currentstage = STAGE_INDICES[inst.stage]
     local targetstage = STAGE_INDICES[stage]
     if (source == "melt" or source == "work") then
         if currentstage and currentstage > targetstage then
-            targetstage = currentstage - 1
+			if not snap_to_stage then
+				targetstage = currentstage - 1
+			end
         else
             return
         end
     elseif source == "grow" then
         if currentstage and currentstage < targetstage then
-            targetstage = currentstage + 1
+			if not snap_to_stage then
+	            targetstage = currentstage + 1
+	        end
         else
             return
         end
+        
+		if inst.stage == "dryup" then
+			local x, y, z = inst.Transform:GetWorldPosition()
+			if #(TheSim:FindEntities(x, y, z, 1.1, nil, {"locomotor", "FX"})) > 0 then
+				return
+			end
+		end        
     end
-    -- otherwise just set the stage to the target!
 
+    -- otherwise just set the stage to the target!
     inst.stage = STAGES[targetstage].name
     SerializeStage(inst, targetstage, source)
+
+	if STAGES[targetstage].isdriedup then
+		if inst.remove_on_dryup then
+			inst.presists = false
+			if inst:IsAsleep() then
+				inst:Remove()
+			else
+				inst:DoTaskInTime(2, inst.Remove)
+			end
+		end
+
+		inst:AddTag("CLASSIFIED")
+	elseif currentstage ~= nil and STAGES[currentstage].isdriedup then
+		inst:RemoveTag("CLASSIFIED")
+	end
 
     if STAGES[targetstage].showrock then
         inst.AnimState:PlayAnimation(STAGES[targetstage].animation)
@@ -142,10 +169,12 @@ local function SetStage(inst, stage, source)
 
     if inst.components.workable ~= nil then
         if source == "work" then
-            local pt = inst:GetPosition()
-            for i = 1, math.random(STAGES[currentstage].icecount) do
-                inst.components.lootdropper:SpawnLootPrefab("ice", pt)
-            end
+			for i = currentstage, targetstage+1, -1 do
+				local pt = inst:GetPosition()
+				for i = 1, math.random(STAGES[i].icecount) do
+					inst.components.lootdropper:SpawnLootPrefab("ice", pt)
+				end
+			end
         end
         if STAGES[targetstage].work < 0 then
             inst.components.workable:SetWorkable(false)
@@ -157,7 +186,8 @@ end
 
 local function OnWorked(inst, worker, workleft)
     if workleft <= 0 then
-        SetStage(inst, "empty", "work")
+		local snap_to_stage = not worker:HasTag("character")
+        SetStage(inst, "empty", "work", snap_to_stage)
         if inst.stage == "empty" then
             inst.SoundEmitter:PlaySound("dontstarve_DLC001/common/iceboulder_smash")
         end
@@ -193,7 +223,7 @@ local function TryStageChange(inst)
         )
     elseif TheWorld.state.issummer then
         --if pct > .1 then
-            SetStage(inst, "empty", "melt")
+            SetStage(inst, "dryup", "melt")
         --end
     elseif TheWorld.state.isautumn then
         SetStage(
@@ -219,7 +249,7 @@ end
 
 local function _OnFireMelt(inst)
     inst.firemelttask = nil
-        SetStage(inst, "empty", "melt")
+    SetStage(inst, "dryup", "melt")
 end
 
 local function StartFireMelt(inst)
@@ -237,9 +267,12 @@ end
 
 local function onsave(inst, data)
     data.stage = inst.stage
+    data.remove_on_dryup = inst.remove_on_dryup
 end
 
 local function onload(inst, data)
+    inst.remove_on_dryup = data ~= nil and data.remove_on_dryup or nil
+
     if data ~= nil and data.stage ~= nil then
         while inst.stage ~= data.stage do
             SetStage(inst, data.stage)
@@ -273,14 +306,17 @@ local function rock_ice_fn()
 
     inst.MiniMapEntity:SetIcon("iceboulder.png")
 
+    inst:AddTag("antlion_sinkhole_blocker")
     inst:AddTag("frozen")
     MakeSnowCoveredPristine(inst)
 
     inst.name = STRINGS.NAMES.ROCK_ICE
     inst.no_wet_prefix = false
 
+
+    inst._ismelt = net_bool(inst.GUID, "rock_ice.ismelt", "stagedirty")
     inst._stage = net_tinybyte(inst.GUID, "rock_ice.stage", "stagedirty")
-    inst._stage:set(3) --tall
+    inst._stage:set(STAGE_INDICES["tall"])
 
     inst.entity:SetPristine()
 
@@ -320,6 +356,8 @@ local function rock_ice_fn()
             SetStage(inst, inst.stage)
         elseif TheWorld.state.isspring or TheWorld.state.iswinter then
             SetStage(inst, "tall")
+        elseif TheWorld.state.issummer then
+            SetStage(inst, "dryup")
         else
             SetStage(inst, "empty")
         end
@@ -329,6 +367,8 @@ local function rock_ice_fn()
     inst.threshold1 = Lerp(.4,.6,math.random())
     inst.threshold2 = Lerp(.65,.85,math.random())
     inst.threshold3 = Lerp(.9,1.1,math.random())
+
+	inst.remove_on_dryup = nil
 
     inst:ListenForEvent("firemelt", StartFireMelt)
     inst:ListenForEvent("stopfiremelt", StopFireMelt)

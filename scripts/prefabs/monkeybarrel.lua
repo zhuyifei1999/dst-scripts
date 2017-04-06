@@ -1,7 +1,11 @@
+require "prefabutil"
+local RuinsRespawner = require "prefabs/ruinsrespawner"
+
 local assets =
 {
     Asset("ANIM", "anim/monkey_barrel.zip"),
     Asset("SOUND", "sound/monkey.fsb"),
+    Asset("SCRIPT", "scripts/prefabs/ruinsrespawner.lua"),
 }
 
 local prefabs =
@@ -10,6 +14,7 @@ local prefabs =
     "poop",
     "cave_banana",
     "collapse_small",
+    "monkeybarrel_ruinsrespawner_inst",
 }
 
 SetSharedLootTable('monkey_barrel',
@@ -196,4 +201,16 @@ local function fn()
     return inst
 end
 
-return Prefab("monkeybarrel", fn, assets, prefabs)
+local function onruinsrespawn(inst, respawner)
+	if not respawner:IsAsleep() then
+		inst.AnimState:PlayAnimation("spawn")
+		inst.AnimState:PushAnimation("idle", false)
+
+		local fx = SpawnPrefab("small_puff")
+		fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+		fx.Transform:SetScale(1.5, 1.5, 1.5)
+	end
+end
+
+return Prefab("monkeybarrel", fn, assets, prefabs),
+    RuinsRespawner.Inst("monkeybarrel", onruinsrespawn), RuinsRespawner.WorldGen("monkeybarrel", onruinsrespawn)

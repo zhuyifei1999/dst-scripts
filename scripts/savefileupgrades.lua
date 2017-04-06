@@ -481,6 +481,132 @@ t = {
             end,
         },
         
+        {
+            version = 4.6, -- ANR: Against the Grain
+            fn = function(savedata)
+                if savedata == nil then
+                    return
+                end
+                if savedata.map ~= nil and savedata.map.prefab == "forest" and savedata.map.persistdata ~= nil then
+                    if savedata.map.persistdata.retrofitforestmap_anr == nil then
+                        savedata.map.persistdata.retrofitforestmap_anr = {}
+                    end
+                    savedata.map.persistdata.retrofitforestmap_anr.retrofit_againstthegrain = true
+                end
+            end,
+        },
+
+        {
+            version = 4.71, -- ANR: Heart of the Ruins
+            fn = function(savedata)
+                if savedata == nil then
+                    return
+                end
+				if savedata.map ~= nil and savedata.map.prefab == "cave" and savedata.map.persistdata ~= nil then
+                    if savedata.map.persistdata.retrofitcavemap_anr == nil then
+						savedata.map.persistdata.retrofitcavemap_anr = {}
+					end
+
+					savedata.map.persistdata.retrofitcavemap_anr.retrofit_heartoftheruins = true
+				end
+            end,
+        },
+ 
+        {
+            version = 4.72, -- ANR: Heart of the Ruins - fix for ruinsrespawners
+            fn = function(savedata)
+                if savedata == nil then
+                    return
+                end
+				if savedata.map ~= nil and savedata.map.prefab == "cave" and savedata.map.persistdata ~= nil then
+                    if savedata.map.persistdata.retrofitcavemap_anr == nil then
+						savedata.map.persistdata.retrofitcavemap_anr = {}
+					end
+
+					savedata.map.persistdata.retrofitcavemap_anr.retrofit_heartoftheruins_respawnerfix = true
+				end
+            end,
+        },
+ 
+        {
+            version = 4.73, -- ANR: Heart of the Ruins - altars
+            fn = function(savedata)
+                if savedata == nil then
+                    return
+                end
+				if savedata.map ~= nil and savedata.map.prefab == "cave" and savedata.map.persistdata ~= nil then
+                    if savedata.map.persistdata.retrofitcavemap_anr == nil then
+						savedata.map.persistdata.retrofitcavemap_anr = {}
+					end
+
+					savedata.map.persistdata.retrofitcavemap_anr.retrofit_heartoftheruins_altars = true
+				end
+            end,
+        },
+
+        {
+            version = 4.731, -- ANR: Penguin Ice
+            fn = function(savedata)
+                if savedata == nil then
+                    return
+                end
+                if savedata.map ~= nil and savedata.map.prefab == "forest" and savedata.map.persistdata ~= nil then
+                    if savedata.map.persistdata.retrofitforestmap_anr == nil then
+                        savedata.map.persistdata.retrofitforestmap_anr = {}
+                    end
+                    savedata.map.persistdata.retrofitforestmap_anr.retrofit_penguinice = true
+                end
+            end,
+        },
+
+        {
+            version = 4.74, -- ANR: Heart of the Ruins - cave holes
+            fn = function(savedata)
+                if savedata == nil then
+                    return
+                end
+				if savedata.map ~= nil and savedata.map.prefab == "cave" and savedata.map.persistdata ~= nil then
+                    if savedata.map.persistdata.retrofitcavemap_anr == nil then
+						savedata.map.persistdata.retrofitcavemap_anr = {}
+					end
+
+					savedata.map.persistdata.retrofitcavemap_anr.retrofit_heartoftheruins_caveholes = true
+				end
+            end,
+        },
+
+        {
+            version = 4.751, -- ANR: Heart of the Ruins - atrium fixup for gate position and world node
+            fn = function(savedata)
+                if savedata == nil then
+                    return
+                end
+				if savedata.map ~= nil and savedata.map.prefab == "cave" and savedata.map.persistdata ~= nil then
+                    if savedata.map.persistdata.retrofitcavemap_anr == nil then
+						savedata.map.persistdata.retrofitcavemap_anr = {}
+					end
+
+					savedata.map.persistdata.retrofitcavemap_anr.retrofit_heartoftheruins_oldatriumfixup = true
+				end
+            end,
+        },
+
+        {
+            version = 4.76, -- ANR: Heart of the Ruins - respawners for chessjunk and statues
+            fn = function(savedata)
+                if savedata == nil then
+                    return
+                end
+				if savedata.map ~= nil and savedata.map.prefab == "cave" and savedata.map.persistdata ~= nil then
+                    if savedata.map.persistdata.retrofitcavemap_anr == nil then
+						savedata.map.persistdata.retrofitcavemap_anr = {}
+					end
+
+					savedata.map.persistdata.retrofitcavemap_anr.retrofit_heartoftheruins_statuechessrespawners = true
+				end
+            end,
+        },
+
     },
 }
 

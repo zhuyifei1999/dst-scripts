@@ -175,6 +175,10 @@ function Spawner:IsOccupied()
     return self.child ~= nil and self.child.parent == self.inst
 end
 
+local function NoHoles(pt)
+    return not TheWorld.Map:IsPointNearHole(pt)
+end
+
 function Spawner:ReleaseChild()
     self:CancelSpawning()
 
@@ -206,15 +210,18 @@ function Spawner:ReleaseChild()
             local pos = self.inst:GetPosition()
             local start_angle = math.random() * 2 * PI
 
-            local offset = FindWalkableOffset(pos, start_angle, rad, 8, false)
+            local offset = FindWalkableOffset(pos, start_angle, rad, 8, false, true, NoHoles)
             if offset == nil then
                 -- well it's gotta go somewhere!
                 --print(self.inst, "Spawner:ReleaseChild() no good place to spawn child: ", self.child)
                 pos.x = pos.x + rad * math.cos(start_angle)
+                pos.y = 0
                 pos.z = pos.z - rad * math.sin(start_angle)
             else
                 --print(self.inst, "Spawner:ReleaseChild() safe spawn of: ", self.child)
-                pos = pos + offset
+                pos.x = pos.x + offset.x
+                pos.y = 0
+                pos.z = pos.z + offset.z
             end
 
             self:TakeOwnership(self.child)

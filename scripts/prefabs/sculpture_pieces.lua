@@ -1,3 +1,5 @@
+local PHYSICS_RADIUS = .1
+
 local function onunequip(inst, owner)
     owner.AnimState:ClearOverrideSymbol("swap_body")
 end
@@ -21,7 +23,7 @@ local function makepiece(name)
         inst.entity:AddSoundEmitter()
         inst.entity:AddNetwork()
 
-        MakeInventoryPhysics(inst)
+        MakeSmallHeavyObstaclePhysics(inst, PHYSICS_RADIUS)
 
         inst.AnimState:SetBank("sculpture_pieces")
         inst.AnimState:SetBuild("swap_sculpture_"..name)
@@ -36,6 +38,10 @@ local function makepiece(name)
         if not TheWorld.ismastersim then
             return inst
         end
+
+        inst:AddComponent("heavyobstaclephysics")
+        inst.components.heavyobstaclephysics:SetRadius(PHYSICS_RADIUS)
+        inst.components.heavyobstaclephysics:MakeSmallObstacle()
 
         inst:AddComponent("inspectable")
 
@@ -62,6 +68,7 @@ local function makepiece(name)
     return Prefab("sculpture_"..name, fn, assets)
 end
 
+--For searching: "sculpture_knighthead", "sculpture_bishophead", "sculpture_rooknose"
 return makepiece("knighthead"),
     makepiece("bishophead"),
     makepiece("rooknose")

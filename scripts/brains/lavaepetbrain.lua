@@ -37,7 +37,7 @@ local function EatFoodAction(inst)
 end
 
 local MAKE_FOOD_TAGS = { "canlight", "fire", "smolder" }
-local NO_MAKE_FOOD_TAGS = { "INLIMBO", "_equippable" }
+local NO_MAKE_FOOD_TAGS = { "INLIMBO", "_equippable", "outofreach" }
 for k, v in pairs(FUELTYPE) do
     if v ~= FUELTYPE.USAGE then --Not a real fuel
         table.insert(NO_MAKE_FOOD_TAGS, v.."_fueled")
@@ -62,7 +62,7 @@ local function FindFoodAction(inst)
         return
     end
 
-    local target = FindEntity(inst, FIND_FOOD_ACTION_DIST, CanPickup, { "edible_BURNT", "_inventoryitem" }, { "INLIMBO", "fire", "catchable" })
+    local target = FindEntity(inst, FIND_FOOD_ACTION_DIST, CanPickup, { "edible_BURNT", "_inventoryitem" }, { "INLIMBO", "fire", "catchable", "outofreach" })
     return target ~= nil and BufferedAction(inst, target, ACTIONS.PICKUP) or nil
 end
 

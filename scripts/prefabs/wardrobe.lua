@@ -84,7 +84,7 @@ local function fn()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
-    MakeObstaclePhysics(inst, 1)
+    MakeObstaclePhysics(inst, .8)
 
     inst:AddTag("structure")
 

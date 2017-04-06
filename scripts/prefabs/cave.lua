@@ -11,6 +11,7 @@ local prefabs =
     "cavelight",
     "cavelight_small",
     "cavelight_tiny",
+    "cavelight_atrium",
     "flower_cave",
     "ancient_altar",
     "ancient_altar_broken",
@@ -67,6 +68,19 @@ local prefabs =
     "dropperweb",
     "hutch",
     "toadstool_cap",
+    "cavein_boulder",
+    "cavein_debris",
+    "pillar_atrium",
+    "atrium_light",
+    "atrium_gate",
+    "atrium_statue",
+    "atrium_statue_facing",
+    "atrium_fence",
+    "atrium_rubble",
+    "atrium_idol", -- deprecated
+    "atrium_overgrowth",
+    "cave_hole",
+    "chessjunk",
 }
 
 local monsters =
@@ -153,8 +167,10 @@ local function master_postinit(inst)
     inst:AddComponent("toadstoolspawner")
 
     --gameplay
+    inst:AddComponent("caveins")
     inst:AddComponent("kramped")
     inst:AddComponent("chessunlocks")
+    inst:AddComponent("townportalregistry")
 
     --world management
     inst:AddComponent("forestresourcespawner") -- a cave version of this would be nice, but it serves it's purpose...
@@ -171,10 +187,6 @@ local function master_postinit(inst)
 
     --anr update retrofitting
     inst:AddComponent("retrofitcavemap_anr")
-
-    -- inst:AddComponent("periodicthreat")
-    -- local threats = require("periodicthreats")
-    -- inst.components.periodicthreat:AddThreat("WORM", threats["WORM"])
 
     return inst
 end

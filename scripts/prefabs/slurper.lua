@@ -1,17 +1,21 @@
-local brain = require "brains/slurperbrain"
+local RuinsRespawner = require "prefabs/ruinsrespawner"
 
 local assets =
 {
     Asset("ANIM", "anim/slurper_basic.zip"),
     Asset("ANIM", "anim/hat_slurper.zip"),
     Asset("SOUND", "sound/slurper.fsb"),
+    Asset("SCRIPT", "scripts/prefabs/ruinsrespawner.lua"),
 }
 
 local prefabs =
 {
     "slurper_pelt",
     "slurperlight",
+    "slurper_ruinsrespawner_inst",
 }
+
+local brain = require "brains/slurperbrain"
 
 SetSharedLootTable('slurper',
 {
@@ -391,5 +395,13 @@ local function lightfn()
     return inst
 end
 
+local function onruinsrespawn(inst, respawner)
+	if not respawner:IsAsleep() then
+		SpawnPrefab("slurper_respawn").Transform:SetPosition(inst.Transform:GetWorldPosition())
+		inst.sg:GoToState("ruinsrespawn")
+	end
+end
+
 return Prefab("slurper", fn, assets, prefabs),
-    Prefab("slurperlight", lightfn)
+    Prefab("slurperlight", lightfn),
+    RuinsRespawner.Inst("slurper", onruinsrespawn), RuinsRespawner.WorldGen("slurper", onruinsrespawn)

@@ -79,7 +79,7 @@ local statedata =
         growsound   = "dontstarve/forest/treeGrow",
         workleft    = TUNING.WINTER_TREE_CHOP_TALL,
         workaction  = "CHOP",
-        loot        = function(inst) return {"log", "log", "log", inst.seedprefab, "boards", "poop"} end,
+        loot        = function(inst) return {"log", "log", "log", inst.seedprefab, inst.seedprefab, "boards", "poop"} end,
         burntloot   = function(inst) return {"charcoal", "charcoal", inst.seedprefab, "boards", "poop"} end,
         burnfxlevel = 4,
         burntree    = true,
@@ -240,7 +240,17 @@ local random_gift2 =
     panflute = .1,
 }
 
+--V2C: function pasted here for searching
+--[[
+local function NoHoles(pt)
+    return not TheWorld.Map:IsPointNearHole(pt)
+end
+]]
+
 local function NobodySeesPoint(pt)
+    if TheWorld.Map:IsPointNearHole(pt) then
+        return false
+    end
     for i, v in ipairs(AllPlayers) do
         if CanEntitySeePoint(v, pt.x, pt.y, pt.z) then
             return false

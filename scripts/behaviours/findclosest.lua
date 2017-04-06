@@ -13,7 +13,7 @@ FindClosest = Class(BehaviourNode, function(self, inst, see_dist, safe_dist, tag
 end)
 
 function FindClosest:DBString()
-    return string.format("Stay near light %s", tostring(self.targ))
+    return string.format("Stay near target %s", tostring(self.targ))
 end
 
 function FindClosest:Visit()

@@ -1,18 +1,16 @@
 local function getfiltersource(src)
-   if not src then return "[?]" end
-   if src:sub(1, 1) == "@" then
-       src = src:sub(2)
-   end
-   return src
+    return (src == nil and "[?]")
+        or (src:sub(1, 1) == "@" and src:sub(2))
+        or src
 end
 
 local function getformatinfo(info)
-   if not info then return "**error**" end
-   local source = getfiltersource(info.source)
-   if info.currentline then
-       source = source..":"..info.currentline
-   end
-   return ("@%s in %s"):format(source, info.name or "?")
+    return info ~= nil
+        and string.format("@%s%s in %s",
+                getfiltersource(info.source),
+                info.currentline ~= nil and (":"..info.currentline) or "",
+                info.name or "?")
+        or "**error**"
 end
 
 function CalledFrom()
@@ -68,9 +66,8 @@ end
 
 function FindClosestPlayerToInst(inst, range, isalive)
     local x, y, z = inst.Transform:GetWorldPosition()
-	return FindClosestPlayerInRange(x, y, z, range, isalive)
+    return FindClosestPlayerInRange(x, y, z, range, isalive)
 end
-
 
 function FindPlayersInRangeSq(x, y, z, rangesq, isalive)
     local players = {}
@@ -117,12 +114,17 @@ function FindSafeSpawnLocation(x, y, z)
     end
 end
 
-function FindNearbyLand(position)
-    local finaloffset = FindValidPositionByFan(0, 8, 8, function(offset)
-        local run_point = position+offset
-        return TheWorld.Map:IsAboveGroundAtPoint(run_point.x, run_point.y, run_point.z)
+function FindNearbyLand(position, range)
+    local finaloffset = FindValidPositionByFan(math.random() * 2 * PI, range or 8, 8, function(offset)
+        local x, z = position.x + offset.x, position.z + offset.z
+        return TheWorld.Map:IsAboveGroundAtPoint(x, 0, z)
+            and not TheWorld.Map:IsPointNearHole(Vector3(x, 0, z))
     end)
-    return finaloffset ~= nil and position + finaloffset or nil
+    if finaloffset ~= nil then
+        finaloffset.x = finaloffset.x + position.x
+        finaloffset.z = finaloffset.z + position.z
+        return finaloffset
+    end
 end
 
 function GetRandomInstWithTag(tag, inst, radius)
@@ -146,8 +148,7 @@ function DeleteCloseEntsWithTag(tag, inst, radius)
 end
 
 function AnimateUIScale(item, total_time, start_scale, end_scale)
-    item:StartThread(
-    function()
+    item:StartThread(function()
         local scale = 1
         local time_left = total_time
         local start_time = GetTime()
@@ -155,22 +156,21 @@ function AnimateUIScale(item, total_time, start_scale, end_scale)
         local transform = item.UITransform
         while true do
             local t = GetTime()
-            
             local percent = (t - start_time) / total_time
             if percent > 1 then
                 transform:SetScale(end_scale, end_scale, end_scale)
                 return
             end
-            local scale = (1 - percent)*start_scale + percent*end_scale
+            local scale = (1 - percent) * start_scale + percent * end_scale
             transform:SetScale(scale, scale, scale)
             Yield()
         end
     end)
 end
 
-function ShakeAllCameras(mode, duration, speed, scale, source, maxDist)
+function ShakeAllCameras(mode, duration, speed, scale, source_or_pt, maxDist)
     for i, v in ipairs(AllPlayers) do
-        v:ShakeCamera(mode, duration, speed, scale, source, maxDist)
+        v:ShakeCamera(mode, duration, speed, scale, source_or_pt, maxDist)
     end
 end
 
@@ -178,91 +178,60 @@ end
 -- If your condition is basically "walkable ground" use FindWalkableOffset instead.
 -- test_fn takes a parameter "offset" which is check_angle*radius.
 function FindValidPositionByFan(start_angle, radius, attempts, test_fn)
-	local theta = start_angle -- radians
-	
-	attempts = attempts or 8
+    attempts = attempts or 8
 
-	local attempt_angle = (2*PI)/attempts
-	local tmp_angles = {}
-	for i=0,attempts-1 do
-		local a = i*attempt_angle
-		if a > PI then
-			a = a-(2*PI)
-		end
-		table.insert(tmp_angles, a)
-	end
-	
-	-- Make the angles fan out from the original point
-	local angles = {}
-	for i=1,math.ceil(attempts/2) do
-		table.insert(angles, tmp_angles[i])
-		local other_end = #tmp_angles - (i-1)
-		if other_end > i then
-			table.insert(angles, tmp_angles[other_end])
-		end
-	end
+    local TWOPI = 2 * PI
+    local attempt_angle = TWOPI / attempts
+    local tmp_angles = {}
+    for i = 0, attempts - 1 do
+        local a = i * attempt_angle
+        table.insert(tmp_angles, a > PI and a - TWOPI or a)
+    end
 
-	
-    --print("FindValidPositionByFan")
+    -- Make the angles fan out from the original point
+    local angles = {}
+    local iend = math.floor(attempts / 2)
+    for i = 1, iend do
+        table.insert(angles, tmp_angles[i])
+        table.insert(angles, tmp_angles[attempts - i + 1])
+    end
+    if iend * 2 < attempts then
+        table.insert(angles, tmp_angles[iend + 1])
+    end
 
-	for i, attempt in ipairs(angles) do
-		local check_angle = theta + attempt
-		if check_angle > 2*PI then check_angle = check_angle - 2*PI end
-
-		local offset = Vector3(radius * math.cos( check_angle ), 0, -radius * math.sin( check_angle ))
-
-        --print(string.format("    %2.2f", check_angle/DEGREES))
-
-		if test_fn(offset) then
-			local deflected = i > 1
-            --print(string.format("    OK on try %u", i))
-			return offset, check_angle, deflected
-		end
-	end
+    for i, v in ipairs(angles) do
+        local check_angle = start_angle + v
+        if check_angle > TWOPI then
+            check_angle = check_angle - TWOPI
+        end
+        local offset = Vector3(radius * math.cos(check_angle), 0, -radius * math.sin(check_angle))
+        if test_fn(offset) then
+            return offset, check_angle, i > 1 --deflected if not first try
+        end
+    end
 end
 
 -- This function fans out a search from a starting position/direction and looks for a walkable
 -- position, and returns the valid offset, valid angle and whether the original angle was obstructed.
 -- starting_angle is in radians
 function FindWalkableOffset(position, start_angle, radius, attempts, check_los, ignore_walls, customcheckfn)
-	--print("FindWalkableOffset:")
-
-    if ignore_walls == nil then 
-        ignore_walls = true 
-    end
-
-	local test = function(offset)
-		local run_point = position+offset
-		local ground = TheWorld
-		local tile = ground.Map:GetTileAtPoint(run_point.x, run_point.y, run_point.z)
-		if tile == GROUND.IMPASSABLE or tile >= GROUND.UNDERGROUND then
-			--print("\tfailed, unwalkable ground.")
-			return false
-		end
-		if check_los and not ground.Pathfinder:IsClear(position.x, position.y, position.z,
-		                                                 run_point.x, run_point.y, run_point.z,
-		                                                 {ignorewalls = ignore_walls, ignorecreep = true}) then
-			--print("\tfailed, no clear path.")
-			return false
-		end
-
-		if customcheckfn and not customcheckfn(run_point) then
-			--print("\tfailed, customcheckfn said so.")
-			return false
-		end
-
-		--print("\tpassed.")
-		return true
-
-	end
-
-	return FindValidPositionByFan(start_angle, radius, attempts, test)
+    return FindValidPositionByFan(start_angle, radius, attempts,
+            function(offset)
+                local x = position.x + offset.x
+                local y = position.y + offset.y
+                local z = position.z + offset.z
+                return TheWorld.Map:IsAboveGroundAtPoint(x, y, z)
+                    and (not check_los or
+                        TheWorld.Pathfinder:IsClear(
+                            position.x, position.y, position.z,
+                            x, y, z,
+                            { ignorewalls = ignore_walls ~= false, ignorecreep = true }))
+                    and (customcheckfn == nil or customcheckfn(Vector3(x, y, z)))
+            end)
 end
 
-function CanEntitySeeInDark(inst)
-    if inst == nil or not inst:IsValid() then
-        return false
-    elseif inst.components.playervision ~= nil then
+local function _CanEntitySeeInDark(inst)
+    if inst.components.playervision ~= nil then
         --component available on clients as well,
         --but only accurate for your local player
         return inst.components.playervision:HasNightVision()
@@ -271,8 +240,41 @@ function CanEntitySeeInDark(inst)
     return inventory ~= nil and inventory:EquipHasTag("nightvision")
 end
 
+function CanEntitySeeInDark(inst)
+    return inst ~= nil and inst:IsValid() and _CanEntitySeeInDark(inst)
+end
+
+local function _CanEntitySeeInStorm(inst)
+    if inst.components.playervision ~= nil then
+        --component available on clients as well,
+        --but only accurate for your local player
+        return inst.components.playervision:HasGoggleVision()
+    end
+    local inventory = inst.replica.inventory
+    return inventory ~= nil and inventory:EquipHasTag("goggles")
+end
+
+function CanEntitySeeInStorm(inst)
+    return inst ~= nil and inst:IsValid() and _CanEntitySeeInStorm(inst)
+end
+
+local function _GetEntitySandstormLevel(inst)
+    --NOTE: GetSandstormLevel is available on players on server
+    --      and clients, but only accurate for local players.
+    --      stormwatcher is a server-side component.
+    return (inst.GetSandstormLevel ~= nil and inst:GetSandstormLevel())
+        or (inst.components.stormwatcher ~= nil and inst.components.stormwatcher.sandstormlevel)
+        or 0
+end
+
 function CanEntitySeePoint(inst, x, y, z)
-    return TheSim:GetLightAtPoint(x, y, z) > TUNING.DARK_CUTOFF or CanEntitySeeInDark(inst)
+    return inst ~= nil
+        and inst:IsValid()
+        and (TheSim:GetLightAtPoint(x, y, z) > TUNING.DARK_CUTOFF or
+            _CanEntitySeeInDark(inst))
+        and (_GetEntitySandstormLevel(inst) < TUNING.SANDSTORM_FULL_LEVEL or
+            _CanEntitySeeInStorm(inst) or
+            inst:GetDistanceSqToPoint(x, y, z) < TUNING.SANDSTORM_VISION_RANGE_SQ)
 end
 
 function CanEntitySeeTarget(inst, target)
@@ -296,7 +298,6 @@ function TemporarilyRemovePhysics(obj, time)
         obj.Physics:SetCollisionMask(origmask)
     end)
 end
-
 
 function ErodeAway(inst, erode_time)
     local time_to_erode = erode_time or 1

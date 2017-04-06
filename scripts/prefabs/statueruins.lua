@@ -1,3 +1,6 @@
+
+local RuinsRespawner = require "prefabs/ruinsrespawner"
+
 local assets =
 {
     Asset("ANIM", "anim/statue_ruins_small.zip"),
@@ -5,6 +8,7 @@ local assets =
     Asset("ANIM", "anim/statue_ruins.zip"),
     Asset("ANIM", "anim/statue_ruins_gem.zip"),
     Asset("MINIMAP_IMAGE", "statue_ruins"),
+    Asset("SCRIPT", "scripts/prefabs/ruinsrespawner.lua"),
 }
 
 local prefabs =
@@ -21,6 +25,10 @@ local prefabs =
     "thulecite",
     "statue_transition",
     "statue_transition_2",
+	"ruins_statue_head",
+	"ruins_statue_head_nogem",
+	"ruins_statue_mage",
+	"ruins_statue_mage_nogem",
 }
 
 local gemlist =
@@ -306,7 +314,19 @@ local function nogem(small)
     return inst
 end
 
+
+local function onruinsrespawn(inst, respawner)
+	if not respawner:IsAsleep() then
+		local fx = SpawnPrefab("statue_transition")
+		fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+	end
+end
+
 return Prefab("ruins_statue_head", function() return gem(true) end, assets, prefabs),
     Prefab("ruins_statue_head_nogem", function() return nogem(true) end, assets, prefabs),
     Prefab("ruins_statue_mage", function() return gem() end, assets, prefabs),
-    Prefab("ruins_statue_mage_nogem", function() return nogem() end, assets, prefabs)
+    Prefab("ruins_statue_mage_nogem", function() return nogem() end, assets, prefabs),
+    RuinsRespawner.Inst("ruins_statue_head", onruinsrespawn), RuinsRespawner.WorldGen("ruins_statue_head", onruinsrespawn),
+    RuinsRespawner.Inst("ruins_statue_head_nogem", onruinsrespawn), RuinsRespawner.WorldGen("ruins_statue_head_nogem", onruinsrespawn),
+    RuinsRespawner.Inst("ruins_statue_mage", onruinsrespawn), RuinsRespawner.WorldGen("ruins_statue_mage", onruinsrespawn),
+    RuinsRespawner.Inst("ruins_statue_mage_nogem", onruinsrespawn), RuinsRespawner.WorldGen("ruins_statue_mage_nogem", onruinsrespawn)

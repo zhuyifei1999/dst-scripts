@@ -36,39 +36,43 @@ local SpiderBrain = Class(Brain, function(self, inst)
 end)
 
 local function GetTraderFn(inst)
-    if inst.components.trader then
-        return FindEntity(inst, TRADE_DIST, function(target) return inst.components.trader:IsTryingToTradeWithMe(target) end, {"player"})
-    end
+    return inst.components.trader ~= nil
+        and FindEntity(inst, TRADE_DIST, function(target) return inst.components.trader:IsTryingToTradeWithMe(target) end, { "player" })
+        or nil
 end
 
 local function KeepTraderFn(inst, target)
-    if inst.components.trader then
-        return inst.components.trader:IsTryingToTradeWithMe(target)
-    end
+    return inst.components.trader ~= nil
+        and inst.components.trader:IsTryingToTradeWithMe(target)
 end
 
 local function EatFoodAction(inst)
-    local target = FindEntity(inst, SEE_FOOD_DIST, function(item) return inst.components.eater:CanEat(item) and item:IsOnValidGround() and item:GetTimeAlive() > TUNING.SPIDER_EAT_DELAY end)
-    if target then
-        return BufferedAction(inst, target, ACTIONS.EAT)
-    end
+    local target = FindEntity(inst,
+        SEE_FOOD_DIST,
+        function(item)
+            return inst.components.eater:CanEat(item)
+                and item:IsOnValidGround()
+                and item:GetTimeAlive() > TUNING.SPIDER_EAT_DELAY
+        end,
+        nil,
+        { "outofreach" }
+    )
+    return target ~= nil and BufferedAction(inst, target, ACTIONS.EAT) or nil
 end
 
 local function GoHomeAction(inst)
-    if inst.components.homeseeker and
-       inst.components.homeseeker.home and
-       inst.components.homeseeker.home:IsValid() and
-       inst.components.homeseeker.home.components.childspawner and
-       not inst.components.homeseeker.home.components.health:IsDead() then
-        return BufferedAction(inst, inst.components.homeseeker.home, ACTIONS.GOHOME)
-    end
+    local home = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
+    return home ~= nil
+        and home:IsValid()
+        and home.components.childspawner ~= nil
+        and not home.components.health:IsDead()
+        and BufferedAction(inst, home, ACTIONS.GOHOME)
+        or nil
 end
 
 local function InvestigateAction(inst)
-    local investigatePos = inst.components.knownlocations and inst.components.knownlocations:GetLocation("investigate")
-    if investigatePos then
-        return BufferedAction(inst, nil, ACTIONS.INVESTIGATE, nil, investigatePos, nil, 1)
-    end
+    local investigatePos = inst.components.knownlocations ~= nil and inst.components.knownlocations:GetLocation("investigate") or nil
+    return investigatePos ~= nil and BufferedAction(inst, nil, ACTIONS.INVESTIGATE, nil, investigatePos, nil, 1) or nil
 end
 
 local function GetFaceTargetFn(inst)

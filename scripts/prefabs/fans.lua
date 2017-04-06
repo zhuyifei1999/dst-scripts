@@ -23,6 +23,10 @@ local function OnUse(inst, target)
     end
 end
 
+local function NoHoles(pt)
+    return not TheWorld.Map:IsPointNearHole(pt)
+end
+
 local function OnChanneling(inst, target)
     if inst.components.finiteuses:GetUses() > 3 then
         local pos =
@@ -38,7 +42,7 @@ local function OnChanneling(inst, target)
                 angle = inst.lasttornadoangle + PI
                 inst.lasttornadoangle = nil
             end
-            local offset = FindWalkableOffset(pos, angle, 4, 8, false, true)
+            local offset = FindWalkableOffset(pos, angle, 4, 8, false, true, NoHoles)
             if offset ~= nil then
                 inst.components.finiteuses:Use(2)
 

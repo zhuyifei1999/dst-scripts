@@ -84,7 +84,7 @@ local function OnSnowLevel(inst, snowlevel)
         end
     elseif inst.frozen then
         inst.frozen = false
-        inst.AnimState:PlayAnimation("idle"..inst.pondtype)
+        inst.AnimState:PlayAnimation("idle"..inst.pondtype, true)
         inst.components.childspawner:StartSpawning()
         inst.components.fishable:Unfreeze()
 
@@ -134,8 +134,12 @@ local function commonfn(pondtype)
     inst.MiniMapEntity:SetIcon("pond"..pondtype..".png")
 
     inst:AddTag("watersource")
+    inst:AddTag("antlion_sinkhole_blocker")
+    inst:AddTag("birdblocker")
 
     inst.no_wet_prefix = true
+
+    inst:SetDeployExtraSpacing(2)
 
     inst.entity:SetPristine()
 

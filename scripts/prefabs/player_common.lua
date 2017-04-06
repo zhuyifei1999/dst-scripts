@@ -140,6 +140,14 @@ local function GetMoistureRateScale(inst)
     end
 end
 
+local function GetSandstormLevel(inst)
+    return inst.player_classified ~= nil and inst.player_classified.sandstormlevel:value() / 7 or 0
+end
+
+local function IsCarefulWalking(inst)
+    return inst.player_classified ~= nil and inst.player_classified.iscarefulwalking:value()
+end
+
 local function ShouldKnockout(inst)
     return DefaultKnockoutTest(inst) and not inst.sg:HasStateTag("yawn")
 end
@@ -164,24 +172,6 @@ local function OnGetItem(inst, giver, item)
     end
 end
 
-local function DropItem(inst, target, item)
-    inst.components.inventory:Unequip(EQUIPSLOTS.HANDS, true) 
-    inst.components.inventory:DropItem(item)
-    if item.Physics then
-        local x, y, z = item:GetPosition():Get()
-        y = .3
-        item.Physics:Teleport(x,y,z)
-
-        local hp = target:GetPosition()
-        local pt = inst:GetPosition()
-        local vel = (hp - pt):GetNormalized()     
-        local speed = 3 + (math.random() * 2)
-        local angle = -math.atan2(vel.z, vel.x) + (math.random() * 20 - 10) * DEGREES
-        item.Physics:SetVel(math.cos(angle) * speed, 10, math.sin(angle) * speed)
-    end
-    inst.components.talker:Say(GetString(inst, "ANNOUNCE_TOOL_SLIP"))
-end
-
 local function DropWetTool(inst, data)
     --Tool slip.
     if inst.components.moisture:GetSegs() < 4 then
@@ -189,9 +179,26 @@ local function DropWetTool(inst, data)
     end
 
     local tool = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-    if tool ~= nil and tool:GetIsWet() and math.random() < easing.inSine(TheWorld.state.wetness, 0, 0.15, inst.components.moisture:GetMaxMoisture()) then
-        DropItem(inst, data.target, tool)
+    if tool ~= nil and tool:GetIsWet() and math.random() < easing.inSine(TheWorld.state.wetness, 0, .15, inst.components.moisture:GetMaxMoisture()) then
+        inst.components.inventory:Unequip(EQUIPSLOTS.HANDS, true)
+        inst.components.inventory:DropItem(tool)
+        if tool.Physics ~= nil then
+            local x, y, z = tool.Transform:GetWorldPosition()
+            tool.Physics:Teleport(x, .3, z)
+
+            local angle = (math.random() * 20 - 10) * DEGREES
+            if data.target ~= nil and data.target:IsValid() then
+                local x1, y1, z1 = inst.Transform:GetWorldPosition()
+                x, y, z = data.target.Transform:GetWorldPosition()
+                angle = angle + (x1 == x and z1 == z and math.random() * 2 * PI or math.atan2(z1 - z, x1 - x))
+            else
+                angle = angle + math.random() * 2 * PI
+            end
+            local speed = 3 + math.random() * 2
+            tool.Physics:SetVel(math.cos(angle) * speed, 10, math.sin(angle) * speed)
+        end
         --Lock out from picking up for a while?
+        --V2C: no need, the stategraph goes into busy state
     end
 end
 
@@ -290,10 +297,6 @@ local function OnWontEatFood(inst, data)
     end
 end
 
-local function OnWork(inst, data)
-    DropWetTool(inst, data)
-end
-
 --------------------------------------------------------------------------
 --Temperamental events
 --------------------------------------------------------------------------
@@ -353,7 +356,7 @@ local function RegisterMasterEventListeners(inst)
     --Speech events
     inst:ListenForEvent("actionfailed", OnActionFailed)
     inst:ListenForEvent("wonteatfood", OnWontEatFood)
-    inst:ListenForEvent("working", OnWork)
+    inst:ListenForEvent("working", DropWetTool)
 
     --Temperamental events
     inst:ListenForEvent("onstartedfire", OnStartedFire)
@@ -614,14 +617,6 @@ local function OnSetOwner(inst)
     end
 end
 
-local function OnChangeArea(inst, area)
-    if area.tags and table.contains(area.tags, "Nightmare") then
-        inst.components.playervision:SetNightmareVision(true)
-    else
-        inst.components.playervision:SetNightmareVision(false)
-    end
-end
-
 local function AttachClassified(inst, classified)
     inst.player_classified = classified
     inst.ondetachclassified = function() inst:DetachClassified() end
@@ -654,7 +649,7 @@ local function OnRemoveEntity(inst)
         end
     end
 
-    RemoveByValue(AllPlayers, inst)
+    table.removearrayvalue(AllPlayers, inst)
 
     -- "playerexited" is available on both server and client.
     -- - On clients, this is pushed whenever a player entity is removed
@@ -1332,9 +1327,9 @@ local function SnapCamera(inst)
     end
 end
 
-local function ShakeCamera(inst, mode, duration, speed, scale, source, maxDist)
-    if source ~= nil and maxDist ~= nil then
-        local distSq = inst:GetDistanceSqToInst(source)
+local function ShakeCamera(inst, mode, duration, speed, scale, source_or_pt, maxDist)
+    if source_or_pt ~= nil and maxDist ~= nil then
+        local distSq = source_or_pt.entity ~= nil and inst:GetDistanceSqToInst(source_or_pt) or inst:GetDistanceSqToPoint(source_or_pt:Get())
         local k = math.max(0, math.min(1, distSq / (maxDist * maxDist)))
         scale = easing.outQuad(k, scale, -scale, 1)
     end
@@ -1452,6 +1447,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_slurtle_armor.zip"),
         Asset("ANIM", "anim/player_staff.zip"),
         Asset("ANIM", "anim/player_hit_darkness.zip"),
+        Asset("ANIM", "anim/player_hit_spike.zip"),
 
         Asset("ANIM", "anim/player_frozen.zip"),
         Asset("ANIM", "anim/player_shock.zip"),
@@ -1466,6 +1462,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_skin_change.zip"),
         Asset("ANIM", "anim/player_receive_gift.zip"),
         Asset("ANIM", "anim/shadow_skinchangefx.zip"),
+        Asset("ANIM", "anim/player_townportal.zip"),
+        Asset("ANIM", "anim/player_channel.zip"),
 
         Asset("SOUND", "sound/sfx.fsb"),
         Asset("SOUND", "sound/wilson.fsb"),
@@ -1476,6 +1474,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_knockedout.zip"),
         Asset("ANIM", "anim/player_emotesxl.zip"),
         Asset("ANIM", "anim/player_emotes_dance0.zip"),
+        Asset("ANIM", "anim/player_emotes_sit.zip"),
         Asset("ANIM", "anim/player_emotes.zip"),
         Asset("ANIM", "anim/player_hatdance.zip"),
         Asset("ANIM", "anim/player_bow.zip"),
@@ -1489,8 +1488,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_encumbered.zip"),
         Asset("ANIM", "anim/player_encumbered_jump.zip"),
 
-        Asset("ANIM", "anim/fish01.zip"),   --These are used for the fishing animations.
-        Asset("ANIM", "anim/eel01.zip"),
+        Asset("ANIM", "anim/player_sandstorm.zip"),
+        Asset("ANIM", "anim/player_tiptoe.zip"),
 
         Asset("ANIM", "anim/corner_dude.zip"),
 
@@ -1509,6 +1508,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_mount_frozen.zip"),
         Asset("ANIM", "anim/player_mount_groggy.zip"),
         Asset("ANIM", "anim/player_mount_encumbered.zip"),
+        Asset("ANIM", "anim/player_mount_sandstorm.zip"),
         Asset("ANIM", "anim/player_mount_hit_darkness.zip"),
         Asset("ANIM", "anim/player_mount_emotes.zip"),
         Asset("ANIM", "anim/player_mount_emotes_dance0.zip"),
@@ -1535,7 +1535,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         "attune_in_fx",
         "attune_ghost_in_fx",
         "staff_castinglight",
-        "hauntfx",
         "emote_fx",
         "tears",
         "shock_fx",
@@ -1652,6 +1651,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.GetMoisture = GetMoisture -- Didn't want to make moisture a networked component
         inst.GetMaxMoisture = GetMaxMoisture -- Didn't want to make moisture a networked component
         inst.GetMoistureRateScale = GetMoistureRateScale -- Didn't want to make moisture a networked component
+        inst.GetSandstormLevel = GetSandstormLevel -- Didn't want to make stormwatcher a networked component
+        inst.IsCarefulWalking = IsCarefulWalking -- Didn't want to make carefulwalking a networked component
         inst.EnableMovementPrediction = EnableMovementPrediction
         inst.ShakeCamera = ShakeCamera
         inst.SetGhostMode = SetGhostMode
@@ -1672,7 +1673,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 
         inst:AddComponent("playervision")
         inst:AddComponent("areaaware")
-        inst:ListenForEvent("changearea", OnChangeArea)
+        inst.components.areaaware:SetUpdateDist(2)
+        
         inst:AddComponent("attuner")
         --attuner server listeners are not registered until after "ms_playerjoined" has been pushed
 
@@ -1780,6 +1782,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 
         inst:AddComponent("moisture")
         inst:AddComponent("sheltered")
+        inst:AddComponent("stormwatcher")
+        inst:AddComponent("carefulwalker")
 
         -------
 

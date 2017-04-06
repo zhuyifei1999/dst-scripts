@@ -10,11 +10,11 @@ local SEE_DIST = 30
 local TOOCLOSE = 6
 
 local function CanSteal(item)
-    return item.components.inventoryitem ~= nil and
-        item.components.inventoryitem.canbepickedup and
-        not item.components.inventoryitem:IsHeld() and
-        item:IsOnValidGround() and
-        not item:IsNearPlayer(TOOCLOSE)
+    return item.components.inventoryitem ~= nil
+        and item.components.inventoryitem.canbepickedup
+        and not item.components.inventoryitem:IsHeld()
+        and item:IsOnValidGround()
+        and not item:IsNearPlayer(TOOCLOSE)
 end
 
 local function StealAction(inst)
@@ -22,7 +22,7 @@ local function StealAction(inst)
         local target = FindEntity(inst, SEE_DIST,
             CanSteal,
             { "_inventoryitem" }, --see entityreplica.lua
-            { "irreplaceable", "heavy", "prey", "bird" })
+            { "irreplaceable", "heavy", "prey", "bird", "outofreach" })
         if target ~= nil then
             return BufferedAction(inst, target, ACTIONS.PICKUP)
         end

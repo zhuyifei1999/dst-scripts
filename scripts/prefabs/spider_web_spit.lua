@@ -30,6 +30,7 @@ local function fn()
     inst.AnimState:SetBuild("spider_spit")
     inst.AnimState:PlayAnimation("idle")
 
+    --projectile (from projectile component) added to pristine state for optimization
     inst:AddTag("projectile")
 
     inst.entity:SetPristine()

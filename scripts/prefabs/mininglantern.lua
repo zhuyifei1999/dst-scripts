@@ -11,10 +11,30 @@ local prefabs =
     "lanternlight",
 }
 
+local function DoTurnOffSound(inst, owner)
+    inst._soundtask = nil
+    (owner ~= nil and owner:IsValid() and owner.SoundEmitter or inst.SoundEmitter):PlaySound("dontstarve/wilson/lantern_off")
+end
+
+local function PlayTurnOffSound(inst)
+    if inst._soundtask == nil and inst:GetTimeAlive() > 0 then
+        inst._soundtask = inst:DoTaskInTime(0, DoTurnOffSound, inst.components.inventoryitem.owner)
+    end
+end
+
+local function PlayTurnOnSound(inst)
+    if inst._soundtask ~= nil then
+        inst._soundtask:Cancel()
+        inst._soundtask = nil
+    elseif not POPULATING then
+        inst._light.SoundEmitter:PlaySound("dontstarve/wilson/lantern_on")
+    end
+end
+
 local function fuelupdate(inst)
     if inst._light ~= nil then
         local fuelpercent = inst.components.fueled:GetPercent()
-        inst._light.Light:SetIntensity(Lerp(0.4, 0.6, fuelpercent))
+        inst._light.Light:SetIntensity(Lerp(.4, .6, fuelpercent))
         inst._light.Light:SetRadius(Lerp(3, 5, fuelpercent))
         inst._light.Light:SetFalloff(.9)
     end
@@ -22,6 +42,23 @@ end
 
 local function onremovelight(light)
     light._lantern._light = nil
+end
+
+local function stoptrackingowner(inst)
+    if inst._owner ~= nil then
+        inst:RemoveEventCallback("equip", inst._onownerequip, inst._owner)
+        inst._owner = nil
+    end
+end
+
+local function starttrackingowner(inst, owner)
+    if owner ~= inst._owner then
+        stoptrackingowner(inst)
+        if owner ~= nil and owner.components.inventory ~= nil then
+            inst._owner = owner
+            inst:ListenForEvent("equip", inst._onownerequip, owner)
+        end
+    end
 end
 
 local function turnon(inst)
@@ -35,6 +72,7 @@ local function turnon(inst)
             inst._light._lantern = inst
             inst:ListenForEvent("onremove", onremovelight, inst._light)
             fuelupdate(inst)
+            PlayTurnOnSound(inst)
         end
         inst._light.entity:SetParent((owner or inst).entity)
 
@@ -46,20 +84,18 @@ local function turnon(inst)
 
         inst.components.machine.ison = true
 
-        inst.SoundEmitter:PlaySound("dontstarve/wilson/lantern_on")
-        if not inst.SoundEmitter:PlayingSound("loop") then
-            inst.SoundEmitter:PlaySound("dontstarve/wilson/lantern_LP", "loop")
-        end
-
         inst.components.inventoryitem:ChangeImageName("lantern_lit")
     end
 end
 
 local function turnoff(inst)
+    stoptrackingowner(inst)
+
     inst.components.fueled:StopConsuming()
 
     if inst._light ~= nil then
         inst._light:Remove()
+        PlayTurnOffSound(inst)
     end
 
     inst.AnimState:PlayAnimation("idle_off")
@@ -70,15 +106,15 @@ local function turnoff(inst)
 
     inst.components.machine.ison = false
 
-    inst.SoundEmitter:KillSound("loop")
-    inst.SoundEmitter:PlaySound("dontstarve/wilson/lantern_off")
-
     inst.components.inventoryitem:ChangeImageName("lantern")
 end
 
 local function OnRemove(inst)
     if inst._light ~= nil then
         inst._light:Remove()
+    end
+    if inst._soundtask ~= nil then
+        inst._soundtask:Cancel()
     end
 end
 
@@ -106,6 +142,10 @@ local function onunequip(inst, owner)
     owner.AnimState:Show("ARM_normal")
     owner.AnimState:ClearOverrideSymbol("lantern_overlay")
     owner.AnimState:Hide("LANTERN_OVERLAY")
+
+    if inst.components.machine.ison then
+        starttrackingowner(inst, owner)
+    end
 end
 
 local function nofuel(inst)
@@ -128,11 +168,26 @@ local function ontakefuel(inst)
     end
 end
 
+--------------------------------------------------------------------------
+
+local function OnLightWake(inst)
+    if not inst.SoundEmitter:PlayingSound("loop") then
+        inst.SoundEmitter:PlaySound("dontstarve/wilson/lantern_LP", "loop")
+    end
+end
+
+local function OnLightSleep(inst)
+    inst.SoundEmitter:KillSound("loop")
+end
+
+--------------------------------------------------------------------------
+
 local function lanternlightfn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
     inst.entity:AddLight()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
     inst:AddTag("FX")
@@ -146,6 +201,9 @@ local function lanternlightfn()
     end
 
     inst.persists = false
+
+    inst.OnEntityWake = OnLightWake
+    inst.OnEntitySleep = OnLightSleep
 
     return inst
 end
@@ -204,6 +262,15 @@ local function fn()
     inst.components.equippable:SetOnUnequip(onunequip)
 
     inst.OnRemoveEntity = OnRemove
+
+    inst._onownerequip = function(owner, data)
+        if data.item ~= inst and
+            (   data.eslot == EQUIPSLOTS.HANDS or
+                (data.eslot == EQUIPSLOTS.BODY and data.item:HasTag("heavy"))
+            ) then
+            turnoff(inst)
+        end
+    end
 
     return inst
 end

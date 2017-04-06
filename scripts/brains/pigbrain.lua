@@ -58,51 +58,56 @@ local function KeepTraderFn(inst, target)
 end
 
 local function FindFoodAction(inst)
-    local target = nil
-
     if inst.sg:HasStateTag("busy") then
         return
     end
 
-    if inst.components.inventory and inst.components.eater then
-        target = inst.components.inventory:FindItem(function(item) return inst.components.eater:CanEat(item) end)
+    if inst.components.inventory ~= nil and inst.components.eater ~= nil then
+        local target = inst.components.inventory:FindItem(function(item) return inst.components.eater:CanEat(item) end)
+        if target ~= nil then
+            return BufferedAction(inst, target, ACTIONS.EAT)
+        end
     end
 
     local time_since_eat = inst.components.eater:TimeSinceLastEating()
-    local noveggie = time_since_eat and time_since_eat < TUNING.PIG_MIN_POOP_PERIOD*4
-
-    if not target and (not time_since_eat or time_since_eat > TUNING.PIG_MIN_POOP_PERIOD*2) then
-        target = FindEntity(inst, SEE_FOOD_DIST, function(item) 
-                if item:GetTimeAlive() < 8 then return false end
-                if item.prefab == "mandrake" then return false end
-                if noveggie and item.components.edible and item.components.edible.foodtype ~= FOODTYPE.MEAT then
-                    return false
-                end
-                if not item:IsOnValidGround() then
-                    return false
-                end
-                return inst.components.eater:CanEat(item)
-            end)
+    if time_since_eat ~= nil and time_since_eat <= TUNING.PIG_MIN_POOP_PERIOD * 2 then
+        return
     end
-    if target then
+
+    local noveggie = time_since_eat ~= nil and time_since_eat < TUNING.PIG_MIN_POOP_PERIOD * 4
+
+    local target = FindEntity(inst,
+        SEE_FOOD_DIST,
+        function(item)
+            return item:GetTimeAlive() >= 8
+                and item.prefab ~= "mandrake"
+                and item.components.edible ~= nil
+                and (not noveggie or item.components.edible.foodtype == FOODTYPE.MEAT)
+                and item:IsOnValidGround()
+                and inst.components.eater:CanEat(item)
+        end,
+        nil,
+        { "outofreach" }
+    )
+    if target ~= nil then
         return BufferedAction(inst, target, ACTIONS.EAT)
     end
 
-    if not target and (not time_since_eat or time_since_eat > TUNING.PIG_MIN_POOP_PERIOD*2) then
-        target = FindEntity(inst, SEE_FOOD_DIST, function(item) 
-                if not item.components.shelf then return false end
-                if not item.components.shelf.itemonshelf or not item.components.shelf.cantakeitem then return false end
-                if noveggie and item.components.shelf.itemonshelf.components.edible and item.components.shelf.itemonshelf.components.edible.foodtype ~= FOODTYPE.MEAT then
-                    return false
-                end
-                if not item:IsOnValidGround() then
-                    return false
-                end
-                return inst.components.eater:CanEat(item.components.shelf.itemonshelf) 
-            end)
-    end
-
-    if target then
+    target = FindEntity(inst,
+        SEE_FOOD_DIST,
+        function(item)
+            return item.components.shelf ~= nil
+                and item.components.shelf.itemonshelf ~= nil
+                and item.components.shelf.cantakeitem
+                and item.components.shelf.itemonshelf.components.edible ~= nil
+                and (not noveggie or item.components.shelf.itemonshelf.components.edible.foodtype == FOODTYPE.MEAT)
+                and item:IsOnValidGround()
+                and inst.components.eater:CanEat(item.components.shelf.itemonshelf)
+        end,
+        nil,
+        { "outofreach" }
+    )
+    if target ~= nil then
         return BufferedAction(inst, target, ACTIONS.TAKEITEM)
     end
 end

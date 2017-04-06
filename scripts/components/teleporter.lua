@@ -14,6 +14,13 @@ local Teleporter = Class(function(self, inst)
     self.offset = 2
     self.enabled = true
     self.numteleporting = 0
+    self.teleportees = {}
+    self.saveenabled = true
+
+    self.travelcameratime = 3
+    self.travelarrivetime = 4
+
+    self._onremoveteleportee = function(doer) self:UnregisterTeleportee(doer) end
 end,
 nil,
 {
@@ -25,8 +32,35 @@ function Teleporter:OnRemoveFromEntity()
     self.inst:RemoveTag("teleporter")
 end
 
+function Teleporter:IsActive()
+    return self.enabled and self.targetTeleporter ~= nil
+end
+
+function Teleporter:IsBusy()
+    return self.numteleporting > 0 or next(self.teleportees) ~= nil
+end
+
+function Teleporter:IsTargetBusy()
+    return self.targetTeleporter ~= nil and self.targetTeleporter.components.teleporter:IsBusy()
+end
+
+--Notifies ahead of time that someone will try to teleport soon
+function Teleporter:RegisterTeleportee(doer)
+    if not self.teleportees[doer] then
+        self.teleportees[doer] = true
+        self.inst:ListenForEvent("onremove", self._onremoveteleportee, doer)
+    end
+end
+
+function Teleporter:UnregisterTeleportee(doer)
+    if self.teleportees[doer] then
+        self.teleportees[doer] = nil
+        self.inst:RemoveEventCallback("onremove", self._onremoveteleportee, doer)
+    end
+end
+
 function Teleporter:Activate(doer)
-    if self.targetTeleporter == nil or not self.enabled then
+    if not self:IsActive() then
         return false
     end
 
@@ -34,21 +68,21 @@ function Teleporter:Activate(doer)
         self.onActivate(self.inst, doer)
     end
 
-    local targetTeleporter = self.targetTeleporter.components.teleporter
-    if targetTeleporter ~= nil
-        and targetTeleporter.onActivateByOther ~= nil then
-        targetTeleporter.onActivateByOther(self.targetTeleporter, self.inst, doer)
-        targetTeleporter.numteleporting = targetTeleporter.numteleporting + 1
+    if self.targetTeleporter.components.teleporter ~= nil then
+        if self.targetTeleporter.components.teleporter.onActivateByOther ~= nil then
+            self.targetTeleporter.components.teleporter.onActivateByOther(self.targetTeleporter, self.inst, doer)
+        end
+        self.targetTeleporter.components.teleporter.numteleporting = self.targetTeleporter.components.teleporter.numteleporting + 1
     end
 
     self:Teleport(doer)
 
-    if self.targetTeleporter.components.teleporter ~= nil and doer.components.inventoryitem ~= nil then
-        self.targetTeleporter.components.teleporter:ReceiveItem(doer)
-    end
-
-    if self.targetTeleporter.components.teleporter ~= nil and doer:HasTag("player") then
-        self.targetTeleporter.components.teleporter:ReceivePlayer(doer)
+    if self.targetTeleporter.components.teleporter ~= nil then
+        if doer:HasTag("player") then
+            self.targetTeleporter.components.teleporter:ReceivePlayer(doer)
+        elseif doer.components.inventoryitem ~= nil then
+            self.targetTeleporter.components.teleporter:ReceiveItem(doer)
+        end
     end
 
     if doer.components.leader ~= nil then
@@ -83,14 +117,31 @@ function Teleporter:Activate(doer)
     return true
 end
 
+local function NoHoles(pt)
+    return not TheWorld.Map:IsPointNearHole(pt)
+end
+
+local function NoPlayersOrHoles(pt)
+    return not (IsAnyPlayerInRange(pt.x, 0, pt.z, 2) or TheWorld.Map:IsPointNearHole(pt))
+end
+
 -- You probably don't want this, call Activate instead.
 function Teleporter:Teleport(obj)
     if self.targetTeleporter ~= nil then
         local target_x, target_y, target_z = self.targetTeleporter.Transform:GetWorldPosition()
-        if self.offset ~= 0 then
+        local offset = self.targetTeleporter.components.teleporter ~= nil and self.targetTeleporter.components.teleporter.offset or 0
+        if offset ~= 0 then
+            local pt = Vector3(target_x, target_y, target_z)
             local angle = math.random() * 2 * PI
-            target_x = target_x + math.cos(angle) * self.offset
-            target_z = target_z - math.sin(angle) * self.offset
+            offset =
+                FindWalkableOffset(pt, angle, offset, 8, true, false, NoPlayersOrHoles) or
+                FindWalkableOffset(pt, angle, offset * .5, 6, true, false, NoPlayersOrHoles) or
+                FindWalkableOffset(pt, angle, offset, 8, true, false, NoHoles) or
+                FindWalkableOffset(pt, angle, offset * .5, 6, true, false, NoHoles)
+            if offset ~= nil then
+                target_x = target_x + offset.x
+                target_z = target_z + offset.z
+            end
         end
         if obj.Physics ~= nil then
             obj.Physics:Teleport(target_x, target_y, target_z)
@@ -168,8 +219,8 @@ local function ondoerarrive(inst, self, doer)
     --      this is not a task or event handler on the doer.
     if not doer:IsValid() then
         doer = nil
-    elseif doer.sg.currentstate.name == "jumpin" then
-        doer.sg:GoToState("jumpout")
+    elseif doer.sg.statemem.teleportarrivestate ~= nil then
+        doer.sg:GoToState(doer.sg.statemem.teleportarrivestate)
     end
     self.numteleporting = self.numteleporting - 1
     self:PushDoneTeleporting(doer)
@@ -177,8 +228,8 @@ end
 
 function Teleporter:ReceivePlayer(doer)
     doer:ScreenFade(false)
-    self.inst:DoTaskInTime(3, oncameraarrive, doer)
-    self.inst:DoTaskInTime(4, ondoerarrive, self, doer)
+    self.inst:DoTaskInTime(self.travelcameratime, oncameraarrive, doer)
+    self.inst:DoTaskInTime(self.travelarrivetime, ondoerarrive, self, doer)
 end
 
 function Teleporter:Target(otherTeleporter)
@@ -190,7 +241,7 @@ function Teleporter:SetEnabled(enabled)
 end
 
 function Teleporter:OnSave()
-    if self.targetTeleporter ~= nil then
+    if self.saveenabled and self.targetTeleporter ~= nil then
         return { target = self.targetTeleporter.GUID }, { self.targetTeleporter.GUID }
     end
 end
@@ -202,6 +253,10 @@ function Teleporter:LoadPostPass(newents, savedata)
             self.targetTeleporter = targEnt.entity
         end
     end
+end
+
+function Teleporter:GetDebugString()
+    return "Enabled: "..(self.enabled and "T" or "F").." Target:"..tostring(self.targetTeleporter)
 end
 
 return Teleporter

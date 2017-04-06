@@ -30,6 +30,7 @@ local giant_loot1 =
     "dragon_scales",
     "hivehat",
     "shroom_skin",
+    "mandrake",
 }
 
 local giant_loot2 =
@@ -40,6 +41,8 @@ local giant_loot2 =
     "blue_mushroomhat_blueprint",
     "mushroom_light2_blueprint",
     "mushroom_light_blueprint",
+    "townportal_blueprint",
+    "bundlewrap_blueprint",
 }
 
 local giant_loot3 =
@@ -50,6 +53,7 @@ local giant_loot3 =
     "lavae_egg",
     "spiderhat",
     "steelwool",
+    "townportaltalisman",
 }
 
 for i, v in ipairs(giant_loot1) do
@@ -282,6 +286,8 @@ local function fn()
 
     --klaussacklock (from klaussacklock component) added to pristine state for optimization
     inst:AddTag("klaussacklock")
+
+    inst:AddTag("antlion_sinkhole_blocker")
 
     inst.entity:SetPristine()
 

@@ -199,6 +199,8 @@ local function fn()
     inst.components.inspectable.getstatus = GetStatus
 
     inst:AddComponent("inventoryitem")
+    inst:AddComponent("tradable")
+    inst.components.tradable.rocktribute = 6
 
     inst:AddComponent("temperature")
     inst.components.temperature.current = TheWorld.state.temperature

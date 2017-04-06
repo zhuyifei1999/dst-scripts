@@ -5,6 +5,12 @@
 return Class(function(self, inst)
 
 --------------------------------------------------------------------------
+--[[ Dependencies ]]
+--------------------------------------------------------------------------
+
+local SourceModifierList = require("util/sourcemodifierlist")
+
+--------------------------------------------------------------------------
 --[[ Constants ]]
 --------------------------------------------------------------------------
 
@@ -18,6 +24,19 @@ local DENSITYRADIUS = 5 -- the minimum radius that can contain 3 debris (allows 
 
 local SMASHABLE_TAGS = { "smashable", "quakedebris", "_combat" }
 local NON_SMASHABLE_TAGS = { "INLIMBO", "playerghost", "irreplaceable" }
+
+local HEAVY_WORK_ACTIONS =
+{
+    CHOP = true,
+    DIG = true,
+    HAMMER = true,
+    MINE = true,
+}
+local HEAVY_SMASHABLE_TAGS = { "smashable", "quakedebris", "_combat", "_inventoryitem", "campfire" }
+for k, v in pairs(HEAVY_WORK_ACTIONS) do
+    table.insert(HEAVY_SMASHABLE_TAGS, k.."_workable")
+end
+local HEAVY_NON_SMASHABLE_TAGS = { "INLIMBO", "playerghost", "irreplaceable", "caveindebris" }
 
 --------------------------------------------------------------------------
 --[[ Member variables ]]
@@ -35,11 +54,13 @@ local _debrispersecond = 1 -- how much junk falls
 local _mammalsremaining = 0
 local _task = nil
 local _frequencymultiplier = 1
+local _pausesources = SourceModifierList(inst, false, SourceModifierList.boolean)
 
 local _quakedata = nil -- populated through configuration
 
-local _debris = {
-    {weight = 1, loot = {"rocks"}},
+local _debris =
+{
+    { weight = 1, loot = { "rocks" } },
 }
 
 local _activeplayers = {}
@@ -113,29 +134,66 @@ local _BreakDebris = _ismastersim and function(debris)
     debris:Remove()
 end or nil
 
-local _GroundDetectionUpdate = _ismastersim and function(debris)
+local _GroundDetectionUpdate = _ismastersim and function(debris, override_density)
     local x, y, z = debris.Transform:GetWorldPosition()
     if y <= .2 then
         if not debris:IsOnValidGround() then
             debris:PushEvent("detachchild")
             debris:Remove()
+        elseif _world.Map:IsPointNearHole(Vector3(x, 0, z)) then
+            if debris.prefab == "mole" or debris.prefab == "rabbit" then
+                debris:PushEvent("detachchild")
+                debris:Remove()
+            else
+                _BreakDebris(debris)
+            end
         else
             --PlayFallingSound(debris)
 
             -- break stuff we land on
             -- NOTE: re-check validity as we iterate, since we're invalidating stuff as we go
             local softbounce = false
-            local ents = TheSim:FindEntities(x, 0, z, 2, nil, NON_SMASHABLE_TAGS, SMASHABLE_TAGS)
-            for i, v in ipairs(ents) do
-                if v ~= debris and v:IsValid() then
-                    softbounce = true
-                    --NOTE: "smashable" excluded for now
-                    if v:HasTag("quakedebris") then
-                        local vx, vy, vz = v.Transform:GetWorldPosition()
-                        SpawnPrefab("ground_chunks_breaking").Transform:SetPosition(vx, 0, vz)
-                        v:Remove()
-                    elseif v.components.combat ~= nil and not (v:HasTag("epic") or v:HasTag("wall")) then
-                        v.components.combat:GetAttacked(debris, 20, nil)
+            if debris:HasTag("heavy") then
+                local ents = TheSim:FindEntities(x, 0, z, 2, nil, HEAVY_NON_SMASHABLE_TAGS, HEAVY_SMASHABLE_TAGS)
+                for i, v in ipairs(ents) do
+                    if v ~= debris and v:IsValid() and not v:IsInLimbo() then
+                        softbounce = true
+                        --NOTE: "smashable" excluded for now
+                        if v:HasTag("quakedebris") then
+                            local vx, vy, vz = v.Transform:GetWorldPosition()
+                            SpawnPrefab("ground_chunks_breaking").Transform:SetPosition(vx, 0, vz)
+                            v:Remove()
+                        elseif v.components.workable ~= nil then
+                            if v.sg == nil or not v.sg:HasStateTag("busy") then
+                                local work_action = v.components.workable:GetWorkAction()
+                                --V2C: nil action for campfires
+                                if (work_action == nil or HEAVY_WORK_ACTIONS[work_action.id]) and
+                                    (work_action ~= ACTIONS.DIG
+                                    or (v.components.spawner == nil and
+                                        v.components.childspawner == nil)) then
+                                    v.components.workable:Destroy(debris)
+                                end
+                            end
+                        elseif v.components.combat ~= nil then
+                            v.components.combat:GetAttacked(debris, 30, nil)
+                        elseif v.components.inventoryitem ~= nil then
+                            Launch(v, debris, TUNING.LAUNCH_SPEED_SMALL)
+                        end
+                    end
+                end
+            else
+                local ents = TheSim:FindEntities(x, 0, z, 2, nil, NON_SMASHABLE_TAGS, SMASHABLE_TAGS)
+                for i, v in ipairs(ents) do
+                    if v ~= debris and v:IsValid() and not v:IsInLimbo() then
+                        softbounce = true
+                        --NOTE: "smashable" excluded for now
+                        if v:HasTag("quakedebris") then
+                            local vx, vy, vz = v.Transform:GetWorldPosition()
+                            SpawnPrefab("ground_chunks_breaking").Transform:SetPosition(vx, 0, vz)
+                            v:Remove()
+                        elseif v.components.combat ~= nil and not (v:HasTag("epic") or v:HasTag("wall")) then
+                            v.components.combat:GetAttacked(debris, 20, nil)
+                        end
                     end
                 end
             end
@@ -159,11 +217,13 @@ local _GroundDetectionUpdate = _ismastersim and function(debris)
             debris.updatetask:Cancel()
             debris.updatetask = nil
 
-            if debris.prefab == "mole" or
+            local density = override_density or DENSITYRADIUS
+            if density <= 0 or
+                debris.prefab == "mole" or
                 debris.prefab == "rabbit" or
                 not (math.random() < .75 or
                     --NOTE: There will always be at least one found within DENSITYRADIUS, ourself!
-                    #TheSim:FindEntities(x, 0, y, DENSITYRADIUS, nil, { "quakedebris" }, { "INLIMBO" }) > 1
+                    #TheSim:FindEntities(x, 0, y, density, nil, { "quakedebris" }, { "INLIMBO" }) > 1
                 ) then
                 --keep it
                 debris.persists = true
@@ -174,6 +234,7 @@ local _GroundDetectionUpdate = _ismastersim and function(debris)
                         debris.components.inventoryitem.canbepickedup = true
                     end
                 end
+                debris:PushEvent("stopfalling")
             elseif debris:GetTimeAlive() < 1.5 then
                 --should be our first bounce
                 debris:DoTaskInTime(softbounce and .4 or .6, _BreakDebris)
@@ -201,6 +262,7 @@ local _GroundDetectionUpdate = _ismastersim and function(debris)
                 debris.components.inventoryitem.canbepickedup = true
             end
         end
+        debris:PushEvent("stopfalling")
     elseif debris.prefab == "mole" or debris.prefab == "rabbit" then
         --failsafe
         debris:PushEvent("detachchild")
@@ -213,8 +275,12 @@ end or nil
 
 -- /debris methods
 
-local SpawnDebris = _ismastersim and function(spawn_point)
-    local prefab = GetDebris()
+local OnRemoveDebris = _ismastersim and function(debris)
+    debris.shadow:Remove()
+end or nil
+
+local SpawnDebris = _ismastersim and function(spawn_point, override_prefab, override_density)
+    local prefab = override_prefab or GetDebris()
     if prefab ~= nil then
         local debris = SpawnPrefab(prefab)
         if debris ~= nil then
@@ -235,26 +301,33 @@ local SpawnDebris = _ismastersim and function(spawn_point)
             debris.Physics:Teleport(spawn_point.x, 35, spawn_point.z)
 
             debris.shadow = SpawnPrefab("warningshadow")
-            debris.shadow:ListenForEvent("onremove", function() debris.shadow:Remove() end, debris)
+            debris.shadow:ListenForEvent("onremove", OnRemoveDebris, debris)
             debris.shadow.Transform:SetPosition(spawn_point.x, 0, spawn_point.z)
             UpdateShadowSize(debris.shadow, 35)
 
-            debris.updatetask = debris:DoPeriodicTask(FRAMES, _GroundDetectionUpdate)
+            debris.updatetask = debris:DoPeriodicTask(FRAMES, _GroundDetectionUpdate, nil, override_density)
+            debris:PushEvent("startfalling")
         end
         return debris
     end
 end or nil
 
 local GetTimeForNextDebris = _ismastersim and function()
-    return 1/_debrispersecond
+    return 1 / _debrispersecond
 end or nil
 
-local GetSpawnPoint = _ismastersim and function(pt, rad)
+local GetSpawnPoint = _ismastersim and function(pt, rad, minrad)
     local theta = math.random() * 2 * PI
-    local radius = math.random()*(rad or TUNING.FROG_RAIN_SPAWN_RADIUS)
+    local radius = math.random() * (rad or TUNING.FROG_RAIN_SPAWN_RADIUS)
+
+    minrad = minrad ~= nil and minrad > 0 and minrad * minrad or nil
 
     local result_offset = FindValidPositionByFan(theta, radius, 12, function(offset)
-        return _world.Map:IsAboveGroundAtPoint(pt.x + offset.x, 0, pt.z + offset.z)
+        local x = pt.x + offset.x
+        local z = pt.z + offset.z
+        return _world.Map:IsAboveGroundAtPoint(x, 0, z)
+            and (minrad == nil or offset.x * offset.x + offset.z * offset.z >= minrad)
+            and not _world.Map:IsPointNearHole(Vector3(x, 0, z))
     end)
 
     return result_offset ~= nil and pt + result_offset or nil
@@ -322,7 +395,6 @@ end or nil
 
 -- was forward declared
 EndQuake = _ismastersim and function(inst, continue)
-    --print("ENDING QUAKE")
     CancelDrops()
 
     _quakesoundintensity:set(0)
@@ -334,7 +406,6 @@ EndQuake = _ismastersim and function(inst, continue)
 end or nil
 
 local StartQuake = _ismastersim and function(inst, data, overridetime)
-    --print("STARTING QUAKE")
     _quakesoundintensity:set(2)
 
     _debrispersecond = type(data.debrispersecond) == "function" and data.debrispersecond() or data.debrispersecond
@@ -351,15 +422,20 @@ local StartQuake = _ismastersim and function(inst, data, overridetime)
     _state = QUAKESTATE.QUAKING
 end or nil
 
-local WarnQuake = _ismastersim and function(inst, data, overridetime)
-    --print("WARNING QUAKE")
-    inst:DoTaskInTime(1, function()
-        for i, v in ipairs(_activeplayers) do
-            v:DoTaskInTime(math.random() * 2, _DoWarningSpeech)
-        end
-        inst:PushEvent("warnquake")
-    end)
+local DoWarnQuake = _ismastersim and function()
+    for i, v in ipairs(_activeplayers) do
+        v:DoTaskInTime(math.random() * 2, _DoWarningSpeech)
+    end
+    inst:PushEvent("warnquake")
+end or nil
 
+local WarnQuake = _ismastersim and function(inst, data, overridetime)
+    if _pausesources:Get() then
+        SetNextQuake(_quakedata)
+        return
+    end
+
+    inst:DoTaskInTime(1, DoWarnQuake)
     _quakesoundintensity:set(1)
 
     local warntime = overridetime or (type(data.warningtime) == "function" and data.warningtime()) or data.warningtime
@@ -370,8 +446,13 @@ end or nil
 
 -- Was forward declared
 SetNextQuake = _ismastersim and function(data, overridetime)
-    --print("RESCHEDULE QUAKE")
-    local nexttime = overridetime or (type(data.nextquake) == "function" and data.nextquake()*_frequencymultiplier) or data.nextquake*_frequencymultiplier
+    if _frequencymultiplier <= 0 then
+        --should not get here yo!
+        ClearTask()
+        return
+    end
+
+    local nexttime = overridetime or (type(data.nextquake) == "function" and data.nextquake() or data.nextquake) / _frequencymultiplier
     UpdateTask(nexttime, WarnQuake, data)
     _state = QUAKESTATE.WAITING
 end or nil
@@ -404,24 +485,29 @@ end
 
 local _OnEndMiniQuake = _ismastersim and function()
     _miniquakesoundintensity:set(false)
-end
+end or nil
+
+local _OnMiniQuakeSpawn = _ismastersim and function(inst, pos, rad, minrad, debrisfn)
+    local spawn_point = GetSpawnPoint(pos, rad, minrad)
+    if spawn_point ~= nil then
+        if debrisfn ~= nil then
+            local prefab, density = debrisfn()
+            if prefab ~= nil then
+                SpawnDebris(spawn_point, prefab, density)
+            end
+        else
+            SpawnDebris(spawn_point)
+        end
+    end
+end or nil
 
 local OnMiniQuake = _ismastersim and function(src, data)
     _miniquakesoundintensity:set(true)
 
-    local char_pos = Vector3(data.target.Transform:GetWorldPosition())
-
-    local time = 0
-    for i=1,data.num do
-
-        inst:DoTaskInTime(time, function()
-            local spawn_point = GetSpawnPoint(char_pos, data.rad)
-            if spawn_point ~= nil then
-                SpawnDebris(spawn_point)
-            end
-        end)
-
-        time = time + data.duration/data.num
+    local pos = data.pos or data.target:GetPosition()
+    local dt = data.duration / data.num
+    for t = 0, data.duration - dt * .5, dt do
+        inst:DoTaskInTime(t, _OnMiniQuakeSpawn, pos, data.rad, data.minrad, data.debrisfn)
     end
 
     ShakeAllCameras(CAMERASHAKE.FULL, data.duration, .02, .5, data.target, 40)
@@ -445,7 +531,7 @@ local OnForceQuake = _ismastersim and function(src, data)
     return true
 end or nil
 
-local OnPlayerJoined = _ismastersim and function (src, player)
+local OnPlayerJoined = _ismastersim and function(src, player)
     for i, v in ipairs(_activeplayers) do
         if v == player then
             return
@@ -457,7 +543,7 @@ local OnPlayerJoined = _ismastersim and function (src, player)
     end
 end or nil
 
-local OnPlayerLeft = _ismastersim and function (src, player)
+local OnPlayerLeft = _ismastersim and function(src, player)
     for i, v in ipairs(_activeplayers) do
         if v == player then
             CancelDropForPlayer(player)
@@ -467,12 +553,24 @@ local OnPlayerLeft = _ismastersim and function (src, player)
     end
 end or nil
 
-local OnFrequencyMultiplier = _ismastersim and function (src, multiplier)
+local OnFrequencyMultiplier = _ismastersim and function(src, multiplier)
     _frequencymultiplier = multiplier
     if _frequencymultiplier > 0 and _quakedata ~= nil then
         SetNextQuake(_quakedata)
     else
         ClearTask()
+    end
+end or nil
+
+local OnPauseQuakes = _ismastersim and function(src, data)
+    if data ~= nil and data.source ~= nil then
+        _pausesources:SetModifier(data.source, true, data.reason)
+    end
+end or nil
+
+local OnUnpauseQuakes = _ismastersim and function(src, data)
+    if data ~= nil and data.source ~= nil then
+        _pausesources:RemoveModifier(data.source, data.reason)
     end
 end or nil
 
@@ -518,6 +616,9 @@ if _ismastersim then
     inst:ListenForEvent("ms_quakefrequencymultiplier", OnFrequencyMultiplier, _world)
 
     inst:ListenForEvent("explosion", OnExplosion, _world)
+
+    inst:ListenForEvent("pausequakes", OnPauseQuakes, _world)
+    inst:ListenForEvent("unpausequakes", OnUnpauseQuakes, _world)
 end
 
 -- Default configuration
@@ -555,13 +656,6 @@ self:SetQuakeData({
     nextquake = function() return TUNING.TOTAL_DAY_TIME + math.random() * TUNING.TOTAL_DAY_TIME * 2 end,
     mammals = 1,
 })
-
---------------------------------------------------------------------------
---[[ Update ]]
---------------------------------------------------------------------------
-
-function self:LongUpdate(dt)
-end
 
 --------------------------------------------------------------------------
 --[[ Save/Load ]]

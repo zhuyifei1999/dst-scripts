@@ -134,7 +134,6 @@ local function fn()
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
-    inst.entity:AddPhysics()
     inst.entity:AddSoundEmitter()
     --inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()

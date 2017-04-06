@@ -6,6 +6,13 @@ local assets =
     --Asset("ANIM", "anim/swap_goldenpitchfork.zip"),
 }
 
+local prefabs =
+{
+    "sinkhole_spawn_fx_1",
+    "sinkhole_spawn_fx_2",
+    "sinkhole_spawn_fx_3",
+}
+
 local function onequip(inst, owner)
     owner.AnimState:OverrideSymbol("swap_object", "swap_pitchfork", "swap_pitchfork")
     owner.AnimState:Show("ARM_carry")
@@ -97,5 +104,5 @@ end
     --return inst
 --end
 
-return Prefab("pitchfork", normal, assets)--,
-    --Prefab("goldenpitchfork", golden, assets)
+return Prefab("pitchfork", normal, assets, prefabs)--,
+    --Prefab("goldenpitchfork", golden, assets, prefabs)

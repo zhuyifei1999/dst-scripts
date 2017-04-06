@@ -155,6 +155,7 @@ function Dryer:StartDrying(dryable)
     end
 
     self.ingredient = dryable.prefab
+    self.ingredientperish = dryable.components.perishable:GetPercent()
     self.product = dryable.components.dryable:GetProduct()
     self.remainingtime = dryable.components.dryable:GetDryTime()
     self.tasktotime = nil
@@ -233,6 +234,44 @@ function Dryer:Resume()
         self.tasktotime = GetTime() + self.remainingtime
         self.remainingtime = nil
     end
+end
+
+function Dryer:DropItem()
+	if self.ingredient == nil and self.product == nil then
+		return
+	end
+	
+    local loot = SpawnPrefab(self.ingredient or self.product)
+    if loot ~= nil then
+		LaunchAt(loot, self.inst, nil, .25, 1)
+        if loot.components.perishable ~= nil then
+			if self.ingredient ~= nil then
+				print (self.ingredientperish, self:GetTimeToDry(), loot.components.dryable:GetDryTime(), (self:GetTimeToDry() / loot.components.dryable:GetDryTime()), self.ingredientperish * (self:GetTimeToDry() / loot.components.dryable:GetDryTime()))
+				loot.components.perishable:SetPercent(self.ingredientperish * (self:GetTimeToDry() / loot.components.dryable:GetDryTime()))
+	        else
+	            loot.components.perishable:SetPercent(self:GetTimeToSpoil() / TUNING.PERISH_PRESERVED)
+	        end
+            loot.components.perishable:StartPerishing()
+        end
+        if loot.components.inventoryitem ~= nil and not self.protectedfromrain then
+            loot.components.inventoryitem:InheritMoisture(TheWorld.state.wetness, TheWorld.state.iswet)
+        end
+    end
+
+    self.ingredient = nil
+    self.product = nil
+    self.remainingtime = nil
+    self.tasktotime = nil
+    if self.task ~= nil then
+        self.task:Cancel()
+        self.task = nil
+    end
+    StopWatchingRain(self)
+
+    if self.onharvest ~= nil then
+        self.onharvest(self.inst)
+    end
+    return true
 end
 
 function Dryer:Harvest(harvester)
@@ -314,6 +353,7 @@ function Dryer:OnSave()
         return
         {
             ingredient = self.ingredient,
+            ingredientperish = self.ingredientperish,
             product = self.product,
             remainingtime = remainingtime > 0 and remainingtime or nil,
         }
@@ -323,6 +363,7 @@ end
 function Dryer:OnLoad(data)
     if data.product ~= nil then
         self.ingredient = data.ingredient
+        self.ingredientperish = data.ingredientperish or 100 -- for old save files, assume 100%
         self.product = data.product
         self.remainingtime = data.remainingtime or 0
         self.tasktotime = nil

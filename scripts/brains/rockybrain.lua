@@ -31,22 +31,22 @@ local function KeepFaceTargetFn(inst, target)
 end
 
 local function CanPickup(item)
-    return item.components.inventoryitem.canbepickedup and item:GetTimeAlive() >= 8 and item:IsOnValidGround()
+    return item.components.inventoryitem.canbepickedup
+        and item:GetTimeAlive() >= 8
+        and item:IsOnValidGround()
 end
 
 local function EatFoodAction(inst)
     if inst.sg:HasStateTag("busy") then
         return
-    end
-
-    if inst.components.inventory ~= nil and inst.components.eater ~= nil then
+    elseif inst.components.inventory ~= nil and inst.components.eater ~= nil then
         local target = inst.components.inventory:FindItem(function(item) return inst.components.eater:CanEat(item) end)
         if target ~= nil then
             return BufferedAction(inst, target, ACTIONS.EAT)
         end
     end
 
-    local target = FindEntity(inst, 15, CanPickup, { "edible_ELEMENTAL", "_inventoryitem" }, { "INLIMBO", "fire", "catchable" })
+    local target = FindEntity(inst, 15, CanPickup, { "edible_ELEMENTAL", "_inventoryitem" }, { "INLIMBO", "fire", "catchable", "outofreach" })
     if target ~= nil then
         local ba = BufferedAction(inst, target, ACTIONS.PICKUP)
         ba.distance = 1.5

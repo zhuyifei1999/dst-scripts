@@ -1,7 +1,11 @@
+require("stategraphs/commonstates")
 
-ShadowChessEvents = {}
-ShadowChessStates = {}
-ShadowChessFunctions = {}
+local ShadowChess =
+{
+    Events = {},
+    States = {},
+    Functions = {},
+}
 
 --------------------------------------------------------------------------
 local function FinishExtendedSound(inst, soundid)
@@ -30,11 +34,11 @@ local function ExtendedSoundTimelineEvent(t, soundname)
     end)
 end
 
-ShadowChessFunctions.PlayExtendedSound = PlayExtendedSound
-ShadowChessFunctions.ExtendedSoundTimelineEvent = ExtendedSoundTimelineEvent
+ShadowChess.Functions.PlayExtendedSound = PlayExtendedSound
+ShadowChess.Functions.ExtendedSoundTimelineEvent = ExtendedSoundTimelineEvent
 
 --------------------------------------------------------------------------
-ShadowChessEvents.OnAnimOverRemoveAfterSounds = function()
+ShadowChess.Events.OnAnimOverRemoveAfterSounds = function()
     return EventHandler("animover", function(inst)
         if inst.AnimState:AnimDone() then
             if inst.sg.mem.soundcache == nil or next(inst.sg.mem.soundcache) == nil then
@@ -43,6 +47,14 @@ ShadowChessEvents.OnAnimOverRemoveAfterSounds = function()
                 inst:Hide()
                 inst.sg.statemem.readytoremove = true
             end
+        end
+    end)
+end
+
+ShadowChess.Events.IdleOnAnimOver = function()
+    return EventHandler("animover", function(inst)
+        if inst.AnimState:AnimDone() then
+            inst.sg:GoToState("idle")
         end
     end)
 end
@@ -56,7 +68,7 @@ local function DeathSoundTimelineEvent(t)
     return TimeEvent(t, PlayDeathSound)
 end
 
-ShadowChessFunctions.DeathSoundTimelineEvent = DeathSoundTimelineEvent
+ShadowChess.Functions.DeathSoundTimelineEvent = DeathSoundTimelineEvent
 
 --------------------------------------------------------------------------
 local LEVELUP_RADIUS = 25
@@ -70,7 +82,7 @@ local function AwakenNearbyStatues(inst)
     end
 end
 
-ShadowChessFunctions.AwakenNearbyStatues = AwakenNearbyStatues
+ShadowChess.Functions.AwakenNearbyStatues = AwakenNearbyStatues
 
 --------------------------------------------------------------------------
 local function TriggerEpicScare(inst)
@@ -79,22 +91,45 @@ local function TriggerEpicScare(inst)
     end
 end
 
-ShadowChessFunctions.TriggerEpicScare = TriggerEpicScare
+ShadowChess.Functions.TriggerEpicScare = TriggerEpicScare
 
 --------------------------------------------------------------------------
 local function levelup(inst, data)
-    if not inst.components.health:IsDead()then
-        local queued = inst:QueueLevelUp(data.source)
-        if queued then
-            if not inst.sg:HasStateTag("busy") then 
-                inst.sg:GoToState("levelup")
-            end
-        end
+    if not (inst.components.health:IsDead() or inst.sg:HasStateTag("busy")) and inst:WantsToLevelUp() then
+        inst.sg:GoToState("levelup")
     end
 end
 
-ShadowChessEvents.LevelUp = function()
+ShadowChess.Events.LevelUp = function()
     return EventHandler("levelup", levelup)
+end
+
+--------------------------------------------------------------------------
+local function doattack(inst, data)
+    if not (inst.sg:HasStateTag("busy") or
+            inst.sg:HasStateTag("attack") or
+            inst.sg:HasStateTag("taunt") or
+            inst.sg:HasStateTag("levelup") or
+            inst.components.health:IsDead()) then
+        inst.sg:GoToState("attack", data.target)
+    end
+end
+
+ShadowChess.Events.DoAttack = function()
+    return EventHandler("doattack", doattack)
+end
+
+--------------------------------------------------------------------------
+local function onattacked(inst)--, data)
+    if not (inst.sg:HasStateTag("busy") or
+            inst.components.health:IsDead() or
+            inst:WantsToLevelUp()) then
+        inst.sg:GoToState("hit")
+    end
+end
+
+ShadowChess.Events.OnAttacked = function()
+    return EventHandler("attacked", onattacked)
 end
 
 --------------------------------------------------------------------------
@@ -102,10 +137,9 @@ local function ondeath(inst, data)
     inst.sg:GoToState(inst.level == 1 and "death" or "evolved_death", data)
 end    
 
-ShadowChessEvents.OnDeath = function()
+ShadowChess.Events.OnDeath = function()
     return EventHandler("death", ondeath)
 end
-
 
 --------------------------------------------------------------------------
 local function ondespawn(inst, data)
@@ -114,13 +148,12 @@ local function ondespawn(inst, data)
     end
 end    
 
-ShadowChessEvents.OnDespawn = function()
+ShadowChess.Events.OnDespawn = function()
     return EventHandler("despawn", ondespawn)
 end
 
-
 --------------------------------------------------------------------------
-ShadowChessStates.AddIdle = function(states, idle_anim)
+ShadowChess.States.AddIdle = function(states, idle_anim)
     table.insert(states, State
     {
         name = "idle",
@@ -143,7 +176,7 @@ ShadowChessStates.AddIdle = function(states, idle_anim)
 end
 
 --------------------------------------------------------------------------
-ShadowChessStates.AddLevelUp = function(states, anim, sound_frame, transition_frame, busyover_frame)
+ShadowChess.States.AddLevelUp = function(states, anim, sound_frame, transition_frame, busyover_frame)
     table.insert(states, State
     {
         name = "levelup",
@@ -156,26 +189,28 @@ ShadowChessStates.AddLevelUp = function(states, anim, sound_frame, transition_fr
 
         timeline =
         {
-            TimeEvent(sound_frame*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.levelup) end),
-            TimeEvent(transition_frame*FRAMES, function(inst)
+            TimeEvent(sound_frame * FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst.sounds.levelup) end),
+            TimeEvent(transition_frame * FRAMES, function(inst)
                 while inst:WantsToLevelUp() do
                     inst:LevelUp()
                 end
                 AwakenNearbyStatues(inst)
                 TriggerEpicScare(inst)
             end),
-            TimeEvent(busyover_frame*FRAMES, function(inst) inst.sg:RemoveStateTag("busy") end),
+            TimeEvent(busyover_frame * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
         },
 
         events =
         {
-            EventHandler("animover", function(inst) if inst.AnimState:AnimDone() then inst.sg:GoToState("idle") end end),
+            ShadowChess.Events.IdleOnAnimOver(),
         },
     })
 end
 
 --------------------------------------------------------------------------
-ShadowChessStates.AddTaunt = function(states, anim, sound_frame, action_frame, busyover_frame)
+ShadowChess.States.AddTaunt = function(states, anim, sound_frame, action_frame, busyover_frame)
     table.insert(states, State
     {
         name = "taunt",
@@ -200,17 +235,13 @@ ShadowChessStates.AddTaunt = function(states, anim, sound_frame, action_frame, b
 
         events =
         {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end),
+            ShadowChess.Events.IdleOnAnimOver(),
         },
     })
 end
 
 --------------------------------------------------------------------------
-ShadowChessStates.AddHit = function(states, anim, sound_frame, busyover_frame)
+ShadowChess.States.AddHit = function(states, anim, sound_frame, busyover_frame)
     table.insert(states, State
     {
         name = "hit",
@@ -225,15 +256,41 @@ ShadowChessStates.AddHit = function(states, anim, sound_frame, busyover_frame)
         {
             ExtendedSoundTimelineEvent(sound_frame * FRAMES, "hit"),
             TimeEvent(busyover_frame * FRAMES, function(inst)
+                if inst:WantsToLevelUp() then
+                    inst.sg:GoToState("levelup")
+                    return
+                elseif inst.sg.statemem.doattacktarget ~= nil then
+                    if inst.sg.statemem.doattacktarget:IsValid() and
+                        not (inst.sg.statemem.doattacktarget.components.health ~= nil and
+                            inst.sg.statemem.doattacktarget.components.health:IsDead() or
+                            inst.components.health:IsDead()) then
+                        inst.sg:GoToState("attack", inst.sg.statemem.doattacktarget)
+                        return
+                    end
+                    inst.sg.statemem.doattacktarget = nil
+                end
                 inst.sg:RemoveStateTag("busy")
             end),
         },
 
         events =
         {
+            EventHandler("doattack", function(inst, data)
+                inst.sg.statemem.doattacktarget = data.target
+            end),
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
+                    if inst:WantsToLevelUp() then
+                        inst.sg:GoToState("levelup")
+                    elseif inst.sg.statemem.doattacktarget ~= nil
+                        and inst.sg.statemem.doattacktarget:IsValid()
+                        and not (inst.sg.statemem.doattacktarget.components.health ~= nil and
+                                inst.sg.statemem.doattacktarget.components.health:IsDead() or
+                                inst.components.health:IsDead()) then
+                        inst.sg:GoToState("attack", inst.sg.statemem.doattacktarget)
+                    else
+                        inst.sg:GoToState("idle")
+                    end
                 end
             end),
         },
@@ -244,18 +301,23 @@ end
 local function LevelUpAlliesTimelineEvent(frame)
     return TimeEvent(frame * FRAMES, function(inst)
         -- trigger all near by shadow chess pieces to level up
-        local x, y, z = inst.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x, y, z, LEVELUP_RADIUS, { "shadowchesspiece" })
+        local pos = inst:GetPosition()
+        local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, LEVELUP_RADIUS, { "shadowchesspiece" })
         for i, v in ipairs(ents) do
             if v ~= inst and not v.components.health:IsDead() then
                 v:PushEvent("levelup", { source = inst })
             end
         end
+
+        if inst.persists then
+            inst.persists = false
+            inst.components.lootdropper:DropLoot(pos)
+        end
     end)
 end
 
 --------------------------------------------------------------------------
-ShadowChessStates.AddDeath = function(states, anim, action_frame, timeline)
+ShadowChess.States.AddDeath = function(states, anim, action_frame, timeline)
     timeline = timeline or {}
     table.insert(timeline, ExtendedSoundTimelineEvent(0, "disappear"))
     table.insert(timeline, LevelUpAlliesTimelineEvent(action_frame))
@@ -269,16 +331,14 @@ ShadowChessStates.AddDeath = function(states, anim, action_frame, timeline)
             inst.AnimState:PlayAnimation(anim)
             inst.Physics:Stop()
             RemovePhysicsColliders(inst)
-            inst.components.lootdropper:DropLoot(inst:GetPosition())
             inst:AddTag("NOCLICK")
-            inst.persists = false
         end,
 
         timeline = timeline,
 
         events =
         {
-            ShadowChessEvents.OnAnimOverRemoveAfterSounds(),
+            ShadowChess.Events.OnAnimOverRemoveAfterSounds(),
         },
 
         onexit = function(inst)
@@ -288,7 +348,7 @@ ShadowChessStates.AddDeath = function(states, anim, action_frame, timeline)
 end
 
 --------------------------------------------------------------------------
-ShadowChessStates.AddEvolvedDeath = function(states, anim, action_frame, timeline)
+ShadowChess.States.AddEvolvedDeath = function(states, anim, action_frame, timeline)
     timeline = timeline or {}
     table.insert(timeline, ExtendedSoundTimelineEvent(0, "die"))
     table.insert(timeline, LevelUpAlliesTimelineEvent(action_frame))
@@ -302,16 +362,14 @@ ShadowChessStates.AddEvolvedDeath = function(states, anim, action_frame, timelin
             inst.AnimState:PlayAnimation(anim)
             inst.Physics:Stop()
             RemovePhysicsColliders(inst)
-            inst.components.lootdropper:DropLoot(inst:GetPosition())
             inst:AddTag("NOCLICK")
-            inst.persists = false
         end,
 
         timeline = timeline,
 
         events =
         {
-            ShadowChessEvents.OnAnimOverRemoveAfterSounds(),
+            ShadowChess.Events.OnAnimOverRemoveAfterSounds(),
         },
 
         onexit = function(inst)
@@ -321,7 +379,7 @@ ShadowChessStates.AddEvolvedDeath = function(states, anim, action_frame, timelin
 end
 
 --------------------------------------------------------------------------
-ShadowChessStates.AddDespawn = function(states, anim, timeline)
+ShadowChess.States.AddDespawn = function(states, anim, timeline)
     timeline = timeline or {}
     table.insert(timeline, ExtendedSoundTimelineEvent(0, "disappear"))
 
@@ -342,7 +400,7 @@ ShadowChessStates.AddDespawn = function(states, anim, timeline)
 
         events =
         {
-            ShadowChessEvents.OnAnimOverRemoveAfterSounds(),
+            ShadowChess.Events.OnAnimOverRemoveAfterSounds(),
         },
 
         onexit = function(inst)
@@ -350,3 +408,16 @@ ShadowChessStates.AddDespawn = function(states, anim, timeline)
         end,
     })
 end
+
+--------------------------------------------------------------------------
+ShadowChess.CommonEventList =
+{
+    ShadowChess.Events.LevelUp(),
+    ShadowChess.Events.DoAttack(),
+    ShadowChess.Events.OnAttacked(),
+    ShadowChess.Events.OnDeath(),
+    ShadowChess.Events.OnDespawn(),
+    CommonHandlers.OnLocomote(false, true),
+}
+
+return ShadowChess

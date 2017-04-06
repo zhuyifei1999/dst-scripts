@@ -5,7 +5,7 @@ local assets =
     Asset("ANIM", "anim/bulb_plant_triple.zip"),
     Asset("ANIM", "anim/bulb_plant_springy.zip"),
     Asset("SOUND", "sound/common.fsb"),
-	Asset("MINIMAP_IMAGE", "bulb_plant"),
+    Asset("MINIMAP_IMAGE", "bulb_plant"),
 }
 
 local prefabs =
@@ -240,7 +240,7 @@ local function GetDebugString(inst)
     return string.format("State: %s", inst.light_state)
 end
 
-local function commonfn(bank, build, light_params, masterfn)
+local function commonfn(bank, build, light_params)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -274,6 +274,8 @@ local function commonfn(bank, build, light_params, masterfn)
     inst._lightmaxframe = math.floor(LIGHT_MIN_TIME / FRAMES + .5)
     inst._lightframe:set(inst._lightmaxframe)
     inst._lighttask = nil
+
+    inst:SetPrefabNameOverride("flower_cave")
 
     inst.entity:SetPristine()
 
@@ -323,10 +325,6 @@ local function commonfn(bank, build, light_params, masterfn)
 
     MakeHauntableIgnite(inst)
 
-    if masterfn ~= nil then
-        masterfn(inst)
-    end
-
     return inst
 end
 
@@ -346,53 +344,68 @@ local function onload_single(inst,data)
     end
 end
 
+local lightparams_single =
+{
+    falloff = .5,
+    intensity = .8,
+    radius = 3,
+}
+
 local function single()
-    return commonfn(
-        "bulb_plant_single",
-        "bulb_plant_single",
-        {
-            falloff = .5,
-            intensity = .8,
-            radius = 3,
-        },
-        function(inst)
-            inst.plantname = plantnames[math.random(1, #plantnames)]
-            inst.AnimState:SetBank("bulb_plant"..inst.plantname)
-            inst.AnimState:SetBuild("bulb_plant"..inst.plantname)
+    local inst = commonfn("bulb_plant_single", "bulb_plant_single", lightparams_single)
 
-            inst.components.pickable:SetUp("lightbulb", TUNING.FLOWER_CAVE_REGROW_TIME)
+    if not TheWorld.ismastersim then
+        return inst
+    end
 
-            inst.OnSave = onsave_single
-            inst.OnLoad = onload_single
-        end)
+    inst.plantname = plantnames[math.random(1, #plantnames)]
+    inst.AnimState:SetBank("bulb_plant"..inst.plantname)
+    inst.AnimState:SetBuild("bulb_plant"..inst.plantname)
+
+    inst.components.pickable:SetUp("lightbulb", TUNING.FLOWER_CAVE_REGROW_TIME)
+
+    inst.OnSave = onsave_single
+    inst.OnLoad = onload_single
+
+    return inst
 end
+
+local lightparams_double =
+{
+    falloff = .5,
+    intensity = .8,
+    radius = 4.5,
+}
 
 local function double()
-    return commonfn(
-        "bulb_plant_double",
-        "bulb_plant_double",
-        {
-            falloff = .5,
-            intensity = .8,
-            radius = 4.5,
-        },
-        function(inst)
-            inst.components.pickable:SetUp("lightbulb", TUNING.FLOWER_CAVE_REGROW_TIME * 1.5, 2)
-        end)
+    local inst = commonfn("bulb_plant_double", "bulb_plant_double", lightparams_double)
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.components.pickable:SetUp("lightbulb", TUNING.FLOWER_CAVE_REGROW_TIME * 1.5, 2)
+
+    return inst
 end
 
+local lightparams_triple =
+{
+    falloff = .5,
+    intensity = .8,
+    radius = 4.5,
+}
+
 local function triple()
-    return commonfn(
-        "bulb_plant_triple",
-        "bulb_plant_triple",
-        {
-            falloff = .5,
-            intensity = .8,
-            radius = 4.5,
-        },
-        function(inst)
-            inst.components.pickable:SetUp("lightbulb", TUNING.FLOWER_CAVE_REGROW_TIME * 2, 3)
-        end)
+    local inst = commonfn("bulb_plant_triple", "bulb_plant_triple", lightparams_triple)
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.components.pickable:SetUp("lightbulb", TUNING.FLOWER_CAVE_REGROW_TIME * 2, 3)
+
+    return inst
 end
 
 return Prefab("flower_cave", single, assets, prefabs),

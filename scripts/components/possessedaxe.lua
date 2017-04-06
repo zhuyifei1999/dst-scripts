@@ -214,7 +214,7 @@ end
 
 function PossessedAxe:OnLoad(data)
     if data ~= nil then
-        self.revert_prefab = data.revert_prefab or self.revert_prefab
+        self.revert_prefab = data.prefab or self.revert_prefab
         self.revert_uses = data.revert_uses or self.revert_uses
         if self.player == nil
             and (data.waittimeremaining ~= nil

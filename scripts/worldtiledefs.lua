@@ -53,6 +53,31 @@ local WALL_PROPERTIES =
     { GROUND.WALL_STONEEYE,     { name = "walls",   noise_texture = "images/square.tex" } },--"levels/textures/wall_mud_01.tex" } },
 }
 
+local TURF_PROPERTIES =
+{
+    [GROUND.ROAD] =         { name = "road",            anim = "road"           },
+    [GROUND.ROCKY] =        { name = "rocky",           anim = "rocky"          },
+    [GROUND.FOREST] =       { name = "forest",          anim = "forest"         },
+    [GROUND.MARSH] =        { name = "marsh",           anim = "marsh"          },
+    [GROUND.GRASS] =        { name = "grass",           anim = "grass"          },
+    [GROUND.SAVANNA] =      { name = "savanna",         anim = "savanna"        },
+    [GROUND.WOODFLOOR] =    { name = "woodfloor",       anim = "woodfloor"      },
+    [GROUND.CARPET] =       { name = "carpetfloor",     anim = "carpet"         },
+    [GROUND.CHECKER] =      { name = "checkerfloor",    anim = "checker"        },
+
+    [GROUND.CAVE] =         { name = "cave",            anim = "cave"           },
+    [GROUND.FUNGUS] =       { name = "fungus",          anim = "fungus"         },
+    [GROUND.FUNGUSRED] =    { name = "fungus_red",      anim = "fungus_red"     },
+    [GROUND.FUNGUSGREEN] =  { name = "fungus_green",    anim = "fungus_green"   },
+
+    [GROUND.SINKHOLE] =     { name = "sinkhole",        anim = "sinkhole"       },
+    [GROUND.UNDERROCK] =    { name = "underrock",       anim = "rock"           },
+    [GROUND.MUD] =          { name = "mud",             anim = "mud"            },
+    [GROUND.DECIDUOUS] =    { name = "deciduous",       anim = "deciduous"      },
+    [GROUND.DESERT_DIRT] =  { name = "desertdirt",      anim = "dirt"           },
+    [GROUND.SCALE] =        { name = "dragonfly",       anim = "dragonfly"      },
+}
+
 local underground_layers =
 {
     { GROUND.UNDERGROUND, { name = "falloff", noise_texture = "images/square.tex" } },
@@ -190,6 +215,7 @@ return
     ground = GROUND_PROPERTIES,
     creep = GROUND_CREEP_PROPERTIES,
     wall = WALL_PROPERTIES,
+    turf = TURF_PROPERTIES,
     underground = underground_layers,
     assets = assets,
 }

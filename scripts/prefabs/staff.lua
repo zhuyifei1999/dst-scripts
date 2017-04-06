@@ -12,6 +12,10 @@ local prefabs =
     "stafflight",
     "staffcoldlight",
     "cutgrass",
+    "sand_puff_large_front",
+    "sand_puff_large_back",
+    "splash_ocean",
+    "collapse_small",
 }
 
 ---------RED STAFF---------
@@ -306,15 +310,22 @@ local function onblink(staff, pos, caster)
     staff.components.finiteuses:Use(1) 
 end
 
+local function NoHoles(pt)
+    return not TheWorld.Map:IsPointNearHole(pt)
+end
+
 local function blinkstaff_reticuletargetfn()
     local player = ThePlayer
     local rotation = player.Transform:GetRotation() * DEGREES
     local pos = player:GetPosition()
     for r = 13, 1, -1 do
         local numtries = 2 * PI * r
-        local pt = FindWalkableOffset(pos, rotation, r, numtries)
-        if pt ~= nil then
-            return pt + pos
+        local offset = FindWalkableOffset(pos, rotation, r, numtries, false, true, NoHoles)
+        if offset ~= nil then
+            pos.x = pos.x + offset.x
+            pos.y = 0
+            pos.z = pos.z + offset.z
+            return pos
         end
     end
 end
@@ -325,11 +336,15 @@ local function onhauntorange(inst)
         if target ~= nil then
             local pos = target:GetPosition()
             local start_angle = math.random() * 2 * PI
-            local offset = FindWalkableOffset(pos, start_angle, math.random(8, 12), 60, false, true)
-            local pt = pos + offset
-            inst.components.blinkstaff:Blink(pt, target)
-            inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
-            return true
+            local offset = FindWalkableOffset(pos, start_angle, math.random(8, 12), 16, false, true, NoHoles)
+            if offset ~= nil then
+                pos.x = pos.x + offset.x
+                pos.y = 0
+                pos.z = pos.z + offset.z
+                inst.components.blinkstaff:Blink(pos, target)
+                inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
+                return true
+            end
         end
     end
     return false
@@ -377,12 +392,15 @@ end
 DESTSOUNDS = nil
 
 local function CheckSpawnedLoot(loot)
-    if not ((loot.components.inventoryitem ~= nil and loot.components.inventoryitem:IsHeld()) or loot:IsOnValidGround()) then
-        SpawnPrefab("splash_ocean").Transform:SetPosition(loot.Transform:GetWorldPosition())
-        if loot:HasTag("irreplaceable") then
-            loot.Transform:SetPosition(FindSafeSpawnLocation(loot.Transform:GetWorldPosition()))
-        else
-            loot:Remove()
+    if loot.components.inventoryitem == nil or not loot.components.inventoryitem:IsHeld() then
+        local x, y, z = loot.Transform:GetWorldPosition()
+        if not loot:IsOnValidGround() or TheWorld.Map:IsPointNearHole(Vector3(x, 0, z)) then
+            SpawnPrefab("splash_ocean").Transform:SetPosition(x, y, z)
+            if loot:HasTag("irreplaceable") then
+                loot.Transform:SetPosition(FindSafeSpawnLocation(x, y, z))
+            else
+                loot:Remove()
+            end
         end
     end
 end
@@ -482,6 +500,20 @@ local function destroystructure(staff, target)
         target.components.trap:Harvest()
     end
 
+    if target.components.dryer ~= nil then
+        target.components.dryer:DropItem()
+    end
+
+    if target.components.harvestable ~= nil then
+        target.components.harvestable:Harvest()
+    end
+
+    if target.components.stewer ~= nil then
+        target.components.stewer:Harvest()
+    end
+
+   	target:PushEvent("ondeconstrcutstructure", caster)
+
     if target.components.stackable ~= nil then
         --if it's stackable we only want to destroy one of them.
         target.components.stackable:Get():Remove()
@@ -528,7 +560,7 @@ local function onhauntlight(inst)
     if math.random() <= TUNING.HAUNT_CHANCE_RARE then
         local pos = inst:GetPosition()
         local start_angle = math.random() * 2 * PI
-        local offset = FindWalkableOffset(pos, start_angle, math.random(3, 12), 60, false, true)
+        local offset = FindWalkableOffset(pos, start_angle, math.random(3, 12), 60, false, true, NoHoles)
         if offset ~= nil then
             createlight(inst, nil, pos + offset)
             inst.components.hauntable.hauntvalue = TUNING.HAUNT_LARGE
@@ -612,7 +644,7 @@ end
 ---------COLOUR SPECIFIC CONSTRUCTIONS---------
 
 local function red()
-    local inst = commonfn("red", { "firestaff", "rangedfireweapon", "rangedlighter" })
+    local inst = commonfn("red", { "firestaff", "rangedweapon", "rangedlighter" })
 
     if not TheWorld.ismastersim then
         return inst
@@ -634,7 +666,7 @@ local function red()
 end
 
 local function blue()
-    local inst = commonfn("blue", { "icestaff", "extinguisher" })
+    local inst = commonfn("blue", { "icestaff", "rangedweapon", "extinguisher" })
 
     if not TheWorld.ismastersim then
         return inst

@@ -227,6 +227,8 @@ local function commonfn()
     inst.AnimState:SetBuild("blocker_sanity")
     inst.AnimState:PlayAnimation("idle_inactive")
 
+    inst:AddTag("antlion_sinkhole_blocker")
+
     setinactivephysics(inst)
 
     inst._pftable = nil

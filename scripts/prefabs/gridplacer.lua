@@ -14,8 +14,9 @@ end
 local function fn()
     local inst = CreateEntity()
 
-    inst:AddTag("FX")
+    inst:AddTag("CLASSIFIED")
     inst:AddTag("NOCLICK")
+    inst:AddTag("placer")
     --[[Non-networked entity]]
     inst.persists = false
 

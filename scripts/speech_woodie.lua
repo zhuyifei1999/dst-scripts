@@ -69,6 +69,8 @@ return {
             SLOTFULL = "I should probably use what's up there first.",
             DUPLICATE = "No sense having two of the same recipe.",
             NOTSCULPTABLE = "I'd prefer wood, personally.",
+            CANTSHADOWREVIVE = "Didn't work. Probably for the best.",
+            WRONGSHADOWFORM = "That's gotta be rebuilt, eh?",
         },
         GIVETOPLAYER = 
         {
@@ -120,8 +122,21 @@ return {
 	ANNOUNCE_CHARLIE_ATTACK = "Yeouch! That was rough!",
 	ANNOUNCE_COLD = "It's a bit chilly out here!",
 	ANNOUNCE_HOT = "It's so hot out here!",
+	ANNOUNCE_ANTLION_SINKHOLE = 
+	{
+		"Pothole incoming.",
+		"Take cover!",
+		"Dangerous 'round here.",
+	},
+	ANNOUNCE_ANTLION_TRIBUTE =
+	{
+        "Maybe put the sinkholes on pause, eh?",
+        "I got a tribute for you, eh?",
+        "This here's for you, eh?",
+	},
 	ANNOUNCE_CRAFTING_FAIL = "I can't do that right now.",
 	ANNOUNCE_DEERCLOPS = "What was that?",
+	ANNOUNCE_CAVEIN = "Sounds like some trouble up above.",
 	ANNOUNCE_DUSK = "It's almost my bedtime.",
 	ANNOUNCE_NOSLEEPONFIRE = "Not sure that's entirely safe.",
 	ANNOUNCE_NODANGERSIESTA = "Can't siesta, something's chasing me.",
@@ -163,10 +178,19 @@ return {
         "I'm more of a chopper than a lifter...",
         "Huff... huff...",
     },
+    ANNOUNCE_ATRIUM_DESTABILIZING = 
+    {
+        "We better hightail it out of here.",
+        "Let's skedaddle!",
+        "There'll be trouble if we don't leave.",
+    },
+    ANNOUNCE_RUINS_RESET = "All that hard work gone to waste.",
 
 	ANNOUNCE_BECOMEGHOST = "oOooOOOO!!",
 	ANNOUNCE_GHOSTDRAIN = "I'm goin', like, nutso over here...",
 
+	ANNOUNCE_SNARED = "You'll have to do better than that.",
+	ANNOUNCE_REPELLED = "That's just impolite, eh.",
 	ANNOUNCE_ENTER_DARK = "Who turned out the lights?",
 	ANNOUNCE_ENTER_LIGHT = "Brilliance!",
 	ANNOUNCE_FREEDOM = "I got out!",
@@ -187,9 +211,11 @@ return {
 	ANNOUNCE_THORNS = "Ouch!",
 	ANNOUNCE_TORCH_OUT = "My light ran out!",
     ANNOUNCE_FAN_OUT = "I guess I'll just have to suffer now.",
+    ANNOUNCE_THURIBLE_OUT = "No more luring, I guess.",
     ANNOUNCE_COMPASS_OUT = "I'll always have the North in my heart.",
 	ANNOUNCE_TRAP_WENT_OFF = "Oops!",
 	ANNOUNCE_WORMHOLE = "It was gross in there!",
+	ANNOUNCE_TOWNPORTALTELEPORT = "I got sand in my beard.",
 	ANNOUNCE_CANFIX = "\nI think I can fix this!",
 	ANNOUNCE_ACCOMPLISHMENT= "Lucy is going to be so proud of me!",
 	ANNOUNCE_ACCOMPLISHMENT_DONE = "That's a wrap, eh!",
@@ -373,15 +399,19 @@ return {
 		TURF_BADLANDS = "Just some ground, eh?",
 
 		LAVA_POND_ROCK = "Boulder-dash.",
-		LAVA_POND_ROCK2 = "Boulder-dash.",
-		LAVA_POND_ROCK3 = "Boulder-dash.",
-		LAVA_POND_ROCK4 = "Boulder-dash.",
-		LAVA_POND_ROCK5 = "Boulder-dash.",
-		LAVA_POND_ROCK6 = "Boulder-dash.",
-		LAVA_POND_ROCK7 = "Boulder-dash.",
 
 		LIGHTER = "Keep it away from the trees!",
-		
+		ANTLION = 
+		{
+			GENERIC = "They grow'em big out here, eh?",
+			VERYHAPPY = "It seems agreeable.",
+			UNHAPPY = "That critter's in a real bad mood.",
+		},
+		ANTLIONTRINKET = "Could give it to some sandy hoser.",
+		SANDSPIKE = "That's something else, eh?",
+        SANDBLOCK = "Some good craftsmanship.",
+        GLASSSPIKE = "I wonder if it chops.",
+        GLASSBLOCK = "Well it ain't wood.",
 		ABIGAIL_FLOWER = 
 		{
 			GENERIC = "It's a flower? I guess.",
@@ -646,7 +676,22 @@ return {
 		GIFT = "They're just as fun to give as they are to receive.",
         GIFTWRAP = "Should we do something nice today, Lucy?",
 		POTTEDFERN = "I do love me some plant life.",
+		SUCCULENT_POTTED = "Ain't a tree, but ain't bad.",
+        SUCCULENT_PLANT = "That's a plant, eh?",
+        SUCCULENT_PICKED = "There's a lot of water in there for such a tiny plant.",
 		SENTRYWARD = "That's an odd looking tree.",
+		TOWNPORTAL =
+        {
+			GENERIC = "Some sort of sandy transportation.",
+			ACTIVE = "Get a move on.",
+		},
+        TOWNPORTALTALISMAN = 
+        {
+			GENERIC = "S'got a powerful stink, eh?",
+			ACTIVE = "Time to get a move on.",
+		},
+		WETPAPER = "Damp.",
+		WETPOUCH = "Doesn't look useful, but I could be wrong.",
         MOONROCK_PIECES = "That's in a pretty sorry state, eh?",
         MOONBASE =
         {
@@ -668,6 +713,7 @@ return {
         },
 		THULECITE = "It's the wood of the caves!",
 		ARMORRUINS = "That'll stop the hurt.",
+		ARMORSKELETON = "Sticks to yer ribs.",
 		RUINS_BAT = "Metal on a stick.",
 		RUINSHAT = "It's no toque, but it'll do.",
 		NIGHTMARE_TIMEPIECE = --Keeps track of the nightmare cycle
@@ -769,8 +815,6 @@ return {
         BEDROLL_FURRY = "I love camping.",
         BUNNYMAN = "He looks friendly enough.",
         FLOWER_CAVE = "Shiny!",
-        FLOWER_CAVE_DOUBLE = "Shiny!",
-        FLOWER_CAVE_TRIPLE = "Shiny!",
         GUANO = "It stinks less than the other kind.",
         LANTERN = "Well that's enlightening, eh?",
         LIGHTBULB = "It looks chewy.",
@@ -822,12 +866,21 @@ return {
             BLOOM = "Well, I can't cut it down now...",
         },
         MUSHTREE_TALL_WEBBED = "This one needs pruning, at least.",
-        SPORE_TALL = "A flying green pinecone!",
-        SPORE_MEDIUM = "A floating red pinecone!",
-        SPORE_SMALL = "We've been visited by a forest sprite, Lucy!",
-        SPORE_TALL_INV = "One day this might be a tree.",
-        SPORE_MEDIUM_INV = "One day this might be a tree.",
-        SPORE_SMALL_INV = "One day this might be a tree.",
+        SPORE_TALL =
+        {
+            GENERIC = "A flying green pinecone!",
+            HELD = "One day this might be a tree.",
+        },
+        SPORE_MEDIUM =
+        {
+            GENERIC = "A floating red pinecone!",
+            HELD = "One day this might be a tree.",
+        },
+        SPORE_SMALL =
+        {
+            GENERIC = "We've been visited by a forest sprite, Lucy!",
+            HELD = "One day this might be a tree.",
+        },
         SLURTLE = "He's just misunderstood.",
         SLURTLE_SHELLPIECES = "His home is broken now. Oh.",
         SLURTLEHAT = "That could sure keep a noggin safe.",
@@ -838,13 +891,7 @@ return {
         SPIDER_SPITTER = "Spitting is rude!",
         SPIDERHOLE = "I should skedaddle before they come out of there.",
         STALAGMITE = "I'm not too interested in rocks.",
-        STALAGMITE_FULL = "I'm not too interested in rocks.",
-        STALAGMITE_LOW = "I'm not too interested in rocks.",
-        STALAGMITE_MED = "I'm not too interested in rocks.",
         STALAGMITE_TALL = "I'm not too interested in rocks.",
-        STALAGMITE_TALL_FULL = "I'm not too interested in rocks.",
-        STALAGMITE_TALL_LOW = "I'm not too interested in rocks.",
-        STALAGMITE_TALL_MED = "I'm not too interested in rocks.",
 
 		TURF_CARPETFLOOR = "Some ground.",
 		TURF_CHECKERFLOOR = "Some ground.",
@@ -863,7 +910,6 @@ return {
 		TURF_UNDERROCK="Rocks. Bleh.",	
 		TURF_MUD="At least you don't have to clean it.",
 
-		
 		POWCAKE = "I like the ones made with real sugar better.",
         CAVE_ENTRANCE = "It's all bunged up.",
         CAVE_ENTRANCE_RUINS = "It's all bunged up.",
@@ -1156,6 +1202,8 @@ return {
 		{
 			GENERIC = "It's probably a tuft of grass.",
 		},
+		GOGGLESHAT = "Seems pretty useless.",
+        DESERTHAT = "That's easy on the eyes.",
 		DEVTOOL = "I'm not commenting on that.",
 		DIRTPILE = "Hey! A clue!",
 		DIVININGROD =
@@ -1307,6 +1355,11 @@ return {
 			FUNNY = "Eh... Should we try again, Lucy?",
 			COMPLETE = "One hundred percent assembled beastie.",
         },
+        STALKER = "It's a walking anatomy lesson.",
+        STALKER_ATRIUM = "That fuel stuff's gone to its head.",
+        STALKER_MINION = "Ain't no reason for that to exist.",
+        THURIBLE = "Someone's trying to give us a leg up.",
+        ATRIUM_OVERGROWTH = "It probably said something important. Oh well.",
 		FROG =
 		{
 			DEAD = "Ex-frog.",
@@ -1478,6 +1531,7 @@ return {
 		NIGHTSWORD = "Nightmares can't hurt ya!",
 		NITRE = "It's how we built the railway.",
 		ONEMANBAND = "I stand on guard for thee!",
+		OASISLAKE = "That's a whole lotta wet.",
 		PANDORASCHEST = "What's in the box?!",
 		PANFLUTE = "I only sing for Lucy.",
 		PAPYRUS = "I'd rather chop than write.",
@@ -1578,6 +1632,11 @@ return {
 			LOW = "Needs more... wood?",
 			NORMAL = "A fire that needs no wood? Unnn-natural!",
 		},
+		CAVEIN_BOULDER =
+        {
+            GENERIC = "Some elbow grease'll move those, easy.",
+            RAISED = "Can't reach that one.",
+        },
 		ROCK = "I could break it down if I tried hard enough.",
 		ROCKS = "Could make a decent little inukshuk with these.",
         ROOK = "Hmm... does the rook move in a straight line? I forget.",
@@ -1647,6 +1706,7 @@ return {
 		SEEDS = "Not trees.",
 		SEEDS_COOKED = "We call this \"lumberjack surprise\".",
 		SEWING_KIT = "I'm pretty good at sewing.",
+		SEWING_TAPE = "Makes me feel right at home.",
 		SHOVEL = "Dig a hole. Plant a tree!",
 		SILK = "Spiders give me the willies.",
 		SKELETON = "Sorry, friend.",
@@ -1883,7 +1943,7 @@ return {
         FENCE_GATE = "Some nice woodwork there.",
         FENCE_GATE_ITEM = "A good project for a lazy afternoon.",
 		WALRUS = "Oh no. Walruses again!",
-		WALRUSHAT = "My grandad wore a hat like that.",
+		WALRUSHAT = "My granddad wore a hat like that.",
 		WALRUS_CAMP =
 		{
 			EMPTY = "This won't be safe come winter.",
@@ -1941,6 +2001,29 @@ return {
 		ICESTAFF = "It reminds me of home.",
         REVIVER = "I need to share this with somebody!",
         SHADOWHEART = "Yeesh. Don't get that near me.",
+        ATRIUM_RUBBLE = 
+        {
+			LINE_1 = "It's an old drawing of strange creatures.",
+			LINE_2 = "Nothin' of interest left here.",
+			LINE_3 = "Black muck is covering everything in this drawing.",
+			LINE_4 = "Don't look at this one, Lucy.",
+			LINE_5 = "Looks like a bustling city.",
+		},
+        ATRIUM_STATUE = "Was it supposed to be holding something?",
+        ATRIUM_LIGHT = 
+        {
+			ON = "What a nightmare.",
+			OFF = "Gotta be a way to turn it on.",
+		},
+        ATRIUM_GATE =
+        {
+			ON = "That oughta do it.",
+			OFF = "Where d'you think it goes, Lucy?",
+			CHARGING = "It's soaking up energy, hey?",
+			DESTABILIZING = "That'd be my cue to leave.",
+			COOLDOWN = "Don't wanna overdo it.",
+        },
+        ATRIUM_KEY = "Got it from that big bony hoser.",
         LIFEINJECTOR = "This should cure those sniffles.",
         ROCK_MOON = "It's uh, a moon rock.",
         MOONROCKNUGGET = "It's uh, a moon rock.",

@@ -440,6 +440,7 @@ local states =
             print("Dragonfly left the flyaway state! How could this happen?!")
             inst.components.health:SetInvincible(false)
             inst:ClearBufferedAction()
+            inst.DynamicShadow:Enable(true)
         end,
     },
 
@@ -863,17 +864,16 @@ local states =
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("walk_angry", true)
-            inst.Physics:SetMotorVelOverride(0,-11,0)
+            inst.Physics:SetMotorVelOverride(0, -11, 0)
         end,
 
         onupdate = function(inst)
-            inst.Physics:SetMotorVelOverride(0,-15,0)
+            inst.Physics:SetMotorVelOverride(0, -15, 0)
             local x, y, z = inst.Transform:GetWorldPosition()
-            if y < 2 then
+            if y < 2 or inst:IsAsleep() then
                 inst.Physics:ClearMotorVelOverride()
                 inst.Physics:Stop()
                 inst.Physics:Teleport(x, 0, z)
-                inst.DynamicShadow:Enable(true)
                 inst.sg:GoToState("idle", { softstop = true })
                 ShakeIfClose(inst)
             end
@@ -884,6 +884,7 @@ local states =
             if y > 0 then
                 inst.Transform:SetPosition(x, 0, z)
             end
+            inst.Physics:ClearMotorVelOverride()
         end,
     },
 }

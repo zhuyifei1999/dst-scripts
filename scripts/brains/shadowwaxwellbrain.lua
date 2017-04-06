@@ -115,8 +115,7 @@ local function ShouldRunAway(target)
 end
 
 local function ShouldKite(target, inst)
-    return target ~= nil
-        and target == inst.components.combat.target
+    return inst.components.combat:TargetIs(target)
         and target.components.health ~= nil
         and not target.components.health:IsDead()
 end

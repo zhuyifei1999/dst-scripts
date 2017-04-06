@@ -128,6 +128,18 @@ return
         OverrideTuningVariables(tuning_vars[difficulty])
     end,
 
+    antliontribute = function(difficulty)
+        local tuning_vars =
+        {
+            never =  {ANTLION_RAGE_TIME_INITIAL = TUNING.TOTAL_DAY_TIME * 999, ANTLION_RAGE_TIME_MAX = TUNING.TOTAL_DAY_TIME * 999},
+            rare =   {ANTLION_RAGE_TIME_INITIAL = TUNING.TOTAL_DAY_TIME * 7.2, ANTLION_RAGE_TIME_MAX = TUNING.TOTAL_DAY_TIME * 10, ANTLION_TRIBUTE_TO_RAGE_TIME = TUNING.TOTAL_DAY_TIME * .5},
+            often =  {ANTLION_RAGE_TIME_INITIAL = TUNING.TOTAL_DAY_TIME * 4, ANTLION_RAGE_TIME_MAX = TUNING.TOTAL_DAY_TIME * 5},
+            always = {ANTLION_RAGE_TIME_INITIAL = TUNING.TOTAL_DAY_TIME * 3.2, ANTLION_RAGE_TIME_MAX = TUNING.TOTAL_DAY_TIME * 4.5, ANTLION_RAGE_TIME_FAILURE_SCALE = 0.7},
+        }
+
+        OverrideTuningVariables(tuning_vars[difficulty])
+    end,
+
     disease_delay = function(difficulty)
     
         local tuning_vars = {
@@ -201,7 +213,25 @@ return
     end,
 
     flowers = function(difficulty)
-        SetSpawnMode(TheWorld.components.flowerspawner, difficulty)
+        local tuning_vars =
+        {
+            never = { FLOWER_REGROWTH_TIME_MULT = 0 },
+            rare = { FLOWER_REGROWTH_TIME_MULT = .5 },
+            often = { FLOWER_REGROWTH_TIME_MULT = 1.5 },
+            always = { FLOWER_REGROWTH_TIME_MULT = 3 },
+        }
+        OverrideTuningVariables(tuning_vars[difficulty])
+    end,
+
+    flower_cave = function(difficulty)
+        local tuning_vars =
+        {
+            never = { FLOWER_CAVE_REGROWTH_TIME_MULT = 0 },
+            rare = { FLOWER_CAVE_REGROWTH_TIME_MULT = .5 },
+            often = { FLOWER_CAVE_REGROWTH_TIME_MULT = 1.5 },
+            always = { FLOWER_CAVE_REGROWTH_TIME_MULT = 3 },
+        }
+        OverrideTuningVariables(tuning_vars[difficulty])
     end,
 
     birds = function(difficulty)

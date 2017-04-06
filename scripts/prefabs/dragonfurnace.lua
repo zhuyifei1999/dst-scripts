@@ -1,3 +1,5 @@
+require "prefabutil"
+
 local prefabs =
 {
     "collapse_big",
@@ -111,7 +113,6 @@ local function fn()
 
     inst:AddTag("structure")
     inst:AddTag("wildfireprotected")
-    inst:AddTag("iceblocker")
 
     --cooker (from cooker component) added to pristine state for optimization
     inst:AddTag("cooker")

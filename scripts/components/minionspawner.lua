@@ -1,349 +1,386 @@
+--V2C: ughh, needs some serious refactoring, but won't bother now.
+--     whatever you do, do NOT base any new files off of this one.
+
 local function generatefreepositions(max)
-	local pos_table = {}
-	for num = 1, max do
-		table.insert(pos_table, num)
-	end
-	return pos_table
+    local pos_table = {}
+    for num = 1, max do
+        table.insert(pos_table, num)
+    end
+    return pos_table
 end
 
-local pos_modifier = 1.2
+local function _startnextspawn(inst, self)
+    self:StartNextSpawn()
+end
+
+local POS_MODIFIER = 1.2
+
+local DEFAULT_VALID_TILE_TYPES =
+{
+    [GROUND.ROAD] = true,
+    [GROUND.ROCKY] = true,
+    [GROUND.DIRT] = true,
+    [GROUND.SAVANNA] = true,
+    [GROUND.GRASS] = true,
+    [GROUND.FOREST] = true,
+    [GROUND.MARSH] = true,
+    [GROUND.WEB] = true,
+    [GROUND.WOODFLOOR] = true,
+    [GROUND.CARPET] = true,
+    [GROUND.CHECKER] = true,
+
+    -- CAVES
+    [GROUND.CAVE] = true,
+    [GROUND.FUNGUS] = true,
+    [GROUND.SINKHOLE] = true,
+    [GROUND.UNDERROCK] = true,
+    [GROUND.MUD] = true,
+}
 
 local MinionSpawner = Class(function(self, inst)
-	self.inst = inst
-	self.miniontype = "eyeplant"
-	self.maxminions = 27
-	self.minionspawntime = {min = 5, max = 10}
-	self.minions = {}
-	self.numminions = 0
-	self.distancemodifier = 11
-	self.onspawnminionfn = nil
-	self.onlostminionfn = nil
-	self.onminionattacked = nil
-	self.onminionattack = nil
-	self.spawninprogress = false
-	self.nextspawninfo = {}
-	self.shouldspawn = true
-	self.timeuntilspawn = nil
-	self.minionpositions = nil
-	self.validtiletypes = {2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,30}
-	self.freepositions = generatefreepositions(self.maxminions * pos_modifier)
-	self.inst:DoTaskInTime(1, function() self:StartNextSpawn() end)
+    self.inst = inst
+    self.miniontype = "eyeplant"
+    self.maxminions = 27
+    self.minionspawntime = { min = 5, max = 10 }
+    self.minions = {}
+    self.numminions = 0
+    self.distancemodifier = 11
+    self.onspawnminionfn = nil
+    self.onlostminionfn = nil
+    self.onminionattacked = nil
+    self.onminionattack = nil
+    self.spawninprogress = false
+    self.nextspawninfo = {}
+    self.shouldspawn = true
+    self.minionpositions = nil
+    self.validtiletypes = DEFAULT_VALID_TILE_TYPES
+    self.freepositions = generatefreepositions(self.maxminions * POS_MODIFIER)
+    self.inst:DoTaskInTime(1, _startnextspawn, self)
+
+    self._onminionattacked = function(minion) self.onminionattacked(self.inst) end
+    self._onminionattack = function(minion) self.onminionattack(self.inst) end
+    self._onminiondeath = function(minion)
+        minion:PushEvent("attacked")
+        self:OnLostMinion(minion)
+    end
+    self._onminionremoved = function(minion)
+        self:OnLostMinion(minion)
+    end
 end)
 
 function MinionSpawner:GetDebugString()
-	local str = string.format("Num Minions: %s, Spawn In Progress: %s,  Time For Spawn: %s, Should Spawn: %s",
-		tostring(self.numminions), tostring(self.spawninprogress), tostring(self.nextspawninfo.time) or "NIL", tostring(self.shouldspawn))
-	return str
+    return string.format(
+        "Num Minions: %d, Spawn In Progress: %s, Time For Spawn: %2.2f, Should Spawn: %s",
+        self.numminions,
+        tostring(self.spawninprogress),
+        self.nextspawninfo.time or -1,
+        tostring(self.shouldspawn)
+    )
 end
 
-function MinionSpawner:RemovePosition(num)	
-	for k,v in pairs(self.freepositions) do
-		if v == num then
-			table.remove(self.freepositions, k)
-		end
-	end
-	table.sort(self.freepositions)
+function MinionSpawner:RemovePosition(num)
+    for i, v in ipairs(self.freepositions) do
+        if v == num then
+            table.remove(self.freepositions, i)
+            return
+        end
+    end
 end
 
-function MinionSpawner:AddPosition(num)
-	table.insert(self.freepositions, num)
-	table.sort(self.freepositions)
+function MinionSpawner:AddPosition(num, tbl)
+    tbl = tbl or self.freepositions
+    for i, v in ipairs(tbl) do
+        if v == num then
+            --no duplicates! shouldn't happend, but just in case!
+            return
+        elseif v < num then
+            table.insert(tbl, i, num)
+            return
+        end
+    end
 end
 
-local function MakeSaveable(table)
-	local tosave = {}
-	for k,v in pairs(table) do
-		tosave[k] = {x = v.x, y = v.y, z = v.z}
-	end
-	return tosave
+local function SerializePositions(tbl)
+    local ret = {}
+    for i, v in ipairs(tbl) do
+        table.insert(ret, { x = v.x, z = v.z })
+    end
+    return ret
 end
 
-local function UnpackSave(table)
-	local touse = {}
-	for k,v in pairs(table) do
-		touse[k] = Vector3(v.x, v.y, v.z)
-	end
-	return touse
+local function DeserializePositions(data)
+    local ret = {}
+    for i, v in ipairs(data) do
+        table.insert(ret, Vector3(v.x, 0, v.z))
+    end
+    return ret
 end
 
 function MinionSpawner:OnSave()
-	local data = {}
-	local guidtable = {}
-	for k,v in pairs(self.minions) do
-		if not data.minions then
-			data.minions = {{GUID = v.GUID, NUMBER = v.minionnumber}}
-		else
-			table.insert(data.minions, {GUID = v.GUID, NUMBER = v.minionnumber})
-		end
-		table.insert(guidtable, v.GUID)
-	end
+    local data = {}
+    local guidtable = {}
+    for k, v in pairs(self.minions) do
+        table.insert(data, { GUID = v.GUID, NUMBER = v.minionnumber })
+        table.insert(guidtable, v.GUID)
+    end
 
-	data.maxminions = self.maxminions
+    if #data > 0 then
+        data = { minions = data }
+    end
 
-	if self.minionpositions ~= nil then
-		data.minionpositions = MakeSaveable(self.minionpositions)
-	end
-	if self.spawninprogress then
-		data.spawninprogress = self.spawninprogress
-		self.timeuntilspawn = (self.nextspawninfo.start + self.nextspawninfo.time) - GetTime()
-		if self.timeuntilspawn < 0 then self.timeuntilspawn = 1 end
-		data.timeuntilspawn = self.timeuntilspawn
-	end
+    data.maxminions = self.maxminions
 
-	return data, guidtable
+    if self.minionpositions ~= nil then
+        data.minionpositions = SerializePositions(self.minionpositions)
+    end
+
+    if self.spawninprogress then
+        data.spawninprogress = self.spawninprogress
+        data.timeuntilspawn = math.max(1, math.ceil(self.nextspawninfo.start + self.nextspawninfo.time - GetTime()))
+    end
+
+    return data, guidtable
 end
 
 function MinionSpawner:OnLoad(data)
-
-	if data.maxminions then self.maxminions = data.maxminions end
-
-	if data.minionpositions then self.minionpositions = UnpackSave(data.minionpositions) end
-
-	if data.spawninprogress then
-		self:ResumeSpawn(data.timeuntilspawn)
-	end
+    if data.maxminions ~= nil then
+        self.maxminions = data.maxminions
+    end
+    if data.minionpositions ~= nil then
+        self.minionpositions = DeserializePositions(data.minionpositions)
+    end
+    if data.spawninprogress then
+        self:ResumeSpawn(data.timeuntilspawn)
+    end
 end
 
 function MinionSpawner:LoadPostPass(newents, savedata)
-	if savedata.minions then
-		for k,v in pairs(savedata.minions) do
-			local minion = newents[v.GUID]
-			if minion then
-				minion = minion.entity
-				minion.minionnumber = v.NUMBER
-				self:TakeOwnership(minion)
-				local pos = self:GetSpawnLocation(minion.minionnumber)
-				if pos then
-					minion.Transform:SetPosition(pos.x, pos.y, pos.z)
-					self:RemovePosition(minion.minionnumber)
-				end
-			end
-		end
-	end
+    if savedata.minions ~= nil then
+        for i, v in ipairs(savedata.minions) do
+            local minion = newents[v.GUID]
+            if minion ~= nil then
+                minion = minion.entity
+                minion.minionnumber = v.NUMBER
+                self:TakeOwnership(minion)
+                local pos = self:GetSpawnLocation(minion.minionnumber)
+                if pos ~= nil then
+                    if minion.Physics ~= nil then
+                        minion.Physics:Teleport(pos:Get())
+                    else
+                        minion.Transform:SetPosition(pos:Get())
+                    end
+                    self:RemovePosition(minion.minionnumber)
+                end
+            end
+        end
+    end
 end
 
 function MinionSpawner:TakeOwnership(minion)
-	if self.onminionattacked then
-		minion.attackedfn = function() self.onminionattacked(self.inst) end
-		self.inst:ListenForEvent("attacked", minion.attackedfn, minion)
-	end
+    if self.minions[minion] ~= nil then
+        return
+    end
 
-	if self.onminionattack then
-		minion.attackedotherfn = function() self.onminionattack(self.inst) end
-		self.inst:ListenForEvent("onattackother", minion.attackedotherfn, minion)
-	end
+    self.minions[minion] = minion
+    self.numminions = self.numminions + 1
+    minion.minionlord = self.inst
+    if minion.minionnumber == nil then
+        minion.minionnumber = self.freepositions[math.random(#self.freepositions)]
+    end
 
-	minion.deathfn = function() minion:PushEvent("attacked") self:OnLostMinion(minion) end
-	self.inst:ListenForEvent("death", minion.deathfn, minion)
-	self.inst:ListenForEvent("onremove", minion.deathfn, minion)
-	minion.minionlord = self.inst
-	self.minions[minion] = minion
-	self.numminions = self.numminions + 1
-	self.inst:PushEvent("minionchange")
-	if not minion.minionnumber then
-		minion.minionnumber = self.freepositions[math.random(#self.freepositions)]	
-	end
+    if self.onminionattacked ~= nil then
+        self.inst:ListenForEvent("attacked", self._onminionattacked, minion)
+    end
+    if self.onminionattack ~= nil then
+        self.inst:ListenForEvent("onattackother", self._onminionattack, minion)
+    end
+    self.inst:ListenForEvent("death", self._onminiondeath, minion)
+    self.inst:ListenForEvent("onremove", self._onminionremoved, minion)
+
+    self.inst:PushEvent("minionchange")
+end
+
+--NOTE: tbl is cached because freepositions may be regenerated
+local function OnRecyclePosition(inst, self, num, tbl)
+    self:AddPosition(num, tbl)
 end
 
 function MinionSpawner:OnLostMinion(minion)
-	if minion then
+    if self.minions[minion] == nil then
+        return
+    end
 
-		self.inst:DoTaskInTime(3, self:AddPosition(minion.minionnumber))
+    self.minions[minion] = nil
+    self.numminions = self.numminions - 1
 
-		if self.onminionattacked then
-			self.inst:RemoveEventCallback("attacked", minion.attackedfn, minion)
-		end
-		if self.onminionattack then
-			self.inst:RemoveEventCallback("onattackother", minion.attackedotherfn, minion)
-		end
+    self.inst:RemoveEventCallback("attacked", self._onminionattacked, minion)
+    self.inst:RemoveEventCallback("onattackother", self._onminionattack, minion)
+    self.inst:RemoveEventCallback("death", self._onminiondeath, minion)
+    self.inst:RemoveEventCallback("onremove", self._onminionremoved, minion)
 
-		self.inst:RemoveEventCallback("death", minion.deathfn, minion)
-		self.inst:RemoveEventCallback("onremove", minion.deathfn, minion)
+    self.inst:DoTaskInTime(3, OnRecyclePosition, self, minion.minionnumber, self.freepositions)
 
-		self.minions[minion] = nil
-		self.numminions = self.numminions - 1
+    self.inst:PushEvent("minionchange")
 
-		self.inst:PushEvent("minionchange")
-
-		if not self:MaxedMinions() and self.shouldspawn then
-			self:StartNextSpawn()
-		end
-	end
+    if self.shouldspawn and not self:MaxedMinions() then
+        self:StartNextSpawn()
+    end
 end
 
 function MinionSpawner:MakeMinion()
-	if self.miniontype and not self:MaxedMinions() then
-		return SpawnPrefab(self.miniontype)
-	end
+    if self.miniontype ~= nil and not self:MaxedMinions() then
+        return SpawnPrefab(self.miniontype)
+    end
 end
 
 function MinionSpawner:CheckTileCompatibility(tile)
-	for k,v in pairs(self.validtiletypes) do
-		if v == tile then
-			return true
-		end
-	end
+    return self.validtiletypes[tile]
 end
 
 function MinionSpawner:MakeSpawnLocations()
-	local positions = {}
-	for i = 1, 100 do
-	   	local s = i/32.0--(num/2) -- 32.0
-	   	local a = math.sqrt(s*512.0)
-	   	local b = math.sqrt(s)
-		table.insert(positions, Vector3(math.sin(a)*b, 0, math.cos(a)*b))
-	end
-	
-	local useablepositions = {}
-	local pt = Vector3(self.inst.Transform:GetWorldPosition())
+    local x, y, z = self.inst.Transform:GetWorldPosition()
     local ground = TheWorld
-	for k, v in pairs(positions) do
-		local offset = Vector3(v.x * self.distancemodifier, 0, v.z * self.distancemodifier)
-		local try_pos = offset + pt
-        if ground.Map:IsAboveGroundAtPoint(try_pos:Get()) and
-            self:CheckTileCompatibility(ground.Map:GetTileAtPoint(try_pos:Get())) and
-            ground.Pathfinder:IsClear(pt.x, pt.y, pt.z, try_pos.x, try_pos.y, try_pos.z, { ignorewalls = true }) and
-            #TheSim:FindEntities(try_pos.x, try_pos.y, try_pos.z, 2.5, { "eyeplant" }) <= 0 and
-            #TheSim:FindEntities(try_pos.x, try_pos.y, try_pos.z, 1) <= 0 then
+    local maxpositions = self.maxminions * POS_MODIFIER
+    local useablepositions = {}
+    for i = 1, 100 do
+        local s = i / 32--(num/2) -- 32.0
+        local a = math.sqrt(s * 512)
+        local b = math.sqrt(s) * self.distancemodifier
+        local pos = Vector3(x + math.sin(a) * b, 0, z + math.cos(a) * b)
+        if ground.Map:IsAboveGroundAtPoint(pos:Get()) and
+            self:CheckTileCompatibility(ground.Map:GetTileAtPoint(pos:Get())) and
+            ground.Pathfinder:IsClear(x, 0, z, pos.x, 0, pos.z, { ignorewalls = true }) and
+            #TheSim:FindEntities(pos.x, pos.y, pos.z, 2.5, { "eyeplant" }) <= 0 and
+            #TheSim:FindEntities(pos.x, pos.y, pos.z, 1) <= 0 and
+            not ground.Map:IsPointNearHole(pos) then
+            table.insert(useablepositions, pos)
+            if #useablepositions >= maxpositions then
+                return useablepositions 
+            end
+        end
+    end
 
-			table.insert(useablepositions, try_pos)
-			if #useablepositions >= (self.maxminions * pos_modifier) then 
-				return useablepositions 
-			end
-
-		end
-	end
-	--if it couldn't find enough spots for minions.
-	self.maxminions = #useablepositions
-	self.freepositions = generatefreepositions(self.maxminions)
-	if #useablepositions > 0 then
-		return useablepositions
-	else
-		return nil
-	end
+    --if it couldn't find enough spots for minions.
+    self.maxminions = #useablepositions
+    self.freepositions = generatefreepositions(self.maxminions)
+    return #useablepositions > 0 and useablepositions or nil
 end
 
 function MinionSpawner:GetSpawnLocation(num)
-	-- local pt = Vector3(self.inst.Transform:GetWorldPosition())
-	if not self.minionpositions then
-		return
-	end
-	
-	local offset = self.minionpositions[num]
-	-- return (pt.x + (offset.x * self.minionradius)), pt.y, (pt.z + (offset.z * self.minionradius))
-	if offset ~= nil and self:CheckTileCompatibility(TheWorld.Map:GetTileAtPoint(offset:Get())) then
-		return Vector3(offset.x, offset.y, offset.z)
-	end
+    if self.minionpositions == nil then
+        return
+    end
 
+    local pos = self.minionpositions[num]
+    return pos ~= nil
+        and self:CheckTileCompatibility(TheWorld.Map:GetTileAtPoint(pos:Get()))
+        and pos
+        or nil
 end
 
 function MinionSpawner:GetNextSpawnTime()
-	return math.random(self.minionspawntime.min, self.minionspawntime.max)
+    return GetRandomMinMax(self.minionspawntime.min, self.minionspawntime.max)
+end
+
+local function OnKillMinion(inst, minion)
+    if minion:IsValid() and not minion.components.health:IsDead() then
+        minion.components.health:Kill()
+    end
 end
 
 function MinionSpawner:KillAllMinions()
-	self.spawninprogress = false
-	for k,v in pairs(self.minions) do
-		self.inst:DoTaskInTime(math.random(),function() v.components.health:Kill() end)
-	end
+    self.spawninprogress = false
+    for k, v in pairs(self.minions) do
+        self.inst:DoTaskInTime(math.random(), OnKillMinion, v)
+    end
 end
 
 function MinionSpawner:SpawnNewMinion()
+    if self.minionpositions == nil then
+        self.minionpositions = self:MakeSpawnLocations()
+        if self.minionpositions == nil then
+            return
+        end
+    end
 
-	if not self.minionpositions then
-		self.minionpositions = self:MakeSpawnLocations()
-	end
+    if self.shouldspawn and not self:MaxedMinions() and #self.freepositions > 0 then
+        self.spawninprogress = false
 
-	if not self.minionpositions then
-		return
-	end
+        local num = self.freepositions[math.random(#self.freepositions)]
+        local pos = self:GetSpawnLocation(num)
+        if pos ~= nil then
+            local minion = self:MakeMinion()
+            if minion ~= nil then
+                minion.sg:GoToState("spawn")
+                minion.minionnumber = num
+                self:TakeOwnership(minion)
+                minion.Transform:SetPosition(pos:Get())
+                self:RemovePosition(num)
 
-	if self.shouldspawn and not self:MaxedMinions() and #self.freepositions > 0 then
-		self.spawninprogress = false
-		local minion = self:MakeMinion()
-		if minion then
-			minion.sg:GoToState("spawn")
-			self:TakeOwnership(minion)
-			local pos = self:GetSpawnLocation(minion.minionnumber)
-			if pos then
-				minion.Transform:SetPosition(pos.x, pos.y, pos.z)
-				self:RemovePosition(minion.minionnumber)
-				
-				if self.onspawnminionfn then
-					self.onspawnminionfn(self.inst, minion)
-				end
-			else
-				-- self:RemovePosition(minion.minionnumber)
-				-- minion:Remove()
-				self.minionpositions = self:MakeSpawnLocations()
-			end
-		end
+                if self.onspawnminionfn ~= nil then
+                    self.onspawnminionfn(self.inst, minion)
+                end
+            end
+        elseif self.miniontype ~= nil and not self:MaxedMinions() then
+            self.minionpositions = self:MakeSpawnLocations()
+        end
 
-		if not self:MaxedMinions() and self.shouldspawn then
-			self:StartNextSpawn()
-		end
-	end
+        if self.shouldspawn and not self:MaxedMinions() then
+            self:StartNextSpawn()
+        end
+    end
 end
 
-
 function MinionSpawner:MaxedMinions()
-	return self.numminions >= self.maxminions
+    return self.numminions >= self.maxminions
 end
 
 function MinionSpawner:SetSpawnInfo(time)
-	self.nextspawninfo = {}
-	self.nextspawninfo.start = GetTime()
-	self.nextspawninfo.time = time
-	return time
+    self.nextspawninfo = { start = GetTime(), time = time }
+    return time
+end
+
+local function OnSpawnNewMinion(inst, self)
+    self:SpawnNewMinion()
 end
 
 function MinionSpawner:StartNextSpawn()
-
-	if not self.shouldspawn then
-		return
-	end
-
-	if not self.spawninprogress and not self:MaxedMinions() then
-		self.spawninprogress = true
-		local time = self:SetSpawnInfo(self:GetNextSpawnTime())
-		self.task = self.inst:DoTaskInTime(time, function() self:SpawnNewMinion() end)
-	end
+    if self.shouldspawn and not (self.spawninprogress or self:MaxedMinions()) then
+        self.spawninprogress = true
+        self.task = self.inst:DoTaskInTime(self:SetSpawnInfo(self:GetNextSpawnTime()), OnSpawnNewMinion, self)
+    end
 end
 
 function MinionSpawner:ResumeSpawn(time)
-	if time < 1 then time = 1 end
-	self:SetSpawnInfo(time)
-	self.task = self.inst:DoTaskInTime(time, function() self:SpawnNewMinion() end)
-	self.spawninprogress = true
+    self.spawninprogress = true
+    self.task = self.inst:DoTaskInTime(self:SetSpawnInfo(math.max(1, time)), OnSpawnNewMinion, self)
+end
+
+local function useuptime(self, time)
+    local iterations = 0
+    while time > 0 do
+        time = time - self:GetNextSpawnTime()
+        iterations = iterations + 1
+    end
+    return iterations
 end
 
 function MinionSpawner:LongUpdate(dt)
+    if self.spawninprogress and self.shouldspawn then
+        if self.task ~= nil then
+            self.task:Cancel()
+            self.task = nil
+        end
 
-	local useuptime = function(time) 
-		local iterations = 0
-		while time > 0 do
-			time = time - self:GetNextSpawnTime()
-			iterations = iterations + 1
-		end
-		return iterations
-	end
-
-	if self.spawninprogress and self.shouldspawn then
-		if self.task then
-			self.task:Cancel()
-			self.task = nil
-		end
-
-		local possiblespawns = useuptime(dt)
-
-		for i = 1, possiblespawns do
-			if self.task then
-				self.task:Cancel()
-				self.task = nil
-			end
-			self:SpawnNewMinion()
-		end
-	end
+        local possiblespawns = useuptime(self, dt)
+        for i = 1, possiblespawns do
+            if self.task ~= nil then
+                self.task:Cancel()
+                self.task = nil
+            end
+            self:SpawnNewMinion()
+        end
+    end
 end
 
 return MinionSpawner

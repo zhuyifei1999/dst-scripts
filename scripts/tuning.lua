@@ -263,10 +263,10 @@ function Tune(overrides)
 
         CRITTER_TRAITS =
         {
-            COMBAT          = {inc=0.003, decay=1.2},
-            WELLFED         = {inc=0.70,  decay=.85},
-            PLAYFUL         = {inc=0.30,  decay=.8},
-            CRAFTY          = {inc=0.25,  decay=1},
+            COMBAT          = {inc=0.003, decay=1.35},
+            WELLFED         = {inc=0.70,  decay=.7},
+            PLAYFUL         = {inc=0.32,  decay=.7},
+            CRAFTY          = {inc=0.25,  decay=.9},
         },
 
         CRITTER_TRAIT_DECAY_DELAY = seg_time,
@@ -567,7 +567,8 @@ function Tune(overrides)
         SPILAGMITE_SPAWNER = 2,
         SPILAGMITE_ROCK = 4,
         MARBLEPILLAR_MINE = 10,
-        MARBLETREE_MINE = 8,  
+        MARBLETREE_MINE = 8,
+        CAVEIN_BOULDER_MINE = 3,
 
         PETRIFIED_TREE_SMALL = 2,
         PETRIFIED_TREE_NORMAL = 3,
@@ -1211,6 +1212,7 @@ function Tune(overrides)
         MOLEHAT_PERISHTIME = total_day_time*1.5,
         RAINHAT_PERISHTIME = total_day_time*10,
         CATCOONHAT_PERISHTIME = total_day_time*10,
+        GOGGLES_PERISHTIME = total_day_time*10,
 
         GRASS_REGROW_TIME = total_day_time*3,
         SAPLING_REGROW_TIME = total_day_time*4,
@@ -1301,6 +1303,9 @@ function Tune(overrides)
         ARMOR_HIVEHAT_ABSORPTION = .7*multiplayer_armor_absorption_modifier,
         ARMOR_HIVEHAT_SANITY_ABSORPTION = .5,
 
+        ARMOR_SKELETON_COOLDOWN = 5,
+        ARMOR_SKELETON_FIRST_COOLDOWN = 1,
+
         PANFLUTE_SLEEPTIME = 20,
         PANFLUTE_SLEEPRANGE = 15,
         PANFLUTE_USES = 10,
@@ -1315,6 +1320,7 @@ function Tune(overrides)
 
         GOLD_VALUES =
         {
+			ANTLION = 1,
             MEAT = 1,
             RAREMEAT = 5,
             TRINKETS =
@@ -1509,6 +1515,7 @@ function Tune(overrides)
         EFFIGY_HEALTH_PENALTY = 40,
         REVIVE_HEALTH_PENALTY_AS_MULTIPLE_OF_EFFIGY = 1,
 
+        REVIVE_SHADOW_SANITY_PENALTY = -40,
         REVIVE_OTHER_SANITY_BONUS = 80,
         REVIVE_HEALTH_PENALTY = 0.25,
 
@@ -1535,6 +1542,7 @@ function Tune(overrides)
         SANITYAURA_MED = 100/(seg_time*5),
         SANITYAURA_LARGE = 100/(seg_time*2),
         SANITYAURA_HUGE = 100/(seg_time*.5),
+        SANITYAURA_SUPERHUGE = 100/(seg_time*.25),
 
         DAPPERNESS_TINY = 100/(day_time*15),
         DAPPERNESS_SMALL = 100/(day_time*10),
@@ -1542,6 +1550,7 @@ function Tune(overrides)
         DAPPERNESS_MED_LARGE = 100/(day_time*4.5),
         DAPPERNESS_LARGE = 100/(day_time*3),
         DAPPERNESS_HUGE = 100/(day_time),
+        DAPPERNESS_SUPERHUGE = 100/(day_time*0.5),
 
         MOISTURE_SANITY_PENALTY_MAX = -100/(day_time*6), -- Was originally 10 days
 
@@ -1672,6 +1681,8 @@ function Tune(overrides)
 
         SEWINGKIT_USES = 5,
         SEWINGKIT_REPAIR_VALUE = total_day_time*5,
+
+        SEWING_TAPE_REPAIR_VALUE = total_day_time*5,
 
         RABBIT_CARROT_LOYALTY = seg_time*8,
         RABBIT_POLITENESS_LOYALTY_BONUS = seg_time * 4,
@@ -2276,9 +2287,11 @@ function Tune(overrides)
 
         CARROT_REGROWTH_TIME = day_time * 20,
         FLOWER_REGROWTH_TIME = 30,
+        FLOWER_REGROWTH_TIME_MULT = 1,
         FLOWER_WITHER_IN_CAVE_LIGHT = 0.05,
         RABBITHOLE_REGROWTH_TIME = total_day_time * 5,
         FLOWER_CAVE_REGROWTH_TIME = total_day_time * 5,
+        FLOWER_CAVE_REGROWTH_TIME_MULT = 1,
 
         EVERGREEN_REGROWTH = {
             OFFSPRING_TIME = total_day_time * 5,
@@ -2357,6 +2370,154 @@ function Tune(overrides)
         SALTLICK_KOALEFANT_USES = 4,
         SALTLICK_LIGHTNINGGOAT_USES = 1,
         SALTLICK_DEER_USES = 1,
+
+        ANTLION_HEALTH = 6000,
+        ANTLION_MAX_ATTACK_PERIOD = 4,
+        ANTLION_MIN_ATTACK_PERIOD = 2,
+        ANTLION_SPEED_UP = -.2,
+        ANTLION_SLOW_DOWN = .4,
+        ANTLION_CAST_RANGE = 15,
+        ANTLION_CAST_MAX_RANGE = 20,
+        ANTLION_WALL_CD = 20,
+        ANTLION_HIT_RECOVERY = 1,
+        ANTLION_EAT_HEALING = 200,
+
+        ANTLION_SINKHOLE_WORKTOREPAIR = 3,
+        ANTLION_SINKHOLE =
+        {
+            RADIUS = 2.5,
+            UNEVENGROUND_RADIUS = 3,
+
+            WAVE_MAX_ATTACKS = 5,
+            WAVE_MIN_ATTACKS = 2,
+            WAVE_ATTACK_DELAY = .75,
+            WAVE_ATTACK_DELAY_VARIANCE = 1,
+            WAVE_MERGE_ATTACKS_DIST_SQ = math.pow(4 * 3, 2), -- 4 == TILE_SCALE
+
+            NUM_WARNINGS = 12,
+            WARNING_DELAY = 1,
+            WARNING_DELAY_VARIANCE = .3,
+
+            ATTACK_SEQUENCE_INITIAL_DELAY = 1 * total_day_time,
+            ATTACK_SEQUENCE_INITIAL_DELAY_VARIANCE = 1 * total_day_time,
+            ATTACK_SEQUENCE_NEXT_WAVE_DELAY = .35 * total_day_time, -- useage: val * remaing days in season
+            ATTACK_SEQUENCE_NEXT_WAVE_DELAY_VARIANCE = 1 * total_day_time,
+
+            DAMAGE = 30,
+            
+            REPAIR_TIME_VARIANCE = 1 * total_day_time,
+            REPAIR_TIME = -- Note: these times are used from last to first
+            {
+				4 * total_day_time,
+				5 * total_day_time,
+				21 * total_day_time,
+            },
+        },
+
+        ANTLION_RAGE_TIME_INITIAL = 4.2 * total_day_time,
+        ANTLION_RAGE_TIME_MIN = 1 * total_day_time,
+        ANTLION_RAGE_TIME_MAX = 6 * total_day_time,
+        ANTLION_RAGE_TIME_FAILURE_SCALE = 0.8,
+        ANTLION_TRIBUTE_TO_RAGE_TIME = .33 * total_day_time,
+        ANTLION_RAGE_TIME_UNHAPPY_PERCENT = 0.6,
+        ANTLION_RAGE_TIME_HAPPY_PERCENT = 0.95,
+        ANTLION_TRIBUTER_TALKER_TIME = 8,
+
+        SANDSTORM_OASIS_RADIUS = 1,
+        SANDSTORM_FULLY_ENTERED_DEPTH = 20,
+        SANDSTORM_FULL_LEVEL = .7,
+        SANDSTORM_VISION_RANGE_SQ = 25,
+        SANDSTORM_SPEED_MOD = .4,
+
+        SANDSPIKE =
+        {
+            HEALTH =
+            {
+                SHORT = 25,
+                MED = 65,
+                TALL = 100,
+                BLOCK = 250,
+            },
+            DAMAGE =
+            {
+                SHORT = 100,
+                MED = 150,
+                TALL = 200,
+                BLOCK = 0,
+            },
+            LIFETIME =
+            {
+                SHORT = { 6, 7 },
+                MED = { 7, 8 },
+                TALL = { 8, 10 },
+                BLOCK = { 15, 16 },
+            },
+        },
+
+        OASISLAKE_MAX_FISH = 15,
+        OASISLAKE_FISH_RESPAWN_TIME = seg_time*3,
+
+        CAREFUL_SPEED_MOD = .3,
+
+        STALKER_HEALTH = 4000,
+        STALKER_DAMAGE = 200,
+        STALKER_ATTACK_PERIOD = 4,
+        STALKER_ATTACK_RANGE = 2.4,
+        STALKER_HIT_RANGE = 3.8,
+        STALKER_AOE_RANGE = 2,
+        STALKER_AOE_SCALE = .8,
+        STALKER_SPEED = 4.2,
+        STALKER_HIT_RECOVERY = 1,
+
+        STALKER_ABILITY_RETRY_CD = 3,
+
+        STALKER_SNARE_RANGE = 12,
+        STALKER_SNARE_MAX_RANGE = 15,
+        STALKER_SNARE_TIME = 6,
+        STALKER_SNARE_TIME_VARIANCE = .5,
+        STALKER_MAX_SNARES = 6,
+        STALKER_SNARE_CD = 10,
+        STALKER_FIRST_SNARE_CD = 5,
+
+        STALKER_AGGRO_DIST = 15,
+        STALKER_KEEP_AGGRO_DIST = 9,
+        STALKER_DEAGGRO_DIST = 30,
+        STALKER_EPICSCARE_RANGE = 10,
+
+        STALKER_BLOOM_DECAY = 5,
+
+        STALKER_ATRIUM_HEALTH = 16000,
+        STALKER_ATRIUM_PHASE2_HEALTH = 10000,
+        STALKER_ATRIUM_ATTACK_PERIOD = 3,
+
+        FOSSIL_SPIKE_DAMAGE = 100,
+        STALKER_SPIKES_CD = 8,
+        STALKER_FIRST_SPIKES_CD = 4,
+
+        STALKER_CHANNELERS_COUNT = 6,
+        STALKER_CHANNELERS_CD = 20,
+        STALKER_FIRST_CHANNELERS_CD = 5,
+
+        STALKER_FEAST_HEALING = 400,
+        STALKER_MINIONS_LIFESPAN = 45,
+        STALKER_MINIONS_LIFESPAN_VARIANCE = 5,
+        STALKER_MINIONS_COUNT = 20,
+        STALKER_MINIONS_CD = 20,
+        STALKER_FIRST_MINIONS_CD = 5,
+
+        STALKER_MINDCONTROL_RANGE = 15,
+        STALKER_MINDCONTROL_DURATION = 3.5,
+        STALKER_MINDCONTROL_CD = 15,
+        STALKER_FIRST_MINDCONTROL_CD = 5,
+
+        THURIBLE_FUEL_MAX = (night_time + dusk_time) * 3,
+        THURIBLE_AOE_RANGE = 6,
+
+        ATRIUM_GATE_DESTABILIZE_DELAY = 12,
+        ATRIUM_GATE_DESTABILIZE_TIME = seg_time * 8,
+        ATRIUM_GATE_DESTABILIZE_WARNING_TIME = seg_time * 0.55,
+        ATRIUM_GATE_DESTABILIZE_INITIAL_WARNING_DELAY = 2, -- this is the time after ATRIUM_GATE_DESTABILIZE_DELAY that the first pulse will happen
+        ATRIUM_GATE_COOLDOWN = total_day_time * 20,
 
         VOTE_PASSED_SQUELCH_TIME = 0,
         VOTE_FAILED_SQUELCH_TIME = 30,

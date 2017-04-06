@@ -22,14 +22,13 @@ local Hauntable = Class(function(self, inst)
 
     self.cooldowntimer = 0
     self.cooldown = nil
-    
+
     self.cooldown_on_successful_haunt = true
 
     self.panic = false
     self.panictimer = 0
 
     self.usefx = true
-    self.fx = nil
     self.flicker = "off"
 end,
 nil,
@@ -63,16 +62,8 @@ function Hauntable:Panic(panictime)
 end
 
 function Hauntable:StartFX(noflicker)
-    if self.usefx then
-        if not self.fx then
-
---          self.fx = SpawnPrefab("hauntfx")
---          if self.fx then
---              local follower = self.fx.entity:AddFollower()
---              follower:FollowSymbol(self.inst.GUID, self.inst.components.combat and self.inst.components.combat.hiteffectsymbol or "swap_object", 0, 0, 0)
---          end
-        end
-        if not noflicker then self:AdvanceFlickerState() end
+    if not noflicker and self.usefx then
+        self:AdvanceFlickerState()
     end
 end
 
@@ -83,15 +74,10 @@ function Hauntable:AdvanceFlickerState()
         self.flicker = "fadeout"
     elseif self.flicker == "fadeout" then
         self.flicker = "off"
-        --self.inst.AnimState:SetMultColour(1, 1, 1, 1)
     end
 end
 
 function Hauntable:StopFX()
-    if self.fx ~= nil then
-        self.fx:Remove()
-        self.fx = nil
-    end
     self.flicker = "fadeout" -- guarantee that we turn flicker off
     self:AdvanceFlickerState()
 end
@@ -148,23 +134,6 @@ function Hauntable:OnUpdate(dt)
         if self.cooldowntimer < .4 and self.flickering == "on" then
             self:AdvanceFlickerState()
         end
-        if self.cooldowntimer < .2 and self.fx then
-            self:StopFX()
-        end
-
-        --[[if self.flicker == "on" then
-            if math.random() <= .5 then
-                self.inst.AnimState:SetMultColour(1, 1, 1, 1)
-            else
-                self.inst.AnimState:SetMultColour(.7, .7, .7, 1)
-            end
-        elseif self.flicker == "fadeout" then
-            if math.random() <= .2 then
-                self.inst.AnimState:SetMultColour(1, 1, 1, 1)
-            else
-                self.inst.AnimState:SetMultColour(.7, .7, .7, 1)
-            end
-        end]]
     end
 
     if self.panictimer <= 0 then
@@ -174,16 +143,8 @@ function Hauntable:OnUpdate(dt)
         self.panictimer = self.panictimer - dt
     end
 
-    if not self.haunted and not self.panic then
+    if not (self.haunted or self.panic) then
         self.inst:StopUpdatingComponent(self)
-    end
-
-end
-
-function Hauntable:OnRemoveEntity()
-    if self.fx ~= nil then
-        self.fx:Remove()
-        self.fx = nil
     end
 end
 

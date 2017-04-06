@@ -7,11 +7,10 @@ local LOCAL_CHEATS_ENABLED = false
 
 local MAX_DIST_FROM_PLAYER = 12
 local MAX_DIST_FROM_WATER = 6
+local MIN_DIST_FROM_STRUCTURES = 20
 
 local SEARCH_RADIUS = 50
 local SEARCH_RADIUS2 = SEARCH_RADIUS*SEARCH_RADIUS
-
-local ICEBLOCKER_SEARCH_RADIUS = 30
 
 local DEFAULT_NUM_BOULDERS = 7
 
@@ -35,16 +34,14 @@ local _colonies = {}       -- existing colonies
 local _maxColonySize = 12
 local _totalBirds = 0    -- current number of birds alive
 local _flockSize = FLOCK_SIZE
-local _seasonLimit = 0  -- total spawned this season
 local _spacing = 60
 local _checktime = 5
 local _lastSpawnTime = 0
 
-local _maxPenguins = 50  -- max simultaneous penguins
+local _maxColonies = 5
+local _maxPenguins = FLOCK_SIZE * (_maxColonies + 1)  -- max simultaneous penguins
 local _spawnInterval = 30
 
-local _maxColonies = 10
-local _maxSpawnsPerSeason = 35
 local _active = true
 
 local _numBoulders = DEFAULT_NUM_BOULDERS
@@ -104,9 +101,9 @@ local function FindSpawnLocationForPlayer(player)
         return false
     end
 
-    local cang = (TheCamera:GetHeading() % 360) * DEGREES
+    local cang = (math.random() * 360) * DEGREES
     --print("cang:",cang)
-    local loc, landAngle, deflected = FindValidPositionByFan(cang, radius, 4, test)
+    local loc, landAngle, deflected = FindValidPositionByFan(cang, radius, 7, test)
     if loc ~= nil then
         return landPos, tmpAng, deflected
     end
@@ -146,7 +143,7 @@ end
 
 local function SpawnPenguin(inst,spawner,colonyNum,pos,angle)
 
-    if _totalBirds >= _maxPenguins or _seasonLimit > _maxSpawnsPerSeason then
+    if _totalBirds >= _maxPenguins then
         return
     end
 
@@ -191,6 +188,7 @@ local function EstablishColony(loc)
      local testfn = function(offset)
         local run_point = loc + offset
         if not ground.Map:IsAboveGroundAtPoint(run_point:Get()) then
+			--print("not above ground")
             return false
         end
 
@@ -204,18 +202,27 @@ local function EstablishColony(loc)
             not ground.Pathfinder:IsClear(loc.x, loc.y, loc.z,
                                                          run_point.x, run_point.y, run_point.z,
                                                          {ignorewalls = ignore_walls, ignorecreep = true}) then 
+			--print("no path or los")
             return false
         end
+        
         if FindValidPositionByFan(0, 6, 16, NearWaterTest) then
             --print("colony too near water")
             return false
         end
-            -- Now check that the rookeries are not too close together
+		
+        if #(TheSim:FindEntities(run_point.x, run_point.y, run_point.z, MIN_DIST_FROM_STRUCTURES, {"structure"})) > 0 then
+            --print("colony too close to structures")
+			return false
+        end
+
+		-- Now check that the rookeries are not too close together
         local found = true
         for i,v in ipairs(colonies) do
             local pos = v.rookery
             -- What about penninsula effects? May have a long march
             if pos and distsq(run_point,pos) < _spacing*_spacing then
+				--print("too close to another rookery")
                 found = false
             end
         end
@@ -225,7 +232,6 @@ local function EstablishColony(loc)
     -- Look for any nearby colonies with enough room
     -- return the colony if you find it
     for i,v in ipairs(_colonies) do
-        --print(i,"looking at size:",GetTableSize(v.members),v.rookery,"dist=",math.sqrt(distsq(loc,v.rookery)))
         if GetTableSize(v.members) <= (_maxColonySize-(FLOCK_SIZE*.8)) then
             pos = v.rookery
             if pos and distsq(loc,pos) < SEARCH_RADIUS2+60 and
@@ -237,21 +243,17 @@ local function EstablishColony(loc)
             end
         end
     end
+    
     -- Make a new colony
     local newFlock = { members={} }
 
+    -- Find good spot far enough away from the other colonies
     radius = SEARCH_RADIUS
-    -- Otherwise, find another good spot far enough away from the other colonies
     while not newFlock.rookery and radius>30 do
-        -- Starting angle set towards player (to reduce peninsula effects)
-        local angle
-        -- angle = GetRandomWithVariance(ThePlayer:GetAngleToPoint(loc)-180, 10)
-        angle = GetRandomWithVariance(0, PI) -- otherwise will 
-        --newFlock.rookery = FindWalkableOffset(loc, angle, radius, 16, true)
-        --                  FindValidPositionByFan(start_angle, radius, attempts, test_fn)
-        newFlock.rookery =  FindValidPositionByFan(angle, radius, 32, testfn)
+        newFlock.rookery = FindValidPositionByFan(math.random()*PI*2.0, radius, 32, testfn)
         radius = radius - 10
     end
+    
     if newFlock.rookery then
         newFlock.rookery = newFlock.rookery + loc
         newFlock.ice = SpawnPrefab("penguin_ice")
@@ -276,13 +278,9 @@ local function EstablishColony(loc)
                         foundvalidplacement = true
                         numboulders = numboulders - 1
                         
-                        -- Note: if the rock_ice is trying to be placed near something that is prevents it from spawning, then abort this attempt
-                        --       but still count it as a placed rock_ice, that way they dont pile up around the radius of the iceblocker
-	                    ents = TheSim:FindEntities(pos.x + offset.x, pos.y + offset.y, pos.z + offset.z, ICEBLOCKER_SEARCH_RADIUS, {"iceblocker"})
-                        if #ents == 0 then
-                            local icerock = SpawnPrefab("rock_ice")
-                            icerock.Transform:SetPosition(pos.x + offset.x, pos.y + offset.y, pos.z + offset.z)
-                        end
+                        local icerock = SpawnPrefab("rock_ice")
+                        icerock.Transform:SetPosition(pos.x + offset.x, pos.y + offset.y, pos.z + offset.z)
+                        icerock.remove_on_dryup = true
                     end
                 end
                 placement_attempts = placement_attempts + 1
@@ -313,7 +311,7 @@ local function TryToSpawnFlockForPlayer(playerdata)
             return
         end
 
-        if _totalBirds >= _maxPenguins or _seasonLimit > _maxSpawnsPerSeason then
+        if _totalBirds >= _maxPenguins then
             --print("TryToSpawn maxed out")
             return
         end
@@ -326,6 +324,7 @@ local function TryToSpawnFlockForPlayer(playerdata)
 		local playerPos = player:GetPosition()
 		for i,v in ipairs(_activeplayers) do
 			if v.lastSpawnLoc and distsq(v.lastSpawnLoc,playerPos) < MIN_SPAWN_DIST*MIN_SPAWN_DIST then
+				--print("too close to prev spawn")
 				return
 			end
 		end
@@ -373,7 +372,6 @@ local function OnLoadColonies(data)
     if data.colonies then
         for i,v in ipairs(data.colonies) do
             local ice = SpawnPrefab("penguin_ice")
-            --print(i,ice,"+++++++ pos=",v[1],v[2],v[3])
             if ice then
                 ice.Transform:SetPosition(v[1],v[2],v[3])
                 ice.spawner = self
@@ -408,6 +406,26 @@ local function OnSetNumBoulders(val)
     _numBoulders = val or DEFAULT_NUM_BOULDERS
 end
 
+local function OnSeasonTick(inst, data)
+    if data.season ~= SEASONS.WINTER then
+	    if #_colonies > 0 then
+			for _,v in ipairs(_colonies) do
+				local members = v.members or {}
+				for pengu,_ in pairs(members) do
+					pengu.colonyNum = nil
+				end
+				if v.ice then
+					v.ice:QueueRemove()
+				end
+			end
+			
+			_colonies = {}
+		end
+		
+		_totalBirds = 0
+	end
+end
+
 --------------------------------------------------------------------------
 --[[ Initialization ]]
 --------------------------------------------------------------------------
@@ -419,6 +437,7 @@ end
 inst:ListenForEvent("ms_playerjoined", function(src, player) OnPlayerJoined(src, player) end, TheWorld)
 inst:ListenForEvent("ms_playerleft", function(src, player) OnPlayerLeft(src,player) end, TheWorld)
 inst:ListenForEvent("ms_setpenguinnumboulders", function(src, val) OnSetNumBoulders(val) end, TheWorld)
+inst:ListenForEvent("seasontick", OnSeasonTick)
 
 -- Reschedule based on number of players
 self.inst:DoTaskInTime(_checktime / math.max(#_activeplayers,1), function() TryToSpawnFlock() end)
@@ -427,14 +446,13 @@ self.inst:DoTaskInTime(_checktime / math.max(#_activeplayers,1), function() TryT
 --[[ Public member functions ]]
 --------------------------------------------------------------------------
 function self:AddToColony(colonyNum,pengu)
-    local colony = _colonies[colonyNum]
+    local colony = colonyNum ~= nil and _colonies[colonyNum] or nil
     if colony then
         --print(pengu," added to ",colonyNum)
         colony.members = colony.members or {}
         colony.members[pengu] = true
         pengu.colonyNum = colonyNum
         _totalBirds = _totalBirds + 1
-        _seasonLimit = _seasonLimit + 1
         -- NB. Have to create a separate function because
         --     RemoveEventCallback matches the specific function address
         pengu.deathfn = function() LostPenguin(pengu) end
@@ -449,31 +467,28 @@ function self:SpawnModeNever()
     _maxPenguins = 0
     _spawnInterval = -1
     _maxColonies = 0
-    _maxSpawnsPerSeason = 0
     _active = false
     self.inst:StopUpdatingComponent(self)
 end
 
-function self:SpawnModeHeavy()
-    _maxPenguins = 70 
-    _spawnInterval = 10
-    _maxColonies = 15
-    _maxSpawnsPerSeason = 70
+function self:SpawnModeLight()
+    _maxColonies = 3
+    _maxPenguins = FLOCK_SIZE * (_maxColonies + 1)
+    _spawnInterval = 60
 end
 
 function self:SpawnModeMed()
-    _maxPenguins = 60 
+    _maxColonies = 6
+    _maxPenguins = FLOCK_SIZE * (_maxColonies + 2)
     _spawnInterval = 20
-    _maxColonies = 12
-    _maxSpawnsPerSeason = 50
 end
 
-function self:SpawnModeLight()
-    _maxPenguins = 25
-    _spawnInterval = 60
-    _maxColonies = 5
-    _maxSpawnsPerSeason = 20
+function self:SpawnModeHeavy()
+    _maxColonies = 7
+    _maxPenguins = FLOCK_SIZE * (_maxColonies + 5)
+    _spawnInterval = 10
 end
+
 --------------------------------------------------------------------------
 --[[ Save/Load ]]
 --------------------------------------------------------------------------
@@ -487,26 +502,15 @@ function self:OnSave()
     else
         --print("__NO COLONIES")
     end
-    data.maxPenguins = _maxPenguins
-    data.spawnInterval = _spawnInterval
-    data.maxColonies = _maxColonies
-    data.maxSpawnsPerSeason = _maxSpawnsPerSeason
-    data.active = _active
+    
     data.numBoulders = _numBoulders
+
     return data
 end
 
 function self:OnLoad(data)
     if data then
 		OnLoadColonies(data)
-        _active = data.active or true
-        if not _active then
-            self.inst:StopUpdatingComponent(self)
-        end
-        _maxPenguins = data.maxPenguins or 50 
-        _spawnInterval = data.spawnInterval or 30
-        _maxColonies = data.maxColonies or 10
-        _maxSpawnsPerSeason = data.maxSpawnsPerSeason or 35
         _numBoulders = data.numBoulders or DEFAULT_NUM_BOULDERS
     end
 end
@@ -514,6 +518,28 @@ end
 --------------------------------------------------------------------------
 --[[ Debug ]]
 --------------------------------------------------------------------------
+
+function self:GetDebugString()
+	local s = ""
+	s = s .. (_active and "Active" or "Inactive")
+
+	s = s .. ", " .. tostring(_totalBirds) .."/".. tostring(_maxPenguins) .. " Penguins"
+	
+	s = s .. ", " .. tostring(#_colonies) .."/".. tostring(_maxColonies) .. " Colonies"
+	
+	if _totalBirds >= _maxPenguins then
+		s = s .. ", Limit Reached"
+	else
+		local next_spawn_in = _spawnInterval - (GetTime() - _lastSpawnTime)
+		if next_spawn_in > 0 then
+			s = s .. ", next spawn in :" .. tostring(next_spawn_in)
+		else
+			s = s .. ", next spawn imminent"
+		end
+	end
+		
+	return s
+end
 
 --------------------------------------------------------------------------
 --[[ End ]]

@@ -178,6 +178,10 @@ end
 
 --------------------------------------------------------------------------
 
+local function NoHoles(pt)
+    return not TheWorld.Map:IsPointNearHole(pt)
+end
+
 local function FindMushroomBombTargets(inst)
     --ring with a random gap
     local maxbombs = inst.mushroombomb_variance > 0 and inst.mushroombomb_count + math.random(inst.mushroombomb_variance) or inst.mushroombomb_count
@@ -204,7 +208,7 @@ local function FindMushroomBombTargets(inst)
     local targets = {}
     while #angles > 0 do
         local theta = table.remove(angles, math.random(#angles))
-        local offset = FindWalkableOffset(pt, theta, range, 12, true)
+        local offset = FindWalkableOffset(pt, theta, range, 12, true, true, NoHoles)
         if offset ~= nil then
             offset.x = offset.x + pt.x
             offset.y = 0
@@ -286,7 +290,7 @@ local function DoMushroomSprout(inst, angles)
     local pt = inst:GetPosition()
     local theta = table.remove(angles, math.random(#angles))
     local radius = GetRandomMinMax(TUNING.TOADSTOOL_MUSHROOMSPROUT_MIN_RANGE, TUNING.TOADSTOOL_MUSHROOMSPROUT_MAX_RANGE)
-    local offset = FindWalkableOffset(pt, theta, radius, 12, true)
+    local offset = FindWalkableOffset(pt, theta, radius, 12, true, false, NoHoles)
     pt.y = 0
 
     --number of attempts to find an unblocked spawn point
@@ -294,13 +298,12 @@ local function DoMushroomSprout(inst, angles)
     local min_spacing_sq = min_spacing * min_spacing
     for i = 1, 12 do
         if i > 1 then
-            offset = FindWalkableOffset(pt, 2 * PI * math.random(), 2.5, 8, true)
+            offset = FindWalkableOffset(pt, 2 * PI * math.random(), 2.5, 8, true, false, NoHoles)
         end
         if offset ~= nil then
             pt.x = pt.x + offset.x
             pt.z = pt.z + offset.z
-            if map:IsPassableAtPoint(pt:Get()) and
-                #TheSim:FindEntities(pt.x, 0, pt.z, min_spacing, nil, { "_inventoryitem", "playerskeleton", "flower", "DIG_workable", "NOBLOCK", "FX", "INLIMBO", "DECOR" }) <= 0 then
+            if #TheSim:FindEntities(pt.x, 0, pt.z, min_spacing, nil, { "_inventoryitem", "playerskeleton", "flower", "DIG_workable", "NOBLOCK", "FX", "INLIMBO", "DECOR" }) <= 0 then
                 --destroy skeletons and diggables
                 for i, v in ipairs(TheSim:FindEntities(pt.x, 0, pt.z, 1.2, nil, nil, { "playerskeleton", "DIG_workable" })) do
                     v.components.workable:Destroy(inst)
@@ -324,7 +327,7 @@ local function DoMushroomSprout(inst, angles)
 
                 --toss stuff out of the way
                 for i, v in ipairs(totoss) do
-                    if v:IsValid() and not v.components.inventoryitem.nobounce and v.Physics ~= nil then
+                    if v:IsValid() and not v.components.inventoryitem.nobounce and v.Physics ~= nil and v.Physics:IsActive() then
                         SproutLaunch(v, ent, 1.5)
                     end
                 end

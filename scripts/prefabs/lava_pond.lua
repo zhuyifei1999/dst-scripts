@@ -1,12 +1,6 @@
 local assets =
 {
     Asset("ANIM", "anim/lava_tile.zip"),
-	Asset("MINIMAP_IMAGE", "pond_lava"),
-}
-
-local prefabs =
-{
-    "lava_pond_rock",
 }
 
 local rock_assets =
@@ -14,16 +8,7 @@ local rock_assets =
     Asset("ANIM", "anim/scorched_rock.zip"),
 }
 
-local rocktypes =
-{
-    "",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-}
+local NUM_ROCK_TYPES = 7
 
 local function makerock(rocktype)
     local function fn()
@@ -37,7 +22,9 @@ local function makerock(rocktype)
         inst.AnimState:SetBuild("scorched_rock")
         inst.AnimState:PlayAnimation("idle"..rocktype)
 
-        inst.name = STRINGS.NAMES.LAVA_POND_ROCK
+        if rocktype:len() > 0 then
+            inst:SetPrefabNameOverride("lava_pond_rock")
+        end
 
         inst.entity:SetPristine()
 
@@ -61,9 +48,10 @@ local function SpawnRocks(inst)
         inst.rocks = {}
         for i = 1, math.random(2, 4) do
             local theta = math.random() * 2 * PI
+            local rocktype = math.random(NUM_ROCK_TYPES)
             table.insert(inst.rocks,
             {
-                rocktype = rocktypes[math.random(#rocktypes)],
+                rocktype = rocktype > 1 and tostring(rocktype) or "",
                 offset =
                 {
                     math.sin(theta) * 2.1 + math.random() * .3,
@@ -108,6 +96,52 @@ local function OnCollide(inst, other)
     end
 end
 
+--------------------------------------------------------------------------
+
+local function PushMusic(inst)
+    if ThePlayer == nil then
+        inst._playingmusic = false
+    elseif ThePlayer:IsNear(inst, inst._playingmusic and 30 or 20) then
+        inst._playingmusic = true
+        ThePlayer:PushEvent("triggeredevent", { name = "dragonfly" })
+    elseif inst._playingmusic and not ThePlayer:IsNear(inst, 40) then
+        inst._playingmusic = false
+    end
+end
+
+local function OnIsEngagedDirty(inst)
+    --Dedicated server does not need to trigger music
+    if not TheNet:IsDedicated() then
+        if not inst._isengaged:value() then
+            if inst._musictask ~= nil then
+                inst._musictask:Cancel()
+                inst._musictask = nil
+            end
+            inst._playingmusic = false
+        elseif inst._musictask == nil then
+            inst._musictask = inst:DoPeriodicTask(1, PushMusic, math.random())
+            PushMusic(inst)
+        end
+    end
+end
+
+local function OnDragonflyEngaged(inst, data)
+    local engaged = data.engaged and data.dragonfly ~= nil
+    if inst._isengaged:value() ~= engaged then
+        inst._isengaged:set(engaged)
+        OnIsEngagedDirty(inst)
+    end
+end
+
+--------------------------------------------------------------------------
+
+local function OnInit(inst)
+    inst:ListenForEvent("dragonflyengaged", OnDragonflyEngaged)
+    TheWorld:PushEvent("ms_registerlavapond", inst)
+end
+
+--------------------------------------------------------------------------
+
 local function fn()
     local inst = CreateEntity()
 
@@ -127,9 +161,10 @@ local function fn()
     inst.AnimState:SetLayer(LAYER_BACKGROUND)
     inst.AnimState:SetSortOrder(3)
 
-    inst.MiniMapEntity:SetIcon("pond_lava.png")
+    inst.MiniMapEntity:SetIcon("lava_pond.png")
 
     inst:AddTag("lava")
+    inst:AddTag("antlion_sinkhole_blocker")
 
     --cooker (from cooker component) added to pristine state for optimization
     inst:AddTag("cooker")
@@ -140,11 +175,19 @@ local function fn()
     inst.Light:SetIntensity(0.66)
     inst.Light:SetColour(235 / 255, 121 / 255, 12 / 255)
 
+    inst._isengaged = net_bool(inst.GUID, "lava_pond._isengaged", "isengageddirty")
+    inst._playingmusic = false
+    inst._musictask = nil
+
     inst.no_wet_prefix = true
+
+    inst:SetDeployExtraSpacing(2)
 
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
+        inst:ListenForEvent("isengageddirty", OnIsEngagedDirty)
+
         return inst
     end
 
@@ -171,11 +214,18 @@ local function fn()
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
 
+    --Delay registration until after our position is set
+    inst:DoTaskInTime(0, OnInit)
+
     return inst
 end
 
-local prefabs = { Prefab("lava_pond", fn, assets, prefabs) }
-for i, v in ipairs(rocktypes) do
-    table.insert(prefabs, makerock(v))
+local ret = { makerock("") }
+local prefabs = { "lava_pond_rock" }
+for i = 2, NUM_ROCK_TYPES do
+    table.insert(ret, makerock(tostring(i)))
+    table.insert(prefabs, "lava_pond_rock"..tostring(i))
 end
-return unpack(prefabs)
+table.insert(ret, Prefab("lava_pond", fn, assets, prefabs))
+prefabs = nil
+return unpack(ret)

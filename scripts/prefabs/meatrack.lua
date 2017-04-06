@@ -1,3 +1,5 @@
+require "prefabutil"
+
 local assets =
 {
     Asset("ANIM", "anim/meat_rack.zip"),
@@ -38,6 +40,9 @@ local function onhammered(inst, worker)
         inst.components.burnable:Extinguish()
     end
     inst.components.lootdropper:DropLoot()
+    if inst.components.dryer ~= nil then
+        inst.components.dryer:DropItem()
+    end
     local fx = SpawnPrefab("collapse_small")
     fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
     fx:SetMaterial("wood")

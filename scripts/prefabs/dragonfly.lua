@@ -1,6 +1,6 @@
 local brain = require("brains/dragonflybrain")
 
-local assets = 
+local assets =
 {
     Asset("ANIM", "anim/dragonfly_build.zip"),
     Asset("ANIM", "anim/dragonfly_fire_build.zip"),
@@ -36,24 +36,24 @@ SetSharedLootTable('dragonfly',
     {'dragon_scales',             1.00},
     {'dragonflyfurnace_blueprint',1.00},
     {'lavae_egg',                 0.33},
-    
+
     {'meat',             1.00},
     {'meat',             1.00},
     {'meat',             1.00},
     {'meat',             1.00},
     {'meat',             1.00},
     {'meat',             1.00},
-    
+
     {'goldnugget',       1.00},
     {'goldnugget',       1.00},
     {'goldnugget',       1.00},
     {'goldnugget',       1.00},
-    
+
     {'goldnugget',       0.50},
     {'goldnugget',       0.50},
     {'goldnugget',       0.50},
     {'goldnugget',       0.50},
-    
+
     {'redgem',           1.00},
     {'bluegem',          1.00},
     {'purplegem',        1.00},
@@ -68,6 +68,24 @@ SetSharedLootTable('dragonfly',
     {'yellowgem',        0.50},
     {'greengem',         0.50},
 })
+
+--------------------------------------------------------------------------
+
+local function ForceDespawn(inst)
+    inst:Reset()
+    inst:DoDespawn()
+end
+
+local function ToggleDespawnOffscreen(inst)
+    if inst:IsAsleep() then
+        if inst.sleeptask == nil then
+            inst.sleeptask = inst:DoTaskInTime(10, ForceDespawn)
+        end
+    elseif inst.sleeptask ~= nil then
+        inst.sleeptask:Cancel()
+        inst.sleeptask = nil
+    end
+end
 
 --------------------------------------------------------------------------
 
@@ -102,6 +120,12 @@ local function SetEngaged(inst, engaged)
     if inst._isengaged:value() ~= engaged then
         inst._isengaged:set(engaged)
         OnIsEngagedDirty(inst)
+        ToggleDespawnOffscreen(inst)
+
+        local home = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
+        if home ~= nil then
+            home:PushEvent("dragonflyengaged", { engaged = engaged, dragonfly = inst })
+        end
     end
 end
 
@@ -252,7 +276,7 @@ local function TrySoftReset(inst)
     if inst.SoftResetTask == nil then
         print(string.format("Dragonfly - Start soft reset task @ %2.2f", GetTime()))
         inst.SoftResetTask = inst:DoTaskInTime(10, SoftReset)
-    end 
+    end
 end
 
 local function OnTargetDeathTask(inst)
@@ -361,10 +385,21 @@ local function OnSave(inst, data)
     data.playercombat = inst._isengaged:value() or nil
 end
 
+--delayed until homeseeker is initialized (from dragonfly_spawner)
+local function OnInitEngaged(inst)
+    if inst._isengaged:value() then
+        local home = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
+        if home ~= nil then
+            home:PushEvent("dragonflyengaged", { engaged = true, dragonfly = inst })
+        end
+    end
+end
+
 local function OnLoad(inst, data)
     --If the dragonfly was in combat when the game saved then we're going to reset the fight.
     if data.playercombat then
         SetEngaged(inst, true)
+        inst:DoTaskInTime(0, OnInitEngaged)
         inst:DoTaskInTime(1, Reset)
     end
 end
@@ -443,7 +478,7 @@ local function fn()
 
     inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/dragonfly/fly", "flying")
 
-    inst._isengaged = net_bool(inst.GUID, "dragonfly._engaged", "isengageddirty")
+    inst._isengaged = net_bool(inst.GUID, "dragonfly._isengaged", "isengageddirty")
     inst._playingmusic = false
     inst._musictask = nil
 
@@ -551,6 +586,8 @@ local function fn()
 
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad -- Reset fight if in combat with players.
+    inst.OnEntitySleep = ToggleDespawnOffscreen
+    inst.OnEntityWake = ToggleDespawnOffscreen
     inst.Reset = Reset
     inst.DoDespawn = DoDespawn
     inst.TransformFire = TransformFire

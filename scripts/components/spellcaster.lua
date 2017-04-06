@@ -152,7 +152,9 @@ function SpellCaster:CanCast(doer, target, pos)
         if pos == nil then
             return self.canusefrominventory
         end
-        return self.canuseonpoint and TheWorld.Map:IsAboveGroundAtPoint(pos:Get())
+        return self.canuseonpoint
+            and TheWorld.Map:IsAboveGroundAtPoint(pos:Get())
+            and not TheWorld.Map:IsPointNearHole(pos)
     elseif target:IsInLimbo()
         or not target.entity:IsVisible()
         or (target.components.health ~= nil and target.components.health:IsDead())

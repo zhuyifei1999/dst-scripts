@@ -1,158 +1,161 @@
-local texture = "fx/snow.tex"
-local winter_texture = "fx/wintersnow.tex"
-local shader = "shaders/vfx_particle.ksh"
-local colour_envelope_name = "snowcolourenvelope"
-local scale_envelope_name = "snowscaleenvelope"
-local winter_scale_envelope_name = "wintersnowscaleenvelope"
+local TEXTURE = "fx/snow.tex"
+local WINTER_TEXTURE = "fx/wintersnow.tex"
+
+local SHADER = "shaders/vfx_particle.ksh"
+
+local COLOUR_ENVELOPE_NAME = "snowcolourenvelope"
+local SCALE_ENVELOPE_NAME = "snowscaleenvelope"
+local WINTER_SCALE_ENVELOPE_NAME = "wintersnowscaleenvelope"
 
 local assets =
 {
-	Asset("IMAGE", texture),
-	Asset("IMAGE", winter_texture),
-	Asset("SHADER", shader),
+    Asset("IMAGE", TEXTURE),
+    Asset("IMAGE", WINTER_TEXTURE),
+    Asset("SHADER", SHADER),
 }
 
+--------------------------------------------------------------------------
+
 local function IntColour(r, g, b, a)
-	return { r / 255.0, g / 255.0, b / 255.0, a / 255.0 }
+    return { r / 255, g / 255, b / 255, a / 255 }
 end
 
-local init = false
 local function InitEnvelope()
-	if EnvelopeManager and not init then
-		init = true
-		EnvelopeManager:AddColourEnvelope(
-			colour_envelope_name,
-			{	{ 0, IntColour(255, 255, 255, 200) },
-				{ 1, IntColour(255, 255, 255, 200) },
-			})
+    EnvelopeManager:AddColourEnvelope(
+        COLOUR_ENVELOPE_NAME,
+        {
+            { 0, IntColour(255, 255, 255, 200) },
+            { 1, IntColour(255, 255, 255, 200) },
+        }
+   )
 
-		if IsSpecialEventActive( SPECIAL_EVENTS.WINTERS_FEAST ) then
-			local max_scale = 0.3
-			EnvelopeManager:AddVector2Envelope(
-				winter_scale_envelope_name,
-				{
-					{ 0, { max_scale, max_scale } },
-					{ 1, { max_scale, max_scale } },
-				})
-		else
-			local max_scale = 1
-			EnvelopeManager:AddVector2Envelope(
-				scale_envelope_name,
-				{
-					{ 0, { max_scale, max_scale } },
-					{ 1, { max_scale, max_scale } },
-				})
-		end
-	end
+    local max_scale = .3
+    EnvelopeManager:AddVector2Envelope(
+        WINTER_SCALE_ENVELOPE_NAME,
+        {
+            { 0, { max_scale, max_scale } },
+            { 1, { max_scale, max_scale } },
+        }
+    )
+
+    max_scale = 1
+    EnvelopeManager:AddVector2Envelope(
+        SCALE_ENVELOPE_NAME,
+        {
+            { 0, { max_scale, max_scale } },
+            { 1, { max_scale, max_scale } },
+        }
+    )
+
+    InitEnvelope = nil
+    IntColour = nil
 end
 
-local max_lifetime = 7
-local min_lifetime = 4
+--------------------------------------------------------------------------
+
+local MAX_LIFETIME = 7
+local MIN_LIFETIME = 4
+
+--------------------------------------------------------------------------
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst:AddTag("FX")
+    inst:AddTag("FX")
     --[[Non-networked entity]]
     inst.entity:SetCanSleep(false)
     inst.persists = false
 
     inst.entity:AddTransform()
 
-	InitEnvelope()
+    if InitEnvelope ~= nil then
+        InitEnvelope()
+    end
 
     local effect = inst.entity:AddVFXEffect()
-    effect:InitEmitters( 1 )
-    if IsSpecialEventActive( SPECIAL_EVENTS.WINTERS_FEAST ) then
-		effect:SetRenderResources( 0, winter_texture, shader )
-		effect:SetScaleEnvelope( 0, winter_scale_envelope_name )
-		effect:SetUVFrameSize( 0, 0.25, 1 )
-	else
-		effect:SetRenderResources( 0, texture, shader )
-		effect:SetScaleEnvelope( 0, scale_envelope_name )
-	end
-	effect:SetMaxNumParticles( 0, 4800 )
-	effect:SetMaxLifetime( 0, max_lifetime )
-	effect:SetColourEnvelope( 0, colour_envelope_name )
-	effect:SetBlendMode( 0, BLENDMODE.Premultiplied )
-	effect:SetSortOrder( 0, 3 )
-	effect:SetAcceleration( 0, -1, -9.80, 1 )
-	effect:SetDragCoefficient( 0, 0.8 )
-	effect:EnableDepthTest( 0, true )
+    effect:InitEmitters(1)
 
+    -----------------------------------------------------
 
-	
-	-----------------------------------------------------
-	local rng = math.random
-	local tick_time = TheSim:GetTickTime()
+    local rng = math.random
+    local tick_time = TheSim:GetTickTime()
 
-	local desired_particles_per_second = 0--300
-	inst.particles_per_tick = desired_particles_per_second * tick_time
+    local desired_particles_per_second = 0--300
+    inst.particles_per_tick = desired_particles_per_second * tick_time
 
-	inst.num_particles_to_emit = inst.particles_per_tick
+    inst.num_particles_to_emit = inst.particles_per_tick
 
-	local bx, by, bz = 0, 20, 0
-	local emitter_shape = CreateBoxEmitter( bx, by, bz, bx + 20, by, bz + 20 )
-	
-	local update_fn = nil
-	
-	if IsSpecialEventActive( SPECIAL_EVENTS.WINTERS_FEAST ) then
-		local function emit_fn()
-			local vx, vy, vz = 0, 0, 0
-			local lifetime = min_lifetime + (max_lifetime - min_lifetime) * UnitRand()
-			local px, py, pz = emitter_shape()
+    local bx, by, bz = 0, 20, 0
+    local emitter_shape = CreateBoxEmitter(bx, by, bz, bx + 20, by, bz + 20)
 
-			local uv_offset = math.random(0, 3) * 0.25
-			
-			effect:AddParticleUV(
-				0,
-				lifetime,			-- lifetime
-				px, py, pz,			-- position
-				vx, vy, vz,			-- velocity
-				uv_offset, 0        -- uv offset
-			)
-		end
-		update_fn = function()
-			while inst.num_particles_to_emit > 1 do
-					emit_fn(effect)
-					inst.num_particles_to_emit = inst.num_particles_to_emit - 1
-				end
+    local use_uv_offset = false
+    local particle_mult = 1
 
-			inst.num_particles_to_emit = inst.num_particles_to_emit + (inst.particles_per_tick * 2)
-		end
-	else
-		local function emit_fn()
-			local vx, vy, vz = 0, 0, 0
-			local lifetime = min_lifetime + (max_lifetime - min_lifetime) * UnitRand()
-			local px, py, pz = emitter_shape()
-			
-			effect:AddParticle(
-				0,
-				lifetime,			-- lifetime
-				px, py, pz,			-- position
-				vx, vy, vz			-- velocity
-			)
-		end
-		
-		update_fn = function()
-			while inst.num_particles_to_emit > 1 do
-					emit_fn(effect)
-					inst.num_particles_to_emit = inst.num_particles_to_emit - 1
-				end
+    local function emit_fn()
+        local vx, vy, vz = 0, 0, 0
+        local lifetime = MIN_LIFETIME + (MAX_LIFETIME - MIN_LIFETIME) * UnitRand()
+        local px, py, pz = emitter_shape()
 
-			inst.num_particles_to_emit = inst.num_particles_to_emit + inst.particles_per_tick
-		end
-	end
+        if use_uv_offset then
+            local uv_offset = math.random(0, 3) * .25
 
-	EmitterManager:AddEmitter(inst, nil, update_fn)
+            effect:AddParticleUV(
+                0,
+                lifetime,           -- lifetime
+                px, py, pz,         -- position
+                vx, vy, vz,         -- velocity
+                uv_offset, 0        -- uv offset
+            )
+        else
+            effect:AddParticle(
+                0,
+                lifetime,           -- lifetime
+                px, py, pz,         -- position
+                vx, vy, vz          -- velocity
+            )
+        end
+    end
+
+    local init_effect = true
+    local function update_fn()
+        if init_effect then
+            init_effect = nil
+            if IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
+                effect:SetRenderResources(0, WINTER_TEXTURE, SHADER)
+                effect:SetScaleEnvelope(0, WINTER_SCALE_ENVELOPE_NAME)
+                effect:SetUVFrameSize(0, .25, 1)
+                use_uv_offset = true
+                particle_mult = 2
+            else
+                effect:SetRenderResources(0, TEXTURE, SHADER)
+                effect:SetScaleEnvelope(0, SCALE_ENVELOPE_NAME)
+            end
+            effect:SetMaxNumParticles(0, 4800)
+            effect:SetMaxLifetime(0, MAX_LIFETIME)
+            effect:SetColourEnvelope(0, COLOUR_ENVELOPE_NAME)
+            effect:SetBlendMode(0, BLENDMODE.Premultiplied)
+            effect:SetSortOrder(0, 3)
+            effect:SetAcceleration(0, -1, -9.80, 1)
+            effect:SetDragCoefficient(0, .8)
+            effect:EnableDepthTest(0, true)
+        end
+
+        while inst.num_particles_to_emit > 1 do
+            emit_fn()
+            inst.num_particles_to_emit = inst.num_particles_to_emit - 1
+        end
+        inst.num_particles_to_emit = inst.num_particles_to_emit + inst.particles_per_tick * particle_mult
+    end
+
+    EmitterManager:AddEmitter(inst, nil, update_fn)
 
     function inst:PostInit()
         local dt = 1 / 30
-        local t = max_lifetime
+        local t = MAX_LIFETIME
         while t > 0 do
             t = t - dt
             update_fn()
-            effect:FastForward( 0, dt )
+            effect:FastForward(0, dt)
         end
     end
 

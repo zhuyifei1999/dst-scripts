@@ -38,7 +38,7 @@ local function BounceStuff(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x, y, z, 6, { "_inventoryitem" }, { "locomotor", "INLIMBO" })
     for i, v in ipairs(ents) do
-        if v:IsValid() and not (v.components.inventoryitem.nobounce or inst.sg.mem.recentlybounced[v]) and v.Physics ~= nil then
+        if v:IsValid() and not (v.components.inventoryitem.nobounce or inst.sg.mem.recentlybounced[v]) and v.Physics ~= nil and v.Physics:IsActive() then
             local distsq = v:GetDistanceSqToPoint(x, y, z)
             local intensity = math.clamp((36 - distsq) / 27 --[[(36 - 9)]], 0, 1)
             SmallLaunch(v, inst, intensity)

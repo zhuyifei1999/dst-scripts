@@ -14,6 +14,8 @@ local Tool = Class(function(self, inst)
 end)
 
 function Tool:OnRemoveFromEntity()
+    self.inst:RemoveEventCallback("percentusedchange", PercentChanged)
+
     for k, v in pairs(self.actions) do
         self.inst:RemoveTag(k.id.."_tool")
     end

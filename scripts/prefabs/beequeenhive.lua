@@ -1,5 +1,3 @@
-require "prefabutil"
-
 local assets =
 {
     Asset("ANIM", "anim/bee_queen_hive.zip"),
@@ -35,13 +33,13 @@ local function CreatePhysicsEntity(rad)
     inst.entity:AddTransform()
     inst.entity:AddPhysics()
     inst.Physics:SetMass(999999)
-    inst.Physics:SetCapsule(rad, 2)
     inst.Physics:SetCollisionGroup(COLLISION.OBSTACLES)
     inst.Physics:ClearCollisionMask()
     inst.Physics:CollidesWith(COLLISION.WORLD)
     inst.Physics:CollidesWith(COLLISION.ITEMS)
     inst.Physics:CollidesWith(COLLISION.CHARACTERS)
     inst.Physics:CollidesWith(COLLISION.GIANTS)
+    inst.Physics:SetCapsule(rad, 2)
 
     inst:DoTaskInTime(0, inst.Remove)
 
@@ -448,6 +446,7 @@ local function fn()
     MakeObstaclePhysics(inst, PHYS_RAD_LRG)
 
     inst:AddTag("event_trigger")
+    inst:AddTag("antlion_sinkhole_blocker")
 
     inst.AnimState:SetBank("bee_queen_hive")
     inst.AnimState:SetBuild("bee_queen_hive")
@@ -503,12 +502,12 @@ local function base_fn()
     inst:AddTag("blocker")
     inst.entity:AddPhysics()
     inst.Physics:SetMass(0) 
-    inst.Physics:SetCapsule(PHYS_RAD_SML, 2)
     inst.Physics:SetCollisionGroup(COLLISION.OBSTACLES)
     inst.Physics:ClearCollisionMask()
     inst.Physics:CollidesWith(COLLISION.ITEMS)
     inst.Physics:CollidesWith(COLLISION.CHARACTERS)
     --inst.Physics:CollidesWith(COLLISION.GIANTS)
+    inst.Physics:SetCapsule(PHYS_RAD_SML, 2)
     ----------------------------------------------------
 
     inst.AnimState:SetBank("bee_queen_hive")

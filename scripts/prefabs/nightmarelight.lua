@@ -248,6 +248,8 @@ local function fn()
     inst.fx = SpawnPrefab("nightmarelightfx")
     inst.fx.entity:SetParent(inst.entity)
 
+    inst.highlightchildren = { inst.fx }
+
     inst:AddComponent("sanityaura")
 
     inst:AddComponent("childspawner")

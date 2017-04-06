@@ -78,7 +78,7 @@ return {
       objects = {
         {
           name = "",
-          type = "ruins_statue_mage",
+          type = "ruins_statue_mage_spawner",
           shape = "rectangle",
           x = 96,
           y = 176,
@@ -89,7 +89,7 @@ return {
         },
         {
           name = "",
-          type = "ruins_statue_head_nogem",
+          type = "ruins_statue_head_nogem_spawner",
           shape = "rectangle",
           x = 97,
           y = 350,
@@ -100,7 +100,7 @@ return {
         },
         {
           name = "",
-          type = "knight_nightmare",
+          type = "knight_nightmare_spawner",
           shape = "rectangle",
           x = 383,
           y = 137,
@@ -111,7 +111,7 @@ return {
         },
         {
           name = "",
-          type = "bishop_nightmare",
+          type = "bishop_nightmare_spawner",
           shape = "rectangle",
           x = 385,
           y = 370,

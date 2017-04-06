@@ -82,6 +82,8 @@ return {
             SLOTFULL = "Occupied.",
             DUPLICATE = "That can already be made here.",
             NOTSCULPTABLE = "That is certainly not for sculpting with.",
+            CANTSHADOWREVIVE = "It refuses to bend to my will.",
+            WRONGSHADOWFORM = "The bones were too amateurishly assembled.",
         },
         GIVETOPLAYER = 
         {
@@ -125,6 +127,18 @@ return {
 	ANNOUNCE_WORMS = "Oh dear. I know what's making that sound.",
     ANNOUNCE_NOSLEEPONFIRE = "That might not be the best idea.",
 	ANNOUNCE_NODANGERSIESTA = "They're hot on my heels!",
+	ANNOUNCE_ANTLION_SINKHOLE = 
+	{
+		"My world is crumbling!",
+		"I am attacked by my own world!",
+		"An earthquake!",
+	},
+	ANNOUNCE_ANTLION_TRIBUTE =
+	{
+        "May this tribute sate the beast.",
+        "Does this entertain you, beast?",
+        "What a chore.",
+	},
 	ANNOUNCE_NONIGHTSIESTA = "It's sleep time, not siesta time.",
 	ANNOUNCE_NONIGHTSIESTA_CAVE = "It's a bit creepy out for that.",
 	ANNOUNCE_NOHUNGERSIESTA = "Traditionally, a siesta comes after eating, not before.",
@@ -144,6 +158,7 @@ return {
 	ANNOUNCE_HOT = "My heart can't stand the heat!",
 	ANNOUNCE_CRAFTING_FAIL = "Er... I can't do that.",
 	ANNOUNCE_DEERCLOPS = "I hear one of them coming.",
+	ANNOUNCE_CAVEIN = "The ceiling is going to collapse!",
 	ANNOUNCE_DUSK = "It'll be dark soon. Charlie will be waking up.",
 	ANNOUNCE_EAT =
 	{
@@ -164,7 +179,16 @@ return {
         "All my joints... are cracking!",
         "I... was a king, you know..!",
     },
+    ANNOUNCE_ATRIUM_DESTABILIZING = 
+    {
+        "Dark magics are returning.",
+        "Here we go again.",
+        "The power's growing.",
+    },
+    ANNOUNCE_RUINS_RESET = "The cycle begins again.",
 
+    ANNOUNCE_SNARED = "How dare you!",
+    ANNOUNCE_REPELLED = "What trickery is this!",
 	ANNOUNCE_ENTER_DARK = "That smell... both nostalgic and terrifying!",
 	ANNOUNCE_ENTER_LIGHT = "Thank goodness for the light.",
 	ANNOUNCE_FREEDOM = "Freedom, at last!",
@@ -189,10 +213,12 @@ return {
 	ANNOUNCE_THORNS = "I scratched my arms up doing that.",
 	ANNOUNCE_TORCH_OUT = "Curses. Another light down.",
     ANNOUNCE_FAN_OUT = "There goes my respite.",
+    ANNOUNCE_THURIBLE_OUT = "A shame.",
     ANNOUNCE_COMPASS_OUT = "The compass has fallen to pieces.",
 	ANNOUNCE_TRAP_WENT_OFF = "Ack!",
 	ANNOUNCE_UNIMPLEMENTED = "Hmm, not quite done.",
 	ANNOUNCE_WORMHOLE = "Yech. It's horrible in there.",
+	ANNOUNCE_TOWNPORTALTELEPORT = "It's about time.",
 	ANNOUNCE_CANFIX = "\nI think I can fix this!",
 	ANNOUNCE_NOSANITY = "I have the worst headache!",
 	ANNOUNCE_NOFUEL = "I need some nightmare fuel.",
@@ -384,7 +410,17 @@ return {
 		--OBSIDIANMACHETE = "This seems like a dangerous thing to farm with.",
 		--BOOK_METEOR = "Reading strange books has always worked out for me before.",
 		LIGHTER = "It does the job, I suppose.",
-		
+		ANTLION = 
+		{
+			GENERIC = "Have you no pride?",
+			VERYHAPPY = "We've placated it for now.",
+			UNHAPPY = "It's going to wreak havoc on my world.",
+		},
+		ANTLIONTRINKET = "I'll cross it off my bucket list.",
+		SANDSPIKE = "That was quite impolite.",
+        SANDBLOCK = "Impressive.",
+        GLASSSPIKE = "I hope I'm not so transparent.",
+        GLASSBLOCK = "Not the castle I had in mind for myself.",
 		ABIGAIL_FLOWER =
 		{
 			GENERIC = "Hm? What a familiar presence.",
@@ -665,7 +701,22 @@ return {
 		GIFT = "An elegantly wrapped social obligation.",
         GIFTWRAP = "For wrapping odds and ends...",
 		POTTEDFERN = "How quaint.",
+		SUCCULENT_POTTED = "You're hard to kill. I respect that.",
+        SUCCULENT_PLANT = "Doesn't look that succulent to me.",
+        SUCCULENT_PICKED = "It didn't put up much of a fight.",
 		SENTRYWARD = "This is a conduit for strong revelatory magicks.",
+		TOWNPORTAL =
+        {
+			GENERIC = "Walking gets tiresome, you know.",
+			ACTIVE = "The magic beckons!",
+		},
+        TOWNPORTALTALISMAN = 
+        {
+			GENERIC = "An impure orange gem.",
+			ACTIVE = "The magic beckons!",
+		},
+		WETPAPER = "It's absorbent, at any rate.",
+		WETPOUCH = "There's something inside it.",
         MOONROCK_PIECES = "This might be bad.",
         MOONBASE =
         {
@@ -687,6 +738,7 @@ return {
         
 		THULECITE = "An exceedingly rare but useful material.",
 		ARMORRUINS = "Thulecite meshes so well with nightmare fuel.",
+		ARMORSKELETON = "Like all things, it craves the fuel.",
 		RUINS_BAT = "The fuel runs deep in this.",
 		RUINSHAT = "Fuel must flow.",
 		NIGHTMARE_TIMEPIECE = --Keeps track of the nightmare cycle
@@ -762,8 +814,6 @@ return {
         BEDROLL_FURRY = "At least they're good for something.",
         BUNNYMAN = "It reminds me of my old act.",
         FLOWER_CAVE = "It's so dark down here.",
-        FLOWER_CAVE_DOUBLE = "It's so dark down here.",
-        FLOWER_CAVE_TRIPLE = "It's so dark down here.",
         GUANO = "Disgusting!",
         LANTERN = "I hope it keeps Them away.",
         LIGHTBULB = "It will run out eventually.",
@@ -816,12 +866,21 @@ return {
             BLOOM = "Oh fine, do what you like.",
         },
         MUSHTREE_TALL_WEBBED = "Could it get any less appealing?",
-        SPORE_TALL = "How can a seed be so cheerful?",
-        SPORE_MEDIUM = "Magical red, and yet it holds no power of use to me.",
-        SPORE_SMALL = "Hateful, ambulatory whimsy.",
-        SPORE_TALL_INV = "I hope it doesn't stain my jacket.",
-        SPORE_MEDIUM_INV = "I hope it doesn't stain my jacket.",
-        SPORE_SMALL_INV = "I hope it doesn't stain my jacket.",
+        SPORE_TALL =
+        {
+            GENERIC = "How can a seed be so cheerful?",
+            HELD = "I hope it doesn't stain my jacket.",
+        },
+        SPORE_MEDIUM =
+        {
+            GENERIC = "Magical red, and yet it holds no power of use to me.",
+            HELD = "I hope it doesn't stain my jacket.",
+        },
+        SPORE_SMALL =
+        {
+            GENERIC = "Hateful, ambulatory whimsy.",
+            HELD = "I hope it doesn't stain my jacket.",
+        },
         SLURTLE = "I don't remember those...",
         SLURTLE_SHELLPIECES = "Some cracks can't be mended.",
         SLURTLEHAT = "This will keep me standing, if I need to fight.",
@@ -833,25 +892,19 @@ return {
         SPIDERHOLE = "How did that get down here?",
         SPIDERHOLE_ROCK = "How did that get down here?",
         STALAGMITE = "Rocks. How dull.",
-        STALAGMITE_FULL = "Rocks. How dull.",
-        STALAGMITE_LOW = "Rocks. How dull.",
-        STALAGMITE_MED = "Rocks. How dull.",
         STALAGMITE_TALL = "Stalagmite. How dull.",
-        STALAGMITE_TALL_FULL = "Stalagmite. How dull.",
-        STALAGMITE_TALL_LOW = "Stalagmite. How dull.",
-        STALAGMITE_TALL_MED = "Stalagmite. How dull.",
 
-		POWCAKE = "What foul manifestation of evil is this?",
-		CAVE_ENTRANCE = "I plugged it a long time ago.",
-		CAVE_ENTRANCE_RUINS = "Probably shouldn't venture any deeper.",
-        
-        CAVE_ENTRANCE_OPEN = 
+        POWCAKE = "What foul manifestation of evil is this?",
+        CAVE_ENTRANCE = "I plugged it a long time ago.",
+        CAVE_ENTRANCE_RUINS = "Probably shouldn't venture any deeper.",
+
+        CAVE_ENTRANCE_OPEN =
         {
             GENERIC = "That was not a good idea!",
             OPEN = "Off to plunder the depths.",
             FULL = "When it's less claustrophobic, perhaps.",
         },
-        CAVE_EXIT = 
+        CAVE_EXIT =
         {
             GENERIC = "Get me out of here!",
             OPEN = "Onward to the next thing.",
@@ -1136,6 +1189,8 @@ return {
 		{
 			GENERIC = "That's not doing anyone any good.",
 		},
+		GOGGLESHAT = "Not my sort of fashion.",
+        DESERTHAT = "Function over form.",
 		DIRTPILE = "That looks out-of-place.",
 		DIVININGROD =
 		{
@@ -1285,6 +1340,11 @@ return {
 			FUNNY = "It will be the laughingstock of the demon community.",
 			COMPLETE = "Was it wise to unleash this upon the world?",
         },
+        STALKER = "There is no limit to the power of shadows.",
+        STALKER_ATRIUM = "The Atrium's power restored his mind.",
+        STALKER_MINION = "A being of living fuel.",
+        THURIBLE = "Curious. It smells like roses.",
+        ATRIUM_OVERGROWTH = "I can't believe I've forgotten how to read this.",
 		FROG =
 		{
 			DEAD = "It croaked.",
@@ -1458,6 +1518,7 @@ return {
 		NIGHTSWORD = "Snicker-snack!",
 		NITRE = "One third of the way there...",
 		ONEMANBAND = "It has a good beat, and you can dance to it.",
+		OASISLAKE = "Didn't think I'd ever come back here.",
 		PANDORASCHEST = "It's a trap.",
 		PANFLUTE = "I'm going to sing a song of madness.",
 		PAPYRUS = "A blank canvas.",
@@ -1565,6 +1626,11 @@ return {
 			LOW = "The fires are cooling.",
 			NORMAL = "It's hot.",
 		},
+		CAVEIN_BOULDER =
+        {
+            GENERIC = "Well it's not going to move itself.",
+            RAISED = "We must deal with the others first.",
+        },
 		ROCK = "It's a rock.",
 		ROCKS = "Hmmm. Now what do I do with them?",
         ROOK = "A castle for my home.",
@@ -1634,6 +1700,7 @@ return {
 		SEEDS = "I suppose these won't plant themselves.",
 		SEEDS_COOKED = "Broiled the life out of 'em.",
 		SEWING_KIT = "A fine and noble endeavor.",
+		SEWING_TAPE = "The wilderness is tough on a tailor made suit.",
 		SHOVEL = "This is some real advanced technology.",
 		SILK = "Despite its origin, it could make some fine garments.",
 		SKELETON = "Ha! I remember that one.",
@@ -1724,13 +1791,7 @@ return {
 			PARTIAL = "It is still incomplete.",
 		},
 
-		LAVA_POND_ROCK = "With each day I get a little boulder.",
-		LAVA_POND_ROCK2 = "With each day I get a little boulder.",
-		LAVA_POND_ROCK3 = "With each day I get a little boulder.",
-		LAVA_POND_ROCK4 = "With each day I get a little boulder.",
-		LAVA_POND_ROCK5 = "With each day I get a little boulder.",
-		LAVA_POND_ROCK6 = "With each day I get a little boulder.",
-		LAVA_POND_ROCK7 = "With each day I get a little boulder.",
+        LAVA_POND_ROCK = "With each day I get a little boulder.",
 
 		TELEPORTATO_BOX = "This is a box full of sadness and woe.",
 		TELEPORTATO_CRANK = "This is used to agitate the humors.",
@@ -1927,6 +1988,29 @@ return {
 		ACCOMPLISHMENT_SHRINE = "Even They couldn't build something so devious.",		
         REVIVER = "I'm not sure I really want to give this up.",
         SHADOWHEART = "A pulse of malice and betrayal beats within.",
+        ATRIUM_RUBBLE = 
+        {
+			LINE_1 = "A picture of the city, before the fuel.",
+			LINE_2 = "We all know what happens next.",
+			LINE_3 = "They gained such an enviable power...",
+			LINE_4 = "I know why you led me back here.",
+			LINE_5 = "But it won't work.",
+		},
+        ATRIUM_STATUE = "There's a dreamlike quality to the material.",
+        ATRIUM_LIGHT = 
+        {
+			ON = "It feeds off the nightmare.",
+			OFF = "No fuel, no power.",
+		},
+        ATRIUM_GATE =
+        {
+			ON = "This is a most wretched idea.",
+			OFF = "It lacks a key.",
+			CHARGING = "It is feeding off the dark energy.",
+            DESTABILIZING = "Now we've gone and done it.",
+            COOLDOWN = "Best not to overuse this power.",
+        },
+        ATRIUM_KEY = "It's strange to see it.",
         LIFEINJECTOR = "Who would put this filth in their veins?",
         ROCK_MOON = "\"Moon\" rock.",
         MOONROCKNUGGET = "\"Moon\" rock.",

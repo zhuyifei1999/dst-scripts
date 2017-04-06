@@ -114,8 +114,8 @@ local function OnAttacked(inst, data)
     inst.components.combat:SetTarget(data.attacker)
 
     if inst.charged then
-        if data.attacker.components.health then
-            if (data.weapon == nil or (not data.weapon:HasTag("projectile") and data.weapon.projectile == nil))
+        if data.attacker.components.health ~= nil then
+            if (data.weapon == nil or (data.weapon.components.projectile == nil and data.weapon.projectile == nil))
                 and not (data.attacker.components.inventory and data.attacker.components.inventory:IsInsulated()) then
 
                 data.attacker.components.health:DoDelta(-TUNING.LIGHTNING_GOAT_DAMAGE)

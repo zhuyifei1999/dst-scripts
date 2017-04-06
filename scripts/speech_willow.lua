@@ -82,6 +82,8 @@ return {
             SLOTFULL = "Naw, can't make it fit.",
             DUPLICATE = "Awww, we already know that one!",
             NOTSCULPTABLE = "I'd like to see someone try to sculpt with that!",
+            CANTSHADOWREVIVE = "It's not working.",
+            WRONGSHADOWFORM = "Nah. Skeleton's not right.",
         },
         GIVETOPLAYER = 
         {
@@ -117,9 +119,23 @@ return {
 	ANNOUNCE_CHARLIE = "I'm not afraid of you!",
 	ANNOUNCE_CHARLIE_ATTACK = "OUCH! You jerk!",
 	ANNOUNCE_COLD = "The cold! It burns!",
+	ANNOUNCE_ANTLION_SINKHOLE = 
+	{
+		"The ground's cracking!",
+		"Tread carefully!",
+		"Earthquake!",
+	},
+	ANNOUNCE_ANTLION_TRIBUTE =
+	{
+        "Hey, I gotcha something!",
+        "Dinnertime!",
+        "Great Antlion! Take this tribute, or whatever.",
+	},
 	ANNOUNCE_HOT = "The heat is too intense!",
 	ANNOUNCE_DUSK = "Night is coming. I need fire!",
 	ANNOUNCE_ENTER_DARK = "Where'd I put my lighter!?",
+	ANNOUNCE_SNARED = "Gross, ew! Bones!",
+	ANNOUNCE_REPELLED = "Hey! That's not fair!",
 	ANNOUNCE_ENTER_LIGHT = "Oh, I can see! I thought I'd gone blind.",
 	ANNOUNCE_INV_FULL = "I can only carry so much!!",
 	ANNOUNCE_NODANGERAFK = "I'm not leaving now!",
@@ -151,6 +167,13 @@ return {
         "Exercise... sucks!",
         "Hnnfhg!",
     },
+    ANNOUNCE_ATRIUM_DESTABILIZING = 
+    {
+        "I probably shouldn't be here.",
+        "This seems dangerous!",
+        "What was that?!",
+    },
+    ANNOUNCE_RUINS_RESET = "Aw, everything I killed is back!",
 
 	ANNOUNCE_NOSLEEPONFIRE = "It's just the collapsing that concerns me.",
 	ANNOUNCE_NODANGERSIESTA = "It's not time for a siesta, it's time for fighting!",
@@ -192,8 +215,10 @@ return {
 	ANNOUNCE_PECKED = "No! Bad birdy!",
 	ANNOUNCE_TORCH_OUT = "My precious light is gone!",
     ANNOUNCE_FAN_OUT = "Stupid thing broke!",
+    ANNOUNCE_THURIBLE_OUT = "Awww! I liked that thing.",
     ANNOUNCE_COMPASS_OUT = "Arrgh the needle is stuck!",
 	ANNOUNCE_WORMHOLE = "I'll have to burn these clothes!",
+	ANNOUNCE_TOWNPORTALTELEPORT = "Didja miss me?! Haha!",
 	ANNOUNCE_TRAP_WENT_OFF = "Aah!",
     ANNOUNCE_CRAFTING_FAIL = "I'm missing something.",
     ANNOUNCE_QUAKE = "That sound probably doesn't mean good things.",
@@ -209,6 +234,7 @@ return {
     ANNOUNCE_KNOCKEDOUT = "Argh, my little head!",
     ANNOUNCE_LOWRESEARCH = "Boo, that was boring.",
     ANNOUNCE_DEERCLOPS = "That sounded like a big mean monster man!",
+    ANNOUNCE_CAVEIN = "I better protect my head!",
     ANNOUNCE_MOSQUITOS = "Get away, you bloodsucking jerks!",
     ANNOUNCE_NODAYSLEEP = "Who would go inside when there's a great ball of fire in the sky?",
     ANNOUNCE_INSUFFICIENTFERTILIZER = "It looks slightly happier.",
@@ -322,7 +348,7 @@ return {
 		WES = 
 		{
 			GENERIC = "Hi %s!",
-			ATTACKER = "That mime punch was really convincing, %s! Haha, ow!",
+			ATTACKER = "That mime punch was really convincing! Haha, ow!",
 			MURDERER = "Your actions speak louder than words! Murderer!",
 			REVIVER = "Who do ghosts call? %s!",
 			GHOST = "%s, just tell me whatcha need and I'll get it for you. Heheheh!",
@@ -391,7 +417,17 @@ return {
 		BEARGER = "Whoa! Niiiice bear...",
 		BEARGERVEST = "It's like swimming in fur.",
 		ICEPACK = "Fuzzy backpack!",
-		
+		ANTLION = 
+		{
+			GENERIC = "What do you want?!",
+			VERYHAPPY = "You're in a good mood.",
+			UNHAPPY = "There's gonna be tremors in our future.",
+		},
+		SANDSPIKE = "Burn it!",
+        SANDBLOCK = "Buuurn!",
+        GLASSSPIKE = "I can't believe that worked!",
+        GLASSBLOCK = "See? Fire solves everything.",
+		ANTLIONTRINKET = "Buncha junk.",
 		ABIGAIL_FLOWER = 
 		{
 			GENERIC = "Looks flammable.",
@@ -717,7 +753,22 @@ return {
 		GIFT = "It's for me right?!",
         GIFTWRAP = "Ribbons burn real good!",
 		POTTEDFERN = "I'd rather burn them.",
+		SUCCULENT_POTTED = "We're keeping it.",
+        SUCCULENT_PLANT = "It's a small, unburned plant.",
+        SUCCULENT_PICKED = "It's been picked.",
 		SENTRYWARD = "Pfft. It'll burn like the rest.",
+		TOWNPORTAL =
+        {
+			GENERIC = "Magic stuff.",
+			ACTIVE = "Walking's for suckers.",
+		},
+        TOWNPORTALTALISMAN = 
+        {
+			GENERIC = "Yuck. It smells like sulfur.",
+			ACTIVE = "I didn't wanna walk, anyway.",
+		},
+		WETPAPER = "I can think of a real quick way to dry it.",
+		WETPOUCH = "There's something inside.",
         MOONROCK_PIECES = "Oh look! ROCKS! Ughhhhh!",
         MOONBASE =
         {
@@ -740,6 +791,7 @@ return {
 		TREEGUARD = "You'll burn like the rest!",
 		THULECITE = "I don't think it would burn.",
 		ARMORRUINS = "Human beings probably shouldn't wear this.",
+		ARMORSKELETON = "Can't hit me in this thing!",
 		RUINS_BAT = "This will keep the nasties at bay.",
 		RUINSHAT = "It seems like there's something flowing through it.",
 
@@ -835,8 +887,6 @@ return {
         BEDROLL_FURRY = "It's too frilly.",
         BUNNYMAN = "Ugh. They look so stupid.",
         FLOWER_CAVE = "It's burning inside.",
-        FLOWER_CAVE_DOUBLE = "It's burning inside.",
-        FLOWER_CAVE_TRIPLE = "It's burning inside.",
         GRASSGEKKO =
         {
             GENERIC = "Ew.",
@@ -893,12 +943,21 @@ return {
             BLOOM = "Ew, I don't want to get too close.",
         },
         MUSHTREE_TALL_WEBBED = "That one got what it deserves.",
-        SPORE_TALL = "It's like colorful sparks!",
-        SPORE_MEDIUM = "It's like floating fire!",
-        SPORE_SMALL = "It has no idea where it's going.",
-        SPORE_TALL_INV = "It feels flammable.",
-        SPORE_MEDIUM_INV = "It feels flammable.",
-        SPORE_SMALL_INV = "It feels flammable.",
+        SPORE_TALL =
+        {
+            GENERIC = "It's like colorful sparks!",
+            HELD = "It feels flammable.",
+        },
+        SPORE_MEDIUM =
+        {
+            GENERIC = "It's like floating fire!",
+            HELD = "It feels flammable.",
+        },
+        SPORE_SMALL =
+        {
+            GENERIC = "It has no idea where it's going.",
+            HELD = "It feels flammable.",
+        },
         SLURTLE = "I want to blow it up!",
         SLURTLE_SHELLPIECES = "Heh. It broke.",
         SLURTLEHAT = "It's perfectly head-shaped.",
@@ -909,13 +968,7 @@ return {
         SPIDER_SPITTER = "Get over here!",
         SPIDERHOLE = "It's full of spiders.",
         STALAGMITE = "Rocks are boring.",
-        STALAGMITE_FULL = "Rocks are boring.",
-        STALAGMITE_LOW = "Rocks are boring.",
-        STALAGMITE_MED = "Rocks are boring.",
         STALAGMITE_TALL = "More boring rocks.",
-        STALAGMITE_TALL_FULL = "More boring rocks.",
-        STALAGMITE_TALL_LOW = "More boring rocks.",
-        STALAGMITE_TALL_MED = "More boring rocks.",
 
 		TURF_CARPETFLOOR = "The ground is boring.",
 		TURF_CHECKERFLOOR = "The ground is boring.",
@@ -1267,6 +1320,8 @@ return {
 		{
 			GENERIC = "What a sorry looking piece of... grass?",
 		},
+		GOGGLESHAT = "What a great look!",
+        DESERTHAT = "Not very stylish.",
 		DRAGONFRUIT = "It looks sort of like a fire!",
 		DRAGONFRUIT_COOKED = "It looks more like a fruit that's been in a fire now.",
 		DRAGONFRUIT_SEEDS = "Seeds for that fire-looking fruit.",
@@ -1372,6 +1427,11 @@ return {
 			FUNNY = "That looks absolutely ridiculous.",
 			COMPLETE = "Looks passable.",
         },
+        STALKER = "I brought you back so I could beat you up!",
+        STALKER_ATRIUM = "It's just bones and shadow.",
+        STALKER_MINION = "Yuck, it's barely even alive.",
+        THURIBLE = "It smells like burnt hair!",
+        ATRIUM_OVERGROWTH = "It's in some other language.",
 		FROG =
 		{
 			DEAD = "Showed him!",
@@ -1518,6 +1578,7 @@ return {
 		NIGHTSWORD = "It's like dreams that can hurt real things!",
 		NITRE = "There are tiny explosions trapped inside.",
 		ONEMANBAND = "I can do the pyrotechnics too!",
+		OASISLAKE = "It's a bunch of water.",
 		PANDORASCHEST = "Kind of tacky.",
 		PANFLUTE = "Music is boring.",
 		PAPYRUS = "I bet it'd burn!",
@@ -1621,6 +1682,11 @@ return {
 			LOW = "The lava is cooling.",
 			NORMAL = "A pool of fire!",
 		},
+		CAVEIN_BOULDER =
+        {
+            GENERIC = "Let's just smash it up.",
+            RAISED = "I can't get up there!",
+        },
 		ROCKS = "What's the point of collecting these again?",
         ROOK = "It's a castle!",
         ROPE = "What should we tie up??!",
@@ -1700,6 +1766,7 @@ return {
 		SEEDS = "Farming is boring.",
 		SEEDS_COOKED = "No good for farming now.",
 		SEWING_KIT = "But destruction is so much more fun!",
+		SEWING_TAPE = "At least something around here can hold it together.",
 		SHOVEL = "Not great for fighting.",
 		SILK = "Mmmmmm. Smooth.",
 		INSPECTSELF = "Why didn't anyone tell me I had ashes on my face?",
@@ -1876,13 +1943,7 @@ return {
         PERDFAN = "It's a big ol' fan.",
         REDPOUCH = "What a great color!",
 
-		LAVA_POND_ROCK = "Oh great, another stinkin' rock!",
-		LAVA_POND_ROCK2 = "Oh great, another stinkin' rock!",
-		LAVA_POND_ROCK3 = "Oh great, another stinkin' rock!",
-		LAVA_POND_ROCK4 = "Oh great, another stinkin' rock!",
-		LAVA_POND_ROCK5 = "Oh great, another stinkin' rock!",
-		LAVA_POND_ROCK6 = "Oh great, another stinkin' rock!",
-		LAVA_POND_ROCK7 = "Oh great, another stinkin' rock!",
+        LAVA_POND_ROCK = "Oh great, another stinkin' rock!",
 
 		TRUNKVEST_SUMMER = "Now my friend will never leave.",
 		TRUNKVEST_WINTER = "Not as warm as a good fire, but still pretty good!",
@@ -1957,6 +2018,29 @@ return {
 		ACCOMPLISHMENT_SHRINE = "I hate that arrow!",        		
         REVIVER = "I expected it to be blacker.",
         SHADOWHEART = "Oh, ewww! Who would ever touch that?!",
+        ATRIUM_RUBBLE = 
+        {
+			LINE_1 = "It's got a picture of some gross looking people.",
+			LINE_2 = "Can't tell what that was a picture of.",
+			LINE_3 = "I think someone spilled ink on this picture.",
+			LINE_4 = "Oh, gross! The people're losing their skin in this one!",
+			LINE_5 = "It's just a picture of a city.",
+		},
+        ATRIUM_STATUE = "Eerily lifelike.",
+        ATRIUM_LIGHT = 
+        {
+			ON = "It's somehow even creepier when it's on.",
+			OFF = "Ew, creepy.",
+		},
+        ATRIUM_GATE =
+        {
+			ON = "It lit up!",
+			OFF = "Why would anyone want to live down here?",
+			CHARGING = "Something weird's going on.",
+            DESTABILIZING = "Is it gonna explode?!",
+            COOLDOWN = "I'll come back another time.",
+        },
+        ATRIUM_KEY = "The horns make it really easy to turn.",
         LIFEINJECTOR = "Don't you dare stick that in me!",
 	},
 	DESCRIBE_GENERIC = "I have no idea what that is!",

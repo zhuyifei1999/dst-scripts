@@ -49,6 +49,10 @@ local function DoPortNearLeader(inst, self, pos)
     end
 end
 
+local function NoHoles(pt)
+    return not TheWorld.Map:IsPointNearHole(pt)
+end
+
 local function OnEntitySleep(inst)
     local self = inst.components.follower
 
@@ -70,11 +74,16 @@ local function OnEntitySleep(inst)
         end
 
         local angle = self.leader:GetAngleToPoint(init_pos)
-        local offset = FindWalkableOffset(leader_pos, angle * DEGREES, 30, 10) or Vector3(0, 0, 0)
+        local offset = FindWalkableOffset(leader_pos, angle * DEGREES, 30, 10, false, true, NoHoles)
+        if offset ~= nil then
+            leader_pos.x = leader_pos.x + offset.x
+            leader_pos.z = leader_pos.z + offset.z
+        end
+        leader_pos.y = 0
 
         --There's a crash if you teleport without the delay
         --V2C: ORLY
-        self.porttask = inst:DoTaskInTime(0, DoPortNearLeader, self, leader_pos + offset)
+        self.porttask = inst:DoTaskInTime(0, DoPortNearLeader, self, leader_pos)
     else
         --Retry later
         self.porttask = inst:DoTaskInTime(3, OnEntitySleep)

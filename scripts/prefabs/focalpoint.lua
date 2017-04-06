@@ -1,4 +1,47 @@
+local function OnCancelFocus(inst)
+    inst.task = nil
+    inst.target = nil
+    TheCamera:SetDefaultOffset()
+end
+
+local function OnClearFocusPriority(inst)
+    inst.task = inst:DoTaskInTime(0, OnCancelFocus)
+    inst.priority = nil
+end
+
+local function PushTempFocus(inst, target, minrange, maxrange, priority)
+    if target == inst.target or inst.priority == nil or priority > inst.priority then
+        local parent = inst.entity:GetParent()
+        if parent ~= nil then
+            local tpos = target:GetPosition()
+            local ppos = parent:GetPosition()
+            local distsq = distsq(tpos, ppos) --3d distance
+            if distsq < maxrange * maxrange then
+                local offs = tpos - ppos
+                if distsq > minrange * minrange then
+                    offs = offs * (maxrange - math.sqrt(distsq)) / (maxrange - minrange)
+                end
+                offs.y = offs.y + 1.5
+                TheCamera:SetOffset(offs)
+
+                if inst.task ~= nil then
+                    inst.task:Cancel()
+                end
+                inst.task = inst:DoTaskInTime(0, OnClearFocusPriority)
+                inst.target = target
+                inst.priority = priority
+            end
+        end
+    end
+end
+
 local function AttachToEntity(inst, entity)
+    if inst.task ~= nil then
+        inst.task:Cancel()
+        inst.task = nil
+        inst.target = nil
+        inst.priority = nil
+    end
     inst.entity:SetParent(entity)
     TheCamera:SetDefault()
     TheCamera:Snap()
@@ -17,6 +60,11 @@ local function fn()
 
     inst:ListenForEvent("playeractivated", function(world, player) AttachToEntity(inst, player.entity) end, TheWorld)
     inst:ListenForEvent("playerdeactivated", function() AttachToEntity(inst, nil) end, TheWorld)
+
+    inst.task = nil
+    inst.target = nil
+    inst.priority = nil
+    inst.PushTempFocus = PushTempFocus
 
     return inst
 end

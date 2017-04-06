@@ -8,7 +8,7 @@ local events =
     CommonHandlers.OnFreeze(),
     CommonHandlers.OnAttack(),
     CommonHandlers.OnAttacked(),
-    EventHandler("death", function(inst) inst.sg:GoToState("death", inst.sg:HasStateTag("reanimating")) end),
+    EventHandler("death", function(inst) inst.sg:GoToState("death", inst.sg.statemem.dead) end),
     EventHandler("giveuptarget", function(inst, data) if data.target then inst.sg:GoToState("howl") end end),
     EventHandler("newcombattarget", function(inst, data)
         if data.target and not inst.sg:HasStateTag("busy") then
@@ -30,7 +30,7 @@ local states =
 {
     State{
         name = "death",
-        tags = {"busy"},
+        tags = { "busy" },
 
         onenter = function(inst, reanimating)
             inst.SoundEmitter:PlaySound("dontstarve/creatures/werepig/grunt")
@@ -62,7 +62,7 @@ local states =
 
     State{
         name = "howl",
-        tags = {"busy"},
+        tags = { "busy" },
 
         onenter = function(inst)
             inst.Physics:Stop()
@@ -82,7 +82,7 @@ local states =
 
     State{
         name = "idle",
-        tags = {"idle", "canrotate"},
+        tags = { "idle", "canrotate" },
 
         onenter = function(inst, pushanim)
             inst.Physics:Stop()
@@ -99,7 +99,7 @@ local states =
 
     State{
         name = "attack",
-        tags = {"attack", "busy"},
+        tags = { "attack", "busy" },
 
         onenter = function(inst)
             inst.components.combat:StartAttack()
@@ -128,7 +128,7 @@ local states =
 
     State{
         name = "run_start",
-        tags = {"moving", "running", "canrotate"},
+        tags = { "moving", "running", "canrotate" },
 
         onenter = function(inst) 
             inst.components.locomotor:RunForward()
@@ -143,7 +143,7 @@ local states =
 
     State{
         name = "run",
-        tags = {"moving", "running", "canrotate"},
+        tags = { "moving", "running", "canrotate" },
 
         onenter = function(inst)
             inst.components.locomotor:RunForward()
@@ -166,7 +166,7 @@ local states =
 
     State{
         name = "run_stop",
-        tags = {"canrotate"},
+        tags = { "canrotate" },
 
         onenter = function(inst)
             inst.Physics:Stop()
@@ -181,7 +181,7 @@ local states =
 
     State{
         name = "hit",
-        tags = {"busy"},
+        tags = { "busy" },
 
         onenter = function(inst)
             inst.SoundEmitter:PlaySound("dontstarve/creatures/werepig/hurt")
@@ -235,7 +235,7 @@ local states =
 
     State{
         name = "reanimate",
-        tags = { "busy", "reanimating" },
+        tags = { "busy" },
 
         onenter = function(inst, data)
             inst.sg.statemem.howled = data.anim == "howl"
@@ -245,6 +245,7 @@ local states =
             if data.time ~= nil then
                 inst.AnimState:SetTime(data.time)
             end
+            inst.sg.statemem.dead = data.dead
         end,
 
         timeline =
@@ -275,7 +276,7 @@ CommonStates.AddSleepStates(states,
 {
     sleeptimeline =
     {
-        TimeEvent(35*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/werepig/sleep") end),
+        TimeEvent(35 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/creatures/werepig/sleep") end),
     },
 })
 

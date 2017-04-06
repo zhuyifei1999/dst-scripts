@@ -24,50 +24,50 @@ function LootDropper:SetChanceLootTable(name)
     self.chanceloottable = name
 end
 
-function LootDropper:SetLoot( loots )
+function LootDropper:SetLoot(loots)
     self.loot = loots
     self.chanceloot = nil
     self.randomloot = nil
     self.numrandomloot = nil
 end
 
-function LootDropper:SetLootSetupFn( fn )
+function LootDropper:SetLootSetupFn(fn)
     self.lootsetupfn = fn
 end
 
-function LootDropper:AddRandomLoot( prefab, weight)
+function LootDropper:AddRandomLoot(prefab, weight)
     if not self.randomloot then
         self.randomloot = {}
         self.totalrandomweight = 0
     end
 
-    table.insert(self.randomloot, {prefab=prefab,weight=weight} )
+    table.insert(self.randomloot, { prefab = prefab, weight = weight })
     self.totalrandomweight = self.totalrandomweight + weight
 end
 
 -- This overrides the normal loot table while haunted
-function LootDropper:AddRandomHauntedLoot( prefab, weight)
+function LootDropper:AddRandomHauntedLoot(prefab, weight)
     if not self.randomhauntedloot then
         self.randomhauntedloot = {}
         self.totalhauntedrandomweight = 0
     end
 
-    table.insert(self.randomhauntedloot, {prefab=prefab,weight=weight} )
+    table.insert(self.randomhauntedloot, { prefab = prefab, weight = weight })
     self.totalhauntedrandomweight = self.totalhauntedrandomweight + weight
 end
 
-function LootDropper:AddChanceLoot( prefab, chance)
+function LootDropper:AddChanceLoot(prefab, chance)
     if not self.chanceloot then
         self.chanceloot = {}
     end
-    table.insert(self.chanceloot, {prefab=prefab,chance=chance} )
+    table.insert(self.chanceloot, { prefab = prefab, chance = chance })
 end
 
 function LootDropper:AddIfNotChanceLoot(prefab)
     if not self.ifnotchanceloot then
         self.ifnotchanceloot = {}
     end
-    table.insert(self.ifnotchanceloot, {prefab=prefab})
+    table.insert(self.ifnotchanceloot, { prefab = prefab })
 end
 
 function LootDropper:PickRandomLoot()
@@ -191,15 +191,19 @@ function LootDropper:GenerateLoot()
 end
 
 local function SplashOceanLoot(loot, cb)
-    if not (loot.components.inventoryitem ~= nil and loot.components.inventoryitem:IsHeld()) and
-        not loot:IsOnValidGround() then
-        SpawnPrefab("splash_ocean").Transform:SetPosition(loot.Transform:GetWorldPosition())
-        if loot:HasTag("irreplaceable") then
-            loot.Transform:SetPosition(FindSafeSpawnLocation(loot.Transform:GetWorldPosition()))
-        else
-            loot:Remove()
+    if loot.components.inventoryitem == nil or not loot.components.inventoryitem:IsHeld() then
+        local x, y, z = loot.Transform:GetWorldPosition()
+        if not loot:IsOnValidGround() or TheWorld.Map:IsPointNearHole(Vector3(x, 0, z)) then
+            SpawnPrefab("splash_ocean").Transform:SetPosition(x, y, z)
+            if loot:HasTag("irreplaceable") then
+                loot.Transform:SetPosition(FindSafeSpawnLocation(x, y, z))
+            else
+                loot:Remove()
+            end
+            return
         end
-    elseif cb ~= nil then
+    end
+    if cb ~= nil then
         cb(loot)
     end
 end
@@ -296,8 +300,8 @@ function LootDropper:DropLoot(pt)
                 self:SpawnLootPrefab(GetRandomBasicWinterOrnament(), pt)
             end
             if num_decor_loot.special then
-	            self:SpawnLootPrefab("winter_ornament_boss_"..prefabname, pt)
-	        end
+                self:SpawnLootPrefab("winter_ornament_boss_"..prefabname, pt)
+            end
         elseif not TUNING.WINTERS_FEAST_LOOT_EXCLUSION[prefabname] and (self.inst:HasTag("monster") or self.inst:HasTag("animal")) then
             local loot = math.random()
             if loot < 0.005 then

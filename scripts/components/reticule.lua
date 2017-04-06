@@ -54,7 +54,7 @@ function Reticule:OnUpdate(dt)
     end
 
     local x, y, z = self.targetpos:Get()
-    if TheWorld.Map:IsPassableAtPoint(x, y, z) then
+    if TheWorld.Map:IsPassableAtPoint(x, y, z) and not TheWorld.Map:IsPointNearHole(self.targetpos) then
         self.reticule.components.colourtweener:StartTween(self.validcolour, 0)
         self.reticule.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
     else

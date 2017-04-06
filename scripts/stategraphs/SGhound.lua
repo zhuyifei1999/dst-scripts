@@ -8,7 +8,7 @@ local actionhandlers =
 local events =
 {
     EventHandler("attacked", function(inst) if not inst.components.health:IsDead() and not inst.sg:HasStateTag("attack") then inst.sg:GoToState("hit") end end),
-    EventHandler("death", function(inst) inst.sg:GoToState("death", inst.sg:HasStateTag("reanimating")) end),
+    EventHandler("death", function(inst) inst.sg:GoToState("death", inst.sg.statemem.dead) end),
     EventHandler("doattack", function(inst, data) if not inst.components.health:IsDead() and (inst.sg:HasStateTag("hit") or not inst.sg:HasStateTag("busy")) then inst.sg:GoToState("attack", data.target) end end),
     CommonHandlers.OnSleep(),
     CommonHandlers.OnLocomote(true, false),
@@ -240,7 +240,7 @@ local states =
 
     State{
         name = "reanimate",
-        tags = { "busy", "reanimating" },
+        tags = { "busy" },
 
         onenter = function(inst, data)
             inst.sg.statemem.taunted = data.anim == "taunt"
@@ -250,6 +250,7 @@ local states =
             if data.time ~= nil then
                 inst.AnimState:SetTime(data.time)
             end
+            inst.sg.statemem.dead = data.dead
         end,
 
         timeline =

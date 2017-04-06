@@ -41,6 +41,7 @@ function Sanity:AttachClassified(classified)
     self.ondetachclassified = function() self:DetachClassified() end
     self.inst:ListenForEvent("onremove", self.ondetachclassified, classified)
     self.inst:ListenForEvent("isinsanedirty", OnIsInsaneDirty)
+    OnIsInsaneDirty(self.inst)
 end
 
 function Sanity:DetachClassified()

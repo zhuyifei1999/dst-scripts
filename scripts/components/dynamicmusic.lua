@@ -67,6 +67,18 @@ local TRIGGERED_DANGER_MUSIC =
         "dontstarve/music/music_epicfight_5b",
     },
 
+    antlion =
+    {
+        "dontstarve/music/music_epicfight_antlion",
+    },
+
+    stalker =
+    {
+        "dontstarve/music/music_epicfight_stalker",
+        "dontstarve/music/music_epicfight_stalker_b",
+        "",
+    },
+
     default =
     {
         "dontstarve/music/music_epicfight_ruins",
@@ -81,14 +93,14 @@ local TRIGGERED_DANGER_MUSIC =
 self.inst = inst
 
 --Private
-local _isruin = inst:HasTag("ruin")
-local _iscave = _isruin or inst:HasTag("cave")
+local _iscave = inst:HasTag("cave")
 local _isenabled = true
 local _busytask = nil
 local _dangertask = nil
 local _triggeredlevel = nil
 local _isday = nil
 local _isbusydirty = nil
+local _isbusyruins = nil
 local _extendtime = nil
 local _soundemitter = nil
 local _activatedplayer = nil --cached for activation/deactivation only, NOT for logic use
@@ -96,6 +108,11 @@ local _activatedplayer = nil --cached for activation/deactivation only, NOT for 
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
+
+local function IsInRuins(player)
+    return player.components.areaaware ~= nil
+        and player.components.areaaware:CurrentlyInTag("Nightmare")
+end
 
 local function StopBusy(inst, istimeout)
     if _busytask ~= nil then
@@ -115,7 +132,7 @@ local function StopBusy(inst, istimeout)
     end
 end
 
-local function StartBusy()
+local function StartBusy(player)
     if not (_iscave or _isday) then
         return
     elseif _busytask ~= nil then
@@ -124,11 +141,16 @@ local function StartBusy()
         if _isbusydirty then
             _isbusydirty = false
             _soundemitter:KillSound("busy")
-            _soundemitter:PlaySound(
-                (_isruin and "dontstarve/music/music_work_ruins") or
-                (_iscave and "dontstarve/music/music_work_cave") or
-                (SEASON_BUSY_MUSIC[inst.state.season]),
-                "busy")
+            if _iscave then
+                _isbusyruins = IsInRuins(player)
+                _soundemitter:PlaySound(_isbusyruins and "dontstarve/music/music_work_ruins" or "dontstarve/music/music_work_cave", "busy")
+            else
+                _soundemitter:PlaySound(SEASON_BUSY_MUSIC[inst.state.season], "busy")
+            end
+        elseif _iscave and _isbusyruins ~= IsInRuins(player) then
+            _isbusyruins = not _isbusyruins
+            _soundemitter:KillSound("busy")
+            _soundemitter:PlaySound(_isbusyruins and "dontstarve/music/music_work_ruins" or "dontstarve/music/music_work_cave", "busy")
         end
         _soundemitter:SetParameter("busy", "intensity", 1)
         _busytask = inst:DoTaskInTime(15, StopBusy, true)
@@ -169,10 +191,10 @@ local function StartDanger(player)
         local x, y, z = player.Transform:GetWorldPosition()
         _soundemitter:PlaySound(
             #TheSim:FindEntities(x, y, z, 30, { "epic" }, { "noepicmusic" }) > 0
-            and ((_isruin and "dontstarve/music/music_epicfight_ruins") or
+            and ((IsInRuins(player) and "dontstarve/music/music_epicfight_ruins") or
                 (_iscave and "dontstarve/music/music_epicfight_cave") or
                 (SEASON_EPICFIGHT_MUSIC[inst.state.season]))
-            or ((_isruin and "dontstarve/music/music_danger_ruins") or
+            or ((IsInRuins(player) and "dontstarve/music/music_danger_ruins") or
                 (_iscave and "dontstarve/music/music_danger_cave") or
                 (SEASON_DANGER_MUSIC[inst.state.season])),
             "danger")
@@ -185,7 +207,7 @@ end
 local function StartTriggeredDanger(player, data)
     local level = math.max(1, math.floor(data ~= nil and data.level or 1))
     if _triggeredlevel == level then
-        _extendtime = GetTime() + (data.duration or 10)
+        _extendtime = math.max(_extendtime, GetTime() + (data.duration or 10))
     elseif _isenabled then
         StopBusy()
         StopDanger()
@@ -229,7 +251,7 @@ local function CheckAction(player)
         end
     end
     if player:HasTag("working") then
-        StartBusy()
+        StartBusy(player)
     end
 end
 

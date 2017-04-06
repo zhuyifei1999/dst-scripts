@@ -23,7 +23,7 @@ AddRoom("WetWilds", {
             cave_fern = 0.1,
             pillar_algae = .01,
             pond_cave = 0.1,
-            slurper = .05,
+            slurper_spawner = .05,
             fissure_lower = 0.05,
         }
     }
@@ -41,14 +41,14 @@ AddRoom("LichenMeadow", {
             lichen = 1.0,
             cave_fern = 1.0,
             pillar_algae = 0.1,
-            slurper = 0.35,
+            slurper_spawner = 0.35,
             fissure_lower = 0.05,
 
             flower_cave = .05,
             flower_cave_double = .03,
             flower_cave_triple = .01,
 
-            worm = 0.07,
+            worm_spawner = 0.07,
             wormlight_plant = 0.15,
         }
     }
@@ -68,12 +68,12 @@ AddRoom("CaveJungle", {
             pillar_algae = 0.05,
 
             cave_banana_tree = 0.5,
-            monkeybarrel = 0.1,
+            monkeybarrel_spawner = 0.1,
 
-            slurper = 0.06,
+            slurper_spawner = 0.06,
             pond_cave = 0.07,
             fissure_lower = 0.04,
-            worm = 0.04,
+            worm_spawner = 0.04,
             wormlight_plant = 0.08,
         }
     }
@@ -93,12 +93,12 @@ AddRoom("MonkeyMeadow", {
             pillar_algae = 0.05,
 
             cave_banana_tree = 0.1,
-            monkeybarrel = 0.06,
+            monkeybarrel_spawner = 0.06,
 
-            slurper = 0.06,
+            slurper_spawner = 0.06,
             pond_cave = 0.07,
             fissure_lower = 0.04,
-            worm = 0.04,
+            worm_spawner = 0.04,
             wormlight_plant = 0.08,
         }
     }
@@ -116,7 +116,7 @@ AddRoom("LichenLand", {
             lichen = 2.0,
             cave_fern = 0.5,
             pillar_algae = 0.5,
-            slurper = 0.05,
+            slurper_spawner = 0.05,
             fissure_lower = 0.05,
         }
     }
@@ -127,6 +127,10 @@ bgwilds = {
     value = GROUND.MUD,
     tags = {"Hutch_Fishbowl"},    
     contents =  {
+        countprefabs=
+        {
+            cave_hole = function() return math.random(2) - 1 end,
+        },
         distributepercent = 0.15,
         distributeprefabs=
         {
@@ -135,13 +139,13 @@ bgwilds = {
             pillar_algae = 0.01,
 
             cave_banana_tree = 0.01,
-            monkeybarrel = 0.01,
+            monkeybarrel_spawner = 0.01,
 
             flower_cave = 0.05,
             flower_cave_double = 0.03,
             flower_cave_triple = 0.01,
 
-            worm = 0.07,
+            worm_spawner = 0.07,
             wormlight_plant = 0.15,
 
             fissure_lower = 0.04,
@@ -179,6 +183,10 @@ AddRoom("RuinedCity", {-- Maze used to define room connectivity
     tags = {"Maze", "Nightmare"},
     internal_type = NODE_INTERNAL_CONNECTION_TYPE.EdgeCentroid,
     contents =  {
+        countprefabs=
+        {
+            cave_hole = function() return math.random() < 0.25 and 1 or 0 end,
+        },
         distributepercent = 0.09,
         distributeprefabs=
         {
@@ -187,11 +195,11 @@ AddRoom("RuinedCity", {-- Maze used to define room connectivity
             pillar_algae = .05,
 
             cave_banana_tree = 0.1,
-            monkeybarrel = 0.06,
-            slurper = 0.06,
+            monkeybarrel_spawner = 0.06,
+            slurper_spawner = 0.06,
             pond_cave = 0.07,
             fissure_lower = 0.04,
-            worm = 0.04,
+            worm_spawner = 0.04,
         }
     }
 })
@@ -215,9 +223,9 @@ AddRoom("Vacant", {
             lichen = .4,
             cave_fern = .6,
             pillar_algae = .01,
-            slurper = .15,
+            slurper_spawner = .15,
             cave_banana_tree = .1,
-            monkeybarrel = .2,
+            monkeybarrel_spawner = .2,
             dropperweb = .1,
             ruins_rubble_table = 0.1,
             ruins_rubble_chair = 0.1,
@@ -242,9 +250,9 @@ AddRoom("LightHut", {
             lichen = 0.4,
             cave_fern = 0.6,
             pillar_algae = 0.01,
-            slurper = 0.15,
+            slurper_spawner = 0.15,
             cave_banana_tree = 0.1,
-            monkeybarrel = 0.2,
+            monkeybarrel_spawner = 0.2,
             dropperweb = 0.1,
 
             flower_cave = 0.5,
@@ -294,15 +302,13 @@ AddRoom("Barracks",{
         distributepercent = 0.03,
         distributeprefabs=
         {
-            chessjunk1 = .1,
-            chessjunk2 = .1,
-            chessjunk3 = .1,
+            chessjunk_spawner = .3,
 
             nightmarelight = 1,
 
-            rook_nightmare = .07,
-            bishop_nightmare = .07,
-            knight_nightmare = .07,
+            rook_nightmare_spawner = .07,
+            bishop_nightmare_spawner = .07,
+            knight_nightmare_spawner = .07,
         }
     }
 })
@@ -381,26 +387,29 @@ bgsacred = {
     value = GROUND.BRICK,
     tags = {"Nightmare"},
     contents =  {
+        countprefabs=
+        {
+            cave_hole = 1,
+        },
+
         distributepercent = 0.03,
         distributeprefabs=
         {
-            chessjunk1 = .1,
-            chessjunk2 = .1,
-            chessjunk3 = .1,
+            chessjunk_spawner = .3,
 
             nightmarelight = 1,
 
             pillar_ruins = 0.5,
 
-            ruins_statue_head = .1,
-            ruins_statue_head_nogem = .2,
+            ruins_statue_head_spawner = .1,
+            ruins_statue_head_nogem_spawner = .2,
 
-            ruins_statue_mage =.1,
-            ruins_statue_mage_nogem = .2,
+            ruins_statue_mage_spawner =.1,
+            ruins_statue_mage_nogem_spawner = .2,
 
-            rook_nightmare = .07,
-            bishop_nightmare = .07,
-            knight_nightmare = .07,
+            rook_nightmare_spawner = .07,
+            bishop_nightmare_spawner = .07,
+            knight_nightmare_spawner = .07,
         }
     }
 }
@@ -467,13 +476,11 @@ AddRoom("Labyrinth", {-- Not a real Labyrinth.. more of a maze really.
             ruins_rubble_chair = 0.1,
             ruins_rubble_table = 0.1,
 
-            chessjunk1 = 0.01,
-            chessjunk2 = 0.01,
-            chessjunk3 = 0.01,
+            chessjunk_spawner = 0.03,
 
-            rook_nightmare = 0.01,
-            bishop_nightmare = 0.01,
-            knight_nightmare = 0.01,
+            rook_nightmare_spawner = 0.01,
+            bishop_nightmare_spawner = 0.01,
+            knight_nightmare_spawner = 0.01,
 
             thulecite_pieces = 0.05,
         },
@@ -485,6 +492,7 @@ AddRoom("RuinedGuarden", {
     colour={r=0.3,g=0.2,b=0.1,a=0.3},
     value = GROUND.MUD,
     tags = {"Nightmare"},
+    required_prefabs = {"minotaur_spawner"},
     type = NODE_TYPE.Room,
     internal_type = NODE_INTERNAL_CONNECTION_TYPE.EdgeSite,
     contents =  {
@@ -500,6 +508,37 @@ AddRoom("RuinedGuarden", {
     }
 })
 
+--Atrium Maze
+AddRoom("AtriumMazeEntrance", {
+    colour={r=0.2,g=0.0,b=0.2,a=0.3},
+    value = GROUND.MUD,
+    tags = {"MazeEntrance", "RoadPoison", "Hutch_Fishbowl"},
+    contents =  {
+        countprefabs=
+        {
+            cave_hole = 1,
+        },
+        distributepercent = .2,
+        distributeprefabs=
+        {
+            lichen = .8,
+            cave_fern = 1,
+            pillar_algae = .05,
+
+            flower_cave = .2,
+            flower_cave_double = .1,
+            flower_cave_triple = .05,
+        },
+    }
+})
+
+--Atrium Maze
+AddRoom("AtriumMazeRooms",  { -- layout contents determined by maze
+    colour={r=0.3,g=0.2,b=0.1,a=0.3},
+    value = GROUND.FAKE_GROUND,
+    tags = {"ForceDisconnected", "Maze", "RoadPoison"},
+    internal_type = NODE_INTERNAL_CONNECTION_TYPE.EdgeCentroid,
+})
 
 
 ---------------------------------------------

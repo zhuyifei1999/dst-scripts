@@ -129,6 +129,9 @@ local prefabs =
     "shadow_bishop",
     "beequeenhive",
     "klaus_sack",
+    "antlion_spawner",
+    "oasislake",
+    "succulent_plant",
 }
 
 local monsters =
@@ -206,7 +209,6 @@ end
 
 local function master_postinit(inst)
     --Spawners
-    --inst:AddComponent("flowerspawner")
     inst:AddComponent("birdspawner")
     inst:AddComponent("butterflyspawner")
     inst:AddComponent("hounded")
@@ -236,14 +238,12 @@ local function master_postinit(inst)
     inst:AddComponent("chessunlocks")
     inst:AddComponent("retrofitforestmap_anr")
     inst:AddComponent("specialeventsetup")
+    inst:AddComponent("townportalregistry")
+    inst:AddComponent("sandstorms")
 
     if METRICS_ENABLED then
         inst:AddComponent("worldoverseer")
     end
-
-    -- inst:AddComponent("periodicthreat")
-    -- local threats = require"periodicthreats"
-    -- inst.components.periodicthreat:AddThreat("WORM", threats["WORM"])
 end
 
 return MakeWorld("forest", prefabs, assets, common_postinit, master_postinit, {"forest"})

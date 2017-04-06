@@ -99,6 +99,7 @@ ACTIONS =
     HAMMER = Action({ priority=3 }),
     TERRAFORM = Action(),
     JUMPIN = Action({ ghost_valid=true, encumbered_valid=true }),
+    TELEPORT = Action({ rmb=true, distance=2 }),
     RESETMINE = Action({ priority=3 }),
     ACTIVATE = Action(),
     MURDER = Action({ priority=0, mount_valid=true }),
@@ -106,7 +107,7 @@ ACTIONS =
     INVESTIGATE = Action(),
     UNLOCK = Action(),
     USEKLAUSSACKKEY = Action(),
-    TEACH = Action(),
+    TEACH = Action({ mount_valid=true }),
     TURNON = Action({ priority=2 }),
     TURNOFF = Action({ priority=2 }),
     SEW = Action({ mount_valid=true }),
@@ -135,6 +136,8 @@ ACTIONS =
     BUNDLESTORE = Action({ instant=true }),
     WRAPBUNDLE = Action({ instant=true }),
     UNWRAP = Action({ rmb=true, priority=2 }),
+    STARTCHANNELING = Action({ distance=2.1 }),
+    STOPCHANNELING = Action({ instant=true, distance=2.1 }),
 
     TOSS = Action({ rmb=true, distance=8, mount_valid=true }),
     NUZZLE = Action(),
@@ -285,6 +288,12 @@ ACTIONS.REPAIR.fn = function(act)
             return act.target.components.repairable:Repair(act.doer, material)
         end
     end
+end
+
+ACTIONS.SEW.strfn = function(act)
+    return act.invobject ~= nil
+        and (act.invobject:HasTag("tape") and "PATCH")
+        or nil
 end
 
 ACTIONS.SEW.fn = function(act)
@@ -1019,7 +1028,7 @@ end
 
 ACTIONS.TERRAFORM.fn = function(act)
     if act.invobject ~= nil and act.invobject.components.terraformer ~= nil then
-        return act.invobject.components.terraformer:Terraform(act.pos)
+        return act.invobject.components.terraformer:Terraform(act.pos, true)
     end
 end
 
@@ -1079,9 +1088,38 @@ ACTIONS.JUMPIN.strfn = function(act)
 end
 
 ACTIONS.JUMPIN.fn = function(act)
-    if act.doer ~= nil and act.doer.sg ~= nil and act.doer.sg.currentstate.name == "jumpin_pre" then
-        act.doer.sg:GoToState("jumpin", { teleporter = act.target })
-        return true
+    if act.doer ~= nil and
+        act.doer.sg ~= nil and
+        act.doer.sg.currentstate.name == "jumpin_pre" then
+        if act.target ~= nil and
+            act.target.components.teleporter ~= nil and
+            act.target.components.teleporter:IsActive() then
+            act.doer.sg:GoToState("jumpin", { teleporter = act.target })
+            return true
+        end
+        act.doer.sg:GoToState("idle")
+    end
+end
+
+ACTIONS.TELEPORT.strfn = function(act)
+    return act.target ~= nil and "TOWNPORTAL" or nil
+end
+
+ACTIONS.TELEPORT.fn = function(act)
+    if act.doer ~= nil and act.doer.sg ~= nil then
+        local teleporter
+        if act.invobject ~= nil then
+            if act.doer.sg.currentstate.name == "dolongaction" then
+                teleporter = act.invobject
+            end
+        elseif act.target ~= nil
+            and act.doer.sg.currentstate.name == "give" then
+            teleporter = act.target
+        end
+        if teleporter ~= nil and teleporter:HasTag("teleporter") then
+            act.doer.sg:GoToState("entertownportal", { teleporter = teleporter })
+            return true
+        end
     end
 end
 
@@ -1617,6 +1655,19 @@ ACTIONS.DRAW.fn = function(act)
         act.invobject.components.drawingtool:Draw(act.target, image, src)
         return true
     end
+end
+
+ACTIONS.STARTCHANNELING.fn = function(act)
+    local target = act.target
+	return target ~= nil and target.components.channelable:StartChanneling(act.doer)
+end
+
+ACTIONS.STOPCHANNELING.fn = function(act)
+    local target = act.target
+	if target ~= nil then
+		target.components.channelable:StopChanneling(true)
+	end
+	return true
 end
 
 ACTIONS.BUNDLE.fn = function(act)

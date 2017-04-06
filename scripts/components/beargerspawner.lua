@@ -69,46 +69,38 @@ local function PickPlayer()
 	--print("Picked player ", _targetplayer)
 end
 
-
 local function GetSpawnPoint(pt)
-    local theta = math.random() * 2 * PI
-    local radius = HASSLER_SPAWN_DIST
-
-	local offset = FindWalkableOffset(pt, theta, radius, 12, true)
-	if offset then
-		return pt+offset
-	end
+    if not TheWorld.Map:IsAboveGroundAtPoint(pt:Get()) then
+        pt = FindNearbyLand(pt, 1) or pt
+    end
+    local offset = FindWalkableOffset(pt, math.random() * 2 * PI, HASSLER_SPAWN_DIST, 12, true)
+    if offset ~= nil then
+        offset.x = offset.x + pt.x
+        offset.z = offset.z + pt.z
+        return offset
+    end
 end
 
-
 local function ReleaseHassler(targetPlayer)
-	assert(targetPlayer)
-	--print("Releasing hassler!", targetPlayer)
+    assert(targetPlayer)
+    --print("Releasing hassler!", targetPlayer)
 
-	self.inst:StopUpdatingComponent(self)
+    self.inst:StopUpdatingComponent(self)
 
-	local pt = Vector3(targetPlayer.Transform:GetWorldPosition())
+    if _numSpawned >= _targetNum then 
+        print("Not spawning bearger - already at maximum number")
+        return nil
+    end
 
-	if _numSpawned >= _targetNum then 
-		print("Not spawning bearger - already at maximum number")
-		return nil
-	end
+    local spawn_pt = GetSpawnPoint(targetPlayer:GetPosition())
+    if spawn_pt ~= nil then
+        local hassler = SpawnPrefab("bearger")
+        hassler.Physics:Teleport(spawn_pt:Get())
+        _numSpawned = _numSpawned + 1
+        return hassler
+    end
 
-    local spawn_pt = GetSpawnPoint(pt)
-
-    if spawn_pt then
-	   
-		local hassler = SpawnPrefab("bearger")
-		_numSpawned = _numSpawned + 1
-	  
-        if hassler then
-            hassler.Physics:Teleport(spawn_pt:Get())
-
-			return hassler
-		end
-	end
-
-	print("Not spawning bearger - can't find spawn point")
+    print("Not spawning bearger - can't find spawn point")
 end
 
 local function SpawnBearger()

@@ -23,13 +23,27 @@ local _spawnedthiswinter = false
 --[[ Private member functions ]]
 --------------------------------------------------------------------------
 
+local function IsValidSpawner(x, y, z)
+    x, y, z = TheWorld.Map:GetTileCenterPoint(x, 0, z)
+    for _x = -1, 1 do
+        for _z = -1, 1 do
+            if not TheWorld.Map:IsPassableAtPoint(x + (_x * TILE_SCALE), 0, z + (_z * TILE_SCALE)) then
+                return false
+            end
+        end
+    end
+    return true
+end
+
 local function SpawnKlausSack()
     local numstructsatspawn = {}
+
+    _spawners = shuffleArray(_spawners)
 
     local x, y, z
     for i, v in ipairs(_spawners) do
         x, y, z = v.Transform:GetWorldPosition()
-        if TheWorld.Map:IsPassableAtPoint(x, y, z) and not IsAnyPlayerInRange(x, y, z, 35) then
+        if IsValidSpawner(x, y, z) and not IsAnyPlayerInRange(x, y, z, 35) then
             local structs = TheSim:FindEntities(x, y, z, 5, { "structure" })
             if #structs == 0 then
                 break
@@ -114,11 +128,10 @@ local function OnRegisterSackSpawningPt(inst, spawner)
     inst:ListenForEvent("onremove", OnRemoveSpawner, spawner)
 end
 
-local function OnUnregisterSack(sack)
-    self.inst:RemoveEventCallback("onremove", OnUnregisterSack, sack)
+local function OnRemoveSack(sack)
     _sack = nil
 
-    if IsSpecialEventActive( SPECIAL_EVENTS.WINTERS_FEAST ) then
+    if IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
         StartRespawnTimer(TUNING.KLAUSSACK_EVENT_RESPAWN_TIME)
     end
 end
@@ -126,7 +139,7 @@ end
 local function RegisterKlausSack(inst, sack)
     if _sack == nil or not _sack:IsValid() then
         _sack = sack
-        inst:ListenForEvent("onremove", OnUnregisterSack, sack)
+        inst:ListenForEvent("onremove", OnRemoveSack, sack)
     end
 end
 

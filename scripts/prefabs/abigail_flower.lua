@@ -1,31 +1,28 @@
 local assets =
 {
     Asset("ANIM", "anim/abigail_flower.zip"),
-	Asset("INV_IMAGE", "abigail_flower2" ),
-	Asset("INV_IMAGE", "abigail_flower_haunted" ),
+    Asset("INV_IMAGE", "abigail_flower2"),
+    Asset("INV_IMAGE", "abigail_flower_haunted"),
 }
 
 local prefabs =
 {
     "abigail",
-    "flower",
+    "planted_flower",
     "small_puff",
+    "petals",
 }
 
 local function getstatus(inst)
     if inst._chargestate == 3 then
-        return inst.components.inventoryitem.owner ~= nil and
-            "HAUNTED_POCKET" or "HAUNTED_GROUND"
+        return inst.components.inventoryitem.owner ~= nil
+            and "HAUNTED_POCKET"
+            or "HAUNTED_GROUND"
     end
-
     local time_charge = inst.components.cooldown:GetTimeToCharged()
-    if time_charge < TUNING.TOTAL_DAY_TIME * .5 then
-        return "SOON"
-    elseif time_charge < TUNING.TOTAL_DAY_TIME * 2 then
-        return "MEDIUM"
-    else
-        return "LONG"
-    end
+    return (time_charge < TUNING.TOTAL_DAY_TIME * .5 and "SOON")
+        or (time_charge < TUNING.TOTAL_DAY_TIME * 2 and "MEDIUM")
+        or "LONG"
 end
 
 local function activate(inst)
@@ -44,9 +41,36 @@ end
 
 local function dodecay(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
+    local canplant =
+        TheWorld.Map:CanPlantAtPoint(x, 0, z) and
+        TheWorld.Map:CanPlacePrefabFilteredAtPoint(x, 0, z, "flower") and
+        not (RoadManager ~= nil and RoadManager:IsOnRoad(x, 0, z))
+
+    if canplant then
+        local radius = inst.Physics:GetRadius()
+        for i, v in ipairs(TheSim:FindEntities(x, 0, z, 3, nil, { "NOBLOCK", "_inventoryitem", "locomotor", "FX", "INLIMBO", "DECOR" })) do
+            if v ~= inst and v.entity:IsVisible() then
+                local spacing = radius + (v.Physics ~= nil and v.Physics:GetRadius() or .25) - .001
+                if v:GetDistanceSqToPoint(x, 0, z) < (v.deploy_extra_spacing ~= nil and math.max(v.deploy_extra_spacing * v.deploy_extra_spacing, spacing * spacing) or spacing * spacing) then
+                    canplant = false
+                    break
+                end
+            end
+        end
+    end
+
+    if canplant then
+        SpawnPrefab("planted_flower").Transform:SetPosition(x, 0, z)
+    else
+        inst:AddComponent("lootdropper")
+        inst.components.lootdropper:SpawnLootPrefab("petals", Vector3(x, y, z))
+    end
+
+    if not inst:IsAsleep() then
+        SpawnPrefab("small_puff").Transform:SetPosition(x, y, z)
+    end
+
     inst:Remove()
-    SpawnPrefab("flower").Transform:SetPosition(x, y, z)
-    SpawnPrefab("small_puff").Transform:SetPosition(x, y, z)
 end
 
 local function startdecay(inst)
@@ -277,16 +301,16 @@ local function fn()
 
     inst:AddComponent("inventoryitem")
     -----------------------------------
-    
+
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = getstatus
 
     inst:AddComponent("cooldown")
-    inst.components.cooldown.cooldown_duration = TUNING.TOTAL_DAY_TIME + math.random()*TUNING.TOTAL_DAY_TIME*2
+    inst.components.cooldown.cooldown_duration = TUNING.TOTAL_DAY_TIME * (1 + math.random() * 2)
     inst.components.cooldown.onchargedfn = updatestate
     inst.components.cooldown.startchargingfn = updatestate
     inst.components.cooldown:StartCharging()
-    
+
     inst:WatchWorldState("phase", updatestate)
     updatestate(inst)
     startdecay(inst)

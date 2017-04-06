@@ -1,9 +1,10 @@
-require "prefabutil"
+local RuinsRespawner = require "prefabs/ruinsrespawner"
 
 local assets =
 {
     Asset("ANIM", "anim/crafting_table.zip"),
-	Asset("MINIMAP_IMAGE", "tab_crafting_table"),
+    Asset("MINIMAP_IMAGE", "tab_crafting_table"),
+    Asset("SCRIPT", "scripts/prefabs/ruinsrespawner.lua"),
 }
 
 local prefabs =
@@ -40,6 +41,9 @@ local prefabs =
     "crawlingnightmare",
     "nightmarebeak",
     "collapse_small",
+    "collapse_big",
+    "ancient_altar_broken_ruinsrespawner_inst",
+    "ancient_altar_ruinsrespawner_inst",
 }
 
 for k = 1, NUM_TRINKETS do
@@ -79,8 +83,8 @@ local spawns =
     orangegem           = 5,
     greengem            = 5,
     purplegem           = 5,
-    health_plus         = 10,
-    health_minus        = 10,
+    --health_plus         = 10,
+    --health_minus        = 10,
     stafflight          = 15,
     monkey              = 100,
     bat                 = 100,
@@ -156,12 +160,8 @@ local function SpawnCritter(critter, pos, player)
     player:DoTaskInTime(GetRandomWithVariance(1, 0.8), PlayerSpawnCritter, critter, pos)
 end
 
-local function SpawnAt(inst, prefab)
-    local pos = inst:GetPosition()
-    local offset, check_angle, deflected = FindWalkableOffset(pos, math.random() * 2 * PI, 4 , 8, true, false) -- try to avoid walls
-    if offset ~= nil then
-        return SpawnPrefab(prefab).Transform:SetPosition((pos + offset):Get())
-    end
+local function NoHoles(pt)
+    return not TheWorld.Map:IsPointNearHole(pt)
 end
 
 local function DoRandomThing(inst, pos, count, target)
@@ -190,17 +190,21 @@ local function DoRandomThing(inst, pos, count, target)
         end
 
         for i = 1, amt do
-            local offset, check_angle, deflected = FindWalkableOffset(pos, math.random() * 2 * PI, radius , 8, true, false) -- try to avoid walls
+            local offset = FindWalkableOffset(pos, math.random() * 2 * PI, radius , 8, true, false, NoHoles) -- try to avoid walls
             if offset ~= nil then
                 if func ~= nil then
                     func(inst, item, doaction)
-                elseif item == "trinket" then
-                    local prefab = PickRandomTrinket()
-                    if prefab ~= nil then
-                        SpawnCritter(prefab, pos + offset, player)
-                    end
                 else
-                    SpawnCritter(item, pos + offset, player)
+                    offset.x = offset.x + pos.x
+                    offset.z = offset.z + pos.z
+                    if item == "trinket" then
+                        local prefab = PickRandomTrinket()
+                        if prefab ~= nil then
+                            SpawnCritter(prefab, offset, player)
+                        end
+                    else
+                        SpawnCritter(item, offset, player)
+                    end
                 end
             end
         end
@@ -327,6 +331,7 @@ local function complete_onhammered(inst, worker)
     TheWorld:PushEvent("ms_sendlightningstrike", pos)
     SpawnPrefab("collapse_small").Transform:SetPosition(pos:Get())
     DoRandomThing(inst, pos, nil, worker)
+    inst:PushEvent("onprefabswaped", {newobj = broken})
     inst:Remove()
 end
 
@@ -406,6 +411,7 @@ local function broken_onrepaired(inst, doer, repair_item)
         altar.SoundEmitter:PlaySound("dontstarve/common/ancienttable_activate")
         SpawnPrefab("collapse_big").Transform:SetPosition(pos:Get())
         TheWorld:PushEvent("ms_sendlightningstrike", pos)
+        inst:PushEvent("onprefabswaped", {newobj = altar})
         inst:Remove()
     end
 end
@@ -461,5 +467,35 @@ local function broken_fn()
     return inst
 end
 
+local function onruinsrespawn(inst, respawner)
+    if not respawner:IsAsleep() then
+        inst.AnimState:PlayAnimation("spawn")
+        inst.AnimState:PushAnimation("idle_full", false)
+
+        local fx = SpawnPrefab("collapse_big")
+        fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+        fx:SetMaterial("stone")
+    end
+end
+
+local function onruinsrespawn_broken(inst, respawner)
+    if not respawner:IsAsleep() then
+        inst.AnimState:PlayAnimation("spawn_broken")
+        inst.AnimState:PushAnimation("idle_broken", false)
+
+        local fx = SpawnPrefab("collapse_small")
+        fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+        fx:SetMaterial("stone")
+        fx.Transform:SetScale(1.5, 1.5, 1.5)
+    end
+end
+
+local ruinsrespawnerdata =
+{
+    listenforprefabsawp = true,
+}
+
 return Prefab("ancient_altar", complete_fn, assets, prefabs),
-    Prefab("ancient_altar_broken", broken_fn, assets, prefabs)
+    Prefab("ancient_altar_broken", broken_fn, assets, prefabs),
+    RuinsRespawner.Inst("ancient_altar", onruinsrespawn, ruinsrespawnerdata), RuinsRespawner.WorldGen("ancient_altar", onruinsrespawn, ruinsrespawnerdata),
+    RuinsRespawner.Inst("ancient_altar_broken", onruinsrespawn_broken, ruinsrespawnerdata), RuinsRespawner.WorldGen("ancient_altar_broken", onruinsrespawn_broken, ruinsrespawnerdata)

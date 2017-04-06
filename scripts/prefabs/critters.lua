@@ -131,7 +131,6 @@ local function MakeCritter(name, animname, face, diet, flying, data)
             --MakeFlyingCharacterPhysics(inst, 1, .5)
             inst.entity:AddPhysics()
             inst.Physics:SetMass(1)
-            inst.Physics:SetCapsule(.5, 1)
             inst.Physics:SetFriction(0)
             inst.Physics:SetDamping(5)
             inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)
@@ -139,11 +138,14 @@ local function MakeCritter(name, animname, face, diet, flying, data)
             inst.Physics:CollidesWith(COLLISION.WORLD)
             inst.Physics:CollidesWith(COLLISION.FLYERS)
             inst.Physics:CollidesWith(COLLISION.CHARACTERS)
+            inst.Physics:SetCapsule(.5, 1)
 
             inst:AddTag("flying")
         else
             MakeCharacterPhysics(inst, 1, .5)
         end
+
+		inst.Physics:SetDontRemoveOnSleep(true) -- critters dont really go do entitysleep as it triggers a teleport to near the owner, so no point in hitting the physics engine.
 
         inst:AddTag("critter")
         inst:AddTag("companion")

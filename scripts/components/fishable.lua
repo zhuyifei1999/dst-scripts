@@ -34,6 +34,10 @@ function Fishable:AddFish(prefab)
     self.fish[prefab] = prefab
 end
 
+function Fishable:SetGetFishFn(fn)
+	self.getfishfn = fn
+end
+
 function Fishable:SetRespawnTime(time)
     self.fishrespawntime = time
 end
@@ -52,7 +56,7 @@ local function RespawnFish(inst)
 end
 
 function Fishable:HookFish()
-    local fishprefab = GetRandomKey(self.fish)
+    local fishprefab = self.getfishfn ~= nil and self.getfishfn(self.inst) or GetRandomKey(self.fish)
     local fish = SpawnPrefab(fishprefab)
     if fish ~= nil then
         self.hookedfish[fish] = fish

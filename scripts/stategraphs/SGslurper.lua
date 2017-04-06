@@ -145,6 +145,10 @@ local states =
                 inst.sg:GoToState("headslurpmiss") 
             end),
         },
+
+        onexit = function(inst)
+            inst.Physics:ClearMotorVelOverride()
+        end,
     },
 
     State{
@@ -190,6 +194,7 @@ local states =
             inst._light.SoundEmitter:KillSound("roll_dirt")
             inst.components.locomotor:Stop()
             inst.components.locomotor:EnableGroundSpeedMultiplier(true)
+            inst.Physics:ClearMotorVelOverride()
         end,
 
         timeline = {
@@ -324,6 +329,20 @@ local states =
                 inst.sg:GoToState("idle") end ),        
             },
         },
+
+    State{  
+			name = "ruinsrespawn",
+			tags = {"idle"},
+	        
+			onenter = function(inst)
+				inst.AnimState:PlayAnimation("spawn")
+			end,
+
+			events =
+			{
+				EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
+			},
+		},
 
 }
 

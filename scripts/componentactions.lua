@@ -32,6 +32,16 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+        channelable = function(inst, doer, actions, right)
+            if right and inst:HasTag("channelable") then
+                if not inst:HasTag("channeled") then
+                    table.insert(actions, ACTIONS.STARTCHANNELING)
+                elseif doer:HasTag("channeling") then
+                    table.insert(actions, ACTIONS.STOPCHANNELING)
+                end
+            end
+        end,
+
         combat = function(inst, doer, actions, right)
             if not right and
                 doer:CanDoAction(ACTIONS.ATTACK) and
@@ -95,8 +105,8 @@ local COMPONENT_ACTIONS =
         inspectable = function(inst, doer, actions)
             if inst ~= doer and
                 (doer.CanExamine == nil or doer:CanExamine()) and
-                (doer.sg == nil or (doer.sg:HasStateTag("idle") and not doer.sg:HasStateTag("moving"))) and
-                doer:HasTag("idle") and not doer:HasTag("moving") then
+                (doer.sg == nil or (doer.sg:HasStateTag("idle") and not doer.sg:HasStateTag("moving") or doer.sg:HasStateTag("channeling"))) and
+                (doer:HasTag("idle") and not doer:HasTag("moving") or doer:HasTag("channeling")) then
                 --Check state graph as well in case there is movement prediction
                 table.insert(actions, ACTIONS.LOOKAT)
             end
@@ -229,9 +239,13 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-        teleporter = function(inst, doer, actions)
+        teleporter = function(inst, doer, actions, right)
             if inst:HasTag("teleporter") then
-                table.insert(actions, ACTIONS.JUMPIN)
+                if not inst:HasTag("townportal") then
+                    table.insert(actions, ACTIONS.JUMPIN)
+                elseif right and not doer:HasTag("channeling") then
+                    table.insert(actions, ACTIONS.TELEPORT)
+                end
             end
         end,
 
@@ -636,7 +650,7 @@ local COMPONENT_ACTIONS =
             elseif not right and
                 doer.replica.combat ~= nil and
                 doer.replica.combat:CanTarget(target) and
-                (inst:HasTag("projectile") or not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding())) then
+                (inst:HasTag("projectile") or inst:HasTag("rangedweapon") or not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding())) then
                 if target.replica.combat == nil then
                     -- lighting or extinguishing fires
                     table.insert(actions, ACTIONS.ATTACK)
@@ -660,13 +674,13 @@ local COMPONENT_ACTIONS =
     POINT = --args: inst, doer, pos, actions, right
     {
         blinkstaff = function(inst, doer, pos, actions, right)
-            if right and TheWorld.Map:IsAboveGroundAtPoint(pos:Get()) then
+            if right and TheWorld.Map:IsAboveGroundAtPoint(pos:Get()) and not TheWorld.Map:IsPointNearHole(pos) then
                 table.insert(actions, ACTIONS.BLINK)
             end
         end,
 
-        complexprojectile = function(inst, doer, target, actions, right)
-            if right then
+        complexprojectile = function(inst, doer, pos, actions, right)
+            if right and not TheWorld.Map:IsPointNearHole(pos) then
                 table.insert(actions, ACTIONS.TOSS)
             end
         end,
@@ -685,7 +699,8 @@ local COMPONENT_ACTIONS =
 
         spellcaster = function(inst, doer, pos, actions, right)
             if right and inst:HasTag("castonpoint") and
-                TheWorld.Map:IsAboveGroundAtPoint(pos:Get()) then
+                TheWorld.Map:IsAboveGroundAtPoint(pos:Get()) and
+                not TheWorld.Map:IsPointNearHole(pos) then
                 table.insert(actions, ACTIONS.CASTSPELL)
             end
         end,
@@ -706,7 +721,10 @@ local COMPONENT_ACTIONS =
         end,
 
         complexprojectile = function(inst, doer, target, actions, right)
-            if right then
+            if right and
+                not (doer.components.playercontroller ~= nil and
+                    doer.components.playercontroller.isclientcontrollerattached) and
+                not TheWorld.Map:IsPointNearHole(target:GetPosition()) then
                 table.insert(actions, ACTIONS.TOSS)
             end
         end,
@@ -791,7 +809,7 @@ local COMPONENT_ACTIONS =
         weapon = function(inst, doer, target, actions, right)
             if not right
                 and doer.replica.combat ~= nil
-                and (inst:HasTag("projectile") or not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding())) then
+                and (inst:HasTag("projectile") or inst:HasTag("rangedweapon") or not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding())) then
                 if doer.replica.combat:CanExtinguishTarget(target, inst) or
                     doer.replica.combat:CanLightTarget(target, inst) then
                     table.insert(actions, ACTIONS.ATTACK)
@@ -986,6 +1004,12 @@ local COMPONENT_ACTIONS =
         teacher = function(inst, doer, actions)
             if doer.replica.builder ~= nil then
                 table.insert(actions, ACTIONS.TEACH)
+            end
+        end,
+
+        teleporter = function(inst, doer, actions)
+            if inst:HasTag("teleporter") and not doer:HasTag("channeling") then
+                table.insert(actions, ACTIONS.TELEPORT)
             end
         end,
 

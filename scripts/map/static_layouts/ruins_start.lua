@@ -89,7 +89,7 @@ return {
         },
         {
           name = "",
-          type = "chessjunk3",
+          type = "chessjunk_spawner",
           shape = "rectangle",
           x = 160,
           y = 48,
@@ -144,7 +144,7 @@ return {
         },
         {
           name = "",
-          type = "chessjunk2",
+          type = "chessjunk_spawner",
           shape = "rectangle",
           x = 496,
           y = 288,
@@ -155,7 +155,7 @@ return {
         },
         {
           name = "",
-          type = "chessjunk1",
+          type = "chessjunk_spawner",
           shape = "rectangle",
           x = 32,
           y = 480,

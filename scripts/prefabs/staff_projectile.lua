@@ -35,6 +35,7 @@ local function common(anim, bloom)
         inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
     end
 
+    --projectile (from projectile component) added to pristine state for optimization
     inst:AddTag("projectile")
 
     inst.entity:SetPristine()

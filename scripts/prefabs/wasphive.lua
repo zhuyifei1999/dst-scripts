@@ -36,9 +36,6 @@ local function onnear(inst, target)
     end
 end
 
---local function onfar()
---end
-
 local function onhitbyplayer(inst, attacker, damage)
     if inst.components.childspawner ~= nil then
         inst.components.childspawner:ReleaseAllChildren(attacker, "killerbee")
@@ -136,8 +133,6 @@ local function fn()
     inst.components.playerprox:SetDist(10, 13) --set specific values
     inst.components.playerprox:SetOnPlayerNear(onnear)
     inst.components.playerprox:SetPlayerAliveMode(inst.components.playerprox.AliveModes.AliveOnly)
-    inst.components.playerprox:Schedule()
-    --inst.components.playerprox:SetOnPlayerFar(onfar)
     -------------------------
     inst:AddComponent("combat")
     --wasp hive should trigger on proximity, release wasps.

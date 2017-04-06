@@ -1,9 +1,10 @@
 function MakePlacer(name, bank, build, anim, onground, snap, metersnap, scale, fixedcameraoffset, facing, postinit_fn)
-
     local function fn()
         local inst = CreateEntity()
 
-        inst:AddTag("FX")
+        inst:AddTag("CLASSIFIED")
+        inst:AddTag("NOCLICK")
+        inst:AddTag("placer")
         --[[Non-networked entity]]
         inst.entity:SetCanSleep(false)
         inst.persists = false
@@ -47,5 +48,6 @@ function MakePlacer(name, bank, build, anim, onground, snap, metersnap, scale, f
 
         return inst
     end
+
     return Prefab(name, fn)
 end

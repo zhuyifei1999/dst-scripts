@@ -46,12 +46,13 @@ local function common_fn(bank, build, anim, tag, isinventoryitem)
     else
         inst.entity:AddPhysics()
         inst.Physics:SetMass(1)
-        inst.Physics:SetCapsule(0.2, 0.2)
         inst.Physics:SetFriction(0)
         inst.Physics:SetDamping(0)
         inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)
         inst.Physics:ClearCollisionMask()
         inst.Physics:CollidesWith(COLLISION.WORLD)
+        inst.Physics:SetCapsule(0.2, 0.2)
+        inst.Physics:SetDontRemoveOnSleep(true) -- so the object can land and put out the fire, also an optimization due to how this moves through the world
     end
 
     if tag ~= nil then
@@ -131,16 +132,16 @@ end
 local function ReticuleTargetFn()
     local player = ThePlayer
     local ground = TheWorld.Map
-    local x, y, z
+    local pos = Vector3()
     --Attack range is 8, leave room for error
     --Min range was chosen to not hit yourself (2 is the hit range)
     for r = 6.5, 3.5, -.25 do
-        x, y, z = player.entity:LocalToWorldSpace(r, 0, 0)
-        if ground:IsPassableAtPoint(x, y, z) then
-            return Vector3(x, y, z)
+        pos.x, pos.y, pos.z = player.entity:LocalToWorldSpace(r, 0, 0)
+        if ground:IsPassableAtPoint(pos:Get()) and not ground:IsPointNearHole(pos) then
+            return pos
         end
     end
-    return Vector3(x, y, z)
+    return pos
 end
 
 local function waterballoon_fn()

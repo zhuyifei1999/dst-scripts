@@ -14,10 +14,9 @@ local function OnDoneTeleporting(inst, obj)
         inst.closetask:Cancel()
     end
     inst.closetask = inst:DoTaskInTime(1.5, function()
-        if inst.components.teleporter.numteleporting == 0 then
-            if not inst.components.playerprox:IsPlayerClose() then
-                inst.sg:GoToState("closing")
-            end
+        if not (inst.components.teleporter:IsBusy() or
+                inst.components.playerprox:IsPlayerClose()) then
+            inst.sg:GoToState("closing")
         end
     end)
 
@@ -55,13 +54,13 @@ local function OnActivateByOther(inst, source, doer)
 end
 
 local function onnear(inst)
-    if inst.components.teleporter.targetTeleporter ~= nil and not inst.sg:HasStateTag("open") then
+    if inst.components.teleporter:IsActive() and not inst.sg:HasStateTag("open") then
         inst.sg:GoToState("opening")
     end
 end
 
 local function onfar(inst)
-    if inst.components.teleporter.numteleporting == 0 and inst.sg:HasStateTag("open") then
+    if not inst.components.teleporter:IsBusy() and inst.sg:HasStateTag("open") then
         inst.sg:GoToState("closing")
     end
 end
@@ -86,8 +85,8 @@ local function fn()
     inst.entity:AddNetwork()
 
     inst.entity:AddPhysics() -- no collision, this is just for buffered actions
-    inst.Physics:SetSphere(1)
     inst.Physics:ClearCollisionMask()
+    inst.Physics:SetSphere(1)
 
     inst.MiniMapEntity:SetIcon("wormhole.png")
 
@@ -100,6 +99,8 @@ local function fn()
     --trader, alltrader (from trader component) added to pristine state for optimization
     inst:AddTag("trader")
     inst:AddTag("alltrader")
+
+    inst:AddTag("antlion_sinkhole_blocker")
 
     inst.entity:SetPristine()
 
@@ -117,8 +118,6 @@ local function fn()
     inst.components.playerprox:SetDist(4, 5)
     inst.components.playerprox.onnear = onnear
     inst.components.playerprox.onfar = onfar
-
-    inst.teleporting = nil
 
     inst:AddComponent("teleporter")
     inst.components.teleporter.onActivate = OnActivate

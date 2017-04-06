@@ -14,6 +14,7 @@ local prefabs =
     "honey",
     "stinger",
     "hivehat",
+    "bundlewrap_blueprint",
 }
 
 SetSharedLootTable('beequeen',
@@ -33,6 +34,7 @@ SetSharedLootTable('beequeen',
     {'honey',            0.50},
     {'stinger',          1.00},
     {'hivehat',          1.00},
+    {'bundlewrap_blueprint', 1.00},
 })
 
 --------------------------------------------------------------------------
@@ -210,6 +212,37 @@ end
 
 --------------------------------------------------------------------------
 
+local DEFAULT_COMMANDER_RANGE = 40
+local BOOSTED_COMMANDER_RANGE = 80
+
+local function UpdateCommanderRange(inst)
+    local range = inst.components.commander.trackingdist - 4
+    if range > DEFAULT_COMMANDER_RANGE then
+        inst.components.commander:SetTrackingDistance(range)
+    else
+        inst.components.commander:SetTrackingDistance(DEFAULT_COMMANDER_RANGE)
+        inst.commandertask:Cancel()
+        inst.commandertask = nil
+    end
+end
+
+local function BoostCommanderRange(inst, boost)
+    inst.commanderboost = boost
+    if boost then
+        if inst.commandertask ~= nil then
+            inst.commandertask:Cancel()
+            inst.commandertask = nil
+        end
+        inst.components.commander:SetTrackingDistance(BOOSTED_COMMANDER_RANGE)
+    elseif inst.components.commander.trackingdist > DEFAULT_COMMANDER_RANGE
+        and inst.commandertask == nil
+        and not inst:IsAsleep() then
+        inst.commandertask = inst:DoPeriodicTask(1, UpdateCommanderRange)
+    end
+end
+
+--------------------------------------------------------------------------
+
 local PHASE2_HEALTH = .75
 local PHASE3_HEALTH = .5
 local PHASE4_HEALTH = .25
@@ -236,6 +269,10 @@ local function EnterPhase4Trigger(inst)
     inst:PushEvent("screech")
 end
 
+local function OnSave(inst, data)
+    data.boost = inst.components.commander.trackingdist > DEFAULT_COMMANDER_RANGE and math.ceil(inst.components.commander.trackingdist) or nil
+end
+
 local function OnLoad(inst, data)
     local healthpct = inst.components.health:GetPercent()
     SetPhaseLevel(
@@ -245,6 +282,15 @@ local function OnLoad(inst, data)
         (healthpct > PHASE4_HEALTH and 3) or
         4
     )
+
+    if data ~= nil and
+        data.boost ~= nil and
+        data.boost > inst.components.commander.trackingdist then
+        inst.components.commander:SetTrackingDistance(data.boost)
+        if not (inst.commanderboost or inst:IsAsleep()) then
+            BoostCommanderRange(inst, false)
+        end
+    end
 end
 
 --------------------------------------------------------------------------
@@ -264,6 +310,11 @@ local function OnEntitySleep(inst)
         inst._sleeptask:Cancel()
     end
     inst._sleeptask = not inst.components.health:IsDead() and inst:DoTaskInTime(10, inst.Remove) or nil
+
+    if inst.commandertask ~= nil then
+        inst.commandertask:Cancel()
+        inst.commandertask = nil
+    end
 end
 
 local function OnEntityWake(inst)
@@ -271,6 +322,8 @@ local function OnEntityWake(inst)
         inst._sleeptask:Cancel()
         inst._sleeptask = nil
     end
+
+    BoostCommanderRange(inst, inst.commanderboost)
 end
 
 --------------------------------------------------------------------------
@@ -372,7 +425,7 @@ local function fn()
 
     inst:AddComponent("grouptargeter")
     inst:AddComponent("commander")
-    inst.components.commander:SetTrackingDistance(40)
+    inst.components.commander:SetTrackingDistance(DEFAULT_COMMANDER_RANGE)
 
     inst:AddComponent("timer")
 
@@ -394,6 +447,11 @@ local function fn()
     inst.spawnguards_chain = 0
     SetPhaseLevel(inst, 1)
 
+    inst.BoostCommanderRange = BoostCommanderRange
+    inst.commanderboost = false
+    inst.commandertask = nil
+
+    inst.OnSave = OnSave
     inst.OnLoad = OnLoad
     inst.OnEntitySleep = OnEntitySleep
     inst.OnEntityWake = OnEntityWake

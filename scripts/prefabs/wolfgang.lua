@@ -53,7 +53,7 @@ local function applymightiness(inst)
     inst.components.health:SetMaxHealth(health_max)
     inst.components.health:SetPercent(health_percent, true)
 
-    if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
+    if inst.components.rider:IsRiding() then
         OnMounted(inst)
     end
 end

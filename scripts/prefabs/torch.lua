@@ -23,9 +23,7 @@ local function onequip(inst, owner)
     owner.AnimState:Show("ARM_carry")
     owner.AnimState:Hide("ARM_normal")
 
-    inst.SoundEmitter:PlaySound("dontstarve/wilson/torch_LP", "torch")
-    inst.SoundEmitter:PlaySound("dontstarve/wilson/torch_swing")
-    inst.SoundEmitter:SetParameter("torch", "intensity", 1)
+    owner.SoundEmitter:PlaySound("dontstarve/wilson/torch_swing")
 
     if inst.fires == nil then
         inst.fires = {}
@@ -52,13 +50,12 @@ local function onunequip(inst, owner)
             fx:Remove()
         end
         inst.fires = nil
-        inst.SoundEmitter:PlaySound("dontstarve/common/fireOut")
+        owner.SoundEmitter:PlaySound("dontstarve/common/fireOut")
     end
 
     inst.components.burnable:Extinguish()
     owner.AnimState:Hide("ARM_carry") 
     owner.AnimState:Show("ARM_normal")
-    inst.SoundEmitter:KillSound("torch")
 end
 
 local function onpocket(inst, owner)

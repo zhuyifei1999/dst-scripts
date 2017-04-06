@@ -511,14 +511,14 @@ function Combat:GetImpactSound(target, weapon)
             (target:HasTag("tree") and "tree_") or
             (target:HasTag("veggie") and "vegetable_") or
             (target:HasTag("shell") and "shell_") or
-            (target:HasTag("rocky") and "stone_") or
+            ((target:HasTag("rocky") or target:HasTag("fossil")) and "stone_") or
             nil
         return
             hitsound..(
                 tgttype or "flesh_"
             )..(
                 ((target:HasTag("smallcreature") or target:HasTag("small")) and "sml_") or
-                ((target:HasTag("largecreature") or (target:HasTag("epic") and not target:HasTag("shadowchesspiece")) or target:HasTag("large")) and "lrg_") or
+                ((target:HasTag("largecreature") or target:HasTag("epic") or target:HasTag("large")) and not (target:HasTag("shadowchesspiece") or target:HasTag("fossil")) and "lrg_") or
                 (tgttype == nil and target:GetIsWet() and "wet_") or
                 "med_"
             )..weaponmod
@@ -606,9 +606,10 @@ function Combat:GetWeapon()
         local item = self.inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
         return item ~= nil
             and item.components.weapon ~= nil
-            and (item:HasTag("projectile") or
+            and (item.components.projectile ~= nil or
                 not (self.inst.components.rider ~= nil and
-                    self.inst.components.rider:IsRiding()))
+                    self.inst.components.rider:IsRiding()) or
+                item:HasTag("rangedweapon"))
             and item
             or nil
     end

@@ -1,5 +1,6 @@
 local NOTAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO", "burnt", "player", "monster" }
 local EMERGENCYTAGS = { "structure", "wall", "tree", "pickable", "witherable", "readyforharvest", "notreadyforharvest" }
+local NONEMERGENCYTAGS = {"witherable", "fire", "smolder"}
 local TURN_ON_DELAY = 13 * FRAMES
 
 local function onemergency(self, emergency)
@@ -117,7 +118,7 @@ local function CheckTargetScore(target)
         return 0
     elseif target.components.burnable ~= nil then
         if target.components.burnable:IsBurning() then
-            return 10 --Burning
+            return 10, true --Burning, highest priority so no need to keep testing others
         elseif target.components.burnable:IsSmoldering() then
             return 9 --Smoldering
         end
@@ -136,19 +137,22 @@ local function LookForFiresAndFirestarters(inst, self, force)
     if not force and inst.sg ~= nil and inst.sg:HasStateTag("busy") then
         return
     end
-    local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, self.range, nil, NOTAGS)
-    local target = nil
-    local targetscore = 0
-    for i, v in ipairs(ents) do
-        if not self.detectedItems[v] then
-            local score = CheckTargetScore(v)
-            if score > targetscore then
-                targetscore = score
+	local x, y, z = inst.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x, y, z, self.range, nil, NOTAGS, NONEMERGENCYTAGS)
+	local target = nil
+	local targetscore = 0
+	for i, v in ipairs(ents) do
+		if not self.detectedItems[v] then
+            local score, force = CheckTargetScore(v)
+            if force then
                 target = v
-            end
-        end
-    end
+                break
+            elseif score > targetscore then
+				targetscore = score
+				target = v
+			end
+		end
+	end
     if target ~= nil then
         RegisterDetectedItem(inst, self, target)
         if self.onfindfire ~= nil then

@@ -116,12 +116,11 @@ local function pickup(inst, owner)
             owner.components.inventory:CanAcceptCount(v, 1) > 0 then
 
             --Amulet will only ever pick up items one at a time. Even from stacks.
-            local fx = SpawnPrefab("small_puff")
-            fx.Transform:SetPosition(v.Transform:GetWorldPosition())
-            fx.Transform:SetScale(.5, .5, .5)
+            SpawnPrefab("sand_puff").Transform:SetPosition(v.Transform:GetWorldPosition())
 
             inst.components.finiteuses:Use(1)
 
+            local v_pos = v:GetPosition()
             if v.components.stackable ~= nil then
                 v = v.components.stackable:Get()
             end
@@ -129,7 +128,7 @@ local function pickup(inst, owner)
             if v.components.trap ~= nil and v.components.trap:IsSprung() then
                 v.components.trap:Harvest(owner)
             else
-                owner.components.inventory:GiveItem(v)
+                owner.components.inventory:GiveItem(v, nil, v_pos)
             end
             return
         end
@@ -302,6 +301,7 @@ local function blue()
     inst.components.fueled.fueltype = FUELTYPE.MAGIC
     inst.components.fueled:InitializeFuelLevel(TUNING.BLUEAMULET_FUEL)
     inst.components.fueled:SetDepletedFn(inst.Remove)
+    inst.components.fueled:SetFirstPeriod(TUNING.TURNON_FUELED_CONSUMPTION, TUNING.TURNON_FULL_FUELED_CONSUMPTION)
 
     MakeHauntableLaunch(inst)
     AddHauntableCustomReaction(inst, OnHauntBlue, true, nil, true)
@@ -320,11 +320,12 @@ local function purple()
     inst.components.fueled.fueltype = FUELTYPE.MAGIC
     inst.components.fueled:InitializeFuelLevel(TUNING.PURPLEAMULET_FUEL)
     inst.components.fueled:SetDepletedFn(inst.Remove)
+    inst.components.fueled:SetFirstPeriod(TUNING.TURNON_FUELED_CONSUMPTION, TUNING.TURNON_FULL_FUELED_CONSUMPTION)
 
     inst.components.equippable:SetOnEquip(onequip_purple)
     inst.components.equippable:SetOnUnequip(onunequip_purple)
 
-    inst.components.equippable.dapperness = -TUNING.DAPPERNESS_MED    
+    inst.components.equippable.dapperness = -TUNING.DAPPERNESS_MED
 
     MakeHauntableLaunch(inst)
 
@@ -390,6 +391,7 @@ local function yellow()
     inst.components.fueled.fueltype = FUELTYPE.NIGHTMARE
     inst.components.fueled:InitializeFuelLevel(TUNING.YELLOWAMULET_FUEL)
     inst.components.fueled:SetDepletedFn(inst.Remove)
+    inst.components.fueled:SetFirstPeriod(TUNING.TURNON_FUELED_CONSUMPTION, TUNING.TURNON_FULL_FUELED_CONSUMPTION)
     inst.components.fueled.accepting = true
 
     MakeHauntableLaunch(inst)
@@ -428,7 +430,7 @@ end
 return Prefab("amulet", red, assets),
     Prefab("blueamulet", blue, assets),
     Prefab("purpleamulet", purple, assets),
-    Prefab("orangeamulet", orange, assets),
+    Prefab("orangeamulet", orange, assets, {"sand_puff"}),
     Prefab("greenamulet", green, assets),
     Prefab("yellowamulet", yellow, assets, { "yellowamuletlight" }),
     Prefab("yellowamuletlight", yellowlightfn)

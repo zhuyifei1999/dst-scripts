@@ -53,7 +53,10 @@ local function common(anim, tags, removephysicscolliders)
 
     inst:AddTag("blowdart")
     inst:AddTag("sharp")
+
+    --projectile (from projectile component) added to pristine state for optimization
     inst:AddTag("projectile")
+
     if tags ~= nil then
         for i, v in ipairs(tags) do
             inst:AddTag(v)

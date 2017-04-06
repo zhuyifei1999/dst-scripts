@@ -7,28 +7,28 @@ MOD_API_VERSION = 10
 
 -----------------------------------------------------------------------------------------------
 -- Last Release ID added is the current
+-- This is to allow modders to cleanly support features/prefabs that are currently in beta, without crashing when running on the live branch. 
+-- When the release id goes to the live branch, no changes will need to be made to the mod.
+-- Test 'if CurrentRelease.GreaterOrEqualTo("R##_ANR_XXX") then' to see if a feature supported on the branch the player currently running.
 AddModReleaseID( "R01_ANR_PART1" )
 AddModReleaseID( "R02_ANR_WARTSANDALL" )
 AddModReleaseID( "R03_ANR_ARTSANDCRAFTS" )
 AddModReleaseID( "R04_ANR_CUTEFUZZYANIMALS" )
 AddModReleaseID( "R05_ANR_HERDMENTALITY" )
-
-if BRANCH == "staging" then
-	--AddModReleaseID( "R05_ANR_HERDMENTALITY" )
-end
+AddModReleaseID( "R06_ANR_AGAINSTTHEGRAIN" )
+AddModReleaseID( "R07_ANR_HEARTOFTHERUINS" )
 
 -----------------------------------------------------------------------------------------------
 
 MOD_AVATAR_LOCATIONS = { Default = "images/avatars/" }
 --Add your avatar atlas locations for each prefab if you don't want to use the default mod avatar location
 
-
 function AreServerModsEnabled()
 	if ModManager == nil then
 		print("AreServerModsEnabled returning false because ModManager hasn't been created yet.")
 		return false
 	end
-	
+
 	local enabled_server_mod_names = ModManager:GetEnabledServerModNames()
 	return (#enabled_server_mod_names > 0)
 end
@@ -38,35 +38,35 @@ function AreAnyModsEnabled()
 		print("AreAnyModsEnabled returning false because ModManager hasn't been created yet.")
 		return false
 	end
-	
+
 	local enabled_mod_names = ModManager:GetEnabledModNames()
 	return (#enabled_mod_names > 0)
 end
 
 function GetEnabledModNamesDetailed() --just used for callstack reporting
 	local name_details = {}
-	
+
 	for k,mod_name in pairs(ModManager:GetEnabledModNames()) do
 		local modinfo = KnownModIndex:GetModInfo(mod_name)
 		if modinfo ~= nil then
 			local mod_details = mod_name
-			
+
 			if modinfo.name ~= nil then
-				mod_details = mod_details .. ":" .. modinfo.name 
+				mod_details = mod_details .. ":" .. modinfo.name
 			end
-			
+
 			if modinfo.version ~= nil then
-				mod_details = mod_details .. " version: " .. modinfo.version 
+				mod_details = mod_details .. " version: " .. modinfo.version
 			end
-			
+
 			if modinfo.api_version ~= nil then
-				mod_details = mod_details .. " api_version: " .. modinfo.api_version 
+				mod_details = mod_details .. " api_version: " .. modinfo.api_version
 			end
-		 
+
 			table.insert(name_details, mod_details)
 		end
-	end		
-		
+	end
+
 	return name_details
 end
 

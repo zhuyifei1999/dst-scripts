@@ -774,7 +774,8 @@ function Story:AddBGNodes(min_count, max_count)
 												terrain_contents = new_room.contents,
 												terrain_contents_extra = extra_contents,
 												terrain_filter = self.terrain.filter,
-												entrance = new_room.entrance
+												entrance = new_room.entrance,
+												required_prefabs = new_room.required_prefabs
 											  }										
 										})
 
@@ -807,6 +808,7 @@ function Story:AddBGNodes(min_count, max_count)
 													terrain_contents_extra = extra_contents,
 													terrain_filter = self.terrain.filter,
 													blocker_blank = true,
+													required_prefabs = new_room.required_prefabs
 												  }										
 										})
 
@@ -949,7 +951,7 @@ function Story:GenerateNodesFromTask(task, crossLinkFactor)
 	end
 
 
-	local task_node = Graph(task.id, {parent=self.rootNode, default_bg=task.room_bg, colour = task.colour, background=task.background_room, set_pieces=task.set_pieces, random_set_pieces=task.random_set_pieces, maze_tiles=task.maze_tiles, room_tags=task.room_tags})
+	local task_node = Graph(task.id, {parent=self.rootNode, default_bg=task.room_bg, colour = task.colour, background=task.background_room, set_pieces=task.set_pieces, random_set_pieces=task.random_set_pieces, maze_tiles=task.maze_tiles, room_tags=task.room_tags, required_prefabs=task.required_prefabs})
 	task_node.substitutes = task.substitutes
 	--print ("Adding Voronoi Child", self.rootNode.id, task.id, task.backround_room, task.room_bg, task.colour.r, task.colour.g, task.colour.b, task.colour.a )
 
@@ -985,7 +987,8 @@ function Story:GenerateNodesFromTask(task, crossLinkFactor)
 												terrain_contents = next_room.contents,
 												terrain_contents_extra = extra_contents,
 												terrain_filter = self.terrain.filter,
-												entrance = next_room.entrance
+												entrance = next_room.entrance,
+												required_prefabs = next_room.required_prefabs
 											  }										
 									})
 		

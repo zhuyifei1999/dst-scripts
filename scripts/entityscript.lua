@@ -627,6 +627,27 @@ function EntityScript:SetPrefabNameOverride(nameoverride)
     self.nameoverride = nameoverride
 end
 
+function EntityScript:SetDeployExtraSpacing(spacing)
+    --Extra spacing required when deploying other entities near this one.
+    self.deploy_extra_spacing = spacing
+    if spacing ~= nil then
+        --see components/map.lua
+        TheWorld.Map:RegisterDeployExtraSpacing(spacing)
+    end
+end
+
+function EntityScript:SetTerraformExtraSpacing(spacing)
+    --Extra spacing around entity that connot be terraformed.
+    self.terraform_extra_spacing = spacing
+    if spacing ~= nil then
+        self:AddTag("terraformblocker")
+        --see components/map.lua
+        TheWorld.Map:RegisterTerraformExtraSpacing(spacing)
+    else
+        self:RemoveTag("terraformblocker")
+    end
+end
+
 function EntityScript:SpawnChild(name)
     if self.prefabs then
         assert(self.prefabs, "no prefabs registered for this entity ".. name)
@@ -1415,7 +1436,7 @@ end
 
 function EntityScript:PutBackOnGround()
     if not self:IsOnValidGround() then
-        local dest = FindNearbyLand(self:GetPosition())
+        local dest = FindNearbyLand(self:GetPosition(), 8)
         if dest ~= nil then
             if self.Physics ~= nil then
                 self.Physics:Teleport(dest:Get())

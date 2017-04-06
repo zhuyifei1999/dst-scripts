@@ -356,6 +356,7 @@ local function fn()
     inst.MiniMapEntity:SetIcon("resurrection_stone.png")
 
     inst:AddTag("resurrector")
+    inst:AddTag("antlion_sinkhole_blocker")
 
     inst._touchstoneid = net_smallbyte(inst.GUID, "resurrectionstone._touchstoneid")
     inst._enablelights = net_bool(inst.GUID, "resurrectionstone._enablelights", "enablelightsdirty")

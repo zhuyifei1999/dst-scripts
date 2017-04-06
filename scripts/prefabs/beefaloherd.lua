@@ -65,9 +65,7 @@ local function OnSpawned(inst, newent)
     end
     local parent = SpawnableParent(inst)
     if parent ~= nil then
-        newent:DoTaskInTime(0, function()
-            newent.Transform:SetPosition(parent.Transform:GetWorldPosition())
-        end)
+        newent.Transform:SetPosition(parent.Transform:GetWorldPosition())
     end
 end
 

@@ -1,56 +1,13 @@
+local GroundTiles = require("worldtiledefs")
+
 local Terraformer = Class(function(self, inst)
     self.inst = inst
 end)
 
-local GROUND_TURFS =
-{
-    [GROUND.ROCKY]      = "turf_rocky",
-    [GROUND.ROAD]       = "turf_road",
-    [GROUND.DIRT]       = "turf_dirt",
-    [GROUND.SAVANNA]    = "turf_savanna",
-    [GROUND.GRASS]      = "turf_grass",
-    [GROUND.FOREST]     = "turf_forest",
-    [GROUND.MARSH]      = "turf_marsh",
-    [GROUND.WOODFLOOR]  = "turf_woodfloor",
-    [GROUND.CARPET]     = "turf_carpetfloor",
-    [GROUND.CHECKER]    = "turf_checkerfloor",
-
-    [GROUND.CAVE]       = "turf_cave",
-    [GROUND.FUNGUS]     = "turf_fungus",
-    [GROUND.FUNGUSRED]  = "turf_fungus_red",
-    [GROUND.FUNGUSGREEN]= "turf_fungus_green",
-
-    [GROUND.SINKHOLE]   = "turf_sinkhole",
-    [GROUND.UNDERROCK]  = "turf_underrock",
-    [GROUND.MUD]        = "turf_mud",
-
-    [GROUND.DESERT_DIRT]= "turf_desertdirt",
-    [GROUND.DECIDUOUS]  = "turf_deciduous",
-
-    [GROUND.SCALE]      = "turf_dragonfly",
-
-    webbing             = "turf_webbing",
-}
-
-local function SpawnTurf(turf, pt)
-    if turf ~= nil then
-        local loot = SpawnPrefab(turf)
-        if loot.components.inventoryitem ~= nil then
-            loot.components.inventoryitem:InheritMoisture(TheWorld.state.wetness, TheWorld.state.iswet)
-        end
-        loot.Transform:SetPosition(pt:Get())
-        if loot.Physics ~= nil then
-            local angle = math.random() * 2 * PI
-            loot.Physics:SetVel(2 * math.cos(angle), 10, 2 * math.sin(angle))
-        end
-    end
-end
-
-function Terraformer:Terraform(pt)
+function Terraformer:Terraform(pt, spawnturf)
     local world = TheWorld
     local map = world.Map
-
-    if not map:CanTerraformAtPoint(pt:Get()) then
+    if not world.Map:CanTerraformAtPoint(pt:Get()) then
         return false
     end
 
@@ -61,11 +18,24 @@ function Terraformer:Terraform(pt)
     map:RebuildLayer(original_tile_type, x, y)
     map:RebuildLayer(GROUND.DIRT, x, y)
 
-    local minimap = world.minimap.MiniMap
-    minimap:RebuildLayer(original_tile_type, x, y)
-    minimap:RebuildLayer(GROUND.DIRT, x, y)
+    world.minimap.MiniMap:RebuildLayer(original_tile_type, x, y)
+    world.minimap.MiniMap:RebuildLayer(GROUND.DIRT, x, y)
 
-    SpawnTurf(GROUND_TURFS[original_tile_type], pt)
+    spawnturf = spawnturf and GroundTiles.turf[original_tile_type] or nil
+    if spawnturf ~= nil then
+        local loot = SpawnPrefab("turf_"..spawnturf.name)
+        if loot.components.inventoryitem ~= nil then
+            loot.components.inventoryitem:InheritMoisture(world.state.wetness, world.state.iswet)
+        end
+        loot.Transform:SetPosition(pt:Get())
+        if loot.Physics ~= nil then
+            local angle = math.random() * 2 * PI
+            loot.Physics:SetVel(2 * math.cos(angle), 10, 2 * math.sin(angle))
+        end
+    else
+        SpawnPrefab("sinkhole_spawn_fx_"..tostring(math.random(3))).Transform:SetPosition(pt:Get())
+    end
+
     return true
 end
 

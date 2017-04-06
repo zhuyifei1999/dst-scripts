@@ -476,26 +476,26 @@ local function MakeHat(name)
                 inst._light.entity:SetParent(owner.entity)
             end
             inst.components.fueled:StartConsuming()
-            inst.SoundEmitter:PlaySound("dontstarve/common/minerhatAddFuel")
+            local soundemitter = owner ~= nil and owner.SoundEmitter or inst.SoundEmitter
+            soundemitter:PlaySound("dontstarve/common/minerhatAddFuel")
         elseif owner ~= nil then
             onequip(inst, owner, "hat_miner_off")
         end
     end
 
     local function miner_turnoff(inst)
-        if inst.components.equippable ~= nil and inst.components.equippable:IsEquipped() then
-            local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner or nil
-            if owner ~= nil then
-                onequip(inst, owner, "hat_miner_off")
-            end
+        local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner or nil
+        if owner ~= nil and inst.components.equippable ~= nil and inst.components.equippable:IsEquipped() then
+            onequip(inst, owner, "hat_miner_off")
         end
         inst.components.fueled:StopConsuming()
-        inst.SoundEmitter:PlaySound("dontstarve/common/minerhatOut")
         if inst._light ~= nil then
             if inst._light:IsValid() then
                 inst._light:Remove()
             end
             inst._light = nil
+            local soundemitter = owner ~= nil and owner.SoundEmitter or inst.SoundEmitter
+            soundemitter:PlaySound("dontstarve/common/minerhatOut")
         end
     end
 
@@ -1150,7 +1150,7 @@ local function MakeHat(name)
         inst:AddComponent("periodicspawner")
         inst.components.periodicspawner:SetPrefab(spore_prefab)
         inst.components.periodicspawner:SetRandomTimes(TUNING.MUSHROOMHAT_SPORE_TIME, 1, true)
-        --inst.components.periodicspawner:SetOnSpawnFn(onspawnfn) -- maybe we should add a spaw animation to the hat?
+        --inst.components.periodicspawner:SetOnSpawnFn(onspawnfn) -- maybe we should add a spawn animation to the hat?
 
         inst:AddComponent("insulator")
         inst.components.insulator:SetSummer()
@@ -1339,6 +1339,53 @@ local function MakeHat(name)
         return inst
     end
 
+    local function desert_custom_init(inst)
+        --waterproofer (from waterproofer component) added to pristine state for optimization
+        inst:AddTag("waterproofer")
+
+        inst:AddTag("goggles")
+    end
+
+    local function desert()
+        local inst = simple(desert_custom_init)
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst.components.equippable.dapperness = TUNING.DAPPERNESS_MED
+
+        inst:AddComponent("fueled")
+        inst.components.fueled.fueltype = FUELTYPE.USAGE
+        inst.components.fueled:InitializeFuelLevel(TUNING.GOGGLES_PERISHTIME)
+        inst.components.fueled:SetDepletedFn(--[[generic_perish]]inst.Remove)
+
+        inst:AddComponent("waterproofer")
+        inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
+
+        return inst
+    end
+
+    --NOTE: goggleshat do NOT provide "goggles" tag benefits because you do not
+    --      actually wear them over your eyes, and they're just for style -_ -"
+    local function goggles()
+        local inst = simple()
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst.components.equippable.dapperness = TUNING.DAPPERNESS_MED
+        inst.components.equippable:SetOnEquip(opentop_onequip)
+
+        inst:AddComponent("fueled")
+        inst.components.fueled.fueltype = FUELTYPE.USAGE
+        inst.components.fueled:InitializeFuelLevel(TUNING.GOGGLES_PERISHTIME)
+        inst.components.fueled:SetDepletedFn(--[[generic_perish]]inst.Remove)
+
+        return inst
+    end
+
     local fn = nil
     local assets = { Asset("ANIM", "anim/"..fname..".zip") }
     local prefabs = nil
@@ -1404,6 +1451,10 @@ local function MakeHat(name)
         fn = dragon
     elseif name == "dragontail" then
         fn = dragon
+    elseif name == "desert" then
+        fn = desert
+    elseif name == "goggles" then
+        fn = goggles
     end
 
     return Prefab(prefabname, fn or default, assets, prefabs)
@@ -1463,4 +1514,6 @@ return  MakeHat("straw"),
         MakeHat("dragonhead"),
         MakeHat("dragonbody"),
         MakeHat("dragontail"),
+        MakeHat("desert"),
+        MakeHat("goggles"),
         Prefab("minerhatlight", minerhatlightfn)

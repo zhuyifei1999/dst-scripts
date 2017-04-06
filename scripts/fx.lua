@@ -1,3 +1,11 @@
+local function FinalOffset1(inst)
+    inst.AnimState:SetFinalOffset(1)
+end
+
+local function FinalOffset2(inst)
+    inst.AnimState:SetFinalOffset(2)
+end
+
 local fx =
 {
     {
@@ -39,7 +47,7 @@ local fx =
         bank = "splash",
         build = "splash",
         anim = "splash",
-        fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
+        fn = FinalOffset1,
     },
     {
         name = "frogsplash",
@@ -47,7 +55,7 @@ local fx =
         build = "splash",
         anim = "splash",
         sound = "dontstarve/frog/splash",
-        fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
+        fn = FinalOffset1,
     },
     {
         name = "waterballoon_splash",
@@ -91,6 +99,35 @@ local fx =
         build = "smoke_puff_small",
         anim = "puff",
         sound = "dontstarve/common/deathpoof",
+    },
+    {
+        name = "sand_puff",
+        bank = "sand_puff",
+        build = "sand_puff",
+        anim = "forage_out",
+        sound = "dontstarve/common/deathpoof",
+    },
+    {
+        name = "sand_puff_large_front",
+        bank = "sand_puff",
+        build = "sand_puff",
+        anim = "forage_out",
+        sound = "dontstarve/common/deathpoof",
+        transform = Vector3(1.5, 1.5, 1.5),
+        fn = function(inst)
+            inst.AnimState:SetFinalOffset(2)
+            inst.AnimState:Hide("back")
+        end,
+    },
+    {
+        name = "sand_puff_large_back",
+        bank = "sand_puff",
+        build = "sand_puff",
+        anim = "forage_out",
+        transform = Vector3(1.5, 1.5, 1.5),
+        fn = function(inst)
+            inst.AnimState:Hide("front")
+        end,
     },
     {
         name = "splash_ocean",
@@ -249,6 +286,24 @@ local fx =
         tintalpha = 0.6,
     },
     {
+        name = "slurper_respawn",
+        bank = "die_fx",
+        build = "die",
+        anim = "small",
+        sound = "dontstarve/common/deathpoof",
+        tint = Vector3(0, 0, 0),
+        tintalpha = 1.0,
+    },
+    {
+        name = "pandorachest_reset",
+        bank = "attune_fx",
+        build = "attune_fx",
+        anim = "attune_in",
+        --sound = "dontstarve/maxwell/shadowmax_despawn",
+        tint = Vector3(0, 0, 0),
+        tintalpha = 0.6,
+    },
+    {
         name = "shadow_despawn",
         bank = "statue_ruins_fx",
         build = "statue_ruins_fx",
@@ -286,7 +341,7 @@ local fx =
         build = "emote_fx",
         anim = "emote_fx",
         autorotate = true,
-        fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
+        fn = FinalOffset1,
     },
     {
         name = "tears",
@@ -294,7 +349,7 @@ local fx =
         build = "tears",
         anim = "tears_fx",
         autorotate = true,
-        fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
+        fn = FinalOffset1,
     },
     {
         name = "spawn_fx_tiny",
@@ -379,7 +434,7 @@ local fx =
         anim = "shock",
         sound = "dontstarve_DLC001/common/shocked",
         autorotate = true,
-        fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
+        fn = FinalOffset1,
     },
     {
         name = "groundpound_fx",
@@ -519,7 +574,7 @@ local fx =
         anim = "anim",
         sound = "dontstarve/common/deathpoof",
         transform = Vector3(1.4, 1.4, 1.4),
-        fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
+        fn = FinalOffset1,
     },
     {
         name = "honey_splash",
@@ -528,7 +583,7 @@ local fx =
         anim = "anim",
         nofaced = true,
         transform = Vector3(1.4, 1.4, 1.4),
-        fn = function(inst) inst.AnimState:SetFinalOffset(1) end,
+        fn = FinalOffset1,
     },
     {
         name = "bundle_unwrap",
@@ -548,6 +603,92 @@ local fx =
         build = "redpouch",
         anim = "unwrap",
     },
+    {
+        name = "wetpouch_unwrap",
+        bank = "wetpouch",
+        build = "wetpouch",
+        anim = "unwrap",
+    },
+    {
+        name = "sinkhole_spawn_fx_1",
+        bank = "sinkhole_spawn_fx",
+        build = "sinkhole_spawn_fx",
+        anim = "idle1",
+    },
+    {
+        name = "sinkhole_spawn_fx_2",
+        bank = "sinkhole_spawn_fx",
+        build = "sinkhole_spawn_fx",
+        anim = "idle2",
+    },
+    {
+        name = "sinkhole_spawn_fx_3",
+        bank = "sinkhole_spawn_fx",
+        build = "sinkhole_spawn_fx",
+        anim = "idle3",
+    },
+    {
+        name = "sinkhole_warn_fx_1",
+        bank = "sinkhole_spawn_fx",
+        build = "sinkhole_spawn_fx",
+        anim = "idle1",
+        transform = Vector3(0.75, 0.75, 0.75),
+        fn = function(inst) inst.entity:AddSoundEmitter():PlaySoundWithParams("dontstarve/creatures/together/antlion/sfx/ground_break", { size = 0.01 }) end,
+    },
+    {
+        name = "sinkhole_warn_fx_2",
+        bank = "sinkhole_spawn_fx",
+        build = "sinkhole_spawn_fx",
+        anim = "idle2",
+        transform = Vector3(0.75, 0.75, 0.75),
+        fn = function(inst) inst.entity:AddSoundEmitter():PlaySoundWithParams("dontstarve/creatures/together/antlion/sfx/ground_break", { size = 0.01 }) end,
+    },
+    {
+        name = "sinkhole_warn_fx_3",
+        bank = "sinkhole_spawn_fx",
+        build = "sinkhole_spawn_fx",
+        anim = "idle3",
+        transform = Vector3(0.75, 0.75, 0.75),
+        fn = function(inst) inst.entity:AddSoundEmitter():PlaySoundWithParams("dontstarve/creatures/together/antlion/sfx/ground_break", { size = 0.01 }) end,
+    },
+    {
+        name = "cavein_debris",
+        bank = "cavein_debris_fx",
+        build = "cavein_debris_fx",
+        anim = "anim",
+        fn = function(inst) inst.entity:AddSoundEmitter():PlaySoundWithParams("dontstarve/creatures/together/antlion/sfx/ground_break", { size = 0 }) end,
+    },
+    {
+        name = "glass_fx",
+        bank = "mining_fx",
+        build = "mining_ice_fx",
+        anim = "anim",
+        sound = "dontstarve/creatures/together/antlion/sfx/sand_to_glass",
+    },
+    {
+        name = "erode_ash",
+        bank = "erode_ash",
+        build = "erode_ash",
+        anim = "idle",
+        sound = "dontstarve/common/dust_blowaway",
+    },
 }
+
+for j = 0, 3, 3 do
+    for i = 1, 3 do
+        table.insert(fx, {
+            name = "shadow_shield"..tostring(j + i),
+            bank = "stalker_shield",
+            build = "stalker_shield",
+            anim = "idle"..tostring(i),
+            sound = "dontstarve/creatures/together/stalker/shield",
+            transform = j > 0 and Vector3(-1, 1, 1) or nil,
+            fn = FinalOffset2,
+        })
+    end
+end
+
+FinalOffset1 = nil
+FinalOffset2 = nil
 
 return fx

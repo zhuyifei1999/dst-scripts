@@ -116,7 +116,11 @@ STRINGS =
         GNAW = "Gnaw",
         READ = "Read",
         MAKEBALLOON = "Inflate",
-        SEW = "Sew",
+        SEW =
+        {
+            GENERIC = "Sew",
+            PATCH = "Patch",
+        },
         GIVE =
         {
             GENERIC  = "Give",
@@ -258,6 +262,11 @@ STRINGS =
             GENERIC = "Jump In",
             HAUNT = "Haunt",
         },
+        TELEPORT =
+        {
+            GENERIC = "Use",
+            TOWNPORTAL = "Touch",
+        },
         MURDER = "Murder",
         HEAL =
         {
@@ -321,6 +330,8 @@ STRINGS =
         BUNDLESTORE = "Store",
         WRAPBUNDLE = "Wrap",
         UNWRAP = "Unwrap",
+        STARTCHANNELING = "Touch",
+        STOPCHANNELING = "Stop Channeling",
     },
 
     -- PC controls get hex ranges EE90xx to EE9Fxx
@@ -348,6 +359,7 @@ STRINGS =
         FUEL = "Water-Logged",
         TOOL = "Slippery",
         FOOD = "Soggy",
+        POUCH = "Soggy",
         WETGOOP = "Very",
     },
 
@@ -381,12 +393,10 @@ STRINGS =
         SPORE_TALL = "Blue Spore",
         SPORE_MEDIUM = "Red Spore",
         SPORE_SMALL = "Green Spore",
-        SPORE_TALL_INV = "Blue Spore",
-        SPORE_MEDIUM_INV = "Red Spore",
-        SPORE_SMALL_INV = "Green Spore",
-        SPIDER_HIDER="Cave Spider",
-        SPIDER_SPITTER="Spitter",
+        SPIDER_HIDER = "Cave Spider",
+        SPIDER_SPITTER = "Spitter",
         SEWING_KIT = "Sewing Kit",
+        SEWING_TAPE = "Trusty Tape",
         RED_MUSHROOM = "Red Mushroom",
         RED_CAP = "Red Cap",
         RED_CAP_COOKED = "Cooked Red Cap",
@@ -486,8 +496,6 @@ STRINGS =
         TURF_MUD = "Mud Turf",
         TURF_DESERTDIRT = "Sandy Turf",
         TURF_DECIDUOUS = "Deciduous Turf",
-
-        TURF_WEBBING = "Sticky Webbing",
 
         COOKPOT = "Crock Pot",
         DUG_GRASS = "Grass Tuft",
@@ -600,8 +608,10 @@ STRINGS =
         POND = "Pond",
         POND_MOS = "Pond",
         POND_CAVE = "Pond",
+        OASISLAKE = "Lake",
         RABBIT = "Rabbit",
         RABBITHOLE = "Rabbit Hole",
+        CAVEIN_BOULDER = "Boulder",
         ROCK1 = "Boulder",
         ROCK2 = "Boulder",
         ROCK_MOON = "Boulder",
@@ -648,6 +658,7 @@ STRINGS =
         ARMORWOOD = "Log Suit",
         ARMORGRASS = "Grass Suit",
         ARMORMARBLE = "Marble Suit",
+        ARMORSKELETON = "Bone Armor",
         ARMOR_SANITY = "Night Armor",
         SPEAR = "Spear",
         TENTACLESPIKE = "Tentacle Spike",
@@ -717,8 +728,14 @@ STRINGS =
         FISHINGROD = "Fishing Rod",
         FISH = "Fish",
         FISH_COOKED = "Cooked Fish",
-        FOSSIL_PIECE = "Fossil Fragment",
+        FOSSIL_PIECE = "Fossil Fragments",
         FOSSIL_STALKER = "Odd Skeleton",
+        FOSSILSPIKE = "Fossil Cage",
+        STALKER = "Reanimated Skeleton",
+        STALKER_ATRIUM = "Ancient Fuelweaver",
+        STALKER_MINION = "Woven Shadow",
+        SHADOWCHANNELER = "Unseen Hand",
+        THURIBLE = "Shadow Thurible",
         HONEY = "Honey",
         HONEYCOMB = "Honeycomb",
         BEESWAX = "Beeswax",
@@ -831,6 +848,7 @@ STRINGS =
         TRINKET_35 = "Empty Elixir", -- Empty Potion Bottle
         TRINKET_36 = "Faux Fangs", -- Vampire Teeth
         TRINKET_37 = "Broken Stake", -- Wooden Stake
+        ANTLIONTRINKET = "Beach Toy", --bucket and shovel
 
         CARROT_PLANTED = "Carrot",
         LEIF = "Treeguard",
@@ -873,7 +891,7 @@ STRINGS =
         GUACAMOLE = "Guacamole",
         SPIDERHAT = "Spiderhat",
         WORMHOLE = "Worm Hole",
-        WORMHOLE_LIMITED_1 = "Sick Worm Hole",
+        WORMHOLE_LIMITED = "Sick Worm Hole",
 
         WALL_WOOD_ITEM = "Wood Wall",
         WALL_STONE_ITEM = "Stone Wall",
@@ -999,10 +1017,9 @@ STRINGS =
         LANTERN = "Lantern",
         POWCAKE = "Powdercake",
         FLOWER_CAVE = "Light Flower",
-        FLOWER_CAVE_DOUBLE = "Light Flower",
-        FLOWER_CAVE_TRIPLE = "Light Flower",
         LIGHTBULB = "Light Bulb",
         STALAGMITE = "Stalagmite",
+        STALAGMITE_TALL = "Stalagmite",
 
         SPIDERHOLE = "Spilagmite",
        -- SPIDERHOLE_ROCK = "Spilagmite",
@@ -1045,7 +1062,22 @@ STRINGS =
         THULECITE_PIECES = "Thulecite Fragments",
         RUINSHAT = "Thulecite Crown",
         POTTEDFERN = "Potted Fern",
+        SUCCULENT_POTTED = "Potted Succulent",
+        SUCCULENT_PLANT = "Succulent",
+        SUCCULENT_PICKED = "Succulent",
         SENTRYWARD = "Ocuvigil",
+        TOWNPORTAL = "The Lazy Deserter",
+        TOWNPORTALTALISMAN = "Desert Stone",
+        WETPAPER = "Paper",
+        WETPOUCH = "Crumpled Package",
+        GOGGLESHAT = "Fashion Goggles",
+        DESERTHAT = "Desert Goggles",
+        ANTLION = "Antlion",
+        ANTLION_SINKHOLE = "Sinkhole",
+        SANDSPIKE = "Sand Spike",
+        SANDBLOCK = "Sand Castle",
+        GLASSSPIKE = "Glass Spike",
+        GLASSBLOCK = "Glass Castle",
         MOONBASE = "Moon Stone",
         MOONDIAL = "Moon Dial",
         MOONROCK_PIECES = "Moon Rubble",
@@ -1201,7 +1233,14 @@ STRINGS =
         SADDLE_WAR = "War Saddle",
 
         REVIVER = "Telltale Heart",
+
         SHADOWHEART = "Shadow Atrium",
+        ATRIUM_RUBBLE = "Ancient Mural",
+        ATRIUM_STATUE = "Ancient Statue",
+        ATRIUM_LIGHT = "Ancient Beacon",
+        ATRIUM_GATE = "Ancient Gateway",
+        ATRIUM_KEY = "Ancient Key",
+        ATRIUM_OVERGROWTH = "Ancient Obelisk",
 
         SHADOWMETEOR = "Meteor",
 
@@ -1355,7 +1394,7 @@ STRINGS =
         HEATROCK = "Stores thermals for travel.",
         SLOW_FARMPLOT = "Grows seeds.",
         FAST_FARMPLOT = "Grows seeds a bit faster.",
-        MUSHROOM_FARM = "Grow mushrooms.",
+        MUSHROOM_FARM = "Grows mushrooms.",
         TENT = "Restores sanity, costs time and hunger.",
         SIESTAHUT = "Escape the heat to restore sanity.",
         ROPE = "Tightly woven coils of usefulness.",
@@ -1363,8 +1402,8 @@ STRINGS =
         ARMORGRASS = "Provides a small amount of protection.",
         ARMORMARBLE = "It's heavy, but it will protect you.",
         ARMOR_SANITY = "Protects your body, but not your mind.",
-        SPEAR="Use the pointy end.",
-        CLAW_GLOVE="Gets rid of tough obstacles.",
+        SPEAR = "Use the pointy end.",
+        CLAW_GLOVE = "Gets rid of tough obstacles.",
         STRAWHAT = "Helps you stay cool and dry.",
         TOPHAT = "The classiest hat of all.",
         FLOWERHAT = "Something to soothe the nerves.",
@@ -1465,6 +1504,7 @@ STRINGS =
         TURF_ROAD = "Build your own road to nowhere.",
         TURF_DRAGONFLY = "Quell the spread of fire.",
         SEWING_KIT = "Fix up degraded clothing items.",
+        SEWING_TAPE = "Patch up degraded clothing items.",
         NIGHTLIGHT = "Light the night with your dreams.",
         NIGHTSWORD = "Lucid dreaming damage.",
         NIGHTSTICK = "Morning light for a nighttime fight.",
@@ -1491,12 +1531,14 @@ STRINGS =
         RUINS_BAT = "Spikes make everything better.",
         NIGHTMARE_TIMEPIECE = "Track the flow of ambient magic levels.",
         ARMORSLURPER = "Keep that belly full.",
-        EYETURRET_ITEM = "Keep the nasties away. By killing them.",
+        EYETURRET_ITEM = "Keep nasties away. By killing them.",
         ACCOMPLISHMENT_SHRINE = "Prove your worth as a human being.",
         WALL_RUINS_ITEM = "These walls will take quite a beating.",
         POTTEDFERN = "Make a pot and stick a fern inside.",
+        SUCCULENT_POTTED = "A pretty succulent jammed in a pot.",
         ENDTABLE = "A decorative table.",
         SENTRYWARD = "The cartographer's most valuable weapon.",
+        TOWNPORTAL = "Gather your friends with sand power.",
         MOONDIAL = "Track the phases of the moon!",
         THULECITE = "Combine tiny bits into a big chunk.",
         RUINSHAT = "Complete with ancient force field!",
@@ -1536,6 +1578,8 @@ STRINGS =
         BELL = "This isn't just any bell.",
 
         CATCOONHAT = "For those who value warmth over friends.",
+        GOGGLESHAT = "Decorative goggles you can oggle.",
+        DESERTHAT = "Keeps the sand out of your eyes.",
 
         FEATHERPENCIL = "Yes, the feather IS necessary.",
         MAPSCROLL = "Show everyone what you've seen!",
@@ -1743,6 +1787,7 @@ STRINGS =
     --ITEM DESCRIPTIONS
     DESCRIBE_NULL = "MISSING DESCRIPTION STRING",
 
+    --NOTE: Limit to 7 strings per table! (Using net_tinybyte for NPC chatter)
     PIG_TALK_FOLLOWWILSON = { "YOU FRIEND", "I LOVE FRIEND", "YOU IS GOOD", "I FOLLOW!" },
     PIG_TALK_FIND_LIGHT = { "SCARY", "NO LIKE DARK", "WHERE IS SUN?", "STAY NEAR FIRE", "FIRE IS GOOD" },
     PIG_TALK_LOOKATWILSON = { "WHO ARE YOU?", "YOU NOT PIG", "UGLY MONKEY PERSON", "YOU HAS MEAT?" },
@@ -1765,6 +1810,7 @@ STRINGS =
     PIG_GUARD_TALK_GOHOME = { "MUST DEFEND!", "I PROTECT", "KING! KING!" },
     PIG_GUARD_TALK_LOOKATWILSON = { "YOU LEAVE NOW", "YOU GO AWAY", "YOU NO STAY" },
 
+    --NOTE: Limit to 7 strings per table! (Using net_tinybyte for NPC chatter)
     RABBIT_BATTLECRY = { "HOP!", "KILL!", "DIE!" },
     RABBIT_MEAT_BATTLECRY = { "MEAT!", "UNCLEAN!", "MURDERER!", "REVENGE!", "MONSTER!" },
     RABBIT_GIVEUP = { "DONE.", "LATER." },
@@ -1774,6 +1820,76 @@ STRINGS =
     RABBIT_PANICHOUSEFIRE = { "HOME!", "FIRE!", "BURNING!" },
     RABBIT_PANICHAUNT = { "SCARED!", "AAAH!!", "OHH!", "GHOST!" },
     RABBIT_PANICBOSS = { "RUN!", "AHHH!", "IT MAD", "EHHH!" },
+
+    --NOTE: Limit to 7 strings per table! (Using net_tinybyte for NPC chatter)
+    STALKER_BATTLECRY = { "Huurgh...", "...(growl)...", "...gruuuugh...", "Hrrgh...", "...grraaugh...", "...(rumble)...", "...gruh..." },
+    STALKER_PLAYER_BATTLECRY = { "Huurgh...", "...gruuuugh...", "...grraaugh...", "...(gurgle)...", "...(crunch)...", "...Y-yy...", "...W-wwh..." },
+
+    --NOTE: Limit to 7 strings per table! (Using net_tinybyte for NPC chatter)
+    STALKER_ATRIUM_BATTLECRY = 
+    {
+        "A pity.",
+        "You will not suffer.",
+        "It must be this way.",
+        "My world... threadbare.",
+        "My city... in tatters...",
+        "This will be quick.",
+        "How we've fallen."
+    },
+    STALKER_ATRIUM_PLAYER_BATTLECRY =
+    {
+        "You will fall as we did.",
+        "This is for the best.",
+        "You will be unraveled.",
+        "They are coming. It cannot be stopped.",
+        "This world's fabric is frayed and torn.",
+        "They are unfathomable.",
+        "I will save you."
+    },
+    STALKER_ATRIUM_SUMMON_MINIONS =
+    {
+        "Be woven.",
+        "How long have I slumbered?",
+        "Let the fuel take shape.",
+        "I will not be defeated so easily.",
+        "I will make you understand.",
+        "Let us end it.",
+        "You will rip apart at the seams.",
+    },
+    STALKER_ATRIUM_SUMMON_CHANNELERS =
+    {
+        "I will stop this.",
+        "You cannot win.",
+        "Lend me your power, one last time.",
+        "You cannot hurt me.",
+        "Protect me.",
+        "You have been betrayed.",
+        "I must do this. For your sake.",
+    },
+    STALKER_ATRIUM_USEGATE =
+    {
+        "I will save us.",
+        "Curse Their name!",
+        "It cannot end like this.",
+        "I was wrong.",
+        "Return them to me!",
+        "Why?",
+        "Metheus...",
+    },
+    STALKER_ATRIUM_DECAYCRY =
+    {
+        "Please...",
+    },
+    STALKER_ATRIUM_DEATHCRY =
+    {
+        "Fools!",
+        "Who are you?",
+        "Release me, shade!",
+        "You are not Them...",
+        "Are you so easily deceived? Ha...",
+        "You deserve this.",
+        "You've made your choice.",
+    },
 
     EPITAPHS =
     {
@@ -2224,6 +2340,8 @@ STRINGS.UI =
             "May Wa Leng",
             "Will Turnbull",
             "Michael Rodriguez",
+            "Ragnar Guidote",
+            "Erica Pitt",
         },
 
         ALTGAMES =
@@ -2628,6 +2746,7 @@ STRINGS.UI =
         GHOST_DEATH_ANNOUNCEMENT_ROBOT = "lost all of their humanity and is gone forever.",
         GHOST_DEATH_ANNOUNCEMENT_DEFAULT = "lost all of their humanity and is gone forever.",
         REZ_ANNOUNCEMENT = "was resurrected by",
+        REPORT_RESULT_ANNOUCEMENT = "blank",
         START_AFK = "went away for a bit.",
         STOP_AFK = "has returned from their relaxing time away.",
         AFK_TITLE = "Taking A Breather",
@@ -3412,6 +3531,7 @@ STRINGS.UI =
         DEERCLOPS = "Deerclops",
         GOOSEMOOSE = "Meese/Geese",
         DRAGONFLY = "Dragonfly",
+        ANTLIONTRIBUTE = "Antlion Tribute",
         BATS = "Bats",
         FISSURE = "Nightmare Fissures",
         WORMATTACKS = "Cave Worm Attacks",
@@ -4702,6 +4822,7 @@ STRINGS.UI =
         DARKSTART = "Dark",
         CAVESTART = "Caves",
 
+		EVENT_DEFAULT = "Auto",
         EVENT_HALLOWEDNIGHTS_2016 = "Hallowed Nights",
         EVENT_WINTERSFEAST_2016 = "Winters Feast",
         EVENT_YEAR_OF_THE_GOBBLER_2017 = "Year of the Gobbler",

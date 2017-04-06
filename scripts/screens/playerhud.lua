@@ -10,6 +10,10 @@ local BloodOver = require "widgets/bloodover"
 local BeefBloodOver = require "widgets/beefbloodover"
 local HeatOver = require "widgets/heatover"
 local FumeOver = require "widgets/fumeover"
+local SandOver = require "widgets/sandover"
+local SandDustOver = require "widgets/sanddustover"
+local MindControlOver = require "widgets/mindcontrolover"
+local GogglesOver = require "widgets/gogglesover"
 local easing = require("easing")
 
 local PauseScreen = nil
@@ -37,6 +41,7 @@ local PlayerHud = Class(Screen, function(self)
 
     self.under_root = self:AddChild(Widget("under_root"))
     self.root = self:AddChild(Widget("root"))
+    self.over_root = self:AddChild(Widget("over_root"))
 
     self.playerstatusscreen = nil
     self.giftitempopup = nil
@@ -70,6 +75,7 @@ end)
 function PlayerHud:CreateOverlays(owner)
     self.overlayroot:KillAllChildren()
     self.under_root:KillAllChildren()
+    self.over_root:KillAllChildren()
 
     self.vig = self.overlayroot:AddChild(UIAnim())
     self.vig:GetAnimState():SetBuild("vig")
@@ -82,6 +88,14 @@ function PlayerHud:CreateOverlays(owner)
 
     self.vig:SetClickable(false)
 
+    self.storm_root = self.over_root:AddChild(Widget("storm_root"))
+    self.storm_overlays = self.storm_root:AddChild(Widget("storm_overlays"))
+    self.sanddustover = self.storm_overlays:AddChild(SandDustOver(owner))
+
+    self.mindcontrolover = self.over_root:AddChild(MindControlOver(owner))
+
+    self.sandover = self.overlayroot:AddChild(SandOver(owner, self.sanddustover))
+    self.gogglesover = self.overlayroot:AddChild(GogglesOver(owner, self.storm_overlays))
     self.bloodover = self.overlayroot:AddChild(BloodOver(owner))
     self.beefbloodover = self.overlayroot:AddChild(BeefBloodOver(owner))
     self.iceover = self.overlayroot:AddChild(IceOver(owner))
@@ -417,7 +431,7 @@ function PlayerHud:SetMainCharacter(maincharacter)
         self.inst:ListenForEvent("gosane", function() self:GoSane() end, self.owner)
         self.inst:ListenForEvent("goinsane", function() self:GoInsane() end, self.owner)
 
-        if self.owner.replica.sanity ~= nil and not self.owner.replica.sanity:IsSane() then
+        if self.owner.replica.sanity ~= nil and self.owner.replica.sanity:IsCrazy() then
             self:GoInsane()
         end
         self.controls.crafttabs:UpdateRecipes()

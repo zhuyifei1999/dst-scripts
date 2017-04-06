@@ -113,9 +113,9 @@ local function TryStartAttacks(killed)
         self.inst.watchingcycles = nil
     else
         PauseAttacks()
-        if not self.inst.watchingcycles then 
-        	self:WatchWorldState("cycles", TryStartAttacks)  -- keep checking every day until NO_BOSS_TIME is up
-        	self.inst.watchingcycles = true
+        if not self.inst.watchingcycles then
+            self:WatchWorldState("cycles", TryStartAttacks)  -- keep checking every day until NO_BOSS_TIME is up
+            self.inst.watchingcycles = true
         end
     end
 end
@@ -133,45 +133,44 @@ local function TargetLost()
 end
 
 local function GetSpawnPoint(pt)
-    local theta = math.random() * 2 * PI
-    local radius = HASSLER_SPAWN_DIST
-
-	local offset = FindWalkableOffset(pt, theta, radius, 12, true)
-	if offset then
-		return pt+offset
-	end
+    if not TheWorld.Map:IsAboveGroundAtPoint(pt:Get()) then
+        pt = FindNearbyLand(pt, 1) or pt
+    end
+    local offset = FindWalkableOffset(pt, math.random() * 2 * PI, HASSLER_SPAWN_DIST, 12, true)
+    if offset ~= nil then
+        offset.x = offset.x + pt.x
+        offset.z = offset.z + pt.z
+        return offset
+    end
 end
 
 local function ReleaseHassler(targetPlayer)
-	assert(targetPlayer)
-	local pt = Vector3(targetPlayer.Transform:GetWorldPosition())
+    assert(targetPlayer)
 
-	local hassler = TheSim:FindFirstEntityWithTag("deerclops")
-	if hassler ~= nil then
-		return hassler -- There's already a hassler in the world, we're done here.
-	end
+    local hassler = TheSim:FindFirstEntityWithTag("deerclops")
+    if hassler ~= nil then
+        return hassler -- There's already a hassler in the world, we're done here.
+    end
 
-    local spawn_pt = GetSpawnPoint(pt)
-	
-    if spawn_pt then
-	    if _storedhassler ~= nil then
-			hassler = SpawnSaveRecord(_storedhassler, {})
-			_storedhassler = nil
-		else
-			hassler = SpawnPrefab("deerclops")
-	    end
+    local spawn_pt = GetSpawnPoint(targetPlayer:GetPosition())
+    if spawn_pt ~= nil then
+        if _storedhassler ~= nil then
+            hassler = SpawnSaveRecord(_storedhassler, {})
+            _storedhassler = nil
+        else
+            hassler = SpawnPrefab("deerclops")
+        end
 
-        if hassler then
+        if hassler ~= nil then
             hassler.Physics:Teleport(spawn_pt:Get())
             local target = GetClosestInstWithTag("structure", targetPlayer, 40)
-            if target then
-                local targetPos = Vector3(target.Transform:GetWorldPosition() )
-		        hassler.components.knownlocations:RememberLocation("targetbase", targetPos)
-		    end
-		    -- Liz: home location is now chosen right before going there, to make sure that deerclops can walk there.
-			return hassler
-		end
-	end
+            if target ~= nil then
+                hassler.components.knownlocations:RememberLocation("targetbase", target:GetPosition())
+            end
+            -- Liz: home location is now chosen right before going there, to make sure that deerclops can walk there.
+            return hassler
+        end
+    end
 end
 
 --------------------------------------------------------------------------

@@ -68,6 +68,8 @@ return {
             SLOTFULL = "Something is already put!",
             DUPLICATE = "Little recipe is already in there!",
             NOTSCULPTABLE = "Material is not mighty enough for strong statues!",
+            CANTSHADOWREVIVE = "Is not working.",
+            WRONGSHADOWFORM = "Bones is wrong shape.",
         },
         GIVETOPLAYER = 
         {
@@ -118,6 +120,18 @@ return {
     ANNOUNCE_MIGHTYTONORMAL="I need to fill my mighty belly again!",
     ANNOUNCE_NOSLEEPONFIRE = "Is too hot for sleeping.",
     ANNOUNCE_NODANGERSIESTA = "I prefer fighting to napping!",
+    ANNOUNCE_ANTLION_SINKHOLE = 
+    {
+        "Ground is crumble beneath might of Wolfgang!",
+        "Wolfgang broke the ground!",
+        "That rumble is not stomach!",
+    },
+    ANNOUNCE_ANTLION_TRIBUTE =
+    {
+        "Please do not eat me.",
+        "Is tribute for a mighty... f-friend.",
+        "Do not eat Wolfgang's friends, please?",
+    },
     ANNOUNCE_NONIGHTSIESTA = "Wolfgang have principles against siesta at night.",
     ANNOUNCE_NONIGHTSIESTA_CAVE = "Wolfgang is tense. Too tense to relax.",
     ANNOUNCE_NOHUNGERSIESTA = "Wolfgang take siesta after eating time.",
@@ -158,6 +172,13 @@ return {
         "Witness... Wolfgang strength!",
         "Wolfgang is mighty...!",
     },
+    ANNOUNCE_ATRIUM_DESTABILIZING = 
+    {
+        "Monsters is coming!",
+        "Wolfgang wants out of cave!",
+        "Wolfgang does not like dark cave.",
+    },
+    ANNOUNCE_RUINS_RESET = "Monsters is back!",
 
     ANNOUNCE_BECOMEGHOST = "oOooOOoo!!",
     ANNOUNCE_GHOSTDRAIN = "They are coming... for Wolfgang!",
@@ -166,6 +187,8 @@ return {
     ANNOUNCE_KLAUS_UNCHAINED = "Do not hold back! Wolfgang can take you!",
     ANNOUNCE_KLAUS_CALLFORHELP = "Wimpy monster has called for help!",
 
+    ANNOUNCE_SNARED = "Wolfgang does not like bones!",
+    ANNOUNCE_REPELLED = "Strong bubble protects beast!",
     ANNOUNCE_ENTER_DARK = "I cannot see! I am scared!",
     ANNOUNCE_ENTER_LIGHT = "I can see again!",
     ANNOUNCE_HOUNDS = "I hear puppies!",
@@ -177,8 +200,10 @@ return {
     ANNOUNCE_PECKED = "What I do to deserve this?",
     ANNOUNCE_TORCH_OUT = "Oh no! The light is gone!",
     ANNOUNCE_FAN_OUT = "Tiny fan is broken!",
+    ANNOUNCE_THURIBLE_OUT = "Swingy burnies has gone out!",
     ANNOUNCE_COMPASS_OUT = "Little needle broke off!",
     ANNOUNCE_WORMHOLE = "It makes me feel alive!",
+    ANNOUNCE_TOWNPORTALTELEPORT = "Wolfgang is here!",
     ANNOUNCE_TRAP_WENT_OFF = "Ack! Do not surprise Wolfgang!",
     ANNOUNCE_QUAKE = "Ground is shake. Wolfgang hate shaking ground.",
     ANNOUNCE_NODANGERSLEEP = "Wolfgang prefer fight to sleep.",
@@ -194,6 +219,7 @@ return {
     ANNOUNCE_KNOCKEDOUT = "Ugh, I must have hit head.",
     ANNOUNCE_LOWRESEARCH = "Is tiny information.",
     ANNOUNCE_DEERCLOPS = "Sound like big strong man coming.",
+    ANNOUNCE_CAVEIN = "Sky is fall soon.",
     ANNOUNCE_MOSQUITOS = "Wolfgang need blood, get away sucking bugs!",
     ANNOUNCE_NODAYSLEEP = "Is too bright for sleep.",
     ANNOUNCE_CANFIX = "\nMighty brain could make this better!",
@@ -347,14 +373,8 @@ return {
             GENERIC = "Is so cuddly!",
         },
         BERNIE_ACTIVE = "Is so brave!",
-        
+
         LAVA_POND_ROCK = "Is just small rock.",
-        LAVA_POND_ROCK2 = "Is just small rock.",
-        LAVA_POND_ROCK3 = "Is just small rock.",
-        LAVA_POND_ROCK4 = "Is just small rock.",
-        LAVA_POND_ROCK5 = "Is just small rock.",
-        LAVA_POND_ROCK6 = "Is just small rock.",
-        LAVA_POND_ROCK7 = "Is just small rock.",
         --BOOK_METEOR = "Book make very hot rain.",
 
         GLOMMER = "Why you follow, weird bug?",
@@ -516,7 +536,17 @@ return {
         WATERMELONICLE = "Ha! Melon on a stick.",
 
         LIGHTER = "Is tiny firebox!",
-        
+        ANTLION = 
+        {
+            GENERIC = "Scary monster is friend?",
+            VERYHAPPY = "Monster does not look hungry today.",
+            UNHAPPY = "Monster is looking very scary!",
+        },
+        ANTLIONTRINKET = "Is not for head.",
+        SANDSPIKE = "Spike is made of sand!",
+        SANDBLOCK = "Is very sandy.",
+        GLASSSPIKE = "Spike is glass now.",
+        GLASSBLOCK = "Wolfgang could crush little castle.",
         ABIGAIL_FLOWER = 
         {
             GENERIC = "Is pretty.",
@@ -714,7 +744,22 @@ return {
         GIFT = "Is nice little present!",
         GIFTWRAP = "Wolfgang needs help tying little bow.",
         POTTEDFERN = "Wolfgang worry greenthumb is gangrene.",
+        SUCCULENT_POTTED = "Tough plant is mine.",
+        SUCCULENT_PLANT = "Is tough plant.",
+        SUCCULENT_PICKED = "Tough plant is not dead yet.",
         SENTRYWARD = "Wolfgang thinks is full of secrets.",
+        TOWNPORTAL =
+        {
+            GENERIC = "Is friend-bringer!",
+            ACTIVE = "Is ready now.",
+        },
+        TOWNPORTALTALISMAN = 
+        {
+            GENERIC = "Is rock for quick trip.",
+            ACTIVE = "Is time to go.",
+        },
+        WETPAPER = "Wolfgang can rip like wet paper!",
+        WETPOUCH = "Is treasure from pool.",
         MOONROCK_PIECES = "Is little pieces from moon!",
         MOONBASE =
         {
@@ -794,8 +839,6 @@ return {
         BEDROLL_FURRY="So comfy!",
         BUNNYMAN = "Hello rabbit!",
         FLOWER_CAVE = "Is light plant.",
-        FLOWER_CAVE_DOUBLE = "Is light plant.",
-        FLOWER_CAVE_TRIPLE = "Is light plant.",
         GUANO = "More poop.",
         LANTERN = "It keeps me safe from dark.",
         LIGHTBULB = "Is food?",
@@ -847,12 +890,21 @@ return {
             BLOOM = "Even smell is strong!",
         },
         MUSHTREE_TALL_WEBBED = "Aw, cheer up!",
-        SPORE_TALL = "Little blue bug has no wings.",
-        SPORE_MEDIUM = "Is tiny red bug?",
-        SPORE_SMALL = "Nice green bug. Wolfgang will not swat.",
-        SPORE_TALL_INV = "I make it my pet.",
-        SPORE_MEDIUM_INV = "I make it my pet.",
-        SPORE_SMALL_INV = "I make it my pet.",
+        SPORE_TALL =
+        {
+            GENERIC = "Little blue bug has no wings.",
+            HELD = "I make it my pet.",
+        },
+        SPORE_MEDIUM =
+        {
+            GENERIC = "Is tiny red bug?",
+            HELD = "I make it my pet.",
+        },
+        SPORE_SMALL =
+        {
+            GENERIC = "Nice green bug. Wolfgang will not swat.",
+            HELD = "I make it my pet.",
+        },
         SLURTLE = "Ha! You are slow!",
         SLURTLE_SHELLPIECES = "Is broken.",
         SLURTLEHAT = "Keeps head safe.",
@@ -864,13 +916,7 @@ return {
         SPIDERHOLE = "Spiders everywhere.",
         SPIDERHOLE_ROCK = "Spiders everywhere.",
         STALAGMITE = "Is pointy.",
-        STALAGMITE_FULL = "Is pointy.",
-        STALAGMITE_LOW = "Is pointy.",
-        STALAGMITE_MED = "Is pointy.",
         STALAGMITE_TALL = "Rock, reaching for the roof.",
-        STALAGMITE_TALL_FULL = "Rock, reaching for the roof.",
-        STALAGMITE_TALL_LOW = "Rock, reaching for the roof.",
-        STALAGMITE_TALL_MED = "Rock, reaching for the roof.",
 
         TREASURECHEST_TRAP = "Raagh!",
         TURF_CARPETFLOOR = "Step stones.",
@@ -1167,6 +1213,8 @@ return {
         {
             GENERIC = "Is tuft of grass.",
         },
+        GOGGLESHAT = "Makes Wolfgang look very mighty.",
+        DESERTHAT = "Sand cannot stop Wolfgang!",
         DIRTPILE = "Dirty dirt.",
         DIVININGROD =
         {
@@ -1323,6 +1371,11 @@ return {
             FUNNY = "Eh, maybe we take apart.",
             COMPLETE = "Is look good! Mighty!",
         },
+        STALKER = "Skeleton should not be walking!",
+        STALKER_ATRIUM = "Scary man!",
+        STALKER_MINION = "I do not like it!",
+        THURIBLE = "Is for monster control.",
+        ATRIUM_OVERGROWTH = "Wolfgang cannot read.",
         FROG =
         {
             DEAD = "Is delicacy in my country.",
@@ -1473,6 +1526,7 @@ return {
         NIGHTSWORD = "Is real? Is not real? Is sharp!",
         NITRE = "Is rock, but different.",
         ONEMANBAND = "Is big and loud. I like!",
+        OASISLAKE = "Splishes and splashes.",
         PANDORASCHEST = "Fancy box!",
         PANFLUTE = "You want Wolfgang play folk song?",
         PAPYRUS = "Is like paper.",
@@ -1578,6 +1632,11 @@ return {
             LOW = "Is getting cold.",
             NORMAL = "Liquid fire!",
         },
+        CAVEIN_BOULDER =
+        {
+            GENERIC = "Is no trouble to lift boulder.",
+            RAISED = "Wolfgang must move other rocks.",
+        },
         ROCK = "Everyone watch! Wolfgang will deadlift!",
         ROCKS = "Is rock. What you not get?",
         ROOK = "This one jumps the queen!",
@@ -1647,6 +1706,7 @@ return {
         SEEDS = "Too small to eat.",
         SEEDS_COOKED = "Fire make bigger, can eat now.",
         SEWING_KIT = "Is pokey!",
+        SEWING_TAPE = "Is sticky and good for mending!",
         SHOVEL = "Dirt spoon!",
         SILK = "Is too fancy.",
         SKELETON = "Not enough muscle.",
@@ -1908,6 +1968,7 @@ return {
         },
         WORMHOLE_LIMITED = "Is not looking very good.",
         ARMORRUINS = "Protect me? I don't need it!",
+        ARMORSKELETON = "Is scary strong bones.",
         BISHOP_NIGHTMARE = "Is angry man. Should relax.",
         GREENAMULET = "Is so light! Feels like nothingness!", 
         GREENGEM = "Is pretty and cannot be crushed. Like me!",
@@ -1937,6 +1998,29 @@ return {
         ACCOMPLISHMENT_SHRINE = "I will defeat you, tiny arrow!",                
         REVIVER = "Blib blup! Blib blup! Blib blup!",
         SHADOWHEART = "Wolfgang is not shaking! Is manly flexing!!",
+        ATRIUM_RUBBLE = 
+        {
+            LINE_1 = "Is picture of many sad, weak people.",
+            LINE_2 = "Cannot tell what was picture of.",
+            LINE_3 = "In picture darkness covers sad, weak people.",
+            LINE_4 = "Monsters is bursting out of them!",
+            LINE_5 = "Is picture of very pretty place.",
+        },
+        ATRIUM_STATUE = "Statue make Wolfgang's tummy do flip.",
+        ATRIUM_LIGHT = 
+        {
+            ON = "This light is scarier than the dark.",
+            OFF = "Is place for light.",
+        },
+        ATRIUM_GATE =
+        {
+            ON = "Little lights is on now.",
+            OFF = "Is very old thing.",
+            CHARGING = "Looks very scary now!",
+            DESTABILIZING = "Is going to blow!",
+            COOLDOWN = "Is needing to recharge.",
+        },
+        ATRIUM_KEY = "Little key is for make door.",
         LIFEINJECTOR = "EeeeEEeeEEE!!",
     },
     DESCRIBE_GENERIC = "What is this thing?",

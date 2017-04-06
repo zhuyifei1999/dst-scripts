@@ -156,16 +156,11 @@ function Fueled:CanAcceptFuelItem(item)
 end
 
 function Fueled:GetCurrentSection()
-    if self:IsEmpty() then
-        return 0
-    else
-        return math.min( math.floor(self:GetPercent()* self.sections)+1, self.sections)
-    end
+    return self:IsEmpty() and 0 or math.min( math.floor(self:GetPercent()* self.sections)+1, self.sections)
 end
 
 function Fueled:ChangeSection(amount)
-    local fuelPerSection = self.maxfuel / self.sections
-    self:DoDelta((amount * fuelPerSection)-1)
+    self:DoDelta(amount * self.maxfuel / self.sections - 1)
 end
 
 function Fueled:SetTakeFuelFn(fn)

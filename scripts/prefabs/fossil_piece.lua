@@ -1,3 +1,5 @@
+require "prefabutil"
+
 local assets =
 {
     Asset("ANIM", "anim/fossil_piece.zip"),
@@ -8,14 +10,13 @@ local prefabs =
     "fossil_stalker",
 }
 
-local NUM_FOSSIL_TYPES = 6
-local function SetFossilType(inst, fossiltype)
-    inst.fossiltype = fossiltype
-    inst.AnimState:PlayAnimation(""..(fossiltype or "idle")) -- "idle" is the generic anim to use once its been picked up
-end
+local NUM_FOSSIL_TYPES = 4
 
-local function cleanfossil(inst, data)
-    SetFossilType(inst, nil) -- show the cleaned bones image instead of the random mined images
+local function SetFossilType(inst, fossiltype)
+    if inst.fossiltype ~= fossiltype then
+        inst.fossiltype = fossiltype
+        inst.AnimState:PlayAnimation("f"..tostring(fossiltype))
+    end
 end
 
 local function onsave(inst, data)
@@ -23,17 +24,20 @@ local function onsave(inst, data)
 end
 
 local function onload(inst, data)
-    SetFossilType(inst, data and data.fossiltype)
+    if data ~= nil and
+        data.fossiltype ~= nil and
+        data.fossiltype >= 1 and
+        data.fossiltype <= NUM_FOSSIL_TYPES then
+        SetFossilType(inst, data.fossiltype)
+    end
 end
 
 local function ondeploy(inst, pt)
     local mound = SpawnPrefab("fossil_stalker")
-    if mound then
-        mound.Transform:SetPosition(pt:Get())
-        mound.SoundEmitter:PlaySound("dontstarve/creatures/together/fossil/repair")
+    mound.Transform:SetPosition(pt:Get())
+    mound.SoundEmitter:PlaySound("dontstarve/creatures/together/fossil/repair")
 
-        inst.components.stackable:Get():Remove()
-    end
+    inst.components.stackable:Get():Remove()
 end
 
 local function fn()
@@ -48,9 +52,7 @@ local function fn()
 
     inst.AnimState:SetBank("fossil_piece")
     inst.AnimState:SetBuild("fossil_piece")
-    inst.AnimState:PlayAnimation("idle")
-
-    inst:AddTag("quakedebris")
+    SetFossilType(inst, 1)
 
     inst.entity:SetPristine()
 
@@ -58,9 +60,10 @@ local function fn()
         return inst
     end
 
+    SetFossilType(inst, math.random(NUM_FOSSIL_TYPES))
+
     inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
-    inst.components.stackable:SetOnDeStack(SetFossilType)
 
     inst:AddComponent("tradable")
     inst:AddComponent("inspectable")
@@ -75,13 +78,7 @@ local function fn()
 
     inst:AddComponent("repairer")
     inst.components.repairer.repairmaterial = MATERIALS.FOSSIL
-    inst.components.repairer.healthrepairvalue = 1
     inst.components.repairer.workrepairvalue = 1
-
-    SetFossilType(inst, math.random(NUM_FOSSIL_TYPES))
-
-    inst:ListenForEvent("onpickup", cleanfossil)
-    inst:ListenForEvent("onputininventory", cleanfossil)
 
     --------SaveLoad
     inst.OnSave = onsave
@@ -90,19 +87,15 @@ local function fn()
     return inst
 end
 
+--TODO: REMOVE (someday)! Deprecated, but might be in existing save data
 function cleanfn()
     local inst = fn()
 
-    if not TheWorld.ismastersim then
-        return inst
-    end
-
     inst:SetPrefabName("fossil_piece")
-    SetFossilType(inst, nil)
 
     return inst
 end
 
 return Prefab("fossil_piece", fn, assets, prefabs),
-       MakePlacer("fossil_piece_placer", "fossil_piece", "fossil_piece", "idle"),
+       MakePlacer("fossil_piece_placer", "fossil_stalker", "fossil_stalker", "1_1"),
        Prefab("fossil_piece_clean", cleanfn, assets, prefabs)

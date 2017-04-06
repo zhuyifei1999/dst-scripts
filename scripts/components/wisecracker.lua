@@ -30,16 +30,12 @@ local Wisecracker = Class(function(self, inst)
 
     -- if not TheWorld:HasTag("cave") or not data.newdusk then
     --     inst:WatchWorldState("startdusk", function()
-    --         if inst.components.talker then inst.components.talker:Say(GetString(inst, "ANNOUNCE_DUSK")) end
+    --         inst.components.talker:Say(GetString(inst, "ANNOUNCE_DUSK"))
     --     end)
     -- end
 
     inst:ListenForEvent("itemranout", function(inst, data)
         inst.components.talker:Say(GetString(inst, data.announce))
-    end)
-
-    inst:ListenForEvent("heargrue", function(inst, data)
-        if inst.components.talker then inst.components.talker:Say(GetString(inst, "ANNOUNCE_CHARLIE")) end
     end)
 
     inst:ListenForEvent("accomplishment", function(inst, data)
@@ -56,12 +52,34 @@ local Wisecracker = Class(function(self, inst)
         end
     end)
 
+    inst:ListenForEvent("snared", function(inst)
+        inst.components.talker:Say(GetString(inst, "ANNOUNCE_SNARED"))
+    end)
+
+    inst:ListenForEvent("repelled", function(inst, data)
+        if data ~= nil and data.repeller ~= nil and data.repeller.entity:IsVisible() then
+            local t = GetTime()
+            if t >= (self._repeltime or 0) then
+                self._repeltime = t + 5
+                inst.components.talker:Say(GetString(inst, "ANNOUNCE_REPELLED"))
+            end
+        end
+    end)
+
     inst:ListenForEvent("insufficientfertilizer", function(inst, data)
         inst.components.talker:Say(GetString(inst, "ANNOUNCE_INSUFFICIENTFERTILIZER"))
     end)
 
+    inst:ListenForEvent("heargrue", function(inst, data)
+        inst.components.talker:Say(GetString(inst, "ANNOUNCE_CHARLIE"))
+    end)
+
     inst:ListenForEvent("attackedbygrue", function(inst, data)
-        if inst.components.talker then inst.components.talker:Say(GetString(inst, "ANNOUNCE_CHARLIE_ATTACK")) end
+        inst.components.talker:Say(GetString(inst, "ANNOUNCE_CHARLIE_ATTACK"))
+    end)
+
+    inst:ListenForEvent("resistedgrue", function(inst, data)
+        inst.components.talker:Say(GetString(inst, "ANNOUNCE_CHARLIE_MISSED"))
     end)
 
     inst:ListenForEvent("thorns", function(inst, data)
@@ -108,6 +126,10 @@ local Wisecracker = Class(function(self, inst)
 
     inst:ListenForEvent("wormholespit", function(inst, data)
         inst.components.talker:Say(GetString(inst, "ANNOUNCE_WORMHOLE"))
+    end)
+
+    inst:ListenForEvent("townportalteleport", function(inst, data)
+        inst.components.talker:Say(GetString(inst, "ANNOUNCE_TOWNPORTALTELEPORT"))
     end)
 
     inst:ListenForEvent("huntlosttrail", function(inst, data)

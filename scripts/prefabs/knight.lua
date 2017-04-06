@@ -1,4 +1,5 @@
-local clockwork_common = require"prefabs/clockwork_common"
+local clockwork_common = require "prefabs/clockwork_common"
+local RuinsRespawner = require "prefabs/ruinsrespawner"
 
 local assets =
 {
@@ -7,6 +8,7 @@ local assets =
     Asset("ANIM", "anim/knight_nightmare.zip"),
     Asset("SOUND", "sound/chess.fsb"),
     Asset("SCRIPT", "scripts/prefabs/clockwork_common.lua"),
+    Asset("SCRIPT", "scripts/prefabs/ruinsrespawner.lua"),
 }
 
 local prefabs =
@@ -19,6 +21,7 @@ local prefabs_nightmare =
     "gears",
     "thulecite_pieces",
     "nightmarefuel",
+    "knight_nightmare_ruinsrespawner_inst",
 }
 
 local brain = require "brains/knightbrain"
@@ -161,5 +164,12 @@ local function nightmarefn()
     return inst
 end
 
+local function onruinsrespawn(inst, respawner)
+	if not respawner:IsAsleep() then
+		inst.sg:GoToState("ruinsrespawn")
+	end
+end
+
 return Prefab("knight", fn, assets, prefabs),
-    Prefab("knight_nightmare", nightmarefn, assets, prefabs_nightmare)
+    Prefab("knight_nightmare", nightmarefn, assets, prefabs_nightmare),
+    RuinsRespawner.Inst("knight_nightmare", onruinsrespawn), RuinsRespawner.WorldGen("knight_nightmare", onruinsrespawn)

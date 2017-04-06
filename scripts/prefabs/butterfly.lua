@@ -1,3 +1,5 @@
+require "prefabutil"
+
 local assets =
 {
     Asset("ANIM", "anim/butterfly_basic.zip"),
@@ -7,7 +9,7 @@ local prefabs =
 {
     "butterflywings",
     "butter",
-    "flower",
+    "planted_flower",
 }
 
 local brain = require "brains/butterflybrain"
@@ -54,7 +56,7 @@ local function CanDeploy(inst)
 end
 
 local function OnDeploy(inst, pt) 
-    local flower = SpawnPrefab("flower")
+    local flower = SpawnPrefab("planted_flower")
     if flower then
         flower:PushEvent("growfrombutterfly")
         flower.Transform:SetPosition(pt:Get())
@@ -81,6 +83,9 @@ local function fn()
     inst:AddTag("smallcreature")
     inst:AddTag("cattoyairborne")
     inst:AddTag("wildfireprotected")
+
+    --pollinator (from pollinator component) added to pristine state for optimization
+    inst:AddTag("pollinator")
 
     inst.Transform:SetTwoFaced()
 

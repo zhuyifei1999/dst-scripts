@@ -37,6 +37,11 @@ local function OnTrapped(inst, data)
     end
 end
 
+local function OnPutInInventory(inst)
+    --Otherwise sleeper won't work if we're in a busy state
+    inst.sg:GoToState("idle")
+end
+
 local function OnDropped(inst)
     inst.sg:GoToState("stunned")
 end
@@ -210,8 +215,8 @@ local function makebird(name, soundname)
         inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)
         inst.Physics:ClearCollisionMask()
         inst.Physics:CollidesWith(COLLISION.WORLD)
-        inst.Physics:SetSphere(1)
         inst.Physics:SetMass(1)
+        inst.Physics:SetSphere(1)
 
         inst:AddTag("bird")
         inst:AddTag(name)
@@ -305,7 +310,7 @@ local function makebird(name, soundname)
             birdspawner:StartTracking(inst)
         end
 
-        MakeFeedableSmallLivestock(inst, TUNING.BIRD_PERISH_TIME, nil, OnDropped)
+        MakeFeedableSmallLivestock(inst, TUNING.BIRD_PERISH_TIME, OnPutInInventory, OnDropped)
 
         if name == "canary" and TheWorld.components.toadstoolspawner ~= nil then
             inst.components.occupier.onoccupied = OnCanaryOccupied
@@ -327,7 +332,7 @@ local function makebird(name, soundname)
 
         return inst
     end
-    
+
     return Prefab(name, fn, assets, prefabs)
 end
 

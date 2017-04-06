@@ -141,8 +141,8 @@ local function UnregisterSpawnPoint(spawnpt)
     elseif _masterpt == spawnpt then
         _masterpt = nil
     end
-    RemoveByValue(_openpts, spawnpt)
-    RemoveByValue(_usedpts, spawnpt)
+    table.removearrayvalue(_openpts, spawnpt)
+    table.removearrayvalue(_usedpts, spawnpt)
 end
 
 local function OnRegisterSpawnPoint(inst, spawnpt)
@@ -161,7 +161,7 @@ end
 local function UnregisterMigrationPortal(portal)
     if portal == nil then return end
     --print("Unregistering portal["..tostring(portal.components.worldmigrator.id).."]")
-    RemoveByValue(ShardPortals, portal)
+    table.removearrayvalue(ShardPortals, portal)
 end
 
 local function OnRegisterMigrationPortal(inst, portal)
@@ -172,6 +172,10 @@ local function OnRegisterMigrationPortal(inst, portal)
 
     table.insert(ShardPortals, portal)
     inst:ListenForEvent("onremove", UnregisterMigrationPortal, portal)
+end
+
+local function NoHoles(pt)
+    return not TheWorld.Map:IsPointNearHole(pt)
 end
 
 local function GetDestinationPortalLocation(player)
@@ -191,7 +195,7 @@ local function GetDestinationPortalLocation(player)
         local pos = portal:GetPosition()
         local start_angle = math.random() * PI * 2
         local rad = portal.Physics ~= nil and portal.Physics:GetRadius() + .5 or .5
-        local offset = FindWalkableOffset(pos, start_angle, rad, 8, false)
+        local offset = FindWalkableOffset(pos, start_angle, rad, 8, false, true, NoHoles)
 
         --V2C: Do this after caching physical values, since it might remove itself
         --     and spawn in a new "opened" version, making "portal" invalid.
@@ -260,6 +264,9 @@ function self:SpawnAtLocation(inst, player, x, y, z, isloading)
 
     print(string.format("Spawning player at: [%s] (%2.2f, %2.2f, %2.2f)", isloading and "Load" or MODES[_mode], x, y, z))
     player.Physics:Teleport(x, y, z)
+    if player.components.areaaware ~= nil then
+        player.components.areaaware:UpdatePosition(x, y, z)
+    end
 
     -- Spawn a light if it's dark
     if not inst.state.isday and #TheSim:FindEntities(x, y, z, 4, { "spawnlight" }) <= 0 then

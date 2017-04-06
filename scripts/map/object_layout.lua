@@ -273,11 +273,13 @@ local function ConvertLayoutToEntitylist(layout)
 	return all_items
 end
 
-local function ReserveAndPlaceLayout(node_id, layout, prefabs, add_entity, position)
+local function ReserveAndPlaceLayout(node_id, layout, prefabs, add_entity, position, world)
 	assert(node_id~=nil)
 	assert(layout~=nil)
 	assert(prefabs~=nil)
 	assert(add_entity~=nil)
+	
+	world = world or WorldSim
 
 	-- Calculate min bounding box
 	local item_positions = {}
@@ -296,17 +298,8 @@ local function ReserveAndPlaceLayout(node_id, layout, prefabs, add_entity, posit
 		size = e_height
 	end
 		
---	elseif layout.count ~= nil then
---		
---		for current_prefab, count in ipairs(layout.count) do
---			for i, pos in pairs(count) do
---				table.insert(all_items)
---			end
---		end
-
-	
 	size = layout.scale * size
-	local flip_x = 1
+	local flip_x = -1
 	local flip_y = 1
 	local switch_xy = false	
 
@@ -320,10 +313,10 @@ local function ReserveAndPlaceLayout(node_id, layout, prefabs, add_entity, posit
 	if layout.force_rotation ~= nil then
 		--print(node_id, layout, layout.force_rotation)
 		local translations = { 
-								[LAYOUT_ROTATION.NORTH]={false,	1,	1}, 
-								[LAYOUT_ROTATION.EAST]= {true,	-1, 1}, 
-								[LAYOUT_ROTATION.SOUTH]={false,	-1,	-1}, 
-								[LAYOUT_ROTATION.WEST]=	{true,	1,	-1} 
+								[LAYOUT_ROTATION.NORTH]={false,	-1,	1}, 
+								[LAYOUT_ROTATION.EAST]= {true,	 1, 1}, 
+								[LAYOUT_ROTATION.SOUTH]={false,  1,	-1}, 
+								[LAYOUT_ROTATION.WEST]=	{true,	-1,	-1} 
 							 }
 							 
 		switch_xy  = translations[layout.force_rotation][1]
@@ -331,12 +324,16 @@ local function ReserveAndPlaceLayout(node_id, layout, prefabs, add_entity, posit
 		flip_y = translations[layout.force_rotation][3]
 	end
 
+	-- Hack due to all positioned layouts being authored in the wrong directoin...
+	flip_x = (position ~= nil) and (-flip_x) or flip_x
+	flip_y = (position ~= nil) and (-flip_y) or flip_y
+
 	local tiles = nil
 	if layout.ground ~= nil then
 		size = #layout.ground
 		tiles = {}
-		for row = 1, size do
-			for column = 1, size do
+		for column = 1, size do
+			for row = 1, size do
 				local rw = row
 				local clmn = column
 				
@@ -346,18 +343,18 @@ local function ReserveAndPlaceLayout(node_id, layout, prefabs, add_entity, posit
 				end
 				
 				if flip_x == -1 then
-					rw = size - (rw-1)
-				end
-				if flip_y == -1 then
 					clmn = size - (clmn-1)
 				end
-				--print("rw",rw, "clmn", clmn)
-				if layout.ground[clmn][rw] ~= 0 then	
+				if flip_y == -1 then
+					rw = size - (rw-1)
+				end
+
+				-- !! WARNING: layout.ground is stored as layout.ground[y][x] !! --
+				if layout.ground[rw][clmn] ~= 0 then
 					if position ~= nil then
-						--print(position[1] + clmn, position[2] + rw, layout.ground_types[layout.ground[clmn][rw]])
-						WorldSim:SetTile(position[1] + column, size+position[2] - row, layout.ground_types[layout.ground[rw][clmn]], 1)
-					else
-						table.insert(tiles, layout.ground_types[layout.ground[clmn][rw]])
+						world:SetTile(position[1] + column, position[2] + row, layout.ground_types[layout.ground[rw][clmn]], 1)
+					else 
+						table.insert(tiles, layout.ground_types[layout.ground[rw][clmn]])
 					end
 				else
 					table.insert(tiles, 0)
@@ -376,7 +373,7 @@ local function ReserveAndPlaceLayout(node_id, layout, prefabs, add_entity, posit
 	local rcx = 0
 	local rcy = 0
 	if position == nil then
-		rcx, rcy = WorldSim:ReserveSpace(node_id, size, layout.start_mask, layout.fill_mask, layout.layout_position, tiles)
+		rcx, rcy = world:ReserveSpace(node_id, size, layout.start_mask, layout.fill_mask, layout.layout_position, tiles)
 	else
 		rcx = position[1]
 		rcy = position[2]
@@ -386,29 +383,37 @@ local function ReserveAndPlaceLayout(node_id, layout, prefabs, add_entity, posit
 	
 	if rcx ~= nil then		
 		-- ReserveSpace gives us the bottom left tile, but we orient objects around the center(to ease rotation)
-		rcx = rcx + size - 0.5
-		rcy = rcy + size - 0.5
+		rcx = rcx + size + (position == nil and -0.5 or 0.5)
+		rcy = rcy + size + (position == nil and -0.5 or 0.5)
 	
-	
-		--if flip_y == -1 then
-			--if switch_xy == true then
-				--rcx = rcx - 1
-			--else
-				--rcy = rcy - 1
-			--end
-			
-		--end
 		for idx=1, #prefabs do
-			local x = prefabs[idx].x* flip_x
-			local y = prefabs[idx].y* flip_y 
+			local x = prefabs[idx].x * flip_x
+			local y = prefabs[idx].y * flip_y 
 			
 			if switch_xy == true then
-				x = prefabs[idx].y* flip_y 
-				y = prefabs[idx].x* flip_x
+				x = prefabs[idx].y * flip_y 
+				y = prefabs[idx].x * flip_x
 			end
 			
-			local points_x = rcx + x * layout.scale  --* flip_x
-			local points_y = rcy + y * layout.scale  --* flip_y 
+			if prefabs[idx].properties ~= nil then
+				if prefabs[idx].properties.data ~= nil and prefabs[idx].properties.data.savedrotation ~= nil then
+					local rot = prefabs[idx].properties.data.savedrotation.rotation or 0
+					local dir = Vector3(math.cos(rot / RADIANS), 0, -math.sin(rot / RADIANS))
+					
+					dir.x = dir.x * flip_x
+					dir.z = dir.z * flip_y
+					if switch_xy then
+						dir.x, dir.z = dir.z, dir.x
+					end
+
+					rot = math.floor(math.atan2(-dir.z, dir.x) / DEGREES + 0.5)
+					
+					prefabs[idx].properties.data.savedrotation.rotation = rot
+				end
+			end
+			
+			local points_x = rcx + x * layout.scale
+			local points_y = rcy + y * layout.scale
 				
 			--print ("add_entity", prefabs[idx].prefab, points_x, points_y )	
 			
@@ -428,11 +433,11 @@ local function Convert(node_id, item, addEntity)
 	ReserveAndPlaceLayout(node_id, layout, prefabs, addEntity)
 end
 
-local function Place(position, item, addEntity, choices)
+local function Place(position, item, addEntity, choices, world)
 	assert(item and item ~= "", "Must provide a valid layout name, got nothing.")
 	local layout = LayoutForDefinition(item, choices)
 	local prefabs = ConvertLayoutToEntitylist(layout)
-	ReserveAndPlaceLayout("POSITIONED", layout, prefabs, addEntity, position)
+	ReserveAndPlaceLayout("POSITIONED", layout, prefabs, addEntity, position, world)
 end
 
 return {

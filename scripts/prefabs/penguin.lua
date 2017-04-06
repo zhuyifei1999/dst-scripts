@@ -157,50 +157,22 @@ local function ShareTargetFn(dude)
 end
 
 local function OnAttacked(inst, data)
-
-    if not inst.components.teamattacker then return end
-    --print("OnAttacked")
-
-    if not inst.components.teamattacker.inteam and not inst.components.teamattacker:SearchForTeam() then
-        --print("MakeTeam")
-        MakeTeam(inst, data.attacker)
-    elseif inst.components.teamattacker.teamleader then    
-        inst.components.teamattacker.teamleader:BroadcastDistress()   --Ask for  help!
-        --print("ASK FOR HELP!")
-    end
-
-    if inst.components.teamattacker.inteam and not inst.components.teamattacker.teamleader:CanAttack() then
-        local attacker = data and data.attacker
-        --print(inst,"OnAttack:settarget",attacker)
-        inst.components.combat:SetTarget(attacker)
-        inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, ShareTargetFn, MAX_TARGET_SHARES)
-    end
-end
-
-local function OnThrown(inst, data)
-
-    --print("OnThrow",data.attacker)
-    if not inst.components.teamattacker or
-       data.target ~= inst then
+    if inst.components.teamattacker == nil then
         return
     end
 
     if not inst.components.teamattacker.inteam and not inst.components.teamattacker:SearchForTeam() then
-        --print("MakeTeam",data.attacker)
+        --print("MakeTeam")
         MakeTeam(inst, data.attacker)
-    elseif inst.components.teamattacker.teamleader then    
-        inst.components.teamattacker.teamleader:BroadcastDistress()   --Ask for  help!
-        --print("ASK FOR HELP!")
     end
 
     if inst.components.teamattacker.inteam and not inst.components.teamattacker.teamleader:CanAttack() then
-        local attacker = data.attacker
+        local attacker = data ~= nil and data.attacker or nil
         --print(inst,"OnAttack:settarget",attacker)
         inst.components.combat:SetTarget(attacker)
         inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, ShareTargetFn, MAX_TARGET_SHARES)
     end
 end
-
 
 local function OnEnterMood(inst)
     inst.nesting = true
@@ -232,7 +204,7 @@ local function RememberKnownLocation(inst)
 end
 
 local function CheckAutoRemove(inst)
-    if not TheWorld.state.iswinter or TheWorld.state.remainingdaysinseason < 3 then
+    if inst.colonyNum == nil or not TheWorld.state.iswinter or TheWorld.state.remainingdaysinseason < 3 then
         inst:Remove()
     end
 end
@@ -345,7 +317,6 @@ local function fn()
     inst.components.inventory.acceptsstacks = false
 
     inst:ListenForEvent("attacked", OnAttacked)
-    inst:ListenForEvent("hostileprojectile", OnThrown)
 
     MakeHauntablePanic(inst)
 

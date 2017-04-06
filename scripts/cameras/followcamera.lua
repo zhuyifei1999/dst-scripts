@@ -20,10 +20,14 @@ local FollowCamera = Class(function(self, inst)
     self.onupdatefn = dummyfn
 end)
 
+function FollowCamera:SetDefaultOffset()
+    self.targetoffset = Vector3(0, 1.5, 0)
+end
+
 function FollowCamera:SetDefault()
     self.targetpos = Vector3(0, 0, 0)
     --self.currentpos = Vector3(0, 0, 0)
-    self.targetoffset = Vector3(0, 1.5, 0)
+    self:SetDefaultOffset()
 
     if self.headingtarget == nil then
         self.headingtarget = 45

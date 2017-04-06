@@ -266,12 +266,12 @@ local function fn()
     inst:AddTag("blocker")
     inst.entity:AddPhysics()
     inst.Physics:SetMass(0) 
-    inst.Physics:SetCapsule(.25, 2)
     inst.Physics:SetCollisionGroup(COLLISION.OBSTACLES)
     inst.Physics:ClearCollisionMask()
     inst.Physics:CollidesWith(COLLISION.ITEMS)
     inst.Physics:CollidesWith(COLLISION.CHARACTERS)
     --inst.Physics:CollidesWith(COLLISION.GIANTS)
+    inst.Physics:SetCapsule(.25, 2)
     ----------------------------------------------------
 
     inst.Light:SetFalloff(FADE_FALLOFF)

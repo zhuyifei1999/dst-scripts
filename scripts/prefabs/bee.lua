@@ -237,7 +237,9 @@ local workerbrain = require("brains/beebrain")
 local killerbrain = require("brains/killerbeebrain")
 
 local function workerbee()
-    local inst = commonfn("bee_build", { "worker" })
+    --pollinator (from pollinator component) added to pristine state for optimization
+    --for searching: inst:AddTag("pollinator")
+    local inst = commonfn("bee_build", { "worker", "pollinator" })
 
     if not TheWorld.ismastersim then
         return inst

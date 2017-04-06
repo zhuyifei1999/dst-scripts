@@ -31,6 +31,13 @@ local function OnAttacked(inst, data)
     inst.components.combat:SetTarget(data.attacker)
 end
 
+local function OnPreLoad(inst, data)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	if y > 0 then
+		inst.Transform:SetPosition(x, 0, z)
+	end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -123,6 +130,8 @@ local function fn()
 		inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
 		return true
 	end)
+
+	inst.OnPreLoad = OnPreLoad
 
     return inst
 end

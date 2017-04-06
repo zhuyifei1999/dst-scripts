@@ -20,7 +20,7 @@ end
 function DebugSpawn(prefab)
     if TheSim ~= nil and TheInput ~= nil then
         TheSim:LoadPrefabs({ prefab })
-        if not Prefabs[prefab].is_skin then
+        if Prefabs[prefab] ~= nil and not Prefabs[prefab].is_skin then
 			local inst = SpawnPrefab(prefab)
 			if inst ~= nil then
 				inst.Transform:SetPosition(ConsoleWorldPosition():Get())
@@ -104,7 +104,7 @@ end
 function table.containskey(table, key)
     if table == nil then return false end
 
-    for k, value in pairs (table) do
+    for k, value in pairs(table) do
         if k == key then
             return true
         end
@@ -113,12 +113,12 @@ function table.containskey(table, key)
 end
 
 -- only for indexed tables!
-function table.reverse ( tab )
+function table.reverse(tab)
     local size = #tab
     local newTable = {}
  
-    for i,v in ipairs ( tab ) do
-        newTable[size-i] = v
+    for i,v in ipairs(tab) do
+        newTable[size-i+1] = v
     end
  
     return newTable
@@ -132,8 +132,26 @@ function table.invert(t)
     return invt
 end
 
+function table.removearrayvalue(t, lookup_value)
+    for i, v in ipairs(t) do
+        if v == lookup_value then
+            table.remove(t, i)
+            return v
+        end
+    end
+end
+
+function table.removetablevalue(t, lookup_value)
+    for k, v in pairs(t) do
+        if v == lookup_value then
+            t[k] = nil
+            return v
+        end
+    end
+end
+
 function table.reverselookup(t, lookup_value)
-    for k,v in pairs(t) do
+    for k, v in pairs(t) do
         if v == lookup_value then
             return k
         end
@@ -155,12 +173,13 @@ function GetFlattenedSparse(tab)
 end
 
 -- RemoveByValue only applies to array-type tables
+-- Removes all instances of the value from the table
+-- See table.removearrayvalue above
 function RemoveByValue(t, value)
-    if t then
-        for i,v in ipairs(t) do 
-            while v == value do
+    if t ~= nil then
+        for i = #t, 1, -1 do
+            if t[i] == value then
                 table.remove(t, i)
-                v = t[i]
             end
         end
     end
@@ -1189,4 +1208,25 @@ function CalcDiminishingReturns(current, basedelta)
     local dampen = 3 * basedelta / (current + 3 * basedelta)
     local dcharge = dampen * basedelta * .5 * (1 + math.random() * dampen)
     return current + dcharge
+end
+
+function Dist2dSq(p1, p2) 
+	local dx = p1.x - p2.x
+	local dy = p1.y - p2.y
+	return dx*dx + dy*dy
+end
+
+function DistPointToSegment2dSq(p, v1, v2) 
+	local l2 = Dist2dSq(v1, v2)
+	if (l2 == 0) then
+		return Dist2dSq(p, v1)
+	end
+	local t = ((p.x - v1.x) * (v2.x - v1.x) + (p.y - v1.y) * (v2.y - v1.y)) / l2
+	if (t < 0) then
+		return Dist2dSq(p, v1)
+	end
+	if (t > 1) then
+		return Dist2dSq(p, v2)
+	end
+	return Dist2dSq(p, {x = v1.x + t * (v2.x - v1.x), y =v1.y + t * (v2.y - v1.y)});
 end

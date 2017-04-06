@@ -15,7 +15,7 @@ function OnPhysicsCollision(guid1, guid2)
 end
 
 function Launch(inst, launcher, basespeed)
-    if inst ~= nil and inst.Physics ~= nil and launcher ~= nil then
+    if inst ~= nil and inst.Physics ~= nil and inst.Physics:IsActive() and launcher ~= nil then
         local x, y, z = inst.Transform:GetWorldPosition()
         local x1, y1, z1 = launcher.Transform:GetWorldPosition()
         local vx, vz = x - x1, z - z1
@@ -32,7 +32,7 @@ function Launch(inst, launcher, basespeed)
 end
 
 function LaunchAt(inst, launcher, target, speedmult, startheight, startradius)
-    if inst ~= nil and inst.Physics ~= nil and launcher ~= nil then
+    if inst ~= nil and inst.Physics ~= nil and inst.Physics:IsActive() and launcher ~= nil then
         local x, y, z = launcher.Transform:GetWorldPosition()
         local angle
         if target ~= nil then
@@ -43,7 +43,7 @@ function LaunchAt(inst, launcher, target, speedmult, startheight, startradius)
         end
         local sina, cosa = math.sin(angle), math.cos(angle)
         local spd = (math.random() * 2 + 1) * (speedmult or 1)
-        inst.Transform:SetPosition(x + (startradius or 0) * cosa, startheight or .1, z + (startradius or 0) * sina)
+        inst.Physics:Teleport(x + (startradius or 0) * cosa, startheight or .1, z + (startradius or 0) * sina)
         inst.Physics:SetVel(spd * cosa, math.random() * 2 + 4 + 2 * (speedmult or 1) , spd * sina)
     end
 end

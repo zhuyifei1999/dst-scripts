@@ -11,6 +11,7 @@ BASE_TORSO_TUCK = {}
 BASE_ALTERNATE_FOR_BODY = {}
 BASE_ALTERNATE_FOR_SKIRT = {}
 
+HAS_LEG_BOOT = {}
 BASE_LEGS_SIZE = {}
 BASE_FEET_SIZE = {}
 
@@ -364,6 +365,13 @@ function CreatePrefabSkin(name, info)
     if info.feet_cuff_size ~= nil then
         for base_skin,size in pairs(info.feet_cuff_size) do
             BASE_FEET_SIZE[base_skin] = size
+        end
+    end
+
+	--HAS_LEG_BOOT not yet tested
+    if info.has_leg_boot_builds ~= nil then
+        for _,base_skin in pairs(info.has_leg_boot_builds) do
+            HAS_LEG_BOOT[base_skin] = true
         end
     end
 

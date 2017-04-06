@@ -72,7 +72,9 @@ local states =
             end
 
             inst.components.locomotor:StopMoving()
-            inst.AnimState:PlayAnimation("idle_loop", true)
+            if not inst.AnimState:IsCurrentAnimation("idle_loop") then
+                inst.AnimState:PlayAnimation("idle_loop", true)
+            end
         end,
     },
 

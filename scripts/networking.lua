@@ -278,6 +278,26 @@ function SerializeWorldSession(data, session_identifier, callback)
     TheNet:SerializeWorldSession(data, session_identifier, ENCODE_SAVES, callback)
 end
 
+function ReportAction( userid, items, item_counts, users, cb )
+	TheSim:ReportAction( userid, items, item_counts, users,
+		function(result_str, isSuccessful, resultCode)
+			print(result_str, isSuccessful, resultCode)
+			local status, result_data = pcall( function() return json.decode(result_str) end )
+			local success = false
+			if status and result_data then
+				if result_data.Result == "DONE" then
+					TheNet:Announce(STRINGS.UI.HUD.REPORT_RESULT_ANNOUCEMENT)
+					success = true
+				end
+			end
+			
+			if cb ~= nil then
+				cb(success)
+			end
+		end
+	)
+end
+
 function DownloadMods( server_listing )
     local function enable_server_mods()
         print("We now have the required mods, enable them for server")

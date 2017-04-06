@@ -49,8 +49,8 @@ local function fn()
     inst.Physics:CollidesWith(COLLISION.OBSTACLES)
     inst.Physics:CollidesWith(COLLISION.SMALLOBSTACLES)
     inst.Physics:CollidesWith(COLLISION.GIANTS)
-    inst.Physics:SetSphere(1)
     inst.Physics:SetMass(1)
+    inst.Physics:SetSphere(1)
 
     inst:AddTag("bird")
     inst:AddTag("canary")
@@ -58,6 +58,7 @@ local function fn()
     inst:AddTag("small_livestock")
     inst:AddTag("show_spoilage")
     inst:AddTag("sickness")
+    inst:AddTag("untrappable")
 
     inst.Transform:SetTwoFaced()
 

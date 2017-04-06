@@ -288,6 +288,7 @@ local states =
                     for i, v in ipairs(inst.components.commander:GetAllSoldiers()) do
                         v:FocusTarget(nil)
                     end
+                    inst:BoostCommanderRange(false)
                 end
                 inst.components.commander:PushEventToAllSoldiers("flee")
             end),
@@ -382,6 +383,7 @@ local states =
                     for i, v in ipairs(inst.components.commander:GetAllSoldiers()) do
                         v:FocusTarget(nil)
                     end
+                    inst:BoostCommanderRange(false)
                 end
             end),
             TimeEvent(5, ErodeAway),
@@ -616,11 +618,13 @@ local states =
                             end
                         end
                         inst.sg.mem.focustargets = targets
+                        inst:BoostCommanderRange(true)
                     elseif #targets > 0 then
                         for i, v in ipairs(soldiers) do
                             v:FocusTarget(targets[1])
                         end
                         inst.sg.mem.focustargets = targets
+                        inst:BoostCommanderRange(true)
                     end
                 end
             end),
@@ -729,6 +733,7 @@ local states =
             if inst.components.commander:GetNumSoldiers() <= 0 then
                 inst.sg.statemem.ended = true
                 inst.components.sanityaura.aura = 0
+                inst:BoostCommanderRange(false)
                 inst.sg:GoToState("idle")
             else
                 inst.components.locomotor:StopMoving()
@@ -749,6 +754,7 @@ local states =
                 for i, v in ipairs(inst.components.commander:GetAllSoldiers()) do
                     v:FocusTarget(nil)
                 end
+                inst:BoostCommanderRange(false)
             end),
             CommonHandlers.OnNoSleepTimeEvent(32 * FRAMES, function(inst)
                 inst.sg:RemoveStateTag("busy")
@@ -768,6 +774,7 @@ local states =
                 for i, v in ipairs(inst.components.commander:GetAllSoldiers()) do
                     v:FocusTarget(nil)
                 end
+                inst:BoostCommanderRange(false)
             end
         end,
     },

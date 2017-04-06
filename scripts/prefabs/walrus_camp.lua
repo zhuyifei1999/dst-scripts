@@ -1,5 +1,3 @@
-require "prefabutil"
-
 local assets =
 {
     Asset("ANIM", "anim/walrus_house.zip"),
@@ -404,6 +402,7 @@ local function create()
     inst.Light:SetColour(180/255, 195/255, 50/255)
 
     --inst:AddTag("tent")
+    inst:AddTag("antlion_sinkhole_blocker")
 
     inst.entity:SetPristine()
 

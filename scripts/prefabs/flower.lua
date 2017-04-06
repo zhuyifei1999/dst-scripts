@@ -8,6 +8,7 @@ local prefabs =
     "petals",
     "flower_evil",
     "flower_withered",
+    "planted_flower",
 }
 
 local DAYLIGHT_SEARCH_RANGE = 30
@@ -31,10 +32,12 @@ end
 
 local function onsave(inst, data)
     data.anim = inst.animname
+    data.planted = inst.planted
 end
 
 local function onload(inst, data)
     setflowertype(inst, data ~= nil and data.anim or nil)
+    inst.planted = data ~= nil and data.planted or nil
 end
 
 local function onpickedfn(inst, picker)
@@ -47,7 +50,9 @@ local function onpickedfn(inst, picker)
         picker:PushEvent("thorns")
     end
 
-    TheWorld:PushEvent("beginregrowth", inst)
+	if not inst.planted then
+		TheWorld:PushEvent("beginregrowth", inst)
+	end
 
     inst:Remove()
 end
@@ -80,6 +85,14 @@ local function OnIsCaveDay(inst, isday)
         inst:DoTaskInTime(5.0 + math.random()*5.0, DieInDarkness)
     end
 end
+
+local function OnBurnt(inst)
+	if not inst.planted then
+		TheWorld:PushEvent("beginregrowth", inst)
+	end
+    DefaultBurntFn(inst)
+end
+
 
 local function fn()
     local inst = CreateEntity()
@@ -118,6 +131,8 @@ local function fn()
     --inst.components.transformer.transformPrefab = "flower_evil"
 
     MakeSmallBurnable(inst)
+    inst.components.burnable:SetOnBurntFn(OnBurnt)
+
     MakeSmallPropagator(inst)
 
     if TheWorld:HasTag("cave") then
@@ -150,5 +165,20 @@ function rosefn()
     return inst
 end
 
+function plantedflowerfn()
+    local inst = fn()
+
+    inst:SetPrefabName("flower")
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.planted = true
+
+    return inst
+end
+
 return Prefab("flower", fn, assets, prefabs),
-       Prefab("flower_rose", rosefn, assets, prefabs)
+       Prefab("flower_rose", rosefn, assets, prefabs),
+       Prefab("planted_flower", plantedflowerfn, assets, prefabs)

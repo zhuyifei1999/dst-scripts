@@ -1,9 +1,11 @@
-require "prefabutil"
+
+local RuinsRespawner = require "prefabs/ruinsrespawner"
 
 local assets =
 {
     Asset("ANIM", "anim/chessmonster_ruins.zip"),
 	Asset("MINIMAP_IMAGE", "chessjunk"),
+    Asset("SCRIPT", "scripts/prefabs/ruinsrespawner.lua"),
 }
 
 local prefabs =
@@ -19,6 +21,7 @@ local prefabs =
     "orangegem",
     "collapse_small",
     "maxwell_smoke",
+    "chessjunk_ruinsrespawner_inst",
 }
 
 SetSharedLootTable("chess_junk",
@@ -183,6 +186,25 @@ local function Junk(style)
     end
 end
 
-return Prefab("chessjunk1", Junk(1), assets, prefabs),
+local function RandomJunkFn()
+    local inst = BasePile(math.random(3))
+    inst:SetPrefabName("chessjunk"..inst.style)
+	return inst
+end
+
+local function onruinsrespawn(inst, respawner)
+	if not respawner:IsAsleep() then
+		inst.AnimState:PlayAnimation("hit"..tostring(inst.style))
+		inst.AnimState:PushAnimation("idle"..tostring(inst.style), false)
+
+		local fx = SpawnPrefab("small_puff")
+		fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+		fx.Transform:SetScale(1.5, 1.5, 1.5)
+	end
+end
+
+return Prefab("chessjunk", RandomJunkFn, assets, prefabs),
+	Prefab("chessjunk1", Junk(1), assets, prefabs),
     Prefab("chessjunk2", Junk(2), assets, prefabs),
-    Prefab("chessjunk3", Junk(3), assets, prefabs)
+    Prefab("chessjunk3", Junk(3), assets, prefabs),
+    RuinsRespawner.Inst("chessjunk", onruinsrespawn), RuinsRespawner.WorldGen("chessjunk", onruinsrespawn)

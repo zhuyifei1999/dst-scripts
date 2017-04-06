@@ -29,6 +29,23 @@ local function onremovelight(light)
     light._lantern._light = nil
 end
 
+local function stoptrackingowner(inst)
+    if inst._owner ~= nil then
+        inst:RemoveEventCallback("equip", inst._onownerequip, inst._owner)
+        inst._owner = nil
+    end
+end
+
+local function starttrackingowner(inst, owner)
+    if owner ~= inst._owner then
+        stoptrackingowner(inst)
+        if owner ~= nil and owner.components.inventory ~= nil then
+            inst._owner = owner
+            inst:ListenForEvent("equip", inst._onownerequip, owner)
+        end
+    end
+end
+
 local function turnon(inst)
     if not inst.components.fueled:IsEmpty() then
         inst.components.fueled:StartConsuming()
@@ -57,6 +74,8 @@ local function turnon(inst)
 end
 
 local function turnoff(inst)
+    stoptrackingowner(inst)
+
     inst.components.fueled:StopConsuming()
 
     if inst._light ~= nil then
@@ -162,6 +181,10 @@ local function onunequip(inst, owner)
     owner.AnimState:Show("ARM_normal")
     owner.AnimState:ClearOverrideSymbol("lantern_overlay")
     owner.AnimState:Hide("LANTERN_OVERLAY")
+
+    if inst.components.fueled.consuming then
+        starttrackingowner(inst, owner)
+    end
 end
 
 local function nofuel(inst)
@@ -285,6 +308,15 @@ local function fn()
 
     inst._light = nil
     turnon(inst)
+
+    inst._onownerequip = function(owner, data)
+        if data.item ~= inst and
+            (   data.eslot == EQUIPSLOTS.HANDS or
+                (data.eslot == EQUIPSLOTS.BODY and data.item:HasTag("heavy"))
+            ) then
+            turnoff(inst)
+        end
+    end
 
     return inst
 end

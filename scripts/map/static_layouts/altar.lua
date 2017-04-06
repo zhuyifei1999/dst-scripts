@@ -116,7 +116,7 @@ return {
         },
         {
           name = "",
-          type = "chessjunk2",
+          type = "chessjunk_spawner",
           shape = "rectangle",
           x = 559,
           y = 191,
@@ -127,7 +127,7 @@ return {
         },
         {
           name = "",
-          type = "ancient_altar",
+          type = "ancient_altar_spawner",
           shape = "rectangle",
           x = 384,
           y = 385,
@@ -138,7 +138,7 @@ return {
         },
         {
           name = "",
-          type = "chessjunk1",
+          type = "chessjunk_spawner",
           shape = "rectangle",
           x = 183,
           y = 577,
@@ -571,7 +571,7 @@ return {
         },
         {
           name = "",
-          type = "bishop_nightmare",
+          type = "bishop_nightmare_spawner",
           shape = "rectangle",
           x = 316,
           y = 408,
@@ -582,7 +582,7 @@ return {
         },
         {
           name = "",
-          type = "bishop_nightmare",
+          type = "bishop_nightmare_spawner",
           shape = "rectangle",
           x = 443,
           y = 373,

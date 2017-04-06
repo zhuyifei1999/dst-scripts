@@ -33,7 +33,7 @@ local _players = {}
 local UpdateSpawn
 
 local function StopTracking(player, params, ent)
-    RemoveByValue(params.ents, ent)
+    table.removearrayvalue(params.ents, ent)
 
     if params.targetpop ~= #params.ents then
         if params.spawntask == nil then
