@@ -69,16 +69,6 @@ local states=
         },        
     },
     
-    State {
-		name = "frozen",
-		tags = {"busy"},
-		
-        onenter = function(inst)
-            inst.AnimState:PlayAnimation("frozen")
-            inst.Physics:Stop()
-        end,
-    },
-
     State{
         name = "death",
         tags = {"busy"},
