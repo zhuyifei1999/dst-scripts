@@ -20,7 +20,6 @@ local prefabs =
     "carrot",
 }
 
-
 local beardlordloot = { "beardhair", "beardhair", "monstermeat" }
 local regularloot = { "carrot", "carrot" }
 
@@ -48,17 +47,17 @@ local function SetBeardLord(inst)
     if inst.clearbeardlordtask ~= nil then
         inst.clearbeardlordtask:Cancel()
     end
-    inst:DoTaskInTime(5.0, ClearBeardlord)
+    inst.clearbeardlordtask = inst:DoTaskInTime(5, ClearBeardlord)
 end
 
 local function CalcSanityAura(inst, observer)
     if IsCrazyGuy(observer) then
         SetBeardLord(inst)
+        return -TUNING.SANITYAURA_MED
     end
-    return (IsCrazyGuy(observer) and -TUNING.SANITYAURA_MED)
-        or (inst.components.follower ~= nil and
-            inst.components.follower.leader == observer and
-            TUNING.SANITYAURA_SMALL)
+    return inst.components.follower ~= nil
+        and inst.components.follower:GetLeader() == observer
+        and TUNING.SANITYAURA_SMALL
         or 0
 end
 
@@ -204,7 +203,7 @@ local function fn()
     inst:AddTag("scarytoprey")
 
     inst.AnimState:SetBank("manrabbit")
-    inst.AnimState:PlayAnimation("idle_loop")
+    inst.AnimState:PlayAnimation("idle_loop", true)
     inst.AnimState:Hide("hat")
 
     inst.AnimState:SetClientsideBuildOverride("insane", "manrabbit_build", "manrabbit_beard_build")

@@ -1,12 +1,12 @@
 local assets =
 {
-	Asset("ANIM", "anim/atrium_statue.zip"),
+    Asset("ANIM", "anim/atrium_statue.zip"),
     Asset("MINIMAP_IMAGE", "atrium_statue"),
 }
 
 local prefabs =
 {
-	"collapse_small",
+    "collapse_small",
     "thulecite",
     "thulecite_pieces",
     "statue_transition",
@@ -62,12 +62,12 @@ end
 local function ShowPhaseState(inst, phase, instant)
     inst._phasetask = nil
 
-	if (inst._suffix == "_night") ~= (phase == "wild") then
-		inst._suffix = (phase == "wild") and "_night" or ""
+    if (inst._suffix == "_night") ~= (phase == "wild") then
+        inst._suffix = (phase == "wild") and "_night" or ""
         if not instant then
             DoFx(inst)
         end
-	end		
+    end
 
     OnWorked(inst, nil, inst.components.workable ~= nil and inst.components.workable.workleft or TUNING.MARBLEPILLAR_MINE)
 end
@@ -91,65 +91,65 @@ local function OnEntitySleep(inst)
 end
 
 local function MakeStatue(name, rotate)
-	local function fn()
-		local inst = CreateEntity()
+    local function fn()
+        local inst = CreateEntity()
 
-		inst.entity:AddTransform()
-		inst.entity:AddAnimState()
-		inst.entity:AddSoundEmitter()
-		inst.entity:AddMiniMapEntity()
-		inst.entity:AddNetwork()
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddSoundEmitter()
+        inst.entity:AddMiniMapEntity()
+        inst.entity:AddNetwork()
 
-		MakeObstaclePhysics(inst, 0.45)
+        MakeObstaclePhysics(inst, .45)
 
-		inst.AnimState:SetBank("atrium_statue")
-		inst.AnimState:SetBuild("atrium_statue")
-		inst.AnimState:PlayAnimation("idle_full")
+        inst.AnimState:SetBank("atrium_statue")
+        inst.AnimState:SetBuild("atrium_statue")
+        inst.AnimState:PlayAnimation("idle_full")
 
-		inst.MiniMapEntity:SetIcon("atrium_statue.png")
+        inst.MiniMapEntity:SetIcon("atrium_statue.png")
 
-		if rotate then
-			inst.Transform:SetTwoFaced()
-		end
-		if name ~= "atrium_statue" then
-			inst:SetPrefabNameOverride("atrium_statue")
-		end
+        if rotate then
+            inst.Transform:SetTwoFaced()
+        end
+        if name ~= "atrium_statue" then
+            inst:SetPrefabNameOverride("atrium_statue")
+        end
 
-		inst.entity:SetPristine()
+        inst.entity:SetPristine()
 
-		if not TheWorld.ismastersim then
-			return inst
-		end
+        if not TheWorld.ismastersim then
+            return inst
+        end
 
-		inst:AddComponent("inspectable")
-	    
+        inst:AddComponent("inspectable")
+
 --[[
-		inst:AddComponent("workable")
-		inst.components.workable:SetWorkAction(ACTIONS.MINE)
-		inst.components.workable:SetWorkLeft(TUNING.MARBLEPILLAR_MINE)
-		inst.components.workable:SetOnWorkCallback(OnWorked)
-		inst.components.workable:SetOnFinishCallback(OnWorkFinished)
+        inst:AddComponent("workable")
+        inst.components.workable:SetWorkAction(ACTIONS.MINE)
+        inst.components.workable:SetWorkLeft(TUNING.MARBLEPILLAR_MINE)
+        inst.components.workable:SetOnWorkCallback(OnWorked)
+        inst.components.workable:SetOnFinishCallback(OnWorkFinished)
 
-		inst:AddComponent("lootdropper")
-		inst.components.lootdropper:SetChanceLootTable("atrium_statue_loot")
+        inst:AddComponent("lootdropper")
+        inst.components.lootdropper:SetChanceLootTable("atrium_statue_loot")
 ]]
 
-		if rotate then
-		    inst:AddComponent("savedrotation")
-		end
-		
-		inst.OnEntitySleep = OnEntitySleep
+        if rotate then
+            inst:AddComponent("savedrotation")
+        end
 
-		inst._suffix = ""
+        inst.OnEntitySleep = OnEntitySleep
 
-		inst:WatchWorldState("nightmarephase", OnNightmarePhaseChanged)
-		OnNightmarePhaseChanged(inst, TheWorld.state.nightmarephase, true)
+        inst._suffix = ""
 
-		return inst
-	end
-	
-	return Prefab(name, fn, assets)
+        inst:WatchWorldState("nightmarephase", OnNightmarePhaseChanged)
+        OnNightmarePhaseChanged(inst, TheWorld.state.nightmarephase, true)
+
+        return inst
+    end
+
+    return Prefab(name, fn, assets)
 end
 
 return MakeStatue("atrium_statue", false),
-	MakeStatue("atrium_statue_facing", true)
+    MakeStatue("atrium_statue_facing", true)

@@ -153,6 +153,9 @@ local function RetrofitAgainstTheGrain(area)
 	-- Add standstorm node tag to all of the oasis
 	for k,v in ipairs(node_indices) do
 		if not table.contains(TheWorld.topology.nodes[v].tags, "sandstorm") then
+			if TheWorld.topology.nodes[v].tags == nil then
+				TheWorld.topology.nodes[v].tags = {}
+			end
 			table.insert(TheWorld.topology.nodes[v].tags, "sandstorm")
 		end
 	end
