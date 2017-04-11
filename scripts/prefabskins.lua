@@ -35,6 +35,10 @@ PREFAB_SKINS = {
 		"birdcage_ornamental",
 		"birdcage_pirate",
 	},
+	cane = 
+	{
+		"cane_ancient",
+	},
 	catcoonhat = 
 	{
 		"catcoonhat_trapper_rooster",
@@ -139,6 +143,7 @@ PREFAB_SKINS = {
 	{
 		"torch_rag",
 		"torch_shadow",
+		"torch_shadow_alt",
 		"torch_spooky",
 	},
 	treasurechest = 
@@ -147,6 +152,7 @@ PREFAB_SKINS = {
 		"treasurechest_gingerbread",
 		"treasurechest_posh",
 		"treasurechest_poshprint",
+		"treasurechest_sacred",
 		"treasurechest_steamertrunk",
 		"treasurechest_traincase",
 		"treasurechest_traveltrunk",

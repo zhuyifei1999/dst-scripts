@@ -339,7 +339,7 @@ function Container:Close()
         end
 
         if self.onclosefn ~= nil then
-            self.onclosefn(self.inst)
+            self.onclosefn(self.inst, doer)
         end
 
         self.inst:PushEvent("onclose")

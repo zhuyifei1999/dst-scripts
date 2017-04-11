@@ -607,6 +607,22 @@ t = {
             end,
         },
 
+        {
+            version = 4.77, -- ANR: sacred_chest
+            fn = function(savedata)
+                if savedata == nil then
+                    return
+                end
+				if savedata.map ~= nil and savedata.map.prefab == "cave" and savedata.map.persistdata ~= nil then
+                    if savedata.map.persistdata.retrofitcavemap_anr == nil then
+						savedata.map.persistdata.retrofitcavemap_anr = {}
+					end
+
+					savedata.map.persistdata.retrofitcavemap_anr.retrofit_sacred_chest = true
+				end
+            end,
+        },
+
     },
 }
 

@@ -132,6 +132,8 @@ return
         "It ought to be more docile now.",
         "The great Panthera auropunctata is tamed.",
     },
+    ANNOUNCE_SACREDCHEST_YES = "That did the trick.",
+    ANNOUNCE_SACREDCHEST_NO = "Shoot. I thought I had it.",
     ANNOUNCE_NODANGERAFK = "Were I to lose focus now I'd be sure to sustain bodily injury.",
     ANNOUNCE_NODANGERGIFT = "Presents are not a top survival priority at this moment.",
     ANNOUNCE_NOMOUNTEDGIFT = "I do believe I should dismount first.",
@@ -545,6 +547,11 @@ return
         {
             GENERIC = "A storage chest.",
             BURNT = "The charred skeleton of a storage chest.",
+        },
+        SACRED_CHEST = 
+        {
+            GENERIC = "A small dimension tightly bound in magic.",
+            LOCKED = "The magic's at work.",
         },
         TUMBLEWEED = "A dried collection of plant matter.",
         GRASS_UMBRELLA = "A dainty parasol that will provide moderate protection.",

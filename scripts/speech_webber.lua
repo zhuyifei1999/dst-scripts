@@ -133,6 +133,8 @@ return {
         "Maybe it'll be happier now.",
         "I hope you like our tribute!",
 	},
+	ANNOUNCE_SACREDCHEST_YES = "It likes us!",
+	ANNOUNCE_SACREDCHEST_NO = "But those were presents!",
 	ANNOUNCE_CRAFTING_FAIL = "We're missing something.",
 	ANNOUNCE_DEERCLOPS = "That sounded like a big meanie.",
 	ANNOUNCE_CAVEIN = "I think the sky is falling!",
@@ -1810,6 +1812,11 @@ return {
 		{
 			GENERIC = "We could keep our toys in it!",
 			BURNT = "It won't be very useful to us now.",
+		},
+		SACRED_CHEST = 
+		{
+			GENERIC = "We feel cold.",
+			LOCKED = "It's judging us.",
 		},
 		TRINKET_1 = "We could still play with these, if we're extra creative.", --Melted Marbles
 		TRINKET_2 = "A voiceless instrument.", --Fake Kazoo

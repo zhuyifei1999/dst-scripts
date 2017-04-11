@@ -131,6 +131,8 @@ return {
         "Dinnertime!",
         "Great Antlion! Take this tribute, or whatever.",
 	},
+	ANNOUNCE_SACREDCHEST_YES = "That did it!",
+	ANNOUNCE_SACREDCHEST_NO = "Rude.",
 	ANNOUNCE_HOT = "The heat is too intense!",
 	ANNOUNCE_DUSK = "Night is coming. I need fire!",
 	ANNOUNCE_ENTER_DARK = "Where'd I put my lighter!?",
@@ -464,6 +466,11 @@ return {
 		FURTUFT = "Black and white and fuzzy all over!",
 		BIGFOOT = "What in the world!",
 		TREASURECHEST_TRAP = "Dirty trick!",
+		SACRED_CHEST = 
+		{
+			GENERIC = "A very very old chest.",
+			LOCKED = "I think it's judging me.",
+		},
 		BONESHARD = "I don't think they make good tinder.",
 		BUZZARD = "Your neck is gross.",
 		CACTUS = 

@@ -134,6 +134,8 @@ return {
         "I got a tribute for you, eh?",
         "This here's for you, eh?",
 	},
+	ANNOUNCE_SACREDCHEST_YES = "Thanks'm.",
+	ANNOUNCE_SACREDCHEST_NO = "We didn't cut it, Lucy.",
 	ANNOUNCE_CRAFTING_FAIL = "I can't do that right now.",
 	ANNOUNCE_DEERCLOPS = "What was that?",
 	ANNOUNCE_CAVEIN = "Sounds like some trouble up above.",
@@ -627,6 +629,11 @@ return {
 		{
 			GENERIC = "Wood is so handy! Look at all the things you can make!",
 			BURNT = "I guess wood does have a downside...",
+		},
+		SACRED_CHEST = 
+		{
+			GENERIC = "It makes my beard hair stand on end.",
+			LOCKED = "It's thinkin' real hard.",
 		},
 		TUMBLEWEED = "I wish it was sturdier so I could chop it.",
 		GRASS_UMBRELLA = "That there could keep my beard moderately dry, eh?",

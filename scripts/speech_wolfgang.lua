@@ -132,6 +132,8 @@ return {
         "Is tribute for a mighty... f-friend.",
         "Do not eat Wolfgang's friends, please?",
     },
+    ANNOUNCE_SACREDCHEST_YES = "Chest is happy!",
+    ANNOUNCE_SACREDCHEST_NO = "It did not like me.",
     ANNOUNCE_NONIGHTSIESTA = "Wolfgang have principles against siesta at night.",
     ANNOUNCE_NONIGHTSIESTA_CAVE = "Wolfgang is tense. Too tense to relax.",
     ANNOUNCE_NOHUNGERSIESTA = "Wolfgang take siesta after eating time.",
@@ -659,6 +661,11 @@ return {
         {
             GENERIC = "I put stuff there!",
             BURNT = "Nothing will stay inside.",
+        },
+        SACRED_CHEST = 
+        {
+            GENERIC = "Is little scare-chest.",
+            LOCKED = "Is thinking.",
         },
         TUMBLEWEED = "Come back little tumbling ball!",
         GRASS_UMBRELLA = "I do not like tiny umbrella.",

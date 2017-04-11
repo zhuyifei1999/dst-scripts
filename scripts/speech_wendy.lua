@@ -226,6 +226,8 @@ return {
         "We pay tribute, this day...",
         "Its bloodlust is temporarily quenched.",
 	},
+	ANNOUNCE_SACREDCHEST_YES = "It accepted our items.",
+	ANNOUNCE_SACREDCHEST_NO = "We failed... again...",
 	ANNOUNCE_WET = "Even wetter than when I cry myself to sleep.",
 	ANNOUNCE_WETTER = "An eternity of moisture and sorrow.",
 	ANNOUNCE_SOAKED = "A veritable apocalypse of water.",
@@ -632,6 +634,11 @@ return {
 		{
 			GENERIC = "For which to contain my lucre.",
 			BURNT = "It couldn't even hold ashes.",
+		},
+		SACRED_CHEST = 
+		{
+			GENERIC = "It is touched by death.",
+			LOCKED = "It judges my very being.",
 		},
 		TUMBLEWEED = "Alone, and rolling through life.",
 		GRASS_UMBRELLA = "The sun beats down.",

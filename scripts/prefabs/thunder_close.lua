@@ -27,6 +27,10 @@ local function OnRandDirty(inst)
     inst._complete = true
 end
 
+local function OnInitRand(inst)
+    inst._rand:set(math.random(255))
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -55,7 +59,7 @@ local function fn()
     inst.persists = false
 
     local delay = .25 + math.random() * .5
-    inst:DoTaskInTime(delay, function() inst._rand:set(math.random(255)) end)
+    inst:DoTaskInTime(delay, OnInitRand)
     inst:DoTaskInTime(delay + 1, inst.Remove)
 
     return inst

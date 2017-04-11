@@ -419,7 +419,7 @@ AddRoom("BGSacredRoom", Roomify(bgsacred))
 
 ---------------------------------------------
 -- Altar
--- Altar, statues, thulecite walls, pillars
+-- Altar, statues, thulecite walls, pillars, sacred_chest
 ---------------------------------------------
 
 --The Altar
@@ -427,6 +427,7 @@ AddRoom("Altar", {
     colour={r=0.3,g=0.2,b=0.1,a=0.3},
     value = GROUND.IMPASSABLE,
     tags = {"Nightmare"},
+    required_prefabs = {"sacred_chest"},
     internal_type = NODE_INTERNAL_CONNECTION_TYPE.EdgeSite,
     contents =  {
         countstaticlayouts =

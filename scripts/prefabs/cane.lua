@@ -5,12 +5,24 @@ local assets =
 }
 
 local function onequip(inst, owner)
-    owner.AnimState:OverrideSymbol("swap_object", "swap_cane", "swap_cane")
+    local skin_build = inst:GetSkinBuild()
+    if skin_build ~= nil then
+        owner:PushEvent("equipskinneditem", inst:GetSkinName())
+        owner.AnimState:OverrideItemSkinSymbol("swap_object", skin_build, "swap_cane", inst.GUID, "swap_cane")
+    else
+        owner.AnimState:OverrideSymbol("swap_object", "swap_cane", "swap_cane")
+    end
+
     owner.AnimState:Show("ARM_carry")
     owner.AnimState:Hide("ARM_normal")
 end
 
 local function onunequip(inst, owner)
+    local skin_build = inst:GetSkinBuild()
+    if skin_build ~= nil then
+        owner:PushEvent("unequipskinneditem", inst:GetSkinName())
+    end
+
     owner.AnimState:Hide("ARM_carry")
     owner.AnimState:Show("ARM_normal")
 end
@@ -26,7 +38,8 @@ local function fn()
     MakeInventoryPhysics(inst)
 
     inst.AnimState:SetBank("cane")
-    inst.AnimState:SetBuild("cane")
+    inst.AnimState:SetBuild("swap_cane")
+    inst.AnimState:OverrideSymbol("grass", "swap_cane", "grass")
     inst.AnimState:PlayAnimation("idle")
 
     inst.entity:SetPristine()
