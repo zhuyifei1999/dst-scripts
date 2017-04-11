@@ -1242,6 +1242,8 @@ STRINGS =
         ATRIUM_KEY = "Ancient Key",
         ATRIUM_OVERGROWTH = "Ancient Obelisk",
 
+		SACRED_CHEST = "Ancient Chest",
+
         SHADOWMETEOR = "Meteor",
 
         MOONROCKNUGGET = "Moon Rock",
@@ -2746,7 +2748,7 @@ STRINGS.UI =
         GHOST_DEATH_ANNOUNCEMENT_ROBOT = "lost all of their humanity and is gone forever.",
         GHOST_DEATH_ANNOUNCEMENT_DEFAULT = "lost all of their humanity and is gone forever.",
         REZ_ANNOUNCEMENT = "was resurrected by",
-        REPORT_RESULT_ANNOUCEMENT = "blank",
+        REPORT_RESULT_ANNOUCEMENT = "Your presence has been noticed.",
         START_AFK = "went away for a bit.",
         STOP_AFK = "has returned from their relaxing time away.",
         AFK_TITLE = "Taking A Breather",

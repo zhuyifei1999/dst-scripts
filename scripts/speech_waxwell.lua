@@ -139,6 +139,8 @@ return {
         "Does this entertain you, beast?",
         "What a chore.",
 	},
+	ANNOUNCE_SACREDCHEST_YES = "Was there ever a doubt?",
+	ANNOUNCE_SACREDCHEST_NO = "It's deemed me unworthy.",
 	ANNOUNCE_NONIGHTSIESTA = "It's sleep time, not siesta time.",
 	ANNOUNCE_NONIGHTSIESTA_CAVE = "It's a bit creepy out for that.",
 	ANNOUNCE_NOHUNGERSIESTA = "Traditionally, a siesta comes after eating, not before.",
@@ -647,6 +649,11 @@ return {
 		{
 			GENERIC = "A place to store loot.",
 			BURNT = "It won't store anything now.",
+		},
+		SACRED_CHEST = 
+		{
+			GENERIC = "A relic best forgotten.",
+			LOCKED = "It seems I am to be judged.",
 		},
 		TUMBLEWEED = "Tumble on, weed.",
 		GRASS_UMBRELLA = "It's more \"pretty\" than \"dapper\".",

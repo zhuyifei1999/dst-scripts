@@ -420,6 +420,29 @@ params.minotaurchest = params.treasurechest
 params.dragonflychest = params.shadowchester
 
 --------------------------------------------------------------------------
+--[[ sacred_chest ]]
+--------------------------------------------------------------------------
+
+params.sacred_chest =
+{
+    widget =
+    {
+        slotpos = {},
+        animbank = "ui_chest_3x2",
+        animbuild = "ui_chest_3x2",
+        pos = Vector3(0, 200, 0),
+        side_align_tip = 160,
+    },
+    type = "chest",
+}
+
+for y = 1, 0, -1 do
+    for x = 0, 2 do
+        table.insert(params.sacred_chest.widget.slotpos, Vector3(80 * x - 80 * 2 + 80, 80 * y - 80 * 2 + 120, 0))
+    end
+end
+
+--------------------------------------------------------------------------
 --[[ candybag ]]
 --------------------------------------------------------------------------
 

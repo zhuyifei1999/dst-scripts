@@ -81,6 +81,7 @@ local prefabs =
     "atrium_overgrowth",
     "cave_hole",
     "chessjunk",
+    "sacred_chest",
 }
 
 local monsters =

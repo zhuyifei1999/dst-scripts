@@ -283,16 +283,11 @@ function ReportAction( userid, items, item_counts, users, cb )
 		function(result_str, isSuccessful, resultCode)
 			print(result_str, isSuccessful, resultCode)
 			local status, result_data = pcall( function() return json.decode(result_str) end )
-			local success = false
-			if status and result_data then
-				if result_data.Result == "DONE" then
-					TheNet:Announce(STRINGS.UI.HUD.REPORT_RESULT_ANNOUCEMENT)
-					success = true
-				end
-			end
-			
 			if cb ~= nil then
-				cb(success)
+				local param = (result_data.Result == "NONE" and 2) or
+								(result_data.Result == "DONE" and 3) or
+								1
+				cb(param)
 			end
 		end
 	)

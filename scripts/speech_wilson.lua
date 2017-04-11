@@ -141,6 +141,8 @@ return {
         "A tribute for you, great Antlion.",
         "That'll appease it, for now...",
 	},
+	ANNOUNCE_SACREDCHEST_YES = "I guess I'm worthy.",
+	ANNOUNCE_SACREDCHEST_NO = "It didn't like that.",
 	ANNOUNCE_DUSK = "It's getting late. It will be dark soon.",
 	ANNOUNCE_EAT =
 	{
@@ -1818,6 +1820,11 @@ return {
 			BURNT = "That trunk was truncated.",
 		},
 		TREASURECHEST_TRAP = "How convenient!",
+		SACRED_CHEST = 
+		{
+			GENERIC = "I hear whispers. It wants something.",
+			LOCKED = "It's passing its judgment.",
+		},
 		TREECLUMP = "It's almost like someone is trying to prevent me from going somewhere.",
 		
 		TRINKET_1 = "Melted. Maybe Willow had some fun with them?", --Melted Marbles

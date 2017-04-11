@@ -313,6 +313,68 @@ function reviver_init_fn(inst, build_name)
 end
 
 --------------------------------------------------------------------------
+--[[ Cane skin functions ]]
+--------------------------------------------------------------------------
+local function cane_do_trail(inst)
+    local owner = inst.components.inventoryitem:GetGrandOwner() or inst
+    local x, y, z = owner.Transform:GetWorldPosition()
+    if owner.sg ~= nil and owner.sg:HasStateTag("moving") then
+        local theta = -owner.Transform:GetRotation() * DEGREES
+        local speed = owner.components.locomotor:GetRunSpeed() * .1
+        x = x + speed * math.cos(theta)
+        z = z + speed * math.sin(theta)
+    end
+    local mounted = owner.components.rider ~= nil and owner.components.rider:IsRiding()
+    local map = TheWorld.Map
+    local offset = FindValidPositionByFan(
+        math.random() * 2 * PI,
+        (mounted and 1 or .5) + math.random() * .5,
+        4,
+        function(offset)
+            local pt = Vector3(x + offset.x, 0, z + offset.z)
+            return map:IsPassableAtPoint(pt:Get())
+                and not map:IsPointNearHole(pt)
+                and #TheSim:FindEntities(pt.x, 0, pt.z, .7, { "shadowtrail" }) <= 0
+        end
+    )
+
+    if offset ~= nil then
+        SpawnPrefab(inst.trail_fx).Transform:SetPosition(x + offset.x, 0, z + offset.z)
+    end
+end
+
+local function cane_equipped(inst)
+    if inst._trailtask == nil then
+        inst._trailtask = inst:DoPeriodicTask(6 * FRAMES, cane_do_trail, 2 * FRAMES)
+    end
+end
+
+local function cane_unequipped(inst)
+    if inst._trailtask ~= nil then
+        inst._trailtask:Cancel()
+        inst._trailtask = nil
+    end
+end
+
+function cane_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "cane")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+
+    local skin_fx = SKIN_FX_PREFAB[build_name]
+    if skin_fx ~= nil then
+        inst.trail_fx = skin_fx[1]
+        if inst.trail_fx ~= nil then
+            inst:ListenForEvent("equipped", cane_equipped)
+            inst:ListenForEvent("unequipped", cane_unequipped)
+        end
+    end
+end
+
+--------------------------------------------------------------------------
 
 function CreatePrefabSkin(name, info)
     local prefab_skin = Prefab(name, nil, info.assets, info.prefabs)

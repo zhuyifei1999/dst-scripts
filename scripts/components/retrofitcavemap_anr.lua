@@ -571,6 +571,55 @@ function self:OnPostInit()
 
 	end
 	
+	if self.retrofit_sacred_chest then
+		self.retrofit_AnrArg = nil
+		print ("Retrofitting for A New Reign: Sacred Chest")
+		
+		local altars = {}	
+		for _,v in pairs(Ents) do
+			if v.prefab ~= nil and string.find(v.prefab, "ancient_altar") then
+				table.insert(altars, v)
+			end
+		end
+		
+		local sacredaltar = nil
+		for _,v in pairs(altars) do
+		    for i, node in ipairs(TheWorld.topology.nodes) do
+    			local x, _, z = v.Transform:GetWorldPosition()
+
+		        if string.find(TheWorld.topology.ids[i], "SacredAltar") and TheSim:WorldPointInPoly(x, z, node.poly) then
+					sacredaltar = v
+					break
+				end
+			end
+			if sacredaltar then
+				break
+			end
+		end
+		
+		if sacredaltar then
+			local x, y, z = sacredaltar.Transform:GetWorldPosition()
+			
+			local function TrySpawnAt(x, z)
+				if #(TheSim:FindEntities(x, 0, z, .5, nil, {"locomotor"})) == 0 then
+					SpawnPrefab("sacred_chest").Transform:SetPosition(x, 0, z)
+					return true
+				end
+			end
+			
+			local success = TrySpawnAt(x + 7, z) or TrySpawnAt(x - 7, z) or TrySpawnAt(x, z + 7) or TrySpawnAt(x, z - 7) or
+							TrySpawnAt(x + 8, z) or TrySpawnAt(x - 8, z) or TrySpawnAt(x, z + 8) or TrySpawnAt(x, z - 8)
+		
+			if success then
+				print ("Retrofitting for A New Reign: Sacred Chest: Added sacred_chest")
+			else
+				print ("Retrofitting for A New Reign: Sacred Chest: FAILED to add sacred_chest, not enough room in the Sacred Altar to place it!")
+			end	
+		else
+			print ("Retrofitting for A New Reign: Sacred Chest: FAILED to add sacred_chest, could not find the Sacred Altar to place it in!")
+		end
+	end
+	
 
 
 	---------------------------------------------------------------------------
@@ -609,6 +658,7 @@ function self:OnLoad(data)
 		self.retrofit_heartoftheruins_caveholes = data.retrofit_heartoftheruins_caveholes
 		self.retrofit_heartoftheruins_oldatriumfixup = data.retrofit_heartoftheruins_oldatriumfixup
 		self.retrofit_heartoftheruins_statuechessrespawners = data.retrofit_heartoftheruins_statuechessrespawners
+		self.retrofit_sacred_chest = data.retrofit_sacred_chest
     end
 end
 

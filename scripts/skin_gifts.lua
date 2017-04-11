@@ -2,15 +2,25 @@
 
 local SKIN_GIFT_TYPES =
 {
+	cane_ancient = "ANRARG",
 	emote_swoon = "CUPID",
 	firepit_hole = "EARLY_ACCESS",
 	reviver_cupid = "CUPID",
 	torch_shadow = "ARG",
+	torch_shadow_alt = "ARG",
+	treasurechest_sacred = "ANRARG",
 	winterhat_rooster = "LUNAR",
 }
 
 local SKIN_GIFT_POPUPDATA =
 {
+	ANRARG =
+	{
+		atlas = "images/thankyou_item_event.xml",
+		image = {"thankyou_anrarg.tex"},
+		title = STRINGS.THANKS_POPUP.ANRARG,
+		titleoffset = {0, -20, 0},
+	},
 	ARG =
 	{
 		atlas = "images/thankyou_item_popup.xml",

@@ -135,6 +135,8 @@ return {
         "A tribute for thee, great lion!",
         "O great lion, we pay tribute this day!",
     },
+    ANNOUNCE_SACREDCHEST_YES = "I have gained the gods' favor!",
+    ANNOUNCE_SACREDCHEST_NO = "Alas! I am unworthy!",
     ANNOUNCE_CHARLIE = "Show yourself!",
     ANNOUNCE_CHARLIE_ATTACK = "Coward!",
     ANNOUNCE_COLD = "Brrr! Where are my furs!",
@@ -1820,6 +1822,11 @@ return {
         {
             GENERIC = "A place to store my helm and spear whilst I rest.",
             BURNT = "Its walls were torn down by fire.",
+        },
+        SACRED_CHEST = 
+        {
+            GENERIC = "What foul manner of chest is this?",
+            LOCKED = "I shall submit to the gods' judgment.",
         },
         TREASURECHEST_TRAP = "I am always ready.",
         TREECLUMP = "A dead end! I must stand and fight.",
