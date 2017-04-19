@@ -73,7 +73,7 @@ function SinkholeSpawner:UpdateTarget(targetinfo)
     end
     targetinfo.player = nil
     --V2C: TheShard:IsMigrating(userid) only works on master shard
-    if targetinfo.pos ~= nil and not TheShard:IsMigrating(v.userid) then
+    if targetinfo.pos ~= nil and not TheShard:IsMigrating(targetinfo.client.userid) then
         targetinfo.pos = nil
     end
 end
