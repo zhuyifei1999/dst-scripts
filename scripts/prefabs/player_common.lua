@@ -1513,6 +1513,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_mount_emotes.zip"),
         Asset("ANIM", "anim/player_mount_emotes_dance0.zip"),
         Asset("ANIM", "anim/player_mount_emotesxl.zip"),
+        Asset("ANIM", "anim/player_mount_bow.zip"),
 
         Asset("INV_IMAGE", "skull_"..name),
     }

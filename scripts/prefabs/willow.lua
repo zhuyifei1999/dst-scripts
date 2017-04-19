@@ -40,14 +40,26 @@ local function common_postinit(inst)
     inst:AddTag("expertchef")
 end
 
-local function onsanitydelta(inst, data)
-    inst.components.temperature:SetModifier("sanity",
-        (data.newpercent < TUNING.WILLOW_CHILL_END and TUNING.WILLOW_SANITY_CHILLING) or
-        (data.newpercent < TUNING.WILLOW_CHILL_START 
-        and easing.outQuad(data.newpercent - TUNING.WILLOW_CHILL_END, 
-        TUNING.WILLOW_SANITY_CHILLING, -TUNING.WILLOW_SANITY_CHILLING, 
-        TUNING.WILLOW_CHILL_START - TUNING.WILLOW_CHILL_END)) 
-        or 0)
+local function UpdateSanityTemperature(inst)
+    --Don't chill all the way to 0, or temperature
+    --update fluctuations can still cause freezing
+    if TheWorld.state.temperature > 1 then
+        local sanity = inst.components.sanity:GetPercent()
+        if sanity < TUNING.WILLOW_CHILL_START then
+            inst.components.temperature:SetModifier(
+                "sanity",
+                math.max(
+                    1 - TheWorld.state.temperature,
+                    sanity > TUNING.WILLOW_CHILL_END and
+                    easing.outQuad(sanity - TUNING.WILLOW_CHILL_END, TUNING.WILLOW_SANITY_CHILLING, -TUNING.WILLOW_SANITY_CHILLING, TUNING.WILLOW_CHILL_START - TUNING.WILLOW_CHILL_END) or
+                    TUNING.WILLOW_SANITY_CHILLING
+                )
+            )
+            return
+        end
+    end
+
+    inst.components.temperature:RemoveModifier("sanity")
 end
 
 local function master_postinit(inst)
@@ -58,7 +70,7 @@ local function master_postinit(inst)
     inst.components.sanity.custom_rate_fn = sanityfn
     inst.components.sanity.rate_modifier = TUNING.WILLOW_SANITY_MODIFIER
 
-    inst:ListenForEvent("sanitydelta", onsanitydelta)
+    inst:DoPeriodicTask(.1, UpdateSanityTemperature, 0)
 end
 
 return MakePlayerCharacter("willow", prefabs, assets, common_postinit, master_postinit, start_inv)

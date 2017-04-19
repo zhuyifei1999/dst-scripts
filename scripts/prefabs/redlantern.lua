@@ -110,7 +110,7 @@ local function ondropped(inst)
 end
 
 local function ToggleOverrideSymbols(inst, owner)
-    if owner.sg:HasStateTag("nodangle") or (owner.components.rider ~= nil and owner.components.rider:IsRiding()) then
+    if owner.sg:HasStateTag("nodangle") or (owner.components.rider ~= nil and owner.components.rider:IsRiding() and not owner.sg:HasStateTag("forcedangle")) then
         owner.AnimState:OverrideSymbol("swap_object", "swap_redlantern", "swap_redlantern")
         if not inst.components.fueled:IsEmpty() then
             owner.AnimState:Show("LANTERN_OVERLAY")

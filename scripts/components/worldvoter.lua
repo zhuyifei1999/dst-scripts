@@ -54,13 +54,14 @@ local _votesdirty
 local _resultdelay
 local _squelched
 local _numsquelched
-local _votestarter
+local _targetname
 
 --Network
 local _enabled = net_bool(inst.GUID, "worldvoter._enabled")
 local _countdown = net_byte(inst.GUID, "worldvoter._countdown", "countdowndirty")
 local _commandid = net_uint(inst.GUID, "worldvoter._commandid")
 local _targetuserid = net_string(inst.GUID, "worldvoter._targetuserid")
+local _starteruserid = net_string(inst.GUID, "worldvoter._starteruserid")
 local _votecounts = {}
 for i = 1, MAX_VOTE_OPTIONS do
     table.insert(_votecounts, net_byte(inst.GUID, "worldvoter._votecounts["..tostring(i).."]", "votecountsdirty"))
@@ -74,11 +75,12 @@ local function UpdateCountdown(time)
     _world:PushEvent("worldvotertick", { time = time })
 end
 
-local function GetVoteDialogData(commandhash, targetuserid)
+local function GetVoteDialogData(commandhash, targetuserid, starteruserid)
     --Re-cache table only when needed
     if _dialogdata == nil or
         _dialogdata.hash ~= commandhash or
-        _dialogdata.targetuserid ~= targetuserid then
+        _dialogdata.targetuserid ~= targetuserid or
+        _dialogdata.starteruserid ~= starteruserid then
         local command = UserCommands.GetCommandFromHash(commandhash)
         if command ~= nil and command.vote then
             _dialogdata =
@@ -86,6 +88,7 @@ local function GetVoteDialogData(commandhash, targetuserid)
                 name = command.name,
                 hash = command.hash,
                 targetuserid = targetuserid,
+                starteruserid = starteruserid,
                 cantargetself = command.cantargetself,
                 votecountvisible = command.votecountvisible,
                 votetitlefmt = command.votetitlefmt,
@@ -97,6 +100,15 @@ local function GetVoteDialogData(commandhash, targetuserid)
                 for i, v in ipairs(TheNet:GetClientTable()) do
                     if v.userid == targetuserid and (v.performance == nil or TheNet:GetServerIsClientHosted()) then
                         _dialogdata.targetclient = v
+                        break
+                    end
+                end
+            end
+
+            if starteruserid ~= nil and starteruserid ~= "" then
+                for i, v in ipairs(TheNet:GetClientTable()) do
+                    if v.userid == starteruserid and (v.performance == nil or TheNet:GetServerIsClientHosted()) then
+                        _dialogdata.starterclient = v
                         break
                     end
                 end
@@ -121,18 +133,20 @@ local function GetVoteDialogData(commandhash, targetuserid)
 end
 
 local function UpdateVoteCounts()
-    local data = GetVoteDialogData(_commandid:value(), _targetuserid:value())
+    local data = GetVoteDialogData(_commandid:value(), _targetuserid:value(), _starteruserid:value())
     if data ~= nil and data.votecountvisible then
         _world:PushEvent("votecountschanged", data)
     end
 end
 
 local function ShowVoteDialog()
-    local data = GetVoteDialogData(_commandid:value(), _targetuserid:value())
+    local data = GetVoteDialogData(_commandid:value(), _targetuserid:value(), _starteruserid:value())
     if not _shown then
         _shown = true
         print(string.format(
-            "Vote started: \"%s\" (%s) %s",
+            "Vote started by (%s) %s: \"%s\" (%s) %s",
+            data ~= nil and data.starteruserid or "",
+            data ~= nil and data.starterclient ~= nil and data.starterclient.name or "",
             data ~= nil and data.name or "",
             data ~= nil and data.targetuserid or "",
             data ~= nil and data.targetclient ~= nil and data.targetclient.name or ""
@@ -193,6 +207,7 @@ local PushMasterVoterData = _ismastershard and function()
         countdown = _countdown:value(),
         commandid = _commandid:value(),
         targetuserid = _targetuserid:value(),
+        starteruserid = _starteruserid:value(),
         voters = _voterdata,
     })
     UpdatePlayerVoters()
@@ -261,10 +276,11 @@ local function CancelCountdown()
         _countdown:set(0)
         _commandid:set(0)
         _targetuserid:set("")
+        _starteruserid:set("")
         _voterdata = nil
         _votesdirty = false
-        _votestarter = nil
         _resultdelay = nil
+        _targetname = nil
         PushMasterVoterData()
     end
     _countdownf = nil
@@ -309,16 +325,17 @@ local OnStartVote = _ismastershard and function(src, data)
     elseif data.starteruserid ~= nil and _squelched[data.starteruserid] ~= nil then
         print("Squelched user ("..data.starteruserid..") attempted to start a vote")
     else
-        local newdata = GetVoteDialogData(data.commandhash, data.targetuserid)
+        local newdata = GetVoteDialogData(data.commandhash, data.targetuserid, data.starteruserid)
         if newdata ~= nil then
             _countdown:set(math.min(255, newdata.votetimeout or TUNING.VOTE_TIMEOUT_DEFAULT))
             _commandid:set(data.commandhash)
             _targetuserid:set(data.targetuserid or "")
+            _starteruserid:set(data.starteruserid or "")
             _syncperiod = _countdown:value() > 10 and SYNC_PERIOD_SLOW or SYNC_PERIOD_FAST
             _resultdelay = nil
             _votesdirty = false
-            _votestarter = data.starteruserid
             _voterdata = {}
+            _targetname = UserToName(data.targetuserid)
             for i, v in ipairs(TheNet:GetClientTable()) do
                 if v.performance == nil or TheNet:GetServerIsClientHosted() then
                     _voterdata[v.userid] = not newdata.cantargetself and v.userid == data.targetuserid and CANNOT_VOTE or VOTE_PENDING
@@ -330,7 +347,7 @@ local OnStartVote = _ismastershard and function(src, data)
 end or nil
 
 local OnStopVote = _ismastershard and function()
-    SquelchPlayer(_votestarter, TUNING.VOTE_CANCELLED_SQUELCH_TIME)
+    SquelchPlayer(_starteruserid:value(), TUNING.VOTE_CANCELLED_SQUELCH_TIME)
     CancelCountdown()
 end or nil
 
@@ -385,9 +402,9 @@ local CheckVoteResults = _ismastershard and function(timedout)
             return
         end
         local commandname = _dialogdata.name
-        local targetuserid = _dialogdata.targetuserid 
-        local params = { user = targetuserid }
-        local starteruserid = _votestarter
+        local targetuserid = _dialogdata.targetuserid
+        local params = { user = targetuserid, username = _targetname }
+        local starteruserid = _dialogdata.starteruserid
         CancelCountdown()
         local success = UserCommands.FinishVote(commandname, params, results)
         SquelchPlayer(starteruserid, success and TUNING.VOTE_PASSED_SQUELCH_TIME or TUNING.VOTE_FAILED_SQUELCH_TIME)
@@ -401,6 +418,7 @@ local OnWorldVoterUpdate = _ismastersim and not _ismastershard and function(src,
     _countdown:set(data.countdown)
     _commandid:set(data.commandid)
     _targetuserid:set(data.targetuserid)
+    _starteruserid:set(data.starteruserid)
     _voterdata = data.voters
     UpdatePlayerVoters()
 end or nil
@@ -440,7 +458,7 @@ if _ismastersim then
         _resultdelay = nil
         _squelched = {}
         _numsquelched = 0
-        _votestarter = nil
+        _targetname = nil
 
         inst:ListenForEvent("ms_startvote", OnStartVote, _world)
         inst:ListenForEvent("ms_stopvote", OnStopVote, _world)

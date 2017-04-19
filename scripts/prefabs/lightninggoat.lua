@@ -110,29 +110,29 @@ local function setcharged(inst, instant)
     inst:WatchWorldState("cycles", ReduceCharges)
 end
 
+local function IsChargedGoat(dude)
+    return dude:HasTag("lightninggoat") and dude:HasTag("charged")
+end
+
 local function OnAttacked(inst, data)
-    inst.components.combat:SetTarget(data.attacker)
+    if data ~= nil and data.attacker ~= nil then
+        if inst.charged then
+            if data.attacker.components.health ~= nil and not data.attacker.components.health:IsDead() and
+                (data.weapon == nil or (data.weapon.projectile == nil and data.weapon.components.projectile == nil)) and
+                not (data.attacker.components.inventory ~= nil and data.attacker.components.inventory:IsInsulated()) then
 
-    if inst.charged then
-        if data.attacker.components.health ~= nil then
-            if (data.weapon == nil or (data.weapon.components.projectile == nil and data.weapon.projectile == nil))
-                and not (data.attacker.components.inventory and data.attacker.components.inventory:IsInsulated()) then
-
-                data.attacker.components.health:DoDelta(-TUNING.LIGHTNING_GOAT_DAMAGE)
+                data.attacker.components.health:DoDelta(-TUNING.LIGHTNING_GOAT_DAMAGE, nil, inst.prefab, nil, inst)
                 if data.attacker:HasTag("player") then
                     data.attacker.sg:GoToState("electrocute")
                 end
             end
+        elseif data.weapon ~= nil and data.weapon.components.weapon ~= nil and data.weapon.components.weapon.stimuli == "electric" then
+            setcharged(inst)
         end
-    end
 
-    if not inst.charged and data and data.weapon and data.weapon.components.weapon and data.weapon.components.weapon.stimuli == "electric" then
-        setcharged(inst)
+        inst.components.combat:SetTarget(data.attacker)
+        inst.components.combat:ShareTarget(data.attacker, 20, IsChargedGoat, 3)
     end
-
-    local attacker = data and data.attacker
-    inst.components.combat:SetTarget(attacker)
-    inst.components.combat:ShareTarget(attacker, 20, function(dude) return dude:HasTag("lightninggoat") and dude:HasTag("charged") end, 3)
 end
 
 local function OnSave(inst, data)

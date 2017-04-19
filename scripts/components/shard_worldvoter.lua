@@ -32,6 +32,7 @@ local _enabled = net_bool(inst.GUID, "shard_worldvoter._enabled", "voterenabledd
 local _countdown = net_byte(inst.GUID, "shard_worldvoter._countdown", "voterdirty")
 local _commandid = net_uint(inst.GUID, "shard_worldvoter._commandid", "voterdirty")
 local _targetuserid = net_string(inst.GUID, "shard_worldvoter._targetuserid", "voterdirty")
+local _starteruserid = net_string(inst.GUID, "shard_worldvoter._starteruserid", "voterdirty")
 local _voters = {}
 local _squelchedpool
 local _squelched = {}
@@ -59,6 +60,7 @@ local OnVoterUpdate = _ismastershard and function(src, data)
     _countdown:set(data.countdown)
     _commandid:set(data.commandid)
     _targetuserid:set(data.targetuserid)
+    _starteruserid:set(data.starteruserid)
 
     local i = 1
 
@@ -91,6 +93,7 @@ local OnVoterDirty = not _ismastershard and function()
         countdown = _countdown:value(),
         commandid = _commandid:value(),
         targetuserid = _targetuserid:value(),
+        starteruserid = _starteruserid:value(),
         voters = next(voters) ~= nil and voters or nil,
     })
 end or nil

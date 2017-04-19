@@ -317,6 +317,10 @@ end
 --------------------------------------------------------------------------
 local function cane_do_trail(inst)
     local owner = inst.components.inventoryitem:GetGrandOwner() or inst
+    if not owner.entity:IsVisible() then
+        return
+    end
+
     local x, y, z = owner.Transform:GetWorldPosition()
     if owner.sg ~= nil and owner.sg:HasStateTag("moving") then
         local theta = -owner.Transform:GetRotation() * DEGREES

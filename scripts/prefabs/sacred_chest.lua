@@ -88,7 +88,7 @@ local function onclose(inst, doer)
 	LockChest(inst)
 
 	local x, y, z = inst.Transform:GetWorldPosition()
-	local players = FindPlayersInRange(x, y, z, 20)
+	local players = FindPlayersInRange(x, y, z, 40)
 	if #players <= 1 then
 		UnlockChest(inst, 2, doer)
 		return
