@@ -171,7 +171,9 @@ local function OnIgnite(inst)
     inst:AddTag("NOCLICK")
     inst.components.health:SetInvincible(true)
     inst.components.combat:SetOnHit(nil)
+    inst.components.burnable:SetOnIgniteFn(nil)
     inst.components.burnable.canlight = false
+    inst.components.burnable.flammability = 0
     inst:RemoveEventCallback("animover", ChangeToObstacle)
     inst:ListenForEvent("animover", ChangeToGlass)
     inst.AnimState:PlayAnimation(inst.animname.."_transform")

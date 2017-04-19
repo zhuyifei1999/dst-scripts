@@ -79,8 +79,8 @@ function Tune(overrides)
         WILLOW_FIRE_IMMUNITY = 3,
 
         WILLOW_SANITY_CHILLING = -20,
-        WILLOW_CHILL_START = 0.5,
-        WILLOW_CHILL_END = 0.1,
+        WILLOW_CHILL_START = .4,
+        WILLOW_CHILL_END = 0,
 
         BERNIE_HEALTH = 1000,
         BERNIE_FUEL = 100,

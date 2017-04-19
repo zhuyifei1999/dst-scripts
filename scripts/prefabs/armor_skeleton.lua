@@ -9,6 +9,14 @@ local SHIELD_DURATION = 10 * FRAMES
 local SHIELD_VARIATIONS = 3
 local MAIN_SHIELD_CD = 1.2
 
+local RESISTANCES =
+{
+    "_combat",
+    "explosive",
+    "quakedebris",
+    "caveindebris",
+}
+
 for j = 0, 3, 3 do
     for i = 1, SHIELD_VARIATIONS do
         table.insert(prefabs, "shadow_shield"..tostring(j + i))
@@ -37,8 +45,9 @@ end
 
 local function OnShieldOver(inst, OnResistDamage)
     inst.task = nil
-    inst.components.resistance:RemoveResistance("_combat")
-    inst.components.resistance:RemoveResistance("explosive")
+    for i, v in ipairs(RESISTANCES) do
+        inst.components.resistance:RemoveResistance(v)
+    end
     inst.components.resistance:SetOnResistDamageFn(OnResistDamage)
 end
 
@@ -75,8 +84,9 @@ local function OnChargedFn(inst)
         inst.task = nil
         inst.components.resistance:SetOnResistDamageFn(OnResistDamage)
     end
-    inst.components.resistance:AddResistance("_combat")
-    inst.components.resistance:AddResistance("explosive")
+    for i, v in ipairs(RESISTANCES) do
+        inst.components.resistance:AddResistance(v)
+    end
 end
 
 local function nofuel(inst)
@@ -110,8 +120,9 @@ local function onunequip(inst, owner)
         inst.task = nil
         inst.components.resistance:SetOnResistDamageFn(OnResistDamage)
     end
-    inst.components.resistance:RemoveResistance("_combat")
-    inst.components.resistance:RemoveResistance("explosive")
+    for i, v in ipairs(RESISTANCES) do
+        inst.components.resistance:RemoveResistance(v)
+    end
 end
 
 local function fn()

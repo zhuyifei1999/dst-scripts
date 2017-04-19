@@ -18,7 +18,7 @@ local TEMPERATURE_NOISE_SCALE = .025
 local TEMPERATURE_NOISE_MAG = 8
 
 local MIN_TEMPERATURE = -25
-local MAX_TEMPERATURE = 95 
+local MAX_TEMPERATURE = 95
 local WINTER_CROSSOVER_TEMPERATURE = 5
 local SUMMER_CROSSOVER_TEMPERATURE = 55
 
@@ -280,4 +280,3 @@ end
 --------------------------------------------------------------------------
 
 end)
-

@@ -3116,6 +3116,7 @@ STRINGS.UI =
         VOTECANNOTSTART =
         {
             MINPLAYERS = "Not enough players to start a vote.",
+            MINSTARTAGE = "You have not played long enough to start a vote.",
         },
         COMMANDCANNOTSTART =
         {
@@ -3510,7 +3511,7 @@ STRINGS.UI =
         BEEFALOHEAT = "Beefalo Mating Frequency",
         HUNT = "Hunts",
         ALTERNATEHUNT = "Hunt Surprises",
-        PENGUINS = "Penguins",
+        PENGUINS = "Pengulls",
         PONDS = "Ponds",
         CAVE_PONDS = "Ponds",
         BEES = "Bees",

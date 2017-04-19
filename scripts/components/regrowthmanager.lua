@@ -252,7 +252,7 @@ function self:OnLoad(data)
         for i,timerdata in ipairs(group) do
             AppendTimer(k, {
                 product = timerdata.product,
-                regrowtime = _internaltimes[k] + timerdata.regrowtime,
+                regrowtime = (_internaltimes[k] or CARROT_REGROWTH_TIME) + timerdata.regrowtime,
                 position = Point(timerdata.position.x or 0, timerdata.position.y or 0, timerdata.position.z or 0),
                 i = timer_i,
             })

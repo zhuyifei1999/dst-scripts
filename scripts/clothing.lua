@@ -119,7 +119,7 @@ CLOTHING =
 		type = "body",
 		symbol_overrides = { "arm_lower_cuff", "arm_upper", "torso", "torso_pelvis", "skirt", "foot", },
 		override_build = "body_dress_flouncy_tan_cream",
-		torso_tuck = "skirt",
+		torso_tuck = "full",
 		rarity = "Distinguished",
 	},
 	body_dress_yachtsuit_white_pure =

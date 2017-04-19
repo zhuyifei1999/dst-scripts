@@ -29,7 +29,7 @@ SetSharedLootTable( 'walrus',
 
 SetSharedLootTable( 'walrus_wee_loot',
 {
-    ['meat']     = 1.0,
+    {'meat',            1.0},
 })
 
 local function ShareTargetFn(dude)

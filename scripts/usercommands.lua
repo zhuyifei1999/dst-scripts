@@ -195,10 +195,11 @@ local function userlevel(user)
 end
 
 local function validatevotestart(command, caller, targetid)
+    local isdedicated = not TheNet:GetServerIsClientHosted()
+    local clients = nil
     --Check min player count requirements
     if command.voteminpasscount ~= nil then
-        local isdedicated = not TheNet:GetServerIsClientHosted()
-        local clients = TheNet:GetClientTable()
+        clients = TheNet:GetClientTable()
         local numclients = isdedicated and #clients - 1 or #clients
 
         --Require +1 player if target doesn't get to vote
@@ -207,6 +208,28 @@ local function validatevotestart(command, caller, targetid)
 
         if numclients < minplayers then
             return false, "MINPLAYERS"
+        end
+    end
+    --Check min caller age requirements
+    if command.voteminstartage ~= nil then
+        local age = -2
+        local maxage = -1
+        for i, client in ipairs(clients or TheNet:GetClientTable()) do
+            if isdedicated and client.performance ~= nil then
+                --skip true dedicated server [Host] client
+            elseif client.userid ~= caller.userid then
+                maxage = math.max(maxage, client.playerage)
+            elseif client.playerage >= command.voteminstartage then
+                age = math.huge
+                break
+            elseif client.playerage < maxage then
+                return false, "MINSTARTAGE"
+            else
+                age = client.playerage
+            end
+        end
+        if age < maxage then
+            return false, "MINSTARTAGE"
         end
     end
     --Custom checks
@@ -395,9 +418,12 @@ local function ClearModData(mod)
 end
 
 local function FinishVote(commandname, params, voteresults)
-    local username = UserToName(params.user)
-    if username == nil and params.user ~= nil and params.user:len() > 0 then
-        return false
+    local username = nil
+    if params.user ~= nil and params.user:len() > 0 then
+        username = UserToName(params.user) or params.username
+        if username == nil then
+            return false
+        end
     end
 
     local command = getcommand(commandname)

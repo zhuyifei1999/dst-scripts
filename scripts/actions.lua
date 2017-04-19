@@ -526,7 +526,11 @@ ACTIONS.MANUALEXTINGUISH.fn = function(act)
 end
 
 ACTIONS.NET.fn = function(act)
-    if act.target ~= nil and act.target.components.workable and act.target.components.workable.action == ACTIONS.NET then
+    if act.target ~= nil and
+        act.target.components.workable ~= nil and
+        act.target.components.workable:CanBeWorked() and
+        act.target.components.workable:GetWorkAction() == ACTIONS.NET and
+        not (act.target.components.health ~= nil and act.target.components.health:IsDead()) then
         act.target.components.workable:WorkedBy(act.doer)
     end
     return true

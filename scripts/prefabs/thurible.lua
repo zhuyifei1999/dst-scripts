@@ -89,11 +89,11 @@ local function ondropped(inst)
 end
 
 local function ToggleOverrideSymbols(inst, owner)
-    if owner.sg:HasStateTag("nodangle") or (owner.components.rider ~= nil and owner.components.rider:IsRiding()) then
+    if owner.sg:HasStateTag("nodangle") or (owner.components.rider ~= nil and owner.components.rider:IsRiding() and not owner.sg:HasStateTag("forcedangle")) then
         owner.AnimState:OverrideSymbol("swap_object", "swap_thurible", "swap_thurible")
         inst._body:Hide()
         if inst._smoke ~= nil then
-            inst._smoke.Follower:FollowSymbol(owner.GUID, "swap_object", 68, -70, 0)
+            inst._smoke.Follower:FollowSymbol(owner.GUID, "swap_object", 65, 0, 0)
         end
     else
         owner.AnimState:OverrideSymbol("swap_object", "swap_thurible", "swap_thurible_stick")

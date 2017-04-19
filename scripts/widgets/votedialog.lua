@@ -42,6 +42,8 @@ local VoteDialog = Class(Widget, function(self, owner)
 
     self.bg = self.dialogroot:AddChild(ThreeSlice("images/ui.xml", "votewindow_top.tex", "votewindow_middle.tex", "votewindow_bottom.tex"))
 
+    self.starter = self.dialogroot:AddChild(Text(TALKINGFONT, 35))
+
     self.title = self.dialogroot:AddChild(Text(BUTTONFONT, 35))
     self.title:SetColour(0, 0, 0, 1)
 
@@ -192,7 +194,8 @@ function VoteDialog:RefreshLayout()
     self.start_root_y_pos = (.5 * fill_dist + self.bg.end_cap_size) * VOTE_ROOT_SCALE
     self.target_root_y_pos = (-.5 * fill_dist - self.bg.start_cap_size) * VOTE_ROOT_SCALE - 20
 
-    self.title:SetPosition(0, .38 * self.bg.start_cap_size + .5 * fill_dist, 0)
+    self.starter:SetPosition(0, .62 * self.bg.start_cap_size + .5 * fill_dist, 0)
+    self.title:SetPosition(0, .33 * self.bg.start_cap_size + .5 * fill_dist, 0)
     self.timer:SetPosition(0, -.42 * self.bg.end_cap_size - .5 * fill_dist, 0)
     self.instruction:SetPosition(0, -25 - self.bg.end_cap_size - .5 * fill_dist, 0)
 
@@ -263,6 +266,14 @@ end
 function VoteDialog:UpdateOptions(option_data, norefresh)
     if not self.started then
         return
+    end
+
+    local startername = option_data.starterclient ~= nil and self:GetDisplayName(option_data.starterclient) or ""
+    if startername ~= "" then
+        self.starter:SetColour(unpack(option_data.starterclient.colour or { 0, 0, 0, 1 }))
+        self.starter:SetTruncatedString(startername..":", 260, 40, "..:")
+    else
+        self.starter:SetString("")
     end
 
     local titlefmt = ResolveCommandStringProperty(option_data, "votetitlefmt", "")

@@ -15,7 +15,9 @@ local function band_disable(inst)
 end
 
 local function CalcDapperness(inst, owner)
-    return -TUNING.DAPPERNESS_SMALL -(owner.components.leader:CountFollowers() * TUNING.SANITYAURA_SMALL)
+    local numfollowers = owner.components.leader ~= nil and owner.components.leader:CountFollowers() or 0
+    local numpets = owner.components.petleash ~= nil and owner.components.petleash:GetNumPets() or 0
+    return -TUNING.DAPPERNESS_SMALL - math.max(0, numfollowers - numpets) * TUNING.SANITYAURA_SMALL
 end
 
 local banddt = 1

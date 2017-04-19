@@ -236,7 +236,7 @@ local function SoftReset(inst)
         return
     end
 
-    print(string.format("Dragonfly - Execute soft reset @ %2.2f", GetTime()))
+    --print(string.format("Dragonfly - Execute soft reset @ %2.2f", GetTime()))
 
     ResetLavae(inst)
     SetEngaged(inst, false)
@@ -274,7 +274,7 @@ end
 
 local function TrySoftReset(inst)
     if inst.SoftResetTask == nil then
-        print(string.format("Dragonfly - Start soft reset task @ %2.2f", GetTime()))
+        --print(string.format("Dragonfly - Start soft reset task @ %2.2f", GetTime()))
         inst.SoftResetTask = inst:DoTaskInTime(10, SoftReset)
     end
 end
@@ -289,7 +289,7 @@ end
 
 local function OnNewTarget(inst, data)
     if inst.SoftResetTask ~= nil then
-        print(string.format("Dragonfly - Cancel soft reset task @ %2.2f", GetTime()))
+        --print(string.format("Dragonfly - Cancel soft reset task @ %2.2f", GetTime()))
         inst.SoftResetTask:Cancel()
         inst.SoftResetTask = nil
     end

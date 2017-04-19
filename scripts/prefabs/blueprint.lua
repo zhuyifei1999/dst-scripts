@@ -165,7 +165,8 @@ local function MakeAnyBlueprint()
         return inst
     end
 
-    local recipes = {}
+    local unknownrecipes = {}
+    local knownrecipes = {}
     local allplayers = AllPlayers
     for k, v in pairs(AllRecipes) do
         if IsRecipeValid(v.name) and CanBlueprintRandomRecipe(v) then
@@ -177,12 +178,13 @@ local function MakeAnyBlueprint()
                     break
                 end
             end
-            if not known then
-                table.insert(recipes, v)
-            end
+            table.insert(known and knownrecipes or unknownrecipes, v)
         end
     end
-    inst.recipetouse = #recipes > 0 and recipes[math.random(#recipes)].name or "unknown"
+    inst.recipetouse =
+        (#unknownrecipes > 0 and unknownrecipes[math.random(#unknownrecipes)].name) or
+        (#knownrecipes > 0 and knownrecipes[math.random(#knownrecipes)].name) or
+        "unknown"
     inst.components.teacher:SetRecipe(inst.recipetouse)
     inst.components.named:SetName(STRINGS.NAMES[string.upper(inst.recipetouse)].." "..STRINGS.NAMES.BLUEPRINT)
     return inst
@@ -228,7 +230,8 @@ local function MakeAnyBlueprintFromTab(recipetab)
             return inst
         end
 
-        local recipes = {}
+        local unknownrecipes = {}
+        local knownrecipes = {}
         local allplayers = AllPlayers
         for k, v in pairs(AllRecipes) do
             if IsRecipeValid(v.name) and v.tab == recipetab and CanBlueprintRandomRecipe(v) then
@@ -240,12 +243,13 @@ local function MakeAnyBlueprintFromTab(recipetab)
                         break
                     end
                 end
-                if not known then
-                    table.insert(recipes, v)
-                end
+                table.insert(known and knownrecipes or unknownrecipes, v)
             end
         end
-        inst.recipetouse = #recipes > 0 and recipes[math.random(#recipes)].name or "unknown"
+        inst.recipetouse =
+            (#unknownrecipes > 0 and unknownrecipes[math.random(#unknownrecipes)].name) or
+            (#knownrecipes > 0 and knownrecipes[math.random(#knownrecipes)].name) or
+            "unknown"
         inst.components.teacher:SetRecipe(inst.recipetouse)
         inst.components.named:SetName(STRINGS.NAMES[string.upper(inst.recipetouse)].." "..STRINGS.NAMES.BLUEPRINT)
         return inst

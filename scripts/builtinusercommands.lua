@@ -135,6 +135,7 @@ AddUserCommand("kick", {
     params = {"user"},
     vote = true,
     votetimeout = 30,
+    voteminstartage = 20,
     voteminpasscount = 3,
     votecountvisible = true,
     voteallownotvoted = true,
@@ -145,9 +146,8 @@ AddUserCommand("kick", {
     voteresultfn = VoteUtil.YesNoMajorityVote,
     localfn = function(params, caller)
         --NOTE: must support nil caller for voting
-        local clientid = UserToClientID(params.user)
-        if clientid ~= nil then
-            TheNet:Kick(clientid, caller == nil and TUNING.VOTE_KICK_TIME or nil)
+        if params.user ~= nil then
+            TheNet:Kick(UserToClientID(params.user) or params.user, caller == nil and TUNING.VOTE_KICK_TIME or nil)
         end
     end,
 })
@@ -166,8 +166,8 @@ AddUserCommand("ban", {
     paramsoptional = {false, true}, -- NOTE: all non-optional commands must be before all optional commands
     vote = false,
     localfn = function(params, caller)
-        local clientid = UserToClientID(params.user)
-        if clientid ~= nil then
+        if params.user ~= nil then
+            local clientid = UserToClientID(params.user) or params.user
             if params.seconds ~= nil then
                 local seconds = tonumber(params.seconds)
                 TheNet:BanForTime(clientid, seconds)
@@ -246,6 +246,7 @@ AddUserCommand("rollback", {
     paramsoptional = {true},
     vote = true,
     votetimeout = 30,
+    voteminstartage = 20,
     voteminpasscount = 3,
     votecountvisible = true,
     voteallownotvoted = true,
@@ -283,6 +284,7 @@ AddUserCommand("regenerate", {
     params = {},
     vote = true,
     votetimeout = 30,
+    voteminstartage = 20,
     voteminpasscount = 3,
     votecountvisible = true,
     voteallownotvoted = true,

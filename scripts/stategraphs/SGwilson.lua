@@ -1349,7 +1349,7 @@ local states =
 
     State{
         name = "bow",
-        tags = { "notalking", "busy", "nopredict" },
+        tags = { "notalking", "busy", "nopredict", "forcedangle" },
 
         onenter = function(inst, target)
             if target ~= nil then
@@ -1426,7 +1426,7 @@ local states =
 
     State{
         name = "bow_loop",
-        tags = { "notalking", "idle", "canrotate" },
+        tags = { "notalking", "idle", "canrotate", "forcedangle" },
 
         onenter = function(inst, data)
             if data ~= nil then
@@ -1483,11 +1483,30 @@ local states =
 
     State{
         name = "bow_pst",
-        tags = { "idle", "canrotate" },
+        tags = { "idle", "canrotate", "forcedangle" },
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("bow_pst")
+            inst.sg:SetTimeout(8 * FRAMES)
         end,
+
+        ontimeout = function(inst)
+            inst.sg:GoToState("bow_pst2")
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
+
+    State{
+        name = "bow_pst2",
+        tags = { "idle", "canrotate" },
 
         events =
         {
@@ -1545,6 +1564,25 @@ local states =
             local mount = inst.components.rider:GetMount()
             if mount == nil then
                 inst.sg:GoToState("idle")
+                return
+            end
+
+            local royalty = nil
+            local mindistsq = 25
+            for i, v in ipairs(AllPlayers) do
+                if v ~= inst and
+                    not v:HasTag("playerghost") and
+                    v.entity:IsVisible() and
+                    v.components.inventory:EquipHasTag("regal") then
+                    local distsq = v:GetDistanceSqToInst(inst)
+                    if distsq < mindistsq then
+                        mindistsq = distsq
+                        royalty = v
+                    end
+                end
+            end
+            if royalty ~= nil then
+                inst.sg:GoToState("bow", royalty)
             elseif mount.components.hunger == nil then
                 inst.sg:GoToState(math.random() < .5 and "shake" or "bellow")
             else
