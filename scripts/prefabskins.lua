@@ -118,6 +118,19 @@ PREFAB_SKINS = {
 		"flowerhat_ribbon_wreath",
 		"flowerhat_wreath",
 	},
+	orangestaff = 
+	{
+		"orangestaff_ancient",
+	},
+	researchlab4 = 
+	{
+		"researchlab4_catcoon_costume",
+		"researchlab4_chester_costume",
+		"researchlab4_derby",
+		"researchlab4_festive_bell_red_firehound",
+		"researchlab4_glommer_costume",
+		"researchlab4_hutch_costume",
+	},
 	reviver = 
 	{
 		"reviver_cupid",

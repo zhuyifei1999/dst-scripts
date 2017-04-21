@@ -378,6 +378,8 @@ local function commonfn(name, sixfaced)
     inst.components.combat:SetRetargetFunction(3, retargetfn)
     inst.components.health.redirect = nodmglevelingup
 
+    inst:AddComponent("explosiveresist")
+
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetChanceLootTable("shadow_chesspiece")
     inst.components.lootdropper:SetLootSetupFn(lootsetfn)

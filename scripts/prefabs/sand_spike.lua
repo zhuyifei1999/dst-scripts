@@ -279,6 +279,7 @@ local function MakeSpikeFn(shape, size)
         inst.components.health:SetMaxHealth(TUNING.SANDSPIKE.HEALTH[string.upper(inst.animname)])
         inst.components.health:SetInvincible(true)
         inst.components.health.fire_damage_scale = 0
+        inst.components.health.canheal = false
         inst.components.health.nofadeout = true
 
         inst:AddComponent("combat")

@@ -99,11 +99,9 @@ local function Despawn(inst)
 end
 
 local function AcceptTest(inst, item)
-    return not (inst:HasRewardToGive() or inst.sg.mem.wantstofightdata ~= nil)
-        and (   item.prefab == "heatrock" or
-                (item.components.tradable.rocktribute or 0) > 0 or
-                ((item.components.tradable.goldvalue or 0) > 0 and not item:HasTag("meat"))
-            )
+    return (not (inst:HasRewardToGive() or inst.sg.mem.wantstofightdata ~= nil))
+		and (item.components.tradable.rocktribute ~= nil)
+        and (item.components.tradable.rocktribute > 0)
 end
 
 local function OnGivenItem(inst, giver, item)
@@ -124,7 +122,7 @@ local function OnGivenItem(inst, giver, item)
         (item.components.tradable.goldvalue > 0 and "townportaltalisman") or
         nil
 
-    local rage_calming = (item.components.tradable.rocktribute ~= nil and item.components.tradable.rocktribute or math.ceil(item.components.tradable.goldvalue / 3)) * TUNING.ANTLION_TRIBUTE_TO_RAGE_TIME
+    local rage_calming = item.components.tradable.rocktribute * TUNING.ANTLION_TRIBUTE_TO_RAGE_TIME
     inst.maxragetime = math.min(inst.maxragetime + rage_calming, TUNING.ANTLION_RAGE_TIME_MAX)
 
     local timeleft = inst.components.timer:GetTimeLeft("rage")

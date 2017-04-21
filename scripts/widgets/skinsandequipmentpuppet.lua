@@ -93,7 +93,7 @@ end
 
 function SkinsAndEquipmentPuppet:SetTool(tool)
 	if tool == "swap_staffs" then
-    	self.animstate:OverrideSymbol("swap_object", tool, "redstaff")
+    	self.animstate:OverrideSymbol("swap_object", tool, "swap_redstaff")
     else
     	self.animstate:OverrideSymbol("swap_object", tool, tool)
     end

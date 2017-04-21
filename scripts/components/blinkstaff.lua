@@ -2,12 +2,23 @@ local BlinkStaff = Class(function(self, inst)
     self.inst = inst
     self.onblinkfn = nil
     self.blinktask = nil
+    self.frontfx = nil
+    self.backfx = nil
 end)
+
+function BlinkStaff:SetFX(front, back)
+    self.frontfx = front
+    self.backfx = back
+end
 
 function BlinkStaff:SpawnEffect(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
-    SpawnPrefab("sand_puff_large_back").Transform:SetPosition(x, y - .1, z)
-    SpawnPrefab("sand_puff_large_front").Transform:SetPosition(x, y, z)
+    if self.backfx ~= nil then
+        SpawnPrefab(self.backfx).Transform:SetPosition(x, y - .1, z)
+    end
+    if self.frontfx ~= nil then
+        SpawnPrefab(self.frontfx).Transform:SetPosition(x, y, z)
+    end
 end
 
 local function OnBlinked(caster, self, pt)

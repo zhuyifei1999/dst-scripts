@@ -180,8 +180,27 @@ local function DropWetTool(inst, data)
 
     local tool = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
     if tool ~= nil and tool:GetIsWet() and math.random() < easing.inSine(TheWorld.state.wetness, 0, .15, inst.components.moisture:GetMaxMoisture()) then
-        inst.components.inventory:Unequip(EQUIPSLOTS.HANDS, true)
-        inst.components.inventory:DropItem(tool)
+        local projectile =
+            data.weapon ~= nil and
+            data.projectile == nil and
+            (data.weapon.components.projectile ~= nil or data.weapon.components.complexprojectile ~= nil)
+
+        if projectile then
+            local num = data.weapon.components.stackable ~= nil and data.weapon.components.stackable:StackSize() or 1
+            if num <= 1 then
+                return
+            end
+            inst.components.inventory:Unequip(EQUIPSLOTS.HANDS, true)
+            tool = data.weapon.components.stackable:Get(num - 1)
+            tool.Transform:SetPosition(inst.Transform:GetWorldPosition())
+            if tool.components.inventoryitem ~= nil then
+                tool.components.inventoryitem:OnDropped()
+            end
+        else
+            inst.components.inventory:Unequip(EQUIPSLOTS.HANDS, true)
+            inst.components.inventory:DropItem(tool)
+        end
+
         if tool.Physics ~= nil then
             local x, y, z = tool.Transform:GetWorldPosition()
             tool.Physics:Teleport(x, .3, z)
@@ -190,11 +209,15 @@ local function DropWetTool(inst, data)
             if data.target ~= nil and data.target:IsValid() then
                 local x1, y1, z1 = inst.Transform:GetWorldPosition()
                 x, y, z = data.target.Transform:GetWorldPosition()
-                angle = angle + (x1 == x and z1 == z and math.random() * 2 * PI or math.atan2(z1 - z, x1 - x))
+                angle = angle + (
+                    (x1 == x and z1 == z and math.random() * 2 * PI) or
+                    (projectile and math.atan2(z - z1, x - x1)) or
+                    math.atan2(z1 - z, x1 - x)
+                )
             else
                 angle = angle + math.random() * 2 * PI
             end
-            local speed = 3 + math.random() * 2
+            local speed = projectile and 2 + math.random() or 3 + math.random() * 2
             tool.Physics:SetVel(math.cos(angle) * speed, 10, math.sin(angle) * speed)
         end
         --Lock out from picking up for a while?
@@ -1513,6 +1536,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_mount_emotes.zip"),
         Asset("ANIM", "anim/player_mount_emotes_dance0.zip"),
         Asset("ANIM", "anim/player_mount_emotesxl.zip"),
+        Asset("ANIM", "anim/player_mount_emotes_sit.zip"),
         Asset("ANIM", "anim/player_mount_bow.zip"),
 
         Asset("INV_IMAGE", "skull_"..name),
@@ -1678,6 +1702,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         
         inst:AddComponent("attuner")
         --attuner server listeners are not registered until after "ms_playerjoined" has been pushed
+
+        inst:AddComponent("playeravatardata")
 
         if common_postinit ~= nil then
             common_postinit(inst)

@@ -19,6 +19,10 @@ local MIN_CHARGE_START_DELAY = 1
 local KEY_STAFF = "yellowstaff"
 local MORPHED_STAFF = "opalstaff"
 
+local function HasStaff(inst, staffname)
+    return (inst._staffinst ~= nil and inst._staffinst.prefab or inst.components.pickable.product) == staffname
+end
+
 local function IsFixed(inst)
     return inst.components.workable.workleft > TUNING.MOONBASE_DAMAGED_WORK
 end
@@ -193,12 +197,21 @@ local function ToggleMoonCharge(inst)
 
             HideColdStar(inst)
 
-            local staff = inst.components.lootdropper:SpawnLootPrefab(inst.components.pickable.product)
-            if inst._staffuse ~= nil then
-                if staff ~= nil and staff.components.finiteuses ~= nil then
-                    staff.components.finiteuses:SetUses(inst._staffuse)
-                end
+            if inst._staffinst ~= nil then
+                inst:RemoveChild(inst._staffinst)
+                inst._staffinst:ReturnToScene()
+                inst._staffinst.components.inventoryitem:InheritMoisture(TheWorld.state.wetness, TheWorld.state.iswet)
+                inst.components.lootdropper:FlingItem(inst._staffinst)
+                inst._staffinst = nil
                 inst._staffuse = nil
+            else
+                local staff = inst.components.lootdropper:SpawnLootPrefab(inst.components.pickable.product)
+                if inst._staffuse ~= nil then
+                    if staff ~= nil and staff.components.finiteuses ~= nil then
+                        staff.components.finiteuses:SetUses(inst._staffuse)
+                    end
+                    inst._staffuse = nil
+                end
             end
         end
 
@@ -225,7 +238,7 @@ local function ToggleMoonCharge(inst)
 
         if TheWorld.state.isfullmoon and
             inst.components.pickable.caninteractwith and
-            inst.components.pickable.product == KEY_STAFF then
+            HasStaff(inst, KEY_STAFF) then
             --Start moon charging
             local state = GetAnimState(inst)
             if state ~= "low" then
@@ -294,7 +307,13 @@ local function GetStaffSymbol(staffname)
 end
 
 local function OnStaffGiven(inst, giver, item)
-    local staffname = type(item) == "table" and item.prefab or item
+    local staffname, skin_build
+    if type(item) == "table" then
+        staffname = item.prefab
+        skin_build = item:GetSkinBuild()
+    else
+        staffname = item
+    end
 
     --Disable trading, enable picking.
     inst.components.trader:Disable()
@@ -302,18 +321,33 @@ local function OnStaffGiven(inst, giver, item)
     inst.components.pickable:Pause()
     inst.components.pickable.caninteractwith = true
 
-    inst.AnimState:OverrideSymbol("swap_staffs", "staffs", GetStaffSymbol(staffname))
+    if skin_build ~= nil then
+        inst.AnimState:OverrideItemSkinSymbol("swap_staffs", skin_build, GetStaffSymbol(staffname), item.GUID, "staffs")
+        inst.components.pickable:ChangeProduct(nil)
+        inst._staffinst = item
+        inst._staffuse = nil
+        inst:AddChild(item)
+        item.Transform:SetPosition(0, 0, 0)
+        item:RemoveFromScene()
+    else
+        inst.AnimState:OverrideSymbol("swap_staffs", "staffs", GetStaffSymbol(staffname))
+        if type(item) == "table" then
+            if inst._staffinst ~= nil then
+                --Shouldn't happen
+                inst._staffinst:Remove()
+                inst._staffinst = nil
+            end
+            inst._staffuse = item.components.finiteuses ~= nil and item.components.finiteuses:GetUses() or nil
+            item:Remove()
+        end
+    end
+
     inst.SoundEmitter:PlaySound("dontstarve/common/together/moonbase/moonstaff_place")
 
     if staffname == MORPHED_STAFF then
         ShowColdStar(inst)
     else
         HideColdStar(inst)
-    end
-
-    if type(item) == "table" then
-        inst._staffuse = item.components.finiteuses ~= nil and item.components.finiteuses:GetUses() or nil
-        item:Remove()
     end
 
     if not inst._loading then
@@ -332,7 +366,19 @@ local function OnStaffTaken(inst, picker, loot)
 
     HideColdStar(inst)
 
-    if inst._staffuse ~= nil then
+    if inst._staffinst ~= nil then
+        if loot ~= nil then
+            --Shouldn't happen
+            loot:Remove()
+        end
+        inst:RemoveChild(inst._staffinst)
+        inst._staffinst:ReturnToScene()
+        inst._staffinst.components.inventoryitem:InheritMoisture(TheWorld.state.wetness, TheWorld.state.iswet)
+        picker:PushEvent("picksomething", { object = inst, loot = inst._staffinst })
+        picker.components.inventory:GiveItem(inst._staffinst, nil, inst:GetPosition())
+        inst._staffinst = nil
+        inst._staffuse = nil
+    elseif inst._staffuse ~= nil then
         if loot ~= nil and loot.components.finiteuses ~= nil then
             loot.components.finiteuses:SetUses(inst._staffuse)
         end
@@ -370,9 +416,13 @@ local function OnTimerDone(inst, data)
         StartMusic(inst, 2)
     elseif data.name == "mooncharge"
         and inst.components.pickable.caninteractwith
-        and inst.components.pickable.product == KEY_STAFF then
+        and HasStaff(inst, KEY_STAFF) then
         --morph staff
-        inst.components.pickable.product = MORPHED_STAFF
+        inst.components.pickable:ChangeProduct(MORPHED_STAFF)
+        if inst._staffinst ~= nil then
+            inst._staffinst:Remove()
+            inst._staffinst = nil
+        end
         inst._staffuse = nil
         inst.AnimState:OverrideSymbol("swap_staffs", "staffs", GetStaffSymbol(MORPHED_STAFF))
 
@@ -454,23 +504,42 @@ end
 local function getstatus(inst)
     return (not IsFixed(inst) and "BROKEN")
         or (not inst.components.pickable.caninteractwith and "GENERIC")
-        or (inst.components.pickable.product == KEY_STAFF and "STAFFED")
-        or (inst.components.pickable.product == MORPHED_STAFF and "MOONSTAFF")
+        or (HasStaff(inst, KEY_STAFF) and "STAFFED")
+        or (HasStaff(inst, MORPHED_STAFF) and "MOONSTAFF")
         or "WRONGSTAFF"
 end
 
 local function onsave(inst, data)
     if inst.components.pickable.caninteractwith then
-        data.staffname = inst.components.pickable.product
-        data.staffuse = inst._staffuse
+        if inst._staffinst ~= nil then
+            data.staff = inst._staffinst:GetSaveRecord()
+        else
+            data.staffname = inst.components.pickable.product
+            data.staffuse = inst._staffuse
+        end
     end
 end
 
 local function onload(inst, data)
-    if inst.components.pickable.caninteractwith and data.staffname ~= nil then
-        OnStaffGiven(inst, nil, data.staffname)
-        inst._staffuse = data.staffuse
-    else
+    local staffloaded = false
+    if inst.components.pickable.caninteractwith then
+        if data.staff ~= nil then
+            local staff = SpawnSaveRecord(data.staff)
+            if staff ~= nil then
+                OnStaffGiven(inst, nil, staff)
+                staffloaded = true
+            end
+        elseif data.staffname ~= nil then
+            OnStaffGiven(inst, nil, data.staffname)
+            inst._staffuse = data.staffuse
+            staffloaded = true
+        end
+    end
+    if not staffloaded then
+        if inst._staffinst ~= nil then
+            inst._staffinst:Remove()
+            inst._staffinst = nil
+        end
         inst._staffuse = nil
         OnStaffTaken(inst)
     end
@@ -583,6 +652,7 @@ local function fn()
     inst._stoplighttask = nil
     inst.OnRemoveEntity = OnRemoveEntity
 
+    inst._staffinst = nil
     inst._staffuse = nil
     inst._loading = inst:DoTaskInTime(0, init)
 

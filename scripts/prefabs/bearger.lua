@@ -419,6 +419,11 @@ local function fn()
     end)
 
     ------------------------------------------
+
+    inst:AddComponent("explosiveresist")
+
+    ------------------------------------------
+
     inst:AddComponent("shedder")
     inst.components.shedder.shedItemPrefab = "furtuft"
     inst.components.shedder.shedHeight = 6.5

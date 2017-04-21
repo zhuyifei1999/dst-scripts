@@ -49,7 +49,12 @@ function Explosive:OnBurnt()
                 end
 
                 if v.components.combat ~= nil and not (v.components.health ~= nil and v.components.health:IsDead()) then
-                    v.components.combat:GetAttacked(self.inst, totaldamage, nil)
+                    local dmg = totaldamage
+                    if v.components.explosiveresist ~= nil then
+                        dmg = dmg * (1 - v.components.explosiveresist:GetResistance())
+                        v.components.explosiveresist:OnExplosiveDamage(dmg, self.inst)
+                    end
+                    v.components.combat:GetAttacked(self.inst, dmg, nil)
                 end
 
                 v:PushEvent("explosion", { explosive = self.inst })

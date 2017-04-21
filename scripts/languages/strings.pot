@@ -81403,6 +81403,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.none"
 msgid "Your usual look."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.orangestaff_ancient
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.orangestaff_ancient"
+msgid "orangestaff_ancient"
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.perdling_rooster
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.perdling_rooster"
 msgid "If you wanted a bouncy rooster companion by your side, then you're in cluck!"
@@ -81421,6 +81426,36 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.puppy_winter_builder
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.puppy_winter_builder"
 msgid "missing description"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.researchlab4_catcoon_costume
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.researchlab4_catcoon_costume"
+msgid "researchlab4_catcoon_costume"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.researchlab4_chester_costume
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.researchlab4_chester_costume"
+msgid "researchlab4_chester_costume"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.researchlab4_derby
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.researchlab4_derby"
+msgid "researchlab4_derby"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.researchlab4_festive_bell_red_firehound
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.researchlab4_festive_bell_red_firehound"
+msgid "researchlab4_festive_bell_red_firehound"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.researchlab4_glommer_costume
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.researchlab4_glommer_costume"
+msgid "researchlab4_glommer_costume"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.researchlab4_hutch_costume
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.researchlab4_hutch_costume"
+msgid "researchlab4_hutch_costume"
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.reviver_cupid
@@ -82833,6 +82868,11 @@ msgctxt "STRINGS.SKIN_NAMES.none"
 msgid "Default"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.orangestaff_ancient
+msgctxt "STRINGS.SKIN_NAMES.orangestaff_ancient"
+msgid "Ancient Explorer"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.perdling_rooster
 msgctxt "STRINGS.SKIN_NAMES.perdling_rooster"
 msgid "Rooslet"
@@ -82851,6 +82891,36 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.puppy_winter_builder
 msgctxt "STRINGS.SKIN_NAMES.puppy_winter_builder"
 msgid "puppy_winter_builder"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.researchlab4_catcoon_costume
+msgctxt "STRINGS.SKIN_NAMES.researchlab4_catcoon_costume"
+msgid "Presticatator"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.researchlab4_chester_costume
+msgctxt "STRINGS.SKIN_NAMES.researchlab4_chester_costume"
+msgid "Chestihatator"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.researchlab4_derby
+msgctxt "STRINGS.SKIN_NAMES.researchlab4_derby"
+msgid "Prestibowlerhatator"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.researchlab4_festive_bell_red_firehound
+msgctxt "STRINGS.SKIN_NAMES.researchlab4_festive_bell_red_firehound"
+msgid "Jingly Prestihatator"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.researchlab4_glommer_costume
+msgctxt "STRINGS.SKIN_NAMES.researchlab4_glommer_costume"
+msgid "Prestihataglommer"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.researchlab4_hutch_costume
+msgctxt "STRINGS.SKIN_NAMES.researchlab4_hutch_costume"
+msgid "Prestihutchatator"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.reviver_cupid

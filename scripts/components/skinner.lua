@@ -268,8 +268,7 @@ function Skinner:SetSkinName(skin_name)
 	self:SetSkinMode()
 end
 
-function Skinner:_InternalSetClothing( type, name, set_skin_mode )
-
+local function _InternalSetClothing(self, type, name, set_skin_mode)
 	if self.clothing[type] and self.clothing[type] ~= "" then
 		self.inst:PushEvent("unequipskinneditem", self.clothing[type])
 	end
@@ -291,18 +290,18 @@ end
 
 function Skinner:SetClothing( name )
 	if IsValidClothing(name) then
-		self:_InternalSetClothing( CLOTHING[name].type, name, true )
+		_InternalSetClothing(self, CLOTHING[name].type, name, true)
 	end
 end
 
 function Skinner:GetClothing()
-	local temp_clothing = {}
-	temp_clothing.base = self.skin_name
-	temp_clothing.body = self.clothing.body
-	temp_clothing.hand = self.clothing.hand
-	temp_clothing.legs = self.clothing.legs
-	temp_clothing.feet = self.clothing.feet
-	return temp_clothing
+	return {
+		base = self.skin_name,
+		body = self.clothing.body,
+		hand = self.clothing.hand,
+		legs = self.clothing.legs,
+		feet = self.clothing.feet,
+	}
 end
 
 
@@ -322,13 +321,13 @@ end
 
 function Skinner:ClearAllClothing()
 	for type,_ in pairs(self.clothing) do
-		self:_InternalSetClothing( type, "", false )
+		_InternalSetClothing(self, type, "", false)
 	end
 	self:SetSkinMode()
 end
 
 function Skinner:ClearClothing(type)
-	self:_InternalSetClothing( type, "", true )
+	_InternalSetClothing(self, type, "", true)
 end
 
 function Skinner:OnSave()

@@ -1,5 +1,3 @@
-local EquipSlot = require("equipslotutil")
-
 local assets =
 {
     Asset("ANIM", "anim/skeletons.zip"),
@@ -63,43 +61,7 @@ local function SetSkeletonDescription(inst, char, playername, cause, pkname)
 end
 
 local function SetSkeletonAvatarData(inst, client_obj)
-    for k, v in pairs(inst._avatar_net.strings) do
-        v:set(client_obj ~= nil and client_obj[k] or "")
-    end
-    for k, v in pairs(inst._avatar_net.skins) do
-        v:set(client_obj ~= nil and client_obj[k] or "")
-    end
-    for k, v in pairs(inst._avatar_net.numbers) do
-        v:set(client_obj ~= nil and client_obj[k] or 0)
-    end
-    for i, v in ipairs(inst._avatar_net.equip) do
-        v:set(client_obj ~= nil and client_obj.equip ~= nil and client_obj.equip[i] or "")
-    end
-end
-
---Always return a new table because this data is used in place
---of TheNet:GetClientTable, where the return value is modified
---most of the time by the screens using it.
-local function GetSkeletonAvatarData(inst)
-    if inst._avatar_net.strings.name:value() == "" then
-        return
-    end
-
-    local data = { equip = {} }
-    for k, v in pairs(inst._avatar_net.strings) do
-        data[k] = v:value()
-    end
-    for k, v in pairs(inst._avatar_net.skins) do
-        --Skin strings are translated to nil when empty
-        data[k] = v:value() ~= "" and v:value() or nil
-    end
-    for k, v in pairs(inst._avatar_net.numbers) do
-        data[k] = v:value()
-    end
-    for i, v in ipairs(inst._avatar_net.equip) do
-        table.insert(data.equip, v:value())
-    end
-    return data
+    inst.components.playeravatardata:SetData(client_obj)
 end
 
 local function onhammered(inst)
@@ -134,22 +96,6 @@ local function onsaveplayer(inst, data)
             data.age = time - inst.skeletonspawntime
         end
     end
-
-    data.avatar = inst:GetSkeletonAvatarData()
-    if data.avatar ~= nil and data.avatar.equip ~= nil then
-        --translate equipslot id to name
-        --names never change, but ids change if slots are added/removed
-        local temp = {}
-        if inst.unsupported_equips ~= nil then
-            for k, v in pairs(inst.unsupported_equips) do
-                temp[k] = v
-            end
-        end
-        for i, v in ipairs(data.avatar.equip) do
-            temp[EquipSlot.FromID(i)] = v
-        end
-        data.avatar.equip = temp
-    end
 end
 
 local function onloadplayer(inst, data)
@@ -168,22 +114,8 @@ local function onloadplayer(inst, data)
         end
 
         if data.avatar ~= nil then
-            --translate equipslot name back to id
-            if data.avatar.equip ~= nil then
-                local temp = {}
-                for k, v in pairs(data.avatar.equip) do
-                    local eslotid = EquipSlot.ToID(k)
-                    if eslotid ~= nil then
-                        temp[eslotid] = v
-                    elseif inst.unsupported_equips == nil then
-                        inst.unsupported_equips = { [k] = v }
-                    else
-                        inst.unsupported_equips[k] = v
-                    end
-                end
-                data.avatar.equip = temp
-            end
-            inst:SetSkeletonAvatarData(data.avatar)
+            --Load legacy data
+            inst.components.playeravatardata:OnLoad(data.avatar)
         end
     end
 end
@@ -245,34 +177,7 @@ end
 local function player_custominit(inst)
     inst:AddTag("playerskeleton")
 
-    inst._avatar_net =
-    {
-        strings =
-        {
-            name = net_string(inst.GUID, "skeleton_player.avatar.name"),
-            prefab = net_string(inst.GUID, "skeleton_player.avatar.prefab"),
-        },
-        skins =
-        {
-            --Skin strings are translated to nil when empty
-            base_skin = net_string(inst.GUID, "skeleton_player.avatar.base_skin"),
-            body_skin = net_string(inst.GUID, "skeleton_player.avatar.body_skin"),
-            hand_skin = net_string(inst.GUID, "skeleton_player.avatar.hand_skin"),
-            legs_skin = net_string(inst.GUID, "skeleton_player.avatar.legs_skin"),
-            feet_skin = net_string(inst.GUID, "skeleton_player.avatar.feet_skin"),
-        },
-        numbers =
-        {
-            playerage = net_ushortint(inst.GUID, "skeleton_player.avatar.playerage"),
-        },
-        equip = {},
-    }
-
-    for i = 1, EquipSlot.Count() do
-        table.insert(inst._avatar_net.equip, net_string(inst.GUID, "skeleton_player.avatar.equip["..tostring(i).."]"))
-    end
-
-    inst.GetSkeletonAvatarData = GetSkeletonAvatarData
+    inst:AddComponent("playeravatardata")
 end
 
 local function fnplayer()

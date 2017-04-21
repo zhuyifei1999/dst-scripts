@@ -37,6 +37,7 @@ EMOTE_ITEMS =
 			anim = "emote_swoon",
 			fx = false,
 			loop = false,
+			mounted = true,
 		},
 	},
 	emote_yawn =

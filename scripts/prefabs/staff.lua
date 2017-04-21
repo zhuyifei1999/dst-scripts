@@ -577,24 +577,20 @@ local function onfinished(inst)
     inst:Remove()
 end
 
-local function unimplementeditem(inst)
-    local player = ThePlayer
-    player.components.talker:Say(GetString(player, "ANNOUNCE_UNIMPLEMENTED"))
-    if player.components.health.currenthealth > 1 then
-        player.components.health:DoDelta(-player.components.health.currenthealth * 0.5)
-    end
-
-    if inst.components.useableitem then
-        inst.components.useableitem:StopUsingItem()
-    end
+local function onunequip(inst, owner)
+    owner.AnimState:Hide("ARM_carry")
+    owner.AnimState:Show("ARM_normal")
 end
 
-local onunequip = function(inst, owner) 
-    owner.AnimState:Hide("ARM_carry") 
-    owner.AnimState:Show("ARM_normal") 
+local function onunequip_skinned(inst, owner)
+    if inst:GetSkinBuild() ~= nil then
+        owner:PushEvent("unequipskinneditem", inst:GetSkinName())
+    end
+
+    onunequip(inst, owner)
 end
 
-local function commonfn(colour, tags)
+local function commonfn(colour, tags, hasskin)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -606,6 +602,9 @@ local function commonfn(colour, tags)
 
     inst.AnimState:SetBank("staffs")
     inst.AnimState:SetBuild("staffs")
+    if hasskin then
+        inst.AnimState:OverrideSymbol("grass", "staffs", "grass")
+    end
     inst.AnimState:PlayAnimation(colour.."staff")
 
     if tags ~= nil then
@@ -615,28 +614,44 @@ local function commonfn(colour, tags)
     end
 
     inst.entity:SetPristine()
-    
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    -------   
+    -------
     inst:AddComponent("finiteuses")
     inst.components.finiteuses:SetOnFinished(onfinished)
 
     inst:AddComponent("inspectable")
-    
+
     inst:AddComponent("inventoryitem")
-    
+
     inst:AddComponent("tradable")
 
     inst:AddComponent("equippable")
-    inst.components.equippable:SetOnEquip(function(inst, owner) 
-        owner.AnimState:OverrideSymbol("swap_object", "swap_staffs", colour.."staff")
-        owner.AnimState:Show("ARM_carry") 
-        owner.AnimState:Hide("ARM_normal") 
-    end)
-    inst.components.equippable:SetOnUnequip(onunequip)
+
+    if hasskin then
+        inst.components.equippable:SetOnEquip(function(inst, owner)
+            local skin_build = inst:GetSkinBuild()
+            if skin_build ~= nil then
+                owner:PushEvent("equipskinneditem", inst:GetSkinName())
+                owner.AnimState:OverrideItemSkinSymbol("swap_object", skin_build, "swap_"..colour.."staff", inst.GUID, "swap_staffs")
+            else
+                owner.AnimState:OverrideSymbol("swap_object", "swap_staffs", "swap_"..colour.."staff")
+            end
+            owner.AnimState:Show("ARM_carry")
+            owner.AnimState:Hide("ARM_normal")
+        end)
+        inst.components.equippable:SetOnUnequip(onunequip_skinned)
+    else
+        inst.components.equippable:SetOnEquip(function(inst, owner)
+            owner.AnimState:OverrideSymbol("swap_object", "swap_staffs", "swap_"..colour.."staff")
+            owner.AnimState:Show("ARM_carry")
+            owner.AnimState:Hide("ARM_normal")
+        end)
+        inst.components.equippable:SetOnUnequip(onunequip)
+    end
 
     return inst
 end
@@ -759,7 +774,7 @@ local function green()
 end
 
 local function orange()
-    local inst = commonfn("orange", { "nopunch" })
+    local inst = commonfn("orange", { "nopunch" }, true)
 
     inst:AddComponent("reticule")
     inst.components.reticule.targetfn = blinkstaff_reticuletargetfn
@@ -773,6 +788,7 @@ local function orange()
     inst.castsound = "dontstarve/common/staffteleport"
 
     inst:AddComponent("blinkstaff")
+    inst.components.blinkstaff:SetFX("sand_puff_large_front", "sand_puff_large_back")
     inst.components.blinkstaff.onblinkfn = onblink
 
     inst.components.equippable.walkspeedmult = TUNING.CANE_SPEED_MULT

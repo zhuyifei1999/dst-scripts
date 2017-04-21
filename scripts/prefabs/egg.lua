@@ -82,6 +82,8 @@ local function defaultfn()
     inst.components.edible.hungervalue = TUNING.CALORIES_TINY
     inst.components.perishable:SetPerishTime(TUNING.PERISH_MED)
 
+	inst.components.tradable.rocktribute = 1
+
     return inst
 end
 

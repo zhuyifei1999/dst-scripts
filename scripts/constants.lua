@@ -1267,7 +1267,7 @@ COMMAND_RESULT = {
 
 MAX_VOTE_OPTIONS = 6
 
-CURRENT_BETA = 1 -- set to 0 if there is no beta. Note: release builds wont use this so only staging and dev really care
+CURRENT_BETA = 0 -- set to 0 if there is no beta. Note: release builds wont use this so only staging and dev really care
 BETA_INFO =
 {
     {	
@@ -1277,7 +1277,8 @@ BETA_INFO =
 		URL = "http://forums.kleientertainment.com/topic/69487-how-to-opt-in-to-a-new-reign-beta-for-dont-starve-together/",
 	},
 	
-	-- THE PUBLIC BETA MUST BE LAST --
+	-- THE GENERIC PUBLIC BETA INFO MUST BE LAST --
+	-- This is added to all beta servers as a fallback
 	{
 		NAME = "PUBLIC_BETA",
 		SERVERTAG = "public_beta",
