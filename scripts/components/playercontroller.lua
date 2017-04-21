@@ -1393,12 +1393,9 @@ function PlayerController:DoInspectButton()
 
     if buffaction.action == ACTIONS.LOOKAT and
         buffaction.target ~= nil and
-        (buffaction.target:HasTag("player") or buffaction.target:HasTag("playerskeleton")) and
+        buffaction.target.components.playeravatardata ~= nil and
         self.inst.HUD ~= nil then
-        local client_obj =
-            (buffaction.target.userid ~= nil and TheNet:GetClientTableForUser(buffaction.target.userid)) or
-            (buffaction.target.GetSkeletonAvatarData ~= nil and buffaction.target:GetSkeletonAvatarData()) or
-            nil
+        local client_obj = buffaction.target.components.playeravatardata:GetData()
         if client_obj ~= nil then
             client_obj.inst = buffaction.target
             self.inst.HUD:TogglePlayerAvatarPopup(client_obj.name, client_obj, true)
@@ -2556,13 +2553,10 @@ function PlayerController:OnLeftClick(down)
         end
     elseif act.action == ACTIONS.LOOKAT
         and act.target ~= nil
-        and (act.target:HasTag("player") or act.target:HasTag("playerskeleton"))
+        and act.target.components.playeravatardata ~= nil
         and self.inst.HUD ~= nil then
 
-        local client_obj =
-            (act.target.userid ~= nil and TheNet:GetClientTableForUser(act.target.userid)) or
-            (act.target.GetSkeletonAvatarData ~= nil and act.target:GetSkeletonAvatarData()) or
-            nil
+        local client_obj = act.target.components.playeravatardata:GetData()
         if client_obj ~= nil then
             client_obj.inst = act.target
             self.inst.HUD:TogglePlayerAvatarPopup(client_obj.name, client_obj, true)

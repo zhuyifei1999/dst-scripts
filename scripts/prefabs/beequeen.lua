@@ -423,6 +423,8 @@ local function fn()
     inst.components.combat.battlecryenabled = false
     inst.components.combat.hiteffectsymbol = "hive_body"
 
+    inst:AddComponent("explosiveresist")
+
     inst:AddComponent("grouptargeter")
     inst:AddComponent("commander")
     inst.components.commander:SetTrackingDistance(DEFAULT_COMMANDER_RANGE)

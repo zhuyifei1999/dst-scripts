@@ -122,7 +122,7 @@ local function parseinput(input)
     local args = string.split(input, " ")
     local command = getcommand(args[1])
     if command == nil then
-        modprint("Tried running unknown user command: ",args[1])
+        modprint("Tried running unknown user command: ", args[1])
         modprint("input:", input)
         return nil
     end
@@ -182,7 +182,9 @@ end
 local function commandlevel(command)
     return (command.permission == COMMAND_PERMISSION.ADMIN and 3)
         or (command.permission == COMMAND_PERMISSION.MODERATOR and 2)
-        or (command.permission == COMMAND_PERMISSION.USER and 1)
+        --Default: COMMAND_PERMISSION.USER
+        or (command.vote and 1)
+        or 0
 end
 
 local function userlevel(user)
@@ -355,8 +357,10 @@ end
 
 local function UserRunCommandResult(commandname, player, targetid)
     local command = getcommand(commandname)
+    if command == nil then
+        return COMMAND_RESULT.INVALID
+    end
     assert(command.usermenu ~= true or targetid ~= nil, "UserRunCommandResult must specify a target for user actions!")
-
     return getexectype(command, player, targetid)
 end
 
@@ -367,7 +371,9 @@ end
 
 local function CanUserStartCommand(commandname, player, targetid)
     local command = getcommand(commandname)
-    if command.canstartfn == nil then
+    if command == nil then
+        return false, nil
+    elseif command.canstartfn == nil then
         return true, nil
     end
     --Expects 2 return values, so don't inline!
@@ -376,8 +382,10 @@ end
 
 local function CanUserStartVote(commandname, player, targetid)
     local command = getcommand(commandname)
+    if command == nil then
+        return false, nil
+    end
     assert(command.vote)
-
     return validatevotestart(command, player, targetid)
 end
 
@@ -427,6 +435,9 @@ local function FinishVote(commandname, params, voteresults)
     end
 
     local command = getcommand(commandname)
+    if command == nil then
+        return false
+    end
 
     local passed = false
     if command.voteallownotvoted or voteresults.total_not_voted <= 0 then
@@ -452,14 +463,6 @@ local function FinishVote(commandname, params, voteresults)
         end
     end
     return passed
-end
-
-local function GetCommandFromName(name)
-    return getcommand(name)
-end
-
-local function GetCommandFromHash(hash)
-    return getcommandfromhash(hash)
 end
 
 local function GetCommandNames()
@@ -634,7 +637,7 @@ return {
     ClearModData = ClearModData,
     GetUserActions = GetUserActions,
     GetServerActions = GetServerActions,
-    GetCommandFromHash = GetCommandFromHash,
-    GetCommandFromName = GetCommandFromName,
+    GetCommandFromHash = getcommandfromhash,
+    GetCommandFromName = getcommand,
     GetCommandNames = GetCommandNames,
 }

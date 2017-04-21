@@ -789,8 +789,10 @@ local function fn()
     inst.components.combat.battlecryenabled = false
     inst.components.combat.hiteffectsymbol = "toad_torso"
 
+    inst:AddComponent("explosiveresist")
+
     inst:AddComponent("sanityaura")
-    
+
     inst:AddComponent("epicscare")
     inst.components.epicscare:SetRange(TUNING.TOADSTOOL_EPICSCARE_RANGE)
 

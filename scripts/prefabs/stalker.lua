@@ -1342,6 +1342,8 @@ local function common_fn(bank, build, shadowsize, canfight, atriumstalker)
         inst.components.combat:SetKeepTargetFunction(DoNotKeepTargetFn)
     end
 
+    inst:AddComponent("explosiveresist")
+
     if atriumstalker then
         inst.atriumstalker = true --Need this b4 setting brain
 

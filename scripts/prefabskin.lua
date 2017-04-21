@@ -379,6 +379,46 @@ function cane_init_fn(inst, build_name)
 end
 
 --------------------------------------------------------------------------
+--[[ OrangeStaff skin functions ]]
+--------------------------------------------------------------------------
+function orangestaff_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "staffs")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+
+    local skin_fx = SKIN_FX_PREFAB[build_name]
+    if skin_fx ~= nil then
+        inst.trail_fx = skin_fx[1]
+        if inst.trail_fx ~= nil then
+            inst:ListenForEvent("equipped", cane_equipped)
+            inst:ListenForEvent("unequipped", cane_unequipped)
+        end
+
+        if skin_fx[2] ~= nil then
+            inst.components.blinkstaff:SetFX(skin_fx[2], skin_fx[3])
+        end
+    end
+end
+
+--------------------------------------------------------------------------
+--[[ ResearchLab4 skin functions ]]
+--------------------------------------------------------------------------
+function researchlab4_init_fn(inst, build_name)
+    if inst.components.placer ~= nil then
+        --Placers can run this on clients as well as servers
+        inst.AnimState:OverrideItemSkinSymbol("machine_hat", build_name, "machine_hat", inst.GUID, "researchlab4")
+        return
+    elseif not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:OverrideItemSkinSymbol("machine_hat", build_name, "machine_hat", inst.GUID, "researchlab4")
+end
+
+--------------------------------------------------------------------------
 
 function CreatePrefabSkin(name, info)
     local prefab_skin = Prefab(name, nil, info.assets, info.prefabs)

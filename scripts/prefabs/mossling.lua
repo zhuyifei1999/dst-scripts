@@ -25,57 +25,34 @@ SetSharedLootTable( 'mossling',
     {'goose_feather',    0.33},
 })
 
-local BASE_TAGS = {"structure"}
-local SEE_STRUCTURE_DIST = 20
-
-local TARGET_DIST = 7
 local LOSE_TARGET_DIST = 13
 local TARGET_DIST = 6
 
 local function HasGuardian(inst)
-    local gs = inst.components.herdmember.herd
-    return gs and gs.components.guardian:HasGuardian()
+    return inst.components.herdmember.herd ~= nil
+        and inst.components.herdmember.herd.components.guardian:HasGuardian()
 end
 
 local function RetargetFn(inst)
-    if inst:HasGuardian() or inst.mother_dead then
-        return FindEntity(inst, TARGET_DIST, function(guy)
-            return inst.components.combat:CanTarget(guy)
-        end,
-        nil,
-        { "prey", "smallcreature", "mossling", "moose" },
-        { "monster", "player"})
-    end
-end
-
-local function IsInDanger(inst)
-    --[[
-    If the mosling doesn't have a guardian and
-    does have a combat target then the mosling is in danger.
-
-    If the mosling does have a guardian and does have a combat target but the
-    combat target is a certain distance away then the mosling is safe.
-
-    If the mosling doesn't have a combat target then the mosling is safe.
-    --]]
-
-    if not inst.components.combat.target then
-        return false
-    end
-
-    if (not inst:HasGuardian() or inst.mother_dead) then
-        return true
-    elseif inst:HasGuardian() then
-        if inst:GetDistanceSqToInst(inst.components.combat.target) <= LOSE_TARGET_DIST*LOSE_TARGET_DIST then
-            return false
-        else
-            return true
-        end
-    end
+    return (inst.mother_dead or inst:HasGuardian())
+        and FindEntity(
+                inst,
+                TARGET_DIST,
+                function(guy)
+                    return inst.components.combat:CanTarget(guy)
+                end,
+                nil,
+                { "prey", "smallcreature", "mossling", "moose" },
+                { "monster", "player" }
+            )
+        or nil
 end
 
 local function KeepTargetFn(inst, target)
-    return inst.components.combat:CanTarget(target) and IsInDanger(inst)
+    return inst.components.combat:CanTarget(target)
+        and (inst.mother_dead or
+            not inst:HasGuardian() or
+            not inst:IsNear(target, LOSE_TARGET_DIST))
 end
 
 local function OnSave(inst, data)
@@ -83,7 +60,7 @@ local function OnSave(inst, data)
 end
 
 local function OnLoad(inst, data)
-    if data and data.mother_dead then
+    if data ~= nil and data.mother_dead then
         inst.mother_dead = data.mother_dead
     end
 end
@@ -94,8 +71,8 @@ local function OnEntitySleep(inst)
     end
 end
 
-local function OnSpringChange(inst, isSpring)
-    inst.shouldGoAway = not isSpring
+local function OnSpringChange(inst, isspring)
+    inst.shouldGoAway = not isspring
     if inst:IsAsleep() then
         OnEntitySleep(inst)
     end
@@ -121,8 +98,6 @@ local function fn()
     inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
 
-    local s = 1
-    inst.Transform:SetScale(s,s,s)
     inst.Transform:SetFourFaced()
 
     inst.DynamicShadow:SetSize(1.5, 1.25)

@@ -572,6 +572,8 @@ local function fn()
     inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
     inst.components.combat.hiteffectsymbol = "swap_fire"
 
+    inst:AddComponent("explosiveresist")
+
     inst:AddComponent("grouptargeter")
     inst:AddComponent("commander")
     inst.components.commander:SetTrackingDistance(30)

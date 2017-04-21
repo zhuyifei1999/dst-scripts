@@ -198,6 +198,11 @@ local function fn()
     inst.components.combat:SetRetargetFunction(1, RetargetFn)
     inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
     inst.components.combat:SetHurtSound("dontstarve_DLC001/creatures/moose/hurt")
+
+    ------------------------------------------
+
+    inst:AddComponent("explosiveresist")
+
     ------------------------------------------
 
     inst:AddComponent("sleeper")

@@ -1356,12 +1356,12 @@ function Tune(overrides)
                 4, --[29] Black Rook
                 4, --[30] White Knight
                 4, --[31] Black Knight
-                0, --[32] Crystal Ball
-                0, --[33] Spider Ring
-                0, --[34] Hand / Monkey Paw?
-                0, --[35] Empty Potion Bottle
-                0, --[36] Vampire Teeth
-                0, --[37] Wooden Stake
+                1, --[32] Crystal Ball
+                1, --[33] Spider Ring
+                1, --[34] Hand / Monkey Paw?
+                1, --[35] Empty Potion Bottle
+                1, --[36] Vampire Teeth
+                1, --[37] Wooden Stake
             },
         },
 
@@ -1676,6 +1676,10 @@ function Tune(overrides)
         GUNPOWDER_RANGE = 3,
         GUNPOWDER_DAMAGE = 200,
         BIRD_RAIN_FACTOR = .25,
+
+        EXPLOSIVE_MAX_RESIST_DAMAGE = 8000,
+        EXPLOSIVE_RESIST_DECAY_TIME = 8,
+        EXPLOSIVE_RESIST_DECAY_DELAY = 2,
 
         RESURRECT_HEALTH = 50,
 

@@ -228,6 +228,9 @@ local function fn()
     inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
 
     ------------------------------------------
+    inst:AddComponent("explosiveresist")
+
+    ------------------------------------------
 
     inst:AddComponent("sleeper")
     inst.components.sleeper:SetResistance(4)
