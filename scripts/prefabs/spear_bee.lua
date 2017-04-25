@@ -13,4 +13,5 @@ return CreatePrefabSkin("spear_bee",
 	build_name = "swap_spear_bee",
 	rarity = "Elegant",
 	init_fn = function(inst) spear_init_fn(inst, "swap_spear_bee") end,
+	granted_items = { "firestaff_bee", "icestaff_bee", },
 })

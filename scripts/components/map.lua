@@ -73,20 +73,21 @@ function Map:IsPointNearHole(pt, range)
     return false
 end
 
-function Map:IsDeployPointClear(pt, inst, min_spacing, min_spacing_sq_fn)
-    local min_spacing_sq = min_spacing_sq_fn == nil and min_spacing * min_spacing or nil
+local function IsNearOther(other, pt, min_spacing_sq)
+    --FindEntities range check is <=, but we want <
+    return other:GetDistanceSqToPoint(pt.x, 0, pt.z) < (other.deploy_extra_spacing ~= nil and math.max(other.deploy_extra_spacing * other.deploy_extra_spacing, min_spacing_sq) or min_spacing_sq)
+end
+
+function Map:IsDeployPointClear(pt, inst, min_spacing, min_spacing_sq_fn, near_other_fn)
+    local min_spacing_sq = min_spacing ~= nil and min_spacing * min_spacing or nil
+    near_other_fn = near_other_fn or IsNearOther
     for i, v in ipairs(TheSim:FindEntities(pt.x, 0, pt.z, math.max(DEPLOY_EXTRA_SPACING, min_spacing), nil, DEPLOY_IGNORE_TAGS)) do
         if v ~= inst and
             v.entity:IsVisible() and
             v.components.placer == nil and
-            v.entity:GetParent() == nil then
-            --FindEntities range check is <=, but we want <
-            if min_spacing_sq_fn ~= nil then
-                min_spacing_sq = min_spacing_sq_fn(v)
-            end
-            if v:GetDistanceSqToPoint(pt.x, 0, pt.z) < (v.deploy_extra_spacing ~= nil and math.max(v.deploy_extra_spacing * v.deploy_extra_spacing, min_spacing_sq) or min_spacing_sq) then
-                return false
-            end
+            v.entity:GetParent() == nil and
+            near_other_fn(v, pt, min_spacing_sq_fn ~= nil and min_spacing_sq_fn(v) or min_spacing_sq) then
+            return false
         end
     end
     return true
@@ -103,13 +104,17 @@ function Map:CanDeployPlantAtPoint(pt, inst)
         and self:IsDeployPointClear(pt, inst, inst.replica.inventoryitem ~= nil and inst.replica.inventoryitem:DeploySpacingRadius() or DEPLOYSPACING_RADIUS[DEPLOYSPACING.DEFAULT])
 end
 
-local function CalculateWallSpacingSq(other)
-    return other:HasTag("wall") and .1 or 1
+local function IsNearOtherWall(other, pt, min_spacing_sq)
+    if other:HasTag("wall") then
+        local x, y, z = other.Transform:GetWorldPosition()
+        return math.floor(x) == math.floor(pt.x) and math.floor(z) == math.floor(pt.z)
+    end
+    return IsNearOther(other, pt, min_spacing_sq)
 end
 
 function Map:CanDeployWallAtPoint(pt, inst)
     return self:IsPassableAtPoint(pt:Get())
-        and self:IsDeployPointClear(pt, inst, 1, CalculateWallSpacingSq)
+        and self:IsDeployPointClear(pt, inst, 1, nil, IsNearOtherWall)
 end
 
 function Map:CanPlacePrefabFilteredAtPoint(x, y, z, prefab)

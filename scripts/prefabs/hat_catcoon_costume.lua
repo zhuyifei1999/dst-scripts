@@ -13,4 +13,5 @@ return CreatePrefabSkin("hat_catcoon_costume",
 	build_name = "hat_catcoon_costume",
 	rarity = "Elegant",
 	init_fn = function(inst) tophat_init_fn(inst, "hat_catcoon_costume") end,
+	granted_items = { "researchlab4_catcoon_costume", },
 })

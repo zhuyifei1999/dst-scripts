@@ -67,7 +67,7 @@ local function onattack_red(inst, attacker, target, skipsanity)
         target.components.combat:SuggestTarget(attacker)
     end
 
-    target:PushEvent("attacked", { attacker = attacker, damage = 0 })
+    target:PushEvent("attacked", { attacker = attacker, damage = 0, weapon = inst })
 end
 
 local function onlight(inst, target)
@@ -122,7 +122,7 @@ local function onattack_blue(inst, attacker, target, skipsanity)
     end
 
     if target.sg ~= nil and not target.sg:HasStateTag("frozen") then
-        target:PushEvent("attacked", { attacker = attacker, damage = 0 })
+        target:PushEvent("attacked", { attacker = attacker, damage = 0, weapon = inst })
     end
 
     if target.components.freezable ~= nil then
@@ -659,7 +659,7 @@ end
 ---------COLOUR SPECIFIC CONSTRUCTIONS---------
 
 local function red()
-    local inst = commonfn("red", { "firestaff", "rangedweapon", "rangedlighter" })
+    local inst = commonfn("red", { "firestaff", "rangedweapon", "rangedlighter" }, true)
 
     if not TheWorld.ismastersim then
         return inst
@@ -681,7 +681,7 @@ local function red()
 end
 
 local function blue()
-    local inst = commonfn("blue", { "icestaff", "rangedweapon", "extinguisher" })
+    local inst = commonfn("blue", { "icestaff", "rangedweapon", "extinguisher" }, true)
 
     if not TheWorld.ismastersim then
         return inst

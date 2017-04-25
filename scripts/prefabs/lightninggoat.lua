@@ -118,7 +118,7 @@ local function OnAttacked(inst, data)
     if data ~= nil and data.attacker ~= nil then
         if inst.charged then
             if data.attacker.components.health ~= nil and not data.attacker.components.health:IsDead() and
-                (data.weapon == nil or (data.weapon.projectile == nil and data.weapon.components.projectile == nil)) and
+                (data.weapon == nil or ((data.weapon.components.weapon == nil or data.weapon.components.weapon.projectile == nil) and data.weapon.components.projectile == nil)) and
                 not (data.attacker.components.inventory ~= nil and data.attacker.components.inventory:IsInsulated()) then
 
                 data.attacker.components.health:DoDelta(-TUNING.LIGHTNING_GOAT_DAMAGE, nil, inst.prefab, nil, inst)

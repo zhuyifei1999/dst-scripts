@@ -28,7 +28,7 @@ end
 
 local function FindShadowCreatures(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, TAUNT_DIST, { "shadowcreature", "_combat" })
+    local ents = TheSim:FindEntities(x, y, z, TAUNT_DIST, { "shadowcreature", "_combat", "locomotor" })
     for i = #ents, 1, -1 do
         if not IsTauntable(inst, ents[i]) then
             table.remove(ents, i)

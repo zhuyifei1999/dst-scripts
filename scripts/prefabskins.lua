@@ -112,11 +112,19 @@ PREFAB_SKINS = {
 		"firepit_hole",
 		"firepit_stonehenge",
 	},
+	firestaff = 
+	{
+		"firestaff_bee",
+	},
 	flowerhat = 
 	{
 		"flowerhat_holly_wreath",
 		"flowerhat_ribbon_wreath",
 		"flowerhat_wreath",
+	},
+	icestaff = 
+	{
+		"icestaff_bee",
 	},
 	orangestaff = 
 	{

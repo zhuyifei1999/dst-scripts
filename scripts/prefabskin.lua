@@ -379,15 +379,23 @@ function cane_init_fn(inst, build_name)
 end
 
 --------------------------------------------------------------------------
---[[ OrangeStaff skin functions ]]
+--[[ Staff skin functions ]]
 --------------------------------------------------------------------------
-function orangestaff_init_fn(inst, build_name)
+local function staff_init_fn(inst, build_name)
     if not TheWorld.ismastersim then
         return
     end
 
     inst.AnimState:SetSkin(build_name, "staffs")
     inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+
+function orangestaff_init_fn(inst, build_name)
+    staff_init_fn(inst, build_name)
+
+    if not TheWorld.ismastersim then
+        return
+    end
 
     local skin_fx = SKIN_FX_PREFAB[build_name]
     if skin_fx ~= nil then
@@ -402,6 +410,9 @@ function orangestaff_init_fn(inst, build_name)
         end
     end
 end
+
+firestaff_init_fn = staff_init_fn
+icestaff_init_fn = staff_init_fn
 
 --------------------------------------------------------------------------
 --[[ ResearchLab4 skin functions ]]
@@ -431,6 +442,7 @@ function CreatePrefabSkin(name, info)
     prefab_skin.rarity              = info.rarity
     prefab_skin.skins               = info.skins
     prefab_skin.disabled            = info.disabled
+    prefab_skin.granted_items       = info.granted_items
 
     if info.torso_tuck_builds ~= nil then
         for _,base_skin in pairs(info.torso_tuck_builds) do

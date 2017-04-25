@@ -134,6 +134,8 @@ function SkinsScreen:OnItemSelect(type, item_type, item_id, itemimage)
 		return
 	end
 
+	self.current_item_type = item_type
+
 	self.dressup_hanger:Hide()
 
 	local buildfile = GetBuildForItem(item_type) 
@@ -154,9 +156,20 @@ function SkinsScreen:OnItemSelect(type, item_type, item_id, itemimage)
 
 	local rarity = GetRarityForItem(item_type)
 	local nameStr = GetName(item_type)
+	local usable_on = GetSkinUsableOnString(item_type)
 
 	self.details_panel.name:SetTruncatedString(nameStr, 220, 50, true)
 	self.details_panel.name:SetColour(unpack(SKIN_RARITY_COLORS[rarity]))
+	if usable_on ~= "" then
+		self.details_panel.name.show_help = true
+		self.details_panel.name:SetHoverText(usable_on, { font = NEWFONT_OUTLINE, size = 22, offset_x = 0, offset_y = 35, colour = {1,1,1,1}})
+		self.details_panel.image:SetHoverText(usable_on, { font = NEWFONT_OUTLINE, size = 13.3, offset_x = 0, offset_y = 15, colour = {1,1,1,1}})
+	else
+		self.details_panel.name.show_help = nil
+		self.details_panel.name:ClearHoverText()
+		self.details_panel.image:ClearHoverText()
+	end
+	
     self.details_panel.description:SetMultilineTruncatedString(STRINGS.SKIN_DESCRIPTIONS[item_type] or STRINGS.SKIN_DESCRIPTIONS["missing"], 7, 180, 60, true)
 
 	self.details_panel.rarity:SetString(STRINGS.UI.RARITY[rarity])
@@ -307,7 +320,7 @@ function SkinsScreen:OnBecomeActive()
 
 	elseif not self.sorry_popup then
 		SkinsScreen._base.OnBecomeActive(self)
-		if self.set_info_screen == nil then
+		if self.set_info_screen == nil and self.usable_popup == nil then
 			-- We don't have a saved popup, which means the game is online. Go ahead and activate it.
 			if not self.no_item_popup and #self.full_skins_list == 0 then
 				self.no_item_popup = PopupDialogScreen(STRINGS.UI.SKINSSCREEN.NO_ITEMS_TITLE, STRINGS.UI.SKINSSCREEN.NO_ITEMS, { {text=STRINGS.UI.POPUPDIALOG.OK, cb = function() TheFrontEnd:PopScreen() end} }) 
@@ -325,6 +338,7 @@ function SkinsScreen:OnBecomeActive()
     		self:OnItemSelect() --empty params, to go back to the default hanger
     	end
     	self.set_info_screen = nil
+    	self.usable_popup = nil
 	else
 		-- This triggers when the "sorry" popup closes. Just quit.
 		self:Quit()
@@ -372,6 +386,18 @@ function SkinsScreen:OnControl(control, down)
 			return true
 		elseif not down and control == CONTROL_MENU_MISC_1 and self.details_panel.set_info_btn.show_help then 
 			self.details_panel.set_info_btn.onclick()
+			return true
+		elseif not down and control == CONTROL_MENU_MISC_1 and self.details_panel.name.show_help then 
+			local usable_on = GetSkinUsableOnString(self.current_item_type, true)
+			local popup = PopupDialogScreen(STRINGS.UI.SKINSSCREEN.USABLE_INFO_TITLE, usable_on,
+				{
+					{text=STRINGS.UI.SKINSSCREEN.OK, cb = function()
+						TheFrontEnd:PopScreen()
+					end}
+				})
+			self.usable_popup = true
+			TheFrontEnd:PushScreen(popup)
+	    
 			return true
 		end
     end
@@ -435,6 +461,10 @@ function SkinsScreen:GetHelpText()
    		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_1) .. " " .. STRINGS.UI.SKINSSCREEN.SET_INFO)
    	end
    	
+   	if self.details_panel.name.show_help then
+   		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_1) .. " " .. STRINGS.UI.SKINSSCREEN.USABLE_INFO)
+	end
+	
     return table.concat(t, "  ")
 end
 

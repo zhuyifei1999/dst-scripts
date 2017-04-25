@@ -13,4 +13,5 @@ return CreatePrefabSkin("tophat_derby",
 	build_name = "tophat_derby",
 	rarity = "Elegant",
 	init_fn = function(inst) tophat_init_fn(inst, "tophat_derby") end,
+	granted_items = { "researchlab4_derby", },
 })

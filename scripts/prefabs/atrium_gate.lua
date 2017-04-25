@@ -81,6 +81,7 @@ local function OnSuppressShadows(inst, x, z, range)
                 math.abs(z1 - z) < SUPPRESS_SHADOWS_RANGE then
                 if v.components.lootdropper ~= nil then
                     v.components.lootdropper:SetLoot(nil)
+                    v.components.lootdropper:SetChanceLootTable(nil)
                 end
                 v.components.health:Kill()
             end

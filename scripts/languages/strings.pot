@@ -81158,6 +81158,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.firepit_stonehenge"
 msgid "A firepit modeled after an ancient, giant monument. Luckily, this version is sized more appropriately for humans (and human-sized entities)."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.firestaff_bee
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.firestaff_bee"
+msgid "firestaff_bee"
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.flowerhat_holly_wreath
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.flowerhat_holly_wreath"
 msgid "A jolly holly laurel to wear on your head. How winter-y!"
@@ -81281,6 +81286,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.hat_hutch_costume
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.hat_hutch_costume"
 msgid "It's a Hutch hatch, for your head!"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.icestaff_bee
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.icestaff_bee"
+msgid "icestaff_bee"
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.kitten_winter
@@ -82623,6 +82633,11 @@ msgctxt "STRINGS.SKIN_NAMES.firepit_stonehenge"
 msgid "Mini Monument"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.firestaff_bee
+msgctxt "STRINGS.SKIN_NAMES.firestaff_bee"
+msgid "Bumble Fire Staff"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.flowerhat_holly_wreath
 msgctxt "STRINGS.SKIN_NAMES.flowerhat_holly_wreath"
 msgid "Holly Wreath"
@@ -82746,6 +82761,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.hat_hutch_costume
 msgctxt "STRINGS.SKIN_NAMES.hat_hutch_costume"
 msgid "Hutch Head Disguise"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.icestaff_bee
+msgctxt "STRINGS.SKIN_NAMES.icestaff_bee"
+msgid "Bumble Ice Staff"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.kitten_winter
@@ -92588,6 +92608,11 @@ msgctxt "STRINGS.UI.SKINSSCREEN.OFFLINE"
 msgid "Your item collection is not available in offline mode."
 msgstr ""
 
+#. STRINGS.UI.SKINSSCREEN.OK
+msgctxt "STRINGS.UI.SKINSSCREEN.OK"
+msgid "OK"
+msgstr ""
+
 #. STRINGS.UI.SKINSSCREEN.PICK
 msgctxt "STRINGS.UI.SKINSSCREEN.PICK"
 msgid "Pick A Character"
@@ -92636,6 +92661,46 @@ msgstr ""
 #. STRINGS.UI.SKINSSCREEN.TRADE_TOOLTIP
 msgctxt "STRINGS.UI.SKINSSCREEN.TRADE_TOOLTIP"
 msgid "Trade all your unwanted items in for something new!"
+msgstr ""
+
+#. STRINGS.UI.SKINSSCREEN.USABLE_INFO
+msgctxt "STRINGS.UI.SKINSSCREEN.USABLE_INFO"
+msgid "Usable On Info"
+msgstr ""
+
+#. STRINGS.UI.SKINSSCREEN.USABLE_INFO_TITLE
+msgctxt "STRINGS.UI.SKINSSCREEN.USABLE_INFO_TITLE"
+msgid "Usable On"
+msgstr ""
+
+#. STRINGS.UI.SKINSSCREEN.USABLE_ON
+msgctxt "STRINGS.UI.SKINSSCREEN.USABLE_ON"
+msgid "Usable on {item}"
+msgstr ""
+
+#. STRINGS.UI.SKINSSCREEN.USABLE_ON_MULTIPLE
+msgctxt "STRINGS.UI.SKINSSCREEN.USABLE_ON_MULTIPLE"
+msgid "Usable on {item1} and {item2}"
+msgstr ""
+
+#. STRINGS.UI.SKINSSCREEN.USABLE_ON_MULTIPLE_3
+msgctxt "STRINGS.UI.SKINSSCREEN.USABLE_ON_MULTIPLE_3"
+msgid "Usable on {item1}, {item2} and {item3}"
+msgstr ""
+
+#. STRINGS.UI.SKINSSCREEN.USABLE_ON_MULTIPLE_3_POPUP
+msgctxt "STRINGS.UI.SKINSSCREEN.USABLE_ON_MULTIPLE_3_POPUP"
+msgid "{skin} is usable on {item1}, {item2} and {item3}."
+msgstr ""
+
+#. STRINGS.UI.SKINSSCREEN.USABLE_ON_MULTIPLE_POPUP
+msgctxt "STRINGS.UI.SKINSSCREEN.USABLE_ON_MULTIPLE_POPUP"
+msgid "{skin} is usable on {item1} and {item2}."
+msgstr ""
+
+#. STRINGS.UI.SKINSSCREEN.USABLE_ON_POPUP
+msgctxt "STRINGS.UI.SKINSSCREEN.USABLE_ON_POPUP"
+msgid "{skin} is usable on {item}."
 msgstr ""
 
 #. STRINGS.UI.STARTADVENTURE.BODY
