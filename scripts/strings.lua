@@ -3929,6 +3929,15 @@ STRINGS.UI =
         BONUS = "Reward",
         SET_PROGRESS = "Piece",
         SET_INFO = "Ensemble Info",
+        USABLE_ON = "Usable on {item}",
+        USABLE_ON_MULTIPLE = "Usable on {item1} and {item2}",
+        USABLE_ON_MULTIPLE_3 = "Usable on {item1}, {item2} and {item3}",
+        USABLE_INFO = "Usable On Info",
+        USABLE_INFO_TITLE = "Usable On",
+        USABLE_ON_POPUP = "{skin} is usable on {item}.",
+        USABLE_ON_MULTIPLE_POPUP = "{skin} is usable on {item1} and {item2}.",
+        USABLE_ON_MULTIPLE_3_POPUP = "{skin} is usable on {item1}, {item2} and {item3}.",
+        OK = "OK",
     },
 
     SETPOPUP =

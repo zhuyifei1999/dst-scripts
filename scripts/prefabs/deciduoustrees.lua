@@ -536,15 +536,22 @@ local function chop_down_tree(inst, chopper)
 
     if inst.monster then
         inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/deciduous/death")
-        inst.sg:GoToState("empty")
         inst.components.lootdropper:AddChanceLoot("livinglog", TUNING.DECID_MONSTER_ADDITIONAL_LOOT_CHANCE)
         inst.components.lootdropper:AddChanceLoot("nightmarefuel", TUNING.DECID_MONSTER_ADDITIONAL_LOOT_CHANCE)
         if inst.monster_stop_task ~= nil then
             inst.monster_stop_task:Cancel()
             inst.monster_stop_task = nil
         end
+        inst.monster = false
+        inst.monster_start_time = nil
+        inst.monster_duration = nil
         inst:RemoveComponent("deciduoustreeupdater")
         inst:RemoveComponent("combat")
+        inst.sg:GoToState("empty")
+        if inst.domonsterstop_task ~= nil then
+            inst.domonsterstop_task:Cancel()
+            inst.domonsterstop_task = nil
+        end
     end
 
     inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")

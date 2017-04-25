@@ -342,7 +342,10 @@ function Combat:CanBeAttacked(attacker)
         end
     end
 
-    if self.inst:HasTag("shadowcreature") and self._target:value() == nil then
+    if self.inst:HasTag("shadowcreature") and
+        self._target:value() == nil and
+        --Allow AOE damage on stationary shadows like Unseen Hands
+        (attacker ~= nil or self.inst:HasTag("locomotor")) then
         --Not insane attacker cannot attack shadow creatures
         --(unless shadow creature has a target)
         return false

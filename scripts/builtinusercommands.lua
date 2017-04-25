@@ -267,7 +267,7 @@ AddUserCommand("rollback", {
         end
         TheWorld:DoTaskInTime(5, function(world)
             if world.ismastersim then
-                TheNet:SendWorldRollbackRequestToServer(params.numsaves)
+                TheNet:SendWorldRollbackRequestToServer(params.numsaves ~= nil and tonumber(params.numsaves) or nil)
             end
         end)
     end,
