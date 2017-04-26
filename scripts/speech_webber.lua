@@ -930,8 +930,8 @@ return {
 		CARROT_COOKED = "Easier for us both.",
 		CARROT_PLANTED = "Bury your head, carrot.",
 		CARROT_SEEDS = "We could grow something with these.",
-		CARTOGRAPHYDESK = 
-		{	
+		CARTOGRAPHYDESK =
+		{
 			GENERIC = "Heh heh. I was never allowed in father's study.",
 			BURNING = "Ohh no, uh, oh no!",
 			BURNT = "That's probably why I wasn't allowed in father's study.",
@@ -939,42 +939,26 @@ return {
 		CAVE_FERN = "Swirly plants.",
 		CHARCOAL = "Hard and black, like my better half.",
 
-		CHESSPIECE_PAWN = 
+        CHESSPIECE_PAWN = "Pawns are just as important as the rest of the pieces.",
+        CHESSPIECE_ROOK =
         {
-			GENERIC = "Pawns are just as important as the rest of the pieces.",
-		},
-        CHESSPIECE_ROOK = 
+            GENERIC = "Where's the king of the castle?",
+            STRUGGLE = "It's... alive?!",
+        },
+        CHESSPIECE_KNIGHT =
         {
-			GENERIC = "Where's the king of the castle?",
-			STRUGGLE = "It's... alive?!",
-		},
-        CHESSPIECE_KNIGHT = 
+            GENERIC = "We could sculpt a stallion battalion!",
+            STRUGGLE = "It's... alive?!",
+        },
+        CHESSPIECE_BISHOP =
         {
-			GENERIC = "We could sculpt a stallion battalion!",
-			STRUGGLE = "It's... alive?!",
-		},
-        CHESSPIECE_BISHOP = 
-        {
-			GENERIC = "We've never seen toys so big.",
-			STRUGGLE = "It's... alive?!",
-		},
-        CHESSPIECE_MUSE = 
-        {
-			GENERIC = "We're sure she's nicer than she looks.",
-			--STRUGGLE = "Uh-oh! That looks bad!",
-		},
-        CHESSPIECE_FORMAL = 
-        {
-			GENERIC = "Reminds me of grandpa.",
-		},
-		CHESSPIECE_HORNUCOPIA = 
-        {
-			GENERIC = "Boy, I wish we could eat it.",
-		},
-        CHESSPIECE_PIPE = 
-        {
-			GENERIC = "Bubbles!",
-		},
+            GENERIC = "We've never seen toys so big.",
+            STRUGGLE = "It's... alive?!",
+        },
+        CHESSPIECE_MUSE = "We're sure she's nicer than she looks.",
+        CHESSPIECE_FORMAL = "Reminds me of grandpa.",
+        CHESSPIECE_HORNUCOPIA = "Boy, I wish we could eat it.",
+        CHESSPIECE_PIPE = "Bubbles!",
         CHESSJUNK1 = "A mess of chess.",
         CHESSJUNK2 = "A mess of chess.",
         CHESSJUNK3 = "A mess of chess.",

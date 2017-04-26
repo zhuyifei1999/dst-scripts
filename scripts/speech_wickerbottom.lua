@@ -1691,7 +1691,7 @@ return
         BEDROLL_STRAW = "I'm not sleeping on the ground.",
         CHARCOAL = "It's mostly carbon and ash.",
         MARSH_PLANT = "A swamp-dwelling rhizome.",
-        MARSH_BUSH = 
+        MARSH_BUSH =
         {
             GENERIC = "A cluster of brambles.",
             PICKED = "Picking brambles is dangerous.",
@@ -1699,14 +1699,14 @@ return
         },
         PAPYRUS = "Thin sheets of cellulose and lignin.",
         WAXPAPER = "Now we just require rope to secure it in place.",
-        MARSH_TREE = 
+        MARSH_TREE =
         {
             GENERIC = "A mangal rhizophora.",
             CHOPPED = "It has been felled.",
             BURNING = "Combustion!",
             BURNT = "A carbonized mangrove."
         },
-        FROG = 
+        FROG =
         {
             SLEEPING = "It's sleeping.",
             DEAD = "Considered a delicacy in some countries.",
@@ -1716,69 +1716,53 @@ return
         FROGLEGS = "They're still twitching a bit.",
         FROGLEGS_COOKED = "Not unlike a chicken wing.",
         FRUITMEDLEY = "What a nice selection of fruit!",
-        WORMHOLE = 
+        WORMHOLE =
         {
             GENERIC = "The sleeping Megadrilacea Oraduos.",
             OPEN = "Concentric rings of teeth for rapid ingestion.",
         },
         WORMHOLE_LIMITED = "It will only last a few trips.",
 
-        CHESSPIECE_PAWN = 
-        {
-            GENERIC = "Pawns that journey to the seat of power can be quite dangerous.",
-        },
-        CHESSPIECE_ROOK = 
+        CHESSPIECE_PAWN = "Pawns that journey to the seat of power can be quite dangerous.",
+        CHESSPIECE_ROOK =
         {
             GENERIC = "Represents the protective walls of the king's castle.",
             STRUGGLE = "It seems magic is afoot.",
         },
-        CHESSPIECE_KNIGHT = 
+        CHESSPIECE_KNIGHT =
         {
             GENERIC = "A knight, in service to the king. Or perhaps the queen.",
             STRUGGLE = "It seems magic is afoot.",
         },
-        CHESSPIECE_BISHOP = 
+        CHESSPIECE_BISHOP =
         {
             GENERIC = "A decorative stone carving of a bishop chess piece.",
             STRUGGLE = "It seems magic is afoot.",
         },
-        CHESSPIECE_MUSE = 
-        {
-            GENERIC = "In chess, the queen is by far the most strategically formidable.",
-            --STRUGGLE = "Something stirs in the shadows.",
-        },
-        CHESSPIECE_FORMAL = 
-        {
-            GENERIC = "The king is, by all measures, a liability to everyone on the board.",
-        },
-        CHESSPIECE_HORNUCOPIA = 
-        {
-            GENERIC = "It is a commonly held belief that art imitates life.",
-        },
-        CHESSPIECE_PIPE = 
-        {
-            GENERIC = "I hope this does not have a bad influence on the children.",
-        },
+        CHESSPIECE_MUSE = "In chess, the queen is by far the most strategically formidable.",
+        CHESSPIECE_FORMAL = "The king is, by all measures, a liability to everyone on the board.",
+        CHESSPIECE_HORNUCOPIA = "It is a commonly held belief that art imitates life.",
+        CHESSPIECE_PIPE = "I hope this does not have a bad influence on the children.",
         CHESSJUNK1 = "The magician's unfinished projects?",
         CHESSJUNK2 = "The magician's unfinished projects?",
         CHESSJUNK3 = "The magician's unfinished projects?",
 
         CHESTER = "A motile storage chest.",
-        CHESTER_EYEBONE = 
+        CHESTER_EYEBONE =
         {
             GENERIC = "Oculus Mysterium.",
             WAITING = "The oculus is inactive.",
         },
 
         TALLBIRD = "Magnus Avis, fully developed.",
-        SMALLBIRD = 
+        SMALLBIRD =
         {
             GENERIC = "A rather diminutive specimen of the class Aves.",
             HUNGRY = "It requires sustenance.",
             STARVING = "Without sustenance, it will surely perish.",
         },
 
-        TEENBIRD = 
+        TEENBIRD =
         {
             GENERIC = "An adolescent avian.",
             HUNGRY = "Please keep your voice level to a minimum.",
@@ -1787,7 +1771,7 @@ return
 
         TALLBIRDEGG = "It requires incubation.",
         TALLBIRDEGG_COOKED = "Full of cholesterol.",
-        TALLBIRDEGG_CRACKED = 
+        TALLBIRDEGG_CRACKED =
         {
             GENERIC = "Development appears to be progressing.",
             HOT = "Exposure to temperature extremes may result in death.",

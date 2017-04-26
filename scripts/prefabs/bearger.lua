@@ -1,5 +1,3 @@
---V2C: TODO: ... u know what this needs.... - _-""
-
 local assets =
 {
     Asset("ANIM", "anim/bearger_build.zip"),
@@ -39,43 +37,37 @@ local function CalcSanityAura(inst, observer)
     return inst.components.combat.target ~= nil and -TUNING.SANITYAURA_HUGE or -TUNING.SANITYAURA_LARGE
 end
 
-local function SetGroundPounderSettings(inst, mode)
-    if mode == "normal" then 
-        inst.components.groundpounder.damageRings = 2
-        inst.components.groundpounder.destructionRings = 2
-        inst.components.groundpounder.numRings = 3
-    --[[elseif mode == "hibernation" then 
-        inst.components.groundpounder.damageRings = 3
-        inst.components.groundpounder.destructionRings = 3
-        inst.components.groundpounder.numRings = 4]]
-    end
+local function HoneyedItem(item)
+    return item:HasTag("honeyed")
 end
 
 local function RetargetFn(inst)
-    if inst.components.sleeper and inst.components.sleeper:IsAsleep() then return end
-
-    local attackingTarget = FindEntity(inst, TARGET_DIST, function(guy)
-                                    return inst.components.combat:CanTarget(guy)
-                                           and (guy.components.combat.target == inst)
-
-                                    end,
-                                    nil,
-                                    {"prey", "smallcreature"}
-                                    )
-
-    if attackingTarget then 
-        --print(inst, "got target that is attacking", attackingTarget)
-        return attackingTarget               
-    elseif inst.last_eat_time and (GetTime() - inst.last_eat_time) > TUNING.BEARGER_DISGRUNTLE_TIME then
-        --print(inst, "looking for target with food")
-        return FindEntity(inst, TARGET_DIST*5, function(guy)
-            return inst.components.combat:CanTarget(guy) 
-                and guy.components.inventory and (guy.components.inventory:FindItem(function(item) return item:HasTag("honeyed") end) ~= nil)
-        end,
-        nil,
-        { "prey", "smallcreature" }
-        )
-    end
+    return not inst.components.sleeper:IsAsleep()
+        and (   FindEntity(
+                    inst,
+                    TARGET_DIST,
+                    function(guy)
+                        return guy.components.combat.target == inst
+                            and inst.components.combat:CanTarget(guy)
+                    end,
+                    { "_combat" }, --see entityreplica.lua
+                    { "prey", "smallcreature", "INLIMBO" }
+                ) or
+                (   inst.last_eat_time ~= nil and
+                    GetTime() - inst.last_eat_time > TUNING.BEARGER_DISGRUNTLE_TIME and
+                    FindEntity(
+                        inst,
+                        TARGET_DIST * 5,
+                        function(guy)
+                            return guy.components.inventory:FindItem(HoneyedItem) ~= nil
+                                and inst.components.combat:CanTarget(guy)
+                        end,
+                        { "_combat", "_inventory" }, --see entityreplica.lua
+                        { "prey", "smallcreature", "INLIMBO" }
+                    )
+                )
+            )
+        or nil
 end
 
 local function KeepTargetFn(inst, target)
@@ -102,14 +94,15 @@ local function OnLoad(inst, data)
     end
 end
 
-local function OnSeasonChange(inst, data)
-    if TheWorld.state.season == "autumn" or TheWorld.state.season == "summer" then 
-        SetGroundPounderSettings(inst, "normal")
-        inst.components.health:SetAbsorptionAmount(0)
-        inst:RemoveTag("hibernation")
-    else
-        --SetGroundPounderSettings(inst, "hibernation")
+local function IsHibernationSeason(season)
+    return season == "winter" or season == "spring"
+end
+
+local function OnSeasonChange(inst, season)
+    if IsHibernationSeason(season) then
         inst:AddTag("hibernation")
+    else
+        inst:RemoveTag("hibernation")
     end
 end
 
@@ -152,30 +145,30 @@ local function OnCollide(inst, other)
 end
 
 local function WorkEntities(inst)
-    local pt = inst:GetPosition()
-    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 5, nil, { "insect", "INLIMBO" })
-    local heading_angle = inst.Transform:GetRotation()
-    local dir = Vector3(math.cos(heading_angle * DEGREES), 0, -math.sin(heading_angle * DEGREES))
-
-    for i, v in ipairs(ents) do
-        if v:IsValid() and v.components.workable ~= nil then
-            local offset = (v:GetPosition() - pt):GetNormalized()
-            if offset:Dot(dir) > .3 then
-                v.components.workable:Destroy(inst)
-            end
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local heading_angle = inst.Transform:GetRotation() * DEGREES
+    local x1, z1 = math.cos(heading_angle), -math.sin(heading_angle)
+    for i, v in ipairs(TheSim:FindEntities(x, 0, z, 5, nil, { "insect", "INLIMBO" }, { "CHOP_workable", "DIG_workable", "HAMMER_workable", "MINE_workable" })) do
+        local x2, y2, z2 = v.Transform:GetWorldPosition()
+        local dx, dz = x2 - x, z2 - z
+        local len = math.sqrt(dx * dx + dz * dz)
+        --Normalized, then Dot product
+        if len <= 0 or x1 * dx / len + z1 * dz / len > .3 then
+            v.components.workable:Destroy(inst)
         end
     end
 end
 
 local function LaunchItem(inst, target, item)
-    if item.Physics ~= nil then
+    if item.Physics ~= nil and item.Physics:IsActive() then
         local x, y, z = item.Transform:GetWorldPosition()
         item.Physics:Teleport(x, .1, z)
 
-        local vel = (target:GetPosition() - inst:GetPosition()):GetNormalized()
+        x, y, z = inst.Transform:GetWorldPosition()
+        local x1, y1, z1 = target.Transform:GetWorldPosition()
+        local angle = math.atan2(z1 - z, x1 - x) + (math.random() * 20 - 10) * DEGREES
         local speed = 5 + math.random() * 2
-        local angle = math.atan2(vel.z, vel.x) + (math.random() * 20 - 10) * DEGREES
-        item.Physics:SetVel(math.cos(angle) * speed, 10, -math.sin(angle) * speed)
+        item.Physics:SetVel(math.cos(angle) * speed, 10, math.sin(angle) * speed)
     end
 end
 
@@ -186,12 +179,12 @@ local function OnGroundPound(inst)
 end
 
 local function OnHitOther(inst, data)
-    local other = data.target
-    if other and other.components.inventory then
-        local item = other.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-        if not item then return end
-        other.components.inventory:DropItem(item)
-        LaunchItem(inst, data.target, item)
+    if data.target ~= nil and data.target.components.inventory ~= nil then
+        local item = data.target.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+        if item ~= nil then
+            data.target.components.inventory:DropItem(item)
+            LaunchItem(inst, data.target, item)
+        end
     end
 end
 
@@ -205,80 +198,50 @@ end
 
 local function ShouldSleep(inst)
     -- don't fall asleep if we have a target, we were either chasing it, or it woke us up
-    if inst.components.combat.target then
-        return false
-    end
-
     -- don't fall asleep while on fire
-    if inst.components.health.takingfiredamage then 
-        return false
-    end
-
-    if TheWorld.state.season == "winter" or TheWorld.state.season == "spring" then 
+    if not (inst.components.combat:HasTarget() or
+            inst.components.health.takingfiredamage) and
+        IsHibernationSeason(TheWorld.state.season) then
+        --Start hibernating
         inst.components.shedder:StopShedding()
         inst:AddTag("hibernation")
         inst:AddTag("asleep")
         inst.AnimState:SetBuild("bearger_groggy_build")
-        --SetGroundPounderSettings(inst, "hibernation")
-        --inst.components.health:SetAbsorptionAmount(.15)
         return true
     end
-
     return false
 end
 
 local function ShouldWake(inst)
-    if TheWorld.state.season == "summer" or TheWorld.state.season == "autumn" then
+    if not IsHibernationSeason(TheWorld.state.season) then
         inst.components.shedder:StartShedding(TUNING.BEARGER_SHED_INTERVAL)
         inst:RemoveTag("hibernation")
         inst:RemoveTag("asleep")
         inst.AnimState:SetBuild("bearger_build")
-        --SetGroundPounderSettings(inst, "normal")
-        --inst.components.health:SetAbsorptionAmount(0)
         return true
-    else
-        return false
     end
+    return false
 end
 
-local function OnLostTarget(inst, data)
-    --Remove the listening set up on "OnCombatTarget"
-    if data.oldtarget and data.oldtarget.BEARGER_OnDropItemFn then
-        inst:RemoveEventCallback("dropitem", data.oldtarget.BEARGER_OnDropItemFn, data.oldtarget)
+local function OnDroppedTarget(inst, data)
+    if data.target ~= nil then
+        inst:RemoveEventCallback("dropitem", inst._OnTargetDropItem, data.target)
     end
+    inst.components.locomotor.walkspeed = TUNING.BEARGER_CALM_WALK_SPEED
 end
 
 local function OnCombatTarget(inst, data)
     --Listen for dropping of items... if it's food, maybe forgive your target?
-    if data.oldtarget then
-        OnLostTarget(inst, data)
+    if data.oldtarget ~= nil then
+        inst:RemoveEventCallback("dropitem", inst._OnTargetDropItem, data.oldtarget)
     end
-    if data.target then
+    if data.target ~= nil then
         inst.num_food_cherrypicked = TUNING.BEARGER_STOLEN_TARGETS_FOR_AGRO - 1
         inst.components.locomotor.walkspeed = TUNING.BEARGER_ANGRY_WALK_SPEED
-        data.target.BEARGER_OnDropItemFn = function(target, info)
-            if inst.components.eater:CanEat(info.item) then
-                --print("Bearger saw dropped food, losing target")
-                if info.item:HasTag("honeyed") or math.random() < 1 then
-                    inst.components.combat:SetTarget(nil)
-                end
-            end
-        end
-        inst:ListenForEvent("dropitem", data.target.BEARGER_OnDropItemFn, data.target)
+        inst:ListenForEvent("dropitem", inst._OnTargetDropItem, data.target)
     else
         inst.components.locomotor.walkspeed = TUNING.BEARGER_CALM_WALK_SPEED
     end
-end
-
-local function IsTargetValidForAreaAttack(inst, target)
-
-    local pos = Vector3(inst.Transform:GetWorldPosition())
-    local targetPos = Vector3(target.Transform:GetWorldPosition())
-
-    local forwardAngle = inst.Transform:GetRotation()*DEGREES
-    local forwardVector = Vector3(math.cos(forwardAngle), 0, math.sin(forwardAngle))
-
-    return IsWithinAngle(pos, forwardVector, TUNING.BEARGER_ATTACK_CONE_WIDTH, targetPos)
 end
 
 local function SetStandState(inst, state)
@@ -290,15 +253,9 @@ local function IsStandState(inst, state)
     return inst.StandState == string.lower(state)
 end
 
-local function OnKill(inst, data)
-    if data and data.victim:HasTag("player") then
-        inst.killedplayer = true
-    end
-end
-
 local function OnDead(inst)
-    TheWorld:PushEvent("beargerkilled", inst)
     inst.components.shedder:StopShedding()
+    TheWorld:PushEvent("beargerkilled", inst)
 end
 
 local function OnRemove(inst)
@@ -306,24 +263,23 @@ local function OnRemove(inst)
 end
 
 local function OnPlayerAction(inst, player, data)
-    if inst.components.sleeper and inst.components.sleeper:IsAsleep() then 
+    if data.action == nil or inst.components.sleeper:IsAsleep() then
         return -- don't react to things when asleep
     end
 
-    local playerAction = data.action
     local selfAction = inst:GetBufferedAction()
+    if selfAction == nil or selfAction.target ~= data.action.target then
+        --You're not doing anything, or not doing the same thing as the player
+        return
+    end
 
-    if not playerAction or not selfAction then return end --You're not doing anything so whatever.
-
-    if playerAction.target == selfAction.target then -- We got a problem bud.
-
-        inst.num_food_cherrypicked = inst.num_food_cherrypicked + 1
-        if inst.num_food_cherrypicked < TUNING.BEARGER_STOLEN_TARGETS_FOR_AGRO then
-            inst.sg:GoToState("targetstolen")
-        else
-            inst.num_food_cherrypicked = TUNING.BEARGER_STOLEN_TARGETS_FOR_AGRO - 1
-            inst.components.combat:SuggestTarget(player)
-        end
+    -- We got a problem bud. (targeting the same thing for action)
+    inst.num_food_cherrypicked = inst.num_food_cherrypicked + 1
+    if inst.num_food_cherrypicked < TUNING.BEARGER_STOLEN_TARGETS_FOR_AGRO then
+        inst.sg:GoToState("targetstolen")
+    else
+        inst.num_food_cherrypicked = TUNING.BEARGER_STOLEN_TARGETS_FOR_AGRO - 1
+        inst.components.combat:SuggestTarget(player)
     end
 end
 
@@ -336,13 +292,14 @@ local function OnPlayerJoined(inst, player)
         end
     end
 
-    inst:ListenForEvent("performaction", function(player, data) OnPlayerAction(inst, player, data) end, player)
+    inst:ListenForEvent("performaction", inst._OnPlayerAction, player)
     table.insert(inst._activeplayers, player)
 end
 
 local function OnPlayerLeft(inst, player)
     for i, v in ipairs(inst._activeplayers) do
         if v == player then
+            inst:RemoveEventCallback("performaction", inst._OnPlayerAction, player)
             table.remove(inst._activeplayers, i)
             return
         end
@@ -350,6 +307,23 @@ local function OnPlayerLeft(inst, player)
 end
 
 --[[ END PLAYER TRACKING ]]
+
+local function OnWakeUp(inst)
+    inst.homelocation = inst:GetPosition()
+end
+
+local function OnKilledOther(inst, data)
+    if data ~= nil and data.victim ~= nil then
+        if data.victim:HasTag("player") then
+            inst.killedplayer = true
+        end
+        if data.victim == inst.components.combat.target then
+            inst:RemoveEventCallback("dropitem", inst._OnTargetDropItem, data.victim)
+            inst.components.combat.target = nil
+            inst.components.locomotor.walkspeed = TUNING.BEARGER_CALM_WALK_SPEED
+        end
+    end
+end
 
 local function fn()
     local inst = CreateEntity()
@@ -362,8 +336,6 @@ local function fn()
 
     inst.Transform:SetFourFaced()
     inst.DynamicShadow:SetSize(6, 3.5)
-    local s = 1
-    inst.Transform:SetScale(s,s,s)
 
     MakeGiantCharacterPhysics(inst, 1000, 1.5)
 
@@ -412,11 +384,6 @@ local function fn()
     inst.components.combat:SetRetargetFunction(3, RetargetFn)
     inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
     inst.components.combat:SetHurtSound("dontstarve_DLC001/creatures/bearger/hurt")
-    inst:ListenForEvent("killed", function(inst, data)
-        if inst.components.combat and data and data.victim == inst.components.combat.target then
-            inst.components.combat.target = nil
-        end
-    end)
 
     ------------------------------------------
 
@@ -436,7 +403,7 @@ local function fn()
     inst.components.sleeper:SetResistance(4)
     inst.components.sleeper:SetSleepTest(ShouldSleep)
     inst.components.sleeper:SetWakeTest(ShouldWake)
-    inst:ListenForEvent("onwakeup", function() inst.homelocation = inst:GetPosition() end )
+    inst:ListenForEvent("onwakeup", OnWakeUp)
 
     ------------------------------------------
 
@@ -455,10 +422,9 @@ local function fn()
     inst:AddComponent("inventory")
     inst:AddComponent("groundpounder")
     inst.components.groundpounder.destroyer = true
-    SetGroundPounderSettings(inst, "normal")
-    --inst.components.groundpounder.damageRings = 2
-    --inst.components.groundpounder.destructionRings = 2
-    --inst.components.groundpounder.numRings = 3
+    inst.components.groundpounder.damageRings = 2
+    inst.components.groundpounder.destructionRings = 2
+    inst.components.groundpounder.numRings = 3
     inst.components.groundpounder.groundpoundFn = OnGroundPound
     inst:AddComponent("timer")
     inst:AddComponent("eater")
@@ -468,6 +434,8 @@ local function fn()
     ------------------------------------------
 
     inst:WatchWorldState("season", OnSeasonChange)
+    OnSeasonChange(inst, TheWorld.state.season)
+
     inst:ListenForEvent("attacked", OnAttacked)
     inst:ListenForEvent("onhitother", OnHitOther)
     inst:ListenForEvent("timerdone", ontimerdone)
@@ -490,10 +458,18 @@ local function fn()
     inst.num_good_food_eaten = 0
     inst.num_food_cherrypicked = 0
 
-    inst:DoTaskInTime(0, function() inst.homelocation = inst:GetPosition() end)
+    inst:DoTaskInTime(0, OnWakeUp)
 
-    inst:ListenForEvent("killed", OnKill)
+    inst._OnTargetDropItem = function(target, data)
+        if inst.components.eater:CanEat(data.item) then
+            --print("Bearger saw dropped food, losing target")
+            inst.components.combat:SetTarget(nil)
+        end
+    end
+
+    inst:ListenForEvent("killed", OnKilledOther)
     inst:ListenForEvent("newcombattarget", OnCombatTarget)
+    inst:ListenForEvent("droppedtarget", OnDroppedTarget)
 
     inst.seenbase = nil -- for brain
 
@@ -513,6 +489,7 @@ local function fn()
     --[[ PLAYER TRACKING ]]
 
     inst._activeplayers = {}
+    inst._OnPlayerAction = function(player, data) OnPlayerAction(inst, player, data) end
     inst:ListenForEvent("ms_playerjoined", function(src, player) OnPlayerJoined(inst, player) end, TheWorld)
     inst:ListenForEvent("ms_playerleft", function(src, player) OnPlayerLeft(inst, player) end, TheWorld)
 

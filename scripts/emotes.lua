@@ -32,7 +32,7 @@ local EMOTES =
 
     ["joy"] = {
             aliases = { "click", "heelclick", "heels", "celebrate", "celebration" },
-            data = { anim = "research", fx = false },
+            data = { anim = "research", fx = false, mounted = true },
         },
 
     ["dance"] = {

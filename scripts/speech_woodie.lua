@@ -1109,8 +1109,8 @@ return {
 		CARROT_COOKED = "That's cooked rabbit food.",
 		CARROT_PLANTED = "I'm not one for vegetables, eh?",
 		CARROT_SEEDS = "Tiny carrots.",
-		CARTOGRAPHYDESK = 
-		{	
+		CARTOGRAPHYDESK =
+		{
 			GENERIC = "Heh. Has a little compass and everything.",
 			BURNING = "Looks like the map ends here.",
 			BURNT = "Eh, I prefer to just wander around the woods anyway.",
@@ -1118,42 +1118,26 @@ return {
 		CAVE_FERN = "Hey! It's a fern!",
 		CHARCOAL = "This makes me a bit sad.",
 
-		CHESSPIECE_PAWN = 
+        CHESSPIECE_PAWN = "Just a humble peasant, really.",
+        CHESSPIECE_ROOK =
         {
-			GENERIC = "Just a humble peasant, really.",
-		},
-        CHESSPIECE_ROOK = 
+            GENERIC = "Pfft, tacky.",
+            STRUGGLE = "Get ready, Lucy.",
+        },
+        CHESSPIECE_KNIGHT =
         {
-			GENERIC = "Pfft, tacky.",
-			STRUGGLE = "Get ready, Lucy.",
-		},
-        CHESSPIECE_KNIGHT = 
+            GENERIC = "I miss horses.",
+            STRUGGLE = "Get ready, Lucy.",
+        },
+        CHESSPIECE_BISHOP =
         {
-			GENERIC = "I miss horses.",
-			STRUGGLE = "Get ready, Lucy.",
-		},
-        CHESSPIECE_BISHOP = 
-        {
-			GENERIC = "That's not really my sort of thing, eh?",
-			STRUGGLE = "Get ready, Lucy.",
-		},
-        CHESSPIECE_MUSE = 
-        {
-			GENERIC = "I don't tend to trust anyone without a face. Lucy excluded, of course.",
-			--STRUGGLE = "Brace yourself, Lucy.",
-		},
-        CHESSPIECE_FORMAL = 
-        {
-			GENERIC = "Looks like a bit of a hoser.",
-		},
-		CHESSPIECE_HORNUCOPIA = 
-        {
-			GENERIC = "Well, I did say I had a hankering for \"stone fruit\".",
-		},
-        CHESSPIECE_PIPE = 
-        {
-			GENERIC = "Kitschy. Just how Lucy and I like it.",
-		},
+            GENERIC = "That's not really my sort of thing, eh?",
+            STRUGGLE = "Get ready, Lucy.",
+        },
+        CHESSPIECE_MUSE = "I don't tend to trust anyone without a face. Lucy excluded, of course.",
+        CHESSPIECE_FORMAL = "Looks like a bit of a hoser.",
+        CHESSPIECE_HORNUCOPIA = "Well, I did say I had a hankering for \"stone fruit\".",
+        CHESSPIECE_PIPE = "Kitschy. Just how Lucy and I like it.",
         CHESSJUNK1 = "Dead metal.",
         CHESSJUNK2 = "Dead metal.",
         CHESSJUNK3 = "Dead metal.",

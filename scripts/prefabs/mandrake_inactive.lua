@@ -17,10 +17,16 @@ end
 
 local function doareasleep(inst, range, time)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, range)
+    local ents = TheSim:FindEntities(x, y, z, range, nil, { "playerghost", "FX", "DECOR", "INLIMBO" }, { "sleeper", "player" })
+    local canpvp = not inst:HasTag("player") or TheNet:GetPVPEnabled()
     for i, v in ipairs(ents) do
-        if not (v.components.freezable ~= nil and v.components.freezable:IsFrozen()) and
+        if (v == inst or canpvp or not v:HasTag("player")) and
+            not (v.components.freezable ~= nil and v.components.freezable:IsFrozen()) and
             not (v.components.pinnable ~= nil and v.components.pinnable:IsStuck()) then
+            local mount = v.components.rider ~= nil and v.components.rider:GetMount() or nil
+            if mount ~= nil then
+                mount:PushEvent("ridersleep", { sleepiness = 7, sleeptime = time + math.random() })
+            end
             if v:HasTag("player") then
                 v:PushEvent("yawn", { grogginess = 4, knockoutduration = time + math.random() })
             elseif v.components.sleeper ~= nil then

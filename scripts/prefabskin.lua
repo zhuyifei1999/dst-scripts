@@ -136,11 +136,14 @@ function hat_init_fn(inst, build_name)
     inst.AnimState:SetSkin(build_name, "swap_hat")
     inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
 end
+
 tophat_init_fn = hat_init_fn
 flowerhat_init_fn = hat_init_fn
 strawhat_init_fn = hat_init_fn
 winterhat_init_fn = hat_init_fn
 catcoonhat_init_fn = hat_init_fn
+rainhat_init_fn = hat_init_fn
+minerhat_init_fn = hat_init_fn
 
 --------------------------------------------------------------------------
 --[[ Bedroll skin functions ]]

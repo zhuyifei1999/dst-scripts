@@ -9,15 +9,13 @@ local function MakeHat(name)
         inst:Remove()
     end]]
 
-    local function onequip(inst, owner, fname_override)
-        local build = fname_override or fname
-
+    local function onequip(inst, owner, symbol_override)
         local skin_build = inst:GetSkinBuild()
         if skin_build ~= nil then
             owner:PushEvent("equipskinneditem", inst:GetSkinName())
-            owner.AnimState:OverrideItemSkinSymbol("swap_hat", skin_build, "swap_hat", inst.GUID, build)
+            owner.AnimState:OverrideItemSkinSymbol("swap_hat", skin_build, symbol_override or "swap_hat", inst.GUID, fname)
         else
-            owner.AnimState:OverrideSymbol("swap_hat", build, "swap_hat")
+            owner.AnimState:OverrideSymbol("swap_hat", fname, symbol_override or "swap_hat")
         end
         owner.AnimState:Show("HAT")
         owner.AnimState:Show("HAIR_HAT")
@@ -479,14 +477,14 @@ local function MakeHat(name)
             local soundemitter = owner ~= nil and owner.SoundEmitter or inst.SoundEmitter
             soundemitter:PlaySound("dontstarve/common/minerhatAddFuel")
         elseif owner ~= nil then
-            onequip(inst, owner, "hat_miner_off")
+            onequip(inst, owner, "swap_hat_off")
         end
     end
 
     local function miner_turnoff(inst)
         local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner or nil
         if owner ~= nil and inst.components.equippable ~= nil and inst.components.equippable:IsEquipped() then
-            onequip(inst, owner, "hat_miner_off")
+            onequip(inst, owner, "swap_hat_off")
         end
         inst.components.fueled:StopConsuming()
         if inst._light ~= nil then
@@ -1406,7 +1404,6 @@ local function MakeHat(name)
         fn = spider
     elseif name == "miner" then
         fn = miner
-        table.insert(assets, Asset("ANIM", "anim/hat_miner_off.zip"))
         prefabs = { "minerhatlight" }
     elseif name == "earmuffs" then
         fn = earmuffs

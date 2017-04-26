@@ -911,7 +911,7 @@ return {
         COONTAIL = "It is the tail of cute meat.",
         COMPASS =
         {
-            GENERIC= "A reading cannot be gleaned.",
+            GENERIC = "A reading cannot be gleaned.",
             N = "North.",
             S = "South.",
             E = "East.",
@@ -925,8 +925,8 @@ return {
         CARROT_COOKED = "Sad cooked carrots.",
         CARROT_PLANTED = "A wee root vegetable.",
         CARROT_SEEDS = "Tiny nature bits.",
-        CARTOGRAPHYDESK = 
-        {   
+        CARTOGRAPHYDESK =
+        {
             GENERIC = "What legends might I find within these maps?",
             BURNING = "Alas! My hunting excursions will go unregaled!",
             BURNT = "I've no choice but to act out my directions now.",
@@ -934,42 +934,26 @@ return {
         CAVE_FERN = "Foliage from the dark ages.",
         CHARCOAL = "Loot from Loge, the demigod.",
 
-        CHESSPIECE_PAWN = 
-        {
-            GENERIC = "Tis a noble foot soldier.",
-        },
-        CHESSPIECE_ROOK = 
+        CHESSPIECE_PAWN = "Tis a noble foot soldier.",
+        CHESSPIECE_ROOK =
         {
             GENERIC = "A castle fit for a queen.",
             STRUGGLE = "Battle is nigh!",
         },
-        CHESSPIECE_KNIGHT = 
+        CHESSPIECE_KNIGHT =
         {
             GENERIC = "The figure of a fellow warrior!",
             STRUGGLE = "Battle is nigh!",
         },
-        CHESSPIECE_BISHOP = 
+        CHESSPIECE_BISHOP =
         {
             GENERIC = "This warrior does battle in the mind.",
             STRUGGLE = "Battle is nigh!",
         },
-        CHESSPIECE_MUSE = 
-        {
-            GENERIC = "A Valkyrie's spirit dwells within.",
-            --STRUGGLE = "A formidable foe approaches!",
-        },
-        CHESSPIECE_FORMAL = 
-        {
-            GENERIC = "Not a man fit for battle.",
-        },
-        CHESSPIECE_HORNUCOPIA = 
-        {
-            GENERIC = "Feasts, feasts, everywhere, and not a ham to eat.",
-        },
-        CHESSPIECE_PIPE = 
-        {
-            GENERIC = "Tis but a jest.",
-        },
+        CHESSPIECE_MUSE = "A Valkyrie's spirit dwells within.",
+        CHESSPIECE_FORMAL = "Not a man fit for battle.",
+        CHESSPIECE_HORNUCOPIA = "Feasts, feasts, everywhere, and not a ham to eat.",
+        CHESSPIECE_PIPE = "Tis but a jest.",
         CHESSJUNK1 = "It's only a pile of fallen warriors.",
         CHESSJUNK2 = "More fallen mechanical warriors.",
         CHESSJUNK3 = "Someone should really clean this place up.",

@@ -1,71 +1,49 @@
-
-local function DoSingleShed(inst)
-
-	local x, y, z = inst.Transform:GetWorldPosition()
-	local item = nil
-
-	if inst.components.shedder.shedItemPrefab then 
-		item = SpawnPrefab(inst.components.shedder.shedItemPrefab)
-	end
-
-	if item then 
-		local x_offset = math.random() + .5
-		local z_offset = math.random() + .5
-		item.Transform:SetPosition(x + x_offset, inst.components.shedder.shedHeight, z + z_offset)
-	end
-
-	return item
-end
-
-
 local Shedder = Class(function(self, inst)
     self.inst = inst
     self.shedItemPrefab = nil
     self.shedHeight = 6.5 -- this height is for Bearger
-end,
-nil,
-{
-    
-})
+    self.shedTask = nil
+end)
+
+local function DoSingleShed(inst, self)
+    self:DoSingleShed()
+end
 
 function Shedder:StartShedding(interval)
-
-	if not interval then 
-		interval = 60
-	end
-
-	if self.shedTask then 
-		self.shedTask:Cancel()
-		self.shedTask = nil
-	end
-
-	self.shedTask = self.inst:DoPeriodicTask(interval, DoSingleShed)
+    if self.shedTask ~= nil then 
+        self.shedTask:Cancel()
+    end
+    self.shedTask = self.inst:DoPeriodicTask(interval or 60, DoSingleShed, nil, self)
 end
 
 function Shedder:StopShedding()
-	if self.shedTask then 
-		self.shedTask:Cancel()
-		self.shedTask = nil
-	end
+    if self.shedTask ~= nil then 
+        self.shedTask:Cancel()
+        self.shedTask = nil
+    end
+end
+
+function Shedder:DoSingleShed()
+    local item = self.shedItemPrefab ~= nil and SpawnPrefab(self.shedItemPrefab) or nil
+    if item ~= nil then
+        local x, y, z = self.inst.Transform:GetWorldPosition()
+        item.Transform:SetPosition(x + math.random() - .5, self.shedHeight, z + math.random() - .5)
+    end
+    return item
 end
 
 function Shedder:DoMultiShed(max, random)
-
-	local num = max
-	if random then 
-		num = math.random(1, max)
-	end
-	local speed = 4
-	local item = nil
-	for i = 1, num do 
-		item = DoSingleShed(self.inst)
-		if item and item.Physics then 
-			-- move it
-			local angle = math.random() * 360 * DEGREES 
-			item.Physics:SetVel(math.cos(angle) * speed, 0, math.sin(angle) * speed)
-		end
-	end
+    local num = random and math.random(max) or max
+    local speed = 4
+    for i = 1, num do 
+        local item = self:DoSingleShed()
+        if item ~= nil and item.Physics ~= nil and item.Physics:IsActive() then 
+            local angle = math.random() * 2 * PI
+            item.Physics:SetVel(math.cos(angle) * speed, 0, math.sin(angle) * speed)
+        end
+    end
 end
 
+Shedder.OnRemoveFromEntity = Shedder.StopShedding
 
 return Shedder

@@ -4,11 +4,15 @@ local SHAKE_DIST = 40
 
 function yawnfn(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, TUNING.BEARGER_YAWN_RANGE, nil, { "playerghost" }, { "sleeper", "player" })
+    local ents = TheSim:FindEntities(x, y, z, TUNING.BEARGER_YAWN_RANGE, nil, { "playerghost", "FX", "DECOR", "INLIMBO" }, { "sleeper", "player" })
     for i, v in ipairs(ents) do
         if v ~= inst and v:IsValid() and
             not (v.components.freezable ~= nil and v.components.freezable:IsFrozen()) and
             not (v.components.pinnable ~= nil and v.components.pinnable:IsStuck()) then
+            local mount = v.components.rider ~= nil and v.components.rider:GetMount() or nil
+            if mount ~= nil then
+                mount:PushEvent("ridersleep", { sleepiness = 7, sleeptime = TUNING.BEARGER_YAWN_SLEEPTIME })
+            end
             if v:HasTag("player") then
                 v:PushEvent("yawn", { grogginess = 4, knockoutduration = TUNING.BEARGER_YAWN_SLEEPTIME })
             elseif v.components.sleeper ~= nil then

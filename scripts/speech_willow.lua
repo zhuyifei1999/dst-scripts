@@ -1172,8 +1172,8 @@ return {
 		CARROT_COOKED = "Still vegetabley, but better for having been in fire.",
 		CARROT_PLANTED = "Maybe its special carrot friend is in the ground.",
 		CARROT_SEEDS = "Seeds for a yucky orange vegetable.",
-		CARTOGRAPHYDESK = 
-		{	
+		CARTOGRAPHYDESK =
+		{
 			GENERIC = "I guess I could show everyone where I've been.",
 			BURNING = "Yes!!",
 			BURNT = "Scouts don't need maps, anyway.",
@@ -1181,42 +1181,26 @@ return {
 		CAVE_FERN = "Looks flammable.",
 		CHARCOAL = "Mmmm. Smells like fire.",
 
-		CHESSPIECE_PAWN = 
+        CHESSPIECE_PAWN = "What sort of peasant doesn't have a torch?!",
+        CHESSPIECE_ROOK =
         {
-			GENERIC = "What sort of peasant doesn't have a torch?!",
-		},
-        CHESSPIECE_ROOK = 
+            GENERIC = "That one looks like it could do some damage.",
+            STRUGGLE = "I don't wanna see what comes outta that!",
+        },
+        CHESSPIECE_KNIGHT =
         {
-			GENERIC = "That one looks like it could do some damage.",
-			STRUGGLE = "I don't wanna see what comes outta that!",
-		},
-        CHESSPIECE_KNIGHT = 
+            GENERIC = "A horse with no butt.",
+            STRUGGLE = "I don't wanna see what comes outta that!",
+        },
+        CHESSPIECE_BISHOP =
         {
-			GENERIC = "A horse with no butt.",
-			STRUGGLE = "I don't wanna see what comes outta that!",
-		},
-        CHESSPIECE_BISHOP = 
-        {
-			GENERIC = "Just some dumb bishop piece.",
-			STRUGGLE = "I don't wanna see what comes outta that!",
-		},
-        CHESSPIECE_MUSE = 
-        {
-			GENERIC = "Ewww, she doesn't have a head!",
-			--STRUGGLE = "Is that supposed to happen?!",
-		},
-        CHESSPIECE_FORMAL = 
-        {
-			GENERIC = "I'm not afraid of that guy. He doesn't even have arms!",
-		},
-		CHESSPIECE_HORNUCOPIA = 
-        {
-			GENERIC = "Ouchhh! I think I chipped a tooth.",
-		},
-        CHESSPIECE_PIPE = 
-        {
-			GENERIC = "I prefer smokey fires.",
-		},
+            GENERIC = "Just some dumb bishop piece.",
+            STRUGGLE = "I don't wanna see what comes outta that!",
+        },
+        CHESSPIECE_MUSE = "Ewww, she doesn't have a head!",
+        CHESSPIECE_FORMAL = "I'm not afraid of that guy. He doesn't even have arms!",
+        CHESSPIECE_HORNUCOPIA = "Ouchhh! I think I chipped a tooth.",
+        CHESSPIECE_PIPE = "I prefer smokey fires.",
         CHESSJUNK1 = "Dead windup horsey.",
         CHESSJUNK2 = "Dead windup priest.",
         CHESSJUNK3 = "Dead windup castle.",

@@ -1138,8 +1138,8 @@ return {
 		CARROT_COOKED = "It's a carrot that's gone through a gauntlet of fire.",
 		CARROT_PLANTED = "It's a carrot that's in the ground.",
 		CARROT_SEEDS = "It's a carrot that's waiting to be.",
-		CARTOGRAPHYDESK = 
-		{	
+		CARTOGRAPHYDESK =
+		{
 			GENERIC = "Maps are best with monsters drawn on the borders.",
 			BURNING = "Well, old maps always do look burnt at the edges...",
 			BURNT = "No more mapmaking, then.",
@@ -1147,42 +1147,26 @@ return {
 		CAVE_FERN = "A touch of color in the darkness.",
 		CHARCOAL = "Cold, dead and black, just like my heart.",
 
-		CHESSPIECE_PAWN = 
+        CHESSPIECE_PAWN = "We are all but pawns in this game called \"life\".",
+        CHESSPIECE_ROOK =
         {
-			GENERIC = "We are all but pawns in this game called \"life\".",
-		},
-        CHESSPIECE_ROOK = 
+            GENERIC = "A mere minion to something greater.",
+            STRUGGLE = "They're here.",
+        },
+        CHESSPIECE_KNIGHT =
         {
-			GENERIC = "A mere minion to something greater.",
-			STRUGGLE = "They're here.",
-		},
-        CHESSPIECE_KNIGHT = 
+            GENERIC = "Oh, if I could ride away into the night.",
+            STRUGGLE = "They're here.",
+        },
+        CHESSPIECE_BISHOP =
         {
-			GENERIC = "Oh, if I could ride away into the night.",
-			STRUGGLE = "They're here.",
-		},
-        CHESSPIECE_BISHOP = 
-        {
-			GENERIC = "A piece, constrained to the board.",
-			STRUGGLE = "They're here.",
-		},
-        CHESSPIECE_MUSE = 
-        {
-			GENERIC = "She holds the true power, here.",
-			--STRUGGLE = "Something wicked this way comes.",
-		},
-        CHESSPIECE_FORMAL = 
-        {
-			GENERIC = "Alas, the king is but a figurehead, at best.",
-		},
-		CHESSPIECE_HORNUCOPIA = 
-        {
-			GENERIC = "A cold mockery.",
-		},
-        CHESSPIECE_PIPE = 
-        {
-			GENERIC = "A bubble, frozen in time, can never pop.",
-		},
+            GENERIC = "A piece, constrained to the board.",
+            STRUGGLE = "They're here.",
+        },
+        CHESSPIECE_MUSE = "She holds the true power, here.",
+        CHESSPIECE_FORMAL = "Alas, the king is but a figurehead, at best.",
+        CHESSPIECE_HORNUCOPIA = "A cold mockery.",
+        CHESSPIECE_PIPE = "A bubble, frozen in time, can never pop.",
         CHESSJUNK1 = "Cold, dead artificial life.",
         CHESSJUNK2 = "Cold, dead artificial life.",
         CHESSJUNK3 = "Cold, dead artificial life.",

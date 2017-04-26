@@ -156,12 +156,16 @@ local book_defs =
             local x, y, z = reader.Transform:GetWorldPosition()
             local range = 30
             local ents = TheNet:GetPVPEnabled() and
-                        TheSim:FindEntities(x, y, z, range, nil, { "playerghost" }, { "sleeper", "player" }) or
-                        TheSim:FindEntities(x, y, z, range, { "sleeper" }, { "player" })
+                        TheSim:FindEntities(x, y, z, range, nil, { "playerghost", "FX", "DECOR", "INLIMBO" }, { "sleeper", "player" }) or
+                        TheSim:FindEntities(x, y, z, range, { "sleeper" }, { "player", "FX", "DECOR", "INLIMBO" })
             for i, v in ipairs(ents) do
                 if v ~= reader and
                     not (v.components.freezable ~= nil and v.components.freezable:IsFrozen()) and
                     not (v.components.pinnable ~= nil and v.components.pinnable:IsStuck()) then
+                    local mount = v.components.rider ~= nil and v.components.rider:GetMount() or nil
+                    if mount ~= nil then
+                        mount:PushEvent("ridersleep", { sleepiness = 10, sleeptime = 20 })
+                    end
                     if v.components.sleeper ~= nil then
                         v.components.sleeper:AddSleepiness(10, 20)
                     elseif v.components.grogginess ~= nil then
