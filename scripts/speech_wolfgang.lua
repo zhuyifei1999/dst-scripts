@@ -1122,8 +1122,8 @@ return {
         CARROT_COOKED = "Is not more like meat after do cooking.",
         CARROT_PLANTED = "Is hiding?",
         CARROT_SEEDS = "Seeds is too small.",
-        CARTOGRAPHYDESK = 
-        {   
+        CARTOGRAPHYDESK =
+        {
             GENERIC = "Friends make little pictures to help Wolfgang not get lost!",
             BURNING = "Is no good!",
             BURNT = "No more little pictures.",
@@ -1131,42 +1131,26 @@ return {
         CAVE_FERN = "Pretty plant!",
         CHARCOAL = "Is like holding tiny dead tree.",
 
-        CHESSPIECE_PAWN = 
-        {
-            GENERIC = "Little man is wearing little hat!",
-        },
-        CHESSPIECE_ROOK = 
+        CHESSPIECE_PAWN = "Little man is wearing little hat!",
+        CHESSPIECE_ROOK =
         {
             GENERIC = "Does not look like castle to Wolfgang.",
             STRUGGLE = "Wolfgang does not like moving statues!!",
         },
-        CHESSPIECE_KNIGHT = 
+        CHESSPIECE_KNIGHT =
         {
             GENERIC = "Is good horsey, Wolfgang thinks.",
             STRUGGLE = "Wolfgang does not like moving statues!!",
         },
-        CHESSPIECE_BISHOP = 
+        CHESSPIECE_BISHOP =
         {
             GENERIC = "Weak little rock man looks nice.",
             STRUGGLE = "Wolfgang does not like moving statues!!",
         },
-        CHESSPIECE_MUSE = 
-        {
-            GENERIC = "Faceless lady make Wolfgang uncomfortable.",
-            --STRUGGLE = "Scary statue is moving!!",
-        },
-        CHESSPIECE_FORMAL = 
-        {
-            GENERIC = "Looks very not-mighty.",
-        },
-        CHESSPIECE_HORNUCOPIA = 
-        {
-            GENERIC = "Why stone food hurt mouth?",
-        },
-        CHESSPIECE_PIPE = 
-        {
-            GENERIC = "Might be good for lifting!",
-        },
+        CHESSPIECE_MUSE = "Faceless lady make Wolfgang uncomfortable.",
+        CHESSPIECE_FORMAL = "Looks very not-mighty.",
+        CHESSPIECE_HORNUCOPIA = "Why stone food hurt mouth?",
+        CHESSPIECE_PIPE = "Might be good for lifting!",
         CHESSJUNK1 = "Metal junk.",
         CHESSJUNK2 = "Metal junk.",
         CHESSJUNK3 = "Metal junk.",

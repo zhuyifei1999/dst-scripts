@@ -126,9 +126,17 @@ PREFAB_SKINS = {
 	{
 		"icestaff_bee",
 	},
+	minerhat = 
+	{
+		"minerhat_floppy",
+	},
 	orangestaff = 
 	{
 		"orangestaff_ancient",
+	},
+	rainhat = 
+	{
+		"rainhat_floppy",
 	},
 	researchlab4 = 
 	{

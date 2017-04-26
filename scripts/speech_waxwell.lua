@@ -1096,8 +1096,8 @@ return {
 		CARROT_COOKED = "A little more refined, at least.",
 		CARROT_PLANTED = "How mundane.",
 		CARROT_SEEDS = "Such labor is beneath me.",
-		CARTOGRAPHYDESK = 
-		{	
+		CARTOGRAPHYDESK =
+		{
 			GENERIC = "Mapmaking is a soothing pastime. Methodical.",
 			BURNING = "Such directionless destruction.",
 			BURNT = "Useless.",
@@ -1105,42 +1105,26 @@ return {
 		CAVE_FERN = "I'd like to step on it.",
 		CHARCOAL = "Nothing will steal my carbon!",
 
-		CHESSPIECE_PAWN = 
+        CHESSPIECE_PAWN = "I have no idea what that is.",
+        CHESSPIECE_ROOK =
         {
-			GENERIC = "I have no idea what that is.",
-		},
-        CHESSPIECE_ROOK = 
+            GENERIC = "It's nice, but where's the rust? The exhaust pipes?",
+            STRUGGLE = "The pieces are in motion!",
+        },
+        CHESSPIECE_KNIGHT =
         {
-			GENERIC = "It's nice, but where's the rust? The exhaust pipes?",
-			STRUGGLE = "The pieces are in motion!",
-		},
-        CHESSPIECE_KNIGHT = 
+            GENERIC = "A dreadful lack of accordions.",
+            STRUGGLE = "And I thought chivalry was dead!",
+        },
+        CHESSPIECE_BISHOP =
         {
-			GENERIC = "A dreadful lack of accordions.",
-			STRUGGLE = "And I thought chivalry was dead!",
-		},
-        CHESSPIECE_BISHOP = 
-        {
-			GENERIC = "Could use a few more mechanical bits in my opinion.",
-			STRUGGLE = "The pieces are in motion!",
-		},
-        CHESSPIECE_MUSE = 
-        {
-			GENERIC = "Must everything be about my shortcomings?",
-			--STRUGGLE = "I'm not strong enough for this.",
-		},
-        CHESSPIECE_FORMAL = 
-        {
-			GENERIC = "What a well-dressed figure!",
-		},
-		CHESSPIECE_HORNUCOPIA = 
-        {
-			GENERIC = "This seems cruel.",
-		},
-        CHESSPIECE_PIPE = 
-        {
-			GENERIC = "Ceci n'est pas une pipe. Pity.",
-		},
+            GENERIC = "Could use a few more mechanical bits in my opinion.",
+            STRUGGLE = "The pieces are in motion!",
+        },
+        CHESSPIECE_MUSE = "Must everything be about my shortcomings?",
+        CHESSPIECE_FORMAL = "What a well-dressed figure!",
+        CHESSPIECE_HORNUCOPIA = "This seems cruel.",
+        CHESSPIECE_PIPE = "Ceci n'est pas une pipe. Pity.",
         CHESSJUNK1 = "There's a reason I never finished that.",
         CHESSJUNK2 = "That one was a jerk.",
         CHESSJUNK3 = "Didn't like that one's face.",

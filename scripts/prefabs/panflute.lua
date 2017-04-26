@@ -8,6 +8,10 @@ local function HearPanFlute(inst, musician, instrument)
         (TheNet:GetPVPEnabled() or not inst:HasTag("player")) and
         not (inst.components.freezable ~= nil and inst.components.freezable:IsFrozen()) and
         not (inst.components.pinnable ~= nil and inst.components.pinnable:IsStuck()) then
+        local mount = inst.components.rider ~= nil and inst.components.rider:GetMount() or nil
+        if mount ~= nil then
+            mount:PushEvent("ridersleep", { sleepiness = 10, sleeptime = TUNING.PANFLUTE_SLEEPTIME })
+        end
         if inst.components.sleeper ~= nil then
             inst.components.sleeper:AddSleepiness(10, TUNING.PANFLUTE_SLEEPTIME)
         elseif inst.components.grogginess ~= nil then

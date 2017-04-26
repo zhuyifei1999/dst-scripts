@@ -935,8 +935,8 @@ return {
 		CARROT_COOKED = "Mushy.",
 		CARROT_PLANTED = "The earth is making plantbabies.",
 		CARROT_SEEDS = "It's a carrot seed.",
-		CARTOGRAPHYDESK = 
-		{	
+		CARTOGRAPHYDESK =
+		{
 			GENERIC = "Now I can show everyone what I found!",
 			BURNING = "So much for that.",
 			BURNT = "Nothing but ash now.",
@@ -944,42 +944,26 @@ return {
 		WATERMELON_SEEDS = "It's a melon seed.",
 		CAVE_FERN = "It's a fern.",
 		CHARCOAL = "It's small, dark, and smells like burnt wood.",
-        CHESSPIECE_PAWN = 
+        CHESSPIECE_PAWN = "I can relate.",
+        CHESSPIECE_ROOK =
         {
-			GENERIC = "I can relate.",
-		},
-        CHESSPIECE_ROOK = 
+            GENERIC = "It's even heavier than it looks.",
+            STRUGGLE = "The chess pieces are moving themselves!",
+        },
+        CHESSPIECE_KNIGHT =
         {
-			GENERIC = "It's even heavier than it looks.",
-			STRUGGLE = "The chess pieces are moving themselves!",
-		},
-        CHESSPIECE_KNIGHT = 
+            GENERIC = "It's a horse, of course.",
+            STRUGGLE = "The chess pieces are moving themselves!",
+        },
+        CHESSPIECE_BISHOP =
         {
-			GENERIC = "It's a horse, of course.",
-			STRUGGLE = "The chess pieces are moving themselves!",
-		},
-        CHESSPIECE_BISHOP = 
-        {
-			GENERIC = "It's a stone bishop.",
-			STRUGGLE = "The chess pieces are moving themselves!",
-		},
-        CHESSPIECE_MUSE = 
-        {
-			GENERIC = "Hmm... Looks familiar.",
-			--STRUGGLE = "Something's coming!!",
-		},
-        CHESSPIECE_FORMAL = 
-        {
-			GENERIC = "Doesn't seem very \"kingly\" to me.",
-		},
-        CHESSPIECE_HORNUCOPIA = 
-        {
-			GENERIC = "Makes my stomach rumble just looking at it.",
-		},
-        CHESSPIECE_PIPE = 
-        {
-			GENERIC = "That was never really my thing.",
-		},
+            GENERIC = "It's a stone bishop.",
+            STRUGGLE = "The chess pieces are moving themselves!",
+        },
+        CHESSPIECE_MUSE = "Hmm... Looks familiar.",
+        CHESSPIECE_FORMAL = "Doesn't seem very \"kingly\" to me.",
+        CHESSPIECE_HORNUCOPIA = "Makes my stomach rumble just looking at it.",
+        CHESSPIECE_PIPE = "That was never really my thing.",
         CHESSJUNK1 = "A pile of broken chess pieces.",
         CHESSJUNK2 = "Another pile of broken chess pieces.",
         CHESSJUNK3 = "Even more broken chess pieces.",

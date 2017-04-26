@@ -451,14 +451,21 @@ local function OnRiderDoAttack(inst, data)
     inst.components.domesticatable:DeltaTendency(TENDENCY.ORNERY, TUNING.BEEFALO_ORNERY_DOATTACK)
 end
 
+local function DoRiderSleep(inst, sleepiness, sleeptime)
+    inst._ridersleeptask = nil
+    inst.components.sleeper:AddSleepiness(sleepiness, sleeptime)
+end
+
 local function OnRiderChanged(inst, data)
     if inst._bucktask ~= nil then
         inst._bucktask:Cancel()
         inst._bucktask = nil
     end
 
-    --if data.oldrider ~= nil then
-    --end
+    if inst._ridersleeptask ~= nil then
+        inst._ridersleeptask:Cancel()
+        inst._ridersleeptask = nil
+    end
 
     if data.newrider ~= nil then
         if inst.components.sleeper ~= nil then
@@ -472,6 +479,13 @@ local function OnRiderChanged(inst, data)
         end
     elseif inst.components.sleeper ~= nil then
         inst.components.sleeper:StartTesting()
+        if inst._ridersleep ~= nil then
+            local sleeptime = inst._ridersleep.sleeptime + inst._ridersleep.time - GetTime()
+            if sleeptime > 2 then
+                inst._ridersleeptask = inst:DoTaskInTime(0, DoRiderSleep, inst._ridersleep.sleepiness, sleeptime)
+            end
+            inst._ridersleep = nil
+        end
     end
 end
 
@@ -492,6 +506,14 @@ end
 
 local function OnRefuseRider(inst, data)
     inst:DoTaskInTime(0, _OnRefuseRider)
+end
+
+local function OnRiderSleep(inst, data)
+    inst._ridersleep = inst.components.rideable:IsBeingRidden() and {
+        time = GetTime(),
+        sleepiness = data.sleepiness,
+        sleeptime = data.sleeptime,
+    } or nil
 end
 
 local function MountSleepTest(inst)
@@ -702,6 +724,7 @@ local function beefalo()
     inst:ListenForEvent("riderchanged", OnRiderChanged)
     inst:ListenForEvent("riderdoattackother", OnRiderDoAttack)
     inst:ListenForEvent("hungerdelta", OnHungerDelta)
+    inst:ListenForEvent("ridersleep", OnRiderSleep)
 
     inst:AddComponent("uniqueid")
     inst:AddComponent("beefalometrics")
