@@ -513,7 +513,7 @@ local events =
                 inst.sg:GoToState("hit_spike", data.attacker)
             elseif inst.sg:HasStateTag("shell") then
                 inst.sg:GoToState("shell_hit")
-            elseif inst:HasTag("pinned") then
+            elseif inst.components.pinnable ~= nil and inst.components.pinnable:IsStuck() then
                 inst.sg:GoToState("pinned_hit")
             elseif data.stimuli == "darkness" then
                 inst.sg:GoToState("hit_darkness")
@@ -707,7 +707,7 @@ local events =
             if not (inst.components.health:IsDead() or
                     inst.sg:HasStateTag("sleeping") or
                     inst.sg:HasStateTag("frozen") or
-                    inst:HasTag("pinned")) then
+                    (inst.components.pinnable ~= nil and inst.components.pinnable:IsStuck())) then
                 inst.sg:GoToState("yawn", data)
             end
         end),
@@ -1361,6 +1361,12 @@ local states =
 
         timeline =
         {
+            TimeEvent(20 * FRAMES, function(inst)
+                local mount = inst.components.rider:GetMount()
+                if mount ~= nil and mount.sounds ~= nil and mount.sounds.grunt ~= nil then
+                    inst.SoundEmitter:PlaySound(mount.sounds.grunt)
+                end
+            end),
             TimeEvent(24 * FRAMES, function(inst)
                 if inst.sg.statemem.target ~= nil and
                     inst.sg.statemem.target:IsValid() and
@@ -6159,6 +6165,17 @@ local states =
                 end
             end
 
+            if data.mountsound ~= nil then
+                local mount = inst.components.rider:GetMount()
+                if mount ~= nil and mount.sounds ~= nil and mount.sounds[data.mountsound] ~= nil then
+                    if (data.mountsounddelay or 0) <= 0 then
+                        inst.SoundEmitter:PlaySound(mount.sounds[data.mountsound])
+                    else
+                        inst.sg.statemem.emotemountsoundtask = inst:DoTaskInTime(data.mountsounddelay, DoForcedEmoteSound, mount.sounds[data.mountsound])
+                    end
+                end
+            end
+
             if data.zoom ~= nil then
                 inst.sg.statemem.iszoomed = true
                 inst:SetCameraZoomed(true)
@@ -6188,7 +6205,6 @@ local states =
         },
 
         onexit = function(inst)
-            inst.SoundEmitter:KillSound("emotesound")
             if inst.sg.statemem.emotefxtask ~= nil then
                 inst.sg.statemem.emotefxtask:Cancel()
                 inst.sg.statemem.emotefxtask = nil
@@ -6196,6 +6212,10 @@ local states =
             if inst.sg.statemem.emotesoundtask ~= nil then
                 inst.sg.statemem.emotesoundtask:Cancel()
                 inst.sg.statemem.emotesoundtask = nil
+            end
+            if inst.sg.statemem.emotemountsoundtask ~= nil then
+                inst.sg.statemem.emotemountsoundtask:Cancel()
+                inst.sg.statemem.emotemountsoundtask = nil
             end
             if inst.sg.statemem.iszoomed then
                 inst:SetCameraZoomed(false)
@@ -6318,6 +6338,12 @@ local states =
             end
 
             ForceStopHeavyLifting(inst)
+
+            if inst.components.pinnable == nil or not inst.components.pinnable:IsStuck() then
+                inst.sg:GoToState("breakfree")
+                return
+            end
+
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
 
@@ -6335,7 +6361,7 @@ local states =
         events =
         {
             EventHandler("onunpin", function(inst, data)
-                inst.sg:GoToState("breakfree", data)
+                inst.sg:GoToState("breakfree")
             end),
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
@@ -6362,6 +6388,11 @@ local states =
         tags = { "busy", "pinned", "nopredict" },
 
         onenter = function(inst)
+            if inst.components.pinnable == nil or not inst.components.pinnable:IsStuck() then
+                inst.sg:GoToState("breakfree")
+                return
+            end
+
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
 
@@ -6380,7 +6411,7 @@ local states =
         events =
         {
             EventHandler("onunpin", function(inst, data)
-                inst.sg:GoToState("breakfree", data)
+                inst.sg:GoToState("breakfree")
             end),
         },
 
@@ -6418,7 +6449,7 @@ local states =
         events =
         {
             EventHandler("onunpin", function(inst, data)
-                inst.sg:GoToState("breakfree", data)
+                inst.sg:GoToState("breakfree")
             end),
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then

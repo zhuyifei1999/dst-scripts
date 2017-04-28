@@ -1,25 +1,9 @@
 require "prefabutil"
 
-local assets =
-{
-    Asset("ANIM", "anim/bee_mine.zip"),
-    Asset("ANIM", "anim/bee_mine_maxwell.zip"),
-    Asset("SOUND", "sound/bee.fsb"),
-}
-
-local prefabs =
-{
-    "bee",
-    "mosquito",
-}
-
-local function SpawnBees(inst)
+local function SpawnBees(inst, target)
     inst.SoundEmitter:PlaySound("dontstarve/bee/beemine_explo")
-    local target = inst.components.mine ~= nil and inst.components.mine:GetTarget() or nil
     if target == nil or not target:IsValid() then
-        target = FindEntity(inst, 25, nil, nil,
-            { "insect", "playerghost" },
-            { "character", "animal", "monster" })
+        target = FindEntity(inst, 25, nil, nil, { "insect", "playerghost" }, { "character", "animal", "monster" })
     end
     if target ~= nil then
         for i = 1, TUNING.BEEMINE_BEES do
@@ -36,7 +20,6 @@ local function SpawnBees(inst)
         end
         target:PushEvent("coveredinbees")
     end
-    inst:RemoveComponent("mine")
 end
 
 local function OnExplode(inst)
@@ -47,28 +30,28 @@ local function OnExplode(inst)
     if inst.spawntask ~= nil then -- We've already been told to explode
         return
     end
+    inst.components.workable:SetWorkable(false)
     inst.AnimState:PlayAnimation("explode")
     inst.SoundEmitter:PlaySound("dontstarve/bee/beemine_launch")
-    inst.spawntask = inst:DoTaskInTime(9 * FRAMES, SpawnBees)
+    inst.spawntask = inst:DoTaskInTime(9 * FRAMES, SpawnBees, inst.components.mine:GetTarget())
     inst:ListenForEvent("animover", inst.Remove)
-    if inst.components.inventoryitem ~= nil then
-        inst.components.inventoryitem.canbepickedup = false
-    end
-    inst:AddTag("NOCLICK")
+    inst:RemoveComponent("inventoryitem")
+    inst:RemoveComponent("mine")
     inst.persists = false
+    inst.Physics:SetActive(false)
     --V2C: mine is lost if save happens during these 9 frames
     --     but better than loading back into an invalid state
 end
 
 local function onhammered(inst, worker)
-    if inst.components.mine then
+    if inst.components.mine ~= nil then
         inst.components.mine:Explode(worker)
     end
 end
 
 local function MineRattle(inst)
     inst.AnimState:PlayAnimation("hit")
-    inst.AnimState:PushAnimation("idle")
+    inst.AnimState:PushAnimation("idle", false)
     inst.SoundEmitter:PlaySound("dontstarve/bee/beemine_rattle")
     inst.rattletask = inst:DoTaskInTime(4 + math.random(), MineRattle)
 end
@@ -89,11 +72,21 @@ end
 
 local function ondeploy(inst, pt, deployer)
     inst.components.mine:Reset()
+    inst.Physics:Stop()
     inst.Physics:Teleport(pt:Get())
+end
+
+local function SetActive(inst)
+    if inst.components.inventoryitem ~= nil then
+        inst.components.inventoryitem.nobounce = true
+    end
     StartRattling(inst)
 end
 
 local function SetInactive(inst)
+    if inst.components.inventoryitem ~= nil then
+        inst.components.inventoryitem.nobounce = false
+    end
     inst.AnimState:PlayAnimation("inactive")
     StopRattling(inst)
 end
@@ -102,19 +95,41 @@ local function OnDropped(inst)
     inst.components.mine:Deactivate()
 end
 
-local function OnHaunt(inst)
-    if math.random() <= TUNING.HAUNT_CHANCE_RARE then
+local function OnHaunt(inst, haunter)
+    if inst.components.mine == nil or inst.components.mine.inactive then
+        inst.components.hauntable.hauntvalue = TUNING.HUANT_TINY
+        Launch(inst, haunter, TUNING.LAUNCH_SPEED_SMALL)
+        return true
+    elseif inst.components.mine.issprung then
+        return false
+    elseif math.random() <= TUNING.HAUNT_CHANCE_RARE then
         inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
-        OnExplode(inst)
+        inst.components.mine:Explode(nil)
+        return true
+    elseif inst.rattletask ~= nil then
+        inst.components.hauntable.hauntvalue = TUNING.HAUNT_TINY
+        inst.rattletask:Cancel()
+        MineRattle(inst)
         return true
     end
-    inst.components.hauntable.hauntvalue = TUNING.HAUNT_TINY
-    StopRattling(inst)
-    MineRattle(inst)
-    return true
+    return false
 end
 
-local function BeeMine(name, alignment, skin, spawnprefab, inventory)
+local function BeeMine(name, alignment, skin, spawnprefab, isinventory)
+    local assets =
+    {
+        Asset("ANIM", "anim/"..skin..".zip"),
+        Asset("SOUND", "sound/bee.fsb"),
+    }
+    if name ~= "beemine" then
+        table.insert(assets, Asset("MINIMAP_IMAGE", "beemine"))
+    end
+
+    local prefabs =
+    {
+        spawnprefab,
+    }
+
     local function fn()
         local inst = CreateEntity()
 
@@ -130,7 +145,7 @@ local function BeeMine(name, alignment, skin, spawnprefab, inventory)
 
         inst.AnimState:SetBank(skin)
         inst.AnimState:SetBuild(skin)
-        inst.AnimState:PlayAnimation("idle")
+        inst.AnimState:PlayAnimation("inactive")
 
         inst:AddTag("mine")
 
@@ -144,9 +159,10 @@ local function BeeMine(name, alignment, skin, spawnprefab, inventory)
         inst.components.mine:SetOnExplodeFn(OnExplode)
         inst.components.mine:SetAlignment(alignment)
         inst.components.mine:SetRadius(TUNING.BEEMINE_RADIUS)
+        inst.components.mine:SetOnResetFn(SetActive)
+        inst.components.mine:SetOnSprungFn(SetActive)
         inst.components.mine:SetOnDeactivateFn(SetInactive)
 
-        inst.components.mine:StartTesting()
         inst.beeprefab = spawnprefab
 
         inst:AddComponent("inspectable")
@@ -156,24 +172,24 @@ local function BeeMine(name, alignment, skin, spawnprefab, inventory)
         inst.components.workable:SetWorkLeft(1)
         inst.components.workable:SetOnFinishCallback(onhammered)
 
-        if inventory then
+        if isinventory then
             inst:AddComponent("inventoryitem")
-            inst.components.inventoryitem.nobounce = true
             inst.components.inventoryitem:SetOnPutInInventoryFn(StopRattling)
             inst.components.inventoryitem:SetOnDroppedFn(OnDropped)
 
             inst:AddComponent("deployable")
             inst.components.deployable.ondeploy = ondeploy
             inst.components.deployable:SetDeploySpacing(DEPLOYSPACING.LESS)
-        else
-            StartRattling(inst)
         end
 
         inst:AddComponent("hauntable")
         inst.components.hauntable:SetOnHauntFn(OnHaunt)
 
+        inst.components.mine:Reset()
+
         return inst
     end
+
     return Prefab(name, fn, assets, prefabs)
 end
 

@@ -82,6 +82,8 @@ local prefabs =
     "marbletree",
     "statueharp",
     "statuemaxwell",
+    "beemine_maxwell",
+    "trap_teeth_maxwell",
     "sculpture_knight",
     "sculpture_bishop",
     "sculpture_rook",

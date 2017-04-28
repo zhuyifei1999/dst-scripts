@@ -178,6 +178,7 @@ local function player_custominit(inst)
     inst:AddTag("playerskeleton")
 
     inst:AddComponent("playeravatardata")
+    inst.components.playeravatardata:AddPlayerData(true)
 end
 
 local function fnplayer()

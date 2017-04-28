@@ -369,8 +369,13 @@ local states =
 
             --toss stuff out of the way
             for i, v in ipairs(totoss) do
-                if v:IsValid() and not v.components.inventoryitem.nobounce and v.Physics ~= nil and v.Physics:IsActive() then
-                    SproutLaunch(v, inst, 1.5)
+                if v:IsValid() then
+                    if v.components.mine ~= nil then
+                        v.components.mine:Deactivate()
+                    end
+                    if not v.components.inventoryitem.nobounce and v.Physics ~= nil and v.Physics:IsActive() then
+                        SproutLaunch(v, inst, 1.5)
+                    end
                 end
             end
 

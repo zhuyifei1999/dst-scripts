@@ -73,6 +73,7 @@ local function onburnt(inst)
     DefaultBurntStructureFn(inst)
     CancelDressup(inst)
     inst:RemoveTag("scarecrow")
+    inst.components.playeravatardata:SetData(nil)
 end
 
 local function onignite(inst)
@@ -105,6 +106,22 @@ local function ondressup(inst, cb)
     end
 end
 
+local function ondressedup(inst, data)
+    if not inst:HasTag("burnt") then
+        local avatardata =
+        {
+            name = data.doer ~= nil and data.doer:GetBasicDisplayName() or nil,
+            prefab = data.doer ~= nil and data.doer.prefab or nil,
+        }
+        if data.skins ~= nil then
+            for k, v in pairs(data.skins) do
+                avatardata[k.."_skin"] = v
+            end
+        end
+        inst.components.playeravatardata:SetData(avatardata)
+    end
+end
+
 local function onsave(inst, data)
     if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() or inst:HasTag("burnt") then
         data.burnt = true
@@ -112,8 +129,21 @@ local function onsave(inst, data)
 end
 
 local function onload(inst, data)
-    if data ~= nil and data.burnt then
-        inst.components.burnable.onburnt(inst)
+    if data ~= nil then
+        if data.burnt then
+            inst.components.burnable.onburnt(inst)
+        else
+            data = inst.components.playeravatardata:GetData()
+            data =
+            {
+                name = data ~= nil and data.name or nil,
+                prefab = data ~= nil and data.prefab or nil,
+            }
+            for k, v in pairs(inst.components.skinner:GetClothing()) do
+                data[k.."_skin"] = v
+            end
+            inst.components.playeravatardata:SetData(data)
+        end
     end
 end
 
@@ -143,6 +173,11 @@ local function fn()
 
     MakeSnowCoveredPristine(inst)
 
+    inst:AddComponent("playeravatardata")
+    inst.components.playeravatardata:AddNameData(true)
+    inst.components.playeravatardata:AddClothingData(false)
+    inst.components.playeravatardata:SetAllowEmptyName(true)
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -170,11 +205,11 @@ local function fn()
     MakeSnowCovered(inst)
     MakeHauntableWork(inst)
 
-	inst:AddComponent("skinner")
+    inst:AddComponent("skinner")
     inst.components.skinner:SetupNonPlayerData()
-	--inst.UpdateScarecrowAvatarData = update_scarecrow_avatardata --Not yet setup
-	
+
     inst:ListenForEvent("onbuilt", onbuilt)
+    inst:ListenForEvent("dressedup", ondressedup)
 
     inst.OnEntityWake = ChangeFace
 

@@ -3,7 +3,16 @@ local prefabs =
     "thulecite",
     "rocks",
     "cutstone",
+    "silk",
+    "trinket_1",
+    "trinket_3",
     "trinket_6",
+    "trinket_9",
+    "trinket_12",
+    "sewing_kit",
+    "spider_hider",
+    "spider_spitter",
+    "monkey",
     "gears",
     "nightmarefuel",
     "greengem",
@@ -191,7 +200,7 @@ local function makefn(name, asset, animated, smashsound, rubble)
         inst:AddComponent("lootdropper")
         if not string.find(name, "bowl") and not string.find(name, "plate") then
             if string.find(name, "vase") then
-                local trinket = GetRandomItem({ "tinket_1", "trinket_3", "trinket_9", "tinket_12", "tinket_6" })
+                local trinket = GetRandomItem({ "trinket_1", "trinket_3", "trinket_9", "trinket_12", "trinket_6" })
                 inst.components.lootdropper:AddChanceLoot(trinket          , 0.10)
 
                 inst.components.lootdropper.numrandomloot = 1

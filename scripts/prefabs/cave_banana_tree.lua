@@ -123,7 +123,7 @@ local function tree_fn()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
-    MakeObstaclePhysics(inst,.5)
+    MakeObstaclePhysics(inst, .25)
 
     inst.MiniMapEntity:SetIcon("cave_banana_tree.png")
 
@@ -267,7 +267,7 @@ local function burnt_fn()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
-    MakeObstaclePhysics(inst,.5)
+    MakeObstaclePhysics(inst, .25)
 
     inst.MiniMapEntity:SetIcon("cave_banana_tree_burnt.png")
 

@@ -19,7 +19,7 @@ local function MineTest(inst, self)
     end
 end
 
-local function OnPutInInventory(inst)
+local function OnPickup(inst)
     inst.components.mine:Deactivate()
 end
 
@@ -56,9 +56,10 @@ local Mine = Class(function(self, inst)
     self.inactive = true
     self.issprung = false
     self.testtask = nil
-
     self.alignment = "player"
-    self.inst:ListenForEvent("onputininventory", OnPutInInventory)
+
+    inst:ListenForEvent("onputininventory", OnPickup)
+    inst:ListenForEvent("onpickup", OnPickup)
 end,
 nil,
 {
@@ -68,7 +69,8 @@ nil,
 
 function Mine:OnRemoveFromEntity()
     self:StopTesting()
-    self.inst:RemoveEventCallback("onputininventory", OnPutInInventory)
+    self.inst:RemoveEventCallback("onputininventory", OnPickup)
+    self.inst:RemoveEventCallback("onpickup", OnPickup)
     self.inst:RemoveTag("minesprung")
     self.inst:RemoveTag("mineactive")
 end

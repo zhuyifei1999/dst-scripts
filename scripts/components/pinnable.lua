@@ -20,7 +20,7 @@ local function WearOff(inst, self)
     self:UpdateStuckStatus()
 end
 
-local function OnStuckChanged(self, stuck)
+local function onstuck(self, stuck)
     if stuck then
         self.inst:AddTag("pinned")
     else
@@ -29,28 +29,27 @@ local function OnStuckChanged(self, stuck)
 end
 
 local function OnUnpinned(inst)
-    local pinnable = inst.components.pinnable
-    if pinnable ~= nil and pinnable:IsStuck() then
-            pinnable:Unstick()
-        end
+    if inst.components.pinnable:IsStuck() then
+        inst.components.pinnable:Unstick()
+    end
 end
 
 local function OnAttacked(inst)
-    local pinnable = inst.components.pinnable
-    if pinnable ~= nil and pinnable:IsStuck() then
-        pinnable.attacks_since_pinned = pinnable.attacks_since_pinned + 1
-        -- print("attacks since pinned", pinnable.attacks_since_pinned)
-        pinnable:SpawnShatterFX()
-        pinnable:UpdateStuckStatus()
+    local self = inst.components.pinnable
+    if self:IsStuck() then
+        self.attacks_since_pinned = self.attacks_since_pinned + 1
+        --print("attacks since pinned", self.attacks_since_pinned)
+        self:SpawnShatterFX()
+        self:UpdateStuckStatus()
     end
 end
 
 local function OnDied(inst)
-    local pinnable = inst.components.pinnable
-    if pinnable ~= nil and pinnable.wearofftask ~= nil then
-            pinnable.wearofftask:Cancel()
-            pinnable.wearofftask = nil
-        end
+    local self = inst.components.pinnable
+    if self.wearofftask ~= nil then
+        self.wearofftask:Cancel()
+        self.wearofftask = nil
+    end
 end
 
 -----------------------------------------------------------------------------------------------------
@@ -61,6 +60,7 @@ local Pinnable = Class(function(self, inst)
     self.canbepinned = true
     self.stuck = false
     self.wearofftime = TUNING.PINNABLE_WEAR_OFF_TIME
+    self.wearofftask = nil
     self.attacks_since_pinned = 0
     self.last_unstuck_time = 0
     self.last_stuck_time = 0
@@ -68,14 +68,24 @@ local Pinnable = Class(function(self, inst)
     self.fxlevel = 1
     self.fxdata = {}
 
-    self.inst:ListenForEvent("unpinned", OnUnpinned)
-    self.inst:ListenForEvent("attacked", OnAttacked)
-    self.inst:ListenForEvent("playerdied", OnDied)
+    inst:ListenForEvent("unpinned", OnUnpinned)
+    inst:ListenForEvent("attacked", OnAttacked)
+    inst:ListenForEvent("playerdied", OnDied)
 end,
 nil,
 {
-    stuck = OnStuckChanged,
+    stuck = onstuck,
 })
+
+function Pinnable:OnRemoveFromEntity()
+    if self.wearofftask ~= nil then
+        self.wearofftask:Cancel()
+        self.wearofftask = nil
+    end
+    self.inst:RemoveEventCallback("unpinned", OnUnpinned)
+    self.inst:RemoveEventCallback("attacked", OnAttacked)
+    self.inst:RemoveEventCallback("playerdied", OnDied)
+end
 
 function Pinnable:SetDefaultWearOffTime(wearofftime)
     self.wearofftime = wearofftime

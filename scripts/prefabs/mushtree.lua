@@ -429,7 +429,7 @@ local function maketree(name, data, state)
         inst.entity:AddLight()
         inst.entity:AddNetwork()
 
-        MakeObstaclePhysics(inst, 1)
+        MakeObstaclePhysics(inst, .25)
 
         inst.AnimState:SetBuild(data.build)
         inst.AnimState:SetBank(data.bank)
@@ -437,11 +437,10 @@ local function maketree(name, data, state)
 
         inst.MiniMapEntity:SetIcon(data.icon)
 
-        inst.Light:SetFalloff(0.5)
+        inst.Light:SetFalloff(.5)
         inst.Light:SetIntensity(.8)
         inst.Light:SetRadius(data.lightradius)
         inst.Light:SetColour(unpack(data.lightcolour))
-        inst.Light:Enable(true)
 
         inst:AddTag("shelter")
         inst:AddTag("mushtree")
@@ -460,7 +459,7 @@ local function maketree(name, data, state)
             return inst
         end
 
-        local color = 0.5 + math.random() * 0.5
+        local color = .5 + math.random() * .5
         inst.AnimState:SetMultColour(color, color, color, 1)
         inst.AnimState:SetTime(math.random() * 2)
 
@@ -488,7 +487,7 @@ local function maketree(name, data, state)
 
         inst:AddComponent("growable")
         inst.components.growable.stages = growth_stages
-        inst.components.growable:SetStage(math.random(1, 3))
+        inst.components.growable:SetStage(math.random(3))
         inst.components.growable.loopstages = true
         inst.components.growable.growonly = true
         inst.components.growable:StartGrowing()
