@@ -76223,11 +76223,6 @@ msgctxt "STRINGS.NAMES.STUFFEDEGGPLANT"
 msgid "Stuffed Eggplant"
 msgstr ""
 
-#. STRINGS.NAMES.SUCCULENT_PICKED
-msgctxt "STRINGS.NAMES.SUCCULENT_PICKED"
-msgid "Succulent"
-msgstr ""
-
 #. STRINGS.NAMES.SUCCULENT_PLANT
 msgctxt "STRINGS.NAMES.SUCCULENT_PLANT"
 msgid "Succulent"
@@ -82905,7 +82900,7 @@ msgstr ""
 
 #. STRINGS.SKIN_NAMES.orangestaff_ancient
 msgctxt "STRINGS.SKIN_NAMES.orangestaff_ancient"
-msgid "Ancient Explorer"
+msgid "The Ancient Explorer"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.perdling_rooster

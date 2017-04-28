@@ -182,6 +182,7 @@ function ModConfigurationScreen:ResetToDefaultValues()
 			if v.id then
 				self.options[v.id].value = self.options[v.id].default
 				v.spinner:SetSelected(self.options[v.id].value)
+				v.spinner:Changed()
 			end
 		end
 	end
