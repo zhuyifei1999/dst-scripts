@@ -116,7 +116,7 @@ function Wardrobe:BeginChanging(doer)
         local wasclosed = next(self.changers) == nil
 
         self.changers[doer] = true
-		
+
         self.inst:ListenForEvent("onremove", self.onclosewardrobe, doer)
         self.inst:ListenForEvent("ms_closewardrobe", self.onclosewardrobe, doer)
 
@@ -173,7 +173,7 @@ function Wardrobe:EndAllChanging()
 end
 
 local function DoTargetChanging(self, doer, skins)
-	doer.sg.statemem.ischanging = true
+    doer.sg.statemem.ischanging = true
     doer.sg:GoToState("dressupwardrobe", function()
         if self.ondressupfn ~= nil then
             self.ondressupfn(self.inst, function() self:ApplyTargetSkins(self.inst, doer, skins) end)
@@ -229,50 +229,51 @@ function Wardrobe:ActivateChanging(doer, skins)
 end
 
 function Wardrobe:ApplyTargetSkins(target, doer, skins)
-	if target.components.skinner ~= nil then
-		target.AnimState:AssignItemSkins( doer.userid, skins.body, skins.hand, skins.legs, skins.feet )
-		target.components.skinner:ClearAllClothing()
-		target.components.skinner:SetClothing(skins.body)
-		target.components.skinner:SetClothing(skins.hand)
-		target.components.skinner:SetClothing(skins.legs)
-		target.components.skinner:SetClothing(skins.feet)
-	end
+    if target.components.skinner ~= nil then
+        target.AnimState:AssignItemSkins(doer.userid, skins.body, skins.hand, skins.legs, skins.feet)
+        target.components.skinner:ClearAllClothing()
+        target.components.skinner:SetClothing(skins.body)
+        target.components.skinner:SetClothing(skins.hand)
+        target.components.skinner:SetClothing(skins.legs)
+        target.components.skinner:SetClothing(skins.feet)
+        target:PushEvent("dressedup", { wardrobe = self.inst, doer = doer, skins = skins })
+    end
 end
 
 function Wardrobe:ApplySkins(doer, diff)
     if doer.components.skinner ~= nil then
         if diff.base ~= nil then
-			if Prefabs[diff.base] ~= nil and not Prefabs[diff.base].disabled then
-				doer.components.skinner:SetSkinName(diff.base)
-			end
+            if Prefabs[diff.base] ~= nil and not Prefabs[diff.base].disabled then
+                doer.components.skinner:SetSkinName(diff.base)
+            end
         end
 
         if diff.body ~= nil then
-			doer.components.skinner:ClearClothing("body")
-			if CLOTHING[diff.body] ~= nil and not CLOTHING[diff.body].disabled then
-				doer.components.skinner:SetClothing(diff.body)
-			end
+            doer.components.skinner:ClearClothing("body")
+            if CLOTHING[diff.body] ~= nil and not CLOTHING[diff.body].disabled then
+                doer.components.skinner:SetClothing(diff.body)
+            end
         end
 
         if diff.hand ~= nil then
-			doer.components.skinner:ClearClothing("hand")
-			if CLOTHING[diff.hand] ~= nil and not CLOTHING[diff.hand].disabled then
-				doer.components.skinner:SetClothing(diff.hand)
-			end
+            doer.components.skinner:ClearClothing("hand")
+            if CLOTHING[diff.hand] ~= nil and not CLOTHING[diff.hand].disabled then
+                doer.components.skinner:SetClothing(diff.hand)
+            end
         end
 
         if diff.legs ~= nil then
-			doer.components.skinner:ClearClothing("legs")
-			if CLOTHING[diff.legs] ~= nil and not CLOTHING[diff.legs].disabled then
-				doer.components.skinner:SetClothing(diff.legs)
-			end
+            doer.components.skinner:ClearClothing("legs")
+            if CLOTHING[diff.legs] ~= nil and not CLOTHING[diff.legs].disabled then
+                doer.components.skinner:SetClothing(diff.legs)
+            end
         end
-        
+
         if diff.feet ~= nil then
-        	doer.components.skinner:ClearClothing("feet")
-			if CLOTHING[diff.feet] ~= nil and not CLOTHING[diff.feet].disabled then
-				doer.components.skinner:SetClothing(diff.feet)
-			end
+            doer.components.skinner:ClearClothing("feet")
+            if CLOTHING[diff.feet] ~= nil and not CLOTHING[diff.feet].disabled then
+                doer.components.skinner:SetClothing(diff.feet)
+            end
         end
     end
 end

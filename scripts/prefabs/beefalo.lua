@@ -173,6 +173,11 @@ local function CanShareTarget(dude)
 end
 
 local function OnAttacked(inst, data)
+    if inst._ridersleeptask ~= nil then
+        inst._ridersleeptask:Cancel()
+        inst._ridersleeptask = nil
+    end
+    inst._ridersleep = nil
     if inst.components.rideable:IsBeingRidden() then
         if not inst.components.domesticatable:IsDomesticated() or not inst.tendency == TENDENCY.ORNERY then
             inst.components.domesticatable:DeltaDomestication(TUNING.BEEFALO_DOMESTICATION_ATTACKED_DOMESTICATION)

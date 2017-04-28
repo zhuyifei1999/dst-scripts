@@ -82645,7 +82645,7 @@ msgstr ""
 
 #. STRINGS.SKIN_NAMES.firestaff_bee
 msgctxt "STRINGS.SKIN_NAMES.firestaff_bee"
-msgid "Bumble Fire Staff"
+msgid "Fiery Bumble Staff"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.flowerhat_holly_wreath
@@ -82775,7 +82775,7 @@ msgstr ""
 
 #. STRINGS.SKIN_NAMES.icestaff_bee
 msgctxt "STRINGS.SKIN_NAMES.icestaff_bee"
-msgid "Bumble Ice Staff"
+msgid "Icy Bumble Staff"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.kitten_winter
@@ -82890,7 +82890,7 @@ msgstr ""
 
 #. STRINGS.SKIN_NAMES.minerhat_floppy
 msgctxt "STRINGS.SKIN_NAMES.minerhat_floppy"
-msgid "Floppy Miner Hat"
+msgid "Frilly Headlamp"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.missing
@@ -87151,6 +87151,16 @@ msgstr ""
 #. STRINGS.UI.CUSTOMIZATIONSCREEN.YES
 msgctxt "STRINGS.UI.CUSTOMIZATIONSCREEN.YES"
 msgid "Yes"
+msgstr ""
+
+#. STRINGS.UI.DRESSUP_AVATAR.DRESSED_BY_FMT
+msgctxt "STRINGS.UI.DRESSUP_AVATAR.DRESSED_BY_FMT"
+msgid "Dressed by {name}"
+msgstr ""
+
+#. STRINGS.UI.DRESSUP_AVATAR.UNDRESSED_BY_FMT
+msgctxt "STRINGS.UI.DRESSUP_AVATAR.UNDRESSED_BY_FMT"
+msgid "Undressed by {name}"
 msgstr ""
 
 #. STRINGS.UI.EMAILSCREEN.APR

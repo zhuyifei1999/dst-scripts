@@ -92,15 +92,21 @@ local function onexplode(inst)
                 elseif v.components.combat ~= nil then
                     v.components.combat:GetAttacked(inst, inst.size * TUNING.METEOR_DAMAGE, nil)
                 elseif v.components.inventoryitem ~= nil then
-                    if math.random() <= TUNING.METEOR_SMASH_INVITEM_CHANCE then
-                        if v.components.container ~= nil then
+                    if v.components.container ~= nil then
+                        -- Spill backpack contents, but don't destroy backpack
+                        if math.random() <= TUNING.METEOR_SMASH_INVITEM_CHANCE then
                             v.components.container:DropEverything()
                         end
-                    end
-                    -- Always smash things on the periphery so that we don't end up with a ring of flung loot
-                    if (inst.peripheral or math.random() <= TUNING.METEOR_SMASH_INVITEM_CHANCE)
-                        and not v:HasTag("irreplaceable")  then
-
+                        Launch(v, inst, TUNING.LAUNCH_SPEED_SMALL)
+                        launched[v] = true
+                    elseif v.components.mine ~= nil and not v.components.mine.inactive then
+                        -- Always smash things on the periphery so that we don't end up with a ring of flung loot
+                        v.components.mine:Deactivate()
+                        Launch(v, inst, TUNING.LAUNCH_SPEED_SMALL)
+                        launched[v] = true
+                    elseif (inst.peripheral or math.random() <= TUNING.METEOR_SMASH_INVITEM_CHANCE)
+                        and not v:HasTag("irreplaceable") then
+                        -- Always smash things on the periphery so that we don't end up with a ring of flung loot
                         local vx, vy, vz = v.Transform:GetWorldPosition()
                         SpawnPrefab("ground_chunks_breaking").Transform:SetPosition(vx, 0, vz)
                         v:Remove()

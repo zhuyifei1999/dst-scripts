@@ -154,6 +154,9 @@ local function donextcollapse(inst)
     end
     local totoss = TheSim:FindEntities(x, 0, z, TUNING.ANTLION_SINKHOLE.RADIUS, { "_inventoryitem" }, { "locomotor", "INLIMBO" })
     for i, v in ipairs(totoss) do
+        if v.components.mine ~= nil then
+            v.components.mine:Deactivate()
+        end
         if not v.components.inventoryitem.nobounce and v.Physics ~= nil and v.Physics:IsActive() then
             SmallLaunch(v, inst, 1.5)
         end

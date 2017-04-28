@@ -222,7 +222,7 @@ local function OnBurnt(inst, immediate)
     if immediate then
         changes()
     else
-        inst:DoTaskInTime( 0.5, changes)
+        inst:DoTaskInTime(.5, changes)
     end
     inst.AnimState:PlayAnimation(inst.anims.burnt, true)
 

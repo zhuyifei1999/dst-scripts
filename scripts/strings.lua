@@ -2810,11 +2810,11 @@ STRINGS.UI =
         LOGIN = "Login",
         LOGOUT = "Logout",
         SIGNUP = "Sign Up",
-        FORGET= "Forget Account",
-        VIEWSTREAM= "View Stream",
-        STARTSTREAM= "Start Stream",
-        STOPSTREAM= "Stop Stream",
-        HELP= "Help",
+        FORGET = "Forget Account",
+        VIEWSTREAM = "View Stream",
+        STARTSTREAM = "Start Stream",
+        STOPSTREAM = "Stop Stream",
+        HELP = "Help",
     },
 
     PLAYER_AVATAR =
@@ -2825,6 +2825,12 @@ STRINGS.UI =
         CLOSE = "Close",
         STEAM = "View Steam Profile",
         CHOOSING = "is choosing their character",
+    },
+
+    DRESSUP_AVATAR =
+    {
+        DRESSED_BY_FMT = "Dressed by {name}",
+        UNDRESSED_BY_FMT = "Undressed by {name}",
     },
 
     WARDROBE_POPUP =

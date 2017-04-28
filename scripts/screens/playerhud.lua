@@ -33,6 +33,7 @@ local GiftItemPopUp = require "screens/giftitempopup"
 local WardrobePopupScreen = require "screens/wardrobepopup"
 local ScarecrowClothingPopupScreen = require "screens/scarecrowclothingpopup"
 local PlayerAvatarPopup = require "widgets/playeravatarpopup"
+local DressupAvatarPopup = require "widgets/dressupavatarpopup"
 
 local PlayerHud = Class(Screen, function(self)
     Screen._ctor(self, "HUD")
@@ -261,7 +262,12 @@ function PlayerHud:TogglePlayerAvatarPopup(player_name, data, show_net_profile)
     end
 
     -- Don't show steam button for yourself or targets without a userid(skeletons)
-    self.playeravatarpopup = self.controls.right_root:AddChild(PlayerAvatarPopup(self.owner, player_name, data, show_net_profile and data.userid ~= nil and data.userid ~= self.owner.userid))
+    self.playeravatarpopup = self.controls.right_root:AddChild(
+        data.inst ~= nil and
+        data.inst:HasTag("dressable") and
+        DressupAvatarPopup(self.owner, player_name, data) or
+        PlayerAvatarPopup(self.owner, player_name, data, show_net_profile and data.userid ~= nil and data.userid ~= self.owner.userid)
+    )
 end
 
 function PlayerHud:OpenScreenUnderPause(screen)

@@ -267,8 +267,8 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-        wardrobe = function(inst, doer, actions)
-            if inst:HasTag("wardrobe") and not inst:HasTag("fire") then
+        wardrobe = function(inst, doer, actions, right)
+            if inst:HasTag("wardrobe") and not inst:HasTag("fire") and (right or not inst:HasTag("dressable")) then
                 table.insert(actions, ACTIONS.CHANGEIN)
             end
         end,

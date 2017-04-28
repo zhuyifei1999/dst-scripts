@@ -24,7 +24,7 @@ SetSharedLootTable('mushtree_tall_webbed',
 
 local function tree_burnt(inst)
     inst.components.lootdropper:SpawnLootPrefab("ash")
-    if math.random() < 0.5 then
+    if math.random() < .5 then
         inst.components.lootdropper:SpawnLootPrefab("charcoal")
     end
     SpawnPrefab("mushtree_tall_webbed_burntfx").Transform:SetPosition(inst.Transform:GetWorldPosition())
@@ -36,17 +36,16 @@ local function workcallback(inst, worker, workleft)
         inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_mushroom")
     end
 
-    local x,y,z = inst.Transform:GetWorldPosition()
-    local triggered = TheSim:FindEntities(x,y,z,TUNING.MUSHTREE_WEBBED_SPIDER_RADIUS,{"spiderden"})
-    for i,den in ipairs(triggered) do
-        den:PushEvent("creepactivate", {target = worker})
+    local pos = inst:GetPosition()
+    for i, den in ipairs(TheSim:FindEntities(pos.x, pos.y, pos.z, TUNING.MUSHTREE_WEBBED_SPIDER_RADIUS, { "spiderden" })) do
+        den:PushEvent("creepactivate", { target = worker })
     end
     if workleft <= 0 then
         inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")
 
         inst.AnimState:PlayAnimation("fall")
 
-        inst.components.lootdropper:DropLoot(inst:GetPosition())
+        inst.components.lootdropper:DropLoot(pos)
         inst:ListenForEvent("animover", inst.Remove)
     else
         inst.AnimState:PlayAnimation("chop")
@@ -104,7 +103,7 @@ local function fn()
     inst.entity:AddLight()
     inst.entity:AddNetwork()
 
-    MakeObstaclePhysics(inst, 1)
+    MakeObstaclePhysics(inst, .25)
 
     inst.AnimState:SetBuild("mushroom_tree_webbed")
     inst.AnimState:SetBank("mushroom_tree_webbed")
@@ -112,11 +111,10 @@ local function fn()
 
     inst.MiniMapEntity:SetIcon("mushroom_tree_webbed.png")
 
-    inst.Light:SetFalloff(0.5)
+    inst.Light:SetFalloff(.5)
     inst.Light:SetIntensity(.8)
-    inst.Light:SetRadius(0.8)
+    inst.Light:SetRadius(.8)
     inst.Light:SetColour(111/255, 111/255, 227/255)
-    inst.Light:Enable(true)
 
     inst:AddTag("shelter")
     inst:AddTag("mushtree")
@@ -130,7 +128,7 @@ local function fn()
         return inst
     end
 
-    local color = 0.5 + math.random() * 0.5
+    local color = .5 + math.random() * .5
     inst.AnimState:SetMultColour(color, color, color, 1)
     inst.AnimState:SetTime(math.random() * 2)
 
@@ -146,7 +144,7 @@ local function fn()
 
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.CHOP)
-    inst.components.workable:SetWorkLeft(math.ceil(TUNING.MUSHTREE_CHOPS_TALL/2))
+    inst.components.workable:SetWorkLeft(math.ceil(TUNING.MUSHTREE_CHOPS_TALL * .5))
     inst.components.workable:SetOnWorkCallback(workcallback)
 
     inst.OnSave = onsave
