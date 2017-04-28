@@ -47,15 +47,13 @@ local function OnAttacked(inst, data)
 end
 
 local function OnLostTarget(inst)
-    if not inst.sg:HasStateTag("hidden") and inst:GetTimeAlive() > 5 then
-        inst.sg:GoToState("exit")
+    if inst:GetTimeAlive() > 5 then
+        inst:PushEvent("exit")
     end
 end
 
 local function Exit(inst)
-    if not inst.sg:HasStateTag("hidden") then
-        inst.sg:GoToState("exit")
-    end
+    inst:PushEvent("exit")
 end
 
 local function Enter(inst)
@@ -143,7 +141,9 @@ local function fn()
     inst.components.health.fire_damage_scale = 2
     inst:ListenForEvent("death", OnDeath)
     inst.components.propagator.flashpoint = 5 + math.random() * 3
-    MakeSmallFreezableCharacter(inst)
+    MakeSmallFreezableCharacter(inst, "treedrake_root", Vector3(0, -1, .1))
+
+    MakeHauntableIgnite(inst)
 
     inst.Exit = Exit
     inst.Enter = Enter

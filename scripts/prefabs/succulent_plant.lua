@@ -3,21 +3,26 @@ local assets =
     Asset("ANIM", "anim/succulent.zip"),
 }
 
+local assets_inv =
+{
+    Asset("ANIM", "anim/succulent_picked.zip"),
+}
+
 local prefabs =
 {
     "succulent_picked",
 }
 
 local function SetupPlant(inst, plantid)
-	if inst.plantid == nil then
-		inst.plantid = plantid or math.random(5)
-	end
+    if inst.plantid == nil then
+        inst.plantid = plantid or math.random(5)
+    end
 
     if inst.plantid == 1 then
-		inst.AnimState:ClearOverrideSymbol("Symbol_1")
-	else
-		inst.AnimState:OverrideSymbol("Symbol_1", "succulent", "Symbol_"..tostring(inst.plantid))
-	end
+        inst.AnimState:ClearOverrideSymbol("Symbol_1")
+    else
+        inst.AnimState:OverrideSymbol("Symbol_1", "succulent", "Symbol_"..tostring(inst.plantid))
+    end
 end
 
 local function onsave(inst, data)
@@ -64,7 +69,7 @@ local function plantfn()
     inst.OnSave = onsave
     inst.OnLoad = onload
 
-	inst:DoTaskInTime(0, SetupPlant)
+    inst:DoTaskInTime(0, SetupPlant)
 
     return inst
 end
@@ -84,7 +89,8 @@ local function invfn()
 
     inst:AddTag("cattoy")
 
-    inst:SetPrefabNameOverride("succulent_plant")
+    inst.name = STRINGS.NAMES.SUCCULENT_PLANT
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -122,4 +128,4 @@ local function invfn()
 end
 
 return Prefab("succulent_plant", plantfn, assets, prefabs),
-    Prefab("succulent_picked", invfn, {Asset("ANIM", "anim/succulent_picked.zip")})
+    Prefab("succulent_picked", invfn, assets_inv)

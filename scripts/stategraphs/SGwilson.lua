@@ -6606,7 +6606,13 @@ local states =
 
         timeline =
         {
-            TimeEvent(18 * FRAMES, DoYawnSound),
+            TimeEvent(.1, function(inst)
+                local mount = inst.components.rider:GetMount()
+                if mount ~= nil and mount.sounds ~= nil and mount.sounds.yell ~= nil then
+                    inst.SoundEmitter:PlaySound(mount.sounds.yell)
+                end
+            end),
+            TimeEvent(15 * FRAMES, DoYawnSound),
         },
 
         events =

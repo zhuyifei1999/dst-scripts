@@ -40,11 +40,11 @@ local EMOTES =
     },
 
     ["sit"] = {
-        data = { anim = { { "emote_pre_sit2", "emote_loop_sit2" }, { "emote_pre_sit4", "emote_loop_sit4" } }, randomanim = true, loop = true, fx = false, sound = false, mounted = true, mountsound = "walk", mountsounddelay = 6 * FRAMES },
+        data = { anim = { { "emote_pre_sit2", "emote_loop_sit2" }, { "emote_pre_sit4", "emote_loop_sit4" } }, randomanim = true, loop = true, fx = false, mounted = true, mountsound = "walk", mountsounddelay = 6 * FRAMES },
     },
 
     ["squat"] = {
-        data = { anim = { { "emote_pre_sit1", "emote_loop_sit1" }, { "emote_pre_sit3", "emote_loop_sit3" } }, randomanim = true, loop = true, fx = false, sound = false, mounted = true, mountsound = "walk", mountsounddelay = 10 * FRAMES },
+        data = { anim = { { "emote_pre_sit1", "emote_loop_sit1" }, { "emote_pre_sit3", "emote_loop_sit3" } }, randomanim = true, loop = true, fx = false, mounted = true, mountsound = "walk", mountsounddelay = 10 * FRAMES },
     },
 
     ["bonesaw"] = {
