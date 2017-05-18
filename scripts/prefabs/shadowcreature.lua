@@ -12,9 +12,34 @@ local function NotifyBrainOfTarget(inst, target)
 end
 
 local function retargetfn(inst)
-    return FindEntity(inst, TUNING.SHADOWCREATURE_TARGET_DIST, function(guy)
-        return guy.components.sanity:IsCrazy() and inst.components.combat:CanTarget(guy)
-    end, { "player" }, { "playerghost" })
+    local maxrangesq = TUNING.SHADOWCREATURE_TARGET_DIST * TUNING.SHADOWCREATURE_TARGET_DIST
+    local rangesq, rangesq1, rangesq2 = maxrangesq, math.huge, math.huge
+    local target1, target2 = nil, nil
+    for i, v in ipairs(AllPlayers) do
+        if v.components.sanity:IsCrazy() and not v:HasTag("playerghost") then
+            local distsq = v:GetDistanceSqToInst(inst)
+            if distsq < rangesq then
+                if inst.components.shadowsubmissive:TargetHasDominance(v) then
+                    if distsq < rangesq1 and inst.components.combat:CanTarget(v) then
+                        target1 = v
+                        rangesq1 = distsq
+                        rangesq = math.max(rangesq1, rangesq2)
+                    end
+                elseif distsq < rangesq2 and inst.components.combat:CanTarget(v) then
+                    target2 = v
+                    rangesq2 = distsq
+                    rangesq = math.max(rangesq1, rangesq2)
+                end
+            end
+        end
+    end
+
+    if target1 ~= nil and rangesq1 <= math.max(rangesq2, maxrangesq * .25) then
+        --Targets with shadow dominance have higher priority within half targeting range
+        --Force target switch if current target does not have shadow dominance
+        return target1, not inst.components.shadowsubmissive:TargetHasDominance(inst.components.combat.target)
+    end
+    return target2
 end
 
 local function onkilledbyother(inst, attacker)
@@ -123,6 +148,8 @@ local function MakeShadowCreature(data)
         inst.components.combat:SetAttackPeriod(data.attackperiod)
         inst.components.combat:SetRetargetFunction(3, retargetfn)
         inst.components.combat.onkilledbyother = onkilledbyother
+
+        inst:AddComponent("shadowsubmissive")
 
         inst:AddComponent("lootdropper")
         inst.components.lootdropper:SetChanceLootTable('shadow_creature')

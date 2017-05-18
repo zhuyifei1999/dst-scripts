@@ -1,19 +1,3 @@
-local assets =
-{
-    Asset("ANIM", "anim/mushroombomb.zip"),
-    Asset("ANIM", "anim/mushroombomb_base.zip"),
-}
-
-local projectile_assets =
-{
-    Asset("ANIM", "anim/mushroombomb.zip"),
-}
-
-local projectile_prefabs =
-{
-    "mushroombomb",
-}
-
 local FADE_FRAMES = 5
 local FADE_INTENSITY = .8
 local FADE_RADIUS = 1.5
@@ -103,9 +87,8 @@ local function Explode(inst)
     if #ents > 0 then
         local toadstool = inst.components.entitytracker:GetEntity("toadstool")
         local damage =
-            toadstool ~= nil and
-            toadstool.components.combat ~= nil and
-            toadstool.components.combat.defaultdamage or
+            (toadstool ~= nil and toadstool.components.combat ~= nil and toadstool.components.combat.defaultdamage) or
+            (inst.prefab ~= "mushroombomb" and TUNING.TOADSTOOL_DARK_DAMAGE_LVL[0]) or
             TUNING.TOADSTOOL_DAMAGE_LVL[0]
 
         for i, v in ipairs(ents) do
@@ -198,113 +181,148 @@ local function OnLoad(inst, data)
     end
 end
 
-local function fn()
-    local inst = CreateEntity()
+local function MakeBomb(name)
+    local assets =
+    {
+        Asset("ANIM", "anim/mushroombomb.zip"),
+        Asset("ANIM", "anim/mushroombomb_base.zip"),
+    }
+    if name ~= "mushroombomb" then
+        table.insert(assets, Asset("ANIM", "anim/"..name.."_build.zip"))
+    end
 
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddLight()
-    inst.entity:AddSoundEmitter()
-    inst.entity:AddNetwork()
+    local function fn()
+        local inst = CreateEntity()
 
-    inst.Transform:SetFourFaced()
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddLight()
+        inst.entity:AddSoundEmitter()
+        inst.entity:AddNetwork()
 
-    inst.AnimState:SetBank("mushroombomb")
-    inst.AnimState:SetBuild("mushroombomb")
-    inst.AnimState:PlayAnimation("land")
-    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+        inst.Transform:SetFourFaced()
 
-    inst.Light:SetFalloff(FADE_FALLOFF)
-    inst.Light:SetIntensity(FADE_INTENSITY)
-    inst.Light:SetRadius(FADE_RADIUS)
-    inst.Light:SetColour(200 / 255, 100 / 255, 170 / 255)
-    inst.Light:Enable(false)
-    inst.Light:EnableClientModulation(true)
+        inst.AnimState:SetBank("mushroombomb")
+        inst.AnimState:SetBuild(name == "mushroombomb" and "mushroombomb" or (name.."_build"))
+        inst.AnimState:PlayAnimation("land")
+        inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
 
-    inst:AddTag("explosive")
+        inst.Light:SetFalloff(FADE_FALLOFF)
+        inst.Light:SetIntensity(FADE_INTENSITY)
+        inst.Light:SetRadius(FADE_RADIUS)
+        inst.Light:SetColour(200 / 255, 100 / 255, 170 / 255)
+        inst.Light:Enable(false)
+        inst.Light:EnableClientModulation(true)
 
-    inst._explode = net_event(inst.GUID, "mushroombomb._explode")
-    inst._fade = net_smallbyte(inst.GUID, "mushroombomb._fade", "fadedirty")
+        inst:AddTag("explosive")
 
-    inst._fadetask = inst:DoPeriodicTask(FRAMES, OnUpdateFade)
+        inst._explode = net_event(inst.GUID, "mushroombomb._explode")
+        inst._fade = net_smallbyte(inst.GUID, "mushroombomb._fade", "fadedirty")
 
-    inst.entity:SetPristine()
+        inst._fadetask = inst:DoPeriodicTask(FRAMES, OnUpdateFade)
 
-    if not TheWorld.ismastersim then
-        inst:ListenForEvent("mushroombomb._explode", CreateGroundFX)
-        inst:ListenForEvent("fadedirty", OnFadeDirty)
+        inst.entity:SetPristine()
+
+        if not TheWorld.ismastersim then
+            inst:ListenForEvent("mushroombomb._explode", CreateGroundFX)
+            inst:ListenForEvent("fadedirty", OnFadeDirty)
+
+            return inst
+        end
+
+        inst:AddComponent("inspectable")
+        if name ~= "mushroombomb" then
+            inst.components.inspectable.nameoverride = "mushroombomb"
+        end
+
+        inst:AddComponent("entitytracker")
+
+        inst._soundtask = nil
+        inst._growtask = inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength(), Grow, 1)
+        QueueGrowSound(inst, 4 * FRAMES)
+
+        inst.OnSave = OnSave
+        inst.OnLoad = OnLoad
 
         return inst
     end
 
-    inst:AddComponent("inspectable")
-
-    inst:AddComponent("entitytracker")
-
-    inst._soundtask = nil
-    inst._growtask = inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength(), Grow, 1)
-    QueueGrowSound(inst, 4 * FRAMES)
-
-    inst.OnSave = OnSave
-    inst.OnLoad = OnLoad
-
-    return inst
+    return Prefab(name, fn, assets)
 end
 
-local function OnProjectileHit(inst)
-    local x, y, z = inst.Transform:GetWorldPosition()
-    inst:Remove()
-    local bomb = SpawnPrefab("mushroombomb")
-    bomb.Transform:SetPosition(x, y, z)
-    bomb.SoundEmitter:PlaySound("dontstarve/creatures/together/toad_stool/spore_land")
-    local toadstool = inst.components.entitytracker:GetEntity("toadstool")
-    if toadstool ~= nil then
-        bomb.components.entitytracker:TrackEntity("toadstool", toadstool)
+local function MakeProjectile(name, bombname)
+    local assets =
+    {
+        Asset("ANIM", "anim/mushroombomb.zip"),
+    }
+    if bombname ~= "mushroombomb" then
+        table.insert(assets, Asset("ANIM", "anim/"..bombname.."_build.zip"))
     end
-end
 
-local function projectile_fn()
-    local inst = CreateEntity()
+    local prefabs =
+    {
+        bombname,
+    }
 
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddNetwork()
+    local function OnProjectileHit(inst)
+        local x, y, z = inst.Transform:GetWorldPosition()
+        inst:Remove()
+        local bomb = SpawnPrefab(bombname)
+        bomb.Transform:SetPosition(x, y, z)
+        bomb.SoundEmitter:PlaySound("dontstarve/creatures/together/toad_stool/spore_land")
+        local toadstool = inst.components.entitytracker:GetEntity("toadstool")
+        if toadstool ~= nil then
+            bomb.components.entitytracker:TrackEntity("toadstool", toadstool)
+        end
+    end
 
-    inst.entity:AddPhysics()
-    inst.Physics:SetMass(1)
-    inst.Physics:SetFriction(0)
-    inst.Physics:SetDamping(0)
-    inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)
-    inst.Physics:ClearCollisionMask()
-    inst.Physics:CollidesWith(COLLISION.WORLD)
-    inst.Physics:SetCapsule(.2, .2)
+    local function fn()
+        local inst = CreateEntity()
 
-    inst.AnimState:SetBank("mushroombomb")
-    inst.AnimState:SetBuild("mushroombomb")
-    inst.AnimState:PlayAnimation("projectile_loop")
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddNetwork()
 
-    inst:AddTag("NOCLICK")
+        inst.entity:AddPhysics()
+        inst.Physics:SetMass(1)
+        inst.Physics:SetFriction(0)
+        inst.Physics:SetDamping(0)
+        inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)
+        inst.Physics:ClearCollisionMask()
+        inst.Physics:CollidesWith(COLLISION.WORLD)
+        inst.Physics:SetCapsule(.2, .2)
 
-    inst.entity:SetPristine()
+        inst.AnimState:SetBank("mushroombomb")
+        inst.AnimState:SetBuild(bombname == "mushroombomb" and "mushroombomb" or (bombname.."_build"))
+        inst.AnimState:PlayAnimation("projectile_loop", true)
 
-    if not TheWorld.ismastersim then
+        inst:AddTag("NOCLICK")
+
+        inst.entity:SetPristine()
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst:AddComponent("locomotor")
+
+        inst:AddComponent("complexprojectile")
+        inst.components.complexprojectile:SetHorizontalSpeed(15)
+        inst.components.complexprojectile:SetGravity(-25)
+        inst.components.complexprojectile:SetLaunchOffset(Vector3(0, 2.5, 0))
+        inst.components.complexprojectile:SetOnHit(OnProjectileHit)
+
+        inst:AddComponent("entitytracker")
+
+        inst.persists = false
+
         return inst
     end
 
-    inst:AddComponent("locomotor")
-
-    inst:AddComponent("complexprojectile")
-    inst.components.complexprojectile:SetHorizontalSpeed(15)
-    inst.components.complexprojectile:SetGravity(-25)
-    inst.components.complexprojectile:SetLaunchOffset(Vector3(0, 2.5, 0))
-    inst.components.complexprojectile:SetOnHit(OnProjectileHit)
-
-    inst:AddComponent("entitytracker")
-
-    inst.persists = false
-
-    return inst
+    return Prefab(name, fn, assets, prefabs)
 end
 
-return Prefab("mushroombomb", fn, assets),
-    Prefab("mushroombomb_projectile", projectile_fn, projectile_assets, projectile_prefabs)
+return MakeBomb("mushroombomb"),
+    MakeBomb("mushroombomb_dark"),
+    MakeProjectile("mushroombomb_projectile", "mushroombomb"),
+    MakeProjectile("mushroombomb_dark_projectile", "mushroombomb_dark")

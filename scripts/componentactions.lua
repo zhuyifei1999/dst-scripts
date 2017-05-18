@@ -596,11 +596,13 @@ local COMPONENT_ACTIONS =
         end,
 
         tool = function(inst, doer, target, actions, right)
-            for k, v in pairs(TOOLACTIONS) do
-                if inst:HasTag(k.."_tool") then
-                    if target:IsActionValid(ACTIONS[k], right) then
-                        table.insert(actions, ACTIONS[k])
-                        return
+            if not target:HasTag("INLIMBO") then
+                for k, v in pairs(TOOLACTIONS) do
+                    if inst:HasTag(k.."_tool") then
+                        if target:IsActionValid(ACTIONS[k], right) then
+                            table.insert(actions, ACTIONS[k])
+                            return
+                        end
                     end
                 end
             end
@@ -788,12 +790,14 @@ local COMPONENT_ACTIONS =
         end,
 
         tool = function(inst, doer, target, actions, right)
-            for k, v in pairs(TOOLACTIONS) do
-                if inst:HasTag(k.."_tool") then
-                    if target:IsActionValid(ACTIONS[k], right) then
-                        if not right or ACTIONS[k].rmb or not target:HasTag("smolder") then
-                            table.insert(actions, ACTIONS[k])
-                            return
+            if not target:HasTag("INLIMBO") then
+                for k, v in pairs(TOOLACTIONS) do
+                    if inst:HasTag(k.."_tool") then
+                        if target:IsActionValid(ACTIONS[k], right) then
+                            if not right or ACTIONS[k].rmb or not target:HasTag("smolder") then
+                                table.insert(actions, ACTIONS[k])
+                                return
+                            end
                         end
                     end
                 end

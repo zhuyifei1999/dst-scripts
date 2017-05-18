@@ -257,6 +257,10 @@ local states =
                 for i = 1, numloot do
                     inst.components.lootdropper:SpawnLootPrefab("feather_canary", pos)
                 end
+
+                for i, v in ipairs(TheSim:FindEntities(pos.x, 0, pos.z, 3, { "absorbpoison" })) do
+                    v:PushEvent("poisonburst", { source = inst })
+                end
             end),
         },
 

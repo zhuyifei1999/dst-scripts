@@ -1,48 +1,5 @@
 require "prefabutil"
 
-local assets =
-{
-    Asset("ANIM", "anim/treasure_chest.zip"),
-    Asset("ANIM", "anim/ui_chest_3x2.zip"),
-
-    Asset("ANIM", "anim/pandoras_chest.zip"),
-    Asset("ANIM", "anim/skull_chest.zip"),
-    Asset("ANIM", "anim/pandoras_chest_large.zip"),
-	Asset("MINIMAP_IMAGE", "treasure_chest"),
-	Asset("MINIMAP_IMAGE", "minotaur_chest"),
-	Asset("MINIMAP_IMAGE", "pandoras_chest"),
-}
-
-local prefabs =
-{
-    "collapse_small",
-    "pandorachest_reset",
-}
-
-local chests =
-{
-    treasure_chest =
-    {
-        bank = "chest",
-        build = "treasure_chest",
-    },
-    skull_chest =
-    {
-        bank = "skull_chest",
-        build = "skull_chest",
-    },
-    pandoras_chest =
-    {
-        bank = "pandoras_chest",
-        build = "pandoras_chest",
-    },
-    minotaur_chest =
-    {
-        bank = "pandoras_chest_large",
-        build = "pandoras_chest_large",
-    },
-}
-
 local function onopen(inst)
     if not inst:HasTag("burnt") then
         inst.AnimState:PlayAnimation("open")
@@ -89,7 +46,7 @@ local function onbuilt(inst)
 end
 
 local function onsave(inst, data)
-    if inst:HasTag("burnt") or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
+    if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() or inst:HasTag("burnt") then
         data.burnt = true
     end
 end
@@ -100,8 +57,14 @@ local function onload(inst, data)
     end
 end
 
-local function chest(style, indestructible, custom_postinit)
-    return function()
+local function MakeChest(name, bank, build, indestructible, custom_postinit, prefabs)
+    local assets =
+    {
+        Asset("ANIM", "anim/"..build..".zip"),
+        Asset("ANIM", "anim/ui_chest_3x2.zip"),
+    }
+
+    local function fn()
         local inst = CreateEntity()
 
         inst.entity:AddTransform()
@@ -110,12 +73,13 @@ local function chest(style, indestructible, custom_postinit)
         inst.entity:AddMiniMapEntity()
         inst.entity:AddNetwork()
 
-        inst.MiniMapEntity:SetIcon(style..".png")
+        inst.MiniMapEntity:SetIcon(name..".png")
 
         inst:AddTag("structure")
         inst:AddTag("chest")
-        inst.AnimState:SetBank(chests[style].bank)
-        inst.AnimState:SetBuild(chests[style].build)
+
+        inst.AnimState:SetBank(bank)
+        inst.AnimState:SetBuild(build)
         inst.AnimState:PlayAnimation("closed")
 
         MakeSnowCoveredPristine(inst)
@@ -132,83 +96,79 @@ local function chest(style, indestructible, custom_postinit)
         inst.components.container.onopenfn = onopen
         inst.components.container.onclosefn = onclose
 
-		if not indestructible then
-			inst:AddComponent("lootdropper")
-			inst:AddComponent("workable")
-			inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
-			inst.components.workable:SetWorkLeft(2)
-			inst.components.workable:SetOnFinishCallback(onhammered)
-			inst.components.workable:SetOnWorkCallback(onhit) 
-		end
-		
-        AddHauntableDropItemOrWork(inst)
+        if not indestructible then
+            inst:AddComponent("lootdropper")
+            inst:AddComponent("workable")
+            inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
+            inst.components.workable:SetWorkLeft(2)
+            inst.components.workable:SetOnFinishCallback(onhammered)
+            inst.components.workable:SetOnWorkCallback(onhit)
+
+            MakeSmallBurnable(inst, nil, nil, true)
+            MakeMediumPropagator(inst)
+        end
+
+        inst:AddComponent("hauntable")
+        inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
 
         inst:ListenForEvent("onbuilt", onbuilt)
-        MakeSnowCovered(inst)   
+        MakeSnowCovered(inst)
 
-		if not indestructible then
-			MakeSmallBurnable(inst, nil, nil, true)
-			MakeMediumPropagator(inst)
-		end
-		
         inst.OnSave = onsave 
         inst.OnLoad = onload
 
-		if custom_postinit ~= nil then
-			custom_postinit(inst)
-		end
+        if custom_postinit ~= nil then
+            custom_postinit(inst)
+        end
 
         return inst
     end
+
+    return Prefab(name, fn, assets, prefabs)
 end
 
 local function pandora_custom_postinit(inst)
-	local function OnResetRuins()
-		local was_open = inst.components.container:IsOpen()
+    inst:ListenForEvent("resetruins", function()
+        local was_open = inst.components.container:IsOpen()
 
-		if inst.components.scenariorunner == nil then
-			inst.components.container:Close()
-			inst.components.container:DropEverythingWithTag("irreplaceable")
-			inst.components.container:DestroyContents()
+        if inst.components.scenariorunner == nil then
+            inst.components.container:Close()
+            inst.components.container:DropEverythingWithTag("irreplaceable")
+            inst.components.container:DestroyContents()
 
-			inst:AddComponent("scenariorunner")
-			inst.components.scenariorunner:SetScript("chest_labyrinth")
-		    inst.components.scenariorunner:Run()
+            inst:AddComponent("scenariorunner")
+            inst.components.scenariorunner:SetScript("chest_labyrinth")
+            inst.components.scenariorunner:Run()
+        end
 
-		end
+        if not inst:IsAsleep() then
+            if not was_open then
+                inst.AnimState:PlayAnimation("hit")
+                inst.AnimState:PushAnimation("closed", false)
+                inst.SoundEmitter:PlaySound("dontstarve/common/together/chest_retrap")
+            end
 
-		if not inst:IsAsleep() then
-			if not was_open then
-				inst.AnimState:PlayAnimation("hit")
-				inst.AnimState:PushAnimation("closed", false)
-				inst.SoundEmitter:PlaySound("dontstarve/common/together/chest_retrap")
-			end
-		
-			SpawnPrefab("pandorachest_reset").Transform:SetPosition(inst.Transform:GetWorldPosition())
-		end
-	end
-	
-	inst:ListenForEvent("resetruins", OnResetRuins, TheWorld)
+            SpawnPrefab("pandorachest_reset").Transform:SetPosition(inst.Transform:GetWorldPosition())
+        end
+    end, TheWorld)
 end
 
 local function minotuar_custom_postinit(inst)
-	inst:ListenForEvent("resetruins", 
-		function() 
-			inst.components.container:Close()
-			inst.components.container:DropEverything()
+    inst:ListenForEvent("resetruins", function()
+        inst.components.container:Close()
+        inst.components.container:DropEverything()
 
-			if not inst:IsAsleep() then
-				local fx = SpawnPrefab("collapse_small")
-				fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
-				fx:SetMaterial("wood")
-			end
-			
-			inst:Remove()
-		end, TheWorld)
+        if not inst:IsAsleep() then
+            local fx = SpawnPrefab("collapse_small")
+            fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+            fx:SetMaterial("wood")
+        end
+
+        inst:Remove()
+    end, TheWorld)
 end
 
-return Prefab("treasurechest", chest("treasure_chest"), assets, prefabs),
+return MakeChest("treasurechest", "chest", "treasure_chest", false, nil, { "collapse_small" }),
     MakePlacer("treasurechest_placer", "chest", "treasure_chest", "closed"),
-    Prefab("pandoraschest", chest("pandoras_chest", true, pandora_custom_postinit), assets, prefabs),
-    Prefab("skullchest", chest("skull_chest"), assets, prefabs),
-    Prefab("minotaurchest", chest("minotaur_chest", true, minotuar_custom_postinit), assets, prefabs)
+    MakeChest("pandoraschest", "pandoras_chest", "pandoras_chest", true, pandora_custom_postinit, { "pandorachest_reset" }),
+    MakeChest("minotaurchest", "pandoras_chest_large", "pandoras_chest_large", true, minotuar_custom_postinit, { "collapse_small" })

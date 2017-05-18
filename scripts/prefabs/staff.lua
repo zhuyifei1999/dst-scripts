@@ -602,9 +602,6 @@ local function commonfn(colour, tags, hasskin)
 
     inst.AnimState:SetBank("staffs")
     inst.AnimState:SetBuild("staffs")
-    if hasskin then
-        inst.AnimState:OverrideSymbol("grass", "staffs", "grass")
-    end
     inst.AnimState:PlayAnimation(colour.."staff")
 
     if tags ~= nil then

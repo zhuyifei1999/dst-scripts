@@ -1384,6 +1384,47 @@ local function MakeHat(name)
         return inst
     end
 
+    local function skeleton_onequip(inst, owner)
+        onequip(inst, owner)
+        if owner.components.sanity ~= nil then
+            owner.components.sanity:SetInducedInsanity(inst, true)
+        end
+    end
+
+    local function skeleton_onunequip(inst, owner)
+        onunequip(inst, owner)
+        if owner.components.sanity ~= nil then
+            owner.components.sanity:SetInducedInsanity(inst, false)
+        end
+    end
+
+    local function skeleton_custom_init(inst)
+        --waterproofer (from waterproofer component) added to pristine state for optimization
+        inst:AddTag("waterproofer")
+
+        inst:AddTag("shadowdominance")
+    end
+
+    local function skeleton()
+        local inst = simple(skeleton_custom_init)
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst.components.equippable.dapperness = TUNING.CRAZINESS_MED
+        inst.components.equippable:SetOnEquip(skeleton_onequip)
+        inst.components.equippable:SetOnUnequip(skeleton_onunequip)
+
+        inst:AddComponent("armor")
+        inst.components.armor:InitCondition(TUNING.ARMOR_SKELETONHAT, TUNING.ARMOR_SKELETONHAT_ABSORPTION)
+
+        inst:AddComponent("waterproofer")
+        inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
+
+        return inst
+    end
+
     local fn = nil
     local assets = { Asset("ANIM", "anim/"..fname..".zip") }
     local prefabs = nil
@@ -1452,6 +1493,8 @@ local function MakeHat(name)
         fn = desert
     elseif name == "goggles" then
         fn = goggles
+    elseif name == "skeleton" then
+        fn = skeleton
     end
 
     return Prefab(prefabname, fn or default, assets, prefabs)
@@ -1513,4 +1556,5 @@ return  MakeHat("straw"),
         MakeHat("dragontail"),
         MakeHat("desert"),
         MakeHat("goggles"),
+        MakeHat("skeleton"),
         Prefab("minerhatlight", minerhatlightfn)

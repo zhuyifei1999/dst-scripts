@@ -41,6 +41,7 @@ local prefabs =
     "ruins_rubble_table",
     "ruins_rubble_chair",
     "ruins_rubble_vase",
+    "rubble",
     "lichen",
     "cutlichen",
     "rook_nightmare",
@@ -81,6 +82,7 @@ local prefabs =
     "atrium_overgrowth",
     "cave_hole",
     "chessjunk",
+    "pandoraschest",
     "sacred_chest",
 }
 

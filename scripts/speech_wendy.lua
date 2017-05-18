@@ -780,8 +780,6 @@ return {
 		MINOTAUR = "He must be lonely, trapped in such a small cage.",	--Monster in labyrinth
 		SPIDER_DROPPER = "The darkness has drained the color from their fur.",	--White spider that comes from the roof
 		NIGHTMARELIGHT = "It pulls power from beneath.",	--Lights that activate during nightmare.
-		RELIC = "A vision of the past.",	--Fixed relic
-		RUINS_RUBBLE = "A vision of the past. Broken.",	--Broken relic
 		MULTITOOL_AXE_PICKAXE = "An item with multiple uses.",	--Works as axe and pickaxe
 		GREENGEM = "The flaws are its most beautiful features.",
 		ORANGESTAFF = "With each use the wielder dies and is again reborn.",	--Teleports player.
@@ -877,6 +875,7 @@ return {
             OFF = "Oh look... A mushroom...",
             BURNT = "Life goes on.",
         },
+        SLEEPBOMB = "Sickly spores bring such sweet slumber.",
         MUSHROOMBOMB = "Death in mushroom form.",
         SHROOM_SKIN = "A reminder of the death we wrought.",
         TOADSTOOL_CAP =
@@ -1167,6 +1166,10 @@ return {
         CHESSPIECE_FORMAL = "Alas, the king is but a figurehead, at best.",
         CHESSPIECE_HORNUCOPIA = "A cold mockery.",
         CHESSPIECE_PIPE = "A bubble, frozen in time, can never pop.",
+        CHESSPIECE_DEERCLOPS = "What terrible beast.",
+        CHESSPIECE_BEARGER = "Ashes to ashes, bust to bust. Oh.",
+        CHESSPIECE_MOOSEGOOSE = "Such expression in her eyes.",
+        CHESSPIECE_DRAGONFLY = "She now lies, cold as stone.",
         CHESSJUNK1 = "Cold, dead artificial life.",
         CHESSJUNK2 = "Cold, dead artificial life.",
         CHESSJUNK3 = "Cold, dead artificial life.",
@@ -1601,11 +1604,7 @@ return {
 			GENERIC = "It's just a bunch of reeds.",
 			PICKED = "They have already been torn away.",
 		},
-        RELIC = 
-        {
-            GENERIC = "A leftover of an ancient world.",
-            BROKEN = "Broken bits of stone.",
-        },
+        RELIC = "A leftover of an ancient world.",
         RUBBLE = "Broken bits of stone.",
         RUINS_RUBBLE = "A pile of broken dreams.",
 		RESURRECTIONSTONE = "A futile ward.",

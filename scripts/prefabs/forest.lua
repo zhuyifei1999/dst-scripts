@@ -113,7 +113,6 @@ local prefabs =
     "shadowwatcher",
     "shadowhand",
     "stagehand",
-    "rubble",
     "tumbleweedspawner",
     "meteorspawner",
     "dragonfly_spawner",
@@ -187,13 +186,12 @@ local houndspawn =
 local function common_postinit(inst)
     --Add waves
     inst.entity:AddWaveComponent()
-    inst.WaveComponent:SetRegionSize(40, 20)
-    inst.WaveComponent:SetRegionNumWaves(8)
+    inst.WaveComponent:SetWaveParams(13.5, 2.5)						-- wave texture u repeat, forward distance between waves
+    inst.WaveComponent:SetWaveSize(80, 3.5)							-- wave mesh width and height
     inst.WaveComponent:SetWaveTexture("images/wave.tex")
     --See source\game\components\WaveRegion.h
     inst.WaveComponent:SetWaveEffect("shaders/waves.ksh")
     --inst.WaveComponent:SetWaveEffect("shaders/texture.ksh")
-    inst.WaveComponent:SetWaveSize(2048, 512)
 
     --Initialize lua components
     inst:AddComponent("ambientlighting")

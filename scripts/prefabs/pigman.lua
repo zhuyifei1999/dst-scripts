@@ -211,7 +211,6 @@ local function SetNormalPig(inst)
     inst:SetStateGraph("SGpig")
     inst.AnimState:SetBuild(inst.build)
 
-    inst.components.werebeast:SetOnNormalFn(SetNormalPig)
     inst.components.sleeper:SetResistance(2)
 
     inst.components.combat:SetDefaultDamage(TUNING.PIG_DAMAGE)
@@ -310,7 +309,6 @@ local function SetGuardPig(inst)
     inst:SetStateGraph("SGpig")
     inst.AnimState:SetBuild(inst.build)
 
-    inst.components.werebeast:SetOnNormalFn(SetGuardPig)
     inst.components.sleeper:SetResistance(3)
 
     inst.components.health:SetMaxHealth(TUNING.PIG_GUARD_HEALTH)
@@ -613,6 +611,7 @@ local function normal()
 
     inst.build = builds[math.random(#builds)]
     inst.AnimState:SetBuild(inst.build)
+    inst.components.werebeast:SetOnNormalFn(SetNormalPig)
     SetNormalPig(inst)
     return inst
 end
@@ -626,6 +625,7 @@ local function guard()
 
     inst.build = guardbuilds[math.random(#guardbuilds)]
     inst.AnimState:SetBuild(inst.build)
+    inst.components.werebeast:SetOnNormalFn(SetGuardPig)
     SetGuardPig(inst)
     return inst
 end

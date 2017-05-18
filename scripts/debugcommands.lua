@@ -161,7 +161,12 @@ end
 ------------ skins functions --------------------
 ---------------------------------------------------
 
-local TEST_ITEM_NAME = "feet_bootie_black_scribble"
+local TEST_ITEM_NAME = "backpack_buckle_grey_pewter"
+function d_test_thank_you(param)
+	local ThankYouPopup = require "screens/thankyoupopup"
+	local SkinGifts = require("skin_gifts")
+	TheFrontEnd:PushScreen(ThankYouPopup({{ item = param or TEST_ITEM_NAME, item_id = 0, gifttype = SkinGifts.types[param or TEST_ITEM_NAME] or "DEFAULT" }}))
+end
 function d_test_skins_popup(param)
 	local SkinsItemPopUp = require "screens/skinsitempopup"
 	TheFrontEnd:PushScreen( SkinsItemPopUp(param or TEST_ITEM_NAME, "Peter", {1.0, 0.2, 0.6, 1.0}) )

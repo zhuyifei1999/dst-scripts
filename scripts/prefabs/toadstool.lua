@@ -8,10 +8,29 @@ local assets =
     Asset("ANIM", "anim/toadstool_upg_build.zip"),
 }
 
+local assets_dark =
+{
+    Asset("ANIM", "anim/toadstool_basic.zip"),
+    Asset("ANIM", "anim/toadstool_actions.zip"),
+    Asset("ANIM", "anim/toadstool_dark_build.zip"),
+    Asset("ANIM", "anim/toadstool_dark_upg_build.zip"),
+}
+
 local prefabs =
 {
     "mushroomsprout",
     "mushroombomb_projectile",
+    "mushroom_light_blueprint",
+}
+
+local prefabs_dark =
+{
+    "mushroomsprout_dark",
+    "mushroombomb_dark_projectile",
+    "sleepbomb_blueprint",
+}
+
+for i, v in ipairs({
     "sporebomb",
 
     --loot
@@ -24,26 +43,41 @@ local prefabs =
     "red_mushroomhat_blueprint",
     "green_mushroomhat_blueprint",
     "blue_mushroomhat_blueprint",
-    "mushroom_light_blueprint",
     "mushroom_light2_blueprint",
     MUSHTREE_SPORE_RED,
     MUSHTREE_SPORE_GREEN,
     MUSHTREE_SPORE_BLUE,
-}
+}) do
+    table.insert(prefabs, v)
+    table.insert(prefabs_dark, v)
+end
+
+local function AddSporeLoot(inst)
+    -- 2-3 spores
+    local spores = PickSomeWithDups(3, { MUSHTREE_SPORE_RED, MUSHTREE_SPORE_GREEN, MUSHTREE_SPORE_BLUE })
+    inst.components.lootdropper:AddChanceLoot(spores[1], 1)
+    inst.components.lootdropper:AddChanceLoot(spores[2], 1)
+    inst.components.lootdropper:AddChanceLoot(spores[3], .5)
+end
 
 local function AddSpecialLoot(inst)
     -- one hat
-    local hat = GetRandomItem({ "red_mushroomhat_blueprint", "green_mushroomhat_blueprint", "blue_mushroomhat_blueprint" })
-    inst.components.lootdropper:AddChanceLoot(hat, 1.0)
+    local hats = { "red_mushroomhat_blueprint", "green_mushroomhat_blueprint", "blue_mushroomhat_blueprint" }
+    inst.components.lootdropper:AddChanceLoot(hats[math.random(#hats)], 1)
 
     -- one mushroom light
-    inst.components.lootdropper:AddChanceLoot(math.random() < 0.33 and "mushroom_light2_blueprint" or "mushroom_light_blueprint", 1.0)
+    inst.components.lootdropper:AddChanceLoot(math.random() < .33 and "mushroom_light2_blueprint" or "mushroom_light_blueprint", 1)
 
-    -- 2-3 spores
-    local spores = PickSomeWithDups(3, { MUSHTREE_SPORE_RED, MUSHTREE_SPORE_GREEN, MUSHTREE_SPORE_BLUE })
-    inst.components.lootdropper:AddChanceLoot(spores[1], 1.0)
-    inst.components.lootdropper:AddChanceLoot(spores[2], 1.0)
-    inst.components.lootdropper:AddChanceLoot(spores[3], 0.5)
+    AddSporeLoot(inst)
+end
+
+local function AddSpecialLootDark(inst)
+    -- two hats
+    local hats = { "red_mushroomhat_blueprint", "green_mushroomhat_blueprint", "blue_mushroomhat_blueprint" }
+    inst.components.lootdropper:AddChanceLoot(table.remove(hats, math.random(#hats)), 1)
+    inst.components.lootdropper:AddChanceLoot(table.remove(hats, math.random(#hats)), 1)
+
+    AddSporeLoot(inst)
 end
 
 SetSharedLootTable('toadstool',
@@ -68,6 +102,34 @@ SetSharedLootTable('toadstool',
     {"green_cap",     1.00},
     {"green_cap",     0.33},
     {"green_cap",     0.33},
+})
+
+SetSharedLootTable('toadstool_dark',
+{
+    {"froglegs",      1.00},
+    {"meat",          1.00},
+    {"meat",          1.00},
+    {"meat",          1.00},
+    {"meat",          0.50},
+    {"meat",          0.25},
+
+    {"shroom_skin",   1.00},
+    {"shroom_skin",   1.00},
+
+    {"red_cap",       1.00},
+    {"red_cap",       0.33},
+    {"red_cap",       0.33},
+
+    {"blue_cap",      1.00},
+    {"blue_cap",      0.33},
+    {"blue_cap",      0.33},
+
+    {"green_cap",     1.00},
+    {"green_cap",     0.33},
+    {"green_cap",     0.33},
+
+    {"mushroom_light2_blueprint", 1.00},
+    {"sleepbomb_blueprint", 1.00},
 })
 
 --------------------------------------------------------------------------
@@ -222,7 +284,7 @@ end
 
 local function SpawnMushroomBombProjectile(inst, targets)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local projectile = SpawnPrefab("mushroombomb_projectile")
+    local projectile = SpawnPrefab(inst.mushroombomb_prefab)
     projectile.Transform:SetPosition(x, y, z)
     projectile.components.entitytracker:TrackEntity("toadstool", inst)
 
@@ -303,7 +365,7 @@ local function DoMushroomSprout(inst, angles)
         if offset ~= nil then
             pt.x = pt.x + offset.x
             pt.z = pt.z + offset.z
-            if #TheSim:FindEntities(pt.x, 0, pt.z, min_spacing, nil, { "_inventoryitem", "playerskeleton", "flower", "DIG_workable", "NOBLOCK", "FX", "INLIMBO", "DECOR" }) <= 0 then
+            if #TheSim:FindEntities(pt.x, 0, pt.z, min_spacing, nil, { "_inventoryitem", "playerskeleton", "quickpick", "DIG_workable", "NOBLOCK", "FX", "INLIMBO", "DECOR" }) <= 0 then
                 --destroy skeletons and diggables
                 for i, v in ipairs(TheSim:FindEntities(pt.x, 0, pt.z, 1.2, nil, nil, { "playerskeleton", "DIG_workable" })) do
                     v.components.workable:Destroy(inst)
@@ -312,16 +374,21 @@ local function DoMushroomSprout(inst, angles)
                 local totoss = TheSim:FindEntities(pt.x, 0, pt.z, 1, { "_inventoryitem" }, { "locomotor", "INLIMBO" })
 
                 --toss flowers out of the way
-                for i, v in ipairs(TheSim:FindEntities(pt.x, 0, pt.z, 1, { "flower", "pickable" })) do
-                    local loot = v.components.pickable.product ~= nil and SpawnPrefab(v.components.pickable.product) or nil
-                    if loot ~= nil then
-                        loot.Transform:SetPosition(v.Transform:GetWorldPosition())
-                        table.insert(totoss, loot)
+                for i, v in ipairs(TheSim:FindEntities(pt.x, 0, pt.z, 1, { "quickpick", "pickable" }, { "intense" })) do
+                    local num = v.components.pickable.numtoharvest or 1
+                    local product = v.components.pickable.product
+                    local x1, y1, z1 = v.Transform:GetWorldPosition()
+                    v.components.pickable:Pick(inst) -- only calling this to trigger callbacks on the object
+                    if product ~= nil and num > 0 then
+                        for i = 1, num do
+                            local loot = SpawnPrefab(product)
+                            loot.Transform:SetPosition(x1, 0, z1)
+                            table.insert(totoss, loot)
+                        end
                     end
-                    v:Remove()
                 end
 
-                local ent = SpawnPrefab("mushroomsprout")
+                local ent = SpawnPrefab(inst.mushroomsprout_prefab)
                 ent.Transform:SetPosition(pt:Get())
                 ent:PushEvent("linktoadstool", inst)
 
@@ -358,8 +425,13 @@ local function UpdateLevel(inst)
         inst.level = level
 
         inst.components.locomotor.walkspeed = TUNING.TOADSTOOL_SPEED_LVL[level]
-        inst.components.health:SetAbsorptionAmount(TUNING.TOADSTOOL_ABSORPTION_LVL[level])
-        inst.components.combat:SetDefaultDamage(TUNING.TOADSTOOL_DAMAGE_LVL[level])
+        if inst.dark then
+            inst.components.health:SetAbsorptionAmount(TUNING.TOADSTOOL_DARK_ABSORPTION_LVL[level])
+            inst.components.combat:SetDefaultDamage(TUNING.TOADSTOOL_DARK_DAMAGE_LVL[level])
+        else
+            inst.components.health:SetAbsorptionAmount(TUNING.TOADSTOOL_ABSORPTION_LVL[level])
+            inst.components.combat:SetDefaultDamage(TUNING.TOADSTOOL_DAMAGE_LVL[level])
+        end
         inst.components.combat:SetAttackPeriod(TUNING.TOADSTOOL_ATTACK_PERIOD_LVL[level])
         inst.hit_recovery = TUNING.TOADSTOOL_HIT_RECOVERY_LVL[level]
         inst.mushroombomb_variance = TUNING.TOADSTOOL_MUSHROOMBOMB_VAR_LVL[level]
@@ -368,7 +440,7 @@ local function UpdateLevel(inst)
         if level < 1 then
             inst.AnimState:ClearOverrideSymbol("toad_mushroom")
         else
-            inst.AnimState:OverrideSymbol("toad_mushroom", "toadstool_upg_build", "toad_mushroom"..tostring(level))
+            inst.AnimState:OverrideSymbol("toad_mushroom", inst.dark and "toadstool_dark_upg_build" or "toadstool_upg_build", "toad_mushroom"..tostring(level))
         end
     end
 
@@ -587,7 +659,13 @@ end
 
 --------------------------------------------------------------------------
 
+local PHASE2_HEALTH = .7
+local PHASE3_HEALTH = .4
+local PHASE4_HEALTH = .2 --Only triggered for dark version
+
 local function SetPhaseLevel(inst, phase)
+    inst.pound_rnd = phase > 3 and inst.dark
+    phase = math.min(3, phase)
     inst.sporebomb_targets = TUNING.TOADSTOOL_SPOREBOMB_TARGETS_PHASE[phase]
     inst.sporebomb_cd = TUNING.TOADSTOOL_SPOREBOMB_CD_PHASE[phase]
     inst.mushroombomb_count = TUNING.TOADSTOOL_MUSHROOMBOMB_COUNT_PHASE[phase]
@@ -603,9 +681,6 @@ local function DropShroomSkin(inst)
     local player--[[, rangesq]] = inst:GetNearestPlayer()
     LaunchAt(SpawnPrefab("shroom_skin"), inst, player, 1, 4, 2)
 end
-
-local PHASE2_HEALTH = .7
-local PHASE3_HEALTH = .4
 
 local function EnterPhase2Trigger(inst)
     SetPhaseLevel(inst, 2)
@@ -623,6 +698,22 @@ local function EnterPhase3Trigger(inst)
     inst:PushEvent("roar")
 end
 
+local function EnterPhase3TriggerDark(inst)
+    SetPhaseLevel(inst, 3)
+    if inst.components.health:GetPercent() > PHASE2_HEALTH then
+        DropShroomSkin(inst)
+    end
+    inst:PushEvent("roar")
+end
+
+local function EnterPhase4TriggerDark(inst)
+    SetPhaseLevel(inst, 4)
+    if not inst.components.health:IsDead() then
+        DropShroomSkin(inst)
+    end
+    inst:PushEvent("roar")
+end
+
 local function OnSave(inst, data)
     data.engaged = inst.engaged or nil
     data.poundspeed = inst.pound_speed > 0 and math.floor(inst.pound_speed) or nil
@@ -634,7 +725,8 @@ local function OnLoad(inst, data)
         inst,
         (healthpct > PHASE2_HEALTH and 1) or
         (healthpct > PHASE3_HEALTH and 2) or
-        3
+        (not inst.dark or healthpct > PHASE4_HEALTH and 3) or
+        4
     )
 
     if data ~= nil then
@@ -702,7 +794,7 @@ end
 
 --------------------------------------------------------------------------
 
-local function fn()
+local function common_fn(build)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -725,7 +817,7 @@ local function fn()
     MakeGiantCharacterPhysics(inst, 1000, 2.5)
 
     inst.AnimState:SetBank("toadstool")
-    inst.AnimState:SetBuild("toadstool_build")
+    inst.AnimState:SetBuild(build)
     inst.AnimState:PlayAnimation("idle", true)
     inst.AnimState:SetLightOverride(.3)
 
@@ -762,8 +854,6 @@ local function fn()
     inst.components.inspectable:RecordViews()
 
     inst:AddComponent("lootdropper")
-    inst.components.lootdropper:SetChanceLootTable("toadstool")
-    AddSpecialLoot(inst)
 
     inst:AddComponent("sleeper")
     inst.components.sleeper:SetResistance(4)
@@ -776,16 +866,12 @@ local function fn()
     inst.components.locomotor.walkspeed = TUNING.TOADSTOOL_SPEED_LVL[0]
 
     inst:AddComponent("health")
-    inst.components.health:SetMaxHealth(TUNING.TOADSTOOL_HEALTH)
-    inst.components.health:SetAbsorptionAmount(TUNING.TOADSTOOL_ABSORPTION_LVL[0])
     inst.components.health.nofadeout = true
 
     inst:AddComponent("healthtrigger")
     inst.components.healthtrigger:AddTrigger(PHASE2_HEALTH, EnterPhase2Trigger)
-    inst.components.healthtrigger:AddTrigger(PHASE3_HEALTH, EnterPhase3Trigger)
 
     inst:AddComponent("combat")
-    inst.components.combat:SetDefaultDamage(TUNING.TOADSTOOL_DAMAGE_LVL[0])
     inst.components.combat:SetAttackPeriod(TUNING.TOADSTOOL_ATTACK_PERIOD_LVL[0])
     inst.components.combat.playerdamagepercent = .5
     inst.components.combat:SetRange(TUNING.TOADSTOOL_ATTACK_RANGE)
@@ -833,6 +919,7 @@ local function fn()
 
     inst.pound_cd = TUNING.TOADSTOOL_POUND_CD
     inst.pound_speed = 0
+    inst.pound_rnd = false
 
     inst.hit_recovery = TUNING.TOADSTOOL_HIT_RECOVERY_LVL[0]
 
@@ -864,4 +951,55 @@ local function fn()
     return inst
 end
 
-return Prefab("toadstool", fn, assets, prefabs)
+local function normal_fn()
+    local inst = common_fn("toadstool_build")
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.components.health:SetMaxHealth(TUNING.TOADSTOOL_HEALTH)
+    inst.components.health:SetAbsorptionAmount(TUNING.TOADSTOOL_ABSORPTION_LVL[0])
+
+    inst.components.healthtrigger:AddTrigger(PHASE3_HEALTH, EnterPhase3Trigger)
+
+    inst.components.combat:SetDefaultDamage(TUNING.TOADSTOOL_DAMAGE_LVL[0])
+
+    inst.components.lootdropper:SetChanceLootTable("toadstool")
+    AddSpecialLoot(inst)
+
+    inst.mushroombomb_prefab = "mushroombomb_projectile"
+    inst.mushroomsprout_prefab = "mushroomsprout"
+
+    return inst
+end
+
+local function dark_fn()
+    local inst = common_fn("toadstool_dark_build")
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.dark = true
+    inst.components.inspectable.nameoverride = "toadstool"
+
+    inst.components.health:SetMaxHealth(TUNING.TOADSTOOL_DARK_HEALTH)
+    inst.components.health:SetAbsorptionAmount(TUNING.TOADSTOOL_DARK_ABSORPTION_LVL[0])
+    inst.components.healthtrigger:AddTrigger(PHASE3_HEALTH, EnterPhase3TriggerDark)
+
+    inst.components.healthtrigger:AddTrigger(PHASE4_HEALTH, EnterPhase4TriggerDark)
+
+    inst.components.combat:SetDefaultDamage(TUNING.TOADSTOOL_DARK_DAMAGE_LVL[0])
+
+    inst.components.lootdropper:SetChanceLootTable("toadstool_dark")
+    AddSpecialLootDark(inst)
+
+    inst.mushroombomb_prefab = "mushroombomb_dark_projectile"
+    inst.mushroomsprout_prefab = "mushroomsprout_dark"
+
+    return inst
+end
+
+return Prefab("toadstool", normal_fn, assets, prefabs),
+    Prefab("toadstool_dark", dark_fn, assets_dark, prefabs_dark)

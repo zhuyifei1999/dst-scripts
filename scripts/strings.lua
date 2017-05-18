@@ -572,6 +572,7 @@ STRINGS =
         BONFIRE = "Bonfire",
         CAMPFIRE = "Campfire",
         CANARY = "Canary",
+        CANARY_POISONED = "Canary (Volatile)",
         CROW = "Crow",
         ROBIN = "Redbird",
         ROBIN_WINTER = "Snowbird",
@@ -659,6 +660,7 @@ STRINGS =
         ARMORGRASS = "Grass Suit",
         ARMORMARBLE = "Marble Suit",
         ARMORSKELETON = "Bone Armor",
+        SKELETONHAT = "Bone Helm",
         ARMOR_SANITY = "Night Armor",
         SPEAR = "Spear",
         TENTACLESPIKE = "Tentacle Spike",
@@ -1043,6 +1045,13 @@ STRINGS =
 
         RELIC = "Relic",
         RUINS_RUBBLE = "Broken Relic",
+        RUBBLE = "Rubble",
+        RUINSRELIC_PLATE = "Replica Relic Plate",
+        RUINSRELIC_BOWL = "Replica Relic Bowl",
+        RUINSRELIC_CHAIR = "Replica Relic Chair",
+        RUINSRELIC_CHIPBOWL = "Replica Relic Dish",
+        RUINSRELIC_VASE = "Replica Relic Vase",
+        RUINSRELIC_TABLE = "Replica Relic Table",
         MULTITOOL_AXE_PICKAXE = "Pick/Axe",
         SLURPER_PELT = "Slurper Pelt",
         THULECITE = "Thulecite",
@@ -1296,6 +1305,13 @@ STRINGS =
         MUSHROOMSPROUT = "Sporecap",
         SPORECLOUD = "Spore Cloud",
 
+        TOADSTOOL_DARK = "Misery Toadstool",
+        TOADSTOOL_CAP_DARK = "Misery Toadstool",
+        MUSHROOMBOMB_DARK = "Misery Boomshroom",
+        MUSHROOMSPROUT_DARK = "Misery Sporecap",
+
+        SLEEPBOMB = "Napsack",
+
         BEEQUEEN = "Bee Queen",
         BEEQUEENHIVE = "Honey Patch",
         BEEQUEENHIVEGROWING = "Somewhat Gigantic Beehive",
@@ -1313,6 +1329,14 @@ STRINGS =
         CHESSPIECE_FORMAL = "Kingly Figure",
         CHESSPIECE_HORNUCOPIA = "Carved Hornucopia",
         CHESSPIECE_PIPE = "Bubble Pipe Carving",
+        CHESSPIECE_DEERCLOPS = "Deerclops Figure",
+        CHESSPIECE_BEARGER = "Bearger Figure",
+        CHESSPIECE_MOOSEGOOSE = 
+        {
+            MOOSEGOOSE = "Moose Figure",
+            MOOSEGOOSE_ALT = "Goose Figure",
+        },
+        CHESSPIECE_DRAGONFLY = "Dragonfly Figure",
 
         CHESSPIECE_PAWN_BUILDER = "Pawn Figure",
         CHESSPIECE_ROOK_BUILDER = "Rook Figure",
@@ -1322,6 +1346,10 @@ STRINGS =
         CHESSPIECE_FORMAL_BUILDER = "Kingly Figure",
         CHESSPIECE_HORNUCOPIA_BUILDER = "Carved Hornucopia",
         CHESSPIECE_PIPE_BUILDER = "Bubble Pipe Carving",
+        CHESSPIECE_DEERCLOPS_BUILDER = "Deerclops Figure",
+        CHESSPIECE_BEARGER_BUILDER = "Bearger Figure",
+        CHESSPIECE_MOOSEGOOSE_BUILDER = "Moose/Goose Figure",
+        CHESSPIECE_DRAGONFLY_BUILDER = "Dragonfly Figure",
 
         SHADOW_ROOK = "Shadow Rook",
         SHADOW_KNIGHT = "Shadow Knight",
@@ -1545,6 +1573,13 @@ STRINGS =
         RUINSHAT = "Complete with ancient force field!",
         SPIDEREGGSACK = "Get a little help from your friends.",
 
+        RUINSRELIC_PLATE = "Craft a fancy broken plate.",
+        RUINSRELIC_BOWL = "A distressed bowl.",
+        RUINSRELIC_CHAIR = "A weathered-looking chair.",
+        RUINSRELIC_CHIPBOWL = "Don't double dip.",
+        RUINSRELIC_VASE = "A faux-vintage vase.",
+        RUINSRELIC_TABLE = "Don't put your elbows on it.",
+
         RAINCOAT = "A waterproof coat to keep you dry.",
         RAINHAT = "Soft to the touch, slick to the rain.",
         GRASS_UMBRELLA = "Posh & portable protection.",
@@ -1605,6 +1640,7 @@ STRINGS =
         BLUE_MUSHROOMHAT = "It's like eating all kinds of mushrooms.",
         MUSHROOM_LIGHT2 = "Inspired by the lava lamp sciences.",
         MUSHROOM_LIGHT = "The perfect addition to any mush-Room.",
+        SLEEPBOMB = "A throwable pouch full of sleep.",
 
         CHESSPIECE_PAWN_BUILDER = "It takes a village to raise an army.",
         CHESSPIECE_ROOK_BUILDER = "Next best thing to an actual castle.",
@@ -1614,6 +1650,10 @@ STRINGS =
         CHESSPIECE_FORMAL_BUILDER = "Behind every queen is a dapper king.",
         CHESSPIECE_HORNUCOPIA_BUILDER = "A sculpture for a starving artist.",
         CHESSPIECE_PIPE_BUILDER = "Stick this on your wheel and sculpt it.",
+        CHESSPIECE_DEERCLOPS_BUILDER = "Sculpt yourself an eyeball monster.",
+        CHESSPIECE_BEARGER_BUILDER = "A stone reminder of a grizzly autumn.",
+        CHESSPIECE_MOOSEGOOSE_BUILDER = "Two for the price of one.",
+        CHESSPIECE_DRAGONFLY_BUILDER = "The ultimate trophy for the ultimate kill.",
 
         CRITTER_GLOMLING_BUILDER = "Befriend a bouncy Glomglom.",
         CRITTER_DRAGONLING_BUILDER = "Befriend a noble Broodling.",
@@ -3587,6 +3627,7 @@ STRINGS.UI =
         FRIENDSONLY = "Friends:",
         CLANONLY = "Steam Group:",
         HASPVP = "PvP:",
+        EVENT = "Event:",
         HASPVP_DETAIL = "PvP",
         ISDEDICATED = "Dedicated Server",
         SERVERTYPE = "Server Type:",
@@ -3758,6 +3799,7 @@ STRINGS.UI =
         NO = "No",
         YES = "Yes",
         PVP = "PvP:",
+        EVENT = "Event:",
         GAMEMODE = "Game Mode:",
         MAXPLAYERS = "Players:",
         ONLINEONYTITLE = "Online World",
@@ -3954,18 +3996,20 @@ STRINGS.UI =
     -- Rarity and colour tables are to allow translation of item properties. Keys are the names as returned by the item server.
     RARITY =
     {
-        Common          = "Common", -- a common item (eg t-shirt, plain gloves)
-        Classy          = "Classy", -- an uncommon item (eg dress shoes, checkered trousers)
-        Spiffy          = "Spiffy", -- a rare item (eg Trenchcoat)
-        Distinguished   = "Distinguished", -- a very rare item (eg Tuxedo)
-        Elegant         = "Elegant", -- an extremely rare item (eg rabbit pack, GoH base skins)
-        Timeless        = "Timeless", -- not used (yet)
-        Loyal           = "Loyal", -- a special item that isn't tradeable
+        Common          = "Common",
+        Classy          = "Classy",
+        Spiffy          = "Spiffy",
+        Distinguished   = "Distinguished",
+        Elegant         = "Elegant",
+        Timeless        = "Timeless",
+        Loyal           = "Loyal",
         ProofOfPurchase = "Proof Of Purchase",
-        Reward          = "Reward", -- a set bonus item
+        Reward          = "Reward",
         Event           = "Event",
+        
+        Lustrous        = "Lustrous",
     },
-
+    
     COLOUR =
     {
         Black = "Black",
@@ -5173,6 +5217,7 @@ STRINGS.TAGS =
     --V2C: Don't add beta branch tags here, since they should not be
     --     localized. Add to constants.lua BETA_SERVER_TAGS instead.
     PVP = "pvp",
+    EVENT = "event",
     FRIENDSONLY = "friendsonly",
     CLAN = "group",
     LOCAL = "localonly",

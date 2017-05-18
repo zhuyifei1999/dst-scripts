@@ -60,16 +60,6 @@ local function fn()
     inst:AddComponent("inventoryitem")
 
     MakeHauntableLaunch(inst)
-    AddHauntableCustomReaction(inst, function(inst, haunter)
-        if math.random() <= TUNING.HAUNT_CHANCE_HALF then
-            if inst.components.finiteuses then
-                inst.components.finiteuses:Use(1)
-                inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
-                return true
-            end
-        end
-        return false
-    end, true, false, true)
 
     return inst
 end

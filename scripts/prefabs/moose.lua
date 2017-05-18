@@ -13,6 +13,7 @@ local prefabs =
     "mossling",
     "goose_feather",
     "drumstick",
+    "chesspiece_moosegoose_sketch",
 }
 
 local brain = require("brains/moosebrain")
@@ -34,6 +35,7 @@ SetSharedLootTable( 'moose',
     {'goose_feather',    1.00},
     {'goose_feather',    0.33},
     {'goose_feather',    0.33},
+    {'chesspiece_moosegoose_sketch', 1.00},
 })
 
 local BASE_TAGS = {"structure"}

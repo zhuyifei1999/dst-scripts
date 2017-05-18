@@ -1299,9 +1299,12 @@ function Tune(overrides)
         ARMOR_SANITY_ABSORPTION = .95*multiplayer_armor_absorption_modifier,
         ARMOR_SANITY_DMG_AS_SANITY = 0.10,
 
-        ARMOR_HIVEHAT = wilson_health*9*multiplayer_armor_durability_modifier,
-        ARMOR_HIVEHAT_ABSORPTION = .7*multiplayer_armor_absorption_modifier,
+        ARMOR_HIVEHAT = wilson_health * 9 * multiplayer_armor_durability_modifier,
+        ARMOR_HIVEHAT_ABSORPTION = .7 * multiplayer_armor_absorption_modifier,
         ARMOR_HIVEHAT_SANITY_ABSORPTION = .5,
+
+        ARMOR_SKELETONHAT = wilson_health * 9 * multiplayer_armor_durability_modifier,
+        ARMOR_SKELETONHAT_ABSORPTION = .7 * multiplayer_armor_absorption_modifier,
 
         ARMOR_SKELETON_COOLDOWN = 5,
         ARMOR_SKELETON_FIRST_COOLDOWN = 1,
@@ -1843,9 +1846,27 @@ function Tune(overrides)
         TOADSTOOL_MUSHROOMSPROUT_TICK = 2,
         TOADSTOOL_MUSHROOMSPROUT_DURATION = 15,
         TOADSTOOL_MUSHROOMSPROUT_CD = 45,
+        TOADSTOOL_MUSHROOMSPROUT_CHOPS = 10,
 
         TOADSTOOL_POUND_CD = 20,
         TOADSTOOL_ABILITY_INTRO_CD = 10,
+
+        TOADSTOOL_DARK_HEALTH = 99999,
+        TOADSTOOL_DARK_MUSHROOMSPROUT_CHOPS = 14,
+        TOADSTOOL_DARK_DAMAGE_LVL =
+        {
+            [0] = 150,
+            [1] = 175,
+            [2] = 225,
+            [3] = 300,
+        },
+        TOADSTOOL_DARK_ABSORPTION_LVL =
+        {
+            [0] = 0,
+            [1] = .25,
+            [2] = .5,
+            [3] = .99,
+        },
 
         BEEQUEEN_HEALTH = 22500,
         BEEQUEEN_DAMAGE = 120,

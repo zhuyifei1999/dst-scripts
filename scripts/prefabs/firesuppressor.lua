@@ -17,7 +17,6 @@ local glow_assets =
 local prefabs =
 {
     "snowball",
-    "splash_snow_fx",
     "collapse_small",
     "firesuppressor_glow",
 }

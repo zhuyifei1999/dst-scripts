@@ -3,61 +3,65 @@ local assets =
     Asset("ANIM", "anim/nightmare_timepiece.zip"),
 }
 
-local states =
+local DEFAULT_STATE =
 {
-    calm = {
-        anim = "idle_1",
-        inventory = "nightmare_timepiece",
-    },
-    warn = {
+    anim = "idle_1",
+    inventory = "nightmare_timepiece",
+}
+
+local STATES =
+{
+    calm = DEFAULT_STATE,
+    warn =
+    {
         anim = "idle_2",
         inventory = "nightmare_timepiece_warn",
     },
-    wild = {
+    wild =
+    {
         anim = "idle_3",
         inventory = "nightmare_timepiece_nightmare",
     },
-    dawn = {
-        anim = "idle_1",
-        inventory = "nightmare_timepiece",
-    },
+    dawn = DEFAULT_STATE,
 }
 
-for k,v in pairs(states) do
-    table.insert( assets, Asset("INV_IMAGE", v.inventory) )
+for k, v in pairs(STATES) do
+    if v.inventory ~= "nightmare_timepiece" then
+        table.insert(assets, Asset("INV_IMAGE", v.inventory))
+    end
 end
 
 local function GetStatus(inst)
-    if TheWorld.state.isnightmarewild then
-        local percent = TheWorld.state.nightmaretimeinphase
-        if percent < 0.33 then
-            return "WAXING"
-            --Phase just started.
-        elseif percent >= 0.33 and percent < 0.66 then
-            return "STEADY"
-            --Phase in middle.
-        else
-            return "WANING"
-            --Phase ending soon.
-        end
-    elseif TheWorld.state.isnightmarewarn then
-        return "WARN"
-    elseif TheWorld.state.isnightmarecalm then
-        return "CALM"
-    elseif TheWorld.state.isnightmaredawn then
-        return "DAWN"
-    end
-
-    return "NOMAGIC"
+    return (TheWorld.state.isnightmarewarn and "WARN")
+        or (TheWorld.state.isnightmarecalm and "CALM")
+        or (TheWorld.state.isnightmaredawn and "DAWN")
+        or (not TheWorld.state.isnightmarewild and "NOMAGIC")
+        or (TheWorld.state.nightmaretimeinphase < .33 and "WAXING")
+        or (TheWorld.state.nightmaretimeinphase < .66 and "STEADY")
+        or "WANING"
 end
 
-local function OnPhaseChanged(inst, phase)
-    if states[phase] then
-        inst.AnimState:PlayAnimation(states[phase].anim)
-        inst.components.inventoryitem:ChangeImageName(states[phase].inventory)
-    else
-        inst.AnimState:PlayAnimation(states["calm"].anim)
-        inst.components.inventoryitem:ChangeImageName(states["calm"].inventory)
+local function OnNightmarePhaseChanged(inst, phase)
+    local state = STATES[phase] or DEFAULT_STATE
+    inst.AnimState:PlayAnimation(state.anim)
+    inst.components.inventoryitem:ChangeImageName(state.inventory)
+end
+
+local function toground(inst)
+    if inst._owner ~= nil then
+        inst._owner:RemoveTag("nightmaretracker")
+        inst._owner:RemoveEventCallback("onremove", toground, inst)
+        inst._owner = nil
+    end
+end
+
+local function topocket(inst, owner)
+    owner = owner.components.inventoryitem ~= nil and owner.components.inventoryitem:GetGrandOwner() or owner
+    if owner ~= inst._owner then
+        toground(inst)
+        owner:AddTag("nightmaretracker")
+        owner:ListenForEvent("onremove", toground, inst)
+        inst._owner = owner
     end
 end
 
@@ -87,10 +91,12 @@ local function fn()
 
     MakeHauntableLaunch(inst)
 
-    inst:WatchWorldState("nightmarephase", OnPhaseChanged)
-    inst:DoTaskInTime(0, function()
-        OnPhaseChanged(inst, TheWorld.state.nightmarephase)
-    end)
+    inst:WatchWorldState("nightmarephase", OnNightmarePhaseChanged)
+    OnNightmarePhaseChanged(inst, TheWorld.state.nightmarephase)
+
+    inst._owner = nil
+    inst:ListenForEvent("onputininventory", topocket)
+    inst:ListenForEvent("ondropped", toground)
 
     return inst
 end

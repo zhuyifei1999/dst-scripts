@@ -62,6 +62,7 @@ local fx =
         bank = "waterballoon",
         build = "waterballoon",
         anim = "used",
+        sound = "dontstarve/creatures/pengull/splash",
     },
     {
         name = "spat_splat_fx",
@@ -424,6 +425,7 @@ local fx =
         bank = "splash",
         build = "splash_snow",
         anim = "idle",
+        sound = "dontstarve_DLC001/common/firesupressor_impact",
     },
     {
         name = "icespike_fx_1",
@@ -697,6 +699,13 @@ local fx =
         build = "erode_ash",
         anim = "idle",
         sound = "dontstarve/common/dust_blowaway",
+    },
+    {
+        name = "sleepbomb_burst",
+        bank = "sleepbomb",
+        build = "sleepbomb",
+        anim = "used",
+        sound = "dontstarve/common/together/infection_burst",
     },
 }
 

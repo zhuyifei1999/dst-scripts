@@ -1,72 +1,81 @@
-local function CanToggleWere(self)
-    return self.inst.entity:IsVisible() and
-        TheWorld.state.isfullmoon ~= self:IsInWereState()
+local function DoTransform(inst, self, isfullmoon)
+    self._task = nil
+    if isfullmoon then
+        self:SetWere()
+    else
+        self:SetNormal()
+    end
 end
 
-local function OnToggleWere(self)
-    if CanToggleWere(self) then
-        if TheWorld.state.isfullmoon then
-            self.inst:DoTaskInTime(GetRandomWithVariance(1, 2), function()
-                if TheWorld.state.isfullmoon and CanToggleWere(self) then
-                    self:SetWere()
-                end
-            end)
-        else
-            self.inst:DoTaskInTime(GetRandomWithVariance(1, 2), function()
-                if not TheWorld.state.isfullmoon and CanToggleWere(self) then
-                    self:SetNormal()
-                end
-            end)
-        end
+local function OnIsFullmoon(self, isfullmoon)
+    if self._task ~= nil then
+        self._task:Cancel()
+    end
+    self._task =
+        isfullmoon ~= self:IsInWereState() and
+        not self.inst:IsInLimbo() and
+        self.inst:DoTaskInTime(math.max(0, GetRandomWithVariance(1, 2)), DoTransform, self, isfullmoon) or
+        nil
+end
+
+local function DoToggleWere(inst, self)
+    self._task = nil
+    OnIsFullmoon(self, TheWorld.state.isfullmoon)
+end
+
+local function OnExitLimbo(inst)
+    local self = inst.components.werebeast
+    if self._task ~= nil then
+        self._task:Cancel()
+    end
+    self._task = inst:DoTaskInTime(.2, DoToggleWere, self)
+end
+
+local function OnEnterLimbo(inst)
+    local self = inst.components.werebeast
+    if self._task ~= nil then
+        self._task:Cancel()
+        self._task = nil
     end
 end
 
 local WereBeast = Class(function(self, inst)
     self.inst = inst
+
     self.onsetwerefn = nil
     self.onsetnormalfn = nil
-    self.targettick = nil
-    self.targettime = nil
-    self.weretime = TUNING.SEG_TIME*4
-    
+    self.weretime = TUNING.SEG_TIME * 4
+    self.triggerlimit = nil
     self.triggeramount = nil
-    self.triggerthreshold = nil
-    
-    self:WatchWorldState("isfullmoon", OnToggleWere)
 
-    self.inst:ListenForEvent("exitlimbo", function(inst)
-        inst:DoTaskInTime(0.2, function(inst) OnToggleWere(self) end)
-    end)
+    self._task = nil
+    self._reverttask = nil
+
+    self:WatchWorldState("isfullmoon", OnIsFullmoon)
+    inst:ListenForEvent("exitlimbo", OnExitLimbo)
+    inst:ListenForEvent("enterlimbo", OnEnterLimbo)
 end)
 
-local willTransform = {}
-local function WerebeastUpdate(dt)
-	local tick = TheSim:GetTick()
-	if willTransform[tick] then
-		for k,v in pairs(willTransform[tick]) do
-			if v:IsValid() and v.components.werebeast and v.components.werebeast:IsInWereState() and not v.sg:HasStateTag("transform") then
-				v.components.werebeast:SetNormal()
-				v.components.werebeast.targettime = nil
-				v.components.werebeast.targettick = nil
-			end
-		end
-		willTransform[tick] = nil
-	end	
-end
-
-function WereBeast:GetDebugString()
-    if self.triggerlimit then
-        return string.format("triggers %2.2f / %2.2f", self.triggeramount, self.triggerlimit)
+function WereBeast:OnRemoveFromEntity()
+    if self._task ~= nil then
+        self._task:Cancel()
+        self._task = nil
     end
-    return "no triggers"
+    if self._reverttask ~= nil then
+        self._reverttask:Cancel()
+        self._reverttask = nil
+    end
+    self:StopWatchingWorldState("isfullmoon", OnIsFullmoon)
+    self.inst:RemoveEventCallback("exitlimbo", OnExitLimbo)
+    self.inst:RemoveEventCallback("enterlimbo", OnEnterLimbo)
 end
 
 function WereBeast:SetOnWereFn(fn)
-	self.onsetwerefn = fn
+    self.onsetwerefn = fn
 end
 
 function WereBeast:SetOnNormalFn(fn)
-	self.onsetnormalfn = fn
+    self.onsetnormalfn = fn
 end
 
 function WereBeast:SetTriggerLimit(limit)
@@ -75,67 +84,80 @@ function WereBeast:SetTriggerLimit(limit)
 end
 
 function WereBeast:TriggerDelta(amount)
-    self.triggeramount = math.max(0, self.triggeramount + amount)
-    if self.triggerlimit and self.triggeramount >= self.triggerlimit then
-        self.inst.components.werebeast:SetWere()
+    if self.triggerlimit ~= nil then
+        self.triggeramount = math.max(0, self.triggeramount + amount)
+        if self.triggeramount >= self.triggerlimit then
+            self:SetWere()
+        end
     end
 end
 
 function WereBeast:ResetTriggers()
-    self.triggeramount = 0
+    self.triggeramount = self.triggerlimit ~= nil and 0 or nil
+end
+
+local function OnRevert(inst, self)
+    if self:IsInWereState() and not inst.sg:HasStateTag("transform") then
+        self:SetNormal()
+    end
 end
 
 function WereBeast:SetWere(time)
-	if self.onsetwerefn then
-		self.onsetwerefn(self.inst)
-	end
-    self.inst:PushEvent("transformwere")
-	if self.triggerlimit then
-	    self.triggeramount = 0
-	end
-	local weretime = time or self.weretime
-	self.targettime = GetTime() + weretime
-	self.targettick = GetTickForTime(self.targettime)
-	
-    if not willTransform[self.targettick] then
-		willTransform[self.targettick] = {[self.inst] = self.inst}
-    else
-		willTransform[self.targettick][self.inst] = self.inst
+    if self._task ~= nil then
+        self._task:Cancel()
+        self._task = nil
     end
+    if self.onsetwerefn ~= nil then
+        self.onsetwerefn(self.inst)
+    end
+    self.inst:PushEvent("transformwere")
+    self:ResetTriggers()
+
+    if self._reverttask ~= nil then
+        self._reverttask:Cancel()
+    end
+    self._reverttask = self.inst:DoTaskInTime(time or self.weretime, OnRevert, self)
 end
 
 function WereBeast:SetNormal()
-	if self.onsetnormalfn then
-		self.onsetnormalfn(self.inst)
-	end
+    if self._task ~= nil then
+        self._task:Cancel()
+        self._task = nil
+    end
+    if self.onsetnormalfn ~= nil then
+        self.onsetnormalfn(self.inst)
+    end
     self.inst:PushEvent("transformnormal")
-	if self.triggerlimit then
-	    self.triggeramount = 0
-	end
-	if willTransform[self.targettick] then
-	    willTransform[self.targettick][self.inst] = nil
-	end
-	self.targettime = nil
-	self.targettick = nil
+    self:ResetTriggers()
+
+    if self._reverttask ~= nil then
+        self._reverttask:Cancel()
+        self._reverttask = nil
+    end
 end
 
 function WereBeast:IsInWereState()
-	return self.targettime ~= nil
+    return self._reverttask ~= nil
 end
 
 function WereBeast:OnSave()
-    local time = GetTime()
-    if self.targettime and self.targettime > time then
-        return {time = math.floor(self.targettime - time) }
-    end
-end   
-   
-function WereBeast:OnLoad(data)
-    if data and data.time then
-		self:SetWere(data.time)
+    if self._task ~= nil then
+        return TheWorld.state.isfullmoon and { time = math.floor(self.weretime) } or nil
+    elseif self._reverttask ~= nil then
+        local remaining = math.floor(GetTaskRemaining(self._reverttask))
+        return remaining > 0 and { time = remaining } or nil
     end
 end
 
-RegisterStaticComponentUpdate("werebeast", WerebeastUpdate)
+function WereBeast:OnLoad(data)
+    if data ~= nil and data.time ~= nil then
+        self:SetWere(math.max(0, data.time))
+    end
+end
+
+function WereBeast:GetDebugString()
+    return (self.triggerlimit ~= nil and string.format("triggers: %2.2f/%2.2f", self.triggeramount, self.triggerlimit) or "no triggers")
+        ..(self._reverttask ~= nil and string.format(", were time: %2.2f", GetTaskRemaining(self._reverttask)) or "")
+end
 
 return WereBeast

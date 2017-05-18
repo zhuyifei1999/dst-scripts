@@ -669,6 +669,10 @@ function UpdateServerTagsString()
     if TheNet:GetDefaultPvpSetting() then
         table.insert(tagsTable, STRINGS.TAGS.PVP)
     end
+    
+    if TheNet:GetDefaultEventSetting() then
+		table.insert(tagsTable, STRINGS.TAGS.EVENT)
+	end
 
     if TheNet:GetDefaultFriendsOnlyServer() then
         table.insert(tagsTable, STRINGS.TAGS.FRIENDSONLY)
@@ -737,6 +741,7 @@ function GetDefaultServerData()
     {
         intention = TheNet:GetDefaultServerIntention(),
         pvp = TheNet:GetDefaultPvpSetting(),
+        event = TheNet:GetDefaultEventSetting(),
         game_mode = TheNet:GetDefaultGameMode(),
         online_mode = TheNet:IsOnlineMode(),
         max_players = TheNet:GetDefaultMaxPlayers(),

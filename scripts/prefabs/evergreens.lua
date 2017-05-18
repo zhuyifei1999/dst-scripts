@@ -639,17 +639,21 @@ end
 
 local function OnEntitySleep(inst)
     local doBurnt = inst.components.burnable ~= nil and inst.components.burnable:IsBurning()
-    inst:RemoveComponent("burnable")
-    inst:RemoveComponent("propagator")
-    inst:RemoveComponent("inspectable")
-    if doBurnt then
-        inst:RemoveComponent("growable")
-        --#DISEASE if inst.components.petrifiable ~= nil then
-        inst:RemoveComponent("petrifiable")
-        --#DISEASE elseif inst.components.diseaseable ~= nil then
-        --#DISEASE     inst:RemoveComponent("diseaseable")
-        --#DISEASE end
-        inst:AddTag("burnt")
+    if doBurnt and inst:HasTag("stump") then
+        DefaultBurntFn(inst)
+    else
+        inst:RemoveComponent("burnable")
+        inst:RemoveComponent("propagator")
+        inst:RemoveComponent("inspectable")
+        if doBurnt then
+            inst:RemoveComponent("growable")
+            --#DISEASE if inst.components.petrifiable ~= nil then
+            inst:RemoveComponent("petrifiable")
+            --#DISEASE elseif inst.components.diseaseable ~= nil then
+            --#DISEASE     inst:RemoveComponent("diseaseable")
+            --#DISEASE end
+            inst:AddTag("burnt")
+        end
     end
 end
 

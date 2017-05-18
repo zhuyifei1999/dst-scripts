@@ -136,11 +136,9 @@ function SkinsItemPopUp:SetItemDisplay()
 
 	self.spawn_portal:GetAnimState():OverrideSkinSymbol("SWAP_ICON", GetBuildForItem(item_type), "SWAP_ICON")
 
-	local rarity = GetRarityForItem(item_type)
-
-    self.skin_name:SetColour(SKIN_RARITY_COLORS[rarity])
-    self.rarity_label:SetColour(SKIN_RARITY_COLORS[rarity])
-    self.rarity_label:SetString(rarity .. " Item")
+    self.skin_name:SetColour(GetColorForItem(item_type))
+    self.rarity_label:SetColour(GetColorForItem(item_type))
+    self.rarity_label:SetString(GetModifiedRarityStringForItem(item_type))
 
     self.spawn_portal:GetAnimState():PlayAnimation("skin_loop", true)
 

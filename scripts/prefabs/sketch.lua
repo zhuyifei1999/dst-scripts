@@ -12,6 +12,10 @@ local SKETCHES =
     {item="chesspiece_bishop",      recipe="chesspiece_bishop_builder"},
     {item="chesspiece_muse",        recipe="chesspiece_muse_builder"},
     {item="chesspiece_formal",      recipe="chesspiece_formal_builder"},
+    {item="chesspiece_deerclops",   recipe="chesspiece_deerclops_builder"},
+    {item="chesspiece_bearger",     recipe="chesspiece_bearger_builder"},
+    {item="chesspiece_moosegoose",  recipe="chesspiece_moosegoose_builder"},
+    {item="chesspiece_dragonfly",   recipe="chesspiece_dragonfly_builder"},
 }
 
 local function onload(inst, data)

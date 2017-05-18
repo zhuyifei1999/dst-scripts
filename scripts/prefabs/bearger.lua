@@ -13,6 +13,7 @@ local prefabs =
     "groundpoundring_fx",
     "bearger_fur",
     "furtuft",
+    "chesspiece_bearger_sketch",
     "collapse_small",
 }
 
@@ -29,6 +30,7 @@ SetSharedLootTable( 'bearger',
     {'meat',             1.00},
     {'meat',             1.00},
     {'bearger_fur',      1.00},
+    {'chesspiece_bearger_sketch', 1.00},
 })
 
 local TARGET_DIST = 7.5

@@ -112,4 +112,46 @@ local function fn()
     return inst
 end
 
-return Prefab("reviver_cupid_beat_fx", fn, assets)
+--------------------------------------------------------------------------
+
+local function OnGlowFXReplicated(inst)
+    local parent = inst.entity:GetParent()
+    if parent ~= nil and parent.prefab == "reviver" then
+        parent.highlightchildren = { inst }
+    end
+end
+
+local function glowfn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddNetwork()
+
+    inst.AnimState:SetBank("bloodpump")
+    inst.AnimState:SetBuild("bloodpump")
+    inst.AnimState:OverrideSymbol("bloodpump01", "bloodpump", "bloodpumpglow")
+    inst.AnimState:Hide("Shadow")
+    inst.AnimState:PlayAnimation("idle")
+    inst.AnimState:SetLightOverride(.3)
+    inst.AnimState:SetFinalOffset(1)
+
+    inst:AddTag("FX")
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        inst.OnEntityReplicated = OnGlowFXReplicated
+
+        return inst
+    end
+
+    inst.persists = false
+
+    return inst
+end
+
+--------------------------------------------------------------------------
+
+return Prefab("reviver_cupid_beat_fx", fn, assets),
+    Prefab("reviver_cupid_glow_fx", glowfn)

@@ -519,8 +519,6 @@ return {
 		NIGHTMARELIGHT = "Not exactly my kind of nightlight.",
 		NIGHTSTICK = "Night light, night bright!",
 		GREENGEM = "I'm absolutely green with envy.",
-		RELIC = "Reminds me of home, if I had lived in ancient times.",
-		RUINS_RUBBLE = "We can repair it!",
 		MULTITOOL_AXE_PICKAXE = "Double duty.",
 		ORANGESTAFF = "Teleportation gives us a chance to rest all our feet.",
 		YELLOWAMULET = "Nice and glowy.",
@@ -612,13 +610,14 @@ return {
             OFF = "It still needs to be turned on.",
             BURNT = "Well that's no fun-gus.",
         },
+        SLEEPBOMB = "Throwable nap time!",
         MUSHROOMBOMB = "Explodey fungus!",
         SHROOM_SKIN = "Haha! Yuck!",
         TOADSTOOL_CAP =
         {
             EMPTY = "Do you think we'd fit?",
             INGROUND = "I think it needs help getting out.",
-            GENERIC = "Purple! It's purple!",
+            GENERIC = "Mushroom! It's a mushroom!",
         },
         TOADSTOOL =
         {
@@ -959,6 +958,10 @@ return {
         CHESSPIECE_FORMAL = "Reminds me of grandpa.",
         CHESSPIECE_HORNUCOPIA = "Boy, I wish we could eat it.",
         CHESSPIECE_PIPE = "Bubbles!",
+        CHESSPIECE_DEERCLOPS = "This is a really good sculpture.",
+        CHESSPIECE_BEARGER = "The fur looks so real!",
+        CHESSPIECE_MOOSEGOOSE = "She doesn't look so mean.",
+        CHESSPIECE_DRAGONFLY = "We can practically feel the fire!",
         CHESSJUNK1 = "A mess of chess.",
         CHESSJUNK2 = "A mess of chess.",
         CHESSJUNK3 = "A mess of chess.",
@@ -1528,11 +1531,7 @@ return {
 			GENERIC = "I bet those would be useful.",
 			PICKED = "Only stems remain.",
 		},
-        RELIC = 
-        {
-            GENERIC = "These haven't been used in a while.",
-            BROKEN = "Smashed beyond repair.",
-        },
+        RELIC = "These haven't been used in a while.",
         RUINS_RUBBLE = "It looks broken.",
         RUBBLE = "Rocks from an old city.",
 		RESEARCHLAB = 

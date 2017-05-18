@@ -366,7 +366,7 @@ AddGameDebugKey(KEY_F7, function()
                     print("type", node.type)
                     print("story depth", TheWorld.topology.story_depths[i])
                     print("area", node.area)
-                    print("tags", table.concat(node.tags, ", "))
+                    print("tags", table.concat(node.tags or {}, ", "))
 
                     dumptable(TheWorld.generated.densities[ TheWorld.topology.ids[i] ])
 

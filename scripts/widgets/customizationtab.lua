@@ -336,10 +336,12 @@ function CustomizationTab:UpdateMultilevelUI()
 
 
     local locationid = self:GetLocationStringID(self.currentmultilevel)
-    local locationname = STRINGS.UI.SANDBOXMENU.LOCATION[locationid]
+    local locationname = STRINGS.UI.SANDBOXMENU.LOCATION[locationid] or STRINGS.UI.SANDBOXMENU.LOCATION["UNKNOWN"]
+
     self.presettitle:SetString(string.format(STRINGS.UI.SANDBOXMENU.USEPRESETS_LOCATION, locationname))
 
-    locationname = STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME[locationid]
+    locationname = STRINGS.UI.SANDBOXMENU.LOCATIONTABNAME[locationid] or STRINGS.UI.SANDBOXMENU.LOCATION["UNKNOWN"]
+
     self.removemultilevel:SetText(string.format(STRINGS.UI.SANDBOXMENU.REMOVELEVEL, locationname))
 
     for i, tabbtn in ipairs(self.multileveltabs.tabs) do

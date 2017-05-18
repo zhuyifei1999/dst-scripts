@@ -35,10 +35,7 @@ local DressupPanel = Class(Widget, function(self, owner_screen, profile, playerd
     -- ids can be ignored at least for now.
 
     self.onChanged = onChanged
-
-    local window_y_size = 500    
-    local bg_scale = -.8
-
+  
     self.root = self:AddChild(Widget("Root"))
 	if not TheNet:IsOnlineMode() then
 		self.bg_group = self.root:AddChild(TEMPLATES.CurlyWindow(10, 400, .6, .6, 39, -25))
@@ -65,12 +62,12 @@ local DressupPanel = Class(Widget, function(self, owner_screen, profile, playerd
 		text2:SetHAlign(ANCHOR_MIDDLE)
 		text2:SetColour(unpack(GREY))
 	else
-		self.bg_group = self.root:AddChild(TEMPLATES.CurlyWindow(10, window_y_size, .6, .6, 39, -25))
+		self.bg_group = self.root:AddChild(TEMPLATES.CurlyWindow(10, 520, .6, .6, 39, -25))
 	    --self.dressup.bg_group:SetPosition(RESOLUTION_X - 250, window_y_pos, 0)
 
 		self.dressup_bg = self.bg_group:AddChild(Image("images/serverbrowser.xml", "side_panel.tex"))
-		self.dressup_bg:SetScale(-.66, bg_scale)
-		self.dressup_bg:SetPosition(5, 5)
+		self.dressup_bg:SetScale(-.66, -.82)
+		self.dressup_bg:SetPosition(5, 6)
 
 		self.spinners = self.root:AddChild(Widget("spinners"))
 		self.spinners:SetPosition(-5, 0)
@@ -495,7 +492,7 @@ function DressupPanel:GetSkinOptionsForSlot(slot)
 		default_build = self.currentcharacter
 	end
 
-	local colour = SKIN_RARITY_COLORS["Common"]
+	local colour = DEFAULT_SKIN_COLOR
 	table.insert(skin_options, 
 	{
 		text = STRINGS.SKIN_NAMES["none"], 
@@ -519,8 +516,7 @@ function DressupPanel:GetSkinOptionsForSlot(slot)
 				local item = self.skins_list[which].item
 				if (Prefabs[item] ~= nil and not Prefabs[item].disabled) or (CLOTHING[item] ~= nil and (CLOTHING[item].limited_to_prefab == nil or CLOTHING[item].limited_to_prefab == self.currentcharacter) and not CLOTHING[item].disabled) then --check if this clothing is available for this character and it's not disabled
 					local new_indicator = not self.skins_list[which].timestamp or (self.skins_list[which].timestamp > dressup_timestamp)
-					local rarity = GetRarityForItem(item)
-					local colour = rarity and SKIN_RARITY_COLORS[rarity] or SKIN_RARITY_COLORS["Common"]
+					local colour = GetColorForItem(item)
 					local text_name = GetName(self.skins_list[which].item)
 					local key = IsInList(skin_options_items, item)
 
@@ -571,7 +567,7 @@ function DressupPanel:GetSkinOptionsForSlot(slot)
 					data = nil,
 					build = "random_skin",
 					symbol = "SWAP_ICON",
-					colour = SKIN_RARITY_COLORS["Common"],
+					colour = DEFAULT_SKIN_COLOR,
 					new_indicator = false,
 				})
 	end
@@ -803,7 +799,7 @@ function DressupPanel:GetSkinOptionsForRandom()
 				data = nil,
 				build = "previous_skin",
 				symbol = "SWAP_ICON",
-				colour = SKIN_RARITY_COLORS["Common"],
+				colour = DEFAULT_SKIN_COLOR,
 				new_indicator = false,
 			})
 
@@ -813,7 +809,7 @@ function DressupPanel:GetSkinOptionsForRandom()
 				data = nil,
 				build = "random_skin",
 				symbol = "SWAP_ICON",
-				colour = SKIN_RARITY_COLORS["Common"],
+				colour = DEFAULT_SKIN_COLOR,
 				new_indicator = false,
 			})
 

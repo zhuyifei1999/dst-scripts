@@ -162,7 +162,7 @@ print ("running main.lua\n")
 TheSystemService:SetStalling(true)
 
 VERBOSITY_LEVEL = VERBOSITY.ERROR
-if CONFIGURATION ~= "Production" then
+if CONFIGURATION ~= "PRODUCTION" then
 	VERBOSITY_LEVEL = VERBOSITY.DEBUG
 end
 

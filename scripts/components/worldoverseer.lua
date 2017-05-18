@@ -296,6 +296,7 @@ function WorldOverseer:DumpSessionStats()
                             offline = not TheNet:IsOnlineMode(),
                             intention = TheNet:GetServerIntention(),
                             pvp = TheNet:GetServerPVP(),
+                            event = TheNet:GetServerEvent()
                         }
     local clanid = TheNet:GetServerClanID()
     if clanid ~= "" then

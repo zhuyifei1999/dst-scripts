@@ -126,11 +126,17 @@ local function PlayLegBurstSound(inst)
 end
 
 local function SpawnQueen(inst, should_duplicate)
-    local queen = SpawnPrefab("spiderqueen")
+    local map = TheWorld.Map
     local x, y, z = inst.Transform:GetWorldPosition()
-    local rad = 1.25
-    local angle = math.random(2 * PI)
-    queen.Transform:SetPosition(x + rad * math.cos(angle), 0, z + rad * math.sin(angle))
+    local offs = FindValidPositionByFan(math.random() * 2 * PI, 1.25, 5, function(offset)
+        local x1 = x + offset.x
+        local z1 = z + offset.z
+        return map:IsPassableAtPoint(x1, 0, z1)
+            and not map:IsPointNearHole(Vector3(x1, 0, z1))
+    end)
+
+    local queen = SpawnPrefab("spiderqueen")
+    queen.Transform:SetPosition(x + (offs.x or 0), 0, z + (offs.z or 0))
     queen.sg:GoToState("birth")
 
     if not should_duplicate then

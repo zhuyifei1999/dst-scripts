@@ -428,8 +428,15 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
 
                 self:Disable()
 
+                local is_event_server = self.server_settings_tab:GetEvent()
                 local is_multi_level = SaveGameIndex:IsSlotMultiLevel(self.saveslot)
                 local launchingServerPopup = nil
+
+                if is_event_server then 
+                    ShowLoading()
+                    ShowConnectingToGamePopup()
+                    TheNet:RequestServerAndStartClient(SaveGameIndex:GetSlotSession())
+                end
 
                 if is_multi_level then
                     ShowLoading()
@@ -449,12 +456,12 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
                 end
 
                 -- Note: StartDedicatedServers launches both dedicated and non-dedicated servers... ~gjans
-                if not TheSystemService:StartDedicatedServers(self.saveslot, is_multi_level, cluster_info) then
+                if not is_event_server and not TheSystemService:StartDedicatedServers(self.saveslot, is_multi_level, cluster_info) then
                     if launchingServerPopup ~= nil then
                         launchingServerPopup:SetErrorStartingServers()
                     end
                     self:Enable()
-                elseif not is_multi_level then
+                elseif not is_event_server and not is_multi_level then
                     -- Collect the tags we want and set the tags string now that we have our mods enabled
                     TheNet:SetServerTags(BuildTagsStringHosting(self, worldoptions))
                     DoLoadingPortal(function()

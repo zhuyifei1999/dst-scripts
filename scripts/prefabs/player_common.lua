@@ -849,6 +849,7 @@ local function DoActualRez(inst, source, item)
 
     MakeCharacterPhysics(inst, 75, .5)
 
+    inst.components.health.canheal = true
     inst.components.hunger:Resume()
     inst.components.temperature:SetTemp() --nil param will resume temp
     inst.components.frostybreather:Enable()
@@ -1074,6 +1075,7 @@ local function OnMakePlayerGhost(inst, data)
     inst.components.health:SetCurrentHealth(TUNING.RESURRECT_HEALTH)
     inst.components.health:ForceUpdateHUD(true)
     inst.components.health:SetInvincible(true)
+    inst.components.health.canheal = false
 
     inst.components.sanity:SetPercent(.5, true)
     inst.components.sanity.ignore = true

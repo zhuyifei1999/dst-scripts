@@ -170,9 +170,7 @@ function SkinAnnouncement:SetSkinAnnouncementInfo(user_name, user_colour, skin_n
     self.user_name = user_name
     self:SetMessageText(string.format(STRINGS.UI.NOTIFICATION.NEW_SKIN_ANNOUNCEMENT, user_name))
 
-    local rarity = GetRarityForItem(self.skin_name)
-
-    self:SetSkinTextColour(SKIN_RARITY_COLORS[rarity])
+    self:SetSkinTextColour(GetColorForItem(skin_name))
     self:SetSkinText(STRINGS.SKIN_NAMES[skin_name])
 
     self.lifetime = lifetime or 7

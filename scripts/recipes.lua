@@ -53,9 +53,15 @@ Recipe("pottedfern", {Ingredient("foliage", 5), Ingredient("slurtle_shellpieces"
 Recipe("succulent_potted", {Ingredient("succulent_picked", 5), Ingredient("cutstone", 1)}, RECIPETABS.TOWN, TECH.LOST, "succulent_potted_placer", 0.9)
 Recipe("endtable", {Ingredient("marble", 2), Ingredient("boards", 2), Ingredient("turf_carpetfloor", 2)}, RECIPETABS.TOWN, TECH.LOST, "endtable_placer", 1.5)
 
+Recipe("ruinsrelic_plate", {Ingredient("cutstone", 1)}, RECIPETABS.TOWN, TECH.LOST, "ruinsrelic_plate_placer", 0.5)
+Recipe("ruinsrelic_chipbowl", {Ingredient("cutstone", 1)}, RECIPETABS.TOWN, TECH.LOST, "ruinsrelic_chipbowl_placer", 0.5)
+Recipe("ruinsrelic_bowl", {Ingredient("cutstone", 2)}, RECIPETABS.TOWN, TECH.LOST, "ruinsrelic_bowl_placer", 2)
+Recipe("ruinsrelic_vase", {Ingredient("cutstone", 2)}, RECIPETABS.TOWN, TECH.LOST, "ruinsrelic_vase_placer", 2)
+Recipe("ruinsrelic_chair", {Ingredient("cutstone", 3)}, RECIPETABS.TOWN, TECH.LOST, "ruinsrelic_chair_placer", 2)
+Recipe("ruinsrelic_table", {Ingredient("cutstone", 4)}, RECIPETABS.TOWN, TECH.LOST, "ruinsrelic_table_placer")
+
 Recipe("dragonflychest", {Ingredient("dragon_scales", 1), Ingredient("boards", 4), Ingredient("goldnugget", 10)}, RECIPETABS.TOWN, TECH.SCIENCE_TWO, "dragonflychest_placer", 1.5)
 Recipe("dragonflyfurnace", {Ingredient("dragon_scales", 1), Ingredient("redgem", 2), Ingredient("charcoal", 10)}, RECIPETABS.TOWN, TECH.LOST, "dragonflyfurnace_placer")
-
 
 --FARM
 Recipe("slow_farmplot", {Ingredient("cutgrass", 8),Ingredient("poop", 4),Ingredient("log", 4)}, RECIPETABS.FARM,  TECH.SCIENCE_ONE, "slow_farmplot_placer")
@@ -195,6 +201,7 @@ Recipe("armorgrass", {Ingredient("cutgrass", 10), Ingredient("twigs", 2)}, RECIP
 Recipe("armorwood", {Ingredient("log", 8),Ingredient("rope", 2)}, RECIPETABS.WAR,  TECH.SCIENCE_ONE)
 Recipe("armormarble", {Ingredient("marble", 12),Ingredient("rope", 4)}, RECIPETABS.WAR,  TECH.SCIENCE_TWO)
 Recipe("footballhat", {Ingredient("pigskin", 1), Ingredient("rope", 1)}, RECIPETABS.WAR,  TECH.SCIENCE_TWO)
+Recipe("sleepbomb", {Ingredient("shroom_skin", 1), Ingredient("canary_poisoned", 1)}, RECIPETABS.WAR, TECH.LOST, nil, nil, nil, 4)
 Recipe("blowdart_sleep", {Ingredient("cutreeds", 2),Ingredient("stinger", 1),Ingredient("feather_crow", 1) }, RECIPETABS.WAR,  TECH.SCIENCE_ONE)
 Recipe("blowdart_fire", {Ingredient("cutreeds", 2),Ingredient("charcoal", 1),Ingredient("feather_robin", 1) }, RECIPETABS.WAR,  TECH.SCIENCE_ONE)
 Recipe("blowdart_pipe", {Ingredient("cutreeds", 2),Ingredient("houndstooth", 1),Ingredient("feather_robin_winter", 1) }, RECIPETABS.WAR,  TECH.SCIENCE_ONE)
@@ -291,6 +298,10 @@ Recipe("chesspiece_knight_builder", {Ingredient(TECH_INGREDIENT.SCULPTING, 2), I
 Recipe("chesspiece_bishop_builder", {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("rocks", 2)}, RECIPETABS.SCULPTING, TECH.LOST, nil, nil, true, nil, nil, nil, "chesspiece_bishop.tex")
 Recipe("chesspiece_muse_builder", {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("rocks", 2)}, RECIPETABS.SCULPTING, TECH.LOST, nil, nil, true, nil, nil, nil, "chesspiece_muse.tex")
 Recipe("chesspiece_formal_builder", {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("rocks", 2)}, RECIPETABS.SCULPTING, TECH.LOST, nil, nil, true, nil, nil, nil, "chesspiece_formal.tex")
+Recipe("chesspiece_deerclops_builder", {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("rocks", 2), Ingredient("deerclops_eyeball", 1)}, RECIPETABS.SCULPTING, TECH.LOST, nil, nil, true, nil, nil, nil, "chesspiece_deerclops.tex")
+Recipe("chesspiece_bearger_builder", {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("rocks", 2), Ingredient("bearger_fur", 1)}, RECIPETABS.SCULPTING, TECH.LOST, nil, nil, true, nil, nil, nil, "chesspiece_bearger.tex")
+Recipe("chesspiece_moosegoose_builder", {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("rocks", 2), Ingredient("goose_feather", 5)}, RECIPETABS.SCULPTING, TECH.LOST, nil, nil, true, nil, nil, nil, "chesspiece_moosegoose.tex")
+Recipe("chesspiece_dragonfly_builder", {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("rocks", 2), Ingredient("dragon_scales", 1)}, RECIPETABS.SCULPTING, TECH.LOST, nil, nil, true, nil, nil, nil, "chesspiece_dragonfly.tex")
 
 ----CRITTERS----
 Recipe("critter_kitten_builder", {Ingredient("coontail", 1), Ingredient("fishsticks", 1)}, RECIPETABS.ORPHANAGE, TECH.ORPHANAGE_ONE, nil, nil, true)

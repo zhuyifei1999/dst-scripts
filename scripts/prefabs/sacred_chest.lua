@@ -12,6 +12,38 @@ local prefabs =
 	"statue_transition_2",
 }
 
+local offering_recipe =
+{
+	ruinsrelic_plate_blueprint		= { "nightmare_timepiece", "cutstone", "nightmarefuel", "petals", "berries", "carrot" },
+	ruinsrelic_chipbowl_blueprint	= { "nightmare_timepiece", "cutstone", "nightmarefuel", "carrot", "berries", "petals" },
+	ruinsrelic_bowl_blueprint		= { "nightmare_timepiece", "cutstone", "nightmarefuel", "rabbit", "carrot", "petals" },
+	ruinsrelic_vase_blueprint		= { "nightmare_timepiece", "cutstone", "nightmarefuel", "redgem", "butterfly", "petals" },
+	ruinsrelic_chair_blueprint		= { "nightmare_timepiece", "cutstone", "nightmarefuel", "purplegem", "rabbit", "petals"},
+	ruinsrelic_table_blueprint		= { "nightmare_timepiece", "cutstone", "nightmarefuel", "purplegem", "crow", "rabbit" },
+}
+
+for k, _ in pairs(offering_recipe) do
+	table.insert(prefabs, k)
+end
+
+local function CheckOffering(items)
+	for k, recipe in pairs(offering_recipe) do
+		local valid = true
+		for i, item in ipairs(items) do
+			if recipe[i] ~= item.prefab then
+				valid = false
+				break
+			end
+		end
+		if valid then
+			return k
+		end
+	end
+		
+	return nil
+end
+
+
 local MIN_LOCK_TIME = 2.5
 
 local function UnlockChest(inst, param, doer)
@@ -74,9 +106,7 @@ local function onopen(inst)
     inst.SoundEmitter:PlaySound("dontstarve/wilson/chest_open")
 end 
 
-local function onclose(inst, doer)
-    inst.AnimState:PlayAnimation("close")
-
+local function DoNetworkOffering(inst, doer)
 	if (not TheNet:IsOnlineMode()) or
 		(not inst.components.container:IsFull()) or
 		doer == nil or 
@@ -113,9 +143,68 @@ local function onclose(inst, doer)
 	ReportAction(doer.userid, items, counts, userids, function(param) if inst:IsValid() then UnlockChest(inst, param, doer) end end)
 end
 
+local function DoLocalOffering(inst, doer)
+	if inst.components.container:IsFull() then
+		local rewarditem = CheckOffering(inst.components.container.slots)
+		if rewarditem then
+			LockChest(inst)
+			inst.components.container:DestroyContents()
+			inst.components.container:GiveItem(SpawnPrefab(rewarditem))
+			inst.components.timer:StartTimer("localoffering", MIN_LOCK_TIME)
+			return true
+		end
+	end
+	
+	return false
+end
+
+local function OnLocalOffering(inst)
+	inst.AnimState:PlayAnimation("open") 
+    inst.SoundEmitter:PlaySound("dontstarve/wilson/chest_open")
+    inst.components.timer:StartTimer("localoffering_pst", 0.2)
+end
+
+local function OnLocalOfferingPst(inst)
+	inst.components.container:DropEverything() 
+	inst:DoTaskInTime(0.2, function()
+		inst.AnimState:PlayAnimation("close")
+	    inst.SoundEmitter:PlaySound("dontstarve/wilson/chest_close")
+		inst.components.container.canbeopened = true
+	end)
+end
+
+local function onclose(inst, doer)
+    inst.AnimState:PlayAnimation("close")
+
+	if not DoLocalOffering(inst, doer) then
+		DoNetworkOffering(inst, doer)
+	end
+end
+
+local function OnTimerDone(inst, data)
+	if data ~= nil then
+		if data.name == "localoffering" then
+			OnLocalOffering(inst)
+		elseif data.name == "localoffering_pst" then
+			OnLocalOfferingPst(inst)
+		end
+		
+	end
+end
+
 local function getstatus(inst)
     return (inst.components.container.canbeopened == false and "LOCKED") or
 			nil
+end
+
+local function OnLoadPostPass(inst)
+    if inst.components.timer:TimerExists("localoffering") then
+    	LockChest(inst)
+    elseif inst.components.timer:TimerExists("localoffering_pst") then
+    	LockChest(inst)
+    	inst.components.timer:StopTimer("localoffering_pst")
+    	OnLocalOffering(inst)
+	end
 end
 
 local function fn()
@@ -150,6 +239,11 @@ local function fn()
 		
     inst:AddComponent("hauntable")
     inst.components.hauntable.cooldown = TUNING.HAUNT_COOLDOWN_SMALL
+
+    inst:AddComponent("timer")
+    inst:ListenForEvent("timerdone", OnTimerDone)
+
+	inst.OnLoadPostPass = OnLoadPostPass
 
     return inst
 end

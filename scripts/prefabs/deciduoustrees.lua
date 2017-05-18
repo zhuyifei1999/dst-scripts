@@ -542,7 +542,8 @@ local function chop_down_tree(inst, chopper)
             inst.monster_stop_task:Cancel()
             inst.monster_stop_task = nil
         end
-        inst.monster = false
+        --V2C: monster flag still needed for stump
+        --inst.monster = false
         inst.monster_start_time = nil
         inst.monster_duration = nil
         inst:RemoveComponent("deciduoustreeupdater")
@@ -852,6 +853,10 @@ end
 
 local function OnEntitySleep(inst)
     if inst._wasonfire or (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
+        if inst:HasTag("stump") then
+            DefaultBurntFn(inst)
+            return
+        end
         inst._wasonfire = true
         inst:RemoveComponent("growable")
         inst:RemoveEventCallback("animover", ChangeSizeFn)

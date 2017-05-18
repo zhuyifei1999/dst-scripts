@@ -3824,11 +3824,14 @@ local states =
 
         timeline =
         {
-            TimeEvent(30*FRAMES, function(inst)
-                inst.SoundEmitter:PlaySound("dontstarve/wilson/flute_LP", "flute")
-                inst:PerformBufferedAction()
+            TimeEvent(30 * FRAMES, function(inst)
+                if inst:PerformBufferedAction() then
+                    inst.SoundEmitter:PlaySound("dontstarve/wilson/flute_LP", "flute")
+                else
+                    inst.AnimState:SetTime(94 * FRAMES)
+                end
             end),
-            TimeEvent(85*FRAMES, function(inst)
+            TimeEvent(85 * FRAMES, function(inst)
                 inst.SoundEmitter:KillSound("flute")
             end),
         },
@@ -3867,9 +3870,12 @@ local states =
 
         timeline =
         {
-            TimeEvent(21*FRAMES, function(inst)
-                inst.SoundEmitter:PlaySound("dontstarve/common/horn_beefalo")
-                inst:PerformBufferedAction()
+            TimeEvent(21 * FRAMES, function(inst)
+                if inst:PerformBufferedAction() then
+                    inst.SoundEmitter:PlaySound("dontstarve/common/horn_beefalo")
+                else
+                    inst.AnimState:SetTime(48 * FRAMES)
+                end
             end),
         },
 
@@ -3905,11 +3911,11 @@ local states =
 
         timeline =
         {
-            TimeEvent(15*FRAMES, function(inst)
+            TimeEvent(15 * FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("dontstarve_DLC001/common/glommer_bell")
             end),
 
-            TimeEvent(60*FRAMES, function(inst)
+            TimeEvent(60 * FRAMES, function(inst)
                 inst:PerformBufferedAction()
             end),
         },
