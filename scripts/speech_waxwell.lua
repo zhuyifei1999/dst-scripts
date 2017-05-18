@@ -764,8 +764,6 @@ return {
 		MINOTAUR = "My my, the fuel has changed you.",	--Monster in labyrinth
 		SPIDER_DROPPER = "Creatures in this world evolve at a terrifying rate.",	--White spider that comes from the roof
 		NIGHTMARELIGHT = "The overuse of fuel was their downfall.",	--Lights that activate during nightmare.
-		RELIC = "They were all dead when I got here.",	--Fixed relic
-		RUINS_RUBBLE = "The earthquakes have taken their toll.",	--Broken relic
 		MULTITOOL_AXE_PICKAXE = "The duality of mine.",	--Works as axe and pickaxe
 		GREENGEM = "Only the nightmare fuel will unlock its true potential.",
 		ORANGESTAFF = "It's a focusing tool.",	--Teleports player.
@@ -838,9 +836,9 @@ return {
             OFF = "I suppose we're decorating with fungus now.",
             BURNT = "C'est la vie.",
         },
-        MUSHROOMBOMB = "That blewit's gonna blowit!",
+        SLEEPBOMB = "It appears to be a sleeping bag.",
+        MUSHROOMBOMB = "It's gonna blow!",
         SHROOM_SKIN = "I hope the warts are not contagious.",
-        --a blewit is a kind of purple mushroom it's a pun let me have this -.-'
         TOADSTOOL_CAP =
         {
             EMPTY = "It's a dirt hole.",
@@ -1125,6 +1123,10 @@ return {
         CHESSPIECE_FORMAL = "What a well-dressed figure!",
         CHESSPIECE_HORNUCOPIA = "This seems cruel.",
         CHESSPIECE_PIPE = "Ceci n'est pas une pipe. Pity.",
+        CHESSPIECE_DEERCLOPS = "I don't like winters.",
+        CHESSPIECE_BEARGER = "A brute.",
+        CHESSPIECE_MOOSEGOOSE = "What an imbecilic expression.",
+        CHESSPIECE_DRAGONFLY = "It never stood a chance.",
         CHESSJUNK1 = "There's a reason I never finished that.",
         CHESSJUNK2 = "That one was a jerk.",
         CHESSJUNK3 = "Didn't like that one's face.",
@@ -1591,11 +1593,7 @@ return {
 			GENERIC = "There's wind in them there willows.",
 			PICKED = "No more tubes.",
 		},
-        RELIC = 
-        {
-            GENERIC = "Remnants of an extinct civilization.",
-            BROKEN = "Everything eventually turns to dust.",
-        },
+        RELIC = "Remnants of an extinct civilization.",
         RUINS_RUBBLE = "A broken relic.",
         RUBBLE = "Everything eventually turns to dust.",
 		RESURRECTIONSTONE = "There's a story behind that...",
@@ -1970,34 +1968,34 @@ return {
         KLAUS = "My, what a magnificently horrific creature.",
         KLAUS_SACK = "What dark treasures lie within?",
         WHIP = "Makes me feel like the master again.",
-		WORMHOLE =
-		{
-			GENERIC = "It's worse knowing what the other part looks like.",
-			OPEN = "I assure you that it smells worse than it looks.",
-		},
-		WORMHOLE_LIMITED = "It looks ill.",
-		ACCOMPLISHMENT_SHRINE = "Even They couldn't build something so devious.",		
+        WORMHOLE =
+        {
+            GENERIC = "It's worse knowing what the other part looks like.",
+            OPEN = "I assure you that it smells worse than it looks.",
+        },
+        WORMHOLE_LIMITED = "It looks ill.",
+        ACCOMPLISHMENT_SHRINE = "Even They couldn't build something so devious.",
         REVIVER = "I'm not sure I really want to give this up.",
         SHADOWHEART = "A pulse of malice and betrayal beats within.",
-        ATRIUM_RUBBLE = 
+        ATRIUM_RUBBLE =
         {
-			LINE_1 = "A picture of the city, before the fuel.",
-			LINE_2 = "We all know what happens next.",
-			LINE_3 = "They gained such an enviable power...",
-			LINE_4 = "I know why you led me back here.",
-			LINE_5 = "But it won't work.",
-		},
+            LINE_1 = "A picture of the city, before the fuel.",
+            LINE_2 = "We all know what happens next.",
+            LINE_3 = "They gained such an enviable power...",
+            LINE_4 = "I know why you led me back here.",
+            LINE_5 = "But it won't work.",
+        },
         ATRIUM_STATUE = "There's a dreamlike quality to the material.",
-        ATRIUM_LIGHT = 
+        ATRIUM_LIGHT =
         {
-			ON = "It feeds off the nightmare.",
-			OFF = "No fuel, no power.",
-		},
+            ON = "It feeds off the nightmare.",
+            OFF = "No fuel, no power.",
+        },
         ATRIUM_GATE =
         {
-			ON = "This is a most wretched idea.",
-			OFF = "It lacks a key.",
-			CHARGING = "It is feeding off the dark energy.",
+            ON = "This is a most wretched idea.",
+            OFF = "It lacks a key.",
+            CHARGING = "It is feeding off the dark energy.",
             DESTABILIZING = "Now we've gone and done it.",
             COOLDOWN = "Best not to overuse this power.",
         },
@@ -2015,13 +2013,16 @@ return {
         BLUEMOONEYE = "That reminds me, I must practice my cold glare tonight!",
 
         MULTIPLAYER_PORTAL = "Always did have a flair for the dramatic...",
-		--...Make your jokes...I'll be seeing you soon...
-	},
-	DESCRIBE_GENERIC = "You tell me.",
-	DESCRIBE_TOODARK = "I can't see in the dark!",
-	DESCRIBE_SMOLDERING = "Won't be long before it lights on fire.",
-	EAT_FOOD =
-	{
-		TALLBIRDEGG_CRACKED = "That tasted about as good as you'd expect.",
-	},	
+        --...Make your jokes...I'll be seeing you soon...
+    },
+    DESCRIBE_GENERIC = "You tell me.",
+    DESCRIBE_TOODARK = "I can't see in the dark!",
+    DESCRIBE_SMOLDERING = "Won't be long before it lights on fire.",
+    EAT_FOOD =
+    {
+        TALLBIRDEGG_CRACKED = "That tasted about as good as you'd expect.",
+    },
+
+    ANNOUNCE_TOOMANYBIRDS = "There are plenty of birds here already.",
+    ANNOUNCE_WAYTOOMANYBIRDS = "I must wait before I summon the birds again.",
 }

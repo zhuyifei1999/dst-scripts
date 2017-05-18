@@ -48,6 +48,9 @@ end
 function GroundPounder:DestroyPoints(points, breakobjects, dodamage)
     local getEnts = breakobjects or dodamage
     local map = TheWorld.Map
+    if dodamage then
+        self.inst.components.combat:EnableAreaDamage(false)
+    end
     for k, v in pairs(points) do
         if getEnts then
             local ents = TheSim:FindEntities(v.x, v.y, v.z, 3, nil, self.noTags)
@@ -92,15 +95,22 @@ function GroundPounder:DestroyPoints(points, breakobjects, dodamage)
             SpawnPrefab(self.groundpoundfx).Transform:SetPosition(v.x, 0, v.z)
         end
     end
+    if dodamage then
+        self.inst.components.combat:EnableAreaDamage(true)
+    end
+end
+
+local function OnDestroyPoints(inst, self, points, breakobjects, dodamage)
+    self:DestroyPoints(points, breakobjects, dodamage)
 end
 
 function GroundPounder:GroundPound(pt)
-    local pt = pt or self.inst:GetPosition()
+    pt = pt or self.inst:GetPosition()
     SpawnPrefab(self.groundpoundringfx).Transform:SetPosition(pt:Get())
     local points = self:GetPoints(pt)
     local delay = 0
     for i = 1, self.numRings do
-        self.inst:DoTaskInTime(delay, function() self:DestroyPoints(points[i], i <= self.destructionRings, i <= self.damageRings) end)
+        self.inst:DoTaskInTime(delay, OnDestroyPoints, self, points[i], i <= self.destructionRings, i <= self.damageRings)
         delay = delay + self.ringDelay
     end
 
@@ -110,11 +120,10 @@ function GroundPounder:GroundPound(pt)
 end
 
 function GroundPounder:GroundPound_Offscreen(position)
-    local pt = position or self.inst:GetPosition()
+    self.inst.components.combat:EnableAreaDamage(false)
 
     local breakobjectsRadius = self.initialRadius + (self.destructionRings - 1) * self.radiusStepDistance
     local dodamageRadius = self.initialRadius + (self.damageRings - 1) * self.radiusStepDistance
-
     local breakobjectsRadiusSQ = breakobjectsRadius * breakobjectsRadius
 
     local ents = TheSim:FindEntities(position.x, position.y, position.z, dodamageRadius, nil, self.noTags)
@@ -143,6 +152,8 @@ function GroundPounder:GroundPound_Offscreen(position)
             end
         end
     end
+
+    self.inst.components.combat:EnableAreaDamage(true)
 end
 
 function GroundPounder:GetDebugString()

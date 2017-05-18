@@ -27,6 +27,7 @@ local Combat = Class(function(self, inst)
     self.hitrange = 3
     self.areahitrange = nil
     self.areahitdamagepercent = nil
+    --self.areahitdisabled = nil
     self.defaultdamage = 0
     --
     --use nil for defaults
@@ -103,6 +104,10 @@ function Combat:SetAreaDamage(range, percent)
     end
 end
 
+function Combat:EnableAreaDamage(enable)
+    self.areahitdisabled = enable == false
+end
+
 local function OnBlankOutOver(inst, self)
     self.blanktask = nil
     self.canattack = true
@@ -116,7 +121,6 @@ function Combat:BlankOutAttacks(fortime)
     end
     self.blanktask = self.inst:DoTaskInTime(fortime, OnBlankOutOver, self)
 end
-
 
 function Combat:ShareTarget(target, range, fn, maxnum)
     if maxnum <= 0 then
@@ -780,7 +784,7 @@ function Combat:DoAttack(target_override, weapon, projectile, stimuli, instancem
 
     if not self:CanHitTarget(targ, weapon) then
         self.inst:PushEvent("onmissother", { target = targ, weapon = weapon })
-        if self.areahitrange ~= nil then
+        if self.areahitrange ~= nil and not self.areahitdisabled then
             self:DoAreaAttack(projectile or self.inst, self.areahitrange, weapon, nil, stimuli, { "INLIMBO" })
         end
         return
@@ -833,7 +837,7 @@ function Combat:DoAttack(target_override, weapon, projectile, stimuli, instancem
         weapon.components.weapon:OnAttack(self.inst, targ, projectile)
     end
 
-    if self.areahitrange ~= nil then
+    if self.areahitrange ~= nil and not self.areahitdisabled then
         self:DoAreaAttack(targ, self.areahitrange, weapon, nil, stimuli, { "INLIMBO" })
     end
 

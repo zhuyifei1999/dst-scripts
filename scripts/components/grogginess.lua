@@ -128,6 +128,14 @@ function Grogginess:AddGrogginess(grogginess, knockoutduration)
     end
 end
 
+function Grogginess:ExtendKnockout(knockoutduration)
+    if self:IsKnockedOut() then
+        self.knockoutduration = knockoutduration
+        self.knockouttime = 0
+        self.grog_amount = math.max(self.grog_amount, self.resistance)
+    end
+end
+
 function Grogginess:KnockOut()
     if self.inst.entity:IsVisible() and not (self.inst.components.health ~= nil and self.inst.components.health:IsDead()) then
         self.inst:PushEvent("knockedout")

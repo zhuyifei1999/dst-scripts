@@ -208,12 +208,7 @@ function GiftItemPopUp:RevealItem(idx)
     local name_string = STRINGS.SKIN_NAMES[item_name] or item_name
     self.name:SetTruncatedString(name_string, 500, 35, true)
 
-    local rarity = "Common"
-    if skin_data and skin_data.rarity ~= nil then
-        rarity = skin_data.rarity
-    end
-
-    self.name:SetColour(SKIN_RARITY_COLORS[rarity])
+    self.name:SetColour(GetColorForItem(item_name))
     self.item_name = item_name
 end
 

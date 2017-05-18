@@ -1,3 +1,7 @@
+local function MooseGooseRandomizeName(inst)
+    inst._altname:set(math.random() < .5)
+end
+
 local PIECES =
 {
     {name="pawn",       moonevent=false},
@@ -8,6 +12,22 @@ local PIECES =
     {name="formal",     moonevent=false},
     {name="hornucopia", moonevent=false},
     {name="pipe",       moonevent=false},
+
+    {name="deerclops",  moonevent=false},
+    {name="bearger",    moonevent=false},
+    {name="moosegoose", moonevent=false,
+        common_postinit = function(inst)
+            inst._altname = net_bool(inst.GUID, "chesspiece_moosegoose._altname")
+            inst.displaynamefn = function(inst)
+                return inst._altname:value() and STRINGS.NAMES[string.upper(inst.prefab).."_ALT"] or nil
+            end
+        end,
+        master_postinit = function(inst)
+            inst:DoPeriodicTask(5, MooseGooseRandomizeName)
+            MooseGooseRandomizeName(inst)
+        end,
+    },
+    {name="dragonfly",  moonevent=false},
 } 
 
 local MOON_EVENT_RADIUS = 12
@@ -191,6 +211,10 @@ local function makepiece(pieceid, materialid)
 
         inst:SetPrefabName("chesspiece_"..PIECES[pieceid].name)
 
+        if PIECES[pieceid].common_postinit ~= nil then
+            PIECES[pieceid].common_postinit(inst)
+        end
+
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
@@ -226,19 +250,23 @@ local function makepiece(pieceid, materialid)
         inst.OnLoad = onload
         inst.OnSave = onsave
 
-		if not TheWorld:HasTag("cave") then
-			if PIECES[pieceid].moonevent then
-				inst.OnEntityWake = CheckMorph
-				inst.OnEntitySleep = CheckMorph
-				inst:WatchWorldState("isnewmoon", CheckMorph)
-			end
+        if not TheWorld:HasTag("cave") then
+            if PIECES[pieceid].moonevent then
+                inst.OnEntityWake = CheckMorph
+                inst.OnEntitySleep = CheckMorph
+                inst:WatchWorldState("isnewmoon", CheckMorph)
+            end
 
-			inst:ListenForEvent("shadowchessroar", OnShadowChessRoar)
-		end
-		
+            inst:ListenForEvent("shadowchessroar", OnShadowChessRoar)
+        end
+
         inst.pieceid = pieceid
         if materialid then
             SetMaterial(inst, materialid)
+        end
+
+        if PIECES[pieceid].master_postinit ~= nil then
+            PIECES[pieceid].master_postinit(inst)
         end
 
         return inst

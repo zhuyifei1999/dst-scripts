@@ -42,7 +42,7 @@ end
 local function TryRevealBait(inst)
     inst.task = nil
     inst.lure = inst.lurefn(inst)
-    if inst.lure ~= nil and inst.wakeinfo == nil then --There's something to show as bait!
+    if inst.lure ~= nil and inst.hibernatetask == nil then --There's something to show as bait!
         inst:ListenForEvent("onremove", inst._OnLurePerished, inst.lure)
         inst.components.shelf.cantakeitem = true
         inst.components.shelf.itemonshelf = inst.lure
@@ -71,14 +71,12 @@ local function HideBait(inst)
     inst.task = inst:DoTaskInTime(math.random() * 3 + 2, TryRevealBait) --Emerge again after some time.
 end
 
-local function SetWakeInfo(inst, sleeptime)
-    inst.wakeinfo = {}
-    inst.wakeinfo.endsleeptime = GetTime() + sleeptime
-end
-
 local function WakeUp(inst)
-    if not TheWorld.state.iswinter then
-        inst.wakeinfo = nil
+    if TheWorld.state.iswinter then
+        --In case it's still winter when we hit this (could happen from save data)
+        inst.hibernatetask = inst:DoTaskInTime(TUNING.LUREPLANT_HIBERNATE_TIME, WakeUp)
+    else
+        inst.hibernatetask = nil
         inst.components.minionspawner.shouldspawn = true
         inst.components.minionspawner:StartNextSpawn()
         if inst.task == nil then
@@ -100,8 +98,10 @@ local function ResumeSleep(inst, seconds)
     inst.components.minionspawner.shouldspawn = false
     inst.components.minionspawner:KillAllMinions()
     
-    SetWakeInfo(inst, seconds)
-    inst:DoTaskInTime(seconds, WakeUp)
+    if inst.hibernatetask ~= nil then
+        inst.hibernatetask:Cancel()
+    end
+    inst.hibernatetask = inst:DoTaskInTime(seconds, WakeUp)
 end
 
 local function OnPicked(inst)
@@ -120,8 +120,6 @@ local function OnPicked(inst)
     inst.components.minionspawner.shouldspawn = false
     inst.components.minionspawner:KillAllMinions()
 
-    SetWakeInfo(inst, TUNING.LUREPLANT_HIBERNATE_TIME)
-
     if inst.hibernatetask ~= nil then
         inst.hibernatetask:Cancel()
     end
@@ -136,8 +134,6 @@ local function FreshSpawn(inst)
     end
     inst.components.minionspawner.shouldspawn = false
     inst.components.minionspawner:KillAllMinions()
-
-    SetWakeInfo(inst, TUNING.LUREPLANT_HIBERNATE_TIME)
 
     if inst.hibernatetask ~= nil then
         inst.hibernatetask:Cancel()
@@ -211,47 +207,49 @@ end
 
 local function OnLoad(inst, data)
     if data ~= nil and data.timeuntilwake ~= nil then
-        ResumeSleep(inst, data.timeuntilwake)
+        ResumeSleep(inst, math.max(0, data.timeuntilwake))
     end
 end
 
 local function OnSave(inst, data)
-    if inst.wakeinfo ~= nil then
-        data.timeuntilwake = inst.wakeinfo.endsleeptime - GetTime()
-    end
+    data.timeuntilwake = inst.hibernatetask ~= nil and math.floor(GetTaskRemaining(inst.hibernatetask)) or nil
 end
 
 local function OnLongUpdate(inst, dt)
-    if inst.wakeinfo ~= nil and inst.wakeinfo.endsleeptime ~= nil then
-        if inst.hibernatetask ~= nil then
-            inst.hibernatetask:Cancel()
-            inst.hibernatetask = nil
-        end
+    if inst.hibernatetask ~= nil then
+        local t = GetTaskRemaining(inst.hibernatetask)
+        inst.hibernatetask:Cancel()
 
-        local time_to_wait = inst.wakeinfo.endsleeptime - GetTime() - dt
-
-        if time_to_wait <= 0 then
-            WakeUp(inst)
+        if t > dt then
+            inst.hibernatetask = inst:DoTaskInTime(t - dt, WakeUp)
         else
-            inst.wakeinfo.endsleeptime = GetTime() + time_to_wait
-            inst.hibernatetask = inst:DoTaskInTime(time_to_wait, WakeUp)
+            WakeUp(inst)
         end
     end
 end
 
-local function SeasonChanges(inst)
-    if TheWorld.state.iswinter then
-        --hibernate if you aren't already
-        if inst.sg.currentstate.name ~= "hibernate" then
-            OnPicked(inst)
-        else
-            --it's already hibernating & it's still winter. Make it sleep for longer!
-            SetWakeInfo(inst, TUNING.LUREPLANT_HIBERNATE_TIME)
-            if inst.hibernatetask ~= nil then
-                inst.hibernatetask:Cancel()
-            end
-            inst.hibernatetask = inst:DoTaskInTime(TUNING.LUREPLANT_HIBERNATE_TIME, WakeUp)
+local function ExtendHibernation(inst)
+    --hibernate if you aren't already
+    if inst.sg.currentstate.name ~= "hibernate" then
+        OnPicked(inst)
+    else
+        --it's already hibernating & it's still winter. Make it sleep for longer!
+        if inst.hibernatetask ~= nil then
+            inst.hibernatetask:Cancel()
         end
+        inst.hibernatetask = inst:DoTaskInTime(TUNING.LUREPLANT_HIBERNATE_TIME, WakeUp)
+    end
+end
+
+local function OnIsWinter(inst, iswinter)
+    if iswinter then
+        if inst.wintertask == nil then
+            inst.wintertask = inst:DoPeriodicTask(30, ExtendHibernation)
+            ExtendHibernation(inst)
+        end
+    elseif inst.wintertask ~= nil then
+        inst.wintertask:Cancel()
+        inst.wintertask = nil
     end
 end
 
@@ -267,6 +265,13 @@ end
 local function OnStartFireDamage(inst)
     inst.components.minionspawner.shouldspawn = false
     inst.components.minionspawner:KillAllMinions()
+end
+
+local function OnStopFireDamage(inst)
+    if inst.hibernatetask == nil and not (inst.components.health:IsDead() or TheWorld.state.iswinter) then
+        inst.components.minionspawner.shouldspawn = true
+        inst.components.minionspawner:StartNextSpawn()
+    end
 end
 
 local function OnMinionChange(inst)
@@ -342,6 +347,7 @@ local function fn()
     inst:SetStateGraph("SGlureplant")
 
     inst:ListenForEvent("startfiredamage", OnStartFireDamage)
+    inst:ListenForEvent("stopfiredamage", OnStopFireDamage)
 
     inst:ListenForEvent("freshspawn", FreshSpawn)
     inst:ListenForEvent("minionchange", OnMinionChange)
@@ -365,8 +371,8 @@ local function fn()
     inst:DoPeriodicTask(2, CollectItems) -- Always do this.
     TryRevealBait(inst)
 
-    inst.ListenForWinter = inst:DoPeriodicTask(30, SeasonChanges)
-    SeasonChanges(inst)
+    inst:WatchWorldState("iswinter", OnIsWinter)
+    OnIsWinter(inst, TheWorld.state.iswinter)
 
     inst:SetBrain(brain)
 

@@ -250,11 +250,9 @@ end
 function ThankYouPopup:SetSkinName()
     
     local skin_name = string.lower(self.items[self.current_item].item)
-    local name_string = GetName(skin_name) 
 
-    local rarity = GetRarityForItem(skin_name)
-    self.item_name:SetColour(SKIN_RARITY_COLORS[rarity])
-    self.item_name:SetString(name_string or skin_name or "bad item name")
+    self.item_name:SetColour(GetColorForItem(skin_name))
+    self.item_name:SetString(GetName(skin_name))
     --self.banner:Show()
     self.item_name:Show()
     self.upper_banner_text:Show()

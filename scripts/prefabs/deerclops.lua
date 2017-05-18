@@ -13,6 +13,7 @@ local prefabs =
 {
     "meat",
     "deerclops_eyeball",
+    "chesspiece_deerclops_sketch",
     "icespike_fx_1",
     "icespike_fx_2",
     "icespike_fx_3",
@@ -156,7 +157,7 @@ local function OnNewTarget(inst, data)
     end
 end
 
-local loot = {"meat", "meat", "meat", "meat", "meat", "meat", "meat", "meat", "deerclops_eyeball"}
+local loot = {"meat", "meat", "meat", "meat", "meat", "meat", "meat", "meat", "deerclops_eyeball", "chesspiece_deerclops_sketch"}
 
 local function fn()
     local inst = CreateEntity()

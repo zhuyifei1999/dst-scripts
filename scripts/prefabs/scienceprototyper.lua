@@ -1,5 +1,13 @@
 require "prefabutil"
 
+local function Default_PlayAnimation(inst, anim, loop)
+    inst.AnimState:PlayAnimation(anim, loop)
+end
+
+local function Default_PushAnimation(inst, anim, loop)
+    inst.AnimState:PushAnimation(anim, loop)
+end
+
 local function isgifting(inst)
     for k, v in pairs(inst.components.prototyper.doers) do
         if k.components.giftreceiver ~= nil and
@@ -23,11 +31,11 @@ end
 
 local function onhit(inst)
     if not inst:HasTag("burnt") then
-        inst.AnimState:PlayAnimation("hit")
+        inst:_PlayAnimation("hit")
         if inst.components.prototyper.on then
-            inst.AnimState:PushAnimation(isgifting(inst) and "proximity_gift_loop" or "proximity_loop", true)
+            inst:_PushAnimation(isgifting(inst) and "proximity_gift_loop" or "proximity_loop", true)
         else
-            inst.AnimState:PushAnimation("idle", false)
+            inst:_PushAnimation("idle", false)
         end
     end
 end
@@ -44,7 +52,7 @@ end
 
 local function onturnoff(inst)
     if inst._activetask == nil and not inst:HasTag("burnt") then
-        inst.AnimState:PushAnimation("idle", false)
+        inst:_PushAnimation("idle", false)
         inst.SoundEmitter:KillSound("idlesound")
         inst.SoundEmitter:KillSound("loop")
     end
@@ -79,9 +87,9 @@ local function createmachine(level, name, soundprefix, techtree, giftsound)
                 if inst.AnimState:IsCurrentAnimation("proximity_gift_loop") or
                     inst.AnimState:IsCurrentAnimation("place") then
                     --NOTE: push again even if already playing, in case an idle was also pushed
-                    inst.AnimState:PushAnimation("proximity_gift_loop", true)
+                    inst:_PushAnimation("proximity_gift_loop", true)
                 else
-                    inst.AnimState:PlayAnimation("proximity_gift_loop", true)
+                    inst:_PlayAnimation("proximity_gift_loop", true)
                 end
                 if not inst.SoundEmitter:PlayingSound("loop") then
                     inst.SoundEmitter:KillSound("idlesound")
@@ -91,9 +99,9 @@ local function createmachine(level, name, soundprefix, techtree, giftsound)
                 if inst.AnimState:IsCurrentAnimation("proximity_loop") or
                     inst.AnimState:IsCurrentAnimation("place") then
                     --NOTE: push again even if already playing, in case an idle was also pushed
-                    inst.AnimState:PushAnimation("proximity_loop", true)
+                    inst:_PushAnimation("proximity_loop", true)
                 else
-                    inst.AnimState:PlayAnimation("proximity_loop", true)
+                    inst:_PlayAnimation("proximity_loop", true)
                 end
                 if not inst.SoundEmitter:PlayingSound("idlesound") then
                     inst.SoundEmitter:KillSound("loop")
@@ -123,8 +131,8 @@ local function createmachine(level, name, soundprefix, techtree, giftsound)
 
     local function onactivate(inst)
         if not inst:HasTag("burnt") then
-            inst.AnimState:PlayAnimation("use")
-            inst.AnimState:PushAnimation("idle", false)
+            inst:_PlayAnimation("use")
+            inst:_PushAnimation("idle", false)
             if not inst.SoundEmitter:PlayingSound("sound") then
                 inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_"..soundprefix.."_run", "sound")
             end
@@ -139,8 +147,8 @@ local function createmachine(level, name, soundprefix, techtree, giftsound)
 
     local function ongiftopened(inst)
         if not inst:HasTag("burnt") then
-            inst.AnimState:PlayAnimation("gift")
-            inst.AnimState:PushAnimation("idle", false)
+            inst:_PlayAnimation("gift")
+            inst:_PushAnimation("idle", false)
             inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_"..giftsound.."_gift_recieve")
             if inst._activetask ~= nil then
                 inst._activetask:Cancel()
@@ -150,8 +158,8 @@ local function createmachine(level, name, soundprefix, techtree, giftsound)
     end
 
     local function onbuilt(inst)
-        inst.AnimState:PlayAnimation("place")
-        inst.AnimState:PushAnimation("idle", false)
+        inst:_PlayAnimation("place")
+        inst:_PushAnimation("idle", false)
         inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_"..soundprefix.."_place")
     end
 
@@ -216,7 +224,7 @@ local function createmachine(level, name, soundprefix, techtree, giftsound)
         MakeLargeBurnable(inst, nil, nil, true)
         MakeLargePropagator(inst)
 
-        inst.OnSave = onsave 
+        inst.OnSave = onsave
         inst.OnLoad = onload
 
         inst:AddComponent("hauntable")
@@ -226,13 +234,61 @@ local function createmachine(level, name, soundprefix, techtree, giftsound)
         inst:ListenForEvent("ms_removegiftreceiver", refreshonstate)
         inst:ListenForEvent("ms_giftopened", ongiftopened)
 
+        inst._PlayAnimation = Default_PlayAnimation
+        inst._PushAnimation = Default_PushAnimation
+
         return inst
     end
     return Prefab(name, fn, assets, prefabs)
 end
 
+--------------------------------------------------------------------------
+--Skin FX
+local function OnEntityReplicated(inst)
+    local parent = inst.entity:GetParent()
+    if parent ~= nil and parent.prefab == "researchlab2" then
+        if parent.highlightchildren == nil then
+            parent.highlightchildren = { inst }
+        else
+            table.insert(parent.highlightchildren, inst)
+        end
+    end
+end
+
+local function fxfn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddNetwork()
+
+    inst.AnimState:SetBank("researchlab2_pod_alt_fx")
+    inst.AnimState:SetBuild("researchlab2")
+    inst.AnimState:PlayAnimation("idle")
+    inst.AnimState:SetFinalOffset(1)
+    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+
+    inst:AddTag("DECOR") --"FX" will catch mouseover
+    inst:AddTag("NOCLICK")
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        inst.OnEntityReplicated = OnFXReplicated
+
+        return inst
+    end
+
+    inst.persists = false
+
+    return inst
+end
+--------------------------------------------------------------------------
+
 --Using old prefab names
 return createmachine(1, "researchlab", "lvl1", TUNING.PROTOTYPER_TREES.SCIENCEMACHINE, "science"),
     createmachine(2, "researchlab2", "lvl2", TUNING.PROTOTYPER_TREES.ALCHEMYMACHINE, "alchemy"),
     MakePlacer("researchlab_placer", "researchlab", "researchlab", "idle" ),
-    MakePlacer("researchlab2_placer", "researchlab2", "researchlab2", "idle")
+    MakePlacer("researchlab2_placer", "researchlab2", "researchlab2", "idle"),
+    --Skin FX
+    Prefab("researchlab2_pod_alt_fx", fxfn)

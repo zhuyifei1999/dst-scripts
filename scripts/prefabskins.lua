@@ -138,6 +138,11 @@ PREFAB_SKINS = {
 	{
 		"rainhat_floppy",
 	},
+	researchlab2 = 
+	{
+		"researchlab2_pod",
+		"researchlab2_pod_alt",
+	},
 	researchlab4 = 
 	{
 		"researchlab4_catcoon_costume",

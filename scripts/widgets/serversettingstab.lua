@@ -189,6 +189,9 @@ local ServerSettingsTab = Class(Widget, function(self, slotdata, servercreations
     self.pvp = TEMPLATES.LabelSpinner(STRINGS.UI.SERVERCREATIONSCREEN.PVP, pvp_options, narrow_label_width, narrow_input_width, label_height, space_between, NEWFONT, font_size, narrow_field_nudge)
     self.pvp.spinner:SetOnChangedFn(function() self.servercreationscreen:MakeDirty() end)
 
+    self.event = TEMPLATES.LabelSpinner(STRINGS.UI.SERVERCREATIONSCREEN.EVENT, pvp_options, narrow_label_width, narrow_input_width, label_height, space_between, NEWFONT, font_size, narrow_field_nudge)
+    self.event.spinner:SetOnChangedFn(function() self.servercreationscreen:MakeDirty() end)
+
     local online_options = {
         { text = STRINGS.UI.SERVERLISTINGSCREEN.ONLINE, data = true },
         { text = STRINGS.UI.SERVERLISTINGSCREEN.OFFLINE, data = false  }
@@ -211,6 +214,7 @@ local ServerSettingsTab = Class(Widget, function(self, slotdata, servercreations
         --self.clan_only,
         --self.clan_admins,
         self.pvp,
+        self.event,
         self.max_players,
         self.server_pw,
         self.online_mode,
@@ -425,10 +429,16 @@ function ServerSettingsTab:UpdateDetails(slotnum, prevslot, fromDelete)
         if self.slotdata[slotnum] ~= nil and self.slotdata[slotnum].pvp ~= nil then
             pvp = self.slotdata[slotnum].pvp
         end
+        local event = false
+        if self.slotdata[slotnum] ~= nil and self.slotdata[slotnum].event ~= nil then
+            event = self.slotdata[slotnum].event
+        end
+
         local online = TheNet:IsOnlineMode() and not TheFrontEnd:GetIsOfflineMode()
 
         self.game_mode.spinner:SetSelected(self.slotdata[slotnum] and self.slotdata[slotnum].game_mode or DEFAULT_GAME_MODE )
         self.pvp.spinner:SetSelected(pvp)
+        self.event.spinner:SetSelected(event)
         self.max_players.spinner:SetSelected(self.slotdata[slotnum] and self.slotdata[slotnum].max_players or TUNING.MAX_SERVER_SIZE)
         self.server_name.textbox:SetString(self.slotdata[slotnum] and self.slotdata[slotnum].server_name or TheNet:GetLocalUserName()..STRINGS.UI.SERVERCREATIONSCREEN.NEWGAME_SUFFIX)
         self.server_pw.textbox:SetString(self.slotdata[slotnum] and self.slotdata[slotnum].server_pw or "")
@@ -449,8 +459,16 @@ function ServerSettingsTab:UpdateDetails(slotnum, prevslot, fromDelete)
                 pvp = server_data.pvp
             end
 
+            local event = false
+            if self.slotdata[slotnum] ~= nil and self.slotdata[slotnum].event ~= nil then
+                event = self.slotdata[slotnum].event
+            else
+                event = server_data.event
+            end
+
             self.game_mode.spinner:SetSelected(self.slotdata[slotnum] and self.slotdata[slotnum].game_mode or (server_data.game_mode ~= nil and server_data.game_mode or DEFAULT_GAME_MODE ))
             self.pvp.spinner:SetSelected(pvp)
+            self.event.spinner:SetSelected(event)
 
             self.max_players.spinner:SetSelected(self.slotdata[slotnum] and self.slotdata[slotnum].max_players or server_data.max_players)
             self.server_name.textbox:SetString(self.slotdata[slotnum] and self.slotdata[slotnum].name or server_data.name)
@@ -504,6 +522,10 @@ function ServerSettingsTab:GetPVP()
 	return self.pvp.spinner:GetSelectedData()
 end
 
+function ServerSettingsTab:GetEvent()
+    return self.event.spinner:GetSelectedData()
+end
+
 function ServerSettingsTab:GetPrivacyType()
     return self.privacy_type.buttons:GetSelectedData()
 end
@@ -524,6 +546,7 @@ function ServerSettingsTab:GetServerData()
     return {
         intention = self.server_intention.button.data,
         pvp = self.pvp.spinner:GetSelectedData(),
+        event = self.event.spinner:GetSelectedData(),
         game_mode = self:GetGameMode(),
         online_mode = self:GetOnlineMode(),
         max_players = self:GetMaxPlayers(),

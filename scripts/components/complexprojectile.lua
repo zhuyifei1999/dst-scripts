@@ -16,7 +16,16 @@ local ComplexProjectile = Class(function(self, inst)
     self.onmissfn = nil
 
     self.usehigharc = true
+
+    --NOTE: projectile and complexprojectile components are mutually
+    --      exclusive because they share this tag!
+    --V2C: Recommended to explicitly add tag to prefab pristine state
+    inst:AddTag("projectile")
 end)
+
+function ComplexProjectile:OnRemoveFromEntity()
+    self.inst:RemoveTag("projectile")
+end
 
 function ComplexProjectile:GetDebugString()
     return tostring(self.velocity)

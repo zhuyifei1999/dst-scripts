@@ -20,14 +20,12 @@ local waterballoon_prefabs =
 }
 
 local function OnHitSnow(inst, attacker, target)
-    inst.SoundEmitter:PlaySound("dontstarve_DLC001/common/firesupressor_impact")
     SpawnPrefab("splash_snow_fx").Transform:SetPosition(inst.Transform:GetWorldPosition())
     inst.components.wateryprotection:SpreadProtection(inst)
     inst:Remove()
 end
 
 local function OnHitWater(inst, attacker, target)
-    inst.SoundEmitter:PlaySound("dontstarve/creatures/pengull/splash")
     SpawnPrefab("waterballoon_splash").Transform:SetPosition(inst.Transform:GetWorldPosition())
     inst.components.wateryprotection:SpreadProtection(inst)
     inst:Remove()
@@ -58,6 +56,9 @@ local function common_fn(bank, build, anim, tag, isinventoryitem)
     if tag ~= nil then
         inst:AddTag(tag)
     end
+
+    --projectile (from complexprojectile component) added to pristine state for optimization
+    inst:AddTag("projectile")
 
     inst.AnimState:SetBank(bank)
     inst.AnimState:SetBuild(build)
@@ -145,7 +146,7 @@ local function ReticuleTargetFn()
 end
 
 local function waterballoon_fn()
-    local inst = common_fn("waterballoon", "waterballoon", "idle", "projectile", true)
+    local inst = common_fn("waterballoon", "waterballoon", "idle", nil, true)
 
     inst:AddComponent("reticule")
     inst.components.reticule.targetfn = ReticuleTargetFn

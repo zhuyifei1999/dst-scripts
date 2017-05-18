@@ -702,12 +702,12 @@ function TradeScreen:DisplayItemName(gift)
 	self.item_name_displayed = true
 
 	local name_string = GetName(gift) 
-	local rarity = GetRarityForItem(gift)
 	self.item_name:SetTruncatedString(name_string, 330, 35, true)
-	self.item_name:SetColour(SKIN_RARITY_COLORS[rarity])
+	self.item_name:SetColour(GetColorForItem(gift))
 	self.item_name:Show()
 	
 	local str = STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.RESULT
+	local rarity = GetRarityForItem(gift)
 	if rarity ~= self.expected_rarity then 
 		str = STRINGS.UI.TRADESCREEN.SKIN_COLLECTOR_SPEECH.RESULT_LUCKY
 	end

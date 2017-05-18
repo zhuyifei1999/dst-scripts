@@ -17,7 +17,7 @@ self.inst = inst
 local _spawners = {}
 local _sack = nil
 local _respawntask = nil
-local _spawnedthiswinter = false
+local _spawnedthiswinter = nil
 
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
@@ -149,12 +149,12 @@ local function RestoreKlausSackKey(inst, key)
     end
 end
 
-local function QueueSack()
-    if _respawntask == nil and TheWorld.state.iswinter and not _spawnedthiswinter and (_sack == nil or not _sack:IsValid()) then
-        StartRespawnTimer(TUNING.KLAUSSACK_SPAWN_DELAY + math.random()*TUNING.KLAUSSACK_SPAWN_DELAY_VARIANCE)
+local function OnIsWinter(self, iswinter)
+    if iswinter and not _spawnedthiswinter and _respawntask == nil and (_sack == nil or not _sack:IsValid()) then
+        StartRespawnTimer(TUNING.KLAUSSACK_SPAWN_DELAY + math.random() * TUNING.KLAUSSACK_SPAWN_DELAY_VARIANCE)
     end
 
-    _spawnedthiswinter = TheWorld.state.iswinter
+    _spawnedthiswinter = iswinter
 end
 
 --------------------------------------------------------------------------
@@ -165,19 +165,18 @@ end
 inst:ListenForEvent("ms_registerdeerspawningground", OnRegisterSackSpawningPt)
 inst:ListenForEvent("ms_registerklaussack", RegisterKlausSack)
 inst:ListenForEvent("ms_restoreklaussackkey", RestoreKlausSackKey)
-inst:WatchWorldState("iswinter", QueueSack)
 
 --------------------------------------------------------------------------
 --[[ Post initialization ]]
 --------------------------------------------------------------------------
 
 function self:OnPostInit()
-    if IsSpecialEventActive( SPECIAL_EVENTS.WINTERS_FEAST ) then
-        if _sack == nil and _respawntask == nil then
-            OnRespawnTimer() -- spawns on day 1 for winters feast event
-        end
-    else
-        QueueSack()
+    if not IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
+        _spawnedthiswinter = _spawnedthiswinter and TheWorld.state.iswinter
+        self:WatchWorldState("iswinter", OnIsWinter)
+        OnIsWinter(self, TheWorld.state.iswinter)
+    elseif _sack == nil and _respawntask == nil then
+        OnRespawnTimer() -- spawns on day 1 for winters feast event
     end
 end
 
@@ -198,27 +197,27 @@ function self:LongUpdate(dt)
 end
 
 --------------------------------------------------------------------------
---[[ Public member functions ]]
---------------------------------------------------------------------------
-
---------------------------------------------------------------------------
 --[[ Save/Load ]]
 --------------------------------------------------------------------------
 
 function self:OnSave()
-    local data = {}
-    if _respawntask ~= nil then
-        data.timetorespawn = math.ceil(GetTaskRemaining(_respawntask))
-    end
-    return data
+    --Force non-empty data
+    return
+    {
+        timetorespawn = _respawntask ~= nil and math.ceil(GetTaskRemaining(_respawntask)) or false,
+    }
 end
 
 function self:OnLoad(data)
-    if data ~= nil and data.timetorespawn ~= nil then
+    --can be false, so don't nil check
+    if data.timetorespawn then
         StartRespawnTimer(data.timetorespawn)
     end
 
-    _spawnedthiswinter = TheWorld.state.iswinter
+    if not IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
+        --flag to update initial value during PostInit
+        _spawnedthiswinter = true
+    end
 end
 
 --------------------------------------------------------------------------
@@ -226,15 +225,9 @@ end
 --------------------------------------------------------------------------
 
 function self:GetDebugString()
-    local s = ""
-    if _sack ~= nil and _sack:IsValid() then
-        s = "Klaus Sack is in the world."
-    elseif _respawntask ~= nil then
-        s = string.format("Spawning in %.2f (%.2f days)", GetTaskRemaining(_respawntask), GetTaskRemaining(_respawntask) / TUNING.TOTAL_DAY_TIME)
-    else
-        s = "Waiting for winter."
-    end
-    return s
+    return (_sack ~= nil and _sack:IsValid() and "Klaus Sack is in the world.")
+        or (_respawntask == nil and "Waiting for winter.")
+        or string.format("Spawning in %.2f (%.2f days)", GetTaskRemaining(_respawntask), GetTaskRemaining(_respawntask) / TUNING.TOTAL_DAY_TIME)
 end
 
 --------------------------------------------------------------------------

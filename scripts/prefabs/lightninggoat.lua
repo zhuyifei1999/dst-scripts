@@ -167,7 +167,7 @@ local function fn()
 
     inst.Transform:SetFourFaced()
 
-    MakeCharacterPhysics(inst, 100, 1)
+    MakeCharacterPhysics(inst, 100, .5)
 
     inst.AnimState:SetBank("lightning_goat")
     inst.AnimState:SetBuild("lightning_goat_build")

@@ -8,6 +8,7 @@ local prefabs =
 {
     "balloon",
     "mosquitosack",
+    "waterballoon_splash",
 }
 
 local function dodecay(inst)
@@ -54,7 +55,6 @@ local function onload(inst, data)
 end
 
 local function onbuilt(inst, builder)
-    inst.SoundEmitter:PlaySound("dontstarve/creatures/pengull/splash")
     SpawnPrefab("waterballoon_splash").Transform:SetPosition(inst.Transform:GetWorldPosition())
     if builder.components.moisture ~= nil then
         builder.components.moisture:DoDelta(20)

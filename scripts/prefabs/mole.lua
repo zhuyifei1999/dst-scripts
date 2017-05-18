@@ -165,7 +165,6 @@ local function fn()
     MakeFeedableSmallLivestockPristine(inst)
 
     inst.displaynamefn = displaynamefn
-    inst.name = STRINGS.NAMES.MOLE_ABOVEGROUND
 
     inst.entity:SetPristine()
 

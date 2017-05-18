@@ -27,6 +27,8 @@ local Projectile = Class(function(self, inst)
 
     self.stimuli = nil
 
+    --NOTE: projectile and complexprojectile components are mutually
+    --      exclusive because they share this tag!
     --V2C: Recommended to explicitly add tag to prefab pristine state
     inst:AddTag("projectile")
 end,

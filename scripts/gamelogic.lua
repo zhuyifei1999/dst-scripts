@@ -170,7 +170,7 @@ local function LoadAssets(asset_set)
 				print("\tUnload BE")
 				TheSim:UnloadPrefabs(RECIPE_PREFABS)
 				TheSim:UnloadPrefabs(BACKEND_PREFABS)
-                if DEBUG_MODE then
+                if DEBUG_MODE and CONFIGURATION ~= "PRODUCTION" then
                     TheSim:UnloadPrefabs({ "audio_test_prefab " })
                 end
 				print("\tUnload BE done")
@@ -202,7 +202,7 @@ local function LoadAssets(asset_set)
 			for i,file in ipairs(PREFABFILES) do -- required from prefablist.lua
 				LoadPrefabFile("prefabs/"..file)
 			end
-            if DEBUG_MODE then
+            if DEBUG_MODE and CONFIGURATION ~= "PRODUCTION" then
                 LoadPrefabFile("prefabs/audio_test_prefab")
             end
 
@@ -219,7 +219,7 @@ local function LoadAssets(asset_set)
 			for i,file in ipairs(PREFABFILES) do -- required from prefablist.lua
 				LoadPrefabFile("prefabs/"..file)
 			end
-            if DEBUG_MODE then
+            if DEBUG_MODE and CONFIGURATION ~= "PRODUCTION" then
                 LoadPrefabFile("prefabs/audio_test_prefab")
             end
 			InitAllDLC()
@@ -230,7 +230,7 @@ local function LoadAssets(asset_set)
 			print("\tLOAD BE")
 			TheSystemService:SetStalling(true)
 			TheSim:LoadPrefabs(BACKEND_PREFABS)
-            if DEBUG_MODE then
+            if DEBUG_MODE and CONFIGURATION ~= "PRODUCTION" then
                 TheSim:LoadPrefabs({ "audio_test_prefab" })
             end
 			TheSystemService:SetStalling(false)

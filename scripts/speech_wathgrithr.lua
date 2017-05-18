@@ -510,8 +510,6 @@ return {
         NIGHTMARELIGHT = "It harnesses dark powers from beneath.",
         NIGHTSTICK = "A weapon worthy of Thor.",
         GREENGEM = "An emerald stone.",
-        RELIC = "Old bits of a dwelling.",
-        RUINS_RUBBLE = "I'm quite crafty. I could repair that.",
         MULTITOOL_AXE_PICKAXE = "A warrior's tool!",
         ORANGESTAFF = "A staff of magical movement.",
         YELLOWAMULET = "A star, captured within an amulet.",
@@ -594,6 +592,7 @@ return {
             OFF = "A gift from the earth.",
             BURNT = "Laid to waste.",
         },
+        SLEEPBOMB = "Those who enter thy circle shalt know rest.",
         MUSHROOMBOMB = "Defend thyselves, my allies!",
         SHROOM_SKIN = "A trophy of our battles!",
         TOADSTOOL_CAP =
@@ -954,6 +953,10 @@ return {
         CHESSPIECE_FORMAL = "Not a man fit for battle.",
         CHESSPIECE_HORNUCOPIA = "Feasts, feasts, everywhere, and not a ham to eat.",
         CHESSPIECE_PIPE = "Tis but a jest.",
+        CHESSPIECE_DEERCLOPS = "Our fight shall be made ballad.",
+        CHESSPIECE_BEARGER = "Twas a battle to sing of.",
+        CHESSPIECE_MOOSEGOOSE = "Twas an honor to fight thee.",
+        CHESSPIECE_DRAGONFLY = "Tis the trophy of glorious battle!",
         CHESSJUNK1 = "It's only a pile of fallen warriors.",
         CHESSJUNK2 = "More fallen mechanical warriors.",
         CHESSJUNK3 = "Someone should really clean this place up.",
@@ -1527,34 +1530,30 @@ return {
             GENERIC = "Those are some hardy reeds.",
             PICKED = "Cut down in their prime.",
         },
-        RELIC = 
-        {
-            GENERIC = "Fit for Asgard.",
-            BROKEN = "It has been reduced to smithereens.",
-        },
+        RELIC = "Fit for Asgard.",
         RUINS_RUBBLE = "Its days are not done.",
         RUBBLE = "A pile of ancient rocks.",
-        RESEARCHLAB = 
+        RESEARCHLAB =
         {   
             GENERIC = "I prefer battle to science.",
             BURNT = "Ashes to ashes.",
         },
-        RESEARCHLAB2 = 
+        RESEARCHLAB2 =
         {
             GENERIC = "Perhaps science can enhance my combat skills.",
             BURNT = "Dust to dust.",
         },
-        RESEARCHLAB3 = 
+        RESEARCHLAB3 =
         {
             GENERIC = "A mystical thing.",
             BURNT = "Its strange power did not protect it from fire.",
         },
-        RESEARCHLAB4 = 
+        RESEARCHLAB4 =
         {
             GENERIC = "It is an absurd machine that makes meat.",
             BURNT = "No more meat will come from here!",
         },
-        RESURRECTIONSTATUE = 
+        RESURRECTIONSTATUE =
         {
             GENERIC = "Might the gods witness this visage and offer protection.",
             BURNT = "Valhalla, we come!",

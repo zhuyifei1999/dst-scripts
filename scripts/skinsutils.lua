@@ -12,8 +12,12 @@ SKIN_RARITY_COLORS =
 	ProofOfPurchase = { 0.000, 0.478, 0.302, 1 }, -- 007A4D
 	Reward			= { 0.910, 0.592, 0.118, 1 }, -- E8971E - a set bonus reward
 	Event			= { 0.957, 0.769, 0.188, 1 }, -- F4C430 - an event item
+	
+	Lustrous		= { 1.000, 1.000, 0.298, 1 }, -- FFFF4C - rarity modifier
 	-- #40E0D0 reserved skin colour
 }
+DEFAULT_SKIN_COLOR = SKIN_RARITY_COLORS["Common"]
+
 --[[
 Common #B7D2D9
 Classy #415078
@@ -119,20 +123,28 @@ function GetSkinData(item)
 	return skin_data
 end
 
-function GetRarityForItem(item)
-	local rarity = "Common"
+function GetColorForItem(item)
+	local skin_data = GetSkinData(item)
+	return SKIN_RARITY_COLORS[skin_data.rarity_modifier] or SKIN_RARITY_COLORS[skin_data.rarity] or DEFAULT_SKIN_COLOR
+end
 
-	if CLOTHING[item] then 
-		rarity = CLOTHING[item].rarity
-	elseif MISC_ITEMS[item] then 
-		rarity = MISC_ITEMS[item].rarity
-	elseif EMOTE_ITEMS[item] then 
-		rarity = EMOTE_ITEMS[item].rarity
+function GetModifiedRarityStringForItem( item )
+	if GetRarityModifierForItem(item) ~= nil then
+		return STRINGS.UI.RARITY[GetRarityModifierForItem(item)] .. " " .. STRINGS.UI.RARITY[GetRarityForItem(item)]
 	else
-		if Prefabs[item] ~= nil then
-			rarity = Prefabs[item].rarity
-		end
+		return STRINGS.UI.RARITY[GetRarityForItem(item)]
 	end
+end
+
+function GetRarityModifierForItem(item)
+	local skin_data = GetSkinData(item)
+	local rarity_modifier = skin_data.rarity_modifier
+	return rarity_modifier
+end
+
+function GetRarityForItem(item)
+	local skin_data = GetSkinData(item)
+	local rarity = skin_data.rarity
 	
 	if not rarity then 
 		rarity = "Common"
@@ -253,8 +265,7 @@ function GetName(item)
 	if string.sub( item, -8 ) == "_builder" then
 		item = string.sub( item, 1, -9 )
 	end
-	local nameStr = STRINGS.SKIN_NAMES[item] or STRINGS.NAMES[string.upper(item)] 
-					or STRINGS.SKIN_NAMES["missing"]
+	local nameStr = STRINGS.SKIN_NAMES[item] or STRINGS.NAMES[string.upper(item)] or STRINGS.SKIN_NAMES["missing"]
 	local alt = STRINGS.SKIN_NAMES[item.."_alt"]
 	if alt then 
 		nameStr = GetRandomItem({nameStr, alt})

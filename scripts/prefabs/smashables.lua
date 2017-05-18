@@ -48,10 +48,10 @@ end
 local function OnHit(inst)
     if inst.rubble then
         inst.AnimState:PlayAnimation("repair")
-        inst.AnimState:PushAnimation("broken")
+        inst.AnimState:PushAnimation("broken", false)
     else
         inst.AnimState:PlayAnimation("hit")
-        inst.AnimState:PushAnimation("idle")
+        inst.AnimState:PushAnimation("idle", false)
     end
 end
 
@@ -64,9 +64,8 @@ local function MakeRelic(inst)
         inst:RemoveComponent("repairable")
     end
     inst.components.inspectable.nameoverride = "relic"
-    inst.components.named:SetName(STRINGS.NAMES["RELIC"])
     if inst.animated then
-        inst.AnimState:PushAnimation("idle")
+        inst.AnimState:PushAnimation("idle", false)
     else
         inst.AnimState:PlayAnimation("idle")
     end
@@ -100,9 +99,8 @@ local function MakeRubble(inst)
         inst.components.repairable.onrepaired = OnRepaired
     end
     inst.components.inspectable.nameoverride = "ruins_rubble"
-    inst.components.named:SetName(STRINGS.NAMES["RUINS_RUBBLE"])
     if inst.animated then
-        inst.AnimState:PushAnimation("broken")
+        inst.AnimState:PushAnimation("broken", false)
     else
         inst.AnimState:PlayAnimation("broken")
     end
@@ -141,6 +139,10 @@ local function OnPreLoad(inst, data)
     end
 end
 
+local function displaynamefn(inst)
+    return STRINGS.NAMES[inst:HasTag("repairable_stone") and "RUINS_RUBBLE" or "RELIC"]
+end
+
 local function makefn(name, asset, animated, smashsound, rubble)
     return function()
         local inst = CreateEntity()
@@ -164,17 +166,13 @@ local function makefn(name, asset, animated, smashsound, rubble)
         inst:AddTag("object")
         inst:AddTag(smashsound == "rock" and "stone" or "clay")
 
-        --Sneak these into pristine state for optimization
-        inst:AddTag("_named")
+        inst.displaynamefn = displaynamefn
 
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
             return inst
         end
-
-        --Remove these tags so that they can be added properly when replicating components below
-        inst:RemoveTag("_named")
 
         inst.rubble = rubble
         inst.animated = animated
@@ -225,7 +223,6 @@ local function makefn(name, asset, animated, smashsound, rubble)
         end
 
         inst:AddComponent("inspectable")
-        inst:AddComponent("named")
 
         if rubble then
             MakeRubble(inst)

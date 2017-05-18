@@ -12,6 +12,8 @@ local prefabs =
     "monkeyprojectile",
     "smallmeat",
     "cave_banana",
+    "beardhair",
+    "nightmarefuel",
 }
 
 local brain = require "brains/monkeybrain"
@@ -23,10 +25,12 @@ local MAX_CHASEAWAY_DIST = 80
 local MAX_TARGET_SHARES = 5
 local SHARE_TARGET_DIST = 40
 
+local LOOT = { "smallmeat", "cave_banana" }
 SetSharedLootTable('monkey',
 {
     {'smallmeat',     1.0},
     {'cave_banana',   1.0},
+    {'beardhair',     1.0},
     {'nightmarefuel', 0.5},
 })
 
@@ -235,8 +239,8 @@ local function SetNormalMonkey(inst)
     inst.AnimState:SetMultColour(1, 1, 1, 1)
     inst.curious = true
     inst.soundtype = ""
-    inst.components.lootdropper:SetLoot({ "smallmeat", "cave_banana" })
-    inst.components.lootdropper.droppingchanceloot = false
+    inst.components.lootdropper:SetLoot(LOOT)
+    inst.components.lootdropper:SetChanceLootTable(nil)
 
     inst.components.combat:SetTarget(nil)
 
@@ -255,9 +259,9 @@ local function SetNightmareMonkey(inst)
         inst.task:Cancel()
         inst.task = nil
     end
+    inst.components.lootdropper:SetLoot(nil)
+    inst.components.lootdropper:SetChanceLootTable("monkey")
 
-    inst.components.lootdropper:SetLoot({"beardhair"})
-    inst.components.lootdropper.droppingchanceloot = true
     inst.components.combat:SetTarget(nil)
 
     inst:RemoveEventCallback("entity_death", inst.listenfn, TheWorld)
@@ -373,8 +377,7 @@ local function fn()
     inst.components.periodicspawner:Start()
 
     inst:AddComponent("lootdropper")
-    inst.components.lootdropper:SetChanceLootTable('monkey')
-    inst.components.lootdropper.droppingchanceloot = false
+    inst.components.lootdropper:SetLoot(LOOT)
 
     inst:AddComponent("eater")
     inst.components.eater:SetDiet({ FOODTYPE.VEGGIE }, { FOODTYPE.VEGGIE })

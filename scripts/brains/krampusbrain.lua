@@ -68,7 +68,7 @@ function KrampusBrain:SetTarget(target)
             self.listenerfunc = function() self.mytarget = nil end
         end
     end
-    if target ~= self.target then
+    if target ~= self.mytarget then
         if self.mytarget ~= nil then
             self.inst:RemoveEventCallback("onremove", self.listenerfunc, self.mytarget)
         end

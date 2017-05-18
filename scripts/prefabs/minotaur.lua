@@ -6,6 +6,7 @@ local assets =
     Asset("ANIM", "anim/rook_build.zip"),
     Asset("ANIM", "anim/rook_rhino.zip"),
     Asset("SOUND", "sound/chess.fsb"),
+    Asset("MINIMAP_IMAGE", "atrium_key"),
     Asset("SCRIPT", "scripts/prefabs/ruinsrespawner.lua"),
 }
 
@@ -13,8 +14,16 @@ local prefabs =
 {
     "meat",
     "minotaurhorn",
+    "minotaurchestspawner",
+    "atrium_key",
     "collapse_small",
     "minotaur_ruinsrespawner_inst",
+}
+
+local prefabs_chest =
+{
+    "minotaurchest",
+    "atrium_key",
 }
 
 local brain = require "brains/minotaurbrain"
@@ -32,23 +41,23 @@ SetSharedLootTable('minotaur',
     {"minotaurhorn",1.00},
 })
 
-local chest_loot = 
+local chest_loot =
 {
-	{item = {"armorruins", "ruinshat"}, count = 1},
-	{item = {"ruins_bat", "orangestaff", "yellowstaff"}, count = 1},
-	{item = {"firestaff", "icestaff", "telestaff", "multitool_axe_pickaxe"}, count = 1},
-	{item = {"thulecite"}, count = {5, 12}},
-	{item = {"thulecite_pieces"}, count = {12, 36}},
-	{item = {"redgem", "bluegem", "purplegem"}, count = {3, 5}},
-	{item = {"yellowgem", "orangegem", "greengem"}, count = {1, 3}},
-	{item = {"nightmarefuel"}, count = {5, 8}},
-	{item = {"gears"}, count = {3, 6}},
+    {item = {"armorruins", "ruinshat"}, count = 1},
+    {item = {"ruins_bat", "orangestaff", "yellowstaff"}, count = 1},
+    {item = {"firestaff", "icestaff", "telestaff", "multitool_axe_pickaxe"}, count = 1},
+    {item = {"thulecite"}, count = {5, 12}},
+    {item = {"thulecite_pieces"}, count = {12, 36}},
+    {item = {"redgem", "bluegem", "purplegem"}, count = {3, 5}},
+    {item = {"yellowgem", "orangegem", "greengem"}, count = {1, 3}},
+    {item = {"nightmarefuel"}, count = {5, 8}},
+    {item = {"gears"}, count = {3, 6}},
 }
 
-for _,v in ipairs(chest_loot) do
-	for _,item in ipairs(v.item) do
-		table.insert(prefabs, item)
-	end
+for _, v in ipairs(chest_loot) do
+    for _, item in ipairs(v.item) do
+        table.insert(prefabs_chest, item)
+    end
 end
 
 local SLEEP_DIST_FROMHOME_SQ = 20 * 20
@@ -156,50 +165,6 @@ local function oncollide(inst, other)
     inst:DoTaskInTime(2 * FRAMES, onothercollide, other)
 end
 
-local function setupchestloot(chest)
-	chest.components.container:GiveItem(SpawnPrefab("atrium_key"))
-
-	local loot_keys = {} 
-	for i,_ in ipairs(chest_loot) do table.insert(loot_keys,i) end
-	loot_keys = PickSome(math.random(3,6), loot_keys)
-	
-	for _,i in ipairs(loot_keys) do
-		local loot = chest_loot[i]
-		local item = SpawnPrefab(loot.item[math.random(#loot.item)])
-		if item ~= nil then
-			if type(loot.count) == "table" and item.components.stackable ~= nil then
-				item.components.stackable:SetStackSize(math.random(loot.count[1], loot.count[2]))
-			end
-			chest.components.container:GiveItem( item )
-		end
-	end
-end
-
-local function dospawnchest(inst)
-    inst.SoundEmitter:PlaySound("dontstarve/common/ghost_spawn")
-
-    local chest = SpawnPrefab("minotaurchest")
-    local x, y, z = inst.Transform:GetWorldPosition()
-    chest.Transform:SetPosition(x, 0, z)
-	setupchestloot(chest)
-		
-    local fx = SpawnPrefab("statue_transition_2")
-    if fx ~= nil then
-        fx.Transform:SetPosition(x, y, z)
-        fx.Transform:SetScale(1, 2, 1)
-    end
-
-    fx = SpawnPrefab("statue_transition")
-    if fx ~= nil then
-        fx.Transform:SetPosition(x, y, z)
-        fx.Transform:SetScale(1, 1.5, 1)
-    end
-end
-
-local function spawnchest(inst)
-    inst:DoTaskInTime(3, dospawnchest)
-end
-
 local function rememberhome(inst)
     inst.components.knownlocations:RememberLocation("home", inst:GetPosition())
 end
@@ -211,7 +176,14 @@ local function fn()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddDynamicShadow()
+    inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
+
+    inst.MiniMapEntity:SetIcon("atrium_key.png")
+    inst.MiniMapEntity:SetPriority(15)
+    inst.MiniMapEntity:SetCanUseCache(false)
+    inst.MiniMapEntity:SetDrawOverFogOfWar(true)
+    inst.MiniMapEntity:SetRestriction("nightmaretracker")
 
     inst.DynamicShadow:SetSize(5, 3)
     inst.Transform:SetFourFaced()
@@ -260,14 +232,17 @@ local function fn()
 
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(TUNING.MINOTAUR_HEALTH)
-
-    inst:ListenForEvent("death", spawnchest)
+    inst.components.health.nofadeout = true
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetChanceLootTable('minotaur')
 
     inst:AddComponent("inspectable")
     inst:AddComponent("knownlocations")
+
+    inst:AddComponent("maprevealable")
+    inst.components.maprevealable:AddRevealSource(inst, "nightmaretracker")
+    inst.components.maprevealable:SetIconPriority(15)
 
     inst:DoTaskInTime(0, rememberhome)
 
@@ -279,9 +254,87 @@ local function fn()
     return inst
 end
 
-local function onruinsrespawn(inst)
+--------------------------------------------------------------------------
 
+local function dospawnchest(inst, loading)
+    local chest = SpawnPrefab("minotaurchest")
+    local x, y, z = inst.Transform:GetWorldPosition()
+    chest.Transform:SetPosition(x, 0, z)
+
+    --Set up chest loot
+    chest.components.container:GiveItem(SpawnPrefab("atrium_key"))
+
+    local loot_keys = {}
+    for i, _ in ipairs(chest_loot) do
+        table.insert(loot_keys, i)
+    end
+    loot_keys = PickSome(math.random(3, 6), loot_keys)
+
+    for _, i in ipairs(loot_keys) do
+        local loot = chest_loot[i]
+        local item = SpawnPrefab(loot.item[math.random(#loot.item)])
+        if item ~= nil then
+            if type(loot.count) == "table" and item.components.stackable ~= nil then
+                item.components.stackable:SetStackSize(math.random(loot.count[1], loot.count[2]))
+            end
+            chest.components.container:GiveItem(item)
+        end
+    end
+    --
+
+    if not chest:IsAsleep() then
+        chest.SoundEmitter:PlaySound("dontstarve/common/ghost_spawn")
+
+        local fx = SpawnPrefab("statue_transition_2")
+        if fx ~= nil then
+            fx.Transform:SetPosition(x, y, z)
+            fx.Transform:SetScale(1, 2, 1)
+        end
+
+        fx = SpawnPrefab("statue_transition")
+        if fx ~= nil then
+            fx.Transform:SetPosition(x, y, z)
+            fx.Transform:SetScale(1, 1.5, 1)
+        end
+    end
+
+    if inst.minotaur ~= nil and inst.minotaur:IsValid() and inst.minotaur.sg:HasStateTag("death") then
+        inst.minotaur.MiniMapEntity:SetEnabled(false)
+        inst.minotaur:RemoveComponent("maprevealable")
+    end
+
+    if not loading then
+        inst:Remove()
+    end
 end
 
+local function OnLoadChest(inst)
+    if inst.task ~= nil then
+        inst.task:Cancel()
+        inst.task = nil
+        dospawnchest(inst, true)
+        inst.persists = false
+        inst:DoTaskInTime(0, inst.Remove)
+    end
+end
+
+local function chestfn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    --[[Non-networked entity]]
+
+    inst:AddTag("CLASSIFIED")
+
+    inst.task = inst:DoTaskInTime(3, dospawnchest)
+
+    inst.OnLoad = OnLoadChest
+
+    return inst
+end
+
+--------------------------------------------------------------------------
+
 return Prefab("minotaur", fn, assets, prefabs),
-    RuinsRespawner.Inst("minotaur", onruinsrespawn), RuinsRespawner.WorldGen("minotaur", onruinsrespawn)
+    Prefab("minotaurchestspawner", chestfn, nil, prefabs_chest),
+    RuinsRespawner.Inst("minotaur"), RuinsRespawner.WorldGen("minotaur")

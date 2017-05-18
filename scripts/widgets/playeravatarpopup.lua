@@ -68,12 +68,12 @@ function PlayerAvatarPopup:Layout(data, show_net_profile)
     -- net profile button is unreachable with controllers
     show_net_profile = show_net_profile and not TheInput:ControllerAttached()
 
-    self.frame = self.proot:AddChild(TEMPLATES.CurlyWindow(130, 520, .6, .6, 39, -25))
+    self.frame = self.proot:AddChild(TEMPLATES.CurlyWindow(130, 540, .6, .6, 39, -25))
     self.frame:SetPosition(0, 20)
 
     self.frame_bg = self.frame:AddChild(Image("images/fepanel_fills.xml", "panel_fill_tall.tex"))
-    self.frame_bg:SetScale(.51, .73)
-    self.frame_bg:SetPosition(5, 10)
+    self.frame_bg:SetScale(.51, .74)
+    self.frame_bg:SetPosition(5, 7)
 
     if self.currentcharacter ~= "notselected" then
         local left_column = -94
@@ -420,8 +420,7 @@ function PlayerAvatarPopup:CreateSkinWidgetForSlot()
 end
 
 function PlayerAvatarPopup:UpdateSkinWidgetForSlot(image_group, slot, name)
-    local rarity = GetRarityForItem(name)
-    image_group._text:SetColour(unpack(SKIN_RARITY_COLORS[rarity]))
+    image_group._text:SetColour(unpack(GetColorForItem(name)))
 
     local namestr = string.match(name, "_none") and "none" or name -- This version uses "Willow" for "willow_none": string.gsub(name, "_none", "")
     image_group._text:SetMultilineTruncatedString(GetName(namestr), 2, TEXT_WIDTH, 25, true)
@@ -469,9 +468,7 @@ function PlayerAvatarPopup:UpdateEquipWidgetForSlot(image_group, slot, equipdata
     local name = equipdata ~= nil and equipdata[EquipSlot.ToID(slot)] or nil
     name = name ~= nil and #name > 0 and name or "none"
 
-    local rarity = GetRarityForItem(name)
-
-    image_group._text:SetColour(unpack(SKIN_RARITY_COLORS[rarity]))
+    image_group._text:SetColour(unpack(GetColorForItem(name)))
     image_group._text:SetMultilineTruncatedString(GetName(name), 2, TEXT_WIDTH, 25, true)
 
     local atlas = "images/inventoryimages.xml"

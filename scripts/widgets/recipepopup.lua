@@ -474,7 +474,7 @@ function RecipePopup:GetSkinOptions()
     {
         text = STRINGS.UI.CRAFTING.DEFAULT,
         data = nil,
-        colour = SKIN_RARITY_COLORS["Common"],
+        colour = DEFAULT_SKIN_COLOR,
         new_indicator = false,
         image = {"images/inventoryimages.xml", self.recipe.name..".tex", "default.tex"},
     })
@@ -485,8 +485,7 @@ function RecipePopup:GetSkinOptions()
         for which = 1, #self.skins_list do
             local image_name = self.skins_list[which].item
 
-            local rarity = GetRarityForItem(image_name)
-            local colour = rarity and SKIN_RARITY_COLORS[rarity] or SKIN_RARITY_COLORS["Common"]
+            local colour = GetColorForItem(image_name)
             local text_name = GetName(image_name) or STRINGS.SKIN_NAMES["missing"]
             local new_indicator = not self.skins_list[which].timestamp or (self.skins_list[which].timestamp > recipe_timestamp)
 

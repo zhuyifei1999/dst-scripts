@@ -753,6 +753,7 @@ return
             OFF = "A bioluminescent fungus. Neither Agaricales nor Xylariales.",
             BURNT = "That was myco-illogical. Ho ho!",
         },
+        SLEEPBOMB = "It's past your bedtime.",
         MUSHROOMBOMB = "Everyone, give the volatile Agaricus wide berth!",
         SHROOM_SKIN = "Frog skin must remain damp, or they will suffocate. Not that this one minds.",
         TOADSTOOL_CAP =
@@ -1509,20 +1510,19 @@ return
             DISEASING = "Hm... There are spots of discoloration here.",
         },
 
-        REEDS = 
+        REEDS =
         {
             GENERIC = "A group of juncaceae graminoids.",
             PICKED = "I believe they shall grow back.",
             BURNING = "Combustion!",
         },
-        RELIC = 
-        {
-            GENERIC = "An artifact of this extinct civilization.",
-            BROKEN = "Just broken stone.",
-        },
         RUBBLE = "Looks like a job for library paste!",
-
-        PLANT_NORMAL = 
+        --RUINSRELIC_PLATE = "Clearly a forgery.",
+        --RUINSRELIC_BOWL = "Inauthentic.",
+        --RUINSRELIC_CHAIR = "It's a fake.",
+        --RUINSRELIC_VASE = "Lovely, but not genuine.",
+        --RUINSRELIC_TABLE = "An easy fake to spot, if you know what to look for.",
+        PLANT_NORMAL =
         {
             GENERIC = "It's a... plant. Of some kind.",
             READY = "It looks mature, now.",
@@ -1530,7 +1530,7 @@ return
             WITHERED = "It couldn't survive the heat.",
         },
 
-        MOUND = 
+        MOUND =
         {
             GENERIC ="A burial mound.",
             DUG = "A desecrated burial mound.",
@@ -1743,6 +1743,10 @@ return
         CHESSPIECE_FORMAL = "The king is, by all measures, a liability to everyone on the board.",
         CHESSPIECE_HORNUCOPIA = "It is a commonly held belief that art imitates life.",
         CHESSPIECE_PIPE = "I hope this does not have a bad influence on the children.",
+        CHESSPIECE_DEERCLOPS = "An anatomical study of those strange beasts.",
+        CHESSPIECE_BEARGER = "Quite expressive!",
+        CHESSPIECE_MOOSEGOOSE = "Bust of Alces canadensis.",
+        CHESSPIECE_DRAGONFLY = "Artist's interpretation of mythical Diptera.",
         CHESSJUNK1 = "The magician's unfinished projects?",
         CHESSJUNK2 = "The magician's unfinished projects?",
         CHESSJUNK3 = "The magician's unfinished projects?",
@@ -1894,7 +1898,7 @@ return
         },
         ORANGESTAFF = "Handy over small distances.",   --Teleports player.
         ROOK_NIGHTMARE = "It looks like it could break apart at any moment.",
-        RELIC = "A relic of an ancient civilization long lost to the ravages of time.",  --Fixed relic
+        RELIC = "A relic of an ancient civilization, lost to the ravages of time.",  --Fixed relic
         RUINS_RUBBLE = "With a little elbow grease this could be put into working order.",   --Broken relic
         RUINS_BAT = "An implement for administering devastating blows.",
         RUINSHAT = "A bit gaudy for my tastes, but it seems useful.",

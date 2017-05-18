@@ -274,22 +274,9 @@ end
 --------------------------------------------------------------------------
 --[[ Reviver skin functions ]]
 --------------------------------------------------------------------------
-local function reviver_onsave(inst, data)
-    if inst.glowfx ~= nil then
-        data.glow = inst.glowfx:GetSaveRecord()
-        data.glow.x, data.glow.y, data.glow.z = nil, nil, nil
-    end
-end
-
-local function reviver_onload(inst, data)
-    if data ~= nil and data.glow ~= nil and inst.glowfx == nil then
-        inst.glowfx = SpawnSaveRecord(data.glow)
-        if inst.glowfx ~= nil then
-            inst.glowfx:ConvertToGlow()
-            inst.glowfx.entity:SetParent(inst.entity)
-            inst.highlightchildren = { inst.glowfx }
-        end
-    end
+local function reviver_playbeatanimation(inst)
+    inst.AnimState:PlayAnimation("idle")
+    inst.highlightchildren[1].AnimState:PlayAnimation("idle")
 end
 
 function reviver_init_fn(inst, build_name)
@@ -303,16 +290,15 @@ function reviver_init_fn(inst, build_name)
     local skin_fx = SKIN_FX_PREFAB[build_name]
     if skin_fx ~= nil then
         inst.reviver_beat_fx = skin_fx[1]
-    end
 
-    inst.OnBuiltFn = function(inst, builder)
-        inst.glowfx = SpawnPrefab("reviver", build_name, nil, builder.userid):ConvertToGlow()
-        inst.glowfx.entity:SetParent(inst.entity)
-        inst.highlightchildren = { inst.glowfx }
+        if skin_fx[2] ~= nil then
+            local fx = SpawnPrefab(skin_fx[2])
+            fx.entity:SetParent(inst.entity)
+            fx.AnimState:OverrideItemSkinSymbol("bloodpump01", build_name, "bloodpumpglow", inst.GUID, "bloodpump")
+            inst.highlightchildren = { fx }
+            inst.PlayBeatAnimation = reviver_playbeatanimation
+        end
     end
-
-    inst.OnSave = reviver_onsave
-    inst.OnLoad = reviver_onload
 end
 
 --------------------------------------------------------------------------
@@ -369,6 +355,7 @@ function cane_init_fn(inst, build_name)
     end
 
     inst.AnimState:SetSkin(build_name, "cane")
+    inst.AnimState:OverrideSymbol("grass", "swap_cane", "grass")
     inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
 
     local skin_fx = SKIN_FX_PREFAB[build_name]
@@ -390,6 +377,7 @@ local function staff_init_fn(inst, build_name)
     end
 
     inst.AnimState:SetSkin(build_name, "staffs")
+    inst.AnimState:OverrideSymbol("grass", "staffs", "grass")
     inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
 end
 
@@ -418,6 +406,113 @@ firestaff_init_fn = staff_init_fn
 icestaff_init_fn = staff_init_fn
 
 --------------------------------------------------------------------------
+--[[ ResearchLab2 skin functions ]]
+--------------------------------------------------------------------------
+local function researchlab2_cancelflash(inst)
+    for i = 1, #inst.flashtasks do
+        table.remove(inst.flashtasks):Cancel()
+    end
+end
+
+local function researchlab2_applyflash(inst, intensity)
+    inst.AnimState:SetLightOverride(intensity * .6)
+    inst.highlightchildren[1].AnimState:SetLightOverride(intensity)
+end
+
+local function researchlab2_flashupdate(inst, intensity, totalframes)
+    inst.flashframe = inst.flashframe + 1
+    if inst.flashframe < totalframes then
+        local k = inst.flashframe / totalframes
+        researchlab2_applyflash(inst, (1 - k * k) * intensity)
+    else
+        inst.flashfadetask:Cancel()
+        inst.flashfadetask = nil
+        inst.flashframe = nil
+        researchlab2_applyflash(inst, 0)
+    end
+end
+
+local function researchlab2_flash(inst, intensity, frames)
+    if not inst.AnimState:IsCurrentAnimation("proximity_loop") then
+        researchlab2_cancelflash(inst)
+        return
+    end
+    if inst.flashfadetask ~= nil then
+        inst.flashfadetask:Cancel()
+    end
+    inst.flashfadetask = inst:DoPeriodicTask(0, researchlab2_flashupdate, nil, intensity, frames)
+    inst.flashframe = -1
+    researchlab2_applyflash(inst, intensity * .5)
+end
+
+local function researchlab2_checkflashing(inst, anim, offset)
+    if inst.checkanimtask ~= nil then
+        inst.checkanimtask:Cancel()
+        inst.checkanimtask = nil
+    end
+    researchlab2_cancelflash(inst)
+    if anim == "proximity_loop" then
+        local period = 49 * FRAMES
+        table.insert(inst.flashtasks, inst:DoPeriodicTask(period, researchlab2_flash, 18 * FRAMES, .2, 8))
+        table.insert(inst.flashtasks, inst:DoPeriodicTask(period, researchlab2_flash, 24 * FRAMES, .2, 10))
+    end
+end
+
+local function researchlab2_checkanim(inst)
+    if inst.AnimState:IsCurrentAnimation("proximity_loop") then
+        inst.checkanimtask = nil
+        researchlab2_checkflashing(inst, "proximity_loop", inst.AnimState:GetCurrentAnimationTime())
+    else
+        inst.checkanimtask = inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() - inst.AnimState:GetCurrentAnimationTime() + FRAMES, researchlab2_checkanim)
+    end
+end
+
+local function researchlab2_playanimation(inst, anim, loop)
+    inst.AnimState:PlayAnimation(anim, loop)
+    inst.highlightchildren[1].AnimState:PlayAnimation(anim, loop)
+    researchlab2_checkflashing(inst, anim, 0)
+end
+
+local function researchlab2_pushanimation(inst, anim, loop)
+    local wasplaying = inst.AnimState:IsCurrentAnimation(anim)
+    inst.AnimState:PushAnimation(anim, loop)
+    inst.highlightchildren[1].AnimState:PushAnimation(anim, loop)
+    if not wasplaying and inst.AnimState:IsCurrentAnimation(anim) then
+        researchlab2_checkflashing(inst, anim, 0)
+    elseif anim == "proximity_loop" and inst.checkanimtask == nil then
+        inst.checkanimtask = inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() - inst.AnimState:GetCurrentAnimationTime() + FRAMES, researchlab2_checkanim)
+    end
+end
+
+function researchlab2_init_fn(inst, build_name)
+    if inst.components.placer ~= nil then
+        --Placers can run this on clients as well as servers
+        inst.AnimState:SetSkin(build_name, "researchlab2")
+        return
+    elseif not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "researchlab2")
+    inst.AnimState:OverrideSymbol("shadow_plume", "researchlab2", "shadow_plume")
+    inst.AnimState:OverrideSymbol("shadow_wisp", "researchlab2", "shadow_wisp")
+
+    local skin_fx = SKIN_FX_PREFAB[build_name]
+    if skin_fx ~= nil and skin_fx[1] ~= nil then
+        local fx = SpawnPrefab(skin_fx[1])
+        fx.entity:SetParent(inst.entity)
+        for i = 1, 4 do
+            local symbol = "newfx"..tostring(i)
+            fx.AnimState:OverrideItemSkinSymbol(symbol, build_name, symbol, inst.GUID, "researchlab2")
+        end
+        inst.highlightchildren = { fx }
+        inst.flashtasks = {}
+        inst._PlayAnimation = researchlab2_playanimation
+        inst._PushAnimation = researchlab2_pushanimation
+    end
+end
+
+--------------------------------------------------------------------------
 --[[ ResearchLab4 skin functions ]]
 --------------------------------------------------------------------------
 function researchlab4_init_fn(inst, build_name)
@@ -443,6 +538,7 @@ function CreatePrefabSkin(name, info)
     prefab_skin.init_fn             = info.init_fn
     prefab_skin.build_name          = info.build_name
     prefab_skin.rarity              = info.rarity
+    prefab_skin.rarity_modifier     = info.rarity_modifier
     prefab_skin.skins               = info.skins
     prefab_skin.disabled            = info.disabled
     prefab_skin.granted_items       = info.granted_items

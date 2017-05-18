@@ -53,6 +53,7 @@ local prefabs_atrium =
     "nightmarefuel",
     "thurible",
     "armorskeleton",
+    "skeletonhat",
     "flower_rose",
 }
 
@@ -939,6 +940,7 @@ local function AtriumLootFn(lootdropper)
     else
         lootdropper:AddChanceLoot("thurible", 1)
         lootdropper:AddChanceLoot("armorskeleton", 1)
+        lootdropper:AddChanceLoot("skeletonhat", 1)
         lootdropper:AddChanceLoot("nightmarefuel", 1)
         lootdropper:AddChanceLoot("nightmarefuel", 1)
         lootdropper:AddChanceLoot("nightmarefuel", 1)

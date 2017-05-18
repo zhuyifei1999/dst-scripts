@@ -739,7 +739,7 @@ return {
 		MINOTAUR = "Another poor soul with a curse.",	--Monster in labyrinth
 		SPIDER_DROPPER = "They're smart to live away from the corruption.",	--White spider that comes from the roof
 		NIGHTMARELIGHT = "They should have used wood.",	--Lights that activate during nightmare.
-		RELIC = "Piece of furniture.",	--Fixed relic
+		RELIC = "I don't plan on fixin' that.",	--Fixed relic
 		RUINS_RUBBLE = "All busted up.",	--Broken relic
 		MULTITOOL_AXE_PICKAXE = "It's... it's beautiful.",	--Works as axe and pickaxe
 		GREENGEM = "How flashy.",
@@ -760,11 +760,6 @@ return {
 		ORANGEGEM = "It's shimmering.",
         OPALSTAFF = "Err, moon magic isn't really... my thing... Heh.",
         OPALPRECIOUSGEM = "You're fond of it, aren'tcha Lucy?",
-		RELIC =
-		{
-			BROKEN = "I don't plan on fixin' that.",
-			GENERIC = "What's this all aboot?",
-		},
 		TELEBASE = 
 		{
 			VALID = "It's humming with energy.",
@@ -839,6 +834,7 @@ return {
             OFF = "My kind of decor.",
             BURNT = "Whose bright idea was it to kill the lights?",
         },
+        SLEEPBOMB = "Some folks around here could use the shuteye.",
         MUSHROOMBOMB = "I don't like the look of that.",
         SHROOM_SKIN = "That's gross.",
         TOADSTOOL_CAP =
@@ -1138,6 +1134,10 @@ return {
         CHESSPIECE_FORMAL = "Looks like a bit of a hoser.",
         CHESSPIECE_HORNUCOPIA = "Well, I did say I had a hankering for \"stone fruit\".",
         CHESSPIECE_PIPE = "Kitschy. Just how Lucy and I like it.",
+        CHESSPIECE_DEERCLOPS = "Fine detail on that base.",
+        CHESSPIECE_BEARGER = "Good use of stone.",
+        CHESSPIECE_MOOSEGOOSE = "Looks sturdy.",
+        CHESSPIECE_DRAGONFLY = "Good stonework.",
         CHESSJUNK1 = "Dead metal.",
         CHESSJUNK2 = "Dead metal.",
         CHESSJUNK3 = "Dead metal.",

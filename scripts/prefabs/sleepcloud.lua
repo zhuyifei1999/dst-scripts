@@ -1,68 +1,27 @@
 local assets =
 {
-    Asset("ANIM", "anim/sporecloud.zip"),
+    Asset("ANIM", "anim/sleepcloud.zip"),
     Asset("ANIM", "anim/sporecloud_base.zip"),
 }
 
 local prefabs =
 {
-    "sporecloud_overlay",
+    "sleepcloud_overlay",
 }
 
-local AURA_EXCLUDE_TAGS = { "toadstool", "playerghost", "ghost", "shadow", "shadowminion", "noauradamage", "INLIMBO" }
+local CLOUD_TIME = 10
+local TICK_PERIOD = .5
 
-local FADE_FRAMES = 5
-local FADE_INTENSITY = .8
-local FADE_RADIUS = 1
-local FADE_FALLOFF = .5
+local TICK_VALUE = 10
+local MAX_SLEEP_TIME = 5
+local MIN_SLEEP_TIME = 1.5
 
-local function OnUpdateFade(inst)
-    local k
-    if inst._fade:value() <= FADE_FRAMES then
-        inst._fade:set_local(math.min(inst._fade:value() + 1, FADE_FRAMES))
-        k = inst._fade:value() / FADE_FRAMES
-    else
-        inst._fade:set_local(math.min(inst._fade:value() + 1, FADE_FRAMES * 2 + 1))
-        k = (FADE_FRAMES * 2 + 1 - inst._fade:value()) / FADE_FRAMES
-    end
+local PLAYER_TICK_VALUE = 1
+local PLAYER_MAX_SLEEP_TIME = 4
+local PLAYER_MIN_SLEEP_TIME = 1
 
-    inst.Light:SetIntensity(FADE_INTENSITY * k)
-    inst.Light:SetRadius(FADE_RADIUS * k)
-    inst.Light:SetFalloff(1 - (1 - FADE_FALLOFF) * k)
-
-    if TheWorld.ismastersim then
-        inst.Light:Enable(inst._fade:value() > 0 and inst._fade:value() <= FADE_FRAMES * 2)
-    end
-
-    if inst._fade:value() == FADE_FRAMES or inst._fade:value() > FADE_FRAMES * 2 then
-        inst._fadetask:Cancel()
-        inst._fadetask = nil
-    end
-end
-
-local function OnFadeDirty(inst)
-    if inst._fadetask == nil then
-        inst._fadetask = inst:DoPeriodicTask(FRAMES, OnUpdateFade)
-    end
-    OnUpdateFade(inst)
-end
-
-local function FadeOut(inst)
-    inst._fade:set(FADE_FRAMES + 1)
-    if inst._fadetask == nil then
-        inst._fadetask = inst:DoPeriodicTask(FRAMES, OnUpdateFade)
-    end
-end
-
-local function FadeInImmediately(inst)
-    inst._fade:set(FADE_FRAMES)
-    OnFadeDirty(inst)
-end
-
-local function FadeOutImmediately(inst)
-    inst._fade:Set(FADE_FRAMES * 2 + 1)
-    OnFadeDirty(inst)
-end
+local ATTACK_SLEEP_DELAY = 2
+local CHAIN_SLEEP_DELAY = 4
 
 local OVERLAY_COORDS =
 {
@@ -83,7 +42,7 @@ local function SpawnOverlayFX(inst, i, set, isnew)
         end
     end
 
-    local fx = SpawnPrefab("sporecloud_overlay")
+    local fx = SpawnPrefab("sleepcloud_overlay")
     fx.entity:SetParent(inst.entity)
     fx.Transform:SetPosition(set[1] * .85, 0, set[3] * .85)
     fx.Transform:SetScale(set[4], set[4], set[4])
@@ -92,7 +51,7 @@ local function SpawnOverlayFX(inst, i, set, isnew)
     end
 
     if not isnew then
-        fx.AnimState:PlayAnimation("sporecloud_overlay_loop")
+        fx.AnimState:PlayAnimation("sleepcloud_overlay_loop")
         fx.AnimState:SetTime(math.random() * .7)
     end
 
@@ -121,9 +80,11 @@ local function CreateBase(isnew)
     inst.AnimState:SetLayer(LAYER_BACKGROUND)
     inst.AnimState:SetSortOrder(3)
     inst.AnimState:SetFinalOffset(-1)
+    inst.AnimState:SetMultColour(.5, .45, .45, .6)
 
     if isnew then
         inst.AnimState:PlayAnimation("sporecloud_base_pre")
+        inst.AnimState:SetTime(12 * FRAMES)
         inst.AnimState:PushAnimation("sporecloud_base_idle", false)
     else
         inst.AnimState:PlayAnimation("sporecloud_base_idle")
@@ -155,23 +116,12 @@ local function OnAnimOver(inst)
 end
 
 local function OnOverlayAnimOver(fx)
-    fx.AnimState:PlayAnimation("sporecloud_overlay_loop")
+    fx.AnimState:PlayAnimation("sleepcloud_overlay_loop")
 end
 
 local function KillOverlayFX(fx)
     fx:RemoveEventCallback("animover", OnOverlayAnimOver)
-    fx.AnimState:PlayAnimation("sporecloud_overlay_pst")
-end
-
-local function DisableCloud(inst)
-    inst.components.aura:Enable(false)
-
-    if inst._spoiltask ~= nil then
-        inst._spoiltask:Cancel()
-        inst._spoiltask = nil
-    end
-
-    inst:RemoveTag("sporecloud")
+    fx.AnimState:PlayAnimation("sleepcloud_overlay_pst")
 end
 
 local function DoDisperse(inst)
@@ -180,13 +130,15 @@ local function DoDisperse(inst)
         inst._inittask = nil
     end
 
-    DisableCloud(inst)
+    if inst._drowsytask ~= nil then
+        inst._drowsytask:Cancel()
+        inst._drowsytask = nil
+    end
 
     inst:RemoveEventCallback("animover", OnAnimOver)
     inst._state:set(2)
-    FadeOut(inst)
 
-    inst.AnimState:PlayAnimation("sporecloud_pst")
+    inst.AnimState:PlayAnimation("sleepcloud_pst")
     inst.SoundEmitter:KillSound("spore_loop")
     inst.persists = false
     inst:DoTaskInTime(3, inst.Remove) --anim len + 1.5 sec
@@ -210,13 +162,6 @@ end
 
 local function OnTimerDone(inst, data)
     if data.name == "disperse" then
-        DoDisperse(inst)
-    end
-end
-
-local function FinishImmediately(inst)
-    if inst.components.timer:TimerExists("disperse") then
-        inst.components.timer:StopTimer("disperse")
         DoDisperse(inst)
     end
 end
@@ -245,17 +190,18 @@ local function OnLoad(inst, data)
 
     local t = inst.components.timer:GetTimeLeft("disperse")
     if t == nil or t <= 0 then
-        DisableCloud(inst)
+        if inst._drowsytask ~= nil then
+            inst._drowsytask:Cancel()
+            inst._drowsytask = nil
+        end
         inst._state:set(2)
-        FadeOutImmediately(inst)
         inst.SoundEmitter:KillSound("spore_loop")
         inst:Hide()
         inst.persists = false
         inst:DoTaskInTime(0, inst.Remove)
     else
         inst._state:set(1)
-        FadeInImmediately(inst)
-        inst.AnimState:PlayAnimation("sporecloud_loop", true)
+        inst.AnimState:PlayAnimation("sleepcloud_loop", true)
 
         --Dedicated server does not need to spawn the local fx
         if not TheNet:IsDedicated() then
@@ -272,10 +218,6 @@ end
 local function InitFX(inst)
     inst._inittask = nil
 
-    if TheWorld.ismastersim then
-        inst.SoundEmitter:PlaySound("dontstarve/creatures/together/toad_stool/infection_post")
-    end
-
     --Dedicated server does not need to spawn the local fx
     if not TheNet:IsDedicated() then
         inst._basefx = CreateBase(true)
@@ -283,26 +225,67 @@ local function InitFX(inst)
     end
 end
 
-local function TryPerish(item)
-    if item:IsInLimbo() then
-        local owner = item.components.inventoryitem ~= nil and item.components.inventoryitem.owner or nil
-        if owner == nil or
-            (   owner.components.container ~= nil and
-                not owner.components.container:IsOpen() and
-                owner:HasTag("chest")   ) then
-            --in limbo but not inventory or container?
-            --or in a closed chest
-            return
-        end
-    end
-    item.components.perishable:ReducePercent(TUNING.TOADSTOOL_SPORECLOUD_ROT)
-end
-
-local function DoAreaSpoil(inst)
+local function DoAreaDrowsy(inst, sleeptimecache, sleepdelaycache)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, inst.components.aura.radius, nil, { "small_livestock" }, { "fresh", "stale", "spoiled" })
+    local range = 3.5
+    local t = GetTime()
+    local ents =
+        TheNet:GetPVPEnabled() and
+        TheSim:FindEntities(x, y, z, range, nil, { "playerghost", "FX", "DECOR", "INLIMBO" }, { "sleeper", "player" }) or
+        TheSim:FindEntities(x, y, z, range, { "sleeper" }, { "player", "FX", "DECOR", "INLIMBO" })
     for i, v in ipairs(ents) do
-        TryPerish(v)
+        local delayed = false
+        if (sleepdelaycache[v] or 0) > TICK_PERIOD then
+            if v.components.sleeper ~= nil then
+                if not v.components.sleeper:IsAsleep() then
+                    sleepdelaycache[v] = sleepdelaycache[v] - TICK_PERIOD
+                    delayed = true
+                end
+            elseif v.components.grogginess ~= nil
+                and not v.components.grogginess:IsKnockedOut() then
+                sleepdelaycache[v] = sleepdelaycache[v] - TICK_PERIOD
+                delayed = true
+            end
+        end
+        if not delayed and
+            not (v.components.combat ~= nil and v.components.combat:GetLastAttackedTime() + ATTACK_SLEEP_DELAY > t) and
+            not (v.components.burnable ~= nil and v.components.burnable:IsBurning()) and
+            not (v.components.freezable ~= nil and v.components.freezable:IsFrozen()) and
+            not (v.components.pinnable ~= nil and v.components.pinnable:IsStuck()) then
+            local mount = v.components.rider ~= nil and v.components.rider:GetMount() or nil
+            if mount ~= nil then
+                mount:PushEvent("ridersleep", { sleepiness = TICK_VALUE, sleeptime = SLEEP_TIME })
+            end
+            if v.components.sleeper ~= nil then
+                local sleeptime = sleeptimecache[v] or MAX_SLEEP_TIME
+                v.components.sleeper:AddSleepiness(TICK_VALUE, sleeptime / v.components.sleeper:GetSleepTimeMultiplier())
+                if v.components.sleeper:IsAsleep() then
+                    sleeptimecache[v] = math.max(MIN_SLEEP_TIME, sleeptime - TICK_PERIOD)
+                    sleepdelaycache[v] = CHAIN_SLEEP_DELAY
+                else
+                    sleeptimecache[v] = nil
+                end
+            elseif v.components.grogginess ~= nil then
+                local sleeptime = sleeptimecache[v] or PLAYER_MAX_SLEEP_TIME
+                if v.components.grogginess:IsKnockedOut() then
+                    v.components.grogginess:ExtendKnockout(sleeptime)
+                    sleeptimecache[v] = math.max(PLAYER_MIN_SLEEP_TIME, sleeptime - TICK_PERIOD)
+                    sleepdelaycache[v] = CHAIN_SLEEP_DELAY
+                else
+                    v.components.grogginess:AddGrogginess(PLAYER_TICK_VALUE, sleeptime)
+                    if v.components.grogginess:IsKnockedOut() then
+                        sleeptimecache[v] = math.max(PLAYER_MIN_SLEEP_TIME, sleeptime - TICK_PERIOD)
+                        sleepdelaycache[v] = CHAIN_SLEEP_DELAY
+                    else
+                        sleeptimecache[v] = nil
+                    end
+                end
+            else
+                v:PushEvent("knockedout")
+            end
+        else
+            sleeptimecache[v] = nil
+        end
     end
 end
 
@@ -311,34 +294,20 @@ local function fn()
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
-    inst.entity:AddLight()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
-    inst.AnimState:SetBank("sporecloud")
-    inst.AnimState:SetBuild("sporecloud")
-    inst.AnimState:PlayAnimation("sporecloud_pre")
-    inst.AnimState:SetLightOverride(.3)
-    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
-
-    inst.Light:SetFalloff(FADE_FALLOFF)
-    inst.Light:SetIntensity(FADE_INTENSITY)
-    inst.Light:SetRadius(FADE_RADIUS)
-    inst.Light:SetColour(125 / 255, 200 / 255, 50 / 255)
-    inst.Light:Enable(false)
-    inst.Light:EnableClientModulation(true)
+    inst.AnimState:SetBank("sleepcloud")
+    inst.AnimState:SetBuild("sleepcloud")
+    inst.AnimState:PlayAnimation("sleepcloud_pre")
 
     inst:AddTag("FX")
     inst:AddTag("NOCLICK")
     inst:AddTag("notarget")
-    inst:AddTag("sporecloud")
 
     inst.SoundEmitter:PlaySound("dontstarve/creatures/together/toad_stool/spore_cloud_LP", "spore_loop")
 
-    inst._state = net_tinybyte(inst.GUID, "sporecloud._state", "statedirty")
-    inst._fade = net_smallbyte(inst.GUID, "sporecloud._fade", "fadedirty")
-
-    inst._fadetask = inst:DoPeriodicTask(FRAMES, OnUpdateFade)
+    inst._state = net_tinybyte(inst.GUID, "sleepcloud._state", "statedirty")
 
     inst._inittask = inst:DoTaskInTime(0, InitFX)
 
@@ -346,34 +315,21 @@ local function fn()
 
     if not TheWorld.ismastersim then
         inst:ListenForEvent("statedirty", OnStateDirty)
-        inst:ListenForEvent("fadedirty", OnFadeDirty)
 
         return inst
     end
 
-    inst:AddComponent("combat")
-    inst.components.combat:SetDefaultDamage(TUNING.TOADSTOOL_SPORECLOUD_DAMAGE)
+    inst._drowsytask = inst:DoPeriodicTask(TICK_PERIOD, DoAreaDrowsy, nil, {}, {})
 
-    inst:AddComponent("aura")
-    inst.components.aura.radius = TUNING.TOADSTOOL_SPORECLOUD_RADIUS
-    inst.components.aura.tickperiod = TUNING.TOADSTOOL_SPORECLOUD_TICK
-    inst.components.aura.auraexcludetags = AURA_EXCLUDE_TAGS
-    inst.components.aura:Enable(true)
-
-    inst._spoiltask = inst:DoPeriodicTask(inst.components.aura.tickperiod, DoAreaSpoil, inst.components.aura.tickperiod * .5)
-
-    inst.AnimState:PushAnimation("sporecloud_loop", true)
+    inst.AnimState:PushAnimation("sleepcloud_loop", true)
     inst:ListenForEvent("animover", OnAnimOver)
 
     inst:AddComponent("timer")
-    inst.components.timer:StartTimer("disperse", TUNING.TOADSTOOL_SPORECLOUD_LIFETIME)
+    inst.components.timer:StartTimer("disperse", CLOUD_TIME)
 
     inst:ListenForEvent("timerdone", OnTimerDone)
 
     inst.OnLoad = OnLoad
-
-    inst.FadeInImmediately = FadeInImmediately
-    inst.FinishImmediately = FinishImmediately
 
     inst._overlaytasks = {}
     for i, v in ipairs(OVERLAY_COORDS) do
@@ -395,11 +351,9 @@ local function overlayfn()
 
     inst.Transform:SetTwoFaced()
 
-    inst.AnimState:SetBank("sporecloud")
-    inst.AnimState:SetBuild("sporecloud")
-    inst.AnimState:SetLightOverride(.2)
-
-    inst.AnimState:PlayAnimation("sporecloud_overlay_pre")
+    inst.AnimState:SetBank("sleepcloud")
+    inst.AnimState:SetBuild("sleepcloud")
+    inst.AnimState:PlayAnimation("sleepcloud_overlay_pre")
 
     inst.entity:SetPristine()
 
@@ -414,5 +368,5 @@ local function overlayfn()
     return inst
 end
 
-return Prefab("sporecloud", fn, assets, prefabs),
-    Prefab("sporecloud_overlay", overlayfn, assets)
+return Prefab("sleepcloud", fn, assets, prefabs),
+    Prefab("sleepcloud_overlay", overlayfn, assets)

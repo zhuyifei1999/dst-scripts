@@ -154,12 +154,11 @@ function SkinsScreen:OnItemSelect(type, item_type, item_id, itemimage)
 
 	self.details_panel.image:GetAnimState():OverrideSkinSymbol("SWAP_ICON", buildfile, "SWAP_ICON")
 
-	local rarity = GetRarityForItem(item_type)
 	local nameStr = GetName(item_type)
 	local usable_on = GetSkinUsableOnString(item_type)
 
 	self.details_panel.name:SetTruncatedString(nameStr, 220, 50, true)
-	self.details_panel.name:SetColour(unpack(SKIN_RARITY_COLORS[rarity]))
+	self.details_panel.name:SetColour(unpack(GetColorForItem(item_type)))
 	if usable_on ~= "" then
 		self.details_panel.name.show_help = true
 		self.details_panel.name:SetHoverText(usable_on, { font = NEWFONT_OUTLINE, size = 22, offset_x = 0, offset_y = 35, colour = {1,1,1,1}})
@@ -172,8 +171,8 @@ function SkinsScreen:OnItemSelect(type, item_type, item_id, itemimage)
 	
     self.details_panel.description:SetMultilineTruncatedString(STRINGS.SKIN_DESCRIPTIONS[item_type] or STRINGS.SKIN_DESCRIPTIONS["missing"], 7, 180, 60, true)
 
-	self.details_panel.rarity:SetString(STRINGS.UI.RARITY[rarity])
-	self.details_panel.rarity:SetColour(unpack(SKIN_RARITY_COLORS[rarity]))
+	self.details_panel.rarity:SetString(GetModifiedRarityStringForItem(item_type))
+	self.details_panel.rarity:SetColour(unpack(GetColorForItem(item_type)))
 
 	self.details_panel.set_info_btn.show_help = nil
 
@@ -202,9 +201,7 @@ function SkinsScreen:OnItemSelect(type, item_type, item_id, itemimage)
 	else
 		self.details_panel.set_title:Hide()
 		self.details_panel.set_info_btn:Hide()
-
-		self.details_panel.rarity:SetString(STRINGS.UI.RARITY[rarity])
-		self.details_panel.rarity:SetColour(unpack(SKIN_RARITY_COLORS[rarity]))
+		
 		self.details_panel.rarity:SetPosition(0, RARITY_POS_LONE)
 	end
 
@@ -217,17 +214,14 @@ function SkinsScreen:BuildDetailsPanel()
     self.details_frame:SetPosition(-400,0,0)
 
 	self.details_bg = self.details_frame:AddChild(Image("images/serverbrowser.xml", "side_panel.tex"))
-	self.details_bg:SetScale(-.66, -.7)
-	self.details_bg:SetPosition(5, 5)
-
+	self.details_bg:SetScale(.66, .72)
+	self.details_bg:SetPosition(5, 8)
 
 	self.dressup_hanger = self.details_bg:AddChild(Image("images/lobbyscreen.xml", "customization_coming_imageonwood.tex"))
-	self.dressup_hanger:SetScale(-1, -1)
+	self.dressup_hanger:SetScale(1, 1)
 	self.dressup_hanger:SetPosition(0, 0)
 
-
 	self.details_panel = self.fixed_root:AddChild(Widget("details-widget"))
-	
     self.details_panel:SetPosition(-400, -0, 0)
 
     self.details_panel.shadow = self.details_panel:AddChild(Image("images/frontend.xml", "char_shadow.tex"))

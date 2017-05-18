@@ -820,8 +820,6 @@ return {
 		SPIDER_DROPPER = "They come from above.",	--White spider that comes from the roof
 		NIGHTMARELIGHT = "Light without fire is unnatural.",	--Lights that activate during nightmare.
 		GREENGEM = "This one feels really light.",
-		RELIC = "I guess someone lived here before.",	--Fixed relic
-		RUINS_RUBBLE = "That could probably be fixed up.",	--Broken relic
 		MULTITOOL_AXE_PICKAXE = "It's so useful!",	--Works as axe and pickaxe
 		ORANGESTAFF = "It gives me a headache.",	--Teleports player.
 		YELLOWAMULET = "It seems to absorb the darkness around it.",	--Emits light, player walks faster.
@@ -916,13 +914,14 @@ return {
             OFF = "This dumb mushroom's not lighting up.",
             BURNT = "C'mon, you saw that coming.",
         },
+        SLEEPBOMB = "Who's ready for a nap!",
         MUSHROOMBOMB = "She's gonna blow!",
         SHROOM_SKIN = "Ew! Burn that!",
         TOADSTOOL_CAP =
         {
             EMPTY = "It's a hole, what do you want from me?",
             INGROUND = "What is that? It's smelly.",
-            GENERIC = "A purple one! I want it!",
+            GENERIC = "A mutant mushroom! I want it!",
         },
         TOADSTOOL =
         {
@@ -1201,6 +1200,10 @@ return {
         CHESSPIECE_FORMAL = "I'm not afraid of that guy. He doesn't even have arms!",
         CHESSPIECE_HORNUCOPIA = "Ouchhh! I think I chipped a tooth.",
         CHESSPIECE_PIPE = "I prefer smokey fires.",
+        CHESSPIECE_DEERCLOPS = "We kicked its butt.",
+        CHESSPIECE_BEARGER = "Those are some pointy teeth.",
+        CHESSPIECE_MOOSEGOOSE = "Looks as dumb as the real thing.",
+        CHESSPIECE_DRAGONFLY = "I think... I think I understand art.",
         CHESSJUNK1 = "Dead windup horsey.",
         CHESSJUNK2 = "Dead windup priest.",
         CHESSJUNK3 = "Dead windup castle.",
@@ -1648,11 +1651,8 @@ return {
 			GENERIC = "It's a burnable clump of reeds.",
 			PICKED = "It's just reed stubble.",
 		},
-        RELIC = 
-        {
-            GENERIC = "Old furniture.",
-            BROKEN = "Bits and pieces, pieces and bits.",
-        },
+        RELIC = "Old furniture.",
+        RUINS_RUBBLE = "That could probably be fixed up.",
         RUBBLE = "Broken furniture.",
 		RESURRECTIONSTONE = "I'll touch it when I'm good and ready.",
 		ROBIN =

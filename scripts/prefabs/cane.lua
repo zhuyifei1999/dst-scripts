@@ -39,7 +39,6 @@ local function fn()
 
     inst.AnimState:SetBank("cane")
     inst.AnimState:SetBuild("swap_cane")
-    inst.AnimState:OverrideSymbol("grass", "swap_cane", "grass")
     inst.AnimState:PlayAnimation("idle")
 
     inst.entity:SetPristine()

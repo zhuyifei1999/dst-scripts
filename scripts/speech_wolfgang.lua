@@ -863,13 +863,14 @@ return {
             OFF = "Big mushy-room make little light, maybe.",
             BURNT = "Little light burnt too bright?",
         },
+        SLEEPBOMB = "Is bedtime for flinging.",
         MUSHROOMBOMB = "Is dangerous mushy-boom!",
         SHROOM_SKIN = "Is squishy yucky frogman skin!",
         TOADSTOOL_CAP =
         {
             EMPTY = "Is little dirt hole.",
             INGROUND = "Squishy thing in ground.",
-            GENERIC = "Tiny purple mushy-room is no threat to Wolfgang!",
+            GENERIC = "Tiny mushy-room is no threat to Wolfgang!",
         },
         TOADSTOOL =
         {
@@ -1151,6 +1152,10 @@ return {
         CHESSPIECE_FORMAL = "Looks very not-mighty.",
         CHESSPIECE_HORNUCOPIA = "Why stone food hurt mouth?",
         CHESSPIECE_PIPE = "Might be good for lifting!",
+        CHESSPIECE_DEERCLOPS = "Is scary monster statue.",
+        CHESSPIECE_BEARGER = "Terrifying beast statue!",
+        CHESSPIECE_MOOSEGOOSE = "Bad monster made of stone.",
+        CHESSPIECE_DRAGONFLY = "Is fiery killbeast, but stone.",
         CHESSJUNK1 = "Metal junk.",
         CHESSJUNK2 = "Metal junk.",
         CHESSJUNK3 = "Metal junk.",
@@ -1575,7 +1580,7 @@ return {
             GENERIC = "Tiny rabbit! Hide from me!",
             HELD = "He is my friend.",
         },
-        RABBITHOLE = 
+        RABBITHOLE =
         {
             GENERIC = "You can not hide forever, jumping meat!",
             SPRING = "Is busy time in rabbit home.",
@@ -1596,11 +1601,6 @@ return {
             BURNING = "Not good!",
             GENERIC = "Is watery grass.",
             PICKED = "Watery grass has been beaten!",
-        },
-        RELIC = 
-        {
-            GENERIC = "House stuff.",
-            BROKEN = "Smashed all the way!",
         },
         RUBBLE = "Broken house stuff.",
         RESURRECTIONSTONE = "Hop on rock!",
