@@ -1331,11 +1331,8 @@ STRINGS =
         CHESSPIECE_PIPE = "Bubble Pipe Carving",
         CHESSPIECE_DEERCLOPS = "Deerclops Figure",
         CHESSPIECE_BEARGER = "Bearger Figure",
-        CHESSPIECE_MOOSEGOOSE = 
-        {
-            MOOSEGOOSE = "Moose Figure",
-            MOOSEGOOSE_ALT = "Goose Figure",
-        },
+        CHESSPIECE_MOOSEGOOSE = "Moose Figure",
+        CHESSPIECE_MOOSEGOOSE_ALT = "Goose Figure",
         CHESSPIECE_DRAGONFLY = "Dragonfly Figure",
 
         CHESSPIECE_PAWN_BUILDER = "Pawn Figure",
