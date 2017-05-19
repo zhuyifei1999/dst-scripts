@@ -725,7 +725,7 @@ local function OnLoad(inst, data)
         inst,
         (healthpct > PHASE2_HEALTH and 1) or
         (healthpct > PHASE3_HEALTH and 2) or
-        (not inst.dark or healthpct > PHASE4_HEALTH and 3) or
+        ((not inst.dark or healthpct > PHASE4_HEALTH) and 3) or
         4
     )
 
