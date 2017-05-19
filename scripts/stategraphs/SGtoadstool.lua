@@ -946,7 +946,7 @@ end
 CommonStates.AddFrozenStates(states,
     function(inst) --onoverridesymbols
         if inst.level > 0 then
-            inst.AnimState:OverrideSymbol("swap_toad_frozen", inst:IsPoisoned() and "toadstool_dark_upg_build" or "toadstool_upg_build", "swap_toad_frozen"..tostring(inst.level))
+            inst.AnimState:OverrideSymbol("swap_toad_frozen", inst.dark and "toadstool_dark_upg_build" or "toadstool_upg_build", "swap_toad_frozen"..tostring(inst.level))
         else
             inst.AnimState:ClearOverrideSymbol("swap_toad_frozen")
         end
