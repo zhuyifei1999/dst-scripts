@@ -664,6 +664,7 @@ local PHASE3_HEALTH = .4
 local PHASE4_HEALTH = .2 --Only triggered for dark version
 
 local function SetPhaseLevel(inst, phase)
+    inst.phase = phase
     inst.pound_rnd = phase > 3 and inst.dark
     phase = math.min(3, phase)
     inst.sporebomb_targets = TUNING.TOADSTOOL_SPOREBOMB_TARGETS_PHASE[phase]
@@ -683,51 +684,64 @@ local function DropShroomSkin(inst)
 end
 
 local function EnterPhase2Trigger(inst)
-    SetPhaseLevel(inst, 2)
-    if inst.components.health:GetPercent() > PHASE3_HEALTH then
-        DropShroomSkin(inst)
+    if inst.phase < 2 then
+        SetPhaseLevel(inst, 2)
+        if inst.components.health:GetPercent() > PHASE3_HEALTH then
+            DropShroomSkin(inst)
+        end
+        inst:PushEvent("roar")
     end
-    inst:PushEvent("roar")
 end
 
 local function EnterPhase3Trigger(inst)
-    SetPhaseLevel(inst, 3)
-    if not inst.components.health:IsDead() then
-        DropShroomSkin(inst)
+    if inst.phase < 3 then
+        SetPhaseLevel(inst, 3)
+        if not inst.components.health:IsDead() then
+            DropShroomSkin(inst)
+        end
+        inst:PushEvent("roar")
     end
-    inst:PushEvent("roar")
 end
 
 local function EnterPhase3TriggerDark(inst)
-    SetPhaseLevel(inst, 3)
-    if inst.components.health:GetPercent() > PHASE2_HEALTH then
-        DropShroomSkin(inst)
+    if inst.phase < 3 then
+        SetPhaseLevel(inst, 3)
+        if inst.components.health:GetPercent() > PHASE4_HEALTH then
+            DropShroomSkin(inst)
+        end
+        inst:PushEvent("roar")
     end
-    inst:PushEvent("roar")
 end
 
 local function EnterPhase4TriggerDark(inst)
-    SetPhaseLevel(inst, 4)
-    if not inst.components.health:IsDead() then
-        DropShroomSkin(inst)
+    if inst.phase < 4 then
+        SetPhaseLevel(inst, 4)
+        if not inst.components.health:IsDead() then
+            DropShroomSkin(inst)
+        end
+        inst:PushEvent("roar")
     end
-    inst:PushEvent("roar")
 end
 
 local function OnSave(inst, data)
+    data.phase = inst.phase
     data.engaged = inst.engaged or nil
     data.poundspeed = inst.pound_speed > 0 and math.floor(inst.pound_speed) or nil
 end
 
 local function OnLoad(inst, data)
-    local healthpct = inst.components.health:GetPercent()
-    SetPhaseLevel(
-        inst,
-        (healthpct > PHASE2_HEALTH and 1) or
-        (healthpct > PHASE3_HEALTH and 2) or
-        ((not inst.dark or healthpct > PHASE4_HEALTH) and 3) or
-        4
-    )
+    if data ~= nil and data.phase ~= nil then
+        SetPhaseLevel(inst, data.phase)
+    else
+        local healthpct = inst.components.health:GetPercent()
+        SetPhaseLevel(
+            inst,
+            (healthpct > PHASE2_HEALTH and 1) or
+            (healthpct > PHASE3_HEALTH and 2) or
+            ((not inst.dark or healthpct > PHASE4_HEALTH) and 3) or
+            4
+        )
+    end
 
     if data ~= nil then
         if data.poundspeed ~= nil then
@@ -923,6 +937,7 @@ local function common_fn(build)
 
     inst.hit_recovery = TUNING.TOADSTOOL_HIT_RECOVERY_LVL[0]
 
+    inst.phase = 1
     inst.level = 0
     inst._numlinks = 0
     inst._links = {}

@@ -1960,6 +1960,7 @@ return {
         WORMHOLE_LIMITED = "Is not looking very good.",
         ARMORRUINS = "Protect me? I don't need it!",
         ARMORSKELETON = "Is scary strong bones.",
+        SKELETONHAT = "Puts scary pictures in Wolfgang's head.",
         BISHOP_NIGHTMARE = "Is angry man. Should relax.",
         GREENAMULET = "Is so light! Feels like nothingness!", 
         GREENGEM = "Is pretty and cannot be crushed. Like me!",

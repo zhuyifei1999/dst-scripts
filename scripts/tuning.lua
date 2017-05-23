@@ -1320,10 +1320,11 @@ function Tune(overrides)
         MANDRAKE_SLEEP_RANGE = 15,
         MANDRAKE_SLEEP_RANGE_COOKED = 25,
         KNOCKOUT_SLEEP_TIME = 30,
+        SLEEPBOMB_DURATION = 20,
 
         GOLD_VALUES =
         {
-			ANTLION = 1,
+            ANTLION = 1,
             MEAT = 1,
             RAREMEAT = 5,
             TRINKETS =

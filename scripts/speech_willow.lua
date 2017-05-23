@@ -799,6 +799,7 @@ return {
 		THULECITE = "I don't think it would burn.",
 		ARMORRUINS = "Human beings probably shouldn't wear this.",
 		ARMORSKELETON = "Can't hit me in this thing!",
+		SKELETONHAT = "I've got a headache just looking at it.",
 		RUINS_BAT = "This will keep the nasties at bay.",
 		RUINSHAT = "It seems like there's something flowing through it.",
 

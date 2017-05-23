@@ -8,7 +8,7 @@ local FLEE_DELAY = 10
 
 local ToadstoolBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
-    self.channeling = false
+    self.timetochanneling = nil
 end)
 
 local function GetHomePos(inst)
@@ -22,8 +22,16 @@ local function ShouldChannel(self)
             not self.inst.components.timer:TimerExists("mushroomsprout_cd")) then
         return true
     end
-    self.channeling = false
+    self.timetochanneling = nil
     return false
+end
+
+local function ShouldTryReturningToHole(self)
+    if self.timetochanneling == nil then
+        self.timetochanneling = GetTime() + MAX_CHANNEL_LEASH_TIME
+        return true
+    end
+    return self.timetochanneling > 0 and GetTime() < self.timetochanneling
 end
 
 function ToadstoolBrain:OnStart()
@@ -31,13 +39,10 @@ function ToadstoolBrain:OnStart()
     {
         WhileNode(function() return ShouldChannel(self) end, "Channel",
             PriorityNode{
-                WhileNode(function() return not self.channeling end, "ReturnToHole",
-                    FailIfSuccessDecorator(ParallelNodeAny{
-                        Leash(self.inst, GetHomePos, 8, 6),
-                        WaitNode(MAX_CHANNEL_LEASH_TIME),
-                    })),
+                WhileNode(function() return ShouldTryReturningToHole(self) end, "ReturnToHole",
+                    Leash(self.inst, GetHomePos, 8, 6)),
                 ActionNode(function()
-                    self.channeling = true
+                    self.timetochanneling = 0
                     self.inst:PushEvent("startchanneling")
                 end),
             }, 1),

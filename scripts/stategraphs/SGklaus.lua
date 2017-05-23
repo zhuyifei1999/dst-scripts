@@ -724,7 +724,7 @@ local states =
 
         ontimeout = function(inst)
             local deer = inst.sg.statemem.deer
-            if deer ~= nil and deer:IsValid() and deer.sg ~= nil then
+            if deer ~= nil and deer:IsValid() and inst.components.commander:IsSoldier(deer) and deer.sg ~= nil then
                 if deer.sg:HasStateTag("casting") then
                     inst.sg.statemem.commanding = true
                     inst.sg:GoToState("command_loop", deer)

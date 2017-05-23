@@ -762,6 +762,7 @@ return {
 		THULECITE = "Its presence marks the edge of the unknown.",
 		ARMORRUINS = "A reprieve from death.",
 		ARMORSKELETON = "I shall wrap myself in death's sweet embrace.",
+		SKELETONHAT = "A tortured mind dwelled within.",
 		RUINS_BAT = "It possesses the power of the ancients.",
 		RUINSHAT = "Abigail would've loved this crown.",
 		NIGHTMARE_TIMEPIECE = --Keeps track of the nightmare cycle

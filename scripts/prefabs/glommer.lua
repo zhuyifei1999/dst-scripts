@@ -27,23 +27,19 @@ local WAKE_TO_FOLLOW_DISTANCE = 14
 local SLEEP_NEAR_LEADER_DISTANCE = 7
 
 local function ShouldWakeUp(inst)
-    return DefaultWakeTest(inst) or not inst.components.follower:IsNearLeader(WAKE_TO_FOLLOW_DISTANCE)
+    return DefaultWakeTest(inst)
+        or not inst.components.follower:IsNearLeader(WAKE_TO_FOLLOW_DISTANCE)
 end
 
 local function ShouldSleep(inst)
-    --print(inst, "ShouldSleep", DefaultSleepTest(inst), not inst.sg:HasStateTag("open"), inst.components.follower:IsNearLeader(SLEEP_NEAR_LEADER_DISTANCE))
     return DefaultSleepTest(inst) 
-    and inst.components.follower:IsNearLeader(SLEEP_NEAR_LEADER_DISTANCE) 
-    and not TheWorld.state.isfullmoon
-end
-
-local function LeaveWorld(inst)
-    inst:Remove()
+        and inst.components.follower:IsNearLeader(SLEEP_NEAR_LEADER_DISTANCE) 
+        and not TheWorld.state.isfullmoon
 end
 
 local function OnEntitySleep(inst)
     if inst.ShouldLeaveWorld then
-        LeaveWorld(inst)
+        inst:Remove()
     end
 end
 
@@ -52,7 +48,7 @@ local function OnSave(inst, data)
 end
 
 local function OnLoad(inst, data)
-    if data then
+    if data ~= nil then
         inst.ShouldLeaveWorld = data.ShouldLeaveWorld
     end
 end
@@ -62,13 +58,11 @@ local function OnSpawnFuel(inst, fuel)
 end
 
 local function OnStopFollowing(inst)
-    --print("glommer - OnStopFollowing")
     inst:RemoveTag("companion")
 end
 
 local function OnStartFollowing(inst)
-    --print("glommer - OnStartFollowing")
-    if (inst.components.follower.leader:HasTag("glommerflower")) then 
+    if inst.components.follower.leader:HasTag("glommerflower") then 
         inst:AddTag("companion")
     end
 end
@@ -116,7 +110,7 @@ local function fn()
     inst:AddComponent("combat")
     inst:AddComponent("knownlocations")
     inst:AddComponent("lootdropper")
-    inst.components.lootdropper:SetChanceLootTable('glommer') 
+    inst.components.lootdropper:SetChanceLootTable('glommer')
 
     inst:AddComponent("sleeper")
     inst.components.sleeper:SetResistance(3)

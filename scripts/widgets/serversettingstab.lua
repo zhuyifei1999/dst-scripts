@@ -242,6 +242,9 @@ local ServerSettingsTab = Class(Widget, function(self, slotdata, servercreations
 
     self.default_focus = self.scroll_list
     self.focus_forward = self.scroll_list
+
+    --Internal data
+    self.encode_user_path = true
 end)
 
 function ServerSettingsTab:RefreshPrivacyButtons()
@@ -434,11 +437,13 @@ function ServerSettingsTab:UpdateDetails(slotnum, prevslot, fromDelete)
         self.server_pw.textbox:SetString(self.slotdata[slotnum] and self.slotdata[slotnum].server_pw or "")
         self.server_desc.textbox:SetString(self.slotdata[slotnum] and self.slotdata[slotnum].server_desc or "")
         self.privacy_type.buttons:SetSelected(self.slotdata[slotnum] and self.slotdata[slotnum].privacy_type or PRIVACY_TYPE.PUBLIC)
+        self.encode_user_path = true
 
         self:SetServerIntention(self.slotdata[slotnum] and self.slotdata[slotnum].intention or nil)
         self:SetOnlineWidgets(online)
 
         self.game_mode.spinner:Enable()
+
     else -- Save data
         local server_data = SaveGameIndex:GetSlotServerData(slotnum)
         if server_data ~= nil then
@@ -457,6 +462,7 @@ function ServerSettingsTab:UpdateDetails(slotnum, prevslot, fromDelete)
             self.server_pw.textbox:SetString(self.slotdata[slotnum] and self.slotdata[slotnum].password or server_data.password)
             self.server_desc.textbox:SetString(self.slotdata[slotnum] and self.slotdata[slotnum].description or server_data.description)
             self.privacy_type.buttons:SetSelected(self.slotdata[slotnum] and self.slotdata[slotnum].privacy_type or server_data.privacy_type)
+            self.encode_user_path = (self.slotdata[slotnum] or server_data).encode_user_path == true
 
             if self.privacy_type.buttons:GetSelectedData() == PRIVACY_TYPE.CLAN then
                 local claninfo = self.slotdata[slotnum] and self.slotdata[slotnum].clan or server_data.clan
@@ -468,6 +474,7 @@ function ServerSettingsTab:UpdateDetails(slotnum, prevslot, fromDelete)
             self:SetServerIntention(self.slotdata[slotnum] and self.slotdata[slotnum].intention or server_data.intention)
             self:SetOnlineWidgets(server_data.online_mode) -- always load from the server data
         else
+            self.encode_user_path = true
             self:SetServerIntention(nil)
         end
 
@@ -520,12 +527,17 @@ function ServerSettingsTab:GetOnlineMode()
 	return self.online_mode.spinner:GetSelectedData()
 end
 
+function ServerSettingsTab:GetEncodeUserPath()
+    return self.encode_user_path
+end
+
 function ServerSettingsTab:GetServerData()
     return {
         intention = self.server_intention.button.data,
         pvp = self.pvp.spinner:GetSelectedData(),
         game_mode = self:GetGameMode(),
         online_mode = self:GetOnlineMode(),
+        encode_user_path = self:GetEncodeUserPath(),
         max_players = self:GetMaxPlayers(),
         name = self:GetServerName(),
         password = self:GetPassword(),
