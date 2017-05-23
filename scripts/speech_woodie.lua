@@ -721,6 +721,7 @@ return {
 		THULECITE = "It's the wood of the caves!",
 		ARMORRUINS = "That'll stop the hurt.",
 		ARMORSKELETON = "Sticks to yer ribs.",
+		SKELETONHAT = "That right there's a cursed object, eh?",
 		RUINS_BAT = "Metal on a stick.",
 		RUINSHAT = "It's no toque, but it'll do.",
 		NIGHTMARE_TIMEPIECE = --Keeps track of the nightmare cycle

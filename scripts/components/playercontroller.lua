@@ -2061,7 +2061,12 @@ local function UpdateControllerInteractionTarget(self, dt, x, y, z, dirx, dirz)
 
                 --print(v, angle_component, dist_component, mult, add, score)
 
-                if score <= target_score then
+                if score < target_score or
+                    (   score == target_score and
+                        (   (target ~= nil and not (target.CanMouseThrough ~= nil and target:CanMouseThrough())) or
+                            (v.CanMouseThrough ~= nil and v:CanMouseThrough())
+                        )
+                    ) then
                     --skip
                 elseif canexamine and v:HasTag("inspectable") then
                     target = v

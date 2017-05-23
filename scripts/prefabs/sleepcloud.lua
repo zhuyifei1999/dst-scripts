@@ -9,7 +9,6 @@ local prefabs =
     "sleepcloud_overlay",
 }
 
-local CLOUD_TIME = 10
 local TICK_PERIOD = .5
 
 local TICK_VALUE = 10
@@ -325,7 +324,7 @@ local function fn()
     inst:ListenForEvent("animover", OnAnimOver)
 
     inst:AddComponent("timer")
-    inst.components.timer:StartTimer("disperse", CLOUD_TIME)
+    inst.components.timer:StartTimer("disperse", TUNING.SLEEPBOMB_DURATION)
 
     inst:ListenForEvent("timerdone", OnTimerDone)
 

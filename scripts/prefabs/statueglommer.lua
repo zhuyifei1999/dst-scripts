@@ -2,7 +2,6 @@ local assets =
 {
     Asset("ANIM", "anim/glommer_statue.zip"),
     Asset("ANIM", "anim/glommer_swap_flower.zip"),
-	Asset("MINIMAP_IMAGE", "statue_glommer"),
 }
 
 local prefabs =
@@ -69,23 +68,14 @@ local function OnMakeFull(inst)
 end
 
 local function SpawnGlommer(inst)
-    --Get spawn point
     local x, y, z = inst.Transform:GetWorldPosition()
-    local spawn_pt = Vector3(x, y, z)
-    local theta = math.random() * 2 * PI
-    local offset = FindWalkableOffset(spawn_pt, theta, 35, 12, true)
-    if offset ~= nil then
-        spawn_pt.x = spawn_pt.x + offset.x
-        spawn_pt.y = spawn_pt.y + offset.y
-        spawn_pt.z = spawn_pt.z + offset.z
-    end
-
+    local offset = FindWalkableOffset(Vector3(x, y, z), math.random() * 2 * PI, 35, 12, true)
     local glommer = SpawnPrefab("glommer")
     if glommer ~= nil then
         if glommer.components.follower.leader ~= inst then
             glommer.components.follower:SetLeader(inst)
         end
-        glommer.Physics:Teleport(spawn_pt:Get())
+        glommer.Physics:Teleport(offset ~= nil and offset.x + x or x, 0, offset ~= nil and offset.z + z or z)
         glommer:FacePoint(x, y, z)
         return glommer
     end
@@ -99,11 +89,14 @@ local function SpawnGland(inst)
             inst.islighton:set(true)
             OnLightDirty(inst)
         end
+        inst.spawned = true
         return
-    elseif inst.components.timer:TimerExists("Cooldown") then
-        --picked recently
+    elseif inst.spawned then
+        --already spawned this fullmoon
         return
     end
+
+    inst.spawned = true
 
     local gland = TheSim:FindFirstEntityWithTag("glommerflower")
     if gland ~= nil then
@@ -124,6 +117,7 @@ local function SpawnGland(inst)
 end
 
 local function RemoveGland(inst)
+    inst.spawned = false
     inst.components.pickable:MakeEmpty()
 
     local gland = TheSim:FindFirstEntityWithTag("glommerflower")
@@ -163,8 +157,6 @@ local function OnPicked(inst, picker, loot)
         glommer.components.follower:StopFollowing()
         glommer.components.follower:SetLeader(loot)
     end
-
-    inst.components.timer:StartTimer("Cooldown", TUNING.TOTAL_DAY_TIME * 3)
 end
 
 local function OnWorked(inst, worker, workleft)
@@ -182,13 +174,22 @@ end
 
 local function OnSave(inst, data)
     data.worked = inst.components.workable == nil or nil
+    data.spawned = inst.spawned or nil
 end
 
 local function OnLoad(inst, data)
-    if data ~= nil and data.worked and inst.components.workable ~= nil then
-        inst.AnimState:PlayAnimation("low")
-        inst:RemoveComponent("workable")
-        inst:RemoveComponent("lootdropper")
+    if data ~= nil then
+        if data.worked and inst.components.workable ~= nil then
+            inst.AnimState:PlayAnimation("low")
+            inst:RemoveComponent("workable")
+            inst:RemoveComponent("lootdropper")
+        end
+        inst.spawned = data.spawned == true
+    end
+    if inst.components.pickable.canbepicked and not inst.islighton:value() then
+        inst.islighton:set(true)
+        inst.lightval:set(LIGHT_FRAMES)
+        OnLightDirty(inst)
     end
 end
 
@@ -221,14 +222,14 @@ local function fn()
     MakeObstaclePhysics(inst, .75)
 
     inst.MiniMapEntity:SetPriority(5)
-    inst.MiniMapEntity:SetIcon("statue_glommer.png")
+    inst.MiniMapEntity:SetIcon("statueglommer.png")
 
     inst.AnimState:SetBank("glommer_statue")
     inst.AnimState:SetBuild("glommer_statue")
     inst.AnimState:PlayAnimation("full")
 
     inst.Light:SetRadius(0)
-    inst.Light:SetIntensity(0.9)
+    inst.Light:SetIntensity(.9)
     inst.Light:SetFalloff(0.3)
     inst.Light:SetColour(180 / 255, 195 / 255, 150 / 255)
     inst.Light:Enable(false)
@@ -251,7 +252,6 @@ local function fn()
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = getstatus
 
-    inst:AddComponent("timer")
     inst:AddComponent("leader")
     inst.components.leader.onremovefollower = OnLoseChild
 
@@ -274,6 +274,7 @@ local function fn()
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
 
+    inst.spawned = false
     inst:DoTaskInTime(0, OnInit)
 
     MakeHauntableWork(inst)

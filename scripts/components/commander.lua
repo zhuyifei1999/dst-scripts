@@ -31,6 +31,10 @@ function Commander:GetAllSoldiers()
     return soldiers
 end
 
+function Commander:IsSoldier(ent)
+    return self.soldiers[ent] ~= nil
+end
+
 function Commander:ShareTargetToAllSoldiers(target)
     for k, v in pairs(self.soldiers) do
         if k.components.combat ~= nil then

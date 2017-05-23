@@ -4,11 +4,6 @@ local assets =
     Asset("INV_IMAGE", "glommerflower_dead"),
 }
 
-local prefabs =
-{
-    "glommer",
-}
-
 local function OnLoseChild(inst, child)
     if not inst:HasTag("glommerflower") then
         return
@@ -28,9 +23,13 @@ local function OnLoseChild(inst, child)
         local owner = inst.components.inventoryitem.owner
         inst.components.inventoryitem:RemoveFromOwner(true)
         if owner.components.container ~= nil then
+            owner.components.container.ignoresound = true
             owner.components.container:GiveItem(inst)
+            owner.components.container.ignoresound = false
         elseif owner.components.inventory ~= nil then
+            owner.components.inventory.ignoresound = true
             owner.components.inventory:GiveItem(inst)
+            owner.components.inventory.ignoresound = false
         end
     end
 
@@ -95,7 +94,6 @@ local function fn()
     inst:AddComponent("inspectable")
     inst.components.inspectable.getstatus = getstatus
     inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem:ChangeImageName("glommerflower")
 
     MakeHauntableLaunch(inst)
 
@@ -107,4 +105,4 @@ local function fn()
     return inst
 end
 
-return Prefab("glommerflower", fn, assets, prefabs)
+return Prefab("glommerflower", fn, assets)

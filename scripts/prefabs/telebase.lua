@@ -188,8 +188,6 @@ local function commonfn()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
-    MakeInventoryPhysics(inst)
-
     inst.MiniMapEntity:SetIcon("telebase.png")
 
     inst:AddTag("telebase")

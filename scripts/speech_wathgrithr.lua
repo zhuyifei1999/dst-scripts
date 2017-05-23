@@ -490,6 +490,7 @@ return {
         THULECITE = "This material possesses gargantuan strength!",
         ARMORRUINS = "Armor fit for Odin himself!",
         ARMORSKELETON = "What devilish armor!",
+        SKELETONHAT = "Immortal's sight was not meant for thee.",
         RUINS_BAT = "A warrior's wand!",
         RUINSHAT = "A crown... that fights!",
         NIGHTMARE_TIMEPIECE =

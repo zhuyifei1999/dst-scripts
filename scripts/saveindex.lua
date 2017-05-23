@@ -359,6 +359,10 @@ function SaveIndex:OnGenerateNewWorld(saveslot, savedata, session_identifier, cb
         local slotdata = self.data.slots[self.current_slot]
         slotdata.session_id = session_identifier
 
+        if slotdata.server ~= nil then
+            slotdata.server.encode_user_path = TheNet:TryDefaultEncodeUserPath()
+        end
+
         self:Save(cb)
     end
 
@@ -494,16 +498,18 @@ function SaveIndex:LoadSlotCharacter(slot)
             clusterSaveIndex:LoadClusterSlot(slot, "Master", function()
                 local slotdata = clusterSaveIndex.data.slots[clusterSaveIndex.current_slot]
                 if slotdata.session_id ~= nil then
-                    local shard, snapshot = TheNet:GetPlayerSaveLocationInClusterSlot(slot, slotdata.session_id, online_mode)
+                    local encode_user_path = slotdata.server.encode_user_path == true
+                    local shard, snapshot = TheNet:GetPlayerSaveLocationInClusterSlot(slot, slotdata.session_id, online_mode, encode_user_path)
                     if shard ~= nil and snapshot ~= nil then
                         if shard ~= "Master" then
                             clusterSaveIndex = SaveIndex()
                             clusterSaveIndex:LoadClusterSlot(slot, shard, function()
                                 slotdata = clusterSaveIndex.data.slots[clusterSaveIndex.current_slot]
+                                encode_user_path = slotdata.server.encode_user_path == true
                             end)
                         end
                         if slotdata.session_id ~= nil then
-                            local file = TheNet:GetUserSessionFileInClusterSlot(slot, shard, slotdata.session_id, snapshot, online_mode)
+                            local file = TheNet:GetUserSessionFileInClusterSlot(slot, shard, slotdata.session_id, snapshot, online_mode, encode_user_path)
                             if file ~= nil then
                                 TheNet:DeserializeUserSessionInClusterSlot(slot, shard ,file, onreadusersession)
                             end
@@ -512,7 +518,8 @@ function SaveIndex:LoadSlotCharacter(slot)
                 end
             end)
         else
-            local file = TheNet:GetUserSessionFile(slotdata.session_id, nil, online_mode)
+            local encode_user_path = slotdata.server.encode_user_path == true
+            local file = TheNet:GetUserSessionFile(slotdata.session_id, nil, online_mode, encode_user_path)
             if file ~= nil then
                 TheNet:DeserializeUserSession(file, onreadusersession)
             end

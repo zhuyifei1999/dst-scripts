@@ -24,11 +24,16 @@ function ShadowSubmissive:OnRemoveFromEntity()
 end
 
 function ShadowSubmissive:ShouldSubmitToTarget(target)
-    return target ~= nil and target._shadowdsubmissive_task == nil and self:TargetHasDominance(target)
+    return target ~= nil
+        and target._shadowdsubmissive_task == nil
+        and self:TargetHasDominance(target)
 end
 
 function ShadowSubmissive:TargetHasDominance(target)
-    return target ~= nil and target.components.inventory ~= nil and target.components.inventory:EquipHasTag("shadowdominance")
+    return target ~= nil
+        and target.components.inventory ~= nil
+        and target:IsValid()
+        and target.components.inventory:EquipHasTag("shadowdominance")
 end
 
 return ShadowSubmissive

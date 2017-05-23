@@ -429,13 +429,14 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
                 self:Disable()
 
                 local is_multi_level = SaveGameIndex:IsSlotMultiLevel(self.saveslot)
+                local encode_user_path = serverdata.encode_user_path == true
                 local launchingServerPopup = nil
 
                 if is_multi_level then
                     ShowLoading()
                     launchingServerPopup = LaunchingServerPopup({}, 
                         function()
-                            local start_worked = TheNet:StartClient(DEFAULT_JOIN_IP, 10999, -1, self.server_settings_tab:GetServerData().password)
+                            local start_worked = TheNet:StartClient(DEFAULT_JOIN_IP, 10999, -1, serverdata.password)
                             if start_worked then
                                 DisableAllDLC()
                             end
@@ -449,7 +450,7 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
                 end
 
                 -- Note: StartDedicatedServers launches both dedicated and non-dedicated servers... ~gjans
-                if not TheSystemService:StartDedicatedServers(self.saveslot, is_multi_level, cluster_info) then
+                if not TheSystemService:StartDedicatedServers(self.saveslot, is_multi_level, cluster_info, encode_user_path) then
                     if launchingServerPopup ~= nil then
                         launchingServerPopup:SetErrorStartingServers()
                     end

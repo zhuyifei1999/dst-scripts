@@ -186,6 +186,26 @@ end
 function MainScreen:OnRawKey(key, down)
 end
 
+function MainScreen:OnControl(control, down)
+    if MainScreen._base.OnControl(self,control, down) then return true end
+
+    if DEBUG_MODE then
+        if control == CONTROL_PAUSE then
+            -- Use gamepad start button to host game so you can keep mashing
+            -- start to get into game.
+            self:OnHostButton()
+            return true
+
+        elseif control == CONTROL_MAP then
+            -- Make gamepad back a compliment to start: join instead of host.
+            self:OnJoinButton()
+            return true
+        end
+    end
+
+    return false
+end
+
 local PLAY_BUTTON_FADE_TIME = 1.0
 
 -- MULTIPLAYER PLAY

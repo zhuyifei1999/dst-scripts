@@ -135,8 +135,13 @@ local function SpawnQueen(inst, should_duplicate)
             and not map:IsPointNearHole(Vector3(x1, 0, z1))
     end)
 
+    if offs ~= nil then
+        x = x + offs.x
+        z = z + offs.z
+    end
+
     local queen = SpawnPrefab("spiderqueen")
-    queen.Transform:SetPosition(x + (offs.x or 0), 0, z + (offs.z or 0))
+    queen.Transform:SetPosition(x, 0, z)
     queen.sg:GoToState("birth")
 
     if not should_duplicate then

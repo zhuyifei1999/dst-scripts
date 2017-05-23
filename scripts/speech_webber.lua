@@ -508,6 +508,7 @@ return {
 		THULECITE = "Fancy rocks!",
 		ARMORRUINS = "Nice and lightweight.",
 		ARMORSKELETON = "Rattle rattle.",
+		SKELETONHAT = "It's not very comfy.",
 		RUINS_BAT = "We will, we will, smash you!",
 		RUINSHAT = "And now we are king.",
 
