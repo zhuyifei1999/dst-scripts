@@ -107,7 +107,7 @@ local function pickup(inst, owner)
         return
     end
     local x, y, z = owner.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, TUNING.ORANGEAMULET_RANGE, { "_inventoryitem" }, { "INLIMBO", "NOCLICK", "catchable", "fire" })
+    local ents = TheSim:FindEntities(x, y, z, TUNING.ORANGEAMULET_RANGE, { "_inventoryitem" }, { "INLIMBO", "NOCLICK", "catchable", "fire", "minesprung", "mineactive" })
     for i, v in ipairs(ents) do
         if v.components.inventoryitem ~= nil and
             v.components.inventoryitem.canbepickedup and

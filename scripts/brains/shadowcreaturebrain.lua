@@ -49,6 +49,7 @@ end
 
 local function ShouldHarass(self)
     return self._harasstarget ~= nil
+        and self._harasstarget:IsValid()
         and (self.inst.components.combat.nextbattlecrytime == nil or
             self.inst.components.combat.nextbattlecrytime < GetTime())
 end
@@ -80,7 +81,7 @@ function ShadowCreatureBrain:OnStart()
                     end
                 end),
             }, .25)),
-        WhileNode(function() return self._harasstarget ~= nil end, "LoiterAndHarass",
+        WhileNode(function() return self._harasstarget ~= nil and self._harasstarget:IsValid() end, "LoiterAndHarass",
             Wander(self.inst, function() return self._harasstarget:GetPosition() end, 20, { minwaittime = 0, randwaittime = .3 }, function() return GetHarassWanderDir(self) end)),
         Follow(self.inst, function() return self.mytarget end, MIN_FOLLOW, MED_FOLLOW, MAX_FOLLOW),
         Wander(self.inst, function() return self.mytarget ~= nil and self.mytarget:GetPosition() or nil end, 20),

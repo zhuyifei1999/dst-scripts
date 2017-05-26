@@ -354,7 +354,7 @@ function cane_init_fn(inst, build_name)
         return
     end
 
-    inst.AnimState:SetSkin(build_name, "cane")
+    inst.AnimState:SetSkin(build_name, "swap_cane")
     inst.AnimState:OverrideSymbol("grass", "swap_cane", "grass")
     inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
 
