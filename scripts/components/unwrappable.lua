@@ -12,6 +12,7 @@ local Unwrappable = Class(function(self, inst)
     self.canbeunwrapped = true
     self.onwrappedfn = nil
     self.onunwrappedfn = nil
+    self.origin = nil
 
     --V2C: Recommended to explicitly add tags to prefab pristine state
     --On construciton, "unwrappable" tag is added by default
@@ -31,6 +32,7 @@ end
 
 function Unwrappable:WrapItems(items, doer)
     if #items > 0 then
+        self.origin = TheWorld.meta.session_identifier
         self.itemdata = {}
         for i, v in ipairs(items) do
             local data = v:GetSaveRecord()
@@ -62,8 +64,9 @@ function Unwrappable:Unwrap(doer)
                 pos.x, pos.z = doerpos.x, doerpos.z
             end
         end
+        local creator = self.origin ~= nil and TheWorld.meta.session_identifier ~= self.origin and { sessionid = self.origin } or nil
         for i, v in ipairs(self.itemdata) do
-            local item = SpawnSaveRecord(v)
+            local item = SpawnPrefab(v.prefab, v.skinname, v.skin_id, creator)
             if item ~= nil then
                 if item.Physics ~= nil then
                     item.Physics:Teleport(pos:Get())
@@ -83,14 +86,18 @@ function Unwrappable:Unwrap(doer)
 end
 
 function Unwrappable:OnSave()
-    if self.itemdata ~= nil then
-        return { items = self.itemdata }
-    end
+    return self.itemdata ~= nil
+        and {
+            items = self.itemdata,
+            origin = self.origin,
+        }
+        or nil
 end
 
 function Unwrappable:OnLoad(data)
     if data.items ~= nil and #data.items > 0 then
         self.itemdata = data.items
+        self.origin = data.origin
         if self.onwrappedfn ~= nil then
             self.onwrappedfn(self.inst, #self.itemdata)
         end
