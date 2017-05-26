@@ -24,6 +24,8 @@ local TIME_BETWEEN_EATING = 30
 local LEASH_RETURN_DIST = 15
 local LEASH_MAX_DIST = 20
 
+local NO_TAGS = { "INLIMBO", "catchable", "fire", "irreplaceable", "heavy", "outofreach" }
+
 local MonkeyBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
@@ -43,12 +45,11 @@ local function GetPoop(inst)
         SEE_FOOD_DIST,
         function(item)
             return item.prefab == "poop"
-                and (item.components.inventoryitem == nil or not item.components.inventoryitem:IsHeld())
                 and not item:IsNear(inst.components.combat.target, RUN_AWAY_DIST)
                 and item:IsOnValidGround()
         end,
         nil,
-        { "outofreach" }
+        NO_TAGS
     )
 
     return target ~= nil and BufferedAction(inst, target, ACTIONS.PICKUP) or nil
@@ -65,7 +66,7 @@ local ValidFoodsToPick =
 }
 
 local function ItemIsInList(item, list)
-    for k,v in pairs(list) do
+    for k, v in pairs(list) do
         if v == item or k == item then
             return true
         end
@@ -91,7 +92,10 @@ local function EatFoodAction(inst)
 
     --Get the stuff around you and store it in ents
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, SEE_FOOD_DIST, nil, { "outofreach" })
+    local ents = TheSim:FindEntities(x, y, z, SEE_FOOD_DIST,
+        nil,
+        NO_TAGS,
+        { "_inventoryitem", "pickable", "readyforharvest" })
 
     --If you're not wearing a hat, look for a hat to wear!
     if inst.components.inventory ~= nil and inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD) == nil then
@@ -100,7 +104,6 @@ local function EatFoodAction(inst)
                 item.components.equippable.equipslot == EQUIPSLOTS.HEAD and
                 item.components.inventoryitem ~= nil and
                 item.components.inventoryitem.canbepickedup and
-                not item.components.inventoryitem:IsHeld() and
                 item:IsOnValidGround() then
                 return BufferedAction(inst, item, ACTIONS.PICKUP)
             end
@@ -112,7 +115,6 @@ local function EatFoodAction(inst)
         if item:GetTimeAlive() > 8 and
             item.components.inventoryitem ~= nil and
             item.components.inventoryitem.canbepickedup and
-            not item.components.inventoryitem:IsHeld() and
             inst.components.eater:CanEat(item) and
             item:IsOnValidGround() then
             return BufferedAction(inst, item, ACTIONS.PICKUP)
@@ -145,7 +147,6 @@ local function EatFoodAction(inst)
     for i, item in ipairs(ents) do
         if item.components.inventoryitem ~= nil and
             item.components.inventoryitem.canbepickedup and
-            not item.components.inventoryitem:IsHeld() and
             item:IsOnValidGround() then
             inst.curious = false
             inst:DoTaskInTime(10, SetCurious)
@@ -167,7 +168,7 @@ local function AnnoyLeader(inst)
     local m_pt = inst:GetPosition()
     local ents = TheSim:FindEntities(m_pt.x, m_pt.y, m_pt.z, 30,
         nil,
-        { "INLIMBO", "catchable", "fire", "irreplaceable", "heavy" },
+        NO_TAGS,
         { "_inventoryitem", "_container" })
 
     --Can we hassle the player by taking items from stuff he has killed or worked?

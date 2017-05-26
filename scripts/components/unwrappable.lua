@@ -67,12 +67,13 @@ function Unwrappable:Unwrap(doer)
         local creator = self.origin ~= nil and TheWorld.meta.session_identifier ~= self.origin and { sessionid = self.origin } or nil
         for i, v in ipairs(self.itemdata) do
             local item = SpawnPrefab(v.prefab, v.skinname, v.skin_id, creator)
-            if item ~= nil then
+            if item ~= nil and item:IsValid() then
                 if item.Physics ~= nil then
                     item.Physics:Teleport(pos:Get())
                 else
                     item.Transform:SetPosition(pos:Get())
                 end
+                item:SetPersistData(v.data)
                 if item.components.inventoryitem ~= nil then
                     item.components.inventoryitem:OnDropped(true, .5)
                 end
