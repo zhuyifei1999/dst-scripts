@@ -92,28 +92,16 @@ AddIngredientValues({"goatmilk"}, {dairy=1})
 
 
 --our naming conventions aren't completely consistent, sadly
-local aliases=
+local aliases =
 {
 	cookedsmallmeat = "smallmeat_cooked",
 	cookedmonstermeat = "monstermeat_cooked",
-	cookedmeat = "meat_cooked"
+	cookedmeat = "meat_cooked",
 }
 
 local function IsCookingIngredient(prefabname)
-	local name = aliases[prefabname] or prefabname
-	if ingredients[name] then
-		return true
-	end
-
+    return ingredients[aliases[prefabname] or prefabname] ~= nil
 end
-
-local null_ingredient = {tags={}}
-local function GetIngredientData(prefabname)
-	local name = aliases.prefabname or prefabname
-
-	return ingredients[name] or null_ingredient
-end
-
 
 local foods = require("preparedfoods")
 for k,recipe in pairs (foods) do
@@ -121,23 +109,19 @@ for k,recipe in pairs (foods) do
 end
 
 local function GetIngredientValues(prefablist)
-	local prefabs = {}
-	local tags = {}
-	for k,v in pairs(prefablist) do
-		local name = aliases[v] or v
-		prefabs[name] = prefabs[name] and prefabs[name] + 1 or 1
-		local data = GetIngredientData(name)
-
-		if data then
-
-			for kk, vv in pairs(data.tags) do
-
-				tags[kk] = tags[kk] and tags[kk] + vv or vv
-			end
-		end
-	end
-
-	return {tags = tags, names = prefabs}
+    local prefabs = {}
+    local tags = {}
+    for k,v in pairs(prefablist) do
+        local name = aliases[v] or v
+        prefabs[name] = (prefabs[name] or 0) + 1
+        local data = ingredients[name]
+        if data ~= nil then
+            for kk, vv in pairs(data.tags) do
+                tags[kk] = (tags[kk] or 0) + vv
+            end
+        end
+    end
+    return { tags = tags, names = prefabs }
 end
 
 local function GetRecipe(cooker, product)
@@ -146,7 +130,6 @@ local function GetRecipe(cooker, product)
 end
 
 function GetCandidateRecipes(cooker, ingdata)
-
 	local recipes = cookerrecipes[cooker] or {}
 	local candidates = {}
 
@@ -176,11 +159,7 @@ function GetCandidateRecipes(cooker, ingdata)
 	return candidates
 end
 
-
-
 local function CalculateRecipe(cooker, names)
-
-
 	local ingdata = GetIngredientValues(names)
 	local candidates = GetCandidateRecipes(cooker, ingdata)
 
@@ -200,12 +179,9 @@ local function CalculateRecipe(cooker, names)
 
 		idx = idx+1
 	end
-
 end
 
-
-
-local function TestRecipes(cooker, prefablist)
+--[[local function TestRecipes(cooker, prefablist)
 	local ingdata = GetIngredientValues(prefablist)
 
 	print ("Ingredients:")
@@ -233,14 +209,10 @@ local function TestRecipes(cooker, prefablist)
 	local recipe = CalculateRecipe(cooker, prefablist)
 	print ("Make:", recipe)
 
-
 	print ("total health:", foods[recipe].health)
 	print ("total hunger:", foods[recipe].hunger)
-
 end
 
---TestRecipes("cookpot", {"tallbirdegg","meat","carrot","meat"})
-
+TestRecipes("cookpot", {"tallbirdegg","meat","carrot","meat"})]]
 
 return { CalculateRecipe = CalculateRecipe, IsCookingIngredient = IsCookingIngredient, recipes = cookerrecipes, ingredients = ingredients, GetRecipe = GetRecipe}
-

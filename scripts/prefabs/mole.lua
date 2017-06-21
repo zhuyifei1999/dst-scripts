@@ -19,14 +19,17 @@ local brain = require("brains/molebrain")
 
 local function OnAttacked(inst, data)
     -- Don't spread the word when whacked
-    if data and data.weapon and data.weapon == "hammer" then return end
+    -- V2C: this doesn't work because weapon is an inst
+    --      commenting out to preserve behaviour rather
+    --      fixing it to check for hammer tag on weapon
+    --if data and data.weapon and data.weapon == "hammer" then return end
 
     local x,y,z = inst.Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x,y,z, 30, {'mole'})
 
     local num_friends = 0
     local maxnum = 5
-    for k,v in pairs(ents) do
+    for i,v in ipairs(ents) do
         v:PushEvent("gohome")
         num_friends = num_friends + 1
 

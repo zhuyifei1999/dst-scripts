@@ -36,6 +36,10 @@ SetSharedLootTable('monkey',
 
 local function SetHarassPlayer(inst, player)
     if inst.harassplayer ~= player then
+        if inst._harassovertask ~= nil then
+            inst._harassovertask:Cancel()
+            inst._harassovertask = nil
+        end
         if inst.harassplayer ~= nil then
             inst:RemoveEventCallback("onremove", inst._onharassplayerremoved, inst.harassplayer)
             inst.harassplayer = nil
@@ -43,6 +47,7 @@ local function SetHarassPlayer(inst, player)
         if player ~= nil then
             inst:ListenForEvent("onremove", inst._onharassplayerremoved, player)
             inst.harassplayer = player
+            inst._harassovertask = inst:DoTaskInTime(120, SetHarassPlayer, nil)
         end
     end
 end
@@ -152,7 +157,6 @@ local function FindTargetOfInterest(inst)
             --Higher chance to follow if he has bananas
             if target.components.inventory ~= nil and math.random() < (target.components.inventory:FindItem(IsBanana) ~= nil and .6 or .15) then
                 SetHarassPlayer(inst, target)
-                inst:DoTaskInTime(120, SetHarassPlayer, nil)
                 return
             end
         end
@@ -397,7 +401,7 @@ local function fn()
     inst.HasAmmo = hasammo
     inst.curious = true
     inst.harassplayer = nil
-    inst._onharassplayerremoved = function() inst.harassplayer = nil end
+    inst._onharassplayerremoved = function() SetHarassPlayer(inst, nil) end
 
     inst:AddComponent("knownlocations")
 

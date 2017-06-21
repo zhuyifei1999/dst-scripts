@@ -12,7 +12,6 @@ local TOOCLOSE = 6
 local function CanSteal(item)
     return item.components.inventoryitem ~= nil
         and item.components.inventoryitem.canbepickedup
-        and not item.components.inventoryitem:IsHeld()
         and item:IsOnValidGround()
         and not item:IsNearPlayer(TOOCLOSE)
 end
@@ -22,28 +21,26 @@ local function StealAction(inst)
         local target = FindEntity(inst, SEE_DIST,
             CanSteal,
             { "_inventoryitem" }, --see entityreplica.lua
-            { "irreplaceable", "heavy", "prey", "bird", "outofreach" })
-        if target ~= nil then
-            return BufferedAction(inst, target, ACTIONS.PICKUP)
-        end
+            { "INLIMBO", "catchable", "fire", "irreplaceable", "heavy", "prey", "bird", "outofreach", "_container" })
+        return target ~= nil
+            and BufferedAction(inst, target, ACTIONS.PICKUP)
+            or nil
     end
 end
 
 local function CanHammer(item)
-    return item.prefab == "treasurechest" and
-        item.components.container ~= nil and
-        not item.components.container:IsEmpty() and
-        not item:IsNearPlayer(TOOCLOSE)
+    return item.prefab == "treasurechest"
+        and item.components.container ~= nil
+        and not item.components.container:IsEmpty()
+        and not item:IsNearPlayer(TOOCLOSE)
 end
 
 local function EmptyChest(inst)
     if not inst.components.inventory:IsFull() then
-        local target = FindEntity(inst, SEE_DIST,
-            CanHammer,
-            { "_container" }) --see entityreplica.lua
-        if target ~= nil then
-            return BufferedAction(inst, target, ACTIONS.HAMMER)
-        end
+        local target = FindEntity(inst, SEE_DIST, CanHammer, { "structure", "_container", "HAMMER_workable" })
+        return target ~= nil
+            and BufferedAction(inst, target, ACTIONS.HAMMER)
+            or nil
     end
 end
 
@@ -94,8 +91,7 @@ function KrampusBrain:OnStart()
 
     local root = PriorityNode(
     {
-        WhileNode( function() return self.inst.components.hauntable and self.inst.components.hauntable.panic end, "PanicHaunted", Panic(self.inst)),
-        WhileNode( function() return self.inst.components.health.takingfiredamage end, "OnFire", Panic(self.inst)),
+        WhileNode(function() return self.inst.components.hauntable ~= nil and self.inst.components.hauntable.panic or self.inst.components.health.takingfiredamage end, "Panic", Panic(self.inst)),
         ChaseAndAttack(self.inst, 100),
         IfNode( function() return self.inst.components.inventory:NumItems() >= self.greed and not self.inst.sg:HasStateTag("busy") end, "donestealing",
             ActionNode(function() self.inst.sg:GoToState("exit") return SUCCESS end, "leave" )),

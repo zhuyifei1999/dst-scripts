@@ -24,7 +24,9 @@ local TIME_BETWEEN_EATING = 30
 local LEASH_RETURN_DIST = 15
 local LEASH_MAX_DIST = 20
 
-local NO_TAGS = { "INLIMBO", "catchable", "fire", "irreplaceable", "heavy", "outofreach" }
+local NO_LOOTING_TAGS = { "INLIMBO", "catchable", "fire", "irreplaceable", "heavy", "outofreach" }
+local NO_PICKUP_TAGS = deepcopy(NO_LOOTING_TAGS)
+table.insert(NO_PICKUP_TAGS, "_container")
 
 local MonkeyBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
@@ -49,7 +51,7 @@ local function GetPoop(inst)
                 and item:IsOnValidGround()
         end,
         nil,
-        NO_TAGS
+        NO_PICKUP_TAGS
     )
 
     return target ~= nil and BufferedAction(inst, target, ACTIONS.PICKUP) or nil
@@ -74,6 +76,7 @@ local function ItemIsInList(item, list)
 end
 
 local function SetCurious(inst)
+    inst._curioustask = nil
     inst.curious = true
 end
 
@@ -94,7 +97,7 @@ local function EatFoodAction(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x, y, z, SEE_FOOD_DIST,
         nil,
-        NO_TAGS,
+        NO_PICKUP_TAGS,
         { "_inventoryitem", "pickable", "readyforharvest" })
 
     --If you're not wearing a hat, look for a hat to wear!
@@ -149,13 +152,17 @@ local function EatFoodAction(inst)
             item.components.inventoryitem.canbepickedup and
             item:IsOnValidGround() then
             inst.curious = false
-            inst:DoTaskInTime(10, SetCurious)
+            if inst._curioustask ~= nil then
+                inst._curioustask:Cancel()
+            end
+            inst._curioustask = inst:DoTaskInTime(10, SetCurious)
             return BufferedAction(inst, item, ACTIONS.PICKUP)
         end
     end
 end
 
 local function OnLootingCooldown(inst)
+    inst._canlootcheststask = nil
     inst.canlootchests = true
 end
 
@@ -163,47 +170,56 @@ local function AnnoyLeader(inst)
     if inst.sg:HasStateTag("busy") then
         return
     end
-    local player = inst.harassplayer -- You will only ever harass the player.
-    local p_pt = player:GetPosition()
-    local m_pt = inst:GetPosition()
-    local ents = TheSim:FindEntities(m_pt.x, m_pt.y, m_pt.z, 30,
-        nil,
-        NO_TAGS,
-        { "_inventoryitem", "_container" })
+    local lootchests = inst.canlootchests ~= false --nil defaults to true
+    local px, py, pz = inst.harassplayer.Transform:GetWorldPosition()
+    local mx, my, mz = inst.Transform:GetWorldPosition()
+    local ents =
+        lootchests and
+        TheSim:FindEntities(mx, 0, mz, 30, nil, NO_LOOTING_TAGS, { "_inventoryitem", "_container" }) or
+        TheSim:FindEntities(mx, 0, mz, 30, { "_inventoryitem" }, NO_PICKUP_TAGS)
 
     --Can we hassle the player by taking items from stuff he has killed or worked?
     for i, v in ipairs(ents) do
-        if v.components.inventoryitem ~= nil and v.components.inventoryitem.canbepickedup and not v.components.inventoryitem:IsHeld() and v:GetTimeAlive() < 5 then
+        if v.components.inventoryitem ~= nil and
+            v.components.inventoryitem.canbepickedup and
+            v.components.container == nil and
+            v:GetTimeAlive() < 5 then
             return BufferedAction(inst, v, ACTIONS.PICKUP)
         end
     end
 
     --Can we hassle our leader by taking the items he wants?
-    local ba = player:GetBufferedAction()
+    local ba = inst.harassplayer:GetBufferedAction()
     if ba ~= nil and ba.action.id == "PICKUP" then
         --The player wants to pick something up. Am I closer than the player?
         local tar = ba.target
-        if tar ~= nil and tar:IsValid() and tar.components.inventoryitem ~= nil and not tar.components.inventoryitem:IsHeld() then
-            local t_pt = tar:GetPosition()
-            if distsq(p_pt, t_pt) > distsq(m_pt, t_pt) then
-                --I'm closer to the item than the player! Lets go get it!
-                return BufferedAction(inst, tar, ACTIONS.PICKUP)
-            end
+        if tar ~= nil and
+            tar:IsValid() and
+            tar.components.inventoryitem ~= nil and not tar.components.inventoryitem:IsHeld() and
+            tar.components.container == nil and
+            not (tar:HasTag("irreplaceable") or tar:HasTag("heavy") or tar:HasTag("outofreach")) and
+            not (tar.components.burnable ~= nil and tar.components.burnable:IsBurning()) and
+            not (tar.components.projectile ~= nil and tar.components.projectile.cancatch and tar.components.projectile.target ~= nil) then
+            --I'm closer to the item than the player! Lets go get it!
+            local tx, ty, tz = tar.Transform:GetWorldPosition()
+            return distsq(px, pz, tx, tz) > distsq(mx, mz, tx, tz)
+                and BufferedAction(inst, tar, ACTIONS.PICKUP)
+                or nil
         end
     end
 
-    --Can we hassle our leader by toying with his chests?
-    --Default to true when originally nil
-    if inst.canlootchests ~= false then
+    --Can we hassle our leader by toying with his chests? (or bags?)
+    --NOTE: stealing throws the item onto the ground, so we do not
+    --      need to filter items as strictly as the pickup action.
+    if lootchests then
         local items = {}
         for i, v in ipairs(ents) do
-            local cont = v.components.container
-            if cont ~= nil and
-                cont.canbeopened and
-                not cont:IsOpen() and
-                v:GetDistanceSqToPoint(p_pt) < 225--[[15 * 15]] then
-                for k = 1, cont.numslots do
-                    local item = cont.slots[k]
+            if v.components.container ~= nil and
+                v.components.container.canbeopened and
+                not v.components.container:IsOpen() and
+                v:GetDistanceSqToPoint(px, 0, pz) < 225--[[15 * 15]] then
+                for k = 1, v.components.container.numslots do
+                    local item = v.components.container.slots[k]
                     if item ~= nil then
                         table.insert(items, item)
                     end
@@ -213,17 +229,20 @@ local function AnnoyLeader(inst)
 
         if #items > 0 then
             inst.canlootchests = false
-            inst:DoTaskInTime(math.random(15, 30), OnLootingCooldown)
+            if inst._canlootcheststask ~= nil then
+                inst._canlootcheststask:Cancel()
+            end
+            inst._canlootcheststask = inst:DoTaskInTime(math.random(15, 30), OnLootingCooldown)
             local item = items[math.random(#items)]
             local act = BufferedAction(inst, item, ACTIONS.STEAL)
             act.validfn = function()
-                if item.components.inventoryitem ~= nil then
-                    local owner = item.components.inventoryitem.owner
-                    if owner ~= nil and not (owner.components.burnable ~= nil and owner.components.burnable:IsBurning()) then
-                        local cont = owner.components.container
-                        return cont ~= nil and cont.canbeopened and not cont:IsOpen()
-                    end
-                end
+                local owner = item.components.inventoryitem ~= nil and item.components.inventoryitem.owner or nil
+                return owner ~= nil
+                    and not (owner.components.inventoryitem ~= nil and owner.components.inventoryitem:IsHeld())
+                    and not (owner.components.burnable ~= nil and owner.components.burnable:IsBurning())
+                    and owner.components.container ~= nil
+                    and owner.components.container.canbeopened
+                    and not owner.components.container:IsOpen()
             end
             return act
         end

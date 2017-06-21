@@ -8,6 +8,7 @@ local prefabs =
 {
     "sleepbomb_burst",
     "sleepcloud",
+    "reticule",
 }
 
 local function OnHit(inst, attacker, target)

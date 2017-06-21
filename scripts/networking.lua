@@ -336,6 +336,13 @@ function DownloadMods( server_listing )
             end
         end
     end
+    if server_listing.client_mods_disabled then
+		--temp disable all the client enabled mods
+		for _,mod_name in pairs(KnownModIndex:GetClientModNames()) do
+			print("Temp disabling client mod", mod_name)
+			KnownModIndex:TempDisable(mod_name)
+		end
+    end
     KnownModIndex:Save()
 
     if server_listing.mods_enabled then
@@ -444,11 +451,7 @@ function JoinServer(server_listing, optional_password_override)
         TheNet:JoinServerResponse( true )
     end
 
-    local function after_mod_warning(pop_screen)
-        if pop_screen then
-            TheFrontEnd:PopScreen()
-        end
-
+    local function after_mod_warning()
         if server_listing.has_password and (optional_password_override == "" or optional_password_override == nil) then
             local password_prompt_screen
             password_prompt_screen = InputDialogScreen( STRINGS.UI.SERVERLISTINGSCREEN.PASSWORDREQUIRED, 
@@ -488,71 +491,92 @@ function JoinServer(server_listing, optional_password_override)
         end
     end
 
-    if server_listing.mods_enabled and
-        not IsMigrating() and
-        (server_listing.dedicated or not server_listing.owner) and
-        Profile:ShouldWarnModsEnabled() then
+    local function after_client_mod_message()
+		if server_listing.mods_enabled and
+			not IsMigrating() and
+			(server_listing.dedicated or not server_listing.owner) and
+			Profile:ShouldWarnModsEnabled() then
 
-        local checkbox_parent = Widget("checkbox_parent")
-        local checkbox = checkbox_parent:AddChild(ImageButton("images/ui.xml", "checkbox_off.tex", "checkbox_off_highlight.tex", "checkbox_off_disabled.tex", nil, nil, {1,1}, {0,0}))
-        local text = checkbox_parent:AddChild(Text(NEWFONT, 40, STRINGS.UI.SERVERLISTINGSCREEN.SHOW_MOD_WARNING))
-        local textW, textH = text:GetRegionSize()
-        local imageW, imageH = checkbox:GetSize()
-        text:SetVAlign(ANCHOR_LEFT)
-        text:SetColour(0,0,0,1)
-        local checkbox_x = -textW/2 - (imageW*2) 
-        local region = 600
-        checkbox:SetPosition(checkbox_x, 0)
-        text:SetRegionSize(region,50)
-        text:SetPosition(checkbox_x + textW/2 + imageW/1.5, 0)
-        local bg = checkbox_parent:AddChild(Image("images/ui.xml", "single_option_bg.tex"))
-        bg:MoveToBack()
-        bg:SetClickable(false)
-        bg:ScaleToSize(textW + imageW + 40, 50)
-        bg:SetPosition(-75,2)
-        checkbox_parent.do_warning = true
-        checkbox_parent.focus_forward = checkbox
-        checkbox:SetOnClick(function()
-            checkbox_parent.do_warning = not checkbox_parent.do_warning
-            if checkbox_parent.do_warning then
-                checkbox:SetTextures("images/ui.xml", "checkbox_off.tex", "checkbox_off_highlight.tex", "checkbox_off_disabled.tex", nil, nil, {1,1}, {0,0})
-            else
-                checkbox:SetTextures("images/ui.xml", "checkbox_on.tex", "checkbox_on_highlight.tex", "checkbox_on_disabled.tex", nil, nil, {1,1}, {0,0})
-            end
-        end)
-        local menuitems =
-        {
-            {widget=checkbox_parent, offset=Vector3(250,70,0)},
-            {text=STRINGS.UI.SERVERLISTINGSCREEN.CONTINUE,
-                cb = function()
-                    Profile:SetWarnModsEnabled(checkbox_parent.do_warning)
-                    after_mod_warning(true)
-                end, offset=Vector3(-90,0,0)},
-            {text=STRINGS.UI.SERVERLISTINGSCREEN.CANCEL,
-                cb = function()
-                    TheFrontEnd:PopScreen()
-                    on_cancelled()
-                end, offset=Vector3(-90,0,0)}
-        }
+			local checkbox_parent = Widget("checkbox_parent")
+			local checkbox = checkbox_parent:AddChild(ImageButton("images/ui.xml", "checkbox_off.tex", "checkbox_off_highlight.tex", "checkbox_off_disabled.tex", nil, nil, {1,1}, {0,0}))
+			local text = checkbox_parent:AddChild(Text(NEWFONT, 40, STRINGS.UI.SERVERLISTINGSCREEN.SHOW_MOD_WARNING))
+			local textW, textH = text:GetRegionSize()
+			local imageW, imageH = checkbox:GetSize()
+			text:SetVAlign(ANCHOR_LEFT)
+			text:SetColour(0,0,0,1)
+			local checkbox_x = -textW/2 - (imageW*2) 
+			local region = 600
+			checkbox:SetPosition(checkbox_x, 0)
+			text:SetRegionSize(region,50)
+			text:SetPosition(checkbox_x + textW/2 + imageW/1.5, 0)
+			local bg = checkbox_parent:AddChild(Image("images/ui.xml", "single_option_bg.tex"))
+			bg:MoveToBack()
+			bg:SetClickable(false)
+			bg:ScaleToSize(textW + imageW + 40, 50)
+			bg:SetPosition(-75,2)
+			checkbox_parent.do_warning = true
+			checkbox_parent.focus_forward = checkbox
+			checkbox:SetOnClick(function()
+				checkbox_parent.do_warning = not checkbox_parent.do_warning
+				if checkbox_parent.do_warning then
+					checkbox:SetTextures("images/ui.xml", "checkbox_off.tex", "checkbox_off_highlight.tex", "checkbox_off_disabled.tex", nil, nil, {1,1}, {0,0})
+				else
+					checkbox:SetTextures("images/ui.xml", "checkbox_on.tex", "checkbox_on_highlight.tex", "checkbox_on_disabled.tex", nil, nil, {1,1}, {0,0})
+				end
+			end)
+			local menuitems =
+			{
+				{widget=checkbox_parent, offset=Vector3(250,70,0)},
+				{text=STRINGS.UI.SERVERLISTINGSCREEN.CONTINUE,
+					cb = function()
+						Profile:SetWarnModsEnabled(checkbox_parent.do_warning)
+						TheFrontEnd:PopScreen()
+						after_mod_warning()
+					end, offset=Vector3(-90,0,0)},
+				{text=STRINGS.UI.SERVERLISTINGSCREEN.CANCEL,
+					cb = function()
+						TheFrontEnd:PopScreen()
+						on_cancelled()
+					end, offset=Vector3(-90,0,0)}
+			}
 
-        --let the user know the warning about mods
-        local mod_warning = PopupDialogScreen(STRINGS.UI.SERVERLISTINGSCREEN.MOD_WARNING_TITLE, STRINGS.UI.SERVERLISTINGSCREEN.MOD_WARNING_BODY, menuitems)
-        mod_warning.menu.items[1]:SetFocusChangeDir(MOVE_DOWN, mod_warning.menu.items[2])
-        mod_warning.menu.items[1]:SetFocusChangeDir(MOVE_RIGHT, nil)
-        mod_warning.menu.items[2]:SetFocusChangeDir(MOVE_LEFT, nil)
-        mod_warning.menu.items[2]:SetFocusChangeDir(MOVE_RIGHT, mod_warning.menu.items[3])
-        mod_warning.menu.items[2]:SetFocusChangeDir(MOVE_UP, mod_warning.menu.items[1])
-        mod_warning.menu.items[3]:SetFocusChangeDir(MOVE_LEFT, mod_warning.menu.items[2])
-        mod_warning.menu.items[3]:SetFocusChangeDir(MOVE_UP, mod_warning.menu.items[1])
+			--let the user know the warning about mods
+			local mod_warning = PopupDialogScreen(STRINGS.UI.SERVERLISTINGSCREEN.MOD_WARNING_TITLE, STRINGS.UI.SERVERLISTINGSCREEN.MOD_WARNING_BODY, menuitems)
+			mod_warning.menu.items[1]:SetFocusChangeDir(MOVE_DOWN, mod_warning.menu.items[2])
+			mod_warning.menu.items[1]:SetFocusChangeDir(MOVE_RIGHT, nil)
+			mod_warning.menu.items[2]:SetFocusChangeDir(MOVE_LEFT, nil)
+			mod_warning.menu.items[2]:SetFocusChangeDir(MOVE_RIGHT, mod_warning.menu.items[3])
+			mod_warning.menu.items[2]:SetFocusChangeDir(MOVE_UP, mod_warning.menu.items[1])
+			mod_warning.menu.items[3]:SetFocusChangeDir(MOVE_LEFT, mod_warning.menu.items[2])
+			mod_warning.menu.items[3]:SetFocusChangeDir(MOVE_UP, mod_warning.menu.items[1])
 
-        mod_warning.menu.items[2]:SetScale(.7)
-        mod_warning.menu.items[3]:SetScale(.7)
-        mod_warning.text:SetPosition(5, 10, 0)
+			mod_warning.menu.items[2]:SetScale(.7)
+			mod_warning.menu.items[3]:SetScale(.7)
+			mod_warning.text:SetPosition(5, 10, 0)
 
-        TheFrontEnd:PushScreen( mod_warning )
-    else
-        after_mod_warning( false )
-    end
+			TheFrontEnd:PushScreen( mod_warning )
+		else
+			after_mod_warning()
+		end
+	end
+	
+	if server_listing.client_mods_disabled and
+		not IsMigrating() and
+		(server_listing.dedicated or not server_listing.owner) and
+		AreAnyClientModsEnabled() then
+		
+		local client_mod_msg = PopupDialogScreen(STRINGS.UI.SERVERLISTINGSCREEN.CLIENT_MODS_DISABLED_TITLE, STRINGS.UI.SERVERLISTINGSCREEN.CLIENT_MODS_DISABLED_BODY,
+			{{ text=STRINGS.UI.SERVERLISTINGSCREEN.CONTINUE, cb = function() 
+						TheFrontEnd:PopScreen()
+						after_client_mod_message()
+			end }})
+		client_mod_msg.title:SetPosition(0, 75, 0)
+
+		TheFrontEnd:PushScreen( client_mod_msg )
+	else
+		after_client_mod_message()
+	end
+	
 end
 
 function MigrateToServer(serverIp, serverPort, serverPassword, serverNetId)

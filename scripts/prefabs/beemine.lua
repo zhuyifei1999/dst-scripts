@@ -97,7 +97,7 @@ end
 
 local function OnHaunt(inst, haunter)
     if inst.components.mine == nil or inst.components.mine.inactive then
-        inst.components.hauntable.hauntvalue = TUNING.HUANT_TINY
+        inst.components.hauntable.hauntvalue = TUNING.HAUNT_TINY
         Launch(inst, haunter, TUNING.LAUNCH_SPEED_SMALL)
         return true
     elseif inst.components.mine.issprung then

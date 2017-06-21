@@ -23,127 +23,99 @@ local HoverText = Class(Widget, function(self, owner)
     self.secondarytext:SetPosition(0, -30, 0)
     self:FollowMouseConstrained()
     self:StartUpdating()
-    self.lastStr = "";
-    self.strFrames = 0;
+    self.lastStr = ""
+    self.strFrames = 0
 end)
 
 function HoverText:OnUpdate()
-        
-    local using_mouse = self.owner.components and self.owner.components.playercontroller:UsingMouse()        
-    
-    if using_mouse ~= self.shown then
-        if using_mouse then
-            self:Show()
-        else
+    if self.owner.components == nil or not self.owner.components.playercontroller:UsingMouse() then
+        if self.shown then
             self:Hide()
         end
+        return
+    elseif not self.shown then
+        self:Show()
     end
-    
-    if not self.shown then 
-        return 
-    end
-    
+
     local str = nil
     local colour = nil
-    if self.isFE == false then 
+    if not self.isFE then
         str = self.owner.HUD.controls:GetTooltip() or self.owner.components.playercontroller:GetHoverTextOverride()
-        
-        local tooltip_pos = self.owner.HUD.controls:GetTooltipPos()
-        if tooltip_pos then
-            self.text:SetPosition(tooltip_pos)
-        else
-            self.text:SetPosition(self.default_text_pos)
-        end
-
-
-        if self.owner.HUD.controls:GetTooltip() then
+        self.text:SetPosition(self.owner.HUD.controls:GetTooltipPos() or self.default_text_pos)
+        if self.owner.HUD.controls:GetTooltip() ~= nil then
             colour = self.owner.HUD.controls:GetTooltipColour()
         end
     else
         str = self.owner:GetTooltip()
-        tooltip_pos = self.owner:GetTooltipPos()
-        if tooltip_pos then
-            self.text:SetPosition(tooltip_pos)
-        else
-            self.text:SetPosition(self.default_text_pos)
-        end
+        self.text:SetPosition(self.owner:GetTooltipPos() or self.default_text_pos)
     end
 
     local secondarystr = nil
- 
     local lmb = nil
-    if not str and self.isFE == false and self.owner:IsActionsVisible() then
-
+    if str == nil and not self.isFE and self.owner:IsActionsVisible() then
         lmb = self.owner.components.playercontroller:GetLeftMouseAction()
-        if lmb then
-            
+        if lmb ~= nil then
             str = lmb:GetActionString()
 
-            if not colour and lmb.target then
-                colour = (lmb.target and lmb.target:GetIsWet()) and WET_TEXT_COLOUR or NORMAL_TEXT_COLOUR
-                if lmb.invobject and not (lmb.invobject.components.weapon or lmb.invobject.components.tool) then
-                    colour = (lmb.invobject and lmb.invobject:GetIsWet()) and WET_TEXT_COLOUR or NORMAL_TEXT_COLOUR
-                end
-            elseif not colour and lmb.invobject then
-                colour = (lmb.invobject and lmb.invobject:GetIsWet()) and WET_TEXT_COLOUR or NORMAL_TEXT_COLOUR
-            end
-            
-            if lmb.target and lmb.invobject == nil and lmb.target ~= lmb.doer then
-                local name = lmb.target:GetDisplayName() or (lmb.target.components.named and lmb.target.components.named.name)
-                
-                if name then
-                    local adjective = lmb.target:GetAdjective()
-                    
-                    if adjective then
-                        str = str.. " " .. adjective .. " " .. name
+            if colour == nil then
+                if lmb.target ~= nil then
+                    if lmb.invobject ~= nil and lmb.invobject.components.weapon == nil and lmb.invobject.components.tool == nil then
+                        colour = lmb.invobject:GetIsWet() and WET_TEXT_COLOUR or NORMAL_TEXT_COLOUR
                     else
-                        str = str.. " " .. name
+                        colour = lmb.target:GetIsWet() and WET_TEXT_COLOUR or NORMAL_TEXT_COLOUR
                     end
-                    
+                elseif lmb.invobject ~= nil then
+                    colour = lmb.invobject:GetIsWet() and WET_TEXT_COLOUR or NORMAL_TEXT_COLOUR
+                end
+            end
+
+            if lmb.target ~= nil and lmb.invobject == nil and lmb.target ~= lmb.doer then
+                local name = lmb.target:GetDisplayName() or (lmb.target.components.named ~= nil and lmb.target.components.named.name) or nil
+                if name ~= nil then
+                    local adjective = lmb.target:GetAdjective()
+                    str = str.." "..(adjective ~= nil and (adjective.." "..name) or name)
+
                     if lmb.target.replica.stackable ~= nil and lmb.target.replica.stackable:IsStack() then
-                        str = str .. " x" .. tostring(lmb.target.replica.stackable:StackSize())
+                        str = str.." x"..tostring(lmb.target.replica.stackable:StackSize())
                     end
-                    if lmb.target.components.inspectable and lmb.target.components.inspectable.recordview and lmb.target.prefab then
-                        ProfileStatsSet(lmb.target.prefab .. "_seen", true)
+                    if lmb.target.components.inspectable ~= nil and lmb.target.components.inspectable.recordview and lmb.target.prefab ~= nil then
+                        ProfileStatsSet(lmb.target.prefab.."_seen", true)
                     end
                 end
             end
         end
         local rmb = self.owner.components.playercontroller:GetRightMouseAction()
-        if rmb then
-            secondarystr = STRINGS.RMB .. ": " .. rmb:GetActionString()
+        if rmb ~= nil then
+            secondarystr = STRINGS.RMB..": "..rmb:GetActionString()
         end
     end
 
-    if str then
-	if self.str ~= self.lastStr then
---print("new string")
-	    self.lastStr = self.str
-    	    self.strFrames = SHOW_DELAY
-
-        else
-	    self.strFrames = self.strFrames - 1
-            if self.strFrames <= 0 then
-                if lmb and lmb.target and lmb.target:HasTag("player") then
-                    self.text:SetColour(unpack(lmb.target.playercolour))
-                else
-                    self.text:SetColour(unpack(colour or NORMAL_TEXT_COLOUR))
-                end
-                self.text:SetString(str)
-                self.text:Show()
-            end
-        end
-    else
+    if str == nil then
         self.text:Hide()
+    elseif self.str ~= self.lastStr then
+        self.lastStr = self.str
+        self.strFrames = SHOW_DELAY
+    else
+        self.strFrames = self.strFrames - 1
+        if self.strFrames <= 0 then
+            if lmb ~= nil and lmb.target ~= nil and lmb.target:HasTag("player") then
+                self.text:SetColour(unpack(lmb.target.playercolour))
+            else
+                self.text:SetColour(unpack(colour or NORMAL_TEXT_COLOUR))
+            end
+            self.text:SetString(str)
+            self.text:Show()
+        end
     end
-    if secondarystr then
+
+    if secondarystr ~= nil then
         self.secondarytext:SetString(secondarystr)
         self.secondarytext:Show()
     else
         self.secondarytext:Hide()
     end
 
-    local changed = (self.str ~= str) or (self.secondarystr ~= secondarystr)
+    local changed = self.str ~= str or self.secondarystr ~= secondarystr
     self.str = str
     self.secondarystr = secondarystr
     if changed then
@@ -152,40 +124,35 @@ function HoverText:OnUpdate()
     end
 end
 
-function HoverText:UpdatePosition(x,y)
+function HoverText:UpdatePosition(x, y)
     local scale = self:GetScale()
-    
     local scr_w, scr_h = TheSim:GetScreenSize()
-
     local w = 0
     local h = 0
 
-    if self.text and self.str then
+    if self.text ~= nil and self.str ~= nil then
         local w0, h0 = self.text:GetRegionSize()
         w = math.max(w, w0)
         h = math.max(h, h0)
     end
-    if self.secondarytext and self.secondarystr then
+    if self.secondarytext ~= nil and self.secondarystr ~= nil then
         local w1, h1 = self.secondarytext:GetRegionSize()
         w = math.max(w, w1)
         h = math.max(h, h1)
     end
 
-    w = w*scale.x
-    h = h*scale.y
-    
-    x = math.max(x, w/2 + XOFFSET)
-    x = math.min(x, scr_w - w/2 - XOFFSET)
+    w = w * scale.x * .5
+    h = h * scale.y * .5
 
-    y = math.max(y, h/2 + YOFFSETDOWN*scale.y)
-    y = math.min(y, scr_h - h/2 - YOFFSETUP*scale.y)
-
-    self:SetPosition(x,y,0)
+    self:SetPosition(
+        math.clamp(x, w + XOFFSET, scr_w - w - XOFFSET),
+        math.clamp(y, h + YOFFSETDOWN * scale.y, scr_h - h - YOFFSETUP * scale.y),
+        0)
 end
 
 function HoverText:FollowMouseConstrained()
-    if not self.followhandler then
-        self.followhandler = TheInput:AddMoveHandler(function(x,y) self:UpdatePosition(x,y) end)
+    if self.followhandler == nil then
+        self.followhandler = TheInput:AddMoveHandler(function(x, y) self:UpdatePosition(x, y) end)
         local pos = TheInput:GetScreenPosition()
         self:UpdatePosition(pos.x, pos.y)
     end

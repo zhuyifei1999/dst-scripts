@@ -101,7 +101,7 @@ function Trap:Reset(sprung)
     self.isset = false
     self.issprung = sprung == true
     self.lootprefabs = nil
-    self.bait = nil
+    self:RemoveBait()
     self.target = nil
     self:StopStarvation()
 end
@@ -267,7 +267,7 @@ function Trap:DoSpring()
     end
 
     self.target = nil
-    self.bait = nil
+    self:RemoveBait()
     self.isset = false
     self.issprung = true
     --self.inst:RemoveComponent("inventoryitem")
@@ -320,10 +320,12 @@ end
 
 function Trap:RemoveBait()
     if self.bait ~= nil then
-        if self.baitsortorder ~= nil then
+        if self.baitsortorder ~= nil and self.bait:IsValid() then
             self.bait.AnimState:SetFinalOffset(0)
         end
-        self.bait.components.bait.trap = nil
+        if self.bait.components.bait ~= nil then
+            self.bait.components.bait.trap = nil
+        end
         self.bait = nil
     end
 end

@@ -108,6 +108,16 @@ function ModIndex:GetServerModNames()
 	return names
 end
 
+function ModIndex:GetClientModNames()
+	local names = {}
+	for modname,_ in pairs(self.savedata.known_mods) do
+		if self:GetModInfo(modname).client_only_mod then
+			table.insert(names, modname)
+		end
+	end
+	return names
+end
+
 function ModIndex:GetClientModNamesTable()
 	local names = {}
 	for known_modname,_ in pairs(self.savedata.known_mods) do
@@ -274,15 +284,18 @@ function ModIndex:ApplyEnabledOverrides(mod_overrides) --Note(Peter): This funct
 		--Enable mods that are being forced on in the modoverrides.lua file
 		--print("ModIndex:ApplyEnabledOverrides for mods" )
 		for modname,env in pairs(mod_overrides) do
-			--print( "modname override enabled ", env.enabled )
-			if env.enabled ~= nil then
-				local actual_modname = ResolveModname(modname)
-				if actual_modname ~= nil then
-					if env.enabled then
-						print( "modoverrides.lua enabling " .. actual_modname )
-						self:Enable(actual_modname)
-					else
-						self:Disable(actual_modname)
+			if modname == "client_mods_disabled" then
+				self:DisableClientMods( env ) --env is a bool in this case
+			else
+				if env.enabled ~= nil then
+					local actual_modname = ResolveModname(modname)
+					if actual_modname ~= nil then
+						if env.enabled then
+							print( "modoverrides.lua enabling " .. actual_modname )
+							self:Enable(actual_modname)
+						else
+							self:Disable(actual_modname)
+						end
 					end
 				end
 			end
@@ -293,21 +306,25 @@ end
 function ModIndex:ApplyConfigOptionOverrides(mod_overrides)
 	--print("ModIndex:ApplyConfigOptionOverrides for mods" )
 	for modname,env in pairs(mod_overrides) do
-		if env.configuration_options ~= nil then
-			local actual_modname = ResolveModname(modname)
-			if actual_modname ~= nil then			
-				print( "applying configuration_options from modoverrides.lua to mod " .. actual_modname )
-				
-				local force_local_options = true
-				local config_options,_ = self:GetModConfigurationOptions_Internal(actual_modname,force_local_options)
+		if modname == "client_mods_disabled" then
+			--Do nothing here for this entry
+		else
+			if env.configuration_options ~= nil then
+				local actual_modname = ResolveModname(modname)
+				if actual_modname ~= nil then
+					print( "applying configuration_options from modoverrides.lua to mod " .. actual_modname )
+					
+					local force_local_options = true
+					local config_options,_ = self:GetModConfigurationOptions_Internal(actual_modname,force_local_options)
 
-				if config_options and type(config_options) == "table" then
-					for option,override in pairs(env.configuration_options) do
-						for _,config_option in pairs(config_options) do
-			  				if config_option.name == option then
-			  					print( "Overriding mod " .. actual_modname .. "'s option " .. option .. " with value " .. tostring(override) )
-			  					config_option.saved = override
-			  				end
+					if config_options and type(config_options) == "table" then
+						for option,override in pairs(env.configuration_options) do
+							for _,config_option in pairs(config_options) do
+			  					if config_option.name == option then
+			  						print( "Overriding mod " .. actual_modname .. "'s option " .. option .. " with value " .. tostring(override) )
+			  						config_option.saved = override
+			  					end
+							end
 						end
 					end
 				end
@@ -912,6 +929,15 @@ function ModIndex:GetEnabledModTags()
 		end
 	end
 	return tags	
+end
+
+
+function ModIndex:DisableClientMods( disabled ) --to be called from the server/host when loading mod overrides. Note, this is not saved out to the mod index file on the clients, it's applied through the server listing temp disabling individual client mods when connecting
+	self.client_mods_disabled = disabled
+end
+
+function ModIndex:AreClientModsDisabled()
+	return self.client_mods_disabled
 end
 
 KnownModIndex = ModIndex()

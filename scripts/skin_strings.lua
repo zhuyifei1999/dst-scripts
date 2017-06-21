@@ -2,10 +2,10 @@
 
 STRINGS.SKIN_QUOTES =
 {
-	wathgrithr_deerclops = "I could take you curs with one eye behind my mask!",
+	wathgrithr_deerclops = "I cöuld take yöu curs with öne eye behind my mask!",
 	wathgrithr_formal = "We will celebrate as if we were in Valhalla!",
-	wathgrithr_shadow = "I will destroy my enemies!",
-	wathgrithr_survivor = "You have to try harder than this to defeat me!",
+	wathgrithr_shadow = "I will deströy my enemies!",
+	wathgrithr_survivor = "Yöu have tö try harder than this tö defeat me!",
 	waxwell_formal = "I just need to find my beautiful assistant.",
 	waxwell_krampus = "Naughty. Definitely naughty.",
 	waxwell_survivor = "Say, pal, I don't look so good.",

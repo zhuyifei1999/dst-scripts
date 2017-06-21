@@ -8,7 +8,6 @@ local prefabs =
 {
     "tentacle",
     "splash_ocean",
-    "book_fx",
 }
 
 --helper function for book_gardening

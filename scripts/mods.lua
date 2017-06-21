@@ -43,6 +43,29 @@ function AreAnyModsEnabled()
 	return (#enabled_mod_names > 0)
 end
 
+function AreAnyClientModsEnabled()
+	if ModManager == nil or KnownModIndex == nil then
+		print("AreAnyModsEnabled returning false because ModManager and KnownModIndex hasn't been created yet.")
+		return false
+	end
+
+	for _,modname in pairs(ModManager:GetEnabledModNames()) do
+		if KnownModIndex:GetModInfo(modname).client_only_mod then
+			return true
+		end
+	end
+	
+	return false
+end
+
+function AreClientModsDisabled()
+	if KnownModIndex == nil then
+		print("AreClientModsDisabled returning false because KnownModIndex hasn't been created yet.")
+		return false
+	end
+	return KnownModIndex:AreClientModsDisabled()
+end
+
 function GetEnabledModNamesDetailed() --just used for callstack reporting
 	local name_details = {}
 

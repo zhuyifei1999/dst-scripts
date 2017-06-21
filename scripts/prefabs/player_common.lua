@@ -8,13 +8,26 @@ local screen_fade_time = .4
 local DEFAULT_PLAYER_COLOUR = { 1, 1, 1, 1 }
 
 local function giveupstring(combat, target)
-    return GetString(combat.inst, "COMBAT_QUIT", target ~= nil and target:HasTag("prey") and not target:HasTag("hostile") and "PREY" or nil)
+    return GetString(
+        combat.inst,
+        "COMBAT_QUIT",
+        target ~= nil and (
+            (target:HasTag("prey") and not target:HasTag("hostile") and "PREY") or
+            (target:HasTag("pig") and not target:HasTag("werepig") and "PIG")
+        ) or nil
+    )
 end
 
 local function battlecrystring(combat, target)
     return target ~= nil
         and target:IsValid()
-        and GetString(combat.inst, "BATTLECRY", target:HasTag("prey") and not target:HasTag("hostile") and "PREY" or target.prefab)
+        and GetString(
+            combat.inst,
+            "BATTLECRY",
+            (target:HasTag("prey") and not target:HasTag("hostile") and "PREY") or
+            (target:HasTag("pig") and not target:HasTag("werepig") and "PIG") or
+            target.prefab
+        )
         or nil
 end
 
@@ -1553,7 +1566,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
     {
         "brokentool",
         "frostbreath",
-        "reticule",
         "mining_fx",
         "mining_ice_fx",
         "die_fx",
@@ -1562,6 +1574,10 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         "attune_in_fx",
         "attune_ghost_in_fx",
         "staff_castinglight",
+        "staffcastfx",
+        "staffcastfx_mount",
+        "book_fx",
+        "book_fx_mount",
         "emote_fx",
         "tears",
         "shock_fx",

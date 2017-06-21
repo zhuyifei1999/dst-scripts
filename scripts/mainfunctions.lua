@@ -59,6 +59,35 @@ end
 
 ---PREFABS AND ENTITY INSTANTIATION
 
+function ShouldIgnoreResolve( filename, assettype )
+    if assettype == "INV_IMAGE" then 
+        return true 
+    end
+    if assettype == "MINIMAP_IMAGE" then
+        return true
+    end
+
+    if TheNet:IsDedicated() then
+        if assettype == "SOUNDPACKAGE" then
+            return true
+        end
+        if assettype == "SOUND" then
+            return true
+        end
+        if filename:find(".ogv") then 
+            return true
+        end
+        if filename:find(".fev") and assettype == "PKGREF" then
+            return true
+        end
+        if filename:find("fsb") then
+            return true
+        end
+	end
+    return false
+end
+
+
 local modprefabinitfns = {}
 function RegisterPrefabs(...)
     for i, prefab in ipairs({...}) do
@@ -66,7 +95,7 @@ function RegisterPrefabs(...)
         -- allow mod-relative asset paths
 
         for i,asset in ipairs(prefab.assets) do
-            if asset.type ~= "INV_IMAGE" and asset.type ~= "MINIMAP_IMAGE" then
+            if not ShouldIgnoreResolve(asset.file, asset.type) then 
                 local resolvedpath = resolvefilepath(asset.file, prefab.force_path_search)
                 assert(resolvedpath, "Could not find "..asset.file.." required by "..prefab.name)
                 TheSim:OnAssetPathResolve(asset.file, resolvedpath)

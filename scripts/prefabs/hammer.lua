@@ -25,15 +25,17 @@ local function fn()
 
     MakeInventoryPhysics(inst)
 
+    inst.AnimState:SetBank("hammer")
+    inst.AnimState:SetBuild("hammer")
+    inst.AnimState:PlayAnimation("idle")
+
     inst:AddTag("hammer")
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.AnimState:SetBank("hammer")
-    inst.AnimState:SetBuild("hammer")
-    inst.AnimState:PlayAnimation("idle")
 
     inst:AddComponent("weapon")
     inst.components.weapon:SetDamage(TUNING.HAMMER_DAMAGE)
@@ -56,7 +58,6 @@ local function fn()
     inst:AddComponent("inspectable")
 
     inst:AddComponent("equippable")
-
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)
 
