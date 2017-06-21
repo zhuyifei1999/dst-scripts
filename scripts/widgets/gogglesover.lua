@@ -1,7 +1,7 @@
 local Widget = require "widgets/widget"
 local Image = require "widgets/image"
 
-local GogglesOver =  Class(Image, function(self, owner, storm_overlays)
+local GogglesOver =  Class(Widget, function(self, owner, storm_overlays)
     self.owner = owner
     Widget._ctor(self, "GogglesOver")
 

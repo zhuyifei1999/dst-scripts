@@ -626,14 +626,14 @@ function MultiplayerMainScreen:OnRedeemButton()
 end
 
 function MultiplayerMainScreen:OnHostButton()
-	SaveGameIndex:LoadServerEnabledModsFromSlot()
-	KnownModIndex:Save()
-	local start_in_online_mode = false
-	local server_started = TheNet:StartServer(start_in_online_mode)
-	if server_started == true then
+    SaveGameIndex:LoadServerEnabledModsFromSlot()
+    KnownModIndex:Save()
+    local start_in_online_mode = false
+    local slot = SaveGameIndex:GetCurrentSaveSlot()
+    if TheNet:StartServer(start_in_online_mode, slot, SaveGameIndex:GetSlotServerData(slot)) then
         DisableAllDLC()
-		StartNextInstance({reset_action = RESET_ACTION.LOAD_SLOT, save_slot=SaveGameIndex:GetCurrentSaveSlot()})
-	end
+        StartNextInstance({ reset_action = RESET_ACTION.LOAD_SLOT, save_slot = slot })
+    end
 end
 
 function MultiplayerMainScreen:OnJoinButton()

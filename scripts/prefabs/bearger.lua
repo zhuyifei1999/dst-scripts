@@ -13,6 +13,7 @@ local prefabs =
     "groundpoundring_fx",
     "bearger_fur",
     "furtuft",
+    "meat",
     "chesspiece_bearger_sketch",
     "collapse_small",
 }

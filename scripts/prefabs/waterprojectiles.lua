@@ -17,6 +17,7 @@ local waterballoon_assets =
 local waterballoon_prefabs =
 {
     "waterballoon_splash",
+    "reticule",
 }
 
 local function OnHitSnow(inst, attacker, target)

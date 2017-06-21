@@ -244,7 +244,7 @@ end
 
 --------------------------------------------------------------------------
 --Skin FX
-local function OnEntityReplicated(inst)
+local function OnFXReplicated(inst)
     local parent = inst.entity:GetParent()
     if parent ~= nil and parent.prefab == "researchlab2" then
         if parent.highlightchildren == nil then

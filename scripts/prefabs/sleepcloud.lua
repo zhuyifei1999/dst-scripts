@@ -253,7 +253,7 @@ local function DoAreaDrowsy(inst, sleeptimecache, sleepdelaycache)
             not (v.components.pinnable ~= nil and v.components.pinnable:IsStuck()) then
             local mount = v.components.rider ~= nil and v.components.rider:GetMount() or nil
             if mount ~= nil then
-                mount:PushEvent("ridersleep", { sleepiness = TICK_VALUE, sleeptime = SLEEP_TIME })
+                mount:PushEvent("ridersleep", { sleepiness = TICK_VALUE, sleeptime = MAX_SLEEP_TIME })
             end
             if v.components.sleeper ~= nil then
                 local sleeptime = sleeptimecache[v] or MAX_SLEEP_TIME

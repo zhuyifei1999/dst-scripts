@@ -430,7 +430,7 @@ end
 return Prefab("amulet", red, assets),
     Prefab("blueamulet", blue, assets),
     Prefab("purpleamulet", purple, assets),
-    Prefab("orangeamulet", orange, assets, {"sand_puff"}),
+    Prefab("orangeamulet", orange, assets, { "sand_puff" }),
     Prefab("greenamulet", green, assets),
     Prefab("yellowamulet", yellow, assets, { "yellowamuletlight" }),
     Prefab("yellowamuletlight", yellowlightfn)

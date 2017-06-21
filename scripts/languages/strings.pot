@@ -83758,24 +83758,9 @@ msgctxt "STRINGS.SKIN_NAMES.wx78_survivor"
 msgid "The Survivor"
 msgstr ""
 
-#. STRINGS.SKIN_QUOTES.wathgrithr_deerclops
-msgctxt "STRINGS.SKIN_QUOTES.wathgrithr_deerclops"
-msgid "I could take you curs with one eye behind my mask!"
-msgstr ""
-
 #. STRINGS.SKIN_QUOTES.wathgrithr_formal
 msgctxt "STRINGS.SKIN_QUOTES.wathgrithr_formal"
 msgid "We will celebrate as if we were in Valhalla!"
-msgstr ""
-
-#. STRINGS.SKIN_QUOTES.wathgrithr_shadow
-msgctxt "STRINGS.SKIN_QUOTES.wathgrithr_shadow"
-msgid "I will destroy my enemies!"
-msgstr ""
-
-#. STRINGS.SKIN_QUOTES.wathgrithr_survivor
-msgctxt "STRINGS.SKIN_QUOTES.wathgrithr_survivor"
-msgid "You have to try harder than this to defeat me!"
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.waxwell_formal
@@ -92416,6 +92401,16 @@ msgstr ""
 #. STRINGS.UI.SERVERLISTINGSCREEN.CLAN_OTHER_ICON_HOVER
 msgctxt "STRINGS.UI.SERVERLISTINGSCREEN.CLAN_OTHER_ICON_HOVER"
 msgid "Group Server"
+msgstr ""
+
+#. STRINGS.UI.SERVERLISTINGSCREEN.CLIENT_MODS_DISABLED_BODY
+msgctxt "STRINGS.UI.SERVERLISTINGSCREEN.CLIENT_MODS_DISABLED_BODY"
+msgid "Your client mods will be temporarily disabled while playing on this server."
+msgstr ""
+
+#. STRINGS.UI.SERVERLISTINGSCREEN.CLIENT_MODS_DISABLED_TITLE
+msgctxt "STRINGS.UI.SERVERLISTINGSCREEN.CLIENT_MODS_DISABLED_TITLE"
+msgid "Client Mods Disabled"
 msgstr ""
 
 #. STRINGS.UI.SERVERLISTINGSCREEN.CONTINUE

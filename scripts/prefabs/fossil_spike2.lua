@@ -43,7 +43,7 @@ local COLLAPSIBLE_WORK_ACTIONS =
     HAMMER = true,
     MINE = true,
 }
-local COLLAPSIBLE_TAGS = { "_combat", "pickable" }
+local COLLAPSIBLE_TAGS = { "_combat", "pickable", "campfire" }
 for k, v in pairs(COLLAPSIBLE_WORK_ACTIONS) do
     table.insert(COLLAPSIBLE_TAGS, k.."_workable")
 end
@@ -54,9 +54,17 @@ local function DoDamage(inst)
     local ents = TheSim:FindEntities(x, 0, z, PHYSICS_RADIUS + DAMAGE_RADIUS_PADDING, nil, NON_COLLAPSIBLE_TAGS, COLLAPSIBLE_TAGS)
     for i, v in ipairs(ents) do
         if v:IsValid() then
-            if v.components.workable ~= nil and
-                v.components.workable:CanBeWorked() and
-                COLLAPSIBLE_WORK_ACTIONS[v.components.workable:GetWorkAction().id] then
+            local isworkable = false
+            if v.components.workable ~= nil then
+                local work_action = v.components.workable:GetWorkAction()
+                --V2C: nil action for campfires
+                --     allow digging spawners (e.g. rabbithole)
+                isworkable = (
+                    (work_action == nil and v:HasTag("campfire")) or
+                    (v.components.workable:CanBeWorked() and COLLAPSIBLE_WORK_ACTIONS[work_action.id])
+                )
+            end
+            if isworkable then
                 v.components.workable:Destroy(inst)
                 if v:IsValid() and v:HasTag("stump") then
                     v:Remove()

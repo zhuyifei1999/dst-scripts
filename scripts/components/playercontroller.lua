@@ -255,6 +255,19 @@ function PlayerController:ToggleController(val)
         elseif val and self.inst.components.inventory ~= nil then
             self.inst.components.inventory:ReturnActiveItem()
         end
+        if self.handler ~= nil then
+            if self.reticule ~= nil then
+                self.reticule:DestroyReticule()
+                self.reticule = nil
+            end
+            if val then
+                local item = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+                self.reticule = item ~= nil and item.components.reticule or nil
+                if self.reticule ~= nil and self.reticule.reticule == nil then
+                    self.reticule:CreateReticule()
+                end
+            end
+        end
     end
 end
 
@@ -463,14 +476,14 @@ end
 --------------------------------------------------------------------------
 
 function PlayerController:GetCursorInventoryObject()
-    if self.inst.HUD ~= nil then
+    if self.inst.HUD ~= nil and TheInput:ControllerAttached() then
         local item = self.inst.HUD.controls.inv:GetCursorItem()
         return item ~= nil and item:IsValid() and item or nil
     end
 end
 
 function PlayerController:GetCursorInventorySlotAndContainer()
-    if self.inst.HUD ~= nil then
+    if self.inst.HUD ~= nil and TheInput:ControllerAttached() then
         return self.inst.HUD.controls.inv:GetCursorSlot()
     end
 end
@@ -2751,7 +2764,7 @@ function PlayerController:GetGroundUseAction(position)
         (self.deployplacer ~= nil and self.deployplacer:GetPosition()) or
         self.inst:GetPosition()
 
-    if self.map:IsPassableAtPoint(position:Get()) then
+    if self.map:IsPassableAtPoint(position:Get()) and CanEntitySeePoint(self.inst, position:Get()) then
         --Check validitiy because FE controls may call this in WallUpdate
         local equipitem = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
         if equipitem ~= nil and equipitem:IsValid() then

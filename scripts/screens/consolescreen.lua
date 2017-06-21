@@ -10,7 +10,10 @@ local Widget = require "widgets/widget"
 
 -- fix syntax highlighting due to above list: "'
 
+local DEBUG_MODE = BRANCH == "dev"
 local CONSOLE_HISTORY = {}
+local SUGGESTIONS_MAX = 5
+local PREFAB_KEYS = {}
 
 local ConsoleScreen = Class(Screen, function(self)
 	Screen._ctor(self, "ConsoleScreen")
@@ -21,6 +24,17 @@ end)
 function ConsoleScreen:OnBecomeActive()
 	ConsoleScreen._base.OnBecomeActive(self)
 	TheFrontEnd:ShowConsoleLog()
+
+	--setup prefab keys 
+	PREFAB_KEYS = {}
+	for k,v in pairs(Prefabs) do 
+		table.insert(PREFAB_KEYS, k)
+	end 
+
+	self.autocompletePrefix = nil
+	self.autocompleteObjName = ""
+	self.autocompleteObj = nil
+	self.autocompleteOffset = -1
 
 	self.console_edit:SetFocus()
 	self.console_edit:SetEditing(true)
@@ -72,31 +86,49 @@ function ConsoleScreen:ToggleRemoteExecute(force)
 end
 
 function ConsoleScreen:OnRawKey(key, down)
-	if self.runtask ~= nil or ConsoleScreen._base.OnRawKey(self, key, down) then return true end
-	
+	if self.runtask ~= nil then return true end
+	if ConsoleScreen._base.OnRawKey(self, key, down) then 
+        if DEBUG_MODE then
+            self:PrefabSuggest(down, key)
+        end
+		return true 
+	end
+
 	if down then return end
 	
 	if key == KEY_TAB then
-		self:AutoComplete()
-	elseif key == KEY_UP then
-		local len = #CONSOLE_HISTORY
-		if len > 0 then
-			if self.history_idx ~= nil then
-				self.history_idx = math.max( 1, self.history_idx - 1 )
-			else
-				self.history_idx = len
-			end
-			self.console_edit:SetString( CONSOLE_HISTORY[ self.history_idx ] )
+		if self.suggesting then 
+			self:SuggestComplete()
+		else
+			self:AutoComplete()
 		end
-	elseif key == KEY_DOWN then
-		local len = #CONSOLE_HISTORY
-		if len > 0 then
-			if self.history_idx ~= nil then
-				if self.history_idx == len then
-					self.console_edit:SetString( "" )
+	elseif key == KEY_UP then
+		if self.suggesting then 
+			self:DeltaSuggest(1)
+		else 
+			local len = #CONSOLE_HISTORY
+			if len > 0 then
+				if self.history_idx ~= nil then
+					self.history_idx = math.max( 1, self.history_idx - 1 )
 				else
-					self.history_idx = math.min( len, self.history_idx + 1 )
-					self.console_edit:SetString( CONSOLE_HISTORY[ self.history_idx ] )
+					self.history_idx = len
+				end
+				self.console_edit:SetString( CONSOLE_HISTORY[ self.history_idx ] )
+			end
+		end 
+	elseif key == KEY_DOWN then
+		if self.suggesting then 
+			self:DeltaSuggest(-1)
+		else
+			local len = #CONSOLE_HISTORY
+			if len > 0 then
+				if self.history_idx ~= nil then
+					if self.history_idx == len then
+						self.console_edit:SetString( "" )
+					else
+						self.history_idx = math.min( len, self.history_idx + 1 )
+						self.console_edit:SetString( CONSOLE_HISTORY[ self.history_idx ] )
+					end
 				end
 			end
 		end
@@ -111,6 +143,142 @@ function ConsoleScreen:OnRawKey(key, down)
 	end
 	
 	return true
+end
+
+function ConsoleScreen:DeltaSuggest(dt)
+	local newnum = self.highlight + dt
+	if newnum <= 0 then 
+		newnum = #self.suggest_text + dt + 1
+	elseif newnum > #self.suggest_text then 
+		newnum = 1 + dt - 1 
+	end
+
+	self:Highlight(newnum)
+end 
+
+function ConsoleScreen:SuggestComplete()
+	assert(self.suggest_text[self.highlight] ~= nil)
+	assert(self.suggest_idx > 0)
+	local idx = self.suggest_idx - 1
+	local str = self.console_edit:GetString()
+	if string.find(str, "(", nil, true) ~= nil then 
+		--We removed these earlier 
+		idx = idx + 1
+	end 
+	str = str:sub(1, idx)
+	str = str .. self.suggest_text[self.highlight]:GetString()
+	--close quotes and parens, get us ready to submit text
+	if str:find("\'") ~= nil then 
+		str = str .. "\'"
+	elseif str:find("\"") ~= nil then 
+		str = str .. "\"" 
+	end 
+
+	if string.find(str, "(", nil, true) then 
+		str = str .. ")"
+	end 
+
+	for _,v in ipairs(self.suggest_text) do 
+		v:SetString("")
+	end 
+
+	self.console_edit:SetString(str)
+
+	self.suggesting = false 
+	self.highlight = nil
+end 
+
+local function CountQuotes(str)
+	local found_quote = true 
+	local numquotes = 0
+	local lastpos = 1
+
+	while found_quote do 
+		local start, fin = string.find(str, "\"", lastpos)
+		if start == nil then 
+			found_quote = false 
+		else
+			numquotes = numquotes + 1 
+			if str:len() == fin then 
+				found_quote = false 
+			else
+				lastpos = fin + 1
+			end 
+		end 
+	end  
+
+	return numquotes 
+end 
+
+function ConsoleScreen:PrefabSuggest(down, key)
+	 -- not yet comprehensive 
+	local TESTS = {"c_spawn\"", "c_gonext\"", "c_give\"", "c_list\"", "c_find\"", "c_findnext\"", "c_countprefabs\"", "c_selectnear\"", "c_removeall\""}
+	if key == KEY_TAB or key == KEY_UP or key == KEY_DOWN then return end  
+	if down then 
+		for _,v in ipairs(self.suggest_text) do 
+			v:SetString("")
+		end 
+		local str_test = self.console_edit:GetString()
+		str_test = string.lower(str_test) -- lowercase for comparison 
+		str_test = string.gsub(str_test, "%(", "") --remove parens for comparison
+		str_test = string.gsub(str_test, "\'", "\"")
+		local numquotes = CountQuotes(str_test)
+
+		if (numquotes % 2 == 0) then -- even # of quotes, don't autofill 
+			return 
+		end 
+
+		for _,test in ipairs(TESTS) do 
+			local start, fin = str_test:find(test) 
+			if start ~= nil and fin ~= nil then 
+				-- make sure it's not no text and doesn't have a closing quote/parens 
+				if str_test:len() > fin and str_test:find("\"", fin + 1) == nil and str_test:find("%)", fin + 1) == nil then 
+					self:ShowSuggestions(str_test, test, start, fin)
+					break
+				else
+					self.suggesting = false 
+				end 
+			end 
+		end 
+	end
+end 
+
+function ConsoleScreen:ShowSuggestions(fullstr, command, start, fin)
+
+	local str = fullstr:sub(fin+1)
+	local suggestions = {}
+	for _,v in ipairs(PREFAB_KEYS) do
+		if #suggestions >= SUGGESTIONS_MAX then break end 
+		if v:match(str) ~= nil then 
+			table.insert(suggestions, v)
+		end 
+	end 
+
+	if #suggestions > 0 then 
+		self.suggesting = true
+		self.suggest_replace = str
+		self.suggest_idx = fin+1
+	else
+		self.suggesting = false 
+	end 
+
+	for k,v in ipairs(suggestions) do 
+		if k == 1 then 
+			self:Highlight(k)
+		end
+		self.suggest_text[k]:SetString(v)
+	end
+end 
+
+function ConsoleScreen:Highlight(key)
+	for k,v in ipairs(self.suggest_text) do 
+		if k ~= key then 
+			v:SetColour(1, 1, 1, 1)
+		end
+	end 
+
+	self.highlight = key 
+	self.suggest_text[key]:SetColour(1, 1, 0, 1)
 end
 
 function ConsoleScreen:Run()
@@ -299,6 +467,20 @@ function ConsoleScreen:DoInit()
 	self.console_edit:SetHAlign(ANCHOR_LEFT)
 	self.console_edit:SetHelpTextEdit("")
 	
+	self.suggest_text = {}
+	for i = 1, SUGGESTIONS_MAX do 
+		local v = self.root:AddChild(Text(DEFAULTFONT, 27, ""))
+		v:SetPosition(290, 32*i + 18, 0)
+		v:SetHAlign(ANCHOR_RIGHT)
+		v:SetRegionSize(300, label_height)
+		--v.bg_image = v:AddChild(Image("images/global.xml", "square.tex"))
+		table.insert(self.suggest_text, v)
+	end 
+
+	self.suggesting = false 
+	self.highlight = nil 
+	self.suggest_replace = ""
+
 	self.console_edit.OnTextEntered = function() self:OnTextEntered() end
 	--self.console_edit:SetLeftMouseDown( function() self:SetFocus( self.console_edit ) end )
 	self.console_edit:SetFocusedImage(self.edit_bg, "images/textboxes.xml", "textbox_long_over.tex", "textbox_long.tex")

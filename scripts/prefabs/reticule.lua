@@ -19,7 +19,7 @@ local function reticule()
     inst.AnimState:SetBuild("reticule")
     inst.AnimState:PlayAnimation("idle")
     inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
-    inst.AnimState:SetLayer(LAYER_BACKGROUND)
+    inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
     inst.AnimState:SetSortOrder(3)
 
     inst:AddComponent("colourtweener")

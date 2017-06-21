@@ -6,16 +6,43 @@ local assets =
 
 local prefabs =
 {
-    "ice_projectile",
-    "fire_projectile",
-    "staffcastfx",
-    "stafflight",
-    "staffcoldlight",
-    "cutgrass",
-    "sand_puff_large_front",
-    "sand_puff_large_back",
-    "splash_ocean",
-    "collapse_small",
+    blue =
+    {
+        "ice_projectile",
+    },
+
+    red =
+    {
+        "fire_projectile",
+        "cutgrass",
+    },
+
+    --purple = nil,
+
+    orange =
+    {
+        "sand_puff_large_front",
+        "sand_puff_large_back",
+        "reticule",
+    },
+
+    green =
+    {
+        "splash_ocean",
+        "collapse_small",
+    },
+
+    yellow =
+    {
+        "stafflight",
+        "reticule",
+    },
+
+    opal =
+    {
+        "staffcoldlight",
+        "reticule",
+    },
 }
 
 ---------RED STAFF---------
@@ -826,10 +853,10 @@ local function opal()
     return inst
 end
 
-return Prefab("icestaff", blue, assets, prefabs),
-    Prefab("firestaff", red, assets, prefabs),
-    Prefab("telestaff", purple, assets, prefabs),
-    Prefab("orangestaff", orange, assets, prefabs),
-    Prefab("greenstaff", green, assets, prefabs),
-    Prefab("yellowstaff", yellow, assets, prefabs),
-    Prefab("opalstaff", opal, assets, prefabs)
+return Prefab("icestaff", blue, assets, prefabs.blue),
+    Prefab("firestaff", red, assets, prefabs.red),
+    Prefab("telestaff", purple, assets, prefabs.purple),
+    Prefab("orangestaff", orange, assets, prefabs.orange),
+    Prefab("greenstaff", green, assets, prefabs.green),
+    Prefab("yellowstaff", yellow, assets, prefabs.yellow),
+    Prefab("opalstaff", opal, assets, prefabs.opal)
