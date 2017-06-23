@@ -23,8 +23,6 @@ local assets =
 
     Asset("ANIM", "anim/snow.zip"),
     Asset("ANIM", "anim/lightning.zip"),
-    Asset("ANIM", "anim/splash_ocean.zip"),
-    Asset("ANIM", "anim/frozen.zip"),
 
     Asset("SOUND", "sound/forest_stream.fsb"),
     Asset("SOUND", "sound/amb_stream.fsb"),

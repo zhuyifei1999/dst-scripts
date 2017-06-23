@@ -13,7 +13,7 @@ local function giveupstring(combat, target)
         "COMBAT_QUIT",
         target ~= nil and (
             (target:HasTag("prey") and not target:HasTag("hostile") and "PREY") or
-            (target:HasTag("pig") and not target:HasTag("werepig") and "PIG")
+            (string.find(target.prefab, "pig") ~= nil and target:HasTag("pig") and not target:HasTag("werepig") and "PIG")
         ) or nil
     )
 end
@@ -25,7 +25,7 @@ local function battlecrystring(combat, target)
             combat.inst,
             "BATTLECRY",
             (target:HasTag("prey") and not target:HasTag("hostile") and "PREY") or
-            (target:HasTag("pig") and not target:HasTag("werepig") and "PIG") or
+            (string.find(target.prefab, "pig") ~= nil and target:HasTag("pig") and not target:HasTag("werepig") and "PIG") or
             target.prefab
         )
         or nil
