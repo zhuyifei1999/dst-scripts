@@ -269,7 +269,7 @@ function MultiplayerMainScreen:DoInit()
     self:MakeMainMenu()
 	self:MakeSubMenu()
 
-    self.onlinestatus = self.fixed_root:AddChild(OnlineStatus())
+    self.onlinestatus = self.fixed_root:AddChild(OnlineStatus( true ))
 
 	self:UpdateMOTD()
 	--self:UpdateCountdown()

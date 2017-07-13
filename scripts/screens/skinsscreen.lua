@@ -76,7 +76,7 @@ function SkinsScreen:DoInit()
    	self.trade_button:SetPosition(500, -65)
    
 
-    local collection_name = self.profile:GetCollectionName() or (TheNet:GetLocalUserName()..STRINGS.UI.SKINSSCREEN.TITLE)
+    local collection_name = self.profile:GetCollectionName() or (subfmt(STRINGS.UI.SKINSSCREEN.TITLE, {name=TheNet:GetLocalUserName()}))
     local VALID_CHARS = [[ abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:;[]\@!#$%&()'*+-/=?^_{|}~"<>]]
     self.title = self.fixed_root:AddChild(TextEdit(BUTTONFONT, 45, "", BLACK))
     self.title:SetPosition(-390, RESOLUTION_Y*.43)

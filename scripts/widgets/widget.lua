@@ -418,6 +418,26 @@ end
     end
 end--]]
 
+-- Draws a section of data describing this widget to the current debug UI
+-- window.
+--
+-- See imgui.h ( https://github.com/ocornut/imgui/blob/master/imgui.h#L112 )
+-- for the API. Not all functions are available. Some type formats differ
+-- (ImVec must be unpacked). Nonconst pointers are additional return values.
+--
+-- See imgui_demo.lua for usage examples.
+function Widget:DebugDraw_AddSection(dbui)
+    dbui.Text(string.format("Widget: '%s'", tostring(self)))
+
+    local in_x,in_y = self:GetPosition():Get()
+    local step, step_fast = 10, 50
+    local has_modified_x, out_x = dbui.InputFloat("x position", in_x, step, step_fast)
+    local has_modified_y, out_y = dbui.InputFloat("y position", in_y, step, step_fast)
+    if has_modified_x or has_modified_y then
+        self:UpdatePosition(out_x,out_y)
+    end
+end
+
 function Widget:SetFadeAlpha(alpha, skipChildren)
     if not self.can_fade_alpha then return end
 

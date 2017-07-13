@@ -2690,6 +2690,8 @@ STRINGS.UI =
 
         CONSOLE_EDITION_TEXT = "Console Edition",
 
+        FAMILY_SHARED = "Family Sharing",
+        
         OFFLINE = "Offline",
         OFFLINEMODE = "Connection to Klei Failed",
         OFFLINEMODEDESC = "Could not connect to Klei's servers. Characters and worlds from online games will be unavailable. Continue and play offline?",
@@ -3714,8 +3716,9 @@ STRINGS.UI =
         },
         UNKNOWN_PHASE = "???",
         DAYDESC = "Day ",--", Day ",
-        OUT_OF = "of",
-        SHOWING = "shown",
+        SHOWING_FMT = "({viewed} of {total} shown)",
+        OUT_OF = "of", --legacy for mods
+        SHOWING = "shown", --legacy for mods
         CHANGE_TABS = "Change Tab",
         DESC_LOADING = "[Description Loading...]",
         NO_DESC = "[No Description]",
@@ -3811,7 +3814,8 @@ STRINGS.UI =
         OK = "OK",
         NONAMEGAME = "[No Name]",
         NEWGAME = "New World",
-        NEWGAME_SUFFIX = "'s World",
+        NEWGAME_SUFFIX = "'s World", --legacy for mods
+        NEWGAME_FMT = "{name}'s World",
         DELETE = "Delete",
         SLOT = "Server Slot",
         SURE = "Are you sure?",
@@ -3940,13 +3944,13 @@ STRINGS.UI =
         CUSTOMIZE_SCARECROW = "Customize Your Scarecrow",
         COMING = "Coming Soon!",
         OFFLINE = "Not Available Offline",
-        LOADOUT_TITLE = "'s Loadout",
+        LOADOUT_TITLE = "{name}'s Loadout",
         SELECTION_TITLE = "Character Select",
     },
 
     SKINSSCREEN =
     {
-        TITLE = "'s Collection",
+        TITLE = "{name}'s Collection",
         ALL = "All",
         CLOTHING = "Clothing",
         ITEMS = "Items",

@@ -4010,11 +4010,15 @@ local states =
             inst.components.combat:SetTarget(target)
             inst.components.combat:StartAttack()
             inst.components.locomotor:Stop()
-            local cooldown = math.max(inst.components.combat.min_attack_period + .5 * FRAMES, 20 * FRAMES)
 
-            inst.AnimState:PlayAnimation("dart")
+            inst.AnimState:PlayAnimation("dart_pre")
+            if inst.sg.prevstate == inst.sg.currentstate then
+                inst.sg.statemem.chained = true
+                inst.AnimState:SetTime(5 * FRAMES)
+            end
+            inst.AnimState:PushAnimation("dart", false)
 
-            inst.sg:SetTimeout(cooldown)
+            inst.sg:SetTimeout(math.max((inst.sg.statemem.chained and 14 or 18) * FRAMES, inst.components.combat.min_attack_period + .5 * FRAMES))
 
             if target ~= nil and target:IsValid() then
                 inst:FacePoint(target.Transform:GetWorldPosition())
@@ -4025,12 +4029,26 @@ local states =
         timeline =
         {
             TimeEvent(8 * FRAMES, function(inst)
-                inst.SoundEmitter:PlaySound("dontstarve/wilson/blowdart_shoot", nil, nil, true)
+                if inst.sg.statemem.chained then
+                    inst.SoundEmitter:PlaySound("dontstarve/wilson/blowdart_shoot", nil, nil, true)
+                end
             end),
-            TimeEvent(10 * FRAMES, function(inst)
-                inst:PerformBufferedAction()
-                inst.sg:RemoveStateTag("abouttoattack")
-                inst.SoundEmitter:PlaySound("dontstarve/wilson/blowdart_shoot", nil, nil, true)
+            TimeEvent(9 * FRAMES, function(inst)
+                if inst.sg.statemem.chained then
+                    inst:PerformBufferedAction()
+                    inst.sg:RemoveStateTag("abouttoattack")
+                end
+            end),
+            TimeEvent(13 * FRAMES, function(inst)
+                if not inst.sg.statemem.chained then
+                    inst.SoundEmitter:PlaySound("dontstarve/wilson/blowdart_shoot", nil, nil, true)
+                end
+            end),
+            TimeEvent(14 * FRAMES, function(inst)
+                if not inst.sg.statemem.chained then
+                    inst:PerformBufferedAction()
+                    inst.sg:RemoveStateTag("abouttoattack")
+                end
             end),
         },
 
@@ -4043,7 +4061,7 @@ local states =
         {
             EventHandler("equip", function(inst) inst.sg:GoToState("idle") end),
             EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
-            EventHandler("animover", function(inst)
+            EventHandler("animqueueover", function(inst)
                 if inst.AnimState:AnimDone() then
                     inst.sg:GoToState("idle")
                 end

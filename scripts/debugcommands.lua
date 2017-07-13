@@ -237,3 +237,9 @@ end
 function d_resetruins()
 	TheWorld:PushEvent("resetruins")
 end
+
+-- Get the widget selected by the debug widget editor (WidgetDebug).
+-- Try d_getwidget():ScaleTo(3,1,.7)
+function d_getwidget()
+    return TheFrontEnd.widget_editor.debug_widget_target
+end

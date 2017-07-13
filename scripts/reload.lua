@@ -146,20 +146,48 @@ end
 
 function DoReload()
 	print("before hotswap")
-	local files = dofile("scripts/reloadfiles.lua")
-	print(files)
+	local index = 1
+	print("before check:")
+	local modifiedFiles = {}
+	for i,v in pairs(RequiredFilesForReload) do
+		local time = TheSim:GetFileModificationTime(i)
+		if time ~= v then
+			print("Modified file:",i)
+			modifiedFiles[#modifiedFiles+1] = i
+		end
+		--print(index, i,v,time)
+		index = index + 1
+	end
+	
+	local backup_package_path = package.path
+
+	local files = modifiedFiles
 	for i=1,#files do 
 		local filename = files[i] --line --"screens/mainscreen"
-		print("hotswapping ".."["..filename.."]")
-		local result = hotswap(filename)
-		result = nil
-		collectgarbage()
-		for i,v in pairs(InvalidatedTables) do
-			ClassRegistry[i]=nil
+		print("HotSwapping : ",filename)
+		-- in order to qualify it must either contain /scripts/ or start with scripts/
+		local s1,e1 = string.find(filename,"scripts/",1,true)
+		local s2,e2 = string.find(filename,"/scripts/",1,true)
+		if s1 == 1 or s2 then		
+			if s1==1 then
+				filename = filename:sub(e1+1)
+			elseif s2 then
+				filename = filename:sub(e2+1)
+			end
+			-- strip the .lua
+			filename = filename:sub(1,#filename-4)
+			print("hotswapping ".."["..filename.."]")
+			local result = hotswap(filename)
+			result = nil
+			collectgarbage()
+			for i,v in pairs(InvalidatedTables) do
+				ClassRegistry[i]=nil
+			end
+			InvalidatedTables = {}
 		end
-		InvalidatedTables = {}
 	end
 	MonkeyPatchClasses()
+	package.path = backup_package_path
 	print("after hotswap")
 end
 

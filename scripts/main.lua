@@ -57,6 +57,7 @@ GameplayOptions =
 {
 }
 
+RequiredFilesForReload = {}
 
 --install our crazy loader!
 local loadfn = function(modulename)
@@ -68,6 +69,8 @@ local loadfn = function(modulename)
         filename = string.gsub(filename, "\\", "/")
         local result = kleiloadlua(filename)
         if result then
+			local filetime = TheSim:GetFileModificationTime(filename)			
+			RequiredFilesForReload[filename] = filetime
             return result
         end
         errmsg = errmsg.."\n\tno file '"..filename.."' (checked with custom loader)"

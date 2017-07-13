@@ -192,6 +192,14 @@ function c_despawn(player)
     end
 end
 
+function c_getnumplayers()
+    print(#AllPlayers)
+end
+
+function c_getmaxplayers()
+    print(TheNet:GetDefaultMaxPlayers())
+end
+
 -- Return a listing of currently active players
 function c_listplayers()
     local isdedicated = not TheNet:GetServerIsClientHosted()

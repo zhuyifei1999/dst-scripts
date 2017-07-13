@@ -734,6 +734,21 @@ function deepcopy(object)
     return _copy(object)
 end
 
+-- http://lua-users.org/wiki/CopyTable
+function shallowcopy(orig, dest)
+    local copy
+    if type(orig) == 'table' then
+        copy = dest or {}
+        for k, v in pairs(orig) do
+            copy[k] = v
+        end
+    else -- number, string, boolean, etc
+        copy = orig
+    end
+    return copy
+end
+
+
 -- if next(table) == nil, then it is empty
 --
 -- function IsTableEmpty(t)
