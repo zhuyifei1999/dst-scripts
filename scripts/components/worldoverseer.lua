@@ -30,7 +30,7 @@ end
 
 function WorldOverseer:RecordPlayerJoined(player)
 	local playerstats = self._seenplayers[player]
-	local time = GetTime()
+	local time = GetTimeReal() / 1000
 
 	local current_skins = player.components.skinner:GetClothing()
 	local items = {}
@@ -62,7 +62,7 @@ end
 
 function WorldOverseer:RecordPlayerLeft(player)
 	local playerstats = self._seenplayers[player]
-	local time = GetTime()
+	local time = GetTimeReal() / 1000
 	if playerstats then
 		playerstats.endtime = time
 
@@ -87,7 +87,7 @@ function WorldOverseer:CalcIndividualPlayerStats(player)
 
     local toremove = false
 
-    local time = GetTime()
+    local time = GetTimeReal() / 1000
     local secondsplayed = 0
     if playerstats.endtime then
         -- player left
@@ -205,7 +205,7 @@ function WorldOverseer:OnPlayerChangedSkin(player, data)
 	if data.new_skin == data.old_skin then return end
 
 	local playerstats = self._seenplayers[player]
-	local time = GetTime()
+	local time = GetTimeReal() / 1000
 
 	for k,v in pairs(playerstats.worn_items) do
 		if v.item_name == data.old_skin and v.endtime == nil then
@@ -233,7 +233,7 @@ function WorldOverseer:OnEquipSkinnedItem(player, data)
 	if not data then return end
 
 	local playerstats = self._seenplayers[player]
-	local time = GetTime()
+	local time = GetTimeReal() / 1000
 
 	local item ={}
 	item.item_name = data
@@ -247,7 +247,7 @@ function WorldOverseer:OnUnequipSkinnedItem(player, data)
 	if not data then return end
 
 	local playerstats = self._seenplayers[player]
-	local time = GetTime()
+	local time = GetTimeReal() / 1000
 
 	for k,v in pairs(playerstats.worn_items) do
 		if v.item_name == data and v.endtime == nil then

@@ -773,7 +773,7 @@ function ServerListingScreen:SearchForServers()
     if num_servs == 0 then
         self.server_count:SetString("("..STRINGS.UI.SERVERLISTINGSCREEN.SEARCHING_SERVERS..")")
     else
-        self.server_count:SetString("("..#self.viewed_servers.." "..STRINGS.UI.SERVERLISTINGSCREEN.OUT_OF.." "..num_servs.." "..STRINGS.UI.SERVERLISTINGSCREEN.SHOWING..")")
+        self.server_count:SetString( subfmt(STRINGS.UI.SERVERLISTINGSCREEN.SHOWING_FMT, { viewed = #self.viewed_servers, total = num_servs }) )
     end
     if self.view_online and self.offlinemode then
         self.server_count:SetString("("..STRINGS.UI.SERVERLISTINGSCREEN.NO_CONNECTION..")")
@@ -831,7 +831,7 @@ function ServerListingScreen:RefreshView(skipPoll, keepScrollFocusPos)
         self.refresh_button:SetHoverText(STRINGS.UI.SERVERLISTINGSCREEN.REFRESH)
         local num_servs = #self.servers-self.unjoinable_servers
         if num_servs < 0 then num_servs = 0 end
-        self.server_count:SetString("("..#self.viewed_servers.." "..STRINGS.UI.SERVERLISTINGSCREEN.OUT_OF.." "..num_servs.." "..STRINGS.UI.SERVERLISTINGSCREEN.SHOWING..")")
+        self.server_count:SetString( subfmt(STRINGS.UI.SERVERLISTINGSCREEN.SHOWING_FMT, { viewed = #self.viewed_servers, total = num_servs }) )
         if not self.view_online then
             self.server_count:SetString("("..STRINGS.UI.SERVERLISTINGSCREEN.LAN..")")
         end
@@ -1591,7 +1591,7 @@ function ServerListingScreen:DoFiltering(doneSearching, keepScrollFocusPos)
     if num_servs == 0 and not doneSearching then
         self.server_count:SetString("("..STRINGS.UI.SERVERLISTINGSCREEN.SEARCHING_SERVERS..")")
     else
-        self.server_count:SetString("("..#self.viewed_servers.." "..STRINGS.UI.SERVERLISTINGSCREEN.OUT_OF.." "..num_servs.." "..STRINGS.UI.SERVERLISTINGSCREEN.SHOWING..")")
+        self.server_count:SetString( subfmt(STRINGS.UI.SERVERLISTINGSCREEN.SHOWING_FMT, { viewed = #self.viewed_servers, total = num_servs }) )
     end
     if not self.view_online then
         self.server_count:SetString("("..STRINGS.UI.SERVERLISTINGSCREEN.LAN..")")

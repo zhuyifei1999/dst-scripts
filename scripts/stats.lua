@@ -168,7 +168,7 @@ local function ClearProfileStats()
     ProfileStats = {}
 end
 
-local function GetProfileStats(wipe)
+--[[local function GetProfileStats(wipe)
 	if GetTableSize(ProfileStats) == 0 then
 		return json.encode( {} )
 	end
@@ -187,7 +187,7 @@ local function GetProfileStats(wipe)
 		ClearProfileStats()
     end
     return jsonstats
-end
+end]]
 
 
 local function RecordSessionStartStats()
@@ -241,7 +241,7 @@ local function RecordGameStartStats()
 	TheSim:SendProfileStats( jsonstats )
 end
 
-local function SendAccumulatedProfileStats()
+--[[local function SendAccumulatedProfileStats()
 	if not STATS_ENABLE then
 		return
 	end
@@ -249,7 +249,7 @@ local function SendAccumulatedProfileStats()
 	--local sendstats = GetProfileStats(true)
     --sendstats.event = "accumulatedprofile"
 	-- TODO:STATS TheSim:SendProfileStats(sendstats)
-end
+end]]
 
 
 local function GetTestGroup()

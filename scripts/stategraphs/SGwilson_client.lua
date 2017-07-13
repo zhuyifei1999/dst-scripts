@@ -2020,13 +2020,19 @@ local states =
         tags = { "attack", "notalking", "abouttoattack" },
 
         onenter = function(inst)
-            if inst.replica.combat ~= nil then
-                inst.replica.combat:StartAttack()
-                inst.sg:SetTimeout(math.max(20 * FRAMES, inst.replica.combat:MinAttackPeriod() + .5 * FRAMES))
-            end
             inst.components.locomotor:Stop()
 
-            inst.AnimState:PlayAnimation("dart")
+            inst.AnimState:PlayAnimation("dart_pre")
+            if inst.sg.prevstate == inst.sg.currentstate then
+                inst.sg.statemem.chained = true
+                inst.AnimState:SetTime(5 * FRAMES)
+            end
+            inst.AnimState:PushAnimation("dart", false)
+
+            if inst.replica.combat ~= nil then
+                inst.replica.combat:StartAttack()
+                inst.sg:SetTimeout(math.max((inst.sg.statemem.chained and 14 or 18) * FRAMES, inst.replica.combat:MinAttackPeriod() + .5 * FRAMES))
+            end
 
             local buffaction = inst:GetBufferedAction()
             if buffaction ~= nil then
@@ -2042,12 +2048,26 @@ local states =
         timeline =
         {
             TimeEvent(8 * FRAMES, function(inst)
-                inst.SoundEmitter:PlaySound("dontstarve/wilson/blowdart_shoot", nil, nil, true)
+                if inst.sg.statemem.chained then
+                    inst.SoundEmitter:PlaySound("dontstarve/wilson/blowdart_shoot", nil, nil, true)
+                end
             end),
-            TimeEvent(10 * FRAMES, function(inst)
-                inst:ClearBufferedAction()
-                inst.sg:RemoveStateTag("abouttoattack")
-                inst.SoundEmitter:PlaySound("dontstarve/wilson/blowdart_shoot", nil, nil, true)
+            TimeEvent(9 * FRAMES, function(inst)
+                if inst.sg.statemem.chained then
+                    inst:ClearBufferedAction()
+                    inst.sg:RemoveStateTag("abouttoattack")
+                end
+            end),
+            TimeEvent(13 * FRAMES, function(inst)
+                if not inst.sg.statemem.chained then
+                    inst.SoundEmitter:PlaySound("dontstarve/wilson/blowdart_shoot", nil, nil, true)
+                end
+            end),
+            TimeEvent(14 * FRAMES, function(inst)
+                if not inst.sg.statemem.chained then
+                    inst:ClearBufferedAction()
+                    inst.sg:RemoveStateTag("abouttoattack")
+                end
             end),
         },
 
@@ -2058,7 +2078,7 @@ local states =
 
         events =
         {
-            EventHandler("animover", function(inst)
+            EventHandler("animqueueover", function(inst)
                 if inst.AnimState:AnimDone() then
                     inst.sg:GoToState("idle")
                 end

@@ -1,5 +1,7 @@
 local easing = require("easing")
 local Widget = require "widgets/widget"
+local WidgetDebug = require "widgetdebug"
+local EntityDebug = require "entitydebug"
 local Text = require "widgets/text"
 local UIAnim = require "widgets/uianim"
 local Image = require "widgets/image"
@@ -165,6 +167,11 @@ FrontEnd = Class(function(self, name)
 	self.save_indicator_fade_time = 0
 	self.save_indicator_fade = nil
 	self.autosave_enabled = true
+
+    if CHEATS_ENABLED then
+        self.widget_editor = WidgetDebug(self)
+        self.entity_editor = EntityDebug(self)
+    end
 end)
 
 function FrontEnd:ShowSavingIndicator()
@@ -664,6 +671,11 @@ function FrontEnd:Update(dt)
         end
     end
 
+    if CHEATS_ENABLED then
+        self.widget_editor:Update(dt)
+        self.entity_editor:Update(dt)
+    end
+
 	TheSim:ProfilerPush("update widgets")
 	if not self.updating_widgets_alt then
 		self.updating_widgets_alt = {}
@@ -1079,3 +1091,12 @@ end
 function FrontEnd:GetIsOfflineMode()
     return self.offline
 end
+
+function FrontEnd:EnableWidgetDebugging()
+    self.widget_editor:EnableWidgetDebugging()
+end
+
+function FrontEnd:EnableEntityDebugging()
+    self.entity_editor:EnableEntityDebugging()
+end
+

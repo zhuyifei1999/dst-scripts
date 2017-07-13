@@ -177,7 +177,7 @@ local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, def
     self.dressup:SeparateAvatar()
 
     local client_obj = TheNet:GetClientTableForUser(TheNet:GetUserID())
-    local name = TheNet:GetLocalUserName()..STRINGS.UI.LOBBYSCREEN.LOADOUT_TITLE
+    local name = subfmt(STRINGS.UI.LOBBYSCREEN.LOADOUT_TITLE, {name = TheNet:GetLocalUserName()})
     self.loadout_title = self.loadout_root:AddChild(Text(TALKINGFONT, 35, name, client_obj ~= nil and client_obj.colour or BLACK))
     self.loadout_title:SetPosition(RESOLUTION_X/2 - 110, RESOLUTION_Y - 25)
     self.loadout_title:SetRegionSize( 500, 60 )

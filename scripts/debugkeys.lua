@@ -730,6 +730,31 @@ AddGameDebugKey(KEY_P, function()
     return true
 end)
 
+AddGlobalDebugKey(KEY_W, function()
+    -- Only respond to plain ctrl-w
+    if TheInput:IsKeyDown(KEY_CTRL)
+        and not TheInput:IsKeyDown(KEY_SHIFT)
+        and not TheInput:IsKeyDown(KEY_ALT)
+        then
+        TheFrontEnd:EnableWidgetDebugging()
+        return true
+    end
+    return false
+end)
+
+AddGameDebugKey(KEY_W, function()
+    -- Only respond to ctrl-shift-w
+    if TheInput:IsKeyDown(KEY_CTRL)
+        and TheInput:IsKeyDown(KEY_SHIFT)
+        and not TheInput:IsKeyDown(KEY_ALT)
+        then
+        c_select()
+        TheFrontEnd:EnableEntityDebugging()
+        return true
+    end
+    return false
+end)
+
 AddGameDebugKey(KEY_K, function()
     if TheInput:IsKeyDown(KEY_CTRL) then
         local MouseCharacter = TheInput:GetWorldEntityUnderMouse()
