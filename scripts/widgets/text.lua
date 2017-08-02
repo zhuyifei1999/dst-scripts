@@ -21,6 +21,37 @@ function Text:__tostring()
     return string.format("%s - %s", self.name, self.string or "")
 end
 
+function Text:DebugDraw_AddSection(dbui)
+    Text._base.DebugDraw_AddSection(self, dbui)
+
+    local changed, text = dbui.InputText("string", self:GetString())
+    if changed then
+        self:SetString(text)
+    end
+
+    local changed, size = dbui.DragInt("font size", self.size, 1, 10, 150, "%.f")
+    if changed then
+        self:SetSize(size)
+    end
+    local changed, r,g,b,a = dbui.ColorEdit4("colour", unpack(self.colour))
+    if changed then
+        self:SetColour(r, g, b, a)
+    end
+
+    local current_font_idx = 1
+    local available_fonts = {}
+    for i,font in ipairs(FONTS) do
+        table.insert(available_fonts, font.alias)
+        if font.alias == self.font then
+            current_font_idx = i
+        end
+    end
+    local changed, font_idx = dbui.ListBox("font", available_fonts, current_font_idx, 3)
+    if changed then
+        self:SetFont(available_fonts[font_idx])
+    end
+end
+
 function Text:SetColour(r, g, b, a)
     self.colour = type(r) == "number" and { r, g, b, a } or r
     self.inst.TextWidget:SetColour(unpack(self.colour))

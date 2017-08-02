@@ -1,7 +1,10 @@
+local DEBUG_MODE = BRANCH == "dev"
+local CAN_USE_DBUI = DEBUG_MODE and CONFIGURATION ~= "PRODUCTION" and PLATFORM == "WIN32_STEAM"
+
 local easing = require("easing")
 local Widget = require "widgets/widget"
-local WidgetDebug = require "widgetdebug"
-local EntityDebug = require "entitydebug"
+local WidgetDebug = CAN_USE_DBUI and require("dbui_no_package/widgetdebug") or nil
+local EntityDebug = CAN_USE_DBUI and require("dbui_no_package/entitydebug") or nil
 local Text = require "widgets/text"
 local UIAnim = require "widgets/uianim"
 local Image = require "widgets/image"
@@ -168,7 +171,7 @@ FrontEnd = Class(function(self, name)
 	self.save_indicator_fade = nil
 	self.autosave_enabled = true
 
-    if CHEATS_ENABLED then
+    if CAN_USE_DBUI then
         self.widget_editor = WidgetDebug(self)
         self.entity_editor = EntityDebug(self)
     end
@@ -671,7 +674,7 @@ function FrontEnd:Update(dt)
         end
     end
 
-    if CHEATS_ENABLED then
+    if CAN_USE_DBUI then
         self.widget_editor:Update(dt)
         self.entity_editor:Update(dt)
     end
@@ -1093,10 +1096,27 @@ function FrontEnd:GetIsOfflineMode()
 end
 
 function FrontEnd:EnableWidgetDebugging()
-    self.widget_editor:EnableWidgetDebugging()
+    if CAN_USE_DBUI then
+        self.widget_editor:EnableWidgetDebugging()
+    end
 end
 
 function FrontEnd:EnableEntityDebugging()
-    self.entity_editor:EnableEntityDebugging()
+    if CAN_USE_DBUI then
+        self.entity_editor:EnableEntityDebugging()
+    end
+end
+
+-- Programmatically set the debug target.
+--
+-- Don't submit code calling this function! You can call it after constructing
+-- your widget to skip the interactive selection, but we don't want this
+-- sprinkled throughout the code (don't want imgui activating unless
+-- user-triggered).
+function FrontEnd:SetWidgetDebuggingTarget(widget)
+    --~ print("TheFrontEnd:SetWidgetDebuggingTarget called. Be sure to remove before submit!", debugstack())
+    if CAN_USE_DBUI then
+        self.widget_editor:SetDebugTarget(widget)
+    end
 end
 

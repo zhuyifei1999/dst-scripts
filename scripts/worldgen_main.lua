@@ -3,10 +3,11 @@ package.path = package.path .. ";scripts/?.lua"
 --local BAD_CONNECT = 219000 -- 
 --SEED = 1434760235 -- Force roads test level 3
 if SEED == nil then
-	SEED = os.time()
+	SEED = tonumber(tostring(os.time()):reverse():sub(1,6))
 end
 
 math.randomseed(SEED)
+math.random()
 
 --print ("worldgen_main.lua MAIN = 1")
 

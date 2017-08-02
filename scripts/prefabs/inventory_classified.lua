@@ -772,6 +772,9 @@ end
 local function DropItemFromInvTile(inst, item, single)
     if not IsBusy(inst) and
         inst._parent ~= nil and
+        not inst._parent:HasTag("busy") and
+        not (inst._parent.sg ~= nil and
+            inst._parent.sg:HasStateTag("busy")) and
         inst._parent.components.playercontroller ~= nil then
         inst._parent.components.playercontroller:RemoteDropItemFromInvTile(item, single)
     end

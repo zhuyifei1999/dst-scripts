@@ -18,6 +18,32 @@ function Image:__tostring()
 	return string.format("%s - %s:%s", self.name, self.atlas or "", self.texture or "")
 end
 
+function Image:DebugDraw_AddSection(dbui)
+    Image._base.DebugDraw_AddSection(self, dbui)
+
+    -- SetTexture doesn't gracefully fail on bad input, so don't allow editing
+    -- (we'd call SetTexture for every keystroke).
+    dbui.Text(string.format("atlas:texture: %s:%s", self.atlas or "", self.texture or ""))
+    dbui.AtlasImage(self.atlas, self.texture, self:GetSize())
+
+    local function image_from_atlastexture(label, atlastexture)
+        dbui.Text(label ..": ".. tostring(atlastexture))
+        if atlastexture then
+            local parts = atlastexture:split()
+            if #parts == 2 then
+                dbui.Image(parts[1], parts[2], self:GetSize())
+            end
+        end
+    end
+    image_from_atlastexture("mouse over texture", self.mouseovertex)
+    image_from_atlastexture("disabled texture", self.disabledtex)
+
+    local changed, r,g,b,a = dbui.ColorEdit4("tint", unpack(self.tint))
+    if changed then
+        self:SetTint(r, g, b, a)
+    end
+end
+
 function Image:SetAlphaRange(min, max)
 	self.inst.ImageWidget:SetAlphaRange(min, max)
 end
