@@ -89,8 +89,6 @@ local function invfn()
 
     inst:AddTag("cattoy")
 
-    inst.name = STRINGS.NAMES.SUCCULENT_PLANT
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

@@ -1541,7 +1541,9 @@ function Inventory:InspectItemFromInvTile(item)
 end
 
 function Inventory:DropItemFromInvTile(item, single)
-    if self:CanAccessItem(item) and self.inst.components.playercontroller ~= nil then
+    if not self.inst.sg:HasStateTag("busy") and
+        self:CanAccessItem(item) and
+        self.inst.components.playercontroller ~= nil then
         local buffaction = BufferedAction(self.inst, nil, ACTIONS.DROP, item, self.inst.components.playercontroller:GetRemotePredictPosition() or self.inst:GetPosition())
         buffaction.options.wholestack = not (single and item.components.stackable ~= nil and item.components.stackable:IsStack())
         self.inst.components.locomotor:PushAction(buffaction, true)

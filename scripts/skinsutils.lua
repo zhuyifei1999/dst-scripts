@@ -388,7 +388,7 @@ function GetSortedSkinsList()
 		unknown = {},
 	}
 
-	for k,v in ipairs(templist) do 
+	for k,v in ipairs(templist) do
 		local type, item = GetTypeForItem(v.item_type)
 		local rarity = GetRarityForItem(item)
 
@@ -401,6 +401,9 @@ function GetSortedSkinsList()
 			data.timestamp = v.modified_time
 			data.item_id = v.item_id
 		
+			if listoflists[type] == nil then
+				print("Missing sorted skin list type ", type)
+			end
 			table.insert(listoflists[type], data)
 			
 			if v.modified_time > timestamp then 

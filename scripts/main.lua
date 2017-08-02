@@ -1,8 +1,10 @@
 -- Override the package.path in luaconf.h because it is impossible to find
 package.path = "scripts\\?.lua;scriptlibs\\?.lua"
 
+math.randomseed(tonumber(tostring(os.time()):reverse():sub(1,6)))
+math.random()
+
 --defines
-math.randomseed(os.time())
 MAIN = 1
 ENCODE_SAVES = BRANCH ~= "dev"
 CHEATS_ENABLED = BRANCH == "dev" or (PLATFORM == "PS4" and CONFIGURATION ~= "PRODUCTION")

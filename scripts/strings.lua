@@ -1073,6 +1073,7 @@ STRINGS =
         POTTEDFERN = "Potted Fern",
         SUCCULENT_POTTED = "Potted Succulent",
         SUCCULENT_PLANT = "Succulent",
+        SUCCULENT_PICKED = "Succulent",
         SENTRYWARD = "Ocuvigil",
         TOWNPORTAL = "The Lazy Deserter",
         TOWNPORTALTALISMAN = "Desert Stone",
