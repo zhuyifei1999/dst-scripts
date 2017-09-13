@@ -412,6 +412,15 @@ return {
 			GHOST = "Nice try. You're not escaping to Valhalla yet, %s.",
 			FIRESTARTER = "%s is really heating things up today.",
 		},
+        WINONA =
+        {
+            GENERIC = "Good day to you, %s!",
+            ATTACKER = "%s is a safety hazard.",
+            MURDERER = "It ends here, %s!",
+            REVIVER = "It's pretty handy having you around, %s.",
+            GHOST = "That probably threw a wrench into her plans.",
+            FIRESTARTER = "Things are burning up at the factory today.",
+        },
         MIGRATION_PORTAL = 
         {
             GENERIC = "If I had any friends, this could take me to them.",

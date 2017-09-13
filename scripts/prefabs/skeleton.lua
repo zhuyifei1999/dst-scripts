@@ -158,6 +158,11 @@ local function common_fn(custom_init)
     inst.components.workable:SetWorkLeft(3)
     inst.components.workable:SetOnFinishCallback(onhammered)
 
+	if not TheSim:HasPlayerSkeletons() then
+		inst:Hide()
+		inst:DoTaskInTime(0, inst.Remove)
+	end
+
     return inst
 end
 

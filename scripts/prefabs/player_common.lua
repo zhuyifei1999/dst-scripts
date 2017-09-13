@@ -714,7 +714,7 @@ end
 --------------------------------------------------------------------------
 
 local function RemoveDeadPlayer(inst, spawnskeleton)
-    if spawnskeleton then
+    if spawnskeleton and TheSim:HasPlayerSkeletons() then
         local x, y, z = inst.Transform:GetWorldPosition()
 
         -- Spawn a skeleton
@@ -1022,7 +1022,7 @@ local function OnMakePlayerGhost(inst, data)
     local x, y, z = inst.Transform:GetWorldPosition()
 
     -- Spawn a skeleton
-    if data ~= nil and data.skeleton then
+    if data ~= nil and data.skeleton and TheSim:HasPlayerSkeletons() then
         local skel = SpawnPrefab("skeleton_player")
         if skel ~= nil then
             skel.Transform:SetPosition(x, y, z)

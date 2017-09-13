@@ -54,6 +54,7 @@ STRINGS =
         waxwell = "Maxwell",
         wathgrithr = "Wigfrid",
         webber = "Webber",
+        winona = "Winona",
         unknown = "The Unknown",
         random = "Random",
     },
@@ -72,6 +73,7 @@ STRINGS =
         wes = "...",
         wathgrithr = "\"All the wörld's a stage. För me!\"",
         webber = "\"We're always together, and never alone!\"",
+        winona = "\"Anything can be fixed with hard work and elbow grease.\"",
         random = "Anybody could be under that hat.",
     },
 
@@ -88,6 +90,7 @@ STRINGS =
         waxwell = "The Puppet Master",
         wathgrithr = "The Performance Artist",
         webber = "The Indigestible",
+        winona = "The Handywoman",
         random = "?"
     },
 
@@ -106,6 +109,7 @@ STRINGS =
         woodie_canada = "*Has a lovely axe \n*And a terrible secret \n*Celebrates Thanksgiving at the correct time",
         wathgrithr = "*Excels in battle \n*Absorbs the power of fallen foes \n*Only eats meat",
         webber = "*Is a monster \n*Can befriend spiders \n*Grows a silky smooth beard",
+        winona = "*Is a skilled builder\n*Gets one free hit from the dark\n*Brings her own tools",
         random = "\nThis will select a random character",
     },
 
@@ -649,6 +653,7 @@ STRINGS =
         WAXWELL = "Maxwell",
         WATHGRITHR = "Wigfrid",
         WEBBER = "Webber",
+        WINONA = "Winona",
 
         PIGKING = "Pig King",
         STRAWHAT = "Straw Hat",
@@ -1251,7 +1256,7 @@ STRINGS =
         ATRIUM_KEY = "Ancient Key",
         ATRIUM_OVERGROWTH = "Ancient Obelisk",
 
-		SACRED_CHEST = "Ancient Chest",
+        SACRED_CHEST = "Ancient Chest",
 
         SHADOWMETEOR = "Meteor",
 
@@ -2474,6 +2479,7 @@ STRINGS.UI =
             "Willow's teddy bear...",
             "Woodie's plaid...",
             "WX-78's gears...",
+            "Winona's tools...",
             "a monarch's sorrow...",
             "an inescapable nostalgia...",
             "gold and marble...",
@@ -2636,6 +2642,7 @@ STRINGS.UI =
         HOSTCHAR = "Host (CharSelect)",
         JOIN = "Join IP",
         JOINCHAR = "Join (CharSelect)",
+        QUICKJOIN = "Quick Join",
         BROWSE = "Browse Games",
         CREATE = "Host Game",
         GAMEWIZARD = "Game Wizard",
@@ -2715,6 +2722,7 @@ STRINGS.UI =
         NEWUSER_DETECTED_HEADER = "New to Don't Starve?",
         NEWUSER_DETECTED_BODY = "You might want to explore on your own for a bit and get a feel for things. Would you like to host your own private game first?",
         NEWUSER_NO = "No, Browse Games",
+        NEWUSER_NO_QUICKJOIN = "No, Quick Join",
         NEWUSER_YES = "Yes, Host Game",
 
         VERSION_YOURS = "Your Version: %s",
@@ -2725,6 +2733,7 @@ STRINGS.UI =
         VERSION_MOREINFO = "Instructions",
         VERSION_ERROR = "Problem checking for latest version",
 
+        TOOLTIP_QUICKJOIN = "Jump in and start playing",
         TOOLTIP_BROWSE = "Browse the list of servers",
         TOOLTIP_HOST = "Start your own server",
         TOOLTIP_WIZARD = "Let us help you drill down the list of servers",
@@ -3598,6 +3607,22 @@ STRINGS.UI =
         EARTHQUAKES = "Earthquakes",
         CAVELIGHT = "Sinkhole Lights",
     },
+    
+    QUICKJOINSCREEN =
+    {
+		TITLE = "Quick Join",
+		BODY = "Searching for servers",
+
+		JOIN_BTN = "Join",
+		
+		NO_SERVERS_TITLE = "Quick Join Failed",
+		NO_SERVERS_MSG = "No servers could be found matching the quick join criteria.",
+        NO_SERVERS_BROWSE = "Browse Games",
+        NO_SERVERS_HOST = "Host Game",
+        NO_SERVERS_CLOSE = "Close",
+        
+        CONNECTING_TO_SERVER = "Connecting to Server: {server}",
+	},
 
     SERVERLISTINGSCREEN =
     {
@@ -4887,7 +4912,7 @@ STRINGS.UI =
         DARKSTART = "Dark",
         CAVESTART = "Caves",
 
-		EVENT_DEFAULT = "Auto",
+        EVENT_DEFAULT = "Auto",
         EVENT_HALLOWEDNIGHTS_2016 = "Hallowed Nights",
         EVENT_WINTERSFEAST_2016 = "Winters Feast",
         EVENT_YEAR_OF_THE_GOBBLER_2017 = "Year of the Gobbler",
@@ -4931,6 +4956,7 @@ STRINGS.CHARACTERS =
     WICKERBOTTOM = require "speech_wickerbottom",
     WATHGRITHR = require "speech_wathgrithr",
     WEBBER = require "speech_webber",
+    WINONA = require "speech_winona",
 }
 
 STRINGS.LUCY =

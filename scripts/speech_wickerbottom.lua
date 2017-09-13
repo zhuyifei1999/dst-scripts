@@ -256,6 +256,15 @@ return
             GHOST = "%s, I told you not to run with spears. Tsk.",
             FIRESTARTER = "\"By Hel's fire\" is just a turn of phrase, dear.",
         },
+        WINONA =
+        {
+            GENERIC = "Ah, greetings dear %s!",
+            ATTACKER = "Rather crass wouldn't you say, %s?",
+            MURDERER = "I'll not tolerate such behaviour!",
+            REVIVER = "%s is quite the Jane of all trades.",
+            GHOST = "Tsk. Were you wearing your hardhat, dear?",
+            FIRESTARTER = "That was certainly not a regulation fire, dear.",
+        },
 
         MULTIPLAYER_PORTAL = "Hmm... This may require further reading.",
         BERNIE_INACTIVE =

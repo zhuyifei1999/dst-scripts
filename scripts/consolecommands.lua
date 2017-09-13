@@ -1117,3 +1117,7 @@ end
 function c_stopvote()
     TheNet:StopVote()
 end
+
+function c_stopbroadcastingserver()
+    TheNet:StopBroadcastingServer()
+end

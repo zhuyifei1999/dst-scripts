@@ -362,6 +362,15 @@ return {
             GHOST = "You'll not away to Valhalla yet, %s. A heart!",
             FIRESTARTER = "A fellow Viking, forged in flames!",
         },
+        WINONA =
+        {
+            GENERIC = "Greetings, brave %s!",
+            ATTACKER = "Dost thou test me, %s?",
+            MURDERER = "I shall unleash Ragnarok upon thee!",
+            REVIVER = "%s is guided by Brokkr.",
+            GHOST = "%s hath fallen in battle! A heart!",
+            FIRESTARTER = "%s's flames could temper steel.",
+        },
 
         LAVA_POND_ROCK = "Stone belched forth by the earth's fiery heart!",
 

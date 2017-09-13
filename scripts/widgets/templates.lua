@@ -160,6 +160,22 @@ TEMPLATES = {
         return vig
     end,
 
+    BackgroundTint = function(a, rgb)
+        local bg = Image("images/global.xml", "square.tex")    
+        bg:SetVRegPoint(ANCHOR_MIDDLE)
+        bg:SetHRegPoint(ANCHOR_MIDDLE)
+        bg:SetVAnchor(ANCHOR_MIDDLE)
+        bg:SetHAnchor(ANCHOR_MIDDLE)
+        bg:SetScaleMode(SCALEMODE_FILLSCREEN)
+		
+		a = a ~= nil and a or 0.75
+		rgb = rgb ~= nil and rgb or {0, 0, 0 }
+		
+		bg:SetTint(rgb[1], rgb[2], rgb[3], a)
+
+        return bg
+    end,
+
     -------------------------------
     -------------------------------
     -- LEFT/RIGHT SIDE GRADIENTS --

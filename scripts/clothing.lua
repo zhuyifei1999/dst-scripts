@@ -791,6 +791,35 @@ CLOTHING =
 		torso_tuck = "untucked",
 		rarity = "Distinguished",
 	},
+	body_winona_formal =
+	{
+		type = "body",
+		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "foot", "hand", "leg", "skirt", "torso", "torso_pelvis", },
+		override_build = "body_winona_formal",
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+	},
+	body_winona_shadow =
+	{
+		type = "body",
+		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "foot", "hand", "leg", "torso", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		override_build = "body_winona_shadow",
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+		has_leg_boot = true,
+	},
+	body_winona_survivor =
+	{
+		type = "body",
+		symbol_overrides = { "arm_lower", "arm_upper_skin", "foot", "hand", "leg", "torso", "torso_pelvis", },
+		symbol_hides = { "skirt", "arm_upper", "arm_lower_cuff", },
+		override_build = "body_winona_survivor",
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+		legs_cuff_size = 5,
+		feet_cuff_size = 5,
+	},
 	body_wolfgang_formal =
 	{
 		type = "body",

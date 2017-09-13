@@ -75,7 +75,7 @@ local function OnDeath(inst, data)
         domestication_level = inst.components.domesticatable:GetDomestication(),
         tendency = inst.tendency,
         cause = data.cause,
-        afflicter = data.afflicter ~= nil and data.afflicter.userid ~= nil and data.afflicter.userid or nil
+        afflicter = data.afflicter ~= nil and data.afflicter.userid ~= nil and data.afflicter.userid:len() > 0 and data.afflicter.userid or nil
     })
 end
 

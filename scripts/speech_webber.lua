@@ -362,6 +362,15 @@ return {
 			GHOST = "Wow! Even as a ghost you're super tough, %s!",
 			FIRESTARTER = "You're supposed to put fires out when you're finished.",
 		},
+        WINONA =
+        {
+            GENERIC = "Hi %s! Build anything neat today?",
+            ATTACKER = "Don't do hits, %s!",
+            MURDERER = "We didn't wanna have to do this!",
+            REVIVER = "%s keeps us all together!",
+            GHOST = "Aw, I'm sorry that happened to you, %s.",
+            FIRESTARTER = "Don't light fires, %s!",
+        },
 
         MULTIPLAYER_PORTAL = "It's pretty... pretty scary!",
 
