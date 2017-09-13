@@ -215,6 +215,7 @@ Recipe("staff_tornado", {Ingredient("goose_feather", 10), Ingredient("lightningg
 
 --DRESSUP
 
+Recipe("sewing_tape", { Ingredient("silk", 1), Ingredient("cutgrass", 3)}, RECIPETABS.DRESS, TECH.NONE, nil, nil, nil, nil, "handyperson")
 Recipe("sewing_kit", {Ingredient("log", 1), Ingredient("silk", 8), Ingredient("houndstooth", 2)}, RECIPETABS.DRESS, TECH.SCIENCE_TWO)
 
 Recipe("flowerhat", {Ingredient("petals", 12)}, RECIPETABS.DRESS, TECH.NONE)
