@@ -60,4 +60,4 @@ local function fn()
     return inst
 end
 
-return Prefab( "spear_wathgrithr", fn, assets)
+return Prefab("spear_wathgrithr", fn, assets)

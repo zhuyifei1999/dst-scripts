@@ -369,6 +369,15 @@ return {
 			GHOST = "Come back, %s... Take my heart...",
 			FIRESTARTER = "Do the Norse have a god of fire, %s?",
 		},
+        WINONA =
+        {
+            GENERIC = "How do you do, %s?",
+            ATTACKER = "There is anger in %s's heart.",
+            MURDERER = "Abigail and I are going to have fun with you!",
+            REVIVER = "Hi %s. Abigail says \"thank-you\".",
+            GHOST = "You can't escape that way, %s. I've tried.",
+            FIRESTARTER = "Is fire important in your line of work...?",
+        },
 
 		GLOMMER = "Well aren't you a happy little fuzzball. Die.",
         GLOMMERFLOWER = 

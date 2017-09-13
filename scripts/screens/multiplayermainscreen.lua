@@ -9,7 +9,7 @@ local UIAnim = require "widgets/uianim"
 local Widget = require "widgets/widget"
 require "os"
 
-local ANR_BETA_COUNTDOWN_LAYOUT = BRANCH == "staging" or BRANCH == "dev"
+local ANR_BETA_COUNTDOWN_LAYOUT = false -- BRANCH == "staging" or BRANCH == "dev"
 local ANR_BETA_COUNTDOWN_DATE = {year = 2017, day = 23, month = 2, hour = 23}    -- nil, {year = 2016, day = 8, month = 12, hour = 23}
 local ANR_BETA_COUNTDOWN_MODE = "released"                                       -- "text", "image", "reveal", "released"
 local ANR_BETA_COUNTDOWN_IMAGE = "silhouette_beta_8b"                             -- "silhouette_beta_1", "silhouette_beta_2"
@@ -28,6 +28,7 @@ local CountdownBeta = require "widgets/countdownbeta"
 
 local OptionsScreen = require "screens/optionsscreen"
 local MorgueScreen = require "screens/morguescreen"
+local QuickJoinScreen = require "screens/quickjoinscreen"
 local ServerListingScreen = require "screens/serverlistingscreen"
 local ServerCreationScreen = require "screens/servercreationscreen"
 local SkinsScreen = require "screens/skinsscreen"
@@ -51,9 +52,9 @@ local lcol = -RESOLUTION_X/2 +200
 local bottom_offset = 60
 
 local titleX = lcol-35
-local titleY = 165
+local titleY = 195
 local menuX = lcol-30
-local menuY = -240 -- Use -265 when the "game wizard" option is added
+local menuY = -260
 
 SHOW_DST_DEBUG_HOST_JOIN = false
 SHOW_DEBUG_UNLOCK_RESET = false
@@ -491,7 +492,7 @@ function MultiplayerMainScreen:OnSkinsButton()
 end
 
 function MultiplayerMainScreen:OnBrowseServersButton()
-    if self:CheckNewUser() then
+    if self:CheckNewUser(self.OnBrowseServersButton, STRINGS.UI.MAINSCREEN.NEWUSER_NO) then
         return
     end
 
@@ -526,6 +527,21 @@ function MultiplayerMainScreen:OnBrowseServersButton()
             self:Hide()
         end)
     end)
+end
+
+function MultiplayerMainScreen:OnQuickJoinServersButton()
+    if self:CheckNewUser(self.OnQuickJoinServersButton, STRINGS.UI.MAINSCREEN.NEWUSER_NO_QUICKJOIN) then
+        return
+    end
+
+    self.last_focus_widget = TheFrontEnd:GetFocusWidget()
+    self.menu:Disable()
+    self.leaving = true
+
+    TheFrontEnd:PushScreen(QuickJoinScreen(self, self.offline, self.session_data, 
+		CalcQuickJoinServerScore,
+		function() self:OnCreateServerButton() end,
+		function() self:OnBrowseServersButton() end))
 end
 
 -- MORGUE
@@ -704,6 +720,7 @@ function MultiplayerMainScreen:MakeMainMenu()
         return btn
     end
 	
+    local quickjoin_button = MakeMainMenuButton(STRINGS.UI.MAINSCREEN.QUICKJOIN, function() self:OnQuickJoinServersButton() end, STRINGS.UI.MAINSCREEN.TOOLTIP_QUICKJOIN)
     local browse_button = MakeMainMenuButton(STRINGS.UI.MAINSCREEN.BROWSE, function() self:OnBrowseServersButton() end, STRINGS.UI.MAINSCREEN.TOOLTIP_BROWSE)
     local host_button = MakeMainMenuButton(STRINGS.UI.MAINSCREEN.CREATE, function() self:OnCreateServerButton() end, STRINGS.UI.MAINSCREEN.TOOLTIP_HOST)
     --local wizard_button = MakeMainMenuButton(STRINGS.UI.MAINSCREEN.GAMEWIZARD, function() self:OnGameWizardButton() end, STRINGS.UI.MAINSCREEN.TOOLTIP_WIZARD)
@@ -735,6 +752,11 @@ function MultiplayerMainScreen:MakeMainMenu()
             {widget = browse_button},
         }
     end
+
+	if not TheFrontEnd:GetIsOfflineMode() then
+		-- Disabling Quick Join (its is a work in progress)
+		--table.insert(menu_items, {widget = quickjoin_button})
+	end
 
     --if PLATFORM == "WIN32_STEAM" or PLATFORM == "WIN32" then
     --  table.insert( menu_items, {text=STRINGS.UI.MAINSCREEN.BROADCASTING, cb= function() self:BroadcastingMenu() end})
@@ -1142,7 +1164,7 @@ function MultiplayerMainScreen:UpdateCountdown()
 	TheSim:GetPersistentString("updatecountdown", function(...) self:OnCachedCountdownLoad(...) end)
 end
 
-function MultiplayerMainScreen:CheckNewUser()
+function MultiplayerMainScreen:CheckNewUser(onnofn, no_button_text)
     if Profile:SawNewUserPopup() then
         return false
     end
@@ -1161,11 +1183,11 @@ function MultiplayerMainScreen:CheckNewUser()
                 offset = Vector3(-25, 0, 0),
             },
             {
-                text = STRINGS.UI.MAINSCREEN.NEWUSER_NO,
+                text = no_button_text,
                 cb = function()
                     TheFrontEnd:PopScreen()
                     Profile:ShowedNewUserPopup()
-                    self:OnBrowseServersButton()
+                    onnofn(self)
                 end,
                 offset = Vector3(25, 0, 0),
             },

@@ -347,20 +347,39 @@ function ScrollableList:GetNearestStep()
     return math.floor((marker.y / self.step_size) + 0.5)
 end
 
+function ScrollableList:GetHierarchicalScale()
+		local scaleX, scaleY, scaleZ = self.inst.UITransform:GetScale()
+
+		local parent = self:GetParent()
+		while parent do
+			local parentScaleX, parentScaleY, parentScaleZ = parent.inst.UITransform:GetScale()
+			scaleX = scaleX * parentScaleX
+			scaleY = scaleY * parentScaleY
+			scaleZ = scaleZ * parentScaleZ
+			parent = parent:GetParent()
+		end
+		return scaleX, scaleY, scaleZ
+end
+
 function ScrollableList:DoDragScroll()
     -- Near the scroll bar, keep drag-scrolling
     local marker = self.position_marker:GetWorldPosition()
     if self.dragging and math.abs(TheFrontEnd.lastx - marker.x) <= DRAG_SCROLL_X_THRESHOLD then
         local pos = self:GetWorldPosition()
+	
+		local _,scaleY,_ = self:GetHierarchicalScale()
+
         local click_y = TheFrontEnd.lasty
         local prev_step = self:GetNearestStep()
-        if click_y < pos.y - self.height/2 + arrow_button_size then
-            click_y = -self.height/2 + arrow_button_size
-        elseif click_y > pos.y + self.height/2 - arrow_button_size then
-            click_y = self.height/2 - arrow_button_size
-        else
-            click_y = click_y - pos.y
-        end
+
+		local scaledHalflength = (self.height/2) * scaleY
+		local scaledArrowHeight = arrow_button_size * scaleY
+
+		click_y = click_y - pos.y
+		click_y = math.clamp(click_y, - scaledHalflength + scaledArrowHeight, scaledHalflength - scaledArrowHeight)
+
+		click_y = click_y / scaleY
+
         self.position_marker:SetPosition(self.width/2, click_y + self.y_adjustment)
         local curr_step = self:GetNearestStep()
         if curr_step ~= prev_step then

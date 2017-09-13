@@ -951,7 +951,7 @@ function FrontEnd:OnMouseMove(x, y)
     end
 
     self.lastx = x
-    self.lasty = y
+	self.lasty = y
 end
 
 function FrontEnd:OnSaveLoadError(operation, filename, status)

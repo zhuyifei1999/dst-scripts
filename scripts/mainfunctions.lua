@@ -1,6 +1,7 @@
 local PopupDialogScreen = require "screens/popupdialog"
 local BigPopupDialogScreen = require "screens/bigpopupdialog"
 local WorldGenScreen = require "screens/worldgenscreen"
+local Stats = require("stats")
 
 require "scheduler"
 
@@ -653,7 +654,7 @@ function SaveGame(isshutdown, cb)
     end
 
     for i, player in ipairs(AllPlayers) do
-        if player ~= nil then
+        if player.userid ~= nil and player.userid:len() > 0 then
             if save.snapshot ~= nil then
                 table.insert(save.snapshot.players, player.userid)
             end
@@ -866,13 +867,24 @@ function GlobalInit()
 end
 
 function DoLoadingPortal(cb)
+	local join_screen = "other"
     local screen = TheFrontEnd:GetActiveScreen()
     while screen ~= nil and not (screen.bg ~= nil and screen.bg.anim_root ~= nil and screen.bg.anim_root.portal ~= nil) do
+		if screen.name == "ConnectingToGamePopup" then
+			join_screen = "server_listing"
+		elseif screen.name == "QuickJoinScreen" then
+			join_screen = "quick_join"
+		end
+		
         -- Check if we're on a screen with a portal anim
         -- If we're not, then pop the current screen and try again with the next screen down
         TheFrontEnd:PopScreen()
         screen = TheFrontEnd:GetActiveScreen()
     end
+    
+	local values = {}
+	values.join_screen = join_screen 
+	Stats.PushMetricsEvent("joinfromscreen", TheNet:GetUserID(), values)
 
     if screen == nil then
         -- If there are no more screens, just do a generic fade
@@ -1166,9 +1178,19 @@ function OnNetworkDisconnect( message, should_reset, force_immediate_reset, deta
         TheSystemService:StopDedicatedServers()
     end
 
+    local title = STRINGS.UI.NETWORKDISCONNECT.TITLE[message] or STRINGS.UI.NETWORKDISCONNECT.TITLE.DEFAULT 
+    message = STRINGS.UI.NETWORKDISCONNECT.BODY[message] or STRINGS.UI.NETWORKDISCONNECT.BODY.DEFAULT
+
     local screen = TheFrontEnd:GetActiveScreen()
-    if screen and screen.name == "ConnectingToGamePopup" then
-        TheFrontEnd:PopScreen()
+    if screen then
+		if screen.name == "ConnectingToGamePopup" then
+			TheFrontEnd:PopScreen()
+		elseif screen.name == "QuickJoinScreen" then
+		    TheNet:JoinServerResponse( true ) -- cancel join
+            TheNet:Disconnect(false)
+			screen:TryNextServer(title, message)
+			return
+		end
     end
 
     --If we plan to serialize a user session, we should do it now.  It will be too late later.
@@ -1194,9 +1216,6 @@ function OnNetworkDisconnect( message, should_reset, force_immediate_reset, deta
             end
         end
     end
-
-    local title = STRINGS.UI.NETWORKDISCONNECT.TITLE[message] or STRINGS.UI.NETWORKDISCONNECT.TITLE.DEFAULT 
-    message = STRINGS.UI.NETWORKDISCONNECT.BODY[message] or STRINGS.UI.NETWORKDISCONNECT.BODY.DEFAULT
 
     if TheFrontEnd:GetFadeLevel() > 0 then --we're already fading
         if TheFrontEnd.fadedir == false then

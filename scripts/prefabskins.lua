@@ -255,6 +255,13 @@ PREFAB_SKINS = {
 		"wilson_shadow",
 		"wilson_survivor",
 	},
+	winona = 
+	{
+		"winona_none",
+		"winona_formal",
+		"winona_shadow",
+		"winona_survivor",
+	},
 	winterhat = 
 	{
 		"winterhat_black_davys",

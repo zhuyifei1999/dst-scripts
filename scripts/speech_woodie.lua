@@ -365,6 +365,15 @@ return {
 			GHOST = "With a heart you'll be feelin' like your mighty self in no time.",
 			FIRESTARTER = "What's with the fires lately, bud?",
         },
+        WINONA =
+        {
+            GENERIC = "%s! Hey there bud!",
+            ATTACKER = "%s is getting too big for her britches.",
+            MURDERER = "You're on the chopping block now, %s!",
+            REVIVER = "I knew we were gonna get along.",
+            GHOST = "Yer looking a little pale, %s.",
+            FIRESTARTER = "%s betrays the forest!",
+        },
 
 		MULTIPLAYER_PORTAL = "That'd be the thing I fell through, eh.",
 		GLOMMER = "Keep flapping, little guy!",

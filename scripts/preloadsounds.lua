@@ -70,6 +70,7 @@ local MainSounds =
 	"wilson.fsb",
 	"wilton.fsb",
 	"winnie.fsb",
+	"winona.fsb",
 	"wolfgang.fsb",
 	"woodie.fsb",
 	"woodrow.fsb",

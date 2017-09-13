@@ -362,6 +362,15 @@ return {
 			GHOST = "Do you desire a heart, %s?",
 			FIRESTARTER = "The next fire you start will be a funeral pyre.",
 		},
+        WINONA =
+        {
+            GENERIC = "Greetings, Ms. %s.",
+            ATTACKER = "%s has been roughhousing like a commoner.",
+            MURDERER = "You've engineered your own demise!",
+            REVIVER = "%s expertly uses all tools at her disposal.",
+            GHOST = "My, you're looking spirited today, %s.",
+            FIRESTARTER = "It's not wise to start factory fires, %s.",
+        },
 
 		BERNIE_INACTIVE =
 		{

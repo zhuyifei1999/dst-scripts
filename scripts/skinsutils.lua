@@ -385,6 +385,7 @@ function GetSortedSkinsList()
 		base = {},
 		item = {},
 		misc = {},
+		mysterybox = {},
 		unknown = {},
 	}
 
@@ -433,10 +434,12 @@ function GetSortedSkinsList()
 	table.sort(listoflists.emote, compare)
 	table.sort(listoflists.oddment, compare)
 	table.sort(listoflists.misc, compare)
+	table.sort(listoflists.mysterybox, compare)
 	table.sort(listoflists.unknown, compare)
 
 	skins_list = JoinArrays(skins_list, listoflists.oddment)
 	skins_list = JoinArrays(skins_list, listoflists.emote)
+	skins_list = JoinArrays(skins_list, listoflists.mysterybox)
 	skins_list = JoinArrays(skins_list, listoflists.item)
 	skins_list = JoinArrays(skins_list, listoflists.base)
 	skins_list = JoinArrays(skins_list, listoflists.body)

@@ -366,6 +366,15 @@ return {
             GHOST = "World needs stronglady! Wolfgang will get heart!",
             FIRESTARTER = "Why starting fires, stronglady? To fight them?",
         },
+        WINONA =
+        {
+            GENERIC = "Is fixing lady, %s! Hello!",
+            ATTACKER = "%s is breaking things!",
+            MURDERER = "%s broke our friend!",
+            REVIVER = "%s is kind lady.",
+            GHOST = "Wolfgang will fix %s with heart.",
+            FIRESTARTER = "%s's fires is make Wolfgang nervous.",
+        },
 
         MULTIPLAYER_PORTAL = "Why door not crumble under mighty Wolfgang punches?!",
 

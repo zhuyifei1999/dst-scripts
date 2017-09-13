@@ -156,7 +156,6 @@ require("saveindex") -- Added by Altgames for Android focus lost handling
 require("worldtiledefs")
 require("gamemodes")
 require("skinsutils")
-require("bugreport")
 
 if TheConfig:IsEnabled("force_netbookmode") then
 	TheSim:SetNetbookMode(true)

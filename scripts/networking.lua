@@ -258,7 +258,7 @@ end
 --NOTE: this is called from sim as well, so please check it before any
 --      interface changes! (NetworkManager)
 function SerializeUserSession(player, isnewspawn)
-    if player ~= nil and player.userid ~= nil and (player == ThePlayer or TheNet:GetIsServer()) then
+    if player ~= nil and player.userid ~= nil and player.userid:len() > 0 and (player == ThePlayer or TheNet:GetIsServer()) then
         --we don't care about references for player saves
         local playerinfo--[[, refs]] = player:GetSaveRecord()
         local data = DataDumper(playerinfo, nil, BRANCH ~= "dev")
@@ -267,9 +267,7 @@ function SerializeUserSession(player, isnewspawn)
 end
 
 function DeleteUserSession(player)
-    if player ~= nil and
-        player.userid ~= nil and
-        (player == ThePlayer or TheNet:GetIsServer()) then
+    if player ~= nil and player.userid ~= nil and player.userid:len() > 0 and (player == ThePlayer or TheNet:GetIsServer()) then
         TheNet:DeleteUserSession(player.userid)
     end
 end
@@ -431,7 +429,7 @@ end
 
 function ShowConnectingToGamePopup()
     local active_screen = TheFrontEnd:GetActiveScreen()
-    if active_screen == nil or active_screen.name ~= "ConnectingToGamePopup" then
+    if active_screen == nil or (active_screen.name ~= "ConnectingToGamePopup" and active_screen.name ~= "QuickJoinScreen") then
         TheFrontEnd:PushScreen(ConnectingToGamePopup())
     end
 end
@@ -822,6 +820,36 @@ end
 
 function JoinServerFilter()
     return true
+end
+
+function CalcQuickJoinServerScore(server)
+	-- Return the score for the server. 
+	-- Highest scored servers will have the highest proirity
+	-- Return -1 to reject the server
+
+	if (not server.pvp)														-- not PVP
+		and server.dedicated												-- is a dedicated server
+		and (not server.has_password)										-- not passworded
+		and (not server.mods_enabled)										-- not modded
+		and string.lower(server.mode) == "survival"							-- survival game mode
+		and server.current_players < server.max_players						-- not full
+		and (server.ping > 0 and server.ping < 200)							-- filter out bad pings
+	then
+		local score = 0
+		
+		if server.friend_playing then										score = score + 10		end
+		if server._has_character_on_server then								score = score + 4		end
+		if server.current_players >= 3 then									score = score + 3		end
+		if server.current_players > 0 then									score = score + 2		end
+		if server.belongs_to_clan then										score = score + 1		end
+		if server.season ~= nil and server.season == SEASONS.AUTUMN then	score = score + 2		end
+
+		if server.current_players == 0 then									score = score - 1		end
+		
+		return score
+	end
+	
+	return -1
 end
 
 function LookupPlayerInstByUserID(userid)

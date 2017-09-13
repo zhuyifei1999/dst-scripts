@@ -374,6 +374,15 @@ return {
 			GHOST = "Hey %s, I'll get you a heart if you let me wear your helm!",
 			FIRESTARTER = "Yes, %s! Burn!!!",
         },
+        WINONA =
+        {
+            GENERIC = "Hi %s!",
+            ATTACKER = "Too rough, %s! Jeez!",
+            MURDERER = "Murderer! Now you burn!",
+            REVIVER = "%s never gives up on anyone.",
+            GHOST = "A heart sure would come in handy!",
+            FIRESTARTER = "Nice fire, %s!",
+        },
 
         MULTIPLAYER_PORTAL = "The vines coil away from my lighter... weird!",
 		BERNIE_INACTIVE =

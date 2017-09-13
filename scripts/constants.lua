@@ -291,7 +291,7 @@ ROG_CHARACTERLIST =
 
 DST_CHARACTERLIST =
 {
-    "wilson", "willow", "wolfgang", "wendy", "wx78", "wickerbottom", "woodie", "wes", "waxwell", "wathgrithr", "webber"
+    "wilson", "willow", "wolfgang", "wendy", "wx78", "wickerbottom", "woodie", "wes", "waxwell", "wathgrithr", "webber", "winona"
 }
 
 require("prefabskins")
@@ -334,6 +334,7 @@ CHARACTER_GENDERS =
 		"wendy",
 		"wickerbottom",
 		"wathgrithr",
+		"winona",
 	},
 	MALE = {
 		"wilson",
