@@ -21,8 +21,15 @@ local states =
 
         onenter = function(inst)
             inst.Physics:Stop()
-            inst.AnimState:PlayAnimation("idle_loop", true)
+            if not inst.AnimState:IsCurrentAnimation("idle_loop") then
+                inst.AnimState:PlayAnimation("idle_loop", true)
+            end
             inst.SoundEmitter:PlaySound("dontstarve/creatures/together/bernie/idle")
+            inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
+        end,
+
+        ontimeout = function(inst)
+            inst.sg:GoToState("idle")
         end,
     },
 

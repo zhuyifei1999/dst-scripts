@@ -46,7 +46,7 @@ local function fn()
 
     inst.AnimState:SetBank("bernie")
     inst.AnimState:SetBuild("bernie_build")
-    inst.AnimState:PlayAnimation("idle_loop")
+    inst.AnimState:PlayAnimation("idle_loop", true)
 
     inst:AddTag("smallcreature")
     inst:AddTag("companion")
