@@ -13,4 +13,5 @@ return CreatePrefabSkin("glomling_winter_builder",
 	build_name = "glomling_winter",
 	rarity = "Common",
 	init_fn = function(inst) critter_builder_init_fn(inst, "glomling_winter" ) end,
+	release_group = 22,
 })

@@ -8,7 +8,8 @@ function yawnfn(inst)
     for i, v in ipairs(ents) do
         if v ~= inst and v:IsValid() and
             not (v.components.freezable ~= nil and v.components.freezable:IsFrozen()) and
-            not (v.components.pinnable ~= nil and v.components.pinnable:IsStuck()) then
+            not (v.components.pinnable ~= nil and v.components.pinnable:IsStuck()) and
+            not (v.components.fossilizable ~= nil and v.components.fossilizable:IsFossilized()) then
             local mount = v.components.rider ~= nil and v.components.rider:GetMount() or nil
             if mount ~= nil then
                 mount:PushEvent("ridersleep", { sleepiness = 7, sleeptime = TUNING.BEARGER_YAWN_SLEEPTIME })

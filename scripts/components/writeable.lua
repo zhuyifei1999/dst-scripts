@@ -63,7 +63,11 @@ function Writeable:OnSave()
 end
 
 function Writeable:OnLoad(data)
-    self.text = data.text
+	if PLATFORM == "WIN32_RAIL" then
+    	self.text = TheSim:ApplyWordFilter(data.text)
+	else
+		self.text = data.text
+	end
 end
 
 function Writeable:GetText()
@@ -101,6 +105,9 @@ function Writeable:Write(doer, text)
     --      NOT redundant in order for rendering to be safe.
     if self.writer == doer and doer ~= nil and
         (text == nil or text:utf8len() <= MAX_WRITEABLE_LENGTH) then
+		if PLATFORM == "WIN32_RAIL" then
+			text = TheSim:ApplyWordFilter(text)
+		end
         self:SetText(text)
         self:EndWriting()
     end

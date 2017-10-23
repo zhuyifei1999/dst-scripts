@@ -17,4 +17,6 @@ return CreatePrefabSkin("wes_shadow",
 	torso_tuck_builds = { "wes_shadow", },
 	has_alternate_for_body = { "wes_shadow", },
 	has_alternate_for_skirt = { "wes_shadow", },
+	marketable = true,
+	release_group = 6,
 })

@@ -9,6 +9,8 @@ local prefabs =
     "sleepbomb_burst",
     "sleepcloud",
     "reticule",
+    "reticuleaoe",
+    "reticuleaoeping",
 }
 
 local function OnHit(inst, attacker, target)
@@ -54,7 +56,7 @@ local function ReticuleTargetFn()
     --Min range was chosen to not hit yourself (2 is the hit range)
     for r = 6.5, 3.5, -.25 do
         pos.x, pos.y, pos.z = player.entity:LocalToWorldSpace(r, 0, 0)
-        if ground:IsPassableAtPoint(pos:Get()) and not ground:IsPointNearHole(pos) then
+        if ground:IsPassableAtPoint(pos:Get()) and not ground:IsGroundTargetBlocked(pos) then
             return pos
         end
     end
@@ -83,6 +85,15 @@ local function fn()
     inst.components.reticule.targetfn = ReticuleTargetFn
     inst.components.reticule.ease = true
 
+    local advancedtargeting = TheNet:GetServerGameMode() == "lavaarena"
+    if advancedtargeting then
+        inst.components.reticule.reticuleprefab = "reticuleaoe"
+        inst.components.reticule.pingprefab = "reticuleaoeping"
+        inst.components.reticule.mouseenabled = true
+
+        inst:AddTag("nopunch")
+    end
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -98,9 +109,11 @@ local function fn()
     inst.components.complexprojectile:SetOnLaunch(onthrown)
     inst.components.complexprojectile:SetOnHit(OnHit)
 
-    inst:AddComponent("weapon")
-    inst.components.weapon:SetDamage(0)
-    inst.components.weapon:SetRange(8, 10)
+    if not advancedtargeting then
+        inst:AddComponent("weapon")
+        inst.components.weapon:SetDamage(0)
+        inst.components.weapon:SetRange(8, 10)
+    end
 
     inst:AddComponent("inspectable")
 

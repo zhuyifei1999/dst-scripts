@@ -16,4 +16,6 @@ return CreatePrefabSkin("researchlab2_pod_alt",
 	prefabs = { "researchlab2_pod_alt_fx", },
 	init_fn = function(inst) researchlab2_init_fn(inst, "researchlab2_pod_alt") end,
 	fx_prefab = { "researchlab2_pod_alt_fx", },
+	marketable = true,
+	release_group = 29,
 })

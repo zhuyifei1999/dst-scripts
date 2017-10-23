@@ -13,4 +13,6 @@ return CreatePrefabSkin("endtable_vintage",
 	build_name = "endtable_vintage",
 	rarity = "Distinguished",
 	init_fn = function(inst) endtable_init_fn(inst, "endtable_vintage") end,
+	marketable = true,
+	release_group = 18,
 })

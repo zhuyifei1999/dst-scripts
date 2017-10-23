@@ -15,4 +15,6 @@ return CreatePrefabSkin("webber_survivor",
 	rarity = "Elegant",
 	skins = { ghost_skin = "ghost_webber_build", normal_skin = "webber_survivor", },
 	torso_tuck_builds = { "webber_survivor", },
+	marketable = true,
+	release_group = 4,
 })

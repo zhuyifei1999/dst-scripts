@@ -215,12 +215,23 @@ local actionhandlers =
                 and "quickcastspell"
                 or "castspell"
         end),
+    ActionHandler(ACTIONS.CASTAOE,
+        function(inst, action)
+            return action.invobject ~= nil
+                and (   (action.invobject:HasTag("aoeweapon_lunge") and "combat_lunge_start") or
+                        (action.invobject:HasTag("aoeweapon_leap") and "combat_leap_start") or
+                        (action.invobject:HasTag("blowdart") and "blowdart_special") or
+                        (action.invobject:HasTag("throw_line") and "throw_line") or
+                        (action.invobject:HasTag("tome") and "book")
+                    )
+                or "castspell"
+        end),
     ActionHandler(ACTIONS.BLINK, "quicktele"),
     ActionHandler(ACTIONS.COMBINESTACK, "doshortaction"),
     ActionHandler(ACTIONS.FEED, "dolongaction"),
     ActionHandler(ACTIONS.ATTACK,
-        function(inst)
-            if not (inst.replica.health:IsDead() or inst.sg:HasStateTag("attack")) then
+        function(inst, action)
+            if not (inst.sg:HasStateTag("attack") and action.target == inst.sg.statemem.attacktarget or inst.replica.health:IsDead()) then
                 local equip = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
                 if equip == nil then
                     return "attack"
@@ -249,6 +260,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.BUNDLE, "bundle"),
     ActionHandler(ACTIONS.UNWRAP, "dolongaction"),
     ActionHandler(ACTIONS.STARTCHANNELING, "startchanneling"),
+    ActionHandler(ACTIONS.REVIVE_CORPSE, "dolongaction"),
 }
 
 local events =
@@ -1634,6 +1646,11 @@ local states =
             inst.AnimState:PlayAnimation("action_uniqueitem_pre")
             inst.AnimState:PushAnimation("action_uniqueitem_lag", false)
 
+            local item = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+            if item ~= nil and item:HasTag("tome") then
+                inst.sg:AddStateTag("busy")
+            end
+
             inst:PerformPreviewBufferedAction()
             inst.sg:SetTimeout(TIMEOUT)
         end,
@@ -1788,6 +1805,153 @@ local states =
 
     State
     {
+        name = "combat_lunge_start",
+        tags = { "doing", "busy", "nointerrupt" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("lunge_pre")
+            inst.AnimState:PushAnimation("lunge_lag", false)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        timeline =
+        {
+            TimeEvent(4 * FRAMES, function(inst)
+                inst.sg.statemem.twirled = true
+                inst.SoundEmitter:PlaySound("dontstarve/common/twirl", nil, nil, true)
+            end),
+        },
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    if not inst.sg.statemem.twirled then
+                        inst.SoundEmitter:PlaySound("dontstarve/common/twirl", nil, nil, true)
+                    end
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    State
+    {
+        name = "combat_leap_start",
+        tags = { "doing", "busy", "nointerrupt" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("atk_leap_pre")
+            inst.AnimState:PlayAnimation("atk_leap_lag", false)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    State
+    {
+        name = "blowdart_special",
+        tags = { "doing", "busy", "nointerrupt" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("dart_pre")
+            inst.AnimState:PlayAnimation("dart_lag", false)
+
+            local buffaction = inst:GetBufferedAction()
+            if buffaction ~= nil then
+                inst:PerformPreviewBufferedAction()
+
+                if buffaction.pos ~= nil then
+                    inst:ForceFacePoint(buffaction.pos:Get())
+                end
+            end
+
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    State
+    {
+        name = "throw_line",
+        tags = { "doing", "busy", "nointerrupt" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("atk_pre")
+            inst.AnimState:PushAnimation("atk_lag", false)
+
+            local buffaction = inst:GetBufferedAction()
+            if buffaction ~= nil then
+                inst:PerformPreviewBufferedAction()
+
+                if buffaction.pos ~= nil then
+                    inst:ForceFacePoint(buffaction.pos:Get())
+                end
+            end
+
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    State
+    {
         name = "catch_pre",
         tags = { "notalking", "readytocatch" },
 
@@ -1835,12 +1999,28 @@ local states =
                 if equip ~= nil and (equip:HasTag("rangedweapon") or equip:HasTag("projectile")) then
                     inst.AnimState:PlayAnimation("player_atk_pre")
                     inst.AnimState:PushAnimation("player_atk", false)
-                    inst.SoundEmitter:PlaySound(
-                        (equip:HasTag("icestaff") and "dontstarve/wilson/attack_icestaff") or
-                        (equip:HasTag("firestaff") and "dontstarve/wilson/attack_firestaff") or
-                        "dontstarve/wilson/attack_weapon",
-                        nil, nil, true
-                    )
+                    if (equip.projectiledelay or 0) > 0 then
+                        --V2C: Projectiles don't show in the initial delayed frames so that
+                        --     when they do appear, they're already in front of the player.
+                        --     Start the attack early to keep animation in sync.
+                        inst.sg.statemem.projectiledelay = 8 * FRAMES - equip.projectiledelay
+                        if inst.sg.statemem.projectiledelay > FRAMES then
+                            inst.sg.statemem.projectilesound =
+                                (equip:HasTag("icestaff") and "dontstarve/wilson/attack_icestaff") or
+                                (equip:HasTag("firestaff") and "dontstarve/wilson/attack_firestaff") or
+                                "dontstarve/wilson/attack_weapon"
+                        elseif inst.sg.statemem.projectiledelay <= 0 then
+                            inst.sg.statemem.projectiledelay = nil
+                        end
+                    end
+                    if inst.sg.statemem.projectilesound == nil then
+                        inst.SoundEmitter:PlaySound(
+                            (equip:HasTag("icestaff") and "dontstarve/wilson/attack_icestaff") or
+                            (equip:HasTag("firestaff") and "dontstarve/wilson/attack_firestaff") or
+                            "dontstarve/wilson/attack_weapon",
+                            nil, nil, true
+                        )
+                    end
                     if cooldown > 0 then
                         cooldown = math.max(cooldown, 13 * FRAMES)
                     end
@@ -1860,19 +2040,47 @@ local states =
                 if cooldown > 0 then
                     cooldown = math.max(cooldown, 17 * FRAMES)
                 end
+            elseif equip ~= nil and equip:HasTag("book") then
+                inst.AnimState:PlayAnimation("attack_book")
+                inst.sg.statemem.isbook = true
+                inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_whoosh", nil, nil, true)
+                if cooldown > 0 then
+                    cooldown = math.max(cooldown, 19 * FRAMES)
+                end
+            elseif equip ~= nil and equip:HasTag("chop_attack") and inst:HasTag("woodcutter") then
+                inst.AnimState:PlayAnimation(inst.AnimState:IsCurrentAnimation("woodie_chop_loop") and inst.AnimState:GetCurrentAnimationTime() < 7.1 * FRAMES and "woodie_chop_atk_pre" or "woodie_chop_pre")
+                inst.AnimState:PushAnimation("woodie_chop_loop", false)
+                inst.sg.statemem.ischop = true
+                cooldown = math.max(cooldown, 11 * FRAMES)
             elseif equip ~= nil and
                 equip.replica.inventoryitem ~= nil and
                 equip.replica.inventoryitem:IsWeapon() and
                 not equip:HasTag("punch") then
                 inst.AnimState:PlayAnimation("atk_pre")
                 inst.AnimState:PushAnimation("atk", false)
-                inst.SoundEmitter:PlaySound(
-                    (equip:HasTag("icestaff") and "dontstarve/wilson/attack_icestaff") or
-                    (equip:HasTag("shadow") and "dontstarve/wilson/attack_nightsword") or
-                    (equip:HasTag("firestaff") and "dontstarve/wilson/attack_firestaff") or
-                    "dontstarve/wilson/attack_weapon",
-                    nil, nil, true
-                )
+                if (equip.projectiledelay or 0) > 0 then
+                    --V2C: Projectiles don't show in the initial delayed frames so that
+                    --     when they do appear, they're already in front of the player.
+                    --     Start the attack early to keep animation in sync.
+                    inst.sg.statemem.projectiledelay = 8 * FRAMES - equip.projectiledelay
+                    if inst.sg.statemem.projectiledelay > FRAMES then
+                        inst.sg.statemem.projectilesound =
+                            (equip:HasTag("icestaff") and "dontstarve/wilson/attack_icestaff") or
+                            (equip:HasTag("firestaff") and "dontstarve/wilson/attack_firestaff") or
+                            "dontstarve/wilson/attack_weapon"
+                    elseif inst.sg.statemem.projectiledelay <= 0 then
+                        inst.sg.statemem.projectiledelay = nil
+                    end
+                end
+                if inst.sg.statemem.projectilesound == nil then
+                    inst.SoundEmitter:PlaySound(
+                        (equip:HasTag("icestaff") and "dontstarve/wilson/attack_icestaff") or
+                        (equip:HasTag("shadow") and "dontstarve/wilson/attack_nightsword") or
+                        (equip:HasTag("firestaff") and "dontstarve/wilson/attack_firestaff") or
+                        "dontstarve/wilson/attack_weapon",
+                        nil, nil, true
+                    )
+                end
                 if cooldown > 0 then
                     cooldown = math.max(cooldown, 13 * FRAMES)
                 end
@@ -1916,23 +2124,43 @@ local states =
             end
         end,
 
+        onupdate = function(inst, dt)
+            if (inst.sg.statemem.projectiledelay or 0) > 0 then
+                inst.sg.statemem.projectiledelay = inst.sg.statemem.projectiledelay - dt
+                if inst.sg.statemem.projectiledelay <= FRAMES then
+                    if inst.sg.statemem.projectilesound ~= nil then
+                        inst.SoundEmitter:PlaySound(inst.sg.statemem.projectilesound, nil, nil, true)
+                        inst.sg.statemem.projectilesound = nil
+                    end
+                    if inst.sg.statemem.projectiledelay <= 0 then
+                        inst:ClearBufferedAction()
+                        inst.sg:RemoveStateTag("abouttoattack")
+                    end
+                end
+            end
+        end,
+
         timeline =
         {
             TimeEvent(6 * FRAMES, function(inst)
                 if inst.sg.statemem.isbeaver then
                     inst:ClearBufferedAction()
                     inst.sg:RemoveStateTag("abouttoattack")
+                elseif inst.sg.statemem.ischop then
+                    inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_weapon", nil, nil, true)
                 end
             end),
             TimeEvent(8 * FRAMES, function(inst)
                 if not (inst.sg.statemem.isbeaver or
-                        inst.sg.statemem.iswhip) then
+                        inst.sg.statemem.iswhip or
+                        inst.sg.statemem.isbook) and
+                    inst.sg.statemem.projectiledelay == nil then
                     inst:ClearBufferedAction()
                     inst.sg:RemoveStateTag("abouttoattack")
                 end
             end),
             TimeEvent(10 * FRAMES, function(inst)
-                if inst.sg.statemem.iswhip then
+                if inst.sg.statemem.iswhip or inst.sg.statemem.isbook then
                     inst:ClearBufferedAction()
                     inst.sg:RemoveStateTag("abouttoattack")
                 end
@@ -2020,6 +2248,7 @@ local states =
         tags = { "attack", "notalking", "abouttoattack" },
 
         onenter = function(inst)
+            local equip = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
             inst.components.locomotor:Stop()
 
             inst.AnimState:PlayAnimation("dart_pre")
@@ -2043,6 +2272,26 @@ local states =
                     inst.sg.statemem.attacktarget = buffaction.target
                 end
             end
+
+            if (equip.projectiledelay or 0) > 0 then
+                --V2C: Projectiles don't show in the initial delayed frames so that
+                --     when they do appear, they're already in front of the player.
+                --     Start the attack early to keep animation in sync.
+                inst.sg.statemem.projectiledelay = (inst.sg.statemem.chained and 9 or 14) * FRAMES - equip.projectiledelay
+                if inst.sg.statemem.projectiledelay <= 0 then
+                    inst.sg.statemem.projectiledelay = nil
+                end
+            end
+        end,
+
+        onupdate = function(inst, dt)
+            if (inst.sg.statemem.projectiledelay or 0) > 0 then
+                inst.sg.statemem.projectiledelay = inst.sg.statemem.projectiledelay - dt
+                if inst.sg.statemem.projectiledelay <= 0 then
+                    inst:ClearBufferedAction()
+                    inst.sg:RemoveStateTag("abouttoattack")
+                end
+            end
         end,
 
         timeline =
@@ -2053,7 +2302,7 @@ local states =
                 end
             end),
             TimeEvent(9 * FRAMES, function(inst)
-                if inst.sg.statemem.chained then
+                if inst.sg.statemem.chained and inst.sg.statemem.projectiledelay == nil then
                     inst:ClearBufferedAction()
                     inst.sg:RemoveStateTag("abouttoattack")
                 end
@@ -2064,7 +2313,7 @@ local states =
                 end
             end),
             TimeEvent(14 * FRAMES, function(inst)
-                if not inst.sg.statemem.chained then
+                if not inst.sg.statemem.chained and inst.sg.statemem.projectiledelay == nil then
                     inst:ClearBufferedAction()
                     inst.sg:RemoveStateTag("abouttoattack")
                 end

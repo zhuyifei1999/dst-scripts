@@ -14,4 +14,5 @@ return CreatePrefabSkin("waxwell_none",
 	build_name = "waxwell",
 	rarity = "Common",
 	skins = { ghost_skin = "ghost_waxwell_build", normal_skin = "waxwell", },
+	release_group = 999,
 })

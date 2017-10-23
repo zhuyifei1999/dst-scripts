@@ -24,10 +24,12 @@ To add a new language:
 **                   DST UTF-8 formatting                    **
 - Unicode characters can be added to this file in a UTF-8 format.
 - For the custom font characters, the unicode private use area of U+E000 to U+F8FF is being used.
+- For the emoji font characters, we use the unicode private use area of U+F0000 to U+FFFFD.
  
-- The first digit must be 238 or 239
+- The first digit must be 238, 239, or 243
   - 238 will be used for all controller buttons
   - 239 will be used for non-controller buttons
+  - 243 is reserved for emoji
 - The second digit can be from 128 to 191, inclusive
   - XBox:				128 to 131		0x80-0x83
   - PC Mouse:			132 to 135		0x84-0x87
@@ -48,7 +50,7 @@ STRINGS =
         wendy = "Wendy",
         wolfgang = "Wolfgang",
         woodie = "Woodie",
-        wickerbottom = "Ms Wickerbottom",
+        wickerbottom = "Ms. Wickerbottom",
         wx78 = "WX-78",
         wes = "Wes",
         waxwell = "Maxwell",
@@ -94,23 +96,59 @@ STRINGS =
         random = "?"
     },
 
+    -- Use GetCharacterDescription from stringutil -- it handles variants!
     CHARACTER_DESCRIPTIONS =
     {
         wilson = "\n*Grows a magnificent beard",
-        willow = "*Is resistant to fire damage \n*Can craft a cuddly bear and super-sweet lighter \n*Can't keep warm when insane",
+        willow = "*Is resistant to fire damage \n*Can craft a reliable lighter and a cuddly bear \n*Can't keep warm when insane",
         wendy = "*Is haunted by her twin sister \n*Feels comfortable in the dark \n*Doesn't hit very hard",
-        wolfgang = "*Grows stronger with a full belly \n*Is afraid of monsters and the dark",
+        wolfgang = "*Grows stronger on a full belly \n*Is afraid of monsters and the dark",
         wx78 = "*Not a picky eater \n*Is charged by lightning, but damaged by water \n*Can upgrade with gears",
         wickerbottom = "*Knows many things \n*Self-publishes books \n*Can't sleep, hates spoilage",
         wes = "*Can't talk \n*Has trouble staying alive \n*Practices balloonomancy",
         waxwell = "*Is dapper, but frail \n*Can split his mind into pieces \n*Was once the king of the world",
-        woodie = "*Has a lovely axe \n*And a terrible secret \n*Is thankful for bountiful harvests",
-        woodie_us = "*Has a lovely axe \n*And a terrible secret \n*Celebrates Thanksgiving too early",
-        woodie_canada = "*Has a lovely axe \n*And a terrible secret \n*Celebrates Thanksgiving at the correct time",
+        woodie = "*Has a lovely axe... \n*And a terrible secret \n*Is thankful for bountiful harvests",
+        woodie_us = "*Has a lovely axe... \n*And a terrible secret \n*Celebrates Thanksgiving too early",
+        woodie_canada = "*Has a lovely axe... \n*And a terrible secret \n*Celebrates Thanksgiving at the correct time",
         wathgrithr = "*Excels in battle \n*Absorbs the power of fallen foes \n*Only eats meat",
         webber = "*Is a monster \n*Can befriend spiders \n*Grows a silky smooth beard",
         winona = "*Is a skilled builder\n*Gets one free hit from the dark\n*Brings her own tools",
-        random = "\nThis will select a random character",
+        random = "\nSelect a random character",
+    },
+
+    LAVAARENA_CHARACTER_DESCRIPTIONS =
+    {
+        wilson = "*Revives allies twice as quickly\n*Restores three times more health when reviving allies\n\nExpertise:\nMelee, Darts, Staves",
+        willow = "*Protected by Bernie the Bear\n*Fire and Explosive attack damage increased by 10%\n\nExpertise:\nDarts, Staves",
+        wendy = "*Protected by her twin sister, Abigail\n\n\n\nExpertise:\nDarts, Staves",
+        wolfgang = "*Becomes Mighty when health is low\n*Increased attack power, defense, and movement speed while Mighty\n\nExpertise:\nMelee",
+        wx78 = "*Shocks enemies when attacked\n*Electric attack damage increased by 50%\n\nExpertise:\nMelee",
+        wickerbottom = "*Gains a buff after dealing sufficient damage, amplifying her next spell\n\n\nExpertise:\nBooks, Staves",
+        wes = "*Can be revived twice as quickly\n*Gains minimal aggro when attacking\n*Less likely to lose aggro once drawn\n\nExpertise:\nMelee, Darts, Staves",
+        waxwell = "*Summons Shadow Duelists after focusing attacks on a single target\n\n\nExpertise:\nBooks, Staves",
+        woodie = "*Lucy returns to Woodie when thrown\n*Attack speed increased when wielding Lucy\n\nExpertise:\nMelee",
+        woodie_us = "*Lucy returns to Woodie when thrown\n*Attack speed increased when wielding Lucy\n\nExpertise:\nMelee",
+        woodie_canada = "*Lucy returns to Woodie when thrown\n*Attack speed increased when wielding Lucy\n\nExpertise:\nMelee",
+        wathgrithr = "*Battle cries increase nearby allies' next attack damage by 25%\n*Gains less aggro when attacking\n\nExpertise:\nMelee, Darts",
+        webber = "*Accompanied by itsy bitsy spiders\n\n\n\nExpertise:\nDarts",
+        winona = "*All ability cooldowns are 10% faster\n\n\n\nExpertise:\nMelee, Darts, Staves",
+        random = "\nSelect a random character",
+    },
+
+    CHARACTER_ABOUTME =
+    {
+        wilson = "At heart Wilson is truly man of science. It's not in his nature to resist the call of the unknown.",
+        willow = "Willow is a candid woman whose penchant for fire often gets her into more than a little trouble.",
+        wendy = "Wendy is a morose young lady with a sisterly bond so powerful, it transcends death itself.",
+        wolfgang = "Wolfgang is an affable, musclebound giant with a heart plagued by a myriad of phobias.",
+        wx78 = "One might assume WX's callous nature hides a sensitive inner soul. One would assume incorrectly.",
+        wickerbottom = "A woman of curious mind and stern air, Wickerbottom thrives on the lifelong pursuit of knowledge.",
+        wes = "Wes is a mime of many thoughts, but few words.",
+        waxwell = "Formerly the Shadow King, lately Maxwell finds himself reacquainted with life among the commonfolk.",
+        woodie = "A gruff, bearded woodsman, Woodie has a soft spot for nature, plaid, and his trusty axe, Lucy.",
+        wathgrithr = "Whoever Wigfrid was before her titular role has been lost to time, and the power of method acting.",
+        webber = "Webber is a polite young monster who cares deeply for all his friends, human or otherwise.",
+        winona = "Winona is a former assembly line worker with a boisterous attitude and love of all things mechanical.",
     },
 
     --ACTION MOUSEOVER TEXT
@@ -320,6 +358,7 @@ STRINGS =
         ATTUNE = "Attune",
         MIGRATE = "Travel via",
         REMOTERESURRECT = "Resurrect",
+        REVIVE_CORPSE = "Revive",
         MOUNT = "Mount",
         DISMOUNT = "Dismount",
         SADDLE = "Saddle",
@@ -336,6 +375,18 @@ STRINGS =
         UNWRAP = "Unwrap",
         STARTCHANNELING = "Touch",
         STOPCHANNELING = "Stop Channeling",
+        CASTAOE =
+        {
+            GENERIC = "Cast Spell",
+            HEALINGSTAFF = "Cast Life Blossom",
+            FIREBALLSTAFF = "Call Cataclysm",
+            BOOK_FOSSIL = "Petrify",
+            SPEAR_GUNGNIR = "Pyre Poker",
+            HAMMER_MJOLNIR = "Anvil Strike",
+            BLOWDART_LAVA = "Barrage",
+            BLOWDART_LAVA2 = "Molten Bolt",
+            LAVAARENA_LUCY = "Chuck Lucy",
+        },
     },
 
     -- PC controls get hex ranges EE90xx to EE9Fxx
@@ -950,7 +1001,7 @@ STRINGS =
         GREENSTAFF = "Deconstruction Staff",
         YELLOWSTAFF = "Star Caller's Staff",
         OPALSTAFF = "Moon Caller's Staff",
-
+        
         ICEHOUND = "Blue Hound",
         PENGUIN = "Pengull",
         DEERCLOPS_EYEBALL = "Deerclops Eyeball",
@@ -1386,6 +1437,76 @@ STRINGS =
         WINTER_FOOD7 = "Apple Cider",
         WINTER_FOOD8 = "Hot Cocoa",
         WINTER_FOOD9 = "Heavenly Eggnog",
+
+        --Arena Event
+        LAVAARENA_BOARLORD = "Battlemaster Pugna",
+        BOARRIOR = "Grand Forge Boarrior",
+        BOARON = "Pit Pig",
+        PEGHOOK = "Venomeer",
+        PEGHOOK_DOT = "Venomeer Venom",
+        TRAILS1 = "Boarilla",
+        TRAILS2 = "Boarilla",
+        TRAILS = "Boarilla",
+        TURTILLUS = "Tortank",
+        SNAPPER = "Crocovile",
+
+        LAVAARENA_PORTAL = "Ancient Gateway",
+        LAVAARENA_KEYHOLE = "Ancient Anchor",
+        LAVAARENA_SPAWNER = "Forge Portal",
+
+        LAVAARENA_BATTLESTANDARD = "Battle Standard",
+
+        HEALINGSTAFF = "Living Staff",
+        FIREBALLSTAFF = "Infernal Staff",
+        BOOK_FOSSIL = "Petrifying Tome",
+        HAMMER_MJOLNIR = "Forging Hammer",
+        SPEAR_GUNGNIR = "Pith Pike",
+        BLOWDART_LAVA = "Barrage Darts",
+        BLOWDART_LAVA2 = "Molten Darts",
+        LAVAARENA_LUCY = "Riled Lucy",
+        WEBBER_SPIDER_MINION = "Baby Spider",
+        WAXWELL_SHADOWSTRIKER = "Shadow",
+        LAVAARENA_BERNIE = "Bernie",
+        LAVAARENA_METEOR = "Meteor",
+
+        LAVAARENA_ARMORLIGHT = "Reed Tunic",
+        LAVAARENA_ARMORLIGHTSPEED = "Feathered Reed Tunic",
+        LAVAARENA_ARMORMEDIUM = "Wood Armor",
+        LAVAARENA_ARMORMEDIUMDAMAGER = "Jagged Wood Armor",
+        LAVAARENA_ARMORMEDIUMRECHARGER = "Silken Wood Armor",
+        LAVAARENA_ARMORHEAVY = "Stone Splint Mail",
+        LAVAARENA_ARMOREXTRAHEAVY = "Steadfast Stone Armor",
+
+        LAVAARENA_FEATHERCROWNHAT = "Feathered Wreath",
+        LAVAARENA_HEALINGFLOWERHAT = "Flower Headband",
+        LAVAARENA_LIGHTDAMAGERHAT = "Barbed Helm",
+        LAVAARENA_STRONGDAMAGERHAT = "Nox Helm",
+        LAVAARENA_TIARAFLOWERPETALSHAT = "Woven Garland",
+        LAVAARENA_EYECIRCLETHAT = "Clairvoyant Crown",
+        LAVAARENA_RECHARGERHAT = "Crystal Tiara",
+        LAVAARENA_HEALINGGARLANDHAT = "Blossomed Wreath",
+        LAVAARENA_CROWNDAMAGERHAT = "Resplendent Nox Helm",
+    },
+
+    NAME_DETAIL_EXTENTION =
+    {
+        LAVAARENA_ARMORLIGHT = "50% Protection\n+5% Faster Cooldown",
+        LAVAARENA_ARMORLIGHTSPEED = "60% Protection\n+10% Move Speed",
+        LAVAARENA_ARMORMEDIUM = "75% Protection",
+        LAVAARENA_ARMORMEDIUMDAMAGER = "75% Protection\n+10% Physical Damage",
+        LAVAARENA_ARMORMEDIUMRECHARGER = "75% Protection\n+10% Faster Cooldown",
+        LAVAARENA_ARMORHEAVY = "85% Protection",
+        LAVAARENA_ARMOREXTRAHEAVY = "90% Protection\n-15% Move Speed\nKnockback Resistance",
+
+        LAVAARENA_FEATHERCROWNHAT = "+20% Move Speed",
+        LAVAARENA_HEALINGFLOWERHAT = "+25% Healing Received",
+        LAVAARENA_LIGHTDAMAGERHAT = "+10% Physical Damage",
+        LAVAARENA_STRONGDAMAGERHAT = "+15% Physical Damage",
+        LAVAARENA_TIARAFLOWERPETALSHAT = "+20% Healing Dealt",
+        LAVAARENA_RECHARGERHAT = "+10% Faster Cooldown",
+        LAVAARENA_HEALINGGARLANDHAT = "+2 HP/s (80% HP Max)\n+10% Faster Cooldown\n+10% Move Speed",
+        LAVAARENA_CROWNDAMAGERHAT = "+15% Physical Damage\n+10% Faster Cooldown\n+10% Move Speed",
+        LAVAARENA_EYECIRCLETHAT = "+25% Magic Damage\n+10% Faster Cooldown\n+10% Move Speed",
     },
 
     DIRECTIONS =
@@ -1935,6 +2056,179 @@ STRINGS =
         "You've made your choice.",
     },
 
+    --Arena Event
+    BOARLORD_WELCOME_INTRO =					-- welcome / story / why they are here  - end with reason for 10 second delay before the round 1 intro 
+    {
+        "What have we here?",
+        "Gatekeepers? You dare return to the Forge?",
+        "Have you come to reunite us with the Throne?",
+        "Ha! Laughable.",
+        "I am Battlemaster Pugna...",
+        "And I will protect what is rightfully mine.",
+        "Warriors. Prepare for battle!",
+    },
+    BOARLORD_ROUND1_INTRO =						-- Pit Pigs: practice round / boarlord expects players to win / would be upset if they lost
+    {
+        "To arms!",
+        "Release the pigs!",
+    },
+    BOARLORD_ROUND1_FIGHT_TEAMWORK =			-- dialog before the first set of big groups of pit pigs / players will need to start working as a team to get past these waves
+    {
+		"Ha!",
+        "We've trained in solitude for so long.",
+        "It's good to have a challenge once again.",
+        "This should be fun.",
+    },
+    BOARLORD_ROUND1_FIGHT_BANTER =				-- batter between the 12 pit pig and 15 pit pig waves
+    {
+		"More! Overwhelm them!",
+        "More pigs!",
+    },
+    BOARLORD_ROUND1_END =						-- expected players to win / healing staff dropped / give them a complement - end with reason for 15 second delay
+    {
+        "Impressive, Gatekeepers.",
+        "It seems you can handle foot soldiers.",
+        "But our battalions are trained to work together.",
+        "You'll need to do the same.",
+        "That is, if you hope to stand a chance.",
+    },
+    BOARLORD_ROUND2_INTRO =						-- Pit Pigs with Snapper controlling them / a little harder then previous round
+    {
+		"Crocoviles! To the ring!",
+    },
+    BOARLORD_ROUND2_FIGHT_BANTER =				-- banter between waves
+    {
+        "For the Forge!",
+        "Give the Gatekeepers no quarter!",
+        "Fly your banners proudly, warriors!",
+    },
+    BOARLORD_ROUND2_END =						-- accepts that players got this far / mobs were just fodder anyway - reason for 15 second delay until round 3 intro
+    {
+        "Do you think you can win?",
+        "We've endured more in this realm than you know.",
+        "And as forging fires temper steel,",
+        "Hardship has only made us stronger.",
+        "We will never join you.",   
+    },
+    BOARLORD_ROUND3_INTRO =						-- Turtillus round
+    {
+        "Tortanks! Attack!",
+    },
+    BOARLORD_ROUND3_END =						-- boarload didnt really expect you to win / must have good team work / Fireball Staff just dropped  - reason for 15 second delay
+    {
+        "How could you understand?",
+        "We were severed from the Throne.",
+        "Trapped in a realm of stone and fire,",
+        "With no scepter to provide for us.",
+        "Why should I serve a power that deserted my people?",
+    },
+    BOARLORD_ROUND4_INTRO =						-- Peghook / boarload is confident this next round will wipe the group
+    {
+        "You would have been wise to find your own realm.",
+        "Seek safe haven and sever yourselves from the hub.",
+        "Yet here you are.",
+        "I wonder.",
+        "Do you understand the forces you serve?",
+        "...They destroy all They touch.",
+        "Yet They Themselves are untouchable.",
+        "Unknowable.",
+        "That is why we cannot let you win.",
+    },
+    BOARLORD_ROUND4_FIGHT_BANTER =				-- Banter: upset that you are not dead yet
+    {
+        "Grrr... End this now my warriors!",
+        "Poison them!",
+        "We... cannot lose the Forge...",
+    },
+    BOARLORD_TRAILS_INTRO =						-- Trails intro / totally expecting you to die now
+    {
+        "Send in the Boarilla.", 
+    },
+    BOARLORD_ROUND4_END =						-- surprised / upset / mad - reason for 15 second delay
+    {
+        "Know this, Gatekeepers:",
+        "My warriors are proud and strong.",
+        "Once you are dead...",
+        "We will activate the Gateway.",
+        "We will return to the hub and destroy the Throne.",
+        "Whatever way we can.",
+        "We will end this all, for good.",
+    },
+    BOARLORD_ROUND5_INTRO =						-- 2 Trails / boarlord fully expects players to die to them
+    {
+        "Let's finish it.",
+    },
+    BOARLORD_ROUND5_FIGHT_BANTER1 =				-- Banter: Add reinforcements (Snapper + 2 boarons)
+    {
+        "They must not take the Forge!",
+        "Drive the interlopers back!",
+        "Do not hold back! Kill them!",
+    },
+    BOARLORD_ROUND5_FIGHT_BANTER2 =				-- Banter: spawning in whatever warriors are left (Snapper + 2 boarons + turtillus + peghook) / wants the players dead / doesn't care if its a fair fight / sending in anything that he can
+    {
+        "Why are the Gatekeepers still not dead?!",
+        "Destroy them!!",
+        "We will not live in the Throne's shadow!",
+    },
+    BOARLORD_BOARRIOR_INTRO =					-- Boarrior as an add to the remaining trails
+    {
+        "These marauders must be destroyed!",
+        "Grand Forge Boarrior!",
+        "I call on you! The ring is yours!",
+        "Destroy them, my champion!",
+    },
+    BOARLORD_DEFEATED_BATTLECRY =				-- Players win
+    {
+        "No!",
+        "Eons of training, only to be felled by the Throne's lapdogs.",
+        "Please. No more, Gatekeepers. We surrender.",
+        "The day is yours, as is the Gateway.",
+    },
+    BOARLORD_PLAYERS_DEFEATED_BATTLECRY =		-- Players lost
+    {
+        "At last, our realm returns to glory!",
+        "Warriors, rekindle the Gateway...",
+        "Today we take the Throne!",
+    },
+	BOARLORD_PLAYERDEATH_BANTER =
+	{
+		"Ha!",
+		"You are unworthy.",
+        "You never stood a chance.",
+        "Ha ha!",
+        "Weak.",
+        "We are stronger.",
+        "Well struck!",
+	},
+
+-- Not used at the moment
+--[[
+    BOARLORD_GATEACTIVATED_BATTLECRY = 
+    {
+        "Thank you.",
+        "Your mercy is not lost on me.",
+    },
+
+    BOARLORD_BONUS1_FIGHT_BANTER = 
+    {
+        "Ha!",
+        "Push them back!"
+        "We cannot be defeated!",
+        "For our future!",
+        "Honor. Glory. Redemption!",
+    },
+    BOARLORD_ROUND3_FIGHT_BANTER = 
+    {
+        "Fight with all you have.",
+        "Do not give in...",
+        "Defeat is not an option.",
+        "We... cannot lose...",
+        "Grr...",
+        "Our Forge, our proving grounds...",
+    },    
+]]
+
+
     EPITAPHS =
     {
         "It says \"Come on in.\"",
@@ -2262,6 +2556,12 @@ STRINGS.PIGNAMES =
 
 STRINGS.UI =
 {
+	TIME_FORMAT = 
+	{
+		HHMMSS = "{hours}:{minutes}:{seconds}",
+		MMSS = "{minutes}:{seconds}",
+	},
+	
     HELP =
     {
         SCROLLBACK = "Scroll Up",
@@ -2386,6 +2686,9 @@ STRINGS.UI =
             "Michael Rodriguez",
             "Ragnar Guidote",
             "Erica Pitt",
+            "David Briscoe",
+            "Justin Liew",
+            "Ricardo Pinto",
         },
 
         ALTGAMES =
@@ -2470,8 +2773,9 @@ STRINGS.UI =
             "monsters...",
             "a keen sense of despair...",
             "Wilson's beard...",
-            "Maxwell's ties...",
+            "Maxwell's pocket squares...",
             "Wendy's pigtails...",
+            "Abigail's ectoplasm...",
             "Webber's fur...",
             "Wolfgang's moustache...",
             "Wickerbottom's glasses...",
@@ -2642,11 +2946,13 @@ STRINGS.UI =
         HOSTCHAR = "Host (CharSelect)",
         JOIN = "Join IP",
         JOINCHAR = "Join (CharSelect)",
+        FESTIVALEVENT = "Enter the Forge",
         QUICKJOIN = "Quick Join",
         BROWSE = "Browse Games",
         CREATE = "Host Game",
         GAMEWIZARD = "Game Wizard",
-        SKINS = "Collection",
+        SKINS = "Curio Cabinet",
+        MYSTERYBOX = "Treasury",
         RATE = "Rate This Game",
         ACCOUNTINFO = "Account Info",
         VISITFORUM = "Visit Forum",
@@ -2664,8 +2970,8 @@ STRINGS.UI =
         ADVGAMEDESC = "NOTE: This mode is still under development.\n\nFor experienced players only!\n\nYou've decided to bring the fight to Maxwell.\nCan you survive the increasingly harsh conditions he's created, and beat him at his own game?",
         NEWGAME = "Start a new game!",
         NEWGO = "Let's Go!",
-        ASKQUIT = "Do you really want to quit?",
-        ASKQUITDESC = "Charlie will miss you!",
+        ASKQUIT = "Quit Game?",
+        ASKQUITDESC = "Charlie will miss you.",
         QUIT = "Quit",
 
         FRESHBUILD = "Fresh Build!",
@@ -2687,6 +2993,7 @@ STRINGS.UI =
         UPDATENAME = "All's Well That Maxwell",
         DLC_UPDATENAME = "Where There's a Wilson...",
         DST_UPDATENAME = "Release",
+        DST_FORGE_BETA_UPDATENAME = "The Forge Beta (v{version})",
         CONTROLS = "Controls",
 
         LATER = "Not Now",
@@ -2733,16 +3040,18 @@ STRINGS.UI =
         VERSION_MOREINFO = "Instructions",
         VERSION_ERROR = "Problem checking for latest version",
 
+        TOOLTIP_FESTIVALEVENT = "Challenge Battlemaster Pugna's warriors in this limited-time event!",
+        TOOLTIP_BROWSE = "Browse all servers",
         TOOLTIP_QUICKJOIN = "Jump in and start playing",
-        TOOLTIP_BROWSE = "Browse the list of servers",
         TOOLTIP_HOST = "Start your own server",
         TOOLTIP_WIZARD = "Let us help you drill down the list of servers",
-        TOOLTIP_SKINS = "View and manage your items",
         TOOLTIP_MODS = "Customize your game",
-        TOOLTIP_HISTORY = "Revisit past lives and missed connections",
+        TOOLTIP_PLAYERSUMMARY = "Equip curios, craft items and view player history",
         TOOLTIP_OPTIONS = "Change your settings and controls",
         TOOLTIP_QUIT = "Scram!",
 
+        ITEMCOLLECTION_DISABLE = "You must be logged in to view your Profile or Item Collection.",
+        
         LOGIN = "Login",
     },
 
@@ -2812,6 +3121,11 @@ STRINGS.UI =
             PLAYFUL = "Peppy",
             CRAFTY = "Crafty",
         },
+        
+        LAVAARENA_WIN_TITLE = "Victory!",
+        LAVAARENA_WIN_BODY = "You have bested Battlemaster Pugna in battle.",
+        LAVAARENA_LOSE_TITLE = "Defeat!",
+        LAVAARENA_LOSE_BODY = "You have failed Battlemaster Pugna's challenge.",
     },
 
     ACCOUNT =
@@ -2961,7 +3275,16 @@ STRINGS.UI =
         INITIALIZING_SERVER = "Initializing Server",
         WORLDGENERATING_SERVER = "Generating World",
     },
-
+    
+    BOX_POPUP =
+    {
+        OK = "OK",
+        TITLE = "You received...",
+        SERVER_ERROR_TITLE = "Error Opening Chest",
+        SERVER_ERROR_BODY = "There was an error while opening your Chest. Please log in again to refresh your account inventory.",
+        SERVER_NO_ITEM_BODY = "This Chest contained items that are not supported by your current game version. Please exit and update your game.",
+    },
+    
     ITEM_SCREEN =
     {
         THANKS_POPUP_TITLE_DEFAULT = "Thanks for playing",
@@ -3028,6 +3351,7 @@ STRINGS.UI =
             DEFAULT = "Disconnected",
             ID_NO_FREE_INCOMING_CONNECTIONS = "Server Full",
             ID_DST_NO_FREE_PLAYER_SLOTS = "Server Full",
+            ID_DST_NOT_ACCEPTING_NEW_PLAYERS = "Disconnected",
             ID_CONNECTION_ATTEMPT_FAILED = "Server Not Responding",
             ID_DST_DESTINATION_CONNECTION_ATTEMPT_FAILED = "Destination Not Responding",
             ID_INVALID_PASSWORD = "Bad Password",
@@ -3078,6 +3402,7 @@ STRINGS.UI =
             DEFAULT = "You have been disconnected. We're not sure why... Sorry!",
             ID_NO_FREE_INCOMING_CONNECTIONS = "The server is full.",
             ID_DST_NO_FREE_PLAYER_SLOTS = "The server is full.",
+            ID_DST_NOT_ACCEPTING_NEW_PLAYERS = "The server is not accepting new players.",
             ID_CONNECTION_ATTEMPT_FAILED = "The server is not responding. Please try again.",
             ID_DST_DESTINATION_CONNECTION_ATTEMPT_FAILED = "The destination server is not responding. Please try again.",
             ID_INVALID_PASSWORD = "Whoops! The password you entered was incorrect.",
@@ -3464,6 +3789,7 @@ STRINGS.UI =
             COMPLETE_DARKNESS = "Lights Out",
             DST_CAVE = "The Caves",
             DST_CAVE_PLUS = "Caves Plus",
+            LAVAARENA = "The Forge",
 
             MOD_MISSING = "<MOD MISSING>",
         },
@@ -3491,6 +3817,7 @@ STRINGS.UI =
             COMPLETE_DARKNESS = "A dark twist on the standard Don't Starve experience.",
             DST_CAVE = "Delve into the caves... together!",
             DST_CAVE_PLUS = "A darker, more arachnid-y cave experience.",
+            LAVAARENA = "Dare you prove yourself in The Forge?",
 
             MOD_MISSING = "This preset came from a mod, but that mod isn't active right now!",
         },
@@ -3500,6 +3827,7 @@ STRINGS.UI =
             DEFAULT = "Together",
             CLASSIC = "Classic",
             CAVE_DEFAULT = "Underground",
+            LAVA_ARENA = "The Forge",
         },
 
         CUSTOM_PRESET = "Custom Preset",
@@ -3610,19 +3938,35 @@ STRINGS.UI =
     
     QUICKJOINSCREEN =
     {
-		TITLE = "Quick Join",
-		BODY = "Searching for servers",
+        TITLE = "Quick Join",
+        BODY = "Searching for servers",
 
-		JOIN_BTN = "Join",
-		
-		NO_SERVERS_TITLE = "Quick Join Failed",
-		NO_SERVERS_MSG = "No servers could be found matching the quick join criteria.",
+        JOIN_BTN = "Join",
+
+        NO_SERVERS_TITLE = "Quick Join Failed",
+        NO_SERVERS_MSG = "No servers could be found matching the quick join criteria.",
         NO_SERVERS_BROWSE = "Browse Games",
         NO_SERVERS_HOST = "Host Game",
         NO_SERVERS_CLOSE = "Close",
-        
+
         CONNECTING_TO_SERVER = "Connecting to Server: {server}",
-	},
+    },
+
+    EVENT_QUICKJOINSCREEN =
+    {
+        TITLE = "Quick Match",
+        BODY = "Searching for available matches",
+
+        JOIN_BTN = "Join",
+
+        NO_SERVERS_TITLE = "Quick Match Failed",
+        NO_SERVERS_MSG = "No servers could be found matching the quick match criteria.",
+        NO_SERVERS_BROWSE = "Browse",
+        NO_SERVERS_HOST = "Custom Match",
+        NO_SERVERS_CLOSE = "Close",
+
+        CONNECTING_TO_SERVER = "Connecting to Server: {server}",
+    },
 
     SERVERLISTINGSCREEN =
     {
@@ -3869,6 +4213,11 @@ STRINGS.UI =
         INVALIDNEWHOST_BODY = "We recommend trying the game alone in a private world while you learn the ropes and get the hang of not starving. But it's totally up to you!",
     },
 
+    CLOUDSERVERCREATIONSCREEN =
+    {
+        TITLE = "Custom Match",
+    },
+
     GAMEMODES =
     {
         SURVIVAL = "Survival",
@@ -3877,6 +4226,8 @@ STRINGS.UI =
         WILDERNESS_DESCRIPTION = "It's wild and dangerous out there!\n\n* Enter at a random location in the world.\n* No safety net. If you die: try, try again.\n* Those you encounter may or may not be friendly.",
         ENDLESS = "Endless",
         ENDLESS_DESCRIPTION = "A neverending Don't Starve sandbox.\n\n* Enter the world through the Florid Postern.\n* Become a ghost when you die (no sanity drain).\n* Resurrection is always available via the Florid Postern.",
+        LAVAARENA = "The Forge",
+        LAVAARENA_DESCRIPTION = "Prove yourself to Battlemaster Pugna in this Gate Realm.\n* Enter the world through the Molten Gateway.\n* No hunger or sanity.\n* Use what you can find. No outside weapons in the Pit!",
         CUSTOM = "Custom Game",
         UNKNOWN = "Game Mode Unknown",
         UNKNOWN_DESCRIPTION = "We could not retrieve the details of this game mode.",
@@ -3940,7 +4291,8 @@ STRINGS.UI =
 
     LOBBYSCREEN =
     {
-        SELECT = "Go!",
+        SELECT = "Select",
+        START = "Go!",
         APPLY = "Apply",
         CANCEL = "Cancel",
         BACK = "Back",
@@ -3953,6 +4305,7 @@ STRINGS.UI =
         NO = "Maybe not...",
         INVITE = "Invite",
         PLAYERLIST = "Players",
+        NUM_PLAYERS_FMT = "{num}/{max}",
         CHAT = "Chat",
         RANDOMCHAR = "Random",
         PLAYER = "Player",
@@ -3972,6 +4325,22 @@ STRINGS.UI =
         OFFLINE = "Not Available Offline",
         LOADOUT_TITLE = "{name}'s Loadout",
         SELECTION_TITLE = "Character Select",
+        WAITING_FOR_PLAYERS_TITLE = "Waiting For Other Players",
+        EMPTY_SLOT = "Available Slot",
+        READY = "Ready!",
+    },
+
+    LOBBY_WAITING_FOR_PLAYERS_SCREEN =
+    {
+        SPAWN_DELAY = "Match starts in {time}",
+        ENABLE_NO_WAITING_HELPTEXT = "Vote to start with {num}/{max} players",
+        DISABLE_NO_WAITING_HELPTEXT = "Cancel early start vote",
+        PLATER_VOTED_TO_FORCE_START = "Voted To Start",
+        
+        VOTE_POPUP_TITLE = "Voting to Start",
+        VOTE_POPUP_BODY = "You are voting to begin the match with only {num} player(s).\nThe Forge event is designed for {max} players, playing with less is not advised.",
+        VOTE_POPUP_CONTINUE = "Vote",
+        VOTE_POPUP_CANCEL = "Cancel",
     },
 
     SKINSSCREEN =
@@ -3995,27 +4364,295 @@ STRINGS.UI =
         SELECT = "Select",
         PICK = "Pick A Character",
         SORRY = "Sorry",
-        OFFLINE = "Your item collection is not available in offline mode.",
+        OFFLINE = "Your curio cabinet is not available in offline mode.",
         NEW = "NEW",
         TRADE = "Trade Inn",
         BACK = "Back",
-        TRADE_TOOLTIP = "Trade all your unwanted items in for something new!",
+        TRADE_TOOLTIP = "Trade your old items in for something new!",
         NO_ITEMS_TITLE = "Nothing to see here",
         NO_ITEMS = "Start playing to earn items!",
         BONUS = "Reward",
         SET_PROGRESS = "Piece",
         SET_INFO = "Ensemble Info",
-        USABLE_ON = "Usable on {item}",
-        USABLE_ON_MULTIPLE = "Usable on {item1} and {item2}",
-        USABLE_ON_MULTIPLE_3 = "Usable on {item1}, {item2} and {item3}",
-        USABLE_INFO = "Usable On Info",
-        USABLE_INFO_TITLE = "Usable On",
-        USABLE_ON_POPUP = "{skin} is usable on {item}.",
-        USABLE_ON_MULTIPLE_POPUP = "{skin} is usable on {item1} and {item2}.",
-        USABLE_ON_MULTIPLE_3_POPUP = "{skin} is usable on {item1}, {item2} and {item3}.",
+        USABLE_ON = "Reskins {item}s",
+        USABLE_ON_MULTIPLE = "Reskins {item1}s and {item2}s",
+        USABLE_ON_MULTIPLE_3 = "Reskins {item1}s, {item2}s and {item3}s",
+        USABLE_INFO = "Reskin Info",
+        USABLE_INFO_TITLE = "Reskins",
+        USABLE_ON_POPUP = "{skin} will change the appearance of {item}s.",
+        USABLE_ON_MULTIPLE_POPUP = "{skin} will change the appearance of {item1}s and {item2}s.",
+        USABLE_ON_MULTIPLE_3_POPUP = "{skin} will change the appearance of {item1}s, {item2}s and {item3}s.",
         OK = "OK",
     },
 
+    FESTIVALEVENTSCREEN = 
+    {
+        TITLE_LAVAARENA = "The Forge",
+
+        QUICKMATCH = "Quick Match",
+        HOST = "Custom Match",
+        BROWSE = "Browse Servers",
+
+        TOOLTIP_QUICKMATCH = "Hop in to the first available match",
+        TOOLTIP_HOST = "Start your own event server",
+        TOOLTIP_BROWSE = "Browse all event servers",
+
+        -- Phases of Create Server
+        HOST_GETTINGREGIONS = "Getting regions",
+        HOST_DETERMININGREGION = "Determining region",
+        HOST_REQUESTINGSERVER = "Requesting server",
+        HOST_WAITINGFORWORLD = "Waiting for world",
+        HOST_CONNECTINGTOSERVER = "Connecting to server",
+        HOST_FAILED = "Failed to connect to server.",
+        
+        OFFLINE_POPUP_TITLE = "Offline",
+        OFFLINE_POPUP_BODY = "You must be logged in to challenge\nBattlemaster Pugna's warriors.",
+        OFFLINE_POPUP_BACK = "Back",
+        OFFLINE_POPUP_LOGIN = "Log In",
+    },
+
+	PORTRAIT =
+    {
+		HP = "HP",
+		DIFFICULTY = "Difficulty",
+		ITEMS = "Items",
+    },
+    
+    WXPLOBBYPANEL = 
+    {
+        TITLE_VICTORY = "Victory!",
+        TITLE_DEFEAT = "Defeat",
+        MATCH_TIME = "Match Time: {time}",
+
+        SKIP = "Skip",
+        CONTINUE = "Continue",
+        NEWBOX_TITLE = "Forge Chest Earned!",
+        NEWBOXES_TITLE = "{num} Forge Chests Earned!",
+        NEWBOX_BODY = "Visit the Treasury to open your chest",
+        NEWBOXES_BODY = "Visit the Treasury to open your chests",
+
+        WXP_CURRENT_XP = "CURRENT XP",
+        WXP_NEXT_LEVEL_XP = "NEXT LEVEL AT",
+        WXP = "XP",
+        DETAILS_XP = "+{num}",
+        LEVEL_UP = "LEVEL UP!",
+    },
+
+	WXP_DETAILS =
+	{
+		DAILY_FIRST_WIN = "Daily Win Bonus",
+		DURATION = "Time",
+		FRIENDS_BONUS = "Playing with Friends",
+		DAILY_FIRST_MATCH = "Daily Match Bonus",
+		WEEKLY_FIRST_MATCH = "Weekly Match Bonus",
+		CONSECUTIVE = "Consecutive Match Bonus",
+		LAVA_ARENA_MILESTONE_1 = "Survived the Pit Pigs",
+		LAVA_ARENA_MILESTONE_2 = "Survived the Crocovile",
+		LAVA_ARENA_MILESTONE_3 = "Survived the Tortank",
+		LAVA_ARENA_MILESTONE_4 = "Formidable Team",
+		WIN = "Victory",
+		DAILY_FIRST_WIN = "Daily Victory Bonus",
+		LAVA_ARENA_XP_MOD = "debug test",
+	},
+	
+	XPUTILS = 
+	{
+		XPPROGRESS = "{num}/{max}",
+	},
+
+    MVP_LOADING_WIDGET =
+    {
+        TITLES =
+        { 
+            deaths = "Reborn",
+            total_damagedealt = "Brawler",
+            total_damagedealt2 = "Merciless",
+            kills = "Assassin",
+            kills2 = "Master Assassin",
+            aggroheld = "Distraction",
+            aggroheld2 = "Expert Decoy",
+            corpsesrevived = "Resurrector",
+            healingdone = "Healer",
+            healingdone2 = "Doctor",
+            total_damagetaken = "Protector",
+            total_damagetaken2 = "Loyal Guardian",
+            attacks = "Combatant",
+            turtillusflips = "Turtle Flipper",
+            spellscast = "Archmage",
+            altattacks = "Powerful",
+            stepcounter = "Fast-Paced",
+            blowdarts = "Sharpshooter",
+            blowdarts2 = "Ace Marksman",
+            standards = "Vandal",
+            numcc = "Immobilizer",
+            guardsbroken = "Breacher",
+            none = "Participator!",
+        },
+        DESCRIPTIONS =
+        {
+            deaths = "deaths",
+            total_damagedealt = "damage dealt",
+            total_damagedealt2 = "damage dealt",
+            kills = "killing blows",
+            kills2 = "killing blows struck",
+            aggroheld = "seconds with creatures' attention",
+            aggroheld2 = "seconds with creatures' attention",
+            corpsesrevived = "allies revived",
+            healingdone = "health restored",
+            healingdone2 = "health restored",
+            total_damagetaken = "damage taken",
+            total_damagetaken2 = "damage taken for the team",
+            attacks = "swings landed",
+            turtillusflips = "Tortanks flipped",
+            spellscast = "spells cast",
+            altattacks = "special attacks used",
+            stepcounter = "steps taken",
+            blowdarts = "darts hit their mark",
+            blowdarts2 = "darts hit their mark",
+            standards = "battle standards destroyed",
+            numcc = "enemies immobilized",
+            guardsbroken = "enemy guards broken",
+            none = "thanks for playing",
+        },
+        NO_STAT_VALUE = "-",
+    },
+
+    PLAYERSUMMARYSCREEN =
+    {
+        TITLE = "Item Collection",
+
+        TRADING = "Trade Inn",
+        PURCHASE = "Shop",
+
+        CURRENCY_LABEL = "Spools",
+        CURRENCY_EXPLAIN = "Items can be unraveled into Spools to weave event items.",
+        XP_LABEL = "XP Earned",
+        NEW_STUFF = "Recent Discoveries",
+        LOADING_STUFF = "Loading Discoveries...",
+        NO_ITEMS = "Start playing to earn items!",
+        UNOPENED_BOXES_FMT = "{num_boxes} unopened Chests",
+        MOST_COMMON_DEATH = "Often Killed By",
+        MOST_COMMON_FRIEND = "Friendliest Friend",
+        ENCOUNTER_COUNT_FMT = "{num_games} encounters",
+
+        TOOLTIP_TRADE = "Trade your old items in for something new!",
+        TOOLTIP_SKINS = "View and equip your curios",
+        TOOLTIP_MYSTERYBOX = "Open chests to receive new curios",
+        TOOLTIP_HISTORY = "View missed connections and revisit past lives",
+        TOOLTIP_PURCHASE = "Browse purchasable skin sets",
+
+    },
+
+    COLLECTIONSCREEN = 
+    {
+        TITLE = "Curio Cabinet",
+
+        SKINS = "Wardrobe", 
+        GAMEITEM = "Belongings", 
+        EMOTE = "Emotes", 
+        EMOJI = "Emoticons", 
+        LOADERS = "Vignettes",
+        PROFILEFLAIR = "Profile Icons",
+        PORTRAITBACKGROUNDS = "Portrait Frames",
+
+        TOOLTIP_SKINS = "View and equip your character skins",
+        TOOLTIP_GAMEITEM = "Equip your skins for craftable in-game items", 
+        TOOLTIP_EMOTE = "View and equip your character emotes", 
+        TOOLTIP_EMOJI = "View your available chat icons", 
+        TOOLTIP_LOADERS = "Select loading screens to display between games",
+        TOOLTIP_PROFILEFLAIR = "Select an icon for your profile",
+        TOOLTIP_PORTRAITBACKGROUNDS = "Equip new backgrounds to your characters' portraits",
+
+        UNLOCK_LABEL = "Unlocked:",
+        FAILED_TO_LOAD = "Sorry!\nWe've temporarily misplaced your curios.\nPlease try again later.",
+        VIEW_MARKET = "Steam",
+        SET_INFO = "Ensemble",
+
+        NEW = "New!",
+    },
+
+    BARTERSCREEN =
+    {
+        TITLE = "The Event Loom",
+        COMMERCE_BUY = "Weave",
+        COMMERCE_GRIND = "Unravel",
+        CONFIRM_BUY_FMT = "Use {doodad_count} Spools to weave item: {item_name}?\n\nYou will be left with {doodad_net} Spools.\nSpools are used to weave limited-time event items.",
+        FAIL_BUY_FMT = "{doodad_count} Spools are required to weave item: {item_name}.\n\nYou need {doodad_net} more Spool(s) to weave this item.\nSpools can be obtained by unraveling curios.",
+        CONFIRM_GRIND_FMT = "Unravel this {item_name} into {doodad_count} Spools?\n\nYou will have a total of {doodad_net} Spools.\nSpools are used to weave limited-time event items.",
+        COMMERCE_INFO_BUY = "Use Spools to weave this special event item.",
+        COMMERCE_INFO_NOBUY = "Only special event items can be woven from Spools.",
+        COMMERCE_INFO_GRIND = "Items can be unraveled into Spools.",
+        COMMERCE_INFO_NOGRIND = "This item cannot be unraveled.",
+        CANCEL = "Nevermind",
+        OK = "OK",
+    },
+
+    WARDROBESCREEN = 
+    {
+        TITLE = "Wardrobe",
+        ACCEPT = "Accept Outfit",
+        RESET = "Undo Changes",
+
+        BASE = "Head",
+        BODY = "Body",
+        HAND = "Hands",
+        LEGS = "Legs",
+        FEET = "Feet",
+
+        SHOW_HERO_CLOTHING = "Survivor Filter On",
+        SHOW_ALL_CLOTHING = "Survivor Filter Off",
+
+        SHOW_UNOWNED_CLOTHING = "Owned Filter On",
+        SHOW_UNOWNEDANDOWNED_CLOTHING = "Owned Filter Off",
+
+        TOOLTIP_BASE = "Equip a head item",
+        TOOLTIP_BODY = "Equip a body item",
+        TOOLTIP_HAND = "Equip a hand item",
+        TOOLTIP_LEGS = "Equip a leg item",
+        TOOLTIP_FEET = "Equip a foot item",
+    },
+    
+    MYSTERYBOXSCREEN = 
+    {
+        TITLE = "The Treasury",
+        BOXES = "My Chests",
+
+        TOOLTIP_BOXES = "View the chests in your inventory", 
+
+        OPEN_BOX = "Open Chest",
+        OK = "OK",
+
+        OUT_OF_BOXES_TITLE = "", --not needed :)
+        OUT_OF_BOXES_BODY = "You have no chests in your treasury.\nStart playing to earn some!",
+    },
+    
+    PURCHASEPACKSCREEN = 
+    {
+        TITLE = "Forge Clothing Sets",
+
+        FAILED_TO_LOAD = "Sorry!\nThe Klei store is closed right now.\nPlease try again later.",
+
+        PURCHASE_OVERLAY_REQUIRED_TITLE = "Steam Overlay Required",
+        PURCHASE_OVERLAY_REQUIRED_BODY = "Please enable the Steam Overlay to purchase clothing sets.",
+        PURCHASE_OVERLAY_REQUIRED_HELP = "Help",
+
+        PURCHASE_WARNING_TITLE = "No New Items in Chest",
+        PURCHASE_WARNING_DESC = "You already own all the items in this chest. Would you like to purchase it anyway?",
+        PURCHASE_WARNING_OK = "Continue Purchase",
+        PURCHASE_WARNING_CANCEL = "Nevermind!",
+
+        PURCHASE_BTN = "Purchase: {price}",
+
+        OK = "OK",
+    },
+
+    ITEM_SERVER =
+    {
+        FAILED_TITLE = "Connection failure",
+        FAILED_BODY = "Sorry!\nFailed to contact Klei Servers. Please try again.",
+        CONNECT = "Contacting Klei Servers",
+    },
+    
     SETPOPUP =
     {
         OK = "OK",
@@ -4034,9 +4671,10 @@ STRINGS.UI =
         Loyal           = "Loyal",
         ProofOfPurchase = "Proof Of Purchase",
         Reward          = "Reward",
-        Event           = "Event",
+        Event           = "Event (Limited-Time Use)",
         
         Lustrous        = "Lustrous",
+		EventModifier	= "Event - ",
     },
     
     COLOUR =
@@ -4060,12 +4698,15 @@ STRINGS.UI =
     TRADESCREEN =
     {
         TITLE = "Trade Inn",
+
+        TEMPORARILY_CLOSED_BODY = "The Trade Inn is closed for a bit.\n\nBe back soon, okay?",
+
         RESET = "Reset",
         TRADE = "Trade",
         SELECT = "Select",
         ACCEPT = "Accept",
         CANCEL = "Cancel",
-        SELECT_TITLE = "Choose An Item To Swap",
+        SELECT_TITLE = "Choose Items To Swap",
         REMOVE_ITEM = "Remove Item",
         BACK = "Back",
         MARKET = "Steam",
@@ -4099,6 +4740,43 @@ STRINGS.UI =
 
         RECIPE_TITLE = "Wanted: <rarity> Items",
         NO_RECIPES = "No offers",
+
+        MAGICSKIN_COLLECTOR_SPEECH =
+        {
+            -- Shadow Curio dealer.
+            START =
+            {
+                "Greetings, mortal. Have you brought chests? I'll be happy to reveal your gifts, if so.",
+                "Greetings, mortal. I sense a chest in your possession! Please, be my guest.",
+                "Greetings, mortal. Come to receive gifts from the Shadow realm? You need only open your chests.",
+            },
+            START_EMPTY =
+            {
+                "Greetings, mortal. No chests today? A shame.",
+                "Greetings, mortal. I sense you have no chests. You have been adventuring, yes?",
+                "Greetings, mortal. Chests to find their way to you on your travels. I'll be here, until then.",
+            },
+            IDLE =
+            {
+                "It seems you've a few admirers lurking in the shadows.",
+                "Do you ever tire of that ratty old mortal body?",
+                "[Sigh] Immortality is such a burden.",
+                "You're a long way from home are you not, little mortal?",
+                "You must recount your corporeal stories to me some time, mortal.",
+                "Fear the dark, little mortal.",
+                "[Chortle] Have you met her yet?",
+                "Your realm is a bit frazzled around the edges, hm?",
+                "Tell me, have you traveled through the Gateway yet?",
+                "Be at ease, mortal. We exist outside time, here.",
+                "I'll admit, I've always found Chesters endearing.",
+                "[Chortle] You mortals have been quite enamored with the throne, haven't you?",
+                "[The shadow murmurs something, but you cannot comprehend the words.]",
+            },
+            HAND = 
+            {
+                "Test",
+            },
+        },
 
         SKIN_COLLECTOR_SPEECH =
         {
@@ -4799,6 +5477,7 @@ STRINGS.UI =
         {
             FOREST = "Forest",
             CAVE = "Caves",
+            LAVAARENA = "The Forge",
             UNKNOWN = "???",
         },
 
@@ -4806,6 +5485,7 @@ STRINGS.UI =
         {
             FOREST = "Forest",
             CAVE = "Cave",
+            LAVAARENA = "The Forge",
             UNKNOWN = "Some",
         },
 
@@ -5155,8 +5835,6 @@ STRINGS.LUCY =
         "You look distracted.",
         "Why are you making that face?",
         "Try to take deep breaths, okay?",
-        "Calm down! Maybe you need to chew on a twig or something.",
-        "Chewing some wood will help you focus.",
         --"It's just a tree! Calm down!",
     },
     beaver_down_mid =
@@ -5232,6 +5910,21 @@ STRINGS.LUCY =
         "Remember your breathing exercises!",
         "Everything is going to be fine. Just focus!",
     },
+
+    --events
+    lavaarena = 
+    {
+        "It's so hot!",
+        "Throw me!!",
+        "I think we're winning!",
+        "These guys don't stand a chance!",
+        "Gosh it's hot here.",
+        "Fight! Fight!",
+        "Get'em!",
+        "You hear that crowd?!",
+        "Are you gonna take that??",
+        "We're tougher than anyone in this arena.",
+    },
 }
 
 STRINGS.MODS =
@@ -5247,7 +5940,6 @@ STRINGS.TAGS =
     --V2C: Don't add beta branch tags here, since they should not be
     --     localized. Add to constants.lua BETA_SERVER_TAGS instead.
     PVP = "pvp",
-    EVENT = "event",
     FRIENDSONLY = "friendsonly",
     CLAN = "group",
     LOCAL = "localonly",
@@ -5257,6 +5949,10 @@ STRINGS.TAGS =
     {
         --Don't add "forest" tag since it's the default
         CAVE = "caves",
+    },
+    GAMEMODE =
+    {
+        LAVAARENA = "the_forge",
     },
 }
 

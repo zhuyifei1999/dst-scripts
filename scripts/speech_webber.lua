@@ -109,8 +109,18 @@ return {
         {
             EMPTY = "But what should we wrap up?",
         },
+        PICKUP =
+        {
+			RESTRICTION = "We don't want to use that.",
+        },
 	},
 	ACTIONFAIL_GENERIC = "Mom told me never to do that.",
+
+--boarlord event
+	ANNOUNCE_REVIVING_CORPSE = "Hold on, we'll help!",
+	ANNOUNCE_REVIVED_OTHER_CORPSE = "There you go!",
+	ANNOUNCE_REVIVED_FROM_CORPSE = "All better!",
+
 	ANNOUNCE_DIG_DISEASE_WARNING = "Doesn't that feel better!",
 	ANNOUNCE_PICK_DISEASE_WARNING = "Yuck!",
 	ANNOUNCE_MOUNT_LOWHEALTH = "Our hairy friend is hurt!",
@@ -366,8 +376,8 @@ return {
         {
             GENERIC = "Hi %s! Build anything neat today?",
             ATTACKER = "Don't do hits, %s!",
-            MURDERER = "We didn't wanna have to do this!",
-            REVIVER = "%s keeps us all together!",
+            MURDERER = "Murderer! We didn't wanna have to do this!",
+            REVIVER = "%s keeps us all together.",
             GHOST = "Aw, I'm sorry that happened to you, %s.",
             FIRESTARTER = "Don't light fires, %s!",
         },
@@ -2038,6 +2048,54 @@ return {
         },
         ATRIUM_KEY = "This key is REALLY old.",
         LIFEINJECTOR = "I hate taking my medicine!",
+
+        --Arena Event
+        LAVAARENA_BOARLORD = "Maybe he's nice?",
+        BOARRIOR = "You don't look so tough!",
+        BOARON = "Leave us alone!",
+        PEGHOOK = "Wouldn't you rather be bug friends with us?",
+        TRAILS = "No monkey business, mister!",
+        TURTILLUS = "That turtle's huge!",
+        SNAPPER = "Don't bite us!",
+        
+        LAVAARENA_PORTAL = 
+        {
+            ON = "Time to go... \"home\".",
+            GENERIC = "This isn't home!",
+        },
+        LAVAARENA_KEYHOLE = "It doesn't have its key.",
+        LAVAARENA_KEYHOLE_FULL = "That looks much better!",
+        LAVAARENA_BATTLESTANDARD = "Hey, help me break this Battle Standard!",
+        LAVAARENA_SPAWNER = "That's the bad guy portal!",
+
+        HEALINGSTAFF = "That uses magic to hurt people.",
+        FIREBALLSTAFF = "It hurts people with magic.",
+        HAMMER_MJOLNIR = "We're not strong enough to use it.",
+        SPEAR_GUNGNIR = "Wigfrid makes it look so cool!",
+        BLOWDART_LAVA = "We like fighting from far away.",
+        BLOWDART_LAVA2 = "Those look like fun!",
+        LAVAARENA_LUCY = "You look different, Lucy. Did you get a haircut?",
+        WEBBER_SPIDER_MINION = "We'll protect each other, spider babies!",
+        BOOK_FOSSIL = "We can read the words but we can't make them work.",
+		LAVAARENA_BERNIE = "Oh! Willow brought Bernie!",
+
+        LAVAARENA_ARMORLIGHT = "Uhh, I don't think that's very safe.",
+		LAVAARENA_ARMORLIGHTSPEED = "We'd skitter really fast with that.",
+		LAVAARENA_ARMORMEDIUM = "Safety first!",
+		LAVAARENA_ARMORMEDIUMDAMAGER = "We like this armor a lot.",
+		LAVAARENA_ARMORMEDIUMRECHARGER = "This armor seems pretty good!",
+		LAVAARENA_ARMORHEAVY = "We'll be an impervious spider!",
+		LAVAARENA_ARMOREXTRAHEAVY = "Maybe we should let someone tougher have it.",
+
+		LAVAARENA_FEATHERCROWNHAT = "That might make us scuttle faster.",
+        LAVAARENA_HEALINGFLOWERHAT = "It makes your day a little brighter.",
+        LAVAARENA_LIGHTDAMAGERHAT = "That looks like it was made for spiders.",
+        LAVAARENA_STRONGDAMAGERHAT = "We like that hat!",
+        LAVAARENA_TIARAFLOWERPETALSHAT = "I don't think we should wear that.",
+        LAVAARENA_EYECIRCLETHAT = "It looks neat, but we don't want it.",
+        LAVAARENA_RECHARGERHAT = "It sure is sparkly.",
+        LAVAARENA_HEALINGGARLANDHAT = "It makes you feel a little better when you wear it.",
+        LAVAARENA_CROWNDAMAGERHAT = "That helmet is really something!",
 	},
 	DESCRIBE_GENERIC = "Can we play with it?",
 	DESCRIBE_TOODARK = "All our eyes stopped working!",

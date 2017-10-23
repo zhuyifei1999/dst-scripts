@@ -14,4 +14,5 @@ return CreatePrefabSkin("backpack_crab",
 	build_name = "swap_backpack_crab",
 	rarity = "ProofOfPurchase",
 	init_fn = function(inst) backpack_init_fn(inst, "swap_backpack_crab") end,
+	release_group = 9,
 })

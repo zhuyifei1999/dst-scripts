@@ -10,15 +10,18 @@ local assets =
     -- Asset("ATLAS", "images/selectscreen_portraits.xml"), -- Not currently used, but likely to come back
     -- Asset("IMAGE", "images/selectscreen_portraits.tex"), -- Not currently used, but likely to come back
     Asset("DYNAMIC_ATLAS", "bigportraits/locked.xml"),
-    Asset("ASSET_PKGREF", "bigportraits/locked.tex"),
+    Asset("PKGREF", "bigportraits/locked.tex"),
 
     Asset("DYNAMIC_ATLAS", "bigportraits/random.xml"),
-    Asset("ASSET_PKGREF", "bigportraits/random.tex"),
+    Asset("PKGREF", "bigportraits/random.tex"),
     Asset("DYNAMIC_ATLAS", "bigportraits/random_none.xml"),
-    Asset("ASSET_PKGREF", "bigportraits/random_none.tex"),
+    Asset("PKGREF", "bigportraits/random_none.tex"),
 
     Asset("DYNAMIC_ATLAS", "images/names_random.xml"),
-    Asset("ASSET_PKGREF", "images/names_random.tex"),
+    Asset("PKGREF", "images/names_random.tex"),
+
+    Asset("DYNAMIC_ATLAS", "images/names_gold_random.xml"),
+    Asset("PKGREF", "images/names_gold_random.tex"),
 
     -- Asset("ANIM", "anim/portrait_frame.zip"), -- Not currently used, but likely to come back
     Asset("ANIM", "anim/spiral_bg.zip"),
@@ -28,29 +31,11 @@ local assets =
     Asset("ANIM", "anim/frozen.zip"),
 
     Asset("DYNAMIC_ATLAS", "images/bg_spiral_anim.xml"),
-    Asset("ASSET_PKGREF", "images/bg_spiral_anim.tex"),
+    Asset("PKGREF", "images/bg_spiral_anim.tex"),
     Asset("DYNAMIC_ATLAS", "images/bg_spiral_anim_overlay.xml"),
-    Asset("ASSET_PKGREF", "images/bg_spiral_anim_overlay.tex"),
+    Asset("PKGREF", "images/bg_spiral_anim_overlay.tex"),
 }
 
--- Add all the characters by name
-local charlist = GetActiveCharacterList ~= nil and GetActiveCharacterList() or DST_CHARACTERLIST
-for i, char in ipairs(charlist) do
-    if PREFAB_SKINS[char] then
-        for _,character in pairs(PREFAB_SKINS[char]) do
-            table.insert(assets, Asset("DYNAMIC_ATLAS", "bigportraits/"..character..".xml"))
-            table.insert(assets, Asset("ASSET_PKGREF", "bigportraits/"..character..".tex"))
-        end
-        table.insert(assets, Asset("DYNAMIC_ATLAS", "bigportraits/"..char..".xml"))
-        table.insert(assets, Asset("ASSET_PKGREF", "bigportraits/"..char..".tex"))
-
-        table.insert(assets, Asset("DYNAMIC_ATLAS", "images/names_"..char..".xml"))
-        table.insert(assets, Asset("ASSET_PKGREF", "images/names_"..char..".tex"))
-
-        --table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char..".tex"))
-        --table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char.."_silho.tex"))
-    end
-end
 
 for k, v in pairs(GroundTiles.assets) do
     table.insert(assets, v)
@@ -251,7 +236,9 @@ end
 
 --------------------------------------------------------------------------
 
-function MakeWorld(name, customprefabs, customassets, common_postinit, master_postinit, tags)
+function MakeWorld(name, customprefabs, customassets, common_postinit, master_postinit, tags, custom_data)
+	custom_data = custom_data or {}
+
     local worldprefabs = {}
     if name ~= "world" then
         table.insert(worldprefabs, "world")
@@ -293,6 +280,10 @@ function MakeWorld(name, customprefabs, customassets, common_postinit, master_po
         inst.entity:AddPathfinder()
         inst.entity:AddGroundCreep()
         inst.entity:AddSoundEmitter()
+
+        if custom_data.common_preinit ~= nil then
+            custom_data.common_preinit(inst)
+        end
 
         --Initialize map
         for i, data in ipairs(GroundTiles.ground) do

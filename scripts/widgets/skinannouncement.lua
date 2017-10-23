@@ -171,7 +171,7 @@ function SkinAnnouncement:SetSkinAnnouncementInfo(user_name, user_colour, skin_n
     self:SetMessageText(string.format(STRINGS.UI.NOTIFICATION.NEW_SKIN_ANNOUNCEMENT, user_name))
 
     self:SetSkinTextColour(GetColorForItem(skin_name))
-    self:SetSkinText(STRINGS.SKIN_NAMES[skin_name])
+    self:SetSkinText(GetSkinName(skin_name))
 
     self.lifetime = lifetime or 7
     self.fadetime = fadetime or 2

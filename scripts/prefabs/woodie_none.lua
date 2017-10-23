@@ -17,4 +17,5 @@ return CreatePrefabSkin("woodie_none",
 	rarity = "Common",
 	skins = { ghost_skin = "ghost_woodie_build", ghost_werebeaver_skin = "ghost_werebeaver_build", normal_skin = "woodie", werebeaver_skin = "werebeaver_build", },
 	feet_cuff_size = { woodie = 3, },
+	release_group = 999,
 })

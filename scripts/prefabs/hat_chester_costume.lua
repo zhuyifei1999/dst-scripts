@@ -13,5 +13,7 @@ return CreatePrefabSkin("hat_chester_costume",
 	build_name = "hat_chester_costume",
 	rarity = "Elegant",
 	init_fn = function(inst) tophat_init_fn(inst, "hat_chester_costume") end,
+	marketable = true,
+	release_group = 15,
 	granted_items = { "researchlab4_chester_costume", },
 })

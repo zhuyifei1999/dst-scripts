@@ -15,4 +15,6 @@ return CreatePrefabSkin("wendy_formal",
 	rarity = "Elegant",
 	skins = { ghost_skin = "ghost_wendy_build", normal_skin = "wendy_formal", },
 	torso_untuck_builds = { "wendy_formal", },
+	marketable = true,
+	release_group = 2,
 })

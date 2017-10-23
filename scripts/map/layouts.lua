@@ -818,6 +818,22 @@ local ExampleLayout =
 		layout_position = LAYOUT_POSITION.CENTER,
 		disable_transform = true
 	}),
+
+--------------------------------------------------------------------------------
+-- Events
+--------------------------------------------------------------------------------
+
+	["LavaArenaLayout"] = StaticLayout.Get("map/static_layouts/events/lava_arena", 
+    {
+        start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+        fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+        layout_position = LAYOUT_POSITION.CENTER,
+		disable_transform = true,
+    }),
+
+
+
+--------------------------------------------------------------------------------
 }
 
 return {Layouts = ExampleLayout}

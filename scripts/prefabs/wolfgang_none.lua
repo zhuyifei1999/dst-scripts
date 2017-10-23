@@ -17,4 +17,5 @@ return CreatePrefabSkin("wolfgang_none",
 	rarity = "Common",
 	skins = { ghost_skin = "ghost_wolfgang_build", mighty_skin = "wolfgang_mighty", normal_skin = "wolfgang", wimpy_skin = "wolfgang_skinny", },
 	torso_tuck_builds = { "wolfgang", "wolfgang_skinny", "wolfgang_mighty", },
+	release_group = 999,
 })

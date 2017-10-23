@@ -15,7 +15,7 @@ local assets =
 
     --BETA
     Asset("DYNAMIC_ATLAS", "images/anr_silhouettes.xml"),
-    Asset("ASSET_PKGREF", "images/anr_silhouettes.tex"),
+    Asset("PKGREF", "images/anr_silhouettes.tex"),
 
     --Events
     Asset("DYNAMIC_ANIM", "anim/dynamic/frontend_perd.zip"),
@@ -23,13 +23,21 @@ local assets =
     Asset("ATLAS", "images/frontscreen.xml"),
     Asset("IMAGE", "images/frontscreen.tex"),
 
+    Asset("ATLAS", "images/frontend_redux.xml"),
+    Asset("IMAGE", "images/frontend_redux.tex"),
+
     -- Asset("ANIM", "anim/portrait_frame.zip"), -- Not currently used, but likely to come back
 
     Asset("ANIM", "anim/build_status.zip"),
 
-    -- Asset("ANIM", "anim/animated_title.zip"), -- Not currently used, but likely to come back
-    -- Asset("ANIM", "anim/animated_title2.zip"), -- Not currently used, but likely to come back
-    -- Asset("ANIM", "anim/title_fire.zip"), -- Not currently used, but likely to come back
+    -- lavaarena festival event
+    Asset("ANIM", "anim/main_menu1.zip"),
+    Asset("ATLAS", "images/bg_redux_labg.xml"),
+    Asset("IMAGE", "images/bg_redux_labg.tex"),
+
+    --~ Asset("ANIM", "anim/animated_title.zip"), -- Not currently used, but likely to come back
+    --~ Asset("ANIM", "anim/animated_title2.zip"), -- Not currently used, but likely to come back
+    --~ Asset("ANIM", "anim/title_fire.zip"), -- Not currently used, but likely to come back
 
     -- Used by TEMPLATES.Background
     -- Asset("ATLAS", "images/bg_color.xml"), -- Not currently used, but likely to come back
@@ -57,13 +65,35 @@ local assets =
     Asset("ATLAS", "images/bg_plain.xml"),
     Asset("IMAGE", "images/bg_plain.tex"),
 
+    -- Collections screen
+    Asset("ANIM", "anim/spool.zip"), -- doodads
+    Asset("ANIM", "anim/player_progressbar_large.zip"),
+    Asset("ANIM", "anim/player_progressbar_small.zip"),
+    Asset("ANIM", "anim/skin_progressbar.zip"),
+    Asset("ANIM", "anim/player_emotes.zip"), -- item emotes
+    Asset("ANIM", "anim/player_emote_extra.zip"), -- item emotes
+    Asset("ANIM", "anim/player_emotes_dance2.zip"), -- item emotes
+    -- If we want nonitem emotes, we need these too.
+    --~ Asset("ANIM", "anim/player_emotes_dance0.zip"),
+    --~ Asset("ANIM", "anim/player_emotes_sit.zip"),
+
+    -- Wardrobe
+    Asset("ANIM", "anim/player_emotesxl.zip"), -- idle emote animations
+
     Asset("ATLAS", "images/skinsscreen.xml"),
     Asset("IMAGE", "images/skinsscreen.tex"),
+    
+    Asset("ANIM", "anim/skinevent_popup.zip"),
+    Asset("ANIM", "anim/skinevent_all_popup.zip"),
+    Asset("ANIM", "anim/skinevent_set_popup.zip"),
+    Asset("ANIM", "anim/skinparcel_popup.zip"),
 
     Asset("ATLAS", "images/tradescreen.xml"),
     Asset("IMAGE", "images/tradescreen.tex"),
     Asset("ATLAS", "images/tradescreen_overflow.xml"),
     Asset("IMAGE", "images/tradescreen_overflow.tex"),
+    Asset("ATLAS", "images/tradescreen_redux.xml"),
+    Asset("IMAGE", "images/tradescreen_redux.tex"),
 
     --testing 
     Asset("ATLAS", "images/inventoryimages.xml"),
@@ -71,6 +101,8 @@ local assets =
 
     Asset("ANIM", "anim/mod_player_build.zip"),
 
+    Asset("ANIM", "anim/accountitem_frame.zip"),
+    -- TODO(dbriscoe): Finish replacing frames_comp with accountitem_frame and remove.
     Asset("ANIM", "anim/frames_comp.zip"),
     Asset("ANIM", "anim/frame_bg.zip"),
 
@@ -96,11 +128,11 @@ local assets =
     Asset("ANIM", "anim/puff_spawning.zip"),
 
     Asset("DYNAMIC_ATLAS", "images/thankyou_item_popup.xml"),
-    Asset("ASSET_PKGREF", "images/thankyou_item_popup.tex"),
+    Asset("PKGREF", "images/thankyou_item_popup.tex"),
     Asset("DYNAMIC_ATLAS", "images/thankyou_item_event.xml"),
-    Asset("ASSET_PKGREF", "images/thankyou_item_event.tex"),
+    Asset("PKGREF", "images/thankyou_item_event.tex"),
     Asset("DYNAMIC_ATLAS", "images/thankyou_item_popup_rog.xml"),
-    Asset("ASSET_PKGREF", "images/thankyou_item_popup_rog.tex"),
+    Asset("PKGREF", "images/thankyou_item_popup_rog.tex"),
 
     --Credits screen
     Asset("SOUND", "sound/gramaphone.fsb"),
@@ -109,6 +141,7 @@ local assets =
     Asset("PKGREF", "sound/music_frontend.fsb"),
     Asset("PKGREF", "sound/music_frontend_winters_feast.fsb"),
     Asset("PKGREF", "sound/music_frontend_yotg.fsb"),
+    Asset("PKGREF", "sound/lava_arena.fsb"),
 
     Asset("PKGREF", "movies/intro.ogv"),
 }
@@ -118,28 +151,6 @@ if PLATFORM == "PS4" then
     table.insert(assets, Asset("IMAGE", "images/ps4.tex"))
     table.insert(assets, Asset("ATLAS", "images/ps4_controllers.xml"))
     table.insert(assets, Asset("IMAGE", "images/ps4_controllers.tex"))
-end
-
--- Add all the characters by name
-local charlist = GetActiveCharacterList and GetActiveCharacterList() or DST_CHARACTERLIST
-for i,char in ipairs(charlist) do
-    if PREFAB_SKINS[char] then
-        for _,character in pairs(PREFAB_SKINS[char]) do
-            table.insert(assets, Asset("DYNAMIC_ATLAS", "bigportraits/"..character..".xml"))
-            table.insert(assets, Asset("ASSET_PKGREF", "bigportraits/"..character..".tex"))
-        end
-        table.insert(assets, Asset("DYNAMIC_ATLAS", "bigportraits/"..char..".xml"))
-        table.insert(assets, Asset("ASSET_PKGREF", "bigportraits/"..char..".tex"))
-
-        --table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char..".tex")) -- Not currently used, but likely to come back
-        --table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char.."_silho.tex")) -- Not currently used, but likely to come back
-    end
-end
-
-for i, v in pairs(DST_CHARACTERLIST) do
-    if v ~= "" then
-        table.insert(assets, Asset("ANIM", "anim/"..v..".zip"))
-    end
 end
 
 for i, v in pairs(MAINSCREEN_TOOL_LIST) do
@@ -169,16 +180,6 @@ end
 for _, skins_prefabs in pairs(PREFAB_SKINS) do
     for _, skin_prefab in pairs(skins_prefabs) do
         table.insert(prefabs, skin_prefab)
-        if string.sub(skin_prefab, -5) ~= "_none" then
-            local prefab = require("prefabs/"..skin_prefab)
-            if type(prefab) == "table" then
-                for k, v in pairs(prefab.assets) do
-                    table.insert(assets, v)
-                end
-            else
-                print("ERROR: The contents of prefabs/"..skin_prefab..".lua are corrupt. Try verifying your game's install.")
-            end
-        end
     end
 end
 

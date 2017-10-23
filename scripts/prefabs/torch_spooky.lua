@@ -15,4 +15,6 @@ return CreatePrefabSkin("torch_spooky",
 	prefabs = { "torchfire_spooky", },
 	init_fn = function(inst) torch_init_fn(inst, "torch_spooky") end,
 	fx_prefab = { "torchfire_spooky", },
+	marketable = true,
+	release_group = 15,
 })

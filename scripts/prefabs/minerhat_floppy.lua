@@ -13,4 +13,5 @@ return CreatePrefabSkin("minerhat_floppy",
 	build_name = "minerhat_floppy",
 	rarity = "Elegant",
 	init_fn = function(inst) minerhat_init_fn(inst, "minerhat_floppy") end,
+	release_group = 28,
 })

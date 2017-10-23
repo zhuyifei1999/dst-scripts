@@ -143,6 +143,19 @@ function PlayerProfile:GetClothingOptionsForType(type)
 	return owned_clothing
 end
 
+-- Store the player's last selection so we can preselecting the right character
+-- for the player.
+function PlayerProfile:GetLastSelectedCharacter()
+    return self.persistdata.last_selected_character or DST_CHARACTERLIST[1]
+end
+
+function PlayerProfile:SetLastSelectedCharacter(character)
+    -- Only track official characters.
+    if character and STRINGS.CHARACTER_NAMES[character] then
+        self.persistdata.last_selected_character = character
+    end
+end
+
 function PlayerProfile:GetBaseForCharacter(character)
 	if not self.persistdata.characterskins then
 		self.persistdata.characterskins = {}
@@ -164,7 +177,9 @@ function PlayerProfile:GetSkinsForCharacter(character, base)
 		self.persistdata.characterskins[character] = {}
 	end
 
-	return self.persistdata.characterskins[character][base] or {}
+    -- Never return internal data to prevent accidental profile modification.
+    -- Modify via Set functions.
+	return shallowcopy(self.persistdata.characterskins[character][base]) or {}
 end
 
 function PlayerProfile:GetAllEquippedSkins()
@@ -231,6 +246,65 @@ function PlayerProfile:SetSkinsForCharacter(character, base, skinList)
 	self.persistdata.characterskins[character][base] = skinList
 
 	self:Save()
+end
+
+function PlayerProfile:SetCustomizationItemState(customization_type, item_key, is_active)
+    assert(is_active ~= nil, "Always pass all arguments!")
+	if not self.persistdata.customization_items then
+		self.persistdata.customization_items = {}
+	end
+
+	if not self.persistdata.customization_items[customization_type] then
+		self.persistdata.customization_items[customization_type] = {}
+	end
+
+	self.dirty = true
+    if is_active then
+        self.persistdata.customization_items[customization_type].last_item_key = item_key
+    elseif self.persistdata.customization_items[customization_type].last_item_key == item_key then
+        self.persistdata.customization_items[customization_type].last_item_key = nil
+    end
+	self.persistdata.customization_items[customization_type][item_key] = is_active or nil
+
+	self:Save()
+end
+
+function PlayerProfile:GetCustomizationItemState(customization_type, item_key)
+	if not self.persistdata.customization_items then
+		return
+	end
+
+	if not self.persistdata.customization_items[customization_type] then
+		return
+	end
+
+    return self.persistdata.customization_items[customization_type][item_key]
+end
+
+-- Table of all stored customization items for the type. Keys in returned table
+-- match item_key passed to SetCustomizationItemState.
+function PlayerProfile:GetCustomizationItemsForType(customization_type)
+	if not self.persistdata.customization_items then
+		return {}
+	end
+
+	if not self.persistdata.customization_items[customization_type] then
+        return {}
+    end
+
+	local customization_item_keys = shallowcopy(self.persistdata.customization_items[customization_type])
+    customization_item_keys.last_item_key = nil
+	return customization_item_keys
+end
+
+
+-- Table of all stored customization types.
+function PlayerProfile:GetStoredCustomizationItemTypes()
+	if not self.persistdata.customization_items then
+		return {}
+	end
+
+	return table.getkeys(self.persistdata.customization_items)
 end
 
 function PlayerProfile:SetCollectionTimestamp(time)
@@ -312,10 +386,6 @@ function PlayerProfile:GetCollectionName()
 	end
 
 	return nil
-end
-
-function PlayerProfile:UnlockEverything()
-    --Nothing locked in DST
 end
 
 function PlayerProfile:SetValue(name, value)

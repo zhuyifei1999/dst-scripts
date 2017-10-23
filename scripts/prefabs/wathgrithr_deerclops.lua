@@ -14,4 +14,5 @@ return CreatePrefabSkin("wathgrithr_deerclops",
 	build_name = "wathgrithr_deerclops",
 	rarity = "Event",
 	skins = { ghost_skin = "ghost_wathgrithr_build", normal_skin = "wathgrithr_deerclops", },
+	release_group = 15,
 })

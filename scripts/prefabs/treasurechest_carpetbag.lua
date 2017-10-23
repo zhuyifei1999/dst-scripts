@@ -13,4 +13,6 @@ return CreatePrefabSkin("treasurechest_carpetbag",
 	build_name = "treasurechest_carpetbag",
 	rarity = "Distinguished",
 	init_fn = function(inst) treasurechest_init_fn(inst, "treasurechest_carpetbag") end,
+	marketable = true,
+	release_group = 19,
 })

@@ -13,4 +13,5 @@ return CreatePrefabSkin("winterhat_rooster",
 	build_name = "winterhat_rooster",
 	rarity = "Loyal",
 	init_fn = function(inst) winterhat_init_fn(inst, "winterhat_rooster") end,
+	release_group = 23,
 })

@@ -101,6 +101,25 @@ function backpack_init_fn(inst, build_name)
     inst.OnLongUpdate = backpack_decay_long_update
 end
 
+
+--------------------------------------------------------------------------
+--[[ Armor skin functions ]]
+--------------------------------------------------------------------------
+function armor_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "armor_wood") --needs to be the default for the specific prefab
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+
+armordragonfly_init_fn = armor_init_fn
+armorgrass_init_fn = armor_init_fn
+armormarble_init_fn = armor_init_fn
+armorwood_init_fn = armor_init_fn
+
+
 --------------------------------------------------------------------------
 --[[ Torch skin functions ]]
 --------------------------------------------------------------------------
@@ -126,6 +145,43 @@ function spear_init_fn(inst, build_name)
 end
 
 --------------------------------------------------------------------------
+--[[ Hambat skin functions ]]
+--------------------------------------------------------------------------
+function hambat_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "swap_ham_bat")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+
+--------------------------------------------------------------------------
+--[[ Amulet skin functions ]]
+--------------------------------------------------------------------------
+function amulet_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "amulets")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+
+--------------------------------------------------------------------------
+--[[ Books skin functions ]]
+--------------------------------------------------------------------------
+function book_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "books")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+book_brimstone_init_fn = book_init_fn
+
+--------------------------------------------------------------------------
 --[[ Hat skin functions ]]
 --------------------------------------------------------------------------
 function hat_init_fn(inst, build_name)
@@ -133,7 +189,7 @@ function hat_init_fn(inst, build_name)
         return
     end
 
-    inst.AnimState:SetSkin(build_name, "swap_hat")
+    inst.AnimState:SetSkin(build_name, "hat_flower") --needs to be the default for the specific prefab
     inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
 end
 
@@ -144,6 +200,8 @@ winterhat_init_fn = hat_init_fn
 catcoonhat_init_fn = hat_init_fn
 rainhat_init_fn = hat_init_fn
 minerhat_init_fn = hat_init_fn
+footballhat_init_fn = hat_init_fn
+featherhat_init_fn = hat_init_fn
 
 --------------------------------------------------------------------------
 --[[ Bedroll skin functions ]]
@@ -537,11 +595,14 @@ function CreatePrefabSkin(name, info)
     prefab_skin.type                = info.type
     prefab_skin.init_fn             = info.init_fn
     prefab_skin.build_name          = info.build_name
+    prefab_skin.bigportrait         = info.bigportrait
     prefab_skin.rarity              = info.rarity
     prefab_skin.rarity_modifier     = info.rarity_modifier
     prefab_skin.skins               = info.skins
     prefab_skin.disabled            = info.disabled
     prefab_skin.granted_items       = info.granted_items
+	prefab_skin.marketable			= info.marketable
+    prefab_skin.release_group       = info.release_group
 
     if info.torso_tuck_builds ~= nil then
         for _,base_skin in pairs(info.torso_tuck_builds) do

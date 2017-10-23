@@ -1,9 +1,9 @@
 local easing = require("easing")
 local PlayerHud = require("screens/playerhud")
 
-local USE_MOVEMENT_PREDICTION = true
+local ex_fns = require "prefabs/player_common_extensions"
 
-local screen_fade_time = .4
+local USE_MOVEMENT_PREDICTION = true
 
 local DEFAULT_PLAYER_COLOUR = { 1, 1, 1, 1 }
 
@@ -159,10 +159,6 @@ end
 
 local function IsCarefulWalking(inst)
     return inst.player_classified ~= nil and inst.player_classified.iscarefulwalking:value()
-end
-
-local function ShouldKnockout(inst)
-    return DefaultKnockoutTest(inst) and not inst.sg:HasStateTag("yawn")
 end
 
 local function ShouldAcceptItem(inst, item)
@@ -494,24 +490,6 @@ local function OnPlayerJoined(inst)
     end
 end
 
-local function ConfigurePlayerLocomotor(inst)
-    inst.components.locomotor:SetSlowMultiplier(0.6)
-    inst.components.locomotor.pathcaps = { player = true, ignorecreep = true } -- 'player' cap not actually used, just useful for testing
-    inst.components.locomotor.walkspeed = TUNING.WILSON_WALK_SPEED -- 4
-    inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED -- 6
-    inst.components.locomotor.fasteronroad = true
-    inst.components.locomotor:SetTriggersCreep(not inst:HasTag("spiderwhisperer"))
-end
-
-local function ConfigureGhostLocomotor(inst)
-    inst.components.locomotor:SetSlowMultiplier(0.6)
-    inst.components.locomotor.pathcaps = { player = true, ignorecreep = true } -- 'player' cap not actually used, just useful for testing
-    inst.components.locomotor.walkspeed = TUNING.WILSON_WALK_SPEED -- 4 is base
-    inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED -- 6 is base
-    inst.components.locomotor.fasteronroad = false
-    inst.components.locomotor:SetTriggersCreep(false)
-end
-
 local function OnCancelMovementPrediction(inst)
     inst.components.locomotor:Clear()
     inst:ClearBufferedAction()
@@ -528,9 +506,9 @@ local function EnableMovementPrediction(inst, enable)
 
                 inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
                 if isghost then
-                    ConfigureGhostLocomotor(inst)
+                    ex_fns.ConfigureGhostLocomotor(inst)
                 else
-                    ConfigurePlayerLocomotor(inst)
+                    ex_fns.ConfigurePlayerLocomotor(inst)
                 end
 
                 if inst.components.playercontroller ~= nil then
@@ -562,52 +540,37 @@ local function PlayerActionFilter(inst, action)
     return not action.ghost_exclusive
 end
 
---Pushed/popped when dying/resurrecting
-local function GhostActionFilter(inst, action)
-    return action.ghost_valid
-end
-
-local function ConfigurePlayerActions(inst)
-    if inst.components.playeractionpicker ~= nil then
-        inst.components.playeractionpicker:PopActionFilter(GhostActionFilter)
-    end
-end
-
-local function ConfigureGhostActions(inst)
-    if inst.components.playeractionpicker ~= nil then
-        inst.components.playeractionpicker:PushActionFilter(GhostActionFilter, 99)
-    end
-end
-
 local function SetGhostMode(inst, isghost)
-    if not inst.ghostenabled then
-        return
-    end
     TheWorld:PushEvent("enabledynamicmusic", not isghost)
     inst.HUD.controls.status:SetGhostMode(isghost)
-    if isghost then
-        TheMixer:PushMix("death")
-    else
-        TheMixer:PopMix("death")
+    if inst.components.revivablecorpse == nil then
+        if isghost then
+            TheMixer:PushMix("death")
+        else
+            TheMixer:PopMix("death")
+        end
     end
-    if not TheWorld.ismastersim then
-        if USE_MOVEMENT_PREDICTION then
-            if inst.components.locomotor ~= nil then
-                inst:PushEvent("cancelmovementprediction")
-                if isghost then
-                    ConfigureGhostLocomotor(inst)
-                else
-                    ConfigurePlayerLocomotor(inst)
+
+    if inst.ghostenabled then
+        if not TheWorld.ismastersim then
+            if USE_MOVEMENT_PREDICTION then
+                if inst.components.locomotor ~= nil then
+                    inst:PushEvent("cancelmovementprediction")
+                    if isghost then
+                        ex_fns.ConfigureGhostLocomotor(inst)
+                    else
+                        ex_fns.ConfigurePlayerLocomotor(inst)
+                    end
+                end
+                if inst.sg ~= nil then
+                    inst:SetStateGraph(isghost and "SGwilsonghost_client" or "SGwilson_client")
                 end
             end
-            if inst.sg ~= nil then
-                inst:SetStateGraph(isghost and "SGwilsonghost_client" or "SGwilson_client")
+            if isghost then
+                ex_fns.ConfigureGhostActions(inst)
+            else
+                ex_fns.ConfigurePlayerActions(inst)
             end
-        end
-        if isghost then
-            ConfigureGhostActions(inst)
-        else
-            ConfigurePlayerActions(inst)
         end
     end
 end
@@ -710,414 +673,8 @@ local function OnRemoveEntity(inst)
 end
 
 --------------------------------------------------------------------------
---Death/Ghost stuff
+--Save/Load stuff
 --------------------------------------------------------------------------
-
-local function RemoveDeadPlayer(inst, spawnskeleton)
-    if spawnskeleton and TheSim:HasPlayerSkeletons() then
-        local x, y, z = inst.Transform:GetWorldPosition()
-
-        -- Spawn a skeleton
-        local skel = SpawnPrefab("skeleton_player")
-        if skel ~= nil then
-            skel.Transform:SetPosition(x, y, z)
-            -- Set the description
-            skel:SetSkeletonDescription(inst.prefab, inst:GetDisplayName(), inst.deathcause, inst.deathpkname)
-            skel:SetSkeletonAvatarData(inst.deathclientobj)
-        end
-
-        -- Death FX
-        SpawnPrefab("die_fx").Transform:SetPosition(x, y, z)
-    end
-    inst:OnDespawn()
-    DeleteUserSession(inst)
-    inst:Remove()
-end
-
-local function FadeOutDeadPlayer(inst, spawnskeleton)
-    inst:ScreenFade(false, screen_fade_time, true)
-    inst:DoTaskInTime(screen_fade_time * 1.25, RemoveDeadPlayer, spawnskeleton)
-end
-
---Player has completed death sequence
-local function OnPlayerDied(inst, data)
-    inst:DoTaskInTime(3, FadeOutDeadPlayer, data ~= nil and data.skeleton)
-end
-
---Player has initiated death sequence
-local function OnPlayerDeath(inst, data)
-    if inst:HasTag("playerghost") then
-        --ghosts should not be able to die atm
-        return
-    end
-
-    inst:ClearBufferedAction()
-
-    inst.components.age:PauseAging()
-    inst.components.inventory:Close()
-    inst:PushEvent("ms_closepopups")
-
-    inst.deathclientobj = TheNet:GetClientTableForUser(inst.userid)
-    inst.deathcause = data ~= nil and data.cause or "unknown"
-    if data == nil or data.afflicter == nil then
-        inst.deathpkname = nil
-    elseif data.afflicter.overridepkname ~= nil then
-        inst.deathpkname = data.afflicter.overridepkname
-        inst.deathbypet = data.afflicter.overridepkpet
-    else
-        local killer = data.afflicter.components.follower ~= nil and data.afflicter.components.follower:GetLeader() or nil
-        if killer ~= nil and
-            killer.components.petleash ~= nil and
-            killer.components.petleash:IsPet(data.afflicter) then
-            inst.deathbypet = true
-        else
-            killer = data.afflicter
-        end
-        inst.deathpkname = killer:HasTag("player") and killer:GetDisplayName() or nil
-    end
-
-    if not inst.ghostenabled then
-        if inst.deathcause ~= "file_load" then
-            inst.player_classified:AddMorgueRecord()
-
-            local announcement_string = GetNewDeathAnnouncementString(inst, inst.deathcause, inst.deathpkname, inst.deathbypet)
-            if announcement_string ~= "" then
-                TheNet:AnnounceDeath(announcement_string, inst.entity)
-            end
-        end
-        --Early delete in case client disconnects before removal timeout
-        DeleteUserSession(inst)
-    end
-end
-
-local function DoActualRez(inst, source, item)
-    inst.player_classified.MapExplorer:EnableUpdate(true)
-
-    local x, y, z
-    if source ~= nil then
-        x, y, z = source.Transform:GetWorldPosition()
-    else
-        x, y, z = inst.Transform:GetWorldPosition()
-    end
-
-    local diefx = SpawnPrefab("die_fx")
-    if diefx and x and y and z then
-        diefx.Transform:SetPosition(x, y, z)
-    end
-
-    -- inst.AnimState:SetBank("wilson")
-    -- inst.components.skinner:SetSkinMode("normal_skin")
-
-    inst.AnimState:Hide("HAT")
-    inst.AnimState:Hide("HAIR_HAT")
-    inst.AnimState:Show("HAIR_NOHAT")
-    inst.AnimState:Show("HAIR")
-    inst.AnimState:Show("HEAD")
-    inst.AnimState:Hide("HEAD_HAT")
-
-    inst:Show()
-
-    inst:SetStateGraph("SGwilson")
-
-    inst.Physics:Teleport(x, y, z)
-
-    inst.components.inventory:Open()
-    inst.player_classified:SetGhostMode(false)
-
-    -- Resurrector is involved
-    if source ~= nil then
-        inst.DynamicShadow:Enable(true)
-        inst.AnimState:SetBank("wilson")
-        inst.components.skinner:SetSkinMode("normal_skin") -- restore skin
-        inst.components.bloomer:PopBloom("playerghostbloom")
-        inst.AnimState:SetLightOverride(0)
-
-        source:PushEvent("activateresurrection", inst)
-
-        if source.prefab == "amulet" then
-            inst.components.inventory:Equip(source)
-            inst.sg:GoToState("amulet_rebirth")
-        elseif source.prefab == "resurrectionstone" then
-            inst.components.inventory:Hide()
-            inst:PushEvent("ms_closepopups")
-            inst.sg:GoToState("wakeup")
-        elseif source.prefab == "resurrectionstatue" then
-            inst.sg:GoToState("rebirth")
-        elseif source.prefab == "multiplayer_portal" then
-            inst.components.health:DeltaPenalty(TUNING.PORTAL_HEALTH_PENALTY)
-
-            source:PushEvent("rez_player")
-            inst.sg:GoToState("portal_rez")
-        end
-    else -- Telltale Heart
-        inst.sg:GoToState("reviver_rebirth", item)
-    end
- 
-    --Default to electrocute light values
-    inst.Light:SetIntensity(.8)
-    inst.Light:SetRadius(.5)
-    inst.Light:SetFalloff(.65)
-    inst.Light:SetColour(255 / 255, 255 / 255, 236 / 255)
-    inst.Light:Enable(false)
-
-    MakeCharacterPhysics(inst, 75, .5)
-
-    inst.components.health.canheal = true
-    inst.components.hunger:Resume()
-    inst.components.temperature:SetTemp() --nil param will resume temp
-    inst.components.frostybreather:Enable()
-
-    MakeMediumBurnableCharacter(inst, "torso")
-    inst.components.burnable:SetBurnTime(TUNING.PLAYER_BURN_TIME)
-    inst.components.burnable.nocharring = true
-
-    MakeLargeFreezableCharacter(inst, "torso")
-    inst.components.freezable:SetResistance(4)
-    inst.components.freezable:SetDefaultWearOffTime(TUNING.PLAYER_FREEZE_WEAR_OFF_TIME)
-
-    inst:AddComponent("grogginess")
-    inst.components.grogginess:SetResistance(3)
-    inst.components.grogginess:SetKnockOutTest(ShouldKnockout)
-
-    inst.components.moisture:ForceDry(false)
-
-    inst.components.sheltered:Start()
-
-    inst.components.debuffable:Enable(true)
-
-    --don't ignore sanity any more
-    inst.components.sanity.ignore = false
-
-    inst:RemoveTag("playerghost")
-    inst.Network:RemoveUserFlag(USERFLAGS.IS_GHOST)
-
-    inst.components.age:ResumeAging()
-
-    ConfigurePlayerLocomotor(inst)
-    ConfigurePlayerActions(inst)
-
-    if inst.rezsource ~= nil then
-        local announcement_string = GetNewRezAnnouncementString(inst, inst.rezsource)
-        if announcement_string ~= "" then
-            TheNet:AnnounceResurrect(announcement_string, inst.entity)
-        end
-        inst.rezsource = nil
-    end
-    inst.remoterezsource = nil
-
-    inst:PushEvent("ms_respawnedfromghost")
-end
-
-local function DoRezDelay(inst, source, delay)
-    if not source:IsValid() or source:IsInLimbo() then
-        --Revert OnRespawnFromGhost state
-        inst:ShowHUD(true)
-        if inst.components.playercontroller ~= nil then
-            inst.components.playercontroller:Enable(true)
-        end
-        inst.rezsource = nil
-        inst.remoterezsource = nil
-        --Revert DoMoveToRezSource state
-        inst:Show()
-        inst.Light:Enable(true)
-        inst:SetCameraDistance()
-        inst.sg:GoToState("haunt")
-        --
-    elseif delay == nil or delay <= 0 then
-        DoActualRez(inst, source)
-    elseif delay > .35 then
-        inst:DoTaskInTime(.35, DoRezDelay, source, delay - .35)
-    else
-        inst:DoTaskInTime(delay, DoRezDelay, source)
-    end
-end
-
-local function DoMoveToRezSource(inst, source, delay)
-    if not source:IsValid() or source:IsInLimbo() then
-        --Revert OnRespawnFromGhost state
-        inst:ShowHUD(true)
-        if inst.components.playercontroller ~= nil then
-            inst.components.playercontroller:Enable(true)
-        end
-        inst.rezsource = nil
-        inst.remoterezsource = nil
-        --Revert "remoteresurrect" state
-        if inst.sg.currentstate.name == "remoteresurrect" then
-            inst.sg:GoToState("haunt")
-        end
-        --
-        return
-    end
-
-    inst:Hide()
-    inst.Light:Enable(false)
-    inst.Physics:Teleport(source.Transform:GetWorldPosition())
-    inst:SetCameraDistance(24)
-    if inst.sg.currentstate.name == "remoteresurrect" then
-        inst:SnapCamera()
-    end
-    if inst.sg.statemem.faded then
-        inst.sg.statemem.faded = false
-        inst:ScreenFade(true, 1)
-    end
-
-    DoRezDelay(inst, source, delay)
-end
-
-local function OnRespawnFromGhost(inst, data)
-    if not inst:HasTag("playerghost") then
-        return
-    end
-
-    inst.deathclientobj = nil
-    inst.deathcause = nil
-    inst.deathpkname = nil
-    inst.deathbypet = nil
-    inst:ShowHUD(false)
-    if inst.components.playercontroller ~= nil then
-        inst.components.playercontroller:Enable(false)
-    end
-    if inst.components.talker ~= nil then
-        inst.components.talker:ShutUp()
-    end
-    inst.sg:AddStateTag("busy")
-
-    if data == nil or data.source == nil then
-        inst:DoTaskInTime(0, DoActualRez)
-    elseif inst.sg.currentstate.name == "remoteresurrect" then
-        inst:DoTaskInTime(0, DoMoveToRezSource, data.source, 24 * FRAMES)
-    elseif data.source.prefab == "reviver" then
-        inst:DoTaskInTime(0, DoActualRez, nil, data.source)
-    elseif data.source.prefab == "amulet"
-        or data.source.prefab == "resurrectionstone"
-        or data.source.prefab == "resurrectionstatue"
-        or data.source.prefab == "multiplayer_portal" then
-        inst:DoTaskInTime(9 * FRAMES, DoMoveToRezSource, data.source, --[[60-9]] 51 * FRAMES)
-    else
-        --unsupported rez source...
-        inst:DoTaskInTime(0, DoActualRez)
-    end
-
-    inst.rezsource =
-        data ~= nil and (
-            (data.source ~= nil and data.source.prefab ~= "reviver" and data.source.name) or
-            (data.user ~= nil and data.user:GetDisplayName())
-        ) or
-        STRINGS.NAMES.SHENANIGANS
-
-    inst.remoterezsource =
-        data ~= nil and
-        data.source ~= nil and
-        data.source.components.attunable ~= nil and
-        data.source.components.attunable:GetAttunableTag() == "remoteresurrector"
-end
-
-local function OnMakePlayerGhost(inst, data)
-    if inst:HasTag("playerghost") then
-        return
-    end
-
-    inst.player_classified.MapExplorer:EnableUpdate(false)
-
-    local x, y, z = inst.Transform:GetWorldPosition()
-
-    -- Spawn a skeleton
-    if data ~= nil and data.skeleton and TheSim:HasPlayerSkeletons() then
-        local skel = SpawnPrefab("skeleton_player")
-        if skel ~= nil then
-            skel.Transform:SetPosition(x, y, z)
-            -- Set the description
-            skel:SetSkeletonDescription(inst.prefab, inst:GetDisplayName(), inst.deathcause, inst.deathpkname)
-            skel:SetSkeletonAvatarData(inst.deathclientobj)
-        end
-    end
-
-    if data ~= nil and data.loading then
-        -- Set temporary flag for resuming game as a ghost
-        -- Used in ghost stategraph as well as below in this function
-        inst.loading_ghost = true
-    else
-        local announcement_string = GetNewDeathAnnouncementString(inst, inst.deathcause, inst.deathpkname, inst.deathbypet)
-        if announcement_string ~= "" then
-            TheNet:AnnounceDeath(announcement_string, inst.entity)
-        end
-
-        -- Death FX
-        SpawnPrefab("die_fx").Transform:SetPosition(x, y, z)
-    end
-
-    inst.AnimState:SetBank("ghost")
-
-    inst.components.skinner:SetSkinMode("ghost_skin")
-
-    inst.components.bloomer:PushBloom("playerghostbloom", "shaders/anim_bloom_ghost.ksh", 100)
-    inst.AnimState:SetLightOverride(TUNING.GHOST_LIGHT_OVERRIDE)
-
-    inst:SetStateGraph("SGwilsonghost")
-
-    --Switch to ghost light values
-    inst.Light:SetIntensity(.6)
-    inst.Light:SetRadius(.5)
-    inst.Light:SetFalloff(.6)
-    inst.Light:SetColour(180/255, 195/255, 225/255)
-    inst.Light:Enable(true)
-    inst.DynamicShadow:Enable(false)
-
-    MakeGhostPhysics(inst, 1, .5)
-    inst.Physics:Teleport(x, y, z)
-
-    inst:AddTag("playerghost")
-    inst.Network:AddUserFlag(USERFLAGS.IS_GHOST)
-
-    inst:RemoveComponent("burnable")
-
-    inst.components.freezable:Reset()
-    inst:RemoveComponent("freezable")
-    inst:RemoveComponent("propagator")
-
-    inst:RemoveComponent("grogginess")
-
-    inst.components.moisture:ForceDry(true)
-
-    inst.components.sheltered:Stop()
-
-    inst.components.debuffable:Enable(false)
-
-    inst.components.age:PauseAging()
-
-    inst.components.health:SetCurrentHealth(TUNING.RESURRECT_HEALTH)
-    inst.components.health:ForceUpdateHUD(true)
-    inst.components.health:SetInvincible(true)
-    inst.components.health.canheal = false
-
-    inst.components.sanity:SetPercent(.5, true)
-    inst.components.sanity.ignore = true
-
-    inst.components.hunger:SetPercent(2 / 3, true)
-    inst.components.hunger:Pause()
-
-    inst.components.temperature:SetTemp(TUNING.STARTING_TEMP)
-    inst.components.frostybreather:Disable()
-
-    if inst.components.playercontroller ~= nil then
-        inst.components.playercontroller:Enable(true)
-    end
-    inst.player_classified:SetGhostMode(true)
-
-    ConfigureGhostLocomotor(inst)
-    ConfigureGhostActions(inst)
-
-    inst:PushEvent("ms_becameghost")
-
-    if inst.loading_ghost then
-        inst.loading_ghost = nil
-        inst.components.inventory:Close()
-    else
-        inst.player_classified:AddMorgueRecord()
-        SerializeUserSession(inst)
-    end
-end
-
 local function OnSave(inst, data)
     data.is_ghost = inst:HasTag("playerghost") or nil
 
@@ -1158,10 +715,11 @@ local function OnLoad(inst, data)
     --If this character is being loaded then it isn't a new spawn
     inst.OnNewSpawn = nil
     inst._OnNewSpawn = nil
+    inst.starting_inventory = nil
 
     if data ~= nil then
         if data.is_ghost then
-            OnMakePlayerGhost(inst, { loading = true })
+            ex_fns.OnMakePlayerGhost(inst, { loading = true })
         end
 
         --V2C: Sleeping hacks from snapshots or c_saves while sleeping
@@ -1203,6 +761,10 @@ local function OnLoad(inst, data)
         inst:_OnLoad(data)
     end
 end
+
+--------------------------------------------------------------------------
+--Sleep stuff (effect, not entity state)
+--------------------------------------------------------------------------
 
 --V2C: sleeping bag hacks
 --     The gist of it is that when we sleep, we gotta temporarly unequip
@@ -1254,6 +816,10 @@ local function OnWakeUp(inst)
     end
 end
 
+--------------------------------------------------------------------------
+--Spawing stuff
+--------------------------------------------------------------------------
+
 --Player cleanup usually called just before save/delete
 --just before the the player entity is actually removed
 local function OnDespawn(inst)
@@ -1276,7 +842,11 @@ local function OnDespawn(inst)
     inst.components.debuffable:RemoveOnDespawn()
     inst.components.rider:ActualDismount()
     inst.components.bundler:StopBundling()
-    inst.components.inventory:DropEverythingWithTag("irreplaceable")
+    if TheNet:GetServerGameMode() == "lavaarena" then
+        inst.components.inventory:DropEverything()
+    else
+        inst.components.inventory:DropEverythingWithTag("irreplaceable")
+    end
     inst.components.leader:RemoveAllFollowers()
 
     if inst.components.playercontroller ~= nil then
@@ -1284,6 +854,42 @@ local function OnDespawn(inst)
     end
     inst.components.locomotor:StopMoving()
     inst.components.locomotor:Clear()
+end
+
+--Will be triggered from SpawnNewPlayerOnServerFromSim
+--only if it is a new spawn
+local function OnNewSpawn(inst)
+    if inst.starting_inventory ~= nil and #inst.starting_inventory > 0 and inst.components.inventory ~= nil then
+        inst.components.inventory.ignoresound = true
+        if inst.components.inventory:GetNumSlots() > 0 then
+            for i, v in ipairs(inst.starting_inventory) do
+                inst.components.inventory:GiveItem(SpawnPrefab(v))
+            end
+        else
+            local items = {}
+            for i, v in ipairs(inst.starting_inventory) do
+                local item = SpawnPrefab(v)
+                if item.components.equippable ~= nil then
+                    inst.components.inventory:Equip(item)
+                    table.insert(items, item)
+                else
+                    item:Remove()
+                end
+            end
+            for i, v in ipairs(items) do
+                if v.components.inventoryitem == nil or not v.components.inventoryitem:IsHeld() then
+                    v:Remove()
+                end
+            end
+        end
+        inst.components.inventory.ignoresound = false
+    end
+    if inst._OnNewSpawn ~= nil then
+        inst:_OnNewSpawn()
+        inst._OnNewSpawn = nil
+    end
+    inst.OnNewSpawn = nil
+    inst.starting_inventory = nil
 end
 
 --------------------------------------------------------------------------
@@ -1454,6 +1060,8 @@ end
 
 --------------------------------------------------------------------------
 
+--V2C: starting_inventory passed as a parameter here is now deprecated
+--     set .starting_inventory property during master_postinit instead
 local function MakePlayerCharacter(name, customprefabs, customassets, common_postinit, master_postinit, starting_inventory)
     local assets =
     {
@@ -1486,6 +1094,9 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_staff.zip"),
         Asset("ANIM", "anim/player_hit_darkness.zip"),
         Asset("ANIM", "anim/player_hit_spike.zip"),
+        Asset("ANIM", "anim/player_lunge.zip"),
+        Asset("ANIM", "anim/player_attack_leap.zip"),
+        Asset("ANIM", "anim/player_book_attack.zip"),
 
         Asset("ANIM", "anim/player_frozen.zip"),
         Asset("ANIM", "anim/player_shock.zip"),
@@ -1509,11 +1120,16 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_ghost_withhat.zip"),
         Asset("ANIM", "anim/player_revive_ghosthat.zip"),
         Asset("ANIM", "anim/player_revive_to_character.zip"),
+        Asset("ANIM", "anim/player_revive_from_corpse.zip"),
         Asset("ANIM", "anim/player_knockedout.zip"),
         Asset("ANIM", "anim/player_emotesxl.zip"),
         Asset("ANIM", "anim/player_emotes_dance0.zip"),
         Asset("ANIM", "anim/player_emotes_sit.zip"),
-        Asset("ANIM", "anim/player_emotes.zip"),
+        Asset("ANIM", "anim/player_emotes.zip"), -- item emotes
+        Asset("ANIM", "anim/player_emote_extra.zip"), -- item emotes
+        Asset("ANIM", "anim/player_emotes_dance2.zip"), -- item emotes
+        Asset("ANIM", "anim/player_mount_emotes_extra.zip"), -- item emotes
+        Asset("ANIM", "anim/player_mount_emotes_dance2.zip"), -- item emotes
         Asset("ANIM", "anim/player_hatdance.zip"),
         Asset("ANIM", "anim/player_bow.zip"),
         Asset("ANIM", "anim/tears.zip"),
@@ -1555,6 +1171,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_mount_bow.zip"),
 
         Asset("INV_IMAGE", "skull_"..name),
+
+        Asset("SCRIPT", "scripts/prefabs/player_common_extensions.lua"),
     }
 
     local clothing_assets = require("clothing_assets")
@@ -1583,6 +1201,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         "shock_fx",
         "splash",
         "globalmapicon",
+        "lavaarena_player_revive_from_corpse_fx",
 
         -- Player specific classified prefabs
         "player_classified",
@@ -1657,6 +1276,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.AnimState:AddOverrideBuild("player_receive_gift")
         inst.AnimState:AddOverrideBuild("player_actions_uniqueitem")
         inst.AnimState:AddOverrideBuild("player_wrap_bundle")
+        inst.AnimState:AddOverrideBuild("player_lunge")
+        inst.AnimState:AddOverrideBuild("player_attack_leap")
 
         inst.DynamicShadow:SetSize(1.3, .6)
 
@@ -1705,6 +1326,14 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.playercolour = DEFAULT_PLAYER_COLOUR --Default player colour used in case it doesn't get set properly
         inst.ghostenabled = GetGhostEnabled(TheNet:GetServerGameMode())
 
+        if GetGameModeProperty("revivable_corpse") then
+            inst:AddComponent("revivablecorpse")
+        end
+
+        if GetGameModeProperty("spectator_corpse") then
+            inst:AddComponent("spectatorcorpse")
+        end
+
         inst.jointask = inst:DoTaskInTime(0, OnPlayerJoined)
         inst:ListenForEvent("setowner", OnSetOwner)
 
@@ -1717,11 +1346,15 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst:AddComponent("playervision")
         inst:AddComponent("areaaware")
         inst.components.areaaware:SetUpdateDist(2)
-        
+
         inst:AddComponent("attuner")
         --attuner server listeners are not registered until after "ms_playerjoined" has been pushed
 
         inst:AddComponent("playeravatardata")
+
+        if TheNet:GetServerGameMode() == "lavaarena" then
+            inst:AddComponent("healthsyncer")
+        end
 
         if common_postinit ~= nil then
             common_postinit(inst)
@@ -1772,24 +1405,28 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.player_classified = SpawnPrefab("player_classified")
         inst.player_classified.entity:SetParent(inst.entity)
 
-        inst:ListenForEvent("death", OnPlayerDeath)
+        inst:ListenForEvent("death", ex_fns.OnPlayerDeath)
         if inst.ghostenabled then
             --Ghost events (Edit stategraph to push makeplayerghost instead of makeplayerdead to enter ghost state)
-            inst:ListenForEvent("makeplayerghost", OnMakePlayerGhost)
-            inst:ListenForEvent("respawnfromghost", OnRespawnFromGhost)
-            inst:ListenForEvent("ghostdissipated", OnPlayerDied)
+            inst:ListenForEvent("makeplayerghost", ex_fns.OnMakePlayerGhost)
+            inst:ListenForEvent("respawnfromghost", ex_fns.OnRespawnFromGhost)
+            inst:ListenForEvent("ghostdissipated", ex_fns.OnPlayerDied)
+        elseif inst.components.revivablecorpse ~= nil then
+            inst:ListenForEvent("respawnfromcorpse", ex_fns.OnRespawnFromPlayerCorpse)
+            inst:ListenForEvent("playerdied", ex_fns.OnMakePlayerCorpse)
         else
-            inst:ListenForEvent("playerdied", OnPlayerDied)
+            inst:ListenForEvent("playerdied", ex_fns.OnPlayerDied)
         end
 
         inst:AddComponent("bloomer")
+        inst:AddComponent("colouradder")
         inst:AddComponent("birdattractor")
 
         inst:AddComponent("maprevealable")
         inst.components.maprevealable:SetIconPriority(10)
 
         inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
-        ConfigurePlayerLocomotor(inst)
+        ex_fns.ConfigurePlayerLocomotor(inst)
 
         inst:AddComponent("combat")
         inst.components.combat:SetDefaultDamage(TUNING.UNARMED_DAMAGE)
@@ -1799,6 +1436,10 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.components.combat.pvp_damagemod = TUNING.PVP_DAMAGE_MOD -- players shouldn't hurt other players very much
         inst.components.combat:SetAttackPeriod(TUNING.WILSON_ATTACK_PERIOD)
         inst.components.combat:SetRange(2)
+
+        if TheNet:GetServerGameMode() == "lavaarena" then
+            event_server_data("lavaarena", "prefabs/player_common").master_postinit(inst)
+        end
 
         MakeMediumBurnableCharacter(inst, "torso")
         inst.components.burnable:SetBurnTime(TUNING.PLAYER_BURN_TIME)
@@ -1840,9 +1481,13 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.components.hunger:SetMax(TUNING.WILSON_HUNGER)
         inst.components.hunger:SetRate(TUNING.WILSON_HUNGER_RATE)
         inst.components.hunger:SetKillRate(TUNING.WILSON_HEALTH/TUNING.STARVE_KILL_TIME)
+        if GetGameModeProperty("no_hunger") then
+            inst.components.hunger:Pause()
+        end
 
         inst:AddComponent("sanity")
         inst.components.sanity:SetMax(TUNING.WILSON_SANITY)
+        inst.components.sanity.ignore = GetGameModeProperty("no_sanity")
 
         inst:AddComponent("builder")
 
@@ -1881,13 +1526,16 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 
         inst:AddComponent("grogginess")
         inst.components.grogginess:SetResistance(3)
-        inst.components.grogginess:SetKnockOutTest(ShouldKnockout)
+        inst.components.grogginess:SetKnockOutTest(ex_fns.ShouldKnockout)
 
         inst:AddComponent("colourtweener")
         inst:AddComponent("touchstonetracker")
 
         inst:AddComponent("skinner")
-        inst:AddComponent("giftreceiver")
+
+        if not GetGameModeProperty("hide_received_gifts") then
+            inst:AddComponent("giftreceiver")
+        end
 
         inst:AddInherentAction(ACTIONS.PICK)
         inst:AddInherentAction(ACTIONS.SLEEPIN)
@@ -1913,6 +1561,10 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst._scalesource = nil
         inst.ApplyScale = ApplyScale
 
+        if inst.starting_inventory == nil then
+            inst.starting_inventory = starting_inventory
+        end
+
         if master_postinit ~= nil then
             master_postinit(inst)
         end
@@ -1924,30 +1576,13 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst._OnSave = inst.OnSave
         inst._OnPreLoad = inst.OnPreLoad
         inst._OnLoad = inst.OnLoad
+        inst._OnNewSpawn = inst.OnNewSpawn
         inst._OnDespawn = inst.OnDespawn
         inst.OnSave = OnSave
         inst.OnPreLoad = OnPreLoad
         inst.OnLoad = OnLoad
+        inst.OnNewSpawn = OnNewSpawn
         inst.OnDespawn = OnDespawn
-
-        if starting_inventory ~= nil and #starting_inventory > 0 then
-            --Will be triggered from SpawnNewPlayerOnServerFromSim
-            --only if it is a new spawn
-            inst._OnNewSpawn = inst.OnNewSpawn
-            inst.OnNewSpawn = function()
-                if inst.components.inventory ~= nil then
-                    inst.components.inventory.ignoresound = true
-                    for i, v in ipairs(starting_inventory) do
-                        inst.components.inventory:GiveItem(SpawnPrefab(v))
-                    end
-                    inst.components.inventory.ignoresound = false
-                end
-                if inst._OnNewSpawn ~= nil then
-                    inst:_OnNewSpawn()
-                    inst._OnNewSpawn = nil
-                end
-            end
-        end
 
         inst:ListenForEvent("startfiredamage", OnStartFireDamage)
         inst:ListenForEvent("stopfiredamage", OnStopFireDamage)

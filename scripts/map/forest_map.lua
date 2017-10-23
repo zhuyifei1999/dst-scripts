@@ -224,6 +224,10 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
         story_gen_params.layout_mode = current_gen_params.layout_mode
     end
 
+    if current_gen_params.keep_disconnected_tiles ~= nil then
+        story_gen_params.keep_disconnected_tiles = current_gen_params.keep_disconnected_tiles
+    end
+
     if current_gen_params.wormhole_prefab ~= nil then
         story_gen_params.wormhole_prefab = current_gen_params.wormhole_prefab
     end
@@ -513,16 +517,20 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
 	topology_save.root:GlobalPrePopulate(entities, map_width, map_height)
     topology_save.root:ConvertGround(SpawnFunctions, entities, map_width, map_height)
 
-    local replace_count = WorldSim:DetectDisconnect()
-    if replace_count >1000 then
-        print("PANIC: Too many disconnected tiles...",replace_count)
-        if SKIP_GEN_CHECKS == false then
-            return nil
-        end
-    else
-        print("disconnected tiles...",replace_count)
-    end
-
+	if not story_gen_params.keep_disconnected_tiles then
+	    local replace_count = WorldSim:DetectDisconnect()
+		if replace_count >1000 then
+			print("PANIC: Too many disconnected tiles...",replace_count)
+			if SKIP_GEN_CHECKS == false then
+				return nil
+			end
+		else
+			print("disconnected tiles...",replace_count)
+		end
+	else
+		print("Not checking for disconnected tiles.")
+	end
+	
     save.map.generated = {}
     save.map.generated.densities = {}
 
@@ -601,7 +609,8 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
 
     save.playerinfo = {}
 	if (save.ents.spawnpoint_multiplayer == nil or #save.ents.spawnpoint_multiplayer == 0)
-        and (save.ents.multiplayer_portal == nil or #save.ents.multiplayer_portal == 0) then
+        and (save.ents.multiplayer_portal == nil or #save.ents.multiplayer_portal == 0)
+        and (save.ents.lavaarena_portal == nil or #save.ents.lavaarena_portal == 0) then
     	print("PANIC: No start location!")
     	if SKIP_GEN_CHECKS == false then
     		return nil

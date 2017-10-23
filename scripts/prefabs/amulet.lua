@@ -18,7 +18,14 @@ local function healowner(inst, owner)
 end
 
 local function onequip_red(inst, owner)
-    owner.AnimState:OverrideSymbol("swap_body", "torso_amulets", "redamulet")
+    local skin_build = inst:GetSkinBuild()
+    if skin_build ~= nil then
+        owner:PushEvent("equipskinneditem", inst:GetSkinName())
+        owner.AnimState:OverrideItemSkinSymbol("swap_body", skin_build, "swap_body", inst.GUID, "torso_amulets")
+    else
+		owner.AnimState:OverrideSymbol("swap_body", "torso_amulets", "redamulet")
+    end
+    
     inst.task = inst:DoPeriodicTask(30, healowner, nil, owner)
 end
 
@@ -26,6 +33,12 @@ local function onunequip_red(inst, owner)
     if owner.sg == nil or owner.sg.currentstate.name ~= "amulet_rebirth" then
         owner.AnimState:ClearOverrideSymbol("swap_body")
     end
+    
+    local skin_build = inst:GetSkinBuild()
+    if skin_build ~= nil then
+        owner:PushEvent("unequipskinneditem", inst:GetSkinName())
+    end
+    
     if inst.task ~= nil then
         inst.task:Cancel()
         inst.task = nil

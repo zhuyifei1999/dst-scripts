@@ -13,4 +13,6 @@ return CreatePrefabSkin("flowerhat_ribbon_wreath",
 	build_name = "flowerhat_ribbon_wreath",
 	rarity = "Spiffy",
 	init_fn = function(inst) flowerhat_init_fn(inst, "flowerhat_ribbon_wreath") end,
+	marketable = true,
+	release_group = 22,
 })

@@ -17,4 +17,6 @@ return CreatePrefabSkin("wolfgang_survivor",
 	rarity = "Elegant",
 	skins = { ghost_skin = "ghost_wolfgang_build", mighty_skin = "wolfgang_mighty_survivor", normal_skin = "wolfgang_survivor", wimpy_skin = "wolfgang_skinny_survivor", },
 	torso_tuck_builds = { "wolfgang_survivor", "wolfgang_skinny_survivor", "wolfgang_mighty_survivor", },
+	marketable = true,
+	release_group = 4,
 })

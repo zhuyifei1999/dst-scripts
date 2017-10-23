@@ -13,4 +13,6 @@ return CreatePrefabSkin("glomling_beardeddragon",
 	build_name = "glomling_beardeddragon",
 	rarity = "Elegant",
 	init_fn = function(inst) pet_init_fn(inst, "glomling_beardeddragon", "glomling_build" ) end,
+	marketable = true,
+	release_group = 17,
 })

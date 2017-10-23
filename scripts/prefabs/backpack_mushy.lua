@@ -14,4 +14,5 @@ return CreatePrefabSkin("backpack_mushy",
 	build_name = "swap_backpack_mushy",
 	rarity = "Common",
 	init_fn = function(inst) backpack_init_fn(inst, "swap_backpack_mushy") end,
+	release_group = 0,
 })

@@ -110,6 +110,10 @@ return {
         {
             EMPTY = "I need some things to wrap first, eh?",
         },
+        PICKUP =
+        {
+			RESTRICTION = "I ain't too keen on that, eh?",
+        },
 	},
 	ACTIONFAIL_GENERIC = "Sorry, I can't do that.",
 	ANNOUNCE_DIG_DISEASE_WARNING = "Fixed'r right up.",
@@ -236,6 +240,12 @@ return {
 	ANNOUNCE_RESEARCH = "Learnin' keeps your mind sharp. Like an axe.",
 	ANNOUNCE_UNIMPLEMENTED = "Ouch! That wasn't very polite.",
 	ANNOUNCE_WORMS = "Oh geez. I hope you're ready, Lucy.",
+
+--boarlord event
+	ANNOUNCE_REVIVING_CORPSE = "You fell like a tree, eh?",
+	ANNOUNCE_REVIVED_OTHER_CORPSE = "There we go.",
+	ANNOUNCE_REVIVED_FROM_CORPSE = "Lucy'll never let me live that down.",
+	
 	BATTLECRY =
 	{
 		GENERIC = "Get over here, eh!",
@@ -2036,6 +2046,54 @@ return {
         ORANGEMOONEYE = "Makes the hairs on the back of my neck stand up.",
         YELLOWMOONEYE = "It's rude to stare.",
         BLUEMOONEYE = "It sees all with the cold sight of the North.",
+
+        --Arena Event
+        LAVAARENA_BOARLORD = "He seems confused, eh?",
+        BOARRIOR = "Tough guy, eh?",
+        BOARON = "I feel bad beatin' up such a little thing.",
+        PEGHOOK = "That poison'd be a problem, eh?",
+        TRAILS = "Mighty powerful right hook on that hoser.",
+        TURTILLUS = "Gotta keep that one from hiding, eh?",
+        SNAPPER = "Keep them chompers to yourself.",
+        
+        LAVAARENA_PORTAL = 
+        {
+            ON = "Let's head back to camp, Lucy.",
+            GENERIC = "Don't trust that as far as I can throw it.",
+        },
+        LAVAARENA_KEYHOLE = "Needs another piece.",
+		LAVAARENA_KEYHOLE_FULL = "Looks good.",
+        LAVAARENA_BATTLESTANDARD = "Let's chop that Battle Standard!",
+        LAVAARENA_SPAWNER = "Better keep an eye on that.",
+
+        HEALINGSTAFF = "Someone else'd put that to better use.",
+        FIREBALLSTAFF = "I'll leave it to someone more magic-inclined.",
+        HAMMER_MJOLNIR = "Packs a wallop.",
+        SPEAR_GUNGNIR = "I could give it a whirl.",
+        BLOWDART_LAVA = "I'm not much of a shot.",
+        BLOWDART_LAVA2 = "Someone else'll make better use of it.",
+        LAVAARENA_LUCY = "Something's different aboot you, Lucy.",
+        WEBBER_SPIDER_MINION = "Better small spiders than big, I suppose.",
+        BOOK_FOSSIL = "I'm leaving that to the experts.",
+		LAVAARENA_BERNIE = "Hey there little fella.",
+
+        LAVAARENA_ARMORLIGHT = "Won't do anyone much good.",
+		LAVAARENA_ARMORLIGHTSPEED = "Does nothing fast.",
+		LAVAARENA_ARMORMEDIUM = "Better wood armor than nothin'.",
+		LAVAARENA_ARMORMEDIUMDAMAGER = "Looks sharp, eh?",
+		LAVAARENA_ARMORMEDIUMRECHARGER = "Good for a little recharge.",
+		LAVAARENA_ARMORHEAVY = "Looks pretty safe, eh?",
+		LAVAARENA_ARMOREXTRAHEAVY = "No one'd push you around in that.",
+
+		LAVAARENA_FEATHERCROWNHAT = "I don't think agility is my thing, eh?",
+        LAVAARENA_HEALINGFLOWERHAT = "That flower'd look nice with my beard.",
+        LAVAARENA_LIGHTDAMAGERHAT = "I'd swing an axe a little harder with that.",
+        LAVAARENA_STRONGDAMAGERHAT = "I could do some real damage with that.",
+        LAVAARENA_TIARAFLOWERPETALSHAT = "I oughta leave that for someone else.",
+        LAVAARENA_EYECIRCLETHAT = "I don't see much use for that.",
+        LAVAARENA_RECHARGERHAT = "They're reinvigorating rocks.",
+        LAVAARENA_HEALINGGARLANDHAT = "That'll make ya quick on yer feet.",
+        LAVAARENA_CROWNDAMAGERHAT = "Get a loada that hat!",
 	},
 	DESCRIBE_GENERIC = "What's that, eh?",
 	DESCRIBE_TOODARK = "It's too dark, eh!",

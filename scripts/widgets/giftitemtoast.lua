@@ -101,13 +101,13 @@ function GiftItemToast:ToggleHUDFocus(focus)
     self:UpdateControllerHelp()
 end
 
-function GiftItemToast:ToggleController(show)
-    self.controller_hide = show
+function GiftItemToast:ToggleController(hide)
+    self.controller_hide = hide
     self:UpdateElements()
 end
 
-function GiftItemToast:ToggleCrafting(show)
-    self.craft_hide = show
+function GiftItemToast:ToggleCrafting(hide)
+    self.craft_hide = hide
     self:UpdateElements()
 end
 

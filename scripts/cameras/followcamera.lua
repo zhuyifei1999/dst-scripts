@@ -14,10 +14,13 @@ local FollowCamera = Class(function(self, inst)
     self.currentscreenxoffset = 0
     self.distance = 30
     self.screenoffsetstack = {}
+    self.updatelisteners = {}
     self:SetDefault()
     self:Snap()
     self.time_since_zoom = nil
     self.onupdatefn = dummyfn
+    
+    self.gamemode_defaultfn = GetGameModeProperty("cameraoverridefn")
 end)
 
 function FollowCamera:SetDefaultOffset()
@@ -58,6 +61,10 @@ function FollowCamera:SetDefault()
         self.maxdistpitch = 40
         self.distancetarget = 25
     end
+
+	if self.gamemode_defaultfn then
+		self.gamemode_defaultfn(self)
+	end
 
     if self.target ~= nil then
         self:SetTarget(self.target)
@@ -255,6 +262,7 @@ function FollowCamera:Snap()
     self.pitch = lerp(self.mindistpitch, self.maxdistpitch, (self.distance - self.mindist) / (self.maxdist - self.mindist))
 
     self:Apply()
+    self:UpdateListeners(0)
 end
 
 function FollowCamera:CutsceneMode(b)
@@ -350,10 +358,39 @@ function FollowCamera:Update(dt)
 
     self:onupdatefn(dt)
     self:Apply()
+    self:UpdateListeners(dt)
+end
+
+function FollowCamera:UpdateListeners(dt)
+    for src, cbs in pairs(self.updatelisteners) do
+        for _, fn in ipairs(cbs) do
+            fn(dt)
+        end
+    end
 end
 
 function FollowCamera:SetOnUpdateFn(fn)
     self.onupdatefn = fn or dummyfn
+end
+
+function FollowCamera:AddListener(src, cb)
+    if self.updatelisteners[src] ~= nil then
+        table.insert(self.updatelisteners[src], cb)
+    else
+        self.updatelisteners[src] = { cb }
+    end
+end
+
+function FollowCamera:RemoveListener(src, cb)
+    if self.updatelisteners[src] ~= nil then
+        if cb ~= nil then
+            table.removearrayvalue(self.updatelisteners[src], cb)
+            if #self.updatelisteners[src] > 0 then
+                return
+            end
+        end
+        self.updatelisteners[src] = nil
+    end
 end
 
 return FollowCamera

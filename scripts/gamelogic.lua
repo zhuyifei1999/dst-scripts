@@ -23,17 +23,14 @@ local DEBUG_MODE = BRANCH == "dev"
 local LOAD_UPFRONT_MODE = PLATFORM == "PS4"
 
 local MainScreen = nil
-local ModsScreen = nil
 if PLATFORM == "PS4" then
 	MainScreen = require "screens/mainscreen_ps4"
-	ModsScreen = require "screens/modsscreen"
 elseif not TheNet:IsDedicated() then
-	MainScreen = require "screens/mainscreen"
-	ModsScreen = require "screens/modsscreen"
+	MainScreen = require "screens/redux/mainscreen"
 end
 
 global_loading_widget = nil
-LoadingWidget = require "widgets/loadingwidget"
+LoadingWidget = require "widgets/redux/loadingwidget"
 global_loading_widget = LoadingWidget(Settings.load_screen_image)
 global_loading_widget:SetHAnchor(ANCHOR_LEFT)
 global_loading_widget:SetVAnchor(ANCHOR_BOTTOM)
@@ -267,6 +264,10 @@ local function PopulateWorld(savedata, profile)
     Print(VERBOSITY.DEBUG, "[Instantiating objects...]")
     if savedata ~= nil then
         local world = SpawnPrefab(savedata.map.prefab)
+        if DEBUG_MODE then
+            -- Common error in development when switching branches.
+            known_assert(world, "DEV_FAILED_TO_SPAWN_WORLD")
+        end
         world.worldprefab = savedata.map.prefab
         assert(TheWorld == world)
         assert(ThePlayer == nil)
@@ -513,7 +514,7 @@ local function ActivateWorld()
     if TheWorld ~= nil and not TheWorld.isdeactivated then
         SetPause(false)
         TheMixer:SetLevel("master", 1)
-        TheMixer:PushMix("normal")
+        TheMixer:PushMix(GetGameModeProperty("override_normal_mix") or "normal")
     end
 end
 
@@ -830,7 +831,8 @@ local function DoGenerateWorld(saveslot)
         profile_data = Profile.persistdata,
     }
 
-	TheFrontEnd:PushScreen(WorldGenScreen(Profile, onComplete, world_gen_data))
+    local hide_worldgen_screen = GetGameModeProperty("hide_worldgen_loading_screen") and (next(Settings.match_results) ~= nil)
+	TheFrontEnd:PushScreen(WorldGenScreen(Profile, onComplete, world_gen_data, hide_worldgen_screen))
 end
 
 local function LoadSlot(slot)

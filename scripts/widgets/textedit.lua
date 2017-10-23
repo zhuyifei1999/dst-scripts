@@ -38,6 +38,29 @@ local TextEdit = Class(Text, function(self, font, size, text, colour)
     self.conversions = {} --text character transformations, see OnTextInput
 end)
 
+function TextEdit:DebugDraw_AddSection(dbui, panel)
+    TextEdit._base.DebugDraw_AddSection(self, dbui, panel)
+
+    dbui.Spacing()
+    dbui.Text("TextEdit")
+    dbui.Indent() do
+        dbui.Checkbox("regionlimit",           self.regionlimit)
+        dbui.Checkbox("editing",               self.editing)
+        dbui.Checkbox("editing_enter_down",    self.editing_enter_down)
+        dbui.Checkbox("allow_newline",         self.allow_newline)
+        dbui.Checkbox("enable_accept_control", self.enable_accept_control)
+        dbui.Checkbox("force_edit",            self.force_edit)
+        dbui.Checkbox("pasting",               self.pasting)
+
+        dbui.ColorEdit4("idle_text_color", unpack(self.idle_text_color))
+        dbui.ColorEdit4("edit_text_color", unpack(self.edit_text_color))
+        dbui.ColorEdit4("idle_tint",       unpack(self.idle_tint))
+        dbui.ColorEdit4("hover_tint",      unpack(self.hover_tint))
+        dbui.ColorEdit4("selected_tint",   unpack(self.selected_tint))
+    end
+    dbui.Unindent()
+end
+
 function TextEdit:SetForceEdit(force)
     self.force_edit = force
 end

@@ -15,7 +15,7 @@ local Spinner = require "widgets/spinner"
 -- eg
 -- table.insert(skin_options,  
 --			{
---				text = text_name or STRINGS.SKIN_NAMES["missing"], 
+--				text = text_name, 
 --				data = nil,
 --				build = build_name,
 --				item = item_type,

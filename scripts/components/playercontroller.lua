@@ -9,6 +9,16 @@ local function OnPlayerDeactivated(inst)
     inst.components.playercontroller:Deactivate()
 end
 
+local function HasItemSlots(self)
+    return self._hasitemslots
+end
+
+local function CacheHasItemSlots(self)
+    self.HasItemSlots = HasItemSlots
+    self._hasitemslots = self.inst.replica.inventory:GetNumSlots() > 0
+    return self._hasitemslots
+end
+
 local PlayerController = Class(function(self, inst)
     self.inst = inst
 
@@ -16,6 +26,7 @@ local PlayerController = Class(function(self, inst)
     self.map = TheWorld.Map
     self.ismastersim = TheWorld.ismastersim
     self.locomotor = self.inst.components.locomotor
+    self.HasItemSlots = CacheHasItemSlots
 
     --attack control variables
     self.attack_buffer = nil
@@ -112,10 +123,15 @@ local function OnEquip(inst, data)
         local self = inst.components.playercontroller
         if self.reticule ~= nil then
             self.reticule:DestroyReticule()
+            self.reticule = nil
         end
-        self.reticule = data.item.components.reticule
-        if self.reticule ~= nil and self.reticule.reticule == nil and TheInput:ControllerAttached() then
-            self.reticule:CreateReticule()
+        if data.item.components.aoetargeting ~= nil then
+            data.item.components.aoetargeting:StopTargeting()
+        else
+            self.reticule = data.item.components.reticule
+            if self.reticule ~= nil and self.reticule.reticule == nil and (self.reticule.mouseenabled or TheInput:ControllerAttached()) then
+                self.reticule:CreateReticule()
+            end
         end
     end
 end
@@ -171,14 +187,7 @@ function PlayerController:Activate()
         self.predictionsent = false
         self.isclientcontrollerattached = false
 
-        local item = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-        if self.reticule ~= nil then
-            self.reticule:DestroyReticule()
-        end
-        self.reticule = item ~= nil and item.components.reticule or nil
-        if self.reticule ~= nil and self.reticule.reticule == nil and TheInput:ControllerAttached() then
-            self.reticule:CreateReticule()
-        end
+        self:RefreshReticule()
 
         self.inst:ListenForEvent("buildstructure", OnBuild)
         self.inst:ListenForEvent("equip", OnEquip)
@@ -250,23 +259,13 @@ end
 function PlayerController:ToggleController(val)
     if self.isclientcontrollerattached ~= val then
         self.isclientcontrollerattached = val
+        if self.handler ~= nil then
+            self:RefreshReticule()
+        end
         if not self.ismastersim then
             SendRPCToServer(RPC.ToggleController, val)
         elseif val and self.inst.components.inventory ~= nil then
             self.inst.components.inventory:ReturnActiveItem()
-        end
-        if self.handler ~= nil then
-            if self.reticule ~= nil then
-                self.reticule:DestroyReticule()
-                self.reticule = nil
-            end
-            if val then
-                local item = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-                self.reticule = item ~= nil and item.components.reticule or nil
-                if self.reticule ~= nil and self.reticule.reticule == nil then
-                    self.reticule:CreateReticule()
-                end
-            end
         end
     end
 end
@@ -511,6 +510,14 @@ function PlayerController:DoControllerActionButton()
                 act.distance = 1
             end
         end
+    elseif self:IsAOETargeting() then
+        obj, act = self:GetGroundUseAction()
+        if act == nil or act.action ~= ACTIONS.CASTAOE then
+            return
+        end
+        obj = nil --meh.. reusing obj =P
+        self.reticule:PingReticuleAt(act.pos)
+        self:CancelAOETargeting()
     else
         obj = self:GetControllerTarget()
         if obj ~= nil then
@@ -520,7 +527,9 @@ function PlayerController:DoControllerActionButton()
 
     if act == nil then
         return
-    elseif self.ismastersim then
+    end
+
+    if self.ismastersim then
         self.inst.components.combat:SetTarget(nil)
     elseif self.deployplacer ~= nil then
         if self.locomotor == nil then
@@ -531,6 +540,17 @@ function PlayerController:DoControllerActionButton()
                 self.remote_controls[CONTROL_CONTROLLER_ACTION] = 0
                 local isreleased = not TheInput:IsControlPressed(CONTROL_CONTROLLER_ACTION)
                 SendRPCToServer(RPC.ControllerActionButtonDeploy, obj, act.pos.x, act.pos.z, act.rotation ~= 0 and act.rotation or nil, isreleased)
+            end
+        end
+    elseif obj == nil then
+        if self.locomotor == nil then
+            self.remote_controls[CONTROL_CONTROLLER_ACTION] = 0
+            SendRPCToServer(RPC.ControllerActionButtonPoint, act.action.code, act.pos.x, act.pos.z, nil, act.action.canforce, act.action.mod_name)
+        elseif self:CanLocomote() then
+            act.preview_cb = function()
+                self.remote_controls[CONTROL_CONTROLLER_ACTION] = 0
+                local isreleased = not TheInput:IsControlPressed(CONTROL_CONTROLLER_ACTION)
+                SendRPCToServer(RPC.ControllerActionButtonPoint, act.action.code, act.pos.x, act.pos.z, isreleased, nil, act.action.mod_name)
             end
         end
     elseif self.locomotor == nil then
@@ -583,6 +603,42 @@ function PlayerController:OnRemoteControllerActionButton(actioncode, target, isr
     end
 end
 
+function PlayerController:OnRemoteControllerActionButtonPoint(actioncode, position, isreleased, noforce, mod_name)
+    if self.ismastersim and self:IsEnabled() and self.handler == nil then
+        self.inst.components.combat:SetTarget(nil)
+
+        self.remote_controls[CONTROL_CONTROLLER_ACTION] = 0
+        self:ClearControlMods()
+        local lmb, rmb = self:GetGroundUseAction(position)
+        if isreleased then
+            self.remote_controls[CONTROL_CONTROLLER_ACTION] = nil
+        end
+
+        --Possible for lmb action to switch to rmb after autoequip
+        lmb =  (lmb ~= nil and
+                lmb.action.code == actioncode and
+                lmb.action.mod_name == mod_name and
+                lmb)
+            or (rmb ~= nil and
+                rmb.action.code == actioncode and
+                rmb.action.mod_name == mod_name and
+                rmb)
+            or nil
+
+        if lmb ~= nil then
+            if lmb.action.canforce and not noforce then
+                lmb.pos = self:GetRemotePredictPosition() or self.inst:GetPosition()
+                lmb.forced = true
+            end
+            self:DoAction(lmb)
+        --elseif mod_name ~= nil then
+            --print("Remote controller action button action failed: "..tostring(ACTION_MOD_IDS[mod_name][actioncode]))
+        --else
+            --print("Remote controller action button action failed: "..tostring(ACTION_IDS[actioncode]))
+        end
+    end
+end
+
 function PlayerController:OnRemoteControllerActionButtonDeploy(invobject, position, rotation, isreleased)
     if self.ismastersim and self:IsEnabled() and self.handler == nil then
         self.inst.components.combat:SetTarget(nil)
@@ -602,10 +658,11 @@ function PlayerController:DoControllerAltActionButton()
     if self.placer_recipe ~= nil then
         self:CancelPlacement()
         return
-    end
-
-    if self.deployplacer ~= nil then
+    elseif self.deployplacer ~= nil then
         self:CancelDeployPlacement()
+        return
+    elseif self:IsAOETargeting() then
+        self:CancelAOETargeting()
         return
     end
 
@@ -621,13 +678,18 @@ function PlayerController:DoControllerAltActionButton()
             if rider ~= nil and rider:IsRiding() then
                 obj = self.inst
                 act = BufferedAction(obj, obj, ACTIONS.DISMOUNT)
+            else
+                self:TryAOETargeting()
+                return
             end
         end
     end
 
-    if act == nil then
-        return
-    elseif self.ismastersim then
+    if self.reticule ~= nil and self.reticule.reticule ~= nil then
+        self.reticule:PingReticuleAt(act.pos)
+    end
+
+    if self.ismastersim then
         self.inst.components.combat:SetTarget(nil)
     elseif obj ~= nil then
         if self.locomotor == nil then
@@ -729,7 +791,9 @@ function PlayerController:OnRemoteControllerAltActionButtonPoint(actioncode, pos
 end
 
 function PlayerController:DoControllerAttackButton(target)
-    if target ~= nil then
+    if target == nil and self:IsAOETargeting() then
+        return
+    elseif target ~= nil then
         --Don't want to spam the controller attack button when retargetting
         if not self.ismastersim and (self.remote_controls[CONTROL_CONTROLLER_ATTACK] or 0) > 0 then
             return
@@ -769,7 +833,8 @@ function PlayerController:DoControllerAttackButton(target)
         if target == nil and (
             self.directwalking or
             self.inst:HasTag("playerghost") or
-            self.inst.replica.inventory:IsHeavyLifting()
+            self.inst.replica.inventory:IsHeavyLifting() or
+            GetGameModeProperty("no_air_attack")
         ) then
             --Except for player ghosts!
             return
@@ -933,6 +998,62 @@ function PlayerController:StartBuildPlacementMode(recipe, skin)
     end
 end
 
+function PlayerController:GetAOETargetingPos()
+    return self.reticule ~= nil and self.reticule.targetpos or nil
+end
+
+function PlayerController:IsAOETargeting()
+    return self.reticule ~= nil and self.reticule.inst.components.aoetargeting ~= nil
+end
+
+function PlayerController:HasAOETargeting()
+    local item = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+    return item ~= nil
+        and item.components.aoetargeting ~= nil
+        and item.components.aoetargeting:IsEnabled()
+        and not (self.inst.replica.rider ~= nil and self.inst.replica.rider:IsRiding())
+end
+
+function PlayerController:TryAOETargeting()
+    local item = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+    if item ~= nil and
+        item.components.aoetargeting ~= nil and
+        item.components.aoetargeting:IsEnabled() and
+        not self:IsBusy() and
+        not (self.inst.replica.rider ~= nil and self.inst.replica.rider:IsRiding()) then
+        item.components.aoetargeting:StartTargeting()
+    end
+end
+
+function PlayerController:CancelAOETargeting()
+    if self.reticule ~= nil and self.reticule.inst.components.aoetargeting ~= nil then
+        self.reticule.inst.components.aoetargeting:StopTargeting()
+    end
+end
+
+function PlayerController:EchoReticuleAt(x, y, z)
+    local reticule = SpawnPrefab(self.reticule.reticuleprefab)
+    if reticule ~= nil then
+        reticule.Transform:SetPosition(x, 0, z)
+        if reticule.Flash ~= nil then
+            reticule:Flash()
+        else
+            reticule:DoTaskInTime(1, reticule.Remove)
+        end
+    end
+end
+
+function PlayerController:RefreshReticule()
+    local item = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+    if self.reticule ~= nil then
+        self.reticule:DestroyReticule()
+    end
+    self.reticule = item ~= nil and item.components.reticule or nil
+    if self.reticule ~= nil and self.reticule.reticule == nil and (self.reticule.mouseenabled or TheInput:ControllerAttached()) then
+        self.reticule:CreateReticule()
+    end
+end
+
 local function ValidateAttackTarget(combat, target, force_attack, x, z, has_weapon, reach)
     if not combat:CanTarget(target) then
         return false
@@ -966,7 +1087,7 @@ local function ValidateAttackTarget(combat, target, force_attack, x, z, has_weap
 
     --Now we ensure the target is in range
     --light/extinguish targets may not have physics
-    reach = target.Physics ~= nil and reach + target.Physics:GetRadius() or reach
+    reach = reach + target:GetPhysicsRadius(0)
     return target:GetDistanceSqToPoint(x, 0, z) <= reach * reach
 end
 
@@ -1017,7 +1138,7 @@ function PlayerController:GetAttackTarget(force_attack, force_target, isretarget
         end
     end
 
-    local reach = self.inst.Physics:GetRadius() + rad + 0.1
+    local reach = self.inst:GetPhysicsRadius(0) + rad + .1
 
     if force_target ~= nil then
         return ValidateAttackTarget(combat, force_target, force_attack, x, z, has_weapon, reach) and force_target or nil
@@ -1034,10 +1155,7 @@ function PlayerController:GetAttackTarget(force_attack, force_target, isretarget
         if ValidateAttackTarget(combat, v, force_attack, x, z, has_weapon, reach) and
             CanEntitySeeTarget(self.inst, v) then
             local dsq = self.inst:GetDistanceSqToInst(v)
-            local dist =
-                (dsq <= 0 and 0) or
-                (v.Physics ~= nil and math.max(0, math.sqrt(dsq) - v.Physics:GetRadius())) or
-                math.sqrt(dsq)
+            local dist = dsq <= 0 and 0 or math.max(0, math.sqrt(dsq) - v:GetPhysicsRadius(0))
             if not isretarget and combat:IsRecentTarget(v) then
                 if dist < attackrange + .1 then
                     return v
@@ -1056,6 +1174,10 @@ function PlayerController:GetAttackTarget(force_attack, force_target, isretarget
 end
 
 function PlayerController:DoAttackButton(retarget)
+    if retarget == nil and self:IsAOETargeting() then
+        return
+    end
+
     local force_attack = TheInput:IsControlPressed(CONTROL_FORCE_ATTACK)
     local target = self:GetAttackTarget(force_attack, retarget, retarget ~= nil)
 
@@ -1130,7 +1252,12 @@ local function ValidateUnsaddler(target)
     return not target.replica.health:IsDead()
 end
 
-local function GetPickupAction(inst, target, tool)
+local function ValidateCorpseReviver(target, inst)
+    --V2C: revivablecorpse is on clients as well
+    return target.components.revivablecorpse:CanBeRevivedBy(inst)
+end
+
+local function GetPickupAction(self, target, tool)
     if target:HasTag("smolder") then
         return ACTIONS.SMOTHER
     elseif tool ~= nil then
@@ -1148,11 +1275,11 @@ local function GetPickupAction(inst, target, tool)
     elseif target:HasTag("minesprung") then
         return ACTIONS.RESETMINE
     elseif target:HasTag("inactive") then
-        return (not target:HasTag("wall") or inst:IsNear(target, 2.5)) and ACTIONS.ACTIVATE or nil
+        return (not target:HasTag("wall") or self.inst:IsNear(target, 2.5)) and ACTIONS.ACTIVATE or nil
     elseif target.replica.inventoryitem ~= nil and
         target.replica.inventoryitem:CanBePickedUp() and
         not (target:HasTag("heavy") or target:HasTag("fire") or target:HasTag("catchable")) then
-        return ACTIONS.PICKUP
+        return (self:HasItemSlots() or target.replica.equippable ~= nil) and ACTIONS.PICKUP or nil
     elseif target:HasTag("pickable") and not target:HasTag("fire") then
         return ACTIONS.PICK
     elseif target:HasTag("harvestable") then
@@ -1168,6 +1295,8 @@ local function GetPickupAction(inst, target, tool)
         return ACTIONS.UNSADDLE
     elseif tool ~= nil and tool:HasTag("brush") and target:HasTag("brushable") and (not target.replica.health or not target.replica.health:IsDead()) then
         return ACTIONS.BRUSH
+    elseif self.inst.components.revivablecorpse ~= nil and target:HasTag("corpse") and ValidateCorpseReviver(target, self.inst) then
+        return ACTIONS.REVIVE_CORPSE
     end
     --no action found
 end
@@ -1274,6 +1403,20 @@ function PlayerController:GetActionButtonAction(force_target)
             return BufferedAction(self.inst, force_target, ACTIONS.UNPIN)
         end
 
+        --revive (only need to do this if i am also revivable)
+        if self.inst.components.revivablecorpse ~= nil then
+            if force_target == nil then
+                local target = FindEntity(self.inst, 3, ValidateCorpseReviver, { "corpse" }, TARGET_EXCLUDE_TAGS)
+                if CanEntitySeeTarget(self.inst, target) then
+                    return BufferedAction(self.inst, target, ACTIONS.REVIVE_CORPSE)
+                end
+            elseif force_target_distsq <= 9
+                and force_target:HasTag("corpse")
+                and ValidateCorpseReviver(force_target, self.inst) then
+                return BufferedAction(self.inst, force_target, ACTIONS.REVIVE_CORPSE)
+            end
+        end
+
         --misc: pickup, tool work, smother
         if force_target == nil then
             local pickup_tags =
@@ -1299,18 +1442,21 @@ function PlayerController:GetActionButtonAction(force_target)
                     end
                 end
             end
+            if self.inst.components.revivablecorpse ~= nil then
+                table.insert(pickup_tags, "corpse")
+            end
             local x, y, z = self.inst.Transform:GetWorldPosition()
             local ents = TheSim:FindEntities(x, y, z, self.directwalking and 3 or 6, nil, PICKUP_TARGET_EXCLUDE_TAGS, pickup_tags)
             for i, v in ipairs(ents) do
                 if v ~= self.inst and v.entity:IsVisible() and CanEntitySeeTarget(self.inst, v) then
-                    local action = GetPickupAction(self.inst, v, tool)
+                    local action = GetPickupAction(self, v, tool)
                     if action ~= nil then
                         return BufferedAction(self.inst, v, action, action ~= ACTIONS.SMOTHER and tool or nil)
                     end
                 end
             end
         elseif force_target_distsq <= (self.directwalking and 9 or 36) then
-            local action = GetPickupAction(self.inst, force_target, tool)
+            local action = GetPickupAction(self, force_target, tool)
             if action ~= nil then
                 return BufferedAction(self.inst, force_target, action, action ~= ACTIONS.SMOTHER and tool or nil)
             end
@@ -1319,7 +1465,9 @@ function PlayerController:GetActionButtonAction(force_target)
 end
 
 function PlayerController:DoActionButton()
-    if self.placer == nil then
+    if self:IsAOETargeting() then
+        return
+    elseif self.placer == nil then
         local buffaction = self:GetActionButtonAction()
         if buffaction ~= nil then
             if self.ismastersim then
@@ -1524,6 +1672,7 @@ function PlayerController:OnUpdate(dt)
         if self.handler ~= nil then
             self:CancelPlacement(true)
             self:CancelDeployPlacement()
+            self:CancelAOETargeting()
 
             if self.reticule ~= nil and self.reticule.reticule ~= nil then
                 self.reticule.reticule:Hide()
@@ -1652,7 +1801,7 @@ function PlayerController:OnUpdate(dt)
 
         self:DoCameraControl()
 
-        if not controller_mode and self.reticule ~= nil then
+        if self.reticule ~= nil and not (controller_mode or self.reticule.mouseenabled) then
             self.reticule:DestroyReticule()
             self.reticule = nil
         end
@@ -2014,6 +2163,10 @@ local function UpdateControllerInteractionTarget(self, dt, x, y, z, dirx, dirz)
         end
     end
 
+    --Fishing targets may have large radius, making it hard to target with normal priority
+    local fishing = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+    fishing = fishing ~= nil and fishing:HasTag("fishingrod")
+
     local min_rad = 1.5
     local max_rad = 6
     local min_rad_sq = min_rad * min_rad
@@ -2022,8 +2175,9 @@ local function UpdateControllerInteractionTarget(self, dt, x, y, z, dirx, dirz)
             self.controller_target ~= nil and
             math.max(min_rad, math.min(max_rad, math.sqrt(self.inst:GetDistanceSqToInst(self.controller_target)))) or
             max_rad
+    local rad_sq = rad * rad + .1 --allow small error
 
-    local nearby_ents = TheSim:FindEntities(x, y, z, rad, nil, TARGET_EXCLUDE_TAGS)
+    local nearby_ents = TheSim:FindEntities(x, y, z, fishing and max_rad or rad, nil, TARGET_EXCLUDE_TAGS)
     if self.controller_target ~= nil then
         --Note: it may already contain controller_target,
         --      so make sure to handle it only once later
@@ -2042,8 +2196,15 @@ local function UpdateControllerInteractionTarget(self, dt, x, y, z, dirx, dirz)
             local dx, dy, dz = x1 - x, y1 - y, z1 - z
             local dsq = dx * dx + dy * dy + dz * dz
 
+            if fishing and v:HasTag("fishable") then
+                local r = v:GetPhysicsRadius(0)
+                if dsq <= r * r then
+                    dsq = 0
+                end
+            end
+
             if (dsq < min_rad_sq
-                or (dsq <= max_rad_sq
+                or (dsq <= rad_sq
                     and (v == self.controller_target or
                         v == self.controller_attack_target or
                         dx * dirx + dz * dirz > 0))) and
@@ -2109,6 +2270,13 @@ local function UpdateControllerInteractionTarget(self, dt, x, y, z, dirx, dirz)
 end
 
 function PlayerController:UpdateControllerTargets(dt)
+    if self:IsAOETargeting() then
+        self.controller_target = nil
+        self.controller_target_age = 0
+        self.controller_attack_target = nil
+        self.controller_attack_target_ally_cd = nil
+        return
+    end
     local x, y, z = self.inst.Transform:GetWorldPosition()
     local heading_angle = -self.inst.Transform:GetRotation()
     local dirx = math.cos(heading_angle * DEGREES)
@@ -2543,9 +2711,7 @@ function PlayerController:OnLeftClick(down)
     elseif TheInput:GetHUDEntityUnderMouse() ~= nil then 
         self:CancelPlacement()
         return
-    end
-
-    if self.placer_recipe ~= nil and self.placer ~= nil then
+    elseif self.placer_recipe ~= nil and self.placer ~= nil then
         --do the placement
         if self.placer.components.placer.can_build and
             self.inst.replica.builder ~= nil and
@@ -2556,17 +2722,28 @@ function PlayerController:OnLeftClick(down)
         return
     end
 
-    local act = self:GetLeftMouseAction() or BufferedAction(self.inst, nil, ACTIONS.WALKTO, nil, TheInput:GetWorldPosition())
+    local act = nil
+    if self:IsAOETargeting() then
+        act = self:GetRightMouseAction()
+        if act == nil or act.action ~= ACTIONS.CASTAOE then
+            return
+        end
+        self.reticule:PingReticuleAt(act.pos)
+        self:CancelAOETargeting()
+    elseif act == nil then
+        act = self:GetLeftMouseAction() or BufferedAction(self.inst, nil, ACTIONS.WALKTO, nil, TheInput:GetWorldPosition())
+    end
+
     if act.action == ACTIONS.WALKTO then
         if act.target == nil and TheInput:GetWorldEntityUnderMouse() == nil then
             self.startdragtime = GetTime()
         end
     elseif act.action == ACTIONS.ATTACK then
         if self.inst.sg ~= nil then
-            if self.inst.sg:HasStateTag("attack") then
+            if self.inst.sg:HasStateTag("attack") and act.target == self.inst.replica.combat:GetTarget() then
                 return
             end
-        elseif self.inst:HasTag("attack") then
+        elseif self.inst:HasTag("attack") and act.target == self.inst.replica.combat:GetTarget() then
             return
         end
     elseif act.action == ACTIONS.LOOKAT
@@ -2584,8 +2761,13 @@ function PlayerController:OnLeftClick(down)
     if self.ismastersim then
         self.inst.components.combat:SetTarget(nil)
     else
-        local position = TheInput:GetWorldPosition()
-        local mouseover = act.action ~= ACTIONS.DROP and TheInput:GetWorldEntityUnderMouse() or nil
+        local position, mouseover
+        if act.action == ACTIONS.CASTAOE then
+            position = act.pos
+        else
+            position = TheInput:GetWorldPosition()
+            mouseover = act.action ~= ACTIONS.DROP and TheInput:GetWorldEntityUnderMouse() or nil
+        end
         local controlmods = self:EncodeControlMods()
         if self.locomotor == nil then
             self.remote_controls[CONTROL_PRIMARY] = 0
@@ -2659,16 +2841,21 @@ function PlayerController:OnRightClick(down)
     if self.placer_recipe ~= nil then
         self:CancelPlacement()
         return
-    end
-
-    if not self:IsEnabled() or TheInput:GetHUDEntityUnderMouse() ~= nil then
+    elseif self:IsAOETargeting() then
+        self:CancelAOETargeting()
+        return
+    elseif not self:IsEnabled() or TheInput:GetHUDEntityUnderMouse() ~= nil then
         return
     end
 
     local act = self:GetRightMouseAction()
     if act == nil then
         self.inst.replica.inventory:ReturnActiveItem()
+        self:TryAOETargeting()
     else
+        if self.reticule ~= nil and self.reticule.reticule ~= nil then
+            self.reticule:PingReticuleAt(act.pos)
+        end
         if self.deployplacer ~= nil and act.action == ACTIONS.DEPLOY then
             act.rotation = self.deployplacer.Transform:GetRotation()
         end
@@ -2735,7 +2922,7 @@ function PlayerController:GetItemSelfAction(item)
 end
 
 function PlayerController:GetSceneItemControllerAction(item)
-    if item == nil then
+    if item == nil or self:IsAOETargeting() then
         return
     end
     local itempos = item:GetPosition()
@@ -2757,6 +2944,7 @@ function PlayerController:GetSceneItemControllerAction(item)
 end
 
 function PlayerController:GetGroundUseAction(position)
+    local islocal = position == nil
     position = position or
         (self.reticule ~= nil and self.reticule.targetpos) or
         (self.terraformer ~= nil and self.terraformer:GetPosition()) or
@@ -2764,12 +2952,18 @@ function PlayerController:GetGroundUseAction(position)
         (self.deployplacer ~= nil and self.deployplacer:GetPosition()) or
         self.inst:GetPosition()
 
-    if self.map:IsPassableAtPoint(position:Get()) and CanEntitySeePoint(self.inst, position:Get()) then
+    if CanEntitySeePoint(self.inst, position:Get()) then
         --Check validitiy because FE controls may call this in WallUpdate
         local equipitem = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-        if equipitem ~= nil and equipitem:IsValid() then
-            local lmb = self.inst.components.playeractionpicker:GetPointActions(position, equipitem, false)[1]
-            local rmb = self.inst.components.playeractionpicker:GetPointActions(position, equipitem, true)[1]
+        if equipitem ~= nil and equipitem:IsValid() and
+            (   equipitem.components.aoetargeting ~= nil and
+                equipitem.components.aoetargeting.alwaysvalid and
+                equipitem.components.aoetargeting:IsEnabled() or
+                self.map:IsPassableAtPoint(position:Get())
+            ) then
+            local isaoetargeting = islocal and self:IsAOETargeting()
+            local lmb = not isaoetargeting and self.inst.components.playeractionpicker:GetPointActions(position, equipitem, false)[1] or nil
+            local rmb = (not islocal or isaoetargeting or equipitem.components.aoetargeting == nil or not equipitem.components.aoetargeting:IsEnabled()) and self.inst.components.playeractionpicker:GetPointActions(position, equipitem, true)[1] or nil
             if lmb ~= nil then
                 if lmb.action == ACTIONS.DROP then
                     lmb = nil

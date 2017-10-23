@@ -7,13 +7,13 @@ local assets =
 }
 
 local function onequip(inst, owner)
-	local skin_build = inst:GetSkinBuild()
-	if skin_build ~= nil then
-		owner:PushEvent("equipskinneditem", inst:GetSkinName())
-		owner.AnimState:OverrideItemSkinSymbol("swap_object", skin_build, "swap_axe", inst.GUID, "swap_axe" )
-	else
-		owner.AnimState:OverrideSymbol("swap_object", "swap_axe", "swap_axe")
-	end
+    local skin_build = inst:GetSkinBuild()
+    if skin_build ~= nil then
+        owner:PushEvent("equipskinneditem", inst:GetSkinName())
+        owner.AnimState:OverrideItemSkinSymbol("swap_object", skin_build, "swap_axe", inst.GUID, "swap_axe")
+    else
+        owner.AnimState:OverrideSymbol("swap_object", "swap_axe", "swap_axe")
+    end
     owner.AnimState:Show("ARM_carry")
     owner.AnimState:Hide("ARM_normal")
 end
@@ -79,7 +79,7 @@ end
 
 local function onequipgold(inst, owner) 
     owner.AnimState:OverrideSymbol("swap_object", "swap_goldenaxe", "swap_goldenaxe")
-    owner.SoundEmitter:PlaySound("dontstarve/wilson/equip_item_gold")     
+    owner.SoundEmitter:PlaySound("dontstarve/wilson/equip_item_gold")
     owner.AnimState:Show("ARM_carry") 
     owner.AnimState:Hide("ARM_normal") 
 end
@@ -98,9 +98,9 @@ local function golden()
     inst.components.finiteuses:SetConsumption(ACTIONS.CHOP, 1 / TUNING.GOLDENTOOLFACTOR)
     inst.components.weapon.attackwear = 1 / TUNING.GOLDENTOOLFACTOR
     inst.components.equippable:SetOnEquip(onequipgold)
-    
+
     return inst
 end
 
 return Prefab("axe", normal, assets),
-        Prefab("goldenaxe", golden, assets)
+    Prefab("goldenaxe", golden, assets)

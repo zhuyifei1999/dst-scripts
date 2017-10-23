@@ -13,4 +13,5 @@ return CreatePrefabSkin("researchlab4_chester_costume",
 	build_name = "researchlab4_chester_costume",
 	rarity = "Elegant",
 	init_fn = function(inst) researchlab4_init_fn(inst, "researchlab4_chester_costume") end,
+	release_group = 26,
 })

@@ -9,7 +9,7 @@
     net_shortint            16-bit signed integer    [-32767..32767]
     net_ushortint           16-bit unsigned integer  [0..65535]
     net_int                 32-bit signed integer    [-2147483647..2147483647]
-    net_uint                32-bit unsigned integer  [0..4294967296]
+    net_uint                32-bit unsigned integer  [0..4294967295]
     net_float               32-bit float
     net_hash                32-bit hash of the string assigned
     net_string              variable length string

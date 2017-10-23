@@ -17,4 +17,5 @@ return CreatePrefabSkin("wendy_none",
 	torso_untuck_wide_builds = { "wendy", },
 	has_alternate_for_body = { "wendy", },
 	has_alternate_for_skirt = { "wendy", },
+	release_group = 999,
 })

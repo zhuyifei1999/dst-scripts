@@ -16,4 +16,6 @@ return CreatePrefabSkin("woodie_formal",
 	build_name = "woodie_formal",
 	rarity = "Elegant",
 	skins = { ghost_skin = "ghost_woodie_build", ghost_werebeaver_skin = "ghost_werebeaver_build", normal_skin = "woodie_formal", werebeaver_skin = "werebeaver_build", },
+	marketable = true,
+	release_group = 2,
 })

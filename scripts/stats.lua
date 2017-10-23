@@ -132,6 +132,7 @@ local function BuildContextTable(player)
         end
     end
 
+	sendstats.special_event = TheNet:GetServerEvent() and TheNet:GetServerGameMode() or nil
 
     sendstats.user =
         (sendstats.user ~= nil and (sendstats.user.."@chester")) or
@@ -234,7 +235,12 @@ local function RecordGameStartStats()
 	local sendstats = BuildStartupContextTable()
     sendstats.event = "startup.gamestart"
     sendstats.startup = {}
-
+    
+	if PLATFORM == "WIN32_RAIL" then
+		sendstats.appdataWritable = TheSim:IsAppDataWritable()
+		sendstats.documentsWritable = TheSim:IsDocumentsWritable()
+	end
+	
 	--print("_________________++++++ Sending game start stats...\n")
 	--dumptable(sendstats)
 	local jsonstats = json.encode( sendstats )

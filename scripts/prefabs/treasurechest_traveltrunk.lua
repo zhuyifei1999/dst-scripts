@@ -13,4 +13,6 @@ return CreatePrefabSkin("treasurechest_traveltrunk",
 	build_name = "treasurechest_traveltrunk",
 	rarity = "Distinguished",
 	init_fn = function(inst) treasurechest_init_fn(inst, "treasurechest_traveltrunk") end,
+	marketable = true,
+	release_group = 19,
 })

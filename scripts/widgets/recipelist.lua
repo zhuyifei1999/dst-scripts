@@ -257,7 +257,7 @@ function RecipeList:BuildString(data)
  	local str = ""
 	if data.item_type ~= "" then
 		str = STRINGS.UI.TRADESCREEN.RECIPE_INGREDIENT_ITEM
-		str = string.gsub(str, "<item>",  GetName(data.item_type))
+		str = string.gsub(str, "<item>",  GetSkinName(data.item_type))
  		local colour = GetColourFromColourTag(ITEM_COLOURS[data.item_type])
 		str = string.gsub(str, "<colour>", STRINGS.UI.COLOUR[colour] .. " ")
 		show_icon = true

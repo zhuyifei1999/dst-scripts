@@ -2,11 +2,165 @@
 
 EMOTE_ITEMS =
 {
+	emote_dance_chicken =
+	{
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		cmd_name = "chicken",
+		type = "emote",
+		data =
+		{
+			item_type = "emote_dance_chicken",
+			requires_validation = true,
+			anim = { "emoteXL_pre_dance6", "emoteXL_loop_dance6", },
+			fx = false,
+			loop = true,
+			mounted = true,
+			tags = { "dancing", },
+		},
+		release_group = 32,
+	},
+	emote_dance_robot =
+	{
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		cmd_name = "robot",
+		type = "emote",
+		data =
+		{
+			item_type = "emote_dance_robot",
+			requires_validation = true,
+			anim = { "emoteXL_pre_dance8", "emoteXL_loop_dance8", },
+			fx = false,
+			loop = true,
+			mounted = true,
+			tags = { "dancing", },
+		},
+		release_group = 32,
+	},
+	emote_dance_step =
+	{
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		cmd_name = "step",
+		type = "emote",
+		data =
+		{
+			item_type = "emote_dance_step",
+			requires_validation = true,
+			anim = { "emoteXL_pre_dance7", "emoteXL_loop_dance7", },
+			fx = false,
+			loop = true,
+			mounted = true,
+			tags = { "dancing", },
+		},
+		release_group = 32,
+	},
+	emote_fistshake =
+	{
+		rarity = "Reward",
+		cmd_name = "fistshake",
+		type = "emote",
+		data =
+		{
+			item_type = "emote_fistshake",
+			requires_validation = true,
+			anim = "emote_fistshake",
+			fx = false,
+			loop = false,
+			mounted = true,
+		},
+		release_group = 32,
+	},
+	emote_flex =
+	{
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		cmd_name = "flex",
+		type = "emote",
+		data =
+		{
+			item_type = "emote_flex",
+			requires_validation = true,
+			anim = "emote_flex",
+			fx = false,
+			loop = false,
+			mounted = true,
+		},
+		release_group = 32,
+	},
+	emote_impatient =
+	{
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		cmd_name = "impatient",
+		type = "emote",
+		data =
+		{
+			item_type = "emote_impatient",
+			requires_validation = true,
+			anim = "emote_impatient",
+			fx = false,
+			loop = false,
+			mounted = true,
+		},
+		release_group = 32,
+	},
+	emote_jumpcheer =
+	{
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		cmd_name = "cheer",
+		type = "emote",
+		data =
+		{
+			item_type = "emote_jumpcheer",
+			requires_validation = true,
+			anim = "emote_jumpcheer",
+			fx = false,
+			loop = false,
+			mounted = true,
+		},
+		release_group = 32,
+	},
+	emote_laugh =
+	{
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		cmd_name = "laugh",
+		type = "emote",
+		data =
+		{
+			item_type = "emote_laugh",
+			requires_validation = true,
+			anim = "emote_laugh",
+			fx = false,
+			loop = false,
+			mounted = true,
+		},
+		release_group = 32,
+	},
+	emote_shrug =
+	{
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		cmd_name = "shrug",
+		type = "emote",
+		data =
+		{
+			item_type = "emote_shrug",
+			requires_validation = true,
+			anim = "emote_shrug",
+			fx = false,
+			loop = false,
+			mounted = true,
+		},
+		release_group = 32,
+	},
 	emote_sleepy =
 	{
 		rarity = "Reward",
 		cmd_name = "sleepy",
-		skin_build = "emote_sleepy",
 		type = "emote",
 		data =
 		{
@@ -25,12 +179,29 @@ EMOTE_ITEMS =
 		{
 			"eyerub",
 		},
+		release_group = 20,
+	},
+	emote_slowclap =
+	{
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		cmd_name = "slowclap",
+		type = "emote",
+		data =
+		{
+			item_type = "emote_slowclap",
+			requires_validation = true,
+			anim = "emote_slowclap",
+			fx = false,
+			loop = false,
+			mounted = true,
+		},
+		release_group = 32,
 	},
 	emote_swoon =
 	{
 		rarity = "Loyal",
 		cmd_name = "swoon",
-		skin_build = "emote_swoon",
 		type = "emote",
 		data =
 		{
@@ -42,12 +213,12 @@ EMOTE_ITEMS =
 			mounted = true,
 			mountsound = "curious",
 		},
+		release_group = 24,
 	},
 	emote_yawn =
 	{
 		rarity = "Reward",
 		cmd_name = "yawn",
-		skin_build = "emote_yawn",
 		type = "emote",
 		data =
 		{
@@ -62,6 +233,7 @@ EMOTE_ITEMS =
 			sounddelay = 0.5,
 			soundoverride = "yawn",
 		},
+		release_group = 20,
 	},
 }
 

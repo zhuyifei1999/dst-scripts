@@ -86,6 +86,7 @@ local _flashintensity = 1
 local _flashcolour = 0
 local _activatedplayer = nil --cached for activation/deactivation only, NOT for logic use
 local _nightvision = false -- This is whether or not the active player is wearing a mole hat
+local _overridefixedcolour = nil
 
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
@@ -123,20 +124,20 @@ local function PushCurrentColour()
 end
 
 local function ComputeTargetColour(targetsettings, timeoverride)
-    local col = _iscave and targetsettings.currentcolourset.CAVE_COLOUR
-                or _isfullmoon and targetsettings.currentcolourset.FULL_MOON_COLOUR
-                or targetsettings.currentcolourset.PHASE_COLOURS[_season] and targetsettings.currentcolourset.PHASE_COLOURS[_season][_phase]
-                or targetsettings.currentcolourset.PHASE_COLOURS.default[_phase]
+    local col = _overridefixedcolour
+        or (_iscave and targetsettings.currentcolourset.CAVE_COLOUR)
+        or (_isfullmoon and targetsettings.currentcolourset.FULL_MOON_COLOUR)
+        or (targetsettings.currentcolourset.PHASE_COLOURS[_season] and targetsettings.currentcolourset.PHASE_COLOURS[_season][_phase])
+        or targetsettings.currentcolourset.PHASE_COLOURS.default[_phase]
     if col == nil then
         return
     end
 
-    targetsettings.remainingtimeinlerp = col.colour ~= targetsettings.currentcolour and timeoverride or col.time or 0
-    if targetsettings.remainingtimeinlerp > 0 then
-        targetsettings.totaltimeinlerp = targetsettings.remainingtimeinlerp
-        SetColour(targetsettings.lerpfromcolour, targetsettings.currentcolour)
-        SetColour(targetsettings.lerptocolour, col.colour)
-    else
+    targetsettings.remainingtimeinlerp = col ~= _overridefixedcolour and col.colour ~= targetsettings.currentcolour and timeoverride or col.time or 0
+    targetsettings.totaltimeinlerp = targetsettings.remainingtimeinlerp
+    SetColour(targetsettings.lerpfromcolour, targetsettings.currentcolour)
+    SetColour(targetsettings.lerptocolour, col.colour)
+    if targetsettings.remainingtimeinlerp <= 0 then
         SetColour(targetsettings.currentcolour, col.colour)
     end
 
@@ -209,6 +210,15 @@ local OnSeasonTick = not _iscave and function(inst, data)
     _season = data.season
 end or nil
 
+local function OnOverrideAmbientLighting(inst, colour)
+    if colour ~= (_overridefixedcolour ~= nil and _overridefixedcolour.colour or nil) then
+        _overridefixedcolour = colour ~= nil and { colour = Point(colour:Get()) } or nil
+        ComputeTargetColour(_realcolour, 0)
+        ComputeTargetColour(_overridecolour, 0)
+        PushCurrentColour()
+    end
+end
+
 --------------------------------------------------------------------------
 --[[ Initialization ]]
 --------------------------------------------------------------------------
@@ -226,6 +236,7 @@ end
 
 inst:ListenForEvent("playeractivated", OnPlayerActivated)
 inst:ListenForEvent("playerdeactivated", OnPlayerDeactivated)
+inst:ListenForEvent("overrideambientlighting", OnOverrideAmbientLighting)
 
 --------------------------------------------------------------------------
 --[[ Public member functions ]]

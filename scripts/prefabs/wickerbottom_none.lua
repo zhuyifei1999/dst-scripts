@@ -18,4 +18,5 @@ return CreatePrefabSkin("wickerbottom_none",
 	has_alternate_for_body = { "wickerbottom", },
 	has_alternate_for_skirt = { "wickerbottom", },
 	feet_cuff_size = { wickerbottom = 3, },
+	release_group = 999,
 })

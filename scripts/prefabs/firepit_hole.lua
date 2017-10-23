@@ -13,4 +13,5 @@ return CreatePrefabSkin("firepit_hole",
 	build_name = "firepit_hole",
 	rarity = "Loyal",
 	init_fn = function(inst) firepit_init_fn(inst, "firepit_hole", Vector3(0, 26, 0)) end,
+	release_group = 5,
 })

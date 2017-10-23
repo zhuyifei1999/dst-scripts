@@ -13,4 +13,5 @@ return CreatePrefabSkin("firestaff_bee",
 	build_name = "firestaff_bee",
 	rarity = "Elegant",
 	init_fn = function(inst) firestaff_init_fn(inst, "firestaff_bee") end,
+	release_group = 27,
 })

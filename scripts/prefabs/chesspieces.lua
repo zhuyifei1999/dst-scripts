@@ -198,6 +198,7 @@ local function makepiece(pieceid, materialid)
         inst.entity:AddNetwork()
 
         MakeHeavyObstaclePhysics(inst, PHYSICS_RADIUS)
+        inst:SetPhysicsRadiusOverride(PHYSICS_RADIUS)
 
         inst.AnimState:SetBank("chesspiece")
         inst.AnimState:SetBuild("swap_chesspiece_"..PIECES[pieceid].name.."_marble")

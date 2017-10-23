@@ -15,4 +15,6 @@ return CreatePrefabSkin("wx78_shadow",
 	rarity = "Elegant",
 	skins = { ghost_skin = "ghost_wx78_build", normal_skin = "wx78_shadow", },
 	has_alternate_for_body = { "wx78_shadow", },
+	marketable = true,
+	release_group = 6,
 })

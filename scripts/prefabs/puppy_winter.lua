@@ -13,4 +13,6 @@ return CreatePrefabSkin("puppy_winter",
 	build_name = "puppy_winter",
 	rarity = "Elegant",
 	init_fn = function(inst) pet_init_fn(inst, "puppy_winter", "pupington_build" ) end,
+	marketable = true,
+	release_group = 22,
 })

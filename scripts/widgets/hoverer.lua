@@ -84,9 +84,17 @@ function HoverText:OnUpdate()
                 end
             end
         end
+        local aoetargeting = self.owner.components.playercontroller:IsAOETargeting()
         local rmb = self.owner.components.playercontroller:GetRightMouseAction()
         if rmb ~= nil then
-            secondarystr = STRINGS.RMB..": "..rmb:GetActionString()
+            if rmb.action ~= ACTIONS.CASTAOE then
+                secondarystr = STRINGS.RMB..": "..rmb:GetActionString()
+            elseif aoetargeting and str == nil then
+                str = rmb:GetActionString()
+            end
+        end
+        if aoetargeting and secondarystr == nil then
+            secondarystr = STRINGS.RMB..": "..STRINGS.UI.HUD.CANCEL
         end
     end
 

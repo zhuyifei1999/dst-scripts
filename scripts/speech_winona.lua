@@ -116,6 +116,10 @@ return {
         {
             EMPTY = "I can't wrap up thin air.",
         },
+        PICKUP =
+        {
+			RESTRICTION = "That's not really my forte.",
+        },
 	},
 	ACTIONFAIL_GENERIC = "I sure gummed the works there.",
 	ANNOUNCE_DIG_DISEASE_WARNING = "That helped a bit.",
@@ -222,6 +226,11 @@ return {
 	ANNOUNCE_KLAUS_ENRAGE = "HOLY RIVETS! Time to make tracks!",
 	ANNOUNCE_KLAUS_UNCHAINED = "The mitts are coming off!",
 	ANNOUNCE_KLAUS_CALLFORHELP = "He called his goons!",
+
+--boarlord event
+    ANNOUNCE_REVIVING_CORPSE = "Up'n'attem now.",
+    ANNOUNCE_REVIVED_OTHER_CORPSE = "Back to work!",
+    ANNOUNCE_REVIVED_FROM_CORPSE = "I'm back on the clock!",
 
 	BATTLECRY =
 	{
@@ -2022,6 +2031,54 @@ return {
         ORANGEMOONEYE = "You lookin' at me?",
         YELLOWMOONEYE = "Quit staring.",
         BLUEMOONEYE = "It saw me standing alone.",
+
+        --Arena Event
+        LAVAARENA_BOARLORD = "Why don't you fight us yourself!",
+        BOARRIOR = "Let's cut him down to size!",
+        BOARON = "Who's ready fer some bacon?!",
+        PEGHOOK = "That venom stuff stings!",
+        TRAILS = "He's justa big meathead.",
+        TURTILLUS = "Steel yourself, turtle.",
+        SNAPPER = "You keep yer spit to yourself now, buddy.",
+        
+        LAVAARENA_PORTAL = 
+        {
+            ON = "Welp, time to go!",
+            GENERIC = "Just like the one I came through...",
+        },
+        LAVAARENA_KEYHOLE = "Can't go home without the key.",
+        LAVAARENA_KEYHOLE_FULL = "Perfect assembly!",
+        LAVAARENA_BATTLESTANDARD = "Hey! We gotta destroy that Battle Standard!",
+        LAVAARENA_SPAWNER = "Wonder how it works?",
+
+        HEALINGSTAFF = "I'm a bit of a Jane-of-all-trades.",
+        FIREBALLSTAFF = "Doesn't look too hard to operate.",
+        HAMMER_MJOLNIR = "I'm most effective with a tool in hand.",
+        SPEAR_GUNGNIR = "Pretty snazzy weapon there!",
+        BLOWDART_LAVA = "Efficient, and painful!",
+        BLOWDART_LAVA2 = "That's right up my alley!",
+        LAVAARENA_LUCY = "I could take a swing at it. Ha!",
+        WEBBER_SPIDER_MINION = "Can you tell your friends not to get so close to me, kid?",
+        BOOK_FOSSIL = "I ain't much of a bookworm.",
+		LAVAARENA_BERNIE = "You here to help, lil fella?",
+
+        LAVAARENA_ARMORLIGHT = "It's paper thin!",
+		LAVAARENA_ARMORLIGHTSPEED = "I'd rather something a bit heftier.",
+		LAVAARENA_ARMORMEDIUM = "It'll do in a pinch.",
+		LAVAARENA_ARMORMEDIUMDAMAGER = "That should do the trick.",
+		LAVAARENA_ARMORMEDIUMRECHARGER = "That armor puts ya at peak efficiency!",
+		LAVAARENA_ARMORHEAVY = "This is more my style!",
+		LAVAARENA_ARMOREXTRAHEAVY = "I could really take a hit in that thing!",
+
+		LAVAARENA_FEATHERCROWNHAT = "Faster than tiny hands on an assembly line.",
+        LAVAARENA_HEALINGFLOWERHAT = "That hat'll help you feel right as rain.",
+        LAVAARENA_LIGHTDAMAGERHAT = "Gives ya a lil extra punch!",
+        LAVAARENA_STRONGDAMAGERHAT = "I'm gonna be a real slugger with that thing!",
+        LAVAARENA_TIARAFLOWERPETALSHAT = "That'd be fer healin' my pals.",
+        LAVAARENA_EYECIRCLETHAT = "Just some high class trinket.",
+        LAVAARENA_RECHARGERHAT = "I'd be so efficient with that!",
+        LAVAARENA_HEALINGGARLANDHAT = "That's fer a bit of self maintenance.",
+        LAVAARENA_CROWNDAMAGERHAT = "You'd be a real heavy hitter with that.",
 	},
 	DESCRIBE_GENERIC = "Incredible! I have no idea what that is.",
 	DESCRIBE_TOODARK = "Low visibility causes workplace accidents!",

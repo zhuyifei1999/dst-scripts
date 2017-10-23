@@ -14,4 +14,5 @@ return CreatePrefabSkin("willow_none",
 	build_name = "willow",
 	rarity = "Common",
 	skins = { ghost_skin = "ghost_willow_build", normal_skin = "willow", },
+	release_group = 999,
 })

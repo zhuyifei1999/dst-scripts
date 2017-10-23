@@ -30,6 +30,10 @@ local assets =
     Asset("ATLAS", "images/fepanels.xml"),
     Asset("IMAGE", "images/fepanels.tex"),
 
+	-- Used in event join flow and in-game victory.
+    Asset("ATLAS", "images/dialogcurly_9slice.xml"),
+    Asset("IMAGE", "images/dialogcurly_9slice.tex"),
+
     Asset("ATLAS", "images/options.xml"),
     Asset("IMAGE", "images/options.tex"),
     Asset("ATLAS", "images/options_bg.xml"),
@@ -45,43 +49,58 @@ local assets =
     Asset("ATLAS", "images/bg_spiral.xml"),
     Asset("IMAGE", "images/bg_spiral.tex"),
     Asset("DYNAMIC_ATLAS", "images/bg_spiral_fill1.xml"),
-    Asset("ASSET_PKGREF", "images/bg_spiral_fill1.tex"),
+    Asset("PKGREF", "images/bg_spiral_fill1.tex"),
     Asset("DYNAMIC_ATLAS", "images/bg_spiral_fill2.xml"),
-    Asset("ASSET_PKGREF", "images/bg_spiral_fill2.tex"),
+    Asset("PKGREF", "images/bg_spiral_fill2.tex"),
     Asset("DYNAMIC_ATLAS", "images/bg_spiral_fill3.xml"),
-    Asset("ASSET_PKGREF", "images/bg_spiral_fill3.tex"),
+    Asset("PKGREF", "images/bg_spiral_fill3.tex"),
     Asset("DYNAMIC_ATLAS", "images/bg_spiral_fill4.xml"),
-    Asset("ASSET_PKGREF", "images/bg_spiral_fill4.tex"),
+    Asset("PKGREF", "images/bg_spiral_fill4.tex"),
     Asset("DYNAMIC_ATLAS", "images/bg_spiral_fill5.xml"),
-    Asset("ASSET_PKGREF", "images/bg_spiral_fill5.tex"),
+    Asset("PKGREF", "images/bg_spiral_fill5.tex"),
     Asset("DYNAMIC_ATLAS", "images/bg_spiral_fill6.xml"),
-    Asset("ASSET_PKGREF", "images/bg_spiral_fill6.tex"),
+    Asset("PKGREF", "images/bg_spiral_fill6.tex"),
     Asset("DYNAMIC_ATLAS", "images/bg_spiral_fill7.xml"),
-    Asset("ASSET_PKGREF", "images/bg_spiral_fill7.tex"),
+    Asset("PKGREF", "images/bg_spiral_fill7.tex"),
     Asset("DYNAMIC_ATLAS", "images/bg_spiral_fill8.xml"),
-    Asset("ASSET_PKGREF", "images/bg_spiral_fill8.tex"),
+    Asset("PKGREF", "images/bg_spiral_fill8.tex"),
     Asset("DYNAMIC_ATLAS", "images/bg_spiral_fill_halloween1.xml"),
-    Asset("ASSET_PKGREF", "images/bg_spiral_fill_halloween1.tex"),
+    Asset("PKGREF", "images/bg_spiral_fill_halloween1.tex"),
     Asset("DYNAMIC_ATLAS", "images/bg_spiral_fill_halloween2.xml"),
-    Asset("ASSET_PKGREF", "images/bg_spiral_fill_halloween2.tex"),
+    Asset("PKGREF", "images/bg_spiral_fill_halloween2.tex"),
     Asset("DYNAMIC_ATLAS", "images/bg_spiral_fill_halloween3.xml"),
-    Asset("ASSET_PKGREF", "images/bg_spiral_fill_halloween3.tex"),
+    Asset("PKGREF", "images/bg_spiral_fill_halloween3.tex"),
     Asset("DYNAMIC_ATLAS", "images/bg_spiral_fill_christmas1.xml"),
-    Asset("ASSET_PKGREF", "images/bg_spiral_fill_christmas1.tex"),
+    Asset("PKGREF", "images/bg_spiral_fill_christmas1.tex"),
     Asset("DYNAMIC_ATLAS", "images/bg_spiral_fill_christmas2.xml"),
-    Asset("ASSET_PKGREF", "images/bg_spiral_fill_christmas2.tex"),
+    Asset("PKGREF", "images/bg_spiral_fill_christmas2.tex"),
     Asset("DYNAMIC_ATLAS", "images/bg_spiral_fill_yotg1.xml"),
-    Asset("ASSET_PKGREF", "images/bg_spiral_fill_yotg1.tex"),
+    Asset("PKGREF", "images/bg_spiral_fill_yotg1.tex"),
     Asset("DYNAMIC_ATLAS", "images/bg_spiral_fill_yotg2.xml"),
-    Asset("ASSET_PKGREF", "images/bg_spiral_fill_yotg2.tex"),
+    Asset("PKGREF", "images/bg_spiral_fill_yotg2.tex"),
     Asset("ATLAS", "images/bg_vignette.xml"),
     Asset("IMAGE", "images/bg_vignette.tex"),
 
     Asset("ATLAS", "images/lobbyscreen.xml"),
     Asset("Image", "images/lobbyscreen.tex"),
 
+	-- For lobby, victory, play event.
+    Asset("ATLAS", "images/fe_carnygarnish.xml"),
+    Asset("IMAGE", "images/fe_carnygarnish.tex"),
+
     Asset("ATLAS", "images/fepanel_fills.xml"),
     Asset("IMAGE", "images/fepanel_fills.tex"),
+
+    Asset("ATLAS", "images/bg_redux_centred.xml"),
+    Asset("IMAGE", "images/bg_redux_centred.tex"),
+    Asset("ATLAS", "images/bg_redux_dark_left.xml"),
+    Asset("IMAGE", "images/bg_redux_dark_left.tex"),
+    Asset("ATLAS", "images/bg_redux_dark_right.xml"),
+    Asset("IMAGE", "images/bg_redux_dark_right.tex"),
+    Asset("ATLAS", "images/bg_redux_leftsidebar.xml"),
+    Asset("IMAGE", "images/bg_redux_leftsidebar.tex"),
+    Asset("ATLAS", "images/bg_redux_dark_sidebar.xml"),
+    Asset("IMAGE", "images/bg_redux_dark_sidebar.tex"),
 
     Asset("ATLAS", "images/bg_animated_portal.xml"),
     Asset("IMAGE", "images/bg_animated_portal.tex"),
@@ -141,6 +160,7 @@ local assets =
 	Asset("SHADER", "shaders/texture.ksh"),
 	Asset("SHADER", "shaders/ui.ksh"),
 	Asset("SHADER", "shaders/ui_yuv.ksh"),
+	Asset("SHADER", "shaders/swipe_fade.ksh"),
 	Asset("SHADER", "shaders/ui_anim.ksh"),
     Asset("SHADER", "shaders/combine_colour_cubes.ksh"),
 	Asset("SHADER", "shaders/postprocess.ksh"),
@@ -162,6 +182,8 @@ local assets =
     --common UI elements that we will always need
     Asset("ATLAS", "images/ui.xml"),
     Asset("IMAGE", "images/ui.tex"),
+    Asset("ATLAS", "images/global_redux.xml"),
+    Asset("IMAGE", "images/global_redux.tex"),
     Asset("ATLAS", "images/textboxes.xml"),
     Asset("IMAGE", "images/textboxes.tex"),
     Asset("ATLAS", "images/serverbrowser.xml"),
@@ -187,6 +209,9 @@ local assets =
     Asset("ATLAS", "images/avatars.xml"),
     Asset("IMAGE", "images/avatars.tex"),
 
+    Asset("ATLAS", "images/profileflair.xml"),
+    Asset("IMAGE", "images/profileflair.tex"),
+
     Asset("DYNAMIC_ANIM", "anim/dynamic/body_default1.zip"),
     Asset("DYNAMIC_ANIM", "anim/dynamic/hand_default1.zip"),
     Asset("DYNAMIC_ANIM", "anim/dynamic/legs_default1.zip"),
@@ -196,9 +221,75 @@ local assets =
     Asset("DYNAMIC_ANIM", "anim/dynamic/random_skin.zip"),
 }
 
+-- Loading Screens from items
+require "skinsutils"
+require "misc_items"
+for item_key,item_blob in pairs(GetAllMiscItemsOfType("loading")) do
+    local atlas,tex = GetLoaderAtlasAndTexPkgref(item_key)
+    table.insert(assets, Asset("DYNAMIC_ATLAS", atlas))
+    table.insert(assets, Asset("PKGREF", tex))
+end
+-- Player portrait backgrounds from items
+local playerportraits = GetAllMiscItemsOfType("playerportrait")
+playerportraits.playerportrait_bg_none = {} -- none is not a real item
+for item_key,item_blob in pairs(playerportraits) do
+    local atlas,tex = GetPlayerPortraitAtlasAndTexPkgref(item_key)
+    table.insert(assets, Asset("DYNAMIC_ATLAS", atlas))
+    table.insert(assets, Asset("PKGREF", tex))
+end
+
+
 require "fonts"
 for i, font in ipairs( FONTS ) do
 	table.insert( assets, Asset( "FONT", font.filename ) )
+end
+
+-- Add all the characters by name
+-- GetActiveCharacterList doesn't exist in the pipeline.
+local active_characters = GetActiveCharacterList and GetActiveCharacterList() or DST_CHARACTERLIST
+for i,char in ipairs(active_characters) do
+    if PREFAB_SKINS[char] then
+        for _,character in pairs(PREFAB_SKINS[char]) do
+            table.insert(assets, Asset("DYNAMIC_ATLAS", "bigportraits/"..character..".xml"))
+            table.insert(assets, Asset("PKGREF", "bigportraits/"..character..".tex"))
+        end
+        table.insert(assets, Asset("DYNAMIC_ATLAS", "bigportraits/"..char..".xml"))
+        table.insert(assets, Asset("PKGREF", "bigportraits/"..char..".tex"))
+
+        table.insert(assets, Asset("DYNAMIC_ATLAS", "images/names_"..char..".xml"))
+        table.insert(assets, Asset("PKGREF", "images/names_"..char..".tex"))
+
+        table.insert(assets, Asset("DYNAMIC_ATLAS", "images/names_gold_"..char..".xml"))
+        table.insert(assets, Asset("PKGREF", "images/names_gold_"..char..".tex"))
+
+        --table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char..".tex")) -- Not currently used, but likely to come back
+        --table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char.."_silho.tex")) -- Not currently used, but likely to come back
+    end
+end
+
+for i, v in pairs(active_characters) do
+    if v ~= "" then
+        table.insert(assets, Asset("ANIM", "anim/"..v..".zip"))
+    end
+end
+
+--Skins assets
+for _, clothing_asset in pairs(require("clothing_assets")) do
+    table.insert(assets, clothing_asset)
+end
+for _, skins_prefabs in pairs(PREFAB_SKINS) do
+    for _, skin_prefab in pairs(skins_prefabs) do
+        if string.sub(skin_prefab, -5) ~= "_none" then
+            local prefab = require("prefabs/"..skin_prefab)
+            if type(prefab) == "table" then
+                for k, v in pairs(prefab.assets) do
+                    table.insert(assets, v)
+                end
+            else
+                print("ERROR: The contents of prefabs/"..skin_prefab..".lua are corrupt. Try verifying your game's install.")
+            end
+        end
+    end
 end
 
 return Prefab("global", function() end, assets)

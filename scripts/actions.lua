@@ -39,6 +39,9 @@ Action = Class(function(self, data, instant, rmb, distance, ghost_valid, ghost_e
     self.canforce = data.canforce or nil
     self.rangecheckfn = self.canforce ~= nil and data.rangecheckfn or nil
     self.mod_name = nil
+
+    --new params, only supported by passing via data field
+    self.actionmeter = data.actionmeter or nil
 end)
 
 ACTIONS =
@@ -144,7 +147,8 @@ ACTIONS =
     WRITE = Action(),
     ATTUNE = Action(),
     REMOTERESURRECT = Action({ rmb=false, ghost_valid=true, ghost_exclusive=true }),
-    MIGRATE = Action({ rmb=false, encumbered_valid = true, ghost_valid=true }),
+    REVIVE_CORPSE = Action({ rmb=false, actionmeter=true }),
+    MIGRATE = Action({ rmb=false, encumbered_valid=true, ghost_valid=true }),
     MOUNT = Action({ priority=1, rmb=true, encumbered_valid=true }),
     DISMOUNT = Action({ priority=1, instant=true, rmb=true, mount_valid=true, encumbered_valid=true }),
     SADDLE = Action({ priority=1 }),
@@ -152,6 +156,8 @@ ACTIONS =
     BRUSH = Action({ priority=3, rmb=false }),
     ABANDON = Action({ rmb=true }),
     PET = Action(),
+
+    CASTAOE = Action({ priority=10, rmb=true, distance=8 }),
 }
 
 ACTION_IDS = {}
@@ -213,8 +219,9 @@ ACTIONS.EQUIP.fn = function(act)
 end
 
 ACTIONS.UNEQUIP.strfn = function(act)
-    return act.invobject ~= nil
-        and act.invobject:HasTag("heavy")
+    return (act.invobject ~= nil and
+            act.invobject:HasTag("heavy") or
+            act.doer.replica.inventory:GetNumSlots() <= 0)
         and "HEAVY"
         or nil
 end
@@ -247,6 +254,10 @@ ACTIONS.PICKUP.fn = function(act)
             (act.target.components.burnable ~= nil and act.target.components.burnable:IsBurning()) or
             (act.target.components.projectile ~= nil and act.target.components.projectile:IsThrown())) then
 
+		if act.doer.components.itemtyperestrictions ~= nil and not act.doer.components.itemtyperestrictions:IsAllowed(act.target) then
+			return false, "restriction"
+		end
+
         act.doer:PushEvent("onpickupitem", { item = act.target })
 
         --special case for trying to carry two backpacks
@@ -263,7 +274,11 @@ ACTIONS.PICKUP.fn = function(act)
             return true
         end
 
-        if act.doer:HasTag("player") and act.target.components.equippable and not act.doer.components.inventory:GetEquippedItem(act.target.components.equippable.equipslot) then
+        if act.doer:HasTag("player") and
+            (   act.target.components.equippable ~= nil and
+                not act.doer.components.inventory:GetEquippedItem(act.target.components.equippable.equipslot) or
+                act.doer.components.inventory:GetNumSlots() <= 0
+            ) then
             act.doer.components.inventory:Equip(act.target)
         else
             act.doer.components.inventory:GiveItem(act.target, nil, act.target:GetPosition())
@@ -839,17 +854,14 @@ ACTIONS.FEEDPLAYER.fn = function(act)
 end
 
 ACTIONS.GIVE.strfn = function(act)
-    return act.target ~= nil and (
-        (act.target:HasTag("gemsocket") and "SOCKET") or
-        (act.target:HasTag("altar") and (targ.state:value() and "READY" or "NOTREADY"))
-    ) or nil
+    return act.target ~= nil and act.target:HasTag("gemsocket") and "SOCKET" or nil
 end
 
 ACTIONS.DECORATEVASE.fn = function(act)
-	if act.target ~= nil and act.target.components.vase ~= nil and act.target.components.vase.enabled then
-		act.target.components.vase:Decorate(act.doer, act.invobject)
-		return true
-	end
+    if act.target ~= nil and act.target.components.vase ~= nil and act.target.components.vase.enabled then
+        act.target.components.vase:Decorate(act.doer, act.invobject)
+        return true
+    end
 end
 
 ACTIONS.STORE.fn = function(act)
@@ -1562,6 +1574,16 @@ ACTIONS.REMOTERESURRECT.fn = function(act)
     end
 end
 
+ACTIONS.REVIVE_CORPSE.fn = function(act)
+    if act.doer ~= nil and act.target ~= nil and act.target.components.revivablecorpse ~= nil then
+        --Silent fail
+        if act.target.components.revivablecorpse:CanBeRevivedBy(act.doer) then
+            act.target.components.revivablecorpse:Revive(act.doer)
+        end
+        return true
+    end
+end
+
 ACTIONS.MOUNT.fn = function(act)
     if act.target.components.combat ~= nil and act.target.components.combat:HasTarget() then
         return false, "TARGETINCOMBAT"
@@ -1707,6 +1729,17 @@ ACTIONS.UNWRAP.fn = function(act)
         target.components.unwrappable ~= nil and
         target.components.unwrappable.canbeunwrapped then
         target.components.unwrappable:Unwrap(act.doer)
+        return true
+    end
+end
+
+ACTIONS.CASTAOE.strfn = function(act)
+    return act.invobject ~= nil and string.upper(act.invobject.prefab) or nil
+end
+
+ACTIONS.CASTAOE.fn = function(act)
+    if act.invobject ~= nil and act.invobject.components.aoespell ~= nil and act.invobject.components.aoespell:CanCast(act.doer, act.pos) then
+        act.invobject.components.aoespell:CastSpell(act.doer, act.pos)
         return true
     end
 end

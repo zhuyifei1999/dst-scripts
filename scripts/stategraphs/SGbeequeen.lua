@@ -496,7 +496,7 @@ local states =
                 for i = 1, num do
                     local minion = SpawnPrefab("beeguard")
                     local angle = rot + i * drot
-                    local radius = minion.Physics:GetRadius()
+                    local radius = minion:GetPhysicsRadius(0)
                     minion.Transform:SetRotation(angle)
                     angle = -angle * DEGREES
                     minion.Transform:SetPosition(x + radius * math.cos(angle), 0, z + radius * math.sin(angle))

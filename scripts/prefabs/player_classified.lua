@@ -554,6 +554,16 @@ local function OnGhostModeDirty(inst)
     end
 end
 
+local function OnActionMeterDirty(inst)
+    if inst._parent ~= nil and inst._parent.HUD ~= nil then
+        if inst.actionmeter:value() < 2 then
+            inst._parent.HUD:HideRingMeter(inst.actionmeter:value() == 1)
+        else
+            inst._parent.HUD:ShowRingMeter(inst._parent:GetPosition(), inst.actionmetertime:value() * .1, (inst.actionmeter:value() - 2) * .1)
+        end
+    end
+end
+
 local function OnPlayerHUDDirty(inst)
     if inst._parent ~= nil and inst._parent.HUD ~= nil then
         if inst.ishudvisible:value() then
@@ -562,7 +572,7 @@ local function OnPlayerHUDDirty(inst)
             inst._parent.HUD:Hide()
         end
 
-        if inst.ismapcontrolsvisible:value() then
+        if inst.ismapcontrolsvisible:value() and not GetGameModeProperty("no_minimap") then
             inst._parent.HUD.controls.mapcontrols:ShowMapButton()
         else
             if inst._parent.HUD:IsMapScreenOpen() then
@@ -791,6 +801,7 @@ local function RegisterNetListeners(inst)
         inst:ListenForEvent("pausepredictionframesdirty", OnPausePredictionFramesDirty)
         inst:ListenForEvent("iscarefulwalkingdirty", OnIsCarefulWalkingDirty)
         inst:ListenForEvent("isghostmodedirty", OnGhostModeDirty)
+        inst:ListenForEvent("actionmeterdirty", OnActionMeterDirty)
         inst:ListenForEvent("playerhuddirty", OnPlayerHUDDirty)
         inst:ListenForEvent("playercamerashake", OnPlayerCameraShake)
         inst:ListenForEvent("playerscreenflashdirty", OnPlayerScreenFlashDirty)
@@ -1010,6 +1021,8 @@ local function fn()
     --Stategraph variables
     inst.isperformactionsuccess = net_bool(inst.GUID, "sg.isperformactionsuccess", "isperformactionsuccessdirty")
     inst.isghostmode = net_bool(inst.GUID, "sg.isghostmode", "isghostmodedirty")
+    inst.actionmeter = net_byte(inst.GUID, "sg.actionmeter", "actionmeterdirty")
+    inst.actionmetertime = net_byte(inst.GUID, "sg.actionmetertime", "actionmeterdirty")
 
     --Locomotor variables
     inst.runspeed = net_float(inst.GUID, "locomotor.runspeed")

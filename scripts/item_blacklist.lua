@@ -22,5 +22,6 @@ ITEM_DISPLAY_BLACKLIST =
 	researchlab4_glommer_costume = true,
 	researchlab4_hutch_costume = true,
 	backpack_mushy = true,
+	researchlab2_pod_alt = true,
 }
 

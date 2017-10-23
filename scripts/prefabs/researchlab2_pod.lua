@@ -13,4 +13,6 @@ return CreatePrefabSkin("researchlab2_pod",
 	build_name = "researchlab2_pod",
 	rarity = "Elegant",
 	init_fn = function(inst) researchlab2_init_fn(inst, "researchlab2_pod") end,
+	marketable = true,
+	release_group = 29,
 })

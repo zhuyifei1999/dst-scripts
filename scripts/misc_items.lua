@@ -2,5 +2,705 @@
 
 MISC_ITEMS =
 {
+	emoji_arcane =
+	{
+		type = "emoji",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	emoji_beefalo =
+	{
+		type = "emoji",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	emoji_chest =
+	{
+		type = "emoji",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	emoji_chester =
+	{
+		type = "emoji",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	emoji_crockpot =
+	{
+		type = "emoji",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	emoji_eyeball =
+	{
+		type = "emoji",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	emoji_faketeeth =
+	{
+		type = "emoji",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	emoji_farm =
+	{
+		type = "emoji",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	emoji_fire =
+	{
+		type = "emoji",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	emoji_ghost =
+	{
+		type = "emoji",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	emoji_grave =
+	{
+		type = "emoji",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	emoji_hambat =
+	{
+		type = "emoji",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	emoji_hammer =
+	{
+		type = "emoji",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	emoji_heart =
+	{
+		type = "emoji",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	emoji_hunger =
+	{
+		type = "emoji",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	emoji_lightbulb =
+	{
+		type = "emoji",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	emoji_pig =
+	{
+		type = "emoji",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	emoji_poop =
+	{
+		type = "emoji",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	emoji_redgem =
+	{
+		type = "emoji",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	emoji_sanity =
+	{
+		type = "emoji",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	emoji_sciencemachine =
+	{
+		type = "emoji",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	emoji_skull =
+	{
+		type = "emoji",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	emoji_tophat =
+	{
+		type = "emoji",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	emoji_web =
+	{
+		type = "emoji",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	loading_maxwell =
+	{
+		type = "loading",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	loading_merm =
+	{
+		type = "loading",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	loading_pigking =
+	{
+		type = "loading",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	loading_webber =
+	{
+		type = "loading",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	loading_wendy =
+	{
+		type = "loading",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	loading_wickerbottom =
+	{
+		type = "loading",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	loading_wigfrid =
+	{
+		type = "loading",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	loading_willowfire =
+	{
+		type = "loading",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	loading_wolfgang =
+	{
+		type = "loading",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	mysterybox_lava_4 =
+	{
+		type = "mysterybox",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 33,
+	},
+	playerportrait_bg_beefalo =
+	{
+		type = "playerportrait",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	playerportrait_bg_birchnut =
+	{
+		type = "playerportrait",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	playerportrait_bg_camp =
+	{
+		type = "playerportrait",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	playerportrait_bg_cardinals =
+	{
+		type = "playerportrait",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	playerportrait_bg_deciduousforest =
+	{
+		type = "playerportrait",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	playerportrait_bg_forestfire =
+	{
+		type = "playerportrait",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	playerportrait_bg_garden =
+	{
+		type = "playerportrait",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	playerportrait_bg_grasslands =
+	{
+		type = "playerportrait",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	playerportrait_bg_lava =
+	{
+		type = "playerportrait",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	playerportrait_bg_lavaarena =
+	{
+		type = "playerportrait",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	playerportrait_bg_lonecarrot =
+	{
+		type = "playerportrait",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	playerportrait_bg_lumpyevergreen =
+	{
+		type = "playerportrait",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	playerportrait_bg_marshhouse =
+	{
+		type = "playerportrait",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	playerportrait_bg_penguins =
+	{
+		type = "playerportrait",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	playerportrait_bg_pighouse =
+	{
+		type = "playerportrait",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	playerportrait_bg_rocks =
+	{
+		type = "playerportrait",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	playerportrait_bg_roseportal =
+	{
+		type = "playerportrait",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	playerportrait_bg_shoreline =
+	{
+		type = "playerportrait",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	playerportrait_bg_spidermarsh =
+	{
+		type = "playerportrait",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	playerportrait_bg_spikymarsh =
+	{
+		type = "playerportrait",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	playerportrait_bg_thickforest =
+	{
+		type = "playerportrait",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_abigail_flower =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_babybeefalo =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_bat_furled =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_bearger_roar =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_beefalo =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_bernie =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_bishop =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_catcoon =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_chester =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_crow =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_cupcake =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_deerclops =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_dragonfly_sleeping =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_dragonfruit =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_frog =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_goosemoose =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_hound =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_knight =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_koalefant =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_krampus =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_mactusk =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_mandrake =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_merm =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_mole =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_nightlight =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_pengull =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_phonograph =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_pig_happy =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_pigking =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_pumpkinlantern =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_rabbit =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_rook =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_rose =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_shadowhand =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_shadowmanipulator =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_smallbird =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_spider =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_tallbird_eye =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_treeguard =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_trinket_faketeeth =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_trinket_gnome =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_trinket_gnomette =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_waffle =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_werepig_howl =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	profileflair_wererabbit =
+	{
+		type = "profileflair",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
 }
 

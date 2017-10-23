@@ -16,4 +16,5 @@ return CreatePrefabSkin("wendy_lureplant",
 	skins = { ghost_skin = "ghost_wendy_build", normal_skin = "wendy_lureplant", },
 	torso_tuck_builds = { "wendy_lureplant", },
 	has_alternate_for_body = { "wendy_lureplant", },
+	release_group = 15,
 })

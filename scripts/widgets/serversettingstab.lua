@@ -33,8 +33,10 @@ local privacy_options = {
     {text=STRINGS.UI.SERVERCREATIONSCREEN.PRIVACY.PUBLIC,    data=PRIVACY_TYPE.PUBLIC},
     {text=STRINGS.UI.SERVERCREATIONSCREEN.PRIVACY.FRIENDS,   data=PRIVACY_TYPE.FRIENDS},
     {text=STRINGS.UI.SERVERCREATIONSCREEN.PRIVACY.LOCAL,     data=PRIVACY_TYPE.LOCAL},
-    {text=STRINGS.UI.SERVERCREATIONSCREEN.PRIVACY.CLAN,      data=PRIVACY_TYPE.CLAN},
 }
+if PLATFORM ~= "WIN32_RAIL" then
+    table.insert( privacy_options, {text=STRINGS.UI.SERVERCREATIONSCREEN.PRIVACY.CLAN, data=PRIVACY_TYPE.CLAN} )
+end
 local privacy_buttons = {
     width = 140,
     height = label_height,
@@ -120,7 +122,7 @@ local ServerSettingsTab = Class(Widget, function(self, slotdata, servercreations
     end)
 
     self.privacy_type = Widget("Privacy Group")
-    self.privacy_type.buttons = self.privacy_type:AddChild(RadioButtons(privacy_options, 580, 50, privacy_buttons, true))
+    self.privacy_type.buttons = self.privacy_type:AddChild(RadioButtons(privacy_options, #privacy_options * 145, 50, privacy_buttons, true))
     self.privacy_type.buttons:SetOnChangedFn(function(data)
         self:DisplayClanControls(data == PRIVACY_TYPE.CLAN)
         self.servercreationscreen:MakeDirty()
@@ -147,7 +149,10 @@ local ServerSettingsTab = Class(Widget, function(self, slotdata, servercreations
     self.clan_admins.spinner:SetOnChangedFn(function() self.servercreationscreen:MakeDirty() end)
 
     self.game_mode = TEMPLATES.LabelSpinner(STRINGS.UI.SERVERCREATIONSCREEN.GAMEMODE, GetGameModesSpinnerData(ModManager:GetEnabledServerModNames()), narrow_label_width, narrow_input_width, label_height, space_between, NEWFONT, font_size, narrow_field_nudge)
-    self.game_mode.spinner:SetOnChangedFn(function() self.servercreationscreen.world_tab:Refresh() self.servercreationscreen:MakeDirty() end)
+    self.game_mode.spinner:SetOnChangedFn(function(selected, old) 
+		self.servercreationscreen.world_tab:OnChangeGameMode(selected)
+		self.servercreationscreen:MakeDirty()
+		end)
 
     self.game_mode.info_button = self.game_mode:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "info.tex", "", false, false, function() 
             local mode_title = GetGameModeString( self.game_mode.spinner:GetSelectedData() )
@@ -534,7 +539,7 @@ end
 function ServerSettingsTab:GetServerData()
     return {
         intention = self.server_intention.button.data,
-        pvp = self.pvp.spinner:GetSelectedData(),
+        pvp = self:GetPVP(),
         game_mode = self:GetGameMode(),
         online_mode = self:GetOnlineMode(),
         encode_user_path = self:GetEncodeUserPath(),

@@ -140,6 +140,26 @@ local RPC_HANDLERS =
         end
     end,
 
+    ControllerActionButtonPoint = function(player, action, x, z, isreleased, noforce, mod_name)
+        if not (checknumber(action) and
+                checknumber(x) and
+                checknumber(z) and
+                optbool(isreleased) and
+                optbool(noforce) and
+                optstring(mod_name)) then
+            printinvalid("ControllerActionButtonPoint", player)
+            return
+        end
+        local playercontroller = player.components.playercontroller
+        if playercontroller ~= nil then
+            if IsPointInRange(player, x, z) then
+                playercontroller:OnRemoteControllerActionButtonPoint(action, Vector3(x, 0, z), isreleased, noforce, mod_name)
+            else
+                print("Remote controller action button point out of range")
+            end
+        end
+    end,
+
     ControllerActionButtonDeploy = function(player, invobject, x, z, rotation, isreleased)
         if not (checkentity(invobject) and
                 checknumber(x) and

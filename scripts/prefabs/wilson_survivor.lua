@@ -14,4 +14,6 @@ return CreatePrefabSkin("wilson_survivor",
 	build_name = "wilson_survivor",
 	rarity = "Elegant",
 	skins = { ghost_skin = "ghost_wilson_build", normal_skin = "wilson_survivor", },
+	marketable = true,
+	release_group = 4,
 })

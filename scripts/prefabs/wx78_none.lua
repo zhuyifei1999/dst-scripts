@@ -16,4 +16,5 @@ return CreatePrefabSkin("wx78_none",
 	skins = { ghost_skin = "ghost_wx78_build", normal_skin = "wx78", },
 	has_alternate_for_body = { "wx78", },
 	feet_cuff_size = { wx78 = 3, },
+	release_group = 999,
 })

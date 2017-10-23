@@ -15,4 +15,6 @@ return CreatePrefabSkin("waxwell_unshadow",
 	rarity = "Elegant",
 	skins = { ghost_skin = "ghost_waxwell_build", normal_skin = "waxwell_unshadow", },
 	torso_tuck_builds = { "waxwell_unshadow", },
+	marketable = true,
+	release_group = 6,
 })

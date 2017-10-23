@@ -44,7 +44,7 @@ end
 function FindClosestPlayerInRangeSq(x, y, z, rangesq, isalive)
     local closestPlayer = nil
     for i, v in ipairs(AllPlayers) do
-        if (isalive == nil or isalive ~= v:HasTag("playerghost")) and
+        if (isalive == nil or isalive ~= (v.replica.health:IsDead() or v:HasTag("playerghost"))) and
             v.entity:IsVisible() then
             local distsq = v:GetDistanceSqToPoint(x, y, z)
             if distsq < rangesq then
@@ -72,7 +72,7 @@ end
 function FindPlayersInRangeSq(x, y, z, rangesq, isalive)
     local players = {}
     for i, v in ipairs(AllPlayers) do
-        if (isalive == nil or isalive ~= v:HasTag("playerghost")) and
+        if (isalive == nil or isalive ~= (v.replica.health:IsDead() or v:HasTag("playerghost"))) and
             v.entity:IsVisible() and
             v:GetDistanceSqToPoint(x, y, z) < rangesq then
             table.insert(players, v)
@@ -87,7 +87,7 @@ end
 
 function IsAnyPlayerInRangeSq(x, y, z, rangesq, isalive)
     for i, v in ipairs(AllPlayers) do
-        if (isalive == nil or isalive ~= v:HasTag("playerghost")) and
+        if (isalive == nil or isalive ~= (v.replica.health:IsDead() or v:HasTag("playerghost"))) and
             v.entity:IsVisible() and
             v:GetDistanceSqToPoint(x, y, z) < rangesq then
             return true
@@ -100,7 +100,7 @@ function IsAnyPlayerInRange(x, y, z, range, isalive)
     return IsAnyPlayerInRangeSq(x, y, z, range * range, isalive)
 end
 
--- Get a location where it`s safe to spawn an item so it won`t get lost in the ocean
+-- Get a location where it's safe to spawn an item so it won't get lost in the ocean
 function FindSafeSpawnLocation(x, y, z)
     local ent = x ~= nil and z ~= nil and FindClosestPlayer(x, y, z) or nil
     if ent ~= nil then

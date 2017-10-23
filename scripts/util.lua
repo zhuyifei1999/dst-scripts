@@ -90,6 +90,47 @@ function string:split(sep)
     return fields
 end
 
+-- Like string.find, but returns an array of first,last pairs. Never returns
+-- nil. Does not return captures -- if you want text matches, see
+-- string.gmatch.
+function string.findall(s, pattern, init, plain)
+    local matches = {}
+    local first = init or 1
+    local last = first
+    while first ~= nil do
+        first, last = s:find(pattern, first, plain)
+        if first ~= nil then
+            table.insert(matches, {first,last})
+            first = last + 1
+        end
+    end
+    return matches
+end
+
+-- Like string.find, but finds the last match. init is normal index (1 is first
+-- character).
+function string.rfind(s, pattern, init, plain)
+    local matches = s:findall(pattern, init, plain)
+    if #matches > 0 then
+        return table.unpack(matches[#matches])
+    end
+    return nil
+end
+
+
+-- Like string.find, but finds the last match and always does plain matches.
+-- init is normal index (1 is first character).
+function string.rfind_plain(s, query, init)
+    local s_rev = s:reverse()
+    local query_rev = query:reverse()
+    local first,last = s_rev:find(query_rev, init, true)
+    local len = #s
+    if first then
+        return len - last + 1, len - first + 1
+    end
+    return nil
+end
+
 function table.contains(table, element)
     if table == nil then return false end
     
@@ -101,6 +142,7 @@ function table.contains(table, element)
     return false
 end
 
+-- Why use containskey instead of table[key] ~= nil?
 function table.containskey(table, key)
     if table == nil then return false end
 
@@ -110,6 +152,15 @@ function table.containskey(table, key)
         end
     end
     return false
+end
+
+-- Return an array table of the keys of the input table.
+function table.getkeys(t)
+    local keys = {}
+    for key,val in pairs(t) do
+        table.insert(keys, key)
+    end
+    return keys
 end
 
 -- only for indexed tables!
@@ -157,6 +208,17 @@ function table.reverselookup(t, lookup_value)
         end
     end
     return nil
+end
+
+
+local function reverse_next(t, index)
+    if index > 0 then
+        return index - 1, t[index]
+    end
+end
+-- Equivalent of the ipairs() function on tables, but in reverse order.
+function ipairs_reverse(t)
+    return reverse_next, t, #t
 end
 
 -- only use on indexed tables!
@@ -415,6 +477,22 @@ function ExtendedArray(orig, addition, mult)
 	return ret
 end
 
+local function _FlattenTree(tree, ret, exclude, unique)
+    for k, v in pairs(tree) do
+        if type(v) == "table" then
+            _FlattenTree(v, ret, exclude, unique)
+        elseif not exclude[v] then
+            table.insert(ret, v)
+            exclude[v] = unique
+        end
+    end
+    return ret
+end
+
+function FlattenTree(tree, unique)
+    return _FlattenTree(tree, {}, {}, unique)
+end
+
 function GetRandomKey(choices)
  	local choice = math.random(GetTableSize(choices)) -1
  	
@@ -446,7 +524,7 @@ function distsq(v1, v2, v3, v4)
     assert(v2, "Something is wrong: v2 is nil stale component reference?")
     
     --special case for 2dvects passed in as numbers
-    if v1 and v2 and v3 and v4 then
+    if v4 and v3 and v2 and v1 then
         local dx = v1-v3
         local dy = v2-v4
         return dx*dx + dy*dy
@@ -702,6 +780,14 @@ function sortedKeys(dict)
     return keys
 end
 
+function countKeys(t)
+    local count = 0
+    for key,val in pairs(t) do
+        count = count + 1
+    end
+    return count
+end
+
 function TrackedAssert(tracking_data, function_ptr, function_data)
 	--print("TrackedAssert", tracking_data, function_ptr, function_data)
 	_G['tracked_assert'] = function(pass, reason)		
@@ -749,15 +835,11 @@ function shallowcopy(orig, dest)
 end
 
 
--- if next(table) == nil, then it is empty
---
--- function IsTableEmpty(t)
--- 	local empty = true
--- 	for k,v in pairs(t) do
--- 		return false
--- 	end
--- 	return true	
--- end
+-- if next(table) == nil, then the table is empty
+function IsTableEmpty(t)
+    -- https://stackoverflow.com/a/1252776/79125
+    return next(t) == nil
+end
 
 function fastdump(value)
 	local tostring = tostring
@@ -1197,6 +1279,7 @@ end
 --end: 1-based end position (optional, can be negative to count from end)
 --returns a new string
 if APP_VERSION ~= "MAPGEN" then
+    string.utf8char = utf8char
     string.utf8sub = utf8substr
     string.utf8len = utf8strlen
     string.utf8upper = utf8strtoupper
@@ -1231,7 +1314,7 @@ function Dist2dSq(p1, p2)
 	return dx*dx + dy*dy
 end
 
-function DistPointToSegment2dSq(p, v1, v2) 
+function DistPointToSegmentXYSq(p, v1, v2) 
 	local l2 = Dist2dSq(v1, v2)
 	if (l2 == 0) then
 		return Dist2dSq(p, v1)

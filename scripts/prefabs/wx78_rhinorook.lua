@@ -15,4 +15,5 @@ return CreatePrefabSkin("wx78_rhinorook",
 	rarity = "Event",
 	skins = { ghost_skin = "ghost_wx78_build", normal_skin = "wx78_rhinorook", },
 	feet_cuff_size = { wx78_rhinorook = 10, },
+	release_group = 15,
 })

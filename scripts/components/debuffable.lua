@@ -10,7 +10,7 @@ local Debuffable = Class(function(self, inst)
     self.inst = inst
     self.enable = true
     self.followsymbol = ""
-    self.followoffset = { 0, 0, 0 }
+    self.followoffset = Vector3(0, 0, 0)
     self.debuffs = {}
 
     --V2C: Recommended to explicitly add tag to prefab pristine state
@@ -85,11 +85,15 @@ local function RegisterDebuff(self, name, ent)
 end
 
 function Debuffable:AddDebuff(name, prefab)
-    if self.enable and self.debuffs[name] == nil then
-        local ent = SpawnPrefab(prefab)
-        if ent ~= nil then
-            RegisterDebuff(self, name, ent)
-        end
+    if self.enable then
+		if self.debuffs[name] == nil then
+			local ent = SpawnPrefab(prefab)
+			if ent ~= nil then
+				RegisterDebuff(self, name, ent)
+			end
+		else
+			self.debuffs[name].inst.components.debuff:Extend(self.followsymbol, self.followoffset)
+		end
     end
 end
 
@@ -130,6 +134,16 @@ function Debuffable:OnLoad(data)
             end
         end
     end
+end
+
+function Debuffable:GetDebugString()
+	local str = "Num Buffs: " .. tostring(GetTableSize(self.debuffs))
+	
+    for k, v in pairs(self.debuffs) do
+		str = str .. "\n  " .. tostring(v.inst.prefab)
+	end
+		
+	return str
 end
 
 return Debuffable

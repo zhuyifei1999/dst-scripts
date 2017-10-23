@@ -13,5 +13,7 @@ return CreatePrefabSkin("strawhat_floppy",
 	build_name = "strawhat_floppy",
 	rarity = "Elegant",
 	init_fn = function(inst) strawhat_init_fn(inst, "strawhat_floppy") end,
+	marketable = true,
+	release_group = 14,
 	granted_items = { "minerhat_floppy", "rainhat_floppy", },
 })

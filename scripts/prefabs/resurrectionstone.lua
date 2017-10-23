@@ -67,7 +67,7 @@ end
 local function OnCharged(inst)
     if inst.AnimState:IsCurrentAnimation("idle_off") then
         local x, y, z = inst.Transform:GetWorldPosition()
-        if FindEntity(inst, inst.Physics:GetRadius(), HasPhysics, nil, { "FX", "NOCLICK", "DECOR", "INLIMBO", "playerghost", "ghost", "flying" }) ~= nil then
+        if FindEntity(inst, inst:GetPhysicsRadius(0), HasPhysics, nil, { "FX", "NOCLICK", "DECOR", "INLIMBO", "playerghost", "ghost", "flying" }) ~= nil then
             --Something is on top of us
             --Reschedule regenration...
             inst.components.cooldown:StartCharging(math.random(5, 8))

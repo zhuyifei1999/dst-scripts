@@ -15,4 +15,5 @@ return CreatePrefabSkin("torch_shadow",
 	prefabs = { "torchfire_shadow", },
 	init_fn = function(inst) torch_init_fn(inst, "torch_shadow") end,
 	fx_prefab = { "torchfire_shadow", },
+	release_group = 6,
 })

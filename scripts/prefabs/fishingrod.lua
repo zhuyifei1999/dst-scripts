@@ -39,6 +39,9 @@ local function fn()
     inst.AnimState:SetBuild("fishingrod")
     inst.AnimState:PlayAnimation("idle")
 
+    --fishingrod (from fishingrod component) added to pristine state for optimization
+    inst:AddTag("fishingrod")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

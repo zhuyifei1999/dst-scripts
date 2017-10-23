@@ -13,4 +13,6 @@ return CreatePrefabSkin("dragonling_wyvern",
 	build_name = "dragonling_wyvern",
 	rarity = "Elegant",
 	init_fn = function(inst) pet_init_fn(inst, "dragonling_wyvern", "dragonling_build" ) end,
+	marketable = true,
+	release_group = 17,
 })

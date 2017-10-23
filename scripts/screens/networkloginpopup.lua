@@ -8,7 +8,7 @@ local Widget = require "widgets/widget"
 local Menu = require "widgets/menu"
 local TEMPLATES = require "widgets/templates"
 
-local NetworkLoginPopup = Class(Screen, function(self, onLogin, checkVersion, onCancel, hideOfflineButton)
+local NetworkLoginPopup = Class(Screen, function(self, onLogin, onCancel, hideOfflineButton)
 	Screen._ctor(self, "NetworkLoginPopup")
 
 	--darken everything behind the dialog
@@ -75,7 +75,6 @@ local NetworkLoginPopup = Class(Screen, function(self, onLogin, checkVersion, on
 	self.time = 0
 	self.progress = 0
 	self.onLogin = onLogin
-	self.checkVersion = checkVersion
 	self.onCancel = onCancel
 end)
 
@@ -115,7 +114,7 @@ function NetworkLoginPopup:OnControl(control, down)
 end
 
 function NetworkLoginPopup:OnLogin(forceOffline)
-	if forceOffline or (not self.logged and self.checkVersion() ~= "waiting") then
+	if forceOffline or not self.logged then
 		self.logged = true
 	    self:Disable()
 	    self:StopUpdating()

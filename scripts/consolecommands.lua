@@ -572,6 +572,10 @@ function c_godmode(player)
             player:PushEvent("respawnfromghost")
             print("Reviving "..player.name.." from ghost.")
             return
+        elseif player:HasTag("corpse") then
+            player:PushEvent("respawnfromcorpse")
+            print("Reviving "..player.name.." from corpse.")
+            return
         elseif player.components.health ~= nil then
             local godmode = player.components.health.invincible
             player.components.health:SetInvincible(not godmode)
@@ -1025,6 +1029,16 @@ function c_sounddebug()
         require "debugsounds"
     end
     SOUNDDEBUG_ENABLED = true
+    SOUNDDEBUGUI_ENABLED = false
+    TheSim:SetDebugRenderEnabled(true)
+end
+
+function c_sounddebugui()
+    if not package.loaded["debugsounds"] then
+        require "debugsounds"
+    end
+    SOUNDDEBUG_ENABLED = true
+    SOUNDDEBUGUI_ENABLED = true
     TheSim:SetDebugRenderEnabled(true)
 end
 

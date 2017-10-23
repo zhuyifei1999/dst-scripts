@@ -17,4 +17,5 @@ return CreatePrefabSkin("wickerbottom_lightninggoat",
 	torso_tuck_builds = { "wickerbottom_lightninggoat", },
 	has_alternate_for_body = { "wickerbottom_lightninggoat", },
 	has_alternate_for_skirt = { "wickerbottom_lightninggoat", },
+	release_group = 15,
 })

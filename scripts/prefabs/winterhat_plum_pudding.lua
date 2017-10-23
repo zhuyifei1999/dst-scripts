@@ -13,4 +13,5 @@ return CreatePrefabSkin("winterhat_plum_pudding",
 	build_name = "winterhat_plum_pudding",
 	rarity = "Event",
 	init_fn = function(inst) winterhat_init_fn(inst, "winterhat_plum_pudding") end,
+	release_group = 22,
 })

@@ -14,4 +14,6 @@ return CreatePrefabSkin("winona_formal",
 	build_name = "winona_formal",
 	rarity = "Elegant",
 	skins = { ghost_skin = "ghost_winona_build", normal_skin = "winona_formal", },
+	marketable = true,
+	release_group = 30,
 })

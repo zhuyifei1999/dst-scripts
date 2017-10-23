@@ -13,4 +13,5 @@ return CreatePrefabSkin("researchlab4_festive_bell_red_firehound",
 	build_name = "researchlab4_festive_bell_red_firehound",
 	rarity = "Event",
 	init_fn = function(inst) researchlab4_init_fn(inst, "researchlab4_festive_bell_red_firehound") end,
+	release_group = 26,
 })

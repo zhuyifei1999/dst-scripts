@@ -56,6 +56,7 @@ function AddTaskSet(id, data)
     assert(taskgrouplist[id] == nil, "Tried adding task set '"..id.."' twice!")
     data.location = data.location or "forest"
     taskgrouplist[id] = data
+    print("  taskgrouplist:", id, data.name)
 end
 
 function AddModTaskSet(mod, id, data)
@@ -75,6 +76,7 @@ end
 
 require("map/tasksets/forest")
 require("map/tasksets/caves")
+require("map/tasksets/lavaarena")
 
 ------------------------------------------------------------------
 -- Export functions
