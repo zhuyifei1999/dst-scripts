@@ -121,7 +121,7 @@ STRINGS =
         wilson = "*Revives allies twice as quickly\n*Restores three times more health when reviving allies\n\nExpertise:\nMelee, Darts, Staves",
         willow = "*Protected by Bernie the Bear\n*Fire and Explosive attack damage increased by 10%\n\nExpertise:\nDarts, Staves",
         wendy = "*Protected by her twin sister, Abigail\n\n\n\nExpertise:\nDarts, Staves",
-        wolfgang = "*Becomes Mighty when health is low\n*Increased attack power, defense, and movement speed while Mighty\n\nExpertise:\nMelee",
+        wolfgang = "*Becomes Mighty when health is low, increasing attack power, defense, and movement speed for 10 seconds\n\nExpertise:\nMelee",
         wx78 = "*Shocks enemies when attacked\n*Electric attack damage increased by 50%\n\nExpertise:\nMelee",
         wickerbottom = "*Gains a buff after dealing sufficient damage, amplifying her next spell\n\n\nExpertise:\nBooks, Staves",
         wes = "*Can be revived twice as quickly\n*Gains minimal aggro when attacking\n*Less likely to lose aggro once drawn\n\nExpertise:\nMelee, Darts, Staves",
@@ -2069,13 +2069,11 @@ STRINGS =
     },
     BOARLORD_ROUND1_INTRO =						-- Pit Pigs: practice round / boarlord expects players to win / would be upset if they lost
     {
-        "To arms!",
         "Release the pigs!",
     },
     BOARLORD_ROUND1_FIGHT_TEAMWORK =			-- dialog before the first set of big groups of pit pigs / players will need to start working as a team to get past these waves
     {
 		"Ha!",
-        "We've trained in solitude for so long.",
         "It's good to have a challenge once again.",
         "This should be fun.",
     },
@@ -2108,7 +2106,7 @@ STRINGS =
         "We've endured more in this realm than you know.",
         "And as forging fires temper steel,",
         "Hardship has only made us stronger.",
-        "We will never join you.",   
+        "We'll never join you.",   
     },
     BOARLORD_ROUND3_INTRO =						-- Turtillus round
     {
@@ -2124,14 +2122,13 @@ STRINGS =
     },
     BOARLORD_ROUND4_INTRO =						-- Peghook / boarload is confident this next round will wipe the group
     {
-        "You would have been wise to find your own realm.",
+        "You'd have been wise to find your own realm.",
         "Seek safe haven and sever yourselves from the hub.",
         "Yet here you are.",
         "I wonder.",
         "Do you understand the forces you serve?",
         "...They destroy all They touch.",
-        "Yet They Themselves are untouchable.",
-        "Unknowable.",
+        "But They Themselves are untouchable. Unknowable.",
         "That is why we cannot let you win.",
     },
     BOARLORD_ROUND4_FIGHT_BANTER =				-- Banter: upset that you are not dead yet
@@ -2147,12 +2144,11 @@ STRINGS =
     BOARLORD_ROUND4_END =						-- surprised / upset / mad - reason for 15 second delay
     {
         "Know this, Gatekeepers:",
-        "My warriors are proud and strong.",
         "Once you are dead...",
         "We will activate the Gateway.",
-        "We will return to the hub and destroy the Throne.",
-        "Whatever way we can.",
-        "We will end this all, for good.",
+        "We'll return to the hub and destroy the Throne.",
+        "My warriors are proud and strong.",
+        "And we will end this all, for good.",
     },
     BOARLORD_ROUND5_INTRO =						-- 2 Trails / boarlord fully expects players to die to them
     {
@@ -4216,6 +4212,7 @@ STRINGS.UI =
     CLOUDSERVERCREATIONSCREEN =
     {
         TITLE = "Custom Match",
+        CREATE = "Create Match",
     },
 
     GAMEMODES =
@@ -5911,20 +5908,46 @@ STRINGS.LUCY =
         "Everything is going to be fine. Just focus!",
     },
 
-    --events
-    lavaarena = 
+    ---lavaarena -- do not translate --
+    held = 
     {
         "It's so hot!",
-        "Throw me!!",
+        "Throw me!",
         "I think we're winning!",
-        "These guys don't stand a chance!",
-        "Gosh it's hot here.",
+        "They don't stand a chance!",
+        "Gosh it's hot in here.",
         "Fight! Fight!",
         "Get'em!",
-        "You hear that crowd?!",
-        "Are you gonna take that??",
-        "We're tougher than anyone in this arena.",
+        "Give them the chop!",
+        "The crowd is so loud!",
     },
+    heldnotwoodie = 
+    {
+        "I'm not too crazy about this.",
+        "You're not holding me right!",
+        "Your hands are clammy.",
+        "Just throw me already!",
+        "This won't be a regular thing.",
+        "Don't read too much into this.",
+    },
+    struckenemy = 
+    {
+        "Gotcha!",
+        "Take that!",
+        "Take this!",
+        "Bull's eye!",
+        "Ha!",
+        "Thwack!",
+    },
+    missedenemy = 
+    {
+        "Whoops!",
+        "I missed!",
+        "Shoot!",
+        "Hey!",
+        "Get back here!",
+    },
+    ---
 }
 
 STRINGS.MODS =

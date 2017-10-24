@@ -608,11 +608,13 @@ function EntityScript:GetDisplayName()
         name = ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.GENERIC)
     end
 
-	local name_extention = STRINGS.NAME_DETAIL_EXTENTION[string.upper(self.prefab)]
-    if name_extention ~= nil then
-		name = name .. "\n" .. name_extention
+	if self.prefab ~= nil then
+		local name_extention = STRINGS.NAME_DETAIL_EXTENTION[string.upper(self.prefab)]
+		if name_extention ~= nil then
+			name = name .. "\n" .. name_extention
+		end
 	end
-	
+		
     return name
 end
 

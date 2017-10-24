@@ -228,17 +228,17 @@ function QuickJoinScreen:TryPickServer()
 end
 
 function QuickJoinScreen:TryNextServer(error, reason)
-	local server = self.filtered_servers[self.servertojoin]
+	local server = self.filtered_servers ~= nil and self.filtered_servers[self.servertojoin] or nil
 	if server ~= nil and error ~= nil and reason ~= nil then
 	    print(string.format("[QuickJoin]: Failed to join: %s, %s - %s: %s", server.name, tostring(server.ip), tostring(error), tostring(reason)))
 	end
 
-	if self.servertojoin < math.min(#self.filtered_servers, MAX_JOIN_ATTEMPTS) then
+	if self.servertojoin < math.min(self.filtered_servers ~= nil and #self.filtered_servers or 0, MAX_JOIN_ATTEMPTS) then
 		self.servertojoin = self.servertojoin + 1
 		self.queuejoingame = true
 	else
 		local values = {}
-		values.numservers = #self.filtered_servers
+		values.numservers = self.filtered_servers ~= nil and #self.filtered_servers or 0
 		values.special_event = (self.event_id and #self.event_id > 0) and self.event_id or nil
 		Stats.PushMetricsEvent("quickjoin.failed", TheNet:GetUserID(), values)
 
@@ -265,7 +265,7 @@ function QuickJoinScreen:TryNextServer(error, reason)
 end
 
 function QuickJoinScreen:JoinGame()
-	if self.servertojoin then
+	if self.servertojoin and self.filtered_servers ~= nil then
 		local server = self.filtered_servers[self.servertojoin]
 	    self.status_msg:SetString(subfmt(self.string_table.CONNECTING_TO_SERVER, { server = server.name }))
 		local sel_serv = TheNet:GetServerListingFromActualIndex(server.actualindex)

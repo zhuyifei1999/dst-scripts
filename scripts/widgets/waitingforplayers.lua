@@ -172,7 +172,7 @@ local function UpdatePlayerListing(widget, data)
 				widget.puppet.animstate:Hide("ARM_carry")
 				widget.puppet.animstate:Show("ARM_normal")
 			end
-			
+
 			local armour =  TUNING.LAVAARENA_STARTING_ITEMS[string.upper(prefab)][2]
 			armour = item_swap_overrides[armour] or armour
 			if armour ~= nil and armour ~= "" then
@@ -185,7 +185,7 @@ local function UpdatePlayerListing(widget, data)
 end
 
 function WaitingForPlayers:Refresh(force)
-	local prev_num_players = self.players
+    local prev_num_players = self.players ~= nil and #self.players or 0
     self.players = self:GetPlayerTable()
 
     for i, widget in ipairs(self.player_listing) do
@@ -195,22 +195,22 @@ function WaitingForPlayers:Refresh(force)
             player.lobbycharacter ~= widget.lobbycharacter or
             (player.performance ~= nil) ~= (widget.performance ~= nil)
             then
-			UpdatePlayerListing(widget, player)
+            UpdatePlayerListing(widget, player)
         end
     end
-    
+
     self:RefreshNoWaitingDisplay()
-    
-    if prev_num_players ~= self.players then
-		self.nowaiting_checkbox:SetText(subfmt(STRINGS.UI.LOBBY_WAITING_FOR_PLAYERS_SCREEN.ENABLE_NO_WAITING_HELPTEXT, {num=#self.players, max=TheNet:GetServerMaxPlayers()}))
+
+    if prev_num_players ~= #self.players then
+        self.nowaiting_checkbox:SetText(subfmt(STRINGS.UI.LOBBY_WAITING_FOR_PLAYERS_SCREEN.ENABLE_NO_WAITING_HELPTEXT, {num=#self.players, max=TheNet:GetServerMaxPlayers()}))
     end
 end
 
 function WaitingForPlayers:RefreshNoWaitingDisplay()
 	local prev_allow_vote = self.allow_no_waiting_vote
 	self.allow_no_waiting_vote = #self.players ~= TheNet:GetServerMaxPlayers() and not self.spawn_countdown_active
-	
-	if TheWorld.net.components.worldcharacterselectlobby ~= nil then
+
+	if TheWorld.net ~= nil and TheWorld.net.components.worldcharacterselectlobby ~= nil then
 		for i, widget in ipairs(self.player_listing) do
 			if self.allow_no_waiting_vote and widget.userid ~= nil and TheWorld.net.components.worldcharacterselectlobby:GetNoWaitingVote(widget.userid) then
      			widget._nowaiting:Show()
@@ -219,7 +219,7 @@ function WaitingForPlayers:RefreshNoWaitingDisplay()
 			end
 		end
 	end
-	
+
 	if prev_allow_vote and not self.allow_no_waiting_vote then
 		if self.nowaiting_checkbox.timeout_task ~= nil then
 			self.nowaiting_checkbox.timeout_task:Cancel()

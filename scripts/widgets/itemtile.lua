@@ -380,7 +380,7 @@ function ItemTile:StartDrag()
 end
 
 function ItemTile:HasSpoilage()
-    if self.hasspoilage == nil then
+    if self.hasspoilage ~= nil then
         return self.hasspoilage
     elseif not (self.item:HasTag("fresh") or self.item:HasTag("stale") or self.item:HasTag("spoiled")) then
         self.hasspoilage = false

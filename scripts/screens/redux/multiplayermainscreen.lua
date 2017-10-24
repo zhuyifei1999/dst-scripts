@@ -660,7 +660,6 @@ function MultiplayerMainScreen:FinishedFadeIn()
 											{text=lang_popup.no, cb = function() TheFrontEnd:PopScreen() end}
 										}
 									)
-								popup_screen.text:SetFont(BUTTONFONT)
 
 								TheFrontEnd:PushScreen( popup_screen )
 								Profile:SetValue("language_mod_asked_"..interface_lang, true)

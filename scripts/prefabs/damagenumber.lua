@@ -22,6 +22,8 @@ local function fn()
     inst.damage = net_shortint(inst.GUID, "damagenumber.damage")
     inst.large = net_bool(inst.GUID, "damagenumber.large", "damagedirty")
 
+    inst:AddTag("CLASSIFIED")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

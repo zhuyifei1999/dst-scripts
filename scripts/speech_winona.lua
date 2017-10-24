@@ -510,6 +510,8 @@ return {
         },
 		THULECITE = "I love working with new materials.",
 		ARMORRUINS = "Not a bad piece of work.",
+		ARMORSKELETON = "A bit creepy, isn't it?",
+        SKELETONHAT = "Makes me a little uneasy. Heh heh...",
 		RUINS_BAT = "This thulecite stuff is incredible!",
 		RUINSHAT = "Transforms the wearer into the \"King of Snoot\".",
 		NIGHTMARE_TIMEPIECE =
@@ -627,6 +629,7 @@ return {
         	RAGE = "He's tougher than he looks... but so am I!",
         },
         MUSHROOMBOMB = "Fire in the hole!",
+        SLEEPBOMB = "An unethical weapon, plain and simple.",
 		MUSHTREE_TALL =
 		{
             GENERIC = "It's huge!",
@@ -1238,6 +1241,10 @@ return {
 			COMPLETE = "What is this a skeleton of?!",
         },
         STALKER = "That thing's terrifying!",
+        STALKER_ATRIUM = "You got a bone to pick with me, bub? Ha!",
+        STALKER_MINION = "I don't want that anywhere near me!",
+        THURIBLE = "Smells kinda like gasoline.",
+        ATRIUM_OVERGROWTH = "Don't think it's supposed to look like that.",
 		FROG =
 		{
 			DEAD = "It croaked.",

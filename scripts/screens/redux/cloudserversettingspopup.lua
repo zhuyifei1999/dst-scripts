@@ -16,7 +16,6 @@ local TEMPLATES = require "widgets/redux/templates"
 require("constants")
 require("util")
 
-
 local wide_label_width = 120 -- width of the label on the wide fields
 local wide_input_width = 315 -- width of the input box on the wide fields
 local wide_field_nudge = -30
@@ -101,7 +100,7 @@ local CloudServerSettingsPopup = Class(Screen, function(self, prev_screen, user_
     local menu_buttons = {
         {
             cb = function() if self:ValidateSettings() then self:Hide() TheFrontEnd:PushScreen(HostCloudServerPopup(self:GetServerName(), self:GetServerDescription(), self:GetPassword(), self:GetClanInfo())) end end,
-            text = STRINGS.UI.SERVERCREATIONSCREEN.CREATE,
+            text = STRINGS.UI.CLOUDSERVERCREATIONSCREEN.CREATE,
         },
         {
             cb = function() TheFrontEnd:PopScreen() end,

@@ -930,26 +930,16 @@ msgstr ""
 
 #. STRINGS.BOARLORD_ROUND1_FIGHT_TEAMWORK.2
 msgctxt "STRINGS.BOARLORD_ROUND1_FIGHT_TEAMWORK.2"
-msgid "We've trained in solitude for so long."
+msgid "It's good to have a challenge once again."
 msgstr ""
 
 #. STRINGS.BOARLORD_ROUND1_FIGHT_TEAMWORK.3
 msgctxt "STRINGS.BOARLORD_ROUND1_FIGHT_TEAMWORK.3"
-msgid "It's good to have a challenge once again."
-msgstr ""
-
-#. STRINGS.BOARLORD_ROUND1_FIGHT_TEAMWORK.4
-msgctxt "STRINGS.BOARLORD_ROUND1_FIGHT_TEAMWORK.4"
 msgid "This should be fun."
 msgstr ""
 
 #. STRINGS.BOARLORD_ROUND1_INTRO.1
 msgctxt "STRINGS.BOARLORD_ROUND1_INTRO.1"
-msgid "To arms!"
-msgstr ""
-
-#. STRINGS.BOARLORD_ROUND1_INTRO.2
-msgctxt "STRINGS.BOARLORD_ROUND1_INTRO.2"
 msgid "Release the pigs!"
 msgstr ""
 
@@ -975,7 +965,7 @@ msgstr ""
 
 #. STRINGS.BOARLORD_ROUND2_END.5
 msgctxt "STRINGS.BOARLORD_ROUND2_END.5"
-msgid "We will never join you."
+msgid "We'll never join you."
 msgstr ""
 
 #. STRINGS.BOARLORD_ROUND2_FIGHT_BANTER.1
@@ -1035,32 +1025,27 @@ msgstr ""
 
 #. STRINGS.BOARLORD_ROUND4_END.2
 msgctxt "STRINGS.BOARLORD_ROUND4_END.2"
-msgid "My warriors are proud and strong."
+msgid "Once you are dead..."
 msgstr ""
 
 #. STRINGS.BOARLORD_ROUND4_END.3
 msgctxt "STRINGS.BOARLORD_ROUND4_END.3"
-msgid "Once you are dead..."
+msgid "We will activate the Gateway."
 msgstr ""
 
 #. STRINGS.BOARLORD_ROUND4_END.4
 msgctxt "STRINGS.BOARLORD_ROUND4_END.4"
-msgid "We will activate the Gateway."
+msgid "We'll return to the hub and destroy the Throne."
 msgstr ""
 
 #. STRINGS.BOARLORD_ROUND4_END.5
 msgctxt "STRINGS.BOARLORD_ROUND4_END.5"
-msgid "We will return to the hub and destroy the Throne."
+msgid "My warriors are proud and strong."
 msgstr ""
 
 #. STRINGS.BOARLORD_ROUND4_END.6
 msgctxt "STRINGS.BOARLORD_ROUND4_END.6"
-msgid "Whatever way we can."
-msgstr ""
-
-#. STRINGS.BOARLORD_ROUND4_END.7
-msgctxt "STRINGS.BOARLORD_ROUND4_END.7"
-msgid "We will end this all, for good."
+msgid "And we will end this all, for good."
 msgstr ""
 
 #. STRINGS.BOARLORD_ROUND4_FIGHT_BANTER.1
@@ -1080,7 +1065,7 @@ msgstr ""
 
 #. STRINGS.BOARLORD_ROUND4_INTRO.1
 msgctxt "STRINGS.BOARLORD_ROUND4_INTRO.1"
-msgid "You would have been wise to find your own realm."
+msgid "You'd have been wise to find your own realm."
 msgstr ""
 
 #. STRINGS.BOARLORD_ROUND4_INTRO.2
@@ -1110,16 +1095,11 @@ msgstr ""
 
 #. STRINGS.BOARLORD_ROUND4_INTRO.7
 msgctxt "STRINGS.BOARLORD_ROUND4_INTRO.7"
-msgid "Yet They Themselves are untouchable."
+msgid "But They Themselves are untouchable. Unknowable."
 msgstr ""
 
 #. STRINGS.BOARLORD_ROUND4_INTRO.8
 msgctxt "STRINGS.BOARLORD_ROUND4_INTRO.8"
-msgid "Unknowable."
-msgstr ""
-
-#. STRINGS.BOARLORD_ROUND4_INTRO.9
-msgctxt "STRINGS.BOARLORD_ROUND4_INTRO.9"
 msgid "That is why we cannot let you win."
 msgstr ""
 
@@ -53103,6 +53083,11 @@ msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.ARMORRUINS"
 msgid "Not a bad piece of work."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.ARMORSKELETON
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.ARMORSKELETON"
+msgid "A bit creepy, isn't it?"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.ARMORSLURPER
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.ARMORSLURPER"
 msgid "So tight I barely remember the gnawing hunger!"
@@ -53211,6 +53196,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.ATRIUM_LIGHT.ON
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.ATRIUM_LIGHT.ON"
 msgid "Not sure how it works."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.ATRIUM_OVERGROWTH
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.ATRIUM_OVERGROWTH"
+msgid "Don't think it's supposed to look like that."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.ATRIUM_RUBBLE.LINE_1
@@ -57538,6 +57528,11 @@ msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.SKELETON"
 msgid "A workplace safety reminder."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.SKELETONHAT
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.SKELETONHAT"
+msgid "Makes me a little uneasy. Heh heh..."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.SKELETON_PLAYER.DEFAULT
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.SKELETON_PLAYER.DEFAULT"
 msgid "%s got disassembled by %s."
@@ -57566,6 +57561,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.SKULLCHEST
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.SKULLCHEST"
 msgid "Is that supposed to scare me?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.SLEEPBOMB
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.SLEEPBOMB"
+msgid "An unethical weapon, plain and simple."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.SLURPER
@@ -57853,6 +57853,16 @@ msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.STALKER"
 msgid "That thing's terrifying!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.STALKER_ATRIUM
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.STALKER_ATRIUM"
+msgid "You got a bone to pick with me, bub? Ha!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.STALKER_MINION
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.STALKER_MINION"
+msgid "I don't want that anywhere near me!"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.STATUEGLOMMER.EMPTY
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.STATUEGLOMMER.EMPTY"
 msgid "The materials were worth more than the statue."
@@ -58111,6 +58121,11 @@ msgstr ""
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.THULECITE_PIECES
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.THULECITE_PIECES"
 msgid "Just needs a spit shine."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.THURIBLE
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.THURIBLE"
+msgid "Smells kinda like gasoline."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.TOADSTOOL.GENERIC
@@ -79375,7 +79390,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.SPEAR_GUNGNIR
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.SPEAR_GUNGNIR"
-msgid "A EXCELLENT TOOL OF TERMINATION"
+msgid "AN EXCELLENT TOOL OF TERMINATION"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.SPEAR_WATHGRITHR
@@ -81825,7 +81840,7 @@ msgstr ""
 
 #. STRINGS.LAVAARENA_CHARACTER_DESCRIPTIONS.wolfgang
 msgctxt "STRINGS.LAVAARENA_CHARACTER_DESCRIPTIONS.wolfgang"
-msgid "*Becomes Mighty when health is low\n*Increased attack power, defense, and movement speed while Mighty\n\nExpertise:\nMelee"
+msgid "*Becomes Mighty when health is low, increasing attack power, defense, and movement speed for 10 seconds\n\nExpertise:\nMelee"
 msgstr ""
 
 #. STRINGS.LAVAARENA_CHARACTER_DESCRIPTIONS.woodie
@@ -82093,6 +82108,81 @@ msgctxt "STRINGS.LUCY.equipped.9"
 msgid "All work and no play makes me want to chop some trees."
 msgstr ""
 
+#. STRINGS.LUCY.held.1
+msgctxt "STRINGS.LUCY.held.1"
+msgid "It's so hot!"
+msgstr ""
+
+#. STRINGS.LUCY.held.2
+msgctxt "STRINGS.LUCY.held.2"
+msgid "Throw me!"
+msgstr ""
+
+#. STRINGS.LUCY.held.3
+msgctxt "STRINGS.LUCY.held.3"
+msgid "I think we're winning!"
+msgstr ""
+
+#. STRINGS.LUCY.held.4
+msgctxt "STRINGS.LUCY.held.4"
+msgid "They don't stand a chance!"
+msgstr ""
+
+#. STRINGS.LUCY.held.5
+msgctxt "STRINGS.LUCY.held.5"
+msgid "Gosh it's hot in here."
+msgstr ""
+
+#. STRINGS.LUCY.held.6
+msgctxt "STRINGS.LUCY.held.6"
+msgid "Fight! Fight!"
+msgstr ""
+
+#. STRINGS.LUCY.held.7
+msgctxt "STRINGS.LUCY.held.7"
+msgid "Get'em!"
+msgstr ""
+
+#. STRINGS.LUCY.held.8
+msgctxt "STRINGS.LUCY.held.8"
+msgid "Give them the chop!"
+msgstr ""
+
+#. STRINGS.LUCY.held.9
+msgctxt "STRINGS.LUCY.held.9"
+msgid "The crowd is so loud!"
+msgstr ""
+
+#. STRINGS.LUCY.heldnotwoodie.1
+msgctxt "STRINGS.LUCY.heldnotwoodie.1"
+msgid "I'm not too crazy about this."
+msgstr ""
+
+#. STRINGS.LUCY.heldnotwoodie.2
+msgctxt "STRINGS.LUCY.heldnotwoodie.2"
+msgid "You're not holding me right!"
+msgstr ""
+
+#. STRINGS.LUCY.heldnotwoodie.3
+msgctxt "STRINGS.LUCY.heldnotwoodie.3"
+msgid "Your hands are clammy."
+msgstr ""
+
+#. STRINGS.LUCY.heldnotwoodie.4
+msgctxt "STRINGS.LUCY.heldnotwoodie.4"
+msgid "Just throw me already!"
+msgstr ""
+
+#. STRINGS.LUCY.heldnotwoodie.5
+msgctxt "STRINGS.LUCY.heldnotwoodie.5"
+msgid "This won't be a regular thing."
+msgstr ""
+
+#. STRINGS.LUCY.heldnotwoodie.6
+msgctxt "STRINGS.LUCY.heldnotwoodie.6"
+msgid "Don't read too much into this."
+msgstr ""
+
 #. STRINGS.LUCY.in_container.1
 msgctxt "STRINGS.LUCY.in_container.1"
 msgid "It's dark in here!"
@@ -82158,54 +82248,29 @@ msgctxt "STRINGS.LUCY.in_container.9"
 msgid "I can't breathe! Wait."
 msgstr ""
 
-#. STRINGS.LUCY.lavaarena.1
-msgctxt "STRINGS.LUCY.lavaarena.1"
-msgid "It's so hot!"
+#. STRINGS.LUCY.missedenemy.1
+msgctxt "STRINGS.LUCY.missedenemy.1"
+msgid "Whoops!"
 msgstr ""
 
-#. STRINGS.LUCY.lavaarena.10
-msgctxt "STRINGS.LUCY.lavaarena.10"
-msgid "We're tougher than anyone in this arena."
+#. STRINGS.LUCY.missedenemy.2
+msgctxt "STRINGS.LUCY.missedenemy.2"
+msgid "I missed!"
 msgstr ""
 
-#. STRINGS.LUCY.lavaarena.2
-msgctxt "STRINGS.LUCY.lavaarena.2"
-msgid "Throw me!!"
+#. STRINGS.LUCY.missedenemy.3
+msgctxt "STRINGS.LUCY.missedenemy.3"
+msgid "Shoot!"
 msgstr ""
 
-#. STRINGS.LUCY.lavaarena.3
-msgctxt "STRINGS.LUCY.lavaarena.3"
-msgid "I think we're winning!"
+#. STRINGS.LUCY.missedenemy.4
+msgctxt "STRINGS.LUCY.missedenemy.4"
+msgid "Hey!"
 msgstr ""
 
-#. STRINGS.LUCY.lavaarena.4
-msgctxt "STRINGS.LUCY.lavaarena.4"
-msgid "These guys don't stand a chance!"
-msgstr ""
-
-#. STRINGS.LUCY.lavaarena.5
-msgctxt "STRINGS.LUCY.lavaarena.5"
-msgid "Gosh it's hot here."
-msgstr ""
-
-#. STRINGS.LUCY.lavaarena.6
-msgctxt "STRINGS.LUCY.lavaarena.6"
-msgid "Fight! Fight!"
-msgstr ""
-
-#. STRINGS.LUCY.lavaarena.7
-msgctxt "STRINGS.LUCY.lavaarena.7"
-msgid "Get'em!"
-msgstr ""
-
-#. STRINGS.LUCY.lavaarena.8
-msgctxt "STRINGS.LUCY.lavaarena.8"
-msgid "You hear that crowd?!"
-msgstr ""
-
-#. STRINGS.LUCY.lavaarena.9
-msgctxt "STRINGS.LUCY.lavaarena.9"
-msgid "Are you gonna take that??"
+#. STRINGS.LUCY.missedenemy.5
+msgctxt "STRINGS.LUCY.missedenemy.5"
+msgid "Get back here!"
 msgstr ""
 
 #. STRINGS.LUCY.on_chopped.1
@@ -82806,6 +82871,36 @@ msgstr ""
 #. STRINGS.LUCY.other_owner.9
 msgctxt "STRINGS.LUCY.other_owner.9"
 msgid "Did I say you could take me?"
+msgstr ""
+
+#. STRINGS.LUCY.struckenemy.1
+msgctxt "STRINGS.LUCY.struckenemy.1"
+msgid "Gotcha!"
+msgstr ""
+
+#. STRINGS.LUCY.struckenemy.2
+msgctxt "STRINGS.LUCY.struckenemy.2"
+msgid "Take that!"
+msgstr ""
+
+#. STRINGS.LUCY.struckenemy.3
+msgctxt "STRINGS.LUCY.struckenemy.3"
+msgid "Take this!"
+msgstr ""
+
+#. STRINGS.LUCY.struckenemy.4
+msgctxt "STRINGS.LUCY.struckenemy.4"
+msgid "Bull's eye!"
+msgstr ""
+
+#. STRINGS.LUCY.struckenemy.5
+msgctxt "STRINGS.LUCY.struckenemy.5"
+msgid "Ha!"
+msgstr ""
+
+#. STRINGS.LUCY.struckenemy.6
+msgctxt "STRINGS.LUCY.struckenemy.6"
+msgid "Thwack!"
 msgstr ""
 
 #. STRINGS.LUCY.transform_beaver.1
@@ -97721,6 +97816,11 @@ msgstr ""
 #. STRINGS.UI.CHATINPUTSCREEN.WHISPER_DESIGNATOR
 msgctxt "STRINGS.UI.CHATINPUTSCREEN.WHISPER_DESIGNATOR"
 msgid "[W]"
+msgstr ""
+
+#. STRINGS.UI.CLOUDSERVERCREATIONSCREEN.CREATE
+msgctxt "STRINGS.UI.CLOUDSERVERCREATIONSCREEN.CREATE"
+msgid "Create Match"
 msgstr ""
 
 #. STRINGS.UI.CLOUDSERVERCREATIONSCREEN.TITLE
