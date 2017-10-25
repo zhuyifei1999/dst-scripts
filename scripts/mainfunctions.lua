@@ -353,6 +353,10 @@ function GetTimeReal()
     return TheSim:GetRealTime()
 end
 
+function GetTimeRealSeconds()
+    return TheSim:GetRealTime() / 1000
+end
+
 ---SCRIPTING
 local Scripts = {}
 

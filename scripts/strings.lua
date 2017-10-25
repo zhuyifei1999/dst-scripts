@@ -4406,6 +4406,12 @@ STRINGS.UI =
         OFFLINE_POPUP_BODY = "You must be logged in to challenge\nBattlemaster Pugna's warriors.",
         OFFLINE_POPUP_BACK = "Back",
         OFFLINE_POPUP_LOGIN = "Log In",
+
+        MODS_POPUP_TITLE = "Mods Detected!",
+        MODS_POPUP_BODY = "Warning!\nClient mods are unsupported in The Forge.\nDisabling all mods is recommended.",
+        MODS_POPUP_CONTINUE = "Continue",
+        MODS_POPUP_DISABLE_MODS = "Disable All Mods",
+        MODS_POPUP_CANCEL = "Cancel",
     },
 
 	PORTRAIT =
@@ -4420,6 +4426,7 @@ STRINGS.UI =
         TITLE_VICTORY = "Victory!",
         TITLE_DEFEAT = "Defeat",
         MATCH_TIME = "Match Time: {time}",
+        DEATHS = "Total Deaths: {deaths}",
 
         SKIP = "Skip",
         CONTINUE = "Continue",
@@ -4576,10 +4583,11 @@ STRINGS.UI =
         CONFIRM_BUY_FMT = "Use {doodad_count} Spools to weave item: {item_name}?\n\nYou will be left with {doodad_net} Spools.\nSpools are used to weave limited-time event items.",
         FAIL_BUY_FMT = "{doodad_count} Spools are required to weave item: {item_name}.\n\nYou need {doodad_net} more Spool(s) to weave this item.\nSpools can be obtained by unraveling curios.",
         CONFIRM_GRIND_FMT = "Unravel this {item_name} into {doodad_count} Spools?\n\nYou will have a total of {doodad_net} Spools.\nSpools are used to weave limited-time event items.",
-        COMMERCE_INFO_BUY = "Use Spools to weave this special event item.",
+        COMMERCE_INFO_BUY = "Use {doodad_value} Spools to weave this special event item.",
         COMMERCE_INFO_NOBUY = "Only special event items can be woven from Spools.",
-        COMMERCE_INFO_GRIND = "Items can be unraveled into Spools.",
+        COMMERCE_INFO_GRIND = "This item can be unraveled into {doodad_value} Spools.",
         COMMERCE_INFO_NOGRIND = "This item cannot be unraveled.",
+        NO_MARKET = "This item cannot be traded or sold.",
         CANCEL = "Nevermind",
         OK = "OK",
     },

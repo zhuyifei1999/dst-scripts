@@ -75,7 +75,7 @@ local SetPopupDialog = Class(Screen, function(self, set_item_type)
 	local item_y = 58
 	self.max_num_items = 0
 	for _,item_set in pairs(SKIN_SET_ITEMS[self.set_item_type]) do
-		self.max_num_items = math.max( self.max_num_items, #(SKIN_SET_ITEMS[self.set_item_type][1]))
+		self.max_num_items = math.max( self.max_num_items, #item_set)
 	end
 	local steps = MAX_ITEMS - self.max_num_items
 	item_y = item_y - (steps * LINE_HEIGHT/2)

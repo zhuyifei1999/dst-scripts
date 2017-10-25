@@ -91,7 +91,7 @@ local CloudServerSettingsPopup = Class(Screen, function(self, prev_screen, user_
 
     self.item_height = 35
     self.item_padding = 10
-    self.hidden_height = (self.item_height + self.item_padding) * countKeys(self.forced_settings)
+    self.hidden_height = (self.item_height + self.item_padding) * GetTableSize(self.forced_settings)
     self.list_height = 300 - self.hidden_height
     self.buttons_height = 40
     self.dialog_width = 450
@@ -154,6 +154,8 @@ local CloudServerSettingsPopup = Class(Screen, function(self, prev_screen, user_
     self.server_desc.textbox:SetOnTabGoToTextEditWidget(function() return GetNextTextbox(self, self.server_desc.textbox) end)
     self.server_pw.textbox:SetOnTabGoToTextEditWidget(function() return GetNextTextbox(self, self.server_pw.textbox) end)
 
+	local include_privacy_options = PLATFORM == "WIN32_STEAM" or PLATFORM == "LINUX_STEAM" or PLATFORM == "OSX_STEAM"
+	
     if self.forced_settings.privacy_type == nil then
         self.privacy_type = Widget("Privacy Group")
         self.privacy_type.buttons = self.privacy_type:AddChild(RadioButtons(privacy_options, 450, 50, privacy_buttons, true))
@@ -163,28 +165,32 @@ local CloudServerSettingsPopup = Class(Screen, function(self, prev_screen, user_
             self.dirty_cb(self)
         end)
         self.privacy_type.focus_forward = self.privacy_type.buttons
+        
+        if not include_privacy_options then
+			self.privacy_type.buttons:Hide()
+		end
     end
 
-    self.clan_id = TEMPLATES.LabelTextbox(STRINGS.UI.SERVERCREATIONSCREEN.CLANID, nil, narrow_label_width, narrow_input_width, label_height, space_between, NEWFONT, font_size, narrow_field_nudge)
-    self.clan_id.textbox:SetTextLengthLimit( 12 )
-    self.clan_id.textbox:SetCharacterFilter( "0123456789" )
-    self.clan_id.textbox.OnTextInputted = function() self.dirty_cb(self) end
+	self.clan_id = TEMPLATES.LabelTextbox(STRINGS.UI.SERVERCREATIONSCREEN.CLANID, nil, narrow_label_width, narrow_input_width, label_height, space_between, NEWFONT, font_size, narrow_field_nudge)
+	self.clan_id.textbox:SetTextLengthLimit( 12 )
+	self.clan_id.textbox:SetCharacterFilter( "0123456789" )
+	self.clan_id.textbox.OnTextInputted = function() self.dirty_cb(self) end
 
-    self.clan_id.textbox:SetOnTabGoToTextEditWidget(function() return GetNextTextbox(self, self.clan_id.textbox) end)
+	self.clan_id.textbox:SetOnTabGoToTextEditWidget(function() return GetNextTextbox(self, self.clan_id.textbox) end)
 
-    local clan_only_options = {
-        { text = STRINGS.UI.SERVERCREATIONSCREEN.NO, data = false },
-        { text = STRINGS.UI.SERVERCREATIONSCREEN.YES, data = true }
-    }
-    self.clan_only = TEMPLATES.LabelSpinner(STRINGS.UI.SERVERCREATIONSCREEN.CLANONLY, clan_only_options, narrow_label_width, narrow_input_width, label_height, space_between, NEWFONT, font_size, narrow_field_nudge)
-    self.clan_only.spinner:SetOnChangedFn(function() self.dirty_cb(self) end)
+	local clan_only_options = {
+		{ text = STRINGS.UI.SERVERCREATIONSCREEN.NO, data = false },
+		{ text = STRINGS.UI.SERVERCREATIONSCREEN.YES, data = true }
+	}
+	self.clan_only = TEMPLATES.LabelSpinner(STRINGS.UI.SERVERCREATIONSCREEN.CLANONLY, clan_only_options, narrow_label_width, narrow_input_width, label_height, space_between, NEWFONT, font_size, narrow_field_nudge)
+	self.clan_only.spinner:SetOnChangedFn(function() self.dirty_cb(self) end)
 
-    --[[local clan_admin_options = {
-        { text = STRINGS.UI.SERVERCREATIONSCREEN.NO, data = false },
-        { text = STRINGS.UI.SERVERCREATIONSCREEN.YES, data = true }
-    }
-    self.clan_admins = TEMPLATES.LabelSpinner(STRINGS.UI.SERVERCREATIONSCREEN.CLANADMIN, clan_admin_options, narrow_label_width, narrow_input_width, label_height, space_between, NEWFONT, font_size, narrow_field_nudge)
-    self.clan_admins.spinner:SetOnChangedFn(function() self.dirty_cb(self) end)]]
+	--[[local clan_admin_options = {
+		{ text = STRINGS.UI.SERVERCREATIONSCREEN.NO, data = false },
+		{ text = STRINGS.UI.SERVERCREATIONSCREEN.YES, data = true }
+	}
+	self.clan_admins = TEMPLATES.LabelSpinner(STRINGS.UI.SERVERCREATIONSCREEN.CLANADMIN, clan_admin_options, narrow_label_width, narrow_input_width, label_height, space_between, NEWFONT, font_size, narrow_field_nudge)
+	self.clan_admins.spinner:SetOnChangedFn(function() self.dirty_cb(self) end)]]
 
     if self.forced_settings.game_mode == nil then
         self.game_mode = TEMPLATES.LabelSpinner(STRINGS.UI.SERVERCREATIONSCREEN.GAMEMODE, GetGameModesSpinnerData(ModManager:GetEnabledServerModNames()), narrow_label_width, narrow_input_width, label_height, space_between, NEWFONT, font_size, narrow_field_nudge)
@@ -235,7 +241,9 @@ local CloudServerSettingsPopup = Class(Screen, function(self, prev_screen, user_
     AddIfValid(self.server_intention)
     AddIfValid(self.server_name)
     AddIfValid(self.server_desc)
-    AddIfValid(self.privacy_type)
+    if include_privacy_options then
+		AddIfValid(self.privacy_type)
+	end
     AddIfValid(self.game_mode)
     AddIfValid(self.max_players)
     AddIfValid(self.server_pw)
@@ -276,10 +284,10 @@ function CloudServerSettingsPopup:OnBecomeActive()
 end
 
 function CloudServerSettingsPopup:RefreshPrivacyButtons()
-    self.privacy_type.buttons:EnableAllButtons()
-    if self._cached_privacy_setting ~= nil then
-        self.privacy_type.buttons:SetSelected(self._cached_privacy_setting)
-    end
+	self.privacy_type.buttons:EnableAllButtons()
+	if self._cached_privacy_setting ~= nil then
+		self.privacy_type.buttons:SetSelected(self._cached_privacy_setting)
+	end
 end
 
 function CloudServerSettingsPopup:RefreshIntentionsButton()
@@ -295,37 +303,37 @@ end
 
 function CloudServerSettingsPopup:DisplayClanControls(show)
     -- These controls don't get cleaned up properly unless they have a parent, so we shuffle them between the scroll list and ourselves.
-    if show then
-        local expand_height = 2 * (self.item_height + self.item_padding)
-        self.dialog:SetSize(self.dialog_width, self.dialog_height + expand_height)
-        self.scroll_list.height = self.list_height + expand_height + self.item_padding
-        self:RemoveChild(self.clan_id)
-        self:RemoveChild(self.clan_only)
-        --self:RemoveChild(self.clan_admins)
-        local nextrow = nil
-        for i, v in ipairs(self.page_widgets) do
-            if v == self.privacy_type then
-                i, nextrow = next(self.page_widgets, i)
-            end
-        end
-        self.scroll_list:AddItem(self.clan_id, nextrow)
-        self.scroll_list:AddItem(self.clan_only, nextrow)
-        --self.scroll_list:AddItem(self.clan_admins, nextrow)
-        self.clan_id:SetFocus()
-        self.clan_id.textbox:SetEditing(true)
-    else
-        self.dialog:SetSize(self.dialog_width, self.dialog_height)
-        self.scroll_list.height = self.list_height + self.item_padding
-        self.scroll_list:RemoveItem(self.clan_id)
-        self.scroll_list:RemoveItem(self.clan_only)
-        --self.scroll_list:RemoveItem(self.clan_admins)
-        self:AddChild(self.clan_id)
-        self:AddChild(self.clan_only)
-        --self:AddChild(self.clan_admins)
-        self.clan_id:Hide()
-        self.clan_only:Hide()
-        --self.clan_admins:Hide()
-    end
+	if show then
+		local expand_height = 2 * (self.item_height + self.item_padding)
+		self.dialog:SetSize(self.dialog_width, self.dialog_height + expand_height)
+		self.scroll_list.height = self.list_height + expand_height + self.item_padding
+		self:RemoveChild(self.clan_id)
+		self:RemoveChild(self.clan_only)
+		--self:RemoveChild(self.clan_admins)
+		local nextrow = nil
+		for i, v in ipairs(self.page_widgets) do
+			if v == self.privacy_type then
+				i, nextrow = next(self.page_widgets, i)
+			end
+		end
+		self.scroll_list:AddItem(self.clan_id, nextrow)
+		self.scroll_list:AddItem(self.clan_only, nextrow)
+		--self.scroll_list:AddItem(self.clan_admins, nextrow)
+		self.clan_id:SetFocus()
+		self.clan_id.textbox:SetEditing(true)
+	else
+		self.dialog:SetSize(self.dialog_width, self.dialog_height)
+		self.scroll_list.height = self.list_height + self.item_padding
+		self.scroll_list:RemoveItem(self.clan_id)
+		self.scroll_list:RemoveItem(self.clan_only)
+		--self.scroll_list:RemoveItem(self.clan_admins)
+		self:AddChild(self.clan_id)
+		self:AddChild(self.clan_only)
+		--self:AddChild(self.clan_admins)
+		self.clan_id:Hide()
+		self.clan_only:Hide()
+		--self.clan_admins:Hide()
+	end
 end
 
 function CloudServerSettingsPopup:OnControl(control, down)
@@ -480,11 +488,11 @@ end
 
 function CloudServerSettingsPopup:GetClanInfo()
     --V2C: admin flag is ignored for cloud servers
-    return {
-        id = self.clan_id.textbox:GetString(),
-        only = self.clan_only.spinner:GetSelectedData(),
-        admin = false,--self.clan_admins.spinner:GetSelectedData(),
-    }
+	return {
+		id = self.clan_id.textbox:GetString(),
+		only = self.clan_only.spinner:GetSelectedData(),
+		admin = false,--self.clan_admins.spinner:GetSelectedData(),
+	}
 end
 
 function CloudServerSettingsPopup:GetOnlineMode()

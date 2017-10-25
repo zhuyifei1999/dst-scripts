@@ -95590,7 +95590,7 @@ msgstr ""
 
 #. STRINGS.SKIN_NAMES.loading_willowfire
 msgctxt "STRINGS.SKIN_NAMES.loading_willowfire"
-msgid "loading_willowfire"
+msgid "Willow"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.loading_wolfgang
@@ -95725,12 +95725,12 @@ msgstr ""
 
 #. STRINGS.SKIN_NAMES.playerportrait_bg_spidermarsh
 msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_spidermarsh"
-msgid "Spiky Tree Portrait"
+msgid "Spider Nest Portrait"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.playerportrait_bg_spikymarsh
 msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_spikymarsh"
-msgid "Spider Nest Portrait"
+msgid "Spiky Tree Portrait"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.playerportrait_bg_thickforest
@@ -97310,12 +97310,12 @@ msgstr ""
 
 #. STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_BUY
 msgctxt "STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_BUY"
-msgid "Use Spools to weave this special event item."
+msgid "Use {doodad_value} Spools to weave this special event item."
 msgstr ""
 
 #. STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_GRIND
 msgctxt "STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_GRIND"
-msgid "Items can be unraveled into Spools."
+msgid "This item can be unraveled into {doodad_value} Spools."
 msgstr ""
 
 #. STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_NOBUY
@@ -97341,6 +97341,11 @@ msgstr ""
 #. STRINGS.UI.BARTERSCREEN.FAIL_BUY_FMT
 msgctxt "STRINGS.UI.BARTERSCREEN.FAIL_BUY_FMT"
 msgid "{doodad_count} Spools are required to weave item: {item_name}.\n\nYou need {doodad_net} more Spool(s) to weave this item.\nSpools can be obtained by unraveling curios."
+msgstr ""
+
+#. STRINGS.UI.BARTERSCREEN.NO_MARKET
+msgctxt "STRINGS.UI.BARTERSCREEN.NO_MARKET"
+msgid "This item cannot be traded or sold."
 msgstr ""
 
 #. STRINGS.UI.BARTERSCREEN.OK
@@ -100946,6 +100951,31 @@ msgstr ""
 #. STRINGS.UI.FESTIVALEVENTSCREEN.HOST_WAITINGFORWORLD
 msgctxt "STRINGS.UI.FESTIVALEVENTSCREEN.HOST_WAITINGFORWORLD"
 msgid "Waiting for world"
+msgstr ""
+
+#. STRINGS.UI.FESTIVALEVENTSCREEN.MODS_POPUP_BODY
+msgctxt "STRINGS.UI.FESTIVALEVENTSCREEN.MODS_POPUP_BODY"
+msgid "Warning!\nClient mods are unsupported in The Forge.\nDisabling all mods is recommended."
+msgstr ""
+
+#. STRINGS.UI.FESTIVALEVENTSCREEN.MODS_POPUP_CANCEL
+msgctxt "STRINGS.UI.FESTIVALEVENTSCREEN.MODS_POPUP_CANCEL"
+msgid "Cancel"
+msgstr ""
+
+#. STRINGS.UI.FESTIVALEVENTSCREEN.MODS_POPUP_CONTINUE
+msgctxt "STRINGS.UI.FESTIVALEVENTSCREEN.MODS_POPUP_CONTINUE"
+msgid "Continue"
+msgstr ""
+
+#. STRINGS.UI.FESTIVALEVENTSCREEN.MODS_POPUP_DISABLE_MODS
+msgctxt "STRINGS.UI.FESTIVALEVENTSCREEN.MODS_POPUP_DISABLE_MODS"
+msgid "Disable All Mods"
+msgstr ""
+
+#. STRINGS.UI.FESTIVALEVENTSCREEN.MODS_POPUP_TITLE
+msgctxt "STRINGS.UI.FESTIVALEVENTSCREEN.MODS_POPUP_TITLE"
+msgid "Mods Detected!"
 msgstr ""
 
 #. STRINGS.UI.FESTIVALEVENTSCREEN.OFFLINE_POPUP_BACK
@@ -108181,6 +108211,11 @@ msgstr ""
 #. STRINGS.UI.WXPLOBBYPANEL.CONTINUE
 msgctxt "STRINGS.UI.WXPLOBBYPANEL.CONTINUE"
 msgid "Continue"
+msgstr ""
+
+#. STRINGS.UI.WXPLOBBYPANEL.DEATHS
+msgctxt "STRINGS.UI.WXPLOBBYPANEL.DEATHS"
+msgid "Total Deaths: {deaths}"
 msgstr ""
 
 #. STRINGS.UI.WXPLOBBYPANEL.DETAILS_XP

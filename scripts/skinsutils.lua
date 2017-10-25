@@ -600,41 +600,29 @@ end
 
 local SKIN_SET_ITEMS = require("skin_set_info")
 function IsItemInCollection(item_type)
-	for bonus_item,input_items in pairs(SKIN_SET_ITEMS) do
+	for bonus_item,input_sets in pairs(SKIN_SET_ITEMS) do
 		if bonus_item == item_type then
-			return true
+			return true, bonus_item
 		end
-		for _,input_item in pairs(input_items[1]) do
-			if input_item == item_type then
-				return true
+		for _,item_set in pairs(input_sets) do
+			for _,input_item in pairs(item_set) do
+				if input_item == item_type then
+					return true, bonus_item
+				end
 			end
 		end
 	end
-	return false
+	return false, nil
 end
 function IsItemIsReward(item_type)
-	for bonus_item,input_items in pairs(SKIN_SET_ITEMS) do
+	for bonus_item,_ in pairs(SKIN_SET_ITEMS) do
 		if bonus_item == item_type then
 			return true
 		end
 	end
 	return false
 end
-function GetSkinSetData(item_type)
-	for bonus_item,input_items in pairs(SKIN_SET_ITEMS) do
-		local item_pos = 0
-		local set_count = 0
-		for _,input_item in pairs(input_items[1]) do
-			set_count = set_count + 1
-			if input_item == item_type then
-				item_pos = set_count
-			end
-		end
-		if item_pos > 0 then
-			return item_pos,set_count,bonus_item
-		end
-	end
-end
+
 
 
 local PURCHASE_INFO = require("skin_purchase_packs")

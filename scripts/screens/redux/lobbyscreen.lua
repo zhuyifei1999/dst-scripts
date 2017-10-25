@@ -55,18 +55,25 @@ local WxpPanel = Class(LobbyPanel, function(self, owner)
 		self.mvp_widget = self:AddChild(MvpWidget())
 		self.mvp_widget:PopulateData()
 		self.mvp_widget:SetScale(.55)
-		self.mvp_widget:SetPosition(0, 80)
+		self.mvp_widget:SetPosition(0, 75)
 	end
 	
 	self.wxp = self:AddChild(WxpLobbyPanel(owner.profile, function() owner.next_button:SetText(STRINGS.UI.WXPLOBBYPANEL.CONTINUE) end))
-    self.wxp:SetPosition(0, show_mvp_cards and -140 or 70)
+    self.wxp:SetPosition(0, show_mvp_cards and -145 or 70)
 
 	if outcome.time ~= nil then
-		local match_time = self:AddChild(Text(CHATFONT, 18, subfmt(STRINGS.UI.WXPLOBBYPANEL.MATCH_TIME, {time = str_seconds(outcome.time or 0)})))
+		local match_time = self:AddChild(Text(CHATFONT, 18, subfmt(STRINGS.UI.WXPLOBBYPANEL.MATCH_TIME, {time = str_seconds(outcome.time)})))
 		match_time:SetPosition(-250, 285)
 		match_time:SetColour(UICOLOURS.GOLD)
-		match_time:SetRegionSize(400, 50)
+		match_time:SetRegionSize(400, 20)
 		match_time:SetHAlign(ANCHOR_LEFT)
+	end		
+	if outcome.total_deaths ~= nil then
+		local deaths = self:AddChild(Text(CHATFONT, 18, subfmt(STRINGS.UI.WXPLOBBYPANEL.DEATHS, {deaths = outcome.total_deaths})))
+		deaths:SetPosition(-250, 265)
+		deaths:SetColour(UICOLOURS.GOLD)
+		deaths:SetRegionSize(400, 20)
+		deaths:SetHAlign(ANCHOR_LEFT)
 	end
 	
 	if not TheNet:IsOnlineMode() then
@@ -266,7 +273,8 @@ local LobbyScreen = Class(Screen, function(self, profile, cb)
 --	Settings.match_results.mvp_cards = json.decode('[{"user":{"name":"ScqTTFyott","prefab":"wickerbottom","userid":"FU_229530977","base":"wickerbottom_none","colour":[0.80392156862745,0.30980392156863,0.22352941176471,1]},"beststat":["kills2",234]},{"user":{"name":"Scott","prefab":"wilson","userid":"FU_229530977","base":"wilson_none","colour":[0.80392156862745,0.30980392156863,0.22352941176471,1]},"beststat":["damagetaken2",546]},{"user":{"name":"Scott","prefab":"wes","userid":"FU_229530977","base":"wes_none","colour":[0.80392156862745,0.30980392156863,0.22352941176471,1]},"beststat":["blowdarts",5203]},{"user":{"name":"ThisIsAVeryLongName","prefab":"wolfgang","userid":"FU_229530977","base":"wolfgang_none","colour":[0.80392156862745,0.30980392156863,0.22352941176471,1]},"beststat":["standards",65]},{"user":{"name":"Scott","prefab":"waxwell","userid":"FU_229530977","base":"waxwell_none","colour":[0.80392156862745,0.30980392156863,0.22352941176471,1]},"beststat":["damagetaken",87]},{"user":{"name":"Scott","prefab":"webber","userid":"FU_229530977","base":"webber_none","colour":[0.80392156862745,0.30980392156863,0.22352941176471,1]},"beststat":["aggroheld",34]}]')
 --	Settings.match_results.wxp_data = {}
 --	Settings.match_results.wxp_data[TheNet:GetUserID()] = { new_xp = 6998, match_xp = 5998, earned_boxes = 2, details = {{desc="DAILY_FIRST_WIN", val=2000}, {desc="WIN", val=1000}, {desc="DURATION", val=500}} }
-	
+--	Settings.match_results.outcome = {won = true, round = 5, time = 333, total_deaths = 23}
+
     self.currentcharacter = nil
     self.currentskins = nil
     self.time_to_refresh = REFRESH_INTERVAL

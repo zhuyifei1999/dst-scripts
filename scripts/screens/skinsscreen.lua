@@ -194,10 +194,11 @@ function SkinsScreen:OnItemSelect(type, item_type, item_id, itemimage)
 			
 			self.details_panel.set_info_btn.set_item_type = item_type --save it for the click press
 		else
-			local position,total,set_item_type = GetSkinSetData(item_type)
-			self.details_panel.set_title:SetString(STRINGS.SET_NAMES[set_item_type] .. " " .. STRINGS.UI.SKINSSCREEN.SET_PROGRESS)
+			--deprecated old code
+			--local position,total,set_item_type = GetSkinSetData(item_type)
+			--self.details_panel.set_title:SetString(STRINGS.SET_NAMES[set_item_type] .. " " .. STRINGS.UI.SKINSSCREEN.SET_PROGRESS)
 			
-			self.details_panel.set_info_btn.set_item_type = set_item_type --save it for the click press
+			--self.details_panel.set_info_btn.set_item_type = set_item_type --save it for the click press
 		end
 	else
 		self.details_panel.set_title:Hide()

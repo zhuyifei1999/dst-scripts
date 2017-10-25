@@ -254,6 +254,22 @@ function MultiplayerMainScreen:StartMusic()
 end
 
 --------------------------------------------------------------------------------
+function MultiplayerMainScreen:_GoToFestfivalEventScreen(fadeout_cb)
+	self:StopMusic()
+	
+	self.last_focus_widget = TheFrontEnd:GetFocusWidget()
+    self.menu:Disable()
+    self.leaving = true --Note(Peter): what is this even used for?!?
+
+    TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
+		if fadeout_cb ~= nil then
+			fadeout_cb()
+		end
+        TheFrontEnd:PushScreen(FestivalEventScreen(self, self.session_data))
+        TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
+        self:Hide()
+    end)
+end
 
 function MultiplayerMainScreen:OnFestivalEventButton()
     if TheFrontEnd:GetIsOfflineMode() or not TheNet:IsOnlineMode() then
@@ -265,8 +281,32 @@ function MultiplayerMainScreen:OnFestivalEventButton()
                 {text=STRINGS.UI.FESTIVALEVENTSCREEN.OFFLINE_POPUP_BACK, cb=function() TheFrontEnd:PopScreen() end },
             }))
     else
-		self:StopMusic()
-		self:_GoToOnlineScreen(FestivalEventScreen, { self.session_data })
+		if AreAnyModsEnabled() and not KnownModIndex:GetIsSpecialEventModWarningDisabled() then
+			TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.FESTIVALEVENTSCREEN.MODS_POPUP_TITLE, STRINGS.UI.FESTIVALEVENTSCREEN.MODS_POPUP_BODY, 
+				{
+					{text=STRINGS.UI.FESTIVALEVENTSCREEN.MODS_POPUP_DISABLE_MODS, cb = function()
+							self:Disable()
+                            KnownModIndex:DisableAllMods()
+                            ForceAssetReset()
+                            KnownModIndex:SetDisableSpecialEventModWarning()
+                            KnownModIndex:Save(function()
+                                SimReset()
+                            end)
+						end},
+					{text=STRINGS.UI.FESTIVALEVENTSCREEN.MODS_POPUP_CONTINUE, cb=function() 
+						    KnownModIndex:SetDisableSpecialEventModWarning()
+                            KnownModIndex:Save(function()
+								self:_GoToFestfivalEventScreen(function() TheFrontEnd:PopScreen() end)
+							end)
+						end},
+					{text=STRINGS.UI.FESTIVALEVENTSCREEN.MODS_POPUP_CANCEL, cb=function() 
+								TheFrontEnd:PopScreen()
+						end},
+				}))
+		else
+			self:_GoToFestfivalEventScreen()
+		end
+    
 	end
 end
 

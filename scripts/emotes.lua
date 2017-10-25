@@ -10,8 +10,7 @@ local EMOTES =
         data = { anim = { "emoteXL_waving4" }, randomanim = true, mounted = true, mountsound = "angry" },
     },
 
-    ["cheer"] = {
-        aliases = { "cheers", "happy" },
+    ["happy"] = {
         data = { anim = "emoteXL_happycheer", mounted = true, mountsound = "yell" },
     },
 

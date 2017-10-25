@@ -289,12 +289,13 @@ local function DoActualRezFromCorpse(inst, source)
         end
     end
 
-    inst.Physics:ClearCollisionMask()
+    --V2C: Let stategraph do it
+    --[[inst.Physics:ClearCollisionMask()
     inst.Physics:CollidesWith(COLLISION.WORLD)
     inst.Physics:CollidesWith(COLLISION.OBSTACLES)
     inst.Physics:CollidesWith(COLLISION.SMALLOBSTACLES)
     inst.Physics:CollidesWith(COLLISION.CHARACTERS)
-    inst.Physics:CollidesWith(COLLISION.GIANTS)
+    inst.Physics:CollidesWith(COLLISION.GIANTS)]]
 
     CommonActualRez(inst)
 

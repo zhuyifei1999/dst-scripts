@@ -326,18 +326,26 @@ function ItemExplorer:_GetActionInfoText(item_data)
 
     if item_data.is_owned then
         if IsUserCommerceAllowedOnItem(item_data.item_key) then
-            text = STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_GRIND
+            local doodad_value = TheItems:GetBarterSellPrice(item_data.item_key)
+            text = subfmt(STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_GRIND, {doodad_value=doodad_value})
         else
             text = STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_NOGRIND
         end
     else 
         if IsUserCommerceAllowedOnItem(item_data.item_key) then
-            text = STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_BUY
+            local doodad_value = TheItems:GetBarterBuyPrice(item_data.item_key)
+            text = subfmt(STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_BUY, {doodad_value=doodad_value})
         else
             text = STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_NOBUY
         end
     end
     
+    if PLATFORM == "WIN32_STEAM" or PLATFORM == "LINUX_STEAM" or PLATFORM == "OSX_STEAM" then
+		if not IsItemMarketable(item_data.item_key) then
+			text = text.."\n"..STRINGS.UI.BARTERSCREEN.NO_MARKET
+		end
+	end
+
     return text
 end
 
@@ -487,12 +495,11 @@ function ItemExplorer:_UpdateClickedWidget(item_widget)
                     break
                 end
             end
-            if prev_data
-                and prev_data ~= item_widget.data
-                and prev_data.widget -- could have scrolled off screen?
-                then
+            if prev_data and prev_data ~= item_widget.data then
                 self:_SetItemActiveFlag(prev_data, false)
-                prev_data.widget:UpdateSelectionState()
+                if prev_data.widget then -- could have scrolled off screen?
+					prev_data.widget:UpdateSelectionState()
+				end
             end
         end
     end
@@ -506,7 +513,12 @@ end
 function ItemExplorer:_UpdateItemSetInfo(item_key)
     local item_type = item_key
     local pack = item_key and GetPackForItem(item_key) or nil
-	if item_key and IsItemInCollection(item_type) then
+    
+    local in_collection = false
+    local set_reward_type = ""
+    in_collection, set_reward_type = IsItemInCollection(item_type)
+    
+	if in_collection then
         self.set_info_btn.should_show_set_info = true
 		self.set_title:Show()
 		
@@ -515,10 +527,8 @@ function ItemExplorer:_UpdateItemSetInfo(item_key)
 			
 			self.set_info_btn.set_item_type = item_type --save it for the click press
 		else
-			local position,total,set_item_type = GetSkinSetData(item_type)
-			self.set_title:SetString(STRINGS.SET_NAMES[set_item_type] .. " " .. STRINGS.UI.SKINSSCREEN.SET_PROGRESS)
-			
-			self.set_info_btn.set_item_type = set_item_type --save it for the click press
+			self.set_title:SetString(STRINGS.SET_NAMES[set_reward_type] .. " " .. STRINGS.UI.SKINSSCREEN.SET_PROGRESS)
+			self.set_info_btn.set_item_type = set_reward_type --save it for the click press
 		end
     elseif pack then
         -- Don't show the more info button. They should go to the store to find

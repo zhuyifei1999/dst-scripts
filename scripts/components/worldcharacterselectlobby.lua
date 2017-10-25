@@ -24,6 +24,9 @@ self.inst = inst
 local _world = TheWorld
 local _ismastersim = _world.ismastersim
 
+local _lobby_up_time = 0
+local _client_wait_time = {}
+
 --Master simulation
 local _countdownf = -1
 
@@ -133,6 +136,11 @@ end
 
 local function StarTimer(time)
 	print ("[WorldCharacterSelectLobby] Countdown started")
+
+	local msg = {}	
+	msg.up_time = _lobby_up_time and (GetTimeRealSeconds() - _lobby_up_time) or 0
+	TheWorld.components.lavaarenaanalytics:SendAnalyticsLobbyEvent("forge.lobby.startmatch", nil, msg)
+	
 	_countdownf = time
     _countdowni:set(math.ceil(time))
 
@@ -187,13 +195,45 @@ local function OnRequestLobbyCharacter(world, data)
 	TryStartCountdown()
 end
 
-local function OnClientConnected(src, data)
+local function OnLobbyClientConnected(src, data)
 	ClearNoWaitingVotes()
 
-	if not self:IsAllowingCharacterSelect() then
-		print("OnClientConnected", data.userid)
+	if _countdowni:value() == COUNTDOWN_INACTIVE then
+		if GetTableSize(_client_wait_time) == 0 then
+			_lobby_up_time = GetTimeRealSeconds()
+		end
+		_client_wait_time[data.userid] = GetTimeRealSeconds()
+
+		local msg = {}
+		msg.up_time = _lobby_up_time and (GetTimeRealSeconds() - _lobby_up_time) or 0
+		TheWorld.components.lavaarenaanalytics:SendAnalyticsLobbyEvent("forge.lobby.join", data.userid, msg)
 		
+	else		
 		-- TODO: force disconnection
+	end
+end
+
+local function OnLobbyClientDisconnected(src, data)
+	ClearNoWaitingVotes()
+
+	if self:IsAllowingCharacterSelect() and _client_wait_time[data.userid] ~= nil then
+		local wait_time = _client_wait_time[data.userid] and (GetTimeRealSeconds() - _client_wait_time[data.userid]) or 0
+		_client_wait_time[data.userid] = nil 
+		local num_remaining_players = GetTableSize(_client_wait_time)
+
+		local msg = {}
+		msg.up_time = _lobby_up_time and (GetTimeRealSeconds() - _lobby_up_time) or 0
+		msg.duration = wait_time
+		msg.consecutive_match = TheNet:IsConsecutiveMatchForPlayer(data.userid)
+		TheWorld.components.lavaarenaanalytics:SendAnalyticsLobbyEvent("forge.lobby.leave", data.userid, msg)
+		
+		if GetTableSize(_client_wait_time) == 0 then
+			local msg = {}
+			msg.up_time = _lobby_up_time and (GetTimeRealSeconds() - _lobby_up_time) or 0
+			TheWorld.components.lavaarenaanalytics:SendAnalyticsLobbyEvent("forge.lobby.cancelmatch", nil, msg)
+
+			_lobby_up_time = nil
+		end
 	end
 end
 
@@ -232,8 +272,13 @@ if _ismastersim then
     --Register events
     inst:ListenForEvent("ms_requestedlobbycharacter", OnRequestLobbyCharacter, _world)
     inst:ListenForEvent("nowaiting_vote_dirty", TryStartCountdown)
-    inst:ListenForEvent("ms_clientauthenticationcomplete", OnClientConnected, _world)
-    inst:ListenForEvent("ms_clientdisconnected", ClearNoWaitingVotes, _world)
+    inst:ListenForEvent("ms_clientauthenticationcomplete", OnLobbyClientConnected, _world)
+    inst:ListenForEvent("ms_clientdisconnected", OnLobbyClientDisconnected, _world)
+
+	local clients = GetPlayersClientTable()
+	for _, c in ipairs(clients) do
+		OnLobbyClientConnected(TheWorld, {userid = c.userid})
+	end
 end
 
 --------------------------------------------------------------------------

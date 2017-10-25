@@ -6057,6 +6057,14 @@ local states =
                 inst.sg.statemem.fadetime = 0
             end),
             TimeEvent(86 * FRAMES, function(inst)
+                inst.sg.statemem.physicsrestored = true
+                inst.Physics:ClearCollisionMask()
+                inst.Physics:CollidesWith(COLLISION.WORLD)
+                inst.Physics:CollidesWith(COLLISION.OBSTACLES)
+                inst.Physics:CollidesWith(COLLISION.SMALLOBSTACLES)
+                inst.Physics:CollidesWith(COLLISION.CHARACTERS)
+                inst.Physics:CollidesWith(COLLISION.GIANTS)
+
                 inst.AnimState:PlayAnimation("corpse_revive")
                 if inst.sg.statemem.fade ~= nil then
                     inst.sg.statemem.fadeouttime = 20 * FRAMES
@@ -6106,6 +6114,15 @@ local states =
 
             inst.components.bloomer:PopBloom("corpse_rebirth")
             inst.components.colouradder:PopColour("corpse_rebirth")
+
+            if not inst.sg.statemem.physicsrestored then
+                inst.Physics:ClearCollisionMask()
+                inst.Physics:CollidesWith(COLLISION.WORLD)
+                inst.Physics:CollidesWith(COLLISION.OBSTACLES)
+                inst.Physics:CollidesWith(COLLISION.SMALLOBSTACLES)
+                inst.Physics:CollidesWith(COLLISION.CHARACTERS)
+                inst.Physics:CollidesWith(COLLISION.GIANTS)
+            end
 
             SerializeUserSession(inst)
         end,
@@ -7022,7 +7039,6 @@ local states =
             local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("atk_pre")
-            inst.AnimState:PushAnimation("atk", false)
 
             if buffaction ~= nil and buffaction.pos ~= nil then
                 inst:ForceFacePoint(buffaction.pos:Get())
@@ -7066,9 +7082,14 @@ local states =
 
         events =
         {
-            EventHandler("animqueueover", function(inst)
+            EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
+                    if inst.AnimState:IsCurrentAnimation("atk_pre") then
+                        inst.AnimState:PlayAnimation("throw")
+                        inst.AnimState:SetTime(6 * FRAMES)
+                    else
+                        inst.sg:GoToState("idle")
+                    end
                 end
             end),
         },

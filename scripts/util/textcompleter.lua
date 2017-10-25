@@ -176,11 +176,11 @@ function TextCompleter:_SuggestComplete()
 
     -- Replace partially typed suggestion with completed suggestion.
     local first = string.lower(str):rfind_plain(self.suggest_replace)
-    assert(first, "Failed to find partial match inside input. Did input change without updating suggestions?")
-    local idx = first - 1
-    str = str:sub(1, idx)
-    str = str .. self.suggest_text_widgets[self.highlight_idx]:GetString()
-
+    if first ~= nil then
+		local idx = first - 1
+		str = str:sub(1, idx)
+		str = str .. self.suggest_text_widgets[self.highlight_idx]:GetString()
+	end
 
     -- Closing code assumes we cannot have multiple unclosed delimiters (so we
     -- don't need to deal with nesting) because we won't trigger suggestions if

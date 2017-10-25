@@ -204,6 +204,7 @@ function QuickJoinScreen:TryPickServer()
 		    self:KeepSearching(2)
 		else
 			print("[QuickJoin]: no servers passed the filters.")
+			self:KeepSearching(0)
 		    TheNet:StopSearchingServers()
 
 		    -- throws up the error dialog
@@ -213,6 +214,7 @@ function QuickJoinScreen:TryPickServer()
 	else
 	    print("[QuickJoin]: Done Searching. " .. string.format("Searched for %.2fs. %d of %d servers passed the filter", (GetTime() - self.startsearchtime), #self.filtered_servers, #servers))
 	    
+		self:KeepSearching(0)
 	    TheNet:StopSearchingServers()
 
 		self.filtered_servers = PickBestServers(self.filtered_servers)

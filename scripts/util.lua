@@ -780,14 +780,6 @@ function sortedKeys(dict)
     return keys
 end
 
-function countKeys(t)
-    local count = 0
-    for key,val in pairs(t) do
-        count = count + 1
-    end
-    return count
-end
-
 function TrackedAssert(tracking_data, function_ptr, function_data)
 	--print("TrackedAssert", tracking_data, function_ptr, function_data)
 	_G['tracked_assert'] = function(pass, reason)		
