@@ -13,6 +13,7 @@ return CreatePrefabSkin("kitten_winter",
 	build_name = "kitten_winter",
 	rarity = "Elegant",
 	init_fn = function(inst) pet_init_fn(inst, "kitten_winter", "kittington_build" ) end,
+	skin_tags = { "PET", "WINTER", "CRAFTABLE", },
 	marketable = true,
 	release_group = 22,
 })

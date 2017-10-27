@@ -14,5 +14,6 @@ return CreatePrefabSkin("armor_dragonfly_haramaki",
 	rarity = "Elegant",
 	rarity_modifier = "EventModifier",
 	init_fn = function(inst) armordragonfly_init_fn(inst, "armor_dragonfly_haramaki") end,
+	skin_tags = { "ARMORDRAGONFLY", "LAVA", "CRAFTABLE", },
 	release_group = 32,
 })

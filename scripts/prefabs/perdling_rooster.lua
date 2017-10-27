@@ -13,6 +13,7 @@ return CreatePrefabSkin("perdling_rooster",
 	build_name = "perdling_rooster",
 	rarity = "Elegant",
 	init_fn = function(inst) perdling_init_fn(inst, "perdling_rooster", "perdling_build", "dontstarve/creatures/together/rooster/distress_long" ) end,
+	skin_tags = { "PET", "LUNAR", "CRAFTABLE", },
 	marketable = true,
 	release_group = 23,
 })

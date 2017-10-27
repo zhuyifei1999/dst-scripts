@@ -13,6 +13,7 @@ return CreatePrefabSkin("winona_none",
 	assets = assets,
 	build_name = "winona",
 	rarity = "Common",
+	skin_tags = { "BASE", "CHARACTER", "WINONA", },
 	skins = { ghost_skin = "ghost_winona_build", normal_skin = "winona", },
 	release_group = 999,
 })

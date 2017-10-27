@@ -900,12 +900,23 @@ STRINGS =
         TRINKET_29 = "Black Rook",
         TRINKET_30 = "White Knight",
         TRINKET_31 = "Black Knight",
+        --hallowed nights trinkets
         TRINKET_32 = "Cubic Zirconia Ball", -- Crystal Ball
         TRINKET_33 = "Spider Ring", -- Spider Ring
         TRINKET_34 = "Monkey Paw", -- Hand / Monkey Paw?
         TRINKET_35 = "Empty Elixir", -- Empty Potion Bottle
         TRINKET_36 = "Faux Fangs", -- Vampire Teeth
         TRINKET_37 = "Broken Stake", -- Wooden Stake
+        TRINKET_38 = "Binoculars", -- Griftlands trinket
+        TRINKET_39 = "Lone Glove", -- Griftlands trinket
+        TRINKET_40 = "Snail Scale", -- Griftlands trinket
+        TRINKET_41 = "Goop Canister", -- Hot Lava trinket
+        TRINKET_42 = "Toy Cobra", -- Hot Lava trinket
+        TRINKET_43= "Crocodile Toy", -- Hot Lava trinket
+        TRINKET_44 = "Broken Snowglobe", -- ONI trinket
+        TRINKET_45 = "Odd Radio", -- ONI trinket
+        TRINKET_46 = "Duplicated Pumpkin", -- ONI trinket
+        --
         ANTLIONTRINKET = "Beach Toy", --bucket and shovel
 
         CARROT_PLANTED = "Carrot",
@@ -1442,13 +1453,13 @@ STRINGS =
         LAVAARENA_BOARLORD = "Battlemaster Pugna",
         BOARRIOR = "Grand Forge Boarrior",
         BOARON = "Pit Pig",
-        PEGHOOK = "Venomeer",
-        PEGHOOK_DOT = "Venomeer Venom",
+        PEGHOOK = "Scourgion",
+        PEGHOOK_DOT = "Scourgion Acid",
         TRAILS1 = "Boarilla",
         TRAILS2 = "Boarilla",
         TRAILS = "Boarilla",
-        TURTILLUS = "Tortank",
-        SNAPPER = "Crocovile",
+        TURTILLUS = "Snortoise",
+        SNAPPER = "Crocommander",
 
         LAVAARENA_PORTAL = "Ancient Gateway",
         LAVAARENA_KEYHOLE = "Ancient Anchor",
@@ -2057,7 +2068,7 @@ STRINGS =
     },
 
     --Arena Event
-    BOARLORD_WELCOME_INTRO =					-- welcome / story / why they are here  - end with reason for 10 second delay before the round 1 intro 
+    BOARLORD_WELCOME_INTRO =					-- 10 second delay before the round 1 intro 
     {
         "What have we here?",
         "Gatekeepers? You dare return to the Forge?",
@@ -2067,22 +2078,22 @@ STRINGS =
         "And I will protect what is rightfully mine.",
         "Warriors. Prepare for battle!",
     },
-    BOARLORD_ROUND1_INTRO =						-- Pit Pigs: practice round / boarlord expects players to win / would be upset if they lost
+    BOARLORD_ROUND1_INTRO =						-- Pit Pigs: practice round
     {
         "Release the pigs!",
     },
-    BOARLORD_ROUND1_FIGHT_TEAMWORK =			-- dialog before the first set of big groups of pit pigs / players will need to start working as a team to get past these waves
+    BOARLORD_ROUND1_FIGHT_TEAMWORK =			-- dialogue before the first set of big groups of pit pigs
     {
 		"Ha!",
         "It's good to have a challenge once again.",
         "This should be fun.",
     },
-    BOARLORD_ROUND1_FIGHT_BANTER =				-- batter between the 12 pit pig and 15 pit pig waves
+    BOARLORD_ROUND1_FIGHT_BANTER =				-- banter between the 12 pit pig and 15 pit pig waves
     {
 		"More! Overwhelm them!",
         "More pigs!",
     },
-    BOARLORD_ROUND1_END =						-- expected players to win / healing staff dropped / give them a complement - end with reason for 15 second delay
+    BOARLORD_ROUND1_END =						-- healing staff dropped, 15 second delay follows
     {
         "Impressive, Gatekeepers.",
         "It seems you can handle foot soldiers.",
@@ -2090,9 +2101,9 @@ STRINGS =
         "You'll need to do the same.",
         "That is, if you hope to stand a chance.",
     },
-    BOARLORD_ROUND2_INTRO =						-- Pit Pigs with Snapper controlling them / a little harder then previous round
+    BOARLORD_ROUND2_INTRO =						-- Pit Pigs with Snapper controlling them
     {
-		"Crocoviles! To the ring!",
+		"Crocommanders! To the ring!",
     },
     BOARLORD_ROUND2_FIGHT_BANTER =				-- banter between waves
     {
@@ -2100,7 +2111,7 @@ STRINGS =
         "Give the Gatekeepers no quarter!",
         "Fly your banners proudly, warriors!",
     },
-    BOARLORD_ROUND2_END =						-- accepts that players got this far / mobs were just fodder anyway - reason for 15 second delay until round 3 intro
+    BOARLORD_ROUND2_END =						-- 15 second delay until round 3 intro
     {
         "Do you think you can win?",
         "We've endured more in this realm than you know.",
@@ -2110,9 +2121,9 @@ STRINGS =
     },
     BOARLORD_ROUND3_INTRO =						-- Turtillus round
     {
-        "Tortanks! Attack!",
+        "Snortoises! Attack!",
     },
-    BOARLORD_ROUND3_END =						-- boarload didnt really expect you to win / must have good team work / Fireball Staff just dropped  - reason for 15 second delay
+    BOARLORD_ROUND3_END =						-- Fireball Staff just dropped, 15 second delay follows
     {
         "How could you understand?",
         "We were severed from the Throne.",
@@ -2120,7 +2131,7 @@ STRINGS =
         "With no scepter to provide for us.",
         "Why should I serve a power that deserted my people?",
     },
-    BOARLORD_ROUND4_INTRO =						-- Peghook / boarload is confident this next round will wipe the group
+    BOARLORD_ROUND4_INTRO =						-- Peghook
     {
         "You'd have been wise to find your own realm.",
         "Seek safe haven and sever yourselves from the hub.",
@@ -2131,17 +2142,16 @@ STRINGS =
         "But They Themselves are untouchable. Unknowable.",
         "That is why we cannot let you win.",
     },
-    BOARLORD_ROUND4_FIGHT_BANTER =				-- Banter: upset that you are not dead yet
+    BOARLORD_ROUND4_FIGHT_BANTER =				-- Banter
     {
         "Grrr... End this now my warriors!",
-        "Poison them!",
         "We... cannot lose the Forge...",
     },
-    BOARLORD_TRAILS_INTRO =						-- Trails intro / totally expecting you to die now
+    BOARLORD_TRAILS_INTRO =						-- Trails intro
     {
         "Send in the Boarilla.", 
     },
-    BOARLORD_ROUND4_END =						-- surprised / upset / mad - reason for 15 second delay
+    BOARLORD_ROUND4_END =						-- 15 second delay
     {
         "Know this, Gatekeepers:",
         "Once you are dead...",
@@ -2150,7 +2160,7 @@ STRINGS =
         "My warriors are proud and strong.",
         "And we will end this all, for good.",
     },
-    BOARLORD_ROUND5_INTRO =						-- 2 Trails / boarlord fully expects players to die to them
+    BOARLORD_ROUND5_INTRO =						-- 2 Trails
     {
         "Let's finish it.",
     },
@@ -2160,7 +2170,7 @@ STRINGS =
         "Drive the interlopers back!",
         "Do not hold back! Kill them!",
     },
-    BOARLORD_ROUND5_FIGHT_BANTER2 =				-- Banter: spawning in whatever warriors are left (Snapper + 2 boarons + turtillus + peghook) / wants the players dead / doesn't care if its a fair fight / sending in anything that he can
+    BOARLORD_ROUND5_FIGHT_BANTER2 =				-- Banter: spawning in whatever warriors are left (Snapper + 2 boarons + turtillus + peghook)
     {
         "Why are the Gatekeepers still not dead?!",
         "Destroy them!!",
@@ -2199,11 +2209,6 @@ STRINGS =
 
 -- Not used at the moment
 --[[
-    BOARLORD_GATEACTIVATED_BATTLECRY = 
-    {
-        "Thank you.",
-        "Your mercy is not lost on me.",
-    },
 
     BOARLORD_BONUS1_FIGHT_BANTER = 
     {
@@ -4371,14 +4376,14 @@ STRINGS.UI =
         BONUS = "Reward",
         SET_PROGRESS = "Piece",
         SET_INFO = "Ensemble Info",
-        USABLE_ON = "Reskins {item}s",
-        USABLE_ON_MULTIPLE = "Reskins {item1}s and {item2}s",
-        USABLE_ON_MULTIPLE_3 = "Reskins {item1}s, {item2}s and {item3}s",
+        USABLE_ON = "Reskins {item}",
+        USABLE_ON_MULTIPLE = "Reskins {item1} and {item2}",
+        USABLE_ON_MULTIPLE_3 = "Reskins {item1}, {item2} and {item3}",
         USABLE_INFO = "Reskin Info",
         USABLE_INFO_TITLE = "Reskins",
-        USABLE_ON_POPUP = "{skin} will change the appearance of {item}s.",
-        USABLE_ON_MULTIPLE_POPUP = "{skin} will change the appearance of {item1}s and {item2}s.",
-        USABLE_ON_MULTIPLE_3_POPUP = "{skin} will change the appearance of {item1}s, {item2}s and {item3}s.",
+        USABLE_ON_POPUP = "{skin} will change the appearance of {item}.",
+        USABLE_ON_MULTIPLE_POPUP = "{skin} will change the appearance of {item1} and {item2}.",
+        USABLE_ON_MULTIPLE_3_POPUP = "{skin} will change the appearance of {item1}, {item2} and {item3}.",
         OK = "OK",
     },
 
@@ -4427,6 +4432,7 @@ STRINGS.UI =
         TITLE_DEFEAT = "Defeat",
         MATCH_TIME = "Match Time: {time}",
         DEATHS = "Total Deaths: {deaths}",
+        NO_DEATHS = "Perfect!",
 
         SKIP = "Skip",
         CONTINUE = "Continue",
@@ -4450,10 +4456,13 @@ STRINGS.UI =
 		DAILY_FIRST_MATCH = "Daily Match Bonus",
 		WEEKLY_FIRST_MATCH = "Weekly Match Bonus",
 		CONSECUTIVE = "Consecutive Match Bonus",
-		LAVA_ARENA_MILESTONE_1 = "Survived the Pit Pigs",
-		LAVA_ARENA_MILESTONE_2 = "Survived the Crocovile",
-		LAVA_ARENA_MILESTONE_3 = "Survived the Tortank",
+		LAVA_ARENA_MILESTONE_1 = "Pit Pigs Defeated",
+		LAVA_ARENA_MILESTONE_2 = "Crocommanders Defeated",
+		LAVA_ARENA_MILESTONE_3 = "Snortoises Defeated",
 		LAVA_ARENA_MILESTONE_4 = "Formidable Team",
+		LAVA_NO_PLAYER_DEATHS = "Perfect",
+		LAVA_NO_TEAM_DEATHS = "Team Perfect",
+		LAVA_UNIQUE_CHARACTERS = "No Doubles Bonus",
 		WIN = "Victory",
 		DAILY_FIRST_WIN = "Daily Victory Bonus",
 		LAVA_ARENA_XP_MOD = "debug test",
@@ -4507,7 +4516,7 @@ STRINGS.UI =
             total_damagetaken = "damage taken",
             total_damagetaken2 = "damage taken for the team",
             attacks = "swings landed",
-            turtillusflips = "Tortanks flipped",
+            turtillusflips = "Snortoises flipped",
             spellscast = "spells cast",
             altattacks = "special attacks used",
             stepcounter = "steps taken",
@@ -5915,9 +5924,11 @@ STRINGS.LUCY =
         "Remember your breathing exercises!",
         "Everything is going to be fine. Just focus!",
     },
-
+}
+STRINGS.LAVALUCY = 
+{
     ---lavaarena -- do not translate --
-    held = 
+    equipped = 
     {
         "It's so hot!",
         "Throw me!",
@@ -5929,7 +5940,7 @@ STRINGS.LUCY =
         "Give them the chop!",
         "The crowd is so loud!",
     },
-    heldnotwoodie = 
+    other_owner = 
     {
         "I'm not too crazy about this.",
         "You're not holding me right!",

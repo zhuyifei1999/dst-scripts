@@ -54,11 +54,11 @@ function ChaseAndAttack:Visit()
     if self.status == RUNNING then
         local is_attacking = self.inst.sg:HasStateTag("attack")
 
-        if not combat.target or not combat.target.entity:IsValid() then
+        if combat.target == nil or not combat.target.entity:IsValid() then
             self.status = FAILED
             combat:SetTarget(nil)
             self.inst.components.locomotor:Stop()
-        elseif combat.target.components.health and combat.target.components.health:IsDead() then
+        elseif combat.target.components.health ~= nil and combat.target.components.health:IsDead() then
             self.status = SUCCESS
             combat:SetTarget(nil)
             self.inst.components.locomotor:Stop()

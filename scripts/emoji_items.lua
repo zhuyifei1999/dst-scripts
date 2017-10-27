@@ -8,6 +8,7 @@ EMOJI_ITEMS =
 		rarity_modifier = "EventModifier",
 		input_name = "arcane",
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		data =
 		{
 			item_type = "emoji_arcane",
@@ -21,6 +22,7 @@ EMOJI_ITEMS =
 		rarity_modifier = "EventModifier",
 		input_name = "beefalo",
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		data =
 		{
 			item_type = "emoji_beefalo",
@@ -34,6 +36,7 @@ EMOJI_ITEMS =
 		rarity_modifier = "EventModifier",
 		input_name = "chest",
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		data =
 		{
 			item_type = "emoji_chest",
@@ -47,6 +50,7 @@ EMOJI_ITEMS =
 		rarity_modifier = "EventModifier",
 		input_name = "chester",
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		data =
 		{
 			item_type = "emoji_chester",
@@ -60,6 +64,7 @@ EMOJI_ITEMS =
 		rarity_modifier = "EventModifier",
 		input_name = "crockpot",
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		data =
 		{
 			item_type = "emoji_crockpot",
@@ -73,6 +78,7 @@ EMOJI_ITEMS =
 		rarity_modifier = "EventModifier",
 		input_name = "eyeball",
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		data =
 		{
 			item_type = "emoji_eyeball",
@@ -86,6 +92,7 @@ EMOJI_ITEMS =
 		rarity_modifier = "EventModifier",
 		input_name = "faketeeth",
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		data =
 		{
 			item_type = "emoji_faketeeth",
@@ -99,6 +106,7 @@ EMOJI_ITEMS =
 		rarity_modifier = "EventModifier",
 		input_name = "farm",
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		data =
 		{
 			item_type = "emoji_farm",
@@ -112,6 +120,7 @@ EMOJI_ITEMS =
 		rarity_modifier = "EventModifier",
 		input_name = "fire",
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		data =
 		{
 			item_type = "emoji_fire",
@@ -125,6 +134,7 @@ EMOJI_ITEMS =
 		rarity_modifier = "EventModifier",
 		input_name = "ghost",
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		data =
 		{
 			item_type = "emoji_ghost",
@@ -138,6 +148,7 @@ EMOJI_ITEMS =
 		rarity_modifier = "EventModifier",
 		input_name = "grave",
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		data =
 		{
 			item_type = "emoji_grave",
@@ -151,6 +162,7 @@ EMOJI_ITEMS =
 		rarity_modifier = "EventModifier",
 		input_name = "hambat",
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		data =
 		{
 			item_type = "emoji_hambat",
@@ -164,6 +176,7 @@ EMOJI_ITEMS =
 		rarity_modifier = "EventModifier",
 		input_name = "hammer",
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		data =
 		{
 			item_type = "emoji_hammer",
@@ -177,6 +190,7 @@ EMOJI_ITEMS =
 		rarity_modifier = "EventModifier",
 		input_name = "heart",
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		data =
 		{
 			item_type = "emoji_heart",
@@ -190,6 +204,7 @@ EMOJI_ITEMS =
 		rarity_modifier = "EventModifier",
 		input_name = "hunger",
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		data =
 		{
 			item_type = "emoji_hunger",
@@ -203,6 +218,7 @@ EMOJI_ITEMS =
 		rarity_modifier = "EventModifier",
 		input_name = "lightbulb",
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		data =
 		{
 			item_type = "emoji_lightbulb",
@@ -216,6 +232,7 @@ EMOJI_ITEMS =
 		rarity_modifier = "EventModifier",
 		input_name = "pig",
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		data =
 		{
 			item_type = "emoji_pig",
@@ -229,6 +246,7 @@ EMOJI_ITEMS =
 		rarity_modifier = "EventModifier",
 		input_name = "poop",
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		data =
 		{
 			item_type = "emoji_poop",
@@ -242,6 +260,7 @@ EMOJI_ITEMS =
 		rarity_modifier = "EventModifier",
 		input_name = "redgem",
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		data =
 		{
 			item_type = "emoji_redgem",
@@ -255,6 +274,7 @@ EMOJI_ITEMS =
 		rarity_modifier = "EventModifier",
 		input_name = "sanity",
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		data =
 		{
 			item_type = "emoji_sanity",
@@ -268,6 +288,7 @@ EMOJI_ITEMS =
 		rarity_modifier = "EventModifier",
 		input_name = "sciencemachine",
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		data =
 		{
 			item_type = "emoji_sciencemachine",
@@ -281,6 +302,7 @@ EMOJI_ITEMS =
 		rarity_modifier = "EventModifier",
 		input_name = "skull",
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		data =
 		{
 			item_type = "emoji_skull",
@@ -294,6 +316,7 @@ EMOJI_ITEMS =
 		rarity_modifier = "EventModifier",
 		input_name = "tophat",
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		data =
 		{
 			item_type = "emoji_tophat",
@@ -307,6 +330,7 @@ EMOJI_ITEMS =
 		rarity_modifier = "EventModifier",
 		input_name = "web",
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		data =
 		{
 			item_type = "emoji_web",

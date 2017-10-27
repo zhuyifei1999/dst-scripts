@@ -593,6 +593,7 @@ function CreatePrefabSkin(name, info)
 
     prefab_skin.base_prefab         = info.base_prefab
     prefab_skin.type                = info.type
+    prefab_skin.skin_tags           = info.skin_tags
     prefab_skin.init_fn             = info.init_fn
     prefab_skin.build_name          = info.build_name
     prefab_skin.bigportrait         = info.bigportrait

@@ -287,7 +287,7 @@ function d_reportevent(other_ku)
 					Points=5,
 					PlayerStats=
 					{
-						{KU = TheNet:GetUserID(), PlaytimeMs = 100000},
+						{KU = TheNet:GetUserID(), PlaytimeMs = 100000, Custom = { UnlockedAchievements = {"LAVA_ACHV_TEST"..math.random(5)} }},
 						{KU = other_ku or "KU_test", PlaytimeMs = 60000}
 					}
 				},

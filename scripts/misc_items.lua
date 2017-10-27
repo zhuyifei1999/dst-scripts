@@ -5,6 +5,7 @@ MISC_ITEMS =
 	emoji_arcane =
 	{
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -12,6 +13,7 @@ MISC_ITEMS =
 	emoji_beefalo =
 	{
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -19,6 +21,7 @@ MISC_ITEMS =
 	emoji_chest =
 	{
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -26,6 +29,7 @@ MISC_ITEMS =
 	emoji_chester =
 	{
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -33,6 +37,7 @@ MISC_ITEMS =
 	emoji_crockpot =
 	{
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -40,6 +45,7 @@ MISC_ITEMS =
 	emoji_eyeball =
 	{
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -47,6 +53,7 @@ MISC_ITEMS =
 	emoji_faketeeth =
 	{
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -54,6 +61,7 @@ MISC_ITEMS =
 	emoji_farm =
 	{
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -61,6 +69,7 @@ MISC_ITEMS =
 	emoji_fire =
 	{
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -68,6 +77,7 @@ MISC_ITEMS =
 	emoji_ghost =
 	{
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -75,6 +85,7 @@ MISC_ITEMS =
 	emoji_grave =
 	{
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -82,6 +93,7 @@ MISC_ITEMS =
 	emoji_hambat =
 	{
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -89,6 +101,7 @@ MISC_ITEMS =
 	emoji_hammer =
 	{
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -96,6 +109,7 @@ MISC_ITEMS =
 	emoji_heart =
 	{
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -103,6 +117,7 @@ MISC_ITEMS =
 	emoji_hunger =
 	{
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -110,6 +125,7 @@ MISC_ITEMS =
 	emoji_lightbulb =
 	{
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -117,6 +133,7 @@ MISC_ITEMS =
 	emoji_pig =
 	{
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -124,6 +141,7 @@ MISC_ITEMS =
 	emoji_poop =
 	{
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -131,6 +149,7 @@ MISC_ITEMS =
 	emoji_redgem =
 	{
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -138,6 +157,7 @@ MISC_ITEMS =
 	emoji_sanity =
 	{
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -145,6 +165,7 @@ MISC_ITEMS =
 	emoji_sciencemachine =
 	{
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -152,6 +173,7 @@ MISC_ITEMS =
 	emoji_skull =
 	{
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -159,6 +181,7 @@ MISC_ITEMS =
 	emoji_tophat =
 	{
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -166,6 +189,7 @@ MISC_ITEMS =
 	emoji_web =
 	{
 		type = "emoji",
+		skin_tags = { "LAVA", "EMOJI", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -173,6 +197,7 @@ MISC_ITEMS =
 	loading_maxwell =
 	{
 		type = "loading",
+		skin_tags = { "LAVA", "LOADING", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -180,6 +205,7 @@ MISC_ITEMS =
 	loading_merm =
 	{
 		type = "loading",
+		skin_tags = { "LAVA", "LOADING", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -187,6 +213,7 @@ MISC_ITEMS =
 	loading_pigking =
 	{
 		type = "loading",
+		skin_tags = { "LAVA", "LOADING", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -194,6 +221,7 @@ MISC_ITEMS =
 	loading_webber =
 	{
 		type = "loading",
+		skin_tags = { "LAVA", "LOADING", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -201,6 +229,7 @@ MISC_ITEMS =
 	loading_wendy =
 	{
 		type = "loading",
+		skin_tags = { "LAVA", "LOADING", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -208,6 +237,7 @@ MISC_ITEMS =
 	loading_wickerbottom =
 	{
 		type = "loading",
+		skin_tags = { "LAVA", "LOADING", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -215,6 +245,7 @@ MISC_ITEMS =
 	loading_wigfrid =
 	{
 		type = "loading",
+		skin_tags = { "LAVA", "LOADING", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -222,6 +253,7 @@ MISC_ITEMS =
 	loading_willowfire =
 	{
 		type = "loading",
+		skin_tags = { "LAVA", "LOADING", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -229,6 +261,7 @@ MISC_ITEMS =
 	loading_wolfgang =
 	{
 		type = "loading",
+		skin_tags = { "LAVA", "LOADING", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -236,6 +269,7 @@ MISC_ITEMS =
 	mysterybox_lava_4 =
 	{
 		type = "mysterybox",
+		skin_tags = { "MYSTERYBOX", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 33,
@@ -243,6 +277,7 @@ MISC_ITEMS =
 	playerportrait_bg_beefalo =
 	{
 		type = "playerportrait",
+		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -250,6 +285,7 @@ MISC_ITEMS =
 	playerportrait_bg_birchnut =
 	{
 		type = "playerportrait",
+		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -257,6 +293,7 @@ MISC_ITEMS =
 	playerportrait_bg_camp =
 	{
 		type = "playerportrait",
+		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -264,6 +301,7 @@ MISC_ITEMS =
 	playerportrait_bg_cardinals =
 	{
 		type = "playerportrait",
+		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -271,6 +309,7 @@ MISC_ITEMS =
 	playerportrait_bg_deciduousforest =
 	{
 		type = "playerportrait",
+		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -278,6 +317,7 @@ MISC_ITEMS =
 	playerportrait_bg_forestfire =
 	{
 		type = "playerportrait",
+		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -285,6 +325,7 @@ MISC_ITEMS =
 	playerportrait_bg_garden =
 	{
 		type = "playerportrait",
+		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -292,6 +333,7 @@ MISC_ITEMS =
 	playerportrait_bg_grasslands =
 	{
 		type = "playerportrait",
+		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -299,6 +341,7 @@ MISC_ITEMS =
 	playerportrait_bg_lava =
 	{
 		type = "playerportrait",
+		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -306,6 +349,7 @@ MISC_ITEMS =
 	playerportrait_bg_lavaarena =
 	{
 		type = "playerportrait",
+		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -313,6 +357,7 @@ MISC_ITEMS =
 	playerportrait_bg_lonecarrot =
 	{
 		type = "playerportrait",
+		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -320,6 +365,7 @@ MISC_ITEMS =
 	playerportrait_bg_lumpyevergreen =
 	{
 		type = "playerportrait",
+		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -327,6 +373,7 @@ MISC_ITEMS =
 	playerportrait_bg_marshhouse =
 	{
 		type = "playerportrait",
+		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -334,6 +381,7 @@ MISC_ITEMS =
 	playerportrait_bg_penguins =
 	{
 		type = "playerportrait",
+		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -341,6 +389,7 @@ MISC_ITEMS =
 	playerportrait_bg_pighouse =
 	{
 		type = "playerportrait",
+		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -348,6 +397,7 @@ MISC_ITEMS =
 	playerportrait_bg_rocks =
 	{
 		type = "playerportrait",
+		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -355,6 +405,7 @@ MISC_ITEMS =
 	playerportrait_bg_roseportal =
 	{
 		type = "playerportrait",
+		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -362,6 +413,7 @@ MISC_ITEMS =
 	playerportrait_bg_shoreline =
 	{
 		type = "playerportrait",
+		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -369,6 +421,7 @@ MISC_ITEMS =
 	playerportrait_bg_spidermarsh =
 	{
 		type = "playerportrait",
+		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -376,6 +429,7 @@ MISC_ITEMS =
 	playerportrait_bg_spikymarsh =
 	{
 		type = "playerportrait",
+		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -383,6 +437,7 @@ MISC_ITEMS =
 	playerportrait_bg_thickforest =
 	{
 		type = "playerportrait",
+		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -390,6 +445,7 @@ MISC_ITEMS =
 	profileflair_abigail_flower =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -397,6 +453,7 @@ MISC_ITEMS =
 	profileflair_babybeefalo =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -404,6 +461,7 @@ MISC_ITEMS =
 	profileflair_bat_furled =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -411,6 +469,7 @@ MISC_ITEMS =
 	profileflair_bearger_roar =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -418,6 +477,7 @@ MISC_ITEMS =
 	profileflair_beefalo =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -425,6 +485,7 @@ MISC_ITEMS =
 	profileflair_bernie =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -432,6 +493,7 @@ MISC_ITEMS =
 	profileflair_bishop =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -439,6 +501,7 @@ MISC_ITEMS =
 	profileflair_catcoon =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -446,6 +509,7 @@ MISC_ITEMS =
 	profileflair_chester =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -453,6 +517,7 @@ MISC_ITEMS =
 	profileflair_crow =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -460,6 +525,7 @@ MISC_ITEMS =
 	profileflair_cupcake =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -467,6 +533,7 @@ MISC_ITEMS =
 	profileflair_deerclops =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -474,6 +541,7 @@ MISC_ITEMS =
 	profileflair_dragonfly_sleeping =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -481,6 +549,7 @@ MISC_ITEMS =
 	profileflair_dragonfruit =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -488,6 +557,7 @@ MISC_ITEMS =
 	profileflair_frog =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -495,6 +565,7 @@ MISC_ITEMS =
 	profileflair_goosemoose =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -502,6 +573,7 @@ MISC_ITEMS =
 	profileflair_hound =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -509,6 +581,7 @@ MISC_ITEMS =
 	profileflair_knight =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -516,6 +589,7 @@ MISC_ITEMS =
 	profileflair_koalefant =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -523,6 +597,7 @@ MISC_ITEMS =
 	profileflair_krampus =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -530,6 +605,7 @@ MISC_ITEMS =
 	profileflair_mactusk =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -537,6 +613,7 @@ MISC_ITEMS =
 	profileflair_mandrake =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -544,6 +621,7 @@ MISC_ITEMS =
 	profileflair_merm =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -551,6 +629,7 @@ MISC_ITEMS =
 	profileflair_mole =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -558,6 +637,7 @@ MISC_ITEMS =
 	profileflair_nightlight =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -565,6 +645,7 @@ MISC_ITEMS =
 	profileflair_pengull =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -572,6 +653,7 @@ MISC_ITEMS =
 	profileflair_phonograph =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -579,6 +661,7 @@ MISC_ITEMS =
 	profileflair_pig_happy =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -586,6 +669,7 @@ MISC_ITEMS =
 	profileflair_pigking =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -593,6 +677,7 @@ MISC_ITEMS =
 	profileflair_pumpkinlantern =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -600,6 +685,7 @@ MISC_ITEMS =
 	profileflair_rabbit =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -607,6 +693,7 @@ MISC_ITEMS =
 	profileflair_rook =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -614,6 +701,7 @@ MISC_ITEMS =
 	profileflair_rose =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -621,6 +709,7 @@ MISC_ITEMS =
 	profileflair_shadowhand =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -628,6 +717,7 @@ MISC_ITEMS =
 	profileflair_shadowmanipulator =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -635,6 +725,7 @@ MISC_ITEMS =
 	profileflair_smallbird =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -642,6 +733,7 @@ MISC_ITEMS =
 	profileflair_spider =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -649,6 +741,7 @@ MISC_ITEMS =
 	profileflair_tallbird_eye =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -656,6 +749,7 @@ MISC_ITEMS =
 	profileflair_treeguard =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -663,6 +757,7 @@ MISC_ITEMS =
 	profileflair_trinket_faketeeth =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -670,6 +765,7 @@ MISC_ITEMS =
 	profileflair_trinket_gnome =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -677,6 +773,7 @@ MISC_ITEMS =
 	profileflair_trinket_gnomette =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -684,6 +781,7 @@ MISC_ITEMS =
 	profileflair_waffle =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -691,6 +789,7 @@ MISC_ITEMS =
 	profileflair_werepig_howl =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
@@ -698,6 +797,7 @@ MISC_ITEMS =
 	profileflair_wererabbit =
 	{
 		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,

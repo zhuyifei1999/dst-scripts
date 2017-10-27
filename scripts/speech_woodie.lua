@@ -2051,7 +2051,7 @@ return {
         LAVAARENA_BOARLORD = "He seems confused, eh?",
         BOARRIOR = "Tough guy, eh?",
         BOARON = "I feel bad beatin' up such a little thing.",
-        PEGHOOK = "That poison'd be a problem, eh?",
+        PEGHOOK = "That acid'll be a problem, eh?",
         TRAILS = "Mighty powerful right hook on that hoser.",
         TURTILLUS = "Gotta keep that one from hiding, eh?",
         SNAPPER = "Keep them chompers to yourself.",

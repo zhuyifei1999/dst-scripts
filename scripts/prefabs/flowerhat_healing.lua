@@ -14,5 +14,6 @@ return CreatePrefabSkin("flowerhat_healing",
 	rarity = "Elegant",
 	rarity_modifier = "EventModifier",
 	init_fn = function(inst) flowerhat_init_fn(inst, "flowerhat_healing") end,
+	skin_tags = { "FLOWERHAT", "LAVA", "CRAFTABLE", },
 	release_group = 32,
 })

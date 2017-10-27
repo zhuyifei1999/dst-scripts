@@ -14,5 +14,6 @@ return CreatePrefabSkin("firestaff_meteor",
 	rarity = "Elegant",
 	rarity_modifier = "EventModifier",
 	init_fn = function(inst) firestaff_init_fn(inst, "firestaff_meteor") end,
+	skin_tags = { "STAFF", "LAVA", "CRAFTABLE", },
 	release_group = 32,
 })

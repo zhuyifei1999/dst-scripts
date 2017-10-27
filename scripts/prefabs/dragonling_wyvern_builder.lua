@@ -13,5 +13,6 @@ return CreatePrefabSkin("dragonling_wyvern_builder",
 	build_name = "dragonling_wyvern",
 	rarity = "Common",
 	init_fn = function(inst) critter_builder_init_fn(inst, "dragonling_wyvern" ) end,
+	skin_tags = { "CRAFTABLE", },
 	release_group = 17,
 })

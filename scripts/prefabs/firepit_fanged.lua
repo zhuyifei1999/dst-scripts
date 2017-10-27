@@ -13,6 +13,7 @@ return CreatePrefabSkin("firepit_fanged",
 	build_name = "firepit_fanged",
 	rarity = "Distinguished",
 	init_fn = function(inst) firepit_init_fn(inst, "firepit_fanged", Vector3(0, 20, 0)) end,
+	skin_tags = { "FIREPIT", "CRAFTABLE", },
 	marketable = true,
 	release_group = 5,
 })

@@ -13,6 +13,7 @@ return CreatePrefabSkin("dragonling_winter",
 	build_name = "dragonling_winter",
 	rarity = "Elegant",
 	init_fn = function(inst) pet_init_fn(inst, "dragonling_winter", "dragonling_build" ) end,
+	skin_tags = { "PET", "WINTER", "CRAFTABLE", },
 	marketable = true,
 	release_group = 22,
 })

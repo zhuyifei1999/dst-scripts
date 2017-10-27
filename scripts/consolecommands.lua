@@ -1135,3 +1135,7 @@ end
 function c_stopbroadcastingserver()
     TheNet:StopBroadcastingServer()
 end
+
+function c_notifypendingshutdown(timeleft)
+	c_announce("Shutting down server in " .. timeleft .. " minutes")	
+end

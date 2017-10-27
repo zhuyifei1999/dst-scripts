@@ -13,5 +13,6 @@ return CreatePrefabSkin("lamb_winter_builder",
 	build_name = "lamb_winter",
 	rarity = "Common",
 	init_fn = function(inst) critter_builder_init_fn(inst, "lamb_winter" ) end,
+	skin_tags = { "CRAFTABLE", },
 	release_group = 22,
 })

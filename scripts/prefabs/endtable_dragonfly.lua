@@ -13,6 +13,7 @@ return CreatePrefabSkin("endtable_dragonfly",
 	build_name = "endtable_dragonfly",
 	rarity = "Distinguished",
 	init_fn = function(inst) endtable_init_fn(inst, "endtable_dragonfly") end,
+	skin_tags = { "ENDTABLE", "CRAFTABLE", },
 	marketable = true,
 	release_group = 18,
 })

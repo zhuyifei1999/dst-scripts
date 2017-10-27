@@ -43,9 +43,9 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
     self.panel_root = self.clickroot:AddChild(Widget("panel_root"))
     self.panel_root:SetPosition(0,20,0)
 
-    self.bg = self.root:AddChild(TEMPLATES.CurlyWindow(1, 325, .8, .8, 53, -32))
+    self.bg = self.root:AddChild(TEMPLATES.CurlyWindow(1, 325, .85, .8, 53, -32))
     self.bg.fill = self.root:AddChild(Image("images/fepanel_fills.xml", "panel_fill_tall.tex"))
-    self.bg.fill:SetScale(.47, -.5)
+    self.bg.fill:SetScale(.5, -.5)
     self.bg.fill:SetPosition(8, 10)
     self.bg:SetPosition(0,0,0)
 
@@ -61,7 +61,7 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
     self.title:SetPosition(5,150)
 
     self.upper_horizontal_line = self.panel_root:AddChild(Image("images/ui.xml", "line_horizontal_6.tex"))
-    self.upper_horizontal_line:SetScale(.95)
+    self.upper_horizontal_line:SetScale(1)
     self.upper_horizontal_line:SetPosition(7,129)
 
     self.players_number = self.panel_root:AddChild(Text(NEWFONT, 25, "x/y"))
@@ -102,6 +102,12 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
         if not v.admin then
             playerListing.adminBadge:Hide()
         end]]
+
+		playerListing.rank = playerListing:AddChild(Image("images/profileflair.xml", "playerlevel_bg_lavaarena.tex"))
+		playerListing.rank:SetPosition(badge_x-13- 20, -4)  
+		playerListing.rank:SetScale(.5)
+		playerListing.rank.num = playerListing.rank:AddChild(Text(CHATFONT_OUTLINE, 40, v.eventlevel, UICOLOURS.WHITE))
+		playerListing.rank.num:SetPosition(2, 10)
 
         playerListing.name = playerListing:AddChild(Text(TALKINGFONT, 26))
         playerListing.name:SetColour(unpack(v.colour or DEFAULT_PLAYER_COLOUR))
@@ -161,7 +167,7 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
     end
 
     self.scroll_list = self.list_root:AddChild(ScrollableList(self.player_widgets, 180, 300, 30, 10, nil, nil, nil, nil, nil, 10))
-    self.scroll_list:SetPosition(-20,-10)
+    self.scroll_list:SetPosition(-10,-10)
 
     if #self.players == 0 then
         self.scroll_list:Hide()

@@ -14,5 +14,6 @@ return CreatePrefabSkin("book_brimstone_gilded",
 	rarity = "Elegant",
 	rarity_modifier = "EventModifier",
 	init_fn = function(inst) book_brimstone_init_fn(inst, "book_brimstone_gilded") end,
+	skin_tags = { "BOOK_BRIMSTONE", "LAVA", "CRAFTABLE", },
 	release_group = 32,
 })

@@ -14,5 +14,6 @@ return CreatePrefabSkin("armor_wood_haramaki",
 	rarity = "Elegant",
 	rarity_modifier = "EventModifier",
 	init_fn = function(inst) armorwood_init_fn(inst, "armor_wood_haramaki") end,
+	skin_tags = { "ARMORWOOD", "LAVA", "CRAFTABLE", },
 	release_group = 32,
 })

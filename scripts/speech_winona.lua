@@ -2043,7 +2043,7 @@ return {
         LAVAARENA_BOARLORD = "Why don't you fight us yourself!",
         BOARRIOR = "Let's cut him down to size!",
         BOARON = "Who's ready fer some bacon?!",
-        PEGHOOK = "That venom stuff stings!",
+        PEGHOOK = "That acid stuff burns!",
         TRAILS = "He's justa big meathead.",
         TURTILLUS = "Steel yourself, turtle.",
         SNAPPER = "You keep yer spit to yourself now, buddy.",

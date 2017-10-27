@@ -13,6 +13,7 @@ return CreatePrefabSkin("wilson_combatant",
 	assets = assets,
 	build_name = "wilson_combatant",
 	rarity = "Event",
+	skin_tags = { "LAVA", "BASE", "CHARACTER", "WILSON", },
 	skins = { ghost_skin = "ghost_wilson_build", normal_skin = "wilson_combatant", },
 	release_group = 32,
 })

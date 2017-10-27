@@ -13,6 +13,7 @@ return CreatePrefabSkin("birdcage_ornamental",
 	build_name = "birdcage_ornamental",
 	rarity = "Distinguished",
 	init_fn = function(inst) birdcage_init_fn(inst, "birdcage_ornamental") end,
+	skin_tags = { "BIRDCAGE", "WINTER", "CRAFTABLE", },
 	marketable = true,
 	release_group = 22,
 })

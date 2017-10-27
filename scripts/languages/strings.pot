@@ -985,7 +985,7 @@ msgstr ""
 
 #. STRINGS.BOARLORD_ROUND2_INTRO.1
 msgctxt "STRINGS.BOARLORD_ROUND2_INTRO.1"
-msgid "Crocoviles! To the ring!"
+msgid "Crocommanders! To the ring!"
 msgstr ""
 
 #. STRINGS.BOARLORD_ROUND3_END.1
@@ -1015,7 +1015,7 @@ msgstr ""
 
 #. STRINGS.BOARLORD_ROUND3_INTRO.1
 msgctxt "STRINGS.BOARLORD_ROUND3_INTRO.1"
-msgid "Tortanks! Attack!"
+msgid "Snortoises! Attack!"
 msgstr ""
 
 #. STRINGS.BOARLORD_ROUND4_END.1
@@ -1055,11 +1055,6 @@ msgstr ""
 
 #. STRINGS.BOARLORD_ROUND4_FIGHT_BANTER.2
 msgctxt "STRINGS.BOARLORD_ROUND4_FIGHT_BANTER.2"
-msgid "Poison them!"
-msgstr ""
-
-#. STRINGS.BOARLORD_ROUND4_FIGHT_BANTER.3
-msgctxt "STRINGS.BOARLORD_ROUND4_FIGHT_BANTER.3"
 msgid "We... cannot lose the Forge..."
 msgstr ""
 
@@ -6090,7 +6085,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.PEGHOOK
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.PEGHOOK"
-msgid "Don't poison me, please!"
+msgid "That spit is corrosive!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.PENGUIN
@@ -7803,9 +7798,54 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_37"
 msgid "I don't believe in the supernatural."
 msgstr ""
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_38
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_38"
+msgid "I think it came from another world. One with grifts."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_39
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_39"
+msgid "I wonder where the other one is?"
+msgstr ""
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_4
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_4"
 msgid "It must be some kind of religious artifact."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_40
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_40"
+msgid "Holding it makes me feel like bartering."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_41
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_41"
+msgid "It's a little warm to the touch."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_42
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_42"
+msgid "Childhood memories."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_43
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_43"
+msgid "It's not very good at jumping."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_44
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_44"
+msgid "All the water leaked out."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_45
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_45"
+msgid "It's picking up frequencies from another world."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_46
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_46"
+msgid "Smashing!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_5
@@ -8350,7 +8390,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WES.GHOST
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.WES.GHOST"
-msgid "How do you say \"I'll conduct a revival device\" in mime?"
+msgid "How do you say \"I'll concoct a revival device\" in mime?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.WES.MURDERER
@@ -56645,7 +56685,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.PEGHOOK
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.PEGHOOK"
-msgid "That venom stuff stings!"
+msgid "That acid stuff burns!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.PENGUIN
@@ -71150,7 +71190,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.PEGHOOK
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.PEGHOOK"
-msgid "That poison'd be a problem, eh?"
+msgid "That acid'll be a problem, eh?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.PENGUIN
@@ -81863,6 +81903,136 @@ msgctxt "STRINGS.LAVAARENA_CHARACTER_DESCRIPTIONS.wx78"
 msgid "*Shocks enemies when attacked\n*Electric attack damage increased by 50%\n\nExpertise:\nMelee"
 msgstr ""
 
+#. STRINGS.LAVALUCY.equipped.1
+msgctxt "STRINGS.LAVALUCY.equipped.1"
+msgid "It's so hot!"
+msgstr ""
+
+#. STRINGS.LAVALUCY.equipped.2
+msgctxt "STRINGS.LAVALUCY.equipped.2"
+msgid "Throw me!"
+msgstr ""
+
+#. STRINGS.LAVALUCY.equipped.3
+msgctxt "STRINGS.LAVALUCY.equipped.3"
+msgid "I think we're winning!"
+msgstr ""
+
+#. STRINGS.LAVALUCY.equipped.4
+msgctxt "STRINGS.LAVALUCY.equipped.4"
+msgid "They don't stand a chance!"
+msgstr ""
+
+#. STRINGS.LAVALUCY.equipped.5
+msgctxt "STRINGS.LAVALUCY.equipped.5"
+msgid "Gosh it's hot in here."
+msgstr ""
+
+#. STRINGS.LAVALUCY.equipped.6
+msgctxt "STRINGS.LAVALUCY.equipped.6"
+msgid "Fight! Fight!"
+msgstr ""
+
+#. STRINGS.LAVALUCY.equipped.7
+msgctxt "STRINGS.LAVALUCY.equipped.7"
+msgid "Get'em!"
+msgstr ""
+
+#. STRINGS.LAVALUCY.equipped.8
+msgctxt "STRINGS.LAVALUCY.equipped.8"
+msgid "Give them the chop!"
+msgstr ""
+
+#. STRINGS.LAVALUCY.equipped.9
+msgctxt "STRINGS.LAVALUCY.equipped.9"
+msgid "The crowd is so loud!"
+msgstr ""
+
+#. STRINGS.LAVALUCY.missedenemy.1
+msgctxt "STRINGS.LAVALUCY.missedenemy.1"
+msgid "Whoops!"
+msgstr ""
+
+#. STRINGS.LAVALUCY.missedenemy.2
+msgctxt "STRINGS.LAVALUCY.missedenemy.2"
+msgid "I missed!"
+msgstr ""
+
+#. STRINGS.LAVALUCY.missedenemy.3
+msgctxt "STRINGS.LAVALUCY.missedenemy.3"
+msgid "Shoot!"
+msgstr ""
+
+#. STRINGS.LAVALUCY.missedenemy.4
+msgctxt "STRINGS.LAVALUCY.missedenemy.4"
+msgid "Hey!"
+msgstr ""
+
+#. STRINGS.LAVALUCY.missedenemy.5
+msgctxt "STRINGS.LAVALUCY.missedenemy.5"
+msgid "Get back here!"
+msgstr ""
+
+#. STRINGS.LAVALUCY.other_owner.1
+msgctxt "STRINGS.LAVALUCY.other_owner.1"
+msgid "I'm not too crazy about this."
+msgstr ""
+
+#. STRINGS.LAVALUCY.other_owner.2
+msgctxt "STRINGS.LAVALUCY.other_owner.2"
+msgid "You're not holding me right!"
+msgstr ""
+
+#. STRINGS.LAVALUCY.other_owner.3
+msgctxt "STRINGS.LAVALUCY.other_owner.3"
+msgid "Your hands are clammy."
+msgstr ""
+
+#. STRINGS.LAVALUCY.other_owner.4
+msgctxt "STRINGS.LAVALUCY.other_owner.4"
+msgid "Just throw me already!"
+msgstr ""
+
+#. STRINGS.LAVALUCY.other_owner.5
+msgctxt "STRINGS.LAVALUCY.other_owner.5"
+msgid "This won't be a regular thing."
+msgstr ""
+
+#. STRINGS.LAVALUCY.other_owner.6
+msgctxt "STRINGS.LAVALUCY.other_owner.6"
+msgid "Don't read too much into this."
+msgstr ""
+
+#. STRINGS.LAVALUCY.struckenemy.1
+msgctxt "STRINGS.LAVALUCY.struckenemy.1"
+msgid "Gotcha!"
+msgstr ""
+
+#. STRINGS.LAVALUCY.struckenemy.2
+msgctxt "STRINGS.LAVALUCY.struckenemy.2"
+msgid "Take that!"
+msgstr ""
+
+#. STRINGS.LAVALUCY.struckenemy.3
+msgctxt "STRINGS.LAVALUCY.struckenemy.3"
+msgid "Take this!"
+msgstr ""
+
+#. STRINGS.LAVALUCY.struckenemy.4
+msgctxt "STRINGS.LAVALUCY.struckenemy.4"
+msgid "Bull's eye!"
+msgstr ""
+
+#. STRINGS.LAVALUCY.struckenemy.5
+msgctxt "STRINGS.LAVALUCY.struckenemy.5"
+msgid "Ha!"
+msgstr ""
+
+#. STRINGS.LAVALUCY.struckenemy.6
+msgctxt "STRINGS.LAVALUCY.struckenemy.6"
+msgid "Thwack!"
+msgstr ""
+
 #. STRINGS.LUCY.beaver_down_early.1
 msgctxt "STRINGS.LUCY.beaver_down_early.1"
 msgid "Are you okay?"
@@ -82108,81 +82278,6 @@ msgctxt "STRINGS.LUCY.equipped.9"
 msgid "All work and no play makes me want to chop some trees."
 msgstr ""
 
-#. STRINGS.LUCY.held.1
-msgctxt "STRINGS.LUCY.held.1"
-msgid "It's so hot!"
-msgstr ""
-
-#. STRINGS.LUCY.held.2
-msgctxt "STRINGS.LUCY.held.2"
-msgid "Throw me!"
-msgstr ""
-
-#. STRINGS.LUCY.held.3
-msgctxt "STRINGS.LUCY.held.3"
-msgid "I think we're winning!"
-msgstr ""
-
-#. STRINGS.LUCY.held.4
-msgctxt "STRINGS.LUCY.held.4"
-msgid "They don't stand a chance!"
-msgstr ""
-
-#. STRINGS.LUCY.held.5
-msgctxt "STRINGS.LUCY.held.5"
-msgid "Gosh it's hot in here."
-msgstr ""
-
-#. STRINGS.LUCY.held.6
-msgctxt "STRINGS.LUCY.held.6"
-msgid "Fight! Fight!"
-msgstr ""
-
-#. STRINGS.LUCY.held.7
-msgctxt "STRINGS.LUCY.held.7"
-msgid "Get'em!"
-msgstr ""
-
-#. STRINGS.LUCY.held.8
-msgctxt "STRINGS.LUCY.held.8"
-msgid "Give them the chop!"
-msgstr ""
-
-#. STRINGS.LUCY.held.9
-msgctxt "STRINGS.LUCY.held.9"
-msgid "The crowd is so loud!"
-msgstr ""
-
-#. STRINGS.LUCY.heldnotwoodie.1
-msgctxt "STRINGS.LUCY.heldnotwoodie.1"
-msgid "I'm not too crazy about this."
-msgstr ""
-
-#. STRINGS.LUCY.heldnotwoodie.2
-msgctxt "STRINGS.LUCY.heldnotwoodie.2"
-msgid "You're not holding me right!"
-msgstr ""
-
-#. STRINGS.LUCY.heldnotwoodie.3
-msgctxt "STRINGS.LUCY.heldnotwoodie.3"
-msgid "Your hands are clammy."
-msgstr ""
-
-#. STRINGS.LUCY.heldnotwoodie.4
-msgctxt "STRINGS.LUCY.heldnotwoodie.4"
-msgid "Just throw me already!"
-msgstr ""
-
-#. STRINGS.LUCY.heldnotwoodie.5
-msgctxt "STRINGS.LUCY.heldnotwoodie.5"
-msgid "This won't be a regular thing."
-msgstr ""
-
-#. STRINGS.LUCY.heldnotwoodie.6
-msgctxt "STRINGS.LUCY.heldnotwoodie.6"
-msgid "Don't read too much into this."
-msgstr ""
-
 #. STRINGS.LUCY.in_container.1
 msgctxt "STRINGS.LUCY.in_container.1"
 msgid "It's dark in here!"
@@ -82246,31 +82341,6 @@ msgstr ""
 #. STRINGS.LUCY.in_container.9
 msgctxt "STRINGS.LUCY.in_container.9"
 msgid "I can't breathe! Wait."
-msgstr ""
-
-#. STRINGS.LUCY.missedenemy.1
-msgctxt "STRINGS.LUCY.missedenemy.1"
-msgid "Whoops!"
-msgstr ""
-
-#. STRINGS.LUCY.missedenemy.2
-msgctxt "STRINGS.LUCY.missedenemy.2"
-msgid "I missed!"
-msgstr ""
-
-#. STRINGS.LUCY.missedenemy.3
-msgctxt "STRINGS.LUCY.missedenemy.3"
-msgid "Shoot!"
-msgstr ""
-
-#. STRINGS.LUCY.missedenemy.4
-msgctxt "STRINGS.LUCY.missedenemy.4"
-msgid "Hey!"
-msgstr ""
-
-#. STRINGS.LUCY.missedenemy.5
-msgctxt "STRINGS.LUCY.missedenemy.5"
-msgid "Get back here!"
 msgstr ""
 
 #. STRINGS.LUCY.on_chopped.1
@@ -82871,36 +82941,6 @@ msgstr ""
 #. STRINGS.LUCY.other_owner.9
 msgctxt "STRINGS.LUCY.other_owner.9"
 msgid "Did I say you could take me?"
-msgstr ""
-
-#. STRINGS.LUCY.struckenemy.1
-msgctxt "STRINGS.LUCY.struckenemy.1"
-msgid "Gotcha!"
-msgstr ""
-
-#. STRINGS.LUCY.struckenemy.2
-msgctxt "STRINGS.LUCY.struckenemy.2"
-msgid "Take that!"
-msgstr ""
-
-#. STRINGS.LUCY.struckenemy.3
-msgctxt "STRINGS.LUCY.struckenemy.3"
-msgid "Take this!"
-msgstr ""
-
-#. STRINGS.LUCY.struckenemy.4
-msgctxt "STRINGS.LUCY.struckenemy.4"
-msgid "Bull's eye!"
-msgstr ""
-
-#. STRINGS.LUCY.struckenemy.5
-msgctxt "STRINGS.LUCY.struckenemy.5"
-msgid "Ha!"
-msgstr ""
-
-#. STRINGS.LUCY.struckenemy.6
-msgctxt "STRINGS.LUCY.struckenemy.6"
-msgid "Thwack!"
 msgstr ""
 
 #. STRINGS.LUCY.transform_beaver.1
@@ -86200,12 +86240,12 @@ msgstr ""
 
 #. STRINGS.NAMES.PEGHOOK
 msgctxt "STRINGS.NAMES.PEGHOOK"
-msgid "Venomeer"
+msgid "Scourgion"
 msgstr ""
 
 #. STRINGS.NAMES.PEGHOOK_DOT
 msgctxt "STRINGS.NAMES.PEGHOOK_DOT"
-msgid "Venomeer Venom"
+msgid "Scourgion Acid"
 msgstr ""
 
 #. STRINGS.NAMES.PENGUIN
@@ -87000,7 +87040,7 @@ msgstr ""
 
 #. STRINGS.NAMES.SNAPPER
 msgctxt "STRINGS.NAMES.SNAPPER"
-msgid "Crocovile"
+msgid "Crocommander"
 msgstr ""
 
 #. STRINGS.NAMES.SNURTLE
@@ -87613,9 +87653,54 @@ msgctxt "STRINGS.NAMES.TRINKET_37"
 msgid "Broken Stake"
 msgstr ""
 
+#. STRINGS.NAMES.TRINKET_38
+msgctxt "STRINGS.NAMES.TRINKET_38"
+msgid "Binoculars"
+msgstr ""
+
+#. STRINGS.NAMES.TRINKET_39
+msgctxt "STRINGS.NAMES.TRINKET_39"
+msgid "Lone Glove"
+msgstr ""
+
 #. STRINGS.NAMES.TRINKET_4
 msgctxt "STRINGS.NAMES.TRINKET_4"
 msgid "Gnome"
+msgstr ""
+
+#. STRINGS.NAMES.TRINKET_40
+msgctxt "STRINGS.NAMES.TRINKET_40"
+msgid "Snail Scale"
+msgstr ""
+
+#. STRINGS.NAMES.TRINKET_41
+msgctxt "STRINGS.NAMES.TRINKET_41"
+msgid "Goop Canister"
+msgstr ""
+
+#. STRINGS.NAMES.TRINKET_42
+msgctxt "STRINGS.NAMES.TRINKET_42"
+msgid "Toy Cobra"
+msgstr ""
+
+#. STRINGS.NAMES.TRINKET_43
+msgctxt "STRINGS.NAMES.TRINKET_43"
+msgid "Crocodile Toy"
+msgstr ""
+
+#. STRINGS.NAMES.TRINKET_44
+msgctxt "STRINGS.NAMES.TRINKET_44"
+msgid "Broken Snowglobe"
+msgstr ""
+
+#. STRINGS.NAMES.TRINKET_45
+msgctxt "STRINGS.NAMES.TRINKET_45"
+msgid "Odd Radio"
+msgstr ""
+
+#. STRINGS.NAMES.TRINKET_46
+msgctxt "STRINGS.NAMES.TRINKET_46"
+msgid "Duplicated Pumpkin"
 msgstr ""
 
 #. STRINGS.NAMES.TRINKET_5
@@ -87780,7 +87865,7 @@ msgstr ""
 
 #. STRINGS.NAMES.TURTILLUS
 msgctxt "STRINGS.NAMES.TURTILLUS"
-msgid "Tortank"
+msgid "Snortoise"
 msgstr ""
 
 #. STRINGS.NAMES.TWIGGYTREE
@@ -103340,7 +103425,7 @@ msgstr ""
 
 #. STRINGS.UI.MVP_LOADING_WIDGET.DESCRIPTIONS.turtillusflips
 msgctxt "STRINGS.UI.MVP_LOADING_WIDGET.DESCRIPTIONS.turtillusflips"
-msgid "Tortanks flipped"
+msgid "Snortoises flipped"
 msgstr ""
 
 #. STRINGS.UI.MVP_LOADING_WIDGET.NO_STAT_VALUE
@@ -107070,32 +107155,32 @@ msgstr ""
 
 #. STRINGS.UI.SKINSSCREEN.USABLE_ON
 msgctxt "STRINGS.UI.SKINSSCREEN.USABLE_ON"
-msgid "Reskins {item}s"
+msgid "Reskins {item}"
 msgstr ""
 
 #. STRINGS.UI.SKINSSCREEN.USABLE_ON_MULTIPLE
 msgctxt "STRINGS.UI.SKINSSCREEN.USABLE_ON_MULTIPLE"
-msgid "Reskins {item1}s and {item2}s"
+msgid "Reskins {item1} and {item2}"
 msgstr ""
 
 #. STRINGS.UI.SKINSSCREEN.USABLE_ON_MULTIPLE_3
 msgctxt "STRINGS.UI.SKINSSCREEN.USABLE_ON_MULTIPLE_3"
-msgid "Reskins {item1}s, {item2}s and {item3}s"
+msgid "Reskins {item1}, {item2} and {item3}"
 msgstr ""
 
 #. STRINGS.UI.SKINSSCREEN.USABLE_ON_MULTIPLE_3_POPUP
 msgctxt "STRINGS.UI.SKINSSCREEN.USABLE_ON_MULTIPLE_3_POPUP"
-msgid "{skin} will change the appearance of {item1}s, {item2}s and {item3}s."
+msgid "{skin} will change the appearance of {item1}, {item2} and {item3}."
 msgstr ""
 
 #. STRINGS.UI.SKINSSCREEN.USABLE_ON_MULTIPLE_POPUP
 msgctxt "STRINGS.UI.SKINSSCREEN.USABLE_ON_MULTIPLE_POPUP"
-msgid "{skin} will change the appearance of {item1}s and {item2}s."
+msgid "{skin} will change the appearance of {item1} and {item2}."
 msgstr ""
 
 #. STRINGS.UI.SKINSSCREEN.USABLE_ON_POPUP
 msgctxt "STRINGS.UI.SKINSSCREEN.USABLE_ON_POPUP"
-msgid "{skin} will change the appearance of {item}s."
+msgid "{skin} will change the appearance of {item}."
 msgstr ""
 
 #. STRINGS.UI.STARTADVENTURE.BODY
@@ -108253,6 +108338,11 @@ msgctxt "STRINGS.UI.WXPLOBBYPANEL.NEWBOX_TITLE"
 msgid "Forge Chest Earned!"
 msgstr ""
 
+#. STRINGS.UI.WXPLOBBYPANEL.NO_DEATHS
+msgctxt "STRINGS.UI.WXPLOBBYPANEL.NO_DEATHS"
+msgid "Perfect!"
+msgstr ""
+
 #. STRINGS.UI.WXPLOBBYPANEL.SKIP
 msgctxt "STRINGS.UI.WXPLOBBYPANEL.SKIP"
 msgid "Skip"
@@ -108310,17 +108400,17 @@ msgstr ""
 
 #. STRINGS.UI.WXP_DETAILS.LAVA_ARENA_MILESTONE_1
 msgctxt "STRINGS.UI.WXP_DETAILS.LAVA_ARENA_MILESTONE_1"
-msgid "Survived the Pit Pigs"
+msgid "Pit Pigs Defeated"
 msgstr ""
 
 #. STRINGS.UI.WXP_DETAILS.LAVA_ARENA_MILESTONE_2
 msgctxt "STRINGS.UI.WXP_DETAILS.LAVA_ARENA_MILESTONE_2"
-msgid "Survived the Crocovile"
+msgid "Crocommanders Defeated"
 msgstr ""
 
 #. STRINGS.UI.WXP_DETAILS.LAVA_ARENA_MILESTONE_3
 msgctxt "STRINGS.UI.WXP_DETAILS.LAVA_ARENA_MILESTONE_3"
-msgid "Survived the Tortank"
+msgid "Snortoises Defeated"
 msgstr ""
 
 #. STRINGS.UI.WXP_DETAILS.LAVA_ARENA_MILESTONE_4
@@ -108331,6 +108421,21 @@ msgstr ""
 #. STRINGS.UI.WXP_DETAILS.LAVA_ARENA_XP_MOD
 msgctxt "STRINGS.UI.WXP_DETAILS.LAVA_ARENA_XP_MOD"
 msgid "debug test"
+msgstr ""
+
+#. STRINGS.UI.WXP_DETAILS.LAVA_NO_PLAYER_DEATHS
+msgctxt "STRINGS.UI.WXP_DETAILS.LAVA_NO_PLAYER_DEATHS"
+msgid "Perfect"
+msgstr ""
+
+#. STRINGS.UI.WXP_DETAILS.LAVA_NO_TEAM_DEATHS
+msgctxt "STRINGS.UI.WXP_DETAILS.LAVA_NO_TEAM_DEATHS"
+msgid "Team Perfect"
+msgstr ""
+
+#. STRINGS.UI.WXP_DETAILS.LAVA_UNIQUE_CHARACTERS
+msgctxt "STRINGS.UI.WXP_DETAILS.LAVA_UNIQUE_CHARACTERS"
+msgid "No Doubles Bonus"
 msgstr ""
 
 #. STRINGS.UI.WXP_DETAILS.WEEKLY_FIRST_MATCH

@@ -8,6 +8,7 @@ EMOTE_ITEMS =
 		rarity_modifier = "EventModifier",
 		cmd_name = "chicken",
 		type = "emote",
+		skin_tags = { "LAVA", "EMOTE", },
 		data =
 		{
 			item_type = "emote_dance_chicken",
@@ -26,6 +27,7 @@ EMOTE_ITEMS =
 		rarity_modifier = "EventModifier",
 		cmd_name = "robot",
 		type = "emote",
+		skin_tags = { "LAVA", "EMOTE", },
 		data =
 		{
 			item_type = "emote_dance_robot",
@@ -44,6 +46,7 @@ EMOTE_ITEMS =
 		rarity_modifier = "EventModifier",
 		cmd_name = "step",
 		type = "emote",
+		skin_tags = { "LAVA", "EMOTE", },
 		data =
 		{
 			item_type = "emote_dance_step",
@@ -61,6 +64,7 @@ EMOTE_ITEMS =
 		rarity = "Reward",
 		cmd_name = "fistshake",
 		type = "emote",
+		skin_tags = { "LAVA", "EMOTE", },
 		data =
 		{
 			item_type = "emote_fistshake",
@@ -78,6 +82,7 @@ EMOTE_ITEMS =
 		rarity_modifier = "EventModifier",
 		cmd_name = "flex",
 		type = "emote",
+		skin_tags = { "LAVA", "EMOTE", },
 		data =
 		{
 			item_type = "emote_flex",
@@ -95,6 +100,7 @@ EMOTE_ITEMS =
 		rarity_modifier = "EventModifier",
 		cmd_name = "impatient",
 		type = "emote",
+		skin_tags = { "LAVA", "EMOTE", },
 		data =
 		{
 			item_type = "emote_impatient",
@@ -112,6 +118,7 @@ EMOTE_ITEMS =
 		rarity_modifier = "EventModifier",
 		cmd_name = "cheer",
 		type = "emote",
+		skin_tags = { "LAVA", "EMOTE", },
 		data =
 		{
 			item_type = "emote_jumpcheer",
@@ -129,6 +136,7 @@ EMOTE_ITEMS =
 		rarity_modifier = "EventModifier",
 		cmd_name = "laugh",
 		type = "emote",
+		skin_tags = { "LAVA", "EMOTE", },
 		data =
 		{
 			item_type = "emote_laugh",
@@ -146,6 +154,7 @@ EMOTE_ITEMS =
 		rarity_modifier = "EventModifier",
 		cmd_name = "shrug",
 		type = "emote",
+		skin_tags = { "LAVA", "EMOTE", },
 		data =
 		{
 			item_type = "emote_shrug",
@@ -162,6 +171,7 @@ EMOTE_ITEMS =
 		rarity = "Reward",
 		cmd_name = "sleepy",
 		type = "emote",
+		skin_tags = { "EMOTE", },
 		data =
 		{
 			item_type = "emote_sleepy",
@@ -187,6 +197,7 @@ EMOTE_ITEMS =
 		rarity_modifier = "EventModifier",
 		cmd_name = "slowclap",
 		type = "emote",
+		skin_tags = { "LAVA", "EMOTE", },
 		data =
 		{
 			item_type = "emote_slowclap",
@@ -203,6 +214,7 @@ EMOTE_ITEMS =
 		rarity = "Loyal",
 		cmd_name = "swoon",
 		type = "emote",
+		skin_tags = { "EMOTE", },
 		data =
 		{
 			item_type = "emote_swoon",
@@ -220,6 +232,7 @@ EMOTE_ITEMS =
 		rarity = "Reward",
 		cmd_name = "yawn",
 		type = "emote",
+		skin_tags = { "EMOTE", },
 		data =
 		{
 			item_type = "emote_yawn",

@@ -14,5 +14,6 @@ return CreatePrefabSkin("hambat_spiralcut",
 	rarity = "Elegant",
 	rarity_modifier = "EventModifier",
 	init_fn = function(inst) hambat_init_fn(inst, "hambat_spiralcut") end,
+	skin_tags = { "HAMBAT", "LAVA", "CRAFTABLE", },
 	release_group = 32,
 })

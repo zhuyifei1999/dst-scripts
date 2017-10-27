@@ -13,5 +13,6 @@ return CreatePrefabSkin("dragonling_winter_builder",
 	build_name = "dragonling_winter",
 	rarity = "Common",
 	init_fn = function(inst) critter_builder_init_fn(inst, "dragonling_winter" ) end,
+	skin_tags = { "CRAFTABLE", },
 	release_group = 22,
 })

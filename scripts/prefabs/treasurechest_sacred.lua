@@ -13,5 +13,6 @@ return CreatePrefabSkin("treasurechest_sacred",
 	build_name = "treasurechest_sacred",
 	rarity = "Timeless",
 	init_fn = function(inst) treasurechest_init_fn(inst, "treasurechest_sacred") end,
+	skin_tags = { "CHEST", "ANCIENT", "CRAFTABLE", },
 	release_group = 25,
 })

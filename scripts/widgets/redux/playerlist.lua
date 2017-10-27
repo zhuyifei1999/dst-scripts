@@ -10,8 +10,9 @@ local VOICE_MUTE_COLOUR = { 242 / 255, 99 / 255, 99 / 255, 255 / 255 }
 local VOICE_ACTIVE_COLOUR = { 99 / 255, 242 / 255, 99 / 255, 255 / 255 }
 local VOICE_IDLE_COLOUR = { 1, 1, 1, 1 }
 
-local PlayerInfoListing_width = 220
+local PlayerInfoListing_width = 260
 local PlayerInfoListing_height = 37
+local NUM_ROWS = 6
 
 local function GetCharacterPrefab(data)
 	if data == nil then
@@ -69,10 +70,9 @@ function PlayerInfoListing:DoInit(v, nextWidgets)
 
     self.userid = not empty and v.userid or nil
 
-    local nudge_x = -5
-    local name_badge_nudge_x = 15
     -- Widget contents are centred under root.
-    local x = -PlayerInfoListing_width/2 + nudge_x+name_badge_nudge_x
+    local nudge_x = 3
+    local x = -PlayerInfoListing_width/2 + 10
 
     self.bg = self:AddChild(Image("images/ui.xml", "blank.tex"))
     self.bg:ScaleToSize(PlayerInfoListing_width, PlayerInfoListing_height)
@@ -80,11 +80,13 @@ function PlayerInfoListing:DoInit(v, nextWidgets)
         self.bg:Hide()
     end
 
-    -- TODO(dbriscoe): Need new outline/background
-    self.highlight = self:AddChild(Image("images/scoreboard.xml", "row_short_goldoutline.tex"))
-    self.highlight:SetPosition(123-PlayerInfoListing_width/2, 0)
-    self.highlight:ScaleToSize(215,50)
-    self.highlight:Hide()
+    self.rank = self:AddChild(Image("images/profileflair.xml", "playerlevel_bg_lavaarena.tex"))
+    self.rank:SetPosition(x + 16, -4)  
+    self.rank:SetScale(.5)
+    self.rank.num = self.rank:AddChild(Text(CHATFONT_OUTLINE, 40))
+	self.rank.num:SetColour(UICOLOURS.WHITE)
+	self.rank.num:SetPosition(2, 10)
+	x = x + 16*2 + nudge_x
 
     self.characterBadge = nil
     if empty then
@@ -96,25 +98,34 @@ function PlayerInfoListing:DoInit(v, nextWidgets)
         self.characterBadge = self:AddChild(PlayerBadge(GetCharacterPrefab(v), v.colour or DEFAULT_PLAYER_COLOUR, v.performance ~= nil, v.userflags or 0))
     end
     self.characterBadge:SetScale(.45)
-    self.characterBadge:SetPosition(x+nudge_x+name_badge_nudge_x,0,0)
+    self.characterBadge:SetPosition(x + 16, 0)
 
     self.adminBadge = self:AddChild(ImageButton("images/avatars.xml", "avatar_admin.tex"))
     self.adminBadge:Disable()
-    self.adminBadge:SetPosition(x-12+nudge_x+name_badge_nudge_x,-10,0)  
+    self.adminBadge:SetPosition(x + 4, -10)  
     self.adminBadge.image:SetScale(.18)
     self.adminBadge.scale_on_focus = false
-    self.adminBadge:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.ADMIN, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
+    self.adminBadge:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.ADMIN, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 10, colour = {1,1,1,1}})
     if empty or not v.admin then
         self.adminBadge:Hide()
     end
-    x = x + 30
+	x = x + 16*2 + nudge_x
+
+    -- TODO(dbriscoe): Need new outline/background
+    self.highlight = self:AddChild(Image("images/scoreboard.xml", "row_short_goldoutline.tex"))
+    self.highlight:SetPosition(x + 85, 0)
+    self.highlight:ScaleToSize(215,50)
+    self.highlight:Hide()
+    self.highlight:SetClickable(false)
+
+	x = x + nudge_x
 
     self.name = self:AddChild(Text(TALKINGFONT, 24))
     self.name._align =
     {
         maxwidth = 119,
         maxchars = 22,
-        x = x + nudge_x+name_badge_nudge_x,
+        x = x,
         y = -2.5,
     }
     self.name.SetDisplayNameFromData = function(self, data, playerlist)
@@ -130,7 +141,8 @@ function PlayerInfoListing:DoInit(v, nextWidgets)
         self:SetPosition(self._align.x + w * .5, self._align.y, 0)
     end
     self.name:SetDisplayNameFromData(v)
-    x = x + 141
+
+    x = x + self.name._align.maxwidth + nudge_x
 
     -- Randomize only for testing
     local colours = nil --GetAvailablePlayerColours()
@@ -144,7 +156,7 @@ function PlayerInfoListing:DoInit(v, nextWidgets)
     local scale = 0.234
     
     self.viewprofile = self:AddChild(ImageButton("images/scoreboard.xml", "addfriend.tex"))
-    self.viewprofile:SetPosition(x+nudge_x,0,0)
+    self.viewprofile:SetPosition(x + 6, 0)
     self.viewprofile:SetNormalScale(scale)
     self.viewprofile:SetFocusScale(scale * 1.1)
     self.viewprofile:SetFocusSound("dontstarve/HUD/click_mouseover")
@@ -160,12 +172,12 @@ function PlayerInfoListing:DoInit(v, nextWidgets)
     if empty or v.userid == owner or not TheNet:IsNetIDPlatformValid(v.netid) then
         self.viewprofile:Hide()
     end
-    x = x + 25
+    x = x + 32 + nudge_x
 
     self.isMuted = v.muted == true
 
     self.mute = self:AddChild(ImageButton("images/scoreboard.xml", "chat.tex"))
-    self.mute:SetPosition(x+nudge_x,0,0)
+    self.mute:SetPosition(x,0,0)
     self.mute:SetNormalScale(scale)
     self.mute:SetFocusScale(scale * 1.1)
     self.mute:SetFocusSound("dontstarve/HUD/click_mouseover")
@@ -256,9 +268,12 @@ local function UpdatePlayerListing(context, widget, data, index)
 
     if empty then
         widget.characterBadge:Hide()
+        widget.rank:Hide()
     else
         widget.characterBadge:Set(GetCharacterPrefab(data), data.colour or DEFAULT_PLAYER_COLOUR, data.performance ~= nil, data.userflags or 0)
         widget.characterBadge:Show()
+        widget.rank.num:SetString(data.eventlevel + 1)
+        widget.rank:Show()
     end
 
     if not empty and data.admin then
@@ -276,7 +291,7 @@ local function UpdatePlayerListing(context, widget, data, index)
         function()
             -- Can't do this here because HUD doesn't exist yet. TODO: add the playeravatarpopup to frontend, or wrap it in a screen.
             --ThePlayer.HUD:OpenPlayerAvatarPopup(displayName, data, true)
-            if data.netid ~= nil then
+            if data ~= nil and data.netid ~= nil then
                 TheNet:ViewNetProfile(data.netid)
             end
         end)
@@ -372,22 +387,21 @@ function PlayerList:BuildPlayerList(players, nextWidgets)
             return PlayerInfoListing(players[index] or {}, nextWidgets)
         end
 
-        local tooltip_pad = 50
         self.scroll_list = self.player_list:AddChild(TEMPLATES.ScrollingGrid(
                 players,
                 {
                     context = {playerlist = self},
-                    widget_width  = PlayerInfoListing_width + tooltip_pad,
+                    widget_width  = PlayerInfoListing_width,
                     widget_height = PlayerInfoListing_height,
-                    num_visible_rows = 6,
+                    num_visible_rows = NUM_ROWS,
                     num_columns      = 1,
                     item_ctor_fn = ScrollWidgetsCtor,
                     apply_fn = UpdatePlayerListing,
-                    scrollbar_offset = 0, -- see tooltip_pad
-                    peek_percent = 0.5, -- safe because empty widgets are hidden
+                    scrollbar_offset = 20,
+                    peek_percent = TheNet:GetServerMaxPlayers() > NUM_ROWS and 0.3 or 0,
                 }
             ))
-        self.scroll_list:SetPosition(-127+PlayerInfoListing_width/2, -150)
+        self.scroll_list:SetPosition(-40, -143)
     else
         self.scroll_list:SetItemsData(players)
     end

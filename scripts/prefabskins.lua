@@ -136,10 +136,6 @@ PREFAB_SKINS = {
 		"endtable_dragonfly",
 		"endtable_vintage",
 	},
-	featherhat = 
-	{
-		"featherhat_crown",
-	},
 	firepit = 
 	{
 		"firepit_fanged",
@@ -153,6 +149,7 @@ PREFAB_SKINS = {
 	},
 	flowerhat = 
 	{
+		"featherhat_crown",
 		"flowerhat_healing",
 		"flowerhat_holly_wreath",
 		"flowerhat_ribbon_wreath",

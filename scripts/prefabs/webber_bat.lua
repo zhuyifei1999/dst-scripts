@@ -13,6 +13,7 @@ return CreatePrefabSkin("webber_bat",
 	assets = assets,
 	build_name = "webber_bat",
 	rarity = "Event",
+	skin_tags = { "COSTUME", "BASE", "CHARACTER", "WEBBER", },
 	skins = { ghost_skin = "ghost_webber_build", normal_skin = "webber_bat", },
 	release_group = 15,
 })

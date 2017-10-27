@@ -14,6 +14,7 @@ return CreatePrefabSkin("backpack_basic_blue_catcoon",
 	build_name = "swap_backpack_basic_blue_catcoon",
 	rarity = "Spiffy",
 	init_fn = function(inst) backpack_init_fn(inst, "swap_backpack_basic_blue_catcoon") end,
+	skin_tags = { "BACKPACK", "BLUE", "CRAFTABLE", },
 	marketable = true,
 	release_group = 1,
 })

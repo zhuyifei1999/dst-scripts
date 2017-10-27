@@ -14,5 +14,6 @@ return CreatePrefabSkin("amulet_red_occulteye",
 	rarity = "Elegant",
 	rarity_modifier = "EventModifier",
 	init_fn = function(inst) amulet_init_fn(inst, "amulet_red_occulteye") end,
+	skin_tags = { "AMULET_RED", "LAVA", "CRAFTABLE", },
 	release_group = 32,
 })

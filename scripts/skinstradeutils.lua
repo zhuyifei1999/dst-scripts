@@ -85,7 +85,7 @@ function GetSpecialFilters(recipe_data, selected_items)
 
 end
 
-function GetSatisfiedRestrictions(recipe_data, selected_items)
+--[[function GetSatisfiedRestrictions(recipe_data, selected_items)
 	local used_items = {}
 	local satisfied_restrictions = {}
 	for res_id,restriction in pairs(recipe_data.Restrictions) do
@@ -103,10 +103,10 @@ function GetSatisfiedRestrictions(recipe_data, selected_items)
 		end
 	end
 	return satisfied_restrictions
-end
+end]]
 
 -- Moved this out of tradescreen since recipelist also needs to access it now.
-function does_item_match_restriction( restriction, item )
+--[[function does_item_match_restriction( restriction, item )
 	local matched_item = true
 	if restriction.ItemType ~= "" then
 		--print( "looking for item", restriction.ItemType )
@@ -128,4 +128,4 @@ function does_item_match_restriction( restriction, item )
 		--Assume the rarity is correct from the filtering
 	end
 	return matched_item
-end
+end]]

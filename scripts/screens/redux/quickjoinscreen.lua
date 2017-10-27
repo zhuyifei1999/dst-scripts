@@ -5,9 +5,14 @@ local Text = require "widgets/text"
 
 local Stats = require("stats")
 
-local MAX_INITAIL_SEARCH_TIME = 7
+local MAX_INITIAL_SEARCH_TIME = 7
 local MAX_SEARCH_TIME = 15
 local MAX_JOIN_ATTEMPTS = 20
+
+if PLATFORM == "WIN32_RAIL" then
+	MAX_INITIAL_SEARCH_TIME = 10
+	MAX_SEARCH_TIME = 45
+end
 
 local QuickJoinScreen = Class(GenericWaitingPopup, function(self, prev_screen, offline, session_mapping, event_id, scorefn, tohostscreencb, tobrowsescreencb)
 	GenericWaitingPopup._ctor(self, "QuickJoinScreen", (event_id == "" and STRINGS.UI.QUICKJOINSCREEN or STRINGS.UI.EVENT_QUICKJOINSCREEN).TITLE)
@@ -127,7 +132,7 @@ function QuickJoinScreen:OnUpdate(dt)
 end
 
 function QuickJoinScreen:ShouldKeepSearching()
-	return TheNet:GetServerListingReadDirty() and TheNet:IsSearchingServers() and (GetTime() - self.startsearchtime) < MAX_INITAIL_SEARCH_TIME
+	return TheNet:GetServerListingReadDirty() and TheNet:IsSearchingServers() and (GetTime() - self.startsearchtime) < MAX_INITIAL_SEARCH_TIME
 end
 
 local function PickBestServers(servers)
@@ -167,8 +172,6 @@ local function PickBestServers(servers)
 end
 
 function QuickJoinScreen:TryPickServer()
-	self.servertojoin = nil
-
     if self:ShouldKeepSearching() then
 	    self:KeepSearching(1)
 	    
@@ -176,6 +179,7 @@ function QuickJoinScreen:TryPickServer()
 	    return
 	end
 	
+	self.servertojoin = nil
     self.filtered_servers = {}
 
     local servers = TheNet:GetServerListings()
@@ -230,12 +234,12 @@ function QuickJoinScreen:TryPickServer()
 end
 
 function QuickJoinScreen:TryNextServer(error, reason)
-	local server = self.filtered_servers ~= nil and self.filtered_servers[self.servertojoin] or nil
+	local server = self.filtered_servers ~= nil and self.filtered_servers[self.servertojoin or MAX_JOIN_ATTEMPTS] or nil
 	if server ~= nil and error ~= nil and reason ~= nil then
 	    print(string.format("[QuickJoin]: Failed to join: %s, %s - %s: %s", server.name, tostring(server.ip), tostring(error), tostring(reason)))
 	end
 
-	if self.servertojoin < math.min(self.filtered_servers ~= nil and #self.filtered_servers or 0, MAX_JOIN_ATTEMPTS) then
+	if self.servertojoin ~= nil and self.servertojoin < math.min(self.filtered_servers ~= nil and #self.filtered_servers or 0, MAX_JOIN_ATTEMPTS) then
 		self.servertojoin = self.servertojoin + 1
 		self.queuejoingame = true
 	else

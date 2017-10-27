@@ -879,49 +879,15 @@ function GlobalInit()
 end
 
 function DoLoadingPortal(cb)
+	local values = {}
+    local screen = TheFrontEnd:GetActiveScreen()
+	values.join_screen = screen ~= nil and screen.name or "other"
+	values.special_event = screen ~= nil and screen.event_id or nil
+	Stats.PushMetricsEvent("joinfromscreen", TheNet:GetUserID(), values)
+
 	--No portal anymore, just fade to "white". Maybe we want to swipe fade to the loading screen?
 	TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, cb, nil, nil, "white")
 	return
-        
-    --[[local join_screen = "other"
-    local screen = TheFrontEnd:GetActiveScreen()
-    while screen ~= nil and not (screen.bg ~= nil and screen.bg.anim_root ~= nil and screen.bg.anim_root.portal ~= nil) do
-		if screen.name == "ConnectingToGamePopup" then
-			join_screen = "server_listing"
-		elseif screen.name == "QuickJoinScreen" then
-			join_screen = "quick_join"
-		elseif screen.name == "HostCloudServerPopup" then
-			join_screen = "custom_cloud_server"
-		end
-		
-        -- Check if we're on a screen with a portal anim
-        -- If we're not, then pop the current screen and try again with the next screen down
-        TheFrontEnd:PopScreen()
-        screen = TheFrontEnd:GetActiveScreen()
-    end
-    
-	local values = {}
-	values.join_screen = join_screen 
-	Stats.PushMetricsEvent("joinfromscreen", TheNet:GetUserID(), values)
-
-    if screen == nil then
-        -- If there are no more screens, just do a generic fade
-        TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, cb, nil, nil, "white")
-        return
-    end
-
-    -- If we have access to a portal, then start the animation fanciness!
-    TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME * 4, nil, nil, nil, "alpha")
-
-    screen:Disable()
-    screen.inst:DoTaskInTime(SCREEN_FADE_TIME, function(inst)
-        screen.bg.anim_root.portal:GetAnimState():PlayAnimation("portal_blackout", false)
-        TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_flash")
-
-        inst:DoTaskInTime(1.5, function()
-            TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, cb, nil, nil, "white")
-        end)
-    end)]]
 end
 
 -- This is for joining a game: once we're done downloading the map, we load it and simreset

@@ -400,7 +400,7 @@ return {
 			ATTACKER = "%s is silent, but deadly...",
 			MURDERER = "Mime this!",
 			REVIVER = "%s thinks outside the invisible box.",
-			GHOST = "How do you say \"I'll conduct a revival device\" in mime?",
+			GHOST = "How do you say \"I'll concoct a revival device\" in mime?",
 			FIRESTARTER = "Wait, don't tell me. You lit a fire.",
 		},
 		WEBBER = 
@@ -1868,7 +1868,16 @@ return {
         TRINKET_35 = "Hard to find a good flask around here.", --Empty Elixir
         TRINKET_36 = "I might need these after all that candy.", --Faux fangs
         TRINKET_37 = "I don't believe in the supernatural.", --Broken Stake
-
+        TRINKET_38 = "I think it came from another world. One with grifts.", -- Binoculars Griftlands trinket
+        TRINKET_39 = "I wonder where the other one is?", -- Lone Glove Griftlands trinket
+        TRINKET_40 = "Holding it makes me feel like bartering.", -- Snail Scale Griftlands trinket
+        TRINKET_41 = "It's a little warm to the touch.", -- Goop Canister Hot Lava trinket
+        TRINKET_42 = "Childhood memories.", -- Toy Cobra Hot Lava trinket
+        TRINKET_43= "It's not very good at jumping.", -- Crocodile Toy Hot Lava trinket
+        TRINKET_44 = "All the water leaked out.", -- Broken Snowglobe ONI trinket
+        TRINKET_45 = "It's picking up frequencies from another world.", -- Odd Radio ONI trinket
+        TRINKET_46 = "Smashing!", -- ONI trinket
+        
         HALLOWEENCANDY_1 = "The cavities are probably worth it, right?",
         HALLOWEENCANDY_2 = "What corruption of science grew these?",
         HALLOWEENCANDY_3 = "It's... corn.",
@@ -2051,7 +2060,7 @@ return {
         LAVAARENA_BOARLORD = "That's the guy in charge here.",
         BOARRIOR = "You sure are big!",
         BOARON = "I can take him!",
-        PEGHOOK = "Don't poison me, please!",
+        PEGHOOK = "That spit is corrosive!",
         TRAILS = "He's got a strong arm on him.",
         TURTILLUS = "Its shell is so spiky!",
         SNAPPER = "This one's got bite.",

@@ -291,8 +291,32 @@ function GetSortCategoryForItem(item)
     return ""
 end
 
+
+function DoesItemHaveTag(item, tag)
+	local tags = {}
+	if CLOTHING[item] then 
+		tags = CLOTHING[item].skin_tags
+	elseif MISC_ITEMS[item] then 
+		tags = MISC_ITEMS[item].skin_tags
+	elseif EMOTE_ITEMS[item] then 
+		tags = EMOTE_ITEMS[item].skin_tags
+	else
+		if Prefabs[item] ~= nil then
+			tags = Prefabs[item].skin_tags
+		end
+	end
+
+	for _,item_tag in pairs(tags) do
+		if item_tag == tag then
+			return true
+		end
+	end
+	
+	return false
+end
+
 --Note(Peter): do we actually want to do this here, or actually provide the json tags from the pipeline?
-function GetTagFromType(type)
+--[[function GetTagFromType(type)
 	if type == "body" or type == "hand" or type == "legs" or type == "feet" then
 		return string.upper("CLOTHING_" .. type)
 	elseif type == "base" then
@@ -323,15 +347,12 @@ function GetTypeFromTag(tag)
 	else
 		return nil --What do we want to do about colour and misc tags?
 	end
-end
+end]]
 
-function GetColourFromColourTag(c) --UNTESTED!!!
+--[[function GetColourFromColourTag(c) --UNTESTED!!!
 	local s = string.lower(c)
 	return s:sub(1,1):upper()..s:sub(2)
-end
-function GetColourTagFromColour(c)
-	return string.upper(c)
-end
+end]]
 
 function GetSkinName(item)
 	if string.sub( item, -8 ) == "_builder" then

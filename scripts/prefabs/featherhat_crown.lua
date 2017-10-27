@@ -7,12 +7,13 @@ local assets =
 
 return CreatePrefabSkin("featherhat_crown",
 {
-	base_prefab = "featherhat",
+	base_prefab = "flowerhat",
 	type = "item",
 	assets = assets,
 	build_name = "featherhat_crown",
 	rarity = "Elegant",
 	rarity_modifier = "EventModifier",
-	init_fn = function(inst) featherhat_init_fn(inst, "featherhat_crown") end,
+	init_fn = function(inst) flowerhat_init_fn(inst, "featherhat_crown") end,
+	skin_tags = { "FLOWERHAT", "LAVA", "CRAFTABLE", },
 	release_group = 32,
 })

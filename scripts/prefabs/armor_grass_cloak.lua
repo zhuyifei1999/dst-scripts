@@ -14,5 +14,6 @@ return CreatePrefabSkin("armor_grass_cloak",
 	rarity = "Elegant",
 	rarity_modifier = "EventModifier",
 	init_fn = function(inst) armorgrass_init_fn(inst, "armor_grass_cloak") end,
+	skin_tags = { "ARMORGRASS", "LAVA", "CRAFTABLE", },
 	release_group = 32,
 })

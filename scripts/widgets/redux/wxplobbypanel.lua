@@ -83,6 +83,7 @@ function WxpLobbyPanel:DoInit(nosound)
 
     if not nosound then
 	   TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/collectionscreen/xp_shepard_LP", "fillsound")
+	   TheFrontEnd:GetSound():SetParameter("fillsound","pitch",0.8)
     end
 end
 
@@ -234,6 +235,7 @@ function WxpLobbyPanel:OnUpdate(dt)
         if TheFrontEnd:GetSound():PlayingSound("fillsound") then
             TheFrontEnd:GetSound():KillSound("fillsound")
             TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/collectionscreen/xp_shepard_LP", "fillsound")
+            TheFrontEnd:GetSound():SetParameter("fillsound","pitch",0.8)
         end
 	end
 

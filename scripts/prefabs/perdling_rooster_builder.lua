@@ -13,5 +13,6 @@ return CreatePrefabSkin("perdling_rooster_builder",
 	build_name = "perdling_rooster",
 	rarity = "Common",
 	init_fn = function(inst) critter_builder_init_fn(inst, "perdling_rooster" ) end,
+	skin_tags = { "CRAFTABLE", },
 	release_group = 23,
 })

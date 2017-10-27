@@ -63,7 +63,7 @@ local WaitingForPlayers = Class(Widget, function(self, owner, max_players)
 			TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.LOBBY_WAITING_FOR_PLAYERS_SCREEN.VOTE_POPUP_TITLE, subfmt(STRINGS.UI.LOBBY_WAITING_FOR_PLAYERS_SCREEN.VOTE_POPUP_BODY, {num=#self.players, max=TheNet:GetServerMaxPlayers()}),
 				{
 					{text=STRINGS.UI.LOBBY_WAITING_FOR_PLAYERS_SCREEN.VOTE_POPUP_CONTINUE, cb = function() nowaiting_warned = true TheFrontEnd:PopScreen() nowaiting_checkbox.onclick() end },
-					{text=STRINGS.UI.LOBBY_WAITING_FOR_PLAYERS_SCREEN.VOTE_POPUP_CANCEL, cb = function() nowaiting_warned = true TheFrontEnd:PopScreen() end}
+					{text=STRINGS.UI.LOBBY_WAITING_FOR_PLAYERS_SCREEN.VOTE_POPUP_CANCEL, cb = function() TheFrontEnd:PopScreen() end}
 				}))
 		else
 			nowaiting_checkbox:Disable()

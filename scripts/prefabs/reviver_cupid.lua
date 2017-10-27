@@ -14,6 +14,7 @@ return CreatePrefabSkin("reviver_cupid",
 	rarity = "Loyal",
 	prefabs = { "reviver_cupid_beat_fx", "reviver_cupid_glow_fx", },
 	init_fn = function(inst) reviver_init_fn(inst, "reviver_cupid") end,
+	skin_tags = { "REVIVER", "CRAFTABLE", },
 	fx_prefab = { "reviver_cupid_beat_fx", "reviver_cupid_glow_fx", },
 	release_group = 24,
 })

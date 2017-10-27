@@ -5,6 +5,7 @@ CLOTHING =
 	body_buttons_black_jet =
 	{
 		type = "body",
+		skin_tags = { "BLACK", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_buttons_black_jet",
 		torso_tuck = "untucked",
@@ -14,6 +15,7 @@ CLOTHING =
 	body_buttons_blue_sky =
 	{
 		type = "body",
+		skin_tags = { "BLUE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_buttons_blue_sky",
 		torso_tuck = "untucked",
@@ -23,6 +25,7 @@ CLOTHING =
 	body_buttons_green_laurel =
 	{
 		type = "body",
+		skin_tags = { "GREEN", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_buttons_green_laurel",
 		torso_tuck = "untucked",
@@ -32,6 +35,7 @@ CLOTHING =
 	body_buttons_pink_hibiscus =
 	{
 		type = "body",
+		skin_tags = { "PINK", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_buttons_pink_hibiscus",
 		torso_tuck = "untucked",
@@ -41,6 +45,7 @@ CLOTHING =
 	body_buttons_white_ghost =
 	{
 		type = "body",
+		skin_tags = { "WHITE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_buttons_white_ghost",
 		torso_tuck = "untucked",
@@ -50,6 +55,7 @@ CLOTHING =
 	body_cardigan_black_jet =
 	{
 		type = "body",
+		skin_tags = { "LUNAR", "BLACK", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_lower", },
 		override_build = "body_cardigan_black_jet",
 		torso_tuck = "untucked",
@@ -60,6 +66,7 @@ CLOTHING =
 	body_cardigan_red_cardinal =
 	{
 		type = "body",
+		skin_tags = { "LUNAR", "RED", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_lower", },
 		override_build = "body_cardigan_red_cardinal",
 		torso_tuck = "untucked",
@@ -70,6 +77,7 @@ CLOTHING =
 	body_cardigan_teal_jade =
 	{
 		type = "body",
+		skin_tags = { "LUNAR", "TEAL", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_lower", },
 		override_build = "body_cardigan_teal_jade",
 		torso_tuck = "untucked",
@@ -80,6 +88,7 @@ CLOTHING =
 	body_cardigan_white_ghost =
 	{
 		type = "body",
+		skin_tags = { "LUNAR", "WHITE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_lower", },
 		override_build = "body_cardigan_white_ghost",
 		torso_tuck = "untucked",
@@ -90,6 +99,7 @@ CLOTHING =
 	body_catcoon_costume =
 	{
 		type = "body",
+		skin_tags = { "COSTUME", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_upper_skin", "hand", "torso", "torso_pelvis", "leg", "foot", "tail", },
 		symbol_hides = { "skirt", "arm_upper", },
 		override_build = "body_catcoon_costume",
@@ -101,6 +111,7 @@ CLOTHING =
 	body_chester_costume =
 	{
 		type = "body",
+		skin_tags = { "COSTUME", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "hand", "torso", "torso_pelvis", "leg", "foot", },
 		symbol_hides = { "skirt", },
 		override_build = "body_chester_costume",
@@ -112,6 +123,7 @@ CLOTHING =
 	body_coatdress_red_higgsbury =
 	{
 		type = "body",
+		skin_tags = { "LUNAR", "RED", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_upper", "foot", "leg", "skirt", "torso", "torso_pelvis", },
 		symbol_hides = { },
 		override_build = "body_coatdress_red_higgsbury",
@@ -123,6 +135,7 @@ CLOTHING =
 	body_dancer_dragon =
 	{
 		type = "body",
+		skin_tags = { "LUNAR", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower_cuff", "foot", "leg", "torso", "torso_pelvis", },
 		symbol_hides = { "arm_upper", "skirt", },
 		override_build = "body_dancer_dragon",
@@ -133,6 +146,7 @@ CLOTHING =
 	body_dancer_lion =
 	{
 		type = "body",
+		skin_tags = { "LUNAR", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_lower_cuff", "arm_upper", "foot", "leg", "torso", "torso_pelvis", },
 		symbol_hides = { "skirt", },
 		override_build = "body_dancer_lion",
@@ -143,6 +157,7 @@ CLOTHING =
 	body_dress_flouncy_tan_cream =
 	{
 		type = "body",
+		skin_tags = { "TAN", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower_cuff", "arm_upper", "torso", "torso_pelvis", "skirt", "foot", },
 		override_build = "body_dress_flouncy_tan_cream",
 		torso_tuck = "full",
@@ -153,6 +168,7 @@ CLOTHING =
 	body_dress_yachtsuit_white_pure =
 	{
 		type = "body",
+		skin_tags = { "WHITE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_upper", "torso", "torso_pelvis", "skirt", "leg", "foot", },
 		override_build = "body_dress_yachtsuit_white_pure",
 		torso_tuck = "skirt",
@@ -163,6 +179,7 @@ CLOTHING =
 	body_expo_letterman_yellow_beige =
 	{
 		type = "body",
+		skin_tags = { "PROMOTION", "YELLOW", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_lower", "arm_lower_cuff", },
 		override_build = "body_expo_letterman_yellow_beige",
 		torso_tuck = "untucked",
@@ -173,6 +190,7 @@ CLOTHING =
 	body_expo_sweater_blue_agean =
 	{
 		type = "body",
+		skin_tags = { "PROMOTION", "BLUE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_lower", "arm_lower_cuff", },
 		override_build = "body_expo_sweater_blue_agean",
 		torso_tuck = "untucked",
@@ -183,6 +201,7 @@ CLOTHING =
 	body_flannel_blue_snowbird =
 	{
 		type = "body",
+		skin_tags = { "BLUE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_flannel_blue_snowbird",
 		torso_tuck = "untucked",
@@ -192,6 +211,7 @@ CLOTHING =
 	body_flannel_green_napier =
 	{
 		type = "body",
+		skin_tags = { "GREEN", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_flannel_green_napier",
 		torso_tuck = "untucked",
@@ -201,6 +221,7 @@ CLOTHING =
 	body_flannel_orange_lumberjack =
 	{
 		type = "body",
+		skin_tags = { "ORANGE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_flannel_orange_lumberjack",
 		torso_tuck = "untucked",
@@ -210,6 +231,7 @@ CLOTHING =
 	body_flannel_purple_grape =
 	{
 		type = "body",
+		skin_tags = { "PURPLE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_flannel_purple_grape",
 		torso_tuck = "untucked",
@@ -219,6 +241,7 @@ CLOTHING =
 	body_glommer_costume =
 	{
 		type = "body",
+		skin_tags = { "COSTUME", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_upper_skin", "arm_lower", "hand", "torso", "torso_pelvis", "leg", "foot", },
 		symbol_hides = { "skirt", "arm_upper", },
 		override_build = "body_glommer_costume",
@@ -230,6 +253,7 @@ CLOTHING =
 	body_hutch_costume =
 	{
 		type = "body",
+		skin_tags = { "COSTUME", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "torso_pelvis", "leg", "foot", "tail", },
 		symbol_hides = { "skirt", },
 		override_build = "body_hutch_costume",
@@ -241,6 +265,7 @@ CLOTHING =
 	body_jacket_shearling_orange_salmon =
 	{
 		type = "body",
+		skin_tags = { "ORANGE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_upper", "torso", },
 		override_build = "body_jacket_shearling_orange_salmon",
 		torso_tuck = "untucked",
@@ -251,6 +276,7 @@ CLOTHING =
 	body_jacket_toggle_navy_phthalo =
 	{
 		type = "body",
+		skin_tags = { "NAVY", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_upper", "torso", },
 		override_build = "body_jacket_toggle_navy_phthalo",
 		torso_tuck = "untucked",
@@ -261,6 +287,7 @@ CLOTHING =
 	body_outerwear_quilted_red_cardinal =
 	{
 		type = "body",
+		skin_tags = { "LUNAR", "RED", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_lower_cuff", "arm_upper", "foot", "leg", "skirt", "torso", "torso_pelvis", },
 		symbol_hides = { },
 		override_build = "body_outerwear_quilted_red_cardinal",
@@ -272,6 +299,7 @@ CLOTHING =
 	body_overalls_black_scribble =
 	{
 		type = "body",
+		skin_tags = { "BLACK", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", "torso_pelvis", "leg", },
 		symbol_hides = { "skirt", },
 		override_build = "body_overalls_black_scribble",
@@ -284,6 +312,7 @@ CLOTHING =
 	body_overalls_blue_denim =
 	{
 		type = "body",
+		skin_tags = { "BLUE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", "torso_pelvis", "leg", },
 		symbol_hides = { "skirt", },
 		override_build = "body_overalls_blue_denim",
@@ -296,6 +325,7 @@ CLOTHING =
 	body_overalls_navy_ocean =
 	{
 		type = "body",
+		skin_tags = { "NAVY", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", "torso_pelvis", "leg", },
 		symbol_hides = { "skirt", },
 		override_build = "body_overalls_navy_ocean",
@@ -308,6 +338,7 @@ CLOTHING =
 	body_pj_blue_agean =
 	{
 		type = "body",
+		skin_tags = { "BLUE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_lower", "arm_lower_cuff", },
 		override_build = "body_pj_blue_agean",
 		torso_tuck = "untucked",
@@ -318,6 +349,7 @@ CLOTHING =
 	body_pj_purple_mauve =
 	{
 		type = "body",
+		skin_tags = { "PURPLE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_lower", "arm_lower_cuff", },
 		override_build = "body_pj_purple_mauve",
 		torso_tuck = "untucked",
@@ -328,6 +360,7 @@ CLOTHING =
 	body_pj_silk_teal_jade =
 	{
 		type = "body",
+		skin_tags = { "LUNAR", "TEAL", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_lower_cuff", "arm_upper", "leg", "torso", "torso_pelvis", },
 		symbol_hides = { "skirt", },
 		override_build = "body_pj_silk_teal_jade",
@@ -339,6 +372,7 @@ CLOTHING =
 	body_polo_blue_denim =
 	{
 		type = "body",
+		skin_tags = { "BLUE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_polo_blue_denim",
 		torso_tuck = "untucked",
@@ -348,6 +382,7 @@ CLOTHING =
 	body_polo_orange_salmon =
 	{
 		type = "body",
+		skin_tags = { "ORANGE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_polo_orange_salmon",
 		torso_tuck = "untucked",
@@ -357,6 +392,7 @@ CLOTHING =
 	body_polo_red_higgsbury =
 	{
 		type = "body",
+		skin_tags = { "RED", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_polo_red_higgsbury",
 		torso_tuck = "untucked",
@@ -366,6 +402,7 @@ CLOTHING =
 	body_polo_white_marble =
 	{
 		type = "body",
+		skin_tags = { "WHITE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_polo_white_marble",
 		torso_tuck = "untucked",
@@ -375,6 +412,7 @@ CLOTHING =
 	body_polo_yellow_goldenrod =
 	{
 		type = "body",
+		skin_tags = { "YELLOW", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_polo_yellow_goldenrod",
 		torso_tuck = "untucked",
@@ -384,6 +422,7 @@ CLOTHING =
 	body_silk_eveningrobe_blue_frost =
 	{
 		type = "body",
+		skin_tags = { "LUNAR", "BLUE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "skirt", },
 		override_build = "body_silk_eveningrobe_blue_frost",
 		torso_tuck = "skirt",
@@ -394,6 +433,7 @@ CLOTHING =
 	body_silk_eveningrobe_pink_ewecus =
 	{
 		type = "body",
+		skin_tags = { "LUNAR", "PINK", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "skirt", },
 		override_build = "body_silk_eveningrobe_pink_ewecus",
 		torso_tuck = "skirt",
@@ -404,6 +444,7 @@ CLOTHING =
 	body_silk_eveningrobe_red_rump =
 	{
 		type = "body",
+		skin_tags = { "LUNAR", "RED", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "skirt", },
 		override_build = "body_silk_eveningrobe_red_rump",
 		torso_tuck = "skirt",
@@ -414,6 +455,7 @@ CLOTHING =
 	body_silk_eveningrobe_yellow_goldenrod =
 	{
 		type = "body",
+		skin_tags = { "LUNAR", "YELLOW", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "skirt", },
 		override_build = "body_silk_eveningrobe_yellow_goldenrod",
 		torso_tuck = "skirt",
@@ -424,6 +466,7 @@ CLOTHING =
 	body_silk_loungewear_black_davys =
 	{
 		type = "body",
+		skin_tags = { "LUNAR", "BLACK", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "skirt", "torso_pelvis", "leg", },
 		override_build = "body_silk_loungewear_black_davys",
 		torso_tuck = "skirt",
@@ -435,6 +478,7 @@ CLOTHING =
 	body_silk_loungewear_green_laurel =
 	{
 		type = "body",
+		skin_tags = { "LUNAR", "GREEN", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "skirt", "torso_pelvis", "leg", },
 		override_build = "body_silk_loungewear_green_laurel",
 		torso_tuck = "skirt",
@@ -446,6 +490,7 @@ CLOTHING =
 	body_silk_loungewear_red_cranberry =
 	{
 		type = "body",
+		skin_tags = { "LUNAR", "RED", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "skirt", "torso_pelvis", "leg", },
 		override_build = "body_silk_loungewear_red_cranberry",
 		torso_tuck = "skirt",
@@ -457,6 +502,7 @@ CLOTHING =
 	body_silk_loungewear_white_marble =
 	{
 		type = "body",
+		skin_tags = { "LUNAR", "WHITE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "skirt", "torso_pelvis", "leg", },
 		override_build = "body_silk_loungewear_white_marble",
 		torso_tuck = "skirt",
@@ -468,6 +514,7 @@ CLOTHING =
 	body_silkbrocade_coat_green_laurel =
 	{
 		type = "body",
+		skin_tags = { "LUNAR", "GREEN", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_lower_cuff", "arm_upper", "leg", "skirt", "torso", "torso_pelvis", },
 		symbol_hides = { },
 		override_build = "body_silkbrocade_coat_green_laurel",
@@ -479,6 +526,7 @@ CLOTHING =
 	body_sleepgown_blue_ice =
 	{
 		type = "body",
+		skin_tags = { "BLUE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "torso_pelvis", "arm_upper", "skirt", },
 		override_build = "body_sleepgown_blue_ice",
 		torso_tuck = "skirt",
@@ -489,6 +537,7 @@ CLOTHING =
 	body_sleepgown_purple_lavender =
 	{
 		type = "body",
+		skin_tags = { "PURPLE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "torso_pelvis", "arm_upper", "skirt", },
 		override_build = "body_sleepgown_purple_lavender",
 		torso_tuck = "skirt",
@@ -499,6 +548,7 @@ CLOTHING =
 	body_suspenders_pink_pearl =
 	{
 		type = "body",
+		skin_tags = { "PINK", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_suspenders_pink_pearl",
 		torso_tuck = "untucked",
@@ -509,6 +559,7 @@ CLOTHING =
 	body_suspenders_white_pure =
 	{
 		type = "body",
+		skin_tags = { "WHITE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_suspenders_white_pure",
 		torso_tuck = "untucked",
@@ -519,6 +570,7 @@ CLOTHING =
 	body_suspenders_yellow_flax =
 	{
 		type = "body",
+		skin_tags = { "YELLOW", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_suspenders_yellow_flax",
 		torso_tuck = "untucked",
@@ -529,6 +581,7 @@ CLOTHING =
 	body_sweatervest_blue_snowbird =
 	{
 		type = "body",
+		skin_tags = { "BLUE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_sweatervest_blue_snowbird",
 		torso_tuck = "untucked",
@@ -539,6 +592,7 @@ CLOTHING =
 	body_sweatervest_brown_beaver =
 	{
 		type = "body",
+		skin_tags = { "BROWN", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_sweatervest_brown_beaver",
 		torso_tuck = "untucked",
@@ -549,6 +603,7 @@ CLOTHING =
 	body_sweatervest_green_forest =
 	{
 		type = "body",
+		skin_tags = { "GREEN", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_sweatervest_green_forest",
 		torso_tuck = "untucked",
@@ -559,6 +614,7 @@ CLOTHING =
 	body_sweatervest_grey_silver =
 	{
 		type = "body",
+		skin_tags = { "GREY", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_sweatervest_grey_silver",
 		torso_tuck = "untucked",
@@ -569,6 +625,7 @@ CLOTHING =
 	body_sweatervest_red_firehound =
 	{
 		type = "body",
+		skin_tags = { "RED", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_sweatervest_red_firehound",
 		torso_tuck = "untucked",
@@ -579,6 +636,7 @@ CLOTHING =
 	body_tanktop_tiecollar_yellow_goldenrod =
 	{
 		type = "body",
+		skin_tags = { "YELLOW", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", },
 		symbol_hides = { "arm_upper", },
 		override_build = "body_tanktop_tiecollar_yellow_goldenrod",
@@ -590,6 +648,7 @@ CLOTHING =
 	body_toga_white_pure =
 	{
 		type = "body",
+		skin_tags = { "WHITE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "torso_pelvis", "arm_upper", "skirt", },
 		override_build = "body_toga_white_pure",
 		torso_tuck = "skirt",
@@ -600,6 +659,7 @@ CLOTHING =
 	body_trenchcoat_brown_fawn =
 	{
 		type = "body",
+		skin_tags = { "BROWN", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", "arm_lower", "skirt", },
 		override_build = "body_trenchcoat_brown_fawn",
 		torso_tuck = "skirt",
@@ -610,6 +670,7 @@ CLOTHING =
 	body_trenchcoat_yellow_straw =
 	{
 		type = "body",
+		skin_tags = { "YELLOW", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", "arm_lower", "skirt", },
 		override_build = "body_trenchcoat_yellow_straw",
 		torso_tuck = "skirt",
@@ -620,6 +681,7 @@ CLOTHING =
 	body_trimmed_blouse_red_higgsbury =
 	{
 		type = "body",
+		skin_tags = { "RED", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_trimmed_blouse_red_higgsbury",
 		torso_tuck = "untucked",
@@ -629,6 +691,7 @@ CLOTHING =
 	body_trimmed_blouse_white_pure =
 	{
 		type = "body",
+		skin_tags = { "WHITE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_trimmed_blouse_white_pure",
 		torso_tuck = "untucked",
@@ -638,6 +701,7 @@ CLOTHING =
 	body_trimmed_blouse_yellow_flax =
 	{
 		type = "body",
+		skin_tags = { "YELLOW", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_trimmed_blouse_yellow_flax",
 		torso_tuck = "untucked",
@@ -647,6 +711,7 @@ CLOTHING =
 	body_tshirt_grey_battleship =
 	{
 		type = "body",
+		skin_tags = { "GREY", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_tshirt_grey_battleship",
 		torso_tuck = "untucked",
@@ -656,6 +721,7 @@ CLOTHING =
 	body_tshirt_purple_mauve =
 	{
 		type = "body",
+		skin_tags = { "PURPLE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_tshirt_purple_mauve",
 		torso_tuck = "untucked",
@@ -665,6 +731,7 @@ CLOTHING =
 	body_tshirt_red_higgsbury =
 	{
 		type = "body",
+		skin_tags = { "RED", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_tshirt_red_higgsbury",
 		torso_tuck = "untucked",
@@ -674,6 +741,7 @@ CLOTHING =
 	body_tshirt_white_smoke =
 	{
 		type = "body",
+		skin_tags = { "WHITE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_tshirt_white_smoke",
 		torso_tuck = "untucked",
@@ -683,6 +751,7 @@ CLOTHING =
 	body_tweedvest_blue_lightning =
 	{
 		type = "body",
+		skin_tags = { "BLUE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_tweedvest_blue_lightning",
 		torso_tuck = "untucked",
@@ -693,6 +762,7 @@ CLOTHING =
 	body_tweedvest_brown_chocolate =
 	{
 		type = "body",
+		skin_tags = { "BROWN", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_tweedvest_brown_chocolate",
 		torso_tuck = "untucked",
@@ -703,6 +773,7 @@ CLOTHING =
 	body_tweedvest_green_hunters =
 	{
 		type = "body",
+		skin_tags = { "GREEN", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_tweedvest_green_hunters",
 		torso_tuck = "untucked",
@@ -713,6 +784,7 @@ CLOTHING =
 	body_tweedvest_grey_steel =
 	{
 		type = "body",
+		skin_tags = { "GREY", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_tweedvest_grey_steel",
 		torso_tuck = "untucked",
@@ -723,6 +795,7 @@ CLOTHING =
 	body_tweedvest_tan_grass =
 	{
 		type = "body",
+		skin_tags = { "TAN", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_tweedvest_tan_grass",
 		torso_tuck = "untucked",
@@ -733,6 +806,7 @@ CLOTHING =
 	body_wathgrithr_formal =
 	{
 		type = "body",
+		skin_tags = { "FORMAL", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "torso_pelvis", "arm_upper", "arm_upper_skin", "skirt", "leg", "foot", },
 		override_build = "body_wathgrithr_formal",
 		torso_tuck = "untucked",
@@ -743,6 +817,7 @@ CLOTHING =
 	body_wathgrithr_gladiator =
 	{
 		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "torso", },
 		symbol_hides = { "skirt", },
 		override_build = "body_wathgrithr_gladiator",
@@ -754,6 +829,7 @@ CLOTHING =
 	body_wathgrithr_shadow =
 	{
 		type = "body",
+		skin_tags = { "SHADOW", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "torso_pelvis", "arm_upper", "arm_upper_skin", "skirt", "torso_pelvis", "leg", "foot", "arm_lower", "hand", },
 		override_build = "body_wathgrithr_shadow",
 		torso_tuck = "untucked",
@@ -764,6 +840,7 @@ CLOTHING =
 	body_wathgrithr_survivor =
 	{
 		type = "body",
+		skin_tags = { "SURVIVOR", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "torso_pelvis", "arm_upper", "leg", "foot", },
 		override_build = "body_wathgrithr_survivor",
 		torso_tuck = "untucked",
@@ -774,6 +851,7 @@ CLOTHING =
 	body_waxwell_formal =
 	{
 		type = "body",
+		skin_tags = { "FORMAL", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "torso_pelvis", "leg", },
 		symbol_hides = { "skirt", },
 		override_build = "body_waxwell_formal",
@@ -785,6 +863,7 @@ CLOTHING =
 	body_waxwell_gladiator =
 	{
 		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "torso", },
 		override_build = "body_waxwell_gladiator",
 		torso_tuck = "skirt",
@@ -795,6 +874,7 @@ CLOTHING =
 	body_waxwell_survivor =
 	{
 		type = "body",
+		skin_tags = { "SURVIVOR", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "torso_pelvis", "leg", "foot", },
 		symbol_hides = { "skirt", },
 		override_build = "body_waxwell_survivor",
@@ -806,6 +886,7 @@ CLOTHING =
 	body_waxwell_unshadow =
 	{
 		type = "body",
+		skin_tags = { "SHADOW", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "torso_pelvis", "leg", "foot", },
 		symbol_hides = { "skirt", },
 		override_build = "body_waxwell_unshadow",
@@ -817,6 +898,7 @@ CLOTHING =
 	body_webber_formal =
 	{
 		type = "body",
+		skin_tags = { "FORMAL", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
 		override_build = "body_webber_formal",
 		torso_tuck = "untucked",
@@ -827,6 +909,7 @@ CLOTHING =
 	body_webber_gladiator =
 	{
 		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_upper_skin", "leg", "torso", "torso_pelvis", },
 		symbol_hides = { "skirt", },
 		override_build = "body_webber_gladiator",
@@ -838,6 +921,7 @@ CLOTHING =
 	body_webber_shadow =
 	{
 		type = "body",
+		skin_tags = { "SHADOW", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "torso_pelvis", },
 		symbol_hides = { "skirt", "arm_upper", },
 		override_build = "body_webber_shadow",
@@ -849,6 +933,7 @@ CLOTHING =
 	body_webber_survivor =
 	{
 		type = "body",
+		skin_tags = { "SURVIVOR", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "foot", "hand", "leg", "torso", "torso_pelvis", },
 		symbol_hides = { "skirt", },
 		override_build = "body_webber_survivor",
@@ -860,6 +945,7 @@ CLOTHING =
 	body_wendy_formal =
 	{
 		type = "body",
+		skin_tags = { "FORMAL", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_upper", "torso", "torso_pelvis", "skirt", "leg", },
 		override_build = "body_wendy_formal",
 		torso_tuck = "untucked",
@@ -870,6 +956,7 @@ CLOTHING =
 	body_wendy_gladiator =
 	{
 		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "leg", "skirt", "torso", "torso_pelvis", },
 		override_build = "body_wendy_gladiator",
 		torso_tuck = "skirt",
@@ -880,6 +967,7 @@ CLOTHING =
 	body_wendy_shadow =
 	{
 		type = "body",
+		skin_tags = { "SHADOW", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "foot", "hand", "leg", "skirt", "torso", "torso_pelvis", },
 		override_build = "body_wendy_shadow",
 		torso_tuck = "skirt",
@@ -890,6 +978,7 @@ CLOTHING =
 	body_wendy_survivor =
 	{
 		type = "body",
+		skin_tags = { "SURVIVOR", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_upper", "torso", "torso_pelvis", "skirt", "leg", "foot", },
 		override_build = "body_wendy_survivor",
 		torso_tuck = "skirt",
@@ -900,6 +989,7 @@ CLOTHING =
 	body_wes_formal =
 	{
 		type = "body",
+		skin_tags = { "FORMAL", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "arm_upper", "arm_lower", "torso_pelvis", "leg", },
 		symbol_hides = { "skirt", },
 		override_build = "body_wes_formal",
@@ -911,6 +1001,7 @@ CLOTHING =
 	body_wes_gladiator =
 	{
 		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "leg", "torso", "torso_pelvis", },
 		symbol_hides = { "skirt", },
 		override_build = "body_wes_gladiator",
@@ -922,6 +1013,7 @@ CLOTHING =
 	body_wes_shadow =
 	{
 		type = "body",
+		skin_tags = { "SHADOW", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_upper_skin", "foot", "hand", "leg", "torso", "torso_pelvis", },
 		symbol_hides = { "skirt", "arm_upper", },
 		override_build = "body_wes_shadow",
@@ -933,6 +1025,7 @@ CLOTHING =
 	body_wes_survivor =
 	{
 		type = "body",
+		skin_tags = { "SURVIVOR", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "torso_pelvis", "leg", "foot", },
 		symbol_hides = { "skirt", "arm_upper", },
 		override_build = "body_wes_survivor",
@@ -944,6 +1037,7 @@ CLOTHING =
 	body_wickerbottom_formal =
 	{
 		type = "body",
+		skin_tags = { "FORMAL", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_upper", "torso", "torso_pelvis", "skirt", },
 		override_build = "body_wickerbottom_formal",
 		torso_tuck = "full",
@@ -954,6 +1048,7 @@ CLOTHING =
 	body_wickerbottom_gladiator =
 	{
 		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "leg", "skirt", "torso", "torso_pelvis", },
 		override_build = "body_wickerbottom_gladiator",
 		torso_tuck = "full",
@@ -964,6 +1059,7 @@ CLOTHING =
 	body_wickerbottom_shadow =
 	{
 		type = "body",
+		skin_tags = { "SHADOW", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_lower_cuff", "arm_upper", "arm_upper_skin", "foot", "leg", "skirt", "torso", "torso_pelvis", },
 		override_build = "body_wickerbottom_shadow",
 		torso_tuck = "full",
@@ -974,6 +1070,7 @@ CLOTHING =
 	body_wickerbottom_survivor =
 	{
 		type = "body",
+		skin_tags = { "SURVIVOR", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_upper", "torso", "torso_pelvis", "skirt", "leg", "foot", },
 		override_build = "body_wickerbottom_survivor",
 		torso_tuck = "full",
@@ -984,6 +1081,7 @@ CLOTHING =
 	body_willow_formal =
 	{
 		type = "body",
+		skin_tags = { "FORMAL", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_upper", "torso", "torso_pelvis", "skirt", },
 		override_build = "body_willow_formal",
 		torso_tuck = "untucked",
@@ -994,6 +1092,7 @@ CLOTHING =
 	body_willow_gladiator =
 	{
 		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", },
 		symbol_hides = { "arm_upper", },
 		override_build = "body_willow_gladiator",
@@ -1005,6 +1104,7 @@ CLOTHING =
 	body_willow_shadow =
 	{
 		type = "body",
+		skin_tags = { "SHADOW", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "torso_pelvis", "arm_upper", "leg", "skirt", "foot", },
 		override_build = "body_willow_shadow",
 		torso_tuck = "untucked",
@@ -1015,6 +1115,7 @@ CLOTHING =
 	body_willow_survivor =
 	{
 		type = "body",
+		skin_tags = { "SURVIVOR", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "torso_pelvis", "arm_upper", "skirt", },
 		override_build = "body_willow_survivor",
 		torso_tuck = "untucked",
@@ -1025,6 +1126,7 @@ CLOTHING =
 	body_wilson_formal =
 	{
 		type = "body",
+		skin_tags = { "FORMAL", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_upper", "torso", "torso_pelvis", "arm_lower", "leg", },
 		symbol_hides = { "skirt", },
 		override_build = "body_wilson_formal",
@@ -1036,6 +1138,7 @@ CLOTHING =
 	body_wilson_gladiator =
 	{
 		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", },
 		symbol_hides = { "arm_upper", },
 		override_build = "body_wilson_gladiator",
@@ -1047,6 +1150,7 @@ CLOTHING =
 	body_wilson_shadow =
 	{
 		type = "body",
+		skin_tags = { "SHADOW", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "torso_pelvis", "leg", "arm_upper", "arm_upper_skin", "arm_lower", "foot", },
 		symbol_hides = { "skirt", },
 		override_build = "body_wilson_shadow",
@@ -1058,6 +1162,7 @@ CLOTHING =
 	body_wilson_survivor =
 	{
 		type = "body",
+		skin_tags = { "SURVIVOR", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "torso_pelvis", "leg", "arm_upper", "arm_upper_skin", "foot", },
 		symbol_hides = { "skirt", },
 		override_build = "body_wilson_survivor",
@@ -1069,6 +1174,7 @@ CLOTHING =
 	body_winona_formal =
 	{
 		type = "body",
+		skin_tags = { "FORMAL", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "foot", "hand", "leg", "skirt", "torso", "torso_pelvis", },
 		override_build = "body_winona_formal",
 		torso_tuck = "untucked",
@@ -1079,6 +1185,7 @@ CLOTHING =
 	body_winona_gladiator =
 	{
 		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_upper", "torso", },
 		override_build = "body_winona_gladiator",
 		torso_tuck = "untucked",
@@ -1089,6 +1196,7 @@ CLOTHING =
 	body_winona_shadow =
 	{
 		type = "body",
+		skin_tags = { "SHADOW", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "foot", "hand", "leg", "torso", "torso_pelvis", },
 		symbol_hides = { "skirt", },
 		override_build = "body_winona_shadow",
@@ -1101,6 +1209,7 @@ CLOTHING =
 	body_winona_survivor =
 	{
 		type = "body",
+		skin_tags = { "SURVIVOR", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_upper_skin", "foot", "hand", "leg", "torso", "torso_pelvis", },
 		symbol_hides = { "skirt", "arm_upper", "arm_lower_cuff", },
 		override_build = "body_winona_survivor",
@@ -1114,6 +1223,7 @@ CLOTHING =
 	body_wolfgang_formal =
 	{
 		type = "body",
+		skin_tags = { "FORMAL", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_upper", "arm_upper_skin", "arm_lower", "torso", "torso_pelvis", "leg", "foot", },
 		symbol_overrides_skinny = { arm_upper = "arm_upper_skinny", arm_upper_skin = "arm_upper_skin_skinny", arm_lower = "arm_lower_skinny", },
 		symbol_overrides_mighty = { arm_upper = "arm_upper_mighty", torso = "torso_mighty", arm_upper_skin = "arm_upper_skin_mighty", arm_lower = "arm_lower_mighty", },
@@ -1127,6 +1237,7 @@ CLOTHING =
 	body_wolfgang_gladiator =
 	{
 		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_upper_skin", "torso", },
 		symbol_overrides_skinny = { arm_lower = "arm_lower_skinny", arm_upper_skin = "arm_upper_skin_skinny", },
 		symbol_overrides_mighty = { torso = "torso_mighty", arm_lower = "arm_lower_mighty", arm_upper_skin = "arm_upper_skin_mighty", },
@@ -1140,6 +1251,7 @@ CLOTHING =
 	body_wolfgang_shadow =
 	{
 		type = "body",
+		skin_tags = { "SHADOW", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower_cuff", "torso", "torso_pelvis", "leg", "foot", },
 		symbol_overrides_skinny = { torso_pelvis = "torso_pelvis_skinny", torso = "torso_skinny", },
 		symbol_overrides_mighty = { torso_pelvis = "torso_pelvis_mighty", torso = "torso_mighty", },
@@ -1153,6 +1265,7 @@ CLOTHING =
 	body_wolfgang_survivor =
 	{
 		type = "body",
+		skin_tags = { "SURVIVOR", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "torso_pelvis", "leg", "foot", },
 		symbol_overrides_skinny = { },
 		symbol_overrides_mighty = { torso_pelvis = "torso_pelvis_mighty", torso = "torso_mighty", },
@@ -1167,6 +1280,7 @@ CLOTHING =
 	body_woodie_formal =
 	{
 		type = "body",
+		skin_tags = { "FORMAL", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_upper", "arm_upper_skin", "arm_lower", "torso", "torso_pelvis", "skirt", "leg", },
 		override_build = "body_woodie_formal",
 		torso_tuck = "full",
@@ -1177,6 +1291,7 @@ CLOTHING =
 	body_woodie_gladiator =
 	{
 		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "torso", },
 		symbol_hides = { "skirt", },
 		override_build = "body_woodie_gladiator",
@@ -1188,6 +1303,7 @@ CLOTHING =
 	body_woodie_shadow =
 	{
 		type = "body",
+		skin_tags = { "SHADOW", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_lower_cuff", "arm_upper", "arm_upper_skin", "foot", "leg", "torso", "torso_pelvis", },
 		symbol_hides = { "skirt", },
 		override_build = "body_woodie_shadow",
@@ -1199,6 +1315,7 @@ CLOTHING =
 	body_woodie_survivor =
 	{
 		type = "body",
+		skin_tags = { "SURVIVOR", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "torso", "torso_pelvis", "leg", "foot", },
 		symbol_hides = { "skirt", },
 		override_build = "body_woodie_survivor",
@@ -1210,6 +1327,7 @@ CLOTHING =
 	body_wx78_formal =
 	{
 		type = "body",
+		skin_tags = { "FORMAL", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_upper", "torso", "torso_pelvis", },
 		override_build = "body_wx78_formal",
 		torso_tuck = "skirt",
@@ -1220,6 +1338,7 @@ CLOTHING =
 	body_wx78_gladiator =
 	{
 		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_upper", "torso", },
 		symbol_hides = { "skirt", },
 		override_build = "body_wx78_gladiator",
@@ -1231,6 +1350,7 @@ CLOTHING =
 	body_wx78_shadow =
 	{
 		type = "body",
+		skin_tags = { "SHADOW", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_upper", "torso", "torso_pelvis", },
 		override_build = "body_wx78_shadow",
 		torso_tuck = "skirt",
@@ -1241,6 +1361,7 @@ CLOTHING =
 	body_wx78_survivor =
 	{
 		type = "body",
+		skin_tags = { "SURVIVOR", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_upper", "torso", "torso_pelvis", },
 		override_build = "body_wx78_survivor",
 		torso_tuck = "skirt",
@@ -1251,6 +1372,7 @@ CLOTHING =
 	body_yule_coat =
 	{
 		type = "body",
+		skin_tags = { "WINTER", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "foot", "hand", "leg", "torso", "torso_pelvis", },
 		symbol_hides = { "skirt", },
 		override_build = "body_yule_coat",
@@ -1261,6 +1383,7 @@ CLOTHING =
 	body_yule_dress =
 	{
 		type = "body",
+		skin_tags = { "WINTER", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_lower_cuff", "arm_upper", "foot", "hand", "leg", "skirt", "torso", "torso_pelvis", },
 		symbol_hides = { },
 		override_build = "body_yule_dress",
@@ -1271,6 +1394,7 @@ CLOTHING =
 	feet_bootie_black_scribble =
 	{
 		type = "feet",
+		skin_tags = { "BLACK", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_bootie_black_scribble",
 		marketable = true,
@@ -1279,6 +1403,7 @@ CLOTHING =
 	feet_bunnyslippers_purple_mauve =
 	{
 		type = "feet",
+		skin_tags = { "PURPLE", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_bunnyslippers_purple_mauve",
 		rarity = "Distinguished",
@@ -1289,6 +1414,7 @@ CLOTHING =
 	feet_fleece_boot_brown_sepia =
 	{
 		type = "feet",
+		skin_tags = { "FORMAL", "BROWN", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_fleece_boot_brown_sepia",
 		rarity = "Classy",
@@ -1299,6 +1425,7 @@ CLOTHING =
 	feet_formal_highheel_white_pure =
 	{
 		type = "feet",
+		skin_tags = { "FORMAL", "WHITE", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_formal_highheel_white_pure",
 		rarity = "Classy",
@@ -1309,6 +1436,7 @@ CLOTHING =
 	feet_formal_lowheel_black_scribble =
 	{
 		type = "feet",
+		skin_tags = { "FORMAL", "BLACK", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_formal_lowheel_black_scribble",
 		rarity = "Classy",
@@ -1318,6 +1446,7 @@ CLOTHING =
 	feet_formal_stiletto_black_scribble =
 	{
 		type = "feet",
+		skin_tags = { "FORMAL", "BLACK", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_formal_stiletto_black_scribble",
 		rarity = "Classy",
@@ -1327,6 +1456,7 @@ CLOTHING =
 	feet_fuzzyslippers_blue_ice =
 	{
 		type = "feet",
+		skin_tags = { "BLUE", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_fuzzyslippers_blue_ice",
 		rarity = "Distinguished",
@@ -1337,6 +1467,7 @@ CLOTHING =
 	feet_maryjanes_white_pure =
 	{
 		type = "feet",
+		skin_tags = { "FORMAL", "WHITE", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_maryjanes_white_pure",
 		rarity = "Classy",
@@ -1346,6 +1477,7 @@ CLOTHING =
 	feet_ridingboot_white_pure =
 	{
 		type = "feet",
+		skin_tags = { "FORMAL", "WHITE", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_ridingboot_white_pure",
 		rarity = "Classy",
@@ -1356,6 +1488,7 @@ CLOTHING =
 	feet_sandals_blue_catcoon =
 	{
 		type = "feet",
+		skin_tags = { "BLUE", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_sandals_blue_catcoon",
 		rarity = "Classy",
@@ -1366,6 +1499,7 @@ CLOTHING =
 	feet_slippers_rooster_white_pure =
 	{
 		type = "feet",
+		skin_tags = { "LUNAR", "WHITE", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_slippers_rooster_white_pure",
 		rarity = "Event",
@@ -1375,6 +1509,7 @@ CLOTHING =
 	feet_sneakers_blue_catcoon =
 	{
 		type = "feet",
+		skin_tags = { "BLUE", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_sneakers_blue_catcoon",
 		marketable = true,
@@ -1383,6 +1518,7 @@ CLOTHING =
 	feet_sneakers_green_cactus =
 	{
 		type = "feet",
+		skin_tags = { "GREEN", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_sneakers_green_cactus",
 		marketable = true,
@@ -1391,6 +1527,7 @@ CLOTHING =
 	feet_sneakers_orange_carrot =
 	{
 		type = "feet",
+		skin_tags = { "ORANGE", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_sneakers_orange_carrot",
 		marketable = true,
@@ -1399,6 +1536,7 @@ CLOTHING =
 	feet_sneakers_red_auburn =
 	{
 		type = "feet",
+		skin_tags = { "RED", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_sneakers_red_auburn",
 		marketable = true,
@@ -1407,6 +1545,7 @@ CLOTHING =
 	feet_wathgrithr_gladiator =
 	{
 		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_wathgrithr_gladiator",
 		rarity = "Classy",
@@ -1416,6 +1555,7 @@ CLOTHING =
 	feet_waxwell_gladiator =
 	{
 		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_waxwell_gladiator",
 		rarity = "Classy",
@@ -1425,6 +1565,7 @@ CLOTHING =
 	feet_webber_gladiator =
 	{
 		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_webber_gladiator",
 		rarity = "Classy",
@@ -1434,6 +1575,7 @@ CLOTHING =
 	feet_wendy_gladiator =
 	{
 		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_wendy_gladiator",
 		rarity = "Classy",
@@ -1444,6 +1586,7 @@ CLOTHING =
 	feet_wes_gladiator =
 	{
 		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_wes_gladiator",
 		rarity = "Classy",
@@ -1453,6 +1596,7 @@ CLOTHING =
 	feet_wickerbottom_gladiator =
 	{
 		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_wickerbottom_gladiator",
 		rarity = "Classy",
@@ -1462,6 +1606,7 @@ CLOTHING =
 	feet_willow_gladiator =
 	{
 		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_willow_gladiator",
 		rarity = "Classy",
@@ -1472,6 +1617,7 @@ CLOTHING =
 	feet_wilson_gladiator =
 	{
 		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_wilson_gladiator",
 		rarity = "Classy",
@@ -1482,6 +1628,7 @@ CLOTHING =
 	feet_winona_gladiator =
 	{
 		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_winona_gladiator",
 		rarity = "Classy",
@@ -1492,6 +1639,7 @@ CLOTHING =
 	feet_wolfgang_gladiator =
 	{
 		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_wolfgang_gladiator",
 		rarity = "Classy",
@@ -1502,6 +1650,7 @@ CLOTHING =
 	feet_woodie_gladiator =
 	{
 		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_woodie_gladiator",
 		rarity = "Classy",
@@ -1511,6 +1660,7 @@ CLOTHING =
 	feet_workboot_brown_chocolate =
 	{
 		type = "feet",
+		skin_tags = { "BROWN", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_workboot_brown_chocolate",
 		rarity = "Classy",
@@ -1521,6 +1671,7 @@ CLOTHING =
 	feet_workboot_tan_clay =
 	{
 		type = "feet",
+		skin_tags = { "TAN", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_workboot_tan_clay",
 		rarity = "Classy",
@@ -1531,6 +1682,7 @@ CLOTHING =
 	feet_wx78_gladiator =
 	{
 		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
 		symbol_overrides = { "foot", },
 		override_build = "feet_wx78_gladiator",
 		rarity = "Classy",
@@ -1541,6 +1693,7 @@ CLOTHING =
 	hand_beltedgloves_brown_beaver =
 	{
 		type = "hand",
+		skin_tags = { "BROWN", "CLOTHING_HAND", "CLOTHING", },
 		symbol_overrides = { "hand", },
 		override_build = "hand_beltedgloves_brown_beaver",
 		rarity = "Classy",
@@ -1550,6 +1703,7 @@ CLOTHING =
 	hand_beltedgloves_red_firehound =
 	{
 		type = "hand",
+		skin_tags = { "RED", "CLOTHING_HAND", "CLOTHING", },
 		symbol_overrides = { "hand", },
 		override_build = "hand_beltedgloves_red_firehound",
 		rarity = "Classy",
@@ -1559,6 +1713,7 @@ CLOTHING =
 	hand_beltedgloves_teal_jungle =
 	{
 		type = "hand",
+		skin_tags = { "TEAL", "CLOTHING_HAND", "CLOTHING", },
 		symbol_overrides = { "hand", },
 		override_build = "hand_beltedgloves_teal_jungle",
 		rarity = "Classy",
@@ -1568,6 +1723,7 @@ CLOTHING =
 	hand_drivergloves_white_ivory =
 	{
 		type = "hand",
+		skin_tags = { "WHITE", "CLOTHING_HAND", "CLOTHING", },
 		symbol_overrides = { "hand", },
 		override_build = "hand_drivergloves_white_ivory",
 		rarity = "Classy",
@@ -1577,6 +1733,7 @@ CLOTHING =
 	hand_longgloves_green_hunters =
 	{
 		type = "hand",
+		skin_tags = { "GREEN", "CLOTHING_HAND", "CLOTHING", },
 		symbol_overrides = { "arm_lower_cuff", "hand", },
 		override_build = "hand_longgloves_green_hunters",
 		marketable = true,
@@ -1585,6 +1742,7 @@ CLOTHING =
 	hand_longgloves_grey_battleship =
 	{
 		type = "hand",
+		skin_tags = { "GREY", "CLOTHING_HAND", "CLOTHING", },
 		symbol_overrides = { "arm_lower_cuff", "hand", },
 		override_build = "hand_longgloves_grey_battleship",
 		marketable = true,
@@ -1593,6 +1751,7 @@ CLOTHING =
 	hand_longgloves_white_pure =
 	{
 		type = "hand",
+		skin_tags = { "WHITE", "CLOTHING_HAND", "CLOTHING", },
 		symbol_overrides = { "arm_lower_cuff", "hand", },
 		override_build = "hand_longgloves_white_pure",
 		marketable = true,
@@ -1601,6 +1760,7 @@ CLOTHING =
 	hand_longgloves_yellow_straw =
 	{
 		type = "hand",
+		skin_tags = { "YELLOW", "CLOTHING_HAND", "CLOTHING", },
 		symbol_overrides = { "arm_lower_cuff", "hand", },
 		override_build = "hand_longgloves_yellow_straw",
 		marketable = true,
@@ -1609,6 +1769,7 @@ CLOTHING =
 	hand_shortgloves_black_scribble =
 	{
 		type = "hand",
+		skin_tags = { "BLACK", "CLOTHING_HAND", "CLOTHING", },
 		symbol_overrides = { "hand", },
 		override_build = "hand_shortgloves_black_scribble",
 		marketable = true,
@@ -1617,6 +1778,7 @@ CLOTHING =
 	hand_shortgloves_blue_cornflower =
 	{
 		type = "hand",
+		skin_tags = { "BLUE", "CLOTHING_HAND", "CLOTHING", },
 		symbol_overrides = { "hand", },
 		override_build = "hand_shortgloves_blue_cornflower",
 		marketable = true,
@@ -1625,6 +1787,7 @@ CLOTHING =
 	hand_shortgloves_red_higgsbury =
 	{
 		type = "hand",
+		skin_tags = { "RED", "CLOTHING_HAND", "CLOTHING", },
 		symbol_overrides = { "hand", },
 		override_build = "hand_shortgloves_red_higgsbury",
 		marketable = true,
@@ -1633,6 +1796,7 @@ CLOTHING =
 	hand_shortgloves_white_smoke =
 	{
 		type = "hand",
+		skin_tags = { "WHITE", "CLOTHING_HAND", "CLOTHING", },
 		symbol_overrides = { "hand", },
 		override_build = "hand_shortgloves_white_smoke",
 		marketable = true,
@@ -1641,6 +1805,7 @@ CLOTHING =
 	hand_wathgrithr_gladiator =
 	{
 		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
 		symbol_overrides = { "hand", },
 		override_build = "hand_wathgrithr_gladiator",
 		rarity = "Spiffy",
@@ -1650,6 +1815,7 @@ CLOTHING =
 	hand_waxwell_formal =
 	{
 		type = "hand",
+		skin_tags = { "FORMAL", "CLOTHING_HAND", "CLOTHING", },
 		symbol_overrides = { "hand", "arm_lower_cuff", },
 		override_build = "hand_waxwell_formal",
 		rarity = "Classy",
@@ -1659,6 +1825,7 @@ CLOTHING =
 	hand_waxwell_gladiator =
 	{
 		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
 		symbol_overrides = { "arm_lower_cuff", "hand", },
 		override_build = "hand_waxwell_gladiator",
 		rarity = "Spiffy",
@@ -1668,6 +1835,7 @@ CLOTHING =
 	hand_webber_gladiator =
 	{
 		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
 		symbol_overrides = { "hand", },
 		override_build = "hand_webber_gladiator",
 		rarity = "Spiffy",
@@ -1677,6 +1845,7 @@ CLOTHING =
 	hand_wendy_gladiator =
 	{
 		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
 		symbol_overrides = { "arm_lower_cuff", "hand", },
 		override_build = "hand_wendy_gladiator",
 		rarity = "Spiffy",
@@ -1686,6 +1855,7 @@ CLOTHING =
 	hand_wes_gladiator =
 	{
 		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
 		symbol_overrides = { "hand", },
 		override_build = "hand_wes_gladiator",
 		rarity = "Spiffy",
@@ -1695,6 +1865,7 @@ CLOTHING =
 	hand_wickerbottom_gladiator =
 	{
 		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
 		symbol_overrides = { "hand", },
 		override_build = "hand_wickerbottom_gladiator",
 		rarity = "Spiffy",
@@ -1704,6 +1875,7 @@ CLOTHING =
 	hand_willow_gladiator =
 	{
 		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
 		symbol_overrides = { "arm_lower_cuff", "arm_upper", },
 		override_build = "hand_willow_gladiator",
 		rarity = "Spiffy",
@@ -1713,6 +1885,7 @@ CLOTHING =
 	hand_wilson_formal =
 	{
 		type = "hand",
+		skin_tags = { "FORMAL", "CLOTHING_HAND", "CLOTHING", },
 		symbol_overrides = { "hand", "arm_lower_cuff", },
 		override_build = "hand_wilson_formal",
 		rarity = "Classy",
@@ -1722,6 +1895,7 @@ CLOTHING =
 	hand_wilson_gladiator =
 	{
 		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
 		symbol_overrides = { "arm_lower_cuff", },
 		override_build = "hand_wilson_gladiator",
 		rarity = "Spiffy",
@@ -1731,6 +1905,7 @@ CLOTHING =
 	hand_winona_gladiator =
 	{
 		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
 		symbol_overrides = { "hand", },
 		override_build = "hand_winona_gladiator",
 		rarity = "Spiffy",
@@ -1740,6 +1915,7 @@ CLOTHING =
 	hand_wolfgang_gladiator =
 	{
 		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
 		symbol_overrides = { "hand", },
 		override_build = "hand_wolfgang_gladiator",
 		rarity = "Spiffy",
@@ -1749,6 +1925,7 @@ CLOTHING =
 	hand_woodie_gladiator =
 	{
 		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
 		symbol_overrides = { "arm_lower_cuff", "hand", },
 		override_build = "hand_woodie_gladiator",
 		rarity = "Spiffy",
@@ -1758,6 +1935,7 @@ CLOTHING =
 	hand_wx78_gladiator =
 	{
 		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
 		symbol_overrides = { "arm_lower_cuff", "hand", },
 		override_build = "hand_wx78_gladiator",
 		rarity = "Spiffy",
@@ -1767,6 +1945,7 @@ CLOTHING =
 	legs_checkered_pleats_blue_cornflower =
 	{
 		type = "legs",
+		skin_tags = { "BLUE", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "torso_pelvis", "leg", },
 		symbol_hides = { "skirt", },
 		override_build = "legs_checkered_pleats_blue_cornflower",
@@ -1778,6 +1957,7 @@ CLOTHING =
 	legs_checkered_pleats_green_laurel =
 	{
 		type = "legs",
+		skin_tags = { "GREEN", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "torso_pelvis", "leg", },
 		symbol_hides = { "skirt", },
 		override_build = "legs_checkered_pleats_green_laurel",
@@ -1789,6 +1969,7 @@ CLOTHING =
 	legs_pants_basic_black_scribble =
 	{
 		type = "legs",
+		skin_tags = { "BLACK", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "torso_pelvis", "leg", },
 		symbol_hides = { "skirt", },
 		override_build = "legs_pants_basic_black_scribble",
@@ -1799,6 +1980,7 @@ CLOTHING =
 	legs_pants_basic_brown_sepia =
 	{
 		type = "legs",
+		skin_tags = { "BROWN", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "torso_pelvis", "leg", },
 		symbol_hides = { "skirt", },
 		override_build = "legs_pants_basic_brown_sepia",
@@ -1809,6 +1991,7 @@ CLOTHING =
 	legs_pants_basic_green_forest =
 	{
 		type = "legs",
+		skin_tags = { "GREEN", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "torso_pelvis", "leg", },
 		symbol_hides = { "skirt", },
 		override_build = "legs_pants_basic_green_forest",
@@ -1819,6 +2002,7 @@ CLOTHING =
 	legs_pants_basic_grey_dark =
 	{
 		type = "legs",
+		skin_tags = { "GREY", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "torso_pelvis", "leg", },
 		symbol_hides = { "skirt", },
 		override_build = "legs_pants_basic_grey_dark",
@@ -1829,6 +2013,7 @@ CLOTHING =
 	legs_pants_basic_tan_cream =
 	{
 		type = "legs",
+		skin_tags = { "TAN", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "torso_pelvis", "leg", },
 		symbol_hides = { "skirt", },
 		override_build = "legs_pants_basic_tan_cream",
@@ -1839,6 +2024,7 @@ CLOTHING =
 	legs_pj_blue_agean =
 	{
 		type = "legs",
+		skin_tags = { "BLUE", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "torso_pelvis", "leg", },
 		symbol_hides = { "skirt", },
 		override_build = "legs_pj_blue_agean",
@@ -1850,6 +2036,7 @@ CLOTHING =
 	legs_pj_purple_mauve =
 	{
 		type = "legs",
+		skin_tags = { "PURPLE", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "torso_pelvis", "leg", },
 		symbol_hides = { "skirt", },
 		override_build = "legs_pj_purple_mauve",
@@ -1861,6 +2048,7 @@ CLOTHING =
 	legs_skirt_basic_black_scribble =
 	{
 		type = "legs",
+		skin_tags = { "BLACK", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "skirt", },
 		override_build = "legs_skirt_basic_black_scribble",
 		marketable = true,
@@ -1869,6 +2057,7 @@ CLOTHING =
 	legs_skirt_basic_brown_sepia =
 	{
 		type = "legs",
+		skin_tags = { "BROWN", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "skirt", },
 		override_build = "legs_skirt_basic_brown_sepia",
 		marketable = true,
@@ -1877,6 +2066,7 @@ CLOTHING =
 	legs_skirt_basic_grey_dark =
 	{
 		type = "legs",
+		skin_tags = { "GREY", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "skirt", },
 		override_build = "legs_skirt_basic_grey_dark",
 		marketable = true,
@@ -1885,6 +2075,7 @@ CLOTHING =
 	legs_skirt_basic_pink_pigman =
 	{
 		type = "legs",
+		skin_tags = { "PINK", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "skirt", },
 		override_build = "legs_skirt_basic_pink_pigman",
 		marketable = true,
@@ -1893,6 +2084,7 @@ CLOTHING =
 	legs_skirt_basic_tan_cream =
 	{
 		type = "legs",
+		skin_tags = { "TAN", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "skirt", },
 		override_build = "legs_skirt_basic_tan_cream",
 		marketable = true,
@@ -1901,6 +2093,7 @@ CLOTHING =
 	legs_skirt_plaid_blue_cornflower =
 	{
 		type = "legs",
+		skin_tags = { "BLUE", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "skirt", },
 		override_build = "legs_skirt_plaid_blue_cornflower",
 		rarity = "Classy",
@@ -1910,6 +2103,7 @@ CLOTHING =
 	legs_skirt_plaid_green_pistachio =
 	{
 		type = "legs",
+		skin_tags = { "GREEN", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "skirt", },
 		override_build = "legs_skirt_plaid_green_pistachio",
 		rarity = "Classy",
@@ -1919,6 +2113,7 @@ CLOTHING =
 	legs_tweed_knickerbocker_green_hunters =
 	{
 		type = "legs",
+		skin_tags = { "GREEN", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "torso_pelvis", "leg", },
 		symbol_hides = { "skirt", },
 		override_build = "legs_tweed_knickerbocker_green_hunters",
@@ -1929,6 +2124,7 @@ CLOTHING =
 	legs_tweed_knickerbocker_tan_grass =
 	{
 		type = "legs",
+		skin_tags = { "TAN", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "torso_pelvis", "leg", },
 		symbol_hides = { "skirt", },
 		override_build = "legs_tweed_knickerbocker_tan_grass",
@@ -1939,6 +2135,7 @@ CLOTHING =
 	legs_wathgrithr_gladiator =
 	{
 		type = "legs",
+		skin_tags = { "LAVA", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "leg", "torso_pelvis", },
 		symbol_hides = { "skirt", },
 		override_build = "legs_wathgrithr_gladiator",
@@ -1949,6 +2146,7 @@ CLOTHING =
 	legs_waxwell_gladiator =
 	{
 		type = "legs",
+		skin_tags = { "LAVA", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "leg", "skirt", "torso_pelvis", },
 		override_build = "legs_waxwell_gladiator",
 		rarity = "Spiffy",
@@ -1958,6 +2156,7 @@ CLOTHING =
 	legs_willow_gladiator =
 	{
 		type = "legs",
+		skin_tags = { "LAVA", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "skirt", },
 		override_build = "legs_willow_gladiator",
 		rarity = "Spiffy",
@@ -1967,6 +2166,7 @@ CLOTHING =
 	legs_wilson_gladiator =
 	{
 		type = "legs",
+		skin_tags = { "LAVA", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "leg", "torso_pelvis", },
 		symbol_hides = { "skirt", },
 		override_build = "legs_wilson_gladiator",
@@ -1977,6 +2177,7 @@ CLOTHING =
 	legs_winona_gladiator =
 	{
 		type = "legs",
+		skin_tags = { "LAVA", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "leg", "torso_pelvis", },
 		symbol_hides = { "skirt", },
 		override_build = "legs_winona_gladiator",
@@ -1988,6 +2189,7 @@ CLOTHING =
 	legs_wolfgang_gladiator =
 	{
 		type = "legs",
+		skin_tags = { "LAVA", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "torso_pelvis", },
 		symbol_hides = { "skirt", },
 		override_build = "legs_wolfgang_gladiator",
@@ -1998,6 +2200,7 @@ CLOTHING =
 	legs_woodie_gladiator =
 	{
 		type = "legs",
+		skin_tags = { "LAVA", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "leg", "torso_pelvis", },
 		symbol_hides = { "skirt", },
 		override_build = "legs_woodie_gladiator",
@@ -2009,6 +2212,7 @@ CLOTHING =
 	legs_wx78_gladiator =
 	{
 		type = "legs",
+		skin_tags = { "LAVA", "CLOTHING_LEGS", "CLOTHING", },
 		symbol_overrides = { "leg", "torso_pelvis", },
 		symbol_hides = { "skirt", },
 		override_build = "legs_wx78_gladiator",

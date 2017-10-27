@@ -14,6 +14,7 @@ return CreatePrefabSkin("backpack_dragonfly_fire",
 	build_name = "swap_backpack_dragonfly_fire",
 	rarity = "Elegant",
 	init_fn = function(inst) backpack_init_fn(inst, "swap_backpack_dragonfly_fire") end,
+	skin_tags = { "BACKPACK", "LUNAR", "CRAFTABLE", },
 	marketable = true,
 	release_group = 3,
 })

@@ -14,5 +14,6 @@ return CreatePrefabSkin("armor_marble_chainmail",
 	rarity = "Elegant",
 	rarity_modifier = "EventModifier",
 	init_fn = function(inst) armormarble_init_fn(inst, "armor_marble_chainmail") end,
+	skin_tags = { "ARMORMARBLE", "LAVA", "CRAFTABLE", },
 	release_group = 32,
 })

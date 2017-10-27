@@ -69,7 +69,8 @@ local WxpPanel = Class(LobbyPanel, function(self, owner)
 		match_time:SetHAlign(ANCHOR_LEFT)
 	end		
 	if outcome.total_deaths ~= nil then
-		local deaths = self:AddChild(Text(CHATFONT, 18, subfmt(STRINGS.UI.WXPLOBBYPANEL.DEATHS, {deaths = outcome.total_deaths})))
+		local text = outcome.total_deaths == 0 and STRINGS.UI.WXPLOBBYPANEL.NO_DEATHS or subfmt(STRINGS.UI.WXPLOBBYPANEL.DEATHS, {deaths = outcome.total_deaths})
+		local deaths = self:AddChild(Text(CHATFONT, 18, text))
 		deaths:SetPosition(-250, 265)
 		deaths:SetColour(UICOLOURS.GOLD)
 		deaths:SetRegionSize(400, 20)

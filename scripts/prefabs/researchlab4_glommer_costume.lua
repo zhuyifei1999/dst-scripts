@@ -13,5 +13,6 @@ return CreatePrefabSkin("researchlab4_glommer_costume",
 	build_name = "researchlab4_glommer_costume",
 	rarity = "Elegant",
 	init_fn = function(inst) researchlab4_init_fn(inst, "researchlab4_glommer_costume") end,
+	skin_tags = { "PRESHAT", "CRAFTABLE", },
 	release_group = 26,
 })

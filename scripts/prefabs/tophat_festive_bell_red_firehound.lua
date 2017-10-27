@@ -13,6 +13,7 @@ return CreatePrefabSkin("tophat_festive_bell_red_firehound",
 	build_name = "tophat_festive_bell_red_firehound",
 	rarity = "Event",
 	init_fn = function(inst) tophat_init_fn(inst, "tophat_festive_bell_red_firehound") end,
+	skin_tags = { "TOPHAT", "WINTER", "RED", "CRAFTABLE", },
 	release_group = 22,
 	granted_items = { "researchlab4_festive_bell_red_firehound", },
 })

@@ -142,6 +142,7 @@ function TrueScrollList:BuildScrollBar()
 
     self.up_button = self.scroll_bar_container:AddChild(ImageButton("images/global_redux.xml", "scrollbar_arrow_up.tex"))
     self.up_button:SetPosition(0, self.scrollbar_height/2 + nudge_y/2)
+    self.up_button:SetScale(0.3)
     self.up_button:SetWhileDown( function()
         if not self.last_up_button_time or GetTime() - self.last_up_button_time > button_repeat_time then
             self.last_up_button_time = GetTime()
@@ -154,6 +155,7 @@ function TrueScrollList:BuildScrollBar()
     
     self.down_button = self.scroll_bar_container:AddChild(ImageButton("images/global_redux.xml", "scrollbar_arrow_down.tex"))
     self.down_button:SetPosition(0, -self.scrollbar_height/2 - nudge_y)
+    self.down_button:SetScale(0.3)
     self.down_button:SetWhileDown( function()
         if not self.last_down_button_time or GetTime() - self.last_down_button_time > button_repeat_time then
             self.last_down_button_time = GetTime()
@@ -165,7 +167,7 @@ function TrueScrollList:BuildScrollBar()
     end)    
     
     local line_height = self.scrollbar_height - arrow_button_size/2 
-    self.scroll_bar_line = self.scroll_bar_container:AddChild(Image("images/global_redux.xml", "scrollbar_line.tex"))
+    self.scroll_bar_line = self.scroll_bar_container:AddChild(Image("images/global_redux.xml", "scrollbar_bar.tex"))
     self.scroll_bar_line:ScaleToSize(11*bar_width_scale_factor, line_height)
     self.scroll_bar_line:SetPosition(0, 0)
 
@@ -192,7 +194,7 @@ function TrueScrollList:BuildScrollBar()
     self.position_marker.move_on_click = false
     self.position_marker.show_stuff = true
     self.position_marker:SetPosition(0, self.scrollbar_height/2 - arrow_button_size)
-    self.position_marker:SetScale(bar_width_scale_factor, bar_width_scale_factor, 1)
+    self.position_marker:SetScale(bar_width_scale_factor*0.3, bar_width_scale_factor*0.3, 1)
     self.position_marker:SetOnDown( function() 
 		TheFrontEnd:LockFocus(true)
         self.saved_scroll_pos = self.current_scroll_pos
