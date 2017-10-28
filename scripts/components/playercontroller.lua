@@ -1174,9 +1174,9 @@ function PlayerController:GetAttackTarget(force_attack, force_target, isretarget
 end
 
 function PlayerController:DoAttackButton(retarget)
-    if retarget == nil and self:IsAOETargeting() then
-        return
-    end
+    --if retarget == nil and self:IsAOETargeting() then
+    --    return
+    --end
 
     local force_attack = TheInput:IsControlPressed(CONTROL_FORCE_ATTACK)
     local target = self:GetAttackTarget(force_attack, retarget, retarget ~= nil)
@@ -1465,9 +1465,10 @@ function PlayerController:GetActionButtonAction(force_target)
 end
 
 function PlayerController:DoActionButton()
-    if self:IsAOETargeting() then
-        return
-    elseif self.placer == nil then
+    --if self:IsAOETargeting() then
+    --    return
+    --end
+    if self.placer == nil then
         local buffaction = self:GetActionButtonAction()
         if buffaction ~= nil then
             if self.ismastersim then

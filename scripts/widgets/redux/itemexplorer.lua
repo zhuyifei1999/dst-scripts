@@ -387,12 +387,13 @@ function ItemExplorer:_LaunchCommerce()
         -- We completed a barter and now our screens contain old inventory data.
         --
         -- Cache because last_ will be cleared.
-        local purchased_widget = self.last_interaction_target.widget
+        local purchased_widget = self.last_interaction_target and self.last_interaction_target.widget or nil --guarded because we could have refreshed and lost the last_interaction_target if a refresh happened on the same frame as creating the screen.
         -- Tell parent to update as needed.
         self.scroll_list.context.owner:RefreshInventory(true)
         -- Take care of our own update.
         self:RefreshItems()
         if is_buying
+			and purchased_widget ~= nil
             and purchased_widget.data.is_owned
             and purchased_widget.PlayUnlock
             then
@@ -446,6 +447,9 @@ end
 
 function ItemExplorer:_OnClickWidget(item_widget)
     local item_data = item_widget.data
+	
+	print("ItemExplorer:_OnClickWidget", item_data.item_key, item_data.is_owned, item_data.is_active)
+	
     -- if no selection type, then ignore is_active.
     if self.scroll_list.context.selection_type and item_data.is_owned then
         self:_SetItemActiveFlag(item_data, not item_data.is_active)
@@ -470,6 +474,7 @@ function ItemExplorer:_OnClickWidget(item_widget)
 end
     
 function ItemExplorer:_UpdateClickedWidget(item_widget)
+	print("ItemExplorer:_UpdateClickedWidget(item_widget)", item_widget.data.item_key)
     if item_widget.data.item_key == nil then
         -- Ignore empty widgets.
         return

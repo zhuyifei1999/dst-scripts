@@ -705,7 +705,7 @@ local function OnFeedInContainerEvent(inst)
 end
 
 local function OnMorgueDirty(inst)
-    if inst._parent ~= nil and inst._parent.HUD ~= nil then
+    if inst._parent ~= nil and inst._parent.HUD ~= nil and not GetGameModeProperty("no_morgue_record") then
         Morgue:OnDeath({
             pk = inst.isdeathbypk:value() or nil,
             killed_by = inst.deathcause:value(),

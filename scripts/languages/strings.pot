@@ -85198,6 +85198,21 @@ msgctxt "STRINGS.NAMES.HALLOWEENCANDY_11"
 msgid "Choco Pigs"
 msgstr ""
 
+#. STRINGS.NAMES.HALLOWEENCANDY_12
+msgctxt "STRINGS.NAMES.HALLOWEENCANDY_12"
+msgid "Gummy Lice"
+msgstr ""
+
+#. STRINGS.NAMES.HALLOWEENCANDY_13
+msgctxt "STRINGS.NAMES.HALLOWEENCANDY_13"
+msgid "Grift Gobstopper"
+msgstr ""
+
+#. STRINGS.NAMES.HALLOWEENCANDY_14
+msgctxt "STRINGS.NAMES.HALLOWEENCANDY_14"
+msgid "Lava Pepper"
+msgstr ""
+
 #. STRINGS.NAMES.HALLOWEENCANDY_2
 msgctxt "STRINGS.NAMES.HALLOWEENCANDY_2"
 msgid "Candy Corn"
@@ -86240,12 +86255,12 @@ msgstr ""
 
 #. STRINGS.NAMES.PEGHOOK
 msgctxt "STRINGS.NAMES.PEGHOOK"
-msgid "Scourgion"
+msgid "Scorpeon"
 msgstr ""
 
 #. STRINGS.NAMES.PEGHOOK_DOT
 msgctxt "STRINGS.NAMES.PEGHOOK_DOT"
-msgid "Scourgion Acid"
+msgid "Scorpeon Acid"
 msgstr ""
 
 #. STRINGS.NAMES.PENGUIN
@@ -92830,7 +92845,7 @@ msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.hambat_spiralcut
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.hambat_spiralcut"
-msgid "This hambat was fashioned after the scepter of the great Battlemaster Pugna."
+msgid "This ham bat was fashioned after the scepter of the great Battlemaster Pugna."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.hand_beltedgloves_brown_beaver
@@ -95330,7 +95345,7 @@ msgstr ""
 
 #. STRINGS.SKIN_NAMES.hambat_spiralcut
 msgctxt "STRINGS.SKIN_NAMES.hambat_spiralcut"
-msgid "Pugna's Hambat"
+msgid "Pugna's Ham Bat"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.hand_beltedgloves_brown_beaver

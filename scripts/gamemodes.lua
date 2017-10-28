@@ -70,6 +70,7 @@ GAME_MODES =
         no_hunger = true,
         no_sanity = true,
         no_avatar_popup = true,
+        no_morgue_record = true,
         override_normal_mix = "lavaarena_normal",
         override_lobby_music = "dontstarve/music/lava_arena/FE2",
         cloudcolour = { .4, .05, 0 },

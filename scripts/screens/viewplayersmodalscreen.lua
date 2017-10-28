@@ -106,7 +106,7 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
 		playerListing.rank = playerListing:AddChild(Image("images/profileflair.xml", "playerlevel_bg_lavaarena.tex"))
 		playerListing.rank:SetPosition(badge_x-13- 20, -4)  
 		playerListing.rank:SetScale(.5)
-		playerListing.rank.num = playerListing.rank:AddChild(Text(CHATFONT_OUTLINE, 40, v.eventlevel, UICOLOURS.WHITE))
+		playerListing.rank.num = playerListing.rank:AddChild(Text(CHATFONT_OUTLINE, 40, v.eventlevel + 1, UICOLOURS.WHITE))
 		playerListing.rank.num:SetPosition(2, 10)
 
         playerListing.name = playerListing:AddChild(Text(TALKINGFONT, 26))

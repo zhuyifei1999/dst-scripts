@@ -194,7 +194,7 @@ function PlayerSummaryScreen:_BuildMostCommonDeath(width)
         deaths.name = deaths:AddChild(Text(UIFONT, 30, top_cause))
         deaths.name:SetRegionSize(width,30)
         deaths.name:SetPosition(70,10)
-        
+
         --~ local percent = string.format("%0.1f%%", cause_of_death[top_cause] / total_deaths * 100)
         --~ deaths.percent = deaths:AddChild(Text(CHATFONT, 30, percent))
         --~ deaths.percent:SetRegionSize(width,30)
@@ -205,38 +205,56 @@ function PlayerSummaryScreen:_BuildMostCommonDeath(width)
 end
 
 function PlayerSummaryScreen:_BuildMostCommonFriend(width)
-    local total_friends = 0
-    local game_count = {}
+    local friends = Widget("friends")
+    friends.name = friends:AddChild(Text(UIFONT, 30))
+    friends.name:SetRegionSize(width,30)
+    friends.name:SetPosition(70, 10)
+
+    friends.count = friends:AddChild(Text(CHATFONT, 30))
+    friends.count:SetRegionSize(width,30)
+    friends.count:SetPosition(70, -20)
+
+    return friends
+end
+
+function PlayerSummaryScreen:_RefreshMostCommonFriend()
+    local friends_info = {}
     local blackbook = PlayerHistory:GetRows()
-    for i,data in ipairs(blackbook) do
-        if data and data.name and data.server_name and data.prefab then
-            local prev_friends = game_count[data.name] or 0
-            game_count[data.name] = prev_friends + 1
-            total_friends = total_friends + 1
+    for i, data in ipairs(blackbook) do
+        if data and data.name and data.server_name and data.prefab and data.sort_date then
+            local info = friends_info[data.name]
+            if info ~= nil then
+                info.count = info.count + 1
+                info.date = math.max(info.date, data.sort_date)
+            else
+                friends_info[data.name] = { row = i, count = 1, date = data.sort_date }
+            end
         end
     end
 
-    local friendslist = table.getkeys(game_count)
-    table.sort(friendslist, function(a,b)
-        local a_friends = game_count[a] or 0
-        local b_friends = game_count[b] or 0
-        return a_friends > b_friends
+    local friendslist = table.getkeys(friends_info)
+    table.sort(friendslist, function(a, b)
+        a, b = friends_info[a], friends_info[b]
+        if a.count > b.count then
+            return true
+        elseif a.count < b.count then
+            return false
+        elseif a.date > b.date then
+            return true
+        elseif a.date < b.date then
+            return false
+        end
+        return a.row < b.row
     end)
 
-    local friends = Widget("friends")
     local top_friend = friendslist[1]
-    if top_friend then
-        friends.name = friends:AddChild(Text(UIFONT, 30, top_friend))
-        friends.name:SetRegionSize(width,30)
-        friends.name:SetPosition(70,10)
-        
-        local count = subfmt(STRINGS.UI.PLAYERSUMMARYSCREEN.ENCOUNTER_COUNT_FMT, {num_games = game_count[top_friend]})
-        friends.count = friends:AddChild(Text(CHATFONT, 30, count))
-        friends.count:SetRegionSize(width,30)
-        friends.count:SetPosition(70,-20)
+    if top_friend ~= nil then
+        self.most_friend.name:SetString(top_friend)
+        self.most_friend.count:SetString(subfmt(STRINGS.UI.PLAYERSUMMARYSCREEN.ENCOUNTER_COUNT_FMT, { num_games = friends_info[top_friend].count }))
+    else
+        self.most_friend.name:SetString("")
+        self.most_friend.count:SetString("")
     end
-
-    return friends
 end
 
 function PlayerSummaryScreen:_RefreshPuppet()
@@ -255,7 +273,7 @@ end
 
 function PlayerSummaryScreen:_BuildMenu()
     self.tooltip = self.root:AddChild(TEMPLATES.ScreenTooltip())
-	
+
     local skins_button      = TEMPLATES.MenuButton(STRINGS.UI.MAINSCREEN.SKINS, function() self:OnSkinsButton() end, STRINGS.UI.PLAYERSUMMARYSCREEN.TOOLTIP_SKINS, self.tooltip)
     local mysterybox_button = TEMPLATES.MenuButton(STRINGS.UI.MAINSCREEN.MYSTERYBOX, function() self:OnMysteryBoxButton() end, STRINGS.UI.PLAYERSUMMARYSCREEN.TOOLTIP_MYSTERYBOX, self.tooltip)
     local history_button    = TEMPLATES.MenuButton(STRINGS.UI.MORGUESCREEN.HISTORY, function() self:OnHistoryButton() end,    STRINGS.UI.PLAYERSUMMARYSCREEN.TOOLTIP_HISTORY,  self.tooltip)
@@ -293,6 +311,7 @@ function PlayerSummaryScreen:OnBecomeActive()
 	self.menu:RestoreFocusTo(self.last_focus_widget)
     self.leaving = nil
 
+    self:_RefreshMostCommonFriend()
     self:_RefreshClientData()
     self:StartMusic()
 end
