@@ -47,10 +47,10 @@ local function dodecay(inst)
         not (RoadManager ~= nil and RoadManager:IsOnRoad(x, 0, z))
 
     if canplant then
-        local radius = inst:GetPhysicsRadius(0)
+        local radius = inst.Physics:GetRadius()
         for i, v in ipairs(TheSim:FindEntities(x, 0, z, 3, nil, { "NOBLOCK", "_inventoryitem", "locomotor", "FX", "INLIMBO", "DECOR" })) do
             if v ~= inst and v.entity:IsVisible() then
-                local spacing = radius + v:GetPhysicsRadius(.25) - .001
+                local spacing = radius + (v.Physics ~= nil and v.Physics:GetRadius() or .25) - .001
                 if v:GetDistanceSqToPoint(x, 0, z) < (v.deploy_extra_spacing ~= nil and math.max(v.deploy_extra_spacing * v.deploy_extra_spacing, spacing * spacing) or spacing * spacing) then
                     canplant = false
                     break

@@ -1,5 +1,3 @@
--- Don't use this on new screens! Use PopupDialogScreen with big longness
--- instead.
 local Screen = require "widgets/screen"
 local Button = require "widgets/button"
 local AnimButton = require "widgets/animbutton"

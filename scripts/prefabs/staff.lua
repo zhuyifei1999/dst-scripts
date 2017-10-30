@@ -338,7 +338,7 @@ local function onblink(staff, pos, caster)
 end
 
 local function NoHoles(pt)
-    return not TheWorld.Map:IsGroundTargetBlocked(pt)
+    return not TheWorld.Map:IsPointNearHole(pt)
 end
 
 local function blinkstaff_reticuletargetfn()
@@ -449,7 +449,7 @@ local function SpawnLootPrefab(inst, lootprefab)
         loot.Physics:SetVel(2 * math.cos(angle), 10, 2 * math.sin(angle))
 
         if inst.Physics ~= nil then
-            local len = loot:GetPhysicsRadius(0) + inst:GetPhysicsRadius(0)
+            local len = loot.Physics:GetRadius() + inst.Physics:GetRadius()
             x = x + math.cos(angle) * len
             z = z + math.sin(angle) * len
         end
@@ -685,8 +685,6 @@ end
 local function red()
     local inst = commonfn("red", { "firestaff", "rangedweapon", "rangedlighter" }, true)
 
-    inst.projectiledelay = FRAMES
-
     if not TheWorld.ismastersim then
         return inst
     end
@@ -708,8 +706,6 @@ end
 
 local function blue()
     local inst = commonfn("blue", { "icestaff", "rangedweapon", "extinguisher" }, true)
-
-    inst.projectiledelay = FRAMES
 
     if not TheWorld.ismastersim then
         return inst

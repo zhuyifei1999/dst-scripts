@@ -116,10 +116,6 @@ return {
         {
             EMPTY = "I can't wrap up thin air.",
         },
-        PICKUP =
-        {
-			RESTRICTION = "That's not really my forte.",
-        },
 	},
 	ACTIONFAIL_GENERIC = "I sure gummed the works there.",
 	ANNOUNCE_DIG_DISEASE_WARNING = "That helped a bit.",
@@ -226,11 +222,6 @@ return {
 	ANNOUNCE_KLAUS_ENRAGE = "HOLY RIVETS! Time to make tracks!",
 	ANNOUNCE_KLAUS_UNCHAINED = "The mitts are coming off!",
 	ANNOUNCE_KLAUS_CALLFORHELP = "He called his goons!",
-
---boarlord event
-    ANNOUNCE_REVIVING_CORPSE = "Up'n'attem now.",
-    ANNOUNCE_REVIVED_OTHER_CORPSE = "Back to work!",
-    ANNOUNCE_REVIVED_FROM_CORPSE = "I'm back on the clock!",
 
 	BATTLECRY =
 	{
@@ -510,8 +501,6 @@ return {
         },
 		THULECITE = "I love working with new materials.",
 		ARMORRUINS = "Not a bad piece of work.",
-		ARMORSKELETON = "A bit creepy, isn't it?",
-        SKELETONHAT = "Makes me a little uneasy. Heh heh...",
 		RUINS_BAT = "This thulecite stuff is incredible!",
 		RUINSHAT = "Transforms the wearer into the \"King of Snoot\".",
 		NIGHTMARE_TIMEPIECE =
@@ -629,7 +618,6 @@ return {
         	RAGE = "He's tougher than he looks... but so am I!",
         },
         MUSHROOMBOMB = "Fire in the hole!",
-        SLEEPBOMB = "An unethical weapon, plain and simple.",
 		MUSHTREE_TALL =
 		{
             GENERIC = "It's huge!",
@@ -1241,10 +1229,6 @@ return {
 			COMPLETE = "What is this a skeleton of?!",
         },
         STALKER = "That thing's terrifying!",
-        STALKER_ATRIUM = "You got a bone to pick with me, bub? Ha!",
-        STALKER_MINION = "I don't want that anywhere near me!",
-        THURIBLE = "Smells kinda like gasoline.",
-        ATRIUM_OVERGROWTH = "Don't think it's supposed to look like that.",
 		FROG =
 		{
 			DEAD = "It croaked.",
@@ -1860,6 +1844,15 @@ return {
         TRINKET_35 = "Someone drank it already.", --Empty Elixir
 		TRINKET_36 = "Chomp chomp.", --Faux fangs
 		TRINKET_37 = "Doesn't seem worth fixing.", --Broken Stake
+		TRINKET_38 = "Hope no one's been snoopin' on us.", -- Binoculars Griftlands trinket
+        TRINKET_39 = "That just ain't right - it's left! Ha!", -- Lone Glove Griftlands trinket
+        TRINKET_40 = "Not sure what to do with it. I'm weighing my options.", -- Snail Scale Griftlands trinket
+        TRINKET_41 = "Not sure what this was for.", -- Goop Canister Hot Lava trinket
+        TRINKET_42 = "Cute little toy, hey?", -- Toy Cobra Hot Lava trinket
+        TRINKET_43 = "Blech. Handmade.", -- Crocodile Toy Hot Lava trinket
+        TRINKET_44 = "Nope. Can't fix that.", -- Broken Terrarium ONI trinket
+        TRINKET_45 = "I'm not messing with anymore radios.", -- Odd Radio ONI trinket
+        TRINKET_46 = "That might be fun to take apart.", -- Hairdryer ONI trinket
 
 		HALLOWEENCANDY_1 = "A nice change from baked apples.", --Candy Apple
         HALLOWEENCANDY_2 = "Is this even food?", --Candy Corn
@@ -1872,6 +1865,9 @@ return {
         HALLOWEENCANDY_9 = "Real gelatinous.", --Jelly Worm
         HALLOWEENCANDY_10 = "Curious flavor.", --Tentacle Lolli
         HALLOWEENCANDY_11 = "Best eaten by the handful.", --Choco Pigs
+        HALLOWEENCANDY_12 = "Ha, yuck! Everyone watch me eat'em!", --ONI meal lice candy
+        HALLOWEENCANDY_13 = "I ain't patient enough to eat these.",	--Griftlands themed candy
+        HALLOWEENCANDY_14 = "Whew! That's the kick y'need!",	--Hot Lava pepper candy
         CANDYBAG = "It's a goodybag.",
 
         DRAGONHEADHAT = "Front and center!",
@@ -2038,54 +2034,6 @@ return {
         ORANGEMOONEYE = "You lookin' at me?",
         YELLOWMOONEYE = "Quit staring.",
         BLUEMOONEYE = "It saw me standing alone.",
-
-        --Arena Event
-        LAVAARENA_BOARLORD = "Why don't you fight us yourself!",
-        BOARRIOR = "Let's cut him down to size!",
-        BOARON = "Who's ready fer some bacon?!",
-        PEGHOOK = "That acid stuff burns!",
-        TRAILS = "He's justa big meathead.",
-        TURTILLUS = "Steel yourself, turtle.",
-        SNAPPER = "You keep yer spit to yourself now, buddy.",
-        
-        LAVAARENA_PORTAL = 
-        {
-            ON = "Welp, time to go!",
-            GENERIC = "Just like the one I came through...",
-        },
-        LAVAARENA_KEYHOLE = "Can't go home without the key.",
-        LAVAARENA_KEYHOLE_FULL = "Perfect assembly!",
-        LAVAARENA_BATTLESTANDARD = "Hey! We gotta destroy that Battle Standard!",
-        LAVAARENA_SPAWNER = "Wonder how it works?",
-
-        HEALINGSTAFF = "I'm a bit of a Jane-of-all-trades.",
-        FIREBALLSTAFF = "Doesn't look too hard to operate.",
-        HAMMER_MJOLNIR = "I'm most effective with a tool in hand.",
-        SPEAR_GUNGNIR = "Pretty snazzy weapon there!",
-        BLOWDART_LAVA = "Efficient, and painful!",
-        BLOWDART_LAVA2 = "That's right up my alley!",
-        LAVAARENA_LUCY = "I could take a swing at it. Ha!",
-        WEBBER_SPIDER_MINION = "Can you tell your friends not to get so close to me, kid?",
-        BOOK_FOSSIL = "I ain't much of a bookworm.",
-		LAVAARENA_BERNIE = "You here to help, lil fella?",
-
-        LAVAARENA_ARMORLIGHT = "It's paper thin!",
-		LAVAARENA_ARMORLIGHTSPEED = "I'd rather something a bit heftier.",
-		LAVAARENA_ARMORMEDIUM = "It'll do in a pinch.",
-		LAVAARENA_ARMORMEDIUMDAMAGER = "That should do the trick.",
-		LAVAARENA_ARMORMEDIUMRECHARGER = "That armor puts ya at peak efficiency!",
-		LAVAARENA_ARMORHEAVY = "This is more my style!",
-		LAVAARENA_ARMOREXTRAHEAVY = "I could really take a hit in that thing!",
-
-		LAVAARENA_FEATHERCROWNHAT = "Faster than tiny hands on an assembly line.",
-        LAVAARENA_HEALINGFLOWERHAT = "That hat'll help you feel right as rain.",
-        LAVAARENA_LIGHTDAMAGERHAT = "Gives ya a lil extra punch!",
-        LAVAARENA_STRONGDAMAGERHAT = "I'm gonna be a real slugger with that thing!",
-        LAVAARENA_TIARAFLOWERPETALSHAT = "That'd be fer healin' my pals.",
-        LAVAARENA_EYECIRCLETHAT = "Just some high class trinket.",
-        LAVAARENA_RECHARGERHAT = "I'd be so efficient with that!",
-        LAVAARENA_HEALINGGARLANDHAT = "That's fer a bit of self maintenance.",
-        LAVAARENA_CROWNDAMAGERHAT = "You'd be a real heavy hitter with that.",
 	},
 	DESCRIBE_GENERIC = "Incredible! I have no idea what that is.",
 	DESCRIBE_TOODARK = "Low visibility causes workplace accidents!",

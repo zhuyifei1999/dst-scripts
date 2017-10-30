@@ -4,7 +4,6 @@ local Debuff = Class(function(self, inst)
     self.target = nil
     self.onattachedfn = nil
     self.ondetachedfn = nil
-    self.onextendedfn = nil
     --self.keepondespawn = nil
 end)
 
@@ -14,10 +13,6 @@ end
 
 function Debuff:SetDetachedFn(fn)
     self.ondetachedfn = fn
-end
-
-function Debuff:SetExtendedFn(fn)
-    self.onextendedfn = fn
 end
 
 function Debuff:Stop()
@@ -42,12 +37,6 @@ function Debuff:OnDetach()
     self.target = nil
     if self.ondetachedfn ~= nil then
         self.ondetachedfn(self.inst, target)
-    end
-end
-
-function Debuff:Extend(followsymbol, followoffset)
-    if self.onextendedfn ~= nil then
-        self.onextendedfn(self.inst, self.target, followsymbol, followoffset)
     end
 end
 

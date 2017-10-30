@@ -850,7 +850,7 @@ function Graph:ProcessInsanityWormholes(entities, width, height)
 end
 
 function Graph:SwapOutWormholeMarkers(entities, width, height)
-    --assert(self.wormholeprefab ~= nil, "Level must specify a wormhole prefab.")
+    assert(self.wormholeprefab ~= nil, "Level must specify a wormhole prefab.")
 		
 	if entities["wormhole_MARKER"] ~= nil then
 
@@ -880,9 +880,8 @@ function Graph:SwapOutWormholeMarkers(entities, width, height)
 				end
 		end
 		self.MIN_WORMHOLE_ID = id
+		entities["wormhole_MARKER"] = nil
 	end
-
-	entities["wormhole_MARKER"] = nil
 end
 
 
@@ -911,10 +910,7 @@ function Graph:ApplyWormhole(entities, width, height, x1, y1, x2, y2)
 end
 
 function Graph:SwapWormholesAndRoadsExtra(entities, width, height)
-    if self.wormholeprefab == nil or self.wormholeprefab == "" then
-		print ("[Graph:SwapWormholesAndRoadsExtra] No wormhole_prefab defined in location data. Islands will be left disconnected.")
-		return
-	end
+    assert(self.wormholeprefab ~= nil, "Level must specify a wormhole prefab.")
 
 	if entities[self.wormholeprefab] == nil then
 		entities[self.wormholeprefab] = {}

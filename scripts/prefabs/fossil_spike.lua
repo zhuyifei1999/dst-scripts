@@ -109,7 +109,7 @@ local function DoDamage(inst)
             v.components.mine:Deactivate()
         end
         if not v.components.inventoryitem.nobounce and v.Physics ~= nil and v.Physics:IsActive() then
-            SpikeLaunch(v, inst, .8 + PHYSICS_RADIUS, PHYSICS_RADIUS * .4, PHYSICS_RADIUS + v:GetPhysicsRadius(0))
+            SpikeLaunch(v, inst, .8 + PHYSICS_RADIUS, PHYSICS_RADIUS * .4, PHYSICS_RADIUS + v.Physics:GetRadius())
         end
     end
 end

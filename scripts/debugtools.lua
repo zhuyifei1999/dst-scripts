@@ -86,7 +86,6 @@ function debuglocals (level)
 end
 
 function dumptable(obj, indent, recurse_levels, visit_table)
-    local is_top_level = visit_table == nil
     if visit_table == nil then
         visit_table = {}
     end
@@ -94,7 +93,10 @@ function dumptable(obj, indent, recurse_levels, visit_table)
 	indent = indent or 1
 	local i_recurse_levels = recurse_levels or 5
     if obj then
-		local dent = string.rep("\t", indent)
+		local dent = ""
+		if indent then
+			for i=1,indent do dent = dent.."\t" end
+		end
     	if type(obj)==type("") then
     		print(obj)
     		return
@@ -121,9 +123,6 @@ function dumptable(obj, indent, recurse_levels, visit_table)
             -- sort breaks on keys that are tables, so just put them on the end
             table.insert(keys, k)
         end
-        if is_top_level and #keys == 0 then
-            print(dent.."(empty)")
-        end
         for i,k in ipairs(keys) do
             local v = obj[k]
             if type(v) == "table" and i_recurse_levels>0 then
@@ -137,8 +136,6 @@ function dumptable(obj, indent, recurse_levels, visit_table)
                 print(dent.."K: ",k," V: ",v)
             end
         end
-    else
-        print("nil")
     end
 end
 

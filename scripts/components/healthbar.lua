@@ -70,7 +70,7 @@ local function OnInit(inst, self)
         OnHealthDelta(inst, { newpercent = inst.components.health ~= nil and inst.components.health:GetPercent() or 1 })
     else
         inst:ListenForEvent("healthpctdirty", OnHealthPctDirty)
-        OnHealthPctDirty(inst)
+        OnHealthPctDirty(inst, self._healthpct:value())
     end
 end
 

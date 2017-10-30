@@ -19,10 +19,6 @@ local loopingSounds = {}
 local soundCount = 0
 local listenerPos = nil
  
-local uiSounds = {}
-local loopingUISounds = {}
-local uiSoundCount = 0
-
 TheSim:LoadPrefabs({"sounddebugicon"})
 
 SoundEmitter.PlaySound = function(emitter, event, name, volume, ...)
@@ -67,21 +63,7 @@ SoundEmitter.PlaySound = function(emitter, event, name, volume, ...)
             end
         end
     else
-        local soundInfo = {event=event, volume=volume or 1}
-        if name then
-            --add to looping sounds list
-            soundInfo.params = {}
-            if not loopingUISounds[name] then
-                loopingUISounds[name] = {}
-            end
-            loopingUISounds[name] = soundInfo
-        else
-            --add to oneshot sound list
-            uiSoundCount = uiSoundCount + 1
-            local index = (uiSoundCount % maxRecentSounds)+1
-            soundInfo.count = uiSoundCount
-            uiSounds[index] = soundInfo
-        end
+    	print("Playing non-entity sound", event, name, volume)
     end
     
     playsound(emitter, event, name, volume, ...)
@@ -95,11 +77,6 @@ SoundEmitter.KillSound = function(emitter, name, ...)
         end
         loopingSounds[ent][name] = nil
     end
-
-    if loopingUISounds[name] then
-        loopingSounds[name] = nil
-    end
-
     killsound(emitter, name, ...)
 end
 
@@ -114,27 +91,14 @@ SoundEmitter.KillAllSounds = function(emitter, ...)
         end
         sounds = nil
     end
-
-    sounds = loopingUISounds[name]
-    if sounds then
-        for k,v in pairs(sounds) do
-            sounds[v] = nil
-        end
-        sounds = nil
-    end
     killallsounds(emitter, ...)
 end
 
 SoundEmitter.SetParameter = function(emitter, name, parameter, value, ...)
     local ent = emitter:GetEntity()
     if loopingSounds[ent] and loopingSounds[ent][name] then
-        loopingSounds[ent][name].params[parameter] = value
+        loopingSounds[ent][name].params[name] = value
     end
-
-    if loopingUISounds[name] then
-        loopingUISounds[name].params[parameter] = value
-    end
-
     setparameter(emitter, name, parameter, value, ...)
 end
 
@@ -142,10 +106,6 @@ SoundEmitter.SetVolume = function(emitter, name, volume, ...)
     local ent = emitter:GetEntity()
     if loopingSounds[ent] and loopingSounds[ent][name] then
         loopingSounds[ent][name].volume = volume
-    end
-
-    if loopingUISounds[name] then
-        loopingUISounds[name].volume = volume
     end
     setvolume(emitter, name, volume, ...)
 end
@@ -192,19 +152,9 @@ function GetSoundDebugString()
                 for k,v in pairs(info.params) do
                     params = params.." "..k.."="..v
                 end
-                table.insert(lines, string.format("\t[%s] %s owner:%d %s pos:%s dist:%2.2f volume:%d params:{%s}",
+                table.insert(lines, string.format("[%s] %s owner:%d %s pos:%s dist:%2.2f volume:%d params:{%s}",
                         name, info.event, info.guid, info.prefab, tostring(info.pos), info.dist, info.volume, params) )
             end
-        end
-    end
-    if SOUNDDEBUGUI_ENABLED then
-        for name,info in pairs(loopingUISounds) do
-            local params = ""
-            for k,v in pairs(info.params) do
-                params = params.." "..k.."="..v
-            end
-            table.insert(lines, string.format("\t[%s] %s volume:%d params:{%s}",
-                    name, info.event, info.volume, params) )
         end
     end
     table.insert(lines, "Recent Sounds")
@@ -212,18 +162,8 @@ function GetSoundDebugString()
         local index = (i % maxRecentSounds)+1
         if nearbySounds[index] then
             local soundInfo = nearbySounds[index]
-            table.insert(lines, string.format("\t[%d] %s owner:%d %s pos:%s dist:%2.2f volume:%d",
+            table.insert(lines, string.format("[%d] %s owner:%d %s pos:%s dist:%2.2f volume:%d",
                 soundInfo.count, soundInfo.event, soundInfo.guid, soundInfo.prefab, tostring(soundInfo.pos), soundInfo.dist, soundInfo.volume) )
-        end
-    end
-    if SOUNDDEBUGUI_ENABLED then
-        for i = uiSoundCount-maxRecentSounds+1, uiSoundCount do
-            local index = (i % maxRecentSounds)+1
-            if uiSounds[index] then
-                local soundInfo = uiSounds[index]
-                table.insert(lines, string.format("\t[%d] %s volume:%d",
-                    soundInfo.count, soundInfo.event, soundInfo.volume) )
-            end
         end
     end
     return table.concat(lines, "\n")

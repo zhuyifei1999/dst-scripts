@@ -30,7 +30,6 @@ function Tune(overrides)
     local calories_per_day = 75
 
     local wilson_attack_period = .1
-    
     -----------------------
 
     local perish_warp = 1--/200
@@ -2022,8 +2021,6 @@ function Tune(overrides)
         WENDY_DAMAGE_MULT = .75,
         WENDY_SANITY_MULT = .75,
 
-        WES_DAMAGE_MULT = .75,
-
         WICKERBOTTOM_SANITY = 250,
         WICKERBOTTOM_STALE_FOOD_HUNGER = .333,
         WICKERBOTTOM_SPOILED_FOOD_HUNGER = .167,
@@ -2484,7 +2481,7 @@ function Tune(overrides)
         },
 
         OASISLAKE_MAX_FISH = 15,
-        OASISLAKE_FISH_RESPAWN_TIME = seg_time * 3,
+        OASISLAKE_FISH_RESPAWN_TIME = seg_time*3,
 
         CAREFUL_SPEED_MOD = .3,
 
@@ -2547,56 +2544,6 @@ function Tune(overrides)
         ATRIUM_GATE_DESTABILIZE_WARNING_TIME = seg_time * 0.55,
         ATRIUM_GATE_DESTABILIZE_INITIAL_WARNING_DELAY = 2, -- this is the time after ATRIUM_GATE_DESTABILIZE_DELAY that the first pulse will happen
         ATRIUM_GATE_COOLDOWN = total_day_time * 20,
-
-        LAVAARENA_STARTING_HEALTH =
-        {
-            WILSON = 150,
-            WILLOW = 125,
-            WENDY = 125,
-            WOLFGANG = 200,
-            WX78 = 150,
-            WICKERBOTTOM = 125,
-            WES = 100,
-            WAXWELL = 75,
-            WOODIE = 200,
-            WATHGRITHR = 150,
-            WEBBER = 150,
-            WINONA = 200,
-        },
-
-        LAVAARENA_STARTING_ITEMS =
-        {
-            WILSON = { "blowdart_lava", "lavaarena_armormedium" },
-            WILLOW = { "blowdart_lava", "lavaarena_armorlightspeed" },
-            WENDY = { "blowdart_lava", "lavaarena_armorlightspeed" },
-            WOLFGANG = { "hammer_mjolnir", "lavaarena_armormedium" },
-            WX78 = { "hammer_mjolnir", "lavaarena_armormedium" },
-            WICKERBOTTOM = { "book_fossil", "lavaarena_armorlight" },
-            WES = { "blowdart_lava", "lavaarena_armorlightspeed" },
-            WAXWELL = { "book_fossil", "lavaarena_armorlight" },
-            WOODIE = { "lavaarena_lucy", "lavaarena_armormedium" },
-            WATHGRITHR = { "spear_gungnir", "lavaarena_armorlightspeed" },
-            WEBBER = { "blowdart_lava", "lavaarena_armorlightspeed" },
-            WINONA = { "hammer_mjolnir", "lavaarena_armormedium" },
-        },
-        
-        LAVAARENA_SURVIVOR_DIFFICULTY = 
-        {
-            WILSON = 1,
-            WILLOW = 1,
-            WENDY = 1,
-            WOLFGANG = 1,
-            WX78 = 3,
-            WICKERBOTTOM = 2,
-            WES = 3,
-            WAXWELL = 3,
-            WOODIE = 2,
-            WATHGRITHR = 2,
-            WEBBER = 1,
-            WINONA = 1,
-        },
-
-        REVIVE_CORPSE_ACTION_TIME = 6,
 
         VOTE_PASSED_SQUELCH_TIME = 0,
         VOTE_FAILED_SQUELCH_TIME = 30,

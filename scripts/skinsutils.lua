@@ -18,27 +18,6 @@ SKIN_RARITY_COLORS =
 }
 DEFAULT_SKIN_COLOR = SKIN_RARITY_COLORS["Common"]
 
-EVENT_ICONS = 
-{
-	event_forge = 32
-}
-
--- Also update GetBuildForItem!
-local function GetSpecialItemCategories()
-	-- We build this in a function because these symbols don't exist when this
-	-- file is first loaded.
-	return
-	{
-		MISC_ITEMS,
-		CLOTHING,
-		EMOTE_ITEMS,
-		EMOJI_ITEMS,
-	}
-end
-local function GetAllItemCategories()
-	return { Prefabs, unpack(GetSpecialItemCategories()) }
-end
-
 --[[
 Common #B7D2D9
 Classy #415078
@@ -68,11 +47,6 @@ local rarity_order =
 	Classy = 9,
 	Common = 10
 }
-
-function CompareReleaseGroup(a, b)
-	return (a.release_group or 999) > (b.release_group or 999)
-end
-
 function CompareRarities(a, b)
 	local rarity1 = type(a) == "string" and a or a.rarity
 	local rarity2 = type(b) == "string" and b or b.rarity
@@ -97,22 +71,17 @@ function GetNextRarity(rarity)
 end
 
 function GetBuildForItem(name)
-	for i,item_category in ipairs(GetSpecialItemCategories()) do
-		if item_category[name] then
-			return name
+	if CLOTHING[name] or MISC_ITEMS[name] or EMOTE_ITEMS[name] then
+		name = name
+	else
+		if Prefabs[name] ~= nil then
+			name = Prefabs[name].build_name
 		end
 	end
-
-	if Prefabs[name] ~= nil then
-		return Prefabs[name].build_name
-	end
-
+	
 	return name
 end
 
--- Get the bigportrait UIAnim assets loaded by the prefab. Many prefabs don't
--- have this info (only necessary to animate a bigportrait like when you get
--- one in a mysterybox).
 function GetBigPortraitForItem(item_key)
 	if Prefabs[item_key] ~= nil then
 		return Prefabs[item_key].bigportrait
@@ -128,17 +97,15 @@ function IsClothingItem(name)
 	return false
 end
 
--- Skins for items you use in game.
-function IsGameplayItem(name)
-    -- When oddment are released we may need to add them here.
-    return GetTypeForItem(name) == "item"
-end
-
 function IsItemId(name)
-	for i,item_category in ipairs(GetAllItemCategories()) do
-		if item_category[name] then
-			return true
-		end
+	if Prefabs[name] then
+		return true
+	elseif MISC_ITEMS[name] then
+		return true
+	elseif CLOTHING[name] then
+		return true
+	elseif EMOTE_ITEMS[name] then
+		return true
 	end
 	return false
 end
@@ -150,23 +117,29 @@ end
 
 function GetSkinData(item)
 	local skin_data = {}
-	for i,item_category in ipairs(GetAllItemCategories()) do
-		skin_data = item_category[item]
-		if skin_data then
-			return skin_data
+	
+	if CLOTHING[item] then 
+		skin_data = CLOTHING[item]
+	elseif MISC_ITEMS[item] then 
+		skin_data = MISC_ITEMS[item]
+	elseif EMOTE_ITEMS[item] then 
+		skin_data = EMOTE_ITEMS[item]
+	else
+		if Prefabs[item] ~= nil then
+			skin_data = Prefabs[item]
 		end
 	end
-	return {}
+	return skin_data
 end
 
 function GetColorForItem(item)
 	local skin_data = GetSkinData(item)
-	return SKIN_RARITY_COLORS[skin_data.rarity] or DEFAULT_SKIN_COLOR
+	return SKIN_RARITY_COLORS[skin_data.rarity_modifier] or SKIN_RARITY_COLORS[skin_data.rarity] or DEFAULT_SKIN_COLOR
 end
 
 function GetModifiedRarityStringForItem( item )
 	if GetRarityModifierForItem(item) ~= nil then
-		return STRINGS.UI.RARITY[GetRarityModifierForItem(item)] .. STRINGS.UI.RARITY[GetRarityForItem(item)]
+		return STRINGS.UI.RARITY[GetRarityModifierForItem(item)] .. " " .. STRINGS.UI.RARITY[GetRarityForItem(item)]
 	else
 		return STRINGS.UI.RARITY[GetRarityForItem(item)]
 	end
@@ -189,21 +162,10 @@ function GetRarityForItem(item)
 	return rarity
 end
 
-function GetEventIconForItem(item)
-	local skin_data = GetSkinData(item)
-	for k,v in pairs(EVENT_ICONS) do
-		if skin_data.release_group == v then
-			return k
-		end
-	end
-
-	return nil
-end
-
 function GetSkinUsableOnString(item_type, popup_txt)
 	local skin_data = GetSkinData(item_type)
 	
-	local skin_str = GetSkinName(item_type)
+	local skin_str = GetName(item_type)
 	
 	local usable_on_str = ""
 	if skin_data ~= nil and skin_data.base_prefab ~= nil then
@@ -235,26 +197,6 @@ function GetSkinUsableOnString(item_type, popup_txt)
 	return usable_on_str
 end
 
-function IsUserCommerceAllowedOnItem(item_key)
-	if TheInventory:CheckOwnership(item_key) then
-		return IsUserCommerceSellAllowedOnItem(item_key)
-	else
-		return IsUserCommerceBuyAllowedOnItem(item_key)
-	end
-end
-
-function IsUserCommerceSellAllowedOnItem(item_key)
-    local item_counts = GetOwnedItemCounts()
-    local num_owned = item_counts[item_key] or 0
-    return TheItems:GetBarterSellPrice(item_key) ~= 0
-end
-
-function IsUserCommerceBuyAllowedOnItem(item_key)
-    local item_counts = GetOwnedItemCounts()
-    local num_owned = item_counts[item_key] or 0
-    return num_owned == 0 and TheItems:GetBarterBuyPrice(item_key) ~= 0
-end
-
 function GetTypeForItem(item)
 
 	local itemName = string.lower(item) -- they come back from the server in caps
@@ -262,10 +204,15 @@ function GetTypeForItem(item)
 
 	--print("Getting type for ", itemName)
 
-	for i,item_category in ipairs(GetAllItemCategories()) do
-		if item_category[itemName] then
-			type = item_category[itemName].type
-			break
+	if CLOTHING[itemName] then 
+		type = CLOTHING[itemName].type
+	elseif MISC_ITEMS[itemName] then 
+		type = MISC_ITEMS[itemName].type
+	elseif EMOTE_ITEMS[itemName] then 
+		type = EMOTE_ITEMS[itemName].type
+	else
+		if Prefabs[itemName] ~= nil then
+			type = Prefabs[itemName].type
 		end
 	end
 
@@ -273,22 +220,20 @@ function GetTypeForItem(item)
 end
 
 function GetSortCategoryForItem(item)
-	for i,item_category in ipairs(GetSpecialItemCategories()) do
-		if item_category[item] then
-			return item_category[item].type
-		end
-	end
+	local category = "none"
 
-	local skinsData = Prefabs[item]
-    if skinsData then
-        return skinsData.base_prefab
-    end
-    -- Likely cause: Player's inventory contained an unreleased item. Should
-    -- only happen in dev branch. (Also possible someone forgot to update
-    -- GetSpecialItemCategories().)
-    local DEBUG_MODE = BRANCH == "dev"
-    assert(DEBUG_MODE, "Unknown item: ".. item)
-    return ""
+	if CLOTHING[item] then
+		category = CLOTHING[item].type
+	elseif MISC_ITEMS[item] then
+		category = MISC_ITEMS[item].type
+	elseif EMOTE_ITEMS[item] then
+		category = EMOTE_ITEMS[item].type
+	else
+		local skinsData = Prefabs[item]
+		category = skinsData.base_prefab
+	end
+	
+	return category
 end
 
 
@@ -323,18 +268,10 @@ end
 		return "CHARACTER"
 	elseif type == "emote" then
 		return "EMOTE"
-	elseif type == "emoji" then
-		return "EMOJI"
 	elseif type == "item" then
 		return nil --what tags are on item type things
 	elseif type == "oddment" then
 		return "ODDMENT"
-	elseif type == "loading" then
-		return "LOADING"
-	elseif type == "playerportrait" then
-		return "PLAYERPORTRAIT"
-	elseif type == "profileflair" then
-		return "PROFILEFLAIR"
 	else
 		return string.upper("MISC_" .. type)
 	end
@@ -354,7 +291,7 @@ end]]
 	return s:sub(1,1):upper()..s:sub(2)
 end]]
 
-function GetSkinName(item)
+function GetName(item)
 	if string.sub( item, -8 ) == "_builder" then
 		item = string.sub( item, 1, -9 )
 	end
@@ -367,28 +304,32 @@ function GetSkinName(item)
 	return nameStr
 end
 
-function GetSkinDescription(item)
-	return STRINGS.SKIN_DESCRIPTIONS[item] or STRINGS.SKIN_DESCRIPTIONS["missing"]
+function IsSkinEntitlementReceived(entitlement)
+	return Profile:IsEntitlementReceived(entitlement)
 end
 
+function SetSkinEntitlementReceived(entitlement)
+	Profile:SetEntitlementReceived(entitlement)
+end
 
 
 ----------------------------------------------------
 
+local Widget = require "widgets/widget"
 local ItemImage = require "widgets/itemimage"
 
---local widgets_to_update, widgets_per_row, row_height = create_widgets_fn()
--- DEPRECATED: Use TEMPLATES.ScrollingGrid instead!
-function SkinGridListConstructor(context, parent, scroll_list)
-    local screen = context.screen
-	local NUM_ROWS = 5
+function SkinGrid4x4Constructor(screen, parent, disable_selecting)
+	local NUM_ROWS = 4
 	local NUM_COLUMNS = 4
 	local SPACING = 85
-	
+	--assert( parent.images == nil )
+	--parent.images = {}
 	local widgets = {}
 	
+	--local widget = parent:AddChild(Widget("inventory-line"))
+	
 	local x_offset = (NUM_COLUMNS/2) * SPACING + SPACING/2
-	local y_offset = (NUM_ROWS/2) * SPACING - 15
+	local y_offset = (NUM_ROWS/2) * SPACING + SPACING/2
 	
 	for y = 1,NUM_ROWS do
 		for x = 1,NUM_COLUMNS do
@@ -397,11 +338,12 @@ function SkinGridListConstructor(context, parent, scroll_list)
 			local itemimage = parent:AddChild(ItemImage(screen, "", "", 0, 0, nil ))
 			itemimage.clickFn = function(type, item, item_id) 
 				screen:OnItemSelect(type, item, item_id, itemimage)
-				scroll_list:OnItemSelect(itemimage.data_index)
 			end
 		
 			itemimage:SetPosition( x * SPACING - x_offset, -y * SPACING + y_offset, 0)
 		
+			
+			--parent.images[index] = itemimage
 			widgets[index] = itemimage
 			
 			if x > 1 then 
@@ -412,25 +354,20 @@ function SkinGridListConstructor(context, parent, scroll_list)
 				itemimage:SetFocusChangeDir(MOVE_UP, widgets[index-NUM_COLUMNS])
 				widgets[index-NUM_COLUMNS]:SetFocusChangeDir(MOVE_DOWN, itemimage)
 			end
-		end
+		end	
 	end
 	
-	--if disable_selecting then
+	if disable_selecting then
 		for _,item_image in pairs(widgets) do
 			item_image:DisableSelecting()
 		end
-	--end
-	-- Send focus somewhere that does something with it.
-    parent.focus_forward = widgets[1]
+	end
 	
-	return widgets, NUM_COLUMNS, SPACING, NUM_ROWS-2, 0.35
+	return widgets
 end
 
--- DEPRECATED: Use ItemImage.ApplyDataToWidget instead!
-function UpdateSkinGrid(context, list_widget, data, data_index)
-    local screen = context.screen
+function UpdateSkinGrid(list_widget, data, screen)
 	if data ~= nil then
-        -- data.item is actually the item_key!
 		list_widget:SetItem(data.type, data.item, data.item_id, data.timestamp)
 
 		if not list_widget.disable_selecting then
@@ -443,7 +380,7 @@ function UpdateSkinGrid(context, list_widget, data, data_index)
 		list_widget:Show()
 
 		if screen.show_hover_text then
-			local hover_text = GetModifiedRarityStringForItem(data.item) .. "\n" .. GetSkinName(data.item)
+			local hover_text = GetModifiedRarityStringForItem(data.item) .. "\n" .. GetName(data.item)
 			list_widget:SetHoverText( hover_text, { font = NEWFONT_OUTLINE, size = 20, offset_x = 0, offset_y = 60, colour = {1,1,1,1}})
 			if list_widget.focus then --make sure we force the hover text to appear on the default focused item
 				list_widget:OnGainFocus()
@@ -461,34 +398,6 @@ function UpdateSkinGrid(context, list_widget, data, data_index)
 	end
 end
 
-local function GetLexicalSortLiteral(item_key)
-    return GetSortCategoryForItem(item_key)..GetSkinName(item_key)..item_key
-end
-
--- Compare two keys from an item table for sorting purposes. Requires the item
--- table they come from (i.e., MISC_ITEMS) since that data is not always
--- contained within items.
-function CompareItemDataForSort(item_key_a, item_key_b, item_table)
-    if item_key_a == item_key_b then 
-        return false
-    elseif item_table[item_key_a].release_group == item_table[item_key_b].release_group then 
-        return GetLexicalSortLiteral(item_key_a) < GetLexicalSortLiteral(item_key_b)
-    else 
-        return CompareReleaseGroup(item_table[item_key_a], item_table[item_key_b])
-    end
-end
-
-function GetInventoryTimestamp()
-	local templist = TheInventory:GetFullInventory()
-	local timestamp = 0
-	for _,v in ipairs(templist) do
-		if v.modified_time > timestamp then
-			timestamp = v.modified_time
-		end
-	end
-	return timestamp
-end
-
 function GetSortedSkinsList()
 	local templist = TheInventory:GetFullInventory()
 	local skins_list = {}
@@ -498,7 +407,6 @@ function GetSortedSkinsList()
 	{
 		oddment = {},
 		emote = {},
-		emoji = {},
 		feet = {},
 		hand = {},
 		body = {},
@@ -507,10 +415,6 @@ function GetSortedSkinsList()
 		item = {},
 		misc = {},
 		mysterybox = {},
-		purchase = {},
-		loading = {},
-		playerportrait = {},
-		profileflair = {},
 		unknown = {},
 	}
 
@@ -544,63 +448,38 @@ function GetSortedSkinsList()
 							if a.item == b.item then 
 								return a.timestamp > b.timestamp
 							else
-								return GetLexicalSortLiteral(a.item) < GetLexicalSortLiteral(b.item)
+								return GetSortCategoryForItem(a.item)..GetName(a.item)..a.item < GetSortCategoryForItem(b.item)..GetName(b.item)..b.item
 							end
 						else 
-							return CompareReleaseGroup(a,b)
+							return CompareRarities(a,b)
 						end
 					end
+	table.sort(listoflists.feet, compare)
 
-	for name,list in pairs(listoflists) do
-		table.sort(list, compare)
-	end
+	table.sort(listoflists.hand, compare)
+	table.sort(listoflists.body, compare)
+	table.sort(listoflists.legs, compare)
+	table.sort(listoflists.base, compare)
+	table.sort(listoflists.item, compare)
+	table.sort(listoflists.emote, compare)
+	table.sort(listoflists.oddment, compare)
+	table.sort(listoflists.misc, compare)
+	table.sort(listoflists.mysterybox, compare)
+	table.sort(listoflists.unknown, compare)
 
-	-- These must be inserted sequentially to ensure a specific order. Don't
-	-- trust lua table iteration order!
 	skins_list = JoinArrays(skins_list, listoflists.oddment)
 	skins_list = JoinArrays(skins_list, listoflists.emote)
-	skins_list = JoinArrays(skins_list, listoflists.emoji)
 	skins_list = JoinArrays(skins_list, listoflists.mysterybox)
-	skins_list = JoinArrays(skins_list, listoflists.purchase)
 	skins_list = JoinArrays(skins_list, listoflists.item)
 	skins_list = JoinArrays(skins_list, listoflists.base)
 	skins_list = JoinArrays(skins_list, listoflists.body)
 	skins_list = JoinArrays(skins_list, listoflists.hand)
 	skins_list = JoinArrays(skins_list, listoflists.legs)
 	skins_list = JoinArrays(skins_list, listoflists.feet)
-	skins_list = JoinArrays(skins_list, listoflists.loader)
-	skins_list = JoinArrays(skins_list, listoflists.playerportrait)
-	skins_list = JoinArrays(skins_list, listoflists.profileflair)
 	skins_list = JoinArrays(skins_list, listoflists.misc)
 	skins_list = JoinArrays(skins_list, listoflists.unknown)
 
 	return skins_list, timestamp
-end
-
-function GetOwnedItemCounts()
-    local item_counts = {}
-    local inventory_list = TheInventory:GetFullInventory()
-    for i,inv_item in ipairs(inventory_list) do
-        local key = inv_item.item_type
-        if item_counts[key] then
-            item_counts[key] = item_counts[key] + 1
-        else
-            item_counts[key] = 1
-        end
-    end
-    return item_counts
-end
-
-
--- Get the item_id for the first item player owns matching the input key. Items
--- are fungible, so the first one is good enough.
-function GetFirstOwnedItemId(item_key)
-    local inventory_list = TheInventory:GetFullInventory()
-    for k,v in ipairs(inventory_list) do
-        if item_key == v.item_type then
-            return v.item_id
-        end
-    end
 end
 
 
@@ -621,306 +500,38 @@ end
 
 local SKIN_SET_ITEMS = require("skin_set_info")
 function IsItemInCollection(item_type)
-	for bonus_item,input_sets in pairs(SKIN_SET_ITEMS) do
+	for bonus_item,input_items in pairs(SKIN_SET_ITEMS) do
 		if bonus_item == item_type then
-			return true, bonus_item
+			return true
 		end
-		for _,item_set in pairs(input_sets) do
-			for _,input_item in pairs(item_set) do
-				if input_item == item_type then
-					return true, bonus_item
-				end
+		for _,input_item in pairs(input_items[1]) do
+			if input_item == item_type then
+				return true
 			end
 		end
 	end
-	return false, nil
+	return false
 end
 function IsItemIsReward(item_type)
-	for bonus_item,_ in pairs(SKIN_SET_ITEMS) do
+	for bonus_item,input_items in pairs(SKIN_SET_ITEMS) do
 		if bonus_item == item_type then
 			return true
 		end
 	end
 	return false
 end
-
-
-
-local PURCHASE_INFO = require("skin_purchase_packs")
-function GetPackForItem(item_key)
-    return PURCHASE_INFO.CONTENTS[item_key]
-end
-
-function OwnsSkinPack(item_key)
-	for _,v in pairs(PURCHASE_INFO.PACKS[item_key]) do
-		if not TheInventory:CheckOwnership(v) then
-			return false
+function GetSkinSetData(item_type)
+	for bonus_item,input_items in pairs(SKIN_SET_ITEMS) do
+		local item_pos = 0
+		local set_count = 0
+		for _,input_item in pairs(input_items[1]) do
+			set_count = set_count + 1
+			if input_item == item_type then
+				item_pos = set_count
+			end
+		end
+		if item_pos > 0 then
+			return item_pos,set_count,bonus_item
 		end
 	end
-
-	return true
 end
-
-function GetTotalItemCollectionCompletion()
-    local num_owned = 0
-    local num_need = 0
-    for i,item_category in ipairs(GetAllItemCategories()) do
-        for item_key,item_blob in pairs(item_category) do
-            if TheInventory:CheckOwnership(item_key) then
-                num_owned = num_owned + 1
-            else
-                num_need = num_need + 1
-            end
-        end
-    end
-    return num_owned, num_need
-end
-
-local SKIN_AFFINITY_INFO = require("skin_affinity_info")
-function GetSkinCollectionCompletionForHero(herocharacter)
-    assert(herocharacter)
-    local num_owned = 0
-    local num_need = 0
-    for i,item_key in ipairs(SKIN_AFFINITY_INFO[herocharacter] or {}) do
-        if TheInventory:CheckOwnership(item_key) then
-            num_owned = num_owned + 1
-        else
-            num_need = num_need + 1
-        end
-    end
-    return num_owned, num_need
-end
-
-function GetAffinityFilterForHero(herocharacter)
-    local function AffinityFilter(item_key)
-        return table.contains(SKIN_AFFINITY_INFO[herocharacter], item_key)
-    end
-    return AffinityFilter
-end
-
-function GetLockedSkinFilter()
-    local function LockedFilter(item_key)
-        return TheInventory:CheckOwnership(item_key)
-    end
-    return LockedFilter
-end
-
-function GetMysteryBoxCounts()
-	local templist = TheInventory:GetFullInventory()
-	
-	local box_counts = {}
-	for _,item_info in pairs(templist) do
-		local item_type = item_info.item_type
-		if GetTypeForItem(item_type) == "mysterybox" then
-			if box_counts[item_type] == nil then
-				box_counts[item_type] = 1
-			else
-				box_counts[item_type] = box_counts[item_type] + 1
-			end			
-		end
-	end
-		
-	return box_counts
-end
-
-function GetTotalMysteryBoxCount()
-	local templist = TheInventory:GetFullInventory()
-	
-	local box_count = 0
-	for _,item_info in pairs(templist) do
-		local item_type = item_info.item_type
-		if GetTypeForItem(item_type) == "mysterybox" then
-			box_count = box_count + 1
-		end
-	end
-		
-	return box_count
-end
-
-function GetMysteryBoxItemID(item_type)
-	local templist = TheInventory:GetFullInventory()
-	
-	for _,item_info in pairs(templist) do
-		if item_info.item_type == item_type then
-			return item_info.item_id
-		end
-	end
-	
-	return 0
-end
-
-function IsAnyItemNew(user_profile)
-	local collection_timestamp = user_profile and user_profile:GetCollectionTimestamp() or -10000
-	return collection_timestamp < GetInventoryTimestamp()
-end
-
-function ShouldDisplayItemInCollection(item_type)
-	local rarity = GetRarityForItem(item_type)
-	if rarity == "Event" or rarity == "ProofOfPurchase" or rarity == "Loyal" or rarity == "Timeless" then
-		return TheInventory:CheckOwnership(item_type)
-	end
-	return not ITEM_DISPLAY_BLACKLIST[item_type]
-end
-
-local function IsDefaultCharacterSkin(item_key)
-    return item_key:find("_none",-5,true) == nil
-end
-
--- Returns a table similar to MISC_ITEMS, but with character heads (skin
--- bases).
-function GetCharacterSkinBases(hero)
-    local matches = {}
-    local skins = PREFAB_SKINS[hero]
-    for i,item_key in ipairs(skins) do
-        -- We could allow default character skins (so you can pick them), but
-        -- they're not currently account items. If we did that, we'd want the
-        -- same for all vanity item types!
-        if not IsGameplayItem(item_key) and IsDefaultCharacterSkin(item_key) then
-            matches[item_key] = Prefabs[item_key]
-        end
-    end
-    return matches
-end
-
--- Returns a table similar to MISC_ITEMS, but with gameplay items
--- (items used in-game like item skins but not character skins).
-function GetAllGameplayItems()
-    local matches = {}
-    for prefab,skins in pairs(PREFAB_SKINS) do
-        for i,item_key in ipairs(skins) do
-            if IsGameplayItem(item_key) then
-                matches[item_key] = Prefabs[item_key]
-            end
-        end
-    end
-    
-    return matches
-end
-
-function GetAllMiscItemsOfType(item_type)
-    local matches = {}
-    for item_key,item_blob in pairs(MISC_ITEMS) do
-        if item_blob.type == item_type then
-            matches[item_key] = item_blob
-        end
-    end
-    return matches
-end
-
-function ValidateItemsInProfile(user_profile)
-    if TheInventory:HasDownloadedInventory() then
-        -- We know whether they own something.
-        for i,item_type in ipairs(user_profile:GetStoredCustomizationItemTypes()) do
-            for item_key,is_active in pairs(user_profile:GetCustomizationItemsForType(item_type)) do
-                if not TheInventory:CheckOwnership(item_key) then
-                    -- A user who sells/trades an item on the marketplace needs
-                    -- to have it locally revoked.
-                    user_profile:SetCustomizationItemState(item_type, item_key, false)
-                end
-            end
-        end
-    end
-end
-
--- We must cache vanity items before they can be used (caching pushes to c-code
--- which pushes to server).
-function CacheCurrentVanityItems(user_profile)
-    local all_vanity = {}
-    for i,item_type in ipairs({"playerportrait", "profileflair"}) do
-        for item_key,is_active in pairs(user_profile:GetCustomizationItemsForType(item_type)) do
-            if is_active then
-                table.insert(all_vanity, item_key)
-            end
-        end
-    end
-    TheInventory:SetLocalVanityItems(all_vanity)
-end
-
-function GetRemotePlayerVanityItem(active_cosmetics, item_type)
-    -- Instead of GetTypeForItem (which loops over everything), we get the
-    -- types we want and find a match.
-    local all_items_of_type = GetAllMiscItemsOfType(item_type)
-    for i,item_key in ipairs(active_cosmetics) do
-        if all_items_of_type[item_key] then
-            return item_key
-        end
-    end
-end
-
-function GetSkinsDataFromClientTableData(data)
-    local clothing =
-    {
-        body = data.body_skin,
-        hand = data.hand_skin,
-        legs = data.legs_skin,
-        feet = data.feet_skin,
-    }
-    local playerportrait = GetRemotePlayerVanityItem(data.vanity or {}, "playerportrait")
-    local profileflair = GetRemotePlayerVanityItem(data.vanity or {}, "profileflair")
-    return data.base_skin, clothing, playerportrait, profileflair, data.eventlevel
-end
-
-function BuildListOfSelectedItems(user_profile, item_type)
-    local all_image_keys = user_profile:GetCustomizationItemsForType(item_type)
-    local image_keys = {}
-    for item_key,is_active in pairs(all_image_keys) do
-        if is_active and TheInventory:CheckOwnership(item_key) then
-            table.insert(image_keys, item_key)
-        end
-    end
-    table.sort(image_keys)
-    return image_keys
-end
-
-function GetMostRecentlySelectedItem(user_profile, item_type)
-    return user_profile:GetCustomizationItemState(item_type, "last_item_key")
-end
-
-local function GetOneAtlasPerImage_pkgref(atlas_fmt, item_key)
-    return atlas_fmt:format(item_key, "xml"), atlas_fmt:format(item_key, "tex")
-end
-
-local function GetOneAtlasPerImage_tex(atlas_fmt, item_key, defaults)
-    return atlas_fmt:format(item_key, "xml"), item_key ..".tex"
-end
-
-local LOADER_ATLAS_FMT = "images/bg_loading_%s.%s"
-function GetLoaderAtlasAndTexPkgref(item_key)
-    return GetOneAtlasPerImage_pkgref(LOADER_ATLAS_FMT, item_key)
-end
-function GetLoaderAtlasAndTex(item_key)
-    local atlas, tex = GetOneAtlasPerImage_tex(LOADER_ATLAS_FMT, item_key)
-    if softresolvefilepath(atlas) then 
-        return atlas, tex
-    else
-        -- The selected loader doesn't exist! Use a simple spiral instead of
-        -- crashing.
-        return "images/bg_spiral.xml", "bg_spiral.tex"
-    end
-end
-
-function GetProfileFlairAtlasAndTex(item_key)
-    local PROFILEFLAIR_ATLAS = "images/profileflair.xml"
-    local PROFILEFLAIR_DEFAULT = "profileflair_none.tex"
-    if item_key then
-        return PROFILEFLAIR_ATLAS, item_key ..".tex", PROFILEFLAIR_DEFAULT
-    else
-        return PROFILEFLAIR_ATLAS, PROFILEFLAIR_DEFAULT
-    end
-end
-
-local PLAYER_PORTRAIT_ATLAS_FMT = "images/playerportrait_%s.%s"
-function GetPlayerPortraitAtlasAndTexPkgref(item_key)
-    return GetOneAtlasPerImage_pkgref(PLAYER_PORTRAIT_ATLAS_FMT, item_key)
-end
-function GetPlayerPortraitAtlasAndTex(item_key)
-    local DEFAULT_BACKGROUND = "playerportrait_bg_none"
-    local atlas, tex = GetOneAtlasPerImage_tex(PLAYER_PORTRAIT_ATLAS_FMT, item_key or DEFAULT_BACKGROUND)
-    if softresolvefilepath(atlas) then 
-        return atlas, tex
-    else
-        -- item_key was nil or not a real file.
-        return GetOneAtlasPerImage_tex(PLAYER_PORTRAIT_ATLAS_FMT, DEFAULT_BACKGROUND)
-    end
-end
-

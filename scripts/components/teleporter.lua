@@ -168,14 +168,14 @@ local function onitemarrive(inst, self, item)
             if item.Physics ~= nil then
                 item.Physics:Stop()
                 if item:IsAsleep() then
-                    local radius = inst:GetPhysicsRadius(0) + math.random()
+                    local radius = inst.Physics:GetRadius() + math.random() * 1.0
                     item.Physics:Teleport(
                         x + math.cos(angle) * radius,
                         0,
                         z - math.sin(angle) * radius)
                 else
                     local bounce = item.components.inventoryitem ~= nil and not item.components.inventoryitem.nobounce
-                    local speed = (bounce and 3 or 4) + math.random() * .5 + inst:GetPhysicsRadius(0)
+                    local speed = (bounce and 3 or 4) + math.random() * .5 + inst.Physics:GetRadius()
                     item.Physics:Teleport(x, 0, z)
                     item.Physics:SetVel(
                         speed * math.cos(angle),

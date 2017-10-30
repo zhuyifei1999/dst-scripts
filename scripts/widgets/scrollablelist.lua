@@ -145,65 +145,6 @@ local ScrollableList = Class(Widget, function(self, items, listwidth, listheight
     self:RefreshView()
 end)
 
-function ScrollableList:DebugDraw_AddSection(dbui, panel)
-    ScrollableList._base.DebugDraw_AddSection(self, dbui, panel)
-
-    dbui.Spacing()
-    dbui.Text("ScrollableList")
-    dbui.Indent() do
-        local step, step_fast = 1, 5
-        local has_modified_x, out_x = dbui.InputFloat("width", self.width, step, step_fast)
-        if has_modified_x then
-            self.width = out_x
-        end
-        local has_modified_y, out_y = dbui.InputFloat("height", self.height, step, step_fast)
-        if has_modified_y then
-            self.height = out_y
-        end
-        local has_modified_height, out_height = dbui.InputFloat("item_height", self.item_height, step, step_fast)
-        if has_modified_height then
-            self.item_height = out_height
-        end
-        local has_modified_padding, out_padding = dbui.InputFloat("item_padding", self.item_padding, step, step_fast)
-        if has_modified_padding then
-            self.item_padding = out_padding
-        end
-        local has_modified_offset, out_offset = dbui.InputFloat("x_offset", self.x_offset, step, step_fast)
-        if has_modified_offset then
-            self.x_offset = out_offset
-        end
-        local has_modified_initialy, out_initialy = dbui.InputFloat("yInitial", self.yInitial, step, step_fast)
-        if has_modified_initialy then
-            self.yInitial = out_initialy
-        end
-        local has_modified_show, out_show = dbui.Checkbox("always_show_static_widgets", self.always_show_static_widgets)
-        if has_modified_show then
-            self.always_show_static_widgets = out_show
-        end
-        dbui.Value("focused_index", self.focused_index)
-        dbui.Checkbox("focus_children", self.focus_children)
-        dbui.Value("#items", #self.items)
-        --~ local item_names = {}
-        --~ for i,val in ipairs(self.items) do
-        --~     table.insert(item_names, tostring(val))
-        --~ end
-        --~ dbui.ListBox("items", item_names)
-
-        if has_modified_x or has_modified_y or has_modified_height or has_modified_padding or has_modified_offset or has_modified_initialy or has_modified_show then
-            -- Resize commands copied from ctor
-            self.bg:ScaleToSize(self.width, self.height)
-            self.up_button:SetPosition(self.width/2, self.height/2-10, 0)
-            self.down_button:SetPosition(self.width/2, -self.height/2+10, 0)
-            self.scroll_bar_line:SetPosition(self.width/2, 0)
-            self.scroll_bar:SetPosition(self.width/2, 0)
-
-            self:LayOutStaticWidgets(self.yInitial)
-            self:RefreshView(true)
-        end
-    end
-    dbui.Unindent()
-end
-
 function ScrollableList:OnControl(control, down, force)
     if ScrollableList._base.OnControl(self, control, down) then return true end
 

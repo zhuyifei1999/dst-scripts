@@ -336,8 +336,10 @@ end
 
 local function GemmedOnLoadPostPass(inst)
     local keeper = inst.components.entitytracker:GetEntity("keeper")
-    if keeper ~= nil and keeper.components.commander ~= nil then
-        keeper.components.commander:AddSoldier(inst)
+    if keeper ~= nil then
+        if keeper.components.commander ~= nil then
+            keeper.components.commander:AddSoldier(inst)
+        end
     end
 end
 

@@ -155,7 +155,7 @@ end
 local function OnFuelSectionChange(new, old, inst)
     if inst._fuellevel ~= new then
         inst._fuellevel = new
-        inst.AnimState:OverrideSymbol("swap_meter", "firefighter_meter", tostring(new))
+        inst.AnimState:OverrideSymbol("swap_meter", "firefighter_meter", new)
     end
 end
 
@@ -287,7 +287,7 @@ local function fn()
     inst.AnimState:SetBank("firefighter")
     inst.AnimState:SetBuild("firefighter")
     inst.AnimState:PlayAnimation("idle_off")
-    inst.AnimState:OverrideSymbol("swap_meter", "firefighter_meter", "10")
+    inst.AnimState:OverrideSymbol("swap_meter", "firefighter_meter", 10)
 
     inst:AddTag("hasemergencymode")
     inst:AddTag("structure")

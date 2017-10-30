@@ -142,7 +142,7 @@ local function DoSpawn(inst, self)
                 local z1 = pos.z + offset.z
                 local collisions = TheSim:FindEntities(x1, 0, z1, 4, nil, { "INLIMBO" })
                 for i, v in ipairs(collisions) do
-                    local r = v:GetPhysicsRadius(0) + 1
+                    local r = v.Physics ~= nil and v.Physics:GetRadius() + 1 or 1
                     if v:GetDistanceSqToPoint(x1, 0, z1) < r * r then
                         offset = nil
                         break

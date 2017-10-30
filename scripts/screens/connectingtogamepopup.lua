@@ -18,8 +18,8 @@ local ConnectingToGamePopup = Class(Screen, function(self)
     self.black:SetVAnchor(ANCHOR_MIDDLE)
     self.black:SetHAnchor(ANCHOR_MIDDLE)
     self.black:SetScaleMode(SCALEMODE_FILLSCREEN)
-	self.black:SetTint(0,0,0,.75)
-
+	self.black:SetTint(0,0,0,.75)	
+    
 	self.proot = self:AddChild(Widget("ROOT"))
     self.proot:SetVAnchor(ANCHOR_MIDDLE)
     self.proot:SetHAnchor(ANCHOR_MIDDLE)
@@ -31,7 +31,7 @@ local ConnectingToGamePopup = Class(Screen, function(self)
     self.bg.fill = self.proot:AddChild(Image("images/fepanel_fills.xml", "panel_fill_tiny.tex"))
 	self.bg.fill:SetScale(.54, .45)
 	self.bg.fill:SetPosition(6, 8)
-
+		
 	--title	
 	local title = ""
     self.title = self.proot:AddChild(Text(TITLEFONT, 50))
@@ -47,12 +47,12 @@ local ConnectingToGamePopup = Class(Screen, function(self)
     -- self.text:SetRegionSize(140, 100)
 	self.text:SetHAlign(ANCHOR_LEFT)
 	self.text:SetColour(0,0,0,1)
-
+  
     local spacing = 165
-    local buttons =
+    local buttons = 
     {
 		{text=STRINGS.UI.NOAUTHENTICATIONSCREEN.CANCELBUTTON, cb = function() 
-            self:OnCancel()
+            self:OnCancel()            
         end},
     }
 	self.menu = self.proot:AddChild(Menu(buttons, spacing, true))
@@ -75,7 +75,7 @@ function ConnectingToGamePopup:OnUpdate( dt )
 	    if self.progress > 3 then
 	        self.progress = 1
 	    end
-
+	    
 	    local text = STRINGS.UI.NOTIFICATION.CONNECTING
 	    for k = 1, self.progress, 1 do
 	        text = text .. "."
@@ -87,9 +87,9 @@ end
 
 function ConnectingToGamePopup:OnControl(control, down)
     if ConnectingToGamePopup._base.OnControl(self,control, down) then 
-        return true
+        return true 
     end
-
+    
     if control == CONTROL_CANCEL and not down then    
         self:OnCancel()
     end
@@ -102,9 +102,8 @@ function ConnectingToGamePopup:OnCancel()
     -- "This might be problematic for when in-game?"
     -- V2C: Oh i see. =) this comment must have been
     --      for shard migration.
-    TheNet:JoinServerResponse(true) -- cancel join
     TheNet:Disconnect(false)
-    TheFrontEnd:PopScreen()
+	TheFrontEnd:PopScreen()
 
     TheSystemService:StopDedicatedServers() -- just in case, we need to closes the server if the player cancel the connection
 

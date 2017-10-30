@@ -21,36 +21,35 @@ function Text:__tostring()
     return string.format("%s - %s", self.name, self.string or "")
 end
 
-function Text:DebugDraw_AddSection(dbui, panel)
-    Text._base.DebugDraw_AddSection(self, dbui, panel)
-    local DebugPickers = require("dbui_no_package/debug_pickers")
+function Text:DebugDraw_AddSection(dbui)
+    Text._base.DebugDraw_AddSection(self, dbui)
 
-    dbui.Spacing()
-    dbui.Text("Text")
-    dbui.Indent() do
-        local changed, text = dbui.InputText("string", self:GetString())
-        if changed then
-            self:SetString(text)
-        end
+    local changed, text = dbui.InputText("string", self:GetString())
+    if changed then
+        self:SetString(text)
+    end
 
-        local region_x,region_y = self.inst.TextWidget:GetRegionSize()
-        changed, region_x,region_y = dbui.DragFloat3("region size", region_x,region_y, 100, 1, 1000, "%.f")
-        if changed then
-            self:SetRegionSize(region_x,region_y)
-        end
+    local changed, size = dbui.DragInt("font size", self.size, 1, 10, 150, "%.f")
+    if changed then
+        self:SetSize(size)
+    end
+    local changed, r,g,b,a = dbui.ColorEdit4("colour", unpack(self.colour))
+    if changed then
+        self:SetColour(r, g, b, a)
+    end
 
-        local colour = DebugPickers.Colour(dbui, "colour", self.colour)
-        if colour then
-            self:SetColour(colour)
-        end
-
-        local face, size = DebugPickers.Font(dbui, "", self.font, self.size)
-        if face then
-            self:SetFont(face)
-            self:SetSize(size)
+    local current_font_idx = 1
+    local available_fonts = {}
+    for i,font in ipairs(FONTS) do
+        table.insert(available_fonts, font.alias)
+        if font.alias == self.font then
+            current_font_idx = i
         end
     end
-    dbui.Unindent()
+    local changed, font_idx = dbui.ListBox("font", available_fonts, current_font_idx, 3)
+    if changed then
+        self:SetFont(available_fonts[font_idx])
+    end
 end
 
 function Text:SetColour(r, g, b, a)

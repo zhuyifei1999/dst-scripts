@@ -220,7 +220,7 @@ function LootDropper:FlingItem(loot, pt, bouncedcb)
             local angle = math.random() * 2 * PI
             local speed = math.random() * 2
             if loot:IsAsleep() then
-                local radius = .5 * speed + (self.inst.Physics ~= nil and loot:GetPhysicsRadius(1) + self.inst:GetPhysicsRadius(1) or 0)
+                local radius = .5 * speed + (self.inst ~= nil and self.inst.Physics ~= nil and (loot.Physics:GetRadius() or 1) + (self.inst.Physics:GetRadius() or 1) or 0)
                 loot.Transform:SetPosition(
                     pt.x + math.cos(angle) * radius,
                     0,
@@ -232,7 +232,7 @@ function LootDropper:FlingItem(loot, pt, bouncedcb)
                 loot.Physics:SetVel(speed * math.cos(angle), GetRandomWithVariance(8, 4), speed * math.sin(angle))
 
                 if self.inst ~= nil and self.inst.Physics ~= nil then
-                    local radius = loot:GetPhysicsRadius(1) + self.inst:GetPhysicsRadius(1)
+                    local radius = (loot.Physics:GetRadius() or 1) + (self.inst.Physics:GetRadius() or 1)
                     loot.Transform:SetPosition(
                         pt.x + math.cos(angle) * radius,
                         pt.y,

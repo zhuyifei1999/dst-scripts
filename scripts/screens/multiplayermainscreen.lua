@@ -4,7 +4,6 @@ local AnimButton = require "widgets/animbutton"
 local ImageButton = require "widgets/imagebutton"
 local Menu = require "widgets/menu"
 local Text = require "widgets/text"
-local ShadowedText = require "widgets/redux/shadowedtext"
 local Image = require "widgets/image"
 local UIAnim = require "widgets/uianim"
 local Widget = require "widgets/widget"
@@ -363,7 +362,7 @@ function MultiplayerMainScreen:UpdatePuppets()
 		if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
 			local halloween_baseskins = {wilson="wilson_pigguard", willow="willow_dragonfly", wolfgang="wolfgang_walrus", wendy="wendy_lureplant", 
 										wx78="wx78_rhinorook", wickerbottom="wickerbottom_lightninggoat", woodie="woodie_treeguard", wes="wes_mandrake", 
-										waxwell="waxwell_krampus", wathgrithr="wathgrithr_deerclops", webber="webber_bat" }
+										waxwell="waxwell_krampus", wathgrithr="wathgrithr_deerclops", webber="webber_bat", winona="winona_grassgecko" }
 
 			local data = (players[i] and table.contains(DST_CHARACTERLIST, players[i].prefab)) and players[i] or { prefab=DST_CHARACTERLIST[math.random(#DST_CHARACTERLIST)], name="" }
 			data.base_skin = halloween_baseskins[data.prefab]
@@ -540,7 +539,6 @@ function MultiplayerMainScreen:OnQuickJoinServersButton()
     self.leaving = true
 
     TheFrontEnd:PushScreen(QuickJoinScreen(self, self.offline, self.session_data, 
-		"",
 		CalcQuickJoinServerScore,
 		function() self:OnCreateServerButton() end,
 		function() self:OnBrowseServersButton() end))
@@ -694,6 +692,7 @@ function MultiplayerMainScreen:MakeMainMenu()
             TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
             btn.image:Show()
             self.tooltip:SetString(tooltip)
+            self.tooltip_shadow:SetString(tooltip)
             
             self.updatename_root:CancelMoveTo()
 			self.updatename_root:SetPosition( self.updatename_root_off )
@@ -711,6 +710,7 @@ function MultiplayerMainScreen:MakeMainMenu()
             btn.image:Hide()
             if not self.menu.focus then
                 self.tooltip:SetString("")
+                self.tooltip_shadow:SetString("")
 				self.updatename_root:MoveTo( self.updatename_root_off, self.updatename_root_on, .5 )
             end
         end
@@ -764,7 +764,16 @@ function MultiplayerMainScreen:MakeMainMenu()
     self.menu = self.fixed_root:AddChild(Menu(menu_items, 43, nil, nil, true))
     self.menu:SetPosition(menuX, menuY)
 
-    self.tooltip = self.root:AddChild(TEMPLATES.ScreenTooltip())
+    self.tooltip_shadow = self.fixed_root:AddChild(Text(NEWFONT, 30))
+    self.tooltip = self.fixed_root:AddChild(Text(NEWFONT, 30))
+    self.tooltip_shadow:SetHAlign(ANCHOR_LEFT)
+    self.tooltip_shadow:SetRegionSize(800,45)
+    self.tooltip:SetHAlign(ANCHOR_LEFT)
+    self.tooltip:SetRegionSize(800,45)
+    self.tooltip_shadow:SetColour(.1,.1,.1,1)
+    local tooltipX = menuX+310
+    self.tooltip:SetPosition(tooltipX, -(RESOLUTION_Y*.5)+57, 0)
+    self.tooltip_shadow:SetPosition(tooltipX+2, -(RESOLUTION_Y * .5) + 57-2, 0)
 
     -- For Debugging/Testing
     local debug_menu_items = {}
@@ -892,7 +901,20 @@ function MultiplayerMainScreen:OnBecomeActive()
         self:Show()
     end
 
-	self.menu:RestoreFocusTo(self.last_focus_widget)
+	self.menu:Enable()
+    local found = false
+    for i,v in pairs(self.menu.items) do
+        if v ~= self.last_focus_widget then
+            v:OnLoseFocus()
+        else
+            found = true
+            v:SetFocus()
+        end
+    end
+
+    if not found then
+	   self.menu:SetFocus(#self.menu.items)
+    end
 
     if self.debug_menu then self.debug_menu:Enable() end
 

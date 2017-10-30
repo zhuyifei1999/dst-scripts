@@ -203,27 +203,32 @@ function Spawner:ReleaseChild()
             self.inst:RemoveChild(self.child)
             self.child:ReturnToScene()
 
-            local rad = .5 + self.inst:GetPhysicsRadius(0) + self.child:GetPhysicsRadius(0)
-            local x, y, z = self.inst.Transform:GetWorldPosition()
+            local rad = 0.5
+                + (self.inst.Physics ~= nil and self.inst.Physics:GetRadius() or 0)
+                + (self.child.Physics ~= nil and self.child.Physics:GetRadius() or 0)
+
+            local pos = self.inst:GetPosition()
             local start_angle = math.random() * 2 * PI
 
-            local offset = FindWalkableOffset(Vector3(x, 0, z), start_angle, rad, 8, false, true, NoHoles)
+            local offset = FindWalkableOffset(pos, start_angle, rad, 8, false, true, NoHoles)
             if offset == nil then
                 -- well it's gotta go somewhere!
                 --print(self.inst, "Spawner:ReleaseChild() no good place to spawn child: ", self.child)
-                x = x + rad * math.cos(start_angle)
-                z = z - rad * math.sin(start_angle)
+                pos.x = pos.x + rad * math.cos(start_angle)
+                pos.y = 0
+                pos.z = pos.z - rad * math.sin(start_angle)
             else
                 --print(self.inst, "Spawner:ReleaseChild() safe spawn of: ", self.child)
-                x = x + offset.x
-                z = z + offset.z
+                pos.x = pos.x + offset.x
+                pos.y = 0
+                pos.z = pos.z + offset.z
             end
 
             self:TakeOwnership(self.child)
             if self.child.Physics ~= nil then
-                self.child.Physics:Teleport(x, 0, z)
+                self.child.Physics:Teleport(pos:Get())
             else
-                self.child.Transform:SetPosition(x, 0, z)
+                self.child.Transform:SetPosition(pos:Get())
             end
 
             if self.onvacate ~= nil then

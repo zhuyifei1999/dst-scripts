@@ -109,10 +109,6 @@ return {
         {
             EMPTY = "Wolfgang has no little things to wrap!",
         },
-        PICKUP =
-        {
-            RESTRICTION = "That is not mighty weapon!",
-        },
     },
     ACTIONFAIL_GENERIC = "I am not mighty enough to do that.",
     ANNOUNCE_DIG_DISEASE_WARNING = "Ha! Dirt spoon fix it!",
@@ -241,12 +237,6 @@ return {
     ANNOUNCE_NOMOUNTEDGIFT = "Wolfgang will fall if try to open on top of hair cow!",
     ANNOUNCE_NOWARDROBEONFIRE = "Ehh, Wolfgang do that later...",
     ANNOUNCE_WORMS = "Earth is tremble beneath Wolfgang's mighty feet!",
-
---boarlord event
-    ANNOUNCE_REVIVING_CORPSE = "Up now, friend!",
-    ANNOUNCE_REVIVED_OTHER_CORPSE = "Go! Fight many things!",
-    ANNOUNCE_REVIVED_FROM_CORPSE = "Thank-you, friend!",
-    
     BATTLECRY =
     {
         GENERIC = "I will punch you!",
@@ -382,7 +372,7 @@ return {
             ATTACKER = "%s is breaking things!",
             MURDERER = "%s broke our friend!",
             REVIVER = "%s is kind lady.",
-            GHOST = "Wolfgang will fix little %s with heart.",
+            GHOST = "Wolfgang will fix %s with heart.",
             FIRESTARTER = "%s's fires is make Wolfgang nervous.",
         },
 
@@ -1860,6 +1850,15 @@ return {
         TRINKET_35 = "Little potion make Wolfgang mighty?", --Empty Elixir
         TRINKET_36 = "Gah! Do not scare Wolfgang!", --Faux Fangs
         TRINKET_37 = "Stab-stick is useless now.", --Broken Stake
+        TRINKET_38 = "Is making tiny friends look tinier!", -- Binoculars Griftlands trinket
+        TRINKET_39 = "Is just one glove.", -- Lone Glove Griftlands trinket
+        TRINKET_40 = "Wolfgang has no use for tiny garbage.", -- Snail Scale Griftlands trinket
+        TRINKET_41 = "Wolfgang will crush it!", -- Goop Canister Hot Lava trinket
+        TRINKET_42 = "Is tiny scary thing.", -- Toy Cobra Hot Lava trinket
+        TRINKET_43 = "Is tiny toy monster.", -- Crocodile Toy Hot Lava trinket
+        TRINKET_44 = "Is very broke.", -- Broken Terrarium ONI trinket
+        TRINKET_45 = "Wolfgang can barely hear this.", -- Odd Radio ONI trinket
+        TRINKET_46 = "Is useless thing, I think.", -- Hairdryer ONI trinket
 
         HALLOWEENCANDY_1 = "Wolfgang eat many bushels!",
         HALLOWEENCANDY_2 = "Little corns get stuck in Wolfgang's mighty moustache!",
@@ -1872,6 +1871,9 @@ return {
         HALLOWEENCANDY_9 = "Is look yucky, but taste okay.",
         HALLOWEENCANDY_10 = "Is tasty little treat!",
         HALLOWEENCANDY_11 = "Little men of chocolate stand no chance against Wolfgang!",
+        HALLOWEENCANDY_12 = "Is gross little candy bugs!", --ONI meal lice candy
+        HALLOWEENCANDY_13 = "Hard candy is strong like Wolfgang!", --Griftlands themed candy
+        HALLOWEENCANDY_14 = "Is too hot for Wolfgang!!", --Hot Lava pepper candy
         CANDYBAG = "Is little bag for scary goodies!",
 
         DRAGONHEADHAT = "Wolfgang will be mighty beast!",
@@ -2033,54 +2035,6 @@ return {
         },
         ATRIUM_KEY = "Little key is for make door.",
         LIFEINJECTOR = "EeeeEEeeEEE!!",
-
-        --Arena Event
-        LAVAARENA_BOARLORD = "Is important-looking man.",
-        BOARRIOR = "Large pig man cannot out-muscle Wolfgang!",
-        BOARON = "Tiny pig cannot hurt Wolfgang.",
-        PEGHOOK = "Wolfgang will beat you with fists!",
-        TRAILS = "Wolfgang is stronger than you!",
-        TURTILLUS = "Armor is for tiny men!",
-        SNAPPER = "I will smush lizard man!",
-        
-        LAVAARENA_PORTAL = 
-        {
-            ON = "Goodbye, puny fire world!",
-            GENERIC = "Is how Wolfgang got here.",
-        },
-        LAVAARENA_KEYHOLE = "Nothing here.",
-        LAVAARENA_KEYHOLE_FULL = "Is ready now.",
-        LAVAARENA_BATTLESTANDARD = "We must all smash little flag!",
-        LAVAARENA_SPAWNER = "Little circle! Give me many things to fight!",
-
-        HEALINGSTAFF = "Wolfgang cannot fight with twig.",
-        FIREBALLSTAFF = "Puny stick is not for Wolfgang.",
-        HAMMER_MJOLNIR = "Wolfgang is ready for high striker!",
-        SPEAR_GUNGNIR = "Wolfgang will stab many foes!",
-        BLOWDART_LAVA = "Wolfgang does not fight from afar.",
-        BLOWDART_LAVA2 = "Wolfgang will not use wimpy weapon.",
-        LAVAARENA_LUCY = "Is beard's axe.",
-        WEBBER_SPIDER_MINION = "Is tiny monsters!",
-        BOOK_FOSSIL = "Is look very hard to read.",
-        LAVAARENA_BERNIE = "Nice little creepy bear.",
-
-        LAVAARENA_ARMORLIGHT = "Wolfgang does not want flimsy thing.",
-        LAVAARENA_ARMORLIGHTSPEED = "Only cowards run from fights!",
-        LAVAARENA_ARMORMEDIUM = "Is not very thick.",
-        LAVAARENA_ARMORMEDIUMDAMAGER = "Wolfgang does not like weak armor.",
-        LAVAARENA_ARMORMEDIUMRECHARGER = "Is too weak for Wolfgang.",
-        LAVAARENA_ARMORHEAVY = "Armor is strong, like Wolfgang.",
-        LAVAARENA_ARMOREXTRAHEAVY = "Is perfect fit for Wolfgang.",
-
-        LAVAARENA_FEATHERCROWNHAT = "Silly little feather hat.",
-        LAVAARENA_HEALINGFLOWERHAT = "It would make Wolfgang look nice.",
-        LAVAARENA_LIGHTDAMAGERHAT = "Mighty little spike hat!",
-        LAVAARENA_STRONGDAMAGERHAT = "Wolfgang would like to wear it.",
-        LAVAARENA_TIARAFLOWERPETALSHAT = "Is useless leaf hat.",
-        LAVAARENA_EYECIRCLETHAT = "Is no-good creepy hat.",
-        LAVAARENA_RECHARGERHAT = "Nice little head rocks.",
-        LAVAARENA_HEALINGGARLANDHAT = "Is many little fast flowers.",
-        LAVAARENA_CROWNDAMAGERHAT = "Is so mighty!",
     },
     DESCRIBE_GENERIC = "What is this thing?",
     DESCRIBE_TOODARK = "Help friends! Save Wolfgang from dark!",

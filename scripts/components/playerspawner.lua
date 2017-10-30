@@ -192,17 +192,19 @@ local function GetDestinationPortalLocation(player)
 
     if portal ~= nil then
         print("Player will spawn close to portal #"..tostring(portal.components.worldmigrator.id))
-        local x, y, z = portal.Transform:GetWorldPosition()
-        local offset = FindWalkableOffset(Vector3(x, 0, z), math.random() * PI * 2, portal:GetPhysicsRadius(0) + .5, 8, false, true, NoHoles)
+        local pos = portal:GetPosition()
+        local start_angle = math.random() * PI * 2
+        local rad = portal.Physics ~= nil and portal.Physics:GetRadius() + .5 or .5
+        local offset = FindWalkableOffset(pos, start_angle, rad, 8, false, true, NoHoles)
 
         --V2C: Do this after caching physical values, since it might remove itself
         --     and spawn in a new "opened" version, making "portal" invalid.
         portal.components.worldmigrator:ActivatedByOther()
 
         if offset ~= nil then
-            return x + offset.x, 0, z + offset.z
+            return pos.x + offset.x, 0, pos.z + offset.z
         end
-        return x, 0, z
+        return pos.x, 0, pos.z
     else
         print("Player will spawn at default location")
         return GetNextSpawnPosition()

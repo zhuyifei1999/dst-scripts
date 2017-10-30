@@ -116,7 +116,7 @@ end
 local function ShouldCombatFeast(self)
     if not self.inst.components.combat:InCooldown() then
         local target = self.inst.components.combat.target
-        if target ~= nil and target:IsNear(self.inst, TUNING.STALKER_ATTACK_RANGE + target:GetPhysicsRadius(0)) then
+        if target ~= nil and target:IsNear(self.inst, target.Physics ~= nil and TUNING.STALKER_ATTACK_RANGE + target.Physics:GetRadius() or TUNING.STALKER_ATTACK_RANGE) then
             return false
         end
     end

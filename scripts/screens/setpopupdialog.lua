@@ -91,7 +91,7 @@ local SetPopupDialog = Class(Screen, function(self, set_item_type)
     		self.input_item_imagetext[i].check:Show()
     	end
     	
-		self.input_item_imagetext[i].text:SetString(GetSkinName(input_item_type))
+		self.input_item_imagetext[i].text:SetString(STRINGS.SKIN_NAMES[input_item_type])
 		
 		self.input_item_imagetext[i].icon:SetItem(type, input_item_type, nil, nil)
 		self.input_item_imagetext[i].icon:SetItemRarity(GetRarityForItem(input_item_type))
@@ -111,7 +111,7 @@ local SetPopupDialog = Class(Screen, function(self, set_item_type)
 	end
 	self.reward = self.proot:AddChild(TEMPLATES.ItemImageText("body", "body_default1", ITEM_SCALE, FONT, FONT_SIZE, "", color, TEXT_WIDTH, TEXT_OFFSET))
 	self.reward:SetPosition(IMAGE_X, -193, 0)
-	self.reward.text:SetString(GetSkinName(set_item_type))
+	self.reward.text:SetString(STRINGS.SKIN_NAMES[set_item_type])
 	
 	self.reward_txt = self.proot:AddChild(Text(BUTTONFONT, 30))
 	self.reward_txt:SetHAlign(ANCHOR_RIGHT)

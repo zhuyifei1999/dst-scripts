@@ -109,10 +109,6 @@ return {
         {
             EMPTY = "I'm not just gonna wrap air!",
         },
-        PICKUP =
-        {
-			RESTRICTION = "I'm not using that!",
-        },
 	},
 	ACTIONFAIL_GENERIC = "I can'tttttt.",
 	ANNOUNCE_DIG_DISEASE_WARNING = "Pfft. Fire would've worked just as well.",
@@ -248,11 +244,6 @@ return {
 	ANNOUNCE_LIGHTNING_DAMAGE_AVOIDED = "I'm safe from the sky-fire.",
 	ANNOUNCE_TOADESCAPING = "Don't even think about running, toad!",
 	ANNOUNCE_TOADESCAPED = "Ughh! But I was winning!",
-
-	--boarlord event
-	ANNOUNCE_REVIVING_CORPSE = "Hey! Get back up!",
-	ANNOUNCE_REVIVED_OTHER_CORPSE = "You got this!",
-	ANNOUNCE_REVIVED_FROM_CORPSE = "Thanks for the hand!",
 
 	BATTLECRY =
 	{
@@ -1924,6 +1915,15 @@ return {
         TRINKET_35 = "Hey Wes! Dare you to drink the last bit!", --Empty Elixir
         TRINKET_36 = "Pfft, they're not even sharp.", --Faux Fangs
         TRINKET_37 = "Looks like firewood to me.", --Broken Stake
+        TRINKET_38 = "It makes stuff look small no matter which way I turn it.", -- Binoculars Griftlands trinket
+        TRINKET_39 = "Who needs just one glove?", -- Lone Glove Griftlands trinket
+        TRINKET_40 = "Snails are gross!", -- Snail Scale Griftlands trinket
+        TRINKET_41 = "Ooo, it's warm.", -- Goop Canister Hot Lava trinket
+        TRINKET_42 = "I don't like snakes.", -- Toy Cobra Hot Lava trinket
+        TRINKET_43 = "Yeesh. I can feel the nostalgia dripping off it.", -- Crocodile Toy Hot Lava trinket
+        TRINKET_44 = "It's just junk.", -- Broken Terrarium ONI trinket
+        TRINKET_45 = "It's got kind of a dumb face, huh?", -- Odd Radio ONI trinket
+        TRINKET_46 = "I never take my pigtails out anyway.", -- Hairdryer ONI trinket
 
         HALLOWEENCANDY_1 = "That's wayyyy better than a regular apple!",
         HALLOWEENCANDY_2 = "Do people actually eat these or are they just a bad joke?",
@@ -1936,6 +1936,9 @@ return {
         HALLOWEENCANDY_9 = "Why does something so yummy have to look so gross!",
         HALLOWEENCANDY_10 = "Yesssss! Lollipops!",
         HALLOWEENCANDY_11 = "I'm gonna need about a dozen of these.",
+        HALLOWEENCANDY_12 = "Yuck! That's disgusting!", --ONI meal lice candy
+        HALLOWEENCANDY_13 = "It's sorta tangy.",	--Griftlands themed candy
+        HALLOWEENCANDY_14 = "Mmm! It burns my mouth so good!",	--Hot Lava pepper candy
         CANDYBAG = "I'm gonna stuff so much candy in there!",
 
         DRAGONHEADHAT = "Sooo ferocious!",
@@ -2052,54 +2055,6 @@ return {
         },
         ATRIUM_KEY = "The horns make it really easy to turn.",
         LIFEINJECTOR = "Don't you dare stick that in me!",
-
-        --Arena Event
-        LAVAARENA_BOARLORD = "Pfft, I bet he can't even fight.",
-        BOARRIOR = "He looks pretty haggard.",
-        BOARON = "Keep that snout to yourself!",
-        PEGHOOK = "It's got a weaponized butt!",
-        TRAILS = "You can't push me around.",
-        TURTILLUS = "Hey! How am I s'pose to hit you with all that armor?",
-        SNAPPER = "Jeez, what's his crocodeal?",
-        
-        LAVAARENA_PORTAL = 
-        {
-            ON = "Time to go.",
-            GENERIC = "This is WAY better than our gate back home!",
-        },
-		LAVAARENA_KEYHOLE = "There's no key in it.",
-        LAVAARENA_KEYHOLE_FULL = "Looks good.",
-        LAVAARENA_BATTLESTANDARD = "Kill that flag!",
-        LAVAARENA_SPAWNER = "Jerks come out of it.",
-
-        HEALINGSTAFF = "I could take a crack at it.",
-        FIREBALLSTAFF = "So I just wave it and FIRE APPEARS?",
-        HAMMER_MJOLNIR = "That weapon looks boring.",
-        SPEAR_GUNGNIR = "I don't want to use that.",
-        BLOWDART_LAVA = "Ptoo! Now you're dead!",
-        BLOWDART_LAVA2 = "Ooh, the firepower!",
-        LAVAARENA_LUCY = "That's Woodie's axe.",
-        WEBBER_SPIDER_MINION = "That spider's so tiny!",
-        BOOK_FOSSIL = "Looks like kindling to me.",
-		LAVAARENA_BERNIE = "You're always there for me, Bernie.",
-
-        LAVAARENA_ARMORLIGHT = "This armor isn't very good.",
-		LAVAARENA_ARMORLIGHTSPEED = "It barely does anything.",
-		LAVAARENA_ARMORMEDIUM = "This armor will stop a blow or two.",
-		LAVAARENA_ARMORMEDIUMDAMAGER = "Good for smackin' stuff.",
-		LAVAARENA_ARMORMEDIUMRECHARGER = "I could do neat stuff more often with that.",
-		LAVAARENA_ARMORHEAVY = "That armor looks pretty safe.",
-		LAVAARENA_ARMOREXTRAHEAVY = "Nothing's gonna get through that!",
-
-		LAVAARENA_FEATHERCROWNHAT = "It's a feather crown!",
-        LAVAARENA_HEALINGFLOWERHAT = "That's a great wreath!",
-        LAVAARENA_LIGHTDAMAGERHAT = "So pointy!",
-        LAVAARENA_STRONGDAMAGERHAT = "I'd wear it if I felt like hitting stuff.",
-        LAVAARENA_TIARAFLOWERPETALSHAT = "Comes with a matching staff!",
-        LAVAARENA_EYECIRCLETHAT = "Ooo, gimme!",
-        LAVAARENA_RECHARGERHAT = "Ohh, I want it!",
-        LAVAARENA_HEALINGGARLANDHAT = "I don't even wanna burn it!",
-        LAVAARENA_CROWNDAMAGERHAT = "Dibs!",
 	},
 	DESCRIBE_GENERIC = "I have no idea what that is!",
 	DESCRIBE_TOODARK = "I need more light!",

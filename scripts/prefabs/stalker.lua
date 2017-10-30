@@ -193,7 +193,7 @@ local function RetargetFn(inst)
     local hasplayer = false
     local inrange = false
     if target ~= nil then
-        local range = TUNING.STALKER_ATTACK_RANGE + target:GetPhysicsRadius(0)
+        local range = target.Physics ~= nil and TUNING.STALKER_ATTACK_RANGE + target.Physics:GetRadius() or TUNING.STALKER_ATTACK_RANGE        
         x, y, z = inst.Transform:GetWorldPosition()
         targetdistsq = target:GetDistanceSqToPoint(x, y, z)
         inrange = targetdistsq < range * range
@@ -201,7 +201,13 @@ local function RetargetFn(inst)
 
         if hasplayer then
             local newplayer = inst.components.grouptargeter:TryGetNewTarget()
-            if newplayer ~= nil and newplayer:IsNear(inst, inrange and TUNING.STALKER_ATTACK_RANGE + newplayer:GetPhysicsRadius(0) or TUNING.STALKER_KEEP_AGGRO_DIST) then
+            if newplayer ~= nil and
+                newplayer:IsNear(
+                    inst,
+                    (not inrange and TUNING.STALKER_KEEP_AGGRO_DIST) or
+                    (newplayer.Physics ~= nil and TUNING.STALKER_ATTACK_RANGE + newplayer.Physics:GetRadius()) or
+                    TUNING.STALKER_ATTACK_RANGE
+                ) then
                 return newplayer, true
             elseif inrange or targetdistsq < TUNING.STALKER_KEEP_AGGRO_DIST * TUNING.STALKER_KEEP_AGGRO_DIST then
                 return
@@ -212,7 +218,10 @@ local function RetargetFn(inst)
     if not hasplayer then
         local nearplayers = {}
         for k, v in pairs(inst.components.grouptargeter:GetTargets()) do
-            if inst:IsNear(k, inrange and TUNING.STALKER_ATTACK_RANGE + k:GetPhysicsRadius(0) or TUNING.STALKER_AGGRO_DIST) then
+            if inst:IsNear(k,
+                (not inrange and TUNING.STALKER_AGGRO_DIST) or
+                (k.Physics ~= nil and TUNING.STALKER_ATTACK_RANGE + k.Physics:GetRadius()) or
+                TUNING.STALKER_ATTACK_RANGE) then
                 table.insert(nearplayers, k)
             end
         end
@@ -248,14 +257,17 @@ local function AtriumRetargetFn(inst)
 
     local stargate = inst.components.entitytracker:GetEntity("stargate")
     local target = inst.components.combat.target
-    local inrange = target ~= nil and inst:IsNear(target, TUNING.STALKER_ATTACK_RANGE + target:GetPhysicsRadius(0))
+    local inrange = target ~= nil and inst:IsNear(target, target.Physics ~= nil and TUNING.STALKER_ATTACK_RANGE + target.Physics:GetRadius() or TUNING.STALKER_ATTACK_RANGE)
     local neargate = stargate ~= nil and target ~= nil and stargate:IsNear(target, GATE_RANGE)
 
     if target ~= nil and target:HasTag("player") then
         local newplayer = inst.components.grouptargeter:TryGetNewTarget()
         return newplayer ~= nil
             and (not neargate or newplayer:IsNear(stargate, GATE_RANGE))
-            and newplayer:IsNear(inst, inrange and TUNING.STALKER_ATTACK_RANGE + newplayer:GetPhysicsRadius(0) or TUNING.STALKER_KEEP_AGGRO_DIST)
+            and newplayer:IsNear(inst,
+                (not inrange and TUNING.STALKER_KEEP_AGGRO_DIST) or
+                (newplayer.Physics ~= nil and TUNING.STALKER_ATTACK_RANGE + newplayer.Physics:GetRadius()) or
+                TUNING.STALKER_ATTACK_RANGE)
             and newplayer
             or nil,
             true
@@ -264,7 +276,10 @@ local function AtriumRetargetFn(inst)
     local nearplayers = {}
     for k, v in pairs(inst.components.grouptargeter:GetTargets()) do
         if (not neargate or k:IsNear(stargate, GATE_RANGE)) and
-            inst:IsNear(k, inrange and TUNING.STALKER_ATTACK_RANGE + k:GetPhysicsRadius(0) or TUNING.STALKER_AGGRO_DIST) then
+            inst:IsNear(k,
+                (not inrange and TUNING.STALKER_AGGRO_DIST) or
+                (k.Physics ~= nil and TUNING.STALKER_ATTACK_RANGE + k.Physics:GetRadius()) or
+                TUNING.STALKER_ATTACK_RANGE) then
             table.insert(nearplayers, k)
         end
     end
@@ -303,7 +318,7 @@ local function OnAttacked(inst, data)
         if target ~= data.attacker and
             not (target ~= nil and
                 target:HasTag("player") and
-                target:IsNear(inst, TUNING.STALKER_ATTACK_RANGE + target:GetPhysicsRadius(0))) and
+                target:IsNear(inst, target.Physics ~= nil and TUNING.STALKER_ATTACK_RANGE + target.Physics:GetRadius() or TUNING.STALKER_ATTACK_RANGE)) and
             not (inst.atriumstalker and
                 not inst:IsNearAtrium(data.attacker) and
                 inst:IsNearAtrium()) then
@@ -547,7 +562,7 @@ local function SpawnSnares(inst, targets)
             (not inatrium or inst:IsNearAtrium(v)) then
             local x, y, z = v.Transform:GetWorldPosition()
             local islarge = v:HasTag("largecreature")
-            local r = v:GetPhysicsRadius(0) + (islarge and 1.5 or .5)
+            local r = (v.Physics ~= nil and v.Physics:GetRadius() or 0) + (islarge and 1.5 or .5)
             local num = islarge and 12 or 6
             if NoSnareOverlap(x, z, r + SNARE_OVERLAP_MAX) then
                 if SpawnSnare(inst, x, z, r, num, v) then
@@ -733,7 +748,7 @@ end
 
 local function FindMinions(inst, proximity)
     local x, y, z = inst.Transform:GetWorldPosition()
-    return TheSim:FindEntities(x, y, z, MINION_RADIUS + inst:GetPhysicsRadius(0) + (proximity or .5), { "stalkerminion" }, { "NOCLICK" })
+    return TheSim:FindEntities(x, y, z, MINION_RADIUS + inst.Physics:GetRadius() + (proximity or .5), { "stalkerminion" }, { "NOCLICK" })
 end
 
 local function EatMinions(inst)
@@ -887,7 +902,12 @@ local function MindControl(inst)
     for i, v in ipairs(AllPlayers) do
         if IsValidMindControlTarget(inst, v, inatrium) and IsCrazyGuy(v) then
             count = count + 1
-            v.components.debuffable:AddDebuff("mindcontroller", "mindcontroller")
+            local debuff = v.components.debuffable:GetDebuff("mindcontroller")
+            if debuff ~= nil then
+                debuff:ExtendDebuff()
+            else
+                v.components.debuffable:AddDebuff("mindcontroller", "mindcontroller")
+            end
         end
     end
 

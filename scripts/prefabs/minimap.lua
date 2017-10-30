@@ -34,9 +34,6 @@ local MINIMAP_GROUND_PROPERTIES =
     { GROUND.TILES,      { name = "map_edge",      noise_texture = "levels/textures/mini_ruinstile_noise.tex" } },
     { GROUND.TRIM,       { name = "map_edge",      noise_texture = "levels/textures/mini_ruinstrim_noise.tex" } },
 
-    { GROUND.LAVAARENA_TRIM, { name = "lavaarena_floor_ms",      noise_texture = "levels/textures/lavaarena_trim_mini.tex" } },
-    { GROUND.LAVAARENA_FLOOR,{ name = "lavaarena_floor_ms",      noise_texture = "levels/textures/lavaarena_floor_mini.tex" } },
-
     -- { GROUND.WALL_CAVE,    { name = "map_edge",      noise_texture = "levels/textures/mini_cave_wall_noise.tex" } },
     -- { GROUND.WALL_FUNGUS,  { name = "map_edge",      noise_texture = "levels/textures/mini_fungus_wall_noise.tex" } },
     -- { GROUND.WALL_SINKHOLE,{ name = "map_edge",      noise_texture = "levels/textures/mini_sinkhole_wall_noise.tex" } },

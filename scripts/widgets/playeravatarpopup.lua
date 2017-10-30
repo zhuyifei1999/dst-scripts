@@ -6,7 +6,7 @@ local Image = require "widgets/image"
 local UIAnim = require "widgets/uianim"
 local Widget = require "widgets/widget"
 local ImageButton = require "widgets/imagebutton"
-local PlayerAvatarPortrait = require "widgets/redux/playeravatarportrait"
+local SkinsPuppet = require "widgets/skinspuppet"
 local TEMPLATES = require "widgets/templates"
 local EquipSlot = require("equipslotutil")
 
@@ -91,9 +91,13 @@ function PlayerAvatarPopup:Layout(data, show_net_profile)
             self.age:SetColour(0, 0, 0, 1)
         end
 
-        self.puppet = self.proot:AddChild(PlayerAvatarPortrait())
-        self.puppet:SetPosition(left_column + 10, 170)
-        self.puppet:SetScale(0.9)
+        self.puppet = self.proot:AddChild(SkinsPuppet())
+        self.puppet:SetPosition(left_column + 10, 95)
+        self.puppet:SetScale(1.8)
+
+        self.shadow = self.proot:AddChild(Image("images/frontend.xml", "char_shadow.tex"))
+        self.shadow:SetPosition(left_column + 8, 90)
+        self.shadow:SetScale(.35)
 
         local portrait_height = 170
         self.portrait = self.proot:AddChild(Image())
@@ -225,7 +229,14 @@ function PlayerAvatarPopup:UpdateData(data)
 
     if self.puppet ~= nil then
         local build = self.currentcharacter == "unknownmod" and "mod_player_build" or self.currentcharacter
-        self.puppet:UpdatePlayerListing(nil, nil, build, GetSkinsDataFromClientTableData(data))
+        local clothing =
+        {
+            body = data.body_skin,
+            hand = data.hand_skin,
+            legs = data.legs_skin,
+            feet = data.feet_skin,
+        }
+        self.puppet:SetSkins(build, data.base_skin, clothing)
     end
 
     if self.portrait ~= nil then
@@ -412,7 +423,7 @@ function PlayerAvatarPopup:UpdateSkinWidgetForSlot(image_group, slot, name)
     image_group._text:SetColour(unpack(GetColorForItem(name)))
 
     local namestr = string.match(name, "_none") and "none" or name -- This version uses "Willow" for "willow_none": string.gsub(name, "_none", "")
-    image_group._text:SetMultilineTruncatedString(GetSkinName(namestr), 2, TEXT_WIDTH, 25, true)
+    image_group._text:SetMultilineTruncatedString(GetName(namestr), 2, TEXT_WIDTH, 25, true)
 
     local image_name = string.gsub(name, "_none", "")
     if image_name == nil or image_name == "none" then
@@ -458,7 +469,7 @@ function PlayerAvatarPopup:UpdateEquipWidgetForSlot(image_group, slot, equipdata
     name = name ~= nil and #name > 0 and name or "none"
 
     image_group._text:SetColour(unpack(GetColorForItem(name)))
-    image_group._text:SetMultilineTruncatedString(GetSkinName(name), 2, TEXT_WIDTH, 25, true)
+    image_group._text:SetMultilineTruncatedString(GetName(name), 2, TEXT_WIDTH, 25, true)
 
     local atlas = "images/inventoryimages.xml"
     local default = DEFAULT_IMAGES[slot] or "trinket_5.tex"

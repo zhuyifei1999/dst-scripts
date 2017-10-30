@@ -1,13 +1,13 @@
 local Widget = require "widgets/widget"
+local AnimButton = require "widgets/animbutton"
 local ImageButton = require "widgets/imagebutton"
 local Text = require "widgets/text"
 local Button = require "widgets/button"
 
-local Menu = Class(Widget, function(self, menuitems, offset, horizontal, style, wrap, text_size)
+local Menu = Class(Widget, function(self, menuitems, offset, horizontal, style, wrap)
     Widget._ctor(self, "MENU")
     self.offset = offset
     self.style = style
-    self.textSize = text_size
     self.items = {}
     self.horizontal = horizontal
     self.wrap_focus = wrap
@@ -23,24 +23,6 @@ local Menu = Class(Widget, function(self, menuitems, offset, horizontal, style, 
         end
     end
 end)
-
-function Menu:RestoreFocusTo(last_focus_widget)
-	self:Enable()
-
-    local found = false
-    for i,v in pairs(self.items) do
-        if v == last_focus_widget then
-            found = true
-            v:SetFocus()
-        else
-            v:OnLoseFocus()
-        end
-    end
-
-    if not found then
-	   self:SetFocus(#self.items)
-    end
-end
 
 function Menu:Clear()
     for k,v in pairs(self.items) do
@@ -192,14 +174,6 @@ function Menu:AddItem(text, cb, offset, style, size, control)
         button.image:SetScale(1.1)
         button.text:SetPosition(2,-2)
         button:SetFont(BUTTONFONT)
-    elseif style == "carny_long" then
-        button = self:AddChild(ImageButton("images/global_redux.xml", "button_carny_long_normal.tex", "button_carny_long_hover.tex", "button_carny_long_disabled.tex", "button_carny_long_down.tex"))
-        button.image:SetScale(.7)
-        button:SetFont(CHATFONT)
-    elseif style == "carny_xlong" then
-        button = self:AddChild(ImageButton("images/global_redux.xml", "button_carny_xlong_normal.tex", "button_carny_xlong_hover.tex", "button_carny_xlong_disabled.tex", "button_carny_xlong_down.tex"))
-        button.image:SetScale(.7)
-        button:SetFont(CHATFONT)
     elseif style == "none" then
         button = self:AddChild(Button())
         button:SetFont(BUTTONFONT)
@@ -290,12 +264,6 @@ function Menu:EnableItem(num)
 	if self.items[num] then 
 		local i = self.items[num]
 		i:Enable()
-	end
-end
-
-function Menu:UnselectAll()
-    for _,widget  in ipairs(self.items) do
-		widget:Unselect()
 	end
 end
 

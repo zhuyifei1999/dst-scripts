@@ -10,22 +10,6 @@ local VOICE_MUTE_COLOUR = { 242 / 255, 99 / 255, 99 / 255, 255 / 255 }
 local VOICE_ACTIVE_COLOUR = { 99 / 255, 242 / 255, 99 / 255, 255 / 255 }
 local VOICE_IDLE_COLOUR = { 1, 1, 1, 1 }
 
-local function GetCharacterPrefab(data)
-	if data == nil then
-		return ""
-	end
-	
-	if data.prefab and data.prefab ~= "" then
-		return data.prefab
-	end
-	
-	if data.lobbycharacter and data.lobbycharacter ~= "" then
-		return data.lobbycharacter
-	end
-	
-	return ""
-end
-
 local function doButtonFocusHookups(playerListing, nextWidgets)
     local rightFocusMoveSet = false
 
@@ -86,7 +70,7 @@ local function listingConstructor(v, i, parent, nextWidgets)
     else
         --print("player data is ")
         --dumptable(v)
-        playerListing.characterBadge = playerListing:AddChild(PlayerBadge(GetCharacterPrefab(v), v.colour or DEFAULT_PLAYER_COLOUR, v.performance ~= nil, v.userflags or 0))
+        playerListing.characterBadge = playerListing:AddChild(PlayerBadge(v.prefab or "", v.colour or DEFAULT_PLAYER_COLOUR, v.performance ~= nil, v.userflags or 0))
     end
     playerListing.characterBadge:SetScale(.45)
     playerListing.characterBadge:SetPosition(-77+nudge_x+name_badge_nudge_x,0,0)
@@ -252,7 +236,7 @@ local function UpdatePlayerListing(widget, data, index)
     if empty then
         widget.characterBadge:Hide()
     else
-        widget.characterBadge:Set(GetCharacterPrefab(data), data.colour or DEFAULT_PLAYER_COLOUR, data.performance ~= nil, data.userflags or 0)
+        widget.characterBadge:Set(data.prefab or "", data.colour or DEFAULT_PLAYER_COLOUR, data.performance ~= nil, data.userflags or 0)
         widget.characterBadge:Show()
     end
 
@@ -420,35 +404,5 @@ function PlayerList:GetPlayerTable()
     end
     return ClientObjs 
 end
-
-function PlayerList:Refresh(next_widgets)
-    local players = self:GetPlayerTable()
-    if #players ~= self.numPlayers then
-        --rebuild if player count changed
-        self:BuildPlayerList(players, next_widgets)
-    else
-        --rebuild if players changed even though count didn't change
-        for i, v in ipairs(players) do
-            local listitem = self.scroll_list.items[i]
-            if listitem == nil or
-                v.userid ~= listitem.userid or
-                (v.performance ~= nil) ~= (listitem.performance ~= nil) then
-                self:BuildPlayerList(players, next_widgets)
-                return
-            end
-        end
-
-        --refresh existing players
-        for i, widget in ipairs(self.player_widgets) do
-            for i2, data in ipairs(players) do
-                if widget.userid == data.userid and widget.characterBadge.ishost == (data.performance ~= nil) then
-                    widget.characterBadge:Set(GetCharacterPrefab(data), data.colour or DEFAULT_PLAYER_COLOUR, widget.characterBadge.ishost, data.userflags or 0)
-                    widget.name:SetDisplayNameFromData(data)
-                end
-            end
-        end
-    end
-end
-
 
 return PlayerList

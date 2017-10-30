@@ -205,7 +205,7 @@ function GiftItemPopUp:RevealItem(idx)
         end
     end)
 
-    local name_string = GetSkinName(item_name)
+    local name_string = STRINGS.SKIN_NAMES[item_name] or item_name
     self.name:SetTruncatedString(name_string, 500, 35, true)
 
     self.name:SetColour(GetColorForItem(item_name))

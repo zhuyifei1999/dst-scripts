@@ -39,7 +39,7 @@ local function DoDamage(inst)
     local ents = TheSim:FindEntities(x, 0, z, PHYSICS_RADIUS + DAMAGE_RADIUS_PADDING, nil, NON_COLLAPSIBLE_TAGS, COLLAPSIBLE_TAGS)
     for i, v in ipairs(ents) do
         if v:IsValid() then
-            local dist = PHYSICS_RADIUS + v:GetPhysicsRadius(DAMAGE_RADIUS_PADDING)
+            local dist = PHYSICS_RADIUS + (v.Physics ~= nil and v.Physics:GetRadius() or DAMAGE_RADIUS_PADDING)
             if v:GetDistanceSqToPoint(x, 0, z) < dist * dist then
                 local isworkable = false
                 if v.components.workable ~= nil then
@@ -85,9 +85,9 @@ local function DoDamage(inst)
             v.components.mine:Deactivate()
         end
         if not v.components.inventoryitem.nobounce and v.Physics ~= nil and v.Physics:IsActive() then
-            local dist = PHYSICS_RADIUS + v:GetPhysicsRadius(0)
+            local dist = PHYSICS_RADIUS + v.Physics:GetRadius()
             if v:GetDistanceSqToPoint(x, 0, z) < dist * dist then
-                EmergeLaunch(v, inst, .4, .1, PHYSICS_RADIUS + v:GetPhysicsRadius(0))
+                EmergeLaunch(v, inst, .4, .1, PHYSICS_RADIUS + v.Physics:GetRadius())
             end
         end
     end

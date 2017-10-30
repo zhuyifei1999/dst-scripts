@@ -250,10 +250,6 @@ function Input:IsPasteKey(key)
     return key == KEY_INSERT and PLATFORM == "LINUX_STEAM" and self:IsKeyDown(KEY_SHIFT)
 end
 
-function Input:UpdateEntitiesUnderMouse()
-	self.entitiesundermouse = TheSim:GetEntitiesAtScreenPoint(TheSim:GetPosition())
-end
-
 function Input:OnUpdate()
     if self.mouse_enabled then
         self.entitiesundermouse = TheSim:GetEntitiesAtScreenPoint(TheSim:GetPosition())

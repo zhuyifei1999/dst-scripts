@@ -1,4 +1,4 @@
-local MakePlayerCharacter = require("prefabs/player_common")
+local MakePlayerCharacter = require "prefabs/player_common"
 
 local assets =
 {
@@ -8,30 +8,23 @@ local assets =
 
 local prefabs =
 {
+    "spear_wathgrithr",
+    "wathgrithrhat",
     "wathgrithr_spirit",
-    "wathgrithr_bloodlustbuff_other",
-    "wathgrithr_bloodlustbuff_self",
 }
 
 local start_inv =
 {
-    default =
-    {
-        "spear_wathgrithr",
-        "wathgrithrhat",
-        "meat",
-        "meat",
-        "meat",
-        "meat",
-    },
-
-    lavaarena = TUNING.LAVAARENA_STARTING_ITEMS.WATHGRITHR,
+    "spear_wathgrithr",
+    "wathgrithrhat",
+    "meat",
+    "meat",
+    "meat",
+    "meat",
 }
 
-prefabs = FlattenTree({ prefabs, start_inv }, true)
-
-local smallScale = .5
-local medScale = .7
+local smallScale = 0.5
+local medScale = 0.7
 local largeScale = 1.1
 
 local function spawnspirit(inst, x, y, z, scale)
@@ -73,7 +66,7 @@ local BATTLEBORN_STORE_TIME = 3
 local BATTLEBORN_DECAY_TIME = 5
 local BATTLEBORN_TRIGGER_THRESHOLD = 1
 
-local function battleborn_onattack(inst, data)
+local function onattack(inst, data)
     local victim = data.target
     if not inst.components.health:IsDead() and IsValidVictim(victim) then
         local total_health = victim.components.health:GetMaxWithPenalty()
@@ -112,15 +105,13 @@ local function ondeath(inst)
     inst.battleborn = 0
 end
 
-local function common_postinit(inst)
+local function common_init(inst)
     inst:AddTag("valkyrie")
 
     inst.components.talker.mod_str_fn = Umlautify
 end
 
-local function master_postinit(inst)
-    inst.starting_inventory = start_inv[TheNet:GetServerGameMode()] or start_inv.default
-
+local function master_init(inst)
     inst.talker_path_override = "dontstarve_DLC001/characters/"
 
     inst.components.eater:SetDiet({ FOODGROUP.OMNI }, { FOODTYPE.MEAT, FOODTYPE.GOODIES })
@@ -128,21 +119,15 @@ local function master_postinit(inst)
     inst.components.health:SetMaxHealth(TUNING.WATHGRITHR_HEALTH)
     inst.components.hunger:SetMax(TUNING.WATHGRITHR_HUNGER)
     inst.components.sanity:SetMax(TUNING.WATHGRITHR_SANITY)
+    inst.components.combat.damagemultiplier = TUNING.WATHGRITHR_DAMAGE_MULT
+    inst.components.health:SetAbsorptionAmount(TUNING.WATHGRITHR_ABSORPTION)
 
-    if TheNet:GetServerGameMode() == "lavaarena" then
-        event_server_data("lavaarena", "prefabs/wathgrithr").master_postinit(inst)
-    else
-        inst.components.combat.damagemultiplier = TUNING.WATHGRITHR_DAMAGE_MULT
-        inst.components.health:SetAbsorptionAmount(TUNING.WATHGRITHR_ABSORPTION)
-
-        inst:ListenForEvent("killed", onkilled)
-        inst:ListenForEvent("onattackother", battleborn_onattack)
-    end
-
+    inst:ListenForEvent("killed", onkilled)
+    inst:ListenForEvent("onattackother", onattack)
     inst:ListenForEvent("death", ondeath)
 
     inst.battleborn = 0
     inst.battleborn_time = 0
 end
 
-return MakePlayerCharacter("wathgrithr", prefabs, assets, common_postinit, master_postinit)
+return MakePlayerCharacter("wathgrithr", prefabs, assets, common_init, master_init, start_inv)

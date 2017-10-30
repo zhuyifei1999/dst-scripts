@@ -550,7 +550,6 @@ local function fn()
     inst:AddTag("caveindebris")
 
     MakeHeavyObstaclePhysics(inst, PHYSICS_RADIUS)
-    inst:SetPhysicsRadiusOverride(PHYSICS_RADIUS)
 
     inst.entity:SetPristine()
 

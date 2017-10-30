@@ -2,7 +2,7 @@
 -- INCLUDES
 -----------------------------------------------------------------------------------------------------------
 
-local PopupDialogScreen = require "screens/redux/popupdialog"
+local PopupDialogScreen = require "screens/popupdialog"
 
 -----------------------------------------------------------------------------------------------------------
 -- PRIVATE FIELDS
@@ -192,7 +192,7 @@ local function userlevel(user)
     return (client == nil and 0)
         or (client.admin and 3)
         or (client.moderator and 2)
-        or ((user.components == nil or user.components.playervoter == nil or not user.components.playervoter:IsSquelched()) and 1)
+        or ((user.components.playervoter == nil or not user.components.playervoter:IsSquelched()) and 1)
         or 0
 end
 

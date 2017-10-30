@@ -252,7 +252,7 @@ function ThankYouPopup:SetSkinName()
     local skin_name = string.lower(self.items[self.current_item].item)
 
     self.item_name:SetColour(GetColorForItem(skin_name))
-    self.item_name:SetString(GetSkinName(skin_name))
+    self.item_name:SetString(GetName(skin_name))
     --self.banner:Show()
     self.item_name:Show()
     self.upper_banner_text:Show()

@@ -12,7 +12,6 @@ local InventoryItem = Class(function(self, inst)
 
         inst:ListenForEvent("percentusedchange", function(inst, data) self.classified:SerializePercentUsed(data.percent) end)
         inst:ListenForEvent("perishchange", function(inst, data) self.classified:SerializePerish(data.percent) end)
-        inst:ListenForEvent("rechargechange", function(inst, data) self.classified:SerializeRecharge(data.percent, data.overtime) end)
 
         if inst.components.deployable ~= nil then
             self:SetDeployMode(inst.components.deployable.mode)
@@ -168,28 +167,13 @@ function InventoryItem:SerializeUsage()
 
     self.classified:SerializePercentUsed(percentusedcomponent ~= nil and percentusedcomponent:GetPercent() or nil)
     self.classified:SerializePerish(self.inst.components.perishable ~= nil and self.inst.components.perishable:GetPercent() or nil)
-    if self.inst.components.rechargeable ~= nil then
-        self.classified:SerializeRecharge(self.inst.components.rechargeable:GetPercent())
-        self.classified:SerializeRechargeTime(self.inst.components.rechargeable:GetRechargeTime())
-    else
-        self.classified:SerializeRecharge(nil)
-        self.classified:SerializeRechargeTime(nil)
-    end
 end
 
 function InventoryItem:DeserializeUsage()
     if self.classified ~= nil then
         self.classified:DeserializePercentUsed()
         self.classified:DeserializePerish()
-        self.classified:DeserializeRecharge()
-        self.classified:DeserializeRechargeTime()
     end
-end
-
-function InventoryItem:SetChargeTime(t)
-    self.classified:SerializeRechargeTime(t)
-    self.classified.recharge:set(self.classified.recharge:value())
-    self.inst:PushEvent("rechargetimechange", { t = t })
 end
 
 function InventoryItem:SetDeployMode(deploymode)
@@ -260,8 +244,8 @@ end
 function InventoryItem:AttackRange()
     if self.inst.components.weapon ~= nil then
         return self.inst.components.weapon.attackrange or 0
-    elseif self.classified ~= nil and self.classified.attackrange:value() > -99 then
-        return self.classified.attackrange:value()
+    elseif self.classified ~= nil then
+        return math.max(0, self.classified.attackrange:value())
     else
         return 0
     end
@@ -270,7 +254,7 @@ end
 function InventoryItem:IsWeapon()
     return self.inst.components.weapon ~= nil or
         (self.classified ~= nil and
-        self.classified.attackrange:value() > -99)
+        self.classified.attackrange:value() >= 0)
 end
 
 function InventoryItem:SetWalkSpeedMult(walkspeedmult)

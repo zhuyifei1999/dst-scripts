@@ -118,8 +118,8 @@ end
 function SkinsItemPopUp:SetItemDisplay()
 
     local item_type = string.lower(self.item_type)
-    local item_name = GetSkinName(item_type)
-    local item_description = GetSkinDescription(item_type)
+    local item_name = STRINGS.SKIN_NAMES[item_type]
+    local item_description = STRINGS.SKIN_DESCRIPTIONS[item_type]
     
     -- Fallback for development, just in case the name or description doesn't yet exist.
     -- This can be removed before shipping

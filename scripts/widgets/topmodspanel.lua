@@ -5,6 +5,7 @@ local ImageButton = require "widgets/imagebutton"
 local TextButton = require "widgets/textbutton"
 local ScrollableList = require "widgets/scrollablelist"
 local HoverText = require "widgets/hoverer"
+local Grid = require "widgets/grid"
 
 local TEMPLATES = require "widgets/templates"
 

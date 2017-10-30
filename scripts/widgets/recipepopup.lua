@@ -488,7 +488,7 @@ function RecipePopup:GetSkinOptions()
             local image_name = self.skins_list[which].item
 
             local colour = GetColorForItem(image_name)
-            local text_name = GetSkinName(image_name)
+            local text_name = GetName(image_name) or STRINGS.SKIN_NAMES["missing"]
             local new_indicator = not self.skins_list[which].timestamp or (self.skins_list[which].timestamp > recipe_timestamp)
 
             if image_name == "" then

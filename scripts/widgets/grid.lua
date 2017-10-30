@@ -7,7 +7,7 @@ local Grid = Class(Widget, function(self)
     self.items_by_coords = {}
     self.rows = 0
     self.cols = 0
-    self.layout_left_to_right_top_to_bottom = false
+    self.num_children = 0
 end)
 
 function Grid:SetLooping(h, v)
@@ -33,12 +33,6 @@ function Grid:InitSize(c,r, coffset, roffset)
 	end
 end
 
--- Use the expected english text flow style layout.
-function Grid:UseNaturalLayout()
-    assert(#self.children == 0, "Call UseNaturalLayout before adding any items to the grid!")
-    self.layout_left_to_right_top_to_bottom = true
-end
-
 function Grid:Clear()
 	for k,v in pairs(self.items_by_coords) do
 		for k,v in pairs(v) do
@@ -46,6 +40,7 @@ function Grid:Clear()
 		end
 	end
     self.items_by_coords = {}
+    self.num_children = 0
 end
 
 function Grid:DoFocusHookups()
@@ -91,8 +86,6 @@ function Grid:GetRowsInCol(c)
 end
 
 function Grid:SetFocus(c, r)
-    -- Grid itself cannot receive focus -- only its children (so don't call
-    -- parent function).
 	r = r or 1
 	c = c or 1
 
@@ -108,24 +101,11 @@ function Grid:SetFocus(c, r)
 	if item then
 		item:SetFocus()
 	end
+	
 end
-
-
--- Find the first item in the grid matching a predicate.
-function Grid:FindItemSlot(compare_fn)
-    assert(type(compare_fn) == 'function')
-    for c = 1, self.cols do
-        for r = 1, self.rows do
-            local found = self:GetItemInSlot(c,r)
-            if found and compare_fn(found) then
-                return c, r
-            end
-        end
-    end
-end
-
 
 function Grid:GetItemInSlot(c,r)
+	
 	if r > self.rows or c > self.cols then return end
 
 	if not self.items_by_coords[r] then
@@ -137,6 +117,8 @@ end
 
 
 function Grid:AddItem(widget, c, r)
+
+	
 	if r > self.rows or c > self.cols then return end
 
 	local old_item = self:GetItemInSlot(c,r)
@@ -150,97 +132,11 @@ function Grid:AddItem(widget, c, r)
 
 	self.items_by_coords[r][c] = widget
 	
-    self:_Layout(c,r, widget)
+	widget:SetPosition(Vector3(self.h_offset*(c-1), self.v_offset*(r-1), 0))
 
 	self:DoFocusHookups()
 	return widget
 end
-
--- Apply a new layout to the input widget.
---
--- Grid is intended to be a static widget that gives a
--- good initial layout. We may need to rethink somethings if we want to call
--- this in an update loop.
-function Grid:_Layout(c,r, widget)
-    local row_on_screen = r - 1
-    local col_on_screen = c - 1
-    if self.layout_left_to_right_top_to_bottom then
-        row_on_screen = 1 - r
-    end
-	widget:SetPosition(Vector3(self.h_offset*col_on_screen, self.v_offset*row_on_screen, 0))
-end
-
--- Add a list of items to the grid.
---
--- Defaults to starting at the beginning. Great for initial fill of content.
-function Grid:AddList(widget_list, initial_row, initial_col)
-    local c = initial_col or 1
-    local r = initial_row or 1
-    for i,w in ipairs(widget_list) do
-        self:AddItem(w,c,r)
-        c = c + 1
-        if c > self.cols then
-            c = 1
-            r = r + 1
-            if r > self.rows then
-                return
-            end
-        end
-    end
-end
-
--- Easily initialize the grid.
---
--- Orders left to right and top to bottom. Should work how you'd expect.
---      local g = Grid()
---      g:FillGrid(2, 100, 100, { Text(UIFONT, 20, "1"), Text(UIFONT, 20, "2"), Text(UIFONT, 20, "3"), })
--- Gives a grid like:
---      1  2
---      3
-function Grid:FillGrid(num_columns, coffset, roffset, items)
-    local num_rows = math.ceil(#items / num_columns)
-    self:UseNaturalLayout()
-    self:InitSize(num_columns, num_rows, coffset, roffset)
-    self:AddList(items)
-end
-
-function Grid:DebugDraw_AddSection(dbui, panel)
-    Grid._base.DebugDraw_AddSection(self, dbui, panel)
-
-    dbui.Spacing()
-    dbui.Text("Grid")
-    dbui.Indent() do
-        dbui.Value("max rows", self.rows)
-        dbui.Value("max cols", self.cols)
-
-        local changed_layout, should_layout = dbui.Checkbox("use natural layout", self.layout_left_to_right_top_to_bottom)
-        if changed_layout then
-            self.layout_left_to_right_top_to_bottom = should_layout
-        end
-
-        local changed_h, new_h = dbui.DragFloat("h_offset", self.h_offset, 10, 0, 10000, "%.1f", 1)
-        local changed_v, new_v = dbui.DragFloat("v_offset", self.v_offset, 10, 0, 10000, "%.1f", 1)
-        if changed_h then
-            self.h_offset = new_h
-        end
-        if changed_v then
-            self.v_offset = new_v
-        end
-
-        if changed_layout or changed_h or changed_v then
-            for c = 1, self.cols do
-                for r = 1, self.rows do
-                    local item = self:GetItemInSlot(c,r)
-                    if item then
-                        self:_Layout(c,r,item)
-                    end
-                end
-            end
-        end
-    end
-    dbui.Unindent()
-end
-
 
 
 return Grid

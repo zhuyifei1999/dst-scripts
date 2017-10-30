@@ -149,10 +149,7 @@ local ServerSettingsTab = Class(Widget, function(self, slotdata, servercreations
     self.clan_admins.spinner:SetOnChangedFn(function() self.servercreationscreen:MakeDirty() end)
 
     self.game_mode = TEMPLATES.LabelSpinner(STRINGS.UI.SERVERCREATIONSCREEN.GAMEMODE, GetGameModesSpinnerData(ModManager:GetEnabledServerModNames()), narrow_label_width, narrow_input_width, label_height, space_between, NEWFONT, font_size, narrow_field_nudge)
-    self.game_mode.spinner:SetOnChangedFn(function(selected, old) 
-		self.servercreationscreen.world_tab:OnChangeGameMode(selected)
-		self.servercreationscreen:MakeDirty()
-		end)
+    self.game_mode.spinner:SetOnChangedFn(function() self.servercreationscreen.world_tab:Refresh() self.servercreationscreen:MakeDirty() end)
 
     self.game_mode.info_button = self.game_mode:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "info.tex", "", false, false, function() 
             local mode_title = GetGameModeString( self.game_mode.spinner:GetSelectedData() )
@@ -539,7 +536,7 @@ end
 function ServerSettingsTab:GetServerData()
     return {
         intention = self.server_intention.button.data,
-        pvp = self:GetPVP(),
+        pvp = self.pvp.spinner:GetSelectedData(),
         game_mode = self:GetGameMode(),
         online_mode = self:GetOnlineMode(),
         encode_user_path = self:GetEncodeUserPath(),

@@ -83,18 +83,6 @@ local ModWarningScreen = Class(Screen, function(self, title, text, buttons, text
 	    self.menu:SetPosition(0, -250, 0)
 	    self.default_focus = self.menu
 	end
-	
-	if PLATFORM == "WIN32_RAIL" then
-		-- disable the mod forum button if it exists
-		if self.menu and self.menu.items then
-			for i,v in pairs(self.menu.items) do
-				if v:GetText() == STRINGS.UI.MAINSCREEN.MODFORUMS then
-					v:Select()
-					v:SetHoverText(STRINGS.UI.MAINSCREEN.MODFORUMS_NOT_AVAILABLE_YET)
-				end
-			end
-		end
-	end
 end)
 
 return ModWarningScreen

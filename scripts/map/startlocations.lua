@@ -112,13 +112,6 @@ AddStartLocation("caves", {
     },
 })
 
-AddStartLocation("lavaarena", {
-    name = STRINGS.UI.SANDBOXMENU.DEFAULTSTART,
-    location = "lavaarena",
-    start_setpeice = "LavaArenaLayout",
-    start_node = "Blank",
-})
-
 ------------------------------------------------------------------
 -- Export functions
 ------------------------------------------------------------------

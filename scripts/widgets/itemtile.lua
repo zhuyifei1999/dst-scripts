@@ -7,7 +7,6 @@ local UIAnim = require "widgets/uianim"
 local ItemTile = Class(Widget, function(self, invitem)
     Widget._ctor(self, "ItemTile")
     self.item = invitem
-    self.ismastersim = TheWorld.ismastersim
 
     --These flags are used by the client to control animation behaviour while
     --stacksize is being tampered with locally to preview inventory actions so
@@ -23,20 +22,18 @@ local ItemTile = Class(Widget, function(self, invitem)
         print("NO INVENTORY ITEM COMPONENT"..tostring(invitem.prefab), invitem)
         return
     end
-
-    if self.item.prefab == "spoiled_food" or self:HasSpoilage() then
-        self.bg = self:AddChild(Image(HUD_ATLAS, "inv_slot_spoiled.tex"))
-        self.bg:SetClickable(false)
-    end
-
+    
+    self.bg = self:AddChild(Image())
+    self.bg:SetTexture(HUD_ATLAS, "inv_slot_spoiled.tex")
+    self.bg:Hide()
+    self.bg:SetClickable(false)
     self.basescale = 1
-
-    if self:HasSpoilage() then
-        self.spoilage = self:AddChild(UIAnim())
-        self.spoilage:GetAnimState():SetBank("spoiled_meter")
-        self.spoilage:GetAnimState():SetBuild("spoiled_meter")
-        self.spoilage:SetClickable(false)
-    end
+    
+    self.spoilage = self:AddChild(UIAnim())
+    self.spoilage:GetAnimState():SetBank("spoiled_meter")
+    self.spoilage:GetAnimState():SetBuild("spoiled_meter")
+    self.spoilage:Hide()
+    self.spoilage:SetClickable(false)
 
     self.wetness = self:AddChild(UIAnim())
     self.wetness:GetAnimState():SetBank("wet_meter")
@@ -45,23 +42,15 @@ local ItemTile = Class(Widget, function(self, invitem)
     self.wetness:Hide()
     self.wetness:SetClickable(false)
 
-    if self.item:HasTag("rechargeable") then
-        self.rechargepct = 1
-        self.rechargetime = math.huge
-        self.rechargeframe = self:AddChild(UIAnim())
-        self.rechargeframe:GetAnimState():SetBank("recharge_meter")
-        self.rechargeframe:GetAnimState():SetBuild("recharge_meter")
-        self.rechargeframe:GetAnimState():PlayAnimation("frame")
-    end
-
     self.image = self:AddChild(Image(invitem.replica.inventoryitem:GetAtlas(), invitem.replica.inventoryitem:GetImage(), "default.tex"))
     --self.image:SetClickable(false)
 
-    if self.rechargeframe ~= nil then
-        self.recharge = self:AddChild(UIAnim())
-        self.recharge:GetAnimState():SetBank("recharge_meter")
-        self.recharge:GetAnimState():SetBuild("recharge_meter")
-        self.recharge:SetClickable(false)
+    if self.item.prefab == "spoiled_food" or self:HasSpoilage() then
+        self.bg:Show()
+    end
+    
+    if self:HasSpoilage() then
+        self.spoilage:Show()
     end
 
     self.inst:ListenForEvent("imagechange",
@@ -115,18 +104,6 @@ local ItemTile = Class(Widget, function(self, invitem)
             end
         end, invitem)
 
-    if self.rechargeframe ~= nil then
-        self.inst:ListenForEvent("rechargechange",
-            function(invitem, data)
-                self:SetChargePercent(data.percent)
-            end, invitem)
-
-        self.inst:ListenForEvent("rechargetimechange",
-            function(invitem, data)
-                self:SetChargeTime(data.t)
-            end, invitem)
-    end
-
     self.inst:ListenForEvent("wetnesschange",
         function(invitem, wet)
             if not self.isactivetile then
@@ -138,7 +115,7 @@ local ItemTile = Class(Widget, function(self, invitem)
             end
         end, invitem)
 
-    if not self.ismastersim then
+    if not TheWorld.ismastersim then
         self.inst:ListenForEvent("stacksizepreview",
             function(invitem, data)
                 if data.activecontainer ~= nil and
@@ -180,27 +157,28 @@ function ItemTile:Refresh()
         self:SetQuantity(self.item.replica.stackable:StackSize())
     end
 
-    if self.ismastersim then
-        if self.item.components.armor ~= nil then
-            self:SetPercent(self.item.components.armor:GetPercent())
-        elseif self.item.components.perishable ~= nil then
-            if self:HasSpoilage() then
-                self:SetPerishPercent(self.item.components.perishable:GetPercent())
-            else
-                self:SetPercent(self.item.components.perishable:GetPercent())
-            end
-        elseif self.item.components.finiteuses ~= nil then
-            self:SetPercent(self.item.components.finiteuses:GetPercent())
-        elseif self.item.components.fueled ~= nil then
-            self:SetPercent(self.item.components.fueled:GetPercent())
-        end
-
-        if self.rechargeframe ~= nil and self.item.components.rechargeable ~= nil then
-            self:SetChargePercent(self.item.components.rechargeable:GetPercent())
-            self:SetChargeTime(self.item.components.rechargeable:GetRechargeTime())
-        end
-    elseif self.item.replica.inventoryitem ~= nil then
+    if not TheWorld.ismastersim and self.item.replica.inventoryitem ~= nil then
         self.item.replica.inventoryitem:DeserializeUsage()
+    end
+
+    if self.item.components.fueled ~= nil then
+        self:SetPercent(self.item.components.fueled:GetPercent())
+    end
+
+    if self.item.components.finiteuses ~= nil then
+        self:SetPercent(self.item.components.finiteuses:GetPercent())
+    end
+
+    if self.item.components.perishable ~= nil then
+        if self:HasSpoilage() then
+            self:SetPerishPercent(self.item.components.perishable:GetPercent())
+        else
+            self:SetPercent(self.item.components.perishable:GetPercent())
+        end
+    end
+    
+    if self.item.components.armor ~= nil then
+        self:SetPercent(self.item.components.armor:GetPercent())
     end
 
     if not self.isactivetile then
@@ -297,52 +275,22 @@ function ItemTile:SetPerishPercent(percent)
 end
 
 function ItemTile:SetPercent(percent)
-	if not self.item:HasTag("hide_percentage") then
-		if not self.percent then
-			self.percent = self:AddChild(Text(NUMBERFONT, 42))
-			if JapaneseOnPS4() then
-				self.percent:SetHorizontalSqueeze(0.7)
-			end
-			self.percent:SetPosition(5,-32+15,0)
-		end
-		local val_to_show = percent*100
-		if val_to_show > 0 and val_to_show < 1 then
-			val_to_show = 1
-		end
-		self.percent:SetString(string.format("%2.0f%%", val_to_show))
+    --if self.item.replica.stackable == nil then
+        
+    if not self.percent then
+        self.percent = self:AddChild(Text(NUMBERFONT, 42))
+        if JapaneseOnPS4() then
+            self.percent:SetHorizontalSqueeze(0.7)
+        end
+        self.percent:SetPosition(5,-32+15,0)
     end
-end
-
-function ItemTile:SetChargePercent(percent)
-    self.rechargepct = percent
-    if percent < 1 then
-        self.recharge:GetAnimState():SetPercent("recharge", percent)
-        if not self.rechargeframe.shown then
-            self.rechargeframe:Show()
-        end
-        if percent >= .9999 then
-            self:StopUpdating()
-        elseif self.rechargetime < math.huge then
-            self:StartUpdating()
-        end
-    else
-        if not self.recharge:GetAnimState():IsCurrentAnimation("frame_pst") then
-            self.recharge:GetAnimState():PlayAnimation("frame_pst")
-        end
-        if self.rechargeframe.shown then
-            self.rechargeframe:Hide()
-        end
-        self:StopUpdating()
+    local val_to_show = percent*100
+    if val_to_show > 0 and val_to_show < 1 then
+        val_to_show = 1
     end
-end
-
-function ItemTile:SetChargeTime(t)
-    self.rechargetime = t
-    if self.rechargetime >= math.huge then
-        self:StopUpdating()
-    elseif self.rechargepct < .9999 then
-        self:StartUpdating()
-    end
+    self.percent:SetString(string.format("%2.0f%%", val_to_show))
+        
+    --end
 end
 
 --[[
@@ -364,42 +312,25 @@ end
 function ItemTile:StartDrag()
     --self:SetScale(1,1,1)
     if self.item.replica.inventoryitem ~= nil then -- HACK HACK: items without an inventory component won't have any of these
-        if self.spoilage ~= nil then
-            self.spoilage:Hide()
-        end
+        self.spoilage:Hide()
         self.wetness:Hide()
-        if self.bg ~= nil then
-            self.bg:Hide()
-        end
-        if self.recharge ~= nil then
-            self.recharge:Hide()
-            self.rechargeframe:Hide()
-        end
+        self.bg:Hide()
         self.image:SetClickable(false)
     end
 end
 
 function ItemTile:HasSpoilage()
-    if self.hasspoilage ~= nil then
-        return self.hasspoilage
-    elseif not (self.item:HasTag("fresh") or self.item:HasTag("stale") or self.item:HasTag("spoiled")) then
-        self.hasspoilage = false
-    elseif self.item:HasTag("show_spoilage") then
-        self.hasspoilage = true
-    else
+    if self.item:HasTag("fresh") or self.item:HasTag("stale") or self.item:HasTag("spoiled") then
+        if self.item:HasTag("show_spoilage") then
+            return true
+        end
         for k, v in pairs(FOODTYPE) do
             if self.item:HasTag("edible_"..v) then
-                self.hasspoilage = true
                 return true
             end
         end
-        self.hasspoilage = false
     end
-    return self.hasspoilage
-end
-
-function ItemTile:OnUpdate(dt)
-    self:SetChargePercent(self.rechargetime > 0 and self.rechargepct + dt / self.rechargetime or .9999)
+    return false
 end
 
 return ItemTile

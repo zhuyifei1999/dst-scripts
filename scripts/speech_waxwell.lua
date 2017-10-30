@@ -109,10 +109,6 @@ return {
         {
             EMPTY = "I don't know what to wrap.",
         },
-        PICKUP =
-        {
-			RESTRICTION = "I have no use of such things.",
-        },
 	},
 	ACTIONFAIL_GENERIC = "That didn't work.",
 	ANNOUNCE_DIG_DISEASE_WARNING = "That takes care of that.",
@@ -236,12 +232,6 @@ return {
 	ANNOUNCE_TOADESCAPING = "Now is the time to strike!",
 	ANNOUNCE_TOADESCAPED = "It fled back into the earth.",
 
---boarlord event
-	ANNOUNCE_REVIVING_CORPSE = "Allow me to assist.",
-	ANNOUNCE_REVIVED_OTHER_CORPSE = "No need to thank me.",
-	ANNOUNCE_REVIVED_FROM_CORPSE = "That was simply undignified.",
-    ANNOUNCE_SHADOWSTRIKE_ATTACK = "Shadow Strike!",
-	
 	BATTLECRY =
 	{
 		GENERIC = "To arms!",
@@ -379,7 +369,7 @@ return {
             MURDERER = "You've engineered your own demise!",
             REVIVER = "%s expertly uses all tools at her disposal.",
             GHOST = "My, you're looking spirited today, %s.",
-            FIRESTARTER = "You were the last one I expected to start fires, %s.",
+            FIRESTARTER = "It's not wise to start factory fires, %s.",
         },
 
 		BERNIE_INACTIVE =
@@ -1860,6 +1850,15 @@ return {
         TRINKET_35 = "I'm not in the habit of imbibing strange liquids.", --Empty Elixir
         TRINKET_36 = "Permanently bared.", --Faux Fangs
         TRINKET_37 = "I told you people, I am *not* a vampire!", --Broken Stake
+        TRINKET_38 = "You are all ants in my eyes already.", -- Binoculars Griftlands trinket
+        TRINKET_39 = "What a tacky glove.", -- Lone Glove Griftlands trinket
+        TRINKET_40 = "One hundred percent to scale.", -- Snail Scale Griftlands trinket
+        TRINKET_41 = "I've no idea what that is.", -- Goop Canister Hot Lava trinket
+        TRINKET_42 = "It looks cheap.", -- Toy Cobra Hot Lava trinket
+        TRINKET_43 = "What use would I have of such a thing?", -- Crocodile Toy Hot Lava trinket
+        TRINKET_44 = "Rosebud.", -- Broken Terrarium ONI trinket
+        TRINKET_45 = "At least it's not ragtime.", -- Odd Radio ONI trinket
+        TRINKET_46 = "Some harebrained invention of the scientist's, perhaps?", -- Hairdryer ONI trinket
 
         HALLOWEENCANDY_1 = "Oh good, it's solid candy. I feared something healthy had snuck in.",
         HALLOWEENCANDY_2 = "Waxy, just like me.",
@@ -1872,6 +1871,9 @@ return {
         HALLOWEENCANDY_9 = "How the tables have turned, worm.",
         HALLOWEENCANDY_10 = "No one is above enjoying a good lollipop.",
         HALLOWEENCANDY_11 = "Eating them makes me feel powerful.",
+        HALLOWEENCANDY_12 = "Ah, maggots... how novel.", --ONI meal lice candy
+        HALLOWEENCANDY_13 = "It's not terrible.", --Griftlands themed candy
+        HALLOWEENCANDY_14 = "Only ruffians enjoy torturing themselves like this.", --Hot Lava pepper candy
         CANDYBAG = "That's our sugar-sack.",
 
         DRAGONHEADHAT = "Quite formidable looking.",
@@ -2031,54 +2033,6 @@ return {
         ORANGEMOONEYE = "I have a feeling of being watched, even from a considerable distance away.",
         YELLOWMOONEYE = "A conveniently color-coded place marker.",
         BLUEMOONEYE = "That reminds me, I must practice my cold glare tonight!",
-
-        --Arena Event
-        LAVAARENA_BOARLORD = "You seem severely deluded, good sir.",
-        BOARRIOR = "Well he's certainly no slouch.",
-        BOARON = "Begone, swine.",
-        PEGHOOK = "I should like to avoid a pinch from that, I think.",
-        TRAILS = "What a brute!",
-        TURTILLUS = "He's rather thick-headed.",
-        SNAPPER = "I don't fear you, scoundrel.",
-        
-        LAVAARENA_PORTAL = 
-        {
-            ON = "Let us end this chapter of our journey.",
-            GENERIC = "Meddling with it will only cause further trouble.",
-        },
-        LAVAARENA_KEYHOLE =  "A key is key.",
-        LAVAARENA_KEYHOLE_FULL = "Right as rain.",
-        LAVAARENA_BATTLESTANDARD = "We must destroy that Battle Standard.",
-        LAVAARENA_SPAWNER = "It's a one-way portal.",
-
-        HEALINGSTAFF = "I could be persuaded to dabble in white magicks.",
-        FIREBALLSTAFF = "A staff after my own heart!",
-        HAMMER_MJOLNIR = "I would never resort to something so brutish.",
-        SPEAR_GUNGNIR = "I would never stoop to such things.",
-        BLOWDART_LAVA = "That is not my style.",
-        BLOWDART_LAVA2 = "I'm no blowhard.",
-        LAVAARENA_LUCY = "I have no desire to use that.",
-        WEBBER_SPIDER_MINION = "Disgusting.",
-        BOOK_FOSSIL = "I could stop a fiend in its tracks with this.",
-		LAVAARENA_BERNIE = "That thing's still shambling about, I see.",
-
-        LAVAARENA_ARMORLIGHT = "It is nearly useless.",
-		LAVAARENA_ARMORLIGHTSPEED = "Swiftly useless.",
-		LAVAARENA_ARMORMEDIUM = "It offers a serviceable amount of protection.",
-		LAVAARENA_ARMORMEDIUMDAMAGER = "This was intended for someone physically-inclined.",
-		LAVAARENA_ARMORMEDIUMRECHARGER = "Decent protection that will enhance my power.",
-		LAVAARENA_ARMORHEAVY = "Seems heavy.",
-		LAVAARENA_ARMOREXTRAHEAVY = "Quite a clunky looking thing.",
-
-		LAVAARENA_FEATHERCROWNHAT = "Horsefeathers.",
-        LAVAARENA_HEALINGFLOWERHAT = "I could use the invigoration.",
-        LAVAARENA_LIGHTDAMAGERHAT = "That is not suited to me.",
-        LAVAARENA_STRONGDAMAGERHAT = "I'd never wear such an undapper thing.",
-        LAVAARENA_TIARAFLOWERPETALSHAT = "A decent wreath, should I feel like healing.",
-        LAVAARENA_EYECIRCLETHAT = "I must have it.",
-        LAVAARENA_RECHARGERHAT = "It will quickly restore my powers.",
-        LAVAARENA_HEALINGGARLANDHAT = "Self sufficiency in wreath form.",
-        LAVAARENA_CROWNDAMAGERHAT = "You'd need a thick neck to wear such a thing.",
 
         MULTIPLAYER_PORTAL = "Always did have a flair for the dramatic...",
         --...Make your jokes...I'll be seeing you soon...

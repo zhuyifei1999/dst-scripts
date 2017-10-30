@@ -26,23 +26,6 @@ local Button = Class(Widget, function(self)
 	self.help_message = STRINGS.UI.HELP.SELECT
 end)
 
-function Button:DebugDraw_AddSection(dbui, panel)
-    Button._base.DebugDraw_AddSection(self, dbui, panel)
-
-    dbui.Spacing()
-    dbui.Text("Button")
-    dbui.Indent() do
-        dbui.Value("IsSelected", self:IsSelected())
-        dbui.Value("IsEnabled", self:IsEnabled())
-
-        dbui.ColorEdit4("textcolour        ", unpack(self.textcolour))
-        dbui.ColorEdit4("textfocuscolour   ", unpack(self.textfocuscolour))
-        dbui.ColorEdit4("textdisabledcolour", unpack(self.textdisabledcolour))
-        dbui.ColorEdit4("textselectedcolour", unpack(self.textselectedcolour))
-    end
-    dbui.Unindent()
-end
-
 function Button:SetControl(ctrl)
 	if ctrl then
 		self.control = ctrl
@@ -94,10 +77,11 @@ function Button:OnUpdate(dt)
 end
 
 function Button:OnGainFocus()
+
 	Button._base.OnGainFocus(self)
-	
+
     if self:IsEnabled() and not self.selected and TheFrontEnd:GetFadeLevel() <= 0 then
-    	if self.text then self.text:SetColour(self.textfocuscolour) end
+    	if self.text then self.text:SetColour(self.textfocuscolour[1],self.textfocuscolour[2],self.textfocuscolour[3],self.textfocuscolour[4]) end
 		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
 	end
 
@@ -108,7 +92,6 @@ end
 
 function Button:OnLoseFocus()
 	Button._base.OnLoseFocus(self)
-	
 	if self:IsEnabled() and not self.selected then
 		self.text:SetColour(self.textcolour)
 	end
@@ -291,15 +274,13 @@ function Button:SetText(msg, dropShadow, dropShadowOffset)
 		end
 
 		if dropShadow then
-			if self.text_shadow == nil then
-				self.text_shadow = self:AddChild(Text(self.font, self.size or 40))
-				self.text_shadow:SetVAlign(ANCHOR_MIDDLE)
-				self.text_shadow:SetColour(.1,.1,.1,1)
-				local offset = dropShadowOffset or {-2, -2}
-				self.text_shadow:SetPosition(offset[1], offset[2])
-			    self.text:MoveToFront()
-			end
+			self.text_shadow = self:AddChild(Text(self.font, self.size or 40))
+			self.text_shadow:SetVAlign(ANCHOR_MIDDLE)
+		    self.text_shadow:SetColour(.1,.1,.1,1)
+		    local offset = dropShadowOffset or {-2, -2}
+		    self.text_shadow:SetPosition(offset[1], offset[2])
 		    self.text_shadow:SetString(msg)
+		    self.text:MoveToFront()
 		end
     else
         self.text:Hide()

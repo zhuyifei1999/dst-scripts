@@ -148,12 +148,15 @@ local function RetargetFn(inst)
     UpdatePlayerTargets(inst)
 
     local target = inst.components.combat.target
-    local inrange = target ~= nil and inst:IsNear(target, TUNING.BEEQUEEN_ATTACK_RANGE + target:GetPhysicsRadius(0))
+    local inrange = target ~= nil and inst:IsNear(target, target.Physics ~= nil and TUNING.BEEQUEEN_ATTACK_RANGE + target.Physics:GetRadius() or TUNING.BEEQUEEN_ATTACK_RANGE)
 
     if target ~= nil and target:HasTag("player") then
         local newplayer = inst.components.grouptargeter:TryGetNewTarget()
         return newplayer ~= nil
-            and newplayer:IsNear(inst, inrange and TUNING.BEEQUEEN_ATTACK_RANGE + newplayer:GetPhysicsRadius(0) or TUNING.BEEQUEEN_AGGRO_DIST)
+            and newplayer:IsNear(inst,
+                (not inrange and TUNING.BEEQUEEN_AGGRO_DIST) or
+                (newplayer.Physics ~= nil and TUNING.BEEQUEEN_ATTACK_RANGE + newplayer.Physics:GetRadius()) or
+                TUNING.BEEQUEEN_ATTACK_RANGE)
             and newplayer
             or nil,
             true
@@ -161,7 +164,10 @@ local function RetargetFn(inst)
 
     local nearplayers = {}
     for k, v in pairs(inst.components.grouptargeter:GetTargets()) do
-        if inst:IsNear(k, inrange and TUNING.BEEQUEEN_ATTACK_RANGE + k:GetPhysicsRadius(0) or TUNING.BEEQUEEN_AGGRO_DIST) then
+        if inst:IsNear(k,
+            (not inrange and TUNING.BEEQUEEN_AGGRO_DIST) or
+            (k.Physics ~= nil and TUNING.BEEQUEEN_ATTACK_RANGE + k.Physics:GetRadius()) or
+            TUNING.BEEQUEEN_ATTACK_RANGE) then
             table.insert(nearplayers, k)
         end
     end
@@ -178,7 +184,10 @@ local function OnAttacked(inst, data)
         local target = inst.components.combat.target
         if not (target ~= nil and
                 target:HasTag("player") and
-                target:IsNear(inst, inst.focustarget_cd > 0 and TUNING.BEEQUEEN_ATTACK_RANGE + target:GetPhysicsRadius(0) or TUNING.BEEQUEEN_AGGRO_DIST)) then
+                target:IsNear(inst,
+                    (inst.focustarget_cd <= 0 and TUNING.BEEQUEEN_AGGRO_DIST) or
+                    (target.Physics ~= nil and TUNING.BEEQUEEN_ATTACK_RANGE + target.Physics:GetRadius()) or
+                    TUNING.BEEQUEEN_ATTACK_RANGE)) then
             inst.components.combat:SetTarget(data.attacker)
         end
         inst.components.commander:ShareTargetToAllSoldiers(data.attacker)

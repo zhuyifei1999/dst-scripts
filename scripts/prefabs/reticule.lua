@@ -3,7 +3,7 @@ local assets =
     Asset("ANIM", "anim/reticule.zip"),
 }
 
-local function fn()
+local function reticule()
     local inst = CreateEntity()
 
     inst:AddTag("FX")
@@ -22,7 +22,10 @@ local function fn()
     inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
     inst.AnimState:SetSortOrder(3)
 
+    inst:AddComponent("colourtweener")
+    inst.components.colourtweener:StartTween({ 0, 0, 0, 1 }, 0)
+
     return inst
 end
 
-return Prefab("reticule", fn, assets)
+return Prefab("reticule", reticule, assets)

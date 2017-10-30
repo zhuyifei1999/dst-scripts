@@ -240,20 +240,6 @@ function GetDescription(inst, item, modifier)
     return ret or STRINGS.CHARACTERS.GENERIC.DESCRIBE_GENERIC
 end
 
-function GetCharacterDescription(herocharacter)
-    if herocharacter == "woodie" then
-        if TheNet:GetCountryCode() == "CA" then
-            herocharacter = herocharacter.."_canada"
-        elseif TheNet:GetCountryCode() == "US" then
-            herocharacter = herocharacter.."_us"
-        end
-    end
-    if TheNet:GetServerGameMode() == "lavaarena" then
-		return STRINGS.LAVAARENA_CHARACTER_DESCRIPTIONS[herocharacter]
-	end
-    return STRINGS.CHARACTER_DESCRIPTIONS[herocharacter]
-end
-
 -- When calling GetActionFailString, must pass actual instance of entity if it might be used when ghost
 -- Otherwise, handing inst.prefab directly to the function call is okay
 function GetActionFailString(inst, action, reason)
@@ -295,30 +281,3 @@ function subfmt(s, tab)
   return (s:gsub('(%b{})', function(w) return tab[w:sub(2, -2)] or w end))
 end
 
-function str_seconds(time)
-	time = math.floor(time)
-	local seconds = 0
-	local minutes = 0
-	local hours = 0
-
-
-	seconds = time % 60
-	time = (time - seconds) / 60
-	if time > 0  then
-		minutes = time % 60
-		time = (time - minutes) / 60
-	end
-	if time > 0  then
-		hours = time
-	end
-
-	local seconds_str = seconds<10 and tostring("0"..seconds) or tostring(seconds)
-	local minutes_str = (hours > 0 and minutes<10) and tostring("0"..minutes) or tostring(minutes)
-
-	if hours > 0 then
-		return subfmt(STRINGS.UI.TIME_FORMAT.HHMMSS, {hours=hours, minutes=minutes_str, seconds=seconds_str})
-	else
-		return subfmt(STRINGS.UI.TIME_FORMAT.MMSS, {minutes=minutes_str or 0, seconds=seconds_str})
-	end
-	
-end

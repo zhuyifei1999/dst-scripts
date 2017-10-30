@@ -18,44 +18,30 @@ function Image:__tostring()
 	return string.format("%s - %s:%s", self.name, self.atlas or "", self.texture or "")
 end
 
-function Image:DebugDraw_AddSection(dbui, panel)
-    Image._base.DebugDraw_AddSection(self, dbui, panel)
+function Image:DebugDraw_AddSection(dbui)
+    Image._base.DebugDraw_AddSection(self, dbui)
 
-    dbui.Spacing()
-    dbui.Text("Image")
-    dbui.Indent() do
-        -- SetTexture doesn't gracefully fail on bad input, so don't allow editing
-        -- (we'd call SetTexture for every keystroke).
-        local function image_from_atlastexture(label, atlastexture)
-            dbui.SetNextTreeNodeOpen(true, dbui.constant.SetCond.Appearing)
-            if dbui.TreeNode(label ..": ".. tostring(atlastexture)) then
-                if atlastexture then
-                    local parts = atlastexture:split()
-                    if #parts == 2 then
-                        dbui.AtlasImage(parts[1], parts[2], self:GetSize())
-                    end
-                end
-                dbui.TreePop()
+    -- SetTexture doesn't gracefully fail on bad input, so don't allow editing
+    -- (we'd call SetTexture for every keystroke).
+    dbui.Text(string.format("atlas:texture: %s:%s", self.atlas or "", self.texture or ""))
+    dbui.AtlasImage(self.atlas, self.texture, self:GetSize())
+
+    local function image_from_atlastexture(label, atlastexture)
+        dbui.Text(label ..": ".. tostring(atlastexture))
+        if atlastexture then
+            local parts = atlastexture:split()
+            if #parts == 2 then
+                dbui.Image(parts[1], parts[2], self:GetSize())
             end
         end
-        -- Building a string to parse it is ugly, but not uglier than handling two
-        -- input types. Must pass empty text for nil so AtlasImage isn't called on
-        -- invalid data!
-        image_from_atlastexture("atlas:texture", string.format("%s:%s", self.atlas or "", self.texture or ""))
-        image_from_atlastexture("mouse over texture", self.mouseovertex)
-        image_from_atlastexture("disabled texture", self.disabledtex)
-
-        local changed, r,g,b,a = dbui.ColorEdit4("tint", unpack(self.tint))
-        if changed then
-            self:SetTint(r, g, b, a)
-        end
-        local w,h = self:GetSize()
-        changed, w,h = dbui.DragFloat3("size", w,h,0, 1,1,1000)
-        if changed then
-            self:SetSize(w,h)
-        end
     end
-    dbui.Unindent()
+    image_from_atlastexture("mouse over texture", self.mouseovertex)
+    image_from_atlastexture("disabled texture", self.disabledtex)
+
+    local changed, r,g,b,a = dbui.ColorEdit4("tint", unpack(self.tint))
+    if changed then
+        self:SetTint(r, g, b, a)
+    end
 end
 
 function Image:SetAlphaRange(min, max)

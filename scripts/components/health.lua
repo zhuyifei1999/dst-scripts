@@ -323,9 +323,9 @@ end
 
 function Health:DoDelta(amount, overtime, cause, ignore_invincible, afflicter, ignore_absorb)
     if self.redirect ~= nil and self.redirect(self.inst, amount, overtime, cause, ignore_invincible, afflicter, ignore_absorb) then
-        return 0
-    elseif not ignore_invincible and (self.invincible or self.inst.is_teleporting) then
-        return 0
+        return
+    elseif not ignore_invincible and (self.invincible or self.inst.is_teleporting == true) then
+        return
     elseif amount < 0 and not ignore_absorb then
         amount = amount - amount * (self.playerabsorb ~= 0 and afflicter ~= nil and afflicter:HasTag("player") and self.playerabsorb + self.absorb or self.absorb)
     end
@@ -339,7 +339,6 @@ function Health:DoDelta(amount, overtime, cause, ignore_invincible, afflicter, i
     if self.ondelta ~= nil then
         self.ondelta(self.inst, old_percent, self:GetPercent())
     end
-    return amount
 end
 
 return Health

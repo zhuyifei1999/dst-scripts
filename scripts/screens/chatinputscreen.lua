@@ -1,11 +1,9 @@
 require "util"
-local TextCompleter = require "util/textcompleter"
 local Screen = require "widgets/screen"
 local TextEdit = require "widgets/textedit"
 local Widget = require "widgets/widget"
 local Text = require "widgets/text"
 
-local emoji = require("util/emoji")
 local UserCommands = require("usercommands")
 
 local CHAT_INPUT_HISTORY = {}
@@ -19,8 +17,6 @@ end)
 
 function ChatInputScreen:OnBecomeActive()
     ChatInputScreen._base.OnBecomeActive(self)
-
-    self.completer:ClearState()
 
     self.chat_edit:SetFocus()
     self.chat_edit:SetEditing(true)
@@ -75,13 +71,41 @@ function ChatInputScreen:OnControl(control, down)
 end
 
 function ChatInputScreen:OnRawKey(key, down)
-    if self.runtask ~= nil then return true end
-    if ChatInputScreen._base.OnRawKey(self, key, down) then
-        self.completer:UpdateSuggestions(down, key)
-        return true 
+    if self.runtask ~= nil or ChatInputScreen._base.OnRawKey(self, key, down) then return true end
+
+    if down then return end
+
+    if key == KEY_UP then
+        local len = #CHAT_INPUT_HISTORY
+        if len > 0 then
+            if self.history_idx ~= nil then
+                self.history_idx = math.max( 1, self.history_idx - 1 )
+            else
+                self.history_idx = len
+            end
+            self.chat_edit:SetString( CHAT_INPUT_HISTORY[ self.history_idx ] )
+        end
+    elseif key == KEY_DOWN then
+        local len = #CHAT_INPUT_HISTORY
+        if len > 0 then
+            if self.history_idx ~= nil then
+                if self.history_idx == len then
+                    self.chat_edit:SetString( "" )
+                else
+                    self.history_idx = math.min( len, self.history_idx + 1 )
+                    self.chat_edit:SetString( CHAT_INPUT_HISTORY[ self.history_idx ] )
+                end
+            end
+        end
+    else
+        self.autocompletePrefix = nil
+        self.autocompleteObjName = ""
+        self.autocompleteObj = nil
+        self.autocompleteOffset = -1
+        return false
     end
 
-    return self.completer:OnRawKey(key, down)
+    return true
 end
 
 function ChatInputScreen:Run()
@@ -96,9 +120,10 @@ function ChatInputScreen:Run()
         --Default to sending regular chat
         TheNet:Say(chat_string, self.whisper)
     end
+end
 
-    -- To support chat history, uncomment.
-    --~ table.insert( CHAT_INPUT_HISTORY, chat_string )
+function string.starts(String,Start)
+   return string.sub(String,1,string.len(Start))==Start
 end
 
 function ChatInputScreen:Close()
@@ -124,11 +149,24 @@ function ChatInputScreen:DoInit()
     --SetPause(true,"console")
     TheInput:EnableDebugToggle(false)
 
+    local label_width = 200
     local label_height = 50
+    local label_offset = 450
+
+    local space_between = 30
+    local height_offset = -270
+
     local fontsize = 30
+
     local edit_width = 850
     local edit_width_padding = 0
     local chat_type_width = 150
+    local edit_bg_padding = 100
+
+    self.autocompleteOffset = -1
+    self.autocompletePrefix = nil
+    self.autocompleteObj = nil
+    self.autocompleteObjName = ""
 
     self.root = self:AddChild(Widget("chat_input_root"))
     self.root:SetScaleMode(SCALEMODE_PROPORTIONAL)
@@ -172,23 +210,11 @@ function ChatInputScreen:DoInit()
     self.chat_edit:EnableRegionSizeLimit(true)
     self.chat_edit:EnableScrollEditWindow(false)
 
-
-    assert(ThePlayer)
-    local suggestion_data, emoji_translator = emoji.GetSuggestionDataForTextCompleter(ThePlayer.userid)
-
-    local suggest_text_widgets = {}
-    local max_suggestions = 5
-    for i = 1, max_suggestions do
-        local w = self.root:AddChild(emoji.EmojiSuggestText(emoji_translator, DEFAULTFONT, 27))
-        w:SetPosition(290, 32*i + 18, 0)
-        w:SetHAlign(ANCHOR_RIGHT)
-        w:SetRegionSize(220, label_height)
-        table.insert(suggest_text_widgets, w)
-    end
-    self.completer = TextCompleter(suggest_text_widgets, self.chat_edit, CHAT_INPUT_HISTORY, false)
-    self.completer:SetSuggestionData(suggestion_data)
-
     self.chat_edit:SetString("")
+    self.history_idx = nil
+
+    self.chat_edit.validrawkeys[KEY_UP] = true
+    self.chat_edit.validrawkeys[KEY_DOWN] = true
 end
 
 return ChatInputScreen

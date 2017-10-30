@@ -401,9 +401,11 @@ local foods=
 		stacksize = 3,
         prefabs = { "healthregenbuff" },
         oneatenfn = function(inst, eater)
-            if eater.components.debuffable ~= nil and eater.components.debuffable:IsEnabled() and
-                not (eater.components.health ~= nil and eater.components.health:IsDead()) and
+            if eater.components.debuffable ~= nil and
+                not (eater.components.health ~= nil and
+                    eater.components.health:IsDead()) and
                 not eater:HasTag("playerghost") then
+                eater.components.debuffable:RemoveDebuff("healthregenbuff")
                 eater.components.debuffable:AddDebuff("healthregenbuff", "healthregenbuff")
             end
         end,

@@ -23,14 +23,17 @@ local DEBUG_MODE = BRANCH == "dev"
 local LOAD_UPFRONT_MODE = PLATFORM == "PS4"
 
 local MainScreen = nil
+local ModsScreen = nil
 if PLATFORM == "PS4" then
 	MainScreen = require "screens/mainscreen_ps4"
+	ModsScreen = require "screens/modsscreen"
 elseif not TheNet:IsDedicated() then
-	MainScreen = require "screens/redux/mainscreen"
+	MainScreen = require "screens/mainscreen"
+	ModsScreen = require "screens/modsscreen"
 end
 
 global_loading_widget = nil
-LoadingWidget = require "widgets/redux/loadingwidget"
+LoadingWidget = require "widgets/loadingwidget"
 global_loading_widget = LoadingWidget(Settings.load_screen_image)
 global_loading_widget:SetHAnchor(ANCHOR_LEFT)
 global_loading_widget:SetVAnchor(ANCHOR_BOTTOM)
@@ -514,7 +517,7 @@ local function ActivateWorld()
     if TheWorld ~= nil and not TheWorld.isdeactivated then
         SetPause(false)
         TheMixer:SetLevel("master", 1)
-        TheMixer:PushMix(GetGameModeProperty("override_normal_mix") or "normal")
+        TheMixer:PushMix("normal")
     end
 end
 
@@ -831,8 +834,7 @@ local function DoGenerateWorld(saveslot)
         profile_data = Profile.persistdata,
     }
 
-    local hide_worldgen_screen = GetGameModeProperty("hide_worldgen_loading_screen") and (next(Settings.match_results) ~= nil)
-	TheFrontEnd:PushScreen(WorldGenScreen(Profile, onComplete, world_gen_data, hide_worldgen_screen))
+	TheFrontEnd:PushScreen(WorldGenScreen(Profile, onComplete, world_gen_data))
 end
 
 local function LoadSlot(slot)

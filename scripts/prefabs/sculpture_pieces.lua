@@ -24,7 +24,6 @@ local function makepiece(name)
         inst.entity:AddNetwork()
 
         MakeSmallHeavyObstaclePhysics(inst, PHYSICS_RADIUS)
-        inst:SetPhysicsRadiusOverride(PHYSICS_RADIUS)
 
         inst.AnimState:SetBank("sculpture_pieces")
         inst.AnimState:SetBuild("swap_sculpture_"..name)

@@ -54,7 +54,7 @@ function ImageButton:SetTextures(atlas, normal, focus, disabled, down, selected,
         scale = {1, 1}
         offset = {0, 0}
     end
-    scale = image_scale or self.normal_scale or scale
+    scale = image_scale or scale
     offset = image_offset or offset
     self.image_scale = scale
     self.image_offset = offset 

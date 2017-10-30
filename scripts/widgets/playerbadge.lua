@@ -52,9 +52,6 @@ function PlayerBadge:Set(prefab, colour, ishost, userflags)
         elseif table.contains(MODCHARACTERLIST, prefab) then
             self.prefabname = prefab
             self.is_mod_character = true
-        elseif prefab == "random" then
-            self.prefabname = "random"
-            self.is_mod_character = false
         else
             self.prefabname = ""
             self.is_mod_character = (prefab ~= nil and #prefab > 0)

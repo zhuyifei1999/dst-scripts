@@ -118,20 +118,20 @@ function UIClock:UpdateDayString()
     if self._cycles ~= nil then
         local cycles_lived = ThePlayer.Network:GetPlayerAge()
         self._text:SetString(STRINGS.UI.HUD.CLOCKSURVIVED.."\n"..tostring(cycles_lived).." "..(cycles_lived == 1 and STRINGS.UI.HUD.CLOCKDAY or STRINGS.UI.HUD.CLOCKDAYS))
+    else
+        self._text:SetString("")
     end
     self._showingcycles = false
 end
 
 function UIClock:UpdateWorldString()
-    if self._cycles ~= nil then
-		--Todo(Peter):get rid of this platform branch and use the same subfmt on all platforms.
-		if PLATFORM == "WIN32_RAIL" then
-        	local day_text = subfmt(STRINGS.UI.HUD.WORLD_CLOCKDAY_V2,{day_count = self._cycles + 1})
-	    	self._text:SetString(day_text)
-		else
-			self._text:SetString(STRINGS.UI.HUD.WORLD_CLOCKDAY.." "..tostring(self._cycles + 1))
-		end
-    end
+	--Todo(Peter):get rid of this platform branch and use the same subfmt on all platforms.
+	if PLATFORM == "WIN32_RAIL" then
+		local day_text = subfmt(STRINGS.UI.HUD.WORLD_CLOCKDAY_V2,{day_count = TheWorld.state.cycles + 1})
+	    self._text:SetString(day_text)
+	else
+	    self._text:SetString(STRINGS.UI.HUD.WORLD_CLOCKDAY.." "..tostring(TheWorld.state.cycles + 1))
+	end
     self._showingcycles = true
 end
 

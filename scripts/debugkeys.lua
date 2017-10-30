@@ -7,6 +7,16 @@ end
 ----this gets called by the frontend code if a rawkey event has not been consumed by the current screen
 handlers = {}
 
+-- Add commonly used commands here. 
+-- Hitting F2 will append them to the current console history 
+-- Hit  SHIFT-CTRL-F2 to add the current console history to this list (list is not saved between reloads!)
+local LOCAL_HISTORY =
+{
+    "c_godmode(true)",
+    "c_spawn('nightmarebeak',10)",
+    "c_spawn('minotaur')",
+}
+
 function DoDebugKey(key, down)
     if handlers[key] then
         for k,v in ipairs(handlers[key]) do
@@ -80,7 +90,16 @@ AddGlobalDebugKey(KEY_F1, function()
         TheSim:TogglePerfGraph()
         return true
     elseif TheInput:IsKeyDown(KEY_SHIFT) then
-		c_select(TheWorld)
+        c_removeall('beefalo')
+        c_give('saddle_basic')
+        c_give('saddlehorn')
+        c_give('carrot', 80)
+        c_give('dragonpie', 10)
+        c_spawn('dummytarget')
+        local beef = c_spawn('beefalo')
+        beef.components.domesticatable:DeltaDomestication(0.05)
+        beef.components.domesticatable:DeltaObedience(1.0)
+        beef.components.rideable:SetSaddle(nil, SpawnPrefab('saddle_basic'))
     else
         c_select()
         if c_sel() ~= nil then
@@ -94,7 +113,7 @@ AddGlobalDebugKey(KEY_F1, function()
                 end)
             elseif c_sel():HasTag("player") then
                 c_sel():ListenForEvent("onattackother", function(inst)
-                    --print("I DID ATTTACCCCKED")
+                    print("I DID ATTTACCCCKED")
                 end)
             end
         end
@@ -587,7 +606,7 @@ end)
 
 AddGameDebugKey(KEY_KP_MINUS, function()
     local MainCharacter = DebugKeyPlayer()
-    if MainCharacter and TheWorld.ismastersim then
+    if MainCharacter then
         if TheInput:IsKeyDown(KEY_CTRL) then
             --MainCharacter.components.temperature:DoDelta(-10)
             --TheSim:SetTimeScale(TheSim:GetTimeScale() - .25)
@@ -748,53 +767,6 @@ AddGameDebugKey(KEY_K, function()
         end
     end
     return true
-end)
-
-
-AddGameDebugKey(KEY_L, function()
-    if not ThePlayer then
-        -- ThePlayer is nil in lobby screens (which count as GameDebug).
-        return
-    end
-	--local pt = TheInput:GetWorldPosition()
-	local pt = ThePlayer:GetPosition()
-	
---    local tile = TheWorld.Map:GetTileAtPoint(pt:Get())
-
-    local x, _, z = pt:Get()
-    local k = 1.3
-    local str = "\n"
-    local target_tile = 34
-    local valid = nil
-	for _z = 1, -1, -1 do
-	    for _x = -1, 1 do
-			local tile = TheWorld.Map:GetTileAtPoint(x+_x*k, 0, z+_z*k)
-			if tile == 33 then -- this would be tile.sort > target_tile.sort
-				valid = false
-			elseif valid == nil and tile == target_tile then
-				valid = true
-			end
-			
-			str = str .. tostring(tile) .. "\t"
-		end
-		str = str .. "\n"
-	end
-    
-    print (str .. tostring(valid == true))
-    
---	print ("", TheWorld.Map:GetTileAtPoint(x-k, 0, z+k), TheWorld.Map:GetTileAtPoint(x, 0, z+k), TheWorld.Map:GetTileAtPoint(x+k, 0, z+k))
---	print ("", TheWorld.Map:GetTileAtPoint(x-k, 0, z), TheWorld.Map:GetTileAtPoint(x, 0, z), TheWorld.Map:GetTileAtPoint(x+k, 0, z))
---	print ("", TheWorld.Map:GetTileAtPoint(x-k, 0, z-k), TheWorld.Map:GetTileAtPoint(x, 0, z-k), TheWorld.Map:GetTileAtPoint(x+k, 0, z-k))
-    
---[[
-    local x, y = TheWorld.Map:GetTileCoordsAtPoint((pt - Vector3(4,0,4)):Get())
-
-
-    print ("", TheWorld.Map:GetTile(x, y+1), TheWorld.Map:GetTile(x+1, y+1))
-    print ("", TheWorld.Map:GetTile(x, y), TheWorld.Map:GetTile(x+1, y))
-]]
---    print ("", TheWorld.Map:GetTile(x-1, y), TheWorld.Map:GetTile(x, y))
---    print ("", TheWorld.Map:GetTile(x-1, y-1), TheWorld.Map:GetTile(x, y-1))
 end)
 
 local DebugTextureVisible = false
@@ -1094,7 +1066,7 @@ local function DebugRMB(x,y)
         if spawn then
             spawn.Transform:SetPosition(pos:Get())
         end
-    elseif TheInput:IsKeyDown(KEY_CTRL) and TheWorld.ismastersim then
+   elseif TheInput:IsKeyDown(KEY_CTRL) then
         if MouseCharacter then
             if MouseCharacter.components.health and MouseCharacter ~= DebugKeyPlayer() then
                 MouseCharacter.components.health:Kill()
@@ -1110,10 +1082,9 @@ local function DebugRMB(x,y)
             end
         end
     elseif TheInput:IsKeyDown(KEY_ALT) then
-        local player = DebugKeyPlayer()
-        if player then
-            print(player:GetAngleToPoint(pos))
-        end
+
+        print(DebugKeyPlayer():GetAngleToPoint(pos))
+
     elseif TheInput:IsKeyDown(KEY_SHIFT) then
         if MouseCharacter then
             SetDebugEntity(MouseCharacter)

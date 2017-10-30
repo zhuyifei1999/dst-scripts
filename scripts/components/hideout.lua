@@ -123,7 +123,8 @@ function Hideout:DoReleaseChild(target, child, radius)
     end
 
     local pos = self.inst:GetPosition()
-    local offset = FindWalkableOffset(pos, math.random() * PI * 2, (radius or .5) + self.inst:GetPhysicsRadius(0), 8, false, true, NoHoles)
+    local rad = (radius or .5) + (self.inst.Physics ~= nil and self.inst.Physics:GetRadius() or 0)
+    local offset = FindWalkableOffset(pos, math.random() * PI * 2, rad, 8, false, true, NoHoles)
     if offset == nil then
         return
     end

@@ -81,11 +81,7 @@ local function MakeFx(t)
             inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
         end
 
-		if t.animqueue then
-	        inst:ListenForEvent("animqueueover", inst.Remove)
-	    else
-	        inst:ListenForEvent("animover", inst.Remove)
-	    end
+        inst:ListenForEvent("animover", inst.Remove)
 
         if t.fn ~= nil then
             if t.fntime ~= nil then
@@ -111,10 +107,6 @@ local function MakeFx(t)
 
         if t.twofaced then
             inst.Transform:SetTwoFaced()
-        elseif t.eightfaced then
-            inst.Transform:SetEightFaced()
-        elseif t.sixfaced then
-            inst.Transform:SetSixFaced()
         elseif not t.nofaced then
             inst.Transform:SetFourFaced()
         end

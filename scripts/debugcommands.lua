@@ -244,61 +244,28 @@ function d_getwidget()
     return TheFrontEnd.widget_editor.debug_widget_target
 end
 
-function d_startlavaarena()
-	local stage_info = (TheWorld ~= nil and TheWorld.components.lavaarenaevent ~= nil) and TheWorld.components.lavaarenaevent:GetStageInfo() or nil
-	
-	if stage_info ~= nil and stage_info.prefab == "lavaarenastage_allplayersspawned" then
-		TheWorld:PushEvent("ms_lavaarena_endofstage", {reason="debug triggered"})
-	end
-end
+function d_halloween()
+	local spacing = 2
+	local num_wide = math.ceil(math.sqrt(NUM_TRINKETS))
 
-function d_lavaarena_skip()
-	TheWorld:PushEvent("ms_lavaarena_endofstage", {reason="debug triggered"})
-end
-
-function d_lavaarena_speech(dialog, banter_line)
-	local is_banter = string.find(string.upper(dialog), "BANTER", 1) ~= nil
-	dialog = STRINGS[string.upper(dialog)]
-	if dialog ~= nil then
-		if is_banter then
-			dialog = { dialog[banter_line or math.random(#dialog)] }
-		end
-		
-		local lines = {}
-		for i,v in ipairs(dialog) do
-			table.insert(lines, {message=v, duration=3.5, noanim=true})
-		end	
-
-		local target = TheWorld.components.lavaarenaevent:GetBoarlord()
-		if target then
-			target:PushEvent("lavaarena_talk", {text=lines})
+	for y = 0, num_wide do
+		for x = 0, num_wide do
+			local inst = SpawnPrefab("trinket_"..(y*num_wide + x + 1))
+			if inst ~= nil then
+				print(x*spacing,  y*spacing)
+				inst.Transform:SetPosition((ConsoleWorldPosition() + Vector3(x*spacing, 0, y*spacing)):Get())
+			end
 		end
 	end
-end
 
-function d_reportevent(other_ku)
-	TheItems:ReportEventProgress(json.encode(
-		{
-			WorldID = "dev_"..tostring(math.random(9999999))..tostring(math.random(9999999)),
-			Teams =
-			{
-				{
-					Won=true,
-					Points=5,
-					PlayerStats=
-					{
-						{KU = TheNet:GetUserID(), PlaytimeMs = 100000, Custom = { UnlockedAchievements = {"LAVA_ACHV_TEST"..math.random(5)} }},
-						{KU = other_ku or "KU_test", PlaytimeMs = 60000}
-					}
-				},
-				{
-					Won=false,
-					Points=2,
-					PlayerStats=
-					{
-						{KU = "KU_test2", PlaytimeMs = 6000}
-					}
-				}
-			}
-		}), function(ku_tbl, success) print( "Report event:", success) dumptable(ku_tbl) end )
+	local candy_wide = math.ceil(math.sqrt(NUM_HALLOWEENCANDY))
+	for y = 0, candy_wide do
+		for x = 0, candy_wide do
+			local inst = SpawnPrefab("halloweencandy_"..(y*candy_wide + x + 1))
+			if inst ~= nil then
+				print(x*spacing,  y*spacing)
+				inst.Transform:SetPosition((ConsoleWorldPosition() + Vector3((x + num_wide)*spacing, 0, (y+num_wide)*spacing)):Get())
+			end
+		end
+	end
 end

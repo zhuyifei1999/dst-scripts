@@ -453,13 +453,10 @@ function LocoMotor:PreviewAction(bufferedaction, run, try_instant)
         self.inst:PreviewBufferedAction(bufferedaction)
     elseif bufferedaction.target ~= nil then
         self:GoToEntity(bufferedaction.target, bufferedaction, run)
-    elseif bufferedaction.pos == nil then
-        self.inst:PreviewBufferedAction(bufferedaction)
-    elseif bufferedaction.action == ACTIONS.CASTAOE and self.inst:GetDistanceSqToPoint(bufferedaction.pos) <= bufferedaction.distance * bufferedaction.distance then
-        self.inst:FacePoint(bufferedaction.pos:Get())
-        self.inst:PreviewBufferedAction(bufferedaction)
-    else
+    elseif bufferedaction.pos ~= nil then
         self:GoToPoint(bufferedaction.pos, bufferedaction, run)
+    else
+        self.inst:PreviewBufferedAction(bufferedaction)
     end
 end
 
@@ -505,13 +502,10 @@ function LocoMotor:PushAction(bufferedaction, run, try_instant)
         self.inst:PushBufferedAction(bufferedaction)
     elseif bufferedaction.target ~= nil then
         self:GoToEntity(bufferedaction.target, bufferedaction, run)
-    elseif bufferedaction.pos == nil then
-        self.inst:PushBufferedAction(bufferedaction)
-    elseif bufferedaction.action == ACTIONS.CASTAOE and self.inst:GetDistanceSqToPoint(bufferedaction.pos) <= bufferedaction.distance * bufferedaction.distance then
-        self.inst:FacePoint(bufferedaction.pos:Get())
-        self.inst:PushBufferedAction(bufferedaction)
-    else
+    elseif bufferedaction.pos ~= nil then
         self:GoToPoint(bufferedaction.pos, bufferedaction, run)
+    else
+        self.inst:PushBufferedAction(bufferedaction)
     end
 
     if self.inst.components.playercontroller ~= nil then
@@ -529,7 +523,15 @@ function LocoMotor:GoToEntity(inst, bufferedaction, run)
     if bufferedaction ~= nil and bufferedaction.distance ~= nil then
         self.arrive_dist = bufferedaction.distance
     else
-        self.arrive_dist = ARRIVE_STEP + inst:GetPhysicsRadius(0) + self.inst:GetPhysicsRadius(0)
+        self.arrive_dist = ARRIVE_STEP
+
+        if inst.Physics ~= nil then
+            self.arrive_dist = self.arrive_dist + (inst.Physics:GetRadius() or 0)
+        end
+
+        if self.inst.Physics ~= nil then
+            self.arrive_dist = self.arrive_dist + (self.inst.Physics:GetRadius() or 0)
+        end
 
         if bufferedaction ~= nil and bufferedaction.action.mindistance ~= nil and bufferedaction.action.mindistance > self.arrive_dist then
             self.arrive_dist = bufferedaction.action.mindistance
@@ -579,7 +581,7 @@ end
 
 
 function LocoMotor:SetBufferedAction(act)
-    if self.bufferedaction ~= nil then
+    if self.bufferedaction then
         self.bufferedaction:Fail()
     end
     self.bufferedaction = act
@@ -720,29 +722,26 @@ function LocoMotor:OnUpdate(dt)
         local destpos_x, destpos_y, destpos_z = self.dest:GetPoint()
         local mypos_x, mypos_y, mypos_z = self.inst.Transform:GetWorldPosition()
 
-        local reached_dest, invalid
+        local reached_dest
         if self.bufferedaction ~= nil and
             self.bufferedaction.action == ACTIONS.ATTACK and
             not self.bufferedaction.forced and
             self.inst.replica.combat ~= nil then
-            reached_dest, invalid = self.inst.replica.combat:CanAttack(self.bufferedaction.target)
+            reached_dest = self.inst.replica.combat:CanAttack(self.bufferedaction.target)
         else
             local dsq = distsq(destpos_x, destpos_z, mypos_x, mypos_z)
             local run_dist = self:GetRunSpeed() * dt * .5
             reached_dest = dsq <= math.max(run_dist * run_dist, self.arrive_dist * self.arrive_dist)
         end
 
-        if invalid then
-            self:Stop()
-            self:Clear()
-        elseif reached_dest then
+        if reached_dest then
             --Print(VERBOSITY.DEBUG, "REACH DEST")
-            self.inst:PushEvent("onreachdestination", { target = self.dest.inst, pos = Point(destpos_x, destpos_y, destpos_z) })
-            if self.atdestfn ~= nil then
+            self.inst:PushEvent("onreachdestination", {target=self.dest.inst, pos=Point(destpos_x, destpos_y, destpos_z)})
+            if self.atdestfn then
                 self.atdestfn(self.inst)
             end
 
-            if self.bufferedaction ~= nil and self.bufferedaction ~= self.inst.bufferedaction then
+            if self.bufferedaction and self.bufferedaction ~= self.inst.bufferedaction then
                 if self.bufferedaction.target ~= nil and self.bufferedaction.target.Transform ~= nil then
                     self.inst:FacePoint(self.bufferedaction.target.Transform:GetWorldPosition())
                 elseif self.bufferedaction.pos ~= nil and self.bufferedaction.invobject ~= nil then

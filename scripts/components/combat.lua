@@ -1,5 +1,3 @@
-local SourceModifierList = require("util/sourcemodifierlist")
-
 local function onattackrange(self, attackrange)
     self.inst.replica.combat:SetAttackRange(attackrange)
 end
@@ -37,14 +35,7 @@ local Combat = Class(function(self, inst)
     --self.pvp_damagemod = 1
     --self.damagemultiplier = 1
     --self.damagebonus = 0
-    --self.ignorehitrange = false
-    --self.noimpactsound = false
     --
-
-	self.externaldamagemultipliers = SourceModifierList(self.inst) -- damage dealt to others multiplier
-
-	self.externaldamagetakenmultipliers = SourceModifierList(self.inst) -- my damage taken multiplier (post armour reduction)
-
     self.min_attack_period = 4
     self.onhitfn = nil
     self.onhitotherfn = nil
@@ -313,7 +304,8 @@ function Combat:EngageTarget(target)
 end
 
 function Combat:SetTarget(target)
-    if target ~= self.target and (not target or self:IsValidTarget(target)) and not (target and target.sg and target.sg:HasStateTag("hiding") and target:HasTag("player")) then
+    local new = target ~= self.target
+    if new and (not target or self:IsValidTarget(target) ) and not (target and target.sg and target.sg:HasStateTag("hiding") and target:HasTag("player")) then
         self:DropTarget(target ~= nil)
         self:EngageTarget(target)
     end
@@ -373,15 +365,11 @@ function Combat:GetBattleCryString(target)
     return nil
 end
 
-function Combat:ResetBattleCryCooldown(t)
-    self.nextbattlecrytime = (t or GetTime()) + (self.battlecryinterval or 5) + math.random() * 3
-end
-
 function Combat:BattleCry()
     if self.battlecryenabled then
         local t = GetTime()
         if self.nextbattlecrytime == nil or t > self.nextbattlecrytime then
-            self:ResetBattleCryCooldown(t)
+            self.nextbattlecrytime = t + (self.battlecryinterval or 5) + math.random() * 3
             if self.inst.components.talker ~= nil then
                 local cry, strid = self:GetBattleCryString(self.target)
                 if cry ~= nil then
@@ -408,7 +396,6 @@ function Combat:GetAttacked(attacker, damage, weapon, stimuli)
     --print ("ATTACKED", self.inst, attacker, damage)
     local blocked = false
     local damageredirecttarget = self.redirectdamagefn ~= nil and self.redirectdamagefn(self.inst, attacker, damage, weapon, stimuli) or nil
-    local damageresolved = 0
 
     self.lastattacker = attacker
 
@@ -416,15 +403,13 @@ function Combat:GetAttacked(attacker, damage, weapon, stimuli)
         if self.inst.components.inventory ~= nil then
             damage = self.inst.components.inventory:ApplyDamage(damage, attacker, weapon)
         end
-        damage = damage * self.externaldamagetakenmultipliers:Get()
         if damage > 0 and not self.inst.components.health:IsInvincible() then
             --Bonus damage only applies after unabsorbed damage gets through your armor
             if attacker ~= nil and attacker.components.combat ~= nil and attacker.components.combat.bonusdamagefn ~= nil then
                 damage = damage + attacker.components.combat.bonusdamagefn(attacker, self.inst, damage, weapon) or 0
             end
-
             local cause = attacker == self.inst and weapon or attacker
-            damageresolved = -self.inst.components.health:DoDelta(-damage, nil, cause ~= nil and (cause.nameoverride or cause.prefab) or "NIL", nil, cause)
+            self.inst.components.health:DoDelta(-damage, nil, cause ~= nil and (cause.nameoverride or cause.prefab) or "NIL", nil, cause)
             if self.inst.components.health:IsDead() then
                 if attacker ~= nil then
                     attacker:PushEvent("killed", { victim = self.inst })
@@ -458,14 +443,14 @@ function Combat:GetAttacked(attacker, damage, weapon, stimuli)
     end
 
     if not blocked then
-        self.inst:PushEvent("attacked", { attacker = attacker, damage = damage, damageresolved = damageresolved, weapon = weapon, stimuli = stimuli, redirected = damageredirecttarget, noimpactsound = self.noimpactsound })
+        self.inst:PushEvent("attacked", { attacker = attacker, damage = damage, weapon = weapon, stimuli = stimuli, redirected=damageredirecttarget })
 
         if self.onhitfn ~= nil then
             self.onhitfn(self.inst, attacker, damage)
         end
 
         if attacker ~= nil then
-            attacker:PushEvent("onhitother", { target = self.inst, damage = damage, damageresolved = damageresolved, stimuli = stimuli, weapon = weapon, redirected = damageredirecttarget })
+            attacker:PushEvent("onhitother", { target = self.inst, damage = damage, stimuli = stimuli, redirected=damageredirecttarget })
             if attacker.components.combat ~= nil and attacker.components.combat.onhitotherfn ~= nil then
                 attacker.components.combat.onhitotherfn(attacker, self.inst, damage, stimuli)
             end
@@ -478,7 +463,7 @@ function Combat:GetAttacked(attacker, damage, weapon, stimuli)
 end
 
 function Combat:GetImpactSound(target, weapon)
-    if target == nil or self.noimpactsound then
+    if target == nil then
         return
     end
 
@@ -564,31 +549,37 @@ function Combat:HasTarget()
 end
 
 function Combat:CanAttack(target)
-    if not self:IsValidTarget(target) then
-        return false, true
+    if not self.canattack then 
+        return false 
     end
 
-    return self.canattack
-        and (   self.laststartattacktime == nil or
-                GetTime() - self.laststartattacktime >= self.min_attack_period
-            )
-        and (   self.inst.sg == nil or
-                not self.inst.sg:HasStateTag("busy") or
-                self.inst.sg:HasStateTag("hit")
-            )
-        and (   -- V2C: this is 3D distsq
-                self.ignorehitrange or
-                distsq(target:GetPosition(), self.inst:GetPosition()) <= self:CalcAttackRangeSq(target)
-            )
-        and not (   -- gjans: Some specific logic so the birchnutter doesn't attack it's spawn with it's AOE
-                    -- This could possibly be made more generic so that "things" don't attack other things in their "group" or something
-                    self.inst:HasTag("birchnutroot") and
-                    (   target:HasTag("birchnutroot") or
-                        target:HasTag("birchnut") or
-                        target:HasTag("birchnutdrake")
-                    )
-                )
+    if self.laststartattacktime ~= nil and
+        GetTime() - self.laststartattacktime < self.min_attack_period then
+        return false
+    end
+
+    if not self:IsValidTarget(target) or
+        (self.inst.sg ~= nil and (not self.inst.sg:HasStateTag("hit") and self.inst.sg:HasStateTag("busy"))) then
+        return false
+    end
+
+    -- V2C: this is 3D distsq
+    if distsq(target:GetPosition(), self.inst:GetPosition()) > self:CalcAttackRangeSq(target) then
+        return false
+    end
+
+    -- gjans: Some specific logic so the birchnutter doesn't attack it's spawn with it's AOE
+    -- This could possibly be made more generic so that "things" don't attack other things in their "group" or something
+    if self.inst:HasTag("birchnutroot")
+        and (target:HasTag("birchnutroot") or
+            target:HasTag("birchnut") or
+            target:HasTag("birchnutdrake")) then
+        return false
+    end
+
+    return true
 end
+
 
 function Combat:TryAttack(target)
     local target = target or self.target 
@@ -639,7 +630,6 @@ function Combat:CalcDamage(target, weapon, multiplier)
 
     local basedamage
     local basemultiplier = self.damagemultiplier
-    local externaldamagemultipliers = self.externaldamagemultipliers
     local bonus = self.damagebonus --not affected by multipliers
     local playermultiplier = target ~= nil and target:HasTag("player")
     local pvpmultiplier = playermultiplier and self.inst:HasTag("player") and self.pvp_damagemod or 1
@@ -660,7 +650,6 @@ function Combat:CalcDamage(target, weapon, multiplier)
             if mount ~= nil and mount.components.combat ~= nil then
                 basedamage = mount.components.combat.defaultdamage
                 basemultiplier = mount.components.combat.damagemultiplier
-                externaldamagemultipliers = mount.components.combat.externaldamagemultipliers
                 bonus = mount.components.combat.damagebonus
             end
 
@@ -673,7 +662,6 @@ function Combat:CalcDamage(target, weapon, multiplier)
 
     return basedamage
         * (basemultiplier or 1)
-        * self.externaldamagemultipliers:Get()
         * (multiplier or 1)
         * playermultiplier
         * pvpmultiplier
@@ -723,12 +711,13 @@ end
 function Combat:GetAttackRange()
     local weapon = self:GetWeapon()
     return (weapon == nil and self.attackrange)
-        or (weapon.components.weapon.attackrange ~= nil and math.max(0, self.attackrange + weapon.components.weapon.attackrange))
+        or (weapon.components.weapon.attackrange ~= nil and self.attackrange + weapon.components.weapon.attackrange)
         or self.attackrange
 end
 
 function Combat:CalcAttackRangeSq(target)
-    local range = (target or self.target):GetPhysicsRadius(0) + self:GetAttackRange()
+    target = target or self.target
+    local range = target.Physics ~= nil and target.Physics:GetRadius() + self:GetAttackRange() or self:GetAttackRange()
     return range * range
 end
 
@@ -738,7 +727,8 @@ function Combat:GetHitRange()
 end
 
 function Combat:CalcHitRangeSq(target)
-    local range = (target or self.target):GetPhysicsRadius(0) + self:GetHitRange()
+    target = target or self.target
+    local range = target.Physics ~= nil and target.Physics:GetRadius() + self:GetHitRange() or self:GetHitRange()
     return range * range
 end
 
@@ -777,10 +767,10 @@ function Combat:CanHitTarget(target, weapon)
 
         local targetpos = target:GetPosition()
         -- V2C: this is 3D distsq
-        if self.ignorehitrange or distsq(targetpos, self.inst:GetPosition()) <= self:CalcHitRangeSq(target) then
+        if distsq(targetpos, self.inst:GetPosition()) <= self:CalcHitRangeSq(target) then
             return true
         elseif weapon ~= nil and weapon.components.projectile ~= nil then
-            local range = target:GetPhysicsRadius(0) + weapon.components.projectile.hitdist
+            local range = target.Physics ~= nil and target.Physics:GetRadius() + weapon.components.projectile.hitdist or weapon.components.projectile.hitdist
             -- V2C: this is 3D distsq
             return distsq(targetpos, weapon:GetPosition()) <= range * range
         end

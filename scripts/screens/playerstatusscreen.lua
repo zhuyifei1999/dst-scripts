@@ -6,7 +6,7 @@ local Image = require "widgets/image"
 local ImageButton = require "widgets/imagebutton"
 local PlayerBadge = require "widgets/playerbadge"
 local ScrollableList = require "widgets/scrollablelist"
-local UserCommandPickerScreen = require "screens/redux/usercommandpickerscreen"
+local UserCommandPickerScreen = require "screens/usercommandpickerscreen"
 
 local UserCommands = require "usercommands"
 
@@ -639,7 +639,7 @@ function PlayerStatusScreen:DoInit(ClientObjs)
         playerListing.viewprofile:SetOnClick(
             function()
                 TheFrontEnd:PopScreen()
-                self.owner.HUD:TogglePlayerAvatarPopup(playerListing.displayName, client, true, true)
+                self.owner.HUD:TogglePlayerAvatarPopup(playerListing.displayName, client, true)
             end)
 
         local button_start = 50

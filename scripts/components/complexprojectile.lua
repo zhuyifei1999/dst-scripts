@@ -14,7 +14,6 @@ local ComplexProjectile = Class(function(self, inst)
     self.onlaunchfn = nil
     self.onhitfn = nil
     self.onmissfn = nil
-    self.onupdatefn = nil
 
     self.usehigharc = true
 
@@ -54,10 +53,6 @@ end
 
 function ComplexProjectile:SetOnHit(fn)
     self.onhitfn = fn
-end
-
-function ComplexProjectile:SetOnUpdate(fn)
-    self.onupdatefn = fn
 end
 
 function ComplexProjectile:CalculateTrajectory(startPos, endPos, speed)
@@ -130,10 +125,6 @@ function ComplexProjectile:Hit(target)
 end
 
 function ComplexProjectile:OnUpdate(dt)
-    if self.onupdatefn ~= nil and self.onupdatefn(self.inst) then
-        return
-    end
-
     self.inst.Physics:SetMotorVel(self.velocity:Get())
     self.velocity.y = self.velocity.y + (self.gravity * dt)
     if self.velocity.y < 0 then

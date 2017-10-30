@@ -2,14 +2,12 @@ local Bloomer = Class(function(self, inst)
     self.inst = inst
     self.bloomstack = {}
     self.children = {}
-
-    self._onremovesource = function(source) self:PopBloom(source) end
 end)
 
 function Bloomer:OnRemoveFromEntity()
     for i, v in ipairs(self.bloomstack) do
-        if type(v.source) == "table" then
-            self.inst:RemoveEventCallback("onremove", self._onremovesource, v.source)
+        if v.onremove ~= nil then
+            self.inst:RemoveEventCallback("onremove", v.onremove, v.source)
         end
     end
     for k, v in pairs(self.children) do
@@ -77,7 +75,8 @@ function Bloomer:PushBloom(source, fx, priority)
         if bloom == nil then
             bloom = { source = source, fx = fx, priority = priority }
             if type(source) == "table" then
-                self.inst:ListenForEvent("onremove", self._onremovesource, source)
+                bloom.onremove = function() self:PopBloom(source) end
+                self.inst:ListenForEvent("onremove", bloom.onremove, source)
             end
         end
 
@@ -103,8 +102,8 @@ function Bloomer:PopBloom(source)
     if source ~= nil then
         for i, v in ipairs(self.bloomstack) do
             if v.source == source then
-                if type(source) == "table" then
-                    self.inst:RemoveEventCallback("onremove", self._onremovesource, source)
+                if v.onremove ~= nil then
+                    self.inst:RemoveEventCallback("onremove", v.onremove, source)
                 end
                 local oldfx = self:GetCurrentFX()
                 table.remove(self.bloomstack, i)

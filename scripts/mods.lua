@@ -364,6 +364,10 @@ function ModWrangler:DisableAllServerMods()
 	KnownModIndex:Save()
 end
 
+local function IsInFrontEnd()
+	return Settings.reset_action == nil or Settings.reset_action == RESET_ACTION.LOAD_FRONTEND
+end
+
 function ModWrangler:FrontendLoadMod(modname)
     -- When a mod gets enabled, we partially load it, in order to populate settings screens, world gen options, and such.
     if not KnownModIndex:DoesModExistAnyVersion(modname) then

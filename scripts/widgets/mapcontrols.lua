@@ -1,6 +1,6 @@
 local Widget = require "widgets/widget"
 local ImageButton = require "widgets/imagebutton"
-local PauseScreen = require "screens/redux/pausescreen"
+local PauseScreen = require "screens/pausescreen"
 
 local function OnToggleMap()
     ThePlayer.HUD.controls:ToggleMap()

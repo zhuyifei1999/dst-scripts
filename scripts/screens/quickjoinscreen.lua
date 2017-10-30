@@ -143,11 +143,6 @@ function QuickJoinScreen:IsValidWithFilters(server)
         return false
     end
 
-	-- Filter servers that are only accepting players with existing characters in the world
-	if not server.allow_new_players and not self:ProcessPlayerData(server.session) then
-		return false
-	end
-
 	return true
 end
 
@@ -207,7 +202,7 @@ local function PickBestServers(servers)
 		table.insert(servers, all_servers[i])
 	end
 	
-	-- shuffle best rated servers then sort on priorty (without sorting on ping)
+	-- suffle best rated servers then sort on priorty (without sorting on ping)
 	shuffleArray(servers)
 	table.sort(servers, function(a,b)
 		if a.score > b.score then

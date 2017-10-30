@@ -2,8 +2,9 @@ local FollowText = require "widgets/followtext"
 
 local DEFAULT_OFFSET = Vector3(0, -400, 0)
 
-Line = Class(function(self, message, noanim)
+Line = Class(function(self, message, duration, noanim)
     self.message = message
+    self.duration = duration
     self.noanim = noanim
 end)
 
@@ -14,7 +15,6 @@ local Talker = Class(function(self, inst)
     self.mod_str_fn = nil
     self.offset = nil
     self.offset_fn = nil
-    self.disablefollowtext = nil
 end)
 
 function Talker:SetOffsetFn(fn)
@@ -111,7 +111,7 @@ end
 
 local function sayfn(self, script, nobroadcast, colour)
     local player = ThePlayer
-    if (not self.disablefollowtext) and self.widget == nil and player ~= nil and player.HUD ~= nil then
+    if self.widget == nil and player ~= nil and player.HUD ~= nil then
         self.widget = player.HUD:AddChild(FollowText(self.font or TALKINGFONT, self.fontsize or 35))
         self.widget:SetHUD(player.HUD.inst)
     end
@@ -129,28 +129,23 @@ local function sayfn(self, script, nobroadcast, colour)
 
     for i, line in ipairs(script) do
         if line.message ~= nil then
-            local display_message = GetSpecialCharacterPostProcess(
-                        self.inst.prefab,
-                        self.mod_str_fn ~= nil and self.mod_str_fn(line.message) or line.message
-                    )
-
             if not nobroadcast then
                 TheNet:Talker(line.message, self.inst.entity)
             end
 
             if self.widget ~= nil then
-                self.widget.text:SetString(display_message)
+                self.widget.text:SetString(
+                    GetSpecialCharacterPostProcess(
+                        self.inst.prefab,
+                        self.mod_str_fn ~= nil and self.mod_str_fn(line.message) or line.message
+                    )
+                )
             end
-
-            if self.ontalkfn ~= nil then
-                self.ontalkfn(self.inst, { noanim = line.noanim, message=display_message })
-            end
-
             self.inst:PushEvent("ontalk", { noanim = line.noanim })
         elseif self.widget ~= nil then
             self.widget:Hide()
         end
-        Sleep(self.lineduration or 2.5)
+        Sleep(line.duration)
         if not self.inst:IsValid() or (self.widget ~= nil and not self.widget.inst:IsValid()) then
             return
         end
@@ -159,10 +154,6 @@ local function sayfn(self, script, nobroadcast, colour)
     if self.widget ~= nil then
         self.widget:Kill()
         self.widget = nil
-    end
-
-    if self.donetalkingfn ~= nil then
-        self.donetalkingfn(self.inst)
     end
 
     self.inst:PushEvent("donetalking")
@@ -179,10 +170,6 @@ local function CancelSay(self)
             self.widget = nil
         end
 
-        if self.donetalkingfn ~= nil then
-            self.donetalkingfn(self.inst)
-        end
-
         self.inst:PushEvent("donetalking")
     end
 end
@@ -191,26 +178,26 @@ function Talker:Say(script, time, noanim, force, nobroadcast, colour)
     if TheWorld.ismastersim then
         if not force
             and (self.ignoring ~= nil or
-                (self.inst.components.health ~= nil and self.inst.components.health:IsDead() and self.inst.components.revivablecorpse == nil) or
+                (self.inst.components.health ~= nil and self.inst.components.health:IsDead()) or
                 (self.inst.components.sleeper ~= nil and self.inst.components.sleeper:IsAsleep())) then
             return
-        elseif self.ontalk ~= nil then
+        end
+        if self.ontalk ~= nil then
             self.ontalk(self.inst, script)
         end
     elseif not force then
         if self.inst:HasTag("ignoretalking") then
             return
-        elseif self.inst.components.revivablecorpse == nil then
-            local health = self.inst.replica.health
-            if health ~= nil and health:IsDead() then
-                return
-            end
+        end
+        local health = self.inst.replica.health
+        if health ~= nil and health:IsDead() then
+            return
         end
     end
 
     CancelSay(self)
 
-    local lines = type(script) == "string" and { Line(script, noanim) } or script
+    local lines = type(script) == "string" and { Line(script, time or 2.5, noanim) } or script
     if lines ~= nil then
         self.task = self.inst:StartThread(function() sayfn(self, lines, nobroadcast, colour) end)
     end

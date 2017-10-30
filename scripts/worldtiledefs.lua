@@ -31,9 +31,6 @@ local GROUND_PROPERTIES =
     { GROUND.TILES,      { name = "cave",       noise_texture = "levels/textures/noise_ruinstileglow.tex",          runsound="dontstarve/movement/run_dirt",        walksound="dontstarve/movement/walk_dirt",      snowsound="dontstarve/movement/run_ice",    mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
     { GROUND.TRIM_GLOW,  { name = "cave",       noise_texture = "levels/textures/noise_ruinstrim.tex",              runsound="dontstarve/movement/run_dirt",        walksound="dontstarve/movement/walk_dirt",      snowsound="dontstarve/movement/run_snow",   mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
     { GROUND.TRIM,       { name = "cave",       noise_texture = "levels/textures/noise_ruinstrimglow.tex",          runsound="dontstarve/movement/run_dirt",        walksound="dontstarve/movement/walk_dirt",      snowsound="dontstarve/movement/run_ice",    mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
-
-    { GROUND.LAVAARENA_TRIM, { name = "lavaarena_trim_ms",       noise_texture = "levels/textures/lavaarena_trim_noise.tex",         runsound="dontstarve/movement/run_dirt",        walksound="dontstarve/movement/walk_dirt",      snowsound="dontstarve/movement/run_snow",   mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
-    { GROUND.LAVAARENA_FLOOR,{ name = "lavaarena_floor_ms",		noise_texture = "levels/textures/lavaarena_floor_noise.tex",         runsound="dontstarve/movement/run_dirt",        walksound="dontstarve/movement/walk_dirt",      snowsound="dontstarve/movement/run_snow",   mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
 }
 
 local WALL_PROPERTIES =

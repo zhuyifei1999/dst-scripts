@@ -250,8 +250,7 @@ local function DoAreaDrowsy(inst, sleeptimecache, sleepdelaycache)
             not (v.components.combat ~= nil and v.components.combat:GetLastAttackedTime() + ATTACK_SLEEP_DELAY > t) and
             not (v.components.burnable ~= nil and v.components.burnable:IsBurning()) and
             not (v.components.freezable ~= nil and v.components.freezable:IsFrozen()) and
-            not (v.components.pinnable ~= nil and v.components.pinnable:IsStuck()) and
-            not (v.components.fossilizable ~= nil and v.components.fossilizable:IsFossilized()) then
+            not (v.components.pinnable ~= nil and v.components.pinnable:IsStuck()) then
             local mount = v.components.rider ~= nil and v.components.rider:GetMount() or nil
             if mount ~= nil then
                 mount:PushEvent("ridersleep", { sleepiness = TICK_VALUE, sleeptime = MAX_SLEEP_TIME })

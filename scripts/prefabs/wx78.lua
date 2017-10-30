@@ -9,19 +9,7 @@ local assets =
 local prefabs =
 {
     "sparks",
-    "cracklehitfx",
 }
-
-local start_inv =
-{
-    default =
-    {
-    },
-
-    lavaarena = TUNING.LAVAARENA_STARTING_ITEMS.WX78,
-}
-
-prefabs = FlattenTree({ prefabs, start_inv }, true)
 
 --hunger, health, sanity
 local function applyupgrades(inst)
@@ -38,11 +26,7 @@ local function applyupgrades(inst)
 
     inst.components.hunger:SetPercent(hunger_percent)
     inst.components.health:SetPercent(health_percent)
-
-    local ignoresanity = inst.components.sanity.ignore
-    inst.components.sanity.ignore = false
     inst.components.sanity:SetPercent(sanity_percent)
-    inst.components.sanity.ignore = ignoresanity
 end
 
 local function oneat(inst, food)
@@ -104,15 +88,9 @@ local function onpreload(inst, data)
         inst.level = data.level
         applyupgrades(inst)
         --re-set these from the save data, because of load-order clipping issues
-        if data.health ~= nil and data.health.health ~= nil then
-            inst.components.health:SetCurrentHealth(data.health.health)
-        end
-        if data.hunger ~= nil and data.hunger.hunger ~= nil then
-            inst.components.hunger.current = data.hunger.hunger
-        end
-        if data.sanity ~= nil and data.sanity.current ~= nil then
-            inst.components.sanity.current = data.sanity.current
-        end
+        if data.health and data.health.health then inst.components.health:SetCurrentHealth(data.health.health) end
+        if data.hunger and data.hunger.hunger then inst.components.hunger.current = data.hunger.hunger end
+        if data.sanity and data.sanity.current then inst.components.sanity.current = data.sanity.current end
         inst.components.health:DoDelta(0)
         inst.components.hunger:DoDelta(0)
         inst.components.sanity:DoDelta(0)
@@ -179,7 +157,8 @@ local function dorainsparks(inst, dt)
                 inst.spark_time_offset = 3 + math.random() * 2
                 inst.spark_time = t
                 local x, y, z = inst.Transform:GetWorldPosition()
-                SpawnPrefab("sparks").Transform:SetPosition(x, y + 1 + math.random() * 1.5, z)
+                y = y + 1 + math.random() * 1.5
+                SpawnPrefab("sparks").Transform:SetPosition(x, y, z)
             end
         elseif t > inst.spark_time + inst.spark_time_offset then -- We have moisture-giving equipment on our head or it is not raining and we are just passively wet (but drying off). Do full damage.
             inst.components.health:DoDelta(
@@ -190,7 +169,8 @@ local function dorainsparks(inst, dt)
             inst.spark_time_offset = 3 + math.random() * 2
             inst.spark_time = t
             local x, y, z = inst.Transform:GetWorldPosition()
-            SpawnPrefab("sparks").Transform:SetPosition(x, y + .25 + math.random() * 2, z)
+            y = y + .25 + math.random() * 2
+            SpawnPrefab("sparks").Transform:SetPosition(x, y, z)
         end
     end
 end
@@ -283,8 +263,6 @@ local function common_postinit(inst)
 end
 
 local function master_postinit(inst)
-    inst.starting_inventory = start_inv[TheNet:GetServerGameMode()] or start_inv.default
-
     inst.level = 0
     inst.charged_task = nil
     inst.charge_time = 0
@@ -311,10 +289,6 @@ local function master_postinit(inst)
     inst.OnSave = onsave
     inst.OnLoad = onload
     inst.OnPreLoad = onpreload
-
-    if TheNet:GetServerGameMode() == "lavaarena" then
-        event_server_data("lavaarena", "prefabs/wx78").master_postinit(inst)
-    end
 end
 
 return MakePlayerCharacter("wx78", prefabs, assets, common_postinit, master_postinit)

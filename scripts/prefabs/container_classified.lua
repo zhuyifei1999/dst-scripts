@@ -30,9 +30,8 @@ local function SetSlotItem(inst, slot, item, src_pos)
         inst._items[slot]:set(item)
 
         if item ~= nil and inst._items[slot]:value() == item then
-            local inventoryitem = item.replica.inventoryitem
-            inventoryitem:SerializeUsage()
-            inventoryitem:SetPickupPos(src_pos)
+            item.replica.inventoryitem:SerializeUsage()
+            item.replica.inventoryitem:SetPickupPos(src_pos)
         else
             inst._items[slot]:set(nil)
         end

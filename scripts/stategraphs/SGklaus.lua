@@ -106,7 +106,7 @@ local function CalcChompSpeed(inst, target)
     local distsq = inst:GetDistanceSqToPoint(x, y, z)
     if distsq > 0 then
         inst:ForceFacePoint(x, y, z)
-        local dist = math.sqrt(distsq) - (inst:GetPhysicsRadius(0) + target:GetPhysicsRadius(0))
+        local dist = math.sqrt(distsq) - (target.Physics ~= nil and inst.Physics:GetRadius() + target.Physics:GetRadius() or inst.Physics:GetRadius())
         if dist > 0 then
             return math.min(inst.chomp_range, dist) / (10 * FRAMES)
         end
@@ -647,7 +647,7 @@ local states =
                 local target = inst.components.combat.target
                 if target ~= nil and
                     target:IsValid() and
-                    target:IsNear(inst, inst.attack_range + target:GetPhysicsRadius(0)) then
+                    target:IsNear(inst, target.Physics ~= nil and inst.attack_range + target.Physics:GetRadius() or inst.attack_range) then
                     inst.sg:GoToState("quickattack")
                 else
                     inst.sg:RemoveStateTag("busy")

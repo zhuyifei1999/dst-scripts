@@ -3,6 +3,7 @@ local ImageButton = require "widgets/imagebutton"
 local Text = require "widgets/text"
 local Image = require "widgets/image"
 local Widget = require "widgets/widget"
+local Grid = require "widgets/grid"
 local CustomizationList = require "widgets/customizationlist"
 local TEMPLATES = require "widgets/templates"
 

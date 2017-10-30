@@ -125,34 +125,6 @@ local Spinner = Class(Widget, function( self, options, width, height, textinfo, 
 end)
 
 
-function Spinner:DebugDraw_AddSection(dbui, panel)
-    Spinner._base.DebugDraw_AddSection(self, dbui, panel)
-    local DebugPickers = require("dbui_no_package/debug_pickers")
-
-    dbui.Spacing()
-    dbui.Text("Spinner")
-    dbui.Indent() do
-        dbui.Value("lean",       self.lean)
-
-        local changed, w = dbui.DragFloat("width", self.width, 1,1,1000)
-        if changed then
-            self.width = w
-            self:Layout()
-        end
-        -- Can't change height -- it's only used in ctor.
-        dbui.Value("height",     self.height)
-
-        local colour = DebugPickers.Colour(dbui, "textcolour", self.textcolour)
-        if colour then
-            self:SetTextColour(colour)
-        end
-
-        dbui.Text("atlas: "..    self.atlas)
-        panel:AppendTable(dbui, self.textures, "textures")
-    end
-    dbui.Unindent()
-end
-
 function Spinner:OnFocusMove(dir, down)
 	if Spinner._base.OnFocusMove(self,dir,down) then return true end
 
@@ -280,8 +252,8 @@ function Spinner:UpdateBG()
 end
 
 function Spinner:SetTextColour(r,g,b,a)
-    self.textcolour = type(r) == "number" and { r, g, b, a } or r
-	self.text:SetColour(self.textcolour)
+	self.textcolour = { r, g, b, a }
+	self.text:SetColour( r, g, b, a )
 end
 
 function Spinner:Enable()
@@ -416,7 +388,7 @@ function Spinner:SetSelectedIndex( idx )
 	if selected_colour then 
 		self:SetTextColour( unpack(selected_colour) )
 	else
-		self:SetTextColour( unpack(self.textcolour) )
+		self:SetTextColour(0, 0, 0, 1)
 	end
 
 	if self.options[ self.selectedIndex ] ~= nil then 

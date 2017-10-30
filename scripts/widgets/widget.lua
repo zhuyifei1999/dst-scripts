@@ -80,14 +80,20 @@ function Widget:OnFocusMove(dir, down)
 end
 
 function Widget:IsVisible()
-    return self.shown and (self.parent == nil or self.parent:IsVisible())
+    if not self.shown then return false end
+
+    if self.parent then
+        return self.parent:IsVisible()
+    end
+
+    return true 
 end
 
 function Widget:OnRawKey(key, down)
     if not self.focus then return false end
     for k,v in pairs (self.children) do
         if v.focus and v:OnRawKey(key, down) then return true end
-    end
+    end 
 end
 
 function Widget:OnTextInput(text)
@@ -95,7 +101,7 @@ function Widget:OnTextInput(text)
     if not self.focus then return false end
     for k,v in pairs (self.children) do
         if v.focus and v:OnTextInput(text) then return true end
-    end
+    end 
 end
 
 function Widget:OnStopForceProcessTextInput()
@@ -195,6 +201,7 @@ function Widget:GetChildren()
     return self.children
 end
 
+
 function Widget:Enable()
     self.enabled = true
     self:OnEnable()
@@ -226,6 +233,7 @@ function Widget:KillAllChildren()
         k:Kill()
     end
 end
+
 
 function Widget:AddChild(child)
     if child.parent then
@@ -281,12 +289,12 @@ end
 
 function Widget:SetPosition(pos, y, z)
     if type(pos) == "number" then
-        self.inst.UITransform:SetPosition(pos, y, z or 0)
+        self.inst.UITransform:SetPosition(pos,y,z or 0)
     else
         if not self.inst:IsValid() then
-            print(debugstack())
+            print (debugstack())
         end
-        self.inst.UITransform:SetPosition(pos:Get())
+        self.inst.UITransform:SetPosition(pos.x,pos.y,pos.z)
     end
 end
 
@@ -338,24 +346,24 @@ end
 
 function Widget:SetTooltipPos(pos, pos_y, pos_z)
     if type(pos) == "number" then
-        self.tooltip_pos = Vector3(pos, pos_y, pos_z)
+        self.inst.tooltip_pos = {x=pos, y=pos_y, z=pos_z}
     else
         if not self.inst:IsValid() then
-            print(debugstack())
+            print (debugstack())
         end
-        self.tooltip_pos = pos
+        self.inst.tooltip_pos = pos
     end
 end
 
-function Widget:SetTooltipColour(r, g, b, a)
-    self.tooltipcolour = { r, g, b, a }
+function Widget:SetTooltipColour(r,g,b,a)
+    self.tooltipcolour = {r, g, b, a}
 end
 
 function Widget:GetTooltipColour()
     if self.focus then
-        for k, v in pairs(self.children) do
+        for k,v in pairs(self.children) do
             local col = k:GetTooltipColour()
-            if col ~= nil then
+            if col then
                 return col
             end
         end
@@ -365,9 +373,9 @@ end
 
 function Widget:GetTooltip()
     if self.focus then
-        for k, v in pairs(self.children) do
+        for k,v in pairs(self.children) do
             local str = k:GetTooltip()
-            if str ~= nil then
+            if str then
                 return str
             end
         end
@@ -377,13 +385,15 @@ end
 
 function Widget:GetTooltipPos()
    if self.focus then
-        for k, v in pairs(self.children) do
+        for k,v in pairs(self.children) do
             local t_pos = k:GetTooltipPos()
-            if t_pos ~= nil then
+            if t_pos then
                 return t_pos
             end
         end
-        return self.tooltip_pos
+        if self.inst.tooltip_pos then
+            return self.inst.tooltip_pos
+        end
     end 
 end
 
@@ -397,13 +407,13 @@ end
 
 --[[function Widget:Update(dt)
     if not self.enabled then return end
-    if self.OnUpdate ~= nil then
+    if self.OnUpdate then
         self:OnUpdate(dt)
     end
 
-    for k, v in pairs(self.children) do
-        if v.OnUpdate ~= nil or #v.children > 0 then
-            v:Update(dt)
+    for k,v in pairs(self.children) do
+        if v.OnUpdate or #v.children > 0 then
+            v:Update(dt)        
         end
     end
 end--]]
@@ -416,33 +426,16 @@ end--]]
 -- (ImVec must be unpacked). Nonconst pointers are additional return values.
 --
 -- See imgui_demo.lua for usage examples.
-function Widget:DebugDraw_AddSection(dbui, panel)
+function Widget:DebugDraw_AddSection(dbui)
     dbui.Text(string.format("Widget: '%s'", tostring(self)))
-    dbui.Indent() do
-        local in_x,in_y = self:GetPosition():Get()
-        -- These step values are reversed because it's much more comfortable
-        -- get where you want with low precision and then dial it in with high
-        -- precision.
-        local step, step_fast = 10, 1
-        local has_modified_x, out_x = dbui.InputFloat("x position", in_x, step, step_fast)
-        local has_modified_y, out_y = dbui.InputFloat("y position", in_y, step, step_fast)
-        if has_modified_x or has_modified_y then
-            self:UpdatePosition(out_x,out_y)
-        end
 
-        local scale = self:GetScale()
-        -- Scale animates and often modifies other axes, so use awkward InputFloat3
-        -- to discourage editing.
-        local changed,x,y,z = dbui.InputFloat3("scale", scale.x, scale.y, scale.z)
-        if changed then
-            self:SetScale(x,y,z)
-        end
-        changed,x = dbui.DragFloat("uniform scale", scale.x, 0, 5, 0.1, "%.3f")
-        if changed then
-            self:SetScale(x)
-        end
+    local in_x,in_y = self:GetPosition():Get()
+    local step, step_fast = 10, 50
+    local has_modified_x, out_x = dbui.InputFloat("x position", in_x, step, step_fast)
+    local has_modified_y, out_y = dbui.InputFloat("y position", in_y, step, step_fast)
+    if has_modified_x or has_modified_y then
+        self:UpdatePosition(out_x,out_y)
     end
-    dbui.Unindent()
 end
 
 function Widget:SetFadeAlpha(alpha, skipChildren)
@@ -469,31 +462,35 @@ function Widget:SetClickable(val)
     self.inst.entity:SetClickable(val)
 end
 
-function Widget:UpdatePosition(x, y)
-    self:SetPosition(x, y, 0)
+function Widget:UpdatePosition(x,y)
+    self:SetPosition(x,y,0)
 end
 
 function Widget:FollowMouse()
-    if self.followhandler == nil then
-        self.followhandler = TheInput:AddMoveHandler(function(x, y) self:UpdatePosition(x, y) end)
+    if not self.followhandler then
+        self.followhandler = TheInput:AddMoveHandler(function(x,y) self:UpdatePosition(x,y) end)
         self:SetPosition(TheInput:GetScreenPosition())
     end
 end
 
 function Widget:StopFollowMouse()
-    if self.followhandler ~= nil then
+    if self.followhandler then
         self.followhandler:Remove()
-        self.followhandler = nil
     end
+    self.followhandler = nil
 end
 
 function Widget:GetScale()
-    if self.parent ~= nil then
-        local sx, sy, sz = self.inst.UITransform:GetScale()
+    local sx, sy, sz = self.inst.UITransform:GetScale()
+
+    if self.parent then
         local scale = self.parent:GetScale()
-        return Vector3(sx * scale.x, sy * scale.y, sz * scale.z)
+        sx = sx*scale.x
+        sy = sy*scale.y
+        sz = sz*scale.z
     end
-    return Vector3(self.inst.UITransform:GetScale())
+
+    return Vector3(sx,sy,sz)
 end
 
 function Widget:GetLooseScale()
@@ -561,7 +558,7 @@ function Widget:ClearFocus()
         if self.onlosefocusfn then
             self.onlosefocusfn()
         end
-        for k,v in pairs(self.children) do
+		for k,v in pairs(self.children) do
             if v.focus then
                 v:ClearFocus()
             end
@@ -659,12 +656,12 @@ function Widget:SetHoverText(text, params)
                 self.hovertext:SetClickable(false)
 
                 if params.region_h ~= nil or params.region_w ~= nil then 
-                    self.hovertext:SetRegionSize(params.region_w or 1000, params.region_h or 40)
+                	self.hovertext:SetRegionSize(params.region_w or 1000, params.region_h or 40)
                 end
 
                 if params.wordwrap ~= nil then 
-                    --print("Enabling word wrap", params.wordwrap)
-                    self.hovertext:EnableWordWrap(params.wordwrap)
+                	--print("Enabling word wrap", params.wordwrap)
+                	self.hovertext:EnableWordWrap(params.wordwrap)
                 end
             else
                 self.hovertext:SetString(text)
@@ -689,7 +686,7 @@ function Widget:SetHoverText(text, params)
 
             local hover_parent = self.text or self
             if hover_parent.GetString ~= nil and hover_parent:GetString() ~= "" then
-                --Note(Peter): This block is here because Text widgets don't receive OnGainFocus calls.
+				--Note(Peter): This block is here because Text widgets don't receive OnGainFocus calls.
                 self.hover = hover_parent:AddChild(ImageButton("images/ui.xml", "blank.tex", "blank.tex", "blank.tex", nil, nil, {1,1}, {0,0}))
                 self.hover.image:ScaleToSize(hover_parent:GetRegionSize())
 
@@ -702,19 +699,19 @@ function Widget:SetHoverText(text, params)
                     if self.hovertext_bg then self.hovertext_bg:Hide() end
                 end
             else
-                self._OnGainFocus = self.OnGainFocus --save these fns so we can undo the hovertext on focus when clearing the text
-                self._OnLoseFocus = self.OnLoseFocus
+				self._OnGainFocus = self.OnGainFocus --save these fns so we can undo the hovertext on focus when clearing the text
+				self._OnLoseFocus = self.OnLoseFocus
 
-                self.OnGainFocus = function()
-                    self.hovertext:Show()
-                    if self.hovertext_bg then self.hovertext_bg:Show() end
-                    self._OnGainFocus( self )
-                end
-                self.OnLoseFocus = function()
-                    self.hovertext:Hide()
-                    if self.hovertext_bg then self.hovertext_bg:Hide() end
-                    self._OnLoseFocus( self )
-                end
+				self.OnGainFocus = function()
+					self.hovertext:Show()
+					if self.hovertext_bg then self.hovertext_bg:Show() end
+					self._OnGainFocus( self )
+				end
+				self.OnLoseFocus = function()
+					self.hovertext:Hide()
+					if self.hovertext_bg then self.hovertext_bg:Hide() end
+					self._OnLoseFocus( self )
+				end
             end
         else
             self.hovertext:SetString(text)
@@ -728,30 +725,26 @@ end
 
 
 function Widget:ClearHoverText()
-    if self.hover ~= nil then
-        self.hover:Kill()
-        self.hover = nil
-    end
-
-    if self.hovertext_bg ~= nil then
-        self.hovertext_bg:Kill()
-        self.hovertext_bg = nil
-    end
-
-    if self.hovertext ~= nil then
-        self.hovertext:Kill()
-        self.hovertext = nil
-        
-        --unhook the hover text focus functions
-        if self._OnGainFocus then
-            self.OnGainFocus = self._OnGainFocus
-            self.OnLoseFocus = self._OnLoseFocus
-        end
-    end
-end
-
-function Widget:SetScissor(x, y, w, h)
-    self.inst.UITransform:SetScissor(x, y, w, h)
+	if self.hover ~= nil then
+		self.hover:Kill()
+		self.hover = nil
+	end
+	
+	if self.hovertext_bg ~= nil then
+		self.hovertext_bg:Kill()
+		self.hovertext_bg = nil
+	end
+	
+	if self.hovertext ~= nil then
+		self.hovertext:Kill()
+		self.hovertext = nil
+		
+		--unhook the hover text focus functions
+		if self._OnGainFocus then
+			self.OnGainFocus = self._OnGainFocus
+			self.OnLoseFocus = self._OnLoseFocus
+		end
+	end
 end
 
 return Widget

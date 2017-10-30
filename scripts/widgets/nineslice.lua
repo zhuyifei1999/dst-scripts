@@ -13,11 +13,11 @@ local OPPOSITEALIGN = {
     [ANCHOR_TOP] = ANCHOR_BOTTOM,
 }
 
-local function SetupSubElement(self, element, atlas, tex, halign, valign, resizew, resizeh, offsetX, offsetY)
-	if atlas and tex then
-		element:SetTexture(atlas, tex)
-	end
-	
+local function CreateSubElement(self, atlas, tex, halign, valign, resizew, resizeh, offsetX, offsetY)
+    if tex == nil then
+        return
+    end
+    local element = self:AddChild(Image(atlas, tex))
     element:SetHRegPoint(OPPOSITEALIGN[halign])
     element:SetVRegPoint(OPPOSITEALIGN[valign])
 
@@ -40,29 +40,10 @@ local function SetupSubElement(self, element, atlas, tex, halign, valign, resize
     return element
 end
 
-local function CreateSubElement(self, atlas, tex, halign, valign, resizew, resizeh, offsetX, offsetY)
-    if tex == nil then
-        return
-    end
-    local element = self:AddChild(Image())
-    SetupSubElement(self, element, atlas, tex, halign, valign, resizew, resizeh, offsetX, offsetY)
-    return element
-end
-
 local NineSlice = Class(Widget, function(self, atlas, top_left, top_center, top_right,
                                                         mid_left, mid_center, mid_right,
                                                         bottom_left, bottom_center, bottom_right)
     Widget._ctor(self, "NineSlice")
-
-    top_left = top_left or "topleft.tex"
-    top_center = top_center or "top.tex"
-    top_right = top_right or "topright.tex"
-    mid_left = mid_left or "left.tex"
-    mid_center = mid_center or "center.tex"
-    mid_right = mid_right or "right.tex"
-    bottom_left = bottom_left or "bottomleft.tex"
-    bottom_center = bottom_center or "bottom.tex"
-    bottom_right = bottom_right or "bottomright.tex"
 
     self.atlas = atlas
 
@@ -93,22 +74,6 @@ local NineSlice = Class(Widget, function(self, atlas, top_left, top_center, top_
         self:SetSize(100,100)
     end
 end)
-
-function NineSlice:DebugDraw_AddSection(dbui, panel)
-    NineSlice._base.DebugDraw_AddSection(self, dbui, panel)
-
-    dbui.Spacing()
-    dbui.Text("NineSlice")
-    dbui.Indent() do
-        local w, h = self:GetSize()
-        local changed
-        changed,w,h = dbui.DragFloat3("size", w, h, 0,1,50,900)
-        if changed then
-            self:SetSize(w,h)
-        end
-    end
-    dbui.Unindent()
-end
 
 local function ResizeSubElement(element, w, h)
     if element == nil then
@@ -167,32 +132,8 @@ function NineSlice:SetSize(w, h)
     end
 end
 
-function NineSlice:GetSize()
-	return self.mid_center:GetSize()
-end
-
 function NineSlice:AddCrown(image, hanchor, vanchor, offsetX, offsetY)
-	local crown = CreateSubElement(self, self.atlas, image, hanchor, vanchor, false, false, offsetX, offsetY)
-    table.insert(self.elements, crown)
-    return crown
-end
-
-function NineSlice:AddTail(image, hanchor, vanchor, offsetX, offsetY)
-	self.tail = CreateSubElement(self, self.atlas, image, hanchor, vanchor, false, false, offsetX, offsetY)
-    table.insert(self.elements, self.tail)
-    return self.tail
-end
-
-function NineSlice:UpdateTail(hanchor, vanchor, offsetX, offsetY)
-	SetupSubElement(self, self.tail, nil, nil, hanchor, vanchor, false, false, offsetX, offsetY)
-	RepositionSubElement(self.tail, self.mid_center:GetSize())
-end
-
-function NineSlice:SetTint(r, g, b, a)
-	self.mid_center:SetTint(r, g, b, a)
-    for i,element in ipairs(self.elements) do
-		element:SetTint(r, g, b, a)
-	end
+    table.insert(self.elements, CreateSubElement(self, self.atlas, image, hanchor, vanchor, false, false, offsetX, offsetY))
 end
 
 return NineSlice

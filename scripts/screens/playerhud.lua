@@ -14,16 +14,13 @@ local SandOver = require "widgets/sandover"
 local SandDustOver = require "widgets/sanddustover"
 local MindControlOver = require "widgets/mindcontrolover"
 local GogglesOver = require "widgets/gogglesover"
-local EndOfMatchPopup = require "widgets/redux/endofmatchpopup"
-local PopupNumber = require "widgets/popupnumber"
-local RingMeter = require "widgets/ringmeter"
 local easing = require("easing")
 
 local PauseScreen = nil
 if PLATFORM == "PS4" then
     PauseScreen = require "screens/pausescreen_ps4"
 else
-    PauseScreen = require "screens/redux/pausescreen"
+    PauseScreen = require "screens/pausescreen"
 end
 local ChatInputScreen = require "screens/chatinputscreen"
 local PlayerStatusScreen = require "screens/playerstatusscreen"
@@ -46,7 +43,6 @@ local PlayerHud = Class(Screen, function(self)
     self.under_root = self:AddChild(Widget("under_root"))
     self.root = self:AddChild(Widget("root"))
     self.over_root = self:AddChild(Widget("over_root"))
-    self.popupstats_root = self:AddChild(Widget("popupstats_root"))
 
     self.playerstatusscreen = nil
     self.giftitempopup = nil
@@ -56,7 +52,6 @@ local PlayerHud = Class(Screen, function(self)
     self.recentgiftstask = nil
 
     self.inst:ListenForEvent("continuefrompause", function() self:RefreshControllers() end, TheWorld)
-    self.inst:ListenForEvent("endofmatch", function(world, data) self:ShowEndOfMatchPopup(data) end, TheWorld)
 
     if not TheWorld.ismastersim then
         self.inst:ListenForEvent("deactivateworld", function()
@@ -110,14 +105,13 @@ function PlayerHud:CreateOverlays(owner)
     self.fumeover = self.overlayroot:AddChild(FumeOver(owner))
 
     self.clouds = self.under_root:AddChild(UIAnim())
-	self.clouds.cloudcolour = GetGameModeProperty("cloudcolour") or {1, 1, 1}
     self.clouds:SetClickable(false)
     self.clouds:SetHAnchor(ANCHOR_MIDDLE)
     self.clouds:SetVAnchor(ANCHOR_MIDDLE)
     self.clouds:GetAnimState():SetBank("clouds_ol")
     self.clouds:GetAnimState():SetBuild("clouds_ol")
     self.clouds:GetAnimState():PlayAnimation("idle", true)
-    self.clouds:GetAnimState():SetMultColour(self.clouds.cloudcolour[1], self.clouds.cloudcolour[2], self.clouds.cloudcolour[3], 0)
+    self.clouds:GetAnimState():SetMultColour(1,1,1,0)
     self.clouds:Hide()
 
     self.eventannouncer = self.under_root:AddChild(Widget("eventannouncer_root"))
@@ -157,11 +151,7 @@ function PlayerHud:OnLoseFocus()
     if self.controls ~= nil then
         self.controls.hover:Hide()
         self.controls.item_notification:ToggleHUDFocus(false)
-        
-        local resurrectbutton = self.controls.status:GetResurrectButton()
-        if resurrectbutton ~= nil then
-            resurrectbutton:ToggleHUDFocus(false)
-        end
+        self.controls.status.resurrectbutton:ToggleHUDFocus(false)
     end
 end
 
@@ -178,10 +168,7 @@ function PlayerHud:OnGainFocus()
             self.controls.hover:Show()
         end
         self.controls.item_notification:ToggleHUDFocus(true)
-        local resurrectbutton = self.controls.status:GetResurrectButton()
-        if resurrectbutton ~= nil then
-            resurrectbutton:ToggleHUDFocus(false)
-        end
+        self.controls.status.resurrectbutton:ToggleHUDFocus(true)
     end
 
     if not TheInput:ControllerAttached() then
@@ -260,7 +247,7 @@ function PlayerHud:OpenContainer(container, side)
     end
 end
 
-function PlayerHud:TogglePlayerAvatarPopup(player_name, data, show_net_profile, force)
+function PlayerHud:TogglePlayerAvatarPopup(player_name, data, show_net_profile)
     if self.playeravatarpopup ~= nil and
         self.playeravatarpopup.started and
         self.playeravatarpopup.inst:IsValid() then
@@ -274,10 +261,6 @@ function PlayerHud:TogglePlayerAvatarPopup(player_name, data, show_net_profile, 
         end
     end
 
-    if not force and GetGameModeProperty("no_avatar_popup") then
-        return
-    end
-
     -- Don't show steam button for yourself or targets without a userid(skeletons)
     self.playeravatarpopup = self.controls.right_root:AddChild(
         data.inst ~= nil and
@@ -285,18 +268,6 @@ function PlayerHud:TogglePlayerAvatarPopup(player_name, data, show_net_profile, 
         DressupAvatarPopup(self.owner, player_name, data) or
         PlayerAvatarPopup(self.owner, player_name, data, show_net_profile and data.userid ~= nil and data.userid ~= self.owner.userid)
     )
-end
-
---ThePlayer.HUD:ShowEndOfMatchPopup({victory=true})	
-function PlayerHud:ShowEndOfMatchPopup(data)
-	if self.endofmatchpopup == nil then
-		local popupdata =
-		{
-			title = data.victory and STRINGS.UI.HUD.LAVAARENA_WIN_TITLE or STRINGS.UI.HUD.LAVAARENA_LOSE_TITLE,
-			body = data.victory and STRINGS.UI.HUD.LAVAARENA_WIN_BODY or STRINGS.UI.HUD.LAVAARENA_LOSE_BODY,
-		}
-		self.endofmatchpopup = self.root:AddChild(EndOfMatchPopup(self.owner, popupdata))
-	end
 end
 
 function PlayerHud:OpenScreenUnderPause(screen)
@@ -695,14 +666,7 @@ function PlayerHud:OnControl(control, down)
             return true
         end
     elseif control == CONTROL_PAUSE then
-        if not self.owner.components.playercontroller:IsAOETargeting() then
-            TheFrontEnd:PushScreen(PauseScreen())
-        elseif TheInput:ControllerAttached() then
-            self.owner.components.playercontroller:CancelAOETargeting()
-            TheFrontEnd:PushScreen(PauseScreen())
-        else
-            self.owner.components.playercontroller:CancelAOETargeting()
-        end
+        TheFrontEnd:PushScreen(PauseScreen())
         return true
     end
 
@@ -740,12 +704,11 @@ function PlayerHud:OnControl(control, down)
         if self:IsControllerCraftingOpen() then
             self:CloseControllerCrafting()
             return true
-        elseif not GetGameModeProperty("no_crafting") then
-            local inventory = self.owner.replica.inventory
-            if inventory ~= nil and inventory:IsVisible() then
-                self:OpenControllerCrafting()
-                return true
-            end
+        end
+        local inventory = self.owner.replica.inventory
+        if inventory ~= nil and inventory:IsVisible() then
+            self:OpenControllerCrafting()
+            return true
         end
     elseif control == CONTROL_OPEN_INVENTORY then
         if self:IsControllerInventoryOpen() then
@@ -753,7 +716,7 @@ function PlayerHud:OnControl(control, down)
             return true
         end
         local inventory = self.owner.replica.inventory
-        if inventory ~= nil and inventory:IsVisible() and inventory:GetNumSlots() > 0 then
+        if inventory ~= nil and inventory:IsVisible() then
             self:OpenControllerInventory()
             return true
         end
@@ -782,14 +745,7 @@ function PlayerHud:OnControl(control, down)
 end
 
 function PlayerHud:OnRawKey(key, down)
-    if PlayerHud._base.OnRawKey(self, key, down) then
-        return true
-    elseif down and self.shown and key == KEY_SEMICOLON and TheInput:IsKeyDown(KEY_SHIFT) then
-        local chat_input_screen = ChatInputScreen(false)
-        chat_input_screen.chat_edit:SetString(":")
-        TheFrontEnd:PushScreen(chat_input_screen)
-        return true
-    end
+    if PlayerHud._base.OnRawKey(self, key, down) then return true end
 end
 
 function PlayerHud:UpdateClouds(camera)
@@ -806,7 +762,7 @@ function PlayerHud:UpdateClouds(camera)
                 TheMixer:PushMix("high")
             end
             local p = easing.outCubic(dist_percent - cutoff, 0, 1, 1 - cutoff)
-            self.clouds:GetAnimState():SetMultColour(self.clouds.cloudcolour[1], self.clouds.cloudcolour[2], self.clouds.cloudcolour[3], p)
+            self.clouds:GetAnimState():SetMultColour(1, 1, 1, p)
             TheFocalPoint.SoundEmitter:SetVolume("windsound", p)
         elseif self.clouds_on then
             camera.should_push_down = false
@@ -851,29 +807,6 @@ function PlayerHud:RemoveTargetIndicator(target)
     if index then
         local ti = table.remove(self.targetindicators, index)
         if ti then ti:Kill() end
-    end
-end
-
-function PlayerHud:ShowPopupNumber(val, size, pos, height, colour, burst)
-    self.popupstats_root:AddChild(PopupNumber(self.owner, val, size, pos, height, colour, burst))
-end
-
-function PlayerHud:ShowRingMeter(pos, duration, starttime)
-    if self.ringmeter == nil then
-        self.ringmeter = self.popupstats_root:AddChild(RingMeter(self.owner))
-    end
-    self.ringmeter:SetWorldPosition(pos)
-    self.ringmeter:StartTimer(duration, starttime)
-end
-
-function PlayerHud:HideRingMeter(success, duration)
-    if self.ringmeter ~= nil then
-        if success then
-            self.ringmeter:FlashOut(duration)
-        else
-            self.ringmeter:FadeOut(duration)
-        end
-        self.ringmeter = nil
     end
 end
 

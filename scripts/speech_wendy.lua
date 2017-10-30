@@ -109,10 +109,6 @@ return {
         {
             EMPTY = "I can't wrap nothingness...",
         },
-        PICKUP =
-        {
-			RESTRICTION = "No... I don't want that...",
-        },
 	},
 	ACTIONFAIL_GENERIC = "I can't do anything right.",
 	ANNOUNCE_DIG_DISEASE_WARNING = "Your death has been delayed another day.",
@@ -235,12 +231,6 @@ return {
 	ANNOUNCE_WET = "Even wetter than when I cry myself to sleep.",
 	ANNOUNCE_WETTER = "An eternity of moisture and sorrow.",
 	ANNOUNCE_SOAKED = "A veritable apocalypse of water.",
-
-	--boarlord event
-	ANNOUNCE_REVIVING_CORPSE = "You'll not glimpse death today...",
-	ANNOUNCE_REVIVED_OTHER_CORPSE = "All done.",
-	ANNOUNCE_REVIVED_FROM_CORPSE = "Thank-you...",
-	
 	BATTLECRY =
 	{
 		GENERIC = "Death will find you!",
@@ -276,7 +266,7 @@ return {
             MURDERER = "Murderer! Cutthroat!",
             REVIVER = "Abigail likes you, %s.",
             GHOST = "A heart could return %s to this world...",
-            FIRESTARTER = "Do you wish to see the world burn?",
+            FIRESTARTER = "Do you wish to see the world burn, too?",
         },
 		WILSON = 
 		{
@@ -291,7 +281,7 @@ return {
 		{
 			GENERIC = "Hi %s. Why are you shaking?",
 			ATTACKER = "I don't trust %s. Fear makes people dangerous.",
-			MURDERER = "Strength is meaningless if you can't catch me...",
+			MURDERER = "Your strength is meaningless if you can't catch me...",
 			REVIVER = "Don't be scared, %s. Abigail just wants to be friends.",
 			GHOST = "%s... Everyone leaves...",
 			FIRESTARTER = "Fire won't protect you, %s.",
@@ -301,7 +291,7 @@ return {
 			GENERIC = "How are you coping, %s?",
 			ATTACKER = "I don't think I trust %s yet.",
 			MURDERER = "Cursed villain!",
-			REVIVER = "He's gone from Sisyphus to Lazarus.",
+			REVIVER = "From Sisyphus to Lazarus, hey %s?",
 			GHOST = "Should I revive you, %s? Hmm...",
 			FIRESTARTER = "Are you trying to kindle a bad reputation?",
 		},
@@ -312,7 +302,7 @@ return {
 			MURDERER = "None of us are above death, %s!",
 			REVIVER = "Abigail likes you, %s.",
 			GHOST = "Say \"Pretty Please\" and I might get you a heart, %s.",
-			FIRESTARTER = "I'd begun to think you were all talk, %s.",
+			FIRESTARTER = "I was starting to think you were all talk, %s.",
 		},
 		WILLOW = 
 		{
@@ -339,8 +329,8 @@ return {
 			MURDERER = "I'll send you someplace much nicer than this, %s.",
 			REVIVER = "Abigail likes you, %s. But she likes Lucy more.",
 			GHOST = "We'll get a heart, but are you sure you want to come back, %s?",
-			BEAVER = "He pinky-promised I'd get to ride on his shoulders. Such lies.",
-			BEAVERGHOST = "The curse haunts you even in death, %s?",
+			BEAVER = "He pinky-promised I'd get to ride on his shoulders next time. Such lies.",
+			BEAVERGHOST = "The curse haunts you even in death, %s? I'm so sorry.",
 			FIRESTARTER = "Fire setting does not seem in your best interest...",
 		},
 		WICKERBOTTOM = 
@@ -355,10 +345,10 @@ return {
 		WES = 
 		{
 			GENERIC = "How do you do, %s?",
-			ATTACKER = "There's something you're not telling us...",
+			ATTACKER = "%s... there's something you're not telling us...",
 			MURDERER = "%s, this is the end... for you!",
 			REVIVER = "Abigail says she understands you, %s.",
-			GHOST = "You won't leave us if I get you a heart, right?",
+			GHOST = "If I get you a heart you won't leave us, right %s?",
 			FIRESTARTER = "There are other ways to express yourself, %s.",
 		},
 		WEBBER = 
@@ -368,7 +358,7 @@ return {
 			MURDERER = "Don't worry, %s. This won't hurt a bit.",
 			REVIVER = "You could never be a monster, %s.",
 			GHOST = "A heart could bring back my friend, %s...",
-			FIRESTARTER = "%s, let's find a game that doesn't involve fire.",
+			FIRESTARTER = "%s, let's find a game that doesn't involve... burning.",
 		},
 		WATHGRITHR = 
 		{
@@ -383,7 +373,7 @@ return {
         {
             GENERIC = "How do you do, %s?",
             ATTACKER = "There is anger in %s's heart.",
-            MURDERER = "Abigail and I will have fun with you!",
+            MURDERER = "Abigail and I are going to have fun with you!",
             REVIVER = "Hi %s. Abigail says \"thank-you\".",
             GHOST = "You can't escape that way, %s. I've tried.",
             FIRESTARTER = "Is fire important in your line of work...?",
@@ -1868,6 +1858,15 @@ return {
         TRINKET_35 = "Neither half empty, nor half full.", --Empty Elixir
         TRINKET_36 = "Now Webber and I can match.", --Faux Fangs
         TRINKET_37 = "Drive it through my heart and be done.", --Broken Stake
+        TRINKET_38 = "It makes the world look as insignificant as I feel.", -- Binoculars Griftlands trinket
+        TRINKET_39 = "One lonely half of a pair.", -- Lone Glove Griftlands trinket
+        TRINKET_40 = "The weight of the world rests upon me.", -- Snail Scale Griftlands trinket
+        TRINKET_41 = "It looks like ectoplasm in there.", -- Goop Canister Hot Lava trinket
+        TRINKET_42 = "To frolic, to play, no more.", -- Toy Cobra Hot Lava trinket
+        TRINKET_43 = "I have put childish things behind me.", -- Crocodile Toy Hot Lava trinket
+        TRINKET_44 = "Some breaks cannot be mended.", -- Broken Terrarium ONI trinket
+        TRINKET_45 = "It is so colorful...", -- Odd Radio ONI trinket
+        TRINKET_46 = "I simply do not know what is it.", -- Hairdryer ONI trinket
 
         HALLOWEENCANDY_1 = "Oh... it's... g-good.",
         HALLOWEENCANDY_2 = "The most delicious lie.",
@@ -1880,6 +1879,9 @@ return {
         HALLOWEENCANDY_9 = "As perplexing as it is delicious.",
         HALLOWEENCANDY_10 = "This is... fun...",
         HALLOWEENCANDY_11 = "You have to bite their heads off first... heehee...",
+        HALLOWEENCANDY_12 = "Today I eat them. One day, they'll eat me.", --ONI meal lice candy
+        HALLOWEENCANDY_13 = "A candy as hard as my heart.", --Griftlands themed candy
+        HALLOWEENCANDY_14 = "What is this eternal burning?!", --Hot Lava pepper candy
         CANDYBAG = "It's for putting nice things in...",
 
         DRAGONHEADHAT = "What big eyes you have.",
@@ -2025,55 +2027,6 @@ return {
         BLUEMOONEYE = "Such an icy gaze...",
 
 		TREECLUMP = "Was this placed intentionally?",
-
-		--Arena Event
-        LAVAARENA_BOARLORD = "A ruthless man.",
-        BOARRIOR = "Your death will be swift.",
-        BOARON = "A shame you have to perish.",
-        PEGHOOK = "Abigail will defend me.",
-        TRAILS = "You shall fall.",
-        TURTILLUS = "You cannot shield yourself from this world.",
-        SNAPPER = "Death will be a blessing.",
-        
-        LAVAARENA_PORTAL = 
-        {
-            ON = "I bid you good day.",
-            GENERIC = "I dared not hope it would take me home.",
-        },
-        LAVAARENA_KEYHOLE = "Empty as my heart.",
-        LAVAARENA_KEYHOLE_FULL = "Full as my sorrows.",
-        LAVAARENA_BATTLESTANDARD = "That Battle Standard needs to be destroyed...",
-        LAVAARENA_SPAWNER = "That's where they come from...",
-
-        HEALINGSTAFF = "I could restore my allies.",
-        FIREBALLSTAFF = "To call death from the skies.",
-        HAMMER_MJOLNIR = "What a brutal implement.",
-        SPEAR_GUNGNIR = "To cut and slash...",
-        BLOWDART_LAVA = "To pierce the hearts of my foes...",
-        BLOWDART_LAVA2 = "To burn and pierce!",
-        LAVAARENA_LUCY = "Hello again, Lucy.",
-        BOOK_FOSSIL = "There is power in words.",
-		LAVAARENA_BERNIE = "How do you do, Bernie?",
-
-        LAVAARENA_ARMORLIGHT = "If only my heart were as light.",
-		LAVAARENA_ARMORLIGHTSPEED = "They'll have to catch me to hurt me.",
-		LAVAARENA_ARMORMEDIUM = "Protect my fragile frame.",
-		LAVAARENA_ARMORMEDIUMDAMAGER = "Even our armor is fanged.",
-		LAVAARENA_ARMORMEDIUMRECHARGER = "It will restore one's power.",
-		LAVAARENA_ARMORHEAVY = "Heavy protection for one's heart.",
-		LAVAARENA_ARMOREXTRAHEAVY = "This world is nothing but hurt.",
-
-		LAVAARENA_FEATHERCROWNHAT = "But what of the birds?",
-        LAVAARENA_HEALINGFLOWERHAT = "It eases pain of the body, but not of the heart.",
-        LAVAARENA_LIGHTDAMAGERHAT = "It brings more pain into the world.",
-        LAVAARENA_STRONGDAMAGERHAT = "Hit harder, stronger...",
-        LAVAARENA_TIARAFLOWERPETALSHAT = "The wearer shall be a force of good.",
-        LAVAARENA_EYECIRCLETHAT = "There is dastardly power within.",
-        LAVAARENA_RECHARGERHAT = "I'll be able to attack so often...",
-        LAVAARENA_HEALINGGARLANDHAT = "But will it heal my soul?",
-        LAVAARENA_CROWNDAMAGERHAT = "I forsee a wave of death.",
-        
-        WEBBER_SPIDER_MINION = "Webber seems proud of them.",
 	},
 	DESCRIBE_GENERIC = "Sigh... I don't know.",
 	DESCRIBE_TOODARK = "The darkness! It is too dark!",

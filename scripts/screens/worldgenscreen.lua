@@ -9,90 +9,82 @@ local TEMPLATES = require "widgets/templates"
 
 local MIN_GEN_TIME = 9.5
 
-local WorldGenScreen = Class(Screen, function(self, profile, cb, world_gen_data, hidden)
+local WorldGenScreen = Class(Screen, function(self, profile, cb, world_gen_data)
     Screen._ctor(self, "WorldGenScreen")
     self.profile = profile
     self.log = true
 
-	if hidden then
-		TheFrontEnd:Fade(FADE_OUT, 0)
-		TheFrontEnd:SetFadeLevel(0)
-		self:Hide()
-		ShowLoading()
-	else
-		self.bg = self:AddChild(TEMPLATES.BackgroundSpiral())
+    self.bg = self:AddChild(TEMPLATES.BackgroundSpiral())
 
-		self.vignette = self:AddChild(TEMPLATES.BackgroundVignette())
+    self.vignette = self:AddChild(TEMPLATES.BackgroundVignette())
 
-		self.bottom_root = self:AddChild(Widget("root"))
-		self.bottom_root:SetVAnchor(ANCHOR_BOTTOM)
-		self.bottom_root:SetHAnchor(ANCHOR_MIDDLE)
-		self.bottom_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
+    self.bottom_root = self:AddChild(Widget("root"))
+    self.bottom_root:SetVAnchor(ANCHOR_BOTTOM)
+    self.bottom_root:SetHAnchor(ANCHOR_MIDDLE)
+    self.bottom_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
-		self.center_root = self:AddChild(Widget("root"))
-		self.center_root:SetVAnchor(ANCHOR_MIDDLE)
-		self.center_root:SetHAnchor(ANCHOR_MIDDLE)
-		self.center_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
+    self.center_root = self:AddChild(Widget("root"))
+    self.center_root:SetVAnchor(ANCHOR_MIDDLE)
+    self.center_root:SetHAnchor(ANCHOR_MIDDLE)
+    self.center_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
-		self.worldanim = self.bottom_root:AddChild(UIAnim())
+    self.worldanim = self.bottom_root:AddChild(UIAnim())
 
-		local hand_scale = 1.5
-		self.hand1 = self.bottom_root:AddChild(UIAnim())
-		self.hand1:GetAnimState():SetBuild("creepy_hands")
-		self.hand1:GetAnimState():SetBank("creepy_hands")
-		self.hand1:GetAnimState():SetTime(math.random()*2)
-		self.hand1:GetAnimState():PlayAnimation("idle", true)
-		self.hand1:SetPosition(400, 0, 0)
-		self.hand1:SetScale(hand_scale,hand_scale,hand_scale)
+    local hand_scale = 1.5
+    self.hand1 = self.bottom_root:AddChild(UIAnim())
+    self.hand1:GetAnimState():SetBuild("creepy_hands")
+    self.hand1:GetAnimState():SetBank("creepy_hands")
+    self.hand1:GetAnimState():SetTime(math.random()*2)
+    self.hand1:GetAnimState():PlayAnimation("idle", true)
+    self.hand1:SetPosition(400, 0, 0)
+    self.hand1:SetScale(hand_scale,hand_scale,hand_scale)
 
-		self.hand2 = self.bottom_root:AddChild(UIAnim())
-		self.hand2:GetAnimState():SetBuild("creepy_hands")
-		self.hand2:GetAnimState():SetBank("creepy_hands")
-		self.hand2:GetAnimState():PlayAnimation("idle", true)
-		self.hand2:GetAnimState():SetTime(math.random()*2)
-		self.hand2:SetPosition(-425, 0, 0)
-		self.hand2:SetScale(-hand_scale,hand_scale,hand_scale)
+    self.hand2 = self.bottom_root:AddChild(UIAnim())
+    self.hand2:GetAnimState():SetBuild("creepy_hands")
+    self.hand2:GetAnimState():SetBank("creepy_hands")
+    self.hand2:GetAnimState():PlayAnimation("idle", true)
+    self.hand2:GetAnimState():SetTime(math.random()*2)
+    self.hand2:SetPosition(-425, 0, 0)
+    self.hand2:SetScale(-hand_scale,hand_scale,hand_scale)
 
-		self.worldgentext = self.center_root:AddChild(Text(TITLEFONT, 100))
-		self.worldgentext:SetPosition(0, 200, 0)
-		self.worldgentext:SetColour(unpack(PORTAL_TEXT_COLOUR))
+    self.worldgentext = self.center_root:AddChild(Text(TITLEFONT, 100))
+    self.worldgentext:SetPosition(0, 200, 0)
+    self.worldgentext:SetColour(unpack(PORTAL_TEXT_COLOUR))
 
-		if world_gen_data and world_gen_data.level_type == "cave" then
-			-- todo: make this show the cave screen for modern DST worldgen...
-			self.bg:SetTint(unpack(BGCOLOURS.PURPLE))
-			self.worldanim:GetAnimState():SetBuild("generating_cave")
-			self.worldanim:GetAnimState():SetBank("generating_cave")
-			self.worldgentext:SetString(STRINGS.UI.WORLDGEN.CAVETITLE)
+    if world_gen_data and world_gen_data.level_type == "cave" then
+        -- todo: make this show the cave screen for modern DST worldgen...
+        self.bg:SetTint(unpack(BGCOLOURS.PURPLE))
+        self.worldanim:GetAnimState():SetBuild("generating_cave")
+        self.worldanim:GetAnimState():SetBank("generating_cave")
+        self.worldgentext:SetString(STRINGS.UI.WORLDGEN.CAVETITLE)
 
-			TheFrontEnd:GetSound():PlaySound( "dontstarve/HUD/caveGen", "worldgensound" )
-		else
-			self.worldanim:GetAnimState():SetBuild("generating_world")
-			self.worldanim:GetAnimState():SetBank("generating_world")
-			self.worldgentext:SetString(STRINGS.UI.WORLDGEN.TITLE)
+        TheFrontEnd:GetSound():PlaySound( "dontstarve/HUD/caveGen", "worldgensound" )
+    else
+        self.worldanim:GetAnimState():SetBuild("generating_world")
+        self.worldanim:GetAnimState():SetBank("generating_world")
+        self.worldgentext:SetString(STRINGS.UI.WORLDGEN.TITLE)
 
-			TheFrontEnd:GetSound():PlaySound( "dontstarve/HUD/worldGen", "worldgensound" )
-		end
+        TheFrontEnd:GetSound():PlaySound( "dontstarve/HUD/worldGen", "worldgensound" )
+    end
 
-		self.worldanim:GetAnimState():PlayAnimation("idle", true)
+    self.worldanim:GetAnimState():PlayAnimation("idle", true)
 
-		self.flavourtext= self.center_root:AddChild(Text(UIFONT, 40))
-		self.flavourtext:SetPosition(0, 100, 0)
-		self.flavourtext:SetColour(unpack(PORTAL_TEXT_COLOUR))
+    self.flavourtext= self.center_root:AddChild(Text(UIFONT, 40))
+    self.flavourtext:SetPosition(0, 100, 0)
+    self.flavourtext:SetColour(unpack(PORTAL_TEXT_COLOUR))
 
-		local time = 1
-		TheFrontEnd:Fade(FADE_IN, time, nil, nil, nil, "white")
+    self.total_time = 0
+    self.cb = cb
+    local time = 1
+    TheFrontEnd:Fade(FADE_IN, time, nil, nil, nil, "white")
 
-		self.verbs = shuffleArray(STRINGS.UI.WORLDGEN.VERBS)
-		self.nouns = shuffleArray(STRINGS.UI.WORLDGEN.NOUNS)
+    self.verbs = shuffleArray(STRINGS.UI.WORLDGEN.VERBS)
+    self.nouns = shuffleArray(STRINGS.UI.WORLDGEN.NOUNS)
 
-		self.verbidx = 1
-		self.nounidx = 1
-		self:ChangeFlavourText()
-	end
+    self.verbidx = 1
+    self.nounidx = 1
+    self:ChangeFlavourText()
 
-	self.total_time = 0
-	self.cb = cb
-	
     if TheNet:GetIsServer() then
         assert(world_gen_data.profile_data ~= nil and world_gen_data.level_data ~= nil, "Worldgen must be started with a complete profile and level description.")
 

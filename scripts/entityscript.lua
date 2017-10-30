@@ -3,7 +3,6 @@ require("class")
 local BehaviourTrees = {}
 local StateGraphs = {}
 local Components = {}
-local EventServerFiles = {}
 
 StopUpdatingComponents = {}
 
@@ -59,30 +58,17 @@ local function LoadComponent(name)
 end
 
 local function LoadStateGraph(name)
+
     if StateGraphs[name] == nil then
         local fn = require("stategraphs/"..name)
         assert(fn, "could not load stategraph "..name)
         StateGraphs[name] = fn
     end
-
+    
     local sg = StateGraphs[name]
-
+    
     assert(sg, "stategraph "..name.." is not valid")
     return sg
-end
-
--------------------------------------------
---Loading event server files
-function event_server_data(eventname, path)
-    local fullpath = eventname.."_event_server/"..path
-    if EventServerFiles[fullpath] == nil then
-        EventServerFiles[fullpath] = require(fullpath)
-        if path.sub(1, 11) == "components/" then
-            EventServerFiles[fullpath].WatchWorldState = ComponentWatchWorldState
-            EventServerFiles[fullpath].StopWatchingWorldState = ComponentStopWatchingWorldState
-        end
-    end
-    return EventServerFiles[fullpath]
 end
 
 -------------------------------------------
@@ -522,9 +508,9 @@ require("componentactions")
 function EntityScript:AddComponent(name)
     local lower_name = string.lower(name)
     if self.lower_components_shadow[lower_name] ~= nil then
-        print("component "..name.." already exists!"..debugstack_oneline(3))
+		print("component "..name.." already exists!"..debugstack_oneline(3))
     end
-
+    
     local cmp = LoadComponent(name)
     assert(cmp, "component ".. name .. " does not exist!")
 
@@ -533,11 +519,11 @@ function EntityScript:AddComponent(name)
     local loadedcmp = cmp(self)
     self.components[name] = loadedcmp
     self.lower_components_shadow[lower_name] = true
-
+    
     local postinitfns = ModManager:GetPostInitFns("ComponentPostInit", name)
 
-    for i, fn in ipairs(postinitfns) do
-        fn(loadedcmp, self)
+    for k,fn in ipairs(postinitfns) do
+        fn(loadedcmp,self)
     end
 
     self:RegisterComponentActions(name)
@@ -550,7 +536,7 @@ function EntityScript:RemoveComponent(name)
         self:StopWallUpdatingComponent(cmp)
         self.components[name] = nil
         self.lower_components_shadow[string.lower(name)] = nil
-
+        
         if cmp.OnRemoveFromEntity then
             cmp:OnRemoveFromEntity()
         end
@@ -571,51 +557,45 @@ function EntityScript:GetDisplayName()
 
     if self:HasTag("player") then
         --No adjectives for players
+        return name
     elseif self:HasTag("smolder") then
-        name = ConstructAdjectivedName(self, name, STRINGS.SMOLDERINGITEM)
+        return ConstructAdjectivedName(self, name, STRINGS.SMOLDERINGITEM)
     elseif self:HasTag("diseased") then
-        name = ConstructAdjectivedName(self, name, STRINGS.DISEASEDITEM)
+        return ConstructAdjectivedName(self, name, STRINGS.DISEASEDITEM)
     elseif self:HasTag("withered") then
-        name = ConstructAdjectivedName(self, name, STRINGS.WITHEREDITEM)
+        return ConstructAdjectivedName(self, name, STRINGS.WITHEREDITEM)
     elseif not self.no_wet_prefix and (self.always_wet_prefix or self:GetIsWet()) then
         --custom
         if self.wet_prefix ~= nil then
-            name = ConstructAdjectivedName(self, name, self.wet_prefix)
+            return ConstructAdjectivedName(self, name, self.wet_prefix)
         end
         --equippable
         local equippable = self.replica.equippable
         if equippable ~= nil then
             local eslot = equippable:EquipSlot()
             if eslot == EQUIPSLOTS.HANDS then
-                name = ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.TOOL)
+                return ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.TOOL)
             elseif eslot == EQUIPSLOTS.HEAD or eslot == EQUIPSLOTS.BODY then
-                name = ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.CLOTHING)
+                return ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.CLOTHING)
             end
         end
         --edible
         for k, v in pairs(FOODTYPE) do
             if self:HasTag("edible_"..v) then
-                name = ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.FOOD)
+                return ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.FOOD)
             end
         end
         --fuel
         for k, v in pairs(FUELTYPE) do
             if self:HasTag(v.."_fuel") then
-                name = ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.FUEL)
+                return ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.FUEL)
             end
         end
         --generic
-        name = ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.GENERIC)
+        return ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.GENERIC)
+    else
+        return name
     end
-
-	if self.prefab ~= nil then
-		local name_extention = STRINGS.NAME_DETAIL_EXTENTION[string.upper(self.prefab)]
-		if name_extention ~= nil then
-			name = name .. "\n" .. name_extention
-		end
-	end
-		
-    return name
 end
 
 --Can be used on clients
@@ -665,18 +645,6 @@ function EntityScript:SetTerraformExtraSpacing(spacing)
         TheWorld.Map:RegisterTerraformExtraSpacing(spacing)
     else
         self:RemoveTag("terraformblocker")
-    end
-end
-
-function EntityScript:SetGroundTargetBlockerRadius(radius)
-    --Extra spacing around entity that connot be terraformed.
-    self.ground_target_blocker_radius = radius
-    if radius ~= nil then
-        self:AddTag("groundtargetblocker")
-        --see components/map.lua
-        TheWorld.Map:RegisterGroundTargetBlocker(radius)
-    else
-        self:RemoveTag("groundtargetblocker")
     end
 end
 
@@ -1043,14 +1011,6 @@ function EntityScript:PushEvent(event, data)
     end
 end
 
-function EntityScript:SetPhysicsRadiusOverride(radius)
-    self.physicsradiusoverride = radius
-end
-
-function EntityScript:GetPhysicsRadius(default)
-    return self.physicsradiusoverride or (self.Physics ~= nil and self.Physics:GetRadius()) or default
-end
-
 function EntityScript:GetPosition()
     --#V2C #TODO remove this after we've fixed most of the bugs
     --           since it's expensive to assert in something as
@@ -1209,13 +1169,15 @@ function EntityScript:ResumeTask(time, fn, ...)
 end
 
 function EntityScript:ClearBufferedAction()
-    if self.bufferedaction ~= nil then
+    if self.bufferedaction then
         self.bufferedaction:Fail()
         self.bufferedaction = nil
     end
 end
 
-EntityScript.InterruptBufferedAction = EntityScript.ClearBufferedAction
+function EntityScript:InterruptBufferedAction()
+    self:ClearBufferedAction()
+end
 
 function EntityScript:PreviewBufferedAction(bufferedaction)
     if bufferedaction ~= nil and

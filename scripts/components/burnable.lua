@@ -1,3 +1,5 @@
+require("standardcomponents")
+
 local SMOLDER_TICK_TIME = 2
 
 local function oncanlight(self)

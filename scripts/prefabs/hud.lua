@@ -32,7 +32,6 @@ local assets =
     Asset("ANIM", "anim/beaver_meter.zip"),
     Asset("ANIM", "anim/hunger_health_pulse.zip"),
     Asset("ANIM", "anim/spoiled_meter.zip"),
-    Asset("ANIM", "anim/recharge_meter.zip"),
     Asset("ANIM", "anim/compass_bg.zip"),
     Asset("ANIM", "anim/compass_needle.zip"),
     Asset("ANIM", "anim/compass_hud.zip"),
@@ -41,6 +40,7 @@ local assets =
     Asset("ANIM", "anim/vig.zip"),
     Asset("ANIM", "anim/fire_over.zip"),
     Asset("ANIM", "anim/clouds_ol.zip"),
+    Asset("ANIM", "anim/progressbar.zip"),
 
     Asset("ATLAS", "images/avatars.xml"),
     Asset("IMAGE", "images/avatars.tex"),
@@ -66,14 +66,6 @@ local assets =
     Asset("INV_IMAGE", "half_sanity"),
 
     Asset("INV_IMAGE", "sculpting_material"),
-
-    Asset("ATLAS", "images/lavaarena_hud.xml"),
-    Asset("IMAGE", "images/lavaarena_hud.tex"),
-
-    Asset("ANIM", "anim/lavaarena_health.zip"),
-    Asset("ANIM", "anim/lavaarena_pethealth.zip"),
-    Asset("ANIM", "anim/lavaarena_partyhealth.zip"),
-    Asset("ANIM", "anim/ringmeter.zip"),
 
     Asset("SOUND", "sound/together.fsb"),
 }

@@ -114,8 +114,7 @@ local COMPONENT_ACTIONS =
 
         inventoryitem = function(inst, doer, actions, right)
             if inst.replica.inventoryitem:CanBePickedUp() and
-                doer.replica.inventory ~= nil and
-                (doer.replica.inventory:GetNumSlots() > 0 or inst.replica.equippable ~= nil) and
+                doer.replica.inventory ~= nil and 
                 not (inst:HasTag("catchable") or inst:HasTag("fire") or inst:HasTag("smolder")) and
                 (right or not inst:HasTag("heavy")) then
                 table.insert(actions, ACTIONS.PICKUP)
@@ -182,12 +181,6 @@ local COMPONENT_ACTIONS =
                 if item ~= nil and item:HasTag("work_sculpture") then
                     table.insert(actions, ACTIONS.REPAIR)
                 end
-            end
-        end,
-
-        revivablecorpse = function(inst, doer, actions, right)
-            if inst.components.revivablecorpse:CanBeRevivedBy(doer) then
-                table.insert(actions, ACTIONS.REVIVE_CORPSE)
             end
         end,
 
@@ -683,13 +676,13 @@ local COMPONENT_ACTIONS =
     POINT = --args: inst, doer, pos, actions, right
     {
         blinkstaff = function(inst, doer, pos, actions, right)
-            if right and TheWorld.Map:IsAboveGroundAtPoint(pos:Get()) and not TheWorld.Map:IsGroundTargetBlocked(pos) then
+            if right and TheWorld.Map:IsAboveGroundAtPoint(pos:Get()) and not TheWorld.Map:IsPointNearHole(pos) then
                 table.insert(actions, ACTIONS.BLINK)
             end
         end,
 
         complexprojectile = function(inst, doer, pos, actions, right)
-            if right and not TheWorld.Map:IsGroundTargetBlocked(pos) then
+            if right and not TheWorld.Map:IsPointNearHole(pos) then
                 table.insert(actions, ACTIONS.TOSS)
             end
         end,
@@ -709,7 +702,7 @@ local COMPONENT_ACTIONS =
         spellcaster = function(inst, doer, pos, actions, right)
             if right and inst:HasTag("castonpoint") and
                 TheWorld.Map:IsAboveGroundAtPoint(pos:Get()) and
-                not TheWorld.Map:IsGroundTargetBlocked(pos) then
+                not TheWorld.Map:IsPointNearHole(pos) then
                 table.insert(actions, ACTIONS.CASTSPELL)
             end
         end,
@@ -717,17 +710,6 @@ local COMPONENT_ACTIONS =
         terraformer = function(inst, doer, pos, actions, right)
             if right and TheWorld.Map:CanTerraformAtPoint(pos:Get()) then
                 table.insert(actions, ACTIONS.TERRAFORM)
-            end
-        end,
-
-        aoespell = function(inst, doer, pos, actions, right)
-            if right and
-                (   inst.components.aoetargeting == nil or inst.components.aoetargeting:IsEnabled()
-                ) and
-                (   inst.components.aoetargeting ~= nil and inst.components.aoetargeting.alwaysvalid or
-                    (TheWorld.Map:IsAboveGroundAtPoint(pos:Get()) and not TheWorld.Map:IsGroundTargetBlocked(pos))
-                ) then
-                table.insert(actions, ACTIONS.CASTAOE)
             end
         end,
     },
@@ -744,7 +726,7 @@ local COMPONENT_ACTIONS =
             if right and
                 not (doer.components.playercontroller ~= nil and
                     doer.components.playercontroller.isclientcontrollerattached) and
-                not TheWorld.Map:IsGroundTargetBlocked(target:GetPosition()) then
+                not TheWorld.Map:IsPointNearHole(target:GetPosition()) then
                 table.insert(actions, ACTIONS.TOSS)
             end
         end,

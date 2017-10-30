@@ -1,6 +1,6 @@
 require "dlcsupport"
 
-local DLCSounds =
+local DLCSounds = 
 {
 	"amb_stream.fsb",
 	"bearger.fsb",
@@ -20,7 +20,7 @@ local DLCSounds =
 	"webber.fsb",
 }
 
-local MainSounds =
+local MainSounds = 
 {
 	"bat.fsb",
 	"bee.fsb",
@@ -42,7 +42,6 @@ local MainSounds =
 	"hound.fsb",
 	"koalefant.fsb",
 	"krampus.fsb",
-    "lava_arena.fsb",
 	"leif.fsb",
 	"mandrake.fsb",
 	"maxwell.fsb",
