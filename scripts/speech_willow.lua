@@ -1915,6 +1915,15 @@ return {
         TRINKET_35 = "Hey Wes! Dare you to drink the last bit!", --Empty Elixir
         TRINKET_36 = "Pfft, they're not even sharp.", --Faux Fangs
         TRINKET_37 = "Looks like firewood to me.", --Broken Stake
+        TRINKET_38 = "It makes stuff look small no matter which way I turn it.", -- Binoculars Griftlands trinket
+        TRINKET_39 = "Who needs just one glove?", -- Lone Glove Griftlands trinket
+        TRINKET_40 = "Snails are gross!", -- Snail Scale Griftlands trinket
+        TRINKET_41 = "Ooo, it's warm.", -- Goop Canister Hot Lava trinket
+        TRINKET_42 = "I don't like snakes.", -- Toy Cobra Hot Lava trinket
+        TRINKET_43 = "Yeesh. I can feel the nostalgia dripping off it.", -- Crocodile Toy Hot Lava trinket
+        TRINKET_44 = "It's just junk.", -- Broken Terrarium ONI trinket
+        TRINKET_45 = "It's got kind of a dumb face, huh?", -- Odd Radio ONI trinket
+        TRINKET_46 = "I never take my pigtails out anyway.", -- Hairdryer ONI trinket
 
         HALLOWEENCANDY_1 = "That's wayyyy better than a regular apple!",
         HALLOWEENCANDY_2 = "Do people actually eat these or are they just a bad joke?",
@@ -1927,6 +1936,9 @@ return {
         HALLOWEENCANDY_9 = "Why does something so yummy have to look so gross!",
         HALLOWEENCANDY_10 = "Yesssss! Lollipops!",
         HALLOWEENCANDY_11 = "I'm gonna need about a dozen of these.",
+        HALLOWEENCANDY_12 = "Yuck! That's disgusting!", --ONI meal lice candy
+        HALLOWEENCANDY_13 = "It's sorta tangy.",	--Griftlands themed candy
+        HALLOWEENCANDY_14 = "Mmm! It burns my mouth so good!",	--Hot Lava pepper candy
         CANDYBAG = "I'm gonna stuff so much candy in there!",
 
         DRAGONHEADHAT = "Sooo ferocious!",

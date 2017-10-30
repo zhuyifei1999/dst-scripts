@@ -13,4 +13,7 @@ return CreatePrefabSkin("bedroll_furry_quilt_blue_frost",
 	build_name = "swap_bedroll_furry_quilt_blue_frost",
 	rarity = "Distinguished",
 	init_fn = function(inst) bedroll_furry_init_fn(inst, "swap_bedroll_furry_quilt_blue_frost") end,
+	skin_tags = { "BEDROLL", "BLUE", "CRAFTABLE", },
+	marketable = true,
+	release_group = 20,
 })

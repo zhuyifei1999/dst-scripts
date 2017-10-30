@@ -14,5 +14,7 @@ return CreatePrefabSkin("torch_shadow_alt",
 	rarity = "Loyal",
 	prefabs = { "torchfire_shadow", },
 	init_fn = function(inst) torch_init_fn(inst, "torch_shadow_alt") end,
+	skin_tags = { "TORCH", "SHADOW", "CRAFTABLE", },
 	fx_prefab = { "torchfire_shadow", },
+	release_group = 25,
 })

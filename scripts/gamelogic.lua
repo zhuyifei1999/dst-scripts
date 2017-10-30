@@ -267,6 +267,10 @@ local function PopulateWorld(savedata, profile)
     Print(VERBOSITY.DEBUG, "[Instantiating objects...]")
     if savedata ~= nil then
         local world = SpawnPrefab(savedata.map.prefab)
+        if DEBUG_MODE then
+            -- Common error in development when switching branches.
+            known_assert(world, "DEV_FAILED_TO_SPAWN_WORLD")
+        end
         world.worldprefab = savedata.map.prefab
         assert(TheWorld == world)
         assert(ThePlayer == nil)

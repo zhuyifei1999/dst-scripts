@@ -839,17 +839,14 @@ ACTIONS.FEEDPLAYER.fn = function(act)
 end
 
 ACTIONS.GIVE.strfn = function(act)
-    return act.target ~= nil and (
-        (act.target:HasTag("gemsocket") and "SOCKET") or
-        (act.target:HasTag("altar") and (targ.state:value() and "READY" or "NOTREADY"))
-    ) or nil
+    return act.target ~= nil and act.target:HasTag("gemsocket") and "SOCKET" or nil
 end
 
 ACTIONS.DECORATEVASE.fn = function(act)
-	if act.target ~= nil and act.target.components.vase ~= nil and act.target.components.vase.enabled then
-		act.target.components.vase:Decorate(act.doer, act.invobject)
-		return true
-	end
+    if act.target ~= nil and act.target.components.vase ~= nil and act.target.components.vase.enabled then
+        act.target.components.vase:Decorate(act.doer, act.invobject)
+        return true
+    end
 end
 
 ACTIONS.STORE.fn = function(act)

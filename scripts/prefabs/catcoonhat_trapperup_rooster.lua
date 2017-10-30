@@ -13,4 +13,7 @@ return CreatePrefabSkin("catcoonhat_trapperup_rooster",
 	build_name = "catcoonhat_trapperup_rooster",
 	rarity = "Distinguished",
 	init_fn = function(inst) catcoonhat_init_fn(inst, "catcoonhat_trapperup_rooster") end,
+	skin_tags = { "CATCOONHAT", "LUNAR", "CRAFTABLE", },
+	marketable = true,
+	release_group = 23,
 })

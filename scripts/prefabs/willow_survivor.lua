@@ -13,5 +13,8 @@ return CreatePrefabSkin("willow_survivor",
 	assets = assets,
 	build_name = "willow_survivor",
 	rarity = "Elegant",
+	skin_tags = { "SURVIVOR", "BASE", "CHARACTER", "WILLOW", },
 	skins = { ghost_skin = "ghost_willow_build", normal_skin = "willow_survivor", },
+	marketable = true,
+	release_group = 4,
 })

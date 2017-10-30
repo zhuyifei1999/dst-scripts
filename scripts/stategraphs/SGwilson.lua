@@ -429,7 +429,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.ATTACK,
         function(inst, action)
             inst.sg.mem.localchainattack = not action.forced or nil
-            if not inst.components.health:IsDead() and not inst.sg:HasStateTag("attack") then
+            if not (inst.sg:HasStateTag("attack") and action.target == inst.sg.statemem.attacktarget or inst.components.health:IsDead()) then
                 local weapon = inst.components.combat ~= nil and inst.components.combat:GetWeapon() or nil
                 return (weapon == nil and "attack")
                     or (weapon:HasTag("blowdart") and "blowdart")
@@ -5497,7 +5497,7 @@ local states =
                 inst.components.skinner:SetSkinMode("ghost_skin")
             end
             inst.AnimState:PlayAnimation("shudder")
-            inst.AnimState:PushAnimation("hit", false)
+            inst.AnimState:PushAnimation("brace", false)
             inst.AnimState:PushAnimation("transform", false)
             inst.components.health:SetInvincible(true)
             inst:ShowHUD(false)

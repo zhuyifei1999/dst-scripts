@@ -1844,6 +1844,15 @@ return {
         TRINKET_35 = "Someone drank it already.", --Empty Elixir
 		TRINKET_36 = "Chomp chomp.", --Faux fangs
 		TRINKET_37 = "Doesn't seem worth fixing.", --Broken Stake
+		TRINKET_38 = "Hope no one's been snoopin' on us.", -- Binoculars Griftlands trinket
+        TRINKET_39 = "That just ain't right - it's left! Ha!", -- Lone Glove Griftlands trinket
+        TRINKET_40 = "Not sure what to do with it. I'm weighing my options.", -- Snail Scale Griftlands trinket
+        TRINKET_41 = "Not sure what this was for.", -- Goop Canister Hot Lava trinket
+        TRINKET_42 = "Cute little toy, hey?", -- Toy Cobra Hot Lava trinket
+        TRINKET_43 = "Blech. Handmade.", -- Crocodile Toy Hot Lava trinket
+        TRINKET_44 = "Nope. Can't fix that.", -- Broken Terrarium ONI trinket
+        TRINKET_45 = "I'm not messing with anymore radios.", -- Odd Radio ONI trinket
+        TRINKET_46 = "That might be fun to take apart.", -- Hairdryer ONI trinket
 
 		HALLOWEENCANDY_1 = "A nice change from baked apples.", --Candy Apple
         HALLOWEENCANDY_2 = "Is this even food?", --Candy Corn
@@ -1856,6 +1865,9 @@ return {
         HALLOWEENCANDY_9 = "Real gelatinous.", --Jelly Worm
         HALLOWEENCANDY_10 = "Curious flavor.", --Tentacle Lolli
         HALLOWEENCANDY_11 = "Best eaten by the handful.", --Choco Pigs
+        HALLOWEENCANDY_12 = "Ha, yuck! Everyone watch me eat'em!", --ONI meal lice candy
+        HALLOWEENCANDY_13 = "I ain't patient enough to eat these.",	--Griftlands themed candy
+        HALLOWEENCANDY_14 = "Whew! That's the kick y'need!",	--Hot Lava pepper candy
         CANDYBAG = "It's a goodybag.",
 
         DRAGONHEADHAT = "Front and center!",

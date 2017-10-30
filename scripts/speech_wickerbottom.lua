@@ -1665,6 +1665,16 @@ return
         TRINKET_35 = "Odorless. I believe it may have been sugar water.", --Empty Elixir
         TRINKET_36 = "Dunk those in boiling water before wearing them, dear.", --Faux Fangs
         TRINKET_37 = "Luckily it is much too brittle to inflict any real damage.", --Broken Stake
+        TRINKET_38 = "This simply does not work right.", -- Binoculars Griftlands trinket
+        TRINKET_39 = "It appears to be an abandoned glove.", -- Lone Glove Griftlands trinket
+        TRINKET_40 = "What a cute little mollusk shaped scale!", -- Snail Scale Griftlands trinket
+        TRINKET_41 = "This does not seem like it came from this world.", -- Goop Canister Hot Lava trinket
+        TRINKET_42 = "Goodness, it seems quite wistful.", -- Toy Cobra Hot Lava trinket
+        TRINKET_43 = "Perhaps I ought to save it for Webber.", -- Crocodile Toy Hot Lava trinket
+        TRINKET_44 = "A waste of a unique flora specimen.", -- Broken Terrarium ONI trinket
+        TRINKET_45 = "What a curious device!", -- Odd Radio ONI trinket
+        TRINKET_46 = "What an odd contraption.", -- Hairdryer ONI trinket
+
 
         HALLOWEENCANDY_1 = "Remember to eat in moderation, children.",
         HALLOWEENCANDY_2 = "Delightfully colored kernels of high fructose corn syrup.",
@@ -1677,6 +1687,9 @@ return
         HALLOWEENCANDY_9 = "I had best not hear of any tummy aches later.",
         HALLOWEENCANDY_10 = "How darling!",
         HALLOWEENCANDY_11 = "I fear I've a terrible weakness for a spot of chocolate.",
+        HALLOWEENCANDY_12 = "The candy itself is quite pleasant, if unappealing in appearance.", --ONI meal lice candy
+        HALLOWEENCANDY_13 = "There will be some sore jaws in the morning, I imagine.", --Griftlands themed candy
+        HALLOWEENCANDY_14 = "A delightful ten on the Scoville scale.", --Hot Lava pepper candy
         CANDYBAG = "A festive bag for seasonal treats.",
 
         DRAGONHEADHAT = "This is the head to the dragon costume.",

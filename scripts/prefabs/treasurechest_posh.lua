@@ -13,4 +13,7 @@ return CreatePrefabSkin("treasurechest_posh",
 	build_name = "treasurechest_posh",
 	rarity = "Distinguished",
 	init_fn = function(inst) treasurechest_init_fn(inst, "treasurechest_posh") end,
+	skin_tags = { "CHEST", "CRAFTABLE", },
+	marketable = true,
+	release_group = 19,
 })

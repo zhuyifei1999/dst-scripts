@@ -2014,6 +2014,10 @@ local function UpdateControllerInteractionTarget(self, dt, x, y, z, dirx, dirz)
         end
     end
 
+    --Fishing targets may have large radius, making it hard to target with normal priority
+    local fishing = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+    fishing = fishing ~= nil and fishing:HasTag("fishingrod")
+
     local min_rad = 1.5
     local max_rad = 6
     local min_rad_sq = min_rad * min_rad
@@ -2022,8 +2026,9 @@ local function UpdateControllerInteractionTarget(self, dt, x, y, z, dirx, dirz)
             self.controller_target ~= nil and
             math.max(min_rad, math.min(max_rad, math.sqrt(self.inst:GetDistanceSqToInst(self.controller_target)))) or
             max_rad
+    local rad_sq = rad * rad + .1 --allow small error
 
-    local nearby_ents = TheSim:FindEntities(x, y, z, rad, nil, TARGET_EXCLUDE_TAGS)
+    local nearby_ents = TheSim:FindEntities(x, y, z, fishing and max_rad or rad, nil, TARGET_EXCLUDE_TAGS)
     if self.controller_target ~= nil then
         --Note: it may already contain controller_target,
         --      so make sure to handle it only once later
@@ -2042,8 +2047,15 @@ local function UpdateControllerInteractionTarget(self, dt, x, y, z, dirx, dirz)
             local dx, dy, dz = x1 - x, y1 - y, z1 - z
             local dsq = dx * dx + dy * dy + dz * dz
 
+            if fishing and v.Physics ~= nil and v:HasTag("fishable") then
+                local r = v.Physics:GetRadius()
+                if dsq <= r * r then
+                    dsq = 0
+                end
+            end
+
             if (dsq < min_rad_sq
-                or (dsq <= max_rad_sq
+                or (dsq <= rad_sq
                     and (v == self.controller_target or
                         v == self.controller_attack_target or
                         dx * dirx + dz * dirz > 0))) and
@@ -2563,10 +2575,10 @@ function PlayerController:OnLeftClick(down)
         end
     elseif act.action == ACTIONS.ATTACK then
         if self.inst.sg ~= nil then
-            if self.inst.sg:HasStateTag("attack") then
+            if self.inst.sg:HasStateTag("attack") and act.target == self.inst.replica.combat:GetTarget() then
                 return
             end
-        elseif self.inst:HasTag("attack") then
+        elseif self.inst:HasTag("attack") and act.target == self.inst.replica.combat:GetTarget() then
             return
         end
     elseif act.action == ACTIONS.LOOKAT

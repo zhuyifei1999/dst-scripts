@@ -63,7 +63,8 @@ local function onpocket(inst, owner)
 end
 
 local function onattack(weapon, attacker, target)
-    if target ~= nil and target.components.burnable ~= nil and math.random() < TUNING.TORCH_ATTACK_IGNITE_PERCENT * target.components.burnable.flammability then
+    --target may be killed or removed in combat damage phase
+    if target ~= nil and target:IsValid() and target.components.burnable ~= nil and math.random() < TUNING.TORCH_ATTACK_IGNITE_PERCENT * target.components.burnable.flammability then
         target.components.burnable:Ignite(nil, attacker)
     end
 end

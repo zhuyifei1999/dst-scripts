@@ -8,13 +8,25 @@ local function OnBlocked(owner)
 end
 
 local function onequip(inst, owner) 
-    owner.AnimState:OverrideSymbol("swap_body", "armor_marble", "swap_body")
+    local skin_build = inst:GetSkinBuild()
+    if skin_build ~= nil then
+        owner:PushEvent("equipskinneditem", inst:GetSkinName())
+        owner.AnimState:OverrideItemSkinSymbol("swap_body", skin_build, "swap_body", inst.GUID, "armor_marble")
+    else
+		owner.AnimState:OverrideSymbol("swap_body", "armor_marble", "swap_body")
+    end
+    
     inst:ListenForEvent("blocked", OnBlocked, owner)
 end
 
 local function onunequip(inst, owner) 
     owner.AnimState:ClearOverrideSymbol("swap_body")
     inst:RemoveEventCallback("blocked", OnBlocked, owner)
+	
+    local skin_build = inst:GetSkinBuild()
+    if skin_build ~= nil then
+        owner:PushEvent("unequipskinneditem", inst:GetSkinName())
+    end
 end
 
 local function fn()

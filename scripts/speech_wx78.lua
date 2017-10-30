@@ -1823,6 +1823,15 @@ return {
         TRINKET_35 = "THE CONTENTS PROBABLY KILLED A HUMAN. HAHA", --Empty Elixir
         TRINKET_36 = "TEETH ARE FOR FILTHY FOOD-CHOMPING FLESHLINGS", --Faux Fangs
         TRINKET_37 = "NOT EVEN A WEAPON", --Broken Stake
+        TRINKET_38 = "MY OPTICS ALREADY POSSESS ZOOM FUNCTIONALITY", -- Binoculars Griftlands trinket
+        TRINKET_39 = "IT IS A RED GLOVE.", -- Lone Glove Griftlands trinket
+        TRINKET_40 = "I HAVE NO NEED FOR IT", -- Snail Scale Griftlands trinket
+        TRINKET_41 = "DISGUSTING FILTH JUNK", -- Goop Canister Hot Lava trinket
+        TRINKET_42 = "I DO NOT PLAY", -- Toy Cobra Hot Lava trinket
+        TRINKET_43 = "I CANNOT COMPREHEND CHILDHOOD JOY", -- Crocodile Toy Hot Lava trinket
+        TRINKET_44 = "DESTROYED. HA HA", -- Broken Terrarium ONI trinket
+        TRINKET_45 = "MY LOGIC FEELS FUNNY", -- Odd Radio ONI trinket
+        TRINKET_46 = "NONFUNCTIONAL", -- Hairdryer ONI trinket
 
         HALLOWEENCANDY_1 = "WHAT IS THE PURPOSE OF SHAPING FOODS LIKE OTHER FOODS",
         HALLOWEENCANDY_2 = "HORRIBLE TEXTURE, LOOKS NOTHING LIKE CORN. I LOVE IT",
@@ -1835,6 +1844,9 @@ return {
         HALLOWEENCANDY_9 = "EVERY TENTACLE IS EDIBLE IF YOU TRY",
         HALLOWEENCANDY_10 = "FLAVORED SUGAR STICKS",
         HALLOWEENCANDY_11 = "THE TREATS INSIDE ARE SHAPED LIKE FLESHLINGS",
+        HALLOWEENCANDY_12 = "IT IS A GELATIN LIE", --ONI meal lice candy
+        HALLOWEENCANDY_13 = "IT TASTES LIKE THE FUTURE", --Griftlands themed candy
+        HALLOWEENCANDY_14 = "MY MOUTH FEELS NO PAIN", --Hot Lava pepper candy
         CANDYBAG = "BAG FOR SWEETS",
 
         DRAGONHEADHAT = "I AM THE HEAD. YOU WILL FOLLOW ME",

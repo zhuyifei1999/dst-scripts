@@ -13,5 +13,8 @@ return CreatePrefabSkin("wathgrithr_formal",
 	assets = assets,
 	build_name = "wathgrithr_formal",
 	rarity = "Elegant",
+	skin_tags = { "FORMAL", "BASE", "CHARACTER", "WATHGRITHR", },
 	skins = { ghost_skin = "ghost_wathgrithr_build", normal_skin = "wathgrithr_formal", },
+	marketable = true,
+	release_group = 2,
 })

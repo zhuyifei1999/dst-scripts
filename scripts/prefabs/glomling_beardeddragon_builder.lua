@@ -13,4 +13,6 @@ return CreatePrefabSkin("glomling_beardeddragon_builder",
 	build_name = "glomling_beardeddragon",
 	rarity = "Common",
 	init_fn = function(inst) critter_builder_init_fn(inst, "glomling_beardeddragon" ) end,
+	skin_tags = { "CRAFTABLE", },
+	release_group = 17,
 })

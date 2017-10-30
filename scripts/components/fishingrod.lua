@@ -13,6 +13,9 @@ end
 local FishingRod = Class(function(self, inst)
     self.inst = inst
 
+    --V2C: Recommended to explicitly add tag to prefab pristine state
+    inst:AddTag("fishingrod")
+
     self.target = nil
     self.fisherman = nil
     self.hookedfish = nil

@@ -14,5 +14,8 @@ return CreatePrefabSkin("torch_rag",
 	rarity = "Elegant",
 	prefabs = { "torchfire_rag", },
 	init_fn = function(inst) torch_init_fn(inst, "torch_rag") end,
+	skin_tags = { "TORCH", "SURVIVOR", "CRAFTABLE", },
 	fx_prefab = { "torchfire_rag", },
+	marketable = true,
+	release_group = 4,
 })

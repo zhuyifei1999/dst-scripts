@@ -329,7 +329,12 @@ function ModWrangler:LoadServerModsFile()
 	
 	TheNet:BeginServerModSetup()
 	
-	local filename = MODS_ROOT.."dedicated_server_mods_setup.lua"
+	local filename = MODS_ROOT
+	if PLATFORM == "WIN32_RAIL" then
+		filename = filename.."dedicated_server_mods_setup_rail.lua"
+	else
+		filename = filename.."dedicated_server_mods_setup.lua"
+	end
 	local fn = kleiloadlua( filename )
 	if fn ~= nil then
 		local mods_err_fn = function(err)

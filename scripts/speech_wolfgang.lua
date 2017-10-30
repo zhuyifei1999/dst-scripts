@@ -1850,6 +1850,15 @@ return {
         TRINKET_35 = "Little potion make Wolfgang mighty?", --Empty Elixir
         TRINKET_36 = "Gah! Do not scare Wolfgang!", --Faux Fangs
         TRINKET_37 = "Stab-stick is useless now.", --Broken Stake
+        TRINKET_38 = "Is making tiny friends look tinier!", -- Binoculars Griftlands trinket
+        TRINKET_39 = "Is just one glove.", -- Lone Glove Griftlands trinket
+        TRINKET_40 = "Wolfgang has no use for tiny garbage.", -- Snail Scale Griftlands trinket
+        TRINKET_41 = "Wolfgang will crush it!", -- Goop Canister Hot Lava trinket
+        TRINKET_42 = "Is tiny scary thing.", -- Toy Cobra Hot Lava trinket
+        TRINKET_43 = "Is tiny toy monster.", -- Crocodile Toy Hot Lava trinket
+        TRINKET_44 = "Is very broke.", -- Broken Terrarium ONI trinket
+        TRINKET_45 = "Wolfgang can barely hear this.", -- Odd Radio ONI trinket
+        TRINKET_46 = "Is useless thing, I think.", -- Hairdryer ONI trinket
 
         HALLOWEENCANDY_1 = "Wolfgang eat many bushels!",
         HALLOWEENCANDY_2 = "Little corns get stuck in Wolfgang's mighty moustache!",
@@ -1862,6 +1871,9 @@ return {
         HALLOWEENCANDY_9 = "Is look yucky, but taste okay.",
         HALLOWEENCANDY_10 = "Is tasty little treat!",
         HALLOWEENCANDY_11 = "Little men of chocolate stand no chance against Wolfgang!",
+        HALLOWEENCANDY_12 = "Is gross little candy bugs!", --ONI meal lice candy
+        HALLOWEENCANDY_13 = "Hard candy is strong like Wolfgang!", --Griftlands themed candy
+        HALLOWEENCANDY_14 = "Is too hot for Wolfgang!!", --Hot Lava pepper candy
         CANDYBAG = "Is little bag for scary goodies!",
 
         DRAGONHEADHAT = "Wolfgang will be mighty beast!",

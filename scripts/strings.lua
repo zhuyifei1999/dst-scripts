@@ -849,12 +849,23 @@ STRINGS =
         TRINKET_29 = "Black Rook",
         TRINKET_30 = "White Knight",
         TRINKET_31 = "Black Knight",
+        --hallowed nights trinkets
         TRINKET_32 = "Cubic Zirconia Ball", -- Crystal Ball
         TRINKET_33 = "Spider Ring", -- Spider Ring
         TRINKET_34 = "Monkey Paw", -- Hand / Monkey Paw?
         TRINKET_35 = "Empty Elixir", -- Empty Potion Bottle
         TRINKET_36 = "Faux Fangs", -- Vampire Teeth
         TRINKET_37 = "Broken Stake", -- Wooden Stake
+        TRINKET_38 = "Binoculars", -- Griftlands trinket
+        TRINKET_39 = "Lone Glove", -- Griftlands trinket
+        TRINKET_40 = "Snail Scale", -- Griftlands trinket
+        TRINKET_41 = "Goop Canister", -- Hot Lava trinket
+        TRINKET_42 = "Toy Cobra", -- Hot Lava trinket
+        TRINKET_43= "Crocodile Toy", -- Hot Lava trinket
+        TRINKET_44 = "Broken Terrarium", -- ONI trinket
+        TRINKET_45 = "Odd Radio", -- ONI trinket
+        TRINKET_46 = "Broken Hairdryer", -- ONI trinket
+        --
         ANTLIONTRINKET = "Beach Toy", --bucket and shovel
 
         CARROT_PLANTED = "Carrot",
@@ -1369,6 +1380,9 @@ STRINGS =
         HALLOWEENCANDY_9 = "Jelly Worm",
         HALLOWEENCANDY_10 = "Tentacle Lolli",
         HALLOWEENCANDY_11 = "Choco Pigs",
+        HALLOWEENCANDY_12 = "Candy Lice",
+        HALLOWEENCANDY_13 = "Otherworldly Jawbreaker",
+        HALLOWEENCANDY_14 = "Lava Pepper",
         CANDYBAG = "Candy Bag",
 
         WINTER_TREESTAND = "Festive Tree Planter",

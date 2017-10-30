@@ -13,4 +13,7 @@ return CreatePrefabSkin("glomling_winter",
 	build_name = "glomling_winter",
 	rarity = "Elegant",
 	init_fn = function(inst) pet_init_fn(inst, "glomling_winter", "glomling_build" ) end,
+	skin_tags = { "PET", "WINTER", "CRAFTABLE", },
+	marketable = true,
+	release_group = 22,
 })

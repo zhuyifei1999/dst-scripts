@@ -362,7 +362,7 @@ function MultiplayerMainScreen:UpdatePuppets()
 		if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
 			local halloween_baseskins = {wilson="wilson_pigguard", willow="willow_dragonfly", wolfgang="wolfgang_walrus", wendy="wendy_lureplant", 
 										wx78="wx78_rhinorook", wickerbottom="wickerbottom_lightninggoat", woodie="woodie_treeguard", wes="wes_mandrake", 
-										waxwell="waxwell_krampus", wathgrithr="wathgrithr_deerclops", webber="webber_bat" }
+										waxwell="waxwell_krampus", wathgrithr="wathgrithr_deerclops", webber="webber_bat", winona="winona_grassgecko" }
 
 			local data = (players[i] and table.contains(DST_CHARACTERLIST, players[i].prefab)) and players[i] or { prefab=DST_CHARACTERLIST[math.random(#DST_CHARACTERLIST)], name="" }
 			data.base_skin = halloween_baseskins[data.prefab]

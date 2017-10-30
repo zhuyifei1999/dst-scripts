@@ -131,7 +131,7 @@ local function PrintStringTableV2( base, tbl, file )
 				to_add.str = str
 				table.insert( output_strings, to_add )
 			elseif string.len(v) > 4 and PLATFORM == "WIN32_RAIL" then --4 is arbitrary, high enough to just ignore the controller "strings" but low enough to catch valid strings that were dropped due to umlauts and such
-				print("### Possible valid string dropped from .pot generation?", path, v)
+				print("### Possible valid string dropped from .pot generation? Try putting the string into strings.lua without any special characters, such as wigfrid's umlauts stripped out.", path, v)
 			end
 
 		end

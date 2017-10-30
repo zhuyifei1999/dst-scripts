@@ -4,9 +4,11 @@ local TEMPLATES = require "widgets/templates"
 
 local images =
     IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) and {
-        {atlas="images/bg_spiral_fill_halloween1.xml", tex="bg_image1.tex"},
-        {atlas="images/bg_spiral_fill_halloween2.xml", tex="bg_image2.tex"},
-        {atlas="images/bg_spiral_fill_halloween3.xml", tex="bg_image3.tex"},
+--        {atlas="images/bg_spiral_fill_halloween1.xml", tex="bg_image1.tex"},
+--        {atlas="images/bg_spiral_fill_halloween2.xml", tex="bg_image2.tex"},
+--        {atlas="images/bg_spiral_fill_halloween3.xml", tex="bg_image3.tex"},
+        {atlas="images/bg_spiral_fill_halloween4.xml", tex="bg_image4.tex"},
+        {atlas="images/bg_spiral_fill_halloween5.xml", tex="bg_image5.tex"},
     }
     or IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) and {
         {atlas="images/bg_spiral_fill_christmas1.xml", tex="bg_image1.tex"},

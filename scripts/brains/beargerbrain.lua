@@ -101,7 +101,7 @@ local function StealFoodAction(inst) --Look for things to take food from (EatFoo
                 end
             elseif item.components.container ~= nil then
                 if not item.components.container:IsEmpty() then
-                    if item:HasTag("fridge") then
+                    if item:HasTag("fridge") and item.components.workable ~= nil then
                         if targets.honeyed_fridge == nil then
                             if item.components.container:FindItem(function(food) return inst.components.eater:CanEat(food) and food:HasTag("honeyed") end) ~= nil then
                                 targets.honeyed_fridge = item
@@ -110,7 +110,7 @@ local function StealFoodAction(inst) --Look for things to take food from (EatFoo
                                 targets.fridge = item
                             end
                         end
-                    elseif item:HasTag("chest") then
+                    elseif item:HasTag("chest") and item.components.workable ~= nil then
                         if targets.honeyed_chest == nil then
                             if item.components.container:FindItem(function(food) return inst.components.eater:CanEat(food) and food:HasTag("honeyed") end) ~= nil then
                                 targets.honeyed_chest = item

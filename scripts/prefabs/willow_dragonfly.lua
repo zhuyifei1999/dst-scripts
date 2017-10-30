@@ -13,5 +13,7 @@ return CreatePrefabSkin("willow_dragonfly",
 	assets = assets,
 	build_name = "willow_dragonfly",
 	rarity = "Event",
+	skin_tags = { "COSTUME", "BASE", "CHARACTER", "WILLOW", },
 	skins = { ghost_skin = "ghost_willow_build", normal_skin = "willow_dragonfly", },
+	release_group = 15,
 })

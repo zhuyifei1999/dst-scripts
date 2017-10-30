@@ -6,8 +6,8 @@ EMOTE_ITEMS =
 	{
 		rarity = "Reward",
 		cmd_name = "sleepy",
-		skin_build = "emote_sleepy",
 		type = "emote",
+		skin_tags = { "EMOTE", },
 		data =
 		{
 			item_type = "emote_sleepy",
@@ -25,13 +25,14 @@ EMOTE_ITEMS =
 		{
 			"eyerub",
 		},
+		release_group = 20,
 	},
 	emote_swoon =
 	{
 		rarity = "Loyal",
 		cmd_name = "swoon",
-		skin_build = "emote_swoon",
 		type = "emote",
+		skin_tags = { "EMOTE", },
 		data =
 		{
 			item_type = "emote_swoon",
@@ -42,13 +43,14 @@ EMOTE_ITEMS =
 			mounted = true,
 			mountsound = "curious",
 		},
+		release_group = 24,
 	},
 	emote_yawn =
 	{
 		rarity = "Reward",
 		cmd_name = "yawn",
-		skin_build = "emote_yawn",
 		type = "emote",
+		skin_tags = { "EMOTE", },
 		data =
 		{
 			item_type = "emote_yawn",
@@ -62,6 +64,7 @@ EMOTE_ITEMS =
 			sounddelay = 0.5,
 			soundoverride = "yawn",
 		},
+		release_group = 20,
 	},
 }
 

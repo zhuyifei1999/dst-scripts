@@ -13,6 +13,8 @@ return CreatePrefabSkin("wilson_pigguard",
 	assets = assets,
 	build_name = "wilson_pigguard",
 	rarity = "Event",
+	skin_tags = { "COSTUME", "BASE", "CHARACTER", "WILSON", },
 	skins = { ghost_skin = "ghost_wilson_build", normal_skin = "wilson_pigguard", },
 	torso_tuck_builds = { "wilson_pigguard", },
+	release_group = 15,
 })

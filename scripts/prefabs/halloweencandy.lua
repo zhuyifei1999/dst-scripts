@@ -16,6 +16,9 @@ local candyinfo =
     {food=FOODTYPE.GOODIES, health=1, hunger=2, sanity=0}, -- Jelly Worm
     {food=FOODTYPE.GOODIES, health=2, hunger=0, sanity=1}, -- Tentacle Lolli
     {food=FOODTYPE.GOODIES, health=1, hunger=1, sanity=1}, -- Choco Pigs
+    {food=FOODTYPE.GOODIES, health=1, hunger=2, sanity=0}, -- ONI
+    {food=FOODTYPE.GOODIES, health=1, hunger=0, sanity=2}, -- Griftlands
+    {food=FOODTYPE.VEGGIE,  health=0, hunger=1, sanity=2}, -- HotLava
 }
 
 assert(#candyinfo == NUM_HALLOWEENCANDY)

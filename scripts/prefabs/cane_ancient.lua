@@ -14,6 +14,8 @@ return CreatePrefabSkin("cane_ancient",
 	rarity = "Timeless",
 	prefabs = { "cane_ancient_fx", },
 	init_fn = function(inst) cane_init_fn(inst, "cane_ancient") end,
+	skin_tags = { "CANE", "ANCIENT", "CRAFTABLE", },
 	fx_prefab = { "cane_ancient_fx", },
+	release_group = 25,
 	granted_items = { "orangestaff_ancient", },
 })

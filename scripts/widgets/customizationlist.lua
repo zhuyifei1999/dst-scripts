@@ -97,6 +97,32 @@ function CustomizationList:SetTitle(title)
     self.scroll_list:SetList(self.optionwidgets, true)
 end
 
+local OPTIONS_REMAP =
+{
+	autumn	= {img = "blank_season_yellow.tex" },
+	spring	= {img = "blank_season_yellow.tex" },
+	summer	= {img = "blank_season_yellow.tex" },
+	winter	= {img = "blank_season_yellow.tex" },
+	
+	prefabswaps_start = {img = "blank_grassy.tex" },
+	
+	branching		= {img = "blank_world.tex" },
+	loop			= {img = "blank_world.tex" },
+	task_set		= {img = "blank_world.tex" },
+	world_size		= {img = "blank_world.tex" },
+	start_location	= {img = "blank_world.tex" },
+	
+	day				= {img = "blank_season_red.tex" },
+	season_start	= {img = "blank_season_red.tex" },
+	
+	--Unused options icons
+	--["season.tex"]		= {img = "blank_season_yellow.tex" },
+	--["changing_resources.tex"]	= {img = "blank_grassy.tex" },
+	--["periodic_resource.tex"]	= {img = "blank_world.tex" },
+	--["start_resource.tex"]		= {img = "blank_world.tex" },	
+	--["season_length.tex"]		= {img = "blank_season_red.tex" },
+}
+
 function CustomizationList:MakeOptionSpinners()
     self.optionwidgets = {}
 
@@ -113,7 +139,17 @@ function CustomizationList:MakeOptionSpinners()
         bg:SetPosition(19,1)
 
         local image_parent = opt:AddChild(Widget("imageparent"))
-        local image = image_parent:AddChild(Image(v.atlas or "images/customisation.xml", v.image))
+        local icon_image = v.image
+        local icon_txt = nil
+        if PLATFORM == "WIN32_RAIL" and OPTIONS_REMAP[v.name] then
+			print( v.image, v.name )
+			icon_image = OPTIONS_REMAP[v.name].img
+			icon_txt = STRINGS.UI.CUSTOMIZATIONSCREEN.ICON_TITLES[string.upper(v.name)]
+		end
+        local image = image_parent:AddChild(Image(v.atlas or "images/customisation.xml", icon_image))
+        if icon_txt ~= nil then
+			image_parent:AddChild(Text(NEWFONT_OUTLINE, 20, icon_txt))
+        end
 
         local imscale = .5
         image:SetScale(imscale,imscale,imscale)

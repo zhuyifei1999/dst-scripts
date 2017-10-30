@@ -219,8 +219,8 @@ local actionhandlers =
     ActionHandler(ACTIONS.COMBINESTACK, "doshortaction"),
     ActionHandler(ACTIONS.FEED, "dolongaction"),
     ActionHandler(ACTIONS.ATTACK,
-        function(inst)
-            if not (inst.replica.health:IsDead() or inst.sg:HasStateTag("attack")) then
+        function(inst, action)
+            if not (inst.sg:HasStateTag("attack") and action.target == inst.sg.statemem.attacktarget or inst.replica.health:IsDead()) then
                 local equip = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
                 if equip == nil then
                     return "attack"

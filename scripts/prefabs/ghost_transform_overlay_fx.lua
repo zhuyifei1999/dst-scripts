@@ -44,11 +44,9 @@ local function fn()
     inst:AddTag("NOCLICK")
     inst:AddTag("FX")
 
-    inst.AnimState:SetBank("player_revive_FX")
-    inst.AnimState:SetBuild("player_revive_FX")
-    inst.AnimState:PlayAnimation("shudder", false)
-    inst.AnimState:PushAnimation("hit", false)
-    inst.AnimState:PushAnimation("transform", false)
+    inst.AnimState:SetBank("player_revive_fx")
+    inst.AnimState:SetBuild("player_revive_fx")
+    inst.AnimState:PlayAnimation("shudder")
 
     --Copy ghost light values from player_common
     inst.Light:SetIntensity(.6)
@@ -76,6 +74,8 @@ local function fn()
 
     inst.persists = false
 
+    inst.AnimState:PushAnimation("brace", false)
+    inst.AnimState:PushAnimation("transform", false)
     inst:ListenForEvent("animqueueover", RemoveMe)
 
     return inst

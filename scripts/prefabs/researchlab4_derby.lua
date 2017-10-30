@@ -13,4 +13,6 @@ return CreatePrefabSkin("researchlab4_derby",
 	build_name = "researchlab4_derby",
 	rarity = "Elegant",
 	init_fn = function(inst) researchlab4_init_fn(inst, "researchlab4_derby") end,
+	skin_tags = { "PRESHAT", "CRAFTABLE", },
+	release_group = 26,
 })

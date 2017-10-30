@@ -1859,6 +1859,15 @@ return {
         TRINKET_35 = "Doesn't even have a label.", --Empty Elixir
         TRINKET_36 = "More intimidating than beaver teeth.", --Faux Fangs
         TRINKET_37 = "What a waste of wood, eh?", --Broken Stake
+        TRINKET_38 = "Looks like a pair of binoculars.", -- Binoculars Griftlands trinket
+        TRINKET_39 = "Oh, the gloves're comin' off now!", -- Lone Glove Griftlands trinket
+        TRINKET_40 = "It's a snail-shaped scale, eh?", -- Snail Scale Griftlands trinket
+        TRINKET_41 = "Got no idea what that's for.", -- Goop Canister Hot Lava trinket
+        TRINKET_42 = "Better than meeting a real one, eh?", -- Toy Cobra Hot Lava trinket
+        TRINKET_43 = "Get along, lil gator.", -- Crocodile Toy Hot Lava trinket
+        TRINKET_44 = "Smashed to bits.", -- Broken Terrarium ONI trinket
+        TRINKET_45 = "What sorta shows d'you think it gets?", -- Odd Radio ONI trinket
+        TRINKET_46 = "I prefer to let mine air dry.", -- Hairdryer ONI trinket
 
         HALLOWEENCANDY_1 = "Even the stick is delicious.",
         HALLOWEENCANDY_2 = "Don't worry, I'll eat enough for the both of us, Lucy.",
@@ -1871,6 +1880,9 @@ return {
         HALLOWEENCANDY_9 = "Not too bad, eh?",
         HALLOWEENCANDY_10 = "I'll tell you what it tastes like, Lucy.",
         HALLOWEENCANDY_11 = "Melts in your mouth, not in your hand.",
+        HALLOWEENCANDY_12 = "Not the biggest fan of bugs.", --ONI meal lice candy
+        HALLOWEENCANDY_13 = "It's pretty good stuff.", --Griftlands themed candy
+        HALLOWEENCANDY_14 = "Lucy doesn't like it when I eat spice.", --Hot Lava pepper candy
         CANDYBAG = "That there bag could hold a whole heap of candy.",
 
         DRAGONHEADHAT = "That's a sight, eh?",

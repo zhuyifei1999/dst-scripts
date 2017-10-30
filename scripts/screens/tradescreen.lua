@@ -1064,7 +1064,7 @@ function TradeScreen:RefreshMachineTilesState()
 		local item = self.selected_items[i]
 		if not self.machine_in_use and item ~= nil then 
 			local rarity = GetRarityForItem(item.item)
-			local hover_text = rarity .. "\n" .. GetName(item.item)
+			local hover_text = STRINGS.UI.RARITY[rarity] .. "\n" .. GetName(item.item)
 
 			local y_offset = 50
 			if item.last_item_warning then

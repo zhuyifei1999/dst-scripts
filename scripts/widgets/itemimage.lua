@@ -95,7 +95,7 @@ function ItemImage:SetItem(type, name, item_id, timestamp)
 	name = GetBuildForItem(self.name) 
 	
 
-	if self.frame and name ~= "" then 
+	if self.frame and name and name ~= "" then 
 		self.frame:GetAnimState():OverrideSkinSymbol("SWAP_ICON", name, "SWAP_ICON")
 		self.frame:GetAnimState():OverrideSymbol("SWAP_frameBG", "frame_BG", self.rarity)
 	end

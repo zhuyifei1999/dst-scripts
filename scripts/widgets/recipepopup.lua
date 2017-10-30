@@ -20,6 +20,8 @@ local TEXT_WIDTH = 64 * 3 + 30
 
 local testNewTag = false
 
+local recipe_desc_fontSize = PLATFORM ~= "WIN32_RAIL" and 33 or 30
+
 local RecipePopup = Class(Widget, function(self, horizontal)
     Widget._ctor(self, "Recipe Popup")
 
@@ -127,7 +129,7 @@ function RecipePopup:BuildWithSpinner(horizontal)
         self.desc:SetPosition(320, 20, 0)
     else
         self.name = self.contents:AddChild(Text(UIFONT, 40))
-        self.desc = self.contents:AddChild(Text(BODYTEXTFONT, 33))
+        self.desc = self.contents:AddChild(Text(BODYTEXTFONT, recipe_desc_fontSize))
         self.desc:SetPosition(320, 25, 0)
     end
     self.name:SetPosition(320, 172, 0)
@@ -219,7 +221,7 @@ function RecipePopup:BuildNoSpinner(horizontal)
         self.desc:SetPosition(320, -10, 0)
     else
         self.name = self.contents:AddChild(Text(UIFONT, 40))
-        self.desc = self.contents:AddChild(Text(BODYTEXTFONT, 33))
+        self.desc = self.contents:AddChild(Text(BODYTEXTFONT, recipe_desc_fontSize))
         self.desc:SetPosition(320, -5, 0)
     end
     self.name:SetPosition(320, 142, 0)

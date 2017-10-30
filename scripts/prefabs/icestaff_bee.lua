@@ -13,4 +13,6 @@ return CreatePrefabSkin("icestaff_bee",
 	build_name = "icestaff_bee",
 	rarity = "Elegant",
 	init_fn = function(inst) icestaff_init_fn(inst, "icestaff_bee") end,
+	skin_tags = { "STAFF", "CRAFTABLE", },
+	release_group = 27,
 })

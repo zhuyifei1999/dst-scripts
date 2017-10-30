@@ -125,7 +125,13 @@ function UIClock:UpdateDayString()
 end
 
 function UIClock:UpdateWorldString()
-    self._text:SetString(STRINGS.UI.HUD.WORLD_CLOCKDAY.." "..tostring(TheWorld.state.cycles + 1))
+	--Todo(Peter):get rid of this platform branch and use the same subfmt on all platforms.
+	if PLATFORM == "WIN32_RAIL" then
+		local day_text = subfmt(STRINGS.UI.HUD.WORLD_CLOCKDAY_V2,{day_count = TheWorld.state.cycles + 1})
+	    self._text:SetString(day_text)
+	else
+	    self._text:SetString(STRINGS.UI.HUD.WORLD_CLOCKDAY.." "..tostring(TheWorld.state.cycles + 1))
+	end
     self._showingcycles = true
 end
 

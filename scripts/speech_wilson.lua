@@ -1859,7 +1859,16 @@ return {
         TRINKET_35 = "Hard to find a good flask around here.", --Empty Elixir
         TRINKET_36 = "I might need these after all that candy.", --Faux fangs
         TRINKET_37 = "I don't believe in the supernatural.", --Broken Stake
-
+        TRINKET_38 = "I think it came from another world. One with grifts.", -- Binoculars Griftlands trinket
+        TRINKET_39 = "I wonder where the other one is?", -- Lone Glove Griftlands trinket
+        TRINKET_40 = "Holding it makes me feel like bartering.", -- Snail Scale Griftlands trinket
+        TRINKET_41 = "It's a little warm to the touch.", -- Goop Canister Hot Lava trinket
+        TRINKET_42 = "It's full of someone's childhood memories.", -- Toy Cobra Hot Lava trinket
+        TRINKET_43= "It's not very good at jumping.", -- Crocodile Toy Hot Lava trinket
+        TRINKET_44 = "It's some sort of plant specimen.", -- Broken Terrarium ONI trinket
+        TRINKET_45 = "It's picking up frequencies from another world.", -- Odd Radio ONI trinket
+        TRINKET_46 = "Maybe a tool for testing aerodynamics?", -- Hairdryer ONI trinket
+        
         HALLOWEENCANDY_1 = "The cavities are probably worth it, right?",
         HALLOWEENCANDY_2 = "What corruption of science grew these?",
         HALLOWEENCANDY_3 = "It's... corn.",
@@ -1871,6 +1880,9 @@ return {
         HALLOWEENCANDY_9 = "Sticks to your teeth.",
         HALLOWEENCANDY_10 = "Only a sucker wouldn't love this.",
         HALLOWEENCANDY_11 = "Much better tasting than the real thing.",
+        HALLOWEENCANDY_12 = "Did that candy just move?", --ONI meal lice candy
+        HALLOWEENCANDY_13 = "Oh, my poor jaw.", --Griftlands themed candy
+        HALLOWEENCANDY_14 = "I don't do well with spice.", --Hot Lava pepper candy
         CANDYBAG = "It's some sort of delicious pocket dimension for sugary treats.",
 
         DRAGONHEADHAT = "So who gets to be the head?",

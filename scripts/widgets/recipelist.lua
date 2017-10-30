@@ -6,7 +6,6 @@ local Text = require "widgets/text"
 local Image = require "widgets/image"
 local Spinner = require "widgets/spinner"
 
-require "item_colours"
 require "stringutil"
 require "skinstradeutils"
 

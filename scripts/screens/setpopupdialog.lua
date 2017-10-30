@@ -67,12 +67,12 @@ local SetPopupDialog = Class(Screen, function(self, set_item_type)
 	local i = 1
 	
 	local item_y = 58
-	local NUM_ITEMS = #SKIN_SET_ITEMS[set_item_type]
+	local NUM_ITEMS = #(SKIN_SET_ITEMS[set_item_type][1])
 	local steps = 5 - NUM_ITEMS
 	item_y = item_y - (steps * LINE_HEIGHT/2)
 	
 	self.input_item_imagetext = {}
-	for _,input_item_type in pairs(SKIN_SET_ITEMS[set_item_type]) do
+	for _,input_item_type in pairs(SKIN_SET_ITEMS[set_item_type][1]) do
     	local type = GetTypeForItem(input_item_type)
 		
 		local color = GREY

@@ -1858,6 +1858,15 @@ return {
         TRINKET_35 = "Neither half empty, nor half full.", --Empty Elixir
         TRINKET_36 = "Now Webber and I can match.", --Faux Fangs
         TRINKET_37 = "Drive it through my heart and be done.", --Broken Stake
+        TRINKET_38 = "It makes the world look as insignificant as I feel.", -- Binoculars Griftlands trinket
+        TRINKET_39 = "One lonely half of a pair.", -- Lone Glove Griftlands trinket
+        TRINKET_40 = "The weight of the world rests upon me.", -- Snail Scale Griftlands trinket
+        TRINKET_41 = "It looks like ectoplasm in there.", -- Goop Canister Hot Lava trinket
+        TRINKET_42 = "To frolic, to play, no more.", -- Toy Cobra Hot Lava trinket
+        TRINKET_43 = "I have put childish things behind me.", -- Crocodile Toy Hot Lava trinket
+        TRINKET_44 = "Some breaks cannot be mended.", -- Broken Terrarium ONI trinket
+        TRINKET_45 = "It is so colorful...", -- Odd Radio ONI trinket
+        TRINKET_46 = "I simply do not know what is it.", -- Hairdryer ONI trinket
 
         HALLOWEENCANDY_1 = "Oh... it's... g-good.",
         HALLOWEENCANDY_2 = "The most delicious lie.",
@@ -1870,6 +1879,9 @@ return {
         HALLOWEENCANDY_9 = "As perplexing as it is delicious.",
         HALLOWEENCANDY_10 = "This is... fun...",
         HALLOWEENCANDY_11 = "You have to bite their heads off first... heehee...",
+        HALLOWEENCANDY_12 = "Today I eat them. One day, they'll eat me.", --ONI meal lice candy
+        HALLOWEENCANDY_13 = "A candy as hard as my heart.", --Griftlands themed candy
+        HALLOWEENCANDY_14 = "What is this eternal burning?!", --Hot Lava pepper candy
         CANDYBAG = "It's for putting nice things in...",
 
         DRAGONHEADHAT = "What big eyes you have.",

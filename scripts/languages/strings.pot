@@ -4308,6 +4308,21 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HALLOWEENCANDY_11"
 msgid "Much better tasting than the real thing."
 msgstr ""
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.HALLOWEENCANDY_12
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HALLOWEENCANDY_12"
+msgid "Did that candy just move?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.HALLOWEENCANDY_13
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HALLOWEENCANDY_13"
+msgid "Oh, my poor jaw."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.HALLOWEENCANDY_14
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HALLOWEENCANDY_14"
+msgid "I don't do well with spice."
+msgstr ""
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.HALLOWEENCANDY_2
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.HALLOWEENCANDY_2"
 msgid "What corruption of science grew these?"
@@ -7168,9 +7183,54 @@ msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_37"
 msgid "I don't believe in the supernatural."
 msgstr ""
 
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_38
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_38"
+msgid "I think it came from another world. One with grifts."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_39
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_39"
+msgid "I wonder where the other one is?"
+msgstr ""
+
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_4
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_4"
 msgid "It must be some kind of religious artifact."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_40
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_40"
+msgid "Holding it makes me feel like bartering."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_41
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_41"
+msgid "It's a little warm to the touch."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_42
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_42"
+msgid "It's full of someone's childhood memories."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_43
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_43"
+msgid "It's not very good at jumping."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_44
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_44"
+msgid "It's some sort of plant specimen."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_45
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_45"
+msgid "It's picking up frequencies from another world."
+msgstr ""
+
+#. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_46
+msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_46"
+msgid "Maybe a tool for testing aerodynamics?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.TRINKET_5
@@ -11328,6 +11388,21 @@ msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HALLOWEENCANDY_11"
 msgid "Tis not meat, but tis close enough!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HALLOWEENCANDY_12
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HALLOWEENCANDY_12"
+msgid "They look like that which writhe and crawl."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HALLOWEENCANDY_13
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HALLOWEENCANDY_13"
+msgid "You shalt not break me, confection!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HALLOWEENCANDY_14
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HALLOWEENCANDY_14"
+msgid "Wretched Hel's fire!"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HALLOWEENCANDY_2
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.HALLOWEENCANDY_2"
 msgid "A clever ruse. It is not corn at all."
@@ -14163,9 +14238,54 @@ msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.TRINKET_37"
 msgid "For warding off Loki's minions."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.TRINKET_38
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.TRINKET_38"
+msgid "There is a tiny world trapped within!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.TRINKET_39
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.TRINKET_39"
+msgid "To arms! The gauntlet has been thrown down!"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.TRINKET_4
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.TRINKET_4"
 msgid "A small, peculiar man."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.TRINKET_40
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.TRINKET_40"
+msgid "I have no use for such things."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.TRINKET_41
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.TRINKET_41"
+msgid "Perhaps some sort of elixir lies within?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.TRINKET_42
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.TRINKET_42"
+msgid "Tis no foe worthy of I."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.TRINKET_43
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.TRINKET_43"
+msgid "What manner of creature be this?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.TRINKET_44
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.TRINKET_44"
+msgid "It has fallen in battle."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.TRINKET_45
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.TRINKET_45"
+msgid "What stories might you tell, trapped spirit?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.TRINKET_46
+msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.TRINKET_46"
+msgid "Tis a suspicious contraption!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.TRINKET_5
@@ -18328,6 +18448,21 @@ msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.HALLOWEENCANDY_11"
 msgid "Eating them makes me feel powerful."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.HALLOWEENCANDY_12
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.HALLOWEENCANDY_12"
+msgid "Ah, maggots... how novel."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.HALLOWEENCANDY_13
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.HALLOWEENCANDY_13"
+msgid "It's not terrible."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.HALLOWEENCANDY_14
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.HALLOWEENCANDY_14"
+msgid "Only ruffians enjoy torturing themselves like this."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.HALLOWEENCANDY_2
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.HALLOWEENCANDY_2"
 msgid "Waxy, just like me."
@@ -21168,9 +21303,54 @@ msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.TRINKET_37"
 msgid "I told you people, I am *not* a vampire!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.TRINKET_38
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.TRINKET_38"
+msgid "You are all ants in my eyes already."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.TRINKET_39
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.TRINKET_39"
+msgid "What a tacky glove."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.TRINKET_4
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.TRINKET_4"
 msgid "Don't look at me like that."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.TRINKET_40
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.TRINKET_40"
+msgid "One hundred percent to scale."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.TRINKET_41
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.TRINKET_41"
+msgid "I've no idea what that is."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.TRINKET_42
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.TRINKET_42"
+msgid "It looks cheap."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.TRINKET_43
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.TRINKET_43"
+msgid "What use would I have of such a thing?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.TRINKET_44
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.TRINKET_44"
+msgid "Rosebud."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.TRINKET_45
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.TRINKET_45"
+msgid "At least it's not ragtime."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.TRINKET_46
+msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.TRINKET_46"
+msgid "Some harebrained invention of the scientist's, perhaps?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.TRINKET_5
@@ -25333,6 +25513,21 @@ msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.HALLOWEENCANDY_11"
 msgid "Mmm! Sweet revenge!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.HALLOWEENCANDY_12
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.HALLOWEENCANDY_12"
+msgid "Wriggly, yet satisfying."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.HALLOWEENCANDY_13
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.HALLOWEENCANDY_13"
+msgid "We like these a lot."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.HALLOWEENCANDY_14
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.HALLOWEENCANDY_14"
+msgid "Gosh, it's spicy."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.HALLOWEENCANDY_2
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.HALLOWEENCANDY_2"
 msgid "Haha ew! It's weird!"
@@ -28163,9 +28358,54 @@ msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.TRINKET_37"
 msgid "Maybe we should hide this before someone gets hurt."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.TRINKET_38
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.TRINKET_38"
+msgid "Haha! Everything looks so small!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.TRINKET_39
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.TRINKET_39"
+msgid "That's boring."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.TRINKET_4
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.TRINKET_4"
 msgid "It's watching us."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.TRINKET_40
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.TRINKET_40"
+msgid "Haha, it looks like a snail shell."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.TRINKET_41
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.TRINKET_41"
+msgid "Haha! Weird!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.TRINKET_42
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.TRINKET_42"
+msgid "Neat!!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.TRINKET_43
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.TRINKET_43"
+msgid "C'mon little croc! Let's adventure!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.TRINKET_44
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.TRINKET_44"
+msgid "The plant is so pretty!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.TRINKET_45
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.TRINKET_45"
+msgid "It doesn't get any good channels."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.TRINKET_46
+msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.TRINKET_46"
+msgid "What's it for?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.TRINKET_5
@@ -32313,6 +32553,21 @@ msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.HALLOWEENCANDY_11"
 msgid "You have to bite their heads off first... heehee..."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.HALLOWEENCANDY_12
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.HALLOWEENCANDY_12"
+msgid "Today I eat them. One day, they'll eat me."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.HALLOWEENCANDY_13
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.HALLOWEENCANDY_13"
+msgid "A candy as hard as my heart."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.HALLOWEENCANDY_14
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.HALLOWEENCANDY_14"
+msgid "What is this eternal burning?!"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.HALLOWEENCANDY_2
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.HALLOWEENCANDY_2"
 msgid "The most delicious lie."
@@ -35153,9 +35408,54 @@ msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.TRINKET_37"
 msgid "Drive it through my heart and be done."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.TRINKET_38
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.TRINKET_38"
+msgid "It makes the world look as insignificant as I feel."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.TRINKET_39
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.TRINKET_39"
+msgid "One lonely half of a pair."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.TRINKET_4
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.TRINKET_4"
 msgid "I'd carry this to the end of the world."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.TRINKET_40
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.TRINKET_40"
+msgid "The weight of the world rests upon me."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.TRINKET_41
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.TRINKET_41"
+msgid "It looks like ectoplasm in there."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.TRINKET_42
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.TRINKET_42"
+msgid "To frolic, to play, no more."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.TRINKET_43
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.TRINKET_43"
+msgid "I have put childish things behind me."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.TRINKET_44
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.TRINKET_44"
+msgid "Some breaks cannot be mended."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.TRINKET_45
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.TRINKET_45"
+msgid "It is so colorful..."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WENDY.DESCRIBE.TRINKET_46
+msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.TRINKET_46"
+msgid "I simply do not know what is it."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.TRINKET_5
@@ -39328,6 +39628,21 @@ msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.HALLOWEENCANDY_11"
 msgid "I fear I've a terrible weakness for a spot of chocolate."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.HALLOWEENCANDY_12
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.HALLOWEENCANDY_12"
+msgid "The candy itself is quite pleasant, if unappealing in appearance."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.HALLOWEENCANDY_13
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.HALLOWEENCANDY_13"
+msgid "There will be some sore jaws in the morning, I imagine."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.HALLOWEENCANDY_14
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.HALLOWEENCANDY_14"
+msgid "A delightful ten on the Scoville scale."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.HALLOWEENCANDY_2
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.HALLOWEENCANDY_2"
 msgid "Delightfully colored kernels of high fructose corn syrup."
@@ -42168,9 +42483,54 @@ msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.TRINKET_37"
 msgid "Luckily it is much too brittle to inflict any real damage."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.TRINKET_38
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.TRINKET_38"
+msgid "This simply does not work right."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.TRINKET_39
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.TRINKET_39"
+msgid "It appears to be an abandoned glove."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.TRINKET_4
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.TRINKET_4"
 msgid "What a positively, delightfully odd little fellow."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.TRINKET_40
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.TRINKET_40"
+msgid "What a cute little mollusk shaped scale!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.TRINKET_41
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.TRINKET_41"
+msgid "This does not seem like it came from this world."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.TRINKET_42
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.TRINKET_42"
+msgid "Goodness, it seems quite wistful."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.TRINKET_43
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.TRINKET_43"
+msgid "Perhaps I ought to save it for Webber."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.TRINKET_44
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.TRINKET_44"
+msgid "A waste of a unique flora specimen."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.TRINKET_45
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.TRINKET_45"
+msgid "What a curious device!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.TRINKET_46
+msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.TRINKET_46"
+msgid "What an odd contraption."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.TRINKET_5
@@ -46368,6 +46728,21 @@ msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.HALLOWEENCANDY_11"
 msgid "I'm gonna need about a dozen of these."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.HALLOWEENCANDY_12
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.HALLOWEENCANDY_12"
+msgid "Yuck! That's disgusting!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.HALLOWEENCANDY_13
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.HALLOWEENCANDY_13"
+msgid "It's sorta tangy."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.HALLOWEENCANDY_14
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.HALLOWEENCANDY_14"
+msgid "Mmm! It burns my mouth so good!"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.HALLOWEENCANDY_2
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.HALLOWEENCANDY_2"
 msgid "Do people actually eat these or are they just a bad joke?"
@@ -49213,9 +49588,54 @@ msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.TRINKET_37"
 msgid "Looks like firewood to me."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.TRINKET_38
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.TRINKET_38"
+msgid "It makes stuff look small no matter which way I turn it."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.TRINKET_39
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.TRINKET_39"
+msgid "Who needs just one glove?"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.TRINKET_4
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.TRINKET_4"
 msgid "He looks like he was forged in flame."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.TRINKET_40
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.TRINKET_40"
+msgid "Snails are gross!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.TRINKET_41
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.TRINKET_41"
+msgid "Ooo, it's warm."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.TRINKET_42
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.TRINKET_42"
+msgid "I don't like snakes."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.TRINKET_43
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.TRINKET_43"
+msgid "Yeesh. I can feel the nostalgia dripping off it."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.TRINKET_44
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.TRINKET_44"
+msgid "It's just junk."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.TRINKET_45
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.TRINKET_45"
+msgid "It's got kind of a dumb face, huh?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WILLOW.DESCRIBE.TRINKET_46
+msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.TRINKET_46"
+msgid "I never take my pigtails out anyway."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.TRINKET_5
@@ -53303,6 +53723,21 @@ msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.HALLOWEENCANDY_11"
 msgid "Best eaten by the handful."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.HALLOWEENCANDY_12
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.HALLOWEENCANDY_12"
+msgid "Ha, yuck! Everyone watch me eat'em!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.HALLOWEENCANDY_13
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.HALLOWEENCANDY_13"
+msgid "I ain't patient enough to eat these."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.HALLOWEENCANDY_14
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.HALLOWEENCANDY_14"
+msgid "Whew! That's the kick y'need!"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.HALLOWEENCANDY_2
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.HALLOWEENCANDY_2"
 msgid "Is this even food?"
@@ -56193,9 +56628,54 @@ msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.TRINKET_37"
 msgid "Doesn't seem worth fixing."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.TRINKET_38
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.TRINKET_38"
+msgid "Hope no one's been snoopin' on us."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.TRINKET_39
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.TRINKET_39"
+msgid "That just ain't right - it's left! Ha!"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.TRINKET_4
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.TRINKET_4"
 msgid "We're not goin' gnome anytime soon. Ha! ...Oh."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.TRINKET_40
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.TRINKET_40"
+msgid "Not sure what to do with it. I'm weighing my options."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.TRINKET_41
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.TRINKET_41"
+msgid "Not sure what this was for."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.TRINKET_42
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.TRINKET_42"
+msgid "Cute little toy, hey?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.TRINKET_43
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.TRINKET_43"
+msgid "Blech. Handmade."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.TRINKET_44
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.TRINKET_44"
+msgid "Nope. Can't fix that."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.TRINKET_45
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.TRINKET_45"
+msgid "I'm not messing with anymore radios."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WINONA.DESCRIBE.TRINKET_46
+msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.TRINKET_46"
+msgid "That might be fun to take apart."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.TRINKET_5
@@ -60388,6 +60868,21 @@ msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.HALLOWEENCANDY_11"
 msgid "Little men of chocolate stand no chance against Wolfgang!"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.HALLOWEENCANDY_12
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.HALLOWEENCANDY_12"
+msgid "Is gross little candy bugs!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.HALLOWEENCANDY_13
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.HALLOWEENCANDY_13"
+msgid "Hard candy is strong like Wolfgang!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.HALLOWEENCANDY_14
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.HALLOWEENCANDY_14"
+msgid "Is too hot for Wolfgang!!"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.HALLOWEENCANDY_2
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.HALLOWEENCANDY_2"
 msgid "Little corns get stuck in Wolfgang's mighty moustache!"
@@ -63228,9 +63723,54 @@ msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.TRINKET_37"
 msgid "Stab-stick is useless now."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.TRINKET_38
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.TRINKET_38"
+msgid "Is making tiny friends look tinier!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.TRINKET_39
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.TRINKET_39"
+msgid "Is just one glove."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.TRINKET_4
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.TRINKET_4"
 msgid "Ha ha! Is tiny man!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.TRINKET_40
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.TRINKET_40"
+msgid "Wolfgang has no use for tiny garbage."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.TRINKET_41
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.TRINKET_41"
+msgid "Wolfgang will crush it!"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.TRINKET_42
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.TRINKET_42"
+msgid "Is tiny scary thing."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.TRINKET_43
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.TRINKET_43"
+msgid "Is tiny toy monster."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.TRINKET_44
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.TRINKET_44"
+msgid "Is very broke."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.TRINKET_45
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.TRINKET_45"
+msgid "Wolfgang can barely hear this."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.TRINKET_46
+msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.TRINKET_46"
+msgid "Is useless thing, I think."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.TRINKET_5
@@ -67403,6 +67943,21 @@ msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.HALLOWEENCANDY_11"
 msgid "Melts in your mouth, not in your hand."
 msgstr ""
 
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.HALLOWEENCANDY_12
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.HALLOWEENCANDY_12"
+msgid "Not the biggest fan of bugs."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.HALLOWEENCANDY_13
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.HALLOWEENCANDY_13"
+msgid "It's pretty good stuff."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.HALLOWEENCANDY_14
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.HALLOWEENCANDY_14"
+msgid "Lucy doesn't like it when I eat spice."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.HALLOWEENCANDY_2
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.HALLOWEENCANDY_2"
 msgid "Don't worry, I'll eat enough for the both of us, Lucy."
@@ -70248,9 +70803,54 @@ msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.TRINKET_37"
 msgid "What a waste of wood, eh?"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.TRINKET_38
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.TRINKET_38"
+msgid "Looks like a pair of binoculars."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.TRINKET_39
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.TRINKET_39"
+msgid "Oh, the gloves're comin' off now!"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.TRINKET_4
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.TRINKET_4"
 msgid "Wolfgang would appreciate that moustache."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.TRINKET_40
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.TRINKET_40"
+msgid "It's a snail-shaped scale, eh?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.TRINKET_41
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.TRINKET_41"
+msgid "Got no idea what that's for."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.TRINKET_42
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.TRINKET_42"
+msgid "Better than meeting a real one, eh?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.TRINKET_43
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.TRINKET_43"
+msgid "Get along, lil gator."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.TRINKET_44
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.TRINKET_44"
+msgid "Smashed to bits."
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.TRINKET_45
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.TRINKET_45"
+msgid "What sorta shows d'you think it gets?"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WOODIE.DESCRIBE.TRINKET_46
+msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.TRINKET_46"
+msgid "I prefer to let mine air dry."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.TRINKET_5
@@ -74408,6 +75008,21 @@ msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.HALLOWEENCANDY_11"
 msgid "THE TREATS INSIDE ARE SHAPED LIKE FLESHLINGS"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.HALLOWEENCANDY_12
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.HALLOWEENCANDY_12"
+msgid "IT IS A GELATIN LIE"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.HALLOWEENCANDY_13
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.HALLOWEENCANDY_13"
+msgid "IT TASTES LIKE THE FUTURE"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.HALLOWEENCANDY_14
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.HALLOWEENCANDY_14"
+msgid "MY MOUTH FEELS NO PAIN"
+msgstr ""
+
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.HALLOWEENCANDY_2
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.HALLOWEENCANDY_2"
 msgid "HORRIBLE TEXTURE, LOOKS NOTHING LIKE CORN. I LOVE IT"
@@ -77243,9 +77858,54 @@ msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.TRINKET_37"
 msgid "NOT EVEN A WEAPON"
 msgstr ""
 
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.TRINKET_38
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.TRINKET_38"
+msgid "MY OPTICS ALREADY POSSESS ZOOM FUNCTIONALITY"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.TRINKET_39
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.TRINKET_39"
+msgid "IT IS A RED GLOVE."
+msgstr ""
+
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.TRINKET_4
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.TRINKET_4"
 msgid "HEY SCIENTIST THIS HORRIBLE JUNK LOOKS JUST LIKE YOU"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.TRINKET_40
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.TRINKET_40"
+msgid "I HAVE NO NEED FOR IT"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.TRINKET_41
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.TRINKET_41"
+msgid "DISGUSTING FILTH JUNK"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.TRINKET_42
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.TRINKET_42"
+msgid "I DO NOT PLAY"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.TRINKET_43
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.TRINKET_43"
+msgid "I CANNOT COMPREHEND CHILDHOOD JOY"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.TRINKET_44
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.TRINKET_44"
+msgid "DESTROYED. HA HA"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.TRINKET_45
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.TRINKET_45"
+msgid "MY LOGIC FEELS FUNNY"
+msgstr ""
+
+#. STRINGS.CHARACTERS.WX78.DESCRIBE.TRINKET_46
+msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.TRINKET_46"
+msgid "NONFUNCTIONAL"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.TRINKET_5
@@ -82023,6 +82683,21 @@ msgctxt "STRINGS.NAMES.HALLOWEENCANDY_11"
 msgid "Choco Pigs"
 msgstr ""
 
+#. STRINGS.NAMES.HALLOWEENCANDY_12
+msgctxt "STRINGS.NAMES.HALLOWEENCANDY_12"
+msgid "Candy Lice"
+msgstr ""
+
+#. STRINGS.NAMES.HALLOWEENCANDY_13
+msgctxt "STRINGS.NAMES.HALLOWEENCANDY_13"
+msgid "Otherworldly Jawbreaker"
+msgstr ""
+
+#. STRINGS.NAMES.HALLOWEENCANDY_14
+msgctxt "STRINGS.NAMES.HALLOWEENCANDY_14"
+msgid "Lava Pepper"
+msgstr ""
+
 #. STRINGS.NAMES.HALLOWEENCANDY_2
 msgctxt "STRINGS.NAMES.HALLOWEENCANDY_2"
 msgid "Candy Corn"
@@ -84313,9 +84988,54 @@ msgctxt "STRINGS.NAMES.TRINKET_37"
 msgid "Broken Stake"
 msgstr ""
 
+#. STRINGS.NAMES.TRINKET_38
+msgctxt "STRINGS.NAMES.TRINKET_38"
+msgid "Binoculars"
+msgstr ""
+
+#. STRINGS.NAMES.TRINKET_39
+msgctxt "STRINGS.NAMES.TRINKET_39"
+msgid "Lone Glove"
+msgstr ""
+
 #. STRINGS.NAMES.TRINKET_4
 msgctxt "STRINGS.NAMES.TRINKET_4"
 msgid "Gnome"
+msgstr ""
+
+#. STRINGS.NAMES.TRINKET_40
+msgctxt "STRINGS.NAMES.TRINKET_40"
+msgid "Snail Scale"
+msgstr ""
+
+#. STRINGS.NAMES.TRINKET_41
+msgctxt "STRINGS.NAMES.TRINKET_41"
+msgid "Goop Canister"
+msgstr ""
+
+#. STRINGS.NAMES.TRINKET_42
+msgctxt "STRINGS.NAMES.TRINKET_42"
+msgid "Toy Cobra"
+msgstr ""
+
+#. STRINGS.NAMES.TRINKET_43
+msgctxt "STRINGS.NAMES.TRINKET_43"
+msgid "Crocodile Toy"
+msgstr ""
+
+#. STRINGS.NAMES.TRINKET_44
+msgctxt "STRINGS.NAMES.TRINKET_44"
+msgid "Broken Terrarium"
+msgstr ""
+
+#. STRINGS.NAMES.TRINKET_45
+msgctxt "STRINGS.NAMES.TRINKET_45"
+msgid "Odd Radio"
+msgstr ""
+
+#. STRINGS.NAMES.TRINKET_46
+msgctxt "STRINGS.NAMES.TRINKET_46"
+msgid "Broken Hairdryer"
 msgstr ""
 
 #. STRINGS.NAMES.TRINKET_5
@@ -88193,6 +88913,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.bedroll_furry_quilt_white_ivory"
 msgid "Nothing says \"bedtime\" quite like a bunch of little fabric squares sewn into one bigger, 'houndbone white' fabric square."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.birdcage_gothic
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.birdcage_gothic"
+msgid "Trap birds in a prison of their own making."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.birdcage_ornamental
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.birdcage_ornamental"
 msgid "Imprison a bird in a wreath of seasonal cheer."
@@ -88568,6 +89293,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_tweedvest_tan_grass"
 msgid "Don't get lost in the tweeds wearing this 'dry grass tan' colored souvenir from the Village of Tweed."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.body_wathgrithr_deerclops
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wathgrithr_deerclops"
+msgid "Look like an intimidating Deerclops with this Hallowed Nights costume."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.body_wathgrithr_formal
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wathgrithr_formal"
 msgid "Be a knight in shining armor. Or at least look like one. (It's just a costume, not real armor.)"
@@ -88588,6 +89318,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_waxwell_formal"
 msgid "The delightful aroma of mothballs and decay wafts off it."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.body_waxwell_krampus
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_waxwell_krampus"
+msgid "Dress up as a spooky Krampus for Hallowed Nights."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.body_waxwell_survivor
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_waxwell_survivor"
 msgid "A tragic end to a once-dapper three piece suit."
@@ -88596,6 +89331,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.body_waxwell_unshadow
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_waxwell_unshadow"
 msgid "This look hearkens back to a simpler time. You are missed, Charlie."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_webber_bat
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_webber_bat"
+msgid "Look the part of a spooky Batilisk."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_webber_formal
@@ -88618,6 +89358,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wendy_formal"
 msgid "A cute party dress with puffed sleeves."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.body_wendy_lureplant
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wendy_lureplant"
+msgid "Look the part of an alluring Lureplant."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.body_wendy_shadow
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wendy_shadow"
 msgid "Finally the darkness envelops you, as you always knew it would."
@@ -88631,6 +89376,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.body_wes_formal
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wes_formal"
 msgid "A fancy flowing shirt with formal trousers."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_wes_mandrake
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wes_mandrake"
+msgid "A Hallowed Nights costume fashioned after a delightfully annoying vegetable."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_wes_shadow
@@ -88648,6 +89398,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wickerbottom_formal"
 msgid "Be the life of the party in this gray silk ball gown."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.body_wickerbottom_lightninggoat
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wickerbottom_lightninggoat"
+msgid "This electrifying costume will let your dress up like a cute Volt Goat!"
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.body_wickerbottom_shadow
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wickerbottom_shadow"
 msgid "This dress is made from many shadow fragments sewn together."
@@ -88656,6 +89411,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.body_wickerbottom_survivor
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wickerbottom_survivor"
 msgid "Living outdoors may be healthy, but it's sure hard on your clothing."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_willow_dragonfly
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_willow_dragonfly"
+msgid "Be a terrifying Dragonfly for Hallowed Nights!"
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_willow_formal
@@ -88678,6 +89438,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wilson_formal"
 msgid "Some events ask for white tie, and some ask for black tie. Well, this is red tie."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.body_wilson_pigguard
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wilson_pigguard"
+msgid "Dress up like an intimidating Pig Guard for Hallowed Nights!"
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.body_wilson_shadow
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wilson_shadow"
 msgid "A suit made of shadows. Quite the opposite of flashy."
@@ -88691,6 +89456,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.body_winona_formal
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_winona_formal"
 msgid "A formal blazer and matching skirt for a sensible party gal."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_winona_grassgecko
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_winona_grassgecko"
+msgid "Dress up like a cute Grass Gekko for Hallowed Nights."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_winona_shadow
@@ -88718,6 +89488,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wolfgang_survivor"
 msgid "Wearing fur makes you feel like mighty animal!"
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.body_wolfgang_walrus
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wolfgang_walrus"
+msgid "Dress up as an old MacTusk for Hallowed Nights!"
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.body_woodie_formal
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_woodie_formal"
 msgid "A real Canadian Jacket, made for real Canadians. (Not out of real Canadians.)"
@@ -88733,9 +89508,19 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_woodie_survivor"
 msgid "Trees are great, but clothing doesn't grow on them."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.body_woodie_treeguard
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_woodie_treeguard"
+msgid "This Treeguard Hallowed Nights costume will really grow on you."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.body_wx78_formal
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wx78_formal"
 msgid "But of course it has a cummerbund."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.body_wx78_rhinorook
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wx78_rhinorook"
+msgid "This Rook Hallowed Nights costume will give you a run for your money."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_wx78_shadow
@@ -88773,9 +89558,24 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.catcoonhat_trapperup_rooster"
 msgid "This trapper hat appears to have been permanently tied up. Luckily it looks stylish that way."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.cookpot_cauldron
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.cookpot_cauldron"
+msgid "Double, double, broil and gobble, campfire burns and crockpot bubbles!"
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.cookpot_survival
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.cookpot_survival"
 msgid "This cooking pot looks kind of beaten up, but the food it cooks still tastes delicious."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.dragonling_bat
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.dragonling_bat"
+msgid "You'd have to be blind not to appreciate this bat's horrifying adorableness."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.dragonling_bat_builder
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.dragonling_bat_builder"
+msgid "missing description"
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.dragonling_winter
@@ -88800,17 +89600,17 @@ msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.emote_sleepy
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.emote_sleepy"
-msgid "\"You are getting veeery /sleepy...\""
+msgid "Type /sleepy to rub your groggy eyes."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.emote_swoon
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.emote_swoon"
-msgid "A deep /swoon is not for the faint of heart."
+msgid "Type /swoon to fall into a deep swoon."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.emote_yawn
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.emote_yawn"
-msgid "Just /yawn and everyone will know you're ready for an adorable nap!"
+msgid "Type /yawn to let everyone know you're ready for an adorable nap!"
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.endtable_carpet
@@ -89340,12 +90140,17 @@ msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.treasurechest_traveltrunk
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.treasurechest_traveltrunk"
-msgid "Its travelling days may be over, but it'll always have the memories."
+msgid "Its traveling days may be over, but it'll always have the memories."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.wathgrithr_deerclops
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wathgrithr_deerclops"
 msgid "Deerfrid Costume\n\nWearable for a limited time."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wathgrithr_deerclops_d
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wathgrithr_deerclops_d"
+msgid "Wigfrid chose to be one of her favorite foes to battle for Hallowed Nights."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.wathgrithr_formal
@@ -89373,6 +90178,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.waxwell_krampus"
 msgid "Krampwell Costume\n\nWearable for a limited time."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.waxwell_krampus_d
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.waxwell_krampus_d"
+msgid "Maxwell deeply regrets asking the others to choose his costume for him."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.waxwell_survivor
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.waxwell_survivor"
 msgid "This is Maxwell, the intrepid explorer."
@@ -89386,6 +90196,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.webber_bat
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.webber_bat"
 msgid "Webilisk Costume\n\nWearable for a limited time."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.webber_bat_d
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.webber_bat_d"
+msgid "Gosh, those wings look very... real."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.webber_formal
@@ -89413,6 +90228,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.wendy_lureplant"
 msgid "Wendyflower Costume\n\nWearable for a limited time."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.wendy_lureplant_d
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wendy_lureplant_d"
+msgid "Wendy quite fancies this hair color."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.wendy_shadow
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wendy_shadow"
 msgid "Wendy has always been comfortable with darkness."
@@ -89431,6 +90251,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.wes_mandrake
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wes_mandrake"
 msgid "Wesdrake Costume\n\nWearable for a limited time."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wes_mandrake_d
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wes_mandrake_d"
+msgid "What's the sound of one mandrake meeping?"
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.wes_shadow
@@ -89453,6 +90278,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.wickerbottom_lightninggoat"
 msgid "Ms. Voltbottom Costume\n\nWearable for a limited time."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.wickerbottom_lightninggoat_d
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wickerbottom_lightninggoat_d"
+msgid "An elegant costume for an elegant woman."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.wickerbottom_shadow
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wickerbottom_shadow"
 msgid "A librarian knows how to watch from the shadows."
@@ -89466,6 +90296,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.willow_dragonfly
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.willow_dragonfly"
 msgid "Willowfly Costume\n\nWearable for a limited time."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.willow_dragonfly_d
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.willow_dragonfly_d"
+msgid "Willow would dress like this every day if she could."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.willow_formal
@@ -89493,6 +90328,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.wilson_pigguard"
 msgid "Piggsbury Costume\n\nWearable for a limited time."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.wilson_pigguard_d
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wilson_pigguard_d"
+msgid "Wilson usually forgets to put a costume together until the last moment. He's always busy experimenting."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.wilson_shadow
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wilson_shadow"
 msgid "Wilson has learned the science of shadows."
@@ -89506,6 +90346,16 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.winona_formal
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.winona_formal"
 msgid "This isn't what Winona expected when she read \"Formal Assembly\" on the invitation."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.winona_grassgecko
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.winona_grassgecko"
+msgid "Nona Gekko Costume\n\nWearable for a limited time."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.winona_grassgecko_d
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.winona_grassgecko_d"
+msgid "It wasn't easy for Winona to get her hair like that."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.winona_shadow
@@ -89563,6 +90413,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.wolfgang_walrus"
 msgid "MacWolf Costume\n\nWearable for a limited time."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.wolfgang_walrus_d
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wolfgang_walrus_d"
+msgid "It seems a shame to hide such luxurious hair."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.woodie_formal
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.woodie_formal"
 msgid "Woodie puts bear fat in his hair when he goes out."
@@ -89583,6 +90438,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.woodie_treeguard"
 msgid "Woodguard Costume\n\nWearable for a limited time."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.woodie_treeguard_d
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.woodie_treeguard_d"
+msgid "Woodie will have twigs stuck in his beard for weeks. Not that that's unusual."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.wx78_formal
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_formal"
 msgid "ERROR: DO NOT RECOGNIZE COMMAND \"MOUSTACHE.TWIRL\""
@@ -89591,6 +90451,11 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.wx78_rhinorook
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_rhinorook"
 msgid "Rookiebot Costume\n\nWearable for a limited time."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.wx78_rhinorook_d
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.wx78_rhinorook_d"
+msgid "The welding on this costume took AGES."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.wx78_shadow
@@ -89716,6 +90581,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.bedroll_furry_quilt_white_ivory
 msgctxt "STRINGS.SKIN_NAMES.bedroll_furry_quilt_white_ivory"
 msgid "Patchwork Quilt"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.birdcage_gothic
+msgctxt "STRINGS.SKIN_NAMES.birdcage_gothic"
+msgid "Macabre Birdcage"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.birdcage_ornamental
@@ -90093,6 +90963,11 @@ msgctxt "STRINGS.SKIN_NAMES.body_tweedvest_tan_grass"
 msgid "Tweed Waistcoat"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.body_wathgrithr_deerclops
+msgctxt "STRINGS.SKIN_NAMES.body_wathgrithr_deerclops"
+msgid "Deerclops Costume Top"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.body_wathgrithr_formal
 msgctxt "STRINGS.SKIN_NAMES.body_wathgrithr_formal"
 msgid "Valkyrie Armor"
@@ -90113,6 +90988,11 @@ msgctxt "STRINGS.SKIN_NAMES.body_waxwell_formal"
 msgid "Striking Tuxedo"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.body_waxwell_krampus
+msgctxt "STRINGS.SKIN_NAMES.body_waxwell_krampus"
+msgid "Krampus Costume Top"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.body_waxwell_survivor
 msgctxt "STRINGS.SKIN_NAMES.body_waxwell_survivor"
 msgid "Frayed Finery"
@@ -90121,6 +91001,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.body_waxwell_unshadow
 msgctxt "STRINGS.SKIN_NAMES.body_waxwell_unshadow"
 msgid "Unshadow Suit"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_webber_bat
+msgctxt "STRINGS.SKIN_NAMES.body_webber_bat"
+msgid "Batilisk Costume Top"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_webber_formal
@@ -90143,6 +91028,11 @@ msgctxt "STRINGS.SKIN_NAMES.body_wendy_formal"
 msgid "Party Frock"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.body_wendy_lureplant
+msgctxt "STRINGS.SKIN_NAMES.body_wendy_lureplant"
+msgid "Lureplant Costume Top"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.body_wendy_shadow
 msgctxt "STRINGS.SKIN_NAMES.body_wendy_shadow"
 msgid "Shadow Frock"
@@ -90156,6 +91046,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.body_wes_formal
 msgctxt "STRINGS.SKIN_NAMES.body_wes_formal"
 msgid "Evening Attire"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_wes_mandrake
+msgctxt "STRINGS.SKIN_NAMES.body_wes_mandrake"
+msgid "Mandrake Costume Top"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_wes_shadow
@@ -90173,6 +91068,11 @@ msgctxt "STRINGS.SKIN_NAMES.body_wickerbottom_formal"
 msgid "Ball Gown"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.body_wickerbottom_lightninggoat
+msgctxt "STRINGS.SKIN_NAMES.body_wickerbottom_lightninggoat"
+msgid "Volt Goat Costume Top"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.body_wickerbottom_shadow
 msgctxt "STRINGS.SKIN_NAMES.body_wickerbottom_shadow"
 msgid "Shadow Gown"
@@ -90181,6 +91081,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.body_wickerbottom_survivor
 msgctxt "STRINGS.SKIN_NAMES.body_wickerbottom_survivor"
 msgid "Tattered Togs"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_willow_dragonfly
+msgctxt "STRINGS.SKIN_NAMES.body_willow_dragonfly"
+msgid "Dragonfly Costume Top"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_willow_formal
@@ -90203,6 +91108,11 @@ msgctxt "STRINGS.SKIN_NAMES.body_wilson_formal"
 msgid "Tuxedo"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.body_wilson_pigguard
+msgctxt "STRINGS.SKIN_NAMES.body_wilson_pigguard"
+msgid "Pig Guard Costume Top"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.body_wilson_shadow
 msgctxt "STRINGS.SKIN_NAMES.body_wilson_shadow"
 msgid "Shadow Suit"
@@ -90216,6 +91126,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.body_winona_formal
 msgctxt "STRINGS.SKIN_NAMES.body_winona_formal"
 msgid "Skirt and Blazer"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_winona_grassgecko
+msgctxt "STRINGS.SKIN_NAMES.body_winona_grassgecko"
+msgid "Grass Gekko Costume Top"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_winona_shadow
@@ -90243,6 +91158,11 @@ msgctxt "STRINGS.SKIN_NAMES.body_wolfgang_survivor"
 msgid "Patched Bodysuit"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.body_wolfgang_walrus
+msgctxt "STRINGS.SKIN_NAMES.body_wolfgang_walrus"
+msgid "MacTusk Costume Top"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.body_woodie_formal
 msgctxt "STRINGS.SKIN_NAMES.body_woodie_formal"
 msgid "Canadian Jacket"
@@ -90258,9 +91178,19 @@ msgctxt "STRINGS.SKIN_NAMES.body_woodie_survivor"
 msgid "Grubby Gear"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.body_woodie_treeguard
+msgctxt "STRINGS.SKIN_NAMES.body_woodie_treeguard"
+msgid "Treeguard Costume Top"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.body_wx78_formal
 msgctxt "STRINGS.SKIN_NAMES.body_wx78_formal"
 msgid "Formal Body Shell"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.body_wx78_rhinorook
+msgctxt "STRINGS.SKIN_NAMES.body_wx78_rhinorook"
+msgid "Rook Costume Top"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.body_wx78_shadow
@@ -90298,9 +91228,24 @@ msgctxt "STRINGS.SKIN_NAMES.catcoonhat_trapperup_rooster"
 msgid "Tied Trapper Hat"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.cookpot_cauldron
+msgctxt "STRINGS.SKIN_NAMES.cookpot_cauldron"
+msgid "Creepy Cauldron"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.cookpot_survival
 msgctxt "STRINGS.SKIN_NAMES.cookpot_survival"
 msgid "Camping Crock Pot"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.dragonling_bat
+msgctxt "STRINGS.SKIN_NAMES.dragonling_bat"
+msgid "Vampire Batling"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.dragonling_bat_builder
+msgctxt "STRINGS.SKIN_NAMES.dragonling_bat_builder"
+msgid "dragonling_bat_builder"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.dragonling_winter
@@ -90873,6 +91818,11 @@ msgctxt "STRINGS.SKIN_NAMES.wathgrithr_deerclops"
 msgid "Deerclops Costume"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.wathgrithr_deerclops_d
+msgctxt "STRINGS.SKIN_NAMES.wathgrithr_deerclops_d"
+msgid "Deerfrid Mask"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.wathgrithr_formal
 msgctxt "STRINGS.SKIN_NAMES.wathgrithr_formal"
 msgid "Guest of Honor"
@@ -90898,6 +91848,11 @@ msgctxt "STRINGS.SKIN_NAMES.waxwell_krampus"
 msgid "Krampus Costume"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.waxwell_krampus_d
+msgctxt "STRINGS.SKIN_NAMES.waxwell_krampus_d"
+msgid "Krampwell Head"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.waxwell_survivor
 msgctxt "STRINGS.SKIN_NAMES.waxwell_survivor"
 msgid "The Survivor"
@@ -90911,6 +91866,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.webber_bat
 msgctxt "STRINGS.SKIN_NAMES.webber_bat"
 msgid "Batilisk Costume"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.webber_bat_d
+msgctxt "STRINGS.SKIN_NAMES.webber_bat_d"
+msgid "Webilisk Head"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.webber_formal
@@ -90938,6 +91898,11 @@ msgctxt "STRINGS.SKIN_NAMES.wendy_lureplant"
 msgid "Lureplant Costume"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.wendy_lureplant_d
+msgctxt "STRINGS.SKIN_NAMES.wendy_lureplant_d"
+msgid "Wendyflower Head"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.wendy_shadow
 msgctxt "STRINGS.SKIN_NAMES.wendy_shadow"
 msgid "The Triumphant"
@@ -90956,6 +91921,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.wes_mandrake
 msgctxt "STRINGS.SKIN_NAMES.wes_mandrake"
 msgid "Mandrake Costume"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wes_mandrake_d
+msgctxt "STRINGS.SKIN_NAMES.wes_mandrake_d"
+msgid "Wesdrake Makeup"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.wes_shadow
@@ -90978,6 +91948,11 @@ msgctxt "STRINGS.SKIN_NAMES.wickerbottom_lightninggoat"
 msgid "Volt Goat Costume"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.wickerbottom_lightninggoat_d
+msgctxt "STRINGS.SKIN_NAMES.wickerbottom_lightninggoat_d"
+msgid "Ms. Voltbottom Antlers"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.wickerbottom_shadow
 msgctxt "STRINGS.SKIN_NAMES.wickerbottom_shadow"
 msgid "The Triumphant"
@@ -90991,6 +91966,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.willow_dragonfly
 msgctxt "STRINGS.SKIN_NAMES.willow_dragonfly"
 msgid "Dragonfly Costume"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.willow_dragonfly_d
+msgctxt "STRINGS.SKIN_NAMES.willow_dragonfly_d"
+msgid "Willowfly Head"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.willow_formal
@@ -91018,6 +91998,11 @@ msgctxt "STRINGS.SKIN_NAMES.wilson_pigguard"
 msgid "Guard Pig Costume"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.wilson_pigguard_d
+msgctxt "STRINGS.SKIN_NAMES.wilson_pigguard_d"
+msgid "Piggsbury Mask"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.wilson_shadow
 msgctxt "STRINGS.SKIN_NAMES.wilson_shadow"
 msgid "The Triumphant"
@@ -91031,6 +92016,16 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.winona_formal
 msgctxt "STRINGS.SKIN_NAMES.winona_formal"
 msgid "Guest of Honor"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.winona_grassgecko
+msgctxt "STRINGS.SKIN_NAMES.winona_grassgecko"
+msgid "Grass Gekko Costume"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.winona_grassgecko_d
+msgctxt "STRINGS.SKIN_NAMES.winona_grassgecko_d"
+msgid "Nona Gekko Head"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.winona_shadow
@@ -91088,6 +92083,11 @@ msgctxt "STRINGS.SKIN_NAMES.wolfgang_walrus"
 msgid "MacTusk Costume"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.wolfgang_walrus_d
+msgctxt "STRINGS.SKIN_NAMES.wolfgang_walrus_d"
+msgid "MacWolf Bald Cap"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.woodie_formal
 msgctxt "STRINGS.SKIN_NAMES.woodie_formal"
 msgid "Guest of Honor"
@@ -91108,6 +92108,11 @@ msgctxt "STRINGS.SKIN_NAMES.woodie_treeguard"
 msgid "Treeguard Costume"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.woodie_treeguard_d
+msgctxt "STRINGS.SKIN_NAMES.woodie_treeguard_d"
+msgid "Woodguard Head"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.wx78_formal
 msgctxt "STRINGS.SKIN_NAMES.wx78_formal"
 msgid "Guest of Honor"
@@ -91116,6 +92121,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.wx78_rhinorook
 msgctxt "STRINGS.SKIN_NAMES.wx78_rhinorook"
 msgid "Rook Costume"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.wx78_rhinorook_d
+msgctxt "STRINGS.SKIN_NAMES.wx78_rhinorook_d"
+msgid "Rookiebot Headplate"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.wx78_shadow
@@ -91130,202 +92140,532 @@ msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wathgrithr_formal
 msgctxt "STRINGS.SKIN_QUOTES.wathgrithr_formal"
-msgid "We will celebrate as if we were in Valhalla!"
+msgid "\"We will celebrate as if we were in Valhalla!\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.waxwell_formal
 msgctxt "STRINGS.SKIN_QUOTES.waxwell_formal"
-msgid "I just need to find my beautiful assistant."
+msgid "\"I just need to find my beautiful assistant.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.waxwell_krampus
 msgctxt "STRINGS.SKIN_QUOTES.waxwell_krampus"
-msgid "Naughty. Definitely naughty."
+msgid "\"Naughty. Definitely naughty.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.waxwell_survivor
 msgctxt "STRINGS.SKIN_QUOTES.waxwell_survivor"
-msgid "Say, pal, I don't look so good."
+msgid "\"Say, pal, I don't look so good.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.waxwell_unshadow
 msgctxt "STRINGS.SKIN_QUOTES.waxwell_unshadow"
-msgid "The poor unsuspecting fool has no idea what's coming."
+msgid "\"The poor unsuspecting fool has no idea what's coming.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.webber_bat
 msgctxt "STRINGS.SKIN_QUOTES.webber_bat"
-msgid "Raaar! ...That's our bat noise."
+msgid "\"Raaar! ...That's our bat noise.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.webber_formal
 msgctxt "STRINGS.SKIN_QUOTES.webber_formal"
-msgid "We like parties!"
+msgid "\"We like parties!\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.webber_shadow
 msgctxt "STRINGS.SKIN_QUOTES.webber_shadow"
-msgid "Come closer - we are hungry!"
+msgid "\"Come closer - we are hungry!\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.webber_survivor
 msgctxt "STRINGS.SKIN_QUOTES.webber_survivor"
-msgid "I want to go home, but we can't find the way."
+msgid "\"I want to go home, but we can't find the way.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wendy_formal
 msgctxt "STRINGS.SKIN_QUOTES.wendy_formal"
-msgid "I'll only go to the party if Abigail comes too."
+msgid "\"I'll only go to the party if Abigail comes too.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wendy_lureplant
 msgctxt "STRINGS.SKIN_QUOTES.wendy_lureplant"
-msgid "So alluring..."
+msgid "\"So alluring...\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wendy_shadow
 msgctxt "STRINGS.SKIN_QUOTES.wendy_shadow"
-msgid "Shadows are as black as ink, or night, or nightmares."
+msgid "\"Shadows are as black as ink, or night, or nightmares.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wendy_survivor
 msgctxt "STRINGS.SKIN_QUOTES.wendy_survivor"
-msgid "I carry on for Abigail's sake."
+msgid "\"I carry on for Abigail's sake.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wickerbottom_formal
 msgctxt "STRINGS.SKIN_QUOTES.wickerbottom_formal"
-msgid "Even I let my hair down occasionally."
+msgid "\"Even I let my hair down occasionally.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wickerbottom_lightninggoat
 msgctxt "STRINGS.SKIN_QUOTES.wickerbottom_lightninggoat"
-msgid "All it takes is a spark of genius."
+msgid "\"All it takes is a spark of genius.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wickerbottom_shadow
 msgctxt "STRINGS.SKIN_QUOTES.wickerbottom_shadow"
-msgid "Knowledge is power!"
+msgid "\"Knowledge is power!\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wickerbottom_survivor
 msgctxt "STRINGS.SKIN_QUOTES.wickerbottom_survivor"
-msgid "I hope I don't break my glasses."
+msgid "\"I hope I don't break my glasses.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.willow_dragonfly
 msgctxt "STRINGS.SKIN_QUOTES.willow_dragonfly"
-msgid "Woah, I'm smokin'! (No, really!)"
+msgid "\"Woah, I'm smokin'! (No, really!)\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.willow_formal
 msgctxt "STRINGS.SKIN_QUOTES.willow_formal"
-msgid "He died before getting to see these beautiful flames."
+msgid "\"He died before getting to see these beautiful flames.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.willow_shadow
 msgctxt "STRINGS.SKIN_QUOTES.willow_shadow"
-msgid "Shadows are just inverted flames."
+msgid "\"Shadows are just inverted flames.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.willow_survivor
 msgctxt "STRINGS.SKIN_QUOTES.willow_survivor"
-msgid "Surviving just requires strength of will. (And fire.)"
+msgid "\"Surviving just requires strength of will. (And fire.)\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wilson_formal
 msgctxt "STRINGS.SKIN_QUOTES.wilson_formal"
-msgid "I hate parties."
+msgid "\"I hate parties.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wilson_pigguard
 msgctxt "STRINGS.SKIN_QUOTES.wilson_pigguard"
-msgid "I'm sure I had a scientific reason for this."
+msgid "\"I'm sure I had a scientific reason for this.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wilson_shadow
 msgctxt "STRINGS.SKIN_QUOTES.wilson_shadow"
-msgid "Mwahahaha!"
+msgid "\"Mwahahaha!\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wilson_survivor
 msgctxt "STRINGS.SKIN_QUOTES.wilson_survivor"
-msgid "There is a scientific solution, here. I know it."
+msgid "\"There is a scientific solution, here. I know it.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.winona_formal
 msgctxt "STRINGS.SKIN_QUOTES.winona_formal"
-msgid "The life of the party has arrived!"
+msgid "\"The life of the party has arrived!\""
+msgstr ""
+
+#. STRINGS.SKIN_QUOTES.winona_grassgecko
+msgctxt "STRINGS.SKIN_QUOTES.winona_grassgecko"
+msgid "\"Heh heh, this thing's itchy.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.winona_shadow
 msgctxt "STRINGS.SKIN_QUOTES.winona_shadow"
-msgid "You are but a cog in my machine."
+msgid "\"You are but a cog in my machine.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.winona_survivor
 msgctxt "STRINGS.SKIN_QUOTES.winona_survivor"
-msgid "I don't break down easy."
+msgid "\"I don't break down easy.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wolfgang_formal
 msgctxt "STRINGS.SKIN_QUOTES.wolfgang_formal"
-msgid "I used my special moustache wax."
+msgid "\"I used my special moustache wax.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wolfgang_shadow
 msgctxt "STRINGS.SKIN_QUOTES.wolfgang_shadow"
-msgid "Do not challenge the Mighty Wolfgang!"
+msgid "\"Do not challenge the Mighty Wolfgang!\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wolfgang_survivor
 msgctxt "STRINGS.SKIN_QUOTES.wolfgang_survivor"
-msgid "Wolfgang is tough. Lots of muscle."
+msgid "\"Wolfgang is tough. Lots of muscle.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wolfgang_walrus
 msgctxt "STRINGS.SKIN_QUOTES.wolfgang_walrus"
-msgid "Wolfgang is large moustache man! Ha ha!"
+msgid "\"Wolfgang is large moustache man! Ha ha!\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.woodie_formal
 msgctxt "STRINGS.SKIN_QUOTES.woodie_formal"
-msgid "I clean up pretty good, eh?"
+msgid "\"I clean up pretty good, eh?\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.woodie_shadow
 msgctxt "STRINGS.SKIN_QUOTES.woodie_shadow"
-msgid "Forests are full of shadows, eh?"
+msgid "\"Forests are full of shadows, eh?\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.woodie_survivor
 msgctxt "STRINGS.SKIN_QUOTES.woodie_survivor"
-msgid "I could do with a haircut and a cup of tea, eh?"
+msgid "\"I could do with a haircut and a cup of tea, eh?\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.woodie_treeguard
 msgctxt "STRINGS.SKIN_QUOTES.woodie_treeguard"
-msgid "To chop the tree, you must be the tree."
+msgid "\"To chop the tree, you must be the tree.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wx78_formal
 msgctxt "STRINGS.SKIN_QUOTES.wx78_formal"
-msgid "I POLISHED MY CHASSIS FOR THE OCCASION"
+msgid "\"I POLISHED MY CHASSIS FOR THE OCCASION\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wx78_rhinorook
 msgctxt "STRINGS.SKIN_QUOTES.wx78_rhinorook"
-msgid "OVERCHARGED, READY TO CHARGE"
+msgid "\"OVERCHARGED, READY TO CHARGE\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wx78_shadow
 msgctxt "STRINGS.SKIN_QUOTES.wx78_shadow"
-msgid "NOW THE OUTSIDE MATCHES THE INSIDE. EVIL."
+msgid "\"NOW THE OUTSIDE MATCHES THE INSIDE. EVIL.\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wx78_survivor
 msgctxt "STRINGS.SKIN_QUOTES.wx78_survivor"
-msgid "RUSTED AND BUSTED."
+msgid "\"RUSTED AND BUSTED\""
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.CHARACTER.WATHGRITHR
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.CHARACTER.WATHGRITHR"
+msgid "Wigfrid"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.CHARACTER.WAXWELL
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.CHARACTER.WAXWELL"
+msgid "Maxwell"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.CHARACTER.WEBBER
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.CHARACTER.WEBBER"
+msgid "Webber"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.CHARACTER.WENDY
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.CHARACTER.WENDY"
+msgid "Wendy"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.CHARACTER.WES
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.CHARACTER.WES"
+msgid "Wes"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.CHARACTER.WICKERBOTTOM
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.CHARACTER.WICKERBOTTOM"
+msgid "Wickerbottom"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.CHARACTER.WILLOW
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.CHARACTER.WILLOW"
+msgid "Willow"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.CHARACTER.WILSON
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.CHARACTER.WILSON"
+msgid "Wilson"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.CHARACTER.WINONA
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.CHARACTER.WINONA"
+msgid "Winona"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.CHARACTER.WOLFGANG
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.CHARACTER.WOLFGANG"
+msgid "Wolfgang"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.CHARACTER.WOODIE
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.CHARACTER.WOODIE"
+msgid "Woodie"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.CHARACTER.WX78
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.CHARACTER.WX78"
+msgid "WX78"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.CLOTHINGTYPE.CLOTHING_BODY
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.CLOTHINGTYPE.CLOTHING_BODY"
+msgid "Body"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.CLOTHINGTYPE.CLOTHING_FEET
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.CLOTHINGTYPE.CLOTHING_FEET"
+msgid "Feet"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.CLOTHINGTYPE.CLOTHING_HAND
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.CLOTHINGTYPE.CLOTHING_HAND"
+msgid "Hand"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.CLOTHINGTYPE.CLOTHING_LEGS
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.CLOTHINGTYPE.CLOTHING_LEGS"
+msgid "Legs"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.ANCIENT
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.ANCIENT"
+msgid "Ancient Collection"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.COSTUME
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.COSTUME"
+msgid "Costume Collection"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.FORMAL
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.FORMAL"
+msgid "Formal Collection"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.LUNAR
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.LUNAR"
+msgid "Lunar Collection"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.PROMOTION
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.PROMOTION"
+msgid "Promotional Collection"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.SHADOW
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.SHADOW"
+msgid "Shadow Collection"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.SURVIVOR
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.SURVIVOR"
+msgid "Survivor Collection"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.WINTER
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLLECTION.WINTER"
+msgid "Winter Collection"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.COLOR.BLACK
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLOR.BLACK"
+msgid "Black"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.COLOR.BLUE
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLOR.BLUE"
+msgid "Blue"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.COLOR.BROWN
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLOR.BROWN"
+msgid "Brown"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.COLOR.GREEN
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLOR.GREEN"
+msgid "Green"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.COLOR.GREY
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLOR.GREY"
+msgid "Gray"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.COLOR.NAVY
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLOR.NAVY"
+msgid "Navy"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.COLOR.ORANGE
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLOR.ORANGE"
+msgid "Orange"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.COLOR.PINK
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLOR.PINK"
+msgid "Pink"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.COLOR.PURPLE
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLOR.PURPLE"
+msgid "Purple"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.COLOR.RED
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLOR.RED"
+msgid "Red"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.COLOR.TAN
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLOR.TAN"
+msgid "Tan"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.COLOR.TEAL
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLOR.TEAL"
+msgid "Teal"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.COLOR.WHITE
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLOR.WHITE"
+msgid "White"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.COLOR.YELLOW
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.COLOR.YELLOW"
+msgid "Yellow"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.ALCHEMY
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.ALCHEMY"
+msgid "Alchemy Engine"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.BACKPACK
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.BACKPACK"
+msgid "Backpack"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.BEDROLL
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.BEDROLL"
+msgid "Bed Roll"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.BIRDCAGE
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.BIRDCAGE"
+msgid "Birdcage"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.CANE
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.CANE"
+msgid "Cane"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.CATCOONHAT
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.CATCOONHAT"
+msgid "Cat Cap"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.CHEST
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.CHEST"
+msgid "Chest"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.CROCKPOT
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.CROCKPOT"
+msgid "Crock Pot"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.ENDTABLE
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.ENDTABLE"
+msgid "End Table"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.FIREPIT
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.FIREPIT"
+msgid "Fire Pit"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.FLOWERHAT
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.FLOWERHAT"
+msgid "Garland"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.MINERHAT
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.MINERHAT"
+msgid "Miner Hat"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.PRESHAT
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.PRESHAT"
+msgid "Prestihatitator"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.RAINHAT
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.RAINHAT"
+msgid "Rain Hat"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.REVIVER
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.REVIVER"
+msgid "Telltale Heart"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.SPEAR
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.SPEAR"
+msgid "Spear"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.STAFF
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.STAFF"
+msgid "Staff"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.STRAWHAT
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.STRAWHAT"
+msgid "Straw Hat"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.TOPHAT
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.TOPHAT"
+msgid "Top Hat"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.TORCH
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.TORCH"
+msgid "Torch"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.ITEM.WINTERHAT
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.ITEM.WINTERHAT"
+msgid "Winter Hat"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.TYPE.BASE
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.TYPE.BASE"
+msgid "Head/Base"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.TYPE.CHARACTER
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.TYPE.CHARACTER"
+msgid "Character"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.TYPE.CLOTHING
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.TYPE.CLOTHING"
+msgid "Clothing"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.TYPE.CRAFTABLE
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.TYPE.CRAFTABLE"
+msgid "Craftable"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.TYPE.EMOTE
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.TYPE.EMOTE"
+msgid "Emote"
+msgstr ""
+
+#. STRINGS.SKIN_TAG_CATEGORIES.TYPE.PET
+msgctxt "STRINGS.SKIN_TAG_CATEGORIES.TYPE.PET"
+msgid "Critter"
 msgstr ""
 
 #. STRINGS.SMOLDERINGITEM

@@ -1860,6 +1860,15 @@ return {
         TRINKET_35 = "Twas a poison, most assuredly.", --Empty Elixir
         TRINKET_36 = "Evidence of the undead. Stay wary, my allies!", --Faux Fangs
         TRINKET_37 = "For warding off Loki's minions.", --Broken Stake
+        TRINKET_38 = "There is a tiny world trapped within!", -- Binoculars Griftlands trinket
+        TRINKET_39 = "To arms! The gauntlet has been thrown down!", -- Lone Glove Griftlands trinket
+        TRINKET_40 = "I have no use for such things.", -- Snail Scale Griftlands trinket
+        TRINKET_41 = "Perhaps some sort of elixir lies within?", -- Goop Canister Hot Lava trinket
+        TRINKET_42 = "Tis no foe worthy of I.", -- Toy Cobra Hot Lava trinket
+        TRINKET_43 = "What manner of creature be this?", -- Crocodile Toy Hot Lava trinket
+        TRINKET_44 = "It has fallen in battle.", -- Broken Terrarium ONI trinket
+        TRINKET_45 = "What stories might you tell, trapped spirit?", -- Odd Radio ONI trinket
+        TRINKET_46 = "Tis a suspicious contraption!", -- Hairdryer ONI trinket
 
         HALLOWEENCANDY_1 = "How sinister! I nearly mistook it for a true apple!",
         HALLOWEENCANDY_2 = "A clever ruse. It is not corn at all.",
@@ -1872,6 +1881,9 @@ return {
         HALLOWEENCANDY_9 = "The battle was mighty, yet in the end the worm was consumed!",
         HALLOWEENCANDY_10 = "I shall uncover its secret center!",
         HALLOWEENCANDY_11 = "Tis not meat, but tis close enough!",
+        HALLOWEENCANDY_12 = "They look like that which writhe and crawl.", --ONI meal lice candy
+        HALLOWEENCANDY_13 = "You shalt not break me, confection!", --Griftlands themed candy
+        HALLOWEENCANDY_14 = "Wretched Hel's fire!", --Hot Lava pepper candy
         CANDYBAG = "That we might carry our sweetest plunders!",
 
         DRAGONHEADHAT = "The head of a great and merciful beast!",

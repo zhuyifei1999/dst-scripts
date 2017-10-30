@@ -148,6 +148,9 @@ local Controls = Class(Widget, function(self, owner)
         self.desync:SetVAnchor(ANCHOR_TOP)
         self.desync:SetMaxPropUpscale(MAX_HUD_SCALE)
         self.desync = self.desync:AddChild(Desync(owner))
+        if PLATFORM == "WIN32_RAIL" then
+            self.desync:ShowHostPerf()
+        end
     end
 
     self.dismounthintdelay = 0

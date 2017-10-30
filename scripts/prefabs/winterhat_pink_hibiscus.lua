@@ -13,4 +13,6 @@ return CreatePrefabSkin("winterhat_pink_hibiscus",
 	build_name = "winterhat_pink_hibiscus",
 	rarity = "ProofOfPurchase",
 	init_fn = function(inst) winterhat_init_fn(inst, "winterhat_pink_hibiscus") end,
+	skin_tags = { "WINTERHAT", "CRAFTABLE", },
+	release_group = 12,
 })

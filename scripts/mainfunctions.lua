@@ -5,6 +5,8 @@ local Stats = require("stats")
 
 require "scheduler"
 
+local DEBUG_MODE = BRANCH == "dev"
+
 SimTearingDown = false
 SimShuttingDown = false
 PerformingRestart = false
@@ -117,7 +119,14 @@ function LoadPrefabFile( filename )
     local fn, r = loadfile(filename)
     assert(fn, "Could not load file ".. filename)
     if type(fn) == "string" then
-        assert(false, "Error loading file "..filename.."\n"..fn)
+        local error_msg = "Error loading file "..filename.."\n"..fn
+        if DEBUG_MODE then
+            -- Common error in development when working in a branch (we don't
+            -- submit updateprefab changes in branches).
+            print(error_msg)
+            known_assert(false, "DEV_FAILED_TO_LOAD_PREFAB")
+        end
+        assert(false, error_msg)
     end
     assert( type(fn) == "function", "Prefab file doesn't return a callable chunk: "..filename)
     local ret = {fn()}

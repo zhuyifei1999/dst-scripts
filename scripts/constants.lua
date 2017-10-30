@@ -452,7 +452,7 @@ SPECIAL_EVENTS =
     WINTERS_FEAST = "winters_feast",
     YOTG = "year_of_the_gobbler",
 }
-WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.NONE
+WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.HALLOWED_NIGHTS
 
 --Used in preloadsounds.lua
 ---------------------------------------------------------
@@ -487,7 +487,7 @@ FE_MUSIC =
     SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT].sound or
     "dontstarve/music/music_FE"
 
-NUM_HALLOWEENCANDY = 11
+NUM_HALLOWEENCANDY = 14
 NUM_WINTERFOOD = 9
 
 TECH =
@@ -725,7 +725,9 @@ RENDERPASS =
 	DEFAULT = 2,
 }
 
-NUM_TRINKETS = 37
+NUM_TRINKETS = 46
+HALLOWEDNIGHTS_TINKET_START = 32
+HALLOWEDNIGHTS_TINKET_END = 46
 
 SEASONS =
 {

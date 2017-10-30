@@ -33,8 +33,10 @@ local privacy_options = {
     {text=STRINGS.UI.SERVERCREATIONSCREEN.PRIVACY.PUBLIC,    data=PRIVACY_TYPE.PUBLIC},
     {text=STRINGS.UI.SERVERCREATIONSCREEN.PRIVACY.FRIENDS,   data=PRIVACY_TYPE.FRIENDS},
     {text=STRINGS.UI.SERVERCREATIONSCREEN.PRIVACY.LOCAL,     data=PRIVACY_TYPE.LOCAL},
-    {text=STRINGS.UI.SERVERCREATIONSCREEN.PRIVACY.CLAN,      data=PRIVACY_TYPE.CLAN},
 }
+if PLATFORM ~= "WIN32_RAIL" then
+    table.insert( privacy_options, {text=STRINGS.UI.SERVERCREATIONSCREEN.PRIVACY.CLAN, data=PRIVACY_TYPE.CLAN} )
+end
 local privacy_buttons = {
     width = 140,
     height = label_height,
@@ -120,7 +122,7 @@ local ServerSettingsTab = Class(Widget, function(self, slotdata, servercreations
     end)
 
     self.privacy_type = Widget("Privacy Group")
-    self.privacy_type.buttons = self.privacy_type:AddChild(RadioButtons(privacy_options, 580, 50, privacy_buttons, true))
+    self.privacy_type.buttons = self.privacy_type:AddChild(RadioButtons(privacy_options, #privacy_options * 145, 50, privacy_buttons, true))
     self.privacy_type.buttons:SetOnChangedFn(function(data)
         self:DisplayClanControls(data == PRIVACY_TYPE.CLAN)
         self.servercreationscreen:MakeDirty()

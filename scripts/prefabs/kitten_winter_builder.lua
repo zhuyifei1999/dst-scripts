@@ -13,4 +13,6 @@ return CreatePrefabSkin("kitten_winter_builder",
 	build_name = "kitten_winter",
 	rarity = "Common",
 	init_fn = function(inst) critter_builder_init_fn(inst, "kitten_winter" ) end,
+	skin_tags = { "CRAFTABLE", },
+	release_group = 22,
 })

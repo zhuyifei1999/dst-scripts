@@ -36,6 +36,13 @@ function self:OnPostInit()
 		if not self.halloweentrinkets then
 			self.halloweentrinkets = true
 			local count = 0
+			
+			local trinkets = {}
+			for i = HALLOWEDNIGHTS_TINKET_START, HALLOWEDNIGHTS_TINKET_END do
+				table.insert(trinkets, i)
+			end
+			trinkets = shuffleArray(trinkets)
+			
 			for i,area in pairs(TheWorld.topology.nodes) do
 				if (i % 3) == 0 then
 					local points_x, points_y = TheWorld.Map:GetRandomPointsForSite(area.x, area.y, area.poly, 1)
@@ -45,7 +52,7 @@ function self:OnPostInit()
 
 						local ents = TheSim:FindEntities(x, 0, z, 1)
 						if #ents == 0 then
-							local e = SpawnPrefab("trinket_" .. math.random(32, 37))
+							local e = SpawnPrefab("trinket_" .. trinkets[(count % #trinkets) + 1])
 							e.Transform:SetPosition(x, 0, z)
 							count = count + 1
 						end

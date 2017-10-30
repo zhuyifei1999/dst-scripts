@@ -1850,6 +1850,15 @@ return {
         TRINKET_35 = "I'm not in the habit of imbibing strange liquids.", --Empty Elixir
         TRINKET_36 = "Permanently bared.", --Faux Fangs
         TRINKET_37 = "I told you people, I am *not* a vampire!", --Broken Stake
+        TRINKET_38 = "You are all ants in my eyes already.", -- Binoculars Griftlands trinket
+        TRINKET_39 = "What a tacky glove.", -- Lone Glove Griftlands trinket
+        TRINKET_40 = "One hundred percent to scale.", -- Snail Scale Griftlands trinket
+        TRINKET_41 = "I've no idea what that is.", -- Goop Canister Hot Lava trinket
+        TRINKET_42 = "It looks cheap.", -- Toy Cobra Hot Lava trinket
+        TRINKET_43 = "What use would I have of such a thing?", -- Crocodile Toy Hot Lava trinket
+        TRINKET_44 = "Rosebud.", -- Broken Terrarium ONI trinket
+        TRINKET_45 = "At least it's not ragtime.", -- Odd Radio ONI trinket
+        TRINKET_46 = "Some harebrained invention of the scientist's, perhaps?", -- Hairdryer ONI trinket
 
         HALLOWEENCANDY_1 = "Oh good, it's solid candy. I feared something healthy had snuck in.",
         HALLOWEENCANDY_2 = "Waxy, just like me.",
@@ -1862,6 +1871,9 @@ return {
         HALLOWEENCANDY_9 = "How the tables have turned, worm.",
         HALLOWEENCANDY_10 = "No one is above enjoying a good lollipop.",
         HALLOWEENCANDY_11 = "Eating them makes me feel powerful.",
+        HALLOWEENCANDY_12 = "Ah, maggots... how novel.", --ONI meal lice candy
+        HALLOWEENCANDY_13 = "It's not terrible.", --Griftlands themed candy
+        HALLOWEENCANDY_14 = "Only ruffians enjoy torturing themselves like this.", --Hot Lava pepper candy
         CANDYBAG = "That's our sugar-sack.",
 
         DRAGONHEADHAT = "Quite formidable looking.",

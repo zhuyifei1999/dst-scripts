@@ -71,12 +71,8 @@ function GetNextRarity(rarity)
 end
 
 function GetBuildForItem(name)
-	if CLOTHING[name] then
+	if CLOTHING[name] or MISC_ITEMS[name] or EMOTE_ITEMS[name] then
 		name = name
-	elseif MISC_ITEMS[name] then
-		name = MISC_ITEMS[name].skin_build
-	elseif EMOTE_ITEMS[name] then
-		name = EMOTE_ITEMS[name].skin_build
 	else
 		if Prefabs[name] ~= nil then
 			name = Prefabs[name].build_name
@@ -84,6 +80,14 @@ function GetBuildForItem(name)
 	end
 	
 	return name
+end
+
+function GetBigPortraitForItem(item_key)
+	if Prefabs[item_key] ~= nil then
+		return Prefabs[item_key].bigportrait
+	end
+
+	return nil
 end
 
 function IsClothingItem(name)
@@ -104,6 +108,11 @@ function IsItemId(name)
 		return true
 	end
 	return false
+end
+
+function IsItemMarketable(item)
+	local skin_data = GetSkinData(item)
+	return skin_data.marketable
 end
 
 function GetSkinData(item)
@@ -227,8 +236,32 @@ function GetSortCategoryForItem(item)
 	return category
 end
 
+
+function DoesItemHaveTag(item, tag)
+	local tags = {}
+	if CLOTHING[item] then 
+		tags = CLOTHING[item].skin_tags
+	elseif MISC_ITEMS[item] then 
+		tags = MISC_ITEMS[item].skin_tags
+	elseif EMOTE_ITEMS[item] then 
+		tags = EMOTE_ITEMS[item].skin_tags
+	else
+		if Prefabs[item] ~= nil then
+			tags = Prefabs[item].skin_tags
+		end
+	end
+
+	for _,item_tag in pairs(tags) do
+		if item_tag == tag then
+			return true
+		end
+	end
+	
+	return false
+end
+
 --Note(Peter): do we actually want to do this here, or actually provide the json tags from the pipeline?
-function GetTagFromType(type)
+--[[function GetTagFromType(type)
 	if type == "body" or type == "hand" or type == "legs" or type == "feet" then
 		return string.upper("CLOTHING_" .. type)
 	elseif type == "base" then
@@ -251,15 +284,12 @@ function GetTypeFromTag(tag)
 	else
 		return nil --What do we want to do about colour and misc tags?
 	end
-end
+end]]
 
-function GetColourFromColourTag(c) --UNTESTED!!!
+--[[function GetColourFromColourTag(c) --UNTESTED!!!
 	local s = string.lower(c)
 	return s:sub(1,1):upper()..s:sub(2)
-end
-function GetColourTagFromColour(c)
-	return string.upper(c)
-end
+end]]
 
 function GetName(item)
 	if string.sub( item, -8 ) == "_builder" then
@@ -350,8 +380,7 @@ function UpdateSkinGrid(list_widget, data, screen)
 		list_widget:Show()
 
 		if screen.show_hover_text then
-			local rarity = GetRarityForItem(data.item)
-			local hover_text = rarity .. "\n" .. GetName(data.item)
+			local hover_text = GetModifiedRarityStringForItem(data.item) .. "\n" .. GetName(data.item)
 			list_widget:SetHoverText( hover_text, { font = NEWFONT_OUTLINE, size = 20, offset_x = 0, offset_y = 60, colour = {1,1,1,1}})
 			if list_widget.focus then --make sure we force the hover text to appear on the default focused item
 				list_widget:OnGainFocus()
@@ -404,8 +433,9 @@ function GetSortedSkinsList()
 		
 			if listoflists[type] == nil then
 				print("Missing sorted skin list type ", type)
+			else
+				table.insert(listoflists[type], data)
 			end
-			table.insert(listoflists[type], data)
 			
 			if v.modified_time > timestamp then 
 				timestamp = v.modified_time
@@ -474,7 +504,7 @@ function IsItemInCollection(item_type)
 		if bonus_item == item_type then
 			return true
 		end
-		for _,input_item in pairs(input_items) do
+		for _,input_item in pairs(input_items[1]) do
 			if input_item == item_type then
 				return true
 			end
@@ -494,7 +524,7 @@ function GetSkinSetData(item_type)
 	for bonus_item,input_items in pairs(SKIN_SET_ITEMS) do
 		local item_pos = 0
 		local set_count = 0
-		for _,input_item in pairs(input_items) do
+		for _,input_item in pairs(input_items[1]) do
 			set_count = set_count + 1
 			if input_item == item_type then
 				item_pos = set_count

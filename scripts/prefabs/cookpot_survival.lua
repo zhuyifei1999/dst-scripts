@@ -13,4 +13,7 @@ return CreatePrefabSkin("cookpot_survival",
 	build_name = "cookpot_survival",
 	rarity = "Elegant",
 	init_fn = function(inst) cookpot_init_fn(inst, "cookpot_survival") end,
+	skin_tags = { "CROCKPOT", "SURVIVOR", "CRAFTABLE", },
+	marketable = true,
+	release_group = 4,
 })

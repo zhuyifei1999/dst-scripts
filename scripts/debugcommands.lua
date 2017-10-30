@@ -243,3 +243,29 @@ end
 function d_getwidget()
     return TheFrontEnd.widget_editor.debug_widget_target
 end
+
+function d_halloween()
+	local spacing = 2
+	local num_wide = math.ceil(math.sqrt(NUM_TRINKETS))
+
+	for y = 0, num_wide do
+		for x = 0, num_wide do
+			local inst = SpawnPrefab("trinket_"..(y*num_wide + x + 1))
+			if inst ~= nil then
+				print(x*spacing,  y*spacing)
+				inst.Transform:SetPosition((ConsoleWorldPosition() + Vector3(x*spacing, 0, y*spacing)):Get())
+			end
+		end
+	end
+
+	local candy_wide = math.ceil(math.sqrt(NUM_HALLOWEENCANDY))
+	for y = 0, candy_wide do
+		for x = 0, candy_wide do
+			local inst = SpawnPrefab("halloweencandy_"..(y*candy_wide + x + 1))
+			if inst ~= nil then
+				print(x*spacing,  y*spacing)
+				inst.Transform:SetPosition((ConsoleWorldPosition() + Vector3((x + num_wide)*spacing, 0, (y+num_wide)*spacing)):Get())
+			end
+		end
+	end
+end
