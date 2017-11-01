@@ -31,10 +31,31 @@ self.inst = inst
 --[[ Post initialization ]]
 --------------------------------------------------------------------------
 
+local CURRENT_HALLOWEEN = 2017
+
 function self:OnPostInit()
 	if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
-		if not self.halloweentrinkets then
-			self.halloweentrinkets = true
+		-- retrofitting code to support changing from halloweentrinkets as a bool to as a number
+		
+		if self.halloweentrinkets and self.halloweentrinkets ~= CURRENT_HALLOWEEN then
+			local count = 0
+			for k,v in pairs(Ents) do
+				if v.prefab ~= nil then
+					local split_table = string.split(v.prefab, "trinket_")
+					if #split_table == 1 then
+						local trinket_num = tonumber(split_table[1])
+						if trinket_num ~= nil and trinket_num >= HALLOWEDNIGHTS_TINKET_START and trinket_num <= HALLOWEDNIGHTS_TINKET_END then
+							print ("Halloween Trinkets founds, no need to add more")
+							self.halloweentrinkets = CURRENT_HALLOWEEN
+							break
+						end
+					end
+				end
+			end
+		end
+
+		if (not self.halloweentrinkets) or self.halloweentrinkets ~= CURRENT_HALLOWEEN then
+			self.halloweentrinkets = CURRENT_HALLOWEEN
 			local count = 0
 			
 			local trinkets = {}

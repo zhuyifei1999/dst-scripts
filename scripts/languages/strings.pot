@@ -99923,6 +99923,11 @@ msgctxt "STRINGS.UI.RARITY.Event"
 msgid "Event"
 msgstr ""
 
+#. STRINGS.UI.RARITY.EventModifier
+msgctxt "STRINGS.UI.RARITY.EventModifier"
+msgid "Event - "
+msgstr ""
+
 #. STRINGS.UI.RARITY.Loyal
 msgctxt "STRINGS.UI.RARITY.Loyal"
 msgid "Loyal"

@@ -2416,27 +2416,26 @@ STRINGS.UI =
         THANKYOU = "Thank you!",
         EXTRA_THANKS = "Ophir Lupu\nKo Kim\nColt McAnlis",
         EXTRA_THANKS_2 = "Pieter Wycoff\nMatthew Nickerson\nAnna Sweet",
-        SONY_THANKS = "Shane Bettenhausen\nAdam Boyes\nBrian Silva\nNick Suttner",
-
+        SONY_THANKS = "Shane Bettenhausen\nAdam Boyes\nBrian Silva\nNick Suttner\nAlessandro Bovenzi",
+        
         BABEL =
         {
             TITLE = "Babel",
             NAMES1 =
             {
-                "Guillaume Langlois",
-                "Danny Labrie",
-                "Dominic Knowles",
-                "Marc Kent",
-                "Jeff LeGresley",
+                "Chris Wylie",
+                "Alexander Stokes",
+                "Yubing Hu",          
+                "William Rapone",
+                "Steve Desroches",
             },
             NAMES2 =
             {
-                "Jon Morrell",
-                "JP Bergevin",
+                "Israel Aubin",
+                "Cedric Picard",
                 "Mike Holdaway",
-                "Jonas Miller",
-                "Katri Luotonen",
-            },
+                "Norman Fong",
+        	},
         },
         THANKS = "And a very special thanks to all our supporters who braved the challenge of the \"Early-Access\nBeta\". You are too numerous to name - our amazing moderators, the wonderful artists, musicians,\nlivestreamers, to all who made a Let's Play video and everybody who chimed in to let us know\nexactly what you think. Your encouragement, passion and support has been amazing.\n\nDon't Starve Together is truly a better game because of all of you.",
 
@@ -4721,7 +4720,7 @@ STRINGS.UI =
             R1 = "Rotate Camera",
 
             L2 = "Open Crafting",
-            R2 = "Open Inventory",
+            R2 = "Manage Inventory",
 
             DPAD_UP = "Inspect Item",
             DPAD_LEFT = "Use on World",
