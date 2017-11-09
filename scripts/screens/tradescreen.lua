@@ -5,10 +5,12 @@ local UIAnim = require "widgets/uianim"
 local UIAnimButton = require "widgets/uianimbutton"
 local Text = require "widgets/text"
 local SkinCollector = require "widgets/skincollector"
+local Image = require "widgets/image"
 local ItemSelector = require "widgets/itemselector"
 local ItemImage = require "widgets/itemimage"
 local ImagePopupDialogScreen = require "screens/imagepopupdialog"
-local PopupDialogScreen = require "screens/popupdialog"
+local PopupDialogScreen = require "screens/redux/popupdialog"
+local WoodenSignPopup = require "screens/redux/woodensignpopup"
 local MouseTracker = require "widgets/mousetracker"
 local RecipeList = require "widgets/recipelist"
 local easing = require "easing"
@@ -21,6 +23,7 @@ local MAX_TRADE_ITEMS = 9
 local TRANSITION_ANIM = "large"
 local DEBUG_MODE = BRANCH == "dev"
 
+local IS_OPEN_FOR_BUSINESS = false
 
 local function FindFirstEmptySlot(selections, num_items)
 	local first = nil
@@ -80,16 +83,17 @@ local ItemsInUse = function( selected_items, moving_items_list )
 	return items_in_use
 end
 
-local TradeScreen = Class(Screen, function(self, profile, screen)
+local TradeScreen = Class(Screen, function(self, prev_screen, profile)
 	Screen._ctor(self, "TradeScreen")
 
 	--print("Is offline?", TheNet:IsOnlineMode() or "nil", TheFrontEnd:GetIsOfflineMode() or "nil")
 	
-	self.recipes = TheItems:GetRecipes()
+    -- DISABLE SPECIAL RECIPES
+	-- self.recipes = TheItems:GetRecipes()
 
 	self.profile = profile
 	self:DoInit() 
-	self.prevScreen = screen
+	self.prevScreen = prev_screen
 end)
 
 function TradeScreen:DoInit()
@@ -113,12 +117,12 @@ function TradeScreen:DoInit()
     	self.exit_button:SetPosition(-RESOLUTION_X*.415, -RESOLUTION_Y*.505 + BACK_BUTTON_Y )
   	end
 
-  	self.market_button = self.fixed_root:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "steam.tex", "", false, false, 
-    											function() VisitURL("https://steamcommunity.com/market/search?appid=322330") end  
-    										))
-
-  	self.market_button:SetPosition(RESOLUTION_X*.45, -RESOLUTION_Y*.505 + BACK_BUTTON_Y)
-
+	if PLATFORM ~= "WIN32_RAIL" then
+  		self.market_button = self.fixed_root:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "steam.tex", "", false, false,
+    												function() VisitURL("https://steamcommunity.com/market/search?appid=322330") end
+    											))
+  		self.market_button:SetPosition(RESOLUTION_X*.45, -RESOLUTION_Y*.505 + BACK_BUTTON_Y)
+  	end
 
 	self.current_num_trade_items = 9
 	self.frames_height_adjustment = 0
@@ -135,10 +139,14 @@ function TradeScreen:DoInit()
 
 	self:RefreshUIState()
 	   
-	-- Skin collector
-  	self.innkeeper = self.fixed_root:AddChild(SkinCollector( self.popup:GetNumFilteredItems() )) --this needs to happen after RefreshUIState was called so that we have the filtered list 
+    -- Skin collector
+    self.innkeeper = self.fixed_root:AddChild(SkinCollector( self.popup:GetNumFilteredItems() )) --this needs to happen after RefreshUIState was called so that we have the filtered list 
     self.innkeeper:SetPosition(410, -390)
-    self.innkeeper:Appear()
+    if IS_OPEN_FOR_BUSINESS then
+        self.innkeeper:Appear()
+    else
+        self.innkeeper:Hide()
+    end
 end
 
 function TradeScreen:DoInitInventoryAndMachine()
@@ -162,6 +170,8 @@ function TradeScreen:DoInitInventoryAndMachine()
     self.claw_machine_bg:SetScale(machine_scale)
     self.claw_machine_bg:SetPosition(0, 65)
   	
+-- DISABLE SPECIAL RECIPES
+--[[
 	--Specials recipe list
 	self.specials_list = self.fixed_root:AddChild(RecipeList(
 		function(data)
@@ -175,6 +185,7 @@ function TradeScreen:DoInitInventoryAndMachine()
 	self.specials_list:SetData( self.recipes )
 	self.specials_list:SetHintStrings(STRINGS.UI.TRADESCREEN.PREV, STRINGS.UI.TRADESCREEN.NEXT)
 	self.specials_list:Hide()
+--]]
 	
 	
 	--Machine tiles: frames_container is in the root so that we can order all the layers correctly and the hover text (while still allowing the specials_list to not be scaled)
@@ -214,7 +225,11 @@ function TradeScreen:DoInitInventoryAndMachine()
 	self:PlayMachineAnim("idle_empty", true)
 
     -- Title (Trade Inn sign)
-  	self.title = self.fixed_root:AddChild(Image("images/tradescreen_overflow.xml", "TradeInnSign.tex"))
+	if PLATFORM == "WIN32_RAIL" then
+		self.title = self.fixed_root:AddChild(Image("images/tradescreen_overflow.xml", "TradeInnSign_cn.tex"))
+	else
+		self.title = self.fixed_root:AddChild(Image("images/tradescreen_overflow.xml", "TradeInnSign.tex"))
+	end
   	self.title:SetScale(.66)
   	self.title:SetPosition(0, 305)
 
@@ -455,7 +470,7 @@ function TradeScreen:FinishReset(move_items)
 				self.moving_items_list[i] = TEMPLATES.MovingItem( self.frames_single[i].name,
 														i,
 														self.frames_single[i]:GetWorldPosition(),
-														self.popup.page_list.right_button:GetWorldPosition(),
+														self.popup.scroll_list.position_marker:GetWorldPosition(),
 														.65 * self.fixed_root:GetScale().x, 
 														.5 * self.fixed_root:GetScale().x )
 				self.moving_items_list[i].Move(function() ItemEndMove(self, i) end)
@@ -476,7 +491,7 @@ function TradeScreen:FinishReset(move_items)
 	self.machine_in_use = false
 	self.accept_waiting = false
 	
-	self.popup.page_list:SetPage(1)
+	self.popup.scroll_list:ResetScroll()
 	
 	self.last_added_item_index = nil
 	
@@ -505,6 +520,31 @@ end
 function TradeScreen:OnBecomeActive()
 	--print("**** Activate TradeScreen ****", self.specials_mode)
 	Screen.OnBecomeActive(self)
+
+    if not IS_OPEN_FOR_BUSINESS then
+        -- Don't get stuck in a popup showing loop.
+        if not self.outtolunch_popup then
+            self.outtolunch_popup = WoodenSignPopup(
+                nil,
+                STRINGS.UI.TRADESCREEN.TEMPORARILY_CLOSED_BODY,
+                {
+                    {
+                        text=STRINGS.UI.TRADESCREEN.OK,
+                        cb = function()
+                            TheFrontEnd:PopScreen() -- close popup
+                            -- close trade screen (not using Quit because we
+                            -- haven't started anything and don't want the
+                            -- delay).
+                            TheFrontEnd:FadeBack()
+                            self.quitting = true
+                        end
+                    }
+                })
+            TheFrontEnd:PushScreen(self.outtolunch_popup)
+        end
+        -- Always exit since we're about to quit anyway.
+        return
+    end
 
 --Note(Peter): check if the joystick will get into a weird state when the trade confirmation popup is pushed and then popped.
 	if self.joystick.started_ever then 
@@ -668,7 +708,7 @@ function TradeScreen:GiveItem(item)
 
 	-- Need to store a reference to this so we can start it moving when the player clicks
 	self.moving_gift_item = TEMPLATES.MovingItem(name, self.current_num_trade_items, self.claw_machine_bg:GetWorldPosition(), 
-											self.popup.page_list.right_button:GetWorldPosition(), 1 * self.fixed_root:GetScale().x, .5 * self.fixed_root:GetScale().x)
+											self.popup.scroll_list.position_marker:GetWorldPosition(), 1 * self.fixed_root:GetScale().x, .5 * self.fixed_root:GetScale().x)
 
 	table.insert(self.moving_items_list, self.moving_gift_item)
 
@@ -701,7 +741,7 @@ function TradeScreen:DisplayItemName(gift)
 	assert(not self.item_name_displayed)
 	self.item_name_displayed = true
 
-	local name_string = GetName(gift) 
+	local name_string = GetSkinName(gift) 
 	self.item_name:SetTruncatedString(name_string, 330, 35, true)
 	self.item_name:SetColour(GetColorForItem(gift))
 	self.item_name:Show()
@@ -760,13 +800,10 @@ function TradeScreen:Quit()
 		self.special_lightfx:Kill()
 	end
 	
-	-- Start the fade approximately halfway through the disappear animation
-	-- (which is 45 frames long)
-	self.inst:DoTaskInTime(20*FRAMES, function()
-		TheFrontEnd:Fade(false, SCREEN_FADE_TIME, function()
-	       TheFrontEnd:PopScreen(self)
-	       TheFrontEnd:Fade(true, SCREEN_FADE_TIME)
-	    end)
+	-- Time the fade to start right as he gets off screen.
+	-- (disappear anim is 45 frames long)
+	self.inst:DoTaskInTime(15*FRAMES, function()
+        TheFrontEnd:FadeBack()
 	end)
 	
 	self.quitting = true
@@ -789,7 +826,7 @@ function TradeScreen:RemoveSelectedItem(number)
 		local moving_item = TEMPLATES.MovingItem(self.frames_single[number].name,
 													number,
 													self.frames_single[number]:GetWorldPosition(),
-													self.popup.page_list.right_button:GetWorldPosition(),
+													self.popup.scroll_list.position_marker:GetWorldPosition(),
 													start_scale * self.fixed_root:GetScale().x, .5 * self.fixed_root:GetScale().x)
 	
 		local idx = #self.moving_items_list + 1
@@ -944,15 +981,14 @@ end
 function TradeScreen:RefreshUIState()
 	--print("~~~~~~~~~~~~~~TradeScreen:RefreshUIState")
 	local items_in_use = ItemsInUse( self.selected_items, self.moving_items_list )
-	
 	local filters = nil
 	if self.specials_mode then
 		local recipe_index = self.specials_list:GetRecipeIndex()
-		filters = GetSpecialFilters(self.recipes[recipe_index], items_in_use) 
+		filters = GetSpecialFilters(self.recipes[recipe_index], items_in_use)
 	else
 		local recipe_name = GetBasicRecipeMatch(items_in_use)
 		filters = GetBasicFilters(recipe_name)
-	end	
+	end
 	self.popup:UpdateData(items_in_use, filters)
 	
 	if not self.machine_in_use and self:IsTradeAllowed() then
@@ -1064,7 +1100,7 @@ function TradeScreen:RefreshMachineTilesState()
 		local item = self.selected_items[i]
 		if not self.machine_in_use and item ~= nil then 
 			local rarity = GetRarityForItem(item.item)
-			local hover_text = STRINGS.UI.RARITY[rarity] .. "\n" .. GetName(item.item)
+			local hover_text = STRINGS.UI.RARITY[rarity] .. "\n" .. GetSkinName(item.item)
 
 			local y_offset = 50
 			if item.last_item_warning then
@@ -1267,8 +1303,10 @@ function TradeScreen:OnControl(control, down)
 				end
 				return true
 			elseif control == CONTROL_INSPECT then -- Y button
-				VisitURL("https://steamcommunity.com/market/search?appid=322330")
-				return true
+				if PLATFORM ~= "WIN32_RAIL" then
+					VisitURL("https://steamcommunity.com/market/search?appid=322330")
+					return true
+				end
 			elseif control == CONTROL_MENU_MISC_1 then -- X button
 				local slot_to_remove = FindLastFullSlot(self.selected_items, self.current_num_trade_items)				
 				-- Don't do this if the tile is disabled for any reason (will happen during transitions, quitting, etc.)
@@ -1304,14 +1342,13 @@ function TradeScreen:OnControl(control, down)
 end
 
 function TradeScreen:ScrollBack(control)
-	local page_list = self.popup.page_list
-	if not page_list.repeat_time or page_list.repeat_time <= 0 then
-		local pageNum = page_list.page_number
-       	page_list:ChangePage(-1)
-       	if page_list.page_number ~= pageNum then 
-       		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
-       	end
-        page_list.repeat_time =
+	local scroll_list = self.popup.scroll_list
+	if not scroll_list.repeat_time or scroll_list.repeat_time <= 0 then
+       	scroll_list:Scroll(-1)
+       	--if self.scroll_list.page_number ~= pageNum then 
+       	--	TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+       	--end
+        scroll_list.repeat_time =
             TheInput:GetControlIsMouseWheel(control)
             and MOUSE_SCROLL_REPEAT_TIME
             or (control == CONTROL_SCROLLBACK and SCROLL_REPEAT_TIME) 
@@ -1320,14 +1357,13 @@ function TradeScreen:ScrollBack(control)
 end
 
 function TradeScreen:ScrollFwd(control)
-	local page_list = self.popup.page_list
-	if not page_list.repeat_time or page_list.repeat_time <= 0 then
-		local pageNum = page_list.page_number
-        page_list:ChangePage(1)
-		if page_list.page_number ~= pageNum then 
-       		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
-       	end
-        page_list.repeat_time =
+	local scroll_list = self.popup.scroll_list
+	if not scroll_list.repeat_time or scroll_list.repeat_time <= 0 then
+        scroll_list:Scroll(1)
+		--if self.scroll_list.page_number ~= pageNum then 
+       	--	TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+       	--end
+        scroll_list.repeat_time =
             TheInput:GetControlIsMouseWheel(control)
             and MOUSE_SCROLL_REPEAT_TIME
             or (control == CONTROL_SCROLLFWD and SCROLL_REPEAT_TIME) 
@@ -1345,7 +1381,8 @@ function TradeScreen:GetHelpText()
 
 	if not self.machine_in_use and not self.transitioning then 
 
-	    table.insert(t, self.popup.page_list:GetHelpText())
+        -- HACK(dbriscoe): page_list is nil. ItemSelector doesn't currently create it. Disabled.
+	    --~ table.insert(t, self.popup.page_list:GetHelpText())
 
 		-- DISABLE SPECIAL RECIPES
        	--[[if self.specials_mode then 
@@ -1388,8 +1425,9 @@ function TradeScreen:GetHelpText()
     	local str = self.specials_list:GetHelpText()
     	table.insert(t, str)
     end]]
-
-    table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_INSPECT) .. " " .. STRINGS.UI.TRADESCREEN.MARKET)
+	if PLATFORM ~= "WIN32_RAIL" then
+		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_INSPECT) .. " " .. STRINGS.UI.TRADESCREEN.MARKET)
+	end
 
     return table.concat(t, "  ")
 end

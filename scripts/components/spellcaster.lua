@@ -154,7 +154,7 @@ function SpellCaster:CanCast(doer, target, pos)
         end
         return self.canuseonpoint
             and TheWorld.Map:IsAboveGroundAtPoint(pos:Get())
-            and not TheWorld.Map:IsPointNearHole(pos)
+            and not TheWorld.Map:IsGroundTargetBlocked(pos)
     elseif target:IsInLimbo()
         or not target.entity:IsVisible()
         or (target.components.health ~= nil and target.components.health:IsDead())

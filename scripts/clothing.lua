@@ -6,7 +6,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "BLACK", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_buttons_black_jet",
 		torso_tuck = "untucked",
 		marketable = true,
@@ -16,7 +16,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "BLUE", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_buttons_blue_sky",
 		torso_tuck = "untucked",
 		marketable = true,
@@ -26,7 +26,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "GREEN", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_buttons_green_laurel",
 		torso_tuck = "untucked",
 		marketable = true,
@@ -36,7 +36,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "PINK", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_buttons_pink_hibiscus",
 		torso_tuck = "untucked",
 		marketable = true,
@@ -46,7 +46,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "WHITE", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_buttons_white_ghost",
 		torso_tuck = "untucked",
 		marketable = true,
@@ -125,7 +125,6 @@ CLOTHING =
 		type = "body",
 		skin_tags = { "LUNAR", "RED", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_upper", "foot", "leg", "skirt", "torso", "torso_pelvis", },
-		symbol_hides = { },
 		override_build = "body_coatdress_red_higgsbury",
 		torso_tuck = "skirt",
 		rarity = "Spiffy",
@@ -202,7 +201,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "BLUE", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_flannel_blue_snowbird",
 		torso_tuck = "untucked",
 		marketable = true,
@@ -212,7 +211,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "GREEN", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_flannel_green_napier",
 		torso_tuck = "untucked",
 		marketable = true,
@@ -222,7 +221,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "ORANGE", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_flannel_orange_lumberjack",
 		torso_tuck = "untucked",
 		marketable = true,
@@ -232,7 +231,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "PURPLE", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_flannel_purple_grape",
 		torso_tuck = "untucked",
 		marketable = true,
@@ -289,7 +288,6 @@ CLOTHING =
 		type = "body",
 		skin_tags = { "LUNAR", "RED", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_lower_cuff", "arm_upper", "foot", "leg", "skirt", "torso", "torso_pelvis", },
-		symbol_hides = { },
 		override_build = "body_outerwear_quilted_red_cardinal",
 		torso_tuck = "skirt",
 		rarity = "Spiffy",
@@ -300,7 +298,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "BLACK", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", "torso_pelvis", "leg", },
+		symbol_overrides = { "torso", "arm_upper", "torso_pelvis", "leg", },
 		symbol_hides = { "skirt", },
 		override_build = "body_overalls_black_scribble",
 		torso_tuck = "untucked",
@@ -313,7 +311,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "BLUE", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", "torso_pelvis", "leg", },
+		symbol_overrides = { "torso", "arm_upper", "torso_pelvis", "leg", },
 		symbol_hides = { "skirt", },
 		override_build = "body_overalls_blue_denim",
 		torso_tuck = "untucked",
@@ -326,7 +324,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "NAVY", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", "torso_pelvis", "leg", },
+		symbol_overrides = { "torso", "arm_upper", "torso_pelvis", "leg", },
 		symbol_hides = { "skirt", },
 		override_build = "body_overalls_navy_ocean",
 		torso_tuck = "untucked",
@@ -373,7 +371,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "BLUE", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_polo_blue_denim",
 		torso_tuck = "untucked",
 		marketable = true,
@@ -383,7 +381,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "ORANGE", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_polo_orange_salmon",
 		torso_tuck = "untucked",
 		marketable = true,
@@ -393,7 +391,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "RED", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_polo_red_higgsbury",
 		torso_tuck = "untucked",
 		marketable = true,
@@ -403,7 +401,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "WHITE", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_polo_white_marble",
 		torso_tuck = "untucked",
 		marketable = true,
@@ -413,7 +411,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "YELLOW", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_polo_yellow_goldenrod",
 		torso_tuck = "untucked",
 		marketable = true,
@@ -516,7 +514,6 @@ CLOTHING =
 		type = "body",
 		skin_tags = { "LUNAR", "GREEN", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_lower_cuff", "arm_upper", "leg", "skirt", "torso", "torso_pelvis", },
-		symbol_hides = { },
 		override_build = "body_silkbrocade_coat_green_laurel",
 		torso_tuck = "skirt",
 		rarity = "Event",
@@ -549,7 +546,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "PINK", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_suspenders_pink_pearl",
 		torso_tuck = "untucked",
 		rarity = "Classy",
@@ -560,7 +557,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "WHITE", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_suspenders_white_pure",
 		torso_tuck = "untucked",
 		rarity = "Classy",
@@ -571,7 +568,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "YELLOW", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_suspenders_yellow_flax",
 		torso_tuck = "untucked",
 		rarity = "Classy",
@@ -582,7 +579,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "BLUE", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_sweatervest_blue_snowbird",
 		torso_tuck = "untucked",
 		rarity = "Classy",
@@ -593,7 +590,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "BROWN", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_sweatervest_brown_beaver",
 		torso_tuck = "untucked",
 		rarity = "Classy",
@@ -604,7 +601,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "GREEN", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_sweatervest_green_forest",
 		torso_tuck = "untucked",
 		rarity = "Classy",
@@ -615,7 +612,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "GREY", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_sweatervest_grey_silver",
 		torso_tuck = "untucked",
 		rarity = "Classy",
@@ -626,7 +623,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "RED", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_sweatervest_red_firehound",
 		torso_tuck = "untucked",
 		rarity = "Classy",
@@ -660,7 +657,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "BROWN", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", "arm_lower", "skirt", },
+		symbol_overrides = { "torso", "arm_upper", "arm_lower", "skirt", },
 		override_build = "body_trenchcoat_brown_fawn",
 		torso_tuck = "skirt",
 		rarity = "Spiffy",
@@ -671,7 +668,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "YELLOW", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", "arm_lower", "skirt", },
+		symbol_overrides = { "torso", "arm_upper", "arm_lower", "skirt", },
 		override_build = "body_trenchcoat_yellow_straw",
 		torso_tuck = "skirt",
 		rarity = "Spiffy",
@@ -682,7 +679,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "RED", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_trimmed_blouse_red_higgsbury",
 		torso_tuck = "untucked",
 		marketable = true,
@@ -692,7 +689,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "WHITE", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_trimmed_blouse_white_pure",
 		torso_tuck = "untucked",
 		marketable = true,
@@ -702,7 +699,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "YELLOW", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_trimmed_blouse_yellow_flax",
 		torso_tuck = "untucked",
 		marketable = true,
@@ -712,7 +709,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "GREY", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_tshirt_grey_battleship",
 		torso_tuck = "untucked",
 		marketable = true,
@@ -722,7 +719,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "PURPLE", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_tshirt_purple_mauve",
 		torso_tuck = "untucked",
 		marketable = true,
@@ -732,7 +729,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "RED", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_tshirt_red_higgsbury",
 		torso_tuck = "untucked",
 		marketable = true,
@@ -742,7 +739,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "WHITE", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_tshirt_white_smoke",
 		torso_tuck = "untucked",
 		marketable = true,
@@ -752,7 +749,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "BLUE", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_tweedvest_blue_lightning",
 		torso_tuck = "untucked",
 		rarity = "Classy",
@@ -763,7 +760,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "BROWN", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_tweedvest_brown_chocolate",
 		torso_tuck = "untucked",
 		rarity = "Classy",
@@ -774,7 +771,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "GREEN", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_tweedvest_green_hunters",
 		torso_tuck = "untucked",
 		rarity = "Classy",
@@ -785,7 +782,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "GREY", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_tweedvest_grey_steel",
 		torso_tuck = "untucked",
 		rarity = "Classy",
@@ -796,7 +793,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "TAN", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_tweedvest_tan_grass",
 		torso_tuck = "untucked",
 		rarity = "Classy",
@@ -820,12 +817,23 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "FORMAL", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "torso_pelvis", "arm_upper", "arm_upper_skin", "skirt", "leg", "foot", },
+		symbol_overrides = { "torso", "torso_pelvis", "arm_upper", "skirt", "leg", "foot", },
 		override_build = "body_wathgrithr_formal",
 		torso_tuck = "untucked",
 		rarity = "Distinguished",
 		marketable = true,
 		release_group = 2,
+	},
+	body_wathgrithr_gladiator =
+	{
+		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "torso", },
+		override_build = "body_wathgrithr_gladiator",
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
 	},
 	body_wathgrithr_shadow =
 	{
@@ -860,6 +868,17 @@ CLOTHING =
 		rarity = "Distinguished",
 		marketable = true,
 		release_group = 5,
+	},
+	body_waxwell_gladiator =
+	{
+		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "torso", },
+		override_build = "body_waxwell_gladiator",
+		torso_tuck = "skirt",
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
 	},
 	body_waxwell_krampus =
 	{
@@ -914,12 +933,24 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "FORMAL", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "arm_upper", "arm_upper_skin", },
+		symbol_overrides = { "torso", "arm_upper", },
 		override_build = "body_webber_formal",
 		torso_tuck = "untucked",
 		rarity = "Distinguished",
 		marketable = true,
 		release_group = 2,
+	},
+	body_webber_gladiator =
+	{
+		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_lower", "arm_upper_skin", "leg", "torso", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		override_build = "body_webber_gladiator",
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
 	},
 	body_webber_shadow =
 	{
@@ -955,6 +986,17 @@ CLOTHING =
 		rarity = "Distinguished",
 		marketable = true,
 		release_group = 2,
+	},
+	body_wendy_gladiator =
+	{
+		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "leg", "skirt", "torso", "torso_pelvis", },
+		override_build = "body_wendy_gladiator",
+		torso_tuck = "skirt",
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
 	},
 	body_wendy_lureplant =
 	{
@@ -1003,6 +1045,18 @@ CLOTHING =
 		marketable = true,
 		release_group = 2,
 	},
+	body_wes_gladiator =
+	{
+		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "leg", "torso", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		override_build = "body_wes_gladiator",
+		torso_tuck = "full",
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
 	body_wes_mandrake =
 	{
 		type = "body",
@@ -1050,6 +1104,17 @@ CLOTHING =
 		rarity = "Distinguished",
 		marketable = true,
 		release_group = 2,
+	},
+	body_wickerbottom_gladiator =
+	{
+		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "leg", "skirt", "torso", "torso_pelvis", },
+		override_build = "body_wickerbottom_gladiator",
+		torso_tuck = "full",
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
 	},
 	body_wickerbottom_lightninggoat =
 	{
@@ -1107,6 +1172,18 @@ CLOTHING =
 		marketable = true,
 		release_group = 2,
 	},
+	body_willow_gladiator =
+	{
+		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "torso", },
+		symbol_hides = { "arm_upper", },
+		override_build = "body_willow_gladiator",
+		torso_tuck = "skirt",
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
 	body_willow_shadow =
 	{
 		type = "body",
@@ -1141,6 +1218,18 @@ CLOTHING =
 		marketable = true,
 		release_group = 2,
 	},
+	body_wilson_gladiator =
+	{
+		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "torso", },
+		symbol_hides = { "arm_upper", },
+		override_build = "body_wilson_gladiator",
+		torso_tuck = "full",
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
 	body_wilson_pigguard =
 	{
 		type = "body",
@@ -1171,7 +1260,7 @@ CLOTHING =
 	{
 		type = "body",
 		skin_tags = { "SURVIVOR", "CLOTHING_BODY", "CLOTHING", },
-		symbol_overrides = { "torso", "torso_pelvis", "leg", "arm_upper", "arm_upper_skin", "foot", },
+		symbol_overrides = { "torso", "torso_pelvis", "leg", "arm_upper", "foot", },
 		symbol_hides = { "skirt", },
 		override_build = "body_wilson_survivor",
 		torso_tuck = "untucked",
@@ -1189,6 +1278,17 @@ CLOTHING =
 		rarity = "Distinguished",
 		marketable = true,
 		release_group = 30,
+	},
+	body_winona_gladiator =
+	{
+		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_upper", "torso", },
+		override_build = "body_winona_gladiator",
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
 	},
 	body_winona_grassgecko =
 	{
@@ -1244,6 +1344,20 @@ CLOTHING =
 		marketable = true,
 		release_group = 2,
 	},
+	body_wolfgang_gladiator =
+	{
+		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_lower", "arm_upper_skin", "torso", },
+		symbol_overrides_skinny = { arm_lower = "arm_lower_skinny", arm_upper_skin = "arm_upper_skin_skinny", },
+		symbol_overrides_mighty = { torso = "torso_mighty", arm_lower = "arm_lower_mighty", arm_upper_skin = "arm_upper_skin_mighty", },
+		symbol_hides = { "arm_upper", },
+		override_build = "body_wolfgang_gladiator",
+		torso_tuck = "full",
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
 	body_wolfgang_shadow =
 	{
 		type = "body",
@@ -1298,6 +1412,17 @@ CLOTHING =
 		marketable = true,
 		release_group = 2,
 	},
+	body_woodie_gladiator =
+	{
+		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "torso", },
+		override_build = "body_woodie_gladiator",
+		torso_tuck = "full",
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
 	body_woodie_shadow =
 	{
 		type = "body",
@@ -1346,6 +1471,18 @@ CLOTHING =
 		rarity = "Distinguished",
 		marketable = true,
 		release_group = 2,
+	},
+	body_wx78_gladiator =
+	{
+		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_upper", "torso", },
+		symbol_hides = { "skirt", },
+		override_build = "body_wx78_gladiator",
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
 	},
 	body_wx78_rhinorook =
 	{
@@ -1398,7 +1535,6 @@ CLOTHING =
 		type = "body",
 		skin_tags = { "WINTER", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_lower_cuff", "arm_upper", "foot", "hand", "leg", "skirt", "torso", "torso_pelvis", },
-		symbol_hides = { },
 		override_build = "body_yule_dress",
 		torso_tuck = "skirt",
 		rarity = "Event",
@@ -1555,6 +1691,121 @@ CLOTHING =
 		marketable = true,
 		release_group = 3,
 	},
+	feet_wathgrithr_gladiator =
+	{
+		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		override_build = "feet_wathgrithr_gladiator",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	feet_waxwell_gladiator =
+	{
+		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		override_build = "feet_waxwell_gladiator",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	feet_webber_gladiator =
+	{
+		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		override_build = "feet_webber_gladiator",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	feet_wendy_gladiator =
+	{
+		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		override_build = "feet_wendy_gladiator",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		feet_cuff_size = 5,
+		release_group = 32,
+	},
+	feet_wes_gladiator =
+	{
+		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		override_build = "feet_wes_gladiator",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	feet_wickerbottom_gladiator =
+	{
+		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		override_build = "feet_wickerbottom_gladiator",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	feet_willow_gladiator =
+	{
+		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		override_build = "feet_willow_gladiator",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		feet_cuff_size = 5,
+		release_group = 32,
+	},
+	feet_wilson_gladiator =
+	{
+		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		override_build = "feet_wilson_gladiator",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		feet_cuff_size = 5,
+		release_group = 32,
+	},
+	feet_winona_gladiator =
+	{
+		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		override_build = "feet_winona_gladiator",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		feet_cuff_size = 5,
+		release_group = 32,
+	},
+	feet_wolfgang_gladiator =
+	{
+		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		override_build = "feet_wolfgang_gladiator",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		feet_cuff_size = 5,
+		release_group = 32,
+	},
+	feet_woodie_gladiator =
+	{
+		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		override_build = "feet_woodie_gladiator",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
 	feet_workboot_brown_chocolate =
 	{
 		type = "feet",
@@ -1576,6 +1827,17 @@ CLOTHING =
 		feet_cuff_size = 5,
 		marketable = true,
 		release_group = 7,
+	},
+	feet_wx78_gladiator =
+	{
+		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		override_build = "feet_wx78_gladiator",
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		feet_cuff_size = 5,
+		release_group = 32,
 	},
 	hand_beltedgloves_brown_beaver =
 	{
@@ -1689,6 +1951,16 @@ CLOTHING =
 		marketable = true,
 		release_group = 0,
 	},
+	hand_wathgrithr_gladiator =
+	{
+		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "hand", },
+		override_build = "hand_wathgrithr_gladiator",
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
 	hand_waxwell_formal =
 	{
 		type = "hand",
@@ -1699,6 +1971,67 @@ CLOTHING =
 		marketable = true,
 		release_group = 5,
 	},
+	hand_waxwell_gladiator =
+	{
+		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "arm_lower_cuff", "hand", },
+		override_build = "hand_waxwell_gladiator",
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	hand_webber_gladiator =
+	{
+		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "hand", },
+		override_build = "hand_webber_gladiator",
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	hand_wendy_gladiator =
+	{
+		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "arm_lower_cuff", "hand", },
+		override_build = "hand_wendy_gladiator",
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	hand_wes_gladiator =
+	{
+		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "hand", },
+		override_build = "hand_wes_gladiator",
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	hand_wickerbottom_gladiator =
+	{
+		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "hand", },
+		override_build = "hand_wickerbottom_gladiator",
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	hand_willow_gladiator =
+	{
+		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "arm_lower_cuff", "arm_upper", },
+		base_fallbacks = { "arm_lower", "arm_upper_skin", },
+		override_build = "hand_willow_gladiator",
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
 	hand_wilson_formal =
 	{
 		type = "hand",
@@ -1708,6 +2041,56 @@ CLOTHING =
 		rarity = "Classy",
 		marketable = true,
 		release_group = 2,
+	},
+	hand_wilson_gladiator =
+	{
+		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "arm_lower_cuff", },
+		override_build = "hand_wilson_gladiator",
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	hand_winona_gladiator =
+	{
+		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "hand", },
+		override_build = "hand_winona_gladiator",
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	hand_wolfgang_gladiator =
+	{
+		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "hand", },
+		override_build = "hand_wolfgang_gladiator",
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	hand_woodie_gladiator =
+	{
+		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "arm_lower_cuff", "hand", },
+		override_build = "hand_woodie_gladiator",
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	hand_wx78_gladiator =
+	{
+		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "arm_lower_cuff", "hand", },
+		override_build = "hand_wx78_gladiator",
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
 	},
 	legs_checkered_pleats_blue_cornflower =
 	{
@@ -1898,6 +2281,94 @@ CLOTHING =
 		rarity = "Classy",
 		marketable = true,
 		release_group = 7,
+	},
+	legs_wathgrithr_gladiator =
+	{
+		type = "legs",
+		skin_tags = { "LAVA", "CLOTHING_LEGS", "CLOTHING", },
+		symbol_overrides = { "leg", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		override_build = "legs_wathgrithr_gladiator",
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	legs_waxwell_gladiator =
+	{
+		type = "legs",
+		skin_tags = { "LAVA", "CLOTHING_LEGS", "CLOTHING", },
+		symbol_overrides = { "leg", "skirt", "torso_pelvis", },
+		override_build = "legs_waxwell_gladiator",
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	legs_willow_gladiator =
+	{
+		type = "legs",
+		skin_tags = { "LAVA", "CLOTHING_LEGS", "CLOTHING", },
+		symbol_overrides = { "skirt", },
+		override_build = "legs_willow_gladiator",
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	legs_wilson_gladiator =
+	{
+		type = "legs",
+		skin_tags = { "LAVA", "CLOTHING_LEGS", "CLOTHING", },
+		symbol_overrides = { "leg", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		override_build = "legs_wilson_gladiator",
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	legs_winona_gladiator =
+	{
+		type = "legs",
+		skin_tags = { "LAVA", "CLOTHING_LEGS", "CLOTHING", },
+		symbol_overrides = { "leg", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		override_build = "legs_winona_gladiator",
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		legs_cuff_size = 3,
+		release_group = 32,
+	},
+	legs_wolfgang_gladiator =
+	{
+		type = "legs",
+		skin_tags = { "LAVA", "CLOTHING_LEGS", "CLOTHING", },
+		symbol_overrides = { "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		override_build = "legs_wolfgang_gladiator",
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
+	},
+	legs_woodie_gladiator =
+	{
+		type = "legs",
+		skin_tags = { "LAVA", "CLOTHING_LEGS", "CLOTHING", },
+		symbol_overrides = { "leg", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		override_build = "legs_woodie_gladiator",
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		legs_cuff_size = 2,
+		release_group = 32,
+	},
+	legs_wx78_gladiator =
+	{
+		type = "legs",
+		skin_tags = { "LAVA", "CLOTHING_LEGS", "CLOTHING", },
+		symbol_overrides = { "leg", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		override_build = "legs_wx78_gladiator",
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 32,
 	},
 }
 

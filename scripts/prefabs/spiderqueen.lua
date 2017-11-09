@@ -53,7 +53,7 @@ end
 local function CalcSanityAura(inst, observer)
     return observer:HasTag("spiderwhisperer") and 0 or -TUNING.SANITYAURA_HUGE
 end
-    
+
 local function ShareTargetFn(dude)
     return dude.prefab == "spiderqueen" and not dude.components.health:IsDead()
 end
@@ -70,35 +70,31 @@ local function BabyCount(inst)
 end
 
 local function MakeBaby(inst)
-    local angle = inst.Transform:GetRotation()/DEGREES
-    local prefab = (inst.components.combat.target and math.random() < .333) and "spider_warrior" or "spider"
+    local angle = inst.Transform:GetRotation() / DEGREES
+    local prefab = inst.components.combat:HasTarget() and math.random() < .333 and "spider_warrior" or "spider"
     local spider = inst.components.lootdropper:SpawnLootPrefab(prefab)
-    local rad = spider.Physics:GetRadius()+inst.Physics:GetRadius()+.25;
-    local pt = Vector3(inst.Transform:GetWorldPosition())
-    if spider then
-        spider.Transform:SetPosition(pt.x + rad*math.cos(angle), pt.y, pt.z + rad*math.sin(angle))
+    if spider ~= nil then
+        local rad = spider:GetPhysicsRadius(0) + inst:GetPhysicsRadius(0) + .25
+        local x, y, z = inst.Transform:GetWorldPosition()
+        spider.Transform:SetPosition(x + rad * math.cos(angle), 0, z + rad * math.sin(angle))
         spider.sg:GoToState("taunt")
         inst.components.leader:AddFollower(spider)
-        if inst.components.combat.target then
+        if inst.components.combat.target ~= nil then
             spider.components.combat:SetTarget(inst.components.combat.target)
         end
     end
 end
 
 local function MaxBabies(inst)
-    local pt = Vector3(inst.Transform:GetWorldPosition())
-    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, TUNING.SPIDERQUEEN_NEARBYPLAYERSDIST, {"player"}, {"playerghost"})
-    local spiders = #ents * 20
-
-    return RoundBiasedDown(math.pow(spiders, 1/1.4))
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x, 0, z, TUNING.SPIDERQUEEN_NEARBYPLAYERSDIST, { "player" }, { "playerghost" })
+    return RoundBiasedDown(math.pow(#ents * 20, 1 / 1.4))
 end
 
 local function AdditionalBabies(inst)
-    local pt = Vector3(inst.Transform:GetWorldPosition())
-    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, TUNING.SPIDERQUEEN_NEARBYPLAYERSDIST, {"player"}, {"playerghost"})
-    local addspiders = #ents * 0.5
-
-    return RoundBiasedUp(addspiders)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x, 0, z, TUNING.SPIDERQUEEN_NEARBYPLAYERSDIST, { "player" }, { "playerghost" })
+    return RoundBiasedUp(#ents * .5)
 end
 
 local function fn()

@@ -60,6 +60,30 @@ FrontEnd = Class(function(self, name)
     self.topblackoverlay:SetTint(0,0,0,0)
 	self.topblackoverlay:SetClickable(false)
 	self.topblackoverlay:Hide()
+	
+	self.swipeoverlay = Image("images/global.xml", "noise.tex")
+	self.swipeoverlay:SetEffect( "shaders/swipe_fade.ksh" )
+	self.swipeoverlay:SetEffectParams(0.5,0,0,0)
+    self.swipeoverlay:SetVRegPoint(ANCHOR_MIDDLE)
+    self.swipeoverlay:SetHRegPoint(ANCHOR_MIDDLE)
+    self.swipeoverlay:SetVAnchor(ANCHOR_MIDDLE)
+    self.swipeoverlay:SetHAnchor(ANCHOR_MIDDLE)
+    self.swipeoverlay:SetScaleMode(SCALEMODE_FILLSCREEN)
+    self.swipeoverlay:SetTint(1,1,1,0)
+	self.swipeoverlay:SetClickable(false)
+	self.swipeoverlay:Hide()
+	
+	self.topswipeoverlay = Image("images/global.xml", "noise.tex")
+	self.topswipeoverlay:SetEffect( "shaders/swipe_fade.ksh" )
+	self.topswipeoverlay:SetEffectParams(0,0,0,0)
+    self.topswipeoverlay:SetVRegPoint(ANCHOR_MIDDLE)
+    self.topswipeoverlay:SetHRegPoint(ANCHOR_MIDDLE)
+    self.topswipeoverlay:SetVAnchor(ANCHOR_MIDDLE)
+    self.topswipeoverlay:SetHAnchor(ANCHOR_MIDDLE)
+    self.topswipeoverlay:SetScaleMode(SCALEMODE_FILLSCREEN)
+    self.topswipeoverlay:SetTint(1,1,1,0)
+	self.topswipeoverlay:SetClickable(false)
+	self.topswipeoverlay:Hide()
 
 	self.whiteoverlay = Image("images/global.xml", "square.tex")
     self.whiteoverlay:SetVRegPoint(ANCHOR_MIDDLE)
@@ -113,9 +137,11 @@ FrontEnd = Class(function(self, name)
 	self.overlayroot:AddChild(self.topblackoverlay)
 	self.overlayroot:AddChild(self.topwhiteoverlay)
 	self.overlayroot:AddChild(self.topvigoverlay)
+	self.overlayroot:AddChild(self.topswipeoverlay)
 	self.screenroot:AddChild(self.blackoverlay)
 	self.screenroot:AddChild(self.whiteoverlay)
 	self.screenroot:AddChild(self.vigoverlay)
+	self.screenroot:AddChild(self.swipeoverlay)
 
     self.alpha = 0
 
@@ -175,6 +201,10 @@ FrontEnd = Class(function(self, name)
         self.widget_editor = WidgetDebug(self)
         self.entity_editor = EntityDebug(self)
     end
+    
+    -- data from the current game that is to be passed back to the game when the server resets (used for showing results in events when back in the lobby)
+    -- Never set this to nil or people will crash. If needed, test for empty list if needed to control flow.
+    self.match_results = {}
 end)
 
 function FrontEnd:ShowSavingIndicator()
@@ -199,8 +229,10 @@ function FrontEnd:HideSavingIndicator()
 end
 
 function FrontEnd:HideTopFade()
+	self.topwhiteoverlay:Hide()
+	self.topvigoverlay:Hide()
 	self.topblackoverlay:Hide()
-	self.topblackoverlay:Hide()
+	self.topswipeoverlay:Hide()
 	self.topFadeHidden = true
 end
 
@@ -211,6 +243,8 @@ function FrontEnd:ShowTopFade()
 		self.topvigoverlay:Show()
 	elseif self.fade_type == "black" then
 		self.topblackoverlay:Show()
+	elseif self.fade_type == "swipe" then
+		self.topswipeoverlay:Show()
 	end
 end
 
@@ -449,18 +483,20 @@ function FrontEnd:GetAccountManager()
 	return self.gameinterface.AccountManager
 end
 
-function FrontEnd:SetFadeLevel(alpha)
+function FrontEnd:SetFadeLevel(alpha, time, time_total)
     self.alpha = alpha
     if alpha <= 0 then
         if self.blackoverlay ~= nil then
             self.blackoverlay:Hide()
             self.whiteoverlay:Hide()
             self.vigoverlay:Hide()
+            self.swipeoverlay:Hide()
         end
         if self.topblackoverlay ~= nil then
             self.topblackoverlay:Hide()
             self.topwhiteoverlay:Hide()
             self.topvigoverlay:Hide()
+            self.topswipeoverlay:Hide()
         end
         if self.fade_type == "alpha" then
             local screen = self:GetActiveScreen()
@@ -495,6 +531,27 @@ function FrontEnd:SetFadeLevel(alpha)
             self.topblackoverlay:Show()
         end
         self.topblackoverlay:SetTint(0, 0, 0, alpha)
+    elseif self.fade_type == "swipe" then
+        self.swipeoverlay:Show()
+        self.swipeoverlay:SetTint(1, 1, 1, alpha)
+        if not self.topFadeHidden then
+            self.topswipeoverlay:Show()
+        end
+        self.topswipeoverlay:SetTint(1, 1, 1, alpha)
+        
+        local progress = 0 --progress should be a float from 0 to 1 over the whole fade in and out
+        local phase_1 = 0
+        local fade_progress = time and (time/time_total) or 0
+        if self.fadedir == FADE_IN then
+			progress = 0.5 + (fade_progress/2)
+			phase_1 = 1
+        else--if self.fadedir == FADE_OUT then
+			progress = fade_progress/2
+			phase_1 = 0
+        end
+        
+        self.swipeoverlay:SetEffectParams(progress, phase_1, 0, 0)
+        self.topswipeoverlay:SetEffectParams(progress, phase_1, 0, 0)
     end
 end
 
@@ -532,7 +589,7 @@ function FrontEnd:DoFadingUpdate(dt)
                         end
                 end
 
-                self:SetFadeLevel(alpha)
+                self:SetFadeLevel(alpha, self.fade_time, self.total_fade_time)
                 if self.fade_time >= self.total_fade_time then
                         self.fadedir = nil
                         if self.fadecb ~= nil then
@@ -646,9 +703,10 @@ function FrontEnd:Update(dt)
         end
 
         --Menu nav repeat
+        --skip while editing a text box and hovering over something else
         if self.repeat_time > dt then
             self.repeat_time = self.repeat_time - dt
-        else
+        elseif not (self.textProcessorWidget ~= nil and not self.textProcessorWidget.focus) then
             self.repeat_time = REPEAT_TIME
             if TheInput:IsControlPressed(CONTROL_MOVE_LEFT) or TheInput:IsControlPressed(CONTROL_FOCUS_LEFT) then
                 self:OnFocusMove(MOVE_LEFT, true)
@@ -663,15 +721,7 @@ function FrontEnd:Update(dt)
             end
         end
 
-        if self.tracking_mouse and not self.focus_locked then
-            local entitiesundermouse = TheInput:GetAllEntitiesUnderMouse()
-            local hover_inst = entitiesundermouse[1]
-            if hover_inst and hover_inst.widget then
-                hover_inst.widget:SetFocus()
-            elseif #self.screenstack > 0 then
-                self.screenstack[#self.screenstack]:SetFocus()
-            end
-        end
+        self:DoHoverFocusUpdate()
     end
 
     if CAN_USE_DBUI then
@@ -707,6 +757,22 @@ function FrontEnd:Update(dt)
 	end
 
 	TheSim:ProfilerPop()
+end
+
+function FrontEnd:DoHoverFocusUpdate(manual_update)
+    if self.tracking_mouse and not self.focus_locked then
+		if manual_update then
+			--something has been manually moved, so we want to update the entities under the mouse and re-evaluate the hover/focus state
+			TheInput:UpdateEntitiesUnderMouse()
+		end
+	    local entitiesundermouse = TheInput:GetAllEntitiesUnderMouse()
+        local hover_inst = entitiesundermouse[1]
+        if hover_inst and hover_inst.widget then
+            hover_inst.widget:SetFocus()
+        elseif #self.screenstack > 0 then
+            self.screenstack[#self.screenstack]:SetFocus()
+        end
+    end
 end
 
 function FrontEnd:StartUpdatingWidget(w)
@@ -793,11 +859,48 @@ function FrontEnd:Fade(in_or_out, time_to_take, cb, fade_delay_time, delayovercb
 			self.topvigoverlay:SetTint(1,1,1,0)
 		elseif self.fade_type == "black" then
 			self.topblackoverlay:SetTint(0,0,0,0)
+		elseif self.fade_type == "swipe" then
+			self.topswipeoverlay:SetTint(1,1,1,0)
+			self.topswipeoverlay:SetEffectParams(0,0,0,0)
 		end
 		self:ShowTopFade()
 	end
 	self.fade_delay_time = fade_delay_time
 	self.delayovercb = delayovercb
+end
+
+function FrontEnd:FadeToScreen( existing_screen, new_screen_fn, fade_complete_cp, fade_type )
+	local fade_time = SCREEN_FADE_TIME
+	if fade_type == "swipe" then
+		fade_time = SWIPE_FADE_TIME
+	end
+	
+	self:Fade(FADE_OUT, fade_time,
+		function()
+			local new_screen = new_screen_fn()
+			TheFrontEnd:PushScreen( new_screen )
+            TheFrontEnd:Fade(FADE_IN, fade_time, fade_complete_cp and function() fade_complete_cp(new_screen) end, 0, nil, fade_type )
+            existing_screen:Hide()
+		end,
+	0, nil, fade_type)
+end
+
+function FrontEnd:FadeBack( fade_complete_cb, fade_type, fade_out_complete_cb )
+	local fade_time = SCREEN_FADE_TIME
+	if fade_type == "swipe" then
+		fade_time = SWIPE_FADE_TIME
+	end
+	
+	self:Fade(FADE_OUT, fade_time,
+		function()
+			if fade_out_complete_cb ~= nil then
+				fade_out_complete_cb()
+			end
+			TheFrontEnd:PopScreen()
+            TheFrontEnd:Fade(FADE_IN, fade_time, fade_complete_cb, 0, nil, fade_type)
+            TheFrontEnd:GetActiveScreen():Show()
+		end,
+	0, nil, fade_type)
 end
 
 function FrontEnd:PopScreen(screen)

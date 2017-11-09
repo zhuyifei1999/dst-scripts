@@ -17,6 +17,7 @@ local UIClock = require "widgets/uiclock"
 local MapScreen = require "screens/mapscreen"
 local FollowText = require "widgets/followtext"
 local StatusDisplays = require "widgets/statusdisplays"
+local Lavaarena_StatusDisplays = require "widgets/statusdisplays_lavaarena"
 local ChatQueue = require "widgets/chatqueue"
 local Desync = require "widgets/desync"
 local WorldResetTimer = require "widgets/worldresettimer"
@@ -24,6 +25,7 @@ local GiftItemToast = require "widgets/giftitemtoast"
 local VoteDialog = require "widgets/votedialog"
 local TEMPLATES = require "widgets/templates"
 local easing = require("easing")
+local TeamStatusBars = require("widgets/teamstatusbars")
 
 local Controls = Class(Widget, function(self, owner)
     Widget._ctor(self, "Controls")
@@ -82,12 +84,17 @@ local Controls = Class(Widget, function(self, owner)
     self.votedialog = self.topright_root:AddChild(VoteDialog(self.owner))
     self.votedialog:SetPosition(-330, 0, 0)
 
-    self.status = self.sidepanel:AddChild(StatusDisplays(self.owner))
-    self.status:SetPosition(0,-110,0)
+    if TheNet:GetServerGameMode() == "lavaarena" then
+        self.status = self.bottom_root:AddChild(Lavaarena_StatusDisplays(self.owner))
+        self.teamstatus = self.topleft_root:AddChild(TeamStatusBars(self.owner))
+    else
+        self.status = self.sidepanel:AddChild(StatusDisplays(self.owner))
+        self.status:SetPosition(0,-110,0)
 
-    self.clock = self.sidepanel:AddChild(UIClock(self.owner))
-    if self.clock:IsCaveClock() then
-        self.clock.inst:DoPeriodicTask(.5, function() self.clock:UpdateCaveClock(self.owner) end, 0)
+		self.clock = self.sidepanel:AddChild(UIClock(self.owner))
+		if self.clock:IsCaveClock() then
+			self.clock.inst:DoPeriodicTask(.5, function() self.clock:UpdateCaveClock(self.owner) end, 0)
+		end
     end
 
     local twitch_options = TheFrontEnd:GetTwitchOptions()
@@ -162,10 +169,16 @@ end)
 
 function Controls:ShowStatusNumbers()
     self.status:ShowStatusNumbers()
+    if self.teamstatus ~= nil then
+	    self.teamstatus:ShowStatusNumbers()
+	end
 end
 
 function Controls:HideStatusNumbers()
     self.status:HideStatusNumbers()
+    if self.teamstatus ~= nil then
+        self.teamstatus:HideStatusNumbers()
+    end
 end
 
 function Controls:SetDark(val)
@@ -330,13 +343,25 @@ function Controls:OnUpdate(dt)
                 self.groundactionhint:SetTarget(self.owner)
                 self.groundactionhint.text:SetString(TheInput:GetLocalizedControl(controller_id, CONTROL_CONTROLLER_ACTION) .. " " .. STRINGS.UI.HUD.BUILD.."\n" .. TheInput:GetLocalizedControl(controller_id, CONTROL_CONTROLLER_ALTACTION) .. " " .. STRINGS.UI.HUD.CANCEL.."\n")    
             end
-        elseif ground_r ~= nil then
-            self.groundactionhint:Show()
-            self.groundactionhint:SetTarget(self.owner)
-            table.insert(ground_cmds, TheInput:GetLocalizedControl(controller_id, CONTROL_CONTROLLER_ALTACTION) .. " " .. ground_r:GetActionString())
-            self.groundactionhint.text:SetString(table.concat(ground_cmds, "\n"))
         else
-            self.groundactionhint:Hide()
+            local aoetargeting = self.owner.components.playercontroller:IsAOETargeting()
+            if ground_r ~= nil then
+                if ground_r.action ~= ACTIONS.CASTAOE then
+                    table.insert(ground_cmds, TheInput:GetLocalizedControl(controller_id, CONTROL_CONTROLLER_ALTACTION).." "..ground_r:GetActionString())
+                elseif aoetargeting then
+                    table.insert(ground_cmds, TheInput:GetLocalizedControl(controller_id, CONTROL_CONTROLLER_ACTION).." "..ground_r:GetActionString())
+                end
+            end
+            if aoetargeting then
+                table.insert(ground_cmds, TheInput:GetLocalizedControl(controller_id, CONTROL_CONTROLLER_ALTACTION).." "..STRINGS.UI.HUD.CANCEL)
+            end
+            if #ground_cmds > 0 then
+                self.groundactionhint:Show()
+                self.groundactionhint:SetTarget(self.owner)
+                self.groundactionhint.text:SetString(table.concat(ground_cmds, "\n"))
+            else
+                self.groundactionhint:Hide()
+            end
         end
 
         local attack_shown = false
@@ -476,20 +501,18 @@ function Controls:HighlightActionItem(itemIndex, itemInActions)
         local itemlines = {}
         local commandlines = {}
         local target = self.owner.components.playercontroller.controller_target
-        for idx,line in ipairs(string.split(str, "\r\n")) do
+        for idx,line in ipairs(string.split(str, "\n")) do
             if idx==itemIndex then
-                local adjective = target:GetAdjective()
-                local itemString = adjective ~= nil and (adjective.." "..target:GetDisplayName()) or target:GetDisplayName()
-                itemlines[#itemlines+1] = itemString
-                commandlines[#commandlines+1]=" "
+                itemlines[#itemlines+1] = line
+                commandlines[#commandlines+1]= " "
             else
                 itemlines[#itemlines+1] = " "
                 commandlines[#commandlines+1] = line
             end
         end
-        followerWidget.text:SetString(table.concat(commandlines,"\r\n"))
+        followerWidget.text:SetString(table.concat(commandlines,"\n"))
 
-        self.playeractionhint_itemhighlight.text:SetString(table.concat(itemlines,"\r\n"))
+        self.playeractionhint_itemhighlight.text:SetString(table.concat(itemlines,"\n"))
         if target:GetIsWet() then
             self.playeractionhint_itemhighlight.text:SetColour(unpack(WET_TEXT_COLOUR))
         else
@@ -501,7 +524,7 @@ function Controls:HighlightActionItem(itemIndex, itemInActions)
 end
 
 function Controls:ShowMap()
-    if self.owner ~= nil and self.owner.HUD ~= nil and not self.owner.HUD:IsMapScreenOpen() then
+    if self.owner ~= nil and self.owner.HUD ~= nil and (not self.owner.HUD:IsMapScreenOpen()) and (not GetGameModeProperty("no_minimap")) then
         if self.owner.HUD:IsStatusScreenOpen() then
             TheFrontEnd:PopScreen()
         end
@@ -516,7 +539,7 @@ function Controls:HideMap()
 end
 
 function Controls:ToggleMap()
-    if self.owner ~= nil and self.owner.HUD ~= nil then
+    if self.owner ~= nil and self.owner.HUD ~= nil and (not GetGameModeProperty("no_minimap")) then
         if self.owner.HUD:IsMapScreenOpen() then
             TheFrontEnd:PopScreen()
         elseif self.owner.components.playercontroller ~= nil and self.owner.components.playercontroller:IsMapControlsEnabled() then
@@ -525,6 +548,28 @@ function Controls:ToggleMap()
             end
             TheFrontEnd:PushScreen(MapScreen(self.owner))
         end
+    end
+end
+
+function Controls:ShowCraftingAndInventory()
+    if not GetGameModeProperty("no_crafting") then
+        self.crafttabs:Show()
+    end
+    self.inv:Show()
+    self.containerroot_side:Show()
+    self.item_notification:ToggleCrafting(false)
+    if self.status.ToggleCrafting ~= nil then
+        self.status:ToggleCrafting(false)
+    end
+end
+
+function Controls:HideCraftingAndInventory()
+    self.crafttabs:Hide()
+    self.inv:Hide()
+    self.containerroot_side:Hide()
+    self.item_notification:ToggleCrafting(true)
+    if self.status.ToggleCrafting ~= nil then
+        self.status:ToggleCrafting(true)
     end
 end
 

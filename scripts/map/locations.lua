@@ -33,3 +33,20 @@ AddLocation({
     },
 })
 
+AddLocation({
+    location = "lavaarena",
+    version = 2,
+    overrides = {
+        task_set = "lavaarena_taskset",
+        start_location = "lavaarena",
+        season_start = "default",
+        world_size = "small",
+        layout_mode = "RestrictNodesByKey",
+        keep_disconnected_tiles = true,
+        wormhole_prefab = nil,
+        roads = "never",
+    },
+    required_prefabs = {
+        "lavaarena_portal",
+    },
+})

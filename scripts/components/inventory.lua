@@ -23,7 +23,7 @@ local Inventory = Class(function(self, inst)
     self.ignoresound = false
 
     self.itemslots = {}
-    self.maxslots = MAXITEMSLOTS
+    self.maxslots = GetMaxItemSlots(TheNet:GetServerGameMode())
 
     self.equipslots = {}
     self.heavylifting = false
@@ -752,12 +752,13 @@ function Inventory:GiveItem(inst, slot, src_pos)
         return false
     end
 
-    if not (self.isloading or self.silentfull) then
+    if not (self.isloading or self.silentfull) and self.maxslots > 0 then
         self.inst:PushEvent("inventoryfull", { item = inst })
     end
 
     --can't hold it!
     if self.activeitem == nil and
+        self.maxslots > 0 and
         not (self.inst.components.playercontroller ~= nil and
             self.inst.components.playercontroller.isclientcontrollerattached) then
         inst.components.inventoryitem:OnPutInInventory(self.inst)
@@ -1205,10 +1206,7 @@ function Inventory:Show()
     end
 
     if self.inst.HUD ~= nil then
-        self.inst.HUD.controls.crafttabs:Show()
-        self.inst.HUD.controls.inv:Show()
-        self.inst.HUD.controls.containerroot_side:Show()
-        self.inst.HUD.controls.item_notification:ToggleCrafting(false)
+        self.inst.HUD.controls:ShowCraftingAndInventory()
     end
 
     self.isvisible = true
@@ -1222,10 +1220,7 @@ function Inventory:Open()
     end
 
     if self.inst.HUD ~= nil then
-        self.inst.HUD.controls.crafttabs:Show()
-        self.inst.HUD.controls.inv:Show()
-        self.inst.HUD.controls.containerroot_side:Show()
-        self.inst.HUD.controls.item_notification:ToggleCrafting(false)
+        self.inst.HUD.controls:ShowCraftingAndInventory()
     end
 
     self.isopen = true
@@ -1261,10 +1256,7 @@ function Inventory:Hide()
     end
 
     if self.inst.HUD ~= nil then
-        self.inst.HUD.controls.crafttabs:Hide()
-        self.inst.HUD.controls.inv:Hide()
-        self.inst.HUD.controls.containerroot_side:Hide()
-        self.inst.HUD.controls.item_notification:ToggleCrafting(true)
+        self.inst.HUD.controls:HideCraftingAndInventory()
     end
 
     self.isvisible = false
@@ -1291,10 +1283,7 @@ function Inventory:Close(keepactiveitem)
     end
 
     if self.inst.HUD ~= nil then
-        self.inst.HUD.controls.crafttabs:Hide()
-        self.inst.HUD.controls.inv:Hide()
-        self.inst.HUD.controls.containerroot_side:Hide()
-        self.inst.HUD.controls.item_notification:ToggleCrafting(true)
+        self.inst.HUD.controls:HideCraftingAndInventory()
     end
 
     self.isopen = false
@@ -1479,7 +1468,7 @@ function Inventory:ControllerUseItemOnSelfFromInvTile(item, actioncode, mod_name
         local act = nil
         if not (item.components.equippable ~= nil and item.components.equippable:IsEquipped()) then
             act = self.inst.components.playercontroller:GetItemSelfAction(item)
-        elseif not item:HasTag("heavy") then
+        elseif self.maxslots > 0 and not item:HasTag("heavy") then
             act = BufferedAction(self.inst, nil, ACTIONS.UNEQUIP, item)
         end
 
@@ -1595,7 +1584,11 @@ function Inventory:TakeActiveItemFromEquipSlot(eslot)
     if item ~= nil and
         self:GetActiveItem() == nil then
 
-        self:SelectActiveItemFromEquipSlot(eslot)
+        if self.maxslots > 0 then
+            self:SelectActiveItemFromEquipSlot(eslot)
+        else
+            self:DropItem(self:Unequip(eslot), true, true)
+        end
     end
 end
 

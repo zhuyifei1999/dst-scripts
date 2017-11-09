@@ -83,7 +83,7 @@ function Combat:GetAttackRangeWithWeapon()
     end
     local weapon = self:GetWeapon()
     return weapon ~= nil
-        and self._attackrange:value() + weapon.replica.inventoryitem:AttackRange()
+        and math.max(0, self._attackrange:value() + weapon.replica.inventoryitem:AttackRange())
         or self._attackrange:value()
 end
 
@@ -144,41 +144,33 @@ function Combat:CanAttack(target)
     if self.inst.components.combat ~= nil then
         return self.inst.components.combat:CanAttack(target)
     elseif self.classified ~= nil then
-        if not self.classified.canattack:value() then
+        if not self:IsValidTarget(target) then
+            return false, true
+        elseif not self.classified.canattack:value()
+            or (self._laststartattacktime ~= nil and
+                GetTime() - self._laststartattacktime < self.classified.minattackperiod:value())
+            or (self.inst.sg ~= nil and
+                self.inst.sg:HasStateTag("busy") or
+                self.inst:HasTag("busy"))
+            then
+            -- V2C: client can't check "hit" state tag, but players don't need that anyway
             return false
         end
 
-        if self._laststartattacktime ~= nil and
-            GetTime() - self._laststartattacktime < self.classified.minattackperiod:value() then
-            return false
-        end
-
-        if not self:IsValidTarget(target) or
-            self.inst:HasTag("busy") or
-            (self.inst.sg ~= nil and self.inst.sg:HasStateTag("busy")) then
-            return false
-        end
-
-        local range = target.Physics ~= nil and target.Physics:GetRadius() + self:GetAttackRangeWithWeapon() or self:GetAttackRangeWithWeapon()
-        local error_threshold = .5
-        --account for position error due to prediction
-        range = math.max(range - error_threshold, 0)
+        --account for position error (-.5) due to prediction
+        local range = math.max(0, target:GetPhysicsRadius(0) + self:GetAttackRangeWithWeapon() - .5)
 
         -- V2C: this is 3D distsq
-        if distsq(target:GetPosition(), self.inst:GetPosition()) > range * range then
-            return false
-        end
-
-        -- gjans: Some specific logic so the birchnutter doesn't attack it's spawn with it's AOE
-        -- This could possibly be made more generic so that "things" don't attack other things in their "group" or something
-        if self.inst:HasTag("birchnutroot")
-            and (target:HasTag("birchnutroot") or
-                target:HasTag("birchnut") or
-                target:HasTag("birchnutdrake")) then
-            return false
-        end
-
-        return true
+        --      client does not support ignorehitrange for players
+        return distsq(target:GetPosition(), self.inst:GetPosition()) <= range * range
+            and not (   -- gjans: Some specific logic so the birchnutter doesn't attack it's spawn with it's AOE
+                        -- This could possibly be made more generic so that "things" don't attack other things in their "group" or something
+                        self.inst:HasTag("birchnutroot") and
+                        (   target:HasTag("birchnutroot") or
+                            target:HasTag("birchnut") or
+                            target:HasTag("birchnutdrake")
+                        )
+                    )
     else
         return false
     end
@@ -228,7 +220,7 @@ function Combat:CanHitTarget(target)
             self:CanLightTarget(target, weapon) or
             (target.replica.combat ~= nil and target.replica.combat:CanBeAttacked(self.inst)) then
 
-            local range = target.Physics ~= nil and target.Physics:GetRadius() + self:GetAttackRangeWithWeapon() or self:GetAttackRangeWithWeapon()
+            local range = target:GetPhysicsRadius(0) + self:GetAttackRangeWithWeapon()
             local error_threshold = .5
             --account for position error due to prediction
             range = math.max(range - error_threshold, 0)

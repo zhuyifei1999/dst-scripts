@@ -153,9 +153,9 @@ local function DoDamage(inst, OnIgnite)
         end
         if not v.components.inventoryitem.nobounce and v.Physics ~= nil and v.Physics:IsActive() then
             if isblock then
-                SpikeLaunch(v, inst, 1.2, .6, inst.spikeradius + v.Physics:GetRadius())
+                SpikeLaunch(v, inst, 1.2, .6, inst.spikeradius + v:GetPhysicsRadius(0))
             else
-                SpikeLaunch(v, inst, .8 + inst.spikeradius, inst.spikeradius * .4, inst.spikeradius + v.Physics:GetRadius())
+                SpikeLaunch(v, inst, .8 + inst.spikeradius, inst.spikeradius * .4, inst.spikeradius + v:GetPhysicsRadius(0))
             end
         end
     end

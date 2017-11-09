@@ -127,7 +127,7 @@ local CreditsScreen = Class(Screen, function(self)
             end)
         end , STRINGS.UI.MAINSCREEN.BACK))
 
-        if PLATFORM ~= "PS4" then
+        if PLATFORM ~= "PS4" and PLATFORM ~= "WIN32_RAIL" then
             self.FB_button = self:AddChild(ImageButton())
             self.FB_button:SetScale(.8,.8,.8)
             self.FB_button:SetText(STRINGS.UI.CREDITS.FACEBOOK)

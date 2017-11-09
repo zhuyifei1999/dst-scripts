@@ -86,7 +86,7 @@ local function CalcTaggedNodeDepthSq(pos, node_index, node_tag)
             local node1 = { x = TheWorld.topology.flattenedPoints[point_indices[1]][1], y = TheWorld.topology.flattenedPoints[point_indices[1]][2] }
             local node2 = { x = TheWorld.topology.flattenedPoints[point_indices[2]][1], y = TheWorld.topology.flattenedPoints[point_indices[2]][2] }
 
-            depth = math.min(depth, DistPointToSegment2dSq(pos, node1, node2))
+            depth = math.min(depth, DistPointToSegmentXYSq(pos, node1, node2))
         end
     end
 

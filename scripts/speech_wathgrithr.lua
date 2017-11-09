@@ -109,6 +109,10 @@ return {
         {
             EMPTY = "I cannot wrap that which does not exist!",
         },
+        PICKUP =
+        {
+            RESTRICTION = "There is no glory in that weapon!",
+        },
     },
     ACTIONFAIL_GENERIC = "If I can't do it, it can't be done!",
     ANNOUNCE_DIG_DISEASE_WARNING = "Be banished, beastly blight!",
@@ -231,6 +235,17 @@ return {
     ANNOUNCE_WET = "I am a wet warrior.",
     ANNOUNCE_WETTER = "Does this count as a bath?",
     ANNOUNCE_SOAKED = "I'm nearly drowned!",
+    
+--boarlord event
+    ANNOUNCE_REVIVING_CORPSE = "Rise, my ally!",
+    ANNOUNCE_REVIVED_OTHER_CORPSE = "To battle!",
+    ANNOUNCE_REVIVED_FROM_CORPSE = "I am restored!",
+    BATTLECRY_BLOODLUST = 
+    {
+        "Blessings of Tyr!",
+        "Gods guide my blade!",
+        "To victory!",
+    },
     
     BATTLECRY =
     {
@@ -368,7 +383,7 @@ return {
             ATTACKER = "Dost thou test me, %s?",
             MURDERER = "I shall unleash Ragnarok upon thee!",
             REVIVER = "%s is guided by Brokkr.",
-            GHOST = "%s hath fallen in battle! A heart!",
+            GHOST = "%s hath fallen! A heart!",
             FIRESTARTER = "%s's flames could temper steel.",
         },
 
@@ -2045,6 +2060,57 @@ return {
         --MACHETE = "A fine length of blade.",
         --MOWER = "A fine length of blade.",
         --OBSIDIANMACHETE = "A tool for cutting. A tool for burning.",
+
+        --Arena Event
+        LAVAARENA_BOARLORD = "Tis a coward who watches the fight.",
+        BOARRIOR = "You shall be a worthy opponent!",
+        BOARON = "Tis barely a fight.",
+        PEGHOOK = "You will be felled this day.",
+        TRAILS = "Let us battle with honor!",
+        TURTILLUS = "Your armor shalln't stop my spear.",
+        SNAPPER = "I shall best you, foe!",
+        
+        LAVAARENA_PORTAL = 
+        {
+            ON = "We dive, back into the ether!",
+            GENERIC = "Tis a gate betwixt realms.",
+        },
+        LAVAARENA_KEYHOLE = "The Rainbow Bridge conceals itself.",
+        LAVAARENA_KEYHOLE_FULL = "The Rainbow Bridge opens!",
+        LAVAARENA_BATTLESTANDARD = "Let us down the enemy's standard!",
+        LAVAARENA_SPAWNER = "Tis most heinous magic!",
+
+        HEALINGSTAFF = "Blessings of magicks within.",
+        FIREBALLSTAFF = "The gods did not mean thy magic for me.",
+        HAMMER_MJOLNIR = "I am worthy!",
+        SPEAR_GUNGNIR = "The weapon of a brazen Valkyrie!",
+        BLOWDART_LAVA = "Njord guide my blows!",
+        BLOWDART_LAVA2 = "Njord, lend me thy strength!",
+        LAVAARENA_LUCY = "Thy axe is filled with burning passion this day!",
+        WEBBER_SPIDER_MINION = "I see naught but allies.",
+        BOOK_FOSSIL = "The curse of Alviss dwells within.",
+        LAVAARENA_BERNIE = "The call of battle has arisen in thee!",
+        SPEAR_LANCE = "Tis a divine spear!",
+        BOOK_ELEMENTAL = "Twas not meant for mortal eyes.",
+        LAVAARENA_ELEMENTAL = "Thy fire giant shall fight by our side.",
+
+        LAVAARENA_ARMORLIGHT = "That is not fit for a warrior!",
+        LAVAARENA_ARMORLIGHTSPEED = "The wearer shalt be fleet of foot.",
+        LAVAARENA_ARMORMEDIUM = "Tis not as sturdy as a warrior would hope.",
+        LAVAARENA_ARMORMEDIUMDAMAGER = "Makes the wearer sharp of tooth.",
+        LAVAARENA_ARMORMEDIUMRECHARGER = "Makes the wearer keen of mind.",
+        LAVAARENA_ARMORHEAVY = "Tis a worthy suit of armor.",
+        LAVAARENA_ARMOREXTRAHEAVY = "I shall not bend to whims of my foes.",
+
+        LAVAARENA_FEATHERCROWNHAT = "Sleipnir bestowed it with swiftness.",
+        LAVAARENA_HEALINGFLOWERHAT = "A blessing from Freya is contained within.",
+        LAVAARENA_LIGHTDAMAGERHAT = "Horns, sharp as the spear of the Valkyrie.",
+        LAVAARENA_STRONGDAMAGERHAT = "Empower me with thy Nox strength!",
+        LAVAARENA_TIARAFLOWERPETALSHAT = "Twas not made for a warrior.",
+        LAVAARENA_EYECIRCLETHAT = "I'd not dabble in thy horrid magic.",
+        LAVAARENA_RECHARGERHAT = "Magic stone, empower my spirit!",
+        LAVAARENA_HEALINGGARLANDHAT = "Tis heavily laden with Freya's blessings.",
+        LAVAARENA_CROWNDAMAGERHAT = "Be still my heart! Tis the king of battle helms!",
     },
     DESCRIBE_GENERIC = "It is an artifact of this realm.",
     DESCRIBE_TOODARK = "Too dark, even for battle.",

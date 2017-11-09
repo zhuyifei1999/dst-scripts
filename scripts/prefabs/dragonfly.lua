@@ -319,13 +319,10 @@ local function RetargetFn(inst)
             true
     end
 
-    local inrange = target ~= nil and inst:IsNear(target, target.Physics ~= nil and TUNING.DRAGONFLY_ATTACK_RANGE + target.Physics:GetRadius() or TUNING.DRAGONFLY_ATTACK_RANGE)
+    local inrange = target ~= nil and inst:IsNear(target, TUNING.DRAGONFLY_ATTACK_RANGE + target:GetPhysicsRadius(0))
     local nearplayers = {}
     for k, v in pairs(inst.components.grouptargeter:GetTargets()) do
-        if inst:IsNear(k,
-            (not inrange and TUNING.DRAGONFLY_AGGRO_DIST) or
-            (k.Physics ~= nil and TUNING.DRAGONFLY_ATTACK_RANGE + k.Physics:GetRadius()) or
-            TUNING.DRAGONFLY_ATTACK_RANGE) then
+        if inst:IsNear(k, inrange and TUNING.DRAGONFLY_ATTACK_RANGE + k:GetPhysicsRadius(0) or TUNING.DRAGONFLY_AGGRO_DIST) then
             table.insert(nearplayers, k)
         end
     end
@@ -425,7 +422,7 @@ local function OnAttacked(inst, data)
         local target = inst.components.combat.target
         if not (target ~= nil and
                 target:HasTag("player") and
-                target:IsNear(inst, target.Physics ~= nil and TUNING.DRAGONFLY_ATTACK_RANGE + target.Physics:GetRadius() or TUNING.DRAGONFLY_ATTACK_RANGE)) then
+                target:IsNear(inst, TUNING.DRAGONFLY_ATTACK_RANGE + target:GetPhysicsRadius(0))) then
             inst.components.combat:SetTarget(data.attacker)
         end
     end

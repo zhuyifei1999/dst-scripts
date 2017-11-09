@@ -1,6 +1,6 @@
 local Screen = require "widgets/screen"
 local PopupDialogScreen = require "screens/popupdialog"
-local PagedList = require "widgets/pagedlist"
+local TrueScrollList = require "widgets/truescrolllist"
 local ImageButton = require "widgets/imagebutton"
 local ItemImage = require "widgets/itemimage"
 local UIAnim = require "widgets/uianim"
@@ -105,7 +105,8 @@ function SkinsScreen:DoInit()
 
     self.details_panel:Hide()
     
-	self.default_focus = self.list_widgets[1]
+	--Note(Peter): fix
+	--self.default_focus = self.list_widgets[1]
 
 	self.letterbox = self:AddChild(TEMPLATES.ForegroundLetterbox())
 end
@@ -154,7 +155,7 @@ function SkinsScreen:OnItemSelect(type, item_type, item_id, itemimage)
 
 	self.details_panel.image:GetAnimState():OverrideSkinSymbol("SWAP_ICON", buildfile, "SWAP_ICON")
 
-	local nameStr = GetName(item_type)
+	local nameStr = GetSkinName(item_type)
 	local usable_on = GetSkinUsableOnString(item_type)
 
 	self.details_panel.name:SetTruncatedString(nameStr, 220, 50, true)
@@ -169,7 +170,7 @@ function SkinsScreen:OnItemSelect(type, item_type, item_id, itemimage)
 		self.details_panel.image:ClearHoverText()
 	end
 	
-    self.details_panel.description:SetMultilineTruncatedString(STRINGS.SKIN_DESCRIPTIONS[item_type] or STRINGS.SKIN_DESCRIPTIONS["missing"], 7, 180, 60, true)
+    self.details_panel.description:SetMultilineTruncatedString(GetSkinDescription(item_type), 7, 180, 60, true)
 
 	self.details_panel.rarity:SetString(GetModifiedRarityStringForItem(item_type))
 	self.details_panel.rarity:SetColour(unpack(GetColorForItem(item_type)))
@@ -193,10 +194,11 @@ function SkinsScreen:OnItemSelect(type, item_type, item_id, itemimage)
 			
 			self.details_panel.set_info_btn.set_item_type = item_type --save it for the click press
 		else
-			local position,total,set_item_type = GetSkinSetData(item_type)
-			self.details_panel.set_title:SetString(STRINGS.SET_NAMES[set_item_type] .. " " .. STRINGS.UI.SKINSSCREEN.SET_PROGRESS)
+			--deprecated old code
+			--local position,total,set_item_type = GetSkinSetData(item_type)
+			--self.details_panel.set_title:SetString(STRINGS.SET_NAMES[set_item_type] .. " " .. STRINGS.UI.SKINSSCREEN.SET_PROGRESS)
 			
-			self.details_panel.set_info_btn.set_item_type = set_item_type --save it for the click press
+			--self.details_panel.set_info_btn.set_item_type = set_item_type --save it for the click press
 		end
 	else
 		self.details_panel.set_title:Hide()
@@ -272,22 +274,28 @@ function SkinsScreen:BuildDetailsPanel()
     self.details_panel.set_info_btn:Hide()
 end
 
-
 function SkinsScreen:BuildInventoryList()
 	self.inventory_list = self.fixed_root:AddChild(Widget("container"))
-
-	self.tiles_root = self.inventory_list:AddChild(Widget("tiles_root"))
-	self.list_widgets = SkinGrid4x4Constructor(self, self.tiles_root, false)
-
-	local grid_width = 420
-	self.page_list = self.inventory_list:AddChild(PagedList(grid_width, function(widget, data) UpdateSkinGrid(widget, data, self) end, self.list_widgets))
-	
 	self.inventory_list:SetPosition(100, 100)
+
+    self.inventory_list_frame = self.inventory_list:AddChild(TEMPLATES.CurlyWindow(68, 260, .6, .6, 39, -25))
+    self.inventory_list_frame:SetPosition(-6,-8,0)
+    
+    self.scroll_list = self.inventory_list:AddChild( TrueScrollList(
+            {screen = self},
+            SkinGridListConstructor,
+            UpdateSkinGrid,
+			-200, -150, 400, 300,
+            20
+            )
+        )
+	
+	self.list_widgets = self.scroll_list:GetListWidgets()
 end
 
 function SkinsScreen:UpdateInventoryList()
 	self:GetSkinsList()
-	self.page_list:SetItemsData(self.skins_list)
+	self.scroll_list:SetItemsData(self.skins_list)
 end
 
 
@@ -305,7 +313,7 @@ function SkinsScreen:OnBecomeActive()
 	if not self.sorry_popup and (not TheNet:IsOnlineMode() or TheFrontEnd:GetIsOfflineMode()) then
 		--The game is offline, don't show any inventory
 		self.skins_list = {}
-		self.page_list:SetItemsData(self.skins_list)
+		self.scroll_list:SetItemsData(self.skins_list)
 		
 		--now open a popup saying "sorry"
 		self.sorry_popup = PopupDialogScreen(STRINGS.UI.SKINSSCREEN.SORRY, STRINGS.UI.SKINSSCREEN.OFFLINE, 
@@ -408,13 +416,12 @@ function SkinsScreen:OnControl(control, down)
 end
 
 function SkinsScreen:ScrollBack(control)
-	if not self.page_list.repeat_time or self.page_list.repeat_time <= 0 then
-		local pageNum = self.page_list.page_number
-       	self.page_list:ChangePage(-1)
-       	if self.page_list.page_number ~= pageNum then 
-       		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
-       	end
-        self.page_list.repeat_time =
+	if not self.scroll_list.repeat_time or self.scroll_list.repeat_time <= 0 then
+       	self.scroll_list:Scroll(-1)
+       	--if self.scroll_list.page_number ~= pageNum then 
+       	--	TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+       	--end
+        self.scroll_list.repeat_time =
             TheInput:GetControlIsMouseWheel(control)
             and MOUSE_SCROLL_REPEAT_TIME
             or (control == CONTROL_SCROLLBACK and SCROLL_REPEAT_TIME) 
@@ -423,13 +430,12 @@ function SkinsScreen:ScrollBack(control)
 end
 
 function SkinsScreen:ScrollFwd(control)
-	if not self.page_list.repeat_time or self.page_list.repeat_time <= 0 then
-		local pageNum = self.page_list.page_number
-        self.page_list:ChangePage(1)
-		if self.page_list.page_number ~= pageNum then 
-       		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
-       	end
-        self.page_list.repeat_time =
+	if not self.scroll_list.repeat_time or self.scroll_list.repeat_time <= 0 then
+        self.scroll_list:Scroll(1)
+		--if self.scroll_list.page_number ~= pageNum then 
+       	--	TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+       	--end
+        self.scroll_list.repeat_time =
             TheInput:GetControlIsMouseWheel(control)
             and MOUSE_SCROLL_REPEAT_TIME
             or (control == CONTROL_SCROLLFWD and SCROLL_REPEAT_TIME) 
@@ -445,7 +451,7 @@ function SkinsScreen:GetHelpText()
     	table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.SKINSSCREEN.BACK)
     end
    
-   	table.insert(t, self.page_list:GetHelpText())
+   	table.insert(t, self.scroll_list:GetHelpText())
   	
    	table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE) .. " " .. STRINGS.UI.SKINSSCREEN.LOADOUT)
 

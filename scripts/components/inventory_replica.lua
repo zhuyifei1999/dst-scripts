@@ -1,6 +1,9 @@
 local function OpenInventory(inst, self)
     self.opentask = nil
     inst.components.inventory:Open()
+    if inst.components.revivablecorpse ~= nil and inst:HasTag("corpse") then
+        inst.components.inventory:Hide()
+    end
 end
 
 local Inventory = Class(function(self, inst)
@@ -58,15 +61,9 @@ local function OnVisibleDirty(classified)
     local inst = classified._parent
     if inst ~= nil and inst.HUD ~= nil then
         if classified.visible:value() then
-            inst.HUD.controls.crafttabs:Show()
-            inst.HUD.controls.inv:Show()
-            inst.HUD.controls.containerroot_side:Show()
-            inst.HUD.controls.item_notification:ToggleCrafting(false)
+            inst.HUD.controls:ShowCraftingAndInventory()
         else
-            inst.HUD.controls.crafttabs:Hide()
-            inst.HUD.controls.inv:Hide()
-            inst.HUD.controls.containerroot_side:Hide()
-            inst.HUD.controls.item_notification:ToggleCrafting(true)
+            inst.HUD.controls:HideCraftingAndInventory()
         end
     end
 end
@@ -105,10 +102,7 @@ function Inventory:DetachClassified()
     self.ondetachclassified = nil
 
     if self.inst.HUD ~= nil then
-        self.inst.HUD.controls.crafttabs:Hide()
-        self.inst.HUD.controls.inv:Hide()
-        self.inst.HUD.controls.item_notification:ToggleCrafting(true)
-        self.inst.HUD.controls.containerroot_side:Hide()
+        self.inst.HUD.controls:HideCraftingAndInventory()
         self.inst:PushEvent("newactiveitem", {})
         self.inst:PushEvent("inventoryclosed")
     end
@@ -167,7 +161,7 @@ function Inventory:GetNumSlots()
     if self.inst.components.inventory ~= nil then
         return self.inst.components.inventory:GetNumSlots()
     else
-        return MAXITEMSLOTS
+        return GetMaxItemSlots(TheNet:GetServerGameMode())
     end
 end
 

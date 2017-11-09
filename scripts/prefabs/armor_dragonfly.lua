@@ -16,7 +16,13 @@ local function OnBlocked(owner, data)
 end
 
 local function onequip(inst, owner)
-    owner.AnimState:OverrideSymbol("swap_body", "torso_dragonfly", "swap_body")
+	local skin_build = inst:GetSkinBuild()
+    if skin_build ~= nil then
+        owner:PushEvent("equipskinneditem", inst:GetSkinName())
+        owner.AnimState:OverrideItemSkinSymbol("swap_body", skin_build, "swap_body", inst.GUID, "torso_dragonfly")
+    else
+		owner.AnimState:OverrideSymbol("swap_body", "torso_dragonfly", "swap_body")
+    end
 
     inst:ListenForEvent("blocked", OnBlocked, owner)
     inst:ListenForEvent("attacked", OnBlocked, owner)
@@ -34,6 +40,11 @@ local function onunequip(inst, owner)
 
     if owner.components.health ~= nil then
         owner.components.health.fire_damage_scale = owner.components.health.fire_damage_scale + TUNING.ARMORDRAGONFLY_FIRE_RESIST
+    end
+    
+    local skin_build = inst:GetSkinBuild()
+    if skin_build ~= nil then
+        owner:PushEvent("unequipskinneditem", inst:GetSkinName())
     end
 end
 

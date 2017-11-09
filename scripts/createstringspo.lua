@@ -95,12 +95,14 @@ function PrintTranslatedStringTableV1( base_dta, tbl_dta, lkp_var, file )
 end
 
 
-local function IsValidString( str )
-	for i = 1, #str do
-    	local a = string.byte( str, i, i)
-    	if a < 32 or a > 127 then
-    		return false
-    	end
+local function IsValidString( str )    
+    if 0 < string.len(str) then
+        local lead_byte = string.byte( str, 1, 1)
+        for i, reserved_bytes in pairs(STRINGS.RESERVED_LEAD_BYTE_VALUES) do
+            if lead_byte == reserved_bytes then
+                return false
+            end
+        end
     end
     return true
 end
@@ -130,8 +132,8 @@ local function PrintStringTableV2( base, tbl, file )
 				to_add.path = path
 				to_add.str = str
 				table.insert( output_strings, to_add )
-			elseif string.len(v) > 4 and PLATFORM == "WIN32_RAIL" then --4 is arbitrary, high enough to just ignore the controller "strings" but low enough to catch valid strings that were dropped due to umlauts and such
-				print("### Possible valid string dropped from .pot generation? Try putting the string into strings.lua without any special characters, such as wigfrid's umlauts stripped out.", path, v)
+			elseif string.len(v) > 4 then --4 is arbitrary, high enough to just ignore the controller "strings" but low enough to catch valid strings that were dropped due to umlauts and such
+				print("### Possible valid string dropped from .pot generation?", path, v)
 			end
 
 		end

@@ -53,7 +53,7 @@ local function CanSpawnSpikeAt(pos, size)
         if v.Physics == nil then
             return false
         end
-        local spacing = radius + v.Physics:GetRadius()
+        local spacing = radius + v:GetPhysicsRadius(0)
         if v:GetDistanceSqToPoint(pos) < spacing * spacing then
             return false
         end

@@ -1,17 +1,6 @@
 local MakePlayerCharacter = require("prefabs/player_common")
 local easing = require("easing")
 
-local prefabs =
-{
-    "shovel_dirt",
-    "werebeaver_transform_fx",
-}
-
-local starting_inv =
-{
-    "lucy",
-}
-
 local assets =
 {
     Asset("SCRIPT", "scripts/prefabs/player_common.lua"),
@@ -31,6 +20,24 @@ local assets =
 
     Asset("ANIM", "anim/ghost_werebeaver_build.zip"),
 }
+
+local prefabs =
+{
+    "shovel_dirt",
+    "werebeaver_transform_fx",
+}
+
+local start_inv =
+{
+    default =
+    {
+        "lucy",
+    },
+
+    lavaarena = TUNING.LAVAARENA_STARTING_ITEMS.WOODIE,
+}
+
+prefabs = FlattenTree({ prefabs, start_inv }, true)
 
 local BEAVERVISION_COLOURCUBES =
 {
@@ -415,7 +422,9 @@ local function onbecamehuman(inst)
     inst.components.eater:SetDiet({ FOODGROUP.WOODIE }, { FOODGROUP.WOODIE })
     inst.components.eater:SetAbsorptionModifiers(1,1,1)
     inst.components.pinnable.canbepinned = true
-    inst.components.hunger:Resume()
+    if not GetGameModeProperty("no_hunger") then
+        inst.components.hunger:Resume()
+    end
     inst.components.temperature.inherentinsulation = 0
     inst.components.temperature.inherentsummerinsulation = 0
     inst.components.moisture:SetInherentWaterproofness(0)
@@ -528,8 +537,8 @@ local function onrespawnedfromghost(inst)
     OnIsFullmoon(inst, TheWorld.state.isfullmoon)
 end
 
-local function onbecameghost(inst)
-    if inst.isbeavermode:value() then
+local function onbecameghost(inst, data)
+    if inst.isbeavermode:value() and not (data and data.corps) then
         inst.components.skinner:SetSkinMode("ghost_werebeaver_skin")
     end
 
@@ -609,19 +618,21 @@ local function common_postinit(inst)
     --bearded (from beard component) added to pristine state for optimization
     inst:AddTag("bearded")
 
-    --beaverness (from beaverness component) added to pristine state for optimization
-    inst:AddTag("beaverness")
+    if TheNet:GetServerGameMode() ~= "lavaarena" then
+        --beaverness (from beaverness component) added to pristine state for optimization
+        inst:AddTag("beaverness")
 
-    inst.GetBeaverness = GetBeaverness -- Didn't want to make beaverness a networked component
-    inst.IsBeaverStarving = IsBeaverStarving -- Didn't want to make beaverness a networked component
+        inst.GetBeaverness = GetBeaverness -- Didn't want to make beaverness a networked component
+        inst.IsBeaverStarving = IsBeaverStarving -- Didn't want to make beaverness a networked component
 
-    inst.isbeavermode = net_bool(inst.GUID, "woodie.isbeavermode", "isbeavermodedirty")
-    inst:ListenForEvent("playeractivated", OnPlayerActivated)
-    inst:ListenForEvent("playerdeactivated", OnPlayerDeactivated)
+        inst.isbeavermode = net_bool(inst.GUID, "woodie.isbeavermode", "isbeavermodedirty")
+        inst:ListenForEvent("playeractivated", OnPlayerActivated)
+        inst:ListenForEvent("playerdeactivated", OnPlayerDeactivated)
 
-    if inst.ghostenabled then
-        inst._SetGhostMode = inst.SetGhostMode
-        inst.SetGhostMode = SetGhostMode
+        if inst.ghostenabled then
+            inst._SetGhostMode = inst.SetGhostMode
+            inst.SetGhostMode = SetGhostMode
+        end
     end
 
     inst.components.frostybreather:SetOffsetFn(GetFrostyBreatherOffset)
@@ -632,29 +643,35 @@ local function common_postinit(inst)
 end
 
 local function master_postinit(inst)
-    -- Give Woodie a beard so he gets some insulation from winter cold
-    -- (Value is Wilson's level 2 beard.)
-    inst:AddComponent("beard")
-    inst.components.beard.canshavetest = CanShaveTest
-    inst.components.beard.onreset = OnResetBeard
-    inst.components.beard:EnableGrowth(false)
+    inst.starting_inventory = start_inv[TheNet:GetServerGameMode()] or start_inv.default
 
-    OnResetBeard(inst)
+    if TheNet:GetServerGameMode() == "lavaarena" then
+        event_server_data("lavaarena", "prefabs/woodie").master_postinit(inst)
+    else
+        -- Give Woodie a beard so he gets some insulation from winter cold
+        -- (Value is Wilson's level 2 beard.)
+        inst:AddComponent("beard")
+        inst.components.beard.canshavetest = CanShaveTest
+        inst.components.beard.onreset = OnResetBeard
+        inst.components.beard:EnableGrowth(false)
 
-    inst:AddComponent("beaverness")
+        OnResetBeard(inst)
 
-    inst._getstatus = nil
-    inst._wasnomorph = nil
-    inst.TransformBeaver = TransformBeaver
+        inst:AddComponent("beaverness")
 
-    inst:ListenForEvent("ms_respawnedfromghost", onrespawnedfromghost)
-    inst:ListenForEvent("ms_becameghost", onbecameghost)
+        inst._getstatus = nil
+        inst._wasnomorph = nil
+        inst.TransformBeaver = TransformBeaver
 
-    onrespawnedfromghost(inst)
+        inst:ListenForEvent("ms_respawnedfromghost", onrespawnedfromghost)
+        inst:ListenForEvent("ms_becameghost", onbecameghost)
 
-    inst.OnSave = onsave
-    inst.OnLoad = onload
-    inst.OnPreLoad = onpreload
+        onrespawnedfromghost(inst)
+
+        inst.OnSave = onsave
+        inst.OnLoad = onload
+        inst.OnPreLoad = onpreload
+    end
 end
 
-return MakePlayerCharacter("woodie", prefabs, assets, common_postinit, master_postinit, starting_inv)
+return MakePlayerCharacter("woodie", prefabs, assets, common_postinit, master_postinit)

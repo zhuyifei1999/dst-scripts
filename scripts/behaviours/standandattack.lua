@@ -3,7 +3,7 @@ StandAndAttack = Class(BehaviourNode, function(self, inst, findnewtargetfn)
     self.inst = inst
     self.findnewtargetfn = findnewtargetfn
     self.numattacks = 0
-    
+
     -- we need to store this function as a key to use to remove itself later
     self.onattackfn = function(inst, data)
         self:OnAttackOther(data.target) 
@@ -29,51 +29,45 @@ function StandAndAttack:OnAttackOther(target)
 end
 
 function StandAndAttack:Visit()
-    
     local combat = self.inst.components.combat
     if self.status == READY then
-        
         combat:ValidateTarget()
-        
-        if not combat.target and self.findnewtargetfn then
+
+        if combat.target == nil and self.findnewtargetfn ~= nil then
             combat.target = self.findnewtargetfn(self.inst)
-        end        
-        
-        if combat.target then
+        end
+
+        if combat.target ~= nil then
             self.inst.components.combat:BattleCry()
             self.status = RUNNING
         else
             self.status = FAILED
         end
-        
     end
 
     if self.status == RUNNING then
-        
-       local is_attacking = self.inst.sg:HasStateTag("attack")
-        
-        if not combat.target or not combat.target.entity:IsValid() then
+        local is_attacking = self.inst.sg:HasStateTag("attack")
+
+        if combat.target == nil or not combat.target.entity:IsValid() then
             self.status = FAILED
             combat:SetTarget(nil)
-        elseif combat.target.components.health and combat.target.components.health:IsDead() then
+        elseif combat.target.components.health ~= nil and combat.target.components.health:IsDead() then
             self.status = SUCCESS
             combat:SetTarget(nil)
         else
-                        
             local hp = Point(combat.target.Transform:GetWorldPosition())
             local pt = Point(self.inst.Transform:GetWorldPosition())
             local dsq = distsq(hp, pt)
             local angle = self.inst:GetAngleToPoint(hp)
-            local r= self.inst.Physics:GetRadius()+ combat.target.Physics:GetRadius() + .1
-            
+            local r = self.inst:GetPhysicsRadius(0) + combat.target:GetPhysicsRadius(-.1) + .1
+
             if self.inst.sg:HasStateTag("canrotate") then
                 self.inst:FacePoint(hp)
-            end   
-                            
+            end
+
             combat:TryAttack()
 
-            self:Sleep(.125)            
+            self:Sleep(.125)
         end
-        
     end
 end

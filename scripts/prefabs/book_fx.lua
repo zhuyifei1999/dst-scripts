@@ -3,135 +3,44 @@ local assets =
     Asset("ANIM", "anim/book_fx.zip")
 }
 
-local MAX_LAG = 1.5
+local function MakeBookFX(anim, tint)
+    return function()
+        local inst = CreateEntity()
 
-local function PlayBookFX(proxy, anim, tintalpha, tint)
-    local inst = CreateEntity()
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddNetwork()
 
-    inst:AddTag("FX")
-    --[[Non-networked entity]]
-    inst.entity:SetCanSleep(false)
-    inst.persists = false
+        inst.Transform:SetFourFaced()
 
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
+        inst:AddTag("FX")
 
-    inst.Transform:SetFromProxy(proxy.GUID)
+        inst.Transform:SetFourFaced()
 
-    local parent = proxy.entity:GetParent()
-    if parent ~= nil then
-        inst.Transform:SetPosition(parent.Transform:GetWorldPosition())
-        inst.Transform:SetRotation(parent.Transform:GetRotation())
-    end
-
-    inst.AnimState:SetBank("book_fx")
-    inst.AnimState:SetBuild("book_fx")
-    inst.AnimState:PlayAnimation(anim)
-    --inst.AnimState:SetScale(1.5, 1, 1)
-    inst.AnimState:SetFinalOffset(-1)
-
-    if tint ~= nil then
-        inst.AnimState:SetMultColour(tint.x, tint.y, tint.z, tintalpha)
-    elseif tintalpha ~= 1 then
-        inst.AnimState:SetMultColour(tintalpha, tintalpha, tintalpha, tintalpha)
-    end
-
-    inst:ListenForEvent("animover", inst.Remove)
-
-    --If proxy removed, check if completed or cancelled on server
-    inst:ListenForEvent("onremove", function()
-        if proxy._state:value() ~= 2 then
-            inst:Remove()
+        inst.AnimState:SetBank("book_fx")
+        inst.AnimState:SetBuild("book_fx")
+        inst.AnimState:PlayAnimation(anim)
+        --inst.AnimState:SetScale(1.5, 1, 1)
+        inst.AnimState:SetFinalOffset(-1)
+        if tint ~= nil then
+            inst.AnimState:SetMultColour(unpack(tint))
         end
-    end, proxy)
 
-    if TheWorld.ismastersim then
-        --Complete on server: removing the proxy shouldn't cancel client fx
-        proxy:ListenForEvent("onremove", function()
-            proxy._state:set(2)
-            proxy:DoTaskInTime(MAX_LAG, proxy.Remove)
-        end, inst)
-    end    
-end
+        inst.entity:SetPristine()
 
-local function OnStateDirty(inst)
-    if inst._complete or inst._state:value() ~= 1 then
-        return
-    end
+        if not TheWorld.ismastersim then
+            return inst
+        end
 
-    --Delay one frame in case we are about to be removed
-    --Optional params (i.e. nils) must be at the end
-    inst:DoTaskInTime(0, PlayBookFX, inst.anim, inst.tintalpha, inst.tint)
-    inst._complete = true
-end
+        inst.persists = false
 
-local function Disable(inst)
-    if inst._state:value() ~= 2 then
-        inst._state:set_local(0)
-    end
-end
+        --Anim is padded with extra blank frames at the end
+        inst:ListenForEvent("animover", inst.Remove)
 
-local function common_fn()
-    local inst = CreateEntity()
-
-    inst.entity:AddTransform()
-    inst.entity:AddNetwork()
-
-    inst.Transform:SetFourFaced()
-
-    inst:AddTag("FX")
-
-    inst._state = net_tinybyte(inst.GUID, "_state", "statedirty")
-    inst._complete = false
-
-    inst.anim = "book_fx"
-    inst.tintalpha = 1
-    inst.tint = nil
-
-    inst:ListenForEvent("statedirty", OnStateDirty)
-
-    inst.entity:SetPristine()
-
-    if not TheWorld.ismastersim then
         return inst
     end
-
-    inst.persists = false
-
-    --Disable instead of remove, because spawned fx also listens to the
-    --proxy state in order to remove itself (since fx can be cancelled)
-    inst:DoTaskInTime(MAX_LAG, Disable)
-
-    inst._state:set(1)
-
-    return inst
 end
 
-local function book_fn()
-    local inst = common_fn()
-
-    inst.tintalpha = .4
-
-    return inst
-end
-
-local function mount_book_fn()
-    local inst = common_fn()
-
-    inst.tintalpha = .4
-    inst.anim = "book_fx_mount"
-
-    return inst
-end
-
-local function waxwell_book_fn()
-    local inst = common_fn()
-
-    inst.tint = Vector3(0, 0, 0)
-
-    return inst
-end
-
-return Prefab("book_fx", book_fn, assets),
-    Prefab("book_fx_mount", mount_book_fn, assets),
-    Prefab("waxwell_book_fx", waxwell_book_fn, assets)
+return Prefab("book_fx", MakeBookFX("book_fx", { .4, .4, .4, .4 }), assets),
+    Prefab("book_fx_mount", MakeBookFX("book_fx_mount", { .4, .4, .4, .4 }), assets),
+    Prefab("waxwell_book_fx", MakeBookFX("book_fx", { 0, 0, 0, 1 }), assets)

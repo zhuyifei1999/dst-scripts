@@ -78,7 +78,7 @@ local function ShouldChase(self)
     local target = self.inst.components.combat.target
     if target ~= nil and
         target:IsValid() and
-        target:IsNear(self.inst, target.Physics ~= nil and TUNING.DEER_ATTACK_RANGE + target.Physics:GetRadius() or TUNING.DEER_ATTACK_RANGE) then
+        target:IsNear(self.inst, TUNING.DEER_ATTACK_RANGE + target:GetPhysicsRadius(0)) then
         return true
     end
     self.inst.components.combat:SetTarget(nil)

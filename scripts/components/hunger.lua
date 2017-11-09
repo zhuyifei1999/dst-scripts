@@ -86,7 +86,7 @@ function Hunger:DoDelta(delta, overtime, ignore_invincible)
         return
     end
 
-    if not ignore_invincible and self.inst.components.health.invincible == true or self.inst.is_teleporting == true then
+    if not ignore_invincible and self.inst.components.health.invincible or self.inst.is_teleporting then
         return
     end 
 

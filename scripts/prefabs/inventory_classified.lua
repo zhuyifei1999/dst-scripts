@@ -29,8 +29,9 @@ local function SetSlotItem(inst, slot, item, src_pos)
         inst._items[slot]:set(item)
 
         if item ~= nil and inst._items[slot]:value() == item then
-            item.replica.inventoryitem:SerializeUsage()
-            item.replica.inventoryitem:SetPickupPos(src_pos)
+            local inventoryitem = item.replica.inventoryitem
+            inventoryitem:SerializeUsage()
+            inventoryitem:SetPickupPos(src_pos)
         else
             inst._items[slot]:set(nil)
         end
@@ -704,7 +705,7 @@ local function ControllerUseItemOnSelfFromInvTile(inst, item)
         local act = nil
         if not (item.replica.equippable ~= nil and item.replica.equippable:IsEquipped()) then
             act = inst._parent.components.playercontroller:GetItemSelfAction(item)
-        elseif not item:HasTag("heavy") then
+        elseif #inst._items > 0 and not item:HasTag("heavy") then
             act = BufferedAction(inst._parent, nil, ACTIONS.UNEQUIP, item)
         end
 
@@ -1082,7 +1083,7 @@ local function fn()
     inst._equips = {}
     inst._slottasks = nil
 
-    for i = 1, MAXITEMSLOTS do
+    for i = 1, GetMaxItemSlots(TheNet:GetServerGameMode()) do
         table.insert(inst._items, net_entity(inst.GUID, "inventory._items["..tostring(i).."]", "items["..tostring(i).."]dirty"))
     end
 

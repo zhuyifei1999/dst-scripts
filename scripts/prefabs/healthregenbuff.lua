@@ -10,7 +10,8 @@ end
 
 local function OnAttached(inst, target)
     inst.entity:SetParent(target.entity)
-    inst:DoPeriodicTask(TUNING.JELLYBEAN_TICK_RATE, OnTick, nil, target)
+    inst.Transform:SetPosition(0, 0, 0) --in case of loading
+    inst.task = inst:DoPeriodicTask(TUNING.JELLYBEAN_TICK_RATE, OnTick, nil, target)
     inst:ListenForEvent("death", function()
         inst.components.debuff:Stop()
     end, target)
@@ -22,13 +23,12 @@ local function OnTimerDone(inst, data)
     end
 end
 
---[[
-local function OnExtend(inst)
-    local newduration = CalcDiminishingReturns(inst.components.timer:GetTimeLeft("regenover") or 0, TUNING.JELLYBEAN_DURATION)
+local function OnExtended(inst, target)
     inst.components.timer:StopTimer("regenover")
-    inst.components.timer:StartTimer("regenover", newduration)
+    inst.components.timer:StartTimer("regenover", TUNING.JELLYBEAN_DURATION)
+    inst.task:Cancel()
+    inst.task = inst:DoPeriodicTask(TUNING.JELLYBEAN_TICK_RATE, OnTick, nil, target)
 end
-]]
 
 local function fn()
     local inst = CreateEntity()
@@ -52,12 +52,12 @@ local function fn()
     inst:AddComponent("debuff")
     inst.components.debuff:SetAttachedFn(OnAttached)
     inst.components.debuff:SetDetachedFn(inst.Remove)
+    inst.components.debuff:SetExtendedFn(OnExtended)
     inst.components.debuff.keepondespawn = true
 
     inst:AddComponent("timer")
     inst.components.timer:StartTimer("regenover", TUNING.JELLYBEAN_DURATION)
     inst:ListenForEvent("timerdone", OnTimerDone)
-    --inst:ListenForEvent("extend", OnExtend)
 
     return inst
 end

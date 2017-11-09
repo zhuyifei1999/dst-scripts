@@ -76,7 +76,7 @@ end
 function PetLeash:SpawnPetAt(x, y, z, prefaboverride, skin)
     local petprefab = prefaboverride or self.petprefab
     if self.numpets >= self.maxpets or petprefab == nil then
-        return
+        return nil
     end
 
     local pet = SpawnPrefab(petprefab, skin, nil, self.inst.userid)
@@ -93,6 +93,8 @@ function PetLeash:SpawnPetAt(x, y, z, prefaboverride, skin)
             self.onspawnfn(self.inst, pet)
         end
     end
+    
+    return pet
 end
 
 function PetLeash:DespawnPet(pet)

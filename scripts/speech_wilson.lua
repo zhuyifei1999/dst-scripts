@@ -114,6 +114,10 @@ return {
         {
             EMPTY = "I need to have something to wrap.",
         },
+        PICKUP =
+        {
+			RESTRICTION = "I'm not skilled enough to use that.",
+        },
 	},
 	ACTIONFAIL_GENERIC = "I can't do that.",
 	ANNOUNCE_DIG_DISEASE_WARNING = "It looks better already.",
@@ -236,6 +240,11 @@ return {
 	ANNOUNCE_KLAUS_ENRAGE = "There's no way to beat it now!!",
 	ANNOUNCE_KLAUS_UNCHAINED = "Its chains came off!",
 	ANNOUNCE_KLAUS_CALLFORHELP = "It called for help!",
+
+--boarlord event
+	ANNOUNCE_REVIVING_CORPSE = "Let me help you.",
+	ANNOUNCE_REVIVED_OTHER_CORPSE = "Good as new!",
+	ANNOUNCE_REVIVED_FROM_CORPSE = "Much better, thank-you.",
 
     ANNOUNCE_ROYALTY = 
     {
@@ -391,7 +400,7 @@ return {
 			ATTACKER = "%s is silent, but deadly...",
 			MURDERER = "Mime this!",
 			REVIVER = "%s thinks outside the invisible box.",
-			GHOST = "How do you say \"I'll conduct a revival device\" in mime?",
+			GHOST = "How do you say \"I'll concoct a revival device\" in mime?",
 			FIRESTARTER = "Wait, don't tell me. You lit a fire.",
 		},
 		WEBBER = 
@@ -417,9 +426,9 @@ return {
             GENERIC = "Good day to you, %s!",
             ATTACKER = "%s is a safety hazard.",
             MURDERER = "It ends here, %s!",
-            REVIVER = "It's pretty handy having you around, %s.",
-            GHOST = "That probably threw a wrench into her plans.",
-            FIRESTARTER = "Things are burning up at the factory today.",
+            REVIVER = "You're pretty handy to have around, %s.",
+            GHOST = "Looks like someone threw a wrench into your plans.",
+            FIRESTARTER = "Things are burning up at the factory.",
         },
         MIGRATION_PORTAL = 
         {
@@ -2049,6 +2058,57 @@ return {
         ORANGEMOONEYE = "No one could get lost with that thing looking out for them.",
         YELLOWMOONEYE = "That ought to show everyone the way.",
         BLUEMOONEYE = "It's always smart to keep an eye out.",
+
+        --Arena Event
+        LAVAARENA_BOARLORD = "That's the guy in charge here.",
+        BOARRIOR = "You sure are big!",
+        BOARON = "I can take him!",
+        PEGHOOK = "That spit is corrosive!",
+        TRAILS = "He's got a strong arm on him.",
+        TURTILLUS = "Its shell is so spiky!",
+        SNAPPER = "This one's got bite.",
+        
+        LAVAARENA_PORTAL = 
+        {
+            ON = "I'll just be going now.",
+            GENERIC = "That's how we got here. Hopefully how we get back, too.",
+        },
+        LAVAARENA_KEYHOLE = "It needs a key.",
+		LAVAARENA_KEYHOLE_FULL = "That should do it.",
+        LAVAARENA_BATTLESTANDARD = "Everyone, break the Battle Standard!",
+        LAVAARENA_SPAWNER = "This is where those enemies are coming from.",
+
+        HEALINGSTAFF = "It conducts regenerative energy.",
+        FIREBALLSTAFF = "It calls a meteor from above.",
+        HAMMER_MJOLNIR = "It's a heavy hammer for hitting things.",
+        SPEAR_GUNGNIR = "I could do a quick charge with that.",
+        BLOWDART_LAVA = "That's a weapon I could use from range.",
+        BLOWDART_LAVA2 = "It uses a strong blast of air to propel a projectile.",
+        LAVAARENA_LUCY = "That weapon's for throwing.",
+        WEBBER_SPIDER_MINION = "I guess they're fighting for us.",
+        BOOK_FOSSIL = "This'll keep those monsters held for a little while.",
+		LAVAARENA_BERNIE = "He might make a good distraction for us.",
+		SPEAR_LANCE = "It gets to the point.",
+		BOOK_ELEMENTAL = "I can't make out the text.",
+		LAVAARENA_ELEMENTAL = "It's a rock monster!",
+
+   		LAVAARENA_ARMORLIGHT = "Light, but not very durable.",
+		LAVAARENA_ARMORLIGHTSPEED = "Lightweight and designed for mobility.",
+		LAVAARENA_ARMORMEDIUM = "It offers a decent amount of protection.",
+		LAVAARENA_ARMORMEDIUMDAMAGER = "That could help me hit a little harder.",
+		LAVAARENA_ARMORMEDIUMRECHARGER = "I'd have energy for a few more stunts wearing that.",
+		LAVAARENA_ARMORHEAVY = "That's as good as it gets.",
+		LAVAARENA_ARMOREXTRAHEAVY = "This armor has been petrified for maximum protection.",
+
+		LAVAARENA_FEATHERCROWNHAT = "Those fluffy feathers make me want to run!",
+        LAVAARENA_HEALINGFLOWERHAT = "The blossom interacts well with healing magic.",
+        LAVAARENA_LIGHTDAMAGERHAT = "My strikes would hurt a little more wearing that.",
+        LAVAARENA_STRONGDAMAGERHAT = "It looks like it packs a wallop.",
+        LAVAARENA_TIARAFLOWERPETALSHAT = "Looks like it amplifies healing expertise.",
+        LAVAARENA_EYECIRCLETHAT = "It has a gaze full of science.",
+        LAVAARENA_RECHARGERHAT = "Those crystals will quickened my abilities.",
+        LAVAARENA_HEALINGGARLANDHAT = "This garland will restore a bit of my vitality.",
+        LAVAARENA_CROWNDAMAGERHAT = "That could cause some major destruction.",
 	},
 	DESCRIBE_GENERIC = "It's a... thing.",
 	DESCRIBE_TOODARK = "It's too dark to see!",

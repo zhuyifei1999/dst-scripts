@@ -683,7 +683,7 @@ TEMPLATES = {
             nav_bar.title = nav_bar:AddChild(Text(TITLEFONT, 45, title or ""))
             nav_bar.title:SetRegionSize(200, 50)
             nav_bar.title:SetHAlign(ANCHOR_LEFT)
-            nav_bar.title:SetPosition(40,120)
+            nav_bar.title:SetPosition(40,100)
         end
 
         return nav_bar
@@ -1452,6 +1452,7 @@ TEMPLATES = {
 
         return widg
     end,
+    
 }
 
 return TEMPLATES

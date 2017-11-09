@@ -1,4 +1,4 @@
-local MakePlayerCharacter = require "prefabs/player_common"
+local MakePlayerCharacter = require("prefabs/player_common")
 
 local assets =
 {
@@ -10,14 +10,22 @@ local assets =
 local prefabs =
 {
     "silk",
+    "webber_spider_minion",
 }
 
 local start_inv =
 {
-    "spidereggsack",
-    "monstermeat",
-    "monstermeat",
+    default =
+    {
+        "spidereggsack",
+        "monstermeat",
+        "monstermeat",
+    },
+
+    lavaarena = TUNING.LAVAARENA_STARTING_ITEMS.WEBBER,
 }
+
+prefabs = FlattenTree({ prefabs, start_inv }, true)
 
 local function common_postinit(inst)
     inst:AddTag("spiderwhisperer")
@@ -52,6 +60,8 @@ local function OnGrowLongBeard(inst)
 end
 
 local function master_postinit(inst)
+    inst.starting_inventory = start_inv[TheNet:GetServerGameMode()] or start_inv.default
+
     inst.talker_path_override = "dontstarve_DLC001/characters/"
 
     inst.components.eater.strongstomach = true
@@ -69,6 +79,10 @@ local function master_postinit(inst)
     inst.components.beard:AddCallback(BEARD_DAYS[3], OnGrowLongBeard)
 
     inst.components.locomotor:SetTriggersCreep(false)
+
+    if TheNet:GetServerGameMode() == "lavaarena" then
+        event_server_data("lavaarena", "prefabs/webber").master_postinit(inst)
+    end
 end
 
-return MakePlayerCharacter("webber", prefabs, assets, common_postinit, master_postinit, start_inv)
+return MakePlayerCharacter("webber", prefabs, assets, common_postinit, master_postinit)

@@ -75,20 +75,22 @@ function Weapon:OnAttack(attacker, target, projectile)
 end
 
 function Weapon:LaunchProjectile(attacker, target)
-    if self.projectile then
-
-        if self.onprojectilelaunch then
+    if self.projectile ~= nil then
+        if self.onprojectilelaunch ~= nil then
             self.onprojectilelaunch(self.inst, attacker, target)
         end
 
         local proj = SpawnPrefab(self.projectile)
-        if proj then
-            if proj.components.projectile then
-                proj.Transform:SetPosition(attacker.Transform:GetWorldPosition() )
+        if proj ~= nil then
+            if proj.components.projectile ~= nil then
+                proj.Transform:SetPosition(attacker.Transform:GetWorldPosition())
                 proj.components.projectile:Throw(self.inst, target, attacker)
-            elseif proj.components.complexprojectile then
-                proj.Transform:SetPosition( attacker.Transform:GetWorldPosition() )
-                proj.components.complexprojectile:Launch(Vector3( target.Transform:GetWorldPosition() ), attacker, self.inst)
+                if self.inst.projectiledelay ~= nil then
+                    proj.components.projectile:DelayVisibility(self.inst.projectiledelay)
+                end
+            elseif proj.components.complexprojectile ~= nil then
+                proj.Transform:SetPosition(attacker.Transform:GetWorldPosition())
+                proj.components.complexprojectile:Launch(target:GetPosition(), attacker, self.inst)
             end
         end
     end

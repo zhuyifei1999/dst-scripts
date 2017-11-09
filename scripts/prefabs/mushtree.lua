@@ -39,7 +39,7 @@ local function onspawnfn(inst, spawn)
     inst.SoundEmitter:PlaySound("dontstarve/cave/mushtree_tall_spore_fart")
     local pos = inst:GetPosition()
     spawn.components.knownlocations:RememberLocation("home", pos)
-    local radius = spawn.Physics ~= nil and spawn.Physics:GetRadius() + inst.Physics:GetRadius() or inst.Physics:GetRadius()
+    local radius = spawn:GetPhysicsRadius(0) + inst:GetPhysicsRadius(0)
     local offset = FindWalkableOffset(pos, math.random() * 2 * PI, radius, 8)
     if offset ~= nil then
         spawn.Physics:Teleport(pos.x + offset.x, 0, pos.z + offset.z)

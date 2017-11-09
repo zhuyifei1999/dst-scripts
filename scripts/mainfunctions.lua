@@ -1,9 +1,9 @@
-local PopupDialogScreen = require "screens/popupdialog"
-local BigPopupDialogScreen = require "screens/bigpopupdialog"
+local PopupDialogScreen = require "screens/redux/popupdialog"
 local WorldGenScreen = require "screens/worldgenscreen"
 local Stats = require("stats")
 
 require "scheduler"
+require "skinsutils"
 
 local DEBUG_MODE = BRANCH == "dev"
 
@@ -354,6 +354,10 @@ end
 
 function GetTimeReal()
     return TheSim:GetRealTime()
+end
+
+function GetTimeRealSeconds()
+    return TheSim:GetRealTime() / 1000
 end
 
 ---SCRIPTING
@@ -822,11 +826,10 @@ local function CheckControllers()
             {
                 {text=STRINGS.UI.MAINSCREEN.ENABLECONTROLLER, cb = enableControllers},
                 {text=STRINGS.UI.MAINSCREEN.DISABLECONTROLLER, cb = disableControllers}
-            }
+            },
+            nil,
+            "big"
         )
-        for i,v in pairs(popup.menu.items) do
-            v.text:SetSize(33)
-        end
         if TheInput:ControllerAttached() then
             TheFrontEnd:StopTrackingMouse(true)
         end
@@ -879,43 +882,15 @@ function GlobalInit()
 end
 
 function DoLoadingPortal(cb)
-	local join_screen = "other"
-    local screen = TheFrontEnd:GetActiveScreen()
-    while screen ~= nil and not (screen.bg ~= nil and screen.bg.anim_root ~= nil and screen.bg.anim_root.portal ~= nil) do
-		if screen.name == "ConnectingToGamePopup" then
-			join_screen = "server_listing"
-		elseif screen.name == "QuickJoinScreen" then
-			join_screen = "quick_join"
-		end
-		
-        -- Check if we're on a screen with a portal anim
-        -- If we're not, then pop the current screen and try again with the next screen down
-        TheFrontEnd:PopScreen()
-        screen = TheFrontEnd:GetActiveScreen()
-    end
-    
 	local values = {}
-	values.join_screen = join_screen 
+    local screen = TheFrontEnd:GetActiveScreen()
+	values.join_screen = screen ~= nil and screen.name or "other"
+	values.special_event = screen ~= nil and screen.event_id or nil
 	Stats.PushMetricsEvent("joinfromscreen", TheNet:GetUserID(), values)
 
-    if screen == nil then
-        -- If there are no more screens, just do a generic fade
-        TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, cb, nil, nil, "white")
-        return
-    end
-
-    -- If we have access to a portal, then start the animation fanciness!
-    TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME * 4, nil, nil, nil, "alpha")
-
-    screen:Disable()
-    screen.inst:DoTaskInTime(SCREEN_FADE_TIME, function(inst)
-        screen.bg.anim_root.portal:GetAnimState():PlayAnimation("portal_blackout", false)
-        TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_flash")
-
-        inst:DoTaskInTime(1.5, function()
-            TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, cb, nil, nil, "white")
-        end)
-    end)
+	--No portal anymore, just fade to "white". Maybe we want to swipe fade to the loading screen?
+	TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, cb, nil, nil, "white")
+	return
 end
 
 -- This is for joining a game: once we're done downloading the map, we load it and simreset
@@ -941,14 +916,21 @@ function JapaneseOnPS4()
 end
 
 function StartNextInstance(in_params)
+	local match_results = {}
+	match_results.mvp_cards = (TheWorld ~= nil and TheWorld.GetMvpAwards ~= nil) and TheWorld:GetMvpAwards() or TheFrontEnd.match_results.mvp_cards
+	match_results.wxp_data = (TheWorld ~= nil and TheWorld.GetAwardedWxp ~= nil) and TheWorld:GetAwardedWxp() or TheFrontEnd.match_results.wxp_data
+	match_results.player_stats = (TheWorld ~= nil and TheWorld.GetPlayerStatistics ~= nil) and TheWorld:GetPlayerStatistics() or TheFrontEnd.match_results.player_stats
+	match_results.outcome = (TheWorld ~= nil and TheWorld.GetMatchOutcome ~= nil) and TheWorld:GetMatchOutcome() or TheFrontEnd.match_results.outcome
+
     if TheNet:GetIsServer() then
-        NotifyLoadingState(LoadingStates.Loading)
+        NotifyLoadingState(LoadingStates.Loading, match_results )
     end
 
     local params = in_params or {}
     params.last_reset_action = Settings.reset_action
-
+	params.match_results = match_results
     params.load_screen_image = global_loading_widget.image_random
+    params.loading_screen_keys = BuildListOfSelectedItems(Profile, "loading")
 
     if LOADED_CHARACTER then
         TheSim:UnloadPrefabs(LOADED_CHARACTER)
@@ -1084,7 +1066,7 @@ end
 function SetPauseFromCode(pause)
     if pause then
         if inGamePlay and not IsPaused() then
-            local PauseScreen = require "screens/pausescreen"
+            local PauseScreen = require "screens/redux/pausescreen"
             TheFrontEnd:PushScreen(PauseScreen())
         end
     end
@@ -1135,6 +1117,9 @@ end
 
 function DoRestart(save)
     print("DoRestart:", save)
+
+	Settings.match_results = {}
+
     if not PerformingRestart then
         PerformingRestart = true
         ShowLoading()
@@ -1201,6 +1186,11 @@ function OnNetworkDisconnect( message, should_reset, force_immediate_reset, deta
 		    TheNet:JoinServerResponse( true ) -- cancel join
             TheNet:Disconnect(false)
 			screen:TryNextServer(title, message)
+			return
+		elseif screen.name == "HostCloudServerPopup" then
+		    TheNet:JoinServerResponse( true ) -- cancel join
+            TheNet:Disconnect(false)
+            screen:OnError(message)
 			return
 		end
     end
@@ -1328,7 +1318,7 @@ function ResumeRequestLoadComplete(success)
     --activate and fade in once the user's player is downloaded
     if not success then
         TheNet:DeleteUserSession(TheNet:GetUserID())
-        local LobbyScreen = require "screens/lobbyscreen"
+        local LobbyScreen = require "screens/redux/lobbyscreen"
         TheFrontEnd:PushScreen(LobbyScreen(Profile, OnUserPickedCharacter, false))
         TheFrontEnd:Fade(FADE_IN, 1, nil, nil, nil, "white")
         TheWorld:PushEvent("entercharacterselect")
@@ -1411,25 +1401,40 @@ LoadingStates =
     DoneLoading = 4,
 }
 
-function NotifyLoadingState(loading_state)
+function NotifyLoadingState(loading_state, match_results)
     if TheNet:GetIsClient() then
         --Let gamelogic know not to handle player deactivation messages
         DeactivateWorld()
         --
-        if loading_state == LoadingStates.Loading then
-            ShowLoading()
-            TheFrontEnd:Fade(FADE_OUT, 1)
-        elseif loading_state == LoadingStates.Generating then
-            CreateEntity():DoTaskInTime(0.15, function(inst)
-                TheFrontEnd:PopScreen()
-                TheFrontEnd:PushScreen(WorldGenScreen(nil, nil, nil))
-                inst.entity:Retire()
-            end)
-        elseif loading_state == LoadingStates.DoneGenerating then
-            TheFrontEnd:PopScreen()
-        end
+        if GetGameModeProperty("hide_worldgen_loading_screen") then
+			if loading_state == LoadingStates.Loading then
+				TheFrontEnd:Fade(FADE_OUT, 1,
+					function()
+						TheFrontEnd:PopScreen()
+					end)
+				if match_results ~= nil then
+					TheFrontEnd.match_results = json.decode(match_results)
+				end
+				ShowLoading()
+			elseif loading_state == LoadingStates.Generating or loading_state == LoadingStates.DoneGenerating then
+				ShowLoading()
+			end
+		else
+			if loading_state == LoadingStates.Loading then
+				ShowLoading()
+				TheFrontEnd:Fade(FADE_OUT, 1)
+			elseif loading_state == LoadingStates.Generating then
+				CreateEntity():DoTaskInTime(0.15, function(inst)
+					TheFrontEnd:PopScreen()
+					TheFrontEnd:PushScreen(WorldGenScreen(nil, nil, nil))
+					inst.entity:Retire()
+				end)
+			elseif loading_state == LoadingStates.DoneGenerating then
+				TheFrontEnd:PopScreen()
+			end
+		end
     elseif TheNet:GetIsServer() then
-        TheNet:NotifyLoadingState(loading_state)
+        TheNet:NotifyLoadingState(loading_state, json.encode(match_results))
     end
 end
 
@@ -1491,6 +1496,10 @@ function SaveAndShutdown()
         TheSystemService:EnableStorage(true)
         SaveGameIndex:SaveCurrent(Shutdown, true)
     end
+end
+
+function IsInFrontEnd()
+	return Settings.reset_action == nil or Settings.reset_action == RESET_ACTION.LOAD_FRONTEND
 end
 
 require("dlcsupport")

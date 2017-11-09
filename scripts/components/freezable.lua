@@ -156,24 +156,36 @@ function Freezable:StartWearingOff(wearofftime)
     self.wearofftask = self.inst:DoTaskInTime(self:ResolveWearOffTime(wearofftime or self.wearofftime), WearOff, self)
 end
 
+local function PushColour(inst, r, g, b, a)
+    if inst.components.colouradder ~= nil then
+        inst.components.colouradder:PushColour("freezable", r, g, b, a)
+    else
+        inst.AnimState:SetAddColour(r, g, b, a)
+    end
+end
+
+local function PopColour(inst)
+    if inst.components.colouradder ~= nil then
+        inst.components.colouradder:PopColour("freezable")
+    else
+        inst.AnimState:SetAddColour(0, 0, 0, 0)
+    end
+end
+
 function Freezable:UpdateTint()
     if self.inst.AnimState ~= nil then
+        local r, g, b, a
         if self:IsFrozen() then
-            self.inst.AnimState:SetAddColour(unpack(FREEZE_COLOUR))
+            PushColour(self.inst, FREEZE_COLOUR[1], FREEZE_COLOUR[2], FREEZE_COLOUR[3], FREEZE_COLOUR[4])
         else
             local resistance = self:ResolveResistance()
             if self.coldness >= resistance then
-                self.inst.AnimState:SetAddColour(unpack(FREEZE_COLOUR))
+                PushColour(self.inst, FREEZE_COLOUR[1], FREEZE_COLOUR[2], FREEZE_COLOUR[3], FREEZE_COLOUR[4])
             elseif self.coldness <= 0 then
-                self.inst.AnimState:SetAddColour(0, 0, 0, 0)
+                PopColour(self.inst)
             else
                 local percent = self.coldness / resistance
-                self.inst.AnimState:SetAddColour(
-                    FREEZE_COLOUR[1] * percent,
-                    FREEZE_COLOUR[2] * percent,
-                    FREEZE_COLOUR[3] * percent,
-                    FREEZE_COLOUR[4] * percent
-                )
+                PushColour(self.inst, FREEZE_COLOUR[1] * percent, FREEZE_COLOUR[2] * percent, FREEZE_COLOUR[3] * percent, FREEZE_COLOUR[4] * percent)
             end
         end
     end

@@ -37,10 +37,8 @@ function SetSkinMode( anim_state, prefab, base_skin, clothing_names, skintype, d
 		local leg_build = base_skin --for boot switching, default to the base skin
 		local foot_build = base_skin --for boot switching, default to the base skin
 		
-		local hidden_symbols = {}
-		
 		local tuck_torso = BASE_TORSO_TUCK[base_skin] or "skirt" --tucked into the skirt is the default
-		--print( 	"tuck_torso is ", tuck_torso, base_skin )
+		--print( "tuck_torso is ", tuck_torso, base_skin )
 		
 		local legs_cuff_size = BASE_LEGS_SIZE[base_skin] or 1
 		local feet_cuff_size = BASE_FEET_SIZE[base_skin] or 1
@@ -79,7 +77,17 @@ function SetSkinMode( anim_state, prefab, base_skin, clothing_names, skintype, d
 			end
 		end
 		
-		for num,type in pairs( clothing_order ) do
+		--collect the list of symbols that the clothing pieces have requested to fall back to the base skin.
+		local symbols_to_use_base = {}
+		for _,name in pairs(clothing_names) do
+			if CLOTHING[name] ~= nil and CLOTHING[name].base_fallbacks then
+				for _,base_sym in pairs(CLOTHING[name].base_fallbacks) do
+					table.insert(symbols_to_use_base, base_sym)
+				end
+			end
+		end
+		
+		for _,type in pairs( clothing_order ) do
 			local name = clothing_names[type]
 			if CLOTHING[name] ~= nil then
 				local src_symbols = nil
@@ -98,6 +106,10 @@ function SetSkinMode( anim_state, prefab, base_skin, clothing_names, skintype, d
 					if not ModManager:IsModCharacterClothingSymbolExcluded( prefab, sym ) then
 						if (not allow_torso and sym == "torso") or (not allow_arms and (sym == "arm_upper" or sym == "arm_upper_skin" or sym == "arm_lower")) then
 							--skip this symbol for wolfgang
+						
+						elseif table.contains(symbols_to_use_base, sym) then
+							--skip this symbol because one of the clothing requested it fall to the default (hand_willow_gladiator)
+							--print("skip symbol and leave it at base:",sym)
 						else
 							if sym == "torso" then torso_build = CLOTHING[name].override_build end
 							if sym == "torso_pelvis" then pelvis_build = CLOTHING[name].override_build end
@@ -110,7 +122,6 @@ function SetSkinMode( anim_state, prefab, base_skin, clothing_names, skintype, d
 								src_sym = src_symbols[sym] or sym
 							end
 							anim_state:ShowSymbol(sym)
-							hidden_symbols[sym] = nil --remove it from the hidden list
 							anim_state:OverrideSkinSymbol(sym, CLOTHING[name].override_build, src_sym )
 							--print("setting skin", sym, CLOTHING[name].override_build )
 							
@@ -143,12 +154,23 @@ function SetSkinMode( anim_state, prefab, base_skin, clothing_names, skintype, d
 				if CLOTHING[name].symbol_hides then
 					for _,sym in pairs(CLOTHING[name].symbol_hides) do
 						anim_state:HideSymbol(sym)
-						hidden_symbols[sym] = true
 					end
 				end
 			end
 		end
 		
+		--Future work to be done here: Is this a workable solution long term for skirt issues?
+		--Maybe we need a better system for tagging dresses that can't have torso symbols tucked into them.
+		--Hide any of the base symbols if requested (probably only ever the default skirts). This allows us to turn the skirt on manually with a clothing choice)
+		--for _,name in pairs( clothing_names ) do
+		--	if CLOTHING[name] ~= nil and CLOTHING[name].symbol_hides_only_base then
+		--		for _,sym in pairs(CLOTHING[name].symbol_hides_only_base) do
+		--			if not symbol_overridden[sym] then
+		--				anim_state:HideSymbol(sym)
+		--			end
+		--		end
+		--	end
+		--end
 		
 		local torso_symbol = "torso"
 		local pelvis_symbol = "torso_pelvis"
@@ -165,19 +187,15 @@ function SetSkinMode( anim_state, prefab, base_skin, clothing_names, skintype, d
 		if (BASE_ALTERNATE_FOR_BODY[base_skin] and torso_build ~= nil and pelvis_build == nil) 
 			or (BASE_ALTERNATE_FOR_SKIRT[base_skin] and skirt_build ~= nil and pelvis_build == nil) then
 			pelvis_symbol = "torso_pelvis_wide"
-			if not hidden_symbols["torso_pelvis"] then
-				--print("torso_pelvis replaced with torso_pelvis_wide")
-				wide = true
-				anim_state:OverrideSkinSymbol("torso_pelvis", base_skin, pelvis_symbol )
-			end
+			--print("torso_pelvis replaced with torso_pelvis_wide")
+			wide = true
+			anim_state:OverrideSkinSymbol("torso_pelvis", base_skin, pelvis_symbol )
 		end
 		
 		if BASE_ALTERNATE_FOR_BODY[base_skin] and torso_build ~= nil and skirt_build == nil then
-			if not hidden_symbols["skirt_wide"] then
-				--print("skirt replaced with skirt_wide")
-				wide = true
-				anim_state:OverrideSkinSymbol("skirt", base_skin, "skirt_wide")
-			end
+			--print("skirt replaced with skirt_wide")
+			wide = true
+			anim_state:OverrideSkinSymbol("skirt", base_skin, "skirt_wide")
 		end
 		
 		local use_leg_boot = (CLOTHING[leg_build] and CLOTHING[leg_build].has_leg_boot) or HAS_LEG_BOOT[leg_build]
@@ -201,12 +219,10 @@ function SetSkinMode( anim_state, prefab, base_skin, clothing_names, skintype, d
 		if tuck_torso == "full" then
 			torso_build = torso_build or base_skin
 			pelvis_build = pelvis_build or base_skin
-			if not hidden_symbols["torso_pelvis"] and not hidden_symbols["torso"] then
-				--print("put the pelvis on top of the base torso")
-				anim_state:OverrideSkinSymbol("torso", pelvis_build, pelvis_symbol ) --put the pelvis on top of the base torso by putting it in the torso slot
-				--print("put the torso in pelvis slot")
-				anim_state:OverrideSkinSymbol("torso_pelvis", torso_build, torso_symbol ) --put the torso in pelvis slot to go behind			
-			end
+			--print("put the pelvis on top of the base torso")
+			anim_state:OverrideSkinSymbol("torso", pelvis_build, pelvis_symbol ) --put the pelvis on top of the base torso by putting it in the torso slot
+			--print("put the torso in pelvis slot")
+			anim_state:OverrideSkinSymbol("torso_pelvis", torso_build, torso_symbol ) --put the torso in pelvis slot to go behind			
 		elseif needs_legacy_fixup then
 			if torso_build ~= nil and pelvis_build ~= nil then
 				--fully clothed, no fixup required

@@ -392,13 +392,8 @@ end
 
 -- This should only be called interally
 function ChildSpawner:DoSpawnChild(target, prefab, radius)
-    local pos = self.inst:GetPosition()
-    local start_angle = math.random()*PI*2
-    local rad = radius or 0.5
-    if self.inst.Physics then
-        rad = rad + self.inst.Physics:GetRadius()
-    end
-    local offset = FindWalkableOffset(pos, start_angle, rad, 8, false, true, NoHoles)
+    local x, y, z = self.inst.Transform:GetWorldPosition()
+    local offset = FindWalkableOffset(Vector3(x, 0, z), math.random() * PI * 2, (radius or .5) + self.inst:GetPhysicsRadius(0), 8, false, true, NoHoles)
     if offset == nil then
         return
     end
@@ -412,7 +407,7 @@ function ChildSpawner:DoSpawnChild(target, prefab, radius)
             self.childname
         )
     if child ~= nil then
-        child.Transform:SetPosition(pos.x + offset.x, 0, pos.z + offset.z)
+        child.Transform:SetPosition(x + offset.x, 0, z + offset.z)
         if target ~= nil and child.components.combat ~= nil then
             child.components.combat:SetTarget(target)
         end

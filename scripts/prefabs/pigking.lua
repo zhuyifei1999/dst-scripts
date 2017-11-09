@@ -57,9 +57,11 @@ local function ontradeforgold(inst, item, giver)
 
         -- only people in costumes get a good amount of candy!      
         if giver ~= nil and giver.components.skinner ~= nil then
-            local costume = giver.components.skinner:GetClothing().base
-            if costume ~= nil and costume ~= "" and Prefabs[costume] ~= nil and table.contains(Prefabs[costume].tags, "COSTUME") then
-                numcandies = numcandies + math.random(4) + 2
+            for _, item in pairs(giver.components.skinner:GetClothing()) do
+				if DoesItemHaveTag(item, "COSTUME") then
+					numcandies = numcandies + math.random(4) + 2
+					break
+				end
             end
         end
 

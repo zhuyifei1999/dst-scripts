@@ -12,15 +12,22 @@ local Spinner = require "widgets/spinner"
 local DressupPanel = require "widgets/dressuppanel"
 local CharacterSelect = require "widgets/characterselect"
 local PlayerList = require "widgets/playerlist"
+local WaitingForPlayersWidget = require "widgets/waitingforplayers"
 
 local PopupDialogScreen = require "screens/popupdialog"
 
 local TEMPLATES = require "widgets/templates"
 
+local TextCompleter = require "util/textcompleter"
+local emoji = require("util/emoji")
+
 require("util")
 require("networking")
+require("stringutil")
 
 local DEBUG_MODE = BRANCH == "dev"
+
+local CHAT_INPUT_HISTORY = {}
 
 local REFRESH_INTERVAL = .5
 
@@ -43,6 +50,7 @@ end
 
 local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, default_character, days_survived)
     Screen._ctor(self, "LobbyScreen")
+
     self.profile = profile
     self.log = true
     self.issoundplaying = false
@@ -109,8 +117,9 @@ local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, def
     self.sidebar_root = self.root:AddChild(Widget("Sidebar"))
     self.sidebar_root:SetPosition(lcol-5, -375)
 
-    self.characterselect_root = self.fixed_root:AddChild(Widget("CharacterSelect"))
+    self.characterselect_root = self.fixed_root:AddChild(Widget("CharacterSelect root"))
     self.loadout_root = self.fixed_root:AddChild(Widget("Loadout"))
+    self.waiting_for_players_root = self.fixed_root:AddChild(Widget("waiting_for_players_root"))
 
     self.heroname = self.loadout_root:AddChild(Image())
     self.heroname:SetScale(.34)
@@ -193,10 +202,12 @@ local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, def
         self.invitebutton.text:SetPosition(0, -3)
         ]]
 
-        self.selectbutton = self.characterselect_root:AddChild(TEMPLATES.Button(STRINGS.UI.LOBBYSCREEN.SELECT, function() self:StartLoadout() end))
+        self.selectbutton = self.characterselect_root:AddChild(TEMPLATES.Button(STRINGS.UI.LOBBYSCREEN.SELECT, function()
+			 self:StartLoadout()
+		end))
         self.selectbutton:SetPosition(RESOLUTION_X - 300, 60, 0)
 
-        self.startbutton = self.loadout_root:AddChild(TEMPLATES.Button(STRINGS.UI.LOBBYSCREEN.SELECT, function() StartGame(self) end))
+        self.startbutton = self.loadout_root:AddChild(TEMPLATES.Button(STRINGS.UI.LOBBYSCREEN.START, function() StartGame(self) end))
         self.startbutton:SetPosition(RESOLUTION_X - 180, 60, 0)
 
         self.randomcharbutton = self.characterselect_root:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "random.tex", STRINGS.UI.LOBBYSCREEN.RANDOMCHAR, false, false, function()
@@ -244,6 +255,30 @@ local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, def
     self.characterselect_root:SetPosition(120, 0, 0)
     self.loadout_root:Hide()
     self.in_loadout = false
+    
+    
+    self.waiting_for_players_root:SetPosition(0, 0, 0)
+    self.waiting_for_players = self.waiting_for_players_root:AddChild(WaitingForPlayersWidget(self, 6))
+
+    local waiting_for_players_title = self.waiting_for_players_root:AddChild(Text(BUTTONFONT, 35))
+    waiting_for_players_title:SetHAlign(ANCHOR_LEFT)
+    waiting_for_players_title:SetVAlign(ANCHOR_TOP)
+    waiting_for_players_title:SetPosition(RESOLUTION_X/2 - 110, RESOLUTION_Y - 35)
+    waiting_for_players_title:SetRegionSize( 500, 60 )
+    waiting_for_players_title:EnableWordWrap( false )
+    waiting_for_players_title:SetString( STRINGS.UI.LOBBYSCREEN.waiting_for_players_TITLE )
+    waiting_for_players_title:SetColour(BLACK)
+    
+    self.spawndelaytext = self.waiting_for_players_root:AddChild(Text(BUTTONFONT, 35))
+    self.spawndelaytext:SetHAlign(ANCHOR_MIDDLE)
+    self.spawndelaytext:SetVAlign(ANCHOR_TOP)
+    self.spawndelaytext:SetPosition(RESOLUTION_X/2 + 110, 60, 0)
+    self.spawndelaytext:SetRegionSize( 500, 60 )
+    self.spawndelaytext:SetColour(BLACK)
+    self.spawndelaytext:Hide()
+
+    self.in_readystate = false
+	self.waiting_for_players_root:Hide()
 
     if self.backbutton ~= nil then
         self.backbutton:Hide()
@@ -251,6 +286,29 @@ local LobbyScreen = Class(Screen, function(self, profile, cb, no_backbutton, def
 
     self.default_focus = self.chatbox
     self:DoFocusHookups()
+
+	self:StartSelection()
+
+	self.inst:ListenForEvent("lobbyplayerspawndelay", function(world, data) 
+			if data and data.active then
+                --subtract one so we hang on 0 for a second
+                local str = subfmt(STRINGS.UI.LOBBYSCREEN.SPAWN_DELAY, { time = math.max(0, data.time - 1) })
+                if str ~= self.spawndelaytext:GetString() or not self.spawndelaytext.shown then
+                    self.spawndelaytext:SetString(str)
+                    self.spawndelaytext:Show()
+                    TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/WorldDeathTick")
+                end
+
+				if self.backbutton ~= nil then
+					self.backbutton:Hide()
+				end
+
+				if data.time == 0 then
+					StartGame(self)
+				end
+			end
+		end, TheWorld)
+
 end)
 
 function LobbyScreen:OnBecomeActive()
@@ -323,6 +381,51 @@ end
     end
 end]]
 
+function LobbyScreen:BuildTextCompleter(chatbox)
+    local suggestion_data, emoji_translator = emoji.GetSuggestionDataForTextCompleter(TheNet:GetUserID())
+    local suggest_width = 220
+    local suggest_height = 32
+    local bg_colour = { .075, .07, .07, 1 }
+    local suggest_text_widgets = {}
+    local max_suggestions = 3
+    for i = 1, max_suggestions do
+        local w = chatbox.textbox:AddChild(emoji.EmojiSuggestText(emoji_translator, DEFAULTFONT, 27, bg_colour))
+        w:SetPosition(20, 32*i + 16, 0)
+        w:SetHAlign(ANCHOR_LEFT)
+        w:SetRegionSize(suggest_width, suggest_height)
+        table.insert(suggest_text_widgets, w)
+    end
+    self.completer = TextCompleter(suggest_text_widgets, chatbox.textbox, CHAT_INPUT_HISTORY, false)
+    self.completer:SetSuggestionData(suggestion_data)
+
+    local chat_OnGainFocus = chatbox.textbox.ongainfocusfn
+    chatbox:SetOnGainFocus(function(internal_self)
+        if chat_OnGainFocus then
+            chat_OnGainFocus(internal_self)
+        end
+        self.completer:ClearState()
+    end)
+
+    local chat_OnTextEntered = chatbox.textbox.OnTextEntered
+    chatbox.textbox.OnTextEntered = function(internal_self)
+        -- Do completion on hitting Enter.
+        self.completer:PerformCompletion()
+
+        if chat_OnTextEntered then
+            chat_OnTextEntered(internal_self)
+        end
+    end
+
+    local chat_OnRawKey = chatbox.textbox.OnRawKey
+    chatbox.textbox.OnRawKey = function(internal_self, key, down)
+        if chat_OnRawKey(internal_self, key, down) then
+            self.completer:UpdateSuggestions(down, key)
+            return true
+        end
+        return self.completer:OnRawKey(key, down)
+    end
+end
+
 function LobbyScreen:MakeTextEntryBox(parent)
     local chatbox = parent:AddChild(Widget("chatbox"))
     chatbox.bg = chatbox:AddChild( Image("images/lobbyscreen.xml", "playerlobby_whitebg_type.tex") )
@@ -350,10 +453,6 @@ function LobbyScreen:MakeTextEntryBox(parent)
     chatbox.textbox:EnableScrollEditWindow(true)
     chatbox.textbox:SetHelpTextEdit("")
     chatbox.textbox:SetHelpTextApply(STRINGS.UI.LOBBYSCREEN.CHAT)
-    chatbox.gobutton = chatbox:AddChild(ImageButton("images/lobbyscreen.xml", "button_send.tex", "button_send_over.tex", "button_send_down.tex", "button_send_down.tex", "button_send_down.tex", {1,1}, {0,0}))
-    chatbox.gobutton:SetPosition(box_size - 59 + nudgex, 8 + nudgey)
-    chatbox.gobutton:SetScale(.13)
-    chatbox.gobutton.image:SetTint(.6,.6,.6,1)
     chatbox.textbox.OnTextEntered = function()
         local chat_string = self.chatbox.textbox:GetString()
         chat_string = chat_string ~= nil and chat_string:match("^%s*(.-%S)%s*$") or ""
@@ -365,6 +464,10 @@ function LobbyScreen:MakeTextEntryBox(parent)
         self.chatbox.textbox:SetEditing(true)
     end
 
+    chatbox.gobutton = chatbox:AddChild(ImageButton("images/lobbyscreen.xml", "button_send.tex", "button_send_over.tex", "button_send_down.tex", "button_send_down.tex", "button_send_down.tex", {1,1}, {0,0}))
+    chatbox.gobutton:SetPosition(box_size - 59 + nudgex, 8 + nudgey)
+    chatbox.gobutton:SetScale(.13)
+    chatbox.gobutton.image:SetTint(.6,.6,.6,1)
     chatbox.gobutton:SetOnClick( function() self.chatbox.textbox:OnTextEntered() end )
 
      -- If chatbox ends up focused, highlight the textbox so we can tell something is focused.
@@ -380,6 +483,9 @@ function LobbyScreen:MakeTextEntryBox(parent)
     end
 
     chatbox:SetPosition(-52, -178)
+
+    self:BuildTextCompleter(chatbox)
+
     self.chatbox = chatbox
 end
 
@@ -449,6 +555,10 @@ function LobbyScreen:BuildCharacterDetailsBox()
     self.character_details:MoveToFront()
 end
 
+function LobbyScreen:ReceiveChatMessage(...)
+    self.chatqueue:OnMessageReceived(...)
+end
+
 local SCROLL_REPEAT_TIME = .15
 local MOUSE_SCROLL_REPEAT_TIME = 0
 local STICK_SCROLL_REPEAT_TIME = .25
@@ -468,10 +578,12 @@ function LobbyScreen:OnControl(control, down)
     end
 
     if not self.no_cancel and not down and control == CONTROL_CANCEL then
-        if not self.in_loadout then
-            self:DoConfirmQuit()
-        else
+        if self.in_readystate then
+            self:StartLoadout()
+        elseif self.in_loadout then
             self:StartSelection()
+        else
+            self:DoConfirmQuit()
         end
 
         return true 
@@ -577,7 +689,34 @@ function LobbyScreen:DoFocusHookups()
     self.chatbox.textbox:SetFocusChangeDir(MOVE_UP, self.playerList)
 end
 
+function LobbyScreen:RequestResetLobbyCharacter()
+	if not self.in_readystate then
+		return true
+	end
+
+	if not self.pending_reset_character_request then
+		self.pending_reset_character_request = true
+		TheNet:SendLobbyCharacterRequestToServer("")
+	else
+		local client_obj = TheNet:GetClientTableForUser(TheNet:GetUserID())
+		if client_obj == nil or client_obj.lobbycharacter == nil or client_obj.lobbycharacter == "" then
+			self.in_readystate = false
+			self.pending_reset_character_request = false
+			self:StartSelection()
+		end
+	end
+		
+	return false
+end
+
 function LobbyScreen:StartSelection()
+	if not self:RequestResetLobbyCharacter() then
+		return  -- wait for responce
+	end
+
+	self.in_readystate = false
+	self.waiting_for_players_root:Hide()
+
     self.in_loadout = false
 
     if self.disconnectbutton then 
@@ -601,6 +740,9 @@ function LobbyScreen:StartSelection()
 end
 
 function LobbyScreen:StartLoadout()
+	self.in_readystate = false
+	self.waiting_for_players_root:Hide()
+
     self.in_loadout = true
 
     if self.disconnectbutton ~= nil then
@@ -624,6 +766,18 @@ function LobbyScreen:StartLoadout()
     self.playerList:BuildPlayerList(players, { right = right_widget, down = self.chatbox })
 
     self.dressup:SetFocus()
+end
+
+function LobbyScreen:PlayerReady()
+    self.in_readystate = true
+    self.in_loadout = false
+    self.loadout_root:Hide()
+
+    local skins = self.dressup:GetSkinsForGameStart()
+	TheNet:SendLobbyCharacterRequestToServer(self.currentcharacter, skins.base, skins.body, skins.hand, skins.legs, skins.feet)
+
+	self.waiting_for_players_root:Show()
+	self.waiting_for_players:Refresh()
 end
 
 function LobbyScreen:DoConfirmQuit()
@@ -691,7 +845,7 @@ function LobbyScreen:SetPortraitImage()
 			end
 
 			self.basetitle:Show()
-			self.basetitle:SetString(GetName(name)) 
+			self.basetitle:SetString(GetSkinName(name)) 
 		else
 			if self.currentcharacter ~= "wes" and self.currentcharacter ~= "random" then
 				self.basequote:Show()
@@ -739,13 +893,7 @@ function LobbyScreen:SelectPortrait()
             self.characterquote:SetString(STRINGS.CHARACTER_QUOTES[herocharacter] or "")
         end
         if self.characterdetails then
-            if herocharacter == "woodie" and TheNet:GetCountryCode() == "CA" then
-                self.characterdetails:SetString(STRINGS.CHARACTER_DESCRIPTIONS[herocharacter.."_canada"] or "")
-            elseif herocharacter == "woodie" and TheNet:GetCountryCode() == "US" then
-                self.characterdetails:SetString(STRINGS.CHARACTER_DESCRIPTIONS[herocharacter.."_us"] or "")
-            else
-                self.characterdetails:SetString(STRINGS.CHARACTER_DESCRIPTIONS[herocharacter] or "")
-            end
+            self.characterdetails:SetString(GetCharacterDescription(herocharacter) or "")
         end
 
         self.dressup:UpdateSpinners()
@@ -798,39 +946,21 @@ function LobbyScreen:OnUpdate(dt)
     else
         self.time_to_refresh = REFRESH_INTERVAL
 
-        local right_widget = self.in_loadout and self.dressup or self.character_scroll_list
+		if self.in_readystate then
+			self.waiting_for_players:Refresh()
+		end
 
-        local players = self.playerList:GetPlayerTable()
-        if #players ~= self.playerList.numPlayers then
-            --rebuild if player count changed
-            self.playerList:BuildPlayerList(players, {right = right_widget, down = self.chatbox})
-        else
-            --rebuild if players changed even though count didn't change
-            for i, v in ipairs(players) do
-                local listitem = self.playerList.scroll_list.items[i]
-                if listitem == nil or
-                    v.userid ~= listitem.userid or
-                    (v.performance ~= nil) ~= (listitem.performance ~= nil) then
-                    self.playerList:BuildPlayerList(players, {right = right_widget, down = self.chatbox})
-                    return
-                end
-            end
-
-            --refresh existing players
-            for i, widget in ipairs(self.playerList.player_widgets) do
-                for i2, data in ipairs(players) do
-                    if widget.userid == data.userid and widget.characterBadge.ishost == (data.performance ~= nil) then
-                        widget.characterBadge:Set(data.prefab or "", data.colour or DEFAULT_PLAYER_COLOUR, widget.characterBadge.ishost, data.userflags or 0)
-                        widget.name:SetDisplayNameFromData(data)
-                    end
-                end
-            end
-        end
+		local right_widget = self.in_loadout and self.dressup or self.character_scroll_list
+		self.playerList:Refresh({right = right_widget, down = self.chatbox})
     end
 
     if self.dressup and self.dressup.puppet then
         self.dressup.puppet:EmoteUpdate(dt)
     end
+    
+    if self.pending_reset_character_request then
+		self:RequestResetLobbyCharacter()
+	end
 end
 
 function LobbyScreen:UpdateSpinners()

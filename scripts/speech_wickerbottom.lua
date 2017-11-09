@@ -115,6 +115,10 @@ return
         {
             EMPTY = "I have to know what to wrap, dear.",
         },
+        PICKUP =
+        {
+            RESTRICTION = "That's not my area of expertise.",
+        },
     },
     ACTIONFAIL_GENERIC = "It seems I can't do that.",
     ANNOUNCE_DIG_DISEASE_WARNING = "Caught it just in time. The roots were nearly rotten.",
@@ -143,7 +147,12 @@ return
     ANNOUNCE_KLAUS_ENRAGE = "No sense throwing one's life away. Fall back!",
     ANNOUNCE_KLAUS_UNCHAINED = "Whatever enchantment restrained it has been undone.",
     ANNOUNCE_KLAUS_CALLFORHELP = "Careful! It has summoned lesser Krampii.",
-   
+
+--boarlord event
+    ANNOUNCE_REVIVING_CORPSE = "Hold on a moment, dear.",
+    ANNOUNCE_REVIVED_OTHER_CORPSE = "Off you go now.",
+    ANNOUNCE_REVIVED_FROM_CORPSE = "Oof! Back on my feet!",
+    
     DESCRIBE=
     {
         PLAYER =
@@ -244,7 +253,7 @@ return
             ATTACKER = "That's enough funny business, young arachnid.",
             MURDERER = "Someone needs to teach you some manners, %s!",
             REVIVER = "You're a sweet boy, %s.",
-            GHOST = "Poor dear. We'll get you a nice colored bandage once you're revived.",
+            GHOST = "I'll fetch you a nice colored bandage once you're revived.",
             FIRESTARTER = "Who gave you matches, %s?",
         },
         WATHGRITHR = 
@@ -254,16 +263,16 @@ return
             MURDERER = "Your saga ends here, %s!",
             REVIVER = "I appreciate your commitment to group survival, %s.",
             GHOST = "%s, I told you not to run with spears. Tsk.",
-            FIRESTARTER = "\"By Hel's fire\" is just a turn of phrase, dear.",
+            FIRESTARTER = "\"By Hel's fire\" is a turn of phrase, dear.",
         },
         WINONA =
         {
             GENERIC = "Ah, greetings dear %s!",
             ATTACKER = "Rather crass wouldn't you say, %s?",
-            MURDERER = "I'll not tolerate such behaviour!",
+            MURDERER = "I'll not tolerate cruelty!",
             REVIVER = "%s is quite the Jane of all trades.",
             GHOST = "Tsk. Were you wearing your hardhat, dear?",
-            FIRESTARTER = "That was certainly not a regulation fire, dear.",
+            FIRESTARTER = "That was not a regulation fire, dear.",
         },
 
         MULTIPLAYER_PORTAL = "Hmm... This may require further reading.",
@@ -1955,6 +1964,57 @@ return
         },
         ATRIUM_KEY = "The key to that old gateway.",
         LIFEINJECTOR = "The mold appears to have medicinal properties.",
+
+        --Arena Event
+        LAVAARENA_BOARLORD = "He has a chip on his shoulder, though I couldn't say why.",
+        BOARRIOR = "We best not underestimate that one.",
+        BOARON = "They appear to be used as fodder.",
+        PEGHOOK = "A sentient Scorpiones. How odd.",
+        TRAILS = "All brawn and no brain, I'm afraid.",
+        TURTILLUS = "Best steer clear of those spikes, dear.",
+        SNAPPER = "What a ruffian!",
+        
+        LAVAARENA_PORTAL = 
+        {
+            ON = "Well, this was an unexpected foray.",
+            GENERIC = "It is linked to our Gateway, but inactive on this side.",
+        },
+        LAVAARENA_KEYHOLE = "It requires a key.",
+        LAVAARENA_KEYHOLE_FULL = "All ready for activation.",
+        LAVAARENA_BATTLESTANDARD = "That banner is invigorating nearby enemies.",
+        LAVAARENA_SPAWNER = "It seems to facilitate local teleportation.",
+
+        HEALINGSTAFF = "It is thankless work.",
+        FIREBALLSTAFF = "Someone experienced with magic ought to wield this. Like myself!",
+        HAMMER_MJOLNIR = "That looks much too strenuous.",
+        SPEAR_GUNGNIR = "I fear I'll not be much use with that.",
+        BLOWDART_LAVA = "I haven't the lung capacity for such a thing.",
+        BLOWDART_LAVA2 = "I'll leave that to the younger folks.",
+        LAVAARENA_LUCY = "Quite the unusual axe.",
+        WEBBER_SPIDER_MINION = "What an adorable little arachnid!",
+        BOOK_FOSSIL = "A tome of accelerated petrification.",
+        LAVAARENA_BERNIE = "Fascinating. It is animated, even here.",
+        SPEAR_LANCE = "Such an ineffectual shape for a polearm.",
+        BOOK_ELEMENTAL = "A powerful tome of summoning.",
+        LAVAARENA_ELEMENTAL = "It is bound to our service.",
+
+        LAVAARENA_ARMORLIGHT = "Light, but not particularly protective.",
+        LAVAARENA_ARMORLIGHTSPEED = "The lightweight material grants the wearer better mobility.",
+        LAVAARENA_ARMORMEDIUM = "This ought to prevent grievous harm from befalling the wearer.",
+        LAVAARENA_ARMORMEDIUMDAMAGER = "I can't say it would be much use to me.",
+        LAVAARENA_ARMORMEDIUMRECHARGER = "A weave of magic replenishes the wearer's will.",
+        LAVAARENA_ARMORHEAVY = "I'll leave that to one of the younger folks.",
+        LAVAARENA_ARMOREXTRAHEAVY = "Best for someone on the receiving end of harsh attacks.",
+
+        LAVAARENA_FEATHERCROWNHAT = "A weak enchantment is present on this wreath.",
+        LAVAARENA_HEALINGFLOWERHAT = "This will amplify the effects of incoming healing magic.",
+        LAVAARENA_LIGHTDAMAGERHAT = "How brutish.",
+        LAVAARENA_STRONGDAMAGERHAT = "I'll leave that to someone a tad more spry.",
+        LAVAARENA_TIARAFLOWERPETALSHAT = "This strengthens the wearer's restorative magicks.",
+        LAVAARENA_EYECIRCLETHAT = "An enviable magic relic, I must say.",
+        LAVAARENA_RECHARGERHAT = "A focal point for magical energies.",
+        LAVAARENA_HEALINGGARLANDHAT = "Proximity to the blossoms produces a restorative effect for the user.",
+        LAVAARENA_CROWNDAMAGERHAT = "Goodness, I've no desire to wear such a thing.",
    },
 
     EAT_FOOD = 

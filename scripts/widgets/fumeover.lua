@@ -14,6 +14,10 @@ local function SwitchUpdatePeriod(self, period, UpdateLayers)
 end
 
 local function UpdateLayers(inst, self)
+    if next(self.corrosives) ~= nil then
+        return
+    end
+
     local clouds = 0
 
     if not self.owner:HasTag("playerghost") then
@@ -91,17 +95,37 @@ local FumeOver =  Class(Widget, function(self, owner)
     self._updatetask = self.inst:DoPeriodicTask(self._updateperiod, UpdateLayers, 0, self)
 
     self.debuffs = {}
+    self._onremovedebuff = function(debuff)
+        self.debuffs[debuff] = nil
+        self._updatetask:Cancel()
+        self._updatetask = self.inst:DoPeriodicTask(self._updateperiod, UpdateLayers, 0, self)
+    end
     self.inst:ListenForEvent("startfumedebuff", function(owner, debuff)
         if self.debuffs[debuff] == nil then
-            self.debuffs[debuff] = function()
-                self.debuffs[debuff] = nil
-                self._updatetask:Cancel()
-                self._updatetask = self.inst:DoPeriodicTask(self._updateperiod, UpdateLayers, 0, self)
-            end
-            self.inst:ListenForEvent("onremove", self.debuffs[debuff], debuff)
+            self.debuffs[debuff] = true
+            self.inst:ListenForEvent("onremove", self._onremovedebuff, debuff)
             self._updatetask:Cancel()
             self._updatetask = self.inst:DoPeriodicTask(self._updateperiod, UpdateLayers, nil, self)
             UpdateLayers(self.inst, self)
+        end
+    end, owner)
+
+    self.corrosives = {}
+    self._onremovecorrosive = function(debuff)
+        self.corrosives[debuff] = nil
+        if self._updatetask ~= nil then
+            self._updatetask:Cancel()
+            self._updatetask = self.inst:DoPeriodicTask(self._updateperiod, UpdateLayers, 0, self)
+        elseif next(self.corrosives) == nil then
+            self:TurnOff(self.over)
+        end
+    end
+    self.inst:ListenForEvent("startcorrosivedebuff", function(owner, debuff)
+        if self.corrosives[debuff] == nil then
+            self.corrosives[debuff] = true
+            self.inst:ListenForEvent("onremove", self._onremovecorrosive, debuff)
+            self:TurnOn(self.over)
+            self:TurnOff(self.top)
         end
     end, owner)
 end)
