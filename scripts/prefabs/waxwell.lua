@@ -8,24 +8,30 @@ local assets =
 
 local prefabs =
 {
-    "shadow_despawn",
     "statue_transition_2",
+    "waxwell_shadowstriker",
 }
 
 local start_inv =
 {
-    "waxwelljournal",
-    "nightmarefuel",
-    "nightmarefuel",
-    "nightmarefuel",
-    "nightmarefuel",
-    "nightmarefuel",
-    "nightmarefuel",
+    default =
+    {
+        "waxwelljournal",
+        "nightmarefuel",
+        "nightmarefuel",
+        "nightmarefuel",
+        "nightmarefuel",
+        "nightmarefuel",
+        "nightmarefuel",
+    },
+
+    lavaarena = TUNING.LAVAARENA_STARTING_ITEMS.WAXWELL,
 }
+
+prefabs = FlattenTree({ prefabs, start_inv }, true)
 
 local function DoEffects(pet)
     local x, y, z = pet.Transform:GetWorldPosition()
-    SpawnPrefab("shadow_despawn").Transform:SetPosition(x, y, z)
     SpawnPrefab("statue_transition_2").Transform:SetPosition(x, y, z)
 end
 
@@ -75,6 +81,8 @@ local function common_postinit(inst)
 end
 
 local function master_postinit(inst)
+    inst.starting_inventory = start_inv[TheNet:GetServerGameMode()] or start_inv.default
+
     inst:AddComponent("reader")
 
     if inst.components.petleash ~= nil then
@@ -96,6 +104,10 @@ local function master_postinit(inst)
 
     inst:ListenForEvent("death", OnDeath)
     inst:ListenForEvent("ms_becomeghost", OnDeath)
+
+    if TheNet:GetServerGameMode() == "lavaarena" then
+        event_server_data("lavaarena", "prefabs/waxwell").master_postinit(inst)
+    end
 end
 
-return MakePlayerCharacter("waxwell", prefabs, assets, common_postinit, master_postinit, start_inv)
+return MakePlayerCharacter("waxwell", prefabs, assets, common_postinit, master_postinit)

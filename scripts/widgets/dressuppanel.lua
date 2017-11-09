@@ -495,7 +495,7 @@ function DressupPanel:GetSkinOptionsForSlot(slot)
 	local colour = DEFAULT_SKIN_COLOR
 	table.insert(skin_options, 
 	{
-		text = STRINGS.SKIN_NAMES["none"], 
+		text = GetSkinName("none"), 
 		data = nil,
 		build = default_build,
 		item = "",
@@ -517,7 +517,7 @@ function DressupPanel:GetSkinOptionsForSlot(slot)
 				if (Prefabs[item] ~= nil and not Prefabs[item].disabled) or (CLOTHING[item] ~= nil and (CLOTHING[item].limited_to_prefab == nil or CLOTHING[item].limited_to_prefab == self.currentcharacter) and not CLOTHING[item].disabled) then --check if this clothing is available for this character and it's not disabled
 					local new_indicator = not self.skins_list[which].timestamp or (self.skins_list[which].timestamp > dressup_timestamp)
 					local colour = GetColorForItem(item)
-					local text_name = GetName(self.skins_list[which].item)
+					local text_name = GetSkinName(self.skins_list[which].item)
 					local key = IsInList(skin_options_items, item)
 
 					if new_indicator and key then 
@@ -540,7 +540,7 @@ function DressupPanel:GetSkinOptionsForSlot(slot)
 		
 						table.insert(skin_options_items,  
 						{
-							text = text_name or STRINGS.SKIN_NAMES["missing"], 
+							text = text_name, 
 							data = nil,
 							build = buildfile,
 							item = item,

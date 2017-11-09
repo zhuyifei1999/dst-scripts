@@ -14,6 +14,11 @@ function Map:RegisterTerraformExtraSpacing(spacing)
     TERRAFORM_EXTRA_SPACING = math.max(spacing, TERRAFORM_EXTRA_SPACING)
 end
 
+local MAX_GROUND_TARGET_BLOCKER_RADIUS = 0
+function Map:RegisterGroundTargetBlocker(radius)
+    MAX_GROUND_TARGET_BLOCKER_RADIUS = math.max(radius, MAX_GROUND_TARGET_BLOCKER_RADIUS)
+end
+
 function Map:IsPassableAtPoint(x, y, z)
     local tile = self:GetTileAtPoint(x, y, z)
     return tile ~= GROUND.IMPASSABLE and
@@ -65,8 +70,19 @@ local DEPLOY_IGNORE_TAGS = { "NOBLOCK", "player", "FX", "INLIMBO", "DECOR" }
 function Map:IsPointNearHole(pt, range)
     range = range or .5
     for i, v in ipairs(TheSim:FindEntities(pt.x, 0, pt.z, DEPLOY_EXTRA_SPACING + range, { "groundhole" })) do
-        local radius = v.Physics:GetRadius() + range
+        local radius = v:GetPhysicsRadius(0) + range
         if v:GetDistanceSqToPoint(pt) < radius * radius then
+            return true
+        end
+    end
+    return false
+end
+
+function Map:IsGroundTargetBlocked(pt, range)
+    range = range or .5
+    for i, v in ipairs(TheSim:FindEntities(pt.x, 0, pt.z, math.max(DEPLOY_EXTRA_SPACING, MAX_GROUND_TARGET_BLOCKER_RADIUS) + range, nil, nil, { "groundtargetblocker", "groundhole" })) do
+        local radius = (v.ground_target_blocker_radius or v:GetPhysicsRadius(0)) + range
+        if v:GetDistanceSqToPoint(pt.x, 0, pt.z) < radius * radius then
             return true
         end
     end

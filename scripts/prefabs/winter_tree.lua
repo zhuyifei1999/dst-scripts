@@ -314,7 +314,7 @@ local function dogifting(inst)
                         v:Remove()
                     end
                     local pos = inst:GetPosition()
-                    local radius = inst.Physics:GetRadius() + .7 + math.random() * .5
+                    local radius = inst:GetPhysicsRadius(0) + .7 + math.random() * .5
                     local theta = inst:GetAngleToPoint(player.Transform:GetWorldPosition()) * DEGREES
                     local offset =
                         FindWalkableOffset(pos, theta, radius, 8, false, true, NoOverlap) or

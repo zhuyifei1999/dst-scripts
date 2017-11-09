@@ -37,7 +37,7 @@ function EquipSlot:OnControl(control, down)
                         inventory:EquipActiveItem()
                     end
                 end
-            elseif self.tile ~= nil and self.tile.item ~= nil then
+            elseif self.tile ~= nil and self.tile.item ~= nil and self.owner.replica.inventory:GetNumSlots() > 0 then
                 inventory:TakeActiveItemFromEquipSlot(self.equipslot)
             end
             return true

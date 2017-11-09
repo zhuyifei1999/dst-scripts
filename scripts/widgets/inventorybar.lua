@@ -45,12 +45,19 @@ local Inv = Class(Widget, function(self, owner)
     self.hudcompass:SetScale(1.5, 1.5)
     self.hudcompass:SetMaster()
 
-    self.bg = self.root:AddChild(Image(HUD_ATLAS, "inventory_bg.tex"))
+	if TheNet:GetServerGameMode() == "lavaarena" then
+	    self.base_scale = .55
+		self:SetScale(self.base_scale)
+	    self:SetPosition(0,0,0)
 
-    --self.bg = self.root:AddChild(ThreeSlice(HUD_ATLAS, "inventory_corner.tex", "inventory_filler.tex"))
-
-    self.bgcover = self.root:AddChild(Image(HUD_ATLAS, "inventory_bg_cover.tex"))
-
+		self.bg = self.root:AddChild(Image("images/lavaarena_hud.xml", "lavaarena_inventorybar.tex"))
+		self.bgcover = self.root:AddChild(Widget("dummy"))
+		self.in_pos = Vector3(41,W*1.5,0)
+	else
+		self.bg = self.root:AddChild(Image(HUD_ATLAS, "inventory_bg.tex"))
+		self.bgcover = self.root:AddChild(Image(HUD_ATLAS, "inventory_bg_cover.tex"))
+	end
+	
     self.hovertile = nil
     self.cursortile = nil
 
@@ -149,13 +156,14 @@ function Inv:Rebuild()
     local inventory = self.owner.replica.inventory
     local overflow = inventory:GetOverflowContainer()
     local do_integrated_backpack = overflow ~= nil and self.controller_build
+    local do_self_inspect = not (self.controller_build or GetGameModeProperty("no_avatar_popup"))
 
     local y = overflow ~= nil and ((W + YSEP) / 2) or 0
     local eslot_order = {}
 
     local num_slots = inventory:GetNumSlots()
     local num_equip = #self.equipslotinfo
-    local num_buttons = self.controller_build and 0 or 1
+    local num_buttons = do_self_inspect and 1 or 0
     local num_slotintersep = math.ceil(num_slots / 5)
     local num_equipintersep = num_buttons > 0 and 1 or 0
     local total_w = (num_slots + num_equip + num_buttons) * W + (num_slots + num_equip + num_buttons - num_slotintersep - num_equipintersep - 1) * SEP + (num_slotintersep + num_equipintersep) * INTERSEP
@@ -200,7 +208,7 @@ function Inv:Rebuild()
         atlas_name = "images/hud.xml"
     end
 
-    if not self.controller_build then
+    if do_self_inspect then
         self.bg:SetScale(1.22, 1, 1)
         self.bgcover:SetScale(1.22, 1, 1)
 
@@ -258,23 +266,31 @@ function Inv:Rebuild()
     end
 
     if hadbackpack and self.backpack == nil then
-        self:SelectSlot(self.inv[1])
+        self:SelectDefaultSlot()
         self.current_list = self.inv
     end
 
-    --self.bg:Flow(total_w+60, 256, true)
+    if self.bg.Flow ~= nil then
+        -- note: Flow is a 3-slice function
+        self.bg:Flow(total_w + 60, 256, true)
+    end
 
-    if do_integrated_backpack then
-        self.bg:SetPosition(Vector3(0,-24,0))
-        self.bgcover:SetPosition(Vector3(0, -135, 0))
-        self.toprow:SetPosition(Vector3(0,W/2 + YSEP/2,0))
-        self.bottomrow:SetPosition(Vector3(0,-W/2 - YSEP/2,0))
+    if TheNet:GetServerGameMode() == "lavaarena" then
+        self.bg:SetPosition(15, 0)
+        self.bg:SetScale(1)
+        self.toprow:SetPosition(0, 3)
+        self.root:SetPosition(self.in_pos)
+    elseif do_integrated_backpack then
+        self.bg:SetPosition(0, -24)
+        self.bgcover:SetPosition(0, -135)
+        self.toprow:SetPosition(0, .5 * (W + YSEP))
+        self.bottomrow:SetPosition(0, -.5 * (W + YSEP))
         self.root:MoveTo(self.out_pos, self.in_pos, .5)
     else
-        self.bg:SetPosition(Vector3(0, -64, 0))
-        self.bgcover:SetPosition(Vector3(0, -100, 0))
-        self.toprow:SetPosition(Vector3(0,0,0))
-        self.bottomrow:SetPosition(0,0,0)
+        self.bg:SetPosition(0, -64)
+        self.bgcover:SetPosition(0, -100)
+        self.toprow:SetPosition(0, 0)
+        self.bottomrow:SetPosition(0, 0)
 
         if self.controller_build and not self.rebuild_snapping then
             self.root:MoveTo(self.in_pos, self.out_pos, .2)
@@ -286,7 +302,7 @@ function Inv:Rebuild()
 
     self.actionstring:MoveToFront()
 
-    self:SelectSlot(self.inv[1])
+    self:SelectDefaultSlot()
     self.current_list = self.inv
     self:UpdateCursor()
 
@@ -303,7 +319,7 @@ function Inv:OnUpdate(dt)
 
     self.hint_update_check = self.hint_update_check - dt
     if 0 > self.hint_update_check then
-        if not TheInput:ControllerAttached() then
+        if #self.inv <= 0 or not TheInput:ControllerAttached() then
             self.openhint:Hide()
         else
             self.openhint:Show()
@@ -339,7 +355,7 @@ function Inv:OnUpdate(dt)
     end
 
     if self.active_slot ~= nil and not self.active_slot.inst:IsValid() then
-        self:SelectSlot(self.inv[1])
+        self:SelectDefaultSlot()
 
         self.current_list = self.inv
 
@@ -426,7 +442,6 @@ function Inv:GetInventoryLists(same_container_only)
 
         return lists
     end
-
 end
 
 function Inv:CursorNav(dir, same_container_only)
@@ -439,7 +454,7 @@ function Inv:CursorNav(dir, same_container_only)
 
     if self.active_slot and not self.active_slot.inst:IsValid() then
         self.current_list = self.inv
-        return self:SelectSlot(self.inv[1])
+        return self:SelectDefaultSlot()
     end
 
     local lists = self:GetInventoryLists(same_container_only)
@@ -699,7 +714,7 @@ function Inv:UpdateCursorText()
                     if self_action ~= nil and self_action.action ~= ACTIONS.UNEQUIP then
                         table.insert(str, TheInput:GetLocalizedControl(controller_id, CONTROL_INVENTORY_USEONSCENE) .. " " .. self_action:GetActionString())
                     end
-                    if not inv_item:HasTag("heavy") then
+                    if #self.inv > 0 and not inv_item:HasTag("heavy") then
                         table.insert(str, TheInput:GetLocalizedControl(controller_id, CONTROL_INVENTORY_USEONSELF) .. " " .. STRINGS.UI.HUD.UNEQUIP)
                     end
                 end
@@ -830,6 +845,10 @@ function Inv:SelectSlot(slot)
     end
 end
 
+function Inv:SelectDefaultSlot()
+    self:SelectSlot(self.inv[1] or self.equip[self.equipslotinfo[1].slot])
+end
+
 function Inv:UpdateCursor()
     if not TheInput:ControllerAttached() then
         self.actionstring:Hide()
@@ -850,7 +869,7 @@ function Inv:UpdateCursor()
     end
 
     if self.active_slot == nil then
-        self:SelectSlot(self.inv[1])
+        self:SelectDefaultSlot()
     end
 
     if self.active_slot ~= nil and self.cursortile ~= nil then

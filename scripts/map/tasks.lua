@@ -130,8 +130,8 @@ require("map/tasks/island_hopping")
 require("map/tasks/forest")
 require("map/tasks/caves")
 require("map/tasks/ruins")
-
 require("map/tasks/DLCtasks")
+require("map/tasks/lavaarena")
 
 ------------------------------------------------------------------------------------------------------------------------
 -- TEST TASKS

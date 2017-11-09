@@ -1,6 +1,6 @@
 require "dlcsupport"
 
-local DLCSounds = 
+local DLCSounds =
 {
 	"amb_stream.fsb",
 	"bearger.fsb",
@@ -20,7 +20,7 @@ local DLCSounds =
 	"webber.fsb",
 }
 
-local MainSounds = 
+local MainSounds =
 {
 	"bat.fsb",
 	"bee.fsb",
@@ -42,6 +42,7 @@ local MainSounds =
 	"hound.fsb",
 	"koalefant.fsb",
 	"krampus.fsb",
+    "lava_arena.fsb",
 	"leif.fsb",
 	"mandrake.fsb",
 	"maxwell.fsb",
@@ -95,8 +96,8 @@ function PreloadSounds()
     --      but preloadsounds.lua is loaded first, so we only
     --      access the constants within function calls.
     PreloadSoundList({
-        SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT] ~= nil and
-        SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT].bank or
+        (FESTIVAL_EVENT_MUSIC[WORLD_FESTIVAL_EVENT] ~= nil and FESTIVAL_EVENT_MUSIC[WORLD_FESTIVAL_EVENT].bank) or
+        (SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT] ~= nil and SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT].bank) or
         "music_frontend.fsb",
     })
 end

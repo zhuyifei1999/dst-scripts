@@ -252,7 +252,7 @@ function ServerCreationScreen:UpdateButtons(slotnum)
     if not slotnum or (slotnum < 0 or SaveGameIndex:IsSlotEmpty(slotnum)) then
         if self.delete_button then self.delete_button:Disable() end
         if self.create_button then self.create_button.text:SetString(STRINGS.UI.SERVERCREATIONSCREEN.CREATE) end
-    else -- Save data            
+    else -- Save data
         if self.delete_button then self.delete_button:Enable() end
         if self.create_button then self.create_button.text:SetString(STRINGS.UI.SERVERCREATIONSCREEN.RESUME) end
     end
@@ -271,7 +271,7 @@ local function BuildTagsStringHosting(self, worldoptions)
 
     local tagsTable = {}
 
-    table.insert(tagsTable, self.server_settings_tab:GetGameMode())
+    table.insert(tagsTable, GetGameModeTag(self.server_settings_tab:GetGameMode()))
 
     if self.server_settings_tab:GetPVP() then
         table.insert(tagsTable, STRINGS.TAGS.PVP)

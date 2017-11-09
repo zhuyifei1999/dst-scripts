@@ -110,3 +110,19 @@ TheMixer:AddNewMix("lobby", 2, 8,
     [sfx] = 0,
     [slurp] = 0,
 })
+
+--------------------------------------------------------------------------
+
+TheMixer:AddNewMix("lavaarena_normal", .1, 1,
+{ 
+    [amb] = .8,
+    [cloud] = 0,
+    [music] = 1,
+    [voice] = 1,
+    [movement] = 1,
+    [creature] = 1,
+    [player] = 1,
+    [HUD] = 1,
+    [sfx] = 1,
+    [slurp] = 1,
+})

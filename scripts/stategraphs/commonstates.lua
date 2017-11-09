@@ -49,9 +49,26 @@ CommonHandlers.OnFreezeEx = function()
 end
 
 --------------------------------------------------------------------------
+local function onfossilize(inst, data)
+    if not (inst.components.health ~= nil and inst.components.health:IsDead() or inst.sg:HasStateTag("fossilized")) then
+        if inst.sg:HasStateTag("nofreeze") then
+            inst.components.fossilizable:OnSpawnFX()
+        else
+            inst.sg:GoToState("fossilized", data)
+        end
+    end
+end
+
+CommonHandlers.OnFossilize = function()
+    return EventHandler("fossilize", onfossilize)
+end
+
+--------------------------------------------------------------------------
 local function onattacked(inst, data)
     if inst.components.health ~= nil and not inst.components.health:IsDead()
-        and (not inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("frozen")) then
+        and (not inst.sg:HasStateTag("busy") or
+            inst.sg:HasStateTag("caninterrupt") or
+            inst.sg:HasStateTag("frozen")) then
         inst.sg:GoToState("hit")
     end
 end
@@ -101,6 +118,16 @@ CommonHandlers.OnLocomote = function(can_run, can_walk)
             end
         end
     end)
+end
+
+--------------------------------------------------------------------------
+local function ClearStatusAilments(inst)
+    if inst.components.freezable ~= nil and inst.components.freezable:IsFrozen() then
+        inst.components.freezable:Unfreeze()
+    end
+    if inst.components.pinnable ~= nil and inst.components.pinnable:IsStuck() then
+        inst.components.pinnable:Unstick()
+    end
 end
 
 --------------------------------------------------------------------------
@@ -655,6 +682,60 @@ CommonStates.AddCombatStates = function(states, timelines, anims)
 end
 
 --------------------------------------------------------------------------
+CommonStates.AddHitState = function(states, timeline, anim)
+    table.insert(states, State
+    {
+        name = "hit",
+        tags = { "hit", "busy" },
+
+        onenter = function(inst)
+            if inst.components.locomotor ~= nil then
+                inst.components.locomotor:StopMoving()
+            end
+
+            local hitanim =
+                (anim == nil and "hit") or
+                (type(anim) ~= "function" and anim) or
+                anim(inst)
+
+            inst.AnimState:PlayAnimation(hitanim)
+
+            if inst.SoundEmitter ~= nil and inst.sounds ~= nil and inst.sounds.hit ~= nil then
+                inst.SoundEmitter:PlaySound(inst.sounds.hit)
+            end
+        end,
+
+        timeline = timeline,
+
+        events =
+        {
+            EventHandler("animover", idleonanimover),
+        },
+    })
+end
+
+--------------------------------------------------------------------------
+CommonStates.AddDeathState = function(states, timeline, anim)
+    table.insert(states, State
+    {
+        name = "death",
+        tags = { "busy" },
+
+        onenter = function(inst)
+            if inst.components.locomotor ~= nil then
+                inst.components.locomotor:StopMoving()
+            end
+            inst.AnimState:PlayAnimation(anim or "death")
+            RemovePhysicsColliders(inst)
+            inst.components.lootdropper:DropLoot(inst:GetPosition())
+        end,
+
+        timeline = timeline,
+    })
+
+end
+
+--------------------------------------------------------------------------
 --V2C: DST improved sleep states that support "nosleep" state tag
 
 local function onsleepex(inst)
@@ -814,5 +895,113 @@ CommonStates.AddSleepExStates = function(states, timelines, fns)
         },
 
         onexit = fns ~= nil and fns.onexitwake or nil,
+    })
+end
+
+--------------------------------------------------------------------------
+
+CommonStates.AddFossilizedStates = function(states, timelines, fns)
+    table.insert(states, State
+    {
+        name = "fossilized",
+        tags = { "busy", "fossilized", "caninterrupt" },
+
+        onenter = function(inst, data)
+            ClearStatusAilments(inst)
+            if inst.components.locomotor ~= nil then
+                inst.components.locomotor:StopMoving()
+            end
+            inst.AnimState:PlayAnimation("fossilized")
+            inst.components.fossilizable:OnFossilize(data ~= nil and data.duration or nil, data ~= nil and data.doer or nil)
+            if fns ~= nil and fns.fossilized_onenter ~= nil then
+                fns.fossilized_onenter(inst)
+            end
+        end,
+
+        timeline = timelines ~= nil and timelines.fossilizedtimeline or nil,
+
+        events =
+        {
+            EventHandler("fossilize", function(inst, data)
+                inst.components.fossilizable:OnExtend(data ~= nil and data.duration or nil, data ~= nil and data.doer or nil)
+            end),
+            EventHandler("unfossilize", function(inst)
+                inst.sg.statemem.unfossilizing = true
+                inst.sg:GoToState("unfossilizing")
+            end),
+        },
+
+        onexit = function(inst)
+            inst.components.fossilizable:OnUnfossilize()
+            if not inst.sg.statemem.unfossilizing then
+                --Interrupted
+                inst.components.fossilizable:OnSpawnFX()
+            end
+            if fns ~= nil and fns.fossilized_onexit ~= nil then
+                fns.fossilized_onexit(inst)
+            end
+        end,
+    })
+
+    table.insert(states, State
+    {
+        name = "unfossilizing",
+        tags = { "busy", "caninterrupt" },
+
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("fossilized_shake")
+            if fns ~= nil and fns.unfossilizing_onenter ~= nil then
+                fns.unfossilizing_onenter(inst)
+            end
+        end,
+
+        timeline = timelines ~= nil and timelines.unfossilizingtimeline or nil,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg.statemem.unfossilized = true
+                    inst.sg:GoToState("unfossilized")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if not inst.sg.statemem.unfossilized then
+                --Interrupted
+                inst.components.fossilizable:OnSpawnFX()
+            end
+            if fns ~= nil and fns.unfossilizing_onexit ~= nil then
+                fns.unfossilizing_onexit(inst)
+            end
+        end,
+    })
+
+    table.insert(states, State
+    {
+        name = "unfossilized",
+        tags = { "busy", "caninterrupt" },
+
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("fossilized_pst")
+            inst.components.fossilizable:OnSpawnFX()
+            if fns ~= nil and fns.unfossilized_onenter ~= nil then
+                fns.unfossilized_onenter(inst)
+            end
+        end,
+
+        timeline = timelines ~= nil and timelines.unfossilizedtimeline or nil,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+
+        onexit = fns ~= nil and fns.unfossilized_onexit or nil,
     })
 end

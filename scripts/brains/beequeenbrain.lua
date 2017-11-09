@@ -84,7 +84,7 @@ local function ShouldChase(self)
         return not (self.inst.components.combat:InCooldown() and
                     target ~= nil and
                     target:IsValid() and
-                    target:IsNear(self.inst, target.Physics ~= nil and TUNING.BEEQUEEN_ATTACK_RANGE + target.Physics:GetRadius() or TUNING.BEEQUEEN_ATTACK_RANGE))
+                    target:IsNear(self.inst, TUNING.BEEQUEEN_ATTACK_RANGE + target:GetPhysicsRadius(0)))
     elseif target == nil or not target:IsValid() then
         self._shouldchase = false
         return false
@@ -97,14 +97,14 @@ local function ShouldChase(self)
     elseif self.inst.components.combat:InCooldown() then
         return false
     end
-    range = TUNING.BEEQUEEN_ATTACK_RANGE + (target.Physics ~= nil and 1 + target.Physics:GetRadius() or 1)
+    range = TUNING.BEEQUEEN_ATTACK_RANGE + target:GetPhysicsRadius(0) + 1
     return distsq <= range * range
 end
 
 local function CalcDodgeMult(self)
     local found = false
     for k, v in pairs(self.inst.components.grouptargeter:GetTargets()) do
-        if self.inst:IsNear(k, k.Physics ~= nil and TUNING.BEEQUEEN_ATTACK_RANGE + k.Physics:GetRadius() or TUNING.BEEQUEEN_ATTACK_RANGE) then
+        if self.inst:IsNear(k, TUNING.BEEQUEEN_ATTACK_RANGE + k:GetPhysicsRadius(0)) then
             if found then
                 return .5
             end

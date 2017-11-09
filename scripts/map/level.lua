@@ -165,7 +165,7 @@ function Level:ChooseSetPieces()
 		table.insert(self.chosen_tasks[idx].random_set_pieces, set_piece)
 	end
 
-	for name, choicedata in pairs(self.set_pieces) do
+	for name, choicedata in pairs(self.set_pieces or {}) do
         --print("Adding",name, choicedata.count)
 		local found = false
 		local idx = {}

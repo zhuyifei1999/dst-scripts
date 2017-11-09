@@ -27,6 +27,8 @@ local Projectile = Class(function(self, inst)
 
     self.stimuli = nil
 
+    --self.delaytask = nil
+
     --NOTE: projectile and complexprojectile components are mutually
     --      exclusive because they share this tag!
     --V2C: Recommended to explicitly add tag to prefab pristine state
@@ -44,6 +46,10 @@ function Projectile:OnRemoveFromEntity()
     if self.dozeOffTask ~= nil then
         self.dozeOffTask:Cancel()
         self.dozeOffTask = nil
+    end
+    if self.delaytask ~= nil then
+        self.delaytask:Cancel()
+        self.delaytask = nil
     end
 end
 
@@ -117,7 +123,7 @@ function Projectile:Throw(owner, target, attacker)
     self.inst:PushEvent("onthrown", { thrower = owner, target = target })
     target:PushEvent("hostileprojectile", { thrower = owner, attacker = attacker, target = target })
     if self.onthrown ~= nil then
-        self.onthrown(self.inst, owner, target)
+        self.onthrown(self.inst, owner, target, attacker)
     end
     if self.cancatch and target.components.catcher ~= nil then
         target.components.catcher:StartWatching(self.inst)
@@ -196,7 +202,7 @@ function Projectile:OnUpdate(dt)
         self:Miss(target)
     elseif not self.homing then
         if target ~= nil and target:IsValid() and not target:IsInLimbo() then
-            local range = target.Physics ~= nil and target.Physics:GetRadius() + self.hitdist or self.hitdist
+            local range = target:GetPhysicsRadius(0) + self.hitdist
             -- V2C: this is 3D distsq (since combat range checks use 3D distsq as well)
             -- NOTE: used < here, whereas combat uses <=, just to give us tiny bit of room for error =)
             if distsq(current, target:GetPosition()) < range * range then
@@ -210,7 +216,7 @@ function Projectile:OnUpdate(dt)
         and (target.sg == nil or
             not (target.sg:HasStateTag("flight") or
                 target.sg:HasStateTag("invisible"))) then
-        local range = target.Physics ~= nil and target.Physics:GetRadius() + self.hitdist or self.hitdist
+        local range = target:GetPhysicsRadius(0) + self.hitdist
         -- V2C: this is 3D distsq (since combat range checks use 3D distsq as well)
         -- NOTE: used < here, whereas combat uses <=, just to give us tiny bit of room for error =)
         if distsq(current, target:GetPosition()) < range * range then
@@ -266,6 +272,19 @@ function Projectile:LoadPostPass(newents, savedata)
             self:Throw(owner.entity, target.entity)
         end
     end
+end
+
+local function OnShow(inst, self)
+    self.delaytask = nil
+    inst:Show()
+end
+
+function Projectile:DelayVisibility(duration)
+    if self.delaytask ~= nil then
+        self.delaytask:Cancel()
+    end
+    self.inst:Hide()
+    self.delaytask = self.inst:DoTaskInTime(duration, OnShow, self)
 end
 
 return Projectile

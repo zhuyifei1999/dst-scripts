@@ -13,6 +13,7 @@ DEFAULT_LOCATION = "forest"
 
 local levellist = {}
 levellist[LEVELTYPE.SURVIVAL] = {}
+levellist[LEVELTYPE.LAVAARENA] = {}
 levellist[LEVELTYPE.TEST] = {}
 levellist[LEVELTYPE.CUSTOM] = {}
 
@@ -239,6 +240,7 @@ require("map/locations")
 
 require("map/levels/forest")
 require("map/levels/caves")
+require("map/levels/lavaarena")
 
 ------------------------------------------------------------------
 -- Export functions

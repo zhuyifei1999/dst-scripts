@@ -9,14 +9,29 @@ local assets =
 
 local prefabs =
 {
-    "lighter",
+    "lavaarena_bernie",
 }
 
 local start_inv =
 {
-    "lighter",
-    "bernie_inactive",
+    default =
+    {
+        "lighter",
+        "bernie_inactive",
+    },
+
+    lavaarena = TUNING.LAVAARENA_STARTING_ITEMS.WILLOW,
 }
+
+prefabs = FlattenTree({ prefabs, start_inv }, true)
+
+for k, v in pairs(start_inv) do
+    for i1, v1 in ipairs(v) do
+        if not table.contains(prefabs, v1) then
+            table.insert(prefabs, v1)
+        end
+    end
+end
 
 local function sanityfn(inst)
     local x, y, z = inst.Transform:GetWorldPosition() 
@@ -38,6 +53,12 @@ end
 local function common_postinit(inst)
     inst:AddTag("pyromaniac")
     inst:AddTag("expertchef")
+
+    if TheNet:GetServerGameMode() == "lavaarena" then
+        inst:AddTag("bernie_reviver")
+
+        inst:AddComponent("pethealthbar")
+    end
 end
 
 local function UpdateSanityTemperature(inst)
@@ -63,6 +84,8 @@ local function UpdateSanityTemperature(inst)
 end
 
 local function master_postinit(inst)
+    inst.starting_inventory = start_inv[TheNet:GetServerGameMode()] or start_inv.default
+
     inst.components.health.fire_damage_scale = TUNING.WILLOW_FIRE_DAMAGE
     inst.components.health.fire_timestart = TUNING.WILLOW_FIRE_IMMUNITY
 
@@ -71,6 +94,10 @@ local function master_postinit(inst)
     inst.components.sanity.rate_modifier = TUNING.WILLOW_SANITY_MODIFIER
 
     inst:DoPeriodicTask(.1, UpdateSanityTemperature, 0)
+
+    if TheNet:GetServerGameMode() == "lavaarena" then
+        event_server_data("lavaarena", "prefabs/willow").master_postinit(inst)
+    end
 end
 
-return MakePlayerCharacter("willow", prefabs, assets, common_postinit, master_postinit, start_inv)
+return MakePlayerCharacter("willow", prefabs, assets, common_postinit, master_postinit)

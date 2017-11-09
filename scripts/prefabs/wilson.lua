@@ -11,6 +11,17 @@ local prefabs =
     "beardhair",
 }
 
+local start_inv =
+{
+    default =
+    {
+    },
+
+    lavaarena = TUNING.LAVAARENA_STARTING_ITEMS.WILSON,
+}
+
+prefabs = FlattenTree({ prefabs, start_inv }, true)
+
 local function common_postinit(inst)
     --bearded (from beard component) added to pristine state for optimization
     inst:AddTag("bearded")
@@ -40,12 +51,18 @@ local function OnGrowLongBeard(inst)
 end
 
 local function master_postinit(inst)
+    inst.starting_inventory = start_inv[TheNet:GetServerGameMode()] or start_inv.default
+
     inst:AddComponent("beard")
     inst.components.beard.onreset = OnResetBeard
     inst.components.beard.prize = "beardhair"
     inst.components.beard:AddCallback(BEARD_DAYS[1], OnGrowShortBeard)
     inst.components.beard:AddCallback(BEARD_DAYS[2], OnGrowMediumBeard)
     inst.components.beard:AddCallback(BEARD_DAYS[3], OnGrowLongBeard)
+
+    if TheNet:GetServerGameMode() == "lavaarena" then
+        event_server_data("lavaarena", "prefabs/wilson").master_postinit(inst)
+    end
 end
 
 return MakePlayerCharacter("wilson", prefabs, assets, common_postinit, master_postinit)

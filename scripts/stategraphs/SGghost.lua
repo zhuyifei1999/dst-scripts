@@ -18,8 +18,13 @@ local events =
     EventHandler("startaura", startaura),
     EventHandler("stopaura", stopaura),
     EventHandler("attacked", function(inst)
-        if not inst.components.health:IsDead() then
+        if not (inst.sg:HasStateTag("jumping") or inst.components.health:IsDead()) then
             inst.sg:GoToState("hit")
+        end
+    end),
+    EventHandler("knockback", function(inst, data)
+        if not inst.components.health:IsDead() then
+            inst.sg:GoToState("knockback", data)
         end
     end),
     EventHandler("death", function(inst)
@@ -133,6 +138,69 @@ local states =
                 end
             end)
         },
+    },
+
+    State{
+        name = "knockback",
+        tags = { "busy", "jumping" },
+
+        onenter = function(inst, data)
+            inst.SoundEmitter:PlaySound(inst:HasTag("girl") and "dontstarve/ghost/ghost_girl_howl" or "dontstarve/ghost/ghost_howl")
+            inst.AnimState:PlayAnimation("brace")
+            inst.components.locomotor:Stop()
+
+            if data ~= nil and data.radius ~= nil and data.knocker ~= nil and data.knocker:IsValid() then
+                local x, y, z = data.knocker.Transform:GetWorldPosition()
+                local distsq = inst:GetDistanceSqToPoint(x, y, z)
+                local rangesq = data.radius * data.radius
+                local rot = inst.Transform:GetRotation()
+                local rot1 = distsq > 0 and inst:GetAngleToPoint(x, y, z) or data.knocker.Transform:GetRotation() + 180
+                local drot = math.abs(rot - rot1)
+                while drot > 180 do
+                    drot = math.abs(drot - 360)
+                end
+                local k = distsq < rangesq and .3 * distsq / rangesq - 1 or -.7
+                inst.sg.statemem.speed = (data.strengthmult or 1) * 20 * k
+                inst.sg.statemem.dspeed = 0
+                if drot > 90 then
+                    inst.sg.statemem.reverse = true
+                    inst.Transform:SetRotation(rot1 + 180)
+                    inst.Physics:SetMotorVel(-(inst.sg.statemem.speed + 15), 0, 0)
+                else
+                    inst.Transform:SetRotation(rot1)
+                    inst.Physics:SetMotorVel(inst.sg.statemem.speed + 15, 0, 0)
+                end
+            end
+        end,
+
+        onupdate = function(inst)
+            if inst.sg.statemem.speed ~= nil then
+                inst.sg.statemem.speed = inst.sg.statemem.speed + inst.sg.statemem.dspeed
+                if inst.sg.statemem.speed < 0 then
+                    inst.sg.statemem.dspeed = inst.sg.statemem.dspeed + 1
+                    inst.Physics:SetMotorVel(inst.sg.statemem.reverse and -inst.sg.statemem.speed or inst.sg.statemem.speed, 0, 0)
+                else
+                    inst.sg.statemem.speed = nil
+                    inst.sg.statemem.dspeed = nil
+                    inst.Physics:Stop()
+                end
+            end
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("hit")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if inst.sg.statemem.speed ~= nil then
+                inst.Physics:Stop()
+            end
+        end,
     },
 }
 

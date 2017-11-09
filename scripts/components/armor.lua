@@ -24,6 +24,15 @@ function Armor:InitCondition(amount, absorb_percent)
     self.maxcondition = amount
 end
 
+function Armor:InitIndestructible(absorb_percent)
+    self.absorb_percent = absorb_percent
+    self.indestructible = true
+end
+
+function Armor:IsIndestructible()
+	return self.indestructible == true
+end
+
 function Armor:GetPercent(amount)
     return self.condition / self.maxcondition
 end
@@ -60,6 +69,10 @@ function Armor:SetPercent(amount)
 end
 
 function Armor:SetCondition(amount)
+	if self.indestructible then
+		return
+	end
+	
     self.condition = math.min(amount, self.maxcondition)
     self.inst:PushEvent("percentusedchange", { percent = self:GetPercent() })
 

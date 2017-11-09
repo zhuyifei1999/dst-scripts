@@ -55,6 +55,9 @@ local AMBIENT_SOUNDS =
     [GROUND.TRIM] = { sound = "dontstarve/cave/ruinsAMB" },
     [GROUND.TRIM_GLOW] = { sound = "dontstarve/cave/ruinsAMB" },
 
+    [GROUND.LAVAARENA_FLOOR] = { sound = "dontstarve/lava_arena_amb/arena_day" },
+    [GROUND.LAVAARENA_TRIM] = { sound = "dontstarve/lava_arena_amb/arena_day" },
+
     ABYSS = { sound = "dontstarve/cave/pitAMB" },
     VOID = { sound = "dontstarve/chess/void", wintersound = "dontstarve/chess/void", springsound="dontstarve/chess/void", summersound="dontstarve/chess/void", rainsound = "dontstarve/chess/void" },
     CIVRUINS = { sound = "dontstarve/cave/civruinsAMB" },
@@ -83,7 +86,6 @@ self.inst = inst
 
 --Private
 local _map = inst.Map
-local _iscave = inst:HasTag("cave")
 local _lightattenuation = false
 local _seasonmix = "autumn"
 local _rainmix = false
@@ -92,6 +94,7 @@ local _lastplayerpos = nil
 local _daytimeparam = 1
 local _sanityparam = 0
 local _soundvolumes = {}
+local _wavesenabled = not inst:HasTag("cave")
 local _wavessound = WAVE_SOUNDS[_seasonmix]
 local _wavesvolume = 0
 local _ambientvolume = 1
@@ -162,6 +165,10 @@ end
 
 function self:SetReverbPreset(preset)
     TheSim:SetReverbPreset(preset)
+end
+
+function self:SetWavesEnabled(enabled)
+    _wavesenabled = enabled
 end
 
 --------------------------------------------------------------------------
@@ -252,7 +259,7 @@ function self:OnUpdate(dt)
             soundvolumes[v.sound] = v.count
         end
 
-        wavesvolume = _iscave and 0 or math.min(math.max(wavecount * WAVE_VOLUME_SCALE, 0), 1)
+        wavesvolume = _wavesenabled and math.min(math.max(wavecount * WAVE_VOLUME_SCALE, 0), 1) or 0
     end
 
     if player == nil then

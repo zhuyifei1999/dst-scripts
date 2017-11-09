@@ -9,6 +9,7 @@ MAIN = 1
 ENCODE_SAVES = BRANCH ~= "dev"
 CHEATS_ENABLED = BRANCH == "dev" or (PLATFORM == "PS4" and CONFIGURATION ~= "PRODUCTION")
 SOUNDDEBUG_ENABLED = false
+SOUNDDEBUGUI_ENABLED = false
 WORLDSTATEDEBUG_ENABLED = false
 --DEBUG_MENU_ENABLED = true
 DEBUG_MENU_ENABLED = BRANCH == "dev" or (PLATFORM == "PS4" and CONFIGURATION ~= "PRODUCTION")
@@ -156,6 +157,7 @@ require("saveindex") -- Added by Altgames for Android focus lost handling
 require("worldtiledefs")
 require("gamemodes")
 require("skinsutils")
+require("wxputils")
 
 if TheConfig:IsEnabled("force_netbookmode") then
 	TheSim:SetNetbookMode(true)
@@ -229,6 +231,8 @@ global("AllPlayers")
 AllPlayers = {}
 global("SERVER_TERMINATION_TIMER")
 SERVER_TERMINATION_TIMER = -1
+global("EventAchievements")
+EventAchievements = nil
 
 require("globalvariableoverrides")
 
@@ -262,6 +266,8 @@ local function ModSafeStartup()
 	-- This one needs to be active from the get-go.
 	LoadPrefabFile("prefabs/global")
     LoadAchievements("achievements.lua")
+    EventAchievements = require("eventachievements")()
+    EventAchievements:LoadAchievementsForEvent(require("lavaarena_achievements"))
 
     local FollowCamera = require("cameras/followcamera")
     TheCamera = FollowCamera()

@@ -46,7 +46,7 @@ local function FindBaseToAttack(inst, target)
 end
 
 local function RetargetFn(inst)
-    local range = inst.Physics:GetRadius() + 8
+    local range = inst:GetPhysicsRadius(0) + 8
     return FindEntity(
             inst,
             TARGET_DIST,

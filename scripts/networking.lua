@@ -3,7 +3,7 @@ local PopupDialogScreen = require "screens/popupdialog"
 local Widget = require "widgets/widget"
 local ImageButton = require "widgets/imagebutton"
 local Text = require "widgets/text"
-local ConnectingToGamePopup = require "screens/connectingtogamepopup"
+local ConnectingToGamePopup = require "screens/redux/connectingtogamepopup"
 
 local UserCommands = require("usercommands")
 
@@ -20,8 +20,8 @@ function SpawnSecondInstance()
 end
 
 --V2C: This is for server side processing of remote slash command requests
-function Networking_SlashCmd(guid, cmd)
-    local entity = Ents[guid]
+function Networking_SlashCmd(guid, userid, cmd)
+    local entity = Ents[guid] or TheNet:GetClientTableForUser(userid)
     if entity ~= nil then
         UserCommands.RunTextUserCommand(cmd, entity, true)
     end
@@ -125,8 +125,8 @@ function Networking_Say(guid, userid, name, prefab, message, colour, whisper, is
     if message ~= nil then
         if not (whisper or isemote) then
             local screen = TheFrontEnd:GetActiveScreen()
-            if screen ~= nil and screen.name == "LobbyScreen" then
-                screen.chatqueue:OnMessageReceived(userid, name, prefab, message, colour, whisper)
+            if screen ~= nil and screen.ReceiveChatMessage then
+                screen:ReceiveChatMessage(userid, name, prefab, message, colour, whisper)
             end
         end
         local hud = ThePlayer ~= nil and ThePlayer.HUD or nil
@@ -253,6 +253,10 @@ function SpawnNewPlayerOnServerFromSim(player_guid, skin_base, clothing_body, cl
         TheWorld.components.playerspawner:SpawnAtNextLocation(TheWorld, player)
         SerializeUserSession(player, true)
     end
+end
+
+function RequestedLobbyCharacter(userid, prefab_name, skin_base, clothing_body, clothing_hand, clothing_legs, clothing_feet)
+	TheWorld:PushEvent("ms_requestedlobbycharacter", {userid=userid, prefab_name=prefab_name, skin_base=skin_base, clothing_body=clothing_body, clothing_hand=clothing_hand, clothing_legs=clothing_legs, clothing_feet=clothing_feet})
 end
 
 --NOTE: this is called from sim as well, so please check it before any
@@ -429,7 +433,7 @@ end
 
 function ShowConnectingToGamePopup()
     local active_screen = TheFrontEnd:GetActiveScreen()
-    if active_screen == nil or (active_screen.name ~= "ConnectingToGamePopup" and active_screen.name ~= "QuickJoinScreen") then
+    if active_screen == nil or (active_screen.name ~= "ConnectingToGamePopup" and active_screen.name ~= "QuickJoinScreen" and active_screen.name ~= "HostCloudServerPopup") then
         TheFrontEnd:PushScreen(ConnectingToGamePopup())
     end
 end
@@ -686,15 +690,11 @@ function UpdateServerTagsString()
 
     local tagsTable = {}
 
-    table.insert(tagsTable, TheNet:GetDefaultGameMode())
+    table.insert(tagsTable, GetGameModeTag(TheNet:GetDefaultGameMode()))
 
     if TheNet:GetDefaultPvpSetting() then
         table.insert(tagsTable, STRINGS.TAGS.PVP)
     end
-    
-    if TheNet:GetDefaultEventSetting() then
-		table.insert(tagsTable, STRINGS.TAGS.EVENT)
-	end
 
     if TheNet:GetDefaultFriendsOnlyServer() then
         table.insert(tagsTable, STRINGS.TAGS.FRIENDSONLY)
@@ -763,7 +763,6 @@ function GetDefaultServerData()
     {
         intention = TheNet:GetDefaultServerIntention(),
         pvp = TheNet:GetDefaultPvpSetting(),
-        event = TheNet:GetDefaultEventSetting(),
         game_mode = TheNet:GetDefaultGameMode(),
         online_mode = TheNet:IsOnlineMode(),
         encode_user_path = TheNet:GetDefaultEncodeUserPath(),
@@ -823,8 +822,8 @@ function JoinServerFilter()
 end
 
 function CalcQuickJoinServerScore(server)
-	-- Return the score for the server. 
-	-- Highest scored servers will have the highest proirity
+	-- Return the score for the server.
+	-- Highest scored servers will have the highest priority
 	-- Return -1 to reject the server
 
 	if (not server.pvp)														-- not PVP
@@ -858,4 +857,35 @@ function LookupPlayerInstByUserID(userid)
             return v
         end
     end
+end
+
+-- returns the client table with only the players in it, removing the dedicate host object if needed
+function GetPlayerClientTable()
+    local ClientObjs = TheNet:GetClientTable()
+    if ClientObjs == nil then
+        return {}
+    elseif TheNet:GetServerIsClientHosted() then
+        return ClientObjs
+    end
+
+    --remove dedicate host from player list
+    for i, v in ipairs(ClientObjs) do
+        if v.performance ~= nil then
+            table.remove(ClientObjs, i)
+            break
+        end
+    end
+    return ClientObjs 
+end
+
+function ClientAuthenticationComplete(userid)
+	if TheWorld ~= nil and TheWorld:IsValid() then
+		TheWorld:PushEvent("ms_clientauthenticationcomplete", {userid = userid})
+	end
+end
+
+function ClientDisconnected(userid)
+	if TheWorld ~= nil and TheWorld:IsValid() then
+		TheWorld:PushEvent("ms_clientdisconnected", {userid = userid})
+	end
 end

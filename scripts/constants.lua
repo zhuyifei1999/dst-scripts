@@ -194,6 +194,7 @@ KEY_SHIFT = 402
 KEY_BACKSPACE = 8
 KEY_PERIOD = 46
 KEY_SLASH = 47
+KEY_SEMICOLON = 59
 KEY_LEFTBRACKET	= 91
 KEY_BACKSLASH	= 92
 KEY_RIGHTBRACKET= 93
@@ -270,7 +271,7 @@ GESTURE_ROTATE_RIGHT = 903
 GESTURE_MAX = 904
 
 
-BACKEND_PREFABS = {"hud", "forest", "cave", "fire", "character_fire", "shatter"}
+BACKEND_PREFABS = {"hud", "forest", "cave", "lavaarena", "fire", "character_fire", "shatter"}
 FRONTEND_PREFABS = {"frontend"}
 RECIPE_PREFABS = {}
 
@@ -298,6 +299,7 @@ require("prefabskins")
 require("clothing")
 require("misc_items")
 require("emote_items")
+require("item_blacklist")
 
 MAINSCREEN_TOOL_LIST = 
 {
@@ -361,7 +363,7 @@ EQUIPSLOTS =
     BODY = "body",
 }
 
-ITEMTAG=
+ITEMTAG =
 {
     FOOD = "food",
     MEAT = "meat",
@@ -375,6 +377,7 @@ ITEMTAG=
 }
 
 -- See map_painter.h
+-- PUBLIC USE SPACE FOR MODS is 70 to 89 -- Mods using values outside of this range may find themselfs conflicting with future official content
 GROUND =
 {
 	INVALID = 255,
@@ -411,6 +414,13 @@ GROUND =
 	DECIDUOUS = 30,
 	DESERT_DIRT = 31,
 	SCALE = 32,
+
+	LAVAARENA_FLOOR = 33,
+	LAVAARENA_TRIM = 34,
+
+
+
+	-- PUBLIC USE SPACE FOR MODS is 70 to 89 --
 
     --NOISE
     DIRT_NOISE = 123,
@@ -454,6 +464,18 @@ SPECIAL_EVENTS =
 }
 WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.HALLOWED_NIGHTS
 
+FESTIVAL_EVENTS =
+{
+    NONE = "none",
+    LAVAARENA = "lavaarena",
+}
+WORLD_FESTIVAL_EVENT = FESTIVAL_EVENTS.LAVAARENA
+
+SPECIAL_EVENTS_SKIN_TAGS =
+{
+    hallowed_nights = "COSTUME",
+}
+
 --Used in preloadsounds.lua
 ---------------------------------------------------------
 -- Reminder: update asset dependencies in frontend.lua --
@@ -475,16 +497,62 @@ SPECIAL_EVENT_MUSIC =
     },
 }
 
+FESTIVAL_EVENT_MUSIC =
+{
+    --the forge
+    [FESTIVAL_EVENTS.LAVAARENA] =
+    {
+        bank = "lava_arena.fsb",
+        sound = "dontstarve/music/lava_arena/FE_1_2",
+    },
+}
+
+local FESTIVAL_EVENT_INFO =
+{
+    --the forge
+    [FESTIVAL_EVENTS.LAVAARENA] =
+    {
+        GAME_MODE = "lavaarena",
+        SERVER_NAME = "LavaArena",
+        FEMUSIC = "dontstarve/music/lava_arena/FE2",
+    },
+}
+
+-- Refers to holiday-specific events.
 function IsSpecialEventActive(event)
     return WORLD_SPECIAL_EVENT == event
 end
 
+function IsAnySpecialEventActive()
+    return WORLD_SPECIAL_EVENT ~= SPECIAL_EVENTS.NONE
+end
+
+-- Refers to intermittent scheduled events.
+function IsFestivalEventActive(event)
+    return WORLD_FESTIVAL_EVENT == event
+end
+
+function IsAnyFestivalEventActive()
+    return WORLD_FESTIVAL_EVENT ~= FESTIVAL_EVENTS.NONE
+end
+
+-- Refers to intermittent scheduled events.
+function GetFestivalEventInfo()
+    return FESTIVAL_EVENT_INFO[WORLD_FESTIVAL_EVENT]
+end
+
+-- Used by C side. Do NOT rename without editing simulation.cpp
+function GetActiveFestivalEventServerName()
+    return FESTIVAL_EVENT_INFO[WORLD_FESTIVAL_EVENT] ~= nil and FESTIVAL_EVENT_INFO[WORLD_FESTIVAL_EVENT].SERVER_NAME or ""
+end
+
+--If changing this logic, remember to update preloadsounds.lua
 --default:
 --  bank = "music_frontend.fsb"
 --  sound = "dontstarve/music/music_FE"
 FE_MUSIC =
-    SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT] ~= nil and
-    SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT].sound or
+    (FESTIVAL_EVENT_MUSIC[WORLD_FESTIVAL_EVENT] ~= nil and FESTIVAL_EVENT_MUSIC[WORLD_FESTIVAL_EVENT].sound) or
+    (SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT] ~= nil and SPECIAL_EVENT_MUSIC[WORLD_SPECIAL_EVENT].sound) or
     "dontstarve/music/music_FE"
 
 NUM_HALLOWEENCANDY = 14
@@ -651,6 +719,14 @@ PLACE_MASK =
 	IGNORE_IMPASSABLE_BARREN_RESERVED = 7,
 }
 
+-- keep up to date with MapSampleStyle in MapDefines.h
+MAP_SAMPLE_STYLE =
+{
+	NINE_SAMPLE = 0,
+	MARCHING_SQUARES = 1, -- Note to modders: this approach is still a prototype
+}
+
+
 COLLISION =
 {
 
@@ -679,9 +755,11 @@ BLENDMODE =
 
 ANIM_ORIENTATION =
 {
-	Default = 0,
-	OnGround = 1,
+    BillBoard = 0,
+    OnGround = 1,
+    OnGroundFixed = 2,
 }
+ANIM_ORIENTATION.Default = ANIM_ORIENTATION.BillBoard
 
 RECIPETABS =
 {
@@ -769,6 +847,56 @@ BGCOLOURS =
 	FULL =         RGB(255, 255, 255),
 }
 
+-- Standard html colours: https://en.wikipedia.org/wiki/Web_colors#X11_color_names
+WEBCOLOURS =
+{
+    -- pinks
+    PINK           = RGB(255, 192, 203),
+    PALEVIOLETRED  = RGB(219, 112, 147),
+    -- reds
+    SALMON         = RGB(250, 128, 114),
+    CRIMSON        = RGB(220, 20, 60),
+    FIREBRICK      = RGB(178, 34, 34),
+    DARKRED        = RGB(139, 0, 0),
+    RED            = RGB(255, 0, 0),
+    -- oranges
+    TOMATO         = RGB(255, 99, 71),
+    CORAL          = RGB(255, 127, 80),
+    ORANGE         = RGB(255, 165, 0),
+    -- yellows
+    YELLOW         = RGB(255, 255, 0),
+    KHAKI          = RGB(240, 230, 140),
+    -- browns
+    BISQUE         = RGB(255, 228, 196),
+    BURLYWOOD      = RGB(222, 184, 135),
+    TAN            = RGB(210, 180, 140),
+    ROSYBROWN      = RGB(188, 143, 143),
+    SANDYBROWN     = RGB(244, 164, 96),
+    GOLDENROD      = RGB(218, 165, 32),
+    PERU           = RGB(205, 133, 63),
+    CHOCOLATE      = RGB(210, 105, 30),
+    SADDLEBROWN    = RGB(139, 69, 19),
+    BROWN          = RGB(165, 42, 42),
+    -- greens
+    GREEN          = RGB(0, 128, 0),
+    SPRINGGREEN    = RGB( 0, 255, 127),
+    -- cyans
+    TURQUOISE      = RGB(64, 224, 208),
+    TEAL           = RGB(0, 128, 128),
+    -- blues
+    LIGHTSKYBLUE   = RGB(135, 206, 250),
+    CORNFLOWERBLUE = RGB(100, 149, 237),
+    BLUE           = RGB(0, 0, 255),
+    -- purples
+    LAVENDER       = RGB(230, 230, 250),
+    THISTLE        = RGB(216, 191, 216),
+    PLUM           = RGB(221, 160, 221),
+    MEDIUMPURPLE   = RGB(147, 112, 219),
+    PURPLE         = RGB(128, 0, 128),
+}
+
+-- A limited palette of colours to match our world tones.
+-- Don't reference these from code! The names don't match the colour.
 PLAYERCOLOURS =
 {
 	BLUE =          RGB(149, 191, 242),
@@ -788,6 +916,7 @@ PLAYERCOLOURS =
 	PURPLE =        RGB(125, 81,  156),
 
     --Colour theme to better match the world tones
+    --(So these colour names don't match standard web colours).
     TOMATO =        RGB(205, 79,  57 ),
     TAN =           RGB(255, 165, 79 ),
     PLUM =          RGB(205, 150, 205),
@@ -830,6 +959,25 @@ FRONTEND_SMOKE_COLOUR = {245/255, 232/255, 204/255, 153/255}
 FRONTEND_TITLE_COLOUR = {235/255, 225/255, 212/255, 255/255}
 PORTAL_TEXT_COLOUR = {243/255, 244/255, 243/255, 255/255}
 FADE_WHITE_COLOUR = {237/255, 224/255, 189/255, 255/255}
+
+
+CHARACTER_COLOURS =
+{
+    wilson       = WEBCOLOURS.ORANGE,
+    willow       = WEBCOLOURS.TOMATO,
+    wendy        = WEBCOLOURS.KHAKI,
+    wolfgang     = WEBCOLOURS.LIGHTSKYBLUE,
+    woodie       = WEBCOLOURS.SADDLEBROWN,
+    wickerbottom = WEBCOLOURS.MEDIUMPURPLE,
+    wx78         = WEBCOLOURS.PERU,
+    wes          = WEBCOLOURS.TEAL,
+    waxwell      = WEBCOLOURS.SALMON,
+    wathgrithr   = WEBCOLOURS.OTHERBLUE,
+    webber       = WEBCOLOURS.SPRINGGREEN,
+    winona       = WEBCOLOURS.CRIMSON,
+    default      = WEBCOLOURS.THISTLE,
+}
+
 
 ANNOUNCEMENT_ICONS =
 {
@@ -1119,7 +1267,8 @@ REIGN_OF_GIANTS_APPID = 282470
 -- and someone might be able to do something cool with it.
 HUMAN_MEAT_ENABLED = false
 
-SCREEN_FADE_TIME = .25
+SWIPE_FADE_TIME = .4
+SCREEN_FADE_TIME = .2
 BACK_BUTTON_X = 60
 BACK_BUTTON_Y = 60
 DOUBLE_CLICK_TIMEOUT = .5
@@ -1131,6 +1280,21 @@ WHITE = {1, 1, 1, 1}
 BROWN = {97/255, 73/255, 46/255, 255/255}
 RED = {.7, .1, .1, 1}
 DARKGREY = {.12, .12, .12, 1}
+
+-- A coherent palette for UI elements
+UICOLOURS = {
+    GOLD_CLICKABLE = RGB(215, 210, 157, 255), -- interactive text & menu
+    GOLD_FOCUS = RGB(251, 193, 92, 255), -- menu active item
+    GOLD_SELECTED = RGB(245, 243, 222, 255), -- titles and non-interactive important text
+    GOLD_UNIMPORTANT = RGB(213, 213, 203, 255), -- non-interactive non-important text
+    HIGHLIGHT_GOLD = RGB(243, 217, 161, 255),
+    GOLD = GOLD,
+    GREY = GREY,
+    BLACK = BLACK,
+    WHITE = WHITE,
+    EGGSHELL = RGB(252, 230, 201),
+}
+
 
 MAX_CHAT_INPUT_LENGTH = 150
 MAX_WRITEABLE_LENGTH = 200
@@ -1249,6 +1413,7 @@ LEVELTYPE = {
     SURVIVAL = "SURVIVAL",
     CAVE = "CAVE",
     ADVENTURE = "ADVENTURE",
+    LAVAARENA = "LAVAARENA",
     TEST = "TEST",
     UNKNOWN = "UNKNOWN",
     CUSTOM = "CUSTOM",

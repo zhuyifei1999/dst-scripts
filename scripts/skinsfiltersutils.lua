@@ -112,7 +112,7 @@ function ApplyFilters(full_skins_list, filters)
 				end
 			end
 
-			if matches_filters then 
+			if matches_filters and IsItemMarketable(skin_item.item) then 
 				table.insert(filtered_list, skin_item)
 				break -- stop checking filters if we matched one
 			end

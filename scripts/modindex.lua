@@ -11,6 +11,7 @@ local ModIndex = Class(function(self)
 	{
 		known_mods = { },
 		known_api_version = 0,
+		disable_special_event_warning = false,
 	}
 end)
 
@@ -145,6 +146,7 @@ function ModIndex:Save(callback)
     
 	local newdata = { known_mods = {} }
 	newdata.known_api_version = MOD_API_VERSION
+	newdata.disable_special_event_warning = self.savedata.disable_special_event_warning
 
 	for name, data in pairs(self.savedata.known_mods) do
 		newdata.known_mods[name] = {}
@@ -690,6 +692,14 @@ function ModIndex:IsModForceEnabled(modname)
 	return false
 end
 
+function ModIndex:SetDisableSpecialEventModWarning()
+	self.savedata.disable_special_event_warning = true
+end
+
+function ModIndex:GetIsSpecialEventModWarningDisabled()
+	return self.savedata.disable_special_event_warning
+end
+
 function ModIndex:IsModStandalone(modname)
 	local known_mod = self.savedata.known_mods[modname]
 	return known_mod and known_mod.modinfo and known_mod.modinfo.standalone == true
@@ -774,6 +784,11 @@ function ModIndex:Enable(modname)
 	if not self.savedata.known_mods[modname] then
 		self.savedata.known_mods[modname] = {}
 	end
+
+	if not self.savedata.known_mods[modname].enabled then
+		self.savedata.disable_special_event_warning = false
+	end
+	
 	self.savedata.known_mods[modname].enabled = true
 	self.savedata.known_mods[modname].disabled_bad = false
 	self.savedata.known_mods[modname].disabled_incompatible_with_mode = false

@@ -1,5 +1,5 @@
 local Widget = require "widgets/widget"
-local PagedList = require "widgets/pagedlist"
+local TrueScrollList = require "widgets/truescrolllist"
 local Menu = require "widgets/menu"
 local Text = require "widgets/text"
 
@@ -33,7 +33,7 @@ local ItemSelector = Class(Widget, function(self, parent, owner, profile)
 	
     self:BuildInventoryList()
 
-    self.focus_forward = self.page_list
+    self.focus_forward = self.scroll_list
 end)
 
 function ItemSelector:Close()
@@ -45,21 +45,22 @@ function ItemSelector:BuildInventoryList()
 	self.inventory_list:SetScale(.7)
     self.inventory_list:SetPosition( -18, 65)
 
-	self.tiles_root = self.inventory_list:AddChild(Widget("tiles_root"))
-	self.list_widgets = SkinGrid4x4Constructor(self, self.tiles_root, true)
-
 	self.show_hover_text = true --shows the hover text on the paged list
 	
-	local grid_width = 420
-	self.page_list = self.inventory_list:AddChild(PagedList(grid_width, function(widget, data) UpdateSkinGrid(widget, data, self) end, self.list_widgets))
+	self.scroll_list = self.inventory_list:AddChild( TrueScrollList(
+			{screen = self},
+			SkinGridListConstructor,
+			UpdateSkinGrid,
+			-200, -150, 400, 300,
+            20
+		)
+	)
+	self.list_widgets = self.scroll_list:GetListWidgets()
 end
 
 function ItemSelector:UpdateData( selections, filters_list )
     self.full_skins_list = GetSortedSkinsList()
     self.skins_list = ApplyFilters( self.full_skins_list, filters_list )
-	
-	local last_added_item = self.owner.GetLastAddedItem and self.owner:GetLastAddedItem()
-	local page_number = 0
 	
 	--Remove selected items from the list so we can't select them twice
 	--Note(Peter): this maintaining of the page focus will only work for mono-rarity recipes, otherwise the more complex filtering will produce weird results
@@ -75,11 +76,6 @@ function ItemSelector:UpdateData( selections, filters_list )
     			table.remove(self.skins_list, k)
     			removed = true
     			
-    			if last_added_item ~= nil then
-	    			if v2.item_id == last_added_item.item_id then
-	    				page_number = math.floor((k-1)/16) + 1 -- the -1 and +1 is due to Lua indices starting at 1, boo :)
-	    			end
-				end
     			break
     		end
     	end
@@ -89,26 +85,19 @@ function ItemSelector:UpdateData( selections, filters_list )
     	end
     end
 
-	self.page_list:SetItemsData(self.skins_list)
-
-	if page_number ~= 0 then
-		self.page_list:SetPage(page_number)
-	end
+	self.scroll_list:SetItemsData(self.skins_list)
 end
 
 function ItemSelector:EnableInput()
 	for _,item_image in pairs( self.list_widgets ) do
 		item_image:Enable()
 	end
-	self.page_list:EvaluateArrows() --enables the correct arrow buttons
 end
 
 function ItemSelector:DisableInput()
 	for _,item_image in pairs( self.list_widgets ) do
 		item_image:Disable()
 	end
-	self.page_list.left_button:Disable()
-	self.page_list.right_button:Disable()
 end
 
 -- OnItemSelect is called when an item in the list is clicked

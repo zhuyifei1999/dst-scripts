@@ -151,6 +151,9 @@ local function onequip(inst, owner)
     if owner.components.bloomer ~= nil then
         owner.components.bloomer:AttachChild(inst._body)
     end
+    if owner.components.colouradder ~= nil then
+        owner.components.colouradder:AttachChild(inst._body)
+    end
 
     if inst.components.fueled:IsEmpty() then
         inst._body.AnimState:Hide("LIGHT")

@@ -76,14 +76,15 @@ function PlayerActionPicker:SortActionList(actions, target, useitem)
     local ret = {}
 
     for i, v in ipairs(actions) do
-        if self.actionfilter ~= nil and not self.actionfilter(self.inst, v) then
-            --filtered
-        elseif target == nil then
-            table.insert(ret, BufferedAction(self.inst, nil, v, useitem))
-        elseif target:is_a(EntityScript) then
-            table.insert(ret, BufferedAction(self.inst, target, v, useitem))
-        elseif target:is_a(Vector3) then
-            table.insert(ret, BufferedAction(self.inst, nil, v, useitem, target))
+        if self.actionfilter == nil or self.actionfilter(self.inst, v) then
+            local distance = v == ACTIONS.CASTAOE and useitem ~= nil and useitem.components.aoetargeting ~= nil and useitem.components.aoetargeting:GetRange() or nil
+            if target == nil then
+                table.insert(ret, BufferedAction(self.inst, nil, v, useitem, nil, nil, distance))
+            elseif target:is_a(EntityScript) then
+                table.insert(ret, BufferedAction(self.inst, target, v, useitem, nil, nil, distance))
+            elseif target:is_a(Vector3) then
+                table.insert(ret, BufferedAction(self.inst, nil, v, useitem, target, nil, distance))
+            end
         end
     end
 
@@ -263,12 +264,17 @@ function PlayerActionPicker:GetRightClickActions(position, target)
         --if we're clicking on a scene entity, see if we can use our equipped object on it, or just use it
         if equipitem ~= nil and equipitem:IsValid() then
             actions = self:GetEquippedItemActions(target, equipitem, true)
+
+            --strip out all other actions for weapons with right click special attacks
+            if equipitem.components.aoetargeting ~= nil then
+                return (#actions <= 0 or actions[1].action == ACTIONS.CASTAOE) and actions or {}
+            end
         end
 
         if actions == nil or #actions == 0 then
             actions = self:GetSceneActions(target, true)
         end
-    elseif equipitem ~= nil and equipitem:IsValid() and ispassable then
+    elseif equipitem ~= nil and equipitem:IsValid() and (ispassable or (equipitem.components.aoetargeting ~= nil and equipitem.components.aoetargeting.alwaysvalid and equipitem.components.aoetargeting:IsEnabled())) then
         actions = self:GetPointActions(position, equipitem, true)
     end
 
@@ -276,13 +282,20 @@ function PlayerActionPicker:GetRightClickActions(position, target)
 end
 
 function PlayerActionPicker:DoGetMouseActions(position, target)
+    local isaoetargeting = false
+    local wantsaoetargeting = false
     if position == nil then
         if TheInput:GetHUDEntityUnderMouse() ~= nil then
             return
-        elseif target == nil then
+        end
+
+        isaoetargeting = self.inst.components.playercontroller:IsAOETargeting()
+        wantsaoetargeting = not isaoetargeting and self.inst.components.playercontroller:HasAOETargeting()
+
+        if target == nil and not isaoetargeting then
             target = TheInput:GetWorldEntityUnderMouse()
         end
-        position = TheInput:GetWorldPosition()
+        position = isaoetargeting and self.inst.components.playercontroller:GetAOETargetingPos() or TheInput:GetWorldPosition()
 
         local cansee
         if target == nil then
@@ -294,7 +307,7 @@ function PlayerActionPicker:DoGetMouseActions(position, target)
 
         --Check for actions in the dark
         if not cansee then
-            if self.inst:GetDistanceSqToPoint(position:Get()) < 16 then
+            if not isaoetargeting and self.inst:GetDistanceSqToPoint(position:Get()) < 16 then
                 local lmbs = self:GetLeftClickActions(position)
                 for i, v in ipairs(lmbs) do
                     if v.action == ACTIONS.DROP then
@@ -306,8 +319,8 @@ function PlayerActionPicker:DoGetMouseActions(position, target)
         end
     end
 
-    local lmb = self:GetLeftClickActions(position, target)[1]
-    local rmb = self:GetRightClickActions(position, target)[1]
+    local lmb = not isaoetargeting and self:GetLeftClickActions(position, target)[1] or nil
+    local rmb = not wantsaoetargeting and self:GetRightClickActions(position, target)[1] or nil
 
     return lmb, rmb ~= nil and (lmb == nil or lmb.action ~= rmb.action) and rmb or nil
 end
