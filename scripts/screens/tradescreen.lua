@@ -1381,9 +1381,6 @@ function TradeScreen:GetHelpText()
 
 	if not self.machine_in_use and not self.transitioning then 
 
-        -- HACK(dbriscoe): page_list is nil. ItemSelector doesn't currently create it. Disabled.
-	    --~ table.insert(t, self.popup.page_list:GetHelpText())
-
 		-- DISABLE SPECIAL RECIPES
        	--[[if self.specials_mode then 
 	    	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_OPEN_INVENTORY) .. " " .. STRINGS.UI.TRADESCREEN.NOSPECIALS )

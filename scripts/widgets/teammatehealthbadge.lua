@@ -39,11 +39,13 @@ end)
 function SetPlayerName(self, player)
 	self.name_root:SetPosition(12, 0)
 
-    self.playername:SetTruncatedString(player.name, 300, 35, "...")
+	local name = (player.name ~= nil and #player.name > 0) and player.name or STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_USER_NAME
+
+    self.playername:SetTruncatedString(name, 300, 35, "...")
 
 	local name_left = self.name_banner_left_width - 45
 
-	local text_w, text_h = self.playername:GetRegionSize()
+	local text_w = math.max(self.name_banner_center_width, self.playername:GetRegionSize())
     self.playername:SetPosition(text_w/2 + name_left, 0)
     self.playername:SetColour(player.playercolour)
 

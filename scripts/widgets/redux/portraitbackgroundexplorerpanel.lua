@@ -49,6 +49,7 @@ end)
 function PortraitBackgroundExplorerPanel:_DoFocusHookups()
     self.heroselector:SetFocusChangeDir(MOVE_RIGHT, self.picker)
     self.picker:SetFocusChangeDir(MOVE_LEFT, self.heroselector)
+    self.picker.header.focus_forward = self.filterBar
 end
 
 function PortraitBackgroundExplorerPanel:_GetCurrentCharacter()

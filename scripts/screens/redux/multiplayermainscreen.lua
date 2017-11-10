@@ -226,7 +226,8 @@ end
 --V2C: Currently only FestivalEventScreen transitions use these music helpers
 
 function MultiplayerMainScreen:StopMusic()
-    if GetFestivalEventInfo().FEMUSIC ~= nil then
+    local festival = GetFestivalEventInfo()
+    if festival and festival.FEMUSIC ~= nil then
         if not self.musicstopped then
             self.musicstopped = true
             TheFrontEnd:GetSound():KillSound("FEMusic")

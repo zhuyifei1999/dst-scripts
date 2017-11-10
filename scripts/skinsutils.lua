@@ -403,8 +403,11 @@ function SkinGridListConstructor(context, parent, scroll_list)
 			local itemimage = parent:AddChild(ItemImage(screen, "", "", 0, 0, nil ))
 			itemimage.clickFn = function(type, item, item_id) 
 				screen:OnItemSelect(type, item, item_id, itemimage)
-				scroll_list:OnItemSelect(itemimage.data_index)
 			end
+
+            itemimage.ongainfocusfn = function(is_btn_enabled)
+                scroll_list:OnWidgetFocus(itemimage)
+            end
 		
 			itemimage:SetPosition( x * SPACING - x_offset, -y * SPACING + y_offset, 0)
 		
@@ -474,6 +477,8 @@ end
 -- Compare two keys from an item table for sorting purposes. Requires the item
 -- table they come from (i.e., MISC_ITEMS) since that data is not always
 -- contained within items.
+--
+-- Useful for showing all extant items (no duplicates).
 function CompareItemDataForSort(item_key_a, item_key_b, item_table)
     if item_key_a == item_key_b then 
         return false
@@ -495,6 +500,7 @@ function GetInventoryTimestamp()
 	return timestamp
 end
 
+-- Sorted by rarity and name. Good for displaying duplicates.
 function GetSortedSkinsList()
 	local templist = TheInventory:GetFullInventory()
 	local skins_list = {}
@@ -547,13 +553,17 @@ function GetSortedSkinsList()
 
 	local compare = function(a, b) 
 						if a.rarity == b.rarity then 
-							if a.item == b.item then 
-								return a.timestamp > b.timestamp
+							if a.release_group == b.release_group then 
+								if a.item == b.item then 
+									return a.timestamp > b.timestamp
+								else
+									return GetLexicalSortLiteral(a.item) < GetLexicalSortLiteral(b.item)
+								end
 							else
-								return GetLexicalSortLiteral(a.item) < GetLexicalSortLiteral(b.item)
+								return CompareReleaseGroup(a,b)
 							end
 						else 
-							return CompareReleaseGroup(a,b)
+							return CompareRarities(a,b)
 						end
 					end
 

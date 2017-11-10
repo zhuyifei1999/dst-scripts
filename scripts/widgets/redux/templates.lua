@@ -879,6 +879,87 @@ function TEMPLATES.CurlyWindow(sizeX, sizeY, title_text, bottom_buttons, button_
     return w
 end
 
+-- Grey-bounded dialog with grey border (nine-slice)
+-- title (optional) is anchored to top.
+-- buttons (optional) are anchored to bottom.
+-- Almost exact copy of CurlyWindow.
+function TEMPLATES.RectangleWindow(sizeX, sizeY, title_text, bottom_buttons, button_spacing, body_text)
+    local w = NineSlice("images/dialogrect_9slice.xml")
+    local top = w:AddCrown("crown_top_fg.tex", ANCHOR_MIDDLE, ANCHOR_TOP, 0, 4)
+
+    -- Background overlaps behind and foreground overlaps in front.
+    local bottom = w:AddCrown("crown_bottom_fg.tex", ANCHOR_MIDDLE, ANCHOR_BOTTOM, 0, -4)
+    bottom:MoveToFront()
+
+    -- Ensure we're within the bounds of looking good and fitting on screen.
+    sizeX = math.clamp(sizeX or 200, 90, 1000)
+    sizeY = math.clamp(sizeY or 200, 50, 500)
+    w:SetSize(sizeX, sizeY)
+    w:SetScale(0.7, 0.7)
+
+    if title_text then
+        w.title = top:AddChild(Text(HEADERFONT, 40, title_text, UICOLOURS.GOLD_SELECTED))
+        w.title:SetPosition(0, -50)
+        w.title:SetRegionSize(600, 50)
+        w.title:SetHAlign(ANCHOR_MIDDLE)
+        if JapaneseOnPS4() then
+            w.title:SetSize(40)
+        end
+    end
+
+    if bottom_buttons then
+        -- If plain text widgets are passed in, then Menu will use this style.
+        -- Otherwise, the style is ignored. Use appropriate style for the
+        -- amount of space for buttons. Different styles require different
+        -- spacing.
+        local style = "carny_long"
+        if button_spacing == nil then
+            -- 1,2,3,4 buttons can be big at 210,420,630,840 widths.
+            local space_per_button = sizeX / #bottom_buttons
+            local has_space_for_big_buttons = space_per_button > 209
+            if has_space_for_big_buttons then
+                style = "carny_xlong"
+                button_spacing = 320
+            else
+                button_spacing = 230
+            end
+        end
+        local button_height = 50
+        local button_area_width = button_spacing / 2 * #bottom_buttons
+        local is_tight_bottom_fit = button_area_width > sizeX * 2/3
+        if is_tight_bottom_fit then
+            button_height = 60
+        end
+
+        -- Does text need to be smaller than 30 for JapaneseOnPS4()?
+        w.actions = bottom:AddChild(Menu(bottom_buttons, button_spacing, true, style, nil, 30))
+        w.actions:SetPosition(-(button_spacing*(#bottom_buttons-1))/2, button_height) 
+
+        w.focus_forward = w.actions
+    end
+
+    if body_text then
+        w.body = w:AddChild(Text(CHATFONT, 28, body_text, UICOLOURS.WHITE))
+        w.body:EnableWordWrap(true)
+        w.body:SetPosition(0, -20)
+        local height_reduction = 0
+        if bottom_buttons then
+            height_reduction = 30
+        end
+        w.body:SetRegionSize(sizeX, sizeY - height_reduction)
+        w.body:SetVAlign(ANCHOR_MIDDLE)
+    end
+
+    w.SetBackgroundTint = function(self, r,g,b,a)
+        for i=4,5 do
+            self.elements[i]:SetTint(r,g,b,a)
+        end
+        self.mid_center:SetTint(r,g,b,a)
+    end
+
+    return w
+end
+
 function TEMPLATES.ScrollingGrid(items, opts)
     local peek_height = opts.widget_height * 0.25 -- how much of row to see at the bottom.
     if opts.peek_percent then

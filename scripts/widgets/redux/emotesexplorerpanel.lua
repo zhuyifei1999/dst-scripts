@@ -37,18 +37,19 @@ local EmotesExplorerPanel = Class(Widget, function(self, owner, user_profile)
     self.picker = self:AddChild(self:_BuildItemExplorer())
     self.picker:SetPosition(310, 140)
 
+    self.filterBar = FilterBar(self.picker)
+    self.picker.header:AddChild( self.filterBar:AddFilter(STRINGS.UI.WARDROBESCREEN.SHOW_UNOWNED_CLOTHING, STRINGS.UI.WARDROBESCREEN.SHOW_UNOWNEDANDOWNED_CLOTHING, "lockedFilter", GetLockedSkinFilter()) )
+
     self:_DoFocusHookups()
     self.focus_forward = self.heroselector
 
     self:StartUpdating()
-
-    self.filterBar = FilterBar(self.picker)
-    self.picker.header:AddChild( self.filterBar:AddFilter(STRINGS.UI.WARDROBESCREEN.SHOW_UNOWNED_CLOTHING, STRINGS.UI.WARDROBESCREEN.SHOW_UNOWNEDANDOWNED_CLOTHING, "lockedFilter", GetLockedSkinFilter()) )
 end)
 
 function EmotesExplorerPanel:_DoFocusHookups()
     self.heroselector:SetFocusChangeDir(MOVE_RIGHT, self.picker)
     self.picker:SetFocusChangeDir(MOVE_LEFT, self.heroselector)
+    self.picker.header.focus_forward = self.filterBar
 end
 
 function EmotesExplorerPanel:_GetCurrentCharacter()
