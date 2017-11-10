@@ -87,6 +87,11 @@ local ItemExplorer = Class(Widget, function(self, title_text, primary_item_type,
             end
         end
 
+        self.header:SetFocusChangeDir(MOVE_DOWN, self.scroll_list)
+        self.scroll_list:SetFocusChangeDir(MOVE_UP, self.header)
+        self.scroll_list:SetFocusChangeDir(MOVE_DOWN, self.footer)
+        self.footer:SetFocusChangeDir(MOVE_UP, self.scroll_list)
+
         self.focus_forward = self.scroll_list
     end
 end)

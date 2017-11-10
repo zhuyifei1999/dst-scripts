@@ -175,7 +175,7 @@ local Lavaarena_Achievements =
             {
                 achievementid = "wx78_shocks",
                 wxp = XWP_LEVEL2,
-                testfn = function(user, data) return data.num_hits >= 4 end,
+                testfn = function(user, completed) return completed end,
             },
             {
                 achievementid = "wx78_victory",

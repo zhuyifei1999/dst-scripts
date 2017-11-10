@@ -37,8 +37,13 @@ local LoadersExplorerPanel = Class(Widget, function(self, owner, user_profile)
     self.filterBar = FilterBar(self.picker)
     self.picker.header:AddChild( self.filterBar:AddFilter(STRINGS.UI.WARDROBESCREEN.SHOW_UNOWNED_CLOTHING, STRINGS.UI.WARDROBESCREEN.SHOW_UNOWNEDANDOWNED_CLOTHING, "lockedFilter", GetLockedSkinFilter()) )
 
+    self:_DoFocusHookups()
     self.focus_forward = self.picker
 end)
+
+function LoadersExplorerPanel:_DoFocusHookups()
+    self.picker.header.focus_forward = self.filterBar
+end
 
 function LoadersExplorerPanel:_GetCurrentLoaders()
     return table.getkeys(self.picker:GetSelectedItems())

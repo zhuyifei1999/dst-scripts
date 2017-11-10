@@ -75,7 +75,7 @@ function ItemImage:SetItem(type, name, item_id, timestamp)
     self.frame:SetItem(name)
 
 	local collection_timestamp = self.user_profile and self.user_profile:GetCollectionTimestamp() or timestamp
-    local is_new = timestamp and (timestamp > collection_timestamp)
+    local is_new = timestamp and (timestamp > 0) and (timestamp > collection_timestamp)
     --~ print(is_new and "new" or "old", name, "Timestamp is ", timestamp, collection_timestamp)
     self.frame:SetAge(is_new)
 end

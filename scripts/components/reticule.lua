@@ -65,6 +65,8 @@ function Reticule:CreateReticule()
     end
 
     self.currentcolour = self.invalidcolour
+    self.blipalpha = 1
+    self.inst:StopUpdatingComponent(self)
     self:UpdatePosition()
     TheCamera:AddListener(self, self._oncameraupdate)
 end
@@ -79,6 +81,8 @@ function Reticule:DestroyReticule()
         self.followhandler = nil
     end
     self.fadealpha = 1
+    self.blipalpha = 1
+    self.inst:StopUpdatingComponent(self)
     TheCamera:RemoveListener(self, self._oncameraupdate)
 end
 
@@ -107,7 +111,7 @@ function Reticule:OnUpdate(dt)
     self.blipalpha = self.blipalpha + dt * 5
     if self.blipalpha >= 1 then
         self.blipalpha = 1
-        self.inst:StartUpdatingComponent(self)
+        self.inst:StopUpdatingComponent(self)
     end
     self:UpdateColour()
 end

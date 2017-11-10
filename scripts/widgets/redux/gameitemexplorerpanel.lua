@@ -24,7 +24,14 @@ local GameItemExplorerPanel = Class(Widget, function(self, owner, profile)
 	if self.list_widgets and #self.list_widgets > 0 then 
         self.list_widgets[1]:onclick()
 	end
+
+    self:_DoFocusHookups()
+    self.focus_forward = self.picker
 end)
+
+function GameItemExplorerPanel:_DoFocusHookups()
+    self.picker.header.focus_forward = self.filterBar
+end
 
 function GameItemExplorerPanel:DoInit()
 	--~ TheInputProxy:SetCursorVisible(true)
@@ -32,8 +39,6 @@ function GameItemExplorerPanel:DoInit()
     self.fixed_root = self:AddChild(TEMPLATES.ScreenRoot())
     self:BuildInventoryList()
     self:BuildDetailsPanel()
-
-	self.focus_forward = self.scroll_list
 end
 
 -- Update the details panel when an item is clicked

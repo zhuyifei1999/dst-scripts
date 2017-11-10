@@ -36,8 +36,7 @@ local ClothingExplorerPanel = Class(Widget, function(self, owner, user_profile, 
 end)
 
 function ClothingExplorerPanel:_DoFocusHookups()
-    self.picker:SetFocusChangeDir(MOVE_UP, self.filter_btn)
-    self.filter_btn:SetFocusChangeDir(MOVE_DOWN, self.picker)
+    self.picker.header.focus_forward = self.filterBar
 end
 
 function ClothingExplorerPanel:_GetCurrentClothing()

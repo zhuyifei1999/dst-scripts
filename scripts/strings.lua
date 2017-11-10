@@ -3102,9 +3102,9 @@ STRINGS.UI =
             PLAYFUL = "Peppy",
             CRAFTY = "Crafty",
         },
-        
+
         LAVAARENA_WIN_TITLE = "Victory!",
-        LAVAARENA_WIN_BODY = "You have bested Battlemaster Pugna in battle.",
+        LAVAARENA_WIN_BODY = "You have bested Battlemaster Pugna's champions in battle.",
         LAVAARENA_LOSE_TITLE = "Defeat!",
         LAVAARENA_LOSE_BODY = "You have failed Battlemaster Pugna's challenge.",
     },

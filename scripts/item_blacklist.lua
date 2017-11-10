@@ -5,6 +5,7 @@ ITEM_DISPLAY_BLACKLIST =
 	armor_dragonfly_fangedcollar = true,
 	armor_dragonfly_haramaki = true,
 	armor_dragonfly_lamellar = true,
+	dragonling_bat_builder = true,
 	dragonling_winter_builder = true,
 	dragonling_wyvern_builder = true,
 	firestaff_bee = true,

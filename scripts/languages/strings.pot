@@ -103600,7 +103600,7 @@ msgstr ""
 
 #. STRINGS.UI.HUD.LAVAARENA_WIN_BODY
 msgctxt "STRINGS.UI.HUD.LAVAARENA_WIN_BODY"
-msgid "You have bested Battlemaster Pugna in battle."
+msgid "You have bested Battlemaster Pugna's champions in battle."
 msgstr ""
 
 #. STRINGS.UI.HUD.LAVAARENA_WIN_TITLE

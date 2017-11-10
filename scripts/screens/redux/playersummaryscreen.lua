@@ -123,6 +123,8 @@ function PlayerSummaryScreen:_BuildItemsSummary(width)
     new_root.items:Hide()
 
     new_root.no_items = new_root:AddChild(Text(CHATFONT, 30, STRINGS.UI.PLAYERSUMMARYSCREEN.NO_ITEMS))
+    new_root.no_items:SetPosition(60,0)
+    new_root.no_items:SetRegionSize(width,30)
     new_root.no_items:Hide()
 
     -- This msg will be stomped by UpdateItems!
@@ -137,7 +139,7 @@ function PlayerSummaryScreen:_BuildItemsSummary(width)
 
         table.sort(inventory, 
             function(a, b) 
-                return a.timestamp < b.timestamp
+                return a.timestamp > b.timestamp
             end)
 
         local newest = nil

@@ -70,14 +70,14 @@ local WaitingForPlayers = Class(Widget, function(self, owner, max_players)
 			nowaiting_checkbox.local_nowaiting = not nowaiting_checkbox.local_nowaiting
 			UserCommands.RunUserCommand("nowaitingforplayers", {no_waiting="true"}, TheNet:GetClientTableForUser(TheNet:GetUserID()))
 			nowaiting_checkbox.timeout_task = nowaiting_checkbox.inst:DoTaskInTime(5, function() 
-				nowaiting_checkbox.local_nowaiting = TheWorld.net.components.worldcharacterselectlobby:GetNoWaitingVote(TheNet:GetUserID())
+				nowaiting_checkbox.local_nowaiting = TheWorld.net ~= nil and TheWorld.net.components.worldcharacterselectlobby:GetNoWaitingVote(TheNet:GetUserID()) or false
 				nowaiting_checkbox:Enable()
 				nowaiting_checkbox:Refresh()
 			end)
 		end
 	end)
-    self.inst:ListenForEvent("nowaiting_vote_dirty", function()
-		if TheWorld.net.components.worldcharacterselectlobby:GetNoWaitingVote(TheNet:GetUserID()) == nowaiting_checkbox.local_nowaiting then
+    self.inst:ListenForEvent("nowaiting_vote_dirty", function(net)
+		if net.components.worldcharacterselectlobby:GetNoWaitingVote(TheNet:GetUserID()) == nowaiting_checkbox.local_nowaiting then
 			if nowaiting_checkbox.timeout_task ~= nil then
 				nowaiting_checkbox.timeout_task:Cancel()
 				nowaiting_checkbox.timeout_task = nil
@@ -85,7 +85,7 @@ local WaitingForPlayers = Class(Widget, function(self, owner, max_players)
 			nowaiting_checkbox:Enable()
 			nowaiting_checkbox:Refresh()
 		elseif nowaiting_checkbox.timeout_task == nil then
-			nowaiting_checkbox.local_nowaiting = TheWorld.net.components.worldcharacterselectlobby:GetNoWaitingVote(TheNet:GetUserID())
+			nowaiting_checkbox.local_nowaiting = net.components.worldcharacterselectlobby:GetNoWaitingVote(TheNet:GetUserID())
 			nowaiting_checkbox:Enable()
 			nowaiting_checkbox:Refresh()
 		end
