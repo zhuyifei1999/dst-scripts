@@ -20,6 +20,13 @@ local msgids = {}
 --Used by translated string functions
 local STRINGS_LOOKUP = {}
 
+-- Strings beginning with these special bytes will be ignored during pot file generation
+-- See note about DST UTF-8 encoding in strings.lua
+STRING_RESERVED_LEAD_BYTES = 
+{
+    238,
+    239,
+}
 
 --
 -- Version 1 msgid based, original
@@ -98,7 +105,7 @@ end
 local function IsValidString( str )    
     if 0 < string.len(str) then
         local lead_byte = string.byte( str, 1, 1)
-        for i, reserved_bytes in pairs(STRINGS.RESERVED_LEAD_BYTE_VALUES) do
+        for i, reserved_bytes in pairs(STRING_RESERVED_LEAD_BYTES) do
             if lead_byte == reserved_bytes then
                 return false
             end

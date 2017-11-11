@@ -99,20 +99,40 @@ local LoadingWidget = Class(Widget, function(self, session_random_index)
     self.step_time = GetTime()
 end)
 
+function LoadingWidget:RepickImage()
+    if self.image_random ~= nil then
+        if self.legacy_fg ~= nil then
+            if self.image_random < 0 and #legacy_images > 1 then
+                local random_idx = -math.random(#legacy_images - 1)
+                self.image_random = random_idx == self.image_random and -#legacy_images or random_idx
+                local selected_key = legacy_images[-self.image_random]
+                self.legacy_fg:SetTexture(selected_key.atlas, selected_key.tex)
+            end
+        elseif self.image_random > 0 and Settings.loading_screen_keys ~= nil and #Settings.loading_screen_keys > 1 then
+            local random_idx = math.random(#Settings.loading_screen_keys - 1)
+            self.image_random = random_idx == self.image_random and #Settings.loading_screen_keys or random_idx
+            self.bg:SetTexture(GetLoaderAtlasAndTex(Settings.loading_screen_keys[self.image_random]))
+        end
+    end
+end
+
 function LoadingWidget:ShowNextFrame()
     self.forceShowNextFrame = true
 end
 
 function LoadingWidget:SetEnabled(enabled)
-    self.is_enabled = enabled
     if enabled then
-        self.root_classic:Show()
-
-        self:Show()
-        self:StartUpdating()
-    else
+        if not self.is_enabled then
+            self.is_enabled = true
+            self.root_classic:Show()
+            self:Show()
+            self:StartUpdating()
+        end
+    elseif self.is_enabled then
+        self.is_enabled = false
         self:Hide()
         self:StopUpdating()
+        self:RepickImage()
     end
 end
 
@@ -150,10 +170,8 @@ function LoadingWidget:KeepAlive(auto_increment)
             self.step_time = time
         end
 
-        if 0.01 > self.cached_fade_level then
-            self.is_enabled = false
-            self:Hide()
-            self:StopUpdating()
+        if .01 > self.cached_fade_level then
+            self:SetEnabled(false)
         end
     end
 end
