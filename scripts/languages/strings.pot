@@ -91523,16 +91523,6 @@ msgctxt "STRINGS.RECIPE_DESC.YELLOWSTAFF"
 msgid "Summon a tiny star."
 msgstr ""
 
-#. STRINGS.RESERVED_LEAD_BYTE_VALUES.1
-msgctxt "STRINGS.RESERVED_LEAD_BYTE_VALUES.1"
-msgid "238"
-msgstr ""
-
-#. STRINGS.RESERVED_LEAD_BYTE_VALUES.2
-msgctxt "STRINGS.RESERVED_LEAD_BYTE_VALUES.2"
-msgid "239"
-msgstr ""
-
 #. STRINGS.SELECT
 msgctxt "STRINGS.SELECT"
 msgid "Select"
@@ -101956,6 +101946,11 @@ msgstr ""
 #. STRINGS.UI.CREDITS.NAMES.50
 msgctxt "STRINGS.UI.CREDITS.NAMES.50"
 msgid "Ricardo Pinto"
+msgstr ""
+
+#. STRINGS.UI.CREDITS.NAMES.51
+msgctxt "STRINGS.UI.CREDITS.NAMES.51"
+msgid "Steven Erenst"
 msgstr ""
 
 #. STRINGS.UI.CREDITS.NAMES.6

@@ -28,7 +28,7 @@ local function UpdatePing(inst, s0, s1, t0, duration, multcolour, addcolour)
     inst.AnimState:SetAddColour(c * addcolour[1], c * addcolour[2], c * addcolour[3], c * addcolour[4])
 end
 
-local function MakePing(name, anim)
+local function MakePing(name, anim, scaleup)
     local function fn()
         local inst = CreateEntity()
 
@@ -51,7 +51,7 @@ local function MakePing(name, anim)
         inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
 
         local duration = .5
-        inst:DoPeriodicTask(0, UpdatePing, nil, 1, 1.05, GetTime(), duration, {}, {})
+        inst:DoPeriodicTask(0, UpdatePing, nil, 1, scaleup, GetTime(), duration, {}, {})
         inst:DoTaskInTime(duration, inst.Remove)
 
         return inst
@@ -230,9 +230,9 @@ end
 return MakeReticule("reticuleaoe", "idle"),
     MakeReticule("reticuleaoesmall", "idle_small"),
     MakeReticule("reticuleaoesummon", "idle_summon"),
-    MakePing("reticuleaoeping", "idle"),
-    MakePing("reticuleaoesmallping", "idle_small"),
-    MakePing("reticuleaoesummonping", "idle_summon"),
+    MakePing("reticuleaoeping", "idle", 1.05),
+    MakePing("reticuleaoesmallping", "idle_small", 1.1),
+    MakePing("reticuleaoesummonping", "idle_summon", 1.025),
     MakeTarget("reticuleaoehostiletarget", "idle_target", { 1, .25, 0, 1 }),
     MakeTarget("reticuleaoefriendlytarget", "idle_target", { 0, 1, .25, 1 }),
     MakeTarget("reticuleaoecctarget", "idle_target", { .3, .5, .2, 1 }),

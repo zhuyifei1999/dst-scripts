@@ -367,15 +367,6 @@ function TEMPLATES.BackButton_BesideLeftSidebar(onclick, txt, shadow_offset, sca
     return btn
 end
 
--- A "next screen" button with flourish.
---
--- Add to your screen root.
-function TEMPLATES.BottomRightGarnishedButton(onclick, txt)
-    local btn = TEMPLATES.StandardButton(onclick, txt)
-    btn:SetPosition(446, -271)
-    return btn
-end
-
 function TEMPLATES.StandardButton(onclick, txt, size)
     local prefix = "button_carny_long"
     if size and #size == 2 and size[1] / size[2] > 4 then
@@ -643,9 +634,9 @@ function TEMPLATES.RankBadge()
 
     rank.SetRank = function(self, profileflair, rank_value)
         rank.flair:SetTexture(GetProfileFlairAtlasAndTex(profileflair))
-        rank.num:SetString(tostring(rank_value + 1)) -- because we want to show 1 based levels, not -
-        rank.num:SetColour(UICOLOURS.WHITE)
-    end
+            rank.num:SetString(tostring(rank_value + 1)) -- because we want to show 1 based levels, not -
+            rank.num:SetColour(UICOLOURS.WHITE)
+        end
 
     return rank
 end

@@ -1350,7 +1350,7 @@ CLOTHING =
 		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_upper_skin", "torso", },
 		symbol_overrides_skinny = { arm_lower = "arm_lower_skinny", arm_upper_skin = "arm_upper_skin_skinny", },
-		symbol_overrides_mighty = { torso = "torso_mighty", arm_lower = "arm_lower_mighty", arm_upper_skin = "arm_upper_skin_mighty", },
+		symbol_overrides_mighty = { arm_lower = "arm_lower_mighty", torso = "torso_mighty", },
 		symbol_hides = { "arm_upper", },
 		override_build = "body_wolfgang_gladiator",
 		torso_tuck = "full",

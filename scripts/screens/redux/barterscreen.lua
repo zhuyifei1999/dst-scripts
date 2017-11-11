@@ -75,11 +75,29 @@ function BarterScreen:_BuildDialog()
         go_btn = {
             text = STRINGS.UI.BARTERSCREEN.COMMERCE_GRIND,
             cb = function() 
-                local commerce_popup = PushWaitingPopup()
-                TheItems:BarterLoseItem(GetFirstOwnedItemId(self.item_key), self.doodad_value, function(success, status)
-                    commerce_popup:Close()
-                    self:_BarterComplete(success, status, {"dontstarve/HUD/Together_HUD/collectionscreen/unweave"})
-                end)
+                local item_id = GetFirstOwnedItemId(self.item_key)
+                if item_id then
+                    local commerce_popup = PushWaitingPopup()
+                    TheItems:BarterLoseItem(item_id, self.doodad_value, function(success, status)
+                        commerce_popup:Close()
+                        self:_BarterComplete(success, status, {"dontstarve/HUD/Together_HUD/collectionscreen/unweave"})
+                    end)
+                else
+					local server_error = PopupDialogScreen(
+                        STRINGS.UI.TRADESCREEN.SERVER_ERROR_TITLE,
+                        STRINGS.UI.TRADESCREEN.SERVER_ERROR_BODY,
+						{
+							{
+                                text = STRINGS.UI.TRADESCREEN.OK,
+                                cb = function()
+									print("ERROR: Bartering away unowned item.")
+									SimReset()
+								end
+                            }
+						}
+					)
+					TheFrontEnd:PushScreen(server_error)
+                end
             end
         }
     end

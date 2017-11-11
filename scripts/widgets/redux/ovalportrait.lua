@@ -51,8 +51,9 @@ function OvalPortrait:_BuildCharacterDetails()
     self.characterdetails:SetRegionSize(280, 130)
     self.characterdetails:EnableWordWrap(true)
     self.characterdetails:SetColour(UICOLOURS.GREY)
-
-	if TheNet:GetServerGameMode() == "lavaarena" then 
+	
+	if TheNet:GetServerEvent() then 
+		self.eventid = TheNet:GetServerGameMode()
 		portrait_root:SetPosition(0, -50)
 	
 	    self.character_text:SetPosition(0, -150)
@@ -160,18 +161,17 @@ function OvalPortrait:SetPortrait(herocharacter)
 	end
 	
 	if self.la_achievements then
-		local current_eventid = TheNet:GetServerGameMode()
 		self.achievements_root:Hide()
-		for _, cat in pairs(EventAchievements:GetAchievementsCategoryList(current_eventid)) do
+		for _, cat in pairs(EventAchievements:GetAchievementsCategoryList(self.eventid)) do
 			if cat.category == herocharacter then
 				self.achievements_root:Show()
 				for i, v in ipairs(cat.data) do
 					local achievementid = cat.data[3-(i-1)].achievementid
 					local image = EventAchievements:IsAchievementUnlocked(achievementid) and (achievementid..".tex") or "achievement_locked.tex"
-					self.la_achievements[i].image:SetTexture("images/"..current_eventid.."_achievements.xml", image)
+					self.la_achievements[i].image:SetTexture("images/"..self.eventid.."_achievements.xml", image)
 
-					self.la_achievements[i].name:SetString(STRINGS.UI.ACHIEVEMENTS[string.upper(current_eventid)].ACHIEVEMENT[achievementid].TITLE)
-					self.la_achievements[i].desc:SetString(STRINGS.UI.ACHIEVEMENTS[string.upper(current_eventid)].ACHIEVEMENT[achievementid].DESC)
+					self.la_achievements[i].name:SetString(STRINGS.UI.ACHIEVEMENTS[string.upper(self.eventid)].ACHIEVEMENT[achievementid].TITLE)
+					self.la_achievements[i].desc:SetString(STRINGS.UI.ACHIEVEMENTS[string.upper(self.eventid)].ACHIEVEMENT[achievementid].DESC)
 				end
 				break
 			end

@@ -42,14 +42,6 @@ To add a new language:
 
 STRINGS =
 {
-	-- Strings beginning with these special bytes will be ignored during pot file generation
-	-- See above note about DST UTF-8 encoding
-    RESERVED_LEAD_BYTE_VALUES = 
-    {
-        238,
-        239,
-    },
-
     CHARACTER_NAMES =
     {
         wilson = "Wilson P. Higgsbury",
@@ -2665,6 +2657,7 @@ STRINGS.UI =
             "David Briscoe",
             "Justin Liew",
             "Ricardo Pinto",
+            "Steven Erenst",
         },
 
         ALTGAMES =

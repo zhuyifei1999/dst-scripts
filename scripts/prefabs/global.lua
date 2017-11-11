@@ -91,10 +91,6 @@ local assets =
     Asset("ATLAS", "images/lobbyscreen.xml"),
     Asset("Image", "images/lobbyscreen.tex"),
 
-	-- For lobby, victory, play event.
-    Asset("ATLAS", "images/fe_carnygarnish.xml"),
-    Asset("IMAGE", "images/fe_carnygarnish.tex"),
-
     Asset("ATLAS", "images/fepanel_fills.xml"),
     Asset("IMAGE", "images/fepanel_fills.tex"),
 

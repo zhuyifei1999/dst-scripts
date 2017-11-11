@@ -217,6 +217,7 @@ function ItemExplorer:_DoInit(title_text, contained_items, list_options)
     
     if TheInput:ControllerAttached() then
         self.set_info_btn = { should_show_set_info = false }
+        self.can_show_steam = false
     else
         self.interact_root = self.footer:AddChild(Widget("interact_root"))
         self.commerce = self.interact_root:AddChild(TEMPLATES.StandardButton(
@@ -490,7 +491,7 @@ end
 function ItemExplorer:_OnClickWidget(item_widget)
     local item_data = item_widget.data
 	
-	print("ItemExplorer:_OnClickWidget", item_data.item_key, item_data.is_owned, item_data.is_active)
+	--print("ItemExplorer:_OnClickWidget", item_data.item_key, item_data.is_owned, item_data.is_active)
 	
     -- if no selection type, then ignore is_active.
     if self.scroll_list.context.selection_type and item_data.is_owned then
@@ -516,7 +517,7 @@ function ItemExplorer:_OnClickWidget(item_widget)
 end
     
 function ItemExplorer:_UpdateClickedWidget(item_widget)
-	print("ItemExplorer:_UpdateClickedWidget(item_widget)", item_widget.data.item_key)
+	--print("ItemExplorer:_UpdateClickedWidget(item_widget)", item_widget.data.item_key)
     if item_widget.data.item_key == nil then
         -- Ignore empty widgets.
         return
@@ -555,6 +556,21 @@ end
 
 function ItemExplorer:OnClickedItem(item_data, is_selected)
     self:_UpdateItemSetInfo(item_data.item_key)
+
+    if item_data.item_key then
+        if PLATFORM == "WIN32_STEAM" or PLATFORM == "LINUX_STEAM" or PLATFORM == "OSX_STEAM" then
+            self.can_show_steam = IsItemMarketable(item_data.item_key)
+        else
+            self.can_show_steam = false
+        end
+
+        -- Assumes purchaseable items are not marketable!
+        self.can_show_pack = GetPackForItem(item_data.item_key)
+
+    else
+        self.can_show_steam = false
+        self.can_show_pack = false
+    end
 end
 
 function ItemExplorer:_UpdateItemSetInfo(item_key)
@@ -598,22 +614,22 @@ function ItemExplorer:_UpdateItemSetInfo(item_key)
         -- it.
         self.set_info_btn.should_show_set_info = false
 
-	if GetPackForItem(item_type) then
+        if GetPackForItem(item_type) then
             self.ensemble_title:SetPosition(-60,-25)
             self.store_btn:Show()
         else
             self.ensemble_title:SetPosition(0,-25)
             self.store_btn:Hide()
         end
-		self.ensemble_title:Show()
+        self.ensemble_title:Show()
         self.ensemble_title:SetString(STRINGS.SKIN_NAMES[pack])
         self.set_info_btn.set_item_type = pack
-	else
+    else
         self.set_info_btn.should_show_set_info = false
-		self.ensemble_title:Hide()
-        	self.ensemble_title:SetPosition(0,-25)
-		self.store_btn:Hide()
-	end
+        self.ensemble_title:Hide()
+        self.ensemble_title:SetPosition(0,-25)
+        self.store_btn:Hide()
+    end
 
     if self.interact_root then
         if self.set_info_btn.should_show_set_info then
@@ -740,10 +756,15 @@ function ItemExplorer:OnControl(control, down)
                 self:_LaunchCommerce()
                 return true
             end
-        elseif not down and control == CONTROL_PAUSE then
-			if PLATFORM == "WIN32_STEAM" or PLATFORM == "LINUX_STEAM" or PLATFORM == "OSX_STEAM" then
-				self:_ShowMarketplaceForInteractTarget()
-				return true
+        elseif not down and control == CONTROL_PAUSE and TheInput:ControllerAttached() then
+            -- Hitting Esc fires both Pause and Cancel, so keyboard users will
+            -- need to click buttons instead.
+			if self.can_show_steam then
+                self:_ShowMarketplaceForInteractTarget()
+                return true
+            elseif self.can_show_pack then
+                TheFrontEnd:FadeToScreen( TheFrontEnd:GetActiveScreen(), function() return PurchasePackScreen() end, nil )
+                return true
 			end
         elseif not down and control == CONTROL_MAP then
             if self.set_info_btn.should_show_set_info then
@@ -766,8 +787,10 @@ function ItemExplorer:GetHelpText()
             table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_MAP) .. " " .. STRINGS.UI.COLLECTIONSCREEN.SET_INFO)
         end
 
-		if PLATFORM == "WIN32_STEAM" or PLATFORM == "LINUX_STEAM" or PLATFORM == "OSX_STEAM" then
-			table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE) .. " " .. STRINGS.UI.COLLECTIONSCREEN.VIEW_MARKET)
+		if self.can_show_steam then
+            table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE) .. " " .. STRINGS.UI.COLLECTIONSCREEN.VIEW_MARKET)
+        elseif self.can_show_pack then
+            table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE) .. " " .. STRINGS.UI.PLAYERSUMMARYSCREEN.PURCHASE)
 		end
     end
 
