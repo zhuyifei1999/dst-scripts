@@ -102,9 +102,11 @@ function Reticule:PingReticuleAt(pos)
 end
 
 function Reticule:Blip()
-    self.blipalpha = 0
-    self.inst:StartUpdatingComponent(self)
-    self:UpdateColour()
+    if self.reticule ~= nil then
+        self.blipalpha = 0
+        self.inst:StartUpdatingComponent(self)
+        self:UpdateColour()
+    end
 end
 
 function Reticule:OnUpdate(dt)
