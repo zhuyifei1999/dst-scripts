@@ -23,7 +23,7 @@ local MAX_TRADE_ITEMS = 9
 local TRANSITION_ANIM = "large"
 local DEBUG_MODE = BRANCH == "dev"
 
-local IS_OPEN_FOR_BUSINESS = false
+local IS_OPEN_FOR_BUSINESS = true
 
 local function FindFirstEmptySlot(selections, num_items)
 	local first = nil

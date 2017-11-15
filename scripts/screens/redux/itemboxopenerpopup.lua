@@ -49,24 +49,24 @@ local PP_OFF_TINT = {r=1,g=1,b=1,a=0}
 
 local ItemBoxOpenerPopup = Class(Screen, function(self, parent_screen, options, open_box_fn)
     Screen._ctor(self, "ItemBoxOpenerPopup")
-	
-	self.parent_screen = parent_screen
+
+    self.parent_screen = parent_screen
     self.allow_cancel = options.allow_cancel
     self.use_bigportraits = options.use_bigportraits
     self.open_box_fn = open_box_fn
 
     self.center_root = self:AddChild(TEMPLATES.ScreenRoot())
     self.fg = self:AddChild(TEMPLATES.ReduxForeground())
-    
+
     self.bg = self.center_root:AddChild(TEMPLATES.PlainBackground()) -- match MysteryBoxScreen so it looks like a fade
-	self.bg.bgplate.image:SetTint(1,1,1,0)--maybe we should move this into TintTo
-	self.bg.bgplate.image:TintTo(PP_OFF_TINT, PP_ON_TINT, TRANSITION_DURATION, nil)
-	
+    self.bg.bgplate.image:SetTint(1,1,1,0)--maybe we should move this into TintTo
+    self.bg.bgplate.image:TintTo(PP_OFF_TINT, PP_ON_TINT, TRANSITION_DURATION, nil)
+
     self.proot = self.center_root:AddChild(Widget("ROOT_P"))
     self.proot:SetPosition( 0, -100, 0 )
 
     self.bundle_root = self.proot:AddChild(Widget("bundle_root"))
-        
+
     -- Add fancy nineslice
     --self.frame = self.bundle_root:AddChild(Image("images/fepanels_redux_shop_panel.xml", "shop_panel.tex"))
     self.frame = self.bundle_root:AddChild(NineSlice("images/dialogcurly_9slice.xml"))
@@ -90,12 +90,20 @@ local ItemBoxOpenerPopup = Class(Screen, function(self, parent_screen, options, 
     self.current_item_summary:SetPosition(420,0)
 
     -- Actual animation
+    self.bundle_bg = self.bundle_root:AddChild(UIAnim())
+    self.bundle_bg:SetScale(.7)
+    self.bundle_bg:SetPosition(0, 83)
+    self.bundle_bg:GetAnimState():SetBuild("skinevent_popup_spiral")
+    self.bundle_bg:GetAnimState():SetBank("skinevent_popup_spiral")
+    --
     self.bundle = self.bundle_root:AddChild(UIAnim())
     self.bundle:SetScale(.7)
     self.bundle:SetPosition(0, 83)
-    local box_build = options.box_build or "skinevent_popup"
-    self.bundle:GetAnimState():SetBuild(box_build) -- file name
-    self.bundle:GetAnimState():SetBank(box_build) -- top level symbol
+    self.bundle:GetAnimState():SetBuild("skinevent_popup")
+    self.bundle:GetAnimState():SetBank("skinevent_popup")
+    if options.box_build ~= nil and options.box_build ~= "skinevent_popup" then
+        self.bundle:GetAnimState():AddOverrideBuild(options.box_build)
+    end
 
     if self.allow_cancel and not TheInput:ControllerAttached() then
         self.back_button = self.center_root:AddChild(TEMPLATES.BackButton(
@@ -103,16 +111,17 @@ local ItemBoxOpenerPopup = Class(Screen, function(self, parent_screen, options, 
             ))
     end
 
-
     self.items = nil
     self.active_item_idx = 1
-    
+
     self:AddChild(TEMPLATES.ReduxForeground())
-    
+
     self.ui_state = "INTRO"
     self.inst:DoTaskInTime(.35, function()
-		self.bundle:GetAnimState():PlayAnimation("activate")
-		self.bundle:GetAnimState():PushAnimation("idle", true)
+        self.bundle:GetAnimState():PlayAnimation("activate")
+        self.bundle:GetAnimState():PushAnimation("idle", true)
+        self.bundle_bg:GetAnimState():PlayAnimation("activate")
+        self.bundle_bg:GetAnimState():PushAnimation("idle_loop", true)
 
         TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/collectionscreen/mysterybox/intro")
         TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/collectionscreen/mysterybox/LP","mysteryboxactive")
@@ -132,7 +141,7 @@ function ItemBoxOpenerPopup:_BuildItemSummary(summary_width)
     current_item_summary.item_rarity:SetColour(UICOLOURS.HIGHLIGHT_GOLD)
     current_item_summary.item_rarity:SetHAlign(ANCHOR_LEFT)
 
-	current_item_summary.set_title = current_item_summary:AddChild(Text(HEADERFONT, 20))
+    current_item_summary.set_title = current_item_summary:AddChild(Text(HEADERFONT, 20))
     current_item_summary.set_title:SetPosition(0,-25)
     current_item_summary.set_title:SetColour(UICOLOURS.HIGHLIGHT_GOLD)
     current_item_summary.set_title:SetHAlign(ANCHOR_RIGHT)
@@ -143,7 +152,6 @@ function ItemBoxOpenerPopup:_BuildItemSummary(summary_width)
     current_item_summary.description:SetHAlign(ANCHOR_LEFT)
     current_item_summary.description:SetVAlign(ANCHOR_TOP)
     current_item_summary.description:EnableWordWrap(true)
-
 
     current_item_summary.item_title:SetRegionSize(summary_width, 40)
     current_item_summary.item_rarity:SetRegionSize(summary_width, 30)
@@ -163,17 +171,21 @@ end
 
 function ItemBoxOpenerPopup:OnUpdate(dt)
     --print(self.ui_state)
-    
-	if self.ui_state == "INTRO" and self.bundle:GetAnimState():IsCurrentAnimation("idle") then
-		self.ui_state = "PENDING_OPEN"
-	
-	elseif self.ui_state == "WAIT_ON_ITEMS" and self.bundle:GetAnimState():GetCurrentAnimationTime() > ANIM_TIMING.open.pause_for_server then
-		if self.items == nil then
-			self.bundle:GetAnimState():Pause()
-		else
-			self.ui_state = "BUNDLE_OPENING"
-			self.bundle:GetAnimState():Resume() --we might have paused it if the server was slow to respond
-		end
+
+    if self.ui_state == "INTRO" and self.bundle:GetAnimState():IsCurrentAnimation("idle") then
+        self.ui_state = "PENDING_OPEN"
+
+    elseif self.ui_state == "WAIT_ON_ITEMS"
+        and (   self.bundle:GetAnimState():IsCurrentAnimation("open_loop") or
+                (   self.bundle:GetAnimState():IsCurrentAnimation("open") and
+                    self.bundle:GetAnimState():GetCurrentAnimationTime() + FRAMES > self.bundle:GetAnimState():GetCurrentAnimationLength()
+                )
+            ) then
+        if self.items ~= nil then
+            self.ui_state = "BUNDLE_OPENING"
+            self.bundle:GetAnimState():PlayAnimation("open_pst")
+            self.bundle:GetAnimState():PushAnimation("skin_loop", true)
+        end
 
     elseif self.ui_state == "BUNDLE_OPENING" and self.bundle:GetAnimState():IsCurrentAnimation("skin_loop") then
         self.ui_state = "WAIT_ON_NEXT"
@@ -194,19 +206,19 @@ function ItemBoxOpenerPopup:OnUpdate(dt)
     -- WAIT_ON_NEXT state is progressed by OnControl
     elseif self.ui_state == "BUNDLE_CLOSING" and self.bundle:GetAnimState():AnimDone() then
         self.ui_state = "BUNDLE_REVIEW"
-        
+
         -- update the background size
         local rows = math.ceil(#self.items/columns)
         self.frame:SetSize(columns * COLUMN_WIDTH + bg_frame_w_offset, rows * COLUMN_HEIGHT + bg_frame_h_offset)
         self.frame:SetPosition(0,bg_frame_initial_y - rows*COLUMN_HEIGHT/2)
-        
+
         self.opened_item_display:SetPosition(item_grid_initial_x-(columns*COLUMN_WIDTH/2),210)
-        
+
         self.frame:Show()
         self.opened_item_display:Show()
         TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/collectionscreen/music/reveal")
     end
-    
+
     self:EvaluateButtons()
 end
 
@@ -254,8 +266,8 @@ end
 
 -- Start the opening process. Cannot exit until contents are displayed.
 function ItemBoxOpenerPopup:_OpenItemBox()
-	self.ui_state = "WAIT_ON_ITEMS"
-	
+    self.ui_state = "WAIT_ON_ITEMS"
+
     self.open_box_fn(function(item_types)
         self.items = item_types
 
@@ -265,7 +277,7 @@ function ItemBoxOpenerPopup:_OpenItemBox()
             local item_widget = TEMPLATES.ItemImageVerticalText(item_type, item_key, 150)
             table.insert(item_images, item_widget)
         end
-            
+
         -- Decide how many columns there should be
         if #item_types == 2 or #item_types == 4 then
             columns = 2
@@ -280,9 +292,9 @@ function ItemBoxOpenerPopup:_OpenItemBox()
         self.opened_item_display:FillGrid(columns, COLUMN_WIDTH, COLUMN_HEIGHT, item_images)
         self:_UpdateSwapIcon(1)
     end)
-    
-	self.bundle:GetAnimState():PlayAnimation("open")
-	self.bundle:GetAnimState():PushAnimation("skin_loop", true)
+
+    self.bundle:GetAnimState():PlayAnimation("open")
+    self.bundle:GetAnimState():PushAnimation("open_loop", true)
     TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/collectionscreen/mysterybox/hit2")
     self.inst:DoTaskInTime(0.5, function() TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/collectionscreen/mysterybox/hit3") end )
 end
@@ -303,13 +315,14 @@ function ItemBoxOpenerPopup:_RevealNextItem()
         self.ui_state = "BUNDLE_OPENING"
     else
         self.bundle:GetAnimState():PlayAnimation("skin_out")
+        self.bundle_bg:GetAnimState():PlayAnimation("skin_out")
         TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/collectionscreen/mysterybox/outro")
         self.ui_state = "BUNDLE_CLOSING"
     end
 end
 
 function ItemBoxOpenerPopup:_Close()
-	self.ui_state = "OUTRO"
+    self.ui_state = "OUTRO"
     self.bundle_root:Hide()
 
     self.bg.bgplate.image:TintTo(PP_ON_TINT, PP_OFF_TINT, TRANSITION_DURATION, function()
@@ -329,13 +342,13 @@ end
 
 function ItemBoxOpenerPopup:OnControl(control, down)
     if ItemBoxOpenerPopup._base.OnControl(self,control, down) then 
-        return true 
+        return true
     end
 
     if down then
         return false
     end
-    
+
     if control == CONTROL_ACCEPT then
         if self.ui_state == "PENDING_OPEN" then
             self:_OpenItemBox()
@@ -370,9 +383,9 @@ function ItemBoxOpenerPopup:GetHelpText()
     end
 
     if self:CanExit() then
-		table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.ITEM_SCREEN.BACK)
+        table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.ITEM_SCREEN.BACK)
     end
-    
+
     return table.concat(t, "  ")
 end
 

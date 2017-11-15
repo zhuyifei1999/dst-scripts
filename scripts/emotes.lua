@@ -98,7 +98,7 @@ for item_type, v in pairs(EMOTE_ITEMS) do
     local cmd_data = CreateEmoteCommand(v)
     cmd_data.requires_item_type = item_type
     cmd_data.hasaccessfn = function(command, caller)
-        if caller == nil then
+        if caller == nil or TheWorld == nil then
             return false
         elseif TheWorld.ismastersim then
             return TheInventory:CheckClientOwnership(caller.userid, item_type)

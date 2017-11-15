@@ -114,18 +114,21 @@ local PurchaseWidget = Class(Widget, function(self, screen_self)
                         TheFrontEnd:PushScreen(box_popup)
                     end
 
-                elseif message == "Cancelled" then
+                elseif message == "CANCELLED" then
                     -- If the user just cancelled, then everything's fine.
 
                 else
-                    local server_error = PopupDialogScreen(STRINGS.UI.ITEM_SERVER.FAILED_TITLE, STRINGS.UI.ITEM_SERVER.FAILED_BODY,
+					local body_text = STRINGS.UI.ITEM_SERVER[message] or STRINGS.UI.ITEM_SERVER.FAILED_DEFAULT
+                    local server_error = PopupDialogScreen(STRINGS.UI.ITEM_SERVER.FAILED_TITLE, body_text,
                         {
                             {
                                 text=STRINGS.UI.TRADESCREEN.OK,
                                 cb = function()
                                     print("ERROR: Failed to contact the item server.", message )
                                     TheFrontEnd:PopScreen()
-                                    SimReset()
+                                    if message == "FAILED_DEFAULT" then
+										SimReset()
+									end
                                 end
                             }
                         }

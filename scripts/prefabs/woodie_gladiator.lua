@@ -3,7 +3,9 @@
 local assets =
 {
 	Asset("ANIM", "anim/ghost_woodie_build.zip"),
+	Asset("ANIM", "anim/ghost_werebeaver_build.zip"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/woodie_gladiator.zip"),
+	Asset("ANIM", "anim/werebeaver_build.zip"),
 	Asset("ATLAS_BUILD", "bigportraits/woodie_gladiator.xml", 128),
 }
 
@@ -17,6 +19,6 @@ return CreatePrefabSkin("woodie_gladiator",
 	rarity_modifier = "EventModifier",
 	skin_tags = { "LAVA", "BASE", "CHARACTER", "WOODIE", },
 	bigportrait = { build = "bigportraits/woodie_gladiator.xml", symbol = "woodie_gladiator_oval.tex"},
-	skins = { ghost_skin = "ghost_woodie_build", normal_skin = "woodie_gladiator", },
+	skins = { ghost_skin = "ghost_woodie_build", ghost_werebeaver_skin = "ghost_werebeaver_build", normal_skin = "woodie_gladiator", werebeaver_skin = "werebeaver_build", },
 	release_group = 32,
 })

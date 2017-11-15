@@ -37,7 +37,7 @@ local function OnBrushed(inst, data)
     end
 
     PushEvent("beefalo.domestication.brushed", inst, data.feeder, {
-        domesticated = inst.components.domesticatable:IsDomesticated(),
+        domesticated = inst.components.domesticatable:IsDomesticated() == true,
         domestication_level = inst.components.domesticatable:GetDomestication(),
         tendency = inst.tendency,
         num_loot = data.numprizes,

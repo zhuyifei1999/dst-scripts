@@ -167,7 +167,7 @@ function BarterScreen:_BarterComplete(success, status, sounds)
             self.barter_success_cb()
         end
     else
-        local server_error = PopupDialogScreen(STRINGS.UI.ITEM_SERVER.FAILED_TITLE, STRINGS.UI.ITEM_SERVER.FAILED_BODY, {
+        local server_error = PopupDialogScreen(STRINGS.UI.BARTERSCREEN.FAILED_TITLE, STRINGS.UI.BARTERSCREEN.FAILED_BODY, {
                 {
                     text=STRINGS.UI.BARTERSCREEN.OK,
                     cb = function()

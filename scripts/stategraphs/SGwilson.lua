@@ -4099,6 +4099,7 @@ local states =
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("action_uniqueitem_pre")
             inst.AnimState:PushAnimation("book", false)
+            --V2C: NOTE that these are now used in onexit to clear skinned symbols
             --Moved to player_common because these symbols are never cleared
             --inst.AnimState:OverrideSymbol("book_open", "player_actions_uniqueitem", "book_open")
             --inst.AnimState:OverrideSymbol("book_closed", "player_actions_uniqueitem", "book_closed")
@@ -4106,9 +4107,20 @@ local states =
             --inst.AnimState:Hide("ARM_carry")
             inst.AnimState:Show("ARM_normal")
 
-            inst.components.inventory:ReturnActiveActionItem(inst.bufferedaction ~= nil and (inst.bufferedaction.target or inst.bufferedaction.invobject) or nil)
+            local book = inst.bufferedaction ~= nil and (inst.bufferedaction.target or inst.bufferedaction.invobject) or nil
+            if book ~= nil then
+                inst.components.inventory:ReturnActiveActionItem(book)
+                local skin_build = book:GetSkinBuild()
+                if skin_build ~= nil then
+                    inst.sg.statemem.skinned = true
+                    inst.AnimState:OverrideItemSkinSymbol("book_open", skin_build, "book_open", book.GUID, "player_actions_uniqueitem")
+                    inst.AnimState:OverrideItemSkinSymbol("book_closed", skin_build, "book_closed", book.GUID, "player_actions_uniqueitem")
+                    inst.AnimState:OverrideItemSkinSymbol("book_open_pages", skin_build, "book_open_pages", book.GUID, "player_actions_uniqueitem")
+                end
+            end
 
-            local book = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+            --should be same as the buffered action item, but... w/e
+            book = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
             if book ~= nil and book.components.aoetargeting ~= nil then
                 inst.sg.statemem.isaoe = true
                 inst.sg:AddStateTag("busy")
@@ -4181,6 +4193,11 @@ local states =
             if item ~= nil and not item:HasTag("book") then
                 inst.AnimState:Show("ARM_carry")
                 inst.AnimState:Hide("ARM_normal")
+            end
+            if inst.sg.statemem.skinned then
+                inst.AnimState:OverrideSymbol("book_open", "player_actions_uniqueitem", "book_open")
+                inst.AnimState:OverrideSymbol("book_closed", "player_actions_uniqueitem", "book_closed")
+                inst.AnimState:OverrideSymbol("book_open_pages", "player_actions_uniqueitem", "book_open_pages")
             end
             if inst.sg.statemem.book_fx ~= nil and inst.sg.statemem.book_fx:IsValid() then
                 inst.sg.statemem.book_fx:Remove()
@@ -7157,6 +7174,7 @@ local states =
                     end
                     inst.Physics:Teleport(data.targetpos.x, 0, data.targetpos.z)
                     inst.components.health:SetInvincible(true)
+                    inst.sg:SetTimeout(22 * FRAMES)
                     return
                 end
             end
@@ -7206,6 +7224,10 @@ local states =
             end),
             TimeEvent(19 * FRAMES, PlayFootstep),
         },
+
+        ontimeout = function(inst)
+            inst.sg:GoToState("idle", true)
+        end,
 
         events =
         {

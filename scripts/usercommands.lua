@@ -157,7 +157,7 @@ local function parseinput(input)
         end
     end
 
-    dumptable(params)
+    dumptablequiet(params)
 
     return command, params
 end
@@ -398,7 +398,7 @@ local function RunUserCommand(commandname, params, caller, onserver)
     end
 
     print(caller.userid, "running command:", command.name, tostring(onserver))
-    dumptable(params)
+    dumptablequiet(params)
 
     runcommand(command, params, caller, onserver)
 end
@@ -412,7 +412,7 @@ local function RunTextUserCommand(input, caller, onserver)
     end
 
     print(caller.userid, "running text command:", command.name, tostring(onserver))
-    dumptable(params)
+    dumptablequiet(params)
 
     runcommand(command, params, caller, onserver)
 end

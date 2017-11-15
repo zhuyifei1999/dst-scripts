@@ -3,7 +3,9 @@
 local assets =
 {
 	Asset("ANIM", "anim/ghost_woodie_build.zip"),
+	Asset("ANIM", "anim/ghost_werebeaver_build.zip"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/woodie_combatant.zip"),
+	Asset("ANIM", "anim/werebeaver_build.zip"),
 }
 
 return CreatePrefabSkin("woodie_combatant",
@@ -14,6 +16,6 @@ return CreatePrefabSkin("woodie_combatant",
 	build_name = "woodie_combatant",
 	rarity = "Event",
 	skin_tags = { "LAVA", "BASE", "CHARACTER", "WOODIE", },
-	skins = { ghost_skin = "ghost_woodie_build", normal_skin = "woodie_combatant", },
+	skins = { ghost_skin = "ghost_woodie_build", ghost_werebeaver_skin = "ghost_werebeaver_build", normal_skin = "woodie_combatant", werebeaver_skin = "werebeaver_build", },
 	release_group = 32,
 })
