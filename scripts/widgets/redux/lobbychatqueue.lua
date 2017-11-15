@@ -154,7 +154,7 @@ function LobbyChatQueue:OnMessageReceived(userid, name, prefab, message, colour)
 
     if not self.scroll_list then
         self.scroll_list = self:AddChild(ScrollableList(list_widgets, -- items
-                170,                                                  -- listwidth
+                175,                                                  -- listwidth
                 280,                                                  -- listheight
                 20,                                                   -- itemheight
                 10,                                                   -- itempadding
@@ -163,7 +163,10 @@ function LobbyChatQueue:OnMessageReceived(userid, name, prefab, message, colour)
                 nil,                                                  -- widgetXOffset
                 nil,                                                  -- always_show_static
                 nil,                                                  -- starting_offset
-                15                                                    -- yInit
+                15,                                                   -- yInit
+                nil,                                                  -- bar_width_scale_factor
+                nil,                                                  -- bar_height_scale_factor
+                "GOLD"                                                -- scrollbar_style
             ))
 
         self.scroll_list:SetPosition(100, -45)

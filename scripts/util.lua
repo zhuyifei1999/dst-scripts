@@ -247,6 +247,7 @@ function RemoveByValue(t, value)
     end
 end
 
+-- Count the number of keys/values. Like #t for map-type tables.
 function GetTableSize(table)
 	local numItems = 0
 	if table ~= nil then

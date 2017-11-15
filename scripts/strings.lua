@@ -4824,6 +4824,10 @@ STRINGS.UI =
         NO_MARKET = "This item cannot be traded or sold.",
         CANCEL = "Nevermind",
         OK = "OK",
+        
+        
+        FAILED_TITLE = "Connection failure",
+        FAILED_BODY = "Sorry!\nFailed to contact Klei Servers. Please try again.",
     },
 
     WARDROBESCREEN = 
@@ -4887,8 +4891,12 @@ STRINGS.UI =
 
     ITEM_SERVER =
     {
-        FAILED_TITLE = "Connection failure",
-        FAILED_BODY = "Sorry!\nFailed to contact Klei Servers. Please try again.",
+        FAILED_TITLE = "Purchase Failure",
+        
+        FAILED_DEFAULT = "Sorry!\nFailed to contact Klei Servers. Please try again.",
+        FAILED_MULTIPLE_PENDING_PURCHASES = "Unable to start a new transaction due to having an outstanding purchase active. Please close all other Steam purchases, and try again later.",
+        FAILED_IAP_RATE_LIMITED = "Unable to start a new transaction due to being limited by Steam. Please slow down and try again later.",
+        
         CONNECT = "Contacting Klei Servers",
     },
     

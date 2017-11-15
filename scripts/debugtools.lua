@@ -85,7 +85,10 @@ function debuglocals (level)
         return table.concat(t, "\n")
 end
 
-function dumptable(obj, indent, recurse_levels, visit_table)
+function dumptablequiet(obj, indent, recurse_levels, visit_table)
+    return dumptable(obj, indent, recurse_levels, visit_table, true)
+end
+function dumptable(obj, indent, recurse_levels, visit_table, is_terse)
     local is_top_level = visit_table == nil
     if visit_table == nil then
         visit_table = {}
@@ -121,7 +124,7 @@ function dumptable(obj, indent, recurse_levels, visit_table)
             -- sort breaks on keys that are tables, so just put them on the end
             table.insert(keys, k)
         end
-        if is_top_level and #keys == 0 then
+        if not is_terse and is_top_level and #keys == 0 then
             print(dent.."(empty)")
         end
         for i,k in ipairs(keys) do
@@ -137,7 +140,7 @@ function dumptable(obj, indent, recurse_levels, visit_table)
                 print(dent.."K: ",k," V: ",v)
             end
         end
-    else
+    elseif not is_terse then
         print("nil")
     end
 end

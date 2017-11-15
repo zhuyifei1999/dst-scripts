@@ -99488,6 +99488,16 @@ msgctxt "STRINGS.UI.BARTERSCREEN.CONFIRM_GRIND_FMT"
 msgid "Unravel this {item_name} into {doodad_count} Spools?\n\nYou will have a total of {doodad_net} Spools.\nSpools are used to weave limited-time event items."
 msgstr ""
 
+#. STRINGS.UI.BARTERSCREEN.FAILED_BODY
+msgctxt "STRINGS.UI.BARTERSCREEN.FAILED_BODY"
+msgid "Sorry!\nFailed to contact Klei Servers. Please try again."
+msgstr ""
+
+#. STRINGS.UI.BARTERSCREEN.FAILED_TITLE
+msgctxt "STRINGS.UI.BARTERSCREEN.FAILED_TITLE"
+msgid "Connection failure"
+msgstr ""
+
 #. STRINGS.UI.BARTERSCREEN.FAIL_BUY_FMT
 msgctxt "STRINGS.UI.BARTERSCREEN.FAIL_BUY_FMT"
 msgid "{doodad_count} Spools are required to weave item: {item_name}.\n\nYou need {doodad_net} more Spool(s) to weave this item.\nSpools can be obtained by unraveling curios."
@@ -103863,14 +103873,24 @@ msgctxt "STRINGS.UI.ITEM_SERVER.CONNECT"
 msgid "Contacting Klei Servers"
 msgstr ""
 
-#. STRINGS.UI.ITEM_SERVER.FAILED_BODY
-msgctxt "STRINGS.UI.ITEM_SERVER.FAILED_BODY"
+#. STRINGS.UI.ITEM_SERVER.FAILED_DEFAULT
+msgctxt "STRINGS.UI.ITEM_SERVER.FAILED_DEFAULT"
 msgid "Sorry!\nFailed to contact Klei Servers. Please try again."
+msgstr ""
+
+#. STRINGS.UI.ITEM_SERVER.FAILED_IAP_RATE_LIMITED
+msgctxt "STRINGS.UI.ITEM_SERVER.FAILED_IAP_RATE_LIMITED"
+msgid "Unable to start a new transaction due to being limited by Steam. Please slow down and try again later."
+msgstr ""
+
+#. STRINGS.UI.ITEM_SERVER.FAILED_MULTIPLE_PENDING_PURCHASES
+msgctxt "STRINGS.UI.ITEM_SERVER.FAILED_MULTIPLE_PENDING_PURCHASES"
+msgid "Unable to start a new transaction due to having an outstanding purchase active. Please close all other Steam purchases, and try again later."
 msgstr ""
 
 #. STRINGS.UI.ITEM_SERVER.FAILED_TITLE
 msgctxt "STRINGS.UI.ITEM_SERVER.FAILED_TITLE"
-msgid "Connection failure"
+msgid "Purchase Failure"
 msgstr ""
 
 #. STRINGS.UI.LOBBYSCREEN.APPLY

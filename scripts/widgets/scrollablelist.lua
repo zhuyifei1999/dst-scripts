@@ -11,9 +11,30 @@ local arrow_button_size = 40
 
 local DRAG_SCROLL_X_THRESHOLD = 150
 
+local SCROLLBAR_STYLE = {
+    BLACK = {
+        atlas = "images/ui.xml",
+        up = "arrow_scrollbar_up.tex",
+        down = "arrow_scrollbar_down.tex",
+        bar = "scrollbarline.tex",
+        handle = "scrollbarbox.tex",
+        --~ scale = 0.4,
+        scale = 1.0,
+    },
+    GOLD = {
+        atlas = "images/global_redux.xml",
+        up = "scrollbar_arrow_up.tex",
+        down = "scrollbar_arrow_down.tex",
+        bar = "scrollbar_bar.tex",
+        handle = "scrollbar_handle.tex",
+        scale = 0.3,
+    }
+}
+
 -- ScrollableList expects a table of pre-constructed items to be handed in as the "items" param OR
 -- for the "items" table to be a normalized table of data where each table entry is the data that will be handed as the parameters to the supplied function for "updatefn"
-local ScrollableList = Class(Widget, function(self, items, listwidth, listheight, itemheight, itempadding, updatefn, widgetstoupdate, widgetXOffset, always_show_static, starting_offset, yInit, bar_width_scale_factor, bar_height_scale_factor)
+-- TODO(dbriscoe): Remove bar_width_scale_factor, bar_height_scale_factor. Nothing active uses them.
+local ScrollableList = Class(Widget, function(self, items, listwidth, listheight, itemheight, itempadding, updatefn, widgetstoupdate, widgetXOffset, always_show_static, starting_offset, yInit, bar_width_scale_factor, bar_height_scale_factor, scrollbar_style)
     Widget._ctor(self, "ScrollBar")
     bar_width_scale_factor = bar_width_scale_factor or 1
     bar_height_scale_factor = bar_height_scale_factor or 1
@@ -30,6 +51,8 @@ local ScrollableList = Class(Widget, function(self, items, listwidth, listheight
     self.always_show_static_widgets = always_show_static or false
     self.focused_index = 1
     self.focus_children = true
+    self.scrollbar_style = SCROLLBAR_STYLE[scrollbar_style or "BLACK"]
+    assert(self.scrollbar_style, "If you can't pass a valid scrollbar_style, then don't pass one at all.")
 
     self.items = items
     if updatefn and widgetstoupdate then
@@ -51,8 +74,9 @@ local ScrollableList = Class(Widget, function(self, items, listwidth, listheight
 
     self.scroll_bar_container = self:AddChild(Widget("scroll-bar-container"))
 
-    self.up_button = self.scroll_bar_container:AddChild(ImageButton("images/ui.xml", "arrow_scrollbar_up.tex", "arrow_scrollbar_up.tex", "arrow_scrollbar_up.tex", nil, nil, {1,1}, {0,0}))
-    -- self.up_button:SetScale(.4)
+    self.up_button = self.scroll_bar_container:AddChild(ImageButton(self.scrollbar_style.atlas, self.scrollbar_style.up))
+    self.up_button:SetScale(self.scrollbar_style.scale)
+    local handle_scale = bar_width_scale_factor * self.scrollbar_style.scale
     self.up_button:SetPosition(self.width/2, self.height/2-10, 0)
     self.up_button:SetWhileDown( function() 
         if not self.last_up_button_time or GetTime() - self.last_up_button_time > button_repeat_time then
@@ -66,8 +90,8 @@ local ScrollableList = Class(Widget, function(self, items, listwidth, listheight
     -- self.up_button:StartUpdating()
 
     
-    self.down_button = self.scroll_bar_container:AddChild(ImageButton("images/ui.xml", "arrow_scrollbar_down.tex", "arrow_scrollbar_down.tex", "arrow_scrollbar_down.tex", nil, nil, {1,1}, {0,0}))
-    -- self.down_button:SetScale(.4)
+    self.down_button = self.scroll_bar_container:AddChild(ImageButton(self.scrollbar_style.atlas, self.scrollbar_style.down))
+    self.down_button:SetScale(self.scrollbar_style.scale)
     self.down_button:SetPosition(self.width/2, -self.height/2+10, 0)
     self.down_button:SetWhileDown( function() 
         if not self.last_down_button_time or GetTime() - self.last_down_button_time > button_repeat_time then
@@ -80,7 +104,7 @@ local ScrollableList = Class(Widget, function(self, items, listwidth, listheight
     end)
     -- self.down_button:StartUpdating()
 
-    self.scroll_bar_line = self.scroll_bar_container:AddChild(Image("images/ui.xml", "scrollbarline.tex"))
+    self.scroll_bar_line = self.scroll_bar_container:AddChild(Image(self.scrollbar_style.atlas, self.scrollbar_style.bar))
     self.scroll_bar_line:ScaleToSize( 11*bar_width_scale_factor, self.height - arrow_button_size - 20)
     self.scroll_bar_line:SetPosition(self.width/2, 0)
 
@@ -105,11 +129,12 @@ local ScrollableList = Class(Widget, function(self, items, listwidth, listheight
         end
     end )
 
-    self.position_marker = self.scroll_bar_container:AddChild(ImageButton("images/ui.xml", "scrollbarbox.tex", "scrollbarbox.tex", "scrollbarbox.tex", nil, nil, {1,1}, {0,0}))
+    self.position_marker = self.scroll_bar_container:AddChild(ImageButton(self.scrollbar_style.atlas, self.scrollbar_style.handle))
     self.position_marker.scale_on_focus = false
     self.position_marker.move_on_click = false
     self.position_marker:SetPosition(self.width/2, self.height/2 - arrow_button_size, 0)
-    self.position_marker:SetScale(bar_width_scale_factor, bar_width_scale_factor, 1)
+    local handle_scale = bar_width_scale_factor * self.scrollbar_style.scale
+    self.position_marker:SetScale(handle_scale, handle_scale, 1)
     self.position_marker:SetOnDown( function() 
         self.do_dragging = true
         self.y_adjustment = 0

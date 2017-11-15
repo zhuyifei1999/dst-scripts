@@ -397,7 +397,11 @@ function PlayerList:BuildPlayerList(players, nextWidgets)
 
     if not self.scroll_list then
         local function ScrollWidgetsCtor(context, index)
-            return PlayerInfoListing(players[index] or {}, nextWidgets)
+            local w = PlayerInfoListing(players[index] or {}, nextWidgets)
+            w.ongainfocusfn = function()
+                self.scroll_list:OnWidgetFocus(w)
+            end
+            return w
         end
 
         self.scroll_list = self.player_list:AddChild(TEMPLATES.ScrollingGrid(
@@ -411,6 +415,7 @@ function PlayerList:BuildPlayerList(players, nextWidgets)
                     item_ctor_fn = ScrollWidgetsCtor,
                     apply_fn = UpdatePlayerListing,
                     scrollbar_offset = 20,
+                    scrollbar_height_offset = -50,
                     peek_percent = TheNet:GetServerMaxPlayers() > NUM_ROWS and 0.3 or 0,
                 }
             ))

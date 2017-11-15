@@ -88,7 +88,8 @@ local assets =
 
     Asset("ATLAS", "images/skinsscreen.xml"),
     Asset("IMAGE", "images/skinsscreen.tex"),
-    
+
+    Asset("ANIM", "anim/skinevent_popup_spiral.zip"),
     Asset("ANIM", "anim/skinevent_popup.zip"),
     Asset("ANIM", "anim/skinevent_all_popup.zip"),
     Asset("ANIM", "anim/skinevent_set_popup.zip"),
