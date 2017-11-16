@@ -5,7 +5,6 @@
 require "util"
 local Text = require "widgets/text"
 
-
 local function _CountOccurrences(str, delimiter)
     local _, num_delimiters = str:gsub(delimiter, '')
     return num_delimiters
@@ -177,10 +176,10 @@ function TextCompleter:_SuggestComplete()
     -- Replace partially typed suggestion with completed suggestion.
     local first = string.lower(str):rfind_plain(self.suggest_replace)
     if first ~= nil then
-		local idx = first - 1
-		str = str:sub(1, idx)
-		str = str .. self.suggest_text_widgets[self.highlight_idx]:GetString()
-	end
+        local idx = first - 1
+        str = str:sub(1, idx)
+        str = str .. self.suggest_text_widgets[self.highlight_idx]:GetString()
+    end
 
     -- Closing code assumes we cannot have multiple unclosed delimiters (so we
     -- don't need to deal with nesting) because we won't trigger suggestions if

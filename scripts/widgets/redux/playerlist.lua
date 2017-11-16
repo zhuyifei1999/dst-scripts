@@ -407,7 +407,7 @@ function PlayerList:BuildPlayerList(players, nextWidgets)
         self.scroll_list = self.player_list:AddChild(TEMPLATES.ScrollingGrid(
                 players,
                 {
-                    context = {playerlist = self},
+                    scroll_context = {playerlist = self},
                     widget_width  = PlayerInfoListing_width,
                     widget_height = PlayerInfoListing_height,
                     num_visible_rows = NUM_ROWS,

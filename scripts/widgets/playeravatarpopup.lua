@@ -226,6 +226,10 @@ function PlayerAvatarPopup:UpdateData(data)
     if self.puppet ~= nil then
         local build = self.currentcharacter == "unknownmod" and "mod_player_build" or self.currentcharacter
         self.puppet:UpdatePlayerListing(nil, nil, build, GetSkinsDataFromClientTableData(data))
+        if self.userid == nil then
+            -- Only actual users get vanity items.
+            self.puppet:HideVanityItems()
+        end
     end
 
     if self.portrait ~= nil then

@@ -29,14 +29,18 @@ local PlayerAvatarPortrait = Class(Widget, function(self)
     self.rank:SetScale(0.6)
     
     if TheFrontEnd:GetIsOfflineMode() or not TheNet:IsOnlineMode() then
-		self.rank:Hide()
-		self.frame:Hide()
+        self:HideVanityItems()
 	end
 
     self.playername = self:AddChild(Text(CHATFONT_OUTLINE, 24))
     self.playername:SetPosition(0, -120)
     self.playername:SetHAlign(ANCHOR_MIDDLE)
 end)
+
+function PlayerAvatarPortrait:HideVanityItems()
+    self.rank:Hide()
+    self.frame:Hide()
+end
 
 function PlayerAvatarPortrait:SetBackground(item_key)
     self.frame.bg:SetTexture(GetPlayerPortraitAtlasAndTex(item_key))
