@@ -566,55 +566,60 @@ function EntityScript:GetBasicDisplayName()
         or self.name
 end
 
-function EntityScript:GetDisplayName()
+function EntityScript:GetAdjectivedName()
     local name = self:GetBasicDisplayName()
 
     if self:HasTag("player") then
         --No adjectives for players
+        return name
     elseif self:HasTag("smolder") then
-        name = ConstructAdjectivedName(self, name, STRINGS.SMOLDERINGITEM)
+        return ConstructAdjectivedName(self, name, STRINGS.SMOLDERINGITEM)
     elseif self:HasTag("diseased") then
-        name = ConstructAdjectivedName(self, name, STRINGS.DISEASEDITEM)
+        return ConstructAdjectivedName(self, name, STRINGS.DISEASEDITEM)
     elseif self:HasTag("withered") then
-        name = ConstructAdjectivedName(self, name, STRINGS.WITHEREDITEM)
+        return ConstructAdjectivedName(self, name, STRINGS.WITHEREDITEM)
     elseif not self.no_wet_prefix and (self.always_wet_prefix or self:GetIsWet()) then
         --custom
         if self.wet_prefix ~= nil then
-            name = ConstructAdjectivedName(self, name, self.wet_prefix)
+            return ConstructAdjectivedName(self, name, self.wet_prefix)
         end
         --equippable
         local equippable = self.replica.equippable
         if equippable ~= nil then
             local eslot = equippable:EquipSlot()
             if eslot == EQUIPSLOTS.HANDS then
-                name = ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.TOOL)
+                return ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.TOOL)
             elseif eslot == EQUIPSLOTS.HEAD or eslot == EQUIPSLOTS.BODY then
-                name = ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.CLOTHING)
+                return ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.CLOTHING)
             end
         end
         --edible
         for k, v in pairs(FOODTYPE) do
             if self:HasTag("edible_"..v) then
-                name = ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.FOOD)
+                return ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.FOOD)
             end
         end
         --fuel
         for k, v in pairs(FUELTYPE) do
             if self:HasTag(v.."_fuel") then
-                name = ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.FUEL)
+                return ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.FUEL)
             end
         end
         --generic
-        name = ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.GENERIC)
+        return ConstructAdjectivedName(self, name, STRINGS.WET_PREFIX.GENERIC)
     end
+    return name
+end
 
-	if self.prefab ~= nil then
-		local name_extention = STRINGS.NAME_DETAIL_EXTENTION[string.upper(self.prefab)]
-		if name_extention ~= nil then
-			name = name .. "\n" .. name_extention
-		end
-	end
-		
+function EntityScript:GetDisplayName()
+    local name = self:GetAdjectivedName()
+
+    if self.prefab ~= nil then
+        local name_extention = STRINGS.NAME_DETAIL_EXTENTION[string.upper(self.prefab)]
+        if name_extention ~= nil then
+            return name.."\n"..name_extention
+        end
+    end
     return name
 end
 
