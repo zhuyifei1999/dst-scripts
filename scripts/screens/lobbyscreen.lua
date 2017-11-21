@@ -18,9 +18,6 @@ local PopupDialogScreen = require "screens/popupdialog"
 
 local TEMPLATES = require "widgets/templates"
 
-local TextCompleter = require "util/textcompleter"
-local emoji = require("util/emoji")
-
 require("util")
 require("networking")
 require("stringutil")
@@ -381,51 +378,6 @@ end
     end
 end]]
 
-function LobbyScreen:BuildTextCompleter(chatbox)
-    local suggestion_data, emoji_translator = emoji.GetSuggestionDataForTextCompleter(TheNet:GetUserID())
-    local suggest_width = 220
-    local suggest_height = 32
-    local bg_colour = { .075, .07, .07, 1 }
-    local suggest_text_widgets = {}
-    local max_suggestions = 3
-    for i = 1, max_suggestions do
-        local w = chatbox.textbox:AddChild(emoji.EmojiSuggestText(emoji_translator, DEFAULTFONT, 27, bg_colour))
-        w:SetPosition(20, 32*i + 16, 0)
-        w:SetHAlign(ANCHOR_LEFT)
-        w:SetRegionSize(suggest_width, suggest_height)
-        table.insert(suggest_text_widgets, w)
-    end
-    self.completer = TextCompleter(suggest_text_widgets, chatbox.textbox, CHAT_INPUT_HISTORY, false)
-    self.completer:SetSuggestionData(suggestion_data)
-
-    local chat_OnGainFocus = chatbox.textbox.ongainfocusfn
-    chatbox:SetOnGainFocus(function(internal_self)
-        if chat_OnGainFocus then
-            chat_OnGainFocus(internal_self)
-        end
-        self.completer:ClearState()
-    end)
-
-    local chat_OnTextEntered = chatbox.textbox.OnTextEntered
-    chatbox.textbox.OnTextEntered = function(internal_self)
-        -- Do completion on hitting Enter.
-        self.completer:PerformCompletion()
-
-        if chat_OnTextEntered then
-            chat_OnTextEntered(internal_self)
-        end
-    end
-
-    local chat_OnRawKey = chatbox.textbox.OnRawKey
-    chatbox.textbox.OnRawKey = function(internal_self, key, down)
-        if chat_OnRawKey(internal_self, key, down) then
-            self.completer:UpdateSuggestions(down, key)
-            return true
-        end
-        return self.completer:OnRawKey(key, down)
-    end
-end
-
 function LobbyScreen:MakeTextEntryBox(parent)
     local chatbox = parent:AddChild(Widget("chatbox"))
     chatbox.bg = chatbox:AddChild( Image("images/lobbyscreen.xml", "playerlobby_whitebg_type.tex") )
@@ -483,8 +435,6 @@ function LobbyScreen:MakeTextEntryBox(parent)
     end
 
     chatbox:SetPosition(-52, -178)
-
-    self:BuildTextCompleter(chatbox)
 
     self.chatbox = chatbox
 end

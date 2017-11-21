@@ -820,7 +820,7 @@ return {
 		BERRYBUSH =
 		{
 			BARREN = "Needs something from a beast's backside.",
-			WITHERED = "You've obviously never worked boiler room.",
+			WITHERED = "You've obviously never worked a boiler room.",
 			GENERIC = "Can I eat those?",
 			PICKED = "Picked it right clean.",
 			DISEASED = "Maybe you oughta take a sick day...",

@@ -4,7 +4,6 @@ local ImageButton = require "widgets/imagebutton"
 local Text = require "widgets/text"
 local Image = require "widgets/image"
 local Widget = require "widgets/widget"
-local HoverText = require "widgets/hoverer"
 local PlayerBadge = require "widgets/playerbadge"
 local TEMPLATES = require "widgets/templates"
 local ScrollableList = require "widgets/scrollablelist"
@@ -103,11 +102,13 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
             playerListing.adminBadge:Hide()
         end]]
 
-		playerListing.rank = playerListing:AddChild(Image("images/profileflair.xml", "playerlevel_bg_lavaarena.tex"))
-		playerListing.rank:SetPosition(badge_x-13- 20, -4)  
-		playerListing.rank:SetScale(.5)
-		playerListing.rank.num = playerListing.rank:AddChild(Text(CHATFONT_OUTLINE, 40, (v.eventlevel or 0) + 1, UICOLOURS.WHITE))
-		playerListing.rank.num:SetPosition(2, 10)
+        if IsAnyFestivalEventActive() then
+            playerListing.rank = playerListing:AddChild(Image("images/profileflair.xml", "playerlevel_bg_lavaarena.tex"))
+            playerListing.rank:SetPosition(badge_x-13- 20, -4)  
+            playerListing.rank:SetScale(.5)
+            playerListing.rank.num = playerListing.rank:AddChild(Text(CHATFONT_OUTLINE, 40, (v.eventlevel or 0) + 1, UICOLOURS.WHITE))
+            playerListing.rank.num:SetPosition(2, 10)
+        end
 
         playerListing.name = playerListing:AddChild(Text(TALKINGFONT, 26))
         playerListing.name:SetColour(unpack(v.colour or DEFAULT_PLAYER_COLOUR))

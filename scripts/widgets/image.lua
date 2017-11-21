@@ -24,6 +24,20 @@ function Image:DebugDraw_AddSection(dbui, panel)
     dbui.Spacing()
     dbui.Text("Image")
     dbui.Indent() do
+        -- Clearly show the bounds of blank and other hard-to-see
+        -- images. (Great for debugging buttons.)
+        local show_region = self.region_preview ~= nil
+        local changed, show = dbui.Checkbox("white out image region", show_region)
+        if changed then
+            if show then
+                self.region_preview = self:AddChild(Image("images/ui.xml", "white.tex"))
+                self.region_preview:SetSize(self:GetSize())
+            else
+                self.region_preview:Kill()
+                self.region_preview = nil
+            end
+        end
+
         -- SetTexture doesn't gracefully fail on bad input, so don't allow editing
         -- (we'd call SetTexture for every keystroke).
         local function image_from_atlastexture(label, atlastexture)
@@ -53,6 +67,9 @@ function Image:DebugDraw_AddSection(dbui, panel)
         changed, w,h = dbui.DragFloat3("size", w,h,0, 1,1,1000)
         if changed then
             self:SetSize(w,h)
+            if self.region_preview then
+                self.region_preview:SetSize(self:GetSize())
+            end
         end
     end
     dbui.Unindent()

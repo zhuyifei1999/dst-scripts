@@ -37,18 +37,34 @@ function PlayerSummaryScreen:DoInit()
 
     self.puppet = self.experience_root:AddChild(PlayerAvatarPortrait())
     self.puppet:SetPosition(-220, 40)
+    if IsAnyFestivalEventActive() then
+        -- Profileflair and rank are displayed on experiencebar when its visible.
+        self.puppet:AlwaysHideRankBadge()
+    end
 
     self.username = self.experience_root:AddChild(Text(CHATFONT, 30, TheNet:GetLocalUserName()))
     self.username:SetHAlign(ANCHOR_LEFT)
     self.username:SetRegionSize(600, 50)
     self.username:SetPosition(180,80)
 
+    local width = 300
+
     if IsAnyFestivalEventActive() then
         self.experiencebar = self.experience_root:AddChild(TEMPLATES.WxpBar())
         self.experiencebar:SetPosition(240,40)
-    end
 
-    local width = 300
+    else
+        self.festivals_root = self.root:AddChild(Widget("festivals_root"))
+        self.festivals_root:SetPosition(325,210)
+        self.festivals_label = self.festivals_root:AddChild(Text(HEADERFONT, 25, STRINGS.UI.PLAYERSUMMARYSCREEN.FESTIVAL_HISTORY, UICOLOURS.GOLD_SELECTED))
+        self.festivals_label:SetPosition(60,70)
+        self.festivals_label:SetRegionSize(width,30)
+        self.festivals_divider_top = self.festivals_root:AddChild( Image("images/frontend_redux.xml", "achievements_divider_top.tex") )
+        self.festivals_divider_top:SetScale(0.5)
+        self.festivals_divider_top:SetPosition(60,55)
+        self.festivals_badge = self.festivals_root:AddChild(self:_BuildFestivalHistory(PREVIOUS_FESTIVAL_EVENT))
+        self.festivals_badge:SetPosition(-60,-30)
+    end
 
     self.doodad_root = self.root:AddChild(Widget("doodad_root"))
     self.doodad_root:SetPosition(325,-10)
@@ -106,6 +122,29 @@ function PlayerSummaryScreen:DoInit()
                 end
             ))
     end
+end
+
+function PlayerSummaryScreen:_BuildFestivalHistory(festival_name)
+    local w = Widget("badge")
+
+    w.badge = w:AddChild(TEMPLATES.FestivalNumberBadge(festival_name))
+
+    -- TODO(event2): Retrieve level for past event by name instead of relying on the old data.
+    local festival_rank = TheInventory:GetWXPLevel()
+    w.badge:SetRank(festival_rank)
+    w.badge:SetPosition(0, 20)
+
+    local festival_title = STRINGS.UI.FESTIVALEVENTSCREEN.TITLE[string.upper(festival_name)]
+    w.text = w:AddChild(Text(UIFONT, 30, festival_title, UICOLOURS.WHITE))
+
+    local textwidth = 300
+    local text_offset = 50
+    w.text:SetRegionSize(textwidth, 40)
+    w.text:SetPosition(text_offset + .5*textwidth, 25)
+    w.text:SetHAlign(ANCHOR_LEFT)
+    w.text:SetVAlign(ANCHOR_TOP)
+
+    return w
 end
 
 function PlayerSummaryScreen:_BuildItemsSummary(width)
@@ -264,8 +303,7 @@ function PlayerSummaryScreen:_RefreshPuppet()
     local base_skin = self.user_profile:GetBaseForCharacter(herocharacter)
     local clothing = self.user_profile:GetSkinsForCharacter(herocharacter, base_skin)
     local playerportrait = GetMostRecentlySelectedItem(self.user_profile, "playerportrait")
-    -- Profileflair and rank are they're displayed on experiencebar when its
-    -- visible.
+    -- Profileflair and rank are displayed on experiencebar when its visible.
     local profileflair = nil
     if not IsAnyFestivalEventActive() then
         profileflair = GetMostRecentlySelectedItem(self.user_profile, "profileflair")

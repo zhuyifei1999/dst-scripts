@@ -30,6 +30,9 @@ local assets =
 
     Asset("ANIM", "anim/build_status.zip"),
 
+    -- normal menu background
+    Asset("ANIM", "anim/dst_menu.zip"),
+
     -- lavaarena festival event
     Asset("ANIM", "anim/main_menu1.zip"),
     Asset("ATLAS", "images/bg_redux_labg.xml"),
@@ -41,6 +44,7 @@ local assets =
     Asset("ATLAS", "images/fepanels_redux_shop_panel_wide.xml"),
     Asset("IMAGE", "images/fepanels_redux_shop_panel_wide.tex"),
 
+    -- Swirly fire frontend menu background
     --~ Asset("ANIM", "anim/animated_title.zip"), -- Not currently used, but likely to come back
     --~ Asset("ANIM", "anim/animated_title2.zip"), -- Not currently used, but likely to come back
     --~ Asset("ANIM", "anim/title_fire.zip"), -- Not currently used, but likely to come back
@@ -59,6 +63,10 @@ local assets =
     Asset("IMAGE", "images/new_host_picker.tex"),
 
     Asset("FILE", "images/motd.xml"),
+
+    -- Used for motd
+    Asset("ATLAS", "images/dialogrect_9slice.xml"),
+    Asset("IMAGE", "images/dialogrect_9slice.tex"),
 
     --character portraits
     Asset("ATLAS", "images/saveslot_portraits.xml"),

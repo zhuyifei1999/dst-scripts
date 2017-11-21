@@ -27,8 +27,11 @@ local PlayerAvatarPortrait = Class(Widget, function(self)
     self.rank = self.puppet_root:AddChild(TEMPLATES.RankBadge())
     self.rank:SetPosition(-65, 20)
     self.rank:SetScale(0.6)
+    self.should_show_rank_badge = true
+
+    self.should_show_level = IsAnyFestivalEventActive()
     
-    if TheFrontEnd:GetIsOfflineMode() or not TheNet:IsOnlineMode() then
+    if self:_ShouldHideRankBadge() then
         self:HideVanityItems()
 	end
 
@@ -36,6 +39,15 @@ local PlayerAvatarPortrait = Class(Widget, function(self)
     self.playername:SetPosition(0, -120)
     self.playername:SetHAlign(ANCHOR_MIDDLE)
 end)
+
+function PlayerAvatarPortrait:AlwaysHideRankBadge()
+    self.should_show_rank_badge = false
+    self.rank:Hide()
+end
+
+function PlayerAvatarPortrait:_ShouldHideRankBadge()
+    return not self.should_show_rank_badge or TheFrontEnd:GetIsOfflineMode() or not TheNet:IsOnlineMode()
+end
 
 function PlayerAvatarPortrait:HideVanityItems()
     self.rank:Hide()
@@ -47,8 +59,12 @@ function PlayerAvatarPortrait:SetBackground(item_key)
 end
 
 function PlayerAvatarPortrait:SetRank(profileflair, rank)
+    if not self.should_show_level then
+        -- Don't hide level manually, pass invalid so RankBadge handles hiding.
+        rank = nil
+    end
     self.rank:SetRank(profileflair, rank)
-	if TheFrontEnd:GetIsOfflineMode() or not TheNet:IsOnlineMode() then
+	if self:_ShouldHideRankBadge() then
 		self.rank:Hide()
 	else
 		self.rank:Show()
@@ -77,15 +93,9 @@ function PlayerAvatarPortrait:UpdatePlayerListing(player_name, colour, prefab, b
     else
         self:ClearBackground()
     end
-    -- TODO(dbriscoe): Support invalid ranks and just don't show the number.
-    -- Outside of events, we still want to show the profileflair.
-    if rank and rank >= 0 then
-        -- profileflair may be null (if user has none selected)!
-        self:SetRank(profileflair, rank)
-    else
-        -- If there's no rank, then we don't want to show the rank badge.
-        self.rank:Hide()
-    end
+    -- profileflair may be null if user has none selected.
+    -- rank may be null/invalid outside of events.
+    self:SetRank(profileflair, rank)
     if prefab == "" then
         self.badge:Set("", colour or DEFAULT_PLAYER_COLOUR, false, 0)
         self.badge:Show()

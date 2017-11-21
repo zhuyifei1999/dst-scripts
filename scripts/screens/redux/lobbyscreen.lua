@@ -157,14 +157,16 @@ local CharacterSelectPanel = Class(LobbyPanel, function(self, owner)
 	function self:OnControl(control, down)
 		if Widget.OnControl(self, control, down) then return true end
 
-	    if down and control == CONTROL_MENU_MISC_2 then
-            OnCharacterClick("random")
-            TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
-            return true
-        elseif (not down) and control == CONTROL_PAUSE then
-			OnCharacterClick(self.character_scroll_list.selectedportrait.currentcharacter)
-			return true
-        end
+		if TheInput:ControllerAttached() then
+			if down and control == CONTROL_MENU_MISC_2 then
+				OnCharacterClick("random")
+				TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+				return true
+			elseif (not down) and control == CONTROL_PAUSE then
+				OnCharacterClick(self.character_scroll_list.selectedportrait.currentcharacter)
+				return true
+			end
+		end
 	end
 
 	function self:OnNextButton()
@@ -201,10 +203,12 @@ local LoadoutPanel = Class(LobbyPanel, function(self, owner)
 	function self:OnControl(control, down)
 		if Widget.OnControl(self, control, down) then return true end
 
-        if (not down) and control == CONTROL_PAUSE then
-			owner.next_button:onclick()
-			return true
-        end
+		if TheInput:ControllerAttached() then
+			if (not down) and control == CONTROL_PAUSE then
+				owner.next_button:onclick()
+				return true
+			end
+		end
 	end
 
 	function self:GetHelpText()
@@ -296,20 +300,17 @@ local LobbyScreen = Class(Screen, function(self, profile, cb)
     self.time_to_refresh = REFRESH_INTERVAL
     self.current_panel_index = 0
 
-    self.root = self:AddChild(TEMPLATES.ScreenRoot())
+    self.root = self:AddChild(TEMPLATES.ScreenRoot("screenroot"))
     self.fg = self:AddChild(TEMPLATES.ReduxForeground())
     self.root:AddChild(TEMPLATES.LeftSideBarBackground())	
 
-    local panel_proot = self:AddChild(TEMPLATES.ScreenRoot("panel_proot"))
-    self.panel_root = panel_proot:AddChild(Widget("panel_root"))
+    self.panel_root = self.root:AddChild(Widget("panel_root"))
 	self.panel_root:SetPosition(160, 0)
 	self.default_focus = self.panel_root
 
     if DEBUG_MODE then
         self.onlinestatus = self.root:AddChild(OnlineStatus())
     end
-
-    self.chat_sidebar = self.root:AddChild(ChatSidebar())
 
 	self.panels = {}
 	
@@ -341,6 +342,8 @@ local LobbyScreen = Class(Screen, function(self, profile, cb)
 		self.next_button:Hide()
 	end
 	
+    self.chat_sidebar = self.root:AddChild(ChatSidebar())
+
 	self:ToNextPanel(1)
 	
 	self.inst:ListenForEvent("lobbyplayerspawndelay", function(world, data) 

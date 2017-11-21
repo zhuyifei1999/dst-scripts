@@ -33,6 +33,7 @@ local Stats = require("stats")
 
 
 local SHOW_DST_DEBUG_HOST_JOIN = BRANCH == "dev"
+local SHOW_MOTD = true
 
 
 local MultiplayerMainScreen = Class(Screen, function(self, prev_screen, profile, offline, session_data)
@@ -63,50 +64,60 @@ function MultiplayerMainScreen:DoInit()
 			end))
 		end
     else
-        self.bg = self.fixed_root:AddChild(TEMPLATES.BrightMenuBackground())
-        -- TODO(dbriscoe): We need something to replace the festival art.
-        --~ self.bg_anim = self.fixed_root:AddChild(TEMPLATES.old.BackgroundPortal())
+        --~ self.bg = self.fixed_root:AddChild(TEMPLATES.BrightMenuBackground())
+
+        local anim = UIAnim()
+        anim:GetAnimState():SetBuild("dst_menu")
+        anim:GetAnimState():SetBank("dst_menu")
+        anim:SetScale(0.7)
+        anim:SetPosition(300, -30)
+        anim.PlayOnLoop = function()
+            anim:GetAnimState():PlayAnimation("loop", true)
+        end
+        anim:PlayOnLoop()
+
+        self.bg_anim = self.fixed_root:AddChild(anim)
     end
 
 	self.motd = self.fixed_root:AddChild(Widget("motd"))
-	self.motd:SetScale(.9,.9,.9)
-	self.motd:SetPosition(RESOLUTION_X/2 -200, RESOLUTION_Y/2-250, 0)
-	self.motdbg = self.motd:AddChild( TEMPLATES.old.CurlyWindow(0, 153, .56, 1, 67, -42))
-    self.motdbg:SetPosition(-8, -30)
-    self.motdbg.fill = self.motd:AddChild(Image("images/fepanel_fills.xml", "panel_fill_tiny.tex"))
-    self.motdbg.fill:SetScale(-.405, -.7)
-    self.motdbg.fill:SetPosition(-3, -18)
-	self.motd.motdtitle = self.motd:AddChild(Text(BUTTONFONT, 43))
-    self.motd.motdtitle:SetColour(0,0,0,1)
-    self.motd.motdtitle:SetPosition(0, 70, 0)
-	self.motd.motdtitle:SetRegionSize( 350, 60)
-	self.motd.motdtitle:SetString(STRINGS.UI.MAINSCREEN.MOTDTITLE)
+    self.motd:SetPosition(-240, 230)
 
-	self.motd.motdtext = self.motd:AddChild(Text(BUTTONFONT, 32))
-    self.motd.motdtext:SetColour(0,0,0,1)
-    self.motd.motdtext:SetHAlign(ANCHOR_MIDDLE)
-    self.motd.motdtext:SetVAlign(ANCHOR_MIDDLE)
-    self.motd.motdtext:SetPosition(0, -40, 0)
-	self.motd.motdtext:SetRegionSize(240, 260)
-	self.motd.motdtext:SetString(STRINGS.UI.MAINSCREEN.MOTD)
-	
-	self.motd.motdimage = self.motd:AddChild(ImageButton( "images/global.xml", "square.tex", "square.tex", "square.tex" ))
-    self.motd.motdimage:SetPosition(-2, -15, 0)
-    self.motd.motdimage:SetFocusScale(1, 1, 1)
+    self.motdbg = self.motd:AddChild(TEMPLATES.RectangleWindow(105,179,
+        STRINGS.UI.MAINSCREEN.MOTDTITLE,
+        nil,
+        nil,
+        STRINGS.UI.MAINSCREEN.MOTD
+    ))
+    self.motdbg:SetBackgroundTint(0,0,0,.85)
+    self.motd.motdtitle = self.motdbg.title
+    self.motd.motdtext = self.motdbg.body
+    -- smaller font is more subtle
+    self.motd.motdtitle:SetSize(34)
+    self.motd.motdtext:SetSize(20)
+
+	self.motd.motdimage = self.motd:AddChild(ImageButton( "images/global.xml", "square.tex" ))
+    self.motd.motdimage:SetScale(.7)
+    self.motd.motdimage.scale_on_focus = false -- show focus on motd.button
     self.motd.motdimage:Hide()    
 	self.motd.motdimage:SetOnClick(
 		function()
 			self.motd.button.onclick()
 		end)
-		
-    self.motd.button = self.motd:AddChild(ImageButton())
-	self.motd.button:SetPosition(0,-160)
-    self.motd.button:SetScale(.8*.9)
+
+    self.motd.button = self.motd:AddChild(ImageButton("images/global_redux.xml",
+            "button_carny_long_normal.tex",
+            "button_carny_long_hover.tex",
+            "button_carny_long_disabled.tex",
+            "button_carny_long_down.tex"
+        ))
+    self.motd.button:SetPosition(0,-103)
+    self.motd.button:SetScale(.45)
     self.motd.button:SetText(STRINGS.UI.MAINSCREEN.MOTDBUTTON)
     self.motd.button:SetOnClick( function() VisitURL("http://store.kleientertainment.com/") end )
-	self.motd.motdtext:EnableWordWrap(true)  
-	
-	
+
+    self.motd.focus_forward = self.motd.button
+
+
 	local gainfocusfn_img = self.motd.motdimage.OnGainFocus
     local losefocusfn_img = self.motd.motdimage.OnLoseFocus
     
@@ -172,23 +183,23 @@ function MultiplayerMainScreen:DoInit()
 
 	self.filter_settings = nil
 
-	--focus moving
-    if self.debug_menu then 
-        self.motd.button:SetFocusChangeDir(MOVE_LEFT, self.menu, -1)
-        self.motd.button:SetFocusChangeDir(MOVE_DOWN, self.submenu)
-        self.menu:SetFocusChangeDir(MOVE_RIGHT, self.motd.button)
-        self.submenu:SetFocusChangeDir(MOVE_LEFT, self.menu, -1)
-        self.submenu:SetFocusChangeDir(MOVE_UP, self.motd.button)
-
-        self.debug_menu:SetFocusChangeDir(MOVE_DOWN, self.menu, -1)
-        self.debug_menu:SetFocusChangeDir(MOVE_LEFT, self.menu, -1)
-        self.menu:SetFocusChangeDir(MOVE_LEFT, self.debug_menu)
+    --focus moving
+    self.motd:SetFocusChangeDir(MOVE_LEFT, self.menu, -1)
+    self.motd:SetFocusChangeDir(MOVE_DOWN, self.submenu)
+    self.motd:SetFocusChangeDir(MOVE_RIGHT, self.submenu)
+    if SHOW_MOTD then
+        self.menu:SetFocusChangeDir(MOVE_RIGHT, self.motd)
+        self.submenu:SetFocusChangeDir(MOVE_LEFT, self.motd)
+        self.submenu:SetFocusChangeDir(MOVE_UP, self.motd)
     else
-    	self.motd.button:SetFocusChangeDir(MOVE_LEFT, self.menu, -1)
-        self.motd.button:SetFocusChangeDir(MOVE_DOWN, self.submenu)
-    	self.menu:SetFocusChangeDir(MOVE_RIGHT, self.motd.button)
-    	self.submenu:SetFocusChangeDir(MOVE_LEFT, self.menu, -1)
-        self.submenu:SetFocusChangeDir(MOVE_UP, self.motd.button)
+        self.menu:SetFocusChangeDir(MOVE_RIGHT, self.submenu)
+        self.submenu:SetFocusChangeDir(MOVE_LEFT, self.menu)
+        self.submenu:SetFocusChangeDir(MOVE_UP, self.menu)
+    end
+    if self.debug_menu then 
+        self.motd:SetFocusChangeDir(MOVE_RIGHT, self.debug_menu, -1)
+        self.debug_menu:SetFocusChangeDir(MOVE_LEFT, self.motd)
+        self.debug_menu:SetFocusChangeDir(MOVE_RIGHT, self.submenu)
     end
 
 
@@ -537,7 +548,7 @@ function MultiplayerMainScreen:MakeMainMenu()
         table.insert( debug_menu_items, {text=STRINGS.UI.MAINSCREEN.HOST, cb= function() self:OnHostButton() end})
 
 		self.debug_menu = self.fixed_root:AddChild(Menu(debug_menu_items, 74))
-		self.debug_menu:SetPosition(-RESOLUTION_X/2 + 400, 250, 0)
+		self.debug_menu:SetPosition(-50, 250)
 		self.debug_menu:SetScale(.8)
     end
 end
@@ -740,11 +751,14 @@ function MultiplayerMainScreen:SetMOTD(str, cache)
 	 		SavePersistentString("motd_image", str)
 	    end
 
-		local platform_motd = motd.dststeam
-		
+        local platform_motd = motd.dststeam
+
 		if platform_motd then
 			--make sure we have an actual valid URL
-			if not string.match( platform_motd.link_url, "http://" ) and not string.match( platform_motd.link_url, "https://" ) then
+			if platform_motd.link_url
+                and not string.match( platform_motd.link_url, "http://" )
+                and not string.match( platform_motd.link_url, "https://" )
+                then
 				platform_motd.link_url = "http://" .. platform_motd.link_url
 			end
 			
@@ -752,7 +766,6 @@ function MultiplayerMainScreen:SetMOTD(str, cache)
 		    if platform_motd.motd_title and string.len(platform_motd.motd_title) > 0 and
 			    	platform_motd.motd_body and string.len(platform_motd.motd_body) > 0 then
 			    
-			    self.motdbg.fill:Show()
 			    self.motd.motdtitle:Show()
 				self.motd.motdtitle:SetString(platform_motd.motd_title)
 				self.motd.motdtext:Show()
@@ -771,7 +784,6 @@ function MultiplayerMainScreen:SetMOTD(str, cache)
 				end
 		    elseif platform_motd.image_url and string.len(platform_motd.image_url) > 0 then
 
-			    self.motdbg.fill:Hide()
 				self.motd.motdtitle:Hide()
 				self.motd.motdtext:Hide()
 				
@@ -798,7 +810,7 @@ function MultiplayerMainScreen:SetMOTD(str, cache)
 		    end
 		    
 		    
-			if cache then --the one we cache is the latest we downloaded
+			if platform_motd.link_url and cache then --the one we cache is the latest we downloaded
 				push_motd_event( "motd.seen", platform_motd.link_url, platform_motd.image_version or 0 )
 			end
 	    else
@@ -825,7 +837,7 @@ function MultiplayerMainScreen:OnCachedMOTDLoad(load_success, str)
 end
 
 function MultiplayerMainScreen:UpdateMOTD()
-	if not IsAnyFestivalEventActive() then
+	if SHOW_MOTD then
 		TheSim:GetPersistentString("motd_image", function(...) self:OnCachedMOTDLoad(...) end)
 	else
 		self.motd:Hide()
