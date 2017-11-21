@@ -740,7 +740,7 @@ end
 
 function LoadFonts()
     for k,v in pairs(FONTS) do
-        TheSim:LoadFont(v.filename, v.alias)
+        TheSim:LoadFont(v.filename, v.alias, v.disable_color)
     end
 
     for k,v in pairs(FONTS) do

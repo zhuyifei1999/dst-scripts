@@ -4,11 +4,11 @@ local Screen = require "widgets/screen"
 local TextEdit = require "widgets/textedit"
 local Widget = require "widgets/widget"
 local Text = require "widgets/text"
+local ImageButton = require "widgets/imagebutton"
 
-local emoji = require("util/emoji")
+
+local Emoji = require("util/emoji")
 local UserCommands = require("usercommands")
-
-local CHAT_INPUT_HISTORY = {}
 
 local ChatInputScreen = Class(Screen, function(self, whisper)
     Screen._ctor(self, "ChatInputScreen")
@@ -20,11 +20,8 @@ end)
 function ChatInputScreen:OnBecomeActive()
     ChatInputScreen._base.OnBecomeActive(self)
 
-    self.completer:ClearState()
-
     self.chat_edit:SetFocus()
     self.chat_edit:SetEditing(true)
-    TheFrontEnd:LockFocus(true)
 end
 
 function ChatInputScreen:OnBecomeInactive()
@@ -61,27 +58,33 @@ function ChatInputScreen:OnControl(control, down)
         return true
     end
 
-    -- For controllers, the misc_2 button will whisper if in say mode or say if in whisper mode. This is to allow the player to only bind one key to initiate chat mode.
-    if not down and control == CONTROL_MENU_MISC_2 then
-        self.whisper = not self.whisper
-        self:OnTextEntered()
-        return true
-    end
+	if not down and (control == CONTROL_CANCEL) then 
+		self:Close()
+		return true
+	end
 
-    if not down and (control == CONTROL_CANCEL or control == CONTROL_TOGGLE_SAY or control == CONTROL_TOGGLE_WHISPER) then 
-        self:Close()
-        return true
-    end
+    -- For controllers, the misc_2 button will whisper if in say mode or say if in whisper mode. This is to allow the player to only bind one key to initiate chat mode.
+	if TheInput:ControllerAttached() then
+		if not down and control == CONTROL_MENU_MISC_2 then
+			self.whisper = not self.whisper
+			self:OnTextEntered()
+			return true
+		end
+
+	    if not down and (control == CONTROL_TOGGLE_SAY or control == CONTROL_TOGGLE_WHISPER) then 
+		      self:Close()
+			  return true
+		end
+	end
 end
 
 function ChatInputScreen:OnRawKey(key, down)
     if self.runtask ~= nil then return true end
     if ChatInputScreen._base.OnRawKey(self, key, down) then
-        self.completer:UpdateSuggestions(down, key)
         return true 
     end
 
-    return self.completer:OnRawKey(key, down)
+    return false
 end
 
 function ChatInputScreen:Run()
@@ -96,9 +99,6 @@ function ChatInputScreen:Run()
         --Default to sending regular chat
         TheNet:Say(chat_string, self.whisper)
     end
-
-    -- To support chat history, uncomment.
-    --~ table.insert( CHAT_INPUT_HISTORY, chat_string )
 end
 
 function ChatInputScreen:Close()
@@ -129,6 +129,16 @@ function ChatInputScreen:DoInit()
     local edit_width = 850
     local edit_width_padding = 0
     local chat_type_width = 150
+
+    self.black = self:AddChild(ImageButton("images/global.xml", "square.tex"))
+    self.black.image:SetVRegPoint(ANCHOR_MIDDLE)
+    self.black.image:SetHRegPoint(ANCHOR_MIDDLE)
+    self.black.image:SetVAnchor(ANCHOR_MIDDLE)
+    self.black.image:SetHAnchor(ANCHOR_MIDDLE)
+    self.black.image:SetScaleMode(SCALEMODE_FILLSCREEN)
+    self.black.image:SetTint(0,0,0,0) -- invisible, but clickable!
+    self.black:SetOnClick(function() self:Close() end)
+    self.black:SetHelpTextMessage("")
 
     self.root = self:AddChild(Widget("chat_input_root"))
     self.root:SetScaleMode(SCALEMODE_PROPORTIONAL)
@@ -172,22 +182,11 @@ function ChatInputScreen:DoInit()
     self.chat_edit:EnableRegionSizeLimit(true)
     self.chat_edit:EnableScrollEditWindow(false)
 
-
-    assert(ThePlayer)
-    local suggestion_data, emoji_translator = emoji.GetSuggestionDataForTextCompleter(ThePlayer.userid)
-
-    local suggest_text_widgets = {}
-    local max_suggestions = 5
-    for i = 1, max_suggestions do
-        local w = self.root:AddChild(emoji.EmojiSuggestText(emoji_translator, DEFAULTFONT, 27))
-        w:SetPosition(290, 32*i + 18, 0)
-        w:SetHAlign(ANCHOR_RIGHT)
-        w:SetRegionSize(220, label_height)
-        table.insert(suggest_text_widgets, w)
-    end
-    self.completer = TextCompleter(suggest_text_widgets, self.chat_edit, CHAT_INPUT_HISTORY, false)
-    self.completer:SetSuggestionData(suggestion_data)
-
+	self.chat_edit:SetForceEdit(true)
+    self.chat_edit:EnableWordPrediction({width = 800})
+    self.chat_edit:AddWordPredictionDictionary(Emoji.GetWordPredictionDictionary())
+    self.chat_edit:AddWordPredictionDictionary(UserCommands.GetEmotesWordPredictionDictionary())
+	
     self.chat_edit:SetString("")
 end
 

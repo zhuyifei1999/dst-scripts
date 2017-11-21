@@ -1876,7 +1876,7 @@ return {
         TRINKET_43 = "I have put childish things behind me.", -- Crocodile Toy Hot Lava trinket
         TRINKET_44 = "Some breaks cannot be mended.", -- Broken Terrarium ONI trinket
         TRINKET_45 = "It is so colorful...", -- Odd Radio ONI trinket
-        TRINKET_46 = "I simply do not know what is it.", -- Hairdryer ONI trinket
+        TRINKET_46 = "I simply do not know what it is.", -- Hairdryer ONI trinket
 
         HALLOWEENCANDY_1 = "Oh... it's... g-good.",
         HALLOWEENCANDY_2 = "The most delicious lie.",

@@ -80,13 +80,18 @@ function PlayerInfoListing:DoInit(v, nextWidgets)
         self.bg:Hide()
     end
 
-    self.rank = self:AddChild(Image("images/profileflair.xml", "playerlevel_bg_lavaarena.tex"))
-    self.rank:SetPosition(x + 16, -4)  
-    self.rank:SetScale(.5)
-    self.rank.num = self.rank:AddChild(Text(CHATFONT_OUTLINE, 40))
-	self.rank.num:SetColour(UICOLOURS.WHITE)
-	self.rank.num:SetPosition(2, 10)
-	x = x + 16*2 + nudge_x
+    if IsAnyFestivalEventActive() then
+        self.rank = self:AddChild(Image("images/profileflair.xml", "playerlevel_bg_lavaarena.tex"))
+        self.rank:SetPosition(x + 16, -4)  
+        self.rank:SetScale(.5)
+        self.rank.num = self.rank:AddChild(Text(CHATFONT_OUTLINE, 40))
+        self.rank.num:SetColour(UICOLOURS.WHITE)
+        self.rank.num:SetPosition(2, 10)
+        x = x + 16*2 + nudge_x
+    else
+        -- Ensure there's enough space for "Admin" hover text.
+        x = x + 20
+    end
 
     self.characterBadge = nil
     if empty then
@@ -272,12 +277,16 @@ local function UpdatePlayerListing(context, widget, data, index)
 
     if empty then
         widget.characterBadge:Hide()
-        widget.rank:Hide()
+        if widget.rank then
+            widget.rank:Hide()
+        end
     else
         widget.characterBadge:Set(GetCharacterPrefab(data), data.colour or DEFAULT_PLAYER_COLOUR, data.performance ~= nil, data.userflags or 0)
         widget.characterBadge:Show()
-        widget.rank.num:SetString(data.eventlevel + 1)
-        widget.rank:Show()
+        if widget.rank then
+            widget.rank.num:SetString(data.eventlevel + 1)
+            widget.rank:Show()
+        end
     end
 
     if not empty and data.admin then

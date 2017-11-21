@@ -390,7 +390,7 @@ function TEMPLATES.StandardButton(onclick, txt, size)
 end
 
 
--- For making a square button that has a custom icon on it and has a text label.
+-- Standard-style button with a custom icon and a text label on the button.
 -- Text label offset can be specified, as well as whether or not it always shows.
 function TEMPLATES.IconButton(iconAtlas, iconTexture, labelText, sideLabel, alwaysShowLabel, onclick, textinfo, defaultTexture)
     local btn = TEMPLATES.StandardButton(onclick)
@@ -555,7 +555,7 @@ function TEMPLATES.LabelSpinner(labeltext, spinnerdata, width_label, width_spinn
     return wdg
 end
 
--- Button with a label beside it
+-- Text button with a label beside it
 function TEMPLATES.LabelButton(labeltext, buttontext, width_label, width_button, height, spacing, font, font_size, horiz_offset)
     local wdg = TEMPLATES.old.LabelButton(labeltext, buttontext, width_label, width_button, height, spacing, font, font_size, horiz_offset)
     wdg.label:SetColour(UICOLOURS.GOLD)
@@ -634,11 +634,32 @@ function TEMPLATES.RankBadge()
 
     rank.SetRank = function(self, profileflair, rank_value)
         rank.flair:SetTexture(GetProfileFlairAtlasAndTex(profileflair))
+        local is_rank_valid = rank_value and rank_value >= 0
+        if is_rank_valid then
             rank.num:SetString(tostring(rank_value + 1)) -- because we want to show 1 based levels, not -
             rank.num:SetColour(UICOLOURS.WHITE)
+            -- May have updated with valid rank after retrieving from server.
+            rank.num:Show()
+        else
+            -- For invalid ranks, just don't show the number.
+            -- Outside of events, we still want to show the profileflair.
+            rank.num:Hide()
         end
+    end
 
     return rank
+end
+
+function TEMPLATES.FestivalNumberBadge(festival_key)
+    festival_key = festival_key or "none"
+    local badge = Image("images/profileflair.xml", "playerlevel_bg_".. festival_key ..".tex")
+    badge.num = badge:AddChild(Text(CHATFONT_OUTLINE, 30))
+	badge.num:SetColour(UICOLOURS.WHITE)
+	badge.num:SetPosition(2, 10)
+    badge.SetRank = function(self, rank_value)
+        badge.num:SetString(tostring(rank_value + 1)) -- because we want to show 1-based levels
+    end
+    return badge
 end
 
 function TEMPLATES.UserProgress(onclick)

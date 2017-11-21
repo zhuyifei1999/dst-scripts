@@ -362,7 +362,7 @@ function FrontEnd:OnControl(control, down)
     -- map CONTROL_PRIMARY to CONTROL_ACCEPT for buttons
     -- while editing a text box and hovering over something else, consume the accept button (the raw key handlers will deal with it).
     elseif #self.screenstack > 0
-        and not (self.textProcessorWidget ~= nil and not self.textProcessorWidget.focus and control == CONTROL_ACCEPT)
+        and not (self.textProcessorWidget ~= nil and not self.textProcessorWidget.focus and self.textProcessorWidget:OnControl(control == CONTROL_PRIMARY and CONTROL_ACCEPT or control, down))
         and self.screenstack[#self.screenstack]:OnControl(control == CONTROL_PRIMARY and CONTROL_ACCEPT or control, down) then
         return true
 

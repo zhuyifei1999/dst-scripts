@@ -76,6 +76,7 @@ function MVPLoadingWidget:PopulateData()
 			widget.puppet:SetScale(1.25)
 			widget.puppet:SetPosition(0, 140)
 			widget.puppet:SetClickable(false)
+			widget.puppet:AlwaysHideRankBadge() -- no space and mine is shown on XP bar
 			local random_anim = math.floor((data.beststat[2] or 0) % #card_anims) + 1
 			widget.puppet.puppet.animstate:SetBank("wilson")
 			widget.puppet.puppet.animstate:SetPercent(card_anims[random_anim][1], card_anims[random_anim][2])

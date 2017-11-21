@@ -53,7 +53,9 @@ function Button:OnControl(control, down)
 	
 	if Button._base.OnControl(self, control, down) then return true end
 
-	if not self:IsEnabled() or not self.focus or self:IsSelected() then return end
+	if not self:IsEnabled() or not self.focus then return false end
+	
+	if self:IsSelected() and not self.AllowOnControlWhenSelected then return false end
 	
 	if control == self.control then
 
@@ -316,7 +318,7 @@ end
 function Button:GetHelpText()
 	local controller_id = TheInput:GetControllerID()
 	local t = {}
-	if not self:IsSelected() then
+	if not self:IsSelected() and self.help_message ~= "" then
     	table.insert(t, TheInput:GetLocalizedControl(controller_id, self.control, false, false ) .. " " .. self.help_message)	
     end
 	return table.concat(t, "  ")

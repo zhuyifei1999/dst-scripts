@@ -470,6 +470,7 @@ FESTIVAL_EVENTS =
     LAVAARENA = "lavaarena",
 }
 WORLD_FESTIVAL_EVENT = FESTIVAL_EVENTS.LAVAARENA
+PREVIOUS_FESTIVAL_EVENT = FESTIVAL_EVENTS.LAVAARENA
 
 SPECIAL_EVENTS_SKIN_TAGS =
 {
@@ -542,8 +543,13 @@ function GetFestivalEventInfo()
 end
 
 -- Used by C side. Do NOT rename without editing simulation.cpp
-function GetActiveFestivalEventServerName()
-    return FESTIVAL_EVENT_INFO[WORLD_FESTIVAL_EVENT] ~= nil and FESTIVAL_EVENT_INFO[WORLD_FESTIVAL_EVENT].SERVER_NAME or ""
+function GetMostRecentFestivalEventServerName()
+    local festival = PREVIOUS_FESTIVAL_EVENT
+    if IsAnyFestivalEventActive() then
+        festival = WORLD_FESTIVAL_EVENT
+    end
+    assert(festival ~= FESTIVAL_EVENTS.NONE, "We must have had an event at some point.")
+    return FESTIVAL_EVENT_INFO[festival] ~= nil and FESTIVAL_EVENT_INFO[festival].SERVER_NAME or ""
 end
 
 --If changing this logic, remember to update preloadsounds.lua

@@ -36940,7 +36940,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.TRINKET_46
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.TRINKET_46"
-msgid "I simply do not know what is it."
+msgid "I simply do not know what it is."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.TRINKET_5
@@ -53970,7 +53970,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.BERRYBUSH.WITHERED
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.BERRYBUSH.WITHERED"
-msgid "You've obviously never worked boiler room."
+msgid "You've obviously never worked a boiler room."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.BERRYBUSH_JUICY.BARREN
@@ -97723,6 +97723,11 @@ msgctxt "STRINGS.SKIN_QUOTES.wathgrithr_deerclops"
 msgid "\"I cöuld take yöu curs with öne eye behind my mask!\""
 msgstr ""
 
+#. STRINGS.SKIN_QUOTES.wathgrithr_deerclops_d
+msgctxt "STRINGS.SKIN_QUOTES.wathgrithr_deerclops_d"
+msgid "\"I cöuld take yöu curs with öne eye behind my mask!\""
+msgstr ""
+
 #. STRINGS.SKIN_QUOTES.wathgrithr_formal
 msgctxt "STRINGS.SKIN_QUOTES.wathgrithr_formal"
 msgid "\"We will celebrate as if we were in Valhalla!\""
@@ -97763,6 +97768,11 @@ msgctxt "STRINGS.SKIN_QUOTES.waxwell_krampus"
 msgid "\"Naughty. Definitely naughty.\""
 msgstr ""
 
+#. STRINGS.SKIN_QUOTES.waxwell_krampus_d
+msgctxt "STRINGS.SKIN_QUOTES.waxwell_krampus_d"
+msgid "\"Naughty. Definitely naughty.\""
+msgstr ""
+
 #. STRINGS.SKIN_QUOTES.waxwell_survivor
 msgctxt "STRINGS.SKIN_QUOTES.waxwell_survivor"
 msgid "\"Say, pal, I don't look so good.\""
@@ -97775,6 +97785,11 @@ msgstr ""
 
 #. STRINGS.SKIN_QUOTES.webber_bat
 msgctxt "STRINGS.SKIN_QUOTES.webber_bat"
+msgid "\"Raaar! ...That's our bat noise.\""
+msgstr ""
+
+#. STRINGS.SKIN_QUOTES.webber_bat_d
+msgctxt "STRINGS.SKIN_QUOTES.webber_bat_d"
 msgid "\"Raaar! ...That's our bat noise.\""
 msgstr ""
 
@@ -97823,6 +97838,11 @@ msgctxt "STRINGS.SKIN_QUOTES.wendy_lureplant"
 msgid "\"So alluring...\""
 msgstr ""
 
+#. STRINGS.SKIN_QUOTES.wendy_lureplant_d
+msgctxt "STRINGS.SKIN_QUOTES.wendy_lureplant_d"
+msgid "\"So alluring...\""
+msgstr ""
+
 #. STRINGS.SKIN_QUOTES.wendy_shadow
 msgctxt "STRINGS.SKIN_QUOTES.wendy_shadow"
 msgid "\"Shadows are as black as ink, or night, or nightmares.\""
@@ -97853,6 +97873,11 @@ msgctxt "STRINGS.SKIN_QUOTES.wickerbottom_lightninggoat"
 msgid "\"All it takes is a spark of genius.\""
 msgstr ""
 
+#. STRINGS.SKIN_QUOTES.wickerbottom_lightninggoat_d
+msgctxt "STRINGS.SKIN_QUOTES.wickerbottom_lightninggoat_d"
+msgid "\"All it takes is a spark of genius.\""
+msgstr ""
+
 #. STRINGS.SKIN_QUOTES.wickerbottom_shadow
 msgctxt "STRINGS.SKIN_QUOTES.wickerbottom_shadow"
 msgid "\"Knowledge is power!\""
@@ -97870,6 +97895,11 @@ msgstr ""
 
 #. STRINGS.SKIN_QUOTES.willow_dragonfly
 msgctxt "STRINGS.SKIN_QUOTES.willow_dragonfly"
+msgid "\"Woah, I'm smokin'! (No, really!)\""
+msgstr ""
+
+#. STRINGS.SKIN_QUOTES.willow_dragonfly_d
+msgctxt "STRINGS.SKIN_QUOTES.willow_dragonfly_d"
 msgid "\"Woah, I'm smokin'! (No, really!)\""
 msgstr ""
 
@@ -97913,6 +97943,11 @@ msgctxt "STRINGS.SKIN_QUOTES.wilson_pigguard"
 msgid "\"I'm sure I had a scientific reason for this.\""
 msgstr ""
 
+#. STRINGS.SKIN_QUOTES.wilson_pigguard_d
+msgctxt "STRINGS.SKIN_QUOTES.wilson_pigguard_d"
+msgid "\"I'm sure I had a scientific reason for this.\""
+msgstr ""
+
 #. STRINGS.SKIN_QUOTES.wilson_shadow
 msgctxt "STRINGS.SKIN_QUOTES.wilson_shadow"
 msgid "\"Mwahahaha!\""
@@ -97940,6 +97975,11 @@ msgstr ""
 
 #. STRINGS.SKIN_QUOTES.winona_grassgecko
 msgctxt "STRINGS.SKIN_QUOTES.winona_grassgecko"
+msgid "\"Heh heh, this thing's itchy.\""
+msgstr ""
+
+#. STRINGS.SKIN_QUOTES.winona_grassgecko_d
+msgctxt "STRINGS.SKIN_QUOTES.winona_grassgecko_d"
 msgid "\"Heh heh, this thing's itchy.\""
 msgstr ""
 
@@ -97983,6 +98023,11 @@ msgctxt "STRINGS.SKIN_QUOTES.wolfgang_walrus"
 msgid "\"Wolfgang is large moustache man! Ha ha!\""
 msgstr ""
 
+#. STRINGS.SKIN_QUOTES.wolfgang_walrus_d
+msgctxt "STRINGS.SKIN_QUOTES.wolfgang_walrus_d"
+msgid "\"Wolfgang is large moustache man! Ha ha!\""
+msgstr ""
+
 #. STRINGS.SKIN_QUOTES.woodie_combatant
 msgctxt "STRINGS.SKIN_QUOTES.woodie_combatant"
 msgid "\"I've been in scraps before, eh?\""
@@ -98013,6 +98058,11 @@ msgctxt "STRINGS.SKIN_QUOTES.woodie_treeguard"
 msgid "\"To chop the tree, you must be the tree.\""
 msgstr ""
 
+#. STRINGS.SKIN_QUOTES.woodie_treeguard_d
+msgctxt "STRINGS.SKIN_QUOTES.woodie_treeguard_d"
+msgid "\"To chop the tree, you must be the tree.\""
+msgstr ""
+
 #. STRINGS.SKIN_QUOTES.wx78_combatant
 msgctxt "STRINGS.SKIN_QUOTES.wx78_combatant"
 msgid "\"THIS UNIT IS BATTLE READY\""
@@ -98030,6 +98080,11 @@ msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wx78_rhinorook
 msgctxt "STRINGS.SKIN_QUOTES.wx78_rhinorook"
+msgid "\"OVERCHARGED, READY TO CHARGE\""
+msgstr ""
+
+#. STRINGS.SKIN_QUOTES.wx78_rhinorook_d
+msgctxt "STRINGS.SKIN_QUOTES.wx78_rhinorook_d"
 msgid "\"OVERCHARGED, READY TO CHARGE\""
 msgstr ""
 
@@ -105653,9 +105708,9 @@ msgctxt "STRINGS.UI.MYSTERYBOXSCREEN.OUT_OF_BOXES_BODY"
 msgid "You have no chests in your treasury.\nStart playing to earn some!"
 msgstr ""
 
-#. STRINGS.UI.MYSTERYBOXSCREEN.OUT_OF_BOXES_TITLE
-msgctxt "STRINGS.UI.MYSTERYBOXSCREEN.OUT_OF_BOXES_TITLE"
-msgid ""
+#. STRINGS.UI.MYSTERYBOXSCREEN.OUT_OF_BOXES_BODY_NO_EVENT
+msgctxt "STRINGS.UI.MYSTERYBOXSCREEN.OUT_OF_BOXES_BODY_NO_EVENT"
+msgid "You have no chests in your treasury."
 msgstr ""
 
 #. STRINGS.UI.MYSTERYBOXSCREEN.TITLE
@@ -106866,6 +106921,11 @@ msgstr ""
 #. STRINGS.UI.PLAYERSUMMARYSCREEN.ENCOUNTER_COUNT_FMT
 msgctxt "STRINGS.UI.PLAYERSUMMARYSCREEN.ENCOUNTER_COUNT_FMT"
 msgid "{num_games} encounters"
+msgstr ""
+
+#. STRINGS.UI.PLAYERSUMMARYSCREEN.FESTIVAL_HISTORY
+msgctxt "STRINGS.UI.PLAYERSUMMARYSCREEN.FESTIVAL_HISTORY"
+msgid "History of Travels"
 msgstr ""
 
 #. STRINGS.UI.PLAYERSUMMARYSCREEN.LOADING_STUFF
@@ -110046,6 +110106,11 @@ msgstr ""
 #. STRINGS.UI.WARDROBE_POPUP.SET
 msgctxt "STRINGS.UI.WARDROBE_POPUP.SET"
 msgid "Confirm Outfit"
+msgstr ""
+
+#. STRINGS.UI.WORDPREDICTIONWIDET.DISMISS
+msgctxt "STRINGS.UI.WORDPREDICTIONWIDET.DISMISS"
+msgid "Dismiss"
 msgstr ""
 
 #. STRINGS.UI.WORLDGEN.CAVETITLE

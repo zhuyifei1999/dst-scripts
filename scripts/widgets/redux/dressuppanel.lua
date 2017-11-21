@@ -275,8 +275,6 @@ function DressupPanel:MakeSpinner(slot)
 	local spinner_group = Widget("spinner group")
 
     local atlas = "images/global_redux.xml"
-    -- TODO(dbriscoe): If we don't get a better selection image, then go back to the old spinners.
-    --~ atlas = "images/ui.xml"
 
 	local textures = {
 		arrow_left_normal = "arrow2_left.tex",

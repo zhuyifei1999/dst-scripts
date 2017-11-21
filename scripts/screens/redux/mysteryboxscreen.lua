@@ -31,16 +31,22 @@ function MysteryBoxScreen:DoInit()
 
     self.title = self.root:AddChild(TEMPLATES.ScreenTitle(STRINGS.UI.MYSTERYBOXSCREEN.TITLE, ""))
     self.onlinestatus = self.root:AddChild(OnlineStatus(true))
-    self.userprogress = self.root:AddChild(TEMPLATES.UserProgress(function()
-        -- We should have come from the PlayerSummaryScreen. Can't push the
-        -- screen because we'd have a require loop and "back" navigation would
-        -- be weird.
-        TheFrontEnd:FadeBack()
-    end))
+    if IsAnyFestivalEventActive() then
+        self.userprogress = self.root:AddChild(TEMPLATES.UserProgress(function()
+            -- We should have come from the PlayerSummaryScreen. Can't push the
+            -- screen because we'd have a require loop and "back" navigation would
+            -- be weird.
+            TheFrontEnd:FadeBack()
+        end))
+    end
 
     self.boxes_root = self:_BuildBoxesPanel()
 
-    self.alloutofbox = self.root:AddChild(TEMPLATES.CurlyWindow(400,100, STRINGS.UI.MYSTERYBOXSCREEN.OUT_OF_BOXES_TITLE, nil, nil, STRINGS.UI.MYSTERYBOXSCREEN.OUT_OF_BOXES_BODY))
+    local no_chest_msg = STRINGS.UI.MYSTERYBOXSCREEN.OUT_OF_BOXES_BODY_NO_EVENT
+    if IsAnyFestivalEventActive() then
+        no_chest_msg = STRINGS.UI.MYSTERYBOXSCREEN.OUT_OF_BOXES_BODY
+    end
+    self.alloutofbox = self.root:AddChild(TEMPLATES.CurlyWindow(400,100, nil, nil, nil, no_chest_msg))
     self.alloutofbox:SetPosition(0, -20)
     
 	self:UpdateMysteryBoxInfo()

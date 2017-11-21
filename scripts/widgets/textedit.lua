@@ -1,5 +1,6 @@
 local Widget = require "widgets/widget"
 local Text = require "widgets/text"
+local WordPredictionWidget = require "widgets/wordpredictionwidget"
 
 local TextEdit = Class(Text, function(self, font, size, text, colour)
     Text._ctor(self, font, size, text, colour)
@@ -124,8 +125,12 @@ function TextEdit:SetEditing(editing)
         if self.force_edit then
             TheFrontEnd:SetForceProcessTextInput(false, self)
         end
-    end
-
+        
+        if self.prediction_widget ~= nil then
+			self.prediction_widget:Dismiss()
+		end
+	end
+	
 	-- Update the enable_accept_control flag
 	self:SetAllowNewline(self.allow_newline)
 
@@ -190,6 +195,10 @@ end
 --NOTE: text is expected to be one char
 --pasting: was from a pasted string, not a keypress, so skip the tab next widget test
 function TextEdit:OnTextInput(text)
+	if not self.pasting and self.prediction_widget ~= nil and self.prediction_widget:OnTextInput(text) then
+		return true
+	end
+
     if not (self.shown and self.editing) or
         (self.limit ~= nil and self:GetString():utf8len() >= self.limit) or
         (not self.pasting and self.nextTextEditWidget ~= nil and text == "\t") then
@@ -206,6 +215,10 @@ function TextEdit:OnTextInput(text)
     end
 
     self.inst.TextEditWidget:OnTextInput(text)
+
+	if self.editing and self.prediction_widget ~= nil then
+		self.prediction_widget:RefreshPredictions()
+	end
 
     local overflow = self.regionlimit and self.inst.TextWidget:HasOverflow()
     if overflow then
@@ -239,6 +252,11 @@ function TextEdit:OnStopForceProcessTextInput()
 end
 
 function TextEdit:OnRawKey(key, down)
+	if self.editing and self.prediction_widget ~= nil and self.prediction_widget:OnRawKey(key, down) then
+		self.editing_enter_down = false
+		return true
+	end
+
     if TextEdit._base.OnRawKey(self, key, down) then
         self.editing_enter_down = false
         return true
@@ -301,6 +319,10 @@ function TextEdit:SetPassControlToScreen(control, pass)
 end
 
 function TextEdit:OnControl(control, down)
+	if self.editing and self.prediction_widget ~= nil and self.prediction_widget:OnControl(control, down) then
+		return true
+	end
+	
     if TextEdit._base.OnControl(self, control, down) then return true end
 
     --gobble up extra controls
@@ -324,6 +346,8 @@ function TextEdit:OnControl(control, down)
             return not self.pass_controls_to_screen[control]
         end
     end
+    
+    return false
 end
 
 function TextEdit:OnDestroy()
@@ -512,6 +536,39 @@ function TextEdit:GetHelpText()
     end
 
     return table.concat(t, "  ")
+end
+
+function TextEdit:EnableWordPrediction(layout, dictionary)
+	if self.prediction_widget == nil then
+		
+	    self.prediction_widget = self:AddChild(WordPredictionWidget(self, layout.width))
+	    local sx, sy = self:GetRegionSize()
+	    local pad_y = layout.pad_y or 5
+	    self.prediction_widget:SetPosition(-sx*0.5, sy*0.5 + pad_y)
+	end
+	if dictionary ~= nil then
+		self:AddWordPredictionDictionary(dictionary)
+	end
+end
+
+function TextEdit:AddWordPredictionDictionary(dictionary)
+	if self.prediction_widget ~= nil then
+	    self.prediction_widget.word_predictor:AddDictionary(dictionary)
+	end
+end
+
+function TextEdit:ApplyWordPrediction(prediction_index)
+	if self.prediction_widget ~= nil then
+		local new_str, cursor_pos = self.prediction_widget:ResolvePrediction(prediction_index)
+		if new_str ~= nil then
+			self:SetString(new_str)
+			self.inst.TextEditWidget:SetEditCursorPos(cursor_pos)
+			self.prediction_widget:RefreshPredictions()
+			return true
+		end
+	end
+	
+	return false
 end
 
 return TextEdit

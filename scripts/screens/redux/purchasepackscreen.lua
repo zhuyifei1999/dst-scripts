@@ -28,12 +28,6 @@ function PurchasePackScreen:DoInit()
 
     self.title = self.root:AddChild(TEMPLATES.ScreenTitle(STRINGS.UI.PURCHASEPACKSCREEN.TITLE, ""))
     self.onlinestatus = self.root:AddChild(OnlineStatus(true))
---    self.userprogress = self.root:AddChild(TEMPLATES.UserProgress(function()
---        -- We should have come from the PlayerSummaryScreen. Can't push the
---        -- screen because we'd have a require loop and "back" navigation would
---        -- be weird.
---        TheFrontEnd:FadeBack()
---    end))
 
     self.purchase_root = self:_BuildPurchasePanel()
     
@@ -257,9 +251,6 @@ end
 function PurchasePackScreen:_BuildPurchasePanel()
     local purchase_ss = self.root:AddChild(Widget("purchase_ss"))
 
-    -- TODO(dbriscoe): Purchasing also doesn't work from Big Picture even if
-    -- overlay is enabled (tested as non-steam game).
-    --
     -- Overlay is how we display purchasing.
     if PLATFORM == "WIN32_RAIL" or TheNet:IsNetOverlayEnabled() then
         local unvalidated_iap_defs = TheItems:GetIAPDefs()

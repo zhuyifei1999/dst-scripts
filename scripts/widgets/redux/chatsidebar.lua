@@ -2,8 +2,7 @@ local ImageButton = require "widgets/imagebutton"
 local Widget = require "widgets/widget"
 local LobbyChatQueue = require "widgets/redux/lobbychatqueue"
 local PlayerList = require "widgets/redux/playerlist"
-local TextCompleter = require "util/textcompleter"
-local emoji = require("util/emoji")
+local Emoji = require("util/emoji")
 
 local TEMPLATES = require "widgets/redux/templates"
 
@@ -61,48 +60,6 @@ end
     end
 end]]
 
-function ChatSidebar:BuildTextCompleter(chatbox)
-    local suggestion_data, emoji_translator = emoji.GetSuggestionDataForTextCompleter(TheNet:GetUserID())
-    local suggest_width = 220
-    local suggest_height = 32
-    local bg_colour = { .075, .07, .07, 1 }
-    local suggest_text_widgets = {}
-    local max_suggestions = 3
-    for i = 1, max_suggestions do
-        local w = chatbox.textbox:AddChild(emoji.EmojiSuggestText(emoji_translator, DEFAULTFONT, 27, bg_colour))
-        w:SetPosition(20, 32*i + 16, 0)
-        w:SetHAlign(ANCHOR_LEFT)
-        w:SetRegionSize(suggest_width, suggest_height)
-        table.insert(suggest_text_widgets, w)
-    end
-    self.completer = TextCompleter(suggest_text_widgets, chatbox.textbox, CHAT_INPUT_HISTORY, false)
-    self.completer:SetSuggestionData(suggestion_data)
-
-    local chat_OnGainFocus = chatbox.textbox.ongainfocusfn
-    chatbox:SetOnGainFocus(function(internal_self)
-        if chat_OnGainFocus then
-            chat_OnGainFocus(internal_self)
-        end
-        self.completer:ClearState()
-    end)
-
-    local chat_OnTextEntered = chatbox.textbox.OnTextEntered
-    chatbox.textbox.OnTextEntered = function(internal_self)
-        if chat_OnTextEntered then
-            chat_OnTextEntered(internal_self)
-        end
-    end
-
-    local chat_OnRawKey = chatbox.textbox.OnRawKey
-    chatbox.textbox.OnRawKey = function(internal_self, key, down)
-        if chat_OnRawKey(internal_self, key, down) then
-            self.completer:UpdateSuggestions(down, key)
-            return true
-        end
-        return self.completer:OnRawKey(key, down)
-    end
-end
-
 function ChatSidebar:MakeTextEntryBox(parent)
     local chatbox = parent:AddChild(Widget("chatbox"))
     local box_size = 240
@@ -127,6 +84,7 @@ function ChatSidebar:MakeTextEntryBox(parent)
         self.chatbox.textbox:SetString("")
         self.chatbox.textbox:SetEditing(true)
     end
+    chatbox.textbox:EnableWordPrediction({width = 1100}, Emoji.GetWordPredictionDictionary())
 
     chatbox.gobutton = chatbox:AddChild(ImageButton("images/lobbyscreen.xml", "button_send.tex", "button_send_over.tex", "button_send_down.tex", "button_send_down.tex", "button_send_down.tex", {1,1}, {0,0}))
     chatbox.gobutton:SetPosition(box_size - 59 + nudgex, nudgey)
@@ -148,8 +106,6 @@ function ChatSidebar:MakeTextEntryBox(parent)
 
     chatbox:SetPosition(-10, -210)
 
-    self:BuildTextCompleter(chatbox)
-
     self.chatbox = chatbox
 end
 
@@ -162,6 +118,8 @@ function ChatSidebar:BuildChatWindow()
     self.chatqueue:SetPosition(42,-20) 
 
     self.chat_pane:SetPosition(70,RESOLUTION_Y-410)
+    
+    self.chatbox:MoveToFront()
 end
 
 function ChatSidebar:ReceiveChatMessage(...)

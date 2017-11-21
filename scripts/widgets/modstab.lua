@@ -1,10 +1,8 @@
 local Widget = require "widgets/widget"
 local Text = require "widgets/text"
 local Image = require "widgets/image"
-local TextButton = require "widgets/textbutton"
 local Menu = require "widgets/menu"
 local ScrollableList = require "widgets/scrollablelist"
-local HoverText = require "widgets/hoverer"
 
 local TEMPLATES = require "widgets/templates"
 local PopupDialogScreen = require "screens/popupdialog"

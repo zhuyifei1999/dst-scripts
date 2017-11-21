@@ -3454,6 +3454,11 @@ STRINGS.UI =
         ISSUE = "Report an Issue",
     },
 
+	WORDPREDICTIONWIDET = 
+	{
+		DISMISS = "Dismiss",
+	},
+
     PLAYERSTATUSSCREEN =
     {
         AGE_PREFIX = "Day ",
@@ -4762,6 +4767,7 @@ STRINGS.UI =
         TRADING = "Trade Inn",
         PURCHASE = "Shop",
 
+        FESTIVAL_HISTORY = "History of Travels",
         CURRENCY_LABEL = "Spools",
         CURRENCY_EXPLAIN = "Items can be unraveled into Spools to weave event items.",
         XP_LABEL = "XP Earned",
@@ -4865,8 +4871,8 @@ STRINGS.UI =
         OPEN_BOX = "Open Chest",
         OK = "OK",
 
-        OUT_OF_BOXES_TITLE = "", --not needed :)
         OUT_OF_BOXES_BODY = "You have no chests in your treasury.\nStart playing to earn some!",
+        OUT_OF_BOXES_BODY_NO_EVENT = "You have no chests in your treasury.",
     },
     
     PURCHASEPACKSCREEN = 

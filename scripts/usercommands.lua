@@ -620,6 +620,33 @@ function UserToPlayer(input)
     end
 end
 
+
+function GetEmotesWordPredictionDictionary()
+	local user = {userid=TheNet:GetUserID()}
+	local function is_emote(command) return command.emote and (command.hasaccessfn == nil or command.hasaccessfn(command, user)) end
+
+	local emotes = {}
+    for _, command in pairs(usercommands) do
+		if is_emote(command) then
+			table.insert(emotes, command.name)
+		end
+	end
+    for _, modcommands in pairs(modusercommands) do
+        for _, command in pairs(modcommands) do
+			if is_emote(command) then
+				table.insert(emotes, command.name)
+			end
+        end
+    end
+        
+   	local data = {
+		words = emotes, 
+		delim = "/",
+	}
+	data.GetDisplayString = function(word) return data.delim .. word end
+    return data
+end
+
 -----------------------------------------------------------------------------------------------------------
 -- EXPORT
 -----------------------------------------------------------------------------------------------------------
@@ -640,4 +667,5 @@ return {
     GetCommandFromHash = getcommandfromhash,
     GetCommandFromName = getcommand,
     GetCommandNames = GetCommandNames,
+    GetEmotesWordPredictionDictionary = GetEmotesWordPredictionDictionary,
 }

@@ -71,8 +71,8 @@ FONTS = {
 	{ filename = "fonts/spirequal_outline_small"..font_posfix..".zip", alias = NEWFONT_OUTLINE_SMALL, fallback = DEFAULT_FALLBACK_TABLE_OUTLINE },	-- not in use
 	{ filename = "fonts/ptmono32"..font_posfix..".zip", alias = CODEFONT, fallback = DEFAULT_FALLBACK_TABLE },										-- not in use yet, will be used for promo-code verification text box
 
-	{ filename = "fonts/controllers"..font_posfix..".zip", alias = CONTROLLERS},
-	{ filename = "fonts/emoji"..font_posfix..".zip", alias = EMOJIFONT},
+	{ filename = "fonts/controllers"..font_posfix..".zip", alias = CONTROLLERS, disable_color = true},
+	{ filename = "fonts/emoji"..font_posfix..".zip", alias = EMOJIFONT, disable_color = true},
 
 	{ filename = "fonts/fallback_full_packed"..font_posfix..".zip", alias = FALLBACK_FONT},
 	{ filename = "fonts/fallback_full_outline_packed"..font_posfix..".zip", alias = FALLBACK_FONT_OUTLINE},
