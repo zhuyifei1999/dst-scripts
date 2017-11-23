@@ -5,7 +5,7 @@ local Text = require "widgets/text"
 local Image = require "widgets/image"
 local Widget = require "widgets/widget"
 local PlayerBadge = require "widgets/playerbadge"
-local TEMPLATES = require "widgets/templates"
+local TEMPLATES = require "widgets/redux/templates"
 local ScrollableList = require "widgets/scrollablelist"
 
 local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
@@ -42,7 +42,7 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
     self.panel_root = self.clickroot:AddChild(Widget("panel_root"))
     self.panel_root:SetPosition(0,20,0)
 
-    self.bg = self.root:AddChild(TEMPLATES.CurlyWindow(1, 325, .85, .8, 53, -32))
+    self.bg = self.root:AddChild(TEMPLATES.old.CurlyWindow(1, 325, .85, .8, 53, -32))
     self.bg.fill = self.root:AddChild(Image("images/fepanel_fills.xml", "panel_fill_tall.tex"))
     self.bg.fill:SetScale(.5, -.5)
     self.bg.fill:SetPosition(8, 10)
@@ -103,11 +103,10 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
         end]]
 
         if IsAnyFestivalEventActive() then
-            playerListing.rank = playerListing:AddChild(Image("images/profileflair.xml", "playerlevel_bg_lavaarena.tex"))
+            playerListing.rank = playerListing:AddChild(TEMPLATES.FestivalNumberBadge())
             playerListing.rank:SetPosition(badge_x-13- 20, -4)  
             playerListing.rank:SetScale(.5)
-            playerListing.rank.num = playerListing.rank:AddChild(Text(CHATFONT_OUTLINE, 40, (v.eventlevel or 0) + 1, UICOLOURS.WHITE))
-            playerListing.rank.num:SetPosition(2, 10)
+            playerListing.rank:SetRank(v.eventlevel or 0)
         end
 
         playerListing.name = playerListing:AddChild(Text(TALKINGFONT, 26))
@@ -123,7 +122,7 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
 
         local scale = .5
 
-        playerListing.viewprofile = playerListing:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "steam.tex" ))
+        playerListing.viewprofile = playerListing:AddChild(TEMPLATES.old.IconButton("images/button_icons.xml", "steam.tex" ))
         playerListing.viewprofile:SetPosition(137,-2,0)
         playerListing.viewprofile:SetScale(scale)
         --playerListing.viewprofile:SetNormalScale(scale)

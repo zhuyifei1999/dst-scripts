@@ -1,4 +1,7 @@
+local AchievementsPopup = require "screens/redux/achievementspopup"
 local CollectionScreen = require "screens/redux/collectionscreen"
+local Image = require "widgets/image"
+local ImageButton = require "widgets/imagebutton"
 local MorgueScreen = require "screens/redux/morguescreen"
 local MysteryBoxScreen = require "screens/redux/mysteryboxscreen"
 local OnlineStatus = require "widgets/onlinestatus"
@@ -7,7 +10,6 @@ local PurchasePackScreen = require "screens/redux/purchasepackscreen"
 local Screen = require "widgets/screen"
 local TEMPLATES = require "widgets/redux/templates"
 local Text = require "widgets/text"
-local Image = require "widgets/image"
 local TradeScreen = require "screens/tradescreen"
 local Widget = require "widgets/widget"
 
@@ -22,6 +24,7 @@ local PlayerSummaryScreen = Class(Screen, function(self, prev_screen, user_profi
 
 	self:DoInit()
 
+    self:_DoFocusHookups()
 	self.default_focus = self.menu
 end)
 
@@ -62,8 +65,15 @@ function PlayerSummaryScreen:DoInit()
         self.festivals_divider_top = self.festivals_root:AddChild( Image("images/frontend_redux.xml", "achievements_divider_top.tex") )
         self.festivals_divider_top:SetScale(0.5)
         self.festivals_divider_top:SetPosition(60,55)
-        self.festivals_badge = self.festivals_root:AddChild(self:_BuildFestivalHistory(PREVIOUS_FESTIVAL_EVENT))
-        self.festivals_badge:SetPosition(-60,-30)
+        if TheInventory:GetWXP() > 0 then
+            self.festivals_badge = self.festivals_root:AddChild(self:_BuildFestivalHistory(PREVIOUS_FESTIVAL_EVENT))
+            self.festivals_badge:SetPosition(-60,-10)
+        else
+            self.festivals_untouched = self.festivals_root:AddChild(Text(UIFONT, 30, STRINGS.UI.PLAYERSUMMARYSCREEN.NO_HISTORY))
+            self.festivals_untouched:SetRegionSize(width,60)
+            self.festivals_untouched:EnableWordWrap(true)
+            self.festivals_untouched:SetPosition(60,0)
+        end
     end
 
     self.doodad_root = self.root:AddChild(Widget("doodad_root"))
@@ -124,25 +134,46 @@ function PlayerSummaryScreen:DoInit()
     end
 end
 
-function PlayerSummaryScreen:_BuildFestivalHistory(festival_name)
-    local w = Widget("badge")
+function PlayerSummaryScreen:_DoFocusHookups()
+    if self.festivals_badge then
+        self.menu:SetFocusChangeDir(MOVE_RIGHT, self.festivals_badge)
+        self.festivals_badge:SetFocusChangeDir(MOVE_LEFT, self.menu)
+    end
+end
 
-    w.badge = w:AddChild(TEMPLATES.FestivalNumberBadge(festival_name))
+function PlayerSummaryScreen:_BuildFestivalHistory(festival_key)
+    -- Using ImageButton to get scaling on focus on image children.
+    local w = ImageButton("images/ui.xml", "blank.tex")
+    w:SetFont(UIFONT)
+    w:SetTextSize(30)
+    w:SetTextColour(UICOLOURS.GOLD_CLICKABLE)
+    w:SetTextFocusColour(UICOLOURS.GOLD_SELECTED)
+    w:SetOnClick(function()
+        local screen = AchievementsPopup(self.prev_screen, self.user_profile, festival_key)
+        TheFrontEnd:PushScreen(screen)
+    end)
 
+    w.badge = w.image:AddChild(TEMPLATES.FestivalNumberBadge(festival_key))
     -- TODO(event2): Retrieve level for past event by name instead of relying on the old data.
     local festival_rank = TheInventory:GetWXPLevel()
     w.badge:SetRank(festival_rank)
-    w.badge:SetPosition(0, 20)
+    w.badge.num:SetSize(30)
 
-    local festival_title = STRINGS.UI.FESTIVALEVENTSCREEN.TITLE[string.upper(festival_name)]
-    w.text = w:AddChild(Text(UIFONT, 30, festival_title, UICOLOURS.WHITE))
+
+    local festival_title = STRINGS.UI.FESTIVALEVENTSCREEN.TITLE[string.upper(festival_key)]
+    w:SetText(festival_title)
 
     local textwidth = 300
     local text_offset = 50
     w.text:SetRegionSize(textwidth, 40)
-    w.text:SetPosition(text_offset + .5*textwidth, 25)
+    w.text:SetPosition(text_offset + .5*textwidth, 0)
     w.text:SetHAlign(ANCHOR_LEFT)
     w.text:SetVAlign(ANCHOR_TOP)
+
+    -- Make text clickable too
+    w.bg = w.image:AddChild(Image("images/ui.xml", "blank.tex"))
+    w.bg:ScaleToSize(textwidth, 40)
+    w.bg:SetPosition(text_offset + .5*textwidth, 0)
 
     return w
 end
@@ -416,6 +447,15 @@ function PlayerSummaryScreen:OnControl(control, down)
         self:_Close()
         return true
     end
+end
+
+function PlayerSummaryScreen:GetHelpText()
+    local controller_id = TheInput:GetControllerID()
+    local t = {}
+
+    table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.SERVERLISTINGSCREEN.BACK)
+
+    return table.concat(t, "  ")
 end
 
 function PlayerSummaryScreen:_FadeToScreen(screen_ctor, data)

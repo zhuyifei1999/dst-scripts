@@ -1,9 +1,6 @@
 require "strings"
 require "emoji_items"
 
-local Text = require "widgets/text"
-local Widget = require "widgets/widget"
-
 
 local function GetAllowedEmojiNames(userid)
     local has_ownership = nil
@@ -23,7 +20,6 @@ local function GetAllowedEmojiNames(userid)
             table.insert(allowed_emoji, emoji.input_name)
         end
     end
-    dumptable(allowed_emoji)
     return allowed_emoji, emoji_translator
 end
 

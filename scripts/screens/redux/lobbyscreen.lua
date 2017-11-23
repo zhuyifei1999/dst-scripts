@@ -29,11 +29,7 @@ local function StartGame(this)
 
     if this.cb then
 		local skins = this.currentskins
-		if this.currentcharacter == "random" then
-			local all_characters = GetActiveCharacterList()
-			this.currentcharacter = all_characters[math.random(#all_characters)]
-		end
-        this.cb(this.currentcharacter, skins.base, skins.body, skins.hand, skins.legs, skins.feet) --parameters are base_prefab, skin_base, clothing_body, clothing_hand, then clothing_legs
+        this.cb(this.character_for_game, skins.base, skins.body, skins.hand, skins.legs, skins.feet) --parameters are base_prefab, skin_base, clothing_body, clothing_hand, then clothing_legs
     end
 end
 
@@ -149,8 +145,8 @@ local CharacterSelectPanel = Class(LobbyPanel, function(self, owner)
     self.focus_forward = self.character_scroll_list
     
     function self:OnGainFocus()
-		if owner.currentcharacter ~= nil then
-			self.character_scroll_list:RefocusCharacter(owner.currentcharacter)
+		if owner.lobbycharacter ~= nil then
+			self.character_scroll_list:RefocusCharacter(owner.lobbycharacter)
 		end
     end
 
@@ -170,7 +166,7 @@ local CharacterSelectPanel = Class(LobbyPanel, function(self, owner)
 	end
 
 	function self:OnNextButton()
-		owner.currentcharacter = self.character_scroll_list.selectedportrait.currentcharacter or "random"
+		owner.lobbycharacter = self.character_scroll_list.selectedportrait.currentcharacter or "random"
 		return true
 	end
 
@@ -191,7 +187,7 @@ local LoadoutPanel = Class(LobbyPanel, function(self, owner)
 	self.next_button_title = GetGameModeProperty("lobbywaitforallplayers") and STRINGS.UI.LOBBYSCREEN.READY or STRINGS.UI.LOBBYSCREEN.START
 
 	self.loadout = self:AddChild(LoadoutSelect(owner.profile))
-    self.loadout:SelectPortrait(owner.currentcharacter)
+    self.loadout:SelectPortrait(owner.lobbycharacter)
     self.loadout:StartLoadout()
 
     self.focus_forward = self.loadout
@@ -221,13 +217,14 @@ local LoadoutPanel = Class(LobbyPanel, function(self, owner)
 	function self:OnNextButton()
         self.loadout.dressup:OnClose()
 		owner.currentskins = self.loadout.dressup:GetSkinsForGameStart()
+		owner.character_for_game = self.loadout.dressup.currentcharacter
 
 		if GetGameModeProperty("lobbywaitforallplayers") then
-			if owner.currentcharacter == "random" then
+			if owner.lobbycharacter == "random" then
 				TheNet:SendLobbyCharacterRequestToServer("random")
 			else
 				local skins = owner.currentskins
-				TheNet:SendLobbyCharacterRequestToServer(owner.currentcharacter, skins.base, skins.body, skins.hand, skins.legs, skins.feet)
+				TheNet:SendLobbyCharacterRequestToServer(owner.lobbycharacter, skins.base, skins.body, skins.hand, skins.legs, skins.feet)
 			end
 			return true
 		else
@@ -295,7 +292,8 @@ local LobbyScreen = Class(Screen, function(self, profile, cb)
 --	Settings.match_results.wxp_data[TheNet:GetUserID()] = { new_xp = 7998, match_xp = 5998+500, earned_boxes = 2, details = {{desc="DAILY_FIRST_WIN", val=2000}, {desc="WIN", val=1000}, {desc="DURATION", val=500}, {desc="webber_victory", val=1000}, {desc="webber_merciless", val=500}, {desc="webber_darts", val=500}, {desc="nodeaths_self", val=1000}, {desc="nodeaths_team", val=3000}, {desc="nodeaths_uniqueteam", val=5500}, {desc="wintime_30", val=1500}, {desc="wintime_25", val=3500}, {desc="wintime_20", val=5500}} }
 --	Settings.match_results.outcome = {won = true, round = 5, time = 333, total_deaths = 23}
 
-    self.currentcharacter = nil
+    self.lobbycharacter = nil
+	self.character_for_game = nil
     self.currentskins = nil
     self.time_to_refresh = REFRESH_INTERVAL
     self.current_panel_index = 0

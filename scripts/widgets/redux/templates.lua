@@ -1,11 +1,11 @@
+local AccountItemFrame = require "widgets/redux/accountitemframe"
 local Button = require "widgets/button"
 local Grid = require "widgets/grid"
-local AccountItemFrame = require "widgets/redux/accountitemframe"
 local Image = require "widgets/image"
 local ImageButton = require "widgets/imagebutton"
 local Menu = require "widgets/menu"
 local NineSlice = require "widgets/nineslice"
-local ShadowedText = require "widgets/redux/shadowedtext"
+local NumericSpinner = require "widgets/numericspinner"
 local Spinner = require "widgets/spinner"
 local Text = require "widgets/text"
 local TextEdit = require "widgets/textedit"
@@ -549,9 +549,54 @@ end
 
 -- Spinner with a label beside it
 function TEMPLATES.LabelSpinner(labeltext, spinnerdata, width_label, width_spinner, height, spacing, font, font_size, horiz_offset)
-    local wdg = TEMPLATES.old.LabelSpinner(labeltext, spinnerdata, width_label or 220, width_spinner or 150, height or 40, spacing or -50, font or CHATFONT, font_size or 25, horiz_offset)
+    width_label = width_label or 220
+    width_spinner = width_spinner or 150
+    height = height or 40
+    spacing = spacing or -50
+    font = font or CHATFONT
+    font_size = font_size or 25
+
+    local offset = horiz_offset or 0
+    local total_width = width_label + width_spinner + spacing
+    local wdg = Widget("labelspinner")
+    wdg.label = wdg:AddChild( Text(font, font_size, labeltext) )
+    wdg.label:SetPosition( (-total_width/2)+(width_label/2) + offset, 0 )
+    wdg.label:SetRegionSize( width_label, height )
+    wdg.label:SetHAlign( ANCHOR_RIGHT )
     wdg.label:SetColour(UICOLOURS.GOLD)
+    wdg.spinner = wdg:AddChild(TEMPLATES.StandardSpinner(spinnerdata, width_spinner, height, font, font_size))
+    wdg.spinner:SetPosition((total_width/2)-(width_spinner/2) + offset, 0)
+
+    wdg.focus_forward = wdg.spinner
+
+    return wdg
+end
+
+-- Spinner of numbers with a label beside it
+function TEMPLATES.LabelNumericSpinner(labeltext, min, max, width_label, width_spinner, height, spacing, font, font_size, horiz_offset)
+    width_label = width_label or 220
+    width_spinner = width_spinner or 150
+    height = height or 40
+    spacing = spacing or -50
+    font = font or CHATFONT
+    font_size = font_size or 25
+
+    local offset = horiz_offset or 0
+    local total_width = width_label + width_spinner + spacing
+    local wdg = Widget("labelspinner")
+    wdg.label = wdg:AddChild( Text(font, font_size, labeltext) )
+    wdg.label:SetPosition( (-total_width/2)+(width_label/2) + offset, 0 )
+    wdg.label:SetRegionSize( width_label, height )
+    wdg.label:SetHAlign( ANCHOR_RIGHT )
+    wdg.label:SetColour(UICOLOURS.GOLD)
+    local atlas = "images/global_redux.xml"
+    local lean = true
+    wdg.spinner = wdg:AddChild(NumericSpinner(min, max, width_spinner, height, {font = font, size = font_size}, atlas, nil, nil, lean))
+    wdg.spinner:SetPosition((total_width/2)-(width_spinner/2) + offset, 0)
     wdg.spinner:SetTextColour(UICOLOURS.GOLD)
+
+    wdg.focus_forward = wdg.spinner
+
     return wdg
 end
 
@@ -565,7 +610,7 @@ end
 
 
 -- Spinner
-function TEMPLATES.StandardSpinner(spinnerdata, width_spinner, height, font, font_size, horiz_offset)
+function TEMPLATES.StandardSpinner(spinnerdata, width_spinner, height, font, font_size)
     local atlas = "images/global_redux.xml"
     local lean = true
     local wdg = Spinner(spinnerdata, width_spinner, height, {font = font or CHATFONT, size = font_size or 25}, nil, atlas, nil, lean)
@@ -650,10 +695,12 @@ function TEMPLATES.RankBadge()
     return rank
 end
 
+-- A festival-themed badge with a number.
+-- We don't expect to display this for "none".
 function TEMPLATES.FestivalNumberBadge(festival_key)
-    festival_key = festival_key or "none"
+    festival_key = festival_key or WORLD_FESTIVAL_EVENT
     local badge = Image("images/profileflair.xml", "playerlevel_bg_".. festival_key ..".tex")
-    badge.num = badge:AddChild(Text(CHATFONT_OUTLINE, 30))
+    badge.num = badge:AddChild(Text(CHATFONT_OUTLINE, 40))
 	badge.num:SetColour(UICOLOURS.WHITE)
 	badge.num:SetPosition(2, 10)
     badge.SetRank = function(self, rank_value)
@@ -728,12 +775,10 @@ function TEMPLATES.WxpBar()
     wxpbar.rank:SetScale(1)
     wxpbar.rank:Show()
 
-    wxpbar.nextrank = wxpbar:AddChild(Image("images/profileflair.xml", "playerlevel_bg_lavaarena.tex"))
+    wxpbar.nextrank = wxpbar:AddChild(TEMPLATES.FestivalNumberBadge())
     wxpbar.nextrank:SetPosition(345, -15)
     wxpbar.nextrank:SetScale(1)
-    wxpbar.nextrank.num = wxpbar.nextrank:AddChild(Text(CHATFONT_OUTLINE, 30))
-	wxpbar.nextrank.num:SetColour(UICOLOURS.WHITE)
-	wxpbar.nextrank.num:SetPosition(2, 10)
+    wxpbar.nextrank.num:SetSize(30)
     
     local bar = wxpbar:AddChild(TEMPLATES.LargeScissorProgressBar())
     bar:SetPosition(0, 0)
@@ -778,7 +823,7 @@ function TEMPLATES.WxpBar()
 
     wxpbar.SetRank = function(w_self, rank, next_level_xp, profileflair)
         w_self.rank:SetRank(profileflair, rank)
-        w_self.nextrank.num:SetString(rank + 2)
+        w_self.nextrank:SetRank(rank + 1)
         w_self.nextlevelxp_text:SetString(next_level_xp) 
     end
     

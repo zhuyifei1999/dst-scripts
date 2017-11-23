@@ -29,7 +29,8 @@ function FestivalEventScreen:DoInit()
     self.bg_anim = self.root:AddChild(TEMPLATES.BoarriorAnim())
     self.title = self.root:AddChild(TEMPLATES.ScreenTitle(STRINGS.UI.FESTIVALEVENTSCREEN.TITLE[string.upper(WORLD_FESTIVAL_EVENT)]))
 
-    self.achievements = self.root:AddChild(AchievementsPanel(self.user_profile,Profile))
+    self.achievements = self.root:AddChild(AchievementsPanel(self.user_profile, WORLD_FESTIVAL_EVENT))
+    self.achievements:SetPosition(120,-60)
 
     self.onlinestatus = self.root:AddChild(OnlineStatus(true))
     self.userprogress = self.root:AddChild(TEMPLATES.UserProgress(function()
@@ -121,7 +122,6 @@ function FestivalEventScreen:OnBrowseButton()
         { is_forced = true, name = "HASPVP",       data = false },
         { is_forced = true, name = "ISEMPTY",      data = false },
         { is_forced = true, name = "SEASON",       data = "ANY" },
-        --~ { is_forced = true, name = "VERSIONCHECK", data = true }, -- TODO(dbriscoe): Doesn't currently show cloud servers
         { is_forced = true, name = "MODSENABLED",  data = false },
     }
     local forced_settings = {

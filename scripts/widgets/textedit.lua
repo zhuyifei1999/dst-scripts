@@ -248,6 +248,10 @@ end
 function TextEdit:OnStopForceProcessTextInput()
     if self.editing then
         self:SetEditing(false)
+        
+        if self.OnStopForceEdit ~= nil then
+			self.OnStopForceEdit(self)
+        end
     end
 end
 

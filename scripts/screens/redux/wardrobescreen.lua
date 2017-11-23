@@ -197,7 +197,8 @@ function WardrobeScreen:_CheckDirty()
 end
 
 function WardrobeScreen:_SelectSkin(item_type, item_key, is_selected, is_owned)
-    if is_selected or not is_owned then
+    local is_previewing = is_selected or not is_owned
+    if is_previewing then
         --selecting the item or previewing an item
         self.preview_skins[item_type] = item_key
     else
@@ -205,8 +206,34 @@ function WardrobeScreen:_SelectSkin(item_type, item_key, is_selected, is_owned)
         self.preview_skins[item_type] = nil
     end
 
+    local skins_from_head = nil
+    if item_type == "base" then
+        local head = item_key
+        if not is_previewing then
+            head = self.currentcharacter .."_none"
+        end
+        local saved_skins = self.user_profile:GetSkinsForCharacter(self.currentcharacter, head)
+        if saved_skins.base then
+            -- Have data to load. (Slots may be empty to show default items.)
+            skins_from_head = saved_skins
+        end
+        if skins_from_head then
+            self.preview_skins = skins_from_head
+        end
+    end
+
     if is_owned then
-        if is_selected then
+        if skins_from_head then
+            self.selected_skins = {}
+            for key,val in pairs(skins_from_head) do
+                if TheInventory:CheckOwnership(val) then
+                    self.selected_skins[key] = skins_from_head[key]
+                else
+                    -- Most likely this was a _none head.
+                    self.selected_skins[key] = nil
+                end
+            end
+        elseif is_selected then
             self.selected_skins[item_type] = item_key
         else
             self.selected_skins[item_type] = nil

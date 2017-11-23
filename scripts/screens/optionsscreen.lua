@@ -3,40 +3,23 @@ require "strings"
 require "constants"
 
 local Screen = require "widgets/screen"
-local Button = require "widgets/button"
-local AnimButton = require "widgets/animbutton"
 local ImageButton = require "widgets/imagebutton"
 local Menu = require "widgets/menu"
 local Grid = require "widgets/grid"
 local Text = require "widgets/text"
 local Image = require "widgets/image"
-local UIAnim = require "widgets/uianim"
 local Spinner = require "widgets/spinner"
 local NumericSpinner = require "widgets/numericspinner"
 local Widget = require "widgets/widget"
 local ScrollableList = require "widgets/scrollablelist"
-
 local PopupDialogScreen = require "screens/popupdialog"
-
 local OnlineStatus = require "widgets/onlinestatus"
-
 local TEMPLATES = require "widgets/templates"
 
 
 local show_graphics = PLATFORM ~= "NACL"
-local text_font = NEWFONT --UIFONT--NUMBERFONT
-
-local rcol = RESOLUTION_X/2 -200
-local lcol = -RESOLUTION_X/2 +200
-
-local bottom_offset = 60
-
-local titleX = lcol-50
-local menuX = lcol-45
-local menuY = 170
 
 local enableDisableOptions = { { text = STRINGS.UI.OPTIONS.DISABLED, data = false }, { text = STRINGS.UI.OPTIONS.ENABLED, data = true } }
-local spinnerFont = { font = NEWFONT, size = 30 }
 
 local all_controls = 
 {
@@ -285,35 +268,10 @@ local OptionsScreen = Class(Screen, function(self, prev_screen)
 	self.menu:SetPosition(2, -RESOLUTION_Y*.5 + BACK_BUTTON_Y - 4,0)
 	-- self.menu:SetScale(.8)
 
-
-    -- This is the "options" tab
-    self.settingsroot = self.root:AddChild(Widget("ROOT"))
+    self.settingsroot = self.root:AddChild(self:_BuildSettings())
     self.settingsroot:SetPosition(-48, 10)
-
-    self.settings_title = self.settingsroot:AddChild(Text(BUTTONFONT, 50, STRINGS.UI.MAINSCREEN.SETTINGS))
-    self.settings_title:SetPosition(95,220) 
-    self.settings_title:SetColour(0,0,0,1)   
-
-	
-    -- This is the "controls" tab
-    self.controlsroot = self.root:AddChild(Widget("ROOT"))
-	self.controlsroot:SetPosition(-48, 10)
-
-    self.controls_title = self.controlsroot:AddChild(Text(BUTTONFONT, 50, STRINGS.UI.MAINSCREEN.CONTROLS))
-    self.controls_title:SetPosition(95,220)    
-    self.controls_title:SetColour(0,0,0,1)
-
-    self.controls_horizontal_line = self.controlsroot:AddChild(Image("images/ui.xml", "line_horizontal_5.tex"))
-	self.controls_horizontal_line:SetScale(.65, .65)
-	self.controls_horizontal_line:SetPosition(90, 135)
-
-	self.controls_vertical_line = self.controlsroot:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
-	self.controls_vertical_line:SetScale(.70, .63)
-	self.controls_vertical_line:SetPosition(265, -40)
-
-	-- NOTE: if we add more options, they should be made scrollable. Look at customization screen for an example.
-	self.grid = self.settingsroot:AddChild(Grid())
-	self.grid:SetPosition(-180, 144, 0)
+    self.controlsroot = self.root:AddChild(self:_BuildControls())
+    self.controlsroot:SetPosition(-48, 10)
 
 	self:DoInit()
 	self:InitializeSpinners(true)
@@ -344,6 +302,40 @@ local OptionsScreen = Class(Screen, function(self, prev_screen)
 
 	self.default_focus = self.settings_button
 end)
+
+
+-- This is the "options" tab
+function OptionsScreen:_BuildSettings()
+    local settingsroot = Widget("ROOT")
+
+    settingsroot.settings_title = settingsroot:AddChild(Text(BUTTONFONT, 50, STRINGS.UI.MAINSCREEN.SETTINGS))
+    settingsroot.settings_title:SetPosition(95,220) 
+    settingsroot.settings_title:SetColour(0,0,0,1)   
+
+    -- NOTE: if we add more options, they should be made scrollable. Look
+    -- at customization screen for an example.
+    self.grid = settingsroot:AddChild(Grid())
+    self.grid:SetPosition(-180, 144, 0)
+    return settingsroot
+end
+
+-- This is the "controls" tab
+function OptionsScreen:_BuildControls()
+    local controlsroot = Widget("ROOT")
+
+    controlsroot.controls_title = controlsroot:AddChild(Text(BUTTONFONT, 50, STRINGS.UI.MAINSCREEN.CONTROLS))
+    controlsroot.controls_title:SetPosition(95,220)    
+    controlsroot.controls_title:SetColour(0,0,0,1)
+
+    self.controls_horizontal_line = controlsroot:AddChild(Image("images/ui.xml", "line_horizontal_5.tex"))
+    self.controls_horizontal_line:SetScale(.65, .65)
+    self.controls_horizontal_line:SetPosition(90, 135)
+
+    self.controls_vertical_line = controlsroot:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
+    self.controls_vertical_line:SetScale(.70, .63)
+    self.controls_vertical_line:SetPosition(265, -40)
+    return controlsroot
+end
 
 function OptionsScreen:MakeBackButton()
 	self.cancel_button = self.root:AddChild(TEMPLATES.BackButton(
@@ -1182,20 +1174,21 @@ function OptionsScreen:DoInit()
 	self.left_spinners = {}
 	self.right_spinners = {}
 	
-	if show_graphics then
-		table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.INPUT, self.deviceSpinner } )
-		table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.VIBRATION, self.vibrationSpinner} )
-		table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.FX, self.fxVolume } )
-		table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.MUSIC, self.musicVolume } )
-		table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.AMBIENT, self.ambientVolume } )
-		table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.SHOWPASSWORD, self.passwordSpinner} )
-		table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.AUTOMODS, self.automodsSpinner } )
-		table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.WATHGRITHRFONT, self.wathgrithrfontSpinner} )
-        table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.HUDSIZE, self.hudSize} )
+    table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.INPUT, self.deviceSpinner } )
+    table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.VIBRATION, self.vibrationSpinner} )
+    table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.FX, self.fxVolume } )
+    table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.MUSIC, self.musicVolume } )
+    table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.AMBIENT, self.ambientVolume } )
+    table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.SHOWPASSWORD, self.passwordSpinner} )
+    table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.AUTOMODS, self.automodsSpinner } )
+    table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.WATHGRITHRFONT, self.wathgrithrfontSpinner} )
+    table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.HUDSIZE, self.hudSize} )
 
-        table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.SCREENSHAKE, self.screenshakeSpinner } )
-        table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.DISTORTION, self.distortionSpinner } )
-		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.BLOOM, self.bloomSpinner } )
+    table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.SCREENSHAKE, self.screenshakeSpinner } )
+    table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.DISTORTION, self.distortionSpinner } )
+    table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.BLOOM, self.bloomSpinner } )
+
+	if show_graphics then
 		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.FULLSCREEN, self.fullscreenSpinner } )
 		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.RESOLUTION, self.resolutionSpinner } )
 		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.DISPLAY, self.displaySpinner } )
@@ -1203,20 +1196,6 @@ function OptionsScreen:DoInit()
 		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.SMALLTEXTURES, self.smallTexturesSpinner } )
 		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.NETBOOKMODE, self.netbookModeSpinner } )
         table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.MOVEMENTPREDICTION, self.movementpredictionSpinner } )
-	else
-		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.SCREENSHAKE, self.screenshakeSpinner } )
-		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.DISTORTION, self.distortionSpinner } )
-		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.BLOOM, self.bloomSpinner } )
-
-		table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.INPUT, self.deviceSpinner } )
-		table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.VIBRATION, self.vibrationSpinner} )
-		table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.FX, self.fxVolume } )
-		table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.MUSIC, self.musicVolume } )
-		table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.AMBIENT, self.ambientVolume } )
-		table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.SHOWPASSWORD, self.passwordSpinner} )
-		table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.AUTOMODS, self.automodsSpinner } )
-		table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.WATHGRITHRFONT, self.wathgrithrfontSpinner} )
-        table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.HUDSIZE, self.hudSize} )
 	end
 
 	self.grid:InitSize(2, 10, 440, -40)
@@ -1477,7 +1456,7 @@ function OptionsScreen:InitializeSpinners(first)
 
 	if first then
 		-- Add the bg change when non-init value for all spinners
-		for i,v in pairs(self.left_spinners) do
+        local function SetupOnChange(i,v)
 			if v and v[2] then
 				local spinner = v[2]
 			    spinner.changed_image = spinner:AddChild(Image("images/ui.xml", "option_highlight.tex"))
@@ -1496,39 +1475,19 @@ function OptionsScreen:InitializeSpinners(first)
 					spinOnChanged(_, data)
 
 					if spinner:GetSelectedIndex() ~= spinner.default_index then
-		    		    spinner.changed_image:Show()
-		    		else
-		    		    spinner.changed_image:Hide()
-		    		end
+                        spinner.changed_image:Show()
+                    else
+                        spinner.changed_image:Hide()
+                    end
 				end
 			end
+        end
+		for i,v in pairs(self.left_spinners) do
+            SetupOnChange(i,v)
 		end
 
 		for i,v in pairs(self.right_spinners) do
-			if v and v[2] then
-				local spinner = v[2]
-			    spinner.changed_image = spinner:AddChild(Image("images/ui.xml", "option_highlight.tex"))
-				spinner.changed_image:SetPosition(-1, -1)
-				spinner.changed_image:SetScale(.6, .67)
-				spinner.changed_image:MoveToBack()
-				spinner.changed_image:SetClickable(false)
-				spinner.changed_image:Hide()
-				spinner.background:SetPosition(0,-1)
-
-				spinner.default_index = spinner:GetSelectedIndex()
-
-				local spinOnChanged = spinner.OnChanged
-
-				spinner.OnChanged = function(_, data)
-					spinOnChanged(_, data)
-
-					if spinner:GetSelectedIndex() ~= spinner.default_index then
-		    		    spinner.changed_image:Show()
-		    		else
-		    		    spinner.changed_image:Hide()
-		    		end
-				end
-			end
+            SetupOnChange(i,v)
 		end
 	end
 end

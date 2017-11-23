@@ -130,16 +130,6 @@ function ChatInputScreen:DoInit()
     local edit_width_padding = 0
     local chat_type_width = 150
 
-    self.black = self:AddChild(ImageButton("images/global.xml", "square.tex"))
-    self.black.image:SetVRegPoint(ANCHOR_MIDDLE)
-    self.black.image:SetHRegPoint(ANCHOR_MIDDLE)
-    self.black.image:SetVAnchor(ANCHOR_MIDDLE)
-    self.black.image:SetHAnchor(ANCHOR_MIDDLE)
-    self.black.image:SetScaleMode(SCALEMODE_FILLSCREEN)
-    self.black.image:SetTint(0,0,0,0) -- invisible, but clickable!
-    self.black:SetOnClick(function() self:Close() end)
-    self.black:SetHelpTextMessage("")
-
     self.root = self:AddChild(Widget("chat_input_root"))
     self.root:SetScaleMode(SCALEMODE_PROPORTIONAL)
     self.root:SetHAnchor(ANCHOR_MIDDLE)
@@ -183,6 +173,8 @@ function ChatInputScreen:DoInit()
     self.chat_edit:EnableScrollEditWindow(false)
 
 	self.chat_edit:SetForceEdit(true)
+    self.chat_edit.OnStopForceEdit = function() self:Close() end
+    
     self.chat_edit:EnableWordPrediction({width = 800})
     self.chat_edit:AddWordPredictionDictionary(Emoji.GetWordPredictionDictionary())
     self.chat_edit:AddWordPredictionDictionary(UserCommands.GetEmotesWordPredictionDictionary())

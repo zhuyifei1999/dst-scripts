@@ -100258,6 +100258,11 @@ msgctxt "STRINGS.UI.COMMANDSSCREEN.VOTEFMT"
 msgid "%s (vote)"
 msgstr ""
 
+#. STRINGS.UI.CONSOLESCREEN.LOCALEXECUTE
+msgctxt "STRINGS.UI.CONSOLESCREEN.LOCALEXECUTE"
+msgid "Local:"
+msgstr ""
+
 #. STRINGS.UI.CONSOLESCREEN.REMOTEEXECUTE
 msgctxt "STRINGS.UI.CONSOLESCREEN.REMOTEEXECUTE"
 msgid "Remote:"
@@ -106948,6 +106953,11 @@ msgctxt "STRINGS.UI.PLAYERSUMMARYSCREEN.NEW_STUFF"
 msgid "Recent Discoveries"
 msgstr ""
 
+#. STRINGS.UI.PLAYERSUMMARYSCREEN.NO_HISTORY
+msgctxt "STRINGS.UI.PLAYERSUMMARYSCREEN.NO_HISTORY"
+msgid "The Atrium Gate Lies Dormant"
+msgstr ""
+
 #. STRINGS.UI.PLAYERSUMMARYSCREEN.NO_ITEMS
 msgctxt "STRINGS.UI.PLAYERSUMMARYSCREEN.NO_ITEMS"
 msgid "Start playing to earn items!"
@@ -107106,6 +107116,11 @@ msgstr ""
 #. STRINGS.UI.PURCHASEPACKSCREEN.FAILED_TO_LOAD
 msgctxt "STRINGS.UI.PURCHASEPACKSCREEN.FAILED_TO_LOAD"
 msgid "Sorry!\nThe Klei store is closed right now.\nPlease try again later."
+msgstr ""
+
+#. STRINGS.UI.PURCHASEPACKSCREEN.NO_PACKS_FOR_SALE
+msgctxt "STRINGS.UI.PURCHASEPACKSCREEN.NO_PACKS_FOR_SALE"
+msgid "Sorry!\nThe Klei store is closed.\nCheck back during the next event."
 msgstr ""
 
 #. STRINGS.UI.PURCHASEPACKSCREEN.OK

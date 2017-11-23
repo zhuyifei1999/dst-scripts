@@ -750,8 +750,9 @@ function ItemExplorer:OnControl(control, down)
 
     if self.last_interaction_target then
         if not down and control == CONTROL_INSPECT then 
-            -- TODO(dbriscoe): A bit confusing because interaction target doesn't
-            -- move with focus! Should click focused widget automatically?
+            -- A bit confusing because interaction target doesn't move with
+            -- focus! Could click focused widget automatically, but that's
+            -- inconsistent with mouse controls.
             if self.can_do_commerce then
                 self:_LaunchCommerce()
                 return true

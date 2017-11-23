@@ -2786,6 +2786,7 @@ STRINGS.UI =
     CONSOLESCREEN =
     {
         REMOTEEXECUTE = "Remote:",
+        LOCALEXECUTE = "Local:",
     },
 
     BUGREPORTSCREEN =
@@ -4768,6 +4769,7 @@ STRINGS.UI =
         PURCHASE = "Shop",
 
         FESTIVAL_HISTORY = "History of Travels",
+        NO_HISTORY = "The Atrium Gate Lies Dormant",
         CURRENCY_LABEL = "Spools",
         CURRENCY_EXPLAIN = "Items can be unraveled into Spools to weave event items.",
         XP_LABEL = "XP Earned",
@@ -4880,6 +4882,7 @@ STRINGS.UI =
         TITLE = "Forge Clothing Sets",
 
         FAILED_TO_LOAD = "Sorry!\nThe Klei store is closed right now.\nPlease try again later.",
+        NO_PACKS_FOR_SALE = "Sorry!\nThe Klei store is closed.\nCheck back during the next event.",
 
         PURCHASE_OVERLAY_REQUIRED_TITLE = "Steam Overlay Required",
         PURCHASE_OVERLAY_REQUIRED_BODY = "Please enable the Steam Overlay to purchase clothing sets.",
