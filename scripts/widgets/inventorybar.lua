@@ -285,7 +285,13 @@ function Inv:Rebuild()
         self.bgcover:SetPosition(0, -135)
         self.toprow:SetPosition(0, .5 * (W + YSEP))
         self.bottomrow:SetPosition(0, -.5 * (W + YSEP))
-        self.root:MoveTo(self.out_pos, self.in_pos, .5)
+
+        if self.rebuild_snapping then
+            self.root:SetPosition(self.in_pos)
+            self:UpdatePosition()
+        else
+            self.root:MoveTo(self.out_pos, self.in_pos, .5)
+        end
     else
         self.bg:SetPosition(0, -64)
         self.bgcover:SetPosition(0, -100)

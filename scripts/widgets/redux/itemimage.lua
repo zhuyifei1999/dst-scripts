@@ -59,11 +59,10 @@ function ItemImage:SetItem(type, name, item_id, timestamp)
 
     --~ assert(type and type ~= "") -- ingame items don't have types!!!
     assert(name and name ~= "")
-    -- TODO(dbriscoe): item_id is the account-unique identifier for an item (an
-    -- account may have two of the same item and one could be on sale on the
-    -- marketplace and the other available for sale). Do we need to handle it
-    -- here? Probably not since we're using a single item to represent
-    -- multiples.
+    -- item_id is the account-unique identifier for an item (an account may
+    -- have two of the same item and one could be on sale on the marketplace
+    -- and the other available for sale). ItemImage doesn't necessarily
+    -- represent an owned item or a single item.
     --~ assert(item_id and item_id ~= "")
 
 	self.type = type

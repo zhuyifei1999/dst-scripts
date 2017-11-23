@@ -20,18 +20,19 @@ local function _find_prediction_start(dictionaries, text, cursor_pos)
 
 	local pos = cursor_pos
 	while (pos > 0) do
-		local pos_char = text:sub(pos, pos)
-		if pos_char == HARD_DELIM then
-			break
-		end
-
 		for _, dic in ipairs(dictionaries) do
+			local pos_char = text:sub(pos - (#dic.delim-1), pos)
+
+			if pos_char == nil or #pos_char ~= #dic.delim or pos_char:sub(-1) == HARD_DELIM then
+				break
+			end
+
 			local num_chars_for_prediction = dic.num_chars or 2
 
 			if pos_char == dic.delim then
 				if cursor_pos - pos >= num_chars_for_prediction then
-					local pre_pos_char = pos == 1 and HARD_DELIM or text:sub(pos-1, pos-1)
-					if (pre_pos_char == HARD_DELIM or pre_pos_char == dic.delim or string.byte(pre_pos_char) > 122 or string.byte(pre_pos_char) < 48 ) then -- Note: the character range checking is here so I don't have to write crazy pairing of ':' to determin if the current one is the end of another word
+					local pre_pos_char = (dic.skip_pre_delim_check or pos == 1) and HARD_DELIM or text:sub(pos-#dic.delim, pos-#dic.delim)
+					if pre_pos_char == HARD_DELIM or pre_pos_char == dic.delim or not string.match(pre_pos_char, "[a-z,A-Z]") then -- Note: the character range checking is here so I don't have to write crazy pairing of ':' to determin if the current one is the end of another word
 						local search_text = text:sub(pos + 1, cursor_pos)
 						local matches = {}
 						for _, word in ipairs(dic.words) do

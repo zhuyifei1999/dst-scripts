@@ -64,13 +64,11 @@ function MultiplayerMainScreen:DoInit()
 			end))
 		end
     else
-        --~ self.bg = self.fixed_root:AddChild(TEMPLATES.BrightMenuBackground())
-
         local anim = UIAnim()
         anim:GetAnimState():SetBuild("dst_menu")
         anim:GetAnimState():SetBank("dst_menu")
         anim:SetScale(0.7)
-        anim:SetPosition(300, -30)
+        anim:SetPosition(300, -10)
         anim.PlayOnLoop = function()
             anim:GetAnimState():PlayAnimation("loop", true)
         end

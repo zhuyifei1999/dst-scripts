@@ -1229,6 +1229,9 @@ function Inventory:Open()
     local overflow = self:GetOverflowContainer()
     if overflow ~= nil then
         overflow:Open(self.inst)
+        if self.inst.HUD ~= nil and self.inst.HUD.controls.inv.rebuild_pending then
+            self.inst.HUD.controls.inv.rebuild_snapping = true
+        end
     end
 end
 

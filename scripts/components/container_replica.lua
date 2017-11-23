@@ -84,10 +84,20 @@ local function OnRefreshCrafting(inst)
     end
 end
 
-local function OpenContainer(inst, self)
+local function OpenContainer(inst, self, snap)
     self.opentask = nil
+
+    --V2C: don't animate to and from the backpack position 
+    --     when re-opening inventory as Werebeaver->Woodie
+    local inv = snap and ThePlayer ~= nil and ThePlayer.HUD ~= nil and ThePlayer.HUD.controls.inv or nil
+    snap = inv ~= nil and not inv.rebuild_pending
+
     self:Open(ThePlayer)
     OnRefreshCrafting(inst)
+
+    if snap and inv.rebuild_pending then
+        inv.rebuild_snapping = true
+    end
 end
 
 function Container:AttachClassified(classified)
@@ -98,7 +108,8 @@ function Container:AttachClassified(classified)
 
     classified:InitializeSlots(self:GetNumSlots())
 
-    self.opentask = self.inst:DoTaskInTime(0, OpenContainer, self)
+    local inv = self.issidewidget and ThePlayer ~= nil and ThePlayer.HUD ~= nil and ThePlayer.HUD.controls.inv or nil
+    self.opentask = self.inst:DoTaskInTime(0, OpenContainer, self, inv ~= nil and (not inv.shown or inv.rebuild_snapping))
 
     if self.issidewidget then
         self.inst:ListenForEvent("itemget", OnRefreshCrafting)

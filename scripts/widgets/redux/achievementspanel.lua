@@ -1,4 +1,5 @@
 -- Yup, this is almost the same as PortraitBackgroundExplorerPanel.
+local Image = require "widgets/image"
 local TrueScrollList = require "widgets/truescrolllist"
 local Widget = require "widgets/widget"
 local Text = require "widgets/text"
@@ -9,22 +10,19 @@ require("dlcsupport")
 require("misc_items")
 require("util")
 
-local current_eventid = "lavaarena"
 
-local AchievementsPanel = Class(Widget, function(self, owner, user_profile)
+local AchievementsPanel = Class(Widget, function(self, user_profile, festival_key)
     Widget._ctor(self, "AchievementsPanel")
-    self.owner = owner
     self.user_profile = user_profile
 
     self.achievements_root = self:AddChild(Widget("achievements_root"))
-    self.achievements_root:SetPosition(120,-60)
 
     local bg = self.achievements_root:AddChild(Image("images/ui.xml", "black.tex"))
     bg:SetTint(1,1,1,.8)
 	bg:SetPosition(0, -5)
     bg:SetSize(806, 406)
 
-    self.grid = self.achievements_root:AddChild(self:_BuildAchievementsExplorer())
+    self.grid = self.achievements_root:AddChild(self:_BuildAchievementsExplorer(festival_key))
     self.grid:SetPosition(-10,-5)
 
 	local top_bar = self.achievements_root:AddChild(Image("images/frontend_redux.xml", "achievements_wide_divider_top.tex"))
@@ -37,15 +35,16 @@ local AchievementsPanel = Class(Widget, function(self, owner, user_profile)
     local title = self.achievements_root:AddChild(Text(HEADERFONT, 28, STRINGS.UI.ACHIEVEMENTS.SCREENTITLE, UICOLOURS.HIGHLIGHT_GOLD))
 	title:SetPosition(0, 222)
 
-	local unlocked, total = EventAchievements:GetNumAchievementsUnlocked(current_eventid)
+	local unlocked, total = EventAchievements:GetNumAchievementsUnlocked(festival_key)
 
     local completed = self.achievements_root:AddChild(Text(HEADERFONT, 24, subfmt(STRINGS.UI.XPUTILS.XPPROGRESS, {num=unlocked, max=total}), UICOLOURS.HIGHLIGHT_GOLD))
 	completed:SetHAlign(ANCHOR_RIGHT)
 	completed:SetPosition(330, 222)
 
+    self.focus_forward = self.grid
 end)
 
-function AchievementsPanel:_BuildAchievementsExplorer()
+function AchievementsPanel:_BuildAchievementsExplorer(current_eventid)
     
     local row_w = 720;
     local row_h = 60;

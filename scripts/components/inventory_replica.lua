@@ -95,6 +95,13 @@ function Inventory:AttachClassified(classified)
     self.inst:ListenForEvent("visibledirty", OnVisibleDirty, classified)
     self.inst:ListenForEvent("heavyliftingdirty", OnHeavyLiftingDirty, classified)
     classified:DoTaskInTime(0, OnVisibleDirty)
+
+    --V2C: can re-open inventory with backpack equipped as Werebeaver->Woodie
+    --     need to do it here instead of container_replica for correct timing
+    if self.inst.HUD ~= nil then
+        self.inst.HUD.controls.inv.rebuild_pending = true
+        self.inst.HUD.controls.inv.rebuild_snapping = true
+    end
 end
 
 function Inventory:DetachClassified()

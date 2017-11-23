@@ -81,12 +81,9 @@ function PlayerInfoListing:DoInit(v, nextWidgets)
     end
 
     if IsAnyFestivalEventActive() then
-        self.rank = self:AddChild(Image("images/profileflair.xml", "playerlevel_bg_lavaarena.tex"))
+        self.rank = self:AddChild(TEMPLATES.FestivalNumberBadge())
         self.rank:SetPosition(x + 16, -4)  
         self.rank:SetScale(.5)
-        self.rank.num = self.rank:AddChild(Text(CHATFONT_OUTLINE, 40))
-        self.rank.num:SetColour(UICOLOURS.WHITE)
-        self.rank.num:SetPosition(2, 10)
         x = x + 16*2 + nudge_x
     else
         -- Ensure there's enough space for "Admin" hover text.
@@ -284,7 +281,7 @@ local function UpdatePlayerListing(context, widget, data, index)
         widget.characterBadge:Set(GetCharacterPrefab(data), data.colour or DEFAULT_PLAYER_COLOUR, data.performance ~= nil, data.userflags or 0)
         widget.characterBadge:Show()
         if widget.rank then
-            widget.rank.num:SetString(data.eventlevel + 1)
+            widget.rank:SetRank(data.eventlevel)
             widget.rank:Show()
         end
     end

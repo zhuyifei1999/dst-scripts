@@ -380,12 +380,10 @@ end
 
 
 ----------------------------------------------------
-
-local ItemImage = require "widgets/itemimage"
-
 --local widgets_to_update, widgets_per_row, row_height = create_widgets_fn()
 -- DEPRECATED: Use TEMPLATES.ScrollingGrid instead!
 function SkinGridListConstructor(context, parent, scroll_list)
+	local ItemImage = require "widgets/itemimage"
     local screen = context.screen
 	local NUM_ROWS = 5
 	local NUM_COLUMNS = 4
@@ -672,9 +670,20 @@ end
 
 
 
+-- GetPackForItem only returns purchasable packs! We don't display historical
+-- packs so if it's not for sale, it's not part of a pack. Pack information is
+-- not the same as ensemble/sets.
 local PURCHASE_INFO = require("skin_purchase_packs")
 function GetPackForItem(item_key)
-    return PURCHASE_INFO.CONTENTS[item_key]
+    local pack = PURCHASE_INFO.CONTENTS[item_key]
+    if pack then
+        local iap_defs = TheItems:GetIAPDefs()
+        for i,iap in ipairs(iap_defs) do
+            if iap.item_type == pack then
+                return pack
+            end
+        end
+    end
 end
 
 function OwnsSkinPack(item_key)
@@ -781,11 +790,14 @@ function IsAnyItemNew(user_profile)
 end
 
 function ShouldDisplayItemInCollection(item_type)
+	if ITEM_DISPLAY_BLACKLIST[item_type] then
+        return false
+    end
 	local rarity = GetRarityForItem(item_type)
 	if rarity == "Event" or rarity == "ProofOfPurchase" or rarity == "Loyal" or rarity == "Timeless" then
 		return TheInventory:CheckOwnership(item_type)
 	end
-	return not ITEM_DISPLAY_BLACKLIST[item_type]
+    return true
 end
 
 local function IsDefaultCharacterSkin(item_key)

@@ -262,7 +262,11 @@ function PurchasePackScreen:_BuildPurchasePanel()
             end
         end
         if #iap_defs == 0 then
-            local dialog = purchase_ss:AddChild(TEMPLATES.CurlyWindow(400, 200, "", nil, nil, STRINGS.UI.PURCHASEPACKSCREEN.FAILED_TO_LOAD))
+            local msg = STRINGS.UI.PURCHASEPACKSCREEN.NO_PACKS_FOR_SALE
+            if IsAnyFestivalEventActive() then
+                msg = STRINGS.UI.PURCHASEPACKSCREEN.FAILED_TO_LOAD
+            end
+            local dialog = purchase_ss:AddChild(TEMPLATES.CurlyWindow(400, 200, "", nil, nil, msg))
             purchase_ss.focus_forward = dialog
         else
             local function DisplayOrderSort(a,b)

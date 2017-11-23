@@ -1,5 +1,4 @@
 require "util"
-local TextCompleter = require "util/textcompleter"
 local Screen = require "widgets/screen"
 local Image = require "widgets/image"
 local TextEdit = require "widgets/textedit"
@@ -19,34 +18,18 @@ local ConsoleScreen = Class(Screen, function(self)
 	Screen._ctor(self, "ConsoleScreen")
     self.runtask = nil
 	self:DoInit()
+	
+	self.ctrl_pasting = false
 end)
 
 function ConsoleScreen:OnBecomeActive()
 	ConsoleScreen._base.OnBecomeActive(self)
 	TheFrontEnd:ShowConsoleLog()
 
-	--setup prefab keys
-    local prefab_names = {}
-	for name,_ in pairs(Prefabs) do
-		table.insert(prefab_names, name)
-	end
-
-	local suggestion_data = {
-		-- functions for prefab suggest: not yet comprehensive
-		prefixes = {"c_spawn", "c_gonext", "c_give", "c_list", "c_find", "c_findnext", "c_countprefabs", "c_selectnear", "c_removeall"},
-		words = prefab_names,
-		delimiters = { "\"", "\'" },
-	}
-	self.completer:SetSuggestionData(suggestion_data)
-
-	self.completer:ClearState()
-
 	self.console_edit:SetFocus()
 	self.console_edit:SetEditing(true)
 
     self:ToggleRemoteExecute(true) -- if we are admin, start in remote mode
-
-	TheFrontEnd:LockFocus(true)
 end
 
 function ConsoleScreen:OnBecomeInactive()
@@ -70,19 +53,21 @@ end
 function ConsoleScreen:ToggleRemoteExecute(force)
     local is_valid_time_to_use_remote = TheNet:GetIsClient() and TheNet:GetIsServerAdmin()
     if is_valid_time_to_use_remote then
+        self.console_remote_execute:Show()
         if force == nil then
-            if self.toggle_remote_execute then
-                self.console_remote_execute:Hide()
-            else
-                self.console_remote_execute:Show()
-            end
             self.toggle_remote_execute = not self.toggle_remote_execute
         elseif force == true then
-            self.console_remote_execute:Show()
             self.toggle_remote_execute = true
         elseif force == false then
-            self.console_remote_execute:Hide()
             self.toggle_remote_execute = false
+        end
+        
+        if self.toggle_remote_execute then
+        	self.console_remote_execute:SetString(STRINGS.UI.CONSOLESCREEN.REMOTEEXECUTE)
+        	self.console_remote_execute:SetColour(0.7,0.7,1,1)
+        else
+        	self.console_remote_execute:SetString(STRINGS.UI.CONSOLESCREEN.LOCALEXECUTE)
+        	self.console_remote_execute:SetColour(1,0.7,0.7,1)
         end
     elseif self.toggle_remote_execute then
         self.console_remote_execute:Hide()
@@ -91,20 +76,45 @@ function ConsoleScreen:ToggleRemoteExecute(force)
 end
 
 function ConsoleScreen:OnRawKey(key, down)
+	if TheInput:IsKeyDown(KEY_CTRL) and TheInput:IsPasteKey(key) then
+		self.ctrl_pasting = true
+	end
+
 	if self.runtask ~= nil then return true end
 	if ConsoleScreen._base.OnRawKey(self, key, down) then 
-		if DEBUG_MODE then
-			self.completer:UpdateSuggestions(down, key)
-		end
 		return true 
 	end
 
 	if down then return end
 	
-	if key == KEY_LCTRL or key == KEY_RCTRL then
-        self:ToggleRemoteExecute()
-	else
-		return self.completer:OnRawKey(key, down)
+	if key == KEY_UP then
+		local len = #CONSOLE_HISTORY
+		if len > 0 then
+			if self.history_idx ~= nil then
+				self.history_idx = math.max( 1, self.history_idx - 1 )
+			else
+				self.history_idx = len
+			end
+			self.console_edit:SetString( CONSOLE_HISTORY[ self.history_idx ] )
+		end
+	elseif key == KEY_DOWN then
+		local len = #CONSOLE_HISTORY
+		if len > 0 then
+			if self.history_idx ~= nil then
+				if self.history_idx == len then
+					self.console_edit:SetString( "" )
+				else
+					self.history_idx = math.min( len, self.history_idx + 1 )
+					self.console_edit:SetString( CONSOLE_HISTORY[ self.history_idx ] )
+				end
+			end
+		end
+	elseif (key == KEY_LCTRL or key == KEY_RCTRL) and not self.ctrl_pasting then
+       self:ToggleRemoteExecute()
+	end
+
+	if self.ctrl_pasting and (key == KEY_LCTRL or key == KEY_RCTRL) then
+		self.ctrl_pasting = false
 	end
 
 	return true
@@ -144,9 +154,6 @@ local function DoRun(inst, self)
 end
 
 function ConsoleScreen:OnTextEntered()
-    -- Do completion on hitting Enter.
-    self.completer:PerformCompletion()
-
     if self.runtask ~= nil then
         self.runtask:Cancel()
     end
@@ -174,6 +181,14 @@ function ConsoleScreen:DoInit()
 	
 	self.edit_width   = edit_width
 	self.label_height = label_height
+
+    self.black = self:AddChild(Image("images/global.xml", "square.tex"))
+    self.black:SetVRegPoint(ANCHOR_MIDDLE)
+    self.black:SetHRegPoint(ANCHOR_MIDDLE)
+    self.black:SetVAnchor(ANCHOR_MIDDLE)
+    self.black:SetHAnchor(ANCHOR_MIDDLE)
+    self.black:SetScaleMode(SCALEMODE_FILLSCREEN)
+    self.black:SetTint(0,0,0,0) -- invisible, but clickable!
 	
 	self.root = self:AddChild(Widget(""))
     self.root:SetScaleMode(SCALEMODE_PROPORTIONAL)
@@ -181,23 +196,21 @@ function ConsoleScreen:DoInit()
     self.root:SetVAnchor(ANCHOR_BOTTOM)
     --self.root:SetMaxPropUpscale(MAX_HUD_SCALE)
 	self.root = self.root:AddChild(Widget(""))
-	self.root:SetPosition(0,120,0)
+	self.root:SetPosition(0,100,0)
 	
     self.edit_bg = self.root:AddChild( Image() )
 	self.edit_bg:SetTexture( "images/textboxes.xml", "textbox_long.tex" )
-	self.edit_bg:SetPosition( 0,0,0)
+	self.edit_bg:SetPosition( 0, 0 )
 	self.edit_bg:ScaleToSize( edit_width + edit_bg_padding, label_height )
 
 	self.console_remote_execute = self.root:AddChild( Text( DEFAULTFONT, fontsize ) )
-	self.console_remote_execute:SetString( STRINGS.UI.CONSOLESCREEN.REMOTEEXECUTE)
-	local w,h = self.console_remote_execute:GetRegionSize()
-	self.console_remote_execute:SetPosition( -w - 35,0,0 )
-	self.console_remote_execute:SetHAlign(ANCHOR_LEFT)
-	self.console_remote_execute:SetColour(0.7,0.7,1,1)
+	self.console_remote_execute:SetString( STRINGS.UI.CONSOLESCREEN.REMOTEEXECUTE )
+	self.console_remote_execute:SetRegionSize( 200, fontsize + 5 )
+	self.console_remote_execute:SetPosition( -edit_width*0.5 -200*0.5 - 35, 0 )
+	self.console_remote_execute:SetHAlign( ANCHOR_RIGHT )
+	self.console_remote_execute:SetColour( 0.7, 0.7, 1, 1 )
 	self.console_remote_execute:Hide()
-	local text_height
-	self.console_remote_execute_region_width, text_height = self.console_remote_execute:GetRegionSize()
-	self.console_remote_execute:SetRegionSize( edit_width, label_height )
+
 	self.console_edit = self.root:AddChild( TextEdit( DEFAULTFONT, fontsize, "" ) )
 	self.console_edit.edit_text_color = {1,1,1,1}
 	self.console_edit.idle_text_color = {1,1,1,1}
@@ -207,21 +220,32 @@ function ConsoleScreen:DoInit()
 	self.console_edit:SetHAlign(ANCHOR_LEFT)
 	self.console_edit:SetHelpTextEdit("")
 
-	local max_suggestions = 5
-	local suggest_text_widgets = TextCompleter.CreateDefaultSuggestionWidgets(self.root, label_height, max_suggestions)
-	self.completer = TextCompleter(suggest_text_widgets, self.console_edit, CONSOLE_HISTORY, true)
-
 	self.console_edit.OnTextEntered = function() self:OnTextEntered() end
-	--self.console_edit:SetLeftMouseDown( function() self:SetFocus( self.console_edit ) end )
-	self.console_edit:SetFocusedImage(self.edit_bg, "images/textboxes.xml", "textbox_long_over.tex", "textbox_long.tex")
 	self.console_edit:SetInvalidCharacterFilter( [[`	]] )
     self.console_edit:SetPassControlToScreen(CONTROL_CANCEL, true)
 
 	self.console_edit:SetString("")
 
+	--setup prefab keys
+    local prefab_names = {}
+	for name,_ in pairs(Prefabs) do
+		table.insert(prefab_names, name)
+	end
+
+	self.console_edit:EnableWordPrediction({width = 1000})
+	self.console_edit:AddWordPredictionDictionary({words = prefab_names, delim = '"', postfix='"', skip_pre_delim_check=true})
+	self.console_edit:AddWordPredictionDictionary({words = prefab_names, delim = "'", postfix='"', skip_pre_delim_check=true})
+	local prediction_command = {"spawn", "save()", "gonext", "give", "mat", "list", "findnext", "countprefabs", "selectnear", "removeall", "shutdown(true)", "regenerateworld()", "reset()", "despawn()", "godmode()", "supergodmode()" }
+	self.console_edit:AddWordPredictionDictionary({words = prediction_command, delim = "c_", num_chars = 0})
+
 	self.console_edit.validrawkeys[KEY_LCTRL] = true
 	self.console_edit.validrawkeys[KEY_RCTRL] = true
+	self.console_edit.validrawkeys[KEY_UP] = true
+	self.console_edit.validrawkeys[KEY_DOWN] = true
 	self.toggle_remote_execute = false
+	
+    self.black.focus_forward = self.console_edit
+
 	
 end
 

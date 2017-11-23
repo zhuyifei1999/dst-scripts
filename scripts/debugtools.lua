@@ -73,6 +73,23 @@ function debugstack_oneline(linenum)
     return formatinfo(getinfo(num))
 end
 
+-- Print callstack when any function is called. Useful for finding what's
+-- calling C functions.
+-- Usage:
+--      TheNet = instrument_userdata(TheNet)
+-- or return instrument_userdata(TheNet) from a getter.
+function instrument_userdata(instance)
+    local methods = getmetatable(instance).__index
+    local Proxy = {}
+    for fn,def in pairs(methods) do
+        Proxy[fn] = function (junk, ...)
+            print("instrument_userdata", debugstack())
+            return instance[fn](instance, ...)
+        end
+    end
+    return Proxy
+end
+
 function debuglocals (level)
         local t = {}
         local index = 1

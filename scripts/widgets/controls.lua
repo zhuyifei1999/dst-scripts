@@ -564,6 +564,14 @@ function Controls:ShowCraftingAndInventory()
 end
 
 function Controls:HideCraftingAndInventory()
+    if self.owner ~= nil and self.owner.HUD ~= nil then
+        if self.owner.HUD:IsControllerCraftingOpen() then
+            self.owner.HUD:CloseControllerCrafting()
+        end
+        if self.owner.HUD:IsControllerInventoryOpen() then
+            self.owner.HUD:CloseControllerInventory()
+        end
+    end
     self.crafttabs:Hide()
     self.inv:Hide()
     self.containerroot_side:Hide()
