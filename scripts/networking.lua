@@ -875,7 +875,7 @@ function GetPlayerClientTable()
             break
         end
     end
-    return ClientObjs 
+    return ClientObjs
 end
 
 function ClientAuthenticationComplete(userid)

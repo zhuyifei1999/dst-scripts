@@ -7,12 +7,107 @@ end
 local XWP_VICTORY = 10000
 local XWP_LEVEL1 = 500
 local XWP_LEVEL2 = 1000
+local XWP_LEVEL2_5 = 5000
+local XWP_LEVEL3 = 10000
+local XWP_LEVEL4 = 20000
+local XWP_LEVEL5 = 30000
+
 local function TestForVictory(user, data)
 	return data.outcome.won
 end
 
 local Lavaarena_Achievements = 
 {
+    {
+        category = "encore",
+        anycharacter = true,
+        data = 
+        {
+            {
+                achievementid = "encore_boarons",
+                wxp = XWP_LEVEL2,
+                testfn = function(user, data) 
+					if data.round == 2 then -- called on start of round
+						local statstracker = TheWorld.components.lavaarenamvpstatstracker
+						if statstracker:GetStatTotal("player_damagetaken") < 800 then
+							return true
+						end
+					end
+					return false
+				end,
+            },
+            {
+                achievementid = "encore_boarons_hard",
+                wxp = XWP_LEVEL2_5,
+                testfn = function(user, data) 
+					if data.round == 2 then  -- called on start of round
+						local statstracker = TheWorld.components.lavaarenamvpstatstracker
+						if statstracker:GetStatTotal("player_damagetaken") < 600 then
+							return true
+						end
+					end
+					return false
+				end,
+            },
+            {
+                achievementid = "encore_turtillus",
+                wxp = XWP_LEVEL2,
+                shared_progress_fn = function(data, shared_scratchpad)
+					shared_scratchpad.encore_turtillus = (shared_scratchpad.encore_turtillus or 0) + 1
+                end,
+                testfn = function(user, data, scratchpad, shared_scratchpad) 
+					return data.round == 3 and (shared_scratchpad.encore_turtillus == nil or shared_scratchpad.encore_turtillus <= 3)
+				end,
+            },
+            {
+                achievementid = "encore_turtillus_hard",
+                wxp = XWP_LEVEL2_5,
+                shared_progress_fn = function(data, shared_scratchpad)
+					shared_scratchpad.encore_turtillus_hard_failed = true
+                end,
+                testfn = function(user, data, scratchpad, shared_scratchpad) 
+					return data.round == 3 and shared_scratchpad.encore_turtillus_hard_failed ~= true
+				end,
+            },
+            {
+                achievementid = "encore_peghook",
+                wxp = XWP_LEVEL2_5,
+                shared_progress_fn = function(data, shared_scratchpad)
+					shared_scratchpad.encore_peghook_failed = true
+                end,
+                testfn = function(user, data, scratchpad, shared_scratchpad) 
+					return shared_scratchpad.encore_peghook_failed ~= true
+				end,
+            },
+            {
+                achievementid = "encore_nodeath_easy",
+                wxp = XWP_LEVEL2_5,
+                testfn = function(user, data) 
+					-- end of round 3 - turtillus wave
+					return data.round == 3 and TheWorld.components.lavaarenamvpstatstracker:GetStatTotal("deaths") == 0
+				end,
+            },
+            {
+                achievementid = "encore_nodeath_medium",
+                wxp = XWP_LEVEL3,
+                testfn = function(user, data) 
+					return TheWorld.components.lavaarenaevent:GetCurrentRound() == 4 and TheWorld.components.lavaarenamvpstatstracker:GetStatTotal("deaths") == 0
+				end,
+            },
+            {
+                achievementid = "encore_nodeath_hard",
+                wxp = XWP_LEVEL4,
+                testfn = function(user, data) 
+					return TheWorld.components.lavaarenamvpstatstracker:GetStatTotal("deaths") == 0
+				end,
+            },
+
+
+
+
+        },
+    },
+
     {
         category = "nodeaths",
         anycharacter = true,
@@ -47,7 +142,6 @@ local Lavaarena_Achievements =
             {
                 achievementid = "wintime_30",
                 wxp = 10000,
-                completed = true,
                 endofmatchfn = function(user, data) return TestMatchTime(user, data, 30*60) end,
             },
             {

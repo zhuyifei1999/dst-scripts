@@ -104,7 +104,7 @@ function ChatSidebar:MakeTextEntryBox(parent)
         return table.concat(t, "  ")
     end
 
-    chatbox:SetPosition(-10, -210)
+    chatbox:SetPosition(-15, -210)
 
     self.chatbox = chatbox
 end
@@ -115,9 +115,9 @@ function ChatSidebar:BuildChatWindow()
     self:MakeTextEntryBox(self.chat_pane)
 
     self.chatqueue = self.chat_pane:AddChild(LobbyChatQueue(TheNet:GetUserID(), self.chatbox.textbox, function() --[[TODO: put sounds back in!]] end))
-    self.chatqueue:SetPosition(42,-20) 
+    self.chatqueue:SetPosition(42,-25) 
 
-    self.chat_pane:SetPosition(70,RESOLUTION_Y-410)
+    self.chat_pane:SetPosition(70,320)
     
     self.chatbox:MoveToFront()
 end

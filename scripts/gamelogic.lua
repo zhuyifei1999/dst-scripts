@@ -67,11 +67,26 @@ LOADED_CHARACTER = nil
 TheSim:SetRenderPassDefaultEffect( RENDERPASS.BLOOM, "shaders/anim_bloom.ksh" )
 TheSim:SetErosionTexture( "images/erosion.tex" )
 
+function RecordEventAchievementProgressForAllPlayers(achievement, data)
+	if TheWorld ~= nil and TheWorld.components.eventachievementtracker ~= nil then
+		for _, v in ipairs(AllPlayers) do
+			TheWorld.components.eventachievementtracker:RecordProgress(achievement, v, data)
+		end
+	end
+end
+
 function RecordEventAchievementProgress(achievement, src, data)
 	if TheWorld ~= nil and TheWorld.components.eventachievementtracker ~= nil then
 		TheWorld.components.eventachievementtracker:RecordProgress(achievement, src, data)
 	end
 end
+
+function RecordEventAchievementSharedProgress(achievement, data)
+	if TheWorld ~= nil and TheWorld.components.eventachievementtracker ~= nil then
+		TheWorld.components.eventachievementtracker:RecordSharedProgress(achievement, data)
+	end
+end
+
 
 function ForceAuthenticationDialog()
 	if not InGamePlay() then

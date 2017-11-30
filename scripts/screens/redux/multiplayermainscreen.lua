@@ -34,6 +34,11 @@ local Stats = require("stats")
 
 local SHOW_DST_DEBUG_HOST_JOIN = BRANCH == "dev"
 local SHOW_MOTD = true
+local SHOW_QUICKJOIN = false
+
+if PLATFORM == "WIN32_RAIL" then
+	SHOW_MOTD = false
+end
 
 
 local MultiplayerMainScreen = Class(Screen, function(self, prev_screen, profile, offline, session_data)
@@ -527,7 +532,7 @@ function MultiplayerMainScreen:MakeMainMenu()
         -- Mods should appear above quit (the last menu option).
         table.insert(menu_items, 2, {widget = mods_button})
     end
-	if not TheFrontEnd:GetIsOfflineMode() and not IsAnyFestivalEventActive() then
+	if SHOW_QUICKJOIN and not TheFrontEnd:GetIsOfflineMode() and not IsAnyFestivalEventActive() then
         local quickjoin_button = MakeMainMenuButton(STRINGS.UI.MAINSCREEN.QUICKJOIN, function() self:OnQuickJoinServersButton() end, STRINGS.UI.MAINSCREEN.TOOLTIP_QUICKJOIN, self.tooltip)
 		table.insert(menu_items, {widget = quickjoin_button})
 	end

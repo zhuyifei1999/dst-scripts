@@ -2,7 +2,6 @@ local assets =
 {
     Asset("ANIM", "anim/bearger_build.zip"),
     Asset("ANIM", "anim/bearger_basic.zip"),
-    Asset("ANIM", "anim/bearger_groggy_build.zip"),
     Asset("ANIM", "anim/bearger_actions.zip"),
     Asset("SOUND", "sound/bearger.fsb"),
 }
@@ -209,7 +208,7 @@ local function ShouldSleep(inst)
         inst.components.shedder:StopShedding()
         inst:AddTag("hibernation")
         inst:AddTag("asleep")
-        inst.AnimState:SetBuild("bearger_groggy_build")
+        inst.AnimState:OverrideSymbol("bearger_head", "bearger_build", "bearger_head_groggy")
         return true
     end
     return false
@@ -220,7 +219,7 @@ local function ShouldWake(inst)
         inst.components.shedder:StartShedding(TUNING.BEARGER_SHED_INTERVAL)
         inst:RemoveTag("hibernation")
         inst:RemoveTag("asleep")
-        inst.AnimState:SetBuild("bearger_build")
+        inst.AnimState:ClearOverrideSymbol("bearger_head")
         return true
     end
     return false

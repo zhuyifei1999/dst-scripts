@@ -605,6 +605,18 @@ function c_supergodmode(player)
     end
 end
 
+function c_armor(player)
+    player = ListingOrConsolePlayer(player)
+    if player ~= nil then
+        SuUsed("c_armor", true)
+        player.components.health:SetAbsorptionAmount(1)
+    end
+end
+
+function c_armour(player)
+	c_armour(player)
+end
+
 function c_find(prefab, radius, inst)
     inst = ListingOrConsolePlayer(inst)
     if inst == nil then

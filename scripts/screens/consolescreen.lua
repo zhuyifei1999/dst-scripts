@@ -80,9 +80,19 @@ function ConsoleScreen:OnRawKey(key, down)
 		self.ctrl_pasting = true
 	end
 
+	if down then return end
+
 	if self.runtask ~= nil then return true end
 	if ConsoleScreen._base.OnRawKey(self, key, down) then 
 		return true 
+	end
+	
+	return self:OnRawKeyHandler(key, down)
+end
+
+function ConsoleScreen:OnRawKeyHandler(key, down)
+	if TheInput:IsKeyDown(KEY_CTRL) and TheInput:IsPasteKey(key) then
+		self.ctrl_pasting = true
 	end
 
 	if down then return end
@@ -182,14 +192,6 @@ function ConsoleScreen:DoInit()
 	self.edit_width   = edit_width
 	self.label_height = label_height
 
-    self.black = self:AddChild(Image("images/global.xml", "square.tex"))
-    self.black:SetVRegPoint(ANCHOR_MIDDLE)
-    self.black:SetHRegPoint(ANCHOR_MIDDLE)
-    self.black:SetVAnchor(ANCHOR_MIDDLE)
-    self.black:SetHAnchor(ANCHOR_MIDDLE)
-    self.black:SetScaleMode(SCALEMODE_FILLSCREEN)
-    self.black:SetTint(0,0,0,0) -- invisible, but clickable!
-	
 	self.root = self:AddChild(Widget(""))
     self.root:SetScaleMode(SCALEMODE_PROPORTIONAL)
     self.root:SetHAnchor(ANCHOR_MIDDLE)
@@ -235,18 +237,19 @@ function ConsoleScreen:DoInit()
 	self.console_edit:EnableWordPrediction({width = 1000})
 	self.console_edit:AddWordPredictionDictionary({words = prefab_names, delim = '"', postfix='"', skip_pre_delim_check=true})
 	self.console_edit:AddWordPredictionDictionary({words = prefab_names, delim = "'", postfix='"', skip_pre_delim_check=true})
-	local prediction_command = {"spawn", "save()", "gonext", "give", "mat", "list", "findnext", "countprefabs", "selectnear", "removeall", "shutdown(true)", "regenerateworld()", "reset()", "despawn()", "godmode()", "supergodmode()" }
+	local prediction_command = {"spawn", "save()", "gonext", "give", "mat", "list", "findnext", "countprefabs", "selectnear", "removeall", "shutdown(true)", "regenerateworld()", "reset()", "despawn()", "godmode()", "supergodmode()", "armor()" }
 	self.console_edit:AddWordPredictionDictionary({words = prediction_command, delim = "c_", num_chars = 0})
+
+	self.console_edit:SetForceEdit(true)
+    self.console_edit.OnStopForceEdit = function() self:Close() end
+    self.console_edit.OnRawKey = function(s, key, down) if TextEdit.OnRawKey(self.console_edit, key, down) then return true end self:OnRawKeyHandler(key, down) end
 
 	self.console_edit.validrawkeys[KEY_LCTRL] = true
 	self.console_edit.validrawkeys[KEY_RCTRL] = true
 	self.console_edit.validrawkeys[KEY_UP] = true
 	self.console_edit.validrawkeys[KEY_DOWN] = true
 	self.toggle_remote_execute = false
-	
-    self.black.focus_forward = self.console_edit
-
-	
+		
 end
 
 return ConsoleScreen

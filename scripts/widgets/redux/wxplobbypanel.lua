@@ -95,6 +95,8 @@ function WxpLobbyPanel:DoInit(nosound)
 	self:SetRank(self.displayinfo.showing_level, false, self.displayinfo.showing_level_end_xp - self.displayinfo.showing_level_start_xp)
 	self.wxpbar:UpdateExperience(self.wxp.old_xp - self.displayinfo.showing_level_start_xp, self.displayinfo.showing_level_end_xp - self.displayinfo.showing_level_start_xp)
 
+	self.achievement_root = self.wxpbar:AddChild(Widget("achievement_root"))
+
     if not nosound then
 	   TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/collectionscreen/xp_shepard_LP", "fillsound")
 	   TheFrontEnd:GetSound():SetParameter("fillsound","pitch",0.8)
@@ -104,11 +106,13 @@ end
 function WxpLobbyPanel:ShowAchievement(achievement_id, animate)
 	local num_shown = #self.displayachievements
 	local img_width = 36
+	local max_num_wide = 9
 	
-	local img = self.wxpbar:AddChild(Image("images/"..self.current_eventid.."_achievements.xml", achievement_id..".tex"))
-	img:SetPosition(achievement_start + num_shown*achievement_spacing, img_width + 5)
+	local img = self.achievement_root:AddChild(Image("images/"..self.current_eventid.."_achievements.xml", achievement_id..".tex"))
+	img:SetPosition(achievement_start + (achievement_spacing)*(num_shown%max_num_wide), (achievement_spacing*math.floor(1 + num_shown/max_num_wide)) + 3)
 	img:SetSize(img_width, img_width)
 	img:SetHoverText(STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT[achievement_id].TITLE, {offset_y = 32, size = 25, colour = UICOLOURS.EGGSHELL})
+	img:MoveToBack()
 	
 	if animate then
 		img:SetTint(1,1,1,0)

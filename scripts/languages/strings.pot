@@ -99003,6 +99003,86 @@ msgctxt "STRINGS.UI.ACCOUNT.USERNAME"
 msgid "User Name"
 msgstr ""
 
+#. STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_boarons.DESC
+msgctxt "STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_boarons.DESC"
+msgid "Finish the Pit Pig round having taken less than 800 teamwide damage"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_boarons.TITLE
+msgctxt "STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_boarons.TITLE"
+msgid "Down But Not Snout"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_boarons_hard.DESC
+msgctxt "STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_boarons_hard.DESC"
+msgid "Finish the Pit Pig round having taken less than 600 teamwide damage"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_boarons_hard.TITLE
+msgctxt "STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_boarons_hard.TITLE"
+msgid "Hair Of Their Chinny, Chin, Chin"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_nodeath_easy.DESC
+msgctxt "STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_nodeath_easy.DESC"
+msgid "Survive until the first wave of Scorpeons without any teammates dying"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_nodeath_easy.TITLE
+msgctxt "STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_nodeath_easy.TITLE"
+msgid "Not Today"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_nodeath_hard.DESC
+msgctxt "STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_nodeath_hard.DESC"
+msgid "Survive until the Grand Forge Boarrior is summoned without any teammates dying"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_nodeath_hard.TITLE
+msgctxt "STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_nodeath_hard.TITLE"
+msgid "Just Won't Die!"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_nodeath_medium.DESC
+msgctxt "STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_nodeath_medium.DESC"
+msgid "Survive until the first Boarilla arrives and defeat it without any teammates dying"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_nodeath_medium.TITLE
+msgctxt "STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_nodeath_medium.TITLE"
+msgid "Hard To Kill"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_peghook.DESC
+msgctxt "STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_peghook.DESC"
+msgid "Survive the first wave of Scorpeons without any teammates dying from acid"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_peghook.TITLE
+msgctxt "STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_peghook.TITLE"
+msgid "Basic Solution"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_turtillus.DESC
+msgctxt "STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_turtillus.DESC"
+msgid "Finish the Snortoise round without allowing Snortoises to perform more than 3 spin attacks"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_turtillus.TITLE
+msgctxt "STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_turtillus.TITLE"
+msgid "Big Wheel Kept From Turnin'"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_turtillus_hard.DESC
+msgctxt "STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_turtillus_hard.DESC"
+msgid "Finish the Snortoise round without allowing Snortoises to perform any spin attacks"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_turtillus_hard.TITLE
+msgctxt "STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.encore_turtillus_hard.TITLE"
+msgid "Unspun Hero"
+msgstr ""
+
 #. STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.nodeaths_self.DESC
 msgctxt "STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.nodeaths_self.DESC"
 msgid "Win a Forge match without dying"
@@ -99421,6 +99501,11 @@ msgstr ""
 #. STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.wx78_victory.TITLE
 msgctxt "STRINGS.UI.ACHIEVEMENTS.LAVAARENA.ACHIEVEMENT.wx78_victory.TITLE"
 msgid "Forging Victory"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.LAVAARENA.CATEGORIES.encore
+msgctxt "STRINGS.UI.ACHIEVEMENTS.LAVAARENA.CATEGORIES.encore"
+msgid "Forge Mastery"
 msgstr ""
 
 #. STRINGS.UI.ACHIEVEMENTS.LAVAARENA.CATEGORIES.nodeaths
@@ -102021,6 +102106,11 @@ msgstr ""
 #. STRINGS.UI.CREDITS.NAMES.51
 msgctxt "STRINGS.UI.CREDITS.NAMES.51"
 msgid "Steven Erenst"
+msgstr ""
+
+#. STRINGS.UI.CREDITS.NAMES.52
+msgctxt "STRINGS.UI.CREDITS.NAMES.52"
+msgid "Corey McDaniel"
 msgstr ""
 
 #. STRINGS.UI.CREDITS.NAMES.6
@@ -106571,6 +106661,21 @@ msgstr ""
 #. STRINGS.UI.OPTIONS.SNAPSHOTS
 msgctxt "STRINGS.UI.OPTIONS.SNAPSHOTS"
 msgid "Server Snapshots"
+msgstr ""
+
+#. STRINGS.UI.OPTIONS.TITLE
+msgctxt "STRINGS.UI.OPTIONS.TITLE"
+msgid "Game Options"
+msgstr ""
+
+#. STRINGS.UI.OPTIONS.TOOLTIP_CONTROLS
+msgctxt "STRINGS.UI.OPTIONS.TOOLTIP_CONTROLS"
+msgid "Rebind which input does which in-game action"
+msgstr ""
+
+#. STRINGS.UI.OPTIONS.TOOLTIP_SETTINGS
+msgctxt "STRINGS.UI.OPTIONS.TOOLTIP_SETTINGS"
+msgid "Modify features of the game and user interface"
 msgstr ""
 
 #. STRINGS.UI.OPTIONS.VIBRATION

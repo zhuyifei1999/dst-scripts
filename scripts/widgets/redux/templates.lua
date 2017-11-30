@@ -942,11 +942,11 @@ end
 -- Almost exact copy of CurlyWindow.
 function TEMPLATES.RectangleWindow(sizeX, sizeY, title_text, bottom_buttons, button_spacing, body_text)
     local w = NineSlice("images/dialogrect_9slice.xml")
-    local top = w:AddCrown("crown_top_fg.tex", ANCHOR_MIDDLE, ANCHOR_TOP, 0, 4)
+    w.top = w:AddCrown("crown_top_fg.tex", ANCHOR_MIDDLE, ANCHOR_TOP, 0, 4)
 
     -- Background overlaps behind and foreground overlaps in front.
-    local bottom = w:AddCrown("crown_bottom_fg.tex", ANCHOR_MIDDLE, ANCHOR_BOTTOM, 0, -4)
-    bottom:MoveToFront()
+    w.bottom = w:AddCrown("crown_bottom_fg.tex", ANCHOR_MIDDLE, ANCHOR_BOTTOM, 0, -4)
+    w.bottom:MoveToFront()
 
     -- Ensure we're within the bounds of looking good and fitting on screen.
     sizeX = math.clamp(sizeX or 200, 90, 1000)
@@ -955,7 +955,7 @@ function TEMPLATES.RectangleWindow(sizeX, sizeY, title_text, bottom_buttons, but
     w:SetScale(0.7, 0.7)
 
     if title_text then
-        w.title = top:AddChild(Text(HEADERFONT, 40, title_text, UICOLOURS.GOLD_SELECTED))
+        w.title = w.top:AddChild(Text(HEADERFONT, 40, title_text, UICOLOURS.GOLD_SELECTED))
         w.title:SetPosition(0, -50)
         w.title:SetRegionSize(600, 50)
         w.title:SetHAlign(ANCHOR_MIDDLE)
@@ -989,7 +989,7 @@ function TEMPLATES.RectangleWindow(sizeX, sizeY, title_text, bottom_buttons, but
         end
 
         -- Does text need to be smaller than 30 for JapaneseOnPS4()?
-        w.actions = bottom:AddChild(Menu(bottom_buttons, button_spacing, true, style, nil, 30))
+        w.actions = w.bottom:AddChild(Menu(bottom_buttons, button_spacing, true, style, nil, 30))
         w.actions:SetPosition(-(button_spacing*(#bottom_buttons-1))/2, button_height) 
 
         w.focus_forward = w.actions

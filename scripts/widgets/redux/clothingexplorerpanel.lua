@@ -32,7 +32,15 @@ local ClothingExplorerPanel = Class(Widget, function(self, owner, user_profile, 
     end
 
     self:_DoFocusHookups()
-    self.focus_forward = self.picker
+    self.focus_forward = function()
+        -- If we have no items to display, then we can't push focus to the
+        -- picker since it will contain nothing to focus.
+        if self.picker.scroll_list and #self.picker.scroll_list.items > 0 then
+            return self.picker 
+        else
+            return self.filterBar
+        end
+    end
 end)
 
 function ClothingExplorerPanel:_DoFocusHookups()

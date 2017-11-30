@@ -2658,6 +2658,7 @@ STRINGS.UI =
             "Justin Liew",
             "Ricardo Pinto",
             "Steven Erenst",
+            "Corey McDaniel",
         },
 
         ALTGAMES =
@@ -3179,8 +3180,11 @@ STRINGS.UI =
 
     OPTIONS =
     {
+        TITLE = "Game Options",
         SETTINGS = "Settings",
         CONTROLS = "Controls",
+        TOOLTIP_SETTINGS = "Modify features of the game and user interface",
+        TOOLTIP_CONTROLS = "Rebind which input does which in-game action",
         OPTIONS = "Options",
         BACK = "Back",
         YES = "Yes",
@@ -4530,6 +4534,7 @@ STRINGS.UI =
 		{
 			CATEGORIES =
 			{
+				encore = "Forge Mastery",
 				wintime = "Speed Runs",
 				nodeaths = "Perfect Runs",
 				wilson = "Wilson",
@@ -4547,6 +4552,46 @@ STRINGS.UI =
 			},
 			ACHIEVEMENT =
 			{
+				encore_boarons = 
+				{
+				   TITLE = "Down But Not Snout",
+				   DESC  = "Finish the Pit Pig round having taken less than 800 teamwide damage",
+				},
+				encore_boarons_hard = 
+				{
+				   TITLE = "Hair Of Their Chinny, Chin, Chin",
+				   DESC  = "Finish the Pit Pig round having taken less than 600 teamwide damage",
+				},
+				encore_turtillus = 
+				{
+				   TITLE = "Big Wheel Kept From Turnin'",
+				   DESC  = "Finish the Snortoise round without allowing Snortoises to perform more than 3 spin attacks",
+				},
+				encore_turtillus_hard = 
+				{
+				   TITLE = "Unspun Hero",
+				   DESC  = "Finish the Snortoise round without allowing Snortoises to perform any spin attacks",
+				},
+				encore_peghook = 
+				{
+				   TITLE = "Basic Solution",
+				   DESC  = "Survive the first wave of Scorpeons without any teammates dying from acid",
+				},
+				encore_nodeath_easy = 
+				{
+				   TITLE = "Not Today",
+				   DESC  = "Survive until the first wave of Scorpeons without any teammates dying",
+				},
+				encore_nodeath_medium = 
+				{
+				   TITLE = "Hard To Kill",
+				   DESC  = "Survive until the first Boarilla arrives and defeat it without any teammates dying",
+				},
+				encore_nodeath_hard = 
+				{
+				   TITLE = "Just Won't Die!",
+				   DESC  = "Survive until the Grand Forge Boarrior is summoned without any teammates dying",
+				},
 				nodeaths_self = 
 				{
 				   TITLE = "Solo Survivor",
