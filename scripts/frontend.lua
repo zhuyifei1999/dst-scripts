@@ -703,10 +703,10 @@ function FrontEnd:Update(dt)
         end
 
         --Menu nav repeat
-        --skip while editing a text box and hovering over something else
+        --skip while editing a text box
         if self.repeat_time > dt then
             self.repeat_time = self.repeat_time - dt
-        elseif not (self.textProcessorWidget ~= nil and not self.textProcessorWidget.focus) then
+        elseif not (self.textProcessorWidget ~= nil) then
             self.repeat_time = REPEAT_TIME
             if TheInput:IsControlPressed(CONTROL_MOVE_LEFT) or TheInput:IsControlPressed(CONTROL_FOCUS_LEFT) then
                 self:OnFocusMove(MOVE_LEFT, true)

@@ -64,10 +64,6 @@ local assets =
 
     Asset("FILE", "images/motd.xml"),
 
-    -- Used for motd
-    Asset("ATLAS", "images/dialogrect_9slice.xml"),
-    Asset("IMAGE", "images/dialogrect_9slice.tex"),
-
     --character portraits
     Asset("ATLAS", "images/saveslot_portraits.xml"),
     Asset("IMAGE", "images/saveslot_portraits.tex"),

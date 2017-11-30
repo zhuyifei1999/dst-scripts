@@ -281,12 +281,14 @@ function ItemBoxOpenerPopup:_OpenItemBox()
         -- Decide how many columns there should be
         if #item_types == 2 or #item_types == 4 then
             columns = 2
-        elseif #item_types == 3 or #item_types == 6 or #item_types == 9 or #item_types == 12 then
+        elseif #item_types == 3 or #item_types == 6 or #item_types == 9 then
             columns = 3
         elseif #item_types == 8 then
             columns = 4
         elseif #item_types == 5 or #item_types == 10 then
             columns = 5
+        elseif #item_types == 12 then
+			columns = 6
         end
 
         self.opened_item_display:FillGrid(columns, COLUMN_WIDTH, COLUMN_HEIGHT, item_images)

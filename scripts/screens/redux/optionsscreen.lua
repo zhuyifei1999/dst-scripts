@@ -3,25 +3,23 @@ require "strings"
 require "constants"
 
 local Screen = require "widgets/screen"
+local Subscreener = require "screens/redux/subscreener"
 local ImageButton = require "widgets/imagebutton"
 local Menu = require "widgets/menu"
 local Grid = require "widgets/grid"
 local Text = require "widgets/text"
 local Image = require "widgets/image"
-local Spinner = require "widgets/spinner"
-local NumericSpinner = require "widgets/numericspinner"
 local Widget = require "widgets/widget"
 local ScrollableList = require "widgets/scrollablelist"
-
-local PopupDialogScreen = require "screens/popupdialog"
-
+local PopupDialogScreen = require "screens/redux/popupdialog"
 local OnlineStatus = require "widgets/onlinestatus"
+local TEMPLATES = require "widgets/redux/templates"
 
-local TEMPLATES = require "widgets/templates"
-local redux = {
-    TEMPLATES = require "widgets/redux/templates"
+local controls_ui = {
+    action_label_width = 375,
+    action_btn_width = 250,
+    action_height = 48,
 }
-
 local show_graphics = PLATFORM ~= "NACL"
 
 local enableDisableOptions = { { text = STRINGS.UI.OPTIONS.DISABLED, data = false }, { text = STRINGS.UI.OPTIONS.ENABLED, data = true } }
@@ -239,41 +237,42 @@ local OptionsScreen = Class(Screen, function(self, user_profile, prev_screen)
     
     TheInputProxy:StartMappingControls()
 
-    self.letterbox = self:AddChild(TEMPLATES.ForegroundLetterbox())
+    self.letterbox = self:AddChild(TEMPLATES.old.ForegroundLetterbox())
 
-	self.root = self:AddChild(Widget("ROOT"))
-    self.root:SetVAnchor(ANCHOR_MIDDLE)
-    self.root:SetHAnchor(ANCHOR_MIDDLE)
-    self.root:SetPosition(0,0,0)
-    self.root:SetScaleMode(SCALEMODE_PROPORTIONAL)
-
-    self.bg = self.root:AddChild(redux.TEMPLATES.PlainBackground())	
+	self.root = self:AddChild(TEMPLATES.ScreenRoot("GameOptions"))
+    self.bg = self.root:AddChild(TEMPLATES.PlainBackground())	
+    self.title = self.root:AddChild(TEMPLATES.ScreenTitle(STRINGS.UI.OPTIONS.TITLE, ""))
     
-
-	local panel_bg_frame = self.root:AddChild(TEMPLATES.CenterPanel())
-
-	local panel_frame = panel_bg_frame:AddChild(Image("images/options.xml", "panel_frame.tex"))
-	panel_frame:SetPosition(8, -20)
-	panel_frame:SetScale(.69,.69)
-
 	self.onlinestatus = self.root:AddChild(OnlineStatus())
 
-	self.nav_bar = self.root:AddChild(TEMPLATES.NavBarWithScreenTitle(STRINGS.UI.MAINSCREEN.OPTIONS, "short"))
-	self.settings_button = self.nav_bar:AddChild(TEMPLATES.NavBarButton(25, STRINGS.UI.OPTIONS.SETTINGS,function() self:SetTab("settings") end))
-	self.controls_button = self.nav_bar:AddChild(TEMPLATES.NavBarButton(-25, STRINGS.UI.OPTIONS.CONTROLS,function() self:SetTab("controls") end))
-
+    -- action menu is the bottom buttons
+	self.action_menu = self.root:AddChild(self:_BuildActionMenu())
+	self.action_menu:SetPosition(2, -RESOLUTION_Y*.5 + BACK_BUTTON_Y - 4,0)
+	self.action_menu:SetScale(.8)
 	self:MakeBackButton()
+    self:_RefreshScreenButtons()
 
-	self.menu = self.root:AddChild(Menu(nil, -80, false))
-	self.menu:SetPosition(2, -RESOLUTION_Y*.5 + BACK_BUTTON_Y - 4,0)
-	-- self.menu:SetScale(.8)
+    self.dialog = self.root:AddChild(TEMPLATES.RectangleWindow(830, 450))
+    self.dialog:SetPosition(140, -20)
+    self.panel_root = self.dialog:AddChild(Widget("panel_root"))
+    self.panel_root:SetPosition(-90, 35)
 
-    self.settingsroot = self.root:AddChild(self:_BuildSettings())
-    self.settingsroot:SetPosition(-48, 10)
-    self.controlsroot = self.root:AddChild(self:_BuildControls())
-    self.controlsroot:SetPosition(-48, 10)
 
 	self:DoInit()
+    self.subscreener = Subscreener(self,
+        self._BuildMenu,
+        {
+            -- Left menu items
+            settings = self.panel_root:AddChild(self:_BuildSettings()),
+            controls = self.panel_root:AddChild(self:_BuildControls()),
+        })
+    local old_OnMenuButtonSelected = self.subscreener.OnMenuButtonSelected
+    self.subscreener.OnMenuButtonSelected = function(this, selection)
+        self.selected_tab = selection
+        old_OnMenuButtonSelected(this, selection)
+        self:UpdateMenu()
+    end
+
 	self:InitializeSpinners(true)
 
 	-------------------------------------------------------
@@ -283,13 +282,12 @@ local OptionsScreen = Class(Screen, function(self, user_profile, prev_screen)
         self.kb_controllist:Hide()
         self.active_list = self.controller_controllist
         self.active_list:Show()
-        self.controls_header:SetString(STRINGS.UI.CONTROLSSCREEN.INPUT_NAMES[self._deviceSaved])
     else
         self.controller_controllist:Hide()
         self.active_list = self.kb_controllist
         self.active_list:Show()
-        self.controls_header:SetString(STRINGS.UI.CONTROLSSCREEN.INPUT_NAMES[1])
     end
+    self.controls_header:SetString(self.deviceSpinner:GetSelectedText())
 
 	self:LoadCurrentControls()
 
@@ -298,43 +296,24 @@ local OptionsScreen = Class(Screen, function(self, user_profile, prev_screen)
 
 	---------------------------------------------------
 
-	self:SetTab("settings")
+    self.subscreener:OnMenuButtonSelected("settings")
 
-	self.default_focus = self.settings_button
+    self:_DoFocusHookups()
+	self.default_focus = self.subscreener.menu
 end)
 
+function OptionsScreen:_BuildMenu(subscreener)
+    self.tooltip = self.root:AddChild(TEMPLATES.ScreenTooltip())
+	
+	local settings_button = subscreener:MenuButton(STRINGS.UI.OPTIONS.SETTINGS, "settings", STRINGS.UI.OPTIONS.TOOLTIP_SETTINGS, self.tooltip)
+	local controls_button = subscreener:MenuButton(STRINGS.UI.OPTIONS.CONTROLS, "controls", STRINGS.UI.OPTIONS.TOOLTIP_CONTROLS, self.tooltip)
 
--- This is the "options" tab
-function OptionsScreen:_BuildSettings()
-    local settingsroot = Widget("ROOT")
+    local menu_items = {
+        {widget = controls_button},
+        {widget = settings_button},
+    }
 
-    settingsroot.settings_title = settingsroot:AddChild(Text(BUTTONFONT, 50, STRINGS.UI.MAINSCREEN.SETTINGS))
-    settingsroot.settings_title:SetPosition(95,220) 
-    settingsroot.settings_title:SetColour(0,0,0,1)   
-
-    -- NOTE: if we add more options, they should be made scrollable. Look
-    -- at customization screen for an example.
-    self.grid = settingsroot:AddChild(Grid())
-    self.grid:SetPosition(-180, 144, 0)
-    return settingsroot
-end
-
--- This is the "controls" tab
-function OptionsScreen:_BuildControls()
-    local controlsroot = Widget("ROOT")
-
-    controlsroot.controls_title = controlsroot:AddChild(Text(BUTTONFONT, 50, STRINGS.UI.MAINSCREEN.CONTROLS))
-    controlsroot.controls_title:SetPosition(95,220)    
-    controlsroot.controls_title:SetColour(0,0,0,1)
-
-    self.controls_horizontal_line = controlsroot:AddChild(Image("images/ui.xml", "line_horizontal_5.tex"))
-    self.controls_horizontal_line:SetScale(.65, .65)
-    self.controls_horizontal_line:SetPosition(90, 135)
-
-    self.controls_vertical_line = controlsroot:AddChild(Image("images/ui.xml", "line_vertical_5.tex"))
-    self.controls_vertical_line:SetScale(.70, .63)
-    self.controls_vertical_line:SetPosition(265, -40)
-    return controlsroot
+    return self.root:AddChild(TEMPLATES.StandardMenu(menu_items, 38, nil, nil, true))
 end
 
 function OptionsScreen:MakeBackButton()
@@ -346,6 +325,16 @@ function OptionsScreen:MakeBackButton()
 				self:Close() --go back
 			end 
 		end))
+end
+
+function OptionsScreen:_RefreshScreenButtons()
+    if TheInput:ControllerAttached() then
+        self.cancel_button:Hide()
+		self.action_menu:Hide()
+    else
+        self.cancel_button:Show()
+        self.action_menu:Show()
+    end
 end
 
 
@@ -390,25 +379,6 @@ function OptionsScreen:OnControl(control, down)
 	end
 end
 
-function OptionsScreen:SetTab(tab)
-	if tab == "settings" then
-		self.selected_tab = "settings"
-		if self.settings_button.shown then self.settings_button:Select() end
-		if self.controls_button.shown then self.controls_button:Unselect() end
-		self.settingsroot:Show()
-		self.controlsroot:Hide()
-		-- self.grid:SetFocus()
-	elseif tab == "controls" then
-		self.selected_tab = "controls"
-		if self.settings_button.shown then self.settings_button:Unselect() end
-		if self.controls_button.shown then self.controls_button:Select() end
-		self.settingsroot:Hide()
-		self.controlsroot:Show()
-		-- self.active_list:SetFocus()
-	end
-	self:UpdateMenu()
-end
-
 function OptionsScreen:ApplyChanges()
 	if self:IsDirty() then
 		if self:IsGraphicsDirty() then
@@ -420,12 +390,10 @@ function OptionsScreen:ApplyChanges()
 end
 
 function OptionsScreen:Close(fn)
-	self.nav_bar:Disable()
     TheFrontEnd:FadeBack(nil, nil, fn)
 end	
 
 function OptionsScreen:ConfirmRevert()
-
 	TheFrontEnd:PushScreen(
 		PopupDialogScreen( STRINGS.UI.OPTIONS.BACKTITLE, STRINGS.UI.OPTIONS.BACKBODY,
 		  { 
@@ -529,13 +497,11 @@ end
 function OptionsScreen:MakeDirty()
     self.dirty = true
     self:UpdateMenu()
-    self:RefreshNav()
 end
 
 function OptionsScreen:MakeClean()
     self.dirty = false
     self:UpdateMenu()
-    self:RefreshNav()
 end
 
 function OptionsScreen:IsDirty()
@@ -590,14 +556,6 @@ function OptionsScreen:ConfirmGraphicsChanges(fn)
 						TheFrontEnd:PopScreen()					
 					end
 				}
-			  },
-			  { timeout = 10, cb =
-				function()
-					self.applying = false
-					self:RevertChanges()
-					self:ChangeGraphicsMode()
-					TheFrontEnd:PopScreen()
-				end
 			  }
 			)
 		)
@@ -669,16 +627,11 @@ function OptionsScreen:MapControl(deviceId, controlId)
     local default_text = string.format(STRINGS.UI.CONTROLSSCREEN.DEFAULT_CONTROL_TEXT, loc_text)
     local body_text = STRINGS.UI.CONTROLSSCREEN.CONTROL_SELECT .. "\n\n" .. default_text
     local popup = PopupDialogScreen(STRINGS.UI.CONTROLSSCREEN.CONTROLS[controlIndex], body_text, {})
-    popup.text:SetRegionSize(480, 150)
-    popup.text:SetPosition(0, -25, 0)    
-    if TheInput:GetStringIsButtonImage(loc_text) then
-        popup.text:SetColour(1,1,1,1)
-        popup.text:SetFont(UIFONT)
-    else
-        popup.text:SetColour(0,0,0,1)
-        popup.text:SetFont(NEWFONT)
-    end
-        
+
+    -- Better position within dialog.
+    popup.dialog.body:SetPosition(0, 0)    
+
+    -- Prevent any inputs from being consumed so TheInputProxy can work.
     popup.OnControl = function(_, control, down) --[[self:MapControlInputHandler(control, down)]] return true end
 	TheFrontEnd:PushScreen(popup)
 
@@ -700,27 +653,7 @@ function OptionsScreen:OnControlMapped(deviceId, controlId, inputId, hasChanged)
             if controlId == v.controlId then
                 if hasChanged then
                     local ctrlString = TheInput:GetLocalizedControl(deviceId, v.controlId)
-                    if TheInput:GetStringIsButtonImage(ctrlString) then
-                        if deviceId == 0 then --keyboard
-                            v.button_kb:SetTextColour(1,1,1,1)
-                            v.button_kb:SetFont(UIFONT)
-                            v.button_kb:SetText(ctrlString)
-                        else --other
-                            v.button_controller:SetTextColour(1,1,1,1)
-                            v.button_controller:SetFont(UIFONT)
-                            v.button_controller:SetText(ctrlString)
-                        end
-                    else
-                        if deviceId == 0 then --keyboard
-                            v.button_kb:SetTextColour(0,0,0,1)
-                            v.button_kb:SetFont(NEWFONT)
-                            v.button_kb:SetText(ctrlString)
-                        else --other
-                            v.button_controller:SetTextColour(0,0,0,1)
-                            v.button_controller:SetFont(NEWFONT)
-                            v.button_controller:SetText(ctrlString)
-                        end
-                    end
+                    v.binding_btn:SetText(ctrlString)
                     -- hasChanged only refers to the immediate change, but if a control is modified
                     -- and then modified again to the original we shouldn't highlight it 
                     local changedFromOriginal = TheInputProxy:HasMappingChanged(deviceId, controlId) 
@@ -742,65 +675,41 @@ function OptionsScreen:OnControlMapped(deviceId, controlId, inputId, hasChanged)
     end 
 end
 
-function OptionsScreen:CreateSpinnerGroup( text, spinner )
-	local label_width = 200
-	spinner:SetTextColour(0,0,0,1)
-	local group = Widget( "SpinnerGroup" )
-	local bg = group:AddChild(Image("images/ui.xml", "single_option_bg.tex"))
-	bg:SetSize(380, 40)
-	bg:SetPosition(50, 0, 0)
+function OptionsScreen:_BuildActionMenu()
+	local action_menu = Menu(nil, -80, false)
+    action_menu.horizontal = true
 
-	local label = group:AddChild( Text( NEWFONT, 26, text ) )
-	label:SetPosition( -label_width/2 + 55, 0, 0 )
-	label:SetRegionSize( label_width, 50 )
-	label:SetHAlign( ANCHOR_RIGHT )
-	label:SetColour(0,0,0,1)
-	
-	group:AddChild( spinner )
-	spinner:SetPosition( 148, 0, 0 )
-	spinner:SetTextSize(22)
+    self.apply_button = self.root:AddChild(TEMPLATES.StandardButton(function() self:ApplyChanges() end, STRINGS.UI.OPTIONS.APPLY))
+    action_menu:AddCustomItem(self.apply_button, Vector3(450, 0, 0))
 
-	--pass focus down to the spinner
-	group.focus_forward = spinner
-	return group
+    self.reset_button = self.root:AddChild(TEMPLATES.StandardButton(
+            function() 
+                TheFrontEnd:PushScreen(PopupDialogScreen( STRINGS.UI.CONTROLSSCREEN.RESETTITLE, STRINGS.UI.CONTROLSSCREEN.RESETBODY,
+                        { 
+                            { 
+                                text = STRINGS.UI.CONTROLSSCREEN.YES, 
+                                cb = function()
+                                    self:LoadDefaultControls() 
+                                    TheFrontEnd:PopScreen()
+                                end
+                            },
+                            { 
+                                text = STRINGS.UI.CONTROLSSCREEN.NO, 
+                                cb = function()
+                                    TheFrontEnd:PopScreen()					
+                                end
+                            }
+                    }))
+            end,
+            STRINGS.UI.CONTROLSSCREEN.RESET
+        ))
+    self.reset_button:SetScale(.8)
+    action_menu:AddCustomItem(self.reset_button, Vector3(230, 0, 0))
+
+    return action_menu
 end
 
 function OptionsScreen:UpdateMenu()
-	if TheInput:ControllerAttached() then 
-		self.menu:Hide()
-		return 
-	end
-
-	self.menu:Show()
-
-	if #self.menu.items == 0 then
-		self.menu.horizontal = true
-
-		self.apply_button = self.root:AddChild(TEMPLATES.Button(STRINGS.UI.OPTIONS.APPLY, function() self:ApplyChanges() end))
-		self.menu:AddCustomItem(self.apply_button, Vector3(350, 0, 0))
-
-		self.reset_button = self.root:AddChild(TEMPLATES.Button(STRINGS.UI.CONTROLSSCREEN.RESET, function() 
-	        TheFrontEnd:PushScreen(PopupDialogScreen( STRINGS.UI.CONTROLSSCREEN.RESETTITLE, STRINGS.UI.CONTROLSSCREEN.RESETBODY,
-			{ 
-			  	{ 
-			  		text = STRINGS.UI.CONTROLSSCREEN.YES, 
-			  		cb = function()
-			  			self:LoadDefaultControls() 
-						TheFrontEnd:PopScreen()
-					end
-				},
-				{ 
-					text = STRINGS.UI.CONTROLSSCREEN.NO, 
-					cb = function()
-						TheFrontEnd:PopScreen()					
-					end
-				}
-			}))
-	    end))
-	    self.reset_button:SetScale(.8)
-	    self.menu:AddCustomItem(self.reset_button, Vector3(230, 0, 0))
-	end
-
 	if self:IsDirty() then
 		self.apply_button:Enable()
 	else
@@ -840,7 +749,7 @@ function OptionsScreen:RefreshControls()
         (deviceId ~= 0 and deviceId) or
         (self.deviceSpinner.options[2] ~= nil and self.deviceSpinner.options[2].data) or
         nil
-    --print("Current device is [" .. deviceId .. "]")
+    --print("RefreshControls device is [" .. deviceId .. "]")
     --print("Current controller device is ["..(controllerDeviceId or "none").."]")
 
 	for i,v in pairs(self.active_list.items) do
@@ -851,28 +760,15 @@ function OptionsScreen:RefreshControls()
 		    v.changed_image:Hide()
 		end
 
-        if v.control.keyboard and v.button_kb then
+        if v.device_type == "keyboard" and v.control.keyboard and v.binding_btn then
             local kbString = TheInput:GetLocalizedControl(0, v.control.keyboard)
-            v.button_kb:SetText(kbString)
-        end
+            v.binding_btn:SetText(kbString)
 
-        if v.control.controller and self.deviceSpinner:GetSelectedData() and v.button_controller then
+        elseif v.control.controller and self.deviceSpinner:GetSelectedData() and v.binding_btn then
             local controllerString = controllerDeviceId ~= nil and TheInput:GetLocalizedControl(controllerDeviceId, v.control.controller) or ""
-            v.button_controller:SetText(controllerString)
-
-            if TheInput:GetStringIsButtonImage(controllerString) then
-                v.button_controller:SetTextColour(1,1,1,1)
-                v.button_controller:SetTextFocusColour(1,1,1,1)
-                v.button_controller.text:SetFont(UIFONT)
-            else
-                v.button_controller:SetTextColour(0,0,0,1)
-                v.button_controller:SetTextFocusColour(0,0,0,1)
-                v.button_controller.text:SetFont(NEWFONT)
-            end 
+            v.binding_btn:SetText(controllerString)
         end
 	end
-
-	self:RefreshNav()
 
 	if self.selected_tab == "controls" then
 		if old_idx then
@@ -883,16 +779,7 @@ function OptionsScreen:RefreshControls()
 	self:UpdateMenu()
 end
 
-function OptionsScreen:RefreshNav()
-	
-    local function toleftcol()
-        if self.settings_button:IsEnabled() then
-            return self.settings_button
-        else
-            return self.controls_button
-        end
-    end
-
+function OptionsScreen:_DoFocusHookups()
 	local function torightcol()
         if self.selected_tab == "settings" then
 		    return self.grid
@@ -901,43 +788,17 @@ function OptionsScreen:RefreshNav()
         end
 	end
 
-    if self.active_list and self.active_list.items then
-    	for k,v in pairs(self.active_list.items) do
-            if v.button_kb then
-    		    v.button_kb:SetFocusChangeDir(MOVE_LEFT, toleftcol)
-            elseif v.button_controller then
-                v.button_controller:SetFocusChangeDir(MOVE_LEFT, toleftcol)
-            end
-    	end
-    end
+    self.grid:SetFocusChangeDir(MOVE_RIGHT, self.action_menu)
+    self.controller_controllist:SetFocusChangeDir(MOVE_RIGHT, self.action_menu)
+    self.kb_controllist:SetFocusChangeDir(MOVE_RIGHT, self.action_menu)
 
-    self.grid:SetFocusChangeDir(MOVE_LEFT, toleftcol)
+    self.action_menu:SetFocusChangeDir(MOVE_LEFT, self.subscreener.menu)
+    self.action_menu:SetFocusChangeDir(MOVE_UP, torightcol)
 
-    self.active_list:SetFocusChangeDir(MOVE_LEFT, toleftcol)
-    self.active_list:SetFocusChangeDir(MOVE_RIGHT, self.menu)
-
-    self.menu:SetFocusChangeDir(MOVE_LEFT, self.cancel_button)
-    self.menu:SetFocusChangeDir(MOVE_UP, torightcol())
-
-    self.cancel_button:SetFocusChangeDir(MOVE_UP, toleftcol)
-
-    self.cancel_button:SetFocusChangeDir(MOVE_RIGHT, self.menu)
-    self.settings_button:SetFocusChangeDir(MOVE_RIGHT, torightcol)
-    self.controls_button:SetFocusChangeDir(MOVE_RIGHT, torightcol)
-
-    self.settings_button:SetFocusChangeDir(MOVE_DOWN, self.controls_button)
-    self.controls_button:SetFocusChangeDir(MOVE_UP, self.settings_button)
-    self.controls_button:SetFocusChangeDir(MOVE_DOWN, self.cancel_button)
-
-    if TheInput:ControllerAttached() then
-        self.cancel_button:Hide()
-    else
-        self.cancel_button:Show()
-    end
+    self.cancel_button:SetFocusChangeDir(MOVE_UP, self.subscreener.menu)
 end
 
 function OptionsScreen:DoInit()
-
 	self:UpdateMenu()
 
 	self.devices = TheInput:GetInputDevices()
@@ -948,6 +809,17 @@ function OptionsScreen:DoInit()
             self:OnControlMapped(deviceId, controlId, inputId, hasChanged)
         end
     ))
+end
+
+-- This is the "settings" tab
+function OptionsScreen:_BuildSettings()
+    local settingsroot = Widget("ROOT")
+
+    -- NOTE: if we add more options, they should be made scrollable. Look
+    -- at customization screen for an example.
+    self.grid = settingsroot:AddChild(Grid())
+    self.grid:SetPosition(-90, 144, 0)
+
 
 	--------------
 	--------------
@@ -957,15 +829,28 @@ function OptionsScreen:DoInit()
 
 	local this = self
 
-	local spinner_width = 180
+	local label_width = 200
+	local spinner_width = 220
 	local spinner_height = 36 --nil -- use default
 	local spinner_scale_x = .76
 	local spinner_scale_y = .68
+    local narrow_field_nudge = -50
+    local space_between = 5
 	
+    local function CreateTextSpinner(labeltext, spinnerdata)
+        local w = TEMPLATES.LabelSpinner(labeltext, spinnerdata, label_width, spinner_width, spinner_height, space_between, nil, nil, narrow_field_nudge)
+        return w.spinner
+    end
+
+    local function CreateNumericSpinner(labeltext, min, max)
+        local w = TEMPLATES.LabelNumericSpinner(labeltext, min, max, label_width, spinner_width, spinner_height, space_between, nil, nil, narrow_field_nudge)
+        return w.spinner
+    end
+
 	if show_graphics then
 		local gOpts = TheFrontEnd:GetGraphicsOptions()
 											
-		self.fullscreenSpinner = Spinner( enableDisableOptions, spinner_width, spinner_height, nil, false, nil, nil, true, nil, nil, spinner_scale_x, spinner_scale_y )
+		self.fullscreenSpinner = CreateTextSpinner(STRINGS.UI.OPTIONS.FULLSCREEN, enableDisableOptions)
 		self.fullscreenSpinner.OnChanged =
 			function( _, data )
 				this.working.fullscreen = data
@@ -979,7 +864,7 @@ function OptionsScreen:DoInit()
 		end
 
 		local valid_displays = GetDisplays()
-		self.displaySpinner = Spinner( valid_displays, spinner_width, spinner_height, nil, nil, nil, nil, true, nil, nil, spinner_scale_x, spinner_scale_y )
+		self.displaySpinner = CreateTextSpinner(STRINGS.UI.OPTIONS.DISPLAY, valid_displays)
 		self.displaySpinner.OnChanged =
 			function( _, data )
 				this.working.display = data
@@ -989,7 +874,7 @@ function OptionsScreen:DoInit()
 			end
 		
 		local refresh_rates = GetRefreshRates( self.working.display, self.working.mode_idx )
-		self.refreshRateSpinner = Spinner( refresh_rates, spinner_width, spinner_height, nil, nil, nil, nil, true, nil, nil, spinner_scale_x, spinner_scale_y ) 
+		self.refreshRateSpinner = CreateTextSpinner(STRINGS.UI.OPTIONS.REFRESHRATE, refresh_rates) 
 		self.refreshRateSpinner.OnChanged =
 			function( _, data )
 				this.working.refreshrate = data
@@ -997,7 +882,7 @@ function OptionsScreen:DoInit()
 			end
 
 		local modes = GetDisplayModes( self.working.display )
-		self.resolutionSpinner = Spinner( modes, spinner_width, spinner_height, nil, nil, nil, nil, true, nil, nil, spinner_scale_x, spinner_scale_y )
+		self.resolutionSpinner = CreateTextSpinner(STRINGS.UI.OPTIONS.RESOLUTION, modes)
 		self.resolutionSpinner.OnChanged =
 			function( _, data )
 				this.working.mode_idx = data.idx
@@ -1005,7 +890,7 @@ function OptionsScreen:DoInit()
 				self:UpdateMenu()
 			end			
 			
-		self.netbookModeSpinner = Spinner( enableDisableOptions, spinner_width, spinner_height, nil, nil, nil, nil, true, nil, nil, spinner_scale_x, spinner_scale_y )
+		self.netbookModeSpinner = CreateTextSpinner(STRINGS.UI.OPTIONS.NETBOOKMODE, enableDisableOptions)
 		self.netbookModeSpinner.OnChanged =
 			function( _, data )
 				this.working.netbookmode = data
@@ -1013,7 +898,7 @@ function OptionsScreen:DoInit()
 				self:UpdateMenu()
 			end
 
-		self.smallTexturesSpinner = Spinner( enableDisableOptions, spinner_width, spinner_height, nil, nil, nil, nil, true, nil, nil, spinner_scale_x, spinner_scale_y )
+		self.smallTexturesSpinner = CreateTextSpinner(STRINGS.UI.OPTIONS.SMALLTEXTURES, enableDisableOptions)
 		self.smallTexturesSpinner.OnChanged =
 			function( _, data )
 				this.working.smalltextures = data
@@ -1023,7 +908,7 @@ function OptionsScreen:DoInit()
 						
 	end
 	
-	self.bloomSpinner = Spinner( enableDisableOptions, spinner_width, spinner_height, nil, nil, nil, nil, true, nil, nil, spinner_scale_x, spinner_scale_y )
+	self.bloomSpinner = CreateTextSpinner(STRINGS.UI.OPTIONS.BLOOM, enableDisableOptions)
 	self.bloomSpinner.OnChanged =
 		function( _, data )
 			this.working.bloom = data
@@ -1031,7 +916,7 @@ function OptionsScreen:DoInit()
 			self:UpdateMenu()
 		end
 		
-	self.distortionSpinner = Spinner( enableDisableOptions, spinner_width, spinner_height, nil, nil, nil, nil, true, nil, nil, spinner_scale_x, spinner_scale_y )
+	self.distortionSpinner = CreateTextSpinner(STRINGS.UI.OPTIONS.DISTORTION, enableDisableOptions)
 	self.distortionSpinner.OnChanged =
 		function( _, data )
 			this.working.distortion = data
@@ -1039,7 +924,7 @@ function OptionsScreen:DoInit()
 			self:UpdateMenu()
 		end
 
-	self.screenshakeSpinner = Spinner( enableDisableOptions, spinner_width, spinner_height, nil, nil, nil, nil, true, nil, nil, spinner_scale_x, spinner_scale_y )
+	self.screenshakeSpinner = CreateTextSpinner(STRINGS.UI.OPTIONS.SCREENSHAKE, enableDisableOptions)
 	self.screenshakeSpinner.OnChanged =
 		function( _, data )
 			this.working.screenshake = data
@@ -1047,7 +932,7 @@ function OptionsScreen:DoInit()
 			self:UpdateMenu()
 		end
 
-	self.fxVolume = NumericSpinner( 0, 10, spinner_width, spinner_height, nil, nil, nil, nil, true, nil, nil, spinner_scale_x, spinner_scale_y )
+	self.fxVolume = CreateNumericSpinner(STRINGS.UI.OPTIONS.FX, 0, 10)
 	self.fxVolume.OnChanged =
 		function( _, data )
 			this.working.fxvolume = data
@@ -1055,7 +940,7 @@ function OptionsScreen:DoInit()
 			self:UpdateMenu()
 		end
 
-	self.musicVolume = NumericSpinner( 0, 10, spinner_width, spinner_height, nil, nil, nil, nil, true, nil, nil, spinner_scale_x, spinner_scale_y )
+	self.musicVolume = CreateNumericSpinner(STRINGS.UI.OPTIONS.MUSIC, 0, 10)
 	self.musicVolume.OnChanged =
 		function( _, data )
 			this.working.musicvolume = data
@@ -1063,7 +948,7 @@ function OptionsScreen:DoInit()
 			self:UpdateMenu()
 		end
 
-	self.ambientVolume = NumericSpinner( 0, 10, spinner_width, spinner_height, nil, nil, nil, nil, true, nil, nil, spinner_scale_x, spinner_scale_y )
+	self.ambientVolume = CreateNumericSpinner(STRINGS.UI.OPTIONS.AMBIENT, 0, 10)
 	self.ambientVolume.OnChanged =
 		function( _, data )
 			this.working.ambientvolume = data
@@ -1071,7 +956,7 @@ function OptionsScreen:DoInit()
 			self:UpdateMenu()
 		end
 		
-	self.hudSize = NumericSpinner( 0, 10, spinner_width, spinner_height, nil, nil, nil, nil, true, nil, nil, spinner_scale_x, spinner_scale_y )
+	self.hudSize = CreateNumericSpinner(STRINGS.UI.OPTIONS.HUDSIZE, 0, 10)
 	self.hudSize.OnChanged =
 		function( _, data )
 			this.working.hudSize = data
@@ -1079,7 +964,7 @@ function OptionsScreen:DoInit()
 			self:UpdateMenu()
 		end
 
-	self.vibrationSpinner = Spinner( enableDisableOptions, spinner_width, spinner_height, nil, nil, nil, nil, true, nil, nil, spinner_scale_x, spinner_scale_y )
+	self.vibrationSpinner = CreateTextSpinner(STRINGS.UI.OPTIONS.VIBRATION, enableDisableOptions)
 	self.vibrationSpinner.OnChanged =
 		function( _, data )
 			this.working.vibration = data
@@ -1087,7 +972,7 @@ function OptionsScreen:DoInit()
 			self:UpdateMenu()
 		end
 
-	self.passwordSpinner = Spinner( enableDisableOptions, spinner_width, spinner_height, nil, nil, nil, nil, true, nil, nil, spinner_scale_x, spinner_scale_y )
+	self.passwordSpinner = CreateTextSpinner(STRINGS.UI.OPTIONS.SHOWPASSWORD, enableDisableOptions)
 	self.passwordSpinner.OnChanged =
 		function( _, data )
 			this.working.showpassword = data
@@ -1095,7 +980,7 @@ function OptionsScreen:DoInit()
 			self:UpdateMenu()
 		end
 
-	self.wathgrithrfontSpinner = Spinner( enableDisableOptions, spinner_width, spinner_height, nil, nil, nil, nil, true, nil, nil, spinner_scale_x, spinner_scale_y )
+	self.wathgrithrfontSpinner = CreateTextSpinner(STRINGS.UI.OPTIONS.WATHGRITHRFONT, enableDisableOptions)
 	self.wathgrithrfontSpinner.OnChanged =
 		function( _, data )
 			this.working.wathgrithrfont = data
@@ -1103,7 +988,7 @@ function OptionsScreen:DoInit()
 			self:UpdateMenu()
 		end
 
-    self.movementpredictionSpinner = Spinner(
+    self.movementpredictionSpinner = CreateTextSpinner(STRINGS.UI.OPTIONS.MOVEMENTPREDICTION,
         {
             { text = STRINGS.UI.OPTIONS.MOVEMENTPREDICTION_DISABLED, data = false },
             { text = STRINGS.UI.OPTIONS.MOVEMENTPREDICTION_ENABLED, data = true },
@@ -1115,7 +1000,7 @@ function OptionsScreen:DoInit()
             self:UpdateMenu()
         end
 
-	self.automodsSpinner = Spinner( enableDisableOptions, spinner_width, spinner_height, nil, nil, nil, nil, true, nil, nil, spinner_scale_x, spinner_scale_y )
+	self.automodsSpinner = CreateTextSpinner(STRINGS.UI.OPTIONS.AUTOMODS, enableDisableOptions)
 	self.automodsSpinner.OnChanged =
 		function( _, data )
 			this.working.automods = data
@@ -1123,7 +1008,7 @@ function OptionsScreen:DoInit()
 			self:UpdateMenu()
 		end
 
-	self.deviceSpinner = Spinner( self.devices, spinner_width, spinner_height, nil, nil, nil, nil, true, 250, nil, spinner_scale_x, spinner_scale_y )
+	self.deviceSpinner = CreateTextSpinner(STRINGS.UI.OPTIONS.INPUT, self.devices)
 	self.deviceSpinner.OnChanged =
 		function( _, data )
             for i, v in ipairs(self.devices) do
@@ -1145,6 +1030,7 @@ function OptionsScreen:DoInit()
                 self.active_list = self.kb_controllist
             end
 
+            self:_RefreshScreenButtons()
             self:RefreshControls()
             self:MakeDirty()
 		end
@@ -1152,40 +1038,56 @@ function OptionsScreen:DoInit()
 	self.left_spinners = {}
 	self.right_spinners = {}
 	
-    table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.INPUT, self.deviceSpinner } )
-    table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.VIBRATION, self.vibrationSpinner} )
-    table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.FX, self.fxVolume } )
-    table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.MUSIC, self.musicVolume } )
-    table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.AMBIENT, self.ambientVolume } )
-    table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.SHOWPASSWORD, self.passwordSpinner} )
-    table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.AUTOMODS, self.automodsSpinner } )
-    table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.WATHGRITHRFONT, self.wathgrithrfontSpinner} )
-    table.insert( self.left_spinners, { STRINGS.UI.OPTIONS.HUDSIZE, self.hudSize} )
+    table.insert( self.left_spinners, self.deviceSpinner )
+    table.insert( self.left_spinners, self.vibrationSpinner)
+    table.insert( self.left_spinners, self.fxVolume )
+    table.insert( self.left_spinners, self.musicVolume )
+    table.insert( self.left_spinners, self.ambientVolume )
+    table.insert( self.left_spinners, self.passwordSpinner)
+    table.insert( self.left_spinners, self.automodsSpinner )
+    table.insert( self.left_spinners, self.wathgrithrfontSpinner)
+    table.insert( self.left_spinners, self.hudSize)
 
-    table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.SCREENSHAKE, self.screenshakeSpinner } )
-    table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.DISTORTION, self.distortionSpinner } )
-    table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.BLOOM, self.bloomSpinner } )
+    table.insert( self.right_spinners, self.screenshakeSpinner )
+    table.insert( self.right_spinners, self.distortionSpinner )
+    table.insert( self.right_spinners, self.bloomSpinner )
 
 	if show_graphics then
-		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.FULLSCREEN, self.fullscreenSpinner } )
-		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.RESOLUTION, self.resolutionSpinner } )
-		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.DISPLAY, self.displaySpinner } )
-		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.REFRESHRATE, self.refreshRateSpinner } )
-		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.SMALLTEXTURES, self.smallTexturesSpinner } )
-		table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.NETBOOKMODE, self.netbookModeSpinner } )
-        table.insert( self.right_spinners, { STRINGS.UI.OPTIONS.MOVEMENTPREDICTION, self.movementpredictionSpinner } )
+		table.insert( self.right_spinners, self.fullscreenSpinner )
+		table.insert( self.right_spinners, self.resolutionSpinner )
+		table.insert( self.right_spinners, self.displaySpinner )
+		table.insert( self.right_spinners, self.refreshRateSpinner )
+		table.insert( self.right_spinners, self.smallTexturesSpinner )
+		table.insert( self.right_spinners, self.netbookModeSpinner )
+        table.insert( self.right_spinners, self.movementpredictionSpinner )
 	end
 
 	self.grid:UseNaturalLayout()
 	self.grid:InitSize(2, 10, 440, 40)
 
+    -- Ugh. Using parent because the spinner lists contain a child of a
+    -- composite widget.
 	for k,v in ipairs(self.left_spinners) do
-		self.grid:AddItem(self:CreateSpinnerGroup(v[1], v[2]), 1, k)
+		self.grid:AddItem(v.parent, 1, k)
 	end
 
 	for k,v in ipairs(self.right_spinners) do
-		self.grid:AddItem(self:CreateSpinnerGroup(v[1], v[2]), 2, k)
+		self.grid:AddItem(v.parent, 2, k)
 	end
+
+    settingsroot.focus_forward = self.grid
+    return settingsroot
+end
+
+-- This is the "controls" tab
+function OptionsScreen:_BuildControls()
+    local controlsroot = Widget("ROOT")
+
+    controlsroot:SetPosition(290,-40)
+
+	self.controls_horizontal_line = controlsroot:AddChild(Image("images/global_redux.xml", "item_divider.tex"))
+    self.controls_horizontal_line:SetScale(.9)
+    self.controls_horizontal_line:SetPosition(-210, 175)
 
 	--------------
 	--------------
@@ -1193,153 +1095,114 @@ function OptionsScreen:DoInit()
 	--------------
 	--------------
 
-	local button_x = 177 -- x coord of the right column
-	local keyboard = true
-    self.kb_controlwidgets = {}
-    self.controller_controlwidgets = {}
-	for i,v in ipairs(all_controls) do
+	local button_x = -371 -- x coord of the left edge
+    local button_width = controls_ui.action_btn_width
+    local button_height = controls_ui.action_height
+    local spacing = 15
+    local function BuildControlGroup(is_valid_fn, device_type, initial_device_id, control, index)
 
-        if all_controls[i] and all_controls[i].keyboard then
+        if control and control[device_type] then
 
-            local group = Widget("control"..i)
+            local group = Widget("control"..index)
             group:SetScale(1,1,0.75)
 
-            group.control = all_controls[i]
-            group.controlName = all_controls[i].name
-    		group.controlId = all_controls[i].keyboard
-    		
-    		group.bg = group:AddChild(Image("images/ui.xml", "single_option_bg.tex"))
-    	    group.bg:SetPosition(-115, 3, 0)
-            group.bg:SetScale(1.5, 1, 1)
+            group.device_type = device_type
+            group.control = control
+            group.controlName = control.name
+            group.controlId = control[device_type]
 
-    		group.changed_image = group:AddChild(Image("images/ui.xml", "option_highlight.tex"))
-    		-- group.changed_image:SetTint(unpack(BGCOLOURS.GREY))
-    		group.changed_image:SetPosition(button_x-1,2,0)
-    		group.changed_image:SetScale(.71, .79)
+            local x = button_x
 
-            local hasChanged = false
-            --keyboard
-            if group.control.keyboard then
-                hasChanged = TheInputProxy:HasMappingChanged(0, group.control.keyboard)
-            end
-            if hasChanged then
-    		    group.changed_image:Show()
-    		else
-    		    group.changed_image:Hide()
-    		end
-
-            group.label = group:AddChild(Text(NEWFONT, 28))
+            group.label = group:AddChild(Text(CHATFONT, 28))
             local ctrlString = STRINGS.UI.CONTROLSSCREEN.CONTROLS[group.controlName+1]
             group.label:SetString(ctrlString)
             group.label:SetHAlign(ANCHOR_LEFT)
-            group.label:SetColour(0,0,0,1)
-            group.label:SetRegionSize( 500, 50 )
-            group.label:SetPosition(-146,5,0)
+            group.label:SetColour(UICOLOURS.GOLD_UNIMPORTANT)
+            group.label:SetRegionSize(controls_ui.action_label_width, 50)
+            x = x + controls_ui.action_label_width/2
+            group.label:SetPosition(x,5)
+            x = x + controls_ui.action_label_width/2 + spacing
             group.label:SetClickable(false)
-    		
-    		group.button_kb = group:AddChild(ImageButton("images/ui.xml", "blank.tex", "spinner_focus.tex", nil, nil, nil, {1,1}, {0,0}))
-    		group.button_kb:ForceImageSize(198, 48)
 
-    		group.button_kb:SetTextColour(0,0,0,1)
-            group.button_kb:SetFont(NEWFONT)
-            group.button_kb:SetTextSize(30)  
-    		group.button_kb:SetPosition(button_x,2,0)
-    		group.button_kb.idx = i
-            group.button_kb:SetOnClick( 
-                function() 
-                    self:MapControl(0, group.control.keyboard) --kb is always 0
-                end 
-            ) 
-            group.button_kb:SetHelpTextMessage(STRINGS.UI.CONTROLSSCREEN.CHANGEBIND)
-            group.button_kb:SetDisabledFont(NEWFONT)
-            if group.control.keyboard then
-                group.button_kb:SetText(TheInput:GetLocalizedControl(0, group.control.keyboard)) --kb is always 0
-            end           
+            x = x + button_width/2
+            group.changed_image = group:AddChild(Image("images/global_redux.xml", "wardrobe_spinner_bg.tex"))
+            group.changed_image:SetTint(1,1,1,0.3)
+            group.changed_image:ScaleToSize(button_width, button_height)
+            group.changed_image:SetPosition(x,2)
+            group.changed_image:Hide()
 
-            group.focus_forward = group.button_kb 
-            
-		    table.insert(self.kb_controlwidgets, group)
+            group.binding_btn = group:AddChild(ImageButton("images/global_redux.xml", "blank.tex", "spinner_focus.tex"))
+            group.binding_btn:ForceImageSize(button_width, button_height)
+            group.binding_btn:SetTextColour(UICOLOURS.GOLD_CLICKABLE)
+            group.binding_btn:SetTextFocusColour(UICOLOURS.GOLD_FOCUS)
+            group.binding_btn:SetFont(CHATFONT)
+            group.binding_btn:SetTextSize(30)
+            group.binding_btn:SetPosition(x,2)
+            group.binding_btn.idx = index
+            group.binding_btn:SetOnClick(
+                function()
+                    local device_id = self.deviceSpinner:GetSelectedData()
+                    if is_valid_fn(device_id) then
+                        self:MapControl(device_id, group.controlId)
+                    end
+                end)
+            x = x + button_width/2 + spacing
 
+            group.binding_btn:SetHelpTextMessage(STRINGS.UI.CONTROLSSCREEN.CHANGEBIND)
+            group.binding_btn:SetDisabledFont(CHATFONT)
+            if group.controlId then
+                group.binding_btn:SetText(initial_device_id and TheInput:GetLocalizedControl(initial_device_id, group.controlId) or "")
+            end
+
+            group.focus_forward = group.binding_btn
+
+            return group
         end
-	end
+    end
 
+    self.kb_controlwidgets = {}
+    self.controller_controlwidgets = {}
+
+    local function is_valid_keyboard(device_id) return device_id == 0 end
+
+    for i,v in ipairs(all_controls) do
+        local group = BuildControlGroup(is_valid_keyboard, "keyboard", 0, all_controls[i], i)
+        if group then
+            group.binding_btn:SetHelpTextMessage(STRINGS.UI.CONTROLSSCREEN.CHANGEBIND)
+
+            table.insert(self.kb_controlwidgets, group)
+        end
+    end
+
+
+    -- Try really hard to find a good initial value for gamepad device.
     local deviceId = self.deviceSpinner:GetSelectedData()
     local controllerDeviceId =
         (deviceId ~= 0 and deviceId) or
         (self.deviceSpinner.options[2] ~= nil and self.deviceSpinner.options[2].data) or
         nil
+
     for i,v in ipairs(all_controls) do
-
-        if all_controls[i] and all_controls[i].controller then
-
-            local group = Widget("control"..i)
-            group:SetScale(1,1,0.75)
-
-            group.control = all_controls[i]
-            group.controlName = all_controls[i].name
-            group.controlId = all_controls[i].controller
-            
-            group.bg = group:AddChild(Image("images/ui.xml", "single_option_bg.tex"))
-            group.bg:SetPosition(-115, 3, 0)
-            group.bg:SetScale(1.5, 1, 1)
-
-            group.changed_image = group:AddChild(Image("images/ui.xml", "option_highlight.tex"))
-            -- group.changed_image:SetTint(unpack(BGCOLOURS.GREY))
-    		group.changed_image:SetPosition(button_x-1,2,0)
-    		group.changed_image:SetScale(.71, .79)
-
-            local hasChanged = false
-
-            --selected controller, if any
-            if deviceId ~= nil and deviceId ~= 0 and group.control.controller then
-                hasChanged = hasChanged or TheInputProxy:HasMappingChanged(deviceId, group.control.controller)
-            end
-            if hasChanged then
-                group.changed_image:Show()
-            else
-                group.changed_image:Hide()
-            end
-
-            group.label = group:AddChild(Text(NEWFONT, 28))
-            local ctrlString = STRINGS.UI.CONTROLSSCREEN.CONTROLS[group.controlName+1]
-            group.label:SetString(ctrlString)
-            group.label:SetHAlign(ANCHOR_LEFT)
-            group.label:SetColour(0,0,0,1)
-            group.label:SetRegionSize( 500, 50 )
-            group.label:SetPosition(-146,5,0)
-            group.label:SetClickable(false)
-            
-            group.button_controller = group:AddChild(ImageButton("images/ui.xml", "blank.tex", "spinner_focus.tex", nil, nil, nil, {1,1}, {0,0}))
-            group.button_controller:ForceImageSize(198, 48)
-
-            group.button_controller.text:SetColour(0,0,0,1)
-            group.button_controller:SetFont(NEWFONT)
-            group.button_controller:SetTextSize(30)  
-            group.button_controller:SetPosition(button_x,2,0)
-            group.button_controller.idx = i
-            group.button_controller:SetOnClick( 
-                function() 
-                    if self.deviceSpinner:GetSelectedData() ~= 0 then
-                        self:MapControl(self.deviceSpinner:GetSelectedData(), group.control.controller)
-                    end
-                end 
-            )
-            group.button_controller.OnControl =  
+        local function is_valid_controller(device_id) return device_id and device_id ~= 0 and all_controls[i] and all_controls[i].controller end
+        local group = BuildControlGroup(is_valid_controller, "controller", controllerDeviceId, all_controls[i], i)
+        if group then
+            group.binding_btn.OnControl =  
                 function( _, control, down)
-					if group.button_controller._base.OnControl(group.button_controller, control, down) then return true end
+					if group.binding_btn._base.OnControl(group.binding_btn, control, down) then return true end
 					
-					if not self.is_mapping and self.deviceSpinner:GetSelectedData() ~= 0 then
+                    local device_id = self.deviceSpinner:GetSelectedData()
+					if not self.is_mapping and device_id ~= 0 then
 						if not down and control == CONTROL_MENU_MISC_2 then
 							-- Unbind the game control
-  							self.is_mapping = true
-						    TheInputProxy:UnMapControl(self.deviceSpinner:GetSelectedData(), group.control.controller)
+                            self.is_mapping = true
+						    TheInputProxy:UnMapControl(device_id, group.control.controller)
 	
 							return true
 						end
 					end
                 end 
-           group.button_controller.GetHelpText = 
-				function( self )
+           group.binding_btn.GetHelpText = 
+				function()
 					local controller_id = TheInput:GetControllerID()
 					local t = {}
 					table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_2, false, false ) .. " " .. STRINGS.UI.CONTROLSSCREEN.UNBIND)	
@@ -1347,48 +1210,48 @@ function OptionsScreen:DoInit()
 					return table.concat(t, "  ")
 				end
 
-            group.button_controller:SetDisabledFont(NEWFONT)
-            if group.control.controller then
-                group.button_controller:SetText(controllerDeviceId ~= nil and TheInput:GetLocalizedControl(controllerDeviceId, group.control.controller) or "")
-            end
-
-            if TheInput:GetStringIsButtonImage(group.button_controller:GetText()) then
-                group.button_controller:SetTextColour(1,1,1,1)
-                group.button_controller:SetTextFocusColour(1,1,1,1)
-                group.button_controller.text:SetFont(UIFONT)
-            else
-                group.button_controller:SetTextColour(0,0,0,1)
-                group.button_controller:SetTextFocusColour(0,0,0,1)
-                group.button_controller.text:SetFont(NEWFONT)
-            end  
-            
-            group.focus_forward = group.button_controller 
-            
             table.insert(self.controller_controlwidgets, group)
-
         end
     end
 
-	local header_y = 150
-	local header_x = 375 -- location of the header on the right column
+    local align_to_scroll = controlsroot:AddChild(Widget(""))
+    align_to_scroll:SetPosition(-160, 200) -- hand-tuned amount that aligns with scrollablelist
 
-	self.actions_header = self.controlsroot:AddChild(Text(NEWFONT, 30, STRINGS.UI.OPTIONS.ACTION))
-	self.actions_header:SetColour(0,0,0,1)
-	self.actions_header:SetPosition(header_x-550,header_y,0)
+    local x = button_x
+    x = x + controls_ui.action_label_width/2
+	self.actions_header = align_to_scroll:AddChild(Text(HEADERFONT, 30, STRINGS.UI.OPTIONS.ACTION))
+	self.actions_header:SetColour(UICOLOURS.GOLD_UNIMPORTANT)
+	self.actions_header:SetPosition(x-20, 0) -- move a bit towards text
+	self.actions_header:SetRegionSize(controls_ui.action_label_width, 50)
+    self.actions_header:SetHAlign(ANCHOR_MIDDLE)
+    x = x + controls_ui.action_label_width/2
 
-    self.controls_header = self.controlsroot:AddChild(Text(NEWFONT, 30, STRINGS.UI.CONTROLSSCREEN.INPUT_NAMES[1]))
-    if self.deviceSpinner:GetSelectedData() ~= 0 then
-        self.controls_header:SetString(self.deviceSpinner:GetSelectedText())
+    self.controls_vertical_line = align_to_scroll:AddChild(Image("images/global_redux.xml", "item_divider.tex"))
+    self.controls_vertical_line:SetScale(.7, .43)
+    self.controls_vertical_line:SetRotation(90)
+    self.controls_vertical_line:SetPosition(x, -200)
+    x = x + spacing
+
+    x = x + button_width/2
+    self.controls_header = align_to_scroll:AddChild(Text(HEADERFONT, 30))
+    self.controls_header:SetString(self.deviceSpinner:GetSelectedText())
+    self.controls_header:SetColour(UICOLOURS.GOLD_UNIMPORTANT)
+    self.controls_header:SetPosition(x, 0)
+    x = x + button_width/2 + spacing
+
+    local function CreateScrollableList(items)
+        local width = controls_ui.action_label_width + spacing + controls_ui.action_btn_width
+        return ScrollableList(items, width/2, 330, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, "GOLD")
     end
-    self.controls_header:SetColour(0,0,0,1)
-    self.controls_header:SetPosition(header_x,header_y,0)
+	self.kb_controllist = controlsroot:AddChild(CreateScrollableList(self.kb_controlwidgets))
+    self.controller_controllist = controlsroot:AddChild(CreateScrollableList(self.controller_controlwidgets))
 
-	self.kb_controllist = self.controlsroot:AddChild(ScrollableList(self.kb_controlwidgets, 300, 330))
-	self.kb_controllist:SetPosition(340, -40)
-
-    self.controller_controllist = self.controlsroot:AddChild(ScrollableList(self.controller_controlwidgets, 300, 330))
-    self.controller_controllist:SetPosition(340, -40)
+    controlsroot.focus_forward = function()
+        return self.active_list
+    end
+    return controlsroot
 end
+
 
 local function EnabledOptionsIndex(enabled)
     return enabled and 2 or 1
@@ -1435,15 +1298,15 @@ function OptionsScreen:InitializeSpinners(first)
 
 	if first then
 		-- Add the bg change when non-init value for all spinners
-        local function SetupOnChange(i,v)
-			if v and v[2] then
-				local spinner = v[2]
-			    spinner.changed_image = spinner:AddChild(Image("images/ui.xml", "option_highlight.tex"))
-				spinner.changed_image:SetPosition(-1, -1)
-				spinner.changed_image:SetScale(.6, .67)
+        local function SetupOnChange(i,spinner)
+			if spinner then
+			    spinner.changed_image = spinner:AddChild(Image("images/global_redux.xml", "wardrobe_spinner_bg.tex"))
+				spinner.changed_image:SetPosition(2, 0)
+				spinner.changed_image:ScaleToSize(spinner.width-45, spinner.height)
 				spinner.changed_image:MoveToBack()
 				spinner.changed_image:SetClickable(false)
 				spinner.changed_image:Hide()
+				spinner.changed_image:SetTint(1,1,1,0.3)
 				spinner.background:SetPosition(0,-1)
 
 				spinner.default_index = spinner:GetSelectedIndex()
@@ -1461,12 +1324,12 @@ function OptionsScreen:InitializeSpinners(first)
 				end
 			end
         end
-		for i,v in pairs(self.left_spinners) do
-            SetupOnChange(i,v)
+		for i,spinner in pairs(self.left_spinners) do
+            SetupOnChange(i,spinner)
 		end
 
-		for i,v in pairs(self.right_spinners) do
-            SetupOnChange(i,v)
+		for i,spinner in pairs(self.right_spinners) do
+            SetupOnChange(i,spinner)
 		end
 	end
 end

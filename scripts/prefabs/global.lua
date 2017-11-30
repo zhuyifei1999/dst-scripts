@@ -33,6 +33,10 @@ local assets =
 	-- Used in event join flow and in-game victory.
     Asset("ATLAS", "images/dialogcurly_9slice.xml"),
     Asset("IMAGE", "images/dialogcurly_9slice.tex"),
+
+    -- Used for motd and options
+    Asset("ATLAS", "images/dialogrect_9slice.xml"),
+    Asset("IMAGE", "images/dialogrect_9slice.tex"),
     
     Asset("ATLAS", "images/lavaarena_achievements.xml"),
     Asset("IMAGE", "images/lavaarena_achievements.tex"),

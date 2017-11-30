@@ -76,7 +76,7 @@ end
 function event_server_data(eventname, path)
     local fullpath = eventname.."_event_server/"..path
     if EventServerFiles[fullpath] == nil then
-        EventServerFiles[fullpath] = require(fullpath)
+        EventServerFiles[fullpath] = requireeventfile(fullpath)
         if path.sub(1, 11) == "components/" then
             EventServerFiles[fullpath].WatchWorldState = ComponentWatchWorldState
             EventServerFiles[fullpath].StopWatchingWorldState = ComponentStopWatchingWorldState

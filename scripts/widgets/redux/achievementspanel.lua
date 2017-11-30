@@ -1,6 +1,5 @@
 -- Yup, this is almost the same as PortraitBackgroundExplorerPanel.
 local Image = require "widgets/image"
-local TrueScrollList = require "widgets/truescrolllist"
 local Widget = require "widgets/widget"
 local Text = require "widgets/text"
 
@@ -17,20 +16,13 @@ local AchievementsPanel = Class(Widget, function(self, user_profile, festival_ke
 
     self.achievements_root = self:AddChild(Widget("achievements_root"))
 
-    local bg = self.achievements_root:AddChild(Image("images/ui.xml", "black.tex"))
-    bg:SetTint(1,1,1,.8)
-	bg:SetPosition(0, -5)
-    bg:SetSize(806, 406)
+    self.dialog = self.achievements_root:AddChild(TEMPLATES.RectangleWindow(736, 406))
+    self.dialog:SetBackgroundTint(1,1,1,.8)
+    self.dialog:SetPosition(0, -5)
+    self.dialog.top:Hide() -- top crown would be behind our title.
 
     self.grid = self.achievements_root:AddChild(self:_BuildAchievementsExplorer(festival_key))
     self.grid:SetPosition(-10,-5)
-
-	local top_bar = self.achievements_root:AddChild(Image("images/frontend_redux.xml", "achievements_wide_divider_top.tex"))
-	top_bar:SetScale(0.83, 1)
-	top_bar:SetPosition(1, 214)
-	local bottom_bar = self.achievements_root:AddChild(Image("images/frontend_redux.xml", "achievements_wide_divider_bottom.tex"))
-	bottom_bar:SetScale(0.85, 1)
-	bottom_bar:SetPosition(0, -226)
 
     local title = self.achievements_root:AddChild(Text(HEADERFONT, 28, STRINGS.UI.ACHIEVEMENTS.SCREENTITLE, UICOLOURS.HIGHLIGHT_GOLD))
 	title:SetPosition(0, 222)
