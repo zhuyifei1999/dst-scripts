@@ -166,7 +166,10 @@ end
 
 function GetModifiedRarityStringForItem( item )
 	if GetRarityModifierForItem(item) ~= nil then
-		return STRINGS.UI.RARITY[GetRarityModifierForItem(item)] .. STRINGS.UI.RARITY[GetRarityForItem(item)]
+		if STRINGS.UI.RARITY[GetRarityModifierForItem(item)] == nil then
+			print("Error! Unknown rarity modifier. Needs to be defined in strings.lua.", GetRarityModifierForItem(item) )
+		end
+		return (STRINGS.UI.RARITY[GetRarityModifierForItem(item)] or "") .. STRINGS.UI.RARITY[GetRarityForItem(item)]
 	else
 		return STRINGS.UI.RARITY[GetRarityForItem(item)]
 	end

@@ -99610,7 +99610,7 @@ msgstr ""
 
 #. STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_NOBUY
 msgctxt "STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_NOBUY"
-msgid "Only special event items can be woven from Spools."
+msgid "Only special event items from an active event can be woven from Spools."
 msgstr ""
 
 #. STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_NOGRIND

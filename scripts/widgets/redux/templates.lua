@@ -1014,6 +1014,9 @@ function TEMPLATES.RectangleWindow(sizeX, sizeY, title_text, bottom_buttons, but
         self.mid_center:SetTint(r,g,b,a)
     end
 
+    -- Default to black.
+    w:SetBackgroundTint(0,0,0,1)
+
     return w
 end
 

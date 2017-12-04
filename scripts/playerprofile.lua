@@ -146,12 +146,17 @@ end
 -- Store the player's last selection so we can preselecting the right character
 -- for the player.
 function PlayerProfile:GetLastSelectedCharacter()
-    return self.persistdata.last_selected_character or DST_CHARACTERLIST[1]
+    local character = self.persistdata.last_selected_character
+    if not table.contains(DST_CHARACTERLIST, character) then
+        character = DST_CHARACTERLIST[1]
+    end
+    return character
 end
 
 function PlayerProfile:SetLastSelectedCharacter(character)
-    -- Only track official characters.
-    if character and STRINGS.CHARACTER_NAMES[character] then
+    -- Only track official characters since we show this character a
+    -- lot in the frontend.
+    if table.contains(DST_CHARACTERLIST, character) then
         self.persistdata.last_selected_character = character
     end
 end
