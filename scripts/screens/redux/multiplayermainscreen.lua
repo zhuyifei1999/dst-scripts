@@ -82,8 +82,12 @@ function MultiplayerMainScreen:DoInit()
         self.bg_anim = self.fixed_root:AddChild(anim)
     end
 
-	self.motd = self.fixed_root:AddChild(Widget("motd"))
-    self.motd:SetPosition(-240, 230)
+    self.motd = self.fixed_root:AddChild(Widget("motd"))
+    if IsAnyFestivalEventActive() then
+        self.motd:SetPosition(-240, 230)
+    else
+        self.motd:SetPosition(510, 230)
+    end
 
     self.motdbg = self.motd:AddChild(TEMPLATES.RectangleWindow(105,179,
         STRINGS.UI.MAINSCREEN.MOTDTITLE,
@@ -237,19 +241,16 @@ function MultiplayerMainScreen:_FadeToScreen(screen_ctor, data)
 end
 
 --------------------------------------------------------------------------------
---V2C: Currently only FestivalEventScreen transitions use these music helpers
+--V2C: Peter: Currently only "screens with their own music" transitions use these music helpers
 
 function MultiplayerMainScreen:StopMusic()
-    local festival = GetFestivalEventInfo()
-    if festival and festival.FEMUSIC ~= nil then
-        if not self.musicstopped then
-            self.musicstopped = true
-            TheFrontEnd:GetSound():KillSound("FEMusic")
-            TheFrontEnd:GetSound():KillSound("FEPortalSFX")
-        elseif self.musictask ~= nil then
-            self.musictask:Cancel()
-            self.musictask = nil
-        end
+    if not self.musicstopped then
+        self.musicstopped = true
+        TheFrontEnd:GetSound():KillSound("FEMusic")
+        --TheFrontEnd:GetSound():KillSound("FEPortalSFX")
+    elseif self.musictask ~= nil then
+        self.musictask:Cancel()
+        self.musictask = nil
     end
 end
 
@@ -257,7 +258,7 @@ local function OnStartMusic(inst, self)
     self.musictask = nil
     self.musicstopped = false
     TheFrontEnd:GetSound():PlaySound(FE_MUSIC, "FEMusic")
-    TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_idle_vines", "FEPortalSFX")
+    --TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_idle_vines", "FEPortalSFX")
 end
 
 function MultiplayerMainScreen:StartMusic()
@@ -440,14 +441,14 @@ end
 local function OnMovieDone()
     TheFrontEnd:GetSound():PlaySound(FE_MUSIC, "FEMusic")
     TheFrontEnd:GetSound():SetParameter("FEMusic", "fade", 0)
-    TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_idle_vines", "FEPortalSFX")
+    --TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_idle_vines", "FEPortalSFX")
     TheFrontEnd:Fade(FADE_IN, 2)
 end
 
 function MultiplayerMainScreen:OnMovieButton()
     self.last_focus_widget = TheFrontEnd:GetFocusWidget()
     TheFrontEnd:GetSound():KillSound("FEMusic")
-    TheFrontEnd:GetSound():KillSound("FEPortalSFX")
+    --TheFrontEnd:GetSound():KillSound("FEPortalSFX")
     self.menu:Disable()
     if self.debug_menu ~= nil then
         self.debug_menu:Disable()
@@ -459,7 +460,7 @@ end
 function MultiplayerMainScreen:OnCreditsButton()
     self.last_focus_widget = TheFrontEnd:GetFocusWidget()
 	TheFrontEnd:GetSound():KillSound("FEMusic")
-    TheFrontEnd:GetSound():KillSound("FEPortalSFX")
+    --TheFrontEnd:GetSound():KillSound("FEPortalSFX")
 	self.menu:Disable()
     if self.debug_menu then self.debug_menu:Disable() end
     
