@@ -185,13 +185,15 @@ local function DoForcedEmoteSound(inst, soundpath)
     inst.SoundEmitter:PlaySound(soundpath)
 end
 
-local function DoEmoteSound(inst, soundoverride)
+local function DoEmoteSound(inst, soundoverride, loop)
+    --NOTE: loop only applies to soundoverride
+    loop = loop and soundoverride ~= nil and "emotesoundloop" or nil
     local soundname = soundoverride or "emote"
     local emotesoundoverride = soundname.."soundoverride"
     if inst[emotesoundoverride] ~= nil then
-        inst.SoundEmitter:PlaySound(inst[emotesoundoverride])
+        inst.SoundEmitter:PlaySound(inst[emotesoundoverride], loop)
     elseif not inst:HasTag("mime") then
-        inst.SoundEmitter:PlaySound((inst.talker_path_override or "dontstarve/characters/")..(inst.soundsname or inst.prefab).."/"..soundname)
+        inst.SoundEmitter:PlaySound((inst.talker_path_override or "dontstarve/characters/")..(inst.soundsname or inst.prefab).."/"..soundname, loop)
     end
 end
 
@@ -7606,9 +7608,9 @@ local states =
                 end
             elseif data.sound ~= false then
                 if (data.sounddelay or 0) <= 0 then
-                    DoEmoteSound(inst, data.soundoverride)
+                    DoEmoteSound(inst, data.soundoverride, data.soundlooped)
                 else
-                    inst.sg.statemem.emotesoundtask = inst:DoTaskInTime(data.sounddelay, DoEmoteSound, data.soundoverride)
+                    inst.sg.statemem.emotesoundtask = inst:DoTaskInTime(data.sounddelay, DoEmoteSound, data.soundoverride, data.soundlooped)
                 end
             end
 
@@ -7663,6 +7665,9 @@ local states =
             if inst.sg.statemem.emotemountsoundtask ~= nil then
                 inst.sg.statemem.emotemountsoundtask:Cancel()
                 inst.sg.statemem.emotemountsoundtask = nil
+            end
+            if inst.SoundEmitter:PlayingSound("emotesoundloop") then
+                inst.SoundEmitter:KillSound("emotesoundloop")
             end
             if inst.sg.statemem.iszoomed then
                 inst:SetCameraZoomed(false)

@@ -5,9 +5,11 @@ local assets =
 
 local BLINK_PERIOD = 1.2
 
-local NUM_BASIC_ORNAMENT = 8
-local NUM_FANCY_ORNAMENT = 4
-local NUM_LIGHT_ORNAMENT = 4
+local NUM_BASIC_ORNAMENT = 12
+local NUM_FANCY_ORNAMENT = 8
+local NUM_LIGHT_ORNAMENT = 8
+
+--NOTE: update mushroom_light.lua when adding coloured light bulbs!
 
 local ORNAMENT_GOLD_VALUE =
 {
@@ -16,15 +18,29 @@ local ORNAMENT_GOLD_VALUE =
     ["light"] = 3,
 }
 
+local LIGHT_DATA =
+{
+    { colour = Vector3(1, .1, .1) },
+    { colour = Vector3(.1, 1, .1) },
+    { colour = Vector3(.5, .5, 1) },
+    { colour = Vector3(1, 1, 1) },
+}
+
 function GetAllWinterOrnamentPrefabs()
     local decor =
     {
-		"winter_ornament_boss_bearger",
-		"winter_ornament_boss_beequeen",
-		"winter_ornament_boss_deerclops",
-		"winter_ornament_boss_dragonfly",
-		"winter_ornament_boss_moose",
-		"winter_ornament_boss_toadstool",
+        "winter_ornament_boss_antlion",
+        "winter_ornament_boss_bearger",
+        "winter_ornament_boss_beequeen",
+        "winter_ornament_boss_deerclops",
+        "winter_ornament_boss_dragonfly",
+        "winter_ornament_boss_fuelweaver",
+        "winter_ornament_boss_klaus",
+        "winter_ornament_boss_krampus",
+        "winter_ornament_boss_moose",
+        "winter_ornament_boss_noeyeblue",
+        "winter_ornament_boss_noeyered",
+        "winter_ornament_boss_toadstool",
     }
     for i = 1, NUM_BASIC_ORNAMENT do
         table.insert(decor, "winter_ornament_plain" .. tostring(i))
@@ -219,7 +235,7 @@ local function MakeOrnament(ornamentid, overridename, lightdata)
         return inst
     end
 
-    return Prefab("winter_ornament_"..tostring(ornamentid), fn, assets, prefabs)
+    return Prefab("winter_ornament_"..tostring(ornamentid), fn, assets)
 end
 
 local ornament = {}
@@ -229,17 +245,21 @@ end
 for i = 1, NUM_FANCY_ORNAMENT do
     table.insert(ornament, MakeOrnament("fancy"..i, "winter_ornament"))
 end
+for i = 1, NUM_LIGHT_ORNAMENT do
+    table.insert(ornament, MakeOrnament("light"..i, "winter_ornamentlight", LIGHT_DATA[((i - 1) % 4) + 1]))
+end
 
+table.insert(ornament, MakeOrnament("boss_antlion", "winter_ornamentboss"))
 table.insert(ornament, MakeOrnament("boss_bearger", "winter_ornamentboss"))
 table.insert(ornament, MakeOrnament("boss_beequeen", "winter_ornamentboss"))
 table.insert(ornament, MakeOrnament("boss_deerclops", "winter_ornamentboss"))
 table.insert(ornament, MakeOrnament("boss_dragonfly", "winter_ornamentboss"))
+table.insert(ornament, MakeOrnament("boss_fuelweaver", "winter_ornamentboss"))
+table.insert(ornament, MakeOrnament("boss_klaus", "winter_ornamentboss"))
+table.insert(ornament, MakeOrnament("boss_krampus", "winter_ornamentboss"))
 table.insert(ornament, MakeOrnament("boss_moose", "winter_ornamentboss"))
+table.insert(ornament, MakeOrnament("boss_noeyeblue", "winter_ornamentboss"))
+table.insert(ornament, MakeOrnament("boss_noeyered", "winter_ornamentboss"))
 table.insert(ornament, MakeOrnament("boss_toadstool", "winter_ornamentboss"))
-
-table.insert(ornament, MakeOrnament("light1", "winter_ornamentlight", {colour=Vector3(1,.1,.1)}))
-table.insert(ornament, MakeOrnament("light2", "winter_ornamentlight", {colour=Vector3(.1,1,.1)}))
-table.insert(ornament, MakeOrnament("light3", "winter_ornamentlight", {colour=Vector3(.5,.5,1)}))
-table.insert(ornament, MakeOrnament("light4", "winter_ornamentlight", {colour=Vector3(1,1,1)}))
 
 return unpack(ornament)
