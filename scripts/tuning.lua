@@ -2620,13 +2620,15 @@ function Tune(overrides)
 
         WINTERS_FEAST_TREE_DECOR_LOOT =
         {
-            DEERCLOPS        = {basic=1, special=true},
+            DEERCLOPS        = {basic=0, special=true},
             BEARGER          = {basic=1, special=true},
             DRAGONFLY        = {basic=2, special=true},
             MINOTAUR         = {basic=1, special=false},
             BEEQUEEN         = {basic=2, special=true},
             TOADSTOOL        = {basic=2, special=true},
             MOOSE            = {basic=1, special=true}, -- goose?
+            ANTLION          = {basic=1, special=true},
+            STALKER_ATRIUM   = {basic=2, special=true},
         },
 
         WINTERS_FEAST_LOOT_EXCLUSION =
@@ -2635,6 +2637,8 @@ function Tune(overrides)
             FROG = true,
             TENTACLE = true,
             KLAUS = true,
+            STALKER = true,
+            STALKER_FOREST = true,
         },
 
         FIRECRACKERS_STARTLE_RANGE = 10,

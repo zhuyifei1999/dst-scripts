@@ -12,11 +12,14 @@ local DEBUG_SHOW_MAX_WITH = false
 local FONT_SIZE = 22
 local PADDING = 10
 
-local WordPredictionWidget = Class(Widget, function(self, text_edit, max_width)
+local WordPredictionWidget = Class(Widget, function(self, text_edit, max_width, mode)
     Widget._ctor(self, "WordPredictionWidget")
     
     self.word_predictor = WordPredictor()
 	self.text_edit = text_edit
+
+	self.enter_complete = string.match(mode, "enter", 1, true) ~= nil
+	self.tab_complete = string.match(mode, "tab", 1, true) ~= nil
 	
 	self.sizey = FONT_SIZE + 4
 	self.max_width = max_width or 300
@@ -53,8 +56,10 @@ function WordPredictionWidget:OnRawKey(key, down)
 		return false  -- do not consume the key press
 
 	elseif self.word_predictor.prediction ~= nil then
-		if key == KEY_TAB or key == KEY_ENTER then
-			return true
+		if key == KEY_TAB then
+			return self.tab_complete
+		elseif key == KEY_ENTER then
+			return self.enter_complete
 		elseif key == KEY_LEFT then
 			if down and self.active_prediction_btn > 1 then
 				self.prediction_btns[self.active_prediction_btn - 1]:Select()
@@ -83,10 +88,12 @@ function WordPredictionWidget:OnControl(control, down)
 			end
 			return true
 		elseif control == CONTROL_ACCEPT then
-			if not down then
-				self.text_edit:ApplyWordPrediction(self.active_prediction_btn)
+			if self.enter_complete then
+				if not down then
+					self.text_edit:ApplyWordPrediction(self.active_prediction_btn)
+				end
+				return true
 			end
-			return true
 		end
 	end
 		
@@ -94,7 +101,7 @@ function WordPredictionWidget:OnControl(control, down)
 end
 
 function WordPredictionWidget:OnTextInput(text)
-	if self.word_predictor.prediction ~= nil and text == "\t" then
+	if self.word_predictor.prediction ~= nil and text == "\t" and self.tab_complete then
 		self.text_edit:ApplyWordPrediction(self.active_prediction_btn)
 		return true -- consume the tab key
 	end
@@ -106,7 +113,7 @@ function WordPredictionWidget:ResolvePrediction(prediction_index)
 end
 
 function WordPredictionWidget:Dismiss()
-	self.word_predictor.prediction = nil
+	self.word_predictor:Clear()
 
 	self.prediction_btns = {}
 	self.active_prediction_btn = nil

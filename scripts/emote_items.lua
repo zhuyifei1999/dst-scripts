@@ -2,6 +2,26 @@
 
 EMOTE_ITEMS =
 {
+	emote_carol =
+	{
+		rarity = "Reward",
+		cmd_name = "carol",
+		type = "emote",
+		skin_tags = { "ICE", "EMOTE", },
+		data =
+		{
+			item_type = "emote_carol",
+			requires_validation = true,
+			anim = { "emote_pre_carol", "emote_loop_carol", },
+			fx = false,
+			loop = true,
+			mounted = true,
+			sounddelay = 0.8,
+			soundlooped = true,
+			soundoverride = "carol",
+		},
+		release_group = 36,
+	},
 	emote_dance_chicken =
 	{
 		rarity = "Distinguished",

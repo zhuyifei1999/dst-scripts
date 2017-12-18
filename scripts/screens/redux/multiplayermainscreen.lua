@@ -58,6 +58,13 @@ function MultiplayerMainScreen:DoInit()
     self.fixed_root:SetHAnchor(ANCHOR_MIDDLE)
     self.fixed_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
+    if IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
+        self.snowfall = self:AddChild(TEMPLATES.old.Snowfall())
+        self.snowfall:SetVAnchor(ANCHOR_TOP)
+        self.snowfall:SetHAnchor(ANCHOR_MIDDLE)
+        self.snowfall:SetScaleMode(SCALEMODE_PROPORTIONAL)
+    end
+
     self.fg = self:AddChild(TEMPLATES.ReduxForeground())
 
     if IsAnyFestivalEventActive() then
@@ -69,16 +76,22 @@ function MultiplayerMainScreen:DoInit()
 			end))
 		end
     else
+        local anim_bg = UIAnim()
+        anim_bg:GetAnimState():SetBuild("dst_menu_feast_bg")
+        anim_bg:GetAnimState():SetBank("dst_menu_bg")
+        anim_bg:SetScale(0.7)
+        anim_bg:SetPosition(300, -10)
+        anim_bg:GetAnimState():SetDeltaTimeMultiplier(1.6)
+        anim_bg:GetAnimState():PlayAnimation("loop", true)
+        
         local anim = UIAnim()
-        anim:GetAnimState():SetBuild("dst_menu")
+        anim:GetAnimState():SetBuild("dst_menu_feast")
         anim:GetAnimState():SetBank("dst_menu")
         anim:SetScale(0.7)
         anim:SetPosition(300, -10)
-        anim.PlayOnLoop = function()
-            anim:GetAnimState():PlayAnimation("loop", true)
-        end
-        anim:PlayOnLoop()
+        anim:GetAnimState():PlayAnimation("loop", true)
 
+        self.bg_anim_bg = self.fixed_root:AddChild(anim_bg)
         self.bg_anim = self.fixed_root:AddChild(anim)
     end
 
@@ -86,7 +99,8 @@ function MultiplayerMainScreen:DoInit()
     if IsAnyFestivalEventActive() then
         self.motd:SetPosition(-240, 230)
     else
-        self.motd:SetPosition(510, 230)
+        -- onlinestatus is above motd
+        self.motd:SetPosition(510, 215)
     end
 
     self.motdbg = self.motd:AddChild(TEMPLATES.RectangleWindow(105,179,
@@ -218,10 +232,19 @@ end
 
 function MultiplayerMainScreen:OnShow()
     self._base.OnShow(self)
+    if self.snowfall ~= nil then
+        self.snowfall:EnableSnowfall(not (TheSim:IsNetbookMode() or TheFrontEnd:GetGraphicsOptions():IsSmallTexturesMode()))
+        self.snowfall:StartSnowfall()
+    end
+
+    TheSim:PauseFileExistsAsync(false)
 end
 
 function MultiplayerMainScreen:OnHide()
     self._base.OnHide(self)
+    if self.snowfall ~= nil then
+        self.snowfall:StopSnowfall()
+    end
 end
 
 function MultiplayerMainScreen:OnDestroy()
@@ -587,22 +610,22 @@ function MultiplayerMainScreen:MakeSubMenu()
         return btn
     end
 
-    local credits_button = TEMPLATES.old.IconButton("images/button_icons.xml", "credits.tex", STRINGS.UI.MAINSCREEN.CREDITS, false, true, function() self:OnCreditsButton() end, {font=NEWFONT_OUTLINE, focus_colour={1,1,1,1}})
-    local movie_button = TEMPLATES.old.IconButton("images/button_icons.xml", "movie.tex", STRINGS.UI.MAINSCREEN.MOVIE, false, true, function() self:OnMovieButton() end, {font=NEWFONT_OUTLINE, focus_colour={1,1,1,1}})
-    local forums_button = TEMPLATES.old.IconButton("images/button_icons.xml", "forums.tex", STRINGS.UI.MAINSCREEN.FORUM, false, true, function() self:Forums() end, {font=NEWFONT_OUTLINE, focus_colour={1,1,1,1}})
-    local newsletter_button = TEMPLATES.old.IconButton("images/button_icons.xml", "newsletter.tex", STRINGS.UI.MAINSCREEN.NOTIFY, false, true, function() self:EmailSignup() end, {font=NEWFONT_OUTLINE, focus_colour={1,1,1,1}})
+    local credits_button = TEMPLATES.IconButton("images/button_icons.xml", "credits.tex", STRINGS.UI.MAINSCREEN.CREDITS, false, true, function() self:OnCreditsButton() end, {font=NEWFONT_OUTLINE})
+    local movie_button = TEMPLATES.IconButton("images/button_icons.xml", "movie.tex", STRINGS.UI.MAINSCREEN.MOVIE, false, true, function() self:OnMovieButton() end, {font=NEWFONT_OUTLINE})
+    local forums_button = TEMPLATES.IconButton("images/button_icons.xml", "forums.tex", STRINGS.UI.MAINSCREEN.FORUM, false, true, function() self:Forums() end, {font=NEWFONT_OUTLINE})
+    local newsletter_button = TEMPLATES.IconButton("images/button_icons.xml", "newsletter.tex", STRINGS.UI.MAINSCREEN.NOTIFY, false, true, function() self:EmailSignup() end, {font=NEWFONT_OUTLINE})
 
     if PLATFORM == "WIN32_STEAM" or PLATFORM == "LINUX_STEAM" or PLATFORM == "OSX_STEAM" then
 
-        local more_games_button = TEMPLATES.old.IconButton("images/button_icons.xml", "more_games.tex", STRINGS.UI.MAINSCREEN.MOREGAMES, false, true, function() VisitURL("http://store.steampowered.com/search/?developer=Klei%20Entertainment") end, {font=NEWFONT_OUTLINE, focus_colour={1,1,1,1}})
+        local more_games_button = TEMPLATES.IconButton("images/button_icons.xml", "more_games.tex", STRINGS.UI.MAINSCREEN.MOREGAMES, false, true, function() VisitURL("http://store.steampowered.com/search/?developer=Klei%20Entertainment") end, {font=NEWFONT_OUTLINE})
 
         if TheFrontEnd:GetAccountManager():HasSteamTicket() then
 
-            local manage_account_button = TEMPLATES.old.IconButton("images/button_icons.xml", "profile.tex", STRINGS.UI.SERVERCREATIONSCREEN.MANAGE_ACCOUNT, false, true, function() VisitURL(TheFrontEnd:GetAccountManager():GetViewAccountURL(), true ) end, {font=NEWFONT_OUTLINE, focus_colour={1,1,1,1}})
+            local manage_account_button = TEMPLATES.IconButton("images/button_icons.xml", "profile.tex", STRINGS.UI.SERVERCREATIONSCREEN.MANAGE_ACCOUNT, false, true, function() VisitURL(TheFrontEnd:GetAccountManager():GetViewAccountURL(), true ) end, {font=NEWFONT_OUTLINE})
 
 			local online = TheNet:IsOnlineMode() and not TheFrontEnd:GetIsOfflineMode()
 			if online then
-				local redeem_button = TEMPLATES.old.IconButton("images/button_icons.xml", "redeem.tex", STRINGS.UI.MAINSCREEN.REDEEM, false, true, function() self:OnRedeemButton() end, {font=NEWFONT_OUTLINE, focus_colour={1,1,1,1}})
+				local redeem_button = TEMPLATES.IconButton("images/button_icons.xml", "redeem.tex", STRINGS.UI.MAINSCREEN.REDEEM, false, true, function() self:OnRedeemButton() end, {font=NEWFONT_OUTLINE})
 	            submenuitems =
 				{
             		{widget = redeem_button},

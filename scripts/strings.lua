@@ -3972,14 +3972,23 @@ STRINGS.UI =
         CANCEL  = "Cancel",
         BACK = "Back",
         LOGOUT = "Log Out",
+        SORT_BY = "Sort By:",
+        SORTING_TYPES = {
+            RELEVANCE = "Relevance",
+            PLAYERCOUNT = "Most Active Players",
+            PING = "Best Connection",
+            SERVER_NAME_AZ = "Server Name A-Z",
+            SERVER_NAME_ZA = "Server Name Z-A",
+        },
         PLAYERS = "Players",
         NAME = "Name",
         PING = "Ping",
         DETAILS = "Details",
-        SERVERDETAILS = "Server Details",
+        SERVERDETAILS = "Details",
         FILTERS = "Filters",
         PASSWORDREQUIRED = "Server Requires Password",
-        SEARCH = "Search:",
+        CONNECTION = "Connection:",
+        SEARCH = "Search",
         HASPASSWORD = "Password Protected:",
         HASPASSWORD_DETAIL = "Password Protected",
         GAMEMODE = "Game Mode:",
@@ -4924,7 +4933,7 @@ STRINGS.UI =
     
     PURCHASEPACKSCREEN = 
     {
-        TITLE = "Forge Clothing Sets",
+        TITLE = "Shop",
 
         FAILED_TO_LOAD = "Sorry!\nThe Klei store is closed right now.\nPlease try again later.",
         NO_PACKS_FOR_SALE = "Sorry!\nThe Klei store is closed.\nCheck back during the next event.",
@@ -4976,6 +4985,7 @@ STRINGS.UI =
         
         Lustrous        = "Lustrous",
 		EventModifier	= "Event - ",
+		Seasonal		= "Seasonal - ",
     },
     
     COLOUR =
@@ -5181,14 +5191,14 @@ STRINGS.UI =
         LONGENCOUNTERSTITLE = "Recent Encounters",
         BACK = "Back",
         OK = "OK",
-        PLAYER_NAME = "Name",
+        PLAYER_NAME = "Player",
         PLAYER_CHAR = "Face",
         SERVER_NAME = "Server",
         DECEASED = "Deceased",
-        CAUSE = "Cause of Death",
-        MODE = "World",
-        SEEN_DATE = "Date",
+        CAUSE = "Killed By",
+        MODE = "On Server",
         PLAYER_AGE = "Age",
+        DIED_AGE = "Survived",
         NET_ID = "Profile",
         CLEAR = "Clear",
         DAY = "Day",

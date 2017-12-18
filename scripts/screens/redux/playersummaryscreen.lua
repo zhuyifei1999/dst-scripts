@@ -22,6 +22,8 @@ local PlayerSummaryScreen = Class(Screen, function(self, prev_screen, user_profi
     self.prev_screen = prev_screen
     self.user_profile = user_profile
 
+    TheSim:PauseFileExistsAsync(true)
+
 	self:DoInit()
 
     self:_DoFocusHookups()
@@ -411,9 +413,15 @@ function PlayerSummaryScreen:_RefreshTitles()
     if IsAnyItemNew(self.user_profile) then
         skinsStr = string.format("%s (%s)", skinsStr, STRINGS.UI.COLLECTIONSCREEN.NEW)
     end
-
+    
+    local shopStr = STRINGS.UI.PLAYERSUMMARYSCREEN.PURCHASE
+    if IsShopNew(self.user_profile) then
+        shopStr = string.format("%s (%s)", shopStr, STRINGS.UI.COLLECTIONSCREEN.NEW)
+    end
+    
     self.menu:EditItem(5,skinsStr)
     self.menu:EditItem(4,mysteryboxStr)
+    self.menu:EditItem(1,shopStr)
 end
 
 function PlayerSummaryScreen:_RefreshClientData()
