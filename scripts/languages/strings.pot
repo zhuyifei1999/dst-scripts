@@ -98933,6 +98933,11 @@ msgctxt "STRINGS.SKIN_QUOTES.willow_gladiator"
 msgid "\"Play with fire and you'll get burned.\""
 msgstr ""
 
+#. STRINGS.SKIN_QUOTES.willow_ice
+msgctxt "STRINGS.SKIN_QUOTES.willow_ice"
+msgid "\"Why couldn't it be warm fire?\""
+msgstr ""
+
 #. STRINGS.SKIN_QUOTES.willow_rose
 msgctxt "STRINGS.SKIN_QUOTES.willow_rose"
 msgid "\"A rose to symbolize the flames of passion.\""
@@ -98965,7 +98970,7 @@ msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wilson_ice
 msgctxt "STRINGS.SKIN_QUOTES.wilson_ice"
-msgid "\"Why couldn't it be warm fire?\""
+msgid "\"Brrrrr!\""
 msgstr ""
 
 #. STRINGS.SKIN_QUOTES.wilson_pigguard
