@@ -7617,10 +7617,35 @@ local states =
             if data.mountsound ~= nil then
                 local mount = inst.components.rider:GetMount()
                 if mount ~= nil and mount.sounds ~= nil and mount.sounds[data.mountsound] ~= nil then
-                    if (data.mountsounddelay or 0) <= 0 then
+                    if (data.mountsoundperiod or 0) <= 0 then
+                        if (data.mountsounddelay or 0) <= 0 then
+                            inst.SoundEmitter:PlaySound(mount.sounds[data.mountsound])
+                        else
+                            inst.sg.statemem.emotemountsoundtask = inst:DoTaskInTime(data.mountsounddelay, DoForcedEmoteSound, mount.sounds[data.mountsound])
+                        end
+                    elseif (data.mountsounddelay or 0) <= 0 then
+                        inst.sg.statemem.emotemountsoundtask = inst:DoPeriodicTask(data.mountsoundperiod, DoForcedEmoteSound, nil, mount.sounds[data.mountsound])
                         inst.SoundEmitter:PlaySound(mount.sounds[data.mountsound])
                     else
-                        inst.sg.statemem.emotemountsoundtask = inst:DoTaskInTime(data.mountsounddelay, DoForcedEmoteSound, mount.sounds[data.mountsound])
+                        inst.sg.statemem.emotemountsoundtask = inst:DoPeriodicTask(data.mountsoundperiod, DoForcedEmoteSound, data.mountsounddelay, mount.sounds[data.mountsound])
+                    end
+                end
+            end
+
+            if data.mountsound2 ~= nil then
+                local mount = inst.components.rider:GetMount()
+                if mount ~= nil and mount.sounds ~= nil and mount.sounds[data.mountsound2] ~= nil then
+                    if (data.mountsound2period or 0) <= 0 then
+                        if (data.mountsound2delay or 0) <= 0 then
+                            inst.SoundEmitter:PlaySound(mount.sounds[data.mountsound2])
+                        else
+                            inst.sg.statemem.emotemountsound2task = inst:DoTaskInTime(data.mountsound2delay, DoForcedEmoteSound, mount.sounds[data.mountsound2])
+                        end
+                    elseif (data.mountsound2delay or 0) <= 0 then
+                        inst.sg.statemem.emotemountsound2task = inst:DoPeriodicTask(data.mountsound2period, DoForcedEmoteSound, nil, mount.sounds[data.mountsound2])
+                        inst.SoundEmitter:PlaySound(mount.sounds[data.mountsound2])
+                    else
+                        inst.sg.statemem.emotemountsound2task = inst:DoPeriodicTask(data.mountsound2period, DoForcedEmoteSound, data.mountsound2delay, mount.sounds[data.mountsound2])
                     end
                 end
             end
@@ -7665,6 +7690,10 @@ local states =
             if inst.sg.statemem.emotemountsoundtask ~= nil then
                 inst.sg.statemem.emotemountsoundtask:Cancel()
                 inst.sg.statemem.emotemountsoundtask = nil
+            end
+            if inst.sg.statemem.emotemountsound2task ~= nil then
+                inst.sg.statemem.emotemountsound2task:Cancel()
+                inst.sg.statemem.emotemountsound2task = nil
             end
             if inst.SoundEmitter:PlayingSound("emotesoundloop") then
                 inst.SoundEmitter:KillSound("emotesoundloop")

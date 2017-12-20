@@ -70,7 +70,7 @@ local function updatelight(inst, data)
     if data ~= nil and data.name == "blink" then
         inst.ornamentlighton = not inst.ornamentlighton
         local owner = inst.components.inventoryitem:GetGrandOwner()
-        if owner then
+        if owner ~= nil then
             owner:PushEvent("updatelight", inst)
         else
             inst.Light:Enable(inst.ornamentlighton)
@@ -84,7 +84,7 @@ end
 
 local function ondropped(inst)
     inst.ornamentlighton = false
-    updatelight(inst, {name="blink"})
+    updatelight(inst, { name = "blink" })
     inst.components.fueled:StartConsuming()
 end
 
@@ -92,7 +92,7 @@ local function onpickup(inst, by)
     if by ~= nil and by:HasTag("winter_tree") then
         if not inst.components.timer:TimerExists("blink") then
             inst.ornamentlighton = false
-            updatelight(inst, {name="blink"})
+            updatelight(inst, { name = "blink" })
         end
         inst.components.fueled:StartConsuming()
     else
@@ -110,8 +110,8 @@ end
 local function onentitywake(inst)
     if inst.components.timer:IsPaused("blink") then
         inst.components.timer:ResumeTimer("blink")
-    else
-        updatelight(inst, {name="blink"})
+    elseif inst.components.fueled.consuming then
+        updatelight(inst, { name = "blink" })
     end
 end
 
@@ -213,6 +213,7 @@ local function MakeOrnament(ornamentid, overridename, lightdata)
             inst:AddComponent("fuel")
             inst.components.fuel.fuelvalue = TUNING.MED_LARGE_FUEL
             inst.components.fuel.fueltype = FUELTYPE.CAVE
+
 
             inst.components.inventoryitem:SetOnDroppedFn(ondropped)
             inst.components.inventoryitem:SetOnPutInInventoryFn(onpickup)
