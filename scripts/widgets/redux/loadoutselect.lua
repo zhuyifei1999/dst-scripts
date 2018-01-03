@@ -56,11 +56,8 @@ local LoadoutSelect = Class(Widget, function(self, profile, default_character)
 		if not TheInput:ControllerAttached() then
 			self.randomskinsbutton = self.loadout_root:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "random.tex", STRINGS.UI.LOBBYSCREEN.RANDOMCHAR, false, false, function()
 					self.dressup:AllSpinnersToEnd()
-				end,
-			{
-                offset_x = 2, -- for some reason, this looks more centred
-				offset_y = -45,
-			}))
+				end
+			))
 			self.randomskinsbutton:SetPosition(540, 290)
 		end
 	end

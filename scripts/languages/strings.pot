@@ -94645,7 +94645,7 @@ msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.profileflair_ornaments_3
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_ornaments_3"
-msgid "Set your profile icon to a piercing Deerclops Winter's Feast ornament."
+msgid "Set your profile icon to a piercing Fuelweaver Winter's Feast ornament."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.profileflair_ornaments_4
@@ -97845,7 +97845,7 @@ msgstr ""
 
 #. STRINGS.SKIN_NAMES.profileflair_ornaments_3
 msgctxt "STRINGS.SKIN_NAMES.profileflair_ornaments_3"
-msgid "Magnificent Feastclops Ornament"
+msgid "Magnificent Fuelweaver Ornament"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.profileflair_ornaments_4

@@ -196,6 +196,8 @@ end
 function TEMPLATES.StandardMenu(menuitems, offset, horizontal, style, wrap)
     local menu = Menu(menuitems, offset, horizontal, style, wrap)
     menu:SetPosition(menuX, menuY)
+    -- Menus should start from the top as far as users are concerned.
+    menu.reverse = true
     return menu
 end
 
@@ -461,7 +463,14 @@ function TEMPLATES.IconButton(iconAtlas, iconTexture, labelText, sideLabel, alwa
 
     else
         -- Only show hovertext.
-        btn:SetHoverText(labelText, { font = textinfo.font or NEWFONT_OUTLINE, size = textinfo.size or 22, offset_x = textinfo.offset_x or -4, offset_y = textinfo.offset_y or 45, colour = textinfo.colour or {1,1,1,1}, bg = textinfo.bg })
+        btn:SetHoverText(labelText, {
+                font = textinfo.font or NEWFONT_OUTLINE,
+                size = textinfo.size or 22,
+                offset_x = textinfo.offset_x or 2,
+                offset_y = textinfo.offset_y or -45,
+                colour = textinfo.colour or UICOLOURS.WHITE,
+                bg = textinfo.bg
+            })
     end
 
     return btn
@@ -1202,6 +1211,12 @@ function TEMPLATES.ScrollingGrid(items, opts)
         -- Give grid focus so it can pass on to contained widgets. It sets up
         -- focus movement directions.
         parent.focus_forward = parent.grid
+
+        -- Higher up widgets are further to front so their hover text can
+        -- appear over the widget beneath them.
+        for i,w in ipairs(widgets) do
+            w:MoveToBack()
+        end
 
         -- end_offset helps ensure last item can scroll into view. It's a
         -- percent of a row height. 0.75 seems to prevent the next (empty) row

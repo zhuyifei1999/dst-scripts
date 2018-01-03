@@ -1170,12 +1170,6 @@ function ServerListingScreen:MakeServerListWidgets()
             }
         ))
 
-    -- Higher up widgets are further to front so their hover text can appear
-    -- over the widget beneath them.
-    for i,w in ipairs(self.servers_scroll_list:GetListWidgets()) do
-        w:MoveToBack()
-    end
-
     self.grid_root.server_list_rows:MoveToFront()
 end
 
@@ -1825,7 +1819,7 @@ local function MakeImgButton(parent, xPos, yPos, text, onclick, style, image)
     if not style or style == "large" then
         btn = parent:AddChild(TEMPLATES.StandardButton(onclick, text))
     elseif style == "icon" then
-        btn = parent:AddChild(TEMPLATES.IconButton("images/button_icons.xml", image..".tex", text, false, false, onclick))
+        btn = parent:AddChild(TEMPLATES.IconButton("images/button_icons.xml", image..".tex", text, false, false, onclick, {offset_y = 45}))
     elseif style == "icontext" then
         btn = parent:AddChild(TEMPLATES.StandardButton(onclick, text, {200, 60}, {"images/button_icons.xml", image..".tex"}))
     end
@@ -2031,7 +2025,7 @@ function ServerListingScreen:MakeDetailPanel(right_col, details_height)
     -- self.game_mode_description.text:SetRegionSize( 200, 50 )
     self.game_mode_description.text:SetString("???")
     self.game_mode_description.text:SetColour(UICOLOURS.GOLD_UNIMPORTANT)
-    self.game_mode_description.info_button = self.game_mode_description:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "info.tex", "", false, false, function()  
+    self.game_mode_description.info_button = self.game_mode_description:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "info.tex", nil, false, false, function()  
             local mode_title = GetGameModeString( self.selected_server.mode )
             if mode_title == "" then
                 mode_title = STRINGS.UI.GAMEMODES.UNKNOWN

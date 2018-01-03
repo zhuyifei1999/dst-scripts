@@ -67,25 +67,26 @@ local function SpawnLaser(inst)
     local offset = 2 - step --should still hit players right up against us
     local ground = TheWorld.Map
     local targets, skiptoss = {}, {}
-    local i = 0
+    local i = -1
     local noground = false
     local fx, dist, delay, x1, z1
     while i < numsteps do
         i = i + 1
         dist = i * step + offset
-        delay = i - 1--math.floor((i - 1) * .5)
+        delay = math.max(0, i - 1)
         x1 = x + dist * math.sin(angle)
         z1 = z + dist * math.cos(angle)
         if not ground:IsPassableAtPoint(x1, 0, z1) then
-            if i <= 1 then
+            if i <= 0 then
                 return
             end
             noground = true
         end
-        fx = SpawnPrefab("deerclops_laser")
+        fx = SpawnPrefab(i > 0 and "deerclops_laser" or "deerclops_laserempty")
+        fx.caster = inst
         fx.Transform:SetPosition(x1, 0, z1)
         fx:Trigger(delay * FRAMES, targets, skiptoss)
-        if i == 1 then
+        if i == 0 then
             ShakeAllCameras(CAMERASHAKE.FULL, .7, .02, .6, fx, 30)
         end
         if noground then

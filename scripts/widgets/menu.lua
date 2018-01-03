@@ -38,7 +38,7 @@ function Menu:RestoreFocusTo(last_focus_widget)
     end
 
     if not found then
-	   self:SetFocus(#self.items)
+	   self:SetFocus()
     end
 end
 

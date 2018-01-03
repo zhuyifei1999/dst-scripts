@@ -34,19 +34,23 @@ end
 local function DoDamage(inst, targets, skiptoss)
     inst.task = nil
 
-    inst.AnimState:PlayAnimation("hit_"..tostring(math.random(5)))
-    inst:Show()
-    inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() + 2 * FRAMES, inst.Remove)
-
-    inst.Light:Enable(true)
-    inst:DoTaskInTime(4 * FRAMES, SetLightRadius, .5)
-    inst:DoTaskInTime(5 * FRAMES, DisableLight)
-
     local x, y, z = inst.Transform:GetWorldPosition()
-    SpawnPrefab("deerclops_laserscorch").Transform:SetPosition(x, 0, z)
-    local fx = SpawnPrefab("deerclops_lasertrail")
-    fx.Transform:SetPosition(x, 0, z)
-    fx:FastForward(GetRandomMinMax(.3, .7))
+    if inst.AnimState ~= nil then
+        inst.AnimState:PlayAnimation("hit_"..tostring(math.random(5)))
+        inst:Show()
+        inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() + 2 * FRAMES, inst.Remove)
+
+        inst.Light:Enable(true)
+        inst:DoTaskInTime(4 * FRAMES, SetLightRadius, .5)
+        inst:DoTaskInTime(5 * FRAMES, DisableLight)
+
+        SpawnPrefab("deerclops_laserscorch").Transform:SetPosition(x, 0, z)
+        local fx = SpawnPrefab("deerclops_lasertrail")
+        fx.Transform:SetPosition(x, 0, z)
+        fx:FastForward(GetRandomMinMax(.3, .7))
+    else
+        inst:DoTaskInTime(2 * FRAMES, inst.Remove)
+    end
 
     inst.components.combat.ignorehitrange = true
     for i, v in ipairs(TheSim:FindEntities(x, 0, z, RADIUS + 3, nil, { "playerghost", "INLIMBO", --[["NOCLICK",]] "DECOR", "INLIMBO" }, { "_combat", "pickable", "campfire", "CHOP_workable", "HAMMER_workable", "MINE_workable", "DIG_workable" })) do
@@ -96,7 +100,13 @@ local function DoDamage(inst, targets, skiptoss)
                     end
                 elseif inst.components.combat:CanTarget(v) then
                     targets[v] = true
-                    inst.components.combat:DoAttack(v)
+                    if inst.caster ~= nil and inst.caster:IsValid() then
+                        inst.caster.components.combat.ignorehitrange = true
+                        inst.caster.components.combat:DoAttack(v)
+                        inst.caster.components.combat.ignorehitrange = false
+                    else
+                        inst.components.combat:DoAttack(v)
+                    end
                     if v:IsValid() then
                         SpawnPrefab("deerclops_laserhit"):SetTarget(v)
                         if not v.components.health:IsDead() then
@@ -155,24 +165,26 @@ local function KeepTargetFn()
     return false
 end
 
-local function fn()
+local function common_fn(isempty)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
-    inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
-    inst.AnimState:SetBank("deerclops_laser_hits_sparks")
-    inst.AnimState:SetBuild("deerclops_laser_hit_sparks_fx")
-    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
-    inst.AnimState:SetLightOverride(1)
+    if not isempty then
+        inst.entity:AddAnimState()
+        inst.AnimState:SetBank("deerclops_laser_hits_sparks")
+        inst.AnimState:SetBuild("deerclops_laser_hit_sparks_fx")
+        inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+        inst.AnimState:SetLightOverride(1)
 
-    inst.entity:AddLight()
-    inst.Light:SetIntensity(.6)
-    inst.Light:SetRadius(1)
-    inst.Light:SetFalloff(.7)
-    inst.Light:SetColour(1, .2, .3)
-    inst.Light:Enable(false)
+        inst.entity:AddLight()
+        inst.Light:SetIntensity(.6)
+        inst.Light:SetRadius(1)
+        inst.Light:SetFalloff(.7)
+        inst.Light:SetColour(1, .2, .3)
+        inst.Light:Enable(false)
+    end
 
     inst:Hide()
 
@@ -196,6 +208,14 @@ local function fn()
     inst.persists = false
 
     return inst
+end
+
+local function fn()
+    return common_fn(false)
+end
+
+local function emptyfn()
+    return common_fn(true)
 end
 
 local SCORCH_RED_FRAMES = 20
@@ -382,6 +402,7 @@ local function hitfn()
 end
 
 return Prefab("deerclops_laser", fn, assets, prefabs),
+    Prefab("deerclops_laserempty", emptyfn, assets, prefabs),
     Prefab("deerclops_laserscorch", scorchfn, assets_scorch),
     Prefab("deerclops_lasertrail", trailfn, assets_trail),
     Prefab("deerclops_laserhit", hitfn)
