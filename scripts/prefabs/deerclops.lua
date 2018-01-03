@@ -19,6 +19,7 @@ local prefabs =
     "icespike_fx_3",
     "icespike_fx_4",
     "deerclops_laser",
+    "deerclops_laserempty",
     "winter_ornament_light1",
 }
 

@@ -429,7 +429,7 @@ function ModIndex:InitializeModInfo(modname)
 			print("Error loading mod: "..ModInfoname(modname).."!\n "..old.."\n")
 			env.failed = true
 		else
-			local checkinfo = { "name", "description", "author", "version", "forumthread", "api_version", "dont_starve_compatible", "reign_of_giants_compatible", "configuration_options", "dst_compatible" }
+			local checkinfo = { "name", "description", "author", "version", "api_version", "dont_starve_compatible", "reign_of_giants_compatible", "configuration_options", "dst_compatible" }
 			local missing = {}
 
 			for i,v in ipairs(checkinfo) do
