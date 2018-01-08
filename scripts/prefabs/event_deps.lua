@@ -46,6 +46,8 @@ local SPECIAL_EVENT_DEPS =
         {
             assets =
             {
+				Asset("ANIM", "anim/dst_menu_feast.zip"),
+				Asset("ANIM", "anim/dst_menu_feast_bg.zip"),
                 Asset("PKGREF", "sound/music_frontend_winters_feast.fsb"),
             },
         },
@@ -73,6 +75,18 @@ local SPECIAL_EVENT_DEPS =
             },
         },
     },
+    
+    
+    [SPECIAL_EVENTS.NONE] =
+    {
+        frontend =
+        {
+            assets =
+            {
+				Asset("ANIM", "anim/dst_menu.zip"),
+            },
+        },
+    },
 }
 
 --------------------------------------------------------------------------
@@ -84,6 +98,10 @@ local FESTIVAL_EVENT_DEPS =
         {
             assets =
             {
+				Asset("ANIM", "anim/main_menu1.zip"),
+				Asset("ATLAS", "images/bg_redux_labg.xml"),
+				Asset("IMAGE", "images/bg_redux_labg.tex"),
+    
                 Asset("PKGREF", "sound/lava_arena.fsb"),
             },
         },

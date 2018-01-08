@@ -210,7 +210,7 @@ function ServerListingScreen:_SetTab(tab)
         self.view_online = false
         self:SearchForServers()
         self.server_intention.button:Select()
-        self.server_intention.button:SetText("")
+        self.server_intention.button:SetText(STRINGS.UI.INTENTION.ANY)
     elseif tab == "online" then
         self.view_online = true
         self:SearchForServers()
@@ -1505,7 +1505,7 @@ function ServerListingScreen:DoFiltering(doneSearching, keepScrollFocusPos)
     if self.view_online and self.server_intention.data ~= nil then
         if #self.queryTokens > 0 then
             self.server_intention.button:Select()
-            self.server_intention.button:SetText("")
+            self.server_intention.button:SetText(STRINGS.UI.INTENTION.ANY)
             self.title:SetTruncatedString(STRINGS.UI.SERVERLISTINGSCREEN.SEARCH..": "..self.searchbox.textbox:GetString(), 350, 25, true)
         else
             self.server_intention.button:Unselect()
