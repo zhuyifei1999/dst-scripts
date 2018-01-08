@@ -67,37 +67,47 @@ function MultiplayerMainScreen:DoInit()
 
     self.fg = self:AddChild(TEMPLATES.ReduxForeground())
 
-    if IsAnyFestivalEventActive() then
+    if IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then
         self.bg = self.fixed_root:AddChild(TEMPLATES.BoarriorBackground())
         self.bg_anim = self.fixed_root:AddChild(TEMPLATES.BoarriorAnim())
+	elseif IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
+		local anim_bg = UIAnim()
+		anim_bg:GetAnimState():SetBuild("dst_menu_feast_bg")
+		anim_bg:GetAnimState():SetBank("dst_menu_bg")
+		anim_bg:SetScale(0.7)
+		anim_bg:SetPosition(300, -10)
+		anim_bg:GetAnimState():SetDeltaTimeMultiplier(1.6)
+		anim_bg:GetAnimState():PlayAnimation("loop", true)
+        
+		local anim = UIAnim()
+		anim:GetAnimState():SetBuild("dst_menu_feast")
+		anim:GetAnimState():SetBank("dst_menu")
+		anim:SetScale(0.7)
+		anim:SetPosition(300, -10)
+		anim:GetAnimState():PlayAnimation("loop", true)
+
+		self.bg_anim_bg = self.fixed_root:AddChild(anim_bg)
+		self.bg_anim = self.fixed_root:AddChild(anim)
+	else
+		local anim = UIAnim()
+		anim:GetAnimState():SetBuild("dst_menu")
+		anim:GetAnimState():SetBank("dst_menu")
+		anim:SetScale(0.7)
+		anim:SetPosition(300, -10)
+		anim:GetAnimState():PlayAnimation("loop", true)
+
+		self.bg_anim = self.fixed_root:AddChild(anim)
+    end
+    
+    self.motd = self.fixed_root:AddChild(Widget("motd"))
+    if IsAnyFestivalEventActive() then
+        self.motd:SetPosition(-240, 230)
+        
         if not TheFrontEnd:GetIsOfflineMode() then
 			self.userprogress = self.fixed_root:AddChild(TEMPLATES.UserProgress(function()
 				self:OnPlayerSummaryButton()
 			end))
 		end
-    else
-        local anim_bg = UIAnim()
-        anim_bg:GetAnimState():SetBuild("dst_menu_feast_bg")
-        anim_bg:GetAnimState():SetBank("dst_menu_bg")
-        anim_bg:SetScale(0.7)
-        anim_bg:SetPosition(300, -10)
-        anim_bg:GetAnimState():SetDeltaTimeMultiplier(1.6)
-        anim_bg:GetAnimState():PlayAnimation("loop", true)
-        
-        local anim = UIAnim()
-        anim:GetAnimState():SetBuild("dst_menu_feast")
-        anim:GetAnimState():SetBank("dst_menu")
-        anim:SetScale(0.7)
-        anim:SetPosition(300, -10)
-        anim:GetAnimState():PlayAnimation("loop", true)
-
-        self.bg_anim_bg = self.fixed_root:AddChild(anim_bg)
-        self.bg_anim = self.fixed_root:AddChild(anim)
-    end
-
-    self.motd = self.fixed_root:AddChild(Widget("motd"))
-    if IsAnyFestivalEventActive() then
-        self.motd:SetPosition(-240, 230)
     else
         -- onlinestatus is above motd
         self.motd:SetPosition(510, 215)

@@ -617,7 +617,7 @@ function TEMPLATES.LabelSpinner(labeltext, spinnerdata, width_label, width_spinn
     width_label = width_label or 220
     width_spinner = width_spinner or 150
     height = height or 40
-    spacing = spacing or -50 -- why negative?
+    spacing = spacing or 5
     font = font or CHATFONT
     font_size = font_size or 25
 

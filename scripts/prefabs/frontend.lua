@@ -27,17 +27,6 @@ local assets =
 
     Asset("ANIM", "anim/build_status.zip"),
 
-    -- normal menu background
-    --Asset("ANIM", "anim/dst_menu.zip"),
-    Asset("ANIM", "anim/dst_menu_feast.zip"),
-    Asset("ANIM", "anim/dst_menu_feast_bg.zip"),
-
-    -- lavaarena festival event
-    Asset("ANIM", "anim/main_menu1.zip"),
-    Asset("ATLAS", "images/bg_redux_labg.xml"),
-    Asset("IMAGE", "images/bg_redux_labg.tex"),
-    Asset("ATLAS", "images/fepanels_redux_event_goals_panel.xml"),
-    Asset("IMAGE", "images/fepanels_redux_event_goals_panel.tex"),
     Asset("ATLAS", "images/fepanels_redux_shop_panel.xml"),
     Asset("IMAGE", "images/fepanels_redux_shop_panel.tex"),
     Asset("ATLAS", "images/fepanels_redux_shop_panel_wide.xml"),
