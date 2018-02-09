@@ -11,6 +11,7 @@ local ImageButton = require "widgets/imagebutton"
 local SetPopupDialog = require "screens/redux/setpopupdialog"
 local Text = require "widgets/text"
 local Widget = require "widgets/widget"
+local PopupDialogScreen = require "screens/redux/popupdialog"
 
 local TEMPLATES = require "widgets/redux/templates"
 
@@ -307,7 +308,7 @@ end
 function ItemExplorer:_ApplyDataToDescription(item_data)
     if item_data and item_data.item_key then
         local item_key = item_data.item_key
-        -- TODO(dbriscoe): Should these use SetTruncatedString? SkinsScreen used:
+        -- Could use SetTruncatedString. SkinsScreen used:
         --~     self.details_panel.name:SetTruncatedString(nameStr, 220, 50, true)
         --~     self.details_panel.description:SetMultilineTruncatedString(GetSkinDescription(item_type), 7, 180, 60, true)
         self.focus_label:SetString(GetSkinName(item_key))
@@ -419,7 +420,23 @@ end
 
 function ItemExplorer:_LaunchCommerce()
     local item_key = self.last_interaction_target.item_key
-    local is_buying = not self.last_interaction_target.is_owned
+	if WillUnravelBreakEnsemble( item_key ) then
+        local _, reward_item = IsItemInCollection(item_key)
+        local body = subfmt(STRINGS.UI.BARTERSCREEN.UNRAVEL_WARNING_BODY, {ensemble_name=STRINGS.SET_NAMES[reward_item], reward_name=GetSkinName(reward_item)})
+        
+		TheFrontEnd:PushScreen(PopupDialogScreen(
+			STRINGS.UI.BARTERSCREEN.UNRAVEL_WARNING_TITLE,
+			body,
+			{{ text = STRINGS.UI.BARTERSCREEN.OK, cb = function() TheFrontEnd:PopScreen() self:_DoCommerce(item_key) end },
+			 { text = STRINGS.UI.BARTERSCREEN.CANCEL, cb = function() TheFrontEnd:PopScreen() end }}))
+		return
+	else
+		self:_DoCommerce(item_key)
+	end
+end
+
+function ItemExplorer:_DoCommerce(item_key)
+	local is_buying = not self.last_interaction_target.is_owned
     local barter_screen = BarterScreen(self.scroll_list.context.user_profile, self, item_key, is_buying, function()
         -- We completed a barter and now our screens contain old inventory data.
 

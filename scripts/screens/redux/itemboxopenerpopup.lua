@@ -47,13 +47,14 @@ OUTRO
 local PP_ON_TINT = {r=.6,g=.6,b=.6,a=1}
 local PP_OFF_TINT = {r=1,g=1,b=1,a=0}
 
-local ItemBoxOpenerPopup = Class(Screen, function(self, parent_screen, options, open_box_fn)
+local ItemBoxOpenerPopup = Class(Screen, function(self, parent_screen, options, open_box_fn, completed_cb)
     Screen._ctor(self, "ItemBoxOpenerPopup")
 
     self.parent_screen = parent_screen
     self.allow_cancel = options.allow_cancel
     self.use_bigportraits = options.use_bigportraits
     self.open_box_fn = open_box_fn
+	self.completed_cb = completed_cb
 
     self.center_root = self:AddChild(TEMPLATES.ScreenRoot())
     self.fg = self:AddChild(TEMPLATES.ReduxForeground())
@@ -93,15 +94,15 @@ local ItemBoxOpenerPopup = Class(Screen, function(self, parent_screen, options, 
     self.bundle_bg = self.bundle_root:AddChild(UIAnim())
     self.bundle_bg:SetScale(.7)
     self.bundle_bg:SetPosition(0, 83)
-    self.bundle_bg:GetAnimState():SetBuild("skinevent_popup_spiral")
-    self.bundle_bg:GetAnimState():SetBank("skinevent_popup_spiral")
+    self.bundle_bg:GetAnimState():SetBuild("box_shared_spiral")
+    self.bundle_bg:GetAnimState():SetBank("box_shared_spiral")
     --
     self.bundle = self.bundle_root:AddChild(UIAnim())
     self.bundle:SetScale(.7)
     self.bundle:SetPosition(0, 83)
-    self.bundle:GetAnimState():SetBuild("skinevent_popup")
-    self.bundle:GetAnimState():SetBank("skinevent_popup")
-    if options.box_build ~= nil and options.box_build ~= "skinevent_popup" then
+    self.bundle:GetAnimState():SetBuild("box_shared")
+    self.bundle:GetAnimState():SetBank("box_shared")
+    if options.box_build ~= nil and options.box_build ~= "box_shared" then
         self.bundle:GetAnimState():AddOverrideBuild(options.box_build)
     end
 
@@ -329,6 +330,9 @@ function ItemBoxOpenerPopup:_Close()
 
     self.bg.bgplate.image:TintTo(PP_ON_TINT, PP_OFF_TINT, TRANSITION_DURATION, function()
         TheFrontEnd:PopScreen(self)
+		if self.completed_cb ~= nil then
+			self.completed_cb()
+		end
     end)
 
     TheFrontEnd:GetSound():KillSound("mysteryboxactive")

@@ -14,7 +14,7 @@ local PopupDialogScreen = require "screens/redux/popupdialog"
 local EmailSignupScreen = require "screens/emailsignupscreen"
 local MultiplayerMainScreen = require "screens/redux/multiplayermainscreen"
 
-local NoAuthenticationPopupDialogScreen = require "screens/noauthenticationpopupdialogscreen"
+local NoAuthenticationPopupDialogScreen = require "screens/redux/noauthenticationpopupdialogscreen"
 local NetworkLoginPopup = require "screens/redux/networkloginpopup"
 
 local OnlineStatus = require "widgets/onlinestatus"

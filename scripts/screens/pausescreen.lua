@@ -80,11 +80,25 @@ local PauseScreen = Class(Screen, function(self)
         end)
     end })
     table.insert(buttons, {text=STRINGS.UI.PAUSEMENU.DISCONNECT, cb=function() self:doconfirmquit()	end})
-    table.insert(buttons, {text=STRINGS.UI.PAUSEMENU.ISSUE, cb = function() VisitURL("http://forums.kleientertainment.com/klei-bug-tracker/dont-starve-together/") end })
+    if PLATFORM == "WIN32_RAIL" then
+		if TheSim:RAILGetPlatform() == "TGP" then
+		    table.insert(buttons, {text=STRINGS.UI.PAUSEMENU.ISSUE, cb = function() VisitURL("http://plat.tgp.qq.com/forum/index.html#!/2000004/detail/115888") end })
+		else
+		    table.insert(buttons, {text=STRINGS.UI.PAUSEMENU.ISSUE, cb = function() VisitURL("http://qqgame.gamebbs.qq.com/forum.php?mod=forumdisplay&fid=31043") end })
+		end
+	else
+		table.insert(buttons, {text=STRINGS.UI.PAUSEMENU.ISSUE, cb = function() VisitURL("http://forums.kleientertainment.com/klei-bug-tracker/dont-starve-together/") end })
+	end
 
     self.menu = self.proot:AddChild(Menu(buttons, -button_h, false))
     self.menu:SetPosition(0, 35, 0)
     for i,v in pairs(self.menu.items) do
+		if PLATFORM == "WIN32_RAIL" then
+			if v:GetText() == STRINGS.UI.PAUSEMENU.ISSUE then
+				v:Select()
+				v:SetHoverText(STRINGS.UI.PAUSEMENU.NOT_YET_OPEN)
+			end
+		end
         v:SetScale(.7)
     end
 

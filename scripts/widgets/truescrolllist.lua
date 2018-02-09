@@ -285,6 +285,17 @@ function TrueScrollList:Scroll(scroll_step)
 	self.target_scroll_pos = self.target_scroll_pos + scroll_step
 end
 
+-- Snaps scroll to put the item with input index at the top of the
+-- view (if possible).
+-- If self.end_offset < 1, the last set of items will have a partially-visible
+-- item above the input index. (Search allow_bottom_empty_row.)
+function TrueScrollList:ScrollToDataIndex(index)
+	local target = index
+    self.current_scroll_pos = target
+    self.target_scroll_pos = target
+    self:RefreshView()
+end
+
 -- Scrolls so the input widget is at the top of the list (if possible).
 -- Maintains the current amount of offset (so if the top widget is half
 -- visible, it will remain half visible).
@@ -344,13 +355,8 @@ function TrueScrollList:RefreshView()
 
 	-- call update_fn for each
 	for i = 1,self.items_per_view do 
-		if self.items[start_index + i] then
-			self.update_fn(self.context, self.widgets_to_update[i], self.items[start_index + i], start_index + i )
-			self.widgets_to_update[i]:Show()
-		else
-			self.update_fn(self.context, self.widgets_to_update[i])
-			self.widgets_to_update[i]:Show()
-		end
+        self.update_fn(self.context, self.widgets_to_update[i], self.items[start_index + i], start_index + i )
+        self.widgets_to_update[i]:Show()
 	end
 	
 	--position the scroll bar marker

@@ -266,12 +266,10 @@ local OptionsScreen = Class(Screen, function(self, user_profile, prev_screen)
             settings = self.panel_root:AddChild(self:_BuildSettings()),
             controls = self.panel_root:AddChild(self:_BuildControls()),
         })
-    local old_OnMenuButtonSelected = self.subscreener.OnMenuButtonSelected
-    self.subscreener.OnMenuButtonSelected = function(this, selection)
+    self.subscreener:SetPostMenuSelectionAction(function(selection)
         self.selected_tab = selection
-        old_OnMenuButtonSelected(this, selection)
         self:UpdateMenu()
-    end
+    end)
 
 	self:InitializeSpinners(true)
 
@@ -837,13 +835,22 @@ function OptionsScreen:_BuildSettings()
     local narrow_field_nudge = -50
     local space_between = 5
 	
+    local function AddListItemBackground(w)
+        local total_width = label_width + spinner_width + space_between
+        w.bg = w:AddChild(TEMPLATES.ListItemBackground(total_width + 15, spinner_height + 5))
+        w.bg:SetPosition(-40,0)
+        w.bg:MoveToBack()
+    end
+
     local function CreateTextSpinner(labeltext, spinnerdata)
         local w = TEMPLATES.LabelSpinner(labeltext, spinnerdata, label_width, spinner_width, spinner_height, space_between, nil, nil, narrow_field_nudge)
+        AddListItemBackground(w)
         return w.spinner
     end
 
     local function CreateNumericSpinner(labeltext, min, max)
         local w = TEMPLATES.LabelNumericSpinner(labeltext, min, max, label_width, spinner_width, spinner_height, space_between, nil, nil, narrow_field_nudge)
+        AddListItemBackground(w)
         return w.spinner
     end
 
@@ -1104,6 +1111,8 @@ function OptionsScreen:_BuildControls()
         if control and control[device_type] then
 
             local group = Widget("control"..index)
+            group.bg = group:AddChild(TEMPLATES.ListItemBackground(700, button_height))
+            group.bg:SetPosition(-60,0)
             group:SetScale(1,1,0.75)
 
             group.device_type = device_type
@@ -1120,7 +1129,7 @@ function OptionsScreen:_BuildControls()
             group.label:SetColour(UICOLOURS.GOLD_UNIMPORTANT)
             group.label:SetRegionSize(controls_ui.action_label_width, 50)
             x = x + controls_ui.action_label_width/2
-            group.label:SetPosition(x,5)
+            group.label:SetPosition(x,0)
             x = x + controls_ui.action_label_width/2 + spacing
             group.label:SetClickable(false)
 
@@ -1128,7 +1137,7 @@ function OptionsScreen:_BuildControls()
             group.changed_image = group:AddChild(Image("images/global_redux.xml", "wardrobe_spinner_bg.tex"))
             group.changed_image:SetTint(1,1,1,0.3)
             group.changed_image:ScaleToSize(button_width, button_height)
-            group.changed_image:SetPosition(x,2)
+            group.changed_image:SetPosition(x,0)
             group.changed_image:Hide()
 
             group.binding_btn = group:AddChild(ImageButton("images/global_redux.xml", "blank.tex", "spinner_focus.tex"))
@@ -1137,7 +1146,7 @@ function OptionsScreen:_BuildControls()
             group.binding_btn:SetTextFocusColour(UICOLOURS.GOLD_FOCUS)
             group.binding_btn:SetFont(CHATFONT)
             group.binding_btn:SetTextSize(30)
-            group.binding_btn:SetPosition(x,2)
+            group.binding_btn:SetPosition(x,0)
             group.binding_btn.idx = index
             group.binding_btn:SetOnClick(
                 function()
@@ -1230,6 +1239,7 @@ function OptionsScreen:_BuildControls()
     self.controls_vertical_line:SetScale(.7, .43)
     self.controls_vertical_line:SetRotation(90)
     self.controls_vertical_line:SetPosition(x, -200)
+    self.controls_vertical_line:SetTint(1,1,1,.1)
     x = x + spacing
 
     x = x + button_width/2

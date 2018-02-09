@@ -276,6 +276,9 @@ function ResolveModname(modname)
 end
 
 function IsWorkshopMod(modname)
+	if modname == nil then
+		return false
+	end
 	return modname:sub( 1, workshop_prefix:len() ) == workshop_prefix
 end
 

@@ -22,6 +22,7 @@ EVENT_ICONS =
 {
 	event_forge = "LAVA",
 	event_ice = "ICE",
+	event_yotv = "VARG",
 }
 
 -- Also update GetBuildForItem!
@@ -126,6 +127,17 @@ function IsPackFeatured(item_key)
     local pack_data = GetSkinData(item_key)
     return pack_data.featured_pack
 end
+
+function IsPackGiftable(item_key)
+    local pack_data = GetSkinData(item_key)
+    return pack_data.dlc_id ~= nil
+end
+
+function GetPackGiftDLCID(item_key)
+    local pack_data = GetSkinData(item_key)
+    return pack_data.dlc_id
+end
+
 
 function GetPurchaseDisplayForItem(item_key)
 	local pack_data = GetSkinData(item_key)
@@ -698,6 +710,36 @@ function IsItemIsReward(item_type)
 	return false
 end
 
+function _BonusItemRewarded(bonus_item, item_counts)
+	for _,item_set in pairs(SKIN_SET_ITEMS[bonus_item]) do
+		local missing_item = false
+		for _,input_item in pairs(item_set) do
+			if (item_counts[input_item] or 0) == 0 then
+				missing_item = true
+			end
+		end
+		if not missing_item then
+			return true
+		end
+	end
+	return false
+end
+function WillUnravelBreakEnsemble(item_type)
+	local in_collection, bonus_item = IsItemInCollection(item_type)
+	
+	if not in_collection then
+		return false
+	end
+	
+	local item_counts = GetOwnedItemCounts()
+	if _BonusItemRewarded(bonus_item, item_counts) then
+		item_counts[item_type] = (item_counts[item_type] or 1) - 1 --subtract one if it exists, otherwise 0
+		return not _BonusItemRewarded(bonus_item, item_counts)
+	end
+	
+	return false --not rewarded already
+end
+
 
 
 -- GetPackForItem only returns purchasable packs! We don't display historical
@@ -1012,3 +1054,48 @@ function GetPlayerPortraitAtlasAndTex(item_key)
     end
 end
 
+
+
+function IsSkinDLCEntitlementReceived(entitlement)
+	return Profile:IsEntitlementReceived(entitlement)
+end
+function SetSkinDLCEntitlementReceived(entitlement)
+	Profile:SetEntitlementReceived(entitlement)
+end
+
+
+local newSkinDLCEntitlements = {}
+function AddNewSkinDLCEntitlement(entitlement)
+	table.insert( newSkinDLCEntitlements, entitlement)
+end
+function HasNewSkinDLCEntitlements()
+	return #newSkinDLCEntitlements > 0
+end
+function GetNewSkinDLCEntitlement()
+	local entitlement = newSkinDLCEntitlements[#newSkinDLCEntitlements]
+	table.remove( newSkinDLCEntitlements, #newSkinDLCEntitlements)
+	return entitlement
+end
+
+
+function MakeSkinDLCPopup()
+	local pack_type = GetNewSkinDLCEntitlement()
+
+	if pack_type ~= nil then
+		local PURCHASE_INFO = require("skin_purchase_packs")
+		local display_items = PURCHASE_INFO.PACKS[pack_type]
+		local options = {
+			allow_cancel = false,
+			box_build = GetBoxBuildForItem(pack_type),
+			use_bigportraits = IsPackFeatured(pack_type),
+		}
+
+		local ItemBoxOpenerPopup = require "screens/redux/itemboxopenerpopup"
+		local box_popup = ItemBoxOpenerPopup(nil, options, function(success_cb) success_cb(display_items) end, function() MakeSkinDLCPopup() end)
+		TheFrontEnd:PushScreen(box_popup)
+	else
+		if TheFrontEnd:GetActiveScreen().FinishedFadeIn ~= nil then
+			TheFrontEnd:GetActiveScreen():FinishedFadeIn()
+		end
+	end
+end

@@ -115,6 +115,14 @@ require("json")
 require("tuning")
 require("languages/language")
 require("strings")
+
+if PLATFORM == "WIN32_RAIL" then
+	--Apply a baseline set of translations so that lua in the boot flow can access the correct strings, after the mods are loaded, main.lua will run this again
+	--Ideally we wouldn't need to do this, but stuff like maps/levels/forest loads in the boot flow and it caches strings before they've been translated.
+	--Doing an early translate here is less risky than changing all the cases of early string access. Downside is that it doesn't address the issue for mod transations.
+	TranslateStringTable( STRINGS )
+end
+
 require("languages/server_language_strings")
 require("stringutil")
 require("dlcsupport_strings")

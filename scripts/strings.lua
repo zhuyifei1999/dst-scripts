@@ -42,6 +42,8 @@ To add a new language:
 
 STRINGS =
 {
+	PSN = "PlayStation\226\132\162Network",
+
     CHARACTER_NAMES =
     {
         wilson = "Wilson P. Higgsbury",
@@ -862,6 +864,12 @@ STRINGS =
         LUCKY_GOLDNUGGET = "Lucky Gold Nugget",
         FIRECRACKERS = "Red Firecrackers",
         PERDFAN = "Lucky Fan",
+        WARGSHRINE = "Varg Shrine",
+        CLAYWARG = "Clay Varg",
+        CLAYHOUND = "Clay Hound",
+        HOUNDWHISTLE = "Lucky Whistle",
+        CHESSPIECE_CLAYHOUND_SKETCH = "Clay Hound Figure Sketch",
+        CHESSPIECE_CLAYWARG_SKETCH = "Clay Varg Figure Sketch",
 
         TELEPORTATO_RING = "Ring Thing",
         TELEPORTATO_BOX = "Box Thing",
@@ -1403,6 +1411,8 @@ STRINGS =
         CHESSPIECE_MOOSEGOOSE = "Moose Figure",
         CHESSPIECE_MOOSEGOOSE_ALT = "Goose Figure",
         CHESSPIECE_DRAGONFLY = "Dragonfly Figure",
+        CHESSPIECE_CLAYHOUND = "Hound Figure",
+        CHESSPIECE_CLAYWARG = "Varg Figure",
 
         CHESSPIECE_PAWN_BUILDER = "Pawn Figure",
         CHESSPIECE_ROOK_BUILDER = "Rook Figure",
@@ -1416,6 +1426,8 @@ STRINGS =
         CHESSPIECE_BEARGER_BUILDER = "Bearger Figure",
         CHESSPIECE_MOOSEGOOSE_BUILDER = "Moose/Goose Figure",
         CHESSPIECE_DRAGONFLY_BUILDER = "Dragonfly Figure",
+        CHESSPIECE_CLAYHOUND_BUILDER = "Hound Figure",
+        CHESSPIECE_CLAYWARG_BUILDER = "Varg Figure",
 
         SHADOW_ROOK = "Shadow Rook",
         SHADOW_KNIGHT = "Shadow Knight",
@@ -1750,6 +1762,10 @@ STRINGS =
         REDLANTERN = "A fortuitous lantern to light your way.",
         FIRECRACKERS = "Celebrate with a BANG!",
         PERDFAN = "Extra lucky, extra large.",
+        WARGSHRINE = "Make offerings to the earthen Varg.",
+        HOUNDWHISTLE = "Blow the whistle on wild hounds.",
+        CHESSPIECE_CLAYHOUND_SKETCH = "A sculpture sketch of the Clay Hound.",
+        CHESSPIECE_CLAYWARG_SKETCH = "A sculpture sketch of the Clay Varg.",
 
         SCULPTINGTABLE = "Marble will be like clay in your hands!",
 
@@ -1796,6 +1812,8 @@ STRINGS =
         CHESSPIECE_BEARGER_BUILDER = "A stone reminder of a grizzly autumn.",
         CHESSPIECE_MOOSEGOOSE_BUILDER = "Two for the price of one.",
         CHESSPIECE_DRAGONFLY_BUILDER = "The ultimate trophy for the ultimate kill.",
+        CHESSPIECE_CLAYHOUND_BUILDER = "It ain't nothing but a clay hound dog.",
+        CHESSPIECE_CLAYWARG_BUILDER = "Sculpt a fearsome Clay Varg.",
 
         CRITTER_GLOMLING_BUILDER = "Befriend a bouncy Glomglom.",
         CRITTER_DRAGONLING_BUILDER = "Befriend a noble Broodling.",
@@ -2536,6 +2554,7 @@ STRINGS.UI =
         SCROLLFWD = "Scroll Down",
         PREVVALUE = "Previous Value",
         NEXTVALUE = "Next Value",
+		CHANGEVALUE = "Change Value",
         REVERT = "Revert Changes",
         ACCEPT = "Accept Changes",
         APPLY = "Apply",
@@ -2659,6 +2678,9 @@ STRINGS.UI =
             "Ricardo Pinto",
             "Steven Erenst",
             "Corey McDaniel",
+            "Xiaowen Lin",
+            "Leira Zamfirescu",
+            "Scott Hansen",
         },
 
         ALTGAMES =
@@ -2676,6 +2698,40 @@ STRINGS.UI =
         EXTRA_THANKS = "Ophir Lupu\nKo Kim\nColt McAnlis",
         EXTRA_THANKS_2 = "Pieter Wycoff\nMatthew Nickerson\nAnna Sweet",
         SONY_THANKS = "Shane Bettenhausen\nAdam Boyes\nBrian Silva\nNick Suttner\nAlessandro Bovenzi",
+        XB1_THANKS = "Rick Ryan\nVictor Castano\nAngela Savarese\nNick Bodenham",
+        
+        BLIT =
+        {
+            TITLE = "Xbox One port by BlitWorks",
+            NAMES = 
+            {
+                "Tony Cabello",
+                "Jorge Cabezas",
+                "Miguel Angel Horna",
+            },
+            NAMES2 =
+            {
+                "Roc Ramon",
+                "Sergi Díaz",
+                "Cesar Sánchez"
+            }
+        },
+
+        LOLLI =
+        {
+            TITLE = "Xbox One QA by Lollipop Robot",
+            NAMES = 
+            {
+                "Daniel Segarra",
+                "Óscar Navalón",
+            },
+            NAMES2 =
+            {
+                "Pablo Granada",
+                "Luis Moyano",
+                "Francesc Sánchez"
+            }
+        },
         
         BABEL =
         {
@@ -2699,6 +2755,8 @@ STRINGS.UI =
         THANKS = "And a very special thanks to all our supporters who braved the challenge of the \"Early-Access\nBeta\". You are too numerous to name - our amazing moderators, the wonderful artists, musicians,\nlivestreamers, to all who made a Let's Play video and everybody who chimed in to let us know\nexactly what you think. Your encouragement, passion and support has been amazing.\n\nDon't Starve Together is truly a better game because of all of you.",
 
         FMOD = "FMOD Sound System,\nCopyright Firelight Technologies",
+
+        VMEM = "Powered by VMem\nby PureDev Software",	-- only for PS4
 
         FACEBOOK = "The Facebooks",
         TWITTER = "The Twitters",
@@ -2869,6 +2927,7 @@ STRINGS.UI =
         MODFORUMS = "Mod Forums",
         MODSBADTITLE = "All Mods Disabled",
         MODSBADLOAD = "The game did not start correctly last time. This was likely caused by a mod, so all client mods have been disabled.\n\nYou can try re-enabling mods from the mod settings screen.",
+        MODFORUMS_NOT_AVAILABLE_YET = "Not available yet",
         MODS = "Mods",
         SCRIPTERRORQUIT = "Exit Game",
         SCRIPTERRORMODWARNING = "This error may have occurred due to a mod you have enabled!\nYou have the following mods enabled:\n",
@@ -2899,6 +2958,7 @@ STRINGS.UI =
         BACK = "Back",
         SETTINGS = "Settings",
         OPTIONS = "Options",
+        REGISTER_SECOND_PLAYER = "Split Screen",
         PLAYDEMO = "Play Demo",
         ENTERPRODUCTKEY = "Enter Key",
         ENTERKEY = "Enter New Key",
@@ -2921,6 +2981,8 @@ STRINGS.UI =
             LAVAARENA = "Enter the Forge",
         },
         QUICKJOIN = "Quick Join",
+        SPLITSCREEN = "Split Screen",
+
         BROWSE = "Browse Games",
         CREATE = "Host Game",
         GAMEWIZARD = "Game Wizard",
@@ -2961,6 +3023,7 @@ STRINGS.UI =
         EXIT = "Exit",
         LOGOUT = "Log Out",
         REDEEM = "Redeem",
+        SAVE_LOCATION = "Data",
         MOVIE = "Theatre",
         CREDITS = "Credits",
         UPDATENAME = "All's Well That Maxwell",
@@ -2972,6 +3035,7 @@ STRINGS.UI =
         LATER = "Not Now",
         ADJUST_DISPLAY_HEADER = "Adjust Display Area",
         ADJUST_DISPLAY_TEXT = "Parts of the game may be cut off by the edges of your screen. Do you want to check your display area now? If not, you can do this later in Settings.",
+        ADJUST_DISPLAY_INSTRUCTIONS = "Adjust display area using <up> and <down> to the maximum screen size\nso all arrows are fully visible.\n\nPress <A> to accept the changes.",
 
         CANT_LOAD_TITLE = "Load Failed",
         CANT_LOAD_ROG = "Reign of Giants is not installed. Unable to load.",
@@ -2985,8 +3049,21 @@ STRINGS.UI =
         OFFLINEMODEDESC = "Could not connect to Klei's servers. Characters and worlds from online games will be unavailable. Continue and play offline?",
         STEAMOFFLINEMODE = "Connection to Steam Failed",
         STEAMOFFLINEMODEDESC = "Couldn't connect to Steam (scheduled maintenance or connectivity issues). Characters and worlds from online games will be unavailable. Play offline?",
+        PSN_OFFLINEMODE = "Connection to "..STRINGS.PSN.." failed",
+        PSN_OFFLINEMODEDESC = "Couldn't connect to "..STRINGS.PSN.." (scheduled maintenance or connectivity issues). Characters and worlds from online games will be unavailable. Play offline?",        
+        NOT_SIGNED_IN_TO_PSN = "Not Signed In to "..STRINGS.PSN.."",
+        NOT_SIGNED_IN_TO_PSN_DESC = "You are not signed in to "..STRINGS.PSN..". Characters and worlds from online games will be unavailable. Play offline?",    
+        NO_INTERNET_CONNECTION = "No internet connection",
+        NO_INTERNET_CONNECTION_DESC = "Could not connect to the internet. Characters and worlds from online games will be unavailable. Play offline?",
+        NO_PS_PLUS_MEMBERSHIP = "PlayStation®Plus",
+        NO_PS_PLUS_MEMBERSHIP_DESC = "Online play requires an active PlayStation®Plus membership.\nCharacters and worlds from online games will be unavailable. Play offline?",
         PLAYOFFLINE = "Play Offline",
         CANCELOFFLINE = "Cancel",
+		ONLINE_AGE_RESTRICTION_TITLE = "Online Age Restriction",
+		ONLINE_AGE_RESTRICTION_DESC = "You do not meet the age requirement to play online. Characters and worlds from online games will be unavailable.",
+        
+		ONLINE_UGC_RESTRICTION_TITLE = "User-Generated Media Restriction",
+		ONLINE_UGC_RESTRICTION_DESC = "Online play is disabled due to parental control settings for your account. Characters and worlds from online games will be unavailable.",
 
         VERSION_OUT_OF_DATE_TITLE = "Version Out of Date",
         VERSION_OUT_OF_DATE_BODY = "Your game looks like it's running an old version. We recommend that you update to the latest version.",
@@ -3024,11 +3101,42 @@ STRINGS.UI =
         TOOLTIP_MODS = "Customize your game",
         TOOLTIP_PLAYERSUMMARY = "Equip curios, craft items and view player history",
         TOOLTIP_OPTIONS = "Change your settings and controls",
+        TOOLTIP_OPTIONS_PS4 = "Change your settings and view the controls",
         TOOLTIP_QUIT = "Scram!",
+		TOOLTIP_CREDITS = "See who made the game",
+		TOOLTIP_LOGOUT = "Log out so you can log back in again",
 
         ITEMCOLLECTION_DISABLE = "You must be logged in to view your Profile or Item Collection.",
         
         LOGIN = "Login",
+
+        INVITED_AS = "You were invited to join a game as %s"
+    },
+    
+    XB1_USER_DIALOG =
+    {
+        MAIN_CONTROLLER_DISCONNECTED = "Main controller disconnected.",
+        CONTROLLER_2_DISCONNECTED = "Player 2's controller disconnected",
+        PRESS_A_ON_NEW = "Press A on a new one to continue.",
+        PRESS_A_TO_SWAP_USER = "Press A to connect as the main user.",
+        USER_1_CHANGED = "Main profile changed",
+        USER_2_CHANGED = "Player 2's profile changed",
+        SIGN_IN_TO_CONTINUE = "You must sign in again to continue.",
+        SIGN_IN = "Sign In",
+        USER_2_MUST_BE_DIFFERENT = "Player 2's profile must be\ndifferent from Player 1's.",
+        USER_2_HAS_TO_REJOIN = "Player 2 will need to join the game again."
+    },
+
+	SPLITSCREEN_REGISTRATION =
+	{
+		KICK_PLAYER_PREFIX = "Kick ",
+		KICK_PLAYER_POSTFIX = " from split screen",
+		TITLE_PLAYER_1 = "Player 1",
+		TITLE_PLAYER_2 = "Player 2",
+		STATUS_OFFLINE = "Offline",
+		STATUS_ONLINE = "Signed In",
+		PLAYER_2_PRESS_START_PREFIX = "PRESS",
+		PLAYER_2_PRESS_START_POSTFIX = "TO JOIN",
     },
 
     HUD =
@@ -3042,6 +3150,7 @@ STRINGS.UI =
         CLOCKDAY = "Day",
         CLOCKDAYS = "Days",
         WORLD_CLOCKDAY = "Day",
+        WORLD_CLOCKDAY_V2 = "Day {day_count}",
         SAVING = "SAVING...",
         WORLD = "World",
         BUILD = "Build",
@@ -3185,12 +3294,15 @@ STRINGS.UI =
         CONTROLS = "Controls",
         TOOLTIP_SETTINGS = "Modify features of the game and user interface",
         TOOLTIP_CONTROLS = "Rebind which input does which in-game action",
+        EXTRAS = "Extras",
         OPTIONS = "Options",
         BACK = "Back",
         YES = "Yes",
         NO = "No",
         BACKTITLE = "Lose Changes?",
         BACKBODY = "Do you want to throw out your changes?",
+        BACKTITLE_PS4 = "Wait!",
+        BACKBODY_PS4 = "You've made changes. How you want to proceed?",
         ACCEPTTITLE = "Accept Changes",
         ACCEPTBODY = "Do you wish to accept these changes?",
         ACCEPTGRAPHICSTITLE = "Accept Changes",
@@ -3220,7 +3332,7 @@ STRINGS.UI =
         MOVEMENTPREDICTION = "Lag Compensation:",
         MOVEMENTPREDICTION_ENABLED = "Predictive",
         MOVEMENTPREDICTION_DISABLED = "None",
-        DISPLAY_AREA_LABEL = "Display Area",
+        DISPLAY_AREA_LABEL = "Display Area:",
         DISPLAY_AREA_BUTTON = "Adjust",
         -- INPUTFREQENCY = "Input Frequency(hz):",
         AUTOSAVE = "Auto-save",
@@ -3229,6 +3341,13 @@ STRINGS.UI =
         SNAPSHOTS = "Server Snapshots",
         INPUT = "Input Device:",
         ACTION = "Action",
+        REDEEM = "Redeem a Code",
+        EULA = "Review the EULA",
+        EULA_RESPONSE_CHANGED_TITLE = "Login Required",
+        EULA_RESPONSE_CHANGED_BODY = "Your settings have changed and you must log in again to continue.",
+        OFFLINE_MODE_TITLE = "Offline Mode",
+        OFFLINE_MODE_BODY = "Your selection is not available in offline mode. Please log in and try again.",
+        KLEI_ID_PREFIX = "Klei ID: "
     },
 
     NOTIFICATION =
@@ -3253,6 +3372,9 @@ STRINGS.UI =
         SERVER_WORLDGEN = "Server is Generating World",
         INITIALIZING_SERVER = "Initializing Server",
         WORLDGENERATING_SERVER = "Generating World",
+        CURRENTLY_SPEAKING = "Currently Speaking...",
+        RETRYING = "Retrying",
+        RESTORING = "Restoring Backup",
     },
     
     BOX_POPUP =
@@ -3323,6 +3445,15 @@ STRINGS.UI =
         LEGALESE = "Delivery time may vary due to temporal portal anomalies. Wilson is not responsible for emotional injuries caused by waiting. Gifts may result in bragging, unexpected delight, and/or enhanced gameplay experiences.",
     },
 
+    EULADIALOG = 
+    {
+        TITLE = "End User License Agreement",
+        ACCEPT = "Accept",
+        DECLINE = "Decline",
+        DECLINE_CONFIRMATION_TITLE = "Decline the EULA?",
+        DECLINE_CONFIRMATION_BODY = "You will not be able to play online. Are you sure?",
+    },
+
     NETWORKDISCONNECT =
     {
         TITLE =
@@ -3371,10 +3502,18 @@ STRINGS.UI =
             SERVER_MODS_WORKSHOP_ACCESS_DENIED = "Disconnected Due To Missing Mods",
             ID_DST_SLOT_RESERVATION = "Slot Reserved",
             ID_DST_DESTINATION_SERVER_NOT_AVAILABLE = "Server not available",
-            ID_DST_SERVER_IS_CLAN_ONLY = "Private Group",
             ID_DST_SERVER_IS_CLAN_ONLY = "Not a member of the server's clan",
             ID_DST_SERVER_IS_LAN_ONLY = "Local Connection Server Only",
             ID_DST_DEDICATED_SERVER_STARTUP_FAILED = "Dedicated Server Failed To Start",
+            ID_DST_SERVER_STARTUP_FAILED = "Server Failed To Start",
+			ID_SPLITSCREEN_INGAME_PLAYER2_SIGNED_OUT_OF_PS4 = "Player 2 Logged Out",
+			ID_SPLITSCREEN_UI_PLAYER2_SIGNED_OUT_OF_PS4 = "Player 2 Logged Out",
+			ID_SPLITSCREEN_INGAME_PLAYER1_SIGNED_OUT_OF_PSN = "Player 1 Signed Out",
+			ID_SPLITSCREEN_INGAME_PLAYER2_SIGNED_OUT_OF_PSN = "Player 2 Signed Out",
+			ID_SPLITSCREEN_UI_PLAYER1_SIGNED_OUT_OF_PSN = "Player 1 Signed Out",
+			ID_SPLITSCREEN_UI_PLAYER2_SIGNED_OUT_OF_PSN = "Player 2 Signed Out",
+            ID_DST_NETWORK_CONNECTION_LOST = "Network Connection Lost",
+            ID_DST_SAVE_FILE_DAMAGED = "Load failed",
         },
         BODY =
         {
@@ -3425,6 +3564,14 @@ STRINGS.UI =
             ID_DST_SERVER_IS_LAN_ONLY = "This server only allows players from their same local network.",
             ID_DST_DESTINATION_SERVER_NOT_AVAILABLE = "The server you were playing on is unavailable. Please try again later.",
             ID_DST_DEDICATED_SERVER_STARTUP_FAILED = "There was some sort of trouble starting the server. Please try again.",
+			ID_SPLITSCREEN_INGAME_PLAYER2_SIGNED_OUT_OF_PS4 = "Your split-screen partner logged out in the middle of a game!",
+			ID_SPLITSCREEN_UI_PLAYER2_SIGNED_OUT_OF_PS4 = "Your split-screen partner logged out. Return to the main menu to find another.",
+			ID_SPLITSCREEN_INGAME_PLAYER1_SIGNED_OUT_OF_PSN = "Player 1 has signed out of "..STRINGS.PSN.." in the middle of a game!",
+			ID_SPLITSCREEN_INGAME_PLAYER2_SIGNED_OUT_OF_PSN = "Player 2 has signed out of "..STRINGS.PSN.." in the middle of a game!",
+			ID_SPLITSCREEN_UI_PLAYER1_SIGNED_OUT_OF_PSN = "You have signed out of "..STRINGS.PSN..". Now we have to set everything back up again...",
+			ID_SPLITSCREEN_UI_PLAYER2_SIGNED_OUT_OF_PSN = "Your split-screen partner signed out. Return to the main menu to find another.",
+            ID_DST_NETWORK_CONNECTION_LOST = "Check your connection and try again.",
+            ID_DST_SAVE_FILE_DAMAGED = "Your world is damaged and cannot be loaded.",
         },
         OK = "OK",
     },
@@ -3457,6 +3604,7 @@ STRINGS.UI =
         AFK = "Go AFK",
         SERVER_ADMIN = "Server Admin",
         ISSUE = "Report an Issue",
+		NOT_YET_OPEN = "Not yet open",
     },
 
 	WORDPREDICTIONWIDET = 
@@ -3489,6 +3637,7 @@ STRINGS.UI =
         USERACTIONS = "More Actions...",
         ADMIN = "Admin",
         VIEWPROFILE = "View Player",
+        VIEWGAMERCARD = "Show Gamercard",
         CLEAR = "Remove Player",
         KICKCONFIRM_TITLE = "Kick",
         KICKCONFIRM_BODY = "Are you sure you want to kick",
@@ -3675,6 +3824,7 @@ STRINGS.UI =
         UPDATEMOD = "Update Mod",
         UPDATINGMOD = "Updating...",
         UPTODATE = "Up To Date",
+        DOWNLOADINGMOD = "Downloading:\n{name}",
         CONFIGSCREENTITLESUFFIX = "Configuration",
         BACKTITLE = "Discard Changes",
         BACKBODY = "Do you want to discard the changes you made to this mod's options?",
@@ -3694,8 +3844,8 @@ STRINGS.UI =
         },
         NO_MODS_TITLE = "No Mods Installed",
         NO_MODS_OK = "Show Me!",
-        NO_MODS = "You have no mods installed. Mods can be downloaded from the Steam Workshop.",--Klei forums.",
-        NO_MODS_TYPE = "You have no %s mods installed. Mods can be downloaded from the Steam Workshop.",--Klei forums.",
+        NO_MODS = "You have no mods installed. Mods can be downloaded from the Steam Workshop.",
+        NO_MODS_TYPE = "You have no %s mods installed. Mods can be downloaded from the Steam Workshop.",
         NO_MODS_LINK = "Take me to the mods!",
         WORKSHOP =
         {
@@ -3706,6 +3856,8 @@ STRINGS.UI =
             STATE_DOWNLOAD = "Downloading mods:",
             STATE_DOWNLOAD_PERCENT = "%s percent",
         },
+        SHOWCASEMODS = "Get Mods",
+        NO_MODS_PLAIN_OK = "Ok",
         TOPMODS = "Top Mods",
         FEATUREDMOD = "Featured Mod",
         LOADING = "Loading",
@@ -3720,8 +3872,10 @@ STRINGS.UI =
         MODTITLE = "Mods",
         CLIENTMODS = "Client Mods",
         SERVERMODS = "Server Mods",
-        SERVERMODS_TITLE = "Server Mods - ",
-        SERVERMODS_TITLE_GENERIC = "Server Mods (View/Configure)",
+        SERVERMODS_TITLE_READONLY = "Configure Server Mods",
+        TOOLTIP_SHOWCASEMODS = "See popular and featured mods",
+        TOOLTIP_CLIENTMODS = "Cosmetic mods that run on your machine",
+        TOOLTIP_SERVERMODS = "Gameplay-affecting mods that run on the game server",
         CLEANALL = "Clean All",
         CLEANALL_TITLE = "Clean All Mod Workshop Data",
         CLEANALL_BODY = "Are you sure you want to clean your local Workshop data?\nThis will result in a full download of all your subscribed mods, and your mod configuration settings being reset.",
@@ -3774,10 +3928,12 @@ STRINGS.UI =
                 "Caves Plus",                -- harder caves
 
             SURVIVAL_TOGETHER = "Default",
+            SURVIVAL_TOGETHER_PS4 = "Generic Forest",
             SURVIVAL_TOGETHER_CLASSIC = "No Giants Here",
             SURVIVAL_DEFAULT_PLUS = "Together Plus",
             COMPLETE_DARKNESS = "Lights Out",
             DST_CAVE = "The Caves",
+            DST_CAVE_PS4 = "Standard Caves",
             DST_CAVE_PLUS = "Caves Plus",
             LAVAARENA = "The Forge",
 
@@ -3819,7 +3975,25 @@ STRINGS.UI =
             CAVE_DEFAULT = "Underground",
             LAVA_ARENA = "The Forge",
         },
-
+		
+		ICON_TITLES = {
+			AUTUMN = "Autumn",
+			SPRING = "Spring",
+			SUMMER = "Summer",
+			WINTER = "Winter",
+			
+			PREFABSWAPS_START = "Starting Resource Variety",
+			
+			BRANCHING = "Branches",
+			LOOP = "Loops",
+			TASK_SET = "Biomes",
+			WORLD_SIZE = "Size",
+			START_LOCATION = "Spawn Area",
+			
+			DAY = "Day Type",
+			SEASON_START = "Starting Season",
+		},
+		
         CUSTOM_PRESET = "Custom Preset",
         CUSTOM_PRESET_DESC = "Custom preset",
         MAX_PRESETS_EXCEEDED_TITLE = "Preset Limit Reached",
@@ -4048,9 +4222,12 @@ STRINGS.UI =
         MODS_HIDDEN_LAN = "The mods list isn't visible over LAN.\nWhy not scooch over and ask your friend?",
         OFFLINE_MODE_TITLE = "Offline",
         OFFLINE_MODE_BODY = "You are not logged in and can't play in online games.\nTry playing over LAN or restarting the game to log in.",
+        OFFLINE_MODE_TITLE_PS4 = "Online Not Available",
+        OFFLINE_MODE_BODY_PS4 = "You are currently in offline mode and cannot join online worlds. Please log in and try again.",
         OFFLINEWARNINGTITLE = "Offline World",
         OFFLINEMODEBODYJOIN = "Are you sure you want to join an offline world? You will not be able to receive or use Collection Items in this world.",
-
+        NO_CONNECTION_TO_MASTER_SERVER = "Network Error",
+        NO_CONNECTION_TO_MASTER_SERVER_DESC = "Failed to connect to the master server.\nPlease check your network connection.",
         CHAR_AGE_1 = "Survived ",
         CHAR_AGE_2 = " Day",
         CHAR_AGE_3 = " Days",
@@ -4091,6 +4268,7 @@ STRINGS.UI =
         CHANGE_TABS = "Change Tab",
         DESC_LOADING = "[Description Loading...]",
         NO_DESC = "[No Description]",
+		OFFLINE_DESC = "This is an offline world.\nMany details remain a mystery, but it looks like people are having fun.",
         NO_CONNECTION = "Not Connected",
         SEARCHING_SERVERS = "Searching Servers...",
         PLAYERS_LOADING = "Players Loading...",
@@ -4115,7 +4293,14 @@ STRINGS.UI =
         MISSINGDATATITLE = "Out-of-Date Server",
         MISSINGDATABODY = "This server is not up to date. We cannot display its world settings.",
     },
-
+    
+	DEMOOVERDIALOG =
+	{
+		TITLE_FREEWEEKEND = "Thank you for playing the free demo!",
+		BODY_FREEWEEKEND = "Buy now to get the special price!",
+		QUIT = "Quit",
+	},
+	
     SERVERCREATIONSCREEN =
     {
         CREATE = "Generate World",
@@ -4124,13 +4309,15 @@ STRINGS.UI =
         CANCEL = "Cancel",
         ADMIN = "Manage Server",
         MANAGE_ACCOUNT = "Account",
-        DELETE_SLOT_BUTTON = "Delete\nServer",
-        DELETE_SLOT = "Delete Slot",
+        DELETE_SLOT = "Delete Server",
         WORLD = "World",
+        FORESTWORLD = "Forest World",
+        CAVEWORLD = "Cave World",
         VIEWWORLD = "View World",
         SERVERNAME = "Name:",
         SERVERPASSWORD = "Password:",
         SERVERDESC = "Description:",
+        PRIVACY_LABEL = "Privacy:",
         PRIVACY =
         {
             PUBLIC = "Public",
@@ -4175,6 +4362,8 @@ STRINGS.UI =
         MAXPLAYERS = "Players:",
         ONLINEONYTITLE = "Online World",
         ONLINEONLYBODY = "You can only resume an online world when you have a connection to Steam and Klei. Please log in and try again.",
+        ONLINEONLYBODY_PS4 = "You are currently in offline mode and cannot resume an online world. Please log in and try again.",
+        ONLINEONLYBODY_SPLITSCREEN = "You are currently in offline mode and cannot resume an online world. Please log in and try again.",
         OFFLINEMODETITLE = "Offline Mode",
         OFFLINEMODEBODYCREATE = "Are you sure you want to create an offline world? This is a limited mode where only players on your Local Area Network can join. Players will not be able to receive or use Collection Items in this world.",
         OFFLINEMODEBODYRESUME = "You are resuming an offline world. Only users on your Local Area Network will be able to join this world. Players will not be able to receive or use Collection Items in this world.",
@@ -4193,8 +4382,11 @@ STRINGS.UI =
         SELECT_SLOT = "Select Slot",
         SNAPSHOTS = "Rollback",
         BANS = "Bans",
+        TOOLTIP_BANS = "See which players you've blocked from joining your servers",
         HOST_GAME = "Host Game",
-        SERVERSETTINGS = "Server Settings",
+        SERVERSETTINGS_LONG = "Server Settings",
+        SERVERSETTINGS = "Settings",
+        WORLD_LONG_FMT = "World: {location}",
         MODSDISABLEDWARNINGTITLE = "WARNING - Mods Disabled",
         MODSDISABLEDWARNINGBODY = "Some mods used on this save are disabled, which could cause issues. Continue?",
         MODSOUTOFDATEWARNINGTITLE = "WARNING - Mods Out of Date",
@@ -4210,6 +4402,10 @@ STRINGS.UI =
         INVALIDINTENTIONSETTINGS_BODY = "You forgot to choose a playstyle for your server!",
         INVALIDNEWHOST_TITLE = "Creating your first world?",
         INVALIDNEWHOST_BODY = "We recommend trying the game alone in a private world while you learn the ropes and get the hang of not starving. But it's totally up to you!",
+		UGC_BLOCKED_DESCRIPTION_PREFIX = "Use of user-generated media is not allowed for your account.\nOnline players will see your server name as \"",
+		UGC_BLOCKED_DESCRIPTION_POSTFIX = "'s World\" with a blank description.",
+		UGC_BLOCKED_DESCRIPTION_PREFIX_SPLITSCREEN = "Use of user-generated media is not allowed for the signed in accounts.\nOnline players will see your server name as \"",
+		OFFLINE_WORLD = "Offline",
     },
 
     CLOUDSERVERCREATIONSCREEN =
@@ -4239,11 +4435,12 @@ STRINGS.UI =
         PLAYER = "Player",
         DATE = "Date",
         DAY = "Day",
+        DAY_V2 = "Day {day_count}",
         UNKNOWN_DAY = "???",
+        UNKNOWN_DAY_PS4 = "Creation of the World",
         EMPTY_SLOT = "EMPTY",
         EMPTY_SLOT_TITLE = "Empty Slot",
-        CLEAR_PLAYERS = "Unban\nAll",
-        CLEAR_PLAYERS_HELPTEXT = "Unban All",
+        CLEAR_PLAYERS = "Unban All",
         UNDO_PLAYERS = "Undo All",
         PLAYER_DETAILS = "View Details",
         --PLAYER_PROFILE = "View Profile",
@@ -4386,6 +4583,8 @@ STRINGS.UI =
         USABLE_ON_MULTIPLE_POPUP = "{skin} will change the appearance of {item1} and {item2}.",
         USABLE_ON_MULTIPLE_3_POPUP = "{skin} will change the appearance of {item1}, {item2} and {item3}.",
         OK = "OK",
+		NOW_OFFLINE_TITLE = "Network Connection Lost",
+		NOW_OFFLINE_BODY = "You are now in offline mode.\nYour item collection is not available in offline mode.\nPlease check your connection and log in again.",
     },
 
     FESTIVALEVENTSCREEN =
@@ -4887,6 +5086,8 @@ STRINGS.UI =
         CANCEL = "Nevermind",
         OK = "OK",
         
+        UNRAVEL_WARNING_TITLE = "Warning!",
+        UNRAVEL_WARNING_BODY = "Unravelling this item will break your {ensemble_name} and cause you to lose access to the Reward item, {reward_name}.",
         
         FAILED_TITLE = "Connection failure",
         FAILED_BODY = "Sorry!\nFailed to contact Klei Servers. Please try again.",
@@ -4948,6 +5149,13 @@ STRINGS.UI =
         PURCHASE_WARNING_CANCEL = "Nevermind!",
 
         PURCHASE_BTN = "Purchase: {price}",
+        PURCHASE_GIFT = "Gift to a Friend",
+        
+		GIFT_RECEIVED_TITLE = "You got a chest!",
+		GIFT_RECEIVED_BODY = "Open it to receive your curios.",
+        
+        PURCHASE_GIFT_INFO_TITLE = "Purchase Gift",
+        PURCHASE_GIFT_INFO_BODY = "To purchase the {pack_name} as a gift for your friend, click on \"Add to Cart\", then \"Purchase as a gift\".",
 
         OK = "OK",
     },
@@ -5193,10 +5401,16 @@ STRINGS.UI =
         OK = "OK",
         PLAYER_NAME = "Player",
         PLAYER_CHAR = "Face",
+		PLAYER_CHAR_PS4 = "Character",
         SERVER_NAME = "Server",
         DECEASED = "Deceased",
         CAUSE = "Killed By",
         MODE = "On Server",
+        DECEASED_PS4 = "Character",
+        CAUSE = "Cause of Death",
+        MODE = "World",
+		MODE_PS4 = "Date",
+        SEEN_DATE = "Date",
         PLAYER_AGE = "Age",
         DIED_AGE = "Survived",
         NET_ID = "Profile",
@@ -5204,6 +5418,7 @@ STRINGS.UI =
         DAY = "Day",
         DAYS = "Days",
         UNKNOWN_DAYS = "?",
+        REMOVE_ENCOUNTER = "Remove Encounter",
     },
 
     CONTROLSSCREEN =
@@ -5670,19 +5885,55 @@ STRINGS.UI =
             L2 = "Open Crafting",
             R2 = "Manage Inventory",
 
+            L3 = "Chat*",
+            R3 = "Social Menu",
+
+            TOUCH_BL = "Player List",
+            TOUCH_BR = "Chat",
+
             DPAD_UP = "Inspect Item",
             DPAD_LEFT = "Use on World",
             DPAD_BOTTOM = "Drop Item",
             DPAD_RIGHT = "Use on Self",
 
-            L3 = "Walk",
+            LSTICK = "Walk",
 
             TRIANGLE = "Inspect",
             CIRCLE = "Alt Action / Cancel",
             CROSS = "Do Action / Accept",
             SQUARE = "Attack",
 
-            R3 = "Inventory Selection",
+            RSTICK = "Inventory Selection",
+        },
+        VITA = {
+            TOUCHPAD = "Map",
+            OPTIONS = "Pause",
+
+            L1 = "Rotate Camera",
+            R1 = "Rotate Camera",
+
+            L2 = "Open Crafting",
+            R2 = "Manage Inventory",
+
+            L3 = "Chat*",
+            R3 = "Social Wheel",
+
+            TOUCH_BL = "Player List",
+            TOUCH_BR = "Chat",
+
+            DPAD_UP = "Inspect Item",
+            DPAD_LEFT = "Use on World",
+            DPAD_BOTTOM = "Drop Item",
+            DPAD_RIGHT = "Use on Self",
+
+            LSTICK = "Walk",
+
+            TRIANGLE = "Inspect",
+            CIRCLE = "Alt Action / Cancel",
+            CROSS = "Do Action / Accept",
+            SQUARE = "Attack",
+
+            RSTICK = "Inventory Selection",
         },
     },
 
@@ -5820,6 +6071,9 @@ STRINGS.UI =
         SLIDESLARGE = "Large",
         SLIDESHUGE = "Huge",
 
+		PS4_SLIDESMALL = "Default",
+		PS4_SLIDESMEDIUM = "Big",
+
         SLIDEVERYSIMPLE = "Very Simple",
         SLIDESIMPLE = "Simple",
         SLIDECOMPLEX = "Complex",
@@ -5879,6 +6133,7 @@ STRINGS.UI =
         EVENT_HALLOWEDNIGHTS_2016 = "Hallowed Nights",
         EVENT_WINTERSFEAST_2016 = "Winters Feast",
         EVENT_YEAR_OF_THE_GOBBLER_2017 = "Year of the Gobbler",
+        EVENT_YEAR_OF_THE_VARG_2018 = "Year of the Varg",
     },
 
     SAVELOAD =
@@ -5894,6 +6149,14 @@ STRINGS.UI =
         CANCEL = "Cancel",
         YES = "Yes",
         NO = "No",
+
+		DATA_DAMAGED_PS4 = "Damaged save data",
+        DATA_DAMAGED_BODY = "Your save data is damaged and cannot be used.",
+		DISABLE_AUTOSAVE_PS4 = "Are you sure you want to\ndisable the save feature?",
+        DISABLE = "Disable Save",   
+        RESTORE_BACKUP = "Restore Backup",	
+		RESTORE_BACKUP_BODY = "Are you sure you want to restore from the last available backup? This process can not be undone.",    
+        RESTOREBACKUP_FAILED = "An error occurred while\nrestoring your data.",	 
     },
 
     QUITTINGTITLE = "Quitting!",
@@ -5904,6 +6167,50 @@ STRINGS.UI =
     TELEPORTBODY_ADVENTURE = "This will REMOVE ALL YOUR ITEMS and destroy your current world. Only items placed in the machine will appear in the next world.",
     TELEPORTYES = "Let's Go!",
     TELEPORTNO = "Stay here.",
+    
+    COMMANDWHEEL =
+    {
+		SAY = "Say",
+		WHISPER = "Whisper",
+		EMOTES = "Emotes",
+		PLAYERLIST = "Player Listing",
+        USERCOMMANDS = "Miscellaneous",
+        INVITE = "Send Invitation",
+    },
+    
+    EMOTES =
+    {
+		HELPTEXTPREFIX = "Emote:  ",
+        EMOTIONS = "Emotions",
+        ACTIONS = "Actions",
+
+		ANGRY = "Angry",
+		NO = "Annoyed",
+		BONESAW = "Bonesaw",
+		RUDE = "Threaten",
+		CHEER = "Cheer",
+		DANCE = "Dance",
+		FACEPALM = "Facepalm",
+		JOY = "Joy",
+		KISS = "Kiss",
+		POSE = "Pose",
+		CRY = "Sad",
+		WAVE = "Wave", 
+        SIT = "Sit",
+        SQUAT = "Squat",   
+        YAWN = "Yawn", 
+        SLEEPY = "Sleepy", 
+        SWOON = "Swoon", 
+    },
+
+    PRESENCE = 
+    {    
+        INVITATION = "Let's play Don't Starve Together.... together!",
+        SESSION_NOT_FOUND_TITLE = "Session Not Found",
+        SESSION_NOT_FOUND_BODY = "The session you are trying to join is no longer available",
+        PLAY_TOGETHER_TITLE = "Play Together",
+        PLAY_TOGETHER_BODY = "You can join a server or host your own. Invitations will be sent to the rest of your party once you are in the game.",
+    },
 }
 
 --these are broken out into their own files for ease of editing
@@ -6269,6 +6576,15 @@ STRINGS.TAGS =
 
 STRINGS.SIGNS =
 {
+	MENU = 
+	{
+		PROMPT = "Write on the sign",
+		CANCEL = "Cancel",
+		ACCEPT = "Write it!",
+		RANDOM = "Random",
+		FILTERING = "Validating Message...",
+	},
+	
     ADJ_NOUN_FMT = "{adjective} {noun}",
     ADJ_NOUN_ADD_FMT = "{adjective} {noun} {addition}",
     QUANT_ADJ_NOUN_FMT = "{quantifier} {adjective} {noun}",
@@ -6423,3 +6739,182 @@ STRINGS.SHARD =
 -- Include the names and descriptions of the clothing and craftable skins.
 ----------------------------------------------------------------------------
 require "skin_strings"
+
+if PLATFORM == "WIN32_RAIL" then
+	--Do Rail specific string adjustments here
+	STRINGS.UI.ACCOUNT.LINKSTEAMACCOUNT = ""
+	STRINGS.UI.ACCOUNT.LOGINWITHSTEAM = ""
+	
+	STRINGS.UI.BARTERSCREEN.NO_MARKET = ""
+	
+	STRINGS.UI.COLLECTIONSCREEN.VIEW_MARKET = ""
+	
+	STRINGS.UI.MAINSCREEN.STEAMOFFLINEMODE = ""
+	STRINGS.UI.MAINSCREEN.STEAMOFFLINEMODEDESC = ""
+	
+	STRINGS.UI.MODSSCREEN.MOD_WARNING = ""
+	STRINGS.UI.MODSSCREEN.MORE_MODS = ""
+	STRINGS.UI.MODSSCREEN.NO_MODS = ""
+	STRINGS.UI.MODSSCREEN.NO_MODS_TYPE = ""
+	STRINGS.UI.MODSSCREEN.WORKSHOP.STATE_LIST = "Checking mod subscriptions..."
+	STRINGS.UI.MODSSCREEN.WORKSHOP.UPDATE_TITLE = ""
+	
+	STRINGS.UI.MODSSCREEN.NO_MODS_CLIENT_TGP = "You don't have any client mods installed. You can download some from the TGP client."
+    STRINGS.UI.MODSSCREEN.NO_MODS_SERVER_TGP = "You don't have any server mods installed. You can download some from the TGP client."
+    STRINGS.UI.MODSSCREEN.NO_MODS_CLIENT_QQGAME = "You don't have any client mods installed. You can download some from the QQ Game client."
+    STRINGS.UI.MODSSCREEN.NO_MODS_SERVER_QQGAME = "You don't have any server mods installed. You can download some from the QQ Game client."
+    STRINGS.UI.MODSSCREEN.MOD_WARNING_TGP = "This is not a TGP mod. Players will need to download it manually if you host a server."
+    STRINGS.UI.MODSSCREEN.MOD_WARNING_QQ = "This is not a QQ Game mod. Players will need to download it manually if you host a server."
+	
+	STRINGS.UI.NETWORKDISCONNECT.BODY.APP_OWNERSHIP_CHECK_FAILED = "The server says you don't own the game. But you do... right?"
+	STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_SERVER_IS_CLAN_ONLY = "You must be a member of this server's group to connect."
+	STRINGS.UI.NETWORKDISCONNECT.BODY.SERVER_MODS_NOT_ON_WORKSHOP = "This server requires mods that are not available. You will need to manually download the missing mods."
+	STRINGS.UI.NETWORKDISCONNECT.BODY.SERVER_MODS_WORKSHOP_FAILURE = "Download of the required mods failed. Please try again."
+	STRINGS.UI.NETWORKDISCONNECT.BODY.SERVER_MODS_WORKSHOP_ACCESS_DENIED = "Download of the required mods failed because one or more mods is not visible to you."
+	STRINGS.UI.NETWORKDISCONNECT.TITLE.APP_OWNERSHIP_CHECK_FAILED = "Game Ownership Check Failed"
+	STRINGS.UI.NOAUTHENTICATIONSCREEN.BAD_BODY = "We can't verify that you own a copy of Don't Starve Together right now. Please try again later."
+	STRINGS.UI.NOAUTHENTICATIONSCREEN.BODY2 = "Account creation will temporarily minimize your game and open your web browser"
+	
+	STRINGS.UI.PLAYER_AVATAR.STEAM = "View profile"
+	
+	STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_OVERLAY_REQUIRED_BODY = "Please enable your browser to purchase clothing sets."
+	STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_OVERLAY_REQUIRED_TITLE = "Browser Required"
+	
+	STRINGS.UI.SERVERCREATIONSCREEN.PRIVACY.CLAN = "Group"
+	STRINGS.UI.SERVERCREATIONSCREEN.INVALIDCLANSETTINGS_BODY = "You have to specify the Group you belong to! Please verify the group number."
+	STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY = "You can only resume an online world when you have a connection to the game servers. Please log in and try again."
+	
+	STRINGS.UI.SERVERLISTINGSCREEN.CLANONLY = "Group:"
+	
+	STRINGS.UI.TRADESCREEN.MARKET = ""
+	
+	STRINGS.MODS.VERSIONING.OUT_OF_DATE = "Mod \"%s\" is out of date. The server needs to get the latest version so other users can join."
+	
+	STRINGS.UI.ITEM_SERVER.FAILED_MULTIPLE_PENDING_PURCHASES = ""
+	STRINGS.UI.ITEM_SERVER.FAILED_IAP_RATE_LIMITED = ""
+	
+	STRINGS.CHARACTER_QUOTES.wathgrithr = string.gsub(STRINGS.CHARACTER_QUOTES.wathgrithr, "ö", "o")
+	for k,v in pairs( STRINGS.SKIN_QUOTES ) do
+		STRINGS.SKIN_QUOTES[k] = string.gsub(v, "ö", "o")
+	end
+	
+	--Remove console strings
+	STRINGS.PSN = nil
+	STRINGS.UI.HELP.CHANGEVALUE = nil
+	STRINGS.UI.CREDITS.XB1_THANKS = nil
+	STRINGS.UI.CREDITS.BLIT = nil
+	STRINGS.UI.CREDITS.LOLLI = nil
+	STRINGS.UI.CREDITS.VMEM = nil
+	
+	STRINGS.UI.MAINSCREEN.REGISTER_SECOND_PLAYER = nil
+	STRINGS.UI.MAINSCREEN.SPLITSCREEN = nil
+	STRINGS.UI.MAINSCREEN.ADJUST_DISPLAY_INSTRUCTIONS = nil
+	STRINGS.UI.MAINSCREEN.PSN_OFFLINEMODE = nil
+    STRINGS.UI.MAINSCREEN.PSN_OFFLINEMODEDESC = nil
+    STRINGS.UI.MAINSCREEN.NOT_SIGNED_IN_TO_PSN = nil
+    STRINGS.UI.MAINSCREEN.NOT_SIGNED_IN_TO_PSN_DESC = nil
+    STRINGS.UI.MAINSCREEN.NO_INTERNET_CONNECTION = nil
+    STRINGS.UI.MAINSCREEN.NO_INTERNET_CONNECTION_DESC = nil
+    STRINGS.UI.MAINSCREEN.NO_PS_PLUS_MEMBERSHIP = nil
+    STRINGS.UI.MAINSCREEN.NO_PS_PLUS_MEMBERSHIP_DESC = nil
+	STRINGS.UI.MAINSCREEN.ONLINE_AGE_RESTRICTION_TITLE = nil
+	STRINGS.UI.MAINSCREEN.ONLINE_AGE_RESTRICTION_DESC = nil
+	STRINGS.UI.MAINSCREEN.ONLINE_UGC_RESTRICTION_TITLE = nil
+	STRINGS.UI.MAINSCREEN.ONLINE_UGC_RESTRICTION_DESC = nil
+	STRINGS.UI.MAINSCREEN.TOOLTIP_OPTIONS_PS4 = nil
+    STRINGS.UI.MAINSCREEN.TOOLTIP_CREDITS = nil
+	STRINGS.UI.MAINSCREEN.TOOLTIP_LOGOUT = nil
+	STRINGS.UI.MAINSCREEN.INVITED_AS = nil
+    
+	STRINGS.UI.XB1_USER_DIALOG = nil
+	STRINGS.UI.SPLITSCREEN_REGISTRATION = nil
+	
+	STRINGS.UI.OPTIONS.EXTRAS = nil
+	STRINGS.UI.OPTIONS.BACKTITLE_PS4 = nil
+	STRINGS.UI.OPTIONS.BACKBODY_PS4 = nil
+	STRINGS.UI.OPTIONS.REDEEM = nil
+	STRINGS.UI.OPTIONS.EULA = nil
+	STRINGS.UI.OPTIONS.EULA_RESPONSE_CHANGED_TITLE = nil
+	STRINGS.UI.OPTIONS.EULA_RESPONSE_CHANGED_BODY = nil
+	STRINGS.UI.OPTIONS.OFFLINE_MODE_TITLE = nil
+	STRINGS.UI.OPTIONS.OFFLINE_MODE_BODY = nil
+	STRINGS.UI.OPTIONS.KLEI_ID_PREFIX = nil
+
+	STRINGS.UI.NOTIFICATION.CURRENTLY_SPEAKING = nil
+	STRINGS.UI.NOTIFICATION.RETRYING = nil
+	STRINGS.UI.NOTIFICATION.RESTORING = nil
+
+	STRINGS.UI.EULADIALOG = nil
+
+	STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_DST_SERVER_STARTUP_FAILED = nil
+	STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_SPLITSCREEN_INGAME_PLAYER2_SIGNED_OUT_OF_PS4 = nil
+	STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_SPLITSCREEN_UI_PLAYER2_SIGNED_OUT_OF_PS4 = nil
+	STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_SPLITSCREEN_INGAME_PLAYER1_SIGNED_OUT_OF_PSN = nil
+	STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_SPLITSCREEN_INGAME_PLAYER2_SIGNED_OUT_OF_PSN = nil
+	STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_SPLITSCREEN_UI_PLAYER1_SIGNED_OUT_OF_PSN = nil
+	STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_SPLITSCREEN_UI_PLAYER2_SIGNED_OUT_OF_PSN = nil
+	STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_DST_NETWORK_CONNECTION_LOST = nil
+	STRINGS.UI.NETWORKDISCONNECT.TITLE.ID_DST_SAVE_FILE_DAMAGED = nil
+	STRINGS.UI.NETWORKDISCONNECT.BODY.ID_SPLITSCREEN_INGAME_PLAYER2_SIGNED_OUT_OF_PS4 = nil
+	STRINGS.UI.NETWORKDISCONNECT.BODY.ID_SPLITSCREEN_UI_PLAYER2_SIGNED_OUT_OF_PS4 = nil
+	STRINGS.UI.NETWORKDISCONNECT.BODY.ID_SPLITSCREEN_INGAME_PLAYER1_SIGNED_OUT_OF_PSN = nil
+	STRINGS.UI.NETWORKDISCONNECT.BODY.ID_SPLITSCREEN_INGAME_PLAYER2_SIGNED_OUT_OF_PSN = nil
+	STRINGS.UI.NETWORKDISCONNECT.BODY.ID_SPLITSCREEN_UI_PLAYER1_SIGNED_OUT_OF_PSN = nil
+	STRINGS.UI.NETWORKDISCONNECT.BODY.ID_SPLITSCREEN_UI_PLAYER2_SIGNED_OUT_OF_PSN = nil
+	STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_NETWORK_CONNECTION_LOST = nil
+	STRINGS.UI.NETWORKDISCONNECT.BODY.ID_DST_SAVE_FILE_DAMAGED = nil
+
+	STRINGS.UI.PLAYERSTATUSSCREEN.VIEWGAMERCARD = nil
+
+	STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS.SURVIVAL_TOGETHER_PS4 = nil
+	STRINGS.UI.CUSTOMIZATIONSCREEN.PRESETLEVELS.DST_CAVE_PS4 = nil
+
+	STRINGS.UI.SERVERLISTINGSCREEN.OFFLINE_MODE_TITLE_PS4 = nil
+	STRINGS.UI.SERVERLISTINGSCREEN.OFFLINE_MODE_BODY_PS4 = nil
+	STRINGS.UI.SERVERLISTINGSCREEN.NO_CONNECTION_TO_MASTER_SERVER = nil
+	STRINGS.UI.SERVERLISTINGSCREEN.NO_CONNECTION_TO_MASTER_SERVER_DESC = nil
+	STRINGS.UI.SERVERLISTINGSCREEN.OFFLINE_DESC = nil
+
+	STRINGS.UI.SERVERCREATIONSCREEN.FORESTWORLD = nil
+	STRINGS.UI.SERVERCREATIONSCREEN.CAVEWORLD = nil
+	STRINGS.UI.SERVERCREATIONSCREEN.PRIVACY_LABEL = nil
+	STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY_PS4 = nil
+	STRINGS.UI.SERVERCREATIONSCREEN.ONLINEONLYBODY_SPLITSCREEN = nil
+	STRINGS.UI.SERVERCREATIONSCREEN.UGC_BLOCKED_DESCRIPTION_PREFIX = nil
+	STRINGS.UI.SERVERCREATIONSCREEN.UGC_BLOCKED_DESCRIPTION_POSTFIX = nil
+	STRINGS.UI.SERVERCREATIONSCREEN.UGC_BLOCKED_DESCRIPTION_PREFIX_SPLITSCREEN = nil
+	STRINGS.UI.SERVERCREATIONSCREEN.OFFLINE_WORLD = nil
+
+	STRINGS.UI.SERVERADMINSCREEN.UNKNOWN_DAY_PS4 = nil
+
+	STRINGS.UI.SKINSSCREEN.NOW_OFFLINE_TITLE = nil
+	STRINGS.UI.SKINSSCREEN.NOW_OFFLINE_BODY = nil
+
+	STRINGS.UI.MORGUESCREEN.PLAYER_CHAR_PS4 = nil
+	STRINGS.UI.MORGUESCREEN.DECEASED_PS4 = nil
+	STRINGS.UI.MORGUESCREEN.MODE_PS4 = nil
+	STRINGS.UI.MORGUESCREEN.REMOVE_ENCOUNTER = nil
+
+	STRINGS.UI.CONTROLSSCREEN.PS4 = nil
+
+	STRINGS.UI.CONTROLSSCREEN.VITA = nil
+
+    STRINGS.UI.SANDBOXMENU.PS4_SLIDESMALL = nil
+    STRINGS.UI.SANDBOXMENU.PS4_SLIDESMEDIUM = nil
+
+    STRINGS.UI.SAVELOAD.DATA_DAMAGED_PS4 = nil
+    STRINGS.UI.SAVELOAD.DATA_DAMAGED_BODY = nil
+    STRINGS.UI.SAVELOAD.DISABLE_AUTOSAVE_PS4 = nil
+    STRINGS.UI.SAVELOAD.DISABLE = nil
+    STRINGS.UI.SAVELOAD.RESTORE_BACKUP = nil
+    STRINGS.UI.SAVELOAD.RESTORE_BACKUP_BODY = nil
+    STRINGS.UI.SAVELOAD.RESTOREBACKUP_FAILED = nil
+    
+    STRINGS.UI.COMMANDWHEEL = nil
+
+    STRINGS.UI.EMOTES = nil
+
+    STRINGS.UI.PRESENCE = nil
+
+    STRINGS.SIGNS.MENU = nil
+end

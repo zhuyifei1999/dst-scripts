@@ -1,7 +1,6 @@
 local Screen = require "widgets/screen"
 local Grid = require "widgets/grid"
 local HeaderTabs = require "widgets/redux/headertabs"
-local ImageButton = require "widgets/imagebutton"
 local InputDialogScreen = require "screens/inputdialog"
 local PopupDialogScreen = require "screens/redux/popupdialog"
 local TextListPopup = require "screens/redux/textlistpopup"
@@ -35,7 +34,6 @@ local beta_color = WEBCOLOURS.SANDYBROWN
 local offline_color = UICOLOURS.SLATE
 local normal_color = UICOLOURS.IVORY
 local normal_list_item_bg_tint = { 1,1,1,0.5 }
-local focus_list_item_bg_tint = { 1,1,1,0.7 }
 
 local FONT_SIZE = 35
 if JapaneseOnPS4() then
@@ -872,27 +870,18 @@ function ServerListingScreen:MakeServerListWidgets()
 
         row:SetOnGainFocus(function() self.servers_scroll_list:OnWidgetFocus(row) end)
 
-        row.cursor = row:AddChild(ImageButton("images/frontend_redux.xml",
-                "serverlist_listitem_normal.tex", -- normal
-                nil, -- focus
-                nil,
-                nil,
-                "serverlist_listitem_selected.tex" -- selected
+        local onclickdown = function() self:OnStartClickServerInList(row.unfiltered_index)  end
+        local onclickup   = function() self:OnFinishClickServerInList(row.unfiltered_index) end
+        row.cursor = row:AddChild(TEMPLATES.ListItemBackground(
+                row_width,
+                row_height,
+                onclickup
             ))
         -- Positioning within a row is unfortunate. This one should probably be
         -- centred or offset by its width, but fixing that doesn't seem worth
         -- it.
         row.cursor:SetPosition( row_width/2-90, y_offset, 0)
-        row.cursor:SetOnDown(  function() self:OnStartClickServerInList(row.unfiltered_index)  end)
-        row.cursor:SetOnClick( function() self:OnFinishClickServerInList(row.unfiltered_index) end)
-        row.cursor:ForceImageSize(row_width,row_height)
-        row.cursor:SetImageNormalColour(unpack(normal_list_item_bg_tint))
-        row.cursor:SetImageFocusColour(unpack(focus_list_item_bg_tint))
-        row.cursor:SetImageSelectedColour(unpack(normal_list_item_bg_tint))
-        row.cursor:SetImageDisabledColour(unpack(normal_list_item_bg_tint))
-        row.cursor:UseFocusOverlay("serverlist_listitem_hover.tex")
-        row.cursor.scale_on_focus = false
-        row.cursor.move_on_click = false
+        row.cursor:SetOnDown(onclickdown)
         row.cursor:Hide()
 
         local intent = row:AddChild(Widget("intention_image"))
@@ -1158,7 +1147,7 @@ function ServerListingScreen:MakeServerListWidgets()
             {},
             {
                 context = {},
-                widget_width  = dialog_width * 1.6, -- this arugment is weird. Would expect nineslice's width, but nope!
+                widget_width  = dialog_width * 1.6, -- bigger than width because the widgets are accidentally offset to the left.
                 widget_height = row_height,
                 num_visible_rows = listings_per_view,
                 num_columns      = 1,
@@ -1618,33 +1607,15 @@ local bg_height = height + 2
 local filter_font_face = CHATFONT
 local filter_font_size = 20
 
-local function AddListItemBg(owner, focusable_widget)
-    local bg = owner:AddChild(Image("images/frontend_redux.xml", "serverlist_listitem_normal.tex"))
-    bg:SetSize(bg_width, bg_height)
-    bg:SetTint(unpack(normal_list_item_bg_tint))
-    -- Need the owner as argument because MoveToBack must be done
-    -- after AddChild.
-    bg:MoveToBack()
-
-    focusable_widget:SetOnGainFocus(function(...)
-        bg:SetTint(unpack(focus_list_item_bg_tint))
-    end)
-
-    focusable_widget:SetOnLoseFocus(function(...)
-        bg:SetTint(unpack(normal_list_item_bg_tint))
-    end)
-
-    return bg
-end
-
 local function CreateButtonFilter( self, name, text, buttontext, onclick)
 
     local group = self.side_panel:AddChild(TEMPLATES.LabelButton(onclick, text, buttontext, label_width, widget_width, height*1.4, spacing, filter_font_face, filter_font_size))
+    group.bg = group:AddChild(TEMPLATES.ListItemBackground(bg_width, bg_height))
+    group.bg:MoveToBack()
+
     group.label:SetHAlign(ANCHOR_LEFT)
 
     group.name = name
-
-    AddListItemBg(group, group.button)
 
     return group
 end
@@ -1658,6 +1629,8 @@ local function CreateSpinnerFilter( self, name, text, spinnerOptions, numeric, o
         group = TEMPLATES.LabelSpinner(text, spinnerOptions, label_width, widget_width, height, spacing, filter_font_face, filter_font_size)
     end
     self.side_panel:AddChild(group)
+    group.bg = group:AddChild(TEMPLATES.ListItemBackground(bg_width, bg_height))
+    group.bg:MoveToBack()
 
     group.label:SetHAlign(ANCHOR_LEFT)
     group.spinner:EnablePendingModificationBackground()
@@ -1671,8 +1644,6 @@ local function CreateSpinnerFilter( self, name, text, spinnerOptions, numeric, o
         end)
 
     group.name = name
-
-    AddListItemBg(group, group.spinner)
 
     return group
 end
