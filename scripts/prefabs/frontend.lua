@@ -20,9 +20,6 @@ local assets =
     Asset("ATLAS", "images/frontscreen.xml"),
     Asset("IMAGE", "images/frontscreen.tex"),
 
-    Asset("ATLAS", "images/frontend_redux.xml"),
-    Asset("IMAGE", "images/frontend_redux.tex"),
-
     -- Asset("ANIM", "anim/portrait_frame.zip"), -- Not currently used, but likely to come back
 
     Asset("ANIM", "anim/build_status.zip"),

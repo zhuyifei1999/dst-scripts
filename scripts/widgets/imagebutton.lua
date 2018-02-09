@@ -164,7 +164,9 @@ function ImageButton:OnLoseFocus()
 end
 
 function ImageButton:OnControl(control, down)
-    if not self:IsEnabled() or not self.focus or self:IsSelected() then return end
+    if not self:IsEnabled() or not self.focus then return end
+
+	if self:IsSelected() and not self.AllowOnControlWhenSelected then return false end
 
     if control == self.control then
         if down then

@@ -785,7 +785,7 @@ end
 function ServerListingScreen:OnStartClickServerInList(unfiltered_index)
     if self.servers
         and self.servers[unfiltered_index]
-        and self.selected_index_actual ~= self.servers[unfiltered_index].actualindex
+        and self.selected_index_actual ~= unfiltered_index
         then
         self.last_server_click_time = nil
     end
@@ -795,13 +795,14 @@ end
 function ServerListingScreen:OnFinishClickServerInList(unfiltered_index)
     if self.servers
         and self.servers[unfiltered_index] ~= nil
-        and self.servers[unfiltered_index].actualindex == self.selected_index_actual
+        and unfiltered_index == self.selected_index_actual
+		and self.last_server_click_time ~= nil
         then
         -- If we're clicking on the same server as the last click, check for double-click Join
-        if self.last_server_click_time and GetTime() - self.last_server_click_time <= DOUBLE_CLICK_TIMEOUT then
-            self:Join(false)
-            return
-        end
+		if GetTime() - self.last_server_click_time <= DOUBLE_CLICK_TIMEOUT then
+			self:Join(false)
+			return
+		end
     end
     self.last_server_click_time = GetTime()
 end
@@ -883,6 +884,7 @@ function ServerListingScreen:MakeServerListWidgets()
         row.cursor:SetPosition( row_width/2-90, y_offset, 0)
         row.cursor:SetOnDown(onclickdown)
         row.cursor:Hide()
+		row.cursor.AllowOnControlWhenSelected = true
 
         local intent = row:AddChild(Widget("intention_image"))
         intent:SetPosition(column_offsets.INTENTION, y_offset)
