@@ -48,6 +48,8 @@ local assets =
 
     Asset("ATLAS", "images/frontend.xml"),
     Asset("IMAGE", "images/frontend.tex"),
+    Asset("ATLAS", "images/frontend_redux.xml"),
+    Asset("IMAGE", "images/frontend_redux.tex"),
 
     Asset("ATLAS", "images/bg_spiral.xml"),
     Asset("IMAGE", "images/bg_spiral.tex"),
