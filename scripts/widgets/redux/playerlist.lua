@@ -113,7 +113,6 @@ function PlayerInfoListing:DoInit(v, nextWidgets)
     end
 	x = x + 16*2 + nudge_x
 
-    -- TODO(dbriscoe): Need new outline/background
     self.highlight = self:AddChild(Image("images/scoreboard.xml", "row_short_goldoutline.tex"))
     self.highlight:SetPosition(x + 85, 0)
     self.highlight:ScaleToSize(215,50)

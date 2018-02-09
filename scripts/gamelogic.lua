@@ -16,6 +16,10 @@ local EquipSlot = require("equipslotutil")
 local GroundTiles = require("worldtiledefs")
 local Stats = require("stats")
 
+if PLATFORM == "WIN32_RAIL" then
+	TheSim:SetMemInfoTrackingInterval(5*60)
+end
+
 -- globals
 chestfunctions = require("scenarios/chestfunctions")
 
@@ -898,6 +902,13 @@ local function LoadSlot(slot)
     end
 end
 
+function ShowDemoExpiredDialog()
+	local DemoOverPopupDialogScreen = require "screens/demooverpopup"
+
+	local popup = DemoOverPopupDialogScreen(RequestShutdown)
+	TheFrontEnd:PushScreen(popup)
+end
+
 ----------------LOAD THE PROFILE AND THE SAVE INDEX, AND START THE FRONTEND
 
 local function DoResetAction()
@@ -983,6 +994,9 @@ local function DoResetAction()
 			LoadAssets("FRONTEND")
 			if MainScreen then
 				TheFrontEnd:ShowScreen(MainScreen(Profile))
+				if PLATFORM == "WIN32_RAIL" and TheSim:IsDemoExpired() then
+					ShowDemoExpiredDialog()
+				end
 			end
 		end
 	end
@@ -1038,6 +1052,8 @@ Print(VERBOSITY.DEBUG, "[Loading profile and save index]")
 Profile:Load( function() 
 	SaveGameIndex:Load( OnFilesLoaded )
 end )
+
+require "platformpostload" --Note(Peter): The location of this require is currently only dependent on being after the built in usercommands being loaded
 
 --Online servers will call StartDedicatedServer after authentication
 if TheNet:IsDedicated() and not TheNet:GetIsServer() and TheNet:IsDedicatedOfflineCluster() then

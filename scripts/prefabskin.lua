@@ -262,6 +262,22 @@ function firepit_init_fn(inst, build_name, fxoffset)
 
     inst.AnimState:SetSkin(build_name, "firepit")
     inst.components.burnable:SetFXOffset(fxoffset)
+
+    local skin_fx = SKIN_FX_PREFAB[build_name]
+    if skin_fx ~= nil and skin_fx[1] ~= nil then
+        inst:ListenForEvent("takefuel", function(inst, data)
+            local fuelvalue = data ~= nil and data.fuelvalue or 0
+            if fuelvalue > 0 then
+                local fx = SpawnPrefab(skin_fx[1])
+                fx.entity:SetParent(inst.entity)
+                fx.level:set(
+                    (fuelvalue >= TUNING.LARGE_FUEL and 3) or
+                    (fuelvalue >= TUNING.MED_FUEL and 2) or
+                    1
+                )
+            end
+        end)
+    end
 end
 
 --------------------------------------------------------------------------

@@ -80,7 +80,7 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
 
         local scale = .5
 
-        playerListing.viewprofile = playerListing:AddChild(TEMPLATES.old.IconButton("images/button_icons.xml", "steam.tex" ))
+        playerListing.viewprofile = playerListing:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "steam.tex" ))
         playerListing.viewprofile:SetPosition(137,-2,0)
         playerListing.viewprofile:SetScale(scale)
         --playerListing.viewprofile:SetNormalScale(scale)

@@ -124,7 +124,6 @@ function MysteryBoxScreen:_BuildBoxesPanel()
 	boxes_ss.count_text = boxes_ss.image:AddChild(Text(HEADERFONT, 20, nil, UICOLOURS.WHITE))
     boxes_ss.count_text:SetPosition(0, -70)
     boxes_ss.count_text:SetRegionSize(90, 20)
-    --boxes_ss.count_text:SetHAlign(ANCHOR_LEFT)
 
     boxes_ss.open_btn = boxes_ss:AddChild(TEMPLATES.StandardButton())
     boxes_ss.open_btn:SetScale(0.7)

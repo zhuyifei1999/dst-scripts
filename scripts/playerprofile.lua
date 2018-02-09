@@ -1082,6 +1082,7 @@ end
 function PlayerProfile:SetEntitlementReceived(entitlement)
 	self:SetValue("entitlement_"..entitlement, true)
 	self.dirty = true
+    self:Save()
 end
 
 function PlayerProfile:SawNewUserPopup()

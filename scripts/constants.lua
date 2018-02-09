@@ -470,8 +470,9 @@ SPECIAL_EVENTS =
     HALLOWED_NIGHTS = "hallowed_nights",
     WINTERS_FEAST = "winters_feast",
     YOTG = "year_of_the_gobbler",
+    YOTV = "year_of_the_varg",
 }
-WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.NONE
+WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.YOTV
 
 FESTIVAL_EVENTS =
 {
@@ -509,6 +510,13 @@ SPECIAL_EVENT_MUSIC =
 
     --year of the gobbler
     [SPECIAL_EVENTS.YOTG] =
+    {
+        bank = "music_frontend_yotg.fsb",
+        sound = "dontstarve/music/music_FE_yotg",
+    },
+
+    --year of the varg
+    [SPECIAL_EVENTS.YOTV] =
     {
         bank = "music_frontend_yotg.fsb",
         sound = "dontstarve/music/music_FE_yotg",
@@ -628,10 +636,13 @@ TECH =
 
     ORPHANAGE_ONE = { ORPHANAGE = 1 },
     PERDOFFERING_ONE = { PERDOFFERING = 1 },
+    PERDOFFERING_THREE = { PERDOFFERING = 3 },
+    WARGOFFERING_THREE = { WARGOFFERING = 3 },
 
     HALLOWED_NIGHTS = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
     WINTERS_FEAST = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
     YOTG = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
+    YOTV = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
 
     LOST = { MAGIC = 10, SCIENCE = 10, ANCIENT = 10 },
 }
@@ -1315,6 +1326,7 @@ HUMAN_MEAT_ENABLED = false
 
 SWIPE_FADE_TIME = .4
 SCREEN_FADE_TIME = .2
+-- Use TEMPLATES.BackButton instead of BACK_BUTTON_X/Y
 BACK_BUTTON_X = 60
 BACK_BUTTON_Y = 60
 DOUBLE_CLICK_TIMEOUT = .5

@@ -1,5 +1,6 @@
 local PopupDialogScreen = require "screens/redux/popupdialog"
 local WorldGenScreen = require "screens/worldgenscreen"
+local HealthWarningPopup = require "screens/healthwarningpopup"
 local Stats = require("stats")
 
 require "scheduler"
@@ -885,6 +886,11 @@ function Start()
         end)
 
     CheckControllers()
+
+	if PLATFORM == "WIN32_RAIL" and RUN_GLOBAL_INIT then
+		TheFrontEnd:Fade(FADE_IN, SCREEN_FADE_TIME)
+		TheFrontEnd:PushScreen( HealthWarningPopup() )
+	end
 end
 
 --------------------------
@@ -1186,6 +1192,20 @@ function OnPushPopupDialog( message )
     if screen then
         screen:Enable()
     end
+end
+
+function OnDemoTimeout()
+	print("Demo timed out")
+	if not IsMigrating() then
+		TheSystemService:StopDedicatedServers()
+	end
+	if ThePlayer ~= nil then
+		SerializeUserSession(ThePlayer)
+	end
+	local should_reset = true
+	should_reset = should_reset and (InGamePlay() or IsMigrating())
+
+	DoRestart(should_reset)
 end
 
 -- Receive a disconnect notification
