@@ -1359,6 +1359,7 @@ UICOLOURS = {
     PURPLE = RGB(152, 86, 232, 1),
     RED = RGB(207, 61, 61, 1),
     SLATE = RGB(155, 170, 177, 1),
+	SILVER = RGB(192, 192, 192, 1),
 }
 
 
