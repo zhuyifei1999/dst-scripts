@@ -98,9 +98,10 @@ local ModConfigurationScreen = Class(Screen, function(self, modname, client_conf
             widget:ApplyDescription()
         end)
 
+        widget.real_index = idx
         widget.opt.spinner.OnChanged =
             function( _, data )
-                self.options[idx].value = data
+                self.options[widget.real_index].value = data
                 widget.opt.data.selected_value = data
                 widget.opt.spinner:SetHasModification(widget.opt.data.selected_value ~= widget.opt.data.initial_value)
                 widget:ApplyDescription()
@@ -114,6 +115,8 @@ local ModConfigurationScreen = Class(Screen, function(self, modname, client_conf
     local function ApplyDataToWidget(context, widget, data, idx)
         widget.opt.data = data
 		if data then
+            widget.real_index = idx
+
             widget.opt:Show()
 			widget.opt.spinner:SetOptions(data.spin_options)
 

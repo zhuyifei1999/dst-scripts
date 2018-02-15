@@ -55,11 +55,15 @@ local function SpawnHound(inst)
 end
 
 local function ShowEyeFX(inst)
-    inst._eyeflames:set(true)
+    if inst._eyeflames ~= nil then
+        inst._eyeflames:set(true)
+    end
 end
 
 local function HideEyeFX(inst)
-    inst._eyeflames:set(false)
+    if inst._eyeflames ~= nil then
+        inst._eyeflames:set(false)
+    end
 end
 
 local function PlayClayShakeSound(inst)
@@ -343,6 +347,6 @@ CommonStates.AddSleepStates(states,
     },
     endtimeline = {},
 })
-CommonStates.AddFrozenStates(states)
+CommonStates.AddFrozenStates(states, HideEyeFX, ShowEyeFX)
 
 return StateGraph("warg", states, events, "idle", actionhandlers)

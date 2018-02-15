@@ -93535,7 +93535,7 @@ msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_wathgrithr_nature
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.body_wathgrithr_nature"
-msgid "This folds of this fabric sway in the breeze, reminding the wearer of leaves on the wind."
+msgid "The folds of this fabric sway in the breeze, reminding the wearer of leaves on the wind."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.body_wathgrithr_rose

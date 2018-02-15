@@ -191,7 +191,7 @@ local function OnAttacked(inst, data)
     inst.components.combat:SetTarget(data.attacker)
     inst.components.combat:ShareTarget(data.attacker, SHARE_TARGET_DIST,
         function(dude)
-            return not dude.components.health:IsDead()
+            return not (dude.components.health ~= nil and dude.components.health:IsDead())
                 and (dude:HasTag("hound") or dude:HasTag("houndfriend"))
                 and data.attacker ~= (dude.components.follower ~= nil and dude.components.follower.leader or nil)
         end, 5)
@@ -200,7 +200,7 @@ end
 local function OnAttackOther(inst, data)
     inst.components.combat:ShareTarget(data.target, SHARE_TARGET_DIST,
         function(dude)
-            return not dude.components.health:IsDead()
+            return not (dude.components.health ~= nil and dude.components.health:IsDead())
                 and (dude:HasTag("hound") or dude:HasTag("houndfriend"))
                 and data.target ~= (dude.components.follower ~= nil and dude.components.follower.leader or nil)
         end, 5)
