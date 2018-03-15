@@ -1108,7 +1108,7 @@ function TradeScreen:RefreshMachineTilesState()
 				y_offset = 60
 			end
 			self.frames_single[i]:Mark(item.last_item_warning)
-			self.frames_single[i]:SetHoverText( hover_text, { font = NEWFONT_OUTLINE, size = 20, offset_x = 0, offset_y = y_offset, colour = {1,1,1,1}})
+			self.frames_single[i]:SetHoverText( hover_text, { font = NEWFONT_OUTLINE, offset_x = 0, offset_y = y_offset, colour = {1,1,1,1}})
 		else
 			self.frames_single[i]:ClearHoverText()
 			self.frames_single[i]:Mark(false)

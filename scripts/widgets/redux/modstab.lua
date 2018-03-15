@@ -213,6 +213,7 @@ function ModsTab:EnableUpdateButton()
 end
 
 function ModsTab:_SetModsList(listtype)
+    local scroll_to = self.currentmodtype ~= listtype
     self.currentmodtype = listtype
 
     -- Always show details so it can show the empty message (if workshop is
@@ -233,9 +234,11 @@ function ModsTab:_SetModsList(listtype)
         end
         self:ShowModDetails(idx, self.modnames_client == modnames_list)
 
-        -- On switching tabs, scroll the window to the selected item. (Can't do
-        -- on ShowModDetails since it would snap on each click.)
-        self.mods_scroll_list:ScrollToDataIndex(idx)
+        if scroll_to then
+            -- On switching tabs, scroll the window to the selected item. (Can't do
+            -- on ShowModDetails since it would snap on each click.)
+            self.mods_scroll_list:ScrollToDataIndex(idx)
+        end
     end
 
     if listtype == "client" then
@@ -245,7 +248,6 @@ function ModsTab:_SetModsList(listtype)
     elseif listtype == "server" then
         self.mods_scroll_list:SetItemsData(self.optionwidgets_server)
         ShowLastClickedDetails(self.last_server_modname, self.modnames_server)
-
     end
 
     self:DoFocusHookups()
@@ -446,7 +448,7 @@ function ModsTab:UpdateForWorkshop( force_refresh )
         end
 
         --If nothing has changed bail out and leave the ui alone
-        if not need_to_udpate then
+        if not need_to_udpate or (self.mods_scroll_list and self.mods_scroll_list.dragging) then
             if TheSim:IsLoggedOn() then
                 TheSim:StartWorkshopQuery()
             end
@@ -687,9 +689,7 @@ function ModsTab:UpdateForWorkshop( force_refresh )
         end
 
         -- And make a scrollable list!
-        if self.mods_scroll_list ~= nil then
-            self.mods_scroll_list:SetItemsData(self.optionwidgets_client)
-        else
+        if self.mods_scroll_list == nil then
             self.mods_scroll_list  = self.mods_page:AddChild(TEMPLATES.ScrollingGrid(
                     self.optionwidgets_client,
                     {

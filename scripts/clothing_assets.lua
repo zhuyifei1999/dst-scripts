@@ -362,6 +362,8 @@ local clothing_assets =
 	Asset("DYNAMIC_ANIM", "anim/dynamic/pack_nature_winona.zip"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/pack_nature_woodie.zip"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/pack_nature_wx78.zip"),
+	Asset("DYNAMIC_ANIM", "anim/dynamic/pack_rog_gift.zip"),
+	Asset("DYNAMIC_ANIM", "anim/dynamic/pack_sw_gift.zip"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/playerportrait_bg_beefalo.zip"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/playerportrait_bg_birchnut.zip"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/playerportrait_bg_camp.zip"),

@@ -281,16 +281,14 @@ function IsUserCommerceAllowedOnItem(item_key)
 	end
 end
 
-function IsUserCommerceSellAllowedOnItem(item_key)
-    local item_counts = GetOwnedItemCounts()
-    local num_owned = item_counts[item_key] or 0
-    return TheItems:GetBarterSellPrice(item_key) ~= 0
+function IsUserCommerceSellAllowedOnItem(item_type)
+    local num_owned = TheInventory:GetOwnedItemCount(item_type)
+    return TheItems:GetBarterSellPrice(item_type) ~= 0
 end
 
-function IsUserCommerceBuyAllowedOnItem(item_key)
-    local item_counts = GetOwnedItemCounts()
-    local num_owned = item_counts[item_key] or 0
-    return num_owned == 0 and TheItems:GetBarterBuyPrice(item_key) ~= 0
+function IsUserCommerceBuyAllowedOnItem(item_type)
+    local num_owned = TheInventory:GetOwnedItemCount(item_type)
+	return num_owned == 0 and TheItems:GetBarterBuyPrice(item_type) ~= 0	
 end
 
 function GetTypeForItem(item)
@@ -441,7 +439,7 @@ function SkinGridListConstructor(context, parent, scroll_list)
 				screen:OnItemSelect(type, item, item_id, itemimage)
 			end
 
-            itemimage.ongainfocusfn = function(is_btn_enabled)
+			itemimage.ongainfocusfn = function()
                 scroll_list:OnWidgetFocus(itemimage)
             end
 		
@@ -489,7 +487,7 @@ function UpdateSkinGrid(context, list_widget, data, data_index)
 
 		if screen.show_hover_text then
 			local hover_text = GetModifiedRarityStringForItem(data.item) .. "\n" .. GetSkinName(data.item)
-			list_widget:SetHoverText( hover_text, { font = NEWFONT_OUTLINE, size = 20, offset_x = 0, offset_y = 60, colour = {1,1,1,1}})
+			list_widget:SetHoverText( hover_text, { font = NEWFONT_OUTLINE, offset_x = 0, offset_y = 60, colour = {1,1,1,1}})
 			if list_widget.focus then --make sure we force the hover text to appear on the default focused item
 				list_widget:OnGainFocus()
 			end
@@ -633,18 +631,19 @@ function GetSortedSkinsList()
 	return skins_list, timestamp
 end
 
+--This function is very expensive, don't use it more than once per frame!!!
 function GetOwnedItemCounts()
-    local item_counts = {}
-    local inventory_list = TheInventory:GetFullInventory()
-    for i,inv_item in ipairs(inventory_list) do
-        local key = inv_item.item_type
-        if item_counts[key] then
-            item_counts[key] = item_counts[key] + 1
-        else
-            item_counts[key] = 1
-        end
-    end
-    return item_counts
+	local item_counts = {}
+	local inventory_list = TheInventory:GetOwnedItemCounts()
+	for i,inv_item in ipairs(inventory_list) do
+		local key = inv_item.item_type
+		if item_counts[key] then
+			item_counts[key] = item_counts[key] + 1
+ 		else
+			item_counts[key] = 1
+		end
+	end
+	return item_counts
 end
 
 
@@ -1090,9 +1089,20 @@ function MakeSkinDLCPopup()
 			use_bigportraits = IsPackFeatured(pack_type),
 		}
 
-		local ItemBoxOpenerPopup = require "screens/redux/itemboxopenerpopup"
-		local box_popup = ItemBoxOpenerPopup(nil, options, function(success_cb) success_cb(display_items) end, function() MakeSkinDLCPopup() end)
-		TheFrontEnd:PushScreen(box_popup)
+		if GetSkinData(pack_type).legacy_popup_category ~= nil then
+			local items = {}
+			for _,item in pairs(display_items) do
+				table.insert(items, { item = item, item_id = 0, gifttype = GetSkinData(pack_type).legacy_popup_category })
+			end
+
+			local ThankYouPopup = require "screens/thankyoupopup"
+			local thankyou_popup = ThankYouPopup(items, function() MakeSkinDLCPopup() end)
+			TheFrontEnd:PushScreen(thankyou_popup)
+		else
+			local ItemBoxOpenerPopup = require "screens/redux/itemboxopenerpopup"
+			local box_popup = ItemBoxOpenerPopup(nil, options, function(success_cb) success_cb(display_items) end, function() MakeSkinDLCPopup() end)
+			TheFrontEnd:PushScreen(box_popup)
+		end
 	else
 		if TheFrontEnd:GetActiveScreen().FinishedFadeIn ~= nil then
 			TheFrontEnd:GetActiveScreen():FinishedFadeIn()

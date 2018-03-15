@@ -207,8 +207,7 @@ function PlayerHud:Hide()
     self.shown = false
     self.root:Hide()
 
-    --Normally, HUD hides are tied to gameplay logic, but we need to
-    --manually force close some locally controlled FE popup screens.
+    --Normally, HUD hides are tied to gameplay logic, but we need to manually force close some locally controlled FE popup screens.
     self.controls.votedialog:CloseControllerVoteScreen()
     if self.playerstatusscreen ~= nil then
         self.playerstatusscreen:CloseUserCommandPickerScreen()

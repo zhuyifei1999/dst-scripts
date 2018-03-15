@@ -466,7 +466,6 @@ local function EncounterWidgetConstructor(context, i)
             end
         end,
         {
-            size = 50,
             offset_x = -150,
             offset_y = 0,
     }))
@@ -480,7 +479,6 @@ local function EncounterWidgetConstructor(context, i)
             context.screen:UpdatePlayerHistory()
         end,
         {
-            size = 50,
             offset_x = -180,
             offset_y = 0,
     }))

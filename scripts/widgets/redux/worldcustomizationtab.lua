@@ -643,7 +643,7 @@ end
 
 function WorldCustomizationTab:GetNumberOfTweaks(levelonly)
     local numTweaks = 0
-    for i, level in ipairs(self.current_option_settings) do
+    for i, level in pairs(self.current_option_settings) do
         if levelonly == nil or i == levelonly then
             if level then
                 for tweak,v in pairs(level.tweaks) do

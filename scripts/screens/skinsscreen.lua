@@ -162,8 +162,8 @@ function SkinsScreen:OnItemSelect(type, item_type, item_id, itemimage)
 	self.details_panel.name:SetColour(unpack(GetColorForItem(item_type)))
 	if usable_on ~= "" then
 		self.details_panel.name.show_help = true
-		self.details_panel.name:SetHoverText(usable_on, { font = NEWFONT_OUTLINE, size = 22, offset_x = 0, offset_y = 35, colour = {1,1,1,1}})
-		self.details_panel.image:SetHoverText(usable_on, { font = NEWFONT_OUTLINE, size = 13.3, offset_x = 0, offset_y = 15, colour = {1,1,1,1}})
+		self.details_panel.name:SetHoverText(usable_on, { font = NEWFONT_OUTLINE, offset_x = 0, offset_y = 35, colour = {1,1,1,1}})
+		self.details_panel.image:SetHoverText(usable_on, { font = NEWFONT_OUTLINE, offset_x = 0, offset_y = 15, colour = {1,1,1,1}})
 	else
 		self.details_panel.name.show_help = nil
 		self.details_panel.name:ClearHoverText()

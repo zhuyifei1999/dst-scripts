@@ -202,7 +202,8 @@ function ItemBoxOpenerPopup:OnUpdate(dt)
 
         local item_key = self.items[self.active_item_idx]
         self.current_item_summary:UpdateSummary(item_key)
-        TheFrontEnd:GetSound():PlaySound( RARITY_SOUND[GetRarityForItem(item_key)] or RARITY_SOUND["spiffy"] )
+
+        TheFrontEnd:GetSound():PlaySound( RARITY_SOUND[GetRarityForItem(item_key)] or RARITY_SOUND["Elegant"] )
 
     -- WAIT_ON_NEXT state is progressed by OnControl
     elseif self.ui_state == "BUNDLE_CLOSING" and self.bundle:GetAnimState():AnimDone() then
@@ -280,7 +281,9 @@ function ItemBoxOpenerPopup:_OpenItemBox()
         end
 
         -- Decide how many columns there should be
-        if #item_types == 2 or #item_types == 4 then
+        if #item_types == 1 then
+            columns = 1
+        elseif #item_types == 2 or #item_types == 4 then
             columns = 2
         elseif #item_types == 3 or #item_types == 6 or #item_types == 9 then
             columns = 3

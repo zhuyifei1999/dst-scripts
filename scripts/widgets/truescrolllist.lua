@@ -59,6 +59,9 @@ local TrueScrollList = Class(Widget, function(self, context, create_widgets_fn, 
     -- The row of widgets, not the item row! (Never more than visible_rows.)
     self.focused_widget_row = 1
 
+    self.focused_widget_index = 1
+    self.displayed_start_index = 0
+    
     -- Position scrollbar next to scissor region
 	self.scrollbar_offset = {
         scissor_x + scissor_width + (scrollbar_offset or 0),
@@ -196,7 +199,8 @@ function TrueScrollList:BuildScrollBar()
     self.position_marker:SetPosition(0, self.scrollbar_height/2 - arrow_button_size)
     self.position_marker:SetScale(bar_width_scale_factor*0.3, bar_width_scale_factor*0.3, 1)
     self.position_marker:SetOnDown( function() 
-		TheFrontEnd:LockFocus(true)
+        TheFrontEnd:LockFocus(true)
+        self.dragging = true
         self.saved_scroll_pos = self.current_scroll_pos
     end)
     self.position_marker:SetWhileDown( function() 
@@ -206,6 +210,7 @@ function TrueScrollList:BuildScrollBar()
         --do nothing OnLoseFocus
     end
     self.position_marker:SetOnClick( function() 
+        self.dragging = nil
         TheFrontEnd:LockFocus(false)
         self:RefreshView() --refresh again after we've been moved back to the "up-click" position in Button:OnControl
     end)
@@ -249,6 +254,12 @@ function TrueScrollList:SetItemsData(items)
 	self.end_pos = self.total_rows - self.visible_rows + self.end_offset
 
 	if self.end_pos < 1 then self.end_pos = 1 end --clamp a tiny item set to be at the start position
+
+    local focused_item_index = self.focused_widget_index + self.displayed_start_index
+    if #self.items > 0 and not self.items[focused_item_index] then
+        --print("We filtered out the selected icon, so we need to move the focus back to the start otherwise controller input will be stuck")
+        self.widgets_to_update[1]:SetFocus()
+    end
 
  	self:RefreshView()
 end
@@ -337,7 +348,10 @@ function TrueScrollList:GetSlideRange()
 end
 
 function TrueScrollList:_GetScrollAmountPerRow()
-    return (self.end_pos-1) / self.total_rows * 2
+	local scroll_amount = (self.end_pos-1) / self.total_rows * 2
+
+	-- cap the scroll amount at 1 otherwise focus is going to be skipping rows
+	return (scroll_amount < 1) and scroll_amount or 1
 end
 
 -- Get the index in GetListWidgets for the first visible widget.

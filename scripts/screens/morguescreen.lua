@@ -326,7 +326,7 @@ function MorgueScreen:EncounterWidgetConstructor(data, parent, obit_button)
                 TheNet:ViewNetProfile(group.NET_ID._netid)
             end
         end,
-        { size = 50, offset_y = 65 }))
+        { offset_y = 65 }))
     group.NET_ID:SetPosition(column_offsets.SUBMENU + 12 - 15 + slide_factor, -1, 0)
     group.NET_ID:SetScale(.45)
     group.NET_ID:SetHelpTextMessage(STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE)
@@ -340,7 +340,7 @@ function MorgueScreen:EncounterWidgetConstructor(data, parent, obit_button)
             PlayerHistory:RemoveUser(group.CLEAR._userid)
             self:UpdatePlayerHistory()
         end,
-        { size = 50, offset_y = 65 }))
+        { offset_y = 65 }))
     group.CLEAR:SetPosition(column_offsets.SUBMENU + 12 + 15 + slide_factor, -1, 0)
     group.CLEAR:SetScale(.45)
     group.CLEAR:SetHelpTextMessage(STRINGS.UI.PLAYERSTATUSSCREEN.CLEAR)

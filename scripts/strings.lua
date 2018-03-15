@@ -3292,9 +3292,11 @@ STRINGS.UI =
         TITLE = "Game Options",
         SETTINGS = "Settings",
         CONTROLS = "Controls",
+        MORE = "More",
         TOOLTIP_SETTINGS = "Modify features of the game and user interface",
         TOOLTIP_CONTROLS = "Rebind which input does which in-game action",
-        EXTRAS = "Extras",
+		TOOLTIP_CONTROLS_CONSOLE = "Check which control does which in-game action",
+		TOOLTIP_MORE = "View additional options",
         OPTIONS = "Options",
         BACK = "Back",
         YES = "Yes",
@@ -6829,7 +6831,9 @@ if PLATFORM == "WIN32_RAIL" then
 	STRINGS.UI.XB1_USER_DIALOG = nil
 	STRINGS.UI.SPLITSCREEN_REGISTRATION = nil
 	
-	STRINGS.UI.OPTIONS.EXTRAS = nil
+	STRINGS.UI.OPTIONS.MORE = nil
+	STRINGS.UI.OPTIONS.TOOLTIP_CONTROLS_CONSOLE = nil
+	STRINGS.UI.OPTIONS.TOOLTIP_MORE = nil
 	STRINGS.UI.OPTIONS.BACKTITLE_PS4 = nil
 	STRINGS.UI.OPTIONS.BACKBODY_PS4 = nil
 	STRINGS.UI.OPTIONS.REDEEM = nil

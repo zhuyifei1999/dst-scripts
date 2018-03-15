@@ -727,7 +727,7 @@ function ItemExplorer:_CreateScrollingGridItem(context, scroll_index, width, hei
     local y = height - spacing
 
     w:ScaleToSize(x,y)
-    w.ongainfocusfn = function(is_btn_enabled)
+    w.ongainfocusfn = function()
         self.scroll_list:OnWidgetFocus(w)
         for i,receiver in ipairs(context.input_receivers) do
             if receiver.OnGainGridItemFocus then
@@ -735,7 +735,7 @@ function ItemExplorer:_CreateScrollingGridItem(context, scroll_index, width, hei
             end
         end
     end
-    w.onlosefocusfn = function(is_btn_enabled)
+    w.onlosefocusfn = function()
         for i,receiver in ipairs(context.input_receivers) do
             if receiver.OnLoseGridItemFocus then
                 receiver:OnLoseGridItemFocus(w.data)
@@ -792,7 +792,6 @@ function ItemExplorer._ApplyDataToWidget(context, widget, data, index)
 end
 
 function ItemExplorer:_CreateWidgetDataListForItems(item_table, item_type, activity_checker_fn)
-    local item_counts = GetOwnedItemCounts()
     local contained_items = {}
     for item_key,item_blob in pairs(item_table) do
         if item_blob.type == item_type and ShouldDisplayItemInCollection(item_key) then
@@ -802,7 +801,7 @@ function ItemExplorer:_CreateWidgetDataListForItems(item_table, item_type, activ
                 is_active = is_owned and activity_checker_fn(item_key) or false,
                 acquire_timestamp = timestamp,
                 is_owned = is_owned,
-                owned_count = item_counts[item_key] or 0,
+                owned_count = TheInventory:GetOwnedItemCount(item_key),
                 item_blob = item_blob,
             }
             table.insert(contained_items, data)

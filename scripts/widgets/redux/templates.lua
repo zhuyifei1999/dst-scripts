@@ -527,7 +527,6 @@ function TEMPLATES.IconButton(iconAtlas, iconTexture, labelText, sideLabel, alwa
         -- Only show hovertext.
         btn:SetHoverText(labelText, {
                 font = textinfo.font or NEWFONT_OUTLINE,
-                size = textinfo.size or 22,
                 offset_x = textinfo.offset_x or 2,
                 offset_y = textinfo.offset_y or -45,
                 colour = textinfo.colour or UICOLOURS.WHITE,
@@ -554,7 +553,6 @@ function TEMPLATES.ServerDetailIcon(iconAtlas, iconTexture, bgColor, hoverText, 
             hoverText,
             {
                 font = textinfo.font or NEWFONT_OUTLINE,
-                size = textinfo.size or 22,
                 offset_x = 2, -- for some reason, this looks more centred
                 offset_y = -28,
                 colour = textinfo.colour or {1,1,1,1},
