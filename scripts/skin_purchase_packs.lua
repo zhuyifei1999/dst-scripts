@@ -227,6 +227,14 @@ return
 			"feet_wx78_nature",
 			"hand_wx78_nature",
 		},
+		pack_rog_gift =
+		{
+			"firepit_stonehenge",
+		},
+		pack_sw_gift =
+		{
+			"birdcage_pirate",
+		},
 	},
 
 	CONTENTS =
@@ -346,6 +354,8 @@ return
 		body_wx78_nature = "pack_nature_wx78",
 		feet_wx78_nature = "pack_nature_wx78",
 		hand_wx78_nature = "pack_nature_wx78",
+		firepit_stonehenge = "pack_rog_gift",
+		birdcage_pirate = "pack_sw_gift",
 	}
 
 }

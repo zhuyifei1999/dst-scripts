@@ -181,4 +181,25 @@ function BarterScreen:_BarterComplete(success, status, sounds)
     end
 end
 
+function BarterScreen:OnControl(control, down)
+    if BarterScreen._base.OnControl(self,control, down) then 
+        return true 
+    end
+    
+    if TheInput:ControllerAttached() and control == CONTROL_CANCEL and not down then    
+        self:_OnCancel()
+    end
+end
+
+function BarterScreen:GetHelpText()
+    local controller_id = TheInput:GetControllerID()
+    local t = {}
+
+    if TheInput:ControllerAttached() then
+        table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.HELP.BACK)
+    end
+
+    return table.concat(t, "  ")
+end
+
 return BarterScreen

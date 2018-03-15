@@ -109,6 +109,12 @@ local ServerListingScreen = Class(Screen, function(self, prev_screen, filters, c
 
     self.content_root = self.root:AddChild(Widget("content_root"))
     self.content_root:SetPosition(0,7)
+
+    local details_height = 555
+    self:MakeDetailPanel(right_col, details_height)
+
+    self:MakeMenuButtons(left_col, right_col, nav_col) --put in this before self.server_list is added so that hover text is on top of the buttons.
+    
     self.server_list = self.content_root:AddChild(Widget("server_list"))
     self.server_list:SetPosition(left_col,0)
 
@@ -150,9 +156,6 @@ local ServerListingScreen = Class(Screen, function(self, prev_screen, filters, c
     self.grid_root.server_list_rows = self.grid_root:AddChild(Widget("server_list_rows"))
     self:MakeServerListWidgets()
 
-    local details_height = 555
-    self:MakeDetailPanel(right_col, details_height)
-
     local function GetCentreFocus()
         return self:CurrentCenterFocus()
     end
@@ -165,7 +168,6 @@ local ServerListingScreen = Class(Screen, function(self, prev_screen, filters, c
         return self.sorting_spinner
     end
 
-    self:MakeMenuButtons(left_col, right_col, nav_col)
 
     self:MakeFiltersPanel(filters, details_height)
 
@@ -878,9 +880,7 @@ function ServerListingScreen:MakeServerListWidgets()
                 row_height,
                 onclickup
             ))
-        -- Positioning within a row is unfortunate. This one should probably be
-        -- centred or offset by its width, but fixing that doesn't seem worth
-        -- it.
+        -- Positioning within a row is unfortunate. This one should probably be centred or offset by its width, but fixing that doesn't seem worth it.
         row.cursor:SetPosition( row_width/2-90, y_offset, 0)
         row.cursor:SetOnDown(onclickdown)
         row.cursor:Hide()
@@ -890,7 +890,7 @@ function ServerListingScreen:MakeServerListWidgets()
         intent:SetPosition(column_offsets.INTENTION, y_offset)
         intent.img = intent:AddChild(Image("images/servericons.xml", "playstyle_social.tex"))
         intent.img:ScaleToSize(row_height-5,row_height-5)
-        intent:SetHoverText("INTENTION", {font = NEWFONT_OUTLINE, size = 22, offset_x = 2, offset_y = -28, colour = {1,1,1,1}})
+        intent:SetHoverText("INTENTION", {font = NEWFONT_OUTLINE, offset_x = 2, offset_y = -28, colour = {1,1,1,1}})
         row.INTENTION = intent
         
         row.NAME = row:AddChild(Text(CHATFONT, font_size))
@@ -968,7 +968,6 @@ function ServerListingScreen:MakeServerListWidgets()
                 hovertext,
                 {
                     font = NEWFONT_OUTLINE,
-                    size = 22,
                     offset_x = 10,
                     offset_y = -28
                 })
@@ -1606,12 +1605,11 @@ local spacing = 3
 local total_width = label_width + widget_width + spacing
 local bg_width = spacing + total_width + spacing + 10
 local bg_height = height + 2
-local filter_font_face = CHATFONT
-local filter_font_size = 20
+
 
 local function CreateButtonFilter( self, name, text, buttontext, onclick)
 
-    local group = self.side_panel:AddChild(TEMPLATES.LabelButton(onclick, text, buttontext, label_width, widget_width, height*1.4, spacing, filter_font_face, filter_font_size))
+    local group = self.side_panel:AddChild(TEMPLATES.LabelButton(onclick, text, buttontext, label_width, widget_width, height*1.4, spacing, CHATFONT, 20))
     group.bg = group:AddChild(TEMPLATES.ListItemBackground(bg_width, bg_height))
     group.bg:MoveToBack()
 
@@ -1626,9 +1624,9 @@ local function CreateSpinnerFilter( self, name, text, spinnerOptions, numeric, o
 
     local group = nil
     if numeric then
-        group = TEMPLATES.LabelNumericSpinner(text, spinnerOptions.min, spinnerOptions.max, label_width, widget_width, height, spacing, filter_font_face, filter_font_size)
+        group = TEMPLATES.LabelNumericSpinner(text, spinnerOptions.min, spinnerOptions.max, label_width, widget_width, height, spacing, CHATFONT, 20)
     else
-        group = TEMPLATES.LabelSpinner(text, spinnerOptions, label_width, widget_width, height, spacing, filter_font_face, filter_font_size)
+        group = TEMPLATES.LabelSpinner(text, spinnerOptions, label_width, widget_width, height, spacing, CHATFONT, 20)
     end
     self.side_panel:AddChild(group)
     group.bg = group:AddChild(TEMPLATES.ListItemBackground(bg_width, bg_height))
@@ -1689,7 +1687,7 @@ function ServerListingScreen:MakeFiltersPanel(filter_data, details_height)
     local search_width = 260
     local search_button_width = height + 5
     local searchparent = self.side_panel:AddChild(Widget("searchbox"))
-    local searchbox = searchparent:AddChild(TEMPLATES.StandardSingleLineTextEntry("", search_width, height, filter_font_face, filter_font_size, STRINGS.UI.SERVERLISTINGSCREEN.SEARCH))
+    local searchbox = searchparent:AddChild(TEMPLATES.StandardSingleLineTextEntry("", search_width, height, CHATFONT, 20, STRINGS.UI.SERVERLISTINGSCREEN.SEARCH))
     -- Search box isn't like other filters. It's not aligned on the colon and
     -- should span the full column width. ScrollableList sets positions so we
     -- need this parent.
@@ -1808,8 +1806,7 @@ function ServerListingScreen:_MakeConnectionSpinner()
         { text = STRINGS.UI.SERVERLISTINGSCREEN.LAN,    data = "LAN" },
     }
     local group = CreateSpinnerFilter(self, "CONNECTION", STRINGS.UI.SERVERLISTINGSCREEN.CONNECTION, connection)
-    -- Clobber standard onchangedfn: we're not just modifying filtering, but
-    -- changing the data source.
+    -- Clobber standard onchangedfn: we're not just modifying filtering, but changing the data source.
     group.spinner:SetOnChangedFn(function(selected, old)
         if self.offlinemode and selected == "online" then
             TheFrontEnd:PushScreen(PopupDialogScreen(
@@ -1843,7 +1840,7 @@ function ServerListingScreen:MakeMenuButtons(left_col, right_col, nav_col)
                 data = sort_key, -- This data is what we'll receive in our callbacks.
             })
     end
-    self.sorting_spinner = self.server_list_footer:AddChild(
+    self.sorting_spinner = self.content_root:AddChild(
         TEMPLATES.LabelSpinner(
             STRINGS.UI.SERVERLISTINGSCREEN.SORT_BY,
             sorting_data,
@@ -1852,16 +1849,15 @@ function ServerListingScreen:MakeMenuButtons(left_col, right_col, nav_col)
             nil,
             0
         ))
-    self.sorting_spinner:SetPosition(-20,-2)
+    self.sorting_spinner:SetPosition(-185, -315)
     self.sorting_spinner.spinner:SetOnChangedFn(
         function(selected_name, old)
             self.sort_column = selected_name
             self:DoSorting()
         end)
 
-    -- Need to init refresh to longer string to ensure proper placement of
-    -- icon!
-    self.refresh_button = MakeImgButton(self.server_list_footer, server_list_width/2 - 50, -3, STRINGS.UI.SERVERLISTINGSCREEN.REFRESHING, function() self:SearchForServers() end, "icontext", "refresh")
+    -- Need to init refresh to longer string to ensure proper placement of icon!
+    self.refresh_button = MakeImgButton(self.content_root, 185, -315, STRINGS.UI.SERVERLISTINGSCREEN.REFRESHING, function() self:SearchForServers() end, "icontext", "refresh")
     self.join_button = MakeImgButton(self.side_panel, 0, -RESOLUTION_Y*.5 + BACK_BUTTON_Y - 15, STRINGS.UI.SERVERLISTINGSCREEN.JOIN, function() self:Join(false) end, "large")
 
     local function toggle_filter_fn() self:ToggleShowFilters() end
@@ -1891,8 +1887,7 @@ function ServerListingScreen:MakeMenuButtons(left_col, right_col, nav_col)
     self.cancel_button = self.root:AddChild(TEMPLATES.BackButton(function() self:Cancel() end))
 
     if TheInput:ControllerAttached() then
-        -- Refresh button is visible for controllers so they can tell if we're
-        -- currently refreshing.
+        -- Refresh button is visible for controllers so they can tell if we're currently refreshing.
         -- self.refresh_button:Hide()
         self.join_button:Hide()
         self.cancel_button:Hide()

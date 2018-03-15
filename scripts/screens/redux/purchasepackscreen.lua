@@ -263,7 +263,7 @@ function PurchaseWidget:ApplyDataToWidget(iap_def)
         
         self.ongainfocusfn = nil
     else
-        -- Important that we hide a subelement and not self because TrueScrollList manages our visiblity!
+        -- Important that we hide a sub-element and not self because TrueScrollList manages our visiblity!
         self.root:Hide()
         
         if iap_def and iap_def.is_blank then

@@ -682,8 +682,7 @@ function MultiplayerMainScreen:OnBecomeActive()
     ValidateItemsInProfile(Profile)
 
     if self.leaving and self.userprogress then
-        -- Maybe have returned from collection with new icon or from game with
-        -- more xp.
+        -- Maybe have returned from collection with new icon or from game with  more xp.
         self.userprogress:UpdateProgress()
     end
 
@@ -706,6 +705,16 @@ function MultiplayerMainScreen:OnBecomeActive()
 		TheSim:StartWorkshopQuery()
 	end
 
+    --delay for a frame to allow the screen to finish building, then check the entity count for leaks
+    self.inst:DoTaskInTime(0, function()
+        if self.cached_entity_count ~= nil and self.cached_entity_count ~= TheSim:GetNumberOfEntities() then
+            print("### Error: Leaked entities in the frontend.", self.cached_entity_count)
+            for k, v in pairs(Ents) do if v.widget and (not v:IsValid() or v.widget.parent == nil) then
+                print(k, v.widget.name, v:IsValid(), v.widget.parent ~= nil, v) end
+            end
+        end
+        self.cached_entity_count = TheSim:GetNumberOfEntities()
+    end)
 end
 
 function MultiplayerMainScreen:FinishedFadeIn()
@@ -720,7 +729,7 @@ function MultiplayerMainScreen:FinishedFadeIn()
 		TheFrontEnd:PushScreen( popup_screen )
 	else
 		--Do new entitlement items
-		local items = {} -- early access thank you gifts
+		local items = {}
 		local entitlement_items = TheInventory:GetUnopenedEntitlementItems()
 		for _,item in pairs(entitlement_items) do
 			table.insert(items, { item = item.item_type, item_id = item.item_id, gifttype = SkinGifts.types[item.item_type] or "DEFAULT" })

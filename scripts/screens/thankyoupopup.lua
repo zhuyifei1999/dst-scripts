@@ -393,7 +393,9 @@ function ThankYouPopup:OpenGift()
     -- Mark the item as revealed
     self.revealed_items[self.current_item] = true
     self.reveal_skin = true -- Used on update
-    TheInventory:SetItemOpened(self.items[self.current_item].item_id)
+    if self.items[self.current_item].item_id ~= 0 then
+        TheInventory:SetItemOpened(self.items[self.current_item].item_id)
+    end
 end
 
 function ThankYouPopup:OnControl(control, down)
@@ -410,10 +412,10 @@ function ThankYouPopup:OnControl(control, down)
 			end
 		end
 		
-		if self.can_left and control == CONTROL_SCROLLBACK then
+		if not down and self.can_left and control == CONTROL_SCROLLBACK then
             self:ChangeGift(-1)
             return true
-        elseif self.can_right and control == CONTROL_SCROLLFWD then
+        elseif not down and self.can_right and control == CONTROL_SCROLLFWD then
         	self:ChangeGift(1)
             return true
        	end

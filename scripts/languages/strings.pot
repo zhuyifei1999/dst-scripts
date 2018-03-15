@@ -95198,6 +95198,16 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_nature_wx78"
 msgid "This Spring Chest contains WX-78's complete set of Verdant skin items."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.pack_rog_gift
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_rog_gift"
+msgid "Don't Starve Reign of Giants Gift"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.pack_sw_gift
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_sw_gift"
+msgid "Don't Starve: Shipwrecked Gift"
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.perdling_rooster
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.perdling_rooster"
 msgid "If you wanted a bouncy rooster companion by your side, then you're in cluck!"
@@ -98711,6 +98721,16 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.pack_nature_wx78
 msgctxt "STRINGS.SKIN_NAMES.pack_nature_wx78"
 msgid "WX-78 Spring Chest"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.pack_rog_gift
+msgctxt "STRINGS.SKIN_NAMES.pack_rog_gift"
+msgid "Don't Starve Reign of Giants Gift"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.pack_sw_gift
+msgctxt "STRINGS.SKIN_NAMES.pack_sw_gift"
+msgid "Don't Starve: Shipwrecked Gift"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.perdling_rooster
@@ -109728,11 +109748,6 @@ msgctxt "STRINGS.UI.OPTIONS.EULA_RESPONSE_CHANGED_TITLE"
 msgid "Login Required"
 msgstr ""
 
-#. STRINGS.UI.OPTIONS.EXTRAS
-msgctxt "STRINGS.UI.OPTIONS.EXTRAS"
-msgid "Extras"
-msgstr ""
-
 #. STRINGS.UI.OPTIONS.FULLSCREEN
 msgctxt "STRINGS.UI.OPTIONS.FULLSCREEN"
 msgid "Fullscreen:"
@@ -109756,6 +109771,11 @@ msgstr ""
 #. STRINGS.UI.OPTIONS.KLEI_ID_PREFIX
 msgctxt "STRINGS.UI.OPTIONS.KLEI_ID_PREFIX"
 msgid "Klei ID: "
+msgstr ""
+
+#. STRINGS.UI.OPTIONS.MORE
+msgctxt "STRINGS.UI.OPTIONS.MORE"
+msgid "More"
 msgstr ""
 
 #. STRINGS.UI.OPTIONS.MOVEMENTPREDICTION
@@ -109856,6 +109876,16 @@ msgstr ""
 #. STRINGS.UI.OPTIONS.TOOLTIP_CONTROLS
 msgctxt "STRINGS.UI.OPTIONS.TOOLTIP_CONTROLS"
 msgid "Rebind which input does which in-game action"
+msgstr ""
+
+#. STRINGS.UI.OPTIONS.TOOLTIP_CONTROLS_CONSOLE
+msgctxt "STRINGS.UI.OPTIONS.TOOLTIP_CONTROLS_CONSOLE"
+msgid "Check which control does which in-game action"
+msgstr ""
+
+#. STRINGS.UI.OPTIONS.TOOLTIP_MORE
+msgctxt "STRINGS.UI.OPTIONS.TOOLTIP_MORE"
+msgid "View additional options"
 msgstr ""
 
 #. STRINGS.UI.OPTIONS.TOOLTIP_SETTINGS

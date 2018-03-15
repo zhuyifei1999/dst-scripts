@@ -55,7 +55,7 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
         playerListing.adminBadge:SetPosition(badge_x-13,-10,0)
         playerListing.adminBadge.image:SetScale(.175)
         playerListing.adminBadge.scale_on_focus = false
-        playerListing.adminBadge:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.ADMIN, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
+        playerListing.adminBadge:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.ADMIN, { font = NEWFONT_OUTLINE, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
         if not v.admin then
             playerListing.adminBadge:Hide()
         end]]
@@ -86,7 +86,7 @@ local ViewPlayersModalScreen = Class(Screen, function(self, players, maxPlayers)
         --playerListing.viewprofile:SetNormalScale(scale)
         --playerListing.viewprofile:SetFocusScale(scale+.1)
         --playerListing.viewprofile:SetFocusSound("dontstarve/HUD/click_mouseover")
-        --playerListing.viewprofile:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
+        --playerListing.viewprofile:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE, { font = NEWFONT_OUTLINE, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
         playerListing.viewprofile:SetOnClick(
             function()
                 --TheFrontEnd:PushScreen(PlayerAvatarPopupScreen(v.name, v))

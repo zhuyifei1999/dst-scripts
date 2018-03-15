@@ -242,8 +242,9 @@ local ServerSettingsTab = Class(Widget, function(self, slotdata, servercreations
     end
 
     self.scroll_list = self.server_settings_page:AddChild(ScrollableList(self.page_widgets, 340, label_height * num_visible_rows, label_height - 5, 10, nil, nil, nil, nil, nil, nil, nil, nil, "GOLD"))
-
     self.scroll_list:Hide()
+    
+    self:DisplayClanControls(false) --this needs to be called to ensure that the self.clan_widgets belong to part of the hierarchy
 
     self.default_focus = self.scroll_list
     self.focus_forward = self.scroll_list

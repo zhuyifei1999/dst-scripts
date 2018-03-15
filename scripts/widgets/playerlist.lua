@@ -96,7 +96,7 @@ local function listingConstructor(v, i, parent, nextWidgets)
     playerListing.adminBadge:SetPosition(-89+nudge_x+name_badge_nudge_x,-10,0)  
     playerListing.adminBadge.image:SetScale(.18)
     playerListing.adminBadge.scale_on_focus = false
-    playerListing.adminBadge:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.ADMIN, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
+    playerListing.adminBadge:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.ADMIN, { font = NEWFONT_OUTLINE, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
     if empty or not v.admin then
         playerListing.adminBadge:Hide()
     end
@@ -143,7 +143,7 @@ local function listingConstructor(v, i, parent, nextWidgets)
     playerListing.viewprofile:SetNormalScale(0.234)
     playerListing.viewprofile:SetFocusScale(0.234*1.1)
     playerListing.viewprofile:SetFocusSound("dontstarve/HUD/click_mouseover")
-    playerListing.viewprofile:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
+    playerListing.viewprofile:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE, { font = NEWFONT_OUTLINE, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
     playerListing.viewprofile:SetOnClick(
         function()
             -- Can't do this here because HUD doesn't exist yet. TODO: add the playeravatarpopup to frontend, or wrap it in a screen.
@@ -163,7 +163,7 @@ local function listingConstructor(v, i, parent, nextWidgets)
     playerListing.mute:SetNormalScale(0.234)
     playerListing.mute:SetFocusScale(0.234*1.1)
     playerListing.mute:SetFocusSound("dontstarve/HUD/click_mouseover")
-    playerListing.mute:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.MUTE, { font = NEWFONT_OUTLINE, size = 24, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
+    playerListing.mute:SetHoverText(STRINGS.UI.PLAYERSTATUSSCREEN.MUTE, { font = NEWFONT_OUTLINE, offset_x = 0, offset_y = 30, colour = {1,1,1,1}})
     playerListing.mute.image.inst.OnUpdateVoice = function(inst)
         inst.widget:SetTint(unpack(playerListing.userid ~= nil and TheNet:IsVoiceActive(playerListing.userid) and VOICE_ACTIVE_COLOUR or VOICE_IDLE_COLOUR))
     end

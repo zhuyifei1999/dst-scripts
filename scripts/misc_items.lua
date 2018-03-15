@@ -660,6 +660,22 @@ MISC_ITEMS =
 		box_build = "box_shop_nature",
 		release_group = 41,
 	},
+	pack_rog_gift =
+	{
+		type = "purchase",
+		skin_tags = { },
+		dlc_id = 282470,
+		legacy_popup_category = "ROG",
+		release_group = 42,
+	},
+	pack_sw_gift =
+	{
+		type = "purchase",
+		skin_tags = { },
+		dlc_id = 393010,
+		legacy_popup_category = "SW",
+		release_group = 42,
+	},
 	playerportrait_bg_beefalo =
 	{
 		type = "playerportrait",
