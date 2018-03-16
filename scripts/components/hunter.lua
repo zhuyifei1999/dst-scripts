@@ -342,7 +342,7 @@ local function SpawnHuntedBeast(hunt, pt)
     local spawn_pt = GetSpawnPoint(pt, TUNING.HUNT_SPAWN_DIST, hunt)
     if spawn_pt ~= nil then
         hunt.huntedbeast = SpawnPrefab(
-            (_wargshrines:Get() and "claywarg") or
+            (self:IsWargShrineActive() and "claywarg") or
             (math.random() <= GetAlternateBeastChance() and GetRandomItem(_alternate_beasts)) or
             (TheWorld.state.iswinter and _beast_prefab_winter) or
             _beast_prefab_summer
