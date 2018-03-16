@@ -271,7 +271,11 @@ function ServerListingScreen:ShowServerIntention()
         self.title:SetString(STRINGS.UI.SERVERLISTINGSCREEN.SERVER_LIST_TITLE)
     end
 
-    self:CurrentRightFocus():SetFocus()
+    if self:CurrentRightFocus() ~= nil then
+        self:CurrentRightFocus():SetFocus()
+    elseif self:CurrentCenterFocus() ~= nil then
+        self:CurrentCenterFocus():SetFocus()
+    end
 end
 
 

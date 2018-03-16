@@ -91,7 +91,7 @@ local function OnAttacked(inst, data)
     inst.components.combat:SetTarget(data.attacker)
     inst.components.combat:ShareTarget(data.attacker, TUNING.WARG_MAXHELPERS,
         function(dude)
-            return not dude.components.health:IsDead()
+            return not (dude.components.health ~= nil and dude.components.health:IsDead())
                 and (dude:HasTag("hound") or dude:HasTag("warg"))
                 and data.attacker ~= (dude.components.follower ~= nil and dude.components.follower.leader or nil)
         end, TUNING.WARG_TARGETRANGE)
