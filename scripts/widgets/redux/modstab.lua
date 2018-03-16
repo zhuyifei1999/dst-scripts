@@ -822,7 +822,7 @@ function ModsTab:GetBestModStatus(modname)
     if KnownModIndex:IsModEnabled(modname) then
         return "WORKING_NORMALLY"
     else
-        if KnownModIndex:GetModInfo(modname).failed or KnownModIndex:IsModKnownBad(modname) then
+        if KnownModIndex:GetModInfo(modname) == nil or KnownModIndex:GetModInfo(modname).failed or KnownModIndex:IsModKnownBad(modname) then
             return "DISABLED_ERROR"
         else
             return "DISABLED_MANUAL"

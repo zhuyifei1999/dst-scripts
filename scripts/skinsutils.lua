@@ -634,7 +634,7 @@ end
 --This function is very expensive, don't use it more than once per frame!!!
 function GetOwnedItemCounts()
 	local item_counts = {}
-	local inventory_list = TheInventory:GetOwnedItemCounts()
+	local inventory_list = TheInventory:GetFullInventory()
 	for i,inv_item in ipairs(inventory_list) do
 		local key = inv_item.item_type
 		if item_counts[key] then
