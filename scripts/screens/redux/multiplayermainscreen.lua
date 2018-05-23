@@ -10,7 +10,6 @@ require "os"
 
 local PopupDialogScreen = require "screens/redux/popupdialog"
 local RedeemDialog = require "screens/redeemdialog"
-local EmailSignupScreen = require "screens/emailsignupscreen"
 local FestivalEventScreen = require "screens/redux/festivaleventscreen"
 local MovieDialog = require "screens/moviedialog"
 local CreditsScreen = require "screens/creditsscreen"
@@ -460,11 +459,6 @@ end
 
 
 -- SUBSCREENS
-function MultiplayerMainScreen:EmailSignup()
-    self.last_focus_widget = TheFrontEnd:GetFocusWidget()
-	TheFrontEnd:PushScreen(EmailSignupScreen())
-end
-
 function MultiplayerMainScreen:Forums()
 	VisitURL("http://forums.kleientertainment.com/forum/73-dont-starve-together-beta/")
 end
@@ -633,7 +627,6 @@ function MultiplayerMainScreen:MakeSubMenu()
 
 	local credits_button = TEMPLATES.IconButton("images/button_icons.xml", "credits.tex", STRINGS.UI.MAINSCREEN.CREDITS, false, true, function() self:OnCreditsButton() end, {font=NEWFONT_OUTLINE})
 	local movie_button = TEMPLATES.IconButton("images/button_icons.xml", "movie.tex", STRINGS.UI.MAINSCREEN.MOVIE, false, true, function() self:OnMovieButton() end, {font=NEWFONT_OUTLINE})
-	local newsletter_button = nil
 	local forums_button = nil
 	local more_games_button = nil
 	local manage_account_button = nil
@@ -645,13 +638,12 @@ function MultiplayerMainScreen:MakeSubMenu()
 		if PLATFORM ~= "WIN32_RAIL" then
 	        more_games_button = TEMPLATES.IconButton("images/button_icons.xml", "more_games.tex", STRINGS.UI.MAINSCREEN.MOREGAMES, false, true, function() VisitURL("http://store.steampowered.com/search/?developer=Klei%20Entertainment") end, {font=NEWFONT_OUTLINE})
 			forums_button = TEMPLATES.IconButton("images/button_icons.xml", "forums.tex", STRINGS.UI.MAINSCREEN.FORUM, false, true, function() self:Forums() end, {font=NEWFONT_OUTLINE})
-			newsletter_button = TEMPLATES.IconButton("images/button_icons.xml", "newsletter.tex", STRINGS.UI.MAINSCREEN.NOTIFY, false, true, function() self:EmailSignup() end, {font=NEWFONT_OUTLINE})
 		else
 			documents_button = TEMPLATES.IconButton("images/button_icons.xml", "folder.tex", STRINGS.UI.MAINSCREEN.SAVE_LOCATION, false, true, function() TheSim:OpenDocumentsFolder() end, {font=NEWFONT_OUTLINE})
 		end
 		
         if TheFrontEnd:GetAccountManager():HasSteamTicket() then
-            manage_account_button = TEMPLATES.IconButton("images/button_icons.xml", "profile.tex", STRINGS.UI.SERVERCREATIONSCREEN.MANAGE_ACCOUNT, false, true, function() VisitURL(TheFrontEnd:GetAccountManager():GetViewAccountURL(), true ) end, {font=NEWFONT_OUTLINE})
+            manage_account_button = TEMPLATES.IconButton("images/button_icons.xml", "profile.tex", STRINGS.UI.SERVERCREATIONSCREEN.MANAGE_ACCOUNT, false, true, function() print(TheFrontEnd:GetAccountManager():GetViewAccountURL()) VisitURL( TheFrontEnd:GetAccountManager():GetViewAccountURL(), true ) end, {font=NEWFONT_OUTLINE})
 
 			local online = TheNet:IsOnlineMode() and not TheFrontEnd:GetIsOfflineMode()
 			if online then
@@ -660,7 +652,7 @@ function MultiplayerMainScreen:MakeSubMenu()
         end
     end
     
-	local widgets = { documents_button, redeem_button, manage_account_button, movie_button, credits_button, forums_button, more_games_button, newsletter_button }
+	local widgets = { documents_button, redeem_button, manage_account_button, movie_button, credits_button, forums_button, more_games_button }
 	for i = 1, #widgets do
 		if widgets[i] ~= nil then
 			table.insert(submenuitems, {widget = widgets[i]} )
@@ -719,14 +711,18 @@ end
 
 function MultiplayerMainScreen:FinishedFadeIn()
 	
-	if HasNewSkinDLCEntitlements() then
-		local popup_screen = PopupDialogScreen( STRINGS.UI.PURCHASEPACKSCREEN.GIFT_RECEIVED_TITLE, STRINGS.UI.PURCHASEPACKSCREEN.GIFT_RECEIVED_BODY,
-				{
-					{text=STRINGS.UI.PURCHASEPACKSCREEN.OK, cb = function() TheFrontEnd:PopScreen() MakeSkinDLCPopup() end },
-				}
-			)
+    if HasNewSkinDLCEntitlements() then
+        if PLATFORM == "WIN32_STEAM" or PLATFORM == "LINUX_STEAM" or PLATFORM == "OSX_STEAM" then
+            local popup_screen = PopupDialogScreen( STRINGS.UI.PURCHASEPACKSCREEN.GIFT_RECEIVED_TITLE, STRINGS.UI.PURCHASEPACKSCREEN.GIFT_RECEIVED_BODY,
+                    {
+                        {text=STRINGS.UI.PURCHASEPACKSCREEN.OK, cb = function() TheFrontEnd:PopScreen() MakeSkinDLCPopup() end },
+                    }
+                )
 
-		TheFrontEnd:PushScreen( popup_screen )
+            TheFrontEnd:PushScreen( popup_screen )
+        else
+            MakeSkinDLCPopup()
+        end
 	else
 		--Do new entitlement items
 		local items = {}

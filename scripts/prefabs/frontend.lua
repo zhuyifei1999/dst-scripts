@@ -19,7 +19,7 @@ local assets =
 
     Asset("ATLAS", "images/frontscreen.xml"),
     Asset("IMAGE", "images/frontscreen.tex"),
-
+        
     -- Asset("ANIM", "anim/portrait_frame.zip"), -- Not currently used, but likely to come back
 
     Asset("ANIM", "anim/build_status.zip"),
@@ -146,11 +146,23 @@ local assets =
     Asset("PKGREF", "movies/intro.ogv"),
 }
 
-if PLATFORM == "PS4" then
+if IsConsole() then
+	if TRUE_DEDICATED_SERVER == false then
+	    table.insert(assets, Asset("ATLAS", "images/ui_ps4.xml"))
+	    table.insert(assets, Asset("IMAGE", "images/ui_ps4.tex"))
+	end
+end
+
+if IsPS4() then
     table.insert(assets, Asset("ATLAS", "images/ps4.xml"))
     table.insert(assets, Asset("IMAGE", "images/ps4.tex"))
     table.insert(assets, Asset("ATLAS", "images/ps4_controllers.xml"))
     table.insert(assets, Asset("IMAGE", "images/ps4_controllers.tex"))
+elseif IsXB1() then
+    table.insert(assets, Asset("ATLAS", "images/xb1_controllers.xml"))
+    table.insert(assets, Asset("IMAGE", "images/xb1_controllers.tex"))
+    table.insert(assets, Asset("ATLAS", "images/blit.xml"))
+    table.insert(assets, Asset("IMAGE", "images/blit.tex"))
 end
 
 if PLATFORM == "WIN32_RAIL" then

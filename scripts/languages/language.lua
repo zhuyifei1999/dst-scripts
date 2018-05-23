@@ -9,3 +9,7 @@ require "translator"
 if PLATFORM == "WIN32_RAIL" then
 	LanguageTranslator:LoadPOFile("scripts/languages/simplifiedchinese.po", "cn")
 end
+
+function GetLocaleCode()
+    return "en"
+end

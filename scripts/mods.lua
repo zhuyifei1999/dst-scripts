@@ -198,16 +198,18 @@ end
 
 function ModWrangler:GetEnabledServerModNames()
 	local server_mods = {}
-	local mod_names = KnownModIndex:GetServerModNames()
-	for _,modname in pairs(mod_names) do
-		if KnownModIndex:IsModEnabled(modname) or KnownModIndex:IsModForceEnabled(modname) then
-			local modinfo = KnownModIndex:GetModInfo(modname)
-			if modinfo ~= nil then
-				if not modinfo.client_only_mod then
+	if IsNotConsole() then
+		local mod_names = KnownModIndex:GetServerModNames()
+		for _,modname in pairs(mod_names) do
+			if KnownModIndex:IsModEnabled(modname) or KnownModIndex:IsModForceEnabled(modname) then
+				local modinfo = KnownModIndex:GetModInfo(modname)
+				if modinfo ~= nil then
+					if not modinfo.client_only_mod then
+						table.insert(server_mods, modname)
+					end
+				else
 					table.insert(server_mods, modname)
 				end
-			else
-				table.insert(server_mods, modname)
 			end
 		end
 	end

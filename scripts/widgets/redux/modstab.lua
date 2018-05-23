@@ -411,7 +411,7 @@ local function CompareModDLTable( t1, t2 )
 end
 
 local function IsModOutOfDate( modname, workshop_version )
-    return IsWorkshopMod(modname) and workshop_version ~= "" and workshop_version ~= KnownModIndex:GetModInfo(modname).version
+    return IsWorkshopMod(modname) and workshop_version ~= "" and workshop_version ~= (KnownModIndex:GetModInfo(modname) ~= nil and KnownModIndex:GetModInfo(modname).version or "")
 end
 
 function ModsTab:UpdateForWorkshop( force_refresh )

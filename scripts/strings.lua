@@ -3331,6 +3331,7 @@ STRINGS.UI =
         HUDSIZE = "HUD Size:",
         VIBRATION = "Vibration:",
         WATHGRITHRFONT = "Wigfrid's Umlauts:",
+        DATACOLLECTION = "Data Collection:",
         MOVEMENTPREDICTION = "Lag Compensation:",
         MOVEMENTPREDICTION_ENABLED = "Predictive",
         MOVEMENTPREDICTION_DISABLED = "None",
@@ -3434,18 +3435,18 @@ STRINGS.UI =
         },
         OK = "OK",
     },
-
-    REDEEMDIALOG =
+    
+    REDEEMDIALOG = 
     {
-        TITLE = "Enter Your Code",
-        SUBMIT = "Submit",
-        CANCEL = "Cancel",
-        ACCEPTED = "Success: Code Accepted!",
-        INVALID_CODE = "That code wasn't quite right. Please try again.",
-        ALREADY_REDEEMED = "This code has already been redeemed. Maybe by you?",
-        FAILED_TO_CONTACT = "Sorry, it looks like the server's not answering right now. Please try again later.",
-        LEGALESE = "Delivery time may vary due to temporal portal anomalies. Wilson is not responsible for emotional injuries caused by waiting. Gifts may result in bragging, unexpected delight, and/or enhanced gameplay experiences.",
-    },
+    	TITLE = "Enter Your Code",
+    	SUBMIT = "Submit",
+    	CANCEL = "Cancel",
+    	ACCEPTED = "Success: Code Accepted!",
+    	INVALID_CODE = "That code wasn't quite right. Please try again.",
+    	ALREADY_REDEEMED = "This code has already been redeemed. Maybe by you?",
+    	FAILED_TO_CONTACT = "Sorry, it looks like the server's not answering right now. Please try again later.",
+    	LEGALESE = "Delivery time may vary due to temporal portal anomalies. Wilson is not responsible for emotional injuries caused by waiting. Gifts may result in bragging, unexpected delight, and/or enhanced gameplay experiences.",
+	},
 
     EULADIALOG = 
     {
@@ -3454,6 +3455,7 @@ STRINGS.UI =
         DECLINE = "Decline",
         DECLINE_CONFIRMATION_TITLE = "Decline the EULA?",
         DECLINE_CONFIRMATION_BODY = "You will not be able to play online. Are you sure?",
+		AGREEMENT_UPDATED = "The EULA has been updated and needs your review.",
     },
 
     NETWORKDISCONNECT =
@@ -3550,7 +3552,7 @@ STRINGS.UI =
             ID_DST_INCOMPATIBLE_PROTOCOL_VERSION = "The server has a different version than you do. Please check that your game version is up-to-date.",
             FORCE_DISCONNECTION         = "The connection has been forcibly closed by the engine.",
             E_BANNED = "Your account has been banned for violating the terms of use.",
-            E_UPGRADE = "A new version is available. Please update Don't Starve Together.",
+            E_UPGRADE = "A new version is available.\nPlease update Don't Starve Together.",
             INVALID_CLIENT_TOKEN = "A token error occurred. Please try again.",
             INVALID_GAME_SESSION_TOKEN = "Unable to reach the Klei server. Please try again.",
             ID_DST_GAME_SESSION_AUTH_FAILED = "Authentication failed. Please try again.",
@@ -3768,6 +3770,7 @@ STRINGS.UI =
         {
             PRETTYNAME = "Ban",
             DESC = "Boot someone off the server. 'seconds' param makes the ban temporary.",
+            DESC_CONSOLE = "Boot someone off the server.",
         },
         STOPVOTE =
         {
@@ -3861,7 +3864,6 @@ STRINGS.UI =
         SHOWCASEMODS = "Get Mods",
         NO_MODS_PLAIN_OK = "Ok",
         TOPMODS = "Top Mods",
-        FEATUREDMOD = "Featured Mod",
         LOADING = "Loading",
         RESTART_TITLE = "Restart Required",
         RESTART_REQUIRED = "To enable or disable this mod, you will have to exit and restart the game.",
@@ -4617,6 +4619,9 @@ STRINGS.UI =
         OFFLINE_POPUP_BODY = "You must be logged in to challenge\nBattlemaster Pugna's warriors.",
         OFFLINE_POPUP_BACK = "Back",
         OFFLINE_POPUP_LOGIN = "Log In",
+		
+		OFFLINE_POPUP_TITLE_CONSOLE = "You are in offline mode",
+		OFFLINE_POPUP_BODY_CONSOLE = "All players must be online to challenge\nBattlemaster Pugna's warriors.",
 
         MODS_POPUP_TITLE = "Mods Detected!",
         MODS_POPUP_BODY = "Warning!\nClient mods are unsupported in The Forge.\nDisabling all mods is recommended.",
@@ -5764,67 +5769,67 @@ STRINGS.UI =
             [4] =
             {
                 -- Digital
-                "\238\140\143",--"DPad Up",
-                "\238\140\140",--"DPad Down",
-                "\238\140\141",--"DPad Left",
-                "\238\140\142",--"DPad Right"
-                "\238\140\132",--"Start",
-                "\238\140\133",--"Back",
-                "\238\140\134",--"Left Stick",
-                "\238\140\137",--"Right Stick",
-                "\238\140\135",--"Left Bumper",
-                "\238\140\138",--"Right Bumper",
-                "\238\140\128",--"Button A",
-                "\238\140\129",--"Button B",
-                "\238\140\130",--"Button X",
-                "\238\140\131",--"Button Y",
-
-                -- Analog
-                "\238\140\146",--"Left Thumb Left",
-                "\238\140\147",--"Left Thumb Right",
-                "\238\140\145",--"Left Thumb Down",
-                "\238\140\144",--"Left Thumb Up",
-                "\238\140\150",--"Right Thumb Left",
-                "\238\140\121",--"Right Thumb Right",
-                "\238\140\149",--"Right Thumb Down",
-                "\238\140\148",--"Right Thumb Up",
-                "\238\140\136",--"Left Trigger",
-                "\238\140\136",--"Left Trigger",
-                "\238\140\139",--"Right Trigger",
-                "\238\140\139",--"Right Trigger",
+                "\238\136\143",--"DPad Up",
+                "\238\136\140",--"DPad Down",
+                "\238\136\141",--"DPad Left",
+                "\238\136\142",--"DPad Right"        	
+                "\238\136\132",--"Start",
+                "\238\136\133",--"Back",
+                "\238\136\134",--"Left Stick",
+                "\238\136\137",--"Right Stick",
+                "\238\136\135",--"Left Bumper",
+                "\238\136\138",--"Right Bumper",
+                "\238\136\128",--"Button A",
+                "\238\136\129",--"Button B",
+                "\238\136\130",--"Button X",
+                "\238\136\131",--"Button Y",
+                  
+                -- Analog          
+                "\238\136\146",--"Left Thumb Left",
+                "\238\136\147",--"Left Thumb Right",
+                "\238\136\145",--"Left Thumb Down",
+                "\238\136\144",--"Left Thumb Up",
+                "\238\136\150",--"Right Thumb Left",
+                "\238\136\151",--"Right Thumb Right",
+                "\238\136\149",--"Right Thumb Down",
+                "\238\136\148",--"Right Thumb Up",
+                "\238\136\136",--"Left Trigger",
+                "\238\136\136",--"Left Trigger",
+                "\238\136\139",--"Right Trigger",
+                "\238\136\139",--"Right Trigger", 
             },
             -- Vita Remote Play
             [5] =
             {
                 -- Digital
-                "\238\140\143",--"DPad Up",
-                "\238\140\140",--"DPad Down",
-                "\238\140\141",--"DPad Left",
-                "\238\140\142",--"DPad Right"
-                "\238\140\132",--"Start",
-                "\238\140\133",--"Back",
-                "\238\140\134",--"Left Stick",
-                "\238\140\137",--"Right Stick",
-                "\238\140\152",--"L",
-                "\238\140\153",--"R",
-                "\238\140\128",--"Button A",
-                "\238\140\129",--"Button B",
-                "\238\140\130",--"Button X",
-                "\238\140\131",--"Button Y",
-
-                -- Analog
-                "\238\140\146",--"Left Thumb Left",
-                "\238\140\147",--"Left Thumb Right",
-                "\238\140\145",--"Left Thumb Down",
-                "\238\140\144",--"Left Thumb Up",
-                "\238\140\150",--"Right Thumb Left",
-                "\238\140\121",--"Right Thumb Right",
-                "\238\140\149",--"Right Thumb Down",
-                "\238\140\148",--"Right Thumb Up",
-                "\238\140\154",--"Left Trigger",
-                "\238\140\154",--"Left Trigger",
-                "\238\140\155",--"Right Trigger",
-                "\238\140\155",--"Right Trigger",
+                "\238\136\143",--"DPad Up",
+                "\238\136\140",--"DPad Down",
+                "\238\136\141",--"DPad Left",
+                "\238\136\142",--"DPad Right"        	
+                "\238\136\132",--"Start",
+                "\238\136\133",--"Back",
+                "\238\136\156",--"Left Stick",					-- 57884
+                "\238\136\157",--"Right Stick",					-- 57885
+                "\238\136\152",--"L",							-- 57880
+                "\238\136\153",--"R",					-- 10	-- 57881
+                "\238\136\128",--"Button A",
+                "\238\136\129",--"Button B",
+                "\238\136\130",--"Button X",
+                "\238\136\131",--"Button Y",
+                  
+                -- Analog          
+                "\238\136\146",--"Left Thumb Left",		-- 15
+                "\238\136\147",--"Left Thumb Right",
+                "\238\136\145",--"Left Thumb Down",
+                "\238\136\144",--"Left Thumb Up",
+                "\238\136\150",--"Right Thumb Left",
+                "\238\136\151",--"Right Thumb Right",	-- 20
+                "\238\136\149",--"Right Thumb Down",
+                "\238\136\148",--"Right Thumb Up",
+                "\238\136\154",--"Left Trigger",
+                "\238\136\154",--"Left Trigger",
+                "\238\136\155",--"Right Trigger",		-- 25
+                "\238\136\155",--"Right Trigger", 
             },
             -- Touch
             [6] =
@@ -5938,6 +5943,33 @@ STRINGS.UI =
             RSTICK = "Inventory Selection",
         },
     },
+
+	DATACOLLECTION_POPUP =
+	{
+		OPT_OUT = 
+		{
+			TITLE = "Opt-out for Data Collection",
+			CONTINUE = "Opt-out",
+		},
+
+		OPT_IN =
+		{
+			TITLE = "Opt-in for Data Collection",
+			CONTINUE = "Opt-in",
+		},
+
+		BODY = "We require the collection of user data to provide online services. Players who opt-out of data collection will only have access to play in offline mode.\n\nFor more details on our privacy policy and how we use the data we collect, please see our official privacy policy.",
+
+		PRIVACY_PORTAL = "View Privacy Policy",
+		CANCEL = "Cancel",
+	},
+
+	DATACOLLECTION_LOGIN =
+	{
+		TITLE = "Offline Mode",
+		BODY = "We require the collection of user data to provide online services. Players who opt out of data collection will only have access to play in offline mode.\n\nCharacters and worlds from online games will be unavailable.\n\nData Collection settings can be modified in the Options menu.",
+		CONTINUE = "Continue",
+	},
 
     UNLOCKMAXWELL =
     {
@@ -6160,7 +6192,7 @@ STRINGS.UI =
 		RESTORE_BACKUP_BODY = "Are you sure you want to restore from the last available backup? This process can not be undone.",    
         RESTOREBACKUP_FAILED = "An error occurred while\nrestoring your data.",	 
     },
-
+    
     QUITTINGTITLE = "Quitting!",
     QUITTING = "Packing up the science.",
 
@@ -6190,7 +6222,7 @@ STRINGS.UI =
 		NO = "Annoyed",
 		BONESAW = "Bonesaw",
 		RUDE = "Threaten",
-		CHEER = "Cheer",
+		HAPPY = "Happy",
 		DANCE = "Dance",
 		FACEPALM = "Facepalm",
 		JOY = "Joy",
@@ -6921,4 +6953,7 @@ if PLATFORM == "WIN32_RAIL" then
     STRINGS.UI.PRESENCE = nil
 
     STRINGS.SIGNS.MENU = nil
+	
+	STRINGS.UI.FESTIVALEVENTSCREEN.OFFLINE_POPUP_TITLE_CONSOLE = nil
+	STRINGS.UI.FESTIVALEVENTSCREEN.OFFLINE_POPUP_BODY_CONSOLE = nil
 end

@@ -537,6 +537,44 @@ function TEMPLATES.IconButton(iconAtlas, iconTexture, labelText, sideLabel, alwa
     return btn
 end
 
+function TEMPLATES.StandardCheckbox(onclick, size, init_checked, helptext, hovertext_info)
+	local checkbox = ImageButton()
+    checkbox:ForceImageSize(size, size)
+	checkbox.scale_on_focus = false
+    checkbox.move_on_click = false
+
+	local function SetChecked(checked)
+        if checked then
+            checkbox:SetTextures("images/global_redux.xml", "checkbox_normal_check.tex", "checkbox_focus_check.tex", "checkbox_normal.tex", nil, nil, {1,1}, {0,0})
+        else
+            checkbox:SetTextures("images/global_redux.xml", "checkbox_normal.tex", "checkbox_focus.tex", "checkbox_normal_check.tex", nil, nil, {1,1}, {0,0})
+        end
+	end
+	SetChecked(init_checked)
+
+	checkbox:SetOnClick(function()
+		local checked = onclick()
+		SetChecked(checked)
+	end)
+
+	if helptext ~= nil then
+		checkbox:SetHelpTextMessage(helptext)
+	end
+
+        -- Only show hovertext.
+	if hovertext_info ~= nil then
+        checkbox:SetHoverText(hovertext_info.text, {
+                font = hovertext_info.font or NEWFONT_OUTLINE,
+                offset_x = hovertext_info.offset_x or 2,
+                offset_y = hovertext_info.offset_y or -45,
+                colour = hovertext_info.colour or UICOLOURS.WHITE,
+                bg = hovertext_info.bg
+            })
+    end
+
+    return checkbox
+end
+
 function TEMPLATES.ServerDetailIcon(iconAtlas, iconTexture, bgColor, hoverText, textinfo, imgOffset, scaleX, scaleY)
     imgOffset = imgOffset or {0,0}
 
@@ -956,6 +994,23 @@ function TEMPLATES.LabelButton(onclick, labeltext, buttontext, width_label, widt
     return wdg
 end
 
+-- checkbox button with a label beside it
+function TEMPLATES.LabelCheckbox(onclick, labeltext, checked, width_label, width_button, height, checkbox_size, spacing, font, font_size, horiz_offset)
+    local offset = horiz_offset or 0
+    local total_width = width_label + width_button + spacing
+    local wdg = Widget("labelbutton")
+    wdg.label = wdg:AddChild( Text(font or NEWFONT, font_size or 25, labeltext) )
+    wdg.label:SetPosition( (-total_width/2)+(width_label/2) + offset, 0 )
+    wdg.label:SetRegionSize( width_label, height )
+    wdg.label:SetHAlign( ANCHOR_RIGHT )
+    wdg.label:SetColour(UICOLOURS.GOLD)
+    wdg.button = wdg:AddChild(TEMPLATES.StandardCheckbox(onclick, checkbox_size, checked))
+    wdg.button:SetPosition((total_width/2)-(width_button/2) + offset, 0)
+
+    wdg.focus_forward = wdg.button
+
+    return wdg
+end
 
 -- Spinner
 function TEMPLATES.StandardSpinner(spinnerdata, width_spinner, height, font, font_size)

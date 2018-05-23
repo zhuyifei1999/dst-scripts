@@ -199,6 +199,8 @@ end
 local OptionsScreen = Class(Screen, function(self, user_profile, prev_screen)
 	Screen._ctor(self, "OptionsScreen")
 
+	self.show_datacollection = IsSteam() and not InGamePlay()
+
 	local graphicsOptions = TheFrontEnd:GetGraphicsOptions()
 
 	self.options = {
@@ -222,6 +224,10 @@ local OptionsScreen = Class(Screen, function(self, user_profile, prev_screen)
 	--[[if PLATFORM == "WIN32_STEAM" and not self.in_game then
 		self.options.steamcloud = TheSim:GetSetting("STEAM", "DISABLECLOUD") ~= "true"
 	end--]]
+
+	if self.show_datacollection then
+		self.options.datacollection = TheSim:GetDataCollectionSetting()
+	end
 
 	if show_graphics then
 
@@ -854,6 +860,12 @@ function OptionsScreen:_BuildSettings()
         return w.spinner
     end
 
+    local function CreateCheckBox(labeltext, onclicked, checked )
+        local w = TEMPLATES.LabelCheckbox(onclicked, labeltext, checked, label_width, spinner_width, spinner_height, spinner_height + 15, space_between, CHATFONT, nil, narrow_field_nudge)
+        AddListItemBackground(w)
+        return w.button
+    end
+
 	if show_graphics then
 		local gOpts = TheFrontEnd:GetGraphicsOptions()
 											
@@ -995,6 +1007,41 @@ function OptionsScreen:_BuildSettings()
 			self:UpdateMenu()
 		end
 
+	if self.show_datacollection then
+		self.datacollectionCheckbox = CreateCheckBox(STRINGS.UI.OPTIONS.DATACOLLECTION,
+			function()
+				local opt_in = not TheSim:GetDataCollectionSetting()
+				local str = STRINGS.UI.DATACOLLECTION_POPUP[opt_in and "OPT_IN" or "OPT_OUT"]
+				TheFrontEnd:PushScreen(PopupDialogScreen( str.TITLE, STRINGS.UI.DATACOLLECTION_POPUP.BODY,
+				{ 
+					{ 
+						text = str.CONTINUE,
+						cb = function()
+							local saved = TheSim:SetDataCollectionSetting( opt_in )
+						    known_assert(saved, "AGREEMENTS_WRITE_PERMISSION")
+							SimReset()
+						end
+					},
+					{ 
+						text = STRINGS.UI.DATACOLLECTION_POPUP.PRIVACY_PORTAL,
+						cb = function()
+							VisitURL("https://www.klei.com/privacy-policy")
+						end
+					},
+					{ 
+						text = STRINGS.UI.DATACOLLECTION_POPUP.CANCEL,
+						cb = function()
+							TheFrontEnd:PopScreen()
+						end
+					}
+				},
+				nil, "big", "dark_wide"))
+
+				return not opt_in -- bit of a hack to keep the check box looking the same as it was. This works because toggling the value will reset the sim.
+			end,
+			TheSim:GetDataCollectionSetting())
+	end
+
     self.movementpredictionSpinner = CreateTextSpinner(STRINGS.UI.OPTIONS.MOVEMENTPREDICTION,
         {
             { text = STRINGS.UI.OPTIONS.MOVEMENTPREDICTION_DISABLED, data = false },
@@ -1054,6 +1101,10 @@ function OptionsScreen:_BuildSettings()
     table.insert( self.left_spinners, self.automodsSpinner )
     table.insert( self.left_spinners, self.wathgrithrfontSpinner)
     table.insert( self.left_spinners, self.hudSize)
+
+	if self.show_datacollection then
+		table.insert( self.left_spinners, self.datacollectionCheckbox)
+	end
 
     table.insert( self.right_spinners, self.screenshakeSpinner )
     table.insert( self.right_spinners, self.distortionSpinner )
@@ -1304,12 +1355,16 @@ function OptionsScreen:InitializeSpinners(first)
     self.movementpredictionSpinner:SetSelectedIndex(EnabledOptionsIndex(self.working.movementprediction))
 	self.wathgrithrfontSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.wathgrithrfont ) )
 	
+	if self.show_datacollection then
+		--self.datacollectionCheckbox: -- the current behaviour does not reuqire this to be (re)initialized at any point after construction
+	end
+
 	self.automodsSpinner:SetSelectedIndex( EnabledOptionsIndex( self.working.automods ) )
 
 	if first then
 		-- Add the bg change when non-init value for all spinners
         local function SetupOnChange(i,spinner)
-			if spinner then
+			if spinner and spinner.GetSelectedIndex ~= nil then
 				spinner.default_index = spinner:GetSelectedIndex()
                 spinner:EnablePendingModificationBackground()
 

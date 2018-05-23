@@ -23,6 +23,7 @@ EVENT_ICONS =
 	event_forge = "LAVA",
 	event_ice = "ICE",
 	event_yotv = "VARG",
+	event_quagmire = "VICTORIAN",
 }
 
 -- Also update GetBuildForItem!
@@ -130,12 +131,12 @@ end
 
 function IsPackGiftable(item_key)
     local pack_data = GetSkinData(item_key)
-    return pack_data.dlc_id ~= nil
+    return pack_data.steam_dlc_id ~= nil
 end
 
 function GetPackGiftDLCID(item_key)
     local pack_data = GetSkinData(item_key)
-    return pack_data.dlc_id
+    return pack_data.steam_dlc_id
 end
 
 
@@ -282,15 +283,19 @@ function IsUserCommerceAllowedOnItem(item_key)
 end
 
 function IsUserCommerceSellAllowedOnItem(item_type)
-    local num_owned = TheInventory:GetOwnedItemCount(item_type)
-    return TheItems:GetBarterSellPrice(item_type) ~= 0
+	local num_owned = TheInventory:GetOwnedItemCountForCommerce(item_type)
+    return num_owned > 0 and TheItems:GetBarterSellPrice(item_type) ~= 0
 end
 
 function IsUserCommerceBuyAllowedOnItem(item_type)
-    local num_owned = TheInventory:GetOwnedItemCount(item_type)
+    local num_owned = TheInventory:GetOwnedItemCountForCommerce(item_type)
 	return num_owned == 0 and TheItems:GetBarterBuyPrice(item_type) ~= 0	
 end
 
+function GetIsPermOwned(item_type)
+	return TheInventory:GetIsPermOwned(item_type)
+end
+	
 function GetTypeForItem(item)
 
 	local itemName = string.lower(item) -- they come back from the server in caps
@@ -411,6 +416,21 @@ end
 
 function GetSkinDescription(item)
 	return STRINGS.SKIN_DESCRIPTIONS[item] or STRINGS.SKIN_DESCRIPTIONS["missing"]
+end
+
+function GetSkinInvIconName(item)
+    local image_name = item
+
+    if image_name == "" then
+        image_name = "default"
+    else 
+        if string.sub( image_name, -8 ) == "_builder" then
+            image_name = string.sub( image_name, 1, -9 )
+        end
+        image_name = string.gsub(image_name, "_none", "")
+    end
+
+    return image_name
 end
 
 
@@ -651,8 +671,8 @@ end
 -- are fungible, so the first one is good enough.
 function GetFirstOwnedItemId(item_key)
     local inventory_list = TheInventory:GetFullInventory()
-    for k,v in ipairs(inventory_list) do
-        if item_key == v.item_type then
+	for k,v in ipairs(inventory_list) do
+        if item_key == v.item_type and v.item_id ~= TEMP_ITEM_ID then
             return v.item_id
         end
     end
@@ -1062,6 +1082,12 @@ function SetSkinDLCEntitlementReceived(entitlement)
 	Profile:SetEntitlementReceived(entitlement)
 end
 
+function SetSkinDLCEntitlementOwned(entitlement)
+	if not Profile:IsEntitlementReceived(entitlement) then
+		AddNewSkinDLCEntitlement(entitlement)
+	end
+	Profile:SetEntitlementReceived(entitlement)
+end
 
 local newSkinDLCEntitlements = {}
 function AddNewSkinDLCEntitlement(entitlement)
@@ -1077,35 +1103,45 @@ function GetNewSkinDLCEntitlement()
 end
 
 
-function MakeSkinDLCPopup()
+function MakeSkinDLCPopup(_cb)
 	local pack_type = GetNewSkinDLCEntitlement()
 
 	if pack_type ~= nil then
 		local PURCHASE_INFO = require("skin_purchase_packs")
 		local display_items = PURCHASE_INFO.PACKS[pack_type]
-		local options = {
-			allow_cancel = false,
-			box_build = GetBoxBuildForItem(pack_type),
-			use_bigportraits = IsPackFeatured(pack_type),
-		}
+        if display_items ~= nil then
+		    local options = {
+			    allow_cancel = false,
+			    box_build = GetBoxBuildForItem(pack_type),
+			    use_bigportraits = IsPackFeatured(pack_type),
+		    }
 
-		if GetSkinData(pack_type).legacy_popup_category ~= nil then
-			local items = {}
-			for _,item in pairs(display_items) do
-				table.insert(items, { item = item, item_id = 0, gifttype = GetSkinData(pack_type).legacy_popup_category })
-			end
+		    if GetSkinData(pack_type).legacy_popup_category ~= nil then
+			    local items = {}
+			    for _,item in pairs(display_items) do
+				    table.insert(items, { item = item, item_id = 0, gifttype = GetSkinData(pack_type).legacy_popup_category })
+			    end
 
-			local ThankYouPopup = require "screens/thankyoupopup"
-			local thankyou_popup = ThankYouPopup(items, function() MakeSkinDLCPopup() end)
-			TheFrontEnd:PushScreen(thankyou_popup)
-		else
-			local ItemBoxOpenerPopup = require "screens/redux/itemboxopenerpopup"
-			local box_popup = ItemBoxOpenerPopup(nil, options, function(success_cb) success_cb(display_items) end, function() MakeSkinDLCPopup() end)
-			TheFrontEnd:PushScreen(box_popup)
-		end
+			    local ThankYouPopup = require "screens/thankyoupopup"
+			    local thankyou_popup = ThankYouPopup(items, function() MakeSkinDLCPopup(_cb) end)
+			    TheFrontEnd:PushScreen(thankyou_popup)
+		    else
+			    local ItemBoxOpenerPopup = require "screens/redux/itemboxopenerpopup"
+			    local box_popup = ItemBoxOpenerPopup(nil, options, function(success_cb) success_cb(display_items) end, function() MakeSkinDLCPopup(_cb) end)
+			    TheFrontEnd:PushScreen(box_popup)
+		    end
+        else
+            --No items to display, likely bad data.
+            print("Error: Unable to display skin dlc contents for", pack_type)
+            MakeSkinDLCPopup(_cb)
+        end
 	else
 		if TheFrontEnd:GetActiveScreen().FinishedFadeIn ~= nil then
 			TheFrontEnd:GetActiveScreen():FinishedFadeIn()
+		end
+
+		if _cb ~= nil then
+			_cb()
 		end
 	end
 end
