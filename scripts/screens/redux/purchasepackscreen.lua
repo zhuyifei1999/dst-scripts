@@ -5,7 +5,7 @@ local UIAnim = require "widgets/uianim"
 local Image = require "widgets/image"
 local OnlineStatus = require "widgets/onlinestatus"
 local PopupDialogScreen = require "screens/redux/popupdialog"
-local ItemServerContactPopup = require "screens/redux/itemservercontactpopup"
+local GenericWaitingPopup = require "screens/redux/genericwaitingpopup"
 local ItemBoxOpenerPopup = require "screens/redux/itemboxopenerpopup"
 
 local TEMPLATES = require("widgets/redux/templates")
@@ -73,9 +73,9 @@ local PurchaseWidget = Class(Widget, function(self, screen_self)
     self.text_root = self.root:AddChild(Widget("text_root"))
 	self.text_root:SetPosition(60, 50)
 	self.title = self.text_root:AddChild(Text(HEADERFONT, 25, nil, UICOLOURS.GOLD_SELECTED))
-	self.title:SetPosition(0, 3)
+	self.title:SetPosition(0, 6)
 	self.text = self.text_root:AddChild(Text(CHATFONT, 22, nil, UICOLOURS.GREY))
-	self.text:SetPosition(0, -55)
+	self.text:SetPosition(0, -58)
 	self.text:SetRegionSize(245, 60)
 	self.text:EnableWordWrap(true)
 
@@ -83,45 +83,47 @@ local PurchaseWidget = Class(Widget, function(self, screen_self)
         function()
             TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/collectionscreen/purchase")
 
-            local popup = ItemServerContactPopup()
-            TheFrontEnd:PushScreen(popup)
+            local commerce_popup = GenericWaitingPopup("ItemServerContactPopup", STRINGS.UI.ITEM_SERVER.CONNECT, nil, true)
+            TheFrontEnd:PushScreen(commerce_popup)
 
             TheItems:StartPurchase(self.item_type, function(success, message)
-                popup:Close()
-                if success then
-                    local display_items = PURCHASE_INFO.PACKS[self.item_type]
-                    local options = {
-                        allow_cancel = false,
-                        box_build = GetBoxBuildForItem(self.item_type),
-                        use_bigportraits = IsPackFeatured(self.item_type),
-                    }
-                    
-                    local box_popup = ItemBoxOpenerPopup(screen_self, options, function(success_cb)
-                        success_cb(display_items)
-                    end)
-                    TheFrontEnd:PushScreen(box_popup)
-
-                elseif message == "CANCELLED" then
-                    -- If the user just cancelled, then everything's fine.
-
-                else
-					local body_text = STRINGS.UI.ITEM_SERVER[message] or STRINGS.UI.ITEM_SERVER.FAILED_DEFAULT
-                    local server_error = PopupDialogScreen(STRINGS.UI.ITEM_SERVER.FAILED_TITLE, body_text,
-                        {
-                            {
-                                text=STRINGS.UI.TRADESCREEN.OK,
-                                cb = function()
-                                    print("ERROR: Failed to contact the item server.", message )
-                                    TheFrontEnd:PopScreen()
-                                    if message == "FAILED_DEFAULT" then
-										SimReset()
-									end
-                                end
-                            }
+                self.inst:DoTaskInTime(0, function()  --we need to delay a frame so that the popping of the screens happens at the right time in the frame.
+                    commerce_popup:Close()
+                    if success then
+                        local display_items = PURCHASE_INFO.PACKS[self.item_type]
+                        local options = {
+                            allow_cancel = false,
+                            box_build = GetBoxBuildForItem(self.item_type),
+                            use_bigportraits = IsPackFeatured(self.item_type),
                         }
-                        )
-                    TheFrontEnd:PushScreen( server_error )
-                end
+                        
+                        local box_popup = ItemBoxOpenerPopup(screen_self, options, function(success_cb)
+                            success_cb(display_items)
+                        end)
+                        TheFrontEnd:PushScreen(box_popup)
+
+                    elseif message == "CANCELLED" then
+                        -- If the user just cancelled, then everything's fine.
+
+                    else
+                        local body_text = STRINGS.UI.ITEM_SERVER[message] or STRINGS.UI.ITEM_SERVER.FAILED_DEFAULT
+                        local server_error = PopupDialogScreen(STRINGS.UI.ITEM_SERVER.FAILED_TITLE, body_text,
+                            {
+                                {
+                                    text=STRINGS.UI.TRADESCREEN.OK,
+                                    cb = function()
+                                        print("ERROR: Failed to contact the item server.", message )
+                                        TheFrontEnd:PopScreen()
+                                        if message == "FAILED_DEFAULT" then
+                                            SimReset()
+                                        end
+                                    end
+                                }
+                            }
+                            )
+                        TheFrontEnd:PushScreen( server_error )
+                    end
+                end, self)
             end)
         end
 
@@ -159,7 +161,7 @@ local PurchaseWidget = Class(Widget, function(self, screen_self)
 				{
 					{text=STRINGS.UI.PURCHASEPACKSCREEN.OK, cb = function() 
 							TheFrontEnd:PopScreen()
-							VisitURL("http://store.steampowered.com/app/"..tostring(self.button_dlc.dlc_id))
+							VisitURL("http://store.steampowered.com/app/"..tostring(self.button_dlc.steam_dlc_id))
 						end
 					},
 				}
@@ -229,11 +231,11 @@ function PurchaseWidget:ApplyDataToWidget(iap_def)
 				self.button_dlc:Show()
 				self.button_dlc:SetPosition(110,-115)
 				self.button_dlc.item_type = self.item_type
-				self.button_dlc.dlc_id = GetPackGiftDLCID(self.item_type)
+				self.button_dlc.steam_dlc_id = GetPackGiftDLCID(self.item_type)
 			else
 				self.button_dlc:Hide()
 				self.button_dlc.item_type = nil
-				self.button_dlc.dlc_id = nil
+				self.button_dlc.steam_dlc_id = nil
 			end
 			
 			--Deal with focus hacks for featured widget with multiple buttons
@@ -256,7 +258,7 @@ function PurchaseWidget:ApplyDataToWidget(iap_def)
             self.button:SetPosition(0,-120)
             self.button_dlc:Hide()
             self.button_dlc.item_type = nil
-			self.button_dlc.dlc_id = nil
+			self.button_dlc.steam_dlc_id = nil
         end
 
         self.root:Show()

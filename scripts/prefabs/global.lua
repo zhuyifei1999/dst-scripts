@@ -145,7 +145,7 @@ local assets =
     Asset("SHADER", "shaders/anim_fade_haunted.ksh"),
     Asset("SHADER", "shaders/anim_bloom_haunted.ksh"),
     Asset("SHADER", "shaders/minimapblend.ksh"),
-
+    
     --common UI elements that we will always need
     Asset("ATLAS", "images/ui.xml"),
     Asset("IMAGE", "images/ui.tex"),
@@ -241,19 +241,18 @@ end
 for _, clothing_asset in pairs(require("clothing_assets")) do
     table.insert(assets, clothing_asset)
 end
-for _, skins_prefabs in pairs(PREFAB_SKINS) do
-    for _, skin_prefab in pairs(skins_prefabs) do
-        if string.sub(skin_prefab, -5) ~= "_none" then
-            local prefab = require("prefabs/"..skin_prefab)
-            if type(prefab) == "table" then
-                for k, v in pairs(prefab.assets) do
-                    table.insert(assets, v)
-                end
-            else
-                print("ERROR: The contents of prefabs/"..skin_prefab..".lua are corrupt. Try verifying your game's install.")
-            end
+local skinprefabs = {require("prefabs/skinprefabs")}
+for _,skin_prefab in pairs(skinprefabs) do
+    if string.sub(skin_prefab.name, -5) ~= "_none" then
+        for k, v in pairs(skin_prefab.assets) do
+            table.insert(assets, v)
         end
     end
+end
+
+--klump files for package refs
+for _,klump_asset in pairs(require("klump_assets")) do
+    table.insert(assets, klump_asset)
 end
 
 return Prefab("global", function() end, assets)

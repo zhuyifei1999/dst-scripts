@@ -163,7 +163,11 @@ function Widget:TintTo(from, to, time, fn)
     self.inst.components.uianim:TintTo(from, to, time, fn)
 end
 
+
 function Widget:ForceStartWallUpdating()
+    if IsConsole() then
+        return --disabled for console
+    end
     if not self.inst.components.uianim then
         self.inst:AddComponent("uianim")
     end
@@ -171,11 +175,15 @@ function Widget:ForceStartWallUpdating()
 end
 
 function Widget:ForceStopWallUpdating()
+    if IsConsole() then
+        return --disabled for console
+    end
     if not self.inst.components.uianim then
         self.inst:AddComponent("uianim")
     end
     self.inst.components.uianim:ForceStopWallUpdating(self)
 end
+
 
 function Widget:IsEnabled()
     if not self.enabled then return false end
@@ -269,6 +277,10 @@ end
 
 function Widget:GetPosition()
     return Vector3(self.inst.UITransform:GetLocalPosition())
+end
+
+function Widget:GetWorldScale()
+    return Vector3(self.inst.UITransform:GetWorldScale())
 end
 
 function Widget:Nudge(offset)

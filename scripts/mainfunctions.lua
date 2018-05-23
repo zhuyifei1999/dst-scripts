@@ -193,6 +193,54 @@ function LoadAchievements( filename )
     return ret
 end
 
+function AwardFrontendAchievement( name )
+    if IsConsole() then
+	    TheGameService:AwardAchievement(name, nil)
+    end
+end
+
+function AwardPlayerAchievement( name, player )
+	if IsConsole() then
+        if player ~= nil and player:HasTag("player") then
+		    TheGameService:AwardAchievement(name, tostring(player.userid))
+	    else
+		    print( "AwardPlayerAchievement Error:", name, "to", tostring(player) )
+	    end
+    end
+end
+
+function NotifyPlayerProgress( name, value, player )
+	if IsConsole() then
+        if player ~= nil and player:HasTag("player") then
+		    TheGameService:NotifyProgress(name, value, tostring(player.userid))
+	    else
+		    print( "NotifyPlayerProgress Error:", name, "to", tostring(player) )
+	    end
+    end
+end
+
+function NotifyPlayerPresence( name, level, days, player )
+	if IsConsole() then
+        if player ~= nil and player:HasTag("player") then
+		    TheGameService:NotifyPresence(name, level, days, tostring(player.userid))
+	    else
+		    TheGameService:NotifyPresence(name, level, days, nil)
+	    end
+    end
+end
+
+
+function AwardRadialAchievement( name, pos, radius )
+	if IsConsole() then
+        local players = FindPlayersInRange( pos.x, pos.y, pos.z, radius, true )
+        for k,player in pairs(players) do
+		    AwardPlayerAchievement(name, player)
+	    end
+    end
+end
+
+
+
 function SpawnPrefabFromSim(name)
     name = string.sub(name, string.find(name, "[^/]*$"))
     name = string.lower(name)
@@ -1041,7 +1089,7 @@ function DisplayError(error)
         end
 
         local buttons = nil
-        if PLATFORM ~= "PS4" then
+        if IsNotConsole() then
             buttons = {
                 {text=STRINGS.UI.MAINSCREEN.SCRIPTERRORQUIT, cb = function() TheSim:ForceAbort() end},
                 {text=STRINGS.UI.MAINSCREEN.MODQUIT, cb = function()
@@ -1071,7 +1119,7 @@ function DisplayError(error)
             error = known_error.message
         end
 
-        if PLATFORM ~= "PS4" then
+        if IsNotConsole() then
             buttons = {
                 {text=STRINGS.UI.MAINSCREEN.SCRIPTERRORQUIT, cb = function() TheSim:ForceAbort() end},
             }

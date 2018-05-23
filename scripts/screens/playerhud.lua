@@ -18,13 +18,7 @@ local EndOfMatchPopup = require "widgets/redux/endofmatchpopup"
 local PopupNumber = require "widgets/popupnumber"
 local RingMeter = require "widgets/ringmeter"
 local easing = require("easing")
-
-local PauseScreen = nil
-if PLATFORM == "PS4" then
-    PauseScreen = require "screens/pausescreen_ps4"
-else
-    PauseScreen = require "screens/redux/pausescreen"
-end
+local PauseScreen = require "screens/redux/pausescreen"
 local ChatInputScreen = require "screens/chatinputscreen"
 local PlayerStatusScreen = require "screens/playerstatusscreen"
 local InputDialogScreen = require "screens/inputdialog"
