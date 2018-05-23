@@ -637,24 +637,6 @@ table.insert(prefs, CreatePrefabSkin("cane_ancient",
 	granted_items = { "orangestaff_ancient", },
 }))
 
-table.insert(prefs, CreatePrefabSkin("cane_victorian",
-{
-	base_prefab = "cane",
-	type = "item",
-	assets = {
-		Asset("DYNAMIC_ANIM", "anim/dynamic/cane_victorian.zip"),
-	},
-	build_name = "cane_victorian",
-	rarity = "Elegant",
-	rarity_modifier = "EventModifier",
-	prefabs = { "cane_victorian_fx", },
-	init_fn = function(inst) cane_init_fn(inst, "cane_victorian") end,
-	skin_tags = { "CANE", "VICTORIAN", "CRAFTABLE", },
-	fx_prefab = { "cane_victorian_fx", },
-	release_group = 43,
-	granted_items = { "orangestaff_victorian", },
-}))
-
 table.insert(prefs, CreatePrefabSkin("catcoonhat_trapper_rooster",
 {
 	base_prefab = "catcoonhat",
@@ -713,21 +695,6 @@ table.insert(prefs, CreatePrefabSkin("cookpot_survival",
 	skin_tags = { "CROCKPOT", "SURVIVOR", "CRAFTABLE", },
 	marketable = true,
 	release_group = 4,
-}))
-
-table.insert(prefs, CreatePrefabSkin("cookpot_tureen",
-{
-	base_prefab = "cookpot",
-	type = "item",
-	assets = {
-		Asset("DYNAMIC_ANIM", "anim/dynamic/cookpot_tureen.zip"),
-	},
-	build_name = "cookpot_tureen",
-	rarity = "Elegant",
-	rarity_modifier = "EventModifier",
-	init_fn = function(inst) cookpot_init_fn(inst, "cookpot_tureen") end,
-	skin_tags = { "CROCKPOT", "VICTORIAN", "CRAFTABLE", },
-	release_group = 43,
 }))
 
 table.insert(prefs, CreatePrefabSkin("dragonling_bat",
@@ -922,21 +889,6 @@ table.insert(prefs, CreatePrefabSkin("firepit_stonehenge",
 	release_group = 5,
 }))
 
-table.insert(prefs, CreatePrefabSkin("firepit_victorian",
-{
-	base_prefab = "firepit",
-	type = "item",
-	assets = {
-		Asset("DYNAMIC_ANIM", "anim/dynamic/firepit_victorian.zip"),
-	},
-	build_name = "firepit_victorian",
-	rarity = "Elegant",
-	rarity_modifier = "EventModifier",
-	init_fn = function(inst) firepit_init_fn(inst, "firepit_victorian", Vector3(0, 10, 0)) end,
-	skin_tags = { "FIREPIT", "VICTORIAN", "CRAFTABLE", },
-	release_group = 43,
-}))
-
 table.insert(prefs, CreatePrefabSkin("firestaff_bee",
 {
 	base_prefab = "firestaff",
@@ -1128,21 +1080,6 @@ table.insert(prefs, CreatePrefabSkin("glomling_winter_builder",
 	release_group = 22,
 }))
 
-table.insert(prefs, CreatePrefabSkin("hambat_potroast",
-{
-	base_prefab = "hambat",
-	type = "item",
-	assets = {
-		Asset("DYNAMIC_ANIM", "anim/dynamic/hambat_potroast.zip"),
-	},
-	build_name = "hambat_potroast",
-	rarity = "Elegant",
-	rarity_modifier = "EventModifier",
-	init_fn = function(inst) hambat_init_fn(inst, "hambat_potroast") end,
-	skin_tags = { "HAMBAT", "VICTORIAN", "CRAFTABLE", },
-	release_group = 43,
-}))
-
 table.insert(prefs, CreatePrefabSkin("hambat_spiralcut",
 {
 	base_prefab = "hambat",
@@ -1250,23 +1187,6 @@ table.insert(prefs, CreatePrefabSkin("hat_puppy_cap",
 	init_fn = function(inst) catcoonhat_init_fn(inst, "hat_puppy_cap") end,
 	skin_tags = { "CATCOONHAT", "VARG", "CRAFTABLE", },
 	release_group = 40,
-}))
-
-table.insert(prefs, CreatePrefabSkin("icebox_victorian",
-{
-	base_prefab = "icebox",
-	type = "item",
-	assets = {
-		Asset("DYNAMIC_ANIM", "anim/dynamic/icebox_victorian.zip"),
-	},
-	build_name = "icebox_victorian",
-	rarity = "Elegant",
-	rarity_modifier = "EventModifier",
-	prefabs = { "icebox_victorian_frost_fx", },
-	init_fn = function(inst) icebox_init_fn(inst, "icebox_victorian") end,
-	skin_tags = { "VICTORIAN", "ICEBOX", "CRAFTABLE", },
-	fx_prefab = { "icebox_victorian_frost_fx", },
-	release_group = 43,
 }))
 
 table.insert(prefs, CreatePrefabSkin("icestaff_bee",
@@ -1383,23 +1303,6 @@ table.insert(prefs, CreatePrefabSkin("orangestaff_ancient",
 	skin_tags = { "STAFF", "ANCIENT", "CRAFTABLE", },
 	fx_prefab = { "cane_ancient_fx", "shadow_puff_large_front", "shadow_puff_large_back", },
 	release_group = 26,
-}))
-
-table.insert(prefs, CreatePrefabSkin("orangestaff_victorian",
-{
-	base_prefab = "orangestaff",
-	type = "item",
-	assets = {
-		Asset("DYNAMIC_ANIM", "anim/dynamic/orangestaff_victorian.zip"),
-	},
-	build_name = "orangestaff_victorian",
-	rarity = "Elegant",
-	rarity_modifier = "EventModifier",
-	prefabs = { "cane_victorian_fx", },
-	init_fn = function(inst) orangestaff_init_fn(inst, "orangestaff_victorian") end,
-	skin_tags = { "STAFF", "VICTORIAN", "CRAFTABLE", },
-	fx_prefab = { "cane_victorian_fx", },
-	release_group = 43,
 }))
 
 table.insert(prefs, CreatePrefabSkin("perdling_rooster",
@@ -1987,21 +1890,6 @@ table.insert(prefs, CreatePrefabSkin("wathgrithr_combatant",
 	release_group = 32,
 }))
 
-table.insert(prefs, CreatePrefabSkin("wathgrithr_cook",
-{
-	base_prefab = "wathgrithr",
-	type = "base",
-	assets = {
-		Asset("ANIM", "anim/ghost_wathgrithr_build.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/wathgrithr_cook.zip"),
-	},
-	build_name = "wathgrithr_cook",
-	rarity = "Event",
-	skin_tags = { "VICTORIAN", "BASE", "CHARACTER", "WATHGRITHR", },
-	skins = { ghost_skin = "ghost_wathgrithr_build", normal_skin = "wathgrithr_cook", },
-	release_group = 43,
-}))
-
 table.insert(prefs, CreatePrefabSkin("wathgrithr_deerclops",
 {
 	base_prefab = "wathgrithr",
@@ -2148,22 +2036,6 @@ table.insert(prefs, CreatePrefabSkin("wathgrithr_survivor",
 	release_group = 4,
 }))
 
-table.insert(prefs, CreatePrefabSkin("wathgrithr_victorian",
-{
-	base_prefab = "wathgrithr",
-	type = "base",
-	assets = {
-		Asset("ANIM", "anim/ghost_wathgrithr_build.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/wathgrithr_victorian.zip"),
-	},
-	build_name = "wathgrithr_victorian",
-	rarity = "Elegant",
-	rarity_modifier = "EventModifier",
-	skin_tags = { "VICTORIAN", "BASE", "CHARACTER", "WATHGRITHR", },
-	skins = { ghost_skin = "ghost_wathgrithr_build", normal_skin = "wathgrithr_victorian", },
-	release_group = 43,
-}))
-
 table.insert(prefs, CreatePrefabSkin("waxwell_combatant",
 {
 	base_prefab = "waxwell",
@@ -2177,21 +2049,6 @@ table.insert(prefs, CreatePrefabSkin("waxwell_combatant",
 	skin_tags = { "LAVA", "BASE", "CHARACTER", "WAXWELL", },
 	skins = { ghost_skin = "ghost_waxwell_build", normal_skin = "waxwell_combatant", },
 	release_group = 32,
-}))
-
-table.insert(prefs, CreatePrefabSkin("waxwell_cook",
-{
-	base_prefab = "waxwell",
-	type = "base",
-	assets = {
-		Asset("ANIM", "anim/ghost_waxwell_build.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/waxwell_cook.zip"),
-	},
-	build_name = "waxwell_cook",
-	rarity = "Event",
-	skin_tags = { "VICTORIAN", "BASE", "CHARACTER", "WAXWELL", },
-	skins = { ghost_skin = "ghost_waxwell_build", normal_skin = "waxwell_cook", },
-	release_group = 43,
 }))
 
 table.insert(prefs, CreatePrefabSkin("waxwell_formal",
@@ -2344,23 +2201,6 @@ table.insert(prefs, CreatePrefabSkin("waxwell_unshadow",
 	release_group = 6,
 }))
 
-table.insert(prefs, CreatePrefabSkin("waxwell_victorian",
-{
-	base_prefab = "waxwell",
-	type = "base",
-	assets = {
-		Asset("ANIM", "anim/ghost_waxwell_build.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/waxwell_victorian.zip"),
-	},
-	build_name = "waxwell_victorian",
-	rarity = "Elegant",
-	rarity_modifier = "EventModifier",
-	skin_tags = { "VICTORIAN", "BASE", "CHARACTER", "WAXWELL", },
-	skins = { ghost_skin = "ghost_waxwell_build", normal_skin = "waxwell_victorian", },
-	torso_tuck_builds = { "waxwell_victorian", },
-	release_group = 43,
-}))
-
 table.insert(prefs, CreatePrefabSkin("webber_bat",
 {
 	base_prefab = "webber",
@@ -2405,21 +2245,6 @@ table.insert(prefs, CreatePrefabSkin("webber_combatant",
 	skin_tags = { "LAVA", "BASE", "CHARACTER", "WEBBER", },
 	skins = { ghost_skin = "ghost_webber_build", normal_skin = "webber_combatant", },
 	release_group = 32,
-}))
-
-table.insert(prefs, CreatePrefabSkin("webber_cook",
-{
-	base_prefab = "webber",
-	type = "base",
-	assets = {
-		Asset("ANIM", "anim/ghost_webber_build.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/webber_cook.zip"),
-	},
-	build_name = "webber_cook",
-	rarity = "Event",
-	skin_tags = { "VICTORIAN", "BASE", "CHARACTER", "WEBBER", },
-	skins = { ghost_skin = "ghost_webber_build", normal_skin = "webber_cook", },
-	release_group = 43,
 }))
 
 table.insert(prefs, CreatePrefabSkin("webber_formal",
@@ -2542,23 +2367,6 @@ table.insert(prefs, CreatePrefabSkin("webber_survivor",
 	release_group = 4,
 }))
 
-table.insert(prefs, CreatePrefabSkin("webber_victorian",
-{
-	base_prefab = "webber",
-	type = "base",
-	assets = {
-		Asset("ANIM", "anim/ghost_webber_build.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/webber_victorian.zip"),
-	},
-	build_name = "webber_victorian",
-	rarity = "Elegant",
-	rarity_modifier = "EventModifier",
-	skin_tags = { "VICTORIAN", "BASE", "CHARACTER", "WEBBER", },
-	skins = { ghost_skin = "ghost_webber_build", normal_skin = "webber_victorian", },
-	torso_tuck_builds = { "webber_victorian", },
-	release_group = 43,
-}))
-
 table.insert(prefs, CreatePrefabSkin("wendy_combatant",
 {
 	base_prefab = "wendy",
@@ -2572,21 +2380,6 @@ table.insert(prefs, CreatePrefabSkin("wendy_combatant",
 	skin_tags = { "LAVA", "BASE", "CHARACTER", "WENDY", },
 	skins = { ghost_skin = "ghost_wendy_build", normal_skin = "wendy_combatant", },
 	release_group = 32,
-}))
-
-table.insert(prefs, CreatePrefabSkin("wendy_cook",
-{
-	base_prefab = "wendy",
-	type = "base",
-	assets = {
-		Asset("ANIM", "anim/ghost_wendy_build.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/wendy_cook.zip"),
-	},
-	build_name = "wendy_cook",
-	rarity = "Event",
-	skin_tags = { "VICTORIAN", "BASE", "CHARACTER", "WENDY", },
-	skins = { ghost_skin = "ghost_wendy_build", normal_skin = "wendy_cook", },
-	release_group = 43,
 }))
 
 table.insert(prefs, CreatePrefabSkin("wendy_formal",
@@ -2745,23 +2538,6 @@ table.insert(prefs, CreatePrefabSkin("wendy_survivor",
 	release_group = 4,
 }))
 
-table.insert(prefs, CreatePrefabSkin("wendy_victorian",
-{
-	base_prefab = "wendy",
-	type = "base",
-	assets = {
-		Asset("ANIM", "anim/ghost_wendy_build.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/wendy_victorian.zip"),
-	},
-	build_name = "wendy_victorian",
-	rarity = "Elegant",
-	rarity_modifier = "EventModifier",
-	skin_tags = { "VICTORIAN", "BASE", "CHARACTER", "WENDY", },
-	skins = { ghost_skin = "ghost_wendy_build", normal_skin = "wendy_victorian", },
-	torso_untuck_builds = { "wendy_victorian", },
-	release_group = 43,
-}))
-
 table.insert(prefs, CreatePrefabSkin("wes_combatant",
 {
 	base_prefab = "wes",
@@ -2778,23 +2554,6 @@ table.insert(prefs, CreatePrefabSkin("wes_combatant",
 	has_alternate_for_body = { "wes_combatant", },
 	has_alternate_for_skirt = { "wes_combatant", },
 	release_group = 32,
-}))
-
-table.insert(prefs, CreatePrefabSkin("wes_cook",
-{
-	base_prefab = "wes",
-	type = "base",
-	assets = {
-		Asset("ANIM", "anim/ghost_wes_build.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/wes_cook.zip"),
-	},
-	build_name = "wes_cook",
-	rarity = "Event",
-	skin_tags = { "VICTORIAN", "BASE", "CHARACTER", "WES", },
-	skins = { ghost_skin = "ghost_wes_build", normal_skin = "wes_cook", },
-	has_alternate_for_body = { "wes_cook", },
-	has_alternate_for_skirt = { "wes_cook", },
-	release_group = 43,
 }))
 
 table.insert(prefs, CreatePrefabSkin("wes_formal",
@@ -2970,25 +2729,6 @@ table.insert(prefs, CreatePrefabSkin("wes_survivor",
 	release_group = 4,
 }))
 
-table.insert(prefs, CreatePrefabSkin("wes_victorian",
-{
-	base_prefab = "wes",
-	type = "base",
-	assets = {
-		Asset("ANIM", "anim/ghost_wes_build.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/wes_victorian.zip"),
-	},
-	build_name = "wes_victorian",
-	rarity = "Elegant",
-	rarity_modifier = "EventModifier",
-	skin_tags = { "VICTORIAN", "BASE", "CHARACTER", "WES", },
-	skins = { ghost_skin = "ghost_wes_build", normal_skin = "wes_victorian", },
-	torso_tuck_builds = { "wes_victorian", },
-	has_alternate_for_body = { "wes_victorian", },
-	has_alternate_for_skirt = { "wes_victorian", },
-	release_group = 43,
-}))
-
 table.insert(prefs, CreatePrefabSkin("wickerbottom_combatant",
 {
 	base_prefab = "wickerbottom",
@@ -3006,24 +2746,6 @@ table.insert(prefs, CreatePrefabSkin("wickerbottom_combatant",
 	has_alternate_for_skirt = { "wickerbottom_combatant", },
 	feet_cuff_size = { wickerbottom_combatant = 3, },
 	release_group = 32,
-}))
-
-table.insert(prefs, CreatePrefabSkin("wickerbottom_cook",
-{
-	base_prefab = "wickerbottom",
-	type = "base",
-	assets = {
-		Asset("ANIM", "anim/ghost_wickerbottom_build.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/wickerbottom_cook.zip"),
-	},
-	build_name = "wickerbottom_cook",
-	rarity = "Event",
-	skin_tags = { "VICTORIAN", "BASE", "CHARACTER", "WICKERBOTTOM", },
-	skins = { ghost_skin = "ghost_wickerbottom_build", normal_skin = "wickerbottom_cook", },
-	has_alternate_for_body = { "wickerbottom_cook", },
-	has_alternate_for_skirt = { "wickerbottom_cook", },
-	feet_cuff_size = { wickerbottom_cook = 3, },
-	release_group = 43,
 }))
 
 table.insert(prefs, CreatePrefabSkin("wickerbottom_formal",
@@ -3206,26 +2928,6 @@ table.insert(prefs, CreatePrefabSkin("wickerbottom_survivor",
 	release_group = 4,
 }))
 
-table.insert(prefs, CreatePrefabSkin("wickerbottom_victorian",
-{
-	base_prefab = "wickerbottom",
-	type = "base",
-	assets = {
-		Asset("ANIM", "anim/ghost_wickerbottom_build.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/wickerbottom_victorian.zip"),
-	},
-	build_name = "wickerbottom_victorian",
-	rarity = "Elegant",
-	rarity_modifier = "EventModifier",
-	skin_tags = { "VICTORIAN", "BASE", "CHARACTER", "WICKERBOTTOM", },
-	skins = { ghost_skin = "ghost_wickerbottom_build", normal_skin = "wickerbottom_victorian", },
-	torso_tuck_builds = { "wickerbottom_victorian", },
-	has_alternate_for_body = { "wickerbottom_victorian", },
-	has_alternate_for_skirt = { "wickerbottom_victorian", },
-	feet_cuff_size = { wickerbottom_victorian = 3, },
-	release_group = 43,
-}))
-
 table.insert(prefs, CreatePrefabSkin("willow_combatant",
 {
 	base_prefab = "willow",
@@ -3239,21 +2941,6 @@ table.insert(prefs, CreatePrefabSkin("willow_combatant",
 	skin_tags = { "LAVA", "BASE", "CHARACTER", "WILLOW", },
 	skins = { ghost_skin = "ghost_willow_build", normal_skin = "willow_combatant", },
 	release_group = 32,
-}))
-
-table.insert(prefs, CreatePrefabSkin("willow_cook",
-{
-	base_prefab = "willow",
-	type = "base",
-	assets = {
-		Asset("ANIM", "anim/ghost_willow_build.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/willow_cook.zip"),
-	},
-	build_name = "willow_cook",
-	rarity = "Event",
-	skin_tags = { "VICTORIAN", "BASE", "CHARACTER", "WILLOW", },
-	skins = { ghost_skin = "ghost_willow_build", normal_skin = "willow_cook", },
-	release_group = 43,
 }))
 
 table.insert(prefs, CreatePrefabSkin("willow_dragonfly",
@@ -3402,22 +3089,6 @@ table.insert(prefs, CreatePrefabSkin("willow_survivor",
 	release_group = 4,
 }))
 
-table.insert(prefs, CreatePrefabSkin("willow_victorian",
-{
-	base_prefab = "willow",
-	type = "base",
-	assets = {
-		Asset("ANIM", "anim/ghost_willow_build.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/willow_victorian.zip"),
-	},
-	build_name = "willow_victorian",
-	rarity = "Elegant",
-	rarity_modifier = "EventModifier",
-	skin_tags = { "VICTORIAN", "BASE", "CHARACTER", "WILLOW", },
-	skins = { ghost_skin = "ghost_willow_build", normal_skin = "willow_victorian", },
-	release_group = 43,
-}))
-
 table.insert(prefs, CreatePrefabSkin("wilson_combatant",
 {
 	base_prefab = "wilson",
@@ -3431,21 +3102,6 @@ table.insert(prefs, CreatePrefabSkin("wilson_combatant",
 	skin_tags = { "LAVA", "BASE", "CHARACTER", "WILSON", },
 	skins = { ghost_skin = "ghost_wilson_build", normal_skin = "wilson_combatant", },
 	release_group = 32,
-}))
-
-table.insert(prefs, CreatePrefabSkin("wilson_cook",
-{
-	base_prefab = "wilson",
-	type = "base",
-	assets = {
-		Asset("ANIM", "anim/ghost_wilson_build.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/wilson_cook.zip"),
-	},
-	build_name = "wilson_cook",
-	rarity = "Event",
-	skin_tags = { "VICTORIAN", "BASE", "CHARACTER", "WILSON", },
-	skins = { ghost_skin = "ghost_wilson_build", normal_skin = "wilson_cook", },
-	release_group = 43,
 }))
 
 table.insert(prefs, CreatePrefabSkin("wilson_formal",
@@ -3595,22 +3251,6 @@ table.insert(prefs, CreatePrefabSkin("wilson_survivor",
 	release_group = 4,
 }))
 
-table.insert(prefs, CreatePrefabSkin("wilson_victorian",
-{
-	base_prefab = "wilson",
-	type = "base",
-	assets = {
-		Asset("ANIM", "anim/ghost_wilson_build.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/wilson_victorian.zip"),
-	},
-	build_name = "wilson_victorian",
-	rarity = "Elegant",
-	rarity_modifier = "EventModifier",
-	skin_tags = { "VICTORIAN", "BASE", "CHARACTER", "WILSON", },
-	skins = { ghost_skin = "ghost_wilson_build", normal_skin = "wilson_victorian", },
-	release_group = 43,
-}))
-
 table.insert(prefs, CreatePrefabSkin("winona_combatant",
 {
 	base_prefab = "winona",
@@ -3624,21 +3264,6 @@ table.insert(prefs, CreatePrefabSkin("winona_combatant",
 	skin_tags = { "LAVA", "BASE", "CHARACTER", "WINONA", },
 	skins = { ghost_skin = "ghost_winona_build", normal_skin = "winona_combatant", },
 	release_group = 32,
-}))
-
-table.insert(prefs, CreatePrefabSkin("winona_cook",
-{
-	base_prefab = "winona",
-	type = "base",
-	assets = {
-		Asset("ANIM", "anim/ghost_winona_build.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/winona_cook.zip"),
-	},
-	build_name = "winona_cook",
-	rarity = "Event",
-	skin_tags = { "VICTORIAN", "BASE", "CHARACTER", "WINONA", },
-	skins = { ghost_skin = "ghost_winona_build", normal_skin = "winona_cook", },
-	release_group = 43,
 }))
 
 table.insert(prefs, CreatePrefabSkin("winona_formal",
@@ -3788,22 +3413,6 @@ table.insert(prefs, CreatePrefabSkin("winona_survivor",
 	release_group = 30,
 }))
 
-table.insert(prefs, CreatePrefabSkin("winona_victorian",
-{
-	base_prefab = "winona",
-	type = "base",
-	assets = {
-		Asset("ANIM", "anim/ghost_winona_build.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/winona_victorian.zip"),
-	},
-	build_name = "winona_victorian",
-	rarity = "Elegant",
-	rarity_modifier = "EventModifier",
-	skin_tags = { "VICTORIAN", "BASE", "CHARACTER", "WINONA", },
-	skins = { ghost_skin = "ghost_winona_build", normal_skin = "winona_victorian", },
-	release_group = 43,
-}))
-
 table.insert(prefs, CreatePrefabSkin("winterhat_black_davys",
 {
 	base_prefab = "winterhat",
@@ -3904,23 +3513,6 @@ table.insert(prefs, CreatePrefabSkin("wolfgang_combatant",
 	skin_tags = { "LAVA", "BASE", "CHARACTER", "WOLFGANG", },
 	skins = { ghost_skin = "ghost_wolfgang_build", mighty_skin = "wolfgang_mighty_combatant", normal_skin = "wolfgang_combatant", wimpy_skin = "wolfgang_skinny_combatant", },
 	release_group = 32,
-}))
-
-table.insert(prefs, CreatePrefabSkin("wolfgang_cook",
-{
-	base_prefab = "wolfgang",
-	type = "base",
-	assets = {
-		Asset("ANIM", "anim/ghost_wolfgang_build.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/wolfgang_mighty_cook.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/wolfgang_cook.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/wolfgang_skinny_cook.zip"),
-	},
-	build_name = "wolfgang_cook",
-	rarity = "Event",
-	skin_tags = { "VICTORIAN", "BASE", "CHARACTER", "WOLFGANG", },
-	skins = { ghost_skin = "ghost_wolfgang_build", mighty_skin = "wolfgang_mighty_cook", normal_skin = "wolfgang_cook", wimpy_skin = "wolfgang_skinny_cook", },
-	release_group = 43,
 }))
 
 table.insert(prefs, CreatePrefabSkin("wolfgang_formal",
@@ -4057,25 +3649,6 @@ table.insert(prefs, CreatePrefabSkin("wolfgang_survivor",
 	release_group = 4,
 }))
 
-table.insert(prefs, CreatePrefabSkin("wolfgang_victorian",
-{
-	base_prefab = "wolfgang",
-	type = "base",
-	assets = {
-		Asset("ANIM", "anim/ghost_wolfgang_build.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/wolfgang_mighty_victorian.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/wolfgang_victorian.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/wolfgang_skinny_victorian.zip"),
-	},
-	build_name = "wolfgang_victorian",
-	rarity = "Elegant",
-	rarity_modifier = "EventModifier",
-	skin_tags = { "VICTORIAN", "BASE", "CHARACTER", "WOLFGANG", },
-	skins = { ghost_skin = "ghost_wolfgang_build", mighty_skin = "wolfgang_mighty_victorian", normal_skin = "wolfgang_victorian", wimpy_skin = "wolfgang_skinny_victorian", },
-	torso_tuck_builds = { "wolfgang_victorian", "wolfgang_victorian", "wolfgang_mighty_victorian", },
-	release_group = 43,
-}))
-
 table.insert(prefs, CreatePrefabSkin("wolfgang_walrus",
 {
 	base_prefab = "wolfgang",
@@ -4127,24 +3700,6 @@ table.insert(prefs, CreatePrefabSkin("woodie_combatant",
 	skin_tags = { "LAVA", "BASE", "CHARACTER", "WOODIE", },
 	skins = { ghost_skin = "ghost_woodie_build", ghost_werebeaver_skin = "ghost_werebeaver_build", normal_skin = "woodie_combatant", werebeaver_skin = "werebeaver_build", },
 	release_group = 32,
-}))
-
-table.insert(prefs, CreatePrefabSkin("woodie_cook",
-{
-	base_prefab = "woodie",
-	type = "base",
-	assets = {
-		Asset("ANIM", "anim/ghost_woodie_build.zip"),
-		Asset("ANIM", "anim/ghost_werebeaver_build.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/woodie_cook.zip"),
-		Asset("ANIM", "anim/werebeaver_build.zip"),
-	},
-	build_name = "woodie_cook",
-	rarity = "Event",
-	skin_tags = { "VICTORIAN", "BASE", "CHARACTER", "WOODIE", },
-	skins = { ghost_skin = "ghost_woodie_build", ghost_werebeaver_skin = "ghost_werebeaver_build", normal_skin = "woodie_cook", werebeaver_skin = "werebeaver_build", },
-	feet_cuff_size = { woodie_cook = 3, },
-	release_group = 43,
 }))
 
 table.insert(prefs, CreatePrefabSkin("woodie_formal",
@@ -4312,24 +3867,6 @@ table.insert(prefs, CreatePrefabSkin("woodie_treeguard_d",
 	release_group = 31,
 }))
 
-table.insert(prefs, CreatePrefabSkin("woodie_victorian",
-{
-	base_prefab = "woodie",
-	type = "base",
-	assets = {
-		Asset("ANIM", "anim/ghost_woodie_build.zip"),
-		Asset("ANIM", "anim/ghost_werebeaver_build.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/woodie_victorian.zip"),
-		Asset("ANIM", "anim/werebeaver_build.zip"),
-	},
-	build_name = "woodie_victorian",
-	rarity = "Elegant",
-	rarity_modifier = "EventModifier",
-	skin_tags = { "VICTORIAN", "BASE", "CHARACTER", "WOODIE", },
-	skins = { ghost_skin = "ghost_woodie_build", ghost_werebeaver_skin = "ghost_werebeaver_build", normal_skin = "woodie_victorian", werebeaver_skin = "werebeaver_build", },
-	release_group = 43,
-}))
-
 table.insert(prefs, CreatePrefabSkin("wx78_combatant",
 {
 	base_prefab = "wx78",
@@ -4344,22 +3881,6 @@ table.insert(prefs, CreatePrefabSkin("wx78_combatant",
 	skins = { ghost_skin = "ghost_wx78_build", normal_skin = "wx78_combatant", },
 	feet_cuff_size = { wx78_combatant = 3, },
 	release_group = 32,
-}))
-
-table.insert(prefs, CreatePrefabSkin("wx78_cook",
-{
-	base_prefab = "wx78",
-	type = "base",
-	assets = {
-		Asset("ANIM", "anim/ghost_wx78_build.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/wx78_cook.zip"),
-	},
-	build_name = "wx78_cook",
-	rarity = "Event",
-	skin_tags = { "VICTORIAN", "BASE", "CHARACTER", "WX78", },
-	skins = { ghost_skin = "ghost_wx78_build", normal_skin = "wx78_cook", },
-	feet_cuff_size = { wx78_cook = 3, },
-	release_group = 43,
 }))
 
 table.insert(prefs, CreatePrefabSkin("wx78_formal",
@@ -4519,24 +4040,6 @@ table.insert(prefs, CreatePrefabSkin("wx78_survivor",
 	has_alternate_for_body = { "wx78_survivor", },
 	marketable = true,
 	release_group = 4,
-}))
-
-table.insert(prefs, CreatePrefabSkin("wx78_victorian",
-{
-	base_prefab = "wx78",
-	type = "base",
-	assets = {
-		Asset("ANIM", "anim/ghost_wx78_build.zip"),
-		Asset("DYNAMIC_ANIM", "anim/dynamic/wx78_victorian.zip"),
-	},
-	build_name = "wx78_victorian",
-	rarity = "Elegant",
-	rarity_modifier = "EventModifier",
-	skin_tags = { "VICTORIAN", "BASE", "CHARACTER", "WX78", },
-	skins = { ghost_skin = "ghost_wx78_build", normal_skin = "wx78_victorian", },
-	has_alternate_for_body = { "wx78_victorian", },
-	feet_cuff_size = { wx78_victorian = 3, },
-	release_group = 43,
 }))
 
 return unpack(prefs)
