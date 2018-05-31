@@ -1012,7 +1012,7 @@ function OptionsScreen:_BuildSettings()
 			function()
 				local opt_in = not TheSim:GetDataCollectionSetting()
 				local str = STRINGS.UI.DATACOLLECTION_POPUP[opt_in and "OPT_IN" or "OPT_OUT"]
-				TheFrontEnd:PushScreen(PopupDialogScreen( str.TITLE, STRINGS.UI.DATACOLLECTION_POPUP.BODY,
+				TheFrontEnd:PushScreen(PopupDialogScreen( STRINGS.UI.DATACOLLECTION_POPUP.TITLE, STRINGS.UI.DATACOLLECTION_POPUP.BODY,
 				{ 
 					{ 
 						text = str.CONTINUE,
