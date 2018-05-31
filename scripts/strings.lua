@@ -5948,17 +5948,16 @@ STRINGS.UI =
 	{
 		OPT_OUT = 
 		{
-			TITLE = "Opt-out for Data Collection",
-			CONTINUE = "Opt-out",
+			CONTINUE = "Disable",
 		},
 
 		OPT_IN =
 		{
-			TITLE = "Opt-in for Data Collection",
-			CONTINUE = "Opt-in",
+			CONTINUE = "Enable",
 		},
 
-		BODY = "We require the collection of user data to provide online services. Players who opt-out of data collection will only have access to play in offline mode.\n\nFor more details on our privacy policy and how we use the data we collect, please see our official privacy policy.",
+		TITLE = "Data Collection",
+		BODY = "We require the collection of user data to provide online services. Players who disable data collection will only have access to play in offline mode.\n\nFor more details on our privacy policy and how we use the data we collect, please see our official privacy policy.",
 
 		PRIVACY_PORTAL = "View Privacy Policy",
 		CANCEL = "Cancel",
@@ -5967,7 +5966,7 @@ STRINGS.UI =
 	DATACOLLECTION_LOGIN =
 	{
 		TITLE = "Offline Mode",
-		BODY = "We require the collection of user data to provide online services. Players who opt out of data collection will only have access to play in offline mode.\n\nCharacters and worlds from online games will be unavailable.\n\nData Collection settings can be modified in the Options menu.",
+		BODY = "We require the collection of user data to provide online services. Players who disable data collection will only have access to play in offline mode.\n\nCharacters and worlds from online games will be unavailable.\n\nData Collection settings can be modified in the Options menu.",
 		CONTINUE = "Continue",
 	},
 
