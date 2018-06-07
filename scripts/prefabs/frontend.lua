@@ -17,6 +17,8 @@ local assets =
     Asset("DYNAMIC_ATLAS", "images/anr_silhouettes.xml"),
     Asset("PKGREF", "images/anr_silhouettes.tex"),
 
+    Asset("DYNAMIC_ANIM", "anim/dynamic/quagmire_countdown2.zip"),
+
     Asset("ATLAS", "images/frontscreen.xml"),
     Asset("IMAGE", "images/frontscreen.tex"),
         
