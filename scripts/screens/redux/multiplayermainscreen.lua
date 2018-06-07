@@ -28,6 +28,7 @@ local ThankYouPopup = require "screens/thankyoupopup"
 local SkinGifts = require("skin_gifts")
 local Stats = require("stats")
 
+local CountdownBeta = require "widgets/countdownbeta"
 
 
 
@@ -242,6 +243,17 @@ function MultiplayerMainScreen:DoInit()
         self.debug_menu:SetFocusChangeDir(MOVE_LEFT, self.motd)
         self.debug_menu:SetFocusChangeDir(MOVE_RIGHT, self.submenu)
     end
+
+	if IsNotConsole() then
+		self.beta_countdown = self.fixed_root:AddChild(CountdownBeta(self, "quagmire"))
+		self.beta_countdown:SetScale(.8)
+		self.beta_countdown:SetPosition(500, -100)
+
+		self.beta_countdown:SetFocusChangeDir(MOVE_DOWN, self.submenu)
+		self.beta_countdown:SetFocusChangeDir(MOVE_UP, self.motd.button)
+		self.submenu:SetFocusChangeDir(MOVE_UP, self.beta_countdown)
+		self.motd.button:SetFocusChangeDir(MOVE_DOWN, self.beta_countdown)
+	end
 
 
     self.menu:SetFocus(#self.menu.items)

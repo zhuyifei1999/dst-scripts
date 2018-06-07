@@ -3013,8 +3013,12 @@ STRINGS.UI =
         UPDATERELEASED = "Now Playing:",
         LASTBUILDDAYS = "Last build %d days ago",
         NEXTBUILDIMMINENT = "Next build imminent!",
-        NEXTUPDATEDAYS = "Next Update: %d days",
-        BETA_LABEL = "A New Reign Beta",
+        NEXTUPDATEDAYS = "Next Update: %d days!",
+        BETA_LABEL = "The Gorge Event",
+
+        EVENT_UPDATEDAYS = "Starts in %d days!",
+        EVENT_UPDATEDAY = "Starts in 1 day!",
+        EVENT_IMMINENT = "Update imminent!",
 
         MOTDTITLE = "Klei Store",
         MOTD = "Check out the latest items in the Klei Store!",
