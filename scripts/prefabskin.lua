@@ -144,6 +144,30 @@ function spear_init_fn(inst, build_name)
 end
 
 --------------------------------------------------------------------------
+--[[ Axe skin functions ]]
+--------------------------------------------------------------------------
+function axe_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "swap_axe")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+
+--------------------------------------------------------------------------
+--[[ Shovel skin functions ]]
+--------------------------------------------------------------------------
+function shovel_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "swap_shovel")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+
+--------------------------------------------------------------------------
 --[[ Hambat skin functions ]]
 --------------------------------------------------------------------------
 function hambat_init_fn(inst, build_name)

@@ -14,9 +14,10 @@ local start_inv =
     default =
     {
     },
-
-    lavaarena = TUNING.LAVAARENA_STARTING_ITEMS.WOLFGANG,
 }
+for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
+	start_inv[string.lower(k)] = v.WOLFGANG
+end
 
 local prefabs = FlattenTree(start_inv, true)
 

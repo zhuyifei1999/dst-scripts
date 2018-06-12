@@ -2,6 +2,22 @@
 
 MISC_ITEMS =
 {
+	emoji_abigail =
+	{
+		type = "emoji",
+		skin_tags = { "VICTORIAN", "EMOJI", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	emoji_alchemyengine =
+	{
+		type = "emoji",
+		skin_tags = { "VICTORIAN", "EMOJI", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
 	emoji_arcane =
 	{
 		type = "emoji",
@@ -9,6 +25,14 @@ MISC_ITEMS =
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	emoji_backpack =
+	{
+		type = "emoji",
+		skin_tags = { "VICTORIAN", "EMOJI", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
 	},
 	emoji_battle =
 	{
@@ -25,6 +49,30 @@ MISC_ITEMS =
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	emoji_beehive =
+	{
+		type = "emoji",
+		skin_tags = { "VICTORIAN", "EMOJI", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	emoji_berry_bush =
+	{
+		type = "emoji",
+		skin_tags = { "VICTORIAN", "EMOJI", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	emoji_carrot =
+	{
+		type = "emoji",
+		skin_tags = { "VICTORIAN", "EMOJI", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
 	},
 	emoji_chest =
 	{
@@ -50,6 +98,14 @@ MISC_ITEMS =
 		rarity_modifier = "EventModifier",
 		release_group = 32,
 	},
+	emoji_egg =
+	{
+		type = "emoji",
+		skin_tags = { "VICTORIAN", "EMOJI", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
 	emoji_eyeball =
 	{
 		type = "emoji",
@@ -57,6 +113,14 @@ MISC_ITEMS =
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	emoji_eyeplant =
+	{
+		type = "emoji",
+		skin_tags = { "VICTORIAN", "EMOJI", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
 	},
 	emoji_faketeeth =
 	{
@@ -81,6 +145,14 @@ MISC_ITEMS =
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	emoji_firepit =
+	{
+		type = "emoji",
+		skin_tags = { "VICTORIAN", "EMOJI", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
 	},
 	emoji_flex =
 	{
@@ -138,6 +210,14 @@ MISC_ITEMS =
 		rarity_modifier = "EventModifier",
 		release_group = 32,
 	},
+	emoji_horn =
+	{
+		type = "emoji",
+		skin_tags = { "VICTORIAN", "EMOJI", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
 	emoji_hunger =
 	{
 		type = "emoji",
@@ -153,6 +233,14 @@ MISC_ITEMS =
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	emoji_meat_big =
+	{
+		type = "emoji",
+		skin_tags = { "VICTORIAN", "EMOJI", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
 	},
 	emoji_pig =
 	{
@@ -178,6 +266,22 @@ MISC_ITEMS =
 		rarity_modifier = "EventModifier",
 		release_group = 32,
 	},
+	emoji_refine =
+	{
+		type = "emoji",
+		skin_tags = { "VICTORIAN", "EMOJI", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	emoji_salt =
+	{
+		type = "emoji",
+		skin_tags = { "VICTORIAN", "EMOJI", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
 	emoji_sanity =
 	{
 		type = "emoji",
@@ -194,6 +298,22 @@ MISC_ITEMS =
 		rarity_modifier = "EventModifier",
 		release_group = 32,
 	},
+	emoji_shadowmanipulator =
+	{
+		type = "emoji",
+		skin_tags = { "VICTORIAN", "EMOJI", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	emoji_shovel =
+	{
+		type = "emoji",
+		skin_tags = { "VICTORIAN", "EMOJI", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
 	emoji_skull =
 	{
 		type = "emoji",
@@ -201,6 +321,14 @@ MISC_ITEMS =
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	emoji_thumbsup =
+	{
+		type = "emoji",
+		skin_tags = { "VICTORIAN", "EMOJI", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
 	},
 	emoji_tophat =
 	{
@@ -218,6 +346,30 @@ MISC_ITEMS =
 		rarity_modifier = "Seasonal",
 		release_group = 40,
 	},
+	emoji_trap =
+	{
+		type = "emoji",
+		skin_tags = { "VICTORIAN", "EMOJI", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	emoji_trophy =
+	{
+		type = "emoji",
+		skin_tags = { "VICTORIAN", "EMOJI", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	emoji_wave =
+	{
+		type = "emoji",
+		skin_tags = { "VICTORIAN", "EMOJI", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
 	emoji_web =
 	{
 		type = "emoji",
@@ -225,6 +377,14 @@ MISC_ITEMS =
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	emoji_wormhole =
+	{
+		type = "emoji",
+		skin_tags = { "VICTORIAN", "EMOJI", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
 	},
 	loading_bearger_yule =
 	{
@@ -257,6 +417,14 @@ MISC_ITEMS =
 		rarity = "Distinguished",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
+	},
+	loading_goats_victorian =
+	{
+		type = "loading",
+		skin_tags = { "VICTORIAN", "LOADING", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
 	},
 	loading_goosemoose_yule =
 	{
@@ -306,6 +474,22 @@ MISC_ITEMS =
 		rarity_modifier = "EventModifier",
 		release_group = 32,
 	},
+	loading_wendy_victorian =
+	{
+		type = "loading",
+		skin_tags = { "VICTORIAN", "LOADING", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	loading_wes_victorian =
+	{
+		type = "loading",
+		skin_tags = { "VICTORIAN", "LOADING", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
 	loading_wickerbottom =
 	{
 		type = "loading",
@@ -313,6 +497,14 @@ MISC_ITEMS =
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	loading_wickerbottom_victorian =
+	{
+		type = "loading",
+		skin_tags = { "VICTORIAN", "LOADING", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
 	},
 	loading_wigfrid =
 	{
@@ -322,6 +514,14 @@ MISC_ITEMS =
 		rarity_modifier = "EventModifier",
 		release_group = 32,
 	},
+	loading_willow_victorian =
+	{
+		type = "loading",
+		skin_tags = { "VICTORIAN", "LOADING", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
 	loading_willowfire =
 	{
 		type = "loading",
@@ -330,6 +530,14 @@ MISC_ITEMS =
 		rarity_modifier = "EventModifier",
 		release_group = 32,
 	},
+	loading_winona_victorian =
+	{
+		type = "loading",
+		skin_tags = { "VICTORIAN", "LOADING", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
 	loading_wolfgang =
 	{
 		type = "loading",
@@ -337,6 +545,14 @@ MISC_ITEMS =
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	loading_woodie_victorian =
+	{
+		type = "loading",
+		skin_tags = { "VICTORIAN", "LOADING", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
 	},
 	mysterybox_classic_4 =
 	{
@@ -373,6 +589,15 @@ MISC_ITEMS =
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 41,
+	},
+	mysterybox_victorian_4 =
+	{
+		type = "mysterybox",
+		skin_tags = { "MYSTERYBOX", },
+		box_build = "box_mystery_victorian",
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 45,
 	},
 	pack_gladiator_all =
 	{
@@ -676,6 +901,14 @@ MISC_ITEMS =
 		legacy_popup_category = "SW",
 		release_group = 42,
 	},
+	playerportrait_bg_altarstatue =
+	{
+		type = "playerportrait",
+		skin_tags = { "VICTORIAN", "PLAYERPORTRAIT", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
 	playerportrait_bg_beefalo =
 	{
 		type = "playerportrait",
@@ -692,6 +925,14 @@ MISC_ITEMS =
 		rarity_modifier = "EventModifier",
 		release_group = 32,
 	},
+	playerportrait_bg_brokenclock =
+	{
+		type = "playerportrait",
+		skin_tags = { "VICTORIAN", "PLAYERPORTRAIT", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
 	playerportrait_bg_camp =
 	{
 		type = "playerportrait",
@@ -699,6 +940,14 @@ MISC_ITEMS =
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	playerportrait_bg_car =
+	{
+		type = "playerportrait",
+		skin_tags = { "VICTORIAN", "PLAYERPORTRAIT", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
 	},
 	playerportrait_bg_cardinals =
 	{
@@ -708,6 +957,14 @@ MISC_ITEMS =
 		rarity_modifier = "EventModifier",
 		release_group = 32,
 	},
+	playerportrait_bg_cottontree =
+	{
+		type = "playerportrait",
+		skin_tags = { "VICTORIAN", "PLAYERPORTRAIT", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
 	playerportrait_bg_deciduousforest =
 	{
 		type = "playerportrait",
@@ -716,12 +973,44 @@ MISC_ITEMS =
 		rarity_modifier = "EventModifier",
 		release_group = 32,
 	},
+	playerportrait_bg_fancyarch =
+	{
+		type = "playerportrait",
+		skin_tags = { "VICTORIAN", "PLAYERPORTRAIT", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	playerportrait_bg_fence =
+	{
+		type = "playerportrait",
+		skin_tags = { "VICTORIAN", "PLAYERPORTRAIT", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	playerportrait_bg_fencepattern =
+	{
+		type = "playerportrait",
+		skin_tags = { "VICTORIAN", "PLAYERPORTRAIT", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
 	playerportrait_bg_flames =
 	{
 		type = "playerportrait",
 		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
 		rarity = "Loyal",
 		release_group = 32,
+	},
+	playerportrait_bg_forestaltar =
+	{
+		type = "playerportrait",
+		skin_tags = { "VICTORIAN", "PLAYERPORTRAIT", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
 	},
 	playerportrait_bg_forestfire =
 	{
@@ -739,6 +1028,14 @@ MISC_ITEMS =
 		rarity_modifier = "EventModifier",
 		release_group = 32,
 	},
+	playerportrait_bg_gnaw =
+	{
+		type = "playerportrait",
+		skin_tags = { "VICTORIAN", "PLAYERPORTRAIT", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
 	playerportrait_bg_grasslands =
 	{
 		type = "playerportrait",
@@ -746,6 +1043,22 @@ MISC_ITEMS =
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	playerportrait_bg_gravestones =
+	{
+		type = "playerportrait",
+		skin_tags = { "VICTORIAN", "PLAYERPORTRAIT", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	playerportrait_bg_graveyard =
+	{
+		type = "playerportrait",
+		skin_tags = { "VICTORIAN", "PLAYERPORTRAIT", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
 	},
 	playerportrait_bg_heart1 =
 	{
@@ -762,6 +1075,14 @@ MISC_ITEMS =
 		rarity = "Spiffy",
 		rarity_modifier = "Seasonal",
 		release_group = 39,
+	},
+	playerportrait_bg_lamppost =
+	{
+		type = "playerportrait",
+		skin_tags = { "VICTORIAN", "PLAYERPORTRAIT", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
 	},
 	playerportrait_bg_lava =
 	{
@@ -795,6 +1116,14 @@ MISC_ITEMS =
 		rarity_modifier = "EventModifier",
 		release_group = 32,
 	},
+	playerportrait_bg_marblestatue =
+	{
+		type = "playerportrait",
+		skin_tags = { "VICTORIAN", "PLAYERPORTRAIT", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
 	playerportrait_bg_marshhouse =
 	{
 		type = "playerportrait",
@@ -802,6 +1131,22 @@ MISC_ITEMS =
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	playerportrait_bg_mushroom =
+	{
+		type = "playerportrait",
+		skin_tags = { "VICTORIAN", "PLAYERPORTRAIT", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	playerportrait_bg_oven =
+	{
+		type = "playerportrait",
+		skin_tags = { "VICTORIAN", "PLAYERPORTRAIT", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
 	},
 	playerportrait_bg_penguins =
 	{
@@ -818,6 +1163,30 @@ MISC_ITEMS =
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	playerportrait_bg_plates =
+	{
+		type = "playerportrait",
+		skin_tags = { "VICTORIAN", "PLAYERPORTRAIT", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	playerportrait_bg_portal =
+	{
+		type = "playerportrait",
+		skin_tags = { "VICTORIAN", "PLAYERPORTRAIT", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	playerportrait_bg_pothanger =
+	{
+		type = "playerportrait",
+		skin_tags = { "VICTORIAN", "PLAYERPORTRAIT", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
 	},
 	playerportrait_bg_rocks =
 	{
@@ -1418,6 +1787,94 @@ MISC_ITEMS =
 		rarity = "Common",
 		rarity_modifier = "Seasonal",
 		release_group = 40,
+	},
+	profileflair_victorian_boar =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_victorian_coppercoin =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_victorian_goatkid =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_victorian_goatmom =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_victorian_goldcoin =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_victorian_merm =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_victorian_merm2 =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_victorian_pigeon =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_victorian_safe =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_victorian_silvercoin =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_victorian_topazcoin =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
 	},
 	profileflair_waffle =
 	{

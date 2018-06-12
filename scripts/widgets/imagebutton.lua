@@ -263,7 +263,7 @@ end
 
 function ImageButton:SetFocusScale(scaleX, scaleY, scaleZ)
     if type(scaleX) == "number" then
-        self.focus_scale = {scaleX, scaleY, scaleZ}
+        self.focus_scale = {scaleX, scaleY, scaleZ or 1}
     else
         self.focus_scale = scaleX
     end
@@ -275,7 +275,7 @@ end
 
 function ImageButton:SetNormalScale(scaleX, scaleY, scaleZ)
     if type(scaleX) == "number" then
-        self.normal_scale = {scaleX, scaleY, scaleZ}
+        self.normal_scale = {scaleX, scaleY, scaleZ or 1}
     else
         self.normal_scale = scaleX
     end

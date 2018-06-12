@@ -30,12 +30,8 @@ local DoRunSounds = function(inst)
     end
 end
 
-if TheNet:GetServerGameMode() == "lavaarena" then
-	local DoRunSounds_original = DoRunSounds
-	DoRunSounds = function(inst)
-		DoRunSounds_original(inst)
-        inst:PushEvent("mvpstats_steptaken")
-	end
+if TheNet:GetServerGameMode() == "lavaarena" or TheNet:GetServerGameMode() == "quagmire" then
+    DoRunSounds = event_server_data("common", "stategraphs/SGwilson").OverrideRunSounds(DoRunSounds)
 end
 
 local function DoHurtSound(inst)
@@ -417,11 +413,20 @@ local actionhandlers =
             end
         end),
 
-    ActionHandler(ACTIONS.TAKEITEM, "dolongaction"),
+    ActionHandler(ACTIONS.TAKEITEM,
+        function(inst, action)
+            return action.target ~= nil
+                and action.target.takeitem ~= nil --added for quagmire
+                and "give"
+                or "dolongaction"
+        end),
 
     ActionHandler(ACTIONS.BUILD,
-        function(inst)--, action)
-            return inst:HasTag("fastbuilder") and "domediumaction" or "dolongaction"
+        function(inst, action)
+            local rec = GetValidRecipe(action.recipe)
+            return (rec ~= nil and rec.tab.shop and "give")
+                or (inst:HasTag("fastbuilder") and "domediumaction")
+                or "dolongaction"
         end),
     ActionHandler(ACTIONS.SHAVE, "shave"),
     ActionHandler(ACTIONS.COOK, "dolongaction"),
@@ -450,7 +455,15 @@ local actionhandlers =
                 or (obj.components.edible.foodtype == FOODTYPE.MEAT and "eat")
                 or "quickeat"
         end),
-    ActionHandler(ACTIONS.GIVE, "give"),
+    ActionHandler(ACTIONS.GIVE,
+        function(inst, action)
+            return action.invobject ~= nil
+                and action.invobject.prefab == "quagmire_portal_key"
+                and action.target ~= nil
+                and action.target:HasTag("quagmire_altar")
+                and "quagmireportalkey"
+                or "give"
+        end),
     ActionHandler(ACTIONS.GIVETOPLAYER, "give"),
     ActionHandler(ACTIONS.GIVEALLTOPLAYER, "give"),
     ActionHandler(ACTIONS.FEEDPLAYER, "give"),
@@ -527,6 +540,15 @@ local actionhandlers =
     ActionHandler(ACTIONS.UNWRAP, "dolongaction"),
     ActionHandler(ACTIONS.STARTCHANNELING, "startchanneling"),
     ActionHandler(ACTIONS.REVIVE_CORPSE, "revivecorpse"),
+
+    --Quagmire
+    ActionHandler(ACTIONS.TILL, "till_start"),
+    ActionHandler(ACTIONS.PLANTSOIL, "dolongaction"),
+    ActionHandler(ACTIONS.INSTALL, "dolongaction"),
+    ActionHandler(ACTIONS.TAPTREE, "dolongaction"),
+    ActionHandler(ACTIONS.SLAUGHTER, "dolongaction"),
+    ActionHandler(ACTIONS.REPLATE, "dolongaction"),
+    ActionHandler(ACTIONS.SALT, "dolongaction"),
 }
 
 local events =
@@ -1173,7 +1195,7 @@ local states =
                 inst.components.playercontroller:Enable(false)
             end
             inst.AnimState:PlayAnimation("rebirth")
-            
+
             for k,v in pairs(statue_symbols) do
                 inst.AnimState:OverrideSymbol(v, "wilsonstatue", v)
             end
@@ -6251,19 +6273,19 @@ local states =
                 data.teleporter.components.teleporter:RegisterTeleportee(inst)
             end
 
-            inst.AnimState:PlayAnimation(inst.sg.statemem.heavy and "heavy_jump" or "jump", false)
+            inst.AnimState:PlayAnimation(inst.sg.statemem.heavy and "heavy_jump" or "jump")
 
             local pos = data ~= nil and data.teleporter and data.teleporter:GetPosition() or nil
 
             local MAX_JUMPIN_DIST = 3
-            local MAX_JUMPIN_DIST_SQ = MAX_JUMPIN_DIST*MAX_JUMPIN_DIST
+            local MAX_JUMPIN_DIST_SQ = MAX_JUMPIN_DIST * MAX_JUMPIN_DIST
             local MAX_JUMPIN_SPEED = 6
 
             local dist
             if pos ~= nil then
                 inst:ForceFacePoint(pos:Get())
                 local distsq = inst:GetDistanceSqToPoint(pos:Get())
-                if distsq <= 0.25*0.25 then
+                if distsq <= .25 * .25 then
                     dist = 0
                     inst.sg.statemem.speed = 0
                 elseif distsq >= MAX_JUMPIN_DIST_SQ then
@@ -8610,6 +8632,62 @@ local states =
             end),
         },
     },
+
+    State{
+        name = "till_start",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("till_pre")
+        end,
+
+        events =
+        {
+            EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("till")
+                end
+            end),
+        },
+    },
+
+    State{
+        name = "till",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("till_loop")
+        end,
+
+        timeline =
+        {
+            TimeEvent(4 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/wilson/dig") end),
+            TimeEvent(11 * FRAMES, function(inst)
+                inst:PerformBufferedAction()
+            end),
+            TimeEvent(12 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/mole/emerge") end),
+            TimeEvent(22 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
+
+        events =
+        {
+            EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.AnimState:PlayAnimation("till_pst")
+                    inst.sg:GoToState("idle", true)
+                end
+            end),
+        },
+    },
 }
+
+if TheNet:GetServerGameMode() == "quagmire" then
+    event_server_data("quagmire", "stategraphs/SGwilson").AddQuagmireStates(states, DoTalkSound, ToggleOnPhysics, ToggleOffPhysics)
+end
 
 return StateGraph("wilson", states, events, "idle", actionhandlers)

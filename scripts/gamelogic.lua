@@ -1032,7 +1032,6 @@ local function OnFilesLoaded()
     UpdateGamePurchasedState(OnUpdatePurchaseStateComplete)
 end
 
-Profile = require("playerprofile")()
 SaveGameIndex = SaveIndex()
 Morgue = PlayerDeaths()
 PlayerHistory = PlayerHistory()

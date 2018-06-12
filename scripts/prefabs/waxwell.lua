@@ -24,9 +24,10 @@ local start_inv =
         "nightmarefuel",
         "nightmarefuel",
     },
-
-    lavaarena = TUNING.LAVAARENA_STARTING_ITEMS.WAXWELL,
 }
+for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
+	start_inv[string.lower(k)] = v.WAXWELL
+end
 
 prefabs = FlattenTree({ prefabs, start_inv }, true)
 

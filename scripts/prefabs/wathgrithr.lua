@@ -25,8 +25,10 @@ local start_inv =
         "meat",
     },
 
-    lavaarena = TUNING.LAVAARENA_STARTING_ITEMS.WATHGRITHR,
 }
+for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
+	start_inv[string.lower(k)] = v.WATHGRITHR
+end
 
 prefabs = FlattenTree({ prefabs, start_inv }, true)
 
@@ -123,7 +125,9 @@ local function master_postinit(inst)
 
     inst.talker_path_override = "dontstarve_DLC001/characters/"
 
-    inst.components.eater:SetDiet({ FOODGROUP.OMNI }, { FOODTYPE.MEAT, FOODTYPE.GOODIES })
+    if inst.components.eater ~= nil then
+        inst.components.eater:SetDiet({ FOODGROUP.OMNI }, { FOODTYPE.MEAT, FOODTYPE.GOODIES })
+    end
 
     inst.components.health:SetMaxHealth(TUNING.WATHGRITHR_HEALTH)
     inst.components.hunger:SetMax(TUNING.WATHGRITHR_HUNGER)

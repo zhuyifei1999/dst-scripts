@@ -19,9 +19,10 @@ local start_inv =
         "lighter",
         "bernie_inactive",
     },
-
-    lavaarena = TUNING.LAVAARENA_STARTING_ITEMS.WILLOW,
 }
+for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
+	start_inv[string.lower(k)] = v.WILLOW
+end
 
 prefabs = FlattenTree({ prefabs, start_inv }, true)
 

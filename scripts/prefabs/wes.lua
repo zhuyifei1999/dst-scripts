@@ -13,9 +13,10 @@ local start_inv =
     {
         "balloons_empty",
     },
-
-    lavaarena = TUNING.LAVAARENA_STARTING_ITEMS.WES,
 }
+for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
+	start_inv[string.lower(k)] = v.WES
+end
 
 local prefabs = FlattenTree(start_inv, true)
 

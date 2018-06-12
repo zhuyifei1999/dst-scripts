@@ -16,9 +16,10 @@ local start_inv =
     default =
     {
     },
-
-    lavaarena = TUNING.LAVAARENA_STARTING_ITEMS.WILSON,
 }
+for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
+	start_inv[string.lower(k)] = v.WILSON
+end
 
 prefabs = FlattenTree({ prefabs, start_inv }, true)
 

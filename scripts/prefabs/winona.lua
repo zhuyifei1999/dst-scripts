@@ -14,9 +14,10 @@ local start_inv =
         "sewing_tape",
         "sewing_tape",
     },
-
-    lavaarena = TUNING.LAVAARENA_STARTING_ITEMS.WINONA,
 }
+for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
+    start_inv[string.lower(k)] = v.WINONA
+end
 
 local prefabs = FlattenTree(start_inv, true)
 
@@ -40,6 +41,8 @@ local function master_postinit(inst)
 
     if TheNet:GetServerGameMode() == "lavaarena" then
         event_server_data("lavaarena", "prefabs/winona").master_postinit(inst)
+    elseif TheNet:GetServerGameMode() == "quagmire" then
+        event_server_data("quagmire", "prefabs/winona").master_postinit(inst)
     end
 end
 

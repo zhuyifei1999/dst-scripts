@@ -969,10 +969,10 @@ function PlayerController:RotLeft()
     end
     local rotamount = 45 ---90-- TheWorld:HasTag("cave") and 22.5 or 45
     if not IsPaused() then
-        TheCamera:SetHeadingTarget(TheCamera:GetHeadingTarget() - rotamount) 
+        TheCamera:SetHeadingTarget(TheCamera:GetHeadingTarget() - rotamount)
         --UpdateCameraHeadings() 
     elseif self.inst.HUD ~= nil and self.inst.HUD:IsMapScreenOpen() then
-        TheCamera:SetHeadingTarget(TheCamera:GetHeadingTarget() - rotamount) 
+        TheCamera:SetHeadingTarget(TheCamera:GetHeadingTarget() - rotamount)
         TheCamera:Snap()
     end
 end
@@ -983,10 +983,10 @@ function PlayerController:RotRight()
     end
     local rotamount = 45 --90--TheWorld:HasTag("cave") and 22.5 or 45
     if not IsPaused() then
-        TheCamera:SetHeadingTarget(TheCamera:GetHeadingTarget() + rotamount) 
+        TheCamera:SetHeadingTarget(TheCamera:GetHeadingTarget() + rotamount)
         --UpdateCameraHeadings() 
     elseif self.inst.HUD ~= nil and self.inst.HUD:IsMapScreenOpen() then
-        TheCamera:SetHeadingTarget(TheCamera:GetHeadingTarget() + rotamount) 
+        TheCamera:SetHeadingTarget(TheCamera:GetHeadingTarget() + rotamount)
         TheCamera:Snap()
     end
 end
@@ -1312,7 +1312,10 @@ local function GetPickupAction(self, target, tool)
             end
         end
     end
-    if target:HasTag("trapsprung") then
+
+    if target:HasTag("quagmireharvestabletree") and not target:HasTag("fire") then
+        return ACTIONS.HARVEST_TREE
+    elseif target:HasTag("trapsprung") then
         return ACTIONS.CHECKTRAP
     elseif target:HasTag("minesprung") then
         return ACTIONS.RESETMINE
@@ -1329,6 +1332,8 @@ local function GetPickupAction(self, target, tool)
     elseif target:HasTag("readyforharvest") or
         (target:HasTag("notreadyforharvest") and target:HasTag("withered")) then
         return ACTIONS.HARVEST
+    elseif target:HasTag("tapped_harvestable") and not target:HasTag("fire") then
+		return ACTIONS.HARVEST
     elseif target:HasTag("dried") and not target:HasTag("burnt") then
         return ACTIONS.HARVEST
     elseif target:HasTag("donecooking") and not target:HasTag("burnt") then
@@ -1476,6 +1481,7 @@ function PlayerController:GetActionButtonAction(force_target)
                 "smolder",
                 "saddled",
                 "brushable",
+				"tapped_harvestable",
             }
             if tool ~= nil then
                 for k, v in pairs(TOOLACTIONS) do

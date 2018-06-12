@@ -19,9 +19,10 @@ local start_inv =
         "papyrus",
         "papyrus",
     },
-
-    lavaarena = TUNING.LAVAARENA_STARTING_ITEMS.WICKERBOTTOM,
 }
+for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
+	start_inv[string.lower(k)] = v.WICKERBOTTOM
+end
 
 prefabs = FlattenTree({ prefabs, start_inv }, true)
 
@@ -46,10 +47,12 @@ local function master_postinit(inst)
 
     inst:AddComponent("reader")
 
-    inst.components.eater.stale_hunger = TUNING.WICKERBOTTOM_STALE_FOOD_HUNGER
-    inst.components.eater.stale_health = TUNING.WICKERBOTTOM_STALE_FOOD_HEALTH
-    inst.components.eater.spoiled_hunger = TUNING.WICKERBOTTOM_SPOILED_FOOD_HUNGER
-    inst.components.eater.spoiled_health = TUNING.WICKERBOTTOM_SPOILED_FOOD_HEALTH
+    if inst.components.eater ~= nil then
+        inst.components.eater.stale_hunger = TUNING.WICKERBOTTOM_STALE_FOOD_HUNGER
+        inst.components.eater.stale_health = TUNING.WICKERBOTTOM_STALE_FOOD_HEALTH
+        inst.components.eater.spoiled_hunger = TUNING.WICKERBOTTOM_SPOILED_FOOD_HUNGER
+        inst.components.eater.spoiled_health = TUNING.WICKERBOTTOM_SPOILED_FOOD_HEALTH
+    end
 
     inst.components.sanity:SetMax(TUNING.WICKERBOTTOM_SANITY)
 

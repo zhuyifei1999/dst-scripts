@@ -160,10 +160,19 @@ local actionhandlers =
         function(inst, action)
             return action.invobject ~= nil and "bedroll" or "tent"
         end),
-    ActionHandler(ACTIONS.TAKEITEM, "dolongaction"),
+    ActionHandler(ACTIONS.TAKEITEM,
+        function(inst, action)
+            return action.target ~= nil
+                and action.target.takeitem ~= nil --added for quagmire
+                and "give"
+                or "dolongaction"
+        end),
     ActionHandler(ACTIONS.BUILD,
-        function(inst)--, action)
-            return inst:HasTag("fastbuilder") and "domediumaction" or "dolongaction"
+        function(inst, action)
+            local rec = GetValidRecipe(action.recipe)
+            return (rec ~= nil and rec.tab.shop and "give")
+                or (inst:HasTag("fastbuilder") and "domediumaction")
+                or "dolongaction"
         end),
     ActionHandler(ACTIONS.SHAVE, "shave"),
     ActionHandler(ACTIONS.COOK, "dolongaction"),
@@ -193,7 +202,15 @@ local actionhandlers =
                 end
             end
         end),
-    ActionHandler(ACTIONS.GIVE, "give"),
+    ActionHandler(ACTIONS.GIVE,
+        function(inst, action)
+            return action.invobject ~= nil
+                and action.invobject.prefab == "quagmire_portal_key"
+                and action.target ~= nil
+                and action.target:HasTag("quagmire_altar")
+                and "dolongaction"
+                or "give"
+        end),
     ActionHandler(ACTIONS.GIVETOPLAYER, "give"),
     ActionHandler(ACTIONS.GIVEALLTOPLAYER, "give"),
     ActionHandler(ACTIONS.FEEDPLAYER, "give"),
@@ -261,6 +278,15 @@ local actionhandlers =
     ActionHandler(ACTIONS.UNWRAP, "dolongaction"),
     ActionHandler(ACTIONS.STARTCHANNELING, "startchanneling"),
     ActionHandler(ACTIONS.REVIVE_CORPSE, "dolongaction"),
+
+    --Quagmire
+    ActionHandler(ACTIONS.TILL, "till_start"),
+    ActionHandler(ACTIONS.PLANTSOIL, "dolongaction"),
+    ActionHandler(ACTIONS.INSTALL, "dolongaction"),
+    ActionHandler(ACTIONS.TAPTREE, "dolongaction"),
+    ActionHandler(ACTIONS.SLAUGHTER, "dolongaction"),
+    ActionHandler(ACTIONS.REPLATE, "dolongaction"),
+    ActionHandler(ACTIONS.SALT, "dolongaction"),
 }
 
 local events =
@@ -2488,6 +2514,38 @@ local states =
         ontimeout = function(inst)
             inst:ClearBufferedAction()
             inst.AnimState:PlayAnimation("channel_pst")
+            inst.sg:GoToState("idle", true)
+        end,
+    },
+
+    State
+    {
+        name = "till_start",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("till_pre")
+            inst.AnimState:PushAnimation("till_lag", false)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.AnimState:PlayAnimation("till_pst")
+                inst.sg:GoToState("idle", true)
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.AnimState:PlayAnimation("till_pst")
             inst.sg:GoToState("idle", true)
         end,
     },

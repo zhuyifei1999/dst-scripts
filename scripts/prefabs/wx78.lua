@@ -17,9 +17,10 @@ local start_inv =
     default =
     {
     },
-
-    lavaarena = TUNING.LAVAARENA_STARTING_ITEMS.WX78,
 }
+for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
+	start_inv[string.lower(k)] = v.WX78
+end
 
 prefabs = FlattenTree({ prefabs, start_inv }, true)
 
@@ -293,9 +294,11 @@ local function master_postinit(inst)
     inst.spark_time_offset = 3
     inst.watchingrain = false
 
-    inst.components.eater.ignoresspoilage = true
-    inst.components.eater:SetCanEatGears()
-    inst.components.eater:SetOnEatFn(oneat)
+    if inst.components.eater ~= nil then
+        inst.components.eater.ignoresspoilage = true
+        inst.components.eater:SetCanEatGears()
+        inst.components.eater:SetOnEatFn(oneat)
+    end
     applyupgrades(inst)
 
     inst:ListenForEvent("ms_respawnedfromghost", onbecamerobot)
