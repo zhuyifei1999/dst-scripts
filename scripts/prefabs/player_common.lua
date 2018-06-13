@@ -860,7 +860,7 @@ local function OnDespawn(inst)
     inst.components.debuffable:RemoveOnDespawn()
     inst.components.rider:ActualDismount()
     inst.components.bundler:StopBundling()
-    if GetGameModeProperty("dropeverythingondespawn") then
+    if GetGameModeProperty("drop_everything_on_despawn") then
         inst.components.inventory:DropEverything()
     else
         inst.components.inventory:DropEverythingWithTag("irreplaceable")

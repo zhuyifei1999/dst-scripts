@@ -52,7 +52,7 @@ local function fn()
     inst.components.fishingrod:SetWaitTimes(4, 40)
     inst.components.fishingrod:SetStrainTimes(0, 5)
     -----
-    if TheNet:GetServerGameMode() ~= "quagmire" then
+    if TheNet:GetServerGameMode() == "quagmire" then
         event_server_data("quagmire", "prefabs/fishingrod").master_postinit(inst)
     else
         inst:AddComponent("weapon")

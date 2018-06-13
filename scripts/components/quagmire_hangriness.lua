@@ -61,9 +61,11 @@ end
 
 local function OnRumbled()
     _world:PushEvent("quagmirehangrinessrumbled", { major = _netvars.rumbled:value() })
-    TheFocalPoint.SoundEmitter:PlaySound("dontstarve/quagmire/creature/gnaw/rumble", nil, not _netvars.rumbled:value() and .5 or nil)
     if _netvars.current:value() <= 0 and _netvars.levelstart:value() <= 0 and _netvars.speed:value() <= 0 then
+        TheFocalPoint.SoundEmitter:PlaySound("dontstarve/quagmire/creature/gnaw/rumble", nil, .6)
         TheFocalPoint.SoundEmitter:PlaySound("dontstarve/quagmire/creature/gnaw/eat")
+    else
+        TheFocalPoint.SoundEmitter:PlaySound("dontstarve/quagmire/creature/gnaw/rumble", nil, (_netvars.rumbled:value() and .15 or .1) + math.random() * .05)
     end
 end
 
@@ -87,7 +89,7 @@ local function OnMatched()
 end
 
 local OnCravingMatch = _ismastersim and function(src, data)
-    _serverdata.OnCravingMismatch(data, _netvars, DoDelta)
+    _serverdata.OnCravingMatch(data, _netvars, DoDelta)
     if _updating then
         _netvars.current:set(_netvars.current:value())
         _netvars.levelstart:set(_netvars.current:value())
@@ -172,8 +174,11 @@ function self:GetPercent()
     return _netvars.current:value() / MAX_HANGRY
 end
 
-function self:GetSpeed()
-    return _netvars.speed:value()
+function self:GetLevel()
+    return (_netvars.current:value() <= 0 and 3)
+        or (_netvars.speed:value() >= 8 and 3)
+        or (_netvars.speed:value() >= 4 and 2)
+        or 1
 end
 
 function self:GetTimeRemaining()
@@ -233,13 +238,16 @@ function self:OnUpdate(dt)
     _netvars.speed:set_local(v0)
     DoDelta(x - _netvars.current:value())
 
-    if _rumbledelay ~= nil and _netvars.speed:value() >= 4 then
-        local major = _netvars.speed:value() >= 8
-        _rumbledelay = _rumbledelay - (major and dt * 2 or dt)
-        if _rumbledelay <= 0 then
-            _rumbledelay = _serverdata.GetRumbleDelay()
-            _serverdata.DoRumble(_netvars, major)
-            OnRumbled()
+    if _rumbledelay ~= nil then
+        local level = self:GetLevel()
+        if level > 1 then
+            local major = level > 2
+            _rumbledelay = _rumbledelay - (major and dt * 1.5 or dt)
+            if _rumbledelay <= 0 then
+                _rumbledelay = _serverdata.GetRumbleDelay()
+                _serverdata.DoRumble(_netvars, major)
+                OnRumbled()
+            end
         end
     end
 

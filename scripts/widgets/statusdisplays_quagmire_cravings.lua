@@ -2,9 +2,7 @@ local Widget = require "widgets/widget"
 local UIAnim = require "widgets/uianim"
 
 local function GetLevel()
-    return (TheWorld.net == nil and 1)
-        or (TheWorld.net.components.quagmire_hangriness:GetCurrent() <= 0 and 3)
-        or math.clamp(math.ceil(TheWorld.net.components.quagmire_hangriness:GetSpeed() / 4), 1, 3)
+    return TheWorld.net ~= nil and TheWorld.net.components.quagmire_hangriness:GetLevel() or 1
 end
 
 local function GetMouthLevel(level)
@@ -12,8 +10,7 @@ local function GetMouthLevel(level)
 end
 
 local function GetMeter()
-    return (TheWorld.net == nil and 0)
-        or math.clamp(1 - TheWorld.net.components.quagmire_hangriness:GetPercent(), 0, 1)
+    return TheWorld.net ~= nil and math.clamp(1 - TheWorld.net.components.quagmire_hangriness:GetPercent(), 0, 1) or 0
 end
 
 local function DoCameraShake(self, type, duration, speed, scale)
@@ -22,9 +19,9 @@ local function DoCameraShake(self, type, duration, speed, scale)
     end
 end
 
-local function DoSound(self, sound)
+local function DoSound(self, sound, volume)
     if self.owner.HUD.shown then
-        TheFocalPoint.SoundEmitter:PlaySound(sound)
+        TheFocalPoint.SoundEmitter:PlaySound(sound, nil, volume)
     end
 end
 
@@ -35,7 +32,7 @@ end
 
 local function DoAngryShake(src, self)
     DoCameraShake(self, CAMERASHAKE.FULL, 1.1, .045, .1)
-    DoSound(self, "dontstarve/quagmire/creature/gnaw/rumble")
+    DoSound(self, "dontstarve/quagmire/creature/gnaw/rumble", .5)
 end
 
 local CravingsStatus = Class(Widget, function(self, owner)
@@ -140,7 +137,7 @@ local CravingsStatus = Class(Widget, function(self, owner)
 
     self.inst:ListenForEvent("quagmirehangrinessmatched", function(src, data)
         self.mouth:GetAnimState():PlayAnimation("eat")
-        DoSound(self, "dontstarve/quagmire/creature/gnaw/rumble")
+        DoSound(self, "dontstarve/quagmire/creature/gnaw/rumble", .4)
         self.nextmouthanim = { data.matched and "happy" or "angry" }
         self.nextmouthlevel = self.nextmouthlevel or self.mouthlevel
         self.nextmouthlevel = self.nextmouthlevel > 1 and self.nextmouthlevel or nil
