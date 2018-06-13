@@ -54,7 +54,7 @@ local WxpPanel = Class(LobbyPanel, function(self, owner)
 
 	local outcome = Settings.match_results ~= nil and Settings.match_results.outcome or {}
 
-	self.title = outcome.won and STRINGS.UI.WXPLOBBYPANEL.TITLE_VICTORY or STRINGS.UI.WXPLOBBYPANEL.TITLE_DEFEAT
+	self.title = STRINGS.UI.WXPLOBBYPANEL[string.upper(TheNet:GetServerGameMode())][outcome.won and "TITLE_VICTORY" or "TITLE_DEFEAT"]
 	self.next_button_title = Settings.match_results.wxp_data == nil and STRINGS.UI.WXPLOBBYPANEL.CONTINUE or STRINGS.UI.WXPLOBBYPANEL.SKIP
 
 	local show_mvp_cards = Settings.match_results.mvp_cards ~= nil

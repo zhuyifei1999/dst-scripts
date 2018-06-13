@@ -3736,9 +3736,9 @@ STRINGS.UI =
 			OVEN = "Oven",
 			GRILL = "Grill",
 		},
-		DETAILS_LABEL_TRIBUTE = "Tribute",
-		DETAILS_LABEL_TRIBUTE_SILVER = "{dish} Tribute",
-		DETAILS_LABEL_TRIBUTE_SILVER_UNKNOWN = "Silver Dish Tribute",
+		DETAILS_LABEL_TRIBUTE = "Offering",
+		DETAILS_LABEL_TRIBUTE_SILVER = "{dish} Offering",
+		DETAILS_LABEL_TRIBUTE_SILVER_UNKNOWN = "Silver Dish Offering",
 		DETAILS_LABEL_CRAVING = "Satisfies Craving",
 		DETAILS_LABEL_CRAVINGS = "Satisfies Cravings",
 		DETAILS_LABEL_STATION = "Cooking Station",
@@ -3746,7 +3746,7 @@ STRINGS.UI =
 		DETAILS_LABEL_RECIPES = "Recent Recipes",
 		DETAILS_SPINNER_CRAVING = "Craving",
 		DETAILS_SPINNER_STATION = "Station",
-		DETAILS_SPINNER_TRIBUTE = "Tribute",
+		--DETAILS_SPINNER_TRIBUTE = "Offering",
 		NO_TRIBUTE_VALUE = "None",
 		TRIBUTE_UNKNOWN = "Unknown",
 		NO_CRAVING = "None",
@@ -5287,12 +5287,21 @@ STRINGS.UI =
     
     WXPLOBBYPANEL = 
     {
-        TITLE_VICTORY = "Victory!",
-        TITLE_DEFEAT = "Defeat",
+		LAVAARENA = 
+		{
+			TITLE_VICTORY = "Victory!",
+			TITLE_DEFEAT = "Defeat",
+		},
+		QUAGMIRE = 
+		{
+			TITLE_VICTORY = "Gateway Activated!",
+			TITLE_DEFEAT = "Mermified",
+		},
+
         MATCH_TIME = "Match Time: {time}",
         DEATHS = "Total Deaths: {deaths}",
         NO_DEATHS = "No Deaths",
-        SCORE = "Tribute Score: {score}",
+        SCORE = "Appeasement Points: {score}",
 		TRIBUTES = "Gnaw's Cravings: {success} fulfilled and {failed} failed",
 
         SKIP = "Skip",
@@ -5346,11 +5355,11 @@ STRINGS.UI =
 		QUAGMIRE_MILESTONE_1 = "Sapphire Medallion Earned",
 		QUAGMIRE_MILESTONE_2 = "Red Mark Earned",
 		QUAGMIRE_MILESTONE_3 = "Gnaw's Favor Earned",
-        QUAGMIRE_NO_TRIBUTES_FAILED = "No Failed Snackrifices",
-		QUAGMIRE_NO_DUPLICATE_TRIUBUTES = "Unique Tributes",
+        QUAGMIRE_NO_TRIBUTES_FAILED = "No Failed Offerings",
+		QUAGMIRE_NO_DUPLICATE_TRIUBUTES = "Unique Offerings",
         QUAGMIRE_UNIQUE_CHARACTERS = "No Duplicate Survivors",
         QUAGMIRE_NO_DUPLICATE_TRIUBUTES = "No Repeat Meals",
-        QUAGMIRE_TRIBUTE_SCORE = "Tribute Score Bonus",
+        QUAGMIRE_TRIBUTE_SCORE = "Appeasement Point Bonus",
 	},
 
 	XPUTILS = 
@@ -5753,7 +5762,7 @@ STRINGS.UI =
 			CATEGORIES =
 			{
 				victory = "Victory",
-				tributes = "Tributes",
+				tributes = "Offerings",
 				chef = "Cooking",
 				farmer = "Farming",
 				gatherer = "Resource Collection",

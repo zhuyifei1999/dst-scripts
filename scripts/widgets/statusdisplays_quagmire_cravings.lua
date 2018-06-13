@@ -2,7 +2,9 @@ local Widget = require "widgets/widget"
 local UIAnim = require "widgets/uianim"
 
 local function GetLevel()
-    return TheWorld.net.components.quagmire_hangriness:GetCurrent() > 0 and math.clamp(math.ceil(TheWorld.net.components.quagmire_hangriness:GetSpeed() / 4), 1, 3) or 3
+    return (TheWorld.net == nil and 1)
+        or (TheWorld.net.components.quagmire_hangriness:GetCurrent() <= 0 and 3)
+        or math.clamp(math.ceil(TheWorld.net.components.quagmire_hangriness:GetSpeed() / 4), 1, 3)
 end
 
 local function GetMouthLevel(level)
@@ -10,11 +12,12 @@ local function GetMouthLevel(level)
 end
 
 local function GetMeter()
-    return math.clamp(1 - TheWorld.net.components.quagmire_hangriness:GetPercent(), 0, 1)
+    return (TheWorld.net == nil and 0)
+        or math.clamp(1 - TheWorld.net.components.quagmire_hangriness:GetPercent(), 0, 1)
 end
 
 local function DoCameraShake(self, type, duration, speed, scale)
-    if self.owner.HUD.shown and TheWorld.net.components.quagmire_hangriness:GetCurrent() > 0 then
+    if self.owner.HUD.shown and TheWorld.net ~= nil and TheWorld.net.components.quagmire_hangriness:GetCurrent() > 0 then
         TheCamera:Shake(type, duration, speed, scale)
     end
 end
@@ -174,6 +177,10 @@ function CravingsStatus:SetMouth(mouthlevel)
 end
 
 function CravingsStatus:OnUpdate(dt)
+    if TheWorld.net == nil then
+        return
+    end
+
     local meter = GetMeter()
     self.meter = meter * .1 + self.meter * .9
     self:SetMeter(self.meter)

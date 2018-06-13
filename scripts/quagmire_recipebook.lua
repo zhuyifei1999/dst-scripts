@@ -36,7 +36,13 @@ function QuagmireRecipeBook:Load()
 	self.recipes = {}
 	TheSim:GetPersistentString("recipebook", function(load_success, data) 
 		if load_success and data ~= nil then
-			self.recipes = json.decode(data)
+			local status, recipe_book = pcall( function() return json.decode(data) end )
+		    if status and recipe_book then
+				self.recipes = recipe_book
+			else
+				print("Faild to load the recipe book!")
+			end
+
 			self.dirty = false
 		end
 	end)

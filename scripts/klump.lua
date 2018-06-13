@@ -3,7 +3,6 @@ local LOAD_UPFRONT_MODE = false
 local loaded_klumps = {}
 
 function LoadAccessibleKlumpFiles()
-    --print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ LOADING KLUMP ASSETS from profile")
     --dumptable(Profile.persistdata.klump_ciphers)
     if LOAD_UPFRONT_MODE then
         require("quagmire_event_server/quagmire_food_ids")
@@ -16,6 +15,7 @@ function LoadAccessibleKlumpFiles()
         end
     else
         if IsFestivalEventActive(FESTIVAL_EVENTS.QUAGMIRE) or IsPreviousFestivalEvent(FESTIVAL_EVENTS.QUAGMIRE) then
+            print("Klump load on boot started.")
             local load_count = 0
             for _,file in pairs(require("klump_files")) do
                 local klump_file = string.gsub(file, "klump/", "")
@@ -35,7 +35,7 @@ function LoadAccessibleKlumpFiles()
 				    end
                 end
             end
-            print("Klump load on boot: Files loaded ", load_count)
+            print("Klump files loaded: ", load_count)
         end
     end
 end
