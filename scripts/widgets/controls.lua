@@ -96,6 +96,7 @@ local Controls = Class(Widget, function(self, owner)
 		self.quagmire_hangriness = self.top_root:AddChild(Quagmire_StatusCravingDisplay(self.owner))
 		self.quagmire_notifications = self.right_root:AddChild(Quagmire_NotificationWidget(self.owner))
 		self.quagmire_notifications:SetPosition(0, 200)
+		self.containerroot:MoveToFront() -- so safes ui opens on top of hangriness meter
     else
         self.status = self.sidepanel:AddChild(StatusDisplays(self.owner))
         self.status:SetPosition(0,-110,0)

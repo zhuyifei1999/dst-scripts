@@ -2306,6 +2306,7 @@ return {
         QUAGMIRE_COIN1 = "Treasure!",
         QUAGMIRE_COIN2 = "Coin! Prepare to be spent!",
         QUAGMIRE_COIN3 = "Yes! I hath money!",
+        QUAGMIRE_COIN4 = "I hath earned the god's favor!",
         QUAGMIRE_GOATMILK = "It came from an animal, yet is still not meat!",
         QUAGMIRE_SYRUP = "Nectar for the gods.",
         QUAGMIRE_SAP_SPOILED = "Alas, the nectar 'tis no longer sweet!",

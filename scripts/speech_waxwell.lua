@@ -2284,6 +2284,7 @@ return {
         QUAGMIRE_COIN1 = "Well, well, well...",
         QUAGMIRE_COIN2 = "I have use for this.",
         QUAGMIRE_COIN3 = "On my way up in the world.",
+        QUAGMIRE_COIN4 = "We may worm our way out of this predicament yet.",
         QUAGMIRE_GOATMILK = "Nothing quite like Mumsy's milk.",
         QUAGMIRE_SYRUP = "I presume I pour this on something.",
         QUAGMIRE_SAP_SPOILED = "Bittersweet.",

@@ -2280,6 +2280,7 @@ return {
         QUAGMIRE_COIN1 = "Goat lady and fish men would like.",
         QUAGMIRE_COIN2 = "Goat lady and fish men would like.",
         QUAGMIRE_COIN3 = "Goat lady and fish men would like.",
+        QUAGMIRE_COIN4 = "Sky beast liked Wolfgang's cookings!",
         QUAGMIRE_GOATMILK = "Is from goat lady.",
         QUAGMIRE_SYRUP = "Yummy sugar goop!",
         QUAGMIRE_SAP_SPOILED = "Wolfgang cannot cook with yuck sludge.",

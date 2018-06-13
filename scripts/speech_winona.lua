@@ -2286,6 +2286,7 @@ return {
         QUAGMIRE_COIN1 = "A lucky penny.",
         QUAGMIRE_COIN2 = "Save this for a rainy day.",
         QUAGMIRE_COIN3 = "Gotta watch I don't turn into a rich dope.",
+        QUAGMIRE_COIN4 = "We could bust outta here with enough of these.",
         QUAGMIRE_GOATMILK = "I think that old goat made this herself.",
         QUAGMIRE_SYRUP = "It's like honey from a tree.",
         QUAGMIRE_SAP_SPOILED = "It's no good now.",

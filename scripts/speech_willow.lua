@@ -2301,6 +2301,7 @@ return {
         QUAGMIRE_COIN1 = "Wow. A penny. Pfft.",
         QUAGMIRE_COIN2 = "I can probably buy something good with this.",
         QUAGMIRE_COIN3 = "I'm rich!",
+        QUAGMIRE_COIN4 = "Guess that thing liked what we gave it.",
         QUAGMIRE_GOATMILK = "I think it's from that grumpy old goat.",
         QUAGMIRE_SYRUP = "Mmmm...",
         QUAGMIRE_SAP_SPOILED = "Well that's dumb.",

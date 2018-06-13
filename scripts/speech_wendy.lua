@@ -2274,6 +2274,7 @@ return {
         QUAGMIRE_COIN1 = "I shall put it on my eyes when I die.",
         QUAGMIRE_COIN2 = "Money will not bring back my Abigail.",
         QUAGMIRE_COIN3 = "Wealth cannot buy immortality.",
+        QUAGMIRE_COIN4 = "It came from above.",
         QUAGMIRE_GOATMILK = "Milk of life from Mumsy.",
         QUAGMIRE_SYRUP = "Not as sweet as Abigail.",
         QUAGMIRE_SAP_SPOILED = "As bittersweet as life.",

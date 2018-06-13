@@ -2297,6 +2297,7 @@ return {
         QUAGMIRE_COIN1 = "I need more than a penny for my thoughts.",
         QUAGMIRE_COIN2 = "A decent amount of coin.",
         QUAGMIRE_COIN3 = "Feels less than a pound.",
+        QUAGMIRE_COIN4 = "We can use these to reopen the Gateway.",
         QUAGMIRE_GOATMILK = "It's good if you don't think about where it came from.",
         QUAGMIRE_SYRUP = "For drowning desserts in.",
         QUAGMIRE_SAP_SPOILED = "Might as well toss it on the fire.",

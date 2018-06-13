@@ -142,11 +142,13 @@ local function StarTimer(time)
 	print ("[WorldCharacterSelectLobby] Countdown started")
 
 	local analytics = TheWorld.components.lavaarenaanalytics or TheWorld.components.quagmireanalytics
-	analytics:SendAnalyticsLobbyEvent("lobby.startmatch", nil, { up_time = CalcLobbyUpTime() })
+	if analytics ~= nil then
+		analytics:SendAnalyticsLobbyEvent("lobby.startmatch", nil, { up_time = CalcLobbyUpTime() })
 	
-	for userid, _ in pairs(_client_wait_time) do
-		local data = {play_t = _client_wait_time[userid] ~= nil and (GetTimeRealSeconds() - _client_wait_time[userid]) or 0}
-		analytics:SendAnalyticsLobbyEvent("lobby.clientstartmatch", userid, data)
+		for userid, _ in pairs(_client_wait_time) do
+			local data = {play_t = _client_wait_time[userid] ~= nil and (GetTimeRealSeconds() - _client_wait_time[userid]) or 0}
+			analytics:SendAnalyticsLobbyEvent("lobby.clientstartmatch", userid, data)
+		end
 	end
 
 	_countdownf = time
@@ -207,11 +209,13 @@ local function OnLobbyClientConnected(src, data)
 		end
 		_client_wait_time[data.userid] = GetTimeRealSeconds()
 
-		local msg = {}
-		msg.up_time = CalcLobbyUpTime()
-		local analytics = TheWorld.components.lavaarenaanalytics or TheWorld.components.quagmireanalytics
-		analytics:SendAnalyticsLobbyEvent("lobby.join", nil, msg)
 		
+		local analytics = TheWorld.components.lavaarenaanalytics or TheWorld.components.quagmireanalytics
+		if analytics ~= nil then
+			local msg = {}
+			msg.up_time = CalcLobbyUpTime()
+			analytics:SendAnalyticsLobbyEvent("lobby.join", nil, msg)
+		end		
 	else		
 		-- players will have no choice but to disconncet at this point.
 	end
@@ -225,19 +229,22 @@ local function OnLobbyClientDisconnected(src, data)
 		_client_wait_time[data.userid] = nil 
 		local num_remaining_players = GetTableSize(_client_wait_time)
 
-		local msg = {}
-		msg.up_time = CalcLobbyUpTime()
-		msg.play_t = wait_time
-		msg.consecutive_match = TheNet:IsConsecutiveMatchForPlayer(data.userid)
 		local analytics = TheWorld.components.lavaarenaanalytics or TheWorld.components.quagmireanalytics
-		analytics:SendAnalyticsLobbyEvent("lobby.leave", data.userid, msg)
+		if analytics ~= nil then
+			local msg = {}
+			msg.up_time = CalcLobbyUpTime()
+			msg.play_t = wait_time
+			msg.consecutive_match = TheNet:IsConsecutiveMatchForPlayer(data.userid)
+			local analytics = TheWorld.components.lavaarenaanalytics or TheWorld.components.quagmireanalytics
+			analytics:SendAnalyticsLobbyEvent("lobby.leave", data.userid, msg)
 		
-		if GetTableSize(_client_wait_time) == 0 then
-			local msg2 = {}
-			msg2.up_time = msg.up_time
-			analytics:SendAnalyticsLobbyEvent("lobby.cancelmatch", nil, msg2)
+			if GetTableSize(_client_wait_time) == 0 then
+				local msg2 = {}
+				msg2.up_time = msg.up_time
+				analytics:SendAnalyticsLobbyEvent("lobby.cancelmatch", nil, msg2)
 
-			_lobby_up_time = nil
+				_lobby_up_time = nil
+			end
 		end
 	end
 end

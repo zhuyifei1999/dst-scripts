@@ -32,6 +32,7 @@ end)
 function NotificationWidget:OnRecipeMade(data)
 	local is_new = true
 	local params = {string = data.new_recipe and STRINGS.UI.HUD.QUAGMIRE_NOTFICATIONS.DISCOVERED or STRINGS.UI.HUD.QUAGMIRE_NOTFICATIONS.MADE}
+	params.sfx = data.new_recipe and "dontstarve/quagmire/HUD/new_recipe" or "dontstarve/quagmire/HUD/meal_cooked"
 	if data.dish ~= nil then
 		if IsKlumpLoaded("images/quagmire_food_inv_images_hires_"..data.product..".tex") then
 			params.tint = TINT_GOOD
@@ -40,6 +41,7 @@ function NotificationWidget:OnRecipeMade(data)
 				{atlas = "images/quagmire_food_inv_images_hires_"..data.product..".xml", texture = data.product..".tex"}
 			}
 		else
+			params.sfx = "dontstarve/quagmire/HUD/failed_recipe"
 			params.string = data.overcooked and STRINGS.UI.HUD.QUAGMIRE_NOTFICATIONS.OVERCOOKED or STRINGS.UI.HUD.QUAGMIRE_NOTFICATIONS.FAILED
 			params.tint = TINT_FAIL
 			params.icons = { 
@@ -63,6 +65,7 @@ end
 function NotificationWidget:OnRecipeAppraised(data)
 	local params = {string = STRINGS.UI.HUD.QUAGMIRE_NOTFICATIONS.SENT}
 	params.tint = TINT_GOOD
+	params.sfx = "dontstarve/quagmire/HUD/recipe_sent"
 
 	if IsKlumpLoaded("images/quagmire_food_inv_images_hires_"..data.product..".tex") then
 		params.icons = { 
@@ -72,7 +75,7 @@ function NotificationWidget:OnRecipeAppraised(data)
 		params.coins = data.coins
 	end
 
-    self:AddChild(self:BuildPopupWidget(params))
+    self.inst:DoTaskInTime(2, function() self:AddChild(self:BuildPopupWidget(params)) end)
 end
 
 local function SetupCoins(coins, size, tint)
@@ -126,9 +129,17 @@ local function ShowPopup(self, root)
 	end
 
 	local function on_slideinfn()
-		root.inst:DoTaskInTime(4, function() root:MoveTo(root:GetPosition(), start_position, .25, on_slideoutfn) end)
+		if root._sfx ~= nil then
+			TheFrontEnd:GetSound():PlaySound(root._sfx)
+		end
+		root.inst:DoTaskInTime(4, 
+			function() 
+				TheFrontEnd:GetSound():PlaySound("dontstarve/quagmire/HUD/slide_out")
+				root:MoveTo(root:GetPosition(), start_position, .25, on_slideoutfn) 
+				end)
 	end
 
+	TheFrontEnd:GetSound():PlaySound("dontstarve/quagmire/HUD/slide_in")
 	root:MoveTo(root:GetPosition(), dest_position, .5, on_slideinfn)
 	root:Show()
 end
@@ -137,6 +148,8 @@ function NotificationWidget:BuildPopupWidget(data)
 	local root = Widget("Notification Popup")
 	local scale = 1.2
 	root:SetScale(scale)
+
+	root._sfx = data.sfx
 
 	local x = 22
 
