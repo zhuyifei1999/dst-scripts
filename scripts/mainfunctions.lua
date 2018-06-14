@@ -70,6 +70,9 @@ function ShouldIgnoreResolve( filename, assettype )
     if assettype == "MINIMAP_IMAGE" then
         return true
     end
+    if filename:find(".dyn") and assettype == "PKGREF" then
+        return true
+    end
 
     if TheNet:IsDedicated() then
         if assettype == "SOUNDPACKAGE" then
@@ -1501,7 +1504,7 @@ function NotifyLoadingState(loading_state, match_results)
         --
         if GetGameModeProperty("hide_worldgen_loading_screen") then
 			if loading_state == LoadingStates.Loading then
-				TheFrontEnd:Fade(FADE_OUT, 1,
+				TheFrontEnd:Fade(FADE_OUT, TheFrontEnd:GetFadeLevel() < 1 and 1 or 0,
 					function()
 						TheFrontEnd:PopScreen()
 					end)
@@ -1552,16 +1555,15 @@ function BuildTagsStringCommon(tagsTable)
     for i, mod_tag in ipairs(KnownModIndex:GetEnabledModTags()) do
         table.insert(tagsTable, mod_tag)
     end
-
-    -- Language tag (forced to front of list)
-    local lang_code = TheNet:GetLanguageCode()
-    table.insert(tagsTable, 1, SERVER_LANGUAGES_TAGS[lang_code] or lang_code)
-
+    
     -- Beta tag (forced to front of list)
     if BRANCH == "staging" and CURRENT_BETA > 0 then
         table.insert(tagsTable, 1, BETA_INFO[CURRENT_BETA].SERVERTAG)
         table.insert(tagsTable, 1, BETA_INFO[PUBLIC_BETA].SERVERTAG)
     end
+    
+    -- Language tag (forced to front of list, don't put anything else at slot 1, or language detection will fail!)
+    table.insert(tagsTable, 1, STRINGS.PRETRANSLATED.LANGUAGES[GetLanguage()] or "")
 
     -- Concat unique tags
     local tagged = {}

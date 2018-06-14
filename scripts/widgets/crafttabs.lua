@@ -8,15 +8,16 @@ local UIAnim = require "widgets/uianim"
 local Text = require "widgets/text"
 local MouseCrafting = require "widgets/mousecrafting"
 local ControllerCrafting = require "widgets/controllercrafting"
+local ControllerCrafting_SingleTab = require "widgets/controllercrafting_singletab"
 
-local base_scale = .75
-local selected_scale = .9
+
 local HINT_UPDATE_INTERVAL = 2.0 -- once per second
 local SCROLL_REPEAT_TIME = .15
 local MOUSE_SCROLL_REPEAT_TIME = 0
 
 local tab_bg =
 {
+    atlas = "images/hud.xml",
     normal = "tab_normal.tex",
     selected = "tab_selected.tex",
     highlight = "tab_highlight.tex",
@@ -31,6 +32,8 @@ local function InitTabSoundsAfterFadein(inst, self)
         self.tabs.onclose = nil
         self.tabs.onhighlight = function() return .2 end
         self.tabs.onoverlay = self.tabs.onhighlight
+        self.tabs.onshowtab = nil
+        self.tabs.onhidetab = nil
         inst:DoTaskInTime(0, InitTabSoundsAfterFadein, self)
     else
         self.tabs.onopen = function() TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/craft_open") end
@@ -38,76 +41,123 @@ local function InitTabSoundsAfterFadein(inst, self)
         self.tabs.onclose = function() TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/craft_close") end
         self.tabs.onhighlight = function() TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/recipe_ready") return .2 end
         self.tabs.onoverlay = function() TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/research_available") return .2 end
+        if TheNet:GetServerGameMode() == "quagmire" then
+            self.tabs.onshowtab = function() TheFocalPoint.SoundEmitter:PlaySound("dontstarve/quagmire/HUD/merchant") end
+        else
+            self.tabs.onshowtab = nil
+        end
+        self.tabs.onhidetab = nil
     end
+end
+
+local function QuagmireSetup(self)
+    self:SetPosition(0, 250)
+
+    local crafting_scale = 0.95
+
+	self.crafting = self:AddChild(MouseCrafting(self.owner, 8))
+	self.crafting:Hide()
+	self.crafting:SetScale(crafting_scale)
+    self.crafting.in_pos = Vector3(65,-64,0)
+    self.crafting.out_pos = Vector3(-100,-64,0)
+
+    self.controllercrafting = self:AddChild(ControllerCrafting_SingleTab(self.owner, 8))
+    self.controllercrafting:Hide()
+	self.controllercrafting:SetScale(crafting_scale)
+    self.controllercrafting.in_pos = Vector3(65,-64,0)
+    self.controllercrafting.out_pos = Vector3(-100,-64,0)
+
+	self.tabs = self:AddChild(TabGroup())
+	self.tabs:SetPosition(0, 0)
+    self.tabs.spacing = 0
+	self.tabs.hideoffset = Vector3(-128, 0, 0)
+
+	InitTabSoundsAfterFadein(self.inst, self)
+
+    local tabnames = {}
+    local numtabslots = 1 --reserver 1 slot for crafting station tabs
+    for k, v in pairs(QUAGMIRE_RECIPETABS) do
+        table.insert(tabnames, v)
+	end
+
+
+	tab_bg =
+	{
+		atlas = "images/quagmire_hud.xml",
+		normal = "tab_normal.tex",
+		selected = "tab_selected.tex",
+		highlight = "tab_selected.tex",
+		bufferedhighlight = "tab_selected.tex",
+		overlay = nil,
+	}
+
+
+	return tabnames
 end
 
 local CraftTabs = Class(Widget, function(self, owner, top_root)
     Widget._ctor(self, "CraftTabs")
     self.owner = owner
 
+	self.base_scale = 0.75
+
     self.craft_idx_by_tab = {}
 
-    self:SetPosition(0,0,0)
+	local tabnames = {}
 
-    --[[self.craftroot = self:AddChild(Widget("craftroot"))
-    self.craftroot:SetVAnchor(ANCHOR_TOP)
-    self.craftroot:SetHAnchor(ANCHOR_MIDDLE)
-    self.craftroot:SetScaleMode(SCALEMODE_PROPORTIONAL)
+	if TheNet:GetServerGameMode() == "quagmire" then
+		tabnames = QuagmireSetup(self)
+	else
+	    local crafting_scale = 0.95
 
-    self.controllercrafting = self.craftroot:AddChild(ControllerCrafting(owner))
-    --]]
+	    self:SetPosition(0,0,0)
 
-    local crafting_scale = 0.95
+		self.crafting = self:AddChild(MouseCrafting(owner))
+		self.crafting:Hide()
+		self.crafting:SetScale(crafting_scale)
 
-    self.controllercrafting = self:AddChild(ControllerCrafting(owner))
-    self.controllercrafting:Hide()
-    -- self.controllercrafting:SetScale(crafting_scale, crafting_scale, crafting_scale)
+		self.controllercrafting = self:AddChild(ControllerCrafting(owner, 8))
+		self.controllercrafting:Hide()
 
-    self.crafting = self:AddChild(MouseCrafting(owner))
-    self.crafting:Hide()
-    self.crafting:SetScale(crafting_scale, crafting_scale, crafting_scale)
+		self.bg = self:AddChild(Image("images/hud.xml", "craft_bg.tex"))
 
-    self.bg = self:AddChild(Image("images/hud.xml", "craft_bg.tex"))
+		self.bg_cover = self:AddChild(Image("images/hud.xml", "craft_bg_cover.tex"))
+		self.bg_cover:SetPosition(-38, 0, 0)
+		self.bg_cover:SetClickable(false)
 
-    self.bg_cover = self:AddChild(Image("images/hud.xml", "craft_bg_cover.tex"))
-    self.bg_cover:SetPosition(-38, 0, 0)
-    self.bg_cover:SetClickable(false)
+		self.tabs = self:AddChild(TabGroup())
+		self.tabs:SetPosition(-16,0,0)
 
-    self.tabs = self:AddChild(TabGroup())
-    self.tabs:SetPosition(-16,0,0)
+		InitTabSoundsAfterFadein(self.inst, self)
 
-    InitTabSoundsAfterFadein(self.inst, self)
+		local numtabslots = 1 --reserver 1 slot for crafting station tabs
+		for k, v in pairs(RECIPETABS) do
+			table.insert(tabnames, v)
+			if not v.crafting_station then
+				numtabslots = numtabslots + 1
+			end
+		end
 
-    local tabnames = {}
-    local numtabslots = 1 --reserver 1 slot for crafting station tabs
-    for k, v in pairs(RECIPETABS) do
-        table.insert(tabnames, v)
-        if not v.crafting_station then
-            numtabslots = numtabslots + 1
-        end
-    end
+		for k, v in pairs(CUSTOM_RECIPETABS) do
+			if v.owner_tag == nil or owner:HasTag(v.owner_tag) then
+				table.insert(tabnames, v)
+				if not v.crafting_station then
+					numtabslots = numtabslots + 1
+				end
+			end
+		end
 
-    for k, v in pairs(CUSTOM_RECIPETABS) do
-        if v.owner_tag == nil or owner:HasTag(v.owner_tag) then
-            table.insert(tabnames, v)
-            if not v.crafting_station then
-                numtabslots = numtabslots + 1
-            end
-        end
-    end
+		table.sort(tabnames, function(a,b) return a.sort < b.sort end)
 
-    table.sort(tabnames, function(a,b) return a.sort < b.sort end)
-
-    self.tab_order = {}
-
-    self.tabs.spacing = 750 / numtabslots
+	    self.tabs.spacing = 750 / numtabslots
+	end
 
     self.tabbyfilter = {}
     local was_crafting_station = nil
     for k, v in ipairs(tabnames) do
         local tab = self.tabs:AddTab(
             STRINGS.TABS[v.str],
-            resolvefilepath("images/hud.xml"),
+            resolvefilepath(tab_bg.atlas),
             v.icon_atlas or resolvefilepath("images/hud.xml"),
             v.icon,
             tab_bg.normal,
@@ -116,7 +166,7 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
             tab_bg.bufferedhighlight,
             tab_bg.overlay,
 
-            function() --select fn
+            function(widget) --select fn
                 if not self.controllercraftingopen then
 
                     if self.craft_idx_by_tab[k] then
@@ -144,7 +194,7 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
                 end
             end,
 
-            function() --deselect fn
+            function(widget) --deselect fn
                 self.craft_idx_by_tab[k] = self.crafting.idx
                 self.crafting:Close()
             end,
@@ -156,9 +206,13 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
         tab.icon = v.icon
         tab.icon_atlas = v.icon_atlas or resolvefilepath("images/hud.xml")
         tab.tabname = STRINGS.TABS[v.str]
-        self.tabbyfilter[v] = tab
 
-        table.insert(self.tab_order, tab)
+		if TheNet:GetServerGameMode() == "quagmire" then
+			tab.disable_scaling = true
+			tab.overlay_scaling = true
+		end
+
+        self.tabbyfilter[v] = tab
     end
 
     local function UpdateRecipes()
@@ -209,13 +263,25 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
     self.inst:ListenForEvent("refreshcrafting", UpdateRecipes, self.owner)
     self.inst:ListenForEvent("refreshinventory", UpdateRecipes, self.owner)
     self:DoUpdateRecipes()
-    self:SetScale(base_scale, base_scale, base_scale)
+    self:SetScale(self.base_scale)
     self:StartUpdating()
 
-    self.openhint = self:AddChild(Text(UIFONT, 40))
-    self.openhint:SetPosition(10+150, 430, 0)
-    self.openhint:SetRegionSize(300, 45, 0)
-    self.openhint:SetHAlign(ANCHOR_LEFT)
+	if TheNet:GetServerGameMode() == "quagmire" then
+		self.openhint = self.tabs:AddChild(Text(UIFONT, 40))
+		self.openhint:SetRegionSize(300, 45, 0)
+		self.openhint:SetHAlign(ANCHOR_LEFT)
+		self.openhint:SetPosition(0, 0, 0)
+
+		for i, tab in ipairs(self.tabs.tabs) do
+			tab:SetOnGainFocus(function() if not tab.selected then tab.bg:SetTexture(tab.atlas, tab.imselected) end end)
+			tab:SetOnLoseFocus(function() if not tab.selected then tab.bg:SetTexture(tab.atlas, tab.imnormal) end end)
+		end
+	else
+		self.openhint = self:AddChild(Text(UIFONT, 40))
+		self.openhint:SetRegionSize(300, 45, 0)
+		self.openhint:SetHAlign(ANCHOR_LEFT)
+		self.openhint:SetPosition(10+150, 430, 0)
+	end
 
     self.hint_update_check = HINT_UPDATE_INTERVAL
 
@@ -232,8 +298,6 @@ end
 
 function CraftTabs:CloseControllerCrafting()
     if self.controllercraftingopen then
-        self:ScaleTo(selected_scale, base_scale, .15)
-        --self.blackoverlay:Hide()
         self.controllercraftingopen = false
         self.tabs:DeselectAll()
         self.controllercrafting:Close()
@@ -244,8 +308,6 @@ function CraftTabs:OpenControllerCrafting()
     --self.parent:AddChild(self.controllercrafting)
 
     if not self.controllercraftingopen then
-        self:ScaleTo(base_scale, selected_scale, .15)
-        --self.blackoverlay:Show()
         self.controllercraftingopen = true
         self.crafting:Close()   
         self.controllercrafting:Open()  
@@ -255,6 +317,8 @@ end
 function CraftTabs:OnUpdate(dt)
     self.hint_update_check = self.hint_update_check - dt
     if 0 > self.hint_update_check then  
+        local selected = self.tabs:GetCurrentIdx()
+
         if not TheInput:ControllerAttached() then
             self.openhint:Hide()
         else
@@ -265,6 +329,7 @@ function CraftTabs:OnUpdate(dt)
     end
 
     if self.crafting.open then
+		-- close the crafting tab if the mouse moves too far away from it
         local x = TheInput:GetScreenPosition().x
         local w, h = TheSim:GetScreenSize()
         local res_scale = math.min(w / 1280, h / 720, MAX_HUD_SCALE)
@@ -295,6 +360,10 @@ end
 
 function CraftTabs:GetPrevIdx()
     return self.tabs:GetPrevIdx()
+end
+
+function CraftTabs:GetFirstIdx()
+    return self.tabs:GetFirstIdx()
 end
 
 function CraftTabs:IsCraftingOpen()

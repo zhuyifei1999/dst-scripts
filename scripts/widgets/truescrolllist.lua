@@ -311,7 +311,8 @@ end
 -- Maintains the current amount of offset (so if the top widget is half
 -- visible, it will remain half visible).
 function TrueScrollList:ScrollToWidgetIndex(index)
-	local row_num, row_offset = math.modf(self.current_scroll_pos)
+    local row_num = math.floor(self.current_scroll_pos)
+    local row_offset = self.current_scroll_pos - row_num
     local target = index + row_offset
     self.current_scroll_pos = target
 	self.target_scroll_pos = target
@@ -357,7 +358,8 @@ end
 -- Get the index in GetListWidgets for the first visible widget.
 -- Also returns an offset for how much of the widget is displayed (no promises).
 function TrueScrollList:GetIndexOfFirstVisibleWidget()
-	local row_num, row_offset = math.modf( self.current_scroll_pos )
+    local row_num = math.floor(self.current_scroll_pos)
+    local row_offset = self.current_scroll_pos - row_num
 	return ((row_num - 1) * self.widgets_per_row), row_offset
 end
 

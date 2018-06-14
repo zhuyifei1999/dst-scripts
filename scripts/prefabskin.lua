@@ -144,6 +144,30 @@ function spear_init_fn(inst, build_name)
 end
 
 --------------------------------------------------------------------------
+--[[ Axe skin functions ]]
+--------------------------------------------------------------------------
+function axe_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "swap_axe")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+
+--------------------------------------------------------------------------
+--[[ Shovel skin functions ]]
+--------------------------------------------------------------------------
+function shovel_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "swap_shovel")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+
+--------------------------------------------------------------------------
 --[[ Hambat skin functions ]]
 --------------------------------------------------------------------------
 function hambat_init_fn(inst, build_name)
@@ -428,7 +452,16 @@ local function cane_equipped(inst, data)
     end
 end
 
+local function cane_on_remove(inst, owner)
+    print("#########on remove")
+    --[[if inst.vfx_fx then
+        inst.vfx_fx_insts:Remove()
+    end]]
+    --cane_unequipped
+end
+
 local function cane_unequipped(inst, owner)
+    print("~~~~~~~~~~~ UNEQUIPPED")
     if inst.vfx_fx then
         inst.vfx_fx_insts:Remove()
     else
@@ -456,6 +489,7 @@ function cane_init_fn(inst, build_name)
             inst.trail_fx = skin_fx[1]
         end
         
+        inst:ListenForEvent("onremove", cane_on_remove)
         inst:ListenForEvent("equipped", cane_equipped)
         inst:ListenForEvent("unequipped", cane_unequipped)
     end
