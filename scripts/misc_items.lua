@@ -901,6 +901,161 @@ MISC_ITEMS =
 		legacy_popup_category = "SW",
 		release_group = 42,
 	},
+	pack_victorian_all =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		steam_dlc_id = 840760,
+		display_order = 1,
+		display_atlas = "images/iap_images_victorian.xml",
+		display_tex = "victorian.tex",
+		box_build = "box_shop_victorian",
+		release_group = 46,
+	},
+	pack_victorian_bundle =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 3,
+		display_atlas = "images/iap_images_victorian_bundle.xml",
+		display_tex = "victorian_bundle.tex",
+		box_build = "box_shop_victorian",
+		release_group = 46,
+	},
+	pack_victorian_items =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		steam_dlc_id = 840750,
+		display_order = 2,
+		display_atlas = "images/iap_images_victorian_items.xml",
+		display_tex = "victorian_items.tex",
+		box_build = "box_shop_victorian",
+		release_group = 46,
+	},
+	pack_victorian_wathgrithr =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 13,
+		display_atlas = "bigportraits/wathgrithr_victorian.xml",
+		display_tex = "wathgrithr_victorian_oval.tex",
+		box_build = "box_shop_victorian",
+		release_group = 46,
+	},
+	pack_victorian_waxwell =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 12,
+		display_atlas = "bigportraits/waxwell_victorian.xml",
+		display_tex = "waxwell_victorian_oval.tex",
+		box_build = "box_shop_victorian",
+		release_group = 46,
+	},
+	pack_victorian_webber =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 14,
+		display_atlas = "bigportraits/webber_victorian.xml",
+		display_tex = "webber_victorian_oval.tex",
+		box_build = "box_shop_victorian",
+		release_group = 46,
+	},
+	pack_victorian_wendy =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 7,
+		display_atlas = "bigportraits/wendy_victorian.xml",
+		display_tex = "wendy_victorian_oval.tex",
+		box_build = "box_shop_victorian",
+		release_group = 46,
+	},
+	pack_victorian_wes =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 11,
+		display_atlas = "bigportraits/wes_victorian.xml",
+		display_tex = "wes_victorian_oval.tex",
+		box_build = "box_shop_victorian",
+		release_group = 46,
+	},
+	pack_victorian_wickerbottom =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 9,
+		display_atlas = "bigportraits/wickerbottom_victorian.xml",
+		display_tex = "wickerbottom_victorian_oval.tex",
+		box_build = "box_shop_victorian",
+		release_group = 46,
+	},
+	pack_victorian_willow =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 5,
+		display_atlas = "bigportraits/willow_victorian.xml",
+		display_tex = "willow_victorian_oval.tex",
+		box_build = "box_shop_victorian",
+		release_group = 46,
+	},
+	pack_victorian_wilson =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 4,
+		display_atlas = "bigportraits/wilson_victorian.xml",
+		display_tex = "wilson_victorian_oval.tex",
+		box_build = "box_shop_victorian",
+		release_group = 46,
+	},
+	pack_victorian_winona =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 15,
+		display_atlas = "bigportraits/winona_victorian.xml",
+		display_tex = "winona_victorian_oval.tex",
+		box_build = "box_shop_victorian",
+		release_group = 46,
+	},
+	pack_victorian_wolfgang =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 6,
+		display_atlas = "bigportraits/wolfgang_victorian.xml",
+		display_tex = "wolfgang_victorian_oval.tex",
+		box_build = "box_shop_victorian",
+		release_group = 46,
+	},
+	pack_victorian_woodie =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 10,
+		display_atlas = "bigportraits/woodie_victorian.xml",
+		display_tex = "woodie_victorian_oval.tex",
+		box_build = "box_shop_victorian",
+		release_group = 46,
+	},
+	pack_victorian_wx78 =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 8,
+		display_atlas = "bigportraits/wx78_victorian.xml",
+		display_tex = "wx78_victorian_oval.tex",
+		box_build = "box_shop_victorian",
+		release_group = 46,
+	},
 	playerportrait_bg_altarstatue =
 	{
 		type = "playerportrait",

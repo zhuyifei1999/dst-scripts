@@ -21,10 +21,9 @@ local QuagmireRecipeBookScreen = Class(Screen, function(self, owner)
     black:SetHelpTextMessage("")
 
 	local root = self:AddChild(Widget("root"))
-    root:SetScaleMode(SCALEMODE_PROPORTIONAL)
+	root:SetScaleMode(SCALEMODE_PROPORTIONAL)
     root:SetHAnchor(ANCHOR_MIDDLE)
     root:SetVAnchor(ANCHOR_MIDDLE)
-    root:SetMaxPropUpscale(MAX_HUD_SCALE)
 	root:SetPosition(0, -25)
 
 	self.book = root:AddChild(BookWidget(owner))

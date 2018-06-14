@@ -30,6 +30,10 @@ local function DoEatShake(src, self)
     DoSound(self, "dontstarve/quagmire/creature/gnaw/chomp")
 end
 
+local function DoBlink(src, self, matched)
+    self:Blink(matched and 1 or -1)
+end
+
 local function DoAngryShake(src, self)
     DoCameraShake(self, CAMERASHAKE.FULL, 1.1, .045, .1)
     DoSound(self, "dontstarve/quagmire/creature/gnaw/rumble", .5)
@@ -81,6 +85,8 @@ local CravingsStatus = Class(Widget, function(self, owner)
     self.mouth:GetAnimState():PlayAnimation(self.mouthlevel > 1 and ("idle_"..tostring(self.mouthlevel)) or "idle")
     self.mouth:SetScale(1.1, 1.1)
     self.mouth:SetPosition(0, -.5)
+
+    self.blink = 0
 
     self:StartUpdating()
 
@@ -137,13 +143,15 @@ local CravingsStatus = Class(Widget, function(self, owner)
 
     self.inst:ListenForEvent("quagmirehangrinessmatched", function(src, data)
         self.mouth:GetAnimState():PlayAnimation("eat")
-        DoSound(self, "dontstarve/quagmire/creature/gnaw/rumble", .4)
+        DoSound(self, "dontstarve/quagmire/creature/gnaw/rumble", .3)
         self.nextmouthanim = { data.matched and "happy" or "angry" }
         self.nextmouthlevel = self.nextmouthlevel or self.mouthlevel
         self.nextmouthlevel = self.nextmouthlevel > 1 and self.nextmouthlevel or nil
         self.mouthlevel = 1
         self.inst:DoTaskInTime(13 * FRAMES, DoEatShake, self)
         self.inst:DoTaskInTime(24 * FRAMES, DoEatShake, self)
+        self.inst:DoTaskInTime(14 * FRAMES, DoBlink, self, data.matched)
+        self.inst:DoTaskInTime(25 * FRAMES, DoBlink, self, data.matched)
     end, TheWorld)
 end)
 
@@ -173,18 +181,56 @@ function CravingsStatus:SetMouth(mouthlevel)
     self.nextmouthlevel = mouthlevel ~= self.mouthlevel and mouthlevel or nil
 end
 
+local function UpdateBlinkLight(self, c)
+    local r = 1
+    local g = 1 - c * .2
+    local b = 1 - c * .7
+    self.fx:GetAnimState():SetMultColour(r, g, b, 1)
+    self.bar:GetAnimState():SetMultColour(r, g, b, 1)
+    self.bar2:GetAnimState():SetMultColour(r, g, b, .5)
+end
+
+local function UpdateBlinkDark(self, c)
+    local r = 1 + c * .7
+    local g = 1 + c * .95
+    local b = 1 + c
+    self.fx:GetAnimState():SetMultColour(r, g, b, 1)
+    self.bar:GetAnimState():SetMultColour(r, g, b, 1)
+    self.bar2:GetAnimState():SetMultColour(r, g, b, .5)
+end
+
+function CravingsStatus:Blink(val)
+    self.blink = val
+    if val > 0 then
+        UpdateBlinkDark(self, 0)
+        UpdateBlinkLight(self, val)
+    elseif val < 0 then
+        UpdateBlinkLight(self, 0)
+        UpdateBlinkDark(self, val)
+    else
+        UpdateBlinkLight(self, 0)
+        UpdateBlinkDark(self, 0)
+    end
+end
+
 function CravingsStatus:OnUpdate(dt)
-    if TheWorld.net == nil then
-        return
+    if self.blink > 0 then
+        self.blink = self.blink > .003 and self.blink * .9 or 0
+        UpdateBlinkLight(self, self.blink)
+    elseif self.blink < 0 then
+        self.blink = self.blink < -.003 and self.blink * .9 or 0
+        UpdateBlinkDark(self, self.blink)
     end
 
-    local meter = GetMeter()
-    self.meter = meter * .1 + self.meter * .9
-    self:SetMeter(self.meter)
+    if TheWorld.net ~= nil then
+        local meter = GetMeter()
+        self.meter = meter * .1 + self.meter * .9
+        self:SetMeter(self.meter)
 
-    local level = GetLevel()
-    self:SetLevel(level)
-    self:SetMouth(GetMouthLevel(level))
+        local level = GetLevel()
+        self:SetLevel(level)
+        self:SetMouth(GetMouthLevel(level))
+    end
 end
 
 return CravingsStatus

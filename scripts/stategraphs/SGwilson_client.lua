@@ -128,7 +128,10 @@ local actionhandlers =
     ActionHandler(ACTIONS.TRAVEL, "doshortaction"),
     ActionHandler(ACTIONS.LIGHT, "give"),
     ActionHandler(ACTIONS.UNLOCK, "give"),
-    ActionHandler(ACTIONS.USEKLAUSSACKKEY, "dolongaction"),
+    ActionHandler(ACTIONS.USEKLAUSSACKKEY,
+        function(inst)
+            return inst:HasTag("quagmire_fasthands") and "domediumaction" or "dolongaction"
+        end),
     ActionHandler(ACTIONS.TURNOFF, "give"),
     ActionHandler(ACTIONS.TURNON, "give"),
     ActionHandler(ACTIONS.ADDFUEL, "doshortaction"),
@@ -142,7 +145,10 @@ local actionhandlers =
         function(inst)
             return inst.replica.inventory:IsHeavyLifting() and "heavylifting_drop" or "doshortaction"
         end),
-    ActionHandler(ACTIONS.MURDER, "dolongaction"),
+    ActionHandler(ACTIONS.MURDER,
+        function(inst)
+            return inst:HasTag("quagmire_fasthands") and "domediumaction" or "dolongaction"
+        end),
     ActionHandler(ACTIONS.UPGRADE, "dolongaction"),
     ActionHandler(ACTIONS.ACTIVATE,
         function(inst, action)
@@ -154,6 +160,8 @@ local actionhandlers =
         function(inst, action)
             return (action.target:HasTag("jostlepick") and "dojostleaction")
                 or (action.target:HasTag("quickpick") and "doshortaction")
+                or (inst:HasTag("fastpicker") and "doshortaction")
+                or (inst:HasTag("quagmire_fasthands") and "domediumaction")
                 or "dolongaction"
         end),
     ActionHandler(ACTIONS.SLEEPIN,
@@ -216,7 +224,10 @@ local actionhandlers =
     ActionHandler(ACTIONS.FEEDPLAYER, "give"),
     ActionHandler(ACTIONS.DECORATEVASE, "dolongaction"),
     ActionHandler(ACTIONS.PLANT, "doshortaction"),
-    ActionHandler(ACTIONS.HARVEST, "dolongaction"),
+    ActionHandler(ACTIONS.HARVEST,
+        function(inst)
+            return inst:HasTag("quagmire_fasthands") and "domediumaction" or "dolongaction"
+        end),
     ActionHandler(ACTIONS.PLAY, "play"),
     ActionHandler(ACTIONS.JUMPIN, "jumpin"),
     ActionHandler(ACTIONS.TELEPORT,
@@ -275,18 +286,41 @@ local actionhandlers =
     ActionHandler(ACTIONS.PET, "dolongaction"),
     ActionHandler(ACTIONS.DRAW, "dolongaction"),
     ActionHandler(ACTIONS.BUNDLE, "bundle"),
-    ActionHandler(ACTIONS.UNWRAP, "dolongaction"),
+    ActionHandler(ACTIONS.UNWRAP,
+        function(inst, action)
+            return inst:HasTag("quagmire_fasthands") and "domediumaction" or "dolongaction"
+        end),
     ActionHandler(ACTIONS.STARTCHANNELING, "startchanneling"),
     ActionHandler(ACTIONS.REVIVE_CORPSE, "dolongaction"),
 
     --Quagmire
     ActionHandler(ACTIONS.TILL, "till_start"),
-    ActionHandler(ACTIONS.PLANTSOIL, "dolongaction"),
-    ActionHandler(ACTIONS.INSTALL, "dolongaction"),
-    ActionHandler(ACTIONS.TAPTREE, "dolongaction"),
-    ActionHandler(ACTIONS.SLAUGHTER, "dolongaction"),
-    ActionHandler(ACTIONS.REPLATE, "dolongaction"),
-    ActionHandler(ACTIONS.SALT, "dolongaction"),
+    ActionHandler(ACTIONS.PLANTSOIL,
+        function(inst, action)
+            return (inst:HasTag("quagmire_farmhand") and "doshortaction")
+                or (inst:HasTag("quagmire_fasthands") and "domediumaction")
+                or "dolongaction"
+        end),
+    ActionHandler(ACTIONS.INSTALL,
+        function(inst, action)
+            return inst:HasTag("quagmire_fasthands") and "domediumaction" or "dolongaction"
+        end),
+    ActionHandler(ACTIONS.TAPTREE,
+        function(inst, action)
+            return inst:HasTag("quagmire_fasthands") and "domediumaction" or "dolongaction"
+        end),
+    ActionHandler(ACTIONS.SLAUGHTER,
+        function(inst, action)
+            return inst:HasTag("quagmire_fasthands") and "domediumaction" or "dolongaction"
+        end),
+    ActionHandler(ACTIONS.REPLATE,
+        function(inst, action)
+            return inst:HasTag("quagmire_fasthands") and "domediumaction" or "dolongaction"
+        end),
+    ActionHandler(ACTIONS.SALT,
+        function(inst, action)
+            return inst:HasTag("quagmire_fasthands") and "domediumaction" or "dolongaction"
+        end),
 }
 
 local events =

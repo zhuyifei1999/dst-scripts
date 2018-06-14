@@ -452,7 +452,16 @@ local function cane_equipped(inst, data)
     end
 end
 
+local function cane_on_remove(inst, owner)
+    print("#########on remove")
+    --[[if inst.vfx_fx then
+        inst.vfx_fx_insts:Remove()
+    end]]
+    --cane_unequipped
+end
+
 local function cane_unequipped(inst, owner)
+    print("~~~~~~~~~~~ UNEQUIPPED")
     if inst.vfx_fx then
         inst.vfx_fx_insts:Remove()
     else
@@ -480,6 +489,7 @@ function cane_init_fn(inst, build_name)
             inst.trail_fx = skin_fx[1]
         end
         
+        inst:ListenForEvent("onremove", cane_on_remove)
         inst:ListenForEvent("equipped", cane_equipped)
         inst:ListenForEvent("unequipped", cane_unequipped)
     end

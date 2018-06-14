@@ -2238,20 +2238,19 @@ return {
 		QUAGMIRE_KEY_PARK = "There's more stuff to burn in the park.",
         QUAGMIRE_PORTAL_KEY = "Fancy key.",
 
-
 		QUAGMIRE_MUSHROOMSTUMP =
 		{
 			GENERIC = "They're so hideous they're almost cute.",
 			PICKED = "Hey! Give me more mushrooms!",
 		},
 		QUAGMIRE_MUSHROOMS = "It's totally raw. Fire could fix that!",
-        QUAGMIRE_MEALINGSTONE = "I can smash stuff with it.",
+        QUAGMIRE_MEALINGSTONE = "I can smash stuff down with it.",
 
 		QUAGMIRE_PEBBLECRAB = "Don't worry, I won't kick you.",
 
 		QUAGMIRE_POND_SALT = "Blech! Tastes like ocean.",
 		--
-		QUAGMIRE_RUBBLE_CARRIAGE = "Aw... I won't even light on fire.",
+		QUAGMIRE_RUBBLE_CARRIAGE = "It's so busted, I don't even wanna light it on fire.",
         QUAGMIRE_RUBBLE_CLOCK = "I'd love to burn that to ashes.",
         QUAGMIRE_RUBBLE_CATHEDRAL = "What a waste. It could've burned down.",
         QUAGMIRE_RUBBLE_PUBDOOR = "It'd be better if it was burnt.",
@@ -2266,13 +2265,13 @@ return {
         QUAGMIRE_SWAMPIG_HOUSE_RUBBLE = "Hey pigs! Your house blew down!",
         QUAGMIRE_SWAMPIGELDER =
         {
-            GENERIC = "They're not so different from pigs back at our place.",
+            GENERIC = "They're not so different from the pigs back at our place.",
             SLEEPING = "It's taking a nap.",
         },
         QUAGMIRE_SWAMPIG = "Not the prettiest face.",
         --
         QUAGMIRE_PORTAL = "I'm just gonna keep jumping through portals til I figure out a way home.",
-        QUAGMIRE_SALTROCK = "I licked one. I had to.",
+        QUAGMIRE_SALTROCK = "I licked one. Had to.",
         QUAGMIRE_SALT = "I need a pinch or two on all my food.",
         --food--
         QUAGMIRE_FOOD_BURNT = "Looks good to me.",
@@ -2298,11 +2297,11 @@ return {
         QUAGMIRE_FERN = "I can take my pick of them.",
         QUAGMIRE_FOLIAGE_COOKED = "Leaf this to a professional.",
         --
-        QUAGMIRE_COIN1 = "Wow. A penny. Pfft.",
+        QUAGMIRE_COIN1 = "Wow. A coin. Pfft.",
         QUAGMIRE_COIN2 = "I can probably buy something good with this.",
         QUAGMIRE_COIN3 = "I'm rich!",
         QUAGMIRE_COIN4 = "Guess that thing liked what we gave it.",
-        QUAGMIRE_GOATMILK = "I think it's from that grumpy old goat.",
+        QUAGMIRE_GOATMILK = "What? We needed milk.",
         QUAGMIRE_SYRUP = "Mmmm...",
         QUAGMIRE_SAP_SPOILED = "Well that's dumb.",
         QUAGMIRE_SEEDPACKET = "Aw...I won't know what these are until I plant them.",
@@ -2317,15 +2316,15 @@ return {
         QUAGMIRE_POT_SMALL = "It goes with the fire.",
         QUAGMIRE_POT_SYRUP = "Sweet stuff goes in there.",
         QUAGMIRE_POT_HANGER = "I set it up. Now what?",
-        QUAGMIRE_POT_HANGER_ITEM = "It needs fire.",
+        QUAGMIRE_POT_HANGER_ITEM = "It needs to be set up in a firepit.",
         QUAGMIRE_GRILL = "Fire it up!",
-        QUAGMIRE_GRILL_ITEM = "It needs fire. Like all things.",
+        QUAGMIRE_GRILL_ITEM = "Ugh, I guess I should set it up.",
         QUAGMIRE_GRILL_SMALL = "If it was bigger I could use more fire.",
-        QUAGMIRE_GRILL_SMALL_ITEM = "It just needs a little fire.",
+        QUAGMIRE_GRILL_SMALL_ITEM = "I should set it up over the firepit.",
         QUAGMIRE_OVEN = "Now we're cooking.",
         QUAGMIRE_OVEN_ITEM = "I can't wait to use it!",
         QUAGMIRE_CASSEROLEDISH = "Fancy.",
-        QUAGMIRE_CASSEROLEDISH_SMALL = "It kinda small.",
+        QUAGMIRE_CASSEROLEDISH_SMALL = "It's kinda small.",
         QUAGMIRE_PLATE_SILVER = "Ohh. Look who's fancy now!",
         QUAGMIRE_BOWL_SILVER = "Now I don't have to use my hands.",
         ---
@@ -2345,7 +2344,7 @@ return {
         QUAGMIRE_TRADER_MERM = "Hey, what'dya got for me?",
         QUAGMIRE_TRADER_MERM2 = "Nice hat. Are you selling that, too?",
         --
-        QUAGMIRE_GOATMUM = "What an old goat!",
+        QUAGMIRE_GOATMUM = "Her eyes creep me out.",
         QUAGMIRE_GOATKID = "She'll eat just about anything.",
         QUAGMIRE_PIGEON =
         {

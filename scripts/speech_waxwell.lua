@@ -2181,8 +2181,8 @@ return {
         QUAGMIRE_POT = "Magic could bring it to a boil faster, you know.",
         QUAGMIRE_POT_SMALL = "I shalln't let it speak with the kettle.",
         QUAGMIRE_POT_HANGER_ITEM = "Well I'M not setting it up.",
-        QUAGMIRE_OVEN_ITEM = "It's a magic oven. For cooking.",
-        QUAGMIRE_OVEN = "This makes things much more convenient.",
+        QUAGMIRE_OVEN_ITEM = "It's an oven. For cooking.",
+        QUAGMIRE_OVEN = "This will make things much more convenient.",
 		QUAGMIRE_SUGARWOODTREE = 
 		{
 			GENERIC = "A sickly sweet aroma wafts from its branches.",
@@ -2205,14 +2205,14 @@ return {
 		QUAGMIRE_SALT_RACK =
 		{
 			READY = "Ah. It's ready.",
-			GENERIC = "Any way to improve the food around here is welcome.",
+			GENERIC = "Any method to improve the food around here is welcome.",
 		},
 
-		QUAGMIRE_SALT_RACK_ITEM = "Just useless sticks unless we assemble it.",
+		QUAGMIRE_SALT_RACK_ITEM = "Just useless sticks until we assemble it.",
 
 		QUAGMIRE_SAFE = 
 		{
-			GENERIC = "Now for some expert level rummaging.",
+			GENERIC = "Now for some expert-level rummaging.",
 			LOCKED = "I cannot open it.",
 		},
 
@@ -2225,15 +2225,11 @@ return {
 			GENERIC = "I could, perhaps, produce a makeshift garnish.",
 			PICKED = "It's as hollow as this withered world.",
 		},
-			QUAGMIRE_KINGCRAB_CASTLE =
-		{
-			GENERIC = "Ah. A crab of some stature.",
-			UNKNOWN = "Intriging.",
-		},
+
 		QUAGMIRE_MUSHROOMS = "Fungus has its uses.",
         QUAGMIRE_MEALINGSTONE = "This looks like it requires hard labor.",
 		QUAGMIRE_PEBBLECRAB = "You can't hide from me.",
-		QUAGMIRE_POND_SALT = "Brakish.",
+		QUAGMIRE_POND_SALT = "Brackish.",
 		--
 		QUAGMIRE_RUBBLE_CARRIAGE = "Carriage carnage.",
         QUAGMIRE_RUBBLE_CLOCK = "Time's up.",
@@ -2259,7 +2255,7 @@ return {
         QUAGMIRE_SALTROCK = "It must be ground down before we use it.",
         QUAGMIRE_SALT = "Adding too much is an a-salt on the senses.",
         --food--
-        QUAGMIRE_FOOD_BURNT = "I didn't make that one.",
+        QUAGMIRE_FOOD_BURNT = "I didn't cook that one.",
         --QUAGMIRE_FOOD_PLATE = "It's a simple plate.",
         --QUAGMIRE_FOOD_SOUP = "Ahh... a nice broth.",
         --QUAGMIRE_FOOD_SNACK = "A lovely light snack.",
@@ -2282,11 +2278,11 @@ return {
         QUAGMIRE_FOLIAGE_COOKED = "I ought to mix it in with something else.",
         --
         QUAGMIRE_COIN1 = "Well, well, well...",
-        QUAGMIRE_COIN2 = "I have use for this.",
+        QUAGMIRE_COIN2 = "I'll have use for this.",
         QUAGMIRE_COIN3 = "On my way up in the world.",
-        QUAGMIRE_COIN4 = "We may worm our way out of this predicament yet.",
-        QUAGMIRE_GOATMILK = "Nothing quite like Mumsy's milk.",
-        QUAGMIRE_SYRUP = "I presume I pour this on something.",
+        QUAGMIRE_COIN4 = "We may wyrm our way out of this predicament yet.",
+        QUAGMIRE_GOATMILK = "My bones are naturally fragile, I'm afraid.",
+        QUAGMIRE_SYRUP = "Cooking syrup. Of course.",
         QUAGMIRE_SAP_SPOILED = "Bittersweet.",
         QUAGMIRE_SEEDPACKET = "Instruments of toil.",
         --QUAGMIRE_SEEDPACKET_SMALL = "A small investment in the future.",
@@ -2303,10 +2299,10 @@ return {
         QUAGMIRE_POT_HANGER_ITEM = "Well I'M not setting it up.",
         QUAGMIRE_GRILL = "I believe I can barbeque.",
         QUAGMIRE_GRILL_ITEM = "No use to me here.",
-        QUAGMIRE_GRILL_SMALL = "I wish it was bigger.",
+        QUAGMIRE_GRILL_SMALL = "I'd prefer a larger grill.",
         QUAGMIRE_GRILL_SMALL_ITEM = "At least it's portable.",
         QUAGMIRE_OVEN = "This makes things much more convenient.",
-        QUAGMIRE_OVEN_ITEM = "It's a magic oven. For cooking.",
+        QUAGMIRE_OVEN_ITEM = "It's an oven. For cooking.",
         QUAGMIRE_CASSEROLEDISH = "Homey.",
         QUAGMIRE_CASSEROLEDISH_SMALL = "A tiny bit of domestication.",
         QUAGMIRE_PLATE_SILVER = "Suitable lavishness.",
@@ -2316,7 +2312,7 @@ return {
         QUAGMIRE_MERM_CART2 = "Well what do we have here?", --pipton's cart
         QUAGMIRE_PARK_ANGEL = "Some kind of gargoyle.",
         QUAGMIRE_PARK_ANGEL2 = "Well that's attractive.",
-        QUAGMIRE_PARK_URN = "It's full of burnt human.",
+        QUAGMIRE_PARK_URN = "Yes yes, ashes to ashes and all that.",
         QUAGMIRE_PARK_OBELISK = "It's a monument to death.",
         QUAGMIRE_PARK_GATE =
         {

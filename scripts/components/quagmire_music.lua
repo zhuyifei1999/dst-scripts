@@ -31,6 +31,7 @@ local _levelplaying = nil
 local _netvars =
 {
     level = net_tinybyte(inst.GUID, "lavaarenamusic._netvars.level", "leveldirty"),
+    won = net_event(inst.GUID, "lavaarenamusic._netvars.won")
 }
 
 --------------------------------------------------------------------------
@@ -47,6 +48,10 @@ local function OnLevelDirty(inst)
     end
 end
 
+local function OnWon(inst)
+    _soundemitter:PlaySound("dontstarve/quagmire/music/gorge_win")
+end
+
 local function OnPlayerDeactivated(src, player)
     if player == _activatedplayer then
         _activatedplayer = nil
@@ -54,6 +59,7 @@ local function OnPlayerDeactivated(src, player)
         _soundemitter = nil
         _levelplaying = nil
         inst:RemoveEventCallback("leveldirty", OnLevelDirty)
+        inst:RemoveEventCallback("lavaarenamusic._netvars.won", OnWon)
     end
 end
 
@@ -65,6 +71,7 @@ local function OnPlayerActivated(src, player)
         _activatedplayer = player
         _soundemitter = TheFocalPoint.SoundEmitter
         inst:ListenForEvent("leveldirty", OnLevelDirty)
+        inst:ListenForEvent("lavaarenamusic._netvars.won", OnWon)
         OnLevelDirty(inst)
     end
 end

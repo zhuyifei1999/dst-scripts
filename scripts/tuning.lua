@@ -2609,7 +2609,7 @@ function Tune(overrides)
 			{
 				WILSON = {},
 				WILLOW = {},
-				WENDY = {},
+				WENDY = { "spoiled_food" },
 				WOLFGANG = {},
 				WX78 = {},
 				WICKERBOTTOM = {},

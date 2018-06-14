@@ -2150,7 +2150,7 @@ return {
         --Quagmire
         QUAGMIRE_ALTAR = 
         {
-        	GENERIC = "We have to load it up with good eats.",
+        	GENERIC = "We gotta load it up with good eats.",
             FULL = "It hasn't finished the food we gave it.",
     	},
 		QUAGMIRE_ALTAR_STATUE1 = "I'm not huge on art.",
@@ -2193,7 +2193,7 @@ return {
         QUAGMIRE_POT = "Maybe I could test out some new recipes.",
         QUAGMIRE_POT_SMALL = "I only know a handful of recipes, but I'm real good at them.",
         QUAGMIRE_POT_HANGER_ITEM = "Gotta hang the pot on the fire somehow.",
-        QUAGMIRE_OVEN_ITEM = "Be careful around that fire, Lucy.",
+        QUAGMIRE_OVEN_ITEM = "Wanna help me set it up, Lucy?",
         QUAGMIRE_OVEN = "That better not run on trees.",
 		QUAGMIRE_SUGARWOODTREE = 
 		{
@@ -2210,7 +2210,7 @@ return {
 			PICKED = "That's been picked already.",
 		},
 		QUAGMIRE_SPOTSPICE_SPRIG = "It makes my fingers smell like pepper.",
-		QUAGMIRE_SPOTSPICE_GROUND = "You only need a little to get the flavour.",
+		QUAGMIRE_SPOTSPICE_GROUND = "You only need a pinch to get the flavour.",
 		QUAGMIRE_SAPBUCKET = "Didn't I tell everybody trees were delicious?",
 		QUAGMIRE_SAP = "Tree sap. From a tree.",
 		QUAGMIRE_SALT_RACK =
@@ -2249,7 +2249,7 @@ return {
 		QUAGMIRE_RUBBLE_CARRIAGE = "Huh. Wonder what happened here?",
         QUAGMIRE_RUBBLE_CLOCK = "Is that the right time?",
         QUAGMIRE_RUBBLE_CATHEDRAL = "Kinda scary, eh?",
-        QUAGMIRE_RUBBLE_PUBDOOR = "A shame. I could'a used a drink.",
+        QUAGMIRE_RUBBLE_PUBDOOR = "Such a shame.",
         QUAGMIRE_RUBBLE_ROOF = "That doesn't look right.",
         QUAGMIRE_RUBBLE_CLOCKTOWER = "That's a shame.",
         QUAGMIRE_RUBBLE_BIKE = "It's not gonna work like that.",
@@ -2291,12 +2291,12 @@ return {
             MATCH_BUT_SNACK = "Is this gonna be enough food?",
         },
         --
-        QUAGMIRE_COIN1 = "Bet it's worth a pretty penny.",
+        QUAGMIRE_COIN1 = "This coin could use a polish.",
         QUAGMIRE_COIN2 = "I'm gonna buy something nice for Lucy.",
         QUAGMIRE_COIN3 = "Not a Looney but I guess it works around here.",
         QUAGMIRE_COIN4 = "Nothin' like being owed a favour.",
         QUAGMIRE_GOATMILK = "Builds your bones.",
-        QUAGMIRE_SYRUP = "I missed this.",
+        QUAGMIRE_SYRUP = "Not quite maple.",
         QUAGMIRE_SAP_SPOILED = "That's a shame, eh?",
         QUAGMIRE_SEEDPACKET = "This will keep us busy for a while.",
         --QUAGMIRE_SEEDPACKET_SMALL = "It's a start.",

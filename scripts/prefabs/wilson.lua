@@ -24,6 +24,12 @@ end
 prefabs = FlattenTree({ prefabs, start_inv }, true)
 
 local function common_postinit(inst)
+    if TheNet:GetServerGameMode() == "quagmire" then
+        inst:AddTag("quagmire_foodie")
+        inst:AddTag("quagmire_potmaster")
+        inst:AddTag("quagmire_shopper")
+    end
+
     --bearded (from beard component) added to pristine state for optimization
     inst:AddTag("bearded")
 end

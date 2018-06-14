@@ -33,6 +33,12 @@ local function common_postinit(inst)
     inst:AddTag("monster")
     inst:AddTag(UPGRADETYPES.SPIDER.."_upgradeuser")
 
+    if TheNet:GetServerGameMode() == "quagmire" then
+        inst:AddTag("fastpicker")
+        inst:AddTag("quagmire_farmhand")
+        inst:AddTag("quagmire_shopper")
+    end
+
     --bearded (from beard component) added to pristine state for optimization
     inst:AddTag("bearded")
 end

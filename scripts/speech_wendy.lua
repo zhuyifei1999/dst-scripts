@@ -2158,7 +2158,7 @@ return {
         QUAGMIRE_TOMATO_COOKED = "Its flesh is far more bloody now.",
         QUAGMIRE_TOMATO_SEEDS = "The life they contain is a mystery.",
         --
-        QUAGMIRE_FLOUR = "Flour by any other name t'would smell as sweet.",
+        QUAGMIRE_FLOUR = "Flour by any other name would smell as sweet.",
         QUAGMIRE_WHEAT = "We can grind it down into flour.",
         QUAGMIRE_WHEAT_SEEDS = "The life they contain is a mystery.",
         --NOTE: raw/cooked carrot uses regular carrot strings
@@ -2208,9 +2208,9 @@ return {
 			LOCKED = "Locked, like my heart.",
 		},
 
-		QUAGMIRE_KEY = "It's the key to something. But not my heart.",
-		QUAGMIRE_KEY_PARK = "A key to the park is still not a key to my heart.",
-        QUAGMIRE_PORTAL_KEY = "Perhaps I'll be happier in another world.",
+		QUAGMIRE_KEY = "It is the key to something precious.",
+		QUAGMIRE_KEY_PARK = "The key to a beautiful place, locked long away.",
+        QUAGMIRE_PORTAL_KEY = "Perhaps I'll be happier in the next world.",
 
 
 		QUAGMIRE_MUSHROOMSTUMP =
@@ -2241,7 +2241,7 @@ return {
         QUAGMIRE_SWAMPIGELDER =
         {
             GENERIC = "How do you do, sir?",
-            SLEEPING = "It's practicing for the big sleep.",
+            SLEEPING = "He is practicing for the big sleep.",
         },
         QUAGMIRE_SWAMPIG = "They're less standoffish than their brethren.",
         --
@@ -2271,11 +2271,11 @@ return {
             MATCH_BUT_SNACK = "This will satisfy the beast, but not for long.",
         },
         --
-        QUAGMIRE_COIN1 = "I shall put it on my eyes when I die.",
-        QUAGMIRE_COIN2 = "Money will not bring back my Abigail.",
+        QUAGMIRE_COIN1 = "I shall put them on my eyes when I die.",
+        QUAGMIRE_COIN2 = "Money will not bring back Abigail.",
         QUAGMIRE_COIN3 = "Wealth cannot buy immortality.",
         QUAGMIRE_COIN4 = "It came from above.",
-        QUAGMIRE_GOATMILK = "Milk of life from Mumsy.",
+        QUAGMIRE_GOATMILK = "But no honey.",
         QUAGMIRE_SYRUP = "Not as sweet as Abigail.",
         QUAGMIRE_SAP_SPOILED = "As bittersweet as life.",
         QUAGMIRE_SEEDPACKET = "Planting seeds requires an optimism I don't possess.",
@@ -2288,7 +2288,7 @@ return {
         ---
         QUAGMIRE_POT = "We cook to stave off death.",
         QUAGMIRE_POT_SMALL = "We will cook, or we will die.",
-        QUAGMIRE_POT_SYRUP = "Sweet begets sweeter.",
+        QUAGMIRE_POT_SYRUP = "Sweetness begets sweetness.",
         QUAGMIRE_POT_HANGER = "The hanger is a noose for a pot.",
         QUAGMIRE_POT_HANGER_ITEM = "It's for hanging the pot over the fire.",
         QUAGMIRE_GRILL = "It can't make life more palatable.",
@@ -2299,19 +2299,19 @@ return {
         QUAGMIRE_OVEN_ITEM = "Sigh... Why bother?",
         QUAGMIRE_CASSEROLEDISH = "For making food.",
         QUAGMIRE_CASSEROLEDISH_SMALL = "For making a small amount of food.",
-        QUAGMIRE_PLATE_SILVER = "If only life was handed to me in a silver plate.",
-        QUAGMIRE_BOWL_SILVER = "Is it full of cherries? Or cherry pits?",
+        QUAGMIRE_PLATE_SILVER = "If only life had been handed to me on a silver plate.",
+        QUAGMIRE_BOWL_SILVER = "It is empty, like my heart.",
 
         ---
-        QUAGMIRE_MERM_CART1 = "Can I buy my Abigail back to life?", --sammy's wagon
-        QUAGMIRE_MERM_CART2 = "Nothing in there will bring me happiness.", --pipton's cart
+        QUAGMIRE_MERM_CART1 = "I, too, cart around my baggage.", --sammy's wagon
+        QUAGMIRE_MERM_CART2 = "Nothing in there could bring me happiness.", --pipton's cart
         QUAGMIRE_PARK_ANGEL = "It's winged, but it's no angel.",
         QUAGMIRE_PARK_ANGEL2 = "Abigail needs a statue.",
-        QUAGMIRE_PARK_URN = "It's not Abigail's ashes.",
+        QUAGMIRE_PARK_URN = "Dust to dust.",
         QUAGMIRE_PARK_OBELISK = "A monument. But not to Abigail.",
         QUAGMIRE_PARK_GATE =
         {
-            GENERIC = "Now I may enter to park.",
+            GENERIC = "Now I may enter the park.",
             LOCKED = "I need a key to enter.",
         },
         QUAGMIRE_PARKSPIKE = "Looks dangerous.",
@@ -2330,17 +2330,17 @@ return {
         QUAGMIRE_LAMP_POST = "It sheds light on nothing important.",
 
         QUAGMIRE_BEEFALO = "Don't worry. You'll be dead soon.",
-        QUAGMIRE_SLAUGHTERTOOL = "All of life is a slaughter.",
+        QUAGMIRE_SLAUGHTERTOOL = "Is all of life not a slaughter?",
 
-        QUAGMIRE_SAPLING = "I'll perish before this grows back.",
-        QUAGMIRE_BERRYBUSH = "This bush will never grow another berry.",
+        QUAGMIRE_SAPLING = "We will perish before this grows back.",
+        QUAGMIRE_BERRYBUSH = "It shall never grow another berry.",
 
-        QUAGMIRE_ALTAR_STATUE2 = "A death monument.",
-        QUAGMIRE_ALTAR_QUEEN = "I'm not impressed.",
+        QUAGMIRE_ALTAR_STATUE2 = "Yet another reminder of death.",
+        QUAGMIRE_ALTAR_QUEEN = "I am not impressed by opulence.",
         QUAGMIRE_ALTAR_BOLLARD = "A post. Not very exciting.",
         QUAGMIRE_ALTAR_IVY = "Like death, it creeps everywhere.",
 
-        QUAGMIRE_LAMP_SHORT = "Only Abigail lights my way.",
+        QUAGMIRE_LAMP_SHORT = "The only light in my light is Abigail.",
 
     },
     DESCRIBE_GENERIC = "Sigh... I don't know.",

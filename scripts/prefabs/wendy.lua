@@ -29,6 +29,9 @@ local function common_postinit(inst)
 
     if TheNet:GetServerGameMode() == "lavaarena" then
         inst:AddComponent("pethealthbar")
+    elseif TheNet:GetServerGameMode() == "quagmire" then
+        inst:AddTag("quagmire_grillmaster")
+        inst:AddTag("quagmire_shopper")
     end
 end
 

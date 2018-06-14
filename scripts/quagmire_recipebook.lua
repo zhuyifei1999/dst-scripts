@@ -60,7 +60,7 @@ function QuagmireRecipeBook:Save()
 	local str = json.encode(self.recipes)
 	TheSim:SetPersistentString("recipebook", str, false, function() 
 		self.dirty = false 
-		print("Done writing recipe book.")
+		--print("Done writing recipe book.")
 	end)
 end
 
@@ -164,18 +164,36 @@ local function OnRecipeAppraised(self, data)
 	local recipe = self.recipes[tostring(data.product)]
 	if recipe ~= nil then
 		local coins = {}
-		coins.coin1 = data.coins[1]
+		coins.coin1 = data.coins[1] or 0
 		coins.coin2 = (not(data.coins[2] == 0 and data.coins[3] == 0 and data.coins[4] == 0)) and data.coins[2] or nil
 		coins.coin3 = (not(data.coins[3] == 0 and data.coins[4] == 0)) and data.coins[3] or nil
 		coins.coin4 = data.coins[4] ~= 0 and data.coins[4] or nil
 		
-		recipe[data.silverdish and "silver_value" or "base_value"] = coins
+		local value_type = data.silverdish and "silver_value" or "base_value"
+		local cur_num_coins = recipe[value_type] ~= nil and GetTableSize(recipe[value_type]) or 0
+		local new_num_coins = GetTableSize(coins)
+
+		if recipe[value_type] == nil or cur_num_coins < new_num_coins then
+			recipe[value_type] = coins
+			self.dirty = true
+		elseif cur_num_coins == new_num_coins then
+			for i = cur_num_coins, 1, -1 do
+				if recipe[value_type]["coin"..i] < coins["coin"..i] then
+					recipe[value_type] = coins
+					self.dirty = true
+					break
+				elseif recipe[value_type]["coin"..i] > coins["coin"..i] then
+					break
+				end
+			end
+		end
 
 		if data.matchedcraving ~= nil and not table.contains(recipe.tags, data.matchedcraving) then
 			if recipe.tags == nil then
 				recipe.tags = {}
 			end
 			table.insert(recipe.tags, data.matchedcraving)
+			self.dirty = true
 		end
 
 		if data.snackpenalty and not table.contains(recipe.tags, "snack") then
@@ -183,9 +201,8 @@ local function OnRecipeAppraised(self, data)
 				recipe.tags = {}
 			end
 			table.insert(recipe.tags, "snack")
+			self.dirty = true
 		end
-
-		self.dirty = true
 	end
 
 	self:Save()

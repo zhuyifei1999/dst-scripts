@@ -94,6 +94,10 @@ local prefabs =
     "quagmire_goatkid",
     "quagmire_beefalo",
     "quagmire_pigeon",
+
+	-- character specific
+	"quagmire_book_fertilizer",
+    "quagmire_book_shadow",
 }
 
 local assets =
@@ -174,20 +178,36 @@ local function common_postinit(inst)
 
     --Goat Mum
     local food_atlas = resolvefilepath("images/quagmire_food_common_inv_images.xml")
-    Recipe("quagmire_crate_pot_hanger",     { Ingredient("quagmire_coin1", 6) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MUM, TECH.LOST, nil, nil, true)
-    Recipe("quagmire_crate_oven",           { Ingredient("quagmire_coin1", 6) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MUM, TECH.LOST, nil, nil, true)
-    Recipe("quagmire_crate_grill_small",    { Ingredient("quagmire_coin1", 6) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MUM, TECH.LOST, nil, nil, true)
-    Recipe("quagmire_plate_silver",         { Ingredient("quagmire_coin2", 2) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MUM, TECH.LOST, nil, nil, true, nil, nil, food_atlas, "plate_silver.tex")
-    Recipe("quagmire_bowl_silver",          { Ingredient("quagmire_coin2", 2) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MUM, TECH.LOST, nil, nil, true, nil, nil, food_atlas, "bowl_silver.tex")
+    Recipe("quagmire_crate_pot_hanger",     { Ingredient("quagmire_coin1", 6) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MUM, TECH.LOST, nil, nil, true, nil, "quagmire_shopper")
+    Recipe("quagmire_crate_oven",           { Ingredient("quagmire_coin1", 6) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MUM, TECH.LOST, nil, nil, true, nil, "quagmire_shopper")
+    Recipe("quagmire_crate_grill_small",    { Ingredient("quagmire_coin1", 6) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MUM, TECH.LOST, nil, nil, true, nil, "quagmire_shopper")
+    --
+    Recipe("quagmire_crate_pot_hanger_cs",  { Ingredient("quagmire_coin1", 5) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MUM, TECH.LOST, nil, nil, true, nil, "quagmire_cheapskate", nil, nil, nil, "quagmire_crate_pot_hanger")
+    Recipe("quagmire_crate_oven_cs",        { Ingredient("quagmire_coin1", 5) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MUM, TECH.LOST, nil, nil, true, nil, "quagmire_cheapskate", nil, nil, nil, "quagmire_crate_oven")
+    Recipe("quagmire_crate_grill_small_cs", { Ingredient("quagmire_coin1", 5) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MUM, TECH.LOST, nil, nil, true, nil, "quagmire_cheapskate", nil, nil, nil, "quagmire_crate_grill_small")
+    --
+    Recipe("quagmire_plate_silver",         { Ingredient("quagmire_coin2", 2) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MUM, TECH.LOST, nil, nil, true, nil, "quagmire_shopper", food_atlas, "plate_silver.tex")
+    Recipe("quagmire_bowl_silver",          { Ingredient("quagmire_coin2", 2) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MUM, TECH.LOST, nil, nil, true, nil, "quagmire_shopper", food_atlas, "bowl_silver.tex")
+    --
+    Recipe("quagmire_plate_silver_cs",      { Ingredient("quagmire_coin2", 1) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MUM, TECH.LOST, nil, nil, true, nil, "quagmire_cheapskate", food_atlas, "plate_silver.tex", nil, "quagmire_plate_silver")
+    Recipe("quagmire_bowl_silver_cs",       { Ingredient("quagmire_coin2", 1) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MUM, TECH.LOST, nil, nil, true, nil, "quagmire_cheapskate", food_atlas, "bowl_silver.tex", nil, "quagmire_bowl_silver")
+    --
     Recipe("quagmire_goatmilk",             { Ingredient("quagmire_coin3", 1) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MUM, TECH.LOST, nil, nil, true, 3)
     Recipe("quagmire_portal_key",           { Ingredient("quagmire_coin4", 3) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MUM, TECH.LOST, nil, nil, true)
 
     --Goat Kid
-    Recipe("quagmire_pigeon_shop_item",     { Ingredient("quagmire_coin1", 3) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_KID, TECH.LOST, nil, nil, true, nil, nil, nil, nil, nil, "quagmire_pigeon")
-    Recipe("quagmire_salt_rack_item",       { Ingredient("quagmire_coin1", 8) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_KID, TECH.LOST, nil, nil, true)
-    Recipe("fishingrod",                    { Ingredient("quagmire_coin1", 3) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_KID, TECH.LOST, nil, nil, true)
-    Recipe("trap",                          { Ingredient("quagmire_coin1", 4) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_KID, TECH.LOST, nil, nil, true)
-    Recipe("birdtrap",                      { Ingredient("quagmire_coin1", 5) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_KID, TECH.LOST, nil, nil, true)
+    Recipe("quagmire_pigeon_shop_item",     { Ingredient("quagmire_coin1", 3) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_KID, TECH.LOST, nil, nil, true, nil, "quagmire_shopper", nil, nil, nil, "quagmire_pigeon")
+    Recipe("quagmire_salt_rack_item",       { Ingredient("quagmire_coin1", 8) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_KID, TECH.LOST, nil, nil, true, nil, "quagmire_shopper")
+    Recipe("fishingrod",                    { Ingredient("quagmire_coin1", 3) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_KID, TECH.LOST, nil, nil, true, nil, "quagmire_shopper")
+    Recipe("trap",                          { Ingredient("quagmire_coin1", 4) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_KID, TECH.LOST, nil, nil, true, nil, "quagmire_shopper")
+    Recipe("birdtrap",                      { Ingredient("quagmire_coin1", 5) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_KID, TECH.LOST, nil, nil, true, nil, "quagmire_shopper")
+    --
+    Recipe("quagmire_pigeon_shop_item_cs",  { Ingredient("quagmire_coin1", 2) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_KID, TECH.LOST, nil, nil, true, nil, "quagmire_cheapskate", nil, nil, nil, "quagmire_pigeon")
+    Recipe("quagmire_salt_rack_item_cs",    { Ingredient("quagmire_coin1", 7) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_KID, TECH.LOST, nil, nil, true, nil, "quagmire_cheapskate", nil, nil, nil, "quagmire_salt_rack_item")
+    Recipe("fishingrod_cs",                 { Ingredient("quagmire_coin1", 2) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_KID, TECH.LOST, nil, nil, true, nil, "quagmire_cheapskate", nil, nil, nil, "fishingrod")
+    Recipe("trap_cs",                       { Ingredient("quagmire_coin1", 3) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_KID, TECH.LOST, nil, nil, true, nil, "quagmire_cheapskate", nil, nil, nil, "trap")
+    Recipe("birdtrap_cs",                   { Ingredient("quagmire_coin1", 4) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_KID, TECH.LOST, nil, nil, true, nil, "quagmire_cheapskate", nil, nil, nil, "birdtrap")
+    --
     Recipe("quagmire_crabtrap",             { Ingredient("quagmire_coin3", 1) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_KID, TECH.LOST, nil, nil, true)
     Recipe("quagmire_slaughtertool",        { Ingredient("quagmire_coin3", 1) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_KID, TECH.LOST, nil, nil, true)
 
@@ -203,11 +223,18 @@ local function common_postinit(inst)
     --Merm2
     Recipe("quagmire_seedpacket_7",         { Ingredient("quagmire_coin1", 1) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MERM2, TECH.LOST, nil, nil, true)
     Recipe("quagmire_seedpacket_3",         { Ingredient("quagmire_coin1", 1) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MERM2, TECH.LOST, nil, nil, true)
-    Recipe("quagmire_sapbucket",            { Ingredient("quagmire_coin1", 3) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MERM2, TECH.LOST, nil, nil, true, 3)
-    Recipe("quagmire_pot_syrup",            { Ingredient("quagmire_coin1", 4) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MERM2, TECH.LOST, nil, nil, true)
-    Recipe("quagmire_pot",                  { Ingredient("quagmire_coin1", 4) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MERM2, TECH.LOST, nil, nil, true)
-    Recipe("quagmire_casseroledish",        { Ingredient("quagmire_coin1", 4) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MERM2, TECH.LOST, nil, nil, true)
-    Recipe("quagmire_crate_grill",          { Ingredient("quagmire_coin1", 8) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MERM2, TECH.LOST, nil, nil, true)
+    --
+    Recipe("quagmire_sapbucket",            { Ingredient("quagmire_coin1", 3) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MERM2, TECH.LOST, nil, nil, true, 3, "quagmire_shopper")
+    Recipe("quagmire_pot_syrup",            { Ingredient("quagmire_coin1", 4) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MERM2, TECH.LOST, nil, nil, true, nil, "quagmire_shopper")
+    Recipe("quagmire_pot",                  { Ingredient("quagmire_coin1", 4) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MERM2, TECH.LOST, nil, nil, true, nil, "quagmire_shopper")
+    Recipe("quagmire_casseroledish",        { Ingredient("quagmire_coin1", 4) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MERM2, TECH.LOST, nil, nil, true, nil, "quagmire_shopper")
+    Recipe("quagmire_crate_grill",          { Ingredient("quagmire_coin1", 8) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MERM2, TECH.LOST, nil, nil, true, nil, "quagmire_shopper")
+    --
+    Recipe("quagmire_sapbucket_cs",         { Ingredient("quagmire_coin1", 2) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MERM2, TECH.LOST, nil, nil, true, 3, "quagmire_cheapskate", nil, nil, nil, "quagmire_sapbucket")
+    Recipe("quagmire_pot_syrup_cs",         { Ingredient("quagmire_coin1", 3) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MERM2, TECH.LOST, nil, nil, true, nil, "quagmire_cheapskate", nil, nil, nil, "quagmire_pot_syrup")
+    Recipe("quagmire_pot_cs",               { Ingredient("quagmire_coin1", 3) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MERM2, TECH.LOST, nil, nil, true, nil, "quagmire_cheapskate", nil, nil, nil, "quagmire_pot")
+    Recipe("quagmire_casseroledish_cs",     { Ingredient("quagmire_coin1", 3) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MERM2, TECH.LOST, nil, nil, true, nil, "quagmire_cheapskate", nil, nil, nil, "quagmire_casseroledish")
+    Recipe("quagmire_crate_grill_cs",       { Ingredient("quagmire_coin1", 7) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MERM2, TECH.LOST, nil, nil, true, nil, "quagmire_cheapskate", nil, nil, nil, "quagmire_crate_grill")
 
     --Elder
     Recipe("axe",                           { Ingredient("log", 5) }, QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_ELDER, TECH.LOST, nil, nil, true, nil, nil, nil, "axe_victorian.tex").chooseskin = false

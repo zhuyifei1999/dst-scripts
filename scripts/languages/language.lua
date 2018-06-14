@@ -82,7 +82,7 @@ local function GetCurrentLocale()
         if IsRail() then
             local lang_id = LANGUAGE.CHINESE_S_RAIL
             locale = GetLocale(lang_id)
-		else
+		elseif IsConsole() then
             local lang_id = Profile:GetLanguageID()
             locale = GetLocale(lang_id)
         end

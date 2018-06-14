@@ -7,7 +7,7 @@ local Stats = require("stats")
 
 local MAX_INITIAL_SEARCH_TIME = 7
 local MAX_SEARCH_TIME = 15
-local MAX_JOIN_ATTEMPTS = 20
+local MAX_JOIN_ATTEMPTS = 40
 
 if PLATFORM == "WIN32_RAIL" then
 	MAX_INITIAL_SEARCH_TIME = 10

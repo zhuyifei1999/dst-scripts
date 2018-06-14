@@ -117,6 +117,11 @@ end
 local function common_postinit(inst)
     inst:AddTag("valkyrie")
 
+    if TheNet:GetServerGameMode() == "quagmire" then
+        inst:AddTag("quagmire_butcher")
+        inst:AddTag("quagmire_shopper")
+    end
+
     inst.components.talker.mod_str_fn = Umlautify
 end
 
@@ -135,6 +140,8 @@ local function master_postinit(inst)
 
     if TheNet:GetServerGameMode() == "lavaarena" then
         event_server_data("lavaarena", "prefabs/wathgrithr").master_postinit(inst)
+    elseif TheNet:GetServerGameMode() == "quagmire" then
+        --event_server_data("quagmire", "prefabs/wathgrithr").master_postinit(inst)
     else
         inst.components.combat.damagemultiplier = TUNING.WATHGRITHR_DAMAGE_MULT
         inst.components.health:SetAbsorptionAmount(TUNING.WATHGRITHR_ABSORPTION)

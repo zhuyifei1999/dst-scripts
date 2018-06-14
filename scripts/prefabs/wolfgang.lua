@@ -245,6 +245,9 @@ local function common_postinit(inst)
         end
 
         lavaarena_onisavatardirty(inst)
+    elseif TheNet:GetServerGameMode() == "quagmire" then
+        inst:AddTag("quagmire_ovenmaster")
+        inst:AddTag("quagmire_shopper")
     end
 end
 

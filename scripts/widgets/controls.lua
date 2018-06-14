@@ -176,6 +176,7 @@ local Controls = Class(Widget, function(self, owner)
     end
 
     self.dismounthintdelay = 0
+    self.craftingandinventoryshown = false
 
     self:SetHUDSize()
 
@@ -185,8 +186,8 @@ end)
 function Controls:ShowStatusNumbers()
     self.status:ShowStatusNumbers()
     if self.teamstatus ~= nil then
-	    self.teamstatus:ShowStatusNumbers()
-	end
+        self.teamstatus:ShowStatusNumbers()
+    end
 end
 
 function Controls:HideStatusNumbers()
@@ -489,7 +490,7 @@ function Controls:OnUpdate(dt)
 
         local sep = (x1 + w1/2) < (x2 - w2/2) or
                     (x1 - w1/2) > (x2 + w2/2) or
-                    (y1 + h1/2) < (y2 - h2/2) or                    
+                    (y1 + h1/2) < (y2 - h2/2) or
                     (y1 - h1/2) > (y2 + h2/2)
 
         if not sep then
@@ -600,32 +601,38 @@ function Controls:ToggleMap()
 end
 
 function Controls:ShowCraftingAndInventory()
-    if not GetGameModeProperty("no_crafting") then
-        self.crafttabs:Show()
-    end
-    self.inv:Show()
-    self.containerroot_side:Show()
-    self.item_notification:ToggleCrafting(false)
-    if self.status.ToggleCrafting ~= nil then
-        self.status:ToggleCrafting(false)
+    if not self.craftingandinventoryshown then
+        self.craftingandinventoryshown = true
+        if not GetGameModeProperty("no_crafting") then
+            self.crafttabs:Show()
+        end
+        self.inv:Show()
+        self.containerroot_side:Show()
+        self.item_notification:ToggleCrafting(false)
+        if self.status.ToggleCrafting ~= nil then
+            self.status:ToggleCrafting(false)
+        end
     end
 end
 
 function Controls:HideCraftingAndInventory()
-    if self.owner ~= nil and self.owner.HUD ~= nil then
-        if self.owner.HUD:IsControllerCraftingOpen() then
-            self.owner.HUD:CloseControllerCrafting()
+    if self.craftingandinventoryshown then
+        self.craftingandinventoryshown = false
+        if self.owner ~= nil and self.owner.HUD ~= nil then
+            if self.owner.HUD:IsControllerCraftingOpen() then
+                self.owner.HUD:CloseControllerCrafting()
+            end
+            if self.owner.HUD:IsControllerInventoryOpen() then
+                self.owner.HUD:CloseControllerInventory()
+            end
         end
-        if self.owner.HUD:IsControllerInventoryOpen() then
-            self.owner.HUD:CloseControllerInventory()
+        self.crafttabs:Hide()
+        self.inv:Hide()
+        self.containerroot_side:Hide()
+        self.item_notification:ToggleCrafting(true)
+        if self.status.ToggleCrafting ~= nil then
+            self.status:ToggleCrafting(true)
         end
-    end
-    self.crafttabs:Hide()
-    self.inv:Hide()
-    self.containerroot_side:Hide()
-    self.item_notification:ToggleCrafting(true)
-    if self.status.ToggleCrafting ~= nil then
-        self.status:ToggleCrafting(true)
     end
 end
 

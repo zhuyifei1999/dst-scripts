@@ -2324,11 +2324,11 @@ return
         QUAGMIRE_FERN = "This species of fern is edible.",
         QUAGMIRE_FOLIAGE_COOKED = "I believe we could have prepared it better.",
         --
-        QUAGMIRE_COIN1 = "It appears to be a penny.",
+        QUAGMIRE_COIN1 = "Worth a paltry sum to the locals.",
         QUAGMIRE_COIN2 = "A coin of some denomination.",
         QUAGMIRE_COIN3 = "A coin of some value.",
         QUAGMIRE_COIN4 = "It's made of a sort of condensed magic.",
-        QUAGMIRE_GOATMILK = "I believe the old mare produced this.",
+        QUAGMIRE_GOATMILK = "I shan't question its origins.",
         QUAGMIRE_SYRUP = "A sweetener.",
         QUAGMIRE_SAP_SPOILED = "No longer food grade.",
         QUAGMIRE_SEEDPACKET = "An envelope of potential crops.",

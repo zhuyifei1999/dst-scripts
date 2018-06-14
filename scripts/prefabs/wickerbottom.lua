@@ -38,6 +38,11 @@ local function common_postinit(inst)
     inst:AddTag("insomniac")
     inst:AddTag("bookbuilder")
 
+    if TheNet:GetServerGameMode() == "quagmire" then
+        inst:AddTag("quagmire_foodie")
+        inst:AddTag("quagmire_shopper")
+    end
+
     --reader (from reader component) added to pristine state for optimization
     inst:AddTag("reader")
 end
@@ -60,6 +65,8 @@ local function master_postinit(inst)
 
     if TheNet:GetServerGameMode() == "lavaarena" then
         event_server_data("lavaarena", "prefabs/wickerbottom").master_postinit(inst)
+    elseif TheNet:GetServerGameMode() == "quagmire" then
+        event_server_data("quagmire", "prefabs/wickerbottom").master_postinit(inst)
     end
 end
 

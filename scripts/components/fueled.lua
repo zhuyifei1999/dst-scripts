@@ -172,7 +172,8 @@ function Fueled:TakeFuelItem(item, doer)
         local oldsection = self:GetCurrentSection()
 
         local wetmult = item:GetIsWet() and TUNING.WET_FUEL_PENALTY or 1
-        self:DoDelta(item.components.fuel.fuelvalue * self.bonusmult * wetmult, doer)
+        local masterymult = doer ~= nil and doer.components.fuelmaster ~= nil and doer.components.fuelmaster.bonusmult or 1
+        self:DoDelta(item.components.fuel.fuelvalue * self.bonusmult * wetmult * masterymult, doer)
 
         local fuelvalue = 0
         if item.components.fuel ~= nil then

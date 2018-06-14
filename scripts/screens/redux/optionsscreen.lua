@@ -199,7 +199,7 @@ end
 local OptionsScreen = Class(Screen, function(self, prev_screen)
 	Screen._ctor(self, "OptionsScreen")
 
-    self.show_language_options = (prev_screen ~= nil and prev_screen.name == "MultiplayerMainScreen") and IsSteam()
+    self.show_language_options = (prev_screen ~= nil and prev_screen.name == "MultiplayerMainScreen") and IsConsole()
 
 	self.show_datacollection = IsSteam() and not InGamePlay()
 
@@ -865,7 +865,9 @@ function OptionsScreen:_BuildLangButton(region_size, button_height, lang_id)
     langButton:SetOnClick(function()
         self.working.lang_id = lang_id
         langButton:Select()
-        self.last_selected:Unselect()
+        if self.last_selected ~= nil then
+            self.last_selected:Unselect()
+        end
         self.last_selected = langButton
 
         self:UpdateMenu()

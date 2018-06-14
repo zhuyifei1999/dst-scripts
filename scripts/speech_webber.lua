@@ -2189,7 +2189,7 @@ return {
         --
         QUAGMIRE_ROTTEN_CROP = "That one got a bit squishy.",
         --
-		QUAGMIRE_SALMON = "Mom said salmon oil is good for our brain.",
+		QUAGMIRE_SALMON = "Mom said fish oil is good for our brain.",
 		QUAGMIRE_SALMON_COOKED = "Smells good!",
 		QUAGMIRE_CRABMEAT = "Crabs kinda look like spiders.",
 		QUAGMIRE_CRABMEAT_COOKED = "We don't want to eat it.",
@@ -2232,14 +2232,8 @@ return {
 		},
 
 		QUAGMIRE_KEY = "Cool! I wonder what it unlocks?",
-		QUAGMIRE_KEY_PARK = "This unlocks the gate to that park.",
+		QUAGMIRE_KEY_PARK = "We wanna go to the park.",
         QUAGMIRE_PORTAL_KEY = "I wonder where this takes us.",
-
-		QUAGMIRE_KINGCRAB_CASTLE =
-		{
-			GENERIC = "Cool! A castle.",
-			UNKNOWN = "Huh. What is it?",
-		},
 
 		QUAGMIRE_MUSHROOMSTUMP =
 		{
@@ -2298,11 +2292,11 @@ return {
             MATCH_BUT_SNACK = "This is what it wants, but it's kinda puny.",
         },
         --
-        QUAGMIRE_COIN1 = "A penny!",
+        QUAGMIRE_COIN1 = "We could trade it for something small.",
         QUAGMIRE_COIN2 = "I wonder what we can buy with this.",
         QUAGMIRE_COIN3 = "We can buy a whole bunch of stuff with this.",
         QUAGMIRE_COIN4 = "The nice lady said we need three of them.",
-        QUAGMIRE_GOATMILK = "Milk is good for our bones.",
+        QUAGMIRE_GOATMILK = "Milk is good for our bones. Endo and exo!",
         QUAGMIRE_SYRUP = "Sweet!",
         QUAGMIRE_SAP_SPOILED = "Aw... It's no good anymore.",
         QUAGMIRE_SEEDPACKET = "We can plant a whole bunch of food with this.",
@@ -2320,8 +2314,8 @@ return {
         QUAGMIRE_POT_HANGER_ITEM = "We should put it together.",
         QUAGMIRE_GRILL = "We have to be careful when we cook.",
         QUAGMIRE_GRILL_ITEM = "We could use it to make yummy food.",
-        QUAGMIRE_GRILL_SMALL = "What do you want to cook?",
-        QUAGMIRE_GRILL_SMALL_ITEM = "We can have a cookout!",
+        QUAGMIRE_GRILL_SMALL = "What should we cook?",
+        QUAGMIRE_GRILL_SMALL_ITEM = "Let's find a place to put it.",
         QUAGMIRE_OVEN = "Mom said I should be careful around the oven.",
         QUAGMIRE_OVEN_ITEM = "We gotta set this up.",
         QUAGMIRE_CASSEROLEDISH = "We can cooks stuff in it.",
@@ -2331,7 +2325,7 @@ return {
         ---
         QUAGMIRE_MERM_CART1 = "Do they have any toys?", --sammy's wagon
         QUAGMIRE_MERM_CART2 = "That's full of good stuff.", --pipton's cart
-        QUAGMIRE_PARK_ANGEL = "Looks kinda creepy.",
+        QUAGMIRE_PARK_ANGEL = "I think it's sort of pretty.",
         QUAGMIRE_PARK_ANGEL2 = "It almost looks real.",
         QUAGMIRE_PARK_URN = "Aw. Someone died.",
         QUAGMIRE_PARK_OBELISK = "It's a monument or something.",
@@ -2347,7 +2341,7 @@ return {
         QUAGMIRE_FERN = "Maybe we could make a salad.",
         QUAGMIRE_FOLIAGE_COOKED = "This probably doesn't count as a salad, huh.",
         --
-        QUAGMIRE_GOATMUM = "Do your kids want to play?",
+        QUAGMIRE_GOATMUM = "Does your kid want to play?",
         QUAGMIRE_GOATKID = "Hi! I'm Webber!",
         QUAGMIRE_PIGEON =
         {

@@ -231,7 +231,7 @@ function MultiplayerMainScreen:DoInit()
         self.debug_menu:SetFocusChangeDir(MOVE_RIGHT, self.motd)
     end
 
-	if IsNotConsole() then
+	--[[if IsNotConsole() then
 		self.beta_countdown = self.fixed_root:AddChild(CountdownBeta(self, "quagmire"))
 		self.beta_countdown:SetScale(.8)
 		self.beta_countdown:SetPosition(500, -100)
@@ -240,7 +240,7 @@ function MultiplayerMainScreen:DoInit()
 		self.beta_countdown:SetFocusChangeDir(MOVE_UP, self.motd.button)
 		self.submenu:SetFocusChangeDir(MOVE_UP, self.beta_countdown)
 		self.motd.button:SetFocusChangeDir(MOVE_DOWN, self.beta_countdown)
-	end
+	end]]
 
 
     self.menu:SetFocus(#self.menu.items)
@@ -696,7 +696,7 @@ end
 function MultiplayerMainScreen:FinishedFadeIn()
 	
     if HasNewSkinDLCEntitlements() then
-        if PLATFORM == "WIN32_STEAM" or PLATFORM == "LINUX_STEAM" or PLATFORM == "OSX_STEAM" then
+        if IsSteam() then
             local popup_screen = PopupDialogScreen( STRINGS.UI.PURCHASEPACKSCREEN.GIFT_RECEIVED_TITLE, STRINGS.UI.PURCHASEPACKSCREEN.GIFT_RECEIVED_BODY,
                     {
                         {text=STRINGS.UI.PURCHASEPACKSCREEN.OK, cb = function() TheFrontEnd:PopScreen() MakeSkinDLCPopup() end },
@@ -719,26 +719,28 @@ function MultiplayerMainScreen:FinishedFadeIn()
 			local thankyou_popup = ThankYouPopup(items)
 			TheFrontEnd:PushScreen(thankyou_popup)
 		else
-			--Make sure we only do one mainscreen popup at a time
-			--Do language assistance popup
-			local interface_lang = TheNet:GetLanguageCode()
-			if interface_lang ~= "english" then
-                if Profile:GetValue("language_asked_"..interface_lang) ~= true then
-                    local lang_id = LANGUAGE_STEAMCODE_TO_ID[interface_lang]
-                    local locale = GetLocale(lang_id)
-                    if locale ~= nil then
-                        local popup_screen = PopupDialogScreen( STRINGS.PRETRANSLATED.LANGUAGES_TITLE[locale.id], STRINGS.PRETRANSLATED.LANGUAGES_BODY[locale.id],
-						        {
-							        { text = STRINGS.PRETRANSLATED.LANGUAGES_YES[locale.id], cb = function() Profile:SetLanguageID(lang_id, function() SimReset() end ) end },
-							        { text = STRINGS.PRETRANSLATED.LANGUAGES_NO[locale.id], cb = function() TheFrontEnd:PopScreen() end}
-						        }
-					        )
-				        TheFrontEnd:PushScreen( popup_screen )
-				        Profile:SetValue("language_asked_"..interface_lang, true)
-				        Profile:Save()
+            if IsConsole() then
+			    --Make sure we only do one mainscreen popup at a time
+			    --Do language assistance popup
+			    local interface_lang = TheNet:GetLanguageCode()
+			    if interface_lang ~= "english" then
+                    if Profile:GetValue("language_asked_"..interface_lang) ~= true then
+                        local lang_id = LANGUAGE_STEAMCODE_TO_ID[interface_lang]
+                        local locale = GetLocale(lang_id)
+                        if locale ~= nil then
+                            local popup_screen = PopupDialogScreen( STRINGS.PRETRANSLATED.LANGUAGES_TITLE[locale.id], STRINGS.PRETRANSLATED.LANGUAGES_BODY[locale.id],
+						            {
+							            { text = STRINGS.PRETRANSLATED.LANGUAGES_YES[locale.id], cb = function() Profile:SetLanguageID(lang_id, function() SimReset() end ) end },
+							            { text = STRINGS.PRETRANSLATED.LANGUAGES_NO[locale.id], cb = function() TheFrontEnd:PopScreen() end}
+						            }
+					            )
+				            TheFrontEnd:PushScreen( popup_screen )
+				            Profile:SetValue("language_asked_"..interface_lang, true)
+				            Profile:Save()
+                        end
                     end
-                end
-			end
+			    end
+            end
 		end
 	end
 end

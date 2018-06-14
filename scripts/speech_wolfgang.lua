@@ -2173,13 +2173,13 @@ return {
         --
         QUAGMIRE_ROTTEN_CROP = "Ground turned veggie to gunk.",
         --
-        QUAGMIRE_SALMON = "Is floppy fish. Wolfgang will eat.",
-        QUAGMIRE_SALMON_COOKED = "Is good food for Wolfgang.",
+        QUAGMIRE_SALMON = "Is floppy, floppy fish.",
+        QUAGMIRE_SALMON_COOKED = "Fish is cooked now.",
         QUAGMIRE_CRABMEAT = "Is meat of tiny pincher.",
         QUAGMIRE_CRABMEAT_COOKED = "Yummy, yummy pincher.",
         QUAGMIRE_POT = "Wolfgang brought most important ingredient: love.",
         QUAGMIRE_POT_SMALL = "Friends, do not look! Pot needs to boil.",
-        QUAGMIRE_POT_HANGER_ITEM = "Is make pot hang above fire.",
+        QUAGMIRE_POT_HANGER_ITEM = "Makes pot hang above fire.",
         QUAGMIRE_OVEN_ITEM = "Is fire box bits.",
         QUAGMIRE_OVEN = "Friends! Wolfgang will cook for you!",
         QUAGMIRE_SUGARWOODTREE = 
@@ -2228,7 +2228,7 @@ return {
 
         QUAGMIRE_PEBBLECRAB = "Hello, itty bitty pincher!",
 
-        QUAGMIRE_POND_SALT = "Like ocean, but tiny.",
+        QUAGMIRE_POND_SALT = "Is tiny ocean.",
         --
         QUAGMIRE_RUBBLE_CARRIAGE = "Is not work.",
         QUAGMIRE_RUBBLE_CLOCK = "Wolfgang cannot tell time.",
@@ -2281,7 +2281,7 @@ return {
         QUAGMIRE_COIN2 = "Goat lady and fish men would like.",
         QUAGMIRE_COIN3 = "Goat lady and fish men would like.",
         QUAGMIRE_COIN4 = "Sky beast liked Wolfgang's cookings!",
-        QUAGMIRE_GOATMILK = "Is from goat lady.",
+        QUAGMIRE_GOATMILK = "Maybe goat lady got from hair cows?",
         QUAGMIRE_SYRUP = "Yummy sugar goop!",
         QUAGMIRE_SAP_SPOILED = "Wolfgang cannot cook with yuck sludge.",
         QUAGMIRE_SEEDPACKET = "Give your seeds to Wolfgang, tiny paper!",
@@ -2300,7 +2300,7 @@ return {
         QUAGMIRE_GRILL = "Is put fire to food.",
         QUAGMIRE_GRILL_ITEM = "Where will Wolfgang put this?",
         QUAGMIRE_GRILL_SMALL = "Is put fire on tiny food.",
-        QUAGMIRE_GRILL_SMALL_ITEM = "Wolfgang needs put this down to work it.",
+        QUAGMIRE_GRILL_SMALL_ITEM = "Wolfgang needs put this down some place.",
         QUAGMIRE_OVEN = "Friends! Wolfgang will cook for you!",
         QUAGMIRE_OVEN_ITEM = "Is fire box bits.",
         QUAGMIRE_CASSEROLEDISH = "Is shame Wolfgang forget cabbage casserole recipe.",
@@ -2320,7 +2320,7 @@ return {
             LOCKED = "Is needing key.",
         },
         QUAGMIRE_PARKSPIKE = "Is pointy spiky thing.",
-        QUAGMIRE_CRABTRAP = "Is for catching pinchers.",
+        QUAGMIRE_CRABTRAP = "Is for catching tiny pinchers.",
         QUAGMIRE_TRADER_MERM = "Is having things for Wolfgang?",
         QUAGMIRE_TRADER_MERM2 = "Is having things for Wolfgang?",
         --

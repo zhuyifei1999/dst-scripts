@@ -32,6 +32,11 @@ end
 local function common_postinit(inst)
     inst:AddTag("handyperson")
     inst:AddTag("fastbuilder")
+
+    if TheNet:GetServerGameMode() == "quagmire" then
+        inst:AddTag("quagmire_fasthands")
+        inst:AddTag("quagmire_shopper")
+    end
 end
 
 local function master_postinit(inst)
@@ -41,8 +46,6 @@ local function master_postinit(inst)
 
     if TheNet:GetServerGameMode() == "lavaarena" then
         event_server_data("lavaarena", "prefabs/winona").master_postinit(inst)
-    elseif TheNet:GetServerGameMode() == "quagmire" then
-        event_server_data("quagmire", "prefabs/winona").master_postinit(inst)
     end
 end
 

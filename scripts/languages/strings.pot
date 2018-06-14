@@ -6560,7 +6560,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_COIN1
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_COIN1"
-msgid "I need more than a penny for my thoughts."
+msgid "I'd like more than a penny for my thoughts."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_COIN2
@@ -6570,7 +6570,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_COIN3
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_COIN3"
-msgid "Feels less than a pound."
+msgid "Seems valuable."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_COIN4
@@ -6585,7 +6585,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_CRABMEAT_COOKED
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_CRABMEAT_COOKED"
-msgid "I can put a good meal together in a pinch."
+msgid "I can put a meal together in a pinch."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_CRABTRAP
@@ -6660,7 +6660,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_GOATMILK
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_GOATMILK"
-msgid "It's good if you don't think about where it came from."
+msgid "Good if you don't think about where it came from."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_GOATMUM
@@ -6680,7 +6680,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_GRILL_SMALL
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_GRILL_SMALL"
-msgid "A baby barbecue."
+msgid "Barbecurious."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_GRILL_SMALL_ITEM
@@ -6855,7 +6855,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_POT
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_POT"
-msgid "This one holds more ingredients."
+msgid "This pot holds more ingredients."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_POTATO
@@ -6905,7 +6905,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_RUBBLE_CARRIAGE
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_RUBBLE_CARRIAGE"
-msgid "It's on a road to nowhere."
+msgid "On the road to nowhere."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_RUBBLE_CATHEDRAL
@@ -6925,7 +6925,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_RUBBLE_CLOCK
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_RUBBLE_CLOCK"
-msgid "Someone beat that clock."
+msgid "Someone beat the clock. Literally."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_RUBBLE_CLOCKTOWER
@@ -7030,7 +7030,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_SLAUGHTERTOOL
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_SLAUGHTERTOOL"
-msgid "Laboratory tools for butchery."
+msgid "Laboratory tools for surgical butchery."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_SPOTSPICE_GROUND
@@ -7110,7 +7110,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_SYRUP
 msgctxt "STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_SYRUP"
-msgid "For drowning desserts in."
+msgid "Adds sweetness to the mixture."
 msgstr ""
 
 #. STRINGS.CHARACTERS.GENERIC.DESCRIBE.QUAGMIRE_TOMATO
@@ -14620,12 +14620,12 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_CASSEROLEDISH
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_CASSEROLEDISH"
-msgid "A container for food."
+msgid "It will hold much meat."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_CASSEROLEDISH_SMALL
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_CASSEROLEDISH_SMALL"
-msgid "A tiny contianer for food."
+msgid "A container for food."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_COIN1
@@ -14640,7 +14640,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_COIN3
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_COIN3"
-msgid "Yes! I hath money!"
+msgid "Hurrah! I hath money!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_COIN4
@@ -14650,7 +14650,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_CRABMEAT
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_CRABMEAT"
-msgid "I shall consume thee!"
+msgid "Twould be an honor to be fed to the sky god, beast."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_CRABMEAT_COOKED
@@ -14660,7 +14660,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_CRABTRAP
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_CRABTRAP"
-msgid "It doth trapth sea-meat."
+msgid "It doth trap-eth sea-meat."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_FERN
@@ -14685,7 +14685,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_FOOD.MATCH
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_FOOD.MATCH"
-msgid "This shall quencheth his appetite."
+msgid "This shall quencheth its appetite."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_FOOD.MATCH_BUT_SNACK
@@ -14720,7 +14720,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_GOATKID
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_GOATKID"
-msgid "Ah, youth."
+msgid "Ah, the sweet innocence of youth."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_GOATMILK
@@ -14730,7 +14730,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_GOATMUM
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_GOATMUM"
-msgid "A woman of hearty appetite, like mineself!"
+msgid "A woman of good taste, like mineself!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_GRILL
@@ -14740,7 +14740,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_GRILL_ITEM
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_GRILL_ITEM"
-msgid "An instrument of savory."
+msgid "An instrument of the savory."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_GRILL_SMALL
@@ -14840,7 +14840,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_PARKSPIKE
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_PARKSPIKE"
-msgid "'Tis a fence spear."
+msgid "'Tis a fencing spear."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_PARK_ANGEL
@@ -14870,12 +14870,12 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_PARK_OBELISK
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_PARK_OBELISK"
-msgid "'Tis a rune stone."
+msgid "'Tis a runestone."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_PARK_URN
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_PARK_URN"
-msgid "The remnants of a viking funeral."
+msgid "Remnants of a Viking funeral."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_PEBBLECRAB
@@ -14955,7 +14955,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_POT_SYRUP
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_POT_SYRUP"
-msgid "For the making of !"
+msgid "For the making of godly nectars!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_ROTTEN_CROP
@@ -14965,7 +14965,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_RUBBLE_BIKE
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_RUBBLE_BIKE"
-msgid "A pillaged metal steed."
+msgid "A felled metal steed."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_RUBBLE_CARRIAGE
@@ -14980,7 +14980,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_RUBBLE_CHIMNEY
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_RUBBLE_CHIMNEY"
-msgid "It's hath fallen."
+msgid "It hath fallen."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_RUBBLE_CHIMNEY2
@@ -15010,12 +15010,12 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_RUBBLE_HOUSE.3
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_RUBBLE_HOUSE.3"
-msgid "What hath caused such destruction."
+msgid "What hath caused such destruction?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_RUBBLE_PUBDOOR
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_RUBBLE_PUBDOOR"
-msgid "It once lead to adventure. Alas no more."
+msgid "It once led to adventure. Alas no more."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_RUBBLE_ROOF
@@ -15045,7 +15045,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_SALT
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_SALT"
-msgid "We must launch an a-salt!"
+msgid "Twill make the meat even more divine."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_SALTROCK
@@ -15095,7 +15095,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_SLAUGHTERTOOL
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_SLAUGHTERTOOL"
-msgid "'Tis a tool for slaughtering!"
+msgid "'Tis a weapon of beastly slaughter!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_SPOTSPICE_GROUND
@@ -15140,7 +15140,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_SUGARWOODTREE.TAPPED_READY
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_SUGARWOODTREE.TAPPED_READY"
-msgid "I hath aquired the nectar!"
+msgid "I hath acquired the nectar!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_SUGARWOODTREE.WOUNDED
@@ -15175,7 +15175,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_SYRUP
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_SYRUP"
-msgid "Nectar for the gods."
+msgid "Nectar of the gods, for the gods."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_TOMATO
@@ -15195,12 +15195,12 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_TRADER_MERM
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_TRADER_MERM"
-msgid "Preprare to barter!"
+msgid "Prepare to barter!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_TRADER_MERM2
 msgctxt "STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_TRADER_MERM2"
-msgid "'Tis a jaunty hatted beast."
+msgid "'Tis a jaunty-hatted beast."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.QUAGMIRE_TURNIP
@@ -22700,7 +22700,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_COIN2
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_COIN2"
-msgid "I have use for this."
+msgid "I'll have use for this."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_COIN3
@@ -22710,7 +22710,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_COIN4
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_COIN4"
-msgid "We may worm our way out of this predicament yet."
+msgid "We may wyrm our way out of this predicament yet."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_CRABMEAT
@@ -22765,7 +22765,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_FOOD_BURNT
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_FOOD_BURNT"
-msgid "I didn't make that one."
+msgid "I didn't cook that one."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_GARLIC
@@ -22790,7 +22790,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_GOATMILK
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_GOATMILK"
-msgid "Nothing quite like Mumsy's milk."
+msgid "My bones are naturally fragile, I'm afraid."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_GOATMUM
@@ -22810,7 +22810,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_GRILL_SMALL
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_GRILL_SMALL"
-msgid "I wish it was bigger."
+msgid "I'd prefer a larger grill."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_GRILL_SMALL_ITEM
@@ -22831,16 +22831,6 @@ msgstr ""
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_KEY_PARK
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_KEY_PARK"
 msgid "This should open some doors."
-msgstr ""
-
-#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_KINGCRAB_CASTLE.GENERIC
-msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_KINGCRAB_CASTLE.GENERIC"
-msgid "Ah. A crab of some stature."
-msgstr ""
-
-#. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_KINGCRAB_CASTLE.UNKNOWN
-msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_KINGCRAB_CASTLE.UNKNOWN"
-msgid "Intriging."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_LAMP_POST
@@ -22910,7 +22900,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_OVEN_ITEM
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_OVEN_ITEM"
-msgid "It's a magic oven. For cooking."
+msgid "It's an oven. For cooking."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_PARKSPIKE
@@ -22950,7 +22940,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_PARK_URN
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_PARK_URN"
-msgid "It's full of burnt human."
+msgid "Yes yes, ashes to ashes and all that."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_PEBBLECRAB
@@ -22980,7 +22970,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_POND_SALT
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_POND_SALT"
-msgid "Brakish."
+msgid "Brackish."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_PORTAL
@@ -23100,7 +23090,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_SAFE.GENERIC
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_SAFE.GENERIC"
-msgid "Now for some expert level rummaging."
+msgid "Now for some expert-level rummaging."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_SAFE.LOCKED
@@ -23130,7 +23120,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_SALT_RACK.GENERIC
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_SALT_RACK.GENERIC"
-msgid "Any way to improve the food around here is welcome."
+msgid "Any method to improve the food around here is welcome."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_SALT_RACK.READY
@@ -23140,7 +23130,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_SALT_RACK_ITEM
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_SALT_RACK_ITEM"
-msgid "Just useless sticks unless we assemble it."
+msgid "Just useless sticks until we assemble it."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_SAP
@@ -23250,7 +23240,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_SYRUP
 msgctxt "STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_SYRUP"
-msgid "I presume I pour this on something."
+msgid "Cooking syrup. Of course."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WAXWELL.DESCRIBE.QUAGMIRE_TOMATO
@@ -30770,7 +30760,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.QUAGMIRE_COIN1
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.QUAGMIRE_COIN1"
-msgid "A penny!"
+msgid "We could trade it for something small."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.QUAGMIRE_COIN2
@@ -30865,12 +30855,12 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.QUAGMIRE_GOATMILK
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.QUAGMIRE_GOATMILK"
-msgid "Milk is good for our bones."
+msgid "Milk is good for our bones. Endo and exo!"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.QUAGMIRE_GOATMUM
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.QUAGMIRE_GOATMUM"
-msgid "Do your kids want to play?"
+msgid "Does your kid want to play?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.QUAGMIRE_GRILL
@@ -30885,12 +30875,12 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.QUAGMIRE_GRILL_SMALL
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.QUAGMIRE_GRILL_SMALL"
-msgid "What do you want to cook?"
+msgid "What should we cook?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.QUAGMIRE_GRILL_SMALL_ITEM
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.QUAGMIRE_GRILL_SMALL_ITEM"
-msgid "We can have a cookout!"
+msgid "Let's find a place to put it."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.QUAGMIRE_HOE
@@ -30905,17 +30895,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.QUAGMIRE_KEY_PARK
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.QUAGMIRE_KEY_PARK"
-msgid "This unlocks the gate to that park."
-msgstr ""
-
-#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.QUAGMIRE_KINGCRAB_CASTLE.GENERIC
-msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.QUAGMIRE_KINGCRAB_CASTLE.GENERIC"
-msgid "Cool! A castle."
-msgstr ""
-
-#. STRINGS.CHARACTERS.WEBBER.DESCRIBE.QUAGMIRE_KINGCRAB_CASTLE.UNKNOWN
-msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.QUAGMIRE_KINGCRAB_CASTLE.UNKNOWN"
-msgid "Huh. What is it?"
+msgid "We wanna go to the park."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.QUAGMIRE_LAMP_POST
@@ -30995,7 +30975,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.QUAGMIRE_PARK_ANGEL
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.QUAGMIRE_PARK_ANGEL"
-msgid "Looks kinda creepy."
+msgid "I think it's sort of pretty."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.QUAGMIRE_PARK_ANGEL2
@@ -31185,7 +31165,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.QUAGMIRE_SALMON
 msgctxt "STRINGS.CHARACTERS.WEBBER.DESCRIBE.QUAGMIRE_SALMON"
-msgid "Mom said salmon oil is good for our brain."
+msgid "Mom said fish oil is good for our brain."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WEBBER.DESCRIBE.QUAGMIRE_SALMON_COOKED
@@ -38775,7 +38755,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_ALTAR_QUEEN
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_ALTAR_QUEEN"
-msgid "I'm not impressed."
+msgid "I am not impressed by opulence."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_ALTAR_STATUE1
@@ -38785,7 +38765,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_ALTAR_STATUE2
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_ALTAR_STATUE2"
-msgid "A death monument."
+msgid "Yet another reminder of death."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_BEEFALO
@@ -38795,12 +38775,12 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_BERRYBUSH
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_BERRYBUSH"
-msgid "This bush will never grow another berry."
+msgid "It shall never grow another berry."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_BOWL_SILVER
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_BOWL_SILVER"
-msgid "Is it full of cherries? Or cherry pits?"
+msgid "It is empty, like my heart."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_CARROT_SEEDS
@@ -38820,12 +38800,12 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_COIN1
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_COIN1"
-msgid "I shall put it on my eyes when I die."
+msgid "I shall put them on my eyes when I die."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_COIN2
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_COIN2"
-msgid "Money will not bring back my Abigail."
+msgid "Money will not bring back Abigail."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_COIN3
@@ -38860,7 +38840,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_FLOUR
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_FLOUR"
-msgid "Flour by any other name t'would smell as sweet."
+msgid "Flour by any other name would smell as sweet."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_FOLIAGE_COOKED
@@ -38915,7 +38895,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_GOATMILK
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_GOATMILK"
-msgid "Milk of life from Mumsy."
+msgid "But no honey."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_GOATMUM
@@ -38950,12 +38930,12 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_KEY
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_KEY"
-msgid "It's the key to something. But not my heart."
+msgid "It is the key to something precious."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_KEY_PARK
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_KEY_PARK"
-msgid "A key to the park is still not a key to my heart."
+msgid "The key to a beautiful place, locked long away."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_LAMP_POST
@@ -38965,7 +38945,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_LAMP_SHORT
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_LAMP_SHORT"
-msgid "Only Abigail lights my way."
+msgid "The only light in my light is Abigail."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_MEALINGSTONE
@@ -38980,12 +38960,12 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_MERM_CART1
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_MERM_CART1"
-msgid "Can I buy my Abigail back to life?"
+msgid "I, too, cart around my baggage."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_MERM_CART2
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_MERM_CART2"
-msgid "Nothing in there will bring me happiness."
+msgid "Nothing in there could bring me happiness."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_MUSHROOMS
@@ -39050,7 +39030,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_PARK_GATE.GENERIC
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_PARK_GATE.GENERIC"
-msgid "Now I may enter to park."
+msgid "Now I may enter the park."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_PARK_GATE.LOCKED
@@ -39065,7 +39045,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_PARK_URN
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_PARK_URN"
-msgid "It's not Abigail's ashes."
+msgid "Dust to dust."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_PEBBLECRAB
@@ -39090,7 +39070,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_PLATE_SILVER
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_PLATE_SILVER"
-msgid "If only life was handed to me in a silver plate."
+msgid "If only life had been handed to me on a silver plate."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_POND_SALT
@@ -39105,7 +39085,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_PORTAL_KEY
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_PORTAL_KEY"
-msgid "Perhaps I'll be happier in another world."
+msgid "Perhaps I'll be happier in the next world."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_POT
@@ -39145,7 +39125,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_POT_SYRUP
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_POT_SYRUP"
-msgid "Sweet begets sweeter."
+msgid "Sweetness begets sweetness."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_ROTTEN_CROP
@@ -39270,7 +39250,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_SAPLING
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_SAPLING"
-msgid "I'll perish before this grows back."
+msgid "We will perish before this grows back."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_SAP_SPOILED
@@ -39285,7 +39265,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_SLAUGHTERTOOL
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_SLAUGHTERTOOL"
-msgid "All of life is a slaughter."
+msgid "Is all of life not a slaughter?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_SPOTSPICE_GROUND
@@ -39350,7 +39330,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_SWAMPIGELDER.SLEEPING
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_SWAMPIGELDER.SLEEPING"
-msgid "It's practicing for the big sleep."
+msgid "He is practicing for the big sleep."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_SWAMPIG_HOUSE
@@ -46895,7 +46875,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.QUAGMIRE_COIN1
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.QUAGMIRE_COIN1"
-msgid "It appears to be a penny."
+msgid "Worth a paltry sum to the locals."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.QUAGMIRE_COIN2
@@ -46990,7 +46970,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.QUAGMIRE_GOATMILK
 msgctxt "STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.QUAGMIRE_GOATMILK"
-msgid "I believe the old mare produced this."
+msgid "I shan't question its origins."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.QUAGMIRE_GOATMUM
@@ -54990,12 +54970,12 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_CASSEROLEDISH_SMALL
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_CASSEROLEDISH_SMALL"
-msgid "It kinda small."
+msgid "It's kinda small."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_COIN1
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_COIN1"
-msgid "Wow. A penny. Pfft."
+msgid "Wow. A coin. Pfft."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_COIN2
@@ -55090,12 +55070,12 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_GOATMILK
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_GOATMILK"
-msgid "I think it's from that grumpy old goat."
+msgid "What? We needed milk."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_GOATMUM
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_GOATMUM"
-msgid "What an old goat!"
+msgid "Her eyes creep me out."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_GRILL
@@ -55105,7 +55085,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_GRILL_ITEM
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_GRILL_ITEM"
-msgid "It needs fire. Like all things."
+msgid "Ugh, I guess I should set it up."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_GRILL_SMALL
@@ -55115,7 +55095,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_GRILL_SMALL_ITEM
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_GRILL_SMALL_ITEM"
-msgid "It just needs a little fire."
+msgid "I should set it up over the firepit."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_HOE
@@ -55145,7 +55125,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_MEALINGSTONE
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_MEALINGSTONE"
-msgid "I can smash stuff with it."
+msgid "I can smash stuff down with it."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_MERMHOUSE
@@ -55310,7 +55290,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_POT_HANGER_ITEM
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_POT_HANGER_ITEM"
-msgid "It needs fire."
+msgid "It needs to be set up in a firepit."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_POT_SMALL
@@ -55335,7 +55315,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_RUBBLE_CARRIAGE
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_RUBBLE_CARRIAGE"
-msgid "Aw... I won't even light on fire."
+msgid "It's so busted, I don't even wanna light it on fire."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_RUBBLE_CATHEDRAL
@@ -55415,7 +55395,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_SALTROCK
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_SALTROCK"
-msgid "I licked one. I had to."
+msgid "I licked one. Had to."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_SALT_RACK.GENERIC
@@ -55520,7 +55500,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_SWAMPIGELDER.GENERIC
 msgctxt "STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_SWAMPIGELDER.GENERIC"
-msgid "They're not so different from pigs back at our place."
+msgid "They're not so different from the pigs back at our place."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WILLOW.DESCRIBE.QUAGMIRE_SWAMPIGELDER.SLEEPING
@@ -63045,7 +63025,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.QUAGMIRE_CASSEROLEDISH
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.QUAGMIRE_CASSEROLEDISH"
-msgid "I need to bake this somehow."
+msgid "I'll need to bake it."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.QUAGMIRE_CASSEROLEDISH_SMALL
@@ -63055,7 +63035,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.QUAGMIRE_COIN1
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.QUAGMIRE_COIN1"
-msgid "A lucky penny."
+msgid "A lucky coin."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.QUAGMIRE_COIN2
@@ -63150,7 +63130,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.QUAGMIRE_GOATMILK
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.QUAGMIRE_GOATMILK"
-msgid "I think that old goat made this herself."
+msgid "I try to support local artisans."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.QUAGMIRE_GOATMUM
@@ -63165,7 +63145,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.QUAGMIRE_GRILL_ITEM
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.QUAGMIRE_GRILL_ITEM"
-msgid "I need to put this somewhere for it to work."
+msgid "I need to to find a firepit for this to work."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.QUAGMIRE_GRILL_SMALL
@@ -63255,12 +63235,12 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.QUAGMIRE_OVEN
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.QUAGMIRE_OVEN"
-msgid "This magic stuff's pretty useful."
+msgid "It's a regular ol' oven."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.QUAGMIRE_OVEN_ITEM
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.QUAGMIRE_OVEN_ITEM"
-msgid "It runs on magicy stuff."
+msgid "Welp. Another day, another project."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.QUAGMIRE_PARKSPIKE
@@ -63280,7 +63260,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.QUAGMIRE_PARK_FOUNTAIN
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.QUAGMIRE_PARK_FOUNTAIN"
-msgid "Under used 'n overgrown."
+msgid "Under-used 'n overgrown."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.QUAGMIRE_PARK_GATE.GENERIC
@@ -63445,7 +63425,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.QUAGMIRE_RUBBLE_ROOF
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.QUAGMIRE_RUBBLE_ROOF"
-msgid "I've repaired roofs before but this is a bigger job."
+msgid "I've repaired roofs before but this is a lost cause."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.QUAGMIRE_SAFE.GENERIC
@@ -63520,7 +63500,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.QUAGMIRE_SLAUGHTERTOOL
 msgctxt "STRINGS.CHARACTERS.WINONA.DESCRIBE.QUAGMIRE_SLAUGHTERTOOL"
-msgid "I've skinned my own meat before."
+msgid "Not my kinda tool."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WINONA.DESCRIBE.QUAGMIRE_SPOTSPICE_GROUND
@@ -71205,7 +71185,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.QUAGMIRE_CRABTRAP
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.QUAGMIRE_CRABTRAP"
-msgid "Is for catching pinchers."
+msgid "Is for catching tiny pinchers."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.QUAGMIRE_FERN
@@ -71270,7 +71250,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.QUAGMIRE_GOATMILK
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.QUAGMIRE_GOATMILK"
-msgid "Is from goat lady."
+msgid "Maybe goat lady got from hair cows?"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.QUAGMIRE_GOATMUM
@@ -71295,7 +71275,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.QUAGMIRE_GRILL_SMALL_ITEM
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.QUAGMIRE_GRILL_SMALL_ITEM"
-msgid "Wolfgang needs put this down to work it."
+msgid "Wolfgang needs put this down some place."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.QUAGMIRE_HOE
@@ -71450,7 +71430,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.QUAGMIRE_POND_SALT
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.QUAGMIRE_POND_SALT"
-msgid "Like ocean, but tiny."
+msgid "Is tiny ocean."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.QUAGMIRE_PORTAL
@@ -71580,12 +71560,12 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.QUAGMIRE_SALMON
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.QUAGMIRE_SALMON"
-msgid "Is floppy fish. Wolfgang will eat."
+msgid "Is floppy, floppy fish."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.QUAGMIRE_SALMON_COOKED
 msgctxt "STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.QUAGMIRE_SALMON_COOKED"
-msgid "Is good food for Wolfgang."
+msgid "Fish is cooked now."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.QUAGMIRE_SALT
@@ -79195,7 +79175,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.QUAGMIRE_ALTAR.GENERIC
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.QUAGMIRE_ALTAR.GENERIC"
-msgid "We have to load it up with good eats."
+msgid "We gotta load it up with good eats."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.QUAGMIRE_ALTAR_BOLLARD
@@ -79255,7 +79235,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.QUAGMIRE_COIN1
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.QUAGMIRE_COIN1"
-msgid "Bet it's worth a pretty penny."
+msgid "This coin could use a polish."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.QUAGMIRE_COIN2
@@ -79640,7 +79620,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.QUAGMIRE_RUBBLE_PUBDOOR
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.QUAGMIRE_RUBBLE_PUBDOOR"
-msgid "A shame. I could'a used a drink."
+msgid "Such a shame."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.QUAGMIRE_RUBBLE_ROOF
@@ -79725,7 +79705,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.QUAGMIRE_SPOTSPICE_GROUND
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.QUAGMIRE_SPOTSPICE_GROUND"
-msgid "You only need a little to get the flavour."
+msgid "You only need a pinch to get the flavour."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.QUAGMIRE_SPOTSPICE_SHRUB.GENERIC
@@ -79800,7 +79780,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.QUAGMIRE_SYRUP
 msgctxt "STRINGS.CHARACTERS.WOODIE.DESCRIBE.QUAGMIRE_SYRUP"
-msgid "I missed this."
+msgid "Not quite maple."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WOODIE.DESCRIBE.QUAGMIRE_TOMATO
@@ -87535,12 +87515,12 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.QUAGMIRE_PARK_ANGEL
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.QUAGMIRE_PARK_ANGEL"
-msgid "ERROR"
+msgid "USELESS ORGANIC DECORATION"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.QUAGMIRE_PARK_ANGEL2
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.QUAGMIRE_PARK_ANGEL2"
-msgid "DOES NOT COMPUTE"
+msgid "YOUR MONUMENTS DO NOT UNDO DEATH"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.QUAGMIRE_PARK_FOUNTAIN
@@ -87565,7 +87545,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.QUAGMIRE_PARK_URN
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.QUAGMIRE_PARK_URN"
-msgid "EMPATHY MODE MISSING"
+msgid "I AM INCAPABLE OF EMPATHY"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.QUAGMIRE_PEBBLECRAB
@@ -87590,7 +87570,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.QUAGMIRE_PLATE_SILVER
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.QUAGMIRE_PLATE_SILVER"
-msgid "GILDING DOES NOT COMPUTE"
+msgid "THE DEITY ENJOYS HIGH CONDUCTIVITY MATERIALS"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.QUAGMIRE_POND_SALT
@@ -87705,7 +87685,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.QUAGMIRE_RUBBLE_PUBDOOR
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.QUAGMIRE_RUBBLE_PUBDOOR"
-msgid "ERROR: DOOR LEADS NOWHERE"
+msgid "ERROR: INVALID PATHWAY"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.QUAGMIRE_RUBBLE_ROOF
@@ -87895,7 +87875,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.QUAGMIRE_TURNIP
 msgctxt "STRINGS.CHARACTERS.WX78.DESCRIBE.QUAGMIRE_TURNIP"
-msgid "TURNIP? FOR WHAT?"
+msgid "IT'S A DUMB TURNIP"
 msgstr ""
 
 #. STRINGS.CHARACTERS.WX78.DESCRIBE.QUAGMIRE_TURNIP_COOKED
@@ -100145,72 +100125,72 @@ msgstr ""
 
 #. STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.wathgrithr
 msgctxt "STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.wathgrithr"
-msgid "*??"
+msgid "*Harvests an extra meat when slaughtering Beefalo\n\n\n*Expertise:\nGathering"
 msgstr ""
 
 #. STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.waxwell
 msgctxt "STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.waxwell"
-msgid "*??"
+msgid "*Summons a Shadow Logger\n\n\n\n*Expertise:\nGathering"
 msgstr ""
 
 #. STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.webber
 msgctxt "STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.webber"
-msgid "*??"
+msgid "*Sows seeds and harvests plants much more quickly\n\n\n*Expertise:\nFarming"
 msgstr ""
 
 #. STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.wendy
 msgctxt "STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.wendy"
-msgid "*??"
+msgid "*Improves nearby Grill efficiency\n\n\n\n*Expertise:\nCooking"
 msgstr ""
 
 #. STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.wes
 msgctxt "STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.wes"
-msgid "*??"
+msgid "*Expert haggler\n\n\n\n*Expertise:\nShopping"
 msgstr ""
 
 #. STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.wickerbottom
 msgctxt "STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.wickerbottom"
-msgid "*??"
+msgid "*Has just the book for the occasion\n*Inspects food to determine if it matches the Gnaw's craving\n\n*Expertise:\nFarming"
 msgstr ""
 
 #. STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.willow
 msgctxt "STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.willow"
-msgid "*??"
+msgid "*Logs burn longer on the fire\n\n\n\n*Expertise:\nCooking"
 msgstr ""
 
 #. STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.wilson
 msgctxt "STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.wilson"
-msgid "*??"
+msgid "*Improves nearby Cookpot efficiency\n*Inspects food to determine if it matches the Gnaw's craving\n\n*Expertise:\nCooking"
 msgstr ""
 
 #. STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.winona
 msgctxt "STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.winona"
-msgid "*??"
+msgid "*Performs most actions slightly faster\n\n\n\n*Expertise:\nFarming"
 msgstr ""
 
 #. STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.wolfgang
 msgctxt "STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.wolfgang"
-msgid "*??"
+msgid "*Improves nearby Oven efficiency\n\n\n\n*Expertise:\nCooking"
 msgstr ""
 
 #. STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.woodie
 msgctxt "STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.woodie"
-msgid "*??"
+msgid "*Chops wood more quickly\n\n\n\n*Expertise:\nGathering"
 msgstr ""
 
 #. STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.woodie_canada
 msgctxt "STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.woodie_canada"
-msgid "*??"
+msgid "*Chops wood more quickly\n\n\n\n*Expertise:\nGathering"
 msgstr ""
 
 #. STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.woodie_us
 msgctxt "STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.woodie_us"
-msgid "*??"
+msgid "*Chops wood more quickly\n\n\n\n*Expertise:\nGathering"
 msgstr ""
 
 #. STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.wx78
 msgctxt "STRINGS.QUAGMIRE_CHARACTER_DESCRIPTIONS.wx78"
-msgid "*??"
+msgid "*Enhanced robotic runspeed\n\n\n\n*Expertise:\nGathering"
 msgstr ""
 
 #. STRINGS.QUAGMIRE_ELDER_TALK_BUY.1
@@ -105278,6 +105258,81 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_sw_gift"
 msgid "Don't Starve: Shipwrecked Gift"
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.pack_victorian_all
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_victorian_all"
+msgid "This Gorge Chest contains every survivor's complete set of Victorian skin items."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.pack_victorian_bundle
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_victorian_bundle"
+msgid "This Gorge Chest contains every survivor's complete set of Victorian skin items and all Victorian belongings skin items."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.pack_victorian_items
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_victorian_items"
+msgid "This Gorge Chest contains all Victorian belongings skin items."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.pack_victorian_wathgrithr
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_victorian_wathgrithr"
+msgid "This Gorge Chest contains Wigfrid's complete set of Victorian skin items."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.pack_victorian_waxwell
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_victorian_waxwell"
+msgid "This Gorge Chest contains Maxwell's complete set of Victorian skin items."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.pack_victorian_webber
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_victorian_webber"
+msgid "This Gorge Chest contains Webber's complete set of Victorian skin items."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.pack_victorian_wendy
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_victorian_wendy"
+msgid "This Gorge Chest contains Wendy's complete set of Victorian skin items."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.pack_victorian_wes
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_victorian_wes"
+msgid "This Gorge Chest contains Wes' complete set of Victorian skin items."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.pack_victorian_wickerbottom
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_victorian_wickerbottom"
+msgid "This Gorge Chest contains Wickerbottom's complete set of Victorian skin items."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.pack_victorian_willow
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_victorian_willow"
+msgid "This Gorge Chest contains Willow's complete set of Victorian skin items."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.pack_victorian_wilson
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_victorian_wilson"
+msgid "This Gorge Chest contains Wilson's complete set of Victorian skin items."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.pack_victorian_winona
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_victorian_winona"
+msgid "This Gorge Chest contains Winona's complete set of Victorian skin items."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.pack_victorian_wolfgang
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_victorian_wolfgang"
+msgid "This Gorge Chest contains Wolfgang's complete set of Victorian skin items."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.pack_victorian_woodie
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_victorian_woodie"
+msgid "This Gorge Chest contains Woodie's complete set of Victorian skin items."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.pack_victorian_wx78
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.pack_victorian_wx78"
+msgid "This Gorge Chest contains WX-78's complete set of Victorian skin items."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.perdling_rooster
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.perdling_rooster"
 msgid "If you wanted a bouncy rooster companion by your side, then you're in cluck!"
@@ -105855,7 +105910,7 @@ msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.profileflair_victorian_boar
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_victorian_boar"
-msgid "Set your profile icon to a most distinguished pigman."
+msgid "Set your profile icon to the tragic figure of the Swamp Pig elder."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.profileflair_victorian_coppercoin
@@ -109428,6 +109483,81 @@ msgctxt "STRINGS.SKIN_NAMES.pack_sw_gift"
 msgid "Don't Starve: Shipwrecked Gift"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.pack_victorian_all
+msgctxt "STRINGS.SKIN_NAMES.pack_victorian_all"
+msgid "All Survivors Gorge Chest"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.pack_victorian_bundle
+msgctxt "STRINGS.SKIN_NAMES.pack_victorian_bundle"
+msgid "Complete Gorge Chest"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.pack_victorian_items
+msgctxt "STRINGS.SKIN_NAMES.pack_victorian_items"
+msgid "Gorge Belongings Chest"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.pack_victorian_wathgrithr
+msgctxt "STRINGS.SKIN_NAMES.pack_victorian_wathgrithr"
+msgid "Wigfrid Gorge Chest"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.pack_victorian_waxwell
+msgctxt "STRINGS.SKIN_NAMES.pack_victorian_waxwell"
+msgid "Maxwell Gorge Chest"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.pack_victorian_webber
+msgctxt "STRINGS.SKIN_NAMES.pack_victorian_webber"
+msgid "Webber Gorge Chest"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.pack_victorian_wendy
+msgctxt "STRINGS.SKIN_NAMES.pack_victorian_wendy"
+msgid "Wendy Gorge Chest"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.pack_victorian_wes
+msgctxt "STRINGS.SKIN_NAMES.pack_victorian_wes"
+msgid "Wes Gorge Chest"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.pack_victorian_wickerbottom
+msgctxt "STRINGS.SKIN_NAMES.pack_victorian_wickerbottom"
+msgid "Wickerbottom\nGorge Chest"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.pack_victorian_willow
+msgctxt "STRINGS.SKIN_NAMES.pack_victorian_willow"
+msgid "Willow Gorge Chest"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.pack_victorian_wilson
+msgctxt "STRINGS.SKIN_NAMES.pack_victorian_wilson"
+msgid "Wilson Gorge Chest"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.pack_victorian_winona
+msgctxt "STRINGS.SKIN_NAMES.pack_victorian_winona"
+msgid "Winona Gorge Chest"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.pack_victorian_wolfgang
+msgctxt "STRINGS.SKIN_NAMES.pack_victorian_wolfgang"
+msgid "Wolfgang\nGorge Chest"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.pack_victorian_woodie
+msgctxt "STRINGS.SKIN_NAMES.pack_victorian_woodie"
+msgid "Woodie Gorge Chest"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.pack_victorian_wx78
+msgctxt "STRINGS.SKIN_NAMES.pack_victorian_wx78"
+msgid "WX-78 Gorge Chest"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.perdling_rooster
 msgctxt "STRINGS.SKIN_NAMES.perdling_rooster"
 msgid "Rooslet"
@@ -110005,7 +110135,7 @@ msgstr ""
 
 #. STRINGS.SKIN_NAMES.profileflair_victorian_boar
 msgctxt "STRINGS.SKIN_NAMES.profileflair_victorian_boar"
-msgid "Swamp Pig"
+msgid "Swamp Pig Elder"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.profileflair_victorian_coppercoin

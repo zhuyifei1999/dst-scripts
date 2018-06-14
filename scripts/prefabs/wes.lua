@@ -31,6 +31,10 @@ end
 local function common_postinit(inst)
     inst:AddTag("mime")
     inst:AddTag("balloonomancer")
+
+    if TheNet:GetServerGameMode() == "quagmire" then
+        inst:AddTag("quagmire_cheapskate")
+    end
 end
 
 local function master_postinit(inst)

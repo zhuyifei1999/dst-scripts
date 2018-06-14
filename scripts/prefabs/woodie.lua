@@ -623,7 +623,11 @@ local function common_postinit(inst)
     --bearded (from beard component) added to pristine state for optimization
     inst:AddTag("bearded")
 
-    if TheNet:GetServerGameMode() ~= "lavaarena" and TheNet:GetServerGameMode() ~= "quagmire" then
+    if TheNet:GetServerGameMode() == "lavaarena" then
+        --do nothing
+    elseif TheNet:GetServerGameMode() == "quagmire" then
+        inst:AddTag("quagmire_shopper")
+    else
         --beaverness (from beaverness component) added to pristine state for optimization
         inst:AddTag("beaverness")
 
@@ -653,7 +657,7 @@ local function master_postinit(inst)
     if TheNet:GetServerGameMode() == "lavaarena" then
         event_server_data("lavaarena", "prefabs/woodie").master_postinit(inst)
     elseif TheNet:GetServerGameMode() == "quagmire" then
-        event_server_data("quagmire", "prefabs/woodie").master_postinit(inst)
+		-- nothing to see here (dont go into the else case, or else!)
     else
         -- Give Woodie a beard so he gets some insulation from winter cold
         -- (Value is Wilson's level 2 beard.)

@@ -78,12 +78,11 @@ local function fn()
 
 	inst.entity:SetPristine()
 
-	if not TheWorld.ismastersim then
-		return inst
-	end
-
 	inst.persists = false
 
+    if TheNet:IsDedicated() then
+        return inst
+    end
 	
 	InitEnvelope()
 	
