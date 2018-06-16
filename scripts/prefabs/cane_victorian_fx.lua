@@ -1,7 +1,4 @@
-
-
-
-local FIRE_TEXTURE = "fx/sparkle.tex"
+local SPARKLE_TEXTURE = "fx/sparkle.tex"
 
 local ADD_SHADER = "shaders/vfx_particle_add.ksh"
 
@@ -10,7 +7,7 @@ local SCALE_ENVELOPE_NAME = "cane_victorian_scaleenvelope"
 
 local assets =
 {
-    Asset("IMAGE", FIRE_TEXTURE),
+    Asset("IMAGE", SPARKLE_TEXTURE),
     Asset("SHADER", ADD_SHADER),
 }
 
@@ -21,35 +18,36 @@ local function IntColour(r, g, b, a)
 end
 
 local function InitEnvelope()
-
     local envs = {}
     local t = 0
     local step = .15
-    while (t + step + 0.01) < 1 do
-        table.insert( envs, { t, IntColour(255, 255, 150, 255) } )
+    while t + step + .01 < 1 do
+        table.insert(envs, { t, IntColour(255, 255, 150, 255) })
         t = t + step
-        table.insert( envs, { t, IntColour(255, 255, 150, 0) } )
-        t = t + 0.01
+        table.insert(envs, { t, IntColour(255, 255, 150, 0) })
+        t = t + .01
     end
-    table.insert( envs, { 1, IntColour(255, 255, 150, 0) } )
+    table.insert(envs, { 1, IntColour(255, 255, 150, 0) })
 
-    EnvelopeManager:AddColourEnvelope( COLOUR_ENVELOPE_NAME, envs )
+    EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME, envs)
 
-
-    local fire_max_scale = 0.4
+    local sparkle_max_scale = .4
     EnvelopeManager:AddVector2Envelope(
         SCALE_ENVELOPE_NAME,
         {
-            { 0,    { fire_max_scale, fire_max_scale } },
-            { 1,    { fire_max_scale * .5, fire_max_scale * .5 } },
+            { 0,    { sparkle_max_scale, sparkle_max_scale } },
+            { 1,    { sparkle_max_scale * .5, sparkle_max_scale * .5 } },
         }
     )
+
+    InitEnvelope = nil
+    IntColour = nil
 end
 
 --------------------------------------------------------------------------
 local MAX_LIFETIME = 1.75
 
-local function emit_fire_fn(effect, sphere_emitter)
+local function emit_sparkle_fn(effect, sphere_emitter)
     local vx, vy, vz = .012 * UnitRand(), 0, .012 * UnitRand()
     local lifetime = MAX_LIFETIME * (.7 + UnitRand() * .3)
     local px, py, pz = sphere_emitter()
@@ -69,28 +67,29 @@ local function emit_fire_fn(effect, sphere_emitter)
 end
 
 local function fn()
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddNetwork()
+    inst.entity:AddTransform()
+    inst.entity:AddNetwork()
 
-	inst:AddTag("FX")
+    inst:AddTag("FX")
 
-	inst.entity:SetPristine()
+    inst.entity:SetPristine()
 
-	inst.persists = false
+    inst.persists = false
 
+    --Dedicated server does not need to spawn local particle fx
     if TheNet:IsDedicated() then
         return inst
+    elseif InitEnvelope ~= nil then
+        InitEnvelope()
     end
-	
-	InitEnvelope()
-	
-	local effect = inst.entity:AddVFXEffect()
+
+    local effect = inst.entity:AddVFXEffect()
     effect:InitEmitters(1)
 
-    --FIRE
-    effect:SetRenderResources(0, FIRE_TEXTURE, ADD_SHADER)
+    --SPARKLE
+    effect:SetRenderResources(0, SPARKLE_TEXTURE, ADD_SHADER)
     effect:SetRotationStatus(0, true)
     effect:SetUVFrameSize(0, .25, 1)
     effect:SetMaxNumParticles(0, 256)
@@ -106,10 +105,10 @@ local function fn()
 
     local tick_time = TheSim:GetTickTime()
 
-    local fire_desired_pps_low = 5
-    local fire_desired_pps_high = 50
-    local low_per_tick = fire_desired_pps_low * tick_time
-    local high_per_tick = fire_desired_pps_high * tick_time
+    local sparkle_desired_pps_low = 5
+    local sparkle_desired_pps_high = 50
+    local low_per_tick = sparkle_desired_pps_low * tick_time
+    local high_per_tick = sparkle_desired_pps_high * tick_time
     local num_to_emit = 0
 
     local sphere_emitter = CreateSphereEmitter(.25)
@@ -126,14 +125,12 @@ local function fn()
                 
         num_to_emit = num_to_emit + per_tick * math.random() * 3
         while num_to_emit > 1 do
-            emit_fire_fn(effect, sphere_emitter)
+            emit_sparkle_fn(effect, sphere_emitter)
             num_to_emit = num_to_emit - 1
         end
     end)
-	
-	return inst
+
+    return inst
 end
 
-local pf = Prefab("cane_victorian_fx", fn, assets, {})
-pf.vfx_fx = true --not to get confused with the cane prefab fx
-return pf
+return Prefab("cane_victorian_fx", fn, assets)

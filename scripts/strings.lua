@@ -5234,6 +5234,7 @@ STRINGS.UI =
         HOST_FAILED = "Network Error",
         HOST_FAILED_BODY = "Failed to connect to event server.",
         HOST_NO_SERVERS_BODY = "No servers are currently available for your game version.",
+        HOST_PINGS_FAILED_BODY = "Unable to contact Klei servers.\nPlease check your network connection and try again.",
         
         OFFLINE_POPUP_TITLE = "Offline",
         OFFLINE_POPUP_BODY =
