@@ -45,6 +45,8 @@ function HostCloudServerPopup:OnUpdate(dt)
         self:OnError()
     elseif cloudServerRequestState == 9 then -- eNoServersAvailable
         self:OnError(STRINGS.UI.FESTIVALEVENTSCREEN.HOST_NO_SERVERS_BODY)
+    elseif cloudServerRequestState == 10 then -- ePingsFailed
+        self:OnError(STRINGS.UI.FESTIVALEVENTSCREEN.HOST_PINGS_FAILED_BODY)
     else
         self.status_msg:SetString(phases[cloudServerRequestState] or "")
     end

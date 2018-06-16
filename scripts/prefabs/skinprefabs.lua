@@ -710,7 +710,7 @@ table.insert(prefs, CreatePrefabSkin("cane_ancient",
 	prefabs = { "cane_ancient_fx", },
 	init_fn = function(inst) cane_init_fn(inst, "cane_ancient") end,
 	skin_tags = { "CANE", "ANCIENT", "CRAFTABLE", },
-	fx_prefab = { "cane_ancient_fx", },
+	fx_prefab = { "", "cane_ancient_fx", },
 	release_group = 25,
 	granted_items = { "orangestaff_ancient", },
 }))
@@ -1509,7 +1509,7 @@ table.insert(prefs, CreatePrefabSkin("orangestaff_ancient",
 	prefabs = { "cane_ancient_fx", "shadow_puff_large_front", "shadow_puff_large_back", },
 	init_fn = function(inst) orangestaff_init_fn(inst, "orangestaff_ancient") end,
 	skin_tags = { "STAFF", "ANCIENT", "CRAFTABLE", },
-	fx_prefab = { "cane_ancient_fx", "shadow_puff_large_front", "shadow_puff_large_back", },
+	fx_prefab = { "", "cane_ancient_fx", "shadow_puff_large_front", "shadow_puff_large_back", },
 	release_group = 26,
 }))
 

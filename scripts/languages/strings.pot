@@ -118013,6 +118013,11 @@ msgctxt "STRINGS.UI.FESTIVALEVENTSCREEN.HOST_NO_SERVERS_BODY"
 msgid "No servers are currently available for your game version."
 msgstr ""
 
+#. STRINGS.UI.FESTIVALEVENTSCREEN.HOST_PINGS_FAILED_BODY
+msgctxt "STRINGS.UI.FESTIVALEVENTSCREEN.HOST_PINGS_FAILED_BODY"
+msgid "Unable to contact Klei servers.\nPlease check your network connection and try again."
+msgstr ""
+
 #. STRINGS.UI.FESTIVALEVENTSCREEN.HOST_REQUESTINGSERVER
 msgctxt "STRINGS.UI.FESTIVALEVENTSCREEN.HOST_REQUESTINGSERVER"
 msgid "Requesting server"
