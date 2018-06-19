@@ -12,6 +12,7 @@ local ControllerCrafting_SingleTab = require "widgets/controllercrafting_singlet
 
 
 local HINT_UPDATE_INTERVAL = 2.0 -- once per second
+local QUAGMIRE_HINT_SHOW_DELAY = .3
 local SCROLL_REPEAT_TIME = .15
 local MOUSE_SCROLL_REPEAT_TIME = 0
 
@@ -32,8 +33,17 @@ local function InitTabSoundsAfterFadein(inst, self)
         self.tabs.onclose = nil
         self.tabs.onhighlight = function() return .2 end
         self.tabs.onoverlay = self.tabs.onhighlight
-        self.tabs.onshowtab = nil
-        self.tabs.onhidetab = nil
+        if self.isquagmire then
+            self.tabs.onshowtab = function()
+                if not self.openhint.shown then
+                    self.hint_update_check = QUAGMIRE_HINT_SHOW_DELAY
+                end
+            end
+            self.tabs.onhidetab = function()
+                self.hint_update_check = QUAGMIRE_HINT_SHOW_DELAY
+                self.openhint:Hide()
+            end
+        end
         inst:DoTaskInTime(0, InitTabSoundsAfterFadein, self)
     else
         self.tabs.onopen = function() TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/craft_open") end
@@ -41,12 +51,21 @@ local function InitTabSoundsAfterFadein(inst, self)
         self.tabs.onclose = function() TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/craft_close") end
         self.tabs.onhighlight = function() TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/recipe_ready") return .2 end
         self.tabs.onoverlay = function() TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/research_available") return .2 end
-        if TheNet:GetServerGameMode() == "quagmire" then
-            self.tabs.onshowtab = function() TheFocalPoint.SoundEmitter:PlaySound("dontstarve/quagmire/HUD/merchant") end
+        if self.isquagmire then
+            self.tabs.onshowtab = function()
+                TheFocalPoint.SoundEmitter:PlaySound("dontstarve/quagmire/HUD/merchant")
+                if not self.openhint.shown then
+                    self.hint_update_check = QUAGMIRE_HINT_SHOW_DELAY
+                end
+            end
+            self.tabs.onhidetab = function()
+                self.hint_update_check = QUAGMIRE_HINT_SHOW_DELAY
+                self.openhint:Hide()
+            end
         else
             self.tabs.onshowtab = nil
+            self.tabs.onhidetab = nil
         end
-        self.tabs.onhidetab = nil
     end
 end
 
@@ -99,15 +118,17 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
     Widget._ctor(self, "CraftTabs")
     self.owner = owner
 
-	self.base_scale = 0.75
+    self.base_scale = 0.75
 
     self.craft_idx_by_tab = {}
 
-	local tabnames = {}
+    local tabnames = {}
 
-	if TheNet:GetServerGameMode() == "quagmire" then
-		tabnames = QuagmireSetup(self)
-	else
+    self.isquagmire = TheNet:GetServerGameMode() == "quagmire"
+
+    if self.isquagmire then
+        tabnames = QuagmireSetup(self)
+    else
 	    local crafting_scale = 0.95
 
 	    self:SetPosition(0,0,0)
@@ -191,12 +212,19 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
 
                     self.crafting:SetFilter(advanced_filter)
                     self.crafting:Open()
+                    self.preventautoclose = nil
                 end
             end,
 
             function(widget) --deselect fn
                 self.craft_idx_by_tab[k] = self.crafting.idx
                 self.crafting:Close()
+                self.preventautoclose = nil
+                widget.inst:DoTaskInTime(0, function()
+                    if widget.focus then
+                        widget.ongainfocusfn()
+                    end
+                end)
             end,
 
             was_crafting_station and v.crafting_station --collapsed
@@ -207,10 +235,10 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
         tab.icon_atlas = v.icon_atlas or resolvefilepath("images/hud.xml")
         tab.tabname = STRINGS.TABS[v.str]
 
-		if TheNet:GetServerGameMode() == "quagmire" then
-			tab.disable_scaling = true
-			tab.overlay_scaling = true
-		end
+        if self.isquagmire then
+            tab.disable_scaling = true
+            tab.overlay_scaling = true
+        end
 
         self.tabbyfilter[v] = tab
     end
@@ -266,22 +294,39 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
     self:SetScale(self.base_scale)
     self:StartUpdating()
 
-	if TheNet:GetServerGameMode() == "quagmire" then
-		self.openhint = self.tabs:AddChild(Text(UIFONT, 40))
-		self.openhint:SetRegionSize(300, 45, 0)
-		self.openhint:SetHAlign(ANCHOR_LEFT)
-		self.openhint:SetPosition(0, 0, 0)
+    if self.isquagmire then
+        self.openhint = self.tabs:AddChild(Text(UIFONT, 40))
+        self.openhint:SetRegionSize(300, 45, 0)
+        self.openhint:SetHAlign(ANCHOR_LEFT)
+        self.openhint:SetPosition(195, 110, 0)
 
-		for i, tab in ipairs(self.tabs.tabs) do
-			tab:SetOnGainFocus(function() if not tab.selected then tab.bg:SetTexture(tab.atlas, tab.imselected) end end)
-			tab:SetOnLoseFocus(function() if not tab.selected then tab.bg:SetTexture(tab.atlas, tab.imnormal) end end)
-		end
-	else
-		self.openhint = self:AddChild(Text(UIFONT, 40))
-		self.openhint:SetRegionSize(300, 45, 0)
-		self.openhint:SetHAlign(ANCHOR_LEFT)
-		self.openhint:SetPosition(10+150, 430, 0)
-	end
+        for i, tab in ipairs(self.tabs.tabs) do
+            tab:SetOnGainFocus(function() if not tab.selected then tab.bg:SetTexture(tab.atlas, tab.imselected) end end)
+            tab:SetOnLoseFocus(function() if not tab.selected then tab.bg:SetTexture(tab.atlas, tab.imnormal) end end)
+        end
+
+        self.inst:ListenForEvent("quagmire_shoptab", function(src, tabname)
+            for k, v in pairs(self.tabs.shown) do
+                if k.filter == tabname then
+                    if v then
+                        if k.selected then
+                            k:Deselect()
+                        else
+                            k:Select()
+                            self.preventautoclose = true
+                        end
+                        self.tabs:OnTabsChanged()
+                    end
+                    return
+                end
+            end
+        end, self.owner)
+    else
+        self.openhint = self:AddChild(Text(UIFONT, 40))
+        self.openhint:SetRegionSize(300, 45, 0)
+        self.openhint:SetHAlign(ANCHOR_LEFT)
+        self.openhint:SetPosition(10+150, 430, 0)
+    end
 
     self.hint_update_check = HINT_UPDATE_INTERVAL
 
@@ -316,20 +361,32 @@ end
 
 function CraftTabs:OnUpdate(dt)
     self.hint_update_check = self.hint_update_check - dt
-    if 0 > self.hint_update_check then  
-        local selected = self.tabs:GetCurrentIdx()
-
+    if self.hint_update_check < 0 then
         if not TheInput:ControllerAttached() then
             self.openhint:Hide()
-        else
+        elseif not self.isquagmire then
             self.openhint:Show()
             self.openhint:SetString(TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_OPEN_CRAFTING))
+        else
+            local shown = false
+            for k, v in pairs(self.tabs.shown) do
+                if v then
+                    shown = true
+                    break
+                end
+            end
+            if shown then
+                self.openhint:Show()
+                self.openhint:SetString(TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_OPEN_CRAFTING))
+            else
+                self.openhint:Hide()
+            end
         end
         self.hint_update_check = HINT_UPDATE_INTERVAL
     end
 
-    if self.crafting.open then
-		-- close the crafting tab if the mouse moves too far away from it
+    if self.crafting.open and not self.preventautoclose then
+        -- close the crafting tab if the mouse moves too far away from it
         local x = TheInput:GetScreenPosition().x
         local w, h = TheSim:GetScreenSize()
         local res_scale = math.min(w / 1280, h / 720, MAX_HUD_SCALE)

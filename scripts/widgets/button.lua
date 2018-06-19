@@ -73,7 +73,7 @@ function Button:OnControl(control, down)
 		else
 			if self.down then
 				self.down = false
-				self:SetPosition(self.o_pos)
+                self:ResetPreClickPosition()
 				if self.onclick then
 					self.onclick()
 				end
@@ -108,15 +108,21 @@ function Button:OnGainFocus()
     end
 end
 
+function Button:ResetPreClickPosition()
+	if self.o_pos then
+		self:SetPosition(self.o_pos)
+        self.o_pos = nil
+    end
+end
+
 function Button:OnLoseFocus()
 	Button._base.OnLoseFocus(self)
 	
 	if self:IsEnabled() and not self.selected then
 		self.text:SetColour(self.textcolour)
 	end
-	if self.o_pos then
-		self:SetPosition(self.o_pos)
-	end
+	self:ResetPreClickPosition()
+
 	self.down = false
 
     if self.onlosefocus then

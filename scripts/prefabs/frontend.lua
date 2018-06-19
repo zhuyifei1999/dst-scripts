@@ -150,6 +150,8 @@ local assets =
     Asset("PKGREF", "images/thankyou_item_popup.tex"),
     Asset("DYNAMIC_ATLAS", "images/thankyou_item_event.xml"),
     Asset("PKGREF", "images/thankyou_item_event.tex"),
+    Asset("DYNAMIC_ATLAS", "images/thankyou_item_event2.xml"),
+    Asset("PKGREF", "images/thankyou_item_event2.tex"),
     Asset("DYNAMIC_ATLAS", "images/thankyou_item_popup_rog.xml"),
     Asset("PKGREF", "images/thankyou_item_popup_rog.tex"),
 

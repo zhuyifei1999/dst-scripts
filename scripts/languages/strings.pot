@@ -105418,6 +105418,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_flames"
 msgid "Equip this item to change your character's background portrait."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_foods
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_foods"
+msgid "Equip this item to change your character's background portrait."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_forestaltar
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_forestaltar"
 msgid "Equip this item to change your character's background portrait.\n\nThe Gnaw demands regular offerings of food on the Altar of Gnaw to sate its hunger."
@@ -105683,6 +105688,106 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_dragonfruit"
 msgid "Set your profile icon to a tasty dragon fruit."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_food_berrytart
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_food_berrytart"
+msgid "Set your profile icon to a delectable berry tart."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_food_carrotcake
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_food_carrotcake"
+msgid "Set your profile icon to a yummy carrot cake."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_food_cheeseburger
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_food_cheeseburger"
+msgid "Set your profile icon to a greasy cheeseburger."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_food_cheesecake
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_food_cheesecake"
+msgid "Set your profile icon to an irresistible cheesecake."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_food_crabcake
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_food_crabcake"
+msgid "Set your profile icon to a delectable crab cake."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_food_crabroll
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_food_crabroll"
+msgid "Set your profile icon to a delectable crab roll."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_food_croquette
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_food_croquette"
+msgid "Set your profile icon to a dainty croquette."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_food_fishpie
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_food_fishpie"
+msgid "Set your profile icon to a hearty fish pie."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_food_grilledcheese
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_food_grilledcheese"
+msgid "Set your profile icon to a perfectly grilled cheese."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_food_jellyroll
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_food_jellyroll"
+msgid "Set your profile icon to a sugary jelly roll."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_food_meatpie
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_food_meatpie"
+msgid "Set your profile icon to a hearty meat pie."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_food_pizza
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_food_pizza"
+msgid "Set your profile icon to a cheesy pizza."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_food_potroast
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_food_potroast"
+msgid "Set your profile icon to a tender pot roast."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_food_pudding
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_food_pudding"
+msgid "Set your profile icon to a perfect pudding."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_food_roastedveggies
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_food_roastedveggies"
+msgid "Set your profile icon to some healthy roast veggies."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_food_spaghettiandmeatballs
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_food_spaghettiandmeatballs"
+msgid "Set your profile icon to spaghetti and a single meatball."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_food_steakfrites
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_food_steakfrites"
+msgid "Set your profile icon to some yummy steak frites."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_food_stuffedmushroom
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_food_stuffedmushroom"
+msgid "Set your profile icon to a stuffed mushroom."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_food_trifle
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_food_trifle"
+msgid "Set your profile icon to a tasty trifle desert."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_food_turnipcake
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_food_turnipcake"
+msgid "Set your profile icon to a yummy turnip cake."
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.profileflair_frog
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_frog"
 msgid "Set your profile icon to a frog."
@@ -105935,12 +106040,12 @@ msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.profileflair_victorian_merm
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_victorian_merm"
-msgid "Set your profile icon to that crafty mermified peddler."
+msgid "Set your profile icon to that chatty mermified peddler."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.profileflair_victorian_merm2
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_victorian_merm2"
-msgid "Set your profile icon to that chatty mermified peddler."
+msgid "Set your profile icon to that crafty mermified peddler."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.profileflair_victorian_pigeon
@@ -109643,6 +109748,11 @@ msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_flames"
 msgid "Flame Portrait"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.playerportrait_bg_foods
+msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_foods"
+msgid "Cornucopia Portrait"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.playerportrait_bg_forestaltar
 msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_forestaltar"
 msgid "Altar of Gnaw Portrait"
@@ -109908,6 +110018,106 @@ msgctxt "STRINGS.SKIN_NAMES.profileflair_dragonfruit"
 msgid "Dragon Fruit"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.profileflair_food_berrytart
+msgctxt "STRINGS.SKIN_NAMES.profileflair_food_berrytart"
+msgid "Berry Tart"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.profileflair_food_carrotcake
+msgctxt "STRINGS.SKIN_NAMES.profileflair_food_carrotcake"
+msgid "Carrot Cake"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.profileflair_food_cheeseburger
+msgctxt "STRINGS.SKIN_NAMES.profileflair_food_cheeseburger"
+msgid "Cheeseburger"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.profileflair_food_cheesecake
+msgctxt "STRINGS.SKIN_NAMES.profileflair_food_cheesecake"
+msgid "Cheesecake"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.profileflair_food_crabcake
+msgctxt "STRINGS.SKIN_NAMES.profileflair_food_crabcake"
+msgid "Crab Cake"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.profileflair_food_crabroll
+msgctxt "STRINGS.SKIN_NAMES.profileflair_food_crabroll"
+msgid "Crab Roll"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.profileflair_food_croquette
+msgctxt "STRINGS.SKIN_NAMES.profileflair_food_croquette"
+msgid "Croquette"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.profileflair_food_fishpie
+msgctxt "STRINGS.SKIN_NAMES.profileflair_food_fishpie"
+msgid "Fish Pie"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.profileflair_food_grilledcheese
+msgctxt "STRINGS.SKIN_NAMES.profileflair_food_grilledcheese"
+msgid "Grilled Cheese"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.profileflair_food_jellyroll
+msgctxt "STRINGS.SKIN_NAMES.profileflair_food_jellyroll"
+msgid "Jelly Roll"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.profileflair_food_meatpie
+msgctxt "STRINGS.SKIN_NAMES.profileflair_food_meatpie"
+msgid "Meat Pie"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.profileflair_food_pizza
+msgctxt "STRINGS.SKIN_NAMES.profileflair_food_pizza"
+msgid "Tasty Pizza"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.profileflair_food_potroast
+msgctxt "STRINGS.SKIN_NAMES.profileflair_food_potroast"
+msgid "Pot Roast"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.profileflair_food_pudding
+msgctxt "STRINGS.SKIN_NAMES.profileflair_food_pudding"
+msgid "Pudding"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.profileflair_food_roastedveggies
+msgctxt "STRINGS.SKIN_NAMES.profileflair_food_roastedveggies"
+msgid "Roast Vegetables"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.profileflair_food_spaghettiandmeatballs
+msgctxt "STRINGS.SKIN_NAMES.profileflair_food_spaghettiandmeatballs"
+msgid "Spaghetti and Meatball"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.profileflair_food_steakfrites
+msgctxt "STRINGS.SKIN_NAMES.profileflair_food_steakfrites"
+msgid "Steak Frites"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.profileflair_food_stuffedmushroom
+msgctxt "STRINGS.SKIN_NAMES.profileflair_food_stuffedmushroom"
+msgid "Stuffed Mushroom"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.profileflair_food_trifle
+msgctxt "STRINGS.SKIN_NAMES.profileflair_food_trifle"
+msgid "Trifle"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.profileflair_food_turnipcake
+msgctxt "STRINGS.SKIN_NAMES.profileflair_food_turnipcake"
+msgid "Turnip Cake"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.profileflair_frog
 msgctxt "STRINGS.SKIN_NAMES.profileflair_frog"
 msgid "Froggy"
@@ -110160,12 +110370,12 @@ msgstr ""
 
 #. STRINGS.SKIN_NAMES.profileflair_victorian_merm
 msgctxt "STRINGS.SKIN_NAMES.profileflair_victorian_merm"
-msgid "Sammy"
+msgid "Pipton"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.profileflair_victorian_merm2
 msgctxt "STRINGS.SKIN_NAMES.profileflair_victorian_merm2"
-msgid "Pipton"
+msgid "Sammy"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.profileflair_victorian_pigeon
@@ -112761,6 +112971,11 @@ msgstr ""
 #. STRINGS.THANKS_POPUP.CUPID
 msgctxt "STRINGS.THANKS_POPUP.CUPID"
 msgid "Happy Valentine's Day\nfrom your friends at Klei"
+msgstr ""
+
+#. STRINGS.THANKS_POPUP.GORGE
+msgctxt "STRINGS.THANKS_POPUP.GORGE"
+msgid "Thanks for playing during the\nGorge event"
 msgstr ""
 
 #. STRINGS.THANKS_POPUP.LUNAR

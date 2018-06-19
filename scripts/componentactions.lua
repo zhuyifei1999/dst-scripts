@@ -296,16 +296,16 @@ local COMPONENT_ACTIONS =
             end
         end,
 
-		quagmire_tappable = function(inst, doer, actions, right)
-			if not inst:HasTag("tappable") and not inst:HasTag("fire") then
-				if right then
-					table.insert(actions, ACTIONS.TAPTREE) -- this is to untap the tree
-				elseif inst:HasTag("tapped_harvestable") then
-					table.insert(actions, ACTIONS.HARVEST)
-				end
-			end
+        quagmire_tappable = function(inst, doer, actions, right)
+            if not inst:HasTag("tappable") and not inst:HasTag("fire") then
+                if right then
+                    --TAPTREE action also untaps the tree
+                    table.insert(actions, inst:HasTag("tapped_harvestable") and doer.replica.inventory:EquipHasTag("CHOP_tool") and ACTIONS.HARVEST or ACTIONS.TAPTREE)
+                elseif inst:HasTag("tapped_harvestable") then
+                    table.insert(actions, ACTIONS.HARVEST)
+                end
+            end
         end,
-
     },
 
     USEITEM = --args: inst, doer, target, actions, right

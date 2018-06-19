@@ -41,6 +41,11 @@ for i, v in ipairs(TREE_DEFS) do
     table.insert(assets, Asset("ANIM", "anim/"..v.anim_file..".zip"))
 end
 
+--Remove CHOP action from RMB so this tree can have harvets/tap actions while equipping axe
+local function _IsActionValid(inst, action, right)
+    return (not right or action ~= ACTIONS.CHOP) and EntityScript.IsActionValid(inst, action, right)
+end
+
 local function fn(tree_def)
     local inst = CreateEntity()
 
@@ -71,6 +76,8 @@ local function fn(tree_def)
     inst.AnimState:PlayAnimation("sway1_loop", true)
 
     MakeSnowCoveredPristine(inst)
+
+    inst.IsActionValid = _IsActionValid
 
     inst.entity:SetPristine()
 

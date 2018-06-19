@@ -1615,7 +1615,8 @@ function TEMPLATES.ScrollingGrid(items, opts)
         scissor_width,
         scissor_height,
         opts.scrollbar_offset,
-        opts.scrollbar_height_offset
+        opts.scrollbar_height_offset,
+		opts.scroll_per_click
         )
     scroller:SetItemsData(items)
     scroller.GetScrollRegionSize = function(self)

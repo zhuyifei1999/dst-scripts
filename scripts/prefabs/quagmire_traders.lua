@@ -70,6 +70,7 @@ local function mermfn()
     local inst = commonfn(function(inst)
         MakeObstaclePhysics(inst, 1)
         inst.Transform:SetRotation(-90)
+        inst.quagmire_shoptab = QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MERM1
     end)
 
     if not TheWorld.ismastersim then
@@ -85,6 +86,7 @@ local function merm2fn()
     local inst = commonfn(function(inst)
         inst.AnimState:SetBuild("merm_trader2_build")
         MakeObstaclePhysics(inst, .5)
+        inst.quagmire_shoptab = QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MERM2
     end)
 
     if not TheWorld.ismastersim then

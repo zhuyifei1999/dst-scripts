@@ -1159,6 +1159,13 @@ MISC_ITEMS =
 		rarity = "Loyal",
 		release_group = 32,
 	},
+	playerportrait_bg_foods =
+	{
+		type = "playerportrait",
+		skin_tags = { "VICTORIAN", "PLAYERPORTRAIT", },
+		rarity = "Loyal",
+		release_group = 43,
+	},
 	playerportrait_bg_forestaltar =
 	{
 		type = "playerportrait",
@@ -1582,6 +1589,166 @@ MISC_ITEMS =
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	profileflair_food_berrytart =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_food_carrotcake =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_food_cheeseburger =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_food_cheesecake =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_food_crabcake =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_food_crabroll =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_food_croquette =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_food_fishpie =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_food_grilledcheese =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_food_jellyroll =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_food_meatpie =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_food_pizza =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_food_potroast =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_food_pudding =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_food_roastedveggies =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_food_spaghettiandmeatballs =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_food_steakfrites =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_food_stuffedmushroom =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_food_trifle =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
+	},
+	profileflair_food_turnipcake =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 43,
 	},
 	profileflair_frog =
 	{

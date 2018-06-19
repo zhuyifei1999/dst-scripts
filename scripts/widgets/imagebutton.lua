@@ -198,9 +198,7 @@ function ImageButton:OnControl(control, down)
     			end
             end
             self.down = false
-            if self.o_pos then
-                self:SetPosition(self.o_pos)
-            end
+            self:ResetPreClickPosition()
             if self.onclick then
                 self.onclick()
             end

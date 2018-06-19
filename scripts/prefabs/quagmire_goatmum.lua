@@ -43,6 +43,8 @@ local function fn()
     inst.components.talker.offset = Vector3(0, -400, 0)
     inst.components.talker:MakeChatter()
 
+    inst.quagmire_shoptab = QUAGMIRE_RECIPETABS.QUAGMIRE_TRADER_MUM
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

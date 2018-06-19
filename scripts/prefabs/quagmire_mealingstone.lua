@@ -44,6 +44,8 @@ local function fn()
 
     MakeSnowCoveredPristine(inst)
 
+    inst.quagmire_shoptab = QUAGMIRE_RECIPETABS.QUAGMIRE_MEALINGSTONE
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

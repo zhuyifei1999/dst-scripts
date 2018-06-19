@@ -191,9 +191,9 @@ function PurchaseWidget:ApplyDataToWidget(iap_def)
         local title = GetSkinName(self.item_type)
         local text = GetSkinDescription(self.item_type)
         local price = ""
-        if PLATFORM == "WIN32_STEAM" or PLATFORM == "LINUX_STEAM" or PLATFORM == "OSX_STEAM" then
+        if IsSteam() then
             price = build_price( iap_def.currency_code, iap_def.cents )
-        elseif PLATFORM == "WIN32_RAIL" then
+        elseif IsRail() then
             price = iap_def.rail_price .. " RMB"
         end
         self.button:SetText(subfmt(STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_BTN, {price = price}))
@@ -227,7 +227,7 @@ function PurchaseWidget:ApplyDataToWidget(iap_def)
             self.text:SetRegionSize(500,75)
             self.button:SetPosition(-130,-115)
             
-            if (PLATFORM == "WIN32_STEAM" or PLATFORM == "LINUX_STEAM" or PLATFORM == "OSX_STEAM") and IsPackGiftable(self.item_type) then
+            if IsSteam() and IsPackGiftable(self.item_type) then
 				self.button_dlc:Show()
 				self.button_dlc:SetPosition(110,-115)
 				self.button_dlc.item_type = self.item_type
