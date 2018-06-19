@@ -87,7 +87,7 @@ local QuagmireBook = Class(Widget, function(self, user_profile, parent)
 	self.last_selected = self.tabs[1]
 	self.last_selected:Select()	
 	self.last_selected:MoveToFront()
-	self.panel = self.root:AddChild(RecipeBookWidget())
+	self.panel = self.root:AddChild(RecipeBookWidget(parent))
 	if TheWorld ~= nil then
 		parent.default_focus = self.panel.parent_default_focus
 	else

@@ -22,9 +22,10 @@ end
 
 
 -------------------------------------------------------------------------------------------------------
-local QuagmireRecipeBook = Class(Widget, function(self)
+local QuagmireRecipeBook = Class(Widget, function(self, parent_screen)
     Widget._ctor(self, "OnlineStatus")
 
+    self.parent_screen = parent_screen
 	self:CreateRecipeBook()
 
 	if TheWorld ~= nil then
@@ -48,6 +49,8 @@ function QuagmireRecipeBook:_DoFocusHookups()
 		end
 	end
 	
+    local reset_default_focus = self.parent_default_focus ~= nil and self.parent_screen ~= nil and self.parent_screen.default_focus == self.parent_default_focus
+
 	if self.recipe_grid.items ~= nil and #self.recipe_grid.items > 0 then
 		self.spinners[#self.spinners]:SetFocusChangeDir(MOVE_DOWN, self.recipe_grid)
 		self.recipe_grid:SetFocusChangeDir(MOVE_UP, self.spinners[#self.spinners])
@@ -56,6 +59,10 @@ function QuagmireRecipeBook:_DoFocusHookups()
 	else
 		self.parent_default_focus = self.spinners[1]
 	end
+
+    if reset_default_focus then
+        self.parent_screen.default_focus = self.parent_default_focus
+    end
 end
 
 
