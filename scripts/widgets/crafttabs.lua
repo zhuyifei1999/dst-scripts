@@ -220,11 +220,13 @@ local CraftTabs = Class(Widget, function(self, owner, top_root)
                 self.craft_idx_by_tab[k] = self.crafting.idx
                 self.crafting:Close()
                 self.preventautoclose = nil
-                widget.inst:DoTaskInTime(0, function()
-                    if widget.focus then
-                        widget.ongainfocusfn()
-                    end
-                end)
+                if self.isquagmire then
+                    widget.inst:DoTaskInTime(0, function()
+                        if widget.focus then
+                            widget.ongainfocusfn()
+                        end
+                    end)
+                end
             end,
 
             was_crafting_station and v.crafting_station --collapsed

@@ -349,11 +349,14 @@ ACTIONS.RUMMAGE.fn = function(act)
         elseif targ.components.container.canbeopened then
             local owner = targ.components.inventoryitem ~= nil and targ.components.inventoryitem:GetGrandOwner() or nil
             if owner ~= nil and targ.components.quagmire_stewer ~= nil then
-                if owner ~= act.doer then
+                if owner == act.doer then
+                    owner.components.inventory:DropItem(targ, true, true)
+                elseif owner.components.container ~= nil and owner.components.container:IsOpenedBy(act.doer) then
+                    owner.components.container:DropItem(targ)
+                else
                     --Silent fail, should not reach here
                     return true
                 end
-                owner.components.inventory:DropItem(targ, true, true)
             end
             --Silent fail for opening containers in the dark
             if CanEntitySeeTarget(act.doer, targ) then
