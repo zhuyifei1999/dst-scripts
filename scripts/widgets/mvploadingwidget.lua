@@ -46,12 +46,11 @@ local function UpdatePlayerListing(widget, data)
 			widget.puppet:Show()
 		end
     end
-    
+
     widget.playername:SetColour(unpack(not empty and data.user.colour or DEFAULT_PLAYER_COLOUR))
     widget.playername:SetTruncatedString((not empty) and data.user.name or "", 200, nil, "...")
-    
-    widget.fake_rand = (data.user.colour[1] + data.user.colour[2] + data.user.colour[3]) / 3
-    
+
+    widget.fake_rand = not empty and data.user.colour ~= nil and (data.user.colour[1] + data.user.colour[2] + data.user.colour[3]) / 3 or .5
 end
 
 function MVPLoadingWidget:PopulateData()

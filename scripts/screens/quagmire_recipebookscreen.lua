@@ -26,7 +26,7 @@ local QuagmireRecipeBookScreen = Class(Screen, function(self, owner)
     root:SetVAnchor(ANCHOR_MIDDLE)
 	root:SetPosition(0, -25)
 
-	self.book = root:AddChild(BookWidget(owner))
+	self.book = root:AddChild(BookWidget(owner, self))
 
     if not TheInput:ControllerAttached() then
 		self.bottomright_root = self:AddChild(Widget("br_root"))
@@ -47,8 +47,6 @@ local QuagmireRecipeBookScreen = Class(Screen, function(self, owner)
         self.mapcontrols.rotleft:Hide()
         self.mapcontrols.rotright:Hide()
     end
-
-
 end)
 
 function QuagmireRecipeBookScreen:OnBecomeInactive()

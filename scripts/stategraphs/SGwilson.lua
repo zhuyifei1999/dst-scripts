@@ -3402,13 +3402,9 @@ local states =
         tags = { "idle", "talking" },
 
         onenter = function(inst)
-            for k = 1, math.random(2, 3) do
-                local aname = "mime" .. tostring(math.random(8))
-                if k == 1 then
-                    inst.AnimState:PlayAnimation(aname, false)
-                else
-                    inst.AnimState:PushAnimation(aname, false)
-                end
+            inst.AnimState:PlayAnimation("mime"..tostring(math.random(8)))
+            for k = 1, math.random(2) do
+                inst.AnimState:PushAnimation("mime"..tostring(math.random(8)), false)
             end
             DoTalkSound(inst)
         end,

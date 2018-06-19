@@ -422,6 +422,16 @@ function Controls:OnUpdate(dt)
             if r ~= nil and ground_r == nil then
                 table.insert(cmds, TheInput:GetLocalizedControl(controller_id, CONTROL_CONTROLLER_ALTACTION) .. " " .. r:GetActionString())
             end
+            if controller_target.quagmire_shoptab ~= nil then
+                for k, v in pairs(self.crafttabs.tabs.shown) do
+                    if k.filter == controller_target.quagmire_shoptab then
+                        if v then
+                            table.insert(cmds, TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_OPEN_CRAFTING).." "..STRINGS.UI.CRAFTING.TABACTION[controller_target.quagmire_shoptab.str])
+                        end
+                        break
+                    end
+                end
+            end
 
             if #cmds - cmdsoffset <= 1 then
                 --New special case that we support:

@@ -25,19 +25,44 @@ end
 local QuagmireRecipeBook = Class(Widget, function(self)
     Widget._ctor(self, "OnlineStatus")
 
-	self.panel_root = self:AddChild(Widget("panel_root"))
 	self:CreateRecipeBook()
 
 	if TheWorld ~= nil then
 		self.inst:ListenForEvent("quagmire_refreshrecipbookwidget", function() self:OnRecipeBookUpdated() end, TheWorld)
 	end
 
+	self:_DoFocusHookups()
+
 	return self
 end)
 
+function QuagmireRecipeBook:_DoFocusHookups()
+	for i, v in ipairs(self.spinners) do
+		v:ClearFocusDirs()
+
+		if i > 1 then
+			v:SetFocusChangeDir(MOVE_UP, self.spinners[i-1])
+		end
+		if i < #self.spinners then
+			v:SetFocusChangeDir(MOVE_DOWN, self.spinners[i+1])
+		end
+	end
+	
+	if self.recipe_grid.items ~= nil and #self.recipe_grid.items > 0 then
+		self.spinners[#self.spinners]:SetFocusChangeDir(MOVE_DOWN, self.recipe_grid)
+		self.recipe_grid:SetFocusChangeDir(MOVE_UP, self.spinners[#self.spinners])
+	
+		self.parent_default_focus = self.recipe_grid
+	else
+		self.parent_default_focus = self.spinners[1]
+	end
+end
+
+
 function QuagmireRecipeBook:CreateRecipeBook()
+	local panel_root = self
 	-----------
-	self.gridroot = self.panel_root:AddChild(Widget("grid_root"))
+	self.gridroot = panel_root:AddChild(Widget("grid_root"))
     self.gridroot:SetPosition(-180, -35)
 
     self.recipe_grid = self.gridroot:AddChild( self:BuildRecipeBook() )
@@ -53,7 +78,7 @@ function QuagmireRecipeBook:CreateRecipeBook()
     grid_boarder:SetPosition(-3, -grid_h/2)
     
 	-----------
-	local details_decor_root = self.panel_root:AddChild(Widget("details_root"))
+	local details_decor_root = panel_root:AddChild(Widget("details_root"))
 	details_decor_root:SetPosition(grid_w/2 + 30, 0)
 
 	local details_decor = details_decor_root:AddChild(Image("images/quagmire_recipebook.xml", "quagmire_recipe_menu_block.tex"))
@@ -66,28 +91,28 @@ function QuagmireRecipeBook:CreateRecipeBook()
 	details_decor:SetPosition(120, -190)
 
 
-	self.details_root = self.panel_root:AddChild(Widget("details_root"))
+	self.details_root = panel_root:AddChild(Widget("details_root"))
 	self.details_root:SetPosition(details_decor_root:GetPosition())
 	self.details_root.panel_width = 350
 	self.details_root.panel_height = 500
 
 	-----------
 	self.filters_root = self.gridroot:AddChild(self:BuildFilterPanel())
-	self.filters_root:SetPosition(50, grid_h/2 + 5)
+	self.filters_root:SetPosition(0, grid_h/2 + 5)
 
 	-----------
 	local dis_x = -310
 	local dis_y = 238
 	local unlocked, total = self.num_recipes_discovered, 68
 	dis_y = dis_y - 18/2 
-    local completed = self.panel_root:AddChild(Text(HEADERFONT, 18, STRINGS.UI.RECIPE_BOOK.DISCOVERED_RECIPES, UICOLOURS.BROWN_DARK))
+    local completed = panel_root:AddChild(Text(HEADERFONT, 18, STRINGS.UI.RECIPE_BOOK.DISCOVERED_RECIPES, UICOLOURS.BROWN_DARK))
 	completed:SetHAlign(ANCHOR_RIGHT)
 	completed:SetPosition(dis_x, dis_y)
 	dis_y = dis_y - 18/2 
-	MakeDetailsLine(self.panel_root, dis_x, dis_y-4, .3)
+	MakeDetailsLine(panel_root, dis_x, dis_y-4, .3)
 	dis_y = dis_y - 10
 	dis_y = dis_y - 18/2 
-    completed = self.panel_root:AddChild(Text(HEADERFONT, 18, subfmt(STRINGS.UI.XPUTILS.XPPROGRESS, {num=unlocked, max=QUAGMIRE_NUM_FOOD_RECIPES}), UICOLOURS.BROWN_DARK))
+    completed = panel_root:AddChild(Text(HEADERFONT, 18, subfmt(STRINGS.UI.XPUTILS.XPPROGRESS, {num=unlocked, max=QUAGMIRE_NUM_FOOD_RECIPES}), UICOLOURS.BROWN_DARK))
 	completed:SetHAlign(ANCHOR_RIGHT)
 	completed:SetPosition(dis_x, dis_y)
 	dis_y = dis_y - 18/2 
@@ -96,8 +121,6 @@ function QuagmireRecipeBook:CreateRecipeBook()
 	if TheRecipeBook.selected ~= nil then
 		self.details_root:AddChild(self:CreateRecipeDetailPanel(self.all_recipes[TheRecipeBook.selected]))
 	end
-
-    self.focus_forward = self.recipe_grid
 end
 
 
@@ -438,9 +461,14 @@ function QuagmireRecipeBook:BuildRecipeBook()
         local w = Widget("recipe-cell-".. index)
                 
 		----------------
-		w.cell_root = w:AddChild(ImageButton("images/quagmire_recipebook.xml", "recipe_known.tex", "recipe_known.tex"))
+		w.cell_root = w:AddChild(ImageButton("images/quagmire_recipebook.xml", "recipe_known.tex", "recipe_known_selected.tex"))
 		w.cell_root:SetFocusScale(cell_size/base_size + .05, cell_size/base_size + .05)
 		w.cell_root:SetNormalScale(cell_size/base_size, cell_size/base_size)
+
+		w.focus_forward = w.cell_root
+
+        w.cell_root.ongainfocusfn = function() self.recipe_grid:OnWidgetFocus(w) end
+
 
         w.recipie_unknown = w.cell_root.image:AddChild(Image("images/quagmire_recipebook.xml", "recipe_unknown.tex"))
 		w.recipie_unknown:ScaleToSize(base_size, base_size)
@@ -546,7 +574,9 @@ function QuagmireRecipeBook:BuildRecipeBook()
 				widget.recipie_unknown:Show()
 				widget.id:SetColour(UICOLOURS.SLATE)
 			end
+			widget:Enable()
 		else
+			widget:Disable()
 			widget.cell_root:Hide()
 		end
     end
@@ -629,7 +659,7 @@ function QuagmireRecipeBook:OnRecipeBookUpdated()
 	end
     self.recipe_grid = self.gridroot:AddChild( self:BuildRecipeBook() )
     self.recipe_grid:SetPosition(-15, 0)
-    self.focus_forward = self.recipe_grid
+    
 	if scroll_pos ~= nil then
 		self.recipe_grid:ScrollToDataIndex(scroll_pos)
 	end
@@ -640,6 +670,7 @@ function QuagmireRecipeBook:OnRecipeBookUpdated()
 		self.details_root:KillAllChildren()
 		self.details_root:AddChild(self:CreateRecipeDetailPanel(self.all_recipes[TheRecipeBook.selected]))
 	end
+
 end
 
 function QuagmireRecipeBook:ApplyFilters()
@@ -656,6 +687,8 @@ function QuagmireRecipeBook:ApplyFilters()
 	end
 
     self.recipe_grid:SetItemsData(visible_items)
+
+	self:_DoFocusHookups()
 end
 
 local CRAVINGS =
@@ -675,8 +708,6 @@ local CRAVINGS =
 function QuagmireRecipeBook:BuildFilterPanel()
 	local root = Widget("filter_root")
 	
-	local grid = root:AddChild(Grid())
-
 	local top = 50
 	local left = 0 -- -width/2 + 5
 
@@ -739,8 +770,6 @@ function QuagmireRecipeBook:BuildFilterPanel()
 
 		wdg.spinner:SetSelected(initial_data)
 
-		wdg.focus_forward = wdg.spinner
-
 		return wdg
 	end
 
@@ -749,11 +778,18 @@ function QuagmireRecipeBook:BuildFilterPanel()
 	TheRecipeBook.filters["station"] = TheRecipeBook.filters["station"] or FILTER_ANY
 
 	local items = {}
-	table.insert(items, MakeSpinner(STRINGS.UI.RECIPE_BOOK.DETAILS_SPINNER_CRAVING, craving_options, on_craving_filter, TheRecipeBook.filters["craving"]))
 	table.insert(items, MakeSpinner(STRINGS.UI.RECIPE_BOOK.DETAILS_SPINNER_STATION, station_options, on_station_filter, TheRecipeBook.filters["station"]))
+	table.insert(items, MakeSpinner(STRINGS.UI.RECIPE_BOOK.DETAILS_SPINNER_CRAVING, craving_options, on_craving_filter, TheRecipeBook.filters["craving"]))
 	--table.insert(items, MakeSpinner(STRINGS.UI.RECIPE_BOOK.DETAILS_SPINNER_TRIBUTE, value_options, on_value_filter, TheRecipeBook.filters["value"]))
-    grid:FillGrid(1, width_label + width_spinner, height + 3, items)
-	grid:SetPosition(0, top + 5)
+    
+	self.spinners = {}
+	for i, v in ipairs(items) do
+		local w = root:AddChild(v)
+		w:SetPosition(50, (#items - i + 1)*(height + 3))
+		table.insert(self.spinners, w.spinner)
+	end
+
+	--grid:FillGrid(1, width_label + width_spinner, height + 3, items)
 
 	self:ApplyFilters()
 

@@ -2817,15 +2817,15 @@ function PlayerController:OnLeftClick(down)
         elseif self.inst:HasTag("attack") and act.target == self.inst.replica.combat:GetTarget() then
             return
         end
-    elseif act.action == ACTIONS.LOOKAT
-        and act.target ~= nil
-        and act.target.components.playeravatardata ~= nil
-        and self.inst.HUD ~= nil then
-
-        local client_obj = act.target.components.playeravatardata:GetData()
-        if client_obj ~= nil then
-            client_obj.inst = act.target
-            self.inst.HUD:TogglePlayerAvatarPopup(client_obj.name, client_obj, true)
+    elseif act.action == ACTIONS.LOOKAT and act.target ~= nil and self.inst.HUD ~= nil then
+        if act.target.components.playeravatardata ~= nil then
+            local client_obj = act.target.components.playeravatardata:GetData()
+            if client_obj ~= nil then
+                client_obj.inst = act.target
+                self.inst.HUD:TogglePlayerAvatarPopup(client_obj.name, client_obj, true)
+            end
+        elseif act.target.quagmire_shoptab ~= nil then
+            self.inst:PushEvent("quagmire_shoptab", act.target.quagmire_shoptab)
         end
     end
 

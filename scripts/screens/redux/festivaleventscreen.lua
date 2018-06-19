@@ -37,11 +37,7 @@ function FestivalEventScreen:DoInit()
     end
     self.title = self.root:AddChild(TEMPLATES.ScreenTitle(STRINGS.UI.FESTIVALEVENTSCREEN.TITLE[string.upper(WORLD_FESTIVAL_EVENT)]))
 
-	if IsFestivalEventActive(FESTIVAL_EVENTS.QUAGMIRE) then
-		local recipebook = self.root:AddChild(BookWidget(self.user_profile, WORLD_FESTIVAL_EVENT))
-		recipebook:SetPosition(120, -40)
-		recipebook:MoveToFront()
-    elseif IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then
+    if IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then
 		self.achievements = self.root:AddChild(AchievementsPanel(self.user_profile, WORLD_FESTIVAL_EVENT))
 		self.achievements:SetPosition(120,-60)
 	end
@@ -54,6 +50,12 @@ function FestivalEventScreen:DoInit()
 
     self.menu = self.root:AddChild(self:_MakeMenu())
 	self.menu.reverse = true
+
+	if IsFestivalEventActive(FESTIVAL_EVENTS.QUAGMIRE) then
+		self.recipebook = self.root:AddChild(BookWidget(self.user_profile, self.menu))
+		self.recipebook:SetPosition(120, -40)
+		self.recipebook:MoveToFront()
+	end
 
     if not TheInput:ControllerAttached() then
         self.back_button = self.root:AddChild(TEMPLATES.BackButton(
@@ -78,7 +80,9 @@ function FestivalEventScreen:_MakeMenu()
         {widget = button_quickmatch},
     }
 
-    return self.root:AddChild(TEMPLATES.StandardMenu(menu_items, 38, nil, nil, true))
+	local menu = self.root:AddChild(TEMPLATES.StandardMenu(menu_items, 38, nil, nil, true))
+
+	return menu
 end
 
 local function CalcQuickJoinServerScoreForEvent(server)
@@ -224,6 +228,10 @@ function FestivalEventScreen:OnBecomeActive()
 end
 
 function FestivalEventScreen:OnControl(control, down)
+	if self.recipebook ~= nil and self.recipebook:OnControlTabs(control, down) then
+		return true 
+	end
+
     if FestivalEventScreen._base.OnControl(self, control, down) then return true end
 
     if not down and control == CONTROL_CANCEL then
@@ -232,27 +240,35 @@ function FestivalEventScreen:OnControl(control, down)
         return true
     end
 
-	if down then
-        if control == CONTROL_SCROLLBACK then
-            if self.achievements ~= nil and self.achievements.grid:Scroll(-.66) then
-                TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
-            end
-            return true
-        elseif control == CONTROL_SCROLLFWD then
-            if self.achievements ~= nil and self.achievements.grid:Scroll(.66) then
-                TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
-            end
-            return true
-        end
-    end
+	if self.achievements ~= nil then
+		if down then
+			if control == CONTROL_SCROLLBACK then
+				if self.achievements.grid:Scroll(-.66) then
+					TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
+				end
+				return true
+			elseif control == CONTROL_SCROLLFWD then
+				if self.achievements.grid:Scroll(.66) then
+					TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
+				end
+				return true
+			end
+		end
+	end
 end
 
 function FestivalEventScreen:GetHelpText()
     local controller_id = TheInput:GetControllerID()
     local t = {}
 
+    table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.HELP.BACK)
+
 	if self.achievements ~= nil and not self.achievements.grid.focus and self.achievements.grid:CanScroll() then
 	    table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_SCROLLBACK) .. "/" .. TheInput:GetLocalizedControl(controller_id, CONTROL_SCROLLFWD) .. " " .. STRINGS.UI.HELP.SCROLL)
+	end
+
+	if self.recipebook ~= nil and not self.recipebook.focus then
+		table.insert(t, self.recipebook:GetHelpText())
 	end
 
     return table.concat(t, "  ")

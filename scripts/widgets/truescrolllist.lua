@@ -19,7 +19,7 @@ local DEBUG_MODE = BRANCH == "dev"
 --
 -- scissor_x/y/width/height are a bottom-left anchored box of the visible
 -- region.
-local TrueScrollList = Class(Widget, function(self, context, create_widgets_fn, update_fn, scissor_x, scissor_y, scissor_width, scissor_height, scrollbar_offset, scrollbar_height_offset)
+local TrueScrollList = Class(Widget, function(self, context, create_widgets_fn, update_fn, scissor_x, scissor_y, scissor_width, scissor_height, scrollbar_offset, scrollbar_height_offset, scroll_per_click)
     Widget._ctor(self, "TrueScrollList")
 	
 	assert(create_widgets_fn ~= nil and update_fn ~= nil, "TrueScrollList requires create widgets and update functions")
@@ -27,6 +27,9 @@ local TrueScrollList = Class(Widget, function(self, context, create_widgets_fn, 
     -- Contextual data passed to input functions. Do not use this data inside
     -- TrueScrollList.
     self.context = context or {}
+
+	-- 
+	self.scroll_per_click = scroll_per_click or 0.33
 	
     -- Scroll-region-sized spanning image to ensure we don't lose focus
     -- due to gaps between widgets.
@@ -133,7 +136,6 @@ function TrueScrollList:DebugDraw_AddSection(dbui, panel)
 end
 
 local button_repeat_time = .15
-local scroll_per_click = 0.33
 local scroll_per_page = 3
 local bar_width_scale_factor = 1
 local arrow_button_size = 30
@@ -149,7 +151,7 @@ function TrueScrollList:BuildScrollBar()
     self.up_button:SetWhileDown( function()
         if not self.last_up_button_time or GetTime() - self.last_up_button_time > button_repeat_time then
             self.last_up_button_time = GetTime()
-            self:Scroll(-scroll_per_click) 
+            self:Scroll(-self.scroll_per_click) 
         end
     end)
     self.up_button:SetOnClick( function()
@@ -162,7 +164,7 @@ function TrueScrollList:BuildScrollBar()
     self.down_button:SetWhileDown( function()
         if not self.last_down_button_time or GetTime() - self.last_down_button_time > button_repeat_time then
             self.last_down_button_time = GetTime()
-            self:Scroll(scroll_per_click) 
+            self:Scroll(self.scroll_per_click) 
         end
     end)
     self.down_button:SetOnClick( function()
@@ -428,12 +430,12 @@ function TrueScrollList:OnControl(control, down)
 
     if down and (self.focus and self.scroll_bar:IsVisible()) then
         if control == CONTROL_SCROLLBACK then
-            if self:Scroll(-scroll_per_click) then
+            if self:Scroll(-self.scroll_per_click) then
                 TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
             end
             return true
         elseif control == CONTROL_SCROLLFWD then
-            if self:Scroll(scroll_per_click) then
+            if self:Scroll(self.scroll_per_click) then
                 TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover")
             end
             return true

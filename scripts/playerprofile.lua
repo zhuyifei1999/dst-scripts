@@ -1077,16 +1077,20 @@ function PlayerProfile:SetWarnModsEnabled(do_warning)
 	end
 end
 
+local function _EntitlementKey(entitlement)
+    return TheNet:GetItemsBranch() .. TheNet:GetUserID().."entitlement_"..entitlement
+end
+
 function PlayerProfile:IsEntitlementReceived(entitlement)
-	if self:GetValue(TheNet:GetUserID().."entitlement_"..entitlement) ~= nil then
-		return self:GetValue(TheNet:GetUserID().."entitlement_"..entitlement)
+	if self:GetValue(_EntitlementKey(entitlement)) ~= nil then
+		return self:GetValue(_EntitlementKey(entitlement))
 	else
 		return false
 	end
 end
 
 function PlayerProfile:SetEntitlementReceived(entitlement)
-	self:SetValue(TheNet:GetUserID().."entitlement_"..entitlement, true)
+	self:SetValue(_EntitlementKey(entitlement), true)
 	self.dirty = true
     self:Save()
 end

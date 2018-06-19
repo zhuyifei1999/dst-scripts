@@ -59,7 +59,8 @@ local AchievementsPanel = Class(Widget, function(self, user_profile, festival_ke
 		grid = self.dialog:InsertWidget( self:_BuildAchievementsExplorer(festival_key) )
 		grid:SetPosition(-10,0)
 	end
-	    
+    self.grid = grid
+
 	if not self.overrides.no_title then
 		local title = self.achievements_root:AddChild(Text(HEADERFONT, 28, STRINGS.UI.ACHIEVEMENTS.SCREENTITLE, self.overrides.primary_font_colour or UICOLOURS.HIGHLIGHT_GOLD))
 		title:SetPosition(0, 222)
@@ -74,6 +75,9 @@ local AchievementsPanel = Class(Widget, function(self, user_profile, festival_ke
 	completed:SetPosition(330, 222)
 
     self.focus_forward = grid
+    self.default_focus = grid
+
+	self.parent_default_focus = self
 end)
 
 function AchievementsPanel:_BuildAchievementsExplorer(current_eventid)
@@ -87,6 +91,7 @@ function AchievementsPanel:_BuildAchievementsExplorer(current_eventid)
     
     local function ScrollWidgetsCtor(context, index)
         local w = Widget("achievement-cell-".. index)
+        w.ongainfocusfn = function() self.grid:OnWidgetFocus(w) end
 
         local function OnPortraitFocused(is_enabled)
         end
@@ -232,6 +237,7 @@ function AchievementsPanel:_BuildAchievementsExplorer(current_eventid)
             apply_fn     = ScrollWidgetApply,
             scrollbar_offset = self.overrides.scrollbar_offset or 0,
             scrollbar_height_offset = -60,
+			scroll_per_click = .5,
         })
     
     return grid

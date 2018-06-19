@@ -12,20 +12,8 @@ local AchievementsPanel = require "widgets/redux/achievementspanel"
 
 require("util")
 
-local QUAGMIRE_NUM_FOOD_RECIPES = QUAGMIRE_NUM_FOOD_PREFABS + 1 -- +1 for syrup
-local DISH_ATLAS = "images/quagmire_food_common_inv_images_hires.xml" --"images/quagmire_food_common_inv_images_hires.xml"
-
-local FILTER_ANY = "any"
-
-local function MakeDetailsLine(details_root, x, y, scale, image_override)
-	local value_title_line = details_root:AddChild(Image("images/quagmire_recipebook.xml", image_override or "quagmire_recipe_line.tex"))
-	value_title_line:SetScale(scale, scale)
-	value_title_line:SetPosition(x, y)
-end
-
-
 -------------------------------------------------------------------------------------------------------
-local QuagmireBook = Class(Widget, function(self, user_profile)
+local QuagmireBook = Class(Widget, function(self, user_profile, parent)
     Widget._ctor(self, "OnlineStatus")
 
     self.root = self:AddChild(Widget("root"))
@@ -52,12 +40,12 @@ local QuagmireBook = Class(Widget, function(self, user_profile)
 		{text = STRINGS.UI.ACHIEVEMENTS.SCREENTITLE, build_panel_fn = function() return AchievementsPanel(user_profile, FESTIVAL_EVENTS.QUAGMIRE, achievement_overrides) end}
 	}
 
-	for i, v in ipairs(button_data) do
-		local tab = tab_root:AddChild(ImageButton("images/quagmire_recipebook.xml", "quagmire_recipe_tab_inactive.tex", nil, nil, nil, "quagmire_recipe_tab_active.tex"))
-		tab:SetPosition(-260 + 240*(i-1), 285)
+	local function MakeTab(data, index)
+		local tab = ImageButton("images/quagmire_recipebook.xml", "quagmire_recipe_tab_inactive.tex", nil, nil, nil, "quagmire_recipe_tab_active.tex")
+		--tab:SetPosition(-260 + 240*(i-1), 285)
 		tab:SetFocusScale(base_size, base_size)
 		tab:SetNormalScale(base_size, base_size)
-		tab:SetText(v.text)
+		tab:SetText(data.text)
 		tab:SetTextSize(22)
 		tab:SetFont(HEADERFONT)
 		tab:SetTextColour(UICOLOURS.GOLD)
@@ -73,20 +61,92 @@ local QuagmireBook = Class(Widget, function(self, user_profile)
 			if self.panel ~= nil then 
 				self.panel:Kill()
 			end
-			self.panel = self.root:AddChild(v.build_panel_fn())
+			self.panel = self.root:AddChild(data.build_panel_fn())
+			if parent ~= nil then
+				if TheWorld ~= nil then
+					parent.default_focus = self.panel.parent_default_focus
+				else
+					self:_DoFocusHookups(parent)
+				end
+			end
+			self.panel.parent_default_focus:SetFocus()
 		end)
+		tab._tabindex = index - 1
 
-		if i == 1 then
-			self.last_selected = tab
-		end
+		return tab
 	end
+	
+	self.tabs = {}
+
+	table.insert(self.tabs, tab_root:AddChild(MakeTab(button_data[1], 1)))
+	self.tabs[#self.tabs]:SetPosition(-260, 285)
+	table.insert(self.tabs, tab_root:AddChild(MakeTab(button_data[2], 2)))
+	self.tabs[#self.tabs]:SetPosition(-260 + 240, 285)
 
 	-----
+	self.last_selected = self.tabs[1]
 	self.last_selected:Select()	
 	self.last_selected:MoveToFront()
 	self.panel = self.root:AddChild(RecipeBookWidget())
-
-
+	if TheWorld ~= nil then
+		parent.default_focus = self.panel.parent_default_focus
+	else
+		self:_DoFocusHookups(parent)
+	end
 end)
+
+function QuagmireBook:_DoFocusHookups(menu)
+	menu:ClearFocusDirs()
+	menu:SetFocusChangeDir(MOVE_RIGHT, self.panel.parent_default_focus)
+	self.panel.parent_default_focus:SetFocusChangeDir(MOVE_LEFT, menu)
+
+	for i, v in ipairs(self.tabs) do
+		v:ClearFocusDirs()
+		v:SetFocusChangeDir(MOVE_LEFT, self.panel.parent_default_focus)
+		v:SetFocusChangeDir(MOVE_RIGHT, self.panel.parent_default_focus)
+		v:SetFocusChangeDir(MOVE_UP, self.panel.parent_default_focus)
+		v:SetFocusChangeDir(MOVE_DOWN, self.panel.parent_default_focus)
+	end
+
+	if self.panel.spinners ~= nil then
+		for i, v in ipairs(self.panel.spinners) do
+			v:SetFocusChangeDir(MOVE_LEFT, menu)
+		end
+	end
+end
+
+function QuagmireBook:OnControlTabs(control, down)
+	if control == CONTROL_OPEN_CRAFTING then
+		local tab = self.tabs[((self.last_selected._tabindex - 1) % #self.tabs) + 1]
+		if not down then
+			tab.onclick()
+			return true
+		end
+	elseif control == CONTROL_OPEN_INVENTORY then
+		local tab = self.tabs[((self.last_selected._tabindex + 1) % #self.tabs) + 1]
+		if not down then
+			tab.onclick()
+			return true
+		end
+	end
+
+end
+
+
+function QuagmireBook:OnControl(control, down)
+    if QuagmireBook._base.OnControl(self, control, down) then return true end
+
+	return self:OnControlTabs(control, down)
+end
+
+function QuagmireBook:GetHelpText()
+    local controller_id = TheInput:GetControllerID()
+    local t = {}
+
+    table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_OPEN_CRAFTING).."/"..TheInput:GetLocalizedControl(controller_id, CONTROL_OPEN_INVENTORY).. " " .. STRINGS.UI.HELP.CHANGE_TAB)
+
+    return table.concat(t, "  ")
+end
+
 
 return QuagmireBook
