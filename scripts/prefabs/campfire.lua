@@ -172,41 +172,6 @@ end
 
 -------------------------------------------------------------------------------
 
-local QUAGMIRE_MIN_FIRE_FX = 0.6
-local function quagmire_onupdatefueled(inst)
-    if inst.components.burnable ~= nil and inst.components.fueled ~= nil then
-        updatefuelrate(inst)
-        local fx_percent = inst.components.fueled:GetCurrentSection() > 1 and inst.components.fueled:GetSectionPercent() 
-                        or inst.components.fueled:GetCurrentSection() == 1 and math.max(inst.components.fueled:GetSectionPercent(), QUAGMIRE_MIN_FIRE_FX)
-                        or QUAGMIRE_MIN_FIRE_FX
-        inst.components.burnable:SetFXLevel(math.max(1, inst.components.fueled:GetCurrentSection()), fx_percent)
-    end
-end
-
-local function quagmire_onfuelchange(newsection, oldsection, inst)
-    if newsection <= 0 then
-        newsection = 1
-    end
-
-    if oldsection == 0 then
-        updatefuelrate(inst)
-        inst.components.fueled:StartConsuming()
-    end
-    inst.AnimState:PlayAnimation("idle")
-        local fx_percent = inst.components.fueled:GetCurrentSection() > 1 and inst.components.fueled:GetSectionPercent() 
-                        or inst.components.fueled:GetCurrentSection() == 1 and math.max(inst.components.fueled:GetSectionPercent(), QUAGMIRE_MIN_FIRE_FX)
-                        or QUAGMIRE_MIN_FIRE_FX
-
-    inst.components.burnable:SetFXLevel(newsection, fx_percent)
-
-    inst.components.propagator.propagaterange = PROPAGATE_RANGES[newsection]
-    inst.components.propagator.heatoutput = HEAT_OUTPUTS[newsection]
-end
-
-local function quagmire_getstatus(inst)
-    return SECTION_STATUS[math.max(2, inst.components.fueled:GetCurrentSection())]
-end
-
 local function quagmire_fn()
     local inst = fn()
 
@@ -216,10 +181,7 @@ local function quagmire_fn()
         return inst
     end
 
-    inst.components.fueled:SetUpdateFn(quagmire_onupdatefueled)
-    inst.components.fueled:SetSectionCallback(quagmire_onfuelchange)
-
-    inst.components.inspectable.getstatus = quagmire_getstatus
+    event_server_data("quagmire", "prefabs/campfire").master_postinit(inst, SECTION_STATUS, updatefuelrate)
 
     return inst
 end

@@ -1881,16 +1881,14 @@ ACTIONS.SLAUGHTER.stroverridefn = function(act)
 end
 
 ACTIONS.SLAUGHTER.fn = function(act)
-    if act.invobject.components.quagmire_slaughtertool ~= nil and
-        act.invobject:IsValid() and
-        act.doer:IsValid() and
-        act.target:IsValid() and
-        act.target:HasTag("canbeslaughtered") then
-        if not (act.target:IsInLimbo() or act.doer:IsNear(act.target, 2)) then
+    if act.invobject.components.quagmire_slaughtertool ~= nil and act.invobject:IsValid() and act.doer:IsValid() then
+        if act.target == nil then
             return false, "TOOFAR"
-        end
-
-        if act.target.components.health ~= nil and not act.target.components.health:IsDead() then
+        elseif not (act.target:IsValid() and act.target:HasTag("canbeslaughtered")) then
+            return false
+        elseif not (act.target:IsInLimbo() or act.doer:IsNear(act.target, 2)) then
+            return false, "TOOFAR"
+        elseif act.target.components.health ~= nil and not act.target.components.health:IsDead() then
             act.invobject.components.quagmire_slaughtertool:Slaughter(act.doer, act.target)
             return true
         end
