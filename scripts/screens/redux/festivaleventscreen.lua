@@ -142,6 +142,10 @@ function FestivalEventScreen:OnBrowseButton()
         { is_forced = true, name = "SEASON",       data = "ANY" },
         { is_forced = true, name = "MODSENABLED",  data = false },
     }
+    if IsFestivalEventActive(FESTIVAL_EVENTS.QUAGMIRE) then
+        table.insert(filter_settings, { is_forced = true, name = "MINOPENSLOTS", data = "ANY" })
+	end
+
     local forced_settings = {
         intention = "any",
         online = true,

@@ -2,17 +2,21 @@ local LOAD_UPFRONT_MODE = false
     
 local loaded_klumps = {}
 
-function LoadAccessibleKlumpFiles()
+function LoadAccessibleKlumpFiles(minimal_load)
     --dumptable(Profile.persistdata.klump_ciphers)
     if LOAD_UPFRONT_MODE then
-        require("quagmire_event_server/quagmire_food_ids")
-        local secrets = event_server_data("quagmire", "klump_secrets")
-        for _,name in pairs(QUAGMIRE_FOOD_IDS) do
-            LoadKlumpFile("images/quagmire_food_inv_images_"..name..".tex", secrets[name].cipher, true)
-            LoadKlumpFile("images/quagmire_food_inv_images_hires_"..name..".tex", secrets[name].cipher, true)
-            LoadKlumpFile("anim/dynamic/"..name..".dyn", secrets[name].cipher, true)
-            LoadKlumpString("STRINGS.NAMES."..string.upper(name), secrets[name].cipher, true)
-        end
+        if IsFestivalEventActive(FESTIVAL_EVENTS.QUAGMIRE) or IsPreviousFestivalEvent(FESTIVAL_EVENTS.QUAGMIRE) then
+			require("quagmire_event_server/quagmire_food_ids")
+			local secrets = event_server_data("quagmire", "klump_secrets")
+			for _,name in pairs(QUAGMIRE_FOOD_IDS) do
+				LoadKlumpFile("images/quagmire_food_inv_images_"..name..".tex", secrets[name].cipher, true)
+				LoadKlumpFile("images/quagmire_food_inv_images_hires_"..name..".tex", secrets[name].cipher, true)
+				LoadKlumpFile("anim/dynamic/"..name..".dyn", secrets[name].cipher, true)
+				if not minimal_load then
+					LoadKlumpString("STRINGS.NAMES."..string.upper(name), secrets[name].cipher, true)
+				end
+			end
+		end
     else
         if IsFestivalEventActive(FESTIVAL_EVENTS.QUAGMIRE) or IsPreviousFestivalEvent(FESTIVAL_EVENTS.QUAGMIRE) then
             print("Klump load on boot started.")

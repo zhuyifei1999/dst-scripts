@@ -32,6 +32,23 @@ function QuagmireRecipeBook:GetValidRecipes()
 	return ret
 end
 
+local function CleanupDupRecipes(recipe_book)
+	for _, food in pairs(recipe_book) do
+		local dupes = {}
+		for i = #food.recipes, 1, -1 do
+			local id = ""
+			for _, v in ipairs(food.recipes[i]) do 
+				id = id .. tostring(v) 
+			end
+			if dupes[id] then
+				table.remove(food.recipes, i)
+			else
+				dupes[id] = true
+			end
+		end
+	end
+end
+
 function QuagmireRecipeBook:Load()
 	self.recipes = {}
 	TheSim:GetPersistentString("recipebook", function(load_success, data) 
@@ -42,6 +59,8 @@ function QuagmireRecipeBook:Load()
 			else
 				print("Faild to load the recipe book!")
 			end
+
+			CleanupDupRecipes(self.recipes)
 
 			self.dirty = false
 		end
@@ -80,15 +99,17 @@ end
 
 local function IsKnownIngredients(recipes, ingredients)
 	for ri, known_recipe in ipairs(recipes) do
-		local known = true
-		for i, ingredient in ipairs(ingredients) do
-			if ingredients[i] ~= known_recipe[i] then
-				known = false
-				break
+		if #ingredients == #known_recipe then
+			local known = true
+			for i, ingredient in ipairs(ingredients) do
+				if ingredients[i] ~= known_recipe[i] then
+					known = false
+					break
+				end
 			end
-		end
-		if known then
-			return ri
+			if known then
+				return ri
+			end
 		end
 	end
 end
