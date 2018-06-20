@@ -14,7 +14,7 @@ require("util")
 
 -------------------------------------------------------------------------------------------------------
 local QuagmireBook = Class(Widget, function(self, user_profile, parent)
-    Widget._ctor(self, "OnlineStatus")
+    Widget._ctor(self, "QuagmireBook")
 
     self.root = self:AddChild(Widget("root"))
 
@@ -36,7 +36,7 @@ local QuagmireBook = Class(Widget, function(self, user_profile, parent)
 	local base_size = .7
 
 	local button_data = {
-		{text = STRINGS.UI.RECIPE_BOOK.TITLE, build_panel_fn = function() return RecipeBookWidget() end }, 
+		{text = STRINGS.UI.RECIPE_BOOK.TITLE, build_panel_fn = function() return RecipeBookWidget(parent) end },
 		{text = STRINGS.UI.ACHIEVEMENTS.SCREENTITLE, build_panel_fn = function() return AchievementsPanel(user_profile, FESTIVAL_EVENTS.QUAGMIRE, achievement_overrides) end}
 	}
 

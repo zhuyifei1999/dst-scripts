@@ -2345,7 +2345,7 @@ return {
         QUAGMIRE_TRADER_MERM2 = "Nice hat. Are you selling that, too?",
         --
         QUAGMIRE_GOATMUM = "Her eyes creep me out.",
-        QUAGMIRE_GOATKID = "She'll eat just about anything.",
+        QUAGMIRE_GOATKID = "He'll eat just about anything.",
         QUAGMIRE_PIGEON =
         {
             DEAD = "It's dead.",

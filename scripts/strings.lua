@@ -3733,6 +3733,7 @@ STRINGS.UI =
 		NO_CRAVING = "None",
 		SYRUP_RECIPE_ID = "**",
 		UNKNOWN_RECIPE = "Unknown",
+        UNKNOWN_DATA = "???", --used for bad data
 	},
 
     HUD =

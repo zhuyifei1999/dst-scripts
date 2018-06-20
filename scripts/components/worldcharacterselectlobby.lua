@@ -348,12 +348,14 @@ end
 
 function self:OnUpdate(dt)
     if #AllPlayers <= 0 then
-        local isdedicated = not TheNet:GetServerIsClientHosted()
-        local index = 1
-        for i, v in ipairs(TheNet:GetClientTable()) do
-            if not isdedicated or v.performance == nil then
-                --Still someone connected
-                return
+        local clients = TheNet:GetClientTable()
+        if clients ~= nil then
+            local isdedicated = not TheNet:GetServerIsClientHosted()
+            for i, v in ipairs(TheNet:GetClientTable()) do
+                if not isdedicated or v.performance == nil then
+                    --Still someone connected
+                    return
+                end
             end
         end
     end

@@ -474,6 +474,7 @@ local COMPONENT_ACTIONS =
         inventoryitem = function(inst, doer, target, actions, right)
             if target.replica.container ~= nil and
                 target.replica.container:CanBeOpened() and
+                inst.replica.inventoryitem ~= nil and
                 inst.replica.inventoryitem:IsGrandOwner(doer) then
                 if not (GetGameModeProperty("non_item_equips") and inst.replica.equippable ~= nil) and
                     (   (inst.prefab ~= "spoiled_food" and inst:HasTag("quagmire_stewable") and target:HasTag("quagmire_stewer") and target.replica.container:IsOpenedBy(doer)) or
