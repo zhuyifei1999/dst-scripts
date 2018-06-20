@@ -23,7 +23,7 @@ end
 
 -------------------------------------------------------------------------------------------------------
 local QuagmireRecipeBook = Class(Widget, function(self, parent_screen)
-    Widget._ctor(self, "OnlineStatus")
+    Widget._ctor(self, "QuagmireRecipeBook")
 
     self.parent_screen = parent_screen
 	self:CreateRecipeBook()
@@ -382,9 +382,9 @@ function QuagmireRecipeBook:CreateRecipeDetailPanel(data)
 	y = y - body_font_size/2
 	if num_cravings > 0 then
 		local tag_str = table.concat(data.recipe.tags, ", ")
-		local str = STRINGS.UI.RECIPE_BOOK.CRAVINGS[string.upper(data.recipe.tags[1])]
+		local str = STRINGS.UI.RECIPE_BOOK.CRAVINGS[string.upper(data.recipe.tags[1])] or STRINGS.UI.RECIPE_BOOK.UNKNOWN_DATA
 		for i = 2, num_cravings do
-			str = str .. ", " .. STRINGS.UI.RECIPE_BOOK.CRAVINGS[string.upper(data.recipe.tags[i])]
+			str = str..", "..STRINGS.UI.RECIPE_BOOK.CRAVINGS[string.upper(data.recipe.tags[i])] or STRINGS.UI.RECIPE_BOOK.UNKNOWN_DATA
 		end
 		local tags = details_root:AddChild(Text(HEADERFONT, body_font_size, str, UICOLOURS.BROWN_DARK))
 		tags:SetPosition(0, y)
@@ -411,9 +411,9 @@ function QuagmireRecipeBook:CreateRecipeDetailPanel(data)
 	y = y - body_font_size/2
 	local stations = data.recipe.station -- data.recipe.all_stations
 	if num_stations > 0 then
-		local str = STRINGS.UI.RECIPE_BOOK.STATIONS[string.upper(data.recipe.station[1])]
+		local str = STRINGS.UI.RECIPE_BOOK.STATIONS[string.upper(data.recipe.station[1])] or STRINGS.UI.RECIPE_BOOK.UNKNOWN_DATA
 		for i = 2, num_stations do
-			str = str .. ", " .. STRINGS.UI.RECIPE_BOOK.STATIONS[string.upper(data.recipe.station[i])]
+			str = str .. ", " .. STRINGS.UI.RECIPE_BOOK.STATIONS[string.upper(data.recipe.station[i])] or STRINGS.UI.RECIPE_BOOK.UNKNOWN_DATA
 		end
 		local body = details_root:AddChild(Text(HEADERFONT, body_font_size, str, UICOLOURS.BROWN_DARK))
 		body:SetPosition(0, y)

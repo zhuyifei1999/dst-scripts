@@ -2325,7 +2325,7 @@ return {
         QUAGMIRE_TRADER_MERM2 = "I tip my hat to you sir.",
         --
         QUAGMIRE_GOATMUM =  "May I peruse your wares, ma'am?",
-        QUAGMIRE_GOATKID = "She has no future ahead of her. A shame.",
+        QUAGMIRE_GOATKID = "He has no future ahead of him. A shame.",
         QUAGMIRE_PIGEON =
         {
             DEAD = "It is no more.",

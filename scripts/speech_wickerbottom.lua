@@ -2348,7 +2348,7 @@ return
         QUAGMIRE_GRILL_ITEM = "It needs to be on the ground.",
         QUAGMIRE_GRILL_SMALL = "Smaller than normal, but it'll do.",
         QUAGMIRE_GRILL_SMALL_ITEM = "I need to put it down somewhere to use it.",
-        QUAGMIRE_OVEN = "It's been designed to use magic as fuel.",
+        QUAGMIRE_OVEN = "It is best suited to baking sweets.",
         QUAGMIRE_OVEN_ITEM = "All the parts are necessary to construct a fully functional oven.",
         QUAGMIRE_CASSEROLEDISH = "I do love a good casserole.",
         QUAGMIRE_CASSEROLEDISH_SMALL = "Enough for one.",

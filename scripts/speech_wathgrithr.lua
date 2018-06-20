@@ -2174,20 +2174,20 @@ return {
         QUAGMIRE_TURNIP_COOKED = "Ach! I shall not eat thee!",
         QUAGMIRE_TURNIP_SEEDS = "'Tis a handful of seeds, for not-meat.",
         --
-        QUAGMIRE_GARLIC = "Foul ingredient for sacrifical foods!",
+        QUAGMIRE_GARLIC = "Foul ingredient for sacrificial foods!",
         QUAGMIRE_GARLIC_COOKED = "The stench!",
         QUAGMIRE_GARLIC_SEEDS = "'Tis a handful of seeds, for not-meat.",
         --
-        QUAGMIRE_ONION = "I defy thee to maketh mine eyes tear!",
-        QUAGMIRE_ONION_COOKED = "The gods will deal with thee!",
+        QUAGMIRE_ONION = "I dare thee, provoke tears from mine eyes!",
+        QUAGMIRE_ONION_COOKED = "The gods shall deal with thee!",
         QUAGMIRE_ONION_SEEDS = "'Tis a handful of seeds, for not-meat.",
         --
-        QUAGMIRE_POTATO = "I shall not consume it!",
+        QUAGMIRE_POTATO = "Vileness emerged from the earth.",
         QUAGMIRE_POTATO_COOKED = "Useful only for sacrifice.",
         QUAGMIRE_POTATO_SEEDS = "'Tis a handful of seeds, for not-meat.",
         --
         QUAGMIRE_TOMATO = "Will this not anger the gods?",
-        QUAGMIRE_TOMATO_COOKED = "It hath red guts, yet 'tis not meat!",
+        QUAGMIRE_TOMATO_COOKED = "It boasts reddest guts, yet 'tis not meat!",
         QUAGMIRE_TOMATO_SEEDS = "'Tis a handful of seeds, for not-meat.",
         --
         QUAGMIRE_FLOUR = "The wheat hath fallen in battle.",
@@ -2196,11 +2196,11 @@ return {
         --NOTE: raw/cooked carrot uses regular carrot strings
         QUAGMIRE_CARROT_SEEDS = "'Tis a handful of seeds, for not-meat.",
         --
-        QUAGMIRE_ROTTEN_CROP = "T'would never grace a feast hall in Valhalla.",
+        QUAGMIRE_ROTTEN_CROP = "T'would never grace a hall in Valhalla.",
         --
         QUAGMIRE_SALMON = "Tis a most delicious fish!",
         QUAGMIRE_SALMON_COOKED = "A feast from the sea.",
-        QUAGMIRE_CRABMEAT = "Twould be an honor to be fed to the sky god, beast.",
+        QUAGMIRE_CRABMEAT = "T'would be an honor to be fed to the sky god, beast.",
         QUAGMIRE_CRABMEAT_COOKED = "Tis a delicacy!",
         QUAGMIRE_POT = "Room for more meat!",
         QUAGMIRE_POT_SMALL = "We shall fill thee with meat!",
@@ -2211,8 +2211,8 @@ return {
         {
             GENERIC = "The nectar of the gods dwells within.",
             STUMP = "It has been chopped.",
-            TAPPED_EMPTY = "I hath no patience for thee, sap!",
-            TAPPED_READY = "I hath acquired the nectar!",
+            TAPPED_EMPTY = "I've no patience for thee, sap!",
+            TAPPED_READY = "I have acquired the nectar!",
 			TAPPED_BUGS = "It hath been fouled by tiny beasts!",
             WOUNDED = "It hath been wounded!",
         },
@@ -2247,7 +2247,7 @@ return {
         QUAGMIRE_MUSHROOMSTUMP =
         {
             GENERIC = "Growing non-meat fungus.",
-            PICKED = "It hath already been vanquished.",
+            PICKED = "'Tis vanquished.",
         },
         QUAGMIRE_MUSHROOMS = "Non-meat, I shall not consume thee!",
         QUAGMIRE_MEALINGSTONE = "A weapon for wheat!",
@@ -2256,14 +2256,14 @@ return {
 
         QUAGMIRE_POND_SALT = "Be it a hot spring?",
         --
-        QUAGMIRE_RUBBLE_CARRIAGE = "It hath been pillaged long ago.",
+        QUAGMIRE_RUBBLE_CARRIAGE = "Twas pillaged long ago.",
         QUAGMIRE_RUBBLE_CLOCK = "The time is nigh!",
-        QUAGMIRE_RUBBLE_CATHEDRAL = "Who hath pillaged here?",
-        QUAGMIRE_RUBBLE_PUBDOOR = "It once led to adventure. Alas no more.",
-        QUAGMIRE_RUBBLE_ROOF = "Offers naught protection.",
+        QUAGMIRE_RUBBLE_CATHEDRAL = "Twas the site of a vicious raid.",
+        QUAGMIRE_RUBBLE_PUBDOOR = "It once led to adventure. Alas, no more.",
+        QUAGMIRE_RUBBLE_ROOF = "It offers no sanctuary.",
         QUAGMIRE_RUBBLE_CLOCKTOWER = "The time is nigh!",
         QUAGMIRE_RUBBLE_BIKE = "A felled metal steed.",
-        QUAGMIRE_RUBBLE_HOUSE = {"Pillaged. But by what?", "They had naught protection.", "What hath caused such destruction?",},
+        QUAGMIRE_RUBBLE_HOUSE = {"Pillaged. But by what?", "If only they'd had a warrior to fight for them.", "What foul being caused such destruction?",},
         QUAGMIRE_RUBBLE_CHIMNEY = "It hath fallen.",
         QUAGMIRE_RUBBLE_CHIMNEY2 = "Nothing of value remains.",
         QUAGMIRE_MERMHOUSE = "What horrid home!",
@@ -2274,7 +2274,7 @@ return {
             GENERIC = "Your liege.",
             SLEEPING = "It slumbers soundly.",
         },
-        QUAGMIRE_SWAMPIG = "You would make a most honorable squire.",
+        QUAGMIRE_SWAMPIG = "You would make a most honorable warrior.",
         --
         QUAGMIRE_PORTAL = "Tis closed to us.",
         QUAGMIRE_SALTROCK = "Tis the salt of the earth.",
@@ -2297,16 +2297,16 @@ return {
         {
             GENERIC = "I shall offer it to the great god!",
             MISMATCH = "The Gnaw desires... not this.",
-            MATCH = "This shall quencheth its appetite.",
-            MATCH_BUT_SNACK = "'Tis what the Gnaw desires, but 'tis a paltry meal.",
+            MATCH = "This shall quench the god's appetite.",
+            MATCH_BUT_SNACK = "'Tis what the Gnaw desires, paltry though it is.",
         },
         QUAGMIRE_FERN = "Tis not food fit for a god.",
         QUAGMIRE_FOLIAGE_COOKED = "This is certain to anger the god.",
         --
         QUAGMIRE_COIN1 = "Treasure!",
         QUAGMIRE_COIN2 = "Coin! Prepare to be spent!",
-        QUAGMIRE_COIN3 = "Hurrah! I hath money!",
-        QUAGMIRE_COIN4 = "I hath earned the god's favor!",
+        QUAGMIRE_COIN3 = "Fortune is mine!",
+        QUAGMIRE_COIN4 = "I have earned the god's favor!",
         QUAGMIRE_GOATMILK = "It came from an animal, yet is still not meat!",
         QUAGMIRE_SYRUP = "Nectar of the gods, for the gods.",
         QUAGMIRE_SAP_SPOILED = "Alas, the nectar 'tis no longer sweet!",
@@ -2338,7 +2338,7 @@ return {
         QUAGMIRE_MERM_CART1 = "'Tis full of goods.", --sammy's wagon
         QUAGMIRE_MERM_CART2 = "'Tis full of goods.", --pipton's cart
         QUAGMIRE_PARKSPIKE = "'Tis a fencing spear.",
-        QUAGMIRE_CRABTRAP = "It doth trap-eth sea-meat.",
+        QUAGMIRE_CRABTRAP = "It doth trap sea-meat.",
         QUAGMIRE_TRADER_MERM = "Prepare to barter!",
         QUAGMIRE_TRADER_MERM2 = "'Tis a jaunty-hatted beast.",
         --
@@ -2352,7 +2352,7 @@ return {
         },
         QUAGMIRE_LAMP_POST = "Tis a magic light, surely.",
 
-        QUAGMIRE_BEEFALO = "Its days of war are long gone.",
+        QUAGMIRE_BEEFALO = "Its days of war are past.",
         QUAGMIRE_SLAUGHTERTOOL = "'Tis a weapon of beastly slaughter!",
 
         QUAGMIRE_SAPLING = "'Twill never again grow to its former glory.",
@@ -2360,7 +2360,7 @@ return {
 
         QUAGMIRE_ALTAR_STATUE2 = "'Tis dedicated to its god.",
         QUAGMIRE_ALTAR_QUEEN = "A colossal queen.",
-        QUAGMIRE_ALTAR_BOLLARD = "'Tis a post. Naught worthy of mine attention.",
+        QUAGMIRE_ALTAR_BOLLARD = "'Tis a post. Unworthy of mine attention.",
         QUAGMIRE_ALTAR_IVY = "It climbeth the walls.",
 
         QUAGMIRE_LAMP_SHORT = "'Tis a magic light of short stature.",
