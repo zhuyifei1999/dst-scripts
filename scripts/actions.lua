@@ -1841,7 +1841,8 @@ ACTIONS.INSTALL.fn = function(act)
     if act.invobject ~= nil and act.target ~= nil then
         if act.invobject.components.quagmire_installable ~= nil and
             act.invobject.components.quagmire_installable.installprefab ~= nil and
-            act.target.components.quagmire_installations ~= nil then
+            act.target.components.quagmire_installations ~= nil and
+            act.target.components.quagmire_installations:IsEnabled() then
             local part = SpawnPrefab(act.invobject.components.quagmire_installable.installprefab)
             if part ~= nil then
                 act.invobject:Remove()
