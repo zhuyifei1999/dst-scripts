@@ -440,14 +440,20 @@ local function ActivatePlayer(inst)
     TheWorld.minimap.MiniMap:DrawForgottenFogOfWar(true)
     if inst.player_classified ~= nil then
         inst.player_classified.MapExplorer:ActivateLocalMiniMap()
-        
-        if not TheNet:GetIsHosting(true) and not TheNet:GetServerFriendsOnly() and not TheNet:GetServerLANOnly() then
-			AwardPlayerAchievement("join_game", ThePlayer)
+
+        if not (TheNet:GetIsHosting() or TheNet:GetServerFriendsOnly() or TheNet:GetServerLANOnly()) then
+            AwardPlayerAchievement("join_game", ThePlayer)
         end
     end
 
     inst:PushEvent("playeractivated")
     TheWorld:PushEvent("playeractivated", inst)
+
+    if inst == ThePlayer and not TheWorld.ismastersim then
+        -- Clients save locally as soon as they spawn in, so it is
+        -- easier to find the server to rejoin in case of a crash.
+        SerializeUserSession(inst)
+    end
 end
 
 local function DeactivatePlayer(inst)
@@ -457,14 +463,12 @@ local function DeactivatePlayer(inst)
         return
     end
 
-    if inst == ThePlayer then
+    if inst == ThePlayer and not TheWorld.ismastersim then
         -- For now, clients save their local minimap reveal cache
         -- and we need to trigger this here as well as on network
         -- disconnect.  On migration, we will hit this code first
         -- whereas normally we will hit the one in disconnection.
-        if not TheWorld.ismastersim then
-            SerializeUserSession(inst)
-        end
+        SerializeUserSession(inst)
     end
 
     inst:PushEvent("playerdeactivated")

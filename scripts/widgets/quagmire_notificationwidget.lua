@@ -14,11 +14,12 @@ require "widgets/widgetutil"
 local TINT_GOOD = {239/255, 224/255, 196/255, 1}
 local TINT_FAIL = {255/255, 155/255, 155/255, 1}
 
-local NUM_SLOTS = 5
-
-local NotificationWidget = Class(Widget, function(self, owner)
+local NotificationWidget = Class(Widget, function(self, owner, centered_layout)
     Widget._ctor(self, "NotificationWidget")
 	self.owner = owner
+
+	self.NUM_SLOTS = centered_layout and 1 or 5
+	self.centered_layout = centered_layout
 	
 	self.slots = {}
 	self.queue = {}
@@ -110,9 +111,9 @@ local function SetupCoins(coins, size, tint)
 end
 
 local function ShowPopup(self, root)
-	local y_offset = 80
-	local start_position = Vector3(0, -y_offset*(root._slot_num - 1), 0)
-	local dest_position = Vector3(root._dest_x, -y_offset*(root._slot_num - 1), 0)
+	local side_y_offset = 80
+	local start_position = self.centered_layout and Vector3(root._dest_x, -50, 0) or Vector3(0, -side_y_offset*(root._slot_num - 1), 0)
+	local dest_position = self.centered_layout and Vector3(root._dest_x, 100, 0) or Vector3(root._dest_x, -side_y_offset*(root._slot_num - 1), 0)
 	root:SetPosition(start_position:Get())
 
 	local function on_slideoutfn()
@@ -144,6 +145,24 @@ local function ShowPopup(self, root)
 	root:Show()
 end
 
+local function AddIcons(root, data, x)
+	local icon_size = data.icons ~= nil and 50 or 0
+	local icon_padding = 5
+
+	x = x + icon_size/2
+	for _, icon in ipairs(data.icons or {}) do
+		local icon = root:AddChild(Image(icon.atlas, icon.texture))
+		icon:ScaleToSize(icon_size, icon_size)
+		icon:SetPosition(x, 0)
+		icon:SetEffect("shaders/ui_cc.ksh")
+		icon:SetClickable(false)
+	end
+	x = x + icon_size/2
+	x = x + icon_padding * 2
+
+	return x
+end
+
 function NotificationWidget:BuildPopupWidget(data)
 	local root = Widget("Notification Popup")
 	local scale = 1.2
@@ -151,15 +170,25 @@ function NotificationWidget:BuildPopupWidget(data)
 
 	root._sfx = data.sfx
 
-	local x = 22
+	local x = 0
 
-	local bg = root:AddChild(Image("images/quagmire_hud.xml", "quagmire_announcement_bg.tex"))
-	local bg_w = bg:GetSize()
-	bg:SetPosition(bg_w/2 - x, 0)
-	bg:SetClickable(false)
 
-	local icon_size = data.icons ~= nil and 50 or 0
-	local icon_padding = 5
+	local bg = nil
+	if not self.centered_layout then
+		x = 22 -- initial offset for the alpha portion of the image
+
+		bg = root:AddChild(Image("images/quagmire_hud.xml", "quagmire_announcement_bg.tex"))
+		local bg_w = bg:GetSize()
+		bg:SetPosition(bg_w/2 - x, 0)
+		bg:SetClickable(false)
+	else
+		x = -5
+
+		bg = root:AddChild(Image("images/quagmire_hud.xml", "quagmire_announcement_bg_centered.tex"))
+		bg:SetClickable(false)
+		x = AddIcons(root, data, 
+		x)
+	end
 
     local str = root:AddChild(Text(UIFONT, 21, nil, data.tint))
     str:SetTruncatedString(data.string, 200, nil, true)
@@ -193,22 +222,17 @@ function NotificationWidget:BuildPopupWidget(data)
 		x = x + max_w
 	end
 
-	x = x + icon_size/2
-	for _, icon in ipairs(data.icons or {}) do
-		local icon = root:AddChild(Image(icon.atlas, icon.texture))
-		icon:ScaleToSize(icon_size, icon_size)
-		icon:SetPosition(x, 0)
-		icon:SetEffect("shaders/ui_cc.ksh")
-		icon:SetClickable(false)
+	if not self.centered_layout then
+		x = AddIcons(root, data, x)
+		root._dest_x = -x * scale
+	else
+		root._dest_x = (-x * scale) / 2
+		bg:SetPosition(-root._dest_x, 0)
 	end
-	x = x + icon_size/2
-	x = x + icon_padding * 2
 
 	root:Hide()
 
-	root._dest_x = -x * scale
-
-	for i = 1, NUM_SLOTS do
+	for i = 1, self.NUM_SLOTS do
 		if self.slots[i] == nil then
 			root._slot_num = i
 			self.slots[i] = root
