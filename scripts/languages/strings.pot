@@ -119033,6 +119033,11 @@ msgctxt "STRINGS.UI.ITEM_SCREEN.OPEN_BUTTON"
 msgid "Open Now!"
 msgstr ""
 
+#. STRINGS.UI.ITEM_SCREEN.OPEN_NEXT
+msgctxt "STRINGS.UI.ITEM_SCREEN.OPEN_NEXT"
+msgid "Proceed"
+msgstr ""
+
 #. STRINGS.UI.ITEM_SCREEN.RECEIVED
 msgctxt "STRINGS.UI.ITEM_SCREEN.RECEIVED"
 msgid "You Received"

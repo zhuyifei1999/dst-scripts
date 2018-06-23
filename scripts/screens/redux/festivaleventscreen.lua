@@ -55,6 +55,11 @@ function FestivalEventScreen:DoInit()
 		self.recipebook = self.root:AddChild(BookWidget(self.user_profile, self.menu))
 		self.recipebook:SetPosition(120, -40)
 		self.recipebook:MoveToFront()
+
+        PostProcessor:SetColourCubeData(0, "images/colour_cubes/quagmire_cc.tex", "images/colour_cubes/quagmire_cc.tex")
+        PostProcessor:SetColourCubeData(1, "images/colour_cubes/quagmire_cc.tex", "images/colour_cubes/quagmire_cc.tex")
+        PostProcessor:SetColourCubeLerp(0, 1)
+        PostProcessor:SetColourCubeLerp(1, 0)
 	end
 
     if not TheInput:ControllerAttached() then

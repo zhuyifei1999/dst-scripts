@@ -60,15 +60,17 @@ function Button:OnControl(control, down)
 	if control == self.control then
 
 		if down then
-			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
-			self.o_pos = self:GetLocalPosition()
-			self:SetPosition(self.o_pos + self.clickoffset)
-			self.down = true
-			if self.whiledown then
-				self:StartUpdating()
-			end
-			if self.ondown then
-				self.ondown()
+			if not self.down then
+				TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+				self.o_pos = self:GetLocalPosition()
+				self:SetPosition(self.o_pos + self.clickoffset)
+				self.down = true
+				if self.whiledown then
+					self:StartUpdating()
+				end
+				if self.ondown then
+					self.ondown()
+				end
 			end
 		else
 			if self.down then

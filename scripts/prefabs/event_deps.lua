@@ -125,6 +125,7 @@ local FESTIVAL_EVENT_DEPS =
         {
             assets =
             {
+                Asset("IMAGE", "images/colour_cubes/quagmire_cc.tex"),
                 Asset("ANIM", "anim/quagmire_menu.zip"),
                 Asset("ANIM", "anim/quagmire_menu_mid.zip"),
                 Asset("ANIM", "anim/quagmire_menu_bg.zip"),
