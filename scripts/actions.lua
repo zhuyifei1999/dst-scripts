@@ -1420,9 +1420,9 @@ ACTIONS.UNPIN.fn = function(act)
 end
 
 ACTIONS.STEALMOLEBAIT.fn = function(act)
-    if act.doer and act.target and act.doer.prefab == "mole" then
-        act.target.selectedasmoletarget = false
-        act.target:PushEvent("onstolen", {thief=act.doer})
+    if act.doer ~= nil and act.target ~= nil and act.doer.prefab == "mole" then
+        act.target.selectedasmoletarget = nil
+        act.target:PushEvent("onstolen", { thief = act.doer })
         return true
     end
 end

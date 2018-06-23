@@ -399,6 +399,8 @@ function ItemBoxOpenerPopup:GetHelpText()
 
     if self.ui_state == "PENDING_OPEN" then
         table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT) .. " " .. STRINGS.UI.ITEM_SCREEN.OPEN_BUTTON)
+    elseif self.ui_state == "WAIT_ON_NEXT" then
+        table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT) .. " " .. STRINGS.UI.ITEM_SCREEN.OPEN_NEXT)
     end
 
     if self:CanExit() then

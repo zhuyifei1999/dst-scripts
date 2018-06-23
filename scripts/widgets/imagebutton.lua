@@ -170,42 +170,46 @@ function ImageButton:OnControl(control, down)
 
     if control == self.control then
         if down then
-            if self.has_image_down then
-                self.image:SetTexture(self.atlas, self.image_down)
+            if not self.down then
+                if self.has_image_down then
+                    self.image:SetTexture(self.atlas, self.image_down)
 
-                if self.size_x and self.size_y then 
-    				self.image:ScaleToSize(self.size_x, self.size_y)
-    			end
-            end
-            TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
-            self.o_pos = self:GetLocalPosition()
-            if self.move_on_click then
-                self:SetPosition(self.o_pos + self.clickoffset)
-            end
-            self.down = true
-            if self.whiledown then
-                self:StartUpdating()
-            end
-            if self.ondown then
-                self.ondown()
+                    if self.size_x and self.size_y then 
+                        self.image:ScaleToSize(self.size_x, self.size_y)
+                    end
+                end
+                TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+                self.o_pos = self:GetLocalPosition()
+                if self.move_on_click then
+                    self:SetPosition(self.o_pos + self.clickoffset)
+                end
+                self.down = true
+                if self.whiledown then
+                    self:StartUpdating()
+                end
+                if self.ondown then
+                    self.ondown()
+                end
             end
         else
-            if self.has_image_down then
-                self.image:SetTexture(self.atlas, self.image_focus)
+            if self.down then
+                if self.has_image_down then
+                    self.image:SetTexture(self.atlas, self.image_focus)
 
-                if self.size_x and self.size_y then 
-    				self.image:ScaleToSize(self.size_x, self.size_y)
-    			end
+                    if self.size_x and self.size_y then 
+                        self.image:ScaleToSize(self.size_x, self.size_y)
+                    end
+                end
+                self.down = false
+                self:ResetPreClickPosition()
+                if self.onclick then
+                    self.onclick()
+                end
+                self:StopUpdating()
             end
-            self.down = false
-            self:ResetPreClickPosition()
-            if self.onclick then
-                self.onclick()
-            end
-            self:StopUpdating()
         end
         return true
-	end
+    end
 end
 
 function ImageButton:OnEnable()

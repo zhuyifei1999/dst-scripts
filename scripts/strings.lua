@@ -4012,6 +4012,7 @@ STRINGS.UI =
         NEW_SKIN = "You got a skin for %s!",
         OK_BUTTON = "Close",
         OPEN_BUTTON = "Open Now!",
+        OPEN_NEXT = "Proceed",
         OPENING = "Opening",
         BACK = "Back", 
         NEXT_ITEM = "Put it Away",
