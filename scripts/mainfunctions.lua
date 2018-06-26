@@ -996,26 +996,23 @@ function JapaneseOnPS4()
 end
 
 function StartNextInstance(in_params)
-	local match_results = {}
-	match_results.mvp_cards = (TheWorld ~= nil and TheWorld.GetMvpAwards ~= nil) and TheWorld:GetMvpAwards() or TheFrontEnd.match_results.mvp_cards
-	match_results.wxp_data = (TheWorld ~= nil and TheWorld.GetAwardedWxp ~= nil) and TheWorld:GetAwardedWxp() or TheFrontEnd.match_results.wxp_data
-	match_results.player_stats = (TheWorld ~= nil and TheWorld.GetPlayerStatistics ~= nil) and TheWorld:GetPlayerStatistics() or TheFrontEnd.match_results.player_stats
-	match_results.outcome = (TheWorld ~= nil and TheWorld.GetMatchOutcome ~= nil) and TheWorld:GetMatchOutcome() or TheFrontEnd.match_results.outcome
+    local match_results =
+    {
+        mvp_cards = TheWorld ~= nil and TheWorld.GetMvpAwards ~= nil and TheWorld:GetMvpAwards() or TheFrontEnd.match_results.mvp_cards,
+        wxp_data = TheWorld ~= nil and TheWorld.GetAwardedWxp ~= nil and TheWorld:GetAwardedWxp() or TheFrontEnd.match_results.wxp_data,
+        player_stats = TheWorld ~= nil and TheWorld.GetPlayerStatistics ~= nil and TheWorld:GetPlayerStatistics() or TheFrontEnd.match_results.player_stats,
+        outcome = TheWorld ~= nil and TheWorld.GetMatchOutcome ~= nil and TheWorld:GetMatchOutcome() or TheFrontEnd.match_results.outcome,
+    }
 
     if TheNet:GetIsServer() then
-        NotifyLoadingState(LoadingStates.Loading, match_results )
+        NotifyLoadingState(LoadingStates.Loading, match_results)
     end
 
     local params = in_params or {}
     params.last_reset_action = Settings.reset_action
-	params.match_results = match_results
+    params.match_results = match_results
     params.load_screen_image = global_loading_widget.image_random
     params.loading_screen_keys = BuildListOfSelectedItems(Profile, "loading")
-
-    if LOADED_CHARACTER then
-        TheSim:UnloadPrefabs(LOADED_CHARACTER)
-        LOADED_CHARACTER = nil
-    end
 
     SimReset(params)
 end
@@ -1030,11 +1027,13 @@ function SimReset(instanceparameters)
 
     ModManager:UnloadPrefabs()
 
-    if not instanceparameters then
+    if instanceparameters == nil then
         instanceparameters = {}
     end
     instanceparameters.last_asset_set = Settings.current_asset_set
     instanceparameters.last_world_asset = Settings.current_world_asset
+    instanceparameters.loaded_characters = Settings.loaded_characters
+
     local params = json.encode(instanceparameters)
     TheSim:SetInstanceParameters(params)
     TheSim:Reset()
