@@ -49,7 +49,7 @@ local WaitingForPlayers = Class(Widget, function(self, owner, max_players)
 				{
 					{text=STRINGS.UI.LOBBY_WAITING_FOR_PLAYERS_SCREEN.VOTE_POPUP_CONTINUE, cb = function() widget.votestart_warned = true TheFrontEnd:PopScreen() widget:onclick() end },
 					{text=STRINGS.UI.LOBBY_WAITING_FOR_PLAYERS_SCREEN.VOTE_POPUP_CANCEL, cb = function() TheFrontEnd:PopScreen() end}
-				}, nil, "medium"))
+				}, nil, "medium", "dark_wide" ))
 		else
 			widget.checked = not widget.checked
 			widget:Disable()
