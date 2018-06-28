@@ -181,12 +181,13 @@ local function LoadAssets(asset_set, savedata)
 
 	KeepAlive()
 
+    if Settings.loaded_characters ~= nil then
+        print("\tUnload characters")
+        TheSim:UnloadPrefabs(Settings.loaded_characters)
+        Settings.loaded_characters = nil
+    end
+
 	if Settings.current_asset_set == "FRONTEND" then
-        if Settings.loaded_characters ~= nil then
-            print("\tUnload characters")
-            TheSim:UnloadPrefabs(Settings.loaded_characters)
-            Settings.loaded_characters = nil
-        end
 		if Settings.last_asset_set == "FRONTEND" then
 			print("\tFE assets already loaded")
 			for i,file in ipairs(PREFABFILES) do -- required from prefablist.lua
