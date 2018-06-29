@@ -209,11 +209,11 @@ local function OnRecipeAppraised(self, data)
 			end
 		end
 
-		if data.matchedcraving ~= nil and not table.contains(recipe.tags, data.matchedcraving) then
+		if data.matchedcraving and not table.contains(recipe.tags, data.matchedcraving) then
 			if recipe.tags == nil then
 				recipe.tags = {}
 			end
-			table.insert(recipe.tags, data.matchedcraving)
+			table.insert(recipe.tags, tostring(data.matchedcraving))
 			self.dirty = true
 		end
 

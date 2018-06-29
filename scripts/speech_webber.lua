@@ -2321,7 +2321,7 @@ return {
         QUAGMIRE_CASSEROLEDISH = "We can cooks stuff in it.",
         QUAGMIRE_CASSEROLEDISH_SMALL = "It's kinda small.",
         QUAGMIRE_PLATE_SILVER = "Now we don't have to eat off the floor.",
-        QUAGMIRE_BOWL_SILVER = "Now we don't have somewhere to put food.",
+        QUAGMIRE_BOWL_SILVER = "Now we have somewhere to put food.",
         ---
         QUAGMIRE_MERM_CART1 = "Do they have any toys?", --sammy's wagon
         QUAGMIRE_MERM_CART2 = "That's full of good stuff.", --pipton's cart

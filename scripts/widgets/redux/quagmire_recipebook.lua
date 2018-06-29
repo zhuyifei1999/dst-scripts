@@ -381,10 +381,9 @@ function QuagmireRecipeBook:CreateRecipeDetailPanel(data)
 	y = y - 8
 	y = y - body_font_size/2
 	if num_cravings > 0 then
-		local tag_str = table.concat(data.recipe.tags, ", ")
-		local str = STRINGS.UI.RECIPE_BOOK.CRAVINGS[string.upper(data.recipe.tags[1])] or STRINGS.UI.RECIPE_BOOK.UNKNOWN_DATA
+		local str = STRINGS.UI.RECIPE_BOOK.CRAVINGS[string.upper(tostring(data.recipe.tags[1]))] or STRINGS.UI.RECIPE_BOOK.UNKNOWN_DATA
 		for i = 2, num_cravings do
-			str = str..", "..STRINGS.UI.RECIPE_BOOK.CRAVINGS[string.upper(data.recipe.tags[i])] or STRINGS.UI.RECIPE_BOOK.UNKNOWN_DATA
+			str = str..", "..STRINGS.UI.RECIPE_BOOK.CRAVINGS[string.upper(tostring(data.recipe.tags[i]))] or STRINGS.UI.RECIPE_BOOK.UNKNOWN_DATA
 		end
 		local tags = details_root:AddChild(Text(HEADERFONT, body_font_size, str, UICOLOURS.BROWN_DARK))
 		tags:SetPosition(0, y)
