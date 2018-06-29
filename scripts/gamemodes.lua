@@ -224,6 +224,7 @@ function GetGameModeTag(game_mode)
         or nil
 end
 
+-- Used by C side. Do NOT rename without editing simulation.cpp
 function GetGameModeString(game_mode)
     if game_mode == "" then
         return STRINGS.UI.GAMEMODES.UNKNOWN

@@ -5262,6 +5262,8 @@ STRINGS.UI =
         MODS_POPUP_CONTINUE = "Continue",
         MODS_POPUP_DISABLE_MODS = "Disable All Mods",
         MODS_POPUP_CANCEL = "Cancel",
+		
+		TOGGLE_PLAYER = "Toggle player",
     },
 
 	PORTRAIT =
@@ -7504,21 +7506,21 @@ STRINGS.TAGS =
     GAMEMODE =
     {
         LAVAARENA = "the_forge",
-        QUAGMIRE = "quagmire",
+        QUAGMIRE = "the_gorge",
     },
 }
 
 STRINGS.SIGNS =
 {
-	MENU = 
-	{
-		PROMPT = "Write on the sign",
-		CANCEL = "Cancel",
-		ACCEPT = "Write it!",
-		RANDOM = "Random",
-		FILTERING = "Validating Message...",
-	},
-	
+    MENU =
+    {
+        PROMPT = "Write on the sign",
+        CANCEL = "Cancel",
+        ACCEPT = "Write it!",
+        RANDOM = "Random",
+        FILTERING = "Validating Message...",
+    },
+
     ADJ_NOUN_FMT = "{adjective} {noun}",
     ADJ_NOUN_ADD_FMT = "{adjective} {noun} {addition}",
     QUANT_ADJ_NOUN_FMT = "{quantifier} {adjective} {noun}",

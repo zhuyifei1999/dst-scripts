@@ -450,7 +450,11 @@ function JoinServer(server_listing, optional_password_override)
     end
 
     local function on_cancelled()
-        TheNet:JoinServerResponse( true )
+        TheNet:JoinServerResponse(true)
+        local screen = TheFrontEnd:GetActiveScreen()
+        if screen ~= nil and screen.name == "ConnectingToGamePopup" then
+            screen:Close()
+        end
     end
 
     local function after_mod_warning()
