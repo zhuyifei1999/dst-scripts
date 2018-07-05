@@ -447,6 +447,7 @@ PREFABFILES = {
   "quagmire_burnt_ingredients",
   "quagmire_casseroledish",
   "quagmire_coins",
+  "quagmire_cooking_buff",
   "quagmire_crabtrap",
   "quagmire_crates",
   "quagmire_eventstages",

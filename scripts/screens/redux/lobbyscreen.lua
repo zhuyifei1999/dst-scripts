@@ -68,6 +68,14 @@ local WxpPanel = Class(LobbyPanel, function(self, owner)
 	self.wxp = self:AddChild(WxpLobbyPanel(owner.profile, function() owner.next_button:SetText(STRINGS.UI.WXPLOBBYPANEL.CONTINUE) end))
     self.wxp:SetPosition(0, show_mvp_cards and -145 or 70)
 
+	if outcome.lb_submit == false then
+		local score = self:AddChild(Text(CHATFONT, 18, STRINGS.UI.WXPLOBBYPANEL.LEADERBOARD_ERROR))
+		score:SetPosition(250, 285)
+		score:SetColour(UICOLOURS.RED)
+		score:SetRegionSize(400, 20)
+		score:SetHAlign(ANCHOR_RIGHT)
+	end
+
 	local info_y = 285
 
 	if outcome.score ~= nil then
@@ -388,11 +396,13 @@ local LobbyScreen = Class(Screen, function(self, profile, cb)
 	if not TheNet:IsDedicated() then
 		local player_stats = Settings.match_results.player_stats or TheFrontEnd.match_results.player_stats
 		if player_stats ~= nil and #player_stats.data > 0 then
-			local str = "\nstats_type,"..player_stats.gametype
-			str = str .."\nclient_date," .. os.date("%c")
+			local str = "\nstats_type,".. tostring(player_stats.gametype)
+			str = str .. "\nsession," .. tostring(player_stats.session)
+			str = str .. "\nclient_date," .. os.date("%c")
 			
 			local outcome = Settings.match_results.outcome or TheFrontEnd.match_results.outcome
 			if outcome ~= nil then
+				str = str .. "\nlb_submit," .. tostring(outcome.lb_submit)
 				str = str .. "\nwon," .. (outcome.won and "true" or "false") 
 				str = str .. "\nround," .. tostring(outcome.round)
 				str = str .. "\ntime," .. tostring(math.floor(outcome.time))

@@ -615,7 +615,6 @@ function ItemExplorer:_UpdateClickedWidget(item_widget)
             if prev_data and prev_data ~= item_widget.data then
                 self:_SetItemActiveFlag(prev_data, false)
                 if prev_data.widget then -- could have scrolled off screen?
-                    print("update prev widget", prev_data.widget)
                     prev_data.widget:UpdateSelectionState()
 				end
             end
