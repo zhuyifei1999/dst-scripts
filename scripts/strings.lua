@@ -5292,6 +5292,8 @@ STRINGS.UI =
         SCORE = "Appeasement Points: {score}",
 		TRIBUTES = "Gnaw's Cravings: {success} fulfilled and {failed} failed",
 
+		LEADERBOARD_ERROR = "Unable to connect to leaderboard server.",
+
         SKIP = "Skip",
         CONTINUE = "Continue",
         NEWBOX_TITLE = 
@@ -5314,6 +5316,7 @@ STRINGS.UI =
         LEVEL_UP = "LEVEL UP!",
         ACHIEVEMENT_UNLOCKED = "Achievement: {name}",
 		FOOD_DISCOVERY = "Recipe: {name}",
+		ADD_XP_VAL = "{name}, {val} XP"
     },
 
 	WXP_DETAILS =
@@ -5344,7 +5347,6 @@ STRINGS.UI =
 		QUAGMIRE_MILESTONE_2 = "Red Mark Earned",
 		QUAGMIRE_MILESTONE_3 = "Gnaw's Favor Earned",
         QUAGMIRE_NO_TRIBUTES_FAILED = "No Failed Offerings",
-		QUAGMIRE_NO_DUPLICATE_TRIUBUTES = "Unique Offerings",
         QUAGMIRE_UNIQUE_CHARACTERS = "No Duplicate Survivors",
         QUAGMIRE_NO_DUPLICATE_TRIUBUTES = "No Repeat Meals",
         QUAGMIRE_TRIBUTE_SCORE = "Appeasement Point Bonus",
