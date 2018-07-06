@@ -5293,6 +5293,11 @@ STRINGS.UI =
 		TRIBUTES = "Gnaw's Cravings: {success} fulfilled and {failed} failed",
 
 		LEADERBOARD_ERROR = "Unable to connect to leaderboard server.",
+		
+		STEAM = 
+		{ 
+			TOURNAMENTS_NO_ACCOUNT_SHARING = "Family Sharing accounts are not eligible for tournaments",
+		},
 
         SKIP = "Skip",
         CONTINUE = "Continue",
@@ -5316,7 +5321,7 @@ STRINGS.UI =
         LEVEL_UP = "LEVEL UP!",
         ACHIEVEMENT_UNLOCKED = "Achievement: {name}",
 		FOOD_DISCOVERY = "Recipe: {name}",
-		ADD_XP_VAL = "{name}, {val} XP"
+		ADD_XP_VAL = "{name}, {val} XP",
     },
 
 	WXP_DETAILS =
@@ -5751,6 +5756,7 @@ STRINGS.UI =
 		{
 			CATEGORIES =
 			{
+				encore = "Gorge Mastery",
 				victory = "Victory",
 				tributes = "Offerings",
 				chef = "Cooking",
@@ -5862,12 +5868,12 @@ STRINGS.UI =
 				cook_large = 
 				{
 					TITLE = "Big Meal",
-					DESC  ="Cook and complete at least one meal using a Large Grill, Large Pot or Large Casserole Dish",
+					DESC  ="Cook and complete at least one meal using a Large Grill, Large Cookpot or Large Casserole Dish",
 				},
 				cook_all_stations = 
 				{
 					TITLE = "Bake Boss",
-					DESC  ="Cook and complete at least one meal using an oven, a pot, and a grill, respectively",
+					DESC  ="Cook and complete at least one meal using an oven, a cookpot, and a grill, respectively",
 				},
 				cook_silver = 
 				{
@@ -5919,6 +5925,47 @@ STRINGS.UI =
 				{
 					TITLE = "Finders, Keepers",
 					DESC  ="Unlock at least one safe",
+				},
+
+				quag_encore_nomatches =
+				{
+					TITLE = "Never Satisfied",
+					DESC  = "Escape without satisfying any cravings",
+				},
+				quag_encore_notrees =
+				{
+					TITLE = "Tree Hugger",
+					DESC  = "Escape without harvesting any logs",
+				},
+				quag_encore_meaty =
+				{
+					TITLE = "Killing Spree",
+					DESC  = "Escape with all cooked meals having one or more meat ingredients (Meat Scraps, Salmon, Meat, or Crab Meat)",
+				},
+				quag_encore_veggie =
+				{
+					TITLE = "Meaty Neglect",
+					DESC  = "Escape without any meals cooked with meat ingredients (Meat Scraps, Salmon, Meat, or Crab Meat)",
+				},
+				quag_encore_allcooks =
+				{
+					TITLE = "Three Many Cooks",
+					DESC  = "Play a 3-player match where everyone has a turn to cook and complete at least two meals",
+				},
+				quag_encore_all_stations_large =
+				{
+					TITLE = "Snack of All Trades",
+					DESC  = "Cook and complete at least one meal using a Large Grill, a Large Cookpot, and a Large Casserole Dish, respectively",
+				},
+				quag_encore_tribute_coin3 =
+				{
+					TITLE = "Marked For Red",
+					DESC  = "Find or earn 3 or more Red Marks in one match",
+				},
+				quag_encore_tribute_coin2 =
+				{
+					TITLE = "Gather ‘Round the Sapphire",
+					DESC  = "Find or earn 3 or more Sapphire Medallions in one match",
 				},
 			},
 		},

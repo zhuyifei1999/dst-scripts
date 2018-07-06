@@ -68,15 +68,26 @@ local WxpPanel = Class(LobbyPanel, function(self, owner)
 	self.wxp = self:AddChild(WxpLobbyPanel(owner.profile, function() owner.next_button:SetText(STRINGS.UI.WXPLOBBYPANEL.CONTINUE) end))
     self.wxp:SetPosition(0, show_mvp_cards and -145 or 70)
 
+	local info_y = 285
 	if outcome.lb_submit == false then
 		local score = self:AddChild(Text(CHATFONT, 18, STRINGS.UI.WXPLOBBYPANEL.LEADERBOARD_ERROR))
-		score:SetPosition(250, 285)
+		score:SetPosition(190, info_y)
 		score:SetColour(UICOLOURS.RED)
-		score:SetRegionSize(400, 20)
+		score:SetRegionSize(500, 20)
 		score:SetHAlign(ANCHOR_RIGHT)
+		info_y = info_y - 20
+	end
+	if outcome.tournament_ticket ~= nil and TheSim:IsBorrowed() then
+		local score = self:AddChild(Text(CHATFONT, 18, STRINGS.UI.WXPLOBBYPANEL.STEAM.TOURNAMENTS_NO_ACCOUNT_SHARING))
+		score:SetPosition(190, info_y)
+		score:SetColour(UICOLOURS.RED)
+		score:SetRegionSize(500, 20)
+		score:SetHAlign(ANCHOR_RIGHT)
+		info_y = info_y - 20
 	end
 
-	local info_y = 285
+
+	info_y = 285
 
 	if outcome.score ~= nil then
 		local score = self:AddChild(Text(CHATFONT, 18, subfmt(STRINGS.UI.WXPLOBBYPANEL.SCORE, {score = outcome.score})))

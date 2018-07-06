@@ -113630,7 +113630,7 @@ msgstr ""
 
 #. STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.cook_all_stations.DESC
 msgctxt "STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.cook_all_stations.DESC"
-msgid "Cook and complete at least one meal using an oven, a pot, and a grill, respectively"
+msgid "Cook and complete at least one meal using an oven, a cookpot, and a grill, respectively"
 msgstr ""
 
 #. STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.cook_all_stations.TITLE
@@ -113660,7 +113660,7 @@ msgstr ""
 
 #. STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.cook_large.DESC
 msgctxt "STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.cook_large.DESC"
-msgid "Cook and complete at least one meal using a Large Grill, Large Pot or Large Casserole Dish"
+msgid "Cook and complete at least one meal using a Large Grill, Large Cookpot or Large Casserole Dish"
 msgstr ""
 
 #. STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.cook_large.TITLE
@@ -113776,6 +113776,86 @@ msgstr ""
 #. STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.gather_spice.TITLE
 msgctxt "STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.gather_spice.TITLE"
 msgid "The Spice of Strife"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_all_stations_large.DESC
+msgctxt "STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_all_stations_large.DESC"
+msgid "Cook and complete at least one meal using a Large Grill, a Large Cookpot, and a Large Casserole Dish, respectively"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_all_stations_large.TITLE
+msgctxt "STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_all_stations_large.TITLE"
+msgid "Snack of All Trades"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_allcooks.DESC
+msgctxt "STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_allcooks.DESC"
+msgid "Play a 3-player match where everyone has a turn to cook and complete at least two meals"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_allcooks.TITLE
+msgctxt "STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_allcooks.TITLE"
+msgid "Three Many Cooks"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_meaty.DESC
+msgctxt "STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_meaty.DESC"
+msgid "Escape with all cooked meals having one or more meat ingredients (Meat Scraps, Salmon, Meat, or Crab Meat)"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_meaty.TITLE
+msgctxt "STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_meaty.TITLE"
+msgid "Killing Spree"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_nomatches.DESC
+msgctxt "STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_nomatches.DESC"
+msgid "Escape without satisfying any cravings"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_nomatches.TITLE
+msgctxt "STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_nomatches.TITLE"
+msgid "Never Satisfied"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_notrees.DESC
+msgctxt "STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_notrees.DESC"
+msgid "Escape without harvesting any logs"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_notrees.TITLE
+msgctxt "STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_notrees.TITLE"
+msgid "Tree Hugger"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_tribute_coin2.DESC
+msgctxt "STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_tribute_coin2.DESC"
+msgid "Find or earn 3 or more Sapphire Medallions in one match"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_tribute_coin2.TITLE
+msgctxt "STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_tribute_coin2.TITLE"
+msgid "Gather ‘Round the Sapphire"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_tribute_coin3.DESC
+msgctxt "STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_tribute_coin3.DESC"
+msgid "Find or earn 3 or more Red Marks in one match"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_tribute_coin3.TITLE
+msgctxt "STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_tribute_coin3.TITLE"
+msgid "Marked For Red"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_veggie.DESC
+msgctxt "STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_veggie.DESC"
+msgid "Escape without any meals cooked with meat ingredients (Meat Scraps, Salmon, Meat, or Crab Meat)"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_veggie.TITLE
+msgctxt "STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_encore_veggie.TITLE"
+msgid "Meaty Neglect"
 msgstr ""
 
 #. STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.ACHIEVEMENT.quag_win_fast.DESC
@@ -113951,6 +114031,11 @@ msgstr ""
 #. STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.CATEGORIES.chef
 msgctxt "STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.CATEGORIES.chef"
 msgid "Cooking"
+msgstr ""
+
+#. STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.CATEGORIES.encore
+msgctxt "STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.CATEGORIES.encore"
+msgid "Gorge Mastery"
 msgstr ""
 
 #. STRINGS.UI.ACHIEVEMENTS.QUAGMIRE.CATEGORIES.farmer
@@ -126786,6 +126871,11 @@ msgstr ""
 #. STRINGS.UI.WXPLOBBYPANEL.SKIP
 msgctxt "STRINGS.UI.WXPLOBBYPANEL.SKIP"
 msgid "Skip"
+msgstr ""
+
+#. STRINGS.UI.WXPLOBBYPANEL.STEAM.TOURNAMENTS_NO_ACCOUNT_SHARING
+msgctxt "STRINGS.UI.WXPLOBBYPANEL.STEAM.TOURNAMENTS_NO_ACCOUNT_SHARING"
+msgid "Family Sharing accounts are not eligible for tournaments"
 msgstr ""
 
 #. STRINGS.UI.WXPLOBBYPANEL.TRIBUTES
