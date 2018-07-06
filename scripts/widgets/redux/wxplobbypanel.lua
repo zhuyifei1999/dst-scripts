@@ -36,8 +36,12 @@ local WxpLobbyPanel = Class(Widget, function(self, profile, on_anim_done_fn)
 		if self.wxp.match_xp ~= nil then
 			self.levelup = wxputils.GetLevelForWXP(self.wxp.new_xp - self.wxp.match_xp) ~= wxputils.GetLevelForWXP(self.wxp.new_xp)
 
+			if (not TheSim:IsBorrowed()) and Settings.match_results.outcome ~= nil and Settings.match_results.outcome.tournament_ticket ~= nil then
+				table.insert(self.wxp.details, {desc = string.upper(Settings.match_results.outcome.tournament_ticket), val = 0})
+			end
+
 			self.wxp.achievements = {}
-			for k, detail in pairs(self.wxp.details) do
+			for k, detail in ipairs(self.wxp.details) do
 				if EventAchievements:IsAnAchievement(self.current_eventid, detail.desc) then
 					detail._has_icon = true
 					detail._is_achievement = true
@@ -61,6 +65,7 @@ local WxpLobbyPanel = Class(Widget, function(self, profile, on_anim_done_fn)
 			end
 
 			table.sort(self.wxp.details, function(a, b) return (a.val+(a._sort_value or 0)) < (b.val+(b._sort_value or 0)) end)
+			table.sort(self.wxp.achievements, function(a, b) return (a.val+(a._sort_value or 0)) < (b.val+(b._sort_value or 0)) end)
 			
 			self.wxp.old_xp = math.max(0, self.wxp.new_xp - self.wxp.match_xp)
 			self.wxp.old_level = wxputils.GetLevelForWXP(self.wxp.old_xp)
