@@ -72,7 +72,7 @@ local Quagmire_Achievements =
                 achievementid = "quag_encore_meaty",
                 wxp = WXP_LEVEL4,
                 shared_progress_fn = function(data, shared_scratchpad)
-					if not shared_scratchpad.quag_encore_meaty_failed then
+					if not shared_scratchpad.quag_encore_meaty_failed and data.product ~= "quagmire_syrup" then
 						for _, ingredient in ipairs(data.ingredients) do
 							if table.contains(meat_ingredients, ingredient) then
 								return

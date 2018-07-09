@@ -640,6 +640,22 @@ function GetActiveFestivalEventAchievementStrings()
     return STRINGS.UI.ACHIEVEMENTS[festival:upper()]
 end
 
+-- To enable/disable the tournament, change the return value of Server_IsTournamentActive()
+QUAGMIRE_TOURNAMENT_TICKET = "quagmire_challenge_test"
+
+function Server_IsTournamentActive()
+	-- for internal server use only
+	return false
+end
+
+function Client_IsTournamentActive(ticket_name) -- ticket_name is optional
+	local is_active = Server_IsTournamentActive() and IsSteam()
+	if is_active and ticket_name ~= nil and ticket_name ~= ACTIVE_TOURNAMENT_TICKET then
+		is_active = false
+	end
+	return is_active
+end
+
 ---------------------------------------------------------
 --If changing this logic, remember to update preloadsounds.lua
 --default:

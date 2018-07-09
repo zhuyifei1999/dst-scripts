@@ -1025,14 +1025,13 @@ end
 function SimReset(instanceparameters)
     SimTearingDown = true
 
-    ModManager:UnloadPrefabs()
-
     if instanceparameters == nil then
         instanceparameters = {}
     end
     instanceparameters.last_asset_set = Settings.current_asset_set
     instanceparameters.last_world_asset = Settings.current_world_asset
     instanceparameters.loaded_characters = Settings.loaded_characters
+    instanceparameters.loaded_mods = ModManager:GetUnloadPrefabsData()
 
     local params = json.encode(instanceparameters)
     TheSim:SetInstanceParameters(params)

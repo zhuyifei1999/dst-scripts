@@ -36,7 +36,7 @@ local WxpLobbyPanel = Class(Widget, function(self, profile, on_anim_done_fn)
 		if self.wxp.match_xp ~= nil then
 			self.levelup = wxputils.GetLevelForWXP(self.wxp.new_xp - self.wxp.match_xp) ~= wxputils.GetLevelForWXP(self.wxp.new_xp)
 
-			if (not TheSim:IsBorrowed()) and Settings.match_results.outcome ~= nil and Settings.match_results.outcome.tournament_ticket ~= nil then
+			if Client_IsTournamentActive() and Settings.match_results.outcome ~= nil and Settings.match_results.outcome.tournament_ticket ~= nil and not TheSim:IsBorrowed() then
 				table.insert(self.wxp.details, {desc = string.upper(Settings.match_results.outcome.tournament_ticket), val = 0})
 			end
 

@@ -350,6 +350,11 @@ end
 
 SetInstanceParameters(json_settings)
 
+if Settings.loaded_mods ~= nil then
+    ModManager:UnloadPrefabsFromData(Settings.loaded_mods)
+    Settings.loaded_mods = nil
+end
+
 if not MODS_ENABLED then
 	-- No mods in nacl, and the below functions are async in nacl
 	-- so they break because Main returns before ModSafeStartup has run.

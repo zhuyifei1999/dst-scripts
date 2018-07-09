@@ -77,7 +77,7 @@ local WxpPanel = Class(LobbyPanel, function(self, owner)
 		score:SetHAlign(ANCHOR_RIGHT)
 		info_y = info_y - 20
 	end
-	if outcome.tournament_ticket ~= nil and TheSim:IsBorrowed() then
+	if outcome.tournament_ticket ~= nil and Client_IsTournamentActive() and TheSim:IsBorrowed() then
 		local score = self:AddChild(Text(CHATFONT, 18, STRINGS.UI.WXPLOBBYPANEL.STEAM.TOURNAMENTS_NO_ACCOUNT_SHARING))
 		score:SetPosition(190, info_y)
 		score:SetColour(UICOLOURS.RED)
