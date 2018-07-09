@@ -38945,7 +38945,7 @@ msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_LAMP_SHORT
 msgctxt "STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_LAMP_SHORT"
-msgid "The only light in my light is Abigail."
+msgid "The only light in my life is Abigail."
 msgstr ""
 
 #. STRINGS.CHARACTERS.WENDY.DESCRIBE.QUAGMIRE_MEALINGSTONE

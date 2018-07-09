@@ -627,10 +627,26 @@ function ModWrangler:RegisterPrefabs()
 end
 
 function ModWrangler:UnloadPrefabs()
-	for i, modname in ipairs( self.loadedprefabs ) do
-		print("unloading prefabs for mod "..ModInfoname(modname))
-		TheSim:UnloadPrefabs({modname})
-	end
+    self:UnloadPrefabsFromData(self:GetUnloadPrefabsData())
+end
+
+--This is so we can defer unloading till after sim reset
+function ModWrangler:GetUnloadPrefabsData()
+    local data = {}
+    for i, modname in ipairs(self.loadedprefabs) do
+        table.insert(data, {
+            infoname = ModInfoname(modname),
+            name = modname,
+        })
+    end
+    return data
+end
+
+function ModWrangler:UnloadPrefabsFromData(data)
+    for i, v in ipairs(data) do
+        print("unloading prefabs for mod "..v.infoname)
+        TheSim:UnloadPrefabs({ v.name })
+    end
 end
 
 function ModWrangler:SetPostEnv()

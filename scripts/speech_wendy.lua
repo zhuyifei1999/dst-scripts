@@ -2340,7 +2340,7 @@ return {
         QUAGMIRE_ALTAR_BOLLARD = "A post. Not very exciting.",
         QUAGMIRE_ALTAR_IVY = "Like death, it creeps everywhere.",
 
-        QUAGMIRE_LAMP_SHORT = "The only light in my light is Abigail.",
+        QUAGMIRE_LAMP_SHORT = "The only light in my life is Abigail.",
 
     },
     DESCRIBE_GENERIC = "Sigh... I don't know.",
