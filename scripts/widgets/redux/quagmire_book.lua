@@ -13,7 +13,7 @@ local AchievementsPanel = require "widgets/redux/achievementspanel"
 require("util")
 
 -------------------------------------------------------------------------------------------------------
-local QuagmireBook = Class(Widget, function(self, user_profile, parent)
+local QuagmireBook = Class(Widget, function(self, user_profile, parent, secondary_left_menu)
     Widget._ctor(self, "QuagmireBook")
 
     self.root = self:AddChild(Widget("root"))
@@ -66,7 +66,7 @@ local QuagmireBook = Class(Widget, function(self, user_profile, parent)
 				if TheWorld ~= nil then
 					parent.default_focus = self.panel.parent_default_focus
 				else
-					self:_DoFocusHookups(parent)
+					self:_DoFocusHookups(parent, secondary_left_menu)
 				end
 			end
 			self.panel.parent_default_focus:SetFocus()
@@ -91,14 +91,22 @@ local QuagmireBook = Class(Widget, function(self, user_profile, parent)
 	if TheWorld ~= nil then
 		parent.default_focus = self.panel.parent_default_focus
 	else
-		self:_DoFocusHookups(parent)
+		self:_DoFocusHookups(parent, secondary_left_menu)
 	end
 end)
 
-function QuagmireBook:_DoFocusHookups(menu)
+function QuagmireBook:_DoFocusHookups(menu, secondary_left_menu)
 	menu:ClearFocusDirs()
 	menu:SetFocusChangeDir(MOVE_RIGHT, self.panel.parent_default_focus)
 	self.panel.parent_default_focus:SetFocusChangeDir(MOVE_LEFT, menu)
+
+	if secondary_left_menu ~= nil then
+		secondary_left_menu:ClearFocusDirs()
+
+		menu:SetFocusChangeDir(MOVE_UP, secondary_left_menu)
+		secondary_left_menu:SetFocusChangeDir(MOVE_DOWN, menu)
+		secondary_left_menu:SetFocusChangeDir(MOVE_RIGHT, self.panel.parent_default_focus)
+	end
 
 	for i, v in ipairs(self.tabs) do
 		v:ClearFocusDirs()
