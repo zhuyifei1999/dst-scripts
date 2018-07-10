@@ -8,6 +8,8 @@ local PopupDialogScreen = require "screens/redux/popupdialog"
 local AchievementsPanel = require "widgets/redux/achievementspanel"
 local BookWidget = require "widgets/redux/quagmire_book"
 
+local FestivalEventScreenInfo = require "widgets/redux/festivaleventscreeninfo"
+
 local TEMPLATES = require("widgets/redux/templates")
 
 require("constants")
@@ -51,8 +53,14 @@ function FestivalEventScreen:DoInit()
     self.menu = self.root:AddChild(self:_MakeMenu())
 	self.menu.reverse = true
 
+	if Client_IsTournamentActive() then
+		self.event_details = self.root:AddChild(FestivalEventScreenInfo(self.user_profile))
+		local menu_pos = self.menu:GetPosition()
+		self.event_details:SetPosition(menu_pos.x - 40, menu_pos.y + 280)
+	end
+
 	if IsFestivalEventActive(FESTIVAL_EVENTS.QUAGMIRE) then
-		self.recipebook = self.root:AddChild(BookWidget(self.user_profile, self.menu))
+		self.recipebook = self.root:AddChild(BookWidget(self.user_profile, self.menu, self.event_details))
 		self.recipebook:SetPosition(120, -40)
 		self.recipebook:MoveToFront()
 
@@ -70,6 +78,12 @@ function FestivalEventScreen:DoInit()
                 end
             ))
     end
+
+	if self.event_details ~= nil then
+		self.menu:SetFocusChangeDir(MOVE_UP, self.event_details)
+		self.event_details:SetFocusChangeDir(MOVE_DOWN, self.menu)
+	end
+		
 end
 
 function FestivalEventScreen:_MakeMenu()
