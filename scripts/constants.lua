@@ -641,11 +641,11 @@ function GetActiveFestivalEventAchievementStrings()
 end
 
 -- To enable/disable the tournament, change the return value of Server_IsTournamentActive()
-QUAGMIRE_TOURNAMENT_TICKET = "quagmire_challenge_test"
+QUAGMIRE_TOURNAMENT_TICKET = "quagmire_challenge"
 
 function Server_IsTournamentActive()
 	-- for internal server use only
-	return false
+	return true
 end
 
 function Client_IsTournamentActive(ticket_name) -- ticket_name is optional

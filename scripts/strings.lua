@@ -5355,6 +5355,7 @@ STRINGS.UI =
         QUAGMIRE_UNIQUE_CHARACTERS = "No Duplicate Survivors",
         QUAGMIRE_NO_DUPLICATE_TRIUBUTES = "No Repeat Meals",
         QUAGMIRE_TRIBUTE_SCORE = "Appeasement Point Bonus",
+        QUAGMIRE_CHALLENGE = "Tournament Entry",
 	},
 
 	XPUTILS = 
