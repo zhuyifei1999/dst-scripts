@@ -5,7 +5,7 @@ local loaded_klumps = {}
 function LoadAccessibleKlumpFiles(minimal_load)
     --dumptable(Profile.persistdata.klump_ciphers)
     if LOAD_UPFRONT_MODE then
-        if IsFestivalEventActive(FESTIVAL_EVENTS.QUAGMIRE) or IsPreviousFestivalEvent(FESTIVAL_EVENTS.QUAGMIRE) then
+        if QUAGMIRE_USE_KLUMP and (IsFestivalEventActive(FESTIVAL_EVENTS.QUAGMIRE) or IsPreviousFestivalEvent(FESTIVAL_EVENTS.QUAGMIRE)) then
 			require("quagmire_event_server/quagmire_food_ids")
 			local secrets = event_server_data("quagmire", "klump_secrets")
 			for _,name in pairs(QUAGMIRE_FOOD_IDS) do

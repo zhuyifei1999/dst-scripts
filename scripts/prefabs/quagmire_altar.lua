@@ -12,12 +12,14 @@ local prefabs =
 }
 
 local function OnKeyDirty(inst)
-    if inst.foodid:value() > 0 and inst.klumpkey:value():len() > 0 then
-        local name = string.format("quagmire_food_%03i", inst.foodid:value())
-        LoadKlumpFile("images/quagmire_food_inv_images_"..name..".tex", inst.klumpkey:value())
-        LoadKlumpFile("images/quagmire_food_inv_images_hires_"..name..".tex", inst.klumpkey:value())
-        LoadKlumpFile("anim/dynamic/"..name..".dyn", inst.klumpkey:value())
-        LoadKlumpString("STRINGS.NAMES."..string.upper(name), inst.klumpkey:value())
+    if QUAGMIRE_USE_KLUMP then
+        if inst.foodid:value() > 0 and inst.klumpkey:value():len() > 0 then
+            local name = string.format("quagmire_food_%03i", inst.foodid:value())
+            LoadKlumpFile("images/quagmire_food_inv_images_"..name..".tex", inst.klumpkey:value())
+            LoadKlumpFile("images/quagmire_food_inv_images_hires_"..name..".tex", inst.klumpkey:value())
+            LoadKlumpFile("anim/dynamic/"..name..".dyn", inst.klumpkey:value())
+            LoadKlumpString("STRINGS.NAMES."..string.upper(name), inst.klumpkey:value())
+        end
     end
 end
 

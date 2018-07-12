@@ -609,14 +609,17 @@ function QuagmireRecipeBook:BuildRecipeBook()
 			self.all_recipes[id].id_str = STRINGS.UI.RECIPE_BOOK.SYRUP_RECIPE_ID
 		end
 
-		local is_klump_loaded = IsKlumpLoaded("images/quagmire_food_inv_images_hires_"..client_name..".tex")
+		local is_image_loaded = true
+        if QUAGMIRE_USE_KLUMP then
+            is_image_loaded = IsKlumpLoaded("images/quagmire_food_inv_images_hires_"..client_name..".tex")
+        end
 
 		self.all_recipes[id].name = client_name
 		self.all_recipes[id].recipe = recipe
 		self.all_recipes[id].icon = client_name..".tex"
 		if recipe.dish == nil then
 			self.all_recipes[id].atlas = "images/inventoryimages.xml"
-		elseif not is_klump_loaded then
+		elseif not is_image_loaded then
 			self.all_recipes[id].atlas = "images/quagmire_food_common_inv_images_hires.xml"
 			self.all_recipes[id].icon = (recipe.station[1]=="pot" and "goop_" or "burnt_") .. recipe.dish .. ".tex"
 		else

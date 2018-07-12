@@ -70,7 +70,7 @@ local WxpPanel = Class(LobbyPanel, function(self, owner)
 
 	local info_y = 285
 	if outcome.lb_submit == false then
-		local score = self:AddChild(Text(CHATFONT, 18, STRINGS.UI.WXPLOBBYPANEL.LEADERBOARD_ERROR))
+		local score = self:AddChild(Text(CHATFONT, 18, STRINGS.UI.WXPLOBBYPANEL.LEADERBOARD_ERROR .. " ("..tostring(outcome.lb_response)..")"))
 		score:SetPosition(190, info_y)
 		score:SetColour(UICOLOURS.RED)
 		score:SetRegionSize(500, 20)
@@ -413,7 +413,7 @@ local LobbyScreen = Class(Screen, function(self, profile, cb)
 			
 			local outcome = Settings.match_results.outcome or TheFrontEnd.match_results.outcome
 			if outcome ~= nil then
-				str = str .. "\nlb_submit," .. tostring(outcome.lb_submit)
+				str = str .. "\nlb_submit," .. tostring(outcome.lb_submit) .. ", " .. tostring(outcome.lb_response)
 				str = str .. "\nwon," .. (outcome.won and "true" or "false") 
 				str = str .. "\nround," .. tostring(outcome.round)
 				str = str .. "\ntime," .. tostring(math.floor(outcome.time))
