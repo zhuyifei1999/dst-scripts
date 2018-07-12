@@ -137,6 +137,14 @@ local FESTIVAL_EVENT_DEPS =
     },
 }
 
+if not QUAGMIRE_USE_KLUMP then
+    for i = 1, QUAGMIRE_NUM_FOOD_PREFABS do
+        local name = string.format("quagmire_food_%03i", i)
+        table.insert( FESTIVAL_EVENT_DEPS[FESTIVAL_EVENTS.QUAGMIRE].frontend.assets, Asset("DYNAMIC_ATLAS", "images/quagmire_food_inv_images_hires_"..name..".xml") )
+        table.insert( FESTIVAL_EVENT_DEPS[FESTIVAL_EVENTS.QUAGMIRE].frontend.assets, Asset("PKGREF", "images/quagmire_food_inv_images_hires_"..name..".tex") )
+    end
+end
+
 --------------------------------------------------------------------------
 --we don't actually instantiate this prefab. It's used for controlling asset loading
 local function fn()

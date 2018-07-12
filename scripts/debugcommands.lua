@@ -308,7 +308,7 @@ function d_unlockallachievements()
 		table.insert(achievements, k)
 	end
 	
-	TheItems:ReportEventProgress(json.encode(
+	TheItems:ReportEventProgress(json.encode_compliant(
 		{
 			WorldID = "dev_"..tostring(math.random(9999999))..tostring(math.random(9999999)),
 			Teams =
@@ -338,7 +338,7 @@ function d_unlockfoodachievements()
 	    "food_syrup",
     }
 	
-	TheItems:ReportEventProgress(json.encode(
+	TheItems:ReportEventProgress(json.encode_compliant(
 		{
 			WorldID = "dev_"..tostring(math.random(9999999))..tostring(math.random(9999999)),
 			Teams =
@@ -357,7 +357,7 @@ function d_unlockfoodachievements()
 end
 
 function d_reportevent(other_ku)
-	TheItems:ReportEventProgress(json.encode(
+	TheItems:ReportEventProgress(json.encode_compliant(
 		{
 			WorldID = "dev_"..tostring(math.random(9999999))..tostring(math.random(9999999)),
 			Teams =

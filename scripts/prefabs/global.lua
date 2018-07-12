@@ -266,12 +266,14 @@ for _,skin_prefab in pairs(skinprefabs) do
     end
 end
 
---Add the custom quagmire recipe images
-for _,file in pairs(require("klump_files")) do
-    local klump_file = string.gsub(file, "klump/", "")
-    if klump_file:find(".tex") and klump_file:find("_hires") then --crappy assumption for now that _hires .tex klump files have a matching atlas that we need to load
-        local xml_file = string.gsub(klump_file, ".tex", ".xml")
-        table.insert(assets, Asset("DYNAMIC_ATLAS", xml_file)) --global because the recipe book is used in the frontend and backend
+if QUAGMIRE_USE_KLUMP then
+    --Add the custom quagmire recipe images
+    for _,file in pairs(require("klump_files")) do
+        local klump_file = string.gsub(file, "klump/", "")
+        if klump_file:find(".tex") and klump_file:find("_hires") then --crappy assumption for now that _hires .tex klump files have a matching atlas that we need to load
+            local xml_file = string.gsub(klump_file, ".tex", ".xml")
+            table.insert(assets, Asset("DYNAMIC_ATLAS", xml_file)) --global because the recipe book is used in the frontend and backend
+        end
     end
 end
 

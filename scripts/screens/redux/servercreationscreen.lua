@@ -364,8 +364,26 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
 
             local serverdata = self.server_settings_tab:GetServerData()
             local worldoptions = {}
+            local specialeventoverride = nil
             for i,tab in ipairs(self.world_tabs) do
                 worldoptions[i] = tab:CollectOptions()
+
+                --V2C: copy special event override from master to slaves
+                if worldoptions[i] ~= nil then
+                    if i == 1 then
+                        if worldoptions[1].overrides ~= nil then
+                            specialeventoverride = worldoptions[1].overrides.specialevent
+                            if specialeventoverride == "default" then
+                                specialeventoverride = nil
+                            end
+                        end
+                    elseif specialeventoverride ~= nil then
+                        if worldoptions[i].overrides == nil then
+                            worldoptions[i].overrides = {}
+                        end
+                        worldoptions[i].overrides.specialevent = specialeventoverride
+                    end
+                end
             end
 
             local world1datastring = ""
@@ -618,6 +636,10 @@ function ServerCreationScreen:ValidateSettings()
         return false
     elseif not self.server_settings_tab:VerifyValidClanSettings() then
         TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.SERVERCREATIONSCREEN.INVALIDCLANSETTINGS_TITLE, STRINGS.UI.SERVERCREATIONSCREEN.INVALIDCLANSETTINGS_BODY,
+                    {{text=STRINGS.UI.CUSTOMIZATIONSCREEN.OKAY, cb = function() TheFrontEnd:PopScreen() self:SetTab("settings") end}}))
+        return false
+    elseif not self.server_settings_tab:VerifyValidPassword() then
+        TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.SERVERCREATIONSCREEN.INVALIDPASSWORD_TITLE, STRINGS.UI.SERVERCREATIONSCREEN.INVALIDPASSWORD_BODY,
                     {{text=STRINGS.UI.CUSTOMIZATIONSCREEN.OKAY, cb = function() TheFrontEnd:PopScreen() self:SetTab("settings") end}}))
         return false
     -- Check if our season settings are valid (i.e. at least one season has a duration)
