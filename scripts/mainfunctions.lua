@@ -1062,12 +1062,13 @@ function Shutdown()
 
     Print(VERBOSITY.DEBUG, 'Ending the sim now!')
 
-    UnloadFonts()
+    --V2C: Assets will be unloaded when the C++ subsystems are deconstructed
+    --UnloadFonts()
 
     -- warning, we don't want to run much code here. We're in a strange mix of loaded assets and mapped paths
     -- as a bonus, the fonts are unloaded, so no asserting...
-    TheSim:UnloadAllPrefabs()
-    ModManager:UnloadPrefabs()
+    --TheSim:UnloadAllPrefabs()
+    --ModManager:UnloadPrefabs()
 
     TheSim:Quit()
 end
