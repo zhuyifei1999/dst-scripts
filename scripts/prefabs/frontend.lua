@@ -235,6 +235,19 @@ for _, skins_prefabs in pairs(PREFAB_SKINS) do
     end
 end
 
+
+--Quagmire specific, but needed in the non-event UI now for the player summary recipe book
+table.insert( assets, Asset("IMAGE", "images/colour_cubes/quagmire_cc.tex") )
+if not QUAGMIRE_USE_KLUMP then
+    for i = 1, QUAGMIRE_NUM_FOOD_PREFABS do
+        local name = string.format("quagmire_food_%03i", i)
+        table.insert( assets, Asset("DYNAMIC_ATLAS", "images/quagmire_food_inv_images_hires_"..name..".xml") )
+        table.insert( assets, Asset("PKGREF", "images/quagmire_food_inv_images_hires_"..name..".tex") )
+    end
+end
+
+
+
 --we don't actually instantiate this prefab. It's used for controlling asset loading
 local function fn()
     return CreateEntity()

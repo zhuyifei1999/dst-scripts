@@ -91,7 +91,9 @@ local QuagmireBook = Class(Widget, function(self, user_profile, parent, secondar
 	if TheWorld ~= nil then
 		parent.default_focus = self.panel.parent_default_focus
 	else
-		self:_DoFocusHookups(parent, secondary_left_menu)
+        if parent ~= nil then
+		    self:_DoFocusHookups(parent, secondary_left_menu)
+        end
 	end
 end)
 

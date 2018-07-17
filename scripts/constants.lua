@@ -486,8 +486,8 @@ FESTIVAL_EVENTS =
     LAVAARENA = "lavaarena",
     QUAGMIRE = "quagmire",
 }
-WORLD_FESTIVAL_EVENT = FESTIVAL_EVENTS.QUAGMIRE
-PREVIOUS_FESTIVAL_EVENTS = { FESTIVAL_EVENTS.LAVAARENA } --this is an array now, not a single event key
+WORLD_FESTIVAL_EVENT = FESTIVAL_EVENTS.NONE
+PREVIOUS_FESTIVAL_EVENTS = { FESTIVAL_EVENTS.LAVAARENA, FESTIVAL_EVENTS.QUAGMIRE } --this is an array now, not a single event key
 
 
 ---------------------------------------------------------
