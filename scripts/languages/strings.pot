@@ -105883,6 +105883,21 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_pothanger"
 msgid "Equip this item to change your character's background portrait."
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_quagmiretournamentbronze
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_quagmiretournamentbronze"
+msgid "Equip this item to change your character's background portrait"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_quagmiretournamentgold
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_quagmiretournamentgold"
+msgid "Equip this item to change your character's background portrait"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_quagmiretournamentsilver
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_quagmiretournamentsilver"
+msgid "Equip this item to change your character's background portrait"
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_rocks
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_rocks"
 msgid "Equip this item to change your character's background portrait."
@@ -106286,6 +106301,26 @@ msgstr ""
 #. STRINGS.SKIN_DESCRIPTIONS.profileflair_puppington
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_puppington"
 msgid "Set your profile icon to a sweet litle Vargling.\nHappy Year of the Varg!"
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_quagmiretournament_bronze
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_quagmiretournament_bronze"
+msgid "Set your profile icon to an appeased maw of Gnaw.\n\nYou proved your worth in the Gnaw's great tournament."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_quagmiretournament_gold
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_quagmiretournament_gold"
+msgid "Set your profile icon to an appeased maw of Gnaw.\n\nYou proved your worth and came out on top in the Gnaw's great tournament."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_quagmiretournament_participation
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_quagmiretournament_participation"
+msgid "Set your profile icon to an appeased maw of Gnaw.\n\nYou fulfilled your duty in the Gnaw's great tournament."
+msgstr ""
+
+#. STRINGS.SKIN_DESCRIPTIONS.profileflair_quagmiretournament_silver
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.profileflair_quagmiretournament_silver"
+msgid "Set your profile icon to an appeased maw of Gnaw.\n\nYou proved your worth in the Gnaw's great tournament."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.profileflair_rabbit
@@ -110213,6 +110248,21 @@ msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_pothanger"
 msgid "Pot Hanger Portrait"
 msgstr ""
 
+#. STRINGS.SKIN_NAMES.playerportrait_bg_quagmiretournamentbronze
+msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_quagmiretournamentbronze"
+msgid "Burnished Cornucopia Portrait"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.playerportrait_bg_quagmiretournamentgold
+msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_quagmiretournamentgold"
+msgid "Golden Cornucopia Portrait"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.playerportrait_bg_quagmiretournamentsilver
+msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_quagmiretournamentsilver"
+msgid "Sterling Cornucopia Portrait"
+msgstr ""
+
 #. STRINGS.SKIN_NAMES.playerportrait_bg_rocks
 msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_rocks"
 msgid "Rockland Portrait"
@@ -110616,6 +110666,26 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.profileflair_puppington
 msgctxt "STRINGS.SKIN_NAMES.profileflair_puppington"
 msgid "Vargling"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.profileflair_quagmiretournament_bronze
+msgctxt "STRINGS.SKIN_NAMES.profileflair_quagmiretournament_bronze"
+msgid "Burnished Icon of Gnaw"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.profileflair_quagmiretournament_gold
+msgctxt "STRINGS.SKIN_NAMES.profileflair_quagmiretournament_gold"
+msgid "Golden Icon of Gnaw"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.profileflair_quagmiretournament_participation
+msgctxt "STRINGS.SKIN_NAMES.profileflair_quagmiretournament_participation"
+msgid "Icon of Gnaw"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.profileflair_quagmiretournament_silver
+msgctxt "STRINGS.SKIN_NAMES.profileflair_quagmiretournament_silver"
+msgid "Sterling Icon of Gnaw"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.profileflair_rabbit
@@ -113321,6 +113391,11 @@ msgstr ""
 #. STRINGS.THANKS_POPUP.GORGE
 msgctxt "STRINGS.THANKS_POPUP.GORGE"
 msgid "Thanks for playing during the\nGorge event"
+msgstr ""
+
+#. STRINGS.THANKS_POPUP.GORGE_TOURNAMENT
+msgctxt "STRINGS.THANKS_POPUP.GORGE_TOURNAMENT"
+msgid "Thanks for participating in the\nGorge Tournament"
 msgstr ""
 
 #. STRINGS.THANKS_POPUP.LUNAR

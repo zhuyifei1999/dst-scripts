@@ -6,6 +6,13 @@ local SKIN_GIFT_TYPES =
 	emote_swoon = "CUPID",
 	firepit_hole = "EARLY_ACCESS",
 	playerportrait_bg_foods = "GORGE",
+	playerportrait_bg_quagmiretournamentbronze = "GORGE_TOURNAMENT",
+	playerportrait_bg_quagmiretournamentgold = "GORGE_TOURNAMENT",
+	playerportrait_bg_quagmiretournamentsilver = "GORGE_TOURNAMENT",
+	profileflair_quagmiretournament_bronze = "GORGE_TOURNAMENT",
+	profileflair_quagmiretournament_gold = "GORGE_TOURNAMENT",
+	profileflair_quagmiretournament_participation = "GORGE_TOURNAMENT",
+	profileflair_quagmiretournament_silver = "GORGE_TOURNAMENT",
 	reviver_cupid = "CUPID",
 	reviver_cupid_2 = "CUPID",
 	torch_shadow = "ARG",
@@ -43,6 +50,13 @@ local SKIN_GIFT_POPUPDATA =
 		atlas = "images/thankyou_item_event2.xml",
 		image = {"thankyou_gorge.tex"},
 		title = STRINGS.THANKS_POPUP.GORGE,
+		titleoffset = {0, -20, 0},
+	},
+	GORGE_TOURNAMENT =
+	{
+		atlas = "images/thankyou_item_popup.xml",
+		image = {"thankyou_gift.tex"},
+		title = STRINGS.THANKS_POPUP.GORGE_TOURNAMENT,
 		titleoffset = {0, -20, 0},
 	},
 	LUNAR =
