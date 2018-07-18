@@ -1350,6 +1350,27 @@ MISC_ITEMS =
 		rarity_modifier = "EventModifier",
 		release_group = 43,
 	},
+	playerportrait_bg_quagmiretournamentbronze =
+	{
+		type = "playerportrait",
+		skin_tags = { "VICTORIAN", "PLAYERPORTRAIT", },
+		rarity = "Loyal",
+		release_group = 47,
+	},
+	playerportrait_bg_quagmiretournamentgold =
+	{
+		type = "playerportrait",
+		skin_tags = { "VICTORIAN", "PLAYERPORTRAIT", },
+		rarity = "Loyal",
+		release_group = 47,
+	},
+	playerportrait_bg_quagmiretournamentsilver =
+	{
+		type = "playerportrait",
+		skin_tags = { "VICTORIAN", "PLAYERPORTRAIT", },
+		rarity = "Loyal",
+		release_group = 47,
+	},
 	playerportrait_bg_rocks =
 	{
 		type = "playerportrait",
@@ -1997,6 +2018,34 @@ MISC_ITEMS =
 		rarity = "Common",
 		rarity_modifier = "Seasonal",
 		release_group = 40,
+	},
+	profileflair_quagmiretournament_bronze =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 47,
+	},
+	profileflair_quagmiretournament_gold =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 47,
+	},
+	profileflair_quagmiretournament_participation =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 47,
+	},
+	profileflair_quagmiretournament_silver =
+	{
+		type = "profileflair",
+		skin_tags = { "VICTORIAN", "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 47,
 	},
 	profileflair_rabbit =
 	{
