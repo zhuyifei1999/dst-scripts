@@ -726,7 +726,7 @@ function MultiplayerMainScreen:FinishedFadeIn()
 			    if interface_lang ~= "english" then
                     if Profile:GetValue("language_asked_"..interface_lang) ~= true then
                         local lang_id = LANGUAGE_STEAMCODE_TO_ID[interface_lang]
-                        local locale = GetLocale(lang_id)
+                        local locale = LOC.GetLocale(lang_id)
                         if locale ~= nil then
                             local popup_screen = PopupDialogScreen( STRINGS.PRETRANSLATED.LANGUAGES_TITLE[locale.id], STRINGS.PRETRANSLATED.LANGUAGES_BODY[locale.id],
 						            {

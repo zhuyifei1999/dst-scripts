@@ -34,7 +34,7 @@ local HostCloudServerPopup = Class(GenericWaitingPopup, function(self, name, des
 
     --V2C: admin flag is ignored for cloud servers
     local sessionid = "" -- If we want to load a previous session then we need to fill this out
-    TheNet:StartCloudServerRequestProcess(sessionid, name, description, GetLocaleCode(), password, claninfo.id, claninfo.only, claninfo.admin)
+    TheNet:StartCloudServerRequestProcess(sessionid, name, description, LOC.GetLocaleCode(), password, claninfo.id, claninfo.only, claninfo.admin)
 end)
 
 function HostCloudServerPopup:OnUpdate(dt)

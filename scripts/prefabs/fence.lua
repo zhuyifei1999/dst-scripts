@@ -500,6 +500,8 @@ local function MakeWall(name, builds, isdoor, klaussackkeyid)
         --but we don't to handle it until after our position is set
         inst:DoTaskInTime(0, InitializePathFinding)
 
+        inst.OnRemoveEntity = onremove
+
         -----------------------------------------------------------------------
         inst.entity:SetPristine()
         if not TheWorld.ismastersim then
@@ -569,8 +571,6 @@ local function MakeWall(name, builds, isdoor, klaussackkeyid)
         else
             MakeSnowCovered(inst)
         end
-
-        inst.OnRemoveEntity = onremove
 
         inst.OnSave = onsave
         inst.OnLoad = onload

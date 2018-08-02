@@ -1562,7 +1562,7 @@ function BuildTagsStringCommon(tagsTable)
     end
     
     -- Language tag (forced to front of list, don't put anything else at slot 1, or language detection will fail!)
-    table.insert(tagsTable, 1, STRINGS.PRETRANSLATED.LANGUAGES[GetLanguage()] or "")
+    table.insert(tagsTable, 1, STRINGS.PRETRANSLATED.LANGUAGES[LOC.GetLanguage()] or "")
 
     -- Concat unique tags
     local tagged = {}

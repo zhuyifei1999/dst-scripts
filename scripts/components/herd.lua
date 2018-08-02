@@ -154,10 +154,10 @@ function Herd:MergeNearbyHerds()
     local x, y, z = self.inst.Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x, y, z, self.gatherrange, { "herd" })
 
-    for i, v in ipairs(ents) do 
+    for i, v in ipairs(ents) do
         if v ~= self.inst and
             v.components.herd ~= nil and
-            v.components.herd.gathertag == self.membertag and
+            v.components.herd.membertag == self.membertag and
             v.components.herd.membercount < 4 and
             self.membercount + v.components.herd.membercount <= self.maxsize then
             for k2, v2 in pairs(v.components.herd.members) do

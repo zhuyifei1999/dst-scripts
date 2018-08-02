@@ -156,6 +156,19 @@ function Widget:MoveTo(from, to, time, fn)
     self.inst.components.uianim:MoveTo(from, to, time, fn)
 end
 
+function Widget:CancelRotateTo(run_complete_fn)
+    if self.inst.components.uianim ~= nil then
+        self.inst.components.uianim:CancelRotateTo(run_complete_fn)
+    end
+end
+
+function Widget:RotateTo(from, to, time, fn)
+    if not self.inst.components.uianim then
+        self.inst:AddComponent("uianim")
+    end
+    self.inst.components.uianim:RotateTo(from, to, time, fn)
+end
+
 function Widget:TintTo(from, to, time, fn)
     if not self.inst.components.uianim then
         self.inst:AddComponent("uianim")

@@ -168,18 +168,20 @@ local builds = { "pig_build", "pigspotted_build" }
 local guardbuilds = { "pig_guard_build" }
 
 local function NormalRetargetFn(inst)
-    return FindEntity(
-        inst,
-        TUNING.PIG_TARGET_DIST,
-        function(guy)
-            return (guy.LightWatcher == nil or guy.LightWatcher:IsInLight())
-                and inst.components.combat:CanTarget(guy)
-        end,
-        { "monster", "_combat" }, -- see entityreplica.lua
-        inst.components.follower.leader ~= nil and
-        { "playerghost", "INLIMBO", "abigail" } or
-        { "playerghost", "INLIMBO" }
-    )
+    return not inst:IsInLimbo()
+        and FindEntity(
+                inst,
+                TUNING.PIG_TARGET_DIST,
+                function(guy)
+                    return (guy.LightWatcher == nil or guy.LightWatcher:IsInLight())
+                        and inst.components.combat:CanTarget(guy)
+                end,
+                { "monster", "_combat" }, -- see entityreplica.lua
+                inst.components.follower.leader ~= nil and
+                { "playerghost", "INLIMBO", "abigail" } or
+                { "playerghost", "INLIMBO" }
+            )
+        or nil
 end
 
 local function NormalKeepTargetFn(inst, target)

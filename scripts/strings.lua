@@ -3151,7 +3151,23 @@ STRINGS.UI =
 		HHMMSS = "{hours}:{minutes}:{seconds}",
 		MMSS = "{minutes}:{seconds}",
 	},
+	DAYS_FORMAT =
+	{
+		DHM = "{days}d {hours}h {minutes}m",
+		HM = "{hours}h {minutes}m",
+		M = "{minutes}m",
+	},
+
+	DATE_FORMAT = 
+	{
+		MDY = "{month} {day}, {year}", 
+	},
 	
+	DATE =
+	{
+		MONTH_ABBR = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"},
+	},
+
     HELP =
     {
         SCROLLBACK = "Scroll Up",
@@ -5373,15 +5389,15 @@ STRINGS.UI =
 
         SKIP = "Skip",
         CONTINUE = "Continue",
-        NEWBOX_TITLE = 
-        { 
+        NEWBOX_TITLE =
+        {
             lavaarena = "Forge Chest Earned!",
-            quagmire = "Victorian Chest Earned!",
+            quagmire = "Victorian Chest Earned!", --"Gnaw's Chest Earned!"
         },
-        NEWBOXES_TITLE = 
-        { 
+        NEWBOXES_TITLE =
+        {
             lavaarena = "{num} Forge Chests Earned!",
-            quagmire = "{num} Victorian Chests Earned!",
+            quagmire = "{num} Victorian Chests Earned!", --"{num} Gnaw's Chests Earned!"
         },
         NEWBOX_BODY = "Visit the Treasury to open your chest",
         NEWBOXES_BODY = "Visit the Treasury to open your chests",
@@ -6061,7 +6077,7 @@ STRINGS.UI =
         UNOPENED_BOXES_FMT = "{num_boxes} unopened Chests",
         MOST_COMMON_DEATH = "Often Killed By",
         MOST_COMMON_FRIEND = "Friendliest Friend",
-        ENCOUNTER_COUNT_FMT = "{num_games} encounters",
+        ENCOUNTER_COUNT_FMT = "Time played with: {time}",
 
         TOOLTIP_TRADE = "Trade your old items in for something new!",
         TOOLTIP_SKINS = "View and equip your curios",
@@ -6431,7 +6447,7 @@ STRINGS.UI =
         OK = "OK",
         PLAYER_NAME = "Player",
         PLAYER_CHAR = "Face",
-		PLAYER_CHAR_PS4 = "Character",
+        PLAYER_CHAR_PS4 = "Character",
         SERVER_NAME = "Server",
         DECEASED = "Deceased",
         CAUSE = "Killed By",
@@ -6439,7 +6455,7 @@ STRINGS.UI =
         DECEASED_PS4 = "Character",
         CAUSE = "Cause of Death",
         MODE = "World",
-		MODE_PS4 = "Date",
+        MODE_PS4 = "Date",
         SEEN_DATE = "Date",
         PLAYER_AGE = "Age",
         DIED_AGE = "Survived",
@@ -6448,6 +6464,12 @@ STRINGS.UI =
         DAY = "Day",
         DAYS = "Days",
         UNKNOWN_DAYS = "?",
+
+        ENCOUNTERS =
+        {
+            DESC = "Last seen {date}, on {server_name}",
+            PLAYTIME_LABEL = "Play Time",
+        },
     },
 
     CONTROLSSCREEN =

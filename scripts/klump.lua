@@ -87,7 +87,7 @@ function ApplyKlumpToStringTable(string_id, json_str)
         end
     end
 
-    local locale_code = GetLocaleCode()    
+    local locale_code = LOC.GetLocaleCode()    
     if locale_code == "zhr" then
         locale_code = "zh"
     elseif locale_code == "mex" then

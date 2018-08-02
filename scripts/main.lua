@@ -142,6 +142,7 @@ require("tuning")
 
 Profile = require("playerprofile")() --profile needs to be loaded before language
 Profile:Load( nil, true ) --true to indicate minimal load required for language.lua to read the profile.
+LOC = require("languages/loc")
 require("languages/language")
 require("strings")
 

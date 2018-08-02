@@ -561,7 +561,7 @@ MISC_ITEMS =
 		box_build = "box_mystery_classic",
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
-		release_group = 38,
+		release_group = 41,
 	},
 	mysterybox_ice_4 =
 	{

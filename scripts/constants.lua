@@ -645,7 +645,7 @@ QUAGMIRE_TOURNAMENT_TICKET = "quagmire_challenge"
 
 function Server_IsTournamentActive()
 	-- for internal server use only
-	return true
+	return false
 end
 
 function Client_IsTournamentActive(ticket_name) -- ticket_name is optional
@@ -1443,13 +1443,14 @@ MAX_WRITEABLE_LENGTH = 200
 --Server may use these for things that clients need to know about
 --other clients whose player entities may or may not be available
 --e.g. Stuff that shows on the scoreboard
+-- NOTE: Keep this up to date with USERFLAGS::Enum in PlayerListingData.h
 USERFLAGS =
 {
     IS_GHOST			= 1,
     IS_AFK				= 2,
     CHARACTER_STATE_1	= 4,
     CHARACTER_STATE_2	= 8,
-    -- = 16,
+    IS_LOADING			= 16,
     -- = 32,
     -- = 64,
     -- = 128,

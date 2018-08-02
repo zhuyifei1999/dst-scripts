@@ -83,7 +83,9 @@ function Text:SetFont(font)
 end
 
 function Text:SetSize(sz)
-    sz = sz * GetTextScale()
+	if LOC then
+		sz = sz * LOC.GetTextScale()
+	end
     self.inst.TextWidget:SetSize(sz)
     self.size = sz
 end
