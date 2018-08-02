@@ -93,6 +93,30 @@ function UIAnim:MoveTo(start, dest, duration, whendone)
     self.inst.UITransform:SetPosition(start.x, start.y, start.z)
 end
 
+function UIAnim:CancelRotateTo( run_complete_fn )
+	self.rot_t = nil
+	if run_complete_fn ~= nil and self.rot_whendone then
+		self.rot_whendone()
+    end
+	self.rot_whendone = nil
+end
+
+function UIAnim:RotateTo(start, dest, duration, whendone)
+    self.rot_start = start
+    self.rot_dest = dest
+    self.rot_duration = duration
+    self.rot_t = 0
+    
+    if self.rot_whendone then
+        self.rot_whendone()
+    end
+    self.rot_whendone = whendone
+    
+    self.inst:StartWallUpdatingComponent(self)
+    self.inst.UITransform:SetRotation(start)
+end
+
+
 function UIAnim:OnWallUpdate(dt)
     if not self.inst:IsValid() then
 		self.inst:StopWallUpdatingComponent(self)
@@ -153,7 +177,25 @@ function UIAnim:OnWallUpdate(dt)
         end
     end
 
-    if not self.scale_t and not self.pos_t and not self.tint_t then
+    if self.rot_t then
+        self.rot_t = self.rot_t + dt
+        if self.rot_t < self.rot_duration then
+            local rot = easing.outCubic( self.rot_t, self.rot_start, self.rot_dest - self.rot_start, self.rot_duration)
+            self.inst.UITransform:SetRotation(rot)
+        else
+            local rot = self.rot_dest
+            self.inst.UITransform:SetRotation(rot)
+
+            self.rot_t = nil
+            if self.rot_whendone then
+                local rot_whendonefn = self.rot_whendone
+                self.rot_whendone = nil -- reset this here so that self.rot_whendone can call RotateTo
+                rot_whendonefn()
+            end
+        end
+    end
+
+    if not self.scale_t and not self.pos_t and not self.tint_t and not self.rot_t then
         self.inst:StopWallUpdatingComponent(self)
     end
 end

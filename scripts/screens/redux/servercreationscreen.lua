@@ -421,7 +421,7 @@ function ServerCreationScreen:Create(warnedOffline, warnedDisabledMods, warnedOu
             cluster_info.settings.NETWORK.lan_only_cluster       = tostring(serverdata.privacy_type == PRIVACY_TYPE.LOCAL)
             cluster_info.settings.NETWORK.cluster_intention      = serverdata.intention
             cluster_info.settings.NETWORK.offline_cluster        = tostring(not serverdata.online_mode)
-            cluster_info.settings.NETWORK.cluster_language       = GetLocaleCode()
+            cluster_info.settings.NETWORK.cluster_language       = LOC.GetLocaleCode()
 
             cluster_info.settings.GAMEPLAY                       = {}
             cluster_info.settings.GAMEPLAY.game_mode             = serverdata.game_mode

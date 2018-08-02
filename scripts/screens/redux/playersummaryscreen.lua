@@ -119,7 +119,7 @@ function PlayerSummaryScreen:DoInit()
     self.friend_divider_top = self.friend_root:AddChild( Image("images/frontend_redux.xml", "achievements_divider_top.tex") )
     self.friend_divider_top:SetScale(0.5)
     self.friend_divider_top:SetPosition(60,55)
-    self.most_friend = self.friend_root:AddChild(self:_BuildMostCommonFriend(width))
+    self.most_friend = self.friend_root:AddChild(self:_BuildMostCommonFriend(width + 20))
 
     self.musicstopped = true
 
@@ -322,49 +322,26 @@ function PlayerSummaryScreen:_BuildMostCommonFriend(width)
     local friends = Widget("friends")
     friends.name = friends:AddChild(Text(UIFONT, 30))
     friends.name:SetRegionSize(width,30)
-    friends.name:SetPosition(70, 10)
+    friends.name:SetPosition(60, 10)
 
-    friends.count = friends:AddChild(Text(CHATFONT, 30))
+    friends.count = friends:AddChild(Text(CHATFONT, 25))
     friends.count:SetRegionSize(width,30)
-    friends.count:SetPosition(70, -20)
+    friends.count:SetPosition(60, -20)
 
     return friends
 end
 
 function PlayerSummaryScreen:_RefreshMostCommonFriend()
-    local friends_info = {}
-    local blackbook = PlayerHistory:GetRows()
-    for i, data in ipairs(blackbook) do
-        if data and data.name and data.server_name and data.prefab and data.sort_date then
-            local info = friends_info[data.name]
-            if info ~= nil then
-                info.count = info.count + 1
-                info.date = math.max(info.date, data.sort_date)
-            else
-                friends_info[data.name] = { row = i, count = 1, date = data.sort_date }
-            end
-        end
-    end
+	local top_friend = nil
+	for k, v in pairs(PlayerHistory.seen_players) do
+		if top_friend == nil or (v.time_played_with or 0) > (top_friend.time_played_with or 0) then
+			top_friend = v
+		end
+	end
 
-    local friendslist = table.getkeys(friends_info)
-    table.sort(friendslist, function(a, b)
-        a, b = friends_info[a], friends_info[b]
-        if a.count > b.count then
-            return true
-        elseif a.count < b.count then
-            return false
-        elseif a.date > b.date then
-            return true
-        elseif a.date < b.date then
-            return false
-        end
-        return a.row < b.row
-    end)
-
-    local top_friend = friendslist[1]
     if top_friend ~= nil then
-        self.most_friend.name:SetString(top_friend)
-        self.most_friend.count:SetString(subfmt(STRINGS.UI.PLAYERSUMMARYSCREEN.ENCOUNTER_COUNT_FMT, { num_games = friends_info[top_friend].count }))
+        self.most_friend.name:SetString(top_friend.name or "")
+        self.most_friend.count:SetString(subfmt(STRINGS.UI.PLAYERSUMMARYSCREEN.ENCOUNTER_COUNT_FMT, {time = str_play_time(top_friend.time_played_with)}))
     else
         self.most_friend.name:SetString("")
         self.most_friend.count:SetString("")

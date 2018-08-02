@@ -156,6 +156,18 @@ function axe_init_fn(inst, build_name)
 end
 
 --------------------------------------------------------------------------
+--[[ Umbrella skin functions ]]
+--------------------------------------------------------------------------
+function umbrella_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "swap_umbrella")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+
+--------------------------------------------------------------------------
 --[[ Shovel skin functions ]]
 --------------------------------------------------------------------------
 function shovel_init_fn(inst, build_name)
@@ -225,6 +237,7 @@ rainhat_init_fn = hat_init_fn
 minerhat_init_fn = hat_init_fn
 footballhat_init_fn = hat_init_fn
 featherhat_init_fn = hat_init_fn
+beehat_init_fn = hat_init_fn
 
 --------------------------------------------------------------------------
 --[[ Bedroll skin functions ]]
@@ -355,17 +368,6 @@ function mushroom_light2_init_fn(inst, build_name)
     end
 
     inst.AnimState:SetSkin(build_name, "mushroom_light2")
-end
-
---------------------------------------------------------------------------
---[[ Lantern skin functions ]]
---------------------------------------------------------------------------
-function lantern_init_fn(inst, build_name)
-    if inst.components.placer == nil and not TheWorld.ismastersim then
-        return
-    end
-
-    inst.AnimState:SetSkin(build_name, "lantern")
 end
 
 --------------------------------------------------------------------------
@@ -502,7 +504,7 @@ function orangestaff_init_fn(inst, build_name)
         return
     end
 
-    local skin_fx = SKIN_FX_PREFAB[build_name] --build_name is prefab name for canes
+    local skin_fx = SKIN_FX_PREFAB[build_name] --build_name is prefab name for orangestaff
     if skin_fx ~= nil then
         inst.vfx_fx = skin_fx[1] ~= nil and skin_fx[1]:len() > 0 and skin_fx[1] or nil
         inst.trail_fx = skin_fx[2] ~= nil and skin_fx[2]:len() > 0 and skin_fx[2] or nil
@@ -523,6 +525,70 @@ end
 
 firestaff_init_fn = staff_init_fn
 icestaff_init_fn = staff_init_fn
+
+--------------------------------------------------------------------------
+--[[ Lantern skin functions ]]
+--------------------------------------------------------------------------
+local function lantern_onremovefx(fx)
+    fx._lantern._lit_fx_inst = nil
+end
+
+local function lantern_on(inst)
+    local owner = inst.components.inventoryitem.owner
+    if owner ~= nil then
+        if inst._lit_fx_inst ~= nil and inst._lit_fx_inst.prefab ~= inst._heldfx then
+            inst._lit_fx_inst:Remove()
+        end
+        if inst._heldfx ~= nil then
+            if inst._lit_fx_inst == nil then
+                inst._lit_fx_inst = SpawnPrefab(inst._heldfx)
+                inst._lit_fx_inst._lantern = inst
+                inst._lit_fx_inst.entity:AddFollower()
+                inst:ListenForEvent("onremove", lantern_onremovefx, inst._lit_fx_inst)
+            end
+            inst._lit_fx_inst.entity:SetParent(owner.entity)
+            inst._lit_fx_inst.Follower:FollowSymbol(owner.GUID, "swap_object", 65, -15, 0)
+        end
+    else
+        if inst._lit_fx_inst ~= nil and inst._lit_fx_inst.prefab ~= inst._groundfx then
+            inst._lit_fx_inst:Remove()
+        end
+        if inst._groundfx ~= nil then
+            if inst._lit_fx_inst == nil then
+                inst._lit_fx_inst = SpawnPrefab(inst._groundfx)
+                inst._lit_fx_inst._lantern = inst
+                inst:ListenForEvent("onremove", lantern_onremovefx, inst._lit_fx_inst)
+            end
+            inst._lit_fx_inst.entity:SetParent(inst.entity)
+        end
+    end
+end
+
+local function lantern_off(inst)
+    if inst._lit_fx_inst ~= nil then
+        inst._lit_fx_inst:Remove()
+    end
+end
+
+function lantern_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "lantern")
+
+    local skin_fx = SKIN_FX_PREFAB[build_name] --build_name is prefab name for lanterns
+    if skin_fx ~= nil then
+        inst._heldfx = skin_fx[1]
+        inst._groundfx = skin_fx[2]
+        if inst._heldfx ~= nil or inst._groundfx ~= nil then
+            inst:ListenForEvent("lantern_on", lantern_on)
+            inst:ListenForEvent("lantern_off", lantern_off)
+            inst:ListenForEvent("unequipped", lantern_off)
+            inst:ListenForEvent("onremove", lantern_off)
+        end
+    end
+end
 
 --------------------------------------------------------------------------
 --[[ ResearchLab2 skin functions ]]

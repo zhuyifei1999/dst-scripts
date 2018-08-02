@@ -105885,17 +105885,17 @@ msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_quagmiretournamentbronze
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_quagmiretournamentbronze"
-msgid "Equip this item to change your character's background portrait"
+msgid "Equip this item to change your character's background portrait."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_quagmiretournamentgold
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_quagmiretournamentgold"
-msgid "Equip this item to change your character's background portrait"
+msgid "Equip this item to change your character's background portrait."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_quagmiretournamentsilver
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_quagmiretournamentsilver"
-msgid "Equip this item to change your character's background portrait"
+msgid "Equip this item to change your character's background portrait."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_rocks
@@ -105915,12 +105915,12 @@ msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_spidermarsh
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_spidermarsh"
-msgid "Equip this item to change your character's background portrait."
+msgid "Equip this item to change your character's background portrait.\n\nSpiders are vicious creatures that can survive nearly any climate."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_spikymarsh
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_spikymarsh"
-msgid "Equip this item to change your character's background portrait.\n\nSpiders are vicious creatures that can survive nearly any climate."
+msgid "Equip this item to change your character's background portrait.\n\nTake care where you place your hands."
 msgstr ""
 
 #. STRINGS.SKIN_DESCRIPTIONS.playerportrait_bg_suspisciousdirtpile
@@ -118313,6 +118313,86 @@ msgctxt "STRINGS.UI.DATACOLLECTION_POPUP.TITLE"
 msgid "Data Collection"
 msgstr ""
 
+#. STRINGS.UI.DATE.MONTH_ABBR.1
+msgctxt "STRINGS.UI.DATE.MONTH_ABBR.1"
+msgid "Jan"
+msgstr ""
+
+#. STRINGS.UI.DATE.MONTH_ABBR.10
+msgctxt "STRINGS.UI.DATE.MONTH_ABBR.10"
+msgid "Oct"
+msgstr ""
+
+#. STRINGS.UI.DATE.MONTH_ABBR.11
+msgctxt "STRINGS.UI.DATE.MONTH_ABBR.11"
+msgid "Nov"
+msgstr ""
+
+#. STRINGS.UI.DATE.MONTH_ABBR.12
+msgctxt "STRINGS.UI.DATE.MONTH_ABBR.12"
+msgid "Dec"
+msgstr ""
+
+#. STRINGS.UI.DATE.MONTH_ABBR.2
+msgctxt "STRINGS.UI.DATE.MONTH_ABBR.2"
+msgid "Feb"
+msgstr ""
+
+#. STRINGS.UI.DATE.MONTH_ABBR.3
+msgctxt "STRINGS.UI.DATE.MONTH_ABBR.3"
+msgid "Mar"
+msgstr ""
+
+#. STRINGS.UI.DATE.MONTH_ABBR.4
+msgctxt "STRINGS.UI.DATE.MONTH_ABBR.4"
+msgid "Apr"
+msgstr ""
+
+#. STRINGS.UI.DATE.MONTH_ABBR.5
+msgctxt "STRINGS.UI.DATE.MONTH_ABBR.5"
+msgid "May"
+msgstr ""
+
+#. STRINGS.UI.DATE.MONTH_ABBR.6
+msgctxt "STRINGS.UI.DATE.MONTH_ABBR.6"
+msgid "Jun"
+msgstr ""
+
+#. STRINGS.UI.DATE.MONTH_ABBR.7
+msgctxt "STRINGS.UI.DATE.MONTH_ABBR.7"
+msgid "Jul"
+msgstr ""
+
+#. STRINGS.UI.DATE.MONTH_ABBR.8
+msgctxt "STRINGS.UI.DATE.MONTH_ABBR.8"
+msgid "Aug"
+msgstr ""
+
+#. STRINGS.UI.DATE.MONTH_ABBR.9
+msgctxt "STRINGS.UI.DATE.MONTH_ABBR.9"
+msgid "Sep"
+msgstr ""
+
+#. STRINGS.UI.DATE_FORMAT.MDY
+msgctxt "STRINGS.UI.DATE_FORMAT.MDY"
+msgid "{month} {day}, {year}"
+msgstr ""
+
+#. STRINGS.UI.DAYS_FORMAT.DHM
+msgctxt "STRINGS.UI.DAYS_FORMAT.DHM"
+msgid "{days}d {hours}h {minutes}m"
+msgstr ""
+
+#. STRINGS.UI.DAYS_FORMAT.HM
+msgctxt "STRINGS.UI.DAYS_FORMAT.HM"
+msgid "{hours}h {minutes}m"
+msgstr ""
+
+#. STRINGS.UI.DAYS_FORMAT.M
+msgctxt "STRINGS.UI.DAYS_FORMAT.M"
+msgid "{minutes}m"
+msgstr ""
+
 #. STRINGS.UI.DEMOOVERDIALOG.BODY_FREEWEEKEND
 msgctxt "STRINGS.UI.DEMOOVERDIALOG.BODY_FREEWEEKEND"
 msgid "Buy now to get the special price!"
@@ -121233,6 +121313,16 @@ msgctxt "STRINGS.UI.MORGUESCREEN.DIED_AGE"
 msgid "Survived"
 msgstr ""
 
+#. STRINGS.UI.MORGUESCREEN.ENCOUNTERS.DESC
+msgctxt "STRINGS.UI.MORGUESCREEN.ENCOUNTERS.DESC"
+msgid "Last seen {date}, on {server_name}"
+msgstr ""
+
+#. STRINGS.UI.MORGUESCREEN.ENCOUNTERS.PLAYTIME_LABEL
+msgctxt "STRINGS.UI.MORGUESCREEN.ENCOUNTERS.PLAYTIME_LABEL"
+msgid "Play Time"
+msgstr ""
+
 #. STRINGS.UI.MORGUESCREEN.ENCOUNTERSTITLE
 msgctxt "STRINGS.UI.MORGUESCREEN.ENCOUNTERSTITLE"
 msgid "Encounters"
@@ -123185,7 +123275,7 @@ msgstr ""
 
 #. STRINGS.UI.PLAYERSUMMARYSCREEN.ENCOUNTER_COUNT_FMT
 msgctxt "STRINGS.UI.PLAYERSUMMARYSCREEN.ENCOUNTER_COUNT_FMT"
-msgid "{num_games} encounters"
+msgid "Time played with: {time}"
 msgstr ""
 
 #. STRINGS.UI.PLAYERSUMMARYSCREEN.FESTIVAL_HISTORY

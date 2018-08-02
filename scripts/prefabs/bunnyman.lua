@@ -129,17 +129,22 @@ local function is_meat(item)
 end
 
 local function NormalRetargetFn(inst)
-    return FindEntity(inst, TUNING.PIG_TARGET_DIST,
-        function(guy)
-            return inst.components.combat:CanTarget(guy)
-                and (guy:HasTag("monster")
-                    or (guy.components.inventory ~= nil and
-                        guy:IsNear(inst, TUNING.BUNNYMAN_SEE_MEAT_DIST) and
-                        guy.components.inventory:FindItem(is_meat) ~= nil))
-        end,
-        { "_combat", "_health" }, -- see entityreplica.lua
-        nil,
-        { "monster", "player" })
+    return not inst:IsInLimbo()
+        and FindEntity(
+                inst,
+                TUNING.PIG_TARGET_DIST,
+                function(guy)
+                    return inst.components.combat:CanTarget(guy)
+                        and (guy:HasTag("monster")
+                            or (guy.components.inventory ~= nil and
+                                guy:IsNear(inst, TUNING.BUNNYMAN_SEE_MEAT_DIST) and
+                                guy.components.inventory:FindItem(is_meat) ~= nil))
+                end,
+                { "_combat", "_health" }, -- see entityreplica.lua
+                nil,
+                { "monster", "player" }
+            )
+        or nil
 end
 
 local function NormalKeepTargetFn(inst, target)

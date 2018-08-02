@@ -9,7 +9,7 @@ require("skinsutils")
 
 local function GetTextScale()
 	-- the Russian text is just too darn long
-	local lang = GetLanguage()
+	local lang = LOC.GetLanguage()
 	local scale = 20
 	if (LANGUAGE.RUSSIAN == lang) or (LANGUAGE.PORTUGUESE_BR == lang) then
 		scale = 16

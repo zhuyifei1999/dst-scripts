@@ -892,7 +892,7 @@ function OptionsScreen:_BuildLanguages()
 
     self.lang_grid = languagesRoot:AddChild(Grid())
     self.lang_grid:SetPosition(-125, 90)
-    for _,id in pairs(GetLocalizationOptions()) do
+    for _,id in pairs(LOC.GetLanguages()) do
         table.insert(self.langButtons, self:_BuildLangButton(button_width, button_height, id))
     end
     self.lang_grid:FillGrid(2, button_width, button_height, self.langButtons)
