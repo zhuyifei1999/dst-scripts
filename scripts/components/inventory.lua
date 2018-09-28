@@ -1604,17 +1604,22 @@ function Inventory:MoveItemFromAllOfSlot(slot, container)
     local item = self:GetItemInSlot(slot)
     if item ~= nil and container ~= nil then
         container = container.components.container
-        if container ~= nil and
-            container:IsOpenedBy(self.inst) and
-            container:CanTakeItemInSlot(item) then
+        if container ~= nil and container:IsOpenedBy(self.inst) then
+            local targetslot =
+                self.inst.components.constructionbuilderuidata ~= nil and
+                self.inst.components.constructionbuilderuidata:GetContainer() == container.inst and
+                self.inst.components.constructionbuilderuidata:GetSlotForIngredient(item.prefab) or
+                nil
 
-            item = self:RemoveItemBySlot(slot)
-            item.prevcontainer = nil
-            item.prevslot = nil
-            if not container:GiveItem(item) then
-                self.ignoresound = true
-                self:GiveItem(item, slot)
-                self.ignoresound = false
+            if container:CanTakeItemInSlot(item, targetslot) then
+                item = self:RemoveItemBySlot(slot)
+                item.prevcontainer = nil
+                item.prevslot = nil
+                if not container:GiveItem(item, targetslot) then
+                    self.ignoresound = true
+                    self:GiveItem(item, slot)
+                    self.ignoresound = false
+                end
             end
         end
     end
@@ -1626,17 +1631,24 @@ function Inventory:MoveItemFromHalfOfSlot(slot, container)
         container = container.components.container
         if container ~= nil and
             container:IsOpenedBy(self.inst) and
-            container:CanTakeItemInSlot(item) and
             item.components.stackable ~= nil and
             item.components.stackable:IsStack() then
 
-            local halfstack = item.components.stackable:Get(math.floor(item.components.stackable:StackSize() / 2))
-            halfstack.prevcontainer = nil
-            halfstack.prevslot = nil
-            if not container:GiveItem(halfstack) then
-                self.ignoresound = true
-                self:GiveItem(halfstack, slot)
-                self.ignoresound = false
+            local targetslot =
+                self.inst.components.constructionbuilderuidata ~= nil and
+                self.inst.components.constructionbuilderuidata:GetContainer() == container.inst and
+                self.inst.components.constructionbuilderuidata:GetSlotForIngredient(item.prefab) or
+                nil
+
+            if container:CanTakeItemInSlot(item, targetslot) then
+                local halfstack = item.components.stackable:Get(math.floor(item.components.stackable:StackSize() / 2))
+                halfstack.prevcontainer = nil
+                halfstack.prevslot = nil
+                if not container:GiveItem(halfstack, targetslot) then
+                    self.ignoresound = true
+                    self:GiveItem(halfstack, slot)
+                    self.ignoresound = false
+                end
             end
         end
     end

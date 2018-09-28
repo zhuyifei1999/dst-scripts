@@ -2,19 +2,31 @@
 
 local SKIN_GIFT_TYPES =
 {
+	birdcage_circus = "TWITCH_DROP",
 	cane_ancient = "ANRARG",
 	emote_swoon = "CUPID",
+	featherhat_circus = "TWITCH_DROP",
 	firepit_hole = "EARLY_ACCESS",
+	playerportrait_bg_birdcagecircus = "TWITCH_DROP",
+	playerportrait_bg_featherhatcircus = "TWITCH_DROP",
 	playerportrait_bg_foods = "GORGE",
 	playerportrait_bg_quagmiretournamentbronze = "GORGE_TOURNAMENT",
 	playerportrait_bg_quagmiretournamentgold = "GORGE_TOURNAMENT",
 	playerportrait_bg_quagmiretournamentsilver = "GORGE_TOURNAMENT",
+	playerportrait_bg_rainometercircus = "TWITCH_DROP",
+	playerportrait_bg_tophatcircus = "TWITCH_DROP",
+	profileflair_birdcage_circus = "TWITCH_DROP",
+	profileflair_featherhat_circus = "TWITCH_DROP",
 	profileflair_quagmiretournament_bronze = "GORGE_TOURNAMENT",
 	profileflair_quagmiretournament_gold = "GORGE_TOURNAMENT",
 	profileflair_quagmiretournament_participation = "GORGE_TOURNAMENT",
 	profileflair_quagmiretournament_silver = "GORGE_TOURNAMENT",
+	profileflair_rainometer_circus = "TWITCH_DROP",
+	profileflair_tophat_circus = "TWITCH_DROP",
+	rainometer_circus = "TWITCH_DROP",
 	reviver_cupid = "CUPID",
 	reviver_cupid_2 = "CUPID",
+	tophat_circus = "TWITCH_DROP",
 	torch_shadow = "ARG",
 	torch_shadow_alt = "ARG",
 	treasurechest_sacred = "ANRARG",
@@ -65,6 +77,13 @@ local SKIN_GIFT_POPUPDATA =
 		image = {"thankyou_lunar.tex"},
 		title = STRINGS.THANKS_POPUP.LUNAR,
 		titleoffset = {0, -30, 0},
+	},
+	TWITCH_DROP =
+	{
+		atlas = "images/thankyou_item_popup.xml",
+		image = {"thankyou_twitch.tex"},
+		title = STRINGS.THANKS_POPUP.TWITCH_DROP,
+		titleoffset = {0, -20, 0},
 	},
 	VARG =
 	{

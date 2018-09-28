@@ -1,6 +1,7 @@
 require "mods"
 require "playerdeaths"
 require "playerhistory"
+require "serverpreferences"
 require "saveindex"
 require "map/extents"
 require "perfutil"
@@ -1042,12 +1043,14 @@ end
 SaveGameIndex = SaveIndex()
 Morgue = PlayerDeaths()
 PlayerHistory = PlayerHistory()
+ServerPreferences = ServerPreferences()
 
 Print(VERBOSITY.DEBUG, "[Loading Morgue]")
 Morgue:Load( function(did_it_load) 
 	--print("Morgue loaded....[",did_it_load,"]")
 end )
 PlayerHistory:Load( function() end )
+ServerPreferences:Load( function() end )
 
 Print(VERBOSITY.DEBUG, "[Loading profile and save index]")
 Profile:Load( function() 

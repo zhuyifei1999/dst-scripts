@@ -146,11 +146,6 @@ end
 local function BuildStartupContextTable() -- includes a bit more metadata about the user, should probably only be on startup
     local sendstats = BuildContextTable(TheNet:GetUserID())
 
-    local steamID = TheSim:GetSteamUserID()
-    if steamID ~= "" and steamID ~= "unknownID" then
-        sendstats.steamid = steamID
-    end
-
     sendstats.platform = PLATFORM
     sendstats.branch = BRANCH
 

@@ -53,10 +53,19 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+        constructionsite = function(inst, doer, actions)
+            table.insert(actions,
+                not (doer.components.playercontroller ~= nil and
+                    doer.components.playercontroller.isclientcontrollerattached) and
+                inst.replica.constructionsite:IsBuilder(doer) and
+                ACTIONS.STOPCONSTRUCTION or
+                ACTIONS.CONSTRUCT)
+        end,
+
         container = function(inst, doer, actions, right)
             if inst:HasTag("bundle") then
                 if right and inst.replica.container:IsOpenedBy(doer) then
-                    table.insert(actions, ACTIONS.WRAPBUNDLE)
+                    table.insert(actions, doer.components.constructionbuilderuidata ~= nil and doer.components.constructionbuilderuidata:GetContainer() == inst and ACTIONS.APPLYCONSTRUCTION or ACTIONS.WRAPBUNDLE)
                 end
             elseif not inst:HasTag("burnt") and
                 inst.replica.container:CanBeOpened() and
@@ -333,6 +342,12 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+        constructionplans = function(inst, doer, target, actions)
+            if inst:HasTag(target.prefab.."_plans") then
+                table.insert(actions, ACTIONS.CONSTRUCT)
+            end
+        end,
+
         cooker = function(inst, doer, target, actions)
             if (not inst:HasTag("dangerouscooker") or doer:HasTag("expertchef")) and
                 target:HasTag("cookable") and
@@ -482,6 +497,11 @@ local COMPONENT_ACTIONS =
                     ) then
                     table.insert(actions, target:HasTag("bundle") and ACTIONS.BUNDLESTORE or ACTIONS.STORE)
                 end
+            elseif target.replica.constructionsite ~= nil then
+                if not (GetGameModeProperty("non_item_equips") and inst.replica.equippable ~= nil) and
+                    not (target:HasTag("BURNABLE_fueled") and inst:HasTag("BURNABLE_fuel")) then
+                    table.insert(actions, target.replica.constructionsite:IsBuilder(doer) and ACTIONS.BUNDLESTORE or ACTIONS.CONSTRUCT)
+                end
             elseif target:HasTag("playerghost") then
                 if inst.prefab == "reviver" then
                     table.insert(actions, ACTIONS.GIVETOPLAYER)
@@ -536,6 +556,12 @@ local COMPONENT_ACTIONS =
         maprecorder = function(inst, doer, target, actions)
             if doer == target and target:HasTag("player") then
                 table.insert(actions, ACTIONS.TEACH)
+            end
+        end,
+
+        moonrelic = function(inst, doer, target, actions)
+            if target:HasTag("moontrader") then
+                table.insert(actions, ACTIONS.GIVE)
             end
         end,
 
@@ -688,6 +714,11 @@ local COMPONENT_ACTIONS =
                         not (target:HasTag("BURNABLE_fueled") and inst:HasTag("BURNABLE_fuel"))
                     ) then
                     table.insert(actions, target:HasTag("bundle") and ACTIONS.BUNDLESTORE or ACTIONS.STORE)
+                end
+            elseif target.replica.constructionsite ~= nil then
+                if not (GetGameModeProperty("non_item_equips") and inst.replica.equippable ~= nil) and
+                    not (target:HasTag("BURNABLE_fueled") and inst:HasTag("BURNABLE_fuel")) then
+                    table.insert(actions, target.replica.constructionsite:IsBuilder(doer) and ACTIONS.BUNDLESTORE or ACTIONS.CONSTRUCT)
                 end
             elseif not right and
                 doer.replica.combat ~= nil and

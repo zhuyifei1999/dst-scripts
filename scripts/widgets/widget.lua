@@ -597,6 +597,10 @@ function Widget:ClearFocus()
 end
 
 function Widget:SetFocusFromChild(from_child)
+    if self.parent == nil and not self.is_screen then
+        print("Warning: Widget:SetFocusFromChild is happening on a widget outside of the screen/widget hierachy. This will cause focus moves to fail. Is ", self.name, "not a screen?")
+        print(debugstack())
+    end
     for k,v in pairs(self.children) do
         if v ~= from_child and v.focus then
             v:ClearFocus()

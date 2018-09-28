@@ -23,6 +23,13 @@ return {
 			NOTALLOWED = "That can't go in there.",
 			INUSE = "I should wait my turn.",
 		},
+        CONSTRUCT =
+        {
+            INUSE = "Someone beat me to it.",
+            NOTALLOWED = "It won't fit.",
+            EMPTY = "I need something to build with.",
+            MISMATCH = "Whoops! Wrong plans.",
+        },
 		RUMMAGE =
 		{	
 			GENERIC = "I can't do that.",
@@ -251,6 +258,7 @@ return {
 	ANNOUNCE_WETTER = "Water way to go!",
 	ANNOUNCE_SOAKED = "I've nearly reached my saturation point.",
 
+    ANNOUNCE_DESPAWN = "I can see the light!",
 	ANNOUNCE_BECOMEGHOST = "oOooOooo!!",
 	ANNOUNCE_GHOSTDRAIN = "My humanity is about to start slipping away...",
 	ANNOUNCE_PETRIFED_TREES = "Did I just hear trees screaming?",
@@ -295,7 +303,11 @@ return {
 	DESCRIBE =
 	{
 		MULTIPLAYER_PORTAL = "This ought to be a scientific impossibility.",
-		ANTLION = 
+        MULTIPLAYER_PORTAL_MOONROCK = "I'm sure there's some scientific explanation for this.",
+        MOONROCKIDOL = "Huh. It looks kinda like a key.",
+        CONSTRUCTION_PLANS = "Stuff for science!",
+
+       	ANTLION = 
 		{
 			GENERIC = "It wants something from me.",
 			VERYHAPPY = "I think we're on good terms.",
@@ -2094,6 +2106,7 @@ return {
 		ROCK_MOON = "That rock came from the moon.",
 		MOONROCKNUGGET = "That rock came from the moon.",
 		MOONROCKCRATER = "I should stick something shiny in it. For research.",
+		MOONROCKSEED = "There's science inside!",
 
         REDMOONEYE = "It can see and be seen for miles!",
         PURPLEMOONEYE = "Makes a good marker, but I wish it'd stop looking at me.",

@@ -706,7 +706,7 @@ function ServerListingScreen:ServerSelected(new_index)
         if self.selected_index_actual ~= server.actualindex then
             self.selected_index_actual = server.actualindex
             if string.len(server.row) > 0 then
-                TheNet:DownloadServerDetails(server.row)
+                TheNet:DownloadServerDetails(server.row, server.mode)
             end
         end
         self:UpdateServerData(self.selected_index_actual)

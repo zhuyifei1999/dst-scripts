@@ -177,7 +177,7 @@ Recipe("telebase", {Ingredient("nightmarefuel", 4), Ingredient("livinglog", 4), 
     end)
 Recipe("sentryward", {Ingredient("purplemooneye", 1), Ingredient("compass", 1), Ingredient("boards", 2)}, RECIPETABS.MAGIC, TECH.MAGIC_TWO, "sentryward_placer", 1.5)
 Recipe("moondial", {Ingredient("bluemooneye", 1), Ingredient("moonrocknugget", 2), Ingredient("ice", 2)}, RECIPETABS.MAGIC,  TECH.MAGIC_TWO, "moondial_placer")
-Recipe("townportal", {Ingredient("townportaltalisman", 1), Ingredient("orangemooneye", 1), Ingredient("cutstone", 3)}, RECIPETABS.MAGIC,  TECH.LOST, "townportal_placer")
+Recipe("townportal", {Ingredient("orangemooneye", 1), Ingredient("townportaltalisman", 1), Ingredient("cutstone", 3)}, RECIPETABS.MAGIC, TECH.LOST, "townportal_placer")
 
 --REFINE
 Recipe("rope", {Ingredient("cutgrass", 3)}, RECIPETABS.REFINE, TECH.SCIENCE_ONE)
@@ -274,6 +274,10 @@ Recipe("armorruins", {Ingredient("thulecite", 6), Ingredient("nightmarefuel", 4)
 Recipe("ruins_bat", {Ingredient("livinglog", 3), Ingredient("thulecite", 4), Ingredient("nightmarefuel", 4)}, RECIPETABS.ANCIENT, TECH.ANCIENT_FOUR, nil, nil, true)
 Recipe("eyeturret_item", {Ingredient("deerclops_eyeball", 1), Ingredient("minotaurhorn", 1), Ingredient("thulecite", 5)}, RECIPETABS.ANCIENT, TECH.ANCIENT_FOUR, nil, nil, true)
 
+----MOON----
+Recipe("moonrockidol", {Ingredient("moonrocknugget", 1), Ingredient("purplegem", 1)}, RECIPETABS.CELESTIAL, TECH.CELESTIAL_ONE, nil, nil, true)
+Recipe("multiplayer_portal_moonrock_constr_plans", {Ingredient("boards", 1), Ingredient("rope", 1)}, RECIPETABS.CELESTIAL, TECH.CELESTIAL_ONE, nil, nil, true)
+
 ----BOOK----
 Recipe("book_birds", {Ingredient("papyrus", 2), Ingredient("bird_egg", 2)}, CUSTOM_RECIPETABS.BOOKS, TECH.NONE, nil, nil, nil, nil, "bookbuilder")
 Recipe("book_gardening", {Ingredient("papyrus", 2), Ingredient("seeds", 1), Ingredient("poop", 1)}, CUSTOM_RECIPETABS.BOOKS, TECH.SCIENCE_ONE, nil, nil, nil, nil, "bookbuilder")
@@ -340,5 +344,11 @@ Recipe("yellowmooneye", {Ingredient("moonrockcrater", 1), Ingredient("yellowgem"
 Recipe("greenmooneye", {Ingredient("moonrockcrater", 1), Ingredient("greengem", 1)}, nil, TECH.LOST, nil, nil, true)
 
 Recipe("opalstaff", {Ingredient("nightmarefuel", 4), Ingredient("livinglog", 2), Ingredient("opalpreciousgem", 1)}, nil, TECH.LOST, nil, nil, true)
+
+----CONSTRUCTION PLANS----
+CONSTRUCTION_PLANS =
+{
+    ["multiplayer_portal_moonrock_constr"] = { Ingredient("purplemooneye", 1), Ingredient("moonrocknugget", 20) },
+}
 
 mod_protect_Recipe = true

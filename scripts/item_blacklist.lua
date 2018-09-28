@@ -31,6 +31,7 @@ ITEM_DISPLAY_BLACKLIST =
 	researchlab4_festive_bell_red_firehound = true,
 	researchlab4_glommer_costume = true,
 	researchlab4_hutch_costume = true,
+	researchlab4_tophat_circus = true,
 	backpack_mushy = true,
 	researchlab2_pod_alt = true,
 }

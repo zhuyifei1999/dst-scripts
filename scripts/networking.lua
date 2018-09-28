@@ -114,7 +114,7 @@ function Networking_RollAnnouncement(userid, name, prefab, colour, rolls, max)
     end
 end
 
-function Networking_Say(guid, userid, name, prefab, message, colour, whisper, isemote)
+function Networking_Say(guid, userid, name, prefab, message, colour, whisper, isemote, user_vanity)
     if message ~= nil and message:utf8len() > MAX_CHAT_INPUT_LENGTH then
         return
     end
@@ -126,7 +126,7 @@ function Networking_Say(guid, userid, name, prefab, message, colour, whisper, is
         if not (whisper or isemote) then
             local screen = TheFrontEnd:GetActiveScreen()
             if screen ~= nil and screen.ReceiveChatMessage then
-                screen:ReceiveChatMessage(userid, name, prefab, message, colour, whisper)
+                screen:ReceiveChatMessage(name, prefab, message, colour, whisper)
             end
         end
         local hud = ThePlayer ~= nil and ThePlayer.HUD or nil
@@ -136,9 +136,10 @@ function Networking_Say(guid, userid, name, prefab, message, colour, whisper, is
                     and (hud:HasTargetIndicator(entity) or
                         entity.entity:FrustumCheck()))) then
             if isemote then
-                hud.controls.networkchatqueue:DisplayEmoteMessage(userid, name, prefab, message, colour, whisper)
+                hud.controls.networkchatqueue:DisplayEmoteMessage(name, prefab, message, colour, whisper)
             else
-                hud.controls.networkchatqueue:OnMessageReceived(userid, name, prefab, message, colour, whisper)
+                local profileflair = GetRemotePlayerVanityItem(user_vanity or {}, "profileflair")
+                hud.controls.networkchatqueue:OnMessageReceived(name, prefab, message, colour, whisper, profileflair)
             end
         end
     end

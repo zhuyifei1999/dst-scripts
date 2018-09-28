@@ -618,6 +618,21 @@ table.insert(prefs, CreatePrefabSkin("bedroll_furry_quilt_white_ivory",
 	release_group = 7,
 }))
 
+table.insert(prefs, CreatePrefabSkin("birdcage_circus",
+{
+	base_prefab = "birdcage",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/birdcage_circus.zip"),
+		Asset("PKGREF", "anim/dynamic/birdcage_circus.dyn"),
+	},
+	build_name = "birdcage_circus",
+	rarity = "Loyal",
+	init_fn = function(inst) birdcage_init_fn(inst, "birdcage_circus") end,
+	skin_tags = { "BIRDCAGE", "CIRCUS", "CRAFTABLE", },
+	release_group = 48,
+}))
+
 table.insert(prefs, CreatePrefabSkin("birdcage_gothic",
 {
 	base_prefab = "birdcage",
@@ -953,6 +968,21 @@ table.insert(prefs, CreatePrefabSkin("endtable_vintage",
 	skin_tags = { "ENDTABLE", "CRAFTABLE", },
 	marketable = true,
 	release_group = 18,
+}))
+
+table.insert(prefs, CreatePrefabSkin("featherhat_circus",
+{
+	base_prefab = "featherhat",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/featherhat_circus.zip"),
+		Asset("PKGREF", "anim/dynamic/featherhat_circus.dyn"),
+	},
+	build_name = "featherhat_circus",
+	rarity = "Loyal",
+	init_fn = function(inst) featherhat_init_fn(inst, "featherhat_circus") end,
+	skin_tags = { "FEATHERHAT", "CIRCUS", "CRAFTABLE", },
+	release_group = 48,
 }))
 
 table.insert(prefs, CreatePrefabSkin("firepit_fanged",
@@ -1703,6 +1733,21 @@ table.insert(prefs, CreatePrefabSkin("rainhat_floppy",
 	release_group = 28,
 }))
 
+table.insert(prefs, CreatePrefabSkin("rainometer_circus",
+{
+	base_prefab = "rainometer",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/rainometer_circus.zip"),
+		Asset("PKGREF", "anim/dynamic/rainometer_circus.dyn"),
+	},
+	build_name = "rainometer_circus",
+	rarity = "Loyal",
+	init_fn = function(inst) rainometer_init_fn(inst, "rainometer_circus") end,
+	skin_tags = { "RAINOMETER", "CIRCUS", "CRAFTABLE", },
+	release_group = 48,
+}))
+
 table.insert(prefs, CreatePrefabSkin("researchlab2_pod",
 {
 	base_prefab = "researchlab2",
@@ -1749,7 +1794,7 @@ table.insert(prefs, CreatePrefabSkin("researchlab4_catcoon_costume",
 	build_name = "researchlab4_catcoon_costume",
 	rarity = "Elegant",
 	init_fn = function(inst) researchlab4_init_fn(inst, "researchlab4_catcoon_costume") end,
-	skin_tags = { "PRESHAT", "CRAFTABLE", },
+	skin_tags = { "CRAFTABLE", },
 	release_group = 26,
 }))
 
@@ -1764,7 +1809,7 @@ table.insert(prefs, CreatePrefabSkin("researchlab4_chester_costume",
 	build_name = "researchlab4_chester_costume",
 	rarity = "Elegant",
 	init_fn = function(inst) researchlab4_init_fn(inst, "researchlab4_chester_costume") end,
-	skin_tags = { "PRESHAT", "CRAFTABLE", },
+	skin_tags = { "CRAFTABLE", },
 	release_group = 26,
 }))
 
@@ -1779,7 +1824,7 @@ table.insert(prefs, CreatePrefabSkin("researchlab4_derby",
 	build_name = "researchlab4_derby",
 	rarity = "Elegant",
 	init_fn = function(inst) researchlab4_init_fn(inst, "researchlab4_derby") end,
-	skin_tags = { "PRESHAT", "CRAFTABLE", },
+	skin_tags = { "CRAFTABLE", },
 	release_group = 26,
 }))
 
@@ -1794,7 +1839,7 @@ table.insert(prefs, CreatePrefabSkin("researchlab4_festive_bell_red_firehound",
 	build_name = "researchlab4_festive_bell_red_firehound",
 	rarity = "Event",
 	init_fn = function(inst) researchlab4_init_fn(inst, "researchlab4_festive_bell_red_firehound") end,
-	skin_tags = { "PRESHAT", "RED", "CRAFTABLE", },
+	skin_tags = { "RED", "CRAFTABLE", },
 	release_group = 26,
 }))
 
@@ -1809,7 +1854,7 @@ table.insert(prefs, CreatePrefabSkin("researchlab4_glommer_costume",
 	build_name = "researchlab4_glommer_costume",
 	rarity = "Elegant",
 	init_fn = function(inst) researchlab4_init_fn(inst, "researchlab4_glommer_costume") end,
-	skin_tags = { "PRESHAT", "CRAFTABLE", },
+	skin_tags = { "CRAFTABLE", },
 	release_group = 26,
 }))
 
@@ -1824,8 +1869,23 @@ table.insert(prefs, CreatePrefabSkin("researchlab4_hutch_costume",
 	build_name = "researchlab4_hutch_costume",
 	rarity = "Elegant",
 	init_fn = function(inst) researchlab4_init_fn(inst, "researchlab4_hutch_costume") end,
-	skin_tags = { "PRESHAT", "CRAFTABLE", },
+	skin_tags = { "CRAFTABLE", },
 	release_group = 26,
+}))
+
+table.insert(prefs, CreatePrefabSkin("researchlab4_tophat_circus",
+{
+	base_prefab = "researchlab4",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/researchlab4_tophat_circus.zip"),
+		Asset("PKGREF", "anim/dynamic/researchlab4_tophat_circus.dyn"),
+	},
+	build_name = "researchlab4_tophat_circus",
+	rarity = "Loyal",
+	init_fn = function(inst) researchlab4_init_fn(inst, "researchlab4_tophat_circus") end,
+	skin_tags = { "CRAFTABLE", },
+	release_group = 48,
 }))
 
 table.insert(prefs, CreatePrefabSkin("reviver_cupid",
@@ -1927,6 +1987,22 @@ table.insert(prefs, CreatePrefabSkin("strawhat_floppy",
 	marketable = true,
 	release_group = 14,
 	granted_items = { "minerhat_floppy", "rainhat_floppy", },
+}))
+
+table.insert(prefs, CreatePrefabSkin("tophat_circus",
+{
+	base_prefab = "tophat",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/tophat_circus.zip"),
+		Asset("PKGREF", "anim/dynamic/tophat_circus.dyn"),
+	},
+	build_name = "tophat_circus",
+	rarity = "Loyal",
+	init_fn = function(inst) tophat_init_fn(inst, "tophat_circus") end,
+	skin_tags = { "TOPHAT", "CIRCUS", "CRAFTABLE", },
+	release_group = 48,
+	granted_items = { "researchlab4_tophat_circus", },
 }))
 
 table.insert(prefs, CreatePrefabSkin("tophat_derby",

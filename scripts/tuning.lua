@@ -953,6 +953,10 @@ function Tune(overrides)
                 ANCIENT = 4,
             }),
 
+            MOONORB_LOW = TechTree.Create({
+                CELESTIAL = 1,
+            }),
+
             WAXWELLJOURNAL = TechTree.Create({
                 SHADOW = 4,
             }),
@@ -2319,6 +2323,8 @@ function Tune(overrides)
         METEOR_SHOWER_LVL3_MEDMETEORS_MAX = 6,
         METEOR_SHOWER_LVL3_LRGMETEORS_MIN = 3,
         METEOR_SHOWER_LVL3_LRGMETEORS_MAX = 10,
+
+		MOONROCKSHELL_CHANCE = 0.34,
 
         GROGGINESS_DECAY_RATE = .01,
         GROGGINESS_WEAR_OFF_DURATION = .5,

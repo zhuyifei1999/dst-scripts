@@ -466,10 +466,10 @@ local actionhandlers =
     ActionHandler(ACTIONS.GIVE,
         function(inst, action)
             return action.invobject ~= nil
-                and action.invobject.prefab == "quagmire_portal_key"
                 and action.target ~= nil
-                and action.target:HasTag("quagmire_altar")
-                and "quagmireportalkey"
+                and (   (action.target:HasTag("moonportal") and action.invobject:HasTag("moonportalkey") and "dochannelaction") or
+                        (action.invobject.prefab == "quagmire_portal_key" and action.target:HasTag("quagmire_altar") and "quagmireportalkey")
+                    )
                 or "give"
         end),
     ActionHandler(ACTIONS.GIVETOPLAYER, "give"),
@@ -551,6 +551,10 @@ local actionhandlers =
     ActionHandler(ACTIONS.UNWRAP,
         function(inst, action)
             return inst:HasTag("quagmire_fasthands") and "domediumaction" or "dolongaction"
+        end),
+    ActionHandler(ACTIONS.CONSTRUCT,
+        function(inst, action)
+            return (action.target == nil or action.target.components.constructionsite == nil) and "startconstruct" or "construct"
         end),
     ActionHandler(ACTIONS.STARTCHANNELING, "startchanneling"),
     ActionHandler(ACTIONS.REVIVE_CORPSE, "revivecorpse"),
@@ -3828,6 +3832,85 @@ local states =
         onexit = function(inst)
             if inst.bufferedaction == inst.sg.statemem.action then
                 inst:ClearBufferedAction()
+            end
+        end,
+    },
+
+    State
+    {
+        name = "dochannelaction",
+        tags = { "doing", "busy", "nodangle" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("channel_pre")
+            inst.AnimState:PushAnimation("channel_loop", true)
+            inst.sg.statemem.action = inst.bufferedaction
+            inst.sg:SetTimeout(3)
+        end,
+
+        timeline =
+        {
+            TimeEvent(7 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+            TimeEvent(.7, function(inst)
+                if inst.bufferedaction ~= nil and
+                    inst.components.talker ~= nil and
+                    inst.bufferedaction.target ~= nil and
+                    inst.bufferedaction.target:HasTag("moonportal") then
+                    inst.components.talker:Say(GetString(inst, "ANNOUNCE_DESPAWN"))
+                end
+            end),
+        },
+
+        events =
+        {
+            EventHandler("ontalk", function(inst)
+                if not (inst.AnimState:IsCurrentAnimation("channel_dial_loop") or inst:HasTag("mime")) then
+                    inst.AnimState:PlayAnimation("channel_dial_loop", true)
+                end
+                if inst.sg.statemem.talktask ~= nil then
+                    inst.sg.statemem.talktask:Cancel()
+                    inst.sg.statemem.talktask = nil
+                    inst.SoundEmitter:KillSound("talk")
+                end
+                if DoTalkSound(inst) then
+                    inst.sg.statemem.talktask =
+                        inst:DoTaskInTime(1.5 + math.random() * .5,
+                            function()
+                                inst.SoundEmitter:KillSound("talk")
+                                inst.sg.statemem.talktask = nil
+                            end)
+                end
+            end),
+            EventHandler("donetalking", function(inst)
+                if not inst.AnimState:IsCurrentAnimation("channel_loop") then
+                    inst.AnimState:PlayAnimation("channel_loop", true)
+                end
+                if inst.sg.statemem.talktalk ~= nil then
+                    inst.sg.statemem.talktask:Cancel()
+                    inst.sg.statemem.talktask = nil
+                    inst.SoundEmitter:KillSound("talk")
+                end
+            end),
+        },
+
+        ontimeout = function(inst)
+            if not inst:PerformBufferedAction() then
+                inst.AnimState:PlayAnimation("channel_pst")
+                inst.sg:GoToState("idle", true)
+            end
+        end,
+
+        onexit = function(inst)
+            if inst.bufferedaction == inst.sg.statemem.action then
+                inst:ClearBufferedAction()
+            end
+            if inst.sg.statemem.talktask ~= nil then
+                inst.sg.statemem.talktask:Cancel()
+                inst.sg.statemem.talktask = nil
+                inst.SoundEmitter:KillSound("talk")
             end
         end,
     },
@@ -8536,6 +8619,164 @@ local states =
             inst.SoundEmitter:KillSound("make")
             if not inst.sg.statemem.finished then
                 inst.components.bundler:StopBundling()
+            end
+        end,
+    },
+
+    State
+    {
+        name = "startconstruct",
+
+        onenter = function(inst)
+            inst.sg:GoToState("construct", inst:HasTag("fastbuilder") and .5 or 1)
+        end,
+    },
+
+    State
+    {
+        name = "construct",
+        tags = { "doing", "busy", "nodangle" },
+
+        onenter = function(inst, timeout)
+            inst.components.locomotor:Stop()
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make")
+            if timeout ~= nil then
+                inst.sg:SetTimeout(timeout)
+                inst.sg.statemem.delayed = true
+                inst.AnimState:PlayAnimation("build_pre")
+                inst.AnimState:PushAnimation("build_loop", true)
+            else
+                inst.sg:SetTimeout(.7)
+                inst.AnimState:PlayAnimation("construct_pre")
+                inst.AnimState:PushAnimation("construct_loop", true)
+            end
+        end,
+
+        timeline =
+        {
+            TimeEvent(4 * FRAMES, function(inst)
+                if inst.sg.statemem.delayed then
+                    inst.sg:RemoveStateTag("busy")
+                end
+            end),
+            TimeEvent(9 * FRAMES, function(inst)
+                if not (inst.sg.statemem.delayed or inst:PerformBufferedAction()) then
+                    inst.sg:RemoveStateTag("busy")
+                end
+            end),
+        },
+
+        ontimeout = function(inst)
+            if not inst.sg.statemem.delayed then
+                inst.SoundEmitter:KillSound("make")
+                inst.AnimState:PlayAnimation("construct_pst")
+            elseif not inst:PerformBufferedAction() then
+                inst.SoundEmitter:KillSound("make")
+                inst.AnimState:PlayAnimation("build_pst")
+            end
+        end,
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if not inst.sg.statemem.constructing then
+                inst.SoundEmitter:KillSound("make")
+            end
+        end,
+    },
+
+    State
+    {
+        name = "constructing",
+        tags = { "doing", "busy", "nodangle" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            if not inst.SoundEmitter:PlayingSound("make") then
+                inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make")
+            end
+            if not inst.AnimState:IsCurrentAnimation("construct_loop") then
+                if inst.AnimState:IsCurrentAnimation("build_loop") then
+                    inst.AnimState:PlayAnimation("build_pst")
+                    inst.AnimState:PushAnimation("construct_loop", true)
+                else
+                    inst.AnimState:PlayAnimation("construct_loop", true)
+                end
+            end
+        end,
+
+        timeline =
+        {
+            TimeEvent(FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
+
+        onupdate = function(inst)
+            if not CanEntitySeeTarget(inst, inst) then
+                inst.AnimState:PlayAnimation("construct_pst")
+                inst.sg:GoToState("idle", true)
+            end
+        end,
+
+        events =
+        {
+            EventHandler("stopconstruction", function(inst)
+                inst.AnimState:PlayAnimation("construct_pst")
+                inst.sg:GoToState("idle", true)
+            end),
+        },
+
+        onexit = function(inst)
+            if not inst.sg.statemem.constructing then
+                inst.SoundEmitter:KillSound("make")
+                inst.components.constructionbuilder:StopConstruction()
+            end
+        end,
+    },
+
+    State
+    {
+        name = "construct_pst",
+        tags = { "doing", "busy", "nodangle" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            if not inst.SoundEmitter:PlayingSound("make") then
+                inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make")
+            end
+            inst.AnimState:PlayAnimation("build_pre")
+            inst.AnimState:PushAnimation("build_loop", true)
+            inst.sg:SetTimeout(inst:HasTag("fastbuilder") and .5 or 1)
+        end,
+
+        ontimeout = function(inst)
+            inst.sg:RemoveStateTag("busy")
+            inst.AnimState:PlayAnimation("build_pst")
+            inst.sg.statemem.finished = true
+            inst.components.constructionbuilder:OnFinishConstruction()
+        end,
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            inst.SoundEmitter:KillSound("make")
+            if not inst.sg.statemem.finished then
+                inst.components.constructionbuilder:StopConstruction()
             end
         end,
     },

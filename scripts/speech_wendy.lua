@@ -42,6 +42,13 @@ return {
 			NOTALLOWED = "I must mind my manners.",
 			INUSE = "Can I use that after you?",
 		},
+		CONSTRUCT =
+        {
+            INUSE = "No one wants to share with me.",
+            NOTALLOWED = "It doesn't go there. I know the feeling.",
+            EMPTY = "Nothing comes of nothing.",
+            MISMATCH = "I can't do anything right.",
+        },
 		RUMMAGE =
         {   
             GENERIC = "Must everything in life be hard?",
@@ -175,6 +182,7 @@ return {
     },
     ANNOUNCE_RUINS_RESET = "The dead are risen.",
 
+	ANNOUNCE_DESPAWN = "Abigail?",
 	ANNOUNCE_BECOMEGHOST = "oOoooooO!!",
 	ANNOUNCE_GHOSTDRAIN = "The ghosts... Want to play...",
 	ANNOUNCE_PETRIFED_TREES = "A wave of sadness just washed over me...?",
@@ -279,6 +287,10 @@ return {
 	DESCRIBE =
 	{
         MULTIPLAYER_PORTAL = "Its beauty is tinged with a heartbreaking sadness.",
+        MULTIPLAYER_PORTAL_MOONROCK = "Cold and beautiful like death.",
+        CONSTRUCTION_PLANS = "Shall I even bother building this?",
+        MOONROCKIDOL = "An otherworldly heart beats within it.",
+        MOONROCKSEED = "Its pallor reminds me of Abigail.",
 
 		BERNIE_INACTIVE =
 		{

@@ -778,7 +778,9 @@ function c_selectnear(prefab, rad)
     local closest = nil
     local closeness = nil
     for k,v in pairs(ents) do
+			print("found", v.prefab)
         if v.prefab == prefab then
+			print("found", v.prefab)
             if closest == nil or player:GetDistanceSqToInst(v) < closeness then
                 closest = v
                 closeness = player:GetDistanceSqToInst(v)

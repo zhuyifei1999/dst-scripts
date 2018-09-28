@@ -33,6 +33,13 @@ return {
 			NOTALLOWED = "I could probably find a better place to put that.",
 			INUSE = "Oh, sorry. I didn't mean to hover over your shoulder.",
 		},
+		CONSTRUCT =
+        {
+            INUSE = "Oops, sorry. Someone's using it already.",
+            NOTALLOWED = "Well, it doesn't go there.",
+            EMPTY = "I need to put something there.",
+            MISMATCH = "Sorry. Wrong plans.",
+        },
 		WRITE =
         {
             GENERIC = "No thanks. I have terrible writing.",
@@ -205,6 +212,7 @@ return {
     },
     ANNOUNCE_RUINS_RESET = "All that hard work gone to waste.",
 
+	ANNOUNCE_DESPAWN = "This feels strangely familiar...",
 	ANNOUNCE_BECOMEGHOST = "oOooOOOO!!",
 	ANNOUNCE_GHOSTDRAIN = "I'm goin', like, nutso over here...",
 
@@ -404,6 +412,11 @@ return {
         },
 
 		MULTIPLAYER_PORTAL = "That'd be the thing I fell through, eh.",
+		MULTIPLAYER_PORTAL_MOONROCK = "Wonder where it goes.",
+        CONSTRUCTION_PLANS = "Well, better get building.",
+        MOONROCKIDOL = "Looks kinda loonie.",
+        MOONROCKSEED = "I should probably put this down somewhere, eh?",
+
 		GLOMMER = "Keep flapping, little guy!",
         GLOMMERFLOWER = 
         {

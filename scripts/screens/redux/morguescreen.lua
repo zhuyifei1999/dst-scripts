@@ -11,28 +11,15 @@ require("characterutil")
 require("constants")
 
 -- Note: values are the position of the line at the right side of the named column
-local column_offsets
-if JapaneseOnPS4() then --NB: JP PS4 values have NOT been updated for the new screen (2017-12-08)
-     column_offsets ={
-        DECEASED = -170,
-        DAYS_LIVED = -40,
-        CAUSE = 190,
-        MODE = 610,
-    }
-else
-    column_offsets ={
-        DECEASED = -170,
-        DAYS_LIVED = -40,
-        CAUSE = 190,
-        MODE = 610,
-    }
-end
+local column_offsets = {
+    DECEASED = -170,
+    DAYS_LIVED = -40,
+    CAUSE = 190,
+    MODE = 610,
+}
 
 local font_face = CHATFONT
 local font_size = 28
-if JapaneseOnPS4() then
-    font_size = 28 * 0.75;
-end
 local title_font_size = font_size*.8
 local title_font_face = HEADERFONT
 
@@ -241,7 +228,7 @@ local function obit_widget_update(context, widget, data, index)
     widget.CAUSE:SetTruncatedString(GetKilledByFromMorgueRow(data), widget.CAUSE._align.maxwidth, widget.CAUSE._align.maxchars, true)
     LeftAlignText(widget.CAUSE, "CAUSE")
 
-    widget.MODE:SetTruncatedString(data.server or "", widget.MODE._align.maxwidth, widget.MODE._align.maxchars, true)
+    widget.MODE:SetTruncatedString(ServerPreferences:IsNameAndDescriptionHidden(data.server) and STRINGS.UI.SERVERLISTINGSCREEN.HIDDEN_NAME or data.server or "", widget.MODE._align.maxwidth, widget.MODE._align.maxchars, true)
     LeftAlignText(widget.MODE, "MODE")
 end
 
@@ -250,7 +237,7 @@ local function ecounter_widget_constructor(context, i)
 
 	local w = Widget("control-encounter")
 	w.root = w:AddChild(Widget("encounter-hideable_root"))
-
+	
 	local bg = w.root:AddChild(TEMPLATES.ListItemBackground(row_width, row_height))
 	bg:SetOnGainFocus(function() context.screen.encounters_scroll_list:OnWidgetFocus(w) end)
 
@@ -301,7 +288,66 @@ local function ecounter_widget_constructor(context, i)
     w.widgets.delete_btn:SetScale(.5)
     w.widgets.delete_btn:SetHelpTextMessage(STRINGS.UI.PLAYERSTATUSSCREEN.CLEAR)
 
-	button_x = button_x - spacing - 20
+	if TheInput:ControllerAttached() then
+		-- force an overlay so we can actually tell shat's selected'
+		bg:UseFocusOverlay("serverlist_listitem_hover.tex")
+
+		-- hide the buttons since we're not mousing'
+		w.widgets.delete_btn:Hide()		
+		w.widgets.playerinfo_btn:Hide()
+		
+		-- add help text for controller button commands
+		w.GetHelpText = function()
+			local controller_id = TheInput:GetControllerID()
+			local t = {}
+			if TheInput:ControllerAttached() then
+				if context.screen.can_view_profile and w.widgets.playerinfo_btn._netid ~= nil then		
+					table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MAP) .. " " .. STRINGS.UI.PLAYERSTATUSSCREEN.VIEWPROFILE)		
+				end
+
+				table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_2) .. " " .. STRINGS.UI.PLAYERSTATUSSCREEN.CLEAR)
+			end
+
+			return table.concat(t, "  ")
+		end
+	
+		-- add controller button handlers
+		w.OnControl = function(self, control, down)
+			if context.screen._base.OnControl(self, control, down) then return true end
+
+			if TheInput:ControllerAttached() and not down then
+				if control == CONTROL_MAP and context.screen.can_view_profile and w.widgets.playerinfo_btn._netid ~= nil then
+					TheNet:ViewNetProfile(w.widgets.playerinfo_btn._netid)
+					return true
+				end
+
+				if control == CONTROL_MENU_MISC_2 then			
+					PlayerHistory:RemoveUser(w.widgets.delete_btn._userid)
+					context.screen:UpdatePlayerHistory()
+					return true
+				end
+			end
+		end
+		
+		button_x = button_x + 20
+	else
+		if context.screen.can_view_profile then
+			bg:SetFocusChangeDir(MOVE_RIGHT, w.widgets.playerinfo_btn)
+
+			w.widgets.playerinfo_btn:SetFocusChangeDir(MOVE_LEFT, bg)
+			w.widgets.playerinfo_btn:SetFocusChangeDir(MOVE_DOWN, w.widgets.delete_btn)
+
+			w.widgets.delete_btn:SetFocusChangeDir(MOVE_LEFT, bg)
+			w.widgets.delete_btn:SetFocusChangeDir(MOVE_UP, w.widgets.playerinfo_btn)
+		else	
+			bg:SetFocusChangeDir(MOVE_RIGHT, w.widgets.playerinfo_btn)
+			w.widgets.delete_btn:SetFocusChangeDir(MOVE_LEFT, bg)
+
+			w.widgets.playerinfo_btn:Hide()
+		end
+
+		button_x = button_x - spacing - 20
+	end
 
     w.widgets.playtime_label = w.widgets:AddChild(Text(CHATFONT, 22))
     w.widgets.playtime_label:SetColour(UICOLOURS.GOLD_UNIMPORTANT)
@@ -315,21 +361,6 @@ local function ecounter_widget_constructor(context, i)
         left:SetFocusChangeDir(MOVE_RIGHT, right)
         right:SetFocusChangeDir(MOVE_LEFT, left)
     end
-
-	if context.screen.can_view_profile then
-        bg:SetFocusChangeDir(MOVE_RIGHT, w.widgets.playerinfo_btn)
-
-        w.widgets.playerinfo_btn:SetFocusChangeDir(MOVE_LEFT, bg)
-		w.widgets.playerinfo_btn:SetFocusChangeDir(MOVE_DOWN, w.widgets.delete_btn)
-
-        w.widgets.delete_btn:SetFocusChangeDir(MOVE_LEFT, bg)
-		w.widgets.delete_btn:SetFocusChangeDir(MOVE_UP, w.widgets.playerinfo_btn)
-	else	
-        bg:SetFocusChangeDir(MOVE_RIGHT, w.widgets.playerinfo_btn)
-        w.widgets.delete_btn:SetFocusChangeDir(MOVE_LEFT, bg)
-
-		w.widgets.playerinfo_btn:Hide()
-	end
 
 	w.focus_forward = bg
 
@@ -362,7 +393,7 @@ local function encounter_widget_update(context, w, data, index)
 		SetTruncatedLeftJustifiedString(w.widgets.playername, data.name or "")
 
 		local data_str = data.last_seen_date ~= nil and str_date(data.last_seen_date) or STRINGS.UI.MORGUESCREEN.UNKNOWN_DAYS -- todo: make this localization friendly
-		SetTruncatedLeftJustifiedString(w.widgets.desc, subfmt(STRINGS.UI.MORGUESCREEN.ENCOUNTERS.DESC, {date = data_str, server_name = data.server_name or STRINGS.UI.MORGUESCREEN.UNKNOWN_DAYS}))
+		SetTruncatedLeftJustifiedString(w.widgets.desc, subfmt(STRINGS.UI.MORGUESCREEN.ENCOUNTERS.DESC, {date = data_str, server_name = ServerPreferences:IsNameAndDescriptionHidden(data.server_name) and STRINGS.UI.SERVERLISTINGSCREEN.HIDDEN_NAME or data.server_name or STRINGS.UI.MORGUESCREEN.UNKNOWN_DAYS}))
 
 		if data.time_played_with > 0 then
 			w.widgets.playtime_label:Show()

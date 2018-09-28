@@ -864,6 +864,7 @@ local function OnDespawn(inst)
     inst.components.debuffable:RemoveOnDespawn()
     inst.components.rider:ActualDismount()
     inst.components.bundler:StopBundling()
+    inst.components.constructionbuilder:StopConstruction()
     if GetGameModeProperty("drop_everything_on_despawn") then
         inst.components.inventory:DropEverything()
     else
@@ -1138,6 +1139,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/shadow_skinchangefx.zip"),
         Asset("ANIM", "anim/player_townportal.zip"),
         Asset("ANIM", "anim/player_channel.zip"),
+        Asset("ANIM", "anim/player_construct.zip"),
 
         Asset("SOUND", "sound/sfx.fsb"),
         Asset("SOUND", "sound/wilson.fsb"),
@@ -1380,6 +1382,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         --attuner server listeners are not registered until after "ms_playerjoined" has been pushed
 
         inst:AddComponent("playeravatardata")
+        inst:AddComponent("constructionbuilderuidata")
 
         if TheNet:GetServerGameMode() == "lavaarena" then
             inst:AddComponent("healthsyncer")
@@ -1486,6 +1489,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.components.inventory:DisableDropOnDeath()
 
         inst:AddComponent("bundler")
+        inst:AddComponent("constructionbuilder")
 
         -- Player labeling stuff
         inst:AddComponent("inspectable")

@@ -165,7 +165,7 @@ params.bundle_container =
         slotpos =
         {
             Vector3(-37.5, 32 + 4, 0), 
-            Vector3(37.4, 32 + 4, 0),
+            Vector3(37.5, 32 + 4, 0),
             Vector3(-37.5, -(32 + 4), 0), 
             Vector3(37.5, -(32 + 4), 0),
         },
@@ -195,6 +195,51 @@ function params.bundle_container.widget.buttoninfo.fn(inst)
 end
 
 function params.bundle_container.widget.buttoninfo.validfn(inst)
+    return inst.replica.container ~= nil and not inst.replica.container:IsEmpty()
+end
+
+--------------------------------------------------------------------------
+--[[ construction_container ]]
+--------------------------------------------------------------------------
+
+params.construction_container =
+{
+    widget =
+    {
+        slotpos = {},
+        animbank = "ui_construction_4x1",
+        animbuild = "ui_construction_4x1",
+        pos = Vector3(300, 0, 0),
+        top_align_tip = 50,
+        buttoninfo =
+        {
+            text = STRINGS.ACTIONS.APPLYCONSTRUCTION,
+            position = Vector3(0, -94, 0),
+        }
+    },
+    type = "cooker",
+}
+
+for x = -1.5, 1.5, 1 do
+    table.insert(params.construction_container.widget.slotpos, Vector3(x * 110, 8, 0))
+end
+
+function params.construction_container.itemtestfn(container, item, slot)
+    local doer = container.inst.entity:GetParent()
+    return doer ~= nil
+        and doer.components.constructionbuilderuidata ~= nil
+        and doer.components.constructionbuilderuidata:GetIngredientForSlot(slot) == item.prefab
+end
+
+function params.construction_container.widget.buttoninfo.fn(inst)
+    if inst.components.container ~= nil then
+        BufferedAction(inst.components.container.opener, inst, ACTIONS.APPLYCONSTRUCTION):Do()
+    elseif inst.replica.container ~= nil and not inst.replica.container:IsBusy() then
+        SendRPCToServer(RPC.DoWidgetButtonAction, ACTIONS.APPLYCONSTRUCTION.code, inst, ACTIONS.APPLYCONSTRUCTION.mod_name)
+    end
+end
+
+function params.construction_container.widget.buttoninfo.validfn(inst)
     return inst.replica.container ~= nil and not inst.replica.container:IsEmpty()
 end
 

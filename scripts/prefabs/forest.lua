@@ -240,6 +240,7 @@ local function master_postinit(inst)
     inst:AddComponent("specialeventsetup")
     inst:AddComponent("townportalregistry")
     inst:AddComponent("sandstorms")
+    inst:AddComponent("worldmeteorshower")
 
     if METRICS_ENABLED then
         inst:AddComponent("worldoverseer")

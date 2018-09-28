@@ -23,6 +23,13 @@ return {
 			NOTALLOWED = "That's just impractical.",
 			INUSE = "No rush.",
 		},
+		CONSTRUCT =
+        {
+            INUSE = "Aw someone else is building it already.",
+            NOTALLOWED = "Square peg in a round hole.",
+            EMPTY = "I gotta have something to build with.",
+            MISMATCH = "Oops! Wrong plans.",
+        },
 		RUMMAGE =
 		{	
 			GENERIC = "I can't right now.",
@@ -233,6 +240,7 @@ return {
 	ANNOUNCE_WETTER = "This is just uncomfortable now.",
 	ANNOUNCE_SOAKED = "I'm DRENCHED!",
 
+	ANNOUNCE_DESPAWN = "Good thing I got all my affairs in order.",
 	ANNOUNCE_BECOMEGHOST = "ooOooooO!",
 	ANNOUNCE_GHOSTDRAIN = "My head's all fuzzy...",
 	ANNOUNCE_PETRIFED_TREES = "Do these trees seem shadier?",
@@ -270,6 +278,10 @@ return {
 	DESCRIBE =
 	{
 		MULTIPLAYER_PORTAL = "That was a one-way ticket.",
+		MULTIPLAYER_PORTAL_MOONROCK = "Wow. Can't even see the weld joints.",
+        CONSTRUCTION_PLANS = "Let's get building.",
+        MOONROCKIDOL = "What, do I gotta offer it up to something?",
+        MOONROCKSEED = "I could learn a thing or two from this.",
 		ANTLION = 
 		{
 			GENERIC = "How's the weather up there?",

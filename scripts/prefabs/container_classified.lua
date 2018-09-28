@@ -506,7 +506,16 @@ local function MoveItemFromAllOfSlot(inst, slot, container)
         if container_classified ~= nil and not container_classified:IsBusy() then
             local item = inst:GetItemInSlot(slot)
             if item ~= nil then
-                local remainder = container_classified:ReceiveItem(item)
+                local remainder = nil
+                local player = ThePlayer
+                if player ~= nil and player.components.constructionbuilderuidata ~= nil and player.components.constructionbuilderuidata:GetContainer() == container then
+                    local targetslot = player.components.constructionbuilderuidata:GetSlotForIngredient(item.prefab)
+                    if targetslot ~= nil then
+                        remainder = container_classified:ReceiveItem(item, nil, targetslot)
+                    end
+                else
+                    remainder = container_classified:ReceiveItem(item)
+                end
                 if remainder ~= nil then
                     if remainder > 0 then
                         PushStackSize(inst, nil, item, nil, nil, remainder, false, true)
@@ -527,7 +536,16 @@ local function MoveItemFromHalfOfSlot(inst, slot, container)
         if container_classified ~= nil and not container_classified:IsBusy() then
             local item = inst:GetItemInSlot(slot)
             if item ~= nil then
-                local remainder = container_classified:ReceiveItem(item, math.floor(item.replica.stackable:StackSize() / 2))
+                local remainder = nil
+                local player = ThePlayer
+                if player ~= nil and player.components.constructionbuilderuidata ~= nil and player.components.constructionbuilderuidata:GetContainer() == container then
+                    local targetslot = player.components.constructionbuilderuidata:GetSlotForIngredient(item.prefab)
+                    if targetslot ~= nil then
+                        remainder = container_classified:ReceiveItem(item, math.floor(item.replica.stackable:StackSize() / 2), targetslot)
+                    end
+                else
+                    remainder = container_classified:ReceiveItem(item, math.floor(item.replica.stackable:StackSize() / 2))
+                end
                 if remainder ~= nil then
                     if remainder > 0 then
                         PushStackSize(inst, nil, item, nil, nil, remainder, true, true)
@@ -542,13 +560,13 @@ local function MoveItemFromHalfOfSlot(inst, slot, container)
     end
 end
 
-local function ReceiveItem(inst, item, count)
-    if not IsBusy(inst) then
+local function ReceiveItem(inst, item, count, forceslot)
+    if not IsBusy(inst) and (forceslot == nil or (forceslot >= 1 and forceslot <= #inst._items)) then
         local isstackable = item.replica.stackable ~= nil
         local originalstacksize = isstackable and item.replica.stackable:StackSize() or 1
         if not isstackable or inst._parent.replica.container == nil or not inst._parent.replica.container:AcceptsStacks() then
-            for i, v in ipairs(inst._items) do
-                if v:value() == nil then
+            for i = forceslot or 1, forceslot or #inst._items do
+                if inst._items[i]:value() == nil then
                     local giveitem = SlotItem(item, i)
                     PushItemGet(inst, giveitem)
                     if originalstacksize > 1 then
@@ -563,8 +581,8 @@ local function ReceiveItem(inst, item, count)
             local originalcount = count and math.min(count, originalstacksize) or originalstacksize
             count = originalcount
             local emptyslot = nil
-            for i, v in ipairs(inst._items) do
-                local slotitem = v:value()
+            for i = forceslot or 1, forceslot or #inst._items do
+                local slotitem = inst._items[i]:value()
                 if slotitem == nil then
                     if emptyslot == nil then
                         emptyslot = i
