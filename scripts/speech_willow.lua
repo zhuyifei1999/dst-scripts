@@ -32,6 +32,13 @@ return {
 			NOTALLOWED = "They won't let me.",
 			INUSE = "I'll use it after they're done.",
 		},
+		CONSTRUCT =
+        {
+            INUSE = "Ugh. Someone's already using it.",
+            NOTALLOWED = "It won't go in there.",
+            EMPTY = "I need something to build with first!",
+            MISMATCH = "It's the wrong plans. Jeez!",
+        },
 		WRITE =
         {
             GENERIC = "I can't write on it.",
@@ -228,6 +235,7 @@ return {
 		[6] = "I can't help myself!",
 	},
 	
+	ANNOUNCE_DESPAWN = "A burning light!",
 	ANNOUNCE_BECOMEGHOST = "oOoOooOo!!",
 	ANNOUNCE_GHOSTDRAIN = "Burn... It all must burn...",
 
@@ -412,6 +420,11 @@ return {
         },
 
         MULTIPLAYER_PORTAL = "The vines coil away from my lighter... weird!",
+        MULTIPLAYER_PORTAL_MOONROCK = "It's made of some kind of jerk rock I can't burn.",
+        CONSTRUCTION_PLANS = "I'd rather burn things down than build them up.",
+        MOONROCKIDOL = "Looks like a jerk.",
+        MOONROCKSEED = "Well I can't burn it.",
+
 		BERNIE_INACTIVE =
 		{
 			BROKEN = "I need to fix Bernie up.",

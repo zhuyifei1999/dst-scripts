@@ -32,6 +32,13 @@ return {
             NOTALLOWED = "I fear that does not go there.",
             INUSE = "My stalwart companion currently has use of that.",
         },
+        CONSTRUCT =
+        {
+            INUSE = "'Tis in use, and not by me.",
+            NOTALLOWED = "Alas! It doth not go there!",
+            EMPTY = "It requireth materials.",
+            MISMATCH = "Alas! 'Tis the wrong plans.",
+        },
         RUMMAGE =
         {   
             GENERIC = "That is not a job for a warrior!",
@@ -190,6 +197,7 @@ return {
     },
     ANNOUNCE_RUINS_RESET = "I will fight my way out!",
 
+    ANNOUNCE_DESPAWN = "'Tis the lights of Valhalla?",
     ANNOUNCE_BECOMEGHOST = "oOooOOOo!!",
     ANNOUNCE_GHOSTDRAIN = "They're driving me mad...!",
     ANNOUNCE_PETRIFED_TREES = "I sense Loki's mischievous hand in the shadows.",
@@ -409,6 +417,11 @@ return {
         LAVA_POND_ROCK = "Stone belched forth by the earth's fiery heart!",
 
         MULTIPLAYER_PORTAL = "It makes me long for the stage!",
+        MULTIPLAYER_PORTAL_MOONROCK = "It hath a glow about it.",
+        CONSTRUCTION_PLANS = "Portal! Prepare to be built!",
+        MOONROCKIDOL = "I shall offer it to Mani!",
+        MOONROCKSEED = "It hath knowledge within!",
+
         BERNIE_INACTIVE =
         {
             BROKEN = "He has gone to Valhalla.",

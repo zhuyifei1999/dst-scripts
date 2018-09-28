@@ -193,11 +193,7 @@ local CharacterSelectPanel = Class(LobbyPanel, function(self, owner)
 		if Widget.OnControl(self, control, down) then return true end
 
 		if TheInput:ControllerAttached() then
-			if down and control == CONTROL_MENU_MISC_2 then
-				OnCharacterClick("random")
-				TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
-				return true
-			elseif (not down) and control == CONTROL_PAUSE then
+			if (not down) and control == CONTROL_PAUSE then
 				OnCharacterClick(self.character_scroll_list.selectedportrait.currentcharacter)
 				return true
 			end
@@ -209,12 +205,12 @@ local CharacterSelectPanel = Class(LobbyPanel, function(self, owner)
 		return true
 	end
 
-	function self:GetHelpText()
+	--[[function self:GetHelpText()
 	    local controller_id = TheInput:GetControllerID()
 		local t = {}
 		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_2) .. "  " .. STRINGS.UI.LOBBYSCREEN.RANDOMCHAR)
 	    return table.concat(t, "  ")
-	end
+	end]]
 end)
 
 local LoadoutPanel = Class(LobbyPanel, function(self, owner)
@@ -225,9 +221,11 @@ local LoadoutPanel = Class(LobbyPanel, function(self, owner)
 	self.title = STRINGS.UI.COLLECTIONSCREEN.SKINS
 	self.next_button_title = GetGameModeProperty("lobbywaitforallplayers") and STRINGS.UI.LOBBYSCREEN.SELECT or STRINGS.UI.LOBBYSCREEN.START
 
-	self.loadout = self:AddChild(LoadoutSelect(owner.profile))
-    self.loadout:SelectPortrait(owner.lobbycharacter)
-    self.loadout:StartLoadout()
+	self.loadout = self:AddChild(LoadoutSelect(owner.profile, owner.lobbycharacter))
+
+    function self:OnShow()
+		self.loadout:SetDefaultMenuOption()
+    end
 
     self.focus_forward = self.loadout
 
@@ -252,11 +250,33 @@ local LoadoutPanel = Class(LobbyPanel, function(self, owner)
 		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE) .. "  " .. self.next_button_title)
 	    return table.concat(t, "  ")
 	end
+    
+    function self:OnBecomeActive()
+        if self.loadout and self.loadout.subscreener then
+            for key,sub_screen in pairs(self.loadout.subscreener.sub_screens) do
+                sub_screen:RefreshInventory()
+            end
+        end
+    end
 
 	function self:OnNextButton()
-        self.loadout.dressup:OnClose()
-		owner.currentskins = self.loadout.dressup:GetSkinsForGameStart()
-		owner.character_for_game = self.loadout.dressup.currentcharacter
+        --self.loadout.dressup:OnClose()
+		owner.currentskins = self.loadout.selected_skins
+		owner.character_for_game = self.loadout.currentcharacter
+        
+	    owner.profile:SetCollectionTimestamp(GetInventoryTimestamp())
+
+        --We can't be random character at this point
+        if owner.character_for_game == "random" then
+		    local all_chars = ExceptionArrays(GetActiveCharacterList(), MODCHARACTEREXCEPTIONS_DST)
+		    owner.character_for_game = all_chars[math.random(#all_chars)]
+            
+            local bases = owner.profile:GetSkinsForPrefab(owner.character_for_game)
+            dumptable(bases)
+            owner.currentskins.base = GetRandomItem(bases)
+        else
+            self.loadout:_SaveLoadout() --only save the loadout when it's not a random character
+        end
 
 		if GetGameModeProperty("lobbywaitforallplayers") then
 			if owner.lobbycharacter == "random" then
@@ -273,7 +293,7 @@ local LoadoutPanel = Class(LobbyPanel, function(self, owner)
 	end
 end)
 
-local WaitingPanel = Class(LobbyPanel, function(self, owner, profile)
+local WaitingPanel = Class(LobbyPanel, function(self, owner)
     LobbyPanel._ctor(self, "WaitingPanel")
 
 	self.title = STRINGS.UI.LOBBYSCREEN.WAITING_FOR_PLAYERS_TITLE
@@ -345,7 +365,7 @@ local LobbyScreen = Class(Screen, function(self, profile, cb)
     self.time_to_refresh = REFRESH_INTERVAL
     self.current_panel_index = 0
 
-    self.root = self:AddChild(TEMPLATES.ScreenRoot("screenroot"))
+    self.root = self:AddChild(TEMPLATES.ScreenRoot("lobbyscreen root"))
     self.fg = self:AddChild(TEMPLATES.ReduxForeground())
     self.root:AddChild(TEMPLATES.LeftSideBarBackground())	
 
@@ -462,6 +482,10 @@ end)
 function LobbyScreen:OnBecomeActive()
     self._base.OnBecomeActive(self)
     self:StartLobbyMusic()
+
+    if self.panel ~= nil and self.panel.OnBecomeActive ~= nil then
+		self.panel:OnBecomeActive()
+	end
 end
 
 function LobbyScreen:OnDestroy()

@@ -138,4 +138,20 @@ function AccountItemFrame:SetStyle_Normal()
     self:GetAnimState():PlayAnimation("icon", true)
 end
 
+--Special case functions for lobby screen menu items
+function AccountItemFrame:ShowFocus(f)
+    if f then
+        self:GetAnimState():Show("FOCUS")
+    else
+        self:GetAnimState():Hide("FOCUS")
+    end
+end
+function AccountItemFrame:ShowSelect(s)
+    if s then
+        self:SetStyle_Highlight()
+    else
+        self:SetStyle_Normal()
+    end
+end
+
 return AccountItemFrame

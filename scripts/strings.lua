@@ -189,6 +189,7 @@ STRINGS =
             NOTREADY = "Place",
             READY    = "Sacrifice",
             SOCKET   = "Socket",
+            CELESTIAL = "Offer",
             QUAGMIRE_POT_HANGER = "Hang {item}",
             QUAGMIRE_OVEN       = "Place {item}",
             QUAGMIRE_ALTAR =
@@ -209,7 +210,6 @@ STRINGS =
             SETMINE = "Set Mine",
             PLACELANTERN = "Place",
         },
-        BUILD = "Build",
         PICK = "Pick",
         REPAIR = "Repair",
         PICKUP =
@@ -399,9 +399,25 @@ STRINGS =
         DRAW = "Draw On",
         DRAWITEM = "Draw {item}",
         BUNDLE = "Use",
-        BUNDLESTORE = "Store",
+        BUNDLESTORE =
+        {
+            GENERIC = "Store",
+            CONSTRUCT = "Add Material",
+        },
         WRAPBUNDLE = "Wrap",
         UNWRAP = "Unwrap",
+        CONSTRUCT =
+        {
+            GENERIC = "Build",
+            GENERIC_FMT = "Build {name}",
+            STORE = "Add Material",
+        },
+        STOPCONSTRUCTION =
+        {
+            GENERIC = "Stop Building",
+            GENERIC_FMT = "Stop Building {name}",
+        },
+        APPLYCONSTRUCTION = "Build",
         STARTCHANNELING = "Touch",
         STOPCHANNELING = "Stop Channeling",
         CASTAOE =
@@ -728,6 +744,8 @@ STRINGS =
         ROCK1 = "Boulder",
         ROCK2 = "Boulder",
         ROCK_MOON = "Boulder",
+		ROCK_MOON_CAPSULE = "Boulder",
+        ROCK_MOON_SHELL = "Boulder",
         ROCK_FLINTLESS = "Boulder",
         ROCK_FLINTLESS_MED = "Boulder",
         ROCK_FLINTLESS_LOW = "Boulder",
@@ -1387,6 +1405,7 @@ STRINGS =
 
         MOONROCKNUGGET = "Moon Rock",
         MOONROCKCRATER = "Cratered Moonrock",
+		MOONROCKSEED = "Celestial Orb",
 
         REDMOONEYE ="Red Moonlens",
         PURPLEMOONEYE = "Purple Moonlens",
@@ -1486,6 +1505,10 @@ STRINGS =
         SHADOW_ROOK = "Shadow Rook",
         SHADOW_KNIGHT = "Shadow Knight",
         SHADOW_BISHOP = "Shadow Bishop",
+
+        MULTIPLAYER_PORTAL_MOONROCK = "Celestial Portal",
+        MULTIPLAYER_PORTAL_MOONROCK_CONSTR_PLANS = "Portal Paraphernalia",
+        MOONROCKIDOL = "Moon Rock Idol",
 
         HALLOWEENCANDY_1 = "Candy Apple",
         HALLOWEENCANDY_2 = "Candy Corn",
@@ -2088,6 +2111,9 @@ STRINGS =
         MUSHROOM_LIGHT2 = "Inspired by the lava lamp sciences.",
         MUSHROOM_LIGHT = "The perfect addition to any mush-Room.",
         SLEEPBOMB = "A throwable pouch full of sleep.",
+
+        MULTIPLAYER_PORTAL_MOONROCK_CONSTR_PLANS = "The best laid plans.",
+        MOONROCKIDOL = "A key figure.",
 
         CHESSPIECE_PAWN_BUILDER = "It takes a village to raise an army.",
         CHESSPIECE_ROOK_BUILDER = "Next best thing to an actual castle.",
@@ -2871,6 +2897,7 @@ STRINGS =
         BOOKS = "Books",
         GEMOLOGY = "Gemology",
         ANCIENT = "Ancient",
+        CELESTIAL = "Celestial",
         SHADOW = "Shadow",
         CARTOGRAPHY = "Cartography",
         SCULPTING = "Sculptures",
@@ -3218,6 +3245,7 @@ STRINGS.UI =
         PLACE = "Place",
         BUILD = "Build",
         PROTOTYPE = "Prototype",
+        RESEARCH = "Research",
         TABACTION =
         {
             CARTOGRAPHY = "Scribe",
@@ -3241,8 +3269,6 @@ STRINGS.UI =
             QUAGMIRE_TRADER_KID = "Earn coins to trade!",
         },
         NEEDSTUFF = "Find ingredients \nto craft!",
-        BUILD = "Build",
-        RESEARCH = "Research",
         NEEDSCIENCEMACHINE = "Use a science machine to build a prototype!",
         NEEDALCHEMYENGINE = "Use an alchemy engine to build a prototype!",
         NEEDSHADOWMANIPULATOR = "Use a shadow manipulator to build a prototype!",
@@ -3660,6 +3686,10 @@ STRINGS.UI =
         MOTD = "Check out the latest items in the Klei Store!",
         MOTDBUTTON = "Klei Store",
 
+		MOTD_SYNCING = "Syncing Notifications",
+        MOTD_ALERT_DETAILS = "View Details",
+        MOTD_NEW_UPDATE = "New Update Available!",
+
         EXIT = "Exit",
         LOGOUT = "Log Out",
         REDEEM = "Redeem",
@@ -3836,7 +3866,6 @@ STRINGS.UI =
         WORLD_CLOCKDAY_V2 = "Day {day_count}",
         SAVING = "SAVING...",
         WORLD = "World",
-        BUILD = "Build",
         HERE = "here",
         STALE = "Stale",
         STALE_FROZEN = "Melting",
@@ -3889,6 +3918,7 @@ STRINGS.UI =
             PLAYFUL = "Peppy",
             CRAFTY = "Crafty",
         },
+		UNLOCK_TARGET = "Unlock Target",
 
         LAVAARENA_WIN_TITLE = "Victory!",
         LAVAARENA_WIN_BODY = "You have bested Battlemaster Pugna's champions in battle.",
@@ -3988,12 +4018,14 @@ STRINGS.UI =
         CONTROLS = "Controls",
         LANGUAGES = "Languages",
         LANG_TITLE = "Language Options",
+		CINEMATICS = "Cinematics",
         MORE = "More",
         TOOLTIP_SETTINGS = "Modify features of the game and user interface",
         TOOLTIP_CONTROLS = "Rebind which input does which in-game action",
         TOOLTIP_LANGUAGES = "Select display language",
 		TOOLTIP_CONTROLS_CONSOLE = "Check which control does which in-game action",
 		TOOLTIP_MORE = "View additional options",
+		TOOLTIP_CINEMATICS = "Sit back and watch a video",
         OPTIONS = "Options",
         BACK = "Back",
         YES = "Yes",
@@ -4047,7 +4079,11 @@ STRINGS.UI =
         EULA_RESPONSE_CHANGED_BODY = "Your settings have changed and you must log in again to continue.",
         OFFLINE_MODE_TITLE = "Offline Mode",
         OFFLINE_MODE_BODY = "Your selection is not available in offline mode. Please log in and try again.",
-        KLEI_ID_PREFIX = "Klei ID: "
+        KLEI_ID_PREFIX = "Klei ID: ",
+
+		INTRO_MOVIE = "Intro Movie",
+		CREDITS = "Credits",
+		VIDEO_CHANNEL = "More Klei Videos",
     },
 
     NOTIFICATION =
@@ -4144,6 +4180,10 @@ STRINGS.UI =
     	ALREADY_REDEEMED = "This code has already been redeemed. Maybe by you?",
     	FAILED_TO_CONTACT = "Sorry, it looks like the server's not answering right now. Please try again later.",
     	LEGALESE = "Delivery time may vary due to temporal portal anomalies. Wilson is not responsible for emotional injuries caused by waiting. Gifts may result in bragging, unexpected delight, and/or enhanced gameplay experiences.",
+
+		MENU_BUTTON_TITLE = "Redeem Codes",
+		MENU_BUTTON_DESC = "Transmute some codes into something useful.",
+
 	},
 
     EULADIALOG = 
@@ -4384,6 +4424,8 @@ STRINGS.UI =
         CONFIRMTITLE = "Really %s?",
         CONFIRMTITLE_TARGET = "Really %s %s?",
         CONFIRMBODY = "Are you sure?",
+		HIDE_SERVERNAME = "Hide Server Name",
+		SHOW_SERVERNAME = "Show Server Name",
     },
 
     WORLDRESETDIALOG =
@@ -4414,7 +4456,6 @@ STRINGS.UI =
         WHISPER_DESIGNATOR = "[W]",
         HELP_WHISPER = "Whisper",
         HELP_SAY = "Say",
-        SYSTEMNAME = "[S] system",
     },
 
     USERCOMMANDS =
@@ -4908,6 +4949,7 @@ STRINGS.UI =
         NOTAGS = "No Tags",
         VIEWTAGS = "View Tags",
         MODSENABLED = "Mods Enabled:",
+		TOGGLE_SERVER_NAME = "Toggle Server Name",
         MODSTITLE = "Mods",
         TAGSTITLE = "Tags",
         MOD_WARNING_TITLE = "Mods Enabled",
@@ -4915,7 +4957,8 @@ STRINGS.UI =
         CLIENT_MODS_DISABLED_TITLE = "Client Mods Disabled",
         CLIENT_MODS_DISABLED_BODY = "Your client mods will be temporarily disabled while playing on this server.",
         PASSWORD_ICON_HOVER = "Passworded",
-        DEDICATED_ICON_HOVER = "Dedicated",
+        DEDICATED_ICON_HOVER = "Dedicated Server",
+		DEDICATED_KLEI_ICON_HOVER = "Klei Official Server",
         FRIEND_ICON_HOVER = "Friends Playing",
         FRIEND_SERVER_ICON_HOVER = "Friend-Hosted",
         CLAN_OTHER_ICON_HOVER = "Group Server",
@@ -5000,6 +5043,8 @@ STRINGS.UI =
         MISSINGDATABODY = "This server is not up to date. We cannot display its world settings.",
         SERVER_LANGUAGE_WARNING_TITLE = "Server Language Mismatch",
         SERVER_LANGUAGE_WARNING_BODY = "Your language option doesn't match the language set by this server, do want to join anyways?",
+		HIDDEN_NAME = "*****",
+		HIDDEN_DESCRIPTION = "*****",
     },
     
 	DEMOOVERDIALOG =
@@ -5185,17 +5230,10 @@ STRINGS.UI =
     NOAUTHENTICATIONSCREEN =
     {
         TITLE = "Create an Account",
-        TITLE_FAILEDEMAIL = "Email Not Validated",
         BODY = "It looks like this is your first time playing Don't Starve Together.\nPlease click below to create an account and start playing.",
-        BODY_FAILEDEMAIL = "The email associated with your account has not been validated.\nPlease check your inbox for a validation request.\nIf you think your email was entered incorrectly,\nclick below to try again.",
         BODY2 = "Account creation will temporarily minimize your game and open your web browser.\nIf this doesn't work, try enabling your Steam overlay.",
-        BODY2_FAILEDEMAIL = "Trying again will temporarily minimize your game and open your web browser.",
         CREATEBUTTON = "Create Account",
-        FAILEDEMAILBUTTON = "Try Again",
         CANCELBUTTON = "Cancel",
-        BAD_TITLE = "Ownership Not Confirmed",
-        BAD_BODY = "We can't verify that you own a copy of Don't Starve Together on Steam right now. Please try again later.",
-        BAD_BUTTON = "OK",
     },
 
     LOBBYSCREEN =
@@ -5237,6 +5275,7 @@ STRINGS.UI =
         WAITING_FOR_PLAYERS_TITLE = "Waiting For Other Players",
         EMPTY_SLOT = "Available Slot",
         READY = "Ready!",
+        TOGGLE_PORTRAIT = "Toggle Portrait",
         
         SERVER_SHUTDOWN_TITLE = "Server is Shutting Down",
         SERVER_SHUTDOWN_BODY = "This server is about to shut down.",
@@ -6074,10 +6113,15 @@ STRINGS.UI =
         NEW_STUFF = "Recent Discoveries",
         LOADING_STUFF = "Loading Discoveries...",
         NO_ITEMS = "Start playing to earn items!",
+		OFFLINE_NO_ITEMS = "Log in to starting earning items.",
         UNOPENED_BOXES_FMT = "{num_boxes} unopened Chests",
         MOST_COMMON_DEATH = "Often Killed By",
         MOST_COMMON_FRIEND = "Friendliest Friend",
+        MOST_COMMON_FRIENDS = "Friendliest Friends",
         ENCOUNTER_COUNT_FMT = "Time played with: {time}",
+
+		NO_DEATHS = "No surviver deaths on record.",
+		NO_FRIENDS = "Play online and make some friends.",
 
         TOOLTIP_TRADE = "Trade your old items in for something new!",
         TOOLTIP_SKINS = "View and equip your curios",
@@ -6150,11 +6194,15 @@ STRINGS.UI =
         LEGS = "Legs",
         FEET = "Feet",
 
-        SHOW_HERO_CLOTHING = "Survivor Filter On",
-        SHOW_ALL_CLOTHING = "Survivor Filter Off",
-
-        SHOW_UNOWNED_CLOTHING = "Owned Filter On",
-        SHOW_UNOWNEDANDOWNED_CLOTHING = "Owned Filter Off",
+        SURVIVOR_FILTER_FMT = "Survivor Filter: {mode}",
+        OWNED_FILTER_FMT    = "Owned Filter: {mode}",
+        SORT_MODE_FMT       = "Sort Mode: {mode}",
+        
+        FILTER_ON       = "On",
+        FILTER_OFF      = "Off",
+        SORT_NAME       = "Name",
+        SORT_RARITY     = "Rarity",
+        SORT_RELEASE    = "Release Date",
 
         TOOLTIP_BASE = "Equip a head item",
         TOOLTIP_BODY = "Equip a body item",

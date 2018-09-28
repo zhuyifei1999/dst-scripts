@@ -300,11 +300,13 @@ function TEMPLATES.MenuButton(text, onclick, tooltip_text, tooltip_widget)
     btn.bg:SetPosition(-10,1)
 
     btn.ongainfocus = function(is_enabled)
-        tooltip_widget:SetString(tooltip_text)
+        if tooltip_widget ~= nil then
+            tooltip_widget:SetString(tooltip_text)
+        end
     end
 
     btn.onlosefocus = function()
-        if btn.parent and not btn.parent.focus then
+        if btn.parent and not btn.parent.focus and tooltip_widget ~= nil then
             tooltip_widget:SetString("")
         end
     end
@@ -371,6 +373,46 @@ function TEMPLATES.WardrobeButton(text, onclick, tooltip_text, tooltip_widget)
     return btn
 end
 
+function TEMPLATES.WardrobeButtonMinimal(onclick)
+    local btn = ImageButton(
+        "images/global_redux.xml",
+        "blank.tex", -- never used, hidden
+        nil,
+        nil,
+        nil,
+        "blank.tex",
+        {0.6},
+        {-10,1})
+    btn.scale_on_focus = false
+    btn:SetImageNormalColour(1,1,1,0) -- we don't want anything shown for normal.
+    btn:SetImageFocusColour(1,1,1,0) -- use focus overlay instead.
+    btn:SetImageSelectedColour(1,1,1,1)
+
+    btn.ongainfocus = function(is_enabled)
+        btn.icon:ShowFocus(true)
+    end
+    btn.onlosefocus = function()
+        btn.icon:ShowFocus(false)
+    end
+    btn.onselect = function()
+        btn.icon:ShowSelect(true)
+    end
+    btn.onunselect = function()
+        btn.icon:ShowSelect(false)
+    end
+    btn:SetOnClick(onclick)
+
+    btn.icon = btn:AddChild( AccountItemFrame() )
+    btn.icon:SetStyle_Normal()
+    btn.icon:SetScale(0.4)
+    btn.icon:SetPosition(-114,2)
+
+    btn.SetItem = function(self,item_id)
+        self.icon:SetItem(item_id)
+    end
+
+    return btn
+end
 function TEMPLATES.PortraitIconMenuButton(text, onclick, tooltip_text, tooltip_widget)
     local btn = TEMPLATES.TwoLineMenuButton(text, onclick, tooltip_text, tooltip_widget)
 
@@ -1091,10 +1133,9 @@ function TEMPLATES.CharacterSpinner(onchanged_fn, puppet, user_profile)
     local heroselector = TEMPLATES.StandardSpinner(hero_data, 300)
     heroselector:SetOnChangedFn(function(selected_name, old)
         if puppet and user_profile then
-            local base_skin = user_profile:GetBaseForCharacter(selected_name)
-            local clothing = user_profile:GetSkinsForCharacter(selected_name, base_skin)
+            local clothing = user_profile:GetSkinsForCharacter(selected_name)
             local skip_change_emote = true
-            puppet:SetSkins(selected_name, base_skin, clothing, skip_change_emote)
+            puppet:SetSkins(selected_name, clothing.base, clothing, skip_change_emote)
             user_profile:SetLastSelectedCharacter(selected_name)
         end
         onchanged_fn(selected_name, old)
@@ -1117,6 +1158,60 @@ function TEMPLATES.CharacterSpinner(onchanged_fn, puppet, user_profile)
     return heroselector
 end
 
+function TEMPLATES.ChatFlairBadge()
+    local flair = Widget("chat falir badge")
+
+    flair.bg = flair:AddChild(Image())
+    flair.bg:SetScale(0.8)
+
+    flair.flair_img = flair:AddChild(Image(GetProfileFlairAtlasAndTex()))
+    flair.flair_img:SetScale(.55)
+    flair.flair_img:SetPosition(0, 31)
+    
+    flair.SetFestivalBackground = function(self, festival_key)
+        festival_key = festival_key or "none"
+        self.bg:SetTexture("images/profileflair.xml", "playericon_bg_".. festival_key ..".tex", "playericon_bg_none.tex")
+    end
+    -- Assume current event.
+    flair:SetFestivalBackground(IsAnyFestivalEventActive() and WORLD_FESTIVAL_EVENT or nil)
+    flair:Hide()
+    flair:SetClickable(false)
+
+    --Setup custom widget functions
+    flair.SetFlair = function(self, profileflair)
+        self.profileflair = profileflair
+
+        if self.profileflair then
+            local profileflair = self.profileflair
+            if profileflair == "default" then
+                profileflair = nil
+            end
+            self:Show()
+            self.flair_img:SetTexture(GetProfileFlairAtlasAndTex(profileflair))
+        else
+            self:Hide()
+        end
+    end
+
+    flair.GetFlair = function(self)
+        return self.profileflair
+    end
+
+    flair.SetAlpha = function(self, a)
+        if a > 0.01 and self.profileflair then
+            self:Show()
+            self.bg:SetTint(1,1,1, a)
+            self.flair_img:SetTint(1,1,1, a)
+        else
+            self:Hide()
+        end
+    end
+    
+    flair:SetScale(0.5)
+
+    return flair
+end
+
 function TEMPLATES.RankBadge()
     local rank = Widget("rank badge")
 
@@ -1136,7 +1231,16 @@ function TEMPLATES.RankBadge()
     -- Assume current event.
     rank:SetFestivalBackground(IsAnyFestivalEventActive() and WORLD_FESTIVAL_EVENT or nil)
 
-    rank.SetRank = function(self, profileflair, rank_value)
+    rank.SetRank = function(self, profileflair, rank_value, hide_hover_text)
+        if not IsAnyFestivalEventActive() then
+            rank_value = nil
+        end
+        
+        if not hide_hover_text and IsItemId(profileflair) then
+            rank.flair:SetHoverText( GetSkinName(profileflair), { font = UIFONT, offset_x = 0, offset_y = 40, colour = GetColorForItem(profileflair) } )
+        else
+            rank.flair:ClearHoverText()
+        end
         rank.flair:SetTexture(GetProfileFlairAtlasAndTex(profileflair))
         local is_rank_valid = rank_value and rank_value >= 0
         if is_rank_valid then

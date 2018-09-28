@@ -9,17 +9,13 @@ local Widget = require "widgets/widget"
 require "os"
 
 local PopupDialogScreen = require "screens/redux/popupdialog"
-local RedeemDialog = require "screens/redeemdialog"
 local FestivalEventScreen = require "screens/redux/festivaleventscreen"
-local MovieDialog = require "screens/moviedialog"
-local CreditsScreen = require "screens/creditsscreen"
 local ModsScreen = require "screens/redux/modsscreen"
 local OptionsScreen = require "screens/redux/optionsscreen"
 local PlayerSummaryScreen = require "screens/redux/playersummaryscreen"
 local QuickJoinScreen = require "screens/redux/quickjoinscreen"
 local ServerListingScreen = require "screens/redux/serverlistingscreen"
 local ServerCreationScreen = require "screens/redux/servercreationscreen"
-
 
 local TEMPLATES = require "widgets/redux/templates"
 
@@ -29,21 +25,74 @@ local ThankYouPopup = require "screens/thankyoupopup"
 local SkinGifts = require("skin_gifts")
 local Stats = require("stats")
 
-local CountdownBeta = require "widgets/countdownbeta"
-
-
+local MainMenuMotdPanel = require "widgets/redux/mainmenu_motdpanel"
+local MainMenuStatsPanel = require "widgets/redux/mainmenu_statspanel"
 
 local SHOW_DST_DEBUG_HOST_JOIN = BRANCH == "dev"
-local SHOW_MOTD = true
 local SHOW_QUICKJOIN = false
 
-if PLATFORM == "WIN32_RAIL" then
-	SHOW_MOTD = false
-end
+function MakeBanner(self)
+	local banner_height = 350
 
+	local baner_root = Widget("banner_root")
+	baner_root:SetPosition(0, RESOLUTION_Y / 2 - banner_height / 2 + 1 )
+
+	local anim = baner_root:AddChild(UIAnim())
+	anim:GetAnimState():SetBuild("dst_menu")
+	anim:GetAnimState():SetBank("dst_menu")
+	anim:GetAnimState():PlayAnimation("loop", true)
+	anim:SetScale(0.63)
+	anim:SetPosition(347, 85)
+
+    local logo = baner_root:AddChild(Image("images/frontscreen.xml", "title.tex"))
+    logo:SetScale(.36)
+    logo:SetPosition( -RESOLUTION_X/2 + 180, 5)
+    logo:SetTint(unpack(FRONTEND_TITLE_COLOUR))
+
+	local body_str = nil
+	local title_str = nil
+
+	if body_str ~= nil then
+		local font_size = 20
+		body = baner_root:AddChild(Text(self.info_font, font_size, "", UICOLOURS.GOLD_SELECTED))
+		body:SetMultilineTruncatedString(body_str, 10, 200, nil, true)
+		body:SetHAlign(ANCHOR_LEFT)
+		local w, h = body:GetRegionSize()
+		local body_x, body_y = x + w/2 - cell_size.width/2 + text_padding, y -cell_size.height / 2 + h/2 + text_padding
+		body:SetPosition(body_x, body_y)
+
+		local shadow = baner_root:AddChild(Text(self.info_font, font_size, "", UICOLOURS.BLACK))
+		shadow:SetMultilineTruncatedString(body_str, 10, cell_size.width - text_padding * 2, nil, true)
+		shadow:SetHAlign(ANCHOR_LEFT)
+		shadow:SetPosition(body_x + 1.5, body_y - 1.5)
+		shadow:MoveToBack()
+	end
+
+	if title_str ~= nil then
+		local font_size = 32
+		local title = baner_root:AddChild(Text(self.info_font, font_size, title_str, UICOLOURS.HIGHLIGHT_GOLD))
+		title:SetRegionSize(cell_size.width - text_padding * 2, font_size + 2)
+		title:SetHAlign(ANCHOR_LEFT)
+		title:SetPosition(x, y + cell_size.height / 2 - font_size / 2 - text_padding + 4)
+
+		local shadow = baner_root:AddChild(Text(self.info_font, font_size, title_str, UICOLOURS.BLACK))
+		shadow:SetRegionSize(cell_size.width - text_padding * 2, font_size + 2)
+		shadow:SetHAlign(ANCHOR_LEFT)
+		shadow:SetPosition(x + 1.5, y + cell_size.height / 2 - font_size / 2 - text_padding + 4 - 1.5)
+		shadow:MoveToBack()
+	end
+
+
+
+	return baner_root
+end
 
 local MultiplayerMainScreen = Class(Screen, function(self, prev_screen, profile, offline, session_data)
 	Screen._ctor(self, "MultiplayerMainScreen")
+
+	self.info_font = BODYTEXTFONT -- CHATFONT, FALLBACK_FONT, CHATFONT_OUTLINE
+
+
     self.profile = profile
     self.offline = offline
     self.session_data = session_data
@@ -58,6 +107,7 @@ function MultiplayerMainScreen:DoInit()
     self.fixed_root:SetVAnchor(ANCHOR_MIDDLE)
     self.fixed_root:SetHAnchor(ANCHOR_MIDDLE)
     self.fixed_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
+	self.fixed_root:SetScissor(-RESOLUTION_X*.5, -RESOLUTION_Y*.5, RESOLUTION_X, RESOLUTION_Y)
 
     if IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
         self.snowfall = self:AddChild(TEMPLATES.old.Snowfall())
@@ -66,187 +116,64 @@ function MultiplayerMainScreen:DoInit()
         self.snowfall:SetScaleMode(SCALEMODE_PROPORTIONAL)
     end
 
-    self.fg = self:AddChild(TEMPLATES.ReduxForeground())
+	self.fixed_root:AddChild(MakeBanner(self))
 
+	local bg = self.fixed_root:AddChild(Image("images/bg_redux_dark_bottom_solid.xml", "dark_bottom_solid.tex"))
+	bg:SetScale(.669)
+	bg:SetPosition(0, -158)
+	bg:SetClickable(false)
 
-
-    if IsFestivalEventActive(FESTIVAL_EVENTS.QUAGMIRE) then
-        self.bg_anim = self.fixed_root:AddChild(TEMPLATES.QuagmireAnim())
-    elseif IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then
-        self.bg = self.fixed_root:AddChild(TEMPLATES.BoarriorBackground())
-        self.bg_anim = self.fixed_root:AddChild(TEMPLATES.BoarriorAnim())
-	elseif IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
-		local anim_bg = UIAnim()
-		anim_bg:GetAnimState():SetBuild("dst_menu_feast_bg")
-		anim_bg:GetAnimState():SetBank("dst_menu_bg")
-		anim_bg:SetScale(0.7)
-		anim_bg:SetPosition(300, -10)
-		anim_bg:GetAnimState():SetDeltaTimeMultiplier(1.6)
-		anim_bg:GetAnimState():PlayAnimation("loop", true)
-        
-		local anim = UIAnim()
-		anim:GetAnimState():SetBuild("dst_menu_feast")
-		anim:GetAnimState():SetBank("dst_menu")
-		anim:SetScale(0.7)
-		anim:SetPosition(300, -10)
-		anim:GetAnimState():PlayAnimation("loop", true)
-
-		self.bg_anim_bg = self.fixed_root:AddChild(anim_bg)
-		self.bg_anim = self.fixed_root:AddChild(anim)
-    elseif IsSpecialEventActive(SPECIAL_EVENTS.YOTV) then
-        self.bg_anim_bg = self.fixed_root:AddChild(TEMPLATES.ClayWargBackground())
-        self.bg_anim = self.fixed_root:AddChild(TEMPLATES.ClayWargAnim())
-        
-        --darken the bg slightly with a gradient so that the menu doesn't get too lost.
-		local grad = self.fixed_root:AddChild(Image("images/frontend.xml", "sidemenu_bg.tex"))
-		grad:SetVRegPoint(ANCHOR_MIDDLE)
-		grad:SetHRegPoint(ANCHOR_LEFT)
-		grad:SetScale(1.5)
-		grad:SetPosition(-.5 * RESOLUTION_X, 0)
-		grad:SetTint(0,0,0,1)
+	-- new MOTD
+	if TheFrontEnd.MotdManager:IsEnabled() then
+		local info_panel = MainMenuMotdPanel({font = self.info_font, bg = bg, error_cb = 
+			function() 
+				if self.info_panel ~= nil then
+					self.info_panel:Kill() 
+				end
+				self.info_panel = self.fixed_root:AddChild(MainMenuStatsPanel())
+			end})
+		if self.info_panel == nil then
+			self.info_panel = self.fixed_root:AddChild(info_panel)
+		end
 	else
-		local anim = UIAnim()
-		anim:GetAnimState():SetBuild("dst_menu")
-		anim:GetAnimState():SetBank("dst_menu")
-		anim:SetScale(0.7)
-		anim:SetPosition(300, -10)
-		anim:GetAnimState():PlayAnimation("loop", true)
+		self.info_panel = self.fixed_root:AddChild(MainMenuStatsPanel())
+	end
 
-		self.bg_anim = self.fixed_root:AddChild(anim)
-    end
-    
-    self.motd = self.fixed_root:AddChild(Widget("motd"))
-    if IsAnyFestivalEventActive() then
-        SHOW_MOTD = false
-        
+    if IsAnyFestivalEventActive() then        
         if not TheFrontEnd:GetIsOfflineMode() then
 			self.userprogress = self.fixed_root:AddChild(TEMPLATES.UserProgress(function()
 				self:OnPlayerSummaryButton()
 			end))
 		end
-    else
-        -- onlinestatus is above motd
-        self.motd:SetPosition(510, 215)
     end
-
-    self.motdbg = self.motd:AddChild(TEMPLATES.RectangleWindow(105,179,
-        STRINGS.UI.MAINSCREEN.MOTDTITLE,
-        nil,
-        nil,
-        STRINGS.UI.MAINSCREEN.MOTD
-    ))
-    self.motdbg:SetBackgroundTint(0,0,0,.85) -- black to match image border
-    self.motd.motdtitle = self.motdbg.title
-    self.motd.motdtext = self.motdbg.body
-    -- smaller font is more subtle
-    self.motd.motdtitle:SetSize(34)
-    self.motd.motdtext:SetSize(20)
-
-	self.motd.motdimage = self.motd:AddChild(ImageButton( "images/global.xml", "square.tex" ))
-    self.motd.motdimage:SetScale(.7)
-    self.motd.motdimage.scale_on_focus = false -- show focus on motd.button
-    self.motd.motdimage:Hide()    
-	self.motd.motdimage:SetOnClick(
-		function()
-			self.motd.button.onclick()
-		end)
-
-    self.motd.button = self.motd:AddChild(ImageButton("images/global_redux.xml",
-            "button_carny_long_normal.tex",
-            "button_carny_long_hover.tex",
-            "button_carny_long_disabled.tex",
-            "button_carny_long_down.tex"
-        ))
-    self.motd.button:SetPosition(0,-103)
-    self.motd.button:SetScale(.45)
-    self.motd.button:SetText(STRINGS.UI.MAINSCREEN.MOTDBUTTON)
-    self.motd.button:SetOnClick( function() if PLATFORM ~= "WIN32_RAIL" then VisitURL("http://store.kleientertainment.com/") end end )
-
-    self.motd.focus_forward = self.motd.button
-
-
-	local gainfocusfn_img = self.motd.motdimage.OnGainFocus
-    local losefocusfn_img = self.motd.motdimage.OnLoseFocus
-    
-    self.motd.motdimage.OnGainFocus =
-		function()
-    		gainfocusfn_img(self.motd.motdimage)
-    		self.motd.button.image:SetTexture(self.motd.button.atlas, self.motd.button.image_focus)
-		end
-	self.motd.motdimage.OnLoseFocus =
-		function()
-    		losefocusfn_img(self.motd.motdimage)
-			if not self.motd.button.focus then
-    			self.motd.button.image:SetTexture(self.motd.button.atlas, self.motd.button.image_normal)
-    		end
-		end
-
-    self.motd.button.OnGainFocus =
-		function()
-    		self.motd.button._base.OnGainFocus(self.motd.button)
-    		self.motd.button.image:SetTexture(self.motd.button.atlas, self.motd.button.image_focus)
-		end
-	self.motd.button.OnLoseFocus =
-		function()
-    		self.motd.button._base.OnLoseFocus(self.motd.button)
-			if not self.motd.motdimage.focus then
-    			self.motd.button.image:SetTexture(self.motd.button.atlas, self.motd.button.image_normal)
-    		end
-		end
-	
 	
 	self.fixed_root:AddChild(Widget("left"))
-    
-    self.title = self.fixed_root:AddChild(Image("images/frontscreen.xml", "title.tex"))
-    self.title:SetScale(.32)
-    self.title:SetPosition( -RESOLUTION_X/2 + 160, 220)
-    self.title:SetTint(unpack(FRONTEND_TITLE_COLOUR))
     
     self:MakeMainMenu()
 	self:MakeSubMenu()
 
     self.onlinestatus = self.fixed_root:AddChild(OnlineStatus( true ))
 
-	self:UpdateMOTD()
     ----------------------------------------------------------
 
-	self.filter_settings = nil
-
-    --focus moving
-    self.motd:SetFocusChangeDir(MOVE_LEFT, self.menu)
-    self.motd:SetFocusChangeDir(MOVE_DOWN, self.submenu.items[#self.submenu.items] )
-    if SHOW_MOTD then
-        self.menu:SetFocusChangeDir(MOVE_RIGHT, self.motd)
-        self.submenu:SetFocusChangeDir(MOVE_RIGHT, self.motd)
-    end
-    self.submenu:SetFocusChangeDir(MOVE_UP, self.menu.items[1])
-    self.menu:SetFocusChangeDir(MOVE_DOWN, self.submenu)
-
-
-    if self.debug_menu then
-        self.menu:SetFocusChangeDir(MOVE_UP, self.debug_menu, -1)
-        self.menu:SetFocusChangeDir(MOVE_RIGHT, self.debug_menu, -1)
-        self.motd:SetFocusChangeDir(MOVE_LEFT, self.debug_menu, -1)
-        self.debug_menu:SetFocusChangeDir(MOVE_LEFT, self.menu)
-        self.debug_menu:SetFocusChangeDir(MOVE_RIGHT, self.motd)
-    end
-
-	--[[if IsNotConsole() then
-		self.beta_countdown = self.fixed_root:AddChild(CountdownBeta(self, "quagmire"))
-		self.beta_countdown:SetScale(.8)
-		self.beta_countdown:SetPosition(500, -100)
-
-		self.beta_countdown:SetFocusChangeDir(MOVE_DOWN, self.submenu)
-		self.beta_countdown:SetFocusChangeDir(MOVE_UP, self.motd.button)
-		self.submenu:SetFocusChangeDir(MOVE_UP, self.beta_countdown)
-		self.motd.button:SetFocusChangeDir(MOVE_DOWN, self.beta_countdown)
-	end]]
-
-
+	self:DoFocusHookups()
     self.menu:SetFocus(#self.menu.items)
 
     --V2C: This is so the first time we become active will trigger OnShow to UpdatePuppets
     self:Hide()
+end
+
+function MultiplayerMainScreen:DoFocusHookups()
+    --focus moving
+    self.submenu:SetFocusChangeDir(MOVE_UP, self.menu.items[1])
+    self.menu:SetFocusChangeDir(MOVE_DOWN, self.submenu)
+
+    if self.debug_menu then
+        self.menu:SetFocusChangeDir(MOVE_UP, self.debug_menu, -1)
+        self.menu:SetFocusChangeDir(MOVE_RIGHT, self.debug_menu, -1)
+        self.debug_menu:SetFocusChangeDir(MOVE_LEFT, self.menu)
+    end
+
 end
 
 function MultiplayerMainScreen:OnShow()
@@ -458,12 +385,6 @@ end
 function MultiplayerMainScreen:OnModsButton()
     self:_FadeToScreen(ModsScreen, {})
 end
-
-
--- SUBSCREENS
-function MultiplayerMainScreen:Forums()
-	VisitURL("http://forums.kleientertainment.com/forum/73-dont-starve-together-beta/")
-end
  
 function MultiplayerMainScreen:Quit()
     self.last_focus_widget = TheFrontEnd:GetFocusWidget()
@@ -475,41 +396,6 @@ function MultiplayerMainScreen:Quit()
                 { text=STRINGS.UI.MAINSCREEN.NO, cb = function() TheFrontEnd:PopScreen() end },
             }
         ))
-end
-
-
-local function OnMovieDone()
-    TheFrontEnd:GetSound():PlaySound(FE_MUSIC, "FEMusic")
-    TheFrontEnd:GetSound():SetParameter("FEMusic", "fade", 0)
-    --TheFrontEnd:GetSound():PlaySound("dontstarve/together_FE/portal_idle_vines", "FEPortalSFX")
-    TheFrontEnd:Fade(FADE_IN, 2)
-end
-
-function MultiplayerMainScreen:OnMovieButton()
-    self.last_focus_widget = TheFrontEnd:GetFocusWidget()
-    TheFrontEnd:GetSound():KillSound("FEMusic")
-    --TheFrontEnd:GetSound():KillSound("FEPortalSFX")
-    self.menu:Disable()
-    if self.debug_menu ~= nil then
-        self.debug_menu:Disable()
-    end
-    
-	TheFrontEnd:FadeToScreen( self, function() return MovieDialog("movies/intro.ogv", OnMovieDone) end, nil )
-end
-
-function MultiplayerMainScreen:OnCreditsButton()
-    self.last_focus_widget = TheFrontEnd:GetFocusWidget()
-	TheFrontEnd:GetSound():KillSound("FEMusic")
-    --TheFrontEnd:GetSound():KillSound("FEPortalSFX")
-	self.menu:Disable()
-    if self.debug_menu then self.debug_menu:Disable() end
-    
-	TheFrontEnd:FadeToScreen( self, function() return CreditsScreen() end, nil )
-end
-
-function MultiplayerMainScreen:OnRedeemButton()
-	self.last_focus_widget = TheFrontEnd:GetFocusWidget()
-	TheFrontEnd:PushScreen(RedeemDialog())
 end
 
 function MultiplayerMainScreen:OnHostButton()
@@ -534,11 +420,11 @@ end
 function MultiplayerMainScreen:MakeMainMenu()
     -- There's no Back on main menu, so menu and tooltip positions are shifted.
     self.menu_root = self.fixed_root:AddChild(Widget("menu_root"))
-    self.menu_root:SetPosition(0,-35)
+    self.menu_root:SetPosition(0,-95)
 
-    self.tooltip = self.menu_root:AddChild(TEMPLATES.ScreenTooltip())
-    self.tooltip:SetPosition( -(RESOLUTION_X*.5)+220, -(RESOLUTION_Y*.5)+157 )
-    self.tooltip:SetRegionSize(300,100)
+--    self.tooltip = self.menu_root:AddChild(TEMPLATES.ScreenTooltip())
+--    self.tooltip:SetPosition( -(RESOLUTION_X*.5)+220, -(RESOLUTION_Y*.5)+157 )
+--    self.tooltip:SetRegionSize(300,100)
 
     local function MakeMainMenuButton(text, onclick, tooltip_text, tooltip_widget)
         local btn = TEMPLATES.MenuButton(text, onclick, tooltip_text, tooltip_widget)
@@ -583,7 +469,7 @@ function MultiplayerMainScreen:MakeMainMenu()
         table.insert( debug_menu_items, {text=STRINGS.UI.MAINSCREEN.HOST, cb= function() self:OnHostButton() end})
 
 		self.debug_menu = self.fixed_root:AddChild(Menu(debug_menu_items, 74))
-		self.debug_menu:SetPosition(-50, 250)
+		self.debug_menu:SetPosition(-450, 250)
 		self.debug_menu:SetScale(.8)
     end
 end
@@ -591,57 +477,21 @@ end
 function MultiplayerMainScreen:MakeSubMenu()
     local submenuitems = {}
 
-    local function MakeSubMenuButton(name, text, onclick)
-        local btn = ImageButton("images/frontscreen.xml", name..".tex", nil, nil, nil, nil, {1,1}, {0,0})
-        btn.image:SetPosition(0, 70)
-        btn:SetTextColour(UICOLOURS.GOLD)
-        btn:SetTextFocusColour(UICOLOURS.GOLD)
-        btn:SetFocusScale(1.05, 1.05, 1.05)
-        btn:SetNormalScale(1, 1, 1)
-        btn:SetText(text)
-        btn.bg = btn:AddChild(Image("images/ui.xml", "blank.tex"))
-        local w,h = btn.text:GetRegionSize()
-        btn.bg:ScaleToSize(w+15, h+15)
-        btn:SetOnClick(onclick)
-        btn:SetScale(.75)
-
-        return btn
-    end
-
-	local credits_button = TEMPLATES.IconButton("images/button_icons.xml", "credits.tex", STRINGS.UI.MAINSCREEN.CREDITS, false, true, function() self:OnCreditsButton() end, {font=NEWFONT_OUTLINE})
-	local movie_button = TEMPLATES.IconButton("images/button_icons.xml", "movie.tex", STRINGS.UI.MAINSCREEN.MOVIE, false, true, function() self:OnMovieButton() end, {font=NEWFONT_OUTLINE})
-	local forums_button = nil
-	local more_games_button = nil
-	local manage_account_button = nil
-	local redeem_button = nil
-	local documents_button = nil
-	
-	
-    if PLATFORM == "WIN32_STEAM" or PLATFORM == "LINUX_STEAM" or PLATFORM == "OSX_STEAM" or PLATFORM == "WIN32_RAIL" then
-		if PLATFORM ~= "WIN32_RAIL" then
-	        more_games_button = TEMPLATES.IconButton("images/button_icons.xml", "more_games.tex", STRINGS.UI.MAINSCREEN.MOREGAMES, false, true, function() VisitURL("http://store.steampowered.com/search/?developer=Klei%20Entertainment") end, {font=NEWFONT_OUTLINE})
-			forums_button = TEMPLATES.IconButton("images/button_icons.xml", "forums.tex", STRINGS.UI.MAINSCREEN.FORUM, false, true, function() self:Forums() end, {font=NEWFONT_OUTLINE})
-		else
-			documents_button = TEMPLATES.IconButton("images/button_icons.xml", "folder.tex", STRINGS.UI.MAINSCREEN.SAVE_LOCATION, false, true, function() TheSim:OpenDocumentsFolder() end, {font=NEWFONT_OUTLINE})
+    if IsSteam() or IsRail() then
+		if not IsLinux() then
+			table.insert(submenuitems, {widget = TEMPLATES.IconButton("images/button_icons.xml", "folder.tex", STRINGS.UI.MAINSCREEN.SAVE_LOCATION, false, true, function() TheSim:OpenDocumentsFolder() end, {font=NEWFONT_OUTLINE})})
 		end
-		
+
         if TheFrontEnd:GetAccountManager():HasSteamTicket() then
-            manage_account_button = TEMPLATES.IconButton("images/button_icons.xml", "profile.tex", STRINGS.UI.SERVERCREATIONSCREEN.MANAGE_ACCOUNT, false, true, function() print(TheFrontEnd:GetAccountManager():GetViewAccountURL()) VisitURL( TheFrontEnd:GetAccountManager():GetViewAccountURL(), true ) end, {font=NEWFONT_OUTLINE})
-
-			local online = TheNet:IsOnlineMode() and not TheFrontEnd:GetIsOfflineMode()
-			if online then
-				redeem_button = TEMPLATES.IconButton("images/button_icons.xml", "redeem.tex", STRINGS.UI.MAINSCREEN.REDEEM, false, true, function() self:OnRedeemButton() end, {font=NEWFONT_OUTLINE})
-			end
+            table.insert(submenuitems, {widget = TEMPLATES.IconButton("images/button_icons.xml", "profile.tex", STRINGS.UI.SERVERCREATIONSCREEN.MANAGE_ACCOUNT, false, true, function() VisitURL( TheFrontEnd:GetAccountManager():GetAccountURL(), true ) end, {font=NEWFONT_OUTLINE})})
         end
-    end
-    
-	local widgets = { documents_button, redeem_button, manage_account_button, movie_button, credits_button, forums_button, more_games_button }
-	for i = 1, #widgets do
-		if widgets[i] ~= nil then
-			table.insert(submenuitems, {widget = widgets[i]} )
+
+		if not IsRail() then
+			table.insert(submenuitems, {widget = TEMPLATES.IconButton("images/button_icons.xml", "forums.tex", STRINGS.UI.MAINSCREEN.FORUM, false, true, function() VisitURL("http://forums.kleientertainment.com/forums/forum/73-dont-starve-together/") end, {font=NEWFONT_OUTLINE})})
+	        table.insert(submenuitems, {widget = TEMPLATES.IconButton("images/button_icons.xml", "more_games.tex", STRINGS.UI.MAINSCREEN.MOREGAMES, false, true, function() VisitURL("http://store.steampowered.com/search/?developer=Klei%20Entertainment") end, {font=NEWFONT_OUTLINE})})
 		end
-	end
-	
+    end
+
     self.submenu = self.fixed_root:AddChild(Menu(submenuitems, 75, true))
     self.submenu:SetPosition( -RESOLUTION_X*.5 + 90, -(RESOLUTION_Y*.5)+85, 0)
     self.submenu:SetScale(.8)
@@ -679,6 +529,10 @@ function MultiplayerMainScreen:OnBecomeActive()
     --start a new query everytime we go back to the mainmenu
 	if TheSim:IsLoggedOn() then
 		TheSim:StartWorkshopQuery()
+	end
+
+	if self.info_panel ~= nil and self.info_panel.OnBecomeActive ~= nil then
+		self.info_panel:OnBecomeActive()
 	end
 
     --delay for a frame to allow the screen to finish building, then check the entity count for leaks
@@ -748,134 +602,6 @@ end
 
 function MultiplayerMainScreen:OnUpdate(dt)
 end
-
-function MultiplayerMainScreen:OnGetMOTDImageQueryComplete( is_successful )
-	if is_successful then
-		self.motd.motdimage:SetTextures( "images/motd.xml", "motd.tex", "motd.tex", "motd.tex", "motd.tex", "motd.tex" )
-		self.motd.motdimage:Show()
-	end	
-end
-
-local function push_motd_event( event, url, image_version )
-	local values = {}
-	values.url = url .. "#" .. tostring(image_version)
-	Stats.PushMetricsEvent(event, TheNet:GetUserID(), values)
-end
-
-function MultiplayerMainScreen:SetMOTD(str, cache)
-	--print("MultiplayerMainScreen:SetMOTD", str, cache)
-
-	local status, motd = pcall( function() return json.decode(str) end )
-	--print("decode:", status, motd)
-	if status and motd then
-	    if cache then
-	 		SavePersistentString("motd_image", str)
-	    end
-	    
-		local platform_motd
-		if PLATFORM == "WIN32_RAIL" then
-			platform_motd = motd.dstrail
-		else
-			platform_motd = motd.dststeam
-		end
-
-		if platform_motd then
-			--make sure we have an actual valid URL
-			if platform_motd.link_url
-                and not string.match( platform_motd.link_url, "http://" )
-                and not string.match( platform_motd.link_url, "https://" )
-                then
-				platform_motd.link_url = "http://" .. platform_motd.link_url
-			end
-			
-		    self.motd:Show()
-		    if platform_motd.motd_title and string.len(platform_motd.motd_title) > 0 and
-			    	platform_motd.motd_body and string.len(platform_motd.motd_body) > 0 then
-			    
-			    self.motd.motdtitle:Show()
-				self.motd.motdtitle:SetString(platform_motd.motd_title)
-				self.motd.motdtext:Show()
-				self.motd.motdtext:SetString(platform_motd.motd_body)
-				self.motd.motdimage:Hide()
-
-			    if platform_motd.link_title and string.len(platform_motd.link_title) > 0 and
-				    	platform_motd.link_url and string.len(platform_motd.link_url) > 0 then
-				    self.motd.button:SetText(platform_motd.link_title)
-				    self.motd.button:SetOnClick( function()
-				    	push_motd_event( "motd.clicked", platform_motd.link_url, platform_motd.image_version or 0 )
-						VisitURL(platform_motd.link_url)
-					end )
-				else
-					self.motd.button:Hide()
-				end
-		    elseif platform_motd.image_url and string.len(platform_motd.image_url) > 0 then
-
-				self.motd.motdtitle:Hide()
-				self.motd.motdtext:Hide()
-				
-				local use_disk_file = not cache
-				if use_disk_file then
-					self.motd.motdimage:Hide()
-				end
-				
-				if platform_motd.link_title and string.len(platform_motd.link_title) > 0 and
-				    	platform_motd.link_url and string.len(platform_motd.link_url) > 0 then
-				    self.motd.button:SetText(platform_motd.link_title)
-				    self.motd.button:SetOnClick( function()
-				    	push_motd_event( "motd.clicked", platform_motd.link_url, platform_motd.image_version or 0 )
-						VisitURL(platform_motd.link_url)
-					end )
-				else
-					self.motd.button:Hide()
-				end
-				
-				TheSim:GetMOTDImage( platform_motd.image_url, use_disk_file, platform_motd.image_version or "", function(...) self:OnGetMOTDImageQueryComplete(...) end )
-		    else
-				print("HIDE MOTD")
-				self.motd:Hide()
-		    end
-		    
-		    
-			if platform_motd.link_url and cache then --the one we cache is the latest we downloaded
-				push_motd_event( "motd.seen", platform_motd.link_url, platform_motd.image_version or 0 )
-			end
-	    else
-			print("HIDE MOTD")
-			self.motd:Hide()
-		end
-	end
-end
-
-function MultiplayerMainScreen:OnMOTDQueryComplete( result, isSuccessful, resultCode )
-	--print( "MultiplayerMainScreen:OnMOTDQueryComplete", result, isSuccessful, resultCode )
- 	if isSuccessful and string.len(result) > 1 and resultCode == 200 then 
- 		self:SetMOTD(result, true)
-	end
-end
-
-function MultiplayerMainScreen:OnCachedMOTDLoad(load_success, str)
-	--print("MultiplayerMainScreen:OnCachedMOTDLoad", load_success, str)
-	if load_success and string.len(str) > 1 then
-		self:SetMOTD(str, false)
-	end
-	
-	if PLATFORM == "WIN32_RAIL" then
-		TheSim:QueryServer( "https://d21wmy1ql1e52r.cloudfront.net/ds_image_motd_intl.json", function(...) self:OnMOTDQueryComplete(...) end, "GET" )
-	else
-		TheSim:QueryServer( "https://d21wmy1ql1e52r.cloudfront.net/ds_image_motd.json", function(...) self:OnMOTDQueryComplete(...) end, "GET" )
-	end
-end
-
-function MultiplayerMainScreen:UpdateMOTD()
-	if SHOW_MOTD then
-		if self.motd then
-			TheSim:GetPersistentString("motd_image", function(...) self:OnCachedMOTDLoad(...) end)
-		end
-	else
-		self.motd:Hide()
-	end
-end
-
 
 function MultiplayerMainScreen:CheckNewUser(onnofn, no_button_text)
     if Profile:SawNewUserPopup() then

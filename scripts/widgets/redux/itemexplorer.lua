@@ -40,14 +40,14 @@ local ItemExplorer = Class(Widget, function(self, title_text, primary_item_type,
             return list_options.scroll_context.user_profile:GetCustomizationItemState(self.primary_item_type, item_key)
         end
         self.activity_writer_fn = function(item_data)
-            list_options.scroll_context.user_profile:SetCustomizationItemState(item_data.item_blob.type, item_data.item_key, item_data.is_active)
+            list_options.scroll_context.user_profile:SetCustomizationItemState(GetTypeForItem(item_data.item_key), item_data.item_key, item_data.is_active)
 
             -- Once any item selection has changed, recache the selection.
             CacheCurrentVanityItems(list_options.scroll_context.user_profile)
         end
     end
-
-	local contained_items = self:_CreateWidgetDataListForItems(self.item_table, self.primary_item_type, self.activity_checker_fn)
+    
+    local contained_items = self:_CreateWidgetDataListForItems(self.item_table, self.primary_item_type, self.activity_checker_fn)
 
     -- Validate the first item and assume others have same setup.
     assert(contained_items)
@@ -60,23 +60,20 @@ local ItemExplorer = Class(Widget, function(self, title_text, primary_item_type,
     self.selected_items = {}
 
     if #contained_items == 0 then
-        -- We show all items even if the player hasn't unlocked them, so we
-        -- should never show nothing.
+        -- We show all items even if the player hasn't unlocked them, so we should never show nothing.
+        print("ItemExplorer needs more than 0 items. Well, technically it's okay...")
         self.fail = self:AddChild(TEMPLATES.CurlyWindow(400, 200, title_text, nil, nil, STRINGS.UI.COLLECTIONSCREEN.FAILED_TO_LOAD))
 
         self.focus_forward = self.fail
     else
         self:_DoInit(title_text, contained_items, list_options)
 
-        -- Ensure that anything passed in as active is setup correctly and a
-        -- current item is selected (if possible).
+        -- Ensure that anything passed in as active is setup correctly and a current item is selected (if possible).
         local last_item_key = GetMostRecentlySelectedItem(self.scroll_list.context.user_profile, self.primary_item_type)
         for i,w in ipairs(self.scroll_list:GetListWidgets()) do
-            -- Don't call IsDataSelected here to avoid "clicking" on everything for
-            -- no selection type.
+            -- Don't call IsDataSelected here to avoid "clicking" on everything for no selection type.
             if w.data.is_active then
-                -- Call directly through to click results to avoid toggling the
-                -- item.
+                -- Call directly through to click results to avoid toggling the item.
                 self.selected_items[w.data.item_key] = true
                 self:_UpdateClickedWidget(w)
                 if w.data.item_key == last_item_key then
@@ -106,7 +103,7 @@ end
 local function CountOwnedItems(item_list)
     local count = 0
     for i,item in ipairs(item_list) do
-        if TheInventory:CheckOwnership(item.item_key) then
+        if IsDefaultSkin(item.item_key) or TheInventory:CheckOwnership(item.item_key) then
             count = count + 1
         end
     end
@@ -441,20 +438,16 @@ function ItemExplorer:_DoCommerce(item_key)
         -- We completed a barter and now our screens contain old inventory data.
 
         if not is_buying and self.last_interaction_target.owned_count <= 1 then
-            -- Selling our last one. Fake a click to turn it off. We can't
-            -- click the widget because the interaction target may not be on
-            -- screen (and thus not in a widget).
+            -- Selling our last one. Fake a click to turn it off. We can't click the widget because the interaction target may not be on screen (and thus not in a widget).
             local is_active = false
             local data = self.last_interaction_target
 
-            -- Ensures other collection screens don't think this item is
-            -- active.
+            -- Ensures other collection screens don't think this item is active.
             if self.scroll_list.context.selection_type then
                 self:_SetItemActiveFlag(data, is_active)
             end
 
-            -- Copied from SetOnClick. Removes item from preview on single
-            -- selection screens.
+            -- Copied from SetOnClick. Removes item from preview on single selection screens.
             for i,receiver in ipairs(self.scroll_list.context.input_receivers) do
                 if receiver.OnClickedItem then
                     receiver:OnClickedItem(data, is_active)
@@ -491,7 +484,6 @@ function ItemExplorer:RefreshItems(new_item_filter_fn)
     end
 
     -- Clear old selections.
-    --
     local prev_target_key = nil
     if self.last_interaction_target then
         prev_target_key = self.last_interaction_target.item_key
@@ -524,13 +516,9 @@ function ItemExplorer:RefreshItems(new_item_filter_fn)
     self.scroll_list:SetItemsData(contained_items)
 
 
-    -- Restore previous selection (good to show nice text when first loading
-    -- the screen). We don't scroll to the item and only select items that are
-    -- currently in a widget (visible-ish), so it's quite possible we click
-    -- nothing.
+    -- Restore previous selection (good to show nice text when first loading the screen). We don't scroll to the item and only select items that are currently in a widget (visible-ish), so it's quite possible we click nothing.
 
-    -- Be conservative: avoid clearing unowned preview side effect when
-    -- changing filters. Not strictly necessary, but avoids user surprises.
+    -- Be conservative: avoid clearing unowned preview side effect when changing filters. Not strictly necessary, but avoids user surprises.
     local can_click_without_side_effects = self.scroll_list.context.selection_type == nil
 
     if prev_target_key then
@@ -560,19 +548,15 @@ end
 function ItemExplorer:_OnClickWidget(item_widget)
     local item_data = item_widget.data
 	
-	--print("ItemExplorer:_OnClickWidget", item_data.item_key, item_data.is_owned, item_data.is_active)
-	
     -- if no selection type, then ignore is_active.
-    if self.scroll_list.context.selection_type and item_data.is_owned then
+    if self.scroll_list.context.selection_type and item_data.is_owned and (self.scroll_list.context.selection_type ~= "single" or not item_data.is_active) then
         self:_SetItemActiveFlag(item_data, not item_data.is_active)
     end
 
     if self.last_interaction_target then
         self.last_interaction_target.is_interaction_target = false
 
-        -- Having a last_interaction_target doesn't mean there's an associated
-        -- widget! The widget could have scrolled off the screen. We don't care
-        -- because this update won't change its state.
+        -- Having a last_interaction_target doesn't mean there's an associated widget! The widget could have scrolled off the screen. We don't care because this update won't change its state.
         self.last_interaction_target.widget:UpdateSelectionState()
     end
     self.last_interaction_target = item_data
@@ -627,7 +611,7 @@ function ItemExplorer:OnClickedItem(item_data, is_selected)
     self:_UpdateItemSetInfo(item_data.item_key)
 
     if item_data.item_key then
-        if PLATFORM == "WIN32_STEAM" or PLATFORM == "LINUX_STEAM" or PLATFORM == "OSX_STEAM" then
+        if IsSteam() then
             self.can_show_steam = IsItemMarketable(item_data.item_key)
         else
             self.can_show_steam = false
@@ -775,8 +759,7 @@ function ItemExplorer._ApplyDataToWidget(context, widget, data, index)
         widget.data = data
         widget.data.widget = widget
     else
-        -- A lot of code doesn't check if there is a data, it just assumes it
-        -- exists. Instead, check for item_key for validity.
+        -- A lot of code doesn't check if there is a data, it just assumes it exists. Instead, check for item_key for validity.
         widget.data = {}
     end
     if widget.bg then
@@ -792,25 +775,73 @@ function ItemExplorer._ApplyDataToWidget(context, widget, data, index)
 end
 
 function ItemExplorer:_CreateWidgetDataListForItems(item_table, item_type, activity_checker_fn)
+    --locally cache item data, rather than fetching from the c-side for each item
+    local item_counts = {}
+    local item_latest = {}
+    local item_dlc_owned = {}
+
+	local inventory_list = TheInventory:GetFullInventory()
+	for i,inv_item in ipairs(inventory_list) do
+		local key = inv_item.item_type
+		if item_counts[key] then
+			item_counts[key] = item_counts[key] + 1
+ 		else
+			item_counts[key] = 1
+		end
+
+        if item_latest[key] == nil or item_latest[key] < inv_item.modified_time then
+            item_latest[key] = inv_item.modified_time
+        end
+
+        if inv_item.item_id == 0 and GetRarityForItem(key) ~= "Event" and GetRarityForItem(key) ~= "Reward" then
+            item_dlc_owned[key] = true
+        end
+	end
+
+    --gather the data for the list
     local contained_items = {}
-    for item_key,item_blob in pairs(item_table) do
-        if item_blob.type == item_type and ShouldDisplayItemInCollection(item_key) then
-            local is_owned,timestamp = TheInventory:CheckOwnershipGetLatest(item_key)
+    for item_key,_ in pairs(item_table) do
+        if GetTypeForItem(item_key) == item_type and ShouldDisplayItemInCollection(item_key) then
+            local is_owned = item_latest[item_key] ~= nil
+            local timestamp = item_latest[item_key]
+            if IsDefaultSkin(item_key) then
+                is_owned = true
+                timestamp = 0
+            end
             local data = {
                 item_key = item_key,
                 is_active = is_owned and activity_checker_fn(item_key) or false,
                 acquire_timestamp = timestamp,
                 is_owned = is_owned,
-                owned_count = TheInventory:GetOwnedItemCount(item_key),
-                item_blob = item_blob,
-                is_dlc_owned = GetIsDLCOwned(item_key),
+                owned_count = item_counts[item_key] or 0,
+                is_dlc_owned = item_dlc_owned[item_key],
             }
             table.insert(contained_items, data)
         end
     end
+
+
+    --Sort the data that is going into the list
+    local sort_type = Profile:GetItemSortMode()    
+    local sort_fn = nil
+    if sort_type == "SORT_NAME" then
+        sort_fn = function(item_key_a, item_key_b)
+            return CompareItemDataForSortByName(item_key_a, item_key_b)
+        end
+    elseif sort_type == "SORT_RARITY" then
+        sort_fn = function(item_key_a, item_key_b)
+            return CompareItemDataForSortByRarity(item_key_a, item_key_b)
+        end      
+    else --"SORT_RELEASE" or nil
+        sort_fn = function(item_key_a, item_key_b)
+            return CompareItemDataForSortByRelease(item_key_a, item_key_b)
+        end
+    end
+
     table.sort(contained_items, function(a,b)
-        return CompareItemDataForSort(a.item_key, b.item_key, item_table)
+        return sort_fn(a.item_key, b.item_key)
     end)
+
     return contained_items
 end
 
@@ -819,16 +850,13 @@ function ItemExplorer:OnControl(control, down)
 
     if self.last_interaction_target then
         if not down and control == CONTROL_INSPECT then 
-            -- A bit confusing because interaction target doesn't move with
-            -- focus! Could click focused widget automatically, but that's
-            -- inconsistent with mouse controls.
+            -- A bit confusing because interaction target doesn't move with focus! Could click focused widget automatically, but that's inconsistent with mouse controls.
             if self.can_do_commerce then
                 self:_LaunchCommerce()
                 return true
             end
-        elseif not down and control == CONTROL_PAUSE and TheInput:ControllerAttached() then
-            -- Hitting Esc fires both Pause and Cancel, so keyboard users will
-            -- need to click buttons instead.
+        elseif not down and control == CONTROL_MENU_MISC_1 and TheInput:ControllerAttached() then
+            -- Hitting Esc fires both Pause and Cancel, so keyboard users will need to click buttons instead.
 			if self.can_show_steam then
                 self:_ShowMarketplaceForInteractTarget()
                 return true
@@ -858,9 +886,9 @@ function ItemExplorer:GetHelpText()
         end
 
 		if self.can_show_steam then
-            table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE) .. " " .. STRINGS.UI.COLLECTIONSCREEN.VIEW_MARKET)
+            table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_1 ) .. " " .. STRINGS.UI.COLLECTIONSCREEN.VIEW_MARKET)
         elseif self.can_show_pack then
-            table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE) .. " " .. STRINGS.UI.PLAYERSUMMARYSCREEN.PURCHASE)
+            table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_1 ) .. " " .. STRINGS.UI.PLAYERSUMMARYSCREEN.PURCHASE)
 		end
     end
 

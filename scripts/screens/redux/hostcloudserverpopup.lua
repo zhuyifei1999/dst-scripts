@@ -41,11 +41,11 @@ function HostCloudServerPopup:OnUpdate(dt)
     HostCloudServerPopup._base.OnUpdate(self, dt)
 
     local cloudServerRequestState = TheNet:GetCloudServerRequestState()
-    if cloudServerRequestState == 8 then -- eServerFailed
+    if cloudServerRequestState == 4 then -- eServerFailed
         self:OnError()
-    elseif cloudServerRequestState == 9 then -- eNoServersAvailable
+    elseif cloudServerRequestState == 5 then -- eNoServersAvailable
         self:OnError(STRINGS.UI.FESTIVALEVENTSCREEN.HOST_NO_SERVERS_BODY)
-    elseif cloudServerRequestState == 10 then -- ePingsFailed
+    elseif cloudServerRequestState == 6 then -- ePingsFailed
         self:OnError(STRINGS.UI.FESTIVALEVENTSCREEN.HOST_PINGS_FAILED_BODY)
     else
         self.status_msg:SetString(phases[cloudServerRequestState] or "")

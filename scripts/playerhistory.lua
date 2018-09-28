@@ -9,7 +9,6 @@ PlayerHistory = Class(function(self)
     self.dirty = false
 
 	self.target_max_entries = 100
-	self.expirey_time = 30 * SECONDS_PER_DAY
 end)
 
 function PlayerHistory:StartListening()
@@ -32,7 +31,7 @@ function PlayerHistory:DiscardOldData()
 	-- delete entries that are really old
 	for k, v in pairs(self.seen_players) do
 		local delta_time = os.difftime(current_date, v.last_seen_date)
-		if delta_time > self.expirey_time then
+		if delta_time > USER_HISTORY_EXPIRY_TIME then
 			self.seen_players[k] = nil
 		    self.dirty = true
 		end

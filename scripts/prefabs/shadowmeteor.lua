@@ -14,6 +14,7 @@ local prefabs =
     "splash_ocean",
     "ground_chunks_breaking",
     "rock_moon",
+	"rock_moon_shell",
     "rocks",
     "flint",
     "moonrocknugget",
@@ -34,7 +35,7 @@ local SMASHABLE_TAGS = { "_combat", "_inventoryitem", "campfire" }
 for k, v in pairs(SMASHABLE_WORK_ACTIONS) do
     table.insert(SMASHABLE_TAGS, k.."_workable")
 end
-local NON_SMASHABLE_TAGS = { "INLIMBO", "playerghost" }
+local NON_SMASHABLE_TAGS = { "INLIMBO", "playerghost", "meteor_protection" }
 
 local DENSITY = 0.1 -- the approximate density of rock prefabs in the rocky biomes
 local FIVERADIUS = CalculateFiveRadius(DENSITY)
@@ -141,7 +142,7 @@ local function onexplode(inst)
                     canspawn = false
                 end
                 if canspawn then
-                    local drop = SpawnPrefab(v.prefab)
+                    local drop = TheWorld.components.worldmeteorshower:SpawnMeteorLoot(v.prefab)
                     if drop ~= nil then
                         drop.Transform:SetPosition(x, y, z)
                         if drop.components.inventoryitem ~= nil then

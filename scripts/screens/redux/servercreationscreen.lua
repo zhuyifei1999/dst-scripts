@@ -27,7 +27,7 @@ local dialog_size_y = row_height*(num_rows + 0.25)
 local bottom_button_y = -310
 
 local ServerCreationScreen = Class(Screen, function(self, prev_screen)
-    Widget._ctor(self, "ServerCreationScreen")
+    Screen._ctor(self, "ServerCreationScreen")
 
     -- Defer accessing this table until screen creation to give mods a chance.
     -- Still not awesome, but mostly we require location indexes at this point
@@ -1049,12 +1049,11 @@ end
 
 function ServerCreationScreen:_DoFocusHookups()
     -- This is for register focus change dir to return back to the current save slot
-    local getfocussaveslot = function() return self.default_focus end
     local getfocuscancelorsaveslot = function() return self.cancel_button ~= nil and self.cancel_button:IsVisible() and self.cancel_button or self.default_focus end
 
-    self.detail_panel:SetFocusChangeDir(MOVE_LEFT, getfocussaveslot)
+    self.detail_panel:SetFocusChangeDir(MOVE_LEFT, self.menu)
     self.detail_panel:SetFocusChangeDir(MOVE_DOWN, self.create_button)
-    self.bans_tab:SetFocusChangeDir(MOVE_LEFT, self.menu.items[1])
+    self.bans_tab:SetFocusChangeDir(MOVE_LEFT, self.menu)
 
     local toactivetab = function()
         if self.bans_tab:IsVisible() then

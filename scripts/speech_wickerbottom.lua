@@ -38,6 +38,13 @@ return
             NOTALLOWED = "Nonsense.",
             INUSE = "I do hope you're keeping organized, my dear.",
         },
+        CONSTRUCT =
+        {
+            INUSE = "Someone's already using this.",
+            NOTALLOWED = "That was erroneous.",
+            EMPTY = "I need something to build with first.",
+            MISMATCH = "Those are the wrong plans.",
+        },
         WRITE =
         {
             GENERIC = "I'd rather write in my own books.",
@@ -175,6 +182,7 @@ return
     ANNOUNCE_COMPASS_OUT = "My compass has become demagnetized.",
     ANNOUNCE_DUSK = "Night will be here soon.",
 
+    ANNOUNCE_DESPAWN = "I've never read anything describing this!",
     ANNOUNCE_BECOMEGHOST = "oOoooOoO!!",
     ANNOUNCE_GHOSTDRAIN = "My humanity... it's slipping.",
     ANNOUNCE_PETRIFED_TREES = "The chemical reaction has been catalyzed...",
@@ -421,6 +429,11 @@ return
         },
 
         MULTIPLAYER_PORTAL = "Hmm... This may require further reading.",
+        MULTIPLAYER_PORTAL_MOONROCK = "Its design is decidedly otherworldly.",
+        CONSTRUCTION_PLANS = "Oh, I do like the look of this.",
+        MOONROCKIDOL = "Curious. It's rather keylike.",
+        MOONROCKSEED = "A floating orb of knowledge.",
+
         BERNIE_INACTIVE =
         {
             BROKEN = "That bear is in need of repair.",

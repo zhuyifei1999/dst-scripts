@@ -118,7 +118,7 @@ function RecipePopup:BuildWithSpinner(horizontal)
 
     --
 
-    self.contents = self:AddChild(Widget(""))
+    self.contents = self:AddChild(Widget("contents"))
     self.contents:SetPosition(-75,0 + y_offset,0)
 
     self.lines = self.contents:AddChild(Widget("separators"))
@@ -155,16 +155,10 @@ function RecipePopup:BuildWithSpinner(horizontal)
                                 Profile:SetLastUsedSkinForItem(self.recipe.name, self.skins_spinner.GetItem())
                             end)
     self.button:SetPosition(320, -155, 0)
-
     self.button:SetScale(.7,.7,.7)
     self.button.image:SetScale(.45, .7)
-
-    --self.skinbuttons = {}
-    self.build_title = self.contents:AddChild(Text(BODYTEXTFONT, 33))
-    self.build_title:SetPosition(330, -60, 0)
-
+    
     self.skins_spinner = self.contents:AddChild(self:MakeSpinner())
-    -- self.skins_spinner:SetScale(.3)
     self.skins_spinner:SetPosition(307, -100)
 
     if horizontal and TheInput:ControllerAttached() then

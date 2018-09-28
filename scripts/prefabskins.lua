@@ -63,6 +63,7 @@ PREFAB_SKINS = {
 	},
 	birdcage = 
 	{
+		"birdcage_circus",
 		"birdcage_gothic",
 		"birdcage_ornamental",
 		"birdcage_pirate",
@@ -155,6 +156,10 @@ PREFAB_SKINS = {
 		"endtable_dragonfly",
 		"endtable_vintage",
 	},
+	featherhat = 
+	{
+		"featherhat_circus",
+	},
 	firepit = 
 	{
 		"firepit_fanged",
@@ -209,6 +214,10 @@ PREFAB_SKINS = {
 	{
 		"rainhat_floppy",
 	},
+	rainometer = 
+	{
+		"rainometer_circus",
+	},
 	researchlab2 = 
 	{
 		"researchlab2_pod",
@@ -222,6 +231,7 @@ PREFAB_SKINS = {
 		"researchlab4_festive_bell_red_firehound",
 		"researchlab4_glommer_costume",
 		"researchlab4_hutch_costume",
+		"researchlab4_tophat_circus",
 	},
 	reviver = 
 	{
@@ -247,6 +257,7 @@ PREFAB_SKINS = {
 		"hat_chester_costume",
 		"hat_glommer_costume",
 		"hat_hutch_costume",
+		"tophat_circus",
 		"tophat_derby",
 		"tophat_festive_bell_red_firehound",
 	},

@@ -32,6 +32,13 @@ return {
             NOTALLOWED = "Bah! Useless.",
             INUSE = "Wolfgang can share!",
         },
+        CONSTRUCT =
+        {
+            INUSE = "Wolfgang can share?",
+            NOTALLOWED = "Is not right place for that.",
+            EMPTY = "Wolfgang needs something to put here.",
+            MISMATCH = "Wolfgang have wrong plans.",
+        },
         WRITE =
         {
             GENERIC = "Wolfgang not good with tiny letters.",
@@ -199,6 +206,7 @@ return {
     },
     ANNOUNCE_RUINS_RESET = "Monsters is back!",
 
+    ANNOUNCE_DESPAWN = "Wolfgang is scared!",
     ANNOUNCE_BECOMEGHOST = "oOooOOoo!!",
     ANNOUNCE_GHOSTDRAIN = "They are coming... for Wolfgang!",
     ANNOUNCE_PETRIFED_TREES = "Trees! Getting! STRONG!",
@@ -405,6 +413,10 @@ return {
         },
 
         MULTIPLAYER_PORTAL = "Why door not crumble under mighty Wolfgang punches?!",
+        MULTIPLAYER_PORTAL_MOONROCK = "Is strong like Wolfgang.",
+        CONSTRUCTION_PLANS = "If Wolfgang build it, they will come.",
+        MOONROCKIDOL = "Hehe. Is funny little moon man.",
+        MOONROCKSEED = "Is ball not for throwing.",
 
         BERNIE_INACTIVE =
         {

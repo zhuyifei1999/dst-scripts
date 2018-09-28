@@ -29,6 +29,23 @@ local assets =
 
     Asset("DYNAMIC_ATLAS", "images/fepanels.xml"),
     Asset("PKGREF", "images/fepanels.tex"),
+    
+    --item explorer stuff in and out of game
+    Asset("ANIM", "anim/spool.zip"), -- doodads
+    Asset("ANIM", "anim/frame_bg.zip"),
+    Asset("ANIM", "anim/accountitem_frame.zip"),
+    Asset("ANIM", "anim/frames_comp.zip"), -- If we replace frames_comp with accountitem_frame, we can remove.
+
+    --IAP shop is accessible in FE and in in-game lobby
+    Asset("DYNAMIC_ATLAS", "images/fepanels_redux_shop_panel.xml"),
+    Asset("PKGREF", "images/fepanels_redux_shop_panel.tex"),
+    Asset("DYNAMIC_ATLAS", "images/fepanels_redux_shop_panel_wide.xml"),
+    Asset("PKGREF", "images/fepanels_redux_shop_panel_wide.tex"),
+
+    Asset("DYNAMIC_ANIM", "anim/dynamic/box_shared_spiral.zip"),
+    Asset("PKGREF", "anim/dynamic/box_shared_spiral.dyn"),
+    Asset("DYNAMIC_ANIM", "anim/dynamic/box_shared.zip"), --needed for the mystery and purchase box opening animation (happens to contain the forge box build too)
+    Asset("PKGREF", "anim/dynamic/box_shared.dyn"),
 
     -- Used in event join flow and in-game victory.
     Asset("ATLAS", "images/dialogcurly_9slice.xml"),
@@ -205,15 +222,15 @@ local assets =
 -- Loading Screens from items
 require "skinsutils"
 require "misc_items"
-for item_key,item_blob in pairs(GetAllMiscItemsOfType("loading")) do
+for _,item_key in pairs(GetAllMiscItemsOfType("loading")) do
     local atlas,tex = GetLoaderAtlasAndTexPkgref(item_key)
     table.insert(assets, Asset("DYNAMIC_ATLAS", atlas))
     table.insert(assets, Asset("PKGREF", tex))
 end
 -- Player portrait backgrounds from items
 local playerportraits = GetAllMiscItemsOfType("playerportrait")
-playerportraits.playerportrait_bg_none = {} -- none is not a real item
-for item_key,item_blob in pairs(playerportraits) do
+table.insert( playerportraits, "playerportrait_bg_none" ) --it's not a real item, so we need to add it in so it'll be packaged and loaded
+for _,item_key in pairs(playerportraits) do
     local atlas,tex = GetPlayerPortraitAtlasAndTexPkgref(item_key)
     table.insert(assets, Asset("DYNAMIC_ATLAS", atlas))
     table.insert(assets, Asset("PKGREF", tex))
@@ -256,6 +273,21 @@ end
 --Skins assets
 for _, clothing_asset in pairs(require("clothing_assets")) do
     table.insert(assets, clothing_asset)
+end
+for item,data in pairs(MISC_ITEMS) do
+	if data.box_build ~= nil then
+		table.insert(assets, Asset("DYNAMIC_ANIM", "anim/dynamic/" .. data.box_build .. ".zip"))
+		table.insert(assets, Asset("PKGREF", "anim/dynamic/" .. data.box_build .. ".dyn"))
+	end
+	
+	if data.featured_pack then
+		if data.display_atlas == nil or data.display_tex == nil then
+			print( "Invalid pack data:", item, data.display_atlas, data.display_tex )
+		end
+		
+		table.insert(assets, Asset("DYNAMIC_ATLAS", data.display_atlas ))
+		table.insert(assets, Asset("PKGREF", "images/iap_images_"..data.display_tex ))
+	end
 end
 local skinprefabs = {require("prefabs/skinprefabs")}
 for _,skin_prefab in pairs(skinprefabs) do

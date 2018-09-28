@@ -140,6 +140,9 @@ ACTIONS =
     BUNDLESTORE = Action({ instant=true }),
     WRAPBUNDLE = Action({ instant=true }),
     UNWRAP = Action({ rmb=true, priority=2 }),
+    CONSTRUCT = Action({ distance=2 }),
+    STOPCONSTRUCTION = Action({ instant=true, distance=2 }),
+    APPLYCONSTRUCTION = Action({ instant=true, distance=2 }),
     STARTCHANNELING = Action({ distance=2.1 }),
     STOPCHANNELING = Action({ instant=true, distance=2.1 }),
 
@@ -796,7 +799,10 @@ ACTIONS.ADDWETFUEL.fn = function(act)
 end
 
 ACTIONS.GIVE.strfn = function(act)
-    return act.target ~= nil and act.target:HasTag("gemsocket") and "SOCKET" or nil
+    return act.target ~= nil
+        and ((act.target:HasTag("gemsocket") and "SOCKET") or
+            (act.target:HasTag("moontrader") and "CELESTIAL"))
+        or nil
 end
 
 ACTIONS.GIVE.stroverridefn = function(act)
@@ -834,6 +840,8 @@ ACTIONS.GIVE.fn = function(act)
             end
             act.target.components.trader:AcceptGift(act.doer, act.invobject)
             return true
+        elseif act.target.components.moontrader ~= nil then
+            return act.target.components.moontrader:AcceptOffering(act.doer, act.invobject)
         elseif act.target.components.quagmire_cookwaretrader ~= nil then
             return act.target.components.quagmire_cookwaretrader:AcceptCookware(act.doer, act.invobject)
         elseif act.target.components.quagmire_altar ~= nil then
@@ -922,46 +930,87 @@ ACTIONS.DECORATEVASE.fn = function(act)
 end
 
 ACTIONS.STORE.fn = function(act)
-    if act.target.components.container ~= nil and act.invobject.components.inventoryitem ~= nil and act.doer.components.inventory ~= nil then
-        if act.target.components.container:IsOpen() and not act.target.components.container:IsOpenedBy(act.doer) then
+    local target = act.target
+    --V2C: For dropping items onto the object rather than construction widget
+    if target.components.container == nil and target.components.constructionsite ~= nil then
+        local builder = target.components.constructionsite.builder
+        target = builder == act.doer and builder.components.constructionbuilder ~= nil and builder.components.constructionbuilder.constructioninst or nil
+        if target == nil then
+            return false
+        end
+    end
+    --
+    if target.components.container ~= nil and act.invobject.components.inventoryitem ~= nil and act.doer.components.inventory ~= nil then
+        if target.components.container:IsOpen() and not target.components.container:IsOpenedBy(act.doer) then
             return false, "INUSE"
-        elseif not act.target.components.container:CanTakeItemInSlot(act.invobject) then
+        end
+
+        local targetslot = nil
+        if act.doer.components.constructionbuilderuidata ~= nil and act.doer.components.constructionbuilderuidata:GetContainer() == target then
+            targetslot = act.doer.components.constructionbuilderuidata:GetSlotForIngredient(act.invobject.prefab)
+            if targetslot == nil or not target.components.container:CanTakeItemInSlot(act.invobject, targetslot) then
+                --V2C: construction is a busy state, so we need to force the speech
+                act.doer.components.talker:Say(GetActionFailString(act.doer, "CONSTRUCT", "NOTALLOWED"))
+                return true
+            end
+        elseif not target.components.container:CanTakeItemInSlot(act.invobject) then
+            if target:HasTag("bundle") then
+                --V2C: bundling is a busy state, so we need to force the speech
+                act.doer.components.talker:Say(GetActionFailString(act.doer, "STORE", "NOTALLOWED"))
+                return true
+            end
             return false, "NOTALLOWED"
         end
 
-        local forceopen = act.target.components.quagmire_stewer ~= nil and act.target.components.inventoryitem ~= nil
-        local forcedrop = forceopen and act.target.components.inventoryitem:GetGrandOwner() or nil
+        local forceopen = target.components.quagmire_stewer ~= nil and target.components.inventoryitem ~= nil
+        local forcedrop = forceopen and target.components.inventoryitem:GetGrandOwner() or nil
         if forcedrop ~= nil and forcedrop ~= act.doer then
             --Silent fail, should not reach here
             return true
         end
 
-        local item = act.invobject.components.inventoryitem:RemoveFromOwner(act.target.components.container.acceptsstacks)
+        local item = act.invobject.components.inventoryitem:RemoveFromOwner(target.components.container.acceptsstacks)
         if item ~= nil then
             if forcedrop ~= nil then
-                forcedrop.components.inventory:DropItem(act.target, true, true)
+                forcedrop.components.inventory:DropItem(target, true, true)
             end
-            if forceopen or act.target.components.inventoryitem == nil then
-                act.target.components.container:Open(act.doer)
+            if forceopen or target.components.inventoryitem == nil then
+                target.components.container:Open(act.doer)
             end
 
-            if not act.target.components.container:GiveItem(item, nil, nil, false) then
+            if not target.components.container:GiveItem(item, targetslot, nil, false) then
                 if act.doer.components.playercontroller ~= nil and
                     act.doer.components.playercontroller.isclientcontrollerattached then
                     act.doer.components.inventory:GiveItem(item)
                 else
                     act.doer.components.inventory:GiveActiveItem(item)
                 end
-                return false
+                if target:HasTag("bundle") then
+                    --V2C: bundling is a busy state, so we need to force the speech
+                    act.doer.components.talker:Say(GetActionFailString(act.doer, "STORE"))
+                    return true
+                else
+                    return false
+                end
             end
             return true
         end
     elseif act.invobject ~= nil and
         act.invobject.components.occupier ~= nil and
-        act.target.components.occupiable ~= nil and
-        act.target.components.occupiable:CanOccupy(act.invobject) then
-        return act.target.components.occupiable:Occupy(act.invobject.components.inventoryitem:RemoveFromOwner())
+        target.components.occupiable ~= nil and
+        target.components.occupiable:CanOccupy(act.invobject) then
+        return target.components.occupiable:Occupy(act.invobject.components.inventoryitem:RemoveFromOwner())
     end
+end
+
+ACTIONS.BUNDLESTORE.strfn = function(act)
+    return act.target ~= nil
+        and act.doer ~= nil
+        and act.doer.components.constructionbuilderuidata ~= nil
+        and (act.doer.components.constructionbuilderuidata:GetContainer() == act.target or
+            act.doer.components.constructionbuilderuidata:GetTarget() == act.target)
+        and "CONSTRUCT"
+        or nil
 end
 
 ACTIONS.BUNDLESTORE.fn = ACTIONS.STORE.fn
@@ -1801,6 +1850,108 @@ ACTIONS.UNWRAP.fn = function(act)
         target.components.unwrappable ~= nil and
         target.components.unwrappable.canbeunwrapped then
         target.components.unwrappable:Unwrap(act.doer)
+        return true
+    end
+end
+
+ACTIONS.CONSTRUCT.stroverridefn = function(act)
+    if act.invobject ~= nil then
+        if act.invobject.constructionname ~= nil and not act.target:HasTag("constructionsite") then
+            local name = STRINGS.NAMES[string.upper(act.invobject.constructionname)]
+            return name ~= nil and subfmt(STRINGS.ACTIONS.CONSTRUCT.GENERIC_FMT, { name = name }) or nil
+        end
+    elseif act.target ~= nil and act.target.constructionname ~= nil then
+        local name = STRINGS.NAMES[string.upper(act.target.constructionname)]
+        return name ~= nil and subfmt(STRINGS.ACTIONS.CONSTRUCT.GENERIC_FMT, { name = name }) or nil
+    end
+end
+
+ACTIONS.CONSTRUCT.strfn = function(act)
+    return act.invobject ~= nil and act.target:HasTag("constructionsite") and "STORE" or nil
+end
+
+ACTIONS.CONSTRUCT.fn = function(act)
+    local target = act.target
+    if target == nil or act.doer == nil or act.doer.components.constructionbuilder == nil then
+        return false
+    elseif act.doer.components.constructionbuilder:IsConstructingAny() then
+        --Silent fail, in case of controller mashing buttons, since we continue to
+        --return the construction action after it's initiated once, to prevent the
+        --action prompts from flickering.
+        return true
+    elseif act.doer.components.constructionbuilder:CanStartConstruction() then
+        --Silent fail for construction in the dark
+        if not CanEntitySeeTarget(act.doer, target) then
+            return true
+        end
+        local item = act.invobject
+        local success, reason
+        if item ~= nil and item.components.constructionplans ~= nil and target.components.constructionsite == nil then
+            target, reason = item.components.constructionplans:StartConstruction(target)
+            if target == nil then
+                return false, reason
+            end
+            item:Remove()
+            item = nil
+        end
+        success, reason = act.doer.components.constructionbuilder:StartConstruction(target)
+        if not success then
+            return false, reason
+        end
+        --Try to store whatever was on our mouse pointer
+        if item ~= nil and item.components.inventoryitem ~= nil and act.doer.components.inventory ~= nil then
+            local container = act.doer.components.constructionbuilder.constructioninst
+            container = container ~= nil and container.components.container or nil
+            if container ~= nil and container:IsOpenedBy(act.doer) then
+                local slot
+                for i, v in ipairs(CONSTRUCTION_PLANS[target.prefab] or {}) do
+                    if v.type == item.prefab then
+                        slot = i
+                        break
+                    end
+                end
+                if slot ~= nil and container:CanTakeItemInSlot(item, slot) then
+                    item = item.components.inventoryitem:RemoveFromOwner(container.acceptsstacks)
+                    if item ~= nil and not container:GiveItem(item, slot, nil, false) then
+                        if act.doer.components.playercontroller ~= nil and
+                            act.doer.components.playercontroller.isclientcontrollerattached then
+                            act.doer.components.inventory:GiveItem(item)
+                        else
+                            act.doer.components.inventory:GiveActiveItem(item)
+                        end
+                    end
+                elseif act.doer.components.talker ~= nil then
+                    act.doer.components.talker:Say(GetActionFailString(act.doer, "CONSTRUCT", "NOTALLOWED"))
+                end
+            end
+        end
+        return true
+    end
+end
+
+ACTIONS.STOPCONSTRUCTION.stroverridefn = function(act)
+    if act.invobject == nil and act.target ~= nil and act.target.constructionname ~= nil then
+        local name = STRINGS.NAMES[string.upper(act.target.constructionname)]
+        return name ~= nil and subfmt(STRINGS.ACTIONS.STOPCONSTRUCTION.GENERIC_FMT, { name = name }) or nil
+    end
+end
+
+ACTIONS.STOPCONSTRUCTION.fn = function(act)
+    if act.doer ~= nil and act.doer.components.constructionbuilder ~= nil then
+        act.doer.components.constructionbuilder:StopConstruction()
+    end
+    return true
+end
+
+ACTIONS.APPLYCONSTRUCTION.fn = function(act)
+    if act.doer ~= nil and
+        act.doer.components.constructionbuilder ~= nil and
+        act.doer.components.constructionbuilder:IsConstructing(act.target) then
+        if act.target.components.container ~= nil and not act.target.components.container:IsEmpty() then
+            return act.doer.components.constructionbuilder:FinishConstruction()
+        elseif act.doer.components.talker ~= nil then
+            act.doer.components.talker:Say(GetActionFailString(act.doer, "CONSTRUCT", "EMPTY"))
+        end
         return true
     end
 end

@@ -5,6 +5,7 @@ local AVAILABLE_TECH =
     "SCIENCE",
     "MAGIC",
     "ANCIENT",
+    "CELESTIAL",
     "SHADOW",
     "CARTOGRAPHY",
     "SCULPTING",

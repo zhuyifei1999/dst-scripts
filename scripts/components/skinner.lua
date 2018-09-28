@@ -316,10 +316,6 @@ local function _InternalSetClothing(self, type, name, set_skin_mode)
 	end
 end
 
-function IsValidClothing( name )
-	return name ~= nil and name ~= "" and CLOTHING[name] ~= nil
-end
-
 function Skinner:SetClothing( name )
 	if IsValidClothing(name) then
 		_InternalSetClothing(self, CLOTHING[name].type, name, true)

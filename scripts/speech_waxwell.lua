@@ -22,6 +22,13 @@ return {
 			NOTALLOWED = "That can't go in there.",
 			INUSE = "Worry not, pal. I've the patience of a saint.",
 		},
+		CONSTRUCT =
+        {
+            INUSE = "I don't like sharing.",
+            NOTALLOWED = "That's the wrong part.",
+            EMPTY = "Well I need something to build with.",
+            MISMATCH = "It needs completely different plans.",
+        },
 		WRITE =
         {
             GENERIC = "I'm unable to do that right now.",
@@ -131,6 +138,7 @@ return {
 	ANNOUNCE_DIG_DISEASE_WARNING = "That takes care of that.",
 	ANNOUNCE_PICK_DISEASE_WARNING = "How putrid!",
 	ANNOUNCE_MOUNT_LOWHEALTH = "Say, pal, you don't look so good.",
+	ANNOUNCE_DESPAWN = "Say, pal, I don't look so good...",
     ANNOUNCE_BECOMEGHOST = "oOooooOO!!",
 	ANNOUNCE_GHOSTDRAIN = "They're whispering through the core of my mind...!",
 	ANNOUNCE_PETRIFED_TREES = "Oh, this should be good.",
@@ -2073,7 +2081,7 @@ return {
         ROCK_MOON = "\"Moon\" rock.",
         MOONROCKNUGGET = "\"Moon\" rock.",
         MOONROCKCRATER = "This will make a decent magical vessel.",
-
+        
         REDMOONEYE = "Its aura can be felt from anywhere. Quite useful.",
         PURPLEMOONEYE = "A decent enough use of the gem's power, I suppose.",
         GREENMOONEYE = "It's useful for keeping in contact with my... acquaintances.",
@@ -2133,6 +2141,11 @@ return {
         LAVAARENA_CROWNDAMAGERHAT = "You'd need a thick neck to wear such a thing.",
 
         MULTIPLAYER_PORTAL = "Always did have a flair for the dramatic...",
+        MULTIPLAYER_PORTAL_MOONROCK = "A bit ominous looking.",
+        MOONROCKIDOL = "They always need an offering.",
+        CONSTRUCTION_PLANS = "I suppose I should build this.",
+        MOONROCKSEED = "Oooh, some new knowledge.",
+
         --...Make your jokes...I'll be seeing you soon...
 
         --Quagmire

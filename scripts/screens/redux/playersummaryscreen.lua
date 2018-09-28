@@ -14,6 +14,7 @@ local TradeScreen = require "screens/tradescreen"
 local Widget = require "widgets/widget"
 local GenericWaitingPopup = require "screens/redux/genericwaitingpopup"
 local PopupDialogScreen = require "screens/redux/popupdialog"
+local RedeemDialog = require "screens/redeemdialog"
 
 require("characterutil")
 require("skinsutils")
@@ -44,6 +45,7 @@ function PlayerSummaryScreen:DoInit()
     self.experience_root:SetPosition(-40,150)
 
     self.puppet = self.experience_root:AddChild(PlayerAvatarPortrait())
+    self.puppet:HideHoverText()
     self.puppet:SetPosition(-220, 40)
     if IsAnyFestivalEventActive() then
         -- Profileflair and rank are displayed on experiencebar when its visible.
@@ -247,7 +249,7 @@ function PlayerSummaryScreen:_BuildItemsSummary(width)
 
 	
     new_root.UpdateItems = function()
-        local inventory = GetSortedSkinsList()
+        local inventory = GetInventorySkinsList()
 
         table.sort(inventory, 
             function(a, b) 
@@ -303,7 +305,7 @@ function PlayerSummaryScreen:_BuildMostCommonDeath(width)
     end)
 
     local deaths = Widget("deaths")
-    local top_cause = causes[1]
+    local top_cause = causes[1] or STRINGS.UI.PLAYERSUMMARYSCREEN.NO_DEATHS
     if top_cause then
         deaths.name = deaths:AddChild(Text(UIFONT, 30, top_cause))
         deaths.name:SetRegionSize(width,30)
@@ -341,24 +343,25 @@ function PlayerSummaryScreen:_RefreshMostCommonFriend()
 
     if top_friend ~= nil then
         self.most_friend.name:SetString(top_friend.name or "")
+		self.most_friend.name:SetPosition(60, 10)
         self.most_friend.count:SetString(subfmt(STRINGS.UI.PLAYERSUMMARYSCREEN.ENCOUNTER_COUNT_FMT, {time = str_play_time(top_friend.time_played_with)}))
     else
-        self.most_friend.name:SetString("")
+        self.most_friend.name:SetString(STRINGS.UI.PLAYERSUMMARYSCREEN.NO_FRIENDS)
+		self.most_friend.name:SetPosition(60, 0)
         self.most_friend.count:SetString("")
     end
 end
 
 function PlayerSummaryScreen:_RefreshPuppet()
     local herocharacter = self.user_profile:GetLastSelectedCharacter()
-    local base_skin = self.user_profile:GetBaseForCharacter(herocharacter)
-    local clothing = self.user_profile:GetSkinsForCharacter(herocharacter, base_skin)
+    local clothing = self.user_profile:GetSkinsForCharacter(herocharacter)
     local playerportrait = GetMostRecentlySelectedItem(self.user_profile, "playerportrait")
     -- Profileflair and rank are displayed on experiencebar when its visible.
     local profileflair = nil
     if not IsAnyFestivalEventActive() then
         profileflair = GetMostRecentlySelectedItem(self.user_profile, "profileflair")
     end
-    self.puppet:UpdatePlayerListing(nil, nil, herocharacter, base_skin, clothing, playerportrait, profileflair)
+    self.puppet:UpdatePlayerListing(nil, nil, herocharacter, clothing.base, clothing, playerportrait, profileflair)
 end
 
 function PlayerSummaryScreen:_BuildMenu()
@@ -386,6 +389,7 @@ function PlayerSummaryScreen:_BuildMenu()
 						   STRINGS.UI.MORGUESCREEN.HISTORY, 
 						   STRINGS.UI.PLAYERSUMMARYSCREEN.TRADING, 
 						   shopStr,
+						   STRINGS.UI.REDEEMDIALOG.MENU_BUTTON_TITLE,
 						 }
 	for i, item in pairs(menu_strings) do
 		if item:utf8len() > menu_button_character_limit then
@@ -400,6 +404,7 @@ function PlayerSummaryScreen:_BuildMenu()
     local mysterybox_button = TEMPLATES.MenuButton(STRINGS.UI.MAINSCREEN.MYSTERYBOX, function() self:OnMysteryBoxButton() end, STRINGS.UI.PLAYERSUMMARYSCREEN.TOOLTIP_MYSTERYBOX, self.tooltip, menu_button_style)
     local history_button    = TEMPLATES.MenuButton(STRINGS.UI.MORGUESCREEN.HISTORY, function() self:OnHistoryButton() end,    STRINGS.UI.PLAYERSUMMARYSCREEN.TOOLTIP_HISTORY,  self.tooltip, menu_button_style)
     local trading_button    = TEMPLATES.MenuButton(STRINGS.UI.PLAYERSUMMARYSCREEN.TRADING, function() self:_FadeToScreen(TradeScreen, {}) end, STRINGS.UI.PLAYERSUMMARYSCREEN.TOOLTIP_TRADE, self.tooltip, menu_button_style)
+    local redeem_button     = nil
 
     local menu_items = {
         {widget = trading_button},
@@ -417,6 +422,12 @@ function PlayerSummaryScreen:_BuildMenu()
         skins_button,
     }
 
+    if TheFrontEnd:GetAccountManager():HasSteamTicket() then
+		local redeem_button = TEMPLATES.MenuButton(STRINGS.UI.REDEEMDIALOG.MENU_BUTTON_TITLE, function() self:_FadeToScreen(RedeemDialog, {}) end, STRINGS.UI.REDEEMDIALOG.MENU_BUTTON_DESC, self.tooltip, menu_button_style)
+        table.insert(menu_items, 1, {widget = redeem_button})
+        table.insert(self.waiting_for_inventory, 1, redeem_button)
+	end
+
 	if self.can_shop then
 		local purchase_button   = TEMPLATES.MenuButton(STRINGS.UI.PLAYERSUMMARYSCREEN.PURCHASE, function() self:_FadeToScreen(PurchasePackScreen, {}) end, STRINGS.UI.PLAYERSUMMARYSCREEN.TOOLTIP_PURCHASE, self.tooltip, menu_button_style)	
         table.insert(menu_items, 1, {widget = purchase_button})
@@ -426,7 +437,7 @@ function PlayerSummaryScreen:_BuildMenu()
         table.insert(menu_items, 1, {widget = purchase_button})
         table.insert(self.waiting_for_inventory, 1, purchase_button)
     end
-
+	
     for i,w in ipairs(self.waiting_for_inventory) do
         w:Disable()
     end
@@ -526,6 +537,7 @@ function PlayerSummaryScreen:_ScheduleRefresh()
         self.refresh_task = nil
     end
     self.refresh_task = self.inst:DoTaskInTime(2, function()
+		self.refresh_task = nil
         self:_RefreshClientData()
     end)
 end

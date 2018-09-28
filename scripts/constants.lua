@@ -157,7 +157,11 @@ CONTROL_CUSTOM_START = 100
 
 XBOX_CONTROLLER_ID = 17
 
-
+-- controller targetting er... controls
+CONTROL_TARGET_MODIFIER = CONTROL_MENU_MISC_2
+CONTROL_TARGET_LOCK = CONTROL_MENU_MISC_2
+CONTROL_TARGET_CYCLE_BACK = CONTROL_ROTATE_LEFT
+CONTROL_TARGET_CYCLE_FORWARD = CONTROL_ROTATE_RIGHT
 
 KEY_TAB = 9
 KEY_KP_PERIOD		= 266
@@ -307,6 +311,35 @@ require("clothing")
 require("misc_items")
 require("emote_items")
 require("item_blacklist")
+
+CLOTHING.body_default1 =
+{
+	type = "body",
+    skin_tags = {},
+    is_default = true,
+	release_group = 999,
+}        
+CLOTHING.hand_default1 =
+{
+	type = "hand",
+    skin_tags = {},
+    is_default = true,
+	release_group = 999,
+}        
+CLOTHING.legs_default1 =
+{
+	type = "legs",
+    skin_tags = {},
+    is_default = true,
+	release_group = 999,
+}
+CLOTHING.feet_default1 =
+{
+	type = "feet",
+    skin_tags = {},
+    is_default = true,
+	release_group = 999,
+}
 
 MAINSCREEN_TOOL_LIST = 
 {
@@ -686,6 +719,8 @@ TECH =
     ANCIENT_THREE = { ANCIENT = 3 },
     ANCIENT_FOUR = { ANCIENT = 4 },
 
+    CELESTIAL_ONE = { CELESTIAL = 1 },
+
     SHADOW_TWO = { SHADOW = 3 },
 
     CARTOGRAPHY_TWO = { CARTOGRAPHY = 2 },
@@ -892,6 +927,7 @@ RECIPETABS =
 
     --Crafting stations
     ANCIENT =       { str = "ANCIENT",      sort = 10,  icon = "tab_crafting_table.tex",    crafting_station = true },
+    CELESTIAL =     { str = "CELESTIAL",    sort = 10,  icon = "tab_celestial.tex",         crafting_station = true },
     CARTOGRAPHY =   { str = "CARTOGRAPHY",  sort = 10,  icon = "tab_cartography.tex",       crafting_station = true },
     SCULPTING =     { str = "SCULPTING",    sort = 10,  icon = "tab_sculpt.tex",            crafting_station = true },
     ORPHANAGE =     { str = "ORPHANAGE",    sort = 10,  icon = "tab_orphanage.tex",         crafting_station = true },
@@ -1429,6 +1465,7 @@ UICOLOURS = {
     BRONZE = RGB(180, 116, 36, 1),
     EGGSHELL = RGB(252, 230, 201),
     IVORY = RGB(236, 232, 223, 1),
+    IVORY_70 = RGB(165, 162, 156, 1),
     PURPLE = RGB(152, 86, 232, 1),
     RED = RGB(207, 61, 61, 1),
     SLATE = RGB(155, 170, 177, 1),
@@ -1576,6 +1613,8 @@ COMMAND_RESULT = {
 }
 
 MAX_VOTE_OPTIONS = 6
+
+USER_HISTORY_EXPIRY_TIME = 60*60*24*30 -- 30 days
 
 -- Mirrors enum in SystemService.h
 LANGUAGE = 

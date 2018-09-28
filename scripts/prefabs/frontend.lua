@@ -37,12 +37,7 @@ local assets =
     -- Asset("ANIM", "anim/portrait_frame.zip"), -- Not currently used, but likely to come back
 
     Asset("ANIM", "anim/build_status.zip"),
-
-    Asset("ATLAS", "images/fepanels_redux_shop_panel.xml"),
-    Asset("IMAGE", "images/fepanels_redux_shop_panel.tex"),
-    Asset("ATLAS", "images/fepanels_redux_shop_panel_wide.xml"),
-    Asset("IMAGE", "images/fepanels_redux_shop_panel_wide.tex"),
-
+    
     -- Swirly fire frontend menu background
     --~ Asset("ANIM", "anim/animated_title.zip"), -- Not currently used, but likely to come back
     --~ Asset("ANIM", "anim/animated_title2.zip"), -- Not currently used, but likely to come back
@@ -61,7 +56,29 @@ local assets =
     Asset("DYNAMIC_ATLAS", "images/new_host_picker.xml"),
     Asset("PKGREF", "images/new_host_picker.tex"),
 
-    Asset("FILE", "images/motd.xml"),
+    Asset("FILE", "images/motd_box1.xml"),
+    Asset("FILE", "images/motd_box2.xml"),
+    Asset("FILE", "images/motd_box3.xml"),
+    Asset("FILE", "images/motd_box4.xml"),
+    Asset("FILE", "images/motd_box5.xml"),
+    Asset("FILE", "images/motd_box6.xml"),
+    Asset("DYNAMIC_ATLAS", "images/motd_fallbacks_box1.xml"),
+    Asset("PKGREF", "images/motd_fallbacks_box1.tex"),
+    Asset("DYNAMIC_ATLAS", "images/motd_fallbacks_box2.xml"),
+    Asset("PKGREF", "images/motd_fallbacks_box2.tex"),
+    Asset("DYNAMIC_ATLAS", "images/motd_fallbacks_box3.xml"),
+    Asset("PKGREF", "images/motd_fallbacks_box3.tex"),
+    Asset("DYNAMIC_ATLAS", "images/motd_fallbacks_box4.xml"),
+    Asset("PKGREF", "images/motd_fallbacks_box4.tex"),
+    Asset("DYNAMIC_ATLAS", "images/motd_fallbacks_box5.xml"),
+    Asset("PKGREF", "images/motd_fallbacks_box5.tex"),
+    Asset("DYNAMIC_ATLAS", "images/motd_fallbacks_box6.xml"),
+    Asset("PKGREF", "images/motd_fallbacks_box6.tex"),
+
+    Asset("ATLAS", "images/bg_redux_dark_bottom.xml"),
+    Asset("IMAGE", "images/bg_redux_dark_bottom.tex"),
+    Asset("ATLAS", "images/bg_redux_dark_bottom_solid.xml"),
+    Asset("IMAGE", "images/bg_redux_dark_bottom_solid.tex"),
 
     --character portraits
     Asset("ATLAS", "images/saveslot_portraits.xml"),
@@ -75,7 +92,6 @@ local assets =
     Asset("PKGREF", "images/bg_plain.tex"),
 
     -- Collections screen
-    Asset("ANIM", "anim/spool.zip"), -- doodads
     Asset("ANIM", "anim/player_progressbar_large.zip"),
     Asset("ANIM", "anim/player_progressbar_small.zip"),
     Asset("ANIM", "anim/skin_progressbar.zip"),
@@ -95,11 +111,6 @@ local assets =
     Asset("DYNAMIC_ATLAS", "images/serverbrowser.xml"),
     Asset("PKGREF", "images/serverbrowser.tex"),
     --
-
-    Asset("DYNAMIC_ANIM", "anim/dynamic/box_shared_spiral.zip"),
-    Asset("PKGREF", "anim/dynamic/box_shared_spiral.dyn"),
-    Asset("DYNAMIC_ANIM", "anim/dynamic/box_shared.zip"), --needed for the mystery and purchase box opening animation (happens to contain the forge box build too)
-    Asset("PKGREF", "anim/dynamic/box_shared.dyn"),
     
     Asset("ATLAS", "images/tradescreen.xml"),
     Asset("IMAGE", "images/tradescreen.tex"),
@@ -119,12 +130,7 @@ local assets =
     Asset("IMAGE", "images/inventoryimages.tex"),
 
     Asset("ANIM", "anim/mod_player_build.zip"),
-
-    Asset("ANIM", "anim/accountitem_frame.zip"),
-    -- If we replace frames_comp with accountitem_frame, we can remove.
-    Asset("ANIM", "anim/frames_comp.zip"),
-    Asset("ANIM", "anim/frame_bg.zip"),
-
+    
     -- DISABLE SPECIAL RECIPES
     --Asset("ANIM", "anim/button_weeklyspecial.zip"),
 
@@ -211,22 +217,6 @@ local prefabs = {}
 --Skins assets
 for _, clothing_asset in pairs(require("clothing_assets")) do
     table.insert(assets, clothing_asset)
-end
-
-for item,data in pairs(MISC_ITEMS) do
-	if data.box_build ~= nil then
-		table.insert(assets, Asset("DYNAMIC_ANIM", "anim/dynamic/" .. data.box_build .. ".zip"))
-		table.insert(assets, Asset("PKGREF", "anim/dynamic/" .. data.box_build .. ".dyn"))
-	end
-	
-	if data.featured_pack then
-		if data.display_atlas == nil or data.display_tex == nil then
-			print( "Invalid pack data:", item, data.display_atlas, data.display_tex )
-		end
-		
-		table.insert(assets, Asset("DYNAMIC_ATLAS", data.display_atlas ))
-		table.insert(assets, Asset("PKGREF", "images/iap_images_"..data.display_tex ))
-	end
 end
 
 for _, skins_prefabs in pairs(PREFAB_SKINS) do

@@ -213,10 +213,10 @@ local actionhandlers =
     ActionHandler(ACTIONS.GIVE,
         function(inst, action)
             return action.invobject ~= nil
-                and action.invobject.prefab == "quagmire_portal_key"
                 and action.target ~= nil
-                and action.target:HasTag("quagmire_altar")
-                and "dolongaction"
+                and (   (action.target:HasTag("moonportal") and action.invobject:HasTag("moonportalkey") and "dochannelaction") or
+                        (action.invobject.prefab == "quagmire_portal_key" and action.target:HasTag("quagmire_altar") and "dolongaction")
+                    )
                 or "give"
         end),
     ActionHandler(ACTIONS.GIVETOPLAYER, "give"),
@@ -289,6 +289,10 @@ local actionhandlers =
     ActionHandler(ACTIONS.UNWRAP,
         function(inst, action)
             return inst:HasTag("quagmire_fasthands") and "domediumaction" or "dolongaction"
+        end),
+    ActionHandler(ACTIONS.CONSTRUCT,
+        function(inst, action)
+            return (action.target == nil or not action.target:HasTag("constructionsite")) and "startconstruct" or "construct"
         end),
     ActionHandler(ACTIONS.STARTCHANNELING, "startchanneling"),
     ActionHandler(ACTIONS.REVIVE_CORPSE, "dolongaction"),
@@ -1550,6 +1554,45 @@ local states =
 
     State
     {
+        name = "dochannelaction",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("channel_pre")
+            inst.AnimState:PushAnimation("channel_loop", true)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        timeline =
+        {
+            TimeEvent(7 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.AnimState:PlayAnimation("channel_pst")
+                inst.sg:GoToState("idle", true)
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.AnimState:PlayAnimation("channel_pst")
+            inst.sg:GoToState("idle", true)
+        end,
+    },
+
+    State
+    {
         name = "makeballoon",
         tags = { "doing", "busy" },
 
@@ -2505,6 +2548,72 @@ local states =
         ontimeout = function(inst)
             inst:ClearBufferedAction()
             inst.AnimState:PlayAnimation("wrap_pst")
+            inst.sg:GoToState("idle", true)
+        end,
+
+        onexit = function(inst)
+            inst.SoundEmitter:KillSound("make_preview")
+        end,
+    },
+
+    State
+    {
+        name = "startconstruct",
+
+        onenter = function(inst)
+            inst.sg:GoToState("construct", true)
+        end,
+    },
+
+    State
+    {
+        name = "construct",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst, start)
+            inst.components.locomotor:Stop()
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make_preview")
+            if start then
+                inst.sg.statemem.start = true
+                inst.AnimState:PlayAnimation("build_pre")
+                inst.AnimState:PushAnimation("build_loop", true)
+            else
+                inst.AnimState:PlayAnimation("construct_pre")
+                inst.AnimState:PushAnimation("construct_loop", true)
+            end
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        timeline =
+        {
+            TimeEvent(4 * FRAMES, function(inst)
+                if inst.sg.statemem.start then
+                    inst.sg:RemoveStateTag("busy")
+                end
+            end),
+            TimeEvent(10 * FRAMES, function(inst)
+                if not inst.sg.statemem.start then
+                    inst.sg:RemoveStateTag("busy")
+                end
+            end),
+        },
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.AnimState:PlayAnimation(inst.sg.statemem.start and "build_pst" or "construct_pst")
+                inst.sg:GoToState("idle", true)
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.AnimState:PlayAnimation(inst.sg.statemem.start and "build_pst" or "construct_pst")
             inst.sg:GoToState("idle", true)
         end,
 

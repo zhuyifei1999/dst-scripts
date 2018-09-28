@@ -32,6 +32,13 @@ return {
 			NOTALLOWED = "That's against the rules.",
 			INUSE = "Are you finding everything okay in there?",
 		},
+		CONSTRUCT =
+        {
+            INUSE = "Aw, we don't wanna mess up someone else's stuff.",
+            NOTALLOWED = "It doesn't go there.",
+            EMPTY = "We need stuff to build with.",
+            MISMATCH = "I don't think these are the right plans.",
+        },
 		WRITE =
         {
             GENERIC = "We can't write on that now.",
@@ -196,6 +203,7 @@ return {
     },
     ANNOUNCE_RUINS_RESET = "Everything's back!",
 
+	ANNOUNCE_DESPAWN = "Everything's getting fuzzy!",
 	ANNOUNCE_BECOMEGHOST = "oOooOooO!!",
 	ANNOUNCE_GHOSTDRAIN = "We're becoming... even more monstrous!",
 	ANNOUNCE_PETRIFED_TREES = "The trees are yelling at us!!",
@@ -402,6 +410,10 @@ return {
         },
 
         MULTIPLAYER_PORTAL = "It's pretty... pretty scary!",
+        MULTIPLAYER_PORTAL_MOONROCK = "Gosh. It's so sparkly!",
+        CONSTRUCTION_PLANS = "We should build this.",
+        MOONROCKIDOL = "It looks kinda like an alien.",
+        MOONROCKSEED = "Neat, it's a ball that floats by itself!",
 
 		BERNIE_INACTIVE =
 		{

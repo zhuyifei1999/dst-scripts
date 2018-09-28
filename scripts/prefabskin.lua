@@ -263,6 +263,50 @@ function cookpot_init_fn(inst, build_name)
 end
 
 --------------------------------------------------------------------------
+--[[ Tent skin functions ]]
+--------------------------------------------------------------------------
+function tent_init_fn(inst, build_name)
+    if inst.components.placer == nil and not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "tent")
+end
+
+--------------------------------------------------------------------------
+--[[ Rainometer functions ]]
+--------------------------------------------------------------------------
+function rainometer_init_fn(inst, build_name)
+    if inst.components.placer == nil and not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "rain_meter")
+end
+
+--------------------------------------------------------------------------
+--[[ Winterometer functions ]]
+--------------------------------------------------------------------------
+function winterometer_init_fn(inst, build_name)
+    if inst.components.placer == nil and not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "winter_meter")
+end
+
+--------------------------------------------------------------------------
+--[[ Arrowsign_post functions ]]
+--------------------------------------------------------------------------
+function arrowsign_post_init_fn(inst, build_name)
+    if inst.components.placer == nil and not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "sign_arrow_post")
+end
+
+--------------------------------------------------------------------------
 --[[ Chest skin functions ]]
 --------------------------------------------------------------------------
 function treasurechest_init_fn(inst, build_name)
@@ -543,11 +587,13 @@ local function lantern_on(inst)
             if inst._lit_fx_inst == nil then
                 inst._lit_fx_inst = SpawnPrefab(inst._heldfx)
                 inst._lit_fx_inst._lantern = inst
+                inst._lit_fx_inst.AnimState:OverrideItemSkinSymbol("bolt_b", inst:GetSkinBuild(), "bolt_b", inst.GUID, "lantern")
+                inst._lit_fx_inst.AnimState:OverrideItemSkinSymbol("bolt_c", inst:GetSkinBuild(), "bolt_c", inst.GUID, "lantern")
                 inst._lit_fx_inst.entity:AddFollower()
                 inst:ListenForEvent("onremove", lantern_onremovefx, inst._lit_fx_inst)
             end
             inst._lit_fx_inst.entity:SetParent(owner.entity)
-            inst._lit_fx_inst.Follower:FollowSymbol(owner.GUID, "swap_object", 65, -15, 0)
+            inst._lit_fx_inst.Follower:FollowSymbol(owner.GUID, "swap_object", 67, -7, 0)
         end
     else
         if inst._lit_fx_inst ~= nil and inst._lit_fx_inst.prefab ~= inst._groundfx then
@@ -557,6 +603,8 @@ local function lantern_on(inst)
             if inst._lit_fx_inst == nil then
                 inst._lit_fx_inst = SpawnPrefab(inst._groundfx)
                 inst._lit_fx_inst._lantern = inst
+                inst._lit_fx_inst.AnimState:OverrideItemSkinSymbol("bolt_b", inst:GetSkinBuild(), "bolt_b", inst.GUID, "lantern")
+                inst._lit_fx_inst.AnimState:OverrideItemSkinSymbol("bolt_c", inst:GetSkinBuild(), "bolt_c", inst.GUID, "lantern")
                 inst:ListenForEvent("onremove", lantern_onremovefx, inst._lit_fx_inst)
             end
             inst._lit_fx_inst.entity:SetParent(inst.entity)
