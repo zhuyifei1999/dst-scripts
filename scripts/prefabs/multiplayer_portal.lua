@@ -258,6 +258,9 @@ local function moonrock_common_postinit(inst)
     inst.AnimState:SetLightOverride(.045)
     inst.AnimState:Hide("eye")
     inst.AnimState:Hide("FX_rays")
+    inst.AnimState:OverrideSymbol("portaldoormagic_cycle", "portal_stone", "portaldoormagic_cycle")
+    inst.AnimState:OverrideSymbol("portalbg", "portal_stone", "portalbg")
+    inst.AnimState:OverrideSymbol("spiralfx", "portal_stone", "spiralfx")
 
     inst:AddTag("moonportal")
 
@@ -325,6 +328,7 @@ local function moonrockfxfn()
     inst.AnimState:SetBuild("portal_moonrock")
     inst.AnimState:PlayAnimation("idle_loop", true)
     inst.AnimState:Hide("portal")
+    inst.AnimState:OverrideSymbol("FX_ray", "portal_stone", "FX_ray")
     inst.AnimState:SetLightOverride(.2)
 
     inst:AddTag("FX")
