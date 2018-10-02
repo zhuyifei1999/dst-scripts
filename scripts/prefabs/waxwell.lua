@@ -108,7 +108,7 @@ local function master_postinit(inst)
     inst._onpetlost = function(pet) inst.components.sanity:RemoveSanityPenalty(pet) end
 
     inst:ListenForEvent("death", OnDeath)
-    inst:ListenForEvent("ms_becomeghost", OnDeath)
+    inst:ListenForEvent("ms_becameghost", OnDeath)
 
     if TheNet:GetServerGameMode() == "lavaarena" then
         event_server_data("lavaarena", "prefabs/waxwell").master_postinit(inst)
