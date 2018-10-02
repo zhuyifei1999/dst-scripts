@@ -291,7 +291,7 @@ local function InitStats()
 	RegisterOnAccountEventListener(statsEventListener)
 end
 
-local function PushMetricsEvent(event_id, player, values)
+local function PushMetricsEvent(event_id, player, values, is_only_local_users_data)
 
     local sendstats = BuildContextTable(player)
     sendstats.event = event_id
@@ -306,7 +306,7 @@ local function PushMetricsEvent(event_id, player, values)
     --dumptable(sendstats)
     --print("^^^^^^^^^^^^^^^^^^")
     local jsonstats = json.encode_compliant(sendstats)
-    TheSim:SendProfileStats(jsonstats)
+    TheSim:SendProfileStats(jsonstats, is_only_local_users_data)
 end
 
 ------------------------------------------------------------------------------------------------

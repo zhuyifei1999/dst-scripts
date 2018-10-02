@@ -3,6 +3,7 @@ local Text = require "widgets/text"
 local easing = require "easing"
 local Widget = require "widgets/widget"
 local TEMPLATES = require "widgets/redux/templates"
+local Stats = require("stats")
 
 local BOX_FONT = FALLBACK_FONT -- CHATFONT, FALLBACK_FONT, CHATFONT_OUTLINE
 
@@ -79,6 +80,8 @@ function MotdPanel:OnImagesLoaded()
 	self:SetMotdInfo(TheFrontEnd.MotdManager:GetMotd())
 
 	if self.motd_info == nil then
+		Stats.PushMetricsEvent("motd2.failed", TheNet:GetUserID(), {}, "is_only_local_users_data")
+
 		if self.config.error_cb ~= nil then
 			self.config.error_cb()
 		end
@@ -130,8 +133,21 @@ function MotdPanel:OnImagesLoaded()
 			str = subfmt(body_str.text, format_vars)
 		end
 
+		local motd_msg = {}
+		local screen = TheFrontEnd:GetActiveScreen()
+		motd_msg.target = box_id
+		motd_msg.url = data.link or "none"
+		motd_msg.prefab = title_str or "unknown"
+		motd_msg.special_event = WORLD_FESTIVAL_EVENT or FESTIVAL_EVENTS.NONE
+		Stats.PushMetricsEvent("motd2.seen", TheNet:GetUserID(), motd_msg, "is_only_local_users_data")
+
 		if data.link ~= nil then
-			self.link_btn = self.fg:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "goto_url.tex", nil, false, false, function() VisitURL(data.link) end))
+			self.link_btn = self.fg:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "goto_url.tex", nil, false, false, 
+				function() 
+					VisitURL(data.link) 
+
+					Stats.PushMetricsEvent("motd2.clicked", TheNet:GetUserID(), motd_msg, "is_only_local_users_data")
+				end))
 			self.link_btn:SetScale(0.5)
 			local half_image_size = 10
 			self.link_btn:SetPosition(x + cell_size.width / 2 - text_padding - half_image_size, y - cell_size.height / 2 + text_padding + half_image_size + 5)
