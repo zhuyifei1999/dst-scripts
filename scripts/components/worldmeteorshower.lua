@@ -24,7 +24,7 @@ function self:SpawnMeteorLoot(prefab)
 	if prefab == "rock_moon" and _moonrockshell_chance < 1 then
 		_moonrockshell_chance = _moonrockshell_chance + TUNING.MOONROCKSHELL_CHANCE
 
-		if _moonrockshell_chance >= 1 or math.random() <= _moonrockshell_chance then
+		if _moonrockshell_chance >= 1 or TheWorld.state.cycles >= 60 or math.random() <= _moonrockshell_chance then
 			_moonrockshell_chance = 1
 			return SpawnPrefab("rock_moon_shell")
 		end

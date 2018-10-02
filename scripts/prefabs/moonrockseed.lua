@@ -5,9 +5,19 @@ local assets =
     Asset("ANIM", "anim/moonrock_seed.zip"),
 }
 
+local assets_icon =
+{
+    Asset("MINIMAP_IMAGE", "moonrockseed"),
+}
+
 local prefabs =
 {
-    "moonrockseedfx",
+    "moonrockseed_icon",
+}
+
+local prefabs_icon =
+{
+    "globalmapicon",
 }
 
 local function updatelight(inst)
@@ -116,17 +126,74 @@ end
 local function onactivate(inst)
     blink(inst)
     inst.SoundEmitter:PlaySound("dontstarve/common/together/spawn_vines/spawnportal_open")
-    SpawnPrefab("moonrockseedfx").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    inst._fx:push()
 end
 
-local function topocket(inst)
+local function storeincontainer(inst, container)
+    if container ~= nil and container.components.container ~= nil then
+        inst:ListenForEvent("onputininventory", inst._oncontainerownerchanged, container)
+        inst:ListenForEvent("ondropped", inst._oncontainerownerchanged, container)
+        inst:ListenForEvent("onremove", inst._oncontainerremoved, container)
+        inst._container = container
+    end
+end
+
+local function unstore(inst)
+    if inst._container ~= nil then
+        inst:RemoveEventCallback("onputininventory", inst._oncontainerownerchanged, inst._container)
+        inst:RemoveEventCallback("ondropped", inst._oncontainerownerchanged, inst._container)
+        inst:RemoveEventCallback("onremove", inst._oncontainerremoved, inst._container)
+        inst._container = nil
+    end
+end
+
+local function tostore(inst, owner)
+    if inst._container ~= owner then
+        unstore(inst)
+        storeincontainer(inst, owner)
+    end
+    owner = owner.components.inventoryitem ~= nil and owner.components.inventoryitem:GetGrandOwner() or owner
+    if inst._owner ~= owner then
+        inst._owner = owner
+        inst.icon.entity:SetParent(owner.entity)
+    end
+end
+
+local function topocket(inst, owner)
     cancelblink(inst)
     onturnoff(inst)
+    tostore(inst, owner)
 end
 
 local function toground(inst)
     if inst.components.prototyper.on then
         onturnon(inst, true)
+    end
+    unstore(inst)
+    inst._owner = nil
+    inst.icon.entity:SetParent(inst.entity)
+end
+
+local function OnFX(inst)
+    if not inst:HasTag("INLIMBO") then
+        local fx = CreateEntity()
+
+        fx:AddTag("FX")
+        --[[Non-networked entity]]
+        fx.entity:SetCanSleep(false)
+        fx.persists = false
+
+        fx.entity:AddTransform()
+        fx.entity:AddAnimState()
+
+        fx.Transform:SetFromProxy(inst.GUID)
+
+        fx.AnimState:SetBank("moonrock_seed")
+        fx.AnimState:SetBuild("moonrock_seed")
+        fx.AnimState:PlayAnimation("use")
+        fx.AnimState:SetFinalOffset(-1)
+
+        fx:ListenForEvent("animover", fx.Remove)
     end
 end
 
@@ -139,13 +206,18 @@ local function OnSpawned(inst)
     end
 end
 
+local function OnRemoveEntity(inst)
+    if inst.icon ~= nil then
+        inst.icon:Remove()
+    end
+end
+
 local function fn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
-    inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
@@ -155,9 +227,13 @@ local function fn()
     inst.AnimState:PlayAnimation("idle")
 
     inst:AddTag("irreplaceable")
+    inst:AddTag("nonpotatable")
 
-    inst.MiniMapEntity:SetIcon("moonrockseed.png")
-    inst.MiniMapEntity:SetPriority(5)
+    inst._fx = net_event(inst.GUID, "moonrockseed._fx")
+
+    if not TheNet:IsDedicated() then
+        inst:ListenForEvent("moonrockseed._fx", OnFX)
+    end
 
     inst.entity:SetPristine()
 
@@ -168,6 +244,16 @@ local function fn()
     inst._tasks = {}
     inst._light = 0
     inst._targetlight = 0
+    inst._owner = nil
+    inst._container = nil
+
+    inst._oncontainerownerchanged = function(container)
+        tostore(inst, container)
+    end
+
+    inst._oncontainerremoved = function()
+        unstore(inst)
+    end
 
     inst:AddComponent("inspectable")
 
@@ -182,38 +268,50 @@ local function fn()
 
     MakeHauntableLaunch(inst)
 
+    inst.icon = SpawnPrefab("moonrockseed_icon")
+    inst.icon.entity:SetParent(inst.entity)
     inst:ListenForEvent("onputininventory", topocket)
     inst:ListenForEvent("ondropped", toground)
 
     inst.OnSpawned = OnSpawned
+    inst.OnRemoveEntity = OnRemoveEntity
 
     return inst
 end
 
-local function fxfn()
+local function icon_init(inst)
+    inst.icon = SpawnPrefab("globalmapicon")
+    inst.icon.MiniMapEntity:SetPriority(11)
+    inst.icon:TrackEntity(inst)
+end
+
+local function iconfn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
-    inst.entity:AddAnimState()
+    inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
-    inst.AnimState:SetBank("moonrock_seed")
-    inst.AnimState:SetBuild("moonrock_seed")
-    inst.AnimState:PlayAnimation("use")
-    inst.AnimState:SetFinalOffset(1)
+    inst.MiniMapEntity:SetIcon("moonrockseed.png")
+    inst.MiniMapEntity:SetPriority(11)
+    inst.MiniMapEntity:SetCanUseCache(false)
+    inst.MiniMapEntity:SetDrawOverFogOfWar(true)
 
-    inst:AddTag("FX")
-    inst:AddTag("NOCLICK")
+    inst:AddTag("CLASSIFIED")
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst:ListenForEvent("animover", inst.Remove)
+    inst.icon = nil
+    inst:DoTaskInTime(0, icon_init)
+    inst.OnRemoveEntity = inst.OnRemoveEntity
     inst.persists = false
 
     return inst
 end
 
 return Prefab("moonrockseed", fn, assets, prefabs),
-    Prefab("moonrockseedfx", fxfn, assets)
+    Prefab("moonrockseed_icon", iconfn, assets_icon, prefabs_icon)

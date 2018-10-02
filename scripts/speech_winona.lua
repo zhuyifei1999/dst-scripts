@@ -74,6 +74,7 @@ return {
             NOTSCULPTABLE = "That ain't for sculpting.",
             CANTSHADOWREVIVE = "Don't think that'll work.",
             WRONGSHADOWFORM = "I gotta disassemble it and try again.",
+            NOMOON = "Gonna have to make this under the influence of the moon.",
         },
         GIVETOPLAYER =
         {
@@ -280,7 +281,7 @@ return {
 		MULTIPLAYER_PORTAL = "That was a one-way ticket.",
 		MULTIPLAYER_PORTAL_MOONROCK = "Wow. Can't even see the weld joints.",
         CONSTRUCTION_PLANS = "Let's get building.",
-        MOONROCKIDOL = "What, do I gotta offer it up to something?",
+        MOONROCKIDOL = "Do I gotta offer it up to something?",
         MOONROCKSEED = "I could learn a thing or two from this.",
 		ANTLION = 
 		{

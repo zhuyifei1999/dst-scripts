@@ -98,6 +98,7 @@ return {
             NOTSCULPTABLE = "That is certainly not for sculpting with.",
             CANTSHADOWREVIVE = "It refuses to bend to my will.",
             WRONGSHADOWFORM = "The bones were too amateurishly assembled.",
+            NOMOON = "It's not going to work in here.",
         },
         GIVETOPLAYER = 
         {

@@ -98,6 +98,7 @@ return {
             NOTSCULPTABLE = "I'd like to see someone try to sculpt with that!",
             CANTSHADOWREVIVE = "It's not working.",
             WRONGSHADOWFORM = "Nah. Skeleton's not right.",
+            NOMOON = "Jerk! It won't work in here!",
         },
         GIVETOPLAYER = 
         {

@@ -84,6 +84,7 @@ return {
             NOTSCULPTABLE = "Eight legs isn't nearly enough to sculpt with THAT.",
             CANTSHADOWREVIVE = "It's not waking up.",
             WRONGSHADOWFORM = "We put the bones together wrong.",
+            NOMOON = "Doesn't work. We probably need to see the moon or something.",
         },
         GIVETOPLAYER = 
         {
