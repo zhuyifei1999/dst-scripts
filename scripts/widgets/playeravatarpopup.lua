@@ -382,9 +382,10 @@ end
 
 function PlayerAvatarPopup:UpdateSkinWidgetForSlot(image_group, slot, name)
     image_group._text:SetColour(unpack(GetColorForItem(name)))
-    
-    local namestr = string.match(name, "_none") and "none" or name -- This version uses "Willow" for "willow_none": string.gsub(name, "_none", "")
-    image_group._text:SetMultilineTruncatedString(GetSkinName(namestr), 2, TEXT_WIDTH, 25, true, true)
+       
+    local namestr = STRINGS.NAMES[string.upper(name)] or GetSkinName(name)
+
+    image_group._text:SetMultilineTruncatedString(namestr, 2, TEXT_WIDTH, 25, true, true)
 
     local image_name = string.gsub(name, "_none", "")
     if image_name == nil or image_name == "none" then
@@ -423,9 +424,10 @@ end
 function PlayerAvatarPopup:UpdateEquipWidgetForSlot(image_group, slot, equipdata)
     local name = equipdata ~= nil and equipdata[EquipSlot.ToID(slot)] or nil
     name = name ~= nil and #name > 0 and name or "none"
+    local namestr = STRINGS.NAMES[string.upper(name)] or GetSkinName(name)
 
     image_group._text:SetColour(unpack(GetColorForItem(name)))
-    image_group._text:SetMultilineTruncatedString(GetSkinName(name), 2, TEXT_WIDTH, 25, true, true)
+    image_group._text:SetMultilineTruncatedString(namestr, 2, TEXT_WIDTH, 25, true, true)
 
     local atlas = "images/inventoryimages.xml"
     local default = DEFAULT_IMAGES[slot] or "trinket_5.tex"

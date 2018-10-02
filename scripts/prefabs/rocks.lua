@@ -342,6 +342,7 @@ local function rock_moon()
         return inst
     end
 
+    inst.components.inspectable.nameoverride = "ROCK_MOON"
     inst.components.lootdropper:SetChanceLootTable('rock_moon')
 
     return inst
@@ -370,6 +371,7 @@ local function rock_moon_shell()
         return inst
     end
 
+    inst.components.inspectable.nameoverride = "ROCK_MOON"
     inst.components.lootdropper:SetChanceLootTable('rock_moon_shell')
 
 	inst.doNotRemoveOnWorkDone = true

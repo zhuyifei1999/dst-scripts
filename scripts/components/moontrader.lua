@@ -16,9 +16,14 @@ function MoonTrader:SetOnAcceptFn(fn)
 end
 
 function MoonTrader:AcceptOffering(giver, item)
-    if self.canaccept ~= nil and not self.canaccept(self.inst, item, giver) then
-        return false
-    elseif item.components.stackable ~= nil and item.components.stackable:IsStack() then
+    if self.canaccept ~= nil then
+        local success, reason = self.canaccept(self.inst, item, giver)
+        if not success then
+            return false, reason
+        end
+    end
+
+    if item.components.stackable ~= nil and item.components.stackable:IsStack() then
         item = item.components.stackable:Get()
     else
         item.components.inventoryitem:RemoveFromOwner(true)

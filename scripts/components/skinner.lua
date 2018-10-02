@@ -286,6 +286,10 @@ function Skinner:SetupNonPlayerData()
 end
 
 function Skinner:SetSkinName(skin_name)
+    if skin_name == "" then
+        skin_name = self.inst.prefab.."_none"
+    end
+
 	self.skin_name = skin_name
 	self.skin_data = {}
 	if self.skin_name ~= nil and self.skin_name ~= "" then
@@ -296,6 +300,11 @@ function Skinner:SetSkinName(skin_name)
 			end
 		end
 	end
+
+    if self.skin_data.normal_skin == nil then
+        print("ERROR!!! Invisible werebeaver is probably about to happen!!!")
+    end
+
 	self:SetSkinMode()
 end
 

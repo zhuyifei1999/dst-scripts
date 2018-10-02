@@ -165,6 +165,22 @@ local states =
 
     --For construction portals
     State{
+        name = "placeconstruction",
+        tags = { "idle" },
+        onenter = function(inst)
+            PlayAnimation(inst, "place")
+            PlaySound(inst, "shake")
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                inst.sg:GoToState("idle")
+            end),
+        },
+    },
+
+    State{
         name = "constructed",
         tags = { "busy", "construction" },
         onenter = function(inst, phase)

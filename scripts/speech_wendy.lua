@@ -98,6 +98,7 @@ return {
             NOTSCULPTABLE = "I think that's... wrong...",
             CANTSHADOWREVIVE = "It has no will to live.",
             WRONGSHADOWFORM = "These bones are grimly misassembled...",
+            NOMOON = "I can't... not in here.",
         },
         GIVETOPLAYER = 
         {
@@ -289,7 +290,7 @@ return {
         MULTIPLAYER_PORTAL = "Its beauty is tinged with a heartbreaking sadness.",
         MULTIPLAYER_PORTAL_MOONROCK = "Cold and beautiful like death.",
         CONSTRUCTION_PLANS = "Shall I even bother building this?",
-        MOONROCKIDOL = "An otherworldly heart beats within it.",
+        MOONROCKIDOL = "A lifeless sacrifice.",
         MOONROCKSEED = "Its pallor reminds me of Abigail.",
 
 		BERNIE_INACTIVE =

@@ -104,6 +104,7 @@ return
             NOTSCULPTABLE = "No one ought to sculpt with that, dear.",
             CANTSHADOWREVIVE = "Conditions are not right.",
             WRONGSHADOWFORM = "The skeletal anatomy is incorrect.",
+            NOMOON = "It needs a lunar influence.",
         },
         GIVETOPLAYER = 
         {
@@ -431,7 +432,7 @@ return
         MULTIPLAYER_PORTAL = "Hmm... This may require further reading.",
         MULTIPLAYER_PORTAL_MOONROCK = "Its design is decidedly otherworldly.",
         CONSTRUCTION_PLANS = "Oh, I do like the look of this.",
-        MOONROCKIDOL = "Curious. It's rather keylike.",
+        MOONROCKIDOL = "Curious. It rather looks like a key.",
         MOONROCKSEED = "A floating orb of knowledge.",
 
         BERNIE_INACTIVE =

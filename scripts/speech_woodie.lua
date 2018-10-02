@@ -85,6 +85,7 @@ return {
             NOTSCULPTABLE = "I'd prefer wood, personally.",
             CANTSHADOWREVIVE = "Didn't work. Probably for the best.",
             WRONGSHADOWFORM = "That's gotta be rebuilt, eh?",
+            NOMOON = "Looks like it doesn't work in the caves, eh.",
         },
         GIVETOPLAYER = 
         {

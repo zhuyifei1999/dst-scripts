@@ -434,23 +434,23 @@ end
 
 function ItemExplorer:_DoCommerce(item_key)
 	local is_buying = not self.last_interaction_target.is_owned
+    local cached_data = self.last_interaction_target --we need to cache the last_interaction_target as it may have been nil'd on the refresh when the screen becomes active again
+
     local barter_screen = BarterScreen(self.scroll_list.context.user_profile, self, item_key, is_buying, function()
         -- We completed a barter and now our screens contain old inventory data.
-
-        if not is_buying and self.last_interaction_target.owned_count <= 1 then
+        if not is_buying and cached_data.owned_count <= 1 then
             -- Selling our last one. Fake a click to turn it off. We can't click the widget because the interaction target may not be on screen (and thus not in a widget).
             local is_active = false
-            local data = self.last_interaction_target
 
             -- Ensures other collection screens don't think this item is active.
             if self.scroll_list.context.selection_type then
-                self:_SetItemActiveFlag(data, is_active)
+                self:_SetItemActiveFlag(cached_data, is_active)
             end
 
             -- Copied from SetOnClick. Removes item from preview on single selection screens.
             for i,receiver in ipairs(self.scroll_list.context.input_receivers) do
                 if receiver.OnClickedItem then
-                    receiver:OnClickedItem(data, is_active)
+                    receiver:OnClickedItem(cached_data, is_active)
                 end
             end
         end

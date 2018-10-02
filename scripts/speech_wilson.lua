@@ -72,6 +72,7 @@ return {
             NOTATRIUMKEY = "It's not quite the right shape.",
             CANTSHADOWREVIVE = "It won't resurrect.",
             WRONGSHADOWFORM = "It's not put together right.",
+            NOMOON = "I need to see the moon for that to work.",
         },
         GIVETOPLAYER =
         {
@@ -304,7 +305,7 @@ return {
 	{
 		MULTIPLAYER_PORTAL = "This ought to be a scientific impossibility.",
         MULTIPLAYER_PORTAL_MOONROCK = "I'm sure there's some scientific explanation for this.",
-        MOONROCKIDOL = "Huh. It looks kinda like a key.",
+        MOONROCKIDOL = "I only worship science.",
         CONSTRUCTION_PLANS = "Stuff for science!",
 
        	ANTLION = 

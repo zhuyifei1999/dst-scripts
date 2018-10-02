@@ -84,6 +84,7 @@ return {
             NOTSCULPTABLE = "That material is not befitting a work of art.",
             CANTSHADOWREVIVE = "T'will not raise from death, it seems.",
             WRONGSHADOWFORM = "We must rearrange the bones of the beast.",
+            NOMOON = "Needs the gaze of Mani to work.",
         },
         GIVETOPLAYER = 
         {
@@ -419,7 +420,7 @@ return {
         MULTIPLAYER_PORTAL = "It makes me long for the stage!",
         MULTIPLAYER_PORTAL_MOONROCK = "It hath a glow about it.",
         CONSTRUCTION_PLANS = "Portal! Prepare to be built!",
-        MOONROCKIDOL = "I shall offer it to Mani!",
+        MOONROCKIDOL = "I shall make an offering!",
         MOONROCKSEED = "It hath knowledge within!",
 
         BERNIE_INACTIVE =

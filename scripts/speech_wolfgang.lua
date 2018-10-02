@@ -84,6 +84,7 @@ return {
             NOTSCULPTABLE = "Material is not mighty enough for strong statues!",
             CANTSHADOWREVIVE = "Is not working.",
             WRONGSHADOWFORM = "Bones is wrong shape.",
+            NOMOON = "Is too scary in here for funny man to work.",
         },
         GIVETOPLAYER = 
         {

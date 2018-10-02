@@ -1,13 +1,28 @@
+local assets_stone =
+{
+    Asset("ANIM", "anim/portal_stone.zip"),
+    Asset("MINIMAP_IMAGE", "portal_dst"),
+}
+
 local assets_construction =
 {
     Asset("ANIM", "anim/portal_stone_construction.zip"),
+    Asset("ANIM", "anim/portal_stone.zip"),
     Asset("ANIM", "anim/ui_construction_4x1.zip"),
+    Asset("MINIMAP_IMAGE", "portal_dst"),
+}
+
+local assets_moonrock =
+{
+    Asset("ANIM", "anim/portal_moonrock.zip"),
+    Asset("ANIM", "anim/portal_stone.zip"),
     Asset("MINIMAP_IMAGE", "portal_dst"),
 }
 
 local assets_fx =
 {
     Asset("ANIM", "anim/portal_moonrock.zip"),
+    Asset("ANIM", "anim/portal_stone.zip"),
 }
 
 local prefabs_construction =
@@ -27,13 +42,7 @@ local function OnRezPlayer(inst)
     end
 end
 
-local function MakePortal(name, bank, build, prefabs, assets_override, common_postinit, master_postinit)
-    local assets = assets_override or
-    {
-        Asset("ANIM", "anim/"..build..".zip"),
-        Asset("MINIMAP_IMAGE", "portal_dst"),
-    }
-
+local function MakePortal(name, bank, build, assets, prefabs, common_postinit, master_postinit)
     local function fn()
         local inst = CreateEntity()
 
@@ -140,6 +149,15 @@ end
 local function construction_common_postinit(inst)
     inst.AnimState:Hide("stage2")
     inst.AnimState:Hide("stage3")
+    inst.AnimState:AddOverrideBuild("portal_stone_construction")
+    inst.AnimState:OverrideSymbol("portal_moonrock", "portal_moonrock", "portal_moonrock")
+    inst.AnimState:OverrideSymbol("curtains", "portal_moonrock", "curtains")
+
+    if TheWorld:HasTag("cave") then
+        inst.AnimState:Hide("eyefx")
+    else
+        inst.AnimState:OverrideSymbol("glow", "portal_moonrock", "glow")
+    end
 
     --constructionsite (from constructionsite component) added to pristine state for optimization
     inst:AddTag("constructionsite")
@@ -165,8 +183,7 @@ local function construction_common_postinit(inst)
 end
 
 local function OnStartConstruction(inst)
-    inst.AnimState:PlayAnimation("place")
-    inst.AnimState:PushAnimation("idle_loop")
+    inst.sg:GoToState("placeconstruction")
 end
 
 local function CalculateConstructionPhase(inst)
@@ -255,21 +272,28 @@ local MOONROCK_SOUNDS =
 }
 
 local function moonrock_common_postinit(inst)
-    inst.AnimState:SetLightOverride(.045)
-    inst.AnimState:Hide("eye")
-    inst.AnimState:Hide("FX_rays")
     inst.AnimState:OverrideSymbol("portaldoormagic_cycle", "portal_stone", "portaldoormagic_cycle")
     inst.AnimState:OverrideSymbol("portalbg", "portal_stone", "portalbg")
     inst.AnimState:OverrideSymbol("spiralfx", "portal_stone", "spiralfx")
 
-    inst:AddTag("moonportal")
+    if TheWorld:HasTag("cave") then
+        inst.AnimState:OverrideSymbol("FX_ray", "portal_stone", "FX_ray")
+        inst.AnimState:Hide("eyefx")
+    else
+        inst.AnimState:SetLightOverride(.04)
+        inst.AnimState:Hide("eye")
+        inst.AnimState:Hide("eyefx")
+        inst.AnimState:Hide("FX_rays")
+
+        inst:AddTag("moonportal")
+    end
 
     --moontrader (from moontrader component) added to pristine state for optimization
     inst:AddTag("moontrader")
 
     if TheWorld.ismastersim then
+        inst.fx = not TheWorld:HasTag("cave") and SpawnPrefab("multiplayer_portal_moonrock_fx") or nil
         inst.sounds = MOONROCK_SOUNDS
-        inst.fx = SpawnPrefab("multiplayer_portal_moonrock_fx")
     end
 end
 
@@ -295,7 +319,12 @@ local function moonrock_onwake(inst)
 end
 
 local function moonrock_canaccept(inst, item)--, giver)
-    return item:HasTag("moonportalkey")
+    if not item:HasTag("moonportalkey") then
+        return false
+    elseif TheWorld:HasTag("cave") then
+        return false, "NOMOON"
+    end
+    return true
 end
 
 local function moonrock_onaccept(inst, giver)--, item)
@@ -310,11 +339,12 @@ local function moonrock_master_postinit(inst)
     inst.components.moontrader:SetCanAcceptFn(moonrock_canaccept)
     inst.components.moontrader:SetOnAcceptFn(moonrock_onaccept)
 
-    inst.fx.entity:SetParent(inst.entity)
-
-    inst._task = nil
-    inst.OnEntitySleep = moonrock_onsleep
-    inst.OnEntityWake = moonrock_onwake
+    if not TheWorld:HasTag("cave") then
+        inst.fx.entity:SetParent(inst.entity)
+        inst._task = nil
+        inst.OnEntitySleep = moonrock_onsleep
+        inst.OnEntityWake = moonrock_onwake
+    end
 end
 
 local function moonrockfxfn()
@@ -344,7 +374,7 @@ local function moonrockfxfn()
     return inst
 end
 
-return MakePortal("multiplayer_portal", "portal_dst", "portal_stone", nil, nil, stone_common_postinit),
-    MakePortal("multiplayer_portal_moonrock_constr", "portal_construction_dst", "portal_stone_construction", prefabs_construction, assets_construction, construction_common_postinit, construction_master_postinit),
-    MakePortal("multiplayer_portal_moonrock", "portal_moonrock_dst", "portal_moonrock", prefabs_moonrock, nil, moonrock_common_postinit, moonrock_master_postinit),
+return MakePortal("multiplayer_portal", "portal_dst", "portal_stone", assets_stone, nil, stone_common_postinit),
+    MakePortal("multiplayer_portal_moonrock_constr", "portal_construction_dst", "portal_stone", assets_construction, prefabs_construction, construction_common_postinit, construction_master_postinit),
+    MakePortal("multiplayer_portal_moonrock", "portal_moonrock_dst", "portal_moonrock", assets_moonrock, prefabs_moonrock, moonrock_common_postinit, moonrock_master_postinit),
     Prefab("multiplayer_portal_moonrock_fx", moonrockfxfn, assets_fx)
