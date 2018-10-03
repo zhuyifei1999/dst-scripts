@@ -328,10 +328,20 @@ local function moonrock_canaccept(inst, item)--, giver)
 end
 
 local function moonrock_onaccept(inst, giver)--, item)
+    giver:PushEvent("ms_playerreroll")
     if giver.components.inventory ~= nil then
         giver.components.inventory:DropEverything()
     end
+    inst._savedata[giver.userid] = giver.SaveForReroll ~= nil and giver:SaveForReroll() or nil
     TheWorld:PushEvent("ms_playerdespawnanddelete", giver)
+end
+
+local function moonrock_onsave(inst, data)
+    data.players = next(inst._savedata) ~= nil and inst._savedata or nil
+end
+
+local function moonrock_onload(inst, data)
+    inst._savedata = data ~= nil and data.players or inst._savedata
 end
 
 local function moonrock_master_postinit(inst)
@@ -342,8 +352,25 @@ local function moonrock_master_postinit(inst)
     if not TheWorld:HasTag("cave") then
         inst.fx.entity:SetParent(inst.entity)
         inst._task = nil
+        inst._savedata = {}
         inst.OnEntitySleep = moonrock_onsleep
         inst.OnEntityWake = moonrock_onwake
+        inst.OnSave = moonrock_onsave
+        inst.OnLoad = moonrock_onload
+
+        inst:ListenForEvent("ms_newplayerspawned", function(world, player)
+            if inst._savedata[player.userid] ~= nil then
+                if player.LoadForReroll ~= nil then
+                    player:LoadForReroll(inst._savedata[player.userid])
+                end
+                inst._savedata[player.userid] = nil
+            end
+        end, TheWorld)
+
+        inst:ListenForEvent("ms_playerjoined", function(world, player)
+            --In case despawn never finished after saving for reroll
+            inst._savedata[player.userid] = nil
+        end, TheWorld)
     end
 end
 
