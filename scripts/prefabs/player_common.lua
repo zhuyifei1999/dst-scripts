@@ -913,6 +913,7 @@ local function OnNewSpawn(inst)
     end
     inst.OnNewSpawn = nil
     inst.starting_inventory = nil
+    TheWorld:PushEvent("ms_newplayerspawned", inst)
 end
 
 --------------------------------------------------------------------------
@@ -1078,6 +1079,36 @@ local function ApplyScale(inst, source, scale)
                 inst.Transform:SetScale(scale, scale, scale)
             end
         end
+    end
+end
+
+--------------------------------------------------------------------------
+--V2C: Used by multiplayer_portal_moon for saving certain character traits
+--     when rerolling a new character.
+local function SaveForReroll(inst)
+    --NOTE: ignoring returned refs, should be ok
+    local data =
+    {
+        age = inst.components.age ~= nil and inst.components.age:OnSave() or nil,
+        builder = inst.components.builder ~= nil and inst.components.builder:OnSave() or nil,
+        petleash = inst.components.petleash ~= nil and inst.components.petleash:OnSave() or nil,
+        maps = inst.player_classified ~= nil and inst.player_classified.MapExplorer ~= nil and inst.player_classified.MapExplorer:RecordAllMaps() or nil,
+    }
+    return next(data) ~= nil and data or nil
+end
+
+local function LoadForReroll(inst, data)
+    if data.age ~= nil and inst.components.age ~= nil then
+        inst.components.age:OnLoad(data.age)
+    end
+    if data.builder ~= nil and inst.components.builder ~= nil then
+        inst.components.builder:OnLoad(data.builder)
+    end
+    if data.petleash ~= nil and inst.components.petleash ~= nil then
+        inst.components.petleash:OnLoad(data.petleash)
+    end
+    if data.maps ~= nil and inst.player_classified ~= nil and inst.player_classified.MapExplorer ~= nil then
+        inst.player_classified.MapExplorer:LearnAllMaps(data.maps)
     end
 end
 
@@ -1624,6 +1655,10 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.OnLoad = OnLoad
         inst.OnNewSpawn = OnNewSpawn
         inst.OnDespawn = OnDespawn
+
+        --V2C: used by multiplayer_portal_moon
+        inst.SaveForReroll = SaveForReroll
+        inst.LoadForReroll = LoadForReroll
 
         inst:ListenForEvent("startfiredamage", OnStartFireDamage)
         inst:ListenForEvent("stopfiredamage", OnStopFireDamage)

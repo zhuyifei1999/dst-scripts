@@ -34,24 +34,16 @@ local function GetHintTextForRecipe(player, recipe)
     local validmachines = {}
     local adjusted_level = deepcopy(recipe.level)
 
-    for k, v in pairs(TUNING.PROTOTYPER_TREES) do
-        -- Adjust level for bonus so that the hint gives the right message
-        if player.replica.builder ~= nil then
-            if k == "SCIENCEMACHINE" or k == "ALCHEMYMACHINE" then
-                adjusted_level.SCIENCE = adjusted_level.SCIENCE - player.replica.builder:ScienceBonus()
-            elseif k == "PRESTIHATITATOR" or k == "SHADOWMANIPULATOR" then
-                adjusted_level.MAGIC = adjusted_level.MAGIC - player.replica.builder:MagicBonus()
-            elseif k == "ANCIENTALTAR_LOW" or k == "ANCIENTALTAR_HIGH" then
-                adjusted_level.ANCIENT = adjusted_level.ANCIENT - player.replica.builder:AncientBonus()
-            elseif k == "WAXWELLJOURNAL" then
-                adjusted_level.SHADOW = adjusted_level.SHADOW - player.replica.builder:ShadowBonus()
-            end
-        end
+    -- Adjust recipe's level for bonus so that the hint gives the right message
+    adjusted_level.SCIENCE = adjusted_level.SCIENCE - player.replica.builder:ScienceBonus()
+    adjusted_level.MAGIC = adjusted_level.MAGIC - player.replica.builder:MagicBonus()
+    adjusted_level.ANCIENT = adjusted_level.ANCIENT - player.replica.builder:AncientBonus()
+    adjusted_level.SHADOW = adjusted_level.SHADOW - player.replica.builder:ShadowBonus()
 
+    for k, v in pairs(TUNING.PROTOTYPER_TREES) do
         local canbuild = CanPrototypeRecipe(adjusted_level, v)
         if canbuild then
             table.insert(validmachines, {TREE = tostring(k), SCORE = 0})
-            --return tostring(k)
         end
     end
 
@@ -80,15 +72,6 @@ local function GetHintTextForRecipe(player, recipe)
                 end
             end
         end
-
-        -- local bestmachine = nil
-        -- for each req in recipe.level do
-        --     for m in validmachines do
-        --         if req > 0 and m[req] >= req and m[req] < bestmachine[req] then
-        --             bestmachine = m
-        --         end
-        --     end
-        -- end
 
         table.sort(validmachines, function(a,b) return (a.SCORE) > (b.SCORE) end)
 

@@ -303,8 +303,6 @@ function GetMaxItemSlots(game_mode)
 end
 
 function GetGameModeMaxPlayers(game_mode)
-	print("GetGameModeMaxPlayers", game_mode, GAME_MODES[game_mode].max_players)
-
     local data = GAME_MODES[game_mode]
     return data ~= nil and data.max_players or nil
 end
