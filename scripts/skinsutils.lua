@@ -785,6 +785,14 @@ function GetLockedSkinFilter()
     return LockedFilter
 end
 
+function GetWeaveableSkinFilter()
+    local function WeaveableFilter(item_key)
+        return TheItems:GetBarterBuyPrice(item_key) ~= 0
+    end
+    return WeaveableFilter
+end
+
+
 function GetMysteryBoxCounts()
 	local templist = TheInventory:GetFullInventory()
 

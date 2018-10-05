@@ -5280,6 +5280,11 @@ STRINGS.UI =
         SERVER_SHUTDOWN_BODY = "This server is about to shut down.",
     },
 
+    SKIN_PRESETS =
+    {
+        TITLE = "Clothing Presets",
+    },
+    
     LOBBY_WAITING_FOR_PLAYERS_SCREEN =
     {
         SPAWN_DELAY = "Match starts in {time}",
@@ -6193,9 +6198,10 @@ STRINGS.UI =
         LEGS = "Legs",
         FEET = "Feet",
 
-        SURVIVOR_FILTER_FMT = "Survivor Filter: {mode}",
-        OWNED_FILTER_FMT    = "Owned Filter: {mode}",
-        SORT_MODE_FMT       = "Sort Mode: {mode}",
+        SURVIVOR_FILTER_FMT  = "Survivor Filter: {mode}",
+        OWNED_FILTER_FMT     = "Owned Filter: {mode}",
+        WEAVEABLE_FILTER_FMT = "Weaveable Filter: {mode}",
+        SORT_MODE_FMT        = "Sort Mode: {mode}",
         
         FILTER_ON       = "On",
         FILTER_OFF      = "Off",

@@ -95,18 +95,14 @@ local function scheduledropsounds(inst)
     inst._tasks[3] = inst:DoTaskInTime(18.5 * FRAMES, dodropsound, 2, .15)
 end
 
-local function turnon(inst, instant)
+local function onturnon(inst)
     canceldropsounds(inst)
     inst.AnimState:PlayAnimation("proximity_pre")
     inst.AnimState:PushAnimation("proximity_loop", true)
-    fadelight(inst, .15, instant)
+    fadelight(inst, .15, false)
     if not inst.SoundEmitter:PlayingSound("idlesound") then
         inst.SoundEmitter:PlaySound("dontstarve/common/together/book_maxwell/active_LP", "idlesound")
     end
-end
-
-local function onturnon(inst)
-    turnon(inst, false)
 end
 
 local function onturnoff(inst)
@@ -167,7 +163,7 @@ end
 
 local function toground(inst)
     if inst.components.prototyper.on then
-        onturnon(inst, true)
+        onturnon(inst)
     end
     unstore(inst)
     inst._owner = nil

@@ -477,6 +477,16 @@ function ItemExplorer:_ShowItemSetInfo()
     TheFrontEnd:PushScreen(self.set_info_screen)
 end
 
+function ItemExplorer:ClearSelection()
+    self.last_interaction_target = nil
+    self.selected_items = {}
+    self:_UpdateItemSetInfo(nil)
+    self:_ApplyDataToDescription()
+    if self.interact_root then
+        self.interact_root:Hide()
+    end
+end
+
 function ItemExplorer:RefreshItems(new_item_filter_fn)
     if not self.scroll_list then
         -- Failed initial load, so don't try to refresh.
@@ -488,13 +498,7 @@ function ItemExplorer:RefreshItems(new_item_filter_fn)
     if self.last_interaction_target then
         prev_target_key = self.last_interaction_target.item_key
     end
-    self.last_interaction_target = nil
-    self.selected_items = {}
-    self:_UpdateItemSetInfo(nil)
-    self:_ApplyDataToDescription()
-    if self.interact_root then
-        self.interact_root:Hide()
-    end
+    self:ClearSelection()
 
     local contained_items = self:_CreateWidgetDataListForItems(self.item_table, self.primary_item_type, self.activity_checker_fn)
     self.item_filter_fn = new_item_filter_fn or self.item_filter_fn

@@ -5,6 +5,7 @@ local Screen = require "widgets/screen"
 local Subscreener = require "screens/redux/subscreener"
 local Text = require "widgets/text"
 local Widget = require "widgets/widget"
+local SkinPresetsPopup = require "screens/redux/skinpresetspopup"
 
 local TEMPLATES = require("widgets/redux/templates")
 
@@ -80,6 +81,17 @@ function WardrobeScreen:_DoInit()
         })
 
     if not TheInput:ControllerAttached() then
+        self.presetsbutton = self.root:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "save.tex", STRINGS.UI.SKIN_PRESETS.TITLE, false, false, function()
+			    self:_LoadSkinPresetsScreen()
+		    end
+	    ))
+	    self.presetsbutton:SetPosition(-480, 212)
+        self.presetsbutton:SetScale(0.77)
+        self.menu:SetFocusChangeDir(MOVE_UP, self.presetsbutton)
+        self.presetsbutton:SetFocusChangeDir(MOVE_DOWN, self.menu)
+        self.presetsbutton:SetFocusChangeDir(MOVE_RIGHT, self.subscreener:GetActiveSubscreenFn())
+        
+
         self.back_button = self.root:AddChild(TEMPLATES.BackButton(
                 function()
                     self:_CloseScreen()
@@ -119,7 +131,8 @@ function WardrobeScreen:_MakeMenu(subscreener)
 
     self:_UpdateMenu(self.selected_skins)
     
-    return self.root:AddChild(TEMPLATES.StandardMenu(menu_items, 65, nil, nil, true))
+    self.menu = self.root:AddChild(TEMPLATES.StandardMenu(menu_items, 65, nil, nil, false))
+    return self.menu
 end
 
 function WardrobeScreen:_CloseScreen()
@@ -132,13 +145,55 @@ function WardrobeScreen:_SaveLoadout()
     self.user_profile:SetSkinsForCharacter(self.currentcharacter, self.selected_skins)
 end
 
+function WardrobeScreen:_LoadSkinPresetsScreen()
+    TheFrontEnd:PushScreen( SkinPresetsPopup( self.user_profile, self.currentcharacter, self.selected_skins, function(skins) self:ApplySkinPresets(skins) end ) )
+end
+
+function WardrobeScreen:ApplySkinPresets(skins) 
+    if skins.base == nil then
+        skins.base = self.currentcharacter.."_none"
+    end
+    
+    if skins.body == nil then
+        skins.body = "body_default1"
+    end
+
+    if skins.hand == nil then
+        skins.hand = "hand_default1"
+    end
+
+    if skins.legs == nil then
+        skins.legs = "legs_default1"
+    end
+
+    if skins.feet == nil then
+        skins.feet = "feet_default1"
+    end
+    
+    self.selected_skins = shallowcopy(skins)
+    self.preview_skins = shallowcopy(skins)
+
+    ValidateItemsLocal(self.currentcharacter, self.selected_skins)
+    ValidatePreviewItems(self.currentcharacter, self.preview_skins)
+    
+    for _,screen in pairs(self.subscreener.sub_screens) do
+        screen:ClearSelection() --we need to clear the selection, so that the refresh will apply without re-selection of previously selected items overriding
+    end
+
+    self:_RefreshAfterSkinsLoad()
+end
+
 function WardrobeScreen:_LoadSavedSkins()
     self.selected_skins = self.user_profile:GetSkinsForCharacter(self.currentcharacter)
     self.preview_skins = shallowcopy(self.selected_skins)
 
+    self:_RefreshAfterSkinsLoad()
+end
+
+function WardrobeScreen:_RefreshAfterSkinsLoad()
     -- Creating the subscreens requires skins to be loaded, so we might not have subscreener yet.
     if self.subscreener then
-        for key,sub_screen in pairs(self.subscreener.sub_screens) do
+        for _,sub_screen in pairs(self.subscreener.sub_screens) do
             sub_screen.filter_bar.picker.last_interaction_target = nil --this is to ensure that the refresh doesn't invalidate any undo action that is being done.
             sub_screen:RefreshInventory()
         end
@@ -270,6 +325,7 @@ function WardrobeScreen:GetHelpText()
 	local t = {}
     table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.WARDROBESCREEN.ACCEPT)
     table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE ) .. " " .. STRINGS.UI.WARDROBESCREEN.RESET)
+	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_1) .. " " .. STRINGS.UI.SKIN_PRESETS.TITLE)
 
 	return table.concat(t, "  ")
 end
@@ -284,6 +340,10 @@ function WardrobeScreen:OnControl(control, down)
 
     elseif not down and control == CONTROL_PAUSE then
         self:_LoadSavedSkins()
+        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+        return true
+    elseif not down and control == CONTROL_MENU_MISC_1 then
+        self:_LoadSkinPresetsScreen()
         TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
         return true
     end

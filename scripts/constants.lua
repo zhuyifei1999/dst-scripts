@@ -1192,6 +1192,8 @@ VIBRATION_CAMERA_SHAKE = 0
 VIBRATION_BLOOD_FLASH = 1
 VIBRATION_BLOOD_OVER = 2
 
+NUM_SKIN_PRESET_SLOTS = 10
+
 --V2C: NUM_DST_SAVE_SLOTS is totally redundant...
 --     Not sure why it was added, but keeping it around in case mods are using it
 --     SaveGameIndex:GetNumSlots() for ALL save data, e.g. maintain session cache

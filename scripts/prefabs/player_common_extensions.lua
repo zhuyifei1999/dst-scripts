@@ -241,7 +241,7 @@ local function DoActualRez(inst, source, item)
             inst.sg:GoToState("wakeup")
         elseif source.prefab == "resurrectionstatue" then
             inst.sg:GoToState("rebirth")
-        elseif source.prefab == "multiplayer_portal" then
+        elseif source:HasTag("multiplayer_portal") then
             inst.components.health:DeltaPenalty(TUNING.PORTAL_HEALTH_PENALTY)
 
             source:PushEvent("rez_player")
@@ -399,7 +399,7 @@ local function OnRespawnFromGhost(inst, data)
     elseif data.source.prefab == "amulet"
         or data.source.prefab == "resurrectionstone"
         or data.source.prefab == "resurrectionstatue"
-        or data.source.prefab == "multiplayer_portal" then
+        or data.source:HasTag("multiplayer_portal") then
         inst:DoTaskInTime(9 * FRAMES, DoMoveToRezSource, data.source, --[[60-9]] 51 * FRAMES)
     else
         --unsupported rez source...
@@ -408,7 +408,7 @@ local function OnRespawnFromGhost(inst, data)
 
     inst.rezsource =
         data ~= nil and (
-            (data.source ~= nil and data.source.prefab ~= "reviver" and data.source.name) or
+            (data.source ~= nil and data.source.prefab ~= "reviver" and data.source:GetBasicDisplayName()) or
             (data.user ~= nil and data.user:GetDisplayName())
         ) or
         STRINGS.NAMES.SHENANIGANS

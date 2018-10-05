@@ -731,7 +731,7 @@ function PlayerController:DoControllerAltActionButton()
     elseif self:IsAOETargeting() then
         self:CancelAOETargeting()
         return
-	elseif self:IsControllerTargetLocked() then
+	elseif self:IsControllerTargetLockEnabled() then
 		self:ControllerTargetLock(false)
 		return
     end
@@ -1724,7 +1724,7 @@ function PlayerController:OnUpdate(dt)
 			self:ControllerTargetLock(true)						
 			-- Use the block below if you want to both lock and unlock the target by holding down the modifier button
 			--[[ 
-			if self:IsControllerTargetLocked() then
+			if self:IsControllerTargetLockEnabled() then
 				self:ControllerTargetLock(false)
 			else
 				self:ControllerTargetLock(true)
@@ -2456,8 +2456,12 @@ function PlayerController:IsControllerTargetingModifierDown()
 	return self.controller_targeting_modifier_down
 end
 
-function PlayerController:IsControllerTargetLocked()
+function PlayerController:IsControllerTargetLockEnabled()
 	return self.controller_targeting_lock_target
+end
+
+function PlayerController:IsControllerTargetLocked()
+	return self.controller_targeting_lock_target and self.controller_attack_target
 end
 
 function PlayerController:ControllerTargetLock(enable)
