@@ -70,6 +70,7 @@ local function MakePortal(name, bank, build, assets, prefabs, common_postinit, m
         inst.AnimState:SetBuild(build)
         inst.AnimState:PlayAnimation("idle_loop", true)
 
+        inst:AddTag("multiplayer_portal")
         inst:AddTag("antlion_sinkhole_blocker")
 
         inst:SetDeployExtraSpacing(2)

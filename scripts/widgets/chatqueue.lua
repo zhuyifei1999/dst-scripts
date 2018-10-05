@@ -32,8 +32,8 @@ local ChatQueue = Class(Widget, function(self, owner)
     self.chat_font = TALKINGFONT--DEFAULTFONT --UIFONT
     self.chat_size = 30 --22
     self.chat_height = 50
-    self.user_width = 140
-    self.user_max_chars = 25
+    self.user_width = 160
+    self.user_max_chars = 28
     self.message_width = 850
     self.message_max_chars = 150
 
@@ -188,9 +188,9 @@ function ChatQueue:RefreshWidgets()
             else
                 user:Show()
                 if row_data.whisper then
-                    user:SetString(STRINGS.UI.CHATINPUTSCREEN.WHISPER_DESIGNATOR .. " " .. row_data.username)
+                    user:SetTruncatedString(STRINGS.UI.CHATINPUTSCREEN.WHISPER_DESIGNATOR.." "..row_data.username, self.user_width, self.user_max_chars, true)
                 else
-                    user:SetString(row_data.username)
+                    user:SetTruncatedString(row_data.username, self.user_width, self.user_max_chars, true)
                 end
                 user_width = user:GetRegionSize()
                 user:SetPosition(user_width * -.5 - 330, y)

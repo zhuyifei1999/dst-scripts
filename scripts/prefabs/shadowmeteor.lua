@@ -98,21 +98,31 @@ local function onexplode(inst)
                         if math.random() <= TUNING.METEOR_SMASH_INVITEM_CHANCE then
                             v.components.container:DropEverything()
                         end
-                        Launch(v, inst, TUNING.LAUNCH_SPEED_SMALL)
-                        launched[v] = true
                     elseif v.components.mine ~= nil and not v.components.mine.inactive then
                         -- Always smash things on the periphery so that we don't end up with a ring of flung loot
                         v.components.mine:Deactivate()
-                        Launch(v, inst, TUNING.LAUNCH_SPEED_SMALL)
-                        launched[v] = true
                     elseif (inst.peripheral or math.random() <= TUNING.METEOR_SMASH_INVITEM_CHANCE)
                         and not v:HasTag("irreplaceable") then
                         -- Always smash things on the periphery so that we don't end up with a ring of flung loot
                         local vx, vy, vz = v.Transform:GetWorldPosition()
                         SpawnPrefab("ground_chunks_breaking").Transform:SetPosition(vx, 0, vz)
                         v:Remove()
-                    else
-                        Launch(v, inst, TUNING.LAUNCH_SPEED_SMALL)
+                    end
+                    if v:IsValid() then
+                        if not v.components.inventoryitem.nobounce then
+                            Launch(v, inst, TUNING.LAUNCH_SPEED_SMALL)
+                        elseif v.Physics ~= nil and v.Physics:IsActive() then
+                            local vx, vy, vz = v.Transform:GetWorldPosition()
+                            local dx, dz = vx - x, vz - z
+                            local spd = math.sqrt(dx * dx + dz * dz)
+                            local angle =
+                                spd > 0 and
+                                math.atan2(dz / spd, dx / spd) + (math.random() * 20 - 10) * DEGREES or
+                                math.random() * 2 * PI
+                            spd = 3 + math.random() * 1.5
+                            v.Physics:Teleport(vx, 0, vz)
+                            v.Physics:SetVel(math.cos(angle) * spd, 0, math.sin(angle) * spd)
+                        end
                         launched[v] = true
                     end
                 end

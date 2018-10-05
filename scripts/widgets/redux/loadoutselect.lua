@@ -4,6 +4,7 @@ local Puppet = require "widgets/skinspuppet"
 local Widget = require "widgets/widget"
 local ClothingExplorerPanel = require "widgets/redux/clothingexplorerpanel"
 local Subscreener = require "screens/redux/subscreener"
+local SkinPresetsPopup = require "screens/redux/skinpresetspopup"
 
 local TEMPLATES = require "widgets/redux/templates"
 
@@ -146,7 +147,20 @@ local LoadoutSelect = Class(Widget, function(self, user_profile, character)
 		        end
 	        ))
 	        self.portraitbutton:SetPosition(-260, 270)
-            self.portraitbutton:SetScale(0.6)
+            self.portraitbutton:SetScale(0.77)
+
+            if TheNet:IsOnlineMode() then
+                self.presetsbutton = self.loadout_root:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "save.tex", STRINGS.UI.SKIN_PRESETS.TITLE, false, false, function()
+			            self:_LoadSkinPresetsScreen()
+		            end
+	            ))
+	            self.presetsbutton:SetPosition(200, 315)
+                self.presetsbutton:SetScale(0.77)
+
+                self.menu:SetFocusChangeDir(MOVE_LEFT, self.presetsbutton)
+                self.presetsbutton:SetFocusChangeDir(MOVE_RIGHT, self.menu)
+                self.presetsbutton:SetFocusChangeDir(MOVE_DOWN, self.subscreener:GetActiveSubscreenFn())
+            end
         end
     end
 end)
@@ -203,7 +217,8 @@ function LoadoutSelect:_MakeMenu(subscreener)
     end
 
     self:_UpdateMenu(self.selected_skins)
-    return self.loadout_root:AddChild(TEMPLATES.StandardMenu(menu_items, 65, true))
+    self.menu = self.loadout_root:AddChild(TEMPLATES.StandardMenu(menu_items, 65, true))
+    return self.menu
 end
 
 
@@ -212,7 +227,45 @@ function LoadoutSelect:_SaveLoadout()
         self.user_profile:SetSkinsForCharacter(self.currentcharacter, self.selected_skins)
     end
 end
-		
+
+function LoadoutSelect:_LoadSkinPresetsScreen()
+    TheFrontEnd:PushScreen( SkinPresetsPopup( self.user_profile, self.currentcharacter, self.selected_skins, function(skins) self:ApplySkinPresets(skins) end ) )
+end
+
+function LoadoutSelect:ApplySkinPresets(skins) 
+    if skins.base == nil then
+        skins.base = self.currentcharacter.."_none"
+    end
+    
+    if skins.body == nil then
+        skins.body = "body_default1"
+    end
+
+    if skins.hand == nil then
+        skins.hand = "hand_default1"
+    end
+
+    if skins.legs == nil then
+        skins.legs = "legs_default1"
+    end
+
+    if skins.feet == nil then
+        skins.feet = "feet_default1"
+    end
+    
+    self.selected_skins = shallowcopy(skins)
+    self.preview_skins = shallowcopy(skins)
+
+    ValidateItemsLocal(self.currentcharacter, self.selected_skins)
+    ValidatePreviewItems(self.currentcharacter, self.preview_skins)
+    
+    for _,screen in pairs(self.subscreener.sub_screens) do
+        screen:ClearSelection() --we need to clear the selection, so that the refresh will apply without re-selection of previously selected items overriding
+    end
+
+    self:_RefreshAfterSkinsLoad()
+end
+
 function LoadoutSelect:_LoadSavedSkins()
     if TheNet:IsOnlineMode() then 
         self.selected_skins = self.user_profile:GetSkinsForCharacter(self.currentcharacter)
@@ -221,13 +274,16 @@ function LoadoutSelect:_LoadSavedSkins()
     end
     self.preview_skins = shallowcopy(self.selected_skins)
 
+    self:_RefreshAfterSkinsLoad()
+end
+
+function LoadoutSelect:_RefreshAfterSkinsLoad()
     -- Creating the subscreens requires skins to be loaded, so we might not have subscreener yet.
     if self.subscreener then
         for key,item in pairs(self.preview_skins) do
             self.subscreener.sub_screens[key]:RefreshInventory()
         end
     end
-
     self:_ApplySkins(self.preview_skins, true)
     self:_UpdateMenu(self.selected_skins)
 end
@@ -321,6 +377,18 @@ end
 function LoadoutSelect:OnControl(control, down)
     if LoadoutSelect._base.OnControl(self, control, down) then return true end
 
+    if not down then
+        if control == CONTROL_MENU_MISC_2 then
+            self:_TogglePortrait()
+            TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+            return true
+        elseif control == CONTROL_MENU_MISC_1 and TheNet:IsOnlineMode() then
+            self:_LoadSkinPresetsScreen()
+            TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+            return true
+        end
+    end
+
     return false
 end
 
@@ -329,17 +397,19 @@ function LoadoutSelect:RefreshInventory(animateDoodad)
 end
 
 function LoadoutSelect:GetHelpText()
-	return ""
-	--[[if TheNet:IsOnlineMode() then
+    if TheNet:IsOnlineMode() then
 		local controller_id = TheInput:GetControllerID()
 		local t = {}
 
-		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_2) .. " " .. STRINGS.UI.LOBBYSCREEN.RANDOMCHAR)
+		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_2) .. " " .. STRINGS.UI.LOBBYSCREEN.TOGGLE_PORTRAIT)
+        if TheNet:IsOnlineMode() then
+		    table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_1) .. " " .. STRINGS.UI.SKIN_PRESETS.TITLE)
+        end
 
 		return table.concat(t, "  ")
 	else
 		return ""
-	end]]
+	end
 end
 
 function LoadoutSelect:OnUpdate(dt)

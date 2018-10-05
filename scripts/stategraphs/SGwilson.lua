@@ -4297,20 +4297,19 @@ local states =
                     inst.AnimState:OverrideItemSkinSymbol("book_closed", skin_build, "book_closed", book.GUID, "player_actions_uniqueitem")
                     inst.AnimState:OverrideItemSkinSymbol("book_open_pages", skin_build, "book_open_pages", book.GUID, "player_actions_uniqueitem")
                 end
-            end
 
-            --should be same as the buffered action item, but... w/e
-            book = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-            if book ~= nil and book.components.aoetargeting ~= nil then
-                inst.sg.statemem.isaoe = true
-                inst.sg:AddStateTag("busy")
-                if book.components.aoetargeting.targetprefab ~= nil then
-                    local buffaction = inst:GetBufferedAction()
-                    if buffaction ~= nil and buffaction.pos ~= nil then
-                        inst.sg.statemem.targetfx = SpawnPrefab(book.components.aoetargeting.targetprefab)
-                        if inst.sg.statemem.targetfx ~= nil then
-                            inst.sg.statemem.targetfx.Transform:SetPosition(buffaction.pos:Get())
-                            inst.sg.statemem.targetfx:ListenForEvent("onremove", OnRemoveCleanupTargetFX, inst)
+                --should be same as the buffered action item
+                if book.components.aoetargeting ~= nil and book == inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) then
+                    inst.sg.statemem.isaoe = true
+                    inst.sg:AddStateTag("busy")
+                    if book.components.aoetargeting.targetprefab ~= nil then
+                        local buffaction = inst:GetBufferedAction()
+                        if buffaction ~= nil and buffaction.pos ~= nil then
+                            inst.sg.statemem.targetfx = SpawnPrefab(book.components.aoetargeting.targetprefab)
+                            if inst.sg.statemem.targetfx ~= nil then
+                                inst.sg.statemem.targetfx.Transform:SetPosition(buffaction.pos:Get())
+                                inst.sg.statemem.targetfx:ListenForEvent("onremove", OnRemoveCleanupTargetFX, inst)
+                            end
                         end
                     end
                 end

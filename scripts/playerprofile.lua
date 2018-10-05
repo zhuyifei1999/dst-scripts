@@ -162,6 +162,38 @@ function PlayerProfile:SetLastSelectedCharacter(character)
     end
 end
 
+function PlayerProfile:GetSkinPresetForCharacter(character, preset_index)
+	if not self.persistdata.skin_presets then
+		self.persistdata.skin_presets = {}
+	end
+
+	if not self.persistdata.skin_presets[character] then
+        self.persistdata.skin_presets[character] = {}
+	end
+    
+    --Do skins validation to ensure that the saved skins aren't available anymore
+    --ValidateItemsLocal(character, self.persistdata.skin_presets[character][preset_index])
+
+    -- Never return internal data to prevent accidental profile modification.
+    -- Modify via Set functions.
+	return shallowcopy(self.persistdata.skin_presets[character][preset_index]) or {}
+end
+
+function PlayerProfile:SetSkinPresetForCharacter(character, preset_index, skin_list)
+	if not self.persistdata.skin_presets then
+		self.persistdata.skin_presets = {}
+	end
+
+	if not self.persistdata.skin_presets[character] then
+		self.persistdata.skin_presets[character] = {}
+	end
+
+	self.dirty = true
+	self.persistdata.skin_presets[character][preset_index] = shallowcopy(skin_list)
+
+	self:Save()
+end
+
 function PlayerProfile:GetSkinsForCharacter(character)
 	if not self.persistdata.character_skins then
 		self.persistdata.character_skins = {}
@@ -204,7 +236,7 @@ function PlayerProfile:SetSkinsForCharacter(character, skinList)
 	end
 
 	self.dirty = true
-	self.persistdata.character_skins[character] = skinList
+	self.persistdata.character_skins[character] = shallowcopy(skinList)
 
 	self:Save()
 end

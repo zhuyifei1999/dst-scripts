@@ -27,6 +27,7 @@ local ClothingExplorerPanel = Class(Widget, function(self, owner, user_profile, 
     end
     self.picker.header:AddChild( self.filter_bar:AddFilter(STRINGS.UI.WARDROBESCREEN.SURVIVOR_FILTER_FMT, "survivor_filter_on.tex", "survivor_filter_off.tex", "heroFilter", hero_filter) )
     self.picker.header:AddChild( self.filter_bar:AddFilter(STRINGS.UI.WARDROBESCREEN.OWNED_FILTER_FMT, "owned_filter_on.tex", "owned_filter_off.tex", "lockedFilter", GetLockedSkinFilter()) )
+    self.picker.header:AddChild( self.filter_bar:AddFilter(STRINGS.UI.WARDROBESCREEN.WEAVEABLE_FILTER_FMT, "weave_filter_on.tex", "weave_filter_off.tex", "weaveableFilter", GetWeaveableSkinFilter()) )
     self.picker.header:AddChild( self.filter_bar:AddSorter() )
     if self.item_type == "base" or (filter_options ~= nil and filter_options.ignore_hero) then
         self.filter_bar:HideFilter("heroFilter")
@@ -77,6 +78,11 @@ function ClothingExplorerPanel:_BuildItemExplorer()
     end
 
     return ItemExplorer("", self.item_type, item_table, list_options)
+end
+
+
+function ClothingExplorerPanel:ClearSelection()
+    self.picker:ClearSelection()
 end
 
 function ClothingExplorerPanel:RefreshInventory()
