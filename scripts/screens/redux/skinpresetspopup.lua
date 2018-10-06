@@ -50,20 +50,26 @@ local SkinPresetsPopup = Class(Screen, function(self, user_profile, character, s
     local function ScrollWidgetsCtor(context, i)
         local item = Widget("item-"..i)
         item.root = item:AddChild(Widget("root"))
-        item.root:SetPosition(20,0)
-        
+
         item.row_label = item.root:AddChild(Text(BODYTEXTFONT, 28))
-        item.row_label:SetPosition(-210,-1)
         item.row_label:SetColour(UICOLOURS.IVORY)
         item.row_label:SetHAlign(ANCHOR_RIGHT)
 
         local x_start = -170
         local x_step = 50
-
-        item.base_icon = item.root:AddChild( AccountItemFrame() )
-        item.base_icon:SetStyle_Normal()
-        item.base_icon:SetScale(0.4)
-        item.base_icon:SetPosition(x_start + 0 * x_step,0)
+        
+        if table.contains(DST_CHARACTERLIST, self.character) then --no base option for mod characters
+            item.base_icon = item.root:AddChild( AccountItemFrame() )
+            item.base_icon:SetStyle_Normal()
+            item.base_icon:SetScale(0.4)
+            item.base_icon:SetPosition(x_start + 0 * x_step,0)
+            
+            item.row_label:SetPosition(-210,-1)
+            item.root:SetPosition(20,0)
+        else
+            item.row_label:SetPosition(-160,-1)
+            item.root:SetPosition(-20,0)
+        end
 
         item.body_icon = item.root:AddChild( AccountItemFrame() )
         item.body_icon:SetStyle_Normal()
@@ -110,10 +116,12 @@ local SkinPresetsPopup = Class(Screen, function(self, user_profile, character, s
             item.i = index
             item.row_label:SetString(tostring(index)..":")
 
-            if data.base then
-                item.base_icon:SetItem(data.base)
-            else      
-                item.base_icon:SetItem(self.character.."_none")
+            if table.contains(DST_CHARACTERLIST, self.character) then --no base option for mod characters
+                if data.base then
+                    item.base_icon:SetItem(data.base)
+                else      
+                    item.base_icon:SetItem(self.character.."_none")
+                end
             end
 
             if data.body then

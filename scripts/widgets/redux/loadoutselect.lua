@@ -234,7 +234,9 @@ end
 
 function LoadoutSelect:ApplySkinPresets(skins) 
     if skins.base == nil then
-        skins.base = self.currentcharacter.."_none"
+        if table.contains(DST_CHARACTERLIST, self.currentcharacter) then --no base option for mod characters
+            skins.base = self.currentcharacter.."_none"
+        end
     end
     
     if skins.body == nil then
