@@ -322,7 +322,6 @@ function MultiplayerMainScreen:OnBrowseServersButton()
 
     local function cb(filters)
 	    self.filter_settings = filters
-	    Profile:SaveFilters(self.filter_settings)
     end
 
 	if not self.filter_settings then

@@ -1631,15 +1631,19 @@ function ServerListingScreen:Cancel()
     self:Disable()
 	ServerPreferences:RefreshLastSeen(self.servers)
     TheFrontEnd:Fade(FADE_OUT, SCREEN_FADE_TIME, function()
-        if self.cb then
-            local filters = {}
-            for i, v in ipairs(self.filters) do
-                if v.spinner ~= nil then 
-                    table.insert(filters, {name=v.name, data=v.spinner:GetSelectedData()})
-                elseif v.textbox then
-                    table.insert(filters, {name="search", data=v.textbox:GetString()})
-                end
+        local filters = {}
+        for i, v in ipairs(self.filters) do
+            if v.spinner ~= nil then 
+                table.insert(filters, {name=v.name, data=v.spinner:GetSelectedData()})
+            elseif v.textbox then
+                table.insert(filters, {name="search", data=v.textbox:GetString()})
             end
+        end
+		if self.should_save then
+		    Profile:SaveFilters(filters)
+			Profile:SetValue("serverlistingsort", self.sorting_spinner.spinner:GetSelectedData())
+		end
+        if self.cb then
             self.cb(filters)
         end
         TheFrontEnd:PopScreen()
