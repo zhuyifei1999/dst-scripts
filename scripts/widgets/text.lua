@@ -185,18 +185,17 @@ function Text:SetMultilineTruncatedString(str, maxlines, maxwidth, maxcharsperli
             --check if the first word fits while being wrapped
             local words = {}
             local first = str:match("(%w+)(.+)")
-            if shrink_to_fit and LOC.GetShouldTextFit() and not string.match(line, first) then
-                --drop size to fit a whole word
-                                
+
+            if shrink_to_fit and not self.shrink_in_progress then       
                 --ensure that we reset the size back to the original size when we get new text
-                if not self.shrink_in_progress then
-                    if self.original_size ~= nil then
-                        print("reset size to ", self.original_size)
-                        self:SetSize( self.original_size )
-                    end
-                    self.original_size = self:GetSize()
+                if self.original_size ~= nil then
+                    self:SetSize( self.original_size )
                 end
-                
+                self.original_size = self:GetSize()
+            end
+
+            if shrink_to_fit and LOC.GetShouldTextFit() and not string.match(line, first) and self:GetSize() > 16 then --the 16 is a semi reasonable "smallest" size that is okay. This is to stop stackoverflow from infinite recursion due to bad string data.
+                --drop size to fit a whole word
                 self:SetSize( self:GetSize() - 1 )
                 self.shrink_in_progress = true
                 self:SetMultilineTruncatedString(str, maxlines, maxwidth, maxcharsperline, ellipses, shrink_to_fit)

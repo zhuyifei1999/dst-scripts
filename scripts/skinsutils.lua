@@ -24,6 +24,7 @@ EVENT_ICONS =
 	event_ice = "ICE",
 	event_yotv = "VARG",
 	event_quagmire = "VICTORIAN",
+	event_hallowed = "HALLOWED",
 }
 
 -- Also update GetBuildForItem!

@@ -178,13 +178,10 @@ local SkinPresetsPopup = Class(Screen, function(self, user_profile, character, s
 end)
 
 function SkinPresetsPopup:_LoadPreset(i)
-    print("SkinPresetsPopup:_LoadPreset", i)
     self.apply_cb(self.list_items[i])
     TheFrontEnd:PopScreen(self)
 end
 function SkinPresetsPopup:_SetPreset(i)
-    print("SkinPresetsPopup:_SetPreset", i)
-    dumptable(self.selected_skins)
     self.user_profile:SetSkinPresetForCharacter(self.character, i, self.selected_skins)
     TheFrontEnd:PopScreen(self)
 end
