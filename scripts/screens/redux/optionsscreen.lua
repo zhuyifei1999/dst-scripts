@@ -920,7 +920,7 @@ function OptionsScreen:_BuildCinematics()
     local button_width = 432 * scale
     local button_height = 90 * scale
 
-    local title = root:AddChild(BuildSectionTitle("Cinematics", 200))
+    local title = root:AddChild(BuildSectionTitle(STRINGS.UI.OPTIONS.CINEMATICS, 200))
     title:SetPosition(0, 160)
 
     self.buttons = {}

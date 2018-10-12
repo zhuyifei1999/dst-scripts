@@ -550,7 +550,16 @@ function Builder:MakeRecipeFromMenu(recipe, skin)
     if recipe.placer == nil then
         if self:KnowsRecipe(recipe.name) then
             if self:IsBuildBuffered(recipe.name) or self:CanBuild(recipe.name) then
-                self:MakeRecipe(recipe, nil, nil, ValidateRecipeSkinRequest(self.inst.userid, recipe.product, skin))
+                self:MakeRecipe(recipe, nil, nil,
+                    ValidateRecipeSkinRequest(self.inst.userid, recipe.product, skin),
+                    function()
+                        --V2C: for recipes known through tech bonus, still
+                        --     want to unlock in case we reroll characters
+                        if not recipe.nounlock then
+                            self:AddRecipe(recipe.name)
+                        end
+                    end
+                )
             end
         elseif CanPrototypeRecipe(recipe.level, self.accessible_tech_trees) and
             self:CanLearn(recipe.name) and
@@ -578,13 +587,17 @@ end
 function Builder:BufferBuild(recname)
     local recipe = GetValidRecipe(recname)
     if recipe ~= nil and recipe.placer ~= nil and not self:IsBuildBuffered(recname) and self:CanBuild(recname) then
-        if not self:KnowsRecipe(recname) then
-            if CanPrototypeRecipe(recipe.level, self.accessible_tech_trees) and self:CanLearn(recname) then
-                self:ActivateCurrentResearchMachine()
-                self:UnlockRecipe(recname)
-            else
-                return
+        if self:KnowsRecipe(recname) then
+            --V2C: for recipes known through tech bonus, still
+            --     want to unlock in case we reroll characters
+            if not recipe.nounlock then
+                self:AddRecipe(recname)
             end
+        elseif CanPrototypeRecipe(recipe.level, self.accessible_tech_trees) and self:CanLearn(recname) then
+            self:ActivateCurrentResearchMachine()
+            self:UnlockRecipe(recname)
+        else
+            return
         end
         local materials = self:GetIngredients(recname)
         local wetlevel = self:GetIngredientWetness(materials)
