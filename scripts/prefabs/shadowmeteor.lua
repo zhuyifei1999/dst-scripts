@@ -152,7 +152,12 @@ local function onexplode(inst)
                     canspawn = false
                 end
                 if canspawn then
-                    local drop = TheWorld.components.worldmeteorshower:SpawnMeteorLoot(v.prefab)
+                    local drop
+                    if TheWorld.components.worldmeteorshower ~= nil then
+                        drop = TheWorld.components.worldmeteorshower:SpawnMeteorLoot(v.prefab)
+                    else
+                        drop = SpawnPrefab(v.prefab)
+                    end
                     if drop ~= nil then
                         drop.Transform:SetPosition(x, y, z)
                         if drop.components.inventoryitem ~= nil then
