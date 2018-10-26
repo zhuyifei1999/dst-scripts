@@ -326,7 +326,7 @@ end
 
 
 function DoesItemHaveTag(item, tag)
-	local tags = {}
+	local tags = nil
 	if CLOTHING[item] then
 		tags = CLOTHING[item].skin_tags
 	elseif MISC_ITEMS[item] then
@@ -339,9 +339,11 @@ function DoesItemHaveTag(item, tag)
 		end
 	end
 
-	for _,item_tag in pairs(tags) do
-		if item_tag == tag then
-			return true
+	if tags ~= nil then
+		for _,item_tag in pairs(tags) do
+			if item_tag == tag then
+				return true
+			end
 		end
 	end
 

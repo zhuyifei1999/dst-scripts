@@ -74,10 +74,11 @@ local function onfinishcallback(inst, worker)
             end
 
 			if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
-				local ornament = math.random(NUM_HALLOWEEN_ORNAMENTS * 2)
+				local ornament = math.random(NUM_HALLOWEEN_ORNAMENTS * 4)
 				if ornament <= NUM_HALLOWEEN_ORNAMENTS then
 	                inst.components.lootdropper:SpawnLootPrefab("halloween_ornament_"..tostring(ornament))
-				else
+				end
+				if TheWorld.components.specialeventsetup ~= nil then
 					if math.random() < TheWorld.components.specialeventsetup.halloween_bat_grave_spawn_chance then
 						local num_bats = 3
 						for i = 1, num_bats do
@@ -91,7 +92,7 @@ local function onfinishcallback(inst, worker)
 
 						TheWorld.components.specialeventsetup.halloween_bat_grave_spawn_chance = 0
 					else
-						TheWorld.components.specialeventsetup.halloween_bat_grave_spawn_chance = TheWorld.components.specialeventsetup.halloween_bat_grave_spawn_chance + 0.33
+						TheWorld.components.specialeventsetup.halloween_bat_grave_spawn_chance = TheWorld.components.specialeventsetup.halloween_bat_grave_spawn_chance + 0.1 + (math.random() * 0.1)
 					end
 				end
 			end

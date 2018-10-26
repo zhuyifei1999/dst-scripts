@@ -3377,6 +3377,8 @@ STRINGS.UI =
             "Xiaowen Lin",
             "Leira Zamfirescu",
             "Scott Hansen",
+			"Philippe Donati",
+			"Yorman Arias",
         },
 
         ALTGAMES =

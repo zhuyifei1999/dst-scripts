@@ -33,6 +33,7 @@ ITEM_DISPLAY_BLACKLIST =
 	researchlab4_glommer_costume = true,
 	researchlab4_hutch_costume = true,
 	researchlab4_tophat_circus = true,
+	researchlab4_witch_pyre = true,
 	backpack_mushy = true,
 	researchlab2_pod_alt = true,
 }

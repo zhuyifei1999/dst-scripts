@@ -108438,6 +108438,11 @@ msgctxt "STRINGS.SKIN_DESCRIPTIONS.researchlab4_tophat_circus"
 msgid "researchlab4_tophat_circus"
 msgstr ""
 
+#. STRINGS.SKIN_DESCRIPTIONS.researchlab4_witch_pyre
+msgctxt "STRINGS.SKIN_DESCRIPTIONS.researchlab4_witch_pyre"
+msgid "researchlab4_tophat_circus"
+msgstr ""
+
 #. STRINGS.SKIN_DESCRIPTIONS.reviver_cupid
 msgctxt "STRINGS.SKIN_DESCRIPTIONS.reviver_cupid"
 msgid "The slings and arrows of fate have taken their toll on this poor, afflicted heart."
@@ -113126,6 +113131,11 @@ msgstr ""
 #. STRINGS.SKIN_NAMES.researchlab4_tophat_circus
 msgctxt "STRINGS.SKIN_NAMES.researchlab4_tophat_circus"
 msgid "Prestiringmastatator"
+msgstr ""
+
+#. STRINGS.SKIN_NAMES.researchlab4_witch_pyre
+msgctxt "STRINGS.SKIN_NAMES.researchlab4_witch_pyre"
+msgid "Prestiwitchatator"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.reviver_cupid
@@ -119641,6 +119651,16 @@ msgstr ""
 #. STRINGS.UI.CREDITS.NAMES.55
 msgctxt "STRINGS.UI.CREDITS.NAMES.55"
 msgid "Scott Hansen"
+msgstr ""
+
+#. STRINGS.UI.CREDITS.NAMES.56
+msgctxt "STRINGS.UI.CREDITS.NAMES.56"
+msgid "Philippe Donati"
+msgstr ""
+
+#. STRINGS.UI.CREDITS.NAMES.57
+msgctxt "STRINGS.UI.CREDITS.NAMES.57"
+msgid "Yorman Arias"
 msgstr ""
 
 #. STRINGS.UI.CREDITS.NAMES.6

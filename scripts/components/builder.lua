@@ -68,7 +68,9 @@ nil,
 })
 
 function Builder:ActivateCurrentResearchMachine(recipe)
-    if self.current_prototyper ~= nil and self.current_prototyper.components.prototyper ~= nil then
+    if self.current_prototyper ~= nil and
+        self.current_prototyper.components.prototyper ~= nil and
+        self.current_prototyper:IsValid() then
         self.current_prototyper.components.prototyper:Activate(self.inst, recipe)
     end
 end

@@ -1989,6 +1989,21 @@ table.insert(prefs, CreatePrefabSkin("researchlab4_tophat_circus",
 	release_group = 48,
 }))
 
+table.insert(prefs, CreatePrefabSkin("researchlab4_witch_pyre",
+{
+	base_prefab = "researchlab4",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/researchlab4_witch_pyre.zip"),
+		Asset("PKGREF", "anim/dynamic/researchlab4_witch_pyre.dyn"),
+	},
+	build_name = "researchlab4_witch_pyre",
+	rarity = "ProofOfPurchase",
+	init_fn = function(inst) researchlab4_init_fn(inst, "researchlab4_witch_pyre") end,
+	skin_tags = { "CRAFTABLE", },
+	release_group = 50,
+}))
+
 table.insert(prefs, CreatePrefabSkin("reviver_cupid",
 {
 	base_prefab = "reviver",
@@ -2152,6 +2167,7 @@ table.insert(prefs, CreatePrefabSkin("tophat_witch_pyre",
 	init_fn = function(inst) tophat_init_fn(inst, "tophat_witch_pyre") end,
 	skin_tags = { "TOPHAT", "CRAFTABLE", },
 	release_group = 50,
+	granted_items = { "researchlab4_witch_pyre", },
 }))
 
 table.insert(prefs, CreatePrefabSkin("torch_rag",

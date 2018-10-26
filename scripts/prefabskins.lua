@@ -247,6 +247,7 @@ PREFAB_SKINS = {
 		"researchlab4_glommer_costume",
 		"researchlab4_hutch_costume",
 		"researchlab4_tophat_circus",
+		"researchlab4_witch_pyre",
 	},
 	reviver = 
 	{

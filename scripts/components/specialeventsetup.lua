@@ -38,23 +38,6 @@ local CURRENT_HALLOWEEN = 2018
 function self:OnPostInit()
 	if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
 		-- retrofitting code to support changing from halloweentrinkets as a bool to as a number
-
-		if (not self.halloweentrinkets) or self.halloweentrinkets ~= CURRENT_HALLOWEEN then
-			local count = 0
-			for k,v in pairs(Ents) do
-				if v.prefab ~= nil and v.prefab == "livingtree" and not v:HasTag("burnt") and not v:HasTag("stump") then
-					local x, y, z = v.Transform:GetWorldPosition()
-					v:Remove()
-					local new_tree = SpawnPrefab("livingtree_halloween")
-					new_tree.Transform:SetPosition(x, y, z)
-					if new_tree.components.growable ~= nil then
-						new_tree.components.growable:SetStage(#new_tree.components.growable.stages)
-					end
-					count = count + 1
-				end
-			end
-			print("[SpecialEventSetup] Converted " .. tostring(count) .. " livingtrees to livingtree_halloween.")
-		end
 		
 		-- figure out if there are enough trinkets already in the world (for worlds with last year's halloween trinkets still around)
 		if self.halloweentrinkets and self.halloweentrinkets ~= CURRENT_HALLOWEEN then
