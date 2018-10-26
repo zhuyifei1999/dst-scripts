@@ -111,6 +111,75 @@ return
 			"hand_wx78_gladiator",
 			"legs_wx78_gladiator",
 		},
+		pack_hallowed_all =
+		{
+			"wilson_madscience",
+			"willow_dowdy",
+			"webber_punk",
+			"wendy_creepy",
+			"wes_clown",
+			"wx78_wip",
+		},
+		pack_hallowed_bundle =
+		{
+			"wilson_madscience",
+			"willow_dowdy",
+			"webber_punk",
+			"wendy_creepy",
+			"wes_clown",
+			"wx78_wip",
+			"batbat_scythe",
+			"kitten_black",
+			"treasurechest_monster",
+			"icebox_coffin",
+			"watermelonhat_pumpkin",
+		},
+		pack_hallowed_items =
+		{
+			"batbat_scythe",
+			"kitten_black",
+			"treasurechest_monster",
+			"icebox_coffin",
+			"watermelonhat_pumpkin",
+		},
+		pack_hallowed_webber =
+		{
+			"webber_punk",
+			"body_webber_punk",
+			"hand_webber_punk",
+			"feet_webber_punk",
+		},
+		pack_hallowed_wendy =
+		{
+			"wendy_creepy",
+			"body_wendy_creepy",
+			"feet_wendy_creepy",
+		},
+		pack_hallowed_wes =
+		{
+			"wes_clown",
+			"body_wes_clown",
+			"feet_wes_clown",
+		},
+		pack_hallowed_willow =
+		{
+			"willow_dowdy",
+			"body_willow_dowdy",
+			"feet_willow_dowdy",
+		},
+		pack_hallowed_wilson =
+		{
+			"wilson_madscience",
+			"body_wilson_madscientist",
+			"hand_wilson_madscientist",
+		},
+		pack_hallowed_wx78 =
+		{
+			"wx78_wip",
+			"body_wx78_wip",
+			"hand_wx78_wip",
+			"feet_wx78_wip",
+		},
 		pack_heart_you =
 		{
 			"amulet_red_heart",
@@ -426,6 +495,31 @@ return
 		feet_wx78_gladiator = "pack_gladiator_wx78",
 		hand_wx78_gladiator = "pack_gladiator_wx78",
 		legs_wx78_gladiator = "pack_gladiator_wx78",
+		batbat_scythe = "pack_hallowed_items",
+		kitten_black = "pack_hallowed_items",
+		treasurechest_monster = "pack_hallowed_items",
+		icebox_coffin = "pack_hallowed_items",
+		watermelonhat_pumpkin = "pack_hallowed_items",
+		webber_punk = "pack_hallowed_webber",
+		body_webber_punk = "pack_hallowed_webber",
+		hand_webber_punk = "pack_hallowed_webber",
+		feet_webber_punk = "pack_hallowed_webber",
+		wendy_creepy = "pack_hallowed_wendy",
+		body_wendy_creepy = "pack_hallowed_wendy",
+		feet_wendy_creepy = "pack_hallowed_wendy",
+		wes_clown = "pack_hallowed_wes",
+		body_wes_clown = "pack_hallowed_wes",
+		feet_wes_clown = "pack_hallowed_wes",
+		willow_dowdy = "pack_hallowed_willow",
+		body_willow_dowdy = "pack_hallowed_willow",
+		feet_willow_dowdy = "pack_hallowed_willow",
+		wilson_madscience = "pack_hallowed_wilson",
+		body_wilson_madscientist = "pack_hallowed_wilson",
+		hand_wilson_madscientist = "pack_hallowed_wilson",
+		wx78_wip = "pack_hallowed_wx78",
+		body_wx78_wip = "pack_hallowed_wx78",
+		hand_wx78_wip = "pack_hallowed_wx78",
+		feet_wx78_wip = "pack_hallowed_wx78",
 		amulet_red_heart = "pack_heart_you",
 		firepit_firebird = "pack_heart_you",
 		birdcage_romantic = "pack_heart_you",

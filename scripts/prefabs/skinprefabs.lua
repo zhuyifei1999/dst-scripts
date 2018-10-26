@@ -586,6 +586,24 @@ table.insert(prefs, CreatePrefabSkin("backpack_spider",
 	release_group = 0,
 }))
 
+table.insert(prefs, CreatePrefabSkin("batbat_scythe",
+{
+	base_prefab = "batbat",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/batbat_scythe.zip"),
+		Asset("PKGREF", "anim/dynamic/batbat_scythe.dyn"),
+	},
+	build_name = "batbat_scythe",
+	rarity = "Elegant",
+	rarity_modifier = "Seasonal",
+	prefabs = { "batbat_bats", },
+	init_fn = function(inst) batbat_init_fn(inst, "batbat_scythe") end,
+	skin_tags = { "HALLOWED", "CRAFTABLE", },
+	fx_prefab = { "batbat_bats", },
+	release_group = 49,
+}))
+
 table.insert(prefs, CreatePrefabSkin("bedroll_furry_quilt_blue_frost",
 {
 	base_prefab = "bedroll_furry",
@@ -616,6 +634,21 @@ table.insert(prefs, CreatePrefabSkin("bedroll_furry_quilt_white_ivory",
 	skin_tags = { "BEDROLL", "WHITE", "CRAFTABLE", },
 	marketable = true,
 	release_group = 7,
+}))
+
+table.insert(prefs, CreatePrefabSkin("beehat_mourning",
+{
+	base_prefab = "beehat",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/beehat_mourning.zip"),
+		Asset("PKGREF", "anim/dynamic/beehat_mourning.dyn"),
+	},
+	build_name = "beehat_mourning",
+	rarity = "ProofOfPurchase",
+	init_fn = function(inst) beehat_init_fn(inst, "beehat_mourning") end,
+	skin_tags = { "BEEHAT", "CRAFTABLE", },
+	release_group = 50,
 }))
 
 table.insert(prefs, CreatePrefabSkin("birdcage_circus",
@@ -1401,6 +1434,24 @@ table.insert(prefs, CreatePrefabSkin("hat_puppy_cap",
 	release_group = 40,
 }))
 
+table.insert(prefs, CreatePrefabSkin("icebox_coffin",
+{
+	base_prefab = "icebox",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/icebox_coffin.zip"),
+		Asset("PKGREF", "anim/dynamic/icebox_coffin.dyn"),
+	},
+	build_name = "icebox_coffin",
+	rarity = "Elegant",
+	rarity_modifier = "Seasonal",
+	prefabs = { "icebox_coffin_bat_fx", },
+	init_fn = function(inst) icebox_init_fn(inst, "icebox_coffin") end,
+	skin_tags = { "HALLOWED", "ICEBOX", "CRAFTABLE", },
+	fx_prefab = { "", "icebox_coffin_bat_fx", },
+	release_group = 49,
+}))
+
 table.insert(prefs, CreatePrefabSkin("icebox_victorian",
 {
 	base_prefab = "icebox",
@@ -1447,6 +1498,38 @@ table.insert(prefs, CreatePrefabSkin("icestaff_rose",
 	init_fn = function(inst) icestaff_init_fn(inst, "icestaff_rose") end,
 	skin_tags = { "STAFF", "ROSE", "CRAFTABLE", },
 	release_group = 27,
+}))
+
+table.insert(prefs, CreatePrefabSkin("kitten_black",
+{
+	base_prefab = "critter_kitten",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/kitten_black.zip"),
+		Asset("PKGREF", "anim/dynamic/kitten_black.dyn"),
+	},
+	build_name = "kitten_black",
+	rarity = "Elegant",
+	rarity_modifier = "Seasonal",
+	init_fn = function(inst) pet_init_fn(inst, "kitten_black", "kittington_build" ) end,
+	skin_tags = { "PET", "HALLOWED", "CRAFTABLE", },
+	release_group = 49,
+}))
+
+table.insert(prefs, CreatePrefabSkin("kitten_black_builder",
+{
+	base_prefab = "critter_kitten_builder",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/kitten_black.zip"),
+		Asset("PKGREF", "anim/dynamic/kitten_black.dyn"),
+	},
+	build_name = "kitten_black",
+	rarity = "Elegant",
+	rarity_modifier = "Seasonal",
+	init_fn = function(inst) critter_builder_init_fn(inst, "kitten_black" ) end,
+	skin_tags = { "CRAFTABLE", },
+	release_group = 49,
 }))
 
 table.insert(prefs, CreatePrefabSkin("kitten_winter",
@@ -1509,6 +1592,24 @@ table.insert(prefs, CreatePrefabSkin("lamb_winter_builder",
 	init_fn = function(inst) critter_builder_init_fn(inst, "lamb_winter" ) end,
 	skin_tags = { "CRAFTABLE", },
 	release_group = 22,
+}))
+
+table.insert(prefs, CreatePrefabSkin("lantern_tesla",
+{
+	base_prefab = "lantern",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/lantern_tesla.zip"),
+		Asset("PKGREF", "anim/dynamic/lantern_tesla.dyn"),
+		Asset("INV_IMAGE", "lantern_tesla_lit"),
+	},
+	build_name = "lantern_tesla",
+	rarity = "ProofOfPurchase",
+	prefabs = { "lantern_tesla_fx_held", "lantern_tesla_fx_ground", },
+	init_fn = function(inst) lantern_init_fn(inst, "lantern_tesla") end,
+	skin_tags = { "LANTERN", "CRAFTABLE", },
+	fx_prefab = { "lantern_tesla_fx_held", "lantern_tesla_fx_ground", },
+	release_group = 50,
 }))
 
 table.insert(prefs, CreatePrefabSkin("minerhat_floppy",
@@ -2038,6 +2139,21 @@ table.insert(prefs, CreatePrefabSkin("tophat_festive_bell_red_firehound",
 	granted_items = { "researchlab4_festive_bell_red_firehound", },
 }))
 
+table.insert(prefs, CreatePrefabSkin("tophat_witch_pyre",
+{
+	base_prefab = "tophat",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/tophat_witch_pyre.zip"),
+		Asset("PKGREF", "anim/dynamic/tophat_witch_pyre.dyn"),
+	},
+	build_name = "tophat_witch_pyre",
+	rarity = "ProofOfPurchase",
+	init_fn = function(inst) tophat_init_fn(inst, "tophat_witch_pyre") end,
+	skin_tags = { "TOPHAT", "CRAFTABLE", },
+	release_group = 50,
+}))
+
 table.insert(prefs, CreatePrefabSkin("torch_rag",
 {
 	base_prefab = "torch",
@@ -2139,6 +2255,22 @@ table.insert(prefs, CreatePrefabSkin("treasurechest_gingerbread",
 	release_group = 22,
 }))
 
+table.insert(prefs, CreatePrefabSkin("treasurechest_monster",
+{
+	base_prefab = "treasurechest",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/treasurechest_monster.zip"),
+		Asset("PKGREF", "anim/dynamic/treasurechest_monster.dyn"),
+	},
+	build_name = "treasurechest_monster",
+	rarity = "Elegant",
+	rarity_modifier = "Seasonal",
+	init_fn = function(inst) treasurechest_init_fn(inst, "treasurechest_monster") end,
+	skin_tags = { "CHEST", "HALLOWED", "CRAFTABLE", },
+	release_group = 49,
+}))
+
 table.insert(prefs, CreatePrefabSkin("treasurechest_posh",
 {
 	base_prefab = "treasurechest",
@@ -2231,6 +2363,37 @@ table.insert(prefs, CreatePrefabSkin("treasurechest_traveltrunk",
 	skin_tags = { "CHEST", "CRAFTABLE", },
 	marketable = true,
 	release_group = 19,
+}))
+
+table.insert(prefs, CreatePrefabSkin("umbrella_spider",
+{
+	base_prefab = "umbrella",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/umbrella_spider.zip"),
+		Asset("PKGREF", "anim/dynamic/umbrella_spider.dyn"),
+	},
+	build_name = "umbrella_spider",
+	rarity = "ProofOfPurchase",
+	init_fn = function(inst) umbrella_init_fn(inst, "umbrella_spider") end,
+	skin_tags = { "UMBRELLA", "CRAFTABLE", },
+	release_group = 50,
+}))
+
+table.insert(prefs, CreatePrefabSkin("watermelonhat_pumpkin",
+{
+	base_prefab = "watermelonhat",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/watermelonhat_pumpkin.zip"),
+		Asset("PKGREF", "anim/dynamic/watermelonhat_pumpkin.dyn"),
+	},
+	build_name = "watermelonhat_pumpkin",
+	rarity = "Elegant",
+	rarity_modifier = "Seasonal",
+	init_fn = function(inst) watermelonhat_init_fn(inst, "watermelonhat_pumpkin") end,
+	skin_tags = { "WATERMELONHAT", "HALLOWED", "CRAFTABLE", },
+	release_group = 49,
 }))
 
 table.insert(prefs, CreatePrefabSkin("wathgrithr_combatant",
@@ -2785,6 +2948,25 @@ table.insert(prefs, CreatePrefabSkin("webber_none",
 	release_group = 999,
 }))
 
+table.insert(prefs, CreatePrefabSkin("webber_punk",
+{
+	base_prefab = "webber",
+	type = "base",
+	assets = {
+		Asset("ANIM", "anim/ghost_webber_build.zip"),
+		Asset("DYNAMIC_ANIM", "anim/dynamic/webber_punk.zip"),
+		Asset("PKGREF", "anim/dynamic/webber_punk.dyn"),
+		Asset("ATLAS_BUILD", "bigportraits/webber_punk.xml", 192),
+	},
+	build_name = "webber_punk",
+	rarity = "Elegant",
+	rarity_modifier = "Seasonal",
+	skin_tags = { "HALLOWED", "BASE", "CHARACTER", "WEBBER", },
+	bigportrait = { build = "bigportraits/webber_punk.xml", symbol = "webber_punk_oval.tex"},
+	skins = { ghost_skin = "ghost_webber_build", normal_skin = "webber_punk", },
+	release_group = 49,
+}))
+
 table.insert(prefs, CreatePrefabSkin("webber_rose",
 {
 	base_prefab = "webber",
@@ -2889,6 +3071,25 @@ table.insert(prefs, CreatePrefabSkin("wendy_cook",
 	skin_tags = { "VICTORIAN", "BASE", "CHARACTER", "WENDY", },
 	skins = { ghost_skin = "ghost_wendy_build", normal_skin = "wendy_cook", },
 	release_group = 43,
+}))
+
+table.insert(prefs, CreatePrefabSkin("wendy_creepy",
+{
+	base_prefab = "wendy",
+	type = "base",
+	assets = {
+		Asset("ANIM", "anim/ghost_wendy_build.zip"),
+		Asset("DYNAMIC_ANIM", "anim/dynamic/wendy_creepy.zip"),
+		Asset("PKGREF", "anim/dynamic/wendy_creepy.dyn"),
+		Asset("ATLAS_BUILD", "bigportraits/wendy_creepy.xml", 192),
+	},
+	build_name = "wendy_creepy",
+	rarity = "Elegant",
+	rarity_modifier = "Seasonal",
+	skin_tags = { "HALLOWED", "BASE", "CHARACTER", "WENDY", },
+	bigportrait = { build = "bigportraits/wendy_creepy.xml", symbol = "wendy_creepy_oval.tex"},
+	skins = { ghost_skin = "ghost_wendy_build", normal_skin = "wendy_creepy", },
+	release_group = 49,
 }))
 
 table.insert(prefs, CreatePrefabSkin("wendy_formal",
@@ -3073,6 +3274,28 @@ table.insert(prefs, CreatePrefabSkin("wendy_victorian",
 	skins = { ghost_skin = "ghost_wendy_build", normal_skin = "wendy_victorian", },
 	torso_untuck_builds = { "wendy_victorian", },
 	release_group = 43,
+}))
+
+table.insert(prefs, CreatePrefabSkin("wes_clown",
+{
+	base_prefab = "wes",
+	type = "base",
+	assets = {
+		Asset("ANIM", "anim/ghost_wes_build.zip"),
+		Asset("DYNAMIC_ANIM", "anim/dynamic/wes_clown.zip"),
+		Asset("PKGREF", "anim/dynamic/wes_clown.dyn"),
+		Asset("ATLAS_BUILD", "bigportraits/wes_clown.xml", 192),
+	},
+	build_name = "wes_clown",
+	rarity = "Elegant",
+	rarity_modifier = "Seasonal",
+	skin_tags = { "HALLOWED", "BASE", "CHARACTER", "WES", },
+	bigportrait = { build = "bigportraits/wes_clown.xml", symbol = "wes_clown_oval.tex"},
+	skins = { ghost_skin = "ghost_wes_build", normal_skin = "wes_clown", },
+	torso_tuck_builds = { "wes_clown", },
+	has_alternate_for_body = { "wes_clown", },
+	has_alternate_for_skirt = { "wes_clown", },
+	release_group = 49,
 }))
 
 table.insert(prefs, CreatePrefabSkin("wes_combatant",
@@ -3597,6 +3820,25 @@ table.insert(prefs, CreatePrefabSkin("willow_cook",
 	release_group = 43,
 }))
 
+table.insert(prefs, CreatePrefabSkin("willow_dowdy",
+{
+	base_prefab = "willow",
+	type = "base",
+	assets = {
+		Asset("ANIM", "anim/ghost_willow_build.zip"),
+		Asset("DYNAMIC_ANIM", "anim/dynamic/willow_dowdy.zip"),
+		Asset("PKGREF", "anim/dynamic/willow_dowdy.dyn"),
+		Asset("ATLAS_BUILD", "bigportraits/willow_dowdy.xml", 192),
+	},
+	build_name = "willow_dowdy",
+	rarity = "Elegant",
+	rarity_modifier = "Seasonal",
+	skin_tags = { "HALLOWED", "BASE", "CHARACTER", "WILLOW", },
+	bigportrait = { build = "bigportraits/willow_dowdy.xml", symbol = "willow_dowdy_oval.tex"},
+	skins = { ghost_skin = "ghost_willow_build", normal_skin = "willow_dowdy", },
+	release_group = 49,
+}))
+
 table.insert(prefs, CreatePrefabSkin("willow_dragonfly",
 {
 	base_prefab = "willow",
@@ -3855,6 +4097,25 @@ table.insert(prefs, CreatePrefabSkin("wilson_ice",
 	bigportrait = { build = "bigportraits/wilson_ice.xml", symbol = "wilson_ice_oval.tex"},
 	skins = { ghost_skin = "ghost_wilson_build", normal_skin = "wilson_ice", },
 	release_group = 36,
+}))
+
+table.insert(prefs, CreatePrefabSkin("wilson_madscience",
+{
+	base_prefab = "wilson",
+	type = "base",
+	assets = {
+		Asset("ANIM", "anim/ghost_wilson_build.zip"),
+		Asset("DYNAMIC_ANIM", "anim/dynamic/wilson_madscience.zip"),
+		Asset("PKGREF", "anim/dynamic/wilson_madscience.dyn"),
+		Asset("ATLAS_BUILD", "bigportraits/wilson_madscience.xml", 192),
+	},
+	build_name = "wilson_madscience",
+	rarity = "Elegant",
+	rarity_modifier = "Seasonal",
+	skin_tags = { "HALLOWED", "BASE", "CHARACTER", "WILSON", },
+	bigportrait = { build = "bigportraits/wilson_madscience.xml", symbol = "wilson_madscience_oval.tex"},
+	skins = { ghost_skin = "ghost_wilson_build", normal_skin = "wilson_madscience", },
+	release_group = 49,
 }))
 
 table.insert(prefs, CreatePrefabSkin("wilson_none",
@@ -4982,6 +5243,25 @@ table.insert(prefs, CreatePrefabSkin("wx78_victorian",
 	has_alternate_for_body = { "wx78_victorian", },
 	feet_cuff_size = { wx78_victorian = 3, },
 	release_group = 43,
+}))
+
+table.insert(prefs, CreatePrefabSkin("wx78_wip",
+{
+	base_prefab = "wx78",
+	type = "base",
+	assets = {
+		Asset("ANIM", "anim/ghost_wx78_build.zip"),
+		Asset("DYNAMIC_ANIM", "anim/dynamic/wx78_wip.zip"),
+		Asset("PKGREF", "anim/dynamic/wx78_wip.dyn"),
+		Asset("ATLAS_BUILD", "bigportraits/wx78_wip.xml", 192),
+	},
+	build_name = "wx78_wip",
+	rarity = "Elegant",
+	rarity_modifier = "Seasonal",
+	skin_tags = { "HALLOWED", "BASE", "CHARACTER", "WX78", },
+	bigportrait = { build = "bigportraits/wx78_wip.xml", symbol = "wx78_wip_oval.tex"},
+	skins = { ghost_skin = "ghost_wx78_build", normal_skin = "wx78_wip", },
+	release_group = 49,
 }))
 
 return unpack(prefs)

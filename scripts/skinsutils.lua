@@ -281,7 +281,14 @@ function GetSkinUsableOnString(item_type, popup_txt)
 	return usable_on_str
 end
 
-function IsUserCommerceAllowedOnItem(item_key)
+function IsUserCommerceAllowedOnItemData(item_data)
+    if item_data.is_dlc_owned and item_data.owned_count == 1 then
+        return false
+    end
+    return IsUserCommerceAllowedOnItemType(item_data.item_key)
+    end
+
+function IsUserCommerceAllowedOnItemType(item_key)
 	if TheInventory:CheckOwnership(item_key) then
 		return IsUserCommerceSellAllowedOnItem(item_key)
 	else

@@ -175,7 +175,7 @@ function ItemImage:ApplyDataToWidget(context, widget_data, data_index)
 
         list_widget.owned_count:SetString(GetCountText(widget_data.owned_count))
         
-        list_widget.frame:SetWeavable( IsUserCommerceAllowedOnItem( widget_data.item_key ) )
+        list_widget.frame:SetWeavable( IsUserCommerceAllowedOnItemType( widget_data.item_key ) )
         
 		list_widget:Show()
 

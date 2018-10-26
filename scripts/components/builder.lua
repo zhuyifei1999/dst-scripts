@@ -67,9 +67,9 @@ nil,
     freebuildmode = onfreebuildmode,
 })
 
-function Builder:ActivateCurrentResearchMachine()
+function Builder:ActivateCurrentResearchMachine(recipe)
     if self.current_prototyper ~= nil and self.current_prototyper.components.prototyper ~= nil then
-        self.current_prototyper.components.prototyper:Activate(self.inst)
+        self.current_prototyper.components.prototyper:Activate(self.inst, recipe)
     end
 end
 
@@ -396,6 +396,14 @@ function Builder:DoBuild(recname, pt, rotation, skin)
                 self.inst.components.petleash:HasPetWithTag("critter")
             ) then
             return false, "HASPET"
+        elseif recipe.tab.manufacturing_station and (
+                self.current_prototyper == nil or
+                not self.current_prototyper:IsValid() or
+                self.current_prototyper.components.prototyper == nil or
+                not CanPrototypeRecipe(recipe.level, self.current_prototyper.components.prototyper.trees)
+            ) then
+            -- manufacturing stations requires the current active protyper in order to work
+            return false
         end
 
         local wetlevel = self.buffered_builds[recname]
@@ -409,7 +417,12 @@ function Builder:DoBuild(recname, pt, rotation, skin)
         end
         self.inst:PushEvent("refreshcrafting")
 
-        local prod = SpawnPrefab(recipe.product, recipe.chooseskin or skin, nil, self.inst.userid)
+        if recipe.tab.manufacturing_station then
+            -- its up to the prototyper to implement onactivate and handle spawning the prefab
+            return true
+        end
+
+        local prod = SpawnPrefab(recipe.product, recipe.chooseskin or skin, nil, self.inst.userid) or nil
         if prod ~= nil then
             pt = pt or self.inst:GetPosition()
 
@@ -421,9 +434,6 @@ function Builder:DoBuild(recname, pt, rotation, skin)
                 if self.inst.components.inventory ~= nil then
                     --self.inst.components.inventory:GiveItem(prod)
                     self.inst:PushEvent("builditem", { item = prod, recipe = recipe, skin = skin, prototyper = self.current_prototyper })
-                    if self.current_prototyper ~= nil and self.current_prototyper:IsValid() then
-                        self.current_prototyper:PushEvent("builditem", { item = prod, recipe = recipe, skin = skin })
-                    end
                     ProfileStatsAdd("build_"..prod.prefab)
 
                     if prod.components.equippable ~= nil and self.inst.components.inventory:GetEquippedItem(prod.components.equippable.equipslot) == nil then
@@ -460,7 +470,7 @@ function Builder:DoBuild(recname, pt, rotation, skin)
                         end
                     end
 
-					NotifyPlayerProgress("TotalItemsCrafted", 1, self.inst);
+                    NotifyPlayerProgress("TotalItemsCrafted", 1, self.inst)
 
                     if self.onBuild ~= nil then
                         self.onBuild(self.inst, prod)
@@ -477,7 +487,7 @@ function Builder:DoBuild(recname, pt, rotation, skin)
                 self.inst:PushEvent("buildstructure", { item = prod, recipe = recipe, skin = skin })
                 prod:PushEvent("onbuilt", { builder = self.inst })
                 ProfileStatsAdd("build_"..prod.prefab)
-				NotifyPlayerProgress("TotalItemsCrafted", 1, self.inst);
+                NotifyPlayerProgress("TotalItemsCrafted", 1, self.inst)
 
                 if self.onBuild ~= nil then
                     self.onBuild(self.inst, prod)
@@ -553,9 +563,14 @@ function Builder:MakeRecipeFromMenu(recipe, skin)
                 self:MakeRecipe(recipe, nil, nil,
                     ValidateRecipeSkinRequest(self.inst.userid, recipe.product, skin),
                     function()
-                        --V2C: for recipes known through tech bonus, still
-                        --     want to unlock in case we reroll characters
-                        if not recipe.nounlock then
+                        if self.freebuildmode then
+                            --V2C: free-build should still trigger prototyping
+                            if not table.contains(self.recipes, recipe.name) and CanPrototypeRecipe(recipe.level, self.accessible_tech_trees) then
+                                self:ActivateCurrentResearchMachine(recipe)
+                            end
+                        elseif not recipe.nounlock then
+                            --V2C: for recipes known through tech bonus, still
+                            --     want to unlock in case we reroll characters
                             self:AddRecipe(recipe.name)
                         end
                     end
@@ -567,7 +582,7 @@ function Builder:MakeRecipeFromMenu(recipe, skin)
             self:MakeRecipe(recipe, nil, nil,
                 ValidateRecipeSkinRequest(self.inst.userid, recipe.product, skin),
                 function()
-                    self:ActivateCurrentResearchMachine()
+                    self:ActivateCurrentResearchMachine(recipe)
                     self:UnlockRecipe(recipe.name)
                 end
             )
@@ -588,17 +603,22 @@ function Builder:BufferBuild(recname)
     local recipe = GetValidRecipe(recname)
     if recipe ~= nil and recipe.placer ~= nil and not self:IsBuildBuffered(recname) and self:CanBuild(recname) then
         if self:KnowsRecipe(recname) then
-            --V2C: for recipes known through tech bonus, still
-            --     want to unlock in case we reroll characters
-            if not recipe.nounlock then
+            if self.freebuildmode then
+                --V2C: free-build should still trigger prototyping
+                if not table.contains(self.recipes, recname) and CanPrototypeRecipe(recipe.level, self.accessible_tech_trees) then
+                    self:ActivateCurrentResearchMachine(recipe)
+                end
+            elseif not recipe.nounlock then
+                --V2C: for recipes known through tech bonus, still
+                --     want to unlock in case we reroll characters
                 self:AddRecipe(recname)
             end
         elseif CanPrototypeRecipe(recipe.level, self.accessible_tech_trees) and self:CanLearn(recname) then
-            self:ActivateCurrentResearchMachine()
-            self:UnlockRecipe(recname)
-        else
-            return
-        end
+                self:ActivateCurrentResearchMachine(recipe)
+                self:UnlockRecipe(recname)
+            else
+                return
+            end
         local materials = self:GetIngredients(recname)
         local wetlevel = self:GetIngredientWetness(materials)
         self:RemoveIngredients(materials, recname)

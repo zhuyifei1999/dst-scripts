@@ -141,6 +141,9 @@ local STONE_SOUNDS =
     open = "dontstarve/common/together/spawn_vines/spawnportal_open",
     glow_loop = nil,
     shatter = nil,
+    place = nil,
+    transmute_pre = nil,
+    transmute = nil,
 }
 
 local function stone_common_postinit(inst)
@@ -180,6 +183,9 @@ local function construction_common_postinit(inst)
         open = "dontstarve/common/together/spawn_vines/spawnportal_open",
         glow_loop = "dontstarve/common/together/spawn_vines/spawnportal_spawning",
         shatter = "dontstarve/common/together/spawn_vines/spawnportal_open",
+        place = "dontstarve/common/together/spawn_portal_celestial/reveal",
+        transmute_pre = "dontstarve/common/together/spawn_portal_celestial/cracking",
+        transmute = "dontstarve/common/together/spawn_portal_celestial/shatter",
     } or nil
 end
 
@@ -270,6 +276,9 @@ local MOONROCK_SOUNDS =
     open = "dontstarve/common/together/spawn_vines/spawnportal_open",
     glow_loop = nil,
     shatter = nil,
+    place = nil,
+    transmute_pre = nil,
+    transmute = nil,
 }
 
 local function moonrock_common_postinit(inst)

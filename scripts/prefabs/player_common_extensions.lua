@@ -593,6 +593,19 @@ end
 
 --------------------------------------------------------------------------
 
+local function DoSpookedSanity(inst)
+    inst.components.sanity:DoDelta(-TUNING.SANITY_SMALL)
+end
+
+local function OnSpooked(inst)
+    if not GetGameModeProperty("no_sanity") then
+        --Delay to match bat overlay timing
+        inst:DoTaskInTime(1.35, DoSpookedSanity)
+    end
+end
+
+--------------------------------------------------------------------------
+
 return
 {
     ShouldKnockout              = ShouldKnockout,
@@ -606,4 +619,5 @@ return
     OnMakePlayerCorpse          = OnMakePlayerCorpse,
     OnRespawnFromGhost          = OnRespawnFromGhost,
     OnRespawnFromPlayerCorpse   = OnRespawnFromPlayerCorpse,
+    OnSpooked                   = OnSpooked,
 }

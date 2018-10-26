@@ -12,6 +12,7 @@ local AVAILABLE_TECH =
     "ORPHANAGE", --teehee
     "PERDOFFERING",
     "WARGOFFERING",
+	"MADSCIENCE",
 }
 
 local function Create(t)

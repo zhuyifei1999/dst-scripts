@@ -474,6 +474,14 @@ MISC_ITEMS =
 		rarity_modifier = "EventModifier",
 		release_group = 32,
 	},
+	loading_wendy_creepy =
+	{
+		type = "loading",
+		skin_tags = { "HALLOWED", "LOADING", },
+		rarity = "Classy",
+		rarity_modifier = "Seasonal",
+		release_group = 49,
+	},
 	loading_wendy_victorian =
 	{
 		type = "loading",
@@ -514,6 +522,14 @@ MISC_ITEMS =
 		rarity_modifier = "EventModifier",
 		release_group = 32,
 	},
+	loading_willow_bats =
+	{
+		type = "loading",
+		skin_tags = { "HALLOWED", "LOADING", },
+		rarity = "Classy",
+		rarity_modifier = "Seasonal",
+		release_group = 49,
+	},
 	loading_willow_victorian =
 	{
 		type = "loading",
@@ -529,6 +545,14 @@ MISC_ITEMS =
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	loading_wilson_madscience =
+	{
+		type = "loading",
+		skin_tags = { "HALLOWED", "LOADING", },
+		rarity = "Classy",
+		rarity_modifier = "Seasonal",
+		release_group = 49,
 	},
 	loading_winona_victorian =
 	{
@@ -561,7 +585,7 @@ MISC_ITEMS =
 		box_build = "box_mystery_classic",
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
-		release_group = 41,
+		release_group = 50,
 	},
 	mysterybox_ice_4 =
 	{
@@ -729,6 +753,101 @@ MISC_ITEMS =
 		display_tex = "wx78_gladiator_oval.tex",
 		box_build = "box_shop_forge",
 		release_group = 34,
+	},
+	pack_hallowed_all =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		steam_dlc_id = 840770,
+		display_order = 1,
+		display_atlas = "images/iap_images_hallowed.xml",
+		display_tex = "hallowed.tex",
+		box_build = "box_shop_hallowed",
+		release_group = 49,
+	},
+	pack_hallowed_bundle =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 3,
+		display_atlas = "images/iap_images_hallowed_bundle.xml",
+		display_tex = "hallowed_bundle.tex",
+		box_build = "box_shop_hallowed",
+		release_group = 49,
+	},
+	pack_hallowed_items =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		steam_dlc_id = 962960,
+		display_order = 2,
+		display_atlas = "images/iap_images_hallowed_items.xml",
+		display_tex = "hallowed_items.tex",
+		box_build = "box_shop_hallowed",
+		release_group = 49,
+	},
+	pack_hallowed_webber =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 9,
+		display_atlas = "bigportraits/webber_punk.xml",
+		display_tex = "webber_punk_oval.tex",
+		box_build = "box_shop_hallowed",
+		release_group = 49,
+	},
+	pack_hallowed_wendy =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 6,
+		display_atlas = "bigportraits/wendy_creepy.xml",
+		display_tex = "wendy_creepy_oval.tex",
+		box_build = "box_shop_hallowed",
+		release_group = 49,
+	},
+	pack_hallowed_wes =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 8,
+		display_atlas = "bigportraits/wes_clown.xml",
+		display_tex = "wes_clown_oval.tex",
+		box_build = "box_shop_hallowed",
+		release_group = 49,
+	},
+	pack_hallowed_willow =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 5,
+		display_atlas = "bigportraits/willow_dowdy.xml",
+		display_tex = "willow_dowdy_oval.tex",
+		box_build = "box_shop_hallowed",
+		release_group = 49,
+	},
+	pack_hallowed_wilson =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 4,
+		display_atlas = "bigportraits/wilson_madscience.xml",
+		display_tex = "wilson_madscience_oval.tex",
+		box_build = "box_shop_hallowed",
+		release_group = 49,
+	},
+	pack_hallowed_wx78 =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 7,
+		display_atlas = "bigportraits/wx78_wip.xml",
+		display_tex = "wx78_wip_oval.tex",
+		box_build = "box_shop_hallowed",
+		release_group = 49,
 	},
 	pack_heart_you =
 	{
@@ -1236,6 +1355,22 @@ MISC_ITEMS =
 		rarity_modifier = "EventModifier",
 		release_group = 43,
 	},
+	playerportrait_bg_graveyard2 =
+	{
+		type = "playerportrait",
+		skin_tags = { "HALLOWED", "PLAYERPORTRAIT", },
+		rarity = "Spiffy",
+		rarity_modifier = "Seasonal",
+		release_group = 49,
+	},
+	playerportrait_bg_hallowedornaments =
+	{
+		type = "playerportrait",
+		skin_tags = { "HALLOWED", "PLAYERPORTRAIT", },
+		rarity = "Spiffy",
+		rarity_modifier = "Seasonal",
+		release_group = 49,
+	},
 	playerportrait_bg_heart1 =
 	{
 		type = "playerportrait",
@@ -1276,6 +1411,14 @@ MISC_ITEMS =
 		rarity_modifier = "EventModifier",
 		release_group = 32,
 	},
+	playerportrait_bg_livingforest =
+	{
+		type = "playerportrait",
+		skin_tags = { "HALLOWED", "PLAYERPORTRAIT", },
+		rarity = "Spiffy",
+		rarity_modifier = "Seasonal",
+		release_group = 49,
+	},
 	playerportrait_bg_lonecarrot =
 	{
 		type = "playerportrait",
@@ -1307,6 +1450,14 @@ MISC_ITEMS =
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	playerportrait_bg_messylab =
+	{
+		type = "playerportrait",
+		skin_tags = { "HALLOWED", "PLAYERPORTRAIT", },
+		rarity = "Spiffy",
+		rarity_modifier = "Seasonal",
+		release_group = 49,
 	},
 	playerportrait_bg_mushroom =
 	{
@@ -1363,6 +1514,14 @@ MISC_ITEMS =
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 43,
+	},
+	playerportrait_bg_pumpkinlantern =
+	{
+		type = "playerportrait",
+		skin_tags = { "HALLOWED", "PLAYERPORTRAIT", },
+		rarity = "Spiffy",
+		rarity_modifier = "Seasonal",
+		release_group = 49,
 	},
 	playerportrait_bg_quagmiretournamentbronze =
 	{
@@ -1869,6 +2028,14 @@ MISC_ITEMS =
 		rarity_modifier = "EventModifier",
 		release_group = 32,
 	},
+	profileflair_living_wood =
+	{
+		type = "profileflair",
+		skin_tags = { "HALLOWED", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "Seasonal",
+		release_group = 49,
+	},
 	profileflair_mactusk =
 	{
 		type = "profileflair",
@@ -1876,6 +2043,14 @@ MISC_ITEMS =
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	profileflair_mad_science =
+	{
+		type = "profileflair",
+		skin_tags = { "HALLOWED", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "Seasonal",
+		release_group = 49,
 	},
 	profileflair_mandrake =
 	{
@@ -2045,6 +2220,14 @@ MISC_ITEMS =
 		rarity_modifier = "EventModifier",
 		release_group = 32,
 	},
+	profileflair_potion_sanity =
+	{
+		type = "profileflair",
+		skin_tags = { "HALLOWED", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "Seasonal",
+		release_group = 49,
+	},
 	profileflair_pumpkinlantern =
 	{
 		type = "profileflair",
@@ -2174,6 +2357,14 @@ MISC_ITEMS =
 		skin_tags = { "CIRCUS", "PROFILEFLAIR", },
 		rarity = "Loyal",
 		release_group = 48,
+	},
+	profileflair_treasurechest_monster =
+	{
+		type = "profileflair",
+		skin_tags = { "HALLOWED", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "Seasonal",
+		release_group = 49,
 	},
 	profileflair_treeguard =
 	{
@@ -2310,6 +2501,14 @@ MISC_ITEMS =
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	profileflair_watermelonhat_pumpkin =
+	{
+		type = "profileflair",
+		skin_tags = { "HALLOWED", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "Seasonal",
+		release_group = 49,
 	},
 	profileflair_werepig_howl =
 	{

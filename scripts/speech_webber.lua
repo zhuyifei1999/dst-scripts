@@ -265,6 +265,10 @@ return {
 	ANNOUNCE_WETTER = "Wet as a bathtub we can't crawl out of.",
 	ANNOUNCE_SOAKED = "We're drenched!",
 
+	--hallowed nights
+    ANNOUNCE_SPOOKED = "Are we seeing things?!",
+    ANNOUNCE_BRAVERY_POTION = "Hey, those trees aren't so scary anymore!",
+
     --quagmire event
     QUAGMIRE_ANNOUNCE_NOTRECIPE = "Oh no! That wasn't a recipe!",
     QUAGMIRE_ANNOUNCE_MEALBURNT = "Oh no! We burnt it!",
@@ -1915,6 +1919,21 @@ return {
         HALLOWEENCANDY_13 = "We like these a lot.", --Griftlands themed candy
         HALLOWEENCANDY_14 = "Gosh, it's spicy.", --Hot Lava pepper candy
         CANDYBAG = "Treats, treats, treats!",
+
+        HALLOWEEN_ORNAMENT_1 = "Oooh. Spooky. We should decorate!",
+		HALLOWEEN_ORNAMENT_2 = "Gosh. That almost looks real.",
+		HALLOWEEN_ORNAMENT_3 = "Aw. It's not real. Let's hang it somewhere.",
+		HALLOWEEN_ORNAMENT_4 = "Let's hang it somewhere for Halloween!",
+		HALLOWEEN_ORNAMENT_5 = "We should put this guy in a tree!",
+		HALLOWEEN_ORNAMENT_6 = "If we put it in a tree it'd look almost real.",
+
+		HALLOWEENPOTION_DRINKS_WEAK = "It's only a little powerful.",
+		HALLOWEENPOTION_DRINKS_POTENT = "It's pretty powerful.",
+		HALLOWEENPOTION_FIRE_FX = "Neat! It's like firecrackers.",
+		HALLOWEENPOTION_BRAVERY = "Makes us feel big and strong!",
+		MADSCIENCE_LAB = "Wow. Look at it bubble.",
+		LIVINGTREE_ROOT = "We should plant this somewhere.",
+		LIVINGTREE_SAPLING = "It's a monster kid. Like me!",
 
         DRAGONHEADHAT = "The front part's sort of scary.",
         DRAGONBODYHAT = "I'm not sure I want to be in *another* belly.",

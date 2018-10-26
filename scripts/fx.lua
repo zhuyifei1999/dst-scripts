@@ -6,6 +6,9 @@ local function FinalOffset2(inst)
     inst.AnimState:SetFinalOffset(2)
 end
 
+local function FinalOffset3(inst)
+    inst.AnimState:SetFinalOffset(3)
+end
 local fx =
 {
     {
@@ -30,12 +33,6 @@ local fx =
         sound = "dontstarve/common/deathpoof",
         tint = Vector3(90/255, 66/255, 41/255),
     },
-    --[[{
-        name = "sparks_fx",
-        bank = "sparks",
-        build = "sparks",
-        anim = { "sparks_1", "sparks_2", "sparks_3" },
-    },]]
     {
         name = "lightning_rod_fx",
         bank = "lightning_rod_fx",
@@ -848,6 +845,60 @@ local fx =
         anim = "bowl",
         sound = "dontstarve/quagmire/common/cooking/salt_shake",
         fn = FinalOffset1,
+    },
+    {
+        name = "halloween_firepuff_1",
+        bank = "halloween_embers",
+        build = "halloween_embers",
+        anim = "puff_1",
+        bloom = true,
+        sound = "dontstarve/common/fireAddFuel",
+        fn = FinalOffset3,
+    },
+    {
+        name = "halloween_firepuff_2",
+        bank = "halloween_embers",
+        build = "halloween_embers",
+        anim = "puff_2",
+        bloom = true,
+        sound = "dontstarve/common/fireAddFuel",
+        fn = FinalOffset3,
+    },
+    {
+        name = "halloween_firepuff_3",
+        bank = "halloween_embers",
+        build = "halloween_embers",
+        anim = "puff_3",
+        bloom = true,
+        sound = "dontstarve/common/fireAddFuel",
+        fn = FinalOffset3,
+    },
+    {
+        name = "halloween_firepuff_cold_1",
+        bank = "halloween_embers_cold",
+        build = "halloween_embers_cold",
+        anim = "puff_1",
+        bloom = true,
+        sound = "dontstarve/common/fireAddFuel",
+        fn = FinalOffset3,
+    },
+    {
+        name = "halloween_firepuff_cold_2",
+        bank = "halloween_embers_cold",
+        build = "halloween_embers_cold",
+        anim = "puff_2",
+        bloom = true,
+        sound = "dontstarve/common/fireAddFuel",
+        fn = FinalOffset3,
+    },
+    {
+        name = "halloween_firepuff_cold_3",
+        bank = "halloween_embers_cold",
+        build = "halloween_embers_cold",
+        anim = "puff_3",
+        bloom = true,
+        sound = "dontstarve/common/fireAddFuel",
+        fn = FinalOffset3,
     },
 }
 

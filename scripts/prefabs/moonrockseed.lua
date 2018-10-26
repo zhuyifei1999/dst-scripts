@@ -101,7 +101,7 @@ local function onturnon(inst)
     inst.AnimState:PushAnimation("proximity_loop", true)
     fadelight(inst, .15, false)
     if not inst.SoundEmitter:PlayingSound("idlesound") then
-        inst.SoundEmitter:PlaySound("dontstarve/common/together/book_maxwell/active_LP", "idlesound")
+        inst.SoundEmitter:PlaySound("dontstarve/common/together/celestial_orb/idle_LP", "idlesound")
     end
 end
 
@@ -121,7 +121,7 @@ end
 
 local function onactivate(inst)
     blink(inst)
-    inst.SoundEmitter:PlaySound("dontstarve/common/together/spawn_vines/spawnportal_open")
+    inst.SoundEmitter:PlaySound("dontstarve/common/together/celestial_orb/active")
     inst._fx:push()
 end
 

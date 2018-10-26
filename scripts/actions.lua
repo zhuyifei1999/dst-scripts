@@ -377,7 +377,7 @@ ACTIONS.RUMMAGE.strfn = function(act)
         and (   targ.replica.container ~= nil and
                 targ.replica.container:IsOpenedBy(act.doer) and
                 "CLOSE" or
-                (act.target ~= nil and act.target:HasTag("winter_tree") and "DECORATE")
+                (act.target ~= nil and act.target:HasTag("decoratable") and "DECORATE")
             )
         or nil
 end
@@ -496,7 +496,7 @@ end
 local function DoToolWork(act, workaction)
     if act.target.components.workable ~= nil and
         act.target.components.workable:CanBeWorked() and
-        act.target.components.workable.action == workaction then
+        act.target.components.workable:GetWorkAction() == workaction then
         act.target.components.workable:WorkedBy(
             act.doer,
             (   act.invobject ~= nil and
@@ -509,24 +509,34 @@ local function DoToolWork(act, workaction)
             ) or
             1
         )
+        return true
+    end
+    return false
+end
+
+ACTIONS.CHOP.fn = function(act)
+    if DoToolWork(act, ACTIONS.CHOP) and
+        act.doer ~= nil and
+        act.doer.components.spooked ~= nil and
+        act.target:IsValid() then
+        act.doer.components.spooked:Spook(act.target)
     end
     return true
 end
 
-ACTIONS.CHOP.fn = function(act)
-    return DoToolWork(act, ACTIONS.CHOP)
-end
-
 ACTIONS.MINE.fn = function(act)
-    return DoToolWork(act, ACTIONS.MINE)
+    DoToolWork(act, ACTIONS.MINE)
+    return true
 end
 
 ACTIONS.HAMMER.fn = function(act)
-    return DoToolWork(act, ACTIONS.HAMMER)
+    DoToolWork(act, ACTIONS.HAMMER)
+    return true
 end
 
 ACTIONS.DIG.fn = function(act)
-    return DoToolWork(act, ACTIONS.DIG)
+    DoToolWork(act, ACTIONS.DIG)
+    return true
 end
 
 ACTIONS.FERTILIZE.fn = function(act)
@@ -1019,7 +1029,7 @@ ACTIONS.STORE.strfn = function(act)
     if act.target ~= nil then
         return ((act.target.prefab == "cookpot" or act.target:HasTag("quagmire_stewer")) and "COOK")
             or (act.target.prefab == "birdcage" and "IMPRISON")
-            or (act.target:HasTag("winter_tree") and "DECORATE")
+            or (act.target:HasTag("decoratable") and "DECORATE")
             or nil
     end
 end

@@ -296,7 +296,7 @@ function ItemBoxOpenerPopup:_OpenItemBox()
             columns = 4
         elseif #item_types == 5 or #item_types == 10 then
             columns = 5
-        elseif #item_types == 12 then
+        elseif #item_types == 12 or #item_types == 11 then
 			columns = 6
         elseif #item_types == 19 then
 			columns = 7

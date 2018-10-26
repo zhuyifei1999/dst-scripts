@@ -1404,6 +1404,7 @@ function PlayerController:GetActionButtonAction(force_target)
     --Also check if force_target is still valid
     if (not self.ismastersim and (self.remote_controls[CONTROL_ACTION] or 0) > 0) or
         not self:IsEnabled() or
+        self:IsBusy() or
         (force_target ~= nil and (not force_target.entity:IsVisible() or force_target:HasTag("INLIMBO") or force_target:HasTag("NOCLICK"))) then
         --"DECOR" should never change, should be safe to skip that check
         return

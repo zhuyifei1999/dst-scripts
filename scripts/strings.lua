@@ -224,6 +224,7 @@ STRINGS =
         EAT = "Eat", 
         BAIT = "Bait",
         COOK = "Cook",
+        MIX = "Mix",
         FILL = "Fill",
         ADDFUEL = "Add Fuel",
         ADDWETFUEL = "Add Wet Fuel",
@@ -1255,6 +1256,8 @@ STRINGS =
 
         MOSQUITOSACK = "Mosquito Sack",
         LIVINGTREE = "Totally Normal Tree",
+        LIVINGTREE_ROOT = "Totally Normal Root",
+		LIVINGTREE_SAPLING = "Totally Normal Sapling",
 
         WAXWELLJOURNAL = "Codex Umbra",
         SHADOWWAXWELL = "Shadow",
@@ -1525,6 +1528,13 @@ STRINGS =
         HALLOWEENCANDY_14 = "Lava Pepper",
         CANDYBAG = "Candy Bag",
 
+		MADSCIENCE_LAB = "Mad Scientist Lab", 
+		HALLOWEEN_EXPERIMENT_BRAVERY = "Phobic Experiment",
+		HALLOWEEN_EXPERIMENT_HEALTH = "Sanguine Experiment",  
+		HALLOWEEN_EXPERIMENT_SANITY = "Psychosis Experiment",  
+		HALLOWEEN_EXPERIMENT_VOLATILE = "Sulfuric Experiment",  
+		HALLOWEEN_EXPERIMENT_ROOT = "Arboretum Experiment",
+
         WINTER_TREESTAND = "Festive Tree Planter",
         WINTER_TREE = "Winter's Feast Tree",
         WINTER_ORNAMENT = "Festive Bauble",
@@ -1541,6 +1551,22 @@ STRINGS =
         WINTER_FOOD8 = "Hot Cocoa",
         WINTER_FOOD9 = "Heavenly Eggnog",
 
+		HALLOWEEN_ORNAMENT_1 = "Ghost Decoration",
+		HALLOWEEN_ORNAMENT_2 = "Bat Decoration",
+		HALLOWEEN_ORNAMENT_3 = "Spider Decoration",
+		HALLOWEEN_ORNAMENT_4 = "Tentacle Decoration",
+		HALLOWEEN_ORNAMENT_5 = "Dangling Depth Dweller Decoration",
+		HALLOWEEN_ORNAMENT_6 = "Crow Decoration",
+
+		HALLOWEENPOTION_BRAVERY_SMALL = "Brew of Phobic Abatement",
+		HALLOWEENPOTION_BRAVERY_LARGE = "Brew of Phobic Abrogation",
+		HALLOWEENPOTION_SANITY_SMALL = "Dram of Psychic Fortitude",
+		HALLOWEENPOTION_SANITY_LARGE = "Tumblerful of Psychic Fortitude",
+		HALLOWEENPOTION_HEALTH_SMALL = "Flask of Sanguine Mixture",
+		HALLOWEENPOTION_HEALTH_LARGE = "Canteen of Sanguine Mixture",
+		HALLOWEENPOTION_EMBERS = "Sulfuric Crystals of Lime",
+		HALLOWEENPOTION_SPARKS = "Sulfuric Crystals of Saltpeter",
+		
         --Arena Event
         LAVAARENA_BOARLORD = "Battlemaster Pugna",
         BOARRIOR = "Grand Forge Boarrior",
@@ -2137,6 +2163,14 @@ STRINGS =
         CRITTER_LAMB_BUILDER = "Befriend a fluffy Ewelet.",
 
         CANDYBAG = "Only carries Hallowed Nights goodies.",
+
+		MADSCIENCE_LAB = "Mad science has no limits. Except sanity.",
+		HALLOWEEN_EXPERIMENT_BRAVERY = "Liquid courage.",
+		HALLOWEEN_EXPERIMENT_HEALTH = "Good for your heart.",
+		HALLOWEEN_EXPERIMENT_SANITY = "Put your mind at ease.", 
+		HALLOWEEN_EXPERIMENT_VOLATILE = "Crystalized incandescence.",
+		HALLOWEEN_EXPERIMENT_ROOT = "Spine-chilling saplings.",  
+
         WINTER_TREESTAND = "Plant and decorate a Winter's Feast tree!",
 
         --Quagmire
@@ -2908,6 +2942,7 @@ STRINGS =
         QUAGMIRE_TRADER_MERM2 = "Pipton",
 		QUAGMIRE_TRADER_MUM = "Mumsy",
 		QUAGMIRE_TRADER_KID = "Billy",
+		MADSCIENCE = "Mad Science",
     },
     GREENAMULET_TOOLTIP = "Reduced Material Cost",
 }
@@ -3257,6 +3292,7 @@ STRINGS.UI =
 			QUAGMIRE_TRADER_MERM2 = "Purchase",
 			QUAGMIRE_TRADER_MUM = "Purchase",
 			QUAGMIRE_TRADER_KID = "Purchase",
+			MADSCIENCE = "Mix",
         },
         TABNEEDSTUFF =
         {
@@ -6124,7 +6160,7 @@ STRINGS.UI =
         MOST_COMMON_FRIENDS = "Friendliest Friends",
         ENCOUNTER_COUNT_FMT = "Time played with: {time}",
 
-		NO_DEATHS = "No surviver deaths on record.",
+		NO_DEATHS = "No survivor deaths on record.",
 		NO_FRIENDS = "Play online and make some friends.",
 
         TOOLTIP_TRADE = "Trade your old items in for something new!",

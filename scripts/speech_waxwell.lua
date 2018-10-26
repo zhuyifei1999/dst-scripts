@@ -258,6 +258,10 @@ return {
 	ANNOUNCE_TOADESCAPING = "Now is the time to strike!",
 	ANNOUNCE_TOADESCAPED = "It fled back into the earth.",
 
+	--hallowed nights
+    ANNOUNCE_SPOOKED = "Quite an expert illusion.",
+    ANNOUNCE_BRAVERY_POTION = "I was never really scared of those trees anyhow.",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Allow me to assist.",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "No need to thank me.",
@@ -1912,6 +1916,21 @@ return {
         HALLOWEENCANDY_13 = "It's not terrible.", --Griftlands themed candy
         HALLOWEENCANDY_14 = "Only ruffians enjoy torturing themselves like this.", --Hot Lava pepper candy
         CANDYBAG = "That's our sugar-sack.",
+
+        HALLOWEEN_ORNAMENT_1 = "Oh joy. Is there really need for decoration?",
+		HALLOWEEN_ORNAMENT_2 = "Such a burden to carry it. If only there were a place to leave it.",
+		HALLOWEEN_ORNAMENT_3 = "I like the real ones better.",
+		HALLOWEEN_ORNAMENT_4 = "Shouldn't it be hanging from somewhere.",
+		HALLOWEEN_ORNAMENT_5 = "Ugh. These guys again.",
+		HALLOWEEN_ORNAMENT_6 = "Why do I hear \"Nevermore\"?",
+
+		HALLOWEENPOTION_DRINKS_WEAK = "Could be a little stronger.",
+		HALLOWEENPOTION_DRINKS_POTENT = "Ah. This'll do the trick.",
+		HALLOWEENPOTION_FIRE_FX = "Might as well throw it in the fire.",
+		HALLOWEENPOTION_BRAVERY = "Takes away the horrors. But who would want that?",
+		MADSCIENCE_LAB = "How maddening.",
+		LIVINGTREE_ROOT = "Ah. A chance to grow something horrible.", 
+		LIVINGTREE_SAPLING = "Just days away from dreadful.",
 
         DRAGONHEADHAT = "Quite formidable looking.",
         DRAGONBODYHAT = "I'm no middleman.",

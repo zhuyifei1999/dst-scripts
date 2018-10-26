@@ -1541,6 +1541,11 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst:AddComponent("stormwatcher")
         inst:AddComponent("carefulwalker")
 
+        if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
+            inst:AddComponent("spooked")
+            inst:ListenForEvent("spooked", ex_fns.OnSpooked)
+        end
+
         -------
 
         inst:AddComponent("health")
@@ -1550,7 +1555,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst:AddComponent("hunger")
         inst.components.hunger:SetMax(TUNING.WILSON_HUNGER)
         inst.components.hunger:SetRate(TUNING.WILSON_HUNGER_RATE)
-        inst.components.hunger:SetKillRate(TUNING.WILSON_HEALTH/TUNING.STARVE_KILL_TIME)
+        inst.components.hunger:SetKillRate(TUNING.WILSON_HEALTH / TUNING.STARVE_KILL_TIME)
         if GetGameModeProperty("no_hunger") then
             inst.components.hunger:Pause()
         end

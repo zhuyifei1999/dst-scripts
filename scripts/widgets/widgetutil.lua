@@ -88,7 +88,7 @@ function DoRecipeClick(owner, recipe, skin)
                     end
                     owner.components.playercontroller:StartBuildPlacementMode(recipe, skin)
                     if owner.components.builder ~= nil then
-                        owner.components.builder:ActivateCurrentResearchMachine()
+                        owner.components.builder:ActivateCurrentResearchMachine(recipe)
                         owner.components.builder:UnlockRecipe(recipe.name)
                     end
                 end

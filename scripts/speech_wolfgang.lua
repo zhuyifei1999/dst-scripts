@@ -264,6 +264,10 @@ return {
     ANNOUNCE_NOWARDROBEONFIRE = "Ehh, Wolfgang do that later...",
     ANNOUNCE_WORMS = "Earth is tremble beneath Wolfgang's mighty feet!",
 
+    --hallowed nights
+    ANNOUNCE_SPOOKED = "Wolfgang's eyes is playing tricky!",
+    ANNOUNCE_BRAVERY_POTION = "Wolfgang is brave! Not scared of spooky tree!",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Up now, friend!",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "Go! Fight many things!",
@@ -1916,6 +1920,21 @@ return {
         HALLOWEENCANDY_13 = "Hard candy is strong like Wolfgang!", --Griftlands themed candy
         HALLOWEENCANDY_14 = "Is too hot for Wolfgang!!", --Hot Lava pepper candy
         CANDYBAG = "Is little bag for scary goodies!",
+
+        HALLOWEEN_ORNAMENT_1 = "Wolfgang should be hanging it somewhere.", 
+        HALLOWEEN_ORNAMENT_2 = "Is real bat?! Is not real bat.",
+        HALLOWEEN_ORNAMENT_3 = "Is for decorating.",
+        HALLOWEEN_ORNAMENT_4 = "Wolfgang needs to be decorating.", 
+        HALLOWEEN_ORNAMENT_5 = "Wolfgang could hang somewheres.",
+        HALLOWEEN_ORNAMENT_6 = "Little fake birdy is needing tree!",
+
+        HALLOWEENPOTION_DRINKS_WEAK = "Is okay, but big Wolfgang need big drink!",
+        HALLOWEENPOTION_DRINKS_POTENT = "Is strong like Wolfgang!", 
+        HALLOWEENPOTION_FIRE_FX = "Is making fire go boom boom!", 
+        HALLOWEENPOTION_BRAVERY = "Wolfgang is brave. Is making Wolfgang braver.",
+        MADSCIENCE_LAB = "Is making Wolfgang brain hurt.",
+        LIVINGTREE_ROOT = "Hello little sticky!",
+        LIVINGTREE_SAPLING = "Grow big and strong so Wolfgang can decorate!", 
 
         DRAGONHEADHAT = "Wolfgang will be mighty beast!",
         DRAGONBODYHAT = "Is tums of big scarebeast.",

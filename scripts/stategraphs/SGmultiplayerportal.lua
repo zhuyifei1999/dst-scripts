@@ -169,7 +169,7 @@ local states =
         tags = { "idle" },
         onenter = function(inst)
             PlayAnimation(inst, "place")
-            PlaySound(inst, "shake")
+            PlaySound(inst, "place")
         end,
 
         events =
@@ -205,13 +205,13 @@ local states =
             inst.AnimState:Show("stage2")
             inst.AnimState:Hide("stage3")
             inst.AnimState:Show("hidestage3")
-            PlaySound(inst, "glow_loop", "portalglow")
+            PlaySound(inst, "transmute_pre")
             inst.sg.mem.constructionphase = 2
         end,
 
         timeline =
         {
-            TimeEvent(12 * FRAMES, function(inst) PlaySound(inst, "shatter") end),
+            TimeEvent(12 * FRAMES, function(inst) PlaySound(inst, "transmute") end),
         },
 
         events =
@@ -223,7 +223,6 @@ local states =
 
         onexit = function(inst)
             inst.AnimState:Hide("stage1")
-            inst.SoundEmitter:KillSound("portalglow")
         end,
     },
 
@@ -236,14 +235,14 @@ local states =
             inst.AnimState:Show("stage2")
             inst.AnimState:Show("stage3")
             inst.AnimState:Show("hidestage3")
-            PlaySound(inst, "glow_loop", "portalglow")
+            PlaySound(inst, "transmute_pre")
             inst.sg.mem.constructionphase = 3
             inst.sounds.vines = nil
         end,
 
         timeline =
         {
-            TimeEvent(12 * FRAMES, function(inst) PlaySound(inst, "shatter") end),
+            TimeEvent(12 * FRAMES, function(inst) PlaySound(inst, "transmute") end),
         },
 
         events =
@@ -256,7 +255,6 @@ local states =
         onexit = function(inst)
             inst.AnimState:Hide("stage2")
             inst.AnimState:Hide("hidestage3")
-            inst.SoundEmitter:KillSound("portalglow")
         end,
     },
 
@@ -270,7 +268,7 @@ local states =
             inst.AnimState:Show("stage3")
             inst.AnimState:Hide("hidestage3")
             inst:AddTag("NOCLICK")
-            PlaySound(inst, "shake")
+            PlaySound(inst, "place")
         end,
 
         events =

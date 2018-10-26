@@ -271,6 +271,10 @@ return {
 	ANNOUNCE_TOADESCAPING = "Don't even think about running, toad!",
 	ANNOUNCE_TOADESCAPED = "Ughh! But I was winning!",
 
+	--hallowed nights
+    ANNOUNCE_SPOOKED = "Were those bats, or am I just seeing things.",
+    ANNOUNCE_BRAVERY_POTION = "Haha! Those bats don't scare me anymore!",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Hey! Get back up!",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "You got this!",
@@ -1981,6 +1985,21 @@ return {
         HALLOWEENCANDY_13 = "It's sorta tangy.",	--Griftlands themed candy
         HALLOWEENCANDY_14 = "Mmm! It burns my mouth so good!",	--Hot Lava pepper candy
         CANDYBAG = "I'm gonna stuff so much candy in there!",
+
+        HALLOWEEN_ORNAMENT_1 = "Can I set it on fire?",
+		HALLOWEEN_ORNAMENT_2 = "I should decorate for Halloween.", 
+		HALLOWEEN_ORNAMENT_3 = "Ugh. I hate those jerks.",
+		HALLOWEEN_ORNAMENT_4 = "Wish it was flammable.", 
+		HALLOWEEN_ORNAMENT_5 = "I should hang it somewhere and scare people.",
+		HALLOWEEN_ORNAMENT_6 = "I'm gonna stick you in a tree.",
+
+		HALLOWEENPOTION_DRINKS_WEAK = "I wish it was a little stronger.",
+		HALLOWEENPOTION_DRINKS_POTENT = "Ah. The strong stuff.",
+		HALLOWEENPOTION_FIRE_FX = "I didn't think it was possible to make fire better.",
+		HALLOWEENPOTION_BRAVERY = "It's like there's a fire in my belly.",
+		MADSCIENCE_LAB = "I like the fire!",
+		LIVINGTREE_ROOT = "It's a stick. But I can't even set it on fire.", 
+		LIVINGTREE_SAPLING = "Should I wait until it gets bigger to set it on fire?",
 
         DRAGONHEADHAT = "Sooo ferocious!",
         DRAGONBODYHAT = "Aww, I always get caught in the middle!",

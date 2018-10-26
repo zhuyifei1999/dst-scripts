@@ -263,6 +263,10 @@ return {
 	ANNOUNCE_UNIMPLEMENTED = "Ouch! That wasn't very polite.",
 	ANNOUNCE_WORMS = "Oh geez. I hope you're ready, Lucy.",
 
+	--hallowed nights
+    ANNOUNCE_SPOOKED = "You see that, Lucy?",
+    ANNOUNCE_BRAVERY_POTION = "Glad that's over. Never thought I'd be scared of trees.",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "You fell like a tree, eh?",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "There we go.",
@@ -1926,6 +1930,21 @@ return {
         HALLOWEENCANDY_13 = "It's pretty good stuff.", --Griftlands themed candy
         HALLOWEENCANDY_14 = "Lucy doesn't like it when I eat spice.", --Hot Lava pepper candy
         CANDYBAG = "That there bag could hold a whole heap of candy.",
+
+        HALLOWEEN_ORNAMENT_1 = "It's just fake, eh.",
+		HALLOWEEN_ORNAMENT_2 = "That's nice. I should hang it somewhere.",
+		HALLOWEEN_ORNAMENT_3 = "This would look good in a tree somewhere.",
+		HALLOWEEN_ORNAMENT_4 = "You wanna decorate, Lucy?",
+		HALLOWEEN_ORNAMENT_5 = "Hang in there, eh.",
+		HALLOWEEN_ORNAMENT_6 = "Argh! I'd sure like to hang a real one like that.", 
+
+		HALLOWEENPOTION_DRINKS_WEAK = "Not bad.", 
+		HALLOWEENPOTION_DRINKS_POTENT = "That's a lot, eh.",
+		HALLOWEENPOTION_FIRE_FX = "It'll never replace a good hunk of wood.",
+		HALLOWEENPOTION_BRAVERY = "A good hardy drink.",
+		MADSCIENCE_LAB = "I prefer simpler things.",
+		LIVINGTREE_ROOT = "Hey there's a piece of wood in there.",
+		LIVINGTREE_SAPLING = "Yep. That'll be a fine tree one day.", 
 
         DRAGONHEADHAT = "That's a sight, eh?",
         DRAGONBODYHAT = "Nice needlework.",
