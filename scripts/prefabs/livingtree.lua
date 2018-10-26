@@ -1,6 +1,7 @@
 local assets =
 {
     Asset("ANIM", "anim/evergreen_living_wood.zip"),
+    Asset("MINIMAP_IMAGE", "livingtree"),
     Asset("MINIMAP_IMAGE", "livingtree_burnt"),
     Asset("MINIMAP_IMAGE", "livingtree_stump"),
 }

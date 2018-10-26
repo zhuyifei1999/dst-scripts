@@ -258,6 +258,10 @@ return {
 	ANNOUNCE_WETTER = "An eternity of moisture and sorrow.",
 	ANNOUNCE_SOAKED = "A veritable apocalypse of water.",
 
+	--hallowed nights
+    ANNOUNCE_SPOOKED = "Did you see that, Abigail?",
+    ANNOUNCE_BRAVERY_POTION = "Bats can't scare me anymore. I can return to my melancholy.",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "You'll not glimpse death today...",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "All done.",
@@ -1924,6 +1928,21 @@ return {
         HALLOWEENCANDY_13 = "A candy as hard as my heart.", --Griftlands themed candy
         HALLOWEENCANDY_14 = "What is this eternal burning?!", --Hot Lava pepper candy
         CANDYBAG = "It's for putting nice things in...",
+
+        HALLOWEEN_ORNAMENT_1 = "It reminds me of Abigail. I'll hang it somewhere.",
+		HALLOWEEN_ORNAMENT_2 = "It longs to be hung somewhere.",
+		HALLOWEEN_ORNAMENT_3 = "Decoration for a devilish day.",
+		HALLOWEEN_ORNAMENT_4 = "A memorial for a monster.",
+		HALLOWEEN_ORNAMENT_5 = "It descends into darkness.",
+		HALLOWEEN_ORNAMENT_6 = "Crows in trees mean souls trapped between worlds.",
+
+		HALLOWEENPOTION_DRINKS_WEAK = "Like life, it's a bit disappointing.",
+		HALLOWEENPOTION_DRINKS_POTENT = "If only life was so potent.", 
+		HALLOWEENPOTION_FIRE_FX = "I wish I possessed such burning within my heart.",
+		HALLOWEENPOTION_BRAVERY = "Things seem less horrifying with this.",
+		MADSCIENCE_LAB = "Madness lies within.",
+		LIVINGTREE_ROOT = "Potential horror.",
+		LIVINGTREE_SAPLING = "It'll grow up big and abhorrent.",
 
         DRAGONHEADHAT = "What big eyes you have.",
         DRAGONBODYHAT = "The belly of the beast.",

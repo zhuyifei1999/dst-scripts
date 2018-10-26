@@ -192,6 +192,18 @@ function hambat_init_fn(inst, build_name)
 end
 
 --------------------------------------------------------------------------
+--[[ Batbat skin functions ]]
+--------------------------------------------------------------------------
+function batbat_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "batbat")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+
+--------------------------------------------------------------------------
 --[[ Amulet skin functions ]]
 --------------------------------------------------------------------------
 function amulet_init_fn(inst, build_name)
@@ -238,6 +250,7 @@ minerhat_init_fn = hat_init_fn
 footballhat_init_fn = hat_init_fn
 featherhat_init_fn = hat_init_fn
 beehat_init_fn = hat_init_fn
+watermelonhat_init_fn = hat_init_fn
 
 --------------------------------------------------------------------------
 --[[ Bedroll skin functions ]]
@@ -764,10 +777,18 @@ end
 --[[ Icebox skin functions ]]
 --------------------------------------------------------------------------
 local function icebox_opened(inst)
-    if inst._frostfx == nil then
+    local x, y, z = inst.Transform:GetWorldPosition()
+    if inst.open_fx ~= nil then
+        local t = GetTime()
+        if t >= (inst._open_fx_time or 0) then
+            inst._open_fx_time = t + 1.3
+            SpawnPrefab(inst.open_fx).Transform:SetPosition(x, y, z)
+        end
+    end
+    if inst.frost_fx ~= nil and inst._frostfx == nil then
         inst._frostfx = SpawnPrefab(inst.frost_fx)
-        inst._frostfx.Transform:SetPosition(inst.Transform:GetWorldPosition())
-        inst._frostfx.AnimState:OverrideItemSkinSymbol("cold_air", "icebox_victorian", "cold_air", inst.GUID, "ice_box")
+        inst._frostfx.Transform:SetPosition(x, y, z)
+        inst._frostfx.AnimState:OverrideItemSkinSymbol("cold_air", inst:GetSkinName(), "cold_air", inst.GUID, "ice_box")
     end
 end
 
@@ -791,11 +812,14 @@ function icebox_init_fn(inst, build_name)
 
     local skin_fx = SKIN_FX_PREFAB[build_name]
     if skin_fx ~= nil then
-        inst.frost_fx = skin_fx[1]
-        if inst.frost_fx ~= nil then
+        inst.frost_fx = skin_fx[1] ~= nil and skin_fx[1]:len() > 0 and skin_fx[1] or nil
+        inst.open_fx = skin_fx[2]
+        if inst.frost_fx ~= nil or inst.open_fx ~= nil then
             inst:ListenForEvent("onopen", icebox_opened)
-            inst:ListenForEvent("onclose", icebox_closed)
-            inst:ListenForEvent("onremove", icebox_closed)
+            if inst.frost_fx ~= nil then
+                inst:ListenForEvent("onclose", icebox_closed)
+                inst:ListenForEvent("onremove", icebox_closed)
+            end
         end
     end
 end

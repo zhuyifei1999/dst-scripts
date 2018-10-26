@@ -843,6 +843,7 @@ local function AddWinterTree(treetype)
         MakeSnowCoveredPristine(inst)
 
         inst:AddTag("winter_tree")
+		inst:AddTag("decoratable")
         inst:AddTag("structure")
         inst:AddTag("event_trigger")
 

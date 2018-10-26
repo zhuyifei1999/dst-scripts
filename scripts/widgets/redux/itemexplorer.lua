@@ -360,14 +360,14 @@ function ItemExplorer:_GetActionInfoText(item_data)
     local text = ""
 
     if item_data.is_owned then
-        if IsUserCommerceAllowedOnItem(item_data.item_key) then
+        if IsUserCommerceAllowedOnItemData(item_data) then
             local doodad_value = TheItems:GetBarterSellPrice(item_data.item_key)
             text = subfmt(STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_GRIND, {doodad_value=doodad_value})
         else
             text = STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_NOGRIND
         end
     else 
-        if IsUserCommerceAllowedOnItem(item_data.item_key) then
+        if IsUserCommerceAllowedOnItemType(item_data.item_key) then
             local doodad_value = TheItems:GetBarterBuyPrice(item_data.item_key)
             text = subfmt(STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_BUY, {doodad_value=doodad_value})
         else
@@ -385,7 +385,7 @@ function ItemExplorer:_GetActionInfoText(item_data)
 end
 
 function ItemExplorer:_ApplyItemToCommerce(item_data)
-    self.can_do_commerce = IsUserCommerceAllowedOnItem(item_data.item_key)
+    self.can_do_commerce = IsUserCommerceAllowedOnItemData(item_data)
     if not self.interact_root then
         return
     end
@@ -796,8 +796,8 @@ function ItemExplorer:_CreateWidgetDataListForItems(item_table, item_type, activ
         if item_latest[key] == nil or item_latest[key] < inv_item.modified_time then
             item_latest[key] = inv_item.modified_time
         end
-
-        if inv_item.item_id == 0 and GetRarityForItem(key) ~= "Event" and GetRarityForItem(key) ~= "Reward" then
+        
+        if inv_item.item_id == TEMP_ITEM_ID and GetRarityForItem(key) ~= "Event" and GetRarityForItem(key) ~= "Reward" then
             item_dlc_owned[key] = true
         end
 	end

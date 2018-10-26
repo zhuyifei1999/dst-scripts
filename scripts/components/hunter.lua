@@ -26,6 +26,7 @@ local _track_prefab = "animal_track"
 local _beast_prefab_summer = "koalefant_summer"
 local _beast_prefab_winter = "koalefant_winter"
 local _alternate_beasts = { "warg", "spat" }
+local _ambush_prefab = "bat"
 
 --------------------------------------------------------------------------
 --[[ Member variables ]]
@@ -181,6 +182,20 @@ local function SpawnDirt(pt,hunt)
             hunt.lastdirt = spawned
             hunt.lastdirttime = GetTime()
 
+			if hunt.ambush_track_num ~= nil and hunt.ambush_track_num == hunt.trackspawned then
+				local day = TheWorld.state.cycles
+				local num_bats = math.min(3 + math.floor(day/35), 6)
+				for i = 1, num_bats do
+					spawned:DoTaskInTime(0.2 * i + math.random() * 0.3, function()
+						local bat = SpawnPrefab(_ambush_prefab)
+						local pos = FindNearbyLand(spawned:GetPosition(), 2)
+						bat.Transform:SetPosition(pos:Get())
+						bat:PushEvent("fly_back")
+					end)
+				end
+				hunt.ambush_track_num = nil
+			end
+
             spawned._ondirtremove = function()
                 hunt.lastdirt = nil
                 ResetHunt(hunt)
@@ -223,6 +238,11 @@ local function StartDirt(hunt,position)
     local pt = position --Vector3(player.Transform:GetWorldPosition())
 
     hunt.numtrackstospawn = math.random(MIN_TRACKS, MAX_TRACKS)
+
+    if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
+		hunt.ambush_track_num = math.random(math.floor(hunt.numtrackstospawn/2), hunt.numtrackstospawn-1)
+	end
+
     hunt.trackspawned = 0
     hunt.direction = GetNextSpawnAngle(pt, nil, TUNING.HUNT_SPAWN_DIST)
     if hunt.direction ~= nil then
@@ -527,7 +547,10 @@ end
 function self:GetDebugString()
     local str = ""
     for i, hunt in ipairs(_activehunts) do
-        str = str.." Cooldown: ".. (hunt.cooldowntime and string.format("%2.2f", math.max(1, hunt.cooldowntime - GetTime())) or "-")
+        str = str.." Cooldown: ".. (hunt.cooldowntime and string.format("%2.2f", math.max(1, hunt.cooldowntime - GetTime())) or "-") 
+		if hunt.trackspawned ~= nil then
+			str = str .. " Track # " .. tostring(hunt.trackspawned) .. "/" .. tostring(hunt.numtrackstospawn) .. (hunt.ambush_track_num ~= nil and (" ambush at " .. tostring(hunt.ambush_track_num)) or "")
+		end
         if not hunt.lastdirt then
             str = str.." No last dirt."
             --str = str.." Distance: ".. (playerdata.distance and string.format("%2.2f", playerdata.distance) or "-")

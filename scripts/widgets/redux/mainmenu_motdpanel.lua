@@ -9,7 +9,7 @@ local BOX_FONT = FALLBACK_FONT -- CHATFONT, FALLBACK_FONT, CHATFONT_OUTLINE
 
 local alert_images =
 {
-	error = {image = "motd_alert.tex", colour = WEBCOLOURS.TOMATO},
+	error = {image = "motd_alert.tex", colour = WEBCOLOURS.SALMON},
 	warning = {image = "motd_alert.tex", colour = UICOLOURS.HIGHLIGHT_GOLD},
 	notice = {image = "goto_url.tex", colour = UICOLOURS.HIGHLIGHT_GOLD},
 }
@@ -144,9 +144,13 @@ function MotdPanel:OnImagesLoaded()
 		if data.link ~= nil then
 			self.link_btn = self.fg:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "goto_url.tex", nil, false, false, 
 				function() 
-					VisitURL(data.link) 
-
 					Stats.PushMetricsEvent("motd2.clicked", TheNet:GetUserID(), motd_msg, "is_only_local_users_data")
+
+					if data.link == "skins" then
+						self.config.on_to_skins_cb()
+					else
+						VisitURL(data.link) 
+					end
 				end))
 			self.link_btn:SetScale(0.5)
 			local half_image_size = 10

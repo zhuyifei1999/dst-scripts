@@ -27,6 +27,7 @@ local Stats = require("stats")
 
 local MainMenuMotdPanel = require "widgets/redux/mainmenu_motdpanel"
 local MainMenuStatsPanel = require "widgets/redux/mainmenu_statspanel"
+local PurchasePackScreen = require "screens/redux/purchasepackscreen"
 
 local SHOW_DST_DEBUG_HOST_JOIN = BRANCH == "dev"
 local SHOW_QUICKJOIN = false
@@ -38,11 +39,19 @@ function MakeBanner(self)
 	baner_root:SetPosition(0, RESOLUTION_Y / 2 - banner_height / 2 + 1 )
 
 	local anim = baner_root:AddChild(UIAnim())
-	anim:GetAnimState():SetBuild("dst_menu")
-	anim:GetAnimState():SetBank("dst_menu")
-	anim:GetAnimState():PlayAnimation("loop", true)
-	anim:SetScale(0.63)
-	anim:SetPosition(347, 85)
+	if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
+		anim:GetAnimState():SetBuild("dst_menu_halloween")
+		anim:GetAnimState():SetBank("dst_menu_halloween")
+		anim:GetAnimState():PlayAnimation("anim", true)
+		anim:SetScale(0.67)
+		anim:SetPosition(183, 40)
+	else
+		anim:GetAnimState():SetBuild("dst_menu")
+		anim:GetAnimState():SetBank("dst_menu")
+		anim:GetAnimState():PlayAnimation("loop", true)
+		anim:SetScale(0.63)
+		anim:SetPosition(347, 85)
+	end
 
     local logo = baner_root:AddChild(Image("images/frontscreen.xml", "title.tex"))
     logo:SetScale(.36)
@@ -116,7 +125,7 @@ function MultiplayerMainScreen:DoInit()
         self.snowfall:SetScaleMode(SCALEMODE_PROPORTIONAL)
     end
 
-	self.fixed_root:AddChild(MakeBanner(self))
+	self.banner_root = self.fixed_root:AddChild(MakeBanner(self))
 
 	local bg = self.fixed_root:AddChild(Image("images/bg_redux_dark_bottom_solid.xml", "dark_bottom_solid.tex"))
 	bg:SetScale(.669)
@@ -125,13 +134,28 @@ function MultiplayerMainScreen:DoInit()
 
 	-- new MOTD
 	if TheFrontEnd.MotdManager:IsEnabled() then
-		local info_panel = MainMenuMotdPanel({font = self.info_font, bg = bg, error_cb = 
-			function() 
+		local info_panel = MainMenuMotdPanel({font = self.info_font, bg = bg, 
+			error_cb = function() 
 				if self.info_panel ~= nil then
 					self.info_panel:Kill() 
 				end
 				self.info_panel = self.fixed_root:AddChild(MainMenuStatsPanel())
-			end})
+			end,
+			on_to_skins_cb = function()
+			    if TheFrontEnd:GetIsOfflineMode() or not TheNet:IsOnlineMode() then
+					TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.MAINSCREEN.OFFLINE, STRINGS.UI.MAINSCREEN.ITEMCOLLECTION_DISABLE, 
+						{
+							{text=STRINGS.UI.FESTIVALEVENTSCREEN.OFFLINE_POPUP_LOGIN, cb = function()
+									SimReset()
+								end},
+							{text=STRINGS.UI.FESTIVALEVENTSCREEN.OFFLINE_POPUP_BACK, cb=function() TheFrontEnd:PopScreen() end },
+						}))
+				else
+					self:StopMusic()
+					self:_FadeToScreen(PurchasePackScreen, {Profile})
+				end
+			end
+			})
 		if self.info_panel == nil then
 			self.info_panel = self.fixed_root:AddChild(info_panel)
 		end

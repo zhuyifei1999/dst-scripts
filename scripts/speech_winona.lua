@@ -249,6 +249,10 @@ return {
 	ANNOUNCE_KLAUS_UNCHAINED = "The mitts are coming off!",
 	ANNOUNCE_KLAUS_CALLFORHELP = "He called his goons!",
 
+	--hallowed nights
+    ANNOUNCE_SPOOKED = "I'm seein' things!",
+    ANNOUNCE_BRAVERY_POTION = "I got my moxie back. Now to tackle those trees.",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Up'n'attem now.",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "Back to work!",
@@ -1916,6 +1920,21 @@ return {
         HALLOWEENCANDY_13 = "I ain't patient enough to eat these.",	--Griftlands themed candy
         HALLOWEENCANDY_14 = "Whew! That's the kick y'need!",	--Hot Lava pepper candy
         CANDYBAG = "It's a goodybag.",
+
+        HALLOWEEN_ORNAMENT_1 = "Ha! Ya almost fooled me.",
+		HALLOWEEN_ORNAMENT_2 = "I should hang this somewhere.",
+		HALLOWEEN_ORNAMENT_3 = "Time to decorate.",
+		HALLOWEEN_ORNAMENT_4 = "Time for decoratin'!", 
+		HALLOWEEN_ORNAMENT_5 = "Hey, it's them hanging guys.", 
+		HALLOWEEN_ORNAMENT_6 = "It needs to be in a tree.",
+
+		HALLOWEENPOTION_DRINKS_WEAK = "Aw, I was hoping for a little more.",
+		HALLOWEENPOTION_DRINKS_POTENT = "I got lucky and got the big bottle.",
+		HALLOWEENPOTION_FIRE_FX = "Ohh. This'll make a spark.", 
+		HALLOWEENPOTION_BRAVERY = "Makes ya plucky.",
+		MADSCIENCE_LAB = "I can do some experimentin' with that.",
+		LIVINGTREE_ROOT = "Oh hey! There's a little stick in there.",
+		LIVINGTREE_SAPLING = "Keep growin' little guy! I'm gonna decorate you.",
 
         DRAGONHEADHAT = "Front and center!",
         DRAGONBODYHAT = "It's the beast's tummy!",

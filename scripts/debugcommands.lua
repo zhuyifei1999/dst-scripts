@@ -248,8 +248,8 @@ function d_halloween()
 	local spacing = 2
 	local num_wide = math.ceil(math.sqrt(NUM_TRINKETS))
 
-	for y = 0, num_wide do
-		for x = 0, num_wide do
+	for y = 0, num_wide-1 do
+		for x = 0, num_wide-1 do
 			local inst = SpawnPrefab("trinket_"..(y*num_wide + x + 1))
 			if inst ~= nil then
 				print(x*spacing,  y*spacing)
@@ -259,8 +259,8 @@ function d_halloween()
 	end
 
 	local candy_wide = math.ceil(math.sqrt(NUM_HALLOWEENCANDY))
-	for y = 0, candy_wide do
-		for x = 0, candy_wide do
+	for y = 0, candy_wide-1 do
+		for x = 0, candy_wide-1 do
 			local inst = SpawnPrefab("halloweencandy_"..(y*candy_wide + x + 1))
 			if inst ~= nil then
 				print(x*spacing,  y*spacing)
@@ -268,6 +268,33 @@ function d_halloween()
 			end
 		end
 	end
+end
+
+function d_potions()
+	local all_potions = {"halloweenpotion_bravery_small", "halloweenpotion_bravery_large", "halloweenpotion_health_small",  "halloweenpotion_health_large",
+						 "halloweenpotion_sanity_small", "halloweenpotion_sanity_large", "halloweenpotion_embers",  "halloweenpotion_sparks",  "livingtree_root"}
+
+	local spacing = 2
+	local num_wide = math.ceil(math.sqrt(#all_potions))
+
+	for y = 0, num_wide-1 do
+		for x = 0, num_wide-1 do
+			local inst = SpawnPrefab(all_potions[(y*num_wide + x + 1)])
+			if inst ~= nil then
+				print(x*spacing,  y*spacing)
+				inst.Transform:SetPosition((ConsoleWorldPosition() + Vector3(x*spacing, 0, y*spacing)):Get())
+			end
+		end
+	end
+end
+
+function d_madsciencemats()
+	c_mat("halloween_experiment_bravery")
+	c_mat("halloween_experiment_health")
+	c_mat("halloween_experiment_hunger") 
+	c_mat("halloween_experiment_sanity") 
+	c_mat("halloween_experiment_volatile")
+	c_mat("halloween_experiment_root")
 end
 
 function d_startlavaarena()

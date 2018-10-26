@@ -258,6 +258,11 @@ return {
     ANNOUNCE_WETTER = "Does this count as a bath?",
     ANNOUNCE_SOAKED = "I'm nearly drowned!",
 
+    --hallowed nights
+    ANNOUNCE_SPOOKED = "Doth mine eyes deceive me?",
+    ANNOUNCE_BRAVERY_POTION = "Fear! I hath bested you!",
+
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Rise, my ally!",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "To battle!",
@@ -1933,6 +1938,21 @@ return {
         HALLOWEENCANDY_13 = "You shalt not break me, confection!", --Griftlands themed candy
         HALLOWEENCANDY_14 = "Wretched Hel's fire!", --Hot Lava pepper candy
         CANDYBAG = "That we might carry our sweetest plunders!",
+
+        HALLOWEEN_ORNAMENT_1 = "Meant to hang from Yggdrasil's kin!",
+        HALLOWEEN_ORNAMENT_2 = "Decoration! Prepare to be hung from something!",
+        HALLOWEEN_ORNAMENT_3 = "It shall strike fear unto the hearts of mine foes!",
+        HALLOWEEN_ORNAMENT_4 = "'tis but a decoration!",
+        HALLOWEEN_ORNAMENT_5 = "It shalt be hung from the highest branch!",
+        HALLOWEEN_ORNAMENT_6 = "Huginn? Or Muninn?",
+
+        HALLOWEENPOTION_DRINKS_WEAK = "A meager reward for my troubles.",
+        HALLOWEENPOTION_DRINKS_POTENT = "Fortune hath smiled upon me today!", 
+        HALLOWEENPOTION_FIRE_FX = "Hel's fuel.",
+        HALLOWEENPOTION_BRAVERY = "'tis Berserker magic.",
+        MADSCIENCE_LAB = "Be there method to this madness?",
+        LIVINGTREE_ROOT = "I hath birthed the root of terror!",
+        LIVINGTREE_SAPLING = "It bears the promise of horridness!",
 
         DRAGONHEADHAT = "The head of a great and merciful beast!",
         DRAGONBODYHAT = "It's the beast's back.",

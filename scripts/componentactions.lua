@@ -252,6 +252,16 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+		madsciencelab = function(inst, doer, actions, right)
+            if right and
+                (inst:HasTag("readytocook")
+                or (inst.replica.container ~= nil and
+                    inst.replica.container:IsFull() and
+                    inst.replica.container:IsOpenedBy(doer))) then
+                table.insert(actions, ACTIONS.COOK)
+            end
+        end,
+
         talkable = function(inst, doer, actions)
             if inst:HasTag("maxwellnottalking") then
                 table.insert(actions, ACTIONS.TALKTO)

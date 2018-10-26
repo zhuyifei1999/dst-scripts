@@ -267,6 +267,10 @@ return {
 	ANNOUNCE_KLAUS_UNCHAINED = "Its chains came off!",
 	ANNOUNCE_KLAUS_CALLFORHELP = "It called for help!",
 
+    --hallowed nights
+    ANNOUNCE_SPOOKED = "Did you see that?!",
+	ANNOUNCE_BRAVERY_POTION = "Those trees don't seem so spooky anymore.",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Let me help you.",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "Good as new!",
@@ -1930,6 +1934,21 @@ return {
         HALLOWEENCANDY_13 = "Oh, my poor jaw.", --Griftlands themed candy
         HALLOWEENCANDY_14 = "I don't do well with spice.", --Hot Lava pepper candy
         CANDYBAG = "It's some sort of delicious pocket dimension for sugary treats.",
+
+		HALLOWEEN_ORNAMENT_1 = "A spectornament I could hang in a tree.",
+		HALLOWEEN_ORNAMENT_2 = "Completely batty decoration.",
+		HALLOWEEN_ORNAMENT_3 = "This wood look good hanging somewhere.", 
+		HALLOWEEN_ORNAMENT_4 = "Almost i-tentacle to the real ones.",
+		HALLOWEEN_ORNAMENT_5 = "Eight-armed adornment.",
+		HALLOWEEN_ORNAMENT_6 = "Everyone's raven about tree decorations these days.", 
+
+		HALLOWEENPOTION_DRINKS_WEAK = "I was hoping for something bigger.",
+		HALLOWEENPOTION_DRINKS_POTENT = "A potent potion.",
+        HALLOWEENPOTION_BRAVERY = "Full of grit.",
+		HALLOWEENPOTION_FIRE_FX = "Crystalized inferno.", 
+		MADSCIENCE_LAB = "Sanity is a small price to pay for science!",
+		LIVINGTREE_ROOT = "Something's in there! I'll have to root it out.", 
+		LIVINGTREE_SAPLING = "It'll grow up big and horrifying.",
 
         DRAGONHEADHAT = "So who gets to be the head?",
         DRAGONBODYHAT = "I'm middling on this middle piece.",

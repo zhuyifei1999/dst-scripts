@@ -168,7 +168,22 @@ local assets =
     Asset("PKGREF", "sound/music_frontend.fsb"),
 
     Asset("PKGREF", "movies/intro.ogv"),
+
+
+    --Including these here as well as global to ensure the resizing dependency works
+    Asset("DYNAMIC_ANIM", "anim/dynamic/box_shared_spiral.zip"),
+    Asset("PKGREF", "anim/dynamic/box_shared_spiral.dyn"),
+    Asset("DYNAMIC_ANIM", "anim/dynamic/box_shared.zip"), --needed for the mystery and purchase box opening animation (happens to contain the forge box build too)
+    Asset("PKGREF", "anim/dynamic/box_shared.dyn"),
 }
+
+--Including these here as well as global to ensure the resizing dependency works
+for item,data in pairs(MISC_ITEMS) do
+	if data.box_build ~= nil then
+		table.insert(assets, Asset("DYNAMIC_ANIM", "anim/dynamic/" .. data.box_build .. ".zip"))
+		table.insert(assets, Asset("PKGREF", "anim/dynamic/" .. data.box_build .. ".dyn"))
+	end
+end
 
 if IsConsole() then
 	if TRUE_DEDICATED_SERVER == false then

@@ -14,6 +14,7 @@ local SandOver = require "widgets/sandover"
 local SandDustOver = require "widgets/sanddustover"
 local MindControlOver = require "widgets/mindcontrolover"
 local GogglesOver = require "widgets/gogglesover"
+local BatOver = require "widgets/batover"
 local EndOfMatchPopup = require "widgets/redux/endofmatchpopup"
 local PopupNumber = require "widgets/popupnumber"
 local RingMeter = require "widgets/ringmeter"
@@ -94,6 +95,9 @@ function PlayerHud:CreateOverlays(owner)
 
     self.mindcontrolover = self.over_root:AddChild(MindControlOver(owner))
 
+    if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
+        self.batover = self.overlayroot:AddChild(BatOver(owner))
+    end
     self.sandover = self.overlayroot:AddChild(SandOver(owner, self.sanddustover))
     self.gogglesover = self.overlayroot:AddChild(GogglesOver(owner, self.storm_overlays))
     self.bloodover = self.overlayroot:AddChild(BloodOver(owner))

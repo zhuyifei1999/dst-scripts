@@ -14,6 +14,7 @@ ITEM_DISPLAY_BLACKLIST =
 	glomling_winter_builder = true,
 	icestaff_bee = true,
 	icestaff_rose = true,
+	kitten_black_builder = true,
 	kitten_winter_builder = true,
 	lamb_winter_builder = true,
 	minerhat_floppy = true,

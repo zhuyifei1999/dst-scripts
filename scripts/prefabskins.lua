@@ -56,10 +56,18 @@ PREFAB_SKINS = {
 		"backpack_smallbird",
 		"backpack_spider",
 	},
+	batbat = 
+	{
+		"batbat_scythe",
+	},
 	bedroll_furry = 
 	{
 		"bedroll_furry_quilt_blue_frost",
 		"bedroll_furry_quilt_white_ivory",
+	},
+	beehat = 
+	{
+		"beehat_mourning",
 	},
 	birdcage = 
 	{
@@ -114,10 +122,12 @@ PREFAB_SKINS = {
 	},
 	critter_kitten = 
 	{
+		"kitten_black",
 		"kitten_winter",
 	},
 	critter_kitten_builder = 
 	{
+		"kitten_black_builder",
 		"kitten_winter_builder",
 	},
 	critter_lamb = 
@@ -194,12 +204,17 @@ PREFAB_SKINS = {
 	},
 	icebox = 
 	{
+		"icebox_coffin",
 		"icebox_victorian",
 	},
 	icestaff = 
 	{
 		"icestaff_bee",
 		"icestaff_rose",
+	},
+	lantern = 
+	{
+		"lantern_tesla",
 	},
 	minerhat = 
 	{
@@ -260,6 +275,7 @@ PREFAB_SKINS = {
 		"tophat_circus",
 		"tophat_derby",
 		"tophat_festive_bell_red_firehound",
+		"tophat_witch_pyre",
 	},
 	torch = 
 	{
@@ -272,12 +288,21 @@ PREFAB_SKINS = {
 	{
 		"treasurechest_carpetbag",
 		"treasurechest_gingerbread",
+		"treasurechest_monster",
 		"treasurechest_posh",
 		"treasurechest_poshprint",
 		"treasurechest_sacred",
 		"treasurechest_steamertrunk",
 		"treasurechest_traincase",
 		"treasurechest_traveltrunk",
+	},
+	umbrella = 
+	{
+		"umbrella_spider",
+	},
+	watermelonhat = 
+	{
+		"watermelonhat_pumpkin",
 	},
 	wathgrithr = 
 	{
@@ -319,6 +344,7 @@ PREFAB_SKINS = {
 		"webber_formal",
 		"webber_gladiator",
 		"webber_ice",
+		"webber_punk",
 		"webber_rose",
 		"webber_shadow",
 		"webber_survivor",
@@ -329,6 +355,7 @@ PREFAB_SKINS = {
 		"wendy_none",
 		"wendy_combatant",
 		"wendy_cook",
+		"wendy_creepy",
 		"wendy_formal",
 		"wendy_gladiator",
 		"wendy_ice",
@@ -342,6 +369,7 @@ PREFAB_SKINS = {
 	wes = 
 	{
 		"wes_none",
+		"wes_clown",
 		"wes_combatant",
 		"wes_cook",
 		"wes_formal",
@@ -374,6 +402,7 @@ PREFAB_SKINS = {
 		"willow_none",
 		"willow_combatant",
 		"willow_cook",
+		"willow_dowdy",
 		"willow_dragonfly",
 		"willow_dragonfly_d",
 		"willow_formal",
@@ -392,6 +421,7 @@ PREFAB_SKINS = {
 		"wilson_formal",
 		"wilson_gladiator",
 		"wilson_ice",
+		"wilson_madscience",
 		"wilson_pigguard",
 		"wilson_pigguard_d",
 		"wilson_rose",
@@ -467,6 +497,7 @@ PREFAB_SKINS = {
 		"wx78_shadow",
 		"wx78_survivor",
 		"wx78_victorian",
+		"wx78_wip",
 	},
 
 }

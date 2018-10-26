@@ -92,6 +92,8 @@ local prefabs =
     "purpleamulet",
     "monkey",
     "livingtree",
+	"livingtree_halloween",
+	"livingtree_root",
     "tumbleweed",
     "rock_ice",
     "catcoonden",

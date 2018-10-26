@@ -312,6 +312,33 @@ params.winter_twiggytree = params.winter_tree
 params.winter_deciduoustree = params.winter_tree
 
 --------------------------------------------------------------------------
+--[[ livingtree_halloween ]]
+--------------------------------------------------------------------------
+
+params.livingtree_halloween =
+{
+    widget =
+    {
+        slotpos =
+        {
+            Vector3(-(64 + 12), 0, 0), 
+            Vector3(0, 0, 0),
+            Vector3(64 + 12, 0, 0), 
+        },
+        animbank = "ui_chest_3x1",
+        animbuild = "ui_chest_3x1",
+        pos = Vector3(200, 0, 0),
+        side_align_tip = 100,
+    },
+    acceptsstacks = false,
+    type = "cooker",
+}
+
+function params.livingtree_halloween.itemtestfn(container, item, slot)
+    return item:HasTag("halloween_ornament") and not container.inst:HasTag("burnt")
+end
+
+--------------------------------------------------------------------------
 --[[ icebox ]]
 --------------------------------------------------------------------------
 
@@ -514,7 +541,7 @@ for y = 0, 6 do
 end
 
 function params.candybag.itemtestfn(container, item, slot)
-    return item:HasTag("halloweencandy") or string.sub(item.prefab, 1, 8) == "trinket_"
+    return item:HasTag("halloweencandy") or item:HasTag("halloween_ornament") or string.sub(item.prefab, 1, 8) == "trinket_"
 end
 
 --------------------------------------------------------------------------

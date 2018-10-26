@@ -37,10 +37,10 @@ ANCHOR_TOP = 1
 ANCHOR_BOTTOM = 2
 
 SCALEMODE_NONE = 0
-SCALEMODE_FILLSCREEN = 1
-SCALEMODE_PROPORTIONAL = 2
-SCALEMODE_FIXEDPROPORTIONAL = 3
-SCALEMODE_FIXEDSCREEN_NONDYNAMIC = 4
+SCALEMODE_FILLSCREEN = 1 --stretch art to fit/fill window
+SCALEMODE_PROPORTIONAL = 2 --preserve aspect ratio (picks the smaller of horizontal/vertical scale)
+SCALEMODE_FIXEDPROPORTIONAL = 3 --same as SCALEMODE_FIXEDSCREEN_NONDYNAMIC, except for safe area on consoles
+SCALEMODE_FIXEDSCREEN_NONDYNAMIC = 4 --scale same amount as window scaling from 1280x720
 
 PHYSICS_TYPE_ANIMATION_CONTROLLED = 0
 PHYSICS_TYPE_PHYSICS_CONTROLLED = 1
@@ -511,7 +511,7 @@ SPECIAL_EVENTS =
     YOTG = "year_of_the_gobbler",
     YOTV = "year_of_the_varg",
 }
-WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.NONE
+WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.HALLOWED_NIGHTS
 
 FESTIVAL_EVENTS =
 {
@@ -702,6 +702,7 @@ FE_MUSIC =
 
 ---------------------------------------------------------
 NUM_HALLOWEENCANDY = 14
+NUM_HALLOWEEN_ORNAMENTS = 6
 NUM_WINTERFOOD = 9
 
 TECH =
@@ -732,6 +733,7 @@ TECH =
     PERDOFFERING_ONE = { PERDOFFERING = 1 },
     PERDOFFERING_THREE = { PERDOFFERING = 3 },
     WARGOFFERING_THREE = { WARGOFFERING = 3 },
+    MADSCIENCE_ONE = { MADSCIENCE = 1 },
 
     HALLOWED_NIGHTS = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
     WINTERS_FEAST = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
@@ -932,6 +934,7 @@ RECIPETABS =
     SCULPTING =     { str = "SCULPTING",    sort = 10,  icon = "tab_sculpt.tex",            crafting_station = true },
     ORPHANAGE =     { str = "ORPHANAGE",    sort = 10,  icon = "tab_orphanage.tex",         crafting_station = true },
     PERDOFFERING =  { str = "PERDOFFERING", sort = 10,  icon = "tab_perd_offering.tex",     crafting_station = true },
+    MADSCIENCE =    { str = "MADSCIENCE",   sort = 10,  icon = "tab_madscience_lab.tex",	crafting_station = true, manufacturing_station = true },
 }
 
 CUSTOM_RECIPETABS =

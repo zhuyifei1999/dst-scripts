@@ -278,6 +278,10 @@ return
     ANNOUNCE_KLAUS_UNCHAINED = "Whatever enchantment restrained it has been undone.",
     ANNOUNCE_KLAUS_CALLFORHELP = "Careful! It has summoned lesser Krampii.",
 
+    --hallowed nights
+    ANNOUNCE_SPOOKED = "Curious. I seem to be hallucinating.",
+    ANNOUNCE_BRAVERY_POTION = "My intestinal fortitude has returned!",
+
     --lavaarena event
     ANNOUNCE_REVIVING_CORPSE = "Hold on a moment, dear.",
     ANNOUNCE_REVIVED_OTHER_CORPSE = "Off you go now.",
@@ -1859,6 +1863,22 @@ return
         HALLOWEENCANDY_13 = "There will be some sore jaws in the morning, I imagine.", --Griftlands themed candy
         HALLOWEENCANDY_14 = "A delightful ten on the Scoville scale.", --Hot Lava pepper candy
         CANDYBAG = "A festive bag for seasonal treats.",
+
+        HALLOWEEN_ORNAMENT_1 = "An ornamental poltergeist meant to be hung somewhere.",
+        HALLOWEEN_ORNAMENT_2 = "A flourish of flying mammal.", 
+        HALLOWEEN_ORNAMENT_3 = "An arborator adornment of the arachnid variety.", 
+        HALLOWEEN_ORNAMENT_4 = "I really should decorate.", 
+        HALLOWEEN_ORNAMENT_5 = "An ornament such as this should be hung up.",
+        HALLOWEEN_ORNAMENT_6 = "A corvus such as this would do better in a tree.", 
+
+        HALLOWEENPOTION_DRINKS_WEAK = "Not as potent as I would have liked.",
+        HALLOWEENPOTION_DRINKS_POTENT = "A impressive elixer.", 
+        HALLOWEENPOTION_FIRE_FX = "It appears combustible.", 
+        HALLOWEENPOTION_BRAVERY = "Bottled valor.",
+        MADSCIENCE_LAB = "Mad science indeed!",
+        LIVINGTREE_ROOT = "The root cutting of a beastly tree.",
+        LIVINGTREE_SAPLING = "Ah. Its horror has taken root.",
+
 
         DRAGONHEADHAT = "This is the head to the dragon costume.",
         DRAGONBODYHAT = "The longer the dragon, the better the luck.",

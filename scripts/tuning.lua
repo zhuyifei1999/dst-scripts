@@ -981,6 +981,10 @@ function Tune(overrides)
                 WARGOFFERING = 3,
                 PERDOFFERING = 1,
             }),
+
+            MADSCIENCE = TechTree.Create({
+                MADSCIENCE = 1,
+            }),
         },
 
         RABBIT_HEALTH = 25 * multiplayer_attack_modifier,
@@ -2091,6 +2095,14 @@ function Tune(overrides)
         },
 
         LIVINGTREE_CHANCE = 0.55,
+        LIVINGTREE_YOUNG_WORK = 15,
+        LIVINGTREE_YOUNG_GROW_TIME = 3 * day_time,
+        LIVINGTREE_WORK = 20,
+        LIVINGTREE_EXTRA_SPACING = 4,
+
+        HALLOWEEN_ORNAMENT_TUMBLEWEED_CHANCE = 0.1,
+        HALLOWEENPOTION_FIREFX_FUEL_MOD = .8,
+        HALLOWEENPOTION_FIREFX_DURATION = seg_time * 8,
 
         -- Birchnut monster chances have been reduced and tied to seasons instead of the number of days to balance things out for dedicated servers (which may be running for extremely long times)
         DECID_MONSTER_MIN_DAY = 3, -- No monsters during the first few days

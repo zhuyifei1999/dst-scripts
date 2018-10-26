@@ -53,6 +53,28 @@ LOADING_IMAGES =
 --------------------------------------------------------------------------
 local SPECIAL_EVENT_DEPS =
 {
+    [SPECIAL_EVENTS.HALLOWED_NIGHTS] =
+    {
+        frontend =
+        {
+            assets =
+            {
+                Asset("ANIM", "anim/dst_menu_halloween.zip"),
+            },
+        },
+        backend =
+        {
+            assets =
+            {
+                Asset("ANIM", "anim/player_spooked.zip"),
+            },
+            prefabs =
+            {
+                "battreefx",
+            },
+        },
+    },
+
     [SPECIAL_EVENTS.WINTERS_FEAST] =
     {
         frontend =
