@@ -380,6 +380,24 @@ local function glow_fn()
     return inst
 end
 
+local function dummy_fn()
+    local inst = CreateEntity()
+    inst.entity:AddTransform()
+
+    --[[Non-networked entity]]
+    inst:AddTag("CLASSIFIED")
+
+    inst.entity:SetPristine()
+    if not TheWorld.ismastersim then
+		return inst
+	end
+
+    inst.persists = false
+	inst:DoTaskInTime(0, inst.Remove)
+	return inst
+end
+
+
 local prefab_list = {}
 table.insert(prefab_list, Prefab("madscience_lab", fn, assets, prefabs))
 table.insert(prefab_list, Prefab("madscience_lab_goop", goop_fn))
@@ -389,7 +407,7 @@ table.insert(prefab_list, MakePlacer("madscience_lab_placer", "madscience_lab", 
 
 -- add fake prefabs for all the experiments so the game doesnt log about non-existing prefabs due to recipes
 for k, _ in pairs(EXPERIMENT_RESULTS) do
-    table.insert(prefab_list, Prefab(k, nil))
+    table.insert(prefab_list, Prefab(k, dummy_fn))
 end
 
 return unpack(prefab_list)

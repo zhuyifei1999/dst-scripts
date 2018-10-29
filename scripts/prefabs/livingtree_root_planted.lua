@@ -78,6 +78,7 @@ local function fn()
 
     inst:AddComponent("growable")
     inst.components.growable.stages = GROWTH_STAGES
+	inst.components.growable.growoffscreen = true
     inst.components.growable:SetStage(1)
     inst.components.growable:StartGrowing()
 
