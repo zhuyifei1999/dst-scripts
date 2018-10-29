@@ -15,39 +15,31 @@ local prefabs =
 local NUM_GROWTH_STAGES = 2
 local statedata =
 {
-	{ -- short
-		anim_postfix	= "young",
-		workleft		= TUNING.LIVINGTREE_YOUNG_WORK,
-		loot			= {"livinglog"},
-	},
-	{ -- tall
-		anim_postfix = "old",
-		growanim    = "grow_young_to_old", 
-		workleft    = TUNING.LIVINGTREE_WORK,
-		loot        = {"livinglog", "livinglog"},
-	},
+    { -- short
+        anim_postfix    = "young",
+        workleft        = TUNING.LIVINGTREE_YOUNG_WORK,
+        loot            = {"livinglog"},
+    },
+    { -- tall
+        anim_postfix = "old",
+        growanim    = "grow_young_to_old", 
+        workleft    = TUNING.LIVINGTREE_WORK,
+        loot        = {"livinglog", "livinglog"},
+    },
 }
 
-local function TurnOffEyes(inst, back_on_delay)
-	if inst._eyeflames ~= nil then
-		if inst.eyeflame_delay_task ~= nil then
-			inst.eyeflame_delay_task:Cancel()
-			inst.eyeflame_delay_task = nil
-		end
-
-		inst._eyeflames:set(false)
-		if back_on_delay ~= nil then
-			inst.eyeflame_delay_task = inst:DoTaskInTime(back_on_delay, function() inst._eyeflames:set(true) inst.eyeflame_delay_task = nil end)
-		end
-	end
+local function TurnOffEyes(inst)
+    if inst._eyeflames ~= nil then
+        inst._eyeflames:set(false)
+    end
 end
 
 local function SetGrowth(inst)
-	local new_size = inst.components.growable.stage
+    local new_size = inst.components.growable.stage
     inst.statedata = statedata[new_size]
     inst.AnimState:PlayAnimation("idle_"..inst.statedata.anim_postfix, true)
     
-	inst.components.workable:SetWorkLeft(inst.statedata.workleft)
+    inst.components.workable:SetWorkLeft(inst.statedata.workleft)
 
     if new_size >= #statedata then
         inst.components.growable:StopGrowing()
@@ -72,17 +64,6 @@ local GROWTH_STAGES =
     },
 }
 
-local function RemoveEyes(inst)
-    if inst.eyefxl ~= nil then
-        inst.eyefxl:Remove()
-        inst.eyefxl = nil
-    end
-    if inst.eyefxr ~= nil then
-        inst.eyefxr:Remove()
-        inst.eyefxr = nil
-    end
-end
-
 local function OnEyeFlamesDirty(inst)
     if TheWorld.ismastersim then
         if not inst._eyeflames:value() then
@@ -103,21 +84,30 @@ local function OnEyeFlamesDirty(inst)
     if inst._eyeflames:value() then
         if inst.eyefxl == nil then
             inst.eyefxl = SpawnPrefab("eyeflame")
+            inst.eyefxl.entity:SetParent(inst.entity) --prevent 1st frame sleep on clients
             inst.eyefxl.entity:AddFollower()
             inst.eyefxl.Follower:FollowSymbol(inst.GUID, "eye1", 0, 0, 0)
         end
         if inst.eyefxr == nil then
             inst.eyefxr = SpawnPrefab("eyeflame")
+            inst.eyefxr.entity:SetParent(inst.entity) --prevent 1st frame sleep on clients
             inst.eyefxr.entity:AddFollower()
             inst.eyefxr.Follower:FollowSymbol(inst.GUID, "eye2", 0, 0, 0)
         end
     else
-		RemoveEyes(inst)
+        if inst.eyefxl ~= nil then
+            inst.eyefxl:Remove()
+            inst.eyefxl = nil
+        end
+        if inst.eyefxr ~= nil then
+            inst.eyefxr:Remove()
+            inst.eyefxr = nil
+        end
     end
 end
 
 local function chop_down_burnt_tree(inst, chopper)
-	TurnOffEyes(inst)
+    TurnOffEyes(inst)
     inst:RemoveComponent("workable")
     inst.SoundEmitter:PlaySound("dontstarve/forest/treeCrumble")
     if not (chopper ~= nil and chopper:HasTag("playerghost")) then
@@ -149,8 +139,8 @@ local function Extinguish(inst)
 end
 
 local function OnBurnt(inst)
-	TurnOffEyes(inst)
-	inst:RemoveComponent("sanityaura")
+    TurnOffEyes(inst)
+    inst:RemoveComponent("sanityaura")
 
     inst.components.growable:StopGrowing()
     inst:DoTaskInTime(0.5, Extinguish)
@@ -172,7 +162,7 @@ local function ondug(inst)
 end
 
 local function makestump(inst, instant)
-	TurnOffEyes(inst)
+    TurnOffEyes(inst)
     inst.components.growable:StopGrowing()
 
     if inst.components.container ~= nil then
@@ -181,7 +171,7 @@ local function makestump(inst, instant)
         inst:RemoveComponent("container")
     end
 
-	inst:RemoveComponent("sanityaura")
+    inst:RemoveComponent("sanityaura")
     inst:RemoveComponent("workable")
     inst:RemoveComponent("burnable")
     MakeMediumBurnable(inst)
@@ -257,8 +247,8 @@ end
 
 local function HideDecor(inst, data)
     inst.AnimState:ClearOverrideSymbol("decor"..data.slot)
-	inst.AnimState:Hide("decor"..data.slot)
-	inst.AnimState:Hide("rope"..data.slot)
+    inst.AnimState:Hide("decor"..data.slot)
+    inst.AnimState:Hide("rope"..data.slot)
 end
 
 local function ShowDecor(inst, data)
@@ -266,8 +256,8 @@ local function ShowDecor(inst, data)
         return
     end
 
-	inst.AnimState:Show("decor"..data.slot)
-	inst.AnimState:Show("rope"..data.slot)
+    inst.AnimState:Show("decor"..data.slot)
+    inst.AnimState:Show("rope"..data.slot)
     inst.AnimState:OverrideSymbol("decor"..data.slot, "halloween_ornaments", "decor_" .. tostring(data.item.halloween_ornamentid))
 end
 
@@ -308,34 +298,31 @@ local function fn()
     inst.MiniMapEntity:SetIcon("livingtree.png")
 
     inst:AddTag("tree")
-	inst:AddTag("decoratable")
+    inst:AddTag("decoratable")
     inst:AddTag("fridge")
 
     inst.AnimState:SetBank("evergreen_living_wood_growable")
     inst.AnimState:SetBuild("evergreen_living_wood_growable")
     inst.AnimState:PlayAnimation("idle_old", true)
 
-	inst:SetDeployExtraSpacing(TUNING.LIVINGTREE_EXTRA_SPACING)
+    inst:SetDeployExtraSpacing(TUNING.LIVINGTREE_EXTRA_SPACING)
 
     MakeSnowCoveredPristine(inst)
 
-	if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
+    if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
         inst._eyeflames = net_bool(inst.GUID, "livingtree._eyeflames", "eyeflamesdirty")
         inst:ListenForEvent("eyeflamesdirty", OnEyeFlamesDirty)
-        if not TheNet:IsDedicated() then
-            inst.OnRemoveEntity = RemoveEyes
-        end
-	end
+    end
 
-	inst:SetPrefabNameOverride("livingtree")
+    inst:SetPrefabNameOverride("livingtree")
 
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
-	
-	inst.statedata = statedata[#statedata]
+    
+    inst.statedata = statedata[#statedata]
 
     inst:AddComponent("inspectable")
 
@@ -347,14 +334,14 @@ local function fn()
     inst.components.workable:SetOnWorkCallback(onworked)
     inst.components.workable:SetOnFinishCallback(onworkfinish)
 
-	inst:AddComponent("container")
-	inst.components.container:WidgetSetup("livingtree_halloween")
-	inst.components.container.canbeopened = IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS)
+    inst:AddComponent("container")
+    inst.components.container:WidgetSetup("livingtree_halloween")
+    inst.components.container.canbeopened = IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS)
 
-	if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
-		inst:AddComponent("sanityaura")
-		inst.components.sanityaura.aura = -TUNING.SANITYAURA_MED
-	end
+    if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
+        inst:AddComponent("sanityaura")
+        inst.components.sanityaura.aura = -TUNING.SANITYAURA_MED
+    end
 
     MakeLargeBurnable(inst)
     inst.components.burnable:SetFXLevel(5)
@@ -364,16 +351,17 @@ local function fn()
 
     inst:AddComponent("growable")
     inst.components.growable.stages = GROWTH_STAGES
+    inst.components.growable.growoffscreen = true
     inst.components.growable:SetStage(1)
     inst.components.growable:StartGrowing()
 
     MakeSnowCovered(inst)
 
-	inst.growfromseed = GrowFromSeed
+    inst.growfromseed = GrowFromSeed
 
-	for i = 1, inst.components.container:GetNumSlots() do
-		HideDecor(inst, {slot=i})
-	end
+    for i = 1, inst.components.container:GetNumSlots() do
+        HideDecor(inst, {slot=i})
+    end
 
     inst:ListenForEvent("itemget", ShowDecor)
     inst:ListenForEvent("itemlose", HideDecor)
@@ -381,9 +369,9 @@ local function fn()
     inst.OnSave = onsave
     inst.OnLoad = onload
 
-	if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
-		inst._eyeflames:set(true)
-	end
+    if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
+        inst._eyeflames:set(true)
+    end
 
     return inst
 end

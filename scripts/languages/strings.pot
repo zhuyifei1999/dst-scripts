@@ -112310,7 +112310,7 @@ msgstr ""
 
 #. STRINGS.SKIN_NAMES.playerportrait_bg_livingforest
 msgctxt "STRINGS.SKIN_NAMES.playerportrait_bg_livingforest"
-msgid "Haunted Forest Portait"
+msgid "Haunted Forest Portrait"
 msgstr ""
 
 #. STRINGS.SKIN_NAMES.playerportrait_bg_lonecarrot
