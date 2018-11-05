@@ -281,7 +281,6 @@ function d_potions()
 		for x = 0, num_wide-1 do
 			local inst = SpawnPrefab(all_potions[(y*num_wide + x + 1)])
 			if inst ~= nil then
-				print(x*spacing,  y*spacing)
 				inst.Transform:SetPosition((ConsoleWorldPosition() + Vector3(x*spacing, 0, y*spacing)):Get())
 			end
 		end
@@ -297,12 +296,8 @@ function d_madsciencemats()
 	c_mat("halloween_experiment_root")
 end
 
-function d_startlavaarena()
-	local stage_info = (TheWorld ~= nil and TheWorld.components.lavaarenaevent ~= nil) and TheWorld.components.lavaarenaevent:GetStageInfo() or nil
-	
-	if stage_info ~= nil and stage_info.prefab == "lavaarenastage_allplayersspawned" then
-		TheWorld:PushEvent("ms_lavaarena_endofstage", {reason="debug triggered"})
-	end
+function d_showalleventservers()
+	TheFrontEnd._showalleventservers = not TheFrontEnd._showalleventservers
 end
 
 function d_lavaarena_skip()
@@ -331,7 +326,7 @@ end
 
 function d_unlockallachievements()
 	local achievements = {}
-	for k, _ in pairs(EventAchievements:GetAchievementsIdList("quagmire")) do
+	for k, _ in pairs(EventAchievements:GetActiveAchievementsIdList()) do
 		table.insert(achievements, k)
 	end
 	
@@ -394,7 +389,7 @@ function d_reportevent(other_ku)
 					Points=5,
 					PlayerStats=
 					{
-						{KU = TheNet:GetUserID(), PlaytimeMs = 100000, Custom = { UnlockAchievements = {"nodeaths_self", "wintime_30", "wilson_reviver"} }},
+						{KU = TheNet:GetUserID(), PlaytimeMs = 100000, Custom = { UnlockAchievements = {"scotttestdaily_d1", "wintime_30"} }},
 						--{KU = other_ku or "KU_test", PlaytimeMs = 60000}
 					}
 				},

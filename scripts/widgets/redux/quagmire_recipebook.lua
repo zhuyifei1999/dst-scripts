@@ -22,7 +22,7 @@ end
 
 
 -------------------------------------------------------------------------------------------------------
-local QuagmireRecipeBook = Class(Widget, function(self, parent_screen)
+local QuagmireRecipeBook = Class(Widget, function(self, parent_screen, season)
     Widget._ctor(self, "QuagmireRecipeBook")
 
     self.parent_screen = parent_screen

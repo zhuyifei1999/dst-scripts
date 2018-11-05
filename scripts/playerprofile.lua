@@ -1095,8 +1095,6 @@ function PlayerProfile:ShowedNewHostPicker()
     end
 end
 
-
-
 function PlayerProfile:SaveKlumpCipher(file, cipher)
     if IsConsole() then
         --do nothing on console for Klump ciphers

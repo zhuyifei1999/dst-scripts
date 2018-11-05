@@ -250,7 +250,7 @@ local actionhandlers =
                         (action.invobject:HasTag("aoeweapon_leap") and (action.invobject:HasTag("superjump") and "combat_superjump_start" or "combat_leap_start")) or
                         (action.invobject:HasTag("blowdart") and "blowdart_special") or
                         (action.invobject:HasTag("throw_line") and "throw_line") or
-                        (action.invobject:HasTag("tome") and "book")
+                        (action.invobject:HasTag("book") and "book")
                     )
                 or "castspell"
         end),
@@ -1985,7 +1985,7 @@ local states =
         onenter = function(inst)
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("superjump_pre")
-            inst.AnimState:PlayAnimation("superjump_lag", false)
+            inst.AnimState:PushAnimation("superjump_lag", false)
 
             inst:PerformPreviewBufferedAction()
             inst.sg:SetTimeout(TIMEOUT)

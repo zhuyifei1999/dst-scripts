@@ -104,20 +104,44 @@ end
 --------------------------------------------------------------------------
 --[[ Armor skin functions ]]
 --------------------------------------------------------------------------
-function armor_init_fn(inst, build_name)
+function armor_init_fn(inst, build_name, def_build)
     if not TheWorld.ismastersim then
         return
     end
 
-    inst.AnimState:SetSkin(build_name, "armor_wood") --needs to be the default for the specific prefab
+    inst.AnimState:SetSkin(build_name, def_build)
     inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
 end
 
-armordragonfly_init_fn = armor_init_fn
-armorgrass_init_fn = armor_init_fn
-armormarble_init_fn = armor_init_fn
-armorwood_init_fn = armor_init_fn
+armordragonfly_init_fn = function(inst, build_name) armor_init_fn(inst, build_name, "torso_dragonfly" ) end
+armorgrass_init_fn =  function(inst, build_name) armor_init_fn(inst, build_name, "armor_grass" ) end
+armormarble_init_fn =  function(inst, build_name) armor_init_fn(inst, build_name, "armor_marble" ) end
+armorwood_init_fn =  function(inst, build_name) armor_init_fn(inst, build_name, "armour_wood") end
+armorruins_init_fn =  function(inst, build_name) armor_init_fn(inst, build_name, "armor_ruins" ) end
 
+--------------------------------------------------------------------------
+--[[ Ruins Bat skin functions ]]
+--------------------------------------------------------------------------
+function ruins_bat_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "swap_ruins_bat")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+
+--------------------------------------------------------------------------
+--[[ Hammer skin functions ]]
+--------------------------------------------------------------------------
+function hammer_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "swap_hammer")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
 
 --------------------------------------------------------------------------
 --[[ Torch skin functions ]]

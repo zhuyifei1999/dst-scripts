@@ -158,7 +158,9 @@ function PlayerStatusScreen:OnUpdate(dt)
             -- Kill everything and re-init
             self:DoInit(ClientObjs)
         else
-            if self.serverstate and self.serverage and self.serverage ~= TheWorld.state.cycles + 1 then
+			if TheNet:GetServerGameMode() == "lavaarena" then
+                self.serverstate:SetString(subfmt(STRINGS.UI.PLAYERSTATUSSCREEN.LAVAARENA_SERVER_MODE, {mode=GetGameModeString(TheNet:GetServerGameMode()), num = TheWorld.net.components.lavaarenaeventstate:GetCurrentRound()}))
+            elseif self.serverstate and self.serverage and self.serverage ~= TheWorld.state.cycles + 1 then
                 self.serverage = TheWorld.state.cycles + 1
                 local modeStr = GetGameModeString(TheNet:GetServerGameMode()) ~= nil and GetGameModeString(TheNet:GetServerGameMode()).." - " or ""
                 self.serverstate:SetString(modeStr.." "..STRINGS.UI.PLAYERSTATUSSCREEN.AGE_PREFIX..self.serverage)
@@ -258,9 +260,14 @@ function PlayerStatusScreen:DoInit(ClientObjs)
         self.serverstate = self.root:AddChild(Text(UIFONT,30))
         self.serverstate:SetColour(1,1,1,1)
     end
-    self.serverage = TheWorld.state.cycles + 1
-    local modeStr = GetGameModeString(TheNet:GetServerGameMode()) ~= nil and GetGameModeString(TheNet:GetServerGameMode()).." - " or ""
-    self.serverstate:SetString(modeStr.." "..STRINGS.UI.PLAYERSTATUSSCREEN.AGE_PREFIX..self.serverage)
+
+	if TheNet:GetServerGameMode() == "lavaarena" then
+		self.serverstate:SetString(subfmt(STRINGS.UI.PLAYERSTATUSSCREEN.LAVAARENA_SERVER_MODE, {mode=GetGameModeString(TheNet:GetServerGameMode()), num = TheWorld.net.components.lavaarenaeventstate:GetCurrentRound()}))
+	else
+		self.serverage = TheWorld.state.cycles + 1
+		local modeStr = GetGameModeString(TheNet:GetServerGameMode()) ~= nil and GetGameModeString(TheNet:GetServerGameMode()).." - " or ""
+		self.serverstate:SetString(modeStr.." "..STRINGS.UI.PLAYERSTATUSSCREEN.AGE_PREFIX..self.serverage)
+	end
 
     local servermenunumbtns = 0
 
@@ -440,6 +447,9 @@ function PlayerStatusScreen:DoInit(ClientObjs)
         playerListing.age = playerListing:AddChild(Text(UIFONT, 35, ""))
         playerListing.age:SetPosition(-20,0,0)
         playerListing.age:SetHAlign(ANCHOR_MIDDLE)
+		if TheNet:GetServerGameMode() == "lavaarena" then
+			playerListing.age:Hide()
+		end
 
         playerListing.viewprofile = playerListing:AddChild(ImageButton("images/scoreboard.xml", "addfriend.tex", "addfriend.tex", "addfriend.tex", "addfriend.tex", nil, {1,1}, {0,0}))
         playerListing.viewprofile:SetPosition(120,3,0)

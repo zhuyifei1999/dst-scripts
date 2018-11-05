@@ -287,6 +287,8 @@ function PurchasePackScreen:_BuildPurchasePanel()
             -- Don't show items unless we have data/strings to describe them.
             if MISC_ITEMS[iap.item_type] then
                 table.insert(iap_defs, iap)
+            else
+                print("Missing def for IAP", iap.item_type)                
             end
         end
         if #iap_defs == 0 then
@@ -301,6 +303,11 @@ function PurchasePackScreen:_BuildPurchasePanel()
                 return MISC_ITEMS[a.item_type].display_order < MISC_ITEMS[b.item_type].display_order
             end
             table.sort(iap_defs, DisplayOrderSort)
+
+            --Debug prints for checking order
+            --for _,iap in ipairs(iap_defs) do
+                --print("Adding IAP", iap.item_type, MISC_ITEMS[iap.item_type].display_order)
+            --end
 
 			local padded_defs = {}
 			for _,def in pairs(iap_defs) do

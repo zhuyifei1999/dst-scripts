@@ -2656,6 +2656,8 @@ function Tune(overrides)
             WINONA = 1,
         },
 
+	    LAVAARENA_BERNIE_SCALE = 1.2,
+
         REVIVE_CORPSE_ACTION_TIME = 6,
 
         VOTE_PASSED_SQUELCH_TIME = 0,

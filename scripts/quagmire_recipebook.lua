@@ -11,7 +11,7 @@ end)
 function QuagmireRecipeBook:IsRecipeUnlocked(product)
 	local split_name = string.split(product, "_")
 	local achievement_name = "food_"..split_name[#split_name]
-	return EventAchievements:IsAchievementUnlocked(FESTIVAL_EVENTS.QUAGMIRE, achievement_name)
+	return EventAchievements:IsAchievementUnlocked(FESTIVAL_EVENTS.QUAGMIRE, GetFestivalEventSeasons(FESTIVAL_EVENTS.QUAGMIRE), achievement_name)
 end
 
 function QuagmireRecipeBook:GetValidRecipes()
@@ -20,7 +20,7 @@ function QuagmireRecipeBook:GetValidRecipes()
 	for k, v in pairs(self.recipes) do
 		local split_name = string.split(k, "_")
 		local achievement_name = "food_"..split_name[#split_name]
-		local achievement_unlocked = EventAchievements:IsAchievementUnlocked(FESTIVAL_EVENTS.QUAGMIRE, achievement_name)
+		local achievement_unlocked = EventAchievements:IsAchievementUnlocked(FESTIVAL_EVENTS.QUAGMIRE, GetFestivalEventSeasons(FESTIVAL_EVENTS.QUAGMIRE), achievement_name)
 
 		local temp_unlocked = sessionid ~= nil and v.session == sessionid
 

@@ -610,7 +610,7 @@ function Widget:SetFocusFromChild(from_child)
     if not self.focus then
         self.focus = true
         if self.OnGainFocus then
-            self:OnGainFocus()
+             self:OnGainFocus()
         end
 
         if self.ongainfocusfn then

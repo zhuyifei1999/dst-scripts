@@ -2171,6 +2171,8 @@ return
         TRAILS = "All brawn and no brain, I'm afraid.",
         TURTILLUS = "Best steer clear of those spikes, dear.",
         SNAPPER = "What a ruffian!",
+        RHINODRILL = "Prone to unnecessary displays of masculinity.",
+        BEETLETAUR = "That lock must be heavy on its snout.",
         
         LAVAARENA_PORTAL = 
         {
@@ -2213,6 +2215,11 @@ return
         LAVAARENA_RECHARGERHAT = "A focal point for magical energies.",
         LAVAARENA_HEALINGGARLANDHAT = "Proximity to the blossoms produces a restorative effect for the user.",
         LAVAARENA_CROWNDAMAGERHAT = "Goodness, I've no desire to wear such a thing.",
+
+        LAVAARENA_ARMOR_HP = "Safety first.",
+
+        LAVAARENA_FIREBOMB = "I prefer my books.",
+        LAVAARENA_HEAVYBLADE = "Goodness. I could never lift that!",
 
         --Quagmire
         QUAGMIRE_ALTAR = 

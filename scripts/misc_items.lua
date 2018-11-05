@@ -434,6 +434,14 @@ MISC_ITEMS =
 		rarity_modifier = "Seasonal",
 		release_group = 36,
 	},
+	loading_magma =
+	{
+		type = "loading",
+		skin_tags = { "LAVA", "LOADING", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
 	loading_maxwell =
 	{
 		type = "loading",
@@ -578,6 +586,14 @@ MISC_ITEMS =
 		rarity_modifier = "EventModifier",
 		release_group = 43,
 	},
+	loading_wx_magma =
+	{
+		type = "loading",
+		skin_tags = { "LAVA", "LOADING", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
 	mysterybox_classic_4 =
 	{
 		type = "mysterybox",
@@ -603,7 +619,7 @@ MISC_ITEMS =
 		box_build = "box_shared",
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
-		release_group = 33,
+		release_group = 52,
 	},
 	mysterybox_nature_4 =
 	{
@@ -623,12 +639,34 @@ MISC_ITEMS =
 		rarity_modifier = "EventModifier",
 		release_group = 45,
 	},
+	pack_forge_armor =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 3,
+		display_atlas = "images/iap_images_forge_armor.xml",
+		display_tex = "forge_armor.tex",
+		box_build = "box_shop_forge_all",
+		release_group = 53,
+	},
+	pack_forge_weapons =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 2,
+		display_atlas = "images/iap_images_forge_weapons.xml",
+		display_tex = "forge_weapons.tex",
+		box_build = "box_shop_forge_all",
+		release_group = 53,
+	},
 	pack_gladiator_all =
 	{
 		type = "purchase",
 		skin_tags = { },
 		featured_pack = true,
-		display_order = 1,
+		display_order = 10,
 		display_atlas = "images/iap_images_gladiator.xml",
 		display_tex = "gladiator.tex",
 		box_build = "box_shop_forge_all",
@@ -638,7 +676,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 11,
+		display_order = 310,
 		display_atlas = "bigportraits/wathgrithr_gladiator.xml",
 		display_tex = "wathgrithr_gladiator_oval.tex",
 		box_build = "box_shop_forge",
@@ -648,7 +686,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 10,
+		display_order = 309,
 		display_atlas = "bigportraits/waxwell_gladiator.xml",
 		display_tex = "waxwell_gladiator_oval.tex",
 		box_build = "box_shop_forge",
@@ -658,7 +696,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 12,
+		display_order = 311,
 		display_atlas = "bigportraits/webber_gladiator.xml",
 		display_tex = "webber_gladiator_oval.tex",
 		box_build = "box_shop_forge",
@@ -668,7 +706,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 5,
+		display_order = 304,
 		display_atlas = "bigportraits/wendy_gladiator.xml",
 		display_tex = "wendy_gladiator_oval.tex",
 		box_build = "box_shop_forge",
@@ -678,7 +716,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 9,
+		display_order = 308,
 		display_atlas = "bigportraits/wes_gladiator.xml",
 		display_tex = "wes_gladiator_oval.tex",
 		box_build = "box_shop_forge",
@@ -688,7 +726,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 7,
+		display_order = 306,
 		display_atlas = "bigportraits/wickerbottom_gladiator.xml",
 		display_tex = "wickerbottom_gladiator_oval.tex",
 		box_build = "box_shop_forge",
@@ -698,7 +736,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 3,
+		display_order = 302,
 		display_atlas = "bigportraits/willow_gladiator.xml",
 		display_tex = "willow_gladiator_oval.tex",
 		box_build = "box_shop_forge",
@@ -708,7 +746,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 2,
+		display_order = 301,
 		display_atlas = "bigportraits/wilson_gladiator.xml",
 		display_tex = "wilson_gladiator_oval.tex",
 		box_build = "box_shop_forge",
@@ -718,7 +756,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 13,
+		display_order = 312,
 		display_atlas = "bigportraits/winona_gladiator.xml",
 		display_tex = "winona_gladiator_oval.tex",
 		box_build = "box_shop_forge",
@@ -728,7 +766,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 4,
+		display_order = 303,
 		display_atlas = "bigportraits/wolfgang_gladiator.xml",
 		display_tex = "wolfgang_gladiator_oval.tex",
 		box_build = "box_shop_forge",
@@ -738,7 +776,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 8,
+		display_order = 307,
 		display_atlas = "bigportraits/woodie_gladiator.xml",
 		display_tex = "woodie_gladiator_oval.tex",
 		box_build = "box_shop_forge",
@@ -748,7 +786,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 6,
+		display_order = 305,
 		display_atlas = "bigportraits/wx78_gladiator.xml",
 		display_tex = "wx78_gladiator_oval.tex",
 		box_build = "box_shop_forge",
@@ -760,7 +798,7 @@ MISC_ITEMS =
 		skin_tags = { },
 		featured_pack = true,
 		steam_dlc_id = 840770,
-		display_order = 1,
+		display_order = 5,
 		display_atlas = "images/iap_images_hallowed.xml",
 		display_tex = "hallowed.tex",
 		box_build = "box_shop_hallowed",
@@ -771,7 +809,7 @@ MISC_ITEMS =
 		type = "purchase",
 		skin_tags = { },
 		featured_pack = true,
-		display_order = 3,
+		display_order = 7,
 		display_atlas = "images/iap_images_hallowed_bundle.xml",
 		display_tex = "hallowed_bundle.tex",
 		box_build = "box_shop_hallowed",
@@ -783,7 +821,7 @@ MISC_ITEMS =
 		skin_tags = { },
 		featured_pack = true,
 		steam_dlc_id = 962960,
-		display_order = 2,
+		display_order = 6,
 		display_atlas = "images/iap_images_hallowed_items.xml",
 		display_tex = "hallowed_items.tex",
 		box_build = "box_shop_hallowed",
@@ -793,7 +831,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 9,
+		display_order = 211,
 		display_atlas = "bigportraits/webber_punk.xml",
 		display_tex = "webber_punk_oval.tex",
 		box_build = "box_shop_hallowed",
@@ -803,7 +841,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 6,
+		display_order = 204,
 		display_atlas = "bigportraits/wendy_creepy.xml",
 		display_tex = "wendy_creepy_oval.tex",
 		box_build = "box_shop_hallowed",
@@ -813,7 +851,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 8,
+		display_order = 208,
 		display_atlas = "bigportraits/wes_clown.xml",
 		display_tex = "wes_clown_oval.tex",
 		box_build = "box_shop_hallowed",
@@ -823,7 +861,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 5,
+		display_order = 202,
 		display_atlas = "bigportraits/willow_dowdy.xml",
 		display_tex = "willow_dowdy_oval.tex",
 		box_build = "box_shop_hallowed",
@@ -833,7 +871,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 4,
+		display_order = 201,
 		display_atlas = "bigportraits/wilson_madscience.xml",
 		display_tex = "wilson_madscience_oval.tex",
 		box_build = "box_shop_hallowed",
@@ -843,7 +881,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 7,
+		display_order = 205,
 		display_atlas = "bigportraits/wx78_wip.xml",
 		display_tex = "wx78_wip_oval.tex",
 		box_build = "box_shop_hallowed",
@@ -876,7 +914,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 6,
+		display_order = 111,
 		display_atlas = "bigportraits/webber_ice.xml",
 		display_tex = "webber_ice_oval.tex",
 		box_build = "box_shop_ice",
@@ -886,7 +924,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 5,
+		display_order = 104,
 		display_atlas = "bigportraits/wendy_ice.xml",
 		display_tex = "wendy_ice_oval.tex",
 		box_build = "box_shop_ice",
@@ -896,7 +934,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 6,
+		display_order = 106,
 		display_atlas = "bigportraits/wickerbottom_ice.xml",
 		display_tex = "wickerbottom_ice_oval.tex",
 		box_build = "box_shop_ice",
@@ -906,7 +944,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 3,
+		display_order = 102,
 		display_atlas = "bigportraits/willow_ice.xml",
 		display_tex = "willow_ice_oval.tex",
 		box_build = "box_shop_ice",
@@ -916,7 +954,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 2,
+		display_order = 101,
 		display_atlas = "bigportraits/wilson_ice.xml",
 		display_tex = "wilson_ice_oval.tex",
 		box_build = "box_shop_ice",
@@ -926,11 +964,154 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 4,
+		display_order = 103,
 		display_atlas = "bigportraits/wolfgang_ice.xml",
 		display_tex = "wolfgang_ice_oval.tex",
 		box_build = "box_shop_ice",
 		release_group = 37,
+	},
+	pack_magma_all =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		steam_dlc_id = 974740,
+		display_order = 1,
+		display_atlas = "images/iap_images_magma.xml",
+		display_tex = "magma.tex",
+		box_build = "box_shop_forge_all",
+		release_group = 53,
+	},
+	pack_magma_bundle =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 4,
+		display_atlas = "images/iap_images_magma_bundle.xml",
+		display_tex = "magma_bundle.tex",
+		box_build = "box_shop_forge_all",
+		release_group = 53,
+	},
+	pack_magma_wathgrithr =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 110,
+		display_atlas = "bigportraits/wathgrithr_magma.xml",
+		display_tex = "wathgrithr_magma_oval.tex",
+		box_build = "box_shop_forge",
+		release_group = 53,
+	},
+	pack_magma_waxwell =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 109,
+		display_atlas = "bigportraits/waxwell_magma.xml",
+		display_tex = "waxwell_magma_oval.tex",
+		box_build = "box_shop_forge",
+		release_group = 53,
+	},
+	pack_magma_webber =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 111,
+		display_atlas = "bigportraits/webber_magma.xml",
+		display_tex = "webber_magma_oval.tex",
+		box_build = "box_shop_forge",
+		release_group = 53,
+	},
+	pack_magma_wendy =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 104,
+		display_atlas = "bigportraits/wendy_magma.xml",
+		display_tex = "wendy_magma_oval.tex",
+		box_build = "box_shop_forge",
+		release_group = 53,
+	},
+	pack_magma_wes =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 108,
+		display_atlas = "bigportraits/wes_magma.xml",
+		display_tex = "wes_magma_oval.tex",
+		box_build = "box_shop_forge",
+		release_group = 53,
+	},
+	pack_magma_wickerbottom =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 106,
+		display_atlas = "bigportraits/wickerbottom_magma.xml",
+		display_tex = "wickerbottom_magma_oval.tex",
+		box_build = "box_shop_forge",
+		release_group = 53,
+	},
+	pack_magma_willow =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 102,
+		display_atlas = "bigportraits/willow_magma.xml",
+		display_tex = "willow_magma_oval.tex",
+		box_build = "box_shop_forge",
+		release_group = 53,
+	},
+	pack_magma_wilson =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 101,
+		display_atlas = "bigportraits/wilson_magma.xml",
+		display_tex = "wilson_magma_oval.tex",
+		box_build = "box_shop_forge",
+		release_group = 53,
+	},
+	pack_magma_winona =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 112,
+		display_atlas = "bigportraits/winona_magma.xml",
+		display_tex = "winona_magma_oval.tex",
+		box_build = "box_shop_forge",
+		release_group = 53,
+	},
+	pack_magma_wolfgang =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 103,
+		display_atlas = "bigportraits/wolfgang_magma.xml",
+		display_tex = "wolfgang_magma_oval.tex",
+		box_build = "box_shop_forge",
+		release_group = 53,
+	},
+	pack_magma_woodie =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 107,
+		display_atlas = "bigportraits/woodie_magma.xml",
+		display_tex = "woodie_magma_oval.tex",
+		box_build = "box_shop_forge",
+		release_group = 53,
+	},
+	pack_magma_wx78 =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 105,
+		display_atlas = "bigportraits/wx78_magma.xml",
+		display_tex = "wx78_magma_oval.tex",
+		box_build = "box_shop_forge",
+		release_group = 53,
 	},
 	pack_nature_all =
 	{
@@ -948,7 +1129,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 7,
+		display_order = 110,
 		display_atlas = "bigportraits/wathgrithr_nature.xml",
 		display_tex = "wathgrithr_nature_oval.tex",
 		box_build = "box_shop_nature",
@@ -958,7 +1139,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 6,
+		display_order = 109,
 		display_atlas = "bigportraits/waxwell_nature.xml",
 		display_tex = "waxwell_nature_oval.tex",
 		box_build = "box_shop_nature",
@@ -968,7 +1149,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 5,
+		display_order = 108,
 		display_atlas = "bigportraits/wes_nature.xml",
 		display_tex = "wes_nature_oval.tex",
 		box_build = "box_shop_nature",
@@ -978,7 +1159,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 8,
+		display_order = 112,
 		display_atlas = "bigportraits/winona_nature.xml",
 		display_tex = "winona_nature_oval.tex",
 		box_build = "box_shop_nature",
@@ -988,7 +1169,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 4,
+		display_order = 107,
 		display_atlas = "bigportraits/woodie_nature.xml",
 		display_tex = "woodie_nature_oval.tex",
 		box_build = "box_shop_nature",
@@ -998,7 +1179,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 3,
+		display_order = 105,
 		display_atlas = "bigportraits/wx78_nature.xml",
 		display_tex = "wx78_nature_oval.tex",
 		box_build = "box_shop_nature",
@@ -1059,7 +1240,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 13,
+		display_order = 110,
 		display_atlas = "bigportraits/wathgrithr_victorian.xml",
 		display_tex = "wathgrithr_victorian_oval.tex",
 		box_build = "box_shop_victorian",
@@ -1069,7 +1250,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 12,
+		display_order = 109,
 		display_atlas = "bigportraits/waxwell_victorian.xml",
 		display_tex = "waxwell_victorian_oval.tex",
 		box_build = "box_shop_victorian",
@@ -1079,7 +1260,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 14,
+		display_order = 111,
 		display_atlas = "bigportraits/webber_victorian.xml",
 		display_tex = "webber_victorian_oval.tex",
 		box_build = "box_shop_victorian",
@@ -1089,7 +1270,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 7,
+		display_order = 104,
 		display_atlas = "bigportraits/wendy_victorian.xml",
 		display_tex = "wendy_victorian_oval.tex",
 		box_build = "box_shop_victorian",
@@ -1099,7 +1280,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 11,
+		display_order = 108,
 		display_atlas = "bigportraits/wes_victorian.xml",
 		display_tex = "wes_victorian_oval.tex",
 		box_build = "box_shop_victorian",
@@ -1109,7 +1290,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 9,
+		display_order = 106,
 		display_atlas = "bigportraits/wickerbottom_victorian.xml",
 		display_tex = "wickerbottom_victorian_oval.tex",
 		box_build = "box_shop_victorian",
@@ -1119,7 +1300,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 5,
+		display_order = 102,
 		display_atlas = "bigportraits/willow_victorian.xml",
 		display_tex = "willow_victorian_oval.tex",
 		box_build = "box_shop_victorian",
@@ -1129,7 +1310,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 4,
+		display_order = 101,
 		display_atlas = "bigportraits/wilson_victorian.xml",
 		display_tex = "wilson_victorian_oval.tex",
 		box_build = "box_shop_victorian",
@@ -1139,7 +1320,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 15,
+		display_order = 112,
 		display_atlas = "bigportraits/winona_victorian.xml",
 		display_tex = "winona_victorian_oval.tex",
 		box_build = "box_shop_victorian",
@@ -1149,7 +1330,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 6,
+		display_order = 103,
 		display_atlas = "bigportraits/wolfgang_victorian.xml",
 		display_tex = "wolfgang_victorian_oval.tex",
 		box_build = "box_shop_victorian",
@@ -1159,7 +1340,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 10,
+		display_order = 107,
 		display_atlas = "bigportraits/woodie_victorian.xml",
 		display_tex = "woodie_victorian_oval.tex",
 		box_build = "box_shop_victorian",
@@ -1169,7 +1350,7 @@ MISC_ITEMS =
 	{
 		type = "purchase",
 		skin_tags = { },
-		display_order = 8,
+		display_order = 105,
 		display_atlas = "bigportraits/wx78_victorian.xml",
 		display_tex = "wx78_victorian_oval.tex",
 		box_build = "box_shop_victorian",
@@ -1205,6 +1386,22 @@ MISC_ITEMS =
 		skin_tags = { "CIRCUS", "PLAYERPORTRAIT", },
 		rarity = "Loyal",
 		release_group = 48,
+	},
+	playerportrait_bg_boarilla =
+	{
+		type = "playerportrait",
+		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
+	playerportrait_bg_boarlord =
+	{
+		type = "playerportrait",
+		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
 	},
 	playerportrait_bg_brokenclock =
 	{
@@ -1253,6 +1450,14 @@ MISC_ITEMS =
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	playerportrait_bg_elementals =
+	{
+		type = "playerportrait",
+		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
 	},
 	playerportrait_bg_fancyarch =
 	{
@@ -1459,6 +1664,14 @@ MISC_ITEMS =
 		rarity_modifier = "Seasonal",
 		release_group = 49,
 	},
+	playerportrait_bg_monsterspawn =
+	{
+		type = "playerportrait",
+		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
 	playerportrait_bg_mushroom =
 	{
 		type = "playerportrait",
@@ -1574,6 +1787,14 @@ MISC_ITEMS =
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	playerportrait_bg_spawngate =
+	{
+		type = "playerportrait",
+		skin_tags = { "LAVA", "PLAYERPORTRAIT", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
 	},
 	playerportrait_bg_spidermarsh =
 	{
@@ -2350,6 +2571,214 @@ MISC_ITEMS =
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	profileflair_theforge_battlestandard =
+	{
+		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
+	profileflair_theforge_battlestandardattack =
+	{
+		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
+	profileflair_theforge_battlestandardheal =
+	{
+		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
+	profileflair_theforge_beetletaur =
+	{
+		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
+	profileflair_theforge_blowdarts =
+	{
+		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
+	profileflair_theforge_boaraudienceboo =
+	{
+		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
+	profileflair_theforge_boaraudiencecheer =
+	{
+		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
+	profileflair_theforge_boaraudienceeat =
+	{
+		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
+	profileflair_theforge_boarlord =
+	{
+		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
+	profileflair_theforge_boaron =
+	{
+		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
+	profileflair_theforge_boarrior =
+	{
+		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
+	profileflair_theforge_bookelemental =
+	{
+		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
+	profileflair_theforge_bookfossil =
+	{
+		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
+	profileflair_theforge_elementalattack =
+	{
+		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
+	profileflair_theforge_elementalrise =
+	{
+		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
+	profileflair_theforge_fireballstaff =
+	{
+		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
+	profileflair_theforge_gungnir =
+	{
+		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
+	profileflair_theforge_hammer =
+	{
+		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
+	profileflair_theforge_healingstaff =
+	{
+		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
+	profileflair_theforge_lance =
+	{
+		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
+	profileflair_theforge_peghook =
+	{
+		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
+	profileflair_theforge_rhinodrill =
+	{
+		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
+	profileflair_theforge_snapper =
+	{
+		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
+	profileflair_theforge_tails =
+	{
+		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
+	profileflair_theforge_tailsguard =
+	{
+		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
+	profileflair_theforge_turtillus =
+	{
+		type = "profileflair",
+		skin_tags = { "LAVA", "PROFILEFLAIR", },
+		rarity = "Common",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
 	},
 	profileflair_tophat_circus =
 	{

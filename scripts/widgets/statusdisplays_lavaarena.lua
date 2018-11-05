@@ -157,6 +157,12 @@ function StatusDisplays:HealthDelta(data)
     elseif data.newpercent < data.oldpercent then
         self.heart:PulseRed()
         TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/health_down")
+	elseif data.cause == "_lavarena_healthup" then
+        self.heart:PulseGreen()
+        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/health_up")
+	elseif data.cause == "_lavarena_healthdown" then
+        self.heart:PulseRed()
+        TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/health_down")
     end
 end
 

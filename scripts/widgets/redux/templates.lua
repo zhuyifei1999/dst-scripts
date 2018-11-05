@@ -1571,6 +1571,13 @@ function TEMPLATES.RectangleWindow(sizeX, sizeY, title_text, bottom_buttons, but
         self.mid_center:SetTint(r,g,b,a)
     end
 
+    w.HideBackground = function(self)
+        for i=4,5 do
+            self.elements[i]:Hide()
+        end
+        self.mid_center:Hide()
+    end
+
     w.InsertWidget = function(self, widget)
 		w:AddChild(widget)
 		for i=1,3 do

@@ -42,11 +42,16 @@ local WxpLobbyPanel = Class(Widget, function(self, profile, on_anim_done_fn)
 
 			self.wxp.achievements = {}
 			for k, detail in ipairs(self.wxp.details) do
-				if EventAchievements:IsAnAchievement(self.current_eventid, detail.desc) then
+				if Settings.match_results.outcome ~= nil and Settings.match_results.outcome.won and string.match(detail.desc, "MILESTONE_") then
+					detail.desc = "WIN"
+				end
+				local achievement_name = EventAchievements:ParseFullQuestName(detail.desc).quest_id
+				if EventAchievements:IsActiveAchievement(achievement_name) then
 					detail._has_icon = true
 					detail._is_achievement = true
-					detail._sort_value = 50000
+					detail._sort_value = string.match(achievement_name, "_daily") and 20000 or 50000
 					EventAchievements:SetAchievementTempUnlocked(detail.desc)
+					detail.desc = achievement_name
 					table.insert(self.wxp.achievements, deepcopy(detail))
 				elseif IsAFoodDiscovery(detail.desc) then
 					detail._has_icon = true
@@ -56,6 +61,9 @@ local WxpLobbyPanel = Class(Widget, function(self, profile, on_anim_done_fn)
 					EventAchievements:SetAchievementTempUnlocked(detail.desc)
 					table.insert(self.wxp.achievements, deepcopy(detail))
 				else
+					if self.current_eventid == "lavaarena" then
+						detail.desc = "LAB_" .. tostring(detail.desc)
+					end
 					detail._has_icon = true
 					detail.is_match_goal = true
 					detail._sort_value = 0
@@ -155,6 +163,7 @@ function WxpLobbyPanel:ShowAchievement(achievement, animate)
 	--print("SDFSDF", achievement.desc, IsAFoodDiscovery(achievement.desc))
 
 	local hover_text = nil
+	local achievement_altas = self.current_eventid == "lavaarena" and "images/lavaarena_quests.xml" or "images/quagmire_achievements.xml"
 
 	if achievement._is_discovery then
 		img = self.achievement_root:AddChild(Image("images/quagmire_recipebook.xml", "recipe_known.tex"))
@@ -181,10 +190,10 @@ function WxpLobbyPanel:ShowAchievement(achievement, animate)
 			end
 		end
 	elseif achievement.is_match_goal then
-		img = self.achievement_root:AddChild(Image("images/"..self.current_eventid.."_achievements.xml", string.lower(achievement.desc)..".tex"))
+		img = self.achievement_root:AddChild(Image(achievement_altas, string.lower(achievement.desc)..".tex"))
 		hover_text = STRINGS.UI.WXP_DETAILS[string.upper(achievement.desc)]
 	else
-		img = self.achievement_root:AddChild(Image("images/"..self.current_eventid.."_achievements.xml", achievement.desc..".tex"))
+		img = self.achievement_root:AddChild(Image(achievement_altas, achievement.desc..".tex"))
 
 		local ach_str = GetActiveFestivalEventAchievementStrings()
 		hover_text = ach_str.ACHIEVEMENT[achievement.desc].TITLE

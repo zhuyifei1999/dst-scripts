@@ -146,6 +146,70 @@ table.insert(prefs, CreatePrefabSkin("armor_marble_rockabs",
 	release_group = 32,
 }))
 
+table.insert(prefs, CreatePrefabSkin("armor_ruins_arcane",
+{
+	base_prefab = "armorruins",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/armor_ruins_arcane.zip"),
+		Asset("PKGREF", "anim/dynamic/armor_ruins_arcane.dyn"),
+	},
+	build_name = "armor_ruins_arcane",
+	rarity = "Elegant",
+	rarity_modifier = "EventModifier",
+	init_fn = function(inst) armorruins_init_fn(inst, "armor_ruins_arcane") end,
+	skin_tags = { "ARMORRUINS", "LAVA", "CRAFTABLE", },
+	release_group = 51,
+}))
+
+table.insert(prefs, CreatePrefabSkin("armor_ruins_bulky",
+{
+	base_prefab = "armorruins",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/armor_ruins_bulky.zip"),
+		Asset("PKGREF", "anim/dynamic/armor_ruins_bulky.dyn"),
+	},
+	build_name = "armor_ruins_bulky",
+	rarity = "Elegant",
+	rarity_modifier = "EventModifier",
+	init_fn = function(inst) armorruins_init_fn(inst, "armor_ruins_bulky") end,
+	skin_tags = { "ARMORRUINS", "LAVA", "CRAFTABLE", },
+	release_group = 51,
+}))
+
+table.insert(prefs, CreatePrefabSkin("armor_ruins_leaf",
+{
+	base_prefab = "armorruins",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/armor_ruins_leaf.zip"),
+		Asset("PKGREF", "anim/dynamic/armor_ruins_leaf.dyn"),
+	},
+	build_name = "armor_ruins_leaf",
+	rarity = "Elegant",
+	rarity_modifier = "EventModifier",
+	init_fn = function(inst) armorruins_init_fn(inst, "armor_ruins_leaf") end,
+	skin_tags = { "ARMORRUINS", "LAVA", "CRAFTABLE", },
+	release_group = 51,
+}))
+
+table.insert(prefs, CreatePrefabSkin("armor_ruins_tusk",
+{
+	base_prefab = "armorruins",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/armor_ruins_tusk.zip"),
+		Asset("PKGREF", "anim/dynamic/armor_ruins_tusk.dyn"),
+	},
+	build_name = "armor_ruins_tusk",
+	rarity = "Elegant",
+	rarity_modifier = "EventModifier",
+	init_fn = function(inst) armorruins_init_fn(inst, "armor_ruins_tusk") end,
+	skin_tags = { "ARMORRUINS", "LAVA", "CRAFTABLE", },
+	release_group = 51,
+}))
+
 table.insert(prefs, CreatePrefabSkin("armor_wood_fangedcollar",
 {
 	base_prefab = "armorwood",
@@ -1240,6 +1304,22 @@ table.insert(prefs, CreatePrefabSkin("footballhat_combathelm",
 	release_group = 32,
 }))
 
+table.insert(prefs, CreatePrefabSkin("footballhat_combathelm2",
+{
+	base_prefab = "footballhat",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/footballhat_combathelm2.zip"),
+		Asset("PKGREF", "anim/dynamic/footballhat_combathelm2.dyn"),
+	},
+	build_name = "footballhat_combathelm2",
+	rarity = "Elegant",
+	rarity_modifier = "EventModifier",
+	init_fn = function(inst) footballhat_init_fn(inst, "footballhat_combathelm2") end,
+	skin_tags = { "FOOTBALLHAT", "LAVA", "CRAFTABLE", },
+	release_group = 51,
+}))
+
 table.insert(prefs, CreatePrefabSkin("glomling_beardeddragon",
 {
 	base_prefab = "critter_glomling",
@@ -1332,6 +1412,22 @@ table.insert(prefs, CreatePrefabSkin("hambat_spiralcut",
 	init_fn = function(inst) hambat_init_fn(inst, "hambat_spiralcut") end,
 	skin_tags = { "HAMBAT", "LAVA", "CRAFTABLE", },
 	release_group = 32,
+}))
+
+table.insert(prefs, CreatePrefabSkin("hammer_forge",
+{
+	base_prefab = "hammer",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/hammer_forge.zip"),
+		Asset("PKGREF", "anim/dynamic/hammer_forge.dyn"),
+	},
+	build_name = "hammer_forge",
+	rarity = "Elegant",
+	rarity_modifier = "EventModifier",
+	init_fn = function(inst) hammer_init_fn(inst, "hammer_forge") end,
+	skin_tags = { "HAMMER", "LAVA", "CRAFTABLE", },
+	release_group = 51,
 }))
 
 table.insert(prefs, CreatePrefabSkin("hat_catcoon_costume",
@@ -2038,6 +2134,22 @@ table.insert(prefs, CreatePrefabSkin("reviver_cupid_2",
 	release_group = 39,
 }))
 
+table.insert(prefs, CreatePrefabSkin("ruins_bat_heavy",
+{
+	base_prefab = "ruins_bat",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/ruins_bat_heavy.zip"),
+		Asset("PKGREF", "anim/dynamic/ruins_bat_heavy.dyn"),
+	},
+	build_name = "ruins_bat_heavy",
+	rarity = "Elegant",
+	rarity_modifier = "EventModifier",
+	init_fn = function(inst) ruins_bat_init_fn(inst, "ruins_bat_heavy") end,
+	skin_tags = { "RUINS_BAT", "LAVA", "CRAFTABLE", },
+	release_group = 51,
+}))
+
 table.insert(prefs, CreatePrefabSkin("shovel_victorian",
 {
 	base_prefab = "shovel",
@@ -2069,6 +2181,38 @@ table.insert(prefs, CreatePrefabSkin("spear_bee",
 	marketable = true,
 	release_group = 16,
 	granted_items = { "firestaff_bee", "icestaff_bee", },
+}))
+
+table.insert(prefs, CreatePrefabSkin("spear_forge_gungnir",
+{
+	base_prefab = "spear",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/swap_spear_forge_gungnir.zip"),
+		Asset("PKGREF", "anim/dynamic/swap_spear_forge_gungnir.dyn"),
+	},
+	build_name = "swap_spear_forge_gungnir",
+	rarity = "Elegant",
+	rarity_modifier = "EventModifier",
+	init_fn = function(inst) spear_init_fn(inst, "swap_spear_forge_gungnir") end,
+	skin_tags = { "SPEAR", "LAVA", "CRAFTABLE", },
+	release_group = 51,
+}))
+
+table.insert(prefs, CreatePrefabSkin("spear_forge_lance",
+{
+	base_prefab = "spear",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/swap_spear_forge_lance.zip"),
+		Asset("PKGREF", "anim/dynamic/swap_spear_forge_lance.dyn"),
+	},
+	build_name = "swap_spear_forge_lance",
+	rarity = "Elegant",
+	rarity_modifier = "EventModifier",
+	init_fn = function(inst) spear_init_fn(inst, "swap_spear_forge_lance") end,
+	skin_tags = { "SPEAR", "LAVA", "CRAFTABLE", },
+	release_group = 51,
 }))
 
 table.insert(prefs, CreatePrefabSkin("spear_rose",
@@ -2513,6 +2657,25 @@ table.insert(prefs, CreatePrefabSkin("wathgrithr_gladiator",
 	release_group = 32,
 }))
 
+table.insert(prefs, CreatePrefabSkin("wathgrithr_magma",
+{
+	base_prefab = "wathgrithr",
+	type = "base",
+	assets = {
+		Asset("ANIM", "anim/ghost_wathgrithr_build.zip"),
+		Asset("DYNAMIC_ANIM", "anim/dynamic/wathgrithr_magma.zip"),
+		Asset("PKGREF", "anim/dynamic/wathgrithr_magma.dyn"),
+		Asset("ATLAS_BUILD", "bigportraits/wathgrithr_magma.xml", 192),
+	},
+	build_name = "wathgrithr_magma",
+	rarity = "Elegant",
+	rarity_modifier = "EventModifier",
+	skin_tags = { "LAVA", "BASE", "CHARACTER", "WATHGRITHR", },
+	bigportrait = { build = "bigportraits/wathgrithr_magma.xml", symbol = "wathgrithr_magma_oval.tex"},
+	skins = { ghost_skin = "ghost_wathgrithr_build", normal_skin = "wathgrithr_magma", },
+	release_group = 51,
+}))
+
 table.insert(prefs, CreatePrefabSkin("wathgrithr_nature",
 {
 	base_prefab = "wathgrithr",
@@ -2717,6 +2880,25 @@ table.insert(prefs, CreatePrefabSkin("waxwell_krampus_d",
 	skins = { ghost_skin = "ghost_waxwell_build", normal_skin = "waxwell_krampus_d", },
 	marketable = true,
 	release_group = 31,
+}))
+
+table.insert(prefs, CreatePrefabSkin("waxwell_magma",
+{
+	base_prefab = "waxwell",
+	type = "base",
+	assets = {
+		Asset("ANIM", "anim/ghost_waxwell_build.zip"),
+		Asset("DYNAMIC_ANIM", "anim/dynamic/waxwell_magma.zip"),
+		Asset("PKGREF", "anim/dynamic/waxwell_magma.dyn"),
+		Asset("ATLAS_BUILD", "bigportraits/waxwell_magma.xml", 192),
+	},
+	build_name = "waxwell_magma",
+	rarity = "Elegant",
+	rarity_modifier = "EventModifier",
+	skin_tags = { "LAVA", "BASE", "CHARACTER", "WAXWELL", },
+	bigportrait = { build = "bigportraits/waxwell_magma.xml", symbol = "waxwell_magma_oval.tex"},
+	skins = { ghost_skin = "ghost_waxwell_build", normal_skin = "waxwell_magma", },
+	release_group = 51,
 }))
 
 table.insert(prefs, CreatePrefabSkin("waxwell_nature",
@@ -2947,6 +3129,25 @@ table.insert(prefs, CreatePrefabSkin("webber_ice",
 	skins = { ghost_skin = "ghost_webber_build", normal_skin = "webber_ice", },
 	torso_tuck_builds = { "webber_ice", },
 	release_group = 36,
+}))
+
+table.insert(prefs, CreatePrefabSkin("webber_magma",
+{
+	base_prefab = "webber",
+	type = "base",
+	assets = {
+		Asset("ANIM", "anim/ghost_webber_build.zip"),
+		Asset("DYNAMIC_ANIM", "anim/dynamic/webber_magma.zip"),
+		Asset("PKGREF", "anim/dynamic/webber_magma.dyn"),
+		Asset("ATLAS_BUILD", "bigportraits/webber_magma.xml", 192),
+	},
+	build_name = "webber_magma",
+	rarity = "Elegant",
+	rarity_modifier = "EventModifier",
+	skin_tags = { "LAVA", "BASE", "CHARACTER", "WEBBER", },
+	bigportrait = { build = "bigportraits/webber_magma.xml", symbol = "webber_magma_oval.tex"},
+	skins = { ghost_skin = "ghost_webber_build", normal_skin = "webber_magma", },
+	release_group = 51,
 }))
 
 table.insert(prefs, CreatePrefabSkin("webber_none",
@@ -3200,6 +3401,25 @@ table.insert(prefs, CreatePrefabSkin("wendy_lureplant_d",
 	release_group = 31,
 }))
 
+table.insert(prefs, CreatePrefabSkin("wendy_magma",
+{
+	base_prefab = "wendy",
+	type = "base",
+	assets = {
+		Asset("ANIM", "anim/ghost_wendy_build.zip"),
+		Asset("DYNAMIC_ANIM", "anim/dynamic/wendy_magma.zip"),
+		Asset("PKGREF", "anim/dynamic/wendy_magma.dyn"),
+		Asset("ATLAS_BUILD", "bigportraits/wendy_magma.xml", 192),
+	},
+	build_name = "wendy_magma",
+	rarity = "Elegant",
+	rarity_modifier = "EventModifier",
+	skin_tags = { "LAVA", "BASE", "CHARACTER", "WENDY", },
+	bigportrait = { build = "bigportraits/wendy_magma.xml", symbol = "wendy_magma_oval.tex"},
+	skins = { ghost_skin = "ghost_wendy_build", normal_skin = "wendy_magma", },
+	release_group = 51,
+}))
+
 table.insert(prefs, CreatePrefabSkin("wendy_none",
 {
 	base_prefab = "wendy",
@@ -3391,6 +3611,28 @@ table.insert(prefs, CreatePrefabSkin("wes_gladiator",
 	has_alternate_for_body = { "wes_gladiator", },
 	has_alternate_for_skirt = { "wes_gladiator", },
 	release_group = 32,
+}))
+
+table.insert(prefs, CreatePrefabSkin("wes_magma",
+{
+	base_prefab = "wes",
+	type = "base",
+	assets = {
+		Asset("ANIM", "anim/ghost_wes_build.zip"),
+		Asset("DYNAMIC_ANIM", "anim/dynamic/wes_magma.zip"),
+		Asset("PKGREF", "anim/dynamic/wes_magma.dyn"),
+		Asset("ATLAS_BUILD", "bigportraits/wes_magma.xml", 192),
+	},
+	build_name = "wes_magma",
+	rarity = "Elegant",
+	rarity_modifier = "EventModifier",
+	skin_tags = { "LAVA", "BASE", "CHARACTER", "WES", },
+	bigportrait = { build = "bigportraits/wes_magma.xml", symbol = "wes_magma_oval.tex"},
+	skins = { ghost_skin = "ghost_wes_build", normal_skin = "wes_magma", },
+	torso_tuck_builds = { "wes_magma", },
+	has_alternate_for_body = { "wes_magma", },
+	has_alternate_for_skirt = { "wes_magma", },
+	release_group = 51,
 }))
 
 table.insert(prefs, CreatePrefabSkin("wes_mandrake",
@@ -3700,6 +3942,29 @@ table.insert(prefs, CreatePrefabSkin("wickerbottom_lightninggoat_d",
 	release_group = 31,
 }))
 
+table.insert(prefs, CreatePrefabSkin("wickerbottom_magma",
+{
+	base_prefab = "wickerbottom",
+	type = "base",
+	assets = {
+		Asset("ANIM", "anim/ghost_wickerbottom_build.zip"),
+		Asset("DYNAMIC_ANIM", "anim/dynamic/wickerbottom_magma.zip"),
+		Asset("PKGREF", "anim/dynamic/wickerbottom_magma.dyn"),
+		Asset("ATLAS_BUILD", "bigportraits/wickerbottom_magma.xml", 192),
+	},
+	build_name = "wickerbottom_magma",
+	rarity = "Elegant",
+	rarity_modifier = "EventModifier",
+	skin_tags = { "LAVA", "BASE", "CHARACTER", "WICKERBOTTOM", },
+	bigportrait = { build = "bigportraits/wickerbottom_magma.xml", symbol = "wickerbottom_magma_oval.tex"},
+	skins = { ghost_skin = "ghost_wickerbottom_build", normal_skin = "wickerbottom_magma", },
+	torso_tuck_builds = { "wickerbottom_magma", },
+	has_alternate_for_body = { "wickerbottom_magma", },
+	has_alternate_for_skirt = { "wickerbottom_magma", },
+	feet_cuff_size = { wickerbottom_magma = 3, },
+	release_group = 51,
+}))
+
 table.insert(prefs, CreatePrefabSkin("wickerbottom_none",
 {
 	base_prefab = "wickerbottom",
@@ -3943,6 +4208,25 @@ table.insert(prefs, CreatePrefabSkin("willow_ice",
 	release_group = 36,
 }))
 
+table.insert(prefs, CreatePrefabSkin("willow_magma",
+{
+	base_prefab = "willow",
+	type = "base",
+	assets = {
+		Asset("ANIM", "anim/ghost_willow_build.zip"),
+		Asset("DYNAMIC_ANIM", "anim/dynamic/willow_magma.zip"),
+		Asset("PKGREF", "anim/dynamic/willow_magma.dyn"),
+		Asset("ATLAS_BUILD", "bigportraits/willow_magma.xml", 192),
+	},
+	build_name = "willow_magma",
+	rarity = "Elegant",
+	rarity_modifier = "EventModifier",
+	skin_tags = { "LAVA", "BASE", "CHARACTER", "WILLOW", },
+	bigportrait = { build = "bigportraits/willow_magma.xml", symbol = "willow_magma_oval.tex"},
+	skins = { ghost_skin = "ghost_willow_build", normal_skin = "willow_magma", },
+	release_group = 51,
+}))
+
 table.insert(prefs, CreatePrefabSkin("willow_none",
 {
 	base_prefab = "willow",
@@ -4132,6 +4416,25 @@ table.insert(prefs, CreatePrefabSkin("wilson_madscience",
 	bigportrait = { build = "bigportraits/wilson_madscience.xml", symbol = "wilson_madscience_oval.tex"},
 	skins = { ghost_skin = "ghost_wilson_build", normal_skin = "wilson_madscience", },
 	release_group = 49,
+}))
+
+table.insert(prefs, CreatePrefabSkin("wilson_magma",
+{
+	base_prefab = "wilson",
+	type = "base",
+	assets = {
+		Asset("ANIM", "anim/ghost_wilson_build.zip"),
+		Asset("DYNAMIC_ANIM", "anim/dynamic/wilson_magma.zip"),
+		Asset("PKGREF", "anim/dynamic/wilson_magma.dyn"),
+		Asset("ATLAS_BUILD", "bigportraits/wilson_magma.xml", 192),
+	},
+	build_name = "wilson_magma",
+	rarity = "Elegant",
+	rarity_modifier = "EventModifier",
+	skin_tags = { "LAVA", "BASE", "CHARACTER", "WILSON", },
+	bigportrait = { build = "bigportraits/wilson_magma.xml", symbol = "wilson_magma_oval.tex"},
+	skins = { ghost_skin = "ghost_wilson_build", normal_skin = "wilson_magma", },
+	release_group = 51,
 }))
 
 table.insert(prefs, CreatePrefabSkin("wilson_none",
@@ -4353,6 +4656,25 @@ table.insert(prefs, CreatePrefabSkin("winona_grassgecko_d",
 	skins = { ghost_skin = "ghost_winona_build", normal_skin = "winona_grassgecko_d", },
 	marketable = true,
 	release_group = 31,
+}))
+
+table.insert(prefs, CreatePrefabSkin("winona_magma",
+{
+	base_prefab = "winona",
+	type = "base",
+	assets = {
+		Asset("ANIM", "anim/ghost_winona_build.zip"),
+		Asset("DYNAMIC_ANIM", "anim/dynamic/winona_magma.zip"),
+		Asset("PKGREF", "anim/dynamic/winona_magma.dyn"),
+		Asset("ATLAS_BUILD", "bigportraits/winona_magma.xml", 192),
+	},
+	build_name = "winona_magma",
+	rarity = "Elegant",
+	rarity_modifier = "EventModifier",
+	skin_tags = { "LAVA", "BASE", "CHARACTER", "WINONA", },
+	bigportrait = { build = "bigportraits/winona_magma.xml", symbol = "winona_magma_oval.tex"},
+	skins = { ghost_skin = "ghost_winona_build", normal_skin = "winona_magma", },
+	release_group = 51,
 }))
 
 table.insert(prefs, CreatePrefabSkin("winona_nature",
@@ -4658,6 +4980,29 @@ table.insert(prefs, CreatePrefabSkin("wolfgang_ice",
 	release_group = 36,
 }))
 
+table.insert(prefs, CreatePrefabSkin("wolfgang_magma",
+{
+	base_prefab = "wolfgang",
+	type = "base",
+	assets = {
+		Asset("ANIM", "anim/ghost_wolfgang_build.zip"),
+		Asset("DYNAMIC_ANIM", "anim/dynamic/wolfgang_mighty_magma.zip"),
+		Asset("PKGREF", "anim/dynamic/wolfgang_mighty_magma.dyn"),
+		Asset("DYNAMIC_ANIM", "anim/dynamic/wolfgang_magma.zip"),
+		Asset("PKGREF", "anim/dynamic/wolfgang_magma.dyn"),
+		Asset("DYNAMIC_ANIM", "anim/dynamic/wolfgang_skinny_magma.zip"),
+		Asset("PKGREF", "anim/dynamic/wolfgang_skinny_magma.dyn"),
+		Asset("ATLAS_BUILD", "bigportraits/wolfgang_magma.xml", 192),
+	},
+	build_name = "wolfgang_magma",
+	rarity = "Elegant",
+	rarity_modifier = "EventModifier",
+	skin_tags = { "LAVA", "BASE", "CHARACTER", "WOLFGANG", },
+	bigportrait = { build = "bigportraits/wolfgang_magma.xml", symbol = "wolfgang_magma_oval.tex"},
+	skins = { ghost_skin = "ghost_wolfgang_build", mighty_skin = "wolfgang_mighty_magma", normal_skin = "wolfgang_magma", wimpy_skin = "wolfgang_skinny_magma", },
+	release_group = 51,
+}))
+
 table.insert(prefs, CreatePrefabSkin("wolfgang_none",
 {
 	base_prefab = "wolfgang",
@@ -4885,6 +5230,27 @@ table.insert(prefs, CreatePrefabSkin("woodie_gladiator",
 	release_group = 32,
 }))
 
+table.insert(prefs, CreatePrefabSkin("woodie_magma",
+{
+	base_prefab = "woodie",
+	type = "base",
+	assets = {
+		Asset("ANIM", "anim/ghost_woodie_build.zip"),
+		Asset("ANIM", "anim/ghost_werebeaver_build.zip"),
+		Asset("DYNAMIC_ANIM", "anim/dynamic/woodie_magma.zip"),
+		Asset("PKGREF", "anim/dynamic/woodie_magma.dyn"),
+		Asset("ANIM", "anim/werebeaver_build.zip"),
+		Asset("ATLAS_BUILD", "bigportraits/woodie_magma.xml", 192),
+	},
+	build_name = "woodie_magma",
+	rarity = "Elegant",
+	rarity_modifier = "EventModifier",
+	skin_tags = { "LAVA", "BASE", "CHARACTER", "WOODIE", },
+	bigportrait = { build = "bigportraits/woodie_magma.xml", symbol = "woodie_magma_oval.tex"},
+	skins = { ghost_skin = "ghost_woodie_build", ghost_werebeaver_skin = "ghost_werebeaver_build", normal_skin = "woodie_magma", werebeaver_skin = "werebeaver_build", },
+	release_group = 51,
+}))
+
 table.insert(prefs, CreatePrefabSkin("woodie_nature",
 {
 	base_prefab = "woodie",
@@ -5110,6 +5476,26 @@ table.insert(prefs, CreatePrefabSkin("wx78_gladiator",
 	skins = { ghost_skin = "ghost_wx78_build", normal_skin = "wx78_gladiator", },
 	feet_cuff_size = { wx78_gladiator = 3, },
 	release_group = 32,
+}))
+
+table.insert(prefs, CreatePrefabSkin("wx78_magma",
+{
+	base_prefab = "wx78",
+	type = "base",
+	assets = {
+		Asset("ANIM", "anim/ghost_wx78_build.zip"),
+		Asset("DYNAMIC_ANIM", "anim/dynamic/wx78_magma.zip"),
+		Asset("PKGREF", "anim/dynamic/wx78_magma.dyn"),
+		Asset("ATLAS_BUILD", "bigportraits/wx78_magma.xml", 192),
+	},
+	build_name = "wx78_magma",
+	rarity = "Elegant",
+	rarity_modifier = "EventModifier",
+	skin_tags = { "LAVA", "BASE", "CHARACTER", "WX78", },
+	bigportrait = { build = "bigportraits/wx78_magma.xml", symbol = "wx78_magma_oval.tex"},
+	skins = { ghost_skin = "ghost_wx78_build", normal_skin = "wx78_magma", },
+	feet_cuff_size = { wx78_magma = 3, },
+	release_group = 51,
 }))
 
 table.insert(prefs, CreatePrefabSkin("wx78_nature",

@@ -759,6 +759,16 @@ CLOTHING =
 		rarity_modifier = "EventModifier",
 		release_group = 32,
 	},
+	body_wathgrithr_magma =
+	{
+		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "torso", },
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
 	body_wathgrithr_nature =
 	{
 		type = "body",
@@ -843,6 +853,16 @@ CLOTHING =
 		legs_cuff_size = 3,
 		marketable = true,
 		release_group = 31,
+	},
+	body_waxwell_magma =
+	{
+		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_upper", "torso", },
+		torso_tuck = "skirt",
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
 	},
 	body_waxwell_nature =
 	{
@@ -938,6 +958,18 @@ CLOTHING =
 		rarity = "Distinguished",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
+	},
+	body_webber_magma =
+	{
+		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "leg", "torso", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		legs_cuff_size = 2,
+		release_group = 51,
 	},
 	body_webber_punk =
 	{
@@ -1044,6 +1076,17 @@ CLOTHING =
 		marketable = true,
 		release_group = 31,
 	},
+	body_wendy_magma =
+	{
+		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "leg", "skirt", "torso", "torso_pelvis", },
+		symbol_hides = { "arm_upper", },
+		torso_tuck = "skirt",
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
 	body_wendy_rose =
 	{
 		type = "body",
@@ -1117,6 +1160,17 @@ CLOTHING =
 		rarity = "Distinguished",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	body_wes_magma =
+	{
+		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "leg", "torso", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		torso_tuck = "full",
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
 	},
 	body_wes_mandrake =
 	{
@@ -1227,6 +1281,16 @@ CLOTHING =
 		marketable = true,
 		release_group = 31,
 	},
+	body_wickerbottom_magma =
+	{
+		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "leg", "skirt", "torso", "torso_pelvis", },
+		torso_tuck = "full",
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
 	body_wickerbottom_rose =
 	{
 		type = "body",
@@ -1319,6 +1383,17 @@ CLOTHING =
 		rarity_modifier = "Seasonal",
 		release_group = 36,
 	},
+	body_willow_magma =
+	{
+		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "torso", },
+		symbol_hides = { "arm_upper", },
+		torso_tuck = "skirt",
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
 	body_willow_rose =
 	{
 		type = "body",
@@ -1400,6 +1475,16 @@ CLOTHING =
 		rarity = "Distinguished",
 		rarity_modifier = "Seasonal",
 		release_group = 49,
+	},
+	body_wilson_magma =
+	{
+		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_upper", "torso", },
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
 	},
 	body_wilson_pigguard =
 	{
@@ -1488,6 +1573,16 @@ CLOTHING =
 		feet_cuff_size = 5,
 		marketable = true,
 		release_group = 31,
+	},
+	body_winona_magma =
+	{
+		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_upper", "torso", },
+		torso_tuck = "skirt",
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
 	},
 	body_winona_nature =
 	{
@@ -1584,6 +1679,18 @@ CLOTHING =
 		rarity_modifier = "Seasonal",
 		release_group = 36,
 	},
+	body_wolfgang_magma =
+	{
+		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "torso", },
+		symbol_overrides_mighty = { torso = "torso_mighty", },
+		symbol_hides = { "arm_upper", },
+		torso_tuck = "full",
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
 	body_wolfgang_rose =
 	{
 		type = "body",
@@ -1670,6 +1777,16 @@ CLOTHING =
 		rarity = "Distinguished",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	body_woodie_magma =
+	{
+		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_lower", "arm_lower_cuff", "arm_lower", "arm_upper", "arm_upper_skin", "torso", },
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
 	},
 	body_woodie_nature =
 	{
@@ -1758,6 +1875,17 @@ CLOTHING =
 		rarity = "Distinguished",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	body_wx78_magma =
+	{
+		type = "body",
+		skin_tags = { "LAVA", "CLOTHING_BODY", "CLOTHING", },
+		symbol_overrides = { "arm_upper", "torso", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		torso_tuck = "untucked",
+		rarity = "Distinguished",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
 	},
 	body_wx78_nature =
 	{
@@ -2065,6 +2193,15 @@ CLOTHING =
 		feet_cuff_size = 3,
 		release_group = 36,
 	},
+	feet_webber_magma =
+	{
+		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
 	feet_webber_punk =
 	{
 		type = "feet",
@@ -2115,6 +2252,16 @@ CLOTHING =
 		feet_cuff_size = 3,
 		release_group = 36,
 	},
+	feet_wendy_magma =
+	{
+		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		feet_cuff_size = 5,
+		release_group = 51,
+	},
 	feet_wendy_victorian =
 	{
 		type = "feet",
@@ -2143,6 +2290,16 @@ CLOTHING =
 		rarity = "Classy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	feet_wes_magma =
+	{
+		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		feet_cuff_size = 3,
+		release_group = 51,
 	},
 	feet_wes_nature =
 	{
@@ -2182,6 +2339,15 @@ CLOTHING =
 		rarity_modifier = "Seasonal",
 		feet_cuff_size = 5,
 		release_group = 36,
+	},
+	feet_wickerbottom_magma =
+	{
+		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
 	},
 	feet_wickerbottom_victorian =
 	{
@@ -2352,6 +2518,16 @@ CLOTHING =
 		feet_cuff_size = 5,
 		release_group = 32,
 	},
+	feet_wx78_magma =
+	{
+		type = "feet",
+		skin_tags = { "LAVA", "CLOTHING_FEET", "CLOTHING", },
+		symbol_overrides = { "foot", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		feet_cuff_size = 3,
+		release_group = 51,
+	},
 	feet_wx78_nature =
 	{
 		type = "feet",
@@ -2480,6 +2656,15 @@ CLOTHING =
 		rarity_modifier = "EventModifier",
 		release_group = 32,
 	},
+	hand_wathgrithr_magma =
+	{
+		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "hand", },
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
 	hand_wathgrithr_nature =
 	{
 		type = "hand",
@@ -2516,6 +2701,15 @@ CLOTHING =
 		rarity_modifier = "EventModifier",
 		release_group = 32,
 	},
+	hand_waxwell_magma =
+	{
+		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "hand", },
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
 	hand_waxwell_nature =
 	{
 		type = "hand",
@@ -2542,6 +2736,15 @@ CLOTHING =
 		rarity = "Spiffy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	hand_webber_magma =
+	{
+		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "hand", },
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
 	},
 	hand_webber_punk =
 	{
@@ -2579,6 +2782,15 @@ CLOTHING =
 		rarity_modifier = "Seasonal",
 		release_group = 36,
 	},
+	hand_wendy_magma =
+	{
+		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "arm_lower_cuff", "arm_upper", },
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
 	hand_wendy_victorian =
 	{
 		type = "hand",
@@ -2596,6 +2808,15 @@ CLOTHING =
 		rarity = "Spiffy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	hand_wes_magma =
+	{
+		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "hand", },
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
 	},
 	hand_wes_nature =
 	{
@@ -2633,6 +2854,15 @@ CLOTHING =
 		rarity_modifier = "Seasonal",
 		release_group = 36,
 	},
+	hand_wickerbottom_magma =
+	{
+		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "hand", },
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
 	hand_wickerbottom_victorian =
 	{
 		type = "hand",
@@ -2660,6 +2890,15 @@ CLOTHING =
 		rarity = "Spiffy",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
+	},
+	hand_willow_magma =
+	{
+		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "arm_lower_cuff", },
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
 	},
 	hand_willow_victorian =
 	{
@@ -2706,6 +2945,15 @@ CLOTHING =
 		rarity_modifier = "Seasonal",
 		release_group = 49,
 	},
+	hand_wilson_magma =
+	{
+		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "arm_lower_cuff", "hand", },
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
 	hand_wilson_victorian =
 	{
 		type = "hand",
@@ -2723,6 +2971,15 @@ CLOTHING =
 		rarity = "Spiffy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	hand_winona_magma =
+	{
+		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "hand", },
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
 	},
 	hand_winona_nature =
 	{
@@ -2760,6 +3017,15 @@ CLOTHING =
 		rarity_modifier = "Seasonal",
 		release_group = 36,
 	},
+	hand_wolfgang_magma =
+	{
+		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "arm_lower_cuff", },
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
 	hand_wolfgang_victorian =
 	{
 		type = "hand",
@@ -2777,6 +3043,15 @@ CLOTHING =
 		rarity = "Spiffy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	hand_woodie_magma =
+	{
+		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "arm_lower_cuff", "hand", },
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
 	},
 	hand_woodie_nature =
 	{
@@ -2804,6 +3079,15 @@ CLOTHING =
 		rarity = "Spiffy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	hand_wx78_magma =
+	{
+		type = "hand",
+		skin_tags = { "LAVA", "CLOTHING_HAND", "CLOTHING", },
+		symbol_overrides = { "arm_lower_cuff", "hand", },
+		rarity = "Spiffy",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
 	},
 	hand_wx78_nature =
 	{
@@ -3014,6 +3298,16 @@ CLOTHING =
 		rarity_modifier = "EventModifier",
 		release_group = 32,
 	},
+	legs_wathgrithr_magma =
+	{
+		type = "legs",
+		skin_tags = { "LAVA", "CLOTHING_LEGS", "CLOTHING", },
+		symbol_overrides = { "foot", "leg", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
 	legs_wathgrithr_nature =
 	{
 		type = "legs",
@@ -3045,6 +3339,15 @@ CLOTHING =
 		rarity = "Spiffy",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	legs_waxwell_magma =
+	{
+		type = "legs",
+		skin_tags = { "LAVA", "CLOTHING_LEGS", "CLOTHING", },
+		symbol_overrides = { "foot", "leg", "skirt", "torso_pelvis", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
 	},
 	legs_waxwell_nature =
 	{
@@ -3088,6 +3391,15 @@ CLOTHING =
 		rarity_modifier = "EventModifier",
 		release_group = 32,
 	},
+	legs_willow_magma =
+	{
+		type = "legs",
+		skin_tags = { "LAVA", "CLOTHING_LEGS", "CLOTHING", },
+		symbol_overrides = { "foot", "leg", "skirt", "torso_pelvis", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
 	legs_wilson_gladiator =
 	{
 		type = "legs",
@@ -3108,6 +3420,17 @@ CLOTHING =
 		rarity_modifier = "Seasonal",
 		release_group = 36,
 	},
+	legs_wilson_magma =
+	{
+		type = "legs",
+		skin_tags = { "LAVA", "CLOTHING_LEGS", "CLOTHING", },
+		symbol_overrides = { "foot", "leg", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		feet_cuff_size = 3,
+		release_group = 51,
+	},
 	legs_winona_gladiator =
 	{
 		type = "legs",
@@ -3118,6 +3441,18 @@ CLOTHING =
 		rarity_modifier = "EventModifier",
 		legs_cuff_size = 3,
 		release_group = 32,
+	},
+	legs_winona_magma =
+	{
+		type = "legs",
+		skin_tags = { "LAVA", "CLOTHING_LEGS", "CLOTHING", },
+		symbol_overrides = { "foot", "leg", "skirt", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		legs_cuff_size = 3,
+		feet_cuff_size = 3,
+		has_leg_boot = true,
+		release_group = 51,
 	},
 	legs_winona_nature =
 	{
@@ -3164,6 +3499,16 @@ CLOTHING =
 		legs_cuff_size = 3,
 		release_group = 36,
 	},
+	legs_wolfgang_magma =
+	{
+		type = "legs",
+		skin_tags = { "LAVA", "CLOTHING_LEGS", "CLOTHING", },
+		symbol_overrides = { "foot", "leg", "skirt", "torso_pelvis", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		feet_cuff_size = 3,
+		release_group = 51,
+	},
 	legs_wolfgang_victorian =
 	{
 		type = "legs",
@@ -3187,6 +3532,17 @@ CLOTHING =
 		rarity_modifier = "EventModifier",
 		legs_cuff_size = 2,
 		release_group = 32,
+	},
+	legs_woodie_magma =
+	{
+		type = "legs",
+		skin_tags = { "LAVA", "CLOTHING_LEGS", "CLOTHING", },
+		symbol_overrides = { "foot", "leg", "torso_pelvis", },
+		symbol_hides = { "skirt", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		legs_cuff_size = 2,
+		release_group = 51,
 	},
 	legs_woodie_nature =
 	{

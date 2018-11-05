@@ -250,6 +250,21 @@ function Inventory:IsHeavyLifting()
     return self.heavylifting
 end
 
+function Inventory:CheckForResistanceToTag(tag, trigger_resistance)
+    for k, v in pairs(self.equipslots) do
+        if v.components.resistance ~= nil and
+            v.components.resistance:HasResistanceToTag(tag) and
+            v.components.resistance:ShouldResistDamage() then
+
+            if trigger_resistance then
+                v.components.resistance:ResistDamage(0)
+            end
+            return true
+        end
+    end
+    return false
+end
+
 function Inventory:ApplyDamage(damage, attacker, weapon)
     --check resistance and specialised armor
     local absorbers = {}

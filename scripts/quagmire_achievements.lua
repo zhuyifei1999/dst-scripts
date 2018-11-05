@@ -448,6 +448,7 @@ end
 
 return 
 {
+    seasons = { 1 },
 	eventid = "quagmire",
 	achievements = Quagmire_Achievements,
 }

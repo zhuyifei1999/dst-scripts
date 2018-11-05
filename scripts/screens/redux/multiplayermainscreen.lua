@@ -39,7 +39,14 @@ function MakeBanner(self)
 	baner_root:SetPosition(0, RESOLUTION_Y / 2 - banner_height / 2 + 1 )
 
 	local anim = baner_root:AddChild(UIAnim())
-	if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
+	
+	if IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then
+		anim:GetAnimState():SetBuild("dst_menu_lavaarena_s2")
+		anim:GetAnimState():SetBank("dst_menu_lavaarena_s2")
+		anim:GetAnimState():PlayAnimation("idle", true)
+		anim:SetScale(0.48)
+		anim:SetPosition(0, -160)
+	elseif IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
 		anim:GetAnimState():SetBuild("dst_menu_halloween")
 		anim:GetAnimState():SetBank("dst_menu_halloween")
 		anim:GetAnimState():PlayAnimation("anim", true)

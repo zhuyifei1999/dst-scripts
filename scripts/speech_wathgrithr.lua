@@ -2141,6 +2141,9 @@ return {
         TRAILS = "Let us battle with honor!",
         TURTILLUS = "Your armor shalln't stop my spear.",
         SNAPPER = "I shall best you, foe!",
+        RHINODRILL = "Thy machismo frighten me not!",
+        BEETLETAUR = "You shall be chained again, foe!",
+
         
         LAVAARENA_PORTAL = 
         {
@@ -2183,6 +2186,11 @@ return {
         LAVAARENA_RECHARGERHAT = "Magic stone, empower my spirit!",
         LAVAARENA_HEALINGGARLANDHAT = "Tis heavily laden with Freya's blessings.",
         LAVAARENA_CROWNDAMAGERHAT = "Be still my heart! Tis the king of battle helms!",
+
+        LAVAARENA_ARMOR_HP = "I shall armor myself for battle!",
+
+        LAVAARENA_FIREBOMB = "A barrage of Hel's fire.",
+        LAVAARENA_HEAVYBLADE = "A mighty blade for a mighty battle!",
 
         --Quagmire
         QUAGMIRE_ALTAR = 

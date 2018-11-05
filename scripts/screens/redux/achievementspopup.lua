@@ -1,16 +1,16 @@
 local AchievementsPanel = require "widgets/redux/achievementspanel"
-local BookWidget = require "widgets/redux/quagmire_book"
+local QuagmireBookWidget = require "widgets/redux/quagmire_book"
 
 local Screen = require "widgets/screen"
 local TEMPLATES = require "widgets/redux/templates"
 local Text = require "widgets/text"
 
 
-local AchievementsPopup = Class(Screen, function(self, prev_screen, user_profile, festival_key)
+local AchievementsPopup = Class(Screen, function(self, prev_screen, festival_key, season)
 	Screen._ctor(self, "AchievementsPopup")
     self.prev_screen = prev_screen
-    self.user_profile = user_profile
     self.festival_key = festival_key
+    self.season = season
 
 	self:DoInit()
 
@@ -37,21 +37,21 @@ function AchievementsPopup:DoInit()
 
     self.badge = self.root:AddChild(TEMPLATES.FestivalNumberBadge(self.festival_key))
 
-    local festival_rank = wxputils.GetLevel(self.festival_key)
+    local festival_rank = wxputils.GetLevel(self.festival_key, self.season)
     self.badge:SetRank(festival_rank)
     self.badge.num:SetSize(30)
     self.badge:SetPosition(w/2 + 15, 300)
 
 
     if self.festival_key == FESTIVAL_EVENTS.LAVAARENA then
-        self.achievements = self.root:AddChild(AchievementsPanel(self.user_profile, self.festival_key))
+        self.achievements = self.root:AddChild(AchievementsPanel(self.festival_key, self.season))
         self.achievements:SetPosition(0, -30)
         
         self.level_text:SetPosition(-15, 270)
         self.badge:SetPosition(w/2 + 15, 270)
 
     elseif self.festival_key == FESTIVAL_EVENTS.QUAGMIRE then
-    	self.achievements = self.root:AddChild(BookWidget(self.user_profile, nil, nil))
+    	self.achievements = self.root:AddChild(QuagmireBookWidget(nil, nil, self.season))
 		self.achievements:SetPosition(0, -40)
 
         self.level_text:SetPosition(-15, 310)

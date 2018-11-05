@@ -2139,6 +2139,8 @@ return {
         TRAILS = "No monkey business, mister!",
         TURTILLUS = "That turtle's huge!",
         SNAPPER = "Don't bite us!",
+        RHINODRILL = "Looks like a big bully!",
+		BEETLETAUR = "All that armor must be heavy.",
         
         LAVAARENA_PORTAL = 
         {
@@ -2181,6 +2183,11 @@ return {
         LAVAARENA_RECHARGERHAT = "It sure is sparkly.",
         LAVAARENA_HEALINGGARLANDHAT = "It makes you feel a little better when you wear it.",
         LAVAARENA_CROWNDAMAGERHAT = "That helmet is really something!",
+
+        LAVAARENA_ARMOR_HP = "We should armor up to be safe.",
+
+		LAVAARENA_FIREBOMB = "It's like firey spit balls.",
+		LAVAARENA_HEAVYBLADE = "That sword is too big for us to carry!",
 
         --Quagmire
         QUAGMIRE_ALTAR = 

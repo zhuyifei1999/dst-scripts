@@ -519,7 +519,7 @@ FESTIVAL_EVENTS =
     LAVAARENA = "lavaarena",
     QUAGMIRE = "quagmire",
 }
-WORLD_FESTIVAL_EVENT = FESTIVAL_EVENTS.NONE
+WORLD_FESTIVAL_EVENT = FESTIVAL_EVENTS.LAVAARENA
 PREVIOUS_FESTIVAL_EVENTS = { FESTIVAL_EVENTS.LAVAARENA, FESTIVAL_EVENTS.QUAGMIRE } --this is an array now, not a single event key
 
 
@@ -599,6 +599,7 @@ local FESTIVAL_EVENT_INFO =
         SERVER_NAME = "LavaArena",
         FEMUSIC = "dontstarve/music/lava_arena/FE2",
 		STATS_FILE_PREFIX = "forge_stats",
+        LATEST_SEASON = 2,
     },
     [FESTIVAL_EVENTS.QUAGMIRE] =
     {
@@ -606,6 +607,7 @@ local FESTIVAL_EVENT_INFO =
         SERVER_NAME = "Quagmire",
         FEMUSIC = nil, --no special FE music for the festival event screen
 		STATS_FILE_PREFIX = "thegorge_stats",
+        LATEST_SEASON = 1,
     },
 }
 
@@ -652,14 +654,27 @@ function GetFestivalEventInfo()
     return FESTIVAL_EVENT_INFO[WORLD_FESTIVAL_EVENT]
 end
 
+function GetFestivalEventSeasons(festival)
+    return FESTIVAL_EVENT_INFO[festival] ~= nil and FESTIVAL_EVENT_INFO[festival].LATEST_SEASON or 0
+end
+
 -- Used by C side. Do NOT rename without editing simulation.cpp
 function GetActiveFestivalEventServerName()
     local festival = IsAnyFestivalEventActive() and WORLD_FESTIVAL_EVENT
-    return FESTIVAL_EVENT_INFO[festival] ~= nil and FESTIVAL_EVENT_INFO[festival].SERVER_NAME or ""
+    return FESTIVAL_EVENT_INFO[festival] ~= nil and (string.format( "%s_s%d", FESTIVAL_EVENT_INFO[festival].SERVER_NAME, FESTIVAL_EVENT_INFO[festival].LATEST_SEASON )) or ""
 end
 
-function GetFestivalEventServerName(festival)
-    return FESTIVAL_EVENT_INFO[festival] ~= nil and FESTIVAL_EVENT_INFO[festival].SERVER_NAME or ""
+-- Used by C side. Do NOT rename without editing simulation.cpp
+function GetActiveFestivalProductName()
+	return FESTIVAL_EVENT_INFO[WORLD_FESTIVAL_EVENT] ~= nil and FESTIVAL_EVENT_INFO[WORLD_FESTIVAL_EVENT].SERVER_NAME or ""
+end
+
+function GetFestivalEventServerName(festival, season)
+    if season == 1 then
+        return FESTIVAL_EVENT_INFO[festival] ~= nil and FESTIVAL_EVENT_INFO[festival].SERVER_NAME or ""
+    else
+        return FESTIVAL_EVENT_INFO[festival] ~= nil and (string.format( "%s_s%d", FESTIVAL_EVENT_INFO[festival].SERVER_NAME, season )) or ""
+    end
 end
 
 function GetActiveFestivalEventStatsFilePrefix()
@@ -674,19 +689,13 @@ function GetActiveFestivalEventAchievementStrings()
 end
 
 -- To enable/disable the tournament, change the return value of Server_IsTournamentActive()
-QUAGMIRE_TOURNAMENT_TICKET = "quagmire_challenge"
-
 function Server_IsTournamentActive()
 	-- for internal server use only
 	return false
 end
 
-function Client_IsTournamentActive(ticket_name) -- ticket_name is optional
-	local is_active = Server_IsTournamentActive() and IsSteam()
-	if is_active and ticket_name ~= nil and ticket_name ~= ACTIVE_TOURNAMENT_TICKET then
-		is_active = false
-	end
-	return is_active
+function Client_IsTournamentActive() -- ticket_name is optional
+	return Server_IsTournamentActive() and IsSteam()
 end
 
 ---------------------------------------------------------

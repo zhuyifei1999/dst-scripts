@@ -17,8 +17,9 @@ function UIAnim:FinishCurrentTint()
     self.inst.widget:SetTint(val.r, val.g, val.b, val.a)
 
     if self.tint_whendone then
-        self.tint_whendone()
+		local whendone = self.tint_whendone
         self.tint_whendone = nil
+        whendone()
     end
 end
 
@@ -50,8 +51,9 @@ function UIAnim:FinishCurrentScale()
     self.inst.UITransform:SetScale(sx >= 0 and val or -val, sy >= 0 and val or -val, sz >= 0 and val or -val)
     
     if self.scale_whendone then
-        self.scale_whendone()
+		local whendone = self.scale_whendone
         self.scale_whendone = nil
+        whendone()
     end
 end
 
