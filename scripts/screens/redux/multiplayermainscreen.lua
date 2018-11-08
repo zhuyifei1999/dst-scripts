@@ -39,7 +39,14 @@ function MakeBanner(self)
 	baner_root:SetPosition(0, RESOLUTION_Y / 2 - banner_height / 2 + 1 )
 
 	local anim = baner_root:AddChild(UIAnim())
-	if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
+	
+	if IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then
+		anim:GetAnimState():SetBuild("dst_menu_lavaarena_s2")
+		anim:GetAnimState():SetBank("dst_menu_lavaarena_s2")
+		anim:GetAnimState():PlayAnimation("idle", true)
+		anim:SetScale(0.48)
+		anim:SetPosition(0, -160)
+	elseif IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
 		anim:GetAnimState():SetBuild("dst_menu_halloween")
 		anim:GetAnimState():SetBank("dst_menu_halloween")
 		anim:GetAnimState():PlayAnimation("anim", true)
@@ -53,10 +60,17 @@ function MakeBanner(self)
 		anim:SetPosition(347, 85)
 	end
 
-    local logo = baner_root:AddChild(Image("images/frontscreen.xml", "title.tex"))
-    logo:SetScale(.36)
-    logo:SetPosition( -RESOLUTION_X/2 + 180, 5)
-    logo:SetTint(unpack(FRONTEND_TITLE_COLOUR))
+	if IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then
+		self.logo = baner_root:AddChild(Image("images/lavaarena_frontend.xml", "title.tex"))
+		self.logo:SetScale(.6)
+		self.logo:SetPosition( -RESOLUTION_X/2 + 180, 5)
+	else
+		self.logo = baner_root:AddChild(Image("images/frontscreen.xml", "title.tex"))
+		self.logo:SetScale(.36)
+		self.logo:SetPosition( -RESOLUTION_X/2 + 180, 5)
+		self.logo:SetTint(unpack(FRONTEND_TITLE_COLOUR))
+	end
+	
 
 	local body_str = nil
 	local title_str = nil

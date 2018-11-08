@@ -2115,6 +2115,8 @@ return {
         TRAILS = "You shall fall.",
         TURTILLUS = "You cannot shield yourself from this world.",
         SNAPPER = "Death will be a blessing.",
+        RHINODRILL = "Brotherly camaraderie will not save you.",
+		BEETLETAUR = "You are a prisoner of your own doomed destiny.",
         
         LAVAARENA_PORTAL = 
         {
@@ -2156,6 +2158,11 @@ return {
         LAVAARENA_RECHARGERHAT = "I'll be able to attack so often...",
         LAVAARENA_HEALINGGARLANDHAT = "But will it heal my soul?",
         LAVAARENA_CROWNDAMAGERHAT = "I forsee a wave of death.",
+
+        LAVAARENA_ARMOR_HP = "It protects from damage, but not from sorrow.",
+
+		LAVAARENA_FIREBOMB = "A bombardment of pain.",
+		LAVAARENA_HEAVYBLADE = "It's too heavy. Like my soul.",
         
         WEBBER_SPIDER_MINION = "Webber seems proud of them.",
 

@@ -73,9 +73,14 @@ function PlayerSummaryScreen:DoInit()
         self.festivals_divider_top:SetPosition(60,55)
         
         self.festivals_badges = {}
-        for i,event_name in pairs(PREVIOUS_FESTIVAL_EVENTS) do
-            self.festivals_badges[i] = self.festivals_root:AddChild(self:_BuildFestivalHistory(event_name))
-            self.festivals_badges[i]:SetPosition(-60,65 - i*80)
+        local i = 0
+        for _,event_name in pairs(PREVIOUS_FESTIVAL_EVENTS) do
+            for season=1,GetFestivalEventSeasons(event_name) do
+                print(event_name, season, GetFestivalEventSeasons(event_name))
+                self.festivals_badges[i] = self.festivals_root:AddChild(self:_BuildFestivalHistory(event_name, season))
+                self.festivals_badges[i]:SetPosition(-60,65 - i*80)
+                i = i + 1
+            end
         end
     end
 
@@ -164,15 +169,15 @@ local function PushWaitingPopup()
     return event_wait_popup
 end
 
-function PlayerSummaryScreen:_BuildFestivalHistory(festival_key)
+function PlayerSummaryScreen:_BuildFestivalHistory(festival_key, season)
     local function onclick()
         local event_wait_popup = PushWaitingPopup()
-        wxputils.GetEventStatus(festival_key, function(success)
+        wxputils.GetEventStatus(festival_key, season, function(success)
             self.inst:DoTaskInTime(0, function() --we need to delay a frame so that the popping of the screens happens at the right time in the frame.
                 event_wait_popup:Close()
 
                 if success then
-                    local screen = AchievementsPopup(self.prev_screen, self.user_profile, festival_key)
+                    local screen = AchievementsPopup(self.prev_screen, festival_key, season)
                     TheFrontEnd:PushScreen(screen)
                 else
                     local ok_scr = PopupDialogScreen( STRINGS.UI.PLAYERSUMMARYSCREEN.FESTIVAL_HISTORY, STRINGS.UI.ITEM_SERVER.FAILED_DEFAULT,

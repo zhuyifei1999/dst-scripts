@@ -277,16 +277,24 @@ local function GetRunStateAnim(inst)
 end
 
 local function OnRemoveCleanupTargetFX(inst)
-    (inst.sg.statemem.targetfx.KillFX or inst.sg.statemem.targetfx.Remove)(inst.sg.statemem.targetfx)
+    if inst.sg.statemem.targetfx.KillFX ~= nil then
+        inst.sg.statemem.targetfx:RemoveEventCallback("onremove", OnRemoveCleanupTargetFX, inst)
+        inst.sg.statemem.targetfx:KillFX()
+    else
+        inst.sg.statemem.targetfx:Remove()
+    end
+end
+
+local function IsWeaponEquipped(inst, weapon)
+    return weapon ~= nil
+        and weapon.components.equippable ~= nil
+        and weapon.components.equippable:IsEquipped()
+        and weapon.components.inventoryitem ~= nil
+        and weapon.components.inventoryitem:IsHeldBy(inst)
 end
 
 local function ValidateMultiThruster(inst)
-    return inst.sg.statemem.weapon ~= nil
-        and inst.sg.statemem.weapon.components.equippable ~= nil
-        and inst.sg.statemem.weapon.components.equippable:IsEquipped()
-        and inst.sg.statemem.weapon.components.inventoryitem ~= nil
-        and inst.sg.statemem.weapon.components.inventoryitem:IsHeldBy(inst)
-        and inst.sg.statemem.weapon.components.multithruster ~= nil
+    return IsWeaponEquipped(inst, inst.sg.statemem.weapon) and inst.sg.statemem.weapon.components.multithruster ~= nil
 end
 
 local function DoThrust(inst, nosound)
@@ -613,10 +621,8 @@ local events =
     end),
 
     EventHandler("blocked", function(inst, data)
-        if not inst.components.health:IsDead() then
-            if inst.sg:HasStateTag("shell") then
-                inst.sg:GoToState("shell_hit")
-            end
+        if not inst.components.health:IsDead() and inst.sg:HasStateTag("shell") then
+            inst.sg:GoToState("shell_hit")
         end
     end),
 
@@ -701,7 +707,7 @@ local events =
     end),
 
     EventHandler("knockback", function(inst, data)
-        if not inst.components.health:IsDead() then
+        if not (inst.components.health:IsDead() or inst.components.inventory:CheckForResistanceToTag("knockback", true)) then
             inst.sg:GoToState((data.forcelanded or inst.components.inventory:ArmorHasTag("heavyarmor") or inst:HasTag("heavybody")) and "knockbacklanded" or "knockback", data)
         end
     end),
@@ -4348,7 +4354,7 @@ local states =
             TimeEvent(58 * FRAMES, function(inst)
                 if inst.sg.statemem.targetfx ~= nil then
                     if inst.sg.statemem.targetfx:IsValid() then
-                        (inst.sg.statemem.targetfx.KillFX or inst.sg.statemem.targetfx.Remove)(inst.sg.statemem.targetfx)
+                        OnRemoveCleanupTargetFX(inst)
                     end
                     inst.sg.statemem.targetfx = nil
                 end
@@ -4389,7 +4395,7 @@ local states =
                 inst.sg.statemem.book_fx:Remove()
             end
             if inst.sg.statemem.targetfx ~= nil and inst.sg.statemem.targetfx:IsValid() then
-                (inst.sg.statemem.targetfx.KillFX or inst.sg.statemem.targetfx.Remove)(inst.sg.statemem.targetfx)
+                OnRemoveCleanupTargetFX(inst)
             end
         end,
     },
@@ -6862,7 +6868,7 @@ local states =
             TimeEvent(53 * FRAMES, function(inst)
                 if inst.sg.statemem.targetfx ~= nil then
                     if inst.sg.statemem.targetfx:IsValid() then
-                        (inst.sg.statemem.targetfx.KillFX or inst.sg.statemem.targetfx.Remove)(inst.sg.statemem.targetfx)
+                        OnRemoveCleanupTargetFX(inst)
                     end
                     inst.sg.statemem.targetfx = nil
                 end
@@ -6893,7 +6899,7 @@ local states =
                 inst.sg.statemem.stafflight:Remove()
             end
             if inst.sg.statemem.targetfx ~= nil and inst.sg.statemem.targetfx:IsValid() then
-                (inst.sg.statemem.targetfx.KillFX or inst.sg.statemem.targetfx.Remove)(inst.sg.statemem.targetfx)
+                OnRemoveCleanupTargetFX(inst)
             end
         end,
     },
@@ -7139,7 +7145,7 @@ local states =
 
         onexit = function(inst)
             if not inst.sg.statemem.leap and inst.sg.statemem.targetfx ~= nil and inst.sg.statemem.targetfx:IsValid() then
-                (inst.sg.statemem.targetfx.KillFX or inst.sg.statemem.targetfx.Remove)(inst.sg.statemem.targetfx)
+                OnRemoveCleanupTargetFX(inst)
             end
         end,
     },
@@ -7158,6 +7164,7 @@ local states =
                     data.weapon.components.aoeweapon_leap ~= nil and
                     inst.AnimState:IsCurrentAnimation("atk_leap_lag") then
                     ToggleOffPhysics(inst)
+                    inst.Transform:SetEightFaced()
                     inst.AnimState:PlayAnimation("atk_leap")
                     inst.SoundEmitter:PlaySound("dontstarve/common/deathpoof")
                     inst.sg.statemem.startingpos = inst:GetPosition()
@@ -7186,8 +7193,10 @@ local states =
         timeline =
         {
             TimeEvent(4 * FRAMES, function(inst)
-                if inst.sg.statemem.targetfx ~= nil and inst.sg.statemem.targetfx:IsValid() then
-                    (inst.sg.statemem.targetfx.KillFX or inst.sg.statemem.targetfx.Remove)(inst.sg.statemem.targetfx)
+                if inst.sg.statemem.targetfx ~= nil then
+                    if inst.sg.statemem.targetfx:IsValid() then
+                        OnRemoveCleanupTargetFX(inst)
+                    end
                     inst.sg.statemem.targetfx = nil
                 end
             end),
@@ -7240,10 +7249,11 @@ local states =
                     inst.Physics:Teleport(inst.sg.statemem.targetpos.x, 0, inst.sg.statemem.targetpos.z)
                 end
             end
+            inst.Transform:SetFourFaced()
             inst.components.bloomer:PopBloom("leap")
             inst.components.colouradder:PopColour("leap")
             if inst.sg.statemem.targetfx ~= nil and inst.sg.statemem.targetfx:IsValid() then
-                (inst.sg.statemem.targetfx.KillFX or inst.sg.statemem.targetfx.Remove)(inst.sg.statemem.targetfx)
+                OnRemoveCleanupTargetFX(inst)
             end
         end,
     },
@@ -7292,7 +7302,7 @@ local states =
 
         onexit = function(inst)
             if not inst.sg.statemem.superjump and inst.sg.statemem.targetfx ~= nil and inst.sg.statemem.targetfx:IsValid() then
-                (inst.sg.statemem.targetfx.KillFX or inst.sg.statemem.targetfx.Remove)(inst.sg.statemem.targetfx)
+                OnRemoveCleanupTargetFX(inst)
             end
         end,
     },
@@ -7360,8 +7370,10 @@ local states =
                 inst.sg.statemem.dalpha = .5
             end),
             TimeEvent(1 - 7 * FRAMES, function(inst)
-                if inst.sg.statemem.targetfx ~= nil and inst.sg.statemem.targetfx:IsValid() then
-                    (inst.sg.statemem.targetfx.KillFX or inst.sg.statemem.targetfx.Remove)(inst.sg.statemem.targetfx)
+                if inst.sg.statemem.targetfx ~= nil then
+                    if inst.sg.statemem.targetfx:IsValid() then
+                        OnRemoveCleanupTargetFX(inst)
+                    end
                     inst.sg.statemem.targetfx = nil
                 end
             end),
@@ -7398,7 +7410,7 @@ local states =
                 end
             end
             if inst.sg.statemem.targetfx ~= nil and inst.sg.statemem.targetfx:IsValid() then
-                (inst.sg.statemem.targetfx.KillFX or inst.sg.statemem.targetfx.Remove)(inst.sg.statemem.targetfx)
+                OnRemoveCleanupTargetFX(inst)
             end
             inst:Show()
         end,
@@ -7585,8 +7597,8 @@ local states =
                 DoThrust(inst, true)
             end),
             TimeEvent(19 * FRAMES, function(inst)
-                DoThrust(inst, true)
                 inst.sg:RemoveStateTag("nointerrupt")
+                DoThrust(inst, true)
             end),
         },
 
@@ -7701,6 +7713,14 @@ local states =
 
             if buffaction ~= nil and buffaction.pos ~= nil then
                 inst:ForceFacePoint(buffaction.pos:Get())
+
+                if equip ~= nil and equip.components.aoetargeting ~= nil and equip.components.aoetargeting.targetprefab ~= nil then
+                    inst.sg.statemem.targetfx = SpawnPrefab(equip.components.aoetargeting.targetprefab)
+                    if inst.sg.statemem.targetfx ~= nil then
+                        inst.sg.statemem.targetfx.Transform:SetPosition(buffaction.pos:Get())
+                        inst.sg.statemem.targetfx:ListenForEvent("onremove", OnRemoveCleanupTargetFX, inst)
+                    end
+                end
             end
 
             if (equip ~= nil and equip.projectiledelay or 0) > 0 then
@@ -7720,8 +7740,14 @@ local states =
             if (inst.sg.statemem.projectiledelay or 0) > 0 then
                 inst.sg.statemem.projectiledelay = inst.sg.statemem.projectiledelay - dt
                 if inst.sg.statemem.projectiledelay <= 0 then
-                    inst:PerformBufferedAction()
                     inst.sg:RemoveStateTag("nointerrupt")
+                    if inst:PerformBufferedAction() and inst.sg.statemem.targetfx ~= nil then
+                        if inst.sg.statemem.targetfx:IsValid() then
+                            inst.sg.statemem.targetfx:RemoveEventCallback("onremove", OnRemoveCleanupTargetFX, inst)
+                            inst.sg.statemem.targetfx:DoTaskInTime(1.05, inst.sg.statemem.targetfx.KillFX or inst.sg.statemem.targetfx.Remove)
+                        end
+                        inst.sg.statemem.targetfx = nil
+                    end
                 end
             end
         end,
@@ -7730,12 +7756,22 @@ local states =
         {
             TimeEvent(7 * FRAMES, function(inst)
                 if inst.sg.statemem.projectiledelay == nil then
-                    inst:PerformBufferedAction()
                     inst.sg:RemoveStateTag("nointerrupt")
+                    if inst:PerformBufferedAction() and inst.sg.statemem.targetfx ~= nil then
+                        if inst.sg.statemem.targetfx:IsValid() then
+                            inst.sg.statemem.targetfx:RemoveEventCallback("onremove", OnRemoveCleanupTargetFX, inst)
+                            inst.sg.statemem.targetfx:DoTaskInTime(1.05, inst.sg.statemem.targetfx.KillFX or inst.sg.statemem.targetfx.Remove)
+                        end
+                        inst.sg.statemem.targetfx = nil
+                    end
                 end
             end),
             TimeEvent(18 * FRAMES, function(inst)
-                inst.sg:GoToState("idle", true)
+                if inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) ~= nil then
+                    inst.sg:GoToState("item_out")
+                else
+                    inst.sg:GoToState("idle", true)
+                end
             end),
         },
 
@@ -7747,11 +7783,17 @@ local states =
                         inst.AnimState:PlayAnimation("throw")
                         inst.AnimState:SetTime(6 * FRAMES)
                     else
-                        inst.sg:GoToState("idle")
+                        inst.sg:GoToState(inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS) ~= nil and "item_out" or "idle")
                     end
                 end
             end),
         },
+
+        onexit = function(inst)
+            if inst.sg.statemem.targetfx ~= nil and inst.sg.statemem.targetfx:IsValid() then
+                OnRemoveCleanupTargetFX(inst)
+            end
+        end,
     },
 
     State{

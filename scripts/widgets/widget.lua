@@ -162,11 +162,11 @@ function Widget:CancelRotateTo(run_complete_fn)
     end
 end
 
-function Widget:RotateTo(from, to, time, fn)
+function Widget:RotateTo(from, to, time, fn, infinite)
     if not self.inst.components.uianim then
         self.inst:AddComponent("uianim")
     end
-    self.inst.components.uianim:RotateTo(from, to, time, fn)
+    self.inst.components.uianim:RotateTo(from, to, time, fn, infinite)
 end
 
 function Widget:TintTo(from, to, time, fn)
@@ -610,7 +610,7 @@ function Widget:SetFocusFromChild(from_child)
     if not self.focus then
         self.focus = true
         if self.OnGainFocus then
-            self:OnGainFocus()
+             self:OnGainFocus()
         end
 
         if self.ongainfocusfn then

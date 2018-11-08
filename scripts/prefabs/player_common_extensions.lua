@@ -96,11 +96,11 @@ local function OnPlayerDeath(inst, data)
 
     inst:ClearBufferedAction()
 
-    inst.components.age:PauseAging()
     if inst.components.revivablecorpse ~= nil then
         inst.components.inventory:Hide()
     else
         inst.components.inventory:Close()
+        inst.components.age:PauseAging()
     end
     inst:PushEvent("ms_closepopups")
 
@@ -144,6 +144,7 @@ local function CommonActualRez(inst)
         inst.components.inventory:Show()
     else
         inst.components.inventory:Open()
+        inst.components.age:ResumeAging()
     end
 
     inst.components.health.canheal = true
@@ -175,8 +176,6 @@ local function CommonActualRez(inst)
 
     --don't ignore sanity any more
     inst.components.sanity.ignore = GetGameModeProperty("no_sanity")
-
-    inst.components.age:ResumeAging()
 
     ConfigurePlayerLocomotor(inst)
     ConfigurePlayerActions(inst)
@@ -437,7 +436,9 @@ local function CommonPlayerDeath(inst)
 
     inst.components.debuffable:Enable(false)
 
-    inst.components.age:PauseAging()
+    if inst.components.revivablecorpse == nil then
+        inst.components.age:PauseAging()
+    end
 
     inst.components.health:SetInvincible(true)
     inst.components.health.canheal = false

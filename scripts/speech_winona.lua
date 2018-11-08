@@ -2128,6 +2128,8 @@ return {
         TRAILS = "He's justa big meathead.",
         TURTILLUS = "Steel yourself, turtle.",
         SNAPPER = "You keep yer spit to yourself now, buddy.",
+        RHINODRILL = "Am I supposed to be impressed?",
+		BEETLETAUR = "Go back to your cage.",
         
         LAVAARENA_PORTAL = 
         {
@@ -2170,6 +2172,11 @@ return {
         LAVAARENA_RECHARGERHAT = "I'd be so efficient with that!",
         LAVAARENA_HEALINGGARLANDHAT = "That's fer a bit of self maintenance.",
         LAVAARENA_CROWNDAMAGERHAT = "You'd be a real heavy hitter with that.",
+
+        LAVAARENA_ARMOR_HP = "Can't go wrong with armor.",
+
+		LAVAARENA_FIREBOMB = "Here's fire in yer eye!",
+		LAVAARENA_HEAVYBLADE = "That'll do the trick.",
 
         --Quagmire
         QUAGMIRE_ALTAR = 

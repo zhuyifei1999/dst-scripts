@@ -213,6 +213,10 @@ function ItemBoxOpenerPopup:OnUpdate(dt)
             self.bundle_root:SetPosition(0,90)
             self.bundle_root:SetScale(0.9,0.9)
         end
+        if self.resize_root_small then
+            self.bundle_root:SetPosition(0,150)
+            self.bundle_root:SetScale(0.7,0.7)
+        end
 
         -- update the background size
         local rows = math.ceil(#self.items/columns)
@@ -298,9 +302,15 @@ function ItemBoxOpenerPopup:_OpenItemBox()
             columns = 5
         elseif #item_types == 12 or #item_types == 11 then
 			columns = 6
+        elseif #item_types == 16 then
+			columns = 6
+            self.resize_root = true
         elseif #item_types == 19 then
 			columns = 7
             self.resize_root = true
+        elseif #item_types == 35 then
+			columns = 9
+            self.resize_root_small = true
         else
             print("Warning: Found an unexpected number of items in a box.", #item_types)
         end

@@ -791,9 +791,16 @@ function Combat:CanHitTarget(target, weapon)
     return false
 end
 
-function Combat:DoAttack(target_override, weapon, projectile, stimuli, instancemult)
-    local targ = target_override or self.target
-    local weapon = weapon or self:GetWeapon()
+function Combat:DoAttack(targ, weapon, projectile, stimuli, instancemult)
+    if targ == nil then
+        targ = self.target
+    end
+    if weapon == nil then
+        weapon = self:GetWeapon()
+    end
+    if stimuli == nil and weapon ~= nil and weapon.components.weapon ~= nil and weapon.components.weapon.overridestimulifn ~= nil then
+        stimuli = weapon.components.weapon.overridestimulifn(weapon, self.inst, targ)
+    end
 
     if not self:CanHitTarget(targ, weapon) then
         self.inst:PushEvent("onmissother", { target = targ, weapon = weapon })

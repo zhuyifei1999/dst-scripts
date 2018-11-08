@@ -127,6 +127,79 @@ function GetBigPortraitForItem(item_key)
 	return nil
 end
 
+function GetPackCollection(item_key)
+    local output_items = GetPurchasePackOutputItems(item_key)
+    for _,item in pairs(output_items) do
+        local data = GetSkinData(item)
+        for _,skin_tag in pairs(data.skin_tags) do
+            if STRINGS.SKIN_TAG_CATEGORIES.COLLECTION[skin_tag] ~= nil then
+                return STRINGS.SKIN_TAG_CATEGORIES.COLLECTION[skin_tag]
+            end
+        end
+    end
+end
+
+function GetPackTotalItems(item_key)
+    local output_items = GetPurchasePackOutputItems(item_key)
+    return #output_items
+end
+
+function _GetSubPacks(item_key)
+    local sub_packs = {}
+    local output_items = GetPurchasePackOutputItems(item_key)
+    for _,item in pairs(output_items) do
+        local pack = GetPackForItem(item)
+        sub_packs[pack] = true
+    end
+    return sub_packs
+end
+
+function GetPackTotalSets(item_key)
+    local sub_packs = _GetSubPacks(item_key)
+    
+    local count = 0
+    for pack,_ in pairs(sub_packs) do
+        count = count + 1
+    end
+    return count
+end
+
+function GetPackTotalValue(item_key)
+    local sub_packs = _GetSubPacks(item_key)
+
+    local value = 0
+    
+    if IsSteam() then
+        local iap_defs = TheItems:GetIAPDefs()
+        for _,iap in pairs(iap_defs) do
+            if sub_packs[iap.item_type] then
+                value = value + iap.cents
+            end
+        end
+    elseif IsRail() then
+        local iap_defs = TheItems:GetIAPDefs()
+        for _,iap in pairs(iap_defs) do
+            if sub_packs[iap.item_type] then
+                value = value + tonumber(iap.rail_price)
+            end
+        end
+    else
+        print("Error!!! Figure out iap for this platform.")
+    end
+    
+    return value 
+end
+
+function GetPackSavings(iap_def, total_value)
+    if IsSteam() then
+        return math.floor(100 * (1 - (iap_def.cents / total_value)))
+    elseif IsRail() then
+        return math.floor(100 * (1 - (tonumber(iap_def.rail_price) / total_value)))
+    else
+        print("Error!!! Figure out iap for this platform.")
+    end
+end
+
 function IsPackFeatured(item_key)
     local pack_data = GetSkinData(item_key)
     return pack_data.featured_pack
@@ -163,6 +236,40 @@ function GetBoxBuildForItem(item_key)
 	end
 	return "box_build undefined"
 end
+
+-- GetPackForItem only returns purchasable packs! We don't display historical packs so if it's not for sale, it's not part of a pack. Pack information is not the same as ensemble/sets.
+function GetPackForItem(item_key)
+    local purchase_pack = GetSkinData(item_key).purchase_pack
+    if purchase_pack then
+        local iap_defs = TheItems:GetIAPDefs()
+        for _,iap in ipairs(iap_defs) do
+            if iap.item_type == purchase_pack then
+                return purchase_pack
+            end
+        end
+    end
+end
+
+function OwnsSkinPack(item_key)
+	for _,v in pairs(GetPurchasePackOutputItems(item_key)) do
+		if not TheInventory:CheckOwnership(v) then
+			return false
+		end
+	end
+
+	return true
+end
+
+function GetPurchasePackDisplayItems(item_key)
+    return MISC_ITEMS[item_key] and MISC_ITEMS[item_key].display_items or {}
+end
+
+function GetPurchasePackOutputItems(item_key)
+    return MISC_ITEMS[item_key] and MISC_ITEMS[item_key].output_items or {}
+end
+
+
+
 
 function IsClothingItem(name)
 	if CLOTHING[name] then
@@ -725,34 +832,6 @@ function WillUnravelBreakEnsemble(item_type)
 	return false --not rewarded already
 end
 
-
-
--- GetPackForItem only returns purchasable packs! We don't display historical
--- packs so if it's not for sale, it's not part of a pack. Pack information is
--- not the same as ensemble/sets.
-local PURCHASE_INFO = require("skin_purchase_packs")
-function GetPackForItem(item_key)
-    local pack = PURCHASE_INFO.CONTENTS[item_key]
-    if pack then
-        local iap_defs = TheItems:GetIAPDefs()
-        for i,iap in ipairs(iap_defs) do
-            if iap.item_type == pack then
-                return pack
-            end
-        end
-    end
-end
-
-function OwnsSkinPack(item_key)
-	for _,v in pairs(PURCHASE_INFO.PACKS[item_key]) do
-		if not TheInventory:CheckOwnership(v) then
-			return false
-		end
-	end
-
-	return true
-end
-
 local SKIN_AFFINITY_INFO = require("skin_affinity_info")
 function GetSkinCollectionCompletionForHero(herocharacter)
     assert(herocharacter)
@@ -1107,8 +1186,7 @@ function MakeSkinDLCPopup(_cb)
 	local pack_type = GetNewSkinDLCEntitlement()
 
 	if pack_type ~= nil then
-		local PURCHASE_INFO = require("skin_purchase_packs")
-		local display_items = PURCHASE_INFO.PACKS[pack_type]
+        local display_items = GetPurchasePackDisplayItems(pack_type)
         if display_items ~= nil then
 		    local options = {
 			    allow_cancel = false,

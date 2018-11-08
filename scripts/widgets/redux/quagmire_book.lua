@@ -13,7 +13,7 @@ local AchievementsPanel = require "widgets/redux/achievementspanel"
 require("util")
 
 -------------------------------------------------------------------------------------------------------
-local QuagmireBook = Class(Widget, function(self, user_profile, parent, secondary_left_menu)
+local QuagmireBook = Class(Widget, function(self, parent, secondary_left_menu, season)
     Widget._ctor(self, "QuagmireBook")
 
     self.root = self:AddChild(Widget("root"))
@@ -36,8 +36,8 @@ local QuagmireBook = Class(Widget, function(self, user_profile, parent, secondar
 	local base_size = .7
 
 	local button_data = {
-		{text = STRINGS.UI.RECIPE_BOOK.TITLE, build_panel_fn = function() return RecipeBookWidget(parent) end },
-		{text = STRINGS.UI.ACHIEVEMENTS.SCREENTITLE, build_panel_fn = function() return AchievementsPanel(user_profile, FESTIVAL_EVENTS.QUAGMIRE, achievement_overrides) end}
+		{text = STRINGS.UI.RECIPE_BOOK.TITLE, build_panel_fn = function() return RecipeBookWidget(parent, season) end },
+		{text = STRINGS.UI.ACHIEVEMENTS.SCREENTITLE, build_panel_fn = function() return AchievementsPanel(FESTIVAL_EVENTS.QUAGMIRE, season, achievement_overrides) end}
 	}
 
 	local function MakeTab(data, index)
@@ -87,7 +87,7 @@ local QuagmireBook = Class(Widget, function(self, user_profile, parent, secondar
 	self.last_selected = self.tabs[1]
 	self.last_selected:Select()	
 	self.last_selected:MoveToFront()
-	self.panel = self.root:AddChild(RecipeBookWidget(parent))
+	self.panel = self.root:AddChild(RecipeBookWidget(parent, season))
 	if TheWorld ~= nil then
 		parent.default_focus = self.panel.parent_default_focus
 	else

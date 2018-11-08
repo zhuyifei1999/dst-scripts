@@ -2123,6 +2123,8 @@ return {
         TRAILS = "Wolfgang is stronger than you!",
         TURTILLUS = "Armor is for tiny men!",
         SNAPPER = "I will smush lizard man!",
+        RHINODRILL = "Wolfgang is more macho.",
+        BEETLETAUR = "Is not scaring Wolfgang.",
         
         LAVAARENA_PORTAL = 
         {
@@ -2165,6 +2167,11 @@ return {
         LAVAARENA_RECHARGERHAT = "Nice little head rocks.",
         LAVAARENA_HEALINGGARLANDHAT = "Is many little fast flowers.",
         LAVAARENA_CROWNDAMAGERHAT = "Is so mighty!",
+
+        LAVAARENA_ARMOR_HP = "Is mighty like Wolfgang.",
+
+        LAVAARENA_FIREBOMB = "Wolfgang doesn't like.",
+        LAVAARENA_HEAVYBLADE = "Is might sword for mighty Wolfgang!",
 
         --Quagmire
         QUAGMIRE_ALTAR = 

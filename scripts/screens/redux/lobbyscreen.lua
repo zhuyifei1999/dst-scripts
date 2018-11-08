@@ -11,6 +11,8 @@ local CharacterSelect = require "widgets/redux/characterselect"
 local WaitingForPlayers = require "widgets/waitingforplayers"
 local PopupDialogScreen = require "screens/redux/popupdialog"
 
+local LavaarenaBookWidget = require "widgets/redux/lavaarena_book"
+
 local TEMPLATES = require "widgets/redux/templates"
 
 
@@ -111,6 +113,7 @@ local WxpPanel = Class(LobbyPanel, function(self, owner)
 		match_time:SetColour(UICOLOURS.GOLD)
 		match_time:SetRegionSize(400, 20)
 		match_time:SetHAlign(ANCHOR_LEFT)
+		info_y = info_y - 20
 	end		
 	if outcome.total_deaths ~= nil then
 		local text = outcome.total_deaths == 0 and STRINGS.UI.WXPLOBBYPANEL.NO_DEATHS or subfmt(STRINGS.UI.WXPLOBBYPANEL.DEATHS, {deaths = outcome.total_deaths})
@@ -175,11 +178,7 @@ local CharacterSelectPanel = Class(LobbyPanel, function(self, owner)
             OnCharacterClick,
             {"random"}
         ))
-	if TheNet:GetServerGameMode() == "lavaarena" then
-	    self:SetPosition(300, 170)
-	else
-	    self:SetPosition(300, 100)
-	end
+    self:SetPosition(300, 100)
     
     self.focus_forward = self.character_scroll_list
     
@@ -215,7 +214,7 @@ end)
 
 local LoadoutPanel = Class(LobbyPanel, function(self, owner)
     LobbyPanel._ctor(self, "LoadoutPanel")
-
+    
     self:SetPosition(-160, 0)
 
 	self.title = STRINGS.UI.COLLECTIONSCREEN.SKINS
@@ -333,6 +332,69 @@ local WaitingPanel = Class(LobbyPanel, function(self, owner)
 	end
 end)
 
+local LavaarenaFestivalBookPannel = Class(LobbyPanel, function(self, owner)
+    LobbyPanel._ctor(self, "LavaarenaFestivalBookPannel")
+
+	self.title = ""
+	self.next_button_title = STRINGS.UI.LOBBYSCREEN.NEXT
+
+	self.eventbook = self:AddChild(LavaarenaBookWidget(owner.chat_sidebar.chatbox, nil, GetFestivalEventSeasons(FESTIVAL_EVENTS.LAVAARENA)))
+	self.eventbook:SetPosition(0, 0)
+	
+	self.focus_forward = self.eventbook
+
+	function self:OnControl(control, down)
+		if self.eventbook:OnControlTabs(control, down) then
+			return true 
+		end
+
+		if Widget.OnControl(self, control, down) then return true end
+	end
+
+	function self:OnNextButton()
+		return true
+	end
+
+	function self:OnUpdate(dt)
+		self.eventbook:OnUpdate(dt)
+	end
+
+	function self:OnControl(control, down)
+		if Widget.OnControl(self, control, down) then return true end
+
+        if TheInput:ControllerAttached() and (not down) and (control == CONTROL_PAUSE or control == CONTROL_ACCEPT) and owner.next_button:IsEnabled() then
+			owner.next_button:onclick()
+			return true
+        end
+	end
+
+	function self:GetHelpText()
+	    local controller_id = TheInput:GetControllerID()
+		local t = {}
+		if owner.next_button:IsEnabled() then
+			table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE) .. "  " .. owner.next_button.text:GetString())
+		end
+--		if not self.eventbook.focus then
+--			table.insert(t, self.eventbook:GetHelpText())
+--		end
+	    return table.concat(t, "  ")
+	end
+
+	owner.next_button:Disable()
+	local function OnRecievedData() 
+		owner.next_button:Enable()
+	end
+
+	if not Lavaarena_CommunityProgression:IsQueryActive() then
+		self.inst:DoTaskInTime(0, OnRecievedData)
+	end
+	self.inst:ListenForEvent("community_clientdata_updated", OnRecievedData, TheGlobalInstance)
+
+
+end)
+
+
+
 
 local LobbyScreen = Class(Screen, function(self, profile, cb)
     Screen._ctor(self, "LobbyScreen")
@@ -349,8 +411,11 @@ local LobbyScreen = Class(Screen, function(self, profile, cb)
 	-- lavaarena
 --	Settings.match_results.mvp_cards = json.decode('[{"user":{"name":"ScqTTFyott","prefab":"wickerbottom","userid":"FU_229530977","base":"wickerbottom_none","colour":[0.80392156862745,0.30980392156863,0.22352941176471,1]},"beststat":["kills2",234]},{"user":{"name":"Scott","prefab":"wilson","userid":"FU_229530977","base":"wilson_none","colour":[0.80392156862745,0.30980392156863,0.22352941176471,1]},"beststat":["damagetaken2",546]},{"user":{"name":"Scott","prefab":"wes","userid":"FU_229530977","base":"wes_none","colour":[0.80392156862745,0.30980392156863,0.22352941176471,1]},"beststat":["blowdarts",5203]},{"user":{"name":"ThisIsAVeryLongName","prefab":"wolfgang","userid":"FU_229530977","base":"wolfgang_none","colour":[0.80392156862745,0.30980392156863,0.22352941176471,1]},"beststat":["standards",65]},{"user":{"name":"Scott","prefab":"waxwell","userid":"FU_229530977","base":"waxwell_none","colour":[0.80392156862745,0.30980392156863,0.22352941176471,1]},"beststat":["damagetaken",87]},{"user":{"name":"Scott","prefab":"webber","userid":"FU_229530977","base":"webber_none","colour":[0.80392156862745,0.30980392156863,0.22352941176471,1]},"beststat":["aggroheld",34]}]')
 --	Settings.match_results.wxp_data = {}
---	Settings.match_results.wxp_data[TheNet:GetUserID()] = { new_xp = 7998, match_xp = 5998+500, earned_boxes = 2, details = {{desc="DAILY_FIRST_WIN", val=2000}, {desc="WIN", val=1000}, {desc="DURATION", val=500}, {desc="webber_victory", val=1000}, {desc="webber_merciless", val=500}, {desc="webber_darts", val=500}, {desc="nodeaths_self", val=1000}, {desc="nodeaths_team", val=3000}, {desc="nodeaths_uniqueteam", val=5500}, {desc="wintime_30", val=1500}, {desc="wintime_25", val=3500}, {desc="wintime_20", val=5500}} }
+--	Settings.match_results.wxp_data[TheNet:GetUserID()] = { new_xp = 7998, match_xp = 5998+500, earned_boxes = 2, details = {{desc="MILESTONE_6", val=600}, {desc="DURATION", val=235}, {desc="CONSECUTIVE", val=456}, {desc="FRIENDS_BONUS", val=456}, {desc="UNIQUE_CHARACTERS", val=250}, {desc="NO_DEATHS_PLAYER", val=750}, {desc="NO_DEATHS_TEAM", val=750}, {desc="laq_dailywin-dev-001", val=5000}, {desc="laq_dailymatch-dev-001", val=500}, {desc="laq_reviver-dev-001", val=500}} }
 --	Settings.match_results.outcome = {won = true, time = 333}
+--	Settings.match_results.wxp_data[TheNet:GetUserID()] = { new_xp = 7998, match_xp = 5998+500, earned_boxes = 2, details = {{desc="MILESTONE_1", val=601}, {desc="MILESTONE_2", val=602}, {desc="MILESTONE_3", val=603}, {desc="MILESTONE_4", val=604}, {desc="MILESTONE_5", val=605}, {desc="MILESTONE_6", val=606}, {desc="DURATION", val=235}, {desc="CONSECUTIVE", val=456}, {desc="FRIENDS_BONUS", val=456}, {desc="UNIQUE_CHARACTERS", val=250}, {desc="NO_DEATHS_PLAYER", val=750}, {desc="NO_DEATHS_TEAM", val=750}, {desc="laq_dailywin-dev-001", val=5000}, {desc="laq_dailymatch-dev-001", val=500}, {desc="laq_reviver-dev-001", val=500}} }
+--	Settings.match_results.wxp_data[TheNet:GetUserID()] = { new_xp = 7998, match_xp = 5998+500, earned_boxes = 2, details = {{desc="DURATION", val=235}, {desc="MILESTONE_4", val=200}, {desc="laq_dailywin-dev-001", val=5000}, {desc="laq_dailymatch-dev-001", val=500}, {desc="laq_reviver-dev-001", val=500}} }
+--	Settings.match_results.outcome = {won = false, time = 333}
 
 	-- quagmire
 --	Settings.match_results.mvp_cards = json.decode('[{"user":{"name":"ScqTTFyott","prefab":"wickerbottom","userid":"FU_229530977","base":"wickerbottom_none","colour":[0.80392156862745,0.30980392156863,0.22352941176471,1]},"beststat":["kills2",234]},{"user":{"name":"Scott","prefab":"wilson","userid":"FU_229530977","base":"wilson_none","colour":[0.80392156862745,0.30980392156863,0.22352941176471,1]},"beststat":["damagetaken2",546]},{"user":{"name":"Scott","prefab":"wes","userid":"FU_229530977","base":"wes_none","colour":[0.80392156862745,0.30980392156863,0.22352941176471,1]},"beststat":["blowdarts",5203]}]')
@@ -388,6 +453,9 @@ local LobbyScreen = Class(Screen, function(self, profile, cb)
 		if server_shutting_down then
 			table.insert(self.panels, {panelfn = ServerLockedPanel})
 		else
+			if TheNet:GetServerGameMode() == "lavaarena" then
+				table.insert(self.panels, {panelfn = LavaarenaFestivalBookPannel})
+			end
 			table.insert(self.panels, {panelfn = CharacterSelectPanel})
 			table.insert(self.panels, {panelfn = LoadoutPanel})
 			table.insert(self.panels, {panelfn = WaitingPanel})
@@ -433,13 +501,21 @@ local LobbyScreen = Class(Screen, function(self, profile, cb)
 			
 			local outcome = Settings.match_results.outcome or TheFrontEnd.match_results.outcome
 			if outcome ~= nil then
-				str = str .. "\nlb_submit," .. tostring(outcome.lb_submit) .. ", " .. tostring(outcome.lb_response)
-				str = str .. "\nwon," .. (outcome.won and "true" or "false") 
-				str = str .. "\nround," .. tostring(outcome.round)
-				str = str .. "\ntime," .. tostring(math.floor(outcome.time))
-				str = str .. "\nscore," .. tostring(outcome.score)
-				str = str .. "\ntributes_success," .. tostring(outcome.tributes_success)
-				str = str .. "\ntributes_failed," .. tostring(outcome.tributes_failed)
+				if TheNet:GetServerGameMode() == "quagmire" then
+					str = str .. "\nlb_submit," .. tostring(outcome.lb_submit) .. ", " .. tostring(outcome.lb_response)
+					str = str .. "\nwon," .. (outcome.won and "true" or "false") 
+					str = str .. "\nround," .. tostring(outcome.round)
+					str = str .. "\ntime," .. tostring(math.floor(outcome.time))
+					str = str .. "\nscore," .. tostring(outcome.score)
+					str = str .. "\ntributes_success," .. tostring(outcome.tributes_success)
+					str = str .. "\ntributes_failed," .. tostring(outcome.tributes_failed)
+				else
+					str = str .. "\nwon," .. (outcome.won and "true" or "false") 
+					str = str .. "\nround," .. tostring(outcome.round)
+					str = str .. "\ntime," .. tostring(math.floor(outcome.time))
+					str = str .. "\ntotal_deaths," .. tostring(outcome.total_deaths)
+					str = str .. "\nprogression," .. tostring(outcome.progression)
+				end
 			end
 			
 			local userid_index = 0

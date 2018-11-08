@@ -2144,6 +2144,8 @@ return {
         TRAILS = "You can't push me around.",
         TURTILLUS = "Hey! How am I s'pose to hit you with all that armor?",
         SNAPPER = "Jeez, what's his crocodeal?",
+        RHINODRILL = "Pfft. Whatever Rhinocebros.",
+		BEETLETAUR = "Bet you think you're safe in all that armor.",
         
         LAVAARENA_PORTAL = 
         {
@@ -2186,6 +2188,11 @@ return {
         LAVAARENA_RECHARGERHAT = "Ohh, I want it!",
         LAVAARENA_HEALINGGARLANDHAT = "I don't even wanna burn it!",
         LAVAARENA_CROWNDAMAGERHAT = "Dibs!",
+
+        LAVAARENA_ARMOR_HP = "Woohoo! I should put that on.",
+
+		LAVAARENA_FIREBOMB = "FIRE! FIRE! FIRE!",
+		LAVAARENA_HEAVYBLADE = "No way I can use that!",
 
         --Quagmire
         QUAGMIRE_ALTAR = 

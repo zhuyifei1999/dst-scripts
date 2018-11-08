@@ -630,11 +630,13 @@ ACTIONS.PICK.fn = function(act)
 end
 
 ACTIONS.ATTACK.fn = function(act)
-    if act.doer.sg ~= nil and act.doer.sg:HasStateTag("thrusting") then
-        local weapon = act.doer.components.combat:GetWeapon()
-        return weapon ~= nil
-            and weapon.components.multithruster ~= nil
-            and weapon.components.multithruster:StartThrusting(act.doer)
+    if act.doer.sg ~= nil then
+        if act.doer.sg:HasStateTag("thrusting") then
+            local weapon = act.doer.components.combat:GetWeapon()
+            return weapon ~= nil
+                and weapon.components.multithruster ~= nil
+                and weapon.components.multithruster:StartThrusting(act.doer)
+        end
     end
     act.doer.components.combat:DoAttack(act.target)
     return true

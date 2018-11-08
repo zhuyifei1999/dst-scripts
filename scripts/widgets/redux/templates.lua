@@ -1571,6 +1571,13 @@ function TEMPLATES.RectangleWindow(sizeX, sizeY, title_text, bottom_buttons, but
         self.mid_center:SetTint(r,g,b,a)
     end
 
+    w.HideBackground = function(self)
+        for i=4,5 do
+            self.elements[i]:Hide()
+        end
+        self.mid_center:Hide()
+    end
+
     w.InsertWidget = function(self, widget)
 		w:AddChild(widget)
 		for i=1,3 do
@@ -1707,7 +1714,7 @@ function TEMPLATES.ScrollingGrid(items, opts)
 
     local scissor_pad = opts.scissor_pad or 0
     local scissor_width  = opts.widget_width  * opts.num_columns      + scissor_pad
-    local scissor_height = opts.widget_height * opts.num_visible_rows + scissor_pad + peek_height
+    local scissor_height = opts.widget_height * opts.num_visible_rows + peek_height
     local scissor_x = -scissor_width/2
     local scissor_y = -scissor_height/2
     local scroller = TrueScrollList(

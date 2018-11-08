@@ -58,6 +58,15 @@ local assets =
     Asset("DYNAMIC_ATLAS", "images/lavaarena_achievements.xml"),
     Asset("PKGREF", "images/lavaarena_achievements.tex"),
 
+	Asset("ATLAS", "images/lavaarena_unlocks.xml"),
+	Asset("IMAGE", "images/lavaarena_unlocks.tex"),
+
+	Asset("ATLAS", "images/lavaarena_unlocks2.xml"),
+	Asset("IMAGE", "images/lavaarena_unlocks2.tex"),
+
+	Asset("ATLAS", "images/lavaarena_quests.xml"),
+	Asset("IMAGE", "images/lavaarena_quests.tex"),
+
     Asset("DYNAMIC_ATLAS", "images/quagmire_food_common_inv_images_hires.xml"),
     Asset("PKGREF", "images/quagmire_food_common_inv_images_hires.tex"),
 

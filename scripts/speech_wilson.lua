@@ -2143,7 +2143,9 @@ return {
         TRAILS = "He's got a strong arm on him.",
         TURTILLUS = "Its shell is so spiky!",
         SNAPPER = "This one's got bite.",
-        
+		RHINODRILL = "He's got a nose for this kind of work.",
+		BEETLETAUR = "I can smell him from here!",
+
         LAVAARENA_PORTAL = 
         {
             ON = "I'll just be going now.",
@@ -2185,6 +2187,11 @@ return {
         LAVAARENA_RECHARGERHAT = "Those crystals will quickened my abilities.",
         LAVAARENA_HEALINGGARLANDHAT = "This garland will restore a bit of my vitality.",
         LAVAARENA_CROWNDAMAGERHAT = "That could cause some major destruction.",
+
+		LAVAARENA_ARMOR_HP = "That should keep me safe.",
+
+		LAVAARENA_FIREBOMB = "It smells like brimstone.",
+		LAVAARENA_HEAVYBLADE = "A sharp looking instrument.",
 
         --Quagmire
         QUAGMIRE_ALTAR = 

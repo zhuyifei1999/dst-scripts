@@ -434,6 +434,8 @@ STRINGS =
             BLOWDART_LAVA = "Barrage",
             BLOWDART_LAVA2 = "Molten Bolt",
             LAVAARENA_LUCY = "Chuck Lucy",
+            LAVAARENA_FIREBOMB = "Hearthsfire Bomb",
+            LAVAARENA_HEAVYBLADE = "???",
         },
 
         --Quagmire
@@ -1566,7 +1568,7 @@ STRINGS =
 		HALLOWEENPOTION_HEALTH_LARGE = "Canteen of Sanguine Mixture",
 		HALLOWEENPOTION_EMBERS = "Sulfuric Crystals of Lime",
 		HALLOWEENPOTION_SPARKS = "Sulfuric Crystals of Saltpeter",
-		
+
         --Arena Event
         LAVAARENA_BOARLORD = "Battlemaster Pugna",
         BOARRIOR = "Grand Forge Boarrior",
@@ -1578,6 +1580,9 @@ STRINGS =
         TRAILS = "Boarilla",
         TURTILLUS = "Snortoise",
         SNAPPER = "Crocommander",
+        RHINODRILL = "Rhinocebro Snapback",
+        RHINODRILL2 = "Rhinocebro Flat Top",
+        BEETLETAUR = "Infernal Swineclops",
 
         LAVAARENA_PORTAL = "Ancient Gateway",
         LAVAARENA_KEYHOLE = "Ancient Anchor",
@@ -1619,6 +1624,16 @@ STRINGS =
         LAVAARENA_HEALINGGARLANDHAT = "Blossomed Wreath",
         LAVAARENA_CROWNDAMAGERHAT = "Resplendent Nox Helm",
 
+		-- Lavaarena Season 2
+		LAVAARENA_ARMOR_HPEXTRAHEAVY = "Steadfast Grand Armor",
+		LAVAARENA_ARMOR_HPPETMASTERY = "Whispering Grand Armor",
+		LAVAARENA_ARMOR_HPRECHARGER = "Silken Grand Armor",
+		LAVAARENA_ARMOR_HPDAMAGER = "Jagged Grand Armor",
+
+		LAVAARENA_FIREBOMB = "Hearthsfire Crystals",
+		LAVAARENA_HEAVYBLADE = "Blacksmith's Edge",
+
+		-- Quagmire
         QUAGMIRE_CRATE_POT_HANGER = "Cookpot Kit",
         QUAGMIRE_CRATE_OVEN = "Oven Kit",
         QUAGMIRE_CRATE_GRILL_SMALL = "Grill Kit",
@@ -1874,6 +1889,13 @@ STRINGS =
         LAVAARENA_HEALINGGARLANDHAT = "+2 HP/s (80% HP Max)\n+10% Faster Cooldown\n+10% Move Speed",
         LAVAARENA_CROWNDAMAGERHAT = "+15% Physical Damage\n+10% Faster Cooldown\n+10% Move Speed",
         LAVAARENA_EYECIRCLETHAT = "+25% Magic Damage\n+10% Faster Cooldown\n+10% Move Speed",
+
+		-- Lavaarena Season 2
+		LAVAARENA_ARMOR_HPEXTRAHEAVY = "90% Protection\n+100 Max Health\nKnockback Resistance",
+		LAVAARENA_ARMOR_HPPETMASTERY = "80% Protection\n+50 Max Health\nCompanion Buff",
+		LAVAARENA_ARMOR_HPRECHARGER = "80% Protection\n+50 Max Health\n+15% Faster Cooldown",
+		LAVAARENA_ARMOR_HPDAMAGER = "80% Protection\n+50 Max Health\n+20% Physical Damage",
+
     },
 
     DIRECTIONS =
@@ -2478,11 +2500,10 @@ STRINGS =
     },
 
     --Arena Event
-    BOARLORD_WELCOME_INTRO =					-- 10 second delay before the round 1 intro 
+    BOARLORD_ROUND1_START =					-- 10 second delay before the round 1 intro 
     {
         "What have we here?",
-        "Gatekeepers? Have you come to return us to the Throne?",
-        "Ha! Laughable.",
+        "Gatekeepers? Ha! Have you come to return us to the Throne?",
         "I am Battlemaster Pugna, and I protect what is mine.",
         "Warriors. Release the pigs!",
     },
@@ -2490,10 +2511,10 @@ STRINGS =
     {
         "It's good to have a challenge once again!",
         "This should be fun.",
-		"More! Overwhelm them!",
+		"More pigs! Overwhelm them!",
         "More pigs!",
     },
-    BOARLORD_ROUND1_END =						-- healing staff dropped, 15 second delay follows
+    BOARLORD_ROUND2_START =						-- 15 second delay follows
     {
         "Impressive. You handled our foot soldiers with ease.",
         "But our battalions are trained to work together.",
@@ -2505,20 +2526,18 @@ STRINGS =
         "Give the Gatekeepers no quarter!",
         "Fly your banners proudly, warriors!",
     },
-    BOARLORD_ROUND2_END =						-- 15 second delay until round 3 intro
+    BOARLORD_ROUND3_START =						-- 15 second delay until round 3 intro
     {
         "We've endured more here than you know.",
         "And as forging fires temper steel,",
         "Hardship has only made us stronger.", 
         "Now, Snortoises. Attack!",
     },
-    BOARLORD_ROUND3_END =						-- Fireball Staff just dropped, 15 second delay follows
+    BOARLORD_ROUND4_START =						-- 15 second delay follows
     {
         "...Do you understand the forces you serve?",
-        "We were severed from the Throne!",
-        "Trapped in a realm of stone and fire, with no scepter to provide.",
-        "Why serve a power that deserted my people?",
         "They destroy all They touch...",
+        "We were severed from the Throne, trapped in a realm of stone and fire!",
         "That is why we cannot let you win.",
     },
     BOARLORD_ROUND4_FIGHT_BANTER =				-- Banter
@@ -2526,11 +2545,17 @@ STRINGS =
         "End this now my warriors!",
         "We... cannot lose the Forge...",
     },
-    BOARLORD_TRAILS_INTRO =						-- Trails intro
+    BOARLORD_ROUND4_TRAILS_INTRO =				-- Trails intro
     {
         "Send in the Boarilla.", 
     },
-    BOARLORD_ROUND4_END =						-- 15 second delay
+    BOARLORD_ROUND4_PLAYER_VICTORY =				-- Players win - This is actually round5-boarrior-locked victory
+    {
+        "No! How can this be?!",
+        "You have defeated the mighty Boarilla!",
+        "You may have won the battle, Gatekeepers... but not the war!",
+    },
+    BOARLORD_ROUND5_START =						-- 15 second delay
     {
         "Know this, Gatekeepers:",
         "Once you are dead, we will activate the Gateway.",
@@ -2549,12 +2574,36 @@ STRINGS =
         "Destroy them!!",
         "We will not live in the Throne's shadow!",
     },
-    BOARLORD_BOARRIOR_INTRO =					-- Boarrior as an add to the remaining trails
+    BOARLORD_ROUND5_BOARRIOR_INTRO =			-- Boarrior as an add to the remaining trails
     {
         "Grand Forge Boarrior!",
         "The ring is yours! Destroy them, my champion!",
     },
-    BOARLORD_DEFEATED_BATTLECRY =				-- Players win
+    BOARLORD_ROUND5_PLAYER_VICTORY =			-- Players win - round5-boarrior-unlocked victory
+    {
+        "What?! My champion!?!",
+        "Gatekeepers you have proven yourself mighty.",
+        "...But we will live to fight again!!",
+    },
+    BOARLORD_ROUND6_START =						-- ? second delay
+    {
+        "We do not fear you, Gatekeepers!",
+        "But you will fear us!",
+        "Fear my new champions! Fear the Rhinocebros!",
+    },
+    BOARLORD_ROUND6_PLAYER_VICTORY =			-- Players win
+    {
+        "You have won the battle,",
+        "But the war rages on eternally.",
+        "We are not ready to give up yet.",
+    },
+    BOARLORD_ROUND7_START =						-- ?? second delay until round 3 intro
+    {
+        "You have had many victories, Gatekeepers...",
+        "...but from our dungeons comes our most brutal warrior.",
+        "Behold: The Infernal Swineclops!",
+    },
+    BOARLORD_ROUND7_PLAYER_VICTORY =			-- Players win
     {
         "No! My Forge, felled by the Throne's lapdogs!",
         "Please. No more, Gatekeepers. We surrender.",
@@ -3889,6 +3938,74 @@ STRINGS.UI =
         UNKNOWN_DATA = "???", --used for bad data
 	},
 
+	LAVAARENA_COMMUNITY_UNLOCKS =
+	{
+		TAB_TITLE = "Community Unlocks",
+		URL_LABEL = "Community Unlocks & Leaderboards",
+		DESCRIPTION = "Contribute to the community progression by defeating the {boss}.",
+		EVERYTHING_UNLOCKED = "The {boss} has arrived. Now you can forge your way to a true victory!",
+		UNKNOWN = "Unknown",
+		SYNCING_DATA = "Syncing Data...",
+        XP_LABEL = "XP",
+
+		LOCKED =
+		{
+			ITEM = "Locked Item",
+			CREATURE = "Locked Creature",
+			BOSS = "Locked Creature",
+		},
+
+		UNLOCKED_TITLE =
+		{
+			BOOK_ELEMENTAL = "Tome of Beckoning & Spiral Spear",
+		},
+
+		UNLOCKED_DESC =
+		{
+			BOOK_ELEMENTAL = "Summon a Magma Golum or dive bomb your opponents with a Sky Lunge", -- adds: BOOK_ELEMENTAL + SPEAR_LANCE
+			LAVAARENA_FIREBOMB = "Bombard your opponents with Crystallized Magma",
+			LAVAARENA_HEAVYBLADE = "???",
+			LAVAARENA_ARMOR_HPDAMAGER = "80% Protection, +50 Max Health,\n+20% Physical Damage",
+			LAVAARENA_ARMOR_HPRECHARGER = "80% Protection, +50 Max Health,\n+15% Faster Cooldown",
+			LAVAARENA_ARMOR_HPEXTRAHEAVY = "90% Protection, +100 Max Health,\nKnockback Resistance",
+			LAVAARENA_ARMOR_HPPETMASTERY = "80% Protection, +50 Max Health, Increases effectiveness of Baby Spiders, Abigail or Bernie",
+			BOARRIOR = "Summoned to the arena while defeating the Boarillas",
+			RHINODRILL = "Summoned to the arena when the Grand Forge Boarrior is defeated",
+			BEETLETAUR = "Summoned to the arena for the final round!",
+		},
+
+		AVAILABLE_QUESTS = "Posted Quests",
+		DAILY_RESET = "Daily bonuses reset in: {hours}h {minutes}m",
+		DAILY_RESET_SOON = "Daily bonuses will reset soon.",
+		DAILY_RESET_SOON_INGAME = "Daily bonuses will reset after the next match.",
+		QUEST_RESET = "Posting new quests in: {hours}h {minutes}m",
+		QUEST_RESET_SOON = "New quests will be posted soon.",
+		QUEST_RESET_SOON_INGAME = "New quests will be posted after the next match.",
+
+		QUEST_TYPE_CHARACTER_FMT = "{character}'s {quest_type}",
+		QUEST_TYPE_PERSONAL = "Personal Quest",
+		QUEST_TYPE_TEAM = "Teamwork Quest",
+
+		COMPLETED_QUESTS_FMT = "{num} Quests Completed",
+		DAILY_WINS_FMT = "{num} Daily Victory Bonuses",
+		DAILY_MATCHES_FMT = "{num} Daily Match Bonuses",
+
+		QUEST_QUERY_FAILURE = "Failed to retrive your quests.",
+		PROGRESSION_QUERY_FAILURE = "Failed to retrive community progression data.",
+	},
+	
+	LAVAARENA_SUMMARY_PANEL =
+	{
+		TAB_TITLE = "The Forge",
+		LAQ_DAILYWIN = "Daily Victory Bonus",
+		LAQ_DAILYMATCH = "Daily Match Bonus",
+	},
+
+	LAVAARENA_QUESTS_HISTORY_PANEL =
+	{
+		TAB_TITLE = "Completed Quests",
+	},
+
     HUD =
     {
         MAP = "Show Map\n",
@@ -4260,6 +4377,7 @@ STRINGS.UI =
             ID_NAT_TARGET_NOT_CONNECTED = "Could Not Connect",
             ID_NAT_TARGET_UNRESPONSIVE = "Could Not Connect",
             ID_NAT_CONNECTION_TO_TARGET_LOST = "Could Not Connect",
+            PLATFORM_MISMATCH = "Version Mismatch",
             VERSION_MISMATCH_OLD_SERVER = "Version Mismatch",
             VERSION_MISMATCH_OLD_CLIENT = "Version Mismatch",
             VERSION_MISMATCH_PUBLIC_BETA = "Public Beta Server",
@@ -4320,14 +4438,15 @@ STRINGS.UI =
             ID_NAT_TARGET_NOT_CONNECTED = "Unable to connect to the server.",
             ID_NAT_TARGET_UNRESPONSIVE = "Unable to connect to the server.",
             ID_NAT_CONNECTION_TO_TARGET_LOST = "Unable to connect to the server.",
+            PLATFORM_MISMATCH = "This server is incompatible with your version. Please try another server.",
             VERSION_MISMATCH_OLD_SERVER = "This server is on an older version than you and cannot connect.",
             VERSION_MISMATCH_OLD_CLIENT = "This server is on a newer version than you. Please download the latest update to connect.",
             VERSION_MISMATCH_PUBLIC_BETA = "The server is running a public beta world. You'll need to opt into the beta to play on this server.",
             VERSION_MISMATCH_ARNBETA = "The server is running the A New Reign Beta version. You'll need to opt into the beta to play on this server.",
-            VERSION_HANDSHAKE_FAILED    = "The server is on a different version than you. Please check that your game version is up-to-date.",
+            VERSION_HANDSHAKE_FAILED = "The server is on a different version than you. Please check that your game version is up-to-date.",
             ID_INCOMPATIBLE_PROTOCOL_VERSION = "The server has a different version than you do. Please check that your game version is up-to-date.",
             ID_DST_INCOMPATIBLE_PROTOCOL_VERSION = "The server has a different version than you do. Please check that your game version is up-to-date.",
-            FORCE_DISCONNECTION         = "The connection has been forcibly closed by the engine.",
+            FORCE_DISCONNECTION = "The connection has been forcibly closed by the engine.",
             E_BANNED = "Your account has been banned for violating the terms of use.",
             E_UPGRADE = "A new version is available.\nPlease update Don't Starve Together.",
             INVALID_CLIENT_TOKEN = "A token error occurred. Please try again.",
@@ -4394,6 +4513,7 @@ STRINGS.UI =
 
     PLAYERSTATUSSCREEN =
     {
+		LAVAARENA_SERVER_MODE = "{mode} - Round {num}",
         AGE_PREFIX = "Day ",
         AGE_DAY = " Day",
         AGE_DAYS = " Days",
@@ -5277,6 +5397,7 @@ STRINGS.UI =
     {
         SELECT = "Select",
         START = "Go!",
+		NEXT = "Next",
         APPLY = "Apply",
         CANCEL = "Cancel",
         BACK = "Back",
@@ -5406,7 +5527,7 @@ STRINGS.UI =
         HOST_CONNECTINGTOSERVER = "Connecting to server",
         HOST_FAILED = "Network Error",
         HOST_FAILED_BODY = "Failed to connect to event server.",
-        HOST_NO_SERVERS_BODY = "No servers are currently available for your game version.",
+        HOST_NO_SERVERS_BODY = "No servers are currently available for your game version. Please update and try again.",
         HOST_PINGS_FAILED_BODY = "Unable to contact Klei servers.\nPlease check your network connection and try again.",
         
         OFFLINE_POPUP_TITLE = "Offline",
@@ -5515,6 +5636,21 @@ STRINGS.UI =
 		LAVA_NO_TEAM_DEATHS = "No Deaths (Team)",
 		LAVA_UNIQUE_CHARACTERS = "No Doubles Bonus",
 		UNIQUE_CHARACTERS = "No Doubles Bonus",
+
+		-- lavaarena2
+		LAB_WIN = "Victory",
+		LAB_DURATION = "Time",
+		LAB_FRIENDS_BONUS = "Playing with Friends",
+		LAB_CONSECUTIVE = "Consecutive Match Bonus",
+		LAB_UNIQUE_CHARACTERS = "No Doubles Bonus",
+		LAB_NO_DEATHS_PLAYER = "No Deaths",
+		LAB_NO_DEATHS_TEAM = "No Deaths (Team)",
+		LAB_MILESTONE_1 = "Pit Pigs Defeated",
+		LAB_MILESTONE_2 = "Crocommanders Defeated",
+		LAB_MILESTONE_3 = "Snortoises Defeated",
+		LAB_MILESTONE_4 = "Formidable Team",
+		LAB_MILESTONE_5 = "Grand Forge Boarior Defeated",
+		LAB_MILESTONE_6 = "Rhinocebros Defeated",
 
 		-- quagmire --
 		QUAGMIRE_MILESTONE_1 = "Sapphire Medallion Earned",
@@ -5670,6 +5806,7 @@ STRINGS.UI =
 			},
 			ACHIEVEMENT =
 			{
+				-- The Forge
 				encore_boarons = 
 				{
 				   TITLE = "Down But Not Snout",
@@ -5919,6 +6056,253 @@ STRINGS.UI =
 				{
 					TITLE = "Jill of All Trades",
 					DESC  = "Perform a special attack using a melee weapon, a dart, and a staff in a single match",
+				},
+
+				-- Reforge
+				laq_dailywin =
+				{
+					TITLE = "Daily Victory Bonus",
+					DESC  = "",
+				},
+				laq_dailymatch =
+				{
+					TITLE = "Daily Match Bonus",
+					DESC  = "",
+				},
+				laq_battlestandards =
+				{
+					TITLE = "Triple Standard",
+					DESC  = "Destroy 3 or more battle standards in a single match",
+				},
+				laq_reviver =
+				{
+					TITLE = "Modern Prometheus",
+					DESC  = "Revive a fallen friend",
+				},
+				laq_specials_veryfast =
+				{
+					TITLE = "Rapid Try Movement",
+					DESC  = "Perform 4 special attacks in under 20 seconds (excludes chucking Riled Lucy)",
+				},
+				laq_outofharmsway =
+				{
+					TITLE = "Scorpeons Position",
+					DESC  = "Survive until the Scorpeons arrive, taking under 200 damage",
+				},
+				laq_specials_somany =
+				{
+					TITLE = "Super Special",
+					DESC  = "Use 40 or more special attacks in a single match",
+				},
+				laq_nodashhounds =
+				{
+					TITLE = "Dash Their Hopes",
+					DESC  = "Avoid being hit by a dashing Pit Pig until the end of round 2",
+				},
+				laq_nodeath_solo_easy =
+				{
+					TITLE = "Live To See the Fray",
+					DESC  = "Avoid death before the Boarilla arrives",
+				},
+				laq_rhinodrill1 =
+				{
+					TITLE = "No the Drill",
+					DESC  = "Avoid death by the Rhinocebros",
+				},
+				laq_spinners_easy =
+				{
+					TITLE = "Spin Docker",
+					DESC  = "Defeat the Snortoise round without allowing Snortoises to perform more than 4 spin attacks",
+				},
+				laq_boarons =
+				{
+					TITLE = "Acceptable Casualties",
+					DESC  = "Defeat the Pit Pigs round with less then 800 player damage take by the team",
+				},
+				laq_nopoisondeath =
+				{
+					TITLE = "Acid Redux",
+					DESC  = "Defeat the initial Scorpeon wave without anyone dying from Scorpeon Acid",
+				},
+				laq_beetle1 =
+				{
+					TITLE = "name_laq_beetle1",
+					DESC  = "desc_laq_beetle1",
+				},
+				laq_nodeath_r2 =
+				{
+					TITLE = "Rigor Snortoise",
+					DESC  = "Survive with no team deaths before the Snortoises arrive",
+				},
+				laq_nodeath_r3 =
+				{
+					TITLE = "Scorpeon Denizens",
+					DESC  = "Survive with no team deaths before the Scorpeons arrive",
+				},
+				laq_nodeath_r4 =
+				{
+					TITLE = "Mindless Violence",
+					DESC  = "Survive with no team deaths until a Boarilla is defeated",
+				},
+				laq_nodeath_r5 =
+				{
+					TITLE = "On the Boarrior Path",
+					DESC  = "Survive with no team deaths until the Grand Forge Boarrior is defeated",
+				},
+				laq_nodeath_r6 =
+				{
+					TITLE = "Drill Down",
+					DESC  = "Survive with no team deaths until all Rhinocebros are defeated",
+				},
+				laq_wintime_30 =
+				{
+					TITLE = "Bronze Speed Run",
+					DESC  = "Win a match in under 30 minutes",
+				},
+				laq_wintime_25 =
+				{
+					TITLE = "Silver Speed Run",
+					DESC  = "Win a match in under 25 minutes",
+				},
+				laq_wintime_20 =
+				{
+					TITLE = "Gold Speed Run",
+					DESC  = "Win a match in under 20 minutes",
+				},
+				laq_spinners_hard =
+				{
+					TITLE = "Unspun Hero",
+					DESC  = "Defeat the Snortoise round without allowing Snortoises to perform any spin attacks",
+				},
+				laq_rhinodrill_hard =
+				{
+					TITLE = "Night of the Drilling Dead",
+					DESC  = "Defeat the Rhinocebros without allowing either of them to be revived",
+				},
+				laq_guardsbroken =
+				{
+					TITLE = "Drop Your Guard",
+					DESC  = "Interrupt 5 or more guarded enemies in a single match",
+				},
+				laq_hammer =
+				{
+					TITLE = "Strike A Match",
+					DESC  = "Land Anvil Strikes on 25 or more targets in a single match",
+				},
+				laq_petrify =
+				{
+					TITLE = "Stone Cold",
+					DESC  = "Petrify 25 or more enemies before the Infernal Staff drops",
+				},
+				laq_meteorkill =
+				{
+					TITLE = "Death From Above",
+					DESC  = "Land a killing blow with a Cataclysm Meteor",
+				},
+				laq_fasthealing =
+				{
+					TITLE = "Fight Four Their Life",
+					DESC  = "Cast 4 Life Blossoms within 60 seconds",
+				},
+				laq_stronghealing =
+				{
+					TITLE = "Spell It Out",
+					DESC  = "Cast 3 amplified Life Blossoms within 60 seconds",
+				},
+				laq_distraction =
+				{
+					TITLE = "Welcome Distraction",
+					DESC  = "Achieve the Distraction or Expert Decoy card at the end of the match",
+				},
+				laq_killingblows_lots =
+				{
+					TITLE = "Blow It Wide Open",
+					DESC  = "Land 10 or more killing blows in a single match",
+				},
+				laq_axethrow =
+				{
+					TITLE = "Chuck It Overboard",
+					DESC  = "Land 20 Lucy Chucks in a single match",
+				},
+				laq_flip =
+				{
+					TITLE = "Flip It Real Good",
+					DESC  = "Flip 20 or more Snortoises in a single match",
+				},
+				laq_shock =
+				{
+					TITLE = "Shell Shocked",
+					DESC  = "Stop a spinning Snortoise with a shock",
+				},
+				laq_spinstopper =
+				{
+					TITLE = "Spinning In Their Grave",
+					DESC  = "Stop a spinning Snortoise, by any means necessary.",
+				},
+				laq_battlecry =
+				{
+					TITLE = "Standing Ovation",
+					DESC  = "Trigger the Battle Cry buff on at least 3 friends, 10 times in a single match",
+				},
+				laq_meteors =
+				{
+					TITLE = "Meteor Your Match",
+					DESC  = "Land Cataclysm Meteors on 40 or more targets in a single match",
+				},
+				laq_decoy =
+				{
+					TITLE = "Bundle of Decoy",
+					DESC  = "Achieve the Expert Decoy card at the end of the match",
+				},
+				laq_doctor =
+				{
+					TITLE = "Win Doctor",
+					DESC  = "Achieve the Doctor card at the end of the match",
+				},
+				laq_merciless =
+				{
+					TITLE = "Cry Mercy",
+					DESC  = "Achieve the Merciless card at the end of the match",
+				},
+				laq_shadowkill =
+				{
+					TITLE = "From The Shadows",
+					DESC  = "Deal a killing blow using Maxwell's shadow minions",
+				},
+				laq_fullhands =
+				{
+					TITLE = "Many Hands Make Fight Work",
+					DESC  = "Perform a special attack using a melee weapon, dart and staff all in a single match",
+				},
+				laq_nodeath_solo_hard =
+				{
+					TITLE = "Delusions of Grand Forge",
+					DESC  = "Survive until the Grand Forge Boarrior is defeated",
+				},
+				laq_heavyblade_special =
+				{
+					TITLE = "Best Blade Plans",
+					DESC  = "Parry 15 special attacks in a single match using the Blacksmith's Edge",
+				},
+				laq_defeat_snapper =
+				{
+					TITLE = "Crocommand the Room",
+					DESC  = "Complete the Crocommander round",
+				},
+				laq_defeat_trails =
+				{
+					TITLE = "Boarilla'd To Death",
+					DESC  = "Defeat the Boarilla",
+				},
+				laq_defeat_boarrior =
+				{
+					TITLE = "Boarrior Victorior",
+					DESC  = "Defeat the Grand Forge Boarrior",
+				},
+				laq_defeat_rhinodrill =
+				{
+					TITLE = "Way To Go, Bro",
+					DESC  = "Defeat the Rhinocebro round",
 				},
 			},
 		},	
@@ -6284,8 +6668,15 @@ STRINGS.UI =
         PURCHASE_WARNING_OK = "Continue Purchase",
         PURCHASE_WARNING_CANCEL = "Nevermind!",
 
-        PURCHASE_BTN = "Purchase: {price}",
+        PACK_SAVINGS = "-{savings}%",
+
+        PACK_SHORT_DESC = "Includes {total_items} skin items!",
+        MEGAPACK_SHORT_DESC = "Includes {total_sets} skin sets! {total_items} total skin items!",
+
+        INFO_BTN = "?",
+        PURCHASE_BTN = "Buy Now",
         PURCHASE_GIFT = "Gift to a Friend",
+        PURCHASE_CLOSE = "Close",
         
 		GIFT_RECEIVED_TITLE = "You got a chest!",
 		GIFT_RECEIVED_BODY = "Open it to receive your curios.",

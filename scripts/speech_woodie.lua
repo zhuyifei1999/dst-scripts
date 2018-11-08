@@ -2137,6 +2137,8 @@ return {
         TRAILS = "Mighty powerful right hook on that hoser.",
         TURTILLUS = "Gotta keep that one from hiding, eh?",
         SNAPPER = "Keep them chompers to yourself.",
+        RHINODRILL = "They really like bumping chests like that, eh?",
+		BEETLETAUR = "Gotta chop that armor up.",
         
         LAVAARENA_PORTAL = 
         {
@@ -2179,6 +2181,11 @@ return {
         LAVAARENA_RECHARGERHAT = "They're reinvigorating rocks.",
         LAVAARENA_HEALINGGARLANDHAT = "That'll make ya quick on yer feet.",
         LAVAARENA_CROWNDAMAGERHAT = "Get a loada that hat!",
+
+        LAVAARENA_ARMOR_HP = "Better armor up.",
+
+		LAVAARENA_FIREBOMB = "I'll leave that for someone else.",
+		LAVAARENA_HEAVYBLADE = "I could use that.",
 
         --Quagmire
         QUAGMIRE_ALTAR = 

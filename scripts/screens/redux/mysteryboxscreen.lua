@@ -96,10 +96,9 @@ end
 
 function MysteryBoxScreen:_BuildBoxesPanel()
 	local boxes_ss = self.root:AddChild(Widget("boxes_ss"))
-
-    self.frame = boxes_ss:AddChild(Image("images/fepanels_redux_shop_panel.xml", "shop_panel.tex"))
-    self.frame:SetScale(0.9)
-    self.frame:SetPosition(0,10)
+        
+    boxes_ss.window  = boxes_ss:AddChild(TEMPLATES.RectangleWindow(450, 330))
+    boxes_ss.window:SetPosition(0,10)
     
     boxes_ss.spinner = boxes_ss:AddChild(TEMPLATES.StandardSpinner({}, 450, 40, HEADERFONT, 30))
 	boxes_ss.spinner.background:Hide()

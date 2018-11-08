@@ -22,6 +22,13 @@ PREFAB_SKINS = {
 		"armor_marble_chainmail",
 		"armor_marble_rockabs",
 	},
+	armorruins = 
+	{
+		"armor_ruins_arcane",
+		"armor_ruins_bulky",
+		"armor_ruins_leaf",
+		"armor_ruins_tusk",
+	},
 	armorwood = 
 	{
 		"armor_wood_fangedcollar",
@@ -181,6 +188,8 @@ PREFAB_SKINS = {
 	firestaff = 
 	{
 		"firestaff_bee",
+		"firestaff_gungnir",
+		"firestaff_lance",
 		"firestaff_meteor",
 		"firestaff_rose",
 	},
@@ -195,12 +204,17 @@ PREFAB_SKINS = {
 	footballhat = 
 	{
 		"footballhat_combathelm",
+		"footballhat_combathelm2",
 		"hat_dog_helm",
 	},
 	hambat = 
 	{
 		"hambat_potroast",
 		"hambat_spiralcut",
+	},
+	hammer = 
+	{
+		"hammer_forge",
 	},
 	icebox = 
 	{
@@ -210,6 +224,8 @@ PREFAB_SKINS = {
 	icestaff = 
 	{
 		"icestaff_bee",
+		"icestaff_gungnir",
+		"icestaff_lance",
 		"icestaff_rose",
 	},
 	lantern = 
@@ -254,6 +270,10 @@ PREFAB_SKINS = {
 		"reviver_cupid",
 		"reviver_cupid_2",
 	},
+	ruins_bat = 
+	{
+		"ruins_bat_heavy",
+	},
 	shovel = 
 	{
 		"shovel_victorian",
@@ -261,6 +281,8 @@ PREFAB_SKINS = {
 	spear = 
 	{
 		"spear_bee",
+		"spear_forge_gungnir",
+		"spear_forge_lance",
 		"spear_rose",
 	},
 	strawhat = 
@@ -314,6 +336,7 @@ PREFAB_SKINS = {
 		"wathgrithr_deerclops_d",
 		"wathgrithr_formal",
 		"wathgrithr_gladiator",
+		"wathgrithr_magma",
 		"wathgrithr_nature",
 		"wathgrithr_rose",
 		"wathgrithr_shadow",
@@ -329,6 +352,7 @@ PREFAB_SKINS = {
 		"waxwell_gladiator",
 		"waxwell_krampus",
 		"waxwell_krampus_d",
+		"waxwell_magma",
 		"waxwell_nature",
 		"waxwell_rose",
 		"waxwell_survivor",
@@ -345,6 +369,7 @@ PREFAB_SKINS = {
 		"webber_formal",
 		"webber_gladiator",
 		"webber_ice",
+		"webber_magma",
 		"webber_punk",
 		"webber_rose",
 		"webber_shadow",
@@ -362,6 +387,7 @@ PREFAB_SKINS = {
 		"wendy_ice",
 		"wendy_lureplant",
 		"wendy_lureplant_d",
+		"wendy_magma",
 		"wendy_rose",
 		"wendy_shadow",
 		"wendy_survivor",
@@ -375,6 +401,7 @@ PREFAB_SKINS = {
 		"wes_cook",
 		"wes_formal",
 		"wes_gladiator",
+		"wes_magma",
 		"wes_mandrake",
 		"wes_mandrake_d",
 		"wes_nature",
@@ -393,6 +420,7 @@ PREFAB_SKINS = {
 		"wickerbottom_ice",
 		"wickerbottom_lightninggoat",
 		"wickerbottom_lightninggoat_d",
+		"wickerbottom_magma",
 		"wickerbottom_rose",
 		"wickerbottom_shadow",
 		"wickerbottom_survivor",
@@ -409,6 +437,7 @@ PREFAB_SKINS = {
 		"willow_formal",
 		"willow_gladiator",
 		"willow_ice",
+		"willow_magma",
 		"willow_rose",
 		"willow_shadow",
 		"willow_survivor",
@@ -423,6 +452,7 @@ PREFAB_SKINS = {
 		"wilson_gladiator",
 		"wilson_ice",
 		"wilson_madscience",
+		"wilson_magma",
 		"wilson_pigguard",
 		"wilson_pigguard_d",
 		"wilson_rose",
@@ -439,6 +469,7 @@ PREFAB_SKINS = {
 		"winona_gladiator",
 		"winona_grassgecko",
 		"winona_grassgecko_d",
+		"winona_magma",
 		"winona_nature",
 		"winona_rose",
 		"winona_shadow",
@@ -462,6 +493,7 @@ PREFAB_SKINS = {
 		"wolfgang_formal",
 		"wolfgang_gladiator",
 		"wolfgang_ice",
+		"wolfgang_magma",
 		"wolfgang_rose",
 		"wolfgang_shadow",
 		"wolfgang_survivor",
@@ -476,6 +508,7 @@ PREFAB_SKINS = {
 		"woodie_cook",
 		"woodie_formal",
 		"woodie_gladiator",
+		"woodie_magma",
 		"woodie_nature",
 		"woodie_rose",
 		"woodie_shadow",
@@ -491,6 +524,7 @@ PREFAB_SKINS = {
 		"wx78_cook",
 		"wx78_formal",
 		"wx78_gladiator",
+		"wx78_magma",
 		"wx78_nature",
 		"wx78_rhinorook",
 		"wx78_rhinorook_d",

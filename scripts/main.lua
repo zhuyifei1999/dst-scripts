@@ -275,6 +275,8 @@ global("EventAchievements")
 EventAchievements = nil
 global("TheRecipeBook")
 TheRecipeBook = nil
+global("Lavaarena_CommunityProgression")
+Lavaarena_CommunityProgression = nil
 
 require("globalvariableoverrides")
 
@@ -313,8 +315,11 @@ local function ModSafeStartup()
     EventAchievements = require("eventachievements")()
     EventAchievements:LoadAchievementsForEvent(require("lavaarena_achievements"))
     EventAchievements:LoadAchievementsForEvent(require("quagmire_achievements"))
+    EventAchievements:LoadAchievementsForEvent(require("lavaarena_achievement_quest_defs"))
 	TheRecipeBook = require("quagmire_recipebook")()
 	TheRecipeBook:Load()
+	Lavaarena_CommunityProgression = require("lavaarena_communityprogression")()
+	Lavaarena_CommunityProgression:Load()
 
     local FollowCamera = require("cameras/followcamera")
     TheCamera = FollowCamera()

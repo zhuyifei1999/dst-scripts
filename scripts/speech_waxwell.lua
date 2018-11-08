@@ -2117,6 +2117,8 @@ return {
         TRAILS = "What a brute!",
         TURTILLUS = "He's rather thick-headed.",
         SNAPPER = "I don't fear you, scoundrel.",
+        RHINODRILL = "Brutish grotesquerie.",
+		BEETLETAUR = "Back to the dungeons with you!",
         
         LAVAARENA_PORTAL = 
         {
@@ -2159,6 +2161,11 @@ return {
         LAVAARENA_RECHARGERHAT = "It will quickly restore my powers.",
         LAVAARENA_HEALINGGARLANDHAT = "Self sufficiency in wreath form.",
         LAVAARENA_CROWNDAMAGERHAT = "You'd need a thick neck to wear such a thing.",
+
+        LAVAARENA_ARMOR_HP = "A little extra armor never hurt.",
+
+		LAVAARENA_FIREBOMB = "Not really my style.",
+		LAVAARENA_HEAVYBLADE = "Too brutish for my tastes.",
 
         MULTIPLAYER_PORTAL = "Always did have a flair for the dramatic...",
         MULTIPLAYER_PORTAL_MOONROCK = "A bit ominous looking.",
