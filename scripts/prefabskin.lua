@@ -867,6 +867,7 @@ function CreatePrefabSkin(name, info)
     prefab_skin.granted_items       = info.granted_items
 	prefab_skin.marketable			= info.marketable
     prefab_skin.release_group       = info.release_group
+    prefab_skin.purchase_pack       = info.purchase_pack
 
     if info.torso_tuck_builds ~= nil then
         for _,base_skin in pairs(info.torso_tuck_builds) do

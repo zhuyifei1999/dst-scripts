@@ -188,6 +188,8 @@ PREFAB_SKINS = {
 	firestaff = 
 	{
 		"firestaff_bee",
+		"firestaff_gungnir",
+		"firestaff_lance",
 		"firestaff_meteor",
 		"firestaff_rose",
 	},
@@ -222,6 +224,8 @@ PREFAB_SKINS = {
 	icestaff = 
 	{
 		"icestaff_bee",
+		"icestaff_gungnir",
+		"icestaff_lance",
 		"icestaff_rose",
 	},
 	lantern = 

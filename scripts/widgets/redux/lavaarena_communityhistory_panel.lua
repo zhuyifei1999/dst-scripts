@@ -12,10 +12,8 @@ local easing = require("easing")
 require("util")
 
 -------------------------------------------------------------------------------------------------------
-local CommunityProgress = Class(Widget, function(self, parent_screen)
+local CommunityProgress = Class(Widget, function(self)
     Widget._ctor(self, "CommunityProgress")
-
-    self.parent_screen = parent_screen
 
 	self.root = self:AddChild(Widget("root"))
 	self.root:SetPosition(12, 0)
@@ -119,7 +117,7 @@ end
 
 function CommunityProgress:_DoFocusHookups()
 
-	self.parent_default_focus = self
+--	self.parent_default_focus = self
 end
 
 return CommunityProgress

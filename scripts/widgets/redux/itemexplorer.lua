@@ -142,7 +142,7 @@ function ItemExplorer:_DoInit(title_text, contained_items, list_options)
 
     -- Pad the scissor region to ensure embiggened items don't have ugly
     -- clipping.
-    list_options.scissor_pad = list_options.scissor_pad or list_options.widget_width * 0.15
+    list_options.scissor_pad = list_options.scissor_pad or list_options.widget_width * 0.18
 
     -- Ensure full and empty screens look the same by always applying peek.
     list_options.peek_percent = 0.25

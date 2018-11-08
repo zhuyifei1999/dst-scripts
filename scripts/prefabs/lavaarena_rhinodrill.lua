@@ -1,6 +1,7 @@
 local assets =
 {
     --Asset("ANIM", "anim/lavaarena_rhinodrill_basic.zip"),
+    --Asset("ANIM", "anim/lavaarena_rhinodrill_damaged.zip"),
     Asset("ANIM", "anim/wilson_fx.zip"),
     Asset("ANIM", "anim/fossilized.zip"),
 }
@@ -9,6 +10,7 @@ local assets_alt =
 {
     --Asset("ANIM", "anim/lavaarena_rhinodrill_basic.zip"),
     --Asset("ANIM", "anim/lavaarena_rhinodrill_clothed_b_build.zip"),
+    --Asset("ANIM", "anim/lavaarena_rhinodrill_damaged.zip"),
     Asset("ANIM", "anim/wilson_fx.zip"),
     Asset("ANIM", "anim/fossilized.zip"),
 }

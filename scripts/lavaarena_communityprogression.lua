@@ -362,7 +362,7 @@ local function OnHandleQuestQueryResponce(self, userid, result, isSuccessful, re
 			-- TODO: ERROR HANDLING IF ParseQuestData fails!
 		end
  	else
-		if user_quests.quest_retries_remaining > 0 then
+		if user_quests.quest_retries_remaining ~= nil and user_quests.quest_retries_remaining > 0 then
  			print("[CommunityProgression] Faild to download quest data (" .. tostring(resultCode) .. "), remaining retries: " .. tostring(user_quests.quest_retries_remaining) .. " for user " .. tostring(userid))
 			user_quests.quest_retries_remaining = user_quests.quest_retries_remaining - 1
 			user_quests.quest_query_active = false

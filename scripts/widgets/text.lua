@@ -184,7 +184,7 @@ function Text:SetMultilineTruncatedString(str, maxlines, maxwidth, maxcharsperli
         if #line < #str then
             --check if the first word fits while being wrapped
             local words = {}
-            local first = str:match("(%w+)(.+)")
+            local first = str:match("([^%s]+)(.+)")
 
             if shrink_to_fit and not self.shrink_in_progress then       
                 --ensure that we reset the size back to the original size when we get new text

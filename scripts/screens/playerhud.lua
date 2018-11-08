@@ -287,14 +287,16 @@ end
 
 --ThePlayer.HUD:ShowEndOfMatchPopup({victory=true})	
 function PlayerHud:ShowEndOfMatchPopup(data)
-	if self.endofmatchpopup == nil then
-		local popupdata =
-		{
-			title = data.victory and STRINGS.UI.HUD.LAVAARENA_WIN_TITLE or STRINGS.UI.HUD.LAVAARENA_LOSE_TITLE,
-			body = data.victory and STRINGS.UI.HUD.LAVAARENA_WIN_BODY or STRINGS.UI.HUD.LAVAARENA_LOSE_BODY,
-		}
-		self.endofmatchpopup = self.root:AddChild(EndOfMatchPopup(self.owner, popupdata))
-	end
+	self.inst:DoTaskInTime(data.victory and 2.5 or 0, function()
+		if self.endofmatchpopup == nil then
+			local popupdata =
+			{
+				title = data.victory and STRINGS.UI.HUD.LAVAARENA_WIN_TITLE or STRINGS.UI.HUD.LAVAARENA_LOSE_TITLE,
+				body = data.victory and STRINGS.UI.HUD.LAVAARENA_WIN_BODY or STRINGS.UI.HUD.LAVAARENA_LOSE_BODY,
+			}
+			self.endofmatchpopup = self.root:AddChild(EndOfMatchPopup(self.owner, popupdata))
+		end
+	end)
 end
 
 function PlayerHud:OpenScreenUnderPause(screen)

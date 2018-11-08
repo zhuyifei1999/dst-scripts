@@ -501,13 +501,21 @@ local LobbyScreen = Class(Screen, function(self, profile, cb)
 			
 			local outcome = Settings.match_results.outcome or TheFrontEnd.match_results.outcome
 			if outcome ~= nil then
-				str = str .. "\nlb_submit," .. tostring(outcome.lb_submit) .. ", " .. tostring(outcome.lb_response)
-				str = str .. "\nwon," .. (outcome.won and "true" or "false") 
-				str = str .. "\nround," .. tostring(outcome.round)
-				str = str .. "\ntime," .. tostring(math.floor(outcome.time))
-				str = str .. "\nscore," .. tostring(outcome.score)
-				str = str .. "\ntributes_success," .. tostring(outcome.tributes_success)
-				str = str .. "\ntributes_failed," .. tostring(outcome.tributes_failed)
+				if TheNet:GetServerGameMode() == "quagmire" then
+					str = str .. "\nlb_submit," .. tostring(outcome.lb_submit) .. ", " .. tostring(outcome.lb_response)
+					str = str .. "\nwon," .. (outcome.won and "true" or "false") 
+					str = str .. "\nround," .. tostring(outcome.round)
+					str = str .. "\ntime," .. tostring(math.floor(outcome.time))
+					str = str .. "\nscore," .. tostring(outcome.score)
+					str = str .. "\ntributes_success," .. tostring(outcome.tributes_success)
+					str = str .. "\ntributes_failed," .. tostring(outcome.tributes_failed)
+				else
+					str = str .. "\nwon," .. (outcome.won and "true" or "false") 
+					str = str .. "\nround," .. tostring(outcome.round)
+					str = str .. "\ntime," .. tostring(math.floor(outcome.time))
+					str = str .. "\ntotal_deaths," .. tostring(outcome.total_deaths)
+					str = str .. "\nprogression," .. tostring(outcome.progression)
+				end
 			end
 			
 			local userid_index = 0

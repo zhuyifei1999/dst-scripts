@@ -12,10 +12,9 @@ local easing = require("easing")
 require("util")
 
 -------------------------------------------------------------------------------------------------------
-local CommunityProgress = Class(Widget, function(self, parent_screen, festival_key, season)
+local CommunityProgress = Class(Widget, function(self, festival_key, season)
     Widget._ctor(self, "CommunityProgress")
 
-    self.parent_screen = parent_screen
 	self.festival_key = festival_key
 	self.season = season
 
@@ -353,7 +352,7 @@ end
 
 function CommunityProgress:_DoFocusHookups()
 
-	self.parent_default_focus = self
+--	self.parent_default_focus = self
 end
 
 return CommunityProgress

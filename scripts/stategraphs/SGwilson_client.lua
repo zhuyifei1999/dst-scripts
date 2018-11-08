@@ -1750,7 +1750,7 @@ local states =
             inst.AnimState:PushAnimation("action_uniqueitem_lag", false)
 
             local item = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-            if item ~= nil and item:HasTag("tome") then
+            if item ~= nil and item.components.aoetargeting ~= nil then
                 inst.sg:AddStateTag("busy")
             end
 

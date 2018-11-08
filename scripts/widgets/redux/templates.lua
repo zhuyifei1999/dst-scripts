@@ -1714,7 +1714,7 @@ function TEMPLATES.ScrollingGrid(items, opts)
 
     local scissor_pad = opts.scissor_pad or 0
     local scissor_width  = opts.widget_width  * opts.num_columns      + scissor_pad
-    local scissor_height = opts.widget_height * opts.num_visible_rows + scissor_pad + peek_height
+    local scissor_height = opts.widget_height * opts.num_visible_rows + peek_height
     local scissor_x = -scissor_width/2
     local scissor_y = -scissor_height/2
     local scroller = TrueScrollList(

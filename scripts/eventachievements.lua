@@ -71,7 +71,7 @@ function EventAchievements:IsActiveAchievement(achievementid)
 end
 
 function EventAchievements:GetAllUnlockedAchievements(eventid, season)
-	return TheInventory:GetAllUnlockedAchievements(GetFestivalEventServerName(eventid, season))
+	return TheInventory:GetAllUnlockedAchievements(GetFestivalEventServerName(eventid, season)) or {}
 end
 
 function EventAchievements:SetActiveQuests(quest_data)

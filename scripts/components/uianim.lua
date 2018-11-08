@@ -103,7 +103,7 @@ function UIAnim:CancelRotateTo( run_complete_fn )
 	self.rot_whendone = nil
 end
 
-function UIAnim:RotateTo(start, dest, duration, whendone)
+function UIAnim:RotateTo(start, dest, duration, whendone, infinite )
     self.rot_start = start
     self.rot_dest = dest
     self.rot_duration = duration
@@ -113,6 +113,11 @@ function UIAnim:RotateTo(start, dest, duration, whendone)
         self.rot_whendone()
     end
     self.rot_whendone = whendone
+
+    self.rot_infinite = false
+    if infinite then
+        self.rot_infinite = infinite
+    end
     
     self.inst:StartWallUpdatingComponent(self)
     self.inst.UITransform:SetRotation(start)
@@ -181,7 +186,9 @@ function UIAnim:OnWallUpdate(dt)
 
     if self.rot_t then
         self.rot_t = self.rot_t + dt
-        if self.rot_t < self.rot_duration then
+        if self.rot_infinite then
+            self.inst.UITransform:SetRotation( self.inst.UITransform:GetRotation() + self.rot_dest )
+        elseif self.rot_t < self.rot_duration then
             local rot = easing.outCubic( self.rot_t, self.rot_start, self.rot_dest - self.rot_start, self.rot_duration)
             self.inst.UITransform:SetRotation(rot)
         else

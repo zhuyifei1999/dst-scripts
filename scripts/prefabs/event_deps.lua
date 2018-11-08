@@ -134,11 +134,13 @@ local FESTIVAL_EVENT_DEPS =
         {
             assets =
             {
-                --Asset("ANIM", "anim/main_menu1.zip"),
+                Asset("ANIM", "anim/main_menu1.zip"), -- old assets, keeping around for mods
                 Asset("ATLAS", "images/bg_redux_labg.xml"),
                 Asset("IMAGE", "images/bg_redux_labg.tex"),
 				Asset("ANIM", "anim/dst_menu_lavaarena_s2.zip"),
                 Asset("PKGREF", "sound/lava_arena.fsb"),
+                Asset("ATLAS", "images/lavaarena_frontend.xml"),
+                Asset("IMAGE", "images/lavaarena_frontend.tex"),
             },
         },
     },

@@ -14,13 +14,14 @@ local FestivalEventScreenInfo = Class(Widget, function(self, atlas, image, str, 
 	image:SetClickable(false)
 
 	if str ~= nil then
-		local title = self:AddChild(Text(HEADERFONT, 22, str, UICOLOURS.HIGHLIGHT_GOLD))
-		title:SetPosition(0, -80)
+		local title = self:AddChild(Text(HEADERFONT, 22, "", UICOLOURS.HIGHLIGHT_GOLD))
+		title:SetMultilineTruncatedString(str, 2, 200)
+		title:SetPosition(0, -90)
 	end
 
 	self.button = self:AddChild(TEMPLATES.StandardButton(function() VisitURL(url) end, STRINGS.UI.MODSSCREEN.MODLINK_MOREINFO))
 	self.button:SetScale(0.5, 0.5)
-	self.button:SetPosition(0, -110)
+	self.button:SetPosition(0, -130)
 
 	if self.button ~= nil then 
 		self.focus_forward = self.button

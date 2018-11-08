@@ -336,7 +336,7 @@ function ModWrangler:LoadServerModsFile()
 	TheNet:BeginServerModSetup()
 	
 	local filename = MODS_ROOT
-	if PLATFORM == "WIN32_RAIL" then
+	if DIST_PLATFORM == "Rail" then
 		filename = filename.."dedicated_server_mods_setup_rail.lua"
 	else
 		filename = filename.."dedicated_server_mods_setup.lua"
@@ -357,7 +357,7 @@ function ModWrangler:LoadServerModsFile()
 			setfenv(fn, env)
 			xpcall( fn, mods_err_fn )
 		end
-	end
+    end
 	
 	TheNet:DownloadServerMods()
 end

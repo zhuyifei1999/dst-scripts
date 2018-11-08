@@ -1,18 +1,24 @@
 local assets =
 {
-    --Asset("ANIM", "anim/lavaarena_firebomb.zip"),
-    --Asset("ANIM", "anim/swap_lavaarena_firebomb.zip"),
+    Asset("ANIM", "anim/lavaarena_firebomb.zip"),
+    Asset("ANIM", "anim/swap_lavaarena_firebomb.zip"),
 }
 
 local assets_fx =
 {
-    --Asset("ANIM", "anim/lavaarena_firebomb.zip"),
+    Asset("ANIM", "anim/lavaarena_firebomb.zip"),
+}
+
+local assets_sparks =
+{
+    Asset("ANIM", "anim/sparks_molotov.zip"),
 }
 
 local prefabs =
 {
     "lavaarena_firebomb_projectile",
     "lavaarena_firebomb_proc_fx",
+    "lavaarena_firebomb_sparks",
     "reticuleaoesmall",
     "reticuleaoesmallping",
     "reticuleaoesmallhostiletarget",
@@ -50,7 +56,7 @@ local function fn()
 
     inst.AnimState:SetBank("lavaarena_firebomb")
     inst.AnimState:SetBuild("lavaarena_firebomb")
-    --inst.AnimState:PlayAnimation("idle")
+    inst.AnimState:PlayAnimation("idle")
 
     inst:AddTag("throw_line")
 
@@ -77,12 +83,36 @@ local function fn()
     return inst
 end
 
+local function CreateProjectileAnim()
+    local inst = CreateEntity()
+
+    inst:AddTag("FX")
+    inst:AddTag("NOCLICK")
+    --[[Non-networked entity]]
+    inst.persists = false
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+
+    inst.Transform:SetSixFaced()
+
+    inst.AnimState:SetBank("lavaarena_firebomb")
+    inst.AnimState:SetBuild("lavaarena_firebomb")
+    inst.AnimState:PlayAnimation("spin_loop", true)
+    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+
+    return inst
+end
+
+local function OnDirectionDirty(inst)
+    inst.animent.Transform:SetRotation(inst.direction:value())
+end
+
 local function projectilefn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
     inst.entity:AddPhysics()
-    inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
@@ -95,15 +125,22 @@ local function projectilefn()
     inst.Physics:CollidesWith(COLLISION.GROUND)
     inst.Physics:SetCapsule(.2, .2)
 
-    inst.AnimState:SetBank("lavaarena_firebomb")
-    inst.AnimState:SetBuild("lavaarena_firebomb")
-    --inst.AnimState:PlayAnimation("spin_loop", true)
-    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
-
     inst:AddTag("NOCLICK")
 
     --projectile (from complexprojectile component) added to pristine state for optimization
     inst:AddTag("projectile")
+
+    inst.direction = net_float(inst.GUID, "lavaarena_firebomb_projectile.direction", "directiondirty")
+
+    --Dedicated server does not need to spawn the local animation
+    if not TheNet:IsDedicated() then
+        inst.animent = CreateProjectileAnim()
+        inst.animent.entity:SetParent(inst.entity)
+
+        if not TheWorld.ismastersim then
+            inst:ListenForEvent("directiondirty", OnDirectionDirty)
+        end
+    end
 
     inst.entity:SetPristine()
 
@@ -126,7 +163,7 @@ local function explosionfn()
 
     inst.AnimState:SetBank("lavaarena_firebomb")
     inst.AnimState:SetBuild("lavaarena_firebomb")
-    --inst.AnimState:PlayAnimation("used")
+    inst.AnimState:PlayAnimation("used")
     inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
     inst.AnimState:SetLightOverride(1)
     inst.AnimState:SetFinalOffset(-1)
@@ -155,7 +192,7 @@ local function procfxfn()
 
     inst.AnimState:SetBank("lavaarena_firebomb")
     inst.AnimState:SetBuild("lavaarena_firebomb")
-    --inst.AnimState:PlayAnimation("hitfx")
+    inst.AnimState:PlayAnimation("hitfx")
     inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
     inst.AnimState:SetLightOverride(1)
     inst.AnimState:SetFinalOffset(-1)
@@ -174,7 +211,41 @@ local function procfxfn()
     return inst
 end
 
+local function SetSparkLevel(inst, level)
+    inst.AnimState:PlayAnimation(tostring(math.clamp(level, 1, 3)), true)
+end
+
+local function sparksfn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddNetwork()
+
+    inst.AnimState:SetBank("sparks_molotov")
+    inst.AnimState:SetBuild("sparks_molotov")
+    inst.AnimState:PlayAnimation("1", true)
+    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+    inst.AnimState:SetLightOverride(1)
+    inst.AnimState:SetFinalOffset(1)
+
+    inst:AddTag("FX")
+    inst:AddTag("NOCLICK")
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.persists = false
+    inst.SetSparkLevel = SetSparkLevel
+
+    return inst
+end
+
 return Prefab("lavaarena_firebomb", fn, assets, prefabs),
     Prefab("lavaarena_firebomb_projectile", projectilefn, assets_fx, prefabs_projectile),
     Prefab("lavaarena_firebomb_explosion", explosionfn, assets_fx),
-    Prefab("lavaarena_firebomb_proc_fx", procfxfn, assets_fx)
+    Prefab("lavaarena_firebomb_proc_fx", procfxfn, assets_fx),
+    Prefab("lavaarena_firebomb_sparks", sparksfn, assets_sparks)

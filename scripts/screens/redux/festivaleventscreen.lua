@@ -53,9 +53,9 @@ function FestivalEventScreen:DoInit()
 		local menu_pos = self.menu:GetPosition()
 		self.event_details:SetPosition(menu_pos.x - 40, menu_pos.y + 280)
 	else 
-		--self.event_details = self.root:AddChild(FestivalEventScreenInfo("images/lavaarena_unlocks.xml", "community_unlock_info.tex", STRINGS.UI.LAVAARENA_COMMUNITY_UNLOCKS.URL_LABEL, "https://"))
-		--local menu_pos = self.menu:GetPosition()
-		--self.event_details:SetPosition(menu_pos.x - 40, menu_pos.y + 280)
+		self.event_details = self.root:AddChild(FestivalEventScreenInfo("images/lavaarena_unlocks.xml", "community_unlock_info.tex", STRINGS.UI.LAVAARENA_COMMUNITY_UNLOCKS.URL_LABEL, "https://forums.kleientertainment.com/forge2018/"))
+		local menu_pos = self.menu:GetPosition()
+		self.event_details:SetPosition(menu_pos.x - 20, menu_pos.y + 280)
 	end
 
 	if IsFestivalEventActive(FESTIVAL_EVENTS.QUAGMIRE) then

@@ -434,7 +434,7 @@ STRINGS =
             BLOWDART_LAVA = "Barrage",
             BLOWDART_LAVA2 = "Molten Bolt",
             LAVAARENA_LUCY = "Chuck Lucy",
-            LAVAARENA_FIREBOMB = "???",
+            LAVAARENA_FIREBOMB = "Hearthsfire Bomb",
             LAVAARENA_HEAVYBLADE = "???",
         },
 
@@ -1630,8 +1630,8 @@ STRINGS =
 		LAVAARENA_ARMOR_HPRECHARGER = "Silken Grand Armor",
 		LAVAARENA_ARMOR_HPDAMAGER = "Jagged Grand Armor",
 
-		LAVAARENA_FIREBOMB = "???",
-		LAVAARENA_HEAVYBLADE = "???",
+		LAVAARENA_FIREBOMB = "Hearthsfire Crystals",
+		LAVAARENA_HEAVYBLADE = "Blacksmith's Edge",
 
 		-- Quagmire
         QUAGMIRE_CRATE_POT_HANGER = "Cookpot Kit",
@@ -3941,7 +3941,7 @@ STRINGS.UI =
 	LAVAARENA_COMMUNITY_UNLOCKS =
 	{
 		TAB_TITLE = "Community Unlocks",
-		URL_LABEL = "Community Unlocks!",
+		URL_LABEL = "Community Unlocks & Leaderboards",
 		DESCRIPTION = "Contribute to the community progression by defeating the {boss}.",
 		EVERYTHING_UNLOCKED = "The {boss} has arrived. Now you can forge your way to a true victory!",
 		UNKNOWN = "Unknown",
@@ -3963,7 +3963,7 @@ STRINGS.UI =
 		UNLOCKED_DESC =
 		{
 			BOOK_ELEMENTAL = "Summon a Magma Golum or dive bomb your opponents with a Sky Lunge", -- adds: BOOK_ELEMENTAL + SPEAR_LANCE
-			LAVAARENA_FIREBOMB = "???",
+			LAVAARENA_FIREBOMB = "Bombard your opponents with Crystallized Magma",
 			LAVAARENA_HEAVYBLADE = "???",
 			LAVAARENA_ARMOR_HPDAMAGER = "80% Protection, +50 Max Health,\n+20% Physical Damage",
 			LAVAARENA_ARMOR_HPRECHARGER = "80% Protection, +50 Max Health,\n+15% Faster Cooldown",
@@ -4377,6 +4377,7 @@ STRINGS.UI =
             ID_NAT_TARGET_NOT_CONNECTED = "Could Not Connect",
             ID_NAT_TARGET_UNRESPONSIVE = "Could Not Connect",
             ID_NAT_CONNECTION_TO_TARGET_LOST = "Could Not Connect",
+            PLATFORM_MISMATCH = "Version Mismatch",
             VERSION_MISMATCH_OLD_SERVER = "Version Mismatch",
             VERSION_MISMATCH_OLD_CLIENT = "Version Mismatch",
             VERSION_MISMATCH_PUBLIC_BETA = "Public Beta Server",
@@ -4437,14 +4438,15 @@ STRINGS.UI =
             ID_NAT_TARGET_NOT_CONNECTED = "Unable to connect to the server.",
             ID_NAT_TARGET_UNRESPONSIVE = "Unable to connect to the server.",
             ID_NAT_CONNECTION_TO_TARGET_LOST = "Unable to connect to the server.",
+            PLATFORM_MISMATCH = "This server is incompatible with your version. Please try another server.",
             VERSION_MISMATCH_OLD_SERVER = "This server is on an older version than you and cannot connect.",
             VERSION_MISMATCH_OLD_CLIENT = "This server is on a newer version than you. Please download the latest update to connect.",
             VERSION_MISMATCH_PUBLIC_BETA = "The server is running a public beta world. You'll need to opt into the beta to play on this server.",
             VERSION_MISMATCH_ARNBETA = "The server is running the A New Reign Beta version. You'll need to opt into the beta to play on this server.",
-            VERSION_HANDSHAKE_FAILED    = "The server is on a different version than you. Please check that your game version is up-to-date.",
+            VERSION_HANDSHAKE_FAILED = "The server is on a different version than you. Please check that your game version is up-to-date.",
             ID_INCOMPATIBLE_PROTOCOL_VERSION = "The server has a different version than you do. Please check that your game version is up-to-date.",
             ID_DST_INCOMPATIBLE_PROTOCOL_VERSION = "The server has a different version than you do. Please check that your game version is up-to-date.",
-            FORCE_DISCONNECTION         = "The connection has been forcibly closed by the engine.",
+            FORCE_DISCONNECTION = "The connection has been forcibly closed by the engine.",
             E_BANNED = "Your account has been banned for violating the terms of use.",
             E_UPGRADE = "A new version is available.\nPlease update Don't Starve Together.",
             INVALID_CLIENT_TOKEN = "A token error occurred. Please try again.",
@@ -6280,7 +6282,7 @@ STRINGS.UI =
 				laq_heavyblade_special =
 				{
 					TITLE = "Best Blade Plans",
-					DESC  = "???",
+					DESC  = "Parry 15 special attacks in a single match using the Blacksmith's Edge",
 				},
 				laq_defeat_snapper =
 				{
@@ -6666,8 +6668,15 @@ STRINGS.UI =
         PURCHASE_WARNING_OK = "Continue Purchase",
         PURCHASE_WARNING_CANCEL = "Nevermind!",
 
-        PURCHASE_BTN = "Purchase: {price}",
+        PACK_SAVINGS = "-{savings}%",
+
+        PACK_SHORT_DESC = "Includes {total_items} skin items!",
+        MEGAPACK_SHORT_DESC = "Includes {total_sets} skin sets! {total_items} total skin items!",
+
+        INFO_BTN = "?",
+        PURCHASE_BTN = "Buy Now",
         PURCHASE_GIFT = "Gift to a Friend",
+        PURCHASE_CLOSE = "Close",
         
 		GIFT_RECEIVED_TITLE = "You got a chest!",
 		GIFT_RECEIVED_BODY = "Open it to receive your curios.",

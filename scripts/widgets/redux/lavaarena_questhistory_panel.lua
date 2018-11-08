@@ -41,21 +41,11 @@ local LavaarenaQuestHistoryPanel = Class(Widget, function(self, festival_key, se
 	local stats = self.achievements_root:AddChild(self:_BuildStatsPanel(quest_details))
 	stats:SetPosition(0, 200)
 
-	self.parent_default_focus = self
+	self.parent_default_focus = self.grid.scroll_bar:IsVisible() and self.grid or nil
 end)
 
 function LavaarenaQuestHistoryPanel:GetCompletedQuests(festival_key, season)
 	local unlocked_quests = EventAchievements:GetAllUnlockedAchievements(festival_key, season)
-	
-	unlocked_quests = {}
-	for k, v in pairs(EventAchievements:GetActiveAchievementsIdList()) do
-		if v.character_set ~= nil then
-			table.insert(unlocked_quests, k.."-"..v.character_set[1].."-001-002")
-		else
-			table.insert(unlocked_quests, k.."-001-002")
-		end
-	end
-
 
 	local details = {}
 	details.num_daily_wins = 0
