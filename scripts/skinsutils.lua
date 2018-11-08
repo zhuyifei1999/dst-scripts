@@ -1205,7 +1205,7 @@ function MakeSkinDLCPopup(_cb)
 			    TheFrontEnd:PushScreen(thankyou_popup)
 		    else
 			    local ItemBoxOpenerPopup = require "screens/redux/itemboxopenerpopup"
-			    local box_popup = ItemBoxOpenerPopup(nil, options, function(success_cb) success_cb(display_items) end, function() MakeSkinDLCPopup(_cb) end)
+			    local box_popup = ItemBoxOpenerPopup(options, function(success_cb) success_cb(display_items) end, function() MakeSkinDLCPopup(_cb) end)
 			    TheFrontEnd:PushScreen(box_popup)
 		    end
         else

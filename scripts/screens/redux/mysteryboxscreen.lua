@@ -135,7 +135,7 @@ function MysteryBoxScreen:_BuildBoxesPanel()
             allow_cancel = true,
             box_build = GetBoxBuildForItem( box_item_type ),
         }
-        local box_popup = ItemBoxOpenerPopup(self, options, function(success_cb)
+        local box_popup = ItemBoxOpenerPopup(options, function(success_cb)
             TheItems:OpenBox(box_item_id, function(success, item_types)
                 if not success or #item_types == 0 then
                     local body_txt = (not success) and STRINGS.UI.BOX_POPUP.SERVER_ERROR_BODY or STRINGS.UI.BOX_POPUP.SERVER_NO_ITEM_BODY

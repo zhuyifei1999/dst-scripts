@@ -47,10 +47,9 @@ OUTRO
 local PP_ON_TINT = {r=.6,g=.6,b=.6,a=1}
 local PP_OFF_TINT = {r=1,g=1,b=1,a=0}
 
-local ItemBoxOpenerPopup = Class(Screen, function(self, parent_screen, options, open_box_fn, completed_cb)
+local ItemBoxOpenerPopup = Class(Screen, function(self, options, open_box_fn, completed_cb)
     Screen._ctor(self, "ItemBoxOpenerPopup")
 
-    self.parent_screen = parent_screen
     self.allow_cancel = options.allow_cancel
     self.use_bigportraits = options.use_bigportraits
     self.open_box_fn = open_box_fn
