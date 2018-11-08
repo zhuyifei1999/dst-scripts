@@ -91,7 +91,7 @@ local purchasefn =
                         use_bigportraits = IsPackFeatured(self.item_type),
                     }
                         
-                    local box_popup = ItemBoxOpenerPopup(screen_self, options, function(success_cb)
+                    local box_popup = ItemBoxOpenerPopup(options, function(success_cb)
                         success_cb(display_items)
                     end)
                     TheFrontEnd:PushScreen(box_popup)
