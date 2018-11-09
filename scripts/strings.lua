@@ -2190,7 +2190,7 @@ STRINGS =
 		HALLOWEEN_EXPERIMENT_BRAVERY = "Liquid courage.",
 		HALLOWEEN_EXPERIMENT_HEALTH = "Good for your heart.",
 		HALLOWEEN_EXPERIMENT_SANITY = "Put your mind at ease.", 
-		HALLOWEEN_EXPERIMENT_VOLATILE = "Crystalized incandescence.",
+		HALLOWEEN_EXPERIMENT_VOLATILE = "Crystallized incandescence.",
 		HALLOWEEN_EXPERIMENT_ROOT = "Spine-chilling saplings.",  
 
         WINTER_TREESTAND = "Plant and decorate a Winter's Feast tree!",
@@ -3942,7 +3942,7 @@ STRINGS.UI =
 	{
 		TAB_TITLE = "Community Unlocks",
 		URL_LABEL = "Community Unlocks & Leaderboards",
-		DESCRIPTION = "Contribute to the community progression by defeating the {boss}.",
+		DESCRIPTION = "Contribute to the community's progression by defeating the {boss}.",
 		EVERYTHING_UNLOCKED = "The {boss} has arrived. Now you can forge your way to a true victory!",
 		UNKNOWN = "Unknown",
 		SYNCING_DATA = "Syncing Data...",
@@ -3962,13 +3962,13 @@ STRINGS.UI =
 
 		UNLOCKED_DESC =
 		{
-			BOOK_ELEMENTAL = "Summon a Magma Golum or dive bomb your opponents with a Sky Lunge", -- adds: BOOK_ELEMENTAL + SPEAR_LANCE
-			LAVAARENA_FIREBOMB = "Bombard your opponents with Crystallized Magma",
+			BOOK_ELEMENTAL = "Summon a Magma Golem or divebomb opponents with a powerful Sky Lunge", -- adds: BOOK_ELEMENTAL + SPEAR_LANCE
+			LAVAARENA_FIREBOMB = "Bombard your opponents with searing Hearthsfire",
 			LAVAARENA_HEAVYBLADE = "???",
 			LAVAARENA_ARMOR_HPDAMAGER = "80% Protection, +50 Max Health,\n+20% Physical Damage",
 			LAVAARENA_ARMOR_HPRECHARGER = "80% Protection, +50 Max Health,\n+15% Faster Cooldown",
 			LAVAARENA_ARMOR_HPEXTRAHEAVY = "90% Protection, +100 Max Health,\nKnockback Resistance",
-			LAVAARENA_ARMOR_HPPETMASTERY = "80% Protection, +50 Max Health, Increases effectiveness of Baby Spiders, Abigail or Bernie",
+			LAVAARENA_ARMOR_HPPETMASTERY = "80% Protection, +50 Max Health,\nIncreases effectiveness of Baby Spiders, Abigail or Bernie",
 			BOARRIOR = "Summoned to the arena while defeating the Boarillas",
 			RHINODRILL = "Summoned to the arena when the Grand Forge Boarrior is defeated",
 			BEETLETAUR = "Summoned to the arena for the final round!",
@@ -3990,8 +3990,8 @@ STRINGS.UI =
 		DAILY_WINS_FMT = "{num} Daily Victory Bonuses",
 		DAILY_MATCHES_FMT = "{num} Daily Match Bonuses",
 
-		QUEST_QUERY_FAILURE = "Failed to retrive your quests.",
-		PROGRESSION_QUERY_FAILURE = "Failed to retrive community progression data.",
+		QUEST_QUERY_FAILURE = "Failed to retrieve your quests.",
+		PROGRESSION_QUERY_FAILURE = "Failed to retrieve community progression data.",
 	},
 	
 	LAVAARENA_SUMMARY_PANEL =
@@ -5649,7 +5649,7 @@ STRINGS.UI =
 		LAB_MILESTONE_2 = "Crocommanders Defeated",
 		LAB_MILESTONE_3 = "Snortoises Defeated",
 		LAB_MILESTONE_4 = "Formidable Team",
-		LAB_MILESTONE_5 = "Grand Forge Boarior Defeated",
+		LAB_MILESTONE_5 = "Grand Forge Boarrior Defeated",
 		LAB_MILESTONE_6 = "Rhinocebros Defeated",
 
 		-- quagmire --
@@ -6602,7 +6602,7 @@ STRINGS.UI =
         OK = "OK",
         
         UNRAVEL_WARNING_TITLE = "Warning!",
-        UNRAVEL_WARNING_BODY = "Unravelling this item will break your {ensemble_name} and cause you to lose access to the Reward item, {reward_name}.",
+        UNRAVEL_WARNING_BODY = "Unraveling this item will break your {ensemble_name} and cause you to lose access to the Reward item, {reward_name}.",
         
         FAILED_TITLE = "Connection failure",
         FAILED_BODY = "Sorry!\nFailed to contact Klei Servers. Please try again.",

@@ -1945,7 +1945,7 @@ return {
 		HALLOWEENPOTION_DRINKS_WEAK = "I was hoping for something bigger.",
 		HALLOWEENPOTION_DRINKS_POTENT = "A potent potion.",
         HALLOWEENPOTION_BRAVERY = "Full of grit.",
-		HALLOWEENPOTION_FIRE_FX = "Crystalized inferno.", 
+		HALLOWEENPOTION_FIRE_FX = "Crystallized inferno.", 
 		MADSCIENCE_LAB = "Sanity is a small price to pay for science!",
 		LIVINGTREE_ROOT = "Something's in there! I'll have to root it out.", 
 		LIVINGTREE_SAPLING = "It'll grow up big and horrifying.",
