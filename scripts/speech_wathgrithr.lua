@@ -268,7 +268,7 @@ return {
     ANNOUNCE_REVIVED_OTHER_CORPSE = "To battle!",
     ANNOUNCE_REVIVED_FROM_CORPSE = "I am restored!",
     --quagmire event
-    QUAGMIRE_ANNOUNCE_NOTRECIPE = "Twere not meant to be a meal.",
+    QUAGMIRE_ANNOUNCE_NOTRECIPE = "T'were not meant to be a meal.",
     QUAGMIRE_ANNOUNCE_MEALBURNT = "Alas! If I'd only grabbed it sooner.",
     QUAGMIRE_ANNOUNCE_LOSE = "The god of the sky has been angered!",
     QUAGMIRE_ANNOUNCE_WIN = "We shall live to fight another day!",

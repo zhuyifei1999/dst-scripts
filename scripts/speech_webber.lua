@@ -2186,7 +2186,7 @@ return {
 
         LAVAARENA_ARMOR_HP = "We should armor up to be safe.",
 
-		LAVAARENA_FIREBOMB = "It's like firey spit balls.",
+		LAVAARENA_FIREBOMB = "It's like fiery spit balls.",
 		LAVAARENA_HEAVYBLADE = "That sword is too big for us to carry!",
 
         --Quagmire

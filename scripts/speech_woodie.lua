@@ -771,7 +771,7 @@ return {
 			NIGHT_FULL = "Not a good night to have a curse, but then when's it ever?",
 			NIGHT_WANE = "The moon's waning. Time for some peace and quiet.",
 			CAVE = "We're free from the moon's reach down here.",
-			WEREBEAVER = "Just about time again, Lucy.",
+			WEREBEAVER = "Just aboot time again, Lucy.",
         },
 		THULECITE = "It's the wood of the caves!",
 		ARMORRUINS = "That'll stop the hurt.",
@@ -1336,7 +1336,7 @@ return {
 			GENERIC = "A little bit of nature makes everything nicer.",
 			EMPTY = "Such a beaut of a wood table shouldn't be hidden by a cloth.",
 			WILTED = "Well, that's that.",
-			FRESHLIGHT = "About time we brightened this place up, eh?",
+			FRESHLIGHT = "Aboot time we brightened this place up, eh?",
 			OLDLIGHT = "We need bulbs, eh.",
 		},
 		ACORN = "I should grow it and then chop it down!",
@@ -1869,7 +1869,7 @@ return {
 		TREASURECHEST_TRAP = "Something is not quite right aboot that chest.",
 		MOOSE_NESTING_GROUND = "Where's the pyromaniac? This needs to burn.",
 		TRINKET_1 = "I used to play that game.", --Melted Marbles
-		TRINKET_2 = "Much kazoo about nothing.", --Fake Kazoo
+		TRINKET_2 = "Much kazoo aboot nothing.", --Fake Kazoo
 		TRINKET_3 = "Reminds me of a story I heard once.", --Gord's Knot
 		TRINKET_4 = "Wolfgang would appreciate that moustache.", --Gnome
 		TRINKET_5 = "It needs a robot arm, eh?", --Toy Rocketship
@@ -2072,7 +2072,7 @@ return {
         WINTER_FOOD3 = "Satisfies the sweet tooth.", --candy cane
         WINTER_FOOD4 = "That thing just ain't right.", --fruitcake
         WINTER_FOOD5 = "All the taste and none of the splinters!", --yule log cake
-        WINTER_FOOD6 = "Hard to complain about this whole \"Feast\" business.", --plum pudding
+        WINTER_FOOD6 = "Hard to complain aboot this whole \"Feast\" business.", --plum pudding
         WINTER_FOOD7 = "Doesn't fall far from the cider tree.", --apple cider
         WINTER_FOOD8 = "Perfect for drinking next to a good fire, eh?", --hot cocoa
         WINTER_FOOD9 = "Psst, Lucy. Do I have a 'nog moustache?", --eggnog

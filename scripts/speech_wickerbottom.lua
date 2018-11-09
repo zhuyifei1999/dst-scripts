@@ -1872,7 +1872,7 @@ return
         HALLOWEEN_ORNAMENT_6 = "A corvus such as this would do better in a tree.", 
 
         HALLOWEENPOTION_DRINKS_WEAK = "Not as potent as I would have liked.",
-        HALLOWEENPOTION_DRINKS_POTENT = "A impressive elixer.", 
+        HALLOWEENPOTION_DRINKS_POTENT = "An impressive elixir.", 
         HALLOWEENPOTION_FIRE_FX = "It appears combustible.", 
         HALLOWEENPOTION_BRAVERY = "Bottled valor.",
         MADSCIENCE_LAB = "Mad science indeed!",
@@ -2323,7 +2323,7 @@ return
         QUAGMIRE_RUBBLE_CATHEDRAL = "Interesting. It appears they didn't worship Gnaw.",
         QUAGMIRE_RUBBLE_PUBDOOR = "The door to a public house.",
         QUAGMIRE_RUBBLE_ROOF = "It has collapsed.",
-        QUAGMIRE_RUBBLE_CLOCKTOWER = "The clockwork has siezed as well.",
+        QUAGMIRE_RUBBLE_CLOCKTOWER = "The clockwork has seized as well.",
         QUAGMIRE_RUBBLE_BIKE = "Beyond repair.",
         QUAGMIRE_RUBBLE_HOUSE = {"What creatures once lived here?", "There's nothing left of the inhabitants.", "What caused this city to crumble?",},
         QUAGMIRE_RUBBLE_CHIMNEY = "Something must have knocked it down.",
@@ -2431,7 +2431,7 @@ return
 
         QUAGMIRE_ALTAR_STATUE2 = "A gruesome gargoyle.",
         QUAGMIRE_ALTAR_QUEEN = "Impressive in scope.",
-        QUAGMIRE_ALTAR_BOLLARD = "A nice enough bullard.",
+        QUAGMIRE_ALTAR_BOLLARD = "A nice enough bollard.",
         QUAGMIRE_ALTAR_IVY = "Something in the Hedera family.",
 
         QUAGMIRE_LAMP_SHORT = "It's a nice enough light.",
