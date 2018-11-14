@@ -2,11 +2,13 @@
 
 local SKIN_GIFT_TYPES =
 {
+	arrowsign_post_circus = "TWITCH_DROP",
 	birdcage_circus = "TWITCH_DROP",
 	cane_ancient = "ANRARG",
 	emote_swoon = "CUPID",
 	featherhat_circus = "TWITCH_DROP",
 	firepit_hole = "EARLY_ACCESS",
+	playerportrait_bg_arrowsignpostcircus = "TWITCH_DROP",
 	playerportrait_bg_birdcagecircus = "TWITCH_DROP",
 	playerportrait_bg_featherhatcircus = "TWITCH_DROP",
 	playerportrait_bg_foods = "GORGE",
@@ -14,7 +16,11 @@ local SKIN_GIFT_TYPES =
 	playerportrait_bg_quagmiretournamentgold = "GORGE_TOURNAMENT",
 	playerportrait_bg_quagmiretournamentsilver = "GORGE_TOURNAMENT",
 	playerportrait_bg_rainometercircus = "TWITCH_DROP",
+	playerportrait_bg_tentcircus = "TWITCH_DROP",
 	playerportrait_bg_tophatcircus = "TWITCH_DROP",
+	playerportrait_bg_umbrellacircus = "TWITCH_DROP",
+	playerportrait_bg_winterometercircus = "TWITCH_DROP",
+	profileflair_arrowsignpost_circus = "TWITCH_DROP",
 	profileflair_birdcage_circus = "TWITCH_DROP",
 	profileflair_featherhat_circus = "TWITCH_DROP",
 	profileflair_quagmiretournament_bronze = "GORGE_TOURNAMENT",
@@ -22,16 +28,22 @@ local SKIN_GIFT_TYPES =
 	profileflair_quagmiretournament_participation = "GORGE_TOURNAMENT",
 	profileflair_quagmiretournament_silver = "GORGE_TOURNAMENT",
 	profileflair_rainometer_circus = "TWITCH_DROP",
+	profileflair_tent_circus = "TWITCH_DROP",
 	profileflair_tophat_circus = "TWITCH_DROP",
+	profileflair_umbrella_circus = "TWITCH_DROP",
+	profileflair_winterometer_circus = "TWITCH_DROP",
 	rainometer_circus = "TWITCH_DROP",
 	reviver_cupid = "CUPID",
 	reviver_cupid_2 = "CUPID",
+	tent_circus = "TWITCH_DROP",
 	tophat_circus = "TWITCH_DROP",
 	torch_shadow = "ARG",
 	torch_shadow_alt = "ARG",
 	treasurechest_sacred = "ANRARG",
+	umbrella_circus = "TWITCH_DROP",
 	winterhat_fancy_puppy = "VARG",
 	winterhat_rooster = "LUNAR",
+	winterometer_circus = "TWITCH_DROP",
 }
 
 local SKIN_GIFT_POPUPDATA =

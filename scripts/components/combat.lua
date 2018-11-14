@@ -406,6 +406,9 @@ function Combat:GetAttacked(attacker, damage, weapon, stimuli)
     self.lastwasattackedtime = GetTime()
 
     --print ("ATTACKED", self.inst, attacker, damage)
+    --V2C: redirectdamagefn is currently only used by either mounting or parrying,
+    --     but not both at the same time.  If we use it more, then it really needs
+    --     to be refactored.
     local blocked = false
     local damageredirecttarget = self.redirectdamagefn ~= nil and self.redirectdamagefn(self.inst, attacker, damage, weapon, stimuli) or nil
     local damageresolved = 0

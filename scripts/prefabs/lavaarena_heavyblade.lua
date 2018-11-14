@@ -1,7 +1,7 @@
 local assets =
 {
-    --Asset("ANIM", "anim/sword_buster.zip"),
-    --Asset("ANIM", "anim/swap_sword_buster.zip"),
+    Asset("ANIM", "anim/sword_buster.zip"),
+    Asset("ANIM", "anim/swap_sword_buster.zip"),
 }
 
 local prefabs =
@@ -54,9 +54,12 @@ local function fn()
 
     inst.AnimState:SetBank("sword_buster")
     inst.AnimState:SetBuild("sword_buster")
-    --inst.AnimState:PlayAnimation("idle")
+    inst.AnimState:PlayAnimation("idle")
 
     inst:AddTag("sharp")
+
+    --parryweapon (from parryweapon component) added to pristine state for optimization
+    inst:AddTag("parryweapon")
 
     --rechargeable (from rechargeable component) added to pristine state for optimization
     inst:AddTag("rechargeable")

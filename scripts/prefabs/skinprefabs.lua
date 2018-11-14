@@ -274,6 +274,21 @@ table.insert(prefs, CreatePrefabSkin("armor_wood_lamellar",
 	granted_items = { "armor_dragonfly_lamellar", },
 }))
 
+table.insert(prefs, CreatePrefabSkin("arrowsign_post_circus",
+{
+	base_prefab = "arrowsign_post",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/arrowsign_post_circus.zip"),
+		Asset("PKGREF", "anim/dynamic/arrowsign_post_circus.dyn"),
+	},
+	build_name = "arrowsign_post_circus",
+	rarity = "Loyal",
+	init_fn = function(inst) arrowsign_post_init_fn(inst, "arrowsign_post_circus") end,
+	skin_tags = { "ARROWSIGN_POST", "CIRCUS", "CRAFTABLE", },
+	release_group = 48,
+}))
+
 table.insert(prefs, CreatePrefabSkin("axe_victorian",
 {
 	base_prefab = "axe",
@@ -2353,6 +2368,21 @@ table.insert(prefs, CreatePrefabSkin("strawhat_floppy",
 	granted_items = { "minerhat_floppy", "rainhat_floppy", },
 }))
 
+table.insert(prefs, CreatePrefabSkin("tent_circus",
+{
+	base_prefab = "tent",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/tent_circus.zip"),
+		Asset("PKGREF", "anim/dynamic/tent_circus.dyn"),
+	},
+	build_name = "tent_circus",
+	rarity = "Loyal",
+	init_fn = function(inst) tent_init_fn(inst, "tent_circus") end,
+	skin_tags = { "TENT", "CIRCUS", "CRAFTABLE", },
+	release_group = 48,
+}))
+
 table.insert(prefs, CreatePrefabSkin("tophat_circus",
 {
 	base_prefab = "tophat",
@@ -2628,6 +2658,21 @@ table.insert(prefs, CreatePrefabSkin("treasurechest_traveltrunk",
 	skin_tags = { "CHEST", "CRAFTABLE", },
 	marketable = true,
 	release_group = 19,
+}))
+
+table.insert(prefs, CreatePrefabSkin("umbrella_circus",
+{
+	base_prefab = "umbrella",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/umbrella_circus.zip"),
+		Asset("PKGREF", "anim/dynamic/umbrella_circus.dyn"),
+	},
+	build_name = "umbrella_circus",
+	rarity = "Loyal",
+	init_fn = function(inst) umbrella_init_fn(inst, "umbrella_circus") end,
+	skin_tags = { "UMBRELLA", "CIRCUS", "CRAFTABLE", },
+	release_group = 48,
 }))
 
 table.insert(prefs, CreatePrefabSkin("umbrella_spider",
@@ -5017,6 +5062,21 @@ table.insert(prefs, CreatePrefabSkin("winterhat_stocking_cap_green_forest",
 	skin_tags = { "WINTERHAT", "WINTER", "GREEN", "CRAFTABLE", },
 	marketable = true,
 	release_group = 22,
+}))
+
+table.insert(prefs, CreatePrefabSkin("winterometer_circus",
+{
+	base_prefab = "winterometer",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/winterometer_circus.zip"),
+		Asset("PKGREF", "anim/dynamic/winterometer_circus.dyn"),
+	},
+	build_name = "winterometer_circus",
+	rarity = "Loyal",
+	init_fn = function(inst) winterometer_init_fn(inst, "winterometer_circus") end,
+	skin_tags = { "WINTEROMETER", "CIRCUS", "CRAFTABLE", },
+	release_group = 48,
 }))
 
 table.insert(prefs, CreatePrefabSkin("wolfgang_combatant",

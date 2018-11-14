@@ -636,6 +636,11 @@ ACTIONS.ATTACK.fn = function(act)
             return weapon ~= nil
                 and weapon.components.multithruster ~= nil
                 and weapon.components.multithruster:StartThrusting(act.doer)
+        elseif act.doer.sg:HasStateTag("helmsplitting") then
+            local weapon = act.doer.components.combat:GetWeapon()
+            return weapon ~= nil
+                and weapon.components.helmsplitter ~= nil
+                and weapon.components.helmsplitter:StartHelmSplitting(act.doer)
         end
     end
     act.doer.components.combat:DoAttack(act.target)

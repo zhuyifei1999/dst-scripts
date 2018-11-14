@@ -67,14 +67,14 @@ local prefabs =
     "lavaarena_healinggarlandhat",
     "lavaarena_crowndamagerhat",
 
-	-- Lavaarena season 2
+    -- Lavaarena season 2
     "lavaarena_armor_hpextraheavy",
     "lavaarena_armor_hppetmastery",
     "lavaarena_armor_hprecharger",
     "lavaarena_armor_hpdamager",
 
-	"lavaarena_firebomb",
-	"lavaarena_heavyblade",
+    "lavaarena_firebomb",
+    "lavaarena_heavyblade",
 }
 
 local assets =
@@ -82,6 +82,7 @@ local assets =
     Asset("SCRIPT", "scripts/prefabs/world.lua"),
 
     Asset("SOUND", "sound/lava_arena.fsb"),
+    Asset("SOUND", "sound/forge2.fsb"),
 
     Asset("IMAGE", "images/lavaarena_wave.tex"),
 

@@ -435,7 +435,7 @@ STRINGS =
             BLOWDART_LAVA2 = "Molten Bolt",
             LAVAARENA_LUCY = "Chuck Lucy",
             LAVAARENA_FIREBOMB = "Hearthsfire Bomb",
-            LAVAARENA_HEAVYBLADE = "???",
+            LAVAARENA_HEAVYBLADE = "Parry",
         },
 
         --Quagmire
@@ -1581,7 +1581,7 @@ STRINGS =
         TURTILLUS = "Snortoise",
         SNAPPER = "Crocommander",
         RHINODRILL = "Rhinocebro Snapback",
-        RHINODRILL2 = "Rhinocebro Flat Top",
+        RHINODRILL2 = "Rhinocebro Flatbrim",
         BEETLETAUR = "Infernal Swineclops",
 
         LAVAARENA_PORTAL = "Ancient Gateway",
@@ -2582,12 +2582,12 @@ STRINGS =
     BOARLORD_ROUND5_PLAYER_VICTORY =			-- Players win - round5-boarrior-unlocked victory
     {
         "What?! My champion!?!",
-        "Gatekeepers you have proven yourself mighty.",
+        "I see. You've demonstrated your might.",
         "...But we will live to fight again!!",
     },
     BOARLORD_ROUND6_START =						-- ? second delay
     {
-        "We do not fear you, Gatekeepers!",
+        "We do not fear you.",
         "But you will fear us!",
         "Fear my new champions! Fear the Rhinocebros!",
     },
@@ -2625,6 +2625,24 @@ STRINGS =
         "We are stronger.",
         "Well struck!",
 	},
+    --unused rhinobro barks
+    --[[RHINOCERBRO_ONEDOWN =
+    {
+        "Bro!",
+        "BRO!",
+        "No, BRO!",
+    }, 
+    RHINOCEBRO_REVIVING = 
+    {
+        "Like, get back up, bro.",
+        "I, like, need you bro!",
+        "You, like, okay bro?",
+    },
+    RHINOCERBRO_WHOOP = "Bro! Bro! Bro! Bro!",
+    RHINOCERBRO_DEFEAT = "Dang... bro...",
+    SNAPBACK_WIN = "Hehe, SNAPPED.", --either the snapback win bark fires or the flatbrim win bark fires, never both
+    FLATBRIM_WIN = "Like, FLATTENED.",]]
+
 
 	-- gameplay WIP
     MERM2_TALK_GREETING = --Pipton
@@ -3964,7 +3982,7 @@ STRINGS.UI =
 		{
 			BOOK_ELEMENTAL = "Summon a Magma Golem or divebomb opponents with a powerful Sky Lunge", -- adds: BOOK_ELEMENTAL + SPEAR_LANCE
 			LAVAARENA_FIREBOMB = "Bombard your opponents with searing Hearthsfire",
-			LAVAARENA_HEAVYBLADE = "???",
+			LAVAARENA_HEAVYBLADE = "Hinder your opponents with the almighty Blacksmith's Edge",
 			LAVAARENA_ARMOR_HPDAMAGER = "80% Protection, +50 Max Health,\n+20% Physical Damage",
 			LAVAARENA_ARMOR_HPRECHARGER = "80% Protection, +50 Max Health,\n+15% Faster Cooldown",
 			LAVAARENA_ARMOR_HPEXTRAHEAVY = "90% Protection, +100 Max Health,\nKnockback Resistance",
@@ -6097,7 +6115,7 @@ STRINGS.UI =
 				laq_nodashhounds =
 				{
 					TITLE = "Dash Their Hopes",
-					DESC  = "Avoid being hit by a dashing Pit Pig until the end of round 2",
+					DESC  = "Avoid being hit by a dashing Pit Pig before the Snortoises arrive",
 				},
 				laq_nodeath_solo_easy =
 				{
@@ -6152,7 +6170,7 @@ STRINGS.UI =
 				laq_nodeath_r6 =
 				{
 					TITLE = "Drill Down",
-					DESC  = "Survive with no team deaths until all Rhinocebros are defeated",
+					DESC  = "Survive with no team deaths until both Rhinocebros are defeated",
 				},
 				laq_wintime_30 =
 				{
