@@ -53,7 +53,7 @@ function OvalPortrait:_BuildCharacterDetails()
     self.characterdetails:SetColour(UICOLOURS.GREY)
 	
 	if TheNet:GetServerEvent() and TheNet:GetServerGameMode() == FESTIVAL_EVENTS.LAVAARENA then 
-		self.eventid = TheNet:GetServerGameMode() --Note(Peter):Ahhhhh! we're mixing game mode and event id and server event name, it works though because it's all "lavarena" due to the c-side being case-insensitive
+		self.eventid = TheNet:GetServerGameMode() --Note(Peter):Ahhhhh! we're mixing game mode and event id and server event name, it works though because it's all "lavaarena" due to the c-side being case-insensitive
 		portrait_root:SetPosition(0, 20)
 	
 	    self.character_text:SetPosition(0, -150)

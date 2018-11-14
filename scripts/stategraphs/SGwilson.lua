@@ -297,12 +297,22 @@ local function ValidateMultiThruster(inst)
     return IsWeaponEquipped(inst, inst.sg.statemem.weapon) and inst.sg.statemem.weapon.components.multithruster ~= nil
 end
 
+local function ValidateHelmSplitter(inst)
+    return IsWeaponEquipped(inst, inst.sg.statemem.weapon) and inst.sg.statemem.weapon.components.helmsplitter ~= nil
+end
+
 local function DoThrust(inst, nosound)
     if ValidateMultiThruster(inst) then
         inst.sg.statemem.weapon.components.multithruster:DoThrust(inst, inst.sg.statemem.target)
         if not nosound then
             inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_weapon")
         end
+    end
+end
+
+local function DoHelmSplit(inst)
+    if ValidateHelmSplitter(inst) then
+        inst.sg.statemem.weapon.components.helmsplitter:DoHelmSplit(inst, inst.sg.statemem.target)
     end
 end
 
@@ -521,7 +531,8 @@ local actionhandlers =
                         (action.invobject:HasTag("aoeweapon_leap") and (action.invobject:HasTag("superjump") and "combat_superjump_start" or "combat_leap_start")) or
                         (action.invobject:HasTag("blowdart") and "blowdart_special") or
                         (action.invobject:HasTag("throw_line") and "throw_line") or
-                        (action.invobject:HasTag("book") and "book")
+                        (action.invobject:HasTag("book") and "book") or
+                        (action.invobject:HasTag("parryweapon") and "parry_pre")
                     )
                 or "castspell"
         end),
@@ -537,6 +548,7 @@ local actionhandlers =
                     or (weapon:HasTag("blowdart") and "blowdart")
                     or (weapon:HasTag("thrown") and "throw")
                     or (weapon:HasTag("multithruster") and "multithrust_pre")
+                    or (weapon:HasTag("helmsplitter") and "helmsplitter_pre")
                     or "attack"
             end
         end),
@@ -644,6 +656,14 @@ local events =
                     inst.sg.statemem.iswaking = true
                     inst.sg:GoToState("wakeup")
                 end
+            elseif inst.sg:HasStateTag("parrying") and data.redirected then
+                if not inst.sg:HasStateTag("parryhit") then
+                    inst.sg.statemem.parrying = true
+                    inst.sg:GoToState("parry_hit", {
+                        timeleft = inst.sg.statemem.task ~= nil and GetTaskRemaining(inst.sg.statemem.task) or inst.sg.statemem.parrytime,
+                        pushing = data.attacker ~= nil and data.attacker.sg ~= nil and data.attacker.sg:HasStateTag("pushing"),
+                    })
+                end
             elseif data.attacker ~= nil
                 and data.attacker:HasTag("groundspike")
                 and not inst.components.rider:IsRiding()
@@ -707,8 +727,19 @@ local events =
     end),
 
     EventHandler("knockback", function(inst, data)
-        if not (inst.components.health:IsDead() or inst.components.inventory:CheckForResistanceToTag("knockback", true)) then
-            inst.sg:GoToState((data.forcelanded or inst.components.inventory:ArmorHasTag("heavyarmor") or inst:HasTag("heavybody")) and "knockbacklanded" or "knockback", data)
+        if not inst.components.health:IsDead() then
+            if inst.sg:HasStateTag("parrying") then
+                inst.sg.statemem.parrying = true
+                inst.sg:GoToState("parry_knockback", {
+                    timeleft =
+                        (inst.sg.statemem.task ~= nil and GetTaskRemaining(inst.sg.statemem.task)) or
+                        (inst.sg.statemem.timeleft ~= nil and math.max(0, inst.sg.statemem.timeleft + inst.sg.statemem.timeleft0 - GetTime())) or
+                        inst.sg.statemem.parrytime,
+                    knockbackdata = data,
+                })
+            else
+                inst.sg:GoToState((data.forcelanded or inst.components.inventory:ArmorHasTag("heavyarmor") or inst:HasTag("heavybody")) and "knockbacklanded" or "knockback", data)
+            end
         end
     end),
 
@@ -2430,6 +2461,329 @@ local states =
 
         ontimeout = function(inst)
             inst.sg:GoToState(inst.sg.statemem.unequipped and "idle" or "shell_idle")
+        end,
+    },
+
+    State{
+        name = "parry_pre",
+        tags = { "preparrying", "busy", "nomorph" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("parry_pre")
+            inst.AnimState:PushAnimation("parry_loop", true)
+            inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
+            --V2C: using animover results in a slight hang on last frame of parry_pre
+
+            local function oncombatparry(inst, data)
+                inst.sg:AddStateTag("parrying")
+                if data ~= nil then
+                    if data.direction ~= nil then
+                        inst.Transform:SetRotation(data.direction)
+                    end
+                    inst.sg.statemem.parrytime = data.duration
+                    inst.sg.statemem.item = data.weapon
+                    if data.weapon ~= nil then
+                        inst.components.combat.redirectdamagefn = function(inst, attacker, damage, weapon, stimuli)
+                            return IsWeaponEquipped(inst, data.weapon)
+                                and data.weapon.components.parryweapon ~= nil
+                                and data.weapon.components.parryweapon:TryParry(inst, attacker, damage, weapon, stimuli)
+                                and data.weapon
+                                or nil
+                        end
+                    end
+                end
+            end
+            --V2C: using EventHandler will result in a frame delay, but we want this to trigger
+            --     immediately during PerformBufferedAction()
+            inst:ListenForEvent("combat_parry", oncombatparry)
+            inst:PerformBufferedAction()
+            inst:RemoveEventCallback("combat_parry", oncombatparry)
+        end,
+
+        timeline =
+        {
+            TimeEvent(3 * FRAMES, function(inst)
+                if inst.sg.statemem.item ~= nil and
+                    inst.sg.statemem.item.components.parryweapon ~= nil and
+                    inst.sg.statemem.item:IsValid() then
+                    --This is purely for stategraph animation sfx, can actually be bypassed!
+                    inst.sg.statemem.item.components.parryweapon:OnPreParry(inst)
+                end
+            end),
+        },
+
+        events =
+        {
+            EventHandler("ontalk", function(inst)
+                if inst.sg.statemem.talktask ~= nil then
+                    inst.sg.statemem.talktask:Cancel()
+                    inst.sg.statemem.talktask = nil
+                    inst.SoundEmitter:KillSound("talk")
+                end
+                if DoTalkSound(inst) then
+                    inst.sg.statemem.talktask =
+                        inst:DoTaskInTime(1.5 + math.random() * .5,
+                            function()
+                                inst.SoundEmitter:KillSound("talk")
+                                inst.sg.statemem.talktask = nil
+                            end)
+                end
+            end),
+            EventHandler("donetalking", function(inst)
+                if inst.sg.statemem.talktalk ~= nil then
+                    inst.sg.statemem.talktask:Cancel()
+                    inst.sg.statemem.talktask = nil
+                    inst.SoundEmitter:KillSound("talk")
+                end
+            end),
+            EventHandler("unequip", function(inst, data)
+                -- We need to handle this because the default unequip
+                -- handler is ignored while we are in a "busy" state.
+                inst.sg:GoToState(GetUnequipState(inst, data))
+            end),
+        },
+
+        ontimeout = function(inst)
+            if inst.sg:HasStateTag("parrying") then
+                inst.sg.statemem.parrying = true
+                --Transfer talk task to parry_idle state
+                local talktask = inst.sg.statemem.talktask
+                inst.sg.statemem.talktask = nil
+                inst.sg:GoToState("parry_idle", { duration = inst.sg.statemem.parrytime, pauseframes = 30, talktask = talktask })
+            else
+                inst.AnimState:PlayAnimation("parry_pst")
+                inst.sg:GoToState("idle", true)
+            end
+        end,
+
+        onexit = function(inst)
+            if inst.sg.statemem.talktask ~= nil then
+                inst.sg.statemem.talktask:Cancel()
+                inst.sg.statemem.talktask = nil
+                inst.SoundEmitter:KillSound("talk")
+            end
+            if not inst.sg.statemem.parrying then
+                inst.components.combat.redirectdamagefn = nil
+            end
+        end,
+    },
+
+    State{
+        name = "parry_idle",
+        tags = { "notalking", "parrying", "nomorph" },
+
+        onenter = function(inst, data)
+            inst.components.locomotor:Stop()
+
+            if data ~= nil and data.duration ~= nil then
+                if data.duration > 0 then
+                    inst.sg.statemem.task = inst:DoTaskInTime(data.duration, function(inst)
+                        inst.sg.statemem.task = nil
+                        inst.AnimState:PlayAnimation("parry_pst")
+                        inst.sg:GoToState("idle", true)
+                    end)
+                else
+                    inst.AnimState:PlayAnimation("parry_pst")
+                    inst.sg:GoToState("idle", true)
+                    return
+                end
+            end
+
+            if not inst.AnimState:IsCurrentAnimation("parry_loop") then
+                inst.AnimState:PushAnimation("parry_loop", true)
+            end
+
+            --Transferred over from parry_pre so it doesn't cut off abrubtly
+            inst.sg.statemem.talktask = data ~= nil and data.talktask or nil
+
+            if data ~= nil and (data.pauseframes or 0) > 0 then
+                inst.sg:AddStateTag("busy")
+                inst.sg:AddStateTag("pausepredict")
+
+                if inst.components.playercontroller ~= nil then
+                    inst.components.playercontroller:RemotePausePrediction(data.pauseframes <= 7 and data.pauseframes or nil)
+                end
+                inst.sg:SetTimeout(data.pauseframes * FRAMES)
+            else
+                inst.sg:AddStateTag("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst.sg:RemoveStateTag("busy")
+            inst.sg:RemoveStateTag("pausepredict")
+            inst.sg:AddStateTag("idle")
+        end,
+
+        events =
+        {
+            EventHandler("ontalk", function(inst)
+                if inst.sg.statemem.talktask ~= nil then
+                    inst.sg.statemem.talktask:Cancel()
+                    inst.sg.statemem.talktask = nil
+                    inst.SoundEmitter:KillSound("talk")
+                end
+                if DoTalkSound(inst) then
+                    inst.sg.statemem.talktask =
+                        inst:DoTaskInTime(1.5 + math.random() * .5,
+                            function()
+                                inst.SoundEmitter:KillSound("talk")
+                                inst.sg.statemem.talktask = nil
+                            end)
+                end
+            end),
+            EventHandler("donetalking", function(inst)
+                if inst.sg.statemem.talktalk ~= nil then
+                    inst.sg.statemem.talktask:Cancel()
+                    inst.sg.statemem.talktask = nil
+                    inst.SoundEmitter:KillSound("talk")
+                end
+            end),
+            EventHandler("unequip", function(inst, data)
+                if not inst.sg:HasStateTag("idle") then
+                    -- We need to handle this because the default unequip
+                    -- handler is ignored while we are in a "busy" state.
+                    inst.sg:GoToState(GetUnequipState(inst, data))
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if inst.sg.statemem.task ~= nil then
+                inst.sg.statemem.task:Cancel()
+                inst.sg.statemem.task = nil
+            end
+            if inst.sg.statemem.talktask ~= nil then
+                inst.sg.statemem.talktask:Cancel()
+                inst.sg.statemem.talktask = nil
+                inst.SoundEmitter:KillSound("talk")
+            end
+            if not inst.sg.statemem.parrying then
+                inst.components.combat.redirectdamagefn = nil
+            end
+        end,
+    },
+
+    State{
+        name = "parry_hit",
+        tags = { "parrying", "parryhit", "nomorph", "busy", "nopredict" },
+
+        onenter = function(inst, data)
+            inst.components.locomotor:Stop()
+            inst:ClearBufferedAction()
+
+            inst.AnimState:PlayAnimation("parryblock")
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/hit")
+
+            local stun_frames = data ~= nil and data.pushing and 6 or 4
+            if data ~= nil and data.timeleft ~= nil then
+                inst.sg.statemem.timeleft0 = GetTime()
+                inst.sg.statemem.timeleft = data.timeleft
+            end
+            inst.sg:SetTimeout(stun_frames * FRAMES)
+        end,
+
+        events =
+        {
+            EventHandler("unequip", function(inst, data)
+                -- We need to handle this because the default unequip
+                -- handler is ignored while we are in a "busy" state.
+                inst.sg.statemem.unequipped = true
+            end),
+        },
+
+        ontimeout = function(inst)
+            if inst.sg.statemem.unequipped then
+                inst.sg:GoToState("idle")
+            else
+                inst.sg.statemem.parrying = true
+                inst.sg:GoToState("parry_idle", inst.sg.statemem.timeleft ~= nil and { duration = math.max(0, inst.sg.statemem.timeleft + inst.sg.statemem.timeleft0 - GetTime()) } or nil)
+            end
+        end,
+
+        onexit = function(inst)
+            if not inst.sg.statemem.parrying then
+                inst.components.combat.redirectdamagefn = nil
+            end
+        end,
+    },
+
+    State{
+        name = "parry_knockback",
+        tags = { "parrying", "parryhit", "busy", "nopredict", "nomorph" },
+
+        onenter = function(inst, data)
+            inst.components.locomotor:Stop()
+            inst:ClearBufferedAction()
+
+            inst.AnimState:PlayAnimation("parryblock")
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/hit")
+
+            if data ~= nil then
+                if data.timeleft ~= nil then
+                    inst.sg.statemem.timeleft0 = GetTime()
+                    inst.sg.statemem.timeleft = data.timeleft
+                end
+                data = data.knockbackdata
+                if data ~= nil and data.radius ~= nil and data.knocker ~= nil and data.knocker:IsValid() then
+                    local x, y, z = data.knocker.Transform:GetWorldPosition()
+                    local distsq = inst:GetDistanceSqToPoint(x, y, z)
+                    local rangesq = data.radius * data.radius
+                    local rot = inst.Transform:GetRotation()
+                    local rot1 = distsq > 0 and inst:GetAngleToPoint(x, y, z) or data.knocker.Transform:GetRotation() + 180
+                    local drot = math.abs(rot - rot1)
+                    while drot > 180 do
+                        drot = math.abs(drot - 360)
+                    end
+                    local k = distsq < rangesq and .3 * distsq / rangesq - 1 or -.7
+                    inst.sg.statemem.speed = (data.strengthmult or 1) * 12 * k
+                    if drot > 90 then
+                        inst.sg.statemem.reverse = true
+                        inst.Transform:SetRotation(rot1 + 180)
+                        inst.Physics:SetMotorVel(-inst.sg.statemem.speed, 0, 0)
+                    else
+                        inst.Transform:SetRotation(rot1)
+                        inst.Physics:SetMotorVel(inst.sg.statemem.speed, 0, 0)
+                    end
+                end
+            end
+
+            inst.sg:SetTimeout(6 * FRAMES)
+        end,
+
+        onupdate = function(inst)
+            if inst.sg.statemem.speed ~= nil then
+                inst.sg.statemem.speed = .75 * inst.sg.statemem.speed
+                inst.Physics:SetMotorVel(inst.sg.statemem.reverse and -inst.sg.statemem.speed or inst.sg.statemem.speed, 0, 0)
+            end
+        end,
+
+        events =
+        {
+            EventHandler("unequip", function(inst, data)
+                -- We need to handle this because the default unequip
+                -- handler is ignored while we are in a "busy" state.
+                inst.sg.statemem.unequipped = true
+            end),
+        },
+
+        ontimeout = function(inst)
+            if inst.sg.statemem.unequipped then
+                inst.sg:GoToState("idle")
+            else
+                inst.sg.statemem.parrying = true
+                inst.sg:GoToState("parry_idle", inst.sg.statemem.timeleft ~= nil and { duration = math.max(0, inst.sg.statemem.timeleft + inst.sg.statemem.timeleft0 - GetTime()) } or nil)
+            end
+        end,
+
+        onexit = function(inst)
+            if inst.sg.statemem.speed ~= nil then
+                inst.Physics:Stop()
+            end
+            if not inst.sg.statemem.parrying then
+                inst.components.combat.redirectdamagefn = nil
+            end
         end,
     },
 
@@ -7620,6 +7974,147 @@ local states =
             inst.Transform:SetFourFaced()
             if ValidateMultiThruster(inst) then
                 inst.sg.statemem.weapon.components.multithruster:StopThrusting(inst)
+            end
+        end,
+    },
+
+    State
+    {
+        name = "helmsplitter_pre",
+        tags = { "helmsplitting", "doing", "busy", "nointerrupt", "nomorph", "pausepredict" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("atk_leap_pre")
+
+            if inst.bufferedaction ~= nil and inst.bufferedaction.target ~= nil and inst.bufferedaction.target:IsValid() then
+                inst.sg.statemem.target = inst.bufferedaction.target
+                inst.components.combat:SetTarget(inst.sg.statemem.target)
+                inst:ForceFacePoint(inst.sg.statemem.target.Transform:GetWorldPosition())
+            end
+
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:RemotePausePrediction()
+            end
+
+            inst.sg:SetTimeout(8 * FRAMES)
+        end,
+
+        ontimeout = function(inst)
+            inst.sg.statemem.helmsplitting = true
+            inst.sg:GoToState("helmsplitter", inst.sg.statemem.target)
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg.statemem.helmsplitting = true
+                    inst.sg:GoToState("helmsplitter", inst.sg.statemem.target)
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if not inst.sg.statemem.helmsplitting then
+                inst.components.combat:SetTarget(nil)
+            end
+        end,
+    },
+
+    State
+    {
+        name = "helmsplitter",
+        tags = { "helmsplitting", "doing", "busy", "nointerrupt", "nomorph", "pausepredict" },
+
+        onenter = function(inst, target)
+            inst.components.locomotor:Stop()
+            inst.Transform:SetEightFaced()
+            inst.AnimState:PlayAnimation("atk_leap")
+            inst.SoundEmitter:PlaySound("dontstarve/common/deathpoof")
+
+            if target ~= nil and target:IsValid() then
+                inst.sg.statemem.target = target
+                inst:ForceFacePoint(target.Transform:GetWorldPosition())
+            end
+
+            inst.sg:SetTimeout(30 * FRAMES)
+
+            --[[if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:RemotePausePrediction()
+            end]]
+        end,
+
+        timeline =
+        {
+            TimeEvent(10 * FRAMES, function(inst)
+                inst.components.colouradder:PushColour("helmsplitter", .1, .1, 0, 0)
+            end),
+            TimeEvent(11 * FRAMES, function(inst)
+                inst.components.colouradder:PushColour("helmsplitter", .2, .2, 0, 0)
+            end),
+            TimeEvent(12 * FRAMES, function(inst)
+                inst.components.colouradder:PushColour("helmsplitter", .4, .4, 0, 0)
+                local x, y, z = inst.Transform:GetWorldPosition()
+                ToggleOnPhysics(inst)
+                inst.Physics:Teleport(x, 0, z)
+                inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_weapon")
+                inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_whoosh")
+            end),
+            TimeEvent(13 * FRAMES, function(inst)
+                inst.components.bloomer:PushBloom("helmsplitter", "shaders/anim.ksh", -2)
+                inst.components.colouradder:PushColour("helmsplitter", 1, 1, 0, 0)
+                inst.sg:RemoveStateTag("nointerrupt")
+                ShakeAllCameras(CAMERASHAKE.VERTICAL, .5, .015, .5, inst, 20)
+                inst.sg.statemem.weapon = inst.components.combat:GetWeapon()
+                inst:PerformBufferedAction()
+                DoHelmSplit(inst)
+            end),
+            TimeEvent(14 * FRAMES, function(inst)
+                inst.components.colouradder:PushColour("helmsplitter", .8, .8, 0, 0)
+            end),
+            TimeEvent(15 * FRAMES, function(inst)
+                inst.components.colouradder:PushColour("helmsplitter", .6, .6, 0, 0)
+            end),
+            TimeEvent(16 * FRAMES, function(inst)
+                inst.components.colouradder:PushColour("helmsplitter", .4, .4, 0, 0)
+            end),
+            TimeEvent(17 * FRAMES, function(inst)
+                inst.components.colouradder:PushColour("helmsplitter", .2, .2, 0, 0)
+            end),
+            TimeEvent(18 * FRAMES, function(inst)
+                inst.components.colouradder:PopColour("helmsplitter")
+            end),
+            TimeEvent(19 * FRAMES, function(inst)
+                inst.components.bloomer:PopBloom("helmsplitter")
+            end),
+        },
+
+        ontimeout = function(inst)
+            inst.sg:GoToState("idle", true)
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if inst.sg.statemem.isphysicstoggle then
+                local x, y, z = inst.Transform:GetWorldPosition()
+                ToggleOnPhysics(inst)
+                inst.Physics:Teleport(x, 0, z)
+            end
+            inst.components.combat:SetTarget(nil)
+            inst.Transform:SetFourFaced()
+            inst.components.bloomer:PopBloom("helmsplitter")
+            inst.components.colouradder:PopColour("helmsplitter")
+            if ValidateHelmSplitter(inst) then
+                inst.sg.statemem.weapon.components.helmsplitter:StopHelmSplitting(inst)
             end
         end,
     },

@@ -123,7 +123,7 @@ function MotdManager:QueryForMotdInfo(remaining_retries)
 
 	TheSim:QueryServer( url, function(motd_json, isSuccessful, resultCode) 
 		local status, motd_info = "", "" 
-		 if isSuccessful and string.len(motd_json) > 1 and resultCode == 200 then 
+		if isSuccessful and string.len(motd_json) > 1 and resultCode == 200 then 
 			motd_json = fix_web_string(motd_json)
 			status, motd_info = pcall( function() return json.decode(motd_json) end )
 			if status and motd_info ~= nil then
@@ -138,11 +138,6 @@ function MotdManager:QueryForMotdInfo(remaining_retries)
 						box = motd_info[box_id][1]
 					end
 					if box.image ~= nil and type(box.image) == "string" and string.match(box.image, ".tex") then
---[[
-						if i == 5 then
-							box.image = "https://www.kleientertainment.com/sites/all/themes/klei_theme/logo.png"
-						end
-]]
 						box.requires_download = self.motd_info == nil or self.motd_info[box_id][1].download_failed or (self.motd_info[box_id][1].time ~= box.time) or (self.motd_info[box_id][1].image ~= box.image)
 					else
 						box.image = ""
@@ -152,6 +147,8 @@ function MotdManager:QueryForMotdInfo(remaining_retries)
 			else
 				isSuccessful = false
 			end
+		else
+			isSuccessful = false
 		end
 
 		if not isSuccessful then

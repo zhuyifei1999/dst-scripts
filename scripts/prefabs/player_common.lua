@@ -1154,6 +1154,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_superjump.zip"),
         Asset("ANIM", "anim/player_attack_leap.zip"),
         Asset("ANIM", "anim/player_book_attack.zip"),
+        Asset("ANIM", "anim/player_parryblock.zip"),
 
         Asset("ANIM", "anim/player_frozen.zip"),
         Asset("ANIM", "anim/player_shock.zip"),
@@ -1339,6 +1340,7 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.AnimState:AddOverrideBuild("player_attack_leap")
         inst.AnimState:AddOverrideBuild("player_superjump")
         inst.AnimState:AddOverrideBuild("player_multithrust")
+        inst.AnimState:AddOverrideBuild("player_parryblock")
         inst.AnimState:AddOverrideBuild("player_emote_extra")
 
         inst.DynamicShadow:SetSize(1.3, .6)

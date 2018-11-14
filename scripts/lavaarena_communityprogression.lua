@@ -318,7 +318,7 @@ function CommunityProgression:RequestProgressionData(force, time)
 		self.progression_retries_remaining = NUM_RETRIES
 	end
 
-	TheSim:QueryServer( "https://theforge.kleientertainment.com/wins", 
+	TheSim:QueryServer( "https://theforge.kleientertainment.com/wins2", 
 		function(result, isSuccessful, resultCode) 
 			if not LAG_TEST then 
 				OnHandleProgressionQueryResponce(self, result, isSuccessful, resultCode)
@@ -381,6 +381,10 @@ local function OnHandleQuestQueryResponce(self, userid, result, isSuccessful, re
 		user_quests.quest_query_active = false
 		user_quests.server_json = json.encode(user_quests.quest_data)
 	elseif self.mode == IS_CLIENT_HOSTED then
+		if userid ~= TheNet:GetUserID() then
+			user_quests.quest_query_active = false
+		end
+
 		user_quests.server_json = json.encode(user_quests.quest_data)
 	else
 		user_quests.quest_query_active = false
@@ -518,7 +522,7 @@ function CommunityProgression:Load()
 				self.progression_data = ParseProgressionData(data.progression_data)
 				self.prev_progression_data = deepcopy(self.progression_data)
 				self.progression_query_time = data.progression_query_time
-				self.quest_data = data.quest_data
+				self.quest_data = data.quest_data or {}
 				print("[CommunityProgression] Progression and quest data loaded from file.")
 			else
 				print("[CommunityProgression] Invalid progression and quest data in save file.", tostring(status), tostring(json_data))

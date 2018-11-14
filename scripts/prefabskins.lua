@@ -35,6 +35,10 @@ PREFAB_SKINS = {
 		"armor_wood_haramaki",
 		"armor_wood_lamellar",
 	},
+	arrowsign_post = 
+	{
+		"arrowsign_post_circus",
+	},
 	axe = 
 	{
 		"axe_victorian",
@@ -289,6 +293,10 @@ PREFAB_SKINS = {
 	{
 		"strawhat_floppy",
 	},
+	tent = 
+	{
+		"tent_circus",
+	},
 	tophat = 
 	{
 		"hat_catcoon_costume",
@@ -321,6 +329,7 @@ PREFAB_SKINS = {
 	},
 	umbrella = 
 	{
+		"umbrella_circus",
 		"umbrella_spider",
 	},
 	watermelonhat = 
@@ -484,6 +493,10 @@ PREFAB_SKINS = {
 		"winterhat_plum_pudding",
 		"winterhat_rooster",
 		"winterhat_stocking_cap_green_forest",
+	},
+	winterometer = 
+	{
+		"winterometer_circus",
 	},
 	wolfgang = 
 	{

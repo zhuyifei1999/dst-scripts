@@ -1504,6 +1504,13 @@ MISC_ITEMS =
 		rarity_modifier = "EventModifier",
 		release_group = 43,
 	},
+	playerportrait_bg_arrowsignpostcircus =
+	{
+		type = "playerportrait",
+		skin_tags = { "CIRCUS", "PLAYERPORTRAIT", },
+		rarity = "Loyal",
+		release_group = 48,
+	},
 	playerportrait_bg_beefalo =
 	{
 		type = "playerportrait",
@@ -1962,6 +1969,13 @@ MISC_ITEMS =
 		rarity_modifier = "Seasonal",
 		release_group = 40,
 	},
+	playerportrait_bg_tentcircus =
+	{
+		type = "playerportrait",
+		skin_tags = { "CIRCUS", "PLAYERPORTRAIT", },
+		rarity = "Loyal",
+		release_group = 48,
+	},
 	playerportrait_bg_thickforest =
 	{
 		type = "playerportrait",
@@ -1985,6 +1999,13 @@ MISC_ITEMS =
 		rarity = "Loyal",
 		release_group = 48,
 	},
+	playerportrait_bg_umbrellacircus =
+	{
+		type = "playerportrait",
+		skin_tags = { "CIRCUS", "PLAYERPORTRAIT", },
+		rarity = "Loyal",
+		release_group = 48,
+	},
 	playerportrait_bg_winter =
 	{
 		type = "playerportrait",
@@ -2000,6 +2021,13 @@ MISC_ITEMS =
 		rarity = "Spiffy",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
+	},
+	playerportrait_bg_winterometercircus =
+	{
+		type = "playerportrait",
+		skin_tags = { "CIRCUS", "PLAYERPORTRAIT", },
+		rarity = "Loyal",
+		release_group = 48,
 	},
 	playerportrait_bg_wintertrees =
 	{
@@ -2040,6 +2068,13 @@ MISC_ITEMS =
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	profileflair_arrowsignpost_circus =
+	{
+		type = "profileflair",
+		skin_tags = { "CIRCUS", "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 48,
 	},
 	profileflair_babybeefalo =
 	{
@@ -2714,6 +2749,13 @@ MISC_ITEMS =
 		rarity_modifier = "EventModifier",
 		release_group = 32,
 	},
+	profileflair_tent_circus =
+	{
+		type = "profileflair",
+		skin_tags = { "CIRCUS", "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 48,
+	},
 	profileflair_theforge_battlestandard =
 	{
 		type = "profileflair",
@@ -2969,6 +3011,13 @@ MISC_ITEMS =
 		rarity_modifier = "EventModifier",
 		release_group = 32,
 	},
+	profileflair_umbrella_circus =
+	{
+		type = "profileflair",
+		skin_tags = { "CIRCUS", "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 48,
+	},
 	profileflair_varg =
 	{
 		type = "profileflair",
@@ -3096,6 +3145,13 @@ MISC_ITEMS =
 		rarity = "Common",
 		rarity_modifier = "EventModifier",
 		release_group = 32,
+	},
+	profileflair_winterometer_circus =
+	{
+		type = "profileflair",
+		skin_tags = { "CIRCUS", "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 48,
 	},
 	profileflair_yule_bearger =
 	{

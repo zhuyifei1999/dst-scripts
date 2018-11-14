@@ -293,7 +293,7 @@ function WxpLobbyPanel:OnCompleteAnimation()
 	TheFrontEnd:GetSound():KillSound("fillsound")
 
     if self.wxp.earned_boxes > 0 then
-    	TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/collectionscreen/earned") --change to earned boxes
+    	--TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/Together_HUD/collectionscreen/earned") --change to earned boxes
 
         local newbox_title = self.wxpbar:AddChild(Text(HEADERFONT, 30, "", UICOLOURS.EGGSHELL))
 		newbox_title:SetPosition(0, -37)
