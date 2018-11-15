@@ -8055,9 +8055,6 @@ local states =
             end),
             TimeEvent(12 * FRAMES, function(inst)
                 inst.components.colouradder:PushColour("helmsplitter", .4, .4, 0, 0)
-                local x, y, z = inst.Transform:GetWorldPosition()
-                ToggleOnPhysics(inst)
-                inst.Physics:Teleport(x, 0, z)
                 inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_weapon")
                 inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_whoosh")
             end),
@@ -8104,11 +8101,6 @@ local states =
         },
 
         onexit = function(inst)
-            if inst.sg.statemem.isphysicstoggle then
-                local x, y, z = inst.Transform:GetWorldPosition()
-                ToggleOnPhysics(inst)
-                inst.Physics:Teleport(x, 0, z)
-            end
             inst.components.combat:SetTarget(nil)
             inst.Transform:SetFourFaced()
             inst.components.bloomer:PopBloom("helmsplitter")
