@@ -856,6 +856,8 @@ local clothing_assets =
 	Asset("PKGREF", "anim/dynamic/loading_goosemoose_yule.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/loading_magma.zip"),
 	Asset("PKGREF", "anim/dynamic/loading_magma.dyn"),
+	Asset("DYNAMIC_ANIM", "anim/dynamic/loading_magma2.zip"),
+	Asset("PKGREF", "anim/dynamic/loading_magma2.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/loading_maxwell.zip"),
 	Asset("PKGREF", "anim/dynamic/loading_maxwell.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/loading_merm.zip"),

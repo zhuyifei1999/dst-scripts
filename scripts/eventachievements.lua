@@ -41,6 +41,17 @@ function EventAchievements:GetAchievementsCategoryList(eventid, season)
 	return self._achievement_list[eventid][season]
 end
 
+function EventAchievements:FindAchievementData(eventid, season, achievementid)
+	for _, v in pairs(self._achievement_list[eventid][season]) do
+		for _, achievement in ipairs(v.data) do
+			if achievement.achievementid == achievementid then
+				return achievement
+			end
+		end
+	end
+	return nil
+end
+
 function EventAchievements:IsAchievementUnlocked(eventid, season, achievementid)
 	return TheInventory:IsAchievementUnlocked(GetFestivalEventServerName(eventid, season), achievementid)
 end
@@ -78,13 +89,11 @@ function EventAchievements:SetActiveQuests(quest_data)
 	self._quest_data = quest_data
 end
 
-function EventAchievements:BuildFullQuestName(quest_id)
+function EventAchievements:BuildFullQuestName(quest_id, character)
 	local post_fix = "-" .. string.format("-%03d", self._quest_data.version) .. string.format("-%03d", self._achievement_list_byid[quest_id].daily and self._quest_data.event_day or self._quest_data.quest_day)
 
-	if quest_id == self._quest_data.special1.quest then
-		post_fix = post_fix .. "-" .. self._quest_data.special1.character
-	elseif quest_id == self._quest_data.special2.quest then
-		post_fix = post_fix .. "-" .. self._quest_data.special2.character
+	if character ~= nil and (quest_id == self._quest_data.special1.quest or quest_id == self._quest_data.special2.quest) then
+		post_fix = post_fix .. "-" .. character
 	end
 
 	return quest_id .. post_fix

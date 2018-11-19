@@ -1892,7 +1892,7 @@ STRINGS =
 
 		-- Lavaarena Season 2
 		LAVAARENA_ARMOR_HPEXTRAHEAVY = "90% Protection\n+100 Max Health\nKnockback Resistance",
-		LAVAARENA_ARMOR_HPPETMASTERY = "80% Protection\n+50 Max Health\nCompanion Buff",
+		LAVAARENA_ARMOR_HPPETMASTERY = "80% Protection\n+75 Max Health\nCompanion Buff",
 		LAVAARENA_ARMOR_HPRECHARGER = "80% Protection\n+50 Max Health\n+15% Faster Cooldown",
 		LAVAARENA_ARMOR_HPDAMAGER = "80% Protection\n+50 Max Health\n+20% Physical Damage",
 
@@ -3976,6 +3976,7 @@ STRINGS.UI =
 		UNLOCKED_TITLE =
 		{
 			BOOK_ELEMENTAL = "Tome of Beckoning & Spiral Spear",
+			RHINODRILL = "Rhinocebros, Snapback and Flatbrim",
 		},
 
 		UNLOCKED_DESC =
@@ -3986,7 +3987,7 @@ STRINGS.UI =
 			LAVAARENA_ARMOR_HPDAMAGER = "80% Protection, +50 Max Health,\n+20% Physical Damage",
 			LAVAARENA_ARMOR_HPRECHARGER = "80% Protection, +50 Max Health,\n+15% Faster Cooldown",
 			LAVAARENA_ARMOR_HPEXTRAHEAVY = "90% Protection, +100 Max Health,\nKnockback Resistance",
-			LAVAARENA_ARMOR_HPPETMASTERY = "80% Protection, +50 Max Health,\nIncreases effectiveness of Baby Spiders, Abigail or Bernie",
+			LAVAARENA_ARMOR_HPPETMASTERY = "80% Protection, +75 Max Health, Increases effectiveness of Baby Spiders, Abigail or Bernie",
 			BOARRIOR = "Summoned to the arena while defeating the Boarillas",
 			RHINODRILL = "Summoned to the arena when the Grand Forge Boarrior is defeated",
 			BEETLETAUR = "Summoned to the arena for the final round!",
@@ -5525,6 +5526,7 @@ STRINGS.UI =
     {
         TITLE =
         {
+            LAVAARENA2 = "The Forge - Season 2",
             LAVAARENA = "The Forge",
             QUAGMIRE = "The Gorge",
         },

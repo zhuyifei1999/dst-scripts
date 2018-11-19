@@ -224,7 +224,7 @@ end
 local function MakeDailyEntry(quest_info, festival_key, season)
     local w = Widget("daily-cell")
 
-	local quest_icon = (EventAchievements:IsAchievementUnlocked(festival_key, season, EventAchievements:BuildFullQuestName(quest_info.quest)) and (quest_info.quest .. ".tex"))
+	local quest_icon = (EventAchievements:IsAchievementUnlocked(festival_key, season, EventAchievements:BuildFullQuestName(quest_info.quest, quest_info.character)) and (quest_info.quest .. ".tex"))
 						or (quest_info.quest.."_locked.tex")
 
     local icon = w:AddChild(Image("images/lavaarena_quests.xml", quest_icon))
@@ -249,7 +249,7 @@ end
 local function MakeQuestEntry(quest_info, row_w, festival_key, season)
     local w = Widget("quest-cell")
 
-	local quest_icon = (EventAchievements:IsAchievementUnlocked(festival_key, season, EventAchievements:BuildFullQuestName(quest_info.quest)) and (quest_info.quest .. ".tex"))
+	local quest_icon = (EventAchievements:IsAchievementUnlocked(festival_key, season, EventAchievements:BuildFullQuestName(quest_info.quest, quest_info.character)) and (quest_info.quest .. ".tex"))
 						or (quest_info.character ~= nil and "achievement_"..quest_info.character..".tex")
 						or (EventAchievements:GetActiveAchievementsIdList()[quest_info.quest].team and "achievement_group.tex")
 						or "achievement_personal.tex"
