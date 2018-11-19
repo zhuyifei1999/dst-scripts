@@ -442,6 +442,14 @@ MISC_ITEMS =
 		rarity_modifier = "EventModifier",
 		release_group = 51,
 	},
+	loading_magma2 =
+	{
+		type = "loading",
+		skin_tags = { "LAVA", "LOADING", },
+		rarity = "Classy",
+		rarity_modifier = "EventModifier",
+		release_group = 51,
+	},
 	loading_maxwell =
 	{
 		type = "loading",
@@ -2012,7 +2020,7 @@ MISC_ITEMS =
 	playerportrait_bg_winter =
 	{
 		type = "playerportrait",
-		skin_tags = { "ICE", "PLAYERPORTRAIT", },
+		skin_tags = { "WINTER", "PLAYERPORTRAIT", },
 		rarity = "Spiffy",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
@@ -2020,7 +2028,7 @@ MISC_ITEMS =
 	playerportrait_bg_winterfire =
 	{
 		type = "playerportrait",
-		skin_tags = { "ICE", "PLAYERPORTRAIT", },
+		skin_tags = { "WINTER", "PLAYERPORTRAIT", },
 		rarity = "Spiffy",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
@@ -2035,7 +2043,7 @@ MISC_ITEMS =
 	playerportrait_bg_wintertrees =
 	{
 		type = "playerportrait",
-		skin_tags = { "ICE", "PLAYERPORTRAIT", },
+		skin_tags = { "WINTER", "PLAYERPORTRAIT", },
 		rarity = "Spiffy",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
@@ -2043,7 +2051,7 @@ MISC_ITEMS =
 	playerportrait_bg_yule1 =
 	{
 		type = "playerportrait",
-		skin_tags = { "ICE", "PLAYERPORTRAIT", },
+		skin_tags = { "WINTER", "PLAYERPORTRAIT", },
 		rarity = "Spiffy",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
@@ -2051,7 +2059,7 @@ MISC_ITEMS =
 	playerportrait_bg_yule2 =
 	{
 		type = "playerportrait",
-		skin_tags = { "ICE", "PLAYERPORTRAIT", },
+		skin_tags = { "WINTER", "PLAYERPORTRAIT", },
 		rarity = "Spiffy",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
@@ -2059,7 +2067,7 @@ MISC_ITEMS =
 	playerportrait_bg_yule3 =
 	{
 		type = "playerportrait",
-		skin_tags = { "ICE", "PLAYERPORTRAIT", },
+		skin_tags = { "WINTER", "PLAYERPORTRAIT", },
 		rarity = "Spiffy",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
@@ -2488,7 +2496,7 @@ MISC_ITEMS =
 	profileflair_ornaments_1 =
 	{
 		type = "profileflair",
-		skin_tags = { "ICE", "PROFILEFLAIR", },
+		skin_tags = { "WINTER", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
@@ -2496,7 +2504,7 @@ MISC_ITEMS =
 	profileflair_ornaments_10 =
 	{
 		type = "profileflair",
-		skin_tags = { "ICE", "PROFILEFLAIR", },
+		skin_tags = { "WINTER", "PROFILEFLAIR", },
 		rarity = "Classy",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
@@ -2504,7 +2512,7 @@ MISC_ITEMS =
 	profileflair_ornaments_11 =
 	{
 		type = "profileflair",
-		skin_tags = { "ICE", "PROFILEFLAIR", },
+		skin_tags = { "WINTER", "PROFILEFLAIR", },
 		rarity = "Classy",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
@@ -2512,7 +2520,7 @@ MISC_ITEMS =
 	profileflair_ornaments_12 =
 	{
 		type = "profileflair",
-		skin_tags = { "ICE", "PROFILEFLAIR", },
+		skin_tags = { "WINTER", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
@@ -2520,7 +2528,7 @@ MISC_ITEMS =
 	profileflair_ornaments_13 =
 	{
 		type = "profileflair",
-		skin_tags = { "ICE", "PROFILEFLAIR", },
+		skin_tags = { "WINTER", "PROFILEFLAIR", },
 		rarity = "Classy",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
@@ -2528,7 +2536,7 @@ MISC_ITEMS =
 	profileflair_ornaments_2 =
 	{
 		type = "profileflair",
-		skin_tags = { "ICE", "PROFILEFLAIR", },
+		skin_tags = { "WINTER", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
@@ -2536,7 +2544,7 @@ MISC_ITEMS =
 	profileflair_ornaments_3 =
 	{
 		type = "profileflair",
-		skin_tags = { "ICE", "PROFILEFLAIR", },
+		skin_tags = { "WINTER", "PROFILEFLAIR", },
 		rarity = "Classy",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
@@ -2544,7 +2552,7 @@ MISC_ITEMS =
 	profileflair_ornaments_4 =
 	{
 		type = "profileflair",
-		skin_tags = { "ICE", "PROFILEFLAIR", },
+		skin_tags = { "WINTER", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
@@ -2552,7 +2560,7 @@ MISC_ITEMS =
 	profileflair_ornaments_5 =
 	{
 		type = "profileflair",
-		skin_tags = { "ICE", "PROFILEFLAIR", },
+		skin_tags = { "WINTER", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
@@ -2560,7 +2568,7 @@ MISC_ITEMS =
 	profileflair_ornaments_6 =
 	{
 		type = "profileflair",
-		skin_tags = { "ICE", "PROFILEFLAIR", },
+		skin_tags = { "WINTER", "PROFILEFLAIR", },
 		rarity = "Classy",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
@@ -2568,7 +2576,7 @@ MISC_ITEMS =
 	profileflair_ornaments_7 =
 	{
 		type = "profileflair",
-		skin_tags = { "ICE", "PROFILEFLAIR", },
+		skin_tags = { "WINTER", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
@@ -2576,7 +2584,7 @@ MISC_ITEMS =
 	profileflair_ornaments_8 =
 	{
 		type = "profileflair",
-		skin_tags = { "ICE", "PROFILEFLAIR", },
+		skin_tags = { "WINTER", "PROFILEFLAIR", },
 		rarity = "Common",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
@@ -2584,7 +2592,7 @@ MISC_ITEMS =
 	profileflair_ornaments_9 =
 	{
 		type = "profileflair",
-		skin_tags = { "ICE", "PROFILEFLAIR", },
+		skin_tags = { "WINTER", "PROFILEFLAIR", },
 		rarity = "Classy",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
@@ -3159,7 +3167,7 @@ MISC_ITEMS =
 	profileflair_yule_bearger =
 	{
 		type = "profileflair",
-		skin_tags = { "ICE", "PROFILEFLAIR", },
+		skin_tags = { "WINTER", "PROFILEFLAIR", },
 		rarity = "Distinguished",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
@@ -3167,7 +3175,7 @@ MISC_ITEMS =
 	profileflair_yule_claus =
 	{
 		type = "profileflair",
-		skin_tags = { "ICE", "PROFILEFLAIR", },
+		skin_tags = { "WINTER", "PROFILEFLAIR", },
 		rarity = "Spiffy",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
@@ -3175,7 +3183,7 @@ MISC_ITEMS =
 	profileflair_yule_deer =
 	{
 		type = "profileflair",
-		skin_tags = { "ICE", "PROFILEFLAIR", },
+		skin_tags = { "WINTER", "PROFILEFLAIR", },
 		rarity = "Spiffy",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
@@ -3183,7 +3191,7 @@ MISC_ITEMS =
 	profileflair_yule_deerclops =
 	{
 		type = "profileflair",
-		skin_tags = { "ICE", "PROFILEFLAIR", },
+		skin_tags = { "WINTER", "PROFILEFLAIR", },
 		rarity = "Distinguished",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
@@ -3191,7 +3199,7 @@ MISC_ITEMS =
 	profileflair_yule_dragonfly =
 	{
 		type = "profileflair",
-		skin_tags = { "ICE", "PROFILEFLAIR", },
+		skin_tags = { "WINTER", "PROFILEFLAIR", },
 		rarity = "Distinguished",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
@@ -3199,7 +3207,7 @@ MISC_ITEMS =
 	profileflair_yule_dragonflyfire =
 	{
 		type = "profileflair",
-		skin_tags = { "ICE", "PROFILEFLAIR", },
+		skin_tags = { "WINTER", "PROFILEFLAIR", },
 		rarity = "Distinguished",
 		rarity_modifier = "Seasonal",
 		release_group = 36,
@@ -3207,7 +3215,7 @@ MISC_ITEMS =
 	profileflair_yule_goosemoose =
 	{
 		type = "profileflair",
-		skin_tags = { "ICE", "PROFILEFLAIR", },
+		skin_tags = { "WINTER", "PROFILEFLAIR", },
 		rarity = "Distinguished",
 		rarity_modifier = "Seasonal",
 		release_group = 36,

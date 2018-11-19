@@ -33,11 +33,9 @@ local build_price_str = function( value, currency_code )
     end
 end
 
-local add_details = function ( self, fontsize )
+local add_details = function ( self, proot, fontsize )
         
-    if fontsize == nil then fontsize = 1 end
-
-    self.root = self:AddChild(Widget("purchase_dialog_root"))
+    self.root = proot:AddChild(Widget("purchase_dialog_root"))
 
     self.icon_root = self.root:AddChild(Widget("icon_root"))
 	self.icon_root:SetPosition(-150, 0)
@@ -216,16 +214,14 @@ local PurchasePackPopup = Class(Screen, function(self, iap_def)
     self.black = self:AddChild( TEMPLATES.BackgroundTint() )
     self.proot = self:AddChild( TEMPLATES.ScreenRoot() )
 
-    self.dialog = self:AddChild( TEMPLATES.CurlyWindow( 1200, 800 ) )
-    self.dialog:SetVAnchor(ANCHOR_MIDDLE)
-    self.dialog:SetHAnchor(ANCHOR_MIDDLE)
+    add_details( self, self.proot, 1.8 )
+    self.root:SetScale(0.75)
+
+    self.dialog = self.root:AddChild( TEMPLATES.CurlyWindow( 1200, 800 ) )
+    self.dialog:MoveToBack()
 
     self.default_focus = self.dialog
 
-    -- Add all content
-    self.root = add_details( self, 1.8 )
-    self.root:SetVAnchor(ANCHOR_MIDDLE)
-    self.root:SetHAnchor(ANCHOR_MIDDLE)
 
     self.desc = self.text_root:AddChild(Text(CHATFONT, 16*2, nil, UICOLOURS.GREY))
     self.text:SetSize(26)
@@ -408,7 +404,7 @@ end
 local PurchaseWidget = Class(Widget, function(self, screen_self)
 	Widget._ctor(self, "PurchaseWidget")
 
-	self.root = add_details( self, 1 )
+	self.root = add_details( self, self, 1 )
     self.root:SetScale(0.90)
     self.item_type = nil
         

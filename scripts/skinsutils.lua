@@ -22,6 +22,7 @@ EVENT_ICONS =
 {
 	event_forge = "LAVA",
 	event_ice = "ICE",
+	event_ice = "WINTER",
 	event_yotv = "VARG",
 	event_quagmire = "VICTORIAN",
 	event_hallowed = "HALLOWED",

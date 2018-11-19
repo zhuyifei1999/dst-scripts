@@ -1,6 +1,9 @@
 local assets =
 {
+    --Asset("ANIM", "anim/lavaarena_beetletaur.zip"),
     --Asset("ANIM", "anim/lavaarena_beetletaur_basic.zip"),
+    --Asset("ANIM", "anim/lavaarena_beetletaur_actions.zip"),
+    --Asset("ANIM", "anim/lavaarena_beetletaur_block.zip"),
     Asset("ANIM", "anim/fossilized.zip"),
 }
 
@@ -9,7 +12,8 @@ local prefabs =
     "fossilizing_fx",
     "beetletaur_fossilized_break_fx_right",
     "beetletaur_fossilized_break_fx_left",
-    "beetletaur_fossilized_break_fx",
+    "beetletaur_fossilized_break_fx_left_alt",
+    "beetletaur_fossilized_break_fx_alt",
     "lavaarena_creature_teleport_medium_fx",
 }
 
@@ -24,13 +28,14 @@ local function fn()
 
     inst.DynamicShadow:SetSize(4.5, 2.25)
     inst.Transform:SetFourFaced()
+    inst.Transform:SetScale(1.05, 1.05, 1.05)
 
     inst:SetPhysicsRadiusOverride(1.5)
     MakeCharacterPhysics(inst, 500, inst.physicsradiusoverride)
 
     inst.AnimState:SetBank("beetletaur")
-    inst.AnimState:SetBuild("lavaarena_beetletaur_basic")
-    --inst.AnimState:PlayAnimation("idle_loop", true)
+    inst.AnimState:SetBuild("lavaarena_beetletaur")
+    inst.AnimState:PlayAnimation("idle_loop", true)
 
     inst.AnimState:AddOverrideBuild("fossilized")
 
@@ -62,7 +67,7 @@ local function fn()
     return inst
 end
 
-local function MakeFossilizedBreakFX(side)
+local function MakeFossilizedBreakFX(anim, side, interrupted)
     local function fn()
         local inst = CreateEntity()
 
@@ -77,7 +82,12 @@ local function MakeFossilizedBreakFX(side)
         --Leave this out of pristine state to force animstate to be dirty later
         --inst.AnimState:SetBank("beetletaur")
         inst.AnimState:SetBuild("fossilized")
-        --inst.AnimState:PlayAnimation("fossilized_break_fx")
+        inst.AnimState:PlayAnimation(anim)
+
+        if not interrupted then
+            inst.AnimState:OverrideSymbol("rock", "lavaarena_beetletaur", "rock")
+            inst.AnimState:OverrideSymbol("rock2", "lavaarena_beetletaur", "rock2")
+        end
 
         if side:len() > 0 then
             inst.AnimState:Hide(side == "right" and "fx_lavarock_L" or "fx_lavarock_R")
@@ -95,10 +105,11 @@ local function MakeFossilizedBreakFX(side)
         return inst
     end
 
-    return Prefab(side:len() > 0 and ("beetletaur_fossilized_break_fx_"..side) or "beetletaur_fossilized_break_fx", fn, assets)
+    return Prefab("beetletaur_"..anim..(side:len() > 0 and ("_"..side) or "")..(interrupted and "_alt" or ""), fn, assets)
 end
 
 return Prefab("beetletaur", fn, assets, prefabs),
-    MakeFossilizedBreakFX("right"),
-    MakeFossilizedBreakFX("left"),
-    MakeFossilizedBreakFX("")
+    MakeFossilizedBreakFX("fossilized_break_fx", "right", false),
+    MakeFossilizedBreakFX("fossilized_break_fx", "left", false),
+    MakeFossilizedBreakFX("fossilized_break_fx", "left", true),
+    MakeFossilizedBreakFX("fossilized_break_fx", "", true)
