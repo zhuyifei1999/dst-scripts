@@ -125,19 +125,25 @@ end
 
 --------------------------------------------------------------------------
 
-local function OnFocusCamera(inst)
+local function OnFocusCamera(inst, minrange, maxrange)
     local player = TheFocalPoint.entity:GetParent()
     if player ~= nil then
-        TheFocalPoint:PushTempFocus(inst, 60, 60, 3)
+        TheFocalPoint:PushTempFocus(inst, minrange, maxrange, 3)
     end
 end
 
 local function OnCameraFocusDirty(inst)
     if inst._camerafocus:value() then
         if inst._camerafocustask == nil then
-            inst._camerafocustask = inst:DoPeriodicTask(0, OnFocusCamera)
-            TheCamera:SetDistance(30)
-            TheCamera:SetControllable(false)
+            if inst:HasTag("NOCLICK") then
+                --death
+                inst._camerafocustask = inst:DoPeriodicTask(0, OnFocusCamera, nil, 6, 22)
+            else
+                --pose
+                inst._camerafocustask = inst:DoPeriodicTask(0, OnFocusCamera, nil, 60, 60)
+                TheCamera:SetDistance(30)
+                TheCamera:SetControllable(false)
+            end
         end
     elseif inst._camerafocustask ~= nil then
         inst._camerafocustask:Cancel()
