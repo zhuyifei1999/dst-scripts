@@ -2039,6 +2039,8 @@ return {
         WINTER_ORNAMENT = "Is so small in Wolfgang's hand.",
         WINTER_ORNAMENTLIGHT = "Glass ball of twinkly light!",
         WINTER_ORNAMENTBOSS = "Pretty little token of mightiness!",
+        WINTER_ORNAMENTFORGE = "Decoration of mighty enemy.",
+        WINTER_ORNAMENTGORGE = "Hello, little friend!",
 
         WINTER_FOOD1 = "Little man will crumble under my mighty teeth!", --gingerbread cookie
         WINTER_FOOD2 = "Does Wolfgang have sugar in moustache?", --sugar cookie

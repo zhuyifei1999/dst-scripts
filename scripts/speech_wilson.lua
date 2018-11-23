@@ -2064,6 +2064,8 @@ return {
         WINTER_ORNAMENT = "Every scientist appreciates a good bauble.",
         WINTER_ORNAMENTLIGHT = "A tree's not complete without some electricity.",
         WINTER_ORNAMENTBOSS = "This one is especially impressive.",
+		WINTER_ORNAMENTFORGE = "I should hang this one over a fire.",
+		WINTER_ORNAMENTGORGE = "For some reason it makes me hungry.",
 
         WINTER_FOOD1 = "The anatomy's not right, but I'll overlook it.", --gingerbread cookie
         WINTER_FOOD2 = "I'm going to eat forty. For science.", --sugar cookie

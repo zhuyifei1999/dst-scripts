@@ -52,6 +52,19 @@ function MakeBanner(self)
 		anim:GetAnimState():PlayAnimation("anim", true)
 		anim:SetScale(0.67)
 		anim:SetPosition(183, 40)
+	elseif IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
+		local anim_bg = baner_root:AddChild(UIAnim())
+		anim_bg:GetAnimState():SetBuild("dst_menu_feast_bg")
+		anim_bg:GetAnimState():SetBank("dst_menu_bg")
+		anim_bg:SetScale(0.7)
+		anim_bg:GetAnimState():SetDeltaTimeMultiplier(1.6)
+		anim_bg:GetAnimState():PlayAnimation("loop", true)
+		anim_bg:MoveToBack()
+        
+		anim:GetAnimState():SetBuild("dst_menu_feast")
+		anim:GetAnimState():SetBank("dst_menu")
+		anim:SetScale(0.7)
+		anim:GetAnimState():PlayAnimation("loop", true)
 	else
 		anim:GetAnimState():SetBuild("dst_menu")
 		anim:GetAnimState():SetBank("dst_menu")
@@ -130,14 +143,8 @@ function MultiplayerMainScreen:DoInit()
     self.fixed_root:SetVAnchor(ANCHOR_MIDDLE)
     self.fixed_root:SetHAnchor(ANCHOR_MIDDLE)
     self.fixed_root:SetScaleMode(SCALEMODE_PROPORTIONAL)
-	self.fixed_root:SetScissor(-RESOLUTION_X*.5, -RESOLUTION_Y*.5, RESOLUTION_X, RESOLUTION_Y)
 
-    if IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
-        self.snowfall = self:AddChild(TEMPLATES.old.Snowfall())
-        self.snowfall:SetVAnchor(ANCHOR_TOP)
-        self.snowfall:SetHAnchor(ANCHOR_MIDDLE)
-        self.snowfall:SetScaleMode(SCALEMODE_PROPORTIONAL)
-    end
+    self.letterbox = self:AddChild(TEMPLATES.old.ForegroundLetterbox())
 
 	self.banner_root = self.fixed_root:AddChild(MakeBanner(self))
 
@@ -192,6 +199,18 @@ function MultiplayerMainScreen:DoInit()
 
     self.onlinestatus = self.fixed_root:AddChild(OnlineStatus( true ))
 
+	if IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
+		self.banner_snowfall = self.banner_root:AddChild(TEMPLATES.old.Snowfall(-.39 * RESOLUTION_Y, .35, 3, 15))
+		self.banner_snowfall:SetVAnchor(ANCHOR_TOP)
+		self.banner_snowfall:SetHAnchor(ANCHOR_MIDDLE)
+		self.banner_snowfall:SetScaleMode(SCALEMODE_PROPORTIONAL)
+
+		self.snowfall = self.fixed_root:AddChild(TEMPLATES.old.Snowfall(-.97 * RESOLUTION_Y, .15, 5, 20))
+		self.snowfall:SetVAnchor(ANCHOR_TOP)
+		self.snowfall:SetHAnchor(ANCHOR_MIDDLE)
+		self.snowfall:SetScaleMode(SCALEMODE_PROPORTIONAL)
+	end
+
     ----------------------------------------------------------
 
 	self:DoFocusHookups()
@@ -220,7 +239,11 @@ function MultiplayerMainScreen:OnShow()
         self.snowfall:EnableSnowfall(not (TheSim:IsNetbookMode() or TheFrontEnd:GetGraphicsOptions():IsSmallTexturesMode()))
         self.snowfall:StartSnowfall()
     end
-
+    if self.banner_snowfall ~= nil then
+        self.banner_snowfall:EnableSnowfall(not (TheSim:IsNetbookMode() or TheFrontEnd:GetGraphicsOptions():IsSmallTexturesMode()))
+        self.banner_snowfall:StartSnowfall()
+    end
+	
     TheSim:PauseFileExistsAsync(false)
 end
 
@@ -228,6 +251,9 @@ function MultiplayerMainScreen:OnHide()
     self._base.OnHide(self)
     if self.snowfall ~= nil then
         self.snowfall:StopSnowfall()
+    end
+    if self.banner_snowfall ~= nil then
+        self.banner_snowfall:StopSnowfall()
     end
 end
 

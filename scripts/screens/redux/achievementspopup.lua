@@ -1,5 +1,6 @@
 local AchievementsPanel = require "widgets/redux/achievementspanel"
 local QuagmireBookWidget = require "widgets/redux/quagmire_book"
+local LavaarenaBookWidget = require "widgets/redux/lavaarena_book"
 
 local Screen = require "widgets/screen"
 local TEMPLATES = require "widgets/redux/templates"
@@ -44,12 +45,21 @@ function AchievementsPopup:DoInit()
 
 
     if self.festival_key == FESTIVAL_EVENTS.LAVAARENA then
-        self.achievements = self.root:AddChild(AchievementsPanel(self.festival_key, self.season))
-        self.achievements:SetPosition(0, -30)
-        
-        self.level_text:SetPosition(-15, 270)
-        self.badge:SetPosition(w/2 + 15, 270)
+		if self.season == 2 then
+    		self.achievements = self.root:AddChild(LavaarenaBookWidget(nil, nil, self.season))
+			self.achievements:SetPosition(0, -40)
 
+			self.level_text:SetPosition(-15, 310)
+			self.badge:SetPosition(w/2 + 15, 310)
+
+			self.achievements.focus_forward = self.achievements.panel.parent_default_focus
+		else
+			self.achievements = self.root:AddChild(AchievementsPanel(self.festival_key, self.season))
+			self.achievements:SetPosition(0, -30)
+        
+			self.level_text:SetPosition(-15, 270)
+			self.badge:SetPosition(w/2 + 15, 270)
+		end
     elseif self.festival_key == FESTIVAL_EVENTS.QUAGMIRE then
     	self.achievements = self.root:AddChild(QuagmireBookWidget(nil, nil, self.season))
 		self.achievements:SetPosition(0, -40)

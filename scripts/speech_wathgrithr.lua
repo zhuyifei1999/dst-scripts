@@ -2067,6 +2067,8 @@ return {
         WINTER_ORNAMENT = "A fragile beauty that must be protected.",
         WINTER_ORNAMENTLIGHT = "Tis a light enchantment, trapped inside a glass ball.",
         WINTER_ORNAMENTBOSS = "Tis not a celebration without a good battle!",
+        WINTER_ORNAMENTFORGE = "Hath been forged in fires.",
+        WINTER_ORNAMENTGORGE = "It feeds the festive spirit.",
 
         WINTER_FOOD1 = "How dost I free you from the bread, man of ginger??", --gingerbread cookie
         WINTER_FOOD2 = "Like a snowflake, it is a gift from the heavens!", --sugar cookie

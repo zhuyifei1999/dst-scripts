@@ -1547,6 +1547,9 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
             inst:AddComponent("spooked")
             inst:ListenForEvent("spooked", ex_fns.OnSpooked)
         end
+		if IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
+            inst:AddComponent("wintertreegiftable")
+		end
 
         -------
 

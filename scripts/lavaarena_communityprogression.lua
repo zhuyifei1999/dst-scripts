@@ -231,6 +231,8 @@ local function ParseQuestData(source_quests)
 	quests.special1 = {character = source_quests.special1.character, quest = source_quests.special1.quest}
 	quests.special2 = {character = source_quests.special2.character, quest = source_quests.special2.quest}
 
+	print("[CommunityProgression] Event Day: " .. tostring(quests.event_day) .. ", Quest Day: " .. tostring(quests.quest_day))
+
 	--print("ParseQuestData")
 	--dumptable(quests)
 
@@ -300,6 +302,11 @@ local function OnHandleProgressionQueryResponce(self, result, isSuccessful, resu
 end
 
 function CommunityProgression:RequestProgressionData(force, time)
+	if not IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then
+		self:OnProgressionQueryComplete(self.mode)
+		return
+	end
+
 	if self.progression_query_active == true then
 		return
 	end
@@ -318,7 +325,7 @@ function CommunityProgression:RequestProgressionData(force, time)
 		self.progression_retries_remaining = NUM_RETRIES
 	end
 
-	TheSim:QueryServer( "https://theforge.kleientertainment.com/wins2", 
+	TheSim:QueryServer( "https://theforge.kleientertainment.com/wins", 
 		function(result, isSuccessful, resultCode) 
 			if not LAG_TEST then 
 				OnHandleProgressionQueryResponce(self, result, isSuccessful, resultCode)
@@ -394,6 +401,11 @@ local function OnHandleQuestQueryResponce(self, userid, result, isSuccessful, re
 end
 
 function CommunityProgression:RequestQuestData(force, userid, time)
+	if not IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then
+		self:OnQuestQueryComplete(userid, self.mode)
+		return
+	end
+
 	userid = userid or TheNet:GetUserID()
 
 	if GetQuestDataTable(self, userid).quest_query_active == true then
@@ -428,10 +440,14 @@ function CommunityProgression:RequestQuestData(force, userid, time)
 end
 
 function CommunityProgression:RequestAllData(force, userid)
-	local time = os.time()
-	self.both_queries_active = true
-	self:RequestProgressionData(force, time)
-	self:RequestQuestData(force, userid, time)
+	if IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then
+		local time = os.time()
+		self.both_queries_active = true
+		self:RequestProgressionData(force, time)
+		self:RequestQuestData(force, userid, time)
+	else
+		self:OnProgressionQueryComplete(self.mode)
+	end
 end
 
 local function OnNewProgressionFromServer(self)
@@ -515,6 +531,13 @@ function CommunityProgression:RegisterForWorld()
 end
 
 function CommunityProgression:Load()
+	if not IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then
+		self.quest_data = {}
+		self.progression_data = ParseProgressionData({level = 10, percent = 1.0, unlock_order = {"trails", "book_elemental", "boarrior", "lavaarena_firebomb", "lavaarena_armor_hpextraheavy", "lavaarena_armor_hpdamager", "rhinodrill", "lavaarena_heavyblade", "lavaarena_armor_hprecharger", "lavaarena_armor_hppetmastery", "beetletaur"}})
+		self.prev_progression_data = deepcopy(self.progression_data)
+		return
+	end
+
 	TheSim:GetPersistentString(BRANCH == "dev" and "community_progression_dev" or "community_progression", function(load_success, json_data) 
 		if load_success and json_data ~= nil then
 			local status, data = pcall( function() return json.decode(json_data) end )
@@ -533,6 +556,11 @@ function CommunityProgression:Load()
 end
 
 function CommunityProgression:Save()
+	if not IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then
+		self.dirty = false
+		return
+	end
+
 	if self.dirty and not TheNet:IsDedicated() then
 		local save_data = {}
 		save_data.progression_data = self.progression_data

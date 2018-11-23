@@ -2050,6 +2050,8 @@ return {
         WINTER_ORNAMENT = "Gotta be careful not to break it.",
         WINTER_ORNAMENTLIGHT = "Finally, something with wiring.",
         WINTER_ORNAMENTBOSS = "Fancy lil ornament.",
+        WINTER_ORNAMENTFORGE = "Reminds me of somthin'.",
+		WINTER_ORNAMENTGORGE = "Look at that fancy pants decoration.",
         
         WINTER_FOOD1 = "I love these things!", --gingerbread cookie
         WINTER_FOOD2 = "No thanks, I'm sweet enough.", --sugar cookie

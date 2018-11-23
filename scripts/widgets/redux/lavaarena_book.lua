@@ -26,18 +26,20 @@ local LavaarenaBook = Class(Widget, function(self, main_menu_widget, secondary_l
 end)
 
 function LavaarenaBook:GetTabButtonData()
---[[
-	return {
-		{x = -150, text = STRINGS.UI.LAVAARENA_SUMMARY_PANEL.TAB_TITLE, build_panel_fn = function() return ProgressionWidget(FESTIVAL_EVENTS.LAVAARENA, self.season) end},
-		{x = 150, text = STRINGS.UI.LAVAARENA_COMMUNITY_UNLOCKS.TAB_TITLE, build_panel_fn = function() return CommunityHistoryPanel() end},
-	}
-	]]
-	return {
-		{x = -280, text = STRINGS.UI.LAVAARENA_SUMMARY_PANEL.TAB_TITLE, build_panel_fn = function() return ProgressionWidget(FESTIVAL_EVENTS.LAVAARENA, self.season) end},
-		{x = 0, text = STRINGS.UI.LAVAARENA_COMMUNITY_UNLOCKS.TAB_TITLE, build_panel_fn = function() return CommunityHistoryPanel() end},
-		{x = 280, text = STRINGS.UI.LAVAARENA_QUESTS_HISTORY_PANEL.TAB_TITLE, build_panel_fn = function() return QuestHistoryPanel(FESTIVAL_EVENTS.LAVAARENA, self.season) end},
-	}
-
+	local tabs = {}
+	if IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then
+		tabs = {
+			{x = -280, text = STRINGS.UI.LAVAARENA_SUMMARY_PANEL.TAB_TITLE, build_panel_fn = function() return ProgressionWidget(FESTIVAL_EVENTS.LAVAARENA, self.season) end},
+			{x = 0, text = STRINGS.UI.LAVAARENA_COMMUNITY_UNLOCKS.TAB_TITLE, build_panel_fn = function() return CommunityHistoryPanel() end},
+			{x = 280, text = STRINGS.UI.LAVAARENA_QUESTS_HISTORY_PANEL.TAB_TITLE, build_panel_fn = function() return QuestHistoryPanel(FESTIVAL_EVENTS.LAVAARENA, self.season) end},
+		}
+	else
+		tabs =  {
+			{x = -150, text = STRINGS.UI.LAVAARENA_COMMUNITY_UNLOCKS.TAB_TITLE, build_panel_fn = function() return CommunityHistoryPanel() end},
+			{x = 150, text = STRINGS.UI.LAVAARENA_QUESTS_HISTORY_PANEL.TAB_TITLE, build_panel_fn = function() return QuestHistoryPanel(FESTIVAL_EVENTS.LAVAARENA, self.season) end},
+		}
+	end
+	return tabs	
 end
 
 function LavaarenaBook:_MakeTab(data, index)
@@ -63,7 +65,7 @@ function LavaarenaBook:_MakeTab(data, index)
 		if self.panel ~= nil then 
 			self.panel:Kill()
 		end
-		self.panel = self.root:AddChild(data.build_panel_fn())
+		self.panel = self.root:AddChild(tab.build_panel_fn())
 		self:_DoFocusHookups()
 
 		if not TheFrontEnd.tracking_mouse then
@@ -75,6 +77,7 @@ function LavaarenaBook:_MakeTab(data, index)
 		end
 	end)
 	tab._tabindex = index - 1
+	tab.build_panel_fn = data.build_panel_fn
 
 	return tab
 end
@@ -100,7 +103,7 @@ function LavaarenaBook:DoInit()
 	self.last_selected = self.tabs[1]
 	self.last_selected:Select()	
 	self.last_selected:MoveToFront()
-	self.panel = self.root:AddChild(ProgressionWidget(FESTIVAL_EVENTS.LAVAARENA, self.season))
+	self.panel = self.root:AddChild(self.tabs[1].build_panel_fn())
 
 	self:_DoFocusHookups()
 end

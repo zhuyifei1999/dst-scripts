@@ -21,13 +21,13 @@ local CommunityProgress = Class(Widget, function(self)
 	self:ShowSyncing()
 
 	self.inst:ListenForEvent("community_clientdata_updated", function() self:OnRecievedData() end, TheGlobalInstance)
-	if TheWorld ~= nil then
-		if not Lavaarena_CommunityProgression:IsQueryActive(TheNet:GetUserID()) then
-			self:OnRecievedData()
+		if TheWorld ~= nil then
+			if not Lavaarena_CommunityProgression:IsQueryActive(TheNet:GetUserID()) then
+				self:OnRecievedData()
+			end
+		else
+			Lavaarena_CommunityProgression:RequestAllData(false)
 		end
-	else
-		Lavaarena_CommunityProgression:RequestAllData(false)
-	end
 
 	self:_DoFocusHookups()
 
@@ -46,13 +46,18 @@ function CommunityProgress:OnRecievedData()
 
 	local query_successful = Lavaarena_CommunityProgression:GetProgressionQuerySuccessful()
 	if query_successful then
-		local fmt_str = Lavaarena_CommunityProgression:IsEverythingUnlocked() and STRINGS.UI.LAVAARENA_COMMUNITY_UNLOCKS.EVERYTHING_UNLOCKED or STRINGS.UI.LAVAARENA_COMMUNITY_UNLOCKS.DESCRIPTION
-		local title_str = subfmt(fmt_str, {boss=STRINGS.NAMES[string.upper(Lavaarena_CommunityProgression:GetProgressionKeyBoss())]})
-		local title = self.root:AddChild(Text(HEADERFONT, 18, title_str, UICOLOURS.BROWN_DARK))
-		title:SetPosition(0, 200)
+		if IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then
+			local fmt_str = Lavaarena_CommunityProgression:IsEverythingUnlocked() and STRINGS.UI.LAVAARENA_COMMUNITY_UNLOCKS.EVERYTHING_UNLOCKED or STRINGS.UI.LAVAARENA_COMMUNITY_UNLOCKS.DESCRIPTION
+			local title_str = subfmt(fmt_str, {boss=STRINGS.NAMES[string.upper(Lavaarena_CommunityProgression:GetProgressionKeyBoss())]})
+			local title = self.root:AddChild(Text(HEADERFONT, 18, title_str, UICOLOURS.BROWN_DARK))
+			title:SetPosition(0, 200)
 
-		self.details_root = self.root:AddChild(self:BuildDetailsPanel())
-		self.details_root:SetPosition(0, 150)
+			self.details_root = self.root:AddChild(self:BuildDetailsPanel())
+			self.details_root:SetPosition(0, 150)
+		else
+			self.details_root = self.root:AddChild(self:BuildDetailsPanel())
+			self.details_root:SetPosition(0, 160)
+		end
 	else
 		local failed_msg = self.root:AddChild(Text(HEADERFONT, 22, STRINGS.UI.LAVAARENA_COMMUNITY_UNLOCKS.PROGRESSION_QUERY_FAILURE, UICOLOURS.BROWN_DARK))
 		failed_msg:SetPosition(0, 0)

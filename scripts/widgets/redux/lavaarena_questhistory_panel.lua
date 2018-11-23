@@ -54,12 +54,10 @@ function LavaarenaQuestHistoryPanel:GetCompletedQuests(festival_key, season)
 
 	for _, q in ipairs(unlocked_quests) do
 		local quest_info = EventAchievements:ParseFullQuestName(q)
-		if quest_info.daily then
-			if quest_info.quest_id == "laq_dailywin" then
-				details.num_daily_wins = details.num_daily_wins + 1
-			else
-				details.num_daily_matches = details.num_daily_matches + 1
-			end
+		if quest_info.quest_id == "laq_dailywin" then
+			details.num_daily_wins = details.num_daily_wins + 1
+		elseif quest_info.quest_id == "laq_dailymatch" then
+			details.num_daily_matches = details.num_daily_matches + 1
 		else
 	        table.insert(details.completed_quests, quest_info)
 		end
@@ -163,8 +161,9 @@ function LavaarenaQuestHistoryPanel:_BuildAchievementsExplorer(festival_key, sea
 			
 			w.title:SetString(STRINGS.UI.ACHIEVEMENTS[string.upper(festival_key)].ACHIEVEMENT[quest_info.quest_id].TITLE)
 
-			local is_team = EventAchievements:GetActiveAchievementsIdList()[quest_info.quest_id].team
-			local quest_xp = EventAchievements:GetActiveAchievementsIdList()[quest_info.quest_id].wxp
+			local achievement_data = EventAchievements:FindAchievementData(festival_key, season, quest_info.quest_id)
+			local is_team = achievement_data ~= nil and achievement_data.team
+			local quest_xp = achievement_data ~= nil and achievement_data.wxp
 
 			local quest_type_desc = (quest_info.character ~= nil and subfmt(STRINGS.UI.LAVAARENA_COMMUNITY_UNLOCKS.QUEST_TYPE_CHARACTER_FMT, {character = STRINGS.NAMES[string.upper(quest_info.character)], quest_type = STRINGS.UI.LAVAARENA_COMMUNITY_UNLOCKS[is_team and "QUEST_TYPE_TEAM" or "QUEST_TYPE_PERSONAL"]}))
 									or (is_team and STRINGS.UI.LAVAARENA_COMMUNITY_UNLOCKS.QUEST_TYPE_TEAM)
