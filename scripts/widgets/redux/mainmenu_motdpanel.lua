@@ -7,6 +7,11 @@ local Stats = require("stats")
 
 local BOX_FONT = FALLBACK_FONT -- CHATFONT, FALLBACK_FONT, CHATFONT_OUTLINE
 
+local ICON_MAP =
+{
+	kleistore = { atlas = "images/global.xml", image = "square.tex", x_offset = 0, y_offset = 0, scale = 0.4},
+}
+
 local alert_images =
 {
 	error = {image = "motd_alert.tex", colour = WEBCOLOURS.SALMON},
@@ -207,8 +212,14 @@ function MotdPanel:OnImagesLoaded()
 				shadow:SetPosition(x + 1.5, y + cell_size.height / 2 - font_size / 2 - text_padding + 4 - font_size - 1.5)
 				shadow:MoveToBack()
 			end
+		elseif data.icon ~= nil and ICON_MAP[data.icon] ~= nil then
+			local icon_info = ICON_MAP[data.icon]
+			local icon_image = self.fg:AddChild(Image(icon_info.atlas, icon_info.image))
+			icon_image:SetScale(icon_info.scale)
+			local w, h = icon_image:GetSize()
+			icon_image:SetPosition(x + (w * icon_info.scale / 2) - cell_size.width/2 + text_padding + icon_info.x_offset, y + cell_size.height / 2 - h * icon_info.scale / 2 - text_padding - 20 + icon_info.y_offset)
+			icon_image:SetClickable(false)
 		end
-		
 	end
 
 	local function AddAlert(data)
