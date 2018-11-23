@@ -2089,6 +2089,8 @@ return {
         WINTER_ORNAMENT = "Bibble-ty bauble-ty boo!",
         WINTER_ORNAMENTLIGHT = "It's like a fire, but without the burning!",
         WINTER_ORNAMENTBOSS = "Woah, shiny! Nice!",
+        WINTER_ORNAMENTFORGE = "I should toast this over an open fire.",
+		WINTER_ORNAMENTGORGE = "So cute I don't even wanna burn it.",
 
         WINTER_FOOD1 = "Honestly, who DOESN'T eat the head first?", --gingerbread cookie
         WINTER_FOOD2 = "Doesn't look too bad, considering!", --sugar cookie

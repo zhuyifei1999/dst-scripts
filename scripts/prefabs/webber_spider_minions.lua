@@ -33,6 +33,8 @@ local function fn()
     inst.AnimState:SetBuild("spider_build")
     inst.AnimState:PlayAnimation("idle", true)
 
+    inst.SoundEmitter:OverrideVolumeMultiplier(.3)
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

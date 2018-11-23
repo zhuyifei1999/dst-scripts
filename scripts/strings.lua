@@ -1542,6 +1542,8 @@ STRINGS =
         WINTER_ORNAMENT = "Festive Bauble",
         WINTER_ORNAMENTLIGHT = "Festive Light",
         WINTER_ORNAMENTBOSS = "Magnificent Adornment",
+		WINTER_ORNAMENTFORGE = "Champion Adornment",
+		WINTER_ORNAMENTGORGE = "Appeasing Adornment",
 
         WINTER_FOOD1 = "Gingerbread Cookie",
         WINTER_FOOD2 = "Sugar Cookie",

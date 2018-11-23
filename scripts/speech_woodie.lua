@@ -2066,6 +2066,8 @@ return {
         WINTER_ORNAMENT = "For hanging on the unchopped tree with care.",
         WINTER_ORNAMENTLIGHT = "What do you think, Lucy? Decorate, or chop?",
         WINTER_ORNAMENTBOSS = "Y'know, I do believe that was worth it.",
+        WINTER_ORNAMENTFORGE = "Kinda familiar eh, Lucy?",
+		WINTER_ORNAMENTGORGE = "That's nice.",
 
         WINTER_FOOD1 = "It's a gingerbread lumberjack.", --gingerbread cookie
         WINTER_FOOD2 = "Always had a soft spot for a good holiday cookie.", --sugar cookie

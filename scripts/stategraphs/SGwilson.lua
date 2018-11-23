@@ -714,12 +714,6 @@ local events =
         end
     end),
 
-    EventHandler("playerpanic", function(inst, data)
-        if not (inst.components.health:IsDead() or inst.sg:HasStateTag("panic") or inst.sg:HasStateTag("offground") or inst.sg:HasStateTag("knockback") or inst.sg:HasStateTag("parrying")) then
-            inst.sg:GoToState("hit_panic", data ~= nil and data.loop or nil)
-        end
-    end),
-
     EventHandler("snared", function(inst)
         if not inst.components.health:IsDead() then
             inst.sg:GoToState("startle", true)
@@ -5215,7 +5209,7 @@ local states =
         name = "run",
         tags = { "moving", "running", "canrotate", "autopredict" },
 
-        onenter = function(inst) 
+        onenter = function(inst)
             ConfigureRunState(inst)
             inst.components.locomotor:RunForward()
 
@@ -5815,7 +5809,7 @@ local states =
 
     State{
         name = "hit_spike",
-        tags = { "busy", "nopredict", "nomorph", "offground" },
+        tags = { "busy", "nopredict", "nomorph" },
 
         onenter = function(inst, spike)
             ForceStopHeavyLifting(inst)
@@ -5830,21 +5824,8 @@ local states =
             inst.SoundEmitter:PlaySound("dontstarve/wilson/hit")
             DoHurtSound(inst)
 
-            inst.sg.statemem.heavy = spike ~= nil and spike.spikesize == "heavy"
             inst.sg:SetTimeout(15 * FRAMES)
         end,
-
-        timeline =
-        {
-            TimeEvent(10 * FRAMES, function(inst)
-                if inst.sg.statemem.heavy then
-                    inst.sg:RemoveStateTag("offground")
-                end
-            end),
-            TimeEvent(14 * FRAMES, function(inst)
-                inst.sg:RemoveStateTag("offground")
-            end),
-        },
 
         ontimeout = function(inst)
             inst.sg:GoToState("idle", true)
@@ -5870,142 +5851,6 @@ local states =
 
         ontimeout = function(inst)
             inst.sg:GoToState("idle", true)
-        end,
-    },
-
-    State{
-        name = "hit_panic",
-        tags = { "panic", "busy", "pausepredict", "nomorph" },
-
-        onenter = function(inst, loop)
-            ForceStopHeavyLifting(inst)
-            inst.components.locomotor:Stop()
-            inst:ClearBufferedAction()
-
-            inst.AnimState:PlayAnimation("hit")
-
-            DoHurtSound(inst)
-
-            if inst.components.playercontroller ~= nil then
-                inst.components.playercontroller:RemotePausePrediction()
-            end
-            inst.sg.statemem.loop = loop
-            inst.sg:SetTimeout(6 * FRAMES)
-        end,
-
-        events =
-        {
-            EventHandler("playerpanic", function(inst, data)
-                if data ~= nil and data.loop ~= nil then
-                    inst.sg.statemem.loop = math.max(inst.sg.statemem.loop or 1, data.loop)
-                end
-            end),
-        },
-
-        ontimeout = function(inst)
-            inst.sg:GoToState("panic_loop", { loop = inst.sg.statemem.loop })
-        end,
-    },
-
-    State{
-        name = "panic_loop",
-        tags = { "panic", "busy", "pausepredict", "nomorph" },
-
-        onenter = function(inst, data)
-            if not inst.AnimState:IsCurrentAnimation("distress_loop") then
-                inst.AnimState:PlayAnimation("distress_loop", true)
-            end
-            inst.sg.statemem.loop = data ~= nil and data.loop or 1
-            inst.sg.statemem.talktask = data ~= nil and data.talktask or nil
-            inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
-        end,
-
-        events =
-        {
-            EventHandler("playerpanic", function(inst, data)
-                if data ~= nil then
-                    if data.loop ~= nil then
-                        inst.sg.statemem.loop = math.max(inst.sg.statemem.loop or 1, data.loop)
-                    end
-                    if data.force then
-                        inst.sg:GoToState("hit_panic", inst.sg.statemem.loop)
-                    end
-                end
-            end),
-            EventHandler("ontalk", function(inst)
-                if inst.sg.statemem.talktask ~= nil then
-                    inst.sg.statemem.talktask:Cancel()
-                    inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
-                end
-                if DoTalkSound(inst) then
-                    inst.sg.statemem.talktask =
-                        inst:DoTaskInTime(1.5 + math.random() * .5,
-                            function()
-                                inst.SoundEmitter:KillSound("talk")
-                                inst.sg.statemem.talktask = nil
-                            end)
-                end
-            end),
-            EventHandler("donetalking", function(inst)
-                if inst.sg.statemem.talktalk ~= nil then
-                    inst.sg.statemem.talktask:Cancel()
-                    inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
-                end
-            end),
-        },
-
-        ontimeout = function(inst)
-            local talktask = inst.sg.statemem.talktask
-            inst.sg.statemem.talktask = nil
-            if inst.sg.statemem.loop > 1 then
-                inst.sg:GoToState("panic_loop", { loop = inst.sg.statemem.loop - 1, talktask = talktask })
-            else
-                inst.sg:GoToState("panic_pst", talktask)
-            end
-        end,
-
-        onexit = function(inst)
-            if inst.sg.statemem.talktask ~= nil then
-                inst.sg.statemem.talktask:Cancel()
-                inst.sg.statemem.talktask = nil
-                inst.SoundEmitter:KillSound("talk")
-            end
-        end,
-    },
-
-    State{
-        name = "panic_pst",
-        tags = { "busy", "pausepredict", "nomorph" },
-
-        onenter = function(inst, talktask)
-            inst.AnimState:PlayAnimation("distress_pst")
-            inst.sg.statemem.talktask = talktask
-            inst.sg:SetTimeout(5 * FRAMES)
-        end,
-
-        events =
-        {
-            EventHandler("donetalking", function(inst)
-                if inst.sg.statemem.talktalk ~= nil then
-                    inst.sg.statemem.talktask:Cancel()
-                    inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
-                end
-            end),
-        },
-
-        ontimeout = function(inst)
-            inst.sg:GoToState("idle", true)
-        end,
-
-        onexit = function(inst)
-            if inst.sg.statemem.talktask ~= nil then
-                inst.sg.statemem.talktask:Cancel()
-                inst.sg.statemem.talktask = nil
-                inst.SoundEmitter:KillSound("talk")
-            end
         end,
     },
 
@@ -6112,7 +5957,7 @@ local states =
 
     State{
         name = "knockback",
-        tags = { "busy", "nopredict", "nomorph", "nodangle", "offground" },
+        tags = { "busy", "nopredict", "nomorph", "nodangle" },
 
         onenter = function(inst, data)
             ClearStatusAilments(inst)
@@ -6166,9 +6011,6 @@ local states =
             TimeEvent(8 * FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("dontstarve/movement/bodyfall_dirt")
             end),
-            TimeEvent(12 * FRAMES, function(inst)
-                inst.sg:RemoveStateTag("offground")
-            end),
         },
 
         events =
@@ -6216,7 +6058,7 @@ local states =
 
     State{
         name = "knockbacklanded",
-        tags = { "knockback", "busy", "nopredict", "nomorph", "offground" },
+        tags = { "knockback", "busy", "nopredict", "nomorph" },
 
         onenter = function(inst, data)
             ClearStatusAilments(inst)
@@ -7665,7 +7507,7 @@ local states =
 
     State{
         name = "combat_leap",
-        tags = { "aoe", "doing", "busy", "nointerrupt", "nopredict", "nomorph", "offground" },
+        tags = { "aoe", "doing", "busy", "nointerrupt", "nopredict", "nomorph" },
 
         onenter = function(inst, data)
             if data ~= nil then
@@ -7732,7 +7574,6 @@ local states =
                 inst.components.colouradder:PushColour("leap", 1, 1, 0, 0)
                 inst.sg.statemem.flash = 1.3
                 inst.sg:RemoveStateTag("nointerrupt")
-                inst.sg:RemoveStateTag("offground")
                 if inst.sg.statemem.weapon:IsValid() then
                     inst.sg.statemem.weapon.components.aoeweapon_leap:DoLeap(inst, inst.sg.statemem.startingpos, inst.sg.statemem.targetpos)
                 end
@@ -7823,7 +7664,7 @@ local states =
 
     State{
         name = "combat_superjump",
-        tags = { "aoe", "doing", "busy", "nointerrupt", "nopredict", "nomorph", "offground" },
+        tags = { "aoe", "doing", "busy", "nointerrupt", "nopredict", "nomorph" },
 
         onenter = function(inst, data)
             if data ~= nil then
@@ -7867,7 +7708,6 @@ local states =
             TimeEvent(FRAMES, function(inst)
                 inst.DynamicShadow:Enable(false)
                 inst.sg:AddStateTag("noattack")
-                inst.sg:AddStateTag("offground")
                 inst.components.health:SetInvincible(true)
                 inst.AnimState:SetMultColour(.5, .5, .5, 1)
                 inst.components.colouradder:PushColour("superjump", .3, .3, .2, 0)
@@ -7933,7 +7773,7 @@ local states =
 
     State{
         name = "combat_superjump_pst",
-        tags = { "aoe", "doing", "busy", "noattack", "nopredict", "nomorph", "offground" },
+        tags = { "aoe", "doing", "busy", "noattack", "nopredict", "nomorph" },
 
         onenter = function(inst, data)
             if data ~= nil and data.data ~= nil then
@@ -7994,7 +7834,6 @@ local states =
                 ShakeAllCameras(CAMERASHAKE.VERTICAL, .7, .015, .8, inst, 20)
                 inst.sg.statemem.flash = 1.3
                 inst.sg:RemoveStateTag("noattack")
-                inst.sg:RemoveStateTag("offground")
                 inst.components.health:SetInvincible(false)
                 if inst.sg.statemem.weapon:IsValid() then
                     inst.sg.statemem.weapon.components.aoeweapon_leap:DoLeap(inst, inst.sg.statemem.startingpos, inst.sg.statemem.targetpos)
@@ -8187,7 +8026,7 @@ local states =
     State
     {
         name = "helmsplitter",
-        tags = { "helmsplitting", "doing", "busy", "nointerrupt", "nomorph", "pausepredict", "offground" },
+        tags = { "helmsplitting", "doing", "busy", "nointerrupt", "nomorph", "pausepredict" },
 
         onenter = function(inst, target)
             inst.components.locomotor:Stop()
@@ -8224,7 +8063,6 @@ local states =
                 inst.components.bloomer:PushBloom("helmsplitter", "shaders/anim.ksh", -2)
                 inst.components.colouradder:PushColour("helmsplitter", 1, 1, 0, 0)
                 inst.sg:RemoveStateTag("nointerrupt")
-                inst.sg:RemoveStateTag("offground")
                 ShakeAllCameras(CAMERASHAKE.VERTICAL, .5, .015, .5, inst, 20)
                 inst.sg.statemem.weapon = inst.components.combat:GetWeapon()
                 inst:PerformBufferedAction()
@@ -8719,7 +8557,7 @@ local states =
         name = "thaw",
         tags = { "busy", "thawing", "nopredict", "nodangle" },
 
-        onenter = function(inst) 
+        onenter = function(inst)
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
 

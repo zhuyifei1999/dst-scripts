@@ -150,6 +150,7 @@ GAME_MODES_ORDER =
     wilderness = 2,
     endless = 3,
     lavaarena = 4,
+    quagmire = 5,
 }
 
 local function mode_cmp(a, b)

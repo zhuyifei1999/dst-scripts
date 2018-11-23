@@ -1366,6 +1366,8 @@ return
         WINTER_ORNAMENT = "Careful with it now, dear.",
         WINTER_ORNAMENTLIGHT = "Electrical currents do have a certain appeal, don't they?",
         WINTER_ORNAMENTBOSS = "I'm of the opinion that one can never overdecorate.",
+        WINTER_ORNAMENTFORGE = "A harrowing handicraft.",
+        WINTER_ORNAMENTGORGE = "The needlework on this is quite intricate.",
 
         WINTER_FOOD1 = "What a delightful little individual.", --gingerbread cookie
         WINTER_FOOD2 = "Just like holidays at the library!", --sugar cookie

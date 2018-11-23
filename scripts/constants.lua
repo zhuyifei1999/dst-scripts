@@ -520,7 +520,13 @@ FESTIVAL_EVENTS =
     QUAGMIRE = "quagmire",
 }
 WORLD_FESTIVAL_EVENT = FESTIVAL_EVENTS.LAVAARENA
-PREVIOUS_FESTIVAL_EVENTS = { FESTIVAL_EVENTS.LAVAARENA, FESTIVAL_EVENTS.QUAGMIRE } --this is an array now, not a single event key
+PREVIOUS_FESTIVAL_EVENTS = { FESTIVAL_EVENTS.LAVAARENA, FESTIVAL_EVENTS.QUAGMIRE } --deprecated, use PREVIOUS_FESTIVAL_EVENTS_ORDER
+PREVIOUS_FESTIVAL_EVENTS_ORDER =
+{
+	{id = FESTIVAL_EVENTS.LAVAARENA, season = 2},
+	{id = FESTIVAL_EVENTS.QUAGMIRE, season = 1},
+	{id = FESTIVAL_EVENTS.LAVAARENA, season = 1},
+}
 
 
 ---------------------------------------------------------
@@ -634,8 +640,8 @@ function IsFestivalEventActive(event)
 end
 
 function IsPreviousFestivalEvent(event)
-    for _,prev_event in pairs(PREVIOUS_FESTIVAL_EVENTS) do
-        if prev_event == event then
+    for _,prev_event in ipairs(PREVIOUS_FESTIVAL_EVENTS_ORDER) do
+        if prev_event.id == event then
             return true
         end
     end

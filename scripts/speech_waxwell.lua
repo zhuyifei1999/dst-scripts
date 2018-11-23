@@ -2051,6 +2051,8 @@ return {
         WINTER_ORNAMENT = "Gaudy, like the rest of this shindig.",
         WINTER_ORNAMENTLIGHT = "How frivolous.",
         WINTER_ORNAMENTBOSS = "What a thing to risk one's life for.",
+        WINTER_ORNAMENTFORGE = "A volatile decoration.",
+		WINTER_ORNAMENTGORGE = "There's something familiar about this...",
 
         WINTER_FOOD1 = "Stop looking at me, cookie fiend.", --gingerbread cookie
         WINTER_FOOD2 = "We're celebrating freezing to death, I see.", --sugar cookie

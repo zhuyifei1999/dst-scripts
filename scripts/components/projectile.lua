@@ -28,6 +28,8 @@ local Projectile = Class(function(self, inst)
     self.stimuli = nil
 
     --self.delaytask = nil
+    --self.delayowner = nil
+    self._ondelaycancel = function() inst:Remove() end
 
     --NOTE: projectile and complexprojectile components are mutually
     --      exclusive because they share this tag!
@@ -39,6 +41,25 @@ nil,
     cancatch = oncatchable,
     target = oncatchable,
 })
+
+local function StopTrackingDelayOwner(self)
+    if self.delayowner ~= nil then
+        self.inst:RemoveEventCallback("onremove", self._ondelaycancel, self.delayowner)
+        self.inst:RemoveEventCallback("newstate", self._ondelaycancel, self.delayowner)
+        self.delayowner = nil
+    end
+end
+
+local function StartTrackingDelayOwner(self, owner)
+    if owner ~= self.delayowner then
+        StopTrackingDelayOwner(self)
+        if owner ~= nil then
+            self.inst:ListenForEvent("onremove", self._ondelaycancel, owner)
+            self.inst:ListenForEvent("newstate", self._ondelaycancel, owner)
+            self.delayowner = owner
+        end
+    end
+end
 
 function Projectile:OnRemoveFromEntity()
     self.inst:RemoveTag("projectile")
@@ -132,6 +153,7 @@ end
 
 function Projectile:Catch(catcher)
     if self.cancatch then
+        StopTrackingDelayOwner(self)
         self:Stop()
         self.inst.Physics:Stop()
         if self.oncaught ~= nil then
@@ -145,6 +167,7 @@ function Projectile:Miss(target)
     if self.owner.components.combat == nil and self.owner.components.weapon ~= nil and self.owner.components.inventoryitem ~= nil then
         attacker = self.owner.components.inventoryitem.owner
     end
+    StopTrackingDelayOwner(self)
     self:Stop()
     if self.onmiss ~= nil then
         self.onmiss(self.inst, attacker, target)
@@ -160,6 +183,7 @@ end
 function Projectile:Hit(target)
     local attacker = self.owner
     local weapon = self.inst
+    StopTrackingDelayOwner(self)
     self:Stop()
     self.inst.Physics:Stop()
     if attacker.components.combat == nil and attacker.components.weapon ~= nil and attacker.components.inventoryitem ~= nil then
@@ -277,6 +301,7 @@ end
 local function OnShow(inst, self)
     self.delaytask = nil
     inst:Show()
+    StopTrackingDelayOwner(self)
 end
 
 function Projectile:DelayVisibility(duration)
@@ -284,6 +309,16 @@ function Projectile:DelayVisibility(duration)
         self.delaytask:Cancel()
     end
     self.inst:Hide()
+    StartTrackingDelayOwner(self,
+        not self.cancatch and
+        self.inst.components.inventoryitem == nil and
+        self.owner ~= nil and
+        self.owner:IsValid() and
+        (   self.owner.components.inventoryitem ~= nil and
+            self.owner.components.inventoryitem:GetGrandOwner() or
+            self.owner
+        ) or nil
+    )
     self.delaytask = self.inst:DoTaskInTime(duration, OnShow, self)
 end
 

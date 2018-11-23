@@ -2082,6 +2082,8 @@ return {
         WINTER_ORNAMENT = "Can we get a boost? We can't reach the treetop.",
         WINTER_ORNAMENTLIGHT = "We want to keep one for ourselves.",
         WINTER_ORNAMENTBOSS = "Wow, that one looks great!",
+        WINTER_ORNAMENTFORGE = "Not so scary when they're like this.",
+		WINTER_ORNAMENTGORGE = "Huh. It kinda looks...goaty!",
 
         WINTER_FOOD1 = "I won't eat it. It's our friend now.", --gingerbread cookie
         WINTER_FOOD2 = "Icy icy icing!", --sugar cookie

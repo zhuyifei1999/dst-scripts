@@ -73,15 +73,10 @@ function PlayerSummaryScreen:DoInit()
         self.festivals_divider_top:SetPosition(60,55)
         
         self.festivals_badges = {}
-        local i = 0
-        for _,event_name in pairs(PREVIOUS_FESTIVAL_EVENTS) do
-            for season=1,GetFestivalEventSeasons(event_name) do
-                print(event_name, season, GetFestivalEventSeasons(event_name))
-                self.festivals_badges[i] = self.festivals_root:AddChild(self:_BuildFestivalHistory(event_name, season))
-                self.festivals_badges[i]:SetPosition(-60,65 - i*80)
-                i = i + 1
-            end
-        end
+		for i, eventinfo in ipairs(PREVIOUS_FESTIVAL_EVENTS_ORDER) do
+            table.insert(self.festivals_badges, self.festivals_root:AddChild(self:_BuildFestivalHistory(eventinfo.id, eventinfo.season)))
+            self.festivals_badges[#self.festivals_badges]:SetPosition(60, 55 - i*40)
+		end
     end
 
     self.doodad_root = self.root:AddChild(Widget("doodad_root"))
@@ -191,38 +186,9 @@ function PlayerSummaryScreen:_BuildFestivalHistory(festival_key, season)
             end, self)
         end)
     end
-    -- Using ImageButton to get scaling on focus on image children.
-    local w = ImageButton("images/ui.xml", "blank.tex")
-    w:SetFont(UIFONT)
-    w:SetTextSize(30)
-    w:SetTextColour(UICOLOURS.GOLD_CLICKABLE)
-    w:SetTextFocusColour(UICOLOURS.GOLD_SELECTED)
-    w:SetOnClick(onclick)
 
-    local festival_title = STRINGS.UI.FESTIVALEVENTSCREEN.TITLE[string.upper(festival_key)]
-    w:SetText(festival_title)
-
-    local textwidth = 300
-    local text_offset = 50
-    local text_x = text_offset + .5*textwidth
-    local text_y = 15
-    local text_height = 40
-    w.text:SetRegionSize(textwidth, text_height)
-    w.text:SetPosition(text_x, text_y)
-    w.text:SetHAlign(ANCHOR_LEFT)
-    w.text:SetVAlign(ANCHOR_TOP)
-
-    -- Make text clickable too
-    w.bg = w.image:AddChild(Image("images/ui.xml", "blank.tex"))
-    w.bg:ScaleToSize(textwidth + 20, text_height)
-    w.bg:SetPosition(text_x - 20, text_y + 10)
-
-    -- Button to make interaction obvious.
-    w.btn = w.text:AddChild(TEMPLATES.StandardButton(onclick, STRINGS.UI.ACHIEVEMENTS.SCREENTITLE, {160,40}))
-    w.btn:SetPosition(-80, -25)
-
-    -- Ensure button is highlighted if text/badge are hovered.
-    w.focus_forward = w.btn
+    local festival_title = STRINGS.UI.FESTIVALEVENTSCREEN.TITLE[string.upper(festival_key) .. (season > 1 and tostring(season) or "")]
+	local w = TEMPLATES.StandardButton(onclick, festival_title, {225,40})
 
     return w
 end

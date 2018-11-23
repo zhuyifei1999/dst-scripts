@@ -192,7 +192,7 @@ function MotdPanel:OnImagesLoaded()
 			shadow:MoveToBack()
 		end
 
-		if data.version ~= nil then
+		if data.version ~= nil and tonumber(data.version) ~= nil then
 			if tonumber(data.version) > tonumber(APP_VERSION) then
 				local font_size = 18
 				local str = STRINGS.UI.MAINSCREEN.MOTD_NEW_UPDATE

@@ -2047,6 +2047,8 @@ return {
         WINTER_ORNAMENT = "Do you like this one, Abigail?",
         WINTER_ORNAMENTLIGHT = "Bright lights... Cold nights...",
         WINTER_ORNAMENTBOSS = "This is one of my favorites.",
+        WINTER_ORNAMENTFORGE = "A remembrance of past carnage.",
+		WINTER_ORNAMENTGORGE = "Should old acquaintance be forgot.",
 
         WINTER_FOOD1 = "I'm going to eat you.", --gingerbread cookie
         WINTER_FOOD2 = "Not nearly sweet enough to balance out this bitter world.", --sugar cookie

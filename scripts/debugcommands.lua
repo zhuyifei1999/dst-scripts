@@ -287,6 +287,21 @@ function d_potions()
 	end
 end
 
+function d_wintersfeast()
+	local all_items = GetAllWinterOrnamentPrefabs()
+	local spacing = 2
+	local num_wide = math.ceil(math.sqrt(#all_items))
+
+	for y = 0, num_wide-1 do
+		for x = 0, num_wide-1 do
+			local inst = SpawnPrefab(all_items[(y*num_wide + x + 1)])
+			if inst ~= nil then
+				inst.Transform:SetPosition((ConsoleWorldPosition() + Vector3(x*spacing, 0, y*spacing)):Get())
+			end
+		end
+	end
+end
+
 function d_madsciencemats()
 	c_mat("halloween_experiment_bravery")
 	c_mat("halloween_experiment_health")
