@@ -29,6 +29,7 @@ local Projectile = Class(function(self, inst)
 
     --self.delaytask = nil
     --self.delayowner = nil
+    --self.delaypos = nil
     self._ondelaycancel = function() inst:Remove() end
 
     --NOTE: projectile and complexprojectile components are mutually
@@ -72,6 +73,7 @@ function Projectile:OnRemoveFromEntity()
         self.delaytask:Cancel()
         self.delaytask = nil
     end
+    StopTrackingDelayOwner(self)
 end
 
 function Projectile:GetDebugString()
@@ -178,6 +180,7 @@ function Projectile:Stop()
     self.inst:StopUpdatingComponent(self)
     self.target = nil
     self.owner = nil
+    self.delaypos = nil
 end
 
 function Projectile:Hit(target)
@@ -216,43 +219,67 @@ function Projectile:OnEntityWake()
     end
 end
 
-function Projectile:OnUpdate(dt)
-    local target = self.target
-    if self.homing and target ~= nil and target:IsValid() and not target:IsInLimbo() then
-        self.dest = target:GetPosition()
-    end
-    local current = self.inst:GetPosition()
-    if self.range ~= nil and distsq(self.start, current) > self.range * self.range then
-        self:Miss(target)
-    elseif not self.homing then
-        if target ~= nil and target:IsValid() and not target:IsInLimbo() then
-            local range = target:GetPhysicsRadius(0) + self.hitdist
-            -- V2C: this is 3D distsq (since combat range checks use 3D distsq as well)
-            -- NOTE: used < here, whereas combat uses <=, just to give us tiny bit of room for error =)
-            if distsq(current, target:GetPosition()) < range * range then
-                self:Hit(target)
-            end
-        end
-    elseif target ~= nil
+local function CheckTarget(target)
+    return target ~= nil
         and target:IsValid()
         and not target:IsInLimbo()
         and target.entity:IsVisible()
         and (target.sg == nil or
             not (target.sg:HasStateTag("flight") or
-                target.sg:HasStateTag("invisible"))) then
+                target.sg:HasStateTag("invisible")))
+end
+
+local function RestoreDelayPos(inst, pos, rot)
+    if inst.Physics ~= nil then
+        inst.Physics:Teleport(pos:Get())
+    else
+        inst.Transform:SetPosition(pos:Get())
+    end
+    inst.Transform:SetRotation(rot)
+end
+
+local function DoUpdate(self, target, pos, rot, force)
+    if self.range ~= nil and distsq(self.start, pos) > self.range * self.range then
+        if force then
+            RestoreDelayPos(self.inst, pos, rot)
+        end
+        self:Miss(target)
+        return true
+    elseif not self.homing then
+        if target ~= nil and target:IsValid() and not target:IsInLimbo() then
+            local range = target:GetPhysicsRadius(0) + self.hitdist
+            -- V2C: this is 3D distsq (since combat range checks use 3D distsq as well)
+            -- NOTE: used < here, whereas combat uses <=, just to give us tiny bit of room for error =)
+            if distsq(pos, target:GetPosition()) < range * range then
+                if force then
+                    RestoreDelayPos(self.inst, pos, rot)
+                end
+                self:Hit(target)
+                return true
+            end
+        end
+    elseif CheckTarget(target) then
         local range = target:GetPhysicsRadius(0) + self.hitdist
         -- V2C: this is 3D distsq (since combat range checks use 3D distsq as well)
         -- NOTE: used < here, whereas combat uses <=, just to give us tiny bit of room for error =)
-        if distsq(current, target:GetPosition()) < range * range then
+        if distsq(pos, target:GetPosition()) < range * range then
+            if force then
+                RestoreDelayPos(self.inst, pos, rot)
+            end
             self:Hit(target)
+            return true
         else
-            local direction = (self.dest - current):GetNormalized()
+            local direction = (self.dest - pos):GetNormalized()
             local projectedSpeed = self.speed * TheSim:GetTickTime() * TheSim:GetTimeScale()
-            local projected = current + direction * projectedSpeed
-            if direction:Dot(self.dest - projected) >= 0 then
-                self:RotateToTarget(self.dest)
-            else
+            local projected = pos + direction * projectedSpeed
+            if direction:Dot(self.dest - projected) < 0 then
+                if force then
+                    RestoreDelayPos(self.inst, pos, rot)
+                end
                 self:Hit(target)
+                return true
+            elseif not force then
+                self:RotateToTarget(self.dest)
             end
         end
     elseif self.owner == nil or
@@ -261,14 +288,52 @@ function Projectile:OnUpdate(dt)
         self.inst.components.weapon == nil or
         self.inst.components.weapon.attackrange == nil then
         -- Lost our target, e.g. bird flew away
+        if force then
+            RestoreDelayPos(self.inst, pos, rot)
+        end
         self:Miss(target)
+        return true
     else
         -- We have enough info to make our weapon fly to max distance before "missing"
         local range = self.owner.components.combat.attackrange + self.inst.components.weapon.attackrange
-        if distsq(self.owner:GetPosition(), current) > range * range then
+        if distsq(self.owner:GetPosition(), pos) > range * range then
+            if force then
+                RestoreDelayPos(self.inst, pos, rot)
+            end
             self:Miss(target)
+            return true
         end
     end
+    return false
+end
+
+function Projectile:OnUpdate(dt)
+    local target = self.target
+    if self.homing and target ~= nil and target:IsValid() and not target:IsInLimbo() then
+        self.dest = target:GetPosition()
+    end
+
+    local pos = self.inst:GetPosition()
+    if self.delaypos ~= nil then
+        if not self.inst.entity:IsVisible() then
+            table.insert(self.delaypos, { pos = pos, rot = self.inst.Transform:GetRotation() })
+            if self.homing and CheckTarget(target) then
+                self:RotateToTarget(self.dest)
+            end
+            return
+        end
+
+        local rot = self.inst.Transform:GetRotation()
+        for i, v in ipairs(self.delaypos) do
+            if DoUpdate(self, target, v.pos, v.rot, true) then
+                return
+            end
+        end
+        self.delaypos = nil
+        RestoreDelayPos(self.inst, pos, rot)
+    end
+
+    DoUpdate(self, target, pos)
 end
 
 function Projectile:OnSave()
@@ -319,6 +384,7 @@ function Projectile:DelayVisibility(duration)
             self.owner
         ) or nil
     )
+    self.delaypos = {}
     self.delaytask = self.inst:DoTaskInTime(duration, OnShow, self)
 end
 

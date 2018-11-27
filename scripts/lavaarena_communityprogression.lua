@@ -4,6 +4,8 @@ local USE_SETTINGS_FILE = PLATFORM ~= "PS4" and PLATFORM ~= "NACL"
 local LAG_TEST = false
 local NUM_RETRIES = 4
 
+FINAL_UNLOCK_DATA = {level = 10, percent = 1.0, unlock_order = {"trails", "book_elemental", "boarrior", "lavaarena_firebomb", "lavaarena_armor_hpextraheavy", "lavaarena_armor_hpdamager", "rhinodrill", "lavaarena_heavyblade", "lavaarena_armor_hprecharger", "lavaarena_armor_hppetmastery", "beetletaur"}}
+
 -- self.mode values:
 local IS_FRONTEND = 0
 local IS_CLIENT_ONLY = 1
@@ -302,6 +304,7 @@ local function OnHandleProgressionQueryResponce(self, result, isSuccessful, resu
 end
 
 function CommunityProgression:RequestProgressionData(force, time)
+	
 	if not IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then
 		self:OnProgressionQueryComplete(self.mode)
 		return
@@ -310,7 +313,14 @@ function CommunityProgression:RequestProgressionData(force, time)
 	if self.progression_query_active == true then
 		return
 	end
-
+--[[
+	-- everything is unlocked
+	if true then
+		print("[CommunityProgression] Requesting Progression Data - Final data")
+		OnHandleProgressionQueryResponce(self, json.encode(FINAL_UNLOCK_DATA), true, 200)
+		return
+	end
+]]
 	if not force and not self:IsProgressionQueryExpired() then
 		self:OnProgressionQueryComplete(self.mode)
 		return
@@ -533,7 +543,7 @@ end
 function CommunityProgression:Load()
 	if not IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then
 		self.quest_data = {}
-		self.progression_data = ParseProgressionData({level = 10, percent = 1.0, unlock_order = {"trails", "book_elemental", "boarrior", "lavaarena_firebomb", "lavaarena_armor_hpextraheavy", "lavaarena_armor_hpdamager", "rhinodrill", "lavaarena_heavyblade", "lavaarena_armor_hprecharger", "lavaarena_armor_hppetmastery", "beetletaur"}})
+		self.progression_data = ParseProgressionData(FINAL_UNLOCK_DATA)
 		self.prev_progression_data = deepcopy(self.progression_data)
 		return
 	end

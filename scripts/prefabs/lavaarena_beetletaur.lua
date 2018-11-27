@@ -125,29 +125,19 @@ end
 
 --------------------------------------------------------------------------
 
-local function OnFocusCamera(inst, minrange, maxrange)
-    local player = TheFocalPoint.entity:GetParent()
-    if player ~= nil then
-        TheFocalPoint:PushTempFocus(inst, minrange, maxrange, 3)
-    end
-end
-
 local function OnCameraFocusDirty(inst)
     if inst._camerafocus:value() then
-        if inst._camerafocustask == nil then
-            if inst:HasTag("NOCLICK") then
-                --death
-                inst._camerafocustask = inst:DoPeriodicTask(0, OnFocusCamera, nil, 6, 22)
-            else
-                --pose
-                inst._camerafocustask = inst:DoPeriodicTask(0, OnFocusCamera, nil, 60, 60)
-                TheCamera:SetDistance(30)
-                TheCamera:SetControllable(false)
-            end
+        if inst:HasTag("NOCLICK") then
+            --death
+            TheFocalPoint.components.focalpoint:StartFocusSource(inst, nil, nil, 6, 22, 3)
+        else
+            --pose
+            TheFocalPoint.components.focalpoint:StartFocusSource(inst, nil, nil, 60, 60, 3)
+            TheCamera:SetDistance(30)
+            TheCamera:SetControllable(false)
         end
-    elseif inst._camerafocustask ~= nil then
-        inst._camerafocustask:Cancel()
-        inst._camerafocustask = nil
+    else
+        TheFocalPoint.components.focalpoint:StopFocusSource(inst)
         TheCamera:SetControllable(true)
     end
 end
@@ -242,7 +232,6 @@ local function fn()
 
     inst._bufftype = net_tinybyte(inst.GUID, "beetletaur._bufftype", "bufftypedirty")
     inst._camerafocus = net_bool(inst.GUID, "beetletaur._camerafocus", "camerafocusdirty")
-    inst._camerafocustask = nil
 
     inst._spawnflower = net_event(inst.GUID, "beetletaur._spawnflower")
     inst:ListenForEvent("beetletaur._spawnflower", OnSpawnFlower)

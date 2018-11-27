@@ -9,7 +9,7 @@ local BOX_FONT = FALLBACK_FONT -- CHATFONT, FALLBACK_FONT, CHATFONT_OUTLINE
 
 local ICON_MAP =
 {
-	kleistore = { atlas = "images/global.xml", image = "square.tex", x_offset = 0, y_offset = 0, scale = 0.4},
+	kleistore = { atlas = "images/frontend_redux.xml", image = "kleishop.tex", x_offset = 0, y_offset = 1, scale = 0.32},
 }
 
 local alert_images =
