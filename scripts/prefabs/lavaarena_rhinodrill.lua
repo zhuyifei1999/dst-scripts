@@ -106,21 +106,11 @@ end
 
 --------------------------------------------------------------------------
 
-local function OnFocusCamera(inst)
-    local player = TheFocalPoint.entity:GetParent()
-    if player ~= nil then
-        TheFocalPoint:PushTempFocus(inst, 60, 60, 2)
-    end
-end
-
 local function OnCameraFocusDirty(inst)
     if inst._camerafocus:value() then
-        if inst._camerafocustask == nil then
-            inst._camerafocustask = inst:DoPeriodicTask(0, OnFocusCamera)
-        end
-    elseif inst._camerafocustask ~= nil then
-        inst._camerafocustask:Cancel()
-        inst._camerafocustask = nil
+        TheFocalPoint.components.focalpoint:StartFocusSource(inst, nil, nil, 60, 60, 2)
+    else
+        TheFocalPoint.components.focalpoint:StopFocusSource(inst)
     end
 end
 
@@ -172,7 +162,6 @@ local function MakeRhinoDrill(name, alt)
 
         inst._bufflevel = net_tinybyte(inst.GUID, "rhinodrill._bufflevel", "buffleveldirty")
         inst._camerafocus = net_bool(inst.GUID, "rhinodrill._camerafocus", "camerafocusdirty")
-        inst._camerafocustask = nil
 
         ------------------------------------------
 
