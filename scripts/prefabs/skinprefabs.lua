@@ -742,6 +742,7 @@ table.insert(prefs, CreatePrefabSkin("beehat_mourning",
 	rarity = "Elegant",
 	init_fn = function(inst) beehat_init_fn(inst, "beehat_mourning") end,
 	skin_tags = { "BEEHAT", "CRAFTABLE", },
+	marketable = true,
 	release_group = 50,
 }))
 
@@ -1818,6 +1819,7 @@ table.insert(prefs, CreatePrefabSkin("lantern_tesla",
 	init_fn = function(inst) lantern_init_fn(inst, "lantern_tesla", { "bolt_b", "bolt_c" }, Vector3(67, -7, 0)) end,
 	skin_tags = { "LANTERN", "CRAFTABLE", },
 	fx_prefab = { "lantern_tesla_fx_held", "lantern_tesla_fx_ground", },
+	marketable = true,
 	release_group = 50,
 }))
 
@@ -2444,6 +2446,7 @@ table.insert(prefs, CreatePrefabSkin("tophat_witch_pyre",
 	rarity = "Elegant",
 	init_fn = function(inst) tophat_init_fn(inst, "tophat_witch_pyre") end,
 	skin_tags = { "TOPHAT", "CRAFTABLE", },
+	marketable = true,
 	release_group = 50,
 	granted_items = { "researchlab4_witch_pyre", },
 }))
@@ -2687,6 +2690,7 @@ table.insert(prefs, CreatePrefabSkin("umbrella_spider",
 	rarity = "Elegant",
 	init_fn = function(inst) umbrella_init_fn(inst, "umbrella_spider") end,
 	skin_tags = { "UMBRELLA", "CRAFTABLE", },
+	marketable = true,
 	release_group = 50,
 }))
 
