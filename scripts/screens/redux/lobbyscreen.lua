@@ -562,6 +562,8 @@ function LobbyScreen:OnBecomeActive()
     if self.panel ~= nil and self.panel.OnBecomeActive ~= nil then
 		self.panel:OnBecomeActive()
 	end
+
+	--lavaarena_soaktest(self.cb)
 end
 
 function LobbyScreen:OnDestroy()

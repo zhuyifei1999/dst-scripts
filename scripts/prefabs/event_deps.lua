@@ -21,9 +21,9 @@ LOADING_IMAGES =
 
     [SPECIAL_EVENTS.WINTERS_FEAST] =
     {
-
         { atlas = "images/bg_spiral_fill_christmas1.xml", tex = "bg_image1.tex" },
         { atlas = "images/bg_spiral_fill_christmas2.xml", tex = "bg_image2.tex" },
+        --{ atlas = "images/bg_loading_winters_feast.xml", tex = "bg_image1.tex" },
     },
 
     [SPECIAL_EVENTS.YOTG] =

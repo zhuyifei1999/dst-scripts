@@ -614,48 +614,92 @@ local function lantern_onremovefx(fx)
     fx._lantern._lit_fx_inst = nil
 end
 
+local function lantern_enterlimbo(inst)
+    --V2C: wow! superhacks!
+    --     we want to drop the FX behind when the item is picked up, but the transform
+    --     is cleared before lantern_off is reached, so we need to figure out where we
+    --     were just before.
+    if inst._lit_fx_inst ~= nil then
+        inst._lit_fx_inst._lastpos = inst._lit_fx_inst:GetPosition()
+        local parent = inst.entity:GetParent()
+        if parent ~= nil then
+            local x, y, z = parent.Transform:GetWorldPosition()
+            local angle = (360 - parent.Transform:GetRotation()) * DEGREES
+            local dx = inst._lit_fx_inst._lastpos.x - x
+            local dz = inst._lit_fx_inst._lastpos.z - z
+            local sinangle, cosangle = math.sin(angle), math.cos(angle)
+            inst._lit_fx_inst._lastpos.x = dx * cosangle + dz * sinangle
+            inst._lit_fx_inst._lastpos.y = inst._lit_fx_inst._lastpos.y - y
+            inst._lit_fx_inst._lastpos.z = dz * cosangle - dx * sinangle
+        end
+    end
+end
+
+local function lantern_off(inst)
+    local fx = inst._lit_fx_inst
+    if fx ~= nil then
+        if fx.KillFX ~= nil then
+            inst._lit_fx_inst = nil
+            inst:RemoveEventCallback("onremove", lantern_onremovefx, fx)
+            fx:RemoveEventCallback("enterlimbo", lantern_enterlimbo, inst)
+            fx._lastpos = fx._lastpos or fx:GetPosition()
+            fx.entity:SetParent(nil)
+            if fx.Follower ~= nil then
+                fx.Follower:FollowSymbol(0, "", 0, 0, 0)
+            end
+            fx.Transform:SetPosition(fx._lastpos:Get())
+            fx:KillFX()
+        else
+            fx:Remove()
+        end
+    end
+end
+
 local function lantern_on(inst)
     local owner = inst.components.inventoryitem.owner
     if owner ~= nil then
         if inst._lit_fx_inst ~= nil and inst._lit_fx_inst.prefab ~= inst._heldfx then
-            inst._lit_fx_inst:Remove()
+            lantern_off(inst)
         end
         if inst._heldfx ~= nil then
             if inst._lit_fx_inst == nil then
                 inst._lit_fx_inst = SpawnPrefab(inst._heldfx)
                 inst._lit_fx_inst._lantern = inst
-                inst._lit_fx_inst.AnimState:OverrideItemSkinSymbol("bolt_b", inst:GetSkinBuild(), "bolt_b", inst.GUID, "lantern")
-                inst._lit_fx_inst.AnimState:OverrideItemSkinSymbol("bolt_c", inst:GetSkinBuild(), "bolt_c", inst.GUID, "lantern")
+                if inst._overridesymbols ~= nil and inst._lit_fx_inst.AnimState ~= nil then
+                    for i, v in ipairs(inst._overridesymbols) do
+                        inst._lit_fx_inst.AnimState:OverrideItemSkinSymbol(v, inst:GetSkinBuild(), v, inst.GUID, "lantern")
+                    end
+                end
                 inst._lit_fx_inst.entity:AddFollower()
                 inst:ListenForEvent("onremove", lantern_onremovefx, inst._lit_fx_inst)
             end
             inst._lit_fx_inst.entity:SetParent(owner.entity)
-            inst._lit_fx_inst.Follower:FollowSymbol(owner.GUID, "swap_object", 67, -7, 0)
+            inst._lit_fx_inst.Follower:FollowSymbol(owner.GUID, "swap_object", inst._followoffset ~= nil and inst._followoffset.x or 0, inst._followoffset ~= nil and inst._followoffset.y or 0, inst._followoffset ~= nil and inst._followoffset.z or 0)
         end
     else
         if inst._lit_fx_inst ~= nil and inst._lit_fx_inst.prefab ~= inst._groundfx then
-            inst._lit_fx_inst:Remove()
+            lantern_off(inst)
         end
         if inst._groundfx ~= nil then
             if inst._lit_fx_inst == nil then
                 inst._lit_fx_inst = SpawnPrefab(inst._groundfx)
                 inst._lit_fx_inst._lantern = inst
-                inst._lit_fx_inst.AnimState:OverrideItemSkinSymbol("bolt_b", inst:GetSkinBuild(), "bolt_b", inst.GUID, "lantern")
-                inst._lit_fx_inst.AnimState:OverrideItemSkinSymbol("bolt_c", inst:GetSkinBuild(), "bolt_c", inst.GUID, "lantern")
+                if inst._overridesymbols ~= nil and inst._lit_fx_inst.AnimState ~= nil then
+                    for i, v in ipairs(inst._overridesymbols) do
+                        inst._lit_fx_inst.AnimState:OverrideItemSkinSymbol(v, inst:GetSkinBuild(), v, inst.GUID, "lantern")
+                    end
+                end
                 inst:ListenForEvent("onremove", lantern_onremovefx, inst._lit_fx_inst)
+                if inst._lit_fx_inst.KillFX ~= nil then
+                    inst._lit_fx_inst:ListenForEvent("enterlimbo", lantern_enterlimbo, inst)
+                end
             end
             inst._lit_fx_inst.entity:SetParent(inst.entity)
         end
     end
 end
 
-local function lantern_off(inst)
-    if inst._lit_fx_inst ~= nil then
-        inst._lit_fx_inst:Remove()
-    end
-end
-
-function lantern_init_fn(inst, build_name)
+function lantern_init_fn(inst, build_name, overridesymbols, followoffset)
     if not TheWorld.ismastersim then
         return
     end
@@ -667,6 +711,8 @@ function lantern_init_fn(inst, build_name)
         inst._heldfx = skin_fx[1]
         inst._groundfx = skin_fx[2]
         if inst._heldfx ~= nil or inst._groundfx ~= nil then
+            inst._overridesymbols = overridesymbols
+            inst._followoffset = followoffset
             inst:ListenForEvent("lantern_on", lantern_on)
             inst:ListenForEvent("lantern_off", lantern_off)
             inst:ListenForEvent("unequipped", lantern_off)
