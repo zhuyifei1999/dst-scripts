@@ -7784,6 +7784,7 @@ STRINGS.UI =
         YAWN = "Yawn", 
         SLEEPY = "Sleepy", 
         SWOON = "Swoon", 
+        CAROL = "Carol", 
     },
 
     PRESENCE = 

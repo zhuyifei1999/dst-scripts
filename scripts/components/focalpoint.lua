@@ -15,9 +15,13 @@ function FocalPoint:Reset()
     self.target = nil
     self.priority = nil
     self.prioritydistsq = nil
-    self.inst:StopUpdatingComponent(self)
     TheCamera:SetDefault()
     TheCamera:Snap()
+    if self.inst.entity:GetParent() ~= nil and next(self.targets) ~= nil then
+        self.inst:StartUpdatingComponent(self)
+    else
+        self.inst:StopUpdatingComponent(self)
+    end
 end
 
 function FocalPoint:StartFocusSource(source, id, target, minrange, maxrange, priority)
