@@ -235,6 +235,7 @@ PREFAB_SKINS = {
 	lantern = 
 	{
 		"lantern_tesla",
+		"lantern_winter",
 	},
 	minerhat = 
 	{

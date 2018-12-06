@@ -20,12 +20,11 @@ DEFAULT_SKIN_COLOR = SKIN_RARITY_COLORS["Common"]
 
 EVENT_ICONS =
 {
-	event_forge = "LAVA",
-	event_ice = "ICE",
-	event_ice = "WINTER",
-	event_yotv = "VARG",
-	event_quagmire = "VICTORIAN",
-	event_hallowed = "HALLOWED",
+	event_forge = {"LAVA"},
+	event_ice = {"ICE", "WINTER"},
+	event_yotv = {"VARG"},
+	event_quagmire = {"VICTORIAN"},
+	event_hallowed = {"HALLOWED"}
 }
 
 -- Also update GetBuildForItem!
@@ -345,10 +344,12 @@ end
 
 function GetEventIconForItem(item)
 	local skin_data = GetSkinData(item)
-	for k,v in pairs(EVENT_ICONS) do
-		if DoesItemHaveTag( item, v ) then
-			return k
-		end
+	for k,tags in pairs(EVENT_ICONS) do
+	    for _,tag in pairs(tags) do
+		    if DoesItemHaveTag( item, tag ) then
+			    return k
+		    end
+        end
 	end
 
 	return nil

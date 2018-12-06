@@ -266,6 +266,9 @@ local PurchasePackPopup = Class(Screen, function(self, iap_def)
 	)
     
     self.close_button:SetFocusChangeDir(MOVE_UP, self.buy_button)
+    self.close_button:SetFocusChangeDir(MOVE_RIGHT, self.buy_button)
+    self.buy_button:SetFocusChangeDir(MOVE_DOWN, self.close_button)
+    self.buy_button:SetFocusChangeDir(MOVE_LEFT, self.close_button)
 
     self:SetData( iap_def )
 end)
@@ -338,7 +341,6 @@ function PurchasePackPopup:SetData( iap_def )
 		self.button_dlc.item_type = self.item_type
 		self.button_dlc.steam_dlc_id = GetPackGiftDLCID(self.item_type)
 
-        self.buy_button:SetFocusChangeDir(MOVE_DOWN, self.close_button)
         self.buy_button:SetFocusChangeDir(MOVE_UP, self.button_dlc)
         self.button_dlc:SetFocusChangeDir(MOVE_DOWN, self.buy_button)
 	else
@@ -505,7 +507,6 @@ function PurchaseWidget:ApplyDataToWidget(iap_def)
 			--Deal with focus hacks for featured widget with multiple buttons
             self.info_button:SetFocusChangeDir(MOVE_RIGHT, self.button)
 			self.button:SetFocusChangeDir(MOVE_LEFT, self.info_button)
-			self:SetFocusChangeDir(MOVE_RIGHT, nil)
 			
 		else
 

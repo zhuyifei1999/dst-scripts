@@ -1823,6 +1823,24 @@ table.insert(prefs, CreatePrefabSkin("lantern_tesla",
 	release_group = 50,
 }))
 
+table.insert(prefs, CreatePrefabSkin("lantern_winter",
+{
+	base_prefab = "lantern",
+	type = "item",
+	assets = {
+		Asset("DYNAMIC_ANIM", "anim/dynamic/lantern_winter.zip"),
+		Asset("PKGREF", "anim/dynamic/lantern_winter.dyn"),
+		Asset("INV_IMAGE", "lantern_winter_lit"),
+	},
+	build_name = "lantern_winter",
+	rarity = "Loyal",
+	prefabs = { "lantern_winter_fx_held", "lantern_winter_fx_ground", },
+	init_fn = function(inst) lantern_init_fn(inst, "lantern_winter", { "snowflake" }, Vector3(67, -7, 0)) end,
+	skin_tags = { "LANTERN", "WINTER", "CRAFTABLE", },
+	fx_prefab = { "lantern_winter_fx_held", "lantern_winter_fx_ground", },
+	release_group = 54,
+}))
+
 table.insert(prefs, CreatePrefabSkin("minerhat_floppy",
 {
 	base_prefab = "minerhat",

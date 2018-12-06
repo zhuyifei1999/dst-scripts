@@ -1,6 +1,4 @@
 
-local ENABLE_WINTERS_FEAST_2018 = false  -- !! WIP !! when changing this, run update prefabs and then rebuild the inventory images
-
 local BLINK_PERIOD = 1.2
 
 local NUM_BASIC_ORNAMENT = 12
@@ -50,12 +48,9 @@ function GetAllWinterOrnamentPrefabs()
     for i = 1, NUM_LIGHT_ORNAMENT do
         table.insert(decor, "winter_ornament_light" .. tostring(i))
     end
-
-if ENABLE_WINTERS_FEAST_2018 then
     for i = 1, NUM_FESTIVALEVENTS_ORNAMENT do
         table.insert(decor, "winter_ornament_festivalevents" .. tostring(i))
     end
-end
     return decor
 end
 
@@ -72,7 +67,7 @@ function GetRandomLightWinterOrnament()
 end
 
 function GetRandomFestivalEventWinterOrnament()
-	return ENABLE_WINTERS_FEAST_2018 and ("winter_ornament_festivalevents"..math.random(NUM_FESTIVALEVENTS_ORNAMENT)) or GetRandomFancyWinterOrnament()
+	return "winter_ornament_festivalevents"..math.random(NUM_FESTIVALEVENTS_ORNAMENT)
 end
 
 local function updatelight(inst, data)
@@ -267,13 +262,11 @@ for i = 1, NUM_LIGHT_ORNAMENT do
     table.insert(ornament, MakeOrnament("light"..i, "winter_ornamentlight", LIGHT_DATA[((i - 1) % 4) + 1]))
 end
 
-if ENABLE_WINTERS_FEAST_2018 then
 table.insert(ornament, MakeOrnament("festivalevents1", "winter_ornamentforge", nil, "winter_ornaments2018"))
 table.insert(ornament, MakeOrnament("festivalevents2", "winter_ornamentforge", nil, "winter_ornaments2018"))
 table.insert(ornament, MakeOrnament("festivalevents3", "winter_ornamentforge", nil, "winter_ornaments2018"))
 table.insert(ornament, MakeOrnament("festivalevents4", "winter_ornamentgorge", nil, "winter_ornaments2018"))
 table.insert(ornament, MakeOrnament("festivalevents5", "winter_ornamentgorge", nil, "winter_ornaments2018"))
-end
 
 table.insert(ornament, MakeOrnament("boss_antlion", "winter_ornamentboss"))
 table.insert(ornament, MakeOrnament("boss_bearger", "winter_ornamentboss"))
