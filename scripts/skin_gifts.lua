@@ -8,6 +8,7 @@ local SKIN_GIFT_TYPES =
 	emote_swoon = "CUPID",
 	featherhat_circus = "TWITCH_DROP",
 	firepit_hole = "EARLY_ACCESS",
+	lantern_winter = "WINTER",
 	playerportrait_bg_arrowsignpostcircus = "TWITCH_DROP",
 	playerportrait_bg_birdcagecircus = "TWITCH_DROP",
 	playerportrait_bg_featherhatcircus = "TWITCH_DROP",
@@ -103,6 +104,13 @@ local SKIN_GIFT_POPUPDATA =
 		image = {"thankyou_varg.tex"},
 		title = STRINGS.THANKS_POPUP.VARG,
 		titleoffset = {0, -20, 0},
+	},
+	WINTER =
+	{
+		atlas = "images/thankyou_item_event.xml",
+		image = {"thankyou_winter.tex"},
+		title = STRINGS.THANKS_POPUP.WINTER,
+		titleoffset = {0, -30, 0},
 	},
 }
 

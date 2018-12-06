@@ -189,6 +189,15 @@ function ValidateRecipeSkinRequest(user_id, prefab_name, skin)
     return validated_skin
 end
 
+function VerifySpawnNewPlayerOnServerRequest(user_id)
+	if TheWorld == nil or TheWorld.net == nil or (TheWorld.net.components.worldcharacterselectlobby ~= nil and not TheWorld.net.components.worldcharacterselectlobby:CanPlayersSpawn()) then
+		TheNet:Kick(user_id)
+		return false
+	end
+
+	return true
+end
+
 function ValidateSpawnPrefabRequest(user_id, prefab_name, skin_base, clothing_body, clothing_hand, clothing_legs, clothing_feet)
     local in_mod_char_list = table.contains(MODCHARACTERLIST, prefab_name)
 

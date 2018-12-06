@@ -393,11 +393,9 @@ function PlayerSummaryScreen:_BuildMenu()
         skins_button,
     }
 
-    if TheFrontEnd:GetAccountManager():HasSteamTicket() then
-		local redeem_button = TEMPLATES.MenuButton(STRINGS.UI.REDEEMDIALOG.MENU_BUTTON_TITLE, function() self:_FadeToScreen(RedeemDialog, {}) end, STRINGS.UI.REDEEMDIALOG.MENU_BUTTON_DESC, self.tooltip, menu_button_style)
-        table.insert(menu_items, 1, {widget = redeem_button})
-        table.insert(self.waiting_for_inventory, 1, redeem_button)
-	end
+	local redeem_button = TEMPLATES.MenuButton(STRINGS.UI.REDEEMDIALOG.MENU_BUTTON_TITLE, function() self:_FadeToScreen(RedeemDialog, {}) end, STRINGS.UI.REDEEMDIALOG.MENU_BUTTON_DESC, self.tooltip, menu_button_style)
+    table.insert(menu_items, 1, {widget = redeem_button})
+    table.insert(self.waiting_for_inventory, 1, redeem_button)
 
 	if self.can_shop then
 		local purchase_button   = TEMPLATES.MenuButton(STRINGS.UI.PLAYERSUMMARYSCREEN.PURCHASE, function() self:_FadeToScreen(PurchasePackScreen, {}) end, STRINGS.UI.PLAYERSUMMARYSCREEN.TOOLTIP_PURCHASE, self.tooltip, menu_button_style)	

@@ -740,7 +740,7 @@ function DressupPanel:GetSkinsForGameStart()
             local previous_skins = self.profile:GetSkinsForCharacter(self.currentcharacter)
     
 			if self.base_spinner and self.base_spinner.spinner:GetSelectedIndex() == 1 then 
-				skins.base = previous_base.base
+				skins.base = previous_skins.base
 			else
 				skins.base = GetRandomItem(currentcharacter_skins)
 			end

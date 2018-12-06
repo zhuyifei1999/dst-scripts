@@ -286,6 +286,7 @@ PREFABFILES = {
   "krampus",
   "krampus_sack",
   "lantern_tesla_fx",
+  "lantern_winter_fx",
   "lava_pond",
   "lavaarena",
   "lavaarena_abigail",

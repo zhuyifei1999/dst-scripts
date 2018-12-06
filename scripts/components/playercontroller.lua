@@ -2466,7 +2466,15 @@ function PlayerController:IsControllerTargetLocked()
 end
 
 function PlayerController:ControllerTargetLock(enable)
-	self.controller_targeting_lock_target = enable
+	if enable then
+		-- only enable locking if there's a target
+		if self.controller_attack_target then
+			self.controller_targeting_lock_target = enable
+		end
+	else	
+		-- disable locking at any time
+		self.controller_targeting_lock_target = enable
+	end
 end
 
 function PlayerController:CycleControllerAttackTargetForward()
