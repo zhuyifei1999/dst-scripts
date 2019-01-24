@@ -13,12 +13,15 @@ return
 		"body_wathgrithr_shadow",
 		"body_wathgrithr_survivor",
 		"body_wathgrithr_victorian",
+		"body_wathgrithr_wrestler",
 		"feet_wathgrithr_gladiator",
 		"feet_wathgrithr_nature",
+		"feet_wathgrithr_wrestler",
 		"hand_wathgrithr_gladiator",
 		"hand_wathgrithr_magma",
 		"hand_wathgrithr_nature",
 		"hand_wathgrithr_victorian",
+		"hand_wathgrithr_wrestler",
 		"legs_wathgrithr_gladiator",
 		"legs_wathgrithr_magma",
 		"legs_wathgrithr_nature",
@@ -35,6 +38,7 @@ return
 		"wathgrithr_shadow",
 		"wathgrithr_survivor",
 		"wathgrithr_victorian",
+		"wathgrithr_wrestler",
 	},
 	waxwell = 
 	{
@@ -155,6 +159,7 @@ return
 		"body_wes_shadow",
 		"body_wes_survivor",
 		"body_wes_victorian",
+		"body_wes_wrestler",
 		"feet_wes_clown",
 		"feet_wes_gladiator",
 		"feet_wes_magma",
@@ -164,6 +169,7 @@ return
 		"hand_wes_magma",
 		"hand_wes_nature",
 		"hand_wes_victorian",
+		"hand_wes_wrestler",
 		"wes_clown",
 		"wes_combatant",
 		"wes_cook",
@@ -177,6 +183,7 @@ return
 		"wes_shadow",
 		"wes_survivor",
 		"wes_victorian",
+		"wes_wrestler",
 	},
 	wickerbottom = 
 	{
@@ -332,6 +339,7 @@ return
 		"body_wolfgang_survivor",
 		"body_wolfgang_victorian",
 		"body_wolfgang_walrus",
+		"body_wolfgang_wrestler",
 		"feet_ridingboot_white_pure",
 		"feet_wolfgang_gladiator",
 		"feet_wolfgang_ice",
@@ -339,6 +347,7 @@ return
 		"hand_wolfgang_ice",
 		"hand_wolfgang_magma",
 		"hand_wolfgang_victorian",
+		"hand_wolfgang_wrestler",
 		"legs_wolfgang_gladiator",
 		"legs_wolfgang_ice",
 		"legs_wolfgang_magma",
@@ -355,6 +364,7 @@ return
 		"wolfgang_victorian",
 		"wolfgang_walrus",
 		"wolfgang_walrus_d",
+		"wolfgang_wrestler",
 	},
 	woodie = 
 	{

@@ -161,7 +161,7 @@ end
 ------------ skins functions --------------------
 ---------------------------------------------------
 
-local TEST_ITEM_NAME = "backpack_buckle_grey_pewter"
+local TEST_ITEM_NAME = "birdcage_pirate"
 function d_test_thank_you(param)
 	local ThankYouPopup = require "screens/thankyoupopup"
 	local SkinGifts = require("skin_gifts")

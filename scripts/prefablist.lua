@@ -437,10 +437,13 @@ PREFABFILES = {
   "petrify_fx",
   "phlegm",
   "pickaxe",
+  "pig_token",
+  "pigelite",
   "piggyback",
   "pighouse",
   "pigking",
   "pigman",
+  "pigshrine",
   "pigskin",
   "pigtorch",
   "pigtorch_flame",
@@ -458,6 +461,7 @@ PREFABFILES = {
   "positronbeam",
   "pottedfern",
   "preparedfoods",
+  "propsign",
   "pumpkin_lantern",
   "quagmire",
   "quagmire_altar",
@@ -730,5 +734,6 @@ PREFABFILES = {
   "wormlight_plant",
   "wormwarning",
   "writeable_classified",
-  "wx78" 
+  "wx78",
+  "yotp_food" 
 }

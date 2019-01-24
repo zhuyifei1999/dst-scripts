@@ -85,6 +85,9 @@ return {
             CANTSHADOWREVIVE = "It's not waking up.",
             WRONGSHADOWFORM = "We put the bones together wrong.",
             NOMOON = "Doesn't work. We probably need to see the moon or something.",
+            PIGKINGGAME_MESSY = "We need to clean up before we can play.",
+			PIGKINGGAME_DANGER = "Lets wait until the danger passes before we play.",
+			PIGKINGGAME_TOOLATE = "It's too close to bedtime to start another game.",
         },
         GIVETOPLAYER = 
         {
@@ -274,6 +277,9 @@ return {
     QUAGMIRE_ANNOUNCE_MEALBURNT = "Oh no! We burnt it!",
     QUAGMIRE_ANNOUNCE_LOSE = "Don't eat us!",
     QUAGMIRE_ANNOUNCE_WIN = "I'm ready to go home now!",
+
+    --YOTP--
+    ANNOUNCE_LEAVE_MINIGAME = "We'll leave this sign for someone else.",
 
 	BATTLECRY =
 	{
@@ -1968,6 +1974,22 @@ return {
         HOUNDWHISTLE = "Our head buzzes when we blow it.",
         CHESSPIECE_CLAYHOUND = "Puppy!",
         CHESSPIECE_CLAYWARG = "That's a big, bad dog.",
+
+        PIGSHRINE =
+		{
+            GENERIC = "We can make some fun stuff now!",
+            EMPTY = "We should find some meat for it.",
+            BURNT = "Aww... that's too bad.",
+		},
+		PIG_TOKEN = "Neat! The Pig King would like that.",
+		YOTP_FOOD1 = "Yummy!",
+		YOTP_FOOD2 = "Mmmmmm.",
+		YOTP_FOOD3 = "Smells good.",
+
+		PIGELITE1 = "Cool tattoos!", --BLUE
+		PIGELITE2 = "Yikes! He's angry.", --RED
+		PIGELITE3 = "Leave us alone!", --WHITE
+		PIGELITE4 = "Wish he wouldn't hit us so much.", --GREEN
 
 		TRUNKVEST_SUMMER = "It's so puffy!",
 		TRUNKVEST_WINTER = "You're always supposed to wear a jacket!",

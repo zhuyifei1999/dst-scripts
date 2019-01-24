@@ -229,6 +229,20 @@ function Tune(overrides)
         PIG_LOYALTY_PER_HUNGER = total_day_time/25,
         PIG_MIN_POOP_PERIOD = seg_time * .5,
 
+        PIG_TOKEN_CHANCE = 0.05,
+        PIG_TOKEN_CHANCE_YOTP = .5,
+        PIG_MINIGAME_ARENA_RADIUS = 12,
+        PIG_MINIGAME_REQUIRED_TIME = seg_time * 4,
+		PIG_MINIGAME_SCORE_GREAT = 0.6,
+		PIG_MINIGAME_SCORE_GOOD = 0.3,
+		PIG_MINIGAME_SCORE_BAD = 0.1,
+
+        PIG_FULL_LOYALTY_PERCENT = 0.9,
+
+		MINIGAME_CROWD_DIST_MIN = 12,
+		MINIGAME_CROWD_DIST_TARGET = 14,
+		MINIGAME_CROWD_DIST_MAX = 20,
+
         SPIDER_LOYALTY_MAXTIME = 2.5*total_day_time,
         SPIDER_LOYALTY_PER_HUNGER = total_day_time/25,
 
@@ -247,6 +261,23 @@ function Tune(overrides)
 
         WEREPIG_RUN_SPEED = 7,
         WEREPIG_WALK_SPEED = 3,
+
+        PIG_ELITE_RUN_SPEED = 9,
+        PIG_ELITE_WALK_SPEED = 3,
+        PIG_ELITE_HIT_RECOVERY = 1,
+        PROP_WEAPON_RANGE = .5,
+
+        --for pig king gold minigame
+        --delay b4 pigs and players can pick up something recently knocked out of someone's inventory
+        --players are faster
+        --high is for stuff knocked out of the hand slot
+        --low is for stuff knocked out of pockets
+        KNOCKBACK_DROP_ITEM_HEIGHT_HIGH = 3,
+        KNOCKBACK_DROP_ITEM_HEIGHT_LOW = 1,
+        KNOCKBACK_DELAY_INTERACTION_HIGH = .6,
+        KNOCKBACK_DELAY_INTERACTION_LOW = .45,
+        KNOCKBACK_DELAY_PLAYER_INTERACTION_HIGH = .3,
+        KNOCKBACK_DELAY_PLAYER_INTERACTION_LOW = .15,
 
         WILSON_WALK_SPEED = 4,
         WILSON_RUN_SPEED = 6,
@@ -979,6 +1010,11 @@ function Tune(overrides)
 
             WARGSHRINE = TechTree.Create({
                 WARGOFFERING = 3,
+                PERDOFFERING = 1,
+            }),
+
+            PIGSHRINE = TechTree.Create({
+                PIGOFFERING = 3,
                 PERDOFFERING = 1,
             }),
 
@@ -2710,6 +2746,7 @@ function Tune(overrides)
         PERDFAN_TORNADO_LIFETIME = 2,
         DRAGONHAT_PERISHTIME = total_day_time, --only consumes while dancing
         YOTG_PERD_SPAWNCHANCE = .3,
+
     }
 end
 

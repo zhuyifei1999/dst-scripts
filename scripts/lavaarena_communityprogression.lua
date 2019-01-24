@@ -523,19 +523,21 @@ function CommunityProgression:RegisterForWorld()
 				or TheWorld.ismastersim and IS_CLIENT_HOSTED
 				or IS_CLIENT_ONLY 
 
-	if self.mode == IS_CLIENT_ONLY then
-		self.both_queries_active = true
-		self.progression_query_active = true
-		GetQuestDataTable(self, TheNet:GetUserID()).quest_query_active = true
-	elseif self.mode == IS_CLIENT_HOSTED then
-		self.both_queries_active = true
-	end
+	if IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then
+		if self.mode == IS_CLIENT_ONLY then
+			self.both_queries_active = true
+			self.progression_query_active = true
+			GetQuestDataTable(self, TheNet:GetUserID()).quest_query_active = true
+		elseif self.mode == IS_CLIENT_HOSTED then
+			self.both_queries_active = true
+		end
 
-	if self.mode ~= IS_DEDICATED_SERVER then
-		TheWorld.net:ListenForEvent("progressionjsondirty", function() OnNewProgressionFromServer(self) end)
+		if self.mode ~= IS_DEDICATED_SERVER then
+			TheWorld.net:ListenForEvent("progressionjsondirty", function() OnNewProgressionFromServer(self) end)
 	
-		for i = 1, TheNet:GetServerMaxPlayers() do
-			TheWorld.net:ListenForEvent("playerquestjsondirty_"..i, function(net, data) OnNewQuestFromServer(self, i) end)
+			for i = 1, TheNet:GetServerMaxPlayers() do
+				TheWorld.net:ListenForEvent("playerquestjsondirty_"..i, function(net, data) OnNewQuestFromServer(self, i) end)
+			end
 		end
 	end
 end

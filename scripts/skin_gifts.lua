@@ -3,12 +3,15 @@
 local SKIN_GIFT_TYPES =
 {
 	arrowsign_post_circus = "TWITCH_DROP",
+	beefalohat_pigking = "YOTP",
 	birdcage_circus = "TWITCH_DROP",
 	cane_ancient = "ANRARG",
 	emote_swoon = "CUPID",
 	featherhat_circus = "TWITCH_DROP",
 	firepit_hole = "EARLY_ACCESS",
 	lantern_winter = "WINTER",
+	pack_rog_gift = "ROG",
+	pack_sw_gift = "SW",
 	playerportrait_bg_arrowsignpostcircus = "TWITCH_DROP",
 	playerportrait_bg_birdcagecircus = "TWITCH_DROP",
 	playerportrait_bg_featherhatcircus = "TWITCH_DROP",
@@ -36,6 +39,7 @@ local SKIN_GIFT_TYPES =
 	rainometer_circus = "TWITCH_DROP",
 	reviver_cupid = "CUPID",
 	reviver_cupid_2 = "CUPID",
+	reviver_cupid_3 = "CUPID",
 	tent_circus = "TWITCH_DROP",
 	tophat_circus = "TWITCH_DROP",
 	torch_shadow = "ARG",
@@ -111,6 +115,13 @@ local SKIN_GIFT_POPUPDATA =
 		image = {"thankyou_winter.tex"},
 		title = STRINGS.THANKS_POPUP.WINTER,
 		titleoffset = {0, -30, 0},
+	},
+	YOTP =
+	{
+		atlas = "images/thankyou_item_event2.xml",
+		image = {"thankyou_yotp.tex"},
+		title = STRINGS.THANKS_POPUP.YOTP,
+		titleoffset = {0, -20, 0},
 	},
 }
 

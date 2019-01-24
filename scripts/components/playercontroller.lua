@@ -1205,6 +1205,10 @@ function PlayerController:GetAttackTarget(force_attack, force_target, isretarget
         if tool ~= nil then
             local inventoryitem = tool.replica.inventoryitem
             has_weapon = inventoryitem ~= nil and inventoryitem:IsWeapon()
+            if has_weapon and not force_attack and tool:HasTag("propweapon") then
+                --don't require pressing force_attack when using prop weapons
+                force_attack = true
+            end
         end
     end
 
@@ -1914,13 +1918,14 @@ function PlayerController:OnUpdate(dt)
             placer_item ~= nil and
             placer_item.replica.inventoryitem ~= nil and
             placer_item.replica.inventoryitem:IsDeployable() then
+
             local placer_name = placer_item.replica.inventoryitem:GetDeployPlacerName()
-            if self.deployplacer ~= nil and self.deployplacer.prefab ~= placer_name then
+            local placer_skin = placer_item.AnimState:GetSkinBuild() --hack that relies on the build name to match the linked skinname
+            if self.deployplacer ~= nil and (self.deployplacer.prefab ~= placer_name or (self.deployplacer.skinname or "") ~= placer_skin) then
                 self:CancelDeployPlacement()
             end
-
             if self.deployplacer == nil then
-                self.deployplacer = SpawnPrefab(placer_name)
+                self.deployplacer = SpawnPrefab(placer_name, placer_skin, nil, self.inst.userid )
                 if self.deployplacer ~= nil then
                     self.deployplacer.components.placer:SetBuilder(self.inst, nil, placer_item)
                     self.deployplacer.components.placer.testfn = function(pt)

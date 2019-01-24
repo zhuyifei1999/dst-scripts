@@ -510,8 +510,9 @@ SPECIAL_EVENTS =
     WINTERS_FEAST = "winters_feast",
     YOTG = "year_of_the_gobbler",
     YOTV = "year_of_the_varg",
+    YOTP = "year_of_the_pig",
 }
-WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.WINTERS_FEAST
+WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.YOTP
 
 FESTIVAL_EVENTS =
 {
@@ -567,6 +568,13 @@ SPECIAL_EVENT_MUSIC =
         bank = "music_frontend_yotg.fsb",
         sound = "dontstarve/music/music_FE_yotg",
     },
+
+    --year of the pig
+    [SPECIAL_EVENTS.YOTP] =
+    {
+        bank = "music_frontend_yotg.fsb",
+        sound = "dontstarve/music/music_FE_yotg",
+    },
 }
 
 FESTIVAL_EVENT_MUSIC =
@@ -577,7 +585,7 @@ FESTIVAL_EVENT_MUSIC =
         bank = "lava_arena.fsb",
         sound = "dontstarve/music/lava_arena/FE_1_2",
     },
-    --the ??
+    --the gorge
     [FESTIVAL_EVENTS.QUAGMIRE] =
     {
         bank = "quagmire.fsb",
@@ -607,6 +615,7 @@ local FESTIVAL_EVENT_INFO =
 		STATS_FILE_PREFIX = "forge_stats",
         LATEST_SEASON = 2,
     },
+    --the gorge
     [FESTIVAL_EVENTS.QUAGMIRE] =
     {
         GAME_MODE = "quagmire",
@@ -748,12 +757,14 @@ TECH =
     PERDOFFERING_ONE = { PERDOFFERING = 1 },
     PERDOFFERING_THREE = { PERDOFFERING = 3 },
     WARGOFFERING_THREE = { WARGOFFERING = 3 },
+    PIGOFFERING_THREE = { PIGOFFERING = 3 },
     MADSCIENCE_ONE = { MADSCIENCE = 1 },
 
     HALLOWED_NIGHTS = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
     WINTERS_FEAST = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
     YOTG = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
     YOTV = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
+    YOTP = { SCIENCE = 10 }, -- ApplySpecialEvent() will change this from lost to 0
 
     LOST = { MAGIC = 10, SCIENCE = 10, ANCIENT = 10 },
 }

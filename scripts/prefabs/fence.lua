@@ -137,12 +137,29 @@ local function SetOrientation(inst, rotation)
     end
 
     if inst.builds.narrow then
+        
         if IsNarrow(inst) then
-            GetAnimState(inst):SetBuild(inst.builds.narrow)
-            GetAnimState(inst):SetBank(inst.builds.narrow)
+            if not inst.bank_narrow_set then
+                inst.bank_narrow_set = true
+                inst.bank_wide_set = nil
+                if inst.skin_build_name then
+					GetAnimState(inst):OverrideSkinSymbol("fence_posts", inst.skin_build_name, "fence_posts_thin" )
+                else
+                    GetAnimState(inst):SetBuild(inst.builds.narrow)
+                end
+                GetAnimState(inst):SetBank(inst.builds.narrow)
+            end
         else
-            GetAnimState(inst):SetBuild(inst.builds.wide)
-            GetAnimState(inst):SetBank(inst.builds.wide)
+            if not inst.bank_wide_set then
+                inst.bank_wide_set = true
+                inst.bank_narrow_set = nil
+                if inst.skin_build_name then
+					GetAnimState(inst):OverrideSkinSymbol("fence_posts", inst.skin_build_name, "fence_posts" )
+                else
+                    GetAnimState(inst):SetBuild(inst.builds.wide)
+                end
+                GetAnimState(inst):SetBank(inst.builds.wide)
+            end
         end
 
         if inst.isdoor then
@@ -647,9 +664,9 @@ local function MakeInvItem(name, placement, animdata, isdoor)
         placement,
     }
 
-    local function ondeploywall(inst, pt, deployer, rot)
-        local wall = SpawnPrefab(placement) 
-        if wall ~= nil then 
+    local function ondeploywall(inst, pt, deployer, rot )
+        local wall = SpawnPrefab(placement, inst.linked_skinname, inst.skin_id ) 
+        if wall ~= nil then
             local x = math.floor(pt.x) + .5
             local z = math.floor(pt.z) + .5
 

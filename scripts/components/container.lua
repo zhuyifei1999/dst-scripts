@@ -172,7 +172,7 @@ function Container:GiveItem(item, slot, src_pos, drop_on_fail)
             --need to dump the leftovers back into the original stack)
             if slot ~= nil and slot <= self.numslots then
                 local other_item = self.slots[slot]
-                if other_item ~= nil and other_item.prefab == item.prefab and not other_item.components.stackable:IsFull() then
+                if other_item ~= nil and other_item.prefab == item.prefab and other_item.skinname == item.skinname and not other_item.components.stackable:IsFull() then
                     if self.inst.components.inventoryitem ~= nil and self.inst.components.inventoryitem.owner ~= nil then
                         self.inst.components.inventoryitem.owner:PushEvent("gotnewitem", { item = item, slot = slot })
                     end
@@ -189,7 +189,7 @@ function Container:GiveItem(item, slot, src_pos, drop_on_fail)
             if slot == nil then
                 for k = 1, self.numslots do
                     local other_item = self.slots[k]
-                    if other_item and other_item.prefab == item.prefab and not other_item.components.stackable:IsFull() then
+                    if other_item and other_item.prefab == item.prefab and other_item.skinname == item.skinname and not other_item.components.stackable:IsFull() then
                         if self.inst.components.inventoryitem ~= nil and self.inst.components.inventoryitem.owner ~= nil then
                             self.inst.components.inventoryitem.owner:PushEvent("gotnewitem", { item = item, slot = k })
                         end
@@ -621,7 +621,7 @@ function Container:AddOneOfActiveItemToSlot(slot)
     if active_item ~= nil and
         item ~= nil and
         self:CanTakeItemInSlot(active_item, slot) and
-        item.prefab == active_item.prefab and
+        item.prefab == active_item.prefab and item.skinname == active_item.skinname and 
         item.components.stackable ~= nil and
         self:AcceptsStacks() and
         active_item.components.stackable ~= nil and
@@ -638,7 +638,7 @@ function Container:AddAllOfActiveItemToSlot(slot)
     if active_item ~= nil and
         item ~= nil and
         self:CanTakeItemInSlot(active_item, slot) and
-        item.prefab == active_item.prefab and
+        item.prefab == active_item.prefab and item.skinname == active_item.skinname and
         item.components.stackable ~= nil and
         self:AcceptsStacks() then
 
@@ -653,7 +653,7 @@ function Container:SwapActiveItemWithSlot(slot)
     if active_item ~= nil and
         item ~= nil and
         self:CanTakeItemInSlot(active_item, slot) and
-        not (item.prefab == active_item.prefab and
+        not (item.prefab == active_item.prefab and item.skinname == active_item.skinname and
             item.components.stackable ~= nil and
             self:AcceptsStacks()) and
         not (active_item.components.stackable ~= nil and

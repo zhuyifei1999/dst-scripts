@@ -102,8 +102,10 @@ function FocalPoint:OnUpdate()
 
     if self.focustick == nil then
         self.target = nil
-        self.inst:StopUpdatingComponent(self)
         TheCamera:SetDefaultOffset()
+        if next(self.targets) == nil then
+            self.inst:StopUpdatingComponent(self)
+        end
     elseif self.focustick ~= TheSim:GetTick() then
         self.priority = nil
         self.prioritydistsq = nil

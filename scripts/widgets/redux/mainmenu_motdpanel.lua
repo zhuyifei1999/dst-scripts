@@ -95,7 +95,7 @@ function MotdPanel:OnImagesLoaded()
 
 	local cell = nil
 	local center_x = 167
-	local center_y = -160
+	local center_y = -162
 
     local w = 295
 	local cell_size = {width = w, height = w/16*9}
@@ -254,7 +254,7 @@ function MotdPanel:OnImagesLoaded()
 		self.config.bg:Kill()
 		self.config.bg = self.bg:AddChild(Image("images/bg_redux_dark_bottom.xml", "dark_bottom.tex"))
 		self.config.bg:SetScale(.669)
-		self.config.bg:SetPosition(0, -158)
+		self.config.bg:SetPosition(0, -160)
 		self.config.bg:SetClickable(false)
 	end
 

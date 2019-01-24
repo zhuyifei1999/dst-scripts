@@ -99,6 +99,9 @@ return {
             CANTSHADOWREVIVE = "It has no will to live.",
             WRONGSHADOWFORM = "These bones are grimly misassembled...",
             NOMOON = "I can't... not in here.",
+            PIGKINGGAME_MESSY = "Help me clean up, Abigail.",
+			PIGKINGGAME_DANGER = "Danger lurks. There's no time for games.",
+			PIGKINGGAME_TOOLATE = "It's much too late for games.",
         },
         GIVETOPLAYER = 
         {
@@ -271,7 +274,7 @@ return {
     QUAGMIRE_ANNOUNCE_MEALBURNT = "It's ruined.",
     QUAGMIRE_ANNOUNCE_LOSE = "What a horrible place to have a curse.",
     QUAGMIRE_ANNOUNCE_WIN = "Let us depart this terrible place.",
-
+   
 	BATTLECRY =
 	{
 		GENERIC = "Death will find you!",
@@ -1977,6 +1980,22 @@ return {
         HOUNDWHISTLE = "That I cannot hear it does not mean it is silent.",
         CHESSPIECE_CLAYHOUND = "Happiness is a warm puppy... but this one is cold.",
         CHESSPIECE_CLAYWARG = "It knows only fury.",
+
+        PIGSHRINE =
+		{
+            GENERIC = "A tribute to gluttony.",
+            EMPTY = "It needs a sacrifice of flesh.",
+            BURNT = "Ashes to ashes.",
+		},
+		PIG_TOKEN = "Yet another unnecessary plaything.",
+		YOTP_FOOD1 = "Something died for that feast.",
+		YOTP_FOOD2 = "I don't want to eat that.",
+		YOTP_FOOD3 = "It'll keep me alive a little longer.",
+
+		PIGELITE1 = "A storm rages within him.", --BLUE
+		PIGELITE2 = "Furious.", --RED
+		PIGELITE3 = "His whole career is grounded in violence.", --WHITE
+		PIGELITE4 = "Petrifying.", --GREEN
 
 		TRUNKVEST_SUMMER = "Skin to wear over your skin.",
 		TRUNKVEST_WINTER = "It may warm the body, but what of the spirit?",

@@ -73,6 +73,9 @@ return {
             CANTSHADOWREVIVE = "It won't resurrect.",
             WRONGSHADOWFORM = "It's not put together right.",
             NOMOON = "I need to see the moon for that to work.",
+			PIGKINGGAME_MESSY = "I need to clean up first.",
+			PIGKINGGAME_DANGER = "It's too dangerous for that right now.",
+			PIGKINGGAME_TOOLATE = "It's too late for that now.",
         },
         GIVETOPLAYER =
         {
@@ -1983,6 +1986,22 @@ return {
         HOUNDWHISTLE = "This'd stop a dog in its tracks.",
         CHESSPIECE_CLAYHOUND = "That thing's the leashed of my worries.",
         CHESSPIECE_CLAYWARG = "And I didn't even get eaten!",
+
+		PIGSHRINE =
+		{
+            GENERIC = "More stuff to make.",
+            EMPTY = "It's hungry for meat.",
+            BURNT = "Burnt out.",
+		},
+		PIG_TOKEN = "This looks important.",
+		YOTP_FOOD1 = "A feast fit for me.",
+		YOTP_FOOD2 = "A meal only a beast would love.",
+		YOTP_FOOD3 = "Nothing fancy.",
+
+		PIGELITE1 = "What are you looking at?", --BLUE
+		PIGELITE2 = "He's got gold fever!", --RED
+		PIGELITE3 = "Here's mud in your eye!", --WHITE
+		PIGELITE4 = "Wouldn't you rather hit someone else?", --GREEN
 
 		BISHOP_CHARGE_HIT = "Ow!",
 		TRUNKVEST_SUMMER = "Wilderness casual.",

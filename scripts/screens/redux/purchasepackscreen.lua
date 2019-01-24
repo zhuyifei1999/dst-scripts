@@ -78,15 +78,16 @@ local purchasefn =
         local commerce_popup = GenericWaitingPopup("ItemServerContactPopup", STRINGS.UI.ITEM_SERVER.CONNECT, nil, true)
         TheFrontEnd:PushScreen(commerce_popup)
 
-        TheItems:StartPurchase(self.item_type, function(success, message)
+        local item_type_purchased = self.item_type --need to save a copy of this for the callback function because the UI could update on us, and item_type could change.
+        TheItems:StartPurchase(item_type_purchased, function(success, message)
             self.inst:DoTaskInTime(0, function()  --we need to delay a frame so that the popping of the screens happens at the right time in the frame.
                 commerce_popup:Close()
                 if success then
-                    local display_items = GetPurchasePackDisplayItems(self.item_type)
+                    local display_items = GetPurchasePackDisplayItems(item_type_purchased)
                     local options = {
                         allow_cancel = false,
-                        box_build = GetBoxBuildForItem(self.item_type),
-                        use_bigportraits = IsPackFeatured(self.item_type),
+                        box_build = GetBoxBuildForItem(item_type_purchased),
+                        use_bigportraits = IsPackFeatured(item_type_purchased),
                     }
                         
                     local box_popup = ItemBoxOpenerPopup(options, function(success_cb)
@@ -144,10 +145,7 @@ local set_data =
 
         local title = GetSkinName(self.item_type)
         self.title:SetString(title)
-
-        local desc = GetSkinDescription(self.item_type)
-        self.text:SetString( desc )
-
+        
         local collection = GetPackCollection(self.item_type);
         self.collection:SetString(collection)
 
@@ -222,10 +220,8 @@ local PurchasePackPopup = Class(Screen, function(self, iap_def)
 
     self.default_focus = self.dialog
 
-
-    self.desc = self.text_root:AddChild(Text(CHATFONT, 16*2, nil, UICOLOURS.GREY))
-    self.text:SetSize(26)
-
+    self.desc = self.text_root:AddChild(Text(CHATFONT, 26, nil, UICOLOURS.GREY))
+    
     self.collection:SetSize(22)
 
     self.divider = self.root:AddChild(Image("images/global_redux.xml", "shop_dialog_divider.tex"))
@@ -389,6 +385,8 @@ function PurchasePackScreen:DoInit()
     self.onlinestatus = self.root:AddChild(OnlineStatus(true))
 
     self.purchase_root = self:_BuildPurchasePanel()
+    
+    self:UpdatePurchasePanel()
             
     if not TheInput:ControllerAttached() then 
         self.back_button = self.root:AddChild(TEMPLATES.BackButton(
@@ -487,12 +485,11 @@ function PurchaseWidget:ApplyDataToWidget(iap_def)
 
         if OwnsSkinPack(self.item_type) then
             self.purchased:Show()
-			else
+		else
             self.purchased:Hide()
-			end
+		end
 
         if IsPackFeatured(self.item_type) then
-
             self.frame:SetTexture("images/fepanels_redux_shop_panel_wide.xml", "shop_panel_wide.tex")
 
             self.icon_root:SetPosition(-145, 5)
@@ -509,7 +506,6 @@ function PurchaseWidget:ApplyDataToWidget(iap_def)
 			self.button:SetFocusChangeDir(MOVE_LEFT, self.info_button)
 			
 		else
-
             self.frame:SetTexture("images/fepanels_redux_shop_panel.xml", "shop_panel.tex")
             
             self.icon_root:SetPosition(-145, 10)
@@ -518,7 +514,6 @@ function PurchaseWidget:ApplyDataToWidget(iap_def)
             self.icon_glow2:Hide()
 
             self.collection:Show()
-
         end
 
         self.root:Show()
@@ -540,23 +535,104 @@ end
 
 -------------------------------------------------------------------
 
+function PurchasePackScreen:GetIAPDefs( no_filter_or_sort )
+    local unvalidated_iap_defs = TheItems:GetIAPDefs()
+    local all_iap_defs = {}
+    local iap
+    for _,iap in ipairs(unvalidated_iap_defs) do
+        -- Don't show items unless we have data/strings to describe them.
+        if MISC_ITEMS[iap.item_type] then
+            table.insert(all_iap_defs, iap)
+        else
+            print("Missing def for IAP", iap.item_type)                
+        end
+    end
+    
+    if no_filter_or_sort then
+        return all_iap_defs
+    end
+
+    --Filter here!!!
+    local iap_defs = {}    
+    for _,iap in ipairs(all_iap_defs) do
+        local is_valid_with_filters = true
+        for _,filter in ipairs(self.filters) do
+            if filter.name == "OWNED" then
+                local filter_data = filter.spinner:GetSelectedData()
+                if filter_data == "UNOWNED" then
+                    if OwnsSkinPack(iap.item_type) then
+                        is_valid_with_filters = false
+                    end
+                end
+            
+            elseif filter.name == "TYPE" then
+                local filter_data = filter.spinner:GetSelectedData()
+                if filter_data == "ALL" then
+                    --all good
+                elseif filter_data == "ITEMS" then
+                    if not DoesPackHaveBelongings(iap.item_type) then
+                        is_valid_with_filters = false
+                    end
+                else --characters
+                    if not DoesPackHaveCharacter( iap.item_type, filter_data ) then
+                        is_valid_with_filters = false
+                    end
+                end
+                filter.spinner:GetSelectedData()
+
+            end
+        end
+
+        if is_valid_with_filters then
+            table.insert(iap_defs, iap)
+        end
+    end
+
+
+    local function DisplayOrderSort(a,b)
+        if MISC_ITEMS[a.item_type].release_group == MISC_ITEMS[b.item_type].release_group then
+            return MISC_ITEMS[a.item_type].display_order < MISC_ITEMS[b.item_type].display_order
+        else
+            return MISC_ITEMS[a.item_type].release_group > MISC_ITEMS[b.item_type].release_group
+        end
+    end
+    table.sort(iap_defs, DisplayOrderSort)
+    return iap_defs        
+end
+
+local label_width = 70
+local widget_width = 150
+local height = 30
+local spacing = 3
+local total_width = label_width + widget_width + spacing
+local bg_width = spacing + total_width + spacing + 10
+local bg_height = height + 2
+
+ function PurchasePackScreen:_CreateSpinnerFilter( name, text, spinnerOptions )
+
+    local group = TEMPLATES.LabelSpinner(text, spinnerOptions, label_width, widget_width, height, spacing, CHATFONT, 20)
+    self.side_panel:AddChild(group)
+    group.bg = group:AddChild(TEMPLATES.ListItemBackground(bg_width, bg_height))
+    group.bg:MoveToBack()
+
+    group.label:SetHAlign(ANCHOR_LEFT)
+    group.spinner:EnablePendingModificationBackground()
+    group.spinner:SetOnChangedFn(
+        function(...)
+            self:UpdatePurchasePanel()
+        end)
+
+    group.name = name
+
+    return group
+end
 
 function PurchasePackScreen:_BuildPurchasePanel()
     local purchase_ss = self.root:AddChild(Widget("purchase_ss"))
-  
+
     -- Overlay is how we display purchasing.
     if PLATFORM == "WIN32_RAIL" or TheNet:IsNetOverlayEnabled() then
-        local unvalidated_iap_defs = TheItems:GetIAPDefs()
-        local iap_defs = {}
-        local iap
-        for i,iap in ipairs(unvalidated_iap_defs) do
-            -- Don't show items unless we have data/strings to describe them.
-            if MISC_ITEMS[iap.item_type] then
-                table.insert(iap_defs, iap)
-            else
-                print("Missing def for IAP", iap.item_type)                
-            end
-        end
+        local iap_defs = self:GetIAPDefs(true)
 
         if #iap_defs == 0 then
             local msg = STRINGS.UI.PURCHASEPACKSCREEN.NO_PACKS_FOR_SALE
@@ -566,15 +642,8 @@ function PurchasePackScreen:_BuildPurchasePanel()
             local dialog = purchase_ss:AddChild(TEMPLATES.CurlyWindow(400, 200, "", nil, nil, msg))
             purchase_ss.focus_forward = dialog
         else
-            local function DisplayOrderSort(a,b)
-                return MISC_ITEMS[a.item_type].display_order < MISC_ITEMS[b.item_type].display_order
-            end
-            table.sort(iap_defs, DisplayOrderSort)
+            purchase_ss:SetPosition(40,0)
 
-            --Debug prints for checking order
-            --for _,iap in ipairs(iap_defs) do
-                --print("Adding IAP", iap.item_type, MISC_ITEMS[iap.item_type].display_order)
-            --end
             local function ScrollWidgetsCtor(context, index)
                 return PurchaseWidget( self )
             end
@@ -611,6 +680,44 @@ function PurchasePackScreen:_BuildPurchasePanel()
 				purchase_ss.scroll_window.grid.list_root.grid:DoFocusHookups()
 				oldRefreshView(self)
             end
+            
+
+            self.side_panel = self.root:AddChild(Widget("side_panel"))
+            self.side_panel:SetPosition(-480,0)
+
+            self.filters_label = self.side_panel:AddChild(Text(HEADERFONT, 25, "Filters", UICOLOURS.GOLD_SELECTED))
+            self.filters_label:SetPosition(0,15)
+            self.filters_label:SetRegionSize(100,30)
+            self.filters_divider = self.side_panel:AddChild( Image("images/frontend_redux.xml", "achievements_divider_top.tex") )
+            self.filters_divider:SetScale(0.4)
+
+
+            self.filters = {}
+            local all_unowned = { { text = STRINGS.UI.PURCHASEPACKSCREEN.FILTER_ALL, data = "ALL" }, { text = STRINGS.UI.PURCHASEPACKSCREEN.FILTER_UNOWNED, data = "UNOWNED" } }
+            local all_characters = { { text = STRINGS.UI.PURCHASEPACKSCREEN.FILTER_ALL, data = "ALL" }, { text = STRINGS.UI.PURCHASEPACKSCREEN.FILTER_ITEMS, data = "ITEMS" }  }
+            for _,character in pairs(DST_CHARACTERLIST) do
+                table.insert( all_characters, { text = STRINGS.NAMES[string.upper(character)], data = character } )
+            end
+            
+            table.insert(self.filters, self:_CreateSpinnerFilter( "OWNED", STRINGS.UI.PURCHASEPACKSCREEN.OWNED_FILTER, all_unowned ))
+            table.insert(self.filters, self:_CreateSpinnerFilter( "TYPE", STRINGS.UI.PURCHASEPACKSCREEN.TYPE_FILTER, all_characters ))
+            for i,spinner in pairs(self.filters) do
+                spinner:SetPosition( 0, i * -(height + spacing) )
+                
+                if i > 1 then
+                    spinner:SetFocusChangeDir(MOVE_UP, self.filters[i-1])
+                end
+                if i < #self.filters then
+                    spinner:SetFocusChangeDir(MOVE_DOWN, self.filters[i+1])
+                end
+            end
+
+            self.side_panel.focus_forward = self.filters[1]
+
+            
+            purchase_ss:SetFocusChangeDir(MOVE_LEFT, self.side_panel)
+            self.side_panel:SetFocusChangeDir(MOVE_RIGHT, purchase_ss)
+
         end
     else
         local buttons = {
@@ -632,12 +739,20 @@ function PurchasePackScreen:_BuildPurchasePanel()
     return purchase_ss
 end
 
+function PurchasePackScreen:UpdatePurchasePanel()
+    local iap_defs = self:GetIAPDefs()
+    self.purchase_root.scroll_window.grid:SetItemsData(iap_defs)
+end
+
+
 function PurchasePackScreen:OnBecomeActive()
     PurchasePackScreen._base.OnBecomeActive(self)
 
     if not self.shown then
         self:Show()
     end
+
+    self:UpdatePurchasePanel()
 
     self.leaving = nil
 end

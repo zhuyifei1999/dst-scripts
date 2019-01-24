@@ -287,7 +287,7 @@ function ItemTile:GetDescriptionString()
             end
         elseif active_item:IsValid() then
             if not (self.item.replica.equippable ~= nil and self.item.replica.equippable:IsEquipped()) then
-                if active_item.replica.stackable ~= nil and active_item.prefab == self.item.prefab then
+                if active_item.replica.stackable ~= nil and active_item.prefab == self.item.prefab and active_item.skinname == self.item.skinname then
                     str = str.."\n"..STRINGS.LMB..": "..STRINGS.UI.HUD.PUT
                 else
                     str = str.."\n"..STRINGS.LMB..": "..STRINGS.UI.HUD.SWAP

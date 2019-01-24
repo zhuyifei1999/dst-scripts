@@ -269,6 +269,7 @@ local actionhandlers =
                 return (not (inventoryitem ~= nil and inventoryitem:IsWeapon()) and "attack")
                     or (equip:HasTag("blowdart") and "blowdart")
                     or (equip:HasTag("thrown") and "throw")
+                    or (equip:HasTag("propweapon") and "attack_prop_pre")
                     or "attack"
             end
         end),
@@ -2350,6 +2351,36 @@ local states =
             if inst.sg:HasStateTag("abouttoattack") and inst.replica.combat ~= nil then
                 inst.replica.combat:CancelAttack()
             end
+        end,
+    },
+
+    State
+    {
+        name = "attack_prop_pre",
+        tags = { "propattack", "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("atk_prop_pre")
+            inst.AnimState:PushAnimation("atk_prop_lag", false)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("busy") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
         end,
     },
 

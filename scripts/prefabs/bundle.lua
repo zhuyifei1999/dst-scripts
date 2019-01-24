@@ -287,6 +287,16 @@ local redpouch =
     end,
 }
 
+local redpouch_yotp =
+{
+    master_postinit = function(inst, setupdata)
+        inst.wet_prefix = STRINGS.WET_PREFIX.POUCH
+    end,
+    common_postinit = function(inst, setupdata)
+		inst:SetPrefabNameOverride("redpouch")
+    end,
+}
+
 local wetpouch =
 {
     loottable =
@@ -364,4 +374,5 @@ return MakeContainer("bundle_container", "ui_bundle_2x2"),
     MakeWrap("gift", "bundle_container", nil, true),
     --"redpouch"
     MakeBundle("redpouch", true, nil, { "lucky_goldnugget" }, true, redpouch),
+    MakeBundle("redpouch_yotp", false, nil, nil, true, redpouch_yotp),
     MakeBundle("wetpouch", true, nil, JoinArrays(table.invert(wetpouch.loottable), GetAllWinterOrnamentPrefabs()), false, wetpouch)

@@ -85,6 +85,9 @@ return {
             CANTSHADOWREVIVE = "T'will not raise from death, it seems.",
             WRONGSHADOWFORM = "We must rearrange the bones of the beast.",
             NOMOON = "Needs the gaze of Mani to work.",
+            PIGKINGGAME_MESSY = "I must clear the battlefield first!",
+            PIGKINGGAME_DANGER = "Danger is near! 'tis no time for games.",
+            PIGKINGGAME_TOOLATE = "'tis too late for revelry!",
         },
         GIVETOPLAYER = 
         {
@@ -257,6 +260,9 @@ return {
     ANNOUNCE_WET = "I am a wet warrior.",
     ANNOUNCE_WETTER = "Does this count as a bath?",
     ANNOUNCE_SOAKED = "I'm nearly drowned!",
+
+    --YOTP ---
+    ANNOUNCE_LEAVE_MINIGAME = "These weapons belong on the battlefield.",
 
     --hallowed nights
     ANNOUNCE_SPOOKED = "Doth mine eyes deceive me?",
@@ -1987,6 +1993,22 @@ return {
         HOUNDWHISTLE = "It casts a spell upon the dogged beasts.",
         CHESSPIECE_CLAYHOUND = "A hound of the hunt!",
         CHESSPIECE_CLAYWARG = "A testament to a worthy foe.",
+
+        PIGSHRINE =
+        {
+            GENERIC = "'Tis a tribute worthy of the Pig Gods.",
+            EMPTY = "Like me, it hungers only for meat.",
+            BURNT = "Laid to waste.",
+        },
+        PIG_TOKEN = "The belt of a mighty pig warrior.",
+        YOTP_FOOD1 = "A meaty feast!",
+        YOTP_FOOD2 = "'Tis fit only for the beasts.",
+        YOTP_FOOD3 = "I shall consume it!",
+
+        PIGELITE1 = "The warrior spirit runs deep within him.", --BLUE
+        PIGELITE2 = "He rages with berserker fury.", --RED
+        PIGELITE3 = "He shall not soil mine warrior reputation!", --WHITE
+        PIGELITE4 = "Hath the strength of Yggdrasil.", --GREEN
 
         TRUNKVEST_SUMMER = "It will not suffice in the frozen wastes.",
         TRUNKVEST_WINTER = "The warm pelt of a bested creature. A fine garment.",

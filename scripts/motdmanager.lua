@@ -3,6 +3,7 @@ local TEMPLATES = require "widgets/redux/templates"
 
 local MAX_RETRIES = 4
 local MAX_IMAGE_RETRIES = 1
+local CACHE_FILE_NAME = ENCODE_SAVES and "motd_info" or "motd_info_dev"
 
 local MotdManager = Class(function(self)
 	self.motd_info = nil
@@ -43,7 +44,7 @@ function MotdManager:SetLoadingDone(motd_info)
 end
 
 function MotdManager:LoadCachedMotdInfo()
-	TheSim:GetPersistentString("motd_info", function(load_success, json_info)
+	TheSim:GetPersistentString(CACHE_FILE_NAME, function(load_success, json_info)
 		if load_success and string.len(json_info) > 1 then
 			local status, motd_info = pcall( function() return json.decode(json_info) end )
 			if status and motd_info ~= nil then
@@ -99,7 +100,7 @@ function MotdManager:DownloadNewMotdImages(motd_info, remaining_retries)
 			motd_info.version = hash(json.encode(motd_info))
 
 	 		if self.motd_info == nil or motd_info.version ~= self.motd_info.version then
-				SavePersistentString("motd_info", json.encode(motd_info))
+				SavePersistentString(CACHE_FILE_NAME, json.encode(motd_info), ENCODE_SAVES)
 			end
 			self:SetLoadingDone(motd_info)
 		else

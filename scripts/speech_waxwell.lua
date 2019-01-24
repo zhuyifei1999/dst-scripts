@@ -99,6 +99,9 @@ return {
             CANTSHADOWREVIVE = "It refuses to bend to my will.",
             WRONGSHADOWFORM = "The bones were too amateurishly assembled.",
             NOMOON = "It's not going to work in here.",
+            PIGKINGGAME_MESSY = "Ugh. I'm not doing anything in that mess.",
+			PIGKINGGAME_DANGER = "I have bigger things to worry about right now.",
+			PIGKINGGAME_TOOLATE = "It's much too late for that.",
         },
         GIVETOPLAYER = 
         {
@@ -272,6 +275,9 @@ return {
     QUAGMIRE_ANNOUNCE_MEALBURNT = "Curses! Too slow.",
     QUAGMIRE_ANNOUNCE_LOSE = "This may be the end.",
     QUAGMIRE_ANNOUNCE_WIN = "The Gateway is ready!",
+
+    --YOTP---
+    ANNOUNCE_LEAVE_MINIGAME = "I don't need this anymore.",
 
 	BATTLECRY =
 	{
@@ -1965,6 +1971,22 @@ return {
         HOUNDWHISTLE = "Howl I ever find a use for this?",
         CHESSPIECE_CLAYHOUND = "It's quite fetching.",
         CHESSPIECE_CLAYWARG = "What a gruesome maw.",
+
+        PIGSHRINE =
+		{
+            GENERIC = "How quaint.",
+            EMPTY = "It needs some kind of meat.",
+            BURNT = "Not useful like this.",
+		},
+		PIG_TOKEN = "Those pigs are getting more and more clever.",
+		YOTP_FOOD1 = "Ah. I do enjoy a nice meal.",
+		YOTP_FOOD2 = "Ugh. More fit for a creature than for me.",
+		YOTP_FOOD3 = "Nothing fancy, but it will do.",
+
+		PIGELITE1 = "He's a slippery fellow.", --BLUE
+		PIGELITE2 = "A fiery one.", --RED
+		PIGELITE3 = "Filthy.", --WHITE
+		PIGELITE4 = "Rotten to the core.", --GREEN
 
 		TRUNKVEST_SUMMER = "It's more of a fall vest.",
 		TRUNKVEST_WINTER = "It's so hard to look fashionable in the winter.",

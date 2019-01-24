@@ -105,6 +105,9 @@ return
             CANTSHADOWREVIVE = "Conditions are not right.",
             WRONGSHADOWFORM = "The skeletal anatomy is incorrect.",
             NOMOON = "It needs a lunar influence.",
+            PIGKINGGAME_MESSY = "I'll need to do some tidying up first.",
+            PIGKINGGAME_DANGER = "This is no time for fun and games!",
+            PIGKINGGAME_TOOLATE = "No time for that now. It'll be dark soon.",
         },
         GIVETOPLAYER = 
         {
@@ -1915,6 +1918,22 @@ return
         HOUNDWHISTLE = "It emits a frequency undetectable to the human ear.",
         CHESSPIECE_CLAYHOUND = "A replica of Canis lupis.",
         CHESSPIECE_CLAYWARG = "The sculptor clearly studied the creature closely.",
+
+        PIGSHRINE =
+        {
+            GENERIC = "A Porcine tribute.",
+            EMPTY = "It needs a sacrifice of meat.",
+            BURNT = "No use to me like this.",
+        },
+        PIG_TOKEN = "How did they could achieve such detail using pig hooves?",
+        YOTP_FOOD1 = "A feast fit for a festival!",
+        YOTP_FOOD2 = "Not fit for human consumption.",
+        YOTP_FOOD3 = "I do enjoy a snack now and then.",
+
+        PIGELITE1 = "He's saturated with markings.", --BLUE
+        PIGELITE2 = "Rather hot-tempered.", --RED
+        PIGELITE3 = "Has an earthy musk to him.", --WHITE
+        PIGELITE4 = "I wonder what those green markings signify.", --GREEN
 
         SKULLCHEST = "A container resembling a cranium.",
         PANDORASCHEST = "An artifact which may contain other artifacts.",
