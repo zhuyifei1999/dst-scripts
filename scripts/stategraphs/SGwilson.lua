@@ -316,6 +316,10 @@ local function DoHelmSplit(inst)
     end
 end
 
+local function IsMinigameItem(inst)
+    return inst:HasTag("minigameitem")
+end
+
 local actionhandlers =
 {
     ActionHandler(ACTIONS.CHOP,
@@ -457,7 +461,13 @@ local actionhandlers =
     ActionHandler(ACTIONS.SHAVE, "shave"),
     ActionHandler(ACTIONS.COOK, "dolongaction"),
     ActionHandler(ACTIONS.FILL, "dolongaction"),
-    ActionHandler(ACTIONS.PICKUP, "doshortaction"),
+    ActionHandler(ACTIONS.PICKUP,
+        function(inst, action)
+            return action.target ~= nil
+                and action.target:HasTag("minigameitem")
+                and "dosilentshortaction"
+                or "doshortaction"
+        end),
     ActionHandler(ACTIONS.CHECKTRAP, "doshortaction"),
     ActionHandler(ACTIONS.RUMMAGE, "doshortaction"),
     ActionHandler(ACTIONS.BAIT, "doshortaction"),
@@ -547,6 +557,7 @@ local actionhandlers =
                 return (weapon == nil and "attack")
                     or (weapon:HasTag("blowdart") and "blowdart")
                     or (weapon:HasTag("thrown") and "throw")
+                    or (weapon:HasTag("propweapon") and "attack_prop_pre")
                     or (weapon:HasTag("multithruster") and "multithrust_pre")
                     or (weapon:HasTag("helmsplitter") and "helmsplitter_pre")
                     or "attack"
@@ -3984,12 +3995,13 @@ local states =
         name = "doshortaction",
         tags = { "doing", "busy" },
 
-        onenter = function(inst)
+        onenter = function(inst, silent)
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("pickup")
             inst.AnimState:PushAnimation("pickup_pst", false)
 
             inst.sg.statemem.action = inst.bufferedaction
+            inst.sg.statemem.silent = silent
             inst.sg:SetTimeout(10 * FRAMES)
         end,
 
@@ -3999,7 +4011,13 @@ local states =
                 inst.sg:RemoveStateTag("busy")
             end),
             TimeEvent(6 * FRAMES, function(inst)
-                inst:PerformBufferedAction()
+                if inst.sg.statemem.silent then
+                    inst.components.talker:IgnoreAll("silentpickup")
+                    inst:PerformBufferedAction()
+                    inst.components.talker:StopIgnoringAll("silentpickup")
+                else
+                    inst:PerformBufferedAction()
+                end
             end),
         },
 
@@ -4012,6 +4030,15 @@ local states =
             if inst.bufferedaction == inst.sg.statemem.action then
                 inst:ClearBufferedAction()
             end
+        end,
+    },
+
+    State
+    {
+        name = "dosilentshortaction",
+
+        onenter = function(inst)
+            inst.sg:GoToState("doshortaction", true)
         end,
     },
 
@@ -5148,6 +5175,117 @@ local states =
     },
 
     State{
+        name = "attack_prop_pre",
+        tags = { "propattack", "doing", "busy", "notalking" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("atk_prop_pre")
+
+            local buffaction = inst:GetBufferedAction()
+            local target = buffaction ~= nil and buffaction.target or nil
+            if target ~= nil and target:IsValid() then
+                inst:ForceFacePoint(target.Transform:GetWorldPosition())
+            end
+        end,
+
+        events =
+        {
+            EventHandler("unequip", function(inst)
+                inst.sg:GoToState("idle")
+            end),
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("attack_prop")
+                end
+            end),
+        },
+    },
+
+    State{
+        name = "attack_prop",
+        tags = { "propattack", "doing", "busy", "notalking", "pausepredict" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("atk_prop")
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_whoosh")
+
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:RemotePausePrediction()
+            end
+        end,
+
+        timeline =
+        {
+            TimeEvent(FRAMES, function(inst)
+                inst:PerformBufferedAction()
+                local dist = .8
+                local radius = 1.7
+                inst.components.combat.ignorehitrange = true
+                local x0, y0, z0 = inst.Transform:GetWorldPosition()
+                local angle = (inst.Transform:GetRotation() + 90) * DEGREES
+                local sinangle = math.sin(angle)
+                local cosangle = math.cos(angle)
+                local x = x0 + dist * sinangle
+                local z = z0 + dist * cosangle
+                for i, v in ipairs(TheSim:FindEntities(x, y0, z, radius + 3, { "_combat" }, { "flying", "shadow", "ghost", "FX", "NOCLICK", "DECOR", "INLIMBO", "playerghost" })) do
+                    if v:IsValid() and not v:IsInLimbo() and
+                        not (v.components.health ~= nil and v.components.health:IsDead()) then
+                        local range = radius + v:GetPhysicsRadius(.5)
+                        if v:GetDistanceSqToPoint(x, y0, z) < range * range and inst.components.combat:CanTarget(v) then
+                            --dummy redirected so that players don't get red blood flash
+                            v:PushEvent("attacked", { attacker = inst, damage = 0, redirected = v })
+                            v:PushEvent("knockback", { knocker = inst, radius = radius + dist, propsmashed = true })
+                            inst.sg.statemem.smashed = true
+                        end
+                    end
+                end
+                inst.components.combat.ignorehitrange = false
+                if inst.sg.statemem.smashed then
+                    local prop = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+                    if prop ~= nil then
+                        dist = dist + radius - .5
+                        inst.sg.statemem.smashed = { prop = prop, pos = Vector3(x0 + dist * sinangle, y0, z0 + dist * cosangle) }
+                    else
+                        inst.sg.statemem.smashed = nil
+                    end
+                end
+            end),
+            TimeEvent(2 * FRAMES, function(inst)
+                if inst.sg.statemem.smashed ~= nil then
+                    local smashed = inst.sg.statemem.smashed
+                    inst.sg.statemem.smashed = false
+                    smashed.prop:PushEvent("propsmashed", smashed.pos)
+                end
+            end),
+            TimeEvent(13 * FRAMES, function(inst)
+                inst.sg:GoToState("idle", true)
+            end),
+        },
+
+        events =
+        {
+            EventHandler("unequip", function(inst)
+                if inst.sg.statemem.smashed == nil then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if inst.sg.statemem.smashed then --could be false, so don't nil check
+                inst.sg.statemem.smashed.prop:PushEvent("propsmashed", inst.sg.statemem.smashed.pos)
+            end
+        end,
+    },
+
+    State{
         name = "run_start",
         tags = { "moving", "running", "canrotate", "autopredict" },
 
@@ -5968,26 +6106,51 @@ local states =
 
             inst.AnimState:PlayAnimation("bucked")
 
-            if data ~= nil and data.radius ~= nil and data.knocker ~= nil and data.knocker:IsValid() then
-                local x, y, z = data.knocker.Transform:GetWorldPosition()
-                local distsq = inst:GetDistanceSqToPoint(x, y, z)
-                local rangesq = data.radius * data.radius
-                local rot = inst.Transform:GetRotation()
-                local rot1 = distsq > 0 and inst:GetAngleToPoint(x, y, z) or data.knocker.Transform:GetRotation() + 180
-                local drot = math.abs(rot - rot1)
-                while drot > 180 do
-                    drot = math.abs(drot - 360)
+            if data ~= nil then
+                if data.propsmashed then
+                    local item = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+                    local pos
+                    if item ~= nil then
+                        pos = inst:GetPosition()
+                        pos.y = TUNING.KNOCKBACK_DROP_ITEM_HEIGHT_HIGH
+                        local dropped = inst.components.inventory:DropItem(item, true, true, pos)
+                        if dropped ~= nil then
+                            dropped:PushEvent("knockbackdropped", { owner = inst, knocker = data.knocker, delayinteraction = TUNING.KNOCKBACK_DELAY_INTERACTION_HIGH, delayplayerinteraction = TUNING.KNOCKBACK_DELAY_PLAYER_INTERACTION_HIGH })
+                        end
+                    end
+                    if item == nil or not item:HasTag("propweapon") then
+                        item = inst.components.inventory:FindItem(IsMinigameItem)
+                        if item ~= nil then
+                            pos = pos or inst:GetPosition()
+                            pos.y = TUNING.KNOCKBACK_DROP_ITEM_HEIGHT_LOW
+                            item = inst.components.inventory:DropItem(item, false, true, pos)
+                            if item ~= nil then
+                                item:PushEvent("knockbackdropped", { owner = inst, knocker = data.knocker, delayinteraction = TUNING.KNOCKBACK_DELAY_INTERACTION_LOW, delayplayerinteraction = TUNING.KNOCKBACK_DELAY_PLAYER_INTERACTION_LOW })
+                            end
+                        end
+                    end
                 end
-                local k = distsq < rangesq and .3 * distsq / rangesq - 1 or -.7
-                inst.sg.statemem.speed = (data.strengthmult or 1) * 12 * k
-                inst.sg.statemem.dspeed = 0
-                if drot > 90 then
-                    inst.sg.statemem.reverse = true
-                    inst.Transform:SetRotation(rot1 + 180)
-                    inst.Physics:SetMotorVel(-inst.sg.statemem.speed, 0, 0)
-                else
-                    inst.Transform:SetRotation(rot1)
-                    inst.Physics:SetMotorVel(inst.sg.statemem.speed, 0, 0)
+                if data.radius ~= nil and data.knocker ~= nil and data.knocker:IsValid() then
+                    local x, y, z = data.knocker.Transform:GetWorldPosition()
+                    local distsq = inst:GetDistanceSqToPoint(x, y, z)
+                    local rangesq = data.radius * data.radius
+                    local rot = inst.Transform:GetRotation()
+                    local rot1 = distsq > 0 and inst:GetAngleToPoint(x, y, z) or data.knocker.Transform:GetRotation() + 180
+                    local drot = math.abs(rot - rot1)
+                    while drot > 180 do
+                        drot = math.abs(drot - 360)
+                    end
+                    local k = distsq < rangesq and .3 * distsq / rangesq - 1 or -.7
+                    inst.sg.statemem.speed = (data.strengthmult or 1) * 12 * k
+                    inst.sg.statemem.dspeed = 0
+                    if drot > 90 then
+                        inst.sg.statemem.reverse = true
+                        inst.Transform:SetRotation(rot1 + 180)
+                        inst.Physics:SetMotorVel(-inst.sg.statemem.speed, 0, 0)
+                    else
+                        inst.Transform:SetRotation(rot1)
+                        inst.Physics:SetMotorVel(inst.sg.statemem.speed, 0, 0)
+                    end
                 end
             end
         end,
@@ -6069,26 +6232,53 @@ local states =
 
             inst.AnimState:PlayAnimation("hit_spike_heavy")
 
-            if data ~= nil and data.radius ~= nil and data.knocker ~= nil and data.knocker:IsValid() then
-                local x, y, z = data.knocker.Transform:GetWorldPosition()
-                local distsq = inst:GetDistanceSqToPoint(x, y, z)
-                local rangesq = data.radius * data.radius
-                local rot = inst.Transform:GetRotation()
-                local rot1 = distsq > 0 and inst:GetAngleToPoint(x, y, z) or data.knocker.Transform:GetRotation() + 180
-                local drot = math.abs(rot - rot1)
-                while drot > 180 do
-                    drot = math.abs(drot - 360)
+            if data ~= nil then
+                if data.propsmashed then
+                    local item = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+                    local pos
+                    if item ~= nil then
+                        pos = inst:GetPosition()
+                        pos.y = TUNING.KNOCKBACK_DROP_ITEM_HEIGHT_LOW
+                        local dropped = inst.components.inventory:DropItem(item, true, true, pos)
+                        if dropped ~= nil then
+                            dropped:PushEvent("knockbackdropped", { owner = inst, knocker = data.knocker, delayinteraction = TUNING.KNOCKBACK_DELAY_INTERACTION_LOW, delayplayerinteraction = TUNING.KNOCKBACK_DELAY_PLAYER_INTERACTION_LOW })
+                        end
+                    end
+                    if item == nil or not item:HasTag("propweapon") then
+                        item = inst.components.inventory:FindItem(IsMinigameItem)
+                        if item ~= nil then
+                            if pos == nil then
+                                pos = inst:GetPosition()
+                                pos.y = TUNING.KNOCKBACK_DROP_ITEM_HEIGHT_LOW
+                            end
+                            item = inst.components.inventory:DropItem(item, false, true, pos)
+                            if item ~= nil then
+                                item:PushEvent("knockbackdropped", { owner = inst, knocker = data.knocker, delayinteraction = TUNING.KNOCKBACK_DELAY_INTERACTION_LOW, delayplayerinteraction = TUNING.KNOCKBACK_DELAY_PLAYER_INTERACTION_LOW })
+                            end
+                        end
+                    end
                 end
-                local k = distsq < rangesq and .3 * distsq / rangesq - 1 or -.7
-                inst.sg.statemem.speed = (data.strengthmult or 1) * 8 * k
-                inst.sg.statemem.dspeed = 0
-                if drot > 90 then
-                    inst.sg.statemem.reverse = true
-                    inst.Transform:SetRotation(rot1 + 180)
-                    inst.Physics:SetMotorVel(-inst.sg.statemem.speed, 0, 0)
-                else
-                    inst.Transform:SetRotation(rot1)
-                    inst.Physics:SetMotorVel(inst.sg.statemem.speed, 0, 0)
+                if data.radius ~= nil and data.knocker ~= nil and data.knocker:IsValid() then
+                    local x, y, z = data.knocker.Transform:GetWorldPosition()
+                    local distsq = inst:GetDistanceSqToPoint(x, y, z)
+                    local rangesq = data.radius * data.radius
+                    local rot = inst.Transform:GetRotation()
+                    local rot1 = distsq > 0 and inst:GetAngleToPoint(x, y, z) or data.knocker.Transform:GetRotation() + 180
+                    local drot = math.abs(rot - rot1)
+                    while drot > 180 do
+                        drot = math.abs(drot - 360)
+                    end
+                    local k = distsq < rangesq and .3 * distsq / rangesq - 1 or -.7
+                    inst.sg.statemem.speed = (data.strengthmult or 1) * 8 * k
+                    inst.sg.statemem.dspeed = 0
+                    if drot > 90 then
+                        inst.sg.statemem.reverse = true
+                        inst.Transform:SetRotation(rot1 + 180)
+                        inst.Physics:SetMotorVel(-inst.sg.statemem.speed, 0, 0)
+                    else
+                        inst.Transform:SetRotation(rot1)
+                        inst.Physics:SetMotorVel(inst.sg.statemem.speed, 0, 0)
+                    end
                 end
             end
 
@@ -6250,7 +6440,9 @@ local states =
             inst.AnimState:Hide("ARM_carry")
             inst.AnimState:Show("ARM_normal")
 
-            SpawnPrefab("brokentool").Transform:SetPosition(inst.Transform:GetWorldPosition())
+            if tool == nil or not tool.nobrokentoolfx then
+                SpawnPrefab("brokentool").Transform:SetPosition(inst.Transform:GetWorldPosition())
+            end
 
             inst.sg.statemem.toolname = tool ~= nil and tool.prefab or nil
 

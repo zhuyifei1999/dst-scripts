@@ -86,6 +86,9 @@ return {
             CANTSHADOWREVIVE = "Didn't work. Probably for the best.",
             WRONGSHADOWFORM = "That's gotta be rebuilt, eh?",
             NOMOON = "Looks like it doesn't work in the caves, eh.",
+            PIGKINGGAME_MESSY = "Could use a cleaning first.",
+			PIGKINGGAME_DANGER = "I'll wait until the danger's passed.",
+			PIGKINGGAME_TOOLATE = "Can't do that now. It'll be dark soon.",
         },
         GIVETOPLAYER = 
         {
@@ -1979,6 +1982,22 @@ return {
         HOUNDWHISTLE = "I usually do my own animal calls.",
         CHESSPIECE_CLAYHOUND = "All the dog, none of the smell.",
         CHESSPIECE_CLAYWARG = "Not a wood sculpture, but it'll do.",
+
+        PIGSHRINE =
+		{
+            GENERIC = "Would ya look at that.",
+            EMPTY = "I think it needs meat, Lucy.",
+            BURNT = "Burnt.",
+		},
+		PIG_TOKEN = "Looks like something those pigs would make.",
+		YOTP_FOOD1 = "Want some, Lucy?",
+		YOTP_FOOD2 = "Doesn't look to appetizing. Sorry.",
+		YOTP_FOOD3 = "I don't need nothin' fancy.",
+
+		PIGELITE1 = "Looks a little blue.", --BLUE
+		PIGELITE2 = "Too hot-headed if you ask me.", --RED
+		PIGELITE3 = "Sure likes that gold.", --WHITE
+		PIGELITE4 = "Something about that guy I like.", --GREEN
 
 		TRUNKVEST_SUMMER = "Nice and breezy.",
 		TRUNKVEST_WINTER = "This could stand up to the winters back home, eh?",

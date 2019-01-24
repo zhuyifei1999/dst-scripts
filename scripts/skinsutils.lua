@@ -18,6 +18,8 @@ SKIN_RARITY_COLORS =
 }
 DEFAULT_SKIN_COLOR = SKIN_RARITY_COLORS["Common"]
 
+local SKIN_AFFINITY_INFO = require("skin_affinity_info")
+
 EVENT_ICONS =
 {
 	event_forge = {"LAVA"},
@@ -149,7 +151,11 @@ function _GetSubPacks(item_key)
     local output_items = GetPurchasePackOutputItems(item_key)
     for _,item in pairs(output_items) do
         local pack = GetPackForItem(item)
-        sub_packs[pack] = true
+        if pack ~= nil then
+            sub_packs[pack] = true
+        else
+			print("Error! item is missing a pack type:", item)
+		end
     end
     return sub_packs
 end
@@ -268,6 +274,26 @@ function GetPurchasePackOutputItems(item_key)
     return MISC_ITEMS[item_key] and MISC_ITEMS[item_key].output_items or {}
 end
 
+
+function DoesPackHaveBelongings(item_key)
+    local output_items = GetPurchasePackOutputItems(item_key)
+    for _,output_item in pairs(output_items) do
+        if GetTypeForItem(output_item) == "item" then
+            return true
+        end
+    end
+    return false
+end
+
+function DoesPackHaveCharacter(item_key, character)
+    local output_items = GetPurchasePackOutputItems(item_key)
+    for _,output_item in pairs(output_items) do
+        if table.contains(SKIN_AFFINITY_INFO[character], output_item) then
+            return true
+        end
+    end
+    return false
+end
 
 
 
@@ -834,7 +860,6 @@ function WillUnravelBreakEnsemble(item_type)
 	return false --not rewarded already
 end
 
-local SKIN_AFFINITY_INFO = require("skin_affinity_info")
 function GetSkinCollectionCompletionForHero(herocharacter)
     assert(herocharacter)
     local num_owned = 0
@@ -1170,7 +1195,7 @@ function SetSkinDLCEntitlementOwned(entitlement)
 	Profile:SetEntitlementReceived(entitlement)
 end
 
-local newSkinDLCEntitlements = {}
+local newSkinDLCEntitlements = {} --to test DLC gifting popup, but putting a pack item type in this table
 function AddNewSkinDLCEntitlement(entitlement)
 	table.insert( newSkinDLCEntitlements, entitlement)
 end

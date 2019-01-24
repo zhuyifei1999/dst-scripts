@@ -99,6 +99,9 @@ return {
             CANTSHADOWREVIVE = "It's not working.",
             WRONGSHADOWFORM = "Nah. Skeleton's not right.",
             NOMOON = "Jerk! It won't work in here!",
+            PIGKINGGAME_MESSY = "Aww... You mean I gotta clean up first?",
+			PIGKINGGAME_DANGER = "Not now! There's big jerks around.",
+			PIGKINGGAME_TOOLATE = "Naw. It's too late.",
         },
         GIVETOPLAYER = 
         {
@@ -2035,6 +2038,22 @@ return {
         HOUNDWHISTLE = "Heh heh. STAY.",
         CHESSPIECE_CLAYHOUND = "It almost looks friendly.",
         CHESSPIECE_CLAYWARG = "It doesn't look so tough now.",
+
+        PIGSHRINE =
+		{
+            GENERIC = "Where's the shrine to me?",
+            EMPTY = "Needs meat.",
+            BURNT = "Burnt. I like it.",
+		},
+		PIG_TOKEN = "I'd burn it, but it might be worth something.",
+		YOTP_FOOD1 = "I'm gonna eat it all!",
+		YOTP_FOOD2 = "Nah. I'll feed it to something.",
+		YOTP_FOOD3 = "A little snack to fill my belly.",
+
+		PIGELITE1 = "All washed up.", --BLUE
+        PIGELITE2 = "You, I like.", --RED
+        PIGELITE3 = "Eat dirt!", --WHITE
+        PIGELITE4 = "Sure does like using those signs.", --GREEN
 
         LAVA_POND_ROCK = "Oh great, another stinkin' rock!",
 

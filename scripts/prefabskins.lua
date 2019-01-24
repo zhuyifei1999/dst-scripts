@@ -76,6 +76,10 @@ PREFAB_SKINS = {
 		"bedroll_furry_quilt_blue_frost",
 		"bedroll_furry_quilt_white_ivory",
 	},
+	beefalohat = 
+	{
+		"beefalohat_pigking",
+	},
 	beehat = 
 	{
 		"beehat_mourning",
@@ -218,6 +222,7 @@ PREFAB_SKINS = {
 	},
 	hammer = 
 	{
+		"hammer_crowbar",
 		"hammer_forge",
 	},
 	icebox = 
@@ -239,6 +244,7 @@ PREFAB_SKINS = {
 	},
 	minerhat = 
 	{
+		"minerhat_cowboy",
 		"minerhat_floppy",
 	},
 	orangestaff = 
@@ -248,6 +254,7 @@ PREFAB_SKINS = {
 	},
 	rainhat = 
 	{
+		"rainhat_cowboy",
 		"rainhat_floppy",
 	},
 	rainometer = 
@@ -274,6 +281,7 @@ PREFAB_SKINS = {
 	{
 		"reviver_cupid",
 		"reviver_cupid_2",
+		"reviver_cupid_3",
 	},
 	ruins_bat = 
 	{
@@ -290,8 +298,13 @@ PREFAB_SKINS = {
 		"spear_forge_lance",
 		"spear_rose",
 	},
+	spear_wathgrithr = 
+	{
+		"spear_wathgrithr_wrestle",
+	},
 	strawhat = 
 	{
+		"strawhat_cowboy",
 		"strawhat_floppy",
 	},
 	tent = 
@@ -331,7 +344,12 @@ PREFAB_SKINS = {
 	umbrella = 
 	{
 		"umbrella_circus",
+		"umbrella_heart",
 		"umbrella_spider",
+	},
+	wardrobe = 
+	{
+		"wardrobe_heart",
 	},
 	watermelonhat = 
 	{
@@ -352,6 +370,11 @@ PREFAB_SKINS = {
 		"wathgrithr_shadow",
 		"wathgrithr_survivor",
 		"wathgrithr_victorian",
+		"wathgrithr_wrestler",
+	},
+	wathgrithrhat = 
+	{
+		"wathgrithrhat_wrestle",
 	},
 	waxwell = 
 	{
@@ -419,6 +442,7 @@ PREFAB_SKINS = {
 		"wes_shadow",
 		"wes_survivor",
 		"wes_victorian",
+		"wes_wrestler",
 	},
 	wickerbottom = 
 	{
@@ -514,6 +538,7 @@ PREFAB_SKINS = {
 		"wolfgang_victorian",
 		"wolfgang_walrus",
 		"wolfgang_walrus_d",
+		"wolfgang_wrestler",
 	},
 	woodie = 
 	{

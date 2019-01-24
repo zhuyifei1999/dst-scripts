@@ -86,7 +86,6 @@ function ServerPreferences:Save(callback)
 		self.dirty = false
 
         local str = json.encode(self.persistdata)
- 		print( "SAVING ServerPreferences ", #self.persistdata, str )
         local insz, outsz = SavePersistentString(self:GetSaveName(), str, ENCODE_SAVES, callback)
     else
 		if callback then

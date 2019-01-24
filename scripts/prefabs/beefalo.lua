@@ -14,6 +14,7 @@ local assets =
     Asset("ANIM", "anim/beefalo_personality_pudgy.zip"),
 
     Asset("ANIM", "anim/beefalo_fx.zip"),
+    Asset("ANIM", "anim/poop_cloud.zip"),
 
     Asset("SOUND", "sound/beefalo.fsb"),
 }
@@ -569,6 +570,7 @@ local function beefalo()
 
     inst.AnimState:SetBank("beefalo")
     inst.AnimState:SetBuild("beefalo_build")
+    inst.AnimState:AddOverrideBuild("poop_cloud")
     inst.AnimState:PlayAnimation("idle_loop", true)
     inst.AnimState:Hide("HEAT")
 

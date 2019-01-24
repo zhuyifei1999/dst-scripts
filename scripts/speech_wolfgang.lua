@@ -85,6 +85,9 @@ return {
             CANTSHADOWREVIVE = "Is not working.",
             WRONGSHADOWFORM = "Bones is wrong shape.",
             NOMOON = "Is too scary in here for funny man to work.",
+            PIGKINGGAME_MESSY = "Wolfgang clean first.",
+            PIGKINGGAME_DANGER = "Is too scary for that now!",
+            PIGKINGGAME_TOOLATE = "Is dark. No games now.",
         },
         GIVETOPLAYER = 
         {
@@ -1969,6 +1972,22 @@ return {
         HOUNDWHISTLE = "Tiny whistle stick makes no noise!",
         CHESSPIECE_CLAYHOUND = "Is nice little doggy.",
         CHESSPIECE_CLAYWARG = "It looks like scary monster!",
+
+        PIGSHRINE =
+        {
+            GENERIC = "Is pretty piggy.",
+            EMPTY = "Wolfgang give it meat.",
+            BURNT = "Poor little piggy.",
+        },
+        PIG_TOKEN = "Is not fitting Wolfgang.",
+        YOTP_FOOD1 = "Make Wolfgang mighty!",
+        YOTP_FOOD2 = "Is not for Wolfgang.",
+        YOTP_FOOD3 = "Is for making Wolfgang little bit mighty.",
+
+        PIGELITE1 = "Wolfgang wave to little piggy!", --BLUE
+        PIGELITE2 = "He is having nasty temper.", --RED
+        PIGELITE3 = "Is dirty fighter.", --WHITE
+        PIGELITE4 = "Is mighty. Wolfgang mightier.", --GREEN
 
         TRUNKVEST_SUMMER = "Is warm fuzzy nose.",
         TRUNKVEST_WINTER = "Cozy nosy!",

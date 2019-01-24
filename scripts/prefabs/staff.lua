@@ -230,6 +230,7 @@ local function teleport_end(teleportee, locpos, loctarget)
         if teleportee.components.health ~= nil then
             teleportee.components.health:SetInvincible(false)
         end
+        teleportee:PushEvent("teleported")
     end
 end
 
@@ -253,7 +254,9 @@ local function teleport_start(teleportee, staff, caster, loctarget)
     local ground = TheWorld
 
     --V2C: Gotta do this RIGHT AWAY in case anything happens to loctarget or caster
-    local locpos = loctarget ~= nil and loctarget:GetPosition() or getrandomposition(caster)
+    local locpos = loctarget == nil and getrandomposition(caster)
+				or loctarget.teletopos ~= nil and loctarget:teletopos()
+				or loctarget:GetPosition() 
 
     if teleportee.components.locomotor ~= nil then
         teleportee.components.locomotor:StopMoving()
@@ -313,7 +316,8 @@ local function teleport_func(inst, target)
         target = caster
     end
     local x, y, z = target.Transform:GetWorldPosition()
-    teleport_start(target, inst, caster, FindNearestActiveTelebase(x, y, z, nil, 1))
+    local loctarget = target.components.minigame_participator ~= nil and target.components.minigame_participator:GetMinigame() or FindNearestActiveTelebase(x, y, z, nil, 1)
+    teleport_start(target, inst, caster, loctarget)
 end
 
 local function onhauntpurple(inst)

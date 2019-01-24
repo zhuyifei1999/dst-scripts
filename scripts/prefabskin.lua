@@ -175,7 +175,31 @@ function axe_init_fn(inst, build_name)
         return
     end
 
-    inst.AnimState:SetSkin(build_name, "swap_axe")
+    inst.AnimState:SetSkin(build_name, "axe")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+
+--------------------------------------------------------------------------
+--[[ Boomerang skin functions ]]
+--------------------------------------------------------------------------
+function boomerang_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "boomerang")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+
+--------------------------------------------------------------------------
+--[[ Battle Spear skin functions ]]
+--------------------------------------------------------------------------
+function spear_wathgrithr_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "swap_spear_wathgrithr")
     inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
 end
 
@@ -275,6 +299,8 @@ footballhat_init_fn = hat_init_fn
 featherhat_init_fn = hat_init_fn
 beehat_init_fn = hat_init_fn
 watermelonhat_init_fn = hat_init_fn
+wathgrithrhat_init_fn = hat_init_fn
+beefalohat_init_fn = hat_init_fn
 
 --------------------------------------------------------------------------
 --[[ Bedroll skin functions ]]
@@ -286,6 +312,20 @@ function bedroll_furry_init_fn(inst, build_name)
 
     inst.AnimState:SetSkin(build_name, "swap_bedroll_straw")
     inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+
+--------------------------------------------------------------------------
+--[[ Beemine skin functions ]]
+--------------------------------------------------------------------------
+function beemine_init_fn(inst, build_name)
+    if inst.components.placer == nil and not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "bee_mine")
+    if inst.components.inventoryitem ~= nil then
+        inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+    end
 end
 
 --------------------------------------------------------------------------
@@ -355,6 +395,53 @@ function treasurechest_init_fn(inst, build_name)
 end
 
 --------------------------------------------------------------------------
+--[[ Wardrobe skin functions ]]
+--------------------------------------------------------------------------
+function wardrobe_init_fn(inst, build_name)
+    if inst.components.placer == nil and not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "wardrobe")
+end
+
+--------------------------------------------------------------------------
+--[[ Tooth Trap skin functions ]]
+--------------------------------------------------------------------------
+function trap_teeth_init_fn(inst, build_name)
+    if inst.components.placer == nil and not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "trap_teeth")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+
+--------------------------------------------------------------------------
+--[[ Trap skin functions ]]
+--------------------------------------------------------------------------
+function trap_init_fn(inst, build_name)
+    if inst.components.placer == nil and not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "trap")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+
+--------------------------------------------------------------------------
+--[[ Bird Trap skin functions ]]
+--------------------------------------------------------------------------
+function birdtrap_init_fn(inst, build_name)
+    if inst.components.placer == nil and not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "birdtrap")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+
+--------------------------------------------------------------------------
 --[[ Endtable skin functions ]]
 --------------------------------------------------------------------------
 function endtable_init_fn(inst, build_name)
@@ -400,8 +487,8 @@ end
 --------------------------------------------------------------------------
 --[[ Pet skin functions ]]
 --------------------------------------------------------------------------
-function critter_builder_init_fn(inst, skin_name)
-    inst.skin_name = skin_name
+function critter_builder_init_fn(inst, build_name)
+    inst.linked_skinname = build_name --hack that relies on the build name to match the linked skinname
 end
 
 function pet_init_fn(inst, build_name, default_build)
@@ -430,6 +517,37 @@ function birdcage_init_fn(inst, build_name)
     end
 
     inst.AnimState:SetSkin(build_name, "bird_cage")
+end
+
+--------------------------------------------------------------------------
+--[[ Pighouse skin functions ]]
+--------------------------------------------------------------------------
+function pighouse_init_fn(inst, build_name)
+    if inst.components.placer == nil and not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "pig_house")
+    
+    if inst._window ~= nil then --check to make sure these entitys exist, they don't on dedis, and on placers.
+         inst._window.AnimState:SetSkin(build_name)
+         inst._windowsnow.AnimState:SetSkin(build_name)
+    end
+end
+
+--------------------------------------------------------------------------
+--[[ Fence skin functions ]]
+--------------------------------------------------------------------------
+function fence_item_init_fn(inst, build_name)
+    inst.linked_skinname = build_name --hack that relies on the build name to match the linked skinname
+    inst.AnimState:SetSkin(build_name, "fence") --same hack is used here by the deployable code in player controller
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+function fence_init_fn(inst, build_name)
+    if inst.components.placer == nil and not TheWorld.ismastersim then
+        return
+    end
+    inst.AnimState:SetSkin(build_name, "fence")
 end
 
 --------------------------------------------------------------------------

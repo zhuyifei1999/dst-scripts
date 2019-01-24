@@ -78,6 +78,7 @@ end
 
 function PlayerAvatarPortrait:ClearBackground()
     self.frame.bg:SetTexture(GetPlayerPortraitAtlasAndTex())
+    self.frame.bg:ClearHoverText()
 end
 
 function PlayerAvatarPortrait:SetEmpty()

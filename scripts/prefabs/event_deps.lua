@@ -113,6 +113,26 @@ local SPECIAL_EVENT_DEPS =
         },
     },
 
+    [SPECIAL_EVENTS.YOTP] =
+    {
+        frontend =
+        {
+            assets =
+            {
+                Asset("ANIM", "anim/dst_menu_pig_bg.zip"),
+                Asset("ANIM", "anim/dst_menu_pigs.zip"),
+                Asset("PKGREF", "sound/music_frontend_yotg.fsb"),
+            },
+        },
+        backend =
+        {
+            assets =
+            {
+                Asset("ANIM", "anim/pig_king_elite_build.zip"),
+            },
+        },
+    },
+
     [SPECIAL_EVENTS.NONE] =
     {
         frontend =

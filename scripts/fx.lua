@@ -721,6 +721,12 @@ local fx =
         anim = "unwrap",
     },
     {
+        name = "redpouch_yotp_unwrap",
+        bank = "redpouch",
+        build = "redpouch",
+        anim = "unwrap",
+    },
+    {
         name = "wetpouch_unwrap",
         bank = "wetpouch",
         build = "wetpouch",
@@ -899,6 +905,21 @@ local fx =
         bloom = true,
         sound = "dontstarve/common/fireAddFuel",
         fn = FinalOffset3,
+    },
+    {
+        name = "mudpuddle_splash",
+        bank = "mudsplash",
+        build = "mudsplash",
+        anim = "anim",
+        sound = "dontstarve/creatures/pengull/splash",
+        fn = FinalOffset3,
+    },
+    {
+        name = "slide_puff",
+        bank = "fx_slidepuff",
+        build = "slide_puff",
+        anim = "anim",
+        fn = FinalOffset1,
     },
 }
 

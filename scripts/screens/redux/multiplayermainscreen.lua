@@ -32,6 +32,12 @@ local PurchasePackScreen = require "screens/redux/purchasepackscreen"
 local SHOW_DST_DEBUG_HOST_JOIN = BRANCH == "dev"
 local SHOW_QUICKJOIN = false
 
+local function PlayBannerSound(inst, self, sound)
+    if self.bannersoundsenabled then
+        TheFrontEnd:GetSound():PlaySound(sound)
+    end
+end
+
 function MakeBanner(self)
 	local banner_height = 350
 
@@ -65,6 +71,33 @@ function MakeBanner(self)
 		anim:GetAnimState():SetBank("dst_menu")
 		anim:SetScale(0.7)
 		anim:GetAnimState():PlayAnimation("loop", true)
+	elseif IsSpecialEventActive(SPECIAL_EVENTS.YOTP) then
+		local anim_bg = baner_root:AddChild(UIAnim())
+		anim_bg:GetAnimState():SetBuild("dst_menu_pig_bg")
+		anim_bg:GetAnimState():SetBank("dst_menu_pig_bg")
+		anim_bg:SetScale(0.7)
+		anim_bg:GetAnimState():PlayAnimation("loop", true)
+		anim_bg:MoveToBack()
+        
+		anim:GetAnimState():SetBuild("dst_menu_pigs")
+		anim:GetAnimState():SetBank("dst_menu_pigs")
+		anim:SetScale(2/3)
+
+        local function onanimover(inst)
+            inst.AnimState:PlayAnimation("loop")
+
+            inst:DoTaskInTime(94 * FRAMES, PlayBannerSound, self, "dontstarve/pig/pig_king_laugh")
+            inst:DoTaskInTime(102 * FRAMES, PlayBannerSound, self, "dontstarve/pig/pig_king_laugh")
+            inst:DoTaskInTime(109 * FRAMES, PlayBannerSound, self, "dontstarve/pig/pig_king_laugh")
+            inst:DoTaskInTime(118 * FRAMES, PlayBannerSound, self, "dontstarve/pig/pig_king_laugh")
+
+            inst:DoTaskInTime(32 * FRAMES, PlayBannerSound, self, "dontstarve/pig/come_at_me")
+            inst:DoTaskInTime(40 * FRAMES, PlayBannerSound, self, "dontstarve/pig/come_at_me")
+            inst:DoTaskInTime(151 * FRAMES, PlayBannerSound, self, "dontstarve/pig/come_at_me")
+            inst:DoTaskInTime(161 * FRAMES, PlayBannerSound, self, "dontstarve/pig/come_at_me")
+        end
+        anim.inst:ListenForEvent("animover", onanimover)
+        onanimover(anim.inst)
 	else
 		anim:GetAnimState():SetBuild("dst_menu")
 		anim:GetAnimState():SetBank("dst_menu")
@@ -150,7 +183,7 @@ function MultiplayerMainScreen:DoInit()
 
 	local bg = self.fixed_root:AddChild(Image("images/bg_redux_dark_bottom_solid.xml", "dark_bottom_solid.tex"))
 	bg:SetScale(.669)
-	bg:SetPosition(0, -158)
+	bg:SetPosition(0, -160)
 	bg:SetClickable(false)
 
 	-- new MOTD
@@ -233,6 +266,10 @@ function MultiplayerMainScreen:DoFocusHookups()
 
 end
 
+function MultiplayerMainScreen:EnableBannerSounds(enable)
+    self.bannersoundsenabled = enable
+end
+
 function MultiplayerMainScreen:OnShow()
     self._base.OnShow(self)
     if self.snowfall ~= nil then
@@ -243,7 +280,8 @@ function MultiplayerMainScreen:OnShow()
         self.banner_snowfall:EnableSnowfall(not (TheSim:IsNetbookMode() or TheFrontEnd:GetGraphicsOptions():IsSmallTexturesMode()))
         self.banner_snowfall:StartSnowfall()
     end
-	
+    self:EnableBannerSounds(true)
+
     TheSim:PauseFileExistsAsync(false)
 end
 
@@ -255,6 +293,7 @@ function MultiplayerMainScreen:OnHide()
     if self.banner_snowfall ~= nil then
         self.banner_snowfall:StopSnowfall()
     end
+    self:EnableBannerSounds(false)
 end
 
 function MultiplayerMainScreen:OnDestroy()

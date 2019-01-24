@@ -79,6 +79,11 @@ local TRIGGERED_DANGER_MUSIC =
         "",
     },
 
+    pigking =
+    {
+        "dontstarve/music/music_pigking_minigame",
+    },
+
     default =
     {
         "dontstarve/music/music_epicfight_ruins",

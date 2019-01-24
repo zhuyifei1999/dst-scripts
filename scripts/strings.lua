@@ -240,6 +240,7 @@ STRINGS =
             RANGEDSMOTHER = "Extinguish",
             RANGEDLIGHT = "Light",
             WHACK = "Whack",
+            PROP = "Smack",
         },
         WALKTO = "Walk To",
         CHECKTRAP = "Check",
@@ -558,6 +559,10 @@ STRINGS =
         MANRABBIT_TAIL = "Bunny Puff",
         BUNNYMAN = "Bunnyman",
         PIGGUARD = "Guard Pig",
+        PIGELITE1 = "Wade", --BLUE
+		PIGELITE2 = "Ignatius", --RED
+		PIGELITE3 = "Dmitri", --WHITE
+		PIGELITE4 = "Sawyer", --GREEN
         NITRE = "Nitre",
         GUNPOWDER = "Gunpowder",
         BIRD_EGG = "Egg",
@@ -939,11 +944,17 @@ STRINGS =
         FIRECRACKERS = "Red Firecrackers",
         PERDFAN = "Lucky Fan",
         WARGSHRINE = "Varg Shrine",
+        PIGSHRINE = "Pig Shrine",
         CLAYWARG = "Clay Varg",
         CLAYHOUND = "Clay Hound",
         HOUNDWHISTLE = "Lucky Whistle",
         CHESSPIECE_CLAYHOUND_SKETCH = "Clay Hound Figure Sketch",
         CHESSPIECE_CLAYWARG_SKETCH = "Clay Varg Figure Sketch",
+
+		PIG_TOKEN = "Golden Belt",
+		YOTP_FOOD1 = "Tribute Roast", -- tribute roast
+		YOTP_FOOD2 = "Eight Treasure Mud Pie", -- mud pie
+		YOTP_FOOD3 = "Fish Heads on a Stick", -- fish head skewers
 
         TELEPORTATO_RING = "Ring Thing",
         TELEPORTATO_BOX = "Box Thing",
@@ -2124,9 +2135,13 @@ STRINGS =
         FIRECRACKERS = "Celebrate with a BANG!",
         PERDFAN = "Extra lucky, extra large.",
         WARGSHRINE = "Make offerings to the earthen Varg.",
+        PIGSHRINE = "Make offerings to the affluent Pig.",
         HOUNDWHISTLE = "Blow the whistle on wild hounds.",
         CHESSPIECE_CLAYHOUND_SKETCH = "A sculpture sketch of the Clay Hound.",
         CHESSPIECE_CLAYWARG_SKETCH = "A sculpture sketch of the Clay Varg.",
+		YOTP_FOOD1 = "A roasted tribute to the Pig King.", -- tribute roast
+		YOTP_FOOD2 = "What's hiding in there?", -- mud pie
+		YOTP_FOOD3 = "Prosperity on a stick.", -- fish head skewers
 
         SCULPTINGTABLE = "Marble will be like clay in your hands!",
 
@@ -2415,10 +2430,32 @@ STRINGS =
     PIG_TALK_EAT_MEAT = { "NOM NOM NOM", "YUM!" },
     PIG_TALK_GO_HOME = { "HOME TIME!", "HOME! HOME!" },
     PIG_TALK_RESCUE = { "I HELP YOU!", "OOH! OOH!", "ME HELP!" },
+    PIG_TALK_GIVE_GIFT = { "YOU HAVE THIS", "FOR FRIEND" },
+    PIG_TALK_GAME_GOTO = { "IT STARTING!", "THIS MY FAVORITE!", "YAY!"},
+    PIG_TALK_GAME_CHEER = { "SMASH! SMASH!", "BASH!", "GO PIGS!", "RAAAWR!", "YOU STINK!", "GET GOLD!", "BASH 'EM IN HEAD!"},
     PIG_GUARD_TALK_TORCH = { "TORCH GET LOW", "MAKE TORCH BRIGHT", "MORE BURNING" },
     PIG_GUARD_TALK_FIGHT = { "FOR KING!", "DEFEND!", "SAVE KING!" },
     PIG_GUARD_TALK_GOHOME = { "MUST DEFEND!", "I PROTECT", "KING! KING!" },
     PIG_GUARD_TALK_LOOKATWILSON = { "YOU LEAVE NOW", "YOU GO AWAY", "YOU NO STAY" },
+    PIG_ELITE_SMACK = { "YOU GO SMASH!", "I BASH YOU!", "STAY AWAY!", "FUN!" },
+    PIG_ELITE_GOLD = { "MINE!", "MY GOLD!", "I TAKE GOLD!" },
+    PIG_ELITE_SALTY = { "CHEATER!", "NO FAIR", "NOT ALLOWED DO THAT!" },
+    PIG_ELITE_INTRO =
+    {
+        "FOR KING!",
+        "GET GOLD!",
+    },
+    PIG_ELITE_POST_MATCH =
+    {
+        --[[UGLY =]] "YOU BAD AT THIS. GET BETTER", -- horrible tier
+        --[[BAD =]] "TRY AGAIN SOMETIME?", -- average tier
+        --[[GOOD =]] "YOU WORTHY OPPONENT", -- pretty good tier
+        --[[GREAT =]] "YOU HUMBLE US", -- highest tier
+        --
+        --[[TOOLATE =]] "GOOD MATCH. WE GO BED NOW", -- match ends after dusk
+        --[[CHEATER =]] "YOU CHEATER. WE NO LIKE CHEATERS", -- cheated during match
+    },
+
 
     --NOTE: Limit to 7 strings per table! (Using net_tinybyte for NPC chatter)
     RABBIT_BATTLECRY = { "HOP!", "KILL!", "DIE!" },
@@ -6706,6 +6743,12 @@ STRINGS.UI =
         PURCHASE_GIFT_INFO_TITLE = "Purchase Gift",
         PURCHASE_GIFT_INFO_BODY = "To purchase the {pack_name} as a gift for your friend, click on \"Add to Cart\", then \"Purchase as a gift\".",
 
+        OWNED_FILTER = "Owned:",
+        TYPE_FILTER = "Type:",
+        FILTER_ALL = "All",
+        FILTER_UNOWNED = "Unowned",
+        FILTER_ITEMS = "Belongings",
+        
         OK = "OK",
     },
 
@@ -6725,6 +6768,8 @@ STRINGS.UI =
     {
         OK = "OK",
         REWARD = "Reward:",
+        PREV_SET = "Previous Set",
+        NEXT_SET = "Next Set",
     },
 
     -- Rarity and colour tables are to allow translation of item properties. Keys are the names as returned by the item server.
@@ -7712,11 +7757,15 @@ STRINGS.UI =
         DARKSTART = "Dark",
         CAVESTART = "Caves",
 
-        EVENT_DEFAULT = "Auto",
-        EVENT_HALLOWEDNIGHTS_2016 = "Hallowed Nights",
-        EVENT_WINTERSFEAST_2016 = "Winters Feast",
-        EVENT_YEAR_OF_THE_GOBBLER_2017 = "Year of the Gobbler",
-        EVENT_YEAR_OF_THE_VARG_2018 = "Year of the Varg",
+        SPECIAL_EVENTS =
+        {
+            DEFAULT = "Auto",
+            HALLOWED_NIGHTS = "Hallowed Nights",
+            WINTERS_FEAST = "Winters Feast",
+            YOTG = "Year of the Gobbler",
+            YOTV = "Year of the Varg",
+            YOTP = "Year of the Pig King",
+        },
     },
 
     SAVELOAD =

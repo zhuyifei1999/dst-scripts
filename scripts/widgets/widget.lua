@@ -712,7 +712,9 @@ function Widget:SetHoverText(text, params)
             else
                 self.hovertext:SetString(text)
             end
-            if params.colour then self.hovertext:SetColour(params.colour) end
+            if params.colour then
+                self.hovertext:SetColour(params.colour)
+            end
             self.hovertext:Hide()
 
             
@@ -765,6 +767,9 @@ function Widget:SetHoverText(text, params)
             end
         else
             self.hovertext:SetString(text)
+            if params and params.colour then
+                self.hovertext:SetColour(params.colour)
+            end
             if self.hovertext_bg then
                 local w, h = self.hovertext:GetRegionSize()
                 self.hovertext_bg:SetSize(w*1.5, h*2.0)

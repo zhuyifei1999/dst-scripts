@@ -651,7 +651,7 @@ local COMPONENT_ACTIONS =
         end,
 
         stackable = function(inst, doer, target, actions)
-            if inst.prefab == target.prefab and
+            if inst.prefab == target.prefab and inst.skinname == target.skinname and
                 target.replica.stackable ~= nil and
                 not target.replica.stackable:IsFull() and
                 target.replica.inventoryitem ~= nil and

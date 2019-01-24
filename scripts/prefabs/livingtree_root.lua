@@ -5,6 +5,7 @@ local assets = JoinArrays(PotionCommon.assets,
 {
 	Asset("ANIM", "anim/livingtree_root.zip"),
 	Asset("SCRIPT", "scripts/prefabs/halloweenpotion_common.lua"),
+	Asset("INV_IMAGE", "livingtree_root_hallowed_nights")
 })
 
 local prefabs = JoinArrays(PotionCommon.prefabs, 
@@ -87,6 +88,9 @@ local function fn()
     inst.AnimState:SetBank("livingtree_root")
     inst.AnimState:SetBuild("livingtree_root")
     inst.AnimState:PlayAnimation("idle")
+	if not IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
+		inst.AnimState:Hide("eye")
+	end
 
     inst.entity:SetPristine()
 
@@ -109,6 +113,9 @@ local function fn()
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem:SetOnDroppedFn(ondropped)
     inst.components.inventoryitem:SetOnPutInInventoryFn(onpickup)
+	if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
+        inst.components.inventoryitem:ChangeImageName("livingtree_root_hallowed_nights")
+	end
 
     MakeHauntableLaunchAndIgnite(inst)
 

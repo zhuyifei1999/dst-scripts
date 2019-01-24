@@ -12,6 +12,7 @@ local AVAILABLE_TECH =
     "ORPHANAGE", --teehee
     "PERDOFFERING",
     "WARGOFFERING",
+    "PIGOFFERING",
 	"MADSCIENCE",
 }
 

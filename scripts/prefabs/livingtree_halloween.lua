@@ -312,6 +312,8 @@ local function fn()
     if IsSpecialEventActive(SPECIAL_EVENTS.HALLOWED_NIGHTS) then
         inst._eyeflames = net_bool(inst.GUID, "livingtree._eyeflames", "eyeflamesdirty")
         inst:ListenForEvent("eyeflamesdirty", OnEyeFlamesDirty)
+	else
+		inst.AnimState:Hide("eye")
     end
 
     inst:SetPrefabNameOverride("livingtree")

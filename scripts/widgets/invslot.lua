@@ -77,7 +77,7 @@ function InvSlot:Click(stack_mod)
             end
             TheFocalPoint.SoundEmitter:PlaySound("dontstarve/HUD/click_object")
         elseif container:CanTakeItemInSlot(active_item, slot_number) then
-            if container_item.prefab == active_item.prefab and
+            if container_item.prefab == active_item.prefab and container_item.skinname == active_item.skinname and
                 container_item.replica.stackable ~= nil and
                 container:AcceptsStacks() then
                 --Add active item to slot stack
@@ -146,7 +146,7 @@ local function FindBestContainer(self, item, containers, exclude_containers)
                     end
                     if item.replica.equippable ~= nil and container == k.replica.inventory then
                         local equip = container:GetEquippedItem(item.replica.equippable:EquipSlot())
-                        if equip ~= nil and equip.prefab == item.prefab then
+                        if equip ~= nil and equip.prefab == item.prefab and equip.skinname == item.skinname then
                             if equip.replica.stackable ~= nil and not equip.replica.stackable:IsFull() then
                                 return k
                             elseif not isfull and containerwithsameitem == nil then
@@ -155,7 +155,7 @@ local function FindBestContainer(self, item, containers, exclude_containers)
                         end
                     end
                     for k1, v1 in pairs(container:GetItems()) do
-                        if v1.prefab == item.prefab then
+                        if v1.prefab == item.prefab and v1.skinname == item.skinname then
                             if v1.replica.stackable ~= nil and not v1.replica.stackable:IsFull() then
                                 return k
                             elseif not isfull and containerwithsameitem == nil then
