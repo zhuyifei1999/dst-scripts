@@ -740,8 +740,10 @@ function PurchasePackScreen:_BuildPurchasePanel()
 end
 
 function PurchasePackScreen:UpdatePurchasePanel()
-    local iap_defs = self:GetIAPDefs()
-    self.purchase_root.scroll_window.grid:SetItemsData(iap_defs)
+    if self.purchase_root.scroll_window ~= nil then
+        local iap_defs = self:GetIAPDefs()
+        self.purchase_root.scroll_window.grid:SetItemsData(iap_defs)
+    end
 end
 
 
