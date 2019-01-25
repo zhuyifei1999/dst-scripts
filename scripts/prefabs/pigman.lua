@@ -30,8 +30,8 @@ local MAX_TARGET_SHARES = 5
 local SHARE_TARGET_DIST = 30
 
 local function GetPigToken(inst)
-	local note = next(inst.components.inventory:GetItemByName(PIG_TOKEN_PREFAB, 1))
-	return note
+	local token = next(inst.components.inventory:GetItemByName(PIG_TOKEN_PREFAB, 1))
+	return token
 end
 
 local function ontalk(inst, script)
@@ -260,6 +260,7 @@ local function ReplacePigToken(inst)
 		local should_get_item = math.random() <= (IsSpecialEventActive(SPECIAL_EVENTS.YOTP) and TUNING.PIG_TOKEN_CHANCE_YOTP or TUNING.PIG_TOKEN_CHANCE)
 		if item ~= nil and not should_get_item then
 			inst.components.inventory:RemoveItem(item, true)
+			item:Remove()
 		elseif item == nil and should_get_item then
 			inst.components.inventory:GiveItem(SpawnPrefab(PIG_TOKEN_PREFAB))
 		end
