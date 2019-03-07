@@ -1295,7 +1295,6 @@ function MakeSkinDLCPopup(_cb)
 		    local options = {
 			    allow_cancel = false,
 			    box_build = GetBoxBuildForItem(pack_type),
-			    use_bigportraits = IsPackFeatured(pack_type),
 		    }
 
 		    if GetSkinData(pack_type).legacy_popup_category ~= nil then

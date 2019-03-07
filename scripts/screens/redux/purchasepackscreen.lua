@@ -89,7 +89,6 @@ local purchasefn =
                     local options = {
                         allow_cancel = false,
                         box_build = GetBoxBuildForItem(item_type_purchased),
-                        use_bigportraits = IsPackFeatured(item_type_purchased),
                     }
                         
                     local box_popup = ItemBoxOpenerPopup(options, function(success_cb)
@@ -391,7 +390,7 @@ function PurchasePackScreen:DoInit()
     self.purchase_root = self:_BuildPurchasePanel()
     
     --use the initial item key to set the filters
-    if self.initial_item_key ~= nil then
+    if self.initial_item_key ~= nil and self.filters ~= nil then
         self.filters[FILTER_TYPE_INDEX].spinner:SetSelected(self.initial_item_key)
     end
 

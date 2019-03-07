@@ -34,7 +34,7 @@ function Placer:GetDeployAction()
     end
 end
 
-function Placer:OnWallUpdate(dt)
+function Placer:OnUpdate(dt)
     if ThePlayer == nil then
         return
     elseif not TheInput:ControllerAttached() then
@@ -125,7 +125,9 @@ function Placer:OnWallUpdate(dt)
     end
 end
 
---V2C: OnUpdate has been referenced in other places, so we'll keep it around
-Placer.OnUpdate = Placer.OnWallUpdate
+--V2C: support old mods that were overwriting OnUpdate
+function Placer:OnWallUpdate(dt)
+    self:OnUpdate(dt)
+end
 
 return Placer
