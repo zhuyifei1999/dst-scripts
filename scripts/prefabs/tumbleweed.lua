@@ -453,7 +453,7 @@ local function fn()
         inst.angle = math.clamp(GetRandomWithVariance(inst.angle, ANGLE_VARIANCE), 0, 360)
         inst.components.blowinwind:Start(inst.angle)
     else
-        inst.SoundEmitter:PlaySound("dontstarve_DLC001/common/tumbleweed_roll", "tumbleweed_roll")
+        inst.components.blowinwind:StartSoundLoop()
     end
 
     ---local color = 0.5 + math.random() * 0.5

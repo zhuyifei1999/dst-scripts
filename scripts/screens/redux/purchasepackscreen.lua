@@ -13,6 +13,8 @@ require("misc_items")
 
 -------------------------------------------------------------------
 
+local FILTER_OWNED_INDEX = 1
+local FILTER_TYPE_INDEX = 2
 
 local build_price_str = function( value, currency_code )
     if type(value) ~= "number" then
@@ -146,7 +148,7 @@ local set_data =
         local title = GetSkinName(self.item_type)
         self.title:SetString(title)
         
-        local collection = GetPackCollection(self.item_type);
+        local collection = GetPackCollection(self.item_type)
         self.collection:SetString(collection)
 
         self.price:SetString( build_price_str( iap_def, iap_def.currency_code ) )
@@ -158,7 +160,7 @@ local set_data =
         local savings = GetPackSavings(iap_def, total_value)
 
         self.savings:SetString( subfmt(STRINGS.UI.PURCHASEPACKSCREEN.PACK_SAVINGS, { savings = savings }) )
-        if savings > 0 and IsPackFeatured(self.item_type) then
+        if savings > 0 then
             self.savings:Show()
             self.savings_frame:Show()
 
@@ -172,8 +174,8 @@ local set_data =
             self.oldprice_line:Hide()
         end
 
-        local total_items = GetPackTotalItems(self.item_type);
-        local total_sets = GetPackTotalSets(self.item_type);
+        local total_items = GetPackTotalItems(self.item_type)
+        local total_sets = GetPackTotalSets(self.item_type)
         if total_sets > 1 then
             -- megapack!
             self.text:SetString( subfmt(STRINGS.UI.PURCHASEPACKSCREEN.MEGAPACK_SHORT_DESC, { total_items = total_items, total_sets = total_sets }) )
@@ -367,9 +369,11 @@ end
 -------------------------------------------------------------------
 
 
-local PurchasePackScreen = Class(Screen, function(self)
-	Screen._ctor(self, "PurchasePackScreen")
-	self:DoInit()
+local PurchasePackScreen = Class(Screen, function(self, prev_screen, profile, initial_item_key)
+    Screen._ctor(self, "PurchasePackScreen")
+
+    self.initial_item_key = initial_item_key
+    self:DoInit()
 
 	Profile:SetShopHash( CalculateShopHash() )
 
@@ -386,6 +390,11 @@ function PurchasePackScreen:DoInit()
 
     self.purchase_root = self:_BuildPurchasePanel()
     
+    --use the initial item key to set the filters
+    if self.initial_item_key ~= nil then
+        self.filters[FILTER_TYPE_INDEX].spinner:SetSelected(self.initial_item_key)
+    end
+
     self:UpdatePurchasePanel()
             
     if not TheInput:ControllerAttached() then 
@@ -573,13 +582,17 @@ function PurchasePackScreen:GetIAPDefs( no_filter_or_sort )
                     if not DoesPackHaveBelongings(iap.item_type) then
                         is_valid_with_filters = false
                     end
-                else --characters
-                    if not DoesPackHaveCharacter( iap.item_type, filter_data ) then
+                elseif filter_data == self.initial_item_key then
+                    --specific item passed in
+                    if not DoesPackHaveItem( iap.item_type, self.initial_item_key ) then
+                        is_valid_with_filters = false
+                    end
+                else
+                    --character skins
+                    if not DoesPackHaveSkinsForCharacter( iap.item_type, filter_data ) then
                         is_valid_with_filters = false
                     end
                 end
-                filter.spinner:GetSelectedData()
-
             end
         end
 
@@ -601,7 +614,7 @@ function PurchasePackScreen:GetIAPDefs( no_filter_or_sort )
 end
 
 local label_width = 70
-local widget_width = 150
+local widget_width = 190
 local height = 30
 local spacing = 3
 local total_width = label_width + widget_width + spacing
@@ -685,7 +698,7 @@ function PurchasePackScreen:_BuildPurchasePanel()
             self.side_panel = self.root:AddChild(Widget("side_panel"))
             self.side_panel:SetPosition(-480,0)
 
-            self.filters_label = self.side_panel:AddChild(Text(HEADERFONT, 25, "Filters", UICOLOURS.GOLD_SELECTED))
+            self.filters_label = self.side_panel:AddChild(Text(HEADERFONT, 25, STRINGS.UI.PURCHASEPACKSCREEN.FILTERS, UICOLOURS.GOLD_SELECTED))
             self.filters_label:SetPosition(0,15)
             self.filters_label:SetRegionSize(100,30)
             self.filters_divider = self.side_panel:AddChild( Image("images/frontend_redux.xml", "achievements_divider_top.tex") )
@@ -693,14 +706,19 @@ function PurchasePackScreen:_BuildPurchasePanel()
 
 
             self.filters = {}
-            local all_unowned = { { text = STRINGS.UI.PURCHASEPACKSCREEN.FILTER_ALL, data = "ALL" }, { text = STRINGS.UI.PURCHASEPACKSCREEN.FILTER_UNOWNED, data = "UNOWNED" } }
-            local all_characters = { { text = STRINGS.UI.PURCHASEPACKSCREEN.FILTER_ALL, data = "ALL" }, { text = STRINGS.UI.PURCHASEPACKSCREEN.FILTER_ITEMS, data = "ITEMS" }  }
-            for _,character in pairs(DST_CHARACTERLIST) do
-                table.insert( all_characters, { text = STRINGS.NAMES[string.upper(character)], data = character } )
-            end
             
-            table.insert(self.filters, self:_CreateSpinnerFilter( "OWNED", STRINGS.UI.PURCHASEPACKSCREEN.OWNED_FILTER, all_unowned ))
-            table.insert(self.filters, self:_CreateSpinnerFilter( "TYPE", STRINGS.UI.PURCHASEPACKSCREEN.TYPE_FILTER, all_characters ))
+            local owned_options = { { text = STRINGS.UI.PURCHASEPACKSCREEN.FILTER_ALL, data = "ALL" }, { text = STRINGS.UI.PURCHASEPACKSCREEN.FILTER_UNOWNED, data = "UNOWNED" } }
+            self.filters[FILTER_OWNED_INDEX] = self:_CreateSpinnerFilter( "OWNED", STRINGS.UI.PURCHASEPACKSCREEN.OWNED_FILTER, owned_options )
+            
+            local type_options = { { text = STRINGS.UI.PURCHASEPACKSCREEN.FILTER_ALL, data = "ALL" }, { text = STRINGS.UI.PURCHASEPACKSCREEN.FILTER_ITEMS, data = "ITEMS" }  }
+            for _,character in pairs(DST_CHARACTERLIST) do
+                table.insert( type_options, { text = STRINGS.NAMES[string.upper(character)], data = character } )
+            end
+            if self.initial_item_key ~= nil then
+                table.insert(type_options, 1, { text = GetSkinName(self.initial_item_key), data = self.initial_item_key });
+            end
+            self.filters[FILTER_TYPE_INDEX] = self:_CreateSpinnerFilter( "TYPE", STRINGS.UI.PURCHASEPACKSCREEN.TYPE_FILTER, type_options )
+
             for i,spinner in pairs(self.filters) do
                 spinner:SetPosition( 0, i * -(height + spacing) )
                 

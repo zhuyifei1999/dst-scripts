@@ -110,9 +110,6 @@ local Spinner = Class(Widget, function( self, options, width, height, textinfo, 
 		self:SetTextColour(1,1,1,1)
 	end
 
-	if self.lean then
-		self.text:SetRegionSize( self.textsize.width, self.textsize.height )
-	end
     self.text:Show()
 
 	self.updating = false
@@ -462,7 +459,11 @@ function Spinner:SetSelected( data )
 end
 
 function Spinner:UpdateText( msg )
-	self.text:SetString(msg)
+	local _msg = tostring(msg) --Bogus data in spinners was using numbers as strings. The previous function here, SetString handled that, but SetTruncatedString does not.
+	
+	local width = self.textsize.width-45 --offset for space for the spinner buttons
+	local chars = width / 4 --Note(Peter): 4 is roughly the right size of a miniumum character, no guarantees!
+	self.text:SetTruncatedString(_msg, width, chars, true)
 end
 
 function Spinner:GetText()

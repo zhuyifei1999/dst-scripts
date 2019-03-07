@@ -430,27 +430,25 @@ function DressupPanel:GetSkinOptionsForSlot(slot)
 			else
 				--print(self.skins_list[which].item or "?", "Got timestamp", self.skins_list[which].timestamp or "nil", dressup_timestamp)
 				local item = self.skins_list[which].item
-				if (Prefabs[item] ~= nil and not Prefabs[item].disabled) or (CLOTHING[item] ~= nil and (CLOTHING[item].limited_to_prefab == nil or CLOTHING[item].limited_to_prefab == self.currentcharacter) and not CLOTHING[item].disabled) then --check if this clothing is available for this character and it's not disabled
-					local new_indicator = not self.skins_list[which].timestamp or (self.skins_list[which].timestamp > dressup_timestamp)
-					local colour = GetColorForItem(item)
-					local text_name = GetSkinName(self.skins_list[which].item)
-					local key = IsInList(skin_options_items, item)
+				local new_indicator = not self.skins_list[which].timestamp or (self.skins_list[which].timestamp > dressup_timestamp)
+				local colour = GetColorForItem(item)
+				local text_name = GetSkinName(self.skins_list[which].item)
+				local key = IsInList(skin_options_items, item)
 
-					if new_indicator and key then 
-						skin_options_items[key].new_indicator = true
+				if new_indicator and key then 
+					skin_options_items[key].new_indicator = true
 						
-					elseif new_indicator or not key then
-						table.insert(skin_options_items,
-						{
-							text = text_name, 
-							data = nil,
-							build = GetBuildForItem(item),
-							item = item,
-							symbol = "SWAP_ICON",
-							colour = colour,
-							new_indicator = new_indicator,
-						})
-					end
+				elseif new_indicator or not key then
+					table.insert(skin_options_items,
+					{
+						text = text_name, 
+						data = nil,
+						build = GetBuildForItem(item),
+						item = item,
+						symbol = "SWAP_ICON",
+						colour = colour,
+						new_indicator = new_indicator,
+					})
 				end
 			end
 		end

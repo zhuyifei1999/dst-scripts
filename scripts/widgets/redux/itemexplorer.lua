@@ -103,7 +103,7 @@ end
 local function CountOwnedItems(item_list)
     local count = 0
     for i,item in ipairs(item_list) do
-        if IsDefaultSkin(item.item_key) or TheInventory:CheckOwnership(item.item_key) then
+        if IsDefaultSkinOwned(item.item_key) or TheInventory:CheckOwnership(item.item_key) then
             count = count + 1
         end
     end
@@ -180,20 +180,16 @@ function ItemExplorer:_DoInit(title_text, contained_items, list_options)
     self.focus_rarity:SetColour(UICOLOURS.HIGHLIGHT_GOLD)
     self.focus_rarity:SetHAlign(ANCHOR_LEFT)
 
-	self.ensemble_title = self.footer:AddChild(Text(HEADERFONT, 20))
-    self.ensemble_title:SetPosition(0,-25)
-    self.ensemble_title:SetColour(UICOLOURS.HIGHLIGHT_GOLD)
-    self.ensemble_title:SetHAlign(ANCHOR_RIGHT)
-
 	self.collection_title = self.footer:AddChild(Text(HEADERFONT, 20))
     self.collection_title:SetPosition(0,-68)
     self.collection_title:SetColour(UICOLOURS.HIGHLIGHT_GOLD)
     self.collection_title:SetHAlign(ANCHOR_LEFT)
     
     self.store_btn = self.footer:AddChild(ImageButton("images/frontend_redux.xml", "button_shop_vshort_normal.tex", "button_shop_vshort_hover.tex", "button_shop_vshort_disabled.tex", "button_shop_vshort_down.tex"))
-    self.store_btn:SetOnClick( function() TheFrontEnd:FadeToScreen( TheFrontEnd:GetActiveScreen(), function() return PurchasePackScreen() end, nil ) end )
+    self.store_btn:SetOnClick( function() TheFrontEnd:FadeToScreen( TheFrontEnd:GetActiveScreen(), function() return PurchasePackScreen( nil, nil, self.last_interaction_target.item_key) end, nil ) end )
     self.store_btn:SetScale(0.5)
     self.store_btn:SetPosition(205,-23)
+    self.store_btn:Hide()
     
     self.divider_top = self.footer:AddChild(Image("images/global_redux.xml", "item_divider.tex"))
     self.divider_top:SetPosition(0,-50)
@@ -218,7 +214,7 @@ function ItemExplorer:_DoInit(title_text, contained_items, list_options)
     self.divider_bottom:Hide()
     
     if TheInput:ControllerAttached() then
-        self.set_info_btn = { should_show_set_info = false }
+        self.should_show_set_info = false
         self.can_show_steam = false
     else
         self.interact_root = self.footer:AddChild(Widget("interact_root"))
@@ -275,7 +271,6 @@ function ItemExplorer:RepositionFooter(new_parent, y, footer_width)
 
         self.focus_label:SetRegionSize(footer_width, 40)
         self.focus_rarity:SetRegionSize(footer_width, 30)
-        self.ensemble_title:SetRegionSize(footer_width, 30)
         self.collection_title:SetRegionSize(footer_width, 30)
         self.description:SetRegionSize(footer_width, 130)
         self.action_info:SetRegionSize(footer_width, 60)
@@ -473,14 +468,14 @@ function ItemExplorer:_DoCommerce(item_key)
 end
 
 function ItemExplorer:_ShowItemSetInfo()
-    self.set_info_screen = SetPopupDialog(self.set_info_btn.set_item_type)
+    self.set_info_screen = SetPopupDialog(self.set_item_type)
     TheFrontEnd:PushScreen(self.set_info_screen)
 end
 
 function ItemExplorer:ClearSelection()
     self.last_interaction_target = nil
     self.selected_items = {}
-    self:_UpdateItemSetInfo(nil)
+    self:_UpdateItemSelectedInfo(nil)
     self:_ApplyDataToDescription()
     if self.interact_root then
         self.interact_root:Hide()
@@ -612,31 +607,59 @@ function ItemExplorer:_UpdateClickedWidget(item_widget)
 end
 
 function ItemExplorer:OnClickedItem(item_data, is_selected)
-    self:_UpdateItemSetInfo(item_data.item_key)
+    self:_UpdateItemSelectedInfo(item_data.item_key)
+end
 
-    if item_data.item_key then
+function ItemExplorer:_UpdateItemSelectedInfo(item_key)
+    if item_key then
         if IsSteam() then
-            self.can_show_steam = IsItemMarketable(item_data.item_key)
+            self.can_show_steam = IsItemMarketable(item_key)
         else
             self.can_show_steam = false
         end
 
         -- Assumes purchaseable items are not marketable!
-        self.can_show_pack = GetPackForItem(item_data.item_key)
-
+        self.can_show_pack = IsItemInAnyPack(item_key)
+        if self.can_show_pack then
+            self.store_btn:Show()
+        else
+            self.store_btn:Hide()
+        end
     else
         self.can_show_steam = false
         self.can_show_pack = false
     end
-end
 
-function ItemExplorer:_UpdateItemSetInfo(item_key)
-    local item_type = item_key
-    local pack = item_key and GetPackForItem(item_key) or nil
     
-    local collection = GetItemCollectionName(item_key)
-    if collection then
-        self.collection_title:SetString(collection)
+    local ensemble_string = nil
+    local in_ensemble = false
+    local set_reward_type = ""
+    in_ensemble, set_reward_type = IsItemInCollection(item_key)
+	if in_ensemble then
+        self.should_show_set_info = true
+        if IsItemIsReward(item_key) then
+            ensemble_string = STRINGS.SET_NAMES[item_key] .. " " .. STRINGS.UI.SKINSSCREEN.BONUS
+            
+            self.set_item_type = item_key --save it for the click press
+        else
+            ensemble_string = STRINGS.SET_NAMES[set_reward_type] .. " " .. STRINGS.UI.SKINSSCREEN.SET_PROGRESS
+            self.set_item_type = set_reward_type --save it for the click press
+        end
+    else
+        self.should_show_set_info = false
+    end
+
+    local collection_str = GetItemCollectionName(item_key)
+    if collection_str then
+        if ensemble_string then
+            collection_str = collection_str .. " - " .. ensemble_string
+        end
+    else
+        collection_str = ensemble_string
+    end
+
+    if collection_str then
+        self.collection_title:SetString(collection_str)
         self.collection_title:Show()
         self.description:SetPosition(0,-145)
     else
@@ -644,52 +667,8 @@ function ItemExplorer:_UpdateItemSetInfo(item_key)
         self.description:SetPosition(0,-125)
     end
     
-    local in_ensemble = false
-    local set_reward_type = ""
-    in_ensemble, set_reward_type = IsItemInCollection(item_type)
-	if in_ensemble then
-        self.set_info_btn.should_show_set_info = true
-		self.ensemble_title:Show()
-        if GetPackForItem(item_key) then
-            self.ensemble_title:SetPosition(-60,-25)
-            self.store_btn:Show()
-        else
-            self.ensemble_title:SetPosition(0,-25)
-            self.store_btn:Hide()
-        end
-		
-		if IsItemIsReward(item_type) then
-			self.ensemble_title:SetString(STRINGS.SET_NAMES[item_type] .. " " .. STRINGS.UI.SKINSSCREEN.BONUS)
-			
-			self.set_info_btn.set_item_type = item_type --save it for the click press
-		else
-			self.ensemble_title:SetString(STRINGS.SET_NAMES[set_reward_type] .. " " .. STRINGS.UI.SKINSSCREEN.SET_PROGRESS)
-			self.set_info_btn.set_item_type = set_reward_type --save it for the click press
-		end
-    elseif pack then
-        -- Don't show the more info button. They should go to the store to find
-        -- it.
-        self.set_info_btn.should_show_set_info = false
-
-        if GetPackForItem(item_type) then
-            self.ensemble_title:SetPosition(-60,-25)
-            self.store_btn:Show()
-        else
-            self.ensemble_title:SetPosition(0,-25)
-            self.store_btn:Hide()
-        end
-        self.ensemble_title:Show()
-        self.ensemble_title:SetString(STRINGS.SKIN_NAMES[pack])
-        self.set_info_btn.set_item_type = pack
-    else
-        self.set_info_btn.should_show_set_info = false
-        self.ensemble_title:Hide()
-        self.ensemble_title:SetPosition(0,-25)
-        self.store_btn:Hide()
-    end
-
     if self.interact_root then
-        if self.set_info_btn.should_show_set_info then
+        if self.should_show_set_info then
             self.set_info_btn:Show()
         else
             self.set_info_btn:Hide()
@@ -808,7 +787,7 @@ function ItemExplorer:_CreateWidgetDataListForItems(item_table, item_type, activ
         if GetTypeForItem(item_key) == item_type and ShouldDisplayItemInCollection(item_key) then
             local is_owned = item_latest[item_key] ~= nil
             local timestamp = item_latest[item_key]
-            if IsDefaultSkin(item_key) then
+            if IsDefaultSkinOwned(item_key) then
                 is_owned = true
                 timestamp = 0
             end
@@ -859,17 +838,17 @@ function ItemExplorer:OnControl(control, down)
                 self:_LaunchCommerce()
                 return true
             end
-        elseif not down and control == CONTROL_MENU_MISC_1 and TheInput:ControllerAttached() then
+        elseif not down and control == CONTROL_OPEN_INVENTORY and TheInput:ControllerAttached() then
             -- Hitting Esc fires both Pause and Cancel, so keyboard users will need to click buttons instead.
 			if self.can_show_steam then
                 self:_ShowMarketplaceForInteractTarget()
                 return true
             elseif self.can_show_pack then
-                TheFrontEnd:FadeToScreen( TheFrontEnd:GetActiveScreen(), function() return PurchasePackScreen() end, nil )
+                TheFrontEnd:FadeToScreen( TheFrontEnd:GetActiveScreen(), function() return PurchasePackScreen( nil, nil, self.last_interaction_target.item_key ) end, nil )
                 return true
 			end
         elseif not down and control == CONTROL_MAP then
-            if self.set_info_btn.should_show_set_info then
+            if self.should_show_set_info then
                 self:_ShowItemSetInfo()
             end
         end
@@ -885,14 +864,14 @@ function ItemExplorer:GetHelpText()
             table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_INSPECT) .. " " .. GetCommerceText(self.last_interaction_target))
         end
 
-        if self.set_info_btn.should_show_set_info then
+        if self.should_show_set_info then
             table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_MAP) .. " " .. STRINGS.UI.COLLECTIONSCREEN.SET_INFO)
         end
 
 		if self.can_show_steam then
-            table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_1 ) .. " " .. STRINGS.UI.COLLECTIONSCREEN.VIEW_MARKET)
+            table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_OPEN_INVENTORY ) .. " " .. STRINGS.UI.COLLECTIONSCREEN.VIEW_MARKET)
         elseif self.can_show_pack then
-            table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_1 ) .. " " .. STRINGS.UI.PLAYERSUMMARYSCREEN.PURCHASE)
+            table.insert(t,  TheInput:GetLocalizedControl(controller_id, CONTROL_OPEN_INVENTORY ) .. " " .. STRINGS.UI.PLAYERSUMMARYSCREEN.PURCHASE)
 		end
     end
 

@@ -241,6 +241,7 @@ local function CheckAction(player)
                 target:HasTag("thorny") or
                 target:HasTag("smashable") or
                 target:HasTag("wall") or
+                target:HasTag("engineering") or
                 target:HasTag("smoldering") or
                 target:HasTag("veggie")) then
             if target:HasTag("shadowminion") or target:HasTag("abigail") then

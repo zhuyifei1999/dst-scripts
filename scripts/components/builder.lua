@@ -417,6 +417,11 @@ function Builder:DoBuild(recname, pt, rotation, skin)
             wetlevel = self:GetIngredientWetness(materials)
             self:RemoveIngredients(materials, recname)
         end
+
+        if self.inst:HasTag("hungrybuilder") and not self.inst.sg:HasStateTag("slowaction") then
+            self.inst.components.hunger:DoDelta(TUNING.HUNGRY_BUILDER_DELTA)
+        end
+
         self.inst:PushEvent("refreshcrafting")
 
         if recipe.tab.manufacturing_station then

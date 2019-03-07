@@ -186,7 +186,7 @@ function Combat:CanExtinguishTarget(target, weapon)
 end
 
 function Combat:CanLightTarget(target, weapon)
-    if self.inst.components.combat ~= nil then
+    --[[if self.inst.components.combat ~= nil then
         return self.inst.components.combat:CanLightTarget(target, weapon)
     elseif weapon == nil or
         not (weapon:HasTag("rangedlighter") and
@@ -205,6 +205,15 @@ function Combat:CanLightTarget(target, weapon)
     end
     --Generic burnable
     return true
+    ]]
+    --V2C: fueled or fueltype should not really matter. if we can burn it, should still allow lighting.
+    if self.inst.components.combat ~= nil then
+        return self.inst.components.combat:CanLightTarget(target, weapon)
+    end
+    return weapon ~= nil
+        and weapon:HasTag("rangedlighter")
+        and target:HasTag("canlight")
+        and not (target:HasTag("fire") or target:HasTag("burnt"))
 end
 
 function Combat:CanHitTarget(target)

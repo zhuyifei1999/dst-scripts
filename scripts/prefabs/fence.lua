@@ -142,8 +142,9 @@ local function SetOrientation(inst, rotation)
             if not inst.bank_narrow_set then
                 inst.bank_narrow_set = true
                 inst.bank_wide_set = nil
-                if inst.skin_build_name then
-					GetAnimState(inst):OverrideSkinSymbol("fence_posts", inst.skin_build_name, "fence_posts_thin" )
+                local skin_build = inst:GetSkinBuild()
+                if skin_build then
+					GetAnimState(inst):OverrideSkinSymbol("fence_posts", skin_build, "fence_posts_thin" )
                 else
                     GetAnimState(inst):SetBuild(inst.builds.narrow)
                 end
@@ -153,8 +154,9 @@ local function SetOrientation(inst, rotation)
             if not inst.bank_wide_set then
                 inst.bank_wide_set = true
                 inst.bank_narrow_set = nil
-                if inst.skin_build_name then
-					GetAnimState(inst):OverrideSkinSymbol("fence_posts", inst.skin_build_name, "fence_posts" )
+                local skin_build = inst:GetSkinBuild()
+                if skin_build then
+					GetAnimState(inst):OverrideSkinSymbol("fence_posts", skin_build, "fence_posts" )
                 else
                     GetAnimState(inst):SetBuild(inst.builds.wide)
                 end

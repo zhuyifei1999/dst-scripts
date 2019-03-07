@@ -380,7 +380,7 @@ function LoadoutSelect:OnControl(control, down)
     if LoadoutSelect._base.OnControl(self, control, down) then return true end
 
     if not down then
-        if control == CONTROL_OPEN_INVENTORY then
+        if control == CONTROL_MENU_MISC_3 then
             self:_TogglePortrait()
             TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
             return true
@@ -403,7 +403,7 @@ function LoadoutSelect:GetHelpText()
 		local controller_id = TheInput:GetControllerID()
 		local t = {}
 
-		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_OPEN_INVENTORY) .. " " .. STRINGS.UI.LOBBYSCREEN.TOGGLE_PORTRAIT)
+		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_3) .. " " .. STRINGS.UI.LOBBYSCREEN.TOGGLE_PORTRAIT)
         if TheNet:IsOnlineMode() then
 		    table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_1) .. " " .. STRINGS.UI.SKIN_PRESETS.TITLE)
         end

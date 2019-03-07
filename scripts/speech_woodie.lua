@@ -2423,6 +2423,37 @@ return {
 
         QUAGMIRE_LAMP_SHORT = "Just wastes electricity.",
 
+        --v2 Winona
+        WINONA_CATAPULT = 
+        {
+        	GENERIC = "Looks kinda fun if I'm honest.",
+        	OFF = "Does it look like it's working, Lucy?",
+        	BURNING = "Woah! Careful, Lucy!",
+        	BURNT = "That's a right shame.",
+        },
+        WINONA_SPOTLIGHT = 
+        {
+        	GENERIC = "Fine, as long as it don't start no forest fires.",
+        	OFF = "Does it look like it's working, Lucy?",
+        	BURNING = "Woah! Careful, Lucy!",
+        	BURNT = "That's a right shame.",
+        },
+        WINONA_BATTERY_LOW = 
+        {
+        	GENERIC = "Looks like Winona's work.",
+        	LOWPOWER = "Just about dead.",
+            OFF = "Plum tuckered.",
+            BURNING = "Woah! Careful, Lucy!",
+            BURNT = "That's a right shame.",
+        },
+        WINONA_BATTERY_HIGH = 
+        {
+        	GENERIC = "Pretty odd looking gadget there.",
+        	LOWPOWER = "Just about dead.",
+            OFF = "Plum tuckered.",
+            BURNING = "Woah! Careful, Lucy!",
+            BURNT = "That's a right shame.",
+        },
     },
     DESCRIBE_GENERIC = "What's that, eh?",
     DESCRIBE_TOODARK = "It's too dark, eh!",

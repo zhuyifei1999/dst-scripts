@@ -2456,6 +2456,38 @@ return
         QUAGMIRE_ALTAR_IVY = "Something in the Hedera family.",
 
         QUAGMIRE_LAMP_SHORT = "It's a nice enough light.",
+
+        --v2 Winona
+        WINONA_CATAPULT = 
+        {
+            GENERIC = "That Winona is quite resourceful.",
+            OFF = "It requires a power source.",
+            BURNING = "Oh dear, who did this?",
+            BURNT = "I do hope she'll build another.",
+        },
+        WINONA_SPOTLIGHT = 
+        {
+            GENERIC = "A sensible safety precaution.",
+            OFF = "It requires a power source.",
+            BURNING = "Oh dear, who did this?",
+            BURNT = "I do hope she'll build another.",
+        },
+        WINONA_BATTERY_LOW = 
+        {
+            GENERIC = "An electrical power supply for her lovely inventions.",
+            LOWPOWER = "Hm, her invention is starting to run down.",
+            OFF = "I'll grab the nitre, yes?",
+            BURNING = "Oh dear, who did this?",
+            BURNT = "I do hope she'll build another.",
+        },
+        WINONA_BATTERY_HIGH = 
+        {
+            GENERIC = "It's good to see her keeping an open mind.",
+            LOWPOWER = "The magical focus will wear out soon.",
+            OFF = "It needs a new magic focus.",
+            BURNING = "Oh dear, who did this?",
+            BURNT = "I do hope she'll build another.",
+        },
    },
 
     EAT_FOOD =

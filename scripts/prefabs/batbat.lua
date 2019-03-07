@@ -44,7 +44,7 @@ local function onattack(inst, owner, target)
             end
         end
     end
-    if owner.components.health ~= nil and owner.components.health:GetPercent() < 1 and not target:HasTag("wall") then
+    if owner.components.health ~= nil and owner.components.health:GetPercent() < 1 and not (target:HasTag("wall") or target:HasTag("engineering")) then
         owner.components.health:DoDelta(TUNING.BATBAT_DRAIN, false, "batbat")
         owner.components.sanity:DoDelta(-.5 * TUNING.BATBAT_DRAIN)
     end

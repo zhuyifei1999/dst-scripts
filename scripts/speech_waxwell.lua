@@ -2411,6 +2411,37 @@ return {
 
         QUAGMIRE_LAMP_SHORT = "A little civility.",
 
+        --v2 Winona
+        WINONA_CATAPULT = 
+        {
+        	GENERIC = "I could have thought of that.",
+        	OFF = "It's useless out here without power.",
+        	BURNING = "I'm going to pretend I don't see it.",
+        	BURNT = "Oh. What a pity.",
+        },
+        WINONA_SPOTLIGHT = 
+        {
+        	GENERIC = "Well sure, if you want to take the easy way out.",
+        	OFF = "It's useless out here without power.",
+        	BURNING = "I'm going to pretend I don't see it.",
+        	BURNT = "Oh. What a pity.",
+        },
+        WINONA_BATTERY_LOW = 
+        {
+        	GENERIC = "Where does she find the time to build all this.",
+        	LOWPOWER = "I think it's losing power.",
+            OFF = "See? It wasn't so great after all.",
+            BURNING = "I'm going to pretend I don't see it.",
+            BURNT = "Oh. What a pity.",
+        },
+        WINONA_BATTERY_HIGH = 
+        {
+        	GENERIC = "At least she has the sense to use gems.",
+        	LOWPOWER = "I think it's losing power.",
+            OFF = "Magic isn't so easy, is it?",
+            BURNING = "I'm going to pretend I don't see it.",
+            BURNT = "Oh. What a pity.",
+        },
     },
     DESCRIBE_GENERIC = "You tell me.",
     DESCRIBE_TOODARK = "I can't see in the dark!",

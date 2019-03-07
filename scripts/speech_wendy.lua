@@ -2402,6 +2402,37 @@ return {
 
         QUAGMIRE_LAMP_SHORT = "The only light in my life is Abigail.",
 
+        --v2 Winona
+        WINONA_CATAPULT = 
+        {
+        	GENERIC = "It visits death upon intruders.",
+        	OFF = "It's dead...",
+        	BURNING = "Oh no...",
+        	BURNT = "It all crumbles to ash, in the end.",
+        },
+        WINONA_SPOTLIGHT = 
+        {
+        	GENERIC = "But what if I liked the dark?",
+        	OFF = "It's dead...",
+			BURNING = "Oh no...",
+        	BURNT = "It all crumbles to ash, in the end.",
+        },
+        WINONA_BATTERY_LOW = 
+        {
+        	GENERIC = "It's a kind of electrical box.",
+        	LOWPOWER = "It's not long for this world.",
+        	OFF = "What did Winona put in it again? Oh...",
+        	BURNING = "Oh no...",
+        	BURNT = "It all crumbles to ash, in the end.",
+        },
+        WINONA_BATTERY_HIGH = 
+        {
+        	GENERIC = "This one looks odd.",
+        	LOWPOWER = "It's slowly dying.",
+        	OFF = "I think it wants... gems...",
+        	BURNING = "Oh no...",
+        	BURNT = "It all crumbles to ash, in the end.",
+        },
     },
     DESCRIBE_GENERIC = "Sigh... I don't know.",
     DESCRIBE_TOODARK = "The darkness! It is too dark!",

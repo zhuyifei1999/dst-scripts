@@ -455,6 +455,7 @@ local actionhandlers =
         function(inst, action)
             local rec = GetValidRecipe(action.recipe)
             return (rec ~= nil and rec.tab.shop and "give")
+                or (inst:HasTag("hungrybuilder") and "dohungrybuild")
                 or (inst:HasTag("fastbuilder") and "domediumaction")
                 or "dolongaction"
         end),
@@ -4044,6 +4045,39 @@ local states =
 
     State
     {
+        name = "dohungrybuild",
+
+        onenter = function(inst)
+            local slow = inst.components.hunger:GetPercent() < TUNING.HUNGRY_THRESH
+            if not (slow or inst:HasTag("fastbuilder")) then
+                inst.sg.mem.lasthungrybuildtalk = nil
+                inst.sg:GoToState("dolongaction")
+            else
+                if inst.components.talker ~= nil then
+                    local t = GetTime()
+                    if slow then
+                        inst.sg.mem.hungryfastbuildtalktime = nil
+                        if (inst.sg.mem.hungryslowbuildtalktime or 0) < t then
+                            inst.sg.mem.hungryslowbuildtalktime = t + GetRandomMinMax(4, 6)
+                            inst.components.talker:Say(GetString(inst, "ANNOUNCE_HUNGRY_SLOWBUILD"))
+                        end
+                    else
+                        inst.sg.mem.hungryslowbuildtalktime = nil
+                        if inst.sg.mem.hungryfastbuildtalktime == nil or inst.sg.mem.hungryfastbuildtalktime + 10 < t then
+                            inst.sg.mem.hungryfastbuildtalktime = t + GetRandomMinMax(4, 6)
+                        elseif inst.sg.mem.hungryfastbuildtalktime < t then
+                            inst.sg.mem.hungryfastbuildtalktime = nil
+                            inst.components.talker:Say(GetString(inst, "ANNOUNCE_HUNGRY_FASTBUILD"))
+                        end
+                    end
+                end
+                inst.sg:GoToState("dolongaction", slow and 2 or .5)
+            end
+        end,
+    },
+
+    State
+    {
         name = "domediumaction",
 
         onenter = function(inst)
@@ -4073,7 +4107,12 @@ local states =
         tags = { "doing", "busy", "nodangle" },
 
         onenter = function(inst, timeout)
-            inst.sg:SetTimeout(timeout or 1)
+            if timeout == nil then
+                timeout = 1
+            elseif timeout > 1 then
+                inst.sg:AddStateTag("slowaction")
+            end
+            inst.sg:SetTimeout(timeout)
             inst.components.locomotor:Stop()
             inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make")
             inst.AnimState:PlayAnimation("build_pre")
@@ -4082,7 +4121,7 @@ local states =
                 inst.sg.statemem.action = inst.bufferedaction
                 if inst.bufferedaction.action.actionmeter then
                     inst.sg.statemem.actionmeter = true
-                    StartActionMeter(inst, timeout or 1)
+                    StartActionMeter(inst, timeout)
                 end
                 if inst.bufferedaction.target ~= nil and inst.bufferedaction.target:IsValid() then
                     inst.bufferedaction.target:PushEvent("startlongaction")

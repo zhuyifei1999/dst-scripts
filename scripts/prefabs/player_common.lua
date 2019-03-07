@@ -1235,11 +1235,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("SCRIPT", "scripts/prefabs/player_common_extensions.lua"),
     }
 
-    local clothing_assets = require("clothing_assets")
-    for _, clothing_asset in pairs(clothing_assets) do
-        table.insert(assets, clothing_asset)
-    end
-
     local prefabs =
     {
         "brokentool",

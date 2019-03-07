@@ -29,8 +29,8 @@ end
 local function backpack_decay_fn(inst, backpack_dropped)
     inst.decay_task = nil
     if not inst.decayed then
-        inst.AnimState:SetSkin("swap_backpack_mushy", "swap_backpack")
-        inst.skin_build_name = "swap_backpack_mushy"
+        inst.AnimState:SetSkin("backpack_mushy", "swap_backpack")
+        inst.skin_build_name = "backpack_mushy"
         inst.override_skinname = "backpack_mushy"
         inst.components.inventoryitem:ChangeImageName("backpack_mushy")
         inst.decayed = true
@@ -164,6 +164,18 @@ function spear_init_fn(inst, build_name)
     end
 
     inst.AnimState:SetSkin(build_name, "swap_spear")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+
+--------------------------------------------------------------------------
+--[[ Bug Net skin functions ]]
+--------------------------------------------------------------------------
+function bugnet_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "swap_bugnet")
     inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
 end
 
@@ -392,6 +404,24 @@ function treasurechest_init_fn(inst, build_name)
     end
 
     inst.AnimState:SetSkin(build_name, "treasure_chest")
+end
+
+--------------------------------------------------------------------------
+--[[ Firesuppressor skin functions ]]
+--------------------------------------------------------------------------
+function firesuppressor_init_fn(inst, build_name)
+    if inst.components.placer == nil and not TheWorld.ismastersim then
+        return
+    end
+
+    if inst.prefab == "firesuppressor_placer" then
+        for _, v in pairs(inst.components.placer.linked) do
+            v.AnimState:SetSkin(build_name, "firefighter")
+        end
+    else
+        inst.AnimState:SetSkin(build_name, "firefighter")
+        inst.AnimState:OverrideItemSkinSymbol("swap_meter", build_name, "10", inst.GUID, "firefighter_meter")
+    end
 end
 
 --------------------------------------------------------------------------
@@ -1022,16 +1052,15 @@ function CreatePrefabSkin(name, info)
     prefab_skin.type                = info.type
     prefab_skin.skin_tags           = info.skin_tags
     prefab_skin.init_fn             = info.init_fn
-    prefab_skin.build_name          = info.build_name
+    prefab_skin.build_name_override = info.build_name_override
     prefab_skin.bigportrait         = info.bigportrait
     prefab_skin.rarity              = info.rarity
     prefab_skin.rarity_modifier     = info.rarity_modifier
     prefab_skin.skins               = info.skins
-    prefab_skin.disabled            = info.disabled
+    prefab_skin.is_restricted       = info.is_restricted
     prefab_skin.granted_items       = info.granted_items
 	prefab_skin.marketable			= info.marketable
     prefab_skin.release_group       = info.release_group
-    prefab_skin.purchase_pack       = info.purchase_pack
 
     if info.torso_tuck_builds ~= nil then
         for _,base_skin in pairs(info.torso_tuck_builds) do

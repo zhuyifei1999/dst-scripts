@@ -252,6 +252,21 @@ return {
 	ANNOUNCE_KLAUS_UNCHAINED = "The mitts are coming off!",
 	ANNOUNCE_KLAUS_CALLFORHELP = "He called his goons!",
 
+    ANNOUNCE_HUNGRY_SLOWBUILD = 
+    {
+	    "My head's all clouded by hunger!",
+	    "Oof. I got the brainfog.",
+	    "Maybe I could take a snack break?",
+	    "I could sure go for some grub."
+    },
+    ANNOUNCE_HUNGRY_FASTBUILD = 
+    {
+    	"This's hungry work.",
+    	"I'm working up an appetite.",
+    	"That made me a lil hungry.",
+    	"I'll need some brainfood at this rate.",
+    },
+
 	--hallowed nights
     ANNOUNCE_SPOOKED = "I'm seein' things!",
     ANNOUNCE_BRAVERY_POTION = "I got my moxie back. Now to tackle those trees.",
@@ -2409,6 +2424,37 @@ return {
 
         QUAGMIRE_LAMP_SHORT = "That's a light.",
 
+        --v2 Winona
+        WINONA_CATAPULT = 
+        {
+        	GENERIC = "Not a bad result considering the materials.",
+        	OFF = "Gotta hook it up to the generator.",
+        	BURNING = "Quick! Put it out!",
+        	BURNT = "Aw, nuts and bolts!",
+        },
+        WINONA_SPOTLIGHT = 
+        {
+        	GENERIC = "Sorry, Charlie.",
+        	OFF = "Gotta hook it up to the generator.",
+        	BURNING = "Quick! Put it out!",
+        	BURNT = "Criminy! My machine!",
+        },
+        WINONA_BATTERY_LOW = 
+        {
+        	GENERIC = "That oughta do it.",
+        	LOWPOWER = "Just about out of juice.",
+        	OFF = "Needs some more nitre.",
+        	BURNING = "Quick! Put it out!",
+        	BURNT = "Aw, nuts and bolts!",
+        },
+        WINONA_BATTERY_HIGH = 
+        {
+        	GENERIC = "I don't get how gems work, I just know they do.",
+        	LOWPOWER = "Gonna need a top up soon.",
+        	OFF = "Needs a few more'a those gem thingies.",
+        	BURNING = "Quick! Put it out!",
+        	BURNT = "Criminy! My machine!",
+        },
     },
     DESCRIBE_GENERIC = "Incredible! I have no idea what that is.",
     DESCRIBE_TOODARK = "Low visibility causes workplace accidents!",

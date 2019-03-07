@@ -18,7 +18,7 @@ function Placer:SetBuilder(builder, recipe, invobject)
     self.builder = builder
     self.recipe = recipe
     self.invobject = invobject
-    self.inst:StartUpdatingComponent(self)
+    self.inst:StartWallUpdatingComponent(self)
 end
 
 function Placer:LinkEntity(ent)
@@ -34,7 +34,7 @@ function Placer:GetDeployAction()
     end
 end
 
-function Placer:OnUpdate(dt)
+function Placer:OnWallUpdate(dt)
     if ThePlayer == nil then
         return
     elseif not TheInput:ControllerAttached() then
@@ -55,6 +55,7 @@ function Placer:OnUpdate(dt)
     elseif self.onground then
         --V2C: this will keep ground orientation accurate and smooth,
         --     but unfortunately position will be choppy compared to parenting
+        --V2C: switched to WallUpdate, so should be smooth now
         self.inst.Transform:SetPosition(ThePlayer.entity:LocalToWorldSpace(1, 0, 0))
     elseif self.inst.parent == nil then
         ThePlayer:AddChild(self.inst)
@@ -81,7 +82,7 @@ function Placer:OnUpdate(dt)
     end
 
     local x, y, z = self.inst.Transform:GetWorldPosition()
-    TriggerDeployHelpers(x, y, z, 64)
+    TriggerDeployHelpers(x, y, z, 64, self.recipe, self.inst)
 
     if self.can_build then
         if self.oncanbuild ~= nil then
@@ -123,5 +124,8 @@ function Placer:OnUpdate(dt)
         end
     end
 end
+
+--V2C: OnUpdate has been referenced in other places, so we'll keep it around
+Placer.OnUpdate = Placer.OnWallUpdate
 
 return Placer
