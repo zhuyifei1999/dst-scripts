@@ -135,16 +135,16 @@ local function OnBurnt(inst)
     inst.components.workable:SetOnWorkCallback(nil)
     inst.components.workable:SetOnFinishCallback(OnWorkedBurnt)
 
-    inst:RemoveComponent("health")
-    inst:RemoveComponent("combat")
-
-    inst:AddTag("notarget") -- just in case???
-
     if inst._inittask ~= nil then
         inst._inittask:Cancel()
         inst._inittask = nil
     end
     inst.components.circuitnode:Disconnect()
+
+    inst:RemoveComponent("health")
+    inst:RemoveComponent("combat")
+
+    inst:AddTag("notarget") -- just in case???
 end
 
 local function OnBuilt(inst)--, data)

@@ -463,7 +463,12 @@ function Spinner:UpdateText( msg )
 	
 	local width = self.textsize.width-45 --offset for space for the spinner buttons
 	local chars = width / 4 --Note(Peter): 4 is roughly the right size of a miniumum character, no guarantees!
-	self.text:SetTruncatedString(_msg, width, chars, true)
+
+	if chars > 5 and width > 10 then --Note(Peter): Quick hack fix to address tiny spinners in mods.
+		self.text:SetTruncatedString(_msg, width, chars, true)
+	else
+		self.text:SetString(_msg)
+	end
 end
 
 function Spinner:GetText()
