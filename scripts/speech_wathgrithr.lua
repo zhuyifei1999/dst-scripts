@@ -2431,6 +2431,37 @@ return {
 
         QUAGMIRE_LAMP_SHORT = "'Tis a magic light of short stature.",
 
+        --v2 Winona
+        WINONA_CATAPULT = 
+        {
+            GENERIC = "Reinforcements hath arrived! To battle!",
+            OFF = "It has no fighting spirit.",
+            BURNING = "Tis engulfed in flame!",
+            BURNT = "Twas devoured by Hel's fire!",
+        },
+        WINONA_SPOTLIGHT = 
+        {
+            GENERIC = "It can't get enough of me!",
+            OFF = "It has no fighting spirit.",
+            BURNING = "Tis engulfed in flame!",
+            BURNT = "Twas devoured by Hel's fire!",
+        },
+        WINONA_BATTERY_LOW = 
+        {
+            GENERIC = "The tinkerer hath many tricks.",
+            LOWPOWER = "T'will not hold out much longer!",
+            OFF = "It hath lost its incredible power!",
+            BURNING = "Tis engulfed in flame!",
+            BURNT = "Twas devoured by Hel's fire!",
+        },
+        WINONA_BATTERY_HIGH = 
+        {
+            GENERIC = "Tis fueled by glorious magic.",
+            LOWPOWER = "T'will not hold out much longer!",
+            OFF = "It hath lost its incredible power!",
+            BURNING = "Tis engulfed in flame!",
+            BURNT = "Twas devoured by Hel's fire!",
+        },
     },
     DESCRIBE_GENERIC = "It is an artifact of this realm.",
     DESCRIBE_TOODARK = "Too dark, even for battle.",

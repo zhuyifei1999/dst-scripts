@@ -2410,6 +2410,38 @@ return {
         QUAGMIRE_ALTAR_IVY = "INVADING ORGANIC LIFEFORMS!",
 
         QUAGMIRE_LAMP_SHORT = "AN ADOLESCENT METAL MACHINE",
+
+        --v2 Winona
+        WINONA_CATAPULT = 
+        {
+        	GENERIC = "MY MINION CONTRIBUTES FORCES TO THE ROBOT WAR",
+        	OFF = "IT'S JUST SLEEPING",
+        	BURNING = "HURRY, SAVE IT",
+        	BURNT = "IT WAS A GOOD MACHINE",
+        },
+        WINONA_SPOTLIGHT = 
+        {
+        	GENERIC = "THE OVERALLS FLESHLING HAS PROVED USEFUL",
+        	OFF = "IT'S JUST SLEEPING",
+        	BURNING = "HURRY, SAVE IT",
+        	BURNT = "IT WAS A GOOD MACHINE",
+        },
+        WINONA_BATTERY_LOW = 
+        {
+        	GENERIC = "OVERALLS IS NOW MY LEAST HATED MINION",
+        	LOWPOWER = "DO NOT GIVE UP, BROTHER",
+            OFF = "NOOO",
+            BURNING = "HURRY, SAVE IT",
+            BURNT = "IT WAS A GOOD MACHINE",
+        },
+        WINONA_BATTERY_HIGH = 
+        {
+        	GENERIC = "MORE POWER. YES",
+        	LOWPOWER = "DO NOT DIE ON ME, SISTER",
+            OFF = "WHY",
+            BURNING = "HURRY, SAVE IT",
+            BURNT = "IT WAS A GOOD MACHINE",
+        },
     },
     DESCRIBE_GENERIC = "ERROR: UNKNOWN",
     DESCRIBE_TOODARK = "INSUFFICIENT ILLUMINATION",

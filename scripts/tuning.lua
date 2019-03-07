@@ -508,6 +508,8 @@ function Tune(overrides)
         HUNGRY_THRESH = .333,
         GHOST_THRESH = .125,
 
+        HUNGRY_BUILDER_DELTA = -5,
+
         GRUEDAMAGE = wilson_health*.667,
 
         MARSHBUSH_DAMAGE = wilson_health*.02,
@@ -2747,6 +2749,29 @@ function Tune(overrides)
         DRAGONHAT_PERISHTIME = total_day_time, --only consumes while dancing
         YOTG_PERD_SPAWNCHANCE = .3,
 
+        --v2 Winona
+        WINONA_ENGINEERING_SPACING = 3.2,
+        --this is just the default recipe spacing
+        --we still want to explicitly define it for engineering recipes because of the fixed range indicators
+
+        WINONA_CATAPULT_HEALTH = 400,
+        WINONA_CATAPULT_HEALTH_REGEN_PERIOD = 10,
+        WINONA_CATAPULT_HEALTH_REGEN = 400 * 10 / total_day_time,
+        WINONA_CATAPULT_DAMAGE = wilson_attack * 1.25,
+        WINONA_CATAPULT_MIN_RANGE = 6,
+        WINONA_CATAPULT_MAX_RANGE = 15,
+        WINONA_CATAPULT_ATTACK_PERIOD = 2.5,
+        WINONA_CATAPULT_AOE_RADIUS = 1.25,
+
+        WINONA_SPOTLIGHT_RADIUS = 2.4,
+        WINONA_SPOTLIGHT_MIN_RANGE = 4,
+        WINONA_SPOTLIGHT_MAX_RANGE = 12,
+
+        WINONA_BATTERY_LOW_MAX_FUEL_TIME = seg_time * 6,
+        WINONA_BATTERY_LOW_FUEL_RATE_MULT = .375, --changes max fuel to last 1 full day, while still only costing 2 nitre
+        WINONA_BATTERY_HIGH_MAX_FUEL_TIME = total_day_time * 6,
+        WINONA_BATTERY_RANGE = 5,
+        WINONA_BATTERY_MIN_LOAD = .2,
     }
 end
 

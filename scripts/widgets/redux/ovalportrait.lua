@@ -23,8 +23,8 @@ function OvalPortrait:_BuildCharacterDetails()
 
     -- Everything is anchored around heroportrait.
     self.heroportrait = portrait_root:AddChild(Image())
-    self.heroportrait:SetPosition(0, -20)
-    self.heroportrait:SetScale(.43)
+    self.heroportrait:SetPosition(0, -25)
+    self.heroportrait:SetScale(.5)
 
     self.heroname = portrait_root:AddChild(Image())
     self.heroname:SetScale(.28)
@@ -32,11 +32,6 @@ function OvalPortrait:_BuildCharacterDetails()
 
     self.character_text = portrait_root:AddChild(Widget("character details"))
     self.character_text:SetPosition(0, -170)
-
-    --self.charactername = self.character_text:AddChild(Text(TITLEFONT, 42))
-    --self.charactername:SetHAlign(ANCHOR_MIDDLE)
-    --self.charactername:SetRegionSize(300, 70)
-    --self.charactername:SetColour(GOLD)
 
     self.charactertitle = self.character_text:AddChild(Text(HEADERFONT, 25))
     self.charactertitle:SetHAlign(ANCHOR_MIDDLE)
@@ -119,9 +114,6 @@ function OvalPortrait:SetPortrait(herocharacter)
 
     SetOvalPortraitTexture(self.heroportrait, herocharacter)
 
-    if self.charactername then
-        self.charactername:SetString(STRINGS.CHARACTER_NAMES[herocharacter] or "")
-    end
     if self.charactertitle then
         self.charactertitle:SetString(STRINGS.CHARACTER_TITLES[herocharacter] or "")
     end

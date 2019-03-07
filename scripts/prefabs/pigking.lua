@@ -250,7 +250,7 @@ local function OnActivateMinigame(inst)
     OnBlockBuildingDirty(inst)
 end
 
-local blocking_objects = {"fire", "structure", "minigameitem", "blocker", "CHOP_workable", "HAMMER_workable", "MINE_workable"}
+local blocking_objects = {"fire", "structure", "minigameitem", "CHOP_workable", "HAMMER_workable", "MINE_workable"}
 local function IsAreaClearForMinigame(inst)
 	local x, y, z = inst.Transform:GetWorldPosition()
 	local ents = TheSim:FindEntities(x, y, z, TUNING.PIG_MINIGAME_ARENA_RADIUS, nil, {"INLIMBO"}, blocking_objects) -- musttags, canttags, mustoneoftags

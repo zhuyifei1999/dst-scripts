@@ -226,22 +226,7 @@ function PlayerAvatarPopup:UpdateData(data)
     end
 
     if self.portrait ~= nil then
-        if data.base_skin ~= nil then
-            if softresolvefilepath("bigportraits/"..data.base_skin..".xml") then
-                self.portrait:SetTexture("bigportraits/"..data.base_skin..".xml", data.base_skin.."_oval.tex", self.currentcharacter.."_none.tex")
-                self.portrait:SetPosition(94, 170)
-            else
-                -- Shouldn't actually be possible:
-                self.portrait:SetTexture("bigportraits/"..self.currentcharacter..".xml", self.currentcharacter..".tex")
-                self.portrait:SetPosition(94, 180)
-            end
-        elseif softresolvefilepath("bigportraits/"..self.currentcharacter.."_none.xml") then 
-            self.portrait:SetTexture("bigportraits/"..self.currentcharacter.."_none.xml", self.currentcharacter.."_none_oval.tex")
-            self.portrait:SetPosition(94, 170)
-        else
-            self.portrait:SetTexture("bigportraits/"..self.currentcharacter..".xml", self.currentcharacter..".tex")
-            self.portrait:SetPosition(94, 180)
-        end
+        SetSkinnedOvalPortraitTexture( self.portrait, self.currentcharacter, data.base_skin)
     end
 
     if self.body_image ~= nil then
@@ -256,10 +241,10 @@ function PlayerAvatarPopup:UpdateData(data)
     if self.feet_image ~= nil then
         self:UpdateSkinWidgetForSlot(self.feet_image, "feet", data.feet_skin or "none")
     end
+
     if self.base_image ~= nil then
         self:UpdateSkinWidgetForSlot(self.base_image, "base", data.base_skin or self.currentcharacter.."_none")
     end
-
     if self.head_equip_image ~= nil then
         self:UpdateEquipWidgetForSlot(self.head_equip_image, EQUIPSLOTS.HEAD, data.equip)
     end
@@ -380,23 +365,24 @@ function PlayerAvatarPopup:CreateSkinWidgetForSlot()
     return image_group
 end
 
-function PlayerAvatarPopup:UpdateSkinWidgetForSlot(image_group, slot, name)
-    image_group._text:SetColour(unpack(GetColorForItem(name)))
+function PlayerAvatarPopup:UpdateSkinWidgetForSlot(image_group, slot, skin_name)
+    image_group._text:SetColour(unpack(GetColorForItem(skin_name)))
        
-    local namestr = STRINGS.NAMES[string.upper(name)] or GetSkinName(name)
+    local namestr = STRINGS.NAMES[string.upper(skin_name)] or GetSkinName(skin_name)
 
     image_group._text:SetMultilineTruncatedString(namestr, 2, TEXT_WIDTH, 25, true, true)
-
-    local image_name = string.gsub(name, "_none", "")
-    if image_name == nil or image_name == "none" then
-        image_name =
+    
+    local skin_build = GetBuildForItem(skin_name)
+    if skin_build == nil or skin_build == "none" then
+        skin_build =
             (slot == "body" and "body_default1") or
             (slot == "hand" and "hand_default1") or
             (slot == "legs" and "legs_default1") or
             (slot == "feet" and "feet_default1") or
             self.currentcharacter
     end
-    image_group._image:GetAnimState():OverrideSkinSymbol("SWAP_ICON", image_name, "SWAP_ICON")
+    
+    image_group._image:GetAnimState():OverrideSkinSymbol("SWAP_ICON", skin_build, "SWAP_ICON")
 end
 
 local DEFAULT_IMAGES =

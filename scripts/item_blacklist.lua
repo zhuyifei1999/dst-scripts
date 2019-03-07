@@ -8,6 +8,7 @@ ITEM_DISPLAY_BLACKLIST =
 	dragonling_bat_builder = true,
 	dragonling_winter_builder = true,
 	dragonling_wyvern_builder = true,
+	fence_factory_item = true,
 	firestaff_bee = true,
 	firestaff_gungnir = true,
 	firestaff_lance = true,

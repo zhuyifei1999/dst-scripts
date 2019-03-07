@@ -265,7 +265,7 @@ function ItemBoxOpenerPopup:_UpdateSwapIcon(index)
     local desired_symbol = "SWAP_ICON"
     local build = GetBuildForItem(item_key)
     if self.use_bigportraits then
-        local portrait = GetBigPortraitForItem(item_key)
+        local portrait = GetBigPortraitAnimForItem(item_key)
         if portrait and portrait.build then
             build, desired_symbol = portrait.build, portrait.symbol
         end
@@ -293,11 +293,11 @@ function ItemBoxOpenerPopup:_OpenItemBox()
             columns = 1
         elseif #item_types == 2 or #item_types == 4 then
             columns = 2
-        elseif #item_types == 3 or #item_types == 6 or #item_types == 9 then
+        elseif #item_types == 3 or #item_types == 6 then
             columns = 3
         elseif #item_types == 7 or #item_types == 8 then
             columns = 4
-        elseif #item_types == 5 or #item_types == 10 then
+        elseif #item_types == 5 or #item_types == 10 or #item_types == 9 then
             columns = 5
         elseif #item_types == 12 or #item_types == 11 then
 			columns = 6

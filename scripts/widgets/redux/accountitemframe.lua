@@ -33,7 +33,7 @@ function AccountItemFrame:_SetBuild(build)
 end
 
 function AccountItemFrame:_SetRarity(rarity)
-    self:GetAnimState():OverrideSymbol("SWAP_frameBG", "frame_BG", rarity)
+    self:GetAnimState():OverrideSymbol("SWAP_frameBG", "frame_BG", GetFrameSymbolForRarity(rarity))
 end
 
 function AccountItemFrame:_SetEventIcon(item_key)

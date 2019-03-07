@@ -2407,6 +2407,37 @@ return {
 
         QUAGMIRE_LAMP_SHORT = "Wolfgang loves lamp.",
 
+        --v2 Winona
+        WINONA_CATAPULT = 
+        {
+            GENERIC = "Little fixing lady has very big brainmeats.",
+            OFF = "Is not working.",
+            BURNING = "Is burning!",
+            BURNT = "Is all burned up.",
+        },
+        WINONA_SPOTLIGHT = 
+        {
+            GENERIC = "Fixing lady knows Wolfgang not like dark.",
+            OFF = "Is not working.",
+            BURNING = "Is burning!",
+            BURNT = "Is all burned up.",
+        },
+        WINONA_BATTERY_LOW = 
+        {
+            GENERIC = "Thingamabob made by fixing lady.",
+            LOWPOWER = "Is supposed to look like that?",
+            OFF = "Thingamabob is dead!",
+            BURNING = "Is burning!",
+            BURNT = "Is all burned up.",
+        },
+        WINONA_BATTERY_HIGH = 
+        {
+            GENERIC = "Fixing lady doohickeys.",
+            LOWPOWER = "It does not look so good.",
+            OFF = "Fixing lady, quick, come fix!",
+            BURNING = "Is burning!",
+            BURNT = "Is all burned up.",
+        },
     },
     DESCRIBE_GENERIC = "What is this thing?",
     DESCRIBE_TOODARK = "Help friends! Save Wolfgang from dark!",

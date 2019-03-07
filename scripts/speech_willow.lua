@@ -2428,6 +2428,37 @@ return {
 
         QUAGMIRE_LAMP_SHORT = "Whatever. It's a lamp.",
 
+        --v2 Winona
+        WINONA_CATAPULT = 
+        {
+        	GENERIC = "It flings big stinkin' rocks.",
+        	OFF = "Is this thing on?",
+        	BURNING = "Hehehe!",
+        	BURNT = "Well, that was mildly entertaining.",
+        },
+        WINONA_SPOTLIGHT = 
+        {
+        	GENERIC = "So no more night fires then?",
+        	OFF = "Is this thing on?",
+        	BURNING = "Hehehe!",
+        	BURNT = "Well, that was mildly entertaining.",
+        },
+        WINONA_BATTERY_LOW = 
+        {
+        	GENERIC = "Iunno, it's Winona's junk.",
+        	LOWPOWER = "It's on its last legs.",
+        	OFF = "Oops. It broke.",
+        	BURNING = "Hehehe!",
+        	BURNT = "Well, that was mildly entertaining.",
+        },
+        WINONA_BATTERY_HIGH = 
+        {
+        	GENERIC = "More of Winona's weird junk.",
+        	LOWPOWER = "It's on its last legs.",
+        	OFF = "Oops. It broke.",
+        	BURNING = "Hehehe!",
+        	BURNT = "Well, that was mildly entertaining.",
+        },
     },
     DESCRIBE_GENERIC = "I have no idea what that is!",
     DESCRIBE_TOODARK = "I need more light!",

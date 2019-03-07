@@ -99,11 +99,16 @@ function MakeBanner(self)
         anim.inst:ListenForEvent("animover", onanimover)
         onanimover(anim.inst)
 	else
-		anim:GetAnimState():SetBuild("dst_menu")
+		--[[anim:GetAnimState():SetBuild("dst_menu")
 		anim:GetAnimState():SetBank("dst_menu")
 		anim:GetAnimState():PlayAnimation("loop", true)
 		anim:SetScale(0.63)
-		anim:SetPosition(347, 85)
+		anim:SetPosition(347, 85)]]
+        anim:GetAnimState():SetBuild("dst_menu_winona")
+        anim:GetAnimState():SetBank("dst_menu_winona")
+        anim:GetAnimState():PlayAnimation("loop", true)
+        anim:SetScale(0.475)
+        anim:SetPosition(327, -17)
 	end
 
 	if IsFestivalEventActive(FESTIVAL_EVENTS.LAVAARENA) then
@@ -669,7 +674,12 @@ function MultiplayerMainScreen:FinishedFadeIn()
 		local entitlement_items = TheInventory:GetUnopenedEntitlementItems()
 		for _,item in pairs(entitlement_items) do
 			table.insert(items, { item = item.item_type, item_id = item.item_id, gifttype = SkinGifts.types[item.item_type] or "DEFAULT" })
-		end
+        end
+        
+        local daily_gift = GetDailyGiftItem()
+        if daily_gift then
+            table.insert(items, { item = daily_gift, item_id = 0, gifttype = "DAILY_GIFT" })
+        end
 	
 		if #items > 0 then
 			local thankyou_popup = ThankYouPopup(items)

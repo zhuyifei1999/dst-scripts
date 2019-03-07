@@ -2427,6 +2427,37 @@ return {
 
         QUAGMIRE_LAMP_SHORT = "We're almost as tall as this lamp.",
 
+        --v2 Winona
+        WINONA_CATAPULT = 
+        {
+        	GENERIC = "We feel safer already!",
+        	OFF = "How come it's not on?",
+        	BURNING = "Oh, oh!",
+        	BURNT = "Oh no! It got burnt!",
+        },
+        WINONA_SPOTLIGHT = 
+        {
+        	GENERIC = "She made us a nightlight!",
+        	OFF = "How come it's not on?",
+        	BURNING = "Oh, oh!",
+        	BURNT = "Oh no! It got burnt!",
+        },
+        WINONA_BATTERY_LOW = 
+        {
+        	GENERIC = "It feeds hungry machines.",
+        	LOWPOWER = "We think it's running low.",
+            OFF = "Hey Winona! How do we fix it?",
+            BURNING = "Oh, oh!",
+            BURNT = "Oh no! It got burnt!",
+        },
+        WINONA_BATTERY_HIGH = 
+        {
+        	GENERIC = "Machines think gem power is really tasty.",
+        	LOWPOWER = "We think it's running low.",
+            OFF = "Winoooona! The thing broke!",
+            BURNING = "Oh, oh!",
+            BURNT = "Oh no! It got burnt!",
+        },
     },
     DESCRIBE_GENERIC = "Can we play with it?",
     DESCRIBE_TOODARK = "All our eyes stopped working!",

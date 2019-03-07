@@ -113,7 +113,7 @@ STRINGS =
         woodie_canada = "*Has a lovely axe... \n*And a terrible secret \n*Celebrates Thanksgiving at the correct time",
         wathgrithr = "*Excels in battle \n*Absorbs the power of fallen foes \n*Only eats meat",
         webber = "*Is a monster \n*Can befriend spiders \n*Grows a silky smooth beard",
-        winona = "*Is a skilled builder\n*Gets one free hit from the dark\n*Brings her own tools",
+        winona = "*Is a skilled builder\n*Gets one free hit from the dark\n*Invents her own gadgets",
         random = "\nSelect a random character",
     },
 
@@ -1881,6 +1881,12 @@ STRINGS =
         QUAGMIRE_FOOD_067 = "Scone",
         QUAGMIRE_FOOD_068 = "Trifle",
         QUAGMIRE_FOOD_069 = "Cheesecake",
+
+        --v2 Winona
+        WINONA_CATAPULT = "Winona's Catapult",
+        WINONA_SPOTLIGHT = "Winona's Spotlight",
+        WINONA_BATTERY_LOW = "Winona's Generator",
+        WINONA_BATTERY_HIGH = "Winona's G.E.M.erator",
     },
 
     NAME_DETAIL_EXTENTION =
@@ -2248,6 +2254,12 @@ STRINGS =
         QUAGMIRE_SEEDPACKET_MIX = "Unusual crop seeds. Plant in tilled soil.",
 
         QUAGMIRE_GOATMILK = "Fresh from the source.",
+
+        --v2 Winona
+        WINONA_CATAPULT = "Lob big rocks at fearful foes.",
+        WINONA_SPOTLIGHT = "Shine a light both day and night.",
+        WINONA_BATTERY_LOW = "Someone's gotta keep the juice flowing.",
+        WINONA_BATTERY_HIGH = "This one uses gems, so you know it's good.",
     },
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
@@ -3038,6 +3050,7 @@ STRINGS =
         ANCIENT = "Ancient",
         CELESTIAL = "Celestial",
         SHADOW = "Shadow",
+        ENGINEERING = "Engineering",
         CARTOGRAPHY = "Cartography",
         SCULPTING = "Sculptures",
         ORPHANAGE = "Critters",
@@ -3652,24 +3665,30 @@ STRINGS.UI =
         LOCALEXECUTE = "Local:",
     },
 
-    BUGREPORTSCREEN =
-    {
+    BUGREPORTSCREEN = {
         YES = "Yes",
         NO = "No",
         OK = "OK",
 
-        SUBMIT_TITLE = "Upload files?",
-        SUBMIT_TEXT = "Would you like to upload your logs and data files to Klei?",
-
         SUBMIT_SUCCESS_TITLE = "Success",
-        SUBMIT_SUCCESS_TEXT = "Files successfully uploaded. Code: ",
+        SUBMIT_SUCCESS = "Files successfully uploaded. Thanks for the report!",
 
         SUBMIT_FAILURE_TITLE = "Error",
         SUBMIT_FAILURE_TEXT = "There was a problem uploading your files.",
 
-        DESCRIPTION_LABEL = "Please enter a description of your issue.",
+        DESCRIPTION_LABEL = "Please describe your issue.",
         SUBMIT = "Submit",
         SUBMITTING_TEXT = "Submitting files, please wait",
+
+        SUBMIT_DIALOG_HEADER = "Submit Bug Report?",
+        SUBMIT_DIALOG_BODY = "Submitting a bug report will upload your game information and saved worlds to Klei to help us analyze the issue.\n\nThis may take several minutes.",
+        SUBMIT_TEXT_PLACEHOLDER = "Please enter a description of the bug you are experiencing and any details that you feel may aid us in fixing it.",
+
+        CANCEL_SUBMIT_HEADER = "Cancel Bug Report?",
+        CANCEL_SUBMIT_BODY = "You have not submitted your report.\nAre you sure you want to cancel?",
+
+        ENTER_BUG_DESCRIPTION = "Enter Bug Description",
+        CHANGE_BUG_DESCRIPTION = "Change Bug Description",
     },
 
     EMAILSCREEN =
@@ -3813,6 +3832,11 @@ STRINGS.UI =
         ASKQUIT = "Quit Game?",
         ASKQUITDESC = "Charlie will miss you.",
         QUIT = "Quit",
+
+        DYNAMICCONTENT_TITLE = "Dynamic Content",
+        DYNAMICCONTENT_DESC = "Due to an error, dynamic content loading has been disabled.",
+        DYNAMICCONTENT_RE_ENABLE = "Re-enable",
+        DYNAMICCONTENT_OK = "I understand",
 
         FRESHBUILD = "Fresh Build!",
         UPDATERELEASED = "Now Playing:",
@@ -4288,7 +4312,9 @@ STRINGS.UI =
         REDEEM = "Redeem a Code",
         EULA = "Review the EULA",
         EULA_RESPONSE_CHANGED_TITLE = "Login Required",
-        EULA_RESPONSE_CHANGED_BODY = "Your settings have changed and you must log in again to continue.",
+        EULA_RESPONSE_CHANGED_BODY = "Your settings have changed and you must log in again to continue.",		
+		BUGREPORT = "Submit a Bug Report",
+        DYNAMICCONTENT_ENABLE = "Re-enable Dynamic Content",
         OFFLINE_MODE_TITLE = "Offline Mode",
         OFFLINE_MODE_BODY = "Your selection is not available in offline mode. Please log in and try again.",
         KLEI_ID_PREFIX = "Klei ID: ",
@@ -4336,6 +4362,7 @@ STRINGS.UI =
     
     ITEM_SCREEN =
     {
+        THANKS_POPUP_DAILY = "Welcome back!\nPlease enjoy this daily gift.",
         THANKS_POPUP_TITLE_DEFAULT = "Thanks for playing",
         THANKS_POPUP_SWR = "Thank you for buying the ShipWrecked DLC",
         THANKS_POPUP_ROGR = "Thank you for buying the Reign of Giants DLC",
@@ -6742,6 +6769,8 @@ STRINGS.UI =
         
         PURCHASE_GIFT_INFO_TITLE = "Purchase Gift",
         PURCHASE_GIFT_INFO_BODY = "To purchase the {pack_name} as a gift for your friend, click on \"Add to Cart\", then \"Purchase as a gift\".",
+        
+        FILTERS = "Filters",
 
         OWNED_FILTER = "Owned:",
         TYPE_FILTER = "Type:",
@@ -6780,6 +6809,11 @@ STRINGS.UI =
         Spiffy          = "Spiffy",
         Distinguished   = "Distinguished",
         Elegant         = "Elegant",
+        Character       = "Character",
+        HeirloomClassy = "Heirloom Classy",
+        HeirloomSpiffy = "Heirloom Spiffy",
+        HeirloomDistinguished = "Heirloom Distinguished",
+        HeirloomElegant = "Heirloom Elegant",
         Timeless        = "Timeless",
         Loyal           = "Loyal",
         ProofOfPurchase = "Proof Of Purchase",
@@ -6789,6 +6823,9 @@ STRINGS.UI =
         Lustrous        = "Lustrous",
 		EventModifier	= "Event - ",
 		Seasonal		= "Seasonal - ",
+
+        CharacterModifier = "",
+		Classic			= "Classic - ",
     },
     
     COLOUR =
@@ -7815,6 +7852,7 @@ STRINGS.UI =
 		HELPTEXTPREFIX = "Emote:  ",
         EMOTIONS = "Emotions",
         ACTIONS = "Actions",
+		UNLOCKABLES = "Extras",
 
 		ANGRY = "Angry",
 		NO = "Annoyed",
@@ -7834,6 +7872,16 @@ STRINGS.UI =
         SLEEPY = "Sleepy", 
         SWOON = "Swoon", 
         CAROL = "Carol", 
+        FISTSHAKE = "Fist Shake",
+        CHEER = "Cheer",
+        CHICKEN = "Chicken Dance",
+        FLEX = "Flex",
+        IMPATIENT = "Impatient",
+        LAUGH = "Laugh",
+        ROBOT = "Robot Dance",
+        SHRUG = "Shrug",
+        SLOWCLAP = "Slow Clap",
+        STEP = "Step Dance",
     },
 
     PRESENCE = 
@@ -8568,4 +8616,30 @@ if PLATFORM == "WIN32_RAIL" then
     STRINGS.UI.DATACOLLECTION_POPUP.PRIVACY_PORTAL = nil
     STRINGS.UI.DATACOLLECTION_POPUP.TITLE = nil
     STRINGS.UI.DATACOLLECTION_POPUP.BODY = nil
+	
+    STRINGS.UI.MAINSCREEN.DYNAMICCONTENT_TITLE = nil
+    STRINGS.UI.MAINSCREEN.DYNAMICCONTENT_DESC = nil
+    STRINGS.UI.MAINSCREEN.DYNAMICCONTENT_RE_ENABLE = nil
+    STRINGS.UI.MAINSCREEN.DYNAMICCONTENT_OK = nil
+	
+	STRINGS.UI.OPTIONS.BUGREPORT = nil
+    STRINGS.UI.OPTIONS.DYNAMICCONTENT_ENABLE = nil
+
+    STRINGS.UI.BUGREPORTSCREEN.YES = nil
+    STRINGS.UI.BUGREPORTSCREEN.NO = nil
+    STRINGS.UI.BUGREPORTSCREEN.OK = nil
+    STRINGS.UI.BUGREPORTSCREEN.SUBMIT_SUCCESS_TITLE = nil
+    STRINGS.UI.BUGREPORTSCREEN.SUBMIT_SUCCESS = nil
+    STRINGS.UI.BUGREPORTSCREEN.SUBMIT_FAILURE_TITLE = nil
+    STRINGS.UI.BUGREPORTSCREEN.SUBMIT_FAILURE_TEXT = nil
+    STRINGS.UI.BUGREPORTSCREEN.DESCRIPTION_LABEL = nil
+    STRINGS.UI.BUGREPORTSCREEN.SUBMIT = nil
+    STRINGS.UI.BUGREPORTSCREEN.SUBMITTING_TEXT = nil
+    STRINGS.UI.BUGREPORTSCREEN.SUBMIT_DIALOG_HEADER = nil
+    STRINGS.UI.BUGREPORTSCREEN.SUBMIT_DIALOG_BODY = nil
+    STRINGS.UI.BUGREPORTSCREEN.SUBMIT_TEXT_PLACEHOLDER = nil
+    STRINGS.UI.BUGREPORTSCREEN.CANCEL_SUBMIT_HEADER = nil
+    STRINGS.UI.BUGREPORTSCREEN.CANCEL_SUBMIT_BODY = nil
+    STRINGS.UI.BUGREPORTSCREEN.ENTER_BUG_DESCRIPTION = nil
+    STRINGS.UI.BUGREPORTSCREEN.CHANGE_BUG_DESCRIPTION = nil
 end

@@ -234,6 +234,10 @@ function Combat:OnEntityWake()
     if self.retargetperiod ~= nil then
         self.retargettask = self.inst:DoPeriodicTask(self.retargetperiod, dotryretarget, nil, self)
     end
+
+    if self.target ~= nil and self.keeptargetfn ~= nil then
+        self.inst:StartUpdatingComponent(self)
+    end
 end
 
 function Combat:OnUpdate(dt)
@@ -763,9 +767,11 @@ function Combat:CanLightTarget(target, weapon)
         and target.components.burnable.canlight
         and not target.components.burnable:IsBurning()
         and not target:HasTag("burnt")
-        and (target.components.fueled == nil or
+        --[[and (target.components.fueled == nil or
+            not target.components.fueled.accepting or
             target.components.fueled.fueltype == FUELTYPE.BURNABLE or
-            target.components.fueled.secondaryfueltype == FUELTYPE.BURNABLE)
+            target.components.fueled.secondaryfueltype == FUELTYPE.BURNABLE)]]
+        --V2C: fueled or fueltype should not really matter. if we can burn it, should still allow lighting.
 end
 
 function Combat:CanHitTarget(target, weapon)

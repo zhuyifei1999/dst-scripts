@@ -512,7 +512,7 @@ SPECIAL_EVENTS =
     YOTV = "year_of_the_varg",
     YOTP = "year_of_the_pig",
 }
-WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.YOTP
+WORLD_SPECIAL_EVENT = SPECIAL_EVENTS.NONE
 
 FESTIVAL_EVENTS =
 {
@@ -965,8 +965,9 @@ RECIPETABS =
 
 CUSTOM_RECIPETABS =
 {
-    BOOKS =         { str = "BOOKS",        sort = 999, icon = "tab_book.tex",      owner_tag = "bookbuilder" },
-    SHADOW =        { str = "SHADOW",       sort = 999, icon = "tab_shadow.tex",    owner_tag = "shadowmagic" },
+    BOOKS =         { str = "BOOKS",        sort = 999, icon = "tab_book.tex",          owner_tag = "bookbuilder" },
+    SHADOW =        { str = "SHADOW",       sort = 999, icon = "tab_shadow.tex",        owner_tag = "shadowmagic" },
+    ENGINEERING =   { str = "ENGINEERING",  sort = 999, icon = "tab_engineering.tex",   owner_tag = "handyperson" },
 }
 
 QUAGMIRE_RECIPETABS =

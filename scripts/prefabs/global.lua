@@ -228,83 +228,31 @@ local assets =
     Asset("PKGREF", "anim/dynamic/random_skin.dyn"),
 }
 
--- Loading Screens from items
-require "skinsutils"
-require "misc_items"
-for _,item_key in pairs(GetAllMiscItemsOfType("loading")) do
-    local atlas,tex = GetLoaderAtlasAndTexPkgref(item_key)
-    table.insert(assets, Asset("DYNAMIC_ATLAS", atlas))
-    table.insert(assets, Asset("PKGREF", tex))
-end
--- Player portrait backgrounds from items
-local playerportraits = GetAllMiscItemsOfType("playerportrait")
-table.insert( playerportraits, "playerportrait_bg_none" ) --it's not a real item, so we need to add it in so it'll be packaged and loaded
-for _,item_key in pairs(playerportraits) do
-    local atlas,tex = GetPlayerPortraitAtlasAndTexPkgref(item_key)
-    table.insert(assets, Asset("DYNAMIC_ATLAS", atlas))
-    table.insert(assets, Asset("PKGREF", tex))
-end
-
 require "fonts"
 for i, font in ipairs( FONTS ) do
     table.insert( assets, Asset( "FONT", font.filename ) )
 end
 
 -- Add all the characters by name
--- GetActiveCharacterList doesn't exist in the pipeline.
-local active_characters = GetActiveCharacterList and GetActiveCharacterList() or DST_CHARACTERLIST
-for i,char in ipairs(active_characters) do
-    if PREFAB_SKINS[char] then
-        for _,character in pairs(PREFAB_SKINS[char]) do
-            table.insert(assets, Asset("DYNAMIC_ATLAS", "bigportraits/"..character..".xml"))
-            table.insert(assets, Asset("PKGREF", "bigportraits/"..character..".tex"))
-        end
-        table.insert(assets, Asset("DYNAMIC_ATLAS", "bigportraits/"..char..".xml"))
-        table.insert(assets, Asset("PKGREF", "bigportraits/"..char..".tex"))
+-- GetOfficialCharacterList doesn't exist in the pipeline.
+local official_characters = GetOfficialCharacterList and GetOfficialCharacterList() or DST_CHARACTERLIST
+for _,char in ipairs(official_characters) do
+    table.insert(assets, Asset("DYNAMIC_ATLAS", "bigportraits/"..char..".xml"))
+    table.insert(assets, Asset("PKGREF", "bigportraits/"..char..".tex"))
 
-        table.insert(assets, Asset("DYNAMIC_ATLAS", "images/names_"..char..".xml"))
-        table.insert(assets, Asset("PKGREF", "images/names_"..char..".tex"))
+    table.insert(assets, Asset("DYNAMIC_ATLAS", "images/names_"..char..".xml"))
+    table.insert(assets, Asset("PKGREF", "images/names_"..char..".tex"))
 
-        table.insert(assets, Asset("DYNAMIC_ATLAS", "images/names_gold_"..char..".xml"))
-        table.insert(assets, Asset("PKGREF", "images/names_gold_"..char..".tex"))
+    table.insert(assets, Asset("DYNAMIC_ATLAS", "images/names_gold_"..char..".xml"))
+    table.insert(assets, Asset("PKGREF", "images/names_gold_"..char..".tex"))
 
-        --table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char..".tex")) -- Not currently used, but likely to come back
-        --table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char.."_silho.tex")) -- Not currently used, but likely to come back
-    end
+    --table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char..".tex")) -- Not currently used, but likely to come back
+    --table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char.."_silho.tex")) -- Not currently used, but likely to come back
 end
 
-for i, v in pairs(active_characters) do
-    if v ~= "" then
-        table.insert(assets, Asset("ANIM", "anim/"..v..".zip"))
-    end
-end
-
---Skins assets
-for _, clothing_asset in pairs(require("clothing_assets")) do
-    table.insert(assets, clothing_asset)
-end
-for item,data in pairs(MISC_ITEMS) do
-	if data.box_build ~= nil then
-		table.insert(assets, Asset("DYNAMIC_ANIM", "anim/dynamic/" .. data.box_build .. ".zip"))
-		table.insert(assets, Asset("PKGREF", "anim/dynamic/" .. data.box_build .. ".dyn"))
-	end
-	
-	if data.featured_pack then
-		if data.display_atlas == nil or data.display_tex == nil then
-			print( "Invalid pack data:", item, data.display_atlas, data.display_tex )
-		end
-		
-		table.insert(assets, Asset("DYNAMIC_ATLAS", data.display_atlas ))
-		table.insert(assets, Asset("PKGREF", "images/iap_images_"..data.display_tex ))
-	end
-end
-local skinprefabs = {require("prefabs/skinprefabs")}
-for _,skin_prefab in pairs(skinprefabs) do
-    if string.sub(skin_prefab.name, -5) ~= "_none" then
-        for k, v in pairs(skin_prefab.assets) do
-            table.insert(assets, v)
-        end
-    end
+--Skin assets
+for _, skin_asset in pairs(require("skin_assets")) do
+    table.insert(assets, skin_asset)
 end
 
 if QUAGMIRE_USE_KLUMP then

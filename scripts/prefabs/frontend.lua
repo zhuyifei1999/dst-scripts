@@ -171,14 +171,14 @@ local assets =
     Asset("PKGREF", "movies/intro.ogv"),
 
 
-    --Including these here as well as global to ensure the resizing dependency works
+    --Including these here as well as global to ensure the exporter's resizing dependency works
     Asset("DYNAMIC_ANIM", "anim/dynamic/box_shared_spiral.zip"),
     Asset("PKGREF", "anim/dynamic/box_shared_spiral.dyn"),
-    Asset("DYNAMIC_ANIM", "anim/dynamic/box_shared.zip"), --needed for the mystery and purchase box opening animation (happens to contain the forge box build too)
+    Asset("DYNAMIC_ANIM", "anim/dynamic/box_shared.zip"),
     Asset("PKGREF", "anim/dynamic/box_shared.dyn"),
 }
 
---Including these here as well as global to ensure the resizing dependency works
+--Including these here as well as global to ensure the exporter's resizing dependency works
 for item,data in pairs(MISC_ITEMS) do
 	if data.box_build ~= nil then
 		table.insert(assets, Asset("DYNAMIC_ANIM", "anim/dynamic/" .. data.box_build .. ".zip"))
@@ -228,20 +228,6 @@ for i, v in pairs(MAINSCREEN_HAT_LIST) do
     end
 end
 
-local prefabs = {}
-
---Skins assets
-for _, clothing_asset in pairs(require("clothing_assets")) do
-    table.insert(assets, clothing_asset)
-end
-
-for _, skins_prefabs in pairs(PREFAB_SKINS) do
-    for _, skin_prefab in pairs(skins_prefabs) do
-        table.insert(prefabs, skin_prefab)
-    end
-end
-
-
 --Quagmire specific, but needed in the non-event UI now for the player summary recipe book
 table.insert( assets, Asset("IMAGE", "images/colour_cubes/quagmire_cc.tex") )
 if not QUAGMIRE_USE_KLUMP then
@@ -259,4 +245,4 @@ local function fn()
     return CreateEntity()
 end
 
-return Prefab("frontend", fn, assets, prefabs)
+return Prefab("frontend", fn, assets)

@@ -2426,6 +2426,37 @@ return {
 
         QUAGMIRE_LAMP_SHORT = "Enlightening.",
 
+        --v2 Winona
+        WINONA_CATAPULT = 
+        {
+        	GENERIC = "She's made a sort of automatic defense system.",
+        	OFF = "It needs some electricity.",
+        	BURNING = "It's on fire!",
+        	BURNT = "Science couldn't save it.",
+        },
+        WINONA_SPOTLIGHT = 
+        {
+        	GENERIC = "What an ingenious idea!",
+        	OFF = "It needs some electricity.",
+        	BURNING = "It's on fire!",
+        	BURNT = "Science couldn't save it.",
+        },
+        WINONA_BATTERY_LOW = 
+        {
+        	GENERIC = "Looks science-y. How does it work?",
+        	LOWPOWER = "It's getting low on power.",
+        	OFF = "I could get it working, if Winona's busy.",
+        	BURNING = "It's on fire!",
+        	BURNT = "Science couldn't save it.",
+        },
+        WINONA_BATTERY_HIGH = 
+        {
+        	GENERIC = "Hey! That's not science!",
+        	LOWPOWER = "It'll turn off soon.",
+        	OFF = "Science beats magic, every time.",
+        	BURNING = "It's on fire!",
+        	BURNT = "Science couldn't save it.",
+        },
     },
     DESCRIBE_GENERIC = "It's a... thing.",
     DESCRIBE_TOODARK = "It's too dark to see!",

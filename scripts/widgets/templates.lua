@@ -1246,7 +1246,7 @@ TEMPLATES = {
         local rarity = GetRarityForItem(name)
 
         widg:GetAnimState():OverrideSkinSymbol("SWAP_ICON", GetBuildForItem(name), "SWAP_ICON")
-        widg:GetAnimState():OverrideSymbol("SWAP_frameBG", "frame_BG", rarity)
+        widg:GetAnimState():OverrideSymbol("SWAP_frameBG", "frame_BG", GetFrameSymbolForRarity(rarity))
 
         widg:GetAnimState():PlayAnimation("icon", true)
         widg:GetAnimState():Hide("NEW")

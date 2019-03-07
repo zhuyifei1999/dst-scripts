@@ -57,15 +57,16 @@ local function onattack_red(inst, attacker, target, skipsanity)
     if not target:IsValid() then
         --target killed or removed in combat damage phase
         return
-    end
-
-    if target.components.burnable ~= nil and not target.components.burnable:IsBurning() then
+    elseif target.components.burnable ~= nil and target.components.burnable.canlight and not target.components.burnable:IsBurning() then
         if target.components.freezable ~= nil and target.components.freezable:IsFrozen() then
             target.components.freezable:Unfreeze()
-        elseif target.components.fueled == nil then
+        elseif target.components.fueled == nil
+            or (target.components.fueled.fueltype ~= FUELTYPE.BURNABLE and
+                target.components.fueled.secondaryfueltype ~= FUELTYPE.BURNABLE) then
+            --does not take burnable fuel, so just burn it
             target.components.burnable:Ignite(true)
-        elseif target.components.fueled.fueltype == FUELTYPE.BURNABLE
-            or target.components.fueled.secondaryfueltype == FUELTYPE.BURNABLE then
+        elseif target.components.fueled.accepting then
+            --takes burnable fuel, so fuel it
             local fuel = SpawnPrefab("cutgrass")
             if fuel ~= nil then
                 if fuel.components.fuel ~= nil and
@@ -76,7 +77,6 @@ local function onattack_red(inst, attacker, target, skipsanity)
                 end
             end
         end
-        --V2C: don't ignite if it doens't accespt burnable fuel!
     end
 
     if target.components.freezable ~= nil then

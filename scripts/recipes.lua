@@ -219,7 +219,6 @@ Recipe("staff_tornado", {Ingredient("goose_feather", 10), Ingredient("lightningg
 
 --DRESSUP
 
-Recipe("sewing_tape", { Ingredient("silk", 1), Ingredient("cutgrass", 3)}, RECIPETABS.DRESS, TECH.NONE, nil, nil, nil, nil, "handyperson")
 Recipe("sewing_kit", {Ingredient("log", 1), Ingredient("silk", 8), Ingredient("houndstooth", 2)}, RECIPETABS.DRESS, TECH.SCIENCE_TWO)
 
 Recipe("flowerhat", {Ingredient("petals", 12)}, RECIPETABS.DRESS, TECH.NONE)
@@ -287,13 +286,19 @@ Recipe("book_sleep", {Ingredient("papyrus", 2), Ingredient("nightmarefuel", 2)},
 Recipe("book_brimstone", {Ingredient("papyrus", 2), Ingredient("redgem", 1)}, CUSTOM_RECIPETABS.BOOKS, TECH.MAGIC_THREE, nil, nil, nil, nil, "bookbuilder")
 Recipe("book_tentacles", {Ingredient("papyrus", 2), Ingredient("tentaclespots", 1)}, CUSTOM_RECIPETABS.BOOKS, TECH.SCIENCE_THREE, nil, nil, nil, nil, "bookbuilder")
 
-
 ----SHADOW----
 Recipe("waxwelljournal", {Ingredient("papyrus", 2), Ingredient("nightmarefuel", 2), Ingredient(CHARACTER_INGREDIENT.HEALTH, 50)}, CUSTOM_RECIPETABS.SHADOW, TECH.NONE, nil, nil, nil, nil, "shadowmagic")
 Recipe("shadowlumber_builder", {Ingredient("nightmarefuel", 2), Ingredient("axe", 1), Ingredient(CHARACTER_INGREDIENT.MAX_SANITY, TUNING.SHADOWWAXWELL_SANITY_PENALTY.SHADOWLUMBER)}, CUSTOM_RECIPETABS.SHADOW, TECH.SHADOW_TWO, nil, nil, true, nil, "shadowmagic")
 Recipe("shadowminer_builder", {Ingredient("nightmarefuel", 2), Ingredient("pickaxe", 1), Ingredient(CHARACTER_INGREDIENT.MAX_SANITY, TUNING.SHADOWWAXWELL_SANITY_PENALTY.SHADOWMINER)}, CUSTOM_RECIPETABS.SHADOW, TECH.SHADOW_TWO, nil, nil, true, nil, "shadowmagic")
 Recipe("shadowdigger_builder", {Ingredient("nightmarefuel", 2), Ingredient("shovel", 1), Ingredient(CHARACTER_INGREDIENT.MAX_SANITY, TUNING.SHADOWWAXWELL_SANITY_PENALTY.SHADOWDIGGER)}, CUSTOM_RECIPETABS.SHADOW, TECH.SHADOW_TWO, nil, nil, true, nil, "shadowmagic")
 Recipe("shadowduelist_builder", {Ingredient("nightmarefuel", 2), Ingredient("spear", 1), Ingredient(CHARACTER_INGREDIENT.MAX_SANITY, TUNING.SHADOWWAXWELL_SANITY_PENALTY.SHADOWDUELIST)}, CUSTOM_RECIPETABS.SHADOW, TECH.SHADOW_TWO, nil, nil, true, nil, "shadowmagic")
+
+----ENGINEERING----
+Recipe("sewing_tape", {Ingredient("silk", 1), Ingredient("cutgrass", 3)}, CUSTOM_RECIPETABS.ENGINEERING, TECH.NONE, nil, nil, nil, nil, "handyperson")
+Recipe("winona_catapult", {Ingredient("sewing_tape", 1), Ingredient("twigs", 3), Ingredient("rocks", 15)}, CUSTOM_RECIPETABS.ENGINEERING, TECH.NONE, "winona_catapult_placer", TUNING.WINONA_ENGINEERING_SPACING, nil, nil, "handyperson")
+Recipe("winona_spotlight", {Ingredient("sewing_tape", 1), Ingredient("goldnugget", 2), Ingredient("fireflies", 1)}, CUSTOM_RECIPETABS.ENGINEERING, TECH.NONE, "winona_spotlight_placer", TUNING.WINONA_ENGINEERING_SPACING, nil, nil, "handyperson")
+Recipe("winona_battery_low", {Ingredient("sewing_tape", 1), Ingredient("log", 2), Ingredient("nitre", 2)}, CUSTOM_RECIPETABS.ENGINEERING, TECH.NONE, "winona_battery_low_placer", TUNING.WINONA_ENGINEERING_SPACING, nil, nil, "handyperson")
+Recipe("winona_battery_high", {Ingredient("sewing_tape", 1), Ingredient("boards", 2), Ingredient("transistor", 2)}, CUSTOM_RECIPETABS.ENGINEERING, TECH.NONE, "winona_battery_high_placer", TUNING.WINONA_ENGINEERING_SPACING, nil, nil, "handyperson")
 
 ----CARTOGRAPHY----
 Recipe("mapscroll", {Ingredient("featherpencil", 1), Ingredient("papyrus", 1)}, RECIPETABS.CARTOGRAPHY, TECH.CARTOGRAPHY_TWO, nil, nil, true, nil, nil, nil, function() return TheWorld.worldprefab == "forest" and "mapscroll.tex" or ("mapscroll_"..TheWorld.worldprefab..".tex") end)

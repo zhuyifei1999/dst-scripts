@@ -179,6 +179,7 @@ local actionhandlers =
         function(inst, action)
             local rec = GetValidRecipe(action.recipe)
             return (rec ~= nil and rec.tab.shop and "give")
+                or (inst:HasTag("hungrybuilder") and "dohungrybuild")
                 or (inst:HasTag("fastbuilder") and "domediumaction")
                 or "dolongaction"
         end),
@@ -1446,6 +1447,15 @@ local states =
             inst:ClearBufferedAction()
             inst.AnimState:PlayAnimation("pickup_pst")
             inst.sg:GoToState("idle", true)
+        end,
+    },
+
+    State
+    {
+        name = "dohungrybuild",
+
+        onenter = function(inst)
+            inst.sg:GoToState("dolongaction")
         end,
     },
 
