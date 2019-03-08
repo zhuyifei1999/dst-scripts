@@ -98,7 +98,7 @@ local function OnEnableHelper(inst, enabled, recipename, placerinst)
             else
                 inst.helper = CreatePlacerBatteryRing()
                 inst.helper.entity:SetParent(inst.entity)
-                if recipename == "winona_battery_low" or recipename == "winona_battery_high" then
+                if placerinst ~= nil and (recipename == "winona_battery_low" or recipename == "winona_battery_high") then
                     inst.helper:AddComponent("updatelooper")
                     inst.helper.components.updatelooper:AddOnUpdateFn(OnUpdatePlacerHelper)
                     inst.helper.placerinst = placerinst
