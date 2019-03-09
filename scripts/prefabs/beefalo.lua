@@ -394,6 +394,8 @@ local function OnObedienceDelta(inst, data)
 end
 
 local function OnDeath(inst, data)
+    inst.persists = false
+    inst:AddTag("NOCLICK")
     if inst.components.rideable:IsBeingRidden() then
         --SG won't handle "death" event while we're being ridden
         --SG is forced into death state AFTER dismounting (OnRiderChanged)

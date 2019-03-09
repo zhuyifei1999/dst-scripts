@@ -61,6 +61,7 @@ return {
             SLEEPING = "They're off the clock.",
             BUSY = "They're busy working.",
             ABIGAILHEART = "No one should ever lose a sister.",
+            --...
             GHOSTHEART = "Some things even I can't fix.",
             NOTGEM = "What sort of worker do you take me for?",
             WRONGGEM = "Nn-nn. That doesn't go there.",
@@ -153,8 +154,11 @@ return {
 	ANNOUNCE_BEES = "BEEEES!",
 	ANNOUNCE_BOOMERANG = "I'll catch you next time! Ow...",
 	ANNOUNCE_CHARLIE = "C-Charlie?",
-	ANNOUNCE_CHARLIE_MISSED = "Ha! I know all your moves!", --Winona gets one free hit from Charlie
+    --...I'm so sorry, I never meant for you to come here.
+	ANNOUNCE_CHARLIE_MISSED = "Ha! I know all your moves!",
+    --This wasn't a part of my plan, but as you're here now...
 	ANNOUNCE_CHARLIE_ATTACK = "Yeow! Rude!",
+    --...I suppose I'll have to make do.
 	ANNOUNCE_COLD = "Brr! Cold as frozen steel out here!",
 	ANNOUNCE_HOT = "It's hotter than a tin smelter in July!",
 	ANNOUNCE_CRAFTING_FAIL = "How did I junk that up?!",
@@ -972,6 +976,7 @@ return {
 			LOW = "Gonna go out soon.",
 			NORMAL = "About as cozy as it gets out here.",
 			OUT = "My sister was afraid of the dark.",
+            --You've changed so much.
 		},
 		CANE = "It's no Tin Lizzie.",
 		CATCOON = "She'll keep the rats outta the factory.",
@@ -1252,6 +1257,7 @@ return {
 			LOW = "It's gonna go out soon.",
 			NORMAL = "About as cozy as it gets out here.",
 			OUT = "My sister was afraid of the dark.",
+            --How much time has passed for you?
 		},
 		COLDFIREPIT =
 		{
@@ -1426,6 +1432,7 @@ return {
 		MALE_PUPPET = "He doesn't look none too happy.",
 
 		MANDRAKE_ACTIVE = "This is exactly what having a little sister's like.",
+        --I should like to speak, face to face.
 		MANDRAKE_PLANTED = "That's a weird shrub.",
 		MANDRAKE = "Dead as a doornail.",
 

@@ -168,6 +168,7 @@ local function LoadAssets(asset_set, savedata)
 	assert(asset_set)
 	Settings.current_asset_set = asset_set
     Settings.current_world_asset = savedata ~= nil and savedata.map.prefab or nil
+    Settings.current_world_specialevent = savedata ~= nil and (savedata.map.topology ~= nil and savedata.map.topology.overrides ~= nil and savedata.map.topology.overrides.specialevent ~= "default" and savedata.map.topology.overrides.specialevent or WORLD_SPECIAL_EVENT) or nil
 
 	RECIPE_PREFABS = {}
 	for k,v in pairs(AllRecipes) do
@@ -201,7 +202,9 @@ local function LoadAssets(asset_set, savedata)
 				TheSim:UnloadPrefabs(RECIPE_PREFABS)
                 --V2C: Replaced by Settings.last_world_asset
                 --TheSim:UnloadPrefabs(BACKEND_PREFABS)
-                TheSim:UnloadPrefabs(SPECIAL_EVENT_BACKEND_PREFABS)
+                if Settings.last_world_specialevent ~= nil then
+                    TheSim:UnloadPrefabs({ Settings.last_world_specialevent.."_event_backend" })
+                end
                 TheSim:UnloadPrefabs(FESTIVAL_EVENT_BACKEND_PREFABS)
                 if Settings.last_world_asset ~= nil then
                     TheSim:UnloadPrefabs({ Settings.last_world_asset })
@@ -279,7 +282,9 @@ local function LoadAssets(asset_set, savedata)
 			TheSystemService:SetStalling(true)
             --V2C: Replaced by Settings.current_world_asset
             --TheSim:LoadPrefabs(BACKEND_PREFABS)
-            TheSim:LoadPrefabs(SPECIAL_EVENT_BACKEND_PREFABS)
+            if Settings.current_world_specialevent ~= nil then
+                TheSim:LoadPrefabs({ Settings.current_world_specialevent.."_event_backend" })
+            end
             TheSim:LoadPrefabs(FESTIVAL_EVENT_BACKEND_PREFABS)
             if Settings.current_world_asset ~= nil then
                 TheSim:LoadPrefabs({ Settings.current_world_asset })
@@ -299,6 +304,7 @@ local function LoadAssets(asset_set, savedata)
 
 	Settings.last_asset_set = Settings.current_asset_set
     Settings.last_world_asset = Settings.current_world_asset
+    Settings.last_world_specialevent = Settings.current_world_specialevent
 end
 
 function GetTimePlaying()
@@ -930,7 +936,10 @@ local function DoResetAction()
 		print ("load backend")
         --V2C: load ALL the BACKEND_PREFABS for all types of worlds
 		TheSim:LoadPrefabs(BACKEND_PREFABS)
-        TheSim:LoadPrefabs(SPECIAL_EVENT_BACKEND_PREFABS)
+        --V2C: load ALL the SPECIAL_EVENT_BACKEND_PREFABS, since game backend events can be overriden in world options
+        for k, v in pairs(SPECIAL_EVENTS) do
+            TheSim:LoadPrefabs(v.."_event_backend")
+        end
         TheSim:LoadPrefabs(FESTIVAL_EVENT_BACKEND_PREFABS)
 		print ("load frontend")
 		TheSim:LoadPrefabs(FRONTEND_PREFABS)

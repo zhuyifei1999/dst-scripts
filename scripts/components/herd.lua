@@ -21,6 +21,7 @@ local Herd = Class(function(self, inst)
 
     self.gatherrange = nil
     self.updaterange = nil
+    --self.nomerging = false
 
     self.onempty = nil
     self.onfull = nil
@@ -147,7 +148,7 @@ function Herd:GatherNearbyMembers()
 end
 
 function Herd:MergeNearbyHerds()
-    if self.gatherrange == nil or self:IsFull() then
+    if self.nomerging or self.gatherrange == nil or self:IsFull() then
         return
     end
 

@@ -1284,7 +1284,7 @@ FUELTYPE =
 {
     BURNABLE = "BURNABLE",
     USAGE = "USAGE",
-    MAGIC = "MAGIC",
+    MAGIC = "MAGIC", --V2C: use this one if u don't want there to be any associated fuel
     CAVE = "CAVE",
     NIGHTMARE = "NIGHTMARE",
     ONEMANBAND = "ONEMANBAND",

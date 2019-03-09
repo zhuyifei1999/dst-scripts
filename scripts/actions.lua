@@ -1355,12 +1355,13 @@ ACTIONS.HEAL.strfn = function(act)
 end
 
 ACTIONS.HEAL.fn = function(act)
-    if act.invobject and act.invobject.components.healer then
-        local target = act.target or act.doer
-        return act.invobject.components.healer:Heal(target)
-    elseif act.invobject and act.invobject.components.maxhealer then
-        local target = act.target or act.doer
-        return act.invobject.components.maxhealer:Heal(target)
+    local target = act.target or act.doer
+    if target ~= nil and act.invobject ~= nil and target.components.health ~= nil and not (target.components.health:IsDead() or target:HasTag("playerghost")) then
+        if act.invobject.components.healer ~= nil then
+            return act.invobject.components.healer:Heal(target)
+        elseif act.invobject.components.maxhealer ~= nil then
+            return act.invobject.components.maxhealer:Heal(target)
+        end
     end
 end
 

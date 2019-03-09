@@ -4,7 +4,7 @@ local DEPLOY_HELPERS = {}
 function TriggerDeployHelpers(x, y, z, range, recipe, placerinst)
     range = range * range
     for k, v in pairs(DEPLOY_HELPERS) do
-        if (recipe == nil or k.recipefilters == nil or k.recipefilters[recipe.name]) and k.inst:GetDistanceSqToPoint(x, y, z) < range then
+        if (k.recipefilters == nil or (recipe ~= nil and k.recipefilters[recipe.name])) and k.inst:GetDistanceSqToPoint(x, y, z) < range then
             k:StartHelper(recipe ~= nil and recipe.name or nil, placerinst)
         end
     end

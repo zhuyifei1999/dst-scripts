@@ -283,7 +283,7 @@ function Burnable:Ignite(immediate, source, doer)
             self.onignite(self.inst)
         end
 
-        if self.inst.components.fueled ~= nil then
+        if self.inst.components.fueled ~= nil and (self.inst.components.fueled.fueltype == FUELTYPE.BURNABLE or self.inst.components.fueled.secondaryfueltype == FUELTYPE.BURNABLE) then
             self.inst.components.fueled:StartConsuming()
         end
 
@@ -375,7 +375,7 @@ function Burnable:Extinguish(resetpropagator, heatpct, smotherer)
 
         self.burning = false
         self:KillFX()
-        if self.inst.components.fueled ~= nil then
+        if self.inst.components.fueled ~= nil and (self.inst.components.fueled.fueltype == FUELTYPE.BURNABLE or self.inst.components.fueled.secondaryfueltype == FUELTYPE.BURNABLE) then
             self.inst.components.fueled:StopConsuming()
         end
         if self.onextinguish ~= nil then

@@ -1020,6 +1020,7 @@ end
 function ForceAssetReset()
     Settings.current_asset_set = "FORCERESET"
     Settings.current_world_asset = nil
+    Settings.current_world_specialevent = nil
 end
 
 function SimReset(instanceparameters)
@@ -1030,6 +1031,7 @@ function SimReset(instanceparameters)
     end
     instanceparameters.last_asset_set = Settings.current_asset_set
     instanceparameters.last_world_asset = Settings.current_world_asset
+    instanceparameters.last_world_specialevent = Settings.current_world_specialevent
     instanceparameters.loaded_characters = Settings.loaded_characters
     instanceparameters.loaded_mods = ModManager:GetUnloadPrefabsData()
 
