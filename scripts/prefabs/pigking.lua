@@ -465,6 +465,7 @@ local function CheckElitesPosing(inst)
 end
 
 local function GameCompleteFocus(inst)
+    TheWorld:PushEvent("unpausehounded", { source = inst })
     inst:EnableCameraFocus(true)
     inst._minigametask = inst:DoPeriodicTask(.1, CheckElitesPosing)
 end

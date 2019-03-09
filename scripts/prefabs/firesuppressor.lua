@@ -307,7 +307,6 @@ local function fn()
     --Dedicated server does not need deployhelper
     if not TheNet:IsDedicated() then
         inst:AddComponent("deployhelper")
-        inst.components.deployhelper:AddRecipeFilter("firesuppressor")
         inst.components.deployhelper.onenablehelper = OnEnableHelper
     end
 

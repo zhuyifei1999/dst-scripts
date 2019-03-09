@@ -739,7 +739,7 @@ local events =
     end),
 
     EventHandler("knockback", function(inst, data)
-        if not inst.components.health:IsDead() then
+        if not (inst.components.health:IsDead() or inst:HasTag("beaver")) then
             if inst.sg:HasStateTag("parrying") then
                 inst.sg.statemem.parrying = true
                 inst.sg:GoToState("parry_knockback", {

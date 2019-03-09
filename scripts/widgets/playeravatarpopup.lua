@@ -226,7 +226,7 @@ function PlayerAvatarPopup:UpdateData(data)
     end
 
     if self.portrait ~= nil then
-        SetSkinnedOvalPortraitTexture( self.portrait, self.currentcharacter, data.base_skin)
+        SetSkinnedOvalPortraitTexture( self.portrait, self.currentcharacter, data.base_skin or self.currentcharacter.."_none")
     end
 
     if self.body_image ~= nil then

@@ -292,6 +292,7 @@ local function fn()
     inst.components.equippable:SetOnUnequip(onunequip)
 
     inst:AddComponent("fueled")
+    inst.components.fueled.fueltype = FUELTYPE.MAGIC --no associated fuel, and not burnable fuel, since we want this item to be lit on fire
     inst.components.fueled:InitializeFuelLevel(TUNING.REDLANTERN_LIGHTTIME)
     inst.components.fueled:SetDepletedFn(nofuel)
     inst.components.fueled:SetFirstPeriod(TUNING.TURNON_FUELED_CONSUMPTION, TUNING.TURNON_FULL_FUELED_CONSUMPTION)
