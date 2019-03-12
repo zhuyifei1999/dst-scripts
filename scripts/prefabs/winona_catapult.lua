@@ -128,6 +128,7 @@ local function OnBurnt(inst)
 
     inst:SetBrain(nil)
     inst:ClearStateGraph()
+    inst.SoundEmitter:KillAllSounds()
 
     inst:RemoveEventCallback("attacked", OnAttacked)
     inst:RemoveEventCallback("death", OnDeath)

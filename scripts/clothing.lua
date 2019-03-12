@@ -1569,6 +1569,7 @@ CLOTHING =
 		type = "body",
 		skin_tags = { "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "arm_lower", "arm_upper", "arm_upper_skin", "leg", "torso", "torso_pelvis", },
+		symbol_hides = { "skirt", },
 		torso_tuck = "full",
 		rarity = "Distinguished",
 		rarity_modifier = "EventModifier",

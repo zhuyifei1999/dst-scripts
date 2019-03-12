@@ -4054,24 +4054,17 @@ local states =
                 inst.sg:GoToState("dolongaction")
             else
                 if inst.components.talker ~= nil then
-                    local t = GetTime()
                     if slow then
-                        inst.sg.mem.hungryfastbuildtalktime = nil
+                        local t = GetTime()
                         if (inst.sg.mem.hungryslowbuildtalktime or 0) < t then
                             inst.sg.mem.hungryslowbuildtalktime = t + GetRandomMinMax(4, 6)
                             inst.components.talker:Say(GetString(inst, "ANNOUNCE_HUNGRY_SLOWBUILD"))
                         end
                     else
                         inst.sg.mem.hungryslowbuildtalktime = nil
-                        if inst.sg.mem.hungryfastbuildtalktime == nil or inst.sg.mem.hungryfastbuildtalktime + 10 < t then
-                            inst.sg.mem.hungryfastbuildtalktime = t + GetRandomMinMax(4, 6)
-                        elseif inst.sg.mem.hungryfastbuildtalktime < t then
-                            inst.sg.mem.hungryfastbuildtalktime = nil
-                            inst.components.talker:Say(GetString(inst, "ANNOUNCE_HUNGRY_FASTBUILD"))
-                        end
                     end
                 end
-                inst.sg:GoToState("dolongaction", slow and 2 or .5)
+                inst.sg:GoToState("dolongaction", slow and 1.5 or .5)
             end
         end,
     },

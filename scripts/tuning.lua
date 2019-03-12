@@ -509,6 +509,7 @@ function Tune(overrides)
         GHOST_THRESH = .125,
 
         HUNGRY_BUILDER_DELTA = -5,
+        HUNGRY_BUILDER_RESET_TIME = seg_time * 2,
 
         GRUEDAMAGE = wilson_health*.667,
 
@@ -2765,7 +2766,7 @@ function Tune(overrides)
 
         WINONA_SPOTLIGHT_RADIUS = 2.4,
         WINONA_SPOTLIGHT_MIN_RANGE = 4,
-        WINONA_SPOTLIGHT_MAX_RANGE = 12,
+        WINONA_SPOTLIGHT_MAX_RANGE = 20,
 
         WINONA_BATTERY_LOW_MAX_FUEL_TIME = seg_time * 6,
         WINONA_BATTERY_LOW_FUEL_RATE_MULT = .375, --changes max fuel to last 1 full day, while still only costing 2 nitre

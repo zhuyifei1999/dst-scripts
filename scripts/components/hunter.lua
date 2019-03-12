@@ -38,7 +38,7 @@ self.inst = inst
 -- Private
 local _activeplayers = {}
 local _activehunts = {}
-local _wargshrines
+local _wargshrines = SourceModifierList(inst, false, SourceModifierList.boolean)
 
 --------------------------------------------------------------------------
 --[[ Private member functions ]]
@@ -446,6 +446,14 @@ local function OnPlayerLeft(src, player)
     end
 end
 
+local function OnWargShrineActivated(src, shrine)
+    _wargshrines:SetModifier(shrine, true)
+end
+
+local function OnWargShrineDeactivated(src, shrine)
+    _wargshrines:RemoveModifier(shrine)
+end
+
 --------------------------------------------------------------------------
 --[[ Initialization ]]
 --------------------------------------------------------------------------
@@ -456,13 +464,8 @@ end
 
 inst:ListenForEvent("ms_playerjoined", OnPlayerJoined, TheWorld)
 inst:ListenForEvent("ms_playerleft", OnPlayerLeft, TheWorld)
-
-if IsSpecialEventActive(SPECIAL_EVENTS.YOTV) then
-    _wargshrines = SourceModifierList(inst, false, SourceModifierList.boolean)
-
-    inst:ListenForEvent("wargshrineactivated", function(src, shrine) _wargshrines:SetModifier(shrine, true) end, TheWorld)
-    inst:ListenForEvent("wargshrinedeactivated", function(src, shrine) _wargshrines:RemoveModifier(shrine) end, TheWorld)
-end
+inst:ListenForEvent("wargshrineactivated", OnWargShrineActivated, TheWorld)
+inst:ListenForEvent("wargshrinedeactivated", OnWargShrineDeactivated, TheWorld)
 
 --------------------------------------------------------------------------
 --[[ Public member functions ]]
@@ -522,7 +525,7 @@ function self:OnDirtInvestigated(pt, doer)
 end
 
 function self:IsWargShrineActive()
-    return _wargshrines ~= nil and _wargshrines:Get()
+    return _wargshrines:Get() and IsSpecialEventActive(SPECIAL_EVENTS.YOTV)
 end
 
 --------------------------------------------------------------------------

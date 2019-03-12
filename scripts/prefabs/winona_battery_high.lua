@@ -601,6 +601,7 @@ local function fn()
     MakeMediumBurnable(inst, nil, nil, true)
     MakeMediumPropagator(inst)
     inst.components.burnable:SetOnBurntFn(OnBurnt)
+    inst.components.burnable.ignorefuel = true --igniting/extinguishing should not start/stop fuel consumption
 
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
