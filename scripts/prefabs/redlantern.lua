@@ -307,6 +307,8 @@ local function fn()
     MakeSmallPropagator(inst)
     MakeHauntableLaunch(inst)
 
+    inst.components.burnable.ignorefuel = true --igniting/extinguishing should not start/stop fuel consumption
+
     inst.OnRemoveEntity = OnRemove
     inst.OnLoad = OnLoad
 

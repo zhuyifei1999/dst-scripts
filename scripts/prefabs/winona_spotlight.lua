@@ -136,7 +136,6 @@ end
 --------------------------------------------------------------------------
 
 local LIGHT_EASING = .2
-local LIMIT_RANGE_SQ = 20 * 20
 local UPDATE_TARGET_PERIOD = .5
 local LIGHT_INTENSITY_MAX = .94
 local LIGHT_INTENSITY_DELTA = -.1
@@ -163,23 +162,57 @@ local function CreateLight()
     return inst
 end
 
+local GLOBAL_TARGETS = {}
+
+local function SetTarget(inst, target)
+    if inst._target ~= target then
+        if inst._target ~= nil then
+            local t = GLOBAL_TARGETS[inst._target]
+            t.lights[inst] = nil
+            if t.count > 1 then
+                t.count = t.count - 1
+            else
+                GLOBAL_TARGETS[inst._target] = nil
+            end
+        end
+        inst._target = target
+        if target ~= nil then
+            local t = GLOBAL_TARGETS[target]
+            if t == nil then
+                GLOBAL_TARGETS[target] = { count = 1, lights = { [inst] = true } }
+            else
+                t.lights[inst] = true
+                t.count = t.count + 1
+            end
+        end
+    end
+end
+
+local function HasOtherLight(inst, target)
+    local t = GLOBAL_TARGETS[target]
+    return t ~= nil and (t.lights[inst] and t.count - 1 or t.count) > 0
+end
+
 local function UpdateTarget(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
     local maxrangesq = TUNING.WINONA_SPOTLIGHT_MAX_RANGE * TUNING.WINONA_SPOTLIGHT_MAX_RANGE
     local startrange = TUNING.WINONA_SPOTLIGHT_MAX_RANGE + TUNING.WINONA_SPOTLIGHT_RADIUS + 2
     local rangesq = startrange * startrange
     local targetIsAlive = nil
+    local targetHasOtherLight = nil
     if inst._target ~= nil then
         if not (inst._target:IsValid() and inst._target.entity:IsVisible()) then
-            inst._target = nil
+            SetTarget(inst, nil)
         else
             rangesq = inst._target:GetDistanceSqToPoint(x, y, z)
-            if rangesq >= LIMIT_RANGE_SQ then
-                inst._target = nil
+            local limit = TUNING.WINONA_SPOTLIGHT_MAX_RANGE + 8
+            if rangesq >= limit * limit then
+                SetTarget(inst, nil)
                 rangesq = startrange * startrange
             else
                 targetIsAlive = not (inst._target.components.health:IsDead() or inst._target:HasTag("playerghost"))
-                if targetIsAlive and rangesq < maxrangesq then
+                targetHasOtherLight = HasOtherLight(inst, inst._target)
+                if targetIsAlive and not targetHasOtherLight and rangesq < maxrangesq then
                     return
                 end
             end
@@ -188,12 +221,32 @@ local function UpdateTarget(inst)
     for i, v in ipairs(AllPlayers) do
         if v ~= inst._target and v.entity:IsVisible() then
             local isalive = not (v.components.health:IsDead() or v:HasTag("playerghost"))
-            if isalive or not targetIsAlive then
+            local hasotherlight = HasOtherLight(inst, v)
+            if inst._target == nil then
                 local distsq = v:GetDistanceSqToPoint(x, y, z)
-                if distsq < rangesq or (isalive and not targetIsAlive and distsq < maxrangesq) then
+                if distsq < rangesq then
                     rangesq = distsq
-                    inst._target = v
+                    SetTarget(inst, v)
                     targetIsAlive = isalive
+                    targetHasOtherLight = hasotherlight
+                end
+            elseif not hasotherlight then
+                if isalive and not targetIsAlive or targetHasOtherLight then
+                    local distsq = v:GetDistanceSqToPoint(x, y, z)
+                    if distsq < maxrangesq then
+                        rangesq = distsq
+                        SetTarget(inst, v)
+                        targetIsAlive = isalive
+                        targetHasOtherLight = hasotherlight
+                    end
+                elseif isalive or not targetIsAlive then
+                    local distsq = v:GetDistanceSqToPoint(x, y, z)
+                    if distsq < rangesq then
+                        rangesq = distsq
+                        SetTarget(inst, v)
+                        targetIsAlive = isalive
+                        targetHasOtherLight = hasotherlight
+                    end
                 end
             end
         end
@@ -279,11 +332,11 @@ local function OnUpdateLightServer(inst, dt)
                 inst._lightdir:set(inst:GetAngleToPoint(inst._target.Transform:GetWorldPosition()))
                 inst._lightdist:set(math.clamp(math.sqrt(inst:GetDistanceSqToInst(inst._target)), TUNING.WINONA_SPOTLIGHT_MIN_RANGE, TUNING.WINONA_SPOTLIGHT_MAX_RANGE))
             else
-                inst._target = nil
+                SetTarget(inst, nil)
             end
         end
     else
-        inst._target = nil
+        SetTarget(inst, nil)
     end
     OnUpdateLightCommon(inst)
     if inst._curlightdir ~= nil then
@@ -291,8 +344,8 @@ local function OnUpdateLightServer(inst, dt)
         inst._headinst.Transform:SetRotation(inst._curlightdir)
         local range = TUNING.WINONA_SPOTLIGHT_MAX_RANGE - TUNING.WINONA_SPOTLIGHT_MIN_RANGE
         local tilt = (inst._curlightdist - TUNING.WINONA_SPOTLIGHT_MIN_RANGE) / range
-        local t1 = inst._headinst._tilt > 1 and .2 + 3 / range or .2
-        local t2 = inst._headinst._tilt > 2 and .002 + 1.5 / range or .002
+        local t1 = inst._headinst._tilt > 1 and .3 + 3 / range or .3
+        local t2 = inst._headinst._tilt > 2 and .003 + 1.5 / range or .003
         SetHeadTilt(inst._headinst, (tilt > t1 and 1) or (tilt > t2 and 2) or 3, lightenabled)
     end
 end

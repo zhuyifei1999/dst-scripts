@@ -12,7 +12,7 @@ local function OnThrown(inst)
     end
 end
 
-local NO_TAGS_PVP = { "INLIMBO", "ghost", "playerghost", "FX", "NOCLICK", "DECOR", "notarget", "companion" }
+local NO_TAGS_PVP = { "INLIMBO", "ghost", "playerghost", "FX", "NOCLICK", "DECOR", "notarget", "companion", "shadowminion" }
 local NO_TAGS = { "player" }
 for i, v in ipairs(NO_TAGS_PVP) do
     table.insert(NO_TAGS, v)

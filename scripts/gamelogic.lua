@@ -938,7 +938,7 @@ local function DoResetAction()
 		TheSim:LoadPrefabs(BACKEND_PREFABS)
         --V2C: load ALL the SPECIAL_EVENT_BACKEND_PREFABS, since game backend events can be overriden in world options
         for k, v in pairs(SPECIAL_EVENTS) do
-            TheSim:LoadPrefabs(v.."_event_backend")
+            TheSim:LoadPrefabs({ v.."_event_backend" })
         end
         TheSim:LoadPrefabs(FESTIVAL_EVENT_BACKEND_PREFABS)
 		print ("load frontend")
