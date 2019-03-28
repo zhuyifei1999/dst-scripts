@@ -17,7 +17,7 @@ Ingredient = Class(function(self, ingredienttype, amount, atlas, deconstruct)
     end
     self.type = ingredienttype
     self.amount = amount
-    self.atlas = (atlas and resolvefilepath(atlas))
+    self.atlas = atlas and resolvefilepath(atlas) or nil
     self.deconstruct = deconstruct
 end)
 
