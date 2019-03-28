@@ -739,6 +739,13 @@ PREFABFILES = {
   "wormlight",
   "wormlight_plant",
   "wormwarning",
+  "wortox",
+  "wortox_eat_soul_fx",
+  "wortox_portal_fx",
+  "wortox_soul",
+  "wortox_soul_heal_fx",
+  "wortox_soul_in_fx",
+  "wortox_soul_spawn",
   "writeable_classified",
   "wx78",
   "yotp_food" 

@@ -2643,6 +2643,7 @@ function Tune(overrides)
             WATHGRITHR = 150,
             WEBBER = 150,
             WINONA = 200,
+            WORTOX = 200, --VITO do something here
         },
 
 		GAMEMODE_STARTING_ITEMS =
@@ -2661,6 +2662,7 @@ function Tune(overrides)
 				WATHGRITHR = { "spear_gungnir", "lavaarena_armorlightspeed" },
 				WEBBER = { "blowdart_lava", "lavaarena_armorlightspeed" },
 				WINONA = { "hammer_mjolnir", "lavaarena_armormedium" },
+                WORTOX = {}, --VITO do something here
 			},
 			QUAGMIRE =
 			{
@@ -2676,6 +2678,7 @@ function Tune(overrides)
 				WATHGRITHR = {},
 				WEBBER = {},
 				WINONA = {},
+                WORTOX = {}, --VITO do something here
 			},
 		},
 
@@ -2693,6 +2696,7 @@ function Tune(overrides)
             WATHGRITHR = 2,
             WEBBER = 1,
             WINONA = 1,
+            WORTOX = 1, --VITO do something here
         },
 
 	    LAVAARENA_BERNIE_SCALE = 1.2,
@@ -2773,6 +2777,17 @@ function Tune(overrides)
         WINONA_BATTERY_HIGH_MAX_FUEL_TIME = total_day_time * 6,
         WINONA_BATTERY_RANGE = 5,
         WINONA_BATTERY_MIN_LOAD = .2,
+
+        --wortox
+        WORTOX_HEALTH = 200,
+        WORTOX_HUNGER = 175,
+        WORTOX_SANITY = 150,
+        WORTOX_SANITY_AURA_MULT = .5,
+        WORTOX_MAX_SOULS = 20,
+        WORTOX_FOOD_MULT = .5,
+        WORTOX_SOULEXTRACT_RANGE = 20, --die within this range of wortox to spawn soul
+        WORTOX_SOULSTEALER_RANGE = 8, --souls fly towards wortox when he walks within this range
+        WORTOX_SOULHEAL_RANGE = 8,
     }
 end
 

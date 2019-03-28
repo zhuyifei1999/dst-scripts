@@ -76,20 +76,8 @@ local function IsNearDanger(inst)
         return true
     end
     -- See entityreplica.lua (for _combat tag usage)
-    if inst:HasTag("spiderwhisperer") then
-        --Danger if:
-        -- being targetted
-        -- OR near monster or pig that is neither player nor spider
-        -- ignore shadow monsters when not insane
-        return FindEntity(inst, 10,
-            function(target)
-                return (target.components.combat ~= nil and target.components.combat.target == inst)
-                    or ((target:HasTag("monster") or target:HasTag("pig")) and
-                        not (target:HasTag("player") or target:HasTag("spider")) and
-                        not (inst.components.sanity:IsSane() and target:HasTag("shadowcreature")))
-            end,
-            nil, nil, { "monster", "pig", "_combat" }) ~= nil
-    end
+    local nospiderdanger = inst:HasTag("spiderwhisperer") or inst:HasTag("spiderdisguise")
+    local nopigdanger = not inst:HasTag("monster")
     --Danger if:
     -- being targetted
     -- OR near monster that is not player
@@ -97,11 +85,12 @@ local function IsNearDanger(inst)
     return FindEntity(inst, 10,
         function(target)
             return (target.components.combat ~= nil and target.components.combat.target == inst)
-                or (target:HasTag("monster") and
+                or ((target:HasTag("monster") or (not nopigdanger and target:HasTag("pig"))) and
                     not target:HasTag("player") and
+                    not (nospiderdanger and target:HasTag("spider")) and
                     not (inst.components.sanity:IsSane() and target:HasTag("shadowcreature")))
         end,
-        nil, nil, { "monster", "_combat" }) ~= nil
+        nil, nil, nopigdanger and { "monster", "_combat" } or { "monster", "pig", "_combat" }) ~= nil
 end
 
 --V2C: This is for cleaning up interrupted states with legacy stuff, like
@@ -320,6 +309,17 @@ local function IsMinigameItem(inst)
     return inst:HasTag("minigameitem")
 end
 
+local function DoPortalTint(inst, val)
+    if val > 0 then
+        inst.components.colouradder:PushColour("portaltint", 154 / 255 * val, 23 / 255 * val, 19 / 255 * val, 0)
+        val = 1 - val
+        inst.AnimState:SetMultColour(val, val, val, 1)
+    else
+        inst.components.colouradder:PopColour("portaltint")
+        inst.AnimState:SetMultColour(1, 1, 1, 1)
+    end
+end
+
 local actionhandlers =
 {
     ActionHandler(ACTIONS.CHOP,
@@ -482,13 +482,23 @@ local actionhandlers =
                 return
             end
             local obj = action.target or action.invobject
-            if obj == nil or obj.components.edible == nil then
+            if obj == nil then
                 return
-            elseif not inst.components.eater:PrefersToEat(obj) then
-                inst:PushEvent("wonteatfood", { food = obj })
+            elseif obj.components.edible ~= nil then
+                if not inst.components.eater:PrefersToEat(obj) then
+                    inst:PushEvent("wonteatfood", { food = obj })
+                    return
+                end
+            elseif obj.components.soul ~= nil then
+                if inst.components.souleater == nil then
+                    inst:PushEvent("wonteatfood", { food = obj })
+                    return
+                end
+            else
                 return
             end
             return (inst:HasTag("beaver") and "beavereat")
+                or (obj.components.soul ~= nil and "eat")
                 or (obj.components.edible.foodtype == FOODTYPE.MEAT and "eat")
                 or "quickeat"
         end),
@@ -547,7 +557,10 @@ local actionhandlers =
                     )
                 or "castspell"
         end),
-    ActionHandler(ACTIONS.BLINK, "quicktele"),
+    ActionHandler(ACTIONS.BLINK,
+        function(inst, action)
+            return action.invobject == nil and inst:HasTag("soulstealer") and "portal_jumpin_pre" or "quicktele"
+        end),
     ActionHandler(ACTIONS.COMBINESTACK, "doshortaction"),
     ActionHandler(ACTIONS.FEED, "dolongaction"),
     ActionHandler(ACTIONS.ATTACK,
@@ -754,6 +767,13 @@ local events =
             end
         end
     end),
+
+    EventHandler("souloverload",
+        function(inst)
+            if not inst.components.health:IsDead() then
+                inst.sg:GoToState("hit_souloverload")
+            end
+        end),
 
     EventHandler("mindcontrolled", function(inst)
         if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) then
@@ -3174,6 +3194,15 @@ local states =
                 inst.SoundEmitter:PlaySound("dontstarve/wilson/eat", "eating")
             end
 
+            if feed ~= nil and feed.components.soul ~= nil then
+                inst.sg.statemem.soulfx = SpawnPrefab("wortox_eat_soul_fx")
+                inst.sg.statemem.soulfx.Transform:SetRotation(inst.Transform:GetRotation())
+                inst.sg.statemem.soulfx.entity:SetParent(inst.entity)
+                if inst.components.rider:IsRiding() then
+                    inst.sg.statemem.soulfx:MakeMounted()
+                end
+            end
+
             if inst.components.inventory:IsHeavyLifting() and
                 not inst.components.rider:IsRiding() then
                 inst.AnimState:PlayAnimation("heavy_eat")
@@ -3188,10 +3217,12 @@ local states =
         timeline =
         {
             TimeEvent(28 * FRAMES, function(inst)
-                if inst.sg.statemem.feed ~= nil then
-                    inst.components.eater:Eat(inst.sg.statemem.feed, inst.sg.statemem.feeder)
-                else
+                if inst.sg.statemem.feed == nil then
                     inst:PerformBufferedAction()
+                elseif inst.sg.statemem.feed.components.soul == nil then
+                    inst.components.eater:Eat(inst.sg.statemem.feed, inst.sg.statemem.feeder)
+                elseif inst.components.souleater ~= nil then
+                    inst.components.souleater:EatSoul(inst.sg.statemem.feed)
                 end
             end),
 
@@ -3221,6 +3252,9 @@ local states =
             end
             if inst.sg.statemem.feed ~= nil and inst.sg.statemem.feed:IsValid() then
                 inst.sg.statemem.feed:Remove()
+            end
+            if inst.sg.statemem.soulfx ~= nil then
+                inst.sg.statemem.soulfx:Remove()
             end
         end,
     },
@@ -5945,6 +5979,64 @@ local states =
 
         ontimeout = function(inst)
             inst.sg:GoToState("idle", true)
+        end,
+    },
+
+    State{
+        name = "hit_souloverload",
+        tags = { "busy", "pausepredict" },
+
+        onenter = function(inst)
+            ForceStopHeavyLifting(inst)
+            inst.components.locomotor:Stop()
+            inst:ClearBufferedAction()
+
+            inst.AnimState:PlayAnimation("hit")
+
+            inst.components.talker:Say(GetString(inst, "ANNOUNCE_SOUL_OVERLOAD"))
+
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:RemotePausePrediction()
+            end
+            inst.sg:SetTimeout(13 * FRAMES)
+        end,
+
+        events =
+        {
+            EventHandler("ontalk", function(inst)
+                if inst.sg.statemem.talktask ~= nil then
+                    inst.sg.statemem.talktask:Cancel()
+                    inst.sg.statemem.talktask = nil
+                    inst.SoundEmitter:KillSound("talk")
+                end
+                if DoTalkSound(inst) then
+                    inst.sg.statemem.talktask =
+                        inst:DoTaskInTime(1.5 + math.random() * .5,
+                            function()
+                                inst.SoundEmitter:KillSound("talk")
+                                inst.sg.statemem.talktask = nil
+                            end)
+                end
+            end),
+            EventHandler("donetalking", function(inst)
+                if inst.sg.statemem.talktalk ~= nil then
+                    inst.sg.statemem.talktask:Cancel()
+                    inst.sg.statemem.talktask = nil
+                    inst.SoundEmitter:KillSound("talk")
+                end
+            end),
+        },
+
+        ontimeout = function(inst)
+            inst.sg:GoToState("idle", true)
+        end,
+
+        onexit = function(inst)
+            if inst.sg.statemem.talktask ~= nil then
+                inst.sg.statemem.talktask:Cancel()
+                inst.sg.statemem.talktask = nil
+                inst.SoundEmitter:KillSound("talk")
+            end
         end,
     },
 
@@ -9782,6 +9874,150 @@ local states =
                 end
             end),
         },
+    },
+
+    State{
+        name = "portal_jumpin_pre",
+        tags = { "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("wortox_portal_jumpin_pre")
+
+            local buffaction = inst:GetBufferedAction()
+            if buffaction ~= nil and buffaction.pos ~= nil then
+                inst:ForceFacePoint(buffaction.pos:Get())
+            end
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() and not inst:PerformBufferedAction() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    },
+
+    State{
+        name = "portal_jumpin",
+        tags = { "busy", "pausepredict", "nodangle", "nomorph" },
+
+        onenter = function(inst, dest)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("wortox_portal_jumpin")
+            local x, y, z = inst.Transform:GetWorldPosition()
+            SpawnPrefab("wortox_portal_jumpin_fx").Transform:SetPosition(x, y, z)
+            inst.sg:SetTimeout(11 * FRAMES)
+            if dest ~= nil then
+                inst.sg.statemem.dest = dest
+                inst:ForceFacePoint(dest:Get())
+            else
+                inst.sg.statemem.dest = Vector3(x, y, z)
+            end
+
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:RemotePausePrediction()
+            end
+        end,
+
+        onupdate = function(inst)
+            if inst.sg.statemem.tints ~= nil then
+                DoPortalTint(inst, table.remove(inst.sg.statemem.tints))
+                if #inst.sg.statemem.tints <= 0 then
+                    inst.sg.statemem.tints = nil
+                end
+            end
+        end,
+
+        timeline =
+        {
+            TimeEvent(FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/together/toad_stool/infection_post", nil, .7)
+                inst.SoundEmitter:PlaySound("dontstarve/characters/wortox/soul/spawn", nil, .5)
+            end),
+            TimeEvent(2 * FRAMES, function(inst)
+                inst.sg.statemem.tints = { 1, .6, .3, .1 }
+                PlayFootstep(inst)
+            end),
+            TimeEvent(4 * FRAMES, function(inst)
+                inst.sg:AddStateTag("noattack")
+                inst.components.health:SetInvincible(true)
+                inst.DynamicShadow:Enable(false)
+            end),
+        },
+
+        ontimeout = function(inst)
+            inst.sg.statemem.portaljumping = true
+            inst.sg:GoToState("portal_jumpout", inst.sg.statemem.dest)
+        end,
+
+        onexit = function(inst)
+            if not inst.sg.statemem.portaljumping then
+                inst.components.health:SetInvincible(false)
+                inst.DynamicShadow:Enable(true)
+                DoPortalTint(inst, 0)
+            end
+        end,
+    },
+
+    State{
+        name = "portal_jumpout",
+        tags = { "busy", "nopredict", "nomorph", "noattack", "nointerrupt" },
+
+        onenter = function(inst, dest)
+            ToggleOffPhysics(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("wortox_portal_jumpout")
+            if dest ~= nil then
+                inst.Physics:Teleport(dest:Get())
+            else
+                dest = inst:GetPosition()
+            end
+            SpawnPrefab("wortox_portal_jumpout_fx").Transform:SetPosition(dest:Get())
+            inst.DynamicShadow:Enable(false)
+            inst.sg:SetTimeout(14 * FRAMES)
+            DoPortalTint(inst, 1)
+            inst.components.health:SetInvincible(true)
+            inst:PushEvent("soulhop")
+        end,
+
+        onupdate = function(inst)
+            if inst.sg.statemem.tints ~= nil then
+                DoPortalTint(inst, table.remove(inst.sg.statemem.tints))
+                if #inst.sg.statemem.tints <= 0 then
+                    inst.sg.statemem.tints = nil
+                end
+            end
+        end,
+
+        timeline =
+        {
+            TimeEvent(FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/characters/wortox/soul/hop_out") end),
+            TimeEvent(5 * FRAMES, function(inst)
+                inst.sg.statemem.tints = { 0, .4, .7, .9 }
+            end),
+            TimeEvent(7 * FRAMES, function(inst)
+                inst.components.health:SetInvincible(false)
+                inst.sg:RemoveStateTag("noattack")
+                inst.SoundEmitter:PlaySound("dontstarve/movement/bodyfall_dirt")
+            end),
+            TimeEvent(8 * FRAMES, function(inst)
+                inst.DynamicShadow:Enable(true)
+                ToggleOnPhysics(inst)
+            end),
+        },
+
+        ontimeout = function(inst)
+            inst.sg:GoToState("idle", true)
+        end,
+
+        onexit = function(inst)
+            inst.components.health:SetInvincible(false)
+            inst.DynamicShadow:Enable(true)
+            DoPortalTint(inst, 0)
+        end,
     },
 }
 

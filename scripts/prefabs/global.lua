@@ -200,6 +200,14 @@ local assets =
     Asset("ATLAS", "images/giftpopup.xml"),
     Asset("IMAGE", "images/giftpopup.tex"),
 
+    --Used in the FE and BG
+    Asset("DYNAMIC_ATLAS", "images/inventoryimages.xml"),--legacy for mods
+    Asset("PKGREF", "images/inventoryimages.tex"),
+    Asset("ATLAS", "images/inventoryimages1.xml"),
+    Asset("IMAGE", "images/inventoryimages1.tex"),
+    Asset("ATLAS", "images/inventoryimages2.xml"),
+    Asset("IMAGE", "images/inventoryimages2.tex"),
+
     --oft-used panel bgs
     Asset("DYNAMIC_ATLAS", "images/globalpanels2.xml"),
     Asset("PKGREF", "images/globalpanels2.tex"),
@@ -245,6 +253,10 @@ for _,char in ipairs(official_characters) do
 
     table.insert(assets, Asset("DYNAMIC_ATLAS", "images/names_gold_"..char..".xml"))
     table.insert(assets, Asset("PKGREF", "images/names_gold_"..char..".tex"))
+    
+    table.insert(assets, Asset("DYNAMIC_ATLAS", "images/names_gold_cn_"..char..".xml"))
+    table.insert(assets, Asset("PKGREF", "images/names_gold_cn_"..char..".tex"))
+
 
     --table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char..".tex")) -- Not currently used, but likely to come back
     --table.insert(assets, Asset("IMAGE", "images/selectscreen_portraits/"..char.."_silho.tex")) -- Not currently used, but likely to come back

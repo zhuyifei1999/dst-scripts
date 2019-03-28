@@ -745,6 +745,10 @@ function Inv:SetTooltipColour(r,g,b,a)
    self.actionstringtitle:SetColour(r,g,b,a)
 end
 
+local function GetDropActionString(doer, item)
+    return BufferedAction(doer, nil, ACTIONS.DROP, item, doer:GetPosition()):GetActionString()
+end
+
 function Inv:UpdateCursorText()
     local inv_item = self:GetCursorItem()
     local active_item = self.cursortile ~= nil and self.cursortile.item or nil
@@ -806,7 +810,7 @@ function Inv:UpdateCursorText()
                     end
                 end
 
-                table.insert(str, TheInput:GetLocalizedControl(controller_id, CONTROL_INVENTORY_DROP) .. " " .. STRINGS.UI.HUD.DROP)
+                table.insert(str, TheInput:GetLocalizedControl(controller_id, CONTROL_INVENTORY_DROP) .. " " .. GetDropActionString(self.owner, inv_item))
             end
         else 
             if is_equip_slot then
@@ -822,7 +826,7 @@ function Inv:UpdateCursorText()
                         inv_item.replica.inventoryitem:CanGoInContainer() then
                         table.insert(str, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT) .. " " .. STRINGS.UI.HUD.UNEQUIP)
                     else
-                        table.insert(str, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT) .. " " .. STRINGS.UI.HUD.DROP)
+                        table.insert(str, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT) .. " " .. GetDropActionString(self.owner, inv_item))
                     end
                 end
             else
@@ -839,7 +843,7 @@ function Inv:UpdateCursorText()
 
                 if inv_item ~= nil and active_item == nil then
                     table.insert(str, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT) .. " " .. STRINGS.UI.HUD.SELECT)
-                    table.insert(str, TheInput:GetLocalizedControl(controller_id, CONTROL_INVENTORY_DROP) .. " " .. STRINGS.UI.HUD.DROP)
+                    table.insert(str, TheInput:GetLocalizedControl(controller_id, CONTROL_INVENTORY_DROP) .. " " .. GetDropActionString(self.owner, inv_item))
                 elseif inv_item ~= nil and active_item ~= nil then
                     if inv_item.prefab == active_item.prefab and inv_item.skinname == active_item.skinname and active_item.replica.stackable ~= nil then
                         table.insert(str, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT) .. " " .. STRINGS.UI.HUD.PUT)

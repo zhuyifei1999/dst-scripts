@@ -50,6 +50,7 @@ local function fn()
 
     inst:AddTag("smallcreature")
     inst:AddTag("companion")
+    inst:AddTag("soulless")
 
     inst.entity:SetPristine()
 

@@ -20,7 +20,7 @@ return {
         {
         	WRONGKEY = "That doesn't go there!",
         	KLAUS = "It's too dangerous!",
-        	QUAGMIRE_WRONGKEY = "Aw...It's the wrong one.",
+        	QUAGMIRE_WRONGKEY = "Aw... It's the wrong one.",
         },
         ACTIVATE = 
 		{
@@ -324,7 +324,7 @@ return {
 			ATTACKER = "Hey %s, you look upset about something.",
 			MURDERER = "You're just a big bully!",
 			REVIVER = "%s's nice! I wish he'd stop messing up our head fur, though.",
-			GHOST = "I'm sure you're the strongest ghost, %s. Let's get a heart though.",
+			GHOST = "I'm sure you're the strongest ghost. Let's get a heart though.",
 			FIRESTARTER = "%s, no!! Fire can hurt you!",
 		},
 		WAXWELL =
@@ -350,7 +350,7 @@ return {
 			GENERIC = "Hi %s! How's Bernie?",
 			ATTACKER = "%s's playing with fire. Err...",
 			MURDERER = "You're gonna get burned, %s!",
-			REVIVER = "%s's like a burnt marshmallow. Crispy on the outside, gooey on the inside!",
+			REVIVER = "She's like a burnt marshmallow. Crispy outside, super mushy inside!",
 			GHOST = "Uh-oh! Does that hurt, %s?",
 			FIRESTARTER = "Another fire? Well, as long as you're happy...",
 		},
@@ -360,7 +360,7 @@ return {
 			ATTACKER = "Are you angry at me, %s?",
 			MURDERER = "We're taking my friendship bracelet back!",
 			REVIVER = "%s always plays nice with ghosts.",
-			GHOST = "Don't worry, %s! Our spider friends will help bring you back!",
+			GHOST = "Don't worry! Our spider friends will help bring you back!",
 			FIRESTARTER = "Uhh, uh-oh, let's play a different game, %s.",
 		},
 		WOODIE =
@@ -419,7 +419,15 @@ return {
             GHOST = "Aw, I'm sorry that happened to you, %s.",
             FIRESTARTER = "Don't light fires, %s!",
         },
-
+        WORTOX =
+        {
+            GENERIC = "Hey %s! Your horns look nice!",
+            ATTACKER = "Hey, play nice, %s!",
+            MURDERER = "Oh no! %s, what did you do!",
+            REVIVER = "Grandpa always said laughter was the best medicine!",
+            GHOST = "Oh no, %s! You're hurt!",
+            FIRESTARTER = "Don't play tricks, Mr. Imp!",
+        },
         MULTIPLAYER_PORTAL = "It's pretty... pretty scary!",
         MULTIPLAYER_PORTAL_MOONROCK = "Gosh. It's so sparkly!",
         CONSTRUCTION_PLANS = "We should build this.",

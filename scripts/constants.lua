@@ -303,7 +303,7 @@ ROG_CHARACTERLIST =
 
 DST_CHARACTERLIST =
 {
-    "wilson", "willow", "wolfgang", "wendy", "wx78", "wickerbottom", "woodie", "wes", "waxwell", "wathgrithr", "webber", "winona"
+    "wilson", "willow", "wolfgang", "wendy", "wx78", "wickerbottom", "woodie", "wes", "waxwell", "wathgrithr", "webber", "winona", "wortox",
 }
 
 require("prefabskins")
@@ -385,6 +385,7 @@ CHARACTER_GENDERS =
 		"wolfgang",
 		"wes",
 		"webber",
+		"wortox",
 	},
 	ROBOT = {
 		"wx78",
@@ -1167,6 +1168,7 @@ CHARACTER_COLOURS =
     wathgrithr   = WEBCOLOURS.OTHERBLUE,
     webber       = WEBCOLOURS.SPRINGGREEN,
     winona       = WEBCOLOURS.CRIMSON,
+    wortox       = WEBCOLOURS.RED, --VITO do something here
     default      = WEBCOLOURS.THISTLE,
 }
 

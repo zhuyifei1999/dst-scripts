@@ -419,6 +419,15 @@ return {
             GHOST = "Wolfgang will fix little %s with heart.",
             FIRESTARTER = "%s's fires is make Wolfgang nervous.",
         },
+        WORTOX =
+        {
+            GENERIC = "Is scary horn man, %s!",
+            ATTACKER = "Your game is not nice, little horn man!",
+            MURDERER = "Horn man is evil!",
+            REVIVER = "Scary horn man is nice sometimes.",
+            GHOST = "Fluffy ghost!",
+            FIRESTARTER = "Fire is not game, horn man.",
+        },
 
         MULTIPLAYER_PORTAL = "Why door not crumble under mighty Wolfgang punches?!",
         MULTIPLAYER_PORTAL_MOONROCK = "Is strong like Wolfgang.",

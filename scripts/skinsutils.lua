@@ -37,7 +37,6 @@ EVENT_ICONS =
 	event_hallowed = {"HALLOWED"}
 }
 
--- Also update GetBuildForItem!
 local function GetSpecialItemCategories()
 	-- We build this in a function because these symbols don't exist when this
 	-- file is first loaded.
@@ -98,8 +97,16 @@ function GetNextRarity(rarity)
 	return rarities[rarity] or ""
 end
 
-function GetFrameSymbolForRarity( rarity )
+function IsHeirloomRarity( rarity )
 	if rarity == "HeirloomElegant" or rarity == "HeirloomDistinguished" or rarity == "HeirloomSpiffy" or rarity == "HeirloomClassy" then
+		return true
+	end
+	return false
+end
+
+
+function GetFrameSymbolForRarity( rarity )
+	if IsHeirloomRarity(rarity) then
 		return "heirloom"
 	end
 	return string.lower( rarity )
@@ -110,7 +117,7 @@ function GetBuildForItem(name)
 	local skin_data = GetSkinData(name)
 	if skin_data.build_name_override ~= nil then
 		return skin_data.build_name_override
-	end
+		end
 
 	return name
 end
@@ -418,10 +425,6 @@ function GetRarityForItem(item)
 		rarity = "Common"
 	end
 
-    if rarity == "Character" then --hack for restricted character rarity items
-		rarity = "Common"
-    end
-
 	return rarity
 end
 
@@ -478,7 +481,7 @@ function IsUserCommerceAllowedOnItemData(item_data)
         return false
     end
     return IsUserCommerceAllowedOnItemType(item_data.item_key)
-    end
+end
 
 function IsUserCommerceAllowedOnItemType(item_key)
 	if TheInventory:CheckOwnership(item_key) then
@@ -493,7 +496,54 @@ function IsUserCommerceSellAllowedOnItem(item_type)
     return num_owned > 0 and TheItems:GetBarterSellPrice(item_type) ~= 0
 end
 
+function GetCharacterRequiredForItem(item_type)
+	local data = GetSkinData(item_type)
+	if not data.is_restricted and data.type == "base" then --ignore is_restricted as they'd block themselves from being weaved, ooops :)
+		return data.base_prefab
+	end
+	print("Unexpected item_type passed to GetCharacterRequiredForItem", item_type)
+end
+
+function IsUserCommerceBuyRestrictedDueType(item_type)
+	local data = GetSkinData(item_type)
+	if data.rarity_modifier == nil then
+		return true
+	end
+	return false
+end
+
+function IsUserCommerceBuyRestrictedDueToOwnership(item_type)
+	local data = GetSkinData(item_type)
+	if not data.is_restricted and data.type == "base" then --ignore is_restricted as they'd block themselves from being weaved, ooops :)
+		if not IsCharacterOwned(data.base_prefab) then
+			return true
+		end
+	end
+	return false
+end
+
+function IsPackRestrictedDueToOwnership(item_type)
+	local pack_includes_character = {}
+	for _,v in pairs(GetPurchasePackOutputItems(item_type)) do
+		local data = GetSkinData(v)
+		if data.is_restricted then
+			pack_includes_character[data.base_prefab] = true
+		end
+	end
+	for _,v in pairs(GetPurchasePackOutputItems(item_type)) do
+		local data = GetSkinData(v)
+		if data.type == "base" and pack_includes_character[data.base_prefab] == nil and not IsCharacterOwned(data.base_prefab) then
+			return true, data.base_prefab
+		end
+	end
+	return false
+end
+
 function IsUserCommerceBuyAllowedOnItem(item_type)
+	if IsUserCommerceBuyRestrictedDueToOwnership(item_type) then
+		return false
+	end
+
     local num_owned = TheInventory:GetOwnedItemCountForCommerce(item_type)
 	return num_owned == 0 and TheItems:GetBarterBuyPrice(item_type) ~= 0
 end
@@ -585,12 +635,6 @@ local function _ItemStringRedirect(item)
     if string.sub( item, -8 ) == "_builder" then
 		item = string.sub( item, 1, -9 )
 	end
-    if IsDefaultCharacterSkin(item) then
-        local data = GetSkinData(item)
-        if not data.is_restricted then
-            item = "none"
-        end
-    end
     if string.sub( item, -8) == "default1" then
         item = "none"
     end
@@ -904,6 +948,7 @@ function _BonusItemRewarded(bonus_item, item_counts)
 	end
 	return false
 end
+
 function WillUnravelBreakEnsemble(item_type)
 	local in_collection, bonus_item = IsItemInCollection(item_type)
 
@@ -920,20 +965,50 @@ function WillUnravelBreakEnsemble(item_type)
 	return false --not rewarded already
 end
 
+function WillUnravelBreakRestrictedCharacter(item_type)
+	local item_counts = GetOwnedItemCounts()
+    if item_counts[item_type] == 1 and IsDefaultCharacterSkin( item_type ) then
+		local data = GetSkinData( item_type )
+		if data.is_restricted then
+			return true
+		end
+	end
+	return false
+end
+
+function HasHeirloomItem(herocharacter)
+	for _,item_key in ipairs(SKIN_AFFINITY_INFO[herocharacter] or {}) do
+		local rarity = GetRarityForItem(item_key)
+		if IsHeirloomRarity(rarity) then
+			return true
+		end
+	end
+	return false
+end
+
 function GetSkinCollectionCompletionForHero(herocharacter)
-    assert(herocharacter)
-    local num_owned = 0
-    local num_need = 0
+	assert(herocharacter)
+	--we'll use the shared build name instead of the item_key
+	local bonus = HasHeirloomItem(herocharacter)
+	local owned_items = {}
+	local need_items = {}
+	
     for i,item_key in ipairs(SKIN_AFFINITY_INFO[herocharacter] or {}) do
 		if ShouldDisplayItemInCollection(item_key) then
+			local build = GetBuildForItem(item_key)
 			if TheInventory:CheckOwnership(item_key) then
-				num_owned = num_owned + 1
+				owned_items[build] = true
+				need_items[build] = nil
 			else
-				num_need = num_need + 1
+				bonus = false
+				if owned_items[build] == nil then
+					need_items[build] = true
+				end
 			end
 		end
-    end
-    return num_owned, num_need
+	end
+
+    return GetTableSize(owned_items), GetTableSize(need_items), bonus
 end
 
 function GetNullFilter()
@@ -1047,6 +1122,11 @@ function ShouldDisplayItemInCollection(item_type)
     return true
 end
 
+function IsRestrictedCharacter( prefab )
+	local data = GetSkinData(prefab.."_none")
+	return data.is_restricted
+end
+
 function IsCharacterOwned( prefab )
 	return IsDefaultSkinOwned(prefab.."_none")
 end
@@ -1054,7 +1134,7 @@ end
 function IsDefaultSkinOwned( item_key )
     if IsDefaultCharacterSkin( item_key ) then
 		local data = GetSkinData(item_key)
-        if data.is_restricted then
+		if data.is_restricted then
             return TheInventory:CheckOwnership(item_key)
         end
         return true
@@ -1265,12 +1345,6 @@ function SetSkinDLCEntitlementReceived(entitlement)
 	Profile:SetEntitlementReceived(entitlement)
 end
 
-function SetSkinDLCEntitlementOwned(entitlement)
-	if not Profile:IsEntitlementReceived(entitlement) then
-		AddNewSkinDLCEntitlement(entitlement)
-	end
-	Profile:SetEntitlementReceived(entitlement)
-end
 
 local newSkinDLCEntitlements = {} --to test DLC gifting popup, put a pack item type in this table
 function AddNewSkinDLCEntitlement(entitlement)
@@ -1325,4 +1399,44 @@ function MakeSkinDLCPopup(_cb)
 			_cb()
 		end
 	end
+end
+
+
+function DisplayCharacterUnownedPopup(character, skins_subscreener)
+	local PopupDialogScreen = require "screens/redux/popupdialog"
+	local body_str = subfmt(STRINGS.UI.LOBBYSCREEN.UNOWNED_CHARACTER_BODY, {character = STRINGS.CHARACTER_NAMES[character] })
+    local unowned_popup = PopupDialogScreen(STRINGS.UI.LOBBYSCREEN.UNOWNED_CHARACTER_TITLE, body_str,
+    {
+        --Note(Peter): this is atrocious, but I don't see a better way to talk to the screen panel way down. Maybe implement a UI event system?
+        {text=STRINGS.UI.BARTERSCREEN.COMMERCE_BUY, cb = function()
+            TheFrontEnd:PopScreen()
+            skins_subscreener.sub_screens["base"].picker:DoCommerceForDefaultItem(character.."_none")
+        end},
+        {text=STRINGS.UI.LOBBYSCREEN.VISIT_SHOP, cb = function()
+            TheFrontEnd:PopScreen()
+            skins_subscreener.sub_screens["base"].picker:DoShopForDefaultItem(character.."_none")
+        end},
+        {text=STRINGS.UI.POPUPDIALOG.OK, cb = function()
+            TheFrontEnd:PopScreen()
+        end},
+    })
+    TheFrontEnd:PushScreen(unowned_popup)
+end
+
+function DisplayCharacterUnownedPopupPurchase(character, purchase_screen)
+	local PopupDialogScreen = require "screens/redux/popupdialog"
+	local body_str = subfmt(STRINGS.UI.PURCHASEPACKSCREEN.UNOWNED_CHARACTER_BODY, {character = STRINGS.CHARACTER_NAMES[character] })
+	local button_txt = subfmt(STRINGS.UI.PURCHASEPACKSCREEN.VIEW_REQUIRED, {character = STRINGS.CHARACTER_NAMES[character] })
+	
+	local unowned_popup = PopupDialogScreen(STRINGS.UI.LOBBYSCREEN.UNOWNED_CHARACTER_TITLE, body_str,
+    {
+        {text=button_txt, cb = function()
+			purchase_screen:UpdateFilterToItem(character.."_none")
+			TheFrontEnd:PopScreen()
+        end},
+        {text=STRINGS.UI.POPUPDIALOG.OK, cb = function()
+            TheFrontEnd:PopScreen()
+        end},
+    })
+    TheFrontEnd:PushScreen(unowned_popup)
 end

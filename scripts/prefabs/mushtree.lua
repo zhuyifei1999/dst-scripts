@@ -59,20 +59,22 @@ local REMOVABLE =
 
 local function ontimerdone(inst, data)
     if data.name == "decay" then
+        local x, y, z = inst.Transform:GetWorldPosition()
         if inst:IsAsleep() then
             -- before we disappear, clean up any crap left on the ground
             -- too many objects is as bad for server health as too few!
-            local x, y, z = inst.Transform:GetWorldPosition()
-            local ents = TheSim:FindEntities(x, y, z, 6, { "_inventoryitem" }, { "INLIMBO", "fire" })
-            -- leave at least one
-            if #ents > 1 then
-                table.remove(ents, 1)
-                for i, ent in ipairs(ents) do
-                    if REMOVABLE[ent.prefab] then
-                        ent:Remove()
+            local leftone = false
+            for i, v in ipairs(TheSim:FindEntities(x, y, z, 6, { "_inventoryitem" }, { "INLIMBO", "fire" })) do
+                if REMOVABLE[v.prefab] then
+                    if leftone then
+                        v:Remove()
+                    else
+                        leftone = true
                     end
                 end
             end
+        else
+            SpawnPrefab("small_puff").Transform:SetPosition(x, y, z)
         end
         inst:Remove()
     end
@@ -550,6 +552,7 @@ function treeset(name, data, build, bloombuild)
         name.."_stump",
         name.."_burntfx",
         name.."_bloom_burntfx",
+        "small_puff",
     }
 
     table.insert(treeprefabs, Prefab(name, maketree(name, data), assets, prefabs))

@@ -376,7 +376,7 @@ return {
 			ATTACKER = "%s is plotting something dastardly with that axe.",
 			MURDERER = "I'll send you someplace much nicer than this, %s.",
 			REVIVER = "Abigail likes you, %s. But she likes Lucy more.",
-			GHOST = "We'll get a heart, but are you sure you want to come back, %s?",
+			GHOST = "We'll get a heart, but are you sure you want to come back?",
 			BEAVER = "He pinky-promised I'd get to ride on his shoulders. Such lies.",
 			BEAVERGHOST = "The curse haunts you even in death, %s?",
 			FIRESTARTER = "Fire setting does not seem in your best interest...",
@@ -425,6 +425,15 @@ return {
             REVIVER = "Hi %s. Abigail says \"thank-you\".",
             GHOST = "You can't escape that way, %s. I've tried.",
             FIRESTARTER = "Is fire important in your line of work...?",
+        },
+        WORTOX =
+        {
+            GENERIC = "Heehee. You're funny, %s.",
+            ATTACKER = "You haven't been a good imp today, %s.",
+            MURDERER = "Abby and I will put your souls to rest!",
+            REVIVER = "%s is reliable when it counts.",
+            GHOST = "Did you lose a game, %s?",
+            FIRESTARTER = "Abby and I know what you did, %s.",
         },
 
 		GLOMMER = "Well aren't you a happy little fuzzball. Die.",

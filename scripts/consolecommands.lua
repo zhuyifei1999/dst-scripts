@@ -617,11 +617,12 @@ function c_armor(player)
     if player ~= nil then
         SuUsed("c_armor", true)
         player.components.health:SetAbsorptionAmount(1)
-    end
+        print("Enabled full absorption on " .. tostring(player.userid))
+	end
 end
 
 function c_armour(player)
-	c_armour(player)
+	c_armor(player)
 end
 
 function c_find(prefab, radius, inst)

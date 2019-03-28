@@ -366,7 +366,15 @@ function ItemExplorer:_GetActionInfoText(item_data)
             local doodad_value = TheItems:GetBarterBuyPrice(item_data.item_key)
             text = subfmt(STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_BUY, {doodad_value=doodad_value})
         else
-            text = STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_NOBUY
+            if IsUserCommerceBuyRestrictedDueToOwnership(item_data.item_key) then
+                text = subfmt(STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_NOBUY_UNOWNED, { character = STRINGS.CHARACTER_NAMES[GetCharacterRequiredForItem(item_data.item_key)] } )
+            else
+                if IsUserCommerceBuyRestrictedDueType(item_data.item_key) then
+                    text = STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_NOBUY_NEVER
+                else
+                    text = STRINGS.UI.BARTERSCREEN.COMMERCE_INFO_NOBUY_NOT_ACTIVE
+                end
+            end
         end
     end
     
@@ -410,9 +418,42 @@ function ItemExplorer:_ApplyItemToMarket(item_data)
     end
 end
 
+function ItemExplorer:DoCommerceForDefaultItem(default_item_key)
+    --This relies on the first item in this list matching the expected item key. If we can't find it, maybe we can search to find the selected item.
+    local w = self.scroll_list:GetListWidgets()[1]    
+    if w.data.item_key == default_item_key then
+        w:onclick()
+        self:_LaunchCommerce()
+    else
+        print("Failed to launch commerce due to mismatched item key.")
+    end
+end
+
+function ItemExplorer:DoShopForDefaultItem(default_item_key)
+    --This relies on the first item in this list matching the expected item key. If we can't find it, maybe we can search to find the selected item.
+    local w = self.scroll_list:GetListWidgets()[1]    
+    if w.data.item_key == default_item_key then
+        w:onclick()
+        self.store_btn:onclick()
+    else
+        print("Failed to launch shop due to mismatched item key.")
+    end
+end
+                
 function ItemExplorer:_LaunchCommerce()
     local item_key = self.last_interaction_target.item_key
-	if WillUnravelBreakEnsemble( item_key ) then
+    if WillUnravelBreakRestrictedCharacter( item_key ) then
+        local data = GetSkinData(item_key)
+        local character = data.base_prefab
+        local body = subfmt(STRINGS.UI.BARTERSCREEN.UNRAVEL_WARNING_RESTRICTED_BODY, {character=STRINGS.CHARACTER_NAMES[character]})
+
+		TheFrontEnd:PushScreen(PopupDialogScreen(
+			STRINGS.UI.BARTERSCREEN.UNRAVEL_WARNING_TITLE,
+			body,
+			{{ text = STRINGS.UI.BARTERSCREEN.OK, cb = function() TheFrontEnd:PopScreen() self:_DoCommerce(item_key) end },
+			 { text = STRINGS.UI.BARTERSCREEN.CANCEL, cb = function() TheFrontEnd:PopScreen() end }}))
+		return
+    elseif WillUnravelBreakEnsemble( item_key ) then
         local _, reward_item = IsItemInCollection(item_key)
         local body = subfmt(STRINGS.UI.BARTERSCREEN.UNRAVEL_WARNING_BODY, {ensemble_name=STRINGS.SET_NAMES[reward_item], reward_name=GetSkinName(reward_item)})
         

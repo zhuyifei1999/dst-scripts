@@ -425,7 +425,16 @@ return {
             GHOST = "%s hath fallen! A heart!",
             FIRESTARTER = "%s's flames could temper steel.",
         },
-
+        WORTOX =
+        {
+            GENERIC = "Hail, fire giant %s!",
+            ATTACKER = "Back! Back, beast!",
+            MURDERER = "%s will pay for his trespasses!",
+            REVIVER = "%s abides by a warrior's code.",
+            GHOST = "An honorable Viking leaves no one behind!",
+            FIRESTARTER = "%s stepped forth from Hel's flames!",
+        },
+        
         LAVA_POND_ROCK = "Stone belched forth by the earth's fiery heart!",
 
         MULTIPLAYER_PORTAL = "It makes me long for the stage!",
@@ -1955,7 +1964,7 @@ return {
         HALLOWEENPOTION_DRINKS_WEAK = "A meager reward for my troubles.",
         HALLOWEENPOTION_DRINKS_POTENT = "Fortune hath smiled upon me today!", 
         HALLOWEENPOTION_FIRE_FX = "Hel's fuel.",
-        HALLOWEENPOTION_BRAVERY = "'tis Berserker magic.",
+        HALLOWEENPOTION_BRAVERY = "Tis Berserker magic.",
         MADSCIENCE_LAB = "Be there method to this madness?",
         LIVINGTREE_ROOT = "I hath birthed the root of terror!",
         LIVINGTREE_SAPLING = "It bears the promise of horridness!",

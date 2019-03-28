@@ -578,6 +578,13 @@ PREFAB_SKINS = {
 		"woodie_treeguard_d",
 		"woodie_victorian",
 	},
+	wortox = 
+	{
+		"wortox_minotaur",
+		"wortox_none",
+		"wortox_original",
+		"wortox_survivor",
+	},
 	wx78 = 
 	{
 		"wx78_combatant",

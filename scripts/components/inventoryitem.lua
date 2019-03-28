@@ -18,6 +18,10 @@ local function oncangoincontainer(self, cangoincontainer)
     self.inst.replica.inventoryitem:SetCanGoInContainer(cangoincontainer)
 end
 
+local function oncanonlygoinpocket(self, canonlygoinpocket)
+    self.inst.replica.inventoryitem:SetCanOnlyGoInPocket(canonlygoinpocket)
+end
+
 local function OnStackSizeChange(inst, data)
     local self = inst.components.inventoryitem
     if self.owner ~= nil then
@@ -35,6 +39,7 @@ local InventoryItem = Class(function(self, inst)
     self.isnew = true
     self.nobounce = false
     self.cangoincontainer = true
+    self.canonlygoinpocket = false
     self.keepondeath = false
     self.atlasname = nil
     self.imagename = nil
@@ -54,6 +59,7 @@ nil,
     owner = onowner,
     canbepickedup = oncanbepickedup,
     cangoincontainer = oncangoincontainer,
+    canonlygoinpocket = oncanonlygoinpocket,
 })
 
 function InventoryItem:OnRemoveFromEntity()

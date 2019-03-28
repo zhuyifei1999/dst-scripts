@@ -187,8 +187,12 @@ ACTION_MOD_IDS = {} --This will be filled in when mods add actions via AddAction
 
 ACTIONS.EAT.fn = function(act)
     local obj = act.target or act.invobject
-    if obj ~= nil and obj.components.edible ~= nil and act.doer.components.eater ~= nil then
-        return act.doer.components.eater:Eat(obj, act.doer)
+    if obj ~= nil then
+        if obj.components.edible ~= nil and act.doer.components.eater ~= nil then
+            return act.doer.components.eater:Eat(obj, act.doer)
+        elseif obj.components.soul ~= nil and act.doer.components.souleater ~= nil then
+            return act.doer.components.souleater:EatSoul(obj)
+        end
     end
 end
 
@@ -399,6 +403,7 @@ ACTIONS.DROP.strfn = function(act)
     if act.invobject ~= nil and not act.invobject:HasActionComponent("deployable") then
         return (act.invobject:HasTag("trap") and "SETTRAP")
             or (act.invobject:HasTag("mine") and "SETMINE")
+            or (act.invobject:HasTag("soul") and "FREESOUL")
             or (act.invobject.prefab == "pumpkin_lantern" and "PLACELANTERN")
             or nil
     end
@@ -1325,10 +1330,10 @@ ACTIONS.MURDER.fn = function(act)
             act.doer.SoundEmitter:PlaySound(murdered.components.health.murdersound)
         end
 
+        local stacksize = murdered.components.stackable ~= nil and murdered.components.stackable:StackSize() or 1
         if murdered.components.lootdropper ~= nil then
             murdered.causeofdeath = act.doer
             local pos = Vector3(x, y, z)
-            local stacksize = murdered.components.stackable ~= nil and murdered.components.stackable:StackSize() or 1
             for i = 1, stacksize do
                 local loots = murdered.components.lootdropper:GenerateLoot()
                 for k, v in pairs(loots) do
@@ -1340,7 +1345,8 @@ ACTIONS.MURDER.fn = function(act)
             end
         end
 
-        act.doer:PushEvent("killed", { victim = murdered })
+        act.doer:PushEvent("murdered", { victim = murdered, stackmult = stacksize })
+        act.doer:PushEvent("killed", { victim = murdered, stackmult = stacksize })
         murdered:Remove()
 
         return true
@@ -1463,10 +1469,24 @@ ACTIONS.CASTSPELL.fn = function(act)
     end
 end
 
+ACTIONS.BLINK.strfn = function(act)
+    return act.invobject == nil and act.doer ~= nil and act.doer:HasTag("soulstealer") and "SOUL" or nil
+end
 
 ACTIONS.BLINK.fn = function(act)
-    if act.invobject and act.invobject.components.blinkstaff then
-        return act.invobject.components.blinkstaff:Blink(act.pos, act.doer)
+    if act.invobject ~= nil then
+        if act.invobject.components.blinkstaff ~= nil then
+            return act.invobject.components.blinkstaff:Blink(act.pos, act.doer)
+        end
+    elseif act.doer ~= nil
+        and act.doer.sg ~= nil
+        and act.doer.sg.currentstate.name == "portal_jumpin_pre"
+        and act.pos ~= nil
+        and act.doer.components.inventory ~= nil
+        and act.doer.components.inventory:Has("wortox_soul", 1) then
+        act.doer.components.inventory:ConsumeByName("wortox_soul", 1)
+        act.doer.sg:GoToState("portal_jumpin", act.pos)
+        return true
     end
 end
 
