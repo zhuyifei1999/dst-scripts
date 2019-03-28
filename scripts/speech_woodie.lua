@@ -418,7 +418,16 @@ return {
             GHOST = "Yer looking a little pale, %s.",
             FIRESTARTER = "%s betrays the forest!",
         },
-
+        WORTOX =
+        {
+            GENERIC = "%s, buddy, hey!",
+            ATTACKER = "Trust me, you ain't got the chops, %s.",
+            MURDERER = "I'll hang those horns on the wall of my cabin!",
+            REVIVER = "That was mighty kind of you, %s.",
+            GHOST = "That soul sapper's lookin' like a real sap now.",
+            FIRESTARTER = "You better not burn any of my precious trees!",
+        },
+        
 		MULTIPLAYER_PORTAL = "That'd be the thing I fell through, eh.",
 		MULTIPLAYER_PORTAL_MOONROCK = "Wonder where it goes.",
         CONSTRUCTION_PLANS = "Well, better get building.",

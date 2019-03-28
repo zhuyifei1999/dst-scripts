@@ -1,5 +1,3 @@
-local DEFAULT_ATLAS = "images/inventoryimages.xml"
-
 local InventoryItem = Class(function(self, inst)
     self.inst = inst
 
@@ -85,6 +83,14 @@ function InventoryItem:CanGoInContainer()
     return self.classified ~= nil and self.classified.cangoincontainer:value()
 end
 
+function InventoryItem:SetCanOnlyGoInPocket(canonlygoinpocket)
+    self.classified.canonlygoinpocket:set(canonlygoinpocket)
+end
+
+function InventoryItem:CanOnlyGoInPocket()
+    return self.classified ~= nil and self.classified.canonlygoinpocket:value()
+end
+
 function InventoryItem:SetImage(imagename)
     self.classified.image:set(imagename ~= nil and (imagename..".tex") or 0)
 end
@@ -97,14 +103,14 @@ function InventoryItem:GetImage()
 end
 
 function InventoryItem:SetAtlas(atlasname)
-    self.classified.atlas:set(atlasname ~= nil and atlasname ~= DEFAULT_ATLAS and resolvefilepath(atlasname) or 0)
+    self.classified.atlas:set(atlasname ~= nil and resolvefilepath(atlasname) or 0)
 end
 
 function InventoryItem:GetAtlas()
     return self.classified ~= nil and
         self.classified.atlas:value() ~= 0 and
         self.classified.atlas:value() or
-        DEFAULT_ATLAS
+        GetInventoryItemAtlas(self:GetImage())
 end
 
 function InventoryItem:SetOwner(owner)

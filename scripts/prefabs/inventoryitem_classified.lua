@@ -140,6 +140,7 @@ local function fn()
     inst.image = net_hash(inst.GUID, "inventoryitem.image", "imagedirty")
     inst.atlas = net_hash(inst.GUID, "inventoryitem.atlas", "imagedirty")
     inst.cangoincontainer = net_bool(inst.GUID, "inventoryitem.cangoincontainer")
+    inst.canonlygoinpocket = net_bool(inst.GUID, "inventoryitem.canonlygoinpocket")
     inst.src_pos =
     {
         isvalid = net_bool(inst.GUID, "inventoryitem.src_pos.isvalid"),
@@ -160,6 +161,7 @@ local function fn()
     inst.image:set(0)
     inst.atlas:set(0)
     inst.cangoincontainer:set(true)
+    inst.canonlygoinpocket:set(false)
     inst.src_pos.isvalid:set(false)
     inst.percentused:set(255)
     inst.perish:set(63)

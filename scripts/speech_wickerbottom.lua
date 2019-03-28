@@ -393,7 +393,7 @@ return
         WICKERBOTTOM = 
         {
             GENERIC = "Ah, greetings %s! Fancy seeing you here.",
-            ATTACKER = "%s's immoral acts are putting holes in my multiverse speculations.",
+            ATTACKER = "%s's immorality is putting holes in my multiverse speculations.",
             MURDERER = "I am my own worst critic!",
             REVIVER = "Our knowledge comes in handy, doesn't it, %s?",
             GHOST = "All our self-help books will finally be put to use, hmm %s?",
@@ -434,6 +434,15 @@ return
             REVIVER = "%s is quite the Jane of all trades.",
             GHOST = "Tsk. Were you wearing your hardhat, dear?",
             FIRESTARTER = "That was not a regulation fire, dear.",
+        },
+        WORTOX =
+        {
+            GENERIC = "You must tell me more about your species sometime, dear.",
+            ATTACKER = "You'd best play nice now, %s.",
+            MURDERER = "Enough tricks, %s! I'll finish you!",
+            REVIVER = "Thank-you for the assistance, %s.",
+            GHOST = "That's what you get for causing mischief, %s.",
+            FIRESTARTER = "I'll not tolerate that behavior, %s!",
         },
 
         MULTIPLAYER_PORTAL = "Hmm... This may require further reading.",

@@ -123,20 +123,25 @@ local purchasefn =
 
 local onPurchaseClickFn =
     function( self )
-        if OwnsSkinPack(self.item_type) then
-            local warning = PopupDialogScreen(STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_WARNING_TITLE, STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_WARNING_DESC, 
-                        {
-                            {text=STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_WARNING_OK, cb = function() 
-                                TheFrontEnd:PopScreen()
-                            purchasefn( self ) 
-                            end },
-                            {text=STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_WARNING_CANCEL, cb = function() 
-                                TheFrontEnd:PopScreen()
-                            end },
-                        })
-            TheFrontEnd:PushScreen( warning )    
+        local restricted_pack, missing_character = IsPackRestrictedDueToOwnership(self.item_type)
+        if restricted_pack then
+            DisplayCharacterUnownedPopupPurchase(missing_character, self.screen_self)
         else
-        purchasefn( self )
+            if OwnsSkinPack(self.item_type) then
+                local warning = PopupDialogScreen(STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_WARNING_TITLE, STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_WARNING_DESC, 
+                            {
+                                {text=STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_WARNING_OK, cb = function() 
+                                    TheFrontEnd:PopScreen()
+                                    purchasefn( self ) 
+                                end },
+                                {text=STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_WARNING_CANCEL, cb = function() 
+                                    TheFrontEnd:PopScreen()
+                                end },
+                            })
+                TheFrontEnd:PushScreen( warning )    
+            else
+                purchasefn( self )
+            end
         end
     end
 
@@ -207,9 +212,10 @@ local set_data =
 
 -------------------------------------------------------------------
 
-local PurchasePackPopup = Class(Screen, function(self, iap_def)
+local PurchasePackPopup = Class(Screen, function(self, iap_def, screen_self)
     Screen._ctor(self, "PurchasePackPopup")
-
+    
+    self.screen_self = screen_self
     self.black = self:AddChild( TEMPLATES.BackgroundTint() )
     self.proot = self:AddChild( TEMPLATES.ScreenRoot() )
 
@@ -412,6 +418,7 @@ end
 local PurchaseWidget = Class(Widget, function(self, screen_self)
 	Widget._ctor(self, "PurchaseWidget")
 
+    self.screen_self = screen_self
 	self.root = add_details( self, self, 1 )
     self.root:SetScale(0.90)
     self.item_type = nil
@@ -452,7 +459,7 @@ function PurchaseWidget:ApplyDataToWidget(iap_def)
 
         set_data( self, iap_def )
 
-        self.info_button:SetOnClick( function() TheFrontEnd:PushScreen( PurchasePackPopup( iap_def ) ) end )
+        self.info_button:SetOnClick( function() TheFrontEnd:PushScreen( PurchasePackPopup( iap_def, self.screen_self ) ) end )
         self.button:SetOnClick( function() onPurchaseClickFn( self ) end )
         self.button:SetText(STRINGS.UI.PURCHASEPACKSCREEN.PURCHASE_BTN)
 
@@ -489,7 +496,7 @@ function PurchaseWidget:ApplyDataToWidget(iap_def)
         self.savings:SetPosition(-168,-58)
         self.button:SetPosition(157,-57)
         self.info_button:SetPosition(-212,-57)
-        self.text_root:SetPosition(80, 0)
+        self.text_root:SetPosition(90, 0)
 
         if OwnsSkinPack(self.item_type) then
             self.purchased:Show()
@@ -620,7 +627,7 @@ local total_width = label_width + widget_width + spacing
 local bg_width = spacing + total_width + spacing + 10
 local bg_height = height + 2
 
- function PurchasePackScreen:_CreateSpinnerFilter( name, text, spinnerOptions )
+function PurchasePackScreen:_CreateSpinnerFilter( name, text, spinnerOptions )
 
     local group = TEMPLATES.LabelSpinner(text, spinnerOptions, label_width, widget_width, height, spacing, CHATFONT, 20)
     self.side_panel:AddChild(group)
@@ -637,6 +644,18 @@ local bg_height = height + 2
     group.name = name
 
     return group
+end
+
+local function build_type_options(initial_item_key)
+    local type_options = { { text = STRINGS.UI.PURCHASEPACKSCREEN.FILTER_ALL, data = "ALL" }, { text = STRINGS.UI.PURCHASEPACKSCREEN.FILTER_ITEMS, data = "ITEMS" }  }
+    for _,character in pairs(DST_CHARACTERLIST) do
+        table.insert( type_options, { text = STRINGS.NAMES[string.upper(character)], data = character } )
+    end
+    if initial_item_key ~= nil then
+        table.insert(type_options, 1, { text = GetSkinName(initial_item_key), data = initial_item_key });
+    end
+
+    return type_options
 end
 
 function PurchasePackScreen:_BuildPurchasePanel()
@@ -709,13 +728,7 @@ function PurchasePackScreen:_BuildPurchasePanel()
             local owned_options = { { text = STRINGS.UI.PURCHASEPACKSCREEN.FILTER_ALL, data = "ALL" }, { text = STRINGS.UI.PURCHASEPACKSCREEN.FILTER_UNOWNED, data = "UNOWNED" } }
             self.filters[FILTER_OWNED_INDEX] = self:_CreateSpinnerFilter( "OWNED", STRINGS.UI.PURCHASEPACKSCREEN.OWNED_FILTER, owned_options )
             
-            local type_options = { { text = STRINGS.UI.PURCHASEPACKSCREEN.FILTER_ALL, data = "ALL" }, { text = STRINGS.UI.PURCHASEPACKSCREEN.FILTER_ITEMS, data = "ITEMS" }  }
-            for _,character in pairs(DST_CHARACTERLIST) do
-                table.insert( type_options, { text = STRINGS.NAMES[string.upper(character)], data = character } )
-            end
-            if self.initial_item_key ~= nil then
-                table.insert(type_options, 1, { text = GetSkinName(self.initial_item_key), data = self.initial_item_key });
-            end
+            local type_options = build_type_options( self.initial_item_key )
             self.filters[FILTER_TYPE_INDEX] = self:_CreateSpinnerFilter( "TYPE", STRINGS.UI.PURCHASEPACKSCREEN.TYPE_FILTER, type_options )
 
             for i,spinner in pairs(self.filters) do
@@ -755,6 +768,17 @@ function PurchasePackScreen:_BuildPurchasePanel()
 
     return purchase_ss
 end
+
+
+function PurchasePackScreen:UpdateFilterToItem(item_key)
+    self.initial_item_key = item_key
+    
+    local type_options = build_type_options( self.initial_item_key )
+
+    self.filters[FILTER_TYPE_INDEX].spinner:SetOptions(type_options)
+    self.filters[FILTER_TYPE_INDEX].spinner:SetSelected(self.initial_item_key)
+end
+
 
 function PurchasePackScreen:UpdatePurchasePanel()
     if self.purchase_root.scroll_window ~= nil then

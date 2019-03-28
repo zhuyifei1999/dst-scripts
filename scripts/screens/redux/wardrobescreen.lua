@@ -313,6 +313,12 @@ function WardrobeScreen:OnBecomeActive()
         for key,sub_screen in pairs(self.subscreener.sub_screens) do
             sub_screen:RefreshInventory()
         end
+
+        --Check if they even own this character or not, so we can prompt the user
+        if not self.did_once and not IsCharacterOwned( self.currentcharacter ) then
+            DisplayCharacterUnownedPopup( self.currentcharacter, self.subscreener)
+        end
+        self.did_once = true
     end
 end
 

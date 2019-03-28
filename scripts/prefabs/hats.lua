@@ -573,9 +573,11 @@ local function MakeHat(name)
         end
         local owner = inst.components.inventoryitem and inst.components.inventoryitem.owner
         if owner and owner.components.leader then
-            
-            if not owner:HasTag("spiderwhisperer") then --Webber has to stay a monster.
-                owner:RemoveTag("monster")
+            if not owner:HasTag("spiderwhisperer") then
+                if not owner:HasTag("playermonster") then
+                    owner:RemoveTag("monster")
+                end
+                owner:RemoveTag("spiderdisguise")
 
                 for k,v in pairs(owner.components.leader.followers) do
                     if k:HasTag("spider") and k.components.combat then
@@ -617,6 +619,7 @@ local function MakeHat(name)
         if owner and owner.components.leader then
             owner.components.leader:RemoveFollowersByTag("pig")
             owner:AddTag("monster")
+            owner:AddTag("spiderdisguise")
         end
         inst.updatetask = inst:DoPeriodicTask(0.5, spider_update, 1)
     end

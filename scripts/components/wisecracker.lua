@@ -164,6 +164,30 @@ local Wisecracker = Class(function(self, inst)
         inst.components.talker:Say(GetString(inst, "ANNOUNCE_HUNGRY_FASTBUILD"))
     end)
 
+    if inst:HasTag("soulstealer") then
+        inst:ListenForEvent("soulempty", function(inst)
+            inst.components.talker:Say(GetString(inst, "ANNOUNCE_SOUL_EMPTY"))
+        end)
+
+        local soultoofew_time = 0
+        inst:ListenForEvent("soultoofew", function(inst)
+            local t = GetTime()
+            if t > soultoofew_time then
+                soultoofew_time = t + 30
+                inst.components.talker:Say(GetString(inst, "ANNOUNCE_SOUL_FEW"))
+            end
+        end)
+
+        local soultoomany_time = 0
+        inst:ListenForEvent("soultoomany", function(inst)
+            local t = GetTime()
+            if t > soultoomany_time then
+                soultoomany_time = t + 30
+                inst.components.talker:Say(GetString(inst, "ANNOUNCE_SOUL_MANY"))
+            end
+        end)
+    end
+
     if TheNet:GetServerGameMode() == "quagmire" then
         event_server_data("quagmire", "components/wisecracker").AddQuagmireEventListeners(inst)
     end

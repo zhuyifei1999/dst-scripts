@@ -274,6 +274,7 @@ local function ondeath(inst)
 end
 
 local function common_postinit(inst)
+    inst:AddTag("soulless")
     inst:AddTag("electricdamageimmune")
     --electricdamageimmune is for combat and not lightning strikes
     --also used in stategraph for not stomping custom light values

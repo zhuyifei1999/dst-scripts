@@ -51,7 +51,8 @@ end
 -- Load the oval portrait for input character into the input widget.
 -- Returns whether the oval portrait atlas was found.
 function SetHeroNameTexture_Gold(image_widget, character)
-    local hero_atlas = "images/names_gold_"..character..".xml"
+    local loc_suffix = LOC.GetNamesImageSuffix()
+    local hero_atlas = "images/names_gold" .. loc_suffix .. "_" .. character..".xml"
     if softresolvefilepath(hero_atlas) then 
         image_widget:SetTexture(hero_atlas, character..".tex")
         -- SetTexture may still fail if the texture doesn't exist.

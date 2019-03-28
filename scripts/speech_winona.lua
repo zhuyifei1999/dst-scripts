@@ -164,7 +164,12 @@ return {
 	ANNOUNCE_CRAFTING_FAIL = "How did I junk that up?!",
 	ANNOUNCE_DEERCLOPS = "Democrew incoming!",
 	ANNOUNCE_CAVEIN = "Uh... I hope everyone brought hardhats.",
-	ANNOUNCE_ANTLION_SINKHOLE = "Earthquake! I think?",
+	ANNOUNCE_ANTLION_SINKHOLE = 
+	{
+		"Earthquake! I think?",
+		"What's that?!",
+		"What on earth? The earth!",
+	},
 	ANNOUNCE_ANTLION_TRIBUTE =
 	{
         "Get a load of this!",
@@ -466,6 +471,16 @@ return {
 			GHOST = "That is not a good look on you, %s.",
 			FIRESTARTER = "Haven't we lost enough to fires, %s?",
 		},
+		WORTOX =
+        {
+            GENERIC = "Hey, %s! Heard any good jokes lately?",
+            ATTACKER = "Keep them claws to yourself, how about?!",
+            MURDERER = "Look out! %s is positively demonic!",
+            REVIVER = "Thanks for the assist there, %s.",
+            GHOST = "Oof! You need a hand there, %s?",
+            FIRESTARTER = "Were you plannin' on putting that fire out?",
+        },
+
         MIGRATION_PORTAL = 
         {
             GENERIC = "Hellooo? Anyone in there?",

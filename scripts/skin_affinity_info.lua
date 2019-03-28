@@ -413,6 +413,22 @@ return
 		"woodie_treeguard_d",
 		"woodie_victorian",
 	},
+	wortox = 
+	{
+		"body_wortox_minotaur",
+		"body_wortox_original",
+		"body_wortox_survivor",
+		"hand_wortox_minotaur",
+		"hand_wortox_original",
+		"hand_wortox_survivor",
+		"legs_wortox_minotaur",
+		"legs_wortox_original",
+		"legs_wortox_survivor",
+		"wortox_minotaur",
+		"wortox_none",
+		"wortox_original",
+		"wortox_survivor",
+	},
 	wx78 = 
 	{
 		"body_wx78_formal",

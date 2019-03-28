@@ -17,7 +17,11 @@ function InvSlot:OnControl(control, down)
         if TheInput:IsControlPressed(CONTROL_FORCE_INSPECT) then
             self:Inspect()
         elseif TheInput:IsControlPressed(CONTROL_FORCE_TRADE) then
-            self:TradeItem(TheInput:IsControlPressed(CONTROL_FORCE_STACK))
+            if self:CanTradeItem() then
+                self:TradeItem(TheInput:IsControlPressed(CONTROL_FORCE_STACK))
+            else
+                return false
+            end
         else
             self:Click(TheInput:IsControlPressed(CONTROL_FORCE_STACK))
         end
@@ -28,9 +32,17 @@ function InvSlot:OnControl(control, down)
     elseif control == CONTROL_SPLITSTACK then
         self:Click(true)
     elseif control == CONTROL_TRADEITEM then
-        self:TradeItem(false)
+        if self:CanTradeItem() then
+            self:TradeItem(false)
+        else
+            return false
+        end
     elseif control == CONTROL_TRADESTACK then
-        self:TradeItem(true)
+        if self:CanTradeItem() then
+            self:TradeItem(true)
+        else
+            return false
+        end
     elseif control == CONTROL_INSPECT then
         self:Inspect()
     else
@@ -171,6 +183,11 @@ local function FindBestContainer(self, item, containers, exclude_containers)
     end
 
     return containerwithsameitem or containerwithemptyslot or containerwithnonstackableslot
+end
+
+function InvSlot:CanTradeItem()
+    local item = self.container and self.container:GetItemInSlot(self.num) or nil
+    return not (item ~= nil and item.replica.inventoryitem ~= nil and item.replica.inventoryitem:CanOnlyGoInPocket())
 end
 
 --moves items between open containers

@@ -396,7 +396,7 @@ return {
 			ATTACKER = "That mime punch was really convincing! Haha, ow!",
 			MURDERER = "Your actions speak louder than words! Murderer!",
 			REVIVER = "Who do ghosts call? %s!",
-			GHOST = "%s, just tell me whatcha need and I'll get it for you. Heheheh!",
+			GHOST = "Just tell me whatcha need and I'll get it for you. Heheh!",
 			FIRESTARTER = "Make it BURN!",
 		},
 		WEBBER = 
@@ -425,6 +425,15 @@ return {
             REVIVER = "%s never gives up on anyone.",
             GHOST = "A heart sure would come in handy!",
             FIRESTARTER = "Nice fire, %s!",
+        },
+        WORTOX =
+        {
+            GENERIC = "Hi %s!",
+            ATTACKER = "You're supposed to prank everyone else, not ME.",
+            MURDERER = "Monster! Murderer! BURN!",
+            REVIVER = "I guess %s isn't all mischief.",
+            GHOST = "You're looking a little pale there, red.",
+            FIRESTARTER = "Haha, YES! %s!!",
         },
 
         MULTIPLAYER_PORTAL = "The vines coil away from my lighter... weird!",

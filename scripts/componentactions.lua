@@ -497,10 +497,13 @@ local COMPONENT_ACTIONS =
         end,
 
         inventoryitem = function(inst, doer, target, actions, right)
-            if target.replica.container ~= nil and
-                target.replica.container:CanBeOpened() and
-                inst.replica.inventoryitem ~= nil and
-                inst.replica.inventoryitem:IsGrandOwner(doer) then
+            local inventoryitem = inst.replica.inventoryitem
+            if inventoryitem ~= nil and inventoryitem:CanOnlyGoInPocket() then
+                --not tradable
+            elseif inventoryitem ~= nil
+                and target.replica.container ~= nil
+                and target.replica.container:CanBeOpened()
+                and inventoryitem:IsGrandOwner(doer) then
                 if not (GetGameModeProperty("non_item_equips") and inst.replica.equippable ~= nil) and
                     (   (inst.prefab ~= "spoiled_food" and inst:HasTag("quagmire_stewable") and target:HasTag("quagmire_stewer") and target.replica.container:IsOpenedBy(doer)) or
                         not (target:HasTag("BURNABLE_fueled") and inst:HasTag("BURNABLE_fuel"))
@@ -650,6 +653,12 @@ local COMPONENT_ACTIONS =
             end
         end,
 
+        soul = function(inst, doer, target, actions)
+            if doer == target and target:HasTag("souleater") then
+                table.insert(actions, ACTIONS.EAT)
+            end
+        end,
+
         stackable = function(inst, doer, target, actions)
             if inst.prefab == target.prefab and inst.skinname == target.skinname and
                 target.replica.stackable ~= nil and
@@ -715,18 +724,21 @@ local COMPONENT_ACTIONS =
         end,
 
         weapon = function(inst, doer, target, actions, right)
-            if inst.replica.inventoryitem ~= nil and
+            local inventoryitem = inst.replica.inventoryitem
+            if inventoryitem ~= nil and
                 target.replica.container ~= nil and
                 target.replica.container:CanBeOpened() then
                 -- put weapons into chester, don't attack him unless forcing attack with key press
-                if not (GetGameModeProperty("non_item_equips") and inst.replica.equippable ~= nil) and
+                if not inventoryitem:CanOnlyGoInPocket() and
+                    not (GetGameModeProperty("non_item_equips") and inst.replica.equippable ~= nil) and
                     (   (inst.prefab ~= "spoiled_food" and inst:HasTag("quagmire_stewable") and target:HasTag("quagmire_stewer") and target.replica.container:IsOpenedBy(doer)) or
                         not (target:HasTag("BURNABLE_fueled") and inst:HasTag("BURNABLE_fuel"))
                     ) then
                     table.insert(actions, target:HasTag("bundle") and ACTIONS.BUNDLESTORE or ACTIONS.STORE)
                 end
             elseif target.replica.constructionsite ~= nil then
-                if not (GetGameModeProperty("non_item_equips") and inst.replica.equippable ~= nil) and
+                if not (inventoryitem ~= nil and inventoryitem:CanOnlyGoInPocket()) and
+                    not (GetGameModeProperty("non_item_equips") and inst.replica.equippable ~= nil) and
                     not (target:HasTag("BURNABLE_fueled") and inst:HasTag("BURNABLE_fuel")) then
                     table.insert(actions, target.replica.constructionsite:IsBuilder(doer) and ACTIONS.BUNDLESTORE or ACTIONS.CONSTRUCT)
                 end
@@ -1150,10 +1162,16 @@ local COMPONENT_ACTIONS =
                 table.insert(actions, ACTIONS.SHAVE)
             end
         end,
-		
+
         sleepingbag = function(inst, doer, actions)
             if doer:HasTag("player") and not doer:HasTag("insomniac") and not inst:HasTag("hassleeper") then
                 table.insert(actions, ACTIONS.SLEEPIN)
+            end
+        end,
+
+        soul = function(inst, doer, actions)
+            if doer:HasTag("souleater") then
+                table.insert(actions, ACTIONS.EAT)
             end
         end,
 

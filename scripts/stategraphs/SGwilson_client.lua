@@ -202,6 +202,8 @@ local actionhandlers =
             local obj = action.target or action.invobject
             if obj == nil then
                 return
+            elseif obj:HasTag("soul") then
+                return inst:HasTag("beaver") and "beavereat" or "eat"
             end
             for k, v in pairs(FOODTYPE) do
                 if obj:HasTag("edible_"..v) then
@@ -256,7 +258,10 @@ local actionhandlers =
                     )
                 or "castspell"
         end),
-    ActionHandler(ACTIONS.BLINK, "quicktele"),
+    ActionHandler(ACTIONS.BLINK,
+        function(inst, action)
+            return action.invobject == nil and inst:HasTag("soulstealer") and "portal_jumpin_pre" or "quicktele"
+        end),
     ActionHandler(ACTIONS.COMBINESTACK, "doshortaction"),
     ActionHandler(ACTIONS.FEED, "dolongaction"),
     ActionHandler(ACTIONS.ATTACK,
@@ -2763,6 +2768,45 @@ local states =
             inst:ClearBufferedAction()
             inst.AnimState:PlayAnimation("till_pst")
             inst.sg:GoToState("idle", true)
+        end,
+    },
+
+    State
+    {
+        name = "portal_jumpin_pre",
+        tags = { "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+
+            inst.AnimState:PlayAnimation("wortox_portal_jumpin_pre")
+            inst.AnimState:PushAnimation("wortox_portal_jumpin_lag", false)
+
+            local buffaction = inst:GetBufferedAction()
+            if buffaction ~= nil then
+                inst:PerformPreviewBufferedAction()
+
+                if buffaction.pos ~= nil then
+                    inst:ForceFacePoint(buffaction.pos:Get())
+                end
+            end
+
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("busy") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
         end,
     },
 }

@@ -93,6 +93,9 @@ local ItemTile = Class(Widget, function(self, invitem)
         function(invitem, data)
             if invitem.replica.stackable ~= nil then
                 if self.ignore_stacksize_anim then
+                    if self.movinganim ~= nil then
+                        self.movinganim.isolddata = true
+                    end
                     self:SetQuantity(data.stacksize)
                 elseif data.src_pos ~= nil then
                     if self.movinganim ~= nil and not (self.movinganim.inst.components.uianim ~= nil and (self.movinganim.inst.components.uianim.pos_t or 0) > 0) then
@@ -108,16 +111,22 @@ local ItemTile = Class(Widget, function(self, invitem)
                         --V2C: tile could be killed already if the user picked it
                         --     up with mouse cursor during the move to animation.
                         if self.inst:IsValid() then
+                            local iscurrent = not (self.movinganim ~= nil and self.movinganim.isolddata)
                             if self.movinganim == im then
                                 self.movinganim = nil
                             end
-                            self:SetQuantity(data.stacksize)
-                            self:ScaleTo(self.basescale * 2, self.basescale, .25)
+                            if iscurrent then
+                                self:SetQuantity(data.stacksize)
+                                self:ScaleTo(self.basescale * 2, self.basescale, .25)
+                            end
                         end
                         im:Kill()
                     end)
                     self.movinganim = im
                 elseif not self.ispreviewing then
+                    if self.movinganim ~= nil then
+                        self.movinganim.isolddata = true
+                    end
                     self:SetQuantity(data.stacksize)
                     self:ScaleTo(self.basescale * 2, self.basescale, .25)
                 end
@@ -272,7 +281,7 @@ function ItemTile:GetDescriptionString()
                 --self.namedisp:SetHAlign(ANCHOR_LEFT)
                 if TheInput:IsControlPressed(CONTROL_FORCE_INSPECT) then
                     str = str.."\n"..STRINGS.LMB..": "..STRINGS.INSPECTMOD
-                elseif TheInput:IsControlPressed(CONTROL_FORCE_TRADE) then
+                elseif TheInput:IsControlPressed(CONTROL_FORCE_TRADE) and not self.item.replica.inventoryitem:CanOnlyGoInPocket() then
                     if next(player.replica.inventory:GetOpenContainers()) ~= nil then
                         str = str.."\n"..STRINGS.LMB..": "..((TheInput:IsControlPressed(CONTROL_FORCE_STACK) and self.item.replica.stackable ~= nil) and (STRINGS.STACKMOD.." "..STRINGS.TRADEMOD) or STRINGS.TRADEMOD)
                     end

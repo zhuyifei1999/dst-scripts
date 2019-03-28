@@ -543,7 +543,7 @@ local function onrespawnedfromghost(inst)
 end
 
 local function onbecameghost(inst, data)
-    if inst.isbeavermode:value() and not (data and data.corps) then
+    if inst.isbeavermode:value() and not (data ~= nil and data.corpse) then
         inst.components.skinner:SetSkinMode("ghost_werebeaver_skin")
     end
 
