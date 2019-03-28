@@ -9,7 +9,7 @@ require("dlcsupport")
 -- character is something like 'wilson'
 -- skin is something like 'wilson_formal'
 function SetSkinnedOvalPortraitTexture(image_widget, character, skin)
-    if IsPrefabSkinned(character) then
+    if IsPrefabSkinned(character) or character == "random" then --"random" hack, yuck
         local portrait_name = GetPortraitNameForItem(skin)
         if softresolvefilepath("bigportraits/"..portrait_name..".xml") then 
             -- Try to load the oval and fall back to the unskinned shield if it's stored here.

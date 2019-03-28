@@ -1031,10 +1031,17 @@ return {
 		WATERMELON_SEEDS = "Grow a seed and you shall feed!",
 		CAVE_FERN = "It prefers the dark.",
 		CHARCOAL = "Pre-burnt tree.",
-		CHESSPIECE_PAWN = 
+		CHESSPIECE_CLAYHOUND = "A clay hound made from that sketch we found!",
+        CHESSPIECE_CLAYWARG = "So scary, rendered still in stone.",
+        CHESSPIECE_DEERCLOPS = "That was such a fun day!",
+        CHESSPIECE_BEARGER = "I'll say a prayer for this slain bear.",
+        CHESSPIECE_MOOSEGOOSE = 
         {
-			GENERIC ="Would you like to play?",
-		},
+        	"We've established a stone goose truce.",
+        	"We've established a stone moose truce.",
+        },
+        CHESSPIECE_DRAGONFLY = "Bye bye, dear dragonfly.",
+		CHESSPIECE_PAWN ="Would you like to play?",
         CHESSPIECE_ROOK = 
         {
 			GENERIC = "We carved this from the rock ourselves.",
@@ -1050,22 +1057,10 @@ return {
 			GENERIC = "Bishop made of polished stone.",
 			STRUGGLE = "Yes, yes, come play!",
 		},
-        CHESSPIECE_MUSE = 
-        {
-			GENERIC = "How whimsically elegant.",
-		},
-        CHESSPIECE_FORMAL = 
-        {
-			GENERIC = "You've a much too competitive spirit, sir.",
-		},
-        CHESSPIECE_HORNUCOPIA = 
-        {
-			GENERIC = "What a funny use for a horn!",
-		},
-        CHESSPIECE_PIPE = 
-        {
-			GENERIC = "Bubble, bubble, no such trouble.",
-		},
+        CHESSPIECE_MUSE = "How whimsically elegant.",
+        CHESSPIECE_FORMAL = "You've a much too competitive spirit, sir.",
+        CHESSPIECE_HORNUCOPIA = "What a funny use for a horn!",
+        CHESSPIECE_PIPE = "Bubble, bubble, no such trouble.",
         CHESSJUNK1 = "It looks quite broke, and that's no joke!'",
         CHESSJUNK2 = "It looks quite broke, and that's no joke!'",
         CHESSJUNK3 = "It looks quite broke, and that's no joke!'",
@@ -2020,8 +2015,6 @@ return {
         	STATUE = "Petrified from toe to tip!",
         },
         HOUNDWHISTLE = "Ooo, ouch! My ears!",
-        CHESSPIECE_CLAYHOUND = "A clay hound made from that sketch we found!",
-        CHESSPIECE_CLAYWARG = "So scary, rendered still in stone.",
 
         PIGSHRINE =
 		{

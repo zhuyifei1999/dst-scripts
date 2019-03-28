@@ -1964,6 +1964,7 @@ function PlayerController:OnUpdate(dt)
             local lmb, rmb = self:GetGroundUseAction()
             if rmb ~= nil then
                 terraform = rmb.action == ACTIONS.TERRAFORM
+                hidespecialactionreticule = self.reticule ~= nil and self.reticule.inst == self.inst
             else
                 if self.controller_target ~= nil then
                     lmb, rmb = self:GetSceneItemControllerAction(self.controller_target)
@@ -3207,7 +3208,7 @@ end
 function PlayerController:GetGroundUseAction(position)
     local islocal = position == nil
     position = position or
-        (self.reticule ~= nil and self.reticule.targetpos) or
+        (self.reticule ~= nil and self.reticule.inst ~= self.inst and self.reticule.targetpos) or
         (self.terraformer ~= nil and self.terraformer:GetPosition()) or
         (self.placer ~= nil and self.placer:GetPosition()) or
         (self.deployplacer ~= nil and self.deployplacer:GetPosition()) or
