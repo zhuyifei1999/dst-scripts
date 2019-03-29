@@ -746,6 +746,7 @@ function PlayerController:DoControllerAltActionButton()
     end
 
     local lmb, act = self:GetGroundUseAction()
+    local isspecial = nil
     local obj = nil
     if act == nil then
         obj = self:GetControllerTarget()
@@ -764,6 +765,7 @@ function PlayerController:DoControllerAltActionButton()
                     self:TryAOETargeting()
                     return
                 end
+                isspecial = true
             end
         end
     end
@@ -787,12 +789,12 @@ function PlayerController:DoControllerAltActionButton()
         end
     elseif self.locomotor == nil then
         self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = 0
-        SendRPCToServer(RPC.ControllerAltActionButtonPoint, act.action.code, act.pos.x, act.pos.z, nil, act.action.canforce, act.action.mod_name)
+        SendRPCToServer(RPC.ControllerAltActionButtonPoint, act.action.code, act.pos.x, act.pos.z, nil, act.action.canforce, isspecial, act.action.mod_name)
     elseif self:CanLocomote() then
         act.preview_cb = function()
             self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = 0
             local isreleased = not TheInput:IsControlPressed(CONTROL_CONTROLLER_ALTACTION)
-            SendRPCToServer(RPC.ControllerAltActionButtonPoint, act.action.code, act.pos.x, act.pos.z, isreleased, nil, act.action.mod_name)
+            SendRPCToServer(RPC.ControllerAltActionButtonPoint, act.action.code, act.pos.x, act.pos.z, isreleased, nil, isspecial, act.action.mod_name)
         end
     end
 
@@ -836,15 +838,17 @@ function PlayerController:OnRemoteControllerAltActionButton(actioncode, target, 
     end
 end
 
-function PlayerController:OnRemoteControllerAltActionButtonPoint(actioncode, position, isreleased, noforce, mod_name)
+function PlayerController:OnRemoteControllerAltActionButtonPoint(actioncode, position, isreleased, noforce, isspecial, mod_name)
     if self.ismastersim and self:IsEnabled() and self.handler == nil then
         self.inst.components.combat:SetTarget(nil)
 
         self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = 0
         self:ClearControlMods()
-        local lmb, rmb = self:GetGroundUseAction(position)
-        if rmb == nil then
+        local lmb, rmb
+        if isspecial then
             rmb = self:GetGroundUseSpecialAction(position, true)
+        else
+            lmb, rmb = self:GetGroundUseAction(position)
         end
         if isreleased then
             self.remote_controls[CONTROL_CONTROLLER_ALTACTION] = nil

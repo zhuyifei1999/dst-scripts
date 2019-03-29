@@ -44,13 +44,18 @@ end
 --------------------------------------------------------------------------
 
 local function IsValidMurderVictim(victim)
-    return not (victim:HasTag("structure") or
+    return not (victim:HasTag("veggie") or
+                victim:HasTag("structure") or
                 victim:HasTag("wall") or
+                victim:HasTag("balloon") or
                 victim:HasTag("soulless") or
                 victim:HasTag("chess") or
+                victim:HasTag("shadow") or
                 victim:HasTag("shadowcreature") or
                 victim:HasTag("shadowminion") or
-                victim:HasTag("shadowchesspiece"))
+                victim:HasTag("shadowchesspiece") or
+                victim:HasTag("groundspike") or
+                victim:HasTag("smashable"))
         and victim.components.combat ~= nil
         and victim.components.health ~= nil
 end
