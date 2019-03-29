@@ -616,7 +616,7 @@ return {
 		BISHOP_NIGHTMARE = "Eep! Play nice with the imp!",
 		ROOK_NIGHTMARE = "Eep! Play nice with the imp!",
 		KNIGHT_NIGHTMARE = "Eep! Play nice with the imp!",
-		MINOTAUR = "Goodness gracious, aren't you fearsome.'",
+		MINOTAUR = "Goodness gracious, aren't you fearsome.",
 		SPIDER_DROPPER = "You look like you want to play!",
 		NIGHTMARELIGHT = "Beware, beware, it says to me.",
 		NIGHTSTICK = "Shed some light on any fight.",
@@ -1061,9 +1061,9 @@ return {
         CHESSPIECE_FORMAL = "You've a much too competitive spirit, sir.",
         CHESSPIECE_HORNUCOPIA = "What a funny use for a horn!",
         CHESSPIECE_PIPE = "Bubble, bubble, no such trouble.",
-        CHESSJUNK1 = "It looks quite broke, and that's no joke!'",
-        CHESSJUNK2 = "It looks quite broke, and that's no joke!'",
-        CHESSJUNK3 = "It looks quite broke, and that's no joke!'",
+        CHESSJUNK1 = "It looks quite broke, and that's no joke!",
+        CHESSJUNK2 = "It looks quite broke, and that's no joke!",
+        CHESSJUNK3 = "It looks quite broke, and that's no joke!",
 		CHESTER = "Greetings! Sorry, I can't pet you.",
 		CHESTER_EYEBONE =
 		{
@@ -1773,7 +1773,7 @@ return {
 		SCULPTURE_ROOKBODY = 
 		{
 			COVERED = "Something fun is hiding inside!",
-			UNCOVERED = "Look! It's a rook!'",
+			UNCOVERED = "Look! It's a rook!",
 			FINISHED = "I do say that did the trick!",
 			READY = "C'mon, let's play!",
 		},
