@@ -811,6 +811,23 @@ function CompareItemDataForSortByRarity(item_key_a, item_key_b)
     end
 end
 
+function CompareItemDataForSortByCount(item_key_a, item_key_b, item_counts)
+	local count_a = item_counts[item_key_a] or 0
+	local count_b = item_counts[item_key_b] or 0
+
+	if item_key_a == item_key_b then
+        return false
+    elseif IsDefaultSkin(item_key_a) then
+        return true
+    elseif IsDefaultSkin(item_key_b) then
+        return false
+    elseif count_a ~= count_b then
+		return count_a >= count_b
+	else
+        return GetLexicalSortLiteral(item_key_a) < GetLexicalSortLiteral(item_key_b)
+    end
+end
+
 function GetInventoryTimestamp()
 	local templist = TheInventory:GetFullInventory()
 	local timestamp = 0
@@ -1329,6 +1346,9 @@ local dailyGiftType = nil --to test daily gift popup, put a item type into this 
 function SetDailyGiftItem(item_type)
 	dailyGiftType = item_type
 end
+function IsDailyGiftItemPending()
+	return dailyGiftType ~= nil
+end
 function GetDailyGiftItem()
 	local ret = dailyGiftType
 	dailyGiftType = nil
@@ -1439,4 +1459,45 @@ function DisplayCharacterUnownedPopupPurchase(character, purchase_screen)
         end},
     })
     TheFrontEnd:PushScreen(unowned_popup)
+end
+
+function DisplayInventoryFailedPopup( screen )
+	if not screen.leave_from_fail and not TheInventory:HasDownloadedInventory() then
+		local PopupDialogScreen = require "screens/redux/popupdialog"
+		local GenericWaitingPopup = require "screens/redux/genericwaitingpopup"
+
+		local unowned_popup = PopupDialogScreen(STRINGS.UI.PLAYERSUMMARYSCREEN.FAILED_INVENTORY_TITLE, STRINGS.UI.PLAYERSUMMARYSCREEN.FAILED_INVENTORY_BODY,
+		{
+			{text=STRINGS.UI.PLAYERSUMMARYSCREEN.FAILED_INVENTORY_YES, cb = function()
+				
+                screen.leave_from_fail = true
+                TheFrontEnd:PopScreen() --pop the failed dialog
+                
+                screen.items_get_popup = GenericWaitingPopup("GetAllItemsPopup", STRINGS.UI.PLAYERSUMMARYSCREEN.GET_INVENTORY, nil, false, function()
+                    screen.poll_task:Cancel()
+                    screen.poll_task = nil
+                end )
+                TheFrontEnd:PushScreen(screen.items_get_popup)
+                
+                screen.poll_task = scheduler:ExecutePeriodic( 1, function() 
+                    if not TheInventory:IsDownloadingInventory() then
+                        screen.items_get_popup:Close()
+                    end
+                end, nil, 0, "poll_inv_state", screen )
+
+                TheInventory:StartGetAllItems()
+
+                screen.leave_from_fail = false
+
+			end},
+			{text=STRINGS.UI.PLAYERSUMMARYSCREEN.FAILED_INVENTORY_NO, cb = function()
+								
+                screen.leave_from_fail = true
+                TheFrontEnd:PopScreen()
+				screen:Close()
+				
+			end},
+		})
+		TheFrontEnd:PushScreen(unowned_popup)		
+    end
 end

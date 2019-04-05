@@ -1,8 +1,10 @@
 local MakePlayerCharacter = require("prefabs/player_common")
+local wortox_soul_common = require("prefabs/wortox_soul_common")
 
 local assets =
 {
     Asset("SCRIPT", "scripts/prefabs/player_common.lua"),
+    Asset("SCRIPT", "scripts/prefabs/wortox_soul_common.lua"),
     Asset("SOUND", "sound/wortox.fsb"),
     Asset("ANIM", "anim/wortox_portal.zip"),
 }
@@ -43,25 +45,8 @@ end
 
 --------------------------------------------------------------------------
 
-local function IsValidMurderVictim(victim)
-    return not (victim:HasTag("veggie") or
-                victim:HasTag("structure") or
-                victim:HasTag("wall") or
-                victim:HasTag("balloon") or
-                victim:HasTag("soulless") or
-                victim:HasTag("chess") or
-                victim:HasTag("shadow") or
-                victim:HasTag("shadowcreature") or
-                victim:HasTag("shadowminion") or
-                victim:HasTag("shadowchesspiece") or
-                victim:HasTag("groundspike") or
-                victim:HasTag("smashable"))
-        and victim.components.combat ~= nil
-        and victim.components.health ~= nil
-end
-
 local function IsValidVictim(victim)
-    return IsValidMurderVictim(victim) and victim.components.health:IsDead()
+    return wortox_soul_common.HasSoul(victim) and victim.components.health:IsDead()
 end
 
 local function OnRestoreSoul(victim)
@@ -72,6 +57,31 @@ local function SpawnSoulAt(x, y, z, victim)
     local fx = SpawnPrefab("wortox_soul_spawn")
     fx.Transform:SetPosition(x, y, z)
     fx:Setup(victim)
+end
+
+local function SpawnSoulsAt(victim, numsouls)
+    local x, y, z = victim.Transform:GetWorldPosition()
+    if numsouls == 2 then
+        local theta = math.random() * 2 * PI
+        local radius = .4 + math.random() * .1
+        SpawnSoulAt(x + math.cos(theta) * radius, 0, z - math.sin(theta) * radius, victim)
+        theta = GetRandomWithVariance(theta + PI, PI / 15)
+        SpawnSoulAt(x + math.cos(theta) * radius, 0, z - math.sin(theta) * radius, victim)
+    else
+        SpawnSoulAt(x, y, z, victim)
+        if numsouls > 1 then
+            numsouls = numsouls - 1
+            local theta0 = math.random() * 2 * PI
+            local dtheta = 2 * PI / numsouls
+            local thetavar = dtheta / 10
+            local theta, radius
+            for i = 1, numsouls do
+                theta = GetRandomWithVariance(theta0 + dtheta * i, thetavar)
+                radius = 1.6 + math.random() * .4
+                SpawnSoulAt(x + math.cos(theta) * radius, 0, z - math.sin(theta) * radius, victim)
+            end
+        end
+    end
 end
 
 local function OnEntityDropLoot(inst, data)
@@ -87,28 +97,7 @@ local function OnEntityDropLoot(inst, data)
         ) then
         --V2C: prevents multiple Wortoxes in range from spawning multiple souls per corpse
         victim.nosoultask = victim:DoTaskInTime(5, OnRestoreSoul)
-        local x, y, z = victim.Transform:GetWorldPosition()
-        if victim:HasTag("dualsoul") then
-            local theta = math.random() * 2 * PI
-            local radius = .4 + math.random() * .1
-            SpawnSoulAt(x + math.cos(theta) * radius, 0, z - math.sin(theta) * radius, victim)
-            theta = GetRandomWithVariance(theta + PI, PI / 15)
-            SpawnSoulAt(x + math.cos(theta) * radius, 0, z - math.sin(theta) * radius, victim)
-        else
-            SpawnSoulAt(x, y, z, victim)
-            if victim:HasTag("epic") then
-                local num = math.random(6, 7)
-                local theta0 = math.random() * 2 * PI
-                local dtheta = 2 * PI / num
-                local thetavar = dtheta / 10
-                local theta, radius
-                for i = 1, num do
-                    theta = GetRandomWithVariance(theta0 + dtheta * i, thetavar)
-                    radius = 1.6 + math.random() * .4
-                    SpawnSoulAt(x + math.cos(theta) * radius, 0, z - math.sin(theta) * radius, victim)
-                end
-            end
-        end
+        SpawnSoulsAt(victim, wortox_soul_common.GetNumSouls(victim))
     end
 end
 
@@ -118,21 +107,44 @@ local function OnEntityDeath(inst, data)
     end
 end
 
+local function OnStarvedTrapSouls(inst, data)
+    local trap = data.trap
+    if trap ~= nil and
+        trap.nosoultask == nil and
+        (data.numsouls or 0) > 0 and
+        trap:IsValid() and
+        inst:IsNear(trap, TUNING.WORTOX_SOULEXTRACT_RANGE) then
+        --V2C: prevents multiple Wortoxes in range from spawning multiple souls per trap
+        trap.nosoultask = trap:DoTaskInTime(5, OnRestoreSoul)
+        SpawnSoulsAt(trap, data.numsouls)
+    end
+end
+
+local function GiveSouls(inst, num, pos)
+    local soul = SpawnPrefab("wortox_soul")
+    if soul.components.stackable ~= nil then
+        soul.components.stackable:SetStackSize(num)
+    end
+    inst.components.inventory:GiveItem(soul, nil, pos)
+end
+
 local function OnMurdered(inst, data)
     local victim = data.victim
     if victim ~= nil and
         victim.nosoultask == nil and
         victim:IsValid() and
         (   not inst.components.health:IsDead() and
-            IsValidMurderVictim(victim)
+            wortox_soul_common.HasSoul(victim)
         ) then
         --V2C: prevents multiple Wortoxes in range from spawning multiple souls per corpse
         victim.nosoultask = victim:DoTaskInTime(5, OnRestoreSoul)
-        local soul = SpawnPrefab("wortox_soul")
-        if soul.components.stackable ~= nil then
-            soul.components.stackable:SetStackSize(((victim:HasTag("dualsoul") and 2) or (victim:HasTag("epic") and math.random(7, 8)) or 1) * (data.stackmult or 1))
-        end
-        inst.components.inventory:GiveItem(soul, nil, inst:GetPosition())
+        GiveSouls(inst, wortox_soul_common.GetNumSouls(victim) * (data.stackmult or 1), inst:GetPosition())
+    end
+end
+
+local function OnHarvestTrapSouls(inst, data)
+    if (data.numsouls or 0) > 0 then
+        GiveSouls(inst, data.numsouls, data.pos or inst:GetPosition())
     end
 end
 
@@ -145,16 +157,24 @@ local function OnRespawnedFromGhost(inst)
         inst._onentitydeathfn = function(src, data) OnEntityDeath(inst, data) end
         inst:ListenForEvent("entity_death", inst._onentitydeathfn, TheWorld)
     end
+    if inst._onstarvedtrapsoulsfn == nil then
+        inst._onstarvedtrapsoulsfn = function(src, data) OnStarvedTrapSouls(inst, data) end
+        inst:ListenForEvent("starvedtrapsouls", inst._onstarvedtrapsoulsfn, TheWorld)
+    end
 end
 
 local function OnBecameGhost(inst)
-    if inst._onentitydroplootfn == nil then
+    if inst._onentitydroplootfn ~= nil then
         inst:RemoveEventCallback("entity_droploot", inst._onentitydroplootfn, TheWorld)
         inst._onentitydroplootfn = nil
     end
     if inst._onentitydeathfn ~= nil then
         inst:RemoveEventCallback("entity_death", inst._onentitydeathfn, TheWorld)
         inst._onentitydeathfn = nil
+    end
+    if inst._onstarvedtrapsoulsfn ~= nil then
+        inst:RemoveEventCallback("starvedtrapsouls", inst._onstarvedtrapsoulsfn, TheWorld)
+        inst._onstarvedtrapsoulsfn = nil
     end
 end
 
@@ -346,6 +366,7 @@ local function master_postinit(inst)
     inst:ListenForEvent("dropitem", OnDropItem)
     inst:ListenForEvent("soulhop", OnSoulHop)
     inst:ListenForEvent("murdered", OnMurdered)
+    inst:ListenForEvent("harvesttrapsouls", OnHarvestTrapSouls)
     inst:ListenForEvent("ms_respawnedfromghost", OnRespawnedFromGhost)
     inst:ListenForEvent("ms_becameghost", OnBecameGhost)
 

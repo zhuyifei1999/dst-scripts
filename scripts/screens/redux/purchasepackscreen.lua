@@ -405,7 +405,7 @@ function PurchasePackScreen:DoInit()
     if not TheInput:ControllerAttached() then 
         self.back_button = self.root:AddChild(TEMPLATES.BackButton(
                 function()
-                    TheFrontEnd:FadeBack()
+                    self:Close()
                 end
             ))
     end
@@ -666,10 +666,7 @@ function PurchasePackScreen:_BuildPurchasePanel()
         local iap_defs = self:GetIAPDefs(true)
 
         if #iap_defs == 0 then
-            local msg = STRINGS.UI.PURCHASEPACKSCREEN.NO_PACKS_FOR_SALE
-            if IsAnyFestivalEventActive() then
-                msg = STRINGS.UI.PURCHASEPACKSCREEN.FAILED_TO_LOAD
-            end
+            local msg = STRINGS.UI.PURCHASEPACKSCREEN.FAILED_TO_LOAD
             local dialog = purchase_ss:AddChild(TEMPLATES.CurlyWindow(400, 200, "", nil, nil, msg))
             purchase_ss.focus_forward = dialog
         else
@@ -798,13 +795,19 @@ function PurchasePackScreen:OnBecomeActive()
     self:UpdatePurchasePanel()
 
     self.leaving = nil
+    
+    DisplayInventoryFailedPopup( self )
+end
+
+function PurchasePackScreen:Close()
+    TheFrontEnd:FadeBack()
 end
 
 function PurchasePackScreen:OnControl(control, down)
     if PurchasePackScreen._base.OnControl(self, control, down) then return true end
 
     if not down and control == CONTROL_CANCEL then
-        TheFrontEnd:FadeBack()
+        self:Close()
         return true
     end
 end

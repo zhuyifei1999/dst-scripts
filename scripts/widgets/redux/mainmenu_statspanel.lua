@@ -67,6 +67,8 @@ local MainMenuStatsPanel = Class(Widget, function(self, config)
 	self.recent_items:SetPosition(380, -30)
 
 	self.focus_forward = self.image
+
+	self.hide_items = IsDailyGiftItemPending()
 end)
 
 function MainMenuStatsPanel:RefreshFriends()
@@ -84,6 +86,7 @@ function MainMenuStatsPanel:RefreshFriends()
 end
 
 function MainMenuStatsPanel:OnBecomeActive()
+	self.hide_items = IsDailyGiftItemPending()
     self.recent_items:UpdateItems()
 	self:RefreshFriends()
 end
@@ -108,7 +111,7 @@ function MainMenuStatsPanel:FindMostCommonDeaths()
         return a_deaths > b_deaths
     end)
 
-	return causes;
+	return causes
 end
 
 function MainMenuStatsPanel:BuildItemsSummary(width)
@@ -149,7 +152,7 @@ function MainMenuStatsPanel:BuildItemsSummary(width)
 		unopened_msg:Hide()
 
 		new_root.UpdateItems = function()
-		    if not TheInventory:HasDownloadedInventory() then
+		    if self.hide_items or not TheInventory:HasDownloadedInventory() then
 				for i, item in ipairs(items) do
 					item:Hide()
 				end
