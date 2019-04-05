@@ -3258,7 +3258,7 @@ CLOTHING =
 	{
 		type = "hand",
 		skin_tags = { "CLOTHING_HAND", "CLOTHING", "MINOTAUR", },
-		symbol_overrides = { "hand", },
+		symbol_overrides = { "arm_lower_cuff", "hand", },
 		rarity = "Spiffy",
 		rarity_modifier = "Woven",
 		release_group = 62,

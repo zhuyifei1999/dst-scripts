@@ -27,6 +27,32 @@ local function DoHeal(inst)
     end
 end
 
+local function HasSoul(victim)
+    return not (victim:HasTag("veggie") or
+                victim:HasTag("structure") or
+                victim:HasTag("wall") or
+                victim:HasTag("balloon") or
+                victim:HasTag("soulless") or
+                victim:HasTag("chess") or
+                victim:HasTag("shadow") or
+                victim:HasTag("shadowcreature") or
+                victim:HasTag("shadowminion") or
+                victim:HasTag("shadowchesspiece") or
+                victim:HasTag("groundspike") or
+                victim:HasTag("smashable"))
+        and victim.components.combat ~= nil
+        and victim.components.health ~= nil
+end
+
+local function GetNumSouls(victim)
+    --V2C: assume HasSoul is checked separately
+    return (victim:HasTag("dualsoul") and 2)
+        or (victim:HasTag("epic") and math.random(7, 8))
+        or 1
+end
+
 return {
     DoHeal = DoHeal,
+    HasSoul = HasSoul,
+    GetNumSouls = GetNumSouls,
 }

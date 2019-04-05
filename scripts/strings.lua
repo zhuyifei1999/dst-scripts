@@ -3854,6 +3854,9 @@ STRINGS.UI =
         DYNAMICCONTENT_DESC = "Due to an error, dynamic content loading has been disabled.",
         DYNAMICCONTENT_RE_ENABLE = "Re-enable",
         DYNAMICCONTENT_OK = "I understand",
+		DYNAMICCONTENT_DISABLE = "Disable Dynamic Content",
+		DYNAMICCONTENT_ENABLE = "Enable Dynamic Content",
+		DYNAMICCONTENT_CLEAR = "Clear Dynamic Content",
 
         FRESHBUILD = "Fresh Build!",
         UPDATERELEASED = "Now Playing:",
@@ -4115,7 +4118,7 @@ STRINGS.UI =
         CLOCKSURVIVED = "Survived",
         CLOCKDAY = "Day",
         CLOCKDAYS = "Days",
-        WORLD_CLOCKDAY = "Day",
+        WORLD_CLOCKDAY = "Day", --deprecated, left here for mods to use
         WORLD_CLOCKDAY_V2 = "Day {day_count}",
         SAVING = "SAVING...",
         WORLD = "World",
@@ -4499,6 +4502,7 @@ STRINGS.UI =
             INVALID_CLIENT_TOKEN = "Invalid Client Token", 
             ID_DST_GAME_SESSION_AUTH_FAILED = "Authentication Failed",
             E_BANNED = "Account Banned",
+            E_DELETED = "Account Deleted",
             E_UPGRADE = "Version Out of Date",
             ID_DST_USER_CONNECTION_FAILED = "Connection Failed",
             ID_DST_FRIENDS_ONLY_SERVER = "Friends Only",
@@ -4557,6 +4561,7 @@ STRINGS.UI =
             ID_DST_INCOMPATIBLE_PROTOCOL_VERSION = "The server has a different version than you do. Please check that your game version is up-to-date.",
             FORCE_DISCONNECTION = "The connection has been forcibly closed by the engine.",
             E_BANNED = "Your account has been banned for violating the terms of use.",
+            E_DELETED = "Your account has been marked for deletion and cannot be used anymore.",
             E_UPGRADE = "A new version is available.\nPlease update Don't Starve Together.",
             INVALID_CLIENT_TOKEN = "A token error occurred. Please try again.",
             INVALID_GAME_SESSION_TOKEN = "Unable to reach the Klei server. Please try again.",
@@ -5396,7 +5401,9 @@ STRINGS.UI =
         DELETE = "Delete",
         SLOT = "Server Slot",
         SURE = "Are you sure?",
-        SERVERDAY = "Day",
+        SERVERDAY = "Day", --deprecated, left here for mods to use
+        SERVERDAY_V2 = "Day {day_count}",
+        SERVERDAY_SEASON_V2 = "{season} Day {day_count}",
         SERVERDAY_NEW = "A Whole New World",
         SELECT_SLOT = "Select Slot",
         SNAPSHOTS = "Rollback",
@@ -5457,9 +5464,10 @@ STRINGS.UI =
         BANNED_PLAYERS_HEADER = "Banned Players",
         PLAYER = "Player",
         DATE = "Date",
-        DAY = "Day",
+        DAY = "Day", --deprecated, left here for mods to use
         DAY_V2 = "Day {day_count}",
-        UNKNOWN_DAY = "???",
+        DAY_UNKNOWN = "Unknown Day",
+        UNKNOWN_DAY = "???", --deprecated, left here for mods to use
         UNKNOWN_DAY_PS4 = "Creation of the World",
         EMPTY_SLOT = "EMPTY",
         EMPTY_SLOT_TITLE = "Empty Slot",
@@ -5486,7 +5494,9 @@ STRINGS.UI =
         DELETE_ENTRY_BODY_2 = "\" from your ban list?\nThis will affect all servers you create.",
         CLEAR_LIST_TITLE = "Unban all?",
         CLEAR_LIST_BODY = "Do you want to delete all banned players?\nThis will affect all servers you create.",
-        RESTORE_SNAPSHOT_HEADER = "Restore %s",
+        RESTORE_SNAPSHOT_HEADER = "Restore %s", --deprecated, left here for mods to use
+        HEADER_DAY = "Restore Day {day_count}",
+        HEADER_DAY_UNKNOWN = "Restore Unknown Day",
         RESTORE_SNAPSHOT_BODY = "Do you want to restore this save? You will lose all changes made to the world past the selected day, as well as all subsequent saves. This cannot be undone.",
         UNKNOWN_USER_NAME = "[unknown]", -- this is consistent with what steam when it can't get a player name
         SNAPSHOTS_TITLE = "Snapshots: ",
@@ -6670,6 +6680,13 @@ STRINGS.UI =
         TOOLTIP_PURCHASE = "Browse purchasable skin sets",
 
         LEVEL_ACHIEVED_FMT = "{event_title} level accomplished:",
+
+        FAILED_INVENTORY_TITLE = "Item Collection Download Failed",
+        FAILED_INVENTORY_BODY = "Unfortunately you failed to download your item collection, would you like you try again?",
+        FAILED_INVENTORY_YES = "Yes",
+        FAILED_INVENTORY_NO = "No",
+        
+        GET_INVENTORY = "Downloading Item Collection",
     },
 
     COLLECTIONSCREEN = 
@@ -6746,6 +6763,7 @@ STRINGS.UI =
         FILTER_OFF      = "Off",
         SORT_NAME       = "Name",
         SORT_RARITY     = "Rarity",
+        SORT_COUNT      = "Owned Count",
         SORT_RELEASE    = "Release Date",
 
         TOOLTIP_BASE = "Equip a head item",
@@ -6774,7 +6792,6 @@ STRINGS.UI =
         TITLE = "Shop",
 
         FAILED_TO_LOAD = "Sorry!\nThe Klei store is closed right now.\nPlease try again later.",
-        NO_PACKS_FOR_SALE = "Sorry!\nThe Klei store is closed.\nCheck back during the next event.",
 
         PURCHASE_OVERLAY_REQUIRED_TITLE = "Steam Overlay Required",
         PURCHASE_OVERLAY_REQUIRED_BODY = "Please enable the Steam Overlay to purchase clothing sets.",
@@ -8513,11 +8530,7 @@ if PLATFORM == "WIN32_RAIL" then
 	STRINGS.UI.ITEM_SERVER.FAILED_MULTIPLE_PENDING_PURCHASES = ""
 	STRINGS.UI.ITEM_SERVER.FAILED_IAP_RATE_LIMITED = ""
 	
-	STRINGS.CHARACTER_QUOTES.wathgrithr = string.gsub(STRINGS.CHARACTER_QUOTES.wathgrithr, "ö", "o")
-	for k,v in pairs( STRINGS.SKIN_QUOTES ) do
-		STRINGS.SKIN_QUOTES[k] = string.gsub(v, "ö", "o")
-	end
-	
+
 	--Remove console strings
 	STRINGS.PSN = nil
 	STRINGS.UI.HELP.CHANGEVALUE = nil
@@ -8654,6 +8667,9 @@ if PLATFORM == "WIN32_RAIL" then
     STRINGS.UI.MAINSCREEN.DYNAMICCONTENT_DESC = nil
     STRINGS.UI.MAINSCREEN.DYNAMICCONTENT_RE_ENABLE = nil
     STRINGS.UI.MAINSCREEN.DYNAMICCONTENT_OK = nil
+	STRINGS.UI.MAINSCREEN.DYNAMICCONTENT_DISABLE = nil
+	STRINGS.UI.MAINSCREEN.DYNAMICCONTENT_ENABLE = nil
+	STRINGS.UI.MAINSCREEN.DYNAMICCONTENT_CLEAR = nil
 	
 	STRINGS.UI.OPTIONS.BUGREPORT = nil
     STRINGS.UI.OPTIONS.DYNAMICCONTENT_ENABLE = nil

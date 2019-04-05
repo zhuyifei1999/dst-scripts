@@ -1323,7 +1323,7 @@ return {
 			FUNNY = "A silly look, that's to be sure!",
 			COMPLETE = "That looks right at rain, it does it does!",
         },
-        STALKER = "You're mind's not quite right, but neither is mine!",
+        STALKER = "Your mind's not quite right, but neither is mine!",
         STALKER_ATRIUM = "Shall we dance, dearest demon?",
         STALKER_FOREST = "Hyuyu, sorry to wake you!",
         STALKER_MINION = "Silly thing!",

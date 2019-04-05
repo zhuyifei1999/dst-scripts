@@ -669,6 +669,7 @@ function ItemExplorer:_UpdateItemSelectedInfo(item_key)
     else
         self.can_show_steam = false
         self.can_show_pack = false
+        self.store_btn:Hide()
     end
 
     
@@ -844,6 +845,7 @@ function ItemExplorer:_CreateWidgetDataListForItems(item_table, item_type, activ
         end
     end
 
+    
 
     --Sort the data that is going into the list
     local sort_type = Profile:GetItemSortMode()    
@@ -855,7 +857,12 @@ function ItemExplorer:_CreateWidgetDataListForItems(item_table, item_type, activ
     elseif sort_type == "SORT_RARITY" then
         sort_fn = function(item_key_a, item_key_b)
             return CompareItemDataForSortByRarity(item_key_a, item_key_b)
-        end      
+        end
+    elseif sort_type == "SORT_COUNT" then
+		local item_counts = GetOwnedItemCounts()
+        sort_fn = function(item_key_a, item_key_b)
+            return CompareItemDataForSortByCount(item_key_a, item_key_b, item_counts)
+        end
     else --"SORT_RELEASE" or nil
         sort_fn = function(item_key_a, item_key_b)
             return CompareItemDataForSortByRelease(item_key_a, item_key_b)
