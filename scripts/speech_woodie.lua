@@ -1978,106 +1978,107 @@ return {
             EMPTY = "Gotta warm this doghouse up, eh?",
             BURNT = "Burned up.",
         },
-        CLAYWARG = 
+        CLAYWARG =
         {
-        	GENERIC = "Look at the size of you.",
-        	STATUE = "Wonder where that sculpture came from.",
+            GENERIC = "Look at the size of you.",
+            STATUE = "Wonder where that sculpture came from.",
         },
-        CLAYHOUND = 
+        CLAYHOUND =
         {
-        	GENERIC = "Earth hounds!",
-        	STATUE = "Someone carved each individual hair.",
+            GENERIC = "Earth hounds!",
+            STATUE = "Someone carved each individual hair.",
         },
         HOUNDWHISTLE = "I usually do my own animal calls.",
         CHESSPIECE_CLAYHOUND = "All the dog, none of the smell.",
         CHESSPIECE_CLAYWARG = "Not a wood sculpture, but it'll do.",
 
         PIGSHRINE =
-		{
+        {
             GENERIC = "Would ya look at that.",
             EMPTY = "I think it needs meat, Lucy.",
             BURNT = "Burnt.",
-		},
-		PIG_TOKEN = "Looks like something those pigs would make.",
-		YOTP_FOOD1 = "Want some, Lucy?",
-		YOTP_FOOD2 = "Doesn't look to appetizing. Sorry.",
-		YOTP_FOOD3 = "I don't need nothin' fancy.",
+        },
+        PIG_TOKEN = "Looks like something those pigs would make.",
+        YOTP_FOOD1 = "Want some, Lucy?",
+        YOTP_FOOD2 = "Doesn't look to appetizing. Sorry.",
+        YOTP_FOOD3 = "I don't need nothin' fancy.",
 
-		PIGELITE1 = "Looks a little blue.", --BLUE
-		PIGELITE2 = "Too hot-headed if you ask me.", --RED
-		PIGELITE3 = "Sure likes that gold.", --WHITE
-		PIGELITE4 = "Something about that guy I like.", --GREEN
+        PIGELITE1 = "Looks a little blue.", --BLUE
+        PIGELITE2 = "Too hot-headed if you ask me.", --RED
+        PIGELITE3 = "Sure likes that gold.", --WHITE
+        PIGELITE4 = "Something about that guy I like.", --GREEN
 
-		TRUNKVEST_SUMMER = "Nice and breezy.",
-		TRUNKVEST_WINTER = "This could stand up to the winters back home, eh?",
-		TRUNK_COOKED = "I think it boiled off all of the nose cheese.",
-		TRUNK_SUMMER = "It's pretty thin.",
-		TRUNK_WINTER = "It's thick and hairy.",
-		TURF_CARPETFLOOR = "Too classy for my tastes.",
-		TURF_CHECKERFLOOR = "Looks like one of those city-people outhouses.",
-		TURF_DIRT = "Just some ground, eh?",
-		TURF_FOREST = "Just some ground, eh?",
-		TURF_GRASS = "Just some ground, eh?",
-		TURF_MARSH = "Just some ground, eh?",
-		TURF_ROAD = "Just some ground, eh?",
-		TURF_ROCKY = "Just some ground, eh?",
-		TURF_SAVANNA = "Just some ground, eh?",
-		TURF_WOODFLOOR = "Flooring fit for a king!",
-		TURF_DRAGONFLY = "Fire doesn't quite take here, eh?",
-		TURF_DESERTDIRT = "Just some ground, eh?",
-		TURF_FUNGUS_GREEN = "Just some ground, eh?",
-		TURF_FUNGUS_RED = "Just some ground, eh?",
-		TURKEYDINNER = "Turkey day is here again!",
-		TWIGS = "I should build a tiny axe to chop these.",
-		INSPECTSELF = "Beard's growing out nicely.",
-		BERNIE_ACTIVE = "I guess I should be used to weird stuff by now.",
-		BERNIE_INACTIVE =
-		{
-			BROKEN = "Poor lil guy.",
-			GENERIC = "Cute, isn't it 'Luce?",
-		},
-		TWIGGYTREE = 
+        TRUNKVEST_SUMMER = "Nice and breezy.",
+        TRUNKVEST_WINTER = "This could stand up to the winters back home, eh?",
+        TRUNK_COOKED = "I think it boiled off all of the nose cheese.",
+        TRUNK_SUMMER = "It's pretty thin.",
+        TRUNK_WINTER = "It's thick and hairy.",
+        TURF_CARPETFLOOR = "Too classy for my tastes.",
+        TURF_CHECKERFLOOR = "Looks like one of those city-people outhouses.",
+        TURF_DIRT = "Just some ground, eh?",
+        TURF_FOREST = "Just some ground, eh?",
+        TURF_GRASS = "Just some ground, eh?",
+        TURF_MARSH = "Just some ground, eh?",
+        TURF_ROAD = "Just some ground, eh?",
+        TURF_ROCKY = "Just some ground, eh?",
+        TURF_SAVANNA = "Just some ground, eh?",
+        TURF_WOODFLOOR = "Flooring fit for a king!",
+        TURF_DRAGONFLY = "Fire doesn't quite take here, eh?",
+        TURF_DESERTDIRT = "Just some ground, eh?",
+        TURF_FUNGUS_GREEN = "Just some ground, eh?",
+        TURF_FUNGUS_RED = "Just some ground, eh?",
+        TURKEYDINNER = "Turkey day is here again!",
+        TWIGS = "I should build a tiny axe to chop these.",
+        INSPECTSELF = "Beard's growing out nicely.",
+        BERNIE_ACTIVE = "I guess I should be used to weird stuff by now.",
+        BERNIE_INACTIVE =
+        {
+            BROKEN = "Poor lil thing.",
+            GENERIC = "Cute, isn't it 'Luce?",
+        },
+        BERNIE_BIG = "Hm. Yep. Just another day.",
+        TWIGGYTREE =
         {
             BURNING = "Sorry!",
-			BURNT = "How terrible!",
-			CHOPPED = "Another one!",
-            GENERIC = "Choppin's choppin'.",           
+            BURNT = "How terrible!",
+            CHOPPED = "Another one!",
+            GENERIC = "Choppin's choppin'.",
             DISEASED = "It's caught a bit of a bug.",
         },
         ABIGAIL = "That ain't right.",
         TWIGGY_NUT_SAPLING = "One day it'll make good chopping.",
         TWIGGY_OLD = "I'd be lucky to get two chops out of that thing.",
         TWIGGY_NUT = "With a little care, this could make fer some good choppin'.",
-		UMBRELLA = "Something like that'd keep my beard dry, eh?",
-		UNIMPLEMENTED = "It doesn't look safe.",
-		WAFFLES = "I prefer flapjacks.",
-		WALL_HAY_ITEM = "I could sneeze it apart.",
-		WALL_STONE = "Safe and secure, eh?",
-		WALL_STONE_ITEM = "Safe and secure, eh?",
-		WALL_RUINS = "Crumbling, but still secure, eh?",
-		WALL_RUINS_ITEM = "Heh, stoned again, eh?",
-		WALL_WOOD_ITEM = "I like the look of that!",
-		WALL_MOONROCK = "Looks nice'n'sturdy.",
-		WALL_MOONROCK_ITEM = "It's not much use like that.",
-		FENCE = "That's a good lookin' fence.",
+        UMBRELLA = "Something like that'd keep my beard dry, eh?",
+        UNIMPLEMENTED = "It doesn't look safe.",
+        WAFFLES = "I prefer flapjacks.",
+        WALL_HAY_ITEM = "I could sneeze it apart.",
+        WALL_STONE = "Safe and secure, eh?",
+        WALL_STONE_ITEM = "Safe and secure, eh?",
+        WALL_RUINS = "Crumbling, but still secure, eh?",
+        WALL_RUINS_ITEM = "Heh, stoned again, eh?",
+        WALL_WOOD_ITEM = "I like the look of that!",
+        WALL_MOONROCK = "Looks nice'n'sturdy.",
+        WALL_MOONROCK_ITEM = "It's not much use like that.",
+        FENCE = "That's a good lookin' fence.",
         FENCE_ITEM = "A good project for a lazy afternoon.",
         FENCE_GATE = "Some nice woodwork there.",
         FENCE_GATE_ITEM = "A good project for a lazy afternoon.",
-		WALRUS = "Oh no. Walruses again!",
-		WALRUSHAT = "My granddad wore a hat like that.",
-		WALRUS_CAMP =
-		{
-			EMPTY = "This won't be safe come winter.",
-			GENERIC = "Walruses are nearby, eh?",
-		},
-		WALRUS_TUSK = "He had a cavity, eh?",
-		WARG = "That thing could pull a sled by its lonesome.",
-		WASPHIVE = "Why are those bees so angry?",
-		WATERBALLOON = "Could be fun times lobbin' these around.",
-		WORMLIGHT_LESSER = "Wrinklier than the underside of a beaver.",
-		WETGOOP = "Better than some of the things I've eaten!",
+        WALRUS = "Oh no. Walruses again!",
+        WALRUSHAT = "My granddad wore a hat like that.",
+        WALRUS_CAMP =
+        {
+            EMPTY = "This won't be safe come winter.",
+            GENERIC = "Walruses are nearby, eh?",
+        },
+        WALRUS_TUSK = "He had a cavity, eh?",
+        WARG = "That thing could pull a sled by its lonesome.",
+        WASPHIVE = "Why are those bees so angry?",
+        WATERBALLOON = "Could be fun times lobbin' these around.",
+        WORMLIGHT_LESSER = "Wrinklier than the underside of a beaver.",
+        WETGOOP = "Better than some of the things I've eaten!",
         WHIP = "I hope that doesn't end up hurtin' any lil critters.",
-		WINTERHAT = "It's a nice toque, eh?",
+        WINTERHAT = "It's a nice toque, eh?",
 
         WINTER_TREE =
         {
@@ -2086,16 +2087,16 @@ return {
             CANDECORATE = "Must... not chop...",
             YOUNG = "All holidays should revolve around trees.",
         },
- 		WINTER_TREESTAND = 
-		{
-			GENERIC = "I'm sure I have an extra pine cone somewhere.",
+        WINTER_TREESTAND =
+        {
+            GENERIC = "I'm sure I have an extra pine cone somewhere.",
             BURNT =  "Too bad. Made the place feel real cozy.",
-		},
+        },
         WINTER_ORNAMENT = "For hanging on the unchopped tree with care.",
         WINTER_ORNAMENTLIGHT = "What do you think, Lucy? Decorate, or chop?",
         WINTER_ORNAMENTBOSS = "Y'know, I do believe that was worth it.",
         WINTER_ORNAMENTFORGE = "Kinda familiar eh, Lucy?",
-		WINTER_ORNAMENTGORGE = "That's nice.",
+        WINTER_ORNAMENTGORGE = "That's nice.",
 
         WINTER_FOOD1 = "It's a gingerbread lumberjack.", --gingerbread cookie
         WINTER_FOOD2 = "Always had a soft spot for a good holiday cookie.", --sugar cookie

@@ -309,7 +309,7 @@ return {
             GHOST = "Wolfgang will get raw pump-y heart for you!",
             FIRESTARTER = "%s is lighting burny fires!",
         },
-        WILSON = 
+        WILSON =
         {
             GENERIC = "Is tiny egghead man, %s! Hello!",
             ATTACKER = "Does weak science man want to fight?",
@@ -318,7 +318,7 @@ return {
             GHOST = "Ha ha! Big brain did not save you. I will get heart.",
             FIRESTARTER = "Wolfgang thought he could trust %s!",
         },
-        WOLFGANG = 
+        WOLFGANG =
         {
             GENERIC = "Hello friend %s! We must arm wrestle!",
             ATTACKER = "%s will make a worthy fight!",
@@ -327,7 +327,7 @@ return {
             GHOST = "World needs more %s! I will get heart!",
             FIRESTARTER = "Wolfgang cannot trust even himself not to light fire!",
         },
-        WAXWELL = 
+        WAXWELL =
         {
             GENERIC = "Is tiny frailman, %s! Hello!",
             ATTACKER = "Does fragile %s want to fight? Ha ha! Is funny.",
@@ -336,7 +336,7 @@ return {
             GHOST = "%s is friend of Wolfgang. He will get raw heart.",
             FIRESTARTER = "Is dastardly plan with fire, %s?",
         },
-        WX78 = 
+        WX78 =
         {
             GENERIC = "Is tiny robot, %s! Hello!",
             ATTACKER = "Ha! Metal can is want to rock'em and sock'em!",
@@ -345,7 +345,7 @@ return {
             GHOST = "Robot %s is broken! Wolfgang rub heart on problem.",
             FIRESTARTER = "Robot trying to kill fleshypeople again, maybe?",
         },
-        WILLOW = 
+        WILLOW =
         {
             GENERIC = "Is tiny torchlady, %s! Hello!",
             ATTACKER = "Wolfgang is burning to fight!",
@@ -354,7 +354,7 @@ return {
             GHOST = "Do not hurt, torchlady. Wolfgang get heart!",
             FIRESTARTER = "Is not big surprise.",
         },
-        WENDY = 
+        WENDY =
         {
             GENERIC = "Is very tiny, scary %s! H-hello!",
             ATTACKER = "Ah! Creepy girl is try to fight me!",
@@ -363,7 +363,7 @@ return {
             GHOST = "Please no hauntings, %s! Wolfgang will get you heart!",
             FIRESTARTER = "Oh no. Creepy girl is trying to burn us!",
         },
-        WOODIE = 
+        WOODIE =
         {
             GENERIC = "Is beard! Hello!",
             ATTACKER = "Does beardman %s want to fight?",
@@ -374,7 +374,7 @@ return {
             BEAVERGHOST = "Still have good moustache, %s.",
             FIRESTARTER = "Be careful! Do not burn, beard!",
         },
-        WICKERBOTTOM = 
+        WICKERBOTTOM =
         {
             GENERIC = "Is strong brainlady! Hello, tiny %s!",
             ATTACKER = "Ha ha! %s should not pick fight with dumb books!",
@@ -383,7 +383,7 @@ return {
             GHOST = "Wolfgang will get raw pump-y heart for you!",
             FIRESTARTER = "Strong brainlady probably know what she's doing with fire.",
         },
-        WES = 
+        WES =
         {
             GENERIC = "Is tiny oddman, %s! Hello!",
             ATTACKER = "Wolfgang does not trust your rosy cheeks, %s.",
@@ -392,7 +392,7 @@ return {
             GHOST = "Wolfgang will go get heart for odd clownman!",
             FIRESTARTER = "You are looking very guilty, clownman.",
         },
-        WEBBER = 
+        WEBBER =
         {
             GENERIC = "Is tiny monsterchild, %s! H-hello!",
             ATTACKER = "Ah! Tiny child is try to fight me!",
@@ -401,7 +401,7 @@ return {
             GHOST = "Who squish small bug boy? Wolfgang will smash back!",
             FIRESTARTER = "Please no. Please no burnings!",
         },
-        WATHGRITHR = 
+        WATHGRITHR =
         {
             GENERIC = "Is very strong %s! Hello!",
             ATTACKER = "%s will make a worthy fight!",
@@ -441,12 +441,13 @@ return {
             GENERIC = "Is so cuddly!",
         },
         BERNIE_ACTIVE = "Is so brave!",
+        BERNIE_BIG = "Oh no! Wolfgang has shrunken!",
 
         LAVA_POND_ROCK = "Is just small rock.",
         --BOOK_METEOR = "Book make very hot rain.",
 
         GLOMMER = "Why you follow, weird bug?",
-        GLOMMERFLOWER = 
+        GLOMMERFLOWER =
         {
             GENERIC = "Is shiny flower.",
             DEAD = "Is sad and shiny flower.",
@@ -454,8 +455,8 @@ return {
         GLOMMERWINGS = "Small like fairy wings.",
         GLOMMERFUEL = "Weird bug make weird poop.",
         BELL = "Bell make dainty sound.",
-        STATUEGLOMMER = 
-        {   
+        STATUEGLOMMER =
+        {
             GENERIC = "Why statue is not flying?",
             EMPTY = "Smash!",
         },
@@ -469,7 +470,7 @@ return {
         MOLEHILL = "Mole hole.",
         MOLEHAT = "Mole skin is stretchy.",
         NIGHTSTICK = "Wolfgang like fists better.",
-        RABBITHOUSE=
+        RABBITHOUSE =
         {
             GENERIC = "I hear nomming inside.",
             BURNT = "Nomming is over.",
@@ -486,11 +487,11 @@ return {
         ICEPACK = "Furry bag.",
         TREEGUARD = "Tree man! Fight me!",
         BEARGER_FUR = "Is like hair on Wolfgang chest.",
-        FURTUFT = "Fur from bear?", 
+        FURTUFT = "Fur from bear?",
         BIGFOOT = "Foot is too big!",
         BONESHARD = "Wolfgang crush into even smaller bones!",
         BUZZARD = "Carry on.",
-        CACTUS = 
+        CACTUS =
         {
             GENERIC = "Wolfgang not like sharp plant.",
             PICKED = "Ha! Is flat plant.",
@@ -508,7 +509,7 @@ return {
             OUT = "Uh oh. It turned off.",
         },
         CATCOON = "Wolfgang does not trust it.",
-        CATCOONDEN = 
+        CATCOONDEN =
         {
             GENERIC = "Stump is suspicious.",
             EMPTY = "Wolfgang more comfortable now that stump is empty.",

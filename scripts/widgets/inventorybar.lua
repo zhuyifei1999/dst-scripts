@@ -715,11 +715,11 @@ function Inv:CloseControllerInventory()
             self.active_slot:DeHighlight()
         end
 
-        self:ScaleTo(self.selected_scale, self.base_scale,.1)
+        self:ScaleTo(self.selected_scale, self.base_scale, .1)
 
         local bp = self.owner.HUD:GetFirstOpenContainerWidget()
         if bp ~= nil then
-            bp:ScaleTo(self.selected_scale,self.base_scale,.1)
+            bp:ScaleTo(self.selected_scale,self.base_scale, .1)
         end
 
         TheFrontEnd:LockFocus(false)
@@ -727,22 +727,15 @@ function Inv:CloseControllerInventory()
 end
 
 function Inv:GetDescriptionString(item)
-    local str = nil
-    local in_equip_slot = item and item.components.equippable and item.components.equippable:IsEquipped()
-    if item and item.replica.inventoryitem then
-        local adjective = item:GetAdjective()
-        if adjective then
-            str = adjective .. " " .. item:GetDisplayName()
-        else
-            str = item:GetDisplayName()
-        end
+    if item == nil then
+        return ""
     end
-    
-    return str or ""
+    local adjective = item:GetAdjective()
+    return adjective ~= nil and (adjective.." "..item:GetDisplayName()) or item:GetDisplayName()
 end
 
-function Inv:SetTooltipColour(r,g,b,a)
-   self.actionstringtitle:SetColour(r,g,b,a)
+function Inv:SetTooltipColour(r, g, b, a)
+   self.actionstringtitle:SetColour(r, g, b, a)
 end
 
 local function GetDropActionString(doer, item)
@@ -815,7 +808,7 @@ function Inv:UpdateCursorText()
         else 
             if is_equip_slot then
                 --handle the quip slot stuff as a special case because not every item can go there
-                if active_item ~= nil and active_item.replica.equippable ~= nil and active_item.replica.equippable:EquipSlot() == self.active_slot.equipslot then
+                if active_item ~= nil and active_item.replica.equippable ~= nil and active_item.replica.equippable:EquipSlot() == self.active_slot.equipslot and not active_item.replica.equippable:IsRestricted(self.owner) then
                     if inv_item and active_item then
                         table.insert(str, TheInput:GetLocalizedControl(controller_id, CONTROL_ACCEPT) .. " " .. STRINGS.UI.HUD.SWAP)
                     elseif not inv_item and active_item then

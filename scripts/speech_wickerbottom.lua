@@ -457,10 +457,10 @@ return
             GENERIC = "It's a teddy bear.",
         },
         BERNIE_ACTIVE = "That teddy bear seems to be animated somehow.",
-        
+        BERNIE_BIG = "As whimsical as it is befuddling.",
 
         GLOMMER = "A bizarre specimen of the insecta class.",
-        GLOMMERFLOWER = 
+        GLOMMERFLOWER =
         {
             GENERIC = "It's dripping with goo.",
             DEAD = "It's gone gray, but it's still dripping.",
@@ -468,8 +468,8 @@ return
         GLOMMERWINGS = "The pennons of that strange specimen.",
         GLOMMERFUEL = "It appears to be quite volatile.",
         BELL = "Quiet! This is a library!",
-        STATUEGLOMMER = 
-        {   
+        STATUEGLOMMER =
+        {
             GENERIC = "Is it petrified?",
             EMPTY = "Nope, just a statue.",
         },
@@ -505,7 +505,7 @@ return
         TURF_BADLANDS = "The ground. You step on it.",
 
         LIGHTER = "Ah, a mechanical tool for fire starting. How useful.",
-        ANTLION = 
+        ANTLION =
         {
             GENERIC  = "Ah. You must be behind all the seismic activity.",
             VERYHAPPY = "It has been mollified with tributes.",
@@ -546,7 +546,7 @@ return
         BURNT_MARSH_BUSH = "Reduced to ash.",
         BONESHARD = "Remnants of a life well lived.",
         BUZZARD = "Cathartes, of course.",
-        CACTUS = 
+        CACTUS =
         {
             GENERIC = "A young barrel cactus.",
             PICKED = "Desperate times, desperate measures.",
@@ -565,7 +565,7 @@ return
             HIGH = "That fire is burning at an alarming rate.",
         },
         CATCOON = "A sort of a wildcat. Handsome fellow.",
-        CATCOONDEN = 
+        CATCOONDEN =
         {
             GENERIC = "An excellent hollow for a den.",
             EMPTY = "Looks used up.",

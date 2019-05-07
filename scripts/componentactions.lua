@@ -1076,7 +1076,11 @@ local COMPONENT_ACTIONS =
         end,
 
         equippable = function(inst, doer, actions)
-            table.insert(actions, inst.replica.equippable:IsEquipped() and ACTIONS.UNEQUIP or ACTIONS.EQUIP)
+            if inst.replica.equippable:IsEquipped() then
+                table.insert(actions, ACTIONS.UNEQUIP)
+            elseif not inst.replica.equippable:IsRestricted(doer) then
+                table.insert(actions, ACTIONS.EQUIP)
+            end
         end,
 
         fan = function(inst, doer, actions)

@@ -1713,6 +1713,17 @@ QUAGMIRE_NUM_FOOD_PREFABS = 69
 QUAGMIRE_NUM_SEEDS_PREFABS = 7
 QUAGMIRE_USE_KLUMP = false
 
+-- needs to be kept synchronized with InventoryProgress enum in InventoryManager.h
+INVENTORY_PROGRESS = 
+{
+	IDLE = 0,
+	CHECK_SHOP = 1,
+	CHECK_EVENT = 2,
+	CHECK_DLC = 3,
+	CHECK_DAILY_GIFT = 4,
+	CHECK_INVENTORY = 5,
+}
+
 CURRENT_BETA = 0 -- set to 0 if there is no beta. Note: release builds wont use this so only staging and dev really care
 BETA_INFO =
 {

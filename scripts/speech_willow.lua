@@ -442,69 +442,77 @@ return {
         MOONROCKIDOL = "Looks like a jerk.",
         MOONROCKSEED = "Well I can't burn it.",
 
-		BERNIE_INACTIVE =
-		{
-			BROKEN = "I need to fix Bernie up.",
-			GENERIC = "My childhood buddy - Bernie!",
-		},
-		BERNIE_ACTIVE = "Help me, Bernie!",
-		
-		GLOMMER = "It's fuzzy! And slimy...",
-        GLOMMERFLOWER = 
+        BERNIE_INACTIVE =
         {
-        	GENERIC = "Why does everything have to be a flower?!",
-        	DEAD = "I wonder if it burns...",
+            BROKEN = "I need to fix Bernie up.",
+            GENERIC = "My childhood buddy - Bernie!",
+        },
+        BERNIE_ACTIVE = "Help me, Bernie!",
+        BERNIE_BIG = "GET'EM, BERNIE!!",
+        --ASHLEY_INACTIVE =
+        --{
+            --BROKEN = "Ashley doesn't look so good.",
+            --GENERIC = "My childhood pal - Ashley!",
+        --},
+        --ASHLEY_ACTIVE = "Help me, Ashley!",
+        --ASHLEY_BIG = "GO GET'EM, GIRL!",
+
+        GLOMMER = "It's fuzzy! And slimy...",
+        GLOMMERFLOWER =
+        {
+            GENERIC = "Why does everything have to be a flower?!",
+            DEAD = "I wonder if it burns...",
         },
         GLOMMERWINGS = "They're so small!",
         GLOMMERFUEL = "It's goopy and weird.",
         BELL = "Is it New Year's Eve? Are there FIREWORKS?!",
         MOOSE_NESTING_GROUND = "Ugh, it smells like bird butts!",
-        STATUEGLOMMER = 
-        {	
-        	GENERIC = "Is that supposed to be something?",
-        	EMPTY = "Looks about the same.",
-    	},
-		WEBBERSKULL = "It's not myyy way, but a burial will have to do.",
-		MOLE =
-		{
-			HELD = "Out of the ground, into the fire.",
-			UNDERGROUND = "Hiding from the light, huh?",
-			ABOVEGROUND = "Coming up for a peek!",
-		},
-		MOLEHILL = "It burrows away from the sun's skyfire. Unnatural.",
-		MOLEHAT = "I'm not sure about this...",
-		NIGHTSTICK = "It'd be way cooler if it was on fire...",
-		RABBITHOUSE=
-		{
-			GENERIC = "Ugh. Stupid rabbits.",
-			BURNT = "Ha! Good result.",
-		},
-		TURF_DECIDUOUS = "The ground is boring.",
-		TURF_SANDY = "The ground is boring.",
-		TURF_BADLANDS = "The ground is boring.",
-		BEARGER = "Whoa! Niiiice bear...",
-		BEARGERVEST = "It's like swimming in fur.",
-		ICEPACK = "Fuzzy backpack!",
-		ANTLION = 
-		{
-			GENERIC = "What do you want?!",
-			VERYHAPPY = "You're in a good mood.",
-			UNHAPPY = "There's gonna be tremors in our future.",
-		},
-		SANDSPIKE = "Burn it!",
+        STATUEGLOMMER =
+        {
+            GENERIC = "Is that supposed to be something?",
+            EMPTY = "Looks about the same.",
+        },
+        WEBBERSKULL = "It's not myyy way, but a burial will have to do.",
+        MOLE =
+        {
+            HELD = "Out of the ground, into the fire.",
+            UNDERGROUND = "Hiding from the light, huh?",
+            ABOVEGROUND = "Coming up for a peek!",
+        },
+        MOLEHILL = "It burrows away from the sun's skyfire. Unnatural.",
+        MOLEHAT = "I'm not sure about this...",
+        NIGHTSTICK = "It'd be way cooler if it was on fire...",
+        RABBITHOUSE=
+        {
+            GENERIC = "Ugh. Stupid rabbits.",
+            BURNT = "Ha! Good result.",
+        },
+        TURF_DECIDUOUS = "The ground is boring.",
+        TURF_SANDY = "The ground is boring.",
+        TURF_BADLANDS = "The ground is boring.",
+        BEARGER = "Whoa! Niiiice bear...",
+        BEARGERVEST = "It's like swimming in fur.",
+        ICEPACK = "Fuzzy backpack!",
+        ANTLION =
+        {
+            GENERIC = "What do you want?!",
+            VERYHAPPY = "You're in a good mood.",
+            UNHAPPY = "There's gonna be tremors in our future.",
+        },
+        SANDSPIKE = "Burn it!",
         SANDBLOCK = "Buuurn!",
         GLASSSPIKE = "I can't believe that worked!",
         GLASSBLOCK = "See? Fire solves everything.",
-		ANTLIONTRINKET = "Buncha junk.",
-		ABIGAIL_FLOWER = 
-		{
-			GENERIC = "Looks flammable.",
-			LONG = "Looks flammable.",
-			MEDIUM = "Ugh, it's weird!",
-			SOON = "Burning is still an option.",
-			HAUNTED_POCKET = "It's burning a hole in my pocket. Heh.",
-			HAUNTED_GROUND = "I don't want to mess with that.",
-		},
+        ANTLIONTRINKET = "Buncha junk.",
+        ABIGAIL_FLOWER =
+        {
+            GENERIC = "Looks flammable.",
+            LONG = "Looks flammable.",
+            MEDIUM = "Ugh, it's weird!",
+            SOON = "Burning is still an option.",
+            HAUNTED_POCKET = "It's burning a hole in my pocket. Heh.",
+            HAUNTED_GROUND = "I don't want to mess with that.",
+        },
 
 		BOOK_BIRDS = "Less reading, more burning!",
 		BOOK_TENTACLES = "Looks like kindling to me!",

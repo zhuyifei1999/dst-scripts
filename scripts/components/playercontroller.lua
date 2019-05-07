@@ -2938,9 +2938,10 @@ function PlayerController:DoAction(buffaction)
 end
 
 function PlayerController:DoActionAutoEquip(buffaction)
-    if buffaction.invobject ~= nil and
-        buffaction.invobject.replica.equippable ~= nil and
-        buffaction.invobject.replica.equippable:EquipSlot() == EQUIPSLOTS.HANDS and
+    local equippable = buffaction.invobject ~= nil and buffaction.invobject.replica.equippable or nil
+    if equippable ~= nil and
+        equippable:EquipSlot() == EQUIPSLOTS.HANDS and
+        not equippable:IsRestricted(self.inst) and
         buffaction.action ~= ACTIONS.DROP and
         buffaction.action ~= ACTIONS.COMBINESTACK and
         buffaction.action ~= ACTIONS.STORE and

@@ -21,6 +21,10 @@ local function ontakingfiredamage(self, takingfiredamage)
     self.inst.replica.health:SetIsTakingFireDamage(takingfiredamage)
 end
 
+local function ontakingfiredamagelow(self, takingfiredamagelow)
+    self.inst.replica.health:SetIsTakingFireDamageLow(takingfiredamagelow == true)
+end
+
 local function onpenalty(self, penalty)
     self.inst.replica.health:SetPenalty(penalty)
 end
@@ -57,6 +61,7 @@ local Health = Class(function(self, inst)
 
     self.takingfiredamage = false
     self.takingfiredamagetime = 0
+    --self.takingfiredamagelow = nil
     self.fire_damage_scale = 1
     self.fire_timestart = 1
     self.firedamageinlastsecond = 0
@@ -75,6 +80,7 @@ nil,
     maxhealth = onmaxhealth,
     currenthealth = oncurrenthealth,
     takingfiredamage = ontakingfiredamage,
+    takingfiredamagelow = ontakingfiredamagelow,
     penalty = onpenalty,
     canmurder = oncanmurder,
     canheal = oncanheal,
@@ -131,34 +137,47 @@ end
 local FIRE_TIMEOUT = .5
 
 function Health:DoFireDamage(amount, doer, instant)
-    if not self.invincible and self.fire_damage_scale > 0 then
+    --V2C: "not instant" generally means that we are burning or being set on fire at the same time
+    if not self.invincible and (not instant or self.fire_damage_scale > 0) then
+        local time = GetTime()
         if not self.takingfiredamage then
             self.takingfiredamage = true
-            self.takingfiredamagestarttime = GetTime()
+            self.takingfiredamagestarttime = time
+            if (self.fire_timestart > 1 and not instant) or self.fire_damage_scale <= 0 then
+                self.takingfiredamagelow = true
+            end
             self.inst:StartUpdatingComponent(self)
-            self.inst:PushEvent("startfiredamage")
+            self.inst:PushEvent("startfiredamage", { low = self.takingfiredamagelow })
             ProfileStatsAdd("onfire")
         end
 
-        local time = GetTime()
         self.lastfiredamagetime = time
 
         if (instant or time - self.takingfiredamagestarttime > self.fire_timestart) and amount > 0 then
+            if self.fire_damage_scale > 0 then
+                if self.takingfiredamagelow then
+                    self.takingfiredamagelow = nil
+                    self.inst:PushEvent("changefiredamage", { low = false })
+                end
 
-            --We're going to take damage at this point, so make sure it's now over the cap/second
-            if self.firedamagecaptimer <= time then
-                self.firedamageinlastsecond = 0
-                self.firedamagecaptimer = time + 1
+                --We're going to take damage at this point, so make sure it's not over the cap/second
+                if self.firedamagecaptimer <= time then
+                    self.firedamageinlastsecond = 0
+                    self.firedamagecaptimer = time + 1
+                end
+
+                if self.firedamageinlastsecond + amount > TUNING.MAX_FIRE_DAMAGE_PER_SECOND then
+                    amount = TUNING.MAX_FIRE_DAMAGE_PER_SECOND - self.firedamageinlastsecond
+                end
+
+                self:DoDelta(-amount * self.fire_damage_scale, false, doer ~= nil and (doer.nameoverride or doer.prefab) or "fire", nil, doer)
+                self.inst:PushEvent("firedamage")
+
+                self.firedamageinlastsecond = self.firedamageinlastsecond + amount
+            elseif not self.takingfiredamagelow then
+                self.takingfiredamagelow = true
+                self.inst:PushEvent("changefiredamage", { low = true })
             end
-
-            if self.firedamageinlastsecond + amount > TUNING.MAX_FIRE_DAMAGE_PER_SECOND then
-                amount = TUNING.MAX_FIRE_DAMAGE_PER_SECOND - self.firedamageinlastsecond
-            end
-
-            self:DoDelta(-amount*self.fire_damage_scale, false, "fire")
-            self.inst:PushEvent("firedamage")       
-
-            self.firedamageinlastsecond = self.firedamageinlastsecond + amount
         end
     end
 end
@@ -168,6 +187,9 @@ function Health:OnUpdate(dt)
 
     if time - self.lastfiredamagetime > FIRE_TIMEOUT then
         self.takingfiredamage = false
+        if self.takingfiredamagelow then
+            self.takingfiredamagelow = nil
+        end
         self.inst:StopUpdatingComponent(self)
         self.inst:PushEvent("stopfiredamage")
         ProfileStatsAdd("fireout")

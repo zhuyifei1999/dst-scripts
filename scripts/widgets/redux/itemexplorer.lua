@@ -186,7 +186,7 @@ function ItemExplorer:_DoInit(title_text, contained_items, list_options)
     self.collection_title:SetHAlign(ANCHOR_LEFT)
     
     self.store_btn = self.footer:AddChild(ImageButton("images/frontend_redux.xml", "button_shop_vshort_normal.tex", "button_shop_vshort_hover.tex", "button_shop_vshort_disabled.tex", "button_shop_vshort_down.tex"))
-    self.store_btn:SetOnClick( function() TheFrontEnd:FadeToScreen( TheFrontEnd:GetActiveScreen(), function() return PurchasePackScreen( nil, nil, self.last_interaction_target.item_key) end, nil ) end )
+    self.store_btn:SetOnClick( function() TheFrontEnd:FadeToScreen( TheFrontEnd:GetActiveScreen(), function() return PurchasePackScreen( nil, nil, { initial_item_key = self.last_interaction_target.item_key } ) end, nil ) end )
     self.store_btn:SetScale(0.5)
     self.store_btn:SetPosition(205,-23)
     self.store_btn:Hide()
@@ -771,7 +771,9 @@ function ItemExplorer:_CreateScrollingGridItem(context, scroll_index, width, hei
 
     w.UpdateSelectionState = function(w_self)
         local item_data = w_self.data
-        w_self:SetInteractionState(IsDataSelected(context, item_data), item_data.is_owned, item_data.is_interaction_target, IsUserCommerceBuyAllowedOnItem(item_data.item_key), item_data.is_dlc_owned)
+        if item_data.item_key then --do we have bad data? but wwhhhhhyyy???? and hoooowwww???
+            w_self:SetInteractionState(IsDataSelected(context, item_data), item_data.is_owned, item_data.is_interaction_target, IsUserCommerceBuyAllowedOnItem(item_data.item_key), item_data.is_dlc_owned)
+        end
     end
 
     return w
@@ -892,7 +894,7 @@ function ItemExplorer:OnControl(control, down)
                 self:_ShowMarketplaceForInteractTarget()
                 return true
             elseif self.can_show_pack then
-                TheFrontEnd:FadeToScreen( TheFrontEnd:GetActiveScreen(), function() return PurchasePackScreen( nil, nil, self.last_interaction_target.item_key ) end, nil )
+                TheFrontEnd:FadeToScreen( TheFrontEnd:GetActiveScreen(), function() return PurchasePackScreen( nil, nil, { initial_item_key = self.last_interaction_target.item_key }) end, nil )
                 return true
 			end
         elseif not down and control == CONTROL_MAP then

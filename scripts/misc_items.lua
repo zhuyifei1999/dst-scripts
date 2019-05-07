@@ -1023,6 +1023,20 @@ MISC_ITEMS =
 		output_items = {  "wx78_wip", "body_wx78_wip", "hand_wx78_wip", "feet_wx78_wip", },
 		release_group = 49,
 	},
+	pack_haunteddoll_items =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 2,
+		build_name_override = "pack_common",
+		display_atlas = "images/iap_images_haunteddoll_items.xml",
+		display_tex = "haunteddoll_items.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "bernie_cat", "lighter_haunteddoll", "umbrella_parasol", },
+		output_items = {  "bernie_cat", "lighter_haunteddoll", "umbrella_parasol", },
+		release_group = 66,
+	},
 	pack_heart_you =
 	{
 		type = "purchase",
@@ -1621,6 +1635,85 @@ MISC_ITEMS =
 		output_items = {  "wx78_victorian", "body_wx78_victorian", "hand_wx78_victorian", "legs_wx78_victorian", },
 		release_group = 46,
 	},
+	pack_willow_deluxe =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 1,
+		build_name_override = "pack_common",
+		display_atlas = "images/iap_images_willow_deluxe.xml",
+		display_tex = "willow_deluxe.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "willow_haunteddoll", "willow_formalp", "willow_survivorp", "willow_shadowp", "willow_rosep", },
+		output_items = {  "willow_haunteddoll", "body_willow_haunteddoll", "feet_willow_haunteddoll", "hand_willow_haunteddoll", "willow_formalp", "body_willow_formalp", "feet_formal_stilettop_black_scribble", "willow_survivorp", "body_willow_survivorp", "willow_shadowp", "body_willow_shadowp", "willow_rosep", "body_willow_rosep", },
+		release_group = 66,
+	},
+	pack_willow_formal =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 102,
+		build_name_override = "willow_formal",
+		display_atlas = "bigportraits/willow_formal.xml",
+		display_tex = "willow_formal_oval.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "willow_formalp", "body_willow_formalp", "feet_formal_stilettop_black_scribble", },
+		output_items = {  "willow_formalp", "body_willow_formalp", "feet_formal_stilettop_black_scribble", },
+		release_group = 66,
+	},
+	pack_willow_haunteddoll =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 102,
+		build_name_override = "willow_haunteddoll",
+		display_atlas = "bigportraits/willow_haunteddoll.xml",
+		display_tex = "willow_haunteddoll_oval.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "willow_haunteddoll", "body_willow_haunteddoll", "feet_willow_haunteddoll", "hand_willow_haunteddoll", },
+		output_items = {  "willow_haunteddoll", "body_willow_haunteddoll", "feet_willow_haunteddoll", "hand_willow_haunteddoll", },
+		release_group = 66,
+	},
+	pack_willow_rose =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 102,
+		build_name_override = "willow_rose",
+		display_atlas = "bigportraits/willow_rose.xml",
+		display_tex = "willow_rose_oval.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "willow_rosep", "body_willow_rosep", },
+		output_items = {  "willow_rosep", "body_willow_rosep", },
+		release_group = 66,
+	},
+	pack_willow_shadow =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 102,
+		build_name_override = "willow_shadow",
+		display_atlas = "bigportraits/willow_shadow.xml",
+		display_tex = "willow_shadow_oval.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "willow_shadowp", "body_willow_shadowp", },
+		output_items = {  "willow_shadowp", "body_willow_shadowp", },
+		release_group = 66,
+	},
+	pack_willow_survivor =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 102,
+		build_name_override = "willow_survivor",
+		display_atlas = "bigportraits/willow_survivor.xml",
+		display_tex = "willow_survivor_oval.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "willow_survivorp", "body_willow_survivorp", },
+		output_items = {  "willow_survivorp", "body_willow_survivorp", },
+		release_group = 66,
+	},
 	pack_winona_deluxe =
 	{
 		type = "purchase",
@@ -2052,6 +2145,13 @@ MISC_ITEMS =
 		rarity = "Spiffy",
 		rarity_modifier = "Woven",
 		release_group = 39,
+	},
+	playerportrait_bg_heatrockfire =
+	{
+		type = "playerportrait",
+		skin_tags = { "CRYSTAL", "PLAYERPORTRAIT", },
+		rarity = "Loyal",
+		release_group = 65,
 	},
 	playerportrait_bg_lamppost =
 	{
@@ -2824,6 +2924,13 @@ MISC_ITEMS =
 		rarity = "Common",
 		rarity_modifier = "Woven",
 		release_group = 32,
+	},
+	profileflair_heatrock_fire =
+	{
+		type = "profileflair",
+		skin_tags = { "CRYSTAL", "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 65,
 	},
 	profileflair_hound =
 	{

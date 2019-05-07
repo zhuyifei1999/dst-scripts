@@ -324,48 +324,49 @@ return {
 	},
 	DESCRIBE =
 	{
-		MULTIPLAYER_PORTAL = "I can come and go as I please.",
-		MULTIPLAYER_PORTAL_MOONROCK = "Ooo, what delightful games we might play in there!",
+        MULTIPLAYER_PORTAL = "I can come and go as I please.",
+        MULTIPLAYER_PORTAL_MOONROCK = "Ooo, what delightful games we might play in there!",
         CONSTRUCTION_PLANS = "But it's more fun to wing it!",
         MOONROCKIDOL = "What, pray tell, do you desire?",
         MOONROCKSEED = "I bet you know some fun secrets.",
-		ANTLION = 
-		{
-			GENERIC = "You need only tell me what you desire.",
-			VERYHAPPY = "Are you not pleased, my friend?",
-			UNHAPPY = "Apologies, dear beast! I am but a worm!",
-		},
-		ANTLIONTRINKET = "Better get a bucket!",
-		SANDSPIKE = "Hyuyu, you won't get me!",
+        ANTLION =
+        {
+            GENERIC = "You need only tell me what you desire.",
+            VERYHAPPY = "Are you not pleased, my friend?",
+            UNHAPPY = "Apologies, dear beast! I am but a worm!",
+        },
+        ANTLIONTRINKET = "Better get a bucket!",
+        SANDSPIKE = "Hyuyu, you won't get me!",
         SANDBLOCK = "Goodness gracious, goodness me!",
         GLASSSPIKE = "Sharp and pointy as my tooth!",
         GLASSBLOCK = "A pretty spire, made of glass.",
-		ABIGAIL_FLOWER = 
-		{ 
-			GENERIC = "I think it eats souls, too.",
-			LONG = "It's very sad. Full of regrets.",
-			MEDIUM = "Waking up, are we?",
-			SOON = "It seems the fun will soon begin.",
-			HAUNTED_POCKET = "Sadly, it is not mine to keep.",
-			HAUNTED_GROUND = "Ohh, you're hungry too.",
-		},
+        ABIGAIL_FLOWER =
+        {
+            GENERIC = "I think it eats souls, too.",
+            LONG = "It's very sad. Full of regrets.",
+            MEDIUM = "Waking up, are we?",
+            SOON = "It seems the fun will soon begin.",
+            HAUNTED_POCKET = "Sadly, it is not mine to keep.",
+            HAUNTED_GROUND = "Ohh, you're hungry too.",
+        },
 
-		BALLOONS_EMPTY = "Stores one's breath for later spells.",
-		BALLOON = "I often feel like I might float away. Hyuyu!",
+        BALLOONS_EMPTY = "Stores one's breath for later spells.",
+        BALLOON = "I often feel like I might float away. Hyuyu!",
 
-		BERNIE_INACTIVE =
-		{
-			BROKEN = "He seemed a fine chap.",
-			GENERIC = "What a pity.",
-		},
+        BERNIE_INACTIVE =
+        {
+            BROKEN = "He seemed a fine chap.",
+            GENERIC = "What a pity.",
+        },
 
-		BERNIE_ACTIVE = "Good sir, are you aware you've no soul?",
-		
-		BOOK_BIRDS = "Humans share their knowledge so freely.",
-		BOOK_TENTACLES = "Imps don't disseminate precious knowledge so carelessly.",
-		BOOK_GARDENING = "Secret knowledge of vegetables.",
-		BOOK_SLEEP = "Knowledge is power. Literally.",
-		BOOK_BRIMSTONE = "Who would leave such precious knowledge lying here?",
+        BERNIE_ACTIVE = "Good sir, are you aware you've no soul?",
+        BERNIE_BIG = "It's grown to new heights to win all our fights!",
+
+        BOOK_BIRDS = "Humans share their knowledge so freely.",
+        BOOK_TENTACLES = "Imps don't disseminate precious knowledge so carelessly.",
+        BOOK_GARDENING = "Secret knowledge of vegetables.",
+        BOOK_SLEEP = "Knowledge is power. Literally.",
+        BOOK_BRIMSTONE = "Who would leave such precious knowledge lying here?",
 
         PLAYER =
         {
@@ -376,117 +377,117 @@ return {
             GHOST = "Ooo, lunch is here!",
             FIRESTARTER = "Ooo, who did you prank?",
         },
-		WILSON = 
-		{
-			GENERIC = "Who wants to do science when you can play?",
-			ATTACKER = "That was a mean prank, %s!",
-			MURDERER = "That wasn't a prank! That mortal's dead!",
-			REVIVER = "%s traded a soul for a heart!",
-			GHOST = "Ooo, lunch is here!",
-			FIRESTARTER = "%s knows how to tell a joke!",
-		},
-		WOLFGANG = 
-		{
-			GENERIC = "Hello, hello my giant friend!",
-			ATTACKER = "Hoohoo, %s knows how to throw a punch!",
-			MURDERER = "%s, you've got a taste for souls!",
-			REVIVER = "What a sweet soul %s is!",
-			GHOST = "Can I just get a taste?",
-			FIRESTARTER = "Hyuyu, %s is so funny!",
-		},
-		WAXWELL = 
-		{
-			GENERIC = "He has a bit of magic, that one.",
-			ATTACKER = "Not the horns!",
-			MURDERER = "Eep! Don't banish me from this plane!",
-			REVIVER = "Thank-you, thank-you %s!",
-			GHOST = "What a tasty looking soul!",
-			FIRESTARTER = "%s, you have a funnybone after all!",
-		},
-		WX78 = 
-		{
-			GENERIC = "Hyuyu %s, do you have an off button?",
-			ATTACKER = "Hoohoo, I'll stop grinding your gears! Promise!",
-			MURDERER = "Don't kill the poor little imp!",
-			REVIVER = "What a kind and noble deed!",
-			GHOST = "Not so soulless after all, hyuyu!",
-			FIRESTARTER = "Ooo, the tin can has a sense of humor!",
-		},
-		WILLOW = 
-		{
-			GENERIC = "Oh, you're the funny one!",
-			ATTACKER = "Hey! That's not funny!",
-			MURDERER = "%s! You're just as bad as my old partner!",
-			REVIVER = "Thanks for the leg up!",
-			GHOST = "Ooo, free soul!",
-			FIRESTARTER = "Ooohoo, have you been playing pranks?",
-		},
-		WENDY = 
-		{
-			GENERIC = "Do my claws scare you? Hyuyu!",
-			ATTACKER = "I don't like the game you're playing.",
-			MURDERER = "I was just playing around! Please don't hurt me!",
-			REVIVER = "Thanks for not eating that soul, %s!",
-			GHOST = "Don't worry, I'm not gonna eat you.",
-			FIRESTARTER = "Hyuyu, how funny you are, %s!",
-		},
-		WOODIE = 
-		{
-			GENERIC = "That axe of his sure can tell a joke.",
-			ATTACKER = "I'll stop hiding your axe, promise! Hyuyu!",
-			MURDERER = "Don't kill me, hyuyuyu!",
-			REVIVER = "%s is oh so helpful!",
-			GHOST = "You wouldn't even noticed if I took a bite.",
-			BEAVER = "Hyuyu, you're so funny, %s!",
-			BEAVERGHOST = "What a funny soul! I wonder what it tastes like.",
-			FIRESTARTER = "%s has been a bit of a prankster!",
-		},
-		WICKERBOTTOM = 
-		{
-			GENERIC = "%s needs to have some fun.",
-			ATTACKER = "I'm sorry about the exploding pen gag, hyuyu!",
-			MURDERER = "Hyuyu! Please don't kill me!",
-			REVIVER = "%s wouldn't lose a soul so easily!",
-			GHOST = "Mmm, fresh soul!",
-			FIRESTARTER = "You're having too much fun, %s!",
-		},
-		WES = 
-		{
-			GENERIC = "%s, let's practice our routine!",
-			ATTACKER = "Those punches weren't part of the bit!",
-			MURDERER = "Don't hurt me, %s!",
-			REVIVER = "Thank-you, thank-you, funny friend!",
-			GHOST = "%s, did you get more delicious?",
-			FIRESTARTER = "Ooohoohoo, what have you been up to?",
-		},
-		WEBBER = 
-		{
-			GENERIC = "Hello hello, itsy bitsy spider!",
-			ATTACKER = "Please don't grab my tail!",
-			MURDERER = "You wouldn't murder a helpless imp, would you??",
-			REVIVER = "Hoohoo, that little monster's soft on souls.",
-			GHOST = "Oh don't worry, I won't eat you.",
-			FIRESTARTER = "%s is having so much fun!",
-		},
-		WATHGRITHR = 
-		{
-			GENERIC = "%s, which of your myths mentions imps?",
-			ATTACKER = "Don't hit me!",
-			MURDERER = "Eep! Don't kill me!",
-			REVIVER = "Hoohoo! %s gave a soul a helping hand!",
-			GHOST = "Are you gonna eat that?",
-			FIRESTARTER = "%s has been having so much fun!",
-		},
-		WINONA = 
-		{
-			GENERIC = "Do you think me too silly, %s?",
-			ATTACKER = "Hyuyu, I think I pushed her buttons!",
-			MURDERER = "Eep! I'm but a helpless imp!",
-			REVIVER = "%s, you generous soul!",
-			GHOST = "Just a nibble? You don't need all that soul.",
-			FIRESTARTER = "Ooo, what funny pranks you play!",
-		},
-		WORTOX =
+        WILSON =
+        {
+            GENERIC = "Who wants to do science when you can play?",
+            ATTACKER = "That was a mean prank, %s!",
+            MURDERER = "That wasn't a prank! That mortal's dead!",
+            REVIVER = "%s traded a soul for a heart!",
+            GHOST = "Ooo, lunch is here!",
+            FIRESTARTER = "%s knows how to tell a joke!",
+        },
+        WOLFGANG =
+        {
+            GENERIC = "Hello, hello my giant friend!",
+            ATTACKER = "Hoohoo, %s knows how to throw a punch!",
+            MURDERER = "%s, you've got a taste for souls!",
+            REVIVER = "What a sweet soul %s is!",
+            GHOST = "Can I just get a taste?",
+            FIRESTARTER = "Hyuyu, %s is so funny!",
+        },
+        WAXWELL =
+        {
+            GENERIC = "He has a bit of magic, that one.",
+            ATTACKER = "Not the horns!",
+            MURDERER = "Eep! Don't banish me from this plane!",
+            REVIVER = "Thank-you, thank-you %s!",
+            GHOST = "What a tasty looking soul!",
+            FIRESTARTER = "%s, you have a funnybone after all!",
+        },
+        WX78 =
+        {
+            GENERIC = "Hyuyu %s, do you have an off button?",
+            ATTACKER = "Hoohoo, I'll stop grinding your gears! Promise!",
+            MURDERER = "Don't kill the poor little imp!",
+            REVIVER = "What a kind and noble deed!",
+            GHOST = "Not so soulless after all, hyuyu!",
+            FIRESTARTER = "Ooo, the tin can has a sense of humor!",
+        },
+        WILLOW =
+        {
+            GENERIC = "Oh, you're the funny one!",
+            ATTACKER = "Hey! That's not funny!",
+            MURDERER = "%s! You're just as bad as my old partner!",
+            REVIVER = "Thanks for the leg up!",
+            GHOST = "Ooo, free soul!",
+            FIRESTARTER = "Ooohoo, have you been playing pranks?",
+        },
+        WENDY =
+        {
+            GENERIC = "Do my claws scare you? Hyuyu!",
+            ATTACKER = "I don't like the game you're playing.",
+            MURDERER = "I was just playing around! Please don't hurt me!",
+            REVIVER = "Thanks for not eating that soul, %s!",
+            GHOST = "Don't worry, I'm not gonna eat you.",
+            FIRESTARTER = "Hyuyu, how funny you are, %s!",
+        },
+        WOODIE =
+        {
+            GENERIC = "That axe of his sure can tell a joke.",
+            ATTACKER = "I'll stop hiding your axe, promise! Hyuyu!",
+            MURDERER = "Don't kill me, hyuyuyu!",
+            REVIVER = "%s is oh so helpful!",
+            GHOST = "You wouldn't even noticed if I took a bite.",
+            BEAVER = "Hyuyu, you're so funny, %s!",
+            BEAVERGHOST = "What a funny soul! I wonder what it tastes like.",
+            FIRESTARTER = "%s has been a bit of a prankster!",
+        },
+        WICKERBOTTOM =
+        {
+            GENERIC = "%s needs to have some fun.",
+            ATTACKER = "I'm sorry about the exploding pen gag, hyuyu!",
+            MURDERER = "Hyuyu! Please don't kill me!",
+            REVIVER = "%s wouldn't lose a soul so easily!",
+            GHOST = "Mmm, fresh soul!",
+            FIRESTARTER = "You're having too much fun, %s!",
+        },
+        WES =
+        {
+            GENERIC = "%s, let's practice our routine!",
+            ATTACKER = "Those punches weren't part of the bit!",
+            MURDERER = "Don't hurt me, %s!",
+            REVIVER = "Thank-you, thank-you, funny friend!",
+            GHOST = "%s, did you get more delicious?",
+            FIRESTARTER = "Ooohoohoo, what have you been up to?",
+        },
+        WEBBER =
+        {
+            GENERIC = "Hello hello, itsy bitsy spider!",
+            ATTACKER = "Please don't grab my tail!",
+            MURDERER = "You wouldn't murder a helpless imp, would you??",
+            REVIVER = "Hoohoo, that little monster's soft on souls.",
+            GHOST = "Oh don't worry, I won't eat you.",
+            FIRESTARTER = "%s is having so much fun!",
+        },
+        WATHGRITHR =
+        {
+            GENERIC = "%s, which of your myths mentions imps?",
+            ATTACKER = "Don't hit me!",
+            MURDERER = "Eep! Don't kill me!",
+            REVIVER = "Hoohoo! %s gave a soul a helping hand!",
+            GHOST = "Are you gonna eat that?",
+            FIRESTARTER = "%s has been having so much fun!",
+        },
+        WINONA =
+        {
+            GENERIC = "Do you think me too silly, %s?",
+            ATTACKER = "Hyuyu, I think I pushed her buttons!",
+            MURDERER = "Eep! I'm but a helpless imp!",
+            REVIVER = "%s, you generous soul!",
+            GHOST = "Just a nibble? You don't need all that soul.",
+            FIRESTARTER = "Ooo, what funny pranks you play!",
+        },
+        WORTOX =
         {
             GENERIC = "Oh! What a handsome devil.",
             ATTACKER = "Hey! What's with that impish grin?",
@@ -504,24 +505,24 @@ return {
             GHOST = "Don't worry, I'm not hungry.",
             FIRESTARTER = "Little goat! You played pranks without me!",
         },
-		GLOMMER = 
-		{
-			GENERIC = "What thoughts lurk within that curious noggin?",
-			SLEEPING = "If only I were a sleep demon.",
-		},
-		GLOMMERFLOWER = 
-		{
-			GENERIC = "A flower that attracts a friend.",
-			DEAD = "Oh no, oh dear!",
-		},
-		GLOMMERWINGS = "How dainty!",
-		GLOMMERFUEL = "This stuff's so funny!",
-		BELL = "I believe it might bring forth delight.",
-		STATUEGLOMMER = 
-		{	
-			GENERIC = "The moon will bring a friend my way.",
-			EMPTY = "Whoopsie doopsie!",
-		},
+        GLOMMER =
+        {
+            GENERIC = "What thoughts lurk within that curious noggin?",
+            SLEEPING = "If only I were a sleep demon.",
+        },
+        GLOMMERFLOWER =
+        {
+            GENERIC = "A flower that attracts a friend.",
+            DEAD = "Oh no, oh dear!",
+        },
+        GLOMMERWINGS = "How dainty!",
+        GLOMMERFUEL = "This stuff's so funny!",
+        BELL = "I believe it might bring forth delight.",
+        STATUEGLOMMER =
+        {
+            GENERIC = "The moon will bring a friend my way.",
+            EMPTY = "Whoopsie doopsie!",
+        },
 
 		LAVA_POND_ROCK = "Cold lava.",
 		LAVA_POND_ROCK2 = "Cold lava.",
@@ -2306,7 +2307,7 @@ return {
 		QUAGMIRE_SALT_RACK =
 		{
 			READY = "The minerals are ready.",
-			GENERIC = " The mortals crave these minerals.",
+			GENERIC = "The mortals crave these minerals.",
 		},
 
 		QUAGMIRE_SALT_RACK_ITEM = "It's meant to go above a pond.",

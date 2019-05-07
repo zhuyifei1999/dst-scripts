@@ -1452,6 +1452,10 @@ STRINGS =
 
         BERNIE_INACTIVE = "Bernie",
         BERNIE_ACTIVE = "Bernie",
+        BERNIE_BIG = "BERNIE!",
+        --ASHLEY_INACTIVE = "Ashley",
+        --ASHLEY_ACTIVE = "Ashley",
+        --ASHLEY_BIG = "ASHLEY!",
 
         DECREASE_HEALTH = "Health",
         HALF_HEALTH = "Maximum Health",
@@ -4370,6 +4374,10 @@ STRINGS.UI =
         CURRENTLY_SPEAKING = "Currently Speaking...",
         RETRYING = "Retrying",
         RESTORING = "Restoring Backup",
+		CHECK_SHOP = "Updating the shop",
+		CHECK_EVENT = "Catching up on current events",
+		CHECK_DAILY_GIFT = "Checking for daily gifts",
+		CHECK_INVENTORY = "Updating inventory",
     },
     
     BOX_POPUP =
@@ -4388,7 +4396,7 @@ STRINGS.UI =
         THANKS_POPUP_SWR = "Thank you for buying the ShipWrecked DLC",
         THANKS_POPUP_ROGR = "Thank you for buying the Reign of Giants DLC",
         THANKS_POPUP_TITLE = "Thanks for playing",
-        THANKS_POPUP_TITLE_TWITCH = "Thanks for watching Twitch",
+        THANKS_POPUP_TITLE_TWITCH = "Thanks for watching game streams",
         THANKS_POPUP_TITLE_STORE = "Enjoy your gift",
         NORMAL_POPUP_TITLE = "received...",
         NEW_SKIN = "You got a skin for %s!",
@@ -6803,6 +6811,13 @@ STRINGS.UI =
         PURCHASE_WARNING_CANCEL = "Nevermind!",
 
         PACK_SAVINGS = "-{savings}%",
+        SALE_TXT = "-{sale_percent}%\nSale!",
+
+        EXPIRE_DAYS_TXT = "Offer expires in {days} days!",
+        EXPIRE_DAY_TXT = "Offer expires in 1 day!",
+        EXPIRE_HOURS_TXT = "Offer expires in {hours} hours!",
+        EXPIRE_HOUR_TXT = "Offer expires in 1 hour!",
+        EXPIRE_SOON_TXT = "Offer expires soon!",
 
         PACK_SHORT_DESC = "Includes {total_items} skin items!",
         MEGAPACK_SHORT_DESC = "Includes {total_sets} skin sets! {total_items} total skin items!",
@@ -6822,10 +6837,15 @@ STRINGS.UI =
 
         OWNED_FILTER = "Owned:",
         TYPE_FILTER = "Type:",
+        DISCOUNT_FILTER = "Discount:",
         FILTER_ALL = "All",
         FILTER_UNOWNED = "Unowned",
         FILTER_ITEMS = "Belongings",
-        
+        FILTER_BUNDLE = "Bundles",
+        FILTER_SALE = "Sales",
+
+        EMPTY_AFTER_FILTER = "There are currently no chests for sale that match your filter criteria.",
+
         UNOWNED_CHARACTER_BODY = "You do not currently own {character}.\nThis chest contains skins for {character}, which will be unusable without owning them.",
         VIEW_REQUIRED = "View {character} Chests",
 
@@ -7875,6 +7895,8 @@ STRINGS.UI =
         RESTORE_BACKUP = "Restore Backup",	
 		RESTORE_BACKUP_BODY = "Are you sure you want to restore from the last available backup? This process can not be undone.",    
         RESTOREBACKUP_FAILED = "An error occurred while\nrestoring your data.",	 
+		OVERWRITE_SAVEDATA_TITLE = "Overwrite save data",
+		OVERWRITE_SAVEDATA_BODY = "Are you sure you want to overwrite your save data? Your settings and worlds will be lost. This process can not be undone.",    
     },
     
     QUITTINGTITLE = "Quitting!",
@@ -8643,6 +8665,8 @@ if PLATFORM == "WIN32_RAIL" then
     STRINGS.UI.SAVELOAD.RESTORE_BACKUP = nil
     STRINGS.UI.SAVELOAD.RESTORE_BACKUP_BODY = nil
     STRINGS.UI.SAVELOAD.RESTOREBACKUP_FAILED = nil
+	STRINGS.UI.SAVELOAD.OVERWRITE_SAVEDATA_TITLE = nil
+	STRINGS.UI.SAVELOAD.OVERWRITE_SAVEDATA_BODY = nil
     
     STRINGS.UI.COMMANDWHEEL = nil
 

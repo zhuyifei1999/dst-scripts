@@ -545,7 +545,7 @@ local function destroystructure(staff, target)
         target.components.stewer:Harvest()
     end
 
-   	target:PushEvent("ondeconstrcutstructure", caster)
+   	target:PushEvent("ondeconstructstructure", caster)
 
     if target.components.stackable ~= nil then
         --if it's stackable we only want to destroy one of them.

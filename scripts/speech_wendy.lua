@@ -300,14 +300,15 @@ return {
         MOONROCKIDOL = "A lifeless sacrifice.",
         MOONROCKSEED = "Its pallor reminds me of Abigail.",
 
-		BERNIE_INACTIVE =
-		{
-			BROKEN = "He has passed.",
-			GENERIC = "He's had a rough life.",
-		},
-		BERNIE_ACTIVE = "He dances to forget the pain.",
-		
-		PLAYER =
+        BERNIE_INACTIVE =
+        {
+            BROKEN = "It has passed.",
+            GENERIC = "It's had a rough life.",
+        },
+        BERNIE_ACTIVE = "It dances to forget the pain.",
+        BERNIE_BIG = "Wow... What a big stuffy.",
+
+        PLAYER =
         {
             GENERIC = "How do you do, %s?",
             ATTACKER = "%s... they'll betray us.",
@@ -316,107 +317,107 @@ return {
             GHOST = "A heart could return %s to this world...",
             FIRESTARTER = "Do you wish to see the world burn?",
         },
-		WILSON = 
-		{
-			GENERIC = "How do you do, %s?",
-			ATTACKER = "%s is unstable.",
-			MURDERER = "You've gone mad, scientist.",
-			REVIVER = "Abigail likes you, %s.",
-			GHOST = "That was a bad experiment, %s...",
-			FIRESTARTER = "Douse your fires, %s.",
-		},
-		WOLFGANG = 
-		{
-			GENERIC = "Hi %s. Why are you shaking?",
-			ATTACKER = "I don't trust %s. Fear makes people dangerous.",
-			MURDERER = "Strength is meaningless if you can't catch me...",
-			REVIVER = "Don't be scared, %s. Abigail just wants to be friends.",
-			GHOST = "%s... Everyone leaves...",
-			FIRESTARTER = "Fire won't protect you, %s.",
-		},
-		WAXWELL = 
-		{
-			GENERIC = "How are you coping, %s?",
-			ATTACKER = "I don't think I trust %s yet.",
-			MURDERER = "Cursed villain!",
-			REVIVER = "He's gone from Sisyphus to Lazarus.",
-			GHOST = "Should I revive you, %s? Hmm...",
-			FIRESTARTER = "Are you trying to kindle a bad reputation?",
-		},
-		WX78 = 
-		{
-			GENERIC = "How do you do, %s?",
-			ATTACKER = "Do you have a conscience, %s?",
-			MURDERER = "None of us are above death, %s!",
-			REVIVER = "Abigail likes you, %s.",
-			GHOST = "Say \"Pretty Please\" and I might get you a heart, %s.",
-			FIRESTARTER = "I'd begun to think you were all talk, %s.",
-		},
-		WILLOW = 
-		{
-			GENERIC = "How do you do, %s?",
-			ATTACKER = "%s is a madwoman.",
-			MURDERER = "You've made a terrible error, %s.",
-			REVIVER = "Abigail likes you, %s. Do you like her?",
-			GHOST = "Say hi to Abigail while I get you a heart, %s.",
-			FIRESTARTER = "Let's watch the world burn together, %s.",
-		},
-		WENDY = 
-		{
-			GENERIC = "She looks sad...",
-			ATTACKER = "%s... she's no sister of mine.",
-			MURDERER = "Have we not seen enough death, %s?",
-			REVIVER = "I hope Abigail doesn't like you more than me...",
-			GHOST = "At least a heart could return one sister to this world...",
-			FIRESTARTER = "Fire probably isn't the method I would choose...",
-		},
-		WOODIE = 
-		{
-			GENERIC = "How do you do, %s?",
-			ATTACKER = "%s is plotting something dastardly with that axe.",
-			MURDERER = "I'll send you someplace much nicer than this, %s.",
-			REVIVER = "Abigail likes you, %s. But she likes Lucy more.",
-			GHOST = "We'll get a heart, but are you sure you want to come back?",
-			BEAVER = "He pinky-promised I'd get to ride on his shoulders. Such lies.",
-			BEAVERGHOST = "The curse haunts you even in death, %s?",
-			FIRESTARTER = "Fire setting does not seem in your best interest...",
-		},
-		WICKERBOTTOM = 
-		{
-			GENERIC = "How do you do, Ms. %s?",
-			ATTACKER = "Ms. %s... do you turn your wits against us?",
-			MURDERER = "\"Murder\", she wrote.",
-			REVIVER = "Abigail likes you, Ms. %s.",
-			GHOST = "Everyone that leaves takes a piece of my heart...",
-			FIRESTARTER = "Ms. %s, wreathed in flames.",
-		},
-		WES = 
-		{
-			GENERIC = "How do you do, %s?",
-			ATTACKER = "There's something you're not telling us...",
-			MURDERER = "%s, this is the end... for you!",
-			REVIVER = "Abigail says she understands you, %s.",
-			GHOST = "You won't leave us if I get you a heart, right?",
-			FIRESTARTER = "There are other ways to express yourself, %s.",
-		},
-		WEBBER = 
-		{
-			GENERIC = "Hey, %s!",
-			ATTACKER = "%s, are you friend... or foe?",
-			MURDERER = "Don't worry, %s. This won't hurt a bit.",
-			REVIVER = "You could never be a monster, %s.",
-			GHOST = "A heart could bring back my friend, %s...",
-			FIRESTARTER = "%s, let's find a game that doesn't involve fire.",
-		},
-		WATHGRITHR = 
-		{
-			GENERIC = "How do you do, %s?",
-			ATTACKER = "%s... she's bloodthirsty.",
-			MURDERER = "It'll all be over soon, %s.",
-			REVIVER = "It seems your heart is strong too, %s...",
-			GHOST = "Come back, %s... Take my heart...",
-			FIRESTARTER = "Do the Norse have a god of fire, %s?",
-		},
+        WILSON =
+        {
+            GENERIC = "How do you do, %s?",
+            ATTACKER = "%s is unstable.",
+            MURDERER = "You've gone mad, scientist.",
+            REVIVER = "Abigail likes you, %s.",
+            GHOST = "That was a bad experiment, %s...",
+            FIRESTARTER = "Douse your fires, %s.",
+        },
+        WOLFGANG =
+        {
+            GENERIC = "Hi %s. Why are you shaking?",
+            ATTACKER = "I don't trust %s. Fear makes people dangerous.",
+            MURDERER = "Strength is meaningless if you can't catch me...",
+            REVIVER = "Don't be scared, %s. Abigail just wants to be friends.",
+            GHOST = "%s... Everyone leaves...",
+            FIRESTARTER = "Fire won't protect you, %s.",
+        },
+        WAXWELL =
+        {
+            GENERIC = "How are you coping, %s?",
+            ATTACKER = "I don't think I trust %s yet.",
+            MURDERER = "Cursed villain!",
+            REVIVER = "He's gone from Sisyphus to Lazarus.",
+            GHOST = "Should I revive you, %s? Hmm...",
+            FIRESTARTER = "Are you trying to kindle a bad reputation?",
+        },
+        WX78 =
+        {
+            GENERIC = "How do you do, %s?",
+            ATTACKER = "Do you have a conscience, %s?",
+            MURDERER = "None of us are above death, %s!",
+            REVIVER = "Abigail likes you, %s.",
+            GHOST = "Say \"Pretty Please\" and I might get you a heart, %s.",
+            FIRESTARTER = "I'd begun to think you were all talk, %s.",
+        },
+        WILLOW =
+        {
+            GENERIC = "How do you do, %s?",
+            ATTACKER = "%s is a madwoman.",
+            MURDERER = "You've made a terrible error, %s.",
+            REVIVER = "Abigail likes you, %s. Do you like her?",
+            GHOST = "Say hi to Abigail while I get you a heart, %s.",
+            FIRESTARTER = "Let's watch the world burn together, %s.",
+        },
+        WENDY =
+        {
+            GENERIC = "She looks sad...",
+            ATTACKER = "%s... she's no sister of mine.",
+            MURDERER = "Have we not seen enough death, %s?",
+            REVIVER = "I hope Abigail doesn't like you more than me...",
+            GHOST = "At least a heart could return one sister to this world...",
+            FIRESTARTER = "Fire probably isn't the method I would choose...",
+        },
+        WOODIE =
+        {
+            GENERIC = "How do you do, %s?",
+            ATTACKER = "%s is plotting something dastardly with that axe.",
+            MURDERER = "I'll send you someplace much nicer than this, %s.",
+            REVIVER = "Abigail likes you, %s. But she likes Lucy more.",
+            GHOST = "We'll get a heart, but are you sure you want to come back?",
+            BEAVER = "He pinky-promised I'd get to ride on his shoulders. Such lies.",
+            BEAVERGHOST = "The curse haunts you even in death, %s?",
+            FIRESTARTER = "Fire setting does not seem in your best interest...",
+        },
+        WICKERBOTTOM =
+        {
+            GENERIC = "How do you do, Ms. %s?",
+            ATTACKER = "Ms. %s... do you turn your wits against us?",
+            MURDERER = "\"Murder\", she wrote.",
+            REVIVER = "Abigail likes you, Ms. %s.",
+            GHOST = "Everyone that leaves takes a piece of my heart...",
+            FIRESTARTER = "Ms. %s, wreathed in flames.",
+        },
+        WES =
+        {
+            GENERIC = "How do you do, %s?",
+            ATTACKER = "There's something you're not telling us...",
+            MURDERER = "%s, this is the end... for you!",
+            REVIVER = "Abigail says she understands you, %s.",
+            GHOST = "You won't leave us if I get you a heart, right?",
+            FIRESTARTER = "There are other ways to express yourself, %s.",
+        },
+        WEBBER =
+        {
+            GENERIC = "Hey, %s!",
+            ATTACKER = "%s, are you friend... or foe?",
+            MURDERER = "Don't worry, %s. This won't hurt a bit.",
+            REVIVER = "You could never be a monster, %s.",
+            GHOST = "A heart could bring back my friend, %s...",
+            FIRESTARTER = "%s, let's find a game that doesn't involve fire.",
+        },
+        WATHGRITHR =
+        {
+            GENERIC = "How do you do, %s?",
+            ATTACKER = "%s... she's bloodthirsty.",
+            MURDERER = "It'll all be over soon, %s.",
+            REVIVER = "It seems your heart is strong too, %s...",
+            GHOST = "Come back, %s... Take my heart...",
+            FIRESTARTER = "Do the Norse have a god of fire, %s?",
+        },
         WINONA =
         {
             GENERIC = "How do you do, %s?",
