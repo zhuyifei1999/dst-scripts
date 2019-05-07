@@ -123,8 +123,14 @@ local actionhandlers =
             end
         end),
     ActionHandler(ACTIONS.FERTILIZE, "doshortaction"),
-    ActionHandler(ACTIONS.SMOTHER, "dolongaction"),
-    ActionHandler(ACTIONS.MANUALEXTINGUISH, "dolongaction"),
+    ActionHandler(ACTIONS.SMOTHER,
+        function(inst)
+            return inst:HasTag("pyromaniac") and "domediumaction" or "dolongaction"
+        end),
+    ActionHandler(ACTIONS.MANUALEXTINGUISH,
+        function(inst)
+            return inst:HasTag("pyromaniac") and "domediumaction" or "dolongaction"
+        end),
     ActionHandler(ACTIONS.TRAVEL, "doshortaction"),
     ActionHandler(ACTIONS.LIGHT, "give"),
     ActionHandler(ACTIONS.UNLOCK, "give"),
@@ -143,7 +149,10 @@ local actionhandlers =
     ActionHandler(ACTIONS.STORE, "doshortaction"),
     ActionHandler(ACTIONS.DROP,
         function(inst)
-            return inst.replica.inventory:IsHeavyLifting() and "heavylifting_drop" or "doshortaction"
+            return inst.replica.inventory:IsHeavyLifting()
+                and not (inst.replica.rider ~= nil and inst.replica.rider:IsRiding())
+                and "heavylifting_drop"
+                or "doshortaction"
         end),
     ActionHandler(ACTIONS.MURDER,
         function(inst)

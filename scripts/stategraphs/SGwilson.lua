@@ -378,8 +378,14 @@ local actionhandlers =
     ActionHandler(ACTIONS.FISH, "fishing_pre"),
 
     ActionHandler(ACTIONS.FERTILIZE, "doshortaction"),
-    ActionHandler(ACTIONS.SMOTHER, "dolongaction"),
-    ActionHandler(ACTIONS.MANUALEXTINGUISH, "dolongaction"),
+    ActionHandler(ACTIONS.SMOTHER,
+        function(inst)
+            return inst:HasTag("pyromaniac") and "domediumaction" or "dolongaction"
+        end),
+    ActionHandler(ACTIONS.MANUALEXTINGUISH,
+        function(inst)
+            return inst:HasTag("pyromaniac") and "domediumaction" or "dolongaction"
+        end),
     ActionHandler(ACTIONS.TRAVEL, "doshortaction"),
     ActionHandler(ACTIONS.LIGHT, "give"),
     ActionHandler(ACTIONS.UNLOCK, "give"),
@@ -770,7 +776,7 @@ local events =
 
     EventHandler("souloverload",
         function(inst)
-            if not inst.components.health:IsDead() then
+            if not (inst.components.health:IsDead() or inst.sg:HasStateTag("sleeping")) then
                 inst.sg:GoToState("hit_souloverload")
             end
         end),
@@ -830,7 +836,7 @@ local events =
 
         if data ~= nil and data.cause == "file_load" and inst.components.revivablecorpse ~= nil then
             inst.sg:GoToState("corpse", true)
-        else
+        elseif not inst.sg:HasStateTag("dead") then
             inst.sg:GoToState("death")
         end
     end),
@@ -931,7 +937,7 @@ local events =
             --       pinned
             if not (inst.components.health:IsDead() or
                     inst.sg:HasStateTag("sleeping") or
-                    inst.sg:HasStateTag("frozen") or
+                    (inst.components.freezable ~= nil and inst.components.freezable:IsFrozen()) or
                     (inst.components.pinnable ~= nil and inst.components.pinnable:IsStuck())) then
                 inst.sg:GoToState("yawn", data)
             end
@@ -1360,7 +1366,7 @@ local states =
 
     State{
         name = "death",
-        tags = { "busy", "pausepredict", "nomorph" },
+        tags = { "busy", "dead", "pausepredict", "nomorph" },
 
         onenter = function(inst)
             assert(inst.deathcause ~= nil, "Entered death state without cause.")
@@ -5987,6 +5993,7 @@ local states =
         tags = { "busy", "pausepredict" },
 
         onenter = function(inst)
+            ClearStatusAilments(inst)
             ForceStopHeavyLifting(inst)
             inst.components.locomotor:Stop()
             inst:ClearBufferedAction()
@@ -6979,7 +6986,7 @@ local states =
     State
     {
         name = "corpse",
-        tags = { "busy", "noattack", "nopredict", "nomorph", "nodangle" },
+        tags = { "busy", "dead", "noattack", "nopredict", "nomorph", "nodangle" },
 
         onenter = function(inst, fromload)
             if inst.components.playercontroller ~= nil then

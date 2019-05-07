@@ -434,29 +434,30 @@ return {
         MOONROCKIDOL = "It looks kinda like an alien.",
         MOONROCKSEED = "Neat, it's a ball that floats by itself!",
 
-		BERNIE_INACTIVE =
-		{
-			BROKEN = "It's all busted up.",
-			GENERIC = "A teddy bear.",
-		},
-		BERNIE_ACTIVE = "That teddy bear is moving!",
+        BERNIE_INACTIVE =
+        {
+            BROKEN = "It's all busted up.",
+            GENERIC = "A teddy bear.",
+        },
+        BERNIE_ACTIVE = "That teddy bear is moving!",
+        BERNIE_BIG = "It's creepy and cute at the same time!!",
 
         LAVA_POND_ROCK = "Wow! A rock!",
 
         GLOMMER = "Nice eyes.",
-        GLOMMERFLOWER = 
+        GLOMMERFLOWER =
         {
-        	GENERIC = "It doesn't smell very nice.",
-        	DEAD = "I spoke too soon. It smells worse now.",
+            GENERIC = "It doesn't smell very nice.",
+            DEAD = "I spoke too soon. It smells worse now.",
         },
         GLOMMERWINGS = "I wish I'd at least ended up with wings. Sigh.",
         GLOMMERFUEL = "Yucky muck!",
         BELL = "Exactly the right amount of bell.",
-        STATUEGLOMMER = 
-        {	
-        	GENERIC = "A statue of some weird bug.",
-        	EMPTY = "Take that, rock bug!",
-    	},
+        STATUEGLOMMER =
+        {
+            GENERIC = "A statue of some weird bug.",
+            EMPTY = "Take that, rock bug!",
+        },
 
 		WEBBERSKULL = "How did this get here?",
 		WORMLIGHT = "It's gushing with light.",

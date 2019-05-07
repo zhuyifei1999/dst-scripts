@@ -68,11 +68,18 @@ end
 
 local function OnHit(inst, attacker, target)
     if target ~= nil then
+        local x, y, z = inst.Transform:GetWorldPosition()
         local fx = SpawnPrefab("wortox_soul_in_fx")
-        fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+        fx.Transform:SetPosition(x, y, z)
         fx:Setup(target)
-        if target.components.inventory ~= nil and target.components.inventory:IsOpenedBy(target) then
+        --ignore .isvisible, as long as it's .isopen
+        if target.components.inventory ~= nil and target.components.inventory.isopen then
             target.components.inventory:GiveItem(SpawnPrefab("wortox_soul"), nil, target:GetPosition())
+        else
+            --reuse fx variable
+            fx = SpawnPrefab("wortox_soul")
+            fx.Transform:SetPosition(x, y, z)
+            fx.components.inventoryitem:OnDropped(true)
         end
     end
     inst:Remove()

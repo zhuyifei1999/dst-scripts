@@ -223,7 +223,7 @@ function GetPackTotalSets(item_key)
     return count
 end
 
-function GetPackTotalValue(item_key)
+function IsPackABundle(item_key)
     local sub_packs = _GetSubPacks(item_key)
 
     local value = 0
@@ -246,14 +246,73 @@ function GetPackTotalValue(item_key)
         print("Error!!! Figure out iap for this platform.")
     end
     
-    return value 
+    return (value > 0), value 
 end
 
-function GetPackSavings(iap_def, total_value)
-    if IsSteam() then
-        return math.floor(100 * (1 - (iap_def.cents / total_value)))
+local getPriceFromIAPDef = function( iap_def, sale_active )
+	if IsSteam() then
+		if sale_active then
+			return iap_def.sale_cents
+		else
+			return iap_def.cents
+		end
+	elseif IsRail() then
+		if sale_active then
+			return iap_def.rail_sale_price
+		else
+			return iap_def.rail_price
+		end
+	end
+end
+
+function BuildPriceStr( value, currency_code, sale_active )
+    if type(value) ~= "number" then
+		value = getPriceFromIAPDef( value, sale_active )
+    end
+
+	if IsSteam() then
+		if currency_code == "JPY" or
+			currency_code == "IDR" or
+			currency_code == "VND" or
+			currency_code == "KRW" or
+			currency_code == "UAH" or
+			currency_code == "CNY" or
+			currency_code == "INR" or
+			currency_code == "CLP" or
+			currency_code == "COP" or
+			currency_code == "TWD" or
+			currency_code == "KZT" or
+			currency_code == "CRC" or
+			currency_code == "UYU" then
+
+			return string.format( "%s %0.0f", currency_code, value / 100 )
+		else
+		
+			return string.format( "%s %1.2f", currency_code, value / 100 )
+		end
     elseif IsRail() then
-        return math.floor(100 * (1 - (tonumber(iap_def.rail_price) / total_value)))
+        return tostring(value) .. " RMB"
+    else
+        print("Error!!! Figure out the pricing for the new platform.")
+    end
+end
+
+function IsSaleActive( iap_def )
+	local sale_active = false
+
+	local sale_duration = iap_def.sale_end - os.time()
+	if sale_duration > 0 and iap_def.sale_percent > 0 then
+		sale_active = true
+	end
+
+	return sale_active, sale_duration
+end
+
+function GetPackSavings(iap_def, total_value, sale_active )
+    if IsSteam() then
+        return math.floor(100 * (1 - (getPriceFromIAPDef(iap_def, sale_active) / total_value)))
+    elseif IsRail() then
+        return math.floor(100 * (1 - (tonumber(getPriceFromIAPDef(iap_def, sale_active)) / total_value)))
     else
         print("Error!!! Figure out iap for this platform.")
     end
@@ -1473,7 +1532,7 @@ function DisplayInventoryFailedPopup( screen )
                 screen.leave_from_fail = true
                 TheFrontEnd:PopScreen() --pop the failed dialog
                 
-                screen.items_get_popup = GenericWaitingPopup("GetAllItemsPopup", STRINGS.UI.PLAYERSUMMARYSCREEN.GET_INVENTORY, nil, false, function()
+                screen.items_get_popup = GenericWaitingPopup("GetAllItemsPopup", STRINGS.UI.PLAYERSUMMARYSCREEN.GET_INVENTORY, nil, true, function()
                     screen.poll_task:Cancel()
                     screen.poll_task = nil
                 end )
@@ -1491,7 +1550,7 @@ function DisplayInventoryFailedPopup( screen )
 
 			end},
 			{text=STRINGS.UI.PLAYERSUMMARYSCREEN.FAILED_INVENTORY_NO, cb = function()
-								
+				
                 screen.leave_from_fail = true
                 TheFrontEnd:PopScreen()
 				screen:Close()

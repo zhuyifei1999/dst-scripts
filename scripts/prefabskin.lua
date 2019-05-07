@@ -156,6 +156,18 @@ function torch_init_fn(inst, build_name)
 end
 
 --------------------------------------------------------------------------
+--[[ Lighter skin functions ]]
+--------------------------------------------------------------------------
+function lighter_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "swap_lighter")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+
+--------------------------------------------------------------------------
 --[[ Spear skin functions ]]
 --------------------------------------------------------------------------
 function spear_init_fn(inst, build_name)
@@ -580,6 +592,31 @@ function fence_init_fn(inst, build_name)
     inst.AnimState:SetSkin(build_name, "fence")
 end
 
+
+--------------------------------------------------------------------------
+--[[ Bernie skin functions ]]
+--------------------------------------------------------------------------
+function bernie_inactive_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+    inst.AnimState:SetSkin(build_name, "bernie_build")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+
+function bernie_active_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+    inst.AnimState:SetSkin(build_name, "bernie_build")
+end
+function bernie_big_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+    inst.AnimState:SetSkin(build_name, "bernie_build")
+end
+
 --------------------------------------------------------------------------
 --[[ Mushroomlight skin functions ]]
 --------------------------------------------------------------------------
@@ -754,6 +791,22 @@ end
 
 firestaff_init_fn = staff_init_fn
 icestaff_init_fn = staff_init_fn
+
+
+
+--------------------------------------------------------------------------
+--[[ Thermal Stone skin functions ]]
+--------------------------------------------------------------------------
+function heatrock_init_fn(inst, build_name)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst.AnimState:SetSkin(build_name, "heat_rock")
+    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+end
+
+
 
 --------------------------------------------------------------------------
 --[[ Lantern skin functions ]]

@@ -280,31 +280,30 @@ ACTIONS.PICKUP.fn = function(act)
 
         act.doer:PushEvent("onpickupitem", { item = act.target })
 
-        --special case for trying to carry two backpacks
-        if not act.target.components.inventoryitem.cangoincontainer and act.target.components.equippable and act.doer.components.inventory:GetEquippedItem(act.target.components.equippable.equipslot) then
-            local item = act.doer.components.inventory:GetEquippedItem(act.target.components.equippable.equipslot)
-            if item.components.inventoryitem and item.components.inventoryitem.cangoincontainer then
-                
-                --act.doer.components.inventory:SelectActiveItemFromEquipSlot(act.target.components.equippable.equipslot)
-                act.doer.components.inventory:GiveItem(act.doer.components.inventory:Unequip(act.target.components.equippable.equipslot))
-            else
-                act.doer.components.inventory:DropItem(act.doer.components.inventory:GetEquippedItem(act.target.components.equippable.equipslot))
+        if act.target.components.equippable ~= nil and not act.target.components.equippable:IsRestricted(act.doer) then
+            local equip = act.doer.components.inventory:GetEquippedItem(act.target.components.equippable.equipslot)
+            if equip ~= nil and not act.target.components.inventoryitem.cangoincontainer then
+                --special case for trying to carry two backpacks
+                if equip.components.inventoryitem ~= nil and equip.components.inventoryitem.cangoincontainer then
+                    --act.doer.components.inventory:SelectActiveItemFromEquipSlot(act.target.components.equippable.equipslot)
+                    act.doer.components.inventory:GiveItem(act.doer.components.inventory:Unequip(act.target.components.equippable.equipslot))
+                else
+                    act.doer.components.inventory:DropItem(equip)
+                end
+                act.doer.components.inventory:Equip(act.target)
+                return true
+            elseif act.doer:HasTag("player") then
+                if equip == nil or act.doer.components.inventory:GetNumSlots() <= 0 then
+                    act.doer.components.inventory:Equip(act.target)
+                    return true
+                elseif GetGameModeProperty("non_item_equips") then
+                    act.doer.components.inventory:DropItem(equip)
+                    act.doer.components.inventory:Equip(act.target)
+                    return true
+                end
             end
-            act.doer.components.inventory:Equip(act.target)
-            return true
         end
 
-        if act.target.components.equippable ~= nil and act.doer:HasTag("player") then
-            local equip = act.doer.components.inventory:GetEquippedItem(act.target.components.equippable.equipslot)
-            if equip == nil or act.doer.components.inventory:GetNumSlots() <= 0 then
-                act.doer.components.inventory:Equip(act.target)
-                return true
-            elseif GetGameModeProperty("non_item_equips") then
-                act.doer.components.inventory:DropItem(equip)
-                act.doer.components.inventory:Equip(act.target)
-                return true
-            end
-        end
         act.doer.components.inventory:GiveItem(act.target, nil, act.target:GetPosition())
         return true
     end

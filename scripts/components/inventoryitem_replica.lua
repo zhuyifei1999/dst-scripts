@@ -27,6 +27,7 @@ local InventoryItem = Class(function(self, inst)
         --     Avoiding asserts, but hopefully comments are enough =)
         if inst.components.equippable ~= nil then
             self:SetWalkSpeedMult(inst.components.equippable.walkspeedmult or 1)
+            self:SetEquipRestrictedTag(inst.components.equippable.restrictedtag)
         elseif inst.components.saddler ~= nil then
             self:SetWalkSpeedMult(inst.components.saddler.speedmult or 1)
         end
@@ -302,6 +303,20 @@ function InventoryItem:GetWalkSpeedMult()
     else
         return 1
     end
+end
+
+function InventoryItem:SetEquipRestrictedTag(restrictedtag)
+    self.classified.equiprestrictedtag:set(restrictedtag or 0)
+end
+
+function InventoryItem:GetEquipRestrictedTag()
+    if self.inst.components.equippable ~= nil then
+        return self.inst.components.equippable:GetRestrictedTag()
+    end
+    return self.classified ~= nil
+        and self.classified.equiprestrictedtag:value() ~= 0
+        and self.classified.equiprestrictedtag:value()
+        or nil
 end
 
 function InventoryItem:SetMoistureLevel(moisture)

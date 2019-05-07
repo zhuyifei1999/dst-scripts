@@ -1,5 +1,4 @@
 require "behaviours/wander"
-require "behaviours/faceentity"
 require "behaviours/follow"
 
 local BernieBrain = Class(Brain, function(self, inst)
@@ -13,6 +12,8 @@ local MAX_FOLLOW_DIST = 12
 local TARGET_FOLLOW_DIST = 6
 local TAUNT_DIST = 16
 local LOSE_LEADER_DIST_SQ = 30 * 30
+local BIG_LEADER_DIST_SQ = 8 * 8
+local BIG_EXCLUSION_DIST_SQ = 20 * 20
 
 local wander_times =
 {
@@ -28,7 +29,7 @@ end
 
 local function FindShadowCreatures(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, TAUNT_DIST, { "shadowcreature", "_combat", "locomotor" })
+    local ents = TheSim:FindEntities(x, y, z, TAUNT_DIST, { "shadowcreature", "_combat", "locomotor" }, { "INLIMBO", "notaunt" })
     for i = #ents, 1, -1 do
         if not IsTauntable(inst, ents[i]) then
             table.remove(ents, i)
@@ -78,9 +79,37 @@ local function GetLeader(self)
     return self._leader
 end
 
+local function ShouldGoBig(inst)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    for i, v in ipairs(AllPlayers) do
+        if v:HasTag("bernieowner") and
+            v.components.sanity:IsCrazy() and
+            v.entity:IsVisible() and
+            v:GetDistanceSqToPoint(x, y, z) < BIG_LEADER_DIST_SQ then
+            for k, _ in pairs(inst._berniebigs) do
+                if k:GetDistanceSqToPoint(x, y, z) < BIG_EXCLUSION_DIST_SQ then
+                    --too close to another bernie_big
+                    return false
+                end
+            end
+            return true
+        end
+    end
+    return false
+end
+
 function BernieBrain:OnStart()
     local root =
     PriorityNode({
+        IfNode(
+            function()
+                return not self.inst.sg:HasStateTag("busy")
+                    and not self.inst.components.timer:TimerExists("transform_cd")
+                    and ShouldGoBig(self.inst)
+            end,
+            "Go Big",
+            ActionNode(function() self.inst:GoBig() end)),
+
         --Get the attention of nearby sanity monsters.
         WhileNode(
             function()

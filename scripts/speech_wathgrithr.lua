@@ -434,7 +434,7 @@ return {
             GHOST = "An honorable Viking leaves no one behind!",
             FIRESTARTER = "%s stepped forth from Hel's flames!",
         },
-        
+
         LAVA_POND_ROCK = "Stone belched forth by the earth's fiery heart!",
 
         MULTIPLAYER_PORTAL = "It makes me long for the stage!",
@@ -445,13 +445,14 @@ return {
 
         BERNIE_INACTIVE =
         {
-            BROKEN = "He has gone to Valhalla.",
-            GENERIC = "It's a stuffed bear.",
+            BROKEN = "It has gone to Valhalla.",
+            GENERIC = "It's a stuffed beast.",
         },
-        BERNIE_ACTIVE = "What a brave bear!",
+        BERNIE_ACTIVE = "What a brave beast!",
+        BERNIE_BIG = "The beast hath been imbued with a fighting spirit!",
 
         GLOMMER = "A majestic goober.",
-        GLOMMERFLOWER = 
+        GLOMMERFLOWER =
         {
             GENERIC = "A wonder of the woods.",
             DEAD = "It was once a wonder of the woods.",
@@ -459,8 +460,8 @@ return {
         GLOMMERWINGS = "Ohh, look what the goober left for me.",
         GLOMMERFUEL = "This slop could be useful.",
         BELL = "I prefer the ringing resonance of clashing blades.",
-        STATUEGLOMMER = 
-        {   
+        STATUEGLOMMER =
+        {
             GENERIC = "A curious homage to the gods.",
             EMPTY = "That wasn't very respectful.",
         },

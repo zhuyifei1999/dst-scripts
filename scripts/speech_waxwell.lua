@@ -427,29 +427,31 @@ return {
             GHOST = "Serves you right, meddling imp.",
             FIRESTARTER = "Do I smell fire and brimstone?",
         },
-        
-		BERNIE_INACTIVE =
-		{
-			BROKEN = "It's seen better days.",
-			GENERIC = "It makes me a little nostalgic.",
-		},
-		BERNIE_ACTIVE = "Just what am I looking at here?",
-		BURNT_MARSH_BUSH = "Utterly destroyed.",
-		
-		SHADOWDIGGER = "I'm a shadow of myself. Ha-ha!",
-		
-		LICHEN = "A slow growing cave plant.",
-		GLOMMER = "A flying goop factory.",
-        GLOMMERFLOWER = 
+
+        BERNIE_INACTIVE =
         {
-        	GENERIC = "Flower power.",
-        	DEAD = "Flower power forever.",
+            BROKEN = "It's seen better days.",
+            GENERIC = "It makes me a little nostalgic.",
+        },
+        BERNIE_ACTIVE = "Just what am I looking at here?",
+        BERNIE_BIG = "How truly unnerving.",
+
+        BURNT_MARSH_BUSH = "Utterly destroyed.",
+
+        SHADOWDIGGER = "I'm a shadow of myself. Ha-ha!",
+
+        LICHEN = "A slow growing cave plant.",
+        GLOMMER = "A flying goop factory.",
+        GLOMMERFLOWER =
+        {
+            GENERIC = "Flower power.",
+            DEAD = "Flower power forever.",
         },
         GLOMMERWINGS = "They're sticky.",
         GLOMMERFUEL = "Well, that's rank.",
         BELL = "More bell.",
-        STATUEGLOMMER = 
-        {	
+        STATUEGLOMMER =
+        {
         	GENERIC = "Thank goodness, I thought it was another wretched statue of me.",
         	EMPTY = "The fewer statues the better, I say.",
     	},

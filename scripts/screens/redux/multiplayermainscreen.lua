@@ -109,8 +109,13 @@ function MakeBanner(self)
         anim:GetAnimState():PlayAnimation("loop", true)
         anim:SetScale(0.475)
         anim:SetPosition(327, -17)]]
-        anim:GetAnimState():SetBuild("dst_menu_wortox")
+        --[[anim:GetAnimState():SetBuild("dst_menu_wortox")
         anim:GetAnimState():SetBank("dst_menu_wortox")
+        anim:GetAnimState():PlayAnimation("loop", true)
+        anim:SetScale(.667)
+        anim:SetPosition(0, 0)]]
+        anim:GetAnimState():SetBuild("dst_menu_willow")
+        anim:GetAnimState():SetBank("dst_menu_willow")
         anim:GetAnimState():PlayAnimation("loop", true)
         anim:SetScale(.667)
         anim:SetPosition(0, 0)
@@ -181,7 +186,7 @@ local MultiplayerMainScreen = Class(Screen, function(self, prev_screen, profile,
 	self.default_focus = self.menu
 end)
 
-function MultiplayerMainScreen:GotoShop()
+function MultiplayerMainScreen:GotoShop( filter_info )
 	if TheFrontEnd:GetIsOfflineMode() or not TheNet:IsOnlineMode() then
 		TheFrontEnd:PushScreen(PopupDialogScreen(STRINGS.UI.MAINSCREEN.OFFLINE, STRINGS.UI.MAINSCREEN.ITEMCOLLECTION_DISABLE, 
 			{
@@ -192,7 +197,7 @@ function MultiplayerMainScreen:GotoShop()
 			}))
 	else
 		self:StopMusic()
-		self:_FadeToScreen(PurchasePackScreen, {Profile})
+		self:_FadeToScreen(PurchasePackScreen, {Profile, filter_info})
 	end
 end
 
@@ -238,7 +243,7 @@ function MultiplayerMainScreen:DoInit()
 				end
 				self.info_panel = self.fixed_root:AddChild(self:getStatsPanel())
 			end,
-			on_to_skins_cb = function() self:GotoShop() end,
+			on_to_skins_cb = function( filter_info ) self:GotoShop( filter_info ) end,
 			})
 		if self.info_panel == nil then
 			self.info_panel = self.fixed_root:AddChild(info_panel)

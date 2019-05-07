@@ -811,7 +811,7 @@ function Inventory:SetActiveItem(item)
 end
 
 function Inventory:Equip(item, old_to_active)
-    if item == nil or item.components.equippable == nil or not item:IsValid() then
+    if item == nil or item.components.equippable == nil or not item:IsValid() or item.components.equippable:IsRestricted(self.inst) then
         return
     end
 

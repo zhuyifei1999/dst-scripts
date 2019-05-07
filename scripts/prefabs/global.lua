@@ -37,10 +37,8 @@ local assets =
     Asset("ANIM", "anim/frames_comp.zip"), -- If we replace frames_comp with accountitem_frame, we can remove.
 
     --IAP shop is accessible in FE and in in-game lobby
-    Asset("DYNAMIC_ATLAS", "images/fepanels_redux_shop_panel.xml"),
-    Asset("PKGREF", "images/fepanels_redux_shop_panel.tex"),
-    Asset("DYNAMIC_ATLAS", "images/fepanels_redux_shop_panel_wide.xml"),
-    Asset("PKGREF", "images/fepanels_redux_shop_panel_wide.tex"),
+    Asset("DYNAMIC_ATLAS", "images/fepanels_redux.xml"),
+    Asset("PKGREF", "images/fepanels_redux.tex"),
 
     Asset("DYNAMIC_ANIM", "anim/dynamic/box_shared_spiral.zip"),
     Asset("PKGREF", "anim/dynamic/box_shared_spiral.dyn"),
