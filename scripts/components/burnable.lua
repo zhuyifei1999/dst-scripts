@@ -152,8 +152,9 @@ end
 function Burnable:GetLargestLightRadius()
     local largestRadius = nil
     for i, v in ipairs(self.fxchildren) do
-        if v.Light ~= nil and v.Light:IsEnabled() then
-            local radius = v.Light:GetCalculatedRadius()
+        local light = v.components.firefx ~= nil and v.components.firefx.light ~= nil and v.components.firefx.light.Light or v.Light
+        if light ~= nil and light:IsEnabled() then
+            local radius = light:GetCalculatedRadius()
             if largestRadius == nil or radius > largestRadius then
                 largestRadius = radius
             end

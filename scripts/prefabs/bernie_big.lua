@@ -14,9 +14,6 @@ local prefabs =
 local TARGET_DIST = 12
 local TAUNT_DIST = 16
 local TAUNT_PERIOD = 2
-local TARGET_TAGS = { "_combat", "locomotor" }
-local NO_TAUNT_TAGS = { "INLIMBO", "player", "companion", "epic", "notaunt" }
-local NO_TARGET_TAGS = { "INLIMBO", "player", "companion" }
 
 local function goinactive(inst)
     local skin_name = nil
@@ -66,7 +63,7 @@ end
 local function TauntCreatures(inst)
     if not inst.components.health:IsDead() then
         local x, y, z = inst.Transform:GetWorldPosition()
-        for i, v in ipairs(TheSim:FindEntities(x, y, z, TAUNT_DIST, TARGET_TAGS, NO_TAUNT_TAGS)) do
+        for i, v in ipairs(TheSim:FindEntities(x, y, z, TAUNT_DIST, { "_combat", "locomotor" }, { "INLIMBO", "player", "companion", "epic", "notaunt" })) do
             if IsTauntable(inst, v) then
                 v.components.combat:SetTarget(inst)
             end
@@ -85,7 +82,7 @@ local function RetargetFn(inst)
         return
     end
     local x, y, z = inst.Transform:GetWorldPosition()
-    for i, v in ipairs(TheSim:FindEntities(x, y, z, TARGET_DIST, TARGET_TAGS, NO_TARGET_TAGS)) do
+    for i, v in ipairs(TheSim:FindEntities(x, y, z, TARGET_DIST, { "_combat" }, { "INLIMBO", "player", "companion" }, { "locomotor", "epic" })) do
         if IsTargetable(inst, v) then
             return v
         end
@@ -99,7 +96,15 @@ end
 local function OnAttacked(inst, data)
     local attacker = data ~= nil and data.attacker or nil
     if attacker ~= nil then
-        inst.components.combat:SetTarget(attacker)
+        if not attacker:HasTag("bernieowner") then
+            local target = inst.components.combat.target
+            if not (target ~= nil and target:IsValid() and inst:IsNear(target, TUNING.BERNIE_BIG_ATTACK_RANGE + target:GetPhysicsRadius(0))) then
+                inst.components.combat:SetTarget(attacker)
+            end
+        elseif inst.components.combat:TargetIs(attacker) then
+            --V2C: prevent targeting Willows when using fire/ice staff against Bernie
+            inst.components.combat:DropTarget()
+        end
     end
 end
 
@@ -165,6 +170,8 @@ local function fn()
     inst._taunttask = inst:DoPeriodicTask(TAUNT_PERIOD, TauntCreatures, 0)
     inst.OnLoad = OnLoad
     inst.GoInactive = goinactive
+
+    inst:ListenForEvent("attacked", OnAttacked)
 
     inst:ListenForEvent("ms_registerbernieactive", function(src, bernieactive) bernieactive:TrackBernieBig(inst) end, TheWorld)
     TheWorld:PushEvent("ms_registerberniebig", inst)
