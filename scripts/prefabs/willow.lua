@@ -47,6 +47,10 @@ local function GetFuelMasterBonus(inst, item, target)
     return target:HasTag("campfire") and TUNING.WILLOW_CAMPFIRE_FUEL_MULT or 1
 end
 
+local function OnRespawnedFromGhost(inst)
+    inst.components.freezable:SetResistance(3)
+end
+
 local function common_postinit(inst)
     inst:AddTag("pyromaniac")
     inst:AddTag("expertchef")
@@ -78,7 +82,8 @@ local function master_postinit(inst)
     inst.components.temperature:SetFreezingHurtRate(TUNING.WILSON_HEALTH / TUNING.WILLOW_FREEZING_KILL_TIME)
     inst.components.temperature:SetOverheatHurtRate(TUNING.WILSON_HEALTH / TUNING.WILLOW_OVERHEAT_KILL_TIME)
 
-    inst.components.freezable:SetResistance(3)
+    inst:ListenForEvent("ms_respawnedfromghost", OnRespawnedFromGhost)
+    OnRespawnedFromGhost(inst)
 
     if TheNet:GetServerGameMode() == "lavaarena" then
         event_server_data("lavaarena", "prefabs/willow").master_postinit(inst)
