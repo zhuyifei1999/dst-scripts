@@ -44,7 +44,7 @@ local function sanityfn(inst)
 end
 
 local function GetFuelMasterBonus(inst, item, target)
-    return target:HasTag("campfire") and TUNING.WILLOW_CAMPFIRE_FUEL_MULT or 1
+    return (target:HasTag("campfire") or target.prefab == "nightlight") and TUNING.WILLOW_CAMPFIRE_FUEL_MULT or 1
 end
 
 local function OnRespawnedFromGhost(inst)
