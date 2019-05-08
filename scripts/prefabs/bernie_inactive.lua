@@ -80,7 +80,7 @@ local function tryreanimate(inst)
         if inst:GetSkinName() ~= nil then
             skin_name = inst:GetSkinName().."_active"
         end
-        local active = SpawnPrefab("bernie_active", skin_name, inst.skin_id, nil )
+        local active = SpawnPrefab("bernie_active", skin_name, inst.skin_id, nil)
         if active ~= nil then
             --Transform fuel % into health.
             active.components.health:SetPercent(inst.components.fueled:GetPercent())

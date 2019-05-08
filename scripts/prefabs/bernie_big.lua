@@ -20,7 +20,7 @@ local function goinactive(inst)
     if inst:GetSkinName() ~= nil then
         skin_name = string.gsub(inst:GetSkinName(), "_big", "")
     end
-    local inactive = SpawnPrefab("bernie_inactive", skin_name, inst.skin_id, nil )
+    local inactive = SpawnPrefab("bernie_inactive", skin_name, inst.skin_id, nil)
     if inactive ~= nil then
         --Transform health % into fuel.
         inactive.components.fueled:SetPercent(inst.components.health:GetPercent())
@@ -108,6 +108,24 @@ local function OnAttacked(inst, data)
     end
 end
 
+local function OnSleepTask(inst)
+    inst._sleeptask = nil
+    inst:GoInactive()
+end
+
+local function OnEntitySleep(inst)
+    if inst._sleeptask ~= nil then
+        inst._sleeptask = inst:DoTaskInTime(.5, OnSleepTask)
+    end
+end
+
+local function OnEntityWake(inst)
+    if inst._sleeptask ~= nil then
+        inst._sleeptask:Cancel()
+        inst._sleeptask = nil
+    end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -170,11 +188,10 @@ local function fn()
     inst._taunttask = inst:DoPeriodicTask(TAUNT_PERIOD, TauntCreatures, 0)
     inst.OnLoad = OnLoad
     inst.GoInactive = goinactive
+    inst.OnEntitySleep = OnEntitySleep
+    inst.OnEntityWake = OnEntityWake
 
     inst:ListenForEvent("attacked", OnAttacked)
-
-    inst:ListenForEvent("ms_registerbernieactive", function(src, bernieactive) bernieactive:TrackBernieBig(inst) end, TheWorld)
-    TheWorld:PushEvent("ms_registerberniebig", inst)
 
     return inst
 end

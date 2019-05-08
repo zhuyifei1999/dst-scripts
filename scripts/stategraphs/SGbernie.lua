@@ -55,6 +55,10 @@ local states =
         ontimeout = function(inst)
             inst.sg:GoToState("idle")
         end,
+
+        onexit = function(inst)
+            inst.Transform:SetFourFaced()
+        end,
     },
 
     State{

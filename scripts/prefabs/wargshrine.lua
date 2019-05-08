@@ -331,6 +331,8 @@ local function fn()
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
 
+    inst:ListenForEvent("ondeconstructstructure", DropTorch)
+
     return inst
 end
 

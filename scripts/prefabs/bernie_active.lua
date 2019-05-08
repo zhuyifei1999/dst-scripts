@@ -19,7 +19,7 @@ local function goinactive(inst)
         skin_name = string.gsub(inst:GetSkinName(), "_active", "")
     end
 
-    local inactive = SpawnPrefab("bernie_inactive", skin_name, inst.skin_id, nil )
+    local inactive = SpawnPrefab("bernie_inactive", skin_name, inst.skin_id, nil)
     if inactive ~= nil then
         --Transform health % into fuel.
         inactive.components.fueled:SetPercent(inst.components.health:GetPercent())
@@ -40,7 +40,7 @@ local function gobig(inst)
         skin_name = string.gsub(inst:GetSkinName(), "_active", "_big")
     end
     
-    local big = SpawnPrefab("bernie_big", skin_name, inst.skin_id, nil )
+    local big = SpawnPrefab("bernie_big", skin_name, inst.skin_id, nil)
     if big ~= nil then
         --Rescale health %
         big.components.health:SetPercent(inst.components.health:GetPercent())
@@ -59,10 +59,21 @@ local function onpickup(inst, owner)
     return true
 end
 
-local function TrackBernieBig(inst, berniebig)
-    if not inst._berniebigs[berniebig] then
-        inst._berniebigs[berniebig] = true
-        inst:ListenForEvent("onremove", inst._onremoveberniebig, berniebig)
+local function OnSleepTask(inst)
+    inst._sleeptask = nil
+    inst:GoInactive()
+end
+
+local function OnEntitySleep(inst)
+    if inst._sleeptask ~= nil then
+        inst._sleeptask = inst:DoTaskInTime(.5, OnSleepTask)
+    end
+end
+
+local function OnEntityWake(inst)
+    if inst._sleeptask ~= nil then
+        inst._sleeptask:Cancel()
+        inst._sleeptask = nil
     end
 end
 
@@ -113,12 +124,8 @@ local function fn()
 
     inst.GoInactive = goinactive
     inst.GoBig = gobig
-
-    inst._berniebigs = {}
-    inst.TrackBernieBig = TrackBernieBig
-    inst._onremoveberniebig = function(berniebig) inst._berniebigs[berniebig] = nil end
-    inst:ListenForEvent("ms_registerberniebig", function(src, berniebig) inst:TrackBernieBig(berniebig) end, TheWorld)
-    TheWorld:PushEvent("ms_registerbernieactive", inst)
+    inst.OnEntitySleep = OnEntitySleep
+    inst.OnEntityWake = OnEntityWake
 
     return inst
 end

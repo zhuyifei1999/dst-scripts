@@ -13,7 +13,6 @@ local TARGET_FOLLOW_DIST = 6
 local TAUNT_DIST = 16
 local LOSE_LEADER_DIST_SQ = 30 * 30
 local BIG_LEADER_DIST_SQ = 8 * 8
-local BIG_EXCLUSION_DIST_SQ = 20 * 20
 
 local wander_times =
 {
@@ -79,23 +78,35 @@ local function GetLeader(self)
     return self._leader
 end
 
-local function ShouldGoBig(inst)
-    local x, y, z = inst.Transform:GetWorldPosition()
+local function ShouldGoBig(self)
+    local x, y, z = self.inst.Transform:GetWorldPosition()
     for i, v in ipairs(AllPlayers) do
         if v:HasTag("bernieowner") and
+            v.bigbernies == nil and
+            v.blockbigbernies == nil and
             v.components.sanity:IsCrazy() and
             v.entity:IsVisible() and
             v:GetDistanceSqToPoint(x, y, z) < BIG_LEADER_DIST_SQ then
-            for k, _ in pairs(inst._berniebigs) do
-                if k:GetDistanceSqToPoint(x, y, z) < BIG_EXCLUSION_DIST_SQ then
-                    --too close to another bernie_big
-                    return false
-                end
-            end
+            self._leader = v
             return true
         end
     end
     return false
+end
+
+local function OnEndBlockBigBernies(leader)
+    leader.blockbigbernies = nil
+end
+
+local function DoGoBig(inst, leader)
+    if leader ~= nil then
+        if leader.blockbigbernies ~= nil then
+            leader.blockbigbernies:Cancel()
+        end
+        --V2C: block other big bernies from triggering, since brain needs time to detect initial leader
+        leader.blockbigbernies = leader:DoTaskInTime(.5, OnEndBlockBigBernies)
+    end
+    inst:GoBig()
 end
 
 function BernieBrain:OnStart()
@@ -105,10 +116,10 @@ function BernieBrain:OnStart()
             function()
                 return not self.inst.sg:HasStateTag("busy")
                     and not self.inst.components.timer:TimerExists("transform_cd")
-                    and ShouldGoBig(self.inst)
+                    and ShouldGoBig(self)
             end,
             "Go Big",
-            ActionNode(function() self.inst:GoBig() end)),
+            ActionNode(function() DoGoBig(self.inst, self._leader) end)),
 
         --Get the attention of nearby sanity monsters.
         WhileNode(

@@ -22,35 +22,60 @@ local MIN_ACTIVE_TIME = 4
 local DEACTIVATE_DELAY = 16
 local FOLLOWER_SANITY_THRESHOLD = .5
 
+local function SetLeader(self, leader)
+    if self._leader ~= leader then
+        if self._leader ~= nil then
+            self._leader.bigbernies[self.inst] = nil
+            if next(self._leader.bigbernies) == nil then
+                self._leader.bigbernies = nil
+            end
+        end
+        if leader ~= nil then
+            if leader.bigbernies == nil then
+                leader.bigbernies = { [self.inst] = true }
+            else
+                leader.bigbernies[self.inst] = true
+            end
+        end
+        self._leader = leader
+    end
+end
+
 local function ShouldDeactivate(self)
-    if self.inst.sg:HasStateTag("busy") then
-        return false
+    if self._leader ~= nil then
+        if self.inst.sg:HasStateTag("busy") then
+            return false
+        end
+
+        SetLeader(self, nil) --V2C: not redundant, this will clear .bigbernies
     end
 
-    self._leader = nil
+    local closestleader = nil
     local iscrazy = false
     local rangesq = FIND_LEADER_DIST_SQ
     local x, y, z = self.inst.Transform:GetWorldPosition()
     for i, v in ipairs(AllPlayers) do
-        if v:HasTag("bernieowner") and v.entity:IsVisible() then
+        if v:HasTag("bernieowner") and v.bigbernies == nil and v.entity:IsVisible() then
             if v.components.sanity:IsCrazy() then
                 local distsq = v:GetDistanceSqToPoint(x, y, z)
                 if distsq < (iscrazy and rangesq or FIND_LEADER_DIST_SQ) then
                     iscrazy = true
                     rangesq = distsq
-                    self._leader = v
+                    closestleader = v
                 end
             elseif not iscrazy and v.components.sanity:GetPercent() < FOLLOWER_SANITY_THRESHOLD then
                 local distsq = v:GetDistanceSqToPoint(x, y, z)
                 if distsq < rangesq then
                     rangesq = distsq
-                    self._leader = v
+                    closestleader = v
                 end
             end
         end
     end
 
-    if iscrazy then
+    SetLeader(self, closestleader)
+
+    if iscrazy or self.inst.sg:HasStateTag("busy") then
         return false
     elseif self._leader ~= nil then
         local t = GetTime()
@@ -73,7 +98,7 @@ end
 local function GetLeader(self)
     --V2C: re-checking "bernieowner" tag is redundant
     if self._leader ~= nil and not KeepLeaderFn(self.inst, self._leader) then
-        self._leader = nil
+        SetLeader(self, nil)
     end
     return self._leader
 end
@@ -123,6 +148,19 @@ function BernieBigBrain:OnStart()
         Wander(self.inst),
     }, .2)
     self.bt = BT(self.inst, root)
+
+    if self._onremove == nil then
+        self._onremove = function() SetLeader(self, nil) end
+        self.inst:ListenForEvent("onremove", self._onremove)
+    end
+end
+
+function BernieBigBrain:OnStop()
+    if self._onremove ~= nil then
+        self.inst:RemoveEventCallback("onremove", self._onremove)
+        self._onremove = nil
+    end
+    SetLeader(self, nil)
 end
 
 return BernieBigBrain
