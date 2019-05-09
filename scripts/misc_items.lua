@@ -685,6 +685,7 @@ MISC_ITEMS =
 		skin_tags = { },
 		featured_pack = true,
 		display_order = 2,
+		build_name_override = "pack_common",
 		display_atlas = "images/iap_images_character_wortox.xml",
 		display_tex = "character_wortox.tex",
 		box_build = "box_shop_plain",

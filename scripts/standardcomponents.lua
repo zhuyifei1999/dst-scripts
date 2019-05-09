@@ -1150,3 +1150,23 @@ function ToggleOnAllObjectCollisionsAt(inst, x, z)
 end
 
 --------------------------------------------------------------------------
+--V2C: new for DST, useful for allowing entities to prevent targeting players that attacked them
+
+local function StopTargetingAttacker(inst, attacker)
+    if inst.components.combat ~= nil and inst.components.combat:TargetIs(attacker) then
+        inst.components.combat:DropTarget()
+    end
+end
+
+function PreventTargetingOnAttacked(inst, attacker, tag)
+    if attacker.WINDSTAFF_CASTER ~= nil and attacker.WINDSTAFF_CASTER:IsValid() then
+        attacker = attacker.WINDSTAFF_CASTER
+    end
+    if attacker:HasTag(tag) then
+        StopTargetingAttacker(inst, attacker)
+        --V2C: fire darts and tornado staves may set target after, so do this again next frame
+        inst:DoTaskInTime(0, StopTargetingAttacker, attacker)
+        return true
+    end
+    return false
+end

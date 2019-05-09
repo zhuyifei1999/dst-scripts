@@ -95,15 +95,10 @@ end
 
 local function OnAttacked(inst, data)
     local attacker = data ~= nil and data.attacker or nil
-    if attacker ~= nil then
-        if not attacker:HasTag("bernieowner") then
-            local target = inst.components.combat.target
-            if not (target ~= nil and target:IsValid() and inst:IsNear(target, TUNING.BERNIE_BIG_ATTACK_RANGE + target:GetPhysicsRadius(0))) then
-                inst.components.combat:SetTarget(attacker)
-            end
-        elseif inst.components.combat:TargetIs(attacker) then
-            --V2C: prevent targeting Willows when using fire/ice staff against Bernie
-            inst.components.combat:DropTarget()
+    if attacker ~= nil and not PreventTargetingOnAttacked(inst, attacker, TheNet:GetPVPEnabled() and "bernieowner" or "player") then
+        local target = inst.components.combat.target
+        if not (target ~= nil and target:IsValid() and inst:IsNear(target, TUNING.BERNIE_BIG_ATTACK_RANGE + target:GetPhysicsRadius(0))) then
+            inst.components.combat:SetTarget(attacker)
         end
     end
 end
