@@ -1490,8 +1490,6 @@ local skin_assets =
 	Asset("PKGREF", "anim/dynamic/orangestaff_ancient.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/orangestaff_victorian.zip"),
 	Asset("PKGREF", "anim/dynamic/orangestaff_victorian.dyn"),
-	Asset("DYNAMIC_ANIM", "anim/dynamic/pack_character_wortox.zip"),
-	Asset("PKGREF", "anim/dynamic/pack_character_wortox.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/pack_common.zip"),
 	Asset("PKGREF", "anim/dynamic/pack_common.dyn"),
 	Asset("DYNAMIC_ANIM", "anim/dynamic/pack_forge_armor.zip"),
