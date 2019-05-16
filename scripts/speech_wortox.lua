@@ -2664,6 +2664,7 @@ return {
 		KELP_DRIED = "I do not want it, no siree.",
 
         WALKINGPLANK = "It's just a last resort, worrywart!",
+        OAR = "I'll splash all my friends with this!",
         --Wortox
         WORTOX_SOUL = "Hyuyu! It looks tasty.", --only wortox can inspect souls
     },

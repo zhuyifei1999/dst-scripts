@@ -106,12 +106,12 @@ end
 local function onhit(inst, hitter, work_left, work_done)
     -- If we have no work left, we're going to revert to crack_idle anyway, so don't play any anims.
     if work_left > 0 then
-        if inst.components.prototyper.on then
+        if inst.components.prototyper ~= nil and inst.components.prototyper.on then
             inst.AnimState:PlayAnimation("hit_proximity")
             inst.AnimState:PushAnimation("proximity_loop", true)
         else
-            inst.AnimState:PlayAnimation("hit_inactive")
-            inst.AnimState:PushAnimation("idle3", false)
+            inst.AnimState:PlayAnimation("hit_inactive"..inst._stage)
+            inst.AnimState:PushAnimation("idle"..inst._stage, false)
         end
     end
 end

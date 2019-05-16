@@ -2668,6 +2668,7 @@ return {
 		KELP_DRIED = "Mmm, salty and flaky!",
 
         WALKINGPLANK = "It's the least fun diving board.",
+        OAR = "More legs means faster rowing!",
     },
     DESCRIBE_GENERIC = "Can we play with it?",
     DESCRIBE_TOODARK = "All our eyes stopped working!",

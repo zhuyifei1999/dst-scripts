@@ -4,10 +4,14 @@ local Embarker = Class(function(self, inst)
     self.start_x, self.start_y, self.start_z = self.inst.Transform:GetWorldPosition()
     self.is_jumping_up = true
     self.embark_speed = 10
+    self.last_embark_x = nil
+    self.last_embark_z = nil
 end)
 
 function Embarker:UpdateEmbarkingPos(dt)
     local embark_x, embark_z = self:GetEmbarkPosition()
+    self.last_embark_x, self.last_embark_z = embark_x, embark_z
+
     local my_x, my_y, my_z = self.inst.Transform:GetWorldPosition()
     local delta_x, delta_z = embark_x - my_x, embark_z - my_z
     local delta_dist = math.max(VecUtil_Length(delta_x, delta_z), 0.0001)    
@@ -23,6 +27,7 @@ end
 
 function Embarker:SetEmbarkable(embarkable)
     self.embarkable = embarkable
+    self.last_embark_x, self.last_embark_z = self:GetEmbarkPosition()
 end
 
 function Embarker:SetDisembarkPos(pos_x, pos_z)
@@ -58,9 +63,13 @@ function Embarker:GetEmbarkPosition()
         local embark_x, embark_z = VecUtil_Normalize(my_x - embarkable_x, my_z - embarkable_z)
         return embarkable_x + embark_x * embarkable_radius, embarkable_z + embark_z * embarkable_radius        
     else
-        return self.disembark_x, self.disembark_z
+        local x, z = (self.disembark_x or self.last_embark_x), (self.disembark_z or self.last_embark_z)
+        if x == nil or z == nil then
+            local my_x, my_y, my_z = self.inst.Transform:GetWorldPosition()
+            x, z = my_x, my_z
+        end
+        return x, z
     end
-
 end
 
 function Embarker:Embark()
@@ -72,6 +81,8 @@ function Embarker:Embark()
     self.embarkable = nil    
     self.disembark_x = nil
     self.disembark_z = nil
+    self.last_embark_x = nil
+    self.last_embark_z = nil
     self.inst:StopWallUpdatingComponent(self)
 end
 
@@ -80,6 +91,8 @@ function Embarker:Cancel()
     self.embarkable = nil    
     self.disembark_x = nil
     self.disembark_z = nil
+    self.last_embark_x = nil
+    self.last_embark_z = nil
     self.inst:StopWallUpdatingComponent(self)    
     self.inst.Physics:ClearTransformationHistory()
 end

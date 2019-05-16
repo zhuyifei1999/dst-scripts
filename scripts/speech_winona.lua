@@ -2675,6 +2675,7 @@ return {
 		KELP_DRIED = "I kinda like the stuff!",
 
         WALKINGPLANK = "That thing don't look stable.",
+        OAR = "Remember, back straight, move those arms!",
     },
     DESCRIBE_GENERIC = "Incredible! I have no idea what that is.",
     DESCRIBE_TOODARK = "Low visibility causes workplace accidents!",

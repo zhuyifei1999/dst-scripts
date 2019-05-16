@@ -2342,7 +2342,7 @@ STRINGS =
         MOONROCKIDOL = "A key figure.",
 
 		--MOON_ALTAR--
-        BATHBOMB = "Flowers, for hotsprings? Groundbreaking.",
+        BATHBOMB = "Flowers, for springs? Groundbreaking.",
         MOONGLASSAXE = "Fragile but effective.",
         GLASSCUTTER = "Cutting edge weaponry.",
 		BATHBOMB_BLUEPRINT = "Unlock the secret of hot spring alchemy.",
@@ -2445,6 +2445,10 @@ STRINGS =
         ANCHOR_ITEM = "Boat brakes.",
         SEAFARER_KIT = "Build a boat to stay afloat.",
         STEERINGWHEEL_ITEM = "It's wheely important to have one.",
+        BOAT_ITEM = "Let the seas be your domain.",
+        MAST_ITEM = "Sail away, sail away.",
+        OAR = "Row, row, row your boat.",
+        BOATPATCH = "It's never too late to patch things up.",
 	},
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},

@@ -20,7 +20,7 @@ local function Row(inst, doer, pos, actions, right)
         local platform_under_cursor = map:GetPlatformAtPoint(pos.x, pos.z)
         local is_hovering_cursor_over_my_platform = my_platform ~= nil and (my_platform == platform_under_cursor) and not TheInput:ControllerAttached()
 
-        if not is_hovering_cursor_over_my_platform then
+        if not is_hovering_cursor_over_my_platform and my_platform ~= nil then
             if FORCE_ROW_FAIL_HACK then
                 table.insert(actions, ACTIONS.ROW_FAIL)
             else

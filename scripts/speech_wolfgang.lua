@@ -2498,7 +2498,7 @@ return {
         FISHINGNET = "I will catch many tasty fish!",
         ANTCHOVIES = "Is little squirmy sea bug.",
         STEERINGWHEEL = "Wolfgang does not know where he is going.",
-        ANCHOR = "Is good for weightlift. Build muscles.",
+        ANCHOR = "Is good for weightlift. Build muscle.",
         BOATPATCH = "Mighty Wolfgang will fix all boats!",
         DRIFTWOOD_TREE = 
         {
@@ -2542,7 +2542,7 @@ return {
         DEAD_SEA_BONES = "Big fish is very dead.",
         HOTSPRING = 
         {
-            GENERIC = "Is a hot puddle.",
+            GENERIC = "Is hot puddle.",
             BOMBED = "Puddle stinks with good smells now.",
             GLASS = "Mighty Wolfgang will punch through silly glass!",
         },
@@ -2551,7 +2551,7 @@ return {
         BATHBOMB = "Is for prettifying little hotbath.",
         TRAP_STARFISH =
         {
-            GENERIC = "Wolfgang be careful not to step.",
+            GENERIC = "Wolfgang be careful not to step on.",
             CLOSED = "Ha ha! You is no match for mighty Wolfgang!",
         },
         DUG_TRAP_STARFISH = "Is not bite Wolfgang toesies now.",
@@ -2618,8 +2618,8 @@ return {
         MUTATEDHOUND = 
         {
             DEAD = "Wolfgang would like to stay far away.",
-            GENERIC = "Wolfgang is very frightened!",
-            SLEEPING = "Wolfgang does not like meaty puppy at all.",
+            GENERIC = "Meaty puppy is very scary!",
+            SLEEPING = "Wolfgang does not like meaty puppy.",
         },
 
         MUTATED_PENGUIN = 
@@ -2644,12 +2644,13 @@ return {
             PICKED = "All gone.",
         },
         BULLKELP_ROOT = "Is not very good weapon, I think.",
-        KELPHAT = "This makes Wolfgang very uneasy.",
+        KELPHAT = "This make Wolfgang uneasy.",
         KELP = "Slimy sea spinach!",
         KELP_COOKED = "Sea spinach make Wolfgang strong to the finish.",
         KELP_DRIED = "Little sea flakes make Wolfgang grow strong!",
 
         WALKINGPLANK = "Maybe Wolfgang go for dip.",
+        OAR = "Wolfgang will be mighty rower!",
     },
     DESCRIBE_GENERIC = "What is this thing?",
     DESCRIBE_TOODARK = "Help friends! Save Wolfgang from dark!",

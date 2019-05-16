@@ -86,16 +86,16 @@ local function OnWork(inst, worker, workleft, numworks)
         fx.Transform:SetPosition(x, y, z)
 
 		if worker ~= nil and worker.components.talker ~= nil then
-			worker.components.talker:Say(GetString(inst, "ANNOUNCE_MOONALTAR_MINE", string.upper(inst._altar_piece).."_REVEAL"))
+			worker.components.talker:Say(GetString(worker, "ANNOUNCE_MOONALTAR_MINE", string.upper(inst._altar_piece).."_REVEAL"))
 		end
 
         inst:Remove()
     else
 		if worker ~= nil and worker.components.talker ~= nil then
 			if (workleft + numworks >= TUNING.MOONALTAR_ROCKS_MINE / 3) and (workleft < TUNING.MOONALTAR_ROCKS_MINE / 3) then
-				worker.components.talker:Say(GetString(inst, "ANNOUNCE_MOONALTAR_MINE", string.upper(inst._altar_piece).."_LOW"))
+				worker.components.talker:Say(GetString(worker, "ANNOUNCE_MOONALTAR_MINE", string.upper(inst._altar_piece).."_LOW"))
 			elseif (workleft + numworks >= TUNING.MOONALTAR_ROCKS_MINE * 2 / 3) and (workleft < TUNING.MOONALTAR_ROCKS_MINE * 2 / 3) then
-				worker.components.talker:Say(GetString(inst, "ANNOUNCE_MOONALTAR_MINE", string.upper(inst._altar_piece).."_MED"))
+				worker.components.talker:Say(GetString(worker, "ANNOUNCE_MOONALTAR_MINE", string.upper(inst._altar_piece).."_MED"))
 			end
 		end	
         inst.AnimState:PlayAnimation(

@@ -187,6 +187,8 @@ local LocoMotor = Class(function(self, inst)
     self.hop_distance = 6
     self.hopping = false
     self.movement_locator_platform = nil
+    self.movement_locator_platform_x = 0
+    self.movement_locator_platform_z = 0
 
     --self.isupdating = nil
 end,
@@ -572,16 +574,20 @@ function LocoMotor:GoToEntity(inst, bufferedaction, run)
     self:StartUpdatingInternal()
 end
 
-function LocoMotor:UpdateMovementLocatorPlatform(new_platform)
-    if new_platform == self.movement_locator_platform then return end
-
-    if self.movement_locator_platform ~= nil and self.movement_locator_platform:IsValid() then
-        self.movement_locator_platform.components.walkableplatform:RemoveMovementLocator(self.movement_locator)
+function LocoMotor:UpdateMovementLocatorPlatform(new_platform, pt)
+    self.movement_locator_platform = new_platform
+    if new_platform ~= nil and new_platform:IsValid() then
+        local new_platform_x, new_platform_y, new_platform_z = new_platform.Transform:GetWorldPosition()
+        self.movement_locator_platform_x, self.movement_locator_platform_z = pt.x - new_platform_x, pt.z - new_platform_z
     end
-    self.movement_locator_platform = new_platform    
+end
 
-    if new_platform ~= nil then
-        new_platform.components.walkableplatform:AddMovementLocator(self.movement_locator)
+function LocoMotor:UpdateMovementLocatorPosition()
+    if self.movement_locator_platform ~= nil then
+        if self.movement_locator_platform:IsValid() then
+            local movement_locator_platform_x, movement_locator_platform_y, movement_locator_platform_z = self.movement_locator_platform.Transform:GetWorldPosition()
+            self.movement_locator.Transform:SetPosition(movement_locator_platform_x + self.movement_locator_platform_x, 0, movement_locator_platform_z + self.movement_locator_platform_z)    
+        end
     end
 end
 
@@ -608,10 +614,10 @@ function LocoMotor:GoToPoint(pt, bufferedaction, run, overridedest)
             end
         end
 
-        self:UpdateMovementLocatorPlatform(target_parent)
+        self.movement_locator.Transform:SetPosition(pt.x, 0, pt.z)
 
-        self.movement_locator.entity:SetParent((target_parent and target_parent.entity) or nil)
-        self.movement_locator.Transform:SetPosition(pt.x - target_parent_x, pt.y - target_parent_y, pt.z - target_parent_z)
+        self:UpdateMovementLocatorPlatform(target_parent, pt)
+        self:UpdateMovementLocatorPosition()
 
         locator = self.movement_locator        
     end
@@ -654,6 +660,7 @@ function LocoMotor:Stop(sgparams)
     --Print(VERBOSITY.DEBUG, "LocoMotor:Stop", self.inst.prefab)
     self.isrunning = false
     self.dest = nil
+    self.movement_locator_platform = nil
     self:ResetPath()
     self.lastdesttile = nil
     --self.arrive_step_dist = 0
@@ -824,6 +831,9 @@ function LocoMotor:ScanForPlatform(my_platform, target_x, target_z)
 end
 
 function LocoMotor:OnUpdate(dt)
+
+    self:UpdateMovementLocatorPosition()
+
     if self.hopping then 
         self:UpdateHopping(dt) 
         return

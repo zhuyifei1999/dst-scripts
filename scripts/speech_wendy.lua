@@ -2646,6 +2646,7 @@ return {
         KELP_DRIED = "We took it out of the ocean, then took the ocean out of it.",
 
         WALKINGPLANK = "That would be too easy.",
+        OAR = "I'd prefer to be stranded at sea.",
     },
     DESCRIBE_GENERIC = "Sigh... I don't know.",
     DESCRIBE_TOODARK = "The darkness! It is too dark!",

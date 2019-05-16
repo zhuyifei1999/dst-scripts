@@ -2654,6 +2654,7 @@ return {
         --PARSNIP_PLANTED  = "Make one of the other riffraff pick it.",
 
         WALKINGPLANK = "Jumping off would ruin what's left of my suit.",
+        OAR = "I have no desire to toil like a common sailor.",
     },
     DESCRIBE_GENERIC = "You tell me.",
     DESCRIBE_TOODARK = "I can't see in the dark!",

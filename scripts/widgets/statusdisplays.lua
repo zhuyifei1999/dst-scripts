@@ -183,6 +183,7 @@ local StatusDisplays = Class(Widget, function(self, owner)
 
     if owner:HasTag("beaverness") then
         self:AddBeaverness()
+	    self.boatmeter:SetPosition(-80, -113, 0)
     end
 
 	self.brain:MoveToFront() -- hack so the sanity mode change fx are on top of everything

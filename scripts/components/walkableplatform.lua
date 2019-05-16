@@ -32,28 +32,15 @@ function WalkablePlatform:OnUpdate(dt)
     self:TriggerEvents()
 end
 
-function WalkablePlatform:AddMovementLocator(locator)
-    self.movement_locators[locator] = true
-end
-
-function WalkablePlatform:RemoveMovementLocator(locator)
-    self.movement_locators[locator] = nil
-end
-
-function WalkablePlatform:OnSink()
+function WalkablePlatform:OnSink()    
     TheWorld.components.walkableplatformmanager:RemovePlatform(self.inst) 
+    self:DestroyObjectsOnPlatform()    
     self.inst:RemoveComponent("walkableplatform")
-    self.inst:RemoveTag("walkableplatform")    
-    self:DestroyObjectsOnPlatform()
-    self:ClearMovementLocators()
+    
 end
 
-function WalkablePlatform:ClearMovementLocators()
-    for k,v in pairs(self.movement_locators) do
-        if k:IsValid() and k:HasTag("movement_locator") then
-            k.entity:SetParent(nil)
-        end
-    end
+function WalkablePlatform:OnRemoveFromEntity()
+    self.inst:RemoveTag("walkableplatform")
 end
 
 function WalkablePlatform:OnRemove()

@@ -2520,7 +2520,7 @@ return {
         BOATFRAGMENT05 = "Not much left of it.",
 		BOAT_LEAK = "I should patch that up before we sink.",
         MAST = "Avast! A mast!",
-        SEASTACK = "Is that a monster? No, just a rock.",
+        SEASTACK = "It's a rock.",
         FISHINGNET = "Nothing but net.",
         ANTCHOVIES = "Yeesh. Can I toss it back?",
         STEERINGWHEEL = "I could have been a sailor in another life.",
@@ -2677,6 +2677,7 @@ return {
 		GESTALT = "They're promising me... knowledge.",
 
         WALKINGPLANK = "Couldn't we have just made a lifeboat?",
+        OAR = "Manual ship acceleration.",
 
         --PARSNIP = "It's a parsnip.",
         --PARSNIP_SEEDS = "It's a parsnip seed.",

@@ -2677,6 +2677,7 @@ return {
 		KELP_DRIED = "It's not half bad.",
 
         WALKINGPLANK = "So, who're we gonna make walk it?",
+        OAR = "Rowing's dumb. Why don't we just use a sail?",
     },
     DESCRIBE_GENERIC = "I have no idea what that is!",
     DESCRIBE_TOODARK = "I need more light!",

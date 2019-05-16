@@ -2667,6 +2667,7 @@ return {
 		KELP_DRIED = "It's a nice light snack.",
 
         WALKINGPLANK = "Hopefully I don't have to leave that way.",
+        OAR = "I wouldn't mind taking the boat out on the lake today.",
     },
     DESCRIBE_GENERIC = "What's that, eh?",
     DESCRIBE_TOODARK = "It's too dark, eh!",

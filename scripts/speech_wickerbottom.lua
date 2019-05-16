@@ -2698,6 +2698,7 @@ return
         KELP_DRIED = "It's slightly more palatable with this texture.",
 
         WALKINGPLANK = "A dangerous escape route for one stranded at sea.",
+        OAR = "One and two, and one and two!",
    },
 
     EAT_FOOD =

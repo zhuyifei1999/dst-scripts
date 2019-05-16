@@ -1,6 +1,6 @@
 local assets =
 {
-    Asset("ANIM", "anim/hound_ocean.zip"),
+    Asset("ANIM", "anim/hound.zip"),
     Asset("ANIM", "anim/hound_basic_transformation.zip"),
 }
 
@@ -77,7 +77,7 @@ local function fn()
 
     inst.AnimState:SetRayTestOnBB(true)
     inst.AnimState:SetBank("hound")
-    inst.AnimState:SetBuild("hound_ocean")
+    inst.AnimState:SetBuild("hound")
     inst.AnimState:AddOverrideBuild("hound_basic_transformation")
     inst.AnimState:PlayAnimation("mutated_hound_reviving_pre")
 

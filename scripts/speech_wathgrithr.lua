@@ -2675,6 +2675,7 @@ return {
         KELP_DRIED = "I despise it.",
 
         WALKINGPLANK = "I shall never abandon my vessel!",
+        OAR = "The Norseman's way to sail!",
     },
     DESCRIBE_GENERIC = "It is an artifact of this realm.",
     DESCRIBE_TOODARK = "Too dark, even for battle.",
