@@ -117,6 +117,7 @@ local function fn()
     inst.components.inventoryitem.canbepickedup = false
     inst.components.inventoryitem.canbepickedupalive = true
     inst.components.inventoryitem.nobounce = true
+    inst.components.inventoryitem:SetSinks(true)
 
     ------------------
     inst:AddComponent("pollinator")

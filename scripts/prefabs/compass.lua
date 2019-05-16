@@ -101,6 +101,8 @@ local function fn()
 
     inst:AddTag("compass")
 
+    MakeInventoryFloatable(inst, "med", 0.1, 0.6)
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -108,6 +110,7 @@ local function fn()
     end
 
     inst:AddComponent("inventoryitem")
+
     inst:AddComponent("inspectable")
     --inst.components.inspectable.noanim = true
     --inst.components.inspectable.getstatus = GetStatus

@@ -89,6 +89,10 @@ function FollowCamera:SetMinDistance(distance)
     self.mindist = distance
 end
 
+function FollowCamera:SetMaxDistance(distance)
+    self.maxdist = distance
+end
+
 function FollowCamera:SetGains(pan, heading, distance)
     self.distancegain = distance
     self.pangain = pan
@@ -234,13 +238,13 @@ function FollowCamera:SetHeadingTarget(r)
     self.headingtarget = r
 end
 
-function FollowCamera:ZoomIn()
-    self.distancetarget = math.max(self.mindist, self.distancetarget - self.zoomstep)
+function FollowCamera:ZoomIn(step)
+    self.distancetarget = math.max(self.mindist, self.distancetarget - (step or self.zoomstep))
     self.time_since_zoom = 0
 end
 
-function FollowCamera:ZoomOut()
-    self.distancetarget = math.min(self.maxdist, self.distancetarget + self.zoomstep)
+function FollowCamera:ZoomOut(step)
+    self.distancetarget = math.min(self.maxdist, self.distancetarget + (step or self.zoomstep))
     self.time_since_zoom = 0
 end
 

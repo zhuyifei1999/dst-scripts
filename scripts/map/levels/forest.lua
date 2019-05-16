@@ -13,7 +13,7 @@ local survival_together = {
         version = 3,
 		overrides = {
 		},		
-		ordered_story_setpieces = {
+		required_setpieces = {
 			"Sculptures_1",
 			"Maxwell5",
 		},
@@ -85,7 +85,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 
             cactus = "never",
         },
-		ordered_story_setpieces = {
+		required_setpieces = {
 			"Sculptures_1",
 			"Maxwell5",
 		},
@@ -133,7 +133,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 
             rabbits = "rare",
         },
-		ordered_story_setpieces = {
+		required_setpieces = {
 			"Sculptures_1",
 			"Maxwell5",
 		},
@@ -183,7 +183,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
 
             rabbits = "rare",
         },
-		ordered_story_setpieces = {
+		required_setpieces = {
 			"Sculptures_1",
 			"Maxwell5",
 		},
@@ -226,7 +226,7 @@ AddLevel(LEVELTYPE.SURVIVAL, {
             start_location = "darkness",
             day = "onlynight",
         },
-		ordered_story_setpieces = {
+		required_setpieces = {
 			"Sculptures_1",
 			"Maxwell5",
 		},

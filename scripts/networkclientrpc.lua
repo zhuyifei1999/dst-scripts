@@ -297,6 +297,22 @@ local RPC_HANDLERS =
         end
     end,
 
+    PredictHopping = function(player, x, z)
+        if not (checknumber(x) and
+                checknumber(z)) then
+            printinvalid("PredictHopping", player)
+            return
+        end
+        local playercontroller = player.components.playercontroller
+        if playercontroller ~= nil then
+            if IsPointInRange(player, x, z) then
+                playercontroller:OnRemotePredictHopping(x, z)
+            else
+                print("Remote predict hopping out of range")
+            end
+        end
+    end,
+
     StopWalking = function(player)
         local playercontroller = player.components.playercontroller
         if playercontroller ~= nil then
@@ -656,6 +672,29 @@ local RPC_HANDLERS =
             end
         end
     end,
+
+    MovementPredictionEnabled = function(player, target)
+        if ThePlayer ~= target then
+            print("Platform hopping disabled on: " .. target.name)
+            target.components.locomotor:SetAllowPlatformHopping(false)
+        end
+    end,    
+
+    MovementPredictionDisabled = function(player, target)
+        if ThePlayer ~= target then
+            print("Platform hopping enabled on: " .. target.name)
+            target.components.locomotor:SetAllowPlatformHopping(true)
+        end    
+    end,    
+
+    Hop = function(player, hopper, hop_x, hop_z, other_platform)
+        --print("HOP: ", hop_x, hop_z, other_platform ~= nil and other_platform.name)
+    end,       
+
+    StopHopping = function(player, hopper)
+        local playercontroller = hopper.components.playercontroller
+        playercontroller:OnRemoteStopHopping()
+    end, 
 
     MakeRecipeAtPoint = function(player, recipe, x, z, rot, skin_index)
         if not (checknumber(recipe) and

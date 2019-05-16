@@ -3,6 +3,7 @@ local assets =
 {
     Asset("ANIM", "anim/batbat.zip"),
     Asset("ANIM", "anim/swap_batbat.zip"),
+    Asset("ANIM", "anim/floating_items.zip"),
 }
 
 local assets_bats =
@@ -64,6 +65,9 @@ local function fn()
     inst.AnimState:PlayAnimation("idle")
 
     inst:AddTag("dull")
+
+    local swap_data = {sym_build = "swap_batbat"}
+    MakeInventoryFloatable(inst, "large", 0.05, {0.8, 0.35, 0.8}, true, -27, swap_data)
 
     inst.entity:SetPristine()
 

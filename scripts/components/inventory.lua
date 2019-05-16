@@ -666,7 +666,7 @@ function Inventory:GiveItem(inst, slot, src_pos)
         inst.components.inventoryitem:RemoveFromOwner(true)
     end
 
-    local objectDestroyed = inst.components.inventoryitem:OnPickup(self.inst)
+    local objectDestroyed = inst.components.inventoryitem:OnPickup(self.inst, src_pos)
     if objectDestroyed then
         return
     end

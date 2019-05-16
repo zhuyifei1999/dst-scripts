@@ -1446,9 +1446,9 @@ function EntityScript:GetCurrentTileType()
     local actual_tile = map:GetTile(tx, ty)
 
     if actual_tile ~= nil and tilecenter_x ~= nil and tilecenter_z ~= nil then
-        if actual_tile == GROUND.IMPASSABLE then
-            local xpercent = (tilecenter_x - ptx) / TILE_SCALE + .5
-            local ypercent = (tilecenter_z - ptz) / TILE_SCALE + .5
+        if actual_tile >= GROUND.UNDERGROUND then
+            local xpercent = (tilecenter_x - ptx) / TILE_SCALE + .25
+            local ypercent = (tilecenter_z - ptz) / TILE_SCALE + .25
 
             local x_min = xpercent > .666 and -1 or 0
             local x_max = xpercent < .333 and 1 or 0

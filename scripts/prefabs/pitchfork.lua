@@ -4,6 +4,7 @@ local assets =
     --Asset("ANIM", "anim/goldenpitchfork.zip"),
     Asset("ANIM", "anim/swap_pitchfork.zip"),
     --Asset("ANIM", "anim/swap_goldenpitchfork.zip"),
+    Asset("ANIM", "anim/floating_items.zip"),
 }
 
 local prefabs =
@@ -42,6 +43,8 @@ local function normal()
     inst.AnimState:PlayAnimation("idle")
 
     inst:AddTag("sharp")
+
+    MakeInventoryFloatable(inst, "med", 0.05, {0.78, 0.4, 0.78}, true, 7, {sym_build = "swap_pitchfork"})
 
     inst.entity:SetPristine()
 

@@ -702,7 +702,7 @@ AddGameDebugKey(KEY_D, function()
     if TheInput:IsKeyDown(KEY_CTRL) then
         local MouseCharacter = TheInput:GetWorldEntityUnderMouse()
         if MouseCharacter and MouseCharacter.components.diseaseable ~= nil then
-            MouseCharacter.components.diseaseable:ForceDiseased(1*TUNING.TOTAL_DAY_TIME, 1*TUNING.TOTAL_DAY_TIME)
+            MouseCharacter.components.diseaseable:Disease()
         end
     end
 end)
@@ -775,9 +775,12 @@ AddGameDebugKey(KEY_L, function()
 	
 --    local tile = TheWorld.Map:GetTileAtPoint(pt:Get())
 
+	local GROUND_NAMES = table.invert(GROUND)
+
     local x, _, z = pt:Get()
-    local k = 1.3
+    local k = 4
     local str = "\n"
+	local name_space = 20
     local target_tile = 34
     local valid = nil
 	for _z = 1, -1, -1 do
@@ -789,12 +792,16 @@ AddGameDebugKey(KEY_L, function()
 				valid = true
 			end
 			
-			str = str .. tostring(tile) .. "\t"
+			str = str .. tostring(GROUND_NAMES[tile])
+			for i = #(GROUND_NAMES[tile]), name_space, 1 do
+				str = str .. " "
+			end
 		end
 		str = str .. "\n"
 	end
     
-    print (str .. tostring(valid == true))
+    print (str)
+    --print (str .. tostring(valid == true))
     
 --	print ("", TheWorld.Map:GetTileAtPoint(x-k, 0, z+k), TheWorld.Map:GetTileAtPoint(x, 0, z+k), TheWorld.Map:GetTileAtPoint(x+k, 0, z+k))
 --	print ("", TheWorld.Map:GetTileAtPoint(x-k, 0, z), TheWorld.Map:GetTileAtPoint(x, 0, z), TheWorld.Map:GetTileAtPoint(x+k, 0, z))

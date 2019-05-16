@@ -1,16 +1,18 @@
 --this is called back by the engine side
 
 PhysicsCollisionCallbacks = {}
-function OnPhysicsCollision(guid1, guid2)
+function OnPhysicsCollision(guid1, guid2, world_position_on_a_x, world_position_on_a_y, world_position_on_a_z, world_position_on_b_x, world_position_on_b_y, world_position_on_b_z, world_normal_on_b_x, world_normal_on_b_y, world_normal_on_b_z, lifetime_in_frames)
     local i1 = Ents[guid1]
     local i2 = Ents[guid2]
 
-    if PhysicsCollisionCallbacks[guid1] then
-        PhysicsCollisionCallbacks[guid1](i1, i2)
+    local callback1 = PhysicsCollisionCallbacks[guid1]
+    if callback1 then
+        callback1(i1, i2, world_position_on_a_x, world_position_on_a_y, world_position_on_a_z, world_position_on_b_x, world_position_on_b_y, world_position_on_b_z, world_normal_on_b_x, world_normal_on_b_y, world_normal_on_b_z, lifetime_in_frames)
     end
 
-    if PhysicsCollisionCallbacks[guid2] then
-        PhysicsCollisionCallbacks[guid2](i2, i1)
+    local callback2 = PhysicsCollisionCallbacks[guid2]
+    if callback2 then
+        callback2(i2, i1, world_position_on_b_x, world_position_on_b_y, world_position_on_b_z, world_position_on_a_x, world_position_on_a_y, world_position_on_a_z, -world_normal_on_b_x, -world_normal_on_b_y, -world_normal_on_b_z, lifetime_in_frames)
     end
 end
 
@@ -50,15 +52,17 @@ function Launch2(inst, launcher, basespeed, speedmult, startheight, startradius)
 	end
 end
 
-function LaunchAt(inst, launcher, target, speedmult, startheight, startradius)
+function LaunchAt(inst, launcher, target, speedmult, startheight, startradius, randomangleoffset)
     if inst ~= nil and inst.Physics ~= nil and inst.Physics:IsActive() and launcher ~= nil then
         local x, y, z = launcher.Transform:GetWorldPosition()
+        local angleoffset = randomangleoffset or 30
         local angle
         if target ~= nil then
-            angle = (150 + math.random() * 60 - target:GetAngleToPoint(x, 0, z)) * DEGREES
+            local start_angle = 180 - angleoffset
+            angle = (start_angle + (math.random() * angleoffset * 2) - target:GetAngleToPoint(x, 0, z)) * DEGREES
         else
             local down = TheCamera:GetDownVec()
-            angle = math.atan2(down.z, down.x) + (math.random() * 60 - 30) * DEGREES
+            angle = math.atan2(down.z, down.x) + (math.random() * angleoffset * 2 - angleoffset) * DEGREES
         end
         local sina, cosa = math.sin(angle), math.cos(angle)
         local spd = (math.random() * 2 + 1) * (speedmult or 1)

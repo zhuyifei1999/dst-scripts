@@ -4,6 +4,7 @@ local assets =
     Asset("ANIM", "anim/goldenshovel.zip"),
     Asset("ANIM", "anim/swap_shovel.zip"),
     Asset("ANIM", "anim/swap_goldenshovel.zip"),
+    Asset("ANIM", "anim/floating_items.zip"),
 }
 
 local function onequip(inst, owner)
@@ -40,6 +41,8 @@ local function common_fn(bank, build)
     inst.AnimState:SetBank(bank)
     inst.AnimState:SetBuild(build)
     inst.AnimState:PlayAnimation("idle")
+
+    MakeInventoryFloatable(inst, "med", 0.05, {0.8, 0.4, 0.8})
 
     inst.entity:SetPristine()
 
@@ -87,7 +90,15 @@ local function onequipgold(inst, owner)
 end
 
 local function normal()
-    return common_fn("shovel", "shovel")
+    local inst = common_fn("shovel", "shovel")
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.components.floater:SetBankSwapOnFloat(true, 7, {sym_build = "swap_shovel"})
+
+    return inst
 end
 
 local function golden()
@@ -101,6 +112,8 @@ local function golden()
     inst.components.weapon.attackwear = 1 / TUNING.GOLDENTOOLFACTOR
 
     inst.components.equippable:SetOnEquip(onequipgold)
+
+    inst.components.floater:SetBankSwapOnFloat(true, 7, {sym_build = "swap_goldenshovel"})
 
     return inst
 end

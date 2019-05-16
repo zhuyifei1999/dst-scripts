@@ -62,7 +62,7 @@ local states=
     },    
     State{
         name = "idle",
-        tags = {"idle", "canrotate"},
+        tags = {"idle"},
         
         onenter = function(inst)
             inst.Physics:Stop()

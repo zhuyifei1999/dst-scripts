@@ -2,6 +2,7 @@ local assets =
 {
     Asset("ANIM", "anim/multitool_axe_pickaxe.zip"),
     Asset("ANIM", "anim/swap_multitool_axe_pickaxe.zip"),
+    Asset("ANIM", "anim/floating_items.zip"),
 }
 
 local function onequip(inst, owner)
@@ -30,6 +31,9 @@ local function fn()
     inst.AnimState:PlayAnimation("idle")
 
     inst:AddTag("sharp")
+
+    local swap_data = {sym_build = "swap_multitool_axe_pickaxe", sym_name = "swap_object"}
+    MakeInventoryFloatable(inst, "med", 0.05, {0.7, 0.4, 0.7}, true, -13, swap_data)
 
     inst.entity:SetPristine()
 

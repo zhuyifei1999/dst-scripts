@@ -599,10 +599,27 @@ local actionhandlers =
     ActionHandler(ACTIONS.PET, "dolongaction"),
     ActionHandler(ACTIONS.DRAW, "dolongaction"),
     ActionHandler(ACTIONS.BUNDLE, "bundle"),
+    ActionHandler(ACTIONS.RAISE_SAIL, "dolongaction"),
+    ActionHandler(ACTIONS.LOWER_SAIL, "dolongaction"),
+    ActionHandler(ACTIONS.RAISE_ANCHOR, "dolongaction"),
+    ActionHandler(ACTIONS.LOWER_ANCHOR, "dolongaction"),  
+    ActionHandler(ACTIONS.REPAIR_LEAK, "dolongaction"),
+    ActionHandler(ACTIONS.STEER_BOAT, "steer_boat_idle_pre"),
+    ActionHandler(ACTIONS.STOP_STEERING_BOAT, "stop_steering"),
+    ActionHandler(ACTIONS.ROW_FAIL, "row_fail"),
+    ActionHandler(ACTIONS.ROW, "row"),
+    ActionHandler(ACTIONS.EXTEND_PLANK, "doshortaction"),
+    ActionHandler(ACTIONS.RETRACT_PLANK, "doshortaction"),
+    ActionHandler(ACTIONS.ABANDON_SHIP, "abandon_ship"),
+    ActionHandler(ACTIONS.MOUNT_PLANK, "mount_plank"),
+    ActionHandler(ACTIONS.DISMOUNT_PLANK, "doshortaction"),    
+    ActionHandler(ACTIONS.SET_HEADING, "steer_boat_turning"),
+    ActionHandler(ACTIONS.CAST_NET, "cast_net"),
     ActionHandler(ACTIONS.UNWRAP,
         function(inst, action)
             return inst:HasTag("quagmire_fasthands") and "domediumaction" or "dolongaction"
         end),
+    ActionHandler(ACTIONS.BREAK, "dolongaction"),
     ActionHandler(ACTIONS.CONSTRUCT,
         function(inst, action)
             return (action.target == nil or action.target.components.constructionsite == nil) and "startconstruct" or "construct"
@@ -638,6 +655,7 @@ local actionhandlers =
         function(inst, action)
             return inst:HasTag("quagmire_fasthands") and "domediumaction" or "dolongaction"
         end),
+    ActionHandler(ACTIONS.BATHBOMB, "doshortaction"),
 }
 
 local events =
@@ -668,6 +686,10 @@ local events =
             inst.sg:GoToState("shell_hit")
         end
     end),
+
+    EventHandler("on_master_hop_start", function(inst, data)
+        inst.sg:GoToState("hop_master")
+    end),    
 
     EventHandler("attacked", function(inst, data)
         if not inst.components.health:IsDead() then
@@ -862,6 +884,12 @@ local events =
             inst.sg:GoToState("powerdown")
         end),
 
+    EventHandler("onsink", function(inst, data)
+        if not inst.components.health:IsDead() then
+            inst.sg:GoToState("sink")
+        end
+    end),    
+
     EventHandler("transform_werebeaver",
         function(inst, data)
             if inst.TransformBeaver ~= nil and not inst:HasTag("beaver") then
@@ -1002,6 +1030,14 @@ local events =
                 inst.sg:GoToState("spooked")
             end
         end),
+    EventHandler("wake_from_abandon_ship",
+        function(inst)
+            if not inst.sg:HasStateTag("busy") then
+                inst.sg:GoToState("wakeup")
+            end
+        end),    
+
+    CommonHandlers.OnHop(),
 }
 
 local statue_symbols =
@@ -1502,9 +1538,12 @@ local states =
                     table.insert(anims, "sand_idle_loop")
                     inst.sg.statemem.sandstorm = true
                     dofunny = false
-                elseif not inst.components.sanity:IsSane() then
+                elseif inst.components.sanity:IsInsane() then
                     table.insert(anims, "idle_sanity_pre")
                     table.insert(anims, "idle_sanity_loop")
+                elseif inst.components.sanity:IsEnlightened() then
+                    table.insert(anims, "idle_lunacy_pre")
+                    table.insert(anims, "idle_lunacy_loop")
                 elseif inst.components.temperature:IsFreezing() then
                     table.insert(anims, "idle_shiver_pre")
                     table.insert(anims, "idle_shiver_loop")
@@ -1592,8 +1631,10 @@ local states =
             elseif inst.components.hunger:GetPercent() < TUNING.HUNGRY_THRESH then
                 inst.AnimState:PlayAnimation("hungry")
                 inst.SoundEmitter:PlaySound("dontstarve/wilson/hungry")
-            elseif inst.components.sanity:GetPercent() < .5 then
+            elseif inst.components.sanity:IsInsanityMode() and inst.components.sanity:GetPercent() < .5 then
                 inst.AnimState:PlayAnimation("idle_inaction_sanity")
+            elseif inst.components.sanity:IsLunacyMode() and inst.components.sanity:GetPercent() > .5 then
+                inst.AnimState:PlayAnimation("idle_inaction_lunacy")
             elseif inst:HasTag("groggy") then
                 inst.AnimState:PlayAnimation("idle_groggy01_pre")
                 inst.AnimState:PushAnimation("idle_groggy01_loop")
@@ -2096,8 +2137,10 @@ local states =
                     local target = inst.sg.statemem.action.target
                     if target ~= nil and target:IsValid() then
                         local frozen = target:HasTag("frozen")
+                        local moonglass = target:HasTag("moonglass")
                         if target.Transform ~= nil then
-                            SpawnPrefab(frozen and "mining_ice_fx" or "mining_fx").Transform:SetPosition(target.Transform:GetWorldPosition())
+                            local mine_fx = (frozen and "mining_ice_fx") or (moonglass and "mining_moonglass_fx") or "mining_fx"
+                            SpawnPrefab(mine_fx).Transform:SetPosition(target.Transform:GetWorldPosition())
                         end
                         inst.SoundEmitter:PlaySound(frozen and "dontstarve_DLC001/common/iceboulder_hit" or "dontstarve/wilson/use_pick_rock")
                     end
@@ -4094,17 +4137,24 @@ local states =
                 inst.sg:GoToState("dolongaction")
             else
                 if inst.components.talker ~= nil then
+                    local t = GetTime()
                     if slow then
-                        local t = GetTime()
+                        inst.sg.mem.hungryfastbuildtalktime = nil
                         if (inst.sg.mem.hungryslowbuildtalktime or 0) < t then
                             inst.sg.mem.hungryslowbuildtalktime = t + GetRandomMinMax(4, 6)
                             inst.components.talker:Say(GetString(inst, "ANNOUNCE_HUNGRY_SLOWBUILD"))
                         end
                     else
                         inst.sg.mem.hungryslowbuildtalktime = nil
+                        if inst.sg.mem.hungryfastbuildtalktime == nil or inst.sg.mem.hungryfastbuildtalktime + 10 < t then
+                            inst.sg.mem.hungryfastbuildtalktime = t + GetRandomMinMax(4, 6)
+                        elseif inst.sg.mem.hungryfastbuildtalktime < t then
+                            inst.sg.mem.hungryfastbuildtalktime = nil
+                            inst.components.talker:Say(GetString(inst, "ANNOUNCE_HUNGRY_FASTBUILD"))
+                        end
                     end
                 end
-                inst.sg:GoToState("dolongaction", slow and 1.5 or .5)
+                inst.sg:GoToState("dolongaction", slow and 2 or .5)
             end
         end,
     },
@@ -6124,6 +6174,24 @@ local states =
     },
 
     State{
+        name = "hop_master",
+        tags = {  },
+
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("boat_jump_pre", false) 
+            inst.AnimState:PushAnimation("boat_jump_loop", true) 
+        end,
+
+
+        events = 
+        {
+            EventHandler("on_master_hop_stop", function(inst)
+                inst.sg:GoToState("idle")
+            end),          
+        }        
+    },
+
+    State{
         name = "startle",
         tags = { "busy" },
 
@@ -6161,6 +6229,247 @@ local states =
             inst.sg:GoToState("idle", true)
         end,
     },
+
+   State{
+        name = "stop_steering",
+        tags = { },
+
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("steer_idle_pst")        
+            inst:PerformBufferedAction()
+        end,    
+
+        events = 
+        {
+            EventHandler("animqueueover", function(inst)
+                inst.sg:GoToState("idle", true)
+            end),          
+        }
+    },
+
+   State{
+        name = "mount_plank",
+        tags = { "idle" },
+
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("plank_idle_pre")        
+            inst.AnimState:PushAnimation("plank_idle_loop", true) 
+            inst:AddTag("on_walkable_plank")        
+            inst:PerformBufferedAction()       
+
+            inst.sg:SetTimeout(180 * FRAMES)
+        end,    
+
+        onexit = function(inst)            
+            inst.components.walkingplankuser.current_plank.components.walkingplank:StopMounting()
+            inst:RemoveTag("on_walkable_plank")
+        end,
+
+        ontimeout = function(inst)               
+            inst.AnimState:PlayAnimation("plank_idle_pst")        
+            inst.sg:GoToState("idle", true)
+        end,       
+    },    
+
+   State{
+        name = "abandon_ship",
+        tags = { "doing" },
+
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("plank_hop_pre")        
+            inst.AnimState:PushAnimation("plank_hop", false)                              
+        end,    
+
+        events = 
+        {
+            EventHandler("animqueueover", function(inst)
+                inst:PerformBufferedAction()                  
+            end),
+        }
+    }, 
+
+    State{
+        name = "steer_boat_idle_pre",
+        tags = { },
+
+        onenter = function(inst, skip_pre)
+            inst.AnimState:PlayAnimation("steer_idle_pre")        
+            inst:PerformBufferedAction()
+        end,    
+
+        events = 
+        {
+            EventHandler("animqueueover", function(inst)
+                inst.sg:GoToState("steer_boat_idle_loop")
+            end),          
+        }
+    },
+
+    State{
+        name = "steer_boat_idle_loop",
+        tags = { },
+
+        onenter = function(inst, skip_pre)
+            inst.AnimState:PushAnimation("steer_idle_loop", true)
+        end,      
+    },    
+
+    State{
+        name = "steer_boat_turning",
+        tags = { },
+
+        onenter = function(inst, data)
+            --inst.AnimState:PlayAnimation("steer_left_loop_pre")
+            if inst.components.steeringwheeluser.should_play_left_turn_anim then
+                inst.AnimState:PlayAnimation("steer_left_pre", false)
+                inst.AnimState:PushAnimation("steer_left_loop", false)
+                inst.AnimState:PushAnimation("steer_left_pst", false)
+            else
+                inst.AnimState:PlayAnimation("steer_right_pre", false)
+                inst.AnimState:PushAnimation("steer_right_loop", false)
+                inst.AnimState:PushAnimation("steer_right_pst", false)
+            end
+            inst:PerformBufferedAction()
+        end,
+
+
+        timeline =
+        {
+            TimeEvent(0 * FRAMES, function(inst)          
+                -- TODO(DANY):  This is when the steering wheel is being turned.
+                inst.SoundEmitter:PlaySound("dontstarve/common/dropGeneric")  
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                inst.sg:GoToState("steer_boat_idle_loop")
+            end),
+            --EventHandler("steer_boat_stop_turning", function(inst)
+            --    inst.sg:GoToState("steer_boat", "steer_left_pst")
+            --end),
+        },        
+    },
+
+
+    State{
+        name = "sink",
+        tags = { "busy", "nopredict", "nomorph" },
+
+        onenter = function(inst, data)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("sink")
+        end,
+
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                inst.components.health:SetPercent(0, 0, "drowning")
+                inst:PushEvent(inst.ghostenabled and "makeplayerghost" or "playerdied", { skeleton = false })
+            end),
+        },        
+    },    
+
+    State
+    {
+        name = "cast_net",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst, silent)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("cast_pre")
+            inst.AnimState:PushAnimation("cast_loop", true)
+            --inst.sg.statemem.action = inst.bufferedaction
+            --inst.sg.statemem.silent = silent
+            --inst.sg:SetTimeout(10 * FRAMES)
+        end,
+
+        timeline =
+        {
+            TimeEvent(6 * FRAMES, function(inst)
+          
+                inst:PerformBufferedAction()
+            end),
+        },
+
+        events =
+        {
+            EventHandler("begin_retrieving", function(inst)
+                inst.sg:GoToState("cast_net_retrieving")
+            end),        
+            },
+
+        --[[
+        ontimeout = function(inst)
+            --pickup_pst should still be playing
+            inst.sg:GoToState("idle", true)
+        end,
+        ]]--
+
+        --[[
+        onexit = function(inst)
+            if inst.bufferedaction == inst.sg.statemem.action then
+                inst:ClearBufferedAction()
+            end
+        end,
+        ]]--
+    },   
+
+    State
+    {
+        name = "cast_net_retrieving",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst, silent)
+            inst.AnimState:PlayAnimation("cast_pst")
+            inst.AnimState:PushAnimation("return_pre")
+            inst.AnimState:PushAnimation("return_loop", true)
+        end,
+
+        events =
+        {
+            EventHandler("begin_final_pickup", function(inst)
+                inst.sg:GoToState("cast_net_release")
+            end),        
+        },
+    },  
+
+    State
+    {
+        name = "cast_net_release",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst, silent)
+            inst.AnimState:PlayAnimation("release_loop", false)
+        end,
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                inst.sg:GoToState("cast_net_release_pst")
+            end),         
+        }
+    },   
+
+    State
+    {
+        name = "cast_net_release_pst",
+        tags = { "doing" },
+
+        onenter = function(inst, silent)
+            inst.sg:RemoveStateTag("busy")
+            inst.AnimState:PlayAnimation("release_pst", false)
+        end,
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                inst.sg:GoToState("idle")
+            end),         
+        }
+    },              
 
     State{
         name = "repelled",
@@ -10027,6 +10336,9 @@ local states =
         end,
     },
 }
+
+CommonStates.AddRowStates(states, false)
+CommonStates.AddHopStates(states, false, {pre = "boat_jump_pre", loop = "boat_jump_loop", pst = "boat_jump_pst"}, nil, "sink")
 
 if TheNet:GetServerGameMode() == "quagmire" then
     event_server_data("quagmire", "stategraphs/SGwilson").AddQuagmireStates(states, DoTalkSound, ToggleOnPhysics, ToggleOffPhysics)

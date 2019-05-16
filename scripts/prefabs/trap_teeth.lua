@@ -117,6 +117,10 @@ local function common_fn(bank, build, isinventoryitem)
 
     inst:AddTag("trap")
 
+    if isinventoryitem then
+        MakeInventoryFloatable(inst)
+    end
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

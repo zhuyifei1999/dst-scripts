@@ -84,6 +84,8 @@ local function fn()
     --HASHEATER (from heater component) added to pristine state for optimization
     inst:AddTag("HASHEATER")
 
+    MakeInventoryFloatable(inst, "med", 0.05, 0.75)
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

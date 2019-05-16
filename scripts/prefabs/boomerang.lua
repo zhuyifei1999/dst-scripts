@@ -2,6 +2,7 @@ local assets =
 {
     Asset("ANIM", "anim/boomerang.zip"),
     Asset("ANIM", "anim/swap_boomerang.zip"),
+    Asset("ANIM", "anim/floating_items.zip"),
 }
 
 local function OnFinished(inst)
@@ -102,6 +103,9 @@ local function fn()
 
     --projectile (from projectile component) added to pristine state for optimization
     inst:AddTag("projectile")
+
+    local swap_data = {sym_build = "swap_boomerang"}
+    MakeInventoryFloatable(inst, "small", 0.18, {0.8, 0.9, 0.8}, true, -6, swap_data)
 
     inst.entity:SetPristine()
 

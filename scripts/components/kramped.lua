@@ -25,11 +25,13 @@ local NAUGHTY_VALUE =
     ["robin_winter"] = 2,
     ["canary"] = 2,
     ["butterfly"] = 1,
+    ["moonbutterfly"] = 1,
     ["rabbit"] = 1,
     ["mole"] = 1,
     ["tallbird"] = 2,
     ["bunnyman"] = 3,
     ["penguin"] = 2,
+    ["mutated_penguin"] = 2,
     ["glommer"] = 50, -- You've been bad!
     ["catcoon"] = 5,
 }

@@ -28,6 +28,8 @@ local function fn()
     inst.AnimState:SetBuild("saddlehorn")
     inst.AnimState:PlayAnimation("idle")
 
+    MakeInventoryFloatable(inst, "med")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

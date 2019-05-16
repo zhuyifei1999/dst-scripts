@@ -9,6 +9,8 @@ local function tree()
 end
 
 require "map/terrain"
+require "map/ocean_gen"
+
 local function pickspawnprefab(items_in, ground_type)
 --	if ground_type == GROUND.ROAD then
 --		return
@@ -142,6 +144,7 @@ local TRANSLATE_TO_PREFABS = {
     ["lichen"] =            {"lichen"},
     ["banana"] =            {"cave_banana_tree"},
     ["monkey"] =            {"monkeybarrel_spawner"}, 
+    ["mooncarrot"] =        {"mooncarrot_planted"},
 }
 
 local TRANSLATE_AND_OVERRIDE = { --These are entities that should be translated to prefabs for world gen but also have a postinit override to do
@@ -227,7 +230,10 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
         local start_loc = startlocations.GetStartLocation( current_gen_params.start_location )
         story_gen_params.start_setpeice = type(start_loc.start_setpeice) == "table" and start_loc.start_setpeice[math.random(#start_loc.start_setpeice)] or start_loc.start_setpeice
         story_gen_params.start_node = type(start_loc.start_node) == "table" and start_loc.start_node[math.random(#start_loc.start_node)] or start_loc.start_node
-        story_gen_params.existing_start_node = type(start_loc.existing_start_node) == "table" and start_loc.existing_start_node[math.random(#start_loc.existing_start_node)] or start_loc.existing_start_node
+		if story_gen_params.start_node == nil then
+			-- existing_start_node is no longer supported
+			story_gen_params.start_node = type(start_loc.existing_start_node) == "table" and start_loc.existing_start_node[math.random(#start_loc.existing_start_node)] or start_loc.existing_start_node
+		end
     end
 
     if  current_gen_params.islands ~= nil then
@@ -252,6 +258,18 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
 
     if current_gen_params.keep_disconnected_tiles ~= nil then
         story_gen_params.keep_disconnected_tiles = current_gen_params.keep_disconnected_tiles
+    end
+
+    if current_gen_params.no_joining_islands ~= nil then
+        story_gen_params.no_joining_islands = current_gen_params.no_joining_islands
+    end
+	
+    if current_gen_params.has_ocean ~= nil then
+        story_gen_params.has_ocean = current_gen_params.has_ocean
+    end
+
+    if current_gen_params.no_wormholes_to_disconnected_tiles ~= nil then
+        story_gen_params.no_wormholes_to_disconnected_tiles = current_gen_params.no_wormholes_to_disconnected_tiles
     end
 
     if current_gen_params.wormhole_prefab ~= nil then
@@ -287,57 +305,56 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
             print("ERROR: Worldgen preset had an invalid size: "..current_gen_params.world_size)
         end
 	end
-
-    print("Creating story...")
-    require "map/storygen"
-    local topology_save = BuildStory(tasks, story_gen_params, level)
-
-    local entities = {}
-
-    local save = {}
-    save.ents = {}
-
-
-    --save out the map
-    save.map = {
-        revealed = "",
-        tiles = "",
-        prefab = prefab,
-    }
-
     map_width = min_size
     map_height = min_size
-
     WorldSim:SetWorldSize(map_width, map_height)
 
-    print("Baking map...",min_size)
+    print("Creating story...")
+    require("map/storygen")
+    local topology_save, storygen = BuildStory(tasks, story_gen_params, level)
 
-    if WorldSim:GenerateVoronoiMap(math.random(), 0) == false then -- AM: Dont use the tend
+	WorldSim:WorldGen_InitializeNodePoints();
+
+	WorldSim:WorldGen_VoronoiPass(100)
+
+	storygen:AddRegionsToMainland(function() 	
+		WorldSim:WorldGen_AddNewPositions()
+		WorldSim:WorldGen_VoronoiPass(25)
+	end)
+
+    print("... story created")
+
+
+    print("Baking map...", min_size)
+
+	if not WorldSim:WorldGen_Commit() then
         return nil
     end
 
     topology_save.root:ApplyPoisonTag()
-
     WorldSim:SetImpassibleTileType(default_impassible_tile)
-
     WorldSim:ConvertToTileMap(min_size)
 
 	WorldSim:SeparateIslands()
     print("Map Baked!")
 	map_width, map_height = WorldSim:GetWorldSize()
 	
-	local join_islands = string.upper(level_type) ~= "ADVENTURE"
+	local join_islands = not current_gen_params.no_joining_islands
 
+	-- Note: This also generates land tiles
     WorldSim:ForceConnectivity(join_islands, false)--prefab == "cave" )
     
-	topology_save.root:SwapWormholesAndRoadsExtra(entities, map_width, map_height)
-	if topology_save.root.error == true then
-	    print ("ERROR: Node ", topology_save.root.error_string)
-	    if SKIP_GEN_CHECKS == false then
-	    	return nil
-	    end
+    local entities = {}
+	if not current_gen_params.no_wormholes_to_disconnected_tiles then
+		topology_save.root:SwapWormholesAndRoadsExtra(entities, map_width, map_height)
+		if topology_save.root.error == true then
+			print ("ERROR: Node ", topology_save.root.error_string)
+			if SKIP_GEN_CHECKS == false then
+	    		return nil
+			end
+		end
 	end
-	
+		
 	if prefab ~= "cave" then
 	    WorldSim:SetRoadParameters(
 			ROAD_PARAMETERS.NUM_SUBDIVISIONS_PER_SEGMENT,
@@ -356,7 +373,15 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
 
     print("Encoding...")
     
-    save.map.topology = {}
+    local save = {}
+    save.ents = {}
+    save.map = {
+        revealed = "",
+        tiles = "",
+		topology = {},
+        prefab = prefab,
+		has_ocean = current_gen_params.has_ocean,
+    }
     topology_save.root:SaveEncode({width=map_width, height=map_height}, save.map.topology)
     print("Encoding... DONE")
 
@@ -539,10 +564,26 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
 		end
     end
 
+	if story_gen_params.has_ocean then
+		if level.ocean_prefill_setpieces then
+			-- Adding set peices here, instead of in the ocean population rooms, will allow the land to get a shorline added to it
+			Ocean_PlaceSetPieces(level.ocean_prefill_setpieces, add_fn, obj_layout)
+		end
+		Ocean_ConvertImpassibleToWater(map_width, map_height, require("map/ocean_gen_config"))
+--		local required_treasure_placed = WorldGenPlaceTreasures(topology_save.root:GetChildren(), entities, map_width, map_height, 4600000, level)
+--		if not required_treasure_placed then
+--			print("PANIC: Missing required treasure!")
+--			if SKIP_GEN_CHECKS == false then
+--				return nil
+--			end
+--		end
+	end
+
     print("Populating voronoi...")
 
 	topology_save.root:GlobalPrePopulate(entities, map_width, map_height)
     topology_save.root:ConvertGround(SpawnFunctions, entities, map_width, map_height)
+	WorldSim:ReplaceSingleNonLandTiles()
 
 	if not story_gen_params.keep_disconnected_tiles then
 	    local replace_count = WorldSim:DetectDisconnect()
@@ -562,6 +603,9 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
     save.map.generated.densities = {}
 
     topology_save.root:PopulateVoronoi(SpawnFunctions, entities, map_width, map_height, translated_prefabs, save.map.generated.densities)
+	if story_gen_params.has_ocean then
+		PopulateOcean(SpawnFunctions, entities, map_width, map_height, storygen.ocean_population, current_gen_params)
+	end
     topology_save.root:GlobalPostPopulate(entities, map_width, map_height)
 
     for k,ents in pairs(entities) do
@@ -569,9 +613,9 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
             local x = ents[i].x/TILE_SCALE + map_width/2.0 
             local y = ents[i].z/TILE_SCALE + map_height/2.0 
 
-            local tiletype = WorldSim:GetVisualTileAtPosition(x,y)
-            local ground_OK = tiletype > GROUND.IMPASSABLE and tiletype < GROUND.UNDERGROUND
-            if ground_OK == false then
+            local tiletype = WorldSim:GetVisualTileAtPosition(x,y) -- Warning: This does not quite work as expected. It thinks the ground type id is in rendering order, which it totally is not!
+            if tiletype == GROUND.IMPASSABLE then
+				print("Removing entity on IMPASSABLE", k, x, y, ""..ents[i].x..", 0, "..ents[i].z)
                 table.remove(entities[k], i)
             end
         end

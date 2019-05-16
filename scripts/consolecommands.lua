@@ -669,7 +669,11 @@ function c_findtag(tag, radius, inst)
 end
 
 function c_gonext(name)
-    return c_goto(c_findnext(name))
+	local next = c_findnext(name)
+	if next ~= nil and next.Transform ~= nil then
+		return c_goto(next)
+	end
+    return nil
 end
 
 function c_printtextureinfo( filename )

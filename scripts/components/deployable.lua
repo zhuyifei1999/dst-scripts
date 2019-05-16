@@ -26,6 +26,7 @@ local Deployable = Class(function(self, inst)
     self.usegridplacer = false
 
     self.ondeploy = nil
+    self.deploy_range = 1.1
 end,
 nil,
 {
@@ -61,7 +62,13 @@ function Deployable:CanDeploy(pt, mouseover)
         return TheWorld.Map:CanDeployWallAtPoint(pt, self.inst)
     elseif self.mode == DEPLOYMODE.DEFAULT then
         return TheWorld.Map:CanDeployAtPoint(pt, self.inst, mouseover)
+    elseif self.mode == DEPLOYMODE.WATER then
+        return TheWorld.Map:CanDeployBoatAtPoint(pt, self.inst, mouseover)
     end
+end
+
+function Deployable:SetDeployRange(deploy_range)
+    self.deploy_range = deploy_range
 end
 
 function Deployable:Deploy(pt, deployer, rot)

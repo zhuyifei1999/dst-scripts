@@ -94,6 +94,8 @@ local function fn()
         inst:AddTag("nopunch")
     end
 
+    MakeInventoryFloatable(inst, "small", 0.1, 0.8)
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

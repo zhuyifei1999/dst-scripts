@@ -145,8 +145,19 @@ return {
             MISMATCH = "I always get my dishes mixed up.", 
             SAMEDISH = "It's on a dish already.", 
         },
+        SAIL =
+        {
+        	REPAIR = "In my professional opinion, she don't need repairin'.",
+        },
+        BATHBOMB =
+        {
+            GLASSED = "Can't do that with all this glass in the way.",
+            ALREADY_BOMBED = "That one's already been glitzed up.",
+        },
 	},
 	ACTIONFAIL_GENERIC = "I sure gummed the works there.",
+	ANNOUNCE_BOAT_LEAK = "We gotta repair this ol'girl!",
+	ANNOUNCE_BOAT_SINK = "We're goin' down!",
 	ANNOUNCE_DIG_DISEASE_WARNING = "That helped a bit.",
 	ANNOUNCE_PICK_DISEASE_WARNING = "Whew! If that isn't the mightiest smell.",
 	ANNOUNCE_ADVENTUREFAIL = "Yeow. Don't make me come back in there!",
@@ -260,6 +271,22 @@ return {
 	ANNOUNCE_KLAUS_ENRAGE = "HOLY RIVETS! Time to make tracks!",
 	ANNOUNCE_KLAUS_UNCHAINED = "The mitts are coming off!",
 	ANNOUNCE_KLAUS_CALLFORHELP = "He called his goons!",
+
+	ANNOUNCE_MOONALTAR_MINE =
+	{
+		GLASS_MED = "Hang on, I'll getcha outta there!",
+		GLASS_LOW = "Nearly through!",
+		GLASS_REVEAL = "Ha! Gotcha!",
+		IDOL_MED = "Hang on, I'll getcha outta there!",
+		IDOL_LOW = "Nearly through!",
+		IDOL_REVEAL = "Ha! Gotcha!",
+		SEED_MED = "Hang on, I'll getcha outta there!",
+		SEED_LOW = "Nearly through!",
+		SEED_REVEAL = "Ha! Gotcha!",
+	},
+
+	ANNOUNCE_FLARE_SEEN = "A flare! 'Wonder if someone needs me.",
+    ANNOUNCE_OCEAN_SILHOUETTE_INCOMING = "Woah, that's a bigg'un!",
 
     ANNOUNCE_HUNGRY_SLOWBUILD = 
     {
@@ -774,6 +801,8 @@ return {
 		TURF_FUNGUS_GREEN = "That's a chunk of weird ground.",
 		TURF_FUNGUS_RED = "That's a chunk of weird ground.",
 		TURF_DRAGONFLY = "That's a chunk of fancy ground.",
+		TURF_METEOR = "That's a chunk of fancy ground.",
+        TURF_PEBBLEBEACH = "That's a chunk of fancy ground.",
 
 		POWCAKE = "Gotta eat what you can around here.",
         CAVE_ENTRANCE = "Into the depths!",
@@ -1040,18 +1069,16 @@ return {
 			GENERIC = "I've got a bad feeling about this one.",
 			--STRUGGLE = "...H-hello?",
 		},
-        CHESSPIECE_FORMAL = 
-        {
-			GENERIC = "It's BUSTed. Ha!",
-		},
-        CHESSPIECE_HORNUCOPIA = 
-        {
-			GENERIC = "Ugh, don't remind me of food.",
-		},
-        CHESSPIECE_PIPE = 
-        {
-			GENERIC = "It's got bubbles coming out the top.",
-		},
+        CHESSPIECE_FORMAL = "It's BUSTed. Ha!",
+        CHESSPIECE_HORNUCOPIA = "Ugh, don't remind me of food.",
+        CHESSPIECE_PIPE = "It's got bubbles coming out the top.",
+		CHESSPIECE_DEERCLOPS = "Ha. It looks kinda surprised, don't it?",
+        CHESSPIECE_BEARGER = "Y'got a mean mug there, buddy.",
+        CHESSPIECE_MOOSEGOOSE = "It looks like it's hollerin'.",
+        CHESSPIECE_DRAGONFLY = "My pals and I can't be beat.",
+        CHESSPIECE_BUTTERFLY = "I feel like it's lookin' at me.",
+        CHESSPIECE_ANCHOR = "I'm fond'a this one.",
+        CHESSPIECE_MOON = "That statue's moonin' me! HA!",
         CHESSJUNK1 = "A heap of spare parts.",
         CHESSJUNK2 = "A heap of spare parts.",
         CHESSJUNK3 = "A heap of spare parts.",
@@ -1090,6 +1117,7 @@ return {
         CRITTER_PUPPY = "Pups love you no matter who you are.",
         CRITTER_KITTEN = "I'm going to spoil you rotten.",
         CRITTER_PERDLING = "Hey there, feathers.",
+        CRITTER_LUNARMOTHLING = "You sure are fragile, aren'tcha lil fella?",
 
 		CROW =
 		{
@@ -1399,6 +1427,12 @@ return {
 		HORN = "Watch out for the business end!",
 		HOUND = "Anyone got some rolled up newspaper?",
 		HOUNDBONE = "It's covered in tooth marks.",
+		HOUNDCORPSE =
+		{
+			 GENERIC = "Kinda feel bad for the little fella.",
+			 BURNING = "Better safe than sorry.",
+			 REVIVING = "Yikes! Someone burn that thing, quick!",
+		},
 		HOUNDMOUND = "So that's where they're comin' from.",
 		ICEBOX = "It's not factory standard.",
 		ICEHAT = "There must be a more practical solution.",
@@ -2478,6 +2512,169 @@ return {
         	BURNING = "Quick! Put it out!",
         	BURNT = "Criminy! My machine!",
         },
+        DRIFTWOOD_TREE = 
+        {
+            BURNING = "Yeesh, that thing's on fire!",
+            BURNT = "Looks like there was an accident here.",
+            CHOPPED = "Wonder if driftwood's a good buildin' material.",
+            GENERIC = "This tree's seen better days.",
+        },
+        BOATFRAGMENT01 = "Bust right up, hey?",
+        BOATFRAGMENT02 = "Bust right up, hey?",
+        BOATFRAGMENT03 = "Bust right up, hey?",
+        BOATFRAGMENT04 = "Bust right up, hey?",
+        BOATFRAGMENT05 = "Bust right up, hey?",
+        BOAT_LEAK = "That needs a fixin'!",
+        MAST = "Better get to hoistin'.",
+        SEASTACK = "It's a big rock in the middle of nowhere.",
+        FISHINGNET = "Seems a bit unfair to the fish.",
+        ANTCHOVIES = "We all feel like a fish outta water sometimes.",
+        STEERINGWHEEL = "I'm ready for a sea adventure.",
+        ANCHOR = "Should keep the boat right where I want it.",
+        BOATPATCH = "Never know when you might need one.",
+        DRIFTWOOD_LOG = "Oof. Kitschy.",
+
+        MOON_TREE = 
+        {
+            BURNING = "Yeesh, that thing's on fire!",
+            BURNT = "Looks like there was an accident here.",
+            CHOPPED = "Don't worry, we'll put it to good use.",
+            GENERIC = "Sure is pretty, ain't it?",
+        },
+
+        MOONBUTTERFLY =
+        {
+        	GENERIC = "Cute little fella aintcha?",
+        	HELD = "So... you like engineerin'?",
+        },
+		MOONBUTTERFLYWINGS = "They ain't flyin' no more.",
+        MOONBUTTERFLY_SAPLING = "It'll be a nice tree someday.",
+        ROCK_AVOCADO_FRUIT = "Not sure how to crack this nut.",
+        ROCK_AVOCADO_FRUIT_RIPE = "I think I could eat it now.",
+        ROCK_AVOCADO_FRUIT_RIPE_COOKED = "Who knew rocks were so tasty looking inside?",
+        ROCK_AVOCADO_FRUIT_SPROUT = "We could use more fruit bushes I suppose.",
+        ROCK_AVOCADO_BUSH = 
+        {
+            BARREN = "It's done making fruit. Forever.",
+            WITHERED = "You look a little down there, bucko.",
+            GENERIC = "It looks like it's growing rocks!",
+            PICKED = "Ain't got none of them little stone fruits today.",
+            DISEASED = "It's definitely diseased.",
+            DISEASING = "I think it's coming down with something.",
+            BURNING = "Yeesh, that thing's on fire!",
+        },
+        DEAD_SEA_BONES = "They're picked clean dry.",
+        HOTSPRING = 
+        {
+        	GENERIC = "It's a nice warm spring.",
+        	BOMBED = "I'm not really a bubblebath kinda gal.",
+        	GLASS = "Woah, the top glassed over solid.",
+        },
+        MOONGLASS = "Can't wait to try this out.",
+        MOONGLASS_ROCK = "Wonder if it's got any special properties.",
+        BATHBOMB = "I'm not really the frou-frou type.",
+        TRAP_STARFISH = 
+        {
+            GENERIC = "Watch yer step.",
+            CLOSED = "That thing's a workplace hazard.",
+        },
+        DUG_TRAP_STARFISH = "Can't fool me, ha!",
+        SPIDER_MOON = 
+        {
+            GENERIC = "Urgh! What's wrong with it??",
+            SLEEPING = "I hope it doesn't wake back up, ever.",
+            DEAD = "Don't get back up.",
+        },
+        MOONSPIDERDEN = "I don't wanna see whatever's in there.",
+        FRUITDRAGON =
+        {
+            GENERIC = "You play nice with the other lizards now, hey?",
+            RIPE = "Lookit you, all orange!",
+            SLEEPING = "I hope you earned that break.",
+        },
+        PUFFIN =
+        {
+            GENERIC = "Cute lil bird. Never seen one before.",
+            HELD = "Hope you're comfy in there.",
+            SLEEPING = "Taking her mandated break.",
+        },
+
+        MOONGLASSAXE = "Anything to make gettin' firewood easier.",
+        GLASSCUTTER = "Ha ha! Just try and fight me!",
+
+        ICEBERG =
+        {
+            GENERIC = "Better steer clear'a that.",
+            MELTED = "It's just a lil ice cube now.",
+        },
+        ICEBERG_MELTED = "It's just a lil ice cube now.",
+
+        MINIFLARE = "Safety in numbers, hey?",
+
+        MOON_FISSURE = 
+        {
+        	GENERIC = "Hm, wonder if I could use this energy somehow.",
+        	NOLIGHT = "Wonder how far down it goes.",
+		},
+        MOON_ALTAR =
+        {
+            MOON_ALTAR_WIP = "Don't worry, we're nearly done.",
+            GENERIC = "Inventions? What sort of inventions?",
+        },
+
+        MOON_ALTAR_IDOL = "I'll fix ya up right proper!",
+        MOON_ALTAR_GLASS = "Huh? You talkin' to me?",
+        MOON_ALTAR_SEED = "You're a pretty lil fella.",
+
+        MOON_ALTAR_ROCK_IDOL = "Somethin' inside is itching to get out.",
+        MOON_ALTAR_ROCK_GLASS = "Somethin' inside is itching to get out.",
+        MOON_ALTAR_ROCK_SEED = "Somethin' inside is itching to get out.",
+
+        SEAFARING_PROTOTYPER = 
+        {
+        	GENERIC = "Always be inventing.",
+        	BURNT = "Time to make another!",
+        },
+        SEAFARER_KIT = "S'got everything we need to make a pretty decent vessel.",
+        BOAT_ITEM = "Time to roll up my sleeves!",
+        STEERINGWHEEL_ITEM = "That steering wheel ain't gonna assemble itself.",
+        ANCHOR_ITEM = "Someone's gotta assemble this anchor, might as well be me.",
+        MUTATEDHOUND = 
+        {
+        	DEAD = "Sorry, Fido.",
+        	GENERIC = "That pupper looks awful!",
+        	SLEEPING = "Well, it looks more peaceful at least.",
+        },
+
+        MUTATED_PENGUIN = 
+        {
+			DEAD = "Sorry, fella.",
+			GENERIC = "Yeeshkabob! What happened to your... everything?",
+			SLEEPING = "Gotta be better than being awake.",
+		},
+
+		CARRAT = 
+        {
+        	DEAD = "That don't look good.",
+        	GENERIC = "Yer an orange nuisance, aintcha?",
+        	HELD = "Aw, I can't stay mad at you.",
+        	SLEEPING = "Sleep tight.",
+        },
+
+        GESTALT = "I feel like... they know how to find my sister.",
+
+        BULLKELP_PLANT = 
+        {
+            GENERIC = "We can pick it if we can get close enough.",
+            PICKED = "The sea's fulla food, hey?",
+        },
+        BULLKELP_ROOT = "Preferred tool of the foreman.",
+        KELPHAT = "I'll stick with my bandana, thanks.",
+		KELP = "I'll try anything once.",
+		KELP_COOKED = "Well, that's not how I would have prepared it.",
+		KELP_DRIED = "I kinda like the stuff!",
+
+        WALKINGPLANK = "That thing don't look stable.",
     },
     DESCRIBE_GENERIC = "Incredible! I have no idea what that is.",
     DESCRIBE_TOODARK = "Low visibility causes workplace accidents!",
