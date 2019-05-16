@@ -317,7 +317,7 @@ local states =
 
         events =
         {
-            EventHandler("animqueuover", function(inst)
+            EventHandler("animover", function(inst)
 				if inst._CanMutateFromCorpse ~= nil and inst:_CanMutateFromCorpse() then
 					SpawnPrefab("houndcorpse").Transform:SetPosition(inst.Transform:GetWorldPosition())
 					inst:Remove()

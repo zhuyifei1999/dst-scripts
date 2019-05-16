@@ -24,8 +24,12 @@ local function Row(inst, doer, pos, actions, right)
             if FORCE_ROW_FAIL_HACK then
                 table.insert(actions, ACTIONS.ROW_FAIL)
             else
-                if doer ~= nil and not doer.sg:HasStateTag("row_fail") then
-                    if doer ~= nil and doer.sg:HasStateTag("rowing") then
+                if doer ~= nil and not doer:HasTag("is_row_failing") then                    
+                    local animation_fail_time = 30 / 30
+                    if not doer.AnimState:IsCurrentAnimation("row_pre") then
+                        animation_fail_time = 4/30
+                    end
+                    if doer ~= nil and doer:HasTag("is_rowing") and doer.AnimState:GetCurrentAnimationTime() < animation_fail_time then
                         table.insert(actions, ACTIONS.ROW_FAIL)
                     else
                         if TheInput:ControllerAttached() and my_platform ~= nil then

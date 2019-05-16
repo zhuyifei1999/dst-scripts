@@ -309,8 +309,8 @@ return {
     ANNOUNCE_REVIVED_OTHER_CORPSE = "Good as new!",
     ANNOUNCE_REVIVED_FROM_CORPSE = "Much better, thank-you.",
 
-    ANNOUNCE_FLARE_SEEN = "Someone set a flare. I should go have a look.",
-    ANNOUNCE_OCEAN_SILHOUETTE_INCOMING = "Uh-oh.",
+    ANNOUNCE_FLARE_SEEN = "I wonder who set that flare?",
+    ANNOUNCE_OCEAN_SILHOUETTE_INCOMING = "Uh-oh. Sea monsters!",
 
     --quagmire event
     QUAGMIRE_ANNOUNCE_NOTRECIPE = "Those ingredients didn't make anything.",
@@ -2524,7 +2524,7 @@ return {
         FISHINGNET = "Nothing but net.",
         ANTCHOVIES = "Yeesh. Can I toss it back?",
         STEERINGWHEEL = "I could have been a sailor in another life.",
-        ANCHOR = "So the boat will always be right where I left it.",
+        ANCHOR = "I wouldn't want my boat to float away.",
         BOATPATCH = "Just in case of disaster.",
         DRIFTWOOD_TREE = 
         {
@@ -2543,11 +2543,11 @@ return {
             CHOPPED = "That was a pretty thick tree.",
             GENERIC = "I didn't know trees grew on the moon.",
         },
-		MOON_TREE_BLOSSOM = "It fell from the lune tree.",
+		MOON_TREE_BLOSSOM = "It fell from the moon tree.",
 
         MOONBUTTERFLY = 
         {
-        	GENERIC = "It's a moon butterfly!",
+        	GENERIC = "My vast scientific knowledge tells me it's... a moon butterfly.",
         	HELD = "I've got you now.",
         },
 		MOONBUTTERFLYWINGS = "We're really winging it now.",
@@ -2558,12 +2558,12 @@ return {
         ROCK_AVOCADO_FRUIT_SPROUT = "It's growing.",
         ROCK_AVOCADO_BUSH = 
         {
-        	BARREN = "It's not going to be making anymore fruit.",
+        	BARREN = "Its fruit growing days are over.",
 			WITHERED = "It's pretty hot out.",
 			GENERIC = "It's a bush... from the moon!",
 			PICKED = "It'll take awhile to grow more fruit.",
-			DISEASED = "It's starting to stink a bit.",
-			DISEASING = "I don't think I want to touch it at this point.",
+			DISEASED = "It looks pretty sick.",
+            DISEASING = "Err, something's not right.",
 			BURNING = "It's burning!",
 		},
         DEAD_SEA_BONES = "That's what they get for coming up on land.",
@@ -2598,7 +2598,7 @@ return {
         PUFFIN =
         {
             GENERIC = "I've never seen a live puffin before!",
-            HELD = "Ain't puffin to brag about.",
+            HELD = "Catching one ain't puffin to brag about.",
             SLEEPING = "Peacefully huffin' and puffin'.",
         },
 
@@ -2672,7 +2672,7 @@ return {
         KELPHAT = "Sometimes you have to feel worse to feel better.",
 		KELP = "It gets my pockets all wet and gross.",
 		KELP_COOKED = "It's closer to a liquid than a solid.",
-		KELP_DRIED = "Kind of high sodium content.",
+		KELP_DRIED = "The sodium content's kinda high.",
 
 		GESTALT = "They're promising me... knowledge.",
 

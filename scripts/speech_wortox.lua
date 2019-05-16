@@ -2520,7 +2520,7 @@ return {
             BURNING = "Burning, burning, burning down.",
             BURNT = "So much tinder, burnt to cinder.",
             CHOPPED = "It is no more.",
-            GENERIC = "An old tree, bleached and beached.",
+            GENERIC = "An old, dead tree, beached and bleached.",
         },
 
         DRIFTWOOD_LOG = "Naught but a log.",
@@ -2538,12 +2538,12 @@ return {
         	GENERIC = "A glimmering moth on wings alight.",
         	HELD = "Watch my claws now, dearest friend.",
         },
-		MOONBUTTERFLYWINGS = "Gossamer wings of pale green.",
+		MOONBUTTERFLYWINGS = "Gossamer wings of pale, pale green.",
         MOONBUTTERFLY_SAPLING = "Grow now, safe and sound.",
-        ROCK_AVOCADO_FRUIT = "Thought it looks like a rock, I shall not balk.",
+        ROCK_AVOCADO_FRUIT = "I don't mean to balk, but that looks like a rock.",
         ROCK_AVOCADO_FRUIT_RIPE = "My mortal friends would find it tasty now.",
         ROCK_AVOCADO_FRUIT_RIPE_COOKED = "A meal fit for a mortal.",
-        ROCK_AVOCADO_FRUIT_SPROUT = "How it grows no body knows.",
+        ROCK_AVOCADO_FRUIT_SPROUT = "How it grows, nobody knows.",
         ROCK_AVOCADO_BUSH = 
         {
         	BARREN = "It won't be returning to this plane.",
@@ -2561,7 +2561,7 @@ return {
         	BOMBED = "Mortals love good smells.",
         	GLASS = "All that glass sure froze fast!",
         },
-        MOONGLASS = "In its green sheen I can glean selene.",
+        MOONGLASS = "In its green sheen I see selene.",
         MOONGLASS_ROCK = "A handsome devil is reflected back at me! Hyuyu!",
         BATHBOMB = "Sweetly stinking, bombs for bathing.",
         TRAP_STARFISH = 
@@ -2590,12 +2590,12 @@ return {
             SLEEPING = "Hyuyu, catching some shuteye are we?",
         },
 
-		MOONGLASSAXE = "Swing and a chop, make the trees drop!",
+		MOONGLASSAXE = "Swing and a chop, all the trees drop!",
 		GLASSCUTTER = "Oh, I'm sure I'll have fun with this. Hyuyu!",
 
         ICEBERG =
         {
-            GENERIC = "Glistening ice",
+            GENERIC = "Glistening ice, it looks quite nice.",
             MELTED = "Teeny tiny, drippy droppy iceberg.",
         },
         ICEBERG_MELTED = "Teeny tiny, drippy droppy iceberg.",
@@ -2604,7 +2604,7 @@ return {
 
         MOON_FISSURE = 
         {
-        	GENERIC = "Mmm, what tasty magic is pouring from within!",
+        	GENERIC = "This magic makes my brain so soft and floaty!",
         	NOLIGHT = "A deep, dark hole that knows no end!",
 		},
         MOON_ALTAR =
@@ -2624,13 +2624,13 @@ return {
         MUTATEDHOUND = 
         {
         	DEAD = "I'm surprised it had a soul!",
-        	GENERIC = "What I'm actually inside out, and it's rightside in?",
+        	GENERIC = "What if I'm actually inside out, and it's rightside in?",
         	SLEEPING = "Its mind has fled far from here, hyuyu.",
         },
 
         MOON_ALTAR_IDOL = "You've really fallen apart, huh?",
         MOON_ALTAR_GLASS = "Let's see if we can put you back together again.",
-        MOON_ALTAR_SEED = "What a funny voice you have. It sounds like mine!",
+        MOON_ALTAR_SEED = "What a funny voice you have. How it rattles around in my head!",
 
         MOON_ALTAR_ROCK_IDOL = "There's a surprise inside!",
         MOON_ALTAR_ROCK_GLASS = "There's a surprise inside!",

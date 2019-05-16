@@ -47,15 +47,14 @@ function Embarker:OnWallUpdate(dt)
 end
 
 function Embarker:HasDestination()
-	return self.embarkable ~= nil or self.disembark_x ~= nil 
+	return (self.embarkable ~= nil and self.embarkable:IsValid()) or self.disembark_x ~= nil 
 end
 
 function Embarker:GetEmbarkPosition()
-    if self.embarkable ~= nil then
+    if self.embarkable ~= nil and self.embarkable:IsValid() then
         local embarkable_radius = 3.5
         local my_x, my_y, my_z = self.inst.Transform:GetWorldPosition()
-        local embarkable_x, embarkable_y, embarkable_z = 0,0,0
-        embarkable_x, embarkable_y, embarkable_z = self.embarkable.Transform:GetWorldPosition()
+        local embarkable_x, embarkable_y, embarkable_z = self.embarkable.Transform:GetWorldPosition()
         local embark_x, embark_z = VecUtil_Normalize(my_x - embarkable_x, my_z - embarkable_z)
         return embarkable_x + embark_x * embarkable_radius, embarkable_z + embark_z * embarkable_radius        
     else

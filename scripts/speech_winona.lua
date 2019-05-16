@@ -285,7 +285,7 @@ return {
 		SEED_REVEAL = "Ha! Gotcha!",
 	},
 
-	ANNOUNCE_FLARE_SEEN = "A flare! 'Wonder if someone needs me.",
+	ANNOUNCE_FLARE_SEEN = "A flare! Hold on, I'm comin'!",
     ANNOUNCE_OCEAN_SILHOUETTE_INCOMING = "Woah, that's a bigg'un!",
 
     ANNOUNCE_HUNGRY_SLOWBUILD = 
@@ -2516,21 +2516,21 @@ return {
         {
             BURNING = "Yeesh, that thing's on fire!",
             BURNT = "Looks like there was an accident here.",
-            CHOPPED = "Wonder if driftwood's a good buildin' material.",
+            CHOPPED = "Wonder if driftwood's a good buildin' material?",
             GENERIC = "This tree's seen better days.",
         },
-        BOATFRAGMENT01 = "Bust right up, hey?",
-        BOATFRAGMENT02 = "Bust right up, hey?",
-        BOATFRAGMENT03 = "Bust right up, hey?",
-        BOATFRAGMENT04 = "Bust right up, hey?",
-        BOATFRAGMENT05 = "Bust right up, hey?",
+        BOATFRAGMENT01 = "Busted right up, hey?",
+        BOATFRAGMENT02 = "Busted right up, hey?",
+        BOATFRAGMENT03 = "Busted right up, hey?",
+        BOATFRAGMENT04 = "Busted right up, hey?",
+        BOATFRAGMENT05 = "Busted right up, hey?",
         BOAT_LEAK = "That needs a fixin'!",
         MAST = "Better get to hoistin'.",
         SEASTACK = "It's a big rock in the middle of nowhere.",
         FISHINGNET = "Seems a bit unfair to the fish.",
         ANTCHOVIES = "We all feel like a fish outta water sometimes.",
         STEERINGWHEEL = "I'm ready for a sea adventure.",
-        ANCHOR = "Should keep the boat right where I want it.",
+        ANCHOR = "That'll keep the boat right where we want it.",
         BOATPATCH = "Never know when you might need one.",
         DRIFTWOOD_LOG = "Oof. Kitschy.",
 
@@ -2544,7 +2544,7 @@ return {
 
         MOONBUTTERFLY =
         {
-        	GENERIC = "Cute little fella aintcha?",
+        	GENERIC = "Cute little fella, aintcha?",
         	HELD = "So... you like engineerin'?",
         },
 		MOONBUTTERFLYWINGS = "They ain't flyin' no more.",
@@ -2566,8 +2566,8 @@ return {
         DEAD_SEA_BONES = "They're picked clean dry.",
         HOTSPRING = 
         {
-        	GENERIC = "It's a nice warm spring.",
-        	BOMBED = "I'm not really a bubblebath kinda gal.",
+        	GENERIC = "It's a nice, warm spring.",
+        	BOMBED = "I'm not really a bubble bath kinda gal.",
         	GLASS = "Woah, the top glassed over solid.",
         },
         MOONGLASS = "Can't wait to try this out.",
@@ -2582,7 +2582,7 @@ return {
         SPIDER_MOON = 
         {
             GENERIC = "Urgh! What's wrong with it??",
-            SLEEPING = "I hope it doesn't wake back up, ever.",
+            SLEEPING = "Down and out. For now.",
             DEAD = "Don't get back up.",
         },
         MOONSPIDERDEN = "I don't wanna see whatever's in there.",
@@ -2642,7 +2642,7 @@ return {
         MUTATEDHOUND = 
         {
         	DEAD = "Sorry, Fido.",
-        	GENERIC = "That pupper looks awful!",
+        	GENERIC = "That pup looks awful!",
         	SLEEPING = "Well, it looks more peaceful at least.",
         },
 
@@ -2650,7 +2650,7 @@ return {
         {
 			DEAD = "Sorry, fella.",
 			GENERIC = "Yeeshkabob! What happened to your... everything?",
-			SLEEPING = "Gotta be better than being awake.",
+			SLEEPING = "Better than it being awake.",
 		},
 
 		CARRAT = 
@@ -2661,7 +2661,7 @@ return {
         	SLEEPING = "Sleep tight.",
         },
 
-        GESTALT = "I feel like... they know how to find my sister.",
+        GESTALT = "I feel like... they've seen my sister.",
 
         BULLKELP_PLANT = 
         {

@@ -1276,6 +1276,7 @@ CommonStates.AddRowStates = function(states, is_client)
             if target_pos == nil then
                 target_pos = locomotor.bufferedaction.target:GetPosition()
             end
+            inst:AddTag("is_rowing")
             inst.AnimState:PlayAnimation("row_pre")
             locomotor:Stop()
 
@@ -1355,7 +1356,11 @@ CommonStates.AddRowStates = function(states, is_client)
             if not is_client then
                 inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS).components.oar:FaceWater(inst, target_pos)
             end
-        end,    
+        end, 
+
+        onexit = function(inst)
+            inst:RemoveTag("is_rowing")
+        end,
 
         timeline =
         {
@@ -1388,7 +1393,7 @@ CommonStates.AddRowStates = function(states, is_client)
                 inst:ClearBufferedAction()
                 inst.sg:GoToState("idle")
             end
-        end,            
+        end,        
     })
 
     table.insert(states, State
@@ -1402,10 +1407,17 @@ CommonStates.AddRowStates = function(states, is_client)
             else
                 inst:PerformBufferedAction()
             end
+
+            inst:AddTag("is_row_failing")
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("row_fail_pre") 
             inst.AnimState:PushAnimation("row_fail", false) 
         end,    
+
+
+        onexit = function(inst)
+            inst:RemoveTag("is_row_failing")        
+        end,       
 
         timeline =
         {

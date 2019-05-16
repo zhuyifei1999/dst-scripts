@@ -33,7 +33,7 @@ local function Client_CalcSanityForTranserency(inst, observer)
 		return TUNING.GESTALT.COMBAT_TRANSPERENCY
 	end
 
-	local x = (observer.replica.sanity:GetPercentWithPenalty() - TUNING.GESTALT.MIN_SANITY_TO_SPAWN) / (1 - TUNING.GESTALT.MIN_SANITY_TO_SPAWN)
+	local x = (observer ~= nil and observer.replica.sanity ~= nil) and (observer.replica.sanity:GetPercentWithPenalty() - TUNING.GESTALT.MIN_SANITY_TO_SPAWN) / (1 - TUNING.GESTALT.MIN_SANITY_TO_SPAWN) or 0
 	return math.min(0.5, 0.4*x*x*x + 0.3)
 end
 
