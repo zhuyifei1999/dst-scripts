@@ -10,7 +10,7 @@ local states =
         name = "open",
         onenter = function(inst)
             inst.widget.badge:Show()
-            inst.widget.leak_anim:Show()            
+            inst.widget.leak_anim:Show()
         end,
 
         onupdate = function(inst)
@@ -18,10 +18,10 @@ local states =
         end,
 
         events =
-        {        
+        {
             EventHandler("close_meter", function(inst) inst.sg:GoToState("close_pre") end),
-        },                        
-    },      
+        },
+    },
 
     State
     {
@@ -31,11 +31,11 @@ local states =
         end,
 
         events =
-        {        
+        {
             EventHandler("animqueueover", function(inst) inst.sg:GoToState("open_pst") end),
-        },                        
-    },               
-
+            EventHandler("close_meter", function(inst) inst.sg:GoToState("close_pre") end),
+        },
+    },
 
     State
     {
@@ -47,24 +47,25 @@ local states =
         end,
 
         events =
-        {        
+        {
             EventHandler("animqueueover", function(inst) inst.sg:GoToState("open") end),
-        },                        
-    },               
+            EventHandler("close_meter", function(inst) inst.sg:GoToState("close_pre") end),
+        },
+    },
 
     State
     {
         name = "close_pre",
         onenter = function(inst)
-            inst.widget.anim:GetAnimState():PlayAnimation("close_pre")            
+            inst.widget.anim:GetAnimState():PlayAnimation("close_pre")
         end,
 
         events =
-        {        
+        {
             EventHandler("animqueueover", function(inst) inst.sg:GoToState("close_pst") end),
-        },                        
-    },        
-
+            EventHandler("open_meter", function(inst) inst.sg:GoToState("open_pre") end),
+        },
+    },
 
     State
     {
@@ -76,11 +77,11 @@ local states =
         end,
 
         events =
-        {        
+        {
             EventHandler("animqueueover", function(inst) inst.sg:GoToState("closed") end),
-        },                        
-    },      
-
+            EventHandler("open_meter", function(inst) inst.sg:GoToState("open_pre") end),
+        },
+    },
 
     State
     {
@@ -93,8 +94,8 @@ local states =
         events =
         {
             EventHandler("open_meter", function(inst) inst.sg:GoToState("open_pre") end),
-        },                        
-    },             
+        },
+    },
 }
 
 return StateGraph("boatmeter", states, events, "closed")

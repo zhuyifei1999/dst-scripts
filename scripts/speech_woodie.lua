@@ -150,9 +150,9 @@ return {
 	},
 	ACTIONFAIL_GENERIC = "Sorry, I can't do that.",
 	ANNOUNCE_BOAT_LEAK = "All this water is making me very anxious.",
-	ANNOUNCE_BOAT_SINK = "Lucy will sink!",
+	ANNOUNCE_BOAT_SINK = "Hold on, Lucy!",
 	ANNOUNCE_DIG_DISEASE_WARNING = "Fixed'r right up.",
-	ANNOUNCE_PICK_DISEASE_WARNING = "Well that's not right.",
+	ANNOUNCE_PICK_DISEASE_WARNING = "Well, that's not right.",
 	ANNOUNCE_MOUNT_LOWHEALTH = "This beast looks in a bad way, eh.",
 	ANNOUNCE_ADVENTUREFAIL = "Oh well. I gave it a good try.",
 	ANNOUNCE_BEES = "Bees! Bees!",
@@ -507,7 +507,7 @@ return {
 		SANDSPIKE = "That's something else, eh?",
         SANDBLOCK = "Some good craftsmanship.",
         GLASSSPIKE = "I wonder if it chops.",
-        GLASSBLOCK = "Well it ain't wood.",
+        GLASSBLOCK = "Well, it ain't wood.",
 		ABIGAIL_FLOWER = 
 		{
 			GENERIC = "It's a flower? I guess.",
@@ -735,7 +735,7 @@ return {
 		WALL_HAY = 
 		{	
 			GENERIC = "You could sneeze it down.",
-			BURNT = "Well that escalated quickly.",
+			BURNT = "Well, that escalated quickly.",
 		},
 		WALL_WOOD = 
 		{
@@ -865,7 +865,7 @@ return {
 			VALID = "Looks ready.",
 			GEMS = "It'll need a gem.",
 		},
-		STAFFLIGHT = "Well ain't that something.",	
+		STAFFLIGHT = "Well, ain't that something.",	
         STAFFCOLDLIGHT = "At least it won't start a forest fire.",
 		LUCY = "I love Lucy!",
         ANCIENT_ALTAR =
@@ -913,7 +913,7 @@ return {
         BUNNYMAN = "He looks friendly enough.",
         FLOWER_CAVE = "Shiny!",
         GUANO = "It stinks less than the other kind.",
-        LANTERN = "Well that's enlightening, eh?",
+        LANTERN = "Well, that's enlightening, eh?",
         LIGHTBULB = "It looks chewy.",
         MANRABBIT_TAIL = "I feel sorry for it.",
         MUSHROOMHAT = "That there'll make you one with the forest.",
@@ -1040,7 +1040,7 @@ return {
 			GENERIC = "It's all burnt up.",
 			REMAINS_GLOMMERFLOWER = "This used to be a slimy flower.",
 			REMAINS_EYE_BONE = "This used to be an eyebone.",
-			REMAINS_THINGIE = "Well that's a shame.",
+			REMAINS_THINGIE = "Well, that's a shame.",
 		},
 		AXE = "It's not as nice as Lucy.",
 		BABYBEEFALO = 
@@ -1579,7 +1579,7 @@ return {
 		MAPSCROLL = "Is it still a map if nothing's on it?",
 		MARBLE = "Feels like a government building.",
 		MARBLEBEAN = "The magical fruit.",
-		MARBLEBEAN_SAPLING = "Well lookit that. It sprouted.",
+		MARBLEBEAN_SAPLING = "Well, lookit that. It sprouted.",
         MARBLESHRUB = "Defo can't chop that.",
 		MARBLEPILLAR = "Somebody must have built that.",
 		MARBLETREE = "Even Lucy can't chop that one down.",
@@ -2554,7 +2554,7 @@ return {
             PICKED = "It's a nondescript bush.",
             DISEASED = "That one might be a goner.",
             DISEASING = "It's smelling a little stinky.",
-            BURNING = "Well that's no good.",
+            BURNING = "Well, that's no good.",
         },
         DEAD_SEA_BONES = "Smells ripe.",
         HOTSPRING = 
@@ -2563,13 +2563,13 @@ return {
         	BOMBED = "Lookin' purdy.",
         	GLASS = "Wonder if I could bust through that.",
         },
-        MOONGLASS = "It's green like a nice leaf.",
+        MOONGLASS = "It's green, like a nice leaf.",
         MOONGLASS_ROCK = "That's a big hunk of moon stuff.",
         BATHBOMB = "Smells nice, like wildflowers.",
         TRAP_STARFISH = 
         {
         	GENERIC = "Just a little starfish, eh?",
-            CLOSED = "Well that's just dangerous.",
+            CLOSED = "Well, that's just dangerous.",
         },
         DUG_TRAP_STARFISH = "I should find a place to put it.",
         SPIDER_MOON = 
@@ -2629,9 +2629,9 @@ return {
         	BURNT = "It looks a bit crispier than usual.",
         },
         SEAFARER_KIT = "Everyone could use a boat.",
-        BOAT_ITEM = "It contains the mast and the base of the boat.",
+        BOAT_ITEM = "It contains the base of the boat.",
         STEERINGWHEEL_ITEM = "We should set up the base of the boat first.",
-        ANCHOR_ITEM = "Little elbow grease and we'll have an anchor.",
+        ANCHOR_ITEM = "'Little elbow grease and we'll have an anchor.",
         MUTATEDHOUND = 
         {
         	DEAD = "It's dead.",
@@ -2663,10 +2663,10 @@ return {
 		BULLKELP_ROOT = "Seems a bit cruel, doesn't it?",
         KELPHAT = "Even when I take it off I can still imagine the texture.",
 		KELP = "Could cook it up real nice.",
-		KELP_COOKED = "Good eatin' right there if you ask me.",
+		KELP_COOKED = "Good eatin' right there, if you ask me.",
 		KELP_DRIED = "It's a nice light snack.",
 
-        WALKINGPLANK = "Hopefully I don't have to leave that way.",
+        WALKINGPLANK = "Hopefully we don't have to abandon ship.",
         OAR = "I wouldn't mind taking the boat out on the lake today.",
     },
     DESCRIBE_GENERIC = "What's that, eh?",

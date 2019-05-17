@@ -122,6 +122,8 @@ local prefabs =
     "turf_sinkhole",
     "turf_underrock",
     "turf_mud",
+    "turf_meteor",
+    "turf_pebblebeach",
 
     "skeleton",
     "insanityrock",

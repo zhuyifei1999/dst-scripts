@@ -217,11 +217,13 @@ local function OnSanityDelta(player, data)
 		PostProcessor:SetColourCubeLerp(lunacy_cc_idx, distortion)
 		PostProcessor:SetDistortionFactor(1)
         PostProcessor:SetOverlayBlend(distortion)
+        PostProcessor:SetLunacyEnabled(true)
 	else
 		PostProcessor:SetColourCubeLerp(sanity_cc_idx, distortion)
 		PostProcessor:SetColourCubeLerp(lunacy_cc_idx, 0)
 		PostProcessor:SetDistortionFactor(1 - distortion)
         PostProcessor:SetOverlayBlend(0)
+        PostProcessor:SetLunacyEnabled(false)
 	end
 
 	_fxspeed = easing.outQuad(1 - distortion_target, 0, .2, 1)

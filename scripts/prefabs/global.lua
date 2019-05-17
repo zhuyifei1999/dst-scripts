@@ -177,6 +177,10 @@ local assets =
     Asset("SHADER", "shaders/postprocessbloom.ksh"),
     Asset("SHADER", "shaders/postprocessdistort.ksh"),
     Asset("SHADER", "shaders/postprocessbloomdistort.ksh"),
+    Asset("SHADER", "shaders/postprocesslunacy.ksh"),
+    Asset("SHADER", "shaders/postprocessbloomlunacy.ksh"),
+    Asset("SHADER", "shaders/postprocessdistortlunacy.ksh"),
+    Asset("SHADER", "shaders/postprocessbloomdistortlunacy.ksh"),    
     Asset("SHADER", "shaders/waterfall.ksh"),
 
     Asset("SHADER", "shaders/waves.ksh"),

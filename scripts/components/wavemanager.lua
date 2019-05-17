@@ -1,5 +1,4 @@
 require("constants")
-require("components/seasonmanager")
 
 TUNING.WAVE_LANE_SPACING = 12
 
@@ -140,7 +139,6 @@ local function SpawnLaneWaveRipple(inst, x, y, z, row_radius, col_radius)
 	-- TheSim:ProfilerPush("SpawnLaneWaveRipple")
 	local world = TheWorld
 	local ocean = world.components.ocean
-	local sm = GetSeasonManager()
 	local cx, cy, cz = ocean:GetCurrentVec3() --assuming unit vector here
 	local m1 = math.floor(math.random(-row_radius, row_radius)) --math.random(-16, 16)
 	local m2 = TUNING.WAVE_LANE_SPACING * math.floor(math.random(-col_radius, col_radius)) --math.random(-2, 2)
@@ -156,11 +154,7 @@ local function SpawnLaneWaveRipple(inst, x, y, z, row_radius, col_radius)
 
 			if ents == nil or #ents == 0 then
 				local wave
-				--if (sm:IsWetSeason() and math.random() < easing.inOutCirc(sm:GetPercentSeason(), 0.0, 1.0, 1.0)) or (math.random() < 0.25 and GetClock():GetMoonPhase() == "full") then
-				--	wave = SpawnRogueWave(inst, tx, ty, tz, -ocean:GetCurrentAngle(), inst.ripple_speed * ocean:GetCurrentSpeed() * TUNING.ROGUEWAVE_SPEED_MULTIPLIER)
-				--else
-					wave = SpawnWaveRipple(inst, tx, ty, tz, -ocean:GetCurrentAngle(), inst.ripple_speed * ocean:GetCurrentSpeed())
-				--end
+				wave = SpawnWaveRipple(inst, tx, ty, tz, -ocean:GetCurrentAngle(), inst.ripple_speed * ocean:GetCurrentSpeed())
 				wave:AddTag("lanewave")
 			end
 		end
@@ -260,15 +254,6 @@ local function DebugDraw(inst)
 	end
 end
 
-function WaveManager:SpawnImpactWave(x, y, z, speed, count)
-	local angle = 0
-	local angled = 360 / count
-	for i = 1, count, 1 do
-		SpawnWaveRipple(self, x, y, z, angle, speed)
-		angle = angle + angled
-	end
-end
-
 local function getRippleRadius()
 	-- From values from camera_volcano.lua, camera range 30 to 100
 	local percent = (TheCamera:GetDistance() - 30) / (70)
@@ -294,16 +279,6 @@ local function getPerSecMult(min, max)
 	return mult
 end
 
-local function getSeasonMult()
-	local sm = GetSeasonManager()
-	local mult = 1.0
-	if sm:IsDrySeason() then
-		local percent = sm:GetPercentSeason()
-		mult = 0.5 * math.sin(PI * percent + (PI/2.0)) + 0.5
-	end
-	return mult
-end
-
 function WaveManager:OnUpdate(dt)
 	local player = ThePlayer;
 	if player == nil then return end
@@ -316,10 +291,9 @@ function WaveManager:OnUpdate(dt)
 	local ocean = world.components.ocean
 	local px, py, pz = player.Transform:GetWorldPosition()
 	local mult = getPerSecMult()
-	local seasonmult = getSeasonMult()
 
 	if ocean:GetCurrentSpeed() > 0.0 then		
-		self.ripple_spawn_rate = self.ripple_spawn_rate + self.ripple_per_sec * self.ripple_per_sec_mod * mult * seasonmult * dt
+		self.ripple_spawn_rate = self.ripple_spawn_rate + self.ripple_per_sec * self.ripple_per_sec_mod * mult * dt
 
 		--print(self.ripple_spawn_rate .. " " .. self.shimmer_spawn_rate)
 

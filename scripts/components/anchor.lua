@@ -1,19 +1,34 @@
 local function on_is_anchor_lowered(self, is_anchor_lowered)
-	if is_anchor_lowered then					
+	if is_anchor_lowered then
 		self.inst:RemoveTag("anchor_raised")
-		self.inst:AddTag("anchor_lowered")				
-	else			
+		self.inst:AddTag("anchor_lowered")
+	else
 		self.inst:RemoveTag("anchor_lowered")
 		self.inst:AddTag("anchor_raised")
 	end
 end
 
+local function on_remove(inst)
+    local anchor = inst.components.anchor
+    if anchor ~= nil then
+        if anchor.is_anchor_lowered then
+            local boat = anchor:GetBoat()
+            if boat ~= nil and boat:IsValid() then
+                boat.components.boatphysics:DecrementLoweredAnchorCount()
+            end
+        end
+        anchor.inst:RemoveEventCallback("onremove", on_remove)
+    end
+end
+
 local Anchor = Class(function(self, inst)
     self.inst = inst
+    self.inst:ListenForEvent("onremove", on_remove)
+
     self.is_anchor_lowered = false
 end,
 nil,
-{	
+{
     is_anchor_lowered = on_is_anchor_lowered,
 })
 

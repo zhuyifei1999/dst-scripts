@@ -24,7 +24,7 @@ SetSharedLootTable('fruit_dragon_ripe',
 })
 
 local function IsBetterHeatSource(heat_source, inst, cur_heat)
-	local heat = heat_source.components.heater ~= nil and heat_source.components.heater:GetHeat(inst)
+	local heat = heat_source.components.heater ~= nil and heat_source.components.heater:GetHeat(inst) or 0
 	return heat > cur_heat
 end
 

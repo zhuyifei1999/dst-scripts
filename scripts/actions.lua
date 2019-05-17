@@ -572,11 +572,11 @@ ACTIONS.BAIT.fn = function(act)
 end
 
 ACTIONS.DEPLOY.fn = function(act)
-    if act.invobject and act.invobject.components.deployable and act.invobject.components.deployable:CanDeploy(act.pos) then
+    if act.invobject and act.invobject.components.deployable and act.invobject.components.deployable:CanDeploy(act:GetPlatformRelativeAbsolutePosition()) then
         local obj = (act.doer.components.inventory and act.doer.components.inventory:RemoveItem(act.invobject)) or 
         (act.doer.components.container and act.doer.components.container:RemoveItem(act.invobject))
         if obj then
-            if obj.components.deployable:Deploy(act.pos, act.doer, act.rotation) then
+            if obj.components.deployable:Deploy(act:GetPlatformRelativeAbsolutePosition(), act.doer, act.rotation) then
                 return true
             else
                 act.doer.components.inventory:GiveItem(obj)
@@ -1169,7 +1169,7 @@ end
 
 ACTIONS.BUILD.fn = function(act)
     if act.doer.components.builder ~= nil then
-        return act.doer.components.builder:DoBuild(act.recipe, act.pos, act.rotation, act.skin)
+        return act.doer.components.builder:DoBuild(act.recipe, act:GetPlatformRelativeAbsolutePosition(), act.rotation, act.skin)
     end
 end
 

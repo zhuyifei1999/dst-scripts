@@ -39,52 +39,25 @@ end
 
 local function shallowfn(Sim)
 	local inst = commonfn(Sim)
-	if GetSeasonManager():IsWetSeason() then
-		local ocean = GetWorld().components.ocean
-		inst.Transform:SetRotation(-ocean:GetCurrentAngle())
-		inst.Transform:SetTwoFaced()
-	    inst.AnimState:SetBuild( "wave_hurricane" )
-	    inst.AnimState:SetBank( "wave_hurricane" )
-	    inst.AnimState:PlayAnimation( "idle_small", false )
-	else
-	    inst.AnimState:SetBuild( "wave_shimmer" )
-	    inst.AnimState:SetBank( "shimmer" )
-	    inst.AnimState:PlayAnimation( "idle", false )
-	end
+	inst.AnimState:SetBuild( "wave_shimmer" )
+	inst.AnimState:SetBank( "shimmer" )
+	inst.AnimState:PlayAnimation( "idle", false )
 	return inst
 end
 
 local function medfn(Sim)
 	local inst = commonfn(Sim)
-	if GetSeasonManager():IsWetSeason() then
-		local ocean = GetWorld().components.ocean
-		inst.Transform:SetRotation(-ocean:GetCurrentAngle())
-		inst.Transform:SetTwoFaced()
-	    inst.AnimState:SetBuild( "wave_hurricane" )
-	    inst.AnimState:SetBank( "wave_hurricane" )
-	    inst.AnimState:PlayAnimation( "idle_med", false )
-	else
-	    inst.AnimState:SetBuild( "wave_shimmer_med" )
-	    inst.AnimState:SetBank( "shimmer" )
-	    inst.AnimState:PlayAnimation( "idle", false )
-	end
+	inst.AnimState:SetBuild( "wave_shimmer_med" )
+	inst.AnimState:SetBank( "shimmer" )
+	inst.AnimState:PlayAnimation( "idle", false )
 	return inst
 end
 
 local function deepfn(Sim)
 	local inst = commonfn(Sim)
-	if GetSeasonManager():IsWetSeason() then
-		local ocean = GetWorld().components.ocean
-		inst.Transform:SetRotation(-ocean:GetCurrentAngle())
-		inst.Transform:SetTwoFaced()
-	    inst.AnimState:SetBuild( "wave_hurricane" )
-	    inst.AnimState:SetBank( "wave_hurricane" )
-	    inst.AnimState:PlayAnimation( "idle_deep", false )
-	else
-	    inst.AnimState:SetBuild( "wave_shimmer_deep" )
-	    inst.AnimState:SetBank( "shimmer_deep" )
-	    inst.AnimState:PlayAnimation( "idle", false )
-	end
+	inst.AnimState:SetBuild( "wave_shimmer_deep" )
+	inst.AnimState:SetBank( "shimmer_deep" )
+	inst.AnimState:PlayAnimation( "idle", false )
 	return inst
 end
 
