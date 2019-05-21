@@ -1380,7 +1380,7 @@ local function GetPickupAction(self, target, tool)
         return ACTIONS.HARVEST_TREE
     elseif target:HasTag("trapsprung") then
         return ACTIONS.CHECKTRAP
-    elseif target:HasTag("minesprung") and target:HasTag("mineresuable") then
+    elseif target:HasTag("minesprung") and not target:HasTag("mine_not_reusable") then
         return ACTIONS.RESETMINE
     elseif target:HasTag("inactive") then
         return (not target:HasTag("wall") or self.inst:IsNear(target, 2.5)) and ACTIONS.ACTIVATE or nil

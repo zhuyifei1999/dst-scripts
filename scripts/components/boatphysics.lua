@@ -105,6 +105,25 @@ local BoatPhysics = Class(function(self, inst)
     self.inst:ListenForEvent("death", function() self:OnDeath() end)    
 end)
 
+function BoatPhysics:OnSave()
+    local data =
+    {
+        target_rudder_direction_x = self.target_rudder_direction_x,
+        target_rudder_direction_z = self.target_rudder_direction_z,
+    }
+
+    return data
+end
+
+function BoatPhysics:OnLoad(data)
+    if data ~= nil then
+        self.target_rudder_direction_x = data.target_rudder_direction_x
+        self.rudder_direction_x = data.target_rudder_direction_x
+        self.target_rudder_direction_z = data.target_rudder_direction_z
+        self.rudder_direction_z = data.target_rudder_direction_z
+    end
+end
+
 function BoatPhysics:OnSink()
 	self.is_sinking = true
 end

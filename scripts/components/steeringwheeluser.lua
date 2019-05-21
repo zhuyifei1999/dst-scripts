@@ -4,8 +4,15 @@ local SteeringWheelUser = Class(function(self, inst)
 
     self.inst:StartUpdatingComponent(self)
 
-
     self.inst:ListenForEvent("onsink", function() self:OnSink() end)
+
+    self.wheel_remove_callback = function(wheel)
+        if self.steering_wheel == wheel then
+            self.steering_wheel.components.steeringwheel:StopSteering(self.inst)
+            self.inst:PushEvent("stop_steering_boat")
+            self.steering_wheel = nil
+        end
+    end
 end)
 
 function SteeringWheelUser:OnSink()
@@ -14,19 +21,23 @@ end
 
 function SteeringWheelUser:SetSteeringWheel(steering_wheel)
 	if self.steering_wheel ~= nil then
-		self.steering_wheel.components.steeringwheel:StopSteering(self.inst)		
+		self.steering_wheel.components.steeringwheel:StopSteering(self.inst)
 
     	self.steering_wheel.AnimState:ShowSymbol("boat_wheel_round")
-    	self.steering_wheel.AnimState:ShowSymbol("boat_wheel_stick")		
+    	self.steering_wheel.AnimState:ShowSymbol("boat_wheel_stick")
+
+        self.inst:RemoveEventCallback("onremove", self.wheel_remove_callback, steering_wheel)
 	end
 	if steering_wheel ~= nil then
 		self.inst.Transform:SetPosition(steering_wheel.Transform:GetWorldPosition())
-		self.inst.Physics:ClearTransformationHistory()		
+		self.inst.Physics:ClearTransformationHistory()
 
     	steering_wheel.AnimState:HideSymbol("boat_wheel_round")
-    	steering_wheel.AnimState:HideSymbol("boat_wheel_stick")    	
+    	steering_wheel.AnimState:HideSymbol("boat_wheel_stick")
+
+        self.inst:ListenForEvent("onremove", self.wheel_remove_callback, steering_wheel)
 	else
-		self.inst.PushEvent("steer_boat_stop_turning")
+		self.inst:PushEvent("steer_boat_stop_turning")
 	end
 
 	self.steering_wheel = steering_wheel
@@ -79,10 +90,9 @@ function SteeringWheelUser:OnUpdate(dt)
 	if boat ~= nil then
 		local boat_physics = boat.components.boatphysics
 		if VecUtil_Dot(boat_physics.rudder_direction_x, boat_physics.rudder_direction_z, boat_physics.target_rudder_direction_x, boat_physics.target_rudder_direction_z) > 0.95 then
-			self.inst.PushEvent("steer_boat_stop_turning")					
+			self.inst.PushEvent("steer_boat_stop_turning")
 		end
 	end
-
 end
 
 return SteeringWheelUser

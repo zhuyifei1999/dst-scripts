@@ -150,6 +150,8 @@ local assets =
     Asset("SHADER", "shaders/ground.ksh"),
     Asset("SHADER", "shaders/ground_overlay.ksh"),
     Asset("SHADER", "shaders/ground_lights.ksh"),
+    Asset("SHADER", "shaders/ground_underground.ksh"),
+	Asset("SHADER", "shaders/ground_ocean.ksh"),
     Asset("SHADER", "shaders/ceiling.ksh"),
     -- Asset("SHADER", "shaders/triplanar.ksh"),
     Asset("SHADER", "shaders/triplanar_bg.ksh"),

@@ -55,6 +55,7 @@ local function common_fn(bank, build)
     inst.AnimState:PlayAnimation("idle")
 
     inst:AddTag("sharp")
+    inst:AddTag("possessable_axe")
 
     MakeInventoryFloatable(inst, "small", 0.05, {1.2, 0.75, 1.2})
 

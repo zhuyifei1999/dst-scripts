@@ -8,7 +8,6 @@ PREFABFILES = {
   "amulet",
   "anchor",
   "animal_track",
-  "animalhat",
   "antchovies",
   "antchovies_group",
   "antlion",

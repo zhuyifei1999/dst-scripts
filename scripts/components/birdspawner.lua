@@ -285,7 +285,7 @@ function self:SpawnBird(spawnpoint, ignorebait)
                 v.components.bait and
                 not (v.components.inventoryitem and v.components.inventoryitem:IsHeld()) and
                 not IsDangerNearby(x, y, z) and
-                (bird.components.floatable ~= nil or _map:IsPassableAtPoint(x, y, z)) then
+                (bird.components.floater ~= nil or _map:IsPassableAtPoint(x, y, z)) then
                 spawnpoint.x, spawnpoint.z = x, z
                 bird.bufferedaction = BufferedAction(bird, v, ACTIONS.EAT)
                 break

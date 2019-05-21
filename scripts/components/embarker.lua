@@ -39,9 +39,6 @@ function Embarker:SetDisembarkActionPos(pos_x, pos_z)
 end
 
 function Embarker:StartMoving()
-	if self.inst == c_sel() then
-		print("Embarker:StartMoving")
-	end
 	self.inst.Physics:Stop()
 	self.inst.components.locomotor.hopping = true
     self.inst:StartWallUpdatingComponent(self)

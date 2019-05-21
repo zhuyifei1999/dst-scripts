@@ -1,6 +1,7 @@
 local events =
 {
-
+    EventHandler("close_meter", function(inst) inst.sg:GoToState("close_pre") end),
+    EventHandler("open_meter", function(inst) inst.sg:GoToState("open_pre") end),
 }
 
 local states =
@@ -16,11 +17,6 @@ local states =
         onupdate = function(inst)
             inst.widget:UpdateLeak()
         end,
-
-        events =
-        {
-            EventHandler("close_meter", function(inst) inst.sg:GoToState("close_pre") end),
-        },
     },
 
     State
@@ -33,7 +29,6 @@ local states =
         events =
         {
             EventHandler("animqueueover", function(inst) inst.sg:GoToState("open_pst") end),
-            EventHandler("close_meter", function(inst) inst.sg:GoToState("close_pre") end),
         },
     },
 
@@ -49,7 +44,6 @@ local states =
         events =
         {
             EventHandler("animqueueover", function(inst) inst.sg:GoToState("open") end),
-            EventHandler("close_meter", function(inst) inst.sg:GoToState("close_pre") end),
         },
     },
 
@@ -63,7 +57,6 @@ local states =
         events =
         {
             EventHandler("animqueueover", function(inst) inst.sg:GoToState("close_pst") end),
-            EventHandler("open_meter", function(inst) inst.sg:GoToState("open_pre") end),
         },
     },
 
@@ -79,7 +72,6 @@ local states =
         events =
         {
             EventHandler("animqueueover", function(inst) inst.sg:GoToState("closed") end),
-            EventHandler("open_meter", function(inst) inst.sg:GoToState("open_pre") end),
         },
     },
 
@@ -90,11 +82,6 @@ local states =
             inst.widget.badge:Hide()
             inst.widget.leak_anim:Hide()
         end,
-
-        events =
-        {
-            EventHandler("open_meter", function(inst) inst.sg:GoToState("open_pre") end),
-        },
     },
 }
 

@@ -62,7 +62,8 @@ end
 
 local function IsEligible(player)
 	local area = player.components.areaaware
-	return TheWorld.Map:IsVisualGroundAtPoint(player.Transform:GetWorldPosition())
+	return player:IsValid()
+			and TheWorld.Map:IsVisualGroundAtPoint(player.Transform:GetWorldPosition())
 			and area:GetCurrentArea() ~= nil 
 			and not area:CurrentlyInTag("nohasslers")
 end
@@ -71,17 +72,19 @@ local function PickPlayer()
 	_targetplayer = nil
 
 	local playerlist = {}
-	for i, v in ipairs(_activeplayers) do
-		if IsEligible(v) then
-			table.insert(playerlist, i)
+	if TheWorld ~= nil and TheWorld.Map ~= nil then
+		for i, v in ipairs(_activeplayers) do
+			if IsEligible(v) then
+				table.insert(playerlist, i)
+			end
 		end
 	end
 	if #playerlist == 0 then
 		return
 	end
 
-	local playeri = math.min(math.floor(easing.inQuint(math.random(), 1, #playerlist, 1)), #playerlist)
-	local player = _activeplayers[playerlist[playeri]]
+	local playeri = playerlist[math.min(math.floor(easing.inQuint(math.random(), 1, #playerlist, 1)), #playerlist)]
+	local player = _activeplayers[playeri]
 	table.remove(_activeplayers, playeri)
 	table.insert(_activeplayers, player)
 	_targetplayer = player

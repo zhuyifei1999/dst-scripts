@@ -156,8 +156,8 @@ local function on_dug_up(inst, digger)
         spawndiseasepuff(inst)
     elseif inst.components.diseaseable ~= nil and inst.components.diseaseable:IsBecomingDiseased() then
         spawndiseasepuff(inst)
-        if worker ~= nil then
-            worker:PushEvent("digdiseasing")
+        if digger ~= nil then
+            digger:PushEvent("digdiseasing")
         end
     end
 
@@ -218,6 +218,7 @@ local function makeemptyfn(inst)
         local emptying_dead = inst.AnimState:IsCurrentAnimation("dead1")
 
         inst.components.growable:SetStage(1)
+        inst.components.growable:StartGrowing()
 
         if POPULATING or not (inst:HasTag("withered") or emptying_dead) then
             inst.AnimState:PlayAnimation("idle1", false)

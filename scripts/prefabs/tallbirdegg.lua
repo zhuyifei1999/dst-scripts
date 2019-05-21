@@ -40,7 +40,7 @@ local function CheckHatch(inst)
             inst.components.hatchable.state == "hatch" and
             not inst.components.inventoryitem:IsHeld() then
         local posx, _, posy = inst.Transform:GetWorldPosition()
-        if TheWorld.Map:IsVisualGroundAtPoint(pos_x, 0, pos_z) then
+        if TheWorld.Map:IsVisualGroundAtPoint(posx, 0, posz) then
             Hatch(inst)
         end
     end

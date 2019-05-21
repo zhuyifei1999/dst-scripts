@@ -74,7 +74,7 @@ function Mine:OnRemoveFromEntity()
     self.inst:RemoveEventCallback("onpickup", OnPickup)
     self.inst:RemoveTag("minesprung")
     self.inst:RemoveTag("mineactive")
-    self.inst:RemoveTag("minereusable")
+    self.inst:RemoveTag("mine_not_reusable")
 end
 
 function Mine:SetRadius(radius)
@@ -106,11 +106,10 @@ function Mine:SetAlignment(alignment)
 end
 
 function Mine:SetReusable(reusable)
-    self.canreset = reusable
     if reusable then
-        self.inst:AddTag("minereusable")
+        self.inst:RemoveTag("mine_not_reusable")
     else
-        self.inst:RemoveTag("minereusable")
+        self.inst:AddTag("mine_not_reusable")
     end
 end
 

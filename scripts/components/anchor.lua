@@ -32,6 +32,31 @@ nil,
     is_anchor_lowered = on_is_anchor_lowered,
 })
 
+function Anchor:OnSave()
+    local data =
+    {
+        is_anchor_lowered = self.is_anchor_lowered
+    }
+
+    return data
+end
+
+function Anchor:OnLoad(data)
+    if data ~= nil then
+    	if data.is_anchor_lowered then
+			self.inst:DoTaskInTime(0,
+				function()
+					if self:GetBoat() ~= nil then
+						self.inst.sg:GoToState("lowered")
+					else
+						self.inst.sg:GoToState("lowered_land")
+					end    							
+				end)
+
+    	end
+    end
+end
+
 function Anchor:GetBoat()
 	local pos_x, pos_y, pos_z = self.inst.Transform:GetWorldPosition()
 	return TheWorld.Map:GetPlatformAtPoint(pos_x, pos_z)

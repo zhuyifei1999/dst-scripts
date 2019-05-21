@@ -221,7 +221,7 @@ local COMPONENT_ACTIONS =
         end,        
 
         mine = function(inst, doer, actions, right)
-            if right and inst:HasTag("minesprung") and inst:HasTag("minereusable") then
+            if right and inst:HasTag("minesprung") and not inst:HasTag("mine_not_reusable") then
                 table.insert(actions, ACTIONS.RESETMINE)
             end
         end,

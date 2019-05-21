@@ -295,7 +295,7 @@ function PlayerActionPicker:GetRightClickActions(position, target)
         if useitem:IsValid() then
             if target == self.inst then
                 actions = self:GetInventoryActions(useitem, true)
-            elseif target ~= nil and (not target:HasTag("walkableplatform") or useitem.components.repairer ~= nil) then
+            elseif target ~= nil and (not target:HasTag("walkableplatform") or (useitem:HasTag("repairer") and not useitem:HasTag("deployable"))) then
                 actions = self:GetUseItemActions(target, useitem, true)
             else
                 actions = self:GetPointActions(position, useitem, true)

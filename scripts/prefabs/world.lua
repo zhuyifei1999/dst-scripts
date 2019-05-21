@@ -199,7 +199,6 @@ local prefabs =
     "float_fx_front",
     "float_fx_back",
     "groundshadow",
-    "animalhat",
 
     "puffin"
 }

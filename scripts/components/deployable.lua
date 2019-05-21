@@ -27,6 +27,8 @@ local Deployable = Class(function(self, inst)
 
     self.ondeploy = nil
     self.deploy_range = 1.1
+
+    self.inst:AddTag("deployable")
 end,
 nil,
 {

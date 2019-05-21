@@ -256,7 +256,7 @@ end
 
 local function getRippleRadius()
 	-- From values from camera_volcano.lua, camera range 30 to 100
-	local percent = (TheCamera:GetDistance() - 30) / (70)
+	local percent = (math.clamp(TheCamera:GetDistance(), 30, 100) - 30) / (70)
 	local row_radius = (24 - 16) * percent + 16
 	local col_radius = (8 - 2) * percent + 2
 	--print("Ripple ", row_radius, col_radius)
@@ -265,7 +265,7 @@ end
 
 local function getShimmerRadius()
 	-- From values from camera_volcano.lua, camera range 30 to 100
-	local percent = (TheCamera:GetDistance() - 30) / (70)
+	local percent = (math.clamp(TheCamera:GetDistance(), 30, 100) - 30) / (70)
 	local radius = (75 - 30) * percent + 30
 	--print("Shimmer ", TheCamera:GetDistance(), radius)
 	return radius
@@ -273,7 +273,7 @@ end
 
 local function getPerSecMult(min, max)
 	-- From values from camera_volcano.lua, camera range 30 to 100
-	local percent = (TheCamera:GetDistance() - 30) / (70)
+	local percent = (math.clamp(TheCamera:GetDistance(), 30, 100) - 30) / (70)
 	local mult = (1.5 - 1) * percent + 1 -- 1x to 1.5x 
 	--print("Per sec", TheCamera:GetDistance(), mult)
 	return mult

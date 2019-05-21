@@ -279,6 +279,8 @@ local function basefn()
 
     inst.entity:SetPristine()
 
+	inst:AddTag("DECOR")
+
     if not TheWorld.ismastersim then
         return inst
     end

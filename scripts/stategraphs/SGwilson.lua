@@ -1035,7 +1035,7 @@ local events =
             if not inst.sg:HasStateTag("busy") then
                 inst.sg:GoToState("wakeup")
             end
-        end),    
+        end),
 
     CommonHandlers.OnHop(),
 }
@@ -6301,8 +6301,11 @@ local states =
         {
             EventHandler("animqueueover", function(inst)
                 inst.sg:GoToState("steer_boat_idle_loop")
-            end),          
-        }
+            end),
+            EventHandler("stop_steering_boat", function(inst)
+                inst.sg:GoToState("idle")
+            end),
+        },
     },
 
     State{
@@ -6311,8 +6314,14 @@ local states =
 
         onenter = function(inst, skip_pre)
             inst.AnimState:PushAnimation("steer_idle_loop", true)
-        end,      
-    },    
+        end,
+        events =
+        {
+            EventHandler("stop_steering_boat", function(inst)
+                inst.sg:GoToState("idle")
+            end),
+        },
+    },
 
     State{
         name = "steer_boat_turning",
@@ -6346,12 +6355,14 @@ local states =
             EventHandler("animqueueover", function(inst)
                 inst.sg:GoToState("steer_boat_idle_loop")
             end),
+            EventHandler("stop_steering_boat", function(inst)
+                inst.sg:GoToState("idle")
+            end),
             --EventHandler("steer_boat_stop_turning", function(inst)
             --    inst.sg:GoToState("steer_boat", "steer_left_pst")
             --end),
-        },        
+        },
     },
-
 
     State{
         name = "sink",

@@ -43,7 +43,7 @@ local rock_fruit_prefabs = {
 }
 
 local function on_mine(inst, miner, workleft, workdone)
-    local num_fruits_worked = math.min(workdone / TUNING.ROCK_FRUIT_MINES, TUNING.ROCK_FRUIT_LOOT.MAX_SPAWNS)
+    local num_fruits_worked = math.clamp(workdone / TUNING.ROCK_FRUIT_MINES, 1, TUNING.ROCK_FRUIT_LOOT.MAX_SPAWNS)
 
     if inst.components.stackable.stacksize > num_fruits_worked then
         inst.AnimState:PlayAnimation("mined")
@@ -158,7 +158,7 @@ local function rock_avocado_fruit_ripe()
     inst.components.edible.foodtype = FOODTYPE.VEGGIE
 
     inst:AddComponent("perishable")
-    inst.components.perishable:SetPerishTime(TUNING.PERISH_SLOW)
+    inst.components.perishable:SetPerishTime(TUNING.PERISH_SUPERFAST)
     inst.components.perishable.onperishreplacement = "spoiled_food"
     inst.components.perishable:StartPerishing()
 
@@ -211,7 +211,7 @@ local function rock_avocado_fruit_ripe_cooked()
     inst.components.edible.foodtype = FOODTYPE.VEGGIE
 
     inst:AddComponent("perishable")
-    inst.components.perishable:SetPerishTime(TUNING.PERISH_PRESERVED)
+    inst.components.perishable:SetPerishTime(TUNING.PERISH_TWO_DAY)
     inst.components.perishable.onperishreplacement = "spoiled_food"
     inst.components.perishable:StartPerishing()
 
