@@ -89,12 +89,12 @@ local function fn()
 end
 
 local function ondeploy(inst, pt, deployer)
-    local anchor = SpawnPrefab("steeringwheel")
-    if anchor ~= nil then
-        anchor.Transform:SetPosition(pt:Get())
-        anchor.SoundEmitter:PlaySound("turnoftides/common/together/boat/steering_wheel/place")
-        anchor.AnimState:PlayAnimation("place")
-        anchor.AnimState:PushAnimation("idle")
+    local wheel = SpawnPrefab("steeringwheel")
+    if wheel ~= nil then
+        wheel.Transform:SetPosition(pt:Get())
+        wheel.SoundEmitter:PlaySound("turnoftides/common/together/boat/steering_wheel/place")
+        wheel.AnimState:PlayAnimation("place")
+        wheel.AnimState:PushAnimation("idle")
 
         inst:Remove()
     end

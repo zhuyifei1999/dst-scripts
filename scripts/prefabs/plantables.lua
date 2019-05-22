@@ -130,7 +130,7 @@ local plantables =
         inspectoverride = "rock_avocado_bush",
         bank = "rock_avocado",
         build = "rock_avocado_build",
-        anim = "dropped",
+        anim = "dead1",
         floater = {"med", nil, 0.95},
     },
 	

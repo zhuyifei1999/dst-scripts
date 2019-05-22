@@ -94,15 +94,15 @@ end
 
 function Moisture:AnnounceMoisture(oldSegs, newSegs)
     if self.inst.components.talker then
-    if oldSegs < 1 and newSegs >= 1 then
-        self.inst.components.talker:Say(GetString(self.inst, "ANNOUNCE_DAMP"))
-    elseif oldSegs < 2 and newSegs >= 2 then
-        self.inst.components.talker:Say(GetString(self.inst, "ANNOUNCE_WET"))
-    elseif oldSegs < 3 and newSegs >= 3 then
-        self.inst.components.talker:Say(GetString(self.inst, "ANNOUNCE_WETTER"))
-    elseif oldSegs < 4 and newSegs >= 4 then
-        self.inst.components.talker:Say(GetString(self.inst, "ANNOUNCE_SOAKED"))
-    end
+        if oldSegs < 1 and newSegs >= 1 then
+            self.inst.components.talker:Say(GetString(self.inst, "ANNOUNCE_DAMP"))
+        elseif oldSegs < 2 and newSegs >= 2 then
+            self.inst.components.talker:Say(GetString(self.inst, "ANNOUNCE_WET"))
+        elseif oldSegs < 3 and newSegs >= 3 then
+            self.inst.components.talker:Say(GetString(self.inst, "ANNOUNCE_WETTER"))
+        elseif oldSegs < 4 and newSegs >= 4 then
+            self.inst.components.talker:Say(GetString(self.inst, "ANNOUNCE_SOAKED"))
+        end
     end
 end
 

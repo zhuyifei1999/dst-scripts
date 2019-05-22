@@ -1054,7 +1054,7 @@ function Story:AddBGNodes(min_count, max_count, task_nodes)
 end
 
 function Story:AddCoveNodes(task_nodes) 
-	print("[Ocean] Adding Cove Nodes")
+	print("[Story Gen] Adding Cove Nodes")
 	task_nodes = task_nodes or self.rootNode:GetChildren(false)
 	local bg_idx = 0
 
@@ -1069,7 +1069,7 @@ function Story:AddCoveNodes(task_nodes)
 				cove_room_template.contents = {}
 			end
 
-			local cove_room_chance = task_def.cove_room_chance ~= nil and task_def.cove_room_chance or 0.45
+			local cove_room_chance = task_def.cove_room_chance ~= nil and task_def.cove_room_chance or 0.35
 			local cove_room_max_edges = task_def.cove_room_max_edges ~= nil and task_def.cove_room_max_edges or 1
 			if cove_room_chance == 0 or cove_room_max_edges == 0 then
 				return

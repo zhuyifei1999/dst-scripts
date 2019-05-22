@@ -129,7 +129,33 @@ function HullHealth:OnCollide(data)
 		local health_damage = max_health_damage * math.abs(data.hit_dot_velocity)
 		self.inst.components.health:DoDelta(-health_damage)		
 	end
+end
 
+function HullHealth:OnSave()
+    local leaks = {}
+    for k,leak in pairs(self.leak_indicators) do
+        if leak ~= nil and leak:IsValid() then
+            table.insert(leaks, {
+                leak_point = k,
+                leak_damage = self.leak_damage[k],
+                leak_state = leak.components.boatleak.current_state,
+            })
+        end
+    end
+
+    return (#leaks > 0 and { boat_leaks = leaks }) or nil
+end
+
+function HullHealth:OnLoad(data)
+    if data ~= nil and data.boat_leaks ~= nil then
+        for i, leak_data in ipairs(data.boat_leaks) do
+            self.leak_damage[leak_data.leak_point] = leak_data.leak_damage
+            if self:RefreshLeakIndicator(leak_data.leak_point) then
+                local leak_i = self.leak_indicators[leak_data.leak_point]
+                leak_i.components.boatleak:SetState(leak_data.leak_state)
+            end
+        end
+    end
 end
 
 return HullHealth

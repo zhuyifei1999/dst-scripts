@@ -373,6 +373,6 @@ end
 return Prefab("rock_avocado_fruit_ripe_cooked", rock_avocado_fruit_ripe_cooked, rock_avocado_fruit_ripe_cooked_assets),
     Prefab("rock_avocado_fruit_ripe", rock_avocado_fruit_ripe, rock_avocado_fruit_ripe_assets, {"rock_avocado_fruit_ripe_cooked"}),
     Prefab("rock_avocado_fruit_sprout", rock_avocado_fruit_sprout, rock_avocado_fruit_sprout_assets),
-    MakePlacer("rock_avocado_fruit_sprout_placer", "rock_avocado", "rock_avocado_build", "idle1"),
+    MakePlacer("rock_avocado_fruit_sprout_placer", "rock_avo_fruit_master", "rock_avocado_fruit_build", "idle_buried_seed"),
     Prefab("rock_avocado_fruit_sprout_sapling", rock_avocado_fruit_sprout_sapling, rock_avocado_fruit_sprout_sapling_assets),
     Prefab("rock_avocado_fruit", rock_avocado_fruit_full, rock_avocado_fruit_assets, rock_fruit_prefabs)

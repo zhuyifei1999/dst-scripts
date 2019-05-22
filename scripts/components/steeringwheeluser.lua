@@ -36,8 +36,6 @@ function SteeringWheelUser:SetSteeringWheel(steering_wheel)
     	steering_wheel.AnimState:HideSymbol("boat_wheel_stick")
 
         self.inst:ListenForEvent("onremove", self.wheel_remove_callback, steering_wheel)
-	else
-		self.inst:PushEvent("steer_boat_stop_turning")
 	end
 
 	self.steering_wheel = steering_wheel
@@ -75,6 +73,12 @@ end
 function SteeringWheelUser:OnUpdate(dt)
 	if self.steering_wheel == nil then return end
 
+	--State graph was interrupted
+	if not self.inst.sg:HasStateTag("is_using_steering_wheel") then
+		self:SetSteeringWheel(nil)
+		return 
+	end
+
 	local down_vec = TheCamera:GetDownVec()
 	local my_pos_x, my_pos_y, my_pos_z = self.inst.Transform:GetWorldPosition()
 	local wheel_pos_x, wheel_pos_y, wheel_pos_z = self.steering_wheel.Transform:GetWorldPosition()
@@ -85,14 +89,6 @@ function SteeringWheelUser:OnUpdate(dt)
 	self.inst.Transform:SetPosition(wheel_pos_x - player_offset * down_vec.x, wheel_pos_y - player_offset * down_vec.y, wheel_pos_z - player_offset * down_vec.z)
 	self.inst:FacePoint(facing_x, 0, facing_z)
 	self.steering_wheel:FacePoint(facing_x, 0, facing_z)
-
-	local boat = self:GetBoat()
-	if boat ~= nil then
-		local boat_physics = boat.components.boatphysics
-		if VecUtil_Dot(boat_physics.rudder_direction_x, boat_physics.rudder_direction_z, boat_physics.target_rudder_direction_x, boat_physics.target_rudder_direction_z) > 0.95 then
-			self.inst.PushEvent("steer_boat_stop_turning")
-		end
-	end
 end
 
 return SteeringWheelUser

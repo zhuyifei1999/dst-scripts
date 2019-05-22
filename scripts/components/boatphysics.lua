@@ -64,7 +64,7 @@ local function OnCollide(inst, other, world_position_on_a_x, world_position_on_a
         end
         	other:PushEvent("hit_boat", inst)
 
-        	local push_back = 1.75 * velocity * math.abs(hit_dot_velocity)
+        	local push_back = TUNING.BOAT.PUSH_BACK_VELOCITY * velocity * math.abs(hit_dot_velocity)
         	
         	boat_physics.velocity_x, boat_physics.velocity_z = relative_velocity_x + push_back * hit_normal_x, relative_velocity_z + push_back * hit_normal_z
     end
@@ -75,10 +75,9 @@ local BoatPhysics = Class(function(self, inst)
     self.velocity_x = 0
     self.velocity_z = 0
     self.has_speed = false
-    self.push_back_velocity = 0.5
     self.damageable_velocity = 1.25
-    self.max_velocity = 1.5
-    self.rudder_turn_speed = 0.2
+    self.max_velocity = TUNING.BOAT.MAX_VELOCITY
+    self.rudder_turn_speed = TUNING.BOAT.RUDDER_TURN_SPEED
     self.lowered_anchor_count = 0
     self.fx_spawn_rate = 1.5
     self.fx_spawn_timer = 0
@@ -205,8 +204,8 @@ function BoatPhysics:OnUpdate(dt)
 	elseif raised_sail_count == 0 or self.lowered_anchor_count > 0 then
 		local velocity_length = VecUtil_Length(self.velocity_x, self.velocity_z)	
 		local min_velocity = 0.55
-		local drag = 0.4
-		local anchor_drag = 1.5
+		local drag = TUNING.BOAT.BASE_DRAG
+		local anchor_drag = TUNING.BOAT.ANCHOR_DRAG
 
 		if self.lowered_anchor_count > 0 then
 			min_velocity = 0
@@ -235,7 +234,7 @@ function BoatPhysics:OnUpdate(dt)
         end
     end    
 
-    local new_speed_is_scary = ((self.velocity_x*self.velocity_x) + (self.velocity_z*self.velocity_z)) > TUNING.BOAT_SCARY_MINSPEED_SQR
+    local new_speed_is_scary = ((self.velocity_x*self.velocity_x) + (self.velocity_z*self.velocity_z)) > TUNING.BOAT.SCARY_MINSPEED_SQR
     if not self.has_speed and new_speed_is_scary then
         self.has_speed = true
         self.inst:AddTag("scarytoprey")

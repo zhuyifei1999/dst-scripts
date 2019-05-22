@@ -20,12 +20,12 @@ local function onunequip(inst, owner)
     owner.AnimState:Show("ARM_normal")
 end
 
-local function onpocket(inst, owner)
+local function onfiniteusesfinished(inst)
+    if inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner ~= nil then
+        inst.components.inventoryitem.owner:PushEvent("toolbroke", { tool = inst })
+    end
 
-end
-
-local function onattack(weapon, attacker, target)
-
+    inst:Remove()
 end
 
 local function fn()
@@ -59,8 +59,12 @@ local function fn()
     inst:AddComponent("oar")
     inst:AddComponent("inspectable")
 
+    inst:AddComponent("weapon")
+    inst.components.weapon:SetDamage(TUNING.OAR_DAMAGE)
+    inst.components.weapon.attackwear = TUNING.OAR_ATTACKWEAR
+
+
     inst:AddComponent("equippable")
-    inst.components.equippable:SetOnPocket(onpocket)
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)
 
@@ -71,9 +75,8 @@ local function fn()
     inst:AddComponent("finiteuses")
     inst.components.finiteuses:SetMaxUses(TUNING.OAR_USES)
     inst.components.finiteuses:SetUses(TUNING.OAR_USES)
-    inst.components.finiteuses:SetOnFinished(inst.Remove)
+    inst.components.finiteuses:SetOnFinished(onfiniteusesfinished)
     inst.components.finiteuses:SetConsumption(ACTIONS.ROW, 1)
-
 
     MakeHauntableLaunch(inst)
 

@@ -543,7 +543,7 @@ end
 
 function PopulateWaterPrefabWorldGenCustomizations(populating_tile, spawnFn, entitiesOut, width, height, edge_dist, water_contents, world_gen_choices, prefab_list)
 	-- this is populating extra entities based on worldgen customization
-	print("[Ocean] Populate water extras...")
+--	print("[Ocean] Populate water extras...")
 
 	local generate_these = {}
 	local pos_needed = 0
@@ -559,9 +559,9 @@ function PopulateWaterPrefabWorldGenCustomizations(populating_tile, spawnFn, ent
 		end
 	end
 
-	print("generate_these, before", pos_needed)
-	dumptable(prefab_list, 1, 2)
-	dumptable(generate_these, 1, 2)
+	--print("generate_these, before", pos_needed)
+	--dumptable(prefab_list, 1, 2)
+	--dumptable(generate_these, 1, 2)
 
 	local points_x, points_y = GetRandomWaterPoints(populating_tile, width, height, edge_dist, pos_needed + 20)
 
@@ -579,8 +579,8 @@ function PopulateWaterPrefabWorldGenCustomizations(populating_tile, spawnFn, ent
 		end
 	end
 
-	print("generate_these, after", pos_needed)
-	dumptable(prefab_list, 1, 2)
+	--print("generate_these, after", pos_needed)
+	--dumptable(prefab_list, 1, 2)
 end
 
 local function PopulateWaterType(populating_tile, spawnFn, entitiesOut, width, height, edge_dist, water_contents, world_gen_choices)

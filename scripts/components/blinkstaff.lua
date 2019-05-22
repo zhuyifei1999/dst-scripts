@@ -35,7 +35,8 @@ local function OnBlinked(caster, self, pt)
 end
 
 function BlinkStaff:Blink(pt, caster)
-    if not TheWorld.Map:IsAboveGroundAtPoint(pt:Get()) or TheWorld.Map:IsGroundTargetBlocked(pt) then
+    local x, y, z = pt:Get()
+    if (not TheWorld.Map:IsAboveGroundAtPoint(x, y, z) and not TheWorld.Map:GetPlatformAtPoint(x, z)) or TheWorld.Map:IsGroundTargetBlocked(pt) then
         return false
     end
 

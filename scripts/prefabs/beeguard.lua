@@ -75,7 +75,7 @@ end
 local function CheckFocusTarget(inst)
     if inst._focustarget ~= nil and (
             not inst._focustarget:IsValid() or
-            inst._focustarget.components.health:IsDead() or
+            (inst._focustarget.components.health ~= nil and inst._focustarget.components.health:IsDead()) or
             inst._focustarget:HasTag("playerghost")
         ) then
         inst._focustarget = nil

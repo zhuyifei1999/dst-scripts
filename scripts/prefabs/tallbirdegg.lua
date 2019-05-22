@@ -39,7 +39,7 @@ local function CheckHatch(inst)
             inst.components.playerprox:IsPlayerClose() and
             inst.components.hatchable.state == "hatch" and
             not inst.components.inventoryitem:IsHeld() then
-        local posx, _, posy = inst.Transform:GetWorldPosition()
+        local posx, _, posz = inst.Transform:GetWorldPosition()
         if TheWorld.Map:IsVisualGroundAtPoint(posx, 0, posz) then
             Hatch(inst)
         end

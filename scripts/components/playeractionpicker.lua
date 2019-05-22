@@ -301,7 +301,7 @@ function PlayerActionPicker:GetRightClickActions(position, target)
                 actions = self:GetPointActions(position, useitem, true)
             end
         end
-    elseif target ~= nil then
+    elseif target ~= nil and not target:HasTag("walkableplatform") then
         --if we're clicking on a scene entity, see if we can use our equipped object on it, or just use it
         if equipitem ~= nil and equipitem:IsValid() then
             actions = self:GetEquippedItemActions(target, equipitem, true)
@@ -319,7 +319,7 @@ function PlayerActionPicker:GetRightClickActions(position, target)
         actions = self:GetPointActions(position, equipitem, true)
     end
 
-    if (actions == nil or #actions <= 0) and target == nil and ispassable then
+    if (actions == nil or #actions <= 0) and (target == nil or target:HasTag("walkableplatform")) and ispassable then
         actions = self:GetPointSpecialActions(position, useitem, true)
     end
 

@@ -258,7 +258,7 @@ local function makebird(name, soundname, no_feather, bank, custom_loot_setup, wa
         MakeFeedableSmallLivestockPristine(inst)
 
         if water_bank ~= nil then
-            MakeInventoryFloatable(inst, "small", 0.3)
+            MakeInventoryFloatable(inst)
         end
 
         inst.entity:SetPristine()

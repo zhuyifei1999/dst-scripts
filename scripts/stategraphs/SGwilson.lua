@@ -6290,12 +6290,12 @@ local states =
 
     State{
         name = "steer_boat_idle_pre",
-        tags = { },
+        tags = { "is_using_steering_wheel" },
 
         onenter = function(inst, skip_pre)
             inst.AnimState:PlayAnimation("steer_idle_pre")        
             inst:PerformBufferedAction()
-        end,    
+        end,   
 
         events = 
         {
@@ -6310,11 +6310,12 @@ local states =
 
     State{
         name = "steer_boat_idle_loop",
-        tags = { },
+        tags = { "is_using_steering_wheel" },
 
         onenter = function(inst, skip_pre)
             inst.AnimState:PushAnimation("steer_idle_loop", true)
         end,
+
         events =
         {
             EventHandler("stop_steering_boat", function(inst)
@@ -6325,7 +6326,7 @@ local states =
 
     State{
         name = "steer_boat_turning",
-        tags = { },
+        tags = { "is_using_steering_wheel" },
 
         onenter = function(inst, data)
             --inst.AnimState:PlayAnimation("steer_left_loop_pre")
@@ -6340,7 +6341,6 @@ local states =
             end
             inst:PerformBufferedAction()
         end,
-
 
         timeline =
         {
@@ -6358,9 +6358,6 @@ local states =
             EventHandler("stop_steering_boat", function(inst)
                 inst.sg:GoToState("idle")
             end),
-            --EventHandler("steer_boat_stop_turning", function(inst)
-            --    inst.sg:GoToState("steer_boat", "steer_left_pst")
-            --end),
         },
     },
 
@@ -6379,6 +6376,7 @@ local states =
             EventHandler("animqueueover", function(inst)
                 inst.components.health:SetPercent(0, 0, "drowning")
                 inst:PushEvent(inst.ghostenabled and "makeplayerghost" or "playerdied", { skeleton = false })
+                inst.components.inventory:DropEverything(true)
             end),
         },        
     },    

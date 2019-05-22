@@ -564,21 +564,6 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
 		end
     end
 
-	if story_gen_params.has_ocean then
-		if level.ocean_prefill_setpieces then
-			-- Adding set peices here, instead of in the ocean population rooms, will allow the land to get a shorline added to it
-			Ocean_PlaceSetPieces(level.ocean_prefill_setpieces, add_fn, obj_layout)
-		end
-		Ocean_ConvertImpassibleToWater(map_width, map_height, require("map/ocean_gen_config"))
---		local required_treasure_placed = WorldGenPlaceTreasures(topology_save.root:GetChildren(), entities, map_width, map_height, 4600000, level)
---		if not required_treasure_placed then
---			print("PANIC: Missing required treasure!")
---			if SKIP_GEN_CHECKS == false then
---				return nil
---			end
---		end
-	end
-
     print("Populating voronoi...")
 
 	topology_save.root:GlobalPrePopulate(entities, map_width, map_height)
@@ -604,6 +589,15 @@ local function Generate(prefab, map_width, map_height, tasks, level, level_type)
 
     topology_save.root:PopulateVoronoi(SpawnFunctions, entities, map_width, map_height, translated_prefabs, save.map.generated.densities)
 	if story_gen_params.has_ocean then
+		Ocean_PlaceSetPieces(level.ocean_prefill_setpieces, add_fn, obj_layout)
+--		local required_treasure_placed = WorldGenPlaceTreasures(topology_save.root:GetChildren(), entities, map_width, map_height, 4600000, level)
+--		if not required_treasure_placed then
+--			print("PANIC: Missing required treasure!")
+--			if SKIP_GEN_CHECKS == false then
+--				return nil
+--			end
+--		end
+		Ocean_ConvertImpassibleToWater(map_width, map_height, require("map/ocean_gen_config"))
 		PopulateOcean(SpawnFunctions, entities, map_width, map_height, storygen.ocean_population, current_gen_params)
 	end
     topology_save.root:GlobalPostPopulate(entities, map_width, map_height)

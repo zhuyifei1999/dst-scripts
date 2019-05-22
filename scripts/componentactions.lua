@@ -942,7 +942,8 @@ local COMPONENT_ACTIONS =
     POINT = --args: inst, doer, pos, actions, right
     {
         blinkstaff = function(inst, doer, pos, actions, right)
-            if right and TheWorld.Map:IsAboveGroundAtPoint(pos:Get()) and not TheWorld.Map:IsGroundTargetBlocked(pos) then
+            local x,y,z = pos:Get()
+            if right and (TheWorld.Map:IsAboveGroundAtPoint(x,y,z) or TheWorld.Map:GetPlatformAtPoint(x,z) ~= nil) and not TheWorld.Map:IsGroundTargetBlocked(pos) then
                 table.insert(actions, ACTIONS.BLINK)
             end
         end,

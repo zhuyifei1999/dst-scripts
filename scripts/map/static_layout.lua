@@ -34,6 +34,7 @@ local function ConvertStaticLayoutToLayout(layoutsrc, additionalProps)
 	-- add stuff
 	layout.type = LAYOUT.STATIC	
 	layout.scale = 1	
+	layout.layout_file = layoutsrc
 	
 	-- See \tools\tiled\dont_starve\tiles.png for tiles
 	layout.ground_types = {

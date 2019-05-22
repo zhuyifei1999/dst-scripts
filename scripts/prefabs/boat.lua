@@ -53,10 +53,10 @@ local function fn()
     inst:AddTag("ignorewalkableplatforms")
 
     local radius = 4
-    local max_health = 200
+    local max_health = TUNING.BOAT.HEALTH
 
     local phys = inst.entity:AddPhysics()
-    phys:SetMass(500)
+    phys:SetMass(TUNING.BOAT.MASS)
     phys:SetFriction(0)
     phys:SetDamping(5)    
     phys:SetCollisionGroup(COLLISION.OBSTACLES)

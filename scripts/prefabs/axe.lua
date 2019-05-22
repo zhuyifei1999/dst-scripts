@@ -112,7 +112,7 @@ end
 local function onattack_moonglass(inst, attacker, target)
 	inst.components.weapon.attackwear = target ~= nil and target:IsValid() 
 		and (target:HasTag("shadow") or target:HasTag("shadowminion") or target:HasTag("shadowchesspiece") or target:HasTag("stalker") or target:HasTag("stalkerminion"))
-		and 0 
+		and TUNING.MOONGLASSAXE.SHADOW_WEAR
 		or TUNING.MOONGLASSAXE.ATTACKWEAR
 end
 

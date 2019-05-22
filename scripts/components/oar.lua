@@ -2,6 +2,7 @@ local Oar = Class(function(self, inst)
     self.inst = inst
     self.fail_idx = 0
     self.fail_string_count = 3
+	self.fail_wetness = 9
 end)
 
 function Oar:Row(doer, pos)	
@@ -37,18 +38,19 @@ function Oar:FaceWater(doer, target_pos)
 
 end
 
-function Oar:RowFail(doer)	
+function Oar:RowFail(doer)
 	self.fail_idx = (self.fail_idx + 1) % self.fail_string_count
 
 	local doer_x, doer_y, doer_z = doer.Transform:GetWorldPosition()
 
     local ents = TheSim:FindEntities(doer_x, doer_y, doer_z, 2)
-    for k, v in pairs(ents) do    
+    for k, v in pairs(ents) do
         local moisture = v.components.moisture
         if moisture ~= nil then
-            moisture:DoDelta(9)
+            local waterproofness = (v.components.inventory and math.min(v.components.inventory:GetWaterproofness(),1)) or 0
+            moisture:DoDelta(self.fail_wetness * (1 - waterproofness))
         end
-    end        
+    end
 
     return "BAD_TIMING" .. tostring(self.fail_idx)
 end

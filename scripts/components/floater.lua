@@ -96,7 +96,7 @@ function Floater:OnLandedServer()
         -- update the inventory component to represent the associated wetness.
         -- Don't apply the wetness to something held by someone, though.
         if self.inst.components.inventoryitem ~= nil and not self.inst.components.inventoryitem:IsHeld() then
-            self.inst.components.inventoryitem:AddMoisture(75)
+            self.inst.components.inventoryitem:AddMoisture(TUNING.OCEAN.WETNESS)
         end
 
         self.inst:PushEvent("floater_startfloating")

@@ -629,7 +629,7 @@ function EntityScript:GetIsWet()
     if replica ~= nil then
         return replica:IsWet()
     end
-    return self:HasTag("wet") or TheWorld.state.iswet
+    return self:HasTag("wet") or TheWorld.state.iswet or self:HasTag("swimming")
 end
 
 function EntityScript:GetSkinBuild()

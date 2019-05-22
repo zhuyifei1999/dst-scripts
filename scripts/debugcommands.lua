@@ -509,3 +509,10 @@ function d_boatitems()
     c_spawn("steeringwheel_item")
     c_spawn("oar")
 end
+
+function d_giveturfs()
+    local GroundTiles = require("worldtiledefs")
+    for k, v in pairs(GroundTiles.turf) do
+        c_give("turf_"..v.name)
+    end
+end

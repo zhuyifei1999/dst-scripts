@@ -105,7 +105,9 @@ function Tune(overrides)
         RUINS_BAT_USES = 150,
         SADDLEHORN_USES = 10,
         BRUSH_USES = 75,
+
         OAR_USES = 500,
+        OAR_ATTACKWEAR = 25,
 
         JELLYBEAN_DURATION = total_day_time * .25,
         JELLYBEAN_TICK_RATE = 2,
@@ -177,6 +179,7 @@ function Tune(overrides)
         MINIFAN_DAMAGE = wilson_attack*.5,
         SADDLEHORN_DAMAGE = wilson_attack*.5,
         BRUSH_DAMAGE = wilson_attack*.8,
+        OAR_DAMAGE = wilson_attack*.5,
 
         SADDLE_BASIC_BONUS_DAMAGE = 0,
         SADDLE_WAR_BONUS_DAMAGE = 16,
@@ -2903,6 +2906,7 @@ function Tune(overrides)
 			CONSUMPTION = 1.25,
 			DAMAGE = wilson_attack,
 			ATTACKWEAR = 2,
+			SHADOW_WEAR = 0.5,
 		},
 
 		GLASSCUTTER =
@@ -3059,7 +3063,17 @@ function Tune(overrides)
 
         WATERBIRD_SEE_THREAT_DISTANCE = 6,
 
-        BOAT_SCARY_MINSPEED_SQR = 1,
+        BOAT =
+        {
+            HEALTH = 200,
+            MASS = 500,
+            ANCHOR_DRAG = 1.5,
+            BASE_DRAG = 0.4,
+            MAX_VELOCITY = 1.5,
+            PUSH_BACK_VELOCITY = 1.75,
+            RUDDER_TURN_SPEED = 0.2,
+            SCARY_MINSPEED_SQR = 1,    
+        },        
 
         CARRAT =
         {
@@ -3072,6 +3086,11 @@ function Tune(overrides)
 
             EMERGED_TIME_LIMIT = seg_time * 4,
         },
+
+		OCEAN =
+		{
+			WETNESS = 75,
+		},
 
         OCEAN_SILHOUETTE =
         {
