@@ -216,6 +216,8 @@ local function on_deploy(inst, position, deployer)
 
         new_trap_starfish.Transform:SetPosition(position:Get())
         new_trap_starfish.SoundEmitter:PlaySound("dontstarve/common/plant")
+
+        inst:Remove()
     end
 end
 

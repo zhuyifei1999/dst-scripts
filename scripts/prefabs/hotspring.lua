@@ -87,7 +87,7 @@ local function AddGlass(inst, is_loading)
         local glass_idle = choose_anim_by_level(work_remaining, "glass_low", "glass_med", "glass_full")
         inst.AnimState:PlayAnimation(glass_idle)
     else
-        inst.AnimState:PushAnimation("glassify", false)
+        inst.AnimState:PlayAnimation("glassify", false)
     end
 
     inst.components.workable:SetWorkable(true)

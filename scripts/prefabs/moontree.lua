@@ -185,6 +185,17 @@ local function dig_up_stump(inst, digger)
     inst:Remove()
 end
 
+local function make_stump_burnable(inst)
+    if inst.size == SHORT then
+        MakeSmallBurnable(inst)
+    elseif inst.size == NORMAL then
+        MakeMediumBurnable(inst)
+    else
+        MakeLargeBurnable(inst)
+        inst.components.burnable:SetFXLevel(5)
+    end
+end
+
 local function make_stump(inst)
     inst:RemoveComponent("burnable")
     inst:RemoveComponent("propagator")
@@ -192,17 +203,8 @@ local function make_stump(inst)
     inst:RemoveComponent("hauntable")
     inst:RemoveTag("shelter")
 
-    if inst.size == SHORT then
-        MakeSmallBurnable(inst)
-        MakeSmallPropagator(inst)
-    elseif inst.size == NORMAL then
-        MakeMediumBurnable(inst)
-        MakeSmallPropagator(inst)
-    else
-        MakeLargeBurnable(inst)
-        inst.components.burnable:SetFXLevel(5)
-        MakeMediumPropagator(inst)
-    end
+    make_stump_burnable(inst)
+    MakeMediumPropagator(inst)
     MakeHauntableIgnite(inst)
 
     RemovePhysicsColliders(inst)
@@ -269,16 +271,28 @@ local function push_sway(inst)
 end
 
 local function set_short_burnable(inst)
-    if inst.components.burnable ~= nil then
-        inst:RemoveComponent("burnable")
+    if inst.components.burnable == nil then
+        inst:AddComponent("burnable")
     end
-    if inst.components.propagator ~= nil then
-        inst:RemoveComponent("propagator")
-    end
-
-    MakeSmallBurnable(inst, TUNING.TREE_BURN_TIME / 2)
+    inst.components.burnable:AddBurnFX("fire", Vector3(0, 0, 0))
+    inst.components.burnable:SetFXLevel(2)
+    inst.components.burnable:SetBurnTime(TUNING.TREE_BURN_TIME / 2)
+    inst.components.burnable:SetOnIgniteFn(DefaultBurnFn)
+    inst.components.burnable:SetOnExtinguishFn(DefaultExtinguishFn)
     inst.components.burnable:SetOnBurntFn(on_moon_tree_burnt)
-    MakeMediumPropagator(inst)
+
+    -- Equivalent to MakeSmallPropagator
+    if inst.components.propagator == nil then
+        inst:AddComponent("propagator")
+    end
+    inst.components.propagator.acceptsheat = true
+    inst.components.propagator:SetOnFlashPoint(DefaultIgniteFn)
+    inst.components.propagator.flashpoint = 5 + math.random()*5
+    inst.components.propagator.decayrate = 0.5
+    inst.components.propagator.propagaterange = 5
+    inst.components.propagator.heatoutput = 5
+    inst.components.propagator.damagerange = 2
+    inst.components.propagator.damages = true
 end
 
 local function set_short(inst)
@@ -300,17 +314,28 @@ local function grow_short(inst)
 end
 
 local function set_normal_burnable(inst)
-    if inst.components.burnable ~= nil then
-        inst:RemoveComponent("burnable")
+    if inst.components.burnable == nil then
+        inst:AddComponent("burnable")
     end
-    if inst.components.propagator ~= nil then
-        inst:RemoveComponent("propagator")
-    end
-
-    MakeMediumBurnable(inst, TUNING.TREE_BURN_TIME)
-    inst.components.burnable:SetFXLevel(5)
+    inst.components.burnable:AddBurnFX("fire", Vector3(0, 0, 0))
+    inst.components.burnable:SetBurnTime(TUNING.TREE_BURN_TIME)
+    inst.components.burnable:SetFXLevel(3)
+    inst.components.burnable:SetOnIgniteFn(DefaultBurnFn)
+    inst.components.burnable:SetOnExtinguishFn(DefaultExtinguishFn)
     inst.components.burnable:SetOnBurntFn(on_moon_tree_burnt)
-    MakeMediumPropagator(inst)
+
+    -- Equivalent to MakeSmallPropagator
+    if inst.components.propagator == nil then
+        inst:AddComponent("propagator")
+    end
+    inst.components.propagator.acceptsheat = true
+    inst.components.propagator:SetOnFlashPoint(DefaultIgniteFn)
+    inst.components.propagator.flashpoint = 5 + math.random()*5
+    inst.components.propagator.decayrate = 0.5
+    inst.components.propagator.propagaterange = 5
+    inst.components.propagator.heatoutput = 5
+    inst.components.propagator.damagerange = 2
+    inst.components.propagator.damages = true
 end
 
 local function set_normal(inst)
@@ -332,17 +357,28 @@ local function grow_normal(inst)
 end
 
 local function set_tall_burnable(inst)
-    if inst.components.burnable ~= nil then
-        inst:RemoveComponent("burnable")
+    if inst.components.burnable == nil then
+        inst:AddComponent("burnable")
     end
-    if inst.components.propagator ~= nil then
-        inst:RemoveComponent("propagator")
-    end
-
-    MakeLargeBurnable(inst, TUNING.TREE_BURN_TIME * 1.5)
+    inst.components.burnable:AddBurnFX("fire", Vector3(0, 0, 0))
     inst.components.burnable:SetFXLevel(5)
+    inst.components.burnable:SetBurnTime(TUNING.TREE_BURN_TIME * 1.5)
+    inst.components.burnable:SetOnIgniteFn(DefaultBurnFn)
+    inst.components.burnable:SetOnExtinguishFn(DefaultExtinguishFn)
     inst.components.burnable:SetOnBurntFn(on_moon_tree_burnt)
-    MakeMediumPropagator(inst)
+
+    -- Equivalent to MakeMediumPropagator
+    if inst.components.propagator == nil then
+        inst:AddComponent("propagator")
+    end
+    inst.components.propagator.acceptsheat = true
+    inst.components.propagator:SetOnFlashPoint(DefaultIgniteFn)
+    inst.components.propagator.flashpoint = 15+math.random()*10
+    inst.components.propagator.decayrate = 0.5
+    inst.components.propagator.propagaterange = 7
+    inst.components.propagator.heatoutput = 8.5
+    inst.components.propagator.damagerange = 3
+    inst.components.propagator.damages = true
 end
 
 local function set_tall(inst)
@@ -486,39 +522,21 @@ local function on_wake(inst)
     else
         if not (inst.components.burnable ~= nil and inst.components.burnable:IsBurning()) then
             local is_stump = inst:HasTag("stump")
-            if inst.components.burnable == nil then
-                if is_stump then
-                    if inst.size == SHORT then
-                        MakeSmallBurnable(inst)
-                    elseif inst.size == NORMAL then
-                        MakeMediumBurnable(inst)
-                    else
-                        MakeLargeBurnable(inst)
-                        inst.components.burnable:SetFXLevel(5)
-                    end
-                else
-                    if inst.size == SHORT then
-                        MakeSmallBurnable(inst, TUNING.TREE_BURN_TIME / 2)
-                    elseif inst.size == NORMAL then
-                        MakeMediumBurnable(inst, TUNING.TREE_BURN_TIME)
-                        inst.components.burnable:SetFXLevel(5)
-                    else
-                        MakeLargeBurnable(inst, TUNING.TREE_BURN_TIME * 1.5)
-                        inst.components.burnable:SetFXLevel(5)
-                    end
-                    inst.components.burnable:SetOnBurntFn(on_moon_tree_burnt)
+            if is_stump then
+                if inst.components.burnable == nil then
+                    make_stump_burnable(inst)
                 end
-            end
 
-            if inst.components.propagator == nil then
-                if is_stump then
-                    if inst.size == SHORT or inst.size == NORMAL then
-                        MakeSmallPropagator(inst)
-                    else
-                        MakeMediumPropagator(inst)
-                    end
-                else
+                if inst.components.propagator == nil then
                     MakeMediumPropagator(inst)
+                end
+            else
+                if inst.size == SHORT then
+                    set_short_burnable(inst)
+                elseif inst.size == NORMAL then
+                    set_normal_burnable(inst)
+                else
+                    set_tall_burnable(inst)
                 end
             end
         end

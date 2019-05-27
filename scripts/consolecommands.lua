@@ -1171,3 +1171,20 @@ end
 function c_stopvote()
     TheNet:StopVote()
 end
+
+function c_makeboat()
+	local x, y, z = ConsoleWorldPosition():Get()
+	DebugSpawn("boat")
+	DebugSpawn("mast")
+	local inst = DebugSpawn("steeringwheel")
+	inst.Transform:SetPosition(x + 3.25, y, z)
+	inst = DebugSpawn("anchor")
+	inst.Transform:SetPosition(x + 2.25, y, z + 2.25)
+
+	inst = DebugSpawn("oar")
+	inst.Transform:SetPosition(x, y, z - 3.25)
+	inst = DebugSpawn("oar")
+	inst.Transform:SetPosition(x + 1, y, z - 2.25)
+	inst = DebugSpawn("oar")
+	inst.Transform:SetPosition(x - 1, y, z - 1.25)
+end

@@ -42,7 +42,7 @@ SetSharedLootTable( 'driftwood_small',
 
 local function on_chop(inst, chopper, remaining_chops)
     if not (chopper ~= nil and chopper:HasTag("playerghost")) then
-        inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_tree")
+        inst.SoundEmitter:PlaySound("dontstarve/wilson/hit_armour")
     end
 
     if remaining_chops > 0 then
@@ -75,7 +75,8 @@ local function make_stump(inst, is_burnt)
 end
 
 local function on_chopped_down(inst, chopper)
-    inst.SoundEmitter:PlaySound("dontstarve/forest/treeCrumble")
+    inst.SoundEmitter:PlaySound("dontstarve/forest/appear_wood")
+    inst.SoundEmitter:PlaySound("dontstarve/forest/treeCrumble",nil,.4)
 
     if inst.is_large then
         -- The tall driftwood tree has a different falling animations depending on its position

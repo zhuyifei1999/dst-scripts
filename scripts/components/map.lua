@@ -2,7 +2,6 @@ require "map/terrain"
 
 --NOTE: Call Map:IsVisualGroundAtPoint(x, y, z) if you want to include the overhang
 
-
 --NOTE: this is the max of all entities that have custom deploy_extra_spacing
 --      see EntityScript:SetDeployExtraSpacing(spacing)
 local DEPLOY_EXTRA_SPACING = 0
@@ -25,9 +24,13 @@ end
 local WALKABLE_PLATFORM_TAGS = {"walkableplatform"}
 
 function Map:IsPassableAtPoint(x, y, z, allow_water, exclude_boats)
+    return self:IsPassableAtPointWithPlatformRadiusBias(x, y, z, allow_water, exclude_boats, 0)
+end
+
+function Map:IsPassableAtPointWithPlatformRadiusBias(x, y, z, allow_water, exclude_boats, platform_radius_bias)
     if not allow_water and not self:IsVisualGroundAtPoint(x,y,z) then
         if not exclude_boats then
-            local entities = TheSim:FindEntities(x, 0, z, TUNING.MAX_WALKABLE_PLATFORM_RADIUS, WALKABLE_PLATFORM_TAGS)
+            local entities = TheSim:FindEntities(x, 0, z, TUNING.MAX_WALKABLE_PLATFORM_RADIUS + platform_radius_bias, WALKABLE_PLATFORM_TAGS)
             for i, v in ipairs(entities) do
                 local walkable_platform = v.components.walkableplatform            
                 if walkable_platform ~= nil then  
@@ -44,9 +47,10 @@ function Map:IsPassableAtPoint(x, y, z, allow_water, exclude_boats)
     end
 end
 
-function Map:IsAboveGroundAtPoint(x, y, z)
+function Map:IsAboveGroundAtPoint(x, y, z, allow_water)
     local tile = self:GetTileAtPoint(x, y, z)
-    return tile < GROUND.UNDERGROUND and
+    local valid_water_tile = (allow_water == true) and tile >= GROUND.OCEAN_START and tile <= GROUND.OCEAN_END
+    return (tile < GROUND.UNDERGROUND or valid_water_tile) and
         tile ~= GROUND.IMPASSABLE and
         tile ~= GROUND.INVALID
 end
@@ -130,8 +134,9 @@ function Map:IsDeployPointClear(pt, inst, min_spacing, min_spacing_sq_fn, near_o
 end
 
 function Map:CanDeployAtPoint(pt, inst, mouseover)    
+    local x,y,z = pt:Get()
     return (mouseover == nil or mouseover:HasTag("player") or mouseover:HasTag("walkableplatform"))
-        and self:IsPassableAtPoint(pt:Get())
+        and self:IsPassableAtPointWithPlatformRadiusBias(x,y,z, false, false, TUNING.BOAT.NO_BUILD_BORDER_RADIUS)
         and self:IsDeployPointClear(pt, inst, inst.replica.inventoryitem ~= nil and inst.replica.inventoryitem:DeploySpacingRadius() or DEPLOYSPACING_RADIUS[DEPLOYSPACING.DEFAULT])
 end
 
@@ -149,7 +154,8 @@ local function IsNearOtherWall(other, pt, min_spacing_sq)
 end
 
 function Map:CanDeployWallAtPoint(pt, inst)
-    return self:IsPassableAtPoint(pt:Get())
+    local x,y,z = pt:Get()
+    return self:IsPassableAtPointWithPlatformRadiusBias(x,y,z, false, false, TUNING.BOAT.NO_BUILD_BORDER_RADIUS)
         and self:IsDeployPointClear(pt, inst, 1, nil, IsNearOtherWall)
 end
 
@@ -192,13 +198,14 @@ end
 function Map:CanDeployRecipeAtPoint(pt, recipe, rot)
     local is_valid_ground = false;
     if BUILDMODE.WATER == recipe.build_mode then
-        local pt_x, pt_y, pt_z = pt:Get()
-        is_valid_ground = not self:IsPassableAtPoint(pt:Get())
+        local pt_x, pt_y, pt_z = pt:Get()        
+        is_valid_ground = not self:IsPassableAtPoint(pt_x, pt_y, pt_z)
         if is_valid_ground then
             is_valid_ground = TheWorld.Map:IsSurroundedByWater(pt_x, pt_y, pt_z, 5)
         end
     else
-        is_valid_ground = self:IsPassableAtPoint(pt:Get())
+        local pt_x, pt_y, pt_z = pt:Get()       
+        is_valid_ground = self:IsPassableAtPointWithPlatformRadiusBias(pt_x, pt_y, pt_z, false, false, TUNING.BOAT.NO_BUILD_BORDER_RADIUS)
     end
 
     return is_valid_ground

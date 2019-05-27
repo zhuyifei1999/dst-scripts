@@ -2858,8 +2858,15 @@ end
 function PlayerController:DoBoatSteering(dt)
     local dir = GetWorldControllerVector()
 
-    if dir ~= nil and self.inst.components.steeringwheeluser ~= nil then
-        self.inst.components.steeringwheeluser:SteerInDir(dir.x, dir.z)
+    if dir ~= nil then
+        if self.ismastersim then
+            local steeringwheeluser = self.inst.components.steeringwheeluser
+            if steeringwheeluser ~= nil then
+                steeringwheeluser:SteerInDir(dir.x, dir.z)
+            end
+        else
+            SendRPCToServer(RPC.SteerBoat, dir.x, dir.z)
+        end
     end
 end
 
@@ -3073,6 +3080,7 @@ function PlayerController:DoActionAutoEquip(buffaction)
         buffaction.action ~= ACTIONS.GIVE and
         buffaction.action ~= ACTIONS.ADDFUEL and
         buffaction.action ~= ACTIONS.ADDWETFUEL and
+        buffaction.action ~= ACTIONS.DEPLOY and
         buffaction.action ~= ACTIONS.CONSTRUCT then
         self.inst.replica.inventory:EquipActionItem(buffaction.invobject)
         buffaction.autoequipped = true

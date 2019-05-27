@@ -977,10 +977,11 @@ local COMPONENT_ACTIONS =
         end,            
 
         spellcaster = function(inst, doer, pos, actions, right)
-            if right and inst:HasTag("castonpoint") and
-                TheWorld.Map:IsAboveGroundAtPoint(pos:Get()) and
-                not TheWorld.Map:IsGroundTargetBlocked(pos) then
-                table.insert(actions, ACTIONS.CASTSPELL)
+            if right and inst:HasTag("castonpoint") then
+                local px, py, pz = pos:Get()
+                if TheWorld.Map:IsAboveGroundAtPoint(px, py, pz, inst:HasTag("castonpointwater")) and not TheWorld.Map:IsGroundTargetBlocked(pos) then
+                    table.insert(actions, ACTIONS.CASTSPELL)
+                end
             end
         end,
 

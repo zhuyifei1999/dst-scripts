@@ -28,7 +28,7 @@ local IGNORE_WALKABLE_PLATFORM_TAGS = { "ignorewalkableplatforms", "FX", "DECOR"
 
 --Client Only
 function WalkablePlatform:OnUpdate(dt) 
-    self:CollectEntitiesOnPlatform()
+    self:CollectEntitiesOnPlatform(false)
     self:TriggerEvents()
 end
 
@@ -70,7 +70,7 @@ function WalkablePlatform:GetEntitiesOnPlatform(must_have_tags, ignore_tags)
     local entities = TheSim:FindEntities(world_position_x, world_position_y, world_position_z, self.platform_radius, must_have_tags, ignore_tags)
         
     for i, v in ipairs(entities) do
-        if v == self.inst or not v:IsValid() or v.parent ~= nil then
+        if v == self.inst or not v:IsValid() or v.entity:GetParent() ~= nil then
             table.remove(entities, i)
         end
     end
@@ -91,7 +91,7 @@ function WalkablePlatform:UpdatePositions()
 
     local should_update_pos = VecUtil_LengthSq(delta_position_x, delta_position_z) > 0
 
-    self:CollectEntitiesOnPlatform()
+    self:CollectEntitiesOnPlatform(true)
 
     for k, v in pairs(self.new_objects_on_platform) do
         if k:IsValid() then
@@ -116,11 +116,32 @@ function WalkablePlatform:UpdatePositions()
     self:TriggerEvents()
 end
 
-function WalkablePlatform:CollectEntitiesOnPlatform()
+function WalkablePlatform:CollectEntitiesOnPlatform(check_previous_objects)
     local entities = self:GetEntitiesOnPlatform(nil, IGNORE_WALKABLE_PLATFORM_TAGS)
     for i, v in ipairs(entities) do
-        if v:IsValid() then
-            self.new_objects_on_platform[v] = true
+        self.new_objects_on_platform[v] = true
+    end
+
+    local platform_x, platform_z = self.previous_position_x, self.previous_position_z
+    local bias = 0.01
+    local platform_radius_sq = self.platform_radius * self.platform_radius + bias
+
+    -- check for objects that were on the boat at the previous boat position and move them forward as well
+    if check_previous_objects then
+        for entity, unusued in pairs(self.previous_objects_on_platform) do
+            
+            if entity:IsValid() and not entity.components.embarker then
+                if not self.new_objects_on_platform[entity] then
+                    local entity_x, entity_y, entity_z = entity.Transform:GetWorldPosition()
+                    local delta_x, delta_z = entity_x - platform_x, entity_z - platform_z                    
+                    local dist_sq = delta_x * delta_x + delta_z * delta_z
+                    if dist_sq <= platform_radius_sq then
+                        self.new_objects_on_platform[entity] = true
+                    else
+                        print(entity_x, entity_z, platform_x, platform_z, dist_sq)
+                    end
+                end 
+            end
         end
     end
 end

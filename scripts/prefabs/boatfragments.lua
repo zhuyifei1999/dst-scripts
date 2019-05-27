@@ -20,10 +20,13 @@ local function fn(suffix, radius)
 
     inst.AnimState:SetBank("boat_broken")
     inst.AnimState:SetBuild("boat_brokenparts")
-    inst.AnimState:PlayAnimation("land_" .. suffix)   
-    inst.AnimState:PushAnimation("idle_loop_" .. suffix, true)   
+    inst.AnimState:PlayAnimation("land_" .. suffix)
+    inst.AnimState:PushAnimation("idle_loop_" .. suffix, true)
 
-    inst.entity:SetPristine()    
+    -- Boat fragments are always wet!
+    inst:AddTag("wet")
+
+    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst

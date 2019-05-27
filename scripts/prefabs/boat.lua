@@ -87,6 +87,9 @@ local function fn()
         return inst
     end
 
+	MakeLargeBurnable(inst)
+	MakeLargePropagator(inst)
+
     --inst:AddComponent("hauntable")
     --inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
 

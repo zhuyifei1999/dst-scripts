@@ -20,6 +20,7 @@ local Mast = Class(function(self, inst)
     self.inst:StartUpdatingComponent(self)
 
     self.inst:ListenForEvent("onsink", function(inst) self:OnSink() end)
+    self.inst:ListenForEvent("onremove", function(inst) self:LowerSail() end)
 
     self.inst:DoTaskInTime(0,
     	function() 
@@ -44,6 +45,10 @@ function Mast:SetBoat(boat)
 end
 
 function Mast:OnSink()
+	local mast_sinking = SpawnPrefab("boat_mast_sink_fx")
+	local x_pos, y_pos, z_pos = self.inst.Transform:GetWorldPosition()
+	mast_sinking.Transform:SetPosition(x_pos, y_pos, z_pos)
+
     self.inst:Remove()
 end
 

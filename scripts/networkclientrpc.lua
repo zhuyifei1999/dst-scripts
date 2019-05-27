@@ -313,6 +313,19 @@ local RPC_HANDLERS =
         end
     end,
 
+    SteerBoat = function(player, dir_x, dir_z)
+        if not (checknumber(dir_x) and
+                checknumber(dir_z)) then
+            printinvalid("PredictHopping", player)
+            return
+        end
+        local steering_wheel_user = player.components.steeringwheeluser
+        if steering_wheel_user ~= nil then
+            steering_wheel_user:SteerInDir(dir_x, dir_z)
+        end
+    end,    
+
+
     StopWalking = function(player)
         local playercontroller = player.components.playercontroller
         if playercontroller ~= nil then

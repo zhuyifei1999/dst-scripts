@@ -1,6 +1,7 @@
 local assets =
 {
     Asset("ANIM", "anim/sewing_tape.zip"),
+    Asset("ANIM", "anim/boat_repair_tape_build.zip"),
 }
 
 local function onsewn(inst, target, doer)
@@ -34,6 +35,7 @@ local function fn()
     end
 
     inst:AddComponent("boatpatch")
+    inst.components.boatpatch.patch_type = "tape"
 
     inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM

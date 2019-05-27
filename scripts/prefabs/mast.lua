@@ -10,17 +10,14 @@ local prefabs =
 
 }
 
-local function ondeploy(inst, pt, deployer)
-    local mast = SpawnPrefab("mast")
-    if mast ~= nil then
-        mast.Physics:SetCollides(false)
-        mast.Physics:Teleport(pt.x, 0, pt.z)
-        mast.Physics:SetCollides(true)
+local function on_hammered(inst, hammerer)
+    inst.components.lootdropper:DropLoot()
 
-        mast.AnimState:PlayAnimation("place")
+    local collapse_fx = SpawnPrefab("collapse_small")
+    collapse_fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+    collapse_fx:SetMaterial("wood")
 
-        inst:Remove()
-    end
+    inst:Remove()
 end
 
 local function fn()
@@ -39,7 +36,7 @@ local function fn()
 
     inst.AnimState:SetBank("mast_01")
     inst.AnimState:SetBuild("boat_mast")
-    inst.AnimState:PlayAnimation("closed")    
+    inst.AnimState:PlayAnimation("closed")
 
     inst.entity:SetPristine()
 
@@ -56,7 +53,27 @@ local function fn()
 
     inst:AddComponent("mast")
 
+    -- The loot that this drops is generated from the uncraftable recipe; see recipes.lua for the items.
+    inst:AddComponent("lootdropper")
+    inst:AddComponent("workable")
+    inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
+    inst.components.workable:SetWorkLeft(3)
+    inst.components.workable:SetOnFinishCallback(on_hammered)
+
     return inst
+end
+
+local function ondeploy(inst, pt, deployer)
+    local mast = SpawnPrefab("mast")
+    if mast ~= nil then
+        mast.Physics:SetCollides(false)
+        mast.Physics:Teleport(pt.x, 0, pt.z)
+        mast.Physics:SetCollides(true)
+
+        mast.AnimState:PlayAnimation("place")
+
+        inst:Remove()
+    end
 end
 
 local function item_fn()

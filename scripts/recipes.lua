@@ -381,6 +381,7 @@ Recipe("mermhead", {Ingredient("spoiled_food", 4), Ingredient("twigs", 4)}, nil,
 
 Recipe("steeringwheel", {Ingredient("boards", 2), Ingredient("rope", 1)}, nil, TECH.LOST, nil, nil, true)
 Recipe("anchor", {Ingredient("boards", 2), Ingredient("rope", 1), Ingredient("cutstone", 1)}, nil, TECH.LOST, nil, nil, true)
+Recipe("mast", {Ingredient("boards", 4), Ingredient("rope", 3), Ingredient("silk", 4)}, nil, TECH.LOST, nil, nil, true)
 
 Recipe("purplemooneye", {Ingredient("moonrockcrater", 1), Ingredient("purplegem", 1)}, nil, TECH.LOST, nil, nil, true)
 Recipe("bluemooneye", {Ingredient("moonrockcrater", 1), Ingredient("bluegem", 1)}, nil, TECH.LOST, nil, nil, true)

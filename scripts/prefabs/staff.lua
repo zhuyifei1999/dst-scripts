@@ -783,7 +783,7 @@ local function purple()
 end
 
 local function yellow()
-    local inst = commonfn("yellow", { "nopunch" })
+    local inst = commonfn("yellow", { "nopunch", "allow_action_on_impassable" })
 
     inst:AddComponent("reticule")
     inst.components.reticule.targetfn = light_reticuletargetfn
@@ -799,6 +799,7 @@ local function yellow()
     inst:AddComponent("spellcaster")
     inst.components.spellcaster:SetSpellFn(createlight)
     inst.components.spellcaster.canuseonpoint = true
+    inst.components.spellcaster.canuseonpoint_water = true
 
     inst.components.finiteuses:SetMaxUses(TUNING.YELLOWSTAFF_USES)
     inst.components.finiteuses:SetUses(TUNING.YELLOWSTAFF_USES)
@@ -870,7 +871,7 @@ local function orange()
 end
 
 local function opal()
-    local inst = commonfn("opal", { "nopunch" })
+    local inst = commonfn("opal", { "nopunch", "allow_action_on_impassable" })
 
     inst:AddComponent("reticule")
     inst.components.reticule.targetfn = light_reticuletargetfn
@@ -886,6 +887,7 @@ local function opal()
     inst:AddComponent("spellcaster")
     inst.components.spellcaster:SetSpellFn(createlight)
     inst.components.spellcaster.canuseonpoint = true
+    inst.components.spellcaster.canuseonpoint_water = true
 
     inst.components.finiteuses:SetMaxUses(TUNING.OPALSTAFF_USES)
     inst.components.finiteuses:SetUses(TUNING.OPALSTAFF_USES)

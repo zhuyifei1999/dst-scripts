@@ -44,8 +44,9 @@ local rock_fruit_prefabs = {
 
 local function on_mine(inst, miner, workleft, workdone)
     local num_fruits_worked = math.clamp(workdone / TUNING.ROCK_FRUIT_MINES, 1, TUNING.ROCK_FRUIT_LOOT.MAX_SPAWNS)
+    num_fruits_worked = math.min(num_fruits_worked, inst.components.stackable:StackSize())
 
-    if inst.components.stackable.stacksize > num_fruits_worked then
+    if inst.components.stackable:StackSize() > num_fruits_worked then
         inst.AnimState:PlayAnimation("mined")
         inst.AnimState:PushAnimation("idle", false)
 
@@ -94,6 +95,8 @@ local function rock_avocado_fruit_full()
     inst.AnimState:SetBuild("rock_avocado_fruit_build")
     inst.AnimState:PlayAnimation("idle")
 
+    inst:AddTag("molebait")
+
     MakeInventoryPhysics(inst)
 
     inst.entity:SetPristine()
@@ -119,6 +122,11 @@ local function rock_avocado_fruit_full()
     --inst.components.workable:SetOnFinishCallback(on_mine)
     inst.components.workable:SetOnWorkCallback(on_mine)
 
+    inst:AddComponent("edible")
+    inst.components.edible.foodtype = FOODTYPE.ELEMENTAL
+    inst.components.edible.hungervalue = 2
+    inst:AddComponent("bait")
+
     -- The amount of work needs to be updated whenever the size of the stack changes
     inst:ListenForEvent("stacksizechange", stack_size_changed)
 
@@ -141,6 +149,8 @@ local function rock_avocado_fruit_ripe()
     --cookable (from cookable component) added to pristine state for optimization
     inst:AddTag("cookable")
 
+    inst:AddTag("molebait")
+
     MakeInventoryPhysics(inst)
 
     MakeInventoryFloatable(inst)
@@ -156,6 +166,8 @@ local function rock_avocado_fruit_ripe()
     inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
     inst.components.edible.sanityvalue = 0
     inst.components.edible.foodtype = FOODTYPE.VEGGIE
+
+    inst:AddComponent("bait")
 
     inst:AddComponent("perishable")
     inst.components.perishable:SetPerishTime(TUNING.PERISH_SUPERFAST)

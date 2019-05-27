@@ -5,7 +5,7 @@ local BoatLeak = Class(function(self, inst)
 
 end)
 
-function BoatLeak:Repair(doer, patch_item)    
+function BoatLeak:Repair(doer, patch_item)
     if not self.inst:HasTag("boat_leak") then return false end
 
     if patch_item.components.stackable ~= nil then
@@ -14,13 +14,41 @@ function BoatLeak:Repair(doer, patch_item)
         patch_item:Remove()
     end
 
+    local repair_state = "repaired"
+    local patch_type = (patch_item.components.boatpatch ~= nil and patch_item.components.boatpatch:GetPatchType()) or nil
+    if patch_type ~= nil then
+        repair_state = repair_state.."_"..patch_type
+    end
+
     self.inst.AnimState:PlayAnimation("leak_small_pst")
-    self.inst:ListenForEvent("animqueueover", 
-        function(inst)             
-            self:SetState("repaired") 
-        end)  
+    self.inst:DoTaskInTime(0.4, function(inst)
+        self:SetState(repair_state)
+    end)
 
 	return true
+end
+
+function BoatLeak:ChangeToRepaired(repair_build_name)
+    self.inst:RemoveTag("boat_leak")
+
+    local anim_state = self.inst.AnimState
+    anim_state:SetBuild(repair_build_name)
+    anim_state:SetBankAndPlayAnimation("boat_repair", "pre_idle")
+    anim_state:SetSortOrder(3)
+    anim_state:SetOrientation(ANIM_ORIENTATION.OnGround)
+    anim_state:SetLayer(LAYER_BACKGROUND)
+
+    self.inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/repair")
+    self.inst.SoundEmitter:KillSound("small_leak")
+    self.inst.SoundEmitter:KillSound("med_leak")
+    if self.is_leak_count_incremented then
+        self.boat.components.boatphysics:DecrementLeakCount()
+        self.is_leak_count_incremented = false
+    end
+
+    if self.onrepairedleak ~= nil then
+        self.onrepairedleak(self.inst)
+    end
 end
 
 function BoatLeak:SetState(state)
@@ -31,9 +59,8 @@ function BoatLeak:SetState(state)
 	if state == "small_leak" then
 	    self.inst:AddTag("boat_leak")
 
-        anim_state:SetBank("boat_leak")
         anim_state:SetBuild("boat_leak")        
-    	anim_state:PlayAnimation("leak_small_pre")   
+		anim_state:SetBankAndPlayAnimation("boat_leak", "leak_small_pre")
     	anim_state:PushAnimation("leak_small_loop", true)  
         anim_state:SetSortOrder(0)
         anim_state:SetOrientation(ANIM_ORIENTATION.BillBoard) 
@@ -52,9 +79,8 @@ function BoatLeak:SetState(state)
 	elseif state == "med_leak" then
 	    self.inst:AddTag("boat_leak")
 
-        anim_state:SetBank("boat_leak")
         anim_state:SetBuild("boat_leak")         
-    	anim_state:PlayAnimation("leak_med_pre")   
+		anim_state:SetBankAndPlayAnimation("boat_leak", "leak_med_pre")
     	anim_state:PushAnimation("leak_med_loop", true)  
         anim_state:SetSortOrder(0)
         anim_state:SetOrientation(ANIM_ORIENTATION.BillBoard) 
@@ -71,27 +97,9 @@ function BoatLeak:SetState(state)
 			end
         end
 	elseif state == "repaired" then
-	    self.inst:RemoveTag("boat_leak")
-
-        anim_state:SetBank("boat_repair")
-        anim_state:SetBuild("boat_repair")       
-        anim_state:PlayAnimation("pre_idle")     
-        anim_state:SetSortOrder(3)
-        anim_state:SetOrientation(ANIM_ORIENTATION.OnGround) 
-        anim_state:SetLayer(LAYER_BACKGROUND)                   
-
-        self.inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/repair")
-        self. inst.SoundEmitter:KillSound("small_leak")                
-        self. inst.SoundEmitter:KillSound("med_leak")
-        
-        if self.is_leak_count_incremented then
-            self.boat.components.boatphysics:DecrementLeakCount()
-            self.is_leak_count_incremented = false
-        end
-
-		if self.onrepairedleak ~= nil then
-			self.onrepairedleak(self.inst)
-		end
+        self:ChangeToRepaired("boat_repair_build")
+	elseif state == "repaired_tape" then
+        self:ChangeToRepaired("boat_repair_tape_build")
     end
 
 	self.current_state = state

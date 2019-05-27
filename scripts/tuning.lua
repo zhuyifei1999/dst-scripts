@@ -3073,6 +3073,7 @@ function Tune(overrides)
             PUSH_BACK_VELOCITY = 1.75,
             RUDDER_TURN_SPEED = 0.2,
             SCARY_MINSPEED_SQR = 1,    
+            NO_BUILD_BORDER_RADIUS = -0.2,
         },        
 
         CARRAT =

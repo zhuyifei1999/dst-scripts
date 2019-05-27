@@ -194,8 +194,12 @@ local function onpickedfn(inst, picker)
     -- Play the proper picked animation.
     inst.AnimState:PlayAnimation(picked_anim)
     if inst.components.pickable:IsBarren() then
+        -- NOTE: IsBarren just tests cycles_left; MakeBarren hasn't actually been called!
+        -- So we need to do the relevant parts of that function. Copied here just to not overload SetStage/animations.
         inst.AnimState:PushAnimation("idle1_to_dead1", false)
         inst.AnimState:PushAnimation("dead1", false)
+        inst.components.growable:StopGrowing()
+        inst.components.growable.magicgrowable = false
     else
         inst.AnimState:PushAnimation("idle1", false)
     end
@@ -219,8 +223,9 @@ local function makeemptyfn(inst)
 
         inst.components.growable:SetStage(1)
         inst.components.growable:StartGrowing()
+        inst.components.growable.magicgrowable = true
 
-        if POPULATING or not (inst:HasTag("withered") or emptying_dead) then
+        if not (inst:HasTag("withered") or emptying_dead) then
             inst.AnimState:PlayAnimation("idle1", false)
         else
             inst.AnimState:PlayAnimation("dead1_to_idle1")
@@ -232,6 +237,7 @@ end
 local function makebarrenfn(inst, wasempty)
     inst.components.growable:SetStage(1)
     inst.components.growable:StopGrowing()
+    inst.components.growable.magicgrowable = false
 
     if not POPULATING and inst:HasTag("withered") then
         inst.AnimState:PlayAnimation("idle1_to_dead1")

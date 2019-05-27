@@ -328,12 +328,16 @@ function InventoryItem:SetLanded(is_landed, should_poll_for_landing)
         if should_poll_for_landing then
             self.inst:StartUpdatingComponent(self)
         end
-        if is_landed ~= self.is_landed then
+
+        -- If we're going from landed to not landed
+        if self.is_landed then
             self.inst:PushEvent("on_no_longer_landed")
         end
     else
         self.inst:StopUpdatingComponent(self)
-        if is_landed ~= self.is_landed then
+
+        -- If we're going from not landed to landed
+        if not self.is_landed then
             self.inst:PushEvent("on_landed")
             self:TryToSink()
         end
@@ -343,9 +347,9 @@ function InventoryItem:SetLanded(is_landed, should_poll_for_landing)
 end
 
 function InventoryItem:ShouldSink()
-    if self.sinks and not self:IsHeld() then
+    if self.sinks and not self:IsHeld() and not self.inst:IsInLimbo() then
         local px, _, pz = self.inst.Transform:GetWorldPosition()
-        return not TheWorld.Map:IsPassableAtPoint(px, 0, pz) and not TheWorld.Map:IsVisualGroundAtPoint(px, 0, pz)
+        return not TheWorld.Map:IsPassableAtPoint(px, 0, pz)
     end
 end
 

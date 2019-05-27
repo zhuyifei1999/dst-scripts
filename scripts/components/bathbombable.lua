@@ -13,9 +13,9 @@ function BathBombable:SetOnBathBombedFn(new_fn)
     self.onbathbombedfn = new_fn
 end
 
-function BathBombable:OnBathBombed(bathbomb)
+function BathBombable:OnBathBombed(bathbomb_inst)
     if self.onbathbombedfn ~= nil then
-        self.onbathbombedfn(self.inst, bathbomb)
+        self.onbathbombedfn(self.inst, bathbomb_inst)
     end
 end
 
@@ -31,9 +31,9 @@ function BathBombable:SetCanBeBathBombed(can_be_bathbombed)
     end
 end
 
-function BathBombable:CanBeBathBombed(bathbomb)
+function BathBombable:CanBeBathBombed(bathbomb_inst)
     if self.canbebathbombedfn ~= nil then
-        return self.canbebathbombedfn(self.inst, bathbomb)
+        return self.canbebathbombedfn(self.inst, bathbomb_inst)
     else
         return true
     end

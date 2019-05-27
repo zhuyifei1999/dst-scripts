@@ -533,7 +533,12 @@ ACTIONS.ROW_FAIL.fn = function(act)
 
     if oar == nil then return false end
 
-    return false, oar.components.oar:RowFail(act.doer)
+    --Can't rely on return false to trigger action fail string because returning
+    --false skips the finite uses callback and the oar won't lose durability
+    local fail_string_id = oar.components.oar:RowFail(act.doer)
+    local fail_str = GetActionFailString(act.doer, "ROW_FAIL", fail_string_id)
+    act.doer.components.talker:Say(fail_str)
+    return true
 end
 
 ACTIONS.ROW.fn = function(act)
@@ -2230,7 +2235,7 @@ ACTIONS.BATHBOMB.fn = function(act)
         return false
     end
 
-    local can_bathbomb, failure_reason = bathbombable:CanBeBathBombed(bathbomb)
+    local can_bathbomb, failure_reason = bathbombable:CanBeBathBombed(act.invobject)
     if not can_bathbomb then
         if failure_reason ~= nil then
             return false, failure_reason
@@ -2239,8 +2244,10 @@ ACTIONS.BATHBOMB.fn = function(act)
         end
     end
 
-    act.doer.components.inventory:RemoveItem(act.invobject)
     bathbomb:ApplyBathBomb(bathbombable)
+
+    local removed_item = act.doer.components.inventory:RemoveItem(act.invobject)
+    removed_item:Remove()
     return true
 end
 

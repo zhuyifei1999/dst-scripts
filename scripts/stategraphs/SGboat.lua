@@ -3,7 +3,7 @@ local events =
 
 }
 
-local function SpawnFragment(inst, prefix, suffix, offset_x, offset_y, offset_z)
+local function SpawnFragment(inst, prefix, suffix, offset_x, offset_y, offset_z, ignite)
     local fragment = SpawnPrefab(prefix .. suffix)
     local pos_x, pos_y, pos_z = inst.Transform:GetWorldPosition()
     fragment.Transform:SetPosition(pos_x + offset_x, pos_y + offset_y, pos_z + offset_z)   
@@ -16,6 +16,11 @@ local function SpawnFragment(inst, prefix, suffix, offset_x, offset_y, offset_z)
         end
     end
 
+	if ignite then
+		fragment.components.burnable:Ignite()
+	end
+
+	return fragment
 end
 
 local states =
@@ -138,10 +143,7 @@ local states =
                 inst.SoundEmitter:PlaySoundWithParams("turnoftides/common/together/boat/sink")
             end),
             TimeEvent(1 * FRAMES, function(inst)
-                inst.AnimState:PlayAnimation("hide")  
-
-                local mast_sinking = SpawnPrefab("boat_mast_sink_fx")
-                mast_sinking.Transform:SetPosition(inst.Transform:GetWorldPosition())              
+                inst.AnimState:PlayAnimation("hide")          
 
                 for k,v in ipairs(inst.components.walkableplatform:GetEntitiesOnPlatform()) do
                     v:PushEvent("onsink")
@@ -149,13 +151,14 @@ local states =
 
                 inst:PushEvent("onsink")
 
-                SpawnFragment(inst, "boatfragment", "04", 2.75, 0, 0.5)
-                SpawnFragment(inst, "boatfragment", "05", -2.5, 0, -0.25)
-                SpawnFragment(inst, "boatfragment", "04", 0.25, 0, -2.8)
-                SpawnFragment(inst, "boatfragment", "05", -0.95, 0, 0.75)
-                SpawnFragment(inst, "boards", "", 2, 2, -2.25)
-                SpawnFragment(inst, "boards", "", -1.75, 2, -1.5)
-                SpawnFragment(inst, "boards", "", 1.25, 2, 1.25)                
+				local ignitefragments = inst.components.burnable:IsBurning()
+                SpawnFragment(inst, "boatfragment", "04", 2.75, 0, 0.5, ignitefragments)
+                SpawnFragment(inst, "boatfragment", "05", -2.5, 0, -0.25, ignitefragments)
+                SpawnFragment(inst, "boatfragment", "04", 0.25, 0, -2.8, ignitefragments)
+                SpawnFragment(inst, "boatfragment", "05", -0.95, 0, 0.75, ignitefragments)
+                SpawnFragment(inst, "boards", "", 2, 2, -2.25, ignitefragments)
+                SpawnFragment(inst, "boards", "", -1.75, 2, -1.5, ignitefragments)
+                SpawnFragment(inst, "boards", "", 1.25, 2, 1.25, ignitefragments)                
 
             end),
 

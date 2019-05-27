@@ -50,7 +50,7 @@ function GetProfilerSave(results)
             else
                 local file = TheNet:GetWorldSessionFile(session_id)
                 if file ~= nil then
-                    TheSime:GetPersistentString(file, onreadworldfile)
+                    TheSim:GetPersistentString(file, onreadworldfile)
                 end
             end
         end

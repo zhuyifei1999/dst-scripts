@@ -1572,6 +1572,10 @@ function Inventory:EquipActionItem(item)
         item.components.equippable ~= nil and
         item.components.equippable.equipslot == EQUIPSLOTS.HANDS then
         if not item.components.equippable:IsEquipped() then
+            if item.components.stackable ~= nil and item.components.stackable.stacksize > 1 and not item.components.equippable.equipstack then
+                local stack = item.components.stackable:Get(item.components.stackable.stacksize - 1)
+                self:GiveItem(stack)
+            end
             self:Equip(item)
         end
         if self:GetActiveItem() == item then

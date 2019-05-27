@@ -77,6 +77,7 @@ local function fn()
     inst.components.finiteuses:SetUses(TUNING.OAR_USES)
     inst.components.finiteuses:SetOnFinished(onfiniteusesfinished)
     inst.components.finiteuses:SetConsumption(ACTIONS.ROW, 1)
+    inst.components.finiteuses:SetConsumption(ACTIONS.ROW_FAIL, 25)
 
     MakeHauntableLaunch(inst)
 
