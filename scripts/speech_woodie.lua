@@ -629,6 +629,9 @@ return {
 			DRYINGINRAIN = "This is like watching meat dry... in the rain.",
 			GENERIC = "It's all set up. Just add meat.",
 			BURNT = "Its usefulness has dried up.",
+			DONE_NOTMEAT = "That looks done.",
+			DRYING_NOTMEAT = "This is like watching meat dry.",
+			DRYINGINRAIN_NOTMEAT = "This is like watching meat dry... in the rain.",
 		},
 		MERMHEAD = 
 		{

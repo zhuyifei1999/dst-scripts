@@ -46,6 +46,7 @@ local function fn()
     inst.AnimState:SetBank("boat_anchor")
     inst.AnimState:SetBuild("boat_anchor")
 
+    inst:AddTag("structure")
 
     inst.entity:SetPristine()
 

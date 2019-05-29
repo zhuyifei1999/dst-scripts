@@ -5,6 +5,9 @@ local function fn()
     inst.entity:AddTransform()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
+
+    inst:AddTag("NOBLOCK")
+
     
     inst.entity:SetPristine()
 

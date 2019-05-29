@@ -565,7 +565,11 @@ local ExampleLayout =
 --------------------------------------------------------------------------------
 
     ["CaveEntrance"] = StaticLayout.Get("map/static_layouts/cave_entrance"),
-    ["CaveExit"] = StaticLayout.Get("map/static_layouts/cave_exit"),
+    ["CaveExit"] = StaticLayout.Get("map/static_layouts/cave_exit", {
+        start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+        fill_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
+        layout_position = LAYOUT_POSITION.CENTER,
+    }),
 	["CaveBase"] = StaticLayout.Get("map/static_layouts/cave_base_1"),
 	["MushBase"] = StaticLayout.Get("map/static_layouts/cave_base_2"),
 	["SinkBase"] = StaticLayout.Get("map/static_layouts/cave_base_3"),

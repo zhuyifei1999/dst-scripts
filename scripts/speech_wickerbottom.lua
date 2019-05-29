@@ -668,11 +668,14 @@ return
         GOATMILK = "Tantalizing!",
         MEATRACK =
         {
-            GENERIC = "Meats can be dehydrated.",
+            DONE = "The process has completed.",
             DRYING = "Dehydration is a slow process.",
             DRYINGINRAIN = "The rain has temporarily halted the dehydration process.",
-            DONE = "The process has completed.",
+            GENERIC = "Meats can be dehydrated.",
             BURNT = "It doesn't seem stable.",
+            DONE_NOTMEAT = "The process has completed.",
+            DRYING_NOTMEAT = "Dehydration is a slow process.",
+            DRYINGINRAIN_NOTMEAT = "The rain has temporarily halted the dehydration process.",
         },
         MERMHEAD = 
         {

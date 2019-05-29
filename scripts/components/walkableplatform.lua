@@ -32,9 +32,9 @@ function WalkablePlatform:OnUpdate(dt)
     self:TriggerEvents()
 end
 
-function WalkablePlatform:OnSink()    
+function WalkablePlatform:OnSink()
     TheWorld.components.walkableplatformmanager:RemovePlatform(self.inst) 
-    self:DestroyObjectsOnPlatform()    
+    self:DestroyObjectsOnPlatform()
     self.inst:RemoveComponent("walkableplatform")
     
 end
@@ -49,7 +49,7 @@ end
 
 function WalkablePlatform:DestroyObjectsOnPlatform()
     for k,v in ipairs(self:GetEntitiesOnPlatform(nil, IGNORE_WALKABLE_PLATFORM_TAGS_ON_REMOVE)) do
-        if v:IsValid() then            
+        if v:IsValid() and v.components.amphibiouscreature == nil and not v:HasTag("flying") then
             local health = v.components.health
             if health ~= nil then
                 health:Kill()

@@ -27,8 +27,9 @@ function Map:IsPassableAtPoint(x, y, z, allow_water, exclude_boats)
     return self:IsPassableAtPointWithPlatformRadiusBias(x, y, z, allow_water, exclude_boats, 0)
 end
 
-function Map:IsPassableAtPointWithPlatformRadiusBias(x, y, z, allow_water, exclude_boats, platform_radius_bias)
-    if not allow_water and not self:IsVisualGroundAtPoint(x,y,z) then
+function Map:IsPassableAtPointWithPlatformRadiusBias(x, y, z, allow_water, exclude_boats, platform_radius_bias, ignore_land_overhang)
+	local valid_tile = self:IsAboveGroundAtPoint(x, y, z, allow_water) or ((not ignore_land_overhang) and self:IsVisualGroundAtPoint(x,y,z) or false)
+    if not allow_water and not valid_tile then
         if not exclude_boats then
             local entities = TheSim:FindEntities(x, 0, z, TUNING.MAX_WALKABLE_PLATFORM_RADIUS + platform_radius_bias, WALKABLE_PLATFORM_TAGS)
             for i, v in ipairs(entities) do
@@ -40,11 +41,9 @@ function Map:IsPassableAtPointWithPlatformRadiusBias(x, y, z, allow_water, exclu
                 end
             end
         end
-        return false
-    else
-        local tile = self:GetTileAtPoint(x, y, z)
-        return tile ~= GROUND.IMPASSABLE and tile ~= GROUND.INVALID
+		return false
     end
+	return valid_tile
 end
 
 function Map:IsAboveGroundAtPoint(x, y, z, allow_water)
@@ -136,7 +135,7 @@ end
 function Map:CanDeployAtPoint(pt, inst, mouseover)    
     local x,y,z = pt:Get()
     return (mouseover == nil or mouseover:HasTag("player") or mouseover:HasTag("walkableplatform"))
-        and self:IsPassableAtPointWithPlatformRadiusBias(x,y,z, false, false, TUNING.BOAT.NO_BUILD_BORDER_RADIUS)
+        and self:IsPassableAtPointWithPlatformRadiusBias(x,y,z, false, false, TUNING.BOAT.NO_BUILD_BORDER_RADIUS, true)
         and self:IsDeployPointClear(pt, inst, inst.replica.inventoryitem ~= nil and inst.replica.inventoryitem:DeploySpacingRadius() or DEPLOYSPACING_RADIUS[DEPLOYSPACING.DEFAULT])
 end
 
@@ -155,7 +154,7 @@ end
 
 function Map:CanDeployWallAtPoint(pt, inst)
     local x,y,z = pt:Get()
-    return self:IsPassableAtPointWithPlatformRadiusBias(x,y,z, false, false, TUNING.BOAT.NO_BUILD_BORDER_RADIUS)
+    return self:IsPassableAtPointWithPlatformRadiusBias(x,y,z, false, false, TUNING.BOAT.NO_BUILD_BORDER_RADIUS, true)
         and self:IsDeployPointClear(pt, inst, 1, nil, IsNearOtherWall)
 end
 
@@ -205,7 +204,7 @@ function Map:CanDeployRecipeAtPoint(pt, recipe, rot)
         end
     else
         local pt_x, pt_y, pt_z = pt:Get()       
-        is_valid_ground = self:IsPassableAtPointWithPlatformRadiusBias(pt_x, pt_y, pt_z, false, false, TUNING.BOAT.NO_BUILD_BORDER_RADIUS)
+        is_valid_ground = self:IsPassableAtPointWithPlatformRadiusBias(pt_x, pt_y, pt_z, false, false, TUNING.BOAT.NO_BUILD_BORDER_RADIUS, true)
     end
 
     return is_valid_ground

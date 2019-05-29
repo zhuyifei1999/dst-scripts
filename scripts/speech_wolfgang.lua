@@ -616,6 +616,9 @@ return {
             DRYINGINRAIN = "Go away, rain! Meat is drying!",
             GENERIC = "For drying many meats!",
             BURNT = "Cannot dry meat now.",
+            DONE_NOTMEAT = "Yum, meaty leather!",
+            DRYING_NOTMEAT = "Dry meaty things! Dry!",
+            DRYINGINRAIN_NOTMEAT = "Go away, rain! Meat is drying!",
         },
         MERMHEAD = 
         {

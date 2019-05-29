@@ -617,6 +617,9 @@ return {
 			DRYINGINRAIN = "The rain is keeping it from drying.",
 			GENERIC = "I can hang meat here.",
 			BURNT = "It's done drying. Forever.",
+			DONE_NOTMEAT = "The drying is over.",
+			DRYING_NOTMEAT = "It sways in the drying wind.",
+			DRYINGINRAIN_NOTMEAT = "The rain is keeping it from drying.",
 		},
 		MERMHEAD = 
 		{

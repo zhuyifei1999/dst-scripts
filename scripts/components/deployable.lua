@@ -56,7 +56,7 @@ end
 function Deployable:CanDeploy(pt, mouseover)
     if self.mode == DEPLOYMODE.ANYWHERE then
         local x,y,z = pt:Get()
-        return TheWorld.Map:IsPassableAtPointWithPlatformRadiusBias(x,y,z,false,false,TUNING.BOAT.NO_BUILD_BORDER_RADIUS)
+        return TheWorld.Map:IsPassableAtPointWithPlatformRadiusBias(x,y,z,false,false,TUNING.BOAT.NO_BUILD_BORDER_RADIUS,true)
     elseif self.mode == DEPLOYMODE.TURF then
         return TheWorld.Map:CanPlaceTurfAtPoint(pt:Get())
     elseif self.mode == DEPLOYMODE.PLANT then

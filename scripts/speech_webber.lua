@@ -1484,6 +1484,9 @@ return {
 			DRYINGINRAIN = "It's hard to dry when it's raining.",
 			GENERIC = "It's not doing us much good empty!",
 			BURNT = "Fire takes all.",
+			DONE_NOTMEAT = "Food time!",
+			DRYING_NOTMEAT = "Is it done yet? I'm hungry.",
+			DRYINGINRAIN_NOTMEAT = "It's hard to dry when it's raining.",
 		},
 
 		MEAT_DRIED = "That worked better than expected.",

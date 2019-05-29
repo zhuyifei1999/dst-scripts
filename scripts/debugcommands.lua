@@ -461,18 +461,22 @@ function d_reportevent(other_ku)
 		}), function(ku_tbl, success) print( "Report event:", success) dumptable(ku_tbl) end )
 end
 
-function d_makesoil()
+function d_ground(ground)
+	ground = ground == nil and GROUND.QUAGMIRE_SOIL or 
+			type(ground) == "string" and GROUND[string.upper(ground)] 
+			or ground
+
 	local pt = TheInput:GetWorldPosition()
 	
     local x, y = TheWorld.Map:GetTileCoordsAtPoint(pt:Get())
 
     local original_tile_type = TheWorld.Map:GetTileAtPoint(pt:Get())
-    TheWorld.Map:SetTile(x, y, GROUND.QUAGMIRE_SOIL)
+    TheWorld.Map:SetTile(x, y, ground)
     TheWorld.Map:RebuildLayer(original_tile_type, x, y)
-    TheWorld.Map:RebuildLayer(GROUND.QUAGMIRE_SOIL, x, y)
+    TheWorld.Map:RebuildLayer(ground, x, y)
 
     TheWorld.minimap.MiniMap:RebuildLayer(original_tile_type, x, y)
-    TheWorld.minimap.MiniMap:RebuildLayer(GROUND.QUAGMIRE_SOIL, x, y)
+    TheWorld.minimap.MiniMap:RebuildLayer(ground, x, y)
 end
 
 function d_portalfx()

@@ -677,6 +677,9 @@ return {
 			DRYINGINRAIN = "Forget the rain! Dry!",
 			GENERIC = "I want to hang some meat!",
 			BURNT = "Maybe the fire wasn't the best drying method...",
+			DONE_NOTMEAT = "It's ready!",
+			DRYING_NOTMEAT = "Come on meat, dry already!",
+			DRYINGINRAIN_NOTMEAT = "Forget the rain! Dry!",
 		},
 		MERMHEAD = 
 		{

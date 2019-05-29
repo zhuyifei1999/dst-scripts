@@ -42,7 +42,7 @@ SetSharedLootTable( 'driftwood_small',
 
 local function on_chop(inst, chopper, remaining_chops)
     if not (chopper ~= nil and chopper:HasTag("playerghost")) then
-        inst.SoundEmitter:PlaySound("dontstarve/wilson/hit_armour")
+        inst.SoundEmitter:PlaySound("turnoftides/common/together/driftwood/chop")
     end
 
     if remaining_chops > 0 then

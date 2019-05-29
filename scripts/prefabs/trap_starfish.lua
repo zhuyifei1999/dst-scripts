@@ -14,13 +14,18 @@ local function on_anim_over(inst)
     if inst.components.mine.issprung then
         return
     end
-
+    ---Scott i can't get these sounds to play at the begining of idle 2 and idle 3 
+    ---i need your help, your my only hope
     local random_value = math.random()
     if random_value < 0.4 then
         inst.AnimState:PushAnimation("idle_2")
+        -- inst.SoundEmitter:PlaySound("turnoftides/creatures/together/starfishtrap/idle")
         inst.AnimState:PushAnimation("idle", true)
+
+
     elseif random_value < 0.8 then
         inst.AnimState:PushAnimation("idle_3")
+        -- inst.SoundEmitter:PlaySound("turnoftides/creatures/together/starfishtrap/idle")
         inst.AnimState:PushAnimation("idle", true)
     end
 end
@@ -36,7 +41,7 @@ local mine_no_tags = { "notraptrigger", "flying", "ghost", "playerghost" }
 
 local function do_snap(inst)
     -- We're going off whether we hit somebody or not, so play the trap sound.
-    inst.SoundEmitter:PlaySound("dontstarve/common/trap_teeth_trigger")
+    inst.SoundEmitter:PlaySound("turnoftides/creatures/together/starfishtrap/trap")
 
     -- Do an AOE attack, based on how the combat component does it.
     local x, y, z = inst.Transform:GetWorldPosition()
@@ -84,15 +89,16 @@ local function on_reset(inst)
     inst:ListenForEvent("animover", on_anim_over)
 
     if inst.AnimState:IsCurrentAnimation("trap_idle") then
-        inst.SoundEmitter:PlaySound("dontstarve/common/trap_teeth_reset")
-
         inst.AnimState:PlayAnimation("reset")
+        --- scott this one is playing as expected
+        inst.SoundEmitter:PlaySound("turnoftides/creatures/together/starfishtrap/idle")
         inst.AnimState:PushAnimation("idle", true)
     end
 end
 
 local function on_sprung(inst)
     inst.AnimState:PlayAnimation("trap_idle", true)
+
     inst.AnimState:SetTime(math.random() * inst.AnimState:GetCurrentAnimationLength())
 
     inst:RemoveEventCallback("animover", on_anim_over)

@@ -650,6 +650,9 @@ return {
 			DRYINGINRAIN = "Moist and staying that way.",
 			GENERIC = "It can dry meats so they'll last longer.",
 			BURNT = "It's too brittle to hang meat on now.",
+			DONE_NOTMEAT = "Like the desert.",
+			DRYING_NOTMEAT = "Still moist.",
+			DRYINGINRAIN_NOTMEAT = "Moist and staying that way.",
 		},
 		MERMHEAD = 
 		{

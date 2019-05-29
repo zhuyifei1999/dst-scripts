@@ -78,12 +78,12 @@ local BoatPhysics = Class(function(self, inst)
     self.damageable_velocity = 1.25
     self.max_velocity = TUNING.BOAT.MAX_VELOCITY
     self.rudder_turn_speed = TUNING.BOAT.RUDDER_TURN_SPEED
-    self.lowered_anchor_count = 0
     self.fx_spawn_rate = 1.5
     self.fx_spawn_timer = 0
     self.leak_count = 0
     self.is_sinking = false
     self.masts = {}
+    self.anchor_cmps = {}
 
     self.lastzoomtime = nil
     self.lastzoomwasout = false
@@ -127,12 +127,12 @@ function BoatPhysics:OnSink()
 	self.is_sinking = true
 end
 
-function BoatPhysics:IncrementLoweredAnchorCount()
-	self.lowered_anchor_count = self.lowered_anchor_count + 1
+function BoatPhysics:AddAnchorCmp(anchor_cmp)
+    self.anchor_cmps[anchor_cmp] = anchor_cmp
 end
 
-function BoatPhysics:DecrementLoweredAnchorCount()
-	self.lowered_anchor_count = self.lowered_anchor_count - 1
+function BoatPhysics:RemoveAnchorCmp(anchor_cmp)
+    self.anchor_cmps[anchor_cmp] = nil
 end
 
 function BoatPhysics:IncrementLeakCount()
@@ -185,6 +185,14 @@ function BoatPhysics:Row(row_dir_x, row_dir_z, row_force)
     self.velocity_x, self.velocity_z = self.velocity_x + row_dir_x * row_force, self.velocity_z + row_dir_z * row_force
 end
 
+function BoatPhysics:GetTotalAnchorDrag()
+    local total_anchor_drag = 0
+    for k,v in pairs(self.anchor_cmps) do
+        total_anchor_drag = total_anchor_drag + k:GetDrag()
+    end
+    return total_anchor_drag
+end
+
 function BoatPhysics:OnUpdate(dt)
     local boat_pos_x, boat_pos_y, boat_pos_z = self.inst.Transform:GetWorldPosition()
 
@@ -199,17 +207,18 @@ function BoatPhysics:OnUpdate(dt)
         end
     end
 
-    if raised_sail_count > 0 and self.lowered_anchor_count <= 0 and not self.is_sinking then
+    local total_anchor_drag = self:GetTotalAnchorDrag()
+
+    if raised_sail_count > 0 and total_anchor_drag <= 0 and not self.is_sinking then
         self.velocity_x, self.velocity_z = VecUtil_Add(self.velocity_x, self.velocity_z, VecUtil_Scale(self.rudder_direction_x, self.rudder_direction_z, sail_force * dt))
-	elseif raised_sail_count == 0 or self.lowered_anchor_count > 0 then
+	elseif raised_sail_count == 0 or total_anchor_strength > 0 then
 		local velocity_length = VecUtil_Length(self.velocity_x, self.velocity_z)	
 		local min_velocity = 0.55
 		local drag = TUNING.BOAT.BASE_DRAG
-		local anchor_drag = TUNING.BOAT.ANCHOR_DRAG
 
-		if self.lowered_anchor_count > 0 then
+		if total_anchor_drag > 0 then
 			min_velocity = 0
-			drag = drag + anchor_drag * self.lowered_anchor_count
+			drag = drag + total_anchor_drag
 		end
 
 		if velocity_length > min_velocity then			
@@ -245,7 +254,7 @@ function BoatPhysics:OnUpdate(dt)
 
     local time = GetTime()
     if self.lastzoomtime == nil or time - self.lastzoomtime > 1.0 then
-        local should_zoom_out = raised_sail_count > 0 and self.lowered_anchor_count <= 0 and not self.is_sinking
+        local should_zoom_out = raised_sail_count > 0 and total_anchor_drag <= 0 and not self.is_sinking
         if not self.lastzoomwasout and should_zoom_out then
             self.inst:AddTag("doplatformcamerazoom")
             self.lastzoomwasout = true

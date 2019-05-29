@@ -347,9 +347,9 @@ function InventoryItem:SetLanded(is_landed, should_poll_for_landing)
 end
 
 function InventoryItem:ShouldSink()
-    if self.sinks and not self:IsHeld() and not self.inst:IsInLimbo() then
+    if not self:IsHeld() and not self.inst:IsInLimbo() then
         local px, _, pz = self.inst.Transform:GetWorldPosition()
-        return not TheWorld.Map:IsPassableAtPoint(px, 0, pz)
+        return not TheWorld.Map:IsPassableAtPoint(px, 0, pz, not self.sinks)
     end
 end
 

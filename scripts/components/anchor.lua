@@ -14,7 +14,7 @@ local function on_remove(inst)
         if anchor.is_anchor_lowered then
             local boat = anchor:GetBoat()
             if boat ~= nil and boat:IsValid() then
-                boat.components.boatphysics:DecrementLoweredAnchorCount()
+                boat.components.boatphysics:RemoveAnchorCmp(anchor)
             end
         end
         anchor.inst:RemoveEventCallback("onremove", on_remove)
@@ -26,6 +26,7 @@ local Anchor = Class(function(self, inst)
     self.inst:ListenForEvent("onremove", on_remove)
 
     self.is_anchor_lowered = false
+    self.drag = TUNING.BOAT.ANCHOR_DRAG
 end,
 nil,
 {
@@ -39,6 +40,14 @@ function Anchor:OnSave()
     }
 
     return data
+end
+
+function Anchor:GetDrag()
+	if self.inst:HasTag("burnt") then
+		return 0
+	else
+		return self.drag
+	end
 end
 
 function Anchor:OnLoad(data)
@@ -68,9 +77,9 @@ function Anchor:SetIsAnchorLowered(is_lowered)
 		local boat = self:GetBoat()
 		if boat ~= nil then
 			if is_lowered then
-				boat.components.boatphysics:IncrementLoweredAnchorCount()
+				boat.components.boatphysics:AddAnchorCmp(self)
 			else
-				boat.components.boatphysics:DecrementLoweredAnchorCount()
+				boat.components.boatphysics:RemoveAnchorCmp(self)
 			end
 		end
 	end

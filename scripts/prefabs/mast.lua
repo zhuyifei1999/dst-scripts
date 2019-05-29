@@ -33,6 +33,7 @@ local function fn()
     inst.Transform:SetEightFaced()
 
     inst:AddTag("NOBLOCK")
+    inst:AddTag("structure")
 
     inst.AnimState:SetBank("mast_01")
     inst.AnimState:SetBuild("boat_mast")

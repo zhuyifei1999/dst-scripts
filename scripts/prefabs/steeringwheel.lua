@@ -33,25 +33,6 @@ local function on_hammered(inst, hammerer)
     inst:Remove()
 end
 
-local function on_load_postpass(inst, new_entities, data)
-    -- Check to see if we're placed on a boat.
-    local wheelx, _, wheelz = inst.Transform:GetWorldPosition()
-    local wheel_platform = TheWorld.Map:GetPlatformAtPoint(wheelx, wheelz)
-
-    -- If we're placed on a boat, remove the ability to hammer or burn the steering wheel.
-    if wheel_platform == nil or wheel_platform.components.hull == nil then
-        MakeSmallBurnable(inst)
-        MakeSmallPropagator(inst)
-
-        -- The loot that this drops is generated from the uncraftable recipe; see recipes.lua for the items.
-        inst:AddComponent("lootdropper")
-        inst:AddComponent("workable")
-        inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
-        inst.components.workable:SetWorkLeft(3)
-        inst.components.workable:SetOnFinishCallback(on_hammered)
-    end
-end
-
 local function fn()
 
     local inst = CreateEntity()
@@ -68,22 +49,29 @@ local function fn()
     inst.AnimState:SetBuild("boat_wheel")
     inst.AnimState:PlayAnimation("idle")
 
+    inst:AddTag("structure")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
 
+    MakeSmallBurnable(inst)
+    MakeSmallPropagator(inst)
+
+    -- The loot that this drops is generated from the uncraftable recipe; see recipes.lua for the items.
+    inst:AddComponent("lootdropper")
+    inst:AddComponent("workable")
+    inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
+    inst.components.workable:SetWorkLeft(3)
+    inst.components.workable:SetOnFinishCallback(on_hammered)
+
     inst:AddComponent("hauntable")
     inst:AddComponent("inspectable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
 
     inst:AddComponent("steeringwheel")
-
-    inst.OnLoadPostPass = on_load_postpass
-    if not POPULATING then
-        inst:DoTaskInTime(0, on_load_postpass)
-    end
 
     return inst
 end

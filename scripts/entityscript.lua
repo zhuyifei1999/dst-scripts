@@ -1433,12 +1433,12 @@ function EntityScript:CanDoAction(action)
     end
 end
 
-function EntityScript:IsOnValidGround()
-    local tile = self:GetCurrentTileType()
-    return tile ~= nil and tile ~= GROUND.IMPASSABLE
+function EntityScript:IsOnValidGround() -- this currently does not support boats, TheWorld.Map:IsPassableAtPoint may be what you actually want to call
+	return TheWorld.Map:IsVisualGroundAtPoint(self.Transform:GetWorldPosition())
 end
 
 function EntityScript:GetCurrentTileType()
+-- WARNING: This function is only an approximate, if you only care if the ground is valid or not then call IsOnValidGround()
     local map = TheWorld.Map
     local ptx, pty, ptz = self.Transform:GetWorldPosition()
     local tilecenter_x, tilecenter_y, tilecenter_z  = map:GetTileCenterPoint(ptx, 0, ptz)

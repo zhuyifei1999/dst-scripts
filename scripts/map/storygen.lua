@@ -853,7 +853,7 @@ function Story:GenerateNodesForRegion(taskset, layout_mode)
 	--dumptable(task_nodes, 1, 1)
 
 	local finalNode = nil
-    if layout_mode == string.upper("RestrictNodesByKey") then
+    if string.upper(layout_mode) == string.upper("RestrictNodesByKey") then
         finalNode = self:RestrictNodesByKey(startingTask, task_nodes)
     else
 		finalNode = self:LinkNodesByKeys(startingTask, task_nodes)

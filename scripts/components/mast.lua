@@ -8,6 +8,13 @@ local function onissailraised(self, issailraised)
 	end
 end
 
+local function on_remove(inst)
+    local mast = inst.components.mast
+    if mast.boat ~= nil then
+        mast.boat.components.boatphysics:RemoveMast(mast)
+    end
+end
+
 local Mast = Class(function(self, inst)
     self.inst = inst
     self.is_sail_raised = false
@@ -20,7 +27,7 @@ local Mast = Class(function(self, inst)
     self.inst:StartUpdatingComponent(self)
 
     self.inst:ListenForEvent("onsink", function(inst) self:OnSink() end)
-    self.inst:ListenForEvent("onremove", function(inst) self:LowerSail() end)
+    self.inst:ListenForEvent("onremove", on_remove)
 
     self.inst:DoTaskInTime(0,
     	function() 
