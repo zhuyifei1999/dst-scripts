@@ -211,7 +211,7 @@ function BoatPhysics:OnUpdate(dt)
 
     if raised_sail_count > 0 and total_anchor_drag <= 0 and not self.is_sinking then
         self.velocity_x, self.velocity_z = VecUtil_Add(self.velocity_x, self.velocity_z, VecUtil_Scale(self.rudder_direction_x, self.rudder_direction_z, sail_force * dt))
-	elseif raised_sail_count == 0 or total_anchor_strength > 0 then
+	elseif raised_sail_count == 0 or total_anchor_drag > 0 then
 		local velocity_length = VecUtil_Length(self.velocity_x, self.velocity_z)	
 		local min_velocity = 0.55
 		local drag = TUNING.BOAT.BASE_DRAG
