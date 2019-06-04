@@ -117,7 +117,7 @@ ACTIONS =
     ATTACK = Action({ priority=2, canforce=true, mount_valid=true }), -- No custom range check, attack already handles that
     EAT = Action({ mount_valid=true }),
     PICK = Action({ canforce=true, rangecheckfn=DefaultRangeCheck }),
-    PICKUP = Action({ priority=1, distanceupdatefn=WaterPickupDistanceUpdateFn }),
+    PICKUP = Action({ priority=1 }),
     MINE = Action(),
     DIG = Action({ rmb=true }),
     GIVE = Action({ mount_valid=true, canforce=true, rangecheckfn=DefaultRangeCheck }),

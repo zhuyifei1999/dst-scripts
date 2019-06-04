@@ -3696,6 +3696,9 @@ STRINGS.UI =
             "Scott Hansen",
 			"Philippe Donati",
 			"Yorman Arias",
+			"Grace Kim",
+			"Steven Miclette",
+			"Felix Hard",
         },
 
         ALTGAMES =

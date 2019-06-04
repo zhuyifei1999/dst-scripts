@@ -1268,6 +1268,8 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_mount_actions_item.zip"),
         Asset("ANIM", "anim/player_mount_unique_actions.zip"),
         Asset("ANIM", "anim/player_mount_one_man_band.zip"),
+        Asset("ANIM", "anim/player_mount_boat_jump.zip"),
+        Asset("ANIM", "anim/player_mount_boat_sink.zip"),
         Asset("ANIM", "anim/player_mount_blowdart.zip"),
         Asset("ANIM", "anim/player_mount_shock.zip"),
         Asset("ANIM", "anim/player_mount_frozen.zip"),

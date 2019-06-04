@@ -6376,7 +6376,12 @@ local states =
         tags = { "busy", "nopredict", "nomorph" },
 
         onenter = function(inst, data)
+            ForceStopHeavyLifting(inst)
+            inst:ClearBufferedAction()
+
             inst.components.locomotor:Stop()
+            inst.components.locomotor:Clear()
+
             inst.AnimState:PlayAnimation("sink")
 			
 			inst.components.drownable:OnFallInOcean()
@@ -6396,8 +6401,18 @@ local states =
         {
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-					inst.components.drownable:WashAshore() -- TODO: try moving this into the timeline
 					StartTeleporting(inst)
+
+					if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
+						local mount = inst.components.rider:GetMount()
+						inst.components.rider:ActualDismount()
+						if mount ~= nil and mount.components.health ~= nil then
+							mount:Hide()
+							mount.components.health:Kill()
+						end
+					end
+
+					inst.components.drownable:WashAshore() -- TODO: try moving this into the timeline
 				end
             end),
 
@@ -6425,7 +6440,12 @@ local states =
         tags = { "busy", "nopredict", "nomorph" },
 
         onenter = function(inst, data)
+            ForceStopHeavyLifting(inst)
+            inst:ClearBufferedAction()
+
             inst.components.locomotor:Stop()
+            inst.components.locomotor:Clear()
+
             inst.AnimState:PlayAnimation("sink")
 			inst.AnimState:SetTime(55 * FRAMES)
 			inst.AnimState:Hide("plank")
@@ -6455,8 +6475,18 @@ local states =
         {
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-					inst.components.drownable:WashAshore() -- TODO: try moving this into the timeline
 					StartTeleporting(inst)
+
+					if inst.components.rider ~= nil and inst.components.rider:IsRiding() then
+						local mount = inst.components.rider:GetMount()
+						inst.components.rider:ActualDismount()
+						if mount ~= nil and mount.components.health ~= nil then
+							mount:Hide()
+							mount.components.health:Kill()
+						end
+					end
+
+					inst.components.drownable:WashAshore() -- TODO: try moving this into the timeline
 				end
             end),
 
@@ -6594,6 +6624,7 @@ local states =
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
 			        inst.components.talker:Say(GetString(inst, "ANNOUNCE_WASHED_ASHORE"))
+
                     inst.sg:GoToState("idle")
                 end
             end),

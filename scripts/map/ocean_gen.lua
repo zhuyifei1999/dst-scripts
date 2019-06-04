@@ -514,29 +514,32 @@ end
 
 function Ocean_PlaceSetPieces(set_pieces, add_entity, obj_layout, populating_tile)
 	print("[Ocean] Placing ocean set pieces.")
-
-	populating_tile = populating_tile or GROUND.IMPASSABLE
-
-	local function ReserveAndPlaceLayoutFn(layout, prefabs, position)
-		obj_layout.ReserveAndPlaceLayout("POSITIONED", layout, prefabs, add_entity, position)
-	end
-
+    
 	local total = 0
 	local num_placed = 0
-	for name, data in pairs(set_pieces) do
-		local layout = obj_layout.LayoutForDefinition(name)
-		local prefabs = obj_layout.ConvertLayoutToEntitylist(layout)
-		local count = type(data) == "number" and data
-						or type(data) == "table" and data.count
-						or data
-		count = type(count) == "function" and count() or count
-		for i = 1, count or 1 do
-			if PlaceOceanLayout(layout, prefabs, populating_tile, ReserveAndPlaceLayoutFn) then
-				num_placed = num_placed + 1
-			end
-			total = total + 1
-		end
-	end
+
+    if set_pieces ~= nil then
+	    populating_tile = populating_tile or GROUND.IMPASSABLE
+
+	    local function ReserveAndPlaceLayoutFn(layout, prefabs, position)
+		    obj_layout.ReserveAndPlaceLayout("POSITIONED", layout, prefabs, add_entity, position)
+	    end
+
+	    for name, data in pairs(set_pieces) do
+		    local layout = obj_layout.LayoutForDefinition(name)
+		    local prefabs = obj_layout.ConvertLayoutToEntitylist(layout)
+		    local count = type(data) == "number" and data
+						    or type(data) == "table" and data.count
+						    or data
+		    count = type(count) == "function" and count() or count
+		    for i = 1, count or 1 do
+			    if PlaceOceanLayout(layout, prefabs, populating_tile, ReserveAndPlaceLayoutFn) then
+				    num_placed = num_placed + 1
+			    end
+			    total = total + 1
+		    end
+	    end
+    end
 
 	print("[Ocean] Placed "..tostring(num_placed).." of "..tostring(total).." ocean set pieces.")
 end
@@ -654,7 +657,9 @@ end
 function PopulateOcean(spawnFn, entitiesOut, width, height, ocean_contents, world_gen_choices)
 	print("[Ocean] Populating the ocean with lots of fun things to do...")
 
-	for i, room in ipairs(ocean_contents) do
-		PopulateWaterType(room.data.value, spawnFn, entitiesOut, width, height, OCEAN_POPULATION_EDGE_DIST, room.data.contents, world_gen_choices)
-	end
+    if ocean_contents ~= nil then
+	    for i, room in ipairs(ocean_contents) do
+		    PopulateWaterType(room.data.value, spawnFn, entitiesOut, width, height, OCEAN_POPULATION_EDGE_DIST, room.data.contents, world_gen_choices)
+	    end
+    end
 end

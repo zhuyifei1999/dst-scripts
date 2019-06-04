@@ -882,6 +882,15 @@ AddGameDebugKey(KEY_M, function()
         elseif TheInput:IsKeyDown(KEY_SHIFT) then
             hide_revealed = not hide_revealed
             TheWorld.minimap.MiniMap:ContinuouslyClearRevealedAreas(hide_revealed)
+		elseif TheInput:IsKeyDown(KEY_ALT) then
+            enable_fog = true
+            TheWorld.minimap.MiniMap:EnableFogOfWar(enable_fog)
+
+			for x=-1000,1000,30 do
+				for y=-1000,1000,30 do
+					ThePlayer.player_classified.MapExplorer:RevealArea(x ,0, y)
+				end
+			end
         end
     end
 
