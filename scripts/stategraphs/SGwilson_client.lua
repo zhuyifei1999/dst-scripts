@@ -1752,10 +1752,11 @@ local states =
 
     State{
         name = "steer_boat_idle",
-        tags = { "" },
+        tags = { "is_using_steering_wheel", "doing" },
 
         onenter = function(inst, snap)
-            inst.AnimState:PlayAnimation("steer_idle_pre")            
+            inst.AnimState:PlayAnimation("steer_idle_pre")  
+            inst.AnimState:PushAnimation("steer_lag", false)          
             inst:PerformPreviewBufferedAction()
 
             inst.sg:SetTimeout(TIMEOUT)
@@ -1779,7 +1780,7 @@ local states =
 
     State{
         name = "stop_steering",
-        tags = { "" },
+        tags = { "is_using_steering_wheel", "doing" },
 
         onenter = function(inst, snap)
             inst.AnimState:PlayAnimation("steer_idle_pst")            
@@ -1835,12 +1836,14 @@ local states =
 
     State{
         name = "abandon_ship",
-        tags = { "doing" },
+        tags = { "doing", "busy", "canrotate" },
 
         onenter = function(inst, snap)
-            inst.AnimState:PlayAnimation("plank_hop_pre")
-            inst:PerformPreviewBufferedAction()
+            inst.components.locomotor:Stop()
 
+            inst.AnimState:PlayAnimation("plank_hop_pre")
+
+            inst:PerformPreviewBufferedAction()
             inst.sg:SetTimeout(TIMEOUT)
         end,
 

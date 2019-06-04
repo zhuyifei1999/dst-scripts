@@ -10,7 +10,7 @@ end
 
 local function on_remove(inst)
     local mast = inst.components.mast
-    if mast.boat ~= nil then
+    if mast ~= nil and mast.boat ~= nil then
         mast.boat.components.boatphysics:RemoveMast(mast)
     end
 end
@@ -31,9 +31,9 @@ local Mast = Class(function(self, inst)
 
     self.inst:DoTaskInTime(0,
     	function() 
-    		local mast_x, mast_y, mast_z = self.inst.Transform:GetWorldPosition()
+			local mast_x, mast_y, mast_z = self.inst.Transform:GetWorldPosition()
     		self:SetBoat(TheWorld.Map:GetPlatformAtPoint(mast_x, mast_z))
-            self:SetRudder(SpawnPrefab('rudder'))
+			self:SetRudder(SpawnPrefab('rudder'))
     	end)
 end,
 nil,
@@ -52,7 +52,13 @@ function Mast:SetBoat(boat)
 end
 
 function Mast:OnSink()
-	local mast_sinking = SpawnPrefab("boat_mast_sink_fx")
+	local mast_sinking
+	if self.inst:HasTag("burnt") then
+		mast_sinking = SpawnPrefab("collapse_small")
+	else
+		mast_sinking = SpawnPrefab("boat_mast_sink_fx")
+	end
+	
 	local x_pos, y_pos, z_pos = self.inst.Transform:GetWorldPosition()
 	mast_sinking.Transform:SetPosition(x_pos, y_pos, z_pos)
 

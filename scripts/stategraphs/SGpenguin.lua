@@ -411,6 +411,12 @@ local states=
             inst.AnimState:PlayAnimation("taunt")
             inst.SoundEmitter:PlaySound(inst._soundpath.."taunt")
         end,
+
+         timeline=
+        {
+            TimeEvent(2*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst._soundpath.."taunt") end),
+            TimeEvent(22*FRAMES, function(inst) inst.SoundEmitter:PlaySound(inst._soundpath.."taunt") end),
+        },
         
         events=
         {

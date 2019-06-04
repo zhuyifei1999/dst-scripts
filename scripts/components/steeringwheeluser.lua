@@ -32,13 +32,17 @@ function SteeringWheelUser:SetSteeringWheel(steering_wheel)
 		self.inst.Transform:SetPosition(steering_wheel.Transform:GetWorldPosition())
 		self.inst.Physics:ClearTransformationHistory()
 
-    	steering_wheel.AnimState:HideSymbol("boat_wheel_round")
-    	steering_wheel.AnimState:HideSymbol("boat_wheel_stick")
-
         self.inst:ListenForEvent("onremove", self.wheel_remove_callback, steering_wheel)
 	end
 
 	self.steering_wheel = steering_wheel
+end
+
+function SteeringWheelUser:HideWheel()
+	if self.steering_wheel ~= nil and self.steering_wheel:IsValid() then
+		self.steering_wheel.AnimState:HideSymbol("boat_wheel_round")
+		self.steering_wheel.AnimState:HideSymbol("boat_wheel_stick")	
+	end
 end
 
 function SteeringWheelUser:Steer(pos_x, pos_z)
@@ -84,9 +88,8 @@ function SteeringWheelUser:OnUpdate(dt)
 	local wheel_pos_x, wheel_pos_y, wheel_pos_z = self.steering_wheel.Transform:GetWorldPosition()
 	local facing_x, facing_z = my_pos_x + down_vec.x, my_pos_z + down_vec.z
 
-	local player_offset = 0.05
 
-	self.inst.Transform:SetPosition(wheel_pos_x - player_offset * down_vec.x, wheel_pos_y - player_offset * down_vec.y, wheel_pos_z - player_offset * down_vec.z)
+	self.inst.Transform:SetPosition(wheel_pos_x, wheel_pos_y, wheel_pos_z)
 	self.inst:FacePoint(facing_x, 0, facing_z)
 	self.steering_wheel:FacePoint(facing_x, 0, facing_z)
 end

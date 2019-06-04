@@ -198,6 +198,28 @@ local function ToggleOnPhysics(inst)
     inst.Physics:CollidesWith(COLLISION.GIANTS)
 end
 
+local function StartTeleporting(inst)
+    inst.sg.statemem.isteleporting = true
+
+    inst.components.health:SetInvincible(true)
+    if inst.components.playercontroller ~= nil then
+        inst.components.playercontroller:Enable(false)
+    end
+    inst:Hide()
+    inst.DynamicShadow:Enable(false)
+end
+
+local function DoneTeleporting(inst)
+    inst.sg.statemem.isteleporting = false
+
+    inst.components.health:SetInvincible(false)
+    if inst.components.playercontroller ~= nil then
+        inst.components.playercontroller:Enable(true)
+    end
+    inst:Show()
+    inst.DynamicShadow:Enable(true)
+end
+
 local function UpdateActionMeter(inst, starttime)
     inst.player_classified.actionmeter:set_local(math.min(255, math.floor((GetTime() - starttime) * 10 + 2.5)))
 end
@@ -886,7 +908,11 @@ local events =
 
     EventHandler("onsink", function(inst, data)
         if not inst.components.health:IsDead() then
-            inst.sg:GoToState("sink")
+			if data ~= nil and data.boat ~= nil then
+	            inst.sg:GoToState("sink")
+			else
+	            inst.sg:GoToState("sink_fast")
+			end
         end
     end),    
 
@@ -6235,14 +6261,14 @@ local states =
         tags = { },
 
         onenter = function(inst)
-            inst.AnimState:PlayAnimation("steer_idle_pst")        
-            inst:PerformBufferedAction()
+            inst.AnimState:PlayAnimation("steer_idle_pst")                    
         end,    
 
         events = 
         {
             EventHandler("animqueueover", function(inst)
                 inst.sg:GoToState("idle", true)
+                inst:PerformBufferedAction()
             end),          
         }
     },
@@ -6271,26 +6297,9 @@ local states =
         end,       
     },    
 
-   State{
-        name = "abandon_ship",
-        tags = { "doing" },
-
-        onenter = function(inst)
-            inst.AnimState:PlayAnimation("plank_hop_pre")        
-            inst.AnimState:PushAnimation("plank_hop", false)                              
-        end,    
-
-        events = 
-        {
-            EventHandler("animqueueover", function(inst)
-                inst:PerformBufferedAction()                  
-            end),
-        }
-    }, 
-
     State{
         name = "steer_boat_idle_pre",
-        tags = { "is_using_steering_wheel" },
+        tags = { "is_using_steering_wheel", "doing" },
 
         onenter = function(inst, skip_pre)
             inst.AnimState:PlayAnimation("steer_idle_pre")        
@@ -6310,9 +6319,10 @@ local states =
 
     State{
         name = "steer_boat_idle_loop",
-        tags = { "is_using_steering_wheel" },
+        tags = { "is_using_steering_wheel", "doing" },
 
         onenter = function(inst, skip_pre)
+            inst.components.steeringwheeluser:HideWheel()        
             inst.AnimState:PushAnimation("steer_idle_loop", true)
         end,
 
@@ -6326,7 +6336,7 @@ local states =
 
     State{
         name = "steer_boat_turning",
-        tags = { "is_using_steering_wheel" },
+        tags = { "is_using_steering_wheel", "doing" },
 
         onenter = function(inst, data)
             --inst.AnimState:PlayAnimation("steer_left_loop_pre")
@@ -6368,18 +6378,229 @@ local states =
         onenter = function(inst, data)
             inst.components.locomotor:Stop()
             inst.AnimState:PlayAnimation("sink")
+			
+			inst.components.drownable:OnFallInOcean()
+		    inst.DynamicShadow:Enable(false)
+
+            inst:ShowHUD(false)
         end,
+
+        timeline =
+        {
+            TimeEvent(71 * FRAMES, function(inst)
+				inst.components.drownable:DropInventory()
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+					inst.components.drownable:WashAshore() -- TODO: try moving this into the timeline
+					StartTeleporting(inst)
+				end
+            end),
+
+            EventHandler("on_washed_ashore", function(inst)
+				inst.sg:GoToState("washed_ashore")
+			end),
+        },        
+
+        onexit = function(inst)
+            if inst.sg.statemem.isphysicstoggle then
+                ToggleOnPhysics(inst)
+            end
+
+            if inst.sg.statemem.isteleporting then
+				DoneTeleporting(inst)
+			end
+
+		    inst.DynamicShadow:Enable(true)
+            inst:ShowHUD(true)
+        end,
+    },
+
+    State{
+        name = "sink_fast",
+        tags = { "busy", "nopredict", "nomorph" },
+
+        onenter = function(inst, data)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("sink")
+			inst.AnimState:SetTime(55 * FRAMES)
+			inst.AnimState:Hide("plank")
+			inst.AnimState:Hide("float_front")
+			inst.AnimState:Hide("float_back")
+			
+			
+			inst.components.drownable:OnFallInOcean()
+		    inst.DynamicShadow:Enable(false)
+            inst:ShowHUD(false)
+        end,
+
+        timeline =
+        {
+            TimeEvent(14 * FRAMES, function(inst)
+				inst.AnimState:Show("float_front")
+				inst.AnimState:Show("float_back")
+            end),
+
+            TimeEvent(16 * FRAMES, function(inst)
+				inst.components.drownable:DropInventory()
+            end),
+        },
 
 
         events =
         {
-            EventHandler("animqueueover", function(inst)
-                inst.components.health:SetPercent(0, 0, "drowning")
-                inst:PushEvent(inst.ghostenabled and "makeplayerghost" or "playerdied", { skeleton = false })
-                inst.components.inventory:DropEverything(true)
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+					inst.components.drownable:WashAshore() -- TODO: try moving this into the timeline
+					StartTeleporting(inst)
+				end
             end),
+
+            EventHandler("on_washed_ashore", function(inst)
+				inst.sg:GoToState("washed_ashore")
+			end),
         },        
-    },    
+
+        onexit = function(inst)
+			inst.AnimState:Show("plank")
+			inst.AnimState:Show("float_front")
+			inst.AnimState:Show("float_back")
+            if inst.sg.statemem.isphysicstoggle then
+                ToggleOnPhysics(inst)
+            end
+
+            if inst.sg.statemem.isteleporting then
+				DoneTeleporting(inst)
+			end
+
+		    inst.DynamicShadow:Enable(true)
+            inst:ShowHUD(true)
+        end,
+    },
+	
+
+    State{
+        name = "abandon_ship_pre",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("plank_hop_pre")
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    if inst.bufferedaction ~= nil then
+                        inst:PerformBufferedAction()
+                        inst.sg:GoToState("abandon_ship") 
+                    else
+                        inst.sg:GoToState("idle")
+                    end
+                end
+            end),
+        },
+    },
+
+   State{
+        name = "abandon_ship",
+        tags = { "doing", "busy", "canrotate", "nopredict", "nomorph", "jumping" },
+
+        onenter = function(inst)
+            ToggleOffPhysics(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("plank_hop")
+
+            inst:ShowHUD(false)
+			inst.components.drownable:OnFallInOcean()
+
+            inst.sg.statemem.speed = 6
+            inst.Physics:SetMotorVel(inst.sg.statemem.speed * .5, 0, 0)
+        end,    
+
+        timeline =
+        {
+            TimeEvent(.5 * FRAMES, function(inst)
+                inst.Physics:SetMotorVel(inst.sg.statemem.speed * 0.75, 0, 0)
+            end),
+            TimeEvent(1 * FRAMES, function(inst)
+                inst.Physics:SetMotorVel(inst.sg.statemem.speed, 0, 0)
+            end),
+
+            TimeEvent(12 * FRAMES, function(inst)
+				-- TODO: Start camera fade here
+            end),
+
+            TimeEvent(15 * FRAMES, function(inst)
+			    inst.DynamicShadow:Enable(false)
+				inst.Physics:Stop()
+
+				if TheWorld.Map:IsPassableAtPoint(inst.Transform:GetWorldPosition()) then
+					inst.sg:GoToState("idle")
+				else
+					inst.components.drownable:DropInventory()
+				end
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+					inst.components.drownable:WashAshore() -- TODO: try moving this into the timeline
+					StartTeleporting(inst)
+                end
+            end),
+
+            EventHandler("on_washed_ashore", function(inst)
+				inst.sg:GoToState("washed_ashore")
+			end),
+        },
+
+        onexit = function(inst)
+            if inst.sg.statemem.isphysicstoggle then
+                ToggleOnPhysics(inst)
+            end
+
+            if inst.sg.statemem.isteleporting then
+				DoneTeleporting(inst)
+			end
+
+		    inst.DynamicShadow:Enable(true)
+            inst:ShowHUD(true)
+        end,
+
+    }, 
+
+	State{
+		name = "washed_ashore",
+        tags = { "doing", "busy", "canrotate", "nopredict", "silentmorph" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("wakeup")
+			if inst.components.drownable ~= nil then
+				inst.components.drownable:TakeDrowningDamage()
+			end
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+			        inst.components.talker:Say(GetString(inst, "ANNOUNCE_WASHED_ASHORE"))
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+
+
+	},
 
     State
     {

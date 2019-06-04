@@ -15,19 +15,20 @@ local function DefaultRangeCheck(doer, target)
     return dst <= 16
 end
 
-local function WaterPickupRangeCheck(doer, target)
+local function WaterPickupDistanceUpdateFn(doer, target)
     if target == nil then
         return
     end
     local target_x, target_y, target_z = target.Transform:GetWorldPosition()
     local doer_x, doer_y, doer_z = doer.Transform:GetWorldPosition()
 
+    local map = TheWorld.Map
     local pickup_distance = 0
-    if TheWorld.Map:GetPlatformAtPoint(target_x, target_z) == nil and not TheWorld.Map:IsVisualGroundAtPoint(target_x, target_z) then
-        pickup_distance = 0.5
+    if map:GetPlatformAtPoint(target_x, target_z) == nil and not map:IsVisualGroundAtPoint(target_x, 0, target_z) then
+        pickup_distance = 1.75
     end
 
-    return dst
+    return pickup_distance
 end
 
 local function CheckDeployRange(doer, target)
@@ -103,6 +104,7 @@ Action = Class(function(self, data, instant, rmb, distance, ghost_valid, ghost_e
     self.is_relative_to_platform = data.is_relative_to_platform
     self.disable_platform_hopping = data.disable_platform_hopping
     self.skip_locomotor_facing = data.skip_locomotor_facing
+    self.do_not_locomote = data.do_not_locomote
 end)
 
 ACTIONS =
@@ -115,7 +117,7 @@ ACTIONS =
     ATTACK = Action({ priority=2, canforce=true, mount_valid=true }), -- No custom range check, attack already handles that
     EAT = Action({ mount_valid=true }),
     PICK = Action({ canforce=true, rangecheckfn=DefaultRangeCheck }),
-    PICKUP = Action({ priority=1, rangecheckfn=WaterPickupRangeCheck }),
+    PICKUP = Action({ priority=1, distanceupdatefn=WaterPickupDistanceUpdateFn }),
     MINE = Action(),
     DIG = Action({ rmb=true }),
     GIVE = Action({ mount_valid=true, canforce=true, rangecheckfn=DefaultRangeCheck }),
@@ -247,7 +249,7 @@ ACTIONS =
     DISMOUNT_PLANK = Action({ distance=2.5 }),            
     REPAIR_LEAK = Action({ distance=2.5 }),
     STEER_BOAT = Action({ distance=0 }),
-    SET_HEADING = Action({distance=9999}),
+    SET_HEADING = Action({distance=9999, do_not_locomote=true}),
     STOP_STEERING_BOAT = Action(),
     CAST_NET = Action({ priority=10, rmb=true, distance=12, mount_valid=true, disable_platform_hopping=true }),
     ROW_FAIL = Action({distance=9999, disable_platform_hopping=true, skip_locomotor_facing=true}),

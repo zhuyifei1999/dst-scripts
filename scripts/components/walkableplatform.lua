@@ -1,3 +1,7 @@
+local function OnIsSunkDirty(inst)    
+    inst:RemoveComponent("walkableplatform") 
+end
+
 local WalkablePlatform = Class(function(self, inst)
     self.inst = inst    
 
@@ -19,11 +23,16 @@ local WalkablePlatform = Class(function(self, inst)
     self.new_objects_on_platform = {}
     self.platform_radius = 4
     self.movement_locators = {}
+
+    if not TheNet:IsDedicated() then
+        self.inst:ListenForEvent("issunkdirty", OnIsSunkDirty)
+    end
+
+    self._is_sunk = net_bool(inst.GUID, "walkableplatform._is_sunk", "issunkdirty")
 end)
 
-local IGNORE_WALKABLE_PLATFORM_TAGS = { "ignorewalkableplatforms" }
-local IGNORE_WALKABLE_PLATFORM_TAGS_ON_REMOVE = { "ignorewalkableplatforms", "FX", "NOCLICK", "DECOR", "INLIMBO", "player" }
-local IGNORE_WALKABLE_PLATFORM_TAGS = { "ignorewalkableplatforms", "FX", "DECOR", "INLIMBO" }
+local IGNORE_WALKABLE_PLATFORM_TAGS_ON_REMOVE = { "ignorewalkableplatforms", "flying", "FX", "NOCLICK", "DECOR", "INLIMBO", "player" }
+local IGNORE_WALKABLE_PLATFORM_TAGS = { "ignorewalkableplatforms", "flying", "FX", "DECOR", "INLIMBO" }
 
 
 --Client Only
@@ -32,15 +41,22 @@ function WalkablePlatform:OnUpdate(dt)
     self:TriggerEvents()
 end
 
-function WalkablePlatform:OnSink()
-    TheWorld.components.walkableplatformmanager:RemovePlatform(self.inst) 
+function WalkablePlatform:OnSink()    
+    self._is_sunk:set(true)
     self:DestroyObjectsOnPlatform()
-    self.inst:RemoveComponent("walkableplatform")
-    
+    self.inst:RemoveComponent("walkableplatform")  
 end
 
 function WalkablePlatform:OnRemoveFromEntity()
-    self.inst:RemoveTag("walkableplatform")
+    TheWorld.components.walkableplatformmanager:RemovePlatform(self.inst) 
+
+    self.inst:RemoveTag("walkableplatform")    
+
+    for k,v in pairs(self.previous_objects_on_platform) do
+        if k:IsValid() then         
+            k:PushEvent("got_off_platform", self.inst)
+        end
+    end      
 end
 
 function WalkablePlatform:OnRemove()
@@ -48,17 +64,12 @@ function WalkablePlatform:OnRemove()
 end
 
 function WalkablePlatform:DestroyObjectsOnPlatform()
-    for k,v in ipairs(self:GetEntitiesOnPlatform(nil, IGNORE_WALKABLE_PLATFORM_TAGS_ON_REMOVE)) do
-        if v:IsValid() and v.components.amphibiouscreature == nil and not v:HasTag("flying") then
-            local health = v.components.health
-            if health ~= nil then
-                health:Kill()
-            else
-                if v.components.inventoryitem ~= nil then
-                    v.components.inventoryitem:SetLanded(false, true)
-                else
-                    v:Remove()
-                end
+    for k,v in pairs(self:GetEntitiesOnPlatform(nil, IGNORE_WALKABLE_PLATFORM_TAGS_ON_REMOVE)) do
+        if v:IsValid() and v.components.amphibiouscreature == nil then
+            if v.components.inventoryitem ~= nil then
+                v.components.inventoryitem:SetLanded(false, true)
+            else            
+                DestroyEntity(v, self.inst, true, true)
             end
         end
     end
@@ -69,13 +80,15 @@ function WalkablePlatform:GetEntitiesOnPlatform(must_have_tags, ignore_tags)
     local world_position_x, world_position_y, world_position_z = self.inst.Transform:GetWorldPosition()
     local entities = TheSim:FindEntities(world_position_x, world_position_y, world_position_z, self.platform_radius, must_have_tags, ignore_tags)
         
-    for i, v in ipairs(entities) do
-        if v == self.inst or not v:IsValid() or v.entity:GetParent() ~= nil then
-            table.remove(entities, i)
+    local filtered_entities = {}
+
+    for k, v in pairs(entities) do
+        if v ~= self.inst and v:IsValid() and v.entity:GetParent() == nil then
+            table.insert(filtered_entities, v)
         end
     end
 
-    return entities
+    return filtered_entities
 end
 
 function WalkablePlatform:UpdatePositions()
@@ -118,7 +131,7 @@ end
 
 function WalkablePlatform:CollectEntitiesOnPlatform(check_previous_objects)
     local entities = self:GetEntitiesOnPlatform(nil, IGNORE_WALKABLE_PLATFORM_TAGS)
-    for i, v in ipairs(entities) do
+    for k, v in pairs(entities) do
         self.new_objects_on_platform[v] = true
     end
 
@@ -128,17 +141,15 @@ function WalkablePlatform:CollectEntitiesOnPlatform(check_previous_objects)
 
     -- check for objects that were on the boat at the previous boat position and move them forward as well
     if check_previous_objects then
-        for entity, unusued in pairs(self.previous_objects_on_platform) do
+        for entity, unused in pairs(self.previous_objects_on_platform) do
             
             if entity:IsValid() and not entity.components.embarker then
                 if not self.new_objects_on_platform[entity] then
                     local entity_x, entity_y, entity_z = entity.Transform:GetWorldPosition()
-                    local delta_x, delta_z = entity_x - platform_x, entity_z - platform_z                    
+                    local delta_x, delta_z = entity_x - platform_x, entity_z - platform_z
                     local dist_sq = delta_x * delta_x + delta_z * delta_z
                     if dist_sq <= platform_radius_sq then
                         self.new_objects_on_platform[entity] = true
-                    else
-                        print(entity_x, entity_z, platform_x, platform_z, dist_sq)
                     end
                 end 
             end

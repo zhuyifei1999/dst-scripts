@@ -248,7 +248,7 @@ local function GetSpawnPoint(pt)
 			local x = pt.x + offset.x
 			local y = pt.y + offset.y
 			local z = pt.z + offset.z
-			return NoHoles(pt)
+			return TheWorld.Map:IsAboveGroundAtPoint(x, y, z, true) and NoHoles(pt)
 		end
 
 		local offset = FindValidPositionByFan(math.random() * 2 * PI, SPAWN_DIST, 12, OceanSpawnPoint)

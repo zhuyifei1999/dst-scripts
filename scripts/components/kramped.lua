@@ -31,7 +31,6 @@ local NAUGHTY_VALUE =
     ["tallbird"] = 2,
     ["bunnyman"] = 3,
     ["penguin"] = 2,
-    ["mutated_penguin"] = 2,
     ["glommer"] = 50, -- You've been bad!
     ["catcoon"] = 5,
 }

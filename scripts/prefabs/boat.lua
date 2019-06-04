@@ -25,10 +25,9 @@ local prefabs =
     "boatfragment04",
     "boatfragment05",
     "fx_boat_pop",
-    "boat_mast_sink_fx",
     "boat_player_collision",
     "boat_item_collision",
-    "walkingplank"
+    "walkingplank",
 }
 
 local item_prefabs =
@@ -87,9 +86,6 @@ local function fn()
         return inst
     end
 
-	MakeLargeBurnable(inst)
-	MakeLargePropagator(inst)
-
     --inst:AddComponent("hauntable")
     --inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
 
@@ -123,7 +119,29 @@ local function fn()
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(max_health)
     inst.components.health.nofadeout = true
+	
+	inst.activefires = 0
 
+	local burnable_locator = SpawnPrefab('burnable_locator_medium')
+	burnable_locator.boat = inst
+	inst.components.hull:AttachEntityToBoat(burnable_locator, 0, 0, false, true)
+
+	burnable_locator = SpawnPrefab('burnable_locator_medium')
+	burnable_locator.boat = inst
+	inst.components.hull:AttachEntityToBoat(burnable_locator, 2.5, 0, false, true)
+
+	burnable_locator = SpawnPrefab('burnable_locator_medium')
+	burnable_locator.boat = inst
+	inst.components.hull:AttachEntityToBoat(burnable_locator, -2.5, 0, false, true)
+
+	burnable_locator = SpawnPrefab('burnable_locator_medium')
+	burnable_locator.boat = inst
+	inst.components.hull:AttachEntityToBoat(burnable_locator, 0, 2.5, false, true)
+
+	burnable_locator = SpawnPrefab('burnable_locator_medium')
+	burnable_locator.boat = inst
+	inst.components.hull:AttachEntityToBoat(burnable_locator, 0, -2.5, false, true)
+	
     inst:SetStateGraph("SGboat")
 
     return inst
@@ -222,6 +240,7 @@ local function boat_item_collision_fn()
     phys:SetCollisionGroup(COLLISION.LIMITS)
     phys:ClearCollisionMask()
     phys:CollidesWith(COLLISION.ITEMS)
+    phys:CollidesWith(COLLISION.FLYERS)
     phys:CollidesWith(COLLISION.WORLD)
     phys:SetTriangleMesh(ITEM_COLLISION_MESH)  
     --Boats currently need to not go to sleep because

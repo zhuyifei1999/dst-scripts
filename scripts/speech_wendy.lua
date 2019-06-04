@@ -2612,6 +2612,7 @@ return {
         },
         SEAFARER_KIT = "What's the point of doing anything in a place like this?",
         BOAT_ITEM = "It's for making a boat.",
+        MAST_ITEM = "It's for making a mast.",
         STEERINGWHEEL_ITEM = "It would make a steering wheel...",
         ANCHOR_ITEM = "It's for a burdensome boat anchor.",
         MUTATEDHOUND = 

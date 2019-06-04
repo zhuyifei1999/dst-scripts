@@ -160,6 +160,8 @@ local function commonfn(build, tags)
     inst.AnimState:PlayAnimation("idle", true)
     inst.AnimState:SetRayTestOnBB(true)
 
+    MakeInventoryFloatable(inst)
+
     MakeFeedableSmallLivestockPristine(inst)
 
     inst.entity:SetPristine()
@@ -180,7 +182,7 @@ local function commonfn(build, tags)
     -- inst.components.inventoryitem:SetOnPutInInventoryFn(OnPickedUp)
     inst.components.inventoryitem.canbepickedup = false
     inst.components.inventoryitem.canbepickedupalive = true
-    inst.components.inventoryitem:SetSinks(true)
+    inst.components.inventoryitem.pushlandedevents = false
 
     ---------------------
 

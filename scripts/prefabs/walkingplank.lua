@@ -39,10 +39,7 @@ local function fn()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
-    inst.persists = false
     --MakeObstaclePhysics(inst, .2)
-
-    inst.Transform:SetFourFaced()
 
     inst:SetStateGraph("SGwalkingplank")
 
@@ -53,13 +50,13 @@ local function fn()
     inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
     inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
 
-    inst:AddTag("ignorewalkableplatforms")     
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
+
+    inst.persists = false
 
     inst:AddComponent("walkingplank")
     inst:AddComponent("hauntable")

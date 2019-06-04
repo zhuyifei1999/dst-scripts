@@ -118,7 +118,7 @@ function HullHealth:OnCollide(data)
 		end
 
 		if self:RefreshLeakIndicator(leak_idx) and self.inst.components.walkableplatform ~= nil then
-            for k,v in ipairs(self.inst.components.walkableplatform:GetEntitiesOnPlatform()) do
+            for k,v in pairs(self.inst.components.walkableplatform:GetEntitiesOnPlatform()) do
             	if v:IsValid() then
                 	v:PushEvent("on_standing_on_new_leak")
                 end

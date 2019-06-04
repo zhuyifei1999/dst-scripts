@@ -92,33 +92,10 @@ local states =
             local doer = inst.components.walkingplank.doer
             inst:RemoveTag("interactable")
             inst.sg:SetTimeout(2)    
-            doer:ScreenFade(false, 2)        
         end,
 
         ontimeout = function(inst)
-            local doer = inst.components.walkingplank.doer
-
-            local hunger_delta = 40
-            local min_hunger = 60
-            local hunger = doer.components.hunger
-            if hunger.current > min_hunger then
-                hunger:DoDelta(-math.min( hunger_delta, (hunger.current - min_hunger)))
-            end    
-
-            doer.components.moisture:SetPercent(95)
-
-            doer:ScreenFade(true, 2)      
             inst.sg:GoToState("extended")
-
-            local my_x, my_y, my_z = doer.Transform:GetWorldPosition()
-            for k,v in pairs(Ents) do            
-                if v:IsValid() and v:HasTag("multiplayer_portal") then
-                    doer.Transform:SetPosition(v.Transform:GetWorldPosition())
-                    doer:SnapCamera()
-                    doer:PushEvent("wake_from_abandon_ship")                    
-                end
-            end
-
         end,        
     },            
 }

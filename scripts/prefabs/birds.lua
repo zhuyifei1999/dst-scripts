@@ -235,7 +235,12 @@ local function makebird(name, soundname, no_feather, bank, custom_loot_setup, wa
         --Initialize physics
         inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)
         inst.Physics:ClearCollisionMask()
-        inst.Physics:CollidesWith(COLLISION.WORLD)
+        if water_bank ~= nil then
+            -- Birds that float can pass through LIMITS walls, i.e. when hopping.
+            inst.Physics:CollidesWith(COLLISION.GROUND)
+        else
+            inst.Physics:CollidesWith(COLLISION.WORLD)
+        end
         inst.Physics:SetMass(1)
         inst.Physics:SetSphere(1)
 

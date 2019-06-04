@@ -156,7 +156,6 @@ local states =
             inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
 
             inst.Physics:SetMotorVel(0, math.random() * 10 - 20, 0)
-            inst.Physics:ClearCollidesWith(COLLISION.LIMITS)
             inst.SoundEmitter:PlaySound(inst.sounds.flyin)
         end,
 
@@ -179,10 +178,6 @@ local states =
 
         ontimeout = function(inst)
             inst.sg:GoToState("glide")
-        end,
-
-        onexit = function(inst)
-            inst.Physics:CollidesWith(COLLISION.LIMITS)
         end,
     },
 
@@ -244,10 +239,6 @@ local states =
             end
 
             inst.AnimState:PlayAnimation(inst.sg.statemem.vert and "takeoff_vertical_pre" or "takeoff_diagonal_pre")
-
-            -- Ensure that we can fly away, even if we're near a wall.
-            -- Due to the timeline removal, we don't have to worry about resetting this later.
-            inst.Physics:ClearCollidesWith(COLLISION.LIMITS)
         end,
 
         ontimeout = function(inst)
@@ -281,6 +272,11 @@ local states =
         {
             TimeEvent(8 * FRAMES, function(inst)
                 inst.Physics:Stop()
+                if inst.components.floater ~= nil then
+                    inst:PushEvent("on_landed")
+                elseif inst.components.inventoryitem ~= nil then
+                    inst.components.inventoryitem:TryToSink()
+                end
             end),
         },
 
@@ -330,6 +326,9 @@ local states =
                 inst.Physics:Teleport(x, 0, z)
                 inst.DynamicShadow:Enable(true)
                 inst.sg:GoToState("stunned")
+                if inst.components.floater ~= nil then
+                    inst:PushEvent("on_landed")
+                end
             end
         end,
     },

@@ -100,7 +100,7 @@ end
 local function OnConcealStateChanged(inst)
 	inst.conceal = inst.conceal_queued
 	if not inst.conceal then
-		LaunchAndClearArea(inst, COLLISION_SIZE, 0.5, 0.5, .2, COLLISION_SIZE, false)
+		LaunchAndClearArea(inst, COLLISION_SIZE, 0.5, 0.5, .2, COLLISION_SIZE)
 	end
 
 	OnActiveStateChanged(inst)

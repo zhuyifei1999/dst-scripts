@@ -1498,8 +1498,8 @@ return {
             DRYINGINRAIN = "All this rain isn't helping.",
             GENERIC = "Ah! A dangly rack for my meats!",
             BURNT = "Such a shame.",
-            DONE_NOTMEAT = "Let's eat!",
-            DRYING_NOTMEAT = "It's being prepared just the way I like it.",
+            DONE_NOTMEAT = "Tis as dry as an empty well!",
+            DRYING_NOTMEAT = "It's drying out nicely.",
             DRYINGINRAIN_NOTMEAT = "All this rain isn't helping.",
         },
         MEAT_DRIED = "Excellent battle provisions.",
@@ -2641,6 +2641,7 @@ return {
         },
         SEAFARER_KIT = "I shall build a most valorous vessel!",
         BOAT_ITEM = "Ship building is in my bones!",
+        MAST_ITEM = "To harness the winds upon mine vessel!",
         STEERINGWHEEL_ITEM = "A vital piece of a glorious vessel.",
         ANCHOR_ITEM = "I will craft the finest ship in the land!",
         MUTATEDHOUND = 

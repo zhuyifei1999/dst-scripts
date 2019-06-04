@@ -57,6 +57,7 @@ local InventoryItem = Class(function(self, inst)
     self.trappable = true
     self.sinks = false
 
+    self.pushlandedevents = true
     self:SetLanded(false, true)
 
     self.inst:ListenForEvent("stacksizechange", OnStackSizeChange)
@@ -330,14 +331,14 @@ function InventoryItem:SetLanded(is_landed, should_poll_for_landing)
         end
 
         -- If we're going from landed to not landed
-        if self.is_landed then
+        if self.pushlandedevents and self.is_landed then
             self.inst:PushEvent("on_no_longer_landed")
         end
     else
         self.inst:StopUpdatingComponent(self)
 
         -- If we're going from not landed to landed
-        if not self.is_landed then
+        if self.pushlandedevents and not self.is_landed then
             self.inst:PushEvent("on_landed")
             self:TryToSink()
         end

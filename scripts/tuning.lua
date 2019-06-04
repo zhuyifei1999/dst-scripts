@@ -3074,7 +3074,41 @@ function Tune(overrides)
             RUDDER_TURN_SPEED = 0.2,
             SCARY_MINSPEED_SQR = 1,    
             NO_BUILD_BORDER_RADIUS = -0.2,
+			FIRE_DAMAGE = 5,
         },        
+
+		DROWNING_DAMAGE =
+		{
+			DEFAULT =
+			{
+				HEALTH_PENALTY = 0.25,
+				HUNGER = 25,
+				SANITY = 25,
+				WETNESS = 100,
+			},
+
+			WX78 = 
+			{
+				HEALTH_PENALTY = 0.4,
+				HUNGER = 25,
+				SANITY = 50,
+				WETNESS = 100,
+			},
+
+			WOODIE = 
+			{
+				HEALTH_PENALTY = 0.25,
+				HUNGER = 50,
+				SANITY = 25,
+				WETNESS = 100,
+			},
+
+			WEREBEAVER = 
+			{
+				BEAVERNESS = 100,
+				WETNESS = 100,
+			},
+		},
 
         CARRAT =
         {

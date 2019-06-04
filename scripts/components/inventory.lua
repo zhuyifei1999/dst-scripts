@@ -192,10 +192,12 @@ function Inventory:OnLoad(data, newents)
 end
 
 function Inventory:DropActiveItem()
+	local active_item = nil
     if self.activeitem ~= nil then
-        self:DropItem(self.activeitem)
+        active_item = self:DropItem(self.activeitem)
         self:SetActiveItem(nil)
     end
+	return active_item
 end
 
 function Inventory:ReturnActiveActionItem(item)

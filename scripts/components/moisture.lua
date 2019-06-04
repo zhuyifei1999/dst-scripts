@@ -106,7 +106,7 @@ function Moisture:AnnounceMoisture(oldSegs, newSegs)
     end
 end
 
-function Moisture:DoDelta(num)
+function Moisture:DoDelta(num, no_announce)
     if self.forceddry then
         return
     end
@@ -117,7 +117,9 @@ function Moisture:DoDelta(num)
     local newSegs = self:GetSegs()
     local delta = self.moisture - oldLevel
     self.wet = newSegs >= 2
-    self:AnnounceMoisture(oldSegs, newSegs)
+	if not no_announce then
+	    self:AnnounceMoisture(oldSegs, newSegs)
+	end
     self.inst:PushEvent("moisturedelta", { old = oldLevel, new = self.moisture })
 end
 

@@ -458,7 +458,7 @@ function LocoMotor:PreviewAction(bufferedaction, run, try_instant)
         if bufferedaction.pos ~= nil then
             self:GoToPoint(bufferedaction.pos, bufferedaction, run)
         end
-    elseif bufferedaction.action.instant then
+    elseif bufferedaction.action.instant or bufferedaction.action.do_not_locomote then
         self.inst:PreviewBufferedAction(bufferedaction)
     elseif bufferedaction.target ~= nil then
         self:GoToEntity(bufferedaction.target, bufferedaction, run)
@@ -517,7 +517,7 @@ function LocoMotor:PushAction(bufferedaction, run, try_instant)
         if bufferedaction.pos ~= nil then
             self:GoToPoint(bufferedaction.pos, bufferedaction, run, bufferedaction.overridedest)
         end
-    elseif bufferedaction.action.instant then
+    elseif bufferedaction.action.instant or bufferedaction.action.do_not_locomote then
         self.inst:PushBufferedAction(bufferedaction)
     elseif bufferedaction.target ~= nil then
         self:GoToEntity(bufferedaction.target, bufferedaction, run)
@@ -1089,6 +1089,14 @@ function LocoMotor:OnUpdate(dt)
 					end
 				end
             end
+
+			if self.inst.components.drownable ~= nil and (not can_hop and my_platform == nil and target_platform == nil and not self.inst.sg:HasStateTag("jumping")) and not TheWorld.Map:IsVisualGroundAtPoint(mypos_x, mypos_y, mypos_z) then
+				if self.inst.components.health == nil or not self.inst.components.health:IsInvincible() then -- god mode check
+					self.inst.components.drownable:OnFallInOcean()
+					self.inst:PushEvent("onsink")
+				end
+			end
+
         else
             local speed_mult = self:GetSpeedMultiplier()
             local desired_speed = self.isrunning and self:RunSpeed() or self.walkspeed

@@ -454,6 +454,15 @@ return {
             GHOST = "That soul sapper's lookin' like a real sap now.",
             FIRESTARTER = "You better not burn any of my precious trees!",
         },
+        WORMWOOD =
+        {
+            GENERIC = "%s! Hey little buddy!",
+            ATTACKER = "That plant's on the attack!",
+            MURDERER = "Tree killer! I mean, killer tree!!",
+            REVIVER = "%s's really growing on me.",
+            GHOST = "You had some bad luck there, eh?",
+            FIRESTARTER = "You wouldn't want to burn our friends would you, %s?",
+        },
         
 		MULTIPLAYER_PORTAL = "That'd be the thing I fell through, eh.",
 		MULTIPLAYER_PORTAL_MOONROCK = "Wonder where it goes.",
@@ -630,8 +639,8 @@ return {
 			GENERIC = "It's all set up. Just add meat.",
 			BURNT = "Its usefulness has dried up.",
 			DONE_NOTMEAT = "That looks done.",
-			DRYING_NOTMEAT = "This is like watching meat dry.",
-			DRYINGINRAIN_NOTMEAT = "This is like watching meat dry... in the rain.",
+			DRYING_NOTMEAT = "Watching stuff dry passes for entertainment 'round here.",
+			DRYINGINRAIN_NOTMEAT = "Pretty wet out today, eh?",
 		},
 		MERMHEAD = 
 		{
@@ -2633,6 +2642,7 @@ return {
         },
         SEAFARER_KIT = "Everyone could use a boat.",
         BOAT_ITEM = "It contains the base of the boat.",
+        MAST_ITEM = "Better build it if we don't wanna row all day.",
         STEERINGWHEEL_ITEM = "We should set up the base of the boat first.",
         ANCHOR_ITEM = "'Little elbow grease and we'll have an anchor.",
         MUTATEDHOUND = 

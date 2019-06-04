@@ -678,7 +678,7 @@ return {
 			GENERIC = "I want to hang some meat!",
 			BURNT = "Maybe the fire wasn't the best drying method...",
 			DONE_NOTMEAT = "It's ready!",
-			DRYING_NOTMEAT = "Come on meat, dry already!",
+			DRYING_NOTMEAT = "How long does it take this stuff to dry?!",
 			DRYINGINRAIN_NOTMEAT = "Forget the rain! Dry!",
 		},
 		MERMHEAD = 
@@ -2644,6 +2644,7 @@ return {
         },
         SEAFARER_KIT = "Let's make a boat!",
         BOAT_ITEM = "That's the boat part of the boat.",
+        MAST_ITEM = "You can't call it \"sailing\" if you don't have a sail.",
         STEERINGWHEEL_ITEM = "Can't sail without that.",
         ANCHOR_ITEM = "Ooo, let's build an anchor.",
         MUTATEDHOUND = 

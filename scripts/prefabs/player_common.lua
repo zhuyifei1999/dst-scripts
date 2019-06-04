@@ -1147,9 +1147,11 @@ end
 
 local function OnGotOnPlatform(inst)
     inst.Transform:SetIsOnPlatform(true)
+	inst.Transform:SetPlatform(inst.entity)
 end
 
 local function OnGotOffPlatform(inst)
+	inst.Transform:SetPlatform(nil)
     inst.Transform:SetIsOnPlatform(false)
 end
 
@@ -1679,6 +1681,10 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         if not GetGameModeProperty("hide_received_gifts") then
             inst:AddComponent("giftreceiver")
         end
+
+		if TheWorld.has_ocean then
+	        inst:AddComponent("drownable")
+		end
 
         inst:AddComponent("steeringwheeluser")
         inst:AddComponent("walkingplankuser")

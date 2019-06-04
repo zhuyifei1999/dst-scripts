@@ -423,6 +423,8 @@ local function common_postinit(inst)
         inst:AddComponent("colourcube")
         inst:AddComponent("hallucinations")        
         inst:AddComponent("wavemanager")
+
+        inst.Map:SetTransparentOcean(true)
     end
 end
 

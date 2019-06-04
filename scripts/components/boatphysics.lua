@@ -162,25 +162,6 @@ function BoatPhysics:OnDeath()
     self.inst.SoundEmitter:KillSound("boat_movement")
 end
 
-function BoatPhysics:OnIgnite()
-	self.max_velocity = 1
-
-	local my_pos = Vector3(self.inst.Transform:GetWorldPosition())
-
-    local burnable_locator = SpawnPrefab('burnable_locator_medium')
-    burnable_locator.Transform:SetPosition(my_pos.x + 2.5, my_pos.y + 0, my_pos.z + 0)
-
-    burnable_locator = SpawnPrefab('burnable_locator_medium')
-    burnable_locator.Transform:SetPosition(my_pos.x + -2.5, my_pos.y + 0, my_pos.z + 0)
-
-    burnable_locator = SpawnPrefab('burnable_locator_medium')
-    burnable_locator.Transform:SetPosition(my_pos.x + 0, my_pos.y + 0, my_pos.z + 2.5)
-
-    burnable_locator = SpawnPrefab('burnable_locator_medium')
-    burnable_locator.Transform:SetPosition(my_pos.x + 0, my_pos.y + 0, my_pos.z + -2.5)
-
-end
-
 function BoatPhysics:Row(row_dir_x, row_dir_z, row_force)
     self.velocity_x, self.velocity_z = self.velocity_x + row_dir_x * row_force, self.velocity_z + row_dir_z * row_force
 end

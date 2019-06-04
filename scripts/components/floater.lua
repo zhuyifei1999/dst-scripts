@@ -8,8 +8,13 @@ local Floater = Class(function(self, inst)
     end
 
     if not TheNet:IsDedicated() then
-        self.inst:ListenForEvent("floater.landed", function() self:OnLandedClient() end)
-        self.inst:ListenForEvent("floater.nolongerlanded", function() self:OnNoLongerLandedClient() end)
+        self.inst:ListenForEvent("landeddirty", function()
+            if self._is_landed:value() then
+                self:OnLandedClient()
+            else
+                self:OnNoLongerLandedClient()
+            end
+        end)
     end
 
     self.size = "small"
@@ -23,8 +28,7 @@ local Floater = Class(function(self, inst)
     self.swap_data = nil
     self.showing_effect = false
 
-    self.landed_event = net_event(inst.GUID, "floater.landed")
-    self.no_longer_landed_event = net_event(inst.GUID, "floater.nolongerlanded")
+    self._is_landed = net_bool(inst.GUID, "floater._is_landed", "landeddirty")
 end)
 
 --small/med/large
@@ -90,6 +94,10 @@ function Floater:AttachEffect(effect)
     effect.Transform:SetScale(self.xscale, self.yscale, self.zscale)
 end
 
+function Floater:IsFloating()
+    return self.showing_effect
+end
+
 function Floater:OnLandedServer()
     if not self.showing_effect and self:ShouldShowEffect() then
         -- If something lands in a place where the water effect should be shown, and it has an inventory component,
@@ -100,7 +108,7 @@ function Floater:OnLandedServer()
         end
 
         self.inst:PushEvent("floater_startfloating")
-        self.landed_event:push()
+        self._is_landed:set(true)
         self.showing_effect = true
 
         if self.do_bank_swap then
@@ -126,13 +134,17 @@ function Floater:OnLandedServer()
 end
 
 function Floater:OnLandedClient()
-    self.front_fx = SpawnPrefab("float_fx_front")
-    self:AttachEffect(self.front_fx)
-    self.front_fx.AnimState:PlayAnimation("idle_front_" .. self.size, true)
+    if self.front_fx == nil then
+        self.front_fx = SpawnPrefab("float_fx_front")
+        self:AttachEffect(self.front_fx)
+        self.front_fx.AnimState:PlayAnimation("idle_front_" .. self.size, true)
+    end
 
-    self.back_fx = SpawnPrefab("float_fx_back")
-    self:AttachEffect(self.back_fx)
-    self.back_fx.AnimState:PlayAnimation("idle_back_" .. self.size, true)
+    if self.back_fx == nil then
+        self.back_fx = SpawnPrefab("float_fx_back")
+        self:AttachEffect(self.back_fx)
+        self.back_fx.AnimState:PlayAnimation("idle_back_" .. self.size, true)
+    end
 
     self.inst.AnimState:SetFloatParams(-0.05, 1.0)
 end
@@ -140,7 +152,7 @@ end
 function Floater:OnNoLongerLandedServer()
     if self.showing_effect then
         self.inst:PushEvent("floater_stopfloating")
-        self.no_longer_landed_event:push()
+        self._is_landed:set(false)
         self.showing_effect = false
 
         if self.do_bank_swap then

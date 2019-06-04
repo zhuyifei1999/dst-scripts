@@ -2041,6 +2041,8 @@ STRINGS =
 
         CARRAT = "Carrat",
         CARRAT_PLANTED = "Carrot",
+
+		BURNABLE_LOCATOR_MEDIUM = "Boat",
     },
 
     NAME_DETAIL_EXTENTION =

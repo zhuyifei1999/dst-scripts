@@ -1437,6 +1437,11 @@ function EntityScript:IsOnValidGround() -- this currently does not support boats
 	return TheWorld.Map:IsVisualGroundAtPoint(self.Transform:GetWorldPosition())
 end
 
+function EntityScript:IsOnPassablePoint(include_water, floating_platforms_are_not_passable)
+    local x, y, z = self.Transform:GetWorldPosition()
+    return TheWorld.Map:IsPassableAtPoint(x, y, z, include_water or false, floating_platforms_are_not_passable or false)
+end
+
 function EntityScript:GetCurrentTileType()
 -- WARNING: This function is only an approximate, if you only care if the ground is valid or not then call IsOnValidGround()
     local map = TheWorld.Map
@@ -1477,7 +1482,8 @@ function EntityScript:GetCurrentTileType()
 end
 
 function EntityScript:PutBackOnGround()
-    if not self:IsOnValidGround() then
+	local x, y, z = self.Transform:GetWorldPosition()
+    if not TheWorld.Map:IsPassableAtPoint(x, y, z, true) then
         local dest = FindNearbyLand(self:GetPosition(), 8)
         if dest ~= nil then
             if self.Physics ~= nil then

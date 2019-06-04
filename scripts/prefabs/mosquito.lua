@@ -142,6 +142,8 @@ local function mosquito()
     inst.AnimState:PlayAnimation("idle")
     inst.AnimState:SetRayTestOnBB(true)
 
+    MakeInventoryFloatable(inst)
+
     MakeFeedableSmallLivestockPristine(inst)
 
     inst.entity:SetPristine()
@@ -170,7 +172,7 @@ local function mosquito()
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem.canbepickedup = false
     inst.components.inventoryitem.canbepickedupalive = true
-    inst.components.inventoryitem:SetSinks(true)
+    inst.components.inventoryitem.pushlandedevents = false
 
     ---------------------
 

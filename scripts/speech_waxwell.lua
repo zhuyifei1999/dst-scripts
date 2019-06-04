@@ -2617,6 +2617,7 @@ return {
         },
         SEAFARER_KIT = "A collection of boat-related bric-à-brac.",
         BOAT_ITEM = "I've been reduced to a common shipyard laborer.",
+        MAST_ITEM = "Do I look like a shipyard laborer?",
         STEERINGWHEEL_ITEM = "Hard labor? Isn't that Winona's forte?",
         ANCHOR_ITEM = "Can't someone else assemble it?",
         MUTATEDHOUND = 

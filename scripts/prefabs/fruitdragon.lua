@@ -81,7 +81,7 @@ local function ShouldTarget(target)
 end
 
 local function RetargetFn(inst)
-	if not inst.components.sleeper:IsAsleep() 
+	if (inst.components.sleeper == nil or not inst.components.sleeper:IsAsleep())
 		and not inst.components.timer:TimerExists("panicing") then
 
 		if inst.components.combat.target ~= nil and KeepTarget(inst, inst.components.combat.target) then
@@ -106,7 +106,7 @@ end
 
 local function doattack(inst, data)
 	if data.target:HasTag("fruitdragon") then
-		if data.target:HasTag("sleeping") then
+		if data.target:HasTag("sleeping") and data.target.components.sleeper ~= nil then
 			data.target.components.sleeper:WakeUp()
 			data.target:PushEvent("wake_up_to_challenge")
 		end
@@ -138,7 +138,9 @@ end
 local function onblocked(inst, data)
 	if data.attacker:HasTag("fruitdragon") and not inst.components.timer:TimerExists("panicing") then
 		inst.components.combat:SuggestTarget(data.attacker)
-		inst.components.sleeper:WakeUp()
+		if inst.components.sleeper ~= nil then
+			inst.components.sleeper:WakeUp()
+		end
 	end
 end
 
@@ -335,7 +337,7 @@ local function OnEntityWake(inst)
 
 	inst._findnewhometask = inst:DoPeriodicTask(3, FindNewHome, 0.1 + math.random())
 
-	if not inst.components.health:IsDead() and inst.components.sleeper:IsAsleep() then
+	if not inst.components.health:IsDead() and inst.components.sleeper ~= nil and inst.components.sleeper:IsAsleep() then
 		inst.components.health:StartRegen(TUNING.FRUITDRAGON.NAP_REGEN_AMOUNT, TUNING.FRUITDRAGON.NAP_REGEN_INTERVAL, true)
 	end
 end
@@ -347,7 +349,7 @@ end
 local function GetDebugString(inst)
 	return	"Home: " .. tostring(inst.components.entitytracker:GetEntity("home")) ..
 			"\nRipe: " .. tostring(inst._is_ripe) ..
-			(not inst.components.sleeper:IsAsleep() and ("\nSleep in: " .. tostring(GetRemainingTimeAwake(inst))) or ("\nAwake in: " .. tostring(GetRemainingNapTime(inst)))) ..
+			(not inst:HasTag("sleeping") and ("\nSleep in: " .. tostring(GetRemainingTimeAwake(inst))) or ("\nAwake in: " .. tostring(GetRemainingNapTime(inst)))) ..
 			"\n\n"
 			.. inst:_GetDebugString()
 end

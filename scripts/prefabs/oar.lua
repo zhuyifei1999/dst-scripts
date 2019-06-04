@@ -47,7 +47,7 @@ local function fn()
 
     inst.MiniMapEntity:SetIcon("boat_net.png")
 
-    MakeInventoryFloatable(inst, "large", nil, {0.68, 0.5, 0.68})
+    MakeInventoryFloatable(inst, "small", nil, 0.68)
 
     inst.entity:SetPristine()
 

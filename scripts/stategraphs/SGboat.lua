@@ -75,7 +75,7 @@ local states =
             inst.AnimState:PlayAnimation("crack") 
             inst.sg:SetTimeout(1)  
 
-            for k,v in ipairs(inst.components.walkableplatform:GetEntitiesOnPlatform()) do
+            for k,v in pairs(inst.components.walkableplatform:GetEntitiesOnPlatform()) do
                 v:PushEvent("onpresink")
             end
         end,
@@ -145,13 +145,20 @@ local states =
             TimeEvent(1 * FRAMES, function(inst)
                 inst.AnimState:PlayAnimation("hide")          
 
-                for k,v in ipairs(inst.components.walkableplatform:GetEntitiesOnPlatform()) do
-                    v:PushEvent("onsink")
+				local shore_x, shore_y, shore_z
+                for k,v in pairs(inst.components.walkableplatform:GetEntitiesOnPlatform()) do
+					if v.components.drownable ~= nil then
+						if shore_x == nil then
+							shore_x, shore_y, shore_z = FindRandomPointOnShoreFromOcean(inst.Transform:GetWorldPosition())
+						end
+						v.components.drownable:OnFallInOcean(shore_x, shore_y, shore_z)
+					end
+					v:PushEvent("onsink", {boat = inst})
                 end
 
                 inst:PushEvent("onsink")
 
-				local ignitefragments = inst.components.burnable:IsBurning()
+				local ignitefragments = inst.activefires > 0
                 SpawnFragment(inst, "boatfragment", "04", 2.75, 0, 0.5, ignitefragments)
                 SpawnFragment(inst, "boatfragment", "05", -2.5, 0, -0.25, ignitefragments)
                 SpawnFragment(inst, "boatfragment", "04", 0.25, 0, -2.8, ignitefragments)

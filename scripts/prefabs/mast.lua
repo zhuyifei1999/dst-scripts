@@ -7,7 +7,8 @@ local assets =
 
 local prefabs =
 {
-
+	"boat_mast_sink_fx",
+	"collapse_small",
 }
 
 local function on_hammered(inst, hammerer)
@@ -18,6 +19,30 @@ local function on_hammered(inst, hammerer)
     collapse_fx:SetMaterial("wood")
 
     inst:Remove()
+end
+
+local function onburnt(inst)
+	inst:AddTag("burnt")
+
+	local mast = inst.components.mast
+	if mast.boat ~= nil then
+		mast.boat.components.boatphysics:RemoveMast(mast)
+	end
+
+	inst:RemoveComponent("mast")
+end
+
+local function onsave(inst, data)
+	if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() or inst:HasTag("burnt") then
+		data.burnt = true
+	end
+end
+
+local function onload(inst, data)
+	if data ~= nil and data.burnt then
+        inst.components.burnable.onburnt(inst)
+		inst:PushEvent("onburnt")
+    end
 end
 
 local function fn()
@@ -45,7 +70,8 @@ local function fn()
         return inst
     end
 
-    MakeLargeBurnable(inst)
+    MakeLargeBurnable(inst, nil, nil, true)
+	inst:ListenForEvent("onburnt", onburnt)
     MakeLargePropagator(inst)
 
     inst:AddComponent("hauntable")
@@ -61,6 +87,9 @@ local function fn()
     inst.components.workable:SetWorkLeft(3)
     inst.components.workable:SetOnFinishCallback(on_hammered)
 
+	inst.OnSave = onsave
+    inst.OnLoad = onload
+
     return inst
 end
 
@@ -70,7 +99,8 @@ local function ondeploy(inst, pt, deployer)
         mast.Physics:SetCollides(false)
         mast.Physics:Teleport(pt.x, 0, pt.z)
         mast.Physics:SetCollides(true)
-
+        --- Yog this starts in the right place but it fucks it all up. :( 
+        -- mast.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/place")
         mast.AnimState:PlayAnimation("place")
 
         inst:Remove()

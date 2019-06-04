@@ -132,14 +132,16 @@ function PostUpdate(dt)
     --TheSim:ProfilerPush("LuaPostUpdate")
     EmitterManager:PostUpdate()
 
+    --TheSim:ProfilerPop()
+end
+
+function PostPhysicsWallUpdate(dt)
     if TheWorld ~= nil then
         local walkable_platform_manager = TheWorld.components.walkableplatformmanager
         if walkable_platform_manager ~= nil then
             walkable_platform_manager:PostUpdate(dt)
         end
-    end
-
-    --TheSim:ProfilerPop()
+    end    
 end
 
 local StaticComponentLongUpdates = {}

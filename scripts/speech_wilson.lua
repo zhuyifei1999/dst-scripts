@@ -279,6 +279,8 @@ return {
 	ANNOUNCE_WETTER = "Water way to go!",
 	ANNOUNCE_SOAKED = "I've nearly reached my saturation point.",
 
+	ANNOUNCE_WASHED_ASHORE = "I've nearly reached my saturation point.",
+
     ANNOUNCE_DESPAWN = "I can see the light!",
 	ANNOUNCE_BECOMEGHOST = "oOooOooo!!",
 	ANNOUNCE_GHOSTDRAIN = "My humanity is about to start slipping away...",
@@ -1523,9 +1525,9 @@ return {
             DRYINGINRAIN = "Meat takes even longer to dry in rain.",
             GENERIC = "I should dry some meats.",
             BURNT = "The rack got dried.",
-            DONE_NOTMEAT = "Jerky time!",
-            DRYING_NOTMEAT = "Meat takes a while to dry.",
-            DRYINGINRAIN_NOTMEAT = "Meat takes even longer to dry in rain.",
+            DONE_NOTMEAT = "In laboratory terms, we would call that \"dry\".",
+            DRYING_NOTMEAT = "Drying things is not an exact science.",
+            DRYINGINRAIN_NOTMEAT = "Rain, rain, go away. Be wet again another day.",
         },
         MEAT_DRIED = "Just jerky enough.",
         MERM = "Smells fishy!",
@@ -2645,6 +2647,7 @@ return {
         BOAT_ITEM = "It would be nice to do some experiments on the water.",
         STEERINGWHEEL_ITEM = "That's going to be the steering wheel.",
         ANCHOR_ITEM = "Now I can build an anchor.",
+        MAST_ITEM = "Now I can build a mast.",
         MUTATEDHOUND = 
         {
         	DEAD = "Now I can breathe easy.",

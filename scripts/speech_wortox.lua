@@ -1539,7 +1539,7 @@ return {
 			DRYINGINRAIN = "It's undrying day.",
 			GENERIC = "I don't have much use for this.",
 			BURNT = "A silly prank to be sure.",
-			DONE_NOTMEAT = "The jerky is ready.",
+			DONE_NOTMEAT = "The food's ready.",
 			DRYING_NOTMEAT = "It's drying.",
 			DRYINGINRAIN_NOTMEAT = "It's undrying day.",
 		},
@@ -2622,6 +2622,7 @@ return {
         },
         SEAFARER_KIT = "Boat building basics, hyuyu!",
         BOAT_ITEM = "Let's craft a raft!",
+        MAST_ITEM = "A mast to sail the ocean vast.",
         STEERINGWHEEL_ITEM = "I can see the appeal of a steering wheel.",
         ANCHOR_ITEM = "Such funny ship things I could build.",
         MUTATEDHOUND = 

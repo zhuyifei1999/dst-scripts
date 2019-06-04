@@ -138,9 +138,10 @@ local function fn()
     inst:AddTag("show_spoilage")
     inst:AddTag("small_livestock")
 
-
     inst:DoPeriodicTask(.1, OnUpdateFlicker, nil, GetTime())
     OnUpdateFlicker(inst)
+
+    MakeInventoryFloatable(inst)
 
     inst.entity:SetPristine()
 
@@ -159,9 +160,9 @@ local function fn()
     inst.components.inventoryitem.canbepickedup = false
     inst.components.inventoryitem.canbepickedupalive = true
     inst.components.inventoryitem.nobounce = true
+    inst.components.inventoryitem.pushlandedevents = false
     inst.components.inventoryitem:SetOnPutInInventoryFn(OnPickedUp)
     inst.components.inventoryitem:SetOnDroppedFn(OnDropped)
-    inst.components.inventoryitem:SetSinks(true)
 
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(1)

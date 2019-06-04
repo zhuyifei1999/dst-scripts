@@ -132,3 +132,83 @@ function SpawnWaves(inst, numWaves, totalAngle, waveSpeed, wavePrefab, initialOf
         end
     end
 end
+
+
+function FindLandBetweenPoints(p0x, p0y, p1x, p1y)
+	local map = TheWorld.Map
+	local dummy
+    p0x, dummy, p0y = map:GetTileCenterPoint(p0x, 0, p0y)
+    p1x, dummy, p1y = map:GetTileCenterPoint(p1x, 0, p1y)
+
+	local dx = math.abs(p1x - p0x)
+	local dy = math.abs(p1y - p0y)
+
+    local ix = p0x < p1x and TILE_SCALE or -TILE_SCALE
+    local iy = p0y < p1y and TILE_SCALE or -TILE_SCALE
+
+    local e = 0;
+    for i = 0, dx+dy - 1 do
+	    if IsLandTile(map:GetTileAtPoint(p0x, 0, p0y)) then
+			break
+		end
+
+        local e1 = e + dy
+        local e2 = e - dx
+        if math.abs(e1) < math.abs(e2) then
+            p0x = p0x + ix
+            e = e1
+		else 
+            p0y = p0y + iy
+            e = e2
+        end
+	end
+
+	return p0x, 0, p0y
+end
+
+function FindRandomPointOnShoreFromOcean(x, y, z)
+	local nodes = {}
+
+    for i, node in ipairs(TheWorld.topology.nodes) do
+		if node.type ~= NODE_TYPE.Blank and node.type ~= NODE_TYPE.Blocker and node.type ~= NODE_TYPE.SeparatedRoom then
+			table.insert(nodes, {n = node, distsq = VecUtil_LengthSq(x - node.x, z - node.y)})
+		end
+	end
+	table.sort(nodes, function(a, b) return a.distsq < b.distsq end)
+	
+	local closest = {}
+	for i = 1, 4 do
+		table.insert(closest, nodes[i])
+	end
+	shuffleArray(closest)
+
+	local dest_x, dest_y, dest_z
+	for _, c in ipairs(closest) do
+		dest_x, dest_y, dest_z = FindLandBetweenPoints(x, z, c.n.x, c.n.y)
+		if dest_x ~= nil then
+			return dest_x, dest_y, dest_z
+		end
+	end
+
+	if TheWorld.components.playerspawner ~= nil then
+		return TheWorld.components.playerspawner:GetAnySpawnPoint()
+	end
+
+	return nil
+end
+
+function LandFlyingCreature(creature)
+    creature:RemoveTag("flying")
+    creature:PushEvent("on_landed")
+    if creature.Physics ~= nil then
+        creature.Physics:CollidesWith(COLLISION.LIMITS)
+    end
+end
+
+function RaiseFlyingCreature(creature)
+    creature:AddTag("flying")
+    creature:PushEvent("on_no_longer_landed")
+    if creature.Physics ~= nil then
+        creature.Physics:ClearCollidesWith(COLLISION.LIMITS)
+    end
+end

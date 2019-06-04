@@ -40,8 +40,10 @@ local emotes =
 	{ anim="emote_nuzzle",
       timeline=
 		{
+            TimeEvent(2*FRAMES, LandFlyingCreature),
 			TimeEvent(4*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/blink") end),
 			TimeEvent(14*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/emote_flame") end),
+            TimeEvent(50*FRAMES, RaiseFlyingCreature),
 		},
 	},
 }
@@ -63,9 +65,11 @@ SGCritterStates.AddRandomEmotes(states, emotes)
 SGCritterStates.AddEmote(states, "cute", 
 	{
 		TimeEvent(4*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/blink") end),
-		TimeEvent(14*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/blink") end),
+		TimeEvent(6*FRAMES, LandFlyingCreature),
+        TimeEvent(14*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/blink") end),
 		TimeEvent(24*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/swipe") end),
 		TimeEvent(42*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/blink") end),
+        TimeEvent(57*FRAMES, RaiseFlyingCreature),
 		TimeEvent(59*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/blink") end),
 	})
 SGCritterStates.AddCombatEmote(states,
@@ -73,14 +77,18 @@ SGCritterStates.AddCombatEmote(states,
 		pre =
 		{
 			TimeEvent(8*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/emote_combat") end),
+            TimeEvent(10*FRAMES, LandFlyingCreature),
 		},
 		loop =
 		{
 			TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/emote_combat_2") end),
+            TimeEvent(0*FRAMES, LandFlyingCreature),
 		},
 		pst =
 		{
+            TimeEvent(0*FRAMES, LandFlyingCreature),
 			TimeEvent(4*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/blink") end),
+            TimeEvent(8*FRAMES, RaiseFlyingCreature),
 		},
 	})
 SGCritterStates.AddPlayWithOtherCritter(states, events,
@@ -92,19 +100,28 @@ SGCritterStates.AddPlayWithOtherCritter(states, events,
 		},
 		passive = 
 		{
+            TimeEvent(8*FRAMES, LandFlyingCreature),
 			TimeEvent(57*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/blink") end),
+            TimeEvent(62*FRAMES, RaiseFlyingCreature),
 		},
-	})
+	},
+    {
+        inactive = RaiseFlyingCreature,
+    })
 SGCritterStates.AddEat(states,
     {
         TimeEvent(12*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/eat_pre") end),
         TimeEvent(24*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/blink") end),
+        
+        TimeEvent(26*FRAMES, LandFlyingCreature),
 
         TimeEvent((28+0)*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/eat") end),
         TimeEvent((28+10)*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/eat") end),
-            
+
         TimeEvent((28+24+0)*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/eat") end),
         TimeEvent((28+24+6)*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/blink") end),
+        
+        TimeEvent((28+24+10)*FRAMES, RaiseFlyingCreature),
     })
 SGCritterStates.AddHungry(states,
     {
@@ -115,7 +132,9 @@ SGCritterStates.AddHungry(states,
     })
 SGCritterStates.AddNuzzle(states, actionhandlers,
 	{
+        TimeEvent(2*FRAMES, LandFlyingCreature),
         TimeEvent(15*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/emote") end),
+        TimeEvent(50*FRAMES, RaiseFlyingCreature),
     })
 
 SGCritterStates.AddWalkStates(states, nil, true)
@@ -138,22 +157,31 @@ local function CleanupIfSleepInterrupted(inst)
     if not inst.sg.statemem.continuesleeping then
         RestoreFlapping(inst)
     end
+    RaiseFlyingCreature(inst)
 end
 
 SGCritterStates.AddPetEmote(states, 
 	{
 		TimeEvent(3*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/blink") end),
-        TimeEvent(4*FRAMES, StopFlapping),
+        TimeEvent(4*FRAMES, function(inst)
+            StopFlapping(inst)
+            LandFlyingCreature(inst)
+        end),
 		TimeEvent(7*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/emote") end),
         TimeEvent(27*FRAMES, StartFlapping),
+        TimeEvent(50*FRAMES, RaiseFlyingCreature),
 	},
-    RestoreFlapping)
+    function(inst)
+        RestoreFlapping(inst)
+        RaiseFlyingCreature(inst)
+    end)
 
 CommonStates.AddSleepExStates(states,
 	{
 		starttimeline =
 		{
 			TimeEvent(11*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/sleep_pre") end),
+            TimeEvent(18*FRAMES, LandFlyingCreature),
             TimeEvent(44*FRAMES, StopFlapping),
 			TimeEvent(48*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/sleep") end),
 		},
@@ -162,17 +190,25 @@ CommonStates.AddSleepExStates(states,
 			TimeEvent(13*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/sleep") end),
 			TimeEvent(52*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/sleep") end),
 		},
-		endtimeline = 
+		waketimeline = 
 		{
 			TimeEvent(2*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/together/dragonling/blink") end),
             TimeEvent(12*FRAMES, StartFlapping),
+            TimeEvent(18*FRAMES, RaiseFlyingCreature),
 		},
 	},
     {
         onexitsleep = CleanupIfSleepInterrupted,
         onexitsleeping = CleanupIfSleepInterrupted,
-        onexitwake = RestoreFlapping,
-        onwake = StopFlapping,
+        onsleeping = LandFlyingCreature,
+        onexitwake = function(inst)
+            RestoreFlapping(inst)
+            RaiseFlyingCreature(inst)
+        end,
+        onwake = function(inst)
+            StopFlapping(inst)
+            LandFlyingCreature(inst)
+        end,
     })
 
 return StateGraph("SGcritter_lunarmoth", states, events, "idle", actionhandlers)

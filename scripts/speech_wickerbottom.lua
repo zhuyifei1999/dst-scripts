@@ -2665,6 +2665,7 @@ return
         },
         SEAFARER_KIT = "It is a ship construction kit.",
         BOAT_ITEM = "It will allow us to go on the water.",
+        MAST_ITEM = "A tool for harnessing the wind's power.",
         STEERINGWHEEL_ITEM = "A necessity should we want to steer our boat.",
         ANCHOR_ITEM = "It will allow us to create an anchor for our ships.",
         MUTATEDHOUND = 

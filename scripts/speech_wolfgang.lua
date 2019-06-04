@@ -616,9 +616,9 @@ return {
             DRYINGINRAIN = "Go away, rain! Meat is drying!",
             GENERIC = "For drying many meats!",
             BURNT = "Cannot dry meat now.",
-            DONE_NOTMEAT = "Yum, meaty leather!",
-            DRYING_NOTMEAT = "Dry meaty things! Dry!",
-            DRYINGINRAIN_NOTMEAT = "Go away, rain! Meat is drying!",
+            DONE_NOTMEAT = "Is very good and dry now!",
+            DRYING_NOTMEAT = "Wolfgang could punch water out, maybe?",
+            DRYINGINRAIN_NOTMEAT = "Sky tears is re-wetting Wolfgang's dry things!",
         },
         MERMHEAD = 
         {
@@ -2616,6 +2616,7 @@ return {
         },
         SEAFARER_KIT = "Wolfgang wishes to ride a boat!",
         BOAT_ITEM = "Is for making very nice boat.",
+        MAST_ITEM = "Is for making big sail-stick.",
         STEERINGWHEEL_ITEM = "Is for making little whirly steer-wheel.",
         ANCHOR_ITEM = "Is for making big boat weight.",
         MUTATEDHOUND = 
