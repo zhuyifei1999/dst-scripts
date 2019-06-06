@@ -4977,6 +4977,7 @@ CLOTHING =
 		symbol_hides = { "skirt", "foot", },
 		rarity = "Classy",
 		rarity_modifier = "Woven",
+		legs_cuff_size = 3,
 		release_group = 67,
 	},
 	legs_wormwood_mushroom =

@@ -150,6 +150,8 @@ function SetSkinsOnAnim( anim_state, prefab, base_skin, clothing_names, skintype
 							--print("setting skin", sym, name )
 							
 							if sym == "leg" then
+								anim_state:ShowSymbol("foot") --Hack for wormwood cactus legs hiding feet. If someone else sets legs (full body piece) we want to show the feet again. This should be generalized better if we're going to do more silly stuff like feet hiding.
+
 								if CLOTHING[name].legs_cuff_size ~= nil then
 									legs_cuff_size = CLOTHING[name].legs_cuff_size
 									--print("setting legs_cuff_size to", legs_cuff_size, name )

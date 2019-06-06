@@ -69,6 +69,8 @@ local function MakeFX(name, anim, damage)
         inst.AnimState:SetBuild("bramblefx")
         inst.AnimState:PlayAnimation(anim)
 
+        inst:SetPrefabNameOverride("bramblefx")
+
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then

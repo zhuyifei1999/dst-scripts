@@ -1515,7 +1515,7 @@ function Inventory:ControllerUseItemOnSceneFromInvTile(item, target, actioncode,
         elseif item.components.inventoryitem:GetGrandOwner() ~= self.inst then
             --V2C: This is now invalid as playercontroller will now send this
             --     case to the proper call to move items between controllers.
-        elseif actioncode == nil or CanEntitySeeTarget(self.inst, target) then
+        elseif actioncode == nil or target == nil or CanEntitySeeTarget(self.inst, target) then
             act = self.inst.components.playercontroller:GetItemUseAction(item, target)
         end
 
