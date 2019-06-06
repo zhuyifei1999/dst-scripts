@@ -13,7 +13,7 @@ local function OnCooldown(inst)
 end
 
 local function OnBlocked(owner, data, inst)
-    if inst._cdtask == nil then
+    if inst._cdtask == nil and data ~= nil and not data.redirected then
         --V2C: tiny CD to limit chain reactions
         inst._cdtask = inst:DoTaskInTime(.3, OnCooldown)
 

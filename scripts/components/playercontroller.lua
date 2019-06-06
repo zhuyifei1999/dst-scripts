@@ -3179,7 +3179,7 @@ function PlayerController:GetRightMouseAction()
 end
 
 function PlayerController:GetItemSelfAction(item)
-    if item == nil or self.deploy_mode then
+    if item == nil or (self.handler ~= nil and self.deploy_mode) then
         return
     end
     local act =
