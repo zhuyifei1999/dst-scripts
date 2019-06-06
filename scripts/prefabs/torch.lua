@@ -147,6 +147,9 @@ local function fn()
     --waterproofer (from waterproofer component) added to pristine state for optimization
     inst:AddTag("waterproofer")
 
+    --weapon (from weapon component) added to pristine state for optimization
+    inst:AddTag("weapon")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -162,7 +165,6 @@ local function fn()
     -----------------------------------
 
     inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem:SetSinks(true)
     -----------------------------------
 
     inst:AddComponent("equippable")

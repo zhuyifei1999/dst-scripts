@@ -228,6 +228,9 @@ local function fn()
     inst.AnimState:SetScale(SCALE, SCALE)
     inst.AnimState:SetFinalOffset(-1)
 
+    --weapon (from weapon component) added to pristine state for optimization
+    inst:AddTag("weapon")
+
     --projectile (from projectile component) added to pristine state for optimization
     inst:AddTag("projectile")
 

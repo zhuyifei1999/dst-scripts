@@ -604,6 +604,13 @@ PREFAB_SKINS = {
 		"woodie_treeguard_d",
 		"woodie_victorian",
 	},
+	wormwood = 
+	{
+		"wormwood_cactus",
+		"wormwood_mushroom",
+		"wormwood_none",
+		"wormwood_rose",
+	},
 	wortox = 
 	{
 		"wortox_minotaur",

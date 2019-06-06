@@ -36,8 +36,6 @@ local function StopBuzz(inst)
     inst:EnableBuzz(false)
 end
 
---------------------------------------------------------------------------
-
 local states =
 {
     State{
@@ -245,10 +243,7 @@ local states =
 
         timeline =
         {
-            TimeEvent(13 * FRAMES, function(inst)
-                RemovePhysicsColliders(inst)
-                LandFlyingCreature(inst)
-            end),
+            TimeEvent(13 * FRAMES, RemovePhysicsColliders),
         },
     },
 
@@ -289,7 +284,6 @@ local function CleanupIfSleepInterrupted(inst)
     if not inst.sg.statemem.continuesleeping then
         StartBuzz(inst)
     end
-    RaiseFlyingCreature(inst)
 end
 CommonStates.AddSleepExStates(states,
 {
@@ -297,14 +291,12 @@ CommonStates.AddSleepExStates(states,
     {
         TimeEvent(15 * FRAMES, function(inst)
             inst.sg:RemoveStateTag("caninterrupt")
-            LandFlyingCreature(inst)
         end),
         TimeEvent(23 * FRAMES, StopBuzz),
     },
     waketimeline =
     {
         TimeEvent(1 * FRAMES, StartBuzz),
-        TimeEvent(20 * FRAMES, RaiseFlyingCreature),
         CommonHandlers.OnNoSleepTimeEvent(24 * FRAMES, function(inst)
             inst.sg:RemoveStateTag("busy")
             inst.sg:RemoveStateTag("nosleep")
@@ -312,26 +304,13 @@ CommonStates.AddSleepExStates(states,
     },
 },
 {
+    onexitsleep = CleanupIfSleepInterrupted,
+    onexitsleeping = CleanupIfSleepInterrupted,
+    onexitwake = StartBuzz,
     onsleep = function(inst)
         inst.sg:AddStateTag("caninterrupt")
     end,
-    onexitsleep = CleanupIfSleepInterrupted,
-    onsleeping = LandFlyingCreature,
-    onexitsleeping = CleanupIfSleepInterrupted,
-    onwake = LandFlyingCreature,
-    onexitwake = function(inst)
-        StartBuzz(inst)
-        RaiseFlyingCreature(inst)
-    end,
 })
-CommonStates.AddFrozenStates(states,
-    function(inst)
-        StopBuzz(inst)
-        LandFlyingCreature(inst)
-    end,
-    function(inst)
-        StartBuzz(inst)
-        RaiseFlyingCreature(inst)
-    end)
+CommonStates.AddFrozenStates(states, StopBuzz, StartBuzz)
 
 return StateGraph("SGbeeguard", states, events, "idle")

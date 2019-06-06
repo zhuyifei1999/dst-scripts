@@ -429,10 +429,7 @@ local function ActivateHUD(inst)
     if TheFrontEnd:GetFocusWidget() == nil then
         hud:SetFocus()
     end
-    TheCamera:SetOnUpdateFn(not TheWorld:HasTag("cave") and function(camera)
-        hud:UpdateClouds(camera)
-        hud:UpdateSailing(camera)
-    end or nil)
+    TheCamera:SetOnUpdateFn(not TheWorld:HasTag("cave") and function(camera) hud:UpdateClouds(camera) end or nil)
     hud:SetMainCharacter(inst)
 end
 
@@ -541,13 +538,7 @@ local function EnableMovementPrediction(inst, enable)
 
                 inst.entity:EnableMovementPrediction(true)
                 print("Movement prediction enabled")
-                inst.components.locomotor.is_prediction_enabled = true
-                --This is unfortunate but it doesn't seem like you can send an rpc on the first
-                --frame when a character is spawned
-                inst:DoTaskInTime(0, function(inst)
-                    SendRPCToServer(RPC.MovementPredictionEnabled, inst)
-                    end)
-            end            
+            end
         elseif inst.components.locomotor ~= nil then
             inst:RemoveEventCallback("cancelmovementprediction", OnCancelMovementPrediction)
             inst.entity:EnableMovementPrediction(false)
@@ -558,14 +549,8 @@ local function EnableMovementPrediction(inst, enable)
             end
             inst:RemoveComponent("locomotor")
             print("Movement prediction disabled")
-            --This is unfortunate but it doesn't seem like you can send an rpc on the first
-            --frame when a character is spawned            
-            inst:DoTaskInTime(0, function(inst)
-                SendRPCToServer(RPC.MovementPredictionDisabled, inst)
-                end)            
         end
     end
-
 end
 
 --Always on the bottom of the stack
@@ -669,11 +654,13 @@ local function OnRemoveEntity(inst)
         if TheWorld.ismastersim then
             inst.player_classified:Remove()
             inst.player_classified = nil
-            if inst.ghostenabled then
-                inst.Network:RemoveUserFlag(USERFLAGS.IS_GHOST)
-            end
-            inst.Network:RemoveUserFlag(USERFLAGS.CHARACTER_STATE_1)
-            inst.Network:RemoveUserFlag(USERFLAGS.CHARACTER_STATE_2)
+            --No bit ops support, but in this case, + results in same as |
+            inst.Network:RemoveUserFlag(
+                USERFLAGS.CHARACTER_STATE_1 +
+                USERFLAGS.CHARACTER_STATE_2 +
+                USERFLAGS.CHARACTER_STATE_3 +
+                (inst.ghostenabled and USERFLAGS.IS_GHOST or 0)
+            )
         else
             inst.player_classified._parent = nil
             inst:RemoveEventCallback("onremove", inst.ondetachclassified, inst.player_classified)
@@ -802,19 +789,6 @@ local function OnLoad(inst, data)
     if inst._OnLoad ~= nil then
         inst:_OnLoad(data)
     end
-
-    inst:DoTaskInTime(0, function()
-        local my_x, my_y, my_z = inst.Transform:GetWorldPosition()
-        if not TheWorld.Map:IsPassableAtPoint(my_x, my_y, my_z) then
-        for k,v in pairs(Ents) do            
-                if v:IsValid() and v:HasTag("multiplayer_portal") then
-                    inst.Transform:SetPosition(v.Transform:GetWorldPosition())
-                    inst:SnapCamera()
-                end
-            end            
-        end
-
-    end)
 end
 
 --------------------------------------------------------------------------
@@ -1145,16 +1119,6 @@ local function LoadForReroll(inst, data)
     end
 end
 
-local function OnGotOnPlatform(inst)
-    inst.Transform:SetIsOnPlatform(true)
-	inst.Transform:SetPlatform(inst.entity)
-end
-
-local function OnGotOffPlatform(inst)
-	inst.Transform:SetPlatform(nil)
-    inst.Transform:SetIsOnPlatform(false)
-end
-
 --------------------------------------------------------------------------
 
 --V2C: starting_inventory passed as a parameter here is now deprecated
@@ -1164,7 +1128,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
     {
         Asset("ANIM", "anim/player_basic.zip"),
         Asset("ANIM", "anim/player_idles_shiver.zip"),
-        Asset("ANIM", "anim/player_idles_lunacy.zip"),
         Asset("ANIM", "anim/player_actions.zip"),
         Asset("ANIM", "anim/player_actions_axe.zip"),
         Asset("ANIM", "anim/player_actions_pickaxe.zip"),
@@ -1180,13 +1143,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_actions_boomerang.zip"),
         Asset("ANIM", "anim/player_actions_whip.zip"),
         Asset("ANIM", "anim/player_actions_till.zip"),
-        Asset("ANIM", "anim/player_boat.zip"),
-        Asset("ANIM", "anim/player_boat_plank.zip"),
-        Asset("ANIM", "anim/player_oar.zip"),
-        Asset("ANIM", "anim/player_boat_hook.zip"),
-        Asset("ANIM", "anim/player_boat_net.zip"),
-        Asset("ANIM", "anim/player_boat_sink.zip"),
-        Asset("ANIM", "anim/player_boat_jump.zip"),
         Asset("ANIM", "anim/player_bush_hat.zip"),
         Asset("ANIM", "anim/player_attacks.zip"),
         Asset("ANIM", "anim/player_idles.zip"),
@@ -1268,8 +1224,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         Asset("ANIM", "anim/player_mount_actions_item.zip"),
         Asset("ANIM", "anim/player_mount_unique_actions.zip"),
         Asset("ANIM", "anim/player_mount_one_man_band.zip"),
-        Asset("ANIM", "anim/player_mount_boat_jump.zip"),
-        Asset("ANIM", "anim/player_mount_boat_sink.zip"),
         Asset("ANIM", "anim/player_mount_blowdart.zip"),
         Asset("ANIM", "anim/player_mount_shock.zip"),
         Asset("ANIM", "anim/player_mount_frozen.zip"),
@@ -1294,7 +1248,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         "frostbreath",
         "mining_fx",
         "mining_ice_fx",
-        "mining_moonglass_fx",
         "die_fx",
         "ghost_transform_overlay_fx",
         "attune_out_fx",
@@ -1394,11 +1347,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst.AnimState:AddOverrideBuild("player_multithrust")
         inst.AnimState:AddOverrideBuild("player_parryblock")
         inst.AnimState:AddOverrideBuild("player_emote_extra")
-        inst.AnimState:AddOverrideBuild("player_boat")
-        inst.AnimState:AddOverrideBuild("player_boat_plank")
-        inst.AnimState:AddOverrideBuild("player_boat_net")        
-        inst.AnimState:AddOverrideBuild("player_boat_sink")
-        inst.AnimState:AddOverrideBuild("player_oar")
 
         inst.DynamicShadow:SetSize(1.3, .6)
 
@@ -1500,13 +1448,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 
         inst.userid = ""
 
-        inst:AddComponent("embarker")
-        inst.components.embarker.embark_speed = TUNING.WILSON_RUN_SPEED * 1.25
-
-        --TODO(YOG): Replace these with relative error prediction in transform component
-        inst:ListenForEvent("got_on_platform", function() OnGotOnPlatform(inst) end)
-        inst:ListenForEvent("got_off_platform", function() OnGotOffPlatform(inst) end)
-
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
@@ -1525,11 +1466,13 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst:RemoveTag("_sheltered")
         inst:RemoveTag("_rider")
 
-        if inst.ghostenabled then
-            inst.Network:RemoveUserFlag(USERFLAGS.IS_GHOST)
-        end
-        inst.Network:RemoveUserFlag(USERFLAGS.CHARACTER_STATE_1)
-        inst.Network:RemoveUserFlag(USERFLAGS.CHARACTER_STATE_2)
+        --No bit ops support, but in this case, + results in same as |
+        inst.Network:RemoveUserFlag(
+            USERFLAGS.CHARACTER_STATE_1 +
+            USERFLAGS.CHARACTER_STATE_2 +
+            USERFLAGS.CHARACTER_STATE_3 +
+            (inst.ghostenabled and USERFLAGS.IS_GHOST or 0)
+        )
 
         inst.player_classified = SpawnPrefab("player_classified")
         inst.player_classified.entity:SetParent(inst.entity)
@@ -1556,7 +1499,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
 
         inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
         ex_fns.ConfigurePlayerLocomotor(inst)
-
 
         inst:AddComponent("combat")
         inst.components.combat:SetDefaultDamage(TUNING.UNARMED_DAMAGE)
@@ -1683,13 +1625,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         if not GetGameModeProperty("hide_received_gifts") then
             inst:AddComponent("giftreceiver")
         end
-
-		if TheWorld.has_ocean then
-	        inst:AddComponent("drownable")
-		end
-
-        inst:AddComponent("steeringwheeluser")
-        inst:AddComponent("walkingplankuser")
 
         inst:AddInherentAction(ACTIONS.PICK)
         inst:AddInherentAction(ACTIONS.SLEEPIN)

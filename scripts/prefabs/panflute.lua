@@ -1,7 +1,6 @@
 local assets =
 {
     Asset("ANIM", "anim/pan_flute.zip"),
-    Asset("ANIM", "anim/pan_flute_water.zip"),
 }
 
 local function HearPanFlute(inst, musician, instrument)
@@ -39,8 +38,8 @@ local function fn()
     inst.AnimState:SetBuild("pan_flute")
     inst.AnimState:PlayAnimation("idle")
 
-    MakeInventoryFloatable(inst, "small", 0.05, 0.8)
-    inst.AnimState:AddOverrideBuild("pan_flute_water")
+    --tool (from tool component) added to pristine state for optimization
+    inst:AddTag("tool")
 
     inst.entity:SetPristine()
 
@@ -65,9 +64,6 @@ local function fn()
     inst:AddComponent("inventoryitem")
 
     MakeHauntableLaunch(inst)
-
-    inst:ListenForEvent("floater_startfloating", function(inst) inst.AnimState:PlayAnimation("float") end)
-    inst:ListenForEvent("floater_stopfloating", function(inst) inst.AnimState:PlayAnimation("idle") end)
 
     return inst
 end

@@ -108,7 +108,6 @@ local function deactivate(inst)
     end
 end
 
-
 local function bernie_swap_object_helper( animstate, skin_build, symbol, guid )
     if skin_build ~= nil then
         animstate:OverrideItemSkinSymbol("swap_object", skin_build, symbol, guid, symbol)
@@ -250,7 +249,6 @@ local function fn()
     inst.components.inspectable.getstatus = getstatus
 
     inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem:SetSinks(true)
 
     inst:AddComponent("equippable")
     inst.components.equippable.dapperness = TUNING.DAPPERNESS_SMALL

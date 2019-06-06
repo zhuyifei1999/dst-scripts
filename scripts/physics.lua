@@ -1,18 +1,16 @@
 --this is called back by the engine side
 
 PhysicsCollisionCallbacks = {}
-function OnPhysicsCollision(guid1, guid2, world_position_on_a_x, world_position_on_a_y, world_position_on_a_z, world_position_on_b_x, world_position_on_b_y, world_position_on_b_z, world_normal_on_b_x, world_normal_on_b_y, world_normal_on_b_z, lifetime_in_frames)
+function OnPhysicsCollision(guid1, guid2)
     local i1 = Ents[guid1]
     local i2 = Ents[guid2]
 
-    local callback1 = PhysicsCollisionCallbacks[guid1]
-    if callback1 then
-        callback1(i1, i2, world_position_on_a_x, world_position_on_a_y, world_position_on_a_z, world_position_on_b_x, world_position_on_b_y, world_position_on_b_z, world_normal_on_b_x, world_normal_on_b_y, world_normal_on_b_z, lifetime_in_frames)
+    if PhysicsCollisionCallbacks[guid1] then
+        PhysicsCollisionCallbacks[guid1](i1, i2)
     end
 
-    local callback2 = PhysicsCollisionCallbacks[guid2]
-    if callback2 then
-        callback2(i2, i1, world_position_on_b_x, world_position_on_b_y, world_position_on_b_z, world_position_on_a_x, world_position_on_a_y, world_position_on_a_z, -world_normal_on_b_x, -world_normal_on_b_y, -world_normal_on_b_z, lifetime_in_frames)
+    if PhysicsCollisionCallbacks[guid2] then
+        PhysicsCollisionCallbacks[guid2](i2, i1)
     end
 end
 
@@ -52,17 +50,15 @@ function Launch2(inst, launcher, basespeed, speedmult, startheight, startradius)
 	end
 end
 
-function LaunchAt(inst, launcher, target, speedmult, startheight, startradius, randomangleoffset)
+function LaunchAt(inst, launcher, target, speedmult, startheight, startradius)
     if inst ~= nil and inst.Physics ~= nil and inst.Physics:IsActive() and launcher ~= nil then
         local x, y, z = launcher.Transform:GetWorldPosition()
-        local angleoffset = randomangleoffset or 30
         local angle
         if target ~= nil then
-            local start_angle = 180 - angleoffset
-            angle = (start_angle + (math.random() * angleoffset * 2) - target:GetAngleToPoint(x, 0, z)) * DEGREES
+            angle = (150 + math.random() * 60 - target:GetAngleToPoint(x, 0, z)) * DEGREES
         else
             local down = TheCamera:GetDownVec()
-            angle = math.atan2(down.z, down.x) + (math.random() * angleoffset * 2 - angleoffset) * DEGREES
+            angle = math.atan2(down.z, down.x) + (math.random() * 60 - 30) * DEGREES
         end
         local sina, cosa = math.sin(angle), math.cos(angle)
         local spd = (math.random() * 2 + 1) * (speedmult or 1)
@@ -78,65 +74,54 @@ local COLLAPSIBLE_WORK_ACTIONS =
     HAMMER = true,
     MINE = true,
 }
-local COLLAPSIBLE_TAGS = { "_combat", "pickable", "campfire" }
+local COLLAPSIBLE_TAGS = { "_combat", "pickable", "NPC_workable" }
 for k, v in pairs(COLLAPSIBLE_WORK_ACTIONS) do
     table.insert(COLLAPSIBLE_TAGS, k.."_workable")
 end
 local NON_COLLAPSIBLE_TAGS = { "antlion", "groundspike", "flying", "shadow", "ghost", "playerghost", "FX", "NOCLICK", "DECOR", "INLIMBO" }
-
-function DestroyEntity(ent, destroyer, kill_all_creatures, remove_entity_as_fallback)
-    if ent:IsValid() then
-        local isworkable = false
-        if ent.components.workable ~= nil then
-            local work_action = ent.components.workable:GetWorkAction()
-            --V2C: nil action for campfires
-            --     allow digging spawners (e.g. rabbithole)
-            isworkable = (
-                (work_action == nil and ent:HasTag("campfire")) or
-                (ent.components.workable:CanBeWorked() and COLLAPSIBLE_WORK_ACTIONS[work_action.id])
-            )
-        end
-
-        local health = ent.components.health
-        if isworkable then
-            ent.components.workable:Destroy(destroyer)
-            if ent:IsValid() and ent:HasTag("stump") then
-                ent:Remove()                
-            end
-        elseif ent.components.pickable ~= nil
-            and ent.components.pickable:CanBePicked()
-            and not ent:HasTag("intense") then
-            local num = ent.components.pickable.numtoharvest or 1
-            local product = ent.components.pickable.product
-            local x1, y1, z1 = ent.Transform:GetWorldPosition()
-            ent.components.pickable:Pick(destroyer) -- only calling this to trigger callbacks on the object
-            if product ~= nil and num > 0 then
-                for i = 1, num do
-                    SpawnPrefab(product).Transform:SetPosition(x1, 0, z1)
-                end
-            end
-		elseif kill_all_creatures and health ~= nil then
-			if not health:IsDead() then
-				health:Kill()
-			end
-        elseif ent.components.combat ~= nil
-            and health ~= nil
-            and not health:IsDead() then
-            if ent.components.locomotor == nil then
-                health:Kill()
-            end
-        elseif remove_entity_as_fallback then
-            ent:Remove()
-        end
-    end
-end
-
-function LaunchAndClearArea(inst, radius, launch_basespeed, launch_speedmult, launch_startheight, launch_startradius)
+function LaunchAndClearArea(inst, radius, launch_basespeed, launch_speedmult, launch_startheight, launch_startradius, attack_characters)
     local x, y, z = inst.Transform:GetWorldPosition()
 
     local ents = TheSim:FindEntities(x, 0, z, radius, nil, NON_COLLAPSIBLE_TAGS, COLLAPSIBLE_TAGS)
     for i, v in ipairs(ents) do
-		DestroyEntity(v, inst)
+        if v:IsValid() then
+            local isworkable = false
+            if v.components.workable ~= nil then
+                local work_action = v.components.workable:GetWorkAction()
+                --V2C: nil action for NPC_workable (e.g. campfires)
+                --     allow digging spawners (e.g. rabbithole)
+                isworkable = (
+                    (work_action == nil and v:HasTag("NPC_workable")) or
+                    (v.components.workable:CanBeWorked() and COLLAPSIBLE_WORK_ACTIONS[work_action.id])
+                )
+            end
+            if isworkable then
+                v.components.workable:Destroy(inst)
+                if v:IsValid() and v:HasTag("stump") then
+                    v:Remove()
+                end
+            elseif v.components.pickable ~= nil
+                and v.components.pickable:CanBePicked()
+                and not v:HasTag("intense") then
+                local num = v.components.pickable.numtoharvest or 1
+                local product = v.components.pickable.product
+                local x1, y1, z1 = v.Transform:GetWorldPosition()
+                v.components.pickable:Pick(inst) -- only calling this to trigger callbacks on the object
+                if product ~= nil and num > 0 then
+                    for i = 1, num do
+                        SpawnPrefab(product).Transform:SetPosition(x1, 0, z1)
+                    end
+                end
+            elseif v.components.combat ~= nil
+                and v.components.health ~= nil
+                and not v.components.health:IsDead() then
+                if v.components.locomotor == nil then
+                    v.components.health:Kill()
+                elseif attack_characters and inst.components.combat:IsValidTarget(v) then
+                    inst.components.combat:DoAttack(v)
+                end
+            end
+        end
     end
 
     local totoss = TheSim:FindEntities(x, 0, z, radius, { "_inventoryitem" }, { "locomotor", "INLIMBO" })

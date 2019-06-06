@@ -10,9 +10,6 @@ local assets =
     Asset("ANIM", "anim/werebeaver_basic.zip"),
     Asset("ANIM", "anim/werebeaver_groggy.zip"),
     Asset("ANIM", "anim/werebeaver_dance.zip"),
-	Asset("ANIM", "anim/werebeaver_boat_jump.zip"),
-	Asset("ANIM", "anim/werebeaver_boat_plank.zip"),
-	Asset("ANIM", "anim/werebeaver_boat_sink.zip"),
     Asset("ANIM", "anim/player_revive_to_werebeaver.zip"),
     Asset("ANIM", "anim/player_amulet_resurrect_werebeaver.zip"),
     Asset("ANIM", "anim/player_rebirth_werebeaver.zip"),
@@ -295,7 +292,7 @@ local function OnResetBeard(inst)
     inst.components.beard.bits = inst.isbeavermode:value() and 0 or 3
 end
 
-local function beaversanityfn(inst)
+local function beaversanityfn()--inst, dt)
     return TUNING.BEAVER_SANITY_PENALTY
 end
 
@@ -317,7 +314,7 @@ local function onworked(inst, data)
             inst.components.beaverness:DoDelta(TUNING.WOODIE_CHOP_DRAIN, true)
 
             local equipitem = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-            if equipitem ~= nil and (equipitem:HasTag("possessable_axe")) then
+            if equipitem ~= nil and (equipitem.prefab == "axe" or equipitem.prefab == "goldenaxe") then
                 local itemuses = equipitem.components.finiteuses ~= nil and equipitem.components.finiteuses:GetUses() or nil
                 if itemuses == nil or itemuses > 0 then
                     --Don't make Lucy if we already have one
@@ -413,7 +410,7 @@ end
 --------------------------------------------------------------------------
 
 local function onbecamehuman(inst)
-    if inst.prefab ~= nil and inst.sg.currentstate.name ~= "reviver_rebirth" then
+    if inst.prefab ~= nil and not inst.sg:HasStateTag("ghostbuild") then
         inst.AnimState:SetBank("wilson")
         inst.components.skinner:SetSkinMode("normal_skin")
     end
@@ -460,6 +457,8 @@ local function onbecamehuman(inst)
         inst:RemoveTag("beaver")
         inst.Network:RemoveUserFlag(USERFLAGS.CHARACTER_STATE_1)
         inst.isbeavermode:set(false)
+        inst.overrideskinmode = nil
+        inst.overrideghostskinmode = nil
         inst:PushEvent("stopbeaver")
         OnBeaverModeDirty(inst)
     end
@@ -468,7 +467,7 @@ local function onbecamehuman(inst)
 end
 
 local function onbecamebeaver(inst)
-    if inst.sg.currentstate.name ~= "reviver_rebirth" then
+    if not inst.sg:HasStateTag("ghostbuild") then
         inst.components.skinner:HideAllClothing(inst.AnimState)
         inst.AnimState:SetBank("werebeaver")
         inst.components.skinner:SetSkinMode("werebeaver_skin")
@@ -516,6 +515,8 @@ local function onbecamebeaver(inst)
         inst:AddTag("beaver")
         inst.Network:AddUserFlag(USERFLAGS.CHARACTER_STATE_1)
         inst.isbeavermode:set(true)
+        inst.overrideskinmode = "werebeaver_skin"
+        inst.overrideghostskinmode = "ghost_werebeaver_skin"
         inst:PushEvent("startbeaver")
         OnBeaverModeDirty(inst)
     end
@@ -576,16 +577,6 @@ local function TransformBeaver(inst, isbeaver)
     else
         onbecamehuman(inst)
     end
-end
-
-local function OnTakeDrowningDamage(inst, tuning)
-	if tuning.BEAVERNESS ~= nil and inst.components.beaverness ~= nil then
-		inst.components.beaverness:DoDelta(-tuning.BEAVERNESS)
-	end
-end
-
-local function GetDowningDamgeTunings(inst)
-	return TUNING.DROWNING_DAMAGE[inst:HasTag("beaver") and "WEREBEAVER" or "WOODIE"]
 end
 
 --------------------------------------------------------------------------
@@ -686,11 +677,6 @@ local function master_postinit(inst)
         inst._getstatus = nil
         inst._wasnomorph = nil
         inst.TransformBeaver = TransformBeaver
-
-		if inst.components.drownable ~= nil then
-			inst.components.drownable:SetOnTakeDrowningDamageFn(OnTakeDrowningDamage)
-			inst.components.drownable:SetCustomTuningsFn(GetDowningDamgeTunings)
-		end
 
         inst:ListenForEvent("ms_respawnedfromghost", onrespawnedfromghost)
         inst:ListenForEvent("ms_becameghost", onbecameghost)

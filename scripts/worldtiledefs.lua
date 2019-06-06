@@ -11,32 +11,19 @@ local GROUND_PROPERTIES =
     { GROUND.QUAGMIRE_PEATFOREST,   { name = "grass2",     noise_texture = "levels/textures/quagmire_peatforest_noise.tex",        runsound="dontstarve/movement/run_marsh",       walksound="dontstarve/movement/walk_marsh",     snowsound="dontstarve/movement/run_ice",    mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
     { GROUND.QUAGMIRE_SOIL,         { name = "carpet",     noise_texture = "levels/textures/quagmire_soil_noise.tex",              runsound="dontstarve/movement/run_mud",         walksound="dontstarve/movement/walk_mud",       snowsound="dontstarve/movement/run_snow",   mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
 
-	{ GROUND.OCEAN_COASTAL_SHORE,	{ name = "water_deep",		    noise_texture = "levels/textures/noise_water_graveyard.tex",		runsound="dontstarve/movement/run_marsh",		walksound="dontstarve/movement/walk_marsh",		snowsound="dontstarve/movement/run_ice", mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0, is_shoreline = true	} },	
-	{ GROUND.OCEAN_REEF_SHORE,		{ name = "water_deep",			noise_texture = "levels/textures/noise_water_graveyard.tex",		runsound="dontstarve/movement/run_marsh",		walksound="dontstarve/movement/walk_marsh",		snowsound="dontstarve/movement/run_ice", mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0, is_shoreline = true	} },
-
-	{ GROUND.OCEAN_COASTAL,			{ name = "water_deep",		noise_texture = "levels/textures/noise_water_graveyard.tex",	runsound="dontstarve/movement/run_marsh",		walksound="dontstarve/movement/walk_marsh",		snowsound="dontstarve/movement/run_ice", mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0	} },
-	{ GROUND.OCEAN_REEF,			{ name = "water_deep",	    noise_texture = "levels/textures/noise_water_graveyard.tex",	runsound="dontstarve/movement/run_marsh",		walksound="dontstarve/movement/walk_marsh",		snowsound="dontstarve/movement/run_ice", mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0	} },
-	{ GROUND.OCEAN_SWELL,			{ name = "water_deep",		noise_texture = "levels/textures/noise_water_graveyard.tex",	runsound="dontstarve/movement/run_marsh",		walksound="dontstarve/movement/walk_marsh",		snowsound="dontstarve/movement/run_ice", mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0	} },
-	{ GROUND.OCEAN_ROUGH,			{ name = "water_deep",		noise_texture = "levels/textures/noise_water_graveyard.tex",	runsound="dontstarve/movement/run_marsh",		walksound="dontstarve/movement/walk_marsh",		snowsound="dontstarve/movement/run_ice", mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0	} },
---	{ GROUND.OCEAN_COASTAL,			{ name = "water_medium",	noise_texture = "levels/textures/noise_water_shallow.tex",		runsound="dontstarve/movement/run_marsh",		walksound="dontstarve/movement/walk_marsh",		snowsound="dontstarve/movement/run_ice", mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0	} },
---	{ GROUND.OCEAN_REEF,			{ name = "water_medium",	noise_texture = "levels/textures/noise_water_coral.tex",		runsound="dontstarve/movement/run_marsh",		walksound="dontstarve/movement/walk_marsh",		snowsound="dontstarve/movement/run_ice", mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0	} },
---	{ GROUND.OCEAN_SWELL,			{ name = "water_medium",	noise_texture = "levels/textures/noise_water_medium.tex",	    runsound="dontstarve/movement/run_marsh",		walksound="dontstarve/movement/walk_marsh",		snowsound="dontstarve/movement/run_ice", mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0	} },
---	{ GROUND.OCEAN_ROUGH,			{ name = "water_deep",		noise_texture = "levels/textures/noise_water_deep.tex",		    runsound="dontstarve/movement/run_marsh",		walksound="dontstarve/movement/walk_marsh",		snowsound="dontstarve/movement/run_ice", mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0	} },
-	{ GROUND.OCEAN_HAZARDOUS,	    { name = "water_deep",		noise_texture = "levels/textures/noise_water_graveyard.tex",	runsound="dontstarve/movement/run_marsh",		walksound="dontstarve/movement/walk_marsh",		snowsound="dontstarve/movement/run_ice", mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0	} },
-
-    { GROUND.PEBBLEBEACH,			{ name = "rocky",			noise_texture = "levels/textures/noise_pebblebeach.tex",        runsound="turnoftides/movement/run_pebblebeach",        walksound="turnoftides/movement/run_pebblebeach",      snowsound="dontstarve/movement/run_ice",    mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
-    --{ GROUND.IMPASSABLE, { name = "water_deep",	noise_texture = "levels/textures/noise_water_graveyard.tex",			runsound="dontstarve/movement/run_dirt",        walksound="dontstarve/movement/walk_dirt",      snowsound="dontstarve/movement/run_ice",    mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
-
     { GROUND.ROAD,       { name = "cobblestone",noise_texture = "images/square.tex",                                runsound="dontstarve/movement/run_dirt",        walksound="dontstarve/movement/walk_dirt",      snowsound="dontstarve/movement/run_ice",    mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
-
     { GROUND.MARSH,      { name = "marsh",      noise_texture = "levels/textures/Ground_noise_marsh.tex",           runsound="dontstarve/movement/run_marsh",       walksound="dontstarve/movement/walk_marsh",     snowsound="dontstarve/movement/run_ice",    mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
     { GROUND.ROCKY,      { name = "rocky",      noise_texture = "levels/textures/noise_rocky.tex",                  runsound="dontstarve/movement/run_dirt",        walksound="dontstarve/movement/walk_dirt",      snowsound="dontstarve/movement/run_ice",    mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
     { GROUND.SAVANNA,    { name = "yellowgrass",noise_texture = "levels/textures/Ground_noise_grass_detail.tex",    runsound="dontstarve/movement/run_tallgrass",   walksound="dontstarve/movement/walk_tallgrass", snowsound="dontstarve/movement/run_snow",   mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
     { GROUND.FOREST,     { name = "forest",     noise_texture = "levels/textures/Ground_noise.tex",                 runsound="dontstarve/movement/run_woods",       walksound="dontstarve/movement/walk_woods",     snowsound="dontstarve/movement/run_snow",   mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
     { GROUND.GRASS,      { name = "grass",      noise_texture = "levels/textures/Ground_noise.tex",                 runsound="dontstarve/movement/run_grass",       walksound="dontstarve/movement/walk_grass",     snowsound="dontstarve/movement/run_snow",   mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
     { GROUND.DIRT,       { name = "dirt",       noise_texture = "levels/textures/Ground_noise_dirt.tex",            runsound="dontstarve/movement/run_dirt",        walksound="dontstarve/movement/walk_dirt",      snowsound="dontstarve/movement/run_snow",   mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
+    { GROUND.WOODFLOOR,  { name = "blocky",     noise_texture = "levels/textures/noise_woodfloor.tex",              runsound="dontstarve/movement/run_wood",        walksound="dontstarve/movement/walk_wood",      snowsound="dontstarve/movement/run_ice",    mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
+    { GROUND.CHECKER,    { name = "blocky",     noise_texture = "levels/textures/noise_checker.tex",                runsound="dontstarve/movement/run_marble",      walksound="dontstarve/movement/walk_marble",    snowsound="dontstarve/movement/run_ice",    mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
+    { GROUND.CARPET,     { name = "carpet",     noise_texture = "levels/textures/noise_carpet.tex",                 runsound="dontstarve/movement/run_carpet",      walksound="dontstarve/movement/walk_carpet",    snowsound="dontstarve/movement/run_snow",   mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
     { GROUND.DECIDUOUS,  { name = "deciduous",  noise_texture = "levels/textures/Ground_noise_deciduous.tex",       runsound="dontstarve/movement/run_carpet",      walksound="dontstarve/movement/walk_carpet",    snowsound="dontstarve/movement/run_snow",   mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
     { GROUND.DESERT_DIRT,{ name = "desert_dirt",noise_texture = "levels/textures/Ground_noise_dirt.tex",            runsound="dontstarve/movement/run_dirt",        walksound="dontstarve/movement/walk_dirt",      snowsound="dontstarve/movement/run_snow",   mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
+    { GROUND.SCALE,      { name = "cave",       noise_texture = "levels/textures/Ground_noise_dragonfly.tex",       runsound="dontstarve/movement/run_marble",      walksound="dontstarve/movement/run_marble",     snowsound="dontstarve/movement/run_ice",    mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 250}},
 
     { GROUND.CAVE,       { name = "cave",       noise_texture = "levels/textures/noise_cave.tex",                   runsound="dontstarve/movement/run_dirt",        walksound="dontstarve/movement/walk_dirt",      snowsound="dontstarve/movement/run_ice",    mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
     { GROUND.FUNGUS,     { name = "cave",       noise_texture = "levels/textures/noise_fungus.tex",                 runsound="dontstarve/movement/run_moss",        walksound="dontstarve/movement/walk_moss",      snowsound="dontstarve/movement/run_ice",    mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
@@ -45,7 +32,6 @@ local GROUND_PROPERTIES =
     { GROUND.SINKHOLE,   { name = "cave",       noise_texture = "levels/textures/noise_sinkhole.tex",               runsound="dontstarve/movement/run_dirt",        walksound="dontstarve/movement/walk_dirt",      snowsound="dontstarve/movement/run_snow",   mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
     { GROUND.UNDERROCK,  { name = "cave",       noise_texture = "levels/textures/noise_rock.tex",                   runsound="dontstarve/movement/run_dirt",        walksound="dontstarve/movement/walk_dirt",      snowsound="dontstarve/movement/run_ice",    mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
     { GROUND.MUD,        { name = "cave",       noise_texture = "levels/textures/noise_mud.tex",                    runsound="dontstarve/movement/run_mud",         walksound="dontstarve/movement/walk_mud",       snowsound="dontstarve/movement/run_snow",   mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
-
     { GROUND.BRICK_GLOW, { name = "cave",       noise_texture = "levels/textures/noise_ruinsbrick.tex",             runsound="dontstarve/movement/run_dirt",        walksound="dontstarve/movement/walk_dirt",      snowsound="dontstarve/movement/run_ice",    mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
     { GROUND.BRICK,      { name = "cave",       noise_texture = "levels/textures/noise_ruinsbrickglow.tex",         runsound="dontstarve/movement/run_moss",        walksound="dontstarve/movement/walk_moss",      snowsound="dontstarve/movement/run_ice",    mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
     { GROUND.TILES_GLOW, { name = "cave",       noise_texture = "levels/textures/noise_ruinstile.tex",              runsound="dontstarve/movement/run_dirt",        walksound="dontstarve/movement/walk_dirt",      snowsound="dontstarve/movement/run_snow",   mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
@@ -53,15 +39,9 @@ local GROUND_PROPERTIES =
     { GROUND.TRIM_GLOW,  { name = "cave",       noise_texture = "levels/textures/noise_ruinstrim.tex",              runsound="dontstarve/movement/run_dirt",        walksound="dontstarve/movement/walk_dirt",      snowsound="dontstarve/movement/run_snow",   mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
     { GROUND.TRIM,       { name = "cave",       noise_texture = "levels/textures/noise_ruinstrimglow.tex",          runsound="dontstarve/movement/run_dirt",        walksound="dontstarve/movement/walk_dirt",      snowsound="dontstarve/movement/run_ice",    mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
 
-    { GROUND.METEOR,	 { name = "meteor",		noise_texture = "levels/textures/noise_meteor.tex",					runsound="turnoftides/movement/run_meteor",      walksound="turnoftides/movement/run_meteor",     snowsound="dontstarve/movement/run_ice",    mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0 }},
-
-    { GROUND.SCALE,      { name = "cave",       noise_texture = "levels/textures/Ground_noise_dragonfly.tex",       runsound="dontstarve/movement/run_marble",      walksound="dontstarve/movement/run_marble",     snowsound="dontstarve/movement/run_ice",    mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 250}},
-    { GROUND.WOODFLOOR,  { name = "blocky",     noise_texture = "levels/textures/noise_woodfloor.tex",              runsound="dontstarve/movement/run_wood",        walksound="dontstarve/movement/walk_wood",      snowsound="dontstarve/movement/run_ice",    mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
-    { GROUND.CHECKER,    { name = "blocky",     noise_texture = "levels/textures/noise_checker.tex",                runsound="dontstarve/movement/run_marble",      walksound="dontstarve/movement/walk_marble",    snowsound="dontstarve/movement/run_ice",    mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
-    { GROUND.CARPET,     { name = "carpet",     noise_texture = "levels/textures/noise_carpet.tex",                 runsound="dontstarve/movement/run_carpet",      walksound="dontstarve/movement/walk_carpet",    snowsound="dontstarve/movement/run_snow",   mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
-
     { GROUND.LAVAARENA_TRIM, { name = "lavaarena_trim_ms",       noise_texture = "levels/textures/lavaarena_trim_noise.tex",         runsound="dontstarve/movement/run_dirt",        walksound="dontstarve/movement/walk_dirt",      snowsound="dontstarve/movement/run_snow",   mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
     { GROUND.LAVAARENA_FLOOR,{ name = "lavaarena_floor_ms",		noise_texture = "levels/textures/lavaarena_floor_noise.tex",         runsound="dontstarve/movement/run_dirt",        walksound="dontstarve/movement/walk_dirt",      snowsound="dontstarve/movement/run_snow",   mudsound = "dontstarve/movement/run_mud", flashpoint_modifier = 0   } },
+
 }
 
 local WALL_PROPERTIES =
@@ -84,32 +64,29 @@ local WALL_PROPERTIES =
     { GROUND.WALL_STONEEYE,     { name = "walls",   noise_texture = "images/square.tex" } },--"levels/textures/wall_mud_01.tex" } },
 }
 
--- player craftable turf prefab data
 local TURF_PROPERTIES =
 {
-    [GROUND.ROAD] =         { name = "road",            anim = "road"           ,   bank_build = "turf" },
-    [GROUND.ROCKY] =        { name = "rocky",           anim = "rocky"          ,   bank_build = "turf" },
-    [GROUND.FOREST] =       { name = "forest",          anim = "forest"         ,   bank_build = "turf" },
-    [GROUND.MARSH] =        { name = "marsh",           anim = "marsh"          ,   bank_build = "turf" },
-    [GROUND.GRASS] =        { name = "grass",           anim = "grass"          ,   bank_build = "turf" },
-    [GROUND.SAVANNA] =      { name = "savanna",         anim = "savanna"        ,   bank_build = "turf" },
-    [GROUND.WOODFLOOR] =    { name = "woodfloor",       anim = "woodfloor"      ,   bank_build = "turf" },
-    [GROUND.CARPET] =       { name = "carpetfloor",     anim = "carpet"         ,   bank_build = "turf" },
-    [GROUND.CHECKER] =      { name = "checkerfloor",    anim = "checker"        ,   bank_build = "turf" },
-    [GROUND.METEOR] =       { name = "meteor",          anim = "meteor"         ,   bank_build = "turf_moon"    },
-    [GROUND.PEBBLEBEACH] =  { name = "pebblebeach",     anim = "pebblebeach"    ,   bank_build = "turf_moon"    },
+    [GROUND.ROAD] =         { name = "road",            anim = "road"           },
+    [GROUND.ROCKY] =        { name = "rocky",           anim = "rocky"          },
+    [GROUND.FOREST] =       { name = "forest",          anim = "forest"         },
+    [GROUND.MARSH] =        { name = "marsh",           anim = "marsh"          },
+    [GROUND.GRASS] =        { name = "grass",           anim = "grass"          },
+    [GROUND.SAVANNA] =      { name = "savanna",         anim = "savanna"        },
+    [GROUND.WOODFLOOR] =    { name = "woodfloor",       anim = "woodfloor"      },
+    [GROUND.CARPET] =       { name = "carpetfloor",     anim = "carpet"         },
+    [GROUND.CHECKER] =      { name = "checkerfloor",    anim = "checker"        },
 
-    [GROUND.CAVE] =         { name = "cave",            anim = "cave"           ,   bank_build = "turf" },
-    [GROUND.FUNGUS] =       { name = "fungus",          anim = "fungus"         ,   bank_build = "turf" },
-    [GROUND.FUNGUSRED] =    { name = "fungus_red",      anim = "fungus_red"     ,   bank_build = "turf" },
-    [GROUND.FUNGUSGREEN] =  { name = "fungus_green",    anim = "fungus_green"   ,   bank_build = "turf" },
+    [GROUND.CAVE] =         { name = "cave",            anim = "cave"           },
+    [GROUND.FUNGUS] =       { name = "fungus",          anim = "fungus"         },
+    [GROUND.FUNGUSRED] =    { name = "fungus_red",      anim = "fungus_red"     },
+    [GROUND.FUNGUSGREEN] =  { name = "fungus_green",    anim = "fungus_green"   },
 
-    [GROUND.SINKHOLE] =     { name = "sinkhole",        anim = "sinkhole"       ,   bank_build = "turf" },
-    [GROUND.UNDERROCK] =    { name = "underrock",       anim = "rock"           ,   bank_build = "turf" },
-    [GROUND.MUD] =          { name = "mud",             anim = "mud"            ,   bank_build = "turf" },
-    [GROUND.DECIDUOUS] =    { name = "deciduous",       anim = "deciduous"      ,   bank_build = "turf" },
-    [GROUND.DESERT_DIRT] =  { name = "desertdirt",      anim = "dirt"           ,   bank_build = "turf" },
-    [GROUND.SCALE] =        { name = "dragonfly",       anim = "dragonfly"      ,   bank_build = "turf" },
+    [GROUND.SINKHOLE] =     { name = "sinkhole",        anim = "sinkhole"       },
+    [GROUND.UNDERROCK] =    { name = "underrock",       anim = "rock"           },
+    [GROUND.MUD] =          { name = "mud",             anim = "mud"            },
+    [GROUND.DECIDUOUS] =    { name = "deciduous",       anim = "deciduous"      },
+    [GROUND.DESERT_DIRT] =  { name = "desertdirt",      anim = "dirt"           },
+    [GROUND.SCALE] =        { name = "dragonfly",       anim = "dragonfly"      },
 }
 
 local underground_layers =
@@ -180,33 +157,17 @@ end
 function PlayFootstep(inst, volume, ispredicted)
     local sound = inst.SoundEmitter
     if sound ~= nil then
-        local my_x, my_y, my_z = inst.Transform:GetWorldPosition()
-        local map = TheWorld.Map
-        local my_platform = map:GetPlatformAtPoint(my_x, my_z)
-
         local tile = inst.components.locomotor ~= nil and inst.components.locomotor:TempGroundTile() or nil
         local tileinfo = tile ~= nil and GetTileInfo(tile) or nil
-
-        local size_inst = inst
-        if inst:HasTag("player") then
-            local rider = inst.components.rider or inst.replica.rider
-            if rider ~= nil and rider:IsRiding() then
-                size_inst = rider:GetMount() or inst
+        if tileinfo ~= nil then
+            local size_inst = inst
+            if inst:HasTag("player") then
+                local rider = inst.components.rider or inst.replica.rider
+                if rider ~= nil and rider:IsRiding() then
+                    size_inst = rider:GetMount() or inst
+                end
             end
-        end
 
-        if my_platform ~= nil then
-            sound:PlaySound(
-                (   inst.sg ~= nil and inst.sg:HasStateTag("running") and "dontstarve/movement/run_wood" or "dontstarve/movement/walk_wood"
-                )..
-                (   (size_inst:HasTag("smallcreature") and "_small") or
-                    (size_inst:HasTag("largecreature") and "_large" or "")
-                ),
-                nil,
-                volume or 1,
-                ispredicted            
-                )        
-        elseif tileinfo ~= nil then
             sound:PlaySound(
                 (   inst.sg ~= nil and inst.sg:HasStateTag("running") and tileinfo.runsound or tileinfo.walksound
                 )..

@@ -12,6 +12,12 @@ local function onspacing(self, spacing)
     end
 end
 
+local function onrestrictedtag(self, restrictedtag)
+    if self.inst.replica.inventoryitem ~= nil then
+        self.inst.replica.inventoryitem:SetDeployRestrictedTag(restrictedtag)
+    end
+end
+
 local function onusegridplacer(self, usegridplacer)
     if self.inst.replica.inventoryitem ~= nil then
         self.inst.replica.inventoryitem:SetUseGridPlacer(usegridplacer)
@@ -23,19 +29,26 @@ local Deployable = Class(function(self, inst)
 
     self.mode = DEPLOYMODE.DEFAULT
     self.spacing = DEPLOYSPACING.DEFAULT
+    --self.restrictedtag = nil --only entities with this tag can deploy
     self.usegridplacer = false
 
     self.ondeploy = nil
-    self.deploy_range = 1.1
-
-    self.inst:AddTag("deployable")
 end,
 nil,
 {
     mode = onmode,
     spacing = onspacing,
+    restrictedtag = onrestrictedtag,
     usegridplacer = onusegridplacer,
 })
+
+function Deployable:OnRemoveFromEntity()
+    local inventoryitem = self.inst.replica.inventoryitem
+    if inventoryitem ~= nil then
+        inventoryitem:SetDeployMode(DEPLOYMODE.NONE)
+        inventoryitem:SetDeployRestrictedTag(nil)
+    end
+end
 
 function Deployable:SetDeployMode(mode)
     self.mode = mode
@@ -53,10 +66,17 @@ function Deployable:DeploySpacingRadius()
     return DEPLOYSPACING_RADIUS[self.spacing]
 end
 
-function Deployable:CanDeploy(pt, mouseover)
-    if self.mode == DEPLOYMODE.ANYWHERE then
-        local x,y,z = pt:Get()
-        return TheWorld.Map:IsPassableAtPointWithPlatformRadiusBias(x,y,z,false,false,TUNING.BOAT.NO_BUILD_BORDER_RADIUS,true)
+function Deployable:IsDeployable(deployer)
+    return self.restrictedtag == nil
+        or self.restrictedtag:len() <= 0
+        or (deployer ~= nil and deployer:HasTag(self.restrictedtag))
+end
+
+function Deployable:CanDeploy(pt, mouseover, deployer)
+    if not self:IsDeployable(deployer) then
+        return false
+    elseif self.mode == DEPLOYMODE.ANYWHERE then
+        return TheWorld.Map:IsPassableAtPoint(pt:Get())
     elseif self.mode == DEPLOYMODE.TURF then
         return TheWorld.Map:CanPlaceTurfAtPoint(pt:Get())
     elseif self.mode == DEPLOYMODE.PLANT then
@@ -65,25 +85,22 @@ function Deployable:CanDeploy(pt, mouseover)
         return TheWorld.Map:CanDeployWallAtPoint(pt, self.inst)
     elseif self.mode == DEPLOYMODE.DEFAULT then
         return TheWorld.Map:CanDeployAtPoint(pt, self.inst, mouseover)
-    elseif self.mode == DEPLOYMODE.WATER then
-        return TheWorld.Map:CanDeployBoatAtPoint(pt, self.inst, mouseover)
     end
-end
-
-function Deployable:SetDeployRange(deploy_range)
-    self.deploy_range = deploy_range
 end
 
 function Deployable:Deploy(pt, deployer, rot)
-    if not self:CanDeploy(pt) then
+    if not self:CanDeploy(pt, nil, deployer) then
         return
     end
-    local prefab = self.inst.prefab
+    local isplant = self.inst:HasTag("deployedplant")
     if self.ondeploy ~= nil then
         self.ondeploy(self.inst, pt, deployer, rot or 0)
     end
     -- self.inst is removed during ondeploy
-    deployer:PushEvent("deployitem", { prefab = prefab })
+    deployer:PushEvent("deployitem", { prefab = self.inst.prefab })
+    if isplant then
+        TheWorld:PushEvent("itemplanted", { doer = deployer, pos = pt }) --this event is pushed in other places too
+    end
     return true
 end
 

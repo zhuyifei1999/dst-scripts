@@ -10,9 +10,11 @@ local Wisecracker = Class(function(self, inst)
                     inst.components.talker:Say(GetString(inst, "ANNOUNCE_EAT", "SPOILED"))
                 elseif data.food.components.edible:GetHealth(inst) < 0 and
                     data.food.components.edible:GetSanity(inst) <= 0 and
-                    not (inst.components.eater ~= nil and
-                        inst.components.eater.strongstomach and
-                        data.food:HasTag("monstermeat")) then
+                    not (inst.components.eater ~= nil and (
+                            inst.components.eater.strongstomach and
+                            data.food:HasTag("monstermeat") or
+                            inst.components.eater.healthabsorption == 0
+                        )) then
                     inst.components.talker:Say(GetString(inst, "ANNOUNCE_EAT", "PAINFUL"))
                 elseif data.food.components.perishable ~= nil and
                     data.food.components.edible.degrades_with_spoilage and
@@ -151,14 +153,6 @@ local Wisecracker = Class(function(self, inst)
     inst:ListenForEvent("pickdiseasing", function(inst)
         inst.components.talker:Say(GetString(inst, "ANNOUNCE_PICK_DISEASE_WARNING"))
     end)
-
-    inst:ListenForEvent("onpresink", function(inst)
-        inst.components.talker:Say(GetString(inst, "ANNOUNCE_BOAT_SINK"))
-    end)
-
-    inst:ListenForEvent("on_standing_on_new_leak", function(inst)
-        inst.components.talker:Say(GetString(inst, "ANNOUNCE_BOAT_LEAK"))
-    end)    
 
     inst:ListenForEvent("digdiseasing", function(inst)
         inst.components.talker:Say(GetString(inst, "ANNOUNCE_DIG_DISEASE_WARNING"))

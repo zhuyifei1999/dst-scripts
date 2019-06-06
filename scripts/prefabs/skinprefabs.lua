@@ -4085,6 +4085,60 @@ table.insert(prefs, CreatePrefabSkin("woodie_victorian",
 	release_group = 43,
 }))
 
+table.insert(prefs, CreatePrefabSkin("wormwood_cactus",
+{
+	base_prefab = "wormwood",
+	type = "base",
+	rarity = "Elegant",
+	rarity_modifier = "Woven",
+	skin_tags = { "BASE", "WORMWOOD", "CACTUS", },
+	bigportrait = { build = "bigportraits/wormwood_cactus.xml", symbol = "wormwood_cactus_oval.tex"},
+	skins = { ghost_skin = "ghost_wormwood_cactus", normal_skin = "wormwood_cactus", stage_2 = "wormwood_cactus_stage2", stage_3 = "wormwood_cactus_stage3", stage_4 = "wormwood_cactus_stage4", },
+	has_alternate_for_body = { "wormwood_cactus", "wormwood_cactus_stage2", "wormwood_cactus_stage3", "wormwood_cactus_stage4", },
+	release_group = 67,
+}))
+
+table.insert(prefs, CreatePrefabSkin("wormwood_mushroom",
+{
+	base_prefab = "wormwood",
+	type = "base",
+	rarity = "Elegant",
+	rarity_modifier = "Woven",
+	skin_tags = { "BASE", "WORMWOOD", "MUSHROOM", },
+	bigportrait = { build = "bigportraits/wormwood_mushroom.xml", symbol = "wormwood_mushroom_oval.tex"},
+	skins = { ghost_skin = "ghost_wormwood_mushroom", normal_skin = "wormwood_mushroom", stage_2 = "wormwood_mushroom_stage2", stage_3 = "wormwood_mushroom_stage3", stage_4 = "wormwood_mushroom_stage4", },
+	has_alternate_for_body = { "wormwood_mushroom", "wormwood_mushroom_stage2", "wormwood_mushroom_stage3", "wormwood_mushroom_stage4", },
+	release_group = 67,
+}))
+
+table.insert(prefs, CreatePrefabSkin("wormwood_none",
+{
+	base_prefab = "wormwood",
+	type = "base",
+	build_name_override = "wormwood",
+	rarity = "Character",
+	rarity_modifier = "CharacterModifier",
+	is_restricted = true,
+	skin_tags = { "BASE", "CHARACTER", "WORMWOOD", },
+	bigportrait = { build = "bigportraits/wormwood_none.xml", symbol = "wormwood_none_oval.tex"},
+	skins = { ghost_skin = "ghost_wormwood_build", normal_skin = "wormwood", stage_2 = "wormwood_stage_2", stage_3 = "wormwood_stage_3", stage_4 = "wormwood_stage_4", },
+	has_alternate_for_body = { "wormwood", "wormwood_stage_2", "wormwood_stage_3", "wormwood_stage_4", },
+	release_group = 67,
+}))
+
+table.insert(prefs, CreatePrefabSkin("wormwood_rose",
+{
+	base_prefab = "wormwood",
+	type = "base",
+	rarity = "Elegant",
+	rarity_modifier = "Woven",
+	skin_tags = { "BASE", "WORMWOOD", "ROSE", },
+	bigportrait = { build = "bigportraits/wormwood_rose.xml", symbol = "wormwood_rose_oval.tex"},
+	skins = { ghost_skin = "ghost_wormwood_rose", normal_skin = "wormwood_rose", stage_2 = "wormwood_rose_stage2", stage_3 = "wormwood_rose_stage3", stage_4 = "wormwood_rose_stage4", },
+	has_alternate_for_body = { "wormwood_rose", "wormwood_rose_stage2", "wormwood_rose_stage3", "wormwood_rose_stage4", },
+	release_group = 67,
+}))
+
 table.insert(prefs, CreatePrefabSkin("wortox_minotaur",
 {
 	base_prefab = "wortox",

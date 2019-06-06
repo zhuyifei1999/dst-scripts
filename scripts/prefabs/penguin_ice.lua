@@ -2,7 +2,6 @@ local assets =
 {
     Asset("ANIM", "anim/penguin_ice.zip"),
 	Asset("MINIMAP_IMAGE", "penguin"),
-	Asset("MINIMAP_IMAGE", "mutated_penguin"),
 }
 
 local SNOW_THRESH = 0.10

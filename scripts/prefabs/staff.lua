@@ -2,7 +2,6 @@ local assets =
 {
     Asset("ANIM", "anim/staffs.zip"),
     Asset("ANIM", "anim/swap_staffs.zip"),
-    Asset("ANIM", "anim/floating_items.zip"),
 }
 
 local prefabs =
@@ -644,15 +643,6 @@ local function commonfn(colour, tags, hasskin)
         end
     end
 
-    local floater_swap_data =
-    {
-        sym_build = "swap_staffs",
-        sym_name = "swap_"..colour.."staff",
-        bank = "staffs",
-        anim = colour.."staff"
-    }
-    MakeInventoryFloatable(inst, "med", 0.1, {0.9, 0.4, 0.9}, true, -13, floater_swap_data)
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -699,7 +689,8 @@ end
 ---------COLOUR SPECIFIC CONSTRUCTIONS---------
 
 local function red()
-    local inst = commonfn("red", { "firestaff", "rangedweapon", "rangedlighter" }, true)
+    --weapon (from weapon component) added to pristine state for optimization
+    local inst = commonfn("red", { "firestaff", "weapon", "rangedweapon", "rangedlighter" }, true)
 
     inst.projectiledelay = FRAMES
 
@@ -716,16 +707,6 @@ local function red()
     inst.components.finiteuses:SetMaxUses(TUNING.FIRESTAFF_USES)
     inst.components.finiteuses:SetUses(TUNING.FIRESTAFF_USES)
 
-    local floater_swap_data =
-    {
-        sym_build = "swap_staffs",
-        sym_name = "swap_redstaff",
-        bank = "staffs",
-        anim = "redstaff"
-    }
-    inst.components.floater:SetBankSwapOnFloat(true, -9.5, floater_swap_data)
-    inst.components.floater:SetScale({0.85, 0.4, 0.85})
-
     MakeHauntableLaunch(inst)
     AddHauntableCustomReaction(inst, onhauntred, true, false, true)
 
@@ -733,7 +714,8 @@ local function red()
 end
 
 local function blue()
-    local inst = commonfn("blue", { "icestaff", "rangedweapon", "extinguisher" }, true)
+    --weapon (from weapon component) added to pristine state for optimization
+    local inst = commonfn("blue", { "icestaff", "weapon", "rangedweapon", "extinguisher" }, true)
 
     inst.projectiledelay = FRAMES
 
@@ -749,8 +731,6 @@ local function blue()
 
     inst.components.finiteuses:SetMaxUses(TUNING.ICESTAFF_USES)
     inst.components.finiteuses:SetUses(TUNING.ICESTAFF_USES)
-
-    inst.components.floater:SetScale({0.8, 0.4, 0.8})
 
     MakeHauntableLaunch(inst)
     AddHauntableCustomReaction(inst, onhauntblue, true, false, true)
@@ -774,8 +754,6 @@ local function purple()
     inst.components.spellcaster.canusefrominventory = true
     inst.components.spellcaster.canonlyuseonlocomotorspvp = true
 
-    inst.components.floater:SetScale({0.9, 0.4, 0.9})
-
     MakeHauntableLaunch(inst)
     AddHauntableCustomReaction(inst, onhauntpurple, true, false, true)
 
@@ -783,7 +761,7 @@ local function purple()
 end
 
 local function yellow()
-    local inst = commonfn("yellow", { "nopunch", "allow_action_on_impassable" })
+    local inst = commonfn("yellow", { "nopunch" })
 
     inst:AddComponent("reticule")
     inst.components.reticule.targetfn = light_reticuletargetfn
@@ -799,19 +777,9 @@ local function yellow()
     inst:AddComponent("spellcaster")
     inst.components.spellcaster:SetSpellFn(createlight)
     inst.components.spellcaster.canuseonpoint = true
-    inst.components.spellcaster.canuseonpoint_water = true
 
     inst.components.finiteuses:SetMaxUses(TUNING.YELLOWSTAFF_USES)
     inst.components.finiteuses:SetUses(TUNING.YELLOWSTAFF_USES)
-
-    local floater_swap_data =
-    {
-        sym_build = "swap_staffs",
-        sym_name = "swap_yellowstaff",
-        bank = "staffs",
-        anim = "yellowstaff"
-    }
-    inst.components.floater:SetBankSwapOnFloat(true, -14, floater_swap_data)
 
     MakeHauntableLaunch(inst)
     AddHauntableCustomReaction(inst, onhauntlight, true, false, true)
@@ -871,7 +839,7 @@ local function orange()
 end
 
 local function opal()
-    local inst = commonfn("opal", { "nopunch", "allow_action_on_impassable" })
+    local inst = commonfn("opal", { "nopunch" })
 
     inst:AddComponent("reticule")
     inst.components.reticule.targetfn = light_reticuletargetfn
@@ -887,19 +855,9 @@ local function opal()
     inst:AddComponent("spellcaster")
     inst.components.spellcaster:SetSpellFn(createlight)
     inst.components.spellcaster.canuseonpoint = true
-    inst.components.spellcaster.canuseonpoint_water = true
 
     inst.components.finiteuses:SetMaxUses(TUNING.OPALSTAFF_USES)
     inst.components.finiteuses:SetUses(TUNING.OPALSTAFF_USES)
-
-    local floater_swap_data =
-    {
-        sym_build = "swap_staffs",
-        sym_name = "swap_opalstaff",
-        bank = "staffs",
-        anim = "opalstaff"
-    }
-    inst.components.floater:SetBankSwapOnFloat(true, -14, floater_swap_data)
 
     MakeHauntableLaunch(inst)
     AddHauntableCustomReaction(inst, onhauntlight, true, false, true)

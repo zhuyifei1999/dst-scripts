@@ -220,7 +220,6 @@ local function fn()
     inst.components.inventoryitem.canbepickedup = false
     inst.components.inventoryitem.canbepickedupalive = true
     inst.components.inventoryitem.trappable = false
-    inst.components.inventoryitem:SetSinks(true)
     -- inst.components.inventoryitem:SetOnPickupFn(onpickup)
     -- inst.components.inventoryitem:SetOnDroppedFn(ondrop) Done in MakeFeedableSmallLivestock
 

@@ -427,6 +427,22 @@ return
 		"woodie_treeguard_d",
 		"woodie_victorian",
 	},
+	wormwood = 
+	{
+		"body_wormwood_cactus",
+		"body_wormwood_mushroom",
+		"body_wormwood_rose",
+		"hand_wormwood_cactus",
+		"hand_wormwood_mushroom",
+		"hand_wormwood_rose",
+		"legs_wormwood_cactus",
+		"legs_wormwood_mushroom",
+		"legs_wormwood_rose",
+		"wormwood_cactus",
+		"wormwood_mushroom",
+		"wormwood_none",
+		"wormwood_rose",
+	},
 	wortox = 
 	{
 		"body_wortox_minotaur",

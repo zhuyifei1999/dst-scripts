@@ -27,8 +27,6 @@ local function create_common(anim, cookable)
         inst:AddTag("cookable")
     end
 
-    MakeInventoryFloatable(inst)
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

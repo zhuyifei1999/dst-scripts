@@ -111,25 +111,17 @@ local states=
 		timeline = 
 		{
 			TimeEvent(6*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/glommer/bounce_voice") end),
-            TimeEvent(11*FRAMES, LandFlyingCreature),
 			TimeEvent(12*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/glommer/bounce_ground") end),
-            TimeEvent(18*FRAMES, RaiseFlyingCreature),
 			TimeEvent(25*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/glommer/bounce_voice") end),
-            TimeEvent(33*FRAMES, LandFlyingCreature),
 			TimeEvent(34*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/glommer/bounce_ground") end),
-            TimeEvent(38*FRAMES, RaiseFlyingCreature),
 			TimeEvent(45*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/glommer/bounce_voice") end),
-            TimeEvent(54*FRAMES, LandFlyingCreature),
-			TimeEvent(55*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/glommer/bounce_ground") end),
-            TimeEvent(60*FRAMES, RaiseFlyingCreature),
+			TimeEvent(55*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/glommer/bounce_ground") end)
 		},
 
 		events = 
 		{
 			EventHandler("animover", function(inst) inst.sg:GoToState("idle") end)
 		},
-
-        onexit = RaiseFlyingCreature,
 	},
 
 	State{
@@ -144,12 +136,10 @@ local states=
             inst.SoundEmitter:PlaySound("dontstarve/common/freezecreature")
             inst.AnimState:OverrideSymbol("swap_frozen", "frozen", "frozen")
             StopFlap(inst)
-            LandFlyingCreature(inst)
         end,
         
         onexit = function(inst)
             inst.AnimState:ClearOverrideSymbol("swap_frozen")
-            RaiseFlyingCreature(inst)
         end,
         
         events=
@@ -170,13 +160,11 @@ local states=
             inst.SoundEmitter:PlaySound("dontstarve/common/freezethaw", "thawing")
             inst.AnimState:OverrideSymbol("swap_frozen", "frozen", "frozen")
             StopFlap(inst)
-            LandFlyingCreature(inst)
         end,
         
         onexit = function(inst)
             inst.SoundEmitter:KillSound("thawing")
             inst.AnimState:ClearOverrideSymbol("swap_frozen")
-            RaiseFlyingCreature(inst)
         end,
 
         events =
@@ -203,13 +191,15 @@ local states=
 
         timeline = 
         {
-            TimeEvent(9*FRAMES, function(inst)
+            TimeEvent(9*FRAMES, function(inst)                 
                 inst.AnimState:PushAnimation("walk_loop", true)
                 inst.Physics:SetMotorVel(-2 + math.random()*4, 5+math.random()*3,-2 + math.random()*4) 
             end),
             TimeEvent(5, function(inst) inst:Remove() end)
-        }
-    },
+        }        
+    },   
+
+
 }
 
 CommonStates.AddSimpleActionState(states, "action", "idle", FRAMES*5, {"busy"})
@@ -225,7 +215,6 @@ CommonStates.AddCombatStates(states,
 		TimeEvent(0, function(inst) StartFlap(inst) end),
 		TimeEvent(0, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/glommer/die_voice") end),
 		TimeEvent(10*FRAMES, function(inst) StopFlap(inst) end),
-        TimeEvent(10*FRAMES, LandFlyingCreature),
 		TimeEvent(18*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/glommer/die_ground") end)
 	},
 })
@@ -245,10 +234,6 @@ CommonStates.AddSleepStates(states,
 			TimeEvent(35*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/glommer/sleep_voice") end)
 		},
 	endtimeline = {TimeEvent(0, function(inst) StartFlap(inst) end)},
-},
-{
-    onsleep = LandFlyingCreature,
-    onwake = RaiseFlyingCreature,
 })
   
 return StateGraph("glommer", states, events, "idle", actionhandlers)

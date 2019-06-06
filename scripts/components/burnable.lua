@@ -249,6 +249,9 @@ function Burnable:StartWildfire()
 end
 
 local function DoneBurning(inst, self)
+    local isplant = inst:HasTag("plant") and not (inst.components.diseaseable ~= nil and inst.components.diseaseable:IsDiseased())
+    local pos = isplant and inst:GetPosition() or nil
+
     inst:PushEvent("onburnt")
 
     if self.onburnt ~= nil then
@@ -262,6 +265,10 @@ local function DoneBurning(inst, self)
 
     if self.extinguishimmediately then
         self:Extinguish()
+    end
+
+    if isplant then
+        TheWorld:PushEvent("plantkilled", { pos = pos }) --this event is pushed in other places too
     end
 end
 

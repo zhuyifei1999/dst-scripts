@@ -74,8 +74,6 @@ local function item_commonfn(bank, build, masterfn)
     inst:AddTag("lightbattery")
     inst:AddTag("vasedecoration")
 
-    MakeInventoryFloatable(inst, "small", 0.1, 0.9)
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

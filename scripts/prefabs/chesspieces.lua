@@ -30,20 +30,15 @@ local PIECES =
     {name="dragonfly",  moonevent=false},
     {name="clayhound",  moonevent=false},
     {name="claywarg",   moonevent=false},
-    {name="butterfly",  moonevent=false},
-    {name="anchor",     moonevent=false},
-    {name="moon",       moonevent=false},
 } 
 
 local MOON_EVENT_RADIUS = 12
 local MOON_EVENT_MINPIECES = 3
 
-local MOONGLASS_NAME = "moonglass"
 local MATERIALS =
 {
-    {name="marble",         prefab="marble",        inv_suffix=""},
-    {name="stone",          prefab="cutstone",      inv_suffix="_stone"},
-    {name=MOONGLASS_NAME,   prefab="moonglass",  inv_suffix="_moonglass"},
+    {name="marble",     prefab="marble"},
+    {name="stone",      prefab="cutstone"},
 }
 
 local PHYSICS_RADIUS = .45
@@ -102,13 +97,9 @@ local function StopStruggle(inst)
 end
 
 local function CheckMorph(inst)
-    if (inst.materialid ~= nil and MATERIALS[inst.materialid].name == MOONGLASS_NAME) then
-        return
-    end
-
-    if PIECES[inst.pieceid].moonevent
-        and TheWorld.state.isnewmoon
-        and not inst:IsAsleep() then
+    if PIECES[inst.pieceid].moonevent 
+        and TheWorld.state.isnewmoon and
+        not inst:IsAsleep() then
 
         StartStruggle(inst)
     else
@@ -125,9 +116,7 @@ local function onunequip(inst, owner)
 end
 
 local function onworkfinished(inst)
-    local is_moonglass = (inst.materialid ~= nil and MATERIALS[inst.materialid].name == MOONGLASS_NAME)
-
-    if not is_moonglass and (inst._task ~= nil or inst.forcebreak) then
+    if inst._task ~= nil or inst.forcebreak then
         inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
 
         local creature = SpawnPrefab("shadow_"..PIECES[inst.pieceid].name)
@@ -173,17 +162,6 @@ local function onload(inst, data)
     if data ~= nil then
         inst.pieceid = data.pieceid
         SetMaterial(inst, data.materialid or 1)
-
-        -- The moonglass sculptures don't need any of the shadow creature stuff.
-        if (inst.materialid ~= nil and MATERIALS[inst.materialid].name == MOONGLASS_NAME) then
-            inst:RemoveTag("chess_moonevent")
-            inst:RemoveTag("event_trigger")
-            inst.OnEntityWake = nil
-            inst.OnEntitySleep = nil
-
-            inst:StopWatchingWorldState("isnewmoon", CheckMorph)
-            inst:RemoveEventCallback("shadowchessroar", OnShadowChessRoar)
-        end
     end
 end
 
@@ -193,6 +171,7 @@ local function makepiece(pieceid, materialid)
     local assets =
     {
         Asset("ANIM", "anim/chesspiece.zip"),
+        Asset("INV_IMAGE", "chesspiece_"..PIECES[pieceid].name),
     }
 
     local prefabs = 
@@ -202,16 +181,13 @@ local function makepiece(pieceid, materialid)
     if materialid then
         table.insert(prefabs, MATERIALS[materialid].prefab)
         table.insert(assets, Asset("ANIM", "anim/"..build..".zip"))
-        table.insert(assets, Asset("INV_IMAGE", "chesspiece_"..PIECES[pieceid].name..MATERIALS[materialid].inv_suffix))
     else
         for m = 1, #MATERIALS do
             local p = "chesspiece_" .. PIECES[pieceid].name .. "_" .. MATERIALS[m].name
             table.insert(prefabs, p)
-
-            table.insert(assets, Asset("INV_IMAGE", "chesspiece_"..PIECES[pieceid].name..MATERIALS[m].inv_suffix))
         end
     end
-    if PIECES[pieceid].moonevent and (materialid == nil or MATERIALS[materialid].name ~= MOONGLASS_NAME) then
+    if PIECES[pieceid].moonevent then
         table.insert(prefabs, "shadow_"..PIECES[pieceid].name)
     end
 
@@ -231,7 +207,7 @@ local function makepiece(pieceid, materialid)
         inst.AnimState:PlayAnimation("idle")
 
         inst:AddTag("heavy")
-        if PIECES[pieceid].moonevent and (materialid == nil or MATERIALS[materialid].name ~= MOONGLASS_NAME) then
+        if PIECES[pieceid].moonevent then
             inst:AddTag("chess_moonevent")
             inst:AddTag("event_trigger")
         end
@@ -258,10 +234,7 @@ local function makepiece(pieceid, materialid)
 
         inst:AddComponent("inventoryitem")
         inst.components.inventoryitem.cangoincontainer = false
-        inst.components.inventoryitem:SetSinks(true)
-
-        local inv_image_suffix = (materialid ~= nil and MATERIALS[materialid].inv_suffix) or ""
-        inst.components.inventoryitem:ChangeImageName("chesspiece_"..PIECES[pieceid].name..inv_image_suffix)
+        inst.components.inventoryitem:ChangeImageName("chesspiece_"..PIECES[pieceid].name)
 
         inst:AddComponent("equippable")
         inst.components.equippable.equipslot = EQUIPSLOTS.BODY
@@ -280,7 +253,7 @@ local function makepiece(pieceid, materialid)
         inst.OnLoad = onload
         inst.OnSave = onsave
 
-        if not TheWorld:HasTag("cave") and (materialid == nil or MATERIALS[materialid].name ~= MOONGLASS_NAME) then
+        if not TheWorld:HasTag("cave") then
             if PIECES[pieceid].moonevent then
                 inst.OnEntityWake = CheckMorph
                 inst.OnEntitySleep = CheckMorph

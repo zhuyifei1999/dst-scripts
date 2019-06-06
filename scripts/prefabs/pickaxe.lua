@@ -4,7 +4,6 @@ local assets =
     Asset("ANIM", "anim/goldenpickaxe.zip"),
     Asset("ANIM", "anim/swap_pickaxe.zip"),
     Asset("ANIM", "anim/swap_goldenpickaxe.zip"),
-    Asset("ANIM", "anim/floating_items.zip"),
 }
 
 local function onequip(inst, owner)
@@ -34,7 +33,11 @@ local function common_fn(bank, build)
 
     inst:AddTag("sharp")
 
-    MakeInventoryFloatable(inst, "med", 0.05, {0.75, 0.4, 0.75})
+    --tool (from tool component) added to pristine state for optimization
+    inst:AddTag("tool")
+
+    --weapon (from weapon component) added to pristine state for optimization
+    inst:AddTag("weapon")
 
     inst.entity:SetPristine()
 
@@ -79,15 +82,7 @@ local function onequipgold(inst, owner)
 end
 
 local function normal()
-    local inst = common_fn("pickaxe", "pickaxe")
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
-
-    inst.components.floater:SetBankSwapOnFloat(true, -11, {sym_build = "swap_pickaxe"})
-
-    return inst
+    return common_fn("pickaxe", "pickaxe")
 end
 
 local function golden()
@@ -101,8 +96,6 @@ local function golden()
     inst.components.weapon.attackwear = 1 / TUNING.GOLDENTOOLFACTOR
 
     inst.components.equippable:SetOnEquip(onequipgold)
-
-    inst.components.floater:SetBankSwapOnFloat(true, -11, {sym_build = "swap_goldenpickaxe"})
 
     return inst
 end

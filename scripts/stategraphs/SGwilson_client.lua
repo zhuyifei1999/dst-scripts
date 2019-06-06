@@ -122,7 +122,12 @@ local actionhandlers =
                 end
             end
         end),
-    ActionHandler(ACTIONS.FERTILIZE, "doshortaction"),
+    ActionHandler(ACTIONS.FERTILIZE,
+        function(inst, action)
+            return (action.target ~= nil and action.target ~= inst and "doshortaction")
+                or (action.invobject ~= nil and action.invobject:HasTag("slowfertilize") and "fertilize")
+                or "fertilize_short"
+        end),
     ActionHandler(ACTIONS.SMOTHER,
         function(inst)
             return inst:HasTag("pyromaniac") and "domediumaction" or "dolongaction"
@@ -188,6 +193,7 @@ local actionhandlers =
         function(inst, action)
             local rec = GetValidRecipe(action.recipe)
             return (rec ~= nil and rec.tab.shop and "give")
+                or (action.recipe == "livinglog" and inst:HasTag("plantkin") and "form_log")
                 or (inst:HasTag("hungrybuilder") and "dohungrybuild")
                 or (inst:HasTag("fastbuilder") and "domediumaction")
                 or "dolongaction"
@@ -303,23 +309,6 @@ local actionhandlers =
     ActionHandler(ACTIONS.PET, "dolongaction"),
     ActionHandler(ACTIONS.DRAW, "dolongaction"),
     ActionHandler(ACTIONS.BUNDLE, "bundle"),
-    ActionHandler(ACTIONS.RAISE_SAIL, "dolongaction"),
-    ActionHandler(ACTIONS.LOWER_SAIL, "dolongaction"),    
-    ActionHandler(ACTIONS.RAISE_ANCHOR, "dolongaction"),
-    ActionHandler(ACTIONS.LOWER_ANCHOR, "dolongaction"),
-    ActionHandler(ACTIONS.STEER_BOAT, "steer_boat_idle"),
-    ActionHandler(ACTIONS.REPAIR_LEAK, "dolongaction"),
-    ActionHandler(ACTIONS.SET_HEADING, function(inst, action) inst:PerformPreviewBufferedAction() end),
-    ActionHandler(ACTIONS.CAST_NET, "doshortaction"),    
-    ActionHandler(ACTIONS.STOP_STEERING_BOAT, "stop_steering"),
-    ActionHandler(ACTIONS.ROW_FAIL, "row_fail"),
-    ActionHandler(ACTIONS.ROW, "row"),
-    ActionHandler(ACTIONS.EXTEND_PLANK, "doshortaction"),
-    ActionHandler(ACTIONS.RETRACT_PLANK, "doshortaction"),
-    ActionHandler(ACTIONS.ABANDON_SHIP, "abandon_ship"),
-    ActionHandler(ACTIONS.MOUNT_PLANK, "mount_plank"),
-    ActionHandler(ACTIONS.DISMOUNT_PLANK, "doshortaction"),
-
     ActionHandler(ACTIONS.UNWRAP,
         function(inst, action)
             return inst:HasTag("quagmire_fasthands") and "domediumaction" or "dolongaction"
@@ -359,7 +348,6 @@ local actionhandlers =
         function(inst, action)
             return inst:HasTag("quagmire_fasthands") and "domediumaction" or "dolongaction"
         end),
-    ActionHandler(ACTIONS.BATHBOMB, "doshortaction"),
 }
 
 local events =
@@ -385,8 +373,6 @@ local events =
             inst.sg:GoToState("run_start")
         end
     end),
-
-    CommonHandlers.OnHop(),
 }
 
 local states =
@@ -1750,119 +1736,6 @@ local states =
         end,
     },
 
-    State{
-        name = "steer_boat_idle",
-        tags = { "is_using_steering_wheel", "doing" },
-
-        onenter = function(inst, snap)
-            inst.AnimState:PlayAnimation("steer_idle_pre")  
-            inst.AnimState:PushAnimation("steer_lag", false)          
-            inst:PerformPreviewBufferedAction()
-
-            inst.sg:SetTimeout(TIMEOUT)
-        end,
-
-        onupdate = function(inst)
-            if inst:HasTag("doing") then
-                if inst.entity:FlattenMovementPrediction() then
-                    inst.sg:GoToState("idle", "noanim")
-                end
-            elseif inst.bufferedaction == nil then
-                inst.sg:GoToState("idle")
-            end
-        end,
-
-        ontimeout = function(inst)
-            inst:ClearBufferedAction()
-            inst.sg:GoToState("idle")
-        end,  
-    },   
-
-    State{
-        name = "stop_steering",
-        tags = { "is_using_steering_wheel", "doing" },
-
-        onenter = function(inst, snap)
-            inst.AnimState:PlayAnimation("steer_idle_pst")            
-            inst:PerformPreviewBufferedAction()
-
-            inst.sg:SetTimeout(TIMEOUT)
-        end,
-
-        onupdate = function(inst)
-            if inst:HasTag("doing") then
-                if inst.entity:FlattenMovementPrediction() then
-                    inst.sg:GoToState("idle", "noanim")
-                end
-            elseif inst.bufferedaction == nil then
-                inst.sg:GoToState("idle")
-            end
-        end,
-
-        ontimeout = function(inst)
-            inst:ClearBufferedAction()
-            inst.sg:GoToState("idle")
-        end,  
-    }, 
-
-    State{
-        name = "mount_plank",
-        tags = { "idle" },
-
-        onenter = function(inst, snap)
-            inst.AnimState:PlayAnimation("plank_idle_pre")
-            inst.AnimState:PushAnimation("plank_idle_loop", true)
-            inst:PerformPreviewBufferedAction()
-
-            inst.sg:SetTimeout(TIMEOUT)
-        end,
-
-        onupdate = function(inst)
-            if inst:HasTag("doing") then
-                if inst.entity:FlattenMovementPrediction() then
-                    inst.sg:GoToState("idle", "noanim")
-                end
-            elseif inst.bufferedaction == nil then
-                inst.sg:GoToState("idle")
-            end
-        end,
-
-        ontimeout = function(inst)
-            inst:ClearBufferedAction()
-            inst.sg:GoToState("idle")
-        end,  
-    },    
-
-
-    State{
-        name = "abandon_ship",
-        tags = { "doing", "busy", "canrotate" },
-
-        onenter = function(inst, snap)
-            inst.components.locomotor:Stop()
-
-            inst.AnimState:PlayAnimation("plank_hop_pre")
-
-            inst:PerformPreviewBufferedAction()
-            inst.sg:SetTimeout(TIMEOUT)
-        end,
-
-        onupdate = function(inst)
-            if inst:HasTag("doing") then
-                if inst.entity:FlattenMovementPrediction() then
-                    inst.sg:GoToState("idle", "noanim")
-                end
-            elseif inst.bufferedaction == nil then
-                inst.sg:GoToState("idle")
-            end
-        end,
-
-        ontimeout = function(inst)
-            inst:ClearBufferedAction()
-            inst.sg:GoToState("idle")
-        end,  
-    },       
-
     State
     {
         name = "play",
@@ -2951,9 +2824,100 @@ local states =
             inst.sg:GoToState("idle")
         end,
     },
-}
 
-CommonStates.AddRowStates(states, true)
-CommonStates.AddHopStates(states, false, {pre = "boat_jump_pre", loop = "boat_jump_loop", pst = "boat_jump_pst"})
+    --------------------------------------------------------------------------
+    --Wormwood
+
+    State{
+        name = "form_log",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("form_log_pre")
+            inst.AnimState:PushAnimation("form_log_lag", false)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    State{
+        name = "fertilize",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("fertilize_pre")
+            inst.AnimState:PushAnimation("fertilize_lag", false)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.AnimState:PlayAnimation("item_hat")
+                inst.sg:GoToState("idle", true)
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.AnimState:PlayAnimation("item_hat")
+            inst.sg:GoToState("idle", true)
+        end,
+    },
+
+    State{
+        name = "fertilize_short",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("short_fertilize_pre")
+            inst.AnimState:PushAnimation("short_fertilize_lag", false)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    --------------------------------------------------------------------------
+}
 
 return StateGraph("wilson_client", states, events, "idle", actionhandlers)

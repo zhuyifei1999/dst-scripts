@@ -84,7 +84,8 @@ local function fn()
     --HASHEATER (from heater component) added to pristine state for optimization
     inst:AddTag("HASHEATER")
 
-    MakeInventoryFloatable(inst, "med", 0.05, 0.75)
+    --weapon (from weapon component) added to pristine state for optimization
+    inst:AddTag("weapon")
 
     inst.entity:SetPristine()
 

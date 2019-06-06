@@ -75,9 +75,8 @@ local function addcone(name, spawn_prefab, bank, build, anim, winter_tree)
         inst.AnimState:SetBuild(build)
         inst.AnimState:PlayAnimation("idle")
 
+        inst:AddTag("deployedplant")
         inst:AddTag("cattoy")
-
-        MakeInventoryFloatable(inst, "small", 0.05, 0.9)
 
         inst.entity:SetPristine()
 

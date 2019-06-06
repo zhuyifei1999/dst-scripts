@@ -28,7 +28,8 @@ local function fn()
     inst.AnimState:SetBuild("saddlehorn")
     inst.AnimState:PlayAnimation("idle")
 
-    MakeInventoryFloatable(inst, "med")
+    --weapon (from weapon component) added to pristine state for optimization
+    inst:AddTag("weapon")
 
     inst.entity:SetPristine()
 

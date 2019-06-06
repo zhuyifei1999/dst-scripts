@@ -2,7 +2,6 @@ local assets =
 {
     Asset("ANIM", "anim/tentacle_spike.zip"),
     Asset("ANIM", "anim/swap_spike.zip"),
-    Asset("ANIM", "anim/floating_items.zip"),
 }
 
 local function onequip(inst, owner)
@@ -29,10 +28,10 @@ local function fn()
 
     inst:AddTag("sharp")
 
-    MakeInventoryPhysics(inst)
+    --weapon (from weapon component) added to pristine state for optimization
+    inst:AddTag("weapon")
 
-    local swap_data = {sym_build = "swap_spike", bank = "tentacle_spike"}
-    MakeInventoryFloatable(inst, "med", 0.05, {0.9, 0.5, 0.9}, true, -17, swap_data)
+    MakeInventoryPhysics(inst)
 
     inst.entity:SetPristine()
 

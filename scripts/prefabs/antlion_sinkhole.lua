@@ -11,7 +11,6 @@ local prefabs =
     "sinkhole_spawn_fx_3",
     "mining_ice_fx",
     "mining_fx",
-    "mining_moonglass_fx",
 }
 
 local NUM_CRACKING_STAGES = 3
@@ -74,7 +73,7 @@ local COLLAPSIBLE_WORK_ACTIONS =
     HAMMER = true,
     MINE = true,
 }
-local COLLAPSIBLE_TAGS = { "_combat", "pickable", "campfire" }
+local COLLAPSIBLE_TAGS = { "_combat", "pickable", "NPC_workable" }
 for k, v in pairs(COLLAPSIBLE_WORK_ACTIONS) do
     table.insert(COLLAPSIBLE_TAGS, k.."_workable")
 end
@@ -119,10 +118,10 @@ local function donextcollapse(inst)
             local isworkable = false
             if v.components.workable ~= nil then
                 local work_action = v.components.workable:GetWorkAction()
-                --V2C: nil action for campfires
+                --V2C: nil action for NPC_workable (e.g. campfires)
                 --     allow digging spawners (e.g. rabbithole)
                 isworkable = (
-                    (work_action == nil and v:HasTag("campfire")) or
+                    (work_action == nil and v:HasTag("NPC_workable")) or
                     (v.components.workable:CanBeWorked() and COLLAPSIBLE_WORK_ACTIONS[work_action.id])
                 )
             end
@@ -134,8 +133,7 @@ local function donextcollapse(inst)
                     end
                 else
                     if v.components.workable:GetWorkAction() == ACTIONS.MINE then
-                        local mine_fx = (v:HasTag("frozen") and "mining_ice_fx") or (v:HasTag("moonglass") and "mining_moonglass_fx") or "mining_fx"
-                        SpawnPrefab(mine_fx).Transform:SetPosition(v.Transform:GetWorldPosition())
+                        SpawnPrefab(v:HasTag("frozen") and "mining_ice_fx" or "mining_fx").Transform:SetPosition(v.Transform:GetWorldPosition())
                     end
                     v.components.workable:WorkedBy(inst, 1)
                 end

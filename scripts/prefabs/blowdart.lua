@@ -3,7 +3,6 @@ local assets =
     Asset("ANIM", "anim/blow_dart.zip"),
     Asset("ANIM", "anim/swap_blowdart.zip"),
     Asset("ANIM", "anim/swap_blowdart_pipe.zip"),
-    Asset("ANIM", "anim/floating_items.zip"),
 }
 
 local prefabs =
@@ -55,6 +54,9 @@ local function common(anim, tags, removephysicscolliders)
     inst:AddTag("blowdart")
     inst:AddTag("sharp")
 
+    --weapon (from weapon component) added to pristine state for optimization
+    inst:AddTag("weapon")
+
     --projectile (from projectile component) added to pristine state for optimization
     inst:AddTag("projectile")
 
@@ -67,8 +69,6 @@ local function common(anim, tags, removephysicscolliders)
     if removephysicscolliders then
         RemovePhysicsColliders(inst)
     end
-
-    MakeInventoryFloatable(inst, "small", 0.05, {0.75, 0.5, 0.75})
 
     inst.entity:SetPristine()
 
@@ -89,7 +89,6 @@ local function common(anim, tags, removephysicscolliders)
     inst:AddComponent("inspectable")
 
     inst:AddComponent("inventoryitem")
-
     inst:AddComponent("stackable")
 
     inst:AddComponent("equippable")
@@ -141,9 +140,6 @@ local function sleep()
     inst.components.weapon:SetOnAttack(sleepattack)
     inst.components.projectile:SetOnThrownFn(sleepthrown)
 
-    local swap_data = {sym_build = "swap_blowdart", bank = "blow_dart", anim = "idle_purple"}
-    inst.components.floater:SetBankSwapOnFloat(true, -4, swap_data)
-
     return inst
 end
 
@@ -188,9 +184,6 @@ local function fire()
     inst.components.weapon:SetOnAttack(fireattack)
     inst.components.projectile:SetOnThrownFn(firethrown)
 
-    local swap_data = {sym_build = "swap_blowdart", bank = "blow_dart", anim = "idle_red"}
-    inst.components.floater:SetBankSwapOnFloat(true, -4, swap_data)
-
     return inst
 end
 
@@ -219,9 +212,6 @@ local function pipe()
     inst.components.equippable:SetOnEquip(pipeequip)
     inst.components.weapon:SetDamage(TUNING.PIPE_DART_DAMAGE)
     inst.components.projectile:SetOnThrownFn(pipethrown)
-
-    local swap_data = {sym_build = "swap_blowdart_pipe", bank = "blow_dart", anim = "idle_pipe"}
-    inst.components.floater:SetBankSwapOnFloat(true, -4, swap_data)
 
     return inst
 end
@@ -258,9 +248,6 @@ local function yellow()
     inst.components.weapon:SetElectric()
     inst.components.projectile:SetOnThrownFn(yellowthrown)
 
-    local swap_data = {sym_build = "swap_blowdart", bank = "blow_dart", anim = "idle_yellow"}
-    inst.components.floater:SetBankSwapOnFloat(true, -4, swap_data)
-
     return inst
 end
 
@@ -285,9 +272,6 @@ local function walrus()
     --Increase hitdist (default=1) to account for launch offset height
     --math.sqrt(1 * 1 + 2 * 2)
     inst.components.projectile:SetHitDist(math.sqrt(5))
-
-    local swap_data = {sym_build = "swap_blowdart_pipe", bank = "blow_dart", anim = "idle_pipe"}
-    inst.components.floater:SetBankSwapOnFloat(true, -4, swap_data)
 
     return inst
 end

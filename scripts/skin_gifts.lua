@@ -12,6 +12,7 @@ local SKIN_GIFT_TYPES =
 	firesuppressor_circus = "TWITCH_DROP",
 	heatrock_fire = "TWITCH_DROP",
 	lantern_winter = "WINTER",
+	pack_hamlet_wormwood = "HAMLET",
 	pack_rog_gift = "ROG",
 	pack_sw_gift = "SW",
 	playerportrait_bg_arrowsignpostcircus = "TWITCH_DROP",

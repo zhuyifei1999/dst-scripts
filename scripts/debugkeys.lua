@@ -702,7 +702,7 @@ AddGameDebugKey(KEY_D, function()
     if TheInput:IsKeyDown(KEY_CTRL) then
         local MouseCharacter = TheInput:GetWorldEntityUnderMouse()
         if MouseCharacter and MouseCharacter.components.diseaseable ~= nil then
-            MouseCharacter.components.diseaseable:Disease()
+            MouseCharacter.components.diseaseable:ForceDiseased(1*TUNING.TOTAL_DAY_TIME, 1*TUNING.TOTAL_DAY_TIME)
         end
     end
 end)
@@ -775,12 +775,9 @@ AddGameDebugKey(KEY_L, function()
 	
 --    local tile = TheWorld.Map:GetTileAtPoint(pt:Get())
 
-	local GROUND_NAMES = table.invert(GROUND)
-
     local x, _, z = pt:Get()
-    local k = 4
+    local k = 1.3
     local str = "\n"
-	local name_space = 20
     local target_tile = 34
     local valid = nil
 	for _z = 1, -1, -1 do
@@ -792,16 +789,12 @@ AddGameDebugKey(KEY_L, function()
 				valid = true
 			end
 			
-			str = str .. tostring(GROUND_NAMES[tile])
-			for i = #(GROUND_NAMES[tile]), name_space, 1 do
-				str = str .. " "
-			end
+			str = str .. tostring(tile) .. "\t"
 		end
 		str = str .. "\n"
 	end
     
-    print (str)
-    --print (str .. tostring(valid == true))
+    print (str .. tostring(valid == true))
     
 --	print ("", TheWorld.Map:GetTileAtPoint(x-k, 0, z+k), TheWorld.Map:GetTileAtPoint(x, 0, z+k), TheWorld.Map:GetTileAtPoint(x+k, 0, z+k))
 --	print ("", TheWorld.Map:GetTileAtPoint(x-k, 0, z), TheWorld.Map:GetTileAtPoint(x, 0, z), TheWorld.Map:GetTileAtPoint(x+k, 0, z))
@@ -882,15 +875,6 @@ AddGameDebugKey(KEY_M, function()
         elseif TheInput:IsKeyDown(KEY_SHIFT) then
             hide_revealed = not hide_revealed
             TheWorld.minimap.MiniMap:ContinuouslyClearRevealedAreas(hide_revealed)
-		elseif TheInput:IsKeyDown(KEY_ALT) then
-            enable_fog = true
-            TheWorld.minimap.MiniMap:EnableFogOfWar(enable_fog)
-
-			for x=-1000,1000,30 do
-				for y=-1000,1000,30 do
-					ThePlayer.player_classified.MapExplorer:RevealArea(x ,0, y)
-				end
-			end
         end
     end
 

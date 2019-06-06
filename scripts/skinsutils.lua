@@ -164,6 +164,18 @@ function GetPackTotalItems(item_key)
     return #output_items
 end
 
+function _IsPackInsideOther( pack_a, pack_b )
+	local a_items = GetPurchasePackOutputItems(pack_a)
+	local b_items = GetPurchasePackOutputItems(pack_b)
+	
+	for _,item in ipairs( a_items ) do
+		if not table.contains( b_items, item ) then
+			return false
+		end
+	end
+	return true
+end
+
 function _GetSubPacks(item_key)
     local sub_packs = {}
 	local output_items = GetPurchasePackOutputItems(item_key)
@@ -193,6 +205,23 @@ function _GetSubPacks(item_key)
 	for _,item in pairs(output_items) do
 		if item_to_packinfo[item].pack ~= item_key then
 			sub_packs[item_to_packinfo[item].pack] = true
+		end
+	end
+	
+	--Ugh, packs such as pack_character_wormwood, which have a unique item, plus one other, have one sub pack, which makes us think it's a bundle, but it's not really...
+	if GetTableSize(sub_packs) == 1 then
+		sub_packs = {}
+	end
+
+	--Now coalesce sub packs into the the largest sub packs to avoid overlap
+	for sub_pack_a,_ in pairs( sub_packs ) do
+		for sub_pack_b,_ in pairs( sub_packs ) do
+			if sub_pack_a ~= sub_pack_b then
+				if _IsPackInsideOther( sub_pack_a, sub_pack_b ) then
+					sub_packs[sub_pack_a] = nil
+					break
+				end
+			end
 		end
 	end
 	
@@ -831,9 +860,9 @@ end
 function CompareItemDataForSortByRelease(item_key_a, item_key_b)
     if item_key_a == item_key_b then
         return false
-    elseif IsDefaultSkin(item_key_a) then
+    elseif IsDefaultSkin(item_key_a) and not IsDefaultSkin(item_key_b) then
         return true
-    elseif IsDefaultSkin(item_key_b) then
+    elseif not IsDefaultSkin(item_key_a) and IsDefaultSkin(item_key_b) then
         return false
     elseif GetReleaseGroup(item_key_a) ~= GetReleaseGroup(item_key_b) then
         return CompareReleaseGroup(item_key_a, item_key_b)
@@ -847,9 +876,9 @@ end
 function CompareItemDataForSortByName(item_key_a, item_key_b)
     if item_key_a == item_key_b then
         return false
-    elseif IsDefaultSkin(item_key_a) then
+    elseif IsDefaultSkin(item_key_a) and not IsDefaultSkin(item_key_b) then
         return true
-    elseif IsDefaultSkin(item_key_b) then
+    elseif not IsDefaultSkin(item_key_a) and IsDefaultSkin(item_key_b) then
         return false
     else
         return GetLexicalSortLiteral(item_key_a) < GetLexicalSortLiteral(item_key_b)
@@ -859,9 +888,9 @@ end
 function CompareItemDataForSortByRarity(item_key_a, item_key_b)
     if item_key_a == item_key_b then
         return false
-    elseif IsDefaultSkin(item_key_a) then
+    elseif IsDefaultSkin(item_key_a) and not IsDefaultSkin(item_key_b) then
         return true
-    elseif IsDefaultSkin(item_key_b) then
+    elseif not IsDefaultSkin(item_key_a) and IsDefaultSkin(item_key_b) then
         return false
     elseif GetRarityForItem(item_key_a) ~= GetRarityForItem(item_key_b) then
 		return CompareRarities(item_key_a, item_key_b)
@@ -876,9 +905,9 @@ function CompareItemDataForSortByCount(item_key_a, item_key_b, item_counts)
 
 	if item_key_a == item_key_b then
         return false
-    elseif IsDefaultSkin(item_key_a) then
+    elseif IsDefaultSkin(item_key_a) and not IsDefaultSkin(item_key_b) then
         return true
-    elseif IsDefaultSkin(item_key_b) then
+    elseif not IsDefaultSkin(item_key_a) and IsDefaultSkin(item_key_b) then
         return false
     elseif count_a ~= count_b then
 		return count_a >= count_b
@@ -922,11 +951,15 @@ function GetInventorySkinsList( do_sort )
 		table.insert(skins_list, data)
 	end
 
+	print("################################### GetInventorySkinsList", #skins_list)
+	--dumptable(skins_list)
+
 	if do_sort then
-table.sort(skins_list, function(a,b)
-			return CompareItemDataForSortByRarity(a.item, b.item)
-			end)
-		end
+		table.sort(skins_list, function(a,b)
+			--return a.item > b.item
+			return CompareItemDataForSortByRarity( a.item, b.item )
+		end)
+	end
 
     return skins_list
 end

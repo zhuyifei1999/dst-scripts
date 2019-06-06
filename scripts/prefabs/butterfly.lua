@@ -84,6 +84,7 @@ local function fn()
     inst:AddTag("smallcreature")
     inst:AddTag("cattoyairborne")
     inst:AddTag("wildfireprotected")
+    inst:AddTag("deployedplant")
 
     --pollinator (from pollinator component) added to pristine state for optimization
     inst:AddTag("pollinator")
@@ -96,8 +97,6 @@ local function fn()
     inst.AnimState:SetRayTestOnBB(true)
 
     inst.DynamicShadow:SetSize(.8, .5)
-
-    MakeInventoryFloatable(inst)
 
     MakeFeedableSmallLivestockPristine(inst)
 
@@ -119,7 +118,6 @@ local function fn()
     inst.components.inventoryitem.canbepickedup = false
     inst.components.inventoryitem.canbepickedupalive = true
     inst.components.inventoryitem.nobounce = true
-    inst.components.inventoryitem.pushlandedevents = false
 
     ------------------
     inst:AddComponent("pollinator")

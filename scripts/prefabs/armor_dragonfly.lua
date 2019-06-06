@@ -16,19 +16,19 @@ local function OnBlocked(owner, data)
 end
 
 local function onequip(inst, owner)
-	local skin_build = inst:GetSkinBuild()
+    local skin_build = inst:GetSkinBuild()
     if skin_build ~= nil then
         owner:PushEvent("equipskinneditem", inst:GetSkinName())
         owner.AnimState:OverrideItemSkinSymbol("swap_body", skin_build, "swap_body", inst.GUID, "torso_dragonfly")
     else
-		owner.AnimState:OverrideSymbol("swap_body", "torso_dragonfly", "swap_body")
+        owner.AnimState:OverrideSymbol("swap_body", "torso_dragonfly", "swap_body")
     end
 
     inst:ListenForEvent("blocked", OnBlocked, owner)
     inst:ListenForEvent("attacked", OnBlocked, owner)
 
     if owner.components.health ~= nil then
-        owner.components.health.fire_damage_scale = owner.components.health.fire_damage_scale - TUNING.ARMORDRAGONFLY_FIRE_RESIST
+        owner.components.health.externalfiredamagemultipliers:SetModifier(inst, 1 - TUNING.ARMORDRAGONFLY_FIRE_RESIST)
     end
 end
 
@@ -39,9 +39,9 @@ local function onunequip(inst, owner)
     inst:RemoveEventCallback("attacked", OnBlocked, owner)
 
     if owner.components.health ~= nil then
-        owner.components.health.fire_damage_scale = owner.components.health.fire_damage_scale + TUNING.ARMORDRAGONFLY_FIRE_RESIST
+        owner.components.health.externalfiredamagemultipliers:RemoveModifier(inst)
     end
-    
+
     local skin_build = inst:GetSkinBuild()
     if skin_build ~= nil then
         owner:PushEvent("unequipskinneditem", inst:GetSkinName())
@@ -60,8 +60,6 @@ local function fn()
     inst.AnimState:SetBank("torso_dragonfly")
     inst.AnimState:SetBuild("torso_dragonfly")
     inst.AnimState:PlayAnimation("anim")
-
-    MakeInventoryFloatable(inst, "small", 0.2, 0.80)
 
     inst.entity:SetPristine()
 

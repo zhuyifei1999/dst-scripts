@@ -36,6 +36,12 @@ local function SerializePerish(inst, percent)
     inst.perish:set(percent ~= nil and math.clamp(math.floor(percent * 62 + .5), 0, 62) or 63)
 end
 
+--V2C: used to force color refresh when spoilage changes around 50%/20%
+local function ForcePerishDirty(inst)
+    inst.perish:set_local(inst.perish:value())
+    inst.perish:set(inst.perish:value())
+end
+
 local function DeserializePerish(inst)
     if inst.perish:value() ~= 63 and inst._parent ~= nil then
         inst._parent:PushEvent("perishchange", { percent = inst.perish:value() / 62 })
@@ -153,6 +159,7 @@ local function fn()
     inst.rechargetime = net_float(inst.GUID, "inventoryitem.rechargetime", "rechargetimedirty")
     inst.deploymode = net_tinybyte(inst.GUID, "deployable.mode")
     inst.deployspacing = net_tinybyte(inst.GUID, "deployable.spacing")
+    inst.deployrestrictedtag = net_hash(inst.GUID, "deployable.restrictedtag")
     inst.usegridplacer = net_bool(inst.GUID, "deployable.usegridplacer")
     inst.attackrange = net_float(inst.GUID, "weapon.attackrange")
     inst.walkspeedmult = net_byte(inst.GUID, "equippable.walkspeedmult")
@@ -170,6 +177,7 @@ local function fn()
     inst.rechargetime:set(-2)
     inst.deploymode:set(DEPLOYMODE.NONE)
     inst.deployspacing:set(DEPLOYSPACING.DEFAULT)
+    inst.deployrestrictedtag:set(0)
     inst.usegridplacer:set(false)
     inst.attackrange:set(-99)
     inst.walkspeedmult:set(1)
@@ -196,6 +204,7 @@ local function fn()
 
     inst.SerializePercentUsed = SerializePercentUsed
     inst.SerializePerish = SerializePerish
+    inst.ForcePerishDirty = ForcePerishDirty
     inst.SerializeRecharge = SerializeRecharge
     inst.SerializeRechargeTime = SerializeRechargeTime
 

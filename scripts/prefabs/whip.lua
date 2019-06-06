@@ -85,7 +85,8 @@ local function fn()
 
     inst:AddTag("whip")
 
-    MakeInventoryFloatable(inst, "med", nil, 0.9)
+    --weapon (from weapon component) added to pristine state for optimization
+    inst:AddTag("weapon")
 
     inst.entity:SetPristine()
 

@@ -22,8 +22,6 @@ local function fn()
 
     MakeInventoryPhysics(inst)
 
-    MakeInventoryFloatable(inst, "small", 0.1, 0.8)
-
     if not TheWorld.ismastersim then
         return inst
     end

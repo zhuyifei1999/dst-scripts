@@ -81,16 +81,22 @@ local function MakeTags()
 										end
 										tagdata["Hutch_Fishbowl"] = false
 										return "ITEM", "hutch_fishbowl"
+									end,									
+            ["Nightmare"] = function(tagdata)
+                            return "TAG", "Nightmare"
+                        end, 
+                        
+            ["Atrium"] = function(tagdata)
+                            return "TAG", "Atrium"
+                        end, 
+                        
+			["Mist"] = function(tagdata)
+                            return "TAG", "Mist"
+                        end,
+                        
+            ["sandstorm"] =			function(tagdata)
+										return "TAG", "sandstorm" 
 									end,
-
-            ["Nightmare"] =           function(tagdata) return "TAG", "Nightmare" end, 
-            ["Atrium"] =              function(tagdata) return "TAG", "Atrium" end, 
-			["Mist"] =                function(tagdata) return "TAG", "Mist" end,
-            ["sandstorm"] =           function(tagdata) return "TAG", "sandstorm" end,
-            ["nohunt"] =              function(tagdata) return "TAG", "nohunt" end, 
-            ["moonhunt"] =            function(tagdata) return "TAG", "moonhunt" end, 
-            ["nohasslers"] =          function(tagdata) return "TAG", "nohasslers" end, 
-            ["lunacyarea"] =          function(tagdata) return "TAG", "lunacyarea" end, 
 
 		}
 	return {Tag = map_tags, TagData = map_data }

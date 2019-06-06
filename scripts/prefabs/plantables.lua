@@ -1,11 +1,9 @@
 require "prefabutil"
 
 local function make_plantable(data)
-    local bank = data.bank or data.name
     local assets =
     {
-        Asset("ANIM", "anim/"..bank..".zip"),
-        Asset("INV_IMAGE", "dug_"..data.name)
+        Asset("ANIM", "anim/"..data.name..".zip"),
     }
 
     if data.build ~= nil then
@@ -17,9 +15,7 @@ local function make_plantable(data)
         if tree ~= nil then
             tree.Transform:SetPosition(pt:Get())
             inst.components.stackable:Get():Remove()
-            if tree.components.pickable ~= nil then
-                tree.components.pickable:OnTransplant()
-            end
+            tree.components.pickable:OnTransplant()
             if deployer ~= nil and deployer.SoundEmitter ~= nil then
                 --V2C: WHY?!! because many of the plantables don't
                 --     have SoundEmitter, and we don't want to add
@@ -39,15 +35,11 @@ local function make_plantable(data)
 
         MakeInventoryPhysics(inst)
 
+        inst:AddTag("deployedplant")
+
         inst.AnimState:SetBank(data.bank or data.name)
         inst.AnimState:SetBuild(data.build or data.name)
         inst.AnimState:PlayAnimation("dropped")
-
-        if data.floater ~= nil then
-            MakeInventoryFloatable(inst, data.floater[1], data.floater[2], data.floater[3])
-        else
-            MakeInventoryFloatable(inst)
-        end
 
         inst.entity:SetPristine()
 
@@ -90,50 +82,31 @@ local plantables =
     {
         name = "berrybush",
         anim = "dead",
-        floater = {"med", 0.2, 0.95},
     },
     {
         name = "berrybush2",
         anim = "dead",
         inspectoverride = "dug_berrybush",
-        floater = {"large", 0.2, 0.65},
     },
     {
         name = "berrybush_juicy",
         anim = "dead",
         inspectoverride = "dug_berrybush",
-        floater = {"large", 0.025, {0.65, 0.5, 0.65}},
     },
     {
         name = "sapling",
-        mediumspacing = true,
-        floater = {"large", 0.1, 0.55},
-    },
-    {
-        name = "sapling_moon",
-        mediumspacing = true,
-        floater = {"large", 0.1, 0.55},
+        mediumspacing = true
     },
     {
         name = "grass",
         build = "grass1",
-        mediumspacing = true,
-        floater = {"med", 0.1, 0.92},
+        mediumspacing = true
     },
     {
         name = "marsh_bush",
-        mediumspacing = true,
-        floater = {"med", 0.1, 0.9},
+        mediumspacing = true
     },
-    {
-        name = "rock_avocado_bush",
-        inspectoverride = "rock_avocado_bush",
-        bank = "rock_avocado",
-        build = "rock_avocado_build",
-        anim = "dead1",
-        floater = {"med", nil, 0.95},
-    },
-	
+    --"reeds",
 }
 
 local prefabs = {}

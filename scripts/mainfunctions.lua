@@ -717,7 +717,6 @@ function SaveGame(isshutdown, cb)
         save.map.persistdata, new_refs = ground:GetPersistData()
         save.meta = ground.meta
         save.map.hideminimap = ground.hideminimap
-		save.map.has_ocean = ground.has_ocean
 
         if new_refs ~= nil then
             for k, v in pairs(new_refs) do
@@ -1569,7 +1568,7 @@ function BuildTagsStringCommon(tagsTable)
     end
     
     -- Beta tag (forced to front of list)
-    if (BRANCH == "staging" or BRANCH == "dev") and CURRENT_BETA > 0 then
+    if BRANCH == "staging" and CURRENT_BETA > 0 then
         table.insert(tagsTable, 1, BETA_INFO[CURRENT_BETA].SERVERTAG)
         table.insert(tagsTable, 1, BETA_INFO[PUBLIC_BETA].SERVERTAG)
     end

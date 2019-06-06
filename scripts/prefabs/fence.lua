@@ -710,7 +710,6 @@ local function MakeInvItem(name, placement, animdata, isdoor)
 
         inst:AddComponent("inspectable")
         inst:AddComponent("inventoryitem")
-        inst.components.inventoryitem:SetSinks(true)
 
         inst:AddComponent("deployable")
         inst.components.deployable.ondeploy = ondeploywall

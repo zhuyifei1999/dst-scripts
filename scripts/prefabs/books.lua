@@ -25,16 +25,14 @@ local function trygrowth(inst)
         inst.components.pickable:FinishGrowing()
     end
 
-    if inst.components.crop ~= nil then
-        inst.components.crop:DoGrow(TUNING.TOTAL_DAY_TIME * 3, true)
+    if inst.components.crop ~= nil and (inst.components.crop.rate or 0) > 0 then
+        inst.components.crop:DoGrow(1 / inst.components.crop.rate, true)
     end
 
-    if inst.components.growable ~= nil then
-        -- If we're a tree and not a stump, or we've explicitly allowed magic growth, do the growth.
-        if ((inst:HasTag("tree") or inst:HasTag("winter_tree")) and not inst:HasTag("stump")) or
-                inst.components.growable.magicgrowable then
-            inst.components.growable:DoGrowth()
-        end
+    if inst.components.growable ~= nil and
+        (inst:HasTag("tree") or inst:HasTag("winter_tree")) and
+        not inst:HasTag("stump") then
+        inst.components.growable:DoGrowth()
     end
 
     if inst.components.harvestable ~= nil and inst.components.harvestable:CanBeHarvested() and inst:HasTag("mushroom_farm") then
@@ -225,8 +223,6 @@ local function MakeBook(def)
         inst.AnimState:SetBank("books")
         inst.AnimState:SetBuild("books")
         inst.AnimState:PlayAnimation(def.name)
-
-        MakeInventoryFloatable(inst, "med", nil, 0.75)
 
         inst.entity:SetPristine()
 

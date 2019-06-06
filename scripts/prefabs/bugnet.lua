@@ -2,7 +2,6 @@ local assets =
 {
     Asset("ANIM", "anim/bugnet.zip"),
     Asset("ANIM", "anim/swap_bugnet.zip"),
-    Asset("ANIM", "anim/floating_items.zip"),
 }
 
 local function onequip(inst, owner)
@@ -39,8 +38,11 @@ local function fn()
     inst.AnimState:SetBuild("swap_bugnet")
     inst.AnimState:PlayAnimation("idle")
 
-    local swap_data = {sym_build = "swap_bugnet"}
-    MakeInventoryFloatable(inst, "med", 0.09, {0.9, 0.4, 0.9}, true, -14.5, swap_data)
+    --tool (from tool component) added to pristine state for optimization
+    inst:AddTag("tool")
+
+    --weapon (from weapon component) added to pristine state for optimization
+    inst:AddTag("weapon")
 
     inst.entity:SetPristine()
 

@@ -4,7 +4,6 @@ local HealthBadge = require "widgets/healthbadge"
 local HungerBadge = require "widgets/hungerbadge"
 local BeaverBadge = require "widgets/beaverbadge"
 local MoistureMeter = require "widgets/moisturemeter"
-local BoatMeter = require "widgets/boatmeter"
 local ResurrectButton = require "widgets/resurrectbutton"
 local UIAnim = require "widgets/uianim"
 
@@ -33,14 +32,6 @@ local function OnSetPlayerMode(inst, self)
         self.onmoisturedelta = function(owner, data) self:MoistureDelta(data) end
         self.inst:ListenForEvent("moisturedelta", self.onmoisturedelta, self.owner)
         self:SetMoisturePercent(self.owner:GetMoisture())
-    end
-
-    if self.ongotonplatform == nil then
-        self.ongotonplatform = function(owner, platform) self.boatmeter:Enable(platform) end
-        self.inst:ListenForEvent("got_on_platform", self.ongotonplatform, self.owner)        
-
-        self.ongotoffplatform = function(owner, platform) self.boatmeter:Disable(platform) end
-        self.inst:ListenForEvent("got_off_platform", self.ongotoffplatform, self.owner)                
     end
 
     if self.beaverness ~= nil and self.onbeavernessdelta == nil then
@@ -72,16 +63,6 @@ local function OnSetGhostMode(inst, self)
         self.inst:RemoveEventCallback("moisturedelta", self.onmoisturedelta, self.owner)
         self.onmoisturedelta = nil
     end
-
-    if self.ongotonplatform ~= nil then
-
-        self.inst:RemoveEventCallback("got_on_platform", self.ongotonplatform, self.owner)
-        self.ongotonplatform = nil        
-
-        self.inst:RemoveEventCallback("got_off_platform", self.ongotoffplatform, self.owner)
-        self.ongotoffplatform = nil
-        
-    end       
 
     if self.onbeavernessdelta ~= nil then
         self.inst:RemoveEventCallback("beavernessdelta", self.onbeavernessdelta, self.owner)
@@ -131,11 +112,6 @@ local StatusDisplays = Class(Widget, function(self, owner)
     self.moisturemeter:SetPosition(0, -115, 0)
     self.onmoisturedelta = nil
 
-    self.boatmeter = self:AddChild(BoatMeter(owner))
-    self.boatmeter:SetPosition(-80, -40, 0)
-    self.ongotonplatform = nil
-    self.ongotoffplatform = nil
-
     self.resurrectbutton = self:AddChild(ResurrectButton(owner))
     self.resurrectbutton:SetScale(.75, .75, .75)
     self.resurrectbutton:SetTooltip(STRINGS.UI.HUD.ACTIVATE_RESURRECTION)
@@ -183,10 +159,7 @@ local StatusDisplays = Class(Widget, function(self, owner)
 
     if owner:HasTag("beaverness") then
         self:AddBeaverness()
-	    self.boatmeter:SetPosition(-80, -113, 0)
     end
-
-	self.brain:MoveToFront() -- hack so the sanity mode change fx are on top of everything
 end)
 
 function StatusDisplays:ShowStatusNumbers()
@@ -194,7 +167,6 @@ function StatusDisplays:ShowStatusNumbers()
     self.stomach.num:Show()
     self.heart.num:Show()
     self.moisturemeter.num:Show()
-    self.boatmeter.num:Show()
     if self.beaverness ~= nil then
         self.beaverness.num:Show()
     end
@@ -205,7 +177,6 @@ function StatusDisplays:HideStatusNumbers()
     self.stomach.num:Hide()
     self.heart.num:Hide()
     self.moisturemeter.num:Hide()
-    self.boatmeter.num:Hide()
     if self.beaverness ~= nil then
         self.beaverness.num:Hide()
     end
@@ -224,10 +195,6 @@ function StatusDisplays:AddBeaverness()
             self:SetBeavernessPercent(self.owner:GetBeaverness())
         end
     end
-end
-
-function StatusDisplays:Layout()
-
 end
 
 function StatusDisplays:RemoveBeaverness()
@@ -265,7 +232,6 @@ function StatusDisplays:SetGhostMode(ghostmode)
         self.stomach:Hide()
         self.brain:Hide()
         self.moisturemeter:Hide()
-        self.boatmeter:Hide()
 
         self.heart:StopWarning()
         self.stomach:StopWarning()
@@ -282,7 +248,6 @@ function StatusDisplays:SetGhostMode(ghostmode)
         self.stomach:Show()
         self.brain:Show()
         self.moisturemeter:Show()
-        self.boatmeter:Show()
 
         if self.beaverness ~= nil then
             self.beaverness:Show()
@@ -362,7 +327,7 @@ end
 function StatusDisplays:SetSanityPercent(pct)
     self.brain:SetPercent(pct, self.owner.replica.sanity:Max(), self.owner.replica.sanity:GetPenaltyPercent())
 
-    if self.owner.replica.sanity:IsInsane() or self.owner.replica.sanity:IsEnlightened() then
+    if self.owner.replica.sanity:IsCrazy() then
         self.brain:StartWarning()
     else
         self.brain:StopWarning()

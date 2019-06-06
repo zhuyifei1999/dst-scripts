@@ -2,7 +2,6 @@ local assets =
 {
     Asset("ANIM", "anim/nightstick.zip"),
     Asset("ANIM", "anim/swap_nightstick.zip"),
-    Asset("ANIM", "anim/floating_items.zip"),
     Asset("SOUND", "sound/common.fsb"),
 }
 
@@ -92,7 +91,8 @@ local function fn()
 
     inst:AddTag("wildfireprotected")
 
-    MakeInventoryFloatable(inst, "med", 0.05, {1.1, 0.4, 1.1}, true, -19, {sym_build = "swap_nightstick"})
+    --weapon (from weapon component) added to pristine state for optimization
+    inst:AddTag("weapon")
 
     inst.entity:SetPristine()
 

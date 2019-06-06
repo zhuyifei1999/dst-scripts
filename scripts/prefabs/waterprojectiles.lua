@@ -147,13 +147,12 @@ local function ReticuleTargetFn()
 end
 
 local function waterballoon_fn()
-    local inst = common_fn("waterballoon", "waterballoon", "idle", nil, true)
+    --weapon (from weapon component) added to pristine state for optimization
+    local inst = common_fn("waterballoon", "waterballoon", "idle", "weapon", true)
 
     inst:AddComponent("reticule")
     inst.components.reticule.targetfn = ReticuleTargetFn
     inst.components.reticule.ease = true
-
-    MakeInventoryFloatable(inst, "med", 0.05, 0.65)
 
     if not TheWorld.ismastersim then
         return inst

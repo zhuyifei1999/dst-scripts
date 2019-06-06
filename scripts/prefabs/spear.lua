@@ -2,7 +2,6 @@ local assets =
 {
     Asset("ANIM", "anim/spear.zip"),
     Asset("ANIM", "anim/swap_spear.zip"),
-    Asset("ANIM", "anim/floating_items.zip"),
 }
 
 local function onequip(inst, owner)
@@ -42,7 +41,8 @@ local function fn()
     inst:AddTag("sharp")
     inst:AddTag("pointy")
 
-    MakeInventoryFloatable(inst, "med", 0.05, {1.1, 0.5, 1.1}, true, -9)
+    --weapon (from weapon component) added to pristine state for optimization
+    inst:AddTag("weapon")
 
     inst.entity:SetPristine()
 

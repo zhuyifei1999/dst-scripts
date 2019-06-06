@@ -72,6 +72,9 @@ local function fn()
 
     inst:AddTag("sharp")
 
+    --weapon (from weapon component) added to pristine state for optimization
+    inst:AddTag("weapon")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -92,7 +95,6 @@ local function fn()
     inst:AddComponent("inspectable")
 
     inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem:SetSinks(true)
 
     inst:AddComponent("equippable")
     inst.components.equippable:SetOnEquip(onequip)

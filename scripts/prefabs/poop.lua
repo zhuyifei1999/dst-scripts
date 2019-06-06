@@ -55,8 +55,6 @@ local function fn()
     inst.AnimState:SetBuild("poop")
     inst.AnimState:PlayAnimation("dump")
 
-    MakeInventoryFloatable(inst, "med", 0.1, 0.73)
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -71,6 +69,7 @@ local function fn()
     inst:AddComponent("stackable")
 
     inst:AddComponent("fertilizer")
+    inst.components.fertilizer:SetHealingAmount(TUNING.POOP_FERTILIZE_HEALTH)
     inst.components.fertilizer.fertilizervalue = TUNING.POOP_FERTILIZE
     inst.components.fertilizer.soil_cycles = TUNING.POOP_SOILCYCLES
     inst.components.fertilizer.withered_cycles = TUNING.POOP_WITHEREDCYCLES
