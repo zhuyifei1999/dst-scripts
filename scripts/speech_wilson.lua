@@ -421,7 +421,7 @@ return {
         {
             GENERIC = "Greetings, %s!",
             ATTACKER = "%s has been a bit of a sap lately...",
-            MURDERER = "Murder! Bring me an axe and we'll get in the swing of things!",
+            MURDERER = "Murderer! Bring me an axe and let's get in the swing of things!",
             REVIVER = "%s saved everyone's backbacon.",
             GHOST = "Does \"universal\" coverage include the void, %s?",
             BEAVER = "%s's gone on a wood chucking rampage!",
@@ -443,7 +443,7 @@ return {
             ATTACKER = "%s is silent, but deadly...",
             MURDERER = "Mime this!",
             REVIVER = "%s thinks outside the invisible box.",
-            GHOST = "How do you say \"I'll concoct a revival device\" in mime?",
+            GHOST = "How do you say \"I'll get a revival device\" in mime?",
             FIRESTARTER = "Wait, don't tell me. You lit a fire.",
         },
         WEBBER =
@@ -481,6 +481,15 @@ return {
             REVIVER = "Thanks for lending a helping claw, %s.",
             GHOST = "I reject the reality of ghosts and imps.",
             FIRESTARTER = "%s is becoming a survival liability.",
+        },
+        WORMWOOD =
+        {
+            GENERIC = "Greetings, %s!",
+            ATTACKER = "%s seems pricklier than usual today.",
+            MURDERER = "Prepare to get weed whacked, %s!",
+            REVIVER = "%s never gives up on his friends.",
+            GHOST = "You need some help, lil guy?",
+            FIRESTARTER = "I thought you hated fire, %s.",
         },
 
         MIGRATION_PORTAL =
@@ -2438,36 +2447,41 @@ return {
         QUAGMIRE_LAMP_SHORT = "Enlightening.",
 
         --v2 Winona
-        WINONA_CATAPULT = 
+        WINONA_CATAPULT =
         {
-        	GENERIC = "She's made a sort of automatic defense system.",
-        	OFF = "It needs some electricity.",
-        	BURNING = "It's on fire!",
-        	BURNT = "Science couldn't save it.",
+            GENERIC = "She's made a sort of automatic defense system.",
+            OFF = "It needs some electricity.",
+            BURNING = "It's on fire!",
+            BURNT = "Science couldn't save it.",
         },
-        WINONA_SPOTLIGHT = 
+        WINONA_SPOTLIGHT =
         {
-        	GENERIC = "What an ingenious idea!",
-        	OFF = "It needs some electricity.",
-        	BURNING = "It's on fire!",
-        	BURNT = "Science couldn't save it.",
+            GENERIC = "What an ingenious idea!",
+            OFF = "It needs some electricity.",
+            BURNING = "It's on fire!",
+            BURNT = "Science couldn't save it.",
         },
-        WINONA_BATTERY_LOW = 
+        WINONA_BATTERY_LOW =
         {
-        	GENERIC = "Looks science-y. How does it work?",
-        	LOWPOWER = "It's getting low on power.",
-        	OFF = "I could get it working, if Winona's busy.",
-        	BURNING = "It's on fire!",
-        	BURNT = "Science couldn't save it.",
+            GENERIC = "Looks science-y. How does it work?",
+            LOWPOWER = "It's getting low on power.",
+            OFF = "I could get it working, if Winona's busy.",
+            BURNING = "It's on fire!",
+            BURNT = "Science couldn't save it.",
         },
-        WINONA_BATTERY_HIGH = 
+        WINONA_BATTERY_HIGH =
         {
-        	GENERIC = "Hey! That's not science!",
-        	LOWPOWER = "It'll turn off soon.",
-        	OFF = "Science beats magic, every time.",
-        	BURNING = "It's on fire!",
-        	BURNT = "Science couldn't save it.",
+            GENERIC = "Hey! That's not science!",
+            LOWPOWER = "It'll turn off soon.",
+            OFF = "Science beats magic, every time.",
+            BURNING = "It's on fire!",
+            BURNT = "Science couldn't save it.",
         },
+
+        --Wormwood
+        COMPOSTWRAP = "Wormwood offered me a bite, but I respectfully declined.",
+        ARMOR_BRAMBLE = "The best offense is a good defense.",
+        TRAP_BRAMBLE = "It'd really poke whoever stepped on it.",
     },
     DESCRIBE_GENERIC = "It's a... thing.",
     DESCRIBE_TOODARK = "It's too dark to see!",

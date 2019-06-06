@@ -336,7 +336,19 @@ function ItemTile:SetQuantity(quantity)
 end
 
 function ItemTile:SetPerishPercent(percent)
-    self.spoilage:GetAnimState():SetPercent("anim", 1 - percent)
+    --percent is approximated over the network, so check tags to
+    --determine the correct color at the 50% and 20% boundaries.
+    if percent < .51 and percent > .49 and self.item:HasTag("fresh") then
+        self.spoilage:GetAnimState():OverrideSymbol("meter", "spoiled_meter", "meter_green")
+        self.spoilage:GetAnimState():OverrideSymbol("frame", "spoiled_meter", "frame_green")
+    elseif percent < .21 and percent > .19 and self.item:HasTag("stale") then
+        self.spoilage:GetAnimState():OverrideSymbol("meter", "spoiled_meter", "meter_yellow")
+        self.spoilage:GetAnimState():OverrideSymbol("frame", "spoiled_meter", "frame_yellow")
+    else
+        self.spoilage:GetAnimState():ClearAllOverrideSymbols()
+    end
+    --don't use 100% frame, since it should be replace by something like "spoiled_food" then
+    self.spoilage:GetAnimState():SetPercent("anim", math.clamp(1 - percent, 0, .99))
 end
 
 function ItemTile:SetPercent(percent)

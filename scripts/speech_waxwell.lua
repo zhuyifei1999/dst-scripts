@@ -427,6 +427,15 @@ return {
             GHOST = "Serves you right, meddling imp.",
             FIRESTARTER = "Do I smell fire and brimstone?",
         },
+        WORMWOOD =
+        {
+            GENERIC = "Greetings, Mr. %s.",
+            ATTACKER = "It's time you make like a tree and leaf.",
+            MURDERER = "Don't worry, %s. I'll make it a clear cut.",
+            REVIVER = "I suppose he has his uses.",
+            GHOST = "What a shame. Now I'll never know what that gem does.",
+            FIRESTARTER = "%s has been starting fires, now hasn't he?",
+        },
 
         BERNIE_INACTIVE =
         {
@@ -2418,36 +2427,41 @@ return {
         QUAGMIRE_LAMP_SHORT = "A little civility.",
 
         --v2 Winona
-        WINONA_CATAPULT = 
+        WINONA_CATAPULT =
         {
-        	GENERIC = "I could have thought of that.",
-        	OFF = "It's useless out here without power.",
-        	BURNING = "I'm going to pretend I don't see it.",
-        	BURNT = "Oh. What a pity.",
+            GENERIC = "I could have thought of that.",
+            OFF = "It's useless out here without power.",
+            BURNING = "I'm going to pretend I don't see it.",
+            BURNT = "Oh. What a pity.",
         },
-        WINONA_SPOTLIGHT = 
+        WINONA_SPOTLIGHT =
         {
-        	GENERIC = "Well sure, if you want to take the easy way out.",
-        	OFF = "It's useless out here without power.",
-        	BURNING = "I'm going to pretend I don't see it.",
-        	BURNT = "Oh. What a pity.",
+            GENERIC = "Well sure, if you want to take the easy way out.",
+            OFF = "It's useless out here without power.",
+            BURNING = "I'm going to pretend I don't see it.",
+            BURNT = "Oh. What a pity.",
         },
-        WINONA_BATTERY_LOW = 
+        WINONA_BATTERY_LOW =
         {
-        	GENERIC = "Where does she find the time to build all this.",
-        	LOWPOWER = "I think it's losing power.",
+            GENERIC = "Where does she find the time to build all this.",
+            LOWPOWER = "I think it's losing power.",
             OFF = "See? It wasn't so great after all.",
             BURNING = "I'm going to pretend I don't see it.",
             BURNT = "Oh. What a pity.",
         },
-        WINONA_BATTERY_HIGH = 
+        WINONA_BATTERY_HIGH =
         {
-        	GENERIC = "At least she has the sense to use gems.",
-        	LOWPOWER = "I think it's losing power.",
+            GENERIC = "At least she has the sense to use gems.",
+            LOWPOWER = "I think it's losing power.",
             OFF = "Magic isn't so easy, is it?",
             BURNING = "I'm going to pretend I don't see it.",
             BURNT = "Oh. What a pity.",
         },
+
+        --Wormwood
+        COMPOSTWRAP = "I'm utterly dung with all of this.",
+        ARMOR_BRAMBLE = "Who's frail now?",
+        TRAP_BRAMBLE = "Best laid traps.",
     },
     DESCRIBE_GENERIC = "You tell me.",
     DESCRIBE_TOODARK = "I can't see in the dark!",

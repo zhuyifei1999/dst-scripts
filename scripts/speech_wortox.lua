@@ -496,6 +496,15 @@ return {
             GHOST = "Are you gonna eat that?",
             FIRESTARTER = "Hyuyu! What pranks have you been playing?",
         },
+        WORMWOOD =
+        {
+            GENERIC = "Heard any good jokes lately, %s?",
+            ATTACKER = "What a cruel trick you've played! Hyuyu!",
+            MURDERER = "You've really gone and dung it this time, hyuyu!",
+            REVIVER = "I guess %s doesn't have a taste for souls.",
+            GHOST = "Finally, a break from his poop jokes.",
+            FIRESTARTER = "Ooo, there's an ember of fun in you yet.",
+        },
         NEXTCHARACTER =
         {
             GENERIC = "Hyuyu, what are you up to %s?",
@@ -505,6 +514,7 @@ return {
             GHOST = "Don't worry, I'm not hungry.",
             FIRESTARTER = "Little goat! You played pranks without me!",
         },
+
         GLOMMER =
         {
             GENERIC = "What thoughts lurk within that curious noggin?",
@@ -2432,39 +2442,44 @@ return {
         QUAGMIRE_LAMP_SHORT = "If it were raining I could sing!",
 
         --v2 Winona
-        WINONA_CATAPULT = 
+        WINONA_CATAPULT =
         {
-        	GENERIC = "It's sure to entertain our guests!",
-        	OFF = "Doesn't look too lively!",
-        	BURNING = "Hoohoohoo!",
-        	BURNT = "How hilarious!",
+            GENERIC = "It's sure to entertain our guests!",
+            OFF = "Doesn't look too lively!",
+            BURNING = "Hoohoohoo!",
+            BURNT = "How hilarious!",
         },
-        WINONA_SPOTLIGHT = 
+        WINONA_SPOTLIGHT =
         {
-        	GENERIC = "What a funny thing!",
-        	OFF = "Doesn't look too lively!",
-        	BURNING = "Hoohoohoo!",
-        	BURNT = "How hilarious!",
+            GENERIC = "What a funny thing!",
+            OFF = "Doesn't look too lively!",
+            BURNING = "Hoohoohoo!",
+            BURNT = "How hilarious!",
         },
-        WINONA_BATTERY_LOW = 
+        WINONA_BATTERY_LOW =
         {
-        	GENERIC = "Hyuyu. Mortals don't know magic.",
-        	LOWPOWER = "Winding down, waning.",
-        	OFF = "Playtime's over!",
-        	BURNING = "Hoohoohoo!",
-        	BURNT = "How hilarious!",
+            GENERIC = "Hyuyu. Mortals don't know magic.",
+            LOWPOWER = "Winding down, waning.",
+            OFF = "Playtime's over!",
+            BURNING = "Hoohoohoo!",
+            BURNT = "How hilarious!",
         },
-        WINONA_BATTERY_HIGH = 
+        WINONA_BATTERY_HIGH =
         {
-        	GENERIC = "Ooohoohoo! The mortal learned magic!",
-        	LOWPOWER = "Winding down, waning.",
-        	OFF = "Playtime's over!",
-        	BURNING = "Hoohoohoo!",
-        	BURNT = "How hilarious!",
+            GENERIC = "Ooohoohoo! The mortal learned magic!",
+            LOWPOWER = "Winding down, waning.",
+            OFF = "Playtime's over!",
+            BURNING = "Hoohoohoo!",
+            BURNT = "How hilarious!",
         },
 
         --Wortox
         WORTOX_SOUL = "Hyuyu! It looks tasty.", --only wortox can inspect souls
+
+        --Wormwood
+        COMPOSTWRAP = "It's poop. So the plants won't droop.",
+        ARMOR_BRAMBLE = "Who'd like to give an imp a hug? Hyuyu!",
+        TRAP_BRAMBLE = "Spiky, pointy, green and thorny!",
     },
     DESCRIBE_GENERIC = "Ooo, a mystery!",
     DESCRIBE_TOODARK = "I can't see the physical plane!",

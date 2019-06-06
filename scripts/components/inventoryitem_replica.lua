@@ -10,11 +10,13 @@ local InventoryItem = Class(function(self, inst)
 
         inst:ListenForEvent("percentusedchange", function(inst, data) self.classified:SerializePercentUsed(data.percent) end)
         inst:ListenForEvent("perishchange", function(inst, data) self.classified:SerializePerish(data.percent) end)
+        inst:ListenForEvent("forceperishchange", function(inst) self.classified:ForcePerishDirty() end)
         inst:ListenForEvent("rechargechange", function(inst, data) self.classified:SerializeRecharge(data.percent, data.overtime) end)
 
         if inst.components.deployable ~= nil then
             self:SetDeployMode(inst.components.deployable.mode)
             self:SetDeploySpacing(inst.components.deployable.spacing)
+            self:SetDeployRestrictedTag(inst.components.deployable.restrictedtag)
             self:SetUseGridPlacer(inst.components.deployable.usegridplacer)
         end
 
@@ -203,14 +205,14 @@ function InventoryItem:SetDeployMode(deploymode)
     self.classified.deploymode:set(deploymode)
 end
 
-function InventoryItem:IsDeployable()
+function InventoryItem:IsDeployable(deployer)
     if self.inst.components.deployable ~= nil then
-        return true
-    elseif self.classified ~= nil then
-        return self.classified.deploymode:value() ~= DEPLOYMODE.NONE
-    else
+        return self.inst.components.deployable:IsDeployable(deployer)
+    elseif self.classified == nil or self.classified.deploymode:value() == DEPLOYMODE.NONE then
         return false
     end
+    local restrictedtag = self.classified.deployrestrictedtag:value()
+    return restrictedtag == nil or restrictedtag == 0 or (deployer ~= nil and deployer:HasTag(restrictedtag))
 end
 
 function InventoryItem:SetDeploySpacing(deployspacing)
@@ -227,10 +229,14 @@ function InventoryItem:DeploySpacingRadius()
     end
 end
 
-function InventoryItem:CanDeploy(pt, mouseover)
+function InventoryItem:SetDeployRestrictedTag(restrictedtag)
+    self.classified.deployrestrictedtag:set(restrictedtag or 0)
+end
+
+function InventoryItem:CanDeploy(pt, mouseover, deployer)
     if self.inst.components.deployable ~= nil then
-        return self.inst.components.deployable:CanDeploy(pt, mouseover)
-    elseif self.classified == nil then
+        return self.inst.components.deployable:CanDeploy(pt, mouseover, deployer)
+    elseif not self:IsDeployable(deployer) then
         return false
     elseif self.classified.deploymode:value() == DEPLOYMODE.ANYWHERE then
         return TheWorld.Map:IsPassableAtPoint(pt:Get())
@@ -257,7 +263,7 @@ function InventoryItem:GetDeployPlacerName()
     elseif self.classified ~= nil and self.classified.usegridplacer:value() then
         return "gridplacer"
     end
-    return (self.inst.prefab or "").."_placer"
+    return self.inst.overridedeployplacername or ((self.inst.prefab or "").."_placer")
 end
 
 function InventoryItem:SetAttackRange(attackrange)

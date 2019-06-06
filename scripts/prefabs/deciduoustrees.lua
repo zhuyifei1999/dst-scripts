@@ -1209,6 +1209,7 @@ local function makefn(build, stage, data)
         inst.MiniMapEntity:SetIcon("tree_leaf.png")
         inst.MiniMapEntity:SetPriority(-1)
 
+        inst:AddTag("plant")
         inst:AddTag("tree")
         inst:AddTag("birchnut")
         inst:AddTag("cattoyairborne")

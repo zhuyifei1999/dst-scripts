@@ -481,6 +481,15 @@ return {
             GHOST = "Oof! You need a hand there, %s?",
             FIRESTARTER = "Were you plannin' on putting that fire out?",
         },
+        WORMWOOD =
+        {
+            GENERIC = "%s! How ya doin', ya big bean sprout?",
+            ATTACKER = "Yer on thin ice there, %s.",
+            MURDERER = "Time to roll up my sleeves and pluck a few weeds!",
+            REVIVER = "Keep up the good work there, bucko.",
+            GHOST = "You're not slackin' off, are ya?",
+            FIRESTARTER = "Watch where you're lightin' them fires!",
+        },
 
         MIGRATION_PORTAL =
         {
@@ -2448,36 +2457,41 @@ return {
         QUAGMIRE_LAMP_SHORT = "That's a light.",
 
         --v2 Winona
-        WINONA_CATAPULT = 
+        WINONA_CATAPULT =
         {
-        	GENERIC = "Not a bad result considering the materials.",
-        	OFF = "Gotta hook it up to the generator.",
-        	BURNING = "Quick! Put it out!",
-        	BURNT = "Aw, nuts and bolts!",
+            GENERIC = "Not a bad result considering the materials.",
+            OFF = "Gotta hook it up to the generator.",
+            BURNING = "Quick! Put it out!",
+            BURNT = "Aw, nuts and bolts!",
         },
-        WINONA_SPOTLIGHT = 
+        WINONA_SPOTLIGHT =
         {
-        	GENERIC = "Sorry, Charlie.",
-        	OFF = "Gotta hook it up to the generator.",
-        	BURNING = "Quick! Put it out!",
-        	BURNT = "Criminy! My machine!",
+            GENERIC = "Sorry, Charlie.",
+            OFF = "Gotta hook it up to the generator.",
+            BURNING = "Quick! Put it out!",
+            BURNT = "Criminy! My machine!",
         },
-        WINONA_BATTERY_LOW = 
+        WINONA_BATTERY_LOW =
         {
-        	GENERIC = "That oughta do it.",
-        	LOWPOWER = "Just about out of juice.",
-        	OFF = "Needs some more nitre.",
-        	BURNING = "Quick! Put it out!",
-        	BURNT = "Aw, nuts and bolts!",
+            GENERIC = "That oughta do it.",
+            LOWPOWER = "Just about out of juice.",
+            OFF = "Needs some more nitre.",
+            BURNING = "Quick! Put it out!",
+            BURNT = "Aw, nuts and bolts!",
         },
-        WINONA_BATTERY_HIGH = 
+        WINONA_BATTERY_HIGH =
         {
-        	GENERIC = "I don't get how gems work, I just know they do.",
-        	LOWPOWER = "Gonna need a top up soon.",
-        	OFF = "Needs a few more'a those gem thingies.",
-        	BURNING = "Quick! Put it out!",
-        	BURNT = "Criminy! My machine!",
+            GENERIC = "I don't get how gems work, I just know they do.",
+            LOWPOWER = "Gonna need a top up soon.",
+            OFF = "Needs a few more'a those gem thingies.",
+            BURNING = "Quick! Put it out!",
+            BURNT = "Criminy! My machine!",
         },
+
+        --Wormwood
+        COMPOSTWRAP = "Heh. That bean sprout's a gross little guy.",
+        ARMOR_BRAMBLE = "Odd design. How do you wear it without pricking yourself?",
+        TRAP_BRAMBLE = "That lil plant fella whipped it up.",
     },
     DESCRIBE_GENERIC = "Incredible! I have no idea what that is.",
     DESCRIBE_TOODARK = "Low visibility causes workplace accidents!",

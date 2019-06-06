@@ -314,7 +314,7 @@ return
         SPIDER_WARRIOR = "Back to the drawing board!",
     },
 
-    DESCRIBE=
+    DESCRIBE =
     {
         PLAYER =
         {
@@ -325,7 +325,7 @@ return
             GHOST = "Poor dear. %s needs a heart to anchor them to this plane.",
             FIRESTARTER = "%s, what have I told you about lighting fires?",
         },
-        WILSON = 
+        WILSON =
         {
             GENERIC = "Greetings, dear %s! How are your theorems coming?",
             ATTACKER = "I'll pull you back to base by the ear if I have to, %s.",
@@ -334,7 +334,7 @@ return
             GHOST = "Didn't I tell you to wear a jacket? I'll get the hearts...",
             FIRESTARTER = "%s needs a stern talking to.",
         },
-        WOLFGANG = 
+        WOLFGANG =
         {
             GENERIC = "Ah, greetings dear %s!",
             ATTACKER = "I will not tolerate such behavior, %s.",
@@ -343,7 +343,7 @@ return
             GHOST = "%s acts tough, but he needs my help. A heart should do it.",
             FIRESTARTER = "Was that fire intentional, %s?",
         },
-        WAXWELL = 
+        WAXWELL =
         {
             GENERIC = "Ah, greetings dear %s!",
             ATTACKER = "Up to your old tricks, are you %s?",
@@ -352,7 +352,7 @@ return
             GHOST = "Stings, doesn't it dear? Let me fetch you a heart.",
             FIRESTARTER = "Lighting fires are we now, %s? Tread carefully.",
         },
-        WX78 = 
+        WX78 =
         {
             GENERIC = "Ah, the automaton. Greetings, dear %s!",
             ATTACKER = "What devilishness is that robot up to?",
@@ -361,7 +361,7 @@ return
             GHOST = "Fascinating. %s indeed has a specter, and it lingers still.",
             FIRESTARTER = "Do be careful when trying to destroy all life, dear.",
         },
-        WILLOW = 
+        WILLOW =
         {
             GENERIC = "Ah, greetings dear %s!",
             ATTACKER = "You like to test boundaries, don't you dear?",
@@ -370,7 +370,7 @@ return
             GHOST = "If you cross your ghosteyes they'll get stuck like that, dear.",
             FIRESTARTER = "What have I said about lighting fires, dear?",
         },
-        WENDY = 
+        WENDY =
         {
             GENERIC = "Ah, greetings dear %s!",
             ATTACKER = "%s! That's enough out of you, young lady!",
@@ -379,7 +379,7 @@ return
             GHOST = "Goodness, this just won't do. Let me find you a heart, %s.",
             FIRESTARTER = "Who gave you flammable materials, %s?",
         },
-        WOODIE = 
+        WOODIE =
         {
             GENERIC = "Ah, greetings dear %s!",
             ATTACKER = "Careful, %s. You know what paper pulp is made of, don't you?",
@@ -390,7 +390,7 @@ return
             BEAVERGHOST = "I'll add \"Castorthrope\" to my endangered species list.",
             FIRESTARTER = "Keep lighting fires if you want to get burnt, dear.",
         },
-        WICKERBOTTOM = 
+        WICKERBOTTOM =
         {
             GENERIC = "Ah, greetings %s! Fancy seeing you here.",
             ATTACKER = "%s's immorality is putting holes in my multiverse speculations.",
@@ -399,7 +399,7 @@ return
             GHOST = "All our self-help books will finally be put to use, hmm %s?",
             FIRESTARTER = "Book burnings are quite gauche, %s.",
         },
-        WES = 
+        WES =
         {
             GENERIC = "Ah, the mime lad. Greetings, dear %s!",
             ATTACKER = "His body language says everything.",
@@ -408,7 +408,7 @@ return
             GHOST = "Poor dear. %s needs a heart to anchor him to this plane.",
             FIRESTARTER = "Don't cry to me when you burn yourself, dear.",
         },
-        WEBBER = 
+        WEBBER =
         {
             GENERIC = "Ah, greetings dear %s!",
             ATTACKER = "That's enough funny business, young arachnid.",
@@ -417,7 +417,7 @@ return
             GHOST = "I'll fetch you a nice colored bandage once you're revived.",
             FIRESTARTER = "Who gave you matches, %s?",
         },
-        WATHGRITHR = 
+        WATHGRITHR =
         {
             GENERIC = "Ah, greetings dear %s!",
             ATTACKER = "You're not making trouble, are you %s?",
@@ -443,6 +443,15 @@ return
             REVIVER = "Thank-you for the assistance, %s.",
             GHOST = "That's what you get for causing mischief, %s.",
             FIRESTARTER = "I'll not tolerate that behavior, %s!",
+        },
+        WORMWOOD =
+        {
+            GENERIC = "Ah, greetings, dear %s!",
+            ATTACKER = "%s is of the Urtica family, I suspect.",
+            MURDERER = "%s is a deadly nightshade! Attack!",
+            REVIVER = "You're a very good friend, %s.",
+            GHOST = "Tsk, well that's no good. No good at all.",
+            FIRESTARTER = "Do you want to singe your leaves off, %s?",
         },
 
         MULTIPLAYER_PORTAL = "Hmm... This may require further reading.",
@@ -1490,7 +1499,7 @@ return
         TORCH = "An improvised handheld light.",
         TRAP = "A simple stick-and-basket trap.",
         BEEFALOWOOL = "Long follicles harvested from the beefalo.",
-        BUGNET = "The tool of entomologists",
+        BUGNET = "The tool of entomologists.",
         PANFLUTE = "Hollow reeds with harmonic resonance.",
         ONEMANBAND = "An impressive improvement to the traditional pipe and tabor.",
         OASISLAKE = "It could support a small ecosystem.",
@@ -1543,7 +1552,7 @@ return
 
         RED_CAP = "Red usually indicates poison.",
         GREEN_CAP = "Seems edible, though it may not be totally sane to consume it.",
-        BLUE_CAP = "This seems to have medicinal properties",
+        BLUE_CAP = "This seems to have medicinal properties.",
         RED_CAP_COOKED = "Chemistry has altered it.",
         GREEN_CAP_COOKED = "Chemistry has altered it.",
         BLUE_CAP_COOKED = "Chemistry has altered it.",
@@ -2467,21 +2476,21 @@ return
         QUAGMIRE_LAMP_SHORT = "It's a nice enough light.",
 
         --v2 Winona
-        WINONA_CATAPULT = 
+        WINONA_CATAPULT =
         {
             GENERIC = "That Winona is quite resourceful.",
             OFF = "It requires a power source.",
             BURNING = "Oh dear, who did this?",
             BURNT = "I do hope she'll build another.",
         },
-        WINONA_SPOTLIGHT = 
+        WINONA_SPOTLIGHT =
         {
             GENERIC = "A sensible safety precaution.",
             OFF = "It requires a power source.",
             BURNING = "Oh dear, who did this?",
             BURNT = "I do hope she'll build another.",
         },
-        WINONA_BATTERY_LOW = 
+        WINONA_BATTERY_LOW =
         {
             GENERIC = "An electrical power supply for her lovely inventions.",
             LOWPOWER = "Hm, her invention is starting to run down.",
@@ -2489,7 +2498,7 @@ return
             BURNING = "Oh dear, who did this?",
             BURNT = "I do hope she'll build another.",
         },
-        WINONA_BATTERY_HIGH = 
+        WINONA_BATTERY_HIGH =
         {
             GENERIC = "It's good to see her keeping an open mind.",
             LOWPOWER = "The magical focus will wear out soon.",
@@ -2497,7 +2506,12 @@ return
             BURNING = "Oh dear, who did this?",
             BURNT = "I do hope she'll build another.",
         },
-   },
+
+        --Wormwood
+        COMPOSTWRAP = "Oh dear. Those are some large droppings.",
+        ARMOR_BRAMBLE = "I believe our friend knit it himself.",
+        TRAP_BRAMBLE = "Microscopic barbs on the thorns make them quite unpleasant.",
+    },
 
     EAT_FOOD =
     {

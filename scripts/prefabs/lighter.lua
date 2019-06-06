@@ -172,6 +172,9 @@ local function fn()
     --cooker (from cooker component) added to pristine state for optimization
     inst:AddTag("cooker")
 
+    --weapon (from weapon component) added to pristine state for optimization
+    inst:AddTag("weapon")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

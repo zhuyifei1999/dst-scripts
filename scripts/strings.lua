@@ -59,6 +59,7 @@ STRINGS =
         webber = "Webber",
         winona = "Winona",
         wortox = "Wortox",
+        wormwood = "Wormwood",
         unknown = "The Unknown",
         random = "Random",
     },
@@ -79,6 +80,7 @@ STRINGS =
         webber = "\"We're always together, and never alone!\"",
         winona = "\"Anything can be fixed with hard work and elbow grease.\"",
         wortox = "\"Pardon me if I don't shake your hand.\"",
+        wormwood = "\"Hello friend?\"",
         random = "Anybody could be under that hat.",
     },
 
@@ -97,6 +99,7 @@ STRINGS =
         webber = "The Indigestible",
         winona = "The Handywoman",
         wortox = "The Soul Starved",
+        wormwood = "The Lonesome",
         random = "?"
     },
 
@@ -118,6 +121,7 @@ STRINGS =
         webber = "*Is a monster \n*Can befriend spiders \n*Grows a silky smooth beard",
         winona = "*Is a skilled builder\n*Gets one free hit from the dark\n*Invents her own gadgets",
         wortox = "*Is an imp \n*Can hop through time and space \n*Less nourished by physical food",
+        wormwood = "*Plants relate to him\n*Has a Green Thumb\n*Food fills his stomach, but not his heart",
         random = "\nSelect a random character",
     },
 
@@ -136,7 +140,9 @@ STRINGS =
         woodie_canada = "*Lucy returns to Woodie when thrown\n*Attack speed increased when wielding Lucy\n\nExpertise:\nMelee",
         wathgrithr = "*Battle cries increase nearby allies' next attack damage by 25%\n*Gains less aggro when attacking\n\nExpertise:\nMelee, Darts",
         webber = "*Accompanied by itsy bitsy spiders\n\n\n\nExpertise:\nDarts",
+        winona = "*All ability cooldowns are 10% faster\n\n\n\nExpertise:\nMelee, Darts, Staves",
         wortox = "*PLACEHOLDER\n\n\n\nExpertise:\nPLACEHOLDER",
+        wormwood = "*PLACEHOLDER\n\n\n\nExpertise:\nPLACEHOLDER",
         random = "\nSelect a random character",
     },
 
@@ -157,6 +163,7 @@ STRINGS =
         webber = "*Sows seeds and harvests plants much more quickly\n\n\n*Expertise:\nFarming",
         winona = "*Performs most actions slightly faster\n\n\n\n*Expertise:\nFarming",
         wortox = "*PLACEHOLDER\n\n\n\nExpertise:\nPLACEHOLDER",
+        wormwood = "*PLACEHOLDER\n\n\n\nExpertise:\nPLACEHOLDER",
         random = "\nSelect a random character",
     },
 
@@ -175,6 +182,7 @@ STRINGS =
         webber = "Webber is a polite young monster who cares deeply for all his friends, human or otherwise.",
         winona = "Winona is a former assembly line worker with a boisterous attitude and love of all things mechanical.",
         wortox = "Wortox is a mischievous imp whose levity masks a deep well of guilt. He has taken many souls in his time.",
+        wormwood = "An amalgam of vines given sentience by lunar magic, Wormwood searches for friends so he can finally belong.",
     },
 
     --ACTION MOUSEOVER TEXT
@@ -799,6 +807,7 @@ STRINGS =
         WEBBER = "Webber",
         WINONA = "Winona",
         WORTOX = "Wortox",
+        WORMWOOD = "Wormwood",
 
         PIGKING = "Pig King",
         STRAWHAT = "Straw Hat",
@@ -831,6 +840,7 @@ STRINGS =
         RESEARCHLAB4 = "Prestihatitator",
         CARTOGRAPHYDESK = "Cartographer's Desk",
         PLANT_NORMAL = "Crop",
+        PLANT_NORMAL_GROUND = "Wild Crop",
         RAZOR = "Razor",
         BEARDHAIR = "Beard Hair",
         FURTUFT = "Fur Tuft",
@@ -1906,6 +1916,12 @@ STRINGS =
 
         --Wortox
         WORTOX_SOUL = "Soul",
+
+        --Wormwood
+        COMPOSTWRAP = "Compost Wrap",
+        ARMOR_BRAMBLE = "Bramble Husk",
+        TRAP_BRAMBLE = "Bramble Trap",
+        BRAMBLEFX = "Thorns", --for death announce if killed by thorns from armor_bramble, and owner is no longer available
     },
 
     NAME_DETAIL_EXTENTION =
@@ -2279,6 +2295,12 @@ STRINGS =
         WINONA_SPOTLIGHT = "Shine a light both day and night.",
         WINONA_BATTERY_LOW = "Someone's gotta keep the juice flowing.",
         WINONA_BATTERY_HIGH = "This one uses gems, so you know it's good.",
+
+        --Wormwood
+        LIVINGLOG = "Put yourself into your work.",
+        ARMOR_BRAMBLE = "Nature's way of saying \"keep away\".",
+        COMPOSTWRAP = "\"Herbal\" therapy.",
+        TRAP_BRAMBLE = "An equal opportunity annoyer.",
     },
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
@@ -3070,6 +3092,7 @@ STRINGS =
         CELESTIAL = "Celestial",
         SHADOW = "Shadow",
         ENGINEERING = "Engineering",
+        NATURE = "Green Thumb",
         CARTOGRAPHY = "Cartography",
         SCULPTING = "Sculptures",
         ORPHANAGE = "Critters",
@@ -7980,6 +8003,7 @@ STRINGS.CHARACTERS =
     WEBBER = require "speech_webber",
     WINONA = require "speech_winona",
     WORTOX = require "speech_wortox",
+    WORMWOOD = require "speech_wormwood",
 }
 
 STRINGS.LUCY =

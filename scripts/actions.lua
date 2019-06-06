@@ -96,7 +96,7 @@ ACTIONS =
     FISH = Action(),
     REEL = Action({ instant=true }),
     POLLINATE = Action(),
-    FERTILIZE = Action(),
+    FERTILIZE = Action({ mount_valid=true }),
     SMOTHER = Action({ priority=1 }),
     MANUALEXTINGUISH = Action({ priority=1 }),
     LAYEGG = Action(),
@@ -459,14 +459,14 @@ ACTIONS.BAIT.fn = function(act)
 end
 
 ACTIONS.DEPLOY.fn = function(act)
-    if act.invobject and act.invobject.components.deployable and act.invobject.components.deployable:CanDeploy(act.pos) then
-        local obj = (act.doer.components.inventory and act.doer.components.inventory:RemoveItem(act.invobject)) or 
-        (act.doer.components.container and act.doer.components.container:RemoveItem(act.invobject))
-        if obj then
+    if act.invobject ~= nil and act.invobject.components.deployable ~= nil and act.invobject.components.deployable:CanDeploy(act.pos, nil, act.doer) then
+        local container = act.doer.components.inventory or act.doer.components.container
+        local obj = container ~= nil and container:RemoveItem(act.invobject) or nil
+        if obj ~= nil then
             if obj.components.deployable:Deploy(act.pos, act.doer, act.rotation) then
                 return true
             else
-                act.doer.components.inventory:GiveItem(obj)
+                container:GiveItem(obj)
             end
         end
     end
@@ -544,22 +544,26 @@ ACTIONS.DIG.fn = function(act)
 end
 
 ACTIONS.FERTILIZE.fn = function(act)
-    if act.target ~= nil and act.invobject ~= nil and act.invobject.components.fertilizer ~= nil then
-        if act.target.components.crop ~= nil and not (act.target.components.crop:IsReadyForHarvest() or act.target:HasTag("withered")) then
-            return act.target.components.crop:Fertilize(act.invobject, act.doer)
-        elseif act.target.components.grower ~= nil and act.target.components.grower:IsEmpty() then
-            act.target.components.grower:Fertilize(act.invobject, act.doer)
-            return true
-        elseif act.target.components.pickable ~= nil and act.target.components.pickable:CanBeFertilized() then
-            act.target.components.pickable:Fertilize(act.invobject, act.doer)
-            return true
-        elseif act.target.components.quagmire_fertilizable ~= nil then
-            act.target.components.quagmire_fertilizable:Fertilize(act.invobject, act.doer)
-            return true
+    if act.invobject ~= nil and act.invobject.components.fertilizer ~= nil then
+        if act.target ~= nil and not (act.doer ~= nil and act.doer.components.rider ~= nil and act.doer.components.rider:IsRiding()) then
+            if act.target.components.crop ~= nil and not (act.target.components.crop:IsReadyForHarvest() or act.target:HasTag("withered")) then
+                return act.target.components.crop:Fertilize(act.invobject, act.doer)
+            elseif act.target.components.grower ~= nil and act.target.components.grower:IsEmpty() then
+                act.target.components.grower:Fertilize(act.invobject, act.doer)
+                return true
+            elseif act.target.components.pickable ~= nil and act.target.components.pickable:CanBeFertilized() then
+                act.target.components.pickable:Fertilize(act.invobject, act.doer)
+                return true
+            elseif act.target.components.quagmire_fertilizable ~= nil then
+                act.target.components.quagmire_fertilizable:Fertilize(act.invobject, act.doer)
+                return true
+            end
+        end
+        if act.doer ~= nil and (act.target == nil or act.doer == act.target) then
+            return act.invobject.components.fertilizer:Heal(act.doer)
         end
     end
 end
-
 
 ACTIONS.SMOTHER.fn = function(act)
     if act.target.components.burnable and act.target.components.burnable:IsSmoldering() then
@@ -1066,13 +1070,13 @@ ACTIONS.PLANT.fn = function(act)
     if act.doer.components.inventory ~= nil then
         local seed = act.doer.components.inventory:RemoveItem(act.invobject)
         if seed ~= nil then
-            if act.target.components.grower ~= nil and act.target.components.grower:PlantItem(seed) then
+            if act.target.components.grower ~= nil and act.target.components.grower:PlantItem(seed, act.doer) then
                 return true
             elseif act.target:HasTag("winter_treestand")
                 and act.target.components.burnable ~= nil
                 and not (act.target.components.burnable:IsBurning() or
                         act.target.components.burnable:IsSmoldering()) then
-                act.target:PushEvent("plantwintertreeseed", { seed = seed })
+                act.target:PushEvent("plantwintertreeseed", { seed = seed, doer = act.doer })
                 return true
             else
                 act.doer.components.inventory:GiveItem(seed)

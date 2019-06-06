@@ -436,6 +436,15 @@ return {
             GHOST = "Did you lose a game, %s?",
             FIRESTARTER = "Abby and I know what you did, %s.",
         },
+        WORMWOOD =
+        {
+            GENERIC = "How do you do, %s?",
+            ATTACKER = "%s has developed a taste for blood.",
+            MURDERER = "Don't worry, %s. I'll end it quickly.",
+            REVIVER = "%s's friendship extends beyond the veil.",
+            GHOST = "You were too good for this world, %s.",
+            FIRESTARTER = "If you play with fire, you're liable to get burned...",
+        },
 
 		GLOMMER = "Well aren't you a happy little fuzzball. Die.",
         GLOMMERFLOWER = 
@@ -2413,36 +2422,41 @@ return {
         QUAGMIRE_LAMP_SHORT = "The only light in my life is Abigail.",
 
         --v2 Winona
-        WINONA_CATAPULT = 
+        WINONA_CATAPULT =
         {
-        	GENERIC = "It visits death upon intruders.",
-        	OFF = "It's dead...",
-        	BURNING = "Oh no...",
-        	BURNT = "It all crumbles to ash, in the end.",
+            GENERIC = "It visits death upon intruders.",
+            OFF = "It's dead...",
+            BURNING = "Oh no...",
+            BURNT = "It all crumbles to ash, in the end.",
         },
-        WINONA_SPOTLIGHT = 
+        WINONA_SPOTLIGHT =
         {
-        	GENERIC = "But what if I liked the dark?",
-        	OFF = "It's dead...",
-			BURNING = "Oh no...",
-        	BURNT = "It all crumbles to ash, in the end.",
+            GENERIC = "But what if I liked the dark?",
+            OFF = "It's dead...",
+            BURNING = "Oh no...",
+            BURNT = "It all crumbles to ash, in the end.",
         },
-        WINONA_BATTERY_LOW = 
+        WINONA_BATTERY_LOW =
         {
-        	GENERIC = "It's a kind of electrical box.",
-        	LOWPOWER = "It's not long for this world.",
-        	OFF = "What did Winona put in it again? Oh...",
-        	BURNING = "Oh no...",
-        	BURNT = "It all crumbles to ash, in the end.",
+            GENERIC = "It's a kind of electrical box.",
+            LOWPOWER = "It's not long for this world.",
+            OFF = "What did Winona put in it again? Oh...",
+            BURNING = "Oh no...",
+            BURNT = "It all crumbles to ash, in the end.",
         },
-        WINONA_BATTERY_HIGH = 
+        WINONA_BATTERY_HIGH =
         {
-        	GENERIC = "This one looks odd.",
-        	LOWPOWER = "It's slowly dying.",
-        	OFF = "I think it wants... gems...",
-        	BURNING = "Oh no...",
-        	BURNT = "It all crumbles to ash, in the end.",
+            GENERIC = "This one looks odd.",
+            LOWPOWER = "It's slowly dying.",
+            OFF = "I think it wants... gems...",
+            BURNING = "Oh no...",
+            BURNT = "It all crumbles to ash, in the end.",
         },
+
+        --Wormwood
+        COMPOSTWRAP = "It's poop. Sigh.",
+        ARMOR_BRAMBLE = "So my outside matches my inside.",
+        TRAP_BRAMBLE = "To prick and ensnare.",
     },
     DESCRIBE_GENERIC = "Sigh... I don't know.",
     DESCRIBE_TOODARK = "The darkness! It is too dark!",

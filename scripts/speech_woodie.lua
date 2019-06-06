@@ -280,26 +280,27 @@ return {
     QUAGMIRE_ANNOUNCE_LOSE = "It's over for us, eh.",
     QUAGMIRE_ANNOUNCE_WIN = "We done did it.",
 
-	BATTLECRY =
-	{
-		GENERIC = "Get over here, eh!",
-		PIG = "I'll make bacon of you yet!",
-		PREY = "This here's the end for you!",
-		SPIDER = "For the North!",
-		SPIDER_WARRIOR = "Prepare for a choppin'!",
-		DEER = "Hunting season's open!",
-	},
-	COMBAT_QUIT =
-	{
-		GENERIC = "I think that's enough.",
-		PIG = "I thought that would go better.",
-		PREY = "Sorry, sorry!",
-		SPIDER = "Sorry!",
-		SPIDER_WARRIOR = "Same time again tomorrow, eh?",
-	},
-	DESCRIBE =
-	{
-		PLAYER =
+    BATTLECRY =
+    {
+        GENERIC = "Get over here, eh!",
+        PIG = "I'll make bacon of you yet!",
+        PREY = "This here's the end for you!",
+        SPIDER = "For the North!",
+        SPIDER_WARRIOR = "Prepare for a choppin'!",
+        DEER = "Hunting season's open!",
+    },
+    COMBAT_QUIT =
+    {
+        GENERIC = "I think that's enough.",
+        PIG = "I thought that would go better.",
+        PREY = "Sorry, sorry!",
+        SPIDER = "Sorry!",
+        SPIDER_WARRIOR = "Same time again tomorrow, eh?",
+    },
+
+    DESCRIBE =
+    {
+        PLAYER =
         {
             GENERIC = "Look who it is! %s!",
             ATTACKER = "%s isn't very polite...",
@@ -308,106 +309,106 @@ return {
             GHOST = "Someone should rub a heart on %s.",
             FIRESTARTER = "Knock off the fire starting there, bud.",
         },
-		WILSON = 
-		{
-			GENERIC = "%s! Hey buddy!",
-			ATTACKER = "You haven't been very gentlemanly lately, %s.",
-			MURDERER = "Enemy of the forest!",
-			REVIVER = "%s, you're an alright guy.",
-			GHOST = "Someone should rub a heart on %s.",
-			FIRESTARTER = "Was that blaze some sort of experiment, %s?",
-		},
-		WOLFGANG = 
-		{
-			GENERIC = "That's my buddy, %s! Hey!",
-			ATTACKER = "%s could be a bit more considerate...",
-			MURDERER = "You'll not strong arm me, %s!",
-			REVIVER = "%s has a big, squishy heart under those muscles.",
-			GHOST = "C'mon, bud, let's get you on your feet.",
-			FIRESTARTER = "Don't singe your moustache, %s.",
-		},
-		WAXWELL = 
-		{
-			GENERIC = "Hey %s, how you doin' ya big hoser?",
-			ATTACKER = "%s'll end up on the wrong end of my axe if he's not careful...",
-			MURDERER = "Yer still a hoser! Now it's choppin' time!",
-			REVIVER = "You're growin' on me, %s. Like a fungus.",
-			GHOST = "Lucy says I have to help you, %s. Let's get goin'.",
-			FIRESTARTER = "You'll not want to be burning things, bud.",
-		},
-		WX78 = 
-		{
-			GENERIC = "It's my metal buddy, %s!",
-			ATTACKER = "%s is cruisin' for a bruisin'...",
-			MURDERER = "It's time to power DOWN, %s!",
-			REVIVER = "%s, you're an alright sort.",
-			GHOST = "Huh, I guess %s had a soul after all.",
-			FIRESTARTER = "You're gonna singe your chassis, %s.",
-		},
-		WILLOW = 
-		{
-			GENERIC = "Look who it is! %s!",
-			ATTACKER = "You're tempting a forest fire, %s...",
-			MURDERER = "Here comes the wildfire!",
-			REVIVER = "You're on fire today, %s. No... actually.",
-			GHOST = "Just don't haunt anything while I look for a heart, %s.",
-			FIRESTARTER = "Business as usual, I see.",
-		},
-		WENDY = 
-		{
-			GENERIC = "%s! Hi little buddy!",
-			ATTACKER = "%s, I can't believe what I just SAW! Wait, no...",
-			MURDERER = "Hereeee's Woodie!",
-			REVIVER = "%s! You're doin' great, little buddy.",
-			GHOST = "With a heart you'll be tip-top in no time, %s.",
-			FIRESTARTER = "Should you be setting fires, little buddy?",
-		},
-		WOODIE = 
-		{
-			GENERIC = "%s! Fancy seeing another Canadian here.",
-			ATTACKER = "%s isn't a true Canadian...",
-			MURDERER = "Hey, c'mere %s! I've gotta AXE you question!",
-			REVIVER = "%s is a Canadian patriot, eh.",
-			GHOST = "Canadians gotta stick together, %s. Let's get a heart.",
-			BEAVER = "Been there, bud.",
-			BEAVERGHOST = "You're gonna have one monster headache after this, buddy.",
-			FIRESTARTER = "Those fires are kind of counterproductive now, eh?",
-		},
-		WICKERBOTTOM = 
-		{
-			GENERIC = "%s. Ma'am.",
-			ATTACKER = "%s should read an etiquette book once in awhile.",
-			MURDERER = "This is gonna be a clear cut!",
-			REVIVER = "That's some good work ya did, Ma'am.",
-			GHOST = "You know where I can get a heart, %s?",
-			FIRESTARTER = "Careful around those open flames, Ma'am.",
-		},
-		WES = 
-		{
-			GENERIC = "%s! How ya doin', buddy?",
-			ATTACKER = "%s could learn some manners...",
-			MURDERER = "You're MIME now, %s!",
-			REVIVER = "%s, you're an alright guy.",
-			GHOST = "First we'll get you a heart, then we'll get you some bacon, eh %s?",
-			FIRESTARTER = "Keep those flames away from my trees!",
-		},
-		WEBBER = 
+        WILSON =
+        {
+            GENERIC = "%s! Hey buddy!",
+            ATTACKER = "You haven't been very gentlemanly lately, %s.",
+            MURDERER = "Enemy of the forest!",
+            REVIVER = "%s, you're an alright guy.",
+            GHOST = "Someone should rub a heart on %s.",
+            FIRESTARTER = "Was that blaze some sort of experiment, %s?",
+        },
+        WOLFGANG =
+        {
+            GENERIC = "That's my buddy, %s! Hey!",
+            ATTACKER = "%s could be a bit more considerate...",
+            MURDERER = "You'll not strong arm me, %s!",
+            REVIVER = "%s has a big, squishy heart under those muscles.",
+            GHOST = "C'mon, bud, let's get you on your feet.",
+            FIRESTARTER = "Don't singe your moustache, %s.",
+        },
+        WAXWELL =
+        {
+            GENERIC = "Hey %s, how you doin' ya big hoser?",
+            ATTACKER = "%s'll end up on the wrong end of my axe if he's not careful...",
+            MURDERER = "Yer still a hoser! Now it's choppin' time!",
+            REVIVER = "You're growin' on me, %s. Like a fungus.",
+            GHOST = "Lucy says I have to help you, %s. Let's get goin'.",
+            FIRESTARTER = "You'll not want to be burning things, bud.",
+        },
+        WX78 =
+        {
+            GENERIC = "It's my metal buddy, %s!",
+            ATTACKER = "%s is cruisin' for a bruisin'...",
+            MURDERER = "It's time to power DOWN, %s!",
+            REVIVER = "%s, you're an alright sort.",
+            GHOST = "Huh, I guess %s had a soul after all.",
+            FIRESTARTER = "You're gonna singe your chassis, %s.",
+        },
+        WILLOW =
+        {
+            GENERIC = "Look who it is! %s!",
+            ATTACKER = "You're tempting a forest fire, %s...",
+            MURDERER = "Here comes the wildfire!",
+            REVIVER = "You're on fire today, %s. No... actually.",
+            GHOST = "Just don't haunt anything while I look for a heart, %s.",
+            FIRESTARTER = "Business as usual, I see.",
+        },
+        WENDY =
         {
             GENERIC = "%s! Hi little buddy!",
-			ATTACKER = "Hey %s, can't we all just get a-log?",
-			MURDERER = "'Luce gave me the go-ahead! You're in trouble now, %s!",
-			REVIVER = "You're an alright spider, kiddo.",
-			GHOST = "We better get you a heart, hey kiddo?",
-			FIRESTARTER = "I better not see anymore fires, little buddy.",
+            ATTACKER = "%s, I can't believe what I just SAW! Wait, no...",
+            MURDERER = "Hereeee's Woodie!",
+            REVIVER = "%s! You're doin' great, little buddy.",
+            GHOST = "With a heart you'll be tip-top in no time, %s.",
+            FIRESTARTER = "Should you be setting fires, little buddy?",
         },
-        WATHGRITHR = 
+        WOODIE =
+        {
+            GENERIC = "%s! Fancy seeing another Canadian here.",
+            ATTACKER = "%s isn't a true Canadian...",
+            MURDERER = "Hey, c'mere %s! I've gotta AXE you question!",
+            REVIVER = "%s is a Canadian patriot, eh.",
+            GHOST = "Canadians gotta stick together, %s. Let's get a heart.",
+            BEAVER = "Been there, bud.",
+            BEAVERGHOST = "You're gonna have one monster headache after this, buddy.",
+            FIRESTARTER = "Those fires are kind of counterproductive now, eh?",
+        },
+        WICKERBOTTOM =
+        {
+            GENERIC = "%s. Ma'am.",
+            ATTACKER = "%s should read an etiquette book once in awhile.",
+            MURDERER = "This is gonna be a clear cut!",
+            REVIVER = "That's some good work ya did, Ma'am.",
+            GHOST = "You know where I can get a heart, %s?",
+            FIRESTARTER = "Careful around those open flames, Ma'am.",
+        },
+        WES =
+        {
+            GENERIC = "%s! How ya doin', buddy?",
+            ATTACKER = "%s could learn some manners...",
+            MURDERER = "You're MIME now, %s!",
+            REVIVER = "%s, you're an alright guy.",
+            GHOST = "First we'll get you a heart, then we'll get you some bacon, eh %s?",
+            FIRESTARTER = "Keep those flames away from my trees!",
+        },
+        WEBBER =
+        {
+            GENERIC = "%s! Hi little buddy!",
+            ATTACKER = "Hey %s, can't we all just get a-log?",
+            MURDERER = "'Luce gave me the go-ahead! You're in trouble now, %s!",
+            REVIVER = "You're an alright spider, kiddo.",
+            GHOST = "We better get you a heart, hey kiddo?",
+            FIRESTARTER = "I better not see anymore fires, little buddy.",
+        },
+        WATHGRITHR =
         {
             GENERIC = "%s! Hey bud!",
-			ATTACKER = "%s has raiding and looting on the brain...",
-			MURDERER = "Your spear versus my axe, let's see whatcha got, eh!",
-			REVIVER = "I'm glad you're on our side, %s.",
-			GHOST = "With a heart you'll be feelin' like your mighty self in no time.",
-			FIRESTARTER = "What's with the fires lately, bud?",
+            ATTACKER = "%s has raiding and looting on the brain...",
+            MURDERER = "Your spear versus my axe, let's see whatcha got, eh!",
+            REVIVER = "I'm glad you're on our side, %s.",
+            GHOST = "With a heart you'll be feelin' like your mighty self in no time.",
+            FIRESTARTER = "What's with the fires lately, bud?",
         },
         WINONA =
         {
@@ -427,7 +428,16 @@ return {
             GHOST = "That soul sapper's lookin' like a real sap now.",
             FIRESTARTER = "You better not burn any of my precious trees!",
         },
-        
+        WORMWOOD =
+        {
+            GENERIC = "%s, hey there budding bud!",
+            ATTACKER = "Why don't you leaf the fighting to the professionals?",
+            MURDERER = "I'll wear that gem like a brooch, y'hear!",
+            REVIVER = "You're a good sapling, %s.",
+            GHOST = "C'mon, let's getcha replanted.",
+            FIRESTARTER = "I thought you of all people would prevent forest fires.",
+        },
+
 		MULTIPLAYER_PORTAL = "That'd be the thing I fell through, eh.",
 		MULTIPLAYER_PORTAL_MOONROCK = "Wonder where it goes.",
         CONSTRUCTION_PLANS = "Well, better get building.",
@@ -2434,36 +2444,41 @@ return {
         QUAGMIRE_LAMP_SHORT = "Just wastes electricity.",
 
         --v2 Winona
-        WINONA_CATAPULT = 
+        WINONA_CATAPULT =
         {
-        	GENERIC = "Looks kinda fun if I'm honest.",
-        	OFF = "Does it look like it's working, Lucy?",
-        	BURNING = "Woah! Careful, Lucy!",
-        	BURNT = "That's a right shame.",
+            GENERIC = "Looks kinda fun if I'm honest.",
+            OFF = "Does it look like it's working, Lucy?",
+            BURNING = "Woah! Careful, Lucy!",
+            BURNT = "That's a right shame.",
         },
-        WINONA_SPOTLIGHT = 
+        WINONA_SPOTLIGHT =
         {
-        	GENERIC = "Fine, as long as it don't start no forest fires.",
-        	OFF = "Does it look like it's working, Lucy?",
-        	BURNING = "Woah! Careful, Lucy!",
-        	BURNT = "That's a right shame.",
+            GENERIC = "Fine, as long as it don't start no forest fires.",
+            OFF = "Does it look like it's working, Lucy?",
+            BURNING = "Woah! Careful, Lucy!",
+            BURNT = "That's a right shame.",
         },
-        WINONA_BATTERY_LOW = 
+        WINONA_BATTERY_LOW =
         {
-        	GENERIC = "Looks like Winona's work.",
-        	LOWPOWER = "Just about dead.",
+            GENERIC = "Looks like Winona's work.",
+            LOWPOWER = "Just about dead.",
             OFF = "Plum tuckered.",
             BURNING = "Woah! Careful, Lucy!",
             BURNT = "That's a right shame.",
         },
-        WINONA_BATTERY_HIGH = 
+        WINONA_BATTERY_HIGH =
         {
-        	GENERIC = "Pretty odd looking gadget there.",
-        	LOWPOWER = "Just about dead.",
+            GENERIC = "Pretty odd looking gadget there.",
+            LOWPOWER = "Just about dead.",
             OFF = "Plum tuckered.",
             BURNING = "Woah! Careful, Lucy!",
             BURNT = "That's a right shame.",
         },
+
+        --Wormwood
+        COMPOSTWRAP = "Well. Plants gotta fertilize.",
+        ARMOR_BRAMBLE = "All natural safety precautions.",
+        TRAP_BRAMBLE = "A trap for the forest, by the forest.",
     },
     DESCRIBE_GENERIC = "What's that, eh?",
     DESCRIBE_TOODARK = "It's too dark, eh!",

@@ -60,6 +60,13 @@ local function DoTalkSound(inst)
     end
 end
 
+local function StopTalkSound(inst, instant)
+    if not instant and inst.endtalksound ~= nil and inst.SoundEmitter:PlayingSound("talk") then
+        inst.SoundEmitter:PlaySound(inst.endtalksound)
+    end
+    inst.SoundEmitter:KillSound("talk")
+end
+
 local function DoMountSound(inst, mount, sound, ispredicted)
     if mount ~= nil and mount.sounds ~= nil then
         inst.SoundEmitter:PlaySound(mount.sounds[sound], nil, nil, ispredicted)
@@ -377,7 +384,12 @@ local actionhandlers =
         end),
     ActionHandler(ACTIONS.FISH, "fishing_pre"),
 
-    ActionHandler(ACTIONS.FERTILIZE, "doshortaction"),
+    ActionHandler(ACTIONS.FERTILIZE,
+        function(inst, action)
+            return (action.target ~= nil and action.target ~= inst and "doshortaction")
+                or (action.invobject ~= nil and action.invobject:HasTag("slowfertilize") and "fertilize")
+                or "fertilize_short"
+        end),
     ActionHandler(ACTIONS.SMOTHER,
         function(inst)
             return inst:HasTag("pyromaniac") and "domediumaction" or "dolongaction"
@@ -461,6 +473,7 @@ local actionhandlers =
         function(inst, action)
             local rec = GetValidRecipe(action.recipe)
             return (rec ~= nil and rec.tab.shop and "give")
+                or (action.recipe == "livinglog" and inst:HasTag("plantkin") and "form_log")
                 or (inst:HasTag("hungrybuilder") and "dohungrybuild")
                 or (inst:HasTag("fastbuilder") and "domediumaction")
                 or "dolongaction"
@@ -789,7 +802,7 @@ local events =
 
     --For crafting, attunement cost, etc... Just go directly to hit.
     EventHandler("consumehealthcost", function(inst, data)
-        if not inst.components.health:IsDead() then
+        if not (inst.sg:HasStateTag("nocraftinginterrupt") or inst.components.health:IsDead()) then
             inst.sg:GoToState("hit")
         end
     end),
@@ -1598,8 +1611,20 @@ local states =
                 inst.AnimState:PlayAnimation("idle_groggy01_pre")
                 inst.AnimState:PushAnimation("idle_groggy01_loop")
                 inst.AnimState:PushAnimation("idle_groggy01_pst", false)
-            else
+            elseif inst.customidleanim == nil then
                 inst.AnimState:PlayAnimation("idle_inaction")
+            else
+                if inst.sg.mem.idlerepeats == nil then
+                    inst.sg.mem.usecustomidle = math.random() < .5
+                    inst.sg.mem.idlerepeats = 0
+                end
+                if inst.sg.mem.idlerepeats > 1 then
+                    inst.sg.mem.idlerepeats = inst.sg.mem.idlerepeats - 1
+                else
+                    inst.sg.mem.usecustomidle = not inst.sg.mem.usecustomidle
+                    inst.sg.mem.idlerepeats = inst.sg.mem.usecustomidle and math.random(2) or math.ceil(math.random(5) * .5)
+                end
+                inst.AnimState:PlayAnimation(inst.sg.mem.usecustomidle and inst.customidleanim or "idle_inaction")
             end
         end,
 
@@ -1652,14 +1677,14 @@ local states =
                 if inst.sg.statemem.talktask ~= nil then
                     inst.sg.statemem.talktask:Cancel()
                     inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
+                    StopTalkSound(inst, true)
                 end
                 if DoTalkSound(inst) then
                     inst.sg.statemem.talktask =
                         inst:DoTaskInTime(1.5 + math.random() * .5,
                             function()
-                                inst.SoundEmitter:KillSound("talk")
                                 inst.sg.statemem.talktask = nil
+                                StopTalkSound(inst)
                             end)
                 end
             end),
@@ -1667,7 +1692,7 @@ local states =
                 if inst.sg.statemem.talktalk ~= nil then
                     inst.sg.statemem.talktask:Cancel()
                     inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
+                    StopTalkSound(inst)
                 end
             end),
             EventHandler("animover", function(inst)
@@ -1691,7 +1716,7 @@ local states =
             if not inst.sg.statemem.bowing and inst.sg.statemem.talktask ~= nil then
                 inst.sg.statemem.talktask:Cancel()
                 inst.sg.statemem.talktask = nil
-                inst.SoundEmitter:KillSound("talk")
+                StopTalkSound(inst)
             end
         end,
     },
@@ -1724,14 +1749,14 @@ local states =
                 if inst.sg.statemem.talktask ~= nil then
                     inst.sg.statemem.talktask:Cancel()
                     inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
+                    StopTalkSound(inst, true)
                 end
                 if DoTalkSound(inst) then
                     inst.sg.statemem.talktask =
                         inst:DoTaskInTime(1.5 + math.random() * .5,
                             function()
-                                inst.SoundEmitter:KillSound("talk")
                                 inst.sg.statemem.talktask = nil
+                                StopTalkSound(inst)
                             end)
                 end
             end),
@@ -1739,7 +1764,7 @@ local states =
                 if inst.sg.statemem.talktalk ~= nil then
                     inst.sg.statemem.talktask:Cancel()
                     inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
+                    StopTalkSound(inst)
                 end
             end),
         },
@@ -1748,7 +1773,7 @@ local states =
             if inst.sg.statemem.talktask ~= nil then
                 inst.sg.statemem.talktask:Cancel()
                 inst.sg.statemem.talktask = nil
-                inst.SoundEmitter:KillSound("talk")
+                StopTalkSound(inst)
             end
         end,
     },
@@ -2317,14 +2342,14 @@ local states =
                 if inst.sg.statemem.talktask ~= nil then
                     inst.sg.statemem.talktask:Cancel()
                     inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
+                    StopTalkSound(inst, true)
                 end
                 if DoTalkSound(inst) then
                     inst.sg.statemem.talktask =
                         inst:DoTaskInTime(1.5 + math.random() * .5,
                             function()
-                                inst.SoundEmitter:KillSound("talk")
                                 inst.sg.statemem.talktask = nil
+                                StopTalkSound(inst)
                             end)
                 end
             end),
@@ -2332,7 +2357,7 @@ local states =
                 if inst.sg.statemem.talktalk ~= nil then
                     inst.sg.statemem.talktask:Cancel()
                     inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
+                    StopTalkSound(inst)
                 end
             end),
             EventHandler("unequip", function(inst, data)
@@ -2347,7 +2372,7 @@ local states =
             if inst.sg.statemem.talktask ~= nil then
                 inst.sg.statemem.talktask:Cancel()
                 inst.sg.statemem.talktask = nil
-                inst.SoundEmitter:KillSound("talk")
+                StopTalkSound(inst)
             end
         end,
     },
@@ -2376,14 +2401,14 @@ local states =
                 if inst.sg.statemem.talktask ~= nil then
                     inst.sg.statemem.talktask:Cancel()
                     inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
+                    StopTalkSound(inst, true)
                 end
                 if DoTalkSound(inst) then
                     inst.sg.statemem.talktask =
                         inst:DoTaskInTime(1.5 + math.random() * .5,
                             function()
-                                inst.SoundEmitter:KillSound("talk")
                                 inst.sg.statemem.talktask = nil
+                                StopTalkSound(inst)
                             end)
                 end
             end),
@@ -2391,7 +2416,7 @@ local states =
                 if inst.sg.statemem.talktalk ~= nil then
                     inst.sg.statemem.talktask:Cancel()
                     inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
+                    StopTalkSound(inst)
                 end
             end),
             EventHandler("unequip", function(inst, data)
@@ -2412,7 +2437,7 @@ local states =
             if inst.sg.statemem.talktask ~= nil then
                 inst.sg.statemem.talktask:Cancel()
                 inst.sg.statemem.talktask = nil
-                inst.SoundEmitter:KillSound("talk")
+                StopTalkSound(inst)
             end
         end,
     },
@@ -2438,14 +2463,14 @@ local states =
                 if inst.sg.statemem.talktask ~= nil then
                     inst.sg.statemem.talktask:Cancel()
                     inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
+                    StopTalkSound(inst, true)
                 end
                 if DoTalkSound(inst) then
                     inst.sg.statemem.talktask =
                         inst:DoTaskInTime(1.5 + math.random() * .5,
                             function()
-                                inst.SoundEmitter:KillSound("talk")
                                 inst.sg.statemem.talktask = nil
+                                StopTalkSound(inst)
                             end)
                 end
             end),
@@ -2453,7 +2478,7 @@ local states =
                 if inst.sg.statemem.talktalk ~= nil then
                     inst.sg.statemem.talktask:Cancel()
                     inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
+                    StopTalkSound(inst)
                 end
             end),
         },
@@ -2462,7 +2487,7 @@ local states =
             if inst.sg.statemem.talktask ~= nil then
                 inst.sg.statemem.talktask:Cancel()
                 inst.sg.statemem.talktask = nil
-                inst.SoundEmitter:KillSound("talk")
+                StopTalkSound(inst)
             end
         end,
     },
@@ -2557,14 +2582,14 @@ local states =
                 if inst.sg.statemem.talktask ~= nil then
                     inst.sg.statemem.talktask:Cancel()
                     inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
+                    StopTalkSound(inst, true)
                 end
                 if DoTalkSound(inst) then
                     inst.sg.statemem.talktask =
                         inst:DoTaskInTime(1.5 + math.random() * .5,
                             function()
-                                inst.SoundEmitter:KillSound("talk")
                                 inst.sg.statemem.talktask = nil
+                                StopTalkSound(inst)
                             end)
                 end
             end),
@@ -2572,7 +2597,7 @@ local states =
                 if inst.sg.statemem.talktalk ~= nil then
                     inst.sg.statemem.talktask:Cancel()
                     inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
+                    StopTalkSound(inst)
                 end
             end),
             EventHandler("unequip", function(inst, data)
@@ -2599,7 +2624,7 @@ local states =
             if inst.sg.statemem.talktask ~= nil then
                 inst.sg.statemem.talktask:Cancel()
                 inst.sg.statemem.talktask = nil
-                inst.SoundEmitter:KillSound("talk")
+                StopTalkSound(inst)
             end
             if not inst.sg.statemem.parrying then
                 inst.components.combat.redirectdamagefn = nil
@@ -2660,14 +2685,14 @@ local states =
                 if inst.sg.statemem.talktask ~= nil then
                     inst.sg.statemem.talktask:Cancel()
                     inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
+                    StopTalkSound(inst, true)
                 end
                 if DoTalkSound(inst) then
                     inst.sg.statemem.talktask =
                         inst:DoTaskInTime(1.5 + math.random() * .5,
                             function()
-                                inst.SoundEmitter:KillSound("talk")
                                 inst.sg.statemem.talktask = nil
+                                StopTalkSound(inst)
                             end)
                 end
             end),
@@ -2675,7 +2700,7 @@ local states =
                 if inst.sg.statemem.talktalk ~= nil then
                     inst.sg.statemem.talktask:Cancel()
                     inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
+                    StopTalkSound(inst)
                 end
             end),
             EventHandler("unequip", function(inst, data)
@@ -2695,7 +2720,7 @@ local states =
             if inst.sg.statemem.talktask ~= nil then
                 inst.sg.statemem.talktask:Cancel()
                 inst.sg.statemem.talktask = nil
-                inst.SoundEmitter:KillSound("talk")
+                StopTalkSound(inst)
             end
             if not inst.sg.statemem.parrying then
                 inst.components.combat.redirectdamagefn = nil
@@ -3429,9 +3454,7 @@ local states =
             inst.sg:GoToState("idle", true)
         end,
 
-        onexit = function(inst)
-            inst.SoundEmitter:KillSound("talk")
-        end,
+        onexit = StopTalkSound,
     },
 
     State{
@@ -3815,9 +3838,7 @@ local states =
             end),
         },
 
-        onexit = function(inst)
-            inst.SoundEmitter:KillSound("talk")
-        end,
+        onexit = StopTalkSound,
     },
 
     State{
@@ -3845,9 +3866,7 @@ local states =
             end),
         },
 
-        onexit = function(inst)
-            inst.SoundEmitter:KillSound("talk")
-        end,
+        onexit = StopTalkSound,
     },
 
     State
@@ -4339,14 +4358,14 @@ local states =
                 if inst.sg.statemem.talktask ~= nil then
                     inst.sg.statemem.talktask:Cancel()
                     inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
+                    StopTalkSound(inst, true)
                 end
                 if DoTalkSound(inst) then
                     inst.sg.statemem.talktask =
                         inst:DoTaskInTime(1.5 + math.random() * .5,
                             function()
-                                inst.SoundEmitter:KillSound("talk")
                                 inst.sg.statemem.talktask = nil
+                                StopTalkSound(inst)
                             end)
                 end
             end),
@@ -4357,7 +4376,7 @@ local states =
                 if inst.sg.statemem.talktalk ~= nil then
                     inst.sg.statemem.talktask:Cancel()
                     inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
+                    StopTalkSound(inst)
                 end
             end),
         },
@@ -4376,7 +4395,7 @@ local states =
             if inst.sg.statemem.talktask ~= nil then
                 inst.sg.statemem.talktask:Cancel()
                 inst.sg.statemem.talktask = nil
-                inst.SoundEmitter:KillSound("talk")
+                StopTalkSound(inst)
             end
         end,
     },
@@ -6014,14 +6033,14 @@ local states =
                 if inst.sg.statemem.talktask ~= nil then
                     inst.sg.statemem.talktask:Cancel()
                     inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
+                    StopTalkSound(inst, true)
                 end
                 if DoTalkSound(inst) then
                     inst.sg.statemem.talktask =
                         inst:DoTaskInTime(1.5 + math.random() * .5,
                             function()
-                                inst.SoundEmitter:KillSound("talk")
                                 inst.sg.statemem.talktask = nil
+                                StopTalkSound(inst)
                             end)
                 end
             end),
@@ -6029,7 +6048,7 @@ local states =
                 if inst.sg.statemem.talktalk ~= nil then
                     inst.sg.statemem.talktask:Cancel()
                     inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
+                    StopTalkSound(inst)
                 end
             end),
         },
@@ -6042,7 +6061,7 @@ local states =
             if inst.sg.statemem.talktask ~= nil then
                 inst.sg.statemem.talktask:Cancel()
                 inst.sg.statemem.talktask = nil
-                inst.SoundEmitter:KillSound("talk")
+                StopTalkSound(inst)
             end
         end,
     },
@@ -6699,14 +6718,14 @@ local states =
                 if inst.sg.statemem.talktask ~= nil then
                     inst.sg.statemem.talktask:Cancel()
                     inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
+                    StopTalkSound(inst, true)
                 end
                 if DoTalkSound(inst) then
                     inst.sg.statemem.talktask =
                         inst:DoTaskInTime(1.5 + math.random() * .5,
                             function()
-                                inst.SoundEmitter:KillSound("talk")
                                 inst.sg.statemem.talktask = nil
+                                StopTalkSound(inst)
                             end)
                 end
             end),
@@ -6714,7 +6733,7 @@ local states =
                 if inst.sg.statemem.talktalk ~= nil then
                     inst.sg.statemem.talktask:Cancel()
                     inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
+                    StopTalkSound(inst)
                 end
             end),
             EventHandler("animover", function(inst)
@@ -6728,7 +6747,7 @@ local states =
             if inst.sg.statemem.talktask ~= nil then
                 inst.sg.statemem.talktask:Cancel()
                 inst.sg.statemem.talktask = nil
-                inst.SoundEmitter:KillSound("talk")
+                StopTalkSound(inst)
             end
         end,
     },
@@ -6901,7 +6920,7 @@ local states =
 
     State{
         name = "reviver_rebirth",
-        tags = { "busy", "reviver_rebirth", "pausepredict", "silentmorph" },
+        tags = { "busy", "reviver_rebirth", "pausepredict", "silentmorph", "ghostbuild" },
 
         onenter = function(inst)
             if inst.components.playercontroller ~= nil then
@@ -6916,32 +6935,27 @@ local states =
 
             inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_get_bloodpump")
             inst.AnimState:SetBank("ghost")
-            if inst:HasTag("beaver") then
-                inst.components.skinner:SetSkinMode("ghost_werebeaver_skin")
-            else
-                inst.components.skinner:SetSkinMode("ghost_skin")
-            end
+            inst.components.skinner:SetSkinMode(inst.overrideghostskinmode or "ghost_skin")
             inst.AnimState:PlayAnimation("shudder")
             inst.AnimState:PushAnimation("brace", false)
             inst.AnimState:PushAnimation("transform", false)
             inst.components.health:SetInvincible(true)
             inst:ShowHUD(false)
             inst:SetCameraDistance(14)
+
+            inst:PushEvent("startghostbuildinstate")
         end,
 
         timeline =
         {
             TimeEvent(88 * FRAMES, function(inst)
                 inst.DynamicShadow:Enable(true)
-                if inst:HasTag("beaver") then
-                    inst.AnimState:SetBank("werebeaver")
-                    inst.components.skinner:SetSkinMode("werebeaver_skin")
-                else
-                    inst.AnimState:SetBank("wilson")
-                    inst.components.skinner:SetSkinMode("normal_skin")
-                end
+                inst.AnimState:SetBank(inst:HasTag("beaver") and "werebeaver" or "wilson")
+                inst.components.skinner:SetSkinMode(inst.overrideskinmode or "normal_skin")
                 inst.AnimState:PlayAnimation("transform_end")
                 inst.SoundEmitter:PlaySound("dontstarve/ghost/ghost_use_bloodpump")
+                inst.sg:RemoveStateTag("ghostbuild")
+                inst:PushEvent("stopghostbuildinstate")
             end),
             TimeEvent(96 * FRAMES, function(inst) 
                 inst.components.bloomer:PopBloom("playerghostbloom")
@@ -6961,15 +6975,14 @@ local states =
         onexit = function(inst)
             --In case of interruptions
             inst.DynamicShadow:Enable(true)
-            if inst:HasTag("beaver") then
-                inst.AnimState:SetBank("werebeaver")
-                inst.components.skinner:SetSkinMode("werebeaver_skin")
-            else
-                inst.AnimState:SetBank("wilson")
-                inst.components.skinner:SetSkinMode("normal_skin")
-            end
+            inst.AnimState:SetBank(inst:HasTag("beaver") and "werebeaver" or "wilson")
+            inst.components.skinner:SetSkinMode(inst.overrideskinmode or "normal_skin")
             inst.components.bloomer:PopBloom("playerghostbloom")
             inst.AnimState:SetLightOverride(0)
+            if inst.sg:HasStateTag("ghostbuild") then
+                inst.sg:RemoveStateTag("ghostbuild")
+                inst:PushEvent("stopghostbuildinstate")
+            end
             --
             inst.components.health:SetInvincible(false)
             if inst.components.playercontroller ~= nil then
@@ -7629,6 +7642,20 @@ local states =
                 inst.AnimState:PushAnimation("atk", false)
             end
             inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_weapon")
+
+            --called by blinkstaff component
+            inst.sg.statemem.onstartblinking = function()
+                inst.sg:AddStateTag("noattack")
+                inst.components.health:SetInvincible(true)
+                inst.DynamicShadow:Enable(false)
+                inst:Hide()
+            end
+            inst.sg.statemem.onstopblinking = function()
+                inst.sg:RemoveStateTag("noattack")
+                inst.components.health:SetInvincible(false)
+                inst.DynamicShadow:Enable(true)
+                inst:Show()
+            end
         end,
 
         timeline =
@@ -7646,6 +7673,15 @@ local states =
                 end
             end),
         },
+
+        onexit = function(inst)
+            if inst.sg:HasStateTag("noattack") then
+                --interrupted
+                inst.components.health:SetInvincible(false)
+                inst.DynamicShadow:Enable(true)
+                inst:Show()
+            end
+        end,
     },
 
     State{
@@ -9773,14 +9809,14 @@ local states =
                 if inst.sg.statemem.talktask ~= nil then
                     inst.sg.statemem.talktask:Cancel()
                     inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
+                    StopTalkSound(inst, true)
                 end
                 if DoTalkSound(inst) then
                     inst.sg.statemem.talktask =
                         inst:DoTaskInTime(1.5 + math.random() * .5,
                             function()
-                                inst.SoundEmitter:KillSound("talk")
                                 inst.sg.statemem.talktask = nil
+                                StopTalkSound(inst)
                             end)
                 end
             end),
@@ -9791,7 +9827,7 @@ local states =
                 if inst.sg.statemem.talktalk ~= nil then
                     inst.sg.statemem.talktask:Cancel()
                     inst.sg.statemem.talktask = nil
-                    inst.SoundEmitter:KillSound("talk")
+                    StopTalkSound(inst)
                 end
             end),
         },
@@ -9801,7 +9837,7 @@ local states =
             if inst.sg.statemem.talktask ~= nil then
                 inst.sg.statemem.talktask:Cancel()
                 inst.sg.statemem.talktask = nil
-                inst.SoundEmitter:KillSound("talk")
+                StopTalkSound(inst)
             end
             if not inst.sg.statemem.stopchanneling and
                 inst.sg.statemem.target ~= nil and
@@ -10026,10 +10062,135 @@ local states =
             DoPortalTint(inst, 0)
         end,
     },
+
+    --------------------------------------------------------------------------
+    --Wormwood
+
+    State{
+        name = "form_log",
+        tags = { "doing", "busy", "nocraftinginterrupt" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("form_log_pre")
+            inst.AnimState:PushAnimation("form_log", false)
+            inst.sg.statemem.action = inst.bufferedaction
+        end,
+
+        timeline =
+        {
+            TimeEvent(2 * FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve/characters/wormwood/living_log_craft") end),
+            TimeEvent(50 * FRAMES, function(inst)
+                inst:PerformBufferedAction()
+            end),
+            TimeEvent(58 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if inst.bufferedaction == inst.sg.statemem.action then
+                inst:ClearBufferedAction()
+            end
+        end,
+    },
+
+    State{
+        name = "fertilize",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("fertilize_pre")
+            inst.AnimState:PushAnimation("fertilize", false)
+        end,
+
+        timeline =
+        {
+            TimeEvent(27 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/characters/wormwood/fertalize_LP", "rub")
+                inst.SoundEmitter:SetParameter("rub", "start", math.random())
+            end),
+            TimeEvent(82 * FRAMES, function(inst)
+                inst.SoundEmitter:KillSound("rub")
+            end),
+            TimeEvent(88 * FRAMES, function(inst)
+                inst:PerformBufferedAction()
+            end),
+            TimeEvent(90 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            inst.SoundEmitter:KillSound("rub")
+        end,
+    },
+
+    State{
+        name = "fertilize_short",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("short_fertilize_pre")
+            inst.AnimState:PushAnimation("short_fertilize", false)
+        end,
+
+        timeline =
+        {
+            TimeEvent(15 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/characters/wormwood/fertalize_LP", "rub")
+                inst.SoundEmitter:SetParameter("rub", "start", math.random())
+            end),
+            TimeEvent(18 * FRAMES, function(inst)
+                inst:PerformBufferedAction()
+            end),
+            TimeEvent(31 * FRAMES, function(inst)
+                inst.SoundEmitter:KillSound("rub")
+            end),
+            TimeEvent(33 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            inst.SoundEmitter:KillSound("rub")
+        end,
+    },
+
+    --------------------------------------------------------------------------
 }
 
 if TheNet:GetServerGameMode() == "quagmire" then
-    event_server_data("quagmire", "stategraphs/SGwilson").AddQuagmireStates(states, DoTalkSound, ToggleOnPhysics, ToggleOffPhysics)
+    event_server_data("quagmire", "stategraphs/SGwilson").AddQuagmireStates(states, DoTalkSound, StopTalkSound, ToggleOnPhysics, ToggleOffPhysics)
 end
 
 return StateGraph("wilson", states, events, "idle", actionhandlers)

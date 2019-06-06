@@ -679,6 +679,20 @@ MISC_ITEMS =
 		rarity_modifier = "Woven",
 		release_group = 45,
 	},
+	pack_character_wormwood =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 3,
+		build_name_override = "pack_common",
+		display_atlas = "images/iap_images_character_wormwood.xml",
+		display_tex = "character_wormwood.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "wormwood_none", "wormwood_rose", "body_wormwood_rose", "hand_wormwood_rose", "legs_wormwood_rose", },
+		output_items = {  "wormwood_none", "wormwood_rose", "body_wormwood_rose", "hand_wormwood_rose", "legs_wormwood_rose", },
+		release_group = 68,
+	},
 	pack_character_wortox =
 	{
 		type = "purchase",
@@ -1023,6 +1037,17 @@ MISC_ITEMS =
 		display_items = {  "wx78_wip", "body_wx78_wip", "hand_wx78_wip", "feet_wx78_wip", },
 		output_items = {  "wx78_wip", "body_wx78_wip", "hand_wx78_wip", "feet_wx78_wip", },
 		release_group = 49,
+	},
+	pack_hamlet_wormwood =
+	{
+		type = "purchase",
+		skin_tags = { },
+		steam_dlc_id = 712640,
+		build_name_override = "pack_hamlet_gift",
+		display_items = {  "wormwood_none", },
+		output_items = {  "wormwood_none", },
+		legacy_popup_category = "HAMLET",
+		release_group = 68,
 	},
 	pack_haunteddoll_items =
 	{
@@ -1792,6 +1817,74 @@ MISC_ITEMS =
 		display_items = {  "winona_survivorp", "body_winona_survivorp", },
 		output_items = {  "winona_survivorp", "body_winona_survivorp", },
 		release_group = 61,
+	},
+	pack_wormwood_cactus =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 4,
+		build_name_override = "wormwood_cactus",
+		display_atlas = "bigportraits/wormwood_cactus.xml",
+		display_tex = "wormwood_cactus_oval.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "wormwood_cactus", "body_wormwood_cactus", "hand_wormwood_cactus", "legs_wormwood_cactus", },
+		output_items = {  "wormwood_cactus", "body_wormwood_cactus", "hand_wormwood_cactus", "legs_wormwood_cactus", },
+		release_group = 68,
+	},
+	pack_wormwood_deluxe =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		steam_dlc_id = 1084430,
+		display_order = 1,
+		build_name_override = "pack_common",
+		display_atlas = "images/iap_images_wormwood_deluxe.xml",
+		display_tex = "wormwood_deluxe.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "wormwood_none", "wormwood_rose", "wormwood_cactus", "wormwood_mushroom", },
+		output_items = {  "wormwood_none", "wormwood_rose", "wormwood_cactus", "wormwood_mushroom", "body_wormwood_rose", "hand_wormwood_rose", "legs_wormwood_rose", "body_wormwood_cactus", "hand_wormwood_cactus", "legs_wormwood_cactus", "body_wormwood_mushroom", "hand_wormwood_mushroom", "legs_wormwood_mushroom", },
+		release_group = 68,
+	},
+	pack_wormwood_deluxealt =
+	{
+		type = "purchase",
+		skin_tags = { },
+		featured_pack = true,
+		display_order = 2,
+		build_name_override = "pack_common",
+		display_atlas = "images/iap_images_wormwood_deluxealt.xml",
+		display_tex = "wormwood_deluxealt.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "wormwood_rose", "wormwood_cactus", "wormwood_mushroom", },
+		output_items = {  "wormwood_rose", "wormwood_cactus", "wormwood_mushroom", "body_wormwood_rose", "hand_wormwood_rose", "legs_wormwood_rose", "body_wormwood_cactus", "hand_wormwood_cactus", "legs_wormwood_cactus", "body_wormwood_mushroom", "hand_wormwood_mushroom", "legs_wormwood_mushroom", },
+		release_group = 68,
+	},
+	pack_wormwood_mushroom =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 5,
+		build_name_override = "wormwood_mushroom",
+		display_atlas = "bigportraits/wormwood_mushroom.xml",
+		display_tex = "wormwood_mushroom_oval.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "wormwood_mushroom", "body_wormwood_mushroom", "hand_wormwood_mushroom", "legs_wormwood_mushroom", },
+		output_items = {  "wormwood_mushroom", "body_wormwood_mushroom", "hand_wormwood_mushroom", "legs_wormwood_mushroom", },
+		release_group = 68,
+	},
+	pack_wormwood_rose =
+	{
+		type = "purchase",
+		skin_tags = { },
+		display_order = 6,
+		build_name_override = "wormwood_rose",
+		display_atlas = "bigportraits/wormwood_rose.xml",
+		display_tex = "wormwood_rose_oval.tex",
+		box_build = "box_shop_plain",
+		display_items = {  "wormwood_rose", "body_wormwood_rose", "hand_wormwood_rose", "legs_wormwood_rose", },
+		output_items = {  "wormwood_rose", "body_wormwood_rose", "hand_wormwood_rose", "legs_wormwood_rose", },
+		release_group = 68,
 	},
 	pack_wortox_deluxe =
 	{

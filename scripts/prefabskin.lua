@@ -803,7 +803,11 @@ function heatrock_init_fn(inst, build_name)
     end
 
     inst.AnimState:SetSkin(build_name, "heat_rock")
-    inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+    --V2C: heatrock will have already initialized it's inventory icon
+    --     to the proper skin and heat level, so don't stomp it here!
+    if inst.components.inventoryitem.imagename == nil then
+        inst.components.inventoryitem:ChangeImageName(inst:GetSkinName())
+    end
 end
 
 

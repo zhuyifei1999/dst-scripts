@@ -910,6 +910,7 @@ local function tree(name, build, stage, data)
 
         inst.MiniMapEntity:SetPriority(-1)
 
+        inst:AddTag("plant")
         inst:AddTag("tree")
 
         inst.build = build

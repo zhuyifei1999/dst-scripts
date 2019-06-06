@@ -353,7 +353,7 @@ local COMPONENT_ACTIONS =
         end,
 
         constructionplans = function(inst, doer, target, actions)
-            if inst:HasTag(target.prefab.."_plans") then
+            if target.prefab ~= nil and inst:HasTag(target.prefab.."_plans") then
                 table.insert(actions, ACTIONS.CONSTRUCT)
             end
         end,
@@ -439,10 +439,17 @@ local COMPONENT_ACTIONS =
         end,
 
         fertilizer = function(inst, doer, target, actions)
-            if --[[crop]] (target:HasTag("notreadyforharvest") and not target:HasTag("withered")) or
-                --[[grower]] target:HasTag("fertile") or target:HasTag("infertile") or
-                --[[pickable]] target:HasTag("barren") or
-                --[[quagmire_fertilizable]] target:HasTag("fertilizable") then
+            if not (doer.replica.rider ~= nil and doer.replica.rider:IsRiding()) and
+                (   --[[crop]] (target:HasTag("notreadyforharvest") and not target:HasTag("withered")) or
+                    --[[grower]] target:HasTag("fertile") or target:HasTag("infertile") or
+                    --[[pickable]] target:HasTag("barren") or
+                    --[[quagmire_fertilizable]] target:HasTag("fertilizable")
+                ) or
+                --[[healonfertilize]] ( (target == nil or target == doer) and
+                                        inst:HasTag("heal_fertilize") and
+                                        doer:HasTag("healonfertilize") and
+                                        doer.replica.health ~= nil and
+                                        doer.replica.health:CanHeal()   ) then
                 table.insert(actions, ACTIONS.FERTILIZE)
             end
         end,
@@ -847,7 +854,7 @@ local COMPONENT_ACTIONS =
         end,
 
         deployable = function(inst, doer, pos, actions, right)
-            if right and inst.replica.inventoryitem ~= nil and inst.replica.inventoryitem:CanDeploy(pos) then
+            if right and inst.replica.inventoryitem ~= nil and inst.replica.inventoryitem:CanDeploy(pos, nil, doer) then
                 table.insert(actions, ACTIONS.DEPLOY)
             end
         end,
@@ -1043,11 +1050,11 @@ local COMPONENT_ACTIONS =
         end,
 
         deployable = function(inst, doer, actions)
-            if doer.components.playercontroller ~= nil and
-                not doer.components.playercontroller.deploy_mode and
-                inst.replica.inventoryitem ~= nil and
-                inst.replica.inventoryitem:IsGrandOwner(doer) then
-                table.insert(actions, ACTIONS.TOGGLE_DEPLOY_MODE)
+            if doer.components.playercontroller ~= nil and not doer.components.playercontroller.deploy_mode then
+                local inventoryitem = inst.replica.inventoryitem
+                if inventoryitem ~= nil and inventoryitem:IsGrandOwner(doer) and inventoryitem:IsDeployable(doer) then
+                    table.insert(actions, ACTIONS.TOGGLE_DEPLOY_MODE)
+                end
             end
         end,
 
@@ -1085,6 +1092,15 @@ local COMPONENT_ACTIONS =
 
         fan = function(inst, doer, actions)
             table.insert(actions, ACTIONS.FAN)
+        end,
+
+        fertilizer = function(inst, doer, actions)
+            if inst:HasTag("heal_fertilize") and
+                doer:HasTag("healonfertilize") and
+                doer.replica.health ~= nil and
+                doer.replica.health:CanHeal() then
+                table.insert(actions, ACTIONS.FERTILIZE)
+            end
         end,
 
         --[[

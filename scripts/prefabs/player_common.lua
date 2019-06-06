@@ -654,11 +654,13 @@ local function OnRemoveEntity(inst)
         if TheWorld.ismastersim then
             inst.player_classified:Remove()
             inst.player_classified = nil
-            if inst.ghostenabled then
-                inst.Network:RemoveUserFlag(USERFLAGS.IS_GHOST)
-            end
-            inst.Network:RemoveUserFlag(USERFLAGS.CHARACTER_STATE_1)
-            inst.Network:RemoveUserFlag(USERFLAGS.CHARACTER_STATE_2)
+            --No bit ops support, but in this case, + results in same as |
+            inst.Network:RemoveUserFlag(
+                USERFLAGS.CHARACTER_STATE_1 +
+                USERFLAGS.CHARACTER_STATE_2 +
+                USERFLAGS.CHARACTER_STATE_3 +
+                (inst.ghostenabled and USERFLAGS.IS_GHOST or 0)
+            )
         else
             inst.player_classified._parent = nil
             inst:RemoveEventCallback("onremove", inst.ondetachclassified, inst.player_classified)
@@ -1464,11 +1466,13 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst:RemoveTag("_sheltered")
         inst:RemoveTag("_rider")
 
-        if inst.ghostenabled then
-            inst.Network:RemoveUserFlag(USERFLAGS.IS_GHOST)
-        end
-        inst.Network:RemoveUserFlag(USERFLAGS.CHARACTER_STATE_1)
-        inst.Network:RemoveUserFlag(USERFLAGS.CHARACTER_STATE_2)
+        --No bit ops support, but in this case, + results in same as |
+        inst.Network:RemoveUserFlag(
+            USERFLAGS.CHARACTER_STATE_1 +
+            USERFLAGS.CHARACTER_STATE_2 +
+            USERFLAGS.CHARACTER_STATE_3 +
+            (inst.ghostenabled and USERFLAGS.IS_GHOST or 0)
+        )
 
         inst.player_classified = SpawnPrefab("player_classified")
         inst.player_classified.entity:SetParent(inst.entity)

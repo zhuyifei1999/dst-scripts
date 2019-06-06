@@ -122,7 +122,12 @@ local actionhandlers =
                 end
             end
         end),
-    ActionHandler(ACTIONS.FERTILIZE, "doshortaction"),
+    ActionHandler(ACTIONS.FERTILIZE,
+        function(inst, action)
+            return (action.target ~= nil and action.target ~= inst and "doshortaction")
+                or (action.invobject ~= nil and action.invobject:HasTag("slowfertilize") and "fertilize")
+                or "fertilize_short"
+        end),
     ActionHandler(ACTIONS.SMOTHER,
         function(inst)
             return inst:HasTag("pyromaniac") and "domediumaction" or "dolongaction"
@@ -188,6 +193,7 @@ local actionhandlers =
         function(inst, action)
             local rec = GetValidRecipe(action.recipe)
             return (rec ~= nil and rec.tab.shop and "give")
+                or (action.recipe == "livinglog" and inst:HasTag("plantkin") and "form_log")
                 or (inst:HasTag("hungrybuilder") and "dohungrybuild")
                 or (inst:HasTag("fastbuilder") and "domediumaction")
                 or "dolongaction"
@@ -2818,6 +2824,100 @@ local states =
             inst.sg:GoToState("idle")
         end,
     },
+
+    --------------------------------------------------------------------------
+    --Wormwood
+
+    State{
+        name = "form_log",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("form_log_pre")
+            inst.AnimState:PushAnimation("form_log_lag", false)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    State{
+        name = "fertilize",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("fertilize_pre")
+            inst.AnimState:PushAnimation("fertilize_lag", false)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.AnimState:PlayAnimation("item_hat")
+                inst.sg:GoToState("idle", true)
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.AnimState:PlayAnimation("item_hat")
+            inst.sg:GoToState("idle", true)
+        end,
+    },
+
+    State{
+        name = "fertilize_short",
+        tags = { "doing", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("short_fertilize_pre")
+            inst.AnimState:PushAnimation("short_fertilize_lag", false)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(TIMEOUT)
+        end,
+
+        onupdate = function(inst)
+            if inst:HasTag("doing") then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.sg:GoToState("idle")
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    --------------------------------------------------------------------------
 }
 
 return StateGraph("wilson_client", states, events, "idle", actionhandlers)

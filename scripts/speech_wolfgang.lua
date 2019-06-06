@@ -421,12 +421,21 @@ return {
         },
         WORTOX =
         {
-            GENERIC = "Is scary horn man, %s!",
+            GENERIC = "Is scary horn man, %s! H-hello!",
             ATTACKER = "Your game is not nice, little horn man!",
             MURDERER = "Horn man is evil!",
             REVIVER = "Scary horn man is nice sometimes.",
             GHOST = "Fluffy ghost!",
             FIRESTARTER = "Fire is not game, horn man.",
+        },
+        WORMWOOD =
+        {
+            GENERIC = "Is leafy green man, %s! Hello!",
+            ATTACKER = "%s is all bark AND all bite.",
+            MURDERER = "%s is scary killer tree!",
+            REVIVER = "%s is Wolfgang's best friend.",
+            GHOST = "Little plant was overwatered, maybe?",
+            FIRESTARTER = "Leafy green man did a fire booboo.",
         },
 
         MULTIPLAYER_PORTAL = "Why door not crumble under mighty Wolfgang punches?!",
@@ -907,7 +916,7 @@ return {
         ARMORSNURTLESHELL = "Is sticky inside.",
         BAT = "Flying mousey!",
         BATBAT = "This club makes me feel funny.",
-        BATWING = "Is all hairy and gross",
+        BATWING = "Is all hairy and gross.",
         BATWING_COOKED = "Crispy!",
         BATCAVE = "It's the hidey hole for the flying mousies!",
         BEDROLL_FURRY="So comfy!",
@@ -2418,21 +2427,21 @@ return {
         QUAGMIRE_LAMP_SHORT = "Wolfgang loves lamp.",
 
         --v2 Winona
-        WINONA_CATAPULT = 
+        WINONA_CATAPULT =
         {
             GENERIC = "Little fixing lady has very big brainmeats.",
             OFF = "Is not working.",
             BURNING = "Is burning!",
             BURNT = "Is all burned up.",
         },
-        WINONA_SPOTLIGHT = 
+        WINONA_SPOTLIGHT =
         {
             GENERIC = "Fixing lady knows Wolfgang not like dark.",
             OFF = "Is not working.",
             BURNING = "Is burning!",
             BURNT = "Is all burned up.",
         },
-        WINONA_BATTERY_LOW = 
+        WINONA_BATTERY_LOW =
         {
             GENERIC = "Thingamabob made by fixing lady.",
             LOWPOWER = "Is supposed to look like that?",
@@ -2440,7 +2449,7 @@ return {
             BURNING = "Is burning!",
             BURNT = "Is all burned up.",
         },
-        WINONA_BATTERY_HIGH = 
+        WINONA_BATTERY_HIGH =
         {
             GENERIC = "Fixing lady doohickeys.",
             LOWPOWER = "It does not look so good.",
@@ -2448,6 +2457,11 @@ return {
             BURNING = "Is burning!",
             BURNT = "Is all burned up.",
         },
+
+        --Wormwood
+        COMPOSTWRAP = "Is very mighty poop.",
+        ARMOR_BRAMBLE = "Mighty Wolfgang does not need armor!",
+        TRAP_BRAMBLE = "Is sharp plant for hurting feets.",
     },
     DESCRIBE_GENERIC = "What is this thing?",
     DESCRIBE_TOODARK = "Help friends! Save Wolfgang from dark!",

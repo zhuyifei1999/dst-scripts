@@ -75,11 +75,12 @@ local MainSounds =
 	"winnie.fsb",
 	"winona.fsb",
 	"wolfgang.fsb",
+    "wortox.fsb",
 	"woodie.fsb",
 	"woodrow.fsb",
 	"worm.fsb",
+    "wormwood.fsb",
 	"wx78.fsb",
-	"wortox.fsb",
 }
 
 function PreloadSoundList(list)

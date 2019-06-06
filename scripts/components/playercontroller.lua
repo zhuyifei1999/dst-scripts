@@ -992,7 +992,7 @@ end
 
 function PlayerController:DoControllerUseItemOnSelfFromInvTile(item)
     if not self.deploy_mode and
-        item.replica.inventoryitem:IsDeployable() and
+        item.replica.inventoryitem:IsDeployable(self.inst) and
         item.replica.inventoryitem:IsGrandOwner(self.inst) then
         self.deploy_mode = true
         return
@@ -1937,7 +1937,7 @@ function PlayerController:OnUpdate(dt)
             self.placer == nil and
             placer_item ~= nil and
             placer_item.replica.inventoryitem ~= nil and
-            placer_item.replica.inventoryitem:IsDeployable() then
+            placer_item.replica.inventoryitem:IsDeployable(self.inst) then
 
             local placer_name = placer_item.replica.inventoryitem:GetDeployPlacerName()
             local placer_skin = placer_item.AnimState:GetSkinBuild() --hack that relies on the build name to match the linked skinname
@@ -1952,7 +1952,7 @@ function PlayerController:OnUpdate(dt)
                         local mouseover = TheInput:GetWorldEntityUnderMouse()
                         return placer_item:IsValid() and
                             placer_item.replica.inventoryitem ~= nil and
-                            placer_item.replica.inventoryitem:CanDeploy(pt, mouseover),
+                            placer_item.replica.inventoryitem:CanDeploy(pt, mouseover, self.inst),
                             mouseover ~= nil or TheInput:GetHUDEntityUnderMouse() ~= nil
                     end
                     self.deployplacer.components.placer:OnUpdate(0) --so that our position is accurate on the first frame
@@ -3179,7 +3179,7 @@ function PlayerController:GetRightMouseAction()
 end
 
 function PlayerController:GetItemSelfAction(item)
-    if item == nil then
+    if item == nil or self.deploy_mode then
         return
     end
     local act =
@@ -3280,10 +3280,23 @@ function PlayerController:GetItemUseAction(active_item, target)
         return
     end
     target = target or self:GetControllerTarget()
-    return target ~= nil
-        and (ValidateItemUseAction(--[[rmb]] self, self.inst.components.playeractionpicker:GetUseItemActions(target, active_item, true)[1], active_item, target) or
-            ValidateItemUseAction(--[[lmb]] self, self.inst.components.playeractionpicker:GetUseItemActions(target, active_item, false)[1], active_item, target))
-        or nil
+    local act = target ~= nil and (
+        ValidateItemUseAction(--[[rmb]] self, self.inst.components.playeractionpicker:GetUseItemActions(target, active_item, true)[1], active_item, target) or
+        ValidateItemUseAction(--[[lmb]] self, self.inst.components.playeractionpicker:GetUseItemActions(target, active_item, false)[1], active_item, target)
+    ) or nil
+
+    --V2C: Use self actions blocked by controller R.Dpad "TOGGLE_DEPLOY_MODE"
+    --     e.g. Murder/Plant, Eat/Plant
+    if act ~= nil or not (active_item.replica.inventoryitem:IsDeployable(self.inst) and active_item.replica.inventoryitem:IsGrandOwner(self.inst)) then
+        return act
+    end
+    act = --[[rmb]] self.inst.components.playeractionpicker:GetInventoryActions(active_item, true)
+    act = act[1] ~= nil and act[1].action ~= ACTIONS.TOGGLE_DEPLOY_MODE and act[1] or act[2]
+    if act == nil then
+        act = --[[lmb]] self.inst.components.playeractionpicker:GetInventoryActions(active_item, false)
+        act = act[1] ~= nil and act[1].action ~= ACTIONS.TOGGLE_DEPLOY_MODE and act[1] or act[2]
+    end
+    return act ~= nil and act.action ~= ACTIONS.LOOKAT and act or nil
 end
 
 function PlayerController:RemoteUseItemFromInvTile(buffaction, item)

@@ -90,6 +90,7 @@ local function onupdate(inst, dt)
 
         inst.Light:Enable(true)
         inst.Light:SetRadius(rad)
+        --V2C: setting .runspeed does not stack with mount speed
         inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED*(1+runspeed_bonus)
         inst.components.temperature.mintemp = 10
     end

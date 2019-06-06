@@ -2786,7 +2786,7 @@ function Tune(overrides)
         WILLOW_CAMPFIRE_FUEL_MULT = 1.5,
         WILLOW_FIRE_DAMAGE = 0,
 
-        --wortox
+        --Wortox
         WORTOX_HEALTH = 200,
         WORTOX_HUNGER = 175,
         WORTOX_SANITY = 150,
@@ -2796,6 +2796,20 @@ function Tune(overrides)
         WORTOX_SOULEXTRACT_RANGE = 20, --die within this range of wortox to spawn soul
         WORTOX_SOULSTEALER_RANGE = 8, --souls fly towards wortox when he walks within this range
         WORTOX_SOULHEAL_RANGE = 8,
+
+        --Wormwood
+        WORMWOOD_BURN_TIME = 4.3,
+        WORMWOOD_FIRE_DAMAGE = 1.25,
+        ARMORBRAMBLE_DMG = wilson_attack/1.5,
+        ARMORBRAMBLE_ABSORPTION = .65*multiplayer_armor_absorption_modifier,
+        ARMORBRAMBLE = wilson_health*2.5*multiplayer_armor_durability_modifier,
+        TRAP_BRAMBLE_USES = 10,
+        TRAP_BRAMBLE_DAMAGE = 40,
+        TRAP_BRAMBLE_RADIUS = 2.5,
+        COMPOSTWRAP_SOILCYCLES = 20,
+        COMPOSTWRAP_WITHEREDCYCLES = 2,
+        COMPOSTWRAP_FERTILIZE = day_time * 6,
+        POOP_FERTILIZE_HEALTH = 2,
     }
 end
 

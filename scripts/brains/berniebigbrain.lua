@@ -55,7 +55,7 @@ local function ShouldDeactivate(self)
     local rangesq = FIND_LEADER_DIST_SQ
     local x, y, z = self.inst.Transform:GetWorldPosition()
     for i, v in ipairs(AllPlayers) do
-        if v:HasTag("bernieowner") and v.bigbernies == nil and v.entity:IsVisible() then
+        if v:HasTag("bernieowner") and v.bigbernies == nil and (v.entity:IsVisible() or (v.sg ~= nil and v.sg.currentstate.name == "quicktele")) then
             if v.components.sanity:IsCrazy() then
                 local distsq = v:GetDistanceSqToPoint(x, y, z)
                 if distsq < (iscrazy and rangesq or FIND_LEADER_DIST_SQ) then
@@ -90,7 +90,7 @@ end
 local function KeepLeaderFn(inst, leader)
     --V2C: re-checking "bernieowner" tag is redundant
     return leader:IsValid()
-        and leader.entity:IsVisible()
+        and (leader.entity:IsVisible() or (leader.sg ~= nil and leader.sg.currentstate.name == "quicktele"))
         and leader.components.sanity:GetPercent() < FOLLOWER_SANITY_THRESHOLD
         and inst:IsNear(leader, LOSE_LEADER_DIST_SQ)
 end

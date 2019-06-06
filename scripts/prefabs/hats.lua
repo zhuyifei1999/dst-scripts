@@ -170,6 +170,8 @@ local function MakeHat(name)
     end
 
     local function earmuffs_custom_init(inst)
+        inst:AddTag("open_top_hat")
+
         inst.AnimState:SetRayTestOnBB(true)
     end
 
@@ -302,6 +304,7 @@ local function MakeHat(name)
     end
 
     local function ruins_custom_init(inst)
+        inst:AddTag("open_top_hat")
         inst:AddTag("metal")
     end
 
@@ -770,6 +773,7 @@ local function MakeHat(name)
     end
 
     local function flower_custom_init(inst)
+        inst:AddTag("open_top_hat")
         inst:AddTag("show_spoilage")
     end
 
@@ -886,6 +890,7 @@ local function MakeHat(name)
     end
 
     local function eyebrella_custom_init(inst)
+        inst:AddTag("open_top_hat")
         inst:AddTag("umbrella")
 
         --waterproofer (from waterproofer component) added to pristine state for optimization
@@ -1384,8 +1389,12 @@ local function MakeHat(name)
 
     --NOTE: goggleshat do NOT provide "goggles" tag benefits because you do not
     --      actually wear them over your eyes, and they're just for style -_ -"
+    local function goggles_custom_init(inst)
+        inst:AddTag("open_top_hat")
+    end
+
     local function goggles()
-        local inst = simple()
+        local inst = simple(goggles_custom_init)
 
         if not TheWorld.ismastersim then
             return inst
