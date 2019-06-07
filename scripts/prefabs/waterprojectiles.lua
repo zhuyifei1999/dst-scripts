@@ -154,8 +154,6 @@ local function waterballoon_fn()
     inst.components.reticule.targetfn = ReticuleTargetFn
     inst.components.reticule.ease = true
 
-    MakeInventoryFloatable(inst, "med", 0.05, 0.65)
-
     if not TheWorld.ismastersim then
         return inst
     end

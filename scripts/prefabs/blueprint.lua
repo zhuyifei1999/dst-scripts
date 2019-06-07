@@ -116,8 +116,6 @@ local function fn(is_rare)
 
     inst:SetPrefabName("blueprint")
 
-    MakeInventoryFloatable(inst, "med", nil, 0.75)
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

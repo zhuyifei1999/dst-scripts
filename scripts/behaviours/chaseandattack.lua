@@ -38,7 +38,7 @@ function ChaseAndAttack:Visit()
         combat:ValidateTarget()
 
         if combat.target == nil and self.findnewtargetfn ~= nil then
-            combat:SetTarget(self.findnewtargetfn(self.inst))
+            combat.target = self.findnewtargetfn(self.inst)
         end
 
         if combat.target ~= nil then

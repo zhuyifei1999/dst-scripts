@@ -28,7 +28,6 @@ local Combat = Class(function(self, inst)
     self.attackrange = 3
     self.hitrange = 3
     self.areahitrange = nil
-	--self.areahitcheck = nil
     self.areahitdamagepercent = nil
     --self.areahitdisabled = nil
     self.defaultdamage = 0
@@ -98,10 +97,6 @@ function Combat:ResetCooldown()
     self.laststartattacktime = 0
 end
 
-function Combat:RestartCooldown()
-    self.laststartattacktime = GetTime()
-end
-
 function Combat:SetRange(attack, hit)
     self.attackrange = attack
     self.hitrange = hit or self.attackrange
@@ -111,9 +106,8 @@ function Combat:SetPlayerStunlock(stunlock)
     self.playerstunlock = stunlock
 end
 
-function Combat:SetAreaDamage(range, percent, areahitcheck)
+function Combat:SetAreaDamage(range, percent)
     self.areahitrange = range
-	self.areahitcheck = areahitcheck
     if self.areahitrange then
         self.areahitdamagepercent = percent or 1
     else
@@ -139,7 +133,7 @@ function Combat:BlankOutAttacks(fortime)
     self.blanktask = self.inst:DoTaskInTime(fortime, OnBlankOutOver, self)
 end
 
-function Combat:ShareTarget(target, range, fn, maxnum, musttags)
+function Combat:ShareTarget(target, range, fn, maxnum)
     if maxnum <= 0 then
         return
     end
@@ -147,14 +141,14 @@ function Combat:ShareTarget(target, range, fn, maxnum, musttags)
     --print("Combat:ShareTarget", self.inst, target)
 
     local x, y, z = self.inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, SpringCombatMod(range), musttags or { "_combat" })
+    local ents = TheSim:FindEntities(x, y, z, SpringCombatMod(range), { "_combat" })
 
     local num_helpers = 0
     for i, v in ipairs(ents) do
         if v ~= self.inst
             and not (v.components.health ~= nil and
                     v.components.health:IsDead())
-            and (fn == nil or fn(v))
+            and fn(v)
             and v.components.combat:SuggestTarget(target) then
 
             --print("    share with", v)
@@ -822,7 +816,7 @@ function Combat:DoAttack(targ, weapon, projectile, stimuli, instancemult)
     if not self:CanHitTarget(targ, weapon) then
         self.inst:PushEvent("onmissother", { target = targ, weapon = weapon })
         if self.areahitrange ~= nil and not self.areahitdisabled then
-            self:DoAreaAttack(projectile or self.inst, self.areahitrange, weapon, self.areahitcheck, stimuli, AREA_EXCLUDE_TAGS)
+            self:DoAreaAttack(projectile or self.inst, self.areahitrange, weapon, nil, stimuli, AREA_EXCLUDE_TAGS)
         end
         return
     end
@@ -875,7 +869,7 @@ function Combat:DoAttack(targ, weapon, projectile, stimuli, instancemult)
     end
 
     if self.areahitrange ~= nil and not self.areahitdisabled then
-        self:DoAreaAttack(targ, self.areahitrange, weapon, self.areahitcheck, stimuli, AREA_EXCLUDE_TAGS)
+        self:DoAreaAttack(targ, self.areahitrange, weapon, nil, stimuli, AREA_EXCLUDE_TAGS)
     end
 
     self.lastdoattacktime = GetTime()
@@ -915,7 +909,7 @@ function Combat:DoAreaAttack(target, range, weapon, validfn, stimuli, excludetag
         if ent ~= target and
             ent ~= self.inst and
             self:IsValidTarget(ent) and
-            (validfn == nil or validfn(ent, self.inst)) then
+            (validfn == nil or validfn(ent)) then
             self.inst:PushEvent("onareaattackother", { target = ent, weapon = weapon, stimuli = stimuli })
             ent.components.combat:GetAttacked(self.inst, self:CalcDamage(ent, weapon, self.areahitdamagepercent), weapon, stimuli)
             hitcount = hitcount + 1

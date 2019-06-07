@@ -115,7 +115,6 @@ local function fn()
     inst:AddComponent("timer")
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem:SetOnPickupFn(onpickup)
-    inst.components.inventoryitem:SetSinks(true)
 
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)

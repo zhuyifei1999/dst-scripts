@@ -86,8 +86,6 @@ local function fn()
     end
 
     inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem:SetSinks(true)
-
     inst:AddComponent("inspectable")
 
     inst:AddComponent("tradable")

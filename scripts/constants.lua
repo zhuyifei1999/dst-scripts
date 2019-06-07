@@ -467,21 +467,17 @@ GROUND =
 	QUAGMIRE_SOIL = 39,
 	QUAGMIRE_CITYSTONE = 41,
 
-	PEBBLEBEACH = 42,
-	METEOR = 43,
 
 	-- PUBLIC USE SPACE FOR MODS is 70 to 89 --
 
     --NOISE
-	METEORMINE_NOISE = 121, -- TODO: move noise tile range to > 255
-	METEORCOAST_NOISE = 122,
     DIRT_NOISE = 123,
 	ABYSS_NOISE = 124,
 	GROUND_NOISE = 125,
 	CAVE_NOISE = 126,
 	FUNGUS_NOISE = 127,
 
-	UNDERGROUND = 128, -- todo: incrase this to OCEAN_START once WALL_X have been removed
+	UNDERGROUND = 128,
 	
 	WALL_ROCKY = 151,
 	WALL_DIRT = 152,
@@ -497,24 +493,7 @@ GROUND =
 	WALL_STONEEYE = 162,
 	WALL_STONEEYE_GLOW = 163,
 
-	FAKE_GROUND = 200, -- todo: change to 254 and retrofit maps
-
-	-- OCEAN TILES [201, 247]
-	OCEAN_START = 201, -- enum for checking if tile is ocean water
-
-	-- KLEI OCEAN TILES [201, 230]
-	OCEAN_COASTAL = 201,
-	OCEAN_COASTAL_SHORE = 202,
-	OCEAN_SWELL = 203,
-	OCEAN_ROUGH = 204,
-	OCEAN_REEF = 205,
-	OCEAN_REEF_SHORE = 206,
-	OCEAN_HAZARDOUS = 207,
-
-	-- MODS OCEAN TILES [231, 247]  <--PUBLIC USE SPACE FOR MODS --
-
-	OCEAN_END = 247, -- enum for checking if tile is ocean water
-
+	FAKE_GROUND = 200,
 
 --	STILL_WATER_SHALLOW = 130,
 --	STILL_WATER_DEEP = 131,
@@ -752,10 +731,6 @@ NUM_HALLOWEENCANDY = 14
 NUM_HALLOWEEN_ORNAMENTS = 6
 NUM_WINTERFOOD = 9
 
-SANITY_MODE_INSANITY = 0
-SANITY_MODE_LUNACY = 1
-
-
 TECH =
 {
     NONE = TechTree.Create(),
@@ -773,14 +748,9 @@ TECH =
 
     CELESTIAL_ONE = { CELESTIAL = 1 },
 
-	MOON_ALTAR_TWO = { MOON_ALTAR = 2 },
-
     SHADOW_TWO = { SHADOW = 3 },
 
     CARTOGRAPHY_TWO = { CARTOGRAPHY = 2 },
-
-    SEAFARING_ONE = { SEAFARING = 1 },
-    SEAFARING_TWO = { SEAFARING = 2 },
 
     SCULPTING_ONE = { SCULPTING = 1 },
     SCULPTING_TWO = { SCULPTING = 2 },
@@ -805,13 +775,12 @@ TECH =
 NODE_TYPE =
 {
     Default = 0,		-- Land can touch any other Default node in the task that is within range
-    Blank = 1,			-- empty room with impassable ground
+    Blank = 1,			-- empty room with impassible ground
     Background = 2,
     Random = 3,
     Blocker = 4,		-- Adds 2 Blank nodes beside it
-    Room = 5,			-- Land can only touch the room(s) it is connected to by the graph (adds impassable around its parameter with a single land bidge)
+    Room = 5,			-- Land can only touch the room(s) it is connected to by the graph (adds impassible around its parameter)
     BackgroundRoom = 6,
-	SeparatedRoom = 7,	-- adds impassable around its entire parameter 
 }
 
 -- See cell_data.h
@@ -942,7 +911,6 @@ MAP_SAMPLE_STYLE =
 COLLISION =
 {
 
-    WAVES = 32,
     GROUND = 64, -- See BpWorld.cpp (ocean walls)
     LIMITS = 128,
     WORLD = 192, --limits and ground
@@ -983,20 +951,18 @@ RECIPETABS =
     SCIENCE =       { str = "SCIENCE",      sort = 4,   icon = "tab_science.tex" },
     WAR =           { str = "WAR",          sort = 5,   icon = "tab_fight.tex" },
     TOWN =          { str = "TOWN",         sort = 6,   icon = "tab_build.tex" },
-    SEAFARING =     { str = "SEAFARING",    sort = 7,   icon = "tab_seafaring.tex" },
-    REFINE =        { str = "REFINE",       sort = 8,   icon = "tab_refine.tex" },
-    MAGIC =         { str = "MAGIC",        sort = 9,   icon = "tab_arcane.tex" },
-    DRESS =         { str = "DRESS",        sort = 10,  icon = "tab_dress.tex" },
+    REFINE =        { str = "REFINE",       sort = 7,   icon = "tab_refine.tex" },
+    MAGIC =         { str = "MAGIC",        sort = 8,   icon = "tab_arcane.tex" },
+    DRESS =         { str = "DRESS",        sort = 9,   icon = "tab_dress.tex" },
 
     --Crafting stations
-    ANCIENT =       { str = "ANCIENT",      sort = 100,  icon = "tab_crafting_table.tex",    crafting_station = true },
-    CELESTIAL =     { str = "CELESTIAL",    sort = 100,  icon = "tab_celestial.tex",         crafting_station = true },
-    MOON_ALTAR =    { str = "MOON_ALTAR",   sort = 100,  icon = "tab_moonaltar.tex",         crafting_station = true },
-    CARTOGRAPHY =   { str = "CARTOGRAPHY",  sort = 100,  icon = "tab_cartography.tex",       crafting_station = true },
-    SCULPTING =     { str = "SCULPTING",    sort = 100,  icon = "tab_sculpt.tex",            crafting_station = true },
-    ORPHANAGE =     { str = "ORPHANAGE",    sort = 100,  icon = "tab_orphanage.tex",         crafting_station = true },
-    PERDOFFERING =  { str = "PERDOFFERING", sort = 100,  icon = "tab_perd_offering.tex",     crafting_station = true },
-    MADSCIENCE =    { str = "MADSCIENCE",   sort = 100,  icon = "tab_madscience_lab.tex",	 crafting_station = true, manufacturing_station = true },
+    ANCIENT =       { str = "ANCIENT",      sort = 10,  icon = "tab_crafting_table.tex",    crafting_station = true },
+    CELESTIAL =     { str = "CELESTIAL",    sort = 10,  icon = "tab_celestial.tex",         crafting_station = true },
+    CARTOGRAPHY =   { str = "CARTOGRAPHY",  sort = 10,  icon = "tab_cartography.tex",       crafting_station = true },
+    SCULPTING =     { str = "SCULPTING",    sort = 10,  icon = "tab_sculpt.tex",            crafting_station = true },
+    ORPHANAGE =     { str = "ORPHANAGE",    sort = 10,  icon = "tab_orphanage.tex",         crafting_station = true },
+    PERDOFFERING =  { str = "PERDOFFERING", sort = 10,  icon = "tab_perd_offering.tex",     crafting_station = true },
+    MADSCIENCE =    { str = "MADSCIENCE",   sort = 10,  icon = "tab_madscience_lab.tex",	crafting_station = true, manufacturing_station = true },
 }
 
 CUSTOM_RECIPETABS =
@@ -1050,14 +1016,6 @@ RENDER_QUALITY =
 	LOW = 0,
 	DEFAULT = 1,
 	HIGH = 2,
-}
-
-ANIM_SORT_ORDER =
-{
-	OCEAN_UNDERWATER = 0,
-	OCEAN_WAVES = 1,
-	OCEAN_BOAT = 2,
-	OCEAN_SKYSHADOWS = 3,
 }
 
 ROAD_PARAMETERS =
@@ -1313,7 +1271,6 @@ MATERIALS =
     ICE = "ice",
     SCULPTURE = "sculpture",
     FOSSIL = "fossil",
-    MOON_ALTAR = "moon_altar",
 }
 
 UPGRADETYPES =
@@ -1484,14 +1441,6 @@ DEPLOYMODE =
     TURF = 3,
     PLANT = 4,
     WALL = 5,
-    WATER = 6
-}
-
-BUILDMODE =
-{
-    NONE = 0,
-    LAND = 1,
-    WATER = 2
 }
 
 -- Max value of 7 (net_tinybyte)
@@ -1767,9 +1716,6 @@ QUAGMIRE_NUM_FOOD_PREFABS = 69
 QUAGMIRE_NUM_SEEDS_PREFABS = 7
 QUAGMIRE_USE_KLUMP = false
 
-OCEAN_MAPWRAPPER_WARN_RANGE = 14
-OCEAN_POPULATION_EDGE_DIST = 16
-
 -- needs to be kept synchronized with InventoryProgress enum in InventoryManager.h
 INVENTORY_PROGRESS = 
 {
@@ -1784,20 +1730,13 @@ INVENTORY_PROGRESS =
 CURRENT_BETA = 0 -- set to 0 if there is no beta. Note: release builds wont use this so only staging and dev really care
 BETA_INFO =
 {
-    {
-		NAME = "ROTBETA",
-		SERVERTAG = "return_of_them_beta",
-		VERSION_MISMATCH_STRING = "VERSION_MISMATCH_ROTBETA",
-		URL = "https://forums.kleientertainment.com/forums/topic/106156-how-to-opt-in-to-return-of-them-beta-for-dont-starve-together/ ",
-	},
-
     {	
 		NAME = "ANRBETA",
 		SERVERTAG = "a_new_reign_beta",
 		VERSION_MISMATCH_STRING = "VERSION_MISMATCH_ARNBETA",
 		URL = "http://forums.kleientertainment.com/topic/69487-how-to-opt-in-to-a-new-reign-beta-for-dont-starve-together/",
 	},
-
+	
 	-- THE GENERIC PUBLIC BETA INFO MUST BE LAST --
 	-- This is added to all beta servers as a fallback
 	{

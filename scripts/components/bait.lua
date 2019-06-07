@@ -35,7 +35,7 @@ function Bait:OnRemoveFromEntity()
     self.inst:RemoveEventCallback("onstolen", OnStolen)
 end
 
-function Bait:GetDebugString()
+function Bait:DebugString()
     return "Trap:"..tostring(self.trap)
 end
 

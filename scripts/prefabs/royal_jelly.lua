@@ -23,8 +23,6 @@ local function fn()
 
     inst:AddTag("honeyed")
 
-    MakeInventoryFloatable(inst, "small", nil, 0.8)
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -46,7 +44,6 @@ local function fn()
 
     inst:AddComponent("tradable")
     inst:AddComponent("inventoryitem")
-
     inst:AddComponent("inspectable")
 
     MakeHauntableLaunch(inst)

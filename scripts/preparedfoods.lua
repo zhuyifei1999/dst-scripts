@@ -2,7 +2,7 @@ local foods=
 {
 	butterflymuffin =
 	{
-		test = function(cooker, names, tags) return (names.butterflywings or names.moonbutterflywings) and not tags.meat and tags.veggie end,
+		test = function(cooker, names, tags) return names.butterflywings and not tags.meat and tags.veggie end,
 		priority = 1,
 		weight = 1,
 		foodtype = FOODTYPE.VEGGIE,
@@ -11,7 +11,6 @@ local foods=
 		perishtime = TUNING.PERISH_SLOW,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 2,
-        floater = {"small", 0.05, 0.7},
 	},
 	
 	frogglebunwich =
@@ -24,7 +23,6 @@ local foods=
 		perishtime = TUNING.PERISH_SLOW,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 2,
-        floater = {"med", nil, 0.55},
 	},
 	
 	taffy =
@@ -37,8 +35,7 @@ local foods=
 		perishtime = TUNING.PERISH_SLOW,
 		sanity = TUNING.SANITY_MED,
 		cooktime = 2,
-		tags = {"honeyed"},
-        floater = {"med", nil, 0.6},
+		tags = {"honeyed"}
 	},
 	
 	pumpkincookie =
@@ -51,8 +48,7 @@ local foods=
 		perishtime = TUNING.PERISH_MED,
 		sanity = TUNING.SANITY_MED,
 		cooktime = 2,
-		tags = {"honeyed"},
-        floater = {"med", nil, 0.65},
+		tags = {"honeyed"}
 	},	
 	
 	stuffedeggplant =
@@ -67,7 +63,6 @@ local foods=
 		temperature = TUNING.HOT_FOOD_BONUS_TEMP,
 		temperatureduration = TUNING.FOOD_TEMP_BRIEF,
 		cooktime = 2,
-        floater = {"small", nil, 0.8},
 	},
 	
 	fishsticks =
@@ -80,8 +75,7 @@ local foods=
 		perishtime = TUNING.PERISH_MED,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 2,
-		tags = {"catfood"},
-        floater = {"small", nil, nil},
+		tags = {"catfood"}
 	},
 	
 	honeynuggets =
@@ -94,8 +88,7 @@ local foods=
 		perishtime = TUNING.PERISH_SLOW,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 2,
-		tags = {"honeyed"},
-        floater = {"med", nil, 0.7},
+		tags = {"honeyed"}
 	},
 	
 	honeyham =
@@ -110,8 +103,7 @@ local foods=
 		temperature = TUNING.HOT_FOOD_BONUS_TEMP,
 		temperatureduration = TUNING.FOOD_TEMP_AVERAGE,
 		cooktime = 2,
-		tags = {"honeyed"},
-        floater = {"small", nil, nil},
+		tags = {"honeyed"}
 	},
 	
 	dragonpie =
@@ -126,7 +118,6 @@ local foods=
 		temperature = TUNING.HOT_FOOD_BONUS_TEMP,
 		temperatureduration = TUNING.FOOD_TEMP_AVERAGE,
 		cooktime = 2,
-        floater = {"med", nil, 0.8},
 	},
 	kabobs =
 	{
@@ -140,7 +131,6 @@ local foods=
 		temperature = TUNING.HOT_FOOD_BONUS_TEMP,
 		temperatureduration = TUNING.FOOD_TEMP_LONG,
 		cooktime = 2,
-        floater = {"med", nil, 0.55},
 	},
 	mandrakesoup =
 	{
@@ -152,7 +142,6 @@ local foods=
 		perishtime = TUNING.PERISH_FAST,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 3,
-        floater = {"small", nil, nil},
 	},
 	baconeggs =
 	{
@@ -164,7 +153,6 @@ local foods=
 		perishtime = TUNING.PERISH_PRESERVED,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 2,
-        floater = {"med", nil, 0.6},
 	},
 	meatballs =
 	{
@@ -176,7 +164,6 @@ local foods=
 		perishtime = TUNING.PERISH_MED,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = .75,
-        floater = {"small", nil, nil},
 	},	
 	bonestew =
 	{
@@ -188,7 +175,6 @@ local foods=
 		perishtime = TUNING.PERISH_MED,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = .75,
-        floater = {"small", 0.1, 0.8},
 	},
 	perogies =
 	{
@@ -200,7 +186,6 @@ local foods=
 		perishtime = TUNING.PERISH_PRESERVED,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 1,
-        floater = {"med", nil, 0.65},
 	},
 	turkeydinner =
 	{
@@ -214,7 +199,6 @@ local foods=
 		temperature = TUNING.HOT_FOOD_BONUS_TEMP,
 		temperatureduration = TUNING.FOOD_TEMP_AVERAGE,
 		cooktime = 3,
-        floater = {"med", nil, 0.75},
 	},
 	ratatouille =
 	{
@@ -226,7 +210,6 @@ local foods=
 		perishtime = TUNING.PERISH_SLOW,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 1,
-        floater = {"med", nil, 0.68},
 	},
 	jammypreserves =
 	{
@@ -238,7 +221,6 @@ local foods=
 		perishtime = TUNING.PERISH_SLOW,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = .5,
-        floater = {"small", nil, nil},
 	},
 	
 	fruitmedley =
@@ -253,7 +235,6 @@ local foods=
 		temperature = TUNING.COLD_FOOD_BONUS_TEMP,
 		temperatureduration = TUNING.FOOD_TEMP_BRIEF,
 		cooktime = .5,
-        floater = {"small", nil, 0.6},
 	},
 	fishtacos =
 	{
@@ -265,7 +246,6 @@ local foods=
 		perishtime = TUNING.PERISH_FAST,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = .5,
-        floater = {"small", nil, nil},
 	},
 	waffles =
 	{
@@ -277,7 +257,6 @@ local foods=
 		perishtime = TUNING.PERISH_FAST,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = .5,
-        floater = {"med", nil, 0.75},
 	},	
 	
 	monsterlasagna =
@@ -291,7 +270,6 @@ local foods=
 		sanity = -TUNING.SANITY_MEDLARGE,
 		cooktime = .5,
 		tags = {"monstermeat"},
-        floater = {"med", nil, 0.58},
 	},
 
 	powcake =
@@ -304,8 +282,7 @@ local foods=
 		perishtime = 9000000,
 		sanity = 0,
 		cooktime = 0.5,
-		tags = {"honeyed"},
-        floater = {"med", nil, 0.65},
+		tags = {"honeyed"}
 	},
 
 	unagi =
@@ -318,7 +295,6 @@ local foods=
 		perishtime = TUNING.PERISH_MED,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 0.5,
-        floater = {"med", nil, 0.67},
 	},
 	
 	wetgoop =
@@ -331,7 +307,6 @@ local foods=
 		sanity = 0,
 		cooktime = .25,
 		wet_prefix = STRINGS.WET_PREFIX.WETGOOP,
-        floater = {"small", nil, nil},
 	},
 	
 	flowersalad =
@@ -344,7 +319,6 @@ local foods=
 		perishtime = TUNING.PERISH_FAST,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = .5,
-        floater = {"small", nil, nil},
 	},	
 
 	icecream =
@@ -359,7 +333,6 @@ local foods=
 		temperature = TUNING.COLD_FOOD_BONUS_TEMP,
 		temperatureduration = TUNING.FOOD_TEMP_LONG,
 		cooktime = .5,
-        floater = {"small", nil, nil},
 	},	
 
 	watermelonicle =
@@ -374,7 +347,6 @@ local foods=
 		temperature = TUNING.COLD_FOOD_BONUS_TEMP,
 		temperatureduration = TUNING.FOOD_TEMP_AVERAGE,
 		cooktime = .5,
-        floater = {"small", 0.1, 0.82},
 	},	
 
 	trailmix =
@@ -387,7 +359,6 @@ local foods=
 		perishtime = TUNING.PERISH_SLOW,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = .5,
-        floater = {"small", 0.05, nil},
 	},
 
 	hotchili =
@@ -402,12 +373,11 @@ local foods=
 		temperature = TUNING.HOT_FOOD_BONUS_TEMP,
 		temperatureduration = TUNING.FOOD_TEMP_LONG,
 		cooktime = .5,
-        floater = {"small", nil, nil},
 	},	
 
 	guacamole = 
 	{
-		test = function(cooker, names, tags) return names.mole and (names.rock_avocado_fruit_ripe or names.cactus_meat) and not tags.fruit end,
+		test = function(cooker, names, tags) return names.mole and names.cactus_meat and not tags.fruit end,
 		priority = 10,
 		foodtype = FOODTYPE.MEAT,
 		health = TUNING.HEALING_MED,
@@ -415,7 +385,6 @@ local foods=
 		perishtime = TUNING.PERISH_MED,
 		sanity = 0,
 		cooktime = .5,
-        floater = {"small", nil, 0.85},
 	},
 
 	jellybean =
@@ -438,7 +407,6 @@ local foods=
                 eater.components.debuffable:AddDebuff("healthregenbuff", "healthregenbuff")
             end
         end,
-        floater = {"small", nil, 0.85},
 	},
 
 }

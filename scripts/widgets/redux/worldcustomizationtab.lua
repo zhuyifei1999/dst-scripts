@@ -577,9 +577,8 @@ function WorldCustomizationTab:CollectOptions()
     local ret = nil
     local level_index,level = self.tab_location_index, self.current_option_settings[self.tab_location_index]
     if level then
-		local preset = level.preset
-        ret = Levels.GetDataForLevelID(preset)
-        local options = Customise.GetOptionsWithLocationDefaults(Levels.GetLocationForLevelID(preset), level_index == 1)
+        ret = Levels.GetDataForLevelID(level.preset)
+        local options = Customise.GetOptionsWithLocationDefaults(Levels.GetLocationForLevelID(level.preset), level_index == 1)
         for i,option in ipairs(options) do
             ret.overrides[option.name] = self:GetValueForOption(level_index, option.name)
         end

@@ -365,7 +365,6 @@ local states =
             TimeEvent(14 * FRAMES, DoScreech),
             TimeEvent(15 * FRAMES, DoScreechAlert),
             TimeEvent(28 * FRAMES, function(inst)
-                LandFlyingCreature(inst)
                 inst.components.sanityaura.aura = 0
                 inst.SoundEmitter:PlaySound("dontstarve/bee/beehive_hit")
                 ShakeIfClose(inst)
@@ -387,10 +386,7 @@ local states =
                     inst:BoostCommanderRange(false)
                 end
             end),
-            TimeEvent(5, function(inst)
-                ErodeAway(inst)
-                RaiseFlyingCreature(inst)
-            end),
+            TimeEvent(5, ErodeAway),
         },
 
         onexit = function(inst)
@@ -789,7 +785,6 @@ local function CleanupIfSleepInterrupted(inst)
         RestoreFlapping(inst)
         inst:StartHoney()
     end
-    RaiseFlyingCreature(inst)
 end
 CommonStates.AddSleepExStates(states,
 {
@@ -799,7 +794,6 @@ CommonStates.AddSleepExStates(states,
         TimeEvent(28 * FRAMES, function(inst)
             inst.sg:RemoveStateTag("caninterrupt")
             inst.components.sanityaura.aura = 0
-            LandFlyingCreature(inst)
         end),
         TimeEvent(31 * FRAMES, function(inst)
             inst.SoundEmitter:PlaySound("dontstarve/bee/beehive_hit")
@@ -813,30 +807,24 @@ CommonStates.AddSleepExStates(states,
         CommonHandlers.OnNoSleepTimeEvent(24 * FRAMES, function(inst)
             inst.sg:RemoveStateTag("busy")
             inst.sg:RemoveStateTag("nosleep")
-            RaiseFlyingCreature(inst)
         end),
     },
 },
 {
+    onexitsleep = CleanupIfSleepInterrupted,
+    onexitsleeping = CleanupIfSleepInterrupted,
+    onexitwake = RestoreFlapping,
     onsleep = function(inst)
         inst.sg:AddStateTag("caninterrupt")
         inst.sg.mem.wantstododge = true
         inst.sg.mem.wantstoalert = true
     end,
-    onexitsleep = CleanupIfSleepInterrupted,
     onsleeping = function(inst)
         inst.SoundEmitter:PlaySound("dontstarve/creatures/together/bee_queen/sleep")
-        LandFlyingCreature(inst)
     end,
-    onexitsleeping = CleanupIfSleepInterrupted,
     onwake = function(inst)
         StopFlapping(inst)
         inst:StartHoney()
-        LandFlyingCreature(inst)
-    end,
-    onexitwake = function(inst)
-        RestoreFlapping(inst)
-        RaiseFlyingCreature(inst)
     end,
 })
 
@@ -846,12 +834,10 @@ local function OnOverrideFrozenSymbols(inst)
     inst:StopHoney()
     inst.sg.mem.wantstododge = true
     inst.sg.mem.wantstoalert = true
-    LandFlyingCreature(inst)
 end
 local function OnClearFrozenSymbols(inst)
     StartFlapping(inst)
     inst:StartHoney()
-    RaiseFlyingCreature(inst)
 end
 CommonStates.AddFrozenStates(states, OnOverrideFrozenSymbols, OnClearFrozenSymbols)
 

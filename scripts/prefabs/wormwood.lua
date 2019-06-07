@@ -34,7 +34,7 @@ local WATCH_WORLD_PLANTS_DIST_SQ = 20 * 20
 local SANITY_DRAIN_TIME = 5
 
 local function customidleanimfn(inst)
-    return inst.AnimState:CompareSymbolBuilds("hand", "hand_idle") and "idle_wormwood" or nil
+    return inst.AnimState:CompareSymbolBuilds("hand", "hand_idle_wormwood") and "idle_wormwood" or nil
 end
 
 local function OnEquip(inst, data)

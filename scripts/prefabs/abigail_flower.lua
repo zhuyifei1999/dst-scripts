@@ -117,7 +117,6 @@ local function updatestate(inst)
             if inst.components.inventoryitem.owner == nil then
                 activate(inst)
             end
-            inst:PushEvent("on_no_longer_landed")
         end
     else
         if inst._chargestate == 3 then
@@ -129,13 +128,11 @@ local function updatestate(inst)
                 inst._chargestate = 2
                 inst.components.inventoryitem:ChangeImageName("abigail_flower2")
                 inst.AnimState:PlayAnimation("idle_2")
-                inst:PushEvent("on_landed")
             end
         elseif inst._chargestate ~= 1 then
             inst._chargestate = 1
             inst.components.inventoryitem:ChangeImageName("abigail_flower")
             inst.AnimState:PlayAnimation("idle_1")
-            inst:PushEvent("on_landed")
         end
     end
 end
@@ -270,8 +267,6 @@ local function fn()
 
     inst.MiniMapEntity:SetIcon("abigail_flower.png")
 
-    MakeInventoryFloatable(inst, "small", 0.15, 0.9)
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -309,7 +304,6 @@ local function fn()
     end
 
     inst:AddComponent("inventoryitem")
-
     -----------------------------------
 
     inst:AddComponent("inspectable")

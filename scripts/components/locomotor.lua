@@ -16,8 +16,6 @@ local NO_ISLAND = 127
 
 local ARRIVE_STEP = .15
 
-local INVALID_PLATFORM_ID = "INVALID PLATFORM"
-
 function Dest:IsValid()
     return self.inst == nil or self.inst:IsValid()
 end
@@ -141,7 +139,6 @@ end
 
 local LocoMotor = Class(function(self, inst)
     self.inst = inst
-    self.movement_locator = SpawnPrefab("movementlocator")
     self.ismastersim = TheWorld.ismastersim
 
     if self.ismastersim then
@@ -182,13 +179,7 @@ local LocoMotor = Class(function(self, inst)
     self.externalspeedmultiplier = 1
 
     self.wasoncreep = false
-    self.triggerscreep = true   
-    self.is_prediction_enabled = false
-    self.hop_distance = 6
-    self.hopping = false
-    self.movement_locator_platform = nil
-    self.movement_locator_platform_x = 0
-    self.movement_locator_platform_z = 0
+    self.triggerscreep = true
 
     --self.isupdating = nil
 end,
@@ -458,7 +449,7 @@ function LocoMotor:PreviewAction(bufferedaction, run, try_instant)
         if bufferedaction.pos ~= nil then
             self:GoToPoint(bufferedaction.pos, bufferedaction, run)
         end
-    elseif bufferedaction.action.instant or bufferedaction.action.do_not_locomote then
+    elseif bufferedaction.action.instant then
         self.inst:PreviewBufferedAction(bufferedaction)
     elseif bufferedaction.target ~= nil then
         self:GoToEntity(bufferedaction.target, bufferedaction, run)
@@ -517,7 +508,7 @@ function LocoMotor:PushAction(bufferedaction, run, try_instant)
         if bufferedaction.pos ~= nil then
             self:GoToPoint(bufferedaction.pos, bufferedaction, run, bufferedaction.overridedest)
         end
-    elseif bufferedaction.action.instant or bufferedaction.action.do_not_locomote then
+    elseif bufferedaction.action.instant then
         self.inst:PushBufferedAction(bufferedaction)
     elseif bufferedaction.target ~= nil then
         self:GoToEntity(bufferedaction.target, bufferedaction, run)
@@ -574,54 +565,9 @@ function LocoMotor:GoToEntity(inst, bufferedaction, run)
     self:StartUpdatingInternal()
 end
 
-function LocoMotor:UpdateMovementLocatorPlatform(new_platform, pt)
-    self.movement_locator_platform = new_platform
-    if new_platform ~= nil and new_platform:IsValid() then
-        local new_platform_x, new_platform_y, new_platform_z = new_platform.Transform:GetWorldPosition()
-        self.movement_locator_platform_x, self.movement_locator_platform_z = pt.x - new_platform_x, pt.z - new_platform_z
-    end
-end
-
-function LocoMotor:UpdateMovementLocatorPosition()
-    if self.movement_locator_platform ~= nil then
-        if self.movement_locator_platform:IsValid() then
-            local movement_locator_platform_x, movement_locator_platform_y, movement_locator_platform_z = self.movement_locator_platform.Transform:GetWorldPosition()
-            self.movement_locator.Transform:SetPosition(movement_locator_platform_x + self.movement_locator_platform_x, 0, movement_locator_platform_z + self.movement_locator_platform_z)    
-        end
-    end
-end
-
 --V2C: Added overridedest for additional network controller support
 function LocoMotor:GoToPoint(pt, bufferedaction, run, overridedest)
-    local locator = overridedest
-    if overridedest == nil then
-        local target_parent = nil
-        local target_parent_x, target_parent_y, target_parent_z = 0, 0, 0
-        local my_x, my_y, my_z = self.inst.Transform:GetWorldPosition()
-        if bufferedaction ~= nil and bufferedaction.action.is_relative_to_platform then            
-            local my_platform = TheWorld.Map:GetPlatformAtPoint(my_x, my_z)        
-            --locator is relative to my platform
-            if my_platform ~= nil then    
-                target_parent_x, target_parent_y, target_parent_z = my_platform.Transform:GetWorldPosition()
-                target_parent = my_platform
-            end
-        else
-            local target_platform = TheWorld.Map:GetPlatformAtPoint(my_x, my_z)        
-            --locator is relative to clicked platform
-            if target_platform ~= nil then
-                target_parent_x, target_parent_y, target_parent_z = target_platform.Transform:GetWorldPosition()
-                target_parent = target_platform
-            end
-        end
-
-        self.movement_locator.Transform:SetPosition(pt.x, 0, pt.z)
-
-        self:UpdateMovementLocatorPlatform(target_parent, pt)
-        self:UpdateMovementLocatorPosition()
-
-        locator = self.movement_locator        
-    end
-    self.dest = Dest(locator, pt)
+    self.dest = Dest(overridedest, pt)
     self.throttle = 1
 
     self.arrive_dist =
@@ -651,16 +597,12 @@ function LocoMotor:SetBufferedAction(act)
         self.bufferedaction:Fail()
     end
     self.bufferedaction = act
-    if self.allow_platform_hopping then
-        self.last_platform_visited = INVALID_PLATFORM_ID
-    end    
 end
 
 function LocoMotor:Stop(sgparams)
     --Print(VERBOSITY.DEBUG, "LocoMotor:Stop", self.inst.prefab)
     self.isrunning = false
     self.dest = nil
-    self.movement_locator_platform = nil
     self:ResetPath()
     self.lastdesttile = nil
     --self.arrive_step_dist = 0
@@ -759,86 +701,7 @@ function LocoMotor:WaitingForPathSearch()
     return self.path and self.path.handle
 end
 
-function LocoMotor:UpdateHopping(dt)    
-    self.inst.Physics:Stop()
-end
-
-function LocoMotor:FinishHopping()
-    self.hopping = false
-end
-
-function LocoMotor:SetAllowPlatformHopping(enabled)
-    self.allow_platform_hopping = enabled
-    if enabled then    
-        self.last_platform_visited = INVALID_PLATFORM_ID
-    end
-end
-
-function LocoMotor:CheckEdge(my_platform, map, my_x, my_z, dir_x, dir_z, radius)
-    local pt_x, pt_z = my_x + dir_x * radius, my_z + dir_z * radius 
-    local platform = map:GetPlatformAtPoint(pt_x, pt_z)        
-    local is_water = not map:IsVisualGroundAtPoint(pt_x, 0, pt_z)
-    return (is_water and platform == nil) or platform ~= my_platform    
-end
-
-function LocoMotor:IsAtEdge(my_platform, map, my_x, my_z, dir_x, dir_z)
-    local radius = self.inst.Physics:GetRadius()
-    local edge_range = 0.25
-    return self:CheckEdge(my_platform, map, my_x, my_z, dir_x, dir_z, radius) or 
-           self:CheckEdge(my_platform, map, my_x, my_z, dir_x, dir_z, radius - edge_range) or 
-           self:CheckEdge(my_platform, map, my_x, my_z, dir_x, dir_z, radius + edge_range)
-end
-
-function LocoMotor:ScanForPlatformInDir(my_platform, map, my_x, my_z, dir_x, dir_z, steps, step_size)
-    local is_at_edge = self:IsAtEdge(my_platform, map, my_x, my_z, dir_x, dir_z)
-    local is_first_hop_point = true
-    for i = 1,steps do        
-        local pt_x, pt_z = my_x + dir_x * i * step_size, my_z + dir_z * i * step_size
-        local platform = map:GetPlatformAtPoint(pt_x, pt_z)        
-
-        -- prevent jumping back onto the same platform because if you click an action and land near the edge of a platform
-        -- you would sometimes turn around and jump right back
-        if not (self.last_platform_visited == platform) then
-            local is_water = not map:IsVisualGroundAtPoint(pt_x, 0, pt_z)
-            --print(i, is_at_edge, my_platform, platform, pt_x - my_x, pt_z - my_z, is_water, step_size)
-            if is_at_edge and platform ~= my_platform then            
-                if platform ~= nil or not is_water then
-                    --print("SUCCESS!")
-                    if is_first_hop_point then
-                        is_first_hop_point = false
-                    else
-                        return true, pt_x, pt_z, platform
-                    end
-                end
-            end
-        end
-    end
-    return false, 0, 0, nil
-end
-
-function LocoMotor:ScanForPlatform(my_platform, target_x, target_z)
-    local my_x, my_y, my_z = self.inst.Transform:GetWorldPosition()
-    local dir_x, dir_z = target_x - my_x, target_z - my_z
-    local dir_length = VecUtil_Length(dir_x, dir_z)
-    dir_x, dir_z = dir_x / dir_length, dir_z / dir_length
-
-    local map = TheWorld.Map
-    local landing_range = 1
-    local max_hop_distance = math.min(dir_length + landing_range, self.hop_distance)
-    local step_size = 0.5
-    local step_count = max_hop_distance / step_size    
-    return self:ScanForPlatformInDir(my_platform, map, my_x, my_z, dir_x, dir_z, step_count, max_hop_distance / step_count)
-end
-
 function LocoMotor:OnUpdate(dt)
-
-    self:UpdateMovementLocatorPosition()
-
-    if self.hopping then 
-        self:UpdateHopping(dt) 
-        return
-    end
-
     if not self.inst:IsValid() then
         Print(VERBOSITY.DEBUG, "OnUpdate INVALID", self.inst.prefab)
         self:ResetPath()
@@ -871,22 +734,13 @@ function LocoMotor:OnUpdate(dt)
         local destpos_x, destpos_y, destpos_z = self.dest:GetPoint()
         local mypos_x, mypos_y, mypos_z = self.inst.Transform:GetWorldPosition()
 
-        local buffered_action = self.bufferedaction
         local reached_dest, invalid
-        if buffered_action ~= nil and
-            buffered_action.action == ACTIONS.ATTACK and
-            not buffered_action.forced and
+        if self.bufferedaction ~= nil and
+            self.bufferedaction.action == ACTIONS.ATTACK and
+            not self.bufferedaction.forced and
             self.inst.replica.combat ~= nil then
-            reached_dest, invalid = self.inst.replica.combat:CanAttack(buffered_action.target)
+            reached_dest, invalid = self.inst.replica.combat:CanAttack(self.bufferedaction.target)
         else
-            if buffered_action ~= nil and buffered_action.action.distanceupdatefn ~= nil then 
-                --You have to face your destination for the distance checks to be correct because they rely 
-                --On the character having the proper orientation
-                if self.dest.inst ~= nil and not buffered_action.action.skip_locomotor_facing then
-                    self.inst:FacePoint(self.dest.inst.Transform:GetWorldPosition())
-                end
-                self.arrive_dist = buffered_action.action.distanceupdatefn(self.inst, self.dest.inst)
-            end            
             local dsq = distsq(destpos_x, destpos_z, mypos_x, mypos_z)
             local run_dist = self:GetRunSpeed() * dt * .5
             reached_dest = dsq <= math.max(run_dist * run_dist, self.arrive_dist * self.arrive_dist)
@@ -903,9 +757,9 @@ function LocoMotor:OnUpdate(dt)
             end
 
             if self.bufferedaction ~= nil and self.bufferedaction ~= self.inst.bufferedaction then
-                if self.bufferedaction.target ~= nil and self.bufferedaction.target.Transform ~= nil and not self.bufferedaction.action.skip_locomotor_facing then
+                if self.bufferedaction.target ~= nil and self.bufferedaction.target.Transform ~= nil then
                     self.inst:FacePoint(self.bufferedaction.target.Transform:GetWorldPosition())
-                elseif self.bufferedaction.pos ~= nil and self.bufferedaction.invobject ~= nil and not self.bufferedaction.action.skip_locomotor_facing then
+                elseif self.bufferedaction.pos ~= nil and self.bufferedaction.invobject ~= nil then
                     self.inst:FacePoint(self.bufferedaction.pos:Get())
                 end
                 if self.ismastersim then
@@ -1020,101 +874,19 @@ function LocoMotor:OnUpdate(dt)
 
     local cur_speed = self.inst.Physics:GetMotorSpeed()
     if cur_speed > 0 then
-
-        if self.allow_platform_hopping and (self.bufferedaction == nil or not self.bufferedaction.action.disable_platform_hopping) then            
-
+        
+        local speed_mult = self:GetSpeedMultiplier()
+        local desired_speed = self.isrunning and self:RunSpeed() or self.walkspeed
+        if self.dest and self.dest:IsValid() then
+            local destpos_x, destpos_y, destpos_z = self.dest:GetPoint()
             local mypos_x, mypos_y, mypos_z = self.inst.Transform:GetWorldPosition()
-
-            local destpos_x, destpos_y, destpos_z
-            destpos_y = 0
-
-            local rotation = self.inst.Transform:GetRotation() * DEGREES
-            local forward_x, forward_z = math.cos(rotation), -math.sin(rotation)                
-
-            local dest_dot_forward = 0
-
-            local map = TheWorld.Map
-            local my_platform = map:GetPlatformAtPoint(mypos_x, mypos_z)            
-
-            if self.dest and self.dest:IsValid() then
-                destpos_x, destpos_y, destpos_z = self.dest:GetPoint()
-                local dest_dir_x, dest_dir_z = VecUtil_Normalize(destpos_x - mypos_x, destpos_z - mypos_z)                
-                dest_dot_forward = VecUtil_Dot(dest_dir_x, dest_dir_z, forward_x, forward_z)                
-                local dist = VecUtil_Length(destpos_x - mypos_x, destpos_z - mypos_z)
-                if dist <= 1.5 then
-                    local other_platform = map:GetPlatformAtPoint(destpos_x, destpos_z)
-                    if my_platform == other_platform then
-                        dest_dot_forward = 1
-                    end
-                end
-
-            end 
-
-            local forward_angle_span = 0.1
-            if dest_dot_forward <= 1 - forward_angle_span then
-                destpos_x, destpos_z = forward_x * self.hop_distance + mypos_x, forward_z * self.hop_distance + mypos_z
+            local dsq = distsq(destpos_x, destpos_z, mypos_x, mypos_z)
+            if dsq <= .25 then
+                speed_mult = math.max(.33, math.sqrt(dsq))
             end
-
-            local other_platform = map:GetPlatformAtPoint(destpos_x, destpos_z)
-
-            local can_hop = false
-			local hop_x, hop_z, target_platform 
-			if my_platform ~= other_platform 
-				and (self.inst.components.inventory == nil or not self.inst.components.inventory:IsHeavyLifting()) 
-				and (self.inst.components.rider == nil or not self.inst.components.rider:IsRiding()) 
-				then
-
-				can_hop, hop_x, hop_z, target_platform = self:ScanForPlatform(my_platform, destpos_x, destpos_z)
-			end
-
-            if can_hop then
-                self.last_platform_visited = my_platform
-
-				local embarker = self.inst.components.embarker
-				if embarker ~= nil then
-					if target_platform ~= nil then 
-						embarker:SetEmbarkable(target_platform)
-					else
-						embarker:SetDisembarkPos(hop_x, hop_z)
-					end
-					if not self.inst.sg:HasStateTag("jumping") then
-						self.inst:PushEvent("onhop")
-					end
-				end
-			elseif self.inst.components.amphibiouscreature ~= nil and other_platform == nil and not self.inst.sg:HasStateTag("jumping") then
-				local dist = self.inst:GetPhysicsRadius() + 2.5
-				local _x, _z = forward_x * dist + mypos_x, forward_z * dist + mypos_z
-				if my_platform ~= nil then
-					can_hop = self:ScanForPlatform(nil, _x, _z)
-				end
-				if not can_hop then
-					if self.inst.components.amphibiouscreature:ShouldTransition(_x, _z) then
-						self.inst:PushEvent("onhop", {x = _x, z = _z})
-					end
-				end
-            end
-
-			if self.inst.components.drownable ~= nil and (not can_hop and my_platform == nil and target_platform == nil and not self.inst.sg:HasStateTag("jumping")) and not TheWorld.Map:IsVisualGroundAtPoint(mypos_x, mypos_y, mypos_z) then
-				if self.inst.components.health == nil or not self.inst.components.health:IsInvincible() then -- god mode check
-					self.inst.components.drownable:OnFallInOcean()
-					self.inst:PushEvent("onsink")
-				end
-			end
-
-        else
-            local speed_mult = self:GetSpeedMultiplier()
-            local desired_speed = self.isrunning and self:RunSpeed() or self.walkspeed
-            if self.dest and self.dest:IsValid() then
-                local destpos_x, destpos_y, destpos_z = self.dest:GetPoint()
-                local mypos_x, mypos_y, mypos_z = self.inst.Transform:GetWorldPosition()
-                local dsq = distsq(destpos_x, destpos_z, mypos_x, mypos_z)
-                if dsq <= .25 then
-                    speed_mult = math.max(.33, math.sqrt(dsq))
-                end
-            end
-
-            self.inst.Physics:SetMotorVel(desired_speed * speed_mult, 0, 0)
         end
+
+        self.inst.Physics:SetMotorVel(desired_speed * speed_mult, 0, 0)
     end
 end
 

@@ -6,7 +6,6 @@ local Growable = Class(function(self, inst)
     self.growonly = false
     self.springgrowth = false
     --self.growoffscreen = false
-    self.magicgrowable = false
 end)
 
 function Growable:GetDebugString()
