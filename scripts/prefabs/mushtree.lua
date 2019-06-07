@@ -301,6 +301,17 @@ local function startchange(inst, treestate, build, soundname)
     end
 end
 
+local function workcallback(inst, worker, workleft)
+    if not (worker ~= nil and worker:HasTag("playerghost")) then
+        inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_mushroom")
+    end
+    if workleft > 0 then
+        inst.AnimState:PlayAnimation("chop")
+        inst.AnimState:PushAnimation("idle_loop", true)
+    end
+    --V2C: different anims are played in workfinishcallback if workleft <= 0
+end
+
 local function maketree(name, data, state)
     local function bloom_tree(inst, instant)
         if inst._changetask ~= nil then
@@ -379,22 +390,14 @@ local function maketree(name, data, state)
         end
     end
 
-    local function workcallback(inst, worker, workleft)
-        if not (worker ~= nil and worker:HasTag("playerghost")) then
-            inst.SoundEmitter:PlaySound("dontstarve/wilson/use_axe_mushroom")
-        end
-        if workleft <= 0 then
-            inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")
-            makestump(inst)
+    local function workfinishcallback(inst)--, worker)
+        inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")
+        makestump(inst)
 
-            inst.AnimState:PlayAnimation("fall")
+        inst.AnimState:PlayAnimation("fall")
+        inst.AnimState:PushAnimation("idle_stump")
 
-            inst.components.lootdropper:DropLoot(inst:GetPosition())
-            inst.AnimState:PushAnimation("idle_stump")
-        else
-            inst.AnimState:PlayAnimation("chop")
-            inst.AnimState:PushAnimation("idle_loop", true)
-        end
+        inst.components.lootdropper:DropLoot(inst:GetPosition())
     end
 
     local function onload(inst, loaddata)
@@ -481,6 +484,7 @@ local function maketree(name, data, state)
         inst.components.workable:SetWorkAction(ACTIONS.CHOP)
         inst.components.workable:SetWorkLeft(data.work)
         inst.components.workable:SetOnWorkCallback(workcallback)
+        inst.components.workable:SetOnFinishCallback(workfinishcallback)
 
         inst:AddComponent("periodicspawner")
         inst.components.periodicspawner:SetPrefab(data.spore)

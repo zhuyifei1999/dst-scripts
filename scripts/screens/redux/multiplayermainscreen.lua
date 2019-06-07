@@ -697,20 +697,23 @@ function MultiplayerMainScreen:OnBecomeActive()
 end
 
 function MultiplayerMainScreen:FinishedFadeIn()
-	
     if HasNewSkinDLCEntitlements() then
         if IsSteam() then
             local popup_screen = PopupDialogScreen( STRINGS.UI.PURCHASEPACKSCREEN.GIFT_RECEIVED_TITLE, STRINGS.UI.PURCHASEPACKSCREEN.GIFT_RECEIVED_BODY,
                     {
-                        {text=STRINGS.UI.PURCHASEPACKSCREEN.OK, cb = function() TheFrontEnd:PopScreen() MakeSkinDLCPopup() end },
+                        { text=STRINGS.UI.PURCHASEPACKSCREEN.OK, cb = function()
+                                TheFrontEnd:PopScreen()
+                                MakeSkinDLCPopup( function() self:FinishedFadeIn() end )
+                            end
+                        },
                     }
                 )
 
             TheFrontEnd:PushScreen( popup_screen )
         else
-            MakeSkinDLCPopup()
+            MakeSkinDLCPopup( function() self:FinishedFadeIn() end )
         end
-	else
+    else
 		--Do new entitlement items
 		local items = {}
 		local entitlement_items = TheInventory:GetUnopenedEntitlementItems()

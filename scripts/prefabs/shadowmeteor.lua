@@ -83,7 +83,8 @@ local function onexplode(inst)
                     if v.components.workable:CanBeWorked() and not (v.sg ~= nil and v.sg:HasStateTag("busy")) then
                         local work_action = v.components.workable:GetWorkAction()
                         --V2C: nil action for NPC_workable (e.g. campfires)
-                        if ((work_action == nil and v:HasTag("NPC_workable")) or SMASHABLE_WORK_ACTIONS[work_action.id]) and
+                        if (    (work_action == nil and v:HasTag("NPC_workable")) or
+                                (work_action ~= nil and SMASHABLE_WORK_ACTIONS[work_action.id]) ) and
                             (work_action ~= ACTIONS.DIG
                             or (v.components.spawner == nil and
                                 v.components.childspawner == nil)) then

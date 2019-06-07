@@ -1614,17 +1614,22 @@ local states =
             elseif inst.customidleanim == nil then
                 inst.AnimState:PlayAnimation("idle_inaction")
             else
-                if inst.sg.mem.idlerepeats == nil then
-                    inst.sg.mem.usecustomidle = math.random() < .5
-                    inst.sg.mem.idlerepeats = 0
-                end
-                if inst.sg.mem.idlerepeats > 1 then
-                    inst.sg.mem.idlerepeats = inst.sg.mem.idlerepeats - 1
+                local anim = type(inst.customidleanim) == "string" and inst.customidleanim or inst:customidleanim()
+                if anim ~= nil then
+                    if inst.sg.mem.idlerepeats == nil then
+                        inst.sg.mem.usecustomidle = math.random() < .5
+                        inst.sg.mem.idlerepeats = 0
+                    end
+                    if inst.sg.mem.idlerepeats > 1 then
+                        inst.sg.mem.idlerepeats = inst.sg.mem.idlerepeats - 1
+                    else
+                        inst.sg.mem.usecustomidle = not inst.sg.mem.usecustomidle
+                        inst.sg.mem.idlerepeats = inst.sg.mem.usecustomidle and math.random(2) or math.ceil(math.random(5) * .5)
+                    end
+                    inst.AnimState:PlayAnimation(inst.sg.mem.usecustomidle and anim or "idle_inaction")
                 else
-                    inst.sg.mem.usecustomidle = not inst.sg.mem.usecustomidle
-                    inst.sg.mem.idlerepeats = inst.sg.mem.usecustomidle and math.random(2) or math.ceil(math.random(5) * .5)
+                    inst.AnimState:PlayAnimation("idle_inaction")
                 end
-                inst.AnimState:PlayAnimation(inst.sg.mem.usecustomidle and inst.customidleanim or "idle_inaction")
             end
         end,
 
