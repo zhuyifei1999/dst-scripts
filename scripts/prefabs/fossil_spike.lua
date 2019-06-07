@@ -71,7 +71,7 @@ local function DoDamage(inst)
                 --     allow digging spawners (e.g. rabbithole)
                 isworkable = (
                     (work_action == nil and v:HasTag("NPC_workable")) or
-                    (v.components.workable:CanBeWorked() and COLLAPSIBLE_WORK_ACTIONS[work_action.id])
+                    (v.components.workable:CanBeWorked() and work_action ~= nil and COLLAPSIBLE_WORK_ACTIONS[work_action.id])
                 )
             end
             if isworkable then

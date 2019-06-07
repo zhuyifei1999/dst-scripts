@@ -168,7 +168,8 @@ local _GroundDetectionUpdate = _ismastersim and function(debris, override_densit
                             if v.sg == nil or not v.sg:HasStateTag("busy") then
                                 local work_action = v.components.workable:GetWorkAction()
                                 --V2C: nil action for NPC_workable (e.g. campfires)
-                                if ((work_action == nil and v:HasTag("NPC_workable")) or HEAVY_WORK_ACTIONS[work_action.id]) and
+                                if (    (work_action == nil and v:HasTag("NPC_workable")) or
+                                        (work_action ~= nil and HEAVY_WORK_ACTIONS[work_action.id]) ) and
                                     (work_action ~= ACTIONS.DIG
                                     or (v.components.spawner == nil and
                                         v.components.childspawner == nil)) then

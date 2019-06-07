@@ -192,24 +192,6 @@ function LootDropper:GenerateLoot()
     return loots
 end
 
-local function SplashOceanLoot(loot, cb)
-    if loot.components.inventoryitem == nil or not loot.components.inventoryitem:IsHeld() then
-        local x, y, z = loot.Transform:GetWorldPosition()
-        if not loot:IsOnValidGround() or TheWorld.Map:IsPointNearHole(Vector3(x, 0, z)) then
-            SpawnPrefab("splash_ocean").Transform:SetPosition(x, y, z)
-            if loot:HasTag("irreplaceable") then
-                loot.Transform:SetPosition(FindSafeSpawnLocation(x, y, z))
-            else
-                loot:Remove()
-            end
-            return
-        end
-    end
-    if cb ~= nil then
-        cb(loot)
-    end
-end
-
 function LootDropper:SetFlingTarget(pos, variance)
     self.flingtargetpos = pos
     self.flingtargetvariance = variance
@@ -233,8 +215,6 @@ function LootDropper:FlingItem(loot, pt, bouncedcb)
                     0,
                     pt.z - math.sin(angle) * radius
                 )
-
-                SplashOceanLoot(loot, bouncedcb)
             else
                 local sinangle = math.sin(angle)
                 local cosangle = math.cos(angle)
@@ -248,8 +228,6 @@ function LootDropper:FlingItem(loot, pt, bouncedcb)
                         pt.z - sinangle * radius
                     )
                 end
-
-                loot:DoTaskInTime(1, SplashOceanLoot, bouncedcb)
             end
         end
     end
@@ -269,6 +247,8 @@ function LootDropper:SpawnLootPrefab(lootprefab, pt)
 
         -- here? so we can run a full drop loot?
             self:FlingItem(loot, pt)
+
+            loot.PushEvent("on_loot_dropped")
 
             return loot
         end

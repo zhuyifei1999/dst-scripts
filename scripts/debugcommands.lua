@@ -12,20 +12,14 @@ function d_decodedata(path)
     end)
 end
 
-function d_domesticatedbeefalo()
-    c_give('whip')
-    c_give('saddle_war')
-    c_spawn('dummytarget')
+function d_domesticatedbeefalo(tendency, saddle)
     local beef = c_spawn('beefalo')
-    for k, v in pairs(TENDENCY) do
-        beef = c_spawn('beefalo')
-        beef.components.domesticatable:DeltaDomestication(1)
-        beef.components.domesticatable:DeltaObedience(0.5)
-        beef.components.domesticatable:DeltaTendency(v, 1)
-        beef:SetTendency()
-        beef.components.domesticatable:BecomeDomesticated()
-        beef.components.rideable:SetSaddle(nil, SpawnPrefab('saddle_basic'))
-    end
+    beef.components.domesticatable:DeltaDomestication(1)
+    beef.components.domesticatable:DeltaObedience(0.5)
+    beef.components.domesticatable:DeltaTendency(TENDENCY[tendency] or TENDENCY.DEFAULT, 1)
+    beef:SetTendency()
+    beef.components.domesticatable:BecomeDomesticated()
+    beef.components.rideable:SetSaddle(nil, SpawnPrefab(saddle or "saddle_basic"))
 end
 
 function d_domestication(domestication, obedience)
@@ -287,6 +281,33 @@ function d_potions()
 	end
 end
 
+function d_weirdfloaters()
+    local weird_float_items =
+    {
+        "abigail flower",   "axe",              "batbat",       "blowdart_fire",    "blowdart_pipe",    "blowdart_sleep",
+        "blowdart_walrus",  "blowdart_yellow",  "boomerang",    "brush",            "bugnet",           "cane",
+        "firestaff",        "fishingrod",       "glasscutter",  "goldenaxe",        "goldenpickaxe",
+        "goldenshovel",     "grass_umbrella",   "greenstaff",   "hambat",           "hammer",           "houndstooth",
+        "houndwhistle",     "icestaff",         "lucy",         "miniflare",        "moonglassaxe",     "multitool_axe_pickaxe",
+        "nightstick",       "nightsword",       "opalstaff",    "orangestaff",      "panflute",         "perdfan",
+        "pickaxe",          "pitchfork",        "razor",        "redlantern",       "shovel",           "spear",
+        "spear_wathgrithr", "staff_tornado",    "telestaff",    "tentaclespike",    "trap",             "umbrella",
+        "yellowstaff",      "yotp_food3",
+    }
+
+    local spacing = 2
+    local num_wide = math.ceil(math.sqrt(#weird_float_items))
+
+    for y = 0, num_wide - 1 do
+        for x = 0, num_wide - 1 do
+            local inst = SpawnPrefab(weird_float_items[y*num_wide + x + 1])
+            if inst ~= nil then
+                inst.Transform:SetPosition((ConsoleWorldPosition() + Vector3(x*spacing, 0, y*spacing)):Get())
+            end
+        end
+    end
+end
+
 function d_wintersfeast()
 	local all_items = GetAllWinterOrnamentPrefabs()
 	local spacing = 2
@@ -300,6 +321,20 @@ function d_wintersfeast()
 			end
 		end
 	end
+end
+
+function d_wintersfood()
+    local spacing = 2
+    local num_wide = math.ceil(math.sqrt(NUM_WINTERFOOD))
+
+    for y = 0, num_wide-1 do
+        for x = 0, num_wide-1 do
+            local inst = SpawnPrefab("winter_food"..(y*num_wide + x + 1))
+            if inst ~= nil then
+                inst.Transform:SetPosition((ConsoleWorldPosition() + Vector3(x*spacing, 0, y*spacing)):Get())
+            end
+        end
+    end
 end
 
 function d_madsciencemats()
@@ -420,20 +455,62 @@ function d_reportevent(other_ku)
 		}), function(ku_tbl, success) print( "Report event:", success) dumptable(ku_tbl) end )
 end
 
-function d_makesoil()
+function d_ground(ground)
+	ground = ground == nil and GROUND.QUAGMIRE_SOIL or 
+			type(ground) == "string" and GROUND[string.upper(ground)] 
+			or ground
+
 	local pt = TheInput:GetWorldPosition()
 	
     local x, y = TheWorld.Map:GetTileCoordsAtPoint(pt:Get())
 
     local original_tile_type = TheWorld.Map:GetTileAtPoint(pt:Get())
-    TheWorld.Map:SetTile(x, y, GROUND.QUAGMIRE_SOIL)
+    TheWorld.Map:SetTile(x, y, ground)
     TheWorld.Map:RebuildLayer(original_tile_type, x, y)
-    TheWorld.Map:RebuildLayer(GROUND.QUAGMIRE_SOIL, x, y)
+    TheWorld.Map:RebuildLayer(ground, x, y)
 
     TheWorld.minimap.MiniMap:RebuildLayer(original_tile_type, x, y)
-    TheWorld.minimap.MiniMap:RebuildLayer(GROUND.QUAGMIRE_SOIL, x, y)
+    TheWorld.minimap.MiniMap:RebuildLayer(ground, x, y)
 end
 
 function d_portalfx()
 	TheWorld:PushEvent("ms_newplayercharacterspawned", { player = ThePlayer})
+end
+
+function d_islandstart()
+	c_give("log", 12)
+	c_give("rocks", 12)
+	c_give("smallmeat", 2)
+	c_give("meat", 2)
+	c_give("rope", 2)
+	c_give("cutgrass", 9)
+	c_give("backpack")
+	c_give("charcoal", 9)
+	c_give("carrot", 3)
+	c_give("berries", 12)
+	c_give("pickaxe")
+	c_give("axe")
+	c_give(PickSomeWithDups(1, {"strawhat", "minerhat", "flowerhat"})[1])
+	c_give(PickSomeWithDups(1, {"spear", "hambat", "trap"})[1])
+
+    local MainCharacter = ConsoleCommandPlayer()
+    if MainCharacter ~= nil and MainCharacter.components.sanity ~= nil then
+		MainCharacter.components.sanity:SetPercent(math.random() * 0.4 + 0.2)
+	end		
+
+end
+
+function d_boatitems()
+    c_spawn("boat_item")
+    c_spawn("mast_item", 3)
+    c_spawn("anchor_item")
+    c_spawn("steeringwheel_item")
+    c_spawn("oar")
+end
+
+function d_giveturfs()
+    local GroundTiles = require("worldtiledefs")
+    for k, v in pairs(GroundTiles.turf) do
+        c_give("turf_"..v.name)
+    end
 end

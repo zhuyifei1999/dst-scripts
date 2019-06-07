@@ -3,6 +3,8 @@ local assets =
     Asset("PKGREF", "sound/dontstarve.fev"),
     Asset("SOUNDPACKAGE", "sound/dontstarve_DLC001.fev"),
     Asset("FILE", "sound/DLC_music.fsb"),
+    Asset("SOUNDPACKAGE", "sound/turnoftides.fev"),
+    Asset("FILE", "sound/turnoftides.fsb"),
 
     Asset("FILE", "sound/wilton.fsb"),         -- Legacy sound that can be used in mods
     Asset("FILE", "sound/winnie.fsb"),         -- Legacy sound that can be used in mods
@@ -88,6 +90,9 @@ local assets =
     Asset("IMAGE", "images/bg_spiral.tex"),
     Asset("ATLAS", "images/bg_vignette.xml"),
     Asset("IMAGE", "images/bg_vignette.tex"),
+    Asset("ANIM", "anim/sail_over.zip"),
+    Asset("ANIM", "anim/paddle_over.zip"),
+
 
     Asset("DYNAMIC_ATLAS", "images/fepanel_fills.xml"),
     Asset("PKGREF", "images/fepanel_fills.tex"),
@@ -125,6 +130,9 @@ local assets =
     Asset("IMAGE", "images/roadcorner.tex"),
     Asset("IMAGE", "images/roadendcap.tex"),
 
+    --TODO(YOG): Why does this get unloaded a the wrong time if we load it as part of the forest prefab?
+    Asset("IMAGE", "images/overlays_lunacy.tex"),
+
     Asset("IMAGE", "images/colour_cubes/identity_colourcube.tex"),
 
     Asset("SHADER", "shaders/anim.ksh"),
@@ -142,6 +150,8 @@ local assets =
     Asset("SHADER", "shaders/ground.ksh"),
     Asset("SHADER", "shaders/ground_overlay.ksh"),
     Asset("SHADER", "shaders/ground_lights.ksh"),
+    Asset("SHADER", "shaders/ground_underground.ksh"),
+	Asset("SHADER", "shaders/ground_ocean.ksh"),
     Asset("SHADER", "shaders/ceiling.ksh"),
     -- Asset("SHADER", "shaders/triplanar.ksh"),
     Asset("SHADER", "shaders/triplanar_bg.ksh"),
@@ -157,6 +167,7 @@ local assets =
     Asset("SHADER", "shaders/road.ksh"),
     Asset("SHADER", "shaders/river.ksh"),
     Asset("SHADER", "shaders/splat.ksh"),
+    Asset("SHADER", "shaders/sprite.ksh"),
     Asset("SHADER", "shaders/texture.ksh"),
     Asset("SHADER", "shaders/ui.ksh"),
     Asset("SHADER", "shaders/ui_cc.ksh"),
@@ -164,10 +175,16 @@ local assets =
     Asset("SHADER", "shaders/swipe_fade.ksh"),
     Asset("SHADER", "shaders/ui_anim.ksh"),
     Asset("SHADER", "shaders/combine_colour_cubes.ksh"),
+	Asset("SHADER", "shaders/zoomblur.ksh"),
     Asset("SHADER", "shaders/postprocess.ksh"),
     Asset("SHADER", "shaders/postprocessbloom.ksh"),
     Asset("SHADER", "shaders/postprocessdistort.ksh"),
     Asset("SHADER", "shaders/postprocessbloomdistort.ksh"),
+    Asset("SHADER", "shaders/postprocesslunacy.ksh"),
+    Asset("SHADER", "shaders/postprocessbloomlunacy.ksh"),
+    Asset("SHADER", "shaders/postprocessdistortlunacy.ksh"),
+    Asset("SHADER", "shaders/postprocessbloomdistortlunacy.ksh"),    
+    Asset("SHADER", "shaders/waterfall.ksh"),
 
     Asset("SHADER", "shaders/waves.ksh"),
     Asset("SHADER", "shaders/overheat.ksh"),
@@ -231,7 +248,7 @@ local assets =
     Asset("DYNAMIC_ANIM", "anim/dynamic/previous_skin.zip"),
     Asset("PKGREF", "anim/dynamic/previous_skin.dyn"),
     Asset("DYNAMIC_ANIM", "anim/dynamic/random_skin.zip"),
-    Asset("PKGREF", "anim/dynamic/random_skin.dyn"),
+    Asset("PKGREF", "anim/dynamic/random_skin.dyn"),   
 }
 
 require "fonts"

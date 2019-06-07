@@ -33,6 +33,10 @@ prefabs = FlattenTree({ prefabs, start_inv }, true)
 local WATCH_WORLD_PLANTS_DIST_SQ = 20 * 20
 local SANITY_DRAIN_TIME = 5
 
+local function customidleanimfn(inst)
+    return inst.AnimState:CompareSymbolBuilds("hand", "hand_idle") and "idle_wormwood" or nil
+end
+
 local function OnEquip(inst, data)
     if data.eslot == EQUIPSLOTS.HEAD and not data.item:HasTag("open_top_hat") then
         --V2C: HAH! There's no "beard" in "player_wormwood" build.
@@ -557,7 +561,7 @@ local function master_postinit(inst)
     inst.endtalksound = "dontstarve/characters/wormwood/end"
     --inst.endghosttalksound = nil
 
-    inst.customidleanim = "idle_wormwood"
+    inst.customidleanim = customidleanimfn
 
     inst.components.health.fire_damage_scale = TUNING.WORMWOOD_FIRE_DAMAGE
 

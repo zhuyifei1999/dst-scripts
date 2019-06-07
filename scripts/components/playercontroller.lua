@@ -77,6 +77,7 @@ local PlayerController = Class(function(self, inst)
     self.predictwalking = false
     self.predictionsent = false
     self.draggingonground = false
+    self.is_hopping = false
     self.startdragtestpos = nil
     self.startdragtime = nil
     self.isclientcontrollerattached = false
@@ -214,6 +215,14 @@ local function OnInventoryClosed(inst)
     end
 end
 
+local function OnZoom(inst, data)
+    if data.zoomout then
+        TheCamera:ZoomOut(data.zoom or 6)
+    else
+        TheCamera:ZoomIn(data.zoom or 6)
+    end
+end
+
 local function OnContinueFromPause()
     ThePlayer.components.playercontroller:ToggleController(TheInput:ControllerAttached())
 end
@@ -247,6 +256,7 @@ function PlayerController:Activate()
         self.inst:ListenForEvent("buildstructure", OnBuild)
         self.inst:ListenForEvent("equip", OnEquip)
         self.inst:ListenForEvent("unequip", OnUnequip)
+        self.inst:ListenForEvent("zoomcamera", OnZoom)
         if not self.ismastersim then
             self.inst:ListenForEvent("deactivateworld", OnDeactivateWorld, TheWorld)
             self.inst:ListenForEvent("onreachdestination", OnReachDestination)
@@ -296,6 +306,7 @@ function PlayerController:Deactivate()
             self.inst:RemoveEventCallback("onreachdestination", OnReachDestination)
             self.inst:RemoveEventCallback("bufferedcastaoe", OnBufferedCastAOE)
             self.bufferedcastaoe = nil
+            self.inst:RemoveEventCallback("zoomcamera", OnZoom)
             self.inst:StopUpdatingComponent(self)
         end
     end
@@ -1369,7 +1380,7 @@ local function GetPickupAction(self, target, tool)
         return ACTIONS.HARVEST_TREE
     elseif target:HasTag("trapsprung") then
         return ACTIONS.CHECKTRAP
-    elseif target:HasTag("minesprung") then
+    elseif target:HasTag("minesprung") and not target:HasTag("mine_not_reusable") then
         return ACTIONS.RESETMINE
     elseif target:HasTag("inactive") then
         return (not target:HasTag("wall") or self.inst:IsNear(target, 2.5)) and ACTIONS.ACTIVATE or nil
@@ -1863,7 +1874,7 @@ function PlayerController:OnUpdate(dt)
         self.attack_buffer = nil
     end
 
-    if self.handler ~= nil then
+    if self.handler ~= nil then        
         local controller_mode = TheInput:ControllerAttached()
         local new_highlight = nil
         if not self.inst:IsActionsVisible() then
@@ -1953,7 +1964,7 @@ function PlayerController:OnUpdate(dt)
                         return placer_item:IsValid() and
                             placer_item.replica.inventoryitem ~= nil and
                             placer_item.replica.inventoryitem:CanDeploy(pt, mouseover, self.inst),
-                            mouseover ~= nil or TheInput:GetHUDEntityUnderMouse() ~= nil
+                            (mouseover ~= nil and not mouseover:HasTag("walkableplatform")) or TheInput:GetHUDEntityUnderMouse() ~= nil
                     end
                     self.deployplacer.components.placer:OnUpdate(0) --so that our position is accurate on the first frame
                 end
@@ -2046,12 +2057,19 @@ function PlayerController:OnUpdate(dt)
     end
     --NOTE: isbusy is used further below as well
     local isbusy = self:IsBusy()
+    
+    self:DoPredictHopping(dt)
+
     if isbusy or
         self:DoPredictWalking(dt) or
         self:DoDragWalking(dt) then
         self.bufferedcastaoe = nil
     else
-        self:DoDirectWalking(dt)
+        if not self.inst:HasTag("steeringboat") then
+            self:DoDirectWalking(dt)            
+        else
+            self:DoBoatSteering(dt)
+        end
     end
 
     --do automagic control repeats
@@ -2590,7 +2608,21 @@ function PlayerController:OnRemotePredictWalking(x, z, isdirectwalking)
     end
 end
 
+function PlayerController:OnRemotePredictHopping(x, z)
+    if self.ismastersim and self:IsEnabled() and self.handler == nil then
+        self.remote_vector.x = x
+        self.remote_vector.y = 6
+        self.remote_vector.z = z
+    end
+end
+
 function PlayerController:OnRemoteStopWalking()
+    if self.ismastersim and self:IsEnabled() and self.handler == nil then
+        self.remote_vector.y = 0
+    end
+end
+
+function PlayerController:OnRemoteStopHopping()
     if self.ismastersim and self:IsEnabled() and self.handler == nil then
         self.remote_vector.y = 0
     end
@@ -2625,10 +2657,82 @@ function PlayerController:RemotePredictWalking(x, z)
     end
 end
 
+function PlayerController:RemotePredictHopping(x, z)
+    local y = 6
+    if x ~= nil and z ~= nil then
+        if self.remote_vector.x ~= x or self.remote_vector.z ~= z or self.remote_vector.y ~= y then        
+            SendRPCToServer(RPC.PredictHopping, x, z)
+            self.remote_vector.x = x
+            self.remote_vector.y = y
+            self.remote_vector.z = z
+            self.predictionsent = true
+        end
+    end
+end
+
+function PlayerController:RemoteStopHopping()
+    SendRPCToServer(RPC.StopHopping, self.inst)
+end
+
 function PlayerController:RemoteStopWalking()
     if self.remote_vector.y ~= 0 then
         SendRPCToServer(RPC.StopWalking)
         self.remote_vector.y = 0
+    end
+end
+
+function PlayerController:DoPredictHopping(dt)
+    if self.ismastersim then        
+        local pt = self:GetRemotePredictPosition()
+        if pt ~= nil then            
+            local new_is_hopping = pt.y == 6
+            local should_teleport = new_is_hopping or self.is_hopping
+            if new_is_hopping ~= self.is_hopping then
+                if new_is_hopping then
+                    self.inst.Physics:ClearCollidesWith(COLLISION.OBSTACLES)
+                    self.inst.Physics:ClearCollidesWith(COLLISION.SMALLOBSTACLES)
+                    self.inst.Physics:ClearCollidesWith(COLLISION.LIMITS)
+                    self.inst.AnimState:PlayAnimation("boat_jump_pre", false) 
+                    self.inst.AnimState:PushAnimation("boat_jump_loop", true)                     
+                    --self.inst:PushEvent("on_master_hop_start")  
+                else
+                    self.inst.Physics:CollidesWith(COLLISION.OBSTACLES)  
+                    self.inst.Physics:CollidesWith(COLLISION.SMALLOBSTACLES)  
+                    self.inst.Physics:CollidesWith(COLLISION.LIMITS)                     
+                    --self.inst:PushEvent("on_master_hop_stop")               
+                    self.inst.AnimState:PlayAnimation("boat_jump_pst", false)      
+                end
+                self.is_hopping = new_is_hopping
+            end       
+
+            if should_teleport then
+                --self.inst:ForceFacePoint(pt.x, 0, pt.z)
+                self.inst.Physics:TeleportRespectingInterpolation(pt.x, 0, pt.z)
+                --self.inst.Physics:ClearTransformationHistory()
+                return true
+            else
+                return false
+            end
+        end
+    else
+        local locomotor = self.inst.components.locomotor
+        if locomotor ~= nil then
+            local is_hopping = self.inst.components.locomotor.hopping
+            if is_hopping then
+                self.is_hopping = true
+                local x, y, z = self.inst.Transform:GetPredictionPosition()
+                self:RemotePredictHopping(x, z)
+                return true
+            end          
+
+            if is_hopping ~= self.is_hopping then
+                if not is_hopping then
+                    self:RemoteStopHopping()
+                end
+            end
+
+            self.is_hopping = is_hopping
+        end
     end
 end
 
@@ -2659,13 +2763,17 @@ function PlayerController:DoPredictWalking(dt)
                 self.inst:ClearBufferedAction()
             end
 
-            if distancetotargetsq > stopdistancesq then
-                self.locomotor:RunInDirection(self.inst:GetAngleToPoint(pt))
-            else
-                --Destination reached, queued (instead of immediate) stop
-                --so that prediction may be resumed before the next frame
-                self.inst:FacePoint(pt)
-                self.locomotor:Stop({ force_idle_state = true }) --force idle state in case this tiny motion was meant to cancel an action
+            local is_hopping = pt.y == 6
+
+            if not is_hopping then
+                if distancetotargetsq > stopdistancesq then
+                    self.locomotor:RunInDirection(self.inst:GetAngleToPoint(pt))
+                else
+                    --Destination reached, queued (instead of immediate) stop
+                    --so that prediction may be resumed before the next frame
+                    self.inst:FacePoint(pt)
+                    self.locomotor:Stop({ force_idle_state = true }) --force idle state in case this tiny motion was meant to cancel an action
+                end
             end
 
             --Even though we're predict walking, we want the server to behave
@@ -2699,15 +2807,20 @@ function PlayerController:DoPredictWalking(dt)
                 self.remote_vector.y = 0
             elseif distancetotargetsq > 16 then
                 self.remote_vector.y = 0
-                self.inst.Physics:Teleport(self.inst.Transform:GetWorldPosition())
+                self.inst.Physics:Teleport(self.inst.Transform:GetWorldPosition())                
             end
 
             return true
         end
-    elseif self:CanLocomote() and self.inst.sg:HasStateTag("moving") then
+    else
         local x, y, z = self.inst.Transform:GetPredictionPosition()
-        if x ~= nil and y ~= nil and z ~= nil then
-            self:RemotePredictWalking(x, z)
+        if self:CanLocomote() then            
+            if self.inst.sg:HasStateTag("moving") then            
+                if x ~= nil and y ~= nil and z ~= nil then
+                    self:RemotePredictWalking(x, z)
+                end
+            else             
+            end
         end
     end
 end
@@ -2739,6 +2852,21 @@ function PlayerController:DoDragWalking(dt)
             self:RemoteDragWalking(pt.x, pt.z)
         end
         return true
+    end
+end
+
+function PlayerController:DoBoatSteering(dt)
+    local dir = GetWorldControllerVector()
+
+    if dir ~= nil then
+        if self.ismastersim then
+            local steeringwheeluser = self.inst.components.steeringwheeluser
+            if steeringwheeluser ~= nil then
+                steeringwheeluser:SteerInDir(dir.x, dir.z)
+            end
+        else
+            SendRPCToServer(RPC.SteerBoat, dir.x, dir.z)
+        end
     end
 end
 
@@ -2952,6 +3080,7 @@ function PlayerController:DoActionAutoEquip(buffaction)
         buffaction.action ~= ACTIONS.GIVE and
         buffaction.action ~= ACTIONS.ADDFUEL and
         buffaction.action ~= ACTIONS.ADDWETFUEL and
+        buffaction.action ~= ACTIONS.DEPLOY and
         buffaction.action ~= ACTIONS.CONSTRUCT then
         self.inst.replica.inventory:EquipActionItem(buffaction.invobject)
         buffaction.autoequipped = true
@@ -3002,7 +3131,8 @@ function PlayerController:OnLeftClick(down)
     end
 
     if act.action == ACTIONS.WALKTO then
-        if act.target == nil and TheInput:GetWorldEntityUnderMouse() == nil then
+        local entity_under_mouse = TheInput:GetWorldEntityUnderMouse()
+        if act.target == nil and (entity_under_mouse == nil or entity_under_mouse:HasTag("walkableplatform")) then
             self.startdragtime = GetTime()
         end
     elseif act.action == ACTIONS.ATTACK then
@@ -3145,11 +3275,16 @@ function PlayerController:OnRightClick(down)
     end
 end
 
+--TODO(YOG): Make a better way of forcing the server to play the expected client action
+FORCE_ROW_FAIL_HACK = false
+
 function PlayerController:OnRemoteRightClick(actioncode, position, target, rotation, isreleased, controlmodscode, noforce, mod_name)
     if self.ismastersim and self:IsEnabled() and self.handler == nil then
         self.remote_controls[CONTROL_SECONDARY] = 0
         self:DecodeControlMods(controlmodscode)
+        FORCE_ROW_FAIL_HACK = actioncode == ACTIONS.ROW_FAIL.code
         local lmb, rmb = self.inst.components.playeractionpicker:DoGetMouseActions(position, target)
+        FORCE_ROW_FAIL_HACK = false
         if isreleased then
             self.remote_controls[CONTROL_SECONDARY] = nil
         end

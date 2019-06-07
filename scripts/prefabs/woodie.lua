@@ -10,6 +10,9 @@ local assets =
     Asset("ANIM", "anim/werebeaver_basic.zip"),
     Asset("ANIM", "anim/werebeaver_groggy.zip"),
     Asset("ANIM", "anim/werebeaver_dance.zip"),
+	Asset("ANIM", "anim/werebeaver_boat_jump.zip"),
+	Asset("ANIM", "anim/werebeaver_boat_plank.zip"),
+	Asset("ANIM", "anim/werebeaver_boat_sink.zip"),
     Asset("ANIM", "anim/player_revive_to_werebeaver.zip"),
     Asset("ANIM", "anim/player_amulet_resurrect_werebeaver.zip"),
     Asset("ANIM", "anim/player_rebirth_werebeaver.zip"),
@@ -314,7 +317,7 @@ local function onworked(inst, data)
             inst.components.beaverness:DoDelta(TUNING.WOODIE_CHOP_DRAIN, true)
 
             local equipitem = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-            if equipitem ~= nil and (equipitem.prefab == "axe" or equipitem.prefab == "goldenaxe") then
+            if equipitem ~= nil and (equipitem:HasTag("possessable_axe")) then
                 local itemuses = equipitem.components.finiteuses ~= nil and equipitem.components.finiteuses:GetUses() or nil
                 if itemuses == nil or itemuses > 0 then
                     --Don't make Lucy if we already have one
@@ -579,6 +582,16 @@ local function TransformBeaver(inst, isbeaver)
     end
 end
 
+local function OnTakeDrowningDamage(inst, tuning)
+	if tuning.BEAVERNESS ~= nil and inst.components.beaverness ~= nil then
+		inst.components.beaverness:DoDelta(-tuning.BEAVERNESS)
+	end
+end
+
+local function GetDowningDamgeTunings(inst)
+	return TUNING.DROWNING_DAMAGE[inst:HasTag("beaver") and "WEREBEAVER" or "WOODIE"]
+end
+
 --------------------------------------------------------------------------
 
 --Re-enter idle state right after loading because
@@ -677,6 +690,11 @@ local function master_postinit(inst)
         inst._getstatus = nil
         inst._wasnomorph = nil
         inst.TransformBeaver = TransformBeaver
+
+		if inst.components.drownable ~= nil then
+			inst.components.drownable:SetOnTakeDrowningDamageFn(OnTakeDrowningDamage)
+			inst.components.drownable:SetCustomTuningsFn(GetDowningDamgeTunings)
+		end
 
         inst:ListenForEvent("ms_respawnedfromghost", onrespawnedfromghost)
         inst:ListenForEvent("ms_becameghost", onbecameghost)

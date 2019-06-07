@@ -6,28 +6,44 @@ local AreaAware = Class(function(self, inst)
 	self.updatedistsq = 16 --4*4
 
     self.inst:StartUpdatingComponent(self)
+
+	self._ForceUpdate = function() self:UpdatePosition(self.inst.Transform:GetWorldPosition()) end
+    self.inst:ListenForEvent("done_embark_movement", self._ForceUpdate)                
+	
 end)
+
+function AreaAware:OnRemoveFromEntity()
+    self:StopUpdating()
+    self.inst:RemoveEventCallback("done_embark_movement", self._ForceUpdate)
+end
 
 function AreaAware:UpdatePosition(x, y, z)
     self.lastpt.x, self.lastpt.z = x, z
-
-    if not TheWorld.Map:IsPassableAtPoint(x, 0, z) then
+    if not TheWorld.Map:IsVisualGroundAtPoint(x, 0, z) then
+		if self.current_area_data ~= nil then
+			self.current_area = -1
+			self.current_area_data = nil 
+            self.inst:PushEvent("changearea", self:GetCurrentArea())
+		end
         return
     end
 
+	if self.current_area_data ~= nil and TheSim:WorldPointInPoly(x, z, self.current_area_data.poly) then
+	    return
+	end
+
     for i, node in ipairs(TheWorld.topology.nodes) do
-        if TheSim:WorldPointInPoly(x, z, node.poly) then
-            if self.current_area ~= i then
-                self.current_area = i
-                self.current_area_data = {
-                    id = TheWorld.topology.ids[i],
-                    type = node.type,
-                    center = node.cent,
-                    poly = node.poly,
-                    tags = node.tags,
-                }
-                self.inst:PushEvent("changearea", self:GetCurrentArea())
-            end
+        if self.current_area ~= i and node.type ~= NODE_TYPE.Blank and node.type ~= NODE_TYPE.Blocker and TheSim:WorldPointInPoly(x, z, node.poly) then
+            self.current_area = i
+            self.current_area_data = {
+                id = TheWorld.topology.ids[i],
+                type = node.type,
+                center = node.cent,
+                poly = node.poly,
+                tags = node.tags,
+            }
+            self.inst:PushEvent("changearea", self:GetCurrentArea())
+			return
         end
     end
 end
