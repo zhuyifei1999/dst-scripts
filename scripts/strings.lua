@@ -226,7 +226,11 @@ STRINGS =
             PLACELANTERN = "Place",
         },
         PICK = "Pick",
-        REPAIR = "Repair",
+        REPAIR = 
+        {
+            GENERIC = "Repair",
+			SOCKET = "Socket",
+		},
         PICKUP =
         {
             GENERIC = "Pick up",
@@ -319,6 +323,7 @@ STRINGS =
             FENCE = "Build Fence",
             GATE = "Build Gate",
             TURRET = "Place",
+            WATER = "Launch"
         },
 
         PLAY = "Play",
@@ -483,6 +488,23 @@ STRINGS =
             FMT = "Change {dish}",
         },
         SALT = "Salt",
+        RAISE_SAIL = "Hoist Sail",
+        LOWER_SAIL = "Lower Sail",
+        RAISE_ANCHOR = "Raise Anchor",
+        LOWER_ANCHOR = "Lower Anchor",
+        EXTEND_PLANK = "Extend Plank",
+        RETRACT_PLANK = "Retract Plank", 
+        ABANDON_SHIP = "Abandon Ship",
+        MOUNT_PLANK = "Mount Plank",
+        DISMOUNT_PLANK = "Dismount Plank",
+        STEER_BOAT = "Steer",
+        REPAIR_LEAK = "Repair Leak",
+        SET_HEADING = "Set Heading",
+        STOP_STEERING_BOAT = "Stop Steering",
+        ROW_FAIL = "Row",
+        ROW = "Row",
+        CAST_NET = "Cast Net",
+        BATHBOMB = "Toss In",
     },
 
     -- PC controls get hex ranges EE90xx to EE9Fxx
@@ -640,6 +662,8 @@ STRINGS =
         TURF_WOODFLOOR = "Wooden Flooring",
         TURF_CARPETFLOOR = "Carpeted Flooring",
         TURF_CHECKERFLOOR = "Checkered Flooring",
+        TURF_METEOR = "Moon Crater Turf",
+        TURF_PEBBLEBEACH = "Rocky Beach Turf",
         TURF_DRAGONFLY = "Scaled Flooring",
 
         TURF_CAVE = "Guano Turf",
@@ -655,6 +679,7 @@ STRINGS =
         COOKPOT = "Crock Pot",
         DUG_GRASS = "Grass Tuft",
         DUG_SAPLING = "Sapling",
+        DUG_SAPLING_MOON = "Sapling",
         DUG_BERRYBUSH = "Berry Bush",
         DUG_BERRYBUSH2 = "Berry Bush",
         DUG_MARSH_BUSH = "Spiky Bush",
@@ -694,6 +719,7 @@ STRINGS =
         TORCH = "Torch",
         SEEDS = "Seeds",
         HOUND = "Hound",
+		HOUNDCORPSE = "Hound",
         FIREHOUND = "Red Hound",
         SEEDS_COOKED = "Toasted Seeds",
         SILK = "Silk",
@@ -813,6 +839,7 @@ STRINGS =
         STRAWHAT = "Straw Hat",
         TOPHAT = "Top Hat",
         FLOWERHAT = "Garland",
+        KELPHAT = "Seawreath",
         BEEFALOHAT = "Beefalo Hat",
         FEATHERHAT = "Feather Hat",
         ARMORWOOD = "Log Suit",
@@ -970,7 +997,7 @@ STRINGS =
         CLAYWARG = "Clay Varg",
         CLAYHOUND = "Clay Hound",
         HOUNDWHISTLE = "Lucky Whistle",
-        CHESSPIECE_CLAYHOUND_SKETCH = "Clay Hound Figure Sketch",
+        CHESSPIECE_CLAYHOUND_SKETCH = "Hound Figure Sketch",
         CHESSPIECE_CLAYWARG_SKETCH = "Clay Varg Figure Sketch",
 
 		PIG_TOKEN = "Golden Belt",
@@ -1407,6 +1434,7 @@ STRINGS =
         CRITTER_PERDLING = "Giblet",
         CRITTER_DRAGONLING = "Broodling",
         CRITTER_GLOMLING = "Glomglom",
+		CRITTER_LUNARMOTHLING = "Mothling",
 
         CRITTER_LAMB_BUILDER = "Ewelet",
         CRITTER_PUPPY_BUILDER = "Vargling",
@@ -1414,6 +1442,7 @@ STRINGS =
         CRITTER_PERDLING_BUILDER = "Giblet",
         CRITTER_DRAGONLING_BUILDER = "Broodling",
         CRITTER_GLOMLING_BUILDER = "Glomglom",
+		CRITTER_LUNARMOTHLING_BUILDER = "Mothling",
 
         BEARGERVEST = "Hibearnation Vest",
         ARMORDRAGONFLY = "Scalemail",
@@ -1527,6 +1556,9 @@ STRINGS =
         CHESSPIECE_DRAGONFLY = "Dragonfly Figure",
         CHESSPIECE_CLAYHOUND = "Hound Figure",
         CHESSPIECE_CLAYWARG = "Varg Figure",
+        CHESSPIECE_BUTTERFLY = "Moon Moth Figure",
+        CHESSPIECE_ANCHOR = "Anchor Figure",
+        CHESSPIECE_MOON = "\"Moon\" Figure",
 
         CHESSPIECE_PAWN_BUILDER = "Pawn Figure",
         CHESSPIECE_ROOK_BUILDER = "Rook Figure",
@@ -1542,6 +1574,13 @@ STRINGS =
         CHESSPIECE_DRAGONFLY_BUILDER = "Dragonfly Figure",
         CHESSPIECE_CLAYHOUND_BUILDER = "Hound Figure",
         CHESSPIECE_CLAYWARG_BUILDER = "Varg Figure",
+        CHESSPIECE_BUTTERFLY_BUILDER = "Moon Moth Figure",
+        CHESSPIECE_ANCHOR_BUILDER = "Anchor Figure",
+        CHESSPIECE_MOON_BUILDER = "\"Moon\" Figure",
+
+        CHESSPIECE_BUTTERFLY_SKETCH = "Butterfly Figure Sketch",
+        CHESSPIECE_ANCHOR_SKETCH = "Anchor Figure Sketch",
+        CHESSPIECE_MOON_SKETCH = "\"Moon\" Figure Sketch",
 
         SHADOW_ROOK = "Shadow Rook",
         SHADOW_KNIGHT = "Shadow Knight",
@@ -1550,6 +1589,15 @@ STRINGS =
         MULTIPLAYER_PORTAL_MOONROCK = "Celestial Portal",
         MULTIPLAYER_PORTAL_MOONROCK_CONSTR_PLANS = "Portal Paraphernalia",
         MOONROCKIDOL = "Moon Rock Idol",
+
+		--MOON_ALTAR--
+		BATHBOMB_BLUEPRINT = "Bath Bomb Blueprint",
+		MOONGLASSAXE_BLUEPRINT = "Moon Axe Blueprint",
+		GLASSCUTTER_BLUEPRINT = "Glass Cutter Blueprint",
+		TURF_METEOR_BLUEPRINT = "Crater Turf Blueprint",
+		BUTTERFLY_SKETCH = "Moon Moth Sketch",
+		ANCHOR_SKETCH = "Anchor Sketch",
+        ANCHOR_SKETCH = "\"Moon\" Sketch",
 
         HALLOWEENCANDY_1 = "Candy Apple",
         HALLOWEENCANDY_2 = "Candy Corn",
@@ -1922,6 +1970,96 @@ STRINGS =
         ARMOR_BRAMBLE = "Bramble Husk",
         TRAP_BRAMBLE = "Bramble Trap",
         BRAMBLEFX = "Thorns", --for death announce if killed by thorns from armor_bramble, and owner is no longer available
+
+		-- new content
+        BOAT = "Boat",
+        BOAT_ITEM = "Boat Kit",
+        SEAFARER_KIT = "Seafarer's Kit",
+        BOATFRAGMENT01 = "Boat Fragment",
+        BOATFRAGMENT02 = "Boat Fragment",
+        BOATFRAGMENT03 = "Boat Fragment",
+        BOATFRAGMENT04 = "Boat Fragment",
+        BOATFRAGMENT05 = "Boat Fragment",
+        MAST = "Mast",
+        MAST_ITEM = "Mast",
+		BOAT_LEAK = "Leak",
+        WORLD = "The World",
+        DROWNING = "Drowning",
+        SEASTACK = "Sea Stack",
+        FISHINGNET = "Fishing Net",
+        OAR = "Oar",
+        OAR_DRIFTWOOD = "Driftwood Oar",
+        ANTCHOVIES = "Ant-Chovy",
+        STEERINGWHEEL = "Steering Wheel",
+        STEERINGWHEEL_ITEM = "Steering Wheel Kit",
+        ANCHOR = "Anchor",
+        WALKINGPLANK = "Plank",
+        ANCHOR_ITEM = "Anchor Kit",
+        BOATPATCH = "Boat Patch",
+        DRIFTWOOD_TREE = "Driftwood",
+        DRIFTWOOD_LOG = "Driftwood Piece",
+        MOON_TREE = "Lune Tree",
+        MOON_TREE_BLOSSOM = "Lune Tree Blossom",
+		MOONBUTTERFLY = "Moon Moth",
+        MOONBUTTERFLYWINGS = "Moon Moth Wings",
+        MOONBUTTERFLY_SAPLING = "Lune Tree Sapling",
+        HOTSPRING = "Hot Spring",
+        MOONGLASS = "Moon Shard",
+        MOONGLASS_ROCK = "Moon Glass",
+        BATHBOMB = "Bath Bomb",
+        ROCK_AVOCADO_FRUIT = "Stone Fruit",
+        ROCK_AVOCADO_FRUIT_RIPE = "Ripe Stone Fruit",
+        ROCK_AVOCADO_FRUIT_RIPE_COOKED = "Cooked Stone Fruit",
+        ROCK_AVOCADO_FRUIT_SPROUT = "Sprouting Stone Fruit",
+        ROCK_AVOCADO_BUSH = "Stone Fruit Bush",
+        DUG_ROCK_AVOCADO_BUSH = "Stone Fruit Bush",
+        DEAD_SEA_BONES = "Sea Bones",
+        MUTATEDHOUND = "Horror Hound",
+        TRAP_STARFISH = "Anenemy",
+        DUG_TRAP_STARFISH = "Anenemy Trap",
+        SPIDER_MOON = "Shattered Spider",
+		MOONSPIDER_SPIKE = "Shattered Spider",
+        MOONSPIDERDEN = "Shattered Spider Hole",
+		FRUITDRAGON = "Saladmander",
+        MUTATED_PENGUIN = "Moonrock Pengull",
+        PUFFIN = "Puffin",
+
+		BULLKELP_PLANT = "Bull Kelp",
+		BULLKELP_ROOT = "Bull Kelp Stalk",
+		KELP = "Kelp Fronds",
+		KELP_COOKED = "Cooked Kelp Fronds",
+		KELP_DRIED = "Dried Kelp Fronds",
+
+        MOONGLASSAXE = "Moon Glass Axe",
+        GLASSCUTTER = "Glass Cutter",
+
+        MOON_FISSURE = "Celestial Fissure",
+        MOON_ALTAR =
+        {
+            MOON_ALTAR_WIP = "Partially Assembled Altar",
+            MOON_ALTAR = "Celestial Altar",
+        },
+        MOON_ALTAR_IDOL = "Celestial Altar Idol",
+        MOON_ALTAR_GLASS = "Celestial Altar Base",
+        MOON_ALTAR_SEED = "Celestial Altar Orb",
+
+        MOON_ALTAR_ROCK_IDOL = "Inviting Formation",
+        MOON_ALTAR_ROCK_GLASS = "Inviting Formation",
+        MOON_ALTAR_ROCK_SEED = "Inviting Formation",
+
+		SEAFARING_PROTOTYPER = "Think Tank",
+
+        ICEBERG = "Mini Iceberg",
+        ICEBERG_MELTED = "Melted Iceberg",
+
+        MINIFLARE = "Flare",
+
+		GESTALT = "Gestalt",
+
+        CARRAT = "Carrat",
+        CARRAT_PLANTED = "Carrot",
+
+		BURNABLE_LOCATOR_MEDIUM = "Boat",
     },
 
     NAME_DETAIL_EXTENTION =
@@ -2003,6 +2141,7 @@ STRINGS =
         STRAWHAT = "Helps you stay cool and dry.",
         TOPHAT = "The classiest hat of all.",
         FLOWERHAT = "Something to soothe the nerves.",
+        KELPHAT = "Something to agitate the nerves.",
         BEEFALOHAT = "Be one with the herd! Smell included.",
         AXE = "Chop down trees!",
         PICKAXE = "Break down rocks.",
@@ -2096,6 +2235,7 @@ STRINGS =
         FENCE_GATE_ITEM = "A gate for wood fencing.",
         TURF_WOODFLOOR = "High-quality laminate floorboards.",
         TURF_CHECKERFLOOR = "Nicely checkered marble tiles.",
+        TURF_METEOR = "The cratered surface of the moon.",
         TURF_CARPETFLOOR = "Super soft. Smells like Beefalo.",
         TURF_ROAD = "Build your own road to nowhere.",
         TURF_DRAGONFLY = "Quell the spread of fire.",
@@ -2220,6 +2360,22 @@ STRINGS =
         MULTIPLAYER_PORTAL_MOONROCK_CONSTR_PLANS = "The best laid plans.",
         MOONROCKIDOL = "A key figure.",
 
+		--MOON_ALTAR--
+        BATHBOMB = "Flowers, for springs? Groundbreaking.",
+        MOONGLASSAXE = "Fragile but effective.",
+        GLASSCUTTER = "Cutting edge weaponry.",
+		BATHBOMB_BLUEPRINT = "Unlock the secret of hot spring alchemy.",
+		MOONGLASSAXE_BLUEPRINT = "Knowledge bestowed by the moon itself.",
+		GLASSCUTTER_BLUEPRINT = "The moon will protect you.",
+		TURF_METEOR_BLUEPRINT = "Learn to mold the moon's surface.",
+		BUTTERFLY_SKETCH = "Let the moon send you visions of butterflies.",
+		ANCHOR_SKETCH = "The moon and sea will be your inspirations.",
+        MOON_SKETCH = "Look upon the face of the moon.",
+
+        MINIFLARE = "Light the way for your trusted friends.",
+
+		SEAFARING_PROTOTYPER = "Science at sea.",
+
         CHESSPIECE_PAWN_BUILDER = "It takes a village to raise an army.",
         CHESSPIECE_ROOK_BUILDER = "Next best thing to an actual castle.",
         CHESSPIECE_KNIGHT_BUILDER = "Shining armor not included.",
@@ -2234,6 +2390,13 @@ STRINGS =
         CHESSPIECE_DRAGONFLY_BUILDER = "The ultimate trophy for the ultimate kill.",
         CHESSPIECE_CLAYHOUND_BUILDER = "It ain't nothing but a clay hound dog.",
         CHESSPIECE_CLAYWARG_BUILDER = "Sculpt a fearsome Clay Varg.",
+        CHESSPIECE_BUTTERFLY_BUILDER = "This sculpture's a moth-have.",
+        CHESSPIECE_ANCHOR_BUILDER = "Ground your base with a stone anchor.",
+        CHESSPIECE_MOON_BUILDER = "It's a selene figurine!",
+
+        CHESSPIECE_BUTTERFLY_SKETCH = "A sculpture sketch of a Moon Moth.",
+        CHESSPIECE_ANCHOR_SKETCH = "A sculpture sketch of an anchor.",
+        CHESSPIECE_MOON_SKETCH = "A sculpture sketch of the moon itself.",
 
         CRITTER_GLOMLING_BUILDER = "Befriend a bouncy Glomglom.",
         CRITTER_DRAGONLING_BUILDER = "Befriend a noble Broodling.",
@@ -2241,6 +2404,7 @@ STRINGS =
         CRITTER_KITTEN_BUILDER = "Befriend a clever Kittykit.",
         CRITTER_PUPPY_BUILDER = "Befriend a loyal Vargling.",
         CRITTER_LAMB_BUILDER = "Befriend a fluffy Ewelet.",
+		CRITTER_LUNARMOTHLING_BUILDER = "Befriend a delicate Mothling.",
 
         CANDYBAG = "Only carries Hallowed Nights goodies.",
 
@@ -2301,7 +2465,16 @@ STRINGS =
         ARMOR_BRAMBLE = "Nature's way of saying \"keep away\".",
         COMPOSTWRAP = "\"Herbal\" therapy.",
         TRAP_BRAMBLE = "An equal opportunity annoyer.",
-    },
+
+        FISHINGNET = "Nothin' but net.",
+        ANCHOR_ITEM = "Boat brakes.",
+        SEAFARER_KIT = "Build a boat to stay afloat.",
+        STEERINGWHEEL_ITEM = "It's wheely important to have one.",
+        BOAT_ITEM = "Let the seas be your domain.",
+        MAST_ITEM = "Sail away, sail away.",
+        OAR = "Row, row, row your boat.",
+        BOATPATCH = "It's never too late to patch things up.",
+	},
 
     -- MAXWELL_TEST = {"Say pal, you don't look so good.", "You better find something to eat before night comes!"},
 
@@ -3090,10 +3263,12 @@ STRINGS =
         GEMOLOGY = "Gemology",
         ANCIENT = "Ancient",
         CELESTIAL = "Celestial",
+		MOON_ALTAR = "Celestial",
         SHADOW = "Shadow",
         ENGINEERING = "Engineering",
         NATURE = "Green Thumb",
         CARTOGRAPHY = "Cartography",
+        SEAFARING = "Seafaring",
         SCULPTING = "Sculptures",
         ORPHANAGE = "Critters",
         PERDOFFERING = "Offerings",
@@ -3427,6 +3602,11 @@ STRINGS.UI =
         CANCEL = "Cancel",
     },
 
+    BOAT =
+    {
+        HEALTH = "Boat Health: ",
+    },
+
     CHARACTERSELECT =
     {
         SELECT = "Select",
@@ -3540,6 +3720,9 @@ STRINGS.UI =
             "Scott Hansen",
 			"Philippe Donati",
 			"Yorman Arias",
+			"Grace Kim",
+			"Steven Miclette",
+			"Felix Hard",
         },
 
         ALTGAMES =
@@ -3903,6 +4086,7 @@ STRINGS.UI =
 		MOTD_SYNCING = "Syncing Notifications",
         MOTD_ALERT_DETAILS = "View Details",
         MOTD_NEW_UPDATE = "New Update Available!",
+		MOTD_NEW_ANNOUNCEMENT = "New!",
 
         EXIT = "Exit",
         LOGOUT = "Log Out",
@@ -3923,6 +4107,8 @@ STRINGS.UI =
 
         CANT_LOAD_TITLE = "Load Failed",
         CANT_LOAD_ROG = "Reign of Giants is not installed. Unable to load.",
+
+		MAINBANNER_ROT_BETA_TITLE = "Return of Them Beta",
 
         CONSOLE_EDITION_TEXT = "Console Edition",
 
@@ -4525,6 +4711,7 @@ STRINGS.UI =
             VERSION_MISMATCH_OLD_CLIENT = "Version Mismatch",
             VERSION_MISMATCH_PUBLIC_BETA = "Public Beta Server",
             VERSION_MISMATCH_ARNBETA = "A New Reign Beta",
+			VERSION_MISMATCH_ROTBETA = "Return of Them Beta",
             VERSION_HANDSHAKE_FAILED    = "Version Mismatch",
             ID_INCOMPATIBLE_PROTOCOL_VERSION = "Version Mismatch",
             ID_DST_INCOMPATIBLE_PROTOCOL_VERSION = "Version Mismatch",
@@ -4587,6 +4774,7 @@ STRINGS.UI =
             VERSION_MISMATCH_OLD_CLIENT = "This server is on a newer version than you. Please download the latest update to connect.",
             VERSION_MISMATCH_PUBLIC_BETA = "The server is running a public beta world. You'll need to opt into the beta to play on this server.",
             VERSION_MISMATCH_ARNBETA = "The server is running the A New Reign Beta version. You'll need to opt into the beta to play on this server.",
+			VERSION_MISMATCH_ROTBETA = "The server is running the Return of Them Beta version. You'll need to opt into the beta to play on this server.",
             VERSION_HANDSHAKE_FAILED = "The server is on a different version than you. Please check that your game version is up-to-date.",
             ID_INCOMPATIBLE_PROTOCOL_VERSION = "The server has a different version than you do. Please check that your game version is up-to-date.",
             ID_DST_INCOMPATIBLE_PROTOCOL_VERSION = "The server has a different version than you do. Please check that your game version is up-to-date.",

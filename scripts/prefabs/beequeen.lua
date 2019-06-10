@@ -9,6 +9,7 @@ local prefabs =
 {
     "beeguard",
     "honey_trail",
+    "splash_sink",
     "royal_jelly",
     "honeycomb",
     "honey",
@@ -91,15 +92,20 @@ local function DoHoneyTrail(inst)
     end
 
     if inst.honeycount >= inst.honeythreshold then
+        local hx, hy, hz = inst.Transform:GetWorldPosition()
         inst.honeycount = 0
-
         if inst.honeythreshold < level.threshold then
             inst.honeythreshold = math.ceil((inst.honeythreshold + level.threshold) * .5)
         end
 
-        local fx = SpawnPrefab("honey_trail")
+        local fx = nil
+        if TheWorld.Map:IsPassableAtPoint(hx, hy, hz) then
+            fx = SpawnPrefab("honey_trail")
+            fx:SetVariation(PickHoney(inst), GetRandomMinMax(level.min_scale, level.max_scale), level.duration + math.random() * .5)
+        else
+            fx = SpawnPrefab("splash_sink")
+        end
         fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
-        fx:SetVariation(PickHoney(inst), GetRandomMinMax(level.min_scale, level.max_scale), level.duration + math.random() * .5)
     end
 end
 
@@ -364,6 +370,8 @@ local function fn()
     inst:AddTag("flying")
 
     inst.SoundEmitter:PlaySound("dontstarve/creatures/together/bee_queen/wings_LP", "flying")
+
+    MakeInventoryFloatable(inst, "large", 0.1, {0.6, 1.0, 0.6})
 
     inst.entity:SetPristine()
 

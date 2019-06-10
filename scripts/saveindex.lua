@@ -32,33 +32,39 @@ local function ResetSlotData(data)
     data.enabled_mods = {}
 end
 
-local function GetLevelDataOverride(cb)
+local function GetLevelDataOverride(slotnum, force_shard_path, cb)
     local filename = "../leveldataoverride.lua"
-    TheSim:GetPersistentString( filename,
-        function(load_success, str)
-            if load_success == true then
-                local success, savedata = RunInSandboxSafe(str)
-                if success and string.len(str) > 0 then
-                    print("Found a level data override file with these contents:")
-                    dumptable(savedata)
-                    if savedata ~= nil then
-                        print("Loaded and applied level data override from "..filename)
-                        assert(savedata.id ~= nil
-                            and savedata.name ~= nil
-                            and savedata.desc ~= nil
-                            and savedata.location ~= nil
-                            and savedata.overrides ~= nil, "Level data override is invalid!")
 
-                        cb( savedata )
-                        return
-                    end
-                else
-                    print("ERROR: Failed to load "..filename)
+    local function onload(load_success, str)
+        if load_success == true then
+            local success, savedata = RunInSandboxSafe(str)
+            if success and string.len(str) > 0 then
+                print("Found a level data override file with these contents:")
+                dumptable(savedata)
+                if savedata ~= nil then
+                    print("Loaded and applied level data override from "..filename)
+                    assert(savedata.id ~= nil
+                        and savedata.name ~= nil
+                        and savedata.desc ~= nil
+                        and savedata.location ~= nil
+                        and savedata.overrides ~= nil, "Level data override is invalid!")
+
+                    cb(savedata)
+                    return
                 end
+            else
+                print("ERROR: Failed to load "..filename)
             end
-            print("Not applying level data overrides.")
-            cb( nil, nil )
-        end)
+        end
+        print("Not applying level data overrides.")
+        cb(nil, nil)
+    end
+
+    if force_shard_path ~= nil then
+        TheSim:GetPersistentStringInClusterSlot(slotnum, force_shard_path, filename, onload)
+    else
+        TheSim:GetPersistentString(filename, onload)
+    end
 end
 
 local function SanityCheckWorldGenOverride(wgo)
@@ -96,65 +102,71 @@ local function SanityCheckWorldGenOverride(wgo)
     end
 end
 
-local function GetWorldgenOverride(cb)
+local function GetWorldgenOverride(slotnum, force_shard_path, cb)
     local filename = "../worldgenoverride.lua"
-    TheSim:GetPersistentString( filename,
-        function(load_success, str)
-            if load_success == true then
-                local success, savedata = RunInSandboxSafe(str)
-                if success and string.len(str) > 0 then
-                    print("Found a worldgen override file with these contents:")
-                    dumptable(savedata)
 
-                    if savedata ~= nil then
+    local function onload(load_success, str)
+        if load_success == true then
+            local success, savedata = RunInSandboxSafe(str)
+            if success and string.len(str) > 0 then
+                print("Found a worldgen override file with these contents:")
+                dumptable(savedata)
 
-                        -- gjans: Added upgrade path 28/03/2016. Because this is softer and user editable, will probably have to leave this one in longer than the other upgrades from this same change set.
-                        local savefileupgrades = require("savefileupgrades")
-                        savedata = savefileupgrades.utilities.UpgradeWorldgenoverrideFromV1toV2(savedata)
+                if savedata ~= nil then
 
-                        SanityCheckWorldGenOverride(savedata)
+                    -- gjans: Added upgrade path 28/03/2016. Because this is softer and user editable, will probably have to leave this one in longer than the other upgrades from this same change set.
+                    local savefileupgrades = require("savefileupgrades")
+                    savedata = savefileupgrades.utilities.UpgradeWorldgenoverrideFromV1toV2(savedata)
 
-                        if savedata.override_enabled then
-                            print("Loaded and applied world gen overrides from "..filename)
-                            savedata.override_enabled = nil -- Only part of worldgenoverride, not standard level definition.
+                    SanityCheckWorldGenOverride(savedata)
 
-                            local presetdata = nil
-                            local frompreset = false
-                            if savedata.preset ~= nil then
-                                print("  contained preset "..savedata.preset..", loading...")
-                                local Levels = require("map/levels")
-                                presetdata = Levels.GetDataForLevelID(savedata.preset)
-                                if presetdata ~= nil then
-                                    if GetTableSize(savedata) > 0 then
-                                        print("  applying overrides to preset...")
-                                        presetdata = MergeMapsDeep(presetdata, savedata)
-                                    end
-                                    frompreset = true
-                                else
-                                    print("Worldgenoverride specified a nonexistent preset: "..savedata.preset..". If this is a custom preset, it may not exist in this save location. Ignoring it and applying overrides.")
-                                    presetdata = savedata
+                    if savedata.override_enabled then
+                        print("Loaded and applied world gen overrides from "..filename)
+                        savedata.override_enabled = nil -- Only part of worldgenoverride, not standard level definition.
+
+                        local presetdata = nil
+                        local frompreset = false
+                        if savedata.preset ~= nil then
+                            print("  contained preset "..savedata.preset..", loading...")
+                            local Levels = require("map/levels")
+                            presetdata = Levels.GetDataForLevelID(savedata.preset)
+                            if presetdata ~= nil then
+                                if GetTableSize(savedata) > 0 then
+                                    print("  applying overrides to preset...")
+                                    presetdata = MergeMapsDeep(presetdata, savedata)
                                 end
-                                savedata.preset = nil -- Only part of worldgenoverride, not standard level definition.
+                                frompreset = true
                             else
+                                print("Worldgenoverride specified a nonexistent preset: "..savedata.preset..". If this is a custom preset, it may not exist in this save location. Ignoring it and applying overrides.")
                                 presetdata = savedata
                             end
-
-                            presetdata.override_enabled = nil
-                            presetdata.preset = nil
-
-                            cb( presetdata, frompreset )
-                            return
+                            savedata.preset = nil -- Only part of worldgenoverride, not standard level definition.
                         else
-                            print("Found world gen overrides but not enabled.")
+                            presetdata = savedata
                         end
+
+                        presetdata.override_enabled = nil
+                        presetdata.preset = nil
+
+                        cb( presetdata, frompreset )
+                        return
+                    else
+                        print("Found world gen overrides but not enabled.")
                     end
-                else
-                    print("ERROR: Failed to load "..filename)
                 end
+            else
+                print("ERROR: Failed to load "..filename)
             end
-            print("Not applying world gen overrides.")
-            cb( nil, nil )
-        end)
+        end
+        print("Not applying world gen overrides.")
+        cb(nil, nil)
+    end
+
+    if force_shard_path ~= nil then
+        TheSim:GetPersistentStringInClusterSlot(slotnum, force_shard_path, filename, onload)
+    else
+        TheSim:GetPersistentString(filename, onload)
+    end
 end
 
 function SaveIndex:GuaranteeMinNumSlots(numslots)
@@ -263,36 +275,51 @@ function SaveIndex:LoadClusterSlot(slot, shard, callback)
         end)
 end
 
+local function OnLoadSaveDataFile(file, cb, load_success, str)
+    if not load_success then
+        if TheNet:GetIsClient() then
+            assert(load_success, "SaveIndex:GetSaveData: Load failed for file ["..file.."] Please try joining again.")
+        else
+            assert(load_success, "SaveIndex:GetSaveData: Load failed for file ["..file.."] please consider deleting this save slot and trying again.")
+        end
+    end
+    assert(str, "SaveIndex:GetSaveData: Encoded Savedata is NIL on load ["..file.."]")
+    assert(#str > 0, "SaveIndex:GetSaveData: Encoded Savedata is empty on load ["..file.."]")
+
+    print("Loading world: "..file)
+    local success, savedata = RunInSandbox(str)
+
+    assert(success, "Corrupt Save file ["..file.."]")
+    assert(savedata, "SaveIndex:GetSaveData: Savedata is NIL on load ["..file.."]")
+    assert(GetTableSize(savedata) > 0, "SaveIndex:GetSaveData: Savedata is empty on load ["..file.."]")
+
+    cb(savedata)
+end
+
 function SaveIndex:GetSaveDataFile(file, cb)
     TheSim:GetPersistentString(file, function(load_success, str)
-        if not load_success then
-            if TheNet:GetIsClient() then
-                assert(load_success, "SaveIndex:GetSaveData: Load failed for file ["..file.."] Please try joining again.")
-            else
-                assert(load_success, "SaveIndex:GetSaveData: Load failed for file ["..file.."] please consider deleting this save slot and trying again.")
-            end
-        end
-        assert(str, "SaveIndex:GetSaveData: Encoded Savedata is NIL on load ["..file.."]")
-        assert(#str>0, "SaveIndex:GetSaveData: Encoded Savedata is empty on load ["..file.."]")
-
-        print("Loading world: "..file)
-        local success, savedata = RunInSandbox(str)
-
-        assert(success, "Corrupt Save file ["..file.."]")
-        assert(savedata, "SaveIndex:GetSaveData: Savedata is NIL on load ["..file.."]")
-        assert(GetTableSize(savedata) > 0, "SaveIndex:GetSaveData: Savedata is empty on load ["..file.."]")
-
-        cb(savedata)
+        OnLoadSaveDataFile(file, cb, load_success, str)
     end)
 end
 
-function SaveIndex:GetSaveData(slot, cb)
-    self.current_slot = slot
-    local file = TheNet:GetWorldSessionFile(self.data.slots[slot].session_id)
-    if file ~= nil then
-        self:GetSaveDataFile(file, cb)
-    elseif cb ~= nil then
-        cb()
+function SaveIndex:GetSaveData(slotnum, cb)
+    self.current_slot = slotnum
+    if not TheNet:IsDedicated() and SaveGameIndex:GetSlotServerData(slotnum).use_cluster_path then
+        local file = TheNet:GetWorldSessionFileInClusterSlot(slotnum, "Master", self.data.slots[slotnum].session_id)
+        if file ~= nil then
+            TheSim:GetPersistentStringInClusterSlot(slotnum, "Master", file, function(load_success, str)
+                OnLoadSaveDataFile(file, cb, load_success, str)
+            end)
+        elseif cb ~= nil then
+            cb()
+        end
+    else
+        local file = TheNet:GetWorldSessionFile(self.data.slots[slotnum].session_id)
+        if file ~= nil then
+            self:GetSaveDataFile(file, cb)
+        elseif cb ~= nil then
+            cb()
+        end
     end
 end
 
@@ -407,18 +434,20 @@ function SaveIndex:StartSurvivalMode(saveslot, customoptions, serverdata, onsave
         slot.world.options[1] = {}
     end
 
+    local force_shard_path = serverdata ~= nil and serverdata.use_cluster_path and not TheNet:IsDedicated() and "Master" or nil
+
     -- gjans:
     -- leveldataoverride is for GAME USE. It contains a _complete level definition_ and is used by the clusters to transfer level settings reliably from the client to the cluster servers. It completely overrides existing saved world data.
     -- worldgenoverride is for USER USE. It contains optionally:
     --   a) a preset name. If present, this preset will be loaded and completely override existing save data, including the above. (Note, this is not reliable between client and cluster, but users can do this if they please.)
     --   b) a partial list of overrides that are layered on top of whatever savedata we have at this point now.
-    GetLevelDataOverride(function(leveldata)
+    GetLevelDataOverride(saveslot, force_shard_path, function(leveldata)
         if leveldata ~= nil then
             print("Overwriting savedata with level data file.")
             slot.world.options[1] = leveldata
         end
 
-        GetWorldgenOverride(function(overridedata, frompreset)
+        GetWorldgenOverride(saveslot, force_shard_path, function(overridedata, frompreset)
             if overridedata ~= nil then
                 if frompreset == true then
                     print("Overwriting savedata with override file.")
@@ -511,7 +540,7 @@ function SaveIndex:BuildSlotDayAndSeasonText(slotnum)
                     end
                 end
             end
-            if SaveGameIndex:IsSlotMultiLevel(slotnum) then
+            if SaveGameIndex:IsSlotMultiLevel(slotnum) or SaveGameIndex:GetSlotServerData(slotnum).use_cluster_path then
                 local file = TheNet:GetWorldSessionFileInClusterSlot(slotnum, "Master", session_id)
                 if file ~= nil then
                     if USE_SESSION_METADATA then
@@ -577,7 +606,7 @@ function SaveIndex:LoadSlotCharacter(slot)
                         if slotdata.session_id ~= nil then
                             local file = TheNet:GetUserSessionFileInClusterSlot(slot, shard, slotdata.session_id, snapshot, online_mode, encode_user_path)
                             if file ~= nil then
-                                TheNet:DeserializeUserSessionInClusterSlot(slot, shard ,file, onreadusersession)
+                                TheNet:DeserializeUserSessionInClusterSlot(slot, shard, file, onreadusersession)
                             end
                         end
                     end
@@ -585,9 +614,16 @@ function SaveIndex:LoadSlotCharacter(slot)
             end)
         else
             local encode_user_path = slotdata.server.encode_user_path == true
-            local file = TheNet:GetUserSessionFile(slotdata.session_id, nil, online_mode, encode_user_path)
-            if file ~= nil then
-                TheNet:DeserializeUserSession(file, onreadusersession)
+            if slotdata.server.use_cluster_path then
+                local file = TheNet:GetUserSessionFileInClusterSlot(slot, "Master", slotdata.session_id, nil, online_mode, encode_user_path)
+                if file ~= nil then
+                    TheNet:DeserializeUserSessionInClusterSlot(slot, "Master", file, onreadusersession)
+                end
+            else
+                local file = TheNet:GetUserSessionFile(slotdata.session_id, nil, online_mode, encode_user_path)
+                if file ~= nil then
+                    TheNet:DeserializeUserSession(file, onreadusersession)
+                end
             end
         end
     end

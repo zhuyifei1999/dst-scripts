@@ -39,6 +39,12 @@ local function MakePreparedFood(data)
             end
         end
 
+        if data.floater ~= nil then
+            MakeInventoryFloatable(inst, data.floater[1], data.floater[2], data.floater[3])
+        else
+            MakeInventoryFloatable(inst)
+        end
+
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
@@ -56,7 +62,7 @@ local function MakePreparedFood(data)
 
         inst:AddComponent("inspectable")
         inst.wet_prefix = data.wet_prefix
-        
+
         inst:AddComponent("inventoryitem")
 
         inst:AddComponent("stackable")

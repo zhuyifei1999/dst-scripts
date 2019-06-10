@@ -80,11 +80,11 @@ function PlayerActionPicker:SortActionList(actions, target, useitem)
         if self.actionfilter == nil or self.actionfilter(self.inst, v) then
             local distance = v == ACTIONS.CASTAOE and useitem ~= nil and useitem.components.aoetargeting ~= nil and useitem.components.aoetargeting:GetRange() or nil
             if target == nil then
-                table.insert(ret, BufferedAction(self.inst, nil, v, useitem, nil, nil, distance))
+                table.insert(ret, BufferedAction(self.inst, nil, v, useitem, nil, nil, distance, nil, nil))
             elseif target:is_a(EntityScript) then
-                table.insert(ret, BufferedAction(self.inst, target, v, useitem, nil, nil, distance))
+                table.insert(ret, BufferedAction(self.inst, target, v, useitem, nil, nil, distance, nil, nil))
             elseif target:is_a(Vector3) then
-                table.insert(ret, BufferedAction(self.inst, nil, v, useitem, target, nil, distance))
+                table.insert(ret, BufferedAction(self.inst, nil, v, useitem, target, nil, distance, nil, nil))
             end
         end
     end
@@ -126,6 +126,23 @@ function PlayerActionPicker:GetUseItemActions(target, useitem, right)
     useitem:CollectActions("USEITEM", self.inst, target, actions, right)
 
     return self:SortActionList(actions, target, useitem)
+end
+
+function PlayerActionPicker:GetSteeringActions(inst, pos)
+    if not self.inst:HasTag("steeringboat") then return nil end
+    
+    local map = TheWorld.Map
+    local player_pos = Vector3(inst.Transform:GetWorldPosition())    
+    local player_platform = map:GetPlatformAtPoint(player_pos.x, player_pos.z)
+    local target_platform = map:GetPlatformAtPoint(pos.x, pos.z)
+    
+    if player_platform ~= target_platform then
+        return self:SortActionList({ ACTIONS.SET_HEADING }, pos, nil)
+    else
+        return self:SortActionList({ ACTIONS.STOP_STEERING_BOAT }, player_platform, nil)
+    end
+
+    return nil
 end
 
 function PlayerActionPicker:GetPointActions(pos, useitem, right)
@@ -191,12 +208,21 @@ function PlayerActionPicker:GetLeftClickActions(position, target)
     local equipitem = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
     local ispassable = self.map:IsPassableAtPoint(position:Get())
 
+    self.disable_right_click = false
+
+    local steering_actions = self:GetSteeringActions(self.inst, position)
+    if steering_actions ~= nil then
+        self.disable_right_click = true
+        return steering_actions
+    end
+
+
     --if we're specifically using an item, see if we can use it on the target entity
     if useitem ~= nil then
         if useitem:IsValid() then
             if target == self.inst then
                 actions = self:GetInventoryActions(useitem)
-            elseif target ~= nil then
+            elseif target ~= nil  and not target:HasTag("walkableplatform") then
                 actions = self:GetUseItemActions(target, useitem)
             elseif ispassable then
                 actions = self:GetPointActions(position, useitem)
@@ -244,6 +270,11 @@ function PlayerActionPicker:GetLeftClickActions(position, target)
 end
 
 function PlayerActionPicker:GetRightClickActions(position, target)
+
+    if self.disable_right_click then
+        return {}
+    end
+
     if self.rightclickoverride ~= nil then
         local actions, usedefault = self.rightclickoverride(self.inst, target, position)
         if not usedefault or (actions ~= nil and #actions > 0) then
@@ -264,13 +295,13 @@ function PlayerActionPicker:GetRightClickActions(position, target)
         if useitem:IsValid() then
             if target == self.inst then
                 actions = self:GetInventoryActions(useitem, true)
-            elseif target ~= nil then
+            elseif target ~= nil and (not target:HasTag("walkableplatform") or (useitem:HasTag("repairer") and not useitem:HasTag("deployable"))) then
                 actions = self:GetUseItemActions(target, useitem, true)
-            elseif ispassable then
+            else
                 actions = self:GetPointActions(position, useitem, true)
             end
         end
-    elseif target ~= nil then
+    elseif target ~= nil and not target:HasTag("walkableplatform") then
         --if we're clicking on a scene entity, see if we can use our equipped object on it, or just use it
         if equipitem ~= nil and equipitem:IsValid() then
             actions = self:GetEquippedItemActions(target, equipitem, true)
@@ -284,11 +315,11 @@ function PlayerActionPicker:GetRightClickActions(position, target)
         if actions == nil or #actions == 0 then
             actions = self:GetSceneActions(target, true)
         end
-    elseif equipitem ~= nil and equipitem:IsValid() and (ispassable or (equipitem.components.aoetargeting ~= nil and equipitem.components.aoetargeting.alwaysvalid and equipitem.components.aoetargeting:IsEnabled())) then
+    elseif equipitem ~= nil and equipitem:IsValid() and (ispassable or equipitem:HasTag("allow_action_on_impassable") or (equipitem.components.aoetargeting ~= nil and equipitem.components.aoetargeting.alwaysvalid and equipitem.components.aoetargeting:IsEnabled())) then
         actions = self:GetPointActions(position, equipitem, true)
     end
 
-    if (actions == nil or #actions <= 0) and target == nil and ispassable then
+    if (actions == nil or #actions <= 0) and (target == nil or target:HasTag("walkableplatform")) and ispassable then
         actions = self:GetPointSpecialActions(position, useitem, true)
     end
 

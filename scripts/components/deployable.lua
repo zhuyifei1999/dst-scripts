@@ -33,6 +33,9 @@ local Deployable = Class(function(self, inst)
     self.usegridplacer = false
 
     self.ondeploy = nil
+    self.deploy_range = 1.1
+
+    self.inst:AddTag("deployable")
 end,
 nil,
 {
@@ -76,7 +79,8 @@ function Deployable:CanDeploy(pt, mouseover, deployer)
     if not self:IsDeployable(deployer) then
         return false
     elseif self.mode == DEPLOYMODE.ANYWHERE then
-        return TheWorld.Map:IsPassableAtPoint(pt:Get())
+        local x,y,z = pt:Get()
+        return TheWorld.Map:IsPassableAtPointWithPlatformRadiusBias(x,y,z,false,false,TUNING.BOAT.NO_BUILD_BORDER_RADIUS,true)
     elseif self.mode == DEPLOYMODE.TURF then
         return TheWorld.Map:CanPlaceTurfAtPoint(pt:Get())
     elseif self.mode == DEPLOYMODE.PLANT then
@@ -85,7 +89,13 @@ function Deployable:CanDeploy(pt, mouseover, deployer)
         return TheWorld.Map:CanDeployWallAtPoint(pt, self.inst)
     elseif self.mode == DEPLOYMODE.DEFAULT then
         return TheWorld.Map:CanDeployAtPoint(pt, self.inst, mouseover)
+    elseif self.mode == DEPLOYMODE.WATER then
+        return TheWorld.Map:CanDeployBoatAtPoint(pt, self.inst, mouseover)
     end
+end
+
+function Deployable:SetDeployRange(deploy_range)
+    self.deploy_range = deploy_range
 end
 
 function Deployable:Deploy(pt, deployer, rot)

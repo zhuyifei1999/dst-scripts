@@ -249,6 +249,7 @@ local function fn()
     inst.components.inspectable.getstatus = getstatus
 
     inst:AddComponent("inventoryitem")
+    inst.components.inventoryitem:SetSinks(true)
 
     inst:AddComponent("equippable")
     inst.components.equippable.dapperness = TUNING.DAPPERNESS_SMALL
@@ -279,8 +280,8 @@ local function fn()
     inst.OnLoad = onload
     inst.OnSave = onsave
 
-    inst._onattackother = function()--attacker, data)
-        if not inst.components.fueled:IsEmpty() then
+    inst._onattackother = function(attacker)--, data)
+        if not (attacker.components.rider ~= nil and attacker.components.rider:IsRiding() or inst.components.fueled:IsEmpty()) then
             inst.components.fueled:DoDelta(-.01 * TUNING.BERNIE_FUEL)
         end
     end

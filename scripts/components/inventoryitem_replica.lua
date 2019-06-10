@@ -248,6 +248,8 @@ function InventoryItem:CanDeploy(pt, mouseover, deployer)
         return TheWorld.Map:CanDeployWallAtPoint(pt, self.inst)
     elseif self.classified.deploymode:value() == DEPLOYMODE.DEFAULT then
         return TheWorld.Map:CanDeployAtPoint(pt, self.inst, mouseover)
+    elseif self.classified.deploymode:value() == DEPLOYMODE.WATER then
+        return TheWorld.Map:CanDeployBoatAtPoint(pt, self.inst, mouseover)
     end
 end
 
