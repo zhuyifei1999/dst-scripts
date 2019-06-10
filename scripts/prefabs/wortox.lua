@@ -6,6 +6,7 @@ local assets =
     Asset("SCRIPT", "scripts/prefabs/player_common.lua"),
     Asset("SCRIPT", "scripts/prefabs/wortox_soul_common.lua"),
     Asset("SOUND", "sound/wortox.fsb"),
+    Asset("ANIM", "anim/player_idles_wortox.zip"),
     Asset("ANIM", "anim/wortox_portal.zip"),
 }
 
@@ -347,6 +348,8 @@ end
 
 local function master_postinit(inst)
     inst.starting_inventory = start_inv[TheNet:GetServerGameMode()] or start_inv.default
+
+    inst.customidleanim = "idle_wortox"
 
     inst.components.health:SetMaxHealth(TUNING.WORTOX_HEALTH)
     inst.components.hunger:SetMax(TUNING.WORTOX_HUNGER)

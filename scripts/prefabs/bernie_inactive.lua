@@ -279,8 +279,8 @@ local function fn()
     inst.OnLoad = onload
     inst.OnSave = onsave
 
-    inst._onattackother = function()--attacker, data)
-        if not inst.components.fueled:IsEmpty() then
+    inst._onattackother = function(attacker)--, data)
+        if not (attacker.components.rider ~= nil and attacker.components.rider:IsRiding() or inst.components.fueled:IsEmpty()) then
             inst.components.fueled:DoDelta(-.01 * TUNING.BERNIE_FUEL)
         end
     end

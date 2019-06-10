@@ -26,11 +26,16 @@ local function onpickedfn(inst, picker)
             picker:PushEvent("thorns")
         end
 
-        if inst.has_flower and picker.components.inventory ~= nil then
+        if inst.has_flower then
             -- You get a cactus flower, yay.
             local loot = SpawnPrefab("cactus_flower")
             loot.components.inventoryitem:InheritMoisture(TheWorld.state.wetness, TheWorld.state.iswet)
-            picker.components.inventory:GiveItem(loot, nil, inst:GetPosition())
+            if picker.components.inventory ~= nil then
+                picker.components.inventory:GiveItem(loot, nil, inst:GetPosition())
+            else
+                local x, y, z = inst.Transform:GetWorldPosition()
+                loot.components.inventoryitem:DoDropPhysics(x, y, z, true)
+            end
         end
     end
 
