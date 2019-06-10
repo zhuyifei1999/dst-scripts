@@ -18,7 +18,6 @@ local Leader = Class(function(self, inst)
     inst:ListenForEvent("newcombattarget", OnNewCombatTarget)
     inst:ListenForEvent("attacked", OnAttacked)
     inst:ListenForEvent("death", OnDeath)
-	inst:ListenForEvent("onsink", OnDeath)
 
     self._onfollowerdied = function(follower) self:RemoveFollower(follower) end
     self._onfollowerremoved = function(follower) self:RemoveFollower(follower, true) end
@@ -28,7 +27,6 @@ function Leader:OnRemoveFromEntity()
     self.inst:RemoveEventCallback("newcombattarget", OnNewCombatTarget)
     self.inst:RemoveEventCallback("attacked", OnAttacked)
     self.inst:RemoveEventCallback("death", OnDeath)
-    self.inst:RemoveEventCallback("onsink", OnDeath)
     self:RemoveAllFollowers()
 end
 

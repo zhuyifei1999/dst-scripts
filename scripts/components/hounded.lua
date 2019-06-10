@@ -243,31 +243,15 @@ local function NoHoles(pt)
 end
 
 local function GetSpawnPoint(pt)
-	if TheWorld.has_ocean then
-		local function OceanSpawnPoint(offset)
-			local x = pt.x + offset.x
-			local y = pt.y + offset.y
-			local z = pt.z + offset.z
-			return TheWorld.Map:IsAboveGroundAtPoint(x, y, z, true) and NoHoles(pt)
-		end
-
-		local offset = FindValidPositionByFan(math.random() * 2 * PI, SPAWN_DIST, 12, OceanSpawnPoint)
-		if offset ~= nil then
-			offset.x = offset.x + pt.x
-			offset.z = offset.z + pt.z
-			return offset
-		end
-	else
-		if not TheWorld.Map:IsAboveGroundAtPoint(pt:Get()) then
-			pt = FindNearbyLand(pt, 1) or pt
-		end
-		local offset = FindWalkableOffset(pt, math.random() * 2 * PI, SPAWN_DIST, 12, true, true, NoHoles)
-		if offset ~= nil then
-			offset.x = offset.x + pt.x
-			offset.z = offset.z + pt.z
-			return offset
-		end
-	end
+    if not TheWorld.Map:IsAboveGroundAtPoint(pt:Get()) then
+        pt = FindNearbyLand(pt, 1) or pt
+    end
+    local offset = FindWalkableOffset(pt, math.random() * 2 * PI, SPAWN_DIST, 12, true, true, NoHoles)
+    if offset ~= nil then
+        offset.x = offset.x + pt.x
+        offset.z = offset.z + pt.z
+        return offset
+    end
 end
 
 local function GetSpecialSpawnChance()
@@ -453,7 +437,6 @@ function self:SummonSpawn(pt)
 end
 
 -- Spawns the next wave for debugging
--- TheWorld.components.hounded:ForceNextWave()
 function self:ForceNextWave()
 	PlanNextAttack()
 	_timetoattack = 0

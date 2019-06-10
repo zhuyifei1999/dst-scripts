@@ -35,8 +35,6 @@ local function fn()
     inst:AddTag("lightbattery")
     inst:AddTag("vasedecoration")
 
-    MakeInventoryFloatable(inst, "small", 0.07, 0.73)
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

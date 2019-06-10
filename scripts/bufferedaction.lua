@@ -15,13 +15,6 @@ BufferedAction = Class(function(self, doer, target, action, invobject, pos, reci
     self.forced = forced
     self.autoequipped = nil --true if invobject should've been auto-equipped
     self.skin = nil
-    if pos ~= nil then
-        self.platform = TheWorld.Map:GetPlatformAtPoint(pos.x, pos.z)
-        if self.platform ~= nil then
-            local platform_x, platform_y, platform_z = self.platform.Transform:GetWorldPosition()
-            self.platform_local_x, self.platform_local_z = pos.x - platform_x, pos.z - platform_z
-        end
-    end
 end)
 
 function BufferedAction:Do()
@@ -84,16 +77,6 @@ function BufferedAction:Succeed()
     end
     self.onsuccess = {}
     self.onfail = {}
-end
-
-function BufferedAction:GetPlatformRelativeAbsolutePosition()
-    local platform = self.platform
-    if platform ~= nil and platform:IsValid() then
-        local platform_x, platform_y, platform_z = platform.Transform:GetWorldPosition()
-        return Point(platform_x + self.platform_local_x, 0, platform_z + self.platform_local_z)
-    else
-        return self.pos
-    end
 end
 
 function BufferedAction:Fail()

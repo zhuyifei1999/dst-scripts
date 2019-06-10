@@ -40,8 +40,6 @@ local function commonfn(build, anim, loop, dryable, cookable)
         inst:AddTag("cookable")
     end
 
-    MakeInventoryFloatable(inst)
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -116,9 +114,6 @@ local function cookedfn(build)
     inst.components.edible.healthvalue = TUNING.HEALING_TINY
     inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
     inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
-
-    inst.components.floater:SetVerticalOffset(0.2)
-    inst.components.floater:SetScale(0.75)
 
     return inst
 end

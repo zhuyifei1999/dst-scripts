@@ -201,7 +201,6 @@ local function fn()
     inst.components.inventoryitem:SetOnPickupFn(onpickup)
     inst.components.inventoryitem.canbepickedup = false
     inst.components.inventoryitem.canbepickedupalive = true
-    inst.components.inventoryitem:SetSinks(true)
 
     inst:AddComponent("tradable")
 

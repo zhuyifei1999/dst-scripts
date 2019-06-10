@@ -1,7 +1,6 @@
 local assets =
 {
     Asset("ANIM", "anim/hounds_tooth.zip"),
-    Asset("ANIM", "anim/hounds_tooth_water.zip"),
 }
 
 local function fn()
@@ -18,9 +17,6 @@ local function fn()
     inst.AnimState:SetBuild("hounds_tooth")
     inst.AnimState:PlayAnimation("idle")
 
-    MakeInventoryFloatable(inst, "small", nil, {0.6, 0.55, 0.6})
-    inst.AnimState:AddOverrideBuild("hounds_tooth_water")
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -33,13 +29,9 @@ local function fn()
     inst:AddComponent("inspectable")
 
     inst:AddComponent("inventoryitem")
-
     inst:AddComponent("selfstacker")
 
     MakeHauntableLaunchAndSmash(inst)
-
-    inst:ListenForEvent("floater_startfloating", function(inst) inst.AnimState:PlayAnimation("float") end)
-    inst:ListenForEvent("floater_stopfloating", function(inst) inst.AnimState:PlayAnimation("idle") end)
 
     return inst
 end
