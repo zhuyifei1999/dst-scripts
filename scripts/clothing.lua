@@ -1507,7 +1507,7 @@ CLOTHING =
 		torso_tuck = "untucked",
 		rarity = "Distinguished",
 		rarity_modifier = "Woven",
-		legs_cuff_size = 3,
+		legs_cuff_size = 2,
 		release_group = 43,
 	},
 	body_wes_wrestler =
@@ -3056,7 +3056,7 @@ CLOTHING =
 		symbol_overrides = { "foot", },
 		rarity = "Spiffy",
 		rarity_modifier = "Woven",
-		feet_cuff_size = 1,
+		feet_cuff_size = 3,
 		release_group = 43,
 	},
 	feet_wickerbottom_gladiator =

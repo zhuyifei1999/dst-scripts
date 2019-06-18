@@ -447,6 +447,7 @@ local function MakeSpiderDenFn(den_level)
         inst.components.childspawner.childname = "spider"
         inst.components.childspawner:SetRegenPeriod(TUNING.SPIDERDEN_REGEN_TIME)
         inst.components.childspawner:SetSpawnPeriod(TUNING.SPIDERDEN_RELEASE_TIME)
+        inst.components.childspawner.allowboats = true
 
         inst.components.childspawner.emergencychildname = "spider_warrior"
         inst.components.childspawner.emergencychildrenperplayer = 1

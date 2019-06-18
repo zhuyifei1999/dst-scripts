@@ -279,6 +279,7 @@ function GetRandomItem(choices)
 	return picked
 end
 
+-- This is actually GetRandomItemWithKey
 function GetRandomItemWithIndex(choices)
     local choice = math.random(GetTableSize(choices)) -1
     

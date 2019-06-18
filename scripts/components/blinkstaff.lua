@@ -40,7 +40,7 @@ end
 
 function BlinkStaff:Blink(pt, caster)
     if (caster.sg ~= nil and caster.sg.currentstate.name ~= "quicktele") or
-        not TheWorld.Map:IsAboveGroundAtPoint(pt:Get()) or
+        not TheWorld.Map:IsPassableAtPoint(pt:Get()) or
         TheWorld.Map:IsGroundTargetBlocked(pt) then
         return false
     elseif self.blinktask ~= nil then
@@ -51,13 +51,13 @@ function BlinkStaff:Blink(pt, caster)
     caster.SoundEmitter:PlaySound("dontstarve/common/staff_blink")
 
     if caster.sg == nil then
-        caster:Hide()
-        if caster.DynamicShadow ~= nil then
-            caster.DynamicShadow:Enable(false)
-        end
-        if caster.components.health ~= nil then
-            caster.components.health:SetInvincible(true)
-        end
+    caster:Hide()
+    if caster.DynamicShadow ~= nil then
+        caster.DynamicShadow:Enable(false)
+    end
+    if caster.components.health ~= nil then
+        caster.components.health:SetInvincible(true)
+    end
     elseif caster.sg.statemem.onstartblinking ~= nil then
         caster.sg.statemem.onstartblinking()
     end

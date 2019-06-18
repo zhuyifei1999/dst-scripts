@@ -237,6 +237,8 @@ local function fn()
     inst:AddTag("scarytoprey")
     inst:AddTag("flying")
 
+    MakeInventoryFloatable(inst)
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

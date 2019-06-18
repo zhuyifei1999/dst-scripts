@@ -951,12 +951,8 @@ function GetInventorySkinsList( do_sort )
 		table.insert(skins_list, data)
 	end
 
-	print("################################### GetInventorySkinsList", #skins_list)
-	--dumptable(skins_list)
-
 	if do_sort then
 		table.sort(skins_list, function(a,b)
-			--return a.item > b.item
 			return CompareItemDataForSortByRarity( a.item, b.item )
 		end)
 	end

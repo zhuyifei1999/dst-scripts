@@ -2,6 +2,8 @@ require "class"
 require "bufferedaction"
 require "debugtools"
 require 'util'
+require 'vecutil'
+require ("components/embarker")
 
 local function DefaultRangeCheck(doer, target)
     if target == nil then
@@ -11,6 +13,61 @@ local function DefaultRangeCheck(doer, target)
     local doer_x, doer_y, doer_z = doer.Transform:GetWorldPosition()
     local dst = distsq(target_x, target_z, doer_x, doer_z)
     return dst <= 16
+end
+
+local function WaterPickupDistanceUpdateFn(doer, target)
+    if target == nil then
+        return
+    end
+    local target_x, target_y, target_z = target.Transform:GetWorldPosition()
+    local doer_x, doer_y, doer_z = doer.Transform:GetWorldPosition()
+
+    local map = TheWorld.Map
+    local pickup_distance = 0
+    if map:GetPlatformAtPoint(target_x, target_z) == nil and not map:IsVisualGroundAtPoint(target_x, 0, target_z) then
+        pickup_distance = 1.75
+    end
+
+    return pickup_distance
+end
+
+local function CheckDeployRange(doer, target)
+    if target == nil then
+        return
+    end
+
+    local deploy_range = 1.1
+
+    local locomotor = doer.components.locomotor
+
+    if locomotor ~= nil and locomotor.bufferedaction ~= nil and locomotor.bufferedaction.invobject ~= nil then
+        local inv_object = locomotor.bufferedaction.invobject
+        local deployable = inv_object.components.deployable
+        if deployable ~= nil then
+            deploy_range = deployable.deploy_range
+        end
+    end
+
+    return deploy_range
+end
+
+local function CheckRowRange(doer, target)
+    local distance_to_water = 0.75
+    local rotation = doer.Transform:GetRotation() * DEGREES
+    local forward_x, forward_z = math.cos(rotation), -math.sin(rotation)
+    local doer_x, doer_y, doer_z = doer.Transform:GetWorldPosition()
+    local test_x, test_z = doer_x + forward_x * distance_to_water, doer_z + forward_z * distance_to_water
+
+    
+    local target_x, target_y, target_z = target.Transform:GetWorldPosition()
+    local dist = VecUtil_Length(doer_x - target_x, doer_z - target_z)
+
+    local map = TheWorld.Map
+    if TheWorld.Map:IsVisualGroundAtPoint(test_x, 0, test_z) or map:GetPlatformAtPoint(test_x, test_z) ~= nil then
+        return distance_to_water
+    else
+        return dist
+    end
 end
 
 --Positional parameters have been deprecated, pass in a table instead.
@@ -43,6 +100,11 @@ Action = Class(function(self, data, instant, rmb, distance, ghost_valid, ghost_e
 
     --new params, only supported by passing via data field
     self.actionmeter = data.actionmeter or nil
+    self.distanceupdatefn = data.distanceupdatefn
+    self.is_relative_to_platform = data.is_relative_to_platform
+    self.disable_platform_hopping = data.disable_platform_hopping
+    self.skip_locomotor_facing = data.skip_locomotor_facing
+    self.do_not_locomote = data.do_not_locomote
 end)
 
 ACTIONS =
@@ -87,7 +149,7 @@ ACTIONS =
     SHAVE = Action({ mount_valid=true }),
     STORE = Action(),
     RUMMAGE = Action({ priority=-1, mount_valid=true }),
-    DEPLOY = Action({ distance=1.1 }),
+    DEPLOY = Action({distanceupdatefn=CheckDeployRange}),
     PLAY = Action({ mount_valid=true }),
     CREATE = Action(),
     JOIN = Action(),
@@ -140,6 +202,7 @@ ACTIONS =
     BUNDLESTORE = Action({ instant=true }),
     WRAPBUNDLE = Action({ instant=true }),
     UNWRAP = Action({ rmb=true, priority=2 }),
+	BREAK = Action({ rmb=true, priority=2 }),
     CONSTRUCT = Action({ distance=2 }),
     STOPCONSTRUCTION = Action({ instant=true, distance=2 }),
     APPLYCONSTRUCTION = Action({ instant=true, distance=2 }),
@@ -171,7 +234,29 @@ ACTIONS =
     SLAUGHTER = Action({ canforce=true, rangecheckfn=DefaultRangeCheck }),
     REPLATE = Action(),
     SALT = Action(),
+
+    BATHBOMB = Action(),
+
+    -- boats
+    RAISE_SAIL = Action({ distance=2 }),
+    LOWER_SAIL = Action({ distance=2 }),    
+    RAISE_ANCHOR = Action({ distance=2.5 }),
+    LOWER_ANCHOR = Action({ distance=2.5 }),
+    EXTEND_PLANK = Action({ distance=2.5 }),
+    RETRACT_PLANK = Action({ distance=2.5 }),             
+    ABANDON_SHIP = Action({ distance=2.5, priority=4 }),             
+    MOUNT_PLANK = Action({ distance=0.5 }),            
+    DISMOUNT_PLANK = Action({ distance=2.5 }),            
+    REPAIR_LEAK = Action({ distance=2.5 }),
+    STEER_BOAT = Action({ distance=0 }),
+    SET_HEADING = Action({distance=9999, do_not_locomote=true}),
+    STOP_STEERING_BOAT = Action(),
+    CAST_NET = Action({ priority=10, rmb=true, distance=12, mount_valid=true, disable_platform_hopping=true }),
+    ROW_FAIL = Action({distance=9999, disable_platform_hopping=true, skip_locomotor_facing=true}),
+    ROW = Action({priority=3, distanceupdatefn=CheckRowRange, is_relative_to_platform = true, disable_platform_hopping=true}),
 }
+
+ACTIONS_BY_ACTION_CODE = {}
 
 ACTION_IDS = {}
 for k, v in orderedPairs(ACTIONS) do
@@ -179,6 +264,7 @@ for k, v in orderedPairs(ACTIONS) do
     v.id = k
     table.insert(ACTION_IDS, k)
     v.code = #ACTION_IDS
+    ACTIONS_BY_ACTION_CODE[v.code] = v
 end
 
 ACTION_MOD_IDS = {} --This will be filled in when mods add actions via AddAction in modutil.lua
@@ -200,6 +286,8 @@ ACTIONS.STEAL.fn = function(act)
     local owner = act.target.components.inventoryitem ~= nil and act.target.components.inventoryitem.owner or nil
     if owner ~= nil then
         return act.doer.components.thief:StealItem(owner, act.target, act.attack == true)
+    elseif act.target.components.dryer ~= nil then
+        return act.target.components.dryer:DropItem()
     end
 end
 
@@ -307,6 +395,12 @@ ACTIONS.PICKUP.fn = function(act)
         act.doer.components.inventory:GiveItem(act.target, nil, act.target:GetPosition())
         return true
     end
+end
+
+ACTIONS.REPAIR.strfn = function(act)
+	return act.target ~= nil 
+			and (act.target:HasTag("repairable_moon_altar") and "SOCKET")
+			or nil
 end
 
 ACTIONS.REPAIR.fn = function(act)
@@ -436,6 +530,32 @@ ACTIONS.READ.fn = function(act)
     end
 end
 
+ACTIONS.ROW_FAIL.fn = function(act)
+    local oar = act.doer.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+
+    if oar == nil then return false end
+
+    --Can't rely on return false to trigger action fail string because returning
+    --false skips the finite uses callback and the oar won't lose durability
+    local fail_string_id = oar.components.oar:RowFail(act.doer)
+    local fail_str = GetActionFailString(act.doer, "ROW_FAIL", fail_string_id)
+    act.doer.components.talker:Say(fail_str)
+    return true
+end
+
+ACTIONS.ROW.fn = function(act)
+    local oar = act.doer.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+
+    if oar == nil then return false end
+    
+    local pos = act.pos
+    if pos == nil then
+        pos = act.target:GetPosition()
+    end
+    oar.components.oar:Row(act.doer, pos)   
+    return true
+end
+
 ACTIONS.TALKTO.fn = function(act)
     local targ = act.target or act.invobject
     if targ and targ.components.talkable then
@@ -459,11 +579,11 @@ ACTIONS.BAIT.fn = function(act)
 end
 
 ACTIONS.DEPLOY.fn = function(act)
-    if act.invobject ~= nil and act.invobject.components.deployable ~= nil and act.invobject.components.deployable:CanDeploy(act.pos, nil, act.doer) then
+    if act.invobject ~= nil and act.invobject.components.deployable ~= nil and act.invobject.components.deployable:CanDeploy(act:GetPlatformRelativeAbsolutePosition(), nil, act.doer) then
         local container = act.doer.components.inventory or act.doer.components.container
         local obj = container ~= nil and container:RemoveItem(act.invobject) or nil
         if obj ~= nil then
-            if obj.components.deployable:Deploy(act.pos, act.doer, act.rotation) then
+            if obj.components.deployable:Deploy(act:GetPlatformRelativeAbsolutePosition(), act.doer, act.rotation) then
                 return true
             else
                 container:GiveItem(obj)
@@ -478,6 +598,8 @@ ACTIONS.DEPLOY.strfn = function(act)
                 (act.invobject:HasTag("wallbuilder") and "WALL") or
                 (act.invobject:HasTag("fencebuilder") and "FENCE") or
                 (act.invobject:HasTag("gatebuilder") and "GATE") or
+                (act.invobject:HasTag("boatbuilder") and "WATER") or
+                (act.invobject:HasTag("boat_accessory") and "TURRET") or
                 (act.invobject:HasTag("eyeturret") and "TURRET")    )
         or nil
 end
@@ -1058,7 +1180,7 @@ end
 
 ACTIONS.BUILD.fn = function(act)
     if act.doer.components.builder ~= nil then
-        return act.doer.components.builder:DoBuild(act.recipe, act.pos, act.rotation, act.skin)
+        return act.doer.components.builder:DoBuild(act.recipe, act:GetPlatformRelativeAbsolutePosition(), act.rotation, act.skin)
     end
 end
 
@@ -1902,6 +2024,11 @@ ACTIONS.UNWRAP.fn = function(act)
     end
 end
 
+ACTIONS.BREAK.strfn = function(act)
+    local target = act.target or act.invobject
+    return target ~= nil and target:HasTag("pickapart") and "PICKAPART" or nil
+end
+
 ACTIONS.CONSTRUCT.stroverridefn = function(act)
     if act.invobject ~= nil then
         if act.invobject.constructionname ~= nil and not act.target:HasTag("constructionsite") then
@@ -2105,6 +2232,145 @@ ACTIONS.REPLATE.stroverridefn = function(act)
             return dish ~= nil and subfmt(STRINGS.ACTIONS.REPLATE.FMT, { dish = dish }) or nil
         end
     end
+end
+
+ACTIONS.BATHBOMB.fn = function(act)
+    local bathbombable = (act.target ~= nil and act.target.components.bathbombable) or nil
+    local bathbomb = (act.invobject ~= nil and act.invobject.components.bathbomb) or nil
+    if bathbombable == nil or bathbomb == nil then
+        return false
+    end
+
+    local can_bathbomb, failure_reason = bathbombable:CanBeBathBombed(act.invobject)
+    if not can_bathbomb then
+        if failure_reason ~= nil then
+            return false, failure_reason
+        else
+            return false
+        end
+    end
+
+    bathbomb:ApplyBathBomb(bathbombable)
+
+    local removed_item = act.doer.components.inventory:RemoveItem(act.invobject)
+    removed_item:Remove()
+    return true
+end
+
+ACTIONS.RAISE_SAIL.fn = function(act)    
+    local boat = act.target.components.mast.boat
+    act.target.components.mast:RaiseSail()
+    return true
+end
+
+ACTIONS.RAISE_SAIL.stroverridefn = function(act)
+    return STRINGS.ACTIONS.RAISE_SAIL
+end
+
+ACTIONS.LOWER_SAIL.fn = function(act)
+    act.target.components.mast:LowerSail()
+    return true
+end
+
+ACTIONS.LOWER_SAIL.stroverridefn = function(act)
+    return STRINGS.ACTIONS.LOWER_SAIL
+end
+
+ACTIONS.RAISE_ANCHOR.fn = function(act)
+    return act.target.components.anchor:StartRaisingAnchor()
+end
+
+ACTIONS.RAISE_ANCHOR.stroverridefn = function(act)
+    return STRINGS.ACTIONS.RAISE_ANCHOR
+end
+
+ACTIONS.LOWER_ANCHOR.fn = function(act)
+    return act.target.components.anchor:StartLoweringAnchor()
+end
+
+ACTIONS.LOWER_ANCHOR.stroverridefn = function(act)
+    return STRINGS.ACTIONS.LOWER_ANCHOR
+end
+
+ACTIONS.MOUNT_PLANK.fn = function(act)
+    return act.target.components.walkingplank:MountPlank(act.doer)
+end
+
+ACTIONS.MOUNT_PLANK.stroverridefn = function(act)
+    return STRINGS.ACTIONS.MOUNT_PLANK
+end
+
+ACTIONS.DISMOUNT_PLANK.fn = function(act)
+    act.target.components.walkingplank:DismountPlank(act.doer)
+    return true
+end
+
+ACTIONS.DISMOUNT_PLANK.stroverridefn = function(act)
+    return STRINGS.ACTIONS.DISMOUNT_PLANK
+end
+
+ACTIONS.ABANDON_SHIP.fn = function(act)
+    return act.target.components.walkingplank:AbandonShip(act.doer)
+end
+
+ACTIONS.ABANDON_SHIP.stroverridefn = function(act)
+    return STRINGS.ACTIONS.ABANDON_SHIP
+end
+
+ACTIONS.EXTEND_PLANK.fn = function(act)
+    act.target.components.walkingplank:Extend()
+    return true
+end
+
+ACTIONS.EXTEND_PLANK.stroverridefn = function(act)
+    return STRINGS.ACTIONS.EXTEND_PLANK
+end
+
+ACTIONS.RETRACT_PLANK.fn = function(act)
+    act.target.components.walkingplank:Retract()
+    return true
+end
+
+ACTIONS.RETRACT_PLANK.stroverridefn = function(act)
+    return STRINGS.ACTIONS.RETRACT_PLANK
+end
+
+ACTIONS.REPAIR_LEAK.fn = function(act)    
+    if act.invobject ~= nil and act.target ~= nil and  act.target.components.boatleak ~= nil and act.target:HasTag("boat_leak") then
+	    return act.target.components.boatleak:Repair(act.doer, act.invobject)
+	end
+end
+
+ACTIONS.STEER_BOAT.fn = function(act)
+    act.target.components.steeringwheel:StartSteering(act.doer)    
+    return true
+end
+
+ACTIONS.STEER_BOAT.stroverridefn = function(act)
+    return STRINGS.ACTIONS.STEER_BOAT
+end
+
+ACTIONS.SET_HEADING.fn = function(act)
+    act.doer.components.steeringwheeluser:Steer(act.pos.x, act.pos.z)
+    return true
+end
+
+ACTIONS.STOP_STEERING_BOAT.fn = function(act)
+    act.doer.components.steeringwheeluser:SetSteeringWheel(nil)    
+    return true
+end
+
+ACTIONS.CAST_NET.fn = function(act)
+    if act.invobject and act.invobject.components.fishingnet then
+        if act.pos == nil then
+            local pos_x, pos_y, pos_z = act.target.Transform:GetWorldPosition()
+            act.invobject.components.fishingnet:CastNet(pos_x, pos_z, act.doer)        
+        else
+            act.invobject.components.fishingnet:CastNet(act.pos.x, act.pos.z, act.doer)        
+        end
+        return true
+    end
+    return false
 end
 
 ACTIONS.REPLATE.fn = function(act)

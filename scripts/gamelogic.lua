@@ -367,19 +367,22 @@ local function PopulateWorld(savedata, profile)
             print("Total "..tostring(#Settings.loaded_characters).." character(s) loaded")
         end
 
+        world.has_ocean = savedata.map.has_ocean
+        if world.has_ocean then
+            world.Map:SetOceanEnabled(true)
+        end
+
         --this was spawned by the level file. kinda lame - we should just do everything from in here.
         world.Map:SetSize(savedata.map.width, savedata.map.height)
         world.Map:SetFromString(savedata.map.tiles)
         world.Map:ResetVisited()
         if savedata.map.prefab == "cave" then
-            world.Map:SetPhysicsWallDistance(0.75)--0) -- TEMP for STREAM
             TheFrontEnd:GetGraphicsOptions():DisableStencil()
             TheFrontEnd:GetGraphicsOptions():DisableLightMapComponent()
             -- TheFrontEnd:GetGraphicsOptions():EnableStencil()
             -- TheFrontEnd:GetGraphicsOptions():EnableLightMapComponent()
             world.Map:Finalize(1)
         else
-            world.Map:SetPhysicsWallDistance(0)--0.75)
             TheFrontEnd:GetGraphicsOptions():DisableStencil()
             TheFrontEnd:GetGraphicsOptions():DisableLightMapComponent()
             world.Map:Finalize(0)
@@ -398,6 +401,10 @@ local function PopulateWorld(savedata, profile)
         world.generated = savedata.map.generated
         world.meta = savedata.meta
         assert(savedata.map.topology.ids, "[MALFORMED SAVE DATA] Map missing topology information. This save file is too old, and is missing neccessary information.")
+
+		if savedata.meta ~= nil then
+			print("World generated on version " .. tostring(savedata.meta.build_version) .. ", using seed: " .. tostring(savedata.meta.seed))
+		end
 
         for i=#savedata.map.topology.ids,1, -1 do
             local name = savedata.map.topology.ids[i]
@@ -746,6 +753,8 @@ local function DoInitGame(savedata, profile)
     GroundTiles.Initialize()
 
     PopulateWorld(savedata, profile)
+
+    TheWorld.components.watercolor:Initialize(TheWorld.has_ocean)
 
     if true --[[ Profile.persistdata.debug_world  == 1]] then
     	if savedata.map.topology == nil then

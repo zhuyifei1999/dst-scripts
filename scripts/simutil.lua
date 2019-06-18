@@ -214,13 +214,13 @@ end
 -- This function fans out a search from a starting position/direction and looks for a walkable
 -- position, and returns the valid offset, valid angle and whether the original angle was obstructed.
 -- starting_angle is in radians
-function FindWalkableOffset(position, start_angle, radius, attempts, check_los, ignore_walls, customcheckfn)
+function FindWalkableOffset(position, start_angle, radius, attempts, check_los, ignore_walls, customcheckfn, allow_water, allow_boats)
     return FindValidPositionByFan(start_angle, radius, attempts,
             function(offset)
                 local x = position.x + offset.x
                 local y = position.y + offset.y
                 local z = position.z + offset.z
-                return TheWorld.Map:IsAboveGroundAtPoint(x, y, z)
+                return (TheWorld.Map:IsAboveGroundAtPoint(x, y, z, allow_water) or (allow_boats and TheWorld.Map:GetPlatformAtPoint(x,z) ~= nil))
                     and (not check_los or
                         TheWorld.Pathfinder:IsClear(
                             position.x, position.y, position.z,

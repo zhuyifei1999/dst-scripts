@@ -37,6 +37,9 @@ local assets =
     Asset("PKGREF", "images/bg_spiral_anim.tex"),
     Asset("DYNAMIC_ATLAS", "images/bg_spiral_anim_overlay.xml"),
     Asset("PKGREF", "images/bg_spiral_anim_overlay.tex"),
+
+    
+    Asset("IMAGE", "levels/textures/water_fall_mangrove_opaque.tex"),
 }
 
 
@@ -66,6 +69,7 @@ local prefabs =
     "twiggy_normal",
 
     "sapling",
+    "sapling_moon",
     "berrybush",
     "berrybush2",
     "berrybush_juicy",
@@ -109,15 +113,21 @@ local prefabs =
 
     "turf_road",
     "turf_rocky",
-    "turf_marsh",
-    "turf_savanna",
     "turf_forest",
+    "turf_marsh",
     "turf_grass",
+    "turf_savanna",
+    "turf_meteor",
+    "turf_pebblebeach",
     "turf_cave",
     "turf_fungus",
+    "turf_fungus_red",
+    "turf_fungus_green",
     "turf_sinkhole",
     "turf_underrock",
     "turf_mud",
+    "turf_deciduous",
+    "turf_desertdirt",
 
     "skeleton",
     "insanityrock",
@@ -189,6 +199,12 @@ local prefabs =
     "constructionsite_classified",
 
     "dummytarget",
+    "movementlocator",
+    "float_fx_front",
+    "float_fx_back",
+    "groundshadow",
+
+    "puffin"
 }
 
 --------------------------------------------------------------------------
@@ -340,7 +356,7 @@ function MakeWorld(name, customprefabs, customassets, common_postinit, master_po
 
         --Initialize lua components
         inst:AddComponent("groundcreep")
-
+        
         --Public member functions
         inst.PostInit = PostInit
         inst.OnRemoveEntity = OnRemoveEntity
@@ -359,9 +375,18 @@ function MakeWorld(name, customprefabs, customassets, common_postinit, master_po
 
         inst:SetPrefabName("world") -- the actual prefab to load comes from gamelogic.lua, this is for postinitfns.
 
+        if not TheNet:IsDedicated() then
+            inst:AddComponent("ocean")
+        end
+
+        --
+        inst:AddComponent("walkableplatformmanager")
+        inst:AddComponent("watercolor")
+
         if not inst.ismastersim then
             return inst
         end
+
 
         inst:AddComponent("playerspawner")
 
