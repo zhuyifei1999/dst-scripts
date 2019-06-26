@@ -9,6 +9,7 @@ local assets =
 local prefabs =
 {
     "pigman",
+    "splash_sink",
 }
 
 --Client update
@@ -136,10 +137,20 @@ local function onvacate(inst, child)
             if child.components.werebeast ~= nil then
                 child.components.werebeast:ResetTriggers()
             end
-            if child.components.health ~= nil then
-                child.components.health:SetPercent(1)
+
+            local child_platform = child:GetCurrentPlatform()
+            if (child_platform and child_platform.components.walkableplatform and child_platform.components.walkableplatform._is_sunk:value()) or
+                    (child_platform == nil and not child:IsOnValidGround()) then
+                local fx = SpawnPrefab("splash_sink")
+                fx.Transform:SetPosition(child.Transform:GetWorldPosition())
+
+                child:Remove()
+            else
+                if child.components.health ~= nil then
+                    child.components.health:SetPercent(1)
+                end
+			    child:PushEvent("onvacatehome")
             end
-			child:PushEvent("onvacatehome")
         end
     end
 end

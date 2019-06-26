@@ -27,8 +27,12 @@ local function onhit(inst)
         inst.AnimState:PlayAnimation("hit")
         if inst.components.prototyper.on then
             inst.AnimState:PushAnimation("proximity_loop", true)
+            if not inst.SoundEmitter:PlayingSound("loop_sound") then
+                inst.SoundEmitter:PlaySound("turnoftides/common/together/seafaring_prototyper/LP", "loop_sound")
+            end            
         else
             inst.AnimState:PushAnimation("idle", false)
+            inst.SoundEmitter:KillSound("loop_sound")
         end
     end
 end
@@ -36,6 +40,7 @@ end
 local function onturnoff(inst)
     if not inst:HasTag("burnt") then
         inst.AnimState:PushAnimation("idle", false)
+        inst.SoundEmitter:KillSound("loop_sound")
     end
 end
 
@@ -58,8 +63,14 @@ local function onturnon(inst)
             inst.AnimState:IsCurrentAnimation("use") then
             --NOTE: push again even if already playing, in case an idle was also pushed
             inst.AnimState:PushAnimation("proximity_loop", true)
+            if not inst.SoundEmitter:PlayingSound("loop_sound") then
+                inst.SoundEmitter:PlaySound("turnoftides/common/together/seafaring_prototyper/LP", "loop_sound")
+            end    
         else
             inst.AnimState:PlayAnimation("proximity_loop", true)
+            if not inst.SoundEmitter:PlayingSound("loop_sound") then
+                inst.SoundEmitter:PlaySound("turnoftides/common/together/seafaring_prototyper/LP", "loop_sound")
+            end            
         end
     end
 end
@@ -68,13 +79,14 @@ local function onactivate(inst)
     if not inst:HasTag("burnt") then
         inst.AnimState:PlayAnimation("use")
         inst.AnimState:PushAnimation("proximity_loop", true)
+        inst.SoundEmitter:PlaySound("turnoftides/common/together/seafaring_prototyper/use")
     end
 end
 
 local function onbuilt(inst)
     inst.AnimState:PlayAnimation("place")
     inst.AnimState:PushAnimation("idle", false)
-    inst.SoundEmitter:PlaySound("dontstarve/common/winter_meter_craft")
+    inst.SoundEmitter:PlaySound("turnoftides/common/together/seafaring_prototyper/place")
 end
 
 local function fn()

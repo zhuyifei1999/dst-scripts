@@ -1188,3 +1188,8 @@ function c_makeboat()
 	inst = DebugSpawn("oar")
 	inst.Transform:SetPosition(x - 1, y, z - 1.25)
 end
+
+function c_autoteleportplayers()
+    TheWorld.auto_teleport_players = not TheWorld.auto_teleport_players
+    print("auto_teleport_players:", TheWorld.auto_teleport_players)
+end

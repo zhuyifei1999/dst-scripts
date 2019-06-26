@@ -417,8 +417,7 @@ function InventoryItem:OnUpdate(dt)
         end
 
         if y + vely * dt * 1.5 < 0.01 and vely <= 0 then
-            -- print("vely", vely)
-            self.inst:PushEvent("on_hit_ground", vely)
+            self:SetLanded(true, false)
         end        
     else     
         self:SetLanded(true, false)

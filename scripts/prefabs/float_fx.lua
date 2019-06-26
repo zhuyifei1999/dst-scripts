@@ -24,12 +24,10 @@ local function common_fn(is_front)
 
     if is_front then
         inst.AnimState:SetBank("float_front")
-        inst.AnimState:SetSortWorldOffset(0, 0.1, 0)
         inst.AnimState:PlayAnimation("idle_front_small", true)
     else
         inst.AnimState:SetBank("float_back")
         inst.AnimState:SetLayer(LAYER_BACKGROUND)
-        inst.AnimState:SetSortWorldOffset(0,-0.1,0)
         inst.AnimState:PlayAnimation("idle_back_small", true)
     end
 

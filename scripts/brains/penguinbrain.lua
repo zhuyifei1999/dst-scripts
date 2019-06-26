@@ -62,7 +62,8 @@ local function CheckMyEgg(inst)
         return egg
     end
 
-    if not egg:IsValid() or egg.components.inventoryitem:IsHeld() then
+    if not egg:IsValid() or egg.components.inventoryitem:IsHeld() or
+            not egg:IsOnValidGround() then  -- NOTE: if pengulls start swimming, this can go away.
         inst.myEgg = nil
         inst.laidEgg = false
         return nil
@@ -208,9 +209,9 @@ local function LayEggAction(inst)
                             function()
                                 if not inst:IsValid() then return end
                                 inst.layingEgg = false
-                                nearest = GetClosestInstWithTag("scarytoprey", inst, TOOCLOSE) 
+                                nearest = GetClosestInstWithTag("scarytoprey", inst, TOOCLOSE)
 
-                                if PrepareForNight(inst) or not AtRookery(inst) or                                   
+                                if PrepareForNight(inst) or not AtRookery(inst) or
                                 (nearest and nearest:IsNear(inst, TOOCLOSE)) then
                                    return
                                 end

@@ -66,7 +66,7 @@ local function PlayFossilizingAnim(proxy, anim)
     inst.AnimState:SetMultColour(.75, .5, .5, 1)
     inst.AnimState:SetFinalOffset(2)
 
-    local s = (parent ~= nil and parent:GetPhysicsRadius() or .5) + 1
+    local s = (parent ~= nil and parent:GetPhysicsRadius(.5)) + 1
     inst.Transform:SetScale(s, s * 1.2, s)
 
     inst:ListenForEvent("animover", inst.Remove)

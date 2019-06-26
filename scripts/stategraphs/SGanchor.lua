@@ -117,9 +117,16 @@ local states =
         name = "raising_land",
         onenter = function(inst)
             inst.AnimState:PlayAnimation("tether_land_pst")
-            anchor_raised(true)
+            anchor_raised(inst)
         end,
 
+        timeline =
+        {
+            TimeEvent(0 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/anchor/tether_land_up")
+            end),
+        },
+        
         events =
         {
             EventHandler("animqueueover", function(inst) inst.sg:GoToState("raised") end),
@@ -132,6 +139,13 @@ local states =
         onenter = function(inst)
             inst.AnimState:PlayAnimation("tether_land_pre")
         end,
+
+        timeline =
+        {
+            TimeEvent(0 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/anchor/tether_land")
+            end),
+        },
 
         events =
         {

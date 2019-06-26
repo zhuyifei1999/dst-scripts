@@ -334,6 +334,16 @@ table.insert(prefs, CreatePrefabSkin("backpack_catcoon",
 	release_group = 7,
 }))
 
+table.insert(prefs, CreatePrefabSkin("backpack_chester",
+{
+	base_prefab = "backpack",
+	type = "item",
+	rarity = "ProofOfPurchase",
+	init_fn = function(inst) backpack_init_fn(inst, "backpack_chester") end,
+	skin_tags = { "BACKPACK", "CRAFTABLE", },
+	release_group = 59,
+}))
+
 table.insert(prefs, CreatePrefabSkin("backpack_crab",
 {
 	base_prefab = "backpack",
@@ -601,6 +611,18 @@ table.insert(prefs, CreatePrefabSkin("bugnet_spider",
 	rarity = "ProofOfPurchase",
 	init_fn = function(inst) bugnet_init_fn(inst, "bugnet_spider") end,
 	skin_tags = { "BUGNET", "CRAFTABLE", },
+	skin_sound = "dontstarve/creatures/spider/attack_grunt",
+	release_group = 59,
+}))
+
+table.insert(prefs, CreatePrefabSkin("bugnet_spider_white",
+{
+	base_prefab = "bugnet",
+	type = "item",
+	rarity = "ProofOfPurchase",
+	init_fn = function(inst) bugnet_init_fn(inst, "bugnet_spider_white") end,
+	skin_tags = { "BUGNET", "CRAFTABLE", },
+	skin_sound = "dontstarve/creatures/spider/attack_grunt",
 	release_group = 59,
 }))
 
@@ -783,6 +805,16 @@ table.insert(prefs, CreatePrefabSkin("endtable_vintage",
 	skin_tags = { "ENDTABLE", "CRAFTABLE", },
 	marketable = true,
 	release_group = 18,
+}))
+
+table.insert(prefs, CreatePrefabSkin("eyebrellahat_crystal",
+{
+	base_prefab = "eyebrellahat",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst) eyebrellahat_init_fn(inst, "eyebrellahat_crystal") end,
+	skin_tags = { "EYEBRELLAHAT", "CRYSTAL", "CRAFTABLE", },
+	release_group = 69,
 }))
 
 table.insert(prefs, CreatePrefabSkin("featherhat_circus",
@@ -1194,6 +1226,18 @@ table.insert(prefs, CreatePrefabSkin("icebox_coffin",
 	release_group = 49,
 }))
 
+table.insert(prefs, CreatePrefabSkin("icebox_crystal",
+{
+	base_prefab = "icebox",
+	type = "item",
+	rarity = "Loyal",
+	prefabs = { "icebox_crystal_fx", },
+	init_fn = function(inst) icebox_init_fn(inst, "icebox_crystal") end,
+	skin_tags = { "CRYSTAL", "ICEBOX", "CRAFTABLE", },
+	fx_prefab = { "icebox_crystal_fx", },
+	release_group = 69,
+}))
+
 table.insert(prefs, CreatePrefabSkin("icebox_victorian",
 {
 	base_prefab = "icebox",
@@ -1373,6 +1417,17 @@ table.insert(prefs, CreatePrefabSkin("minerhat_floppy",
 	init_fn = function(inst) minerhat_init_fn(inst, "minerhat_floppy") end,
 	skin_tags = { "MINERHAT", "CRAFTABLE", },
 	release_group = 28,
+}))
+
+table.insert(prefs, CreatePrefabSkin("moonstaff_crystal",
+{
+	base_prefab = "opalstaff",
+	type = "item",
+	build_name_override = "starstaff_crystal",
+	rarity = "Loyal",
+	init_fn = function(inst) opalstaff_init_fn(inst, "starstaff_crystal") end,
+	skin_tags = { "OPALSTAFF", "CRYSTAL", "CRAFTABLE", },
+	release_group = 69,
 }))
 
 table.insert(prefs, CreatePrefabSkin("orangestaff_ancient",
@@ -1763,6 +1818,17 @@ table.insert(prefs, CreatePrefabSkin("spear_wathgrithr_wrestle",
 	init_fn = function(inst) spear_wathgrithr_init_fn(inst, "spear_wathgrithr_wrestle") end,
 	skin_tags = { "SPEAR_WATHGRITHR", "YOTP", "CRAFTABLE", },
 	release_group = 56,
+}))
+
+table.insert(prefs, CreatePrefabSkin("starstaff_crystal",
+{
+	base_prefab = "yellowstaff",
+	type = "item",
+	rarity = "Loyal",
+	init_fn = function(inst) yellowstaff_init_fn(inst, "starstaff_crystal") end,
+	skin_tags = { "YELLOWSTAFF", "CRYSTAL", "CRAFTABLE", },
+	release_group = 69,
+	granted_items = { "moonstaff_crystal", },
 }))
 
 table.insert(prefs, CreatePrefabSkin("strawhat_cowboy",

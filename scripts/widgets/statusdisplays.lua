@@ -36,11 +36,16 @@ local function OnSetPlayerMode(inst, self)
     end
 
     if self.ongotonplatform == nil then
+        local my_platform = self.owner:GetCurrentPlatform()
+        if my_platform ~= nil then
+            self.boatmeter:Enable(my_platform)
+        end
+
         self.ongotonplatform = function(owner, platform) self.boatmeter:Enable(platform) end
-        self.inst:ListenForEvent("got_on_platform", self.ongotonplatform, self.owner)        
+        self.inst:ListenForEvent("got_on_platform", self.ongotonplatform, self.owner)
 
         self.ongotoffplatform = function(owner, platform) self.boatmeter:Disable(platform) end
-        self.inst:ListenForEvent("got_off_platform", self.ongotoffplatform, self.owner)                
+        self.inst:ListenForEvent("got_off_platform", self.ongotoffplatform, self.owner)
     end
 
     if self.beaverness ~= nil and self.onbeavernessdelta == nil then

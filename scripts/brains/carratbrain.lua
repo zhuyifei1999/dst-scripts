@@ -16,7 +16,9 @@ end)
 
 local function edible(inst, item)
     return inst.components.eater:CanEat(item) and item.components.bait and not item:HasTag("planted") and
-            not (item.components.inventoryitem and item.components.inventoryitem:IsHeld())
+            not (item.components.inventoryitem and item.components.inventoryitem:IsHeld()) and
+            item:IsOnPassablePoint() and
+            item:GetCurrentPlatform() == inst:GetCurrentPlatform()
 end
 
 local function eat_food_action(inst)

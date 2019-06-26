@@ -234,7 +234,7 @@ local function boat_item_collision_fn()
     inst.entity:AddNetwork()
 
     local phys = inst.entity:AddPhysics()
-    phys:SetMass(1)
+    phys:SetMass(1000)
     phys:SetFriction(0)
     phys:SetDamping(5)
     phys:SetCollisionGroup(COLLISION.LIMITS)
@@ -242,10 +242,10 @@ local function boat_item_collision_fn()
     phys:CollidesWith(COLLISION.ITEMS)
     phys:CollidesWith(COLLISION.FLYERS)
     phys:CollidesWith(COLLISION.WORLD)
-    phys:SetTriangleMesh(ITEM_COLLISION_MESH)  
+    phys:SetTriangleMesh(ITEM_COLLISION_MESH)
     --Boats currently need to not go to sleep because
     --constraints will cause a crash if either the target object or the source object is removed from the physics world
-    phys:SetDontRemoveOnSleep(true)        
+    phys:SetDontRemoveOnSleep(true)
 
     inst:AddTag("NOBLOCK")
 
@@ -295,8 +295,9 @@ local function item_fn()
     --Deployable needs to be client side because of the custom deploy range
     inst:AddComponent("deployable")
     inst.components.deployable.ondeploy = ondeploy
+    inst.components.deployable:SetDeploySpacing(DEPLOYSPACING.LARGE)
     inst.components.deployable:SetDeployMode(DEPLOYMODE.WATER)
-    inst.components.deployable:SetDeployRange(10)
+    inst.components.deployable:SetDeployRange(9)
 
     inst.entity:SetPristine()
 

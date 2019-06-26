@@ -312,7 +312,7 @@ local COMPONENT_ACTIONS =
         end,
 
         steeringwheel = function(inst, doer, actions, right)
-            if not inst:HasTag("occupied") then
+            if not inst:HasTag("occupied") and not inst:HasTag("fire") then
                 table.insert(actions, ACTIONS.STEER_BOAT)
             end
         end,

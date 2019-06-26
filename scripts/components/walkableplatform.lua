@@ -40,7 +40,7 @@ local WalkablePlatform = Class(function(self, inst)
     self._is_sunk = net_bool(inst.GUID, "walkableplatform._is_sunk", "issunkdirty")
 end)
 
-local IGNORE_WALKABLE_PLATFORM_TAGS_ON_REMOVE = { "ignorewalkableplatforms", "flying", "FX", "NOCLICK", "DECOR", "INLIMBO", "player" }
+local IGNORE_WALKABLE_PLATFORM_TAGS_ON_REMOVE = { "ignorewalkableplatforms", "flying", "FX", "DECOR", "INLIMBO", "player" }
 local IGNORE_WALKABLE_PLATFORM_TAGS = { "ignorewalkableplatforms", "flying", "FX", "DECOR", "INLIMBO" }
 
 

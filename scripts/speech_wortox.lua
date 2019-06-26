@@ -170,7 +170,7 @@ return {
 	ANNOUNCE_COLD = "It's finally frozen over!",
 	ANNOUNCE_HOT = "Hot, hot, hot!",
 	ANNOUNCE_CRAFTING_FAIL = "My hands are truly cursed.",
-	ANNOUNCE_DEERCLOPS = "Clipping and clopping, here comes a stomping!",
+	ANNOUNCE_DEERCLOPS = "A massive brute is en route!",
 	ANNOUNCE_CAVEIN = "I'd best hop on out of here!",
 	ANNOUNCE_ANTLION_SINKHOLE = 
 	{

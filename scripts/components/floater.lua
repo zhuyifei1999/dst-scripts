@@ -134,6 +134,7 @@ function Floater:OnLandedServer()
 end
 
 function Floater:OnLandedClient()
+    self.showing_effect = true
     if self.front_fx == nil then
         self.front_fx = SpawnPrefab("float_fx_front")
         self:AttachEffect(self.front_fx)
@@ -168,6 +169,7 @@ function Floater:OnNoLongerLandedServer()
 end
 
 function Floater:OnNoLongerLandedClient()
+    self.showing_effect = false
     self.inst.AnimState:SetFloatParams(0.0, 0.0)
 
     if self.front_fx ~= nil and self.front_fx:IsValid() then

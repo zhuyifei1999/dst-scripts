@@ -36,7 +36,7 @@ local function FindNewHome(inst)
 	end
 
 	local home = inst.components.entitytracker:GetEntity("home")
-	local new_home = (home ~= nil and home.components.heater ~= nil and inst:IsNear(home, TUNING.FRUITDRAGON.KEEP_HOME_RANGE) and home.components.heater:GetHeat(inst) > 0) and home or nil
+	local new_home = (home ~= nil and home.components.heater ~= nil and inst:IsNear(home, TUNING.FRUITDRAGON.KEEP_HOME_RANGE) and home.components.heater:GetHeat(inst) > 0 and home:IsOnValidGround()) and home or nil
 
 	local cur_heat = new_home ~= nil and new_home.components.heater:GetHeat(inst) or 0
 	local x, y, z = inst.Transform:GetWorldPosition()
@@ -345,19 +345,19 @@ local fruit_dragon_sounds =
     idle = "turnoftides/creatures/together/fruit_dragon/idle",
     death = "turnoftides/creatures/together/fruit_dragon/death",
     eat = "turnoftides/creatures/together/fruit_dragon/eat",
-    hit = "turnoftides/creatures/together/fruit_dragon/hit",
+    onhit = "turnoftides/creatures/together/fruit_dragon/hit",
     sleep_loop = "turnoftides/creatures/together/fruit_dragon/sleep",
     stretch = "turnoftides/creatures/together/fruit_dragon/stretch",
     --do_ripen = "turnoftides/creatures/together/fruit_dragon/do_ripen",
-    do_unripen = "dontstarve/creatures/together/grass_gekko/tail_regrow",
-    attack = "dontstarve/creatures/merm/attack",
-    attack_fire = "dontstarve/creatures/merm/attack",
+    do_unripen = "turnoftides/creatures/together/fruit_dragon/stretch",
+    attack = "turnoftides/creatures/together/fruit_dragon/attack",
+    attack_fire = "turnoftides/creatures/together/fruit_dragon/attack_fire",
     attack_whoosh = "dontstarve/wilson/attack_whoosh",  -- TODO @stevenm remove this when the actual attack sounds are in
-    challenge_pre = "dontstarve/creatures/together/grass_gekko/tail_regrow",
-    challenge = "dontstarve/creatures/together/grass_gekko/tail_regrow",
-    challenge_pst = "dontstarve/creatures/together/grass_gekko/tail_regrow",
-    challenge_win = "dontstarve/creatures/together/grass_gekko/tail_regrow",
-    challenge_lose = "dontstarve/creatures/together/grass_gekko/tail_regrow",
+    challenge_pre = "turnoftides/creatures/together/fruit_dragon/challenge_pre",
+    challenge = "turnoftides/creatures/together/fruit_dragon/challenge",
+    challenge_pst = "turnoftides/creatures/together/fruit_dragon/eat",
+    challenge_win = "turnoftides/creatures/together/fruit_dragon/eat",
+    challenge_lose = "turnoftides/creatures/together/fruit_dragon/eat",
 }
 
 local function fn()
@@ -412,7 +412,7 @@ local function fn()
     inst.components.health.fire_damage_scale = 0
 
     inst:AddComponent("combat")
-    inst.components.combat:SetHurtSound("dontstarve/creatures/together/grass_gekko/hit")
+    inst.components.combat:SetHurtSound("turnoftides/creatures/together/fruit_dragon/hit")
     inst.components.combat.hiteffectsymbol = "gecko_torso_middle"
 	inst.components.combat:SetAttackPeriod(TUNING.FRUITDRAGON.ATTACK_PERIOD)
 	inst.components.combat:SetDefaultDamage(TUNING.FRUITDRAGON.UNRIPE_DAMAGE)

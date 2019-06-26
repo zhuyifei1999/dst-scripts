@@ -1,4 +1,3 @@
-local STEERING_WHEEL_OFFSET = -0.1
 local TIMEOUT = 2
 
 local function DoEquipmentFoleySounds(inst)
@@ -318,7 +317,6 @@ local actionhandlers =
     ActionHandler(ACTIONS.REPAIR_LEAK, "dolongaction"),
     ActionHandler(ACTIONS.SET_HEADING, function(inst, action) inst:PerformPreviewBufferedAction() end),
     ActionHandler(ACTIONS.CAST_NET, "doshortaction"),    
-    ActionHandler(ACTIONS.STOP_STEERING_BOAT, "stop_steering"),
     ActionHandler(ACTIONS.ROW_FAIL, "row_fail"),
     ActionHandler(ACTIONS.ROW, "row"),
     ActionHandler(ACTIONS.EXTEND_PLANK, "doshortaction"),
@@ -1762,13 +1760,13 @@ local states =
         tags = { "is_using_steering_wheel", "doing" },
 
         onenter = function(inst, snap)
+            inst.components.locomotor:Stop()
+			inst.Transform:SetNoFaced()
             inst.AnimState:PlayAnimation("steer_idle_pre")  
             inst.AnimState:PushAnimation("steer_lag", false)          
             inst:PerformPreviewBufferedAction()
 
             inst.sg:SetTimeout(TIMEOUT)
-
-            inst.AnimState:SetSortWorldOffset(0, STEERING_WHEEL_OFFSET, 0) 
         end,      
 
         onupdate = function(inst)
@@ -1777,42 +1775,17 @@ local states =
                     inst.sg:GoToState("idle", "noanim")
                 end
             elseif inst.bufferedaction == nil then
+				inst.Transform:SetFourFaced()
                 inst.sg:GoToState("idle")
             end
         end,
 
         ontimeout = function(inst)
             inst:ClearBufferedAction()
+			inst.Transform:SetFourFaced()
             inst.sg:GoToState("idle")
         end,  
     },   
-
-    State{
-        name = "stop_steering",
-        tags = { "is_using_steering_wheel", "doing" },
-
-        onenter = function(inst, snap)
-            inst.AnimState:PlayAnimation("steer_idle_pst")            
-            inst:PerformPreviewBufferedAction()
-
-            inst.sg:SetTimeout(TIMEOUT)
-        end,
-
-        onupdate = function(inst)
-            if inst:HasTag("doing") then
-                if inst.entity:FlattenMovementPrediction() then
-                    inst.sg:GoToState("idle", "noanim")
-                end
-            elseif inst.bufferedaction == nil then
-                inst.sg:GoToState("idle")
-            end
-        end,
-
-        ontimeout = function(inst)
-            inst:ClearBufferedAction()
-            inst.sg:GoToState("idle")
-        end,  
-    }, 
 
     State{
         name = "mount_plank",

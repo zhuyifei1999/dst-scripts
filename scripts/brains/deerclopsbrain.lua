@@ -16,8 +16,8 @@ local function BaseDestroy(inst)
     if inst.components.knownlocations:GetLocation("targetbase") then
     	local target = FindEntity(inst, SEE_DIST, function(item) 
     			if item.components.workable and item:HasTag("structure")
-    				and item.components.workable.action == ACTIONS.HAMMER
-    			then
+    				    and item.components.workable.action == ACTIONS.HAMMER
+                        and item:IsOnValidGround() then
     				return true
     			end
     		end, nil, {"wall"})

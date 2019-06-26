@@ -2,12 +2,11 @@ local SteeringWheelUser = Class(function(self, inst)
     self.inst = inst
     self.should_play_left_turn_anim = false
 
-    self.inst:StartUpdatingComponent(self)
-
-    self.inst:ListenForEvent("onsink", function() self:OnSink() end)
-
     self.wheel_remove_callback = function(wheel)
         if self.steering_wheel == wheel then
+		    self.inst:StopUpdatingComponent(self)
+			self.inst:RemoveTag("steeringboat")
+
             self.steering_wheel.components.steeringwheel:StopSteering(self.inst)
             self.inst:PushEvent("stop_steering_boat")
             self.steering_wheel = nil
@@ -15,58 +14,56 @@ local SteeringWheelUser = Class(function(self, inst)
     end
 end)
 
-function SteeringWheelUser:OnSink()
-	self:SetSteeringWheel(nil)
-end
-
 function SteeringWheelUser:SetSteeringWheel(steering_wheel)
-	if self.steering_wheel ~= nil then
-		self.steering_wheel.components.steeringwheel:StopSteering(self.inst)
-
-    	self.steering_wheel.AnimState:ShowSymbol("boat_wheel_round")
-    	self.steering_wheel.AnimState:ShowSymbol("boat_wheel_stick")
-
-        self.inst:RemoveEventCallback("onremove", self.wheel_remove_callback, steering_wheel)
+	if self.steering_wheel == steering_wheel then
+		return
 	end
+
+	local prev_steering_wheel = self.steering_wheel
+	self.steering_wheel = steering_wheel
+
+	if prev_steering_wheel ~= nil then
+	    self.inst:StopUpdatingComponent(self)
+		self.inst:RemoveTag("steeringboat")
+        self.inst:RemoveEventCallback("onremove", self.wheel_remove_callback, prev_steering_wheel)
+
+		if steering_wheel == nil and self.inst.sg:HasStateTag("is_using_steering_wheel") then
+			self.inst.sg:GoToState("stop_steering")
+		end
+
+		if prev_steering_wheel.components.steeringwheel ~= nil then
+			prev_steering_wheel.components.steeringwheel:StopSteering(self.inst)
+		end
+	end
+
 	if steering_wheel ~= nil then
+	    self.inst:StartUpdatingComponent(self)
+		self.inst:AddTag("steeringboat")
+
 		self.inst.Transform:SetPosition(steering_wheel.Transform:GetWorldPosition())
 		self.inst.Physics:ClearTransformationHistory()
 
         self.inst:ListenForEvent("onremove", self.wheel_remove_callback, steering_wheel)
-	end
 
-	self.steering_wheel = steering_wheel
-end
-
-function SteeringWheelUser:HideWheel()
-	if self.steering_wheel ~= nil and self.steering_wheel:IsValid() then
-		self.steering_wheel.AnimState:HideSymbol("boat_wheel_round")
-		self.steering_wheel.AnimState:HideSymbol("boat_wheel_stick")	
+		steering_wheel.components.steeringwheel:StartSteering(self.inst)
 	end
 end
 
 function SteeringWheelUser:Steer(pos_x, pos_z)
-	--TODO(YOG): Don't search for the boat
-	local boat = self:GetBoat()
-	if boat == nil then return end
-
-	local boat_pos_x, boat_pos_y, boat_pos_z = boat.Transform:GetWorldPosition()
-
-	local dir_x, dir_z = VecUtil_Normalize(pos_x - boat_pos_x, pos_z - boat_pos_z)
-
+	local x, y, z = self.inst.Transform:GetWorldPosition()
+	local dir_x, dir_z = VecUtil_Normalize(pos_x - x, pos_z - z)
 	self:SteerInDir(dir_x, dir_z)
 end
 
 function SteeringWheelUser:SteerInDir(dir_x, dir_z)
 	local boat = self:GetBoat()
-	if boat == nil then return end
+	if boat ~= nil then
+		boat.components.boatphysics:SetTargetRudderDirection(dir_x, dir_z)
+	end
 
 	local right_vec = TheCamera:GetRightVec()
-
-	self.should_play_left_turn_anim = VecUtil_Dot(right_vec.x, right_vec.z, dir_x, dir_z) < 0
-
-	boat.components.boatphysics:SetTargetRudderDirection(dir_x, dir_z)
-	self.inst:PushEvent("set_heading")	
+	self.should_play_left_turn_anim = VecUtil_Dot(right_vec.x, right_vec.z, dir_x, dir_z) > 0
+	self.inst:PushEvent("set_heading")
 end
 
 function SteeringWheelUser:GetBoat()
@@ -76,7 +73,10 @@ function SteeringWheelUser:GetBoat()
 end
 
 function SteeringWheelUser:OnUpdate(dt)
-	if self.steering_wheel == nil then return end
+	if self.steering_wheel == nil then 
+	    self.inst:StopUpdatingComponent(self)
+		return 
+	end
 
 	--State graph was interrupted
 	if not self.inst.sg:HasStateTag("is_using_steering_wheel") then
@@ -84,15 +84,7 @@ function SteeringWheelUser:OnUpdate(dt)
 		return 
 	end
 
-	local down_vec = TheCamera:GetDownVec()
-	local my_pos_x, my_pos_y, my_pos_z = self.inst.Transform:GetWorldPosition()
-	local wheel_pos_x, wheel_pos_y, wheel_pos_z = self.steering_wheel.Transform:GetWorldPosition()
-	local facing_x, facing_z = my_pos_x + down_vec.x, my_pos_z + down_vec.z
-
-
-	self.inst.Transform:SetPosition(wheel_pos_x, wheel_pos_y, wheel_pos_z)
-	self.inst:FacePoint(facing_x, 0, facing_z)
-	self.steering_wheel:FacePoint(facing_x, 0, facing_z)
+	self.inst.Transform:SetPosition(self.steering_wheel.Transform:GetWorldPosition())
 end
 
 return SteeringWheelUser

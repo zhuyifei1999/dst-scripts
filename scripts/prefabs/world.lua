@@ -209,6 +209,22 @@ local prefabs =
 
 --------------------------------------------------------------------------
 
+local function OnPlayerSpawn(world, inst)
+    inst:DoTaskInTime(0, function()
+        if TheWorld.auto_teleport_players then
+            local teleported = false
+            
+            for k,v in pairs(Ents) do                            
+                if v:IsValid() and v:HasTag("player") and v ~= inst and not teleported then                    
+                    inst.Transform:SetPosition(v.Transform:GetWorldPosition())
+                    inst:SnapCamera()
+                    teleported = true
+                end         
+            end
+        end    
+    end)
+end
+
 local function DoGameDataChanged(inst)
     inst.game_data_task = nil
 
@@ -405,6 +421,8 @@ function MakeWorld(name, customprefabs, customassets, common_postinit, master_po
         UpdateServerWorldGenDataString()
 
         inst.game_data_task = nil
+
+        inst:ListenForEvent("ms_playerspawn", OnPlayerSpawn)
 
         return inst
     end

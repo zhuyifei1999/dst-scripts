@@ -785,7 +785,7 @@ local function purple()
 end
 
 local function yellow()
-    local inst = commonfn("yellow", { "nopunch", "allow_action_on_impassable" })
+    local inst = commonfn("yellow", { "nopunch", "allow_action_on_impassable" }, true)
 
     inst:AddComponent("reticule")
     inst.components.reticule.targetfn = light_reticuletargetfn
@@ -873,7 +873,7 @@ local function orange()
 end
 
 local function opal()
-    local inst = commonfn("opal", { "nopunch", "allow_action_on_impassable" })
+    local inst = commonfn("opal", { "nopunch", "allow_action_on_impassable" }, true)
 
     inst:AddComponent("reticule")
     inst.components.reticule.targetfn = light_reticuletargetfn

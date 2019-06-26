@@ -29,7 +29,7 @@ local states =
     {
         name = "place",
         onenter = function(inst)
-            inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/place")
+            inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/place")
             inst.SoundEmitter:PlaySound("turnoftides/common/together/water/splash/large",nil,.3)
             inst.AnimState:PlayAnimation("place")
         end,

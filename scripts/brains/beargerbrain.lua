@@ -32,8 +32,8 @@ local PICKABLE_FOODS =
 local function EatFoodAction(inst) --Look for food to eat
     -- If we don't check that the target is not a beehive, we will keep doing targeting stuff while there's precious honey on the ground
     if inst.sg:HasStateTag("busy")
-        and not inst.sg:HasStateTag("wantstoeat")
-        and (inst.components.combat ~= nil and
+            and not inst.sg:HasStateTag("wantstoeat")
+            and (inst.components.combat ~= nil and
             inst.components.combat.target ~= nil and
             not inst.components.combat.target:HasTag("beehive")) then
         return
@@ -78,7 +78,7 @@ local function StealFoodAction(inst) --Look for things to take food from (EatFoo
 
     --Gather all targets in one pass
     for i, item in ipairs(ents) do
-        if item:IsValid() then
+        if item:IsValid() and item:IsOnValidGround() then
             if item.components.stewer ~= nil then
                 if targets.stewer == nil and item.components.stewer:IsDone() then
                     targets.stewer = item
@@ -169,7 +169,7 @@ end
 
 local function AttackHiveAction(inst)
     local hive = FindEntity(inst, SEE_STRUCTURE_DIST, function(guy) 
-            return inst.components.combat:CanTarget(guy)
+            return inst.components.combat:CanTarget(guy) and guy:IsOnValidGround()
         end,
         { "beehive" })
     return hive ~= nil and BufferedAction(inst, hive, ACTIONS.ATTACK) or nil

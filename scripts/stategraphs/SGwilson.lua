@@ -1,4 +1,3 @@
-local STEERING_WHEEL_OFFSET = -0.1
 
 local function DoEquipmentFoleySounds(inst)
     for k, v in pairs(inst.components.inventory.equipslots) do
@@ -643,6 +642,7 @@ local actionhandlers =
     ActionHandler(ACTIONS.REPAIR_LEAK, "dolongaction"),
     ActionHandler(ACTIONS.STEER_BOAT, "steer_boat_idle_pre"),
     ActionHandler(ACTIONS.STOP_STEERING_BOAT, "stop_steering"),
+    ActionHandler(ACTIONS.SET_HEADING, "steer_boat_turning"),
     ActionHandler(ACTIONS.ROW_FAIL, "row_fail"),
     ActionHandler(ACTIONS.ROW, "row"),
     ActionHandler(ACTIONS.EXTEND_PLANK, "doshortaction"),
@@ -650,7 +650,6 @@ local actionhandlers =
     ActionHandler(ACTIONS.ABANDON_SHIP, "abandon_ship"),
     ActionHandler(ACTIONS.MOUNT_PLANK, "mount_plank"),
     ActionHandler(ACTIONS.DISMOUNT_PLANK, "doshortaction"),    
-    ActionHandler(ACTIONS.SET_HEADING, "steer_boat_turning"),
     ActionHandler(ACTIONS.CAST_NET, "cast_net"),
     ActionHandler(ACTIONS.UNWRAP,
         function(inst, action)
@@ -3057,10 +3056,12 @@ local states =
 
         timeline =
         {
-            TimeEvent(10*FRAMES, function(inst) 
-                inst:PerformBufferedAction() 
-                inst.sg:RemoveStateTag("prenet") 
-                inst.SoundEmitter:PlaySound("dontstarve/wilson/dig")
+            TimeEvent(10*FRAMES, function(inst)
+                local buffaction = inst:GetBufferedAction()
+                local tool = buffaction ~= nil and buffaction.invobject or nil
+                inst:PerformBufferedAction()
+                inst.sg:RemoveStateTag("prenet")
+                inst.SoundEmitter:PlaySound(tool ~= nil and tool.overridebugnetsound or "dontstarve/wilson/dig")
             end),
         },
 
@@ -4329,7 +4330,7 @@ local states =
                 inst.AnimState:PlayAnimation("whip_pre")
                 inst.AnimState:PushAnimation("whip", false)
                 inst.sg.statemem.iswhip = true
-                inst.SoundEmitter:PlaySound("dontstarve/common/whip_pre")
+                inst.SoundEmitter:PlaySound("dontstarve/common/whip_large")
                 cooldown = 17 * FRAMES
             elseif equip ~= nil and equip.components.weapon ~= nil and not equip:HasTag("punch") then
                 inst.AnimState:PlayAnimation("atk_pre")
@@ -5220,7 +5221,7 @@ local states =
                 inst.AnimState:PlayAnimation("whip_pre")
                 inst.AnimState:PushAnimation("whip", false)
                 inst.sg.statemem.iswhip = true
-                inst.SoundEmitter:PlaySound("dontstarve/common/whip_pre", nil, nil, true)
+                inst.SoundEmitter:PlaySound("dontstarve/common/whip_large", nil, nil, true)
                 cooldown = math.max(cooldown, 17 * FRAMES)
             elseif equip ~= nil and equip:HasTag("book") then
                 inst.AnimState:PlayAnimation("attack_book")
@@ -6289,28 +6290,6 @@ local states =
     },
 
    State{
-        name = "stop_steering",
-        tags = { },
-
-        onenter = function(inst)
-            inst.AnimState:PlayAnimation("steer_idle_pst")                   
-            inst.AnimState:SetSortWorldOffset(0, STEERING_WHEEL_OFFSET, 0)             
-        end,    
-
-        onexit = function(inst)
-            inst.AnimState:SetSortWorldOffset(0, 0, 0)             
-        end,
-
-        events = 
-        {
-            EventHandler("animqueueover", function(inst)
-                inst.sg:GoToState("idle", true)
-                inst:PerformBufferedAction()
-            end),          
-        }
-    },
-
-   State{
         name = "mount_plank",
         tags = { "idle" },
 
@@ -6339,38 +6318,43 @@ local states =
         tags = { "is_using_steering_wheel", "doing" },
 
         onenter = function(inst, skip_pre)
-            inst.AnimState:PlayAnimation("steer_idle_pre")        
-            inst:PerformBufferedAction() 
-            inst.AnimState:SetSortWorldOffset(0, STEERING_WHEEL_OFFSET, 0)  
+			inst.Transform:SetNoFaced()
+			inst.AnimState:PlayAnimation("steer_idle_pre")        
         end,   
-
-        onexit = function(inst)
-            inst.AnimState:SetSortWorldOffset(0, 0, 0)             
-        end,        
 
         events = 
         {
             EventHandler("animqueueover", function(inst)
-                inst.sg:GoToState("steer_boat_idle_loop")
+				if inst:PerformBufferedAction() then
+		            inst.sg:GoToState("steer_boat_idle_loop", true)
+				else
+					inst.sg:GoToState("idle")
+				end
             end),
             EventHandler("stop_steering_boat", function(inst)
                 inst.sg:GoToState("idle")
             end),
         },
+
+        onexit = function(inst)
+			inst.Transform:SetFourFaced()
+        end,        
     },
 
     State{
         name = "steer_boat_idle_loop",
         tags = { "is_using_steering_wheel", "doing" },
 
-        onenter = function(inst, skip_pre)
-            inst.components.steeringwheeluser:HideWheel()        
-            inst.AnimState:PushAnimation("steer_idle_loop", true)            
-            inst.AnimState:SetSortWorldOffset(0, STEERING_WHEEL_OFFSET, 0)  
+        onenter = function(inst, play_pre)
+			inst.Transform:SetNoFaced()
+			if play_pre then
+	            inst.AnimState:PlayAnimation("steer_idle_pre2")
+			end
+            inst.AnimState:PushAnimation("steer_idle_loop", true)
         end,
 
         onexit = function(inst)
-            inst.AnimState:SetSortWorldOffset(0, 0, 0)             
+			inst.Transform:SetFourFaced()
         end,                
 
         events =
@@ -6386,7 +6370,11 @@ local states =
         tags = { "is_using_steering_wheel", "doing", "is_turning_wheel" },
 
         onenter = function(inst, skip_action)
-            --inst.AnimState:PlayAnimation("steer_left_loop_pre")
+            if not skip_action then
+                inst:PerformBufferedAction()       
+            end
+
+			inst.Transform:SetNoFaced()
             if inst.components.steeringwheeluser.should_play_left_turn_anim then
                 inst.AnimState:PlayAnimation("steer_left_pre", false)
                 inst.AnimState:PushAnimation("steer_left_loop", false)
@@ -6396,15 +6384,10 @@ local states =
                 inst.AnimState:PushAnimation("steer_right_loop", false)
                 inst.AnimState:PushAnimation("steer_right_pst", false)
             end
-            
-            if not skip_action then
-                inst:PerformBufferedAction()       
-            end
-            inst.AnimState:SetSortWorldOffset(0, STEERING_WHEEL_OFFSET, 0)             
         end,
 
         onexit = function(inst)
-            inst.AnimState:SetSortWorldOffset(0, 0, 0)             
+			inst.Transform:SetFourFaced()
         end,                        
 
         timeline =
@@ -6423,6 +6406,27 @@ local states =
                 inst.sg:GoToState("idle")
             end),
         },
+    },
+
+   State{
+        name = "stop_steering",
+        tags = { },
+
+        onenter = function(inst)
+			inst.Transform:SetNoFaced()
+            inst.AnimState:PlayAnimation("steer_idle_pst")                   
+        end,    
+
+        onexit = function(inst)
+			inst.Transform:SetFourFaced()
+        end,
+
+        events = 
+        {
+            EventHandler("animqueueover", function(inst)
+                inst.sg:GoToState("idle", true)
+            end),          
+        }
     },
 
     State{

@@ -542,22 +542,30 @@ function LocoMotor:PushAction(bufferedaction, run, try_instant)
     end
 end
 
-function LocoMotor:GoToEntity(inst, bufferedaction, run)
-    self.dest = Dest(inst)
+function LocoMotor:GoToEntity(target, bufferedaction, run)
+    self.dest = Dest(target)
     self.throttle = 1
 
     self:SetBufferedAction(bufferedaction)
     self.wantstomoveforward = true
 
+    local arrive_dist = nil
     if bufferedaction ~= nil and bufferedaction.distance ~= nil then
-        self.arrive_dist = bufferedaction.distance
+        arrive_dist = bufferedaction.distance
     else
-        self.arrive_dist = ARRIVE_STEP + inst:GetPhysicsRadius(0) + self.inst:GetPhysicsRadius(0)
+        arrive_dist = ARRIVE_STEP + target:GetPhysicsRadius(0) + self.inst:GetPhysicsRadius(0)
 
-        if bufferedaction ~= nil and bufferedaction.action.mindistance ~= nil and bufferedaction.action.mindistance > self.arrive_dist then
-            self.arrive_dist = bufferedaction.action.mindistance
+        local entity_arrive_distance_fn = bufferedaction.action.entity_arrive_distance_fn
+        if entity_arrive_distance_fn ~= nil then
+            arrive_dist = arrive_dist + entity_arrive_distance_fn(self.inst, target)
+        end
+
+        if bufferedaction ~= nil and bufferedaction.action.mindistance ~= nil and bufferedaction.action.mindistance > arrive_dist then
+            arrive_dist = bufferedaction.action.mindistance
         end
     end
+
+    self.arrive_dist = arrive_dist
 
     if self.directdrive then
         if run then
@@ -1029,17 +1037,17 @@ function LocoMotor:OnUpdate(dt)
             destpos_y = 0
 
             local rotation = self.inst.Transform:GetRotation() * DEGREES
-            local forward_x, forward_z = math.cos(rotation), -math.sin(rotation)                
+            local forward_x, forward_z = math.cos(rotation), -math.sin(rotation)
 
             local dest_dot_forward = 0
 
             local map = TheWorld.Map
-            local my_platform = map:GetPlatformAtPoint(mypos_x, mypos_z)            
+            local my_platform = map:GetPlatformAtPoint(mypos_x, mypos_z)
 
             if self.dest and self.dest:IsValid() then
                 destpos_x, destpos_y, destpos_z = self.dest:GetPoint()
-                local dest_dir_x, dest_dir_z = VecUtil_Normalize(destpos_x - mypos_x, destpos_z - mypos_z)                
-                dest_dot_forward = VecUtil_Dot(dest_dir_x, dest_dir_z, forward_x, forward_z)                
+                local dest_dir_x, dest_dir_z = VecUtil_Normalize(destpos_x - mypos_x, destpos_z - mypos_z)
+                dest_dot_forward = VecUtil_Dot(dest_dir_x, dest_dir_z, forward_x, forward_z)
                 local dist = VecUtil_Length(destpos_x - mypos_x, destpos_z - mypos_z)
                 if dist <= 1.5 then
                     local other_platform = map:GetPlatformAtPoint(destpos_x, destpos_z)
@@ -1060,8 +1068,8 @@ function LocoMotor:OnUpdate(dt)
             local can_hop = false
 			local hop_x, hop_z, target_platform 
 			if my_platform ~= other_platform 
-				and (self.inst.components.inventory == nil or not self.inst.components.inventory:IsHeavyLifting()) 
-				and (self.inst.components.rider == nil or not self.inst.components.rider:IsRiding()) 
+				    and (self.inst.replica.inventory == nil or not self.inst.replica.inventory:IsHeavyLifting())
+				    and (self.inst.replica.rider == nil or not self.inst.replica.rider:IsRiding())
 				then
 
 				can_hop, hop_x, hop_z, target_platform = self:ScanForPlatform(my_platform, destpos_x, destpos_z)
@@ -1082,7 +1090,7 @@ function LocoMotor:OnUpdate(dt)
 					end
 				end
 			elseif self.inst.components.amphibiouscreature ~= nil and other_platform == nil and not self.inst.sg:HasStateTag("jumping") then
-				local dist = self.inst:GetPhysicsRadius() + 2.5
+				local dist = self.inst:GetPhysicsRadius(0) + 2.5
 				local _x, _z = forward_x * dist + mypos_x, forward_z * dist + mypos_z
 				if my_platform ~= nil then
 					can_hop = self:ScanForPlatform(nil, _x, _z)

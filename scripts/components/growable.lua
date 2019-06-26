@@ -122,6 +122,10 @@ function Growable:ExtendGrowTime(extra_time)
     end
 end
 
+function Growable:GetStage()
+    return self.stage
+end
+
 function Growable:SetStage(stage)
     if stage > #self.stages then
         stage = #self.stages

@@ -807,6 +807,7 @@ local function OnLoad(inst, data)
 
     inst:DoTaskInTime(0, function()
         local my_x, my_y, my_z = inst.Transform:GetWorldPosition()
+
         if not TheWorld.Map:IsPassableAtPoint(my_x, my_y, my_z) then
         for k,v in pairs(Ents) do            
                 if v:IsValid() and v:HasTag("multiplayer_portal") then
@@ -1426,7 +1427,6 @@ local function MakePlayerCharacter(name, customprefabs, customassets, common_pos
         inst:AddTag("scarytoprey")
         inst:AddTag("character")
         inst:AddTag("lightningtarget")
-        inst:AddTag("can_offset_sort_pos")        
 
         inst.AttachClassified = AttachClassified
         inst.DetachClassified = DetachClassified

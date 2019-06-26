@@ -120,8 +120,8 @@ end
 function Map:IsDeployPointClear(pt, inst, min_spacing, min_spacing_sq_fn, near_other_fn)
     local min_spacing_sq = min_spacing ~= nil and min_spacing * min_spacing or nil
     near_other_fn = near_other_fn or IsNearOther
-    for i, v in ipairs(TheSim:FindEntities(pt.x, 0, pt.z, math.max(DEPLOY_EXTRA_SPACING, min_spacing), nil, DEPLOY_IGNORE_TAGS)) do        
-        if v ~= inst and            
+    for i, v in ipairs(TheSim:FindEntities(pt.x, 0, pt.z, math.max(DEPLOY_EXTRA_SPACING, min_spacing), nil, DEPLOY_IGNORE_TAGS)) do
+        if v ~= inst and
             v.entity:IsVisible() and
             v.components.placer == nil and
             v.entity:GetParent() == nil and
@@ -158,32 +158,36 @@ function Map:CanDeployWallAtPoint(pt, inst)
         and self:IsDeployPointClear(pt, inst, 1, nil, IsNearOtherWall)
 end
 
-function Map:CanDeployBoatAtPoint(pt, inst, mouseover)
-    local min_distance_from_land = 0.5    
-    local min_distance_from_boat = 0.5
-
+function Map:CanDeployAtPointInWater(pt, inst, mouseover, data)
     local tile = self:GetTileAtPoint(pt.x, pt.y, pt.z)
     if tile == GROUND.IMPASSABLE or tile == GROUND.INVALID then
         return false
     end
 
     -- check if there's a boat in the way
-    local entities = TheSim:FindEntities(pt.x, 0, pt.z, TUNING.MAX_WALKABLE_PLATFORM_RADIUS * 2 + min_distance_from_boat, WALKABLE_PLATFORM_TAGS)
+    local min_distance_from_boat = (data and data.boat) or 0
+    local radius = (data and data.radius) or 0
+    local entities = TheSim:FindEntities(pt.x, 0, pt.z, TUNING.MAX_WALKABLE_PLATFORM_RADIUS + radius + min_distance_from_boat, WALKABLE_PLATFORM_TAGS)
     for i, v in ipairs(entities) do
         return false
     end
 
+    local min_distance_from_land = (data and data.land) or 0
+
     return (mouseover == nil or mouseover:HasTag("player"))
-        and self:IsDeployPointClear(pt, nil, TUNING.MAX_WALKABLE_PLATFORM_RADIUS)
-        and self:IsSurroundedByWater(pt.x, pt.y, pt.z, min_distance_from_land + TUNING.MAX_WALKABLE_PLATFORM_RADIUS)
+        and self:IsDeployPointClear(pt, nil, min_distance_from_boat + radius)
+        and self:IsSurroundedByWater(pt.x, pt.y, pt.z, min_distance_from_land + radius)
+end
+
+function Map:CanDeployBoatAtPoint(pt, inst, mouseover)
+    return self:CanDeployAtPointInWater(pt, inst, mouseover, {
+        land = 0.5, boat = 0.5, radius = TUNING.MAX_WALKABLE_PLATFORM_RADIUS
+    })
 end
 
 function Map:CanDeployMastAtPoint(pt, inst, mouseover)
-    local min_distance_from_land = 0.5    
-    local min_distance_from_boat = 0.5
-
     local tile = self:GetTileAtPoint(pt.x, pt.y, pt.z)
-    if tile == GROUND.IMPASSABLE or tile == GROUND.IMPASSABLE then
+    if tile == GROUND.IMPASSABLE or tile == GROUND.INVALID then
         return false
     end
 
@@ -195,6 +199,7 @@ function Map:CanDeployMastAtPoint(pt, inst, mouseover)
     end
 
     return (mouseover == nil or mouseover:HasTag("player"))
+        and self:IsPassableAtPointWithPlatformRadiusBias(pt.x,pt.y,pt.z, false, false, TUNING.BOAT.NO_BUILD_BORDER_RADIUS, true)
         and self:IsDeployPointClear(pt, nil, inst.replica.inventoryitem:DeploySpacingRadius())
 end
 

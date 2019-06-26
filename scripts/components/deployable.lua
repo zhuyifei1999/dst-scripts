@@ -90,9 +90,12 @@ function Deployable:CanDeploy(pt, mouseover, deployer)
     elseif self.mode == DEPLOYMODE.DEFAULT then
         return TheWorld.Map:CanDeployAtPoint(pt, self.inst, mouseover)
     elseif self.mode == DEPLOYMODE.WATER then
-        return TheWorld.Map:CanDeployBoatAtPoint(pt, self.inst, mouseover)
+        return TheWorld.Map:CanDeployAtPointInWater(pt, self.inst, mouseover,
+        {
+            land = 0.2, boat = 0.2, radius = self:DeploySpacingRadius(),
+        })
     elseif self.mode == DEPLOYMODE.MAST then
-        return TheWorld.Map:CanDeployMastAtPoint(pt, self.inst, mouseover)        
+        return TheWorld.Map:CanDeployMastAtPoint(pt, self.inst, mouseover)
     end
 end
 

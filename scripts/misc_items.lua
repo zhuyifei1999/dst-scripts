@@ -2247,6 +2247,13 @@ MISC_ITEMS =
 		rarity = "Loyal",
 		release_group = 65,
 	},
+	playerportrait_bg_iceboxcrystal =
+	{
+		type = "playerportrait",
+		skin_tags = { "CRYSTAL", "PLAYERPORTRAIT", },
+		rarity = "Loyal",
+		release_group = 69,
+	},
 	playerportrait_bg_lamppost =
 	{
 		type = "playerportrait",
@@ -2326,6 +2333,13 @@ MISC_ITEMS =
 		rarity = "Classy",
 		rarity_modifier = "Woven",
 		release_group = 51,
+	},
+	playerportrait_bg_moonstarstaffcrystal =
+	{
+		type = "playerportrait",
+		skin_tags = { "CRYSTAL", "PLAYERPORTRAIT", },
+		rarity = "Loyal",
+		release_group = 69,
 	},
 	playerportrait_bg_mushroom =
 	{
@@ -3034,6 +3048,13 @@ MISC_ITEMS =
 		rarity_modifier = "Woven",
 		release_group = 32,
 	},
+	profileflair_icebox_crystal =
+	{
+		type = "profileflair",
+		skin_tags = { "CRYSTAL", "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 69,
+	},
 	profileflair_icehound =
 	{
 		type = "profileflair",
@@ -3121,6 +3142,13 @@ MISC_ITEMS =
 		rarity = "Common",
 		rarity_modifier = "Woven",
 		release_group = 32,
+	},
+	profileflair_moonstaff_crystal =
+	{
+		type = "profileflair",
+		skin_tags = { "CRYSTAL", "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 69,
 	},
 	profileflair_mudpie_yotp =
 	{
@@ -3444,6 +3472,13 @@ MISC_ITEMS =
 		rarity = "Common",
 		rarity_modifier = "Woven",
 		release_group = 32,
+	},
+	profileflair_starstaff_crystal =
+	{
+		type = "profileflair",
+		skin_tags = { "CRYSTAL", "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 69,
 	},
 	profileflair_tallbird_eye =
 	{

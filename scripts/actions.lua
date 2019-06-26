@@ -15,22 +15,6 @@ local function DefaultRangeCheck(doer, target)
     return dst <= 16
 end
 
-local function WaterPickupDistanceUpdateFn(doer, target)
-    if target == nil then
-        return
-    end
-    local target_x, target_y, target_z = target.Transform:GetWorldPosition()
-    local doer_x, doer_y, doer_z = doer.Transform:GetWorldPosition()
-
-    local map = TheWorld.Map
-    local pickup_distance = 0
-    if map:GetPlatformAtPoint(target_x, target_z) == nil and not map:IsVisualGroundAtPoint(target_x, 0, target_z) then
-        pickup_distance = 1.75
-    end
-
-    return pickup_distance
-end
-
 local function CheckDeployRange(doer, target)
     if target == nil then
         return
@@ -70,6 +54,22 @@ local function CheckRowRange(doer, target)
     end
 end
 
+local function PickupRange(doer, target)
+    if not target:IsValid() then
+        return 0
+    end
+
+    local target_x, target_y, target_z = target.Transform:GetWorldPosition()
+
+    local is_on_water = not TheWorld.Map:IsVisualGroundAtPoint(target_x, 0, target_z) and not TheWorld.Map:IsPassableAtPoint(target_x, 0, target_z)            
+
+    if is_on_water then
+        return 0.75
+    end
+
+    return 0
+end
+
 --Positional parameters have been deprecated, pass in a table instead.
 Action = Class(function(self, data, instant, rmb, distance, ghost_valid, ghost_exclusive, canforce, rangecheckfn)
     if data == nil then
@@ -105,6 +105,7 @@ Action = Class(function(self, data, instant, rmb, distance, ghost_valid, ghost_e
     self.disable_platform_hopping = data.disable_platform_hopping
     self.skip_locomotor_facing = data.skip_locomotor_facing
     self.do_not_locomote = data.do_not_locomote
+    self.entity_arrive_distance_fn = data.entity_arrive_distance_fn
 end)
 
 ACTIONS =
@@ -116,8 +117,8 @@ ACTIONS =
     CHOP = Action(),
     ATTACK = Action({ priority=2, canforce=true, mount_valid=true }), -- No custom range check, attack already handles that
     EAT = Action({ mount_valid=true }),
-    PICK = Action({ canforce=true, rangecheckfn=DefaultRangeCheck }),
-    PICKUP = Action({ priority=1 }),
+    PICK = Action({ canforce=true, rangecheckfn=DefaultRangeCheck, entity_arrive_distance_fn=PickupRange }),
+    PICKUP = Action({ priority=1, entity_arrive_distance_fn=PickupRange }),
     MINE = Action(),
     DIG = Action({ rmb=true }),
     GIVE = Action({ mount_valid=true, canforce=true, rangecheckfn=DefaultRangeCheck }),
@@ -248,9 +249,9 @@ ACTIONS =
     MOUNT_PLANK = Action({ distance=0.5 }),            
     DISMOUNT_PLANK = Action({ distance=2.5 }),            
     REPAIR_LEAK = Action({ distance=2.5 }),
-    STEER_BOAT = Action({ distance=0 }),
+    STEER_BOAT = Action({ distance=0.1 }),
     SET_HEADING = Action({distance=9999, do_not_locomote=true}),
-    STOP_STEERING_BOAT = Action(),
+    STOP_STEERING_BOAT = Action({instant=true}),
     CAST_NET = Action({ priority=10, rmb=true, distance=12, mount_valid=true, disable_platform_hopping=true }),
     ROW_FAIL = Action({distance=9999, disable_platform_hopping=true, skip_locomotor_facing=true}),
     ROW = Action({priority=3, distanceupdatefn=CheckRowRange, is_relative_to_platform = true, disable_platform_hopping=true}),
@@ -2336,27 +2337,37 @@ ACTIONS.RETRACT_PLANK.stroverridefn = function(act)
 end
 
 ACTIONS.REPAIR_LEAK.fn = function(act)    
-    if act.invobject ~= nil and act.target ~= nil and  act.target.components.boatleak ~= nil and act.target:HasTag("boat_leak") then
+    if act.invobject ~= nil and act.target ~= nil and act.target.components.boatleak ~= nil and act.target:HasTag("boat_leak") then
 	    return act.target.components.boatleak:Repair(act.doer, act.invobject)
 	end
-end
-
-ACTIONS.STEER_BOAT.fn = function(act)
-    act.target.components.steeringwheel:StartSteering(act.doer)    
-    return true
 end
 
 ACTIONS.STEER_BOAT.stroverridefn = function(act)
     return STRINGS.ACTIONS.STEER_BOAT
 end
 
+ACTIONS.STEER_BOAT.fn = function(act)
+	if act.target ~= nil
+		and (act.target.components.steeringwheel ~= nil and act.target.components.steeringwheel.sailor == nil)
+		and (act.target.components.burnable ~= nil and not act.target.components.burnable:IsBurning()) 
+		and act.doer.components.steeringwheeluser ~= nil then
+
+		act.doer.components.steeringwheeluser:SetSteeringWheel(act.target)
+		return true
+	end
+end
+
 ACTIONS.SET_HEADING.fn = function(act)
-    act.doer.components.steeringwheeluser:Steer(act.pos.x, act.pos.z)
+	if act.doer.components.steeringwheeluser ~= nil then
+	    act.doer.components.steeringwheeluser:Steer(act.pos.x, act.pos.z)
+	end
     return true
 end
 
 ACTIONS.STOP_STEERING_BOAT.fn = function(act)
-    act.doer.components.steeringwheeluser:SetSteeringWheel(nil)    
+	if act.doer.components.steeringwheeluser ~= nil then
+	    act.doer.components.steeringwheeluser:SetSteeringWheel(nil)    
+	end
     return true
 end
 

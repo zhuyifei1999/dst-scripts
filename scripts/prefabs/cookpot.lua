@@ -39,10 +39,17 @@ local function onhit(inst, worker)
         if inst.components.stewer:IsCooking() then
             inst.AnimState:PlayAnimation("hit_cooking")
             inst.AnimState:PushAnimation("cooking_loop", true)
+            inst.SoundEmitter:PlaySound("dontstarve/common/cookingpot_close")
         elseif inst.components.stewer:IsDone() then
             inst.AnimState:PlayAnimation("hit_full")
             inst.AnimState:PushAnimation("idle_full", false)
         else
+            if inst.components.container ~= nil and inst.components.container:IsOpen() then
+                inst.components.container:Close()
+                --onclose will trigger sfx already
+            else
+                inst.SoundEmitter:PlaySound("dontstarve/common/cookingpot_close")
+            end
             inst.AnimState:PlayAnimation("hit_empty")
             inst.AnimState:PushAnimation("idle_empty", false)
         end
@@ -127,6 +134,7 @@ end
 local function harvestfn(inst)
     if not inst:HasTag("burnt") then
         inst.AnimState:PlayAnimation("idle_empty")
+        inst.SoundEmitter:PlaySound("dontstarve/common/cookingpot_close")
     end
 end
 

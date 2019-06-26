@@ -31,6 +31,13 @@ local states =
             inst:RemoveTag("interactable")
         end,
 
+        timeline =
+        {
+            TimeEvent(0 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/plank/in")
+            end),
+        },
+
         events =
         {
             EventHandler("animover", function(inst) inst.sg:GoToState("retracted") end),
@@ -77,6 +84,13 @@ local states =
             inst.AnimState:PlayAnimation("plank_activate")
             inst:RemoveTag("interactable")
         end,
+
+        timeline =
+        {
+            TimeEvent(0 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("turnoftides/common/together/boat/plank/out")
+            end),
+        },
 
         events =
         {

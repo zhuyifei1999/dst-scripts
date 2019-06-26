@@ -2096,8 +2096,8 @@ CLOTHING =
 		type = "body",
 		skin_tags = { "ROSE", "CLOTHING_BODY", "CLOTHING", },
 		symbol_overrides = { "hand", "arm_lower", "arm_upper", "torso", "torso_pelvis", "leg", "foot", },
-		symbol_overrides_skinny = { arm_lower = "arm_lower_skinny", arm_upper = "arm_upper_mighty", },
-		symbol_overrides_mighty = { arm_lower = "arm_lower_mighty", arm_upper = "arm_upper_skinny", torso = "torso_mighty", },
+		symbol_overrides_skinny = { arm_lower = "arm_lower_skinny", arm_upper = "arm_upper_skinny", },
+		symbol_overrides_mighty = { arm_lower = "arm_lower_mighty", arm_upper = "arm_upper_mighty", torso = "torso_mighty", },
 		symbol_hides = { "skirt", "arm_upper_skin", },
 		torso_tuck = "untucked",
 		rarity = "Distinguished",
@@ -3991,7 +3991,7 @@ CLOTHING =
 	{
 		type = "hand",
 		skin_tags = { "CLOTHING_HAND", "CLOTHING", "BROWN", },
-		symbol_overrides = { "hand", },
+		symbol_overrides = { "arm_lower_cuff", "hand", },
 		marketable = true,
 		release_group = 64,
 	},
@@ -3999,7 +3999,7 @@ CLOTHING =
 	{
 		type = "hand",
 		skin_tags = { "CLOTHING_HAND", "CLOTHING", "GREY", },
-		symbol_overrides = { "hand", },
+		symbol_overrides = { "arm_lower_cuff", "hand", },
 		marketable = true,
 		release_group = 64,
 	},
@@ -4007,7 +4007,7 @@ CLOTHING =
 	{
 		type = "hand",
 		skin_tags = { "CLOTHING_HAND", "CLOTHING", "RED", },
-		symbol_overrides = { "hand", },
+		symbol_overrides = { "arm_lower_cuff", "hand", },
 		marketable = true,
 		release_group = 64,
 	},
@@ -4015,7 +4015,7 @@ CLOTHING =
 	{
 		type = "hand",
 		skin_tags = { "CLOTHING_HAND", "CLOTHING", "TAN", },
-		symbol_overrides = { "hand", },
+		symbol_overrides = { "arm_lower_cuff", "hand", },
 		marketable = true,
 		release_group = 64,
 	},

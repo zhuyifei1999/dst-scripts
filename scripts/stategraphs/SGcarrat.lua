@@ -27,21 +27,11 @@ local states =
         onenter = function(inst, playanim)
             inst.Physics:Stop()
 
-            local play_special_idle = (math.random() > 0.85)
-
             if playanim then
                 inst.AnimState:PlayAnimation(playanim)
-                if play_special_idle then
-                    inst.AnimState:PushAnimation("idle2", false)
-                end
                 inst.AnimState:PushAnimation("idle1", true)
-            elseif not inst.AnimState:IsCurrentAnimation("idle1") and not inst.AnimState:IsCurrentAnimation("idle2") then
-                if play_special_idle then
-                    inst.AnimState:PlayAnimation("idle2", false)
-                    inst.AnimState:PushAnimation("idle1", true)
-                else
-                    inst.AnimState:PlayAnimation("idle1", true)
-                end
+            elseif not inst.AnimState:IsCurrentAnimation("idle1") then
+                inst.AnimState:PlayAnimation("idle1", true)
             end
             inst.sg:SetTimeout(1 + math.random()*1)
         end,
@@ -49,6 +39,8 @@ local states =
         ontimeout= function(inst)
             if ((inst.sg.mem.emerge_time or 0) + TUNING.CARRAT.EMERGED_TIME_LIMIT) < GetTime() then
                 inst.sg:GoToState("submerge")
+            elseif math.random() > 0.55 then
+                inst.sg:GoToState("idle2")
             else
                 inst.sg:GoToState("idle")
             end
@@ -56,10 +48,37 @@ local states =
     },
 
     State {
+        name = "idle2",
+        tags = { "idle", "canrotate" },
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("idle2", false)
+        end,
+
+        timeline =
+        {
+            TimeEvent(10*FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound(inst.sounds.idle)
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                inst.sg:GoToState("idle")
+            end),
+        },
+    },
+
+    State {
         name = "submerge",
         tags = { "busy", "noattack" },
 
         onenter = function(inst)
+            if not inst:IsOnValidGround() then
+                inst.sg:GoToState("idle")
+                return
+            end
+
             if inst.components.locomotor ~= nil then
                 inst.components.locomotor:StopMoving()
             end
@@ -122,7 +141,6 @@ local states =
 
         onenter = function(inst)
             inst.Physics:SetActive(false)
-            inst.SoundEmitter:PlaySound(inst.sounds.emerge)
             inst.AnimState:PlayAnimation("emerge_fast")
 
             inst.sg.mem.emerge_time = GetTime()
@@ -139,6 +157,9 @@ local states =
 
         timeline =
         {
+            TimeEvent(0, function(inst)
+                inst.SoundEmitter:PlaySound(inst.sounds.emerge)
+            end),
             TimeEvent(5*FRAMES, function(inst)
                 inst.DynamicShadow:Enable(true)
             end),

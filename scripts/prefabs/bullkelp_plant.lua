@@ -46,7 +46,8 @@ local function fn()
 
     inst.MiniMapEntity:SetIcon("bullkelp_plant.png")
 
-	MakeInventoryPhysics(inst)
+    local radius = 0.7
+	MakeInventoryPhysics(inst, nil, radius)
 
     inst.AnimState:SetBank("bullkelp")
     inst.AnimState:SetBuild("bullkelp")

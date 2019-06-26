@@ -266,9 +266,11 @@ function MakeHugeFreezableCharacter(inst, sym, offset)
     inst.components.freezable:AddShatterFX(shatterfx.character, offset or Vector3(0, 0, 0), sym)
 end
 
-function MakeInventoryPhysics(inst)
+function MakeInventoryPhysics(inst, mass, rad)
+    mass = mass or 1
+    rad = rad or .5
 	local phys = inst.entity:AddPhysics()
-	phys:SetMass(1)
+	phys:SetMass(mass)
 	phys:SetFriction(.1)
 	phys:SetDamping(0)
 	phys:SetRestitution(.5)
@@ -277,7 +279,7 @@ function MakeInventoryPhysics(inst)
 	phys:CollidesWith(COLLISION.WORLD)
 	phys:CollidesWith(COLLISION.OBSTACLES)
 	phys:CollidesWith(COLLISION.SMALLOBSTACLES)
-	phys:SetSphere(.5)
+	phys:SetSphere(rad)
     return phys
 end
 

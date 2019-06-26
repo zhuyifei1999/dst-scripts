@@ -69,6 +69,27 @@ function FindClosestPlayerToInst(inst, range, isalive)
     return FindClosestPlayerInRange(x, y, z, range, isalive)
 end
 
+function FindClosestPlayerOnLandInRangeSq(x, y, z, rangesq, isalive)
+    local closestPlayer = nil
+    for i, v in ipairs(AllPlayers) do
+        if (isalive == nil or isalive ~= (v.replica.health:IsDead() or v:HasTag("playerghost"))) and
+                v.entity:IsVisible() and
+                v:IsOnValidGround() then
+            local distsq = v:GetDistanceSqToPoint(x, y, z)
+            if distsq < rangesq then
+                rangesq = distsq
+                closestPlayer = v
+            end
+        end
+    end
+    return closestPlayer, closestPlayer ~= nil and rangesq or nil
+end
+
+function FindClosestPlayerToInstOnLand(inst, range, isalive)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    return FindClosestPlayerOnLandInRangeSq(x, y, z, range * range, isalive)
+end
+
 function FindPlayersInRangeSq(x, y, z, rangesq, isalive)
     local players = {}
     for i, v in ipairs(AllPlayers) do

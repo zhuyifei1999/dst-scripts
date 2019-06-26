@@ -19,6 +19,16 @@ local item_prefabs =
     "steeringwheel",
 }
 
+local function on_start_steering(inst)
+	inst.AnimState:HideSymbol("boat_wheel_round")
+	inst.AnimState:HideSymbol("boat_wheel_stick")	
+end
+
+local function on_stop_steering(inst)
+	inst.AnimState:ShowSymbol("boat_wheel_round")
+	inst.AnimState:ShowSymbol("boat_wheel_stick")
+end
+
 local function on_hammered(inst, hammerer)
     inst.components.lootdropper:DropLoot()
 
@@ -34,27 +44,21 @@ local function on_hammered(inst, hammerer)
 end
 
 local function onignite(inst)
+	DefaultBurnFn(inst)
+
 	if inst.components.steeringwheel.sailor ~= nil then
+		local sailor = inst.components.steeringwheel.sailor
 		inst.components.steeringwheel:StopSteering(inst.components.steeringwheel.sailor)
-		inst.components.steeringwheel.sailor.components.steeringwheeluser:SetSteeringWheel(nil)
 
-		inst.components.steeringwheel.sailor:PushEvent("stop_steering_boat")
-	end
-
-	inst:RemoveComponent("steeringwheel")
-end
-
-local function onextinguish(inst)
-	if not inst:HasTag("burnt") then
-		inst:AddComponent("steeringwheel")
+		sailor.components.steeringwheeluser:SetSteeringWheel(nil)
+		sailor:PushEvent("stop_steering_boat")
 	end
 end
 
 local function onburnt(inst)
-	inst:AddTag("burnt")
-	if inst.components.steeringwheel ~= nil then
-		inst:RemoveComponent("steeringwheel")
-	end
+	DefaultBurntStructureFn(inst)
+
+	inst:RemoveComponent("steeringwheel")
 end
 
 local function onsave(inst, data)
@@ -66,27 +70,25 @@ end
 local function onload(inst, data)
 	if data ~= nil and data.burnt == true then
         inst.components.burnable.onburnt(inst)
-		inst:PushEvent("onburnt")
 	end
 end
 
 local function fn()
-
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
-    --MakeObstaclePhysics(inst, .2)
-
-    --inst.Transform:SetFourFaced()
 
     inst.AnimState:SetBank("boat_wheel")
     inst.AnimState:SetBuild("boat_wheel")
     inst.AnimState:PlayAnimation("idle")    
+	inst.AnimState:SetFinalOffset(1)
 
     inst:AddTag("structure")
+
+	inst:SetPhysicsRadiusOverride(0.25)
 
     inst.entity:SetPristine()
 
@@ -94,24 +96,27 @@ local function fn()
         return inst
     end
 
-    MakeSmallBurnable(inst, nil, nil, true)
-	inst.components.burnable:SetOnIgniteFn(onignite)
-	inst.components.burnable:SetOnExtinguishFn(onextinguish)
-	inst:ListenForEvent("onburnt", onburnt)
-    MakeSmallPropagator(inst)
+    inst:AddComponent("inspectable")
 
-    -- The loot that this drops is generated from the uncraftable recipe; see recipes.lua for the items.
+    inst:AddComponent("steeringwheel")
+	inst.components.steeringwheel:SetOnStartSteeringFn(on_start_steering)
+	inst.components.steeringwheel:SetOnStopSteeringFn(on_stop_steering)
+
     inst:AddComponent("lootdropper")
+
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
     inst.components.workable:SetWorkLeft(3)
     inst.components.workable:SetOnFinishCallback(on_hammered)
 
-    inst:AddComponent("hauntable")
-    inst:AddComponent("inspectable")
-    inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
+    MakeSmallBurnable(inst, nil, nil, true)
+	inst.components.burnable:SetOnIgniteFn(onignite)
+    inst.components.burnable:SetOnBurntFn(onburnt)
 
-    inst:AddComponent("steeringwheel")
+
+    MakeSmallPropagator(inst)
+
+    MakeHauntableWork(inst)
 
 	inst.OnSave = onsave
     inst.OnLoad = onload

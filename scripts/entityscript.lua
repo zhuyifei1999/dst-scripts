@@ -1435,13 +1435,18 @@ function EntityScript:CanDoAction(action)
     end
 end
 
-function EntityScript:IsOnValidGround() -- this currently does not support boats, TheWorld.Map:IsPassableAtPoint may be what you actually want to call
+function EntityScript:IsOnValidGround() -- this currently does not support boats. IsOnPassablePoint may be what you actually want to call
 	return TheWorld.Map:IsVisualGroundAtPoint(self.Transform:GetWorldPosition())
 end
 
 function EntityScript:IsOnPassablePoint(include_water, floating_platforms_are_not_passable)
     local x, y, z = self.Transform:GetWorldPosition()
     return TheWorld.Map:IsPassableAtPoint(x, y, z, include_water or false, floating_platforms_are_not_passable or false)
+end
+
+function EntityScript:GetCurrentPlatform()
+    local x, y, z = self.Transform:GetWorldPosition()
+    return TheWorld.Map:GetPlatformAtPoint(x, z)
 end
 
 function EntityScript:GetCurrentTileType()

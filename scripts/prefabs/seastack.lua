@@ -23,7 +23,7 @@ local function fn()
 
     inst.AnimState:SetBank("water_rock01")
     inst.AnimState:SetBuild("water_rock_01")
-    inst.AnimState:PlayAnimation("idle")   
+    inst.AnimState:PlayAnimation("1_full")
 
     inst.entity:SetPristine()    
 
@@ -40,8 +40,8 @@ local function fn()
     inst:AddComponent("inspectable")
 
     inst:ListenForEvent("hit_boat", function(inst) 
-        inst.AnimState:PlayAnimation("hit") 
-        inst.AnimState:PushAnimation("idle", false) 
+        --inst.AnimState:PlayAnimation("hit1") 
+        --inst.AnimState:PushAnimation("a1", false) 
     end)
 
     return inst

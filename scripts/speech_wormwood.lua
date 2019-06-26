@@ -170,7 +170,7 @@ return {
 	ANNOUNCE_COLD = "Brrr... Cold!",
 	ANNOUNCE_HOT = "Woo-wee, it's hot!",
 	ANNOUNCE_CRAFTING_FAIL = "Failed",
-	ANNOUNCE_DEERCLOPS = "Eyeball Branch Head near!",
+	ANNOUNCE_DEERCLOPS = "Something scary coming!!",
 	ANNOUNCE_CAVEIN = "Sky is falling!",
 	ANNOUNCE_ANTLION_SINKHOLE = 
 	{
@@ -1835,7 +1835,7 @@ return {
 			GENERIC = "Angry Leggy Bug",
 			SLEEPING = "Sleepytime",
 		},
-		SPOILED_FOOD = "Yum",
+		SPOILED_FOOD = "Not good for belly",
         STAGEHAND =
         {
 			AWAKE ="Ohh! Table friend!",

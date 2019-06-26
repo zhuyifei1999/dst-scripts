@@ -514,3 +514,25 @@ function d_giveturfs()
         c_give("turf_"..v.name)
     end
 end
+
+function d_spawnlayout(name, offset)
+	local obj_layout = require("map/object_layout")
+	local entities = {}
+	local map_width, map_height = TheWorld.Map:GetSize()
+	local add_fn = {
+		fn=function(prefab, points_x, points_y, current_pos_idx, entitiesOut, width, height, prefab_list, prefab_data, rand_offset)
+		print("adding, ", prefab, points_x[current_pos_idx], points_y[current_pos_idx])
+			local x = (points_x[current_pos_idx] - width/2.0)*TILE_SCALE
+			local y = (points_y[current_pos_idx] - height/2.0)*TILE_SCALE
+			x = math.floor(x*100)/100.0
+			y = math.floor(y*100)/100.0
+			SpawnPrefab(prefab).Transform:SetPosition(x, 0, y)
+		end,
+		args={entitiesOut=entities, width=map_width, height=map_height, rand_offset = false, debug_prefab_list=nil}
+	}
+
+    local x, y, z = ConsoleWorldPosition():Get()
+	x, z = TheWorld.Map:GetTileCoordsAtPoint(x, y, z)
+	offset = offset or 3
+	obj_layout.Place({math.floor(x) - 3, math.floor(z) - 3}, name, add_fn, nil, TheWorld.Map)
+end
