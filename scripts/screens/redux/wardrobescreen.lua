@@ -34,30 +34,47 @@ function WardrobeScreen:_DoInit()
 	self.doodad_count:SetPosition(-550, 215)
 	self.doodad_count:SetScale(0.4)
 
-    self.puppet_root = self.root:AddChild(Widget("puppet_root"))
-    self.puppet_root:SetPosition(-100, -190)
+	self.preview_root = self.root:AddChild(Widget("preview_root"))
+	self.preview_root:SetPosition(-100, -190)
 
-    self.heroname = self.puppet_root:AddChild(Image())
+	self.heroname = self.preview_root:AddChild(Image())
     self.heroname:SetScale(.28)
     self.heroname:SetPosition(0, 460)
 
-    self.heroportrait = self.puppet_root:AddChild(Image())
-    self.heroportrait:SetScale(.4)
-    self.heroportrait:SetPosition(-130, 160)
+    self.puppet_root = self.preview_root:AddChild(Widget("puppet_root"))
+
+    self.glow = self.puppet_root:AddChild(Image("images/lobbyscreen.xml", "glow.tex"))
+	self.glow:SetPosition(0, 160)
+	self.glow:SetScale(2.5)
+	self.glow:SetTint(1, 1, 1, .5)
+	self.glow:SetClickable(false)
 
     self.puppet = self.puppet_root:AddChild(Puppet())
-    self.puppet:SetPosition(0, 50)
-    self.puppet:SetScale(4)
+	self.puppet:AddShadow()
+	self.puppet_base_offset = { 0, 50 }
+	self.puppet:SetPosition(self.puppet_base_offset[1], self.puppet_base_offset[2])
+	self.puppet_default_scale = 4
+    self.puppet:SetScale(self.puppet_default_scale)
     self.puppet:SetClickable(false)
 
-    self.characterquote = self.puppet_root:AddChild(Text(TALKINGFONT, 28))
+	self.characterquote = self.preview_root:AddChild(Text(TALKINGFONT, 28))
     self.characterquote:SetHAlign(ANCHOR_MIDDLE)
     self.characterquote:SetVAlign(ANCHOR_TOP)
-    self.characterquote:SetPosition(0,-20)
+	self.characterquote:SetPosition(0,-20)
     self.characterquote:SetColour(UICOLOURS.IVORY)
+
+    self.heroportrait = self.preview_root:AddChild(Image())
+    self.heroportrait:SetScale(0.70)
+    self.heroportrait:SetPosition(0, 240)
+	self.heroportrait:Hide()
 
     -- Can't load skins until above widgets exist. Can't create ClothingExplorerPanel until skins are loaded.
 	self:_LoadSavedSkins()
+
+	self.skintypes = GetSkinModes(self.currentcharacter)
+	self.view_index = 1
+	self.selected_skintype = self.skintypes[self.view_index].type
+	self.portrait_view_index = 2--	1 < value <= #self.skintypes
 
     local reader = function(item_key)
         return table.contains(self.selected_skins, item_key)
@@ -88,6 +105,13 @@ function WardrobeScreen:_DoInit()
         self.menu:SetFocusChangeDir(MOVE_UP, self.presetsbutton)
         self.presetsbutton:SetFocusChangeDir(MOVE_DOWN, self.menu)
         self.presetsbutton:SetFocusChangeDir(MOVE_RIGHT, self.subscreener:GetActiveSubscreenFn())
+
+		self.cyclebutton = self.root:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "player_info.tex", STRINGS.UI.SKINTYPES.CYCLE_VIEW, false, false, function()
+				self:_CycleView()
+			end
+		))
+		self.cyclebutton:SetPosition(-260, 270)
+		self.cyclebutton:SetScale(0.77)
         
 
         self.back_button = self.root:AddChild(TEMPLATES.BackButton(
@@ -107,6 +131,52 @@ function WardrobeScreen:_DoInit()
         self.reset_current:SetPosition(-100, -314)
         self:_CheckDirty()
     end
+end
+
+function WardrobeScreen:_SetSkintype(skintypedata)
+	self.selected_skintype = skintypedata.type
+	self:_ApplySkins(self.preview_skins, true, self.selected_skintype)
+	self.puppet:SetScale(skintypedata.scale or self.puppet_default_scale)
+	if skintypedata.offset ~= nil then
+		self.puppet:SetPosition(self.puppet_base_offset[1] + (skintypedata.offset[1] or 0), self.puppet_base_offset[2] + (skintypedata.offset[2] or 0))
+	else
+		self.puppet:SetPosition(self.puppet_base_offset[1], self.puppet_base_offset[2])
+	end
+end
+
+function WardrobeScreen:_CycleView(force_off)
+	if force_off then
+		if self.showing_portrait then
+			self.heroportrait:Hide()
+			self.puppet_root:Show()
+			self.showing_portrait = false
+
+			self.view_index = 1
+			self:_SetSkintype(self.skintypes[self.view_index])
+		end
+	else
+		if self.showing_portrait then
+			self.heroportrait:Hide()
+			self.puppet_root:Show()
+			self.showing_portrait = false
+
+			self:_SetSkintype(self.skintypes[self.view_index])
+		else
+			self.view_index = self.view_index + 1
+
+			if self.view_index == self.portrait_view_index then
+				self.heroportrait:Show()
+				self.puppet_root:Hide()
+				self.showing_portrait = true
+			else
+				if self.view_index > #self.skintypes then
+					self.view_index = 1
+				end
+			end
+
+			self:_SetSkintype(self.skintypes[self.view_index])
+		end
+	end
 end
 
 function WardrobeScreen:_MakeMenu(subscreener)
@@ -242,7 +312,7 @@ function WardrobeScreen:_ApplySkins(skins)
     ValidateItemsLocal(self.currentcharacter, self.selected_skins)
     ValidatePreviewItems(self.currentcharacter, skins)
 
-    self.puppet:SetSkins(self.currentcharacter, skins.base, skins)
+	self.puppet:SetSkins(self.currentcharacter, skins.base, skins, nil, self.selected_skintype)
 	self:_SetPortrait()
     self:_CheckDirty()
 end
@@ -337,6 +407,8 @@ function WardrobeScreen:GetHelpText()
     table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE ) .. " " .. STRINGS.UI.WARDROBESCREEN.RESET)
 	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_1) .. " " .. STRINGS.UI.SKIN_PRESETS.TITLE)
 
+	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_3, false, false) .. " " .. STRINGS.UI.SKINTYPES.CYCLE_VIEW)
+
 	return table.concat(t, "  ")
 end
 
@@ -356,7 +428,10 @@ function WardrobeScreen:OnControl(control, down)
         self:_LoadSkinPresetsScreen()
         TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
         return true
-    end
+	elseif not down and control == CONTROL_MENU_MISC_3 then
+		self:_CycleView()
+		return true
+	end
 end
 
 function WardrobeScreen:OnUpdate(dt)

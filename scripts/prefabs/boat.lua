@@ -39,6 +39,25 @@ local function OnRepaired(inst)
     --inst.SoundEmitter:PlaySound("dontstarve/creatures/together/fossil/repair")
 end
 
+local function FinishRemovingEntity(inst)
+    if inst:IsValid() then
+        inst.Physics:ConstrainTo(nil) 
+        inst:Remove()
+    end
+end
+
+local function AddConstrainedPhysicsObj(boat, physics_obj)
+	physics_obj:ListenForEvent("onremove", function() FinishRemovingEntity(physics_obj) end, boat)
+    physics_obj:ListenForEvent("onsink", function() FinishRemovingEntity(physics_obj) end, boat)
+
+    physics_obj:DoTaskInTime(0, function()
+		if boat:IsValid() then
+			physics_obj.Transform:SetPosition(boat.Transform:GetWorldPosition())
+   			physics_obj.Physics:ConstrainTo(boat.entity)
+		end
+	end)
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -80,7 +99,9 @@ local function fn()
     inst:AddComponent("healthsyncer")
     inst.components.healthsyncer.max_health = max_health
 
-    inst.entity:SetPristine()
+	AddConstrainedPhysicsObj(inst, SpawnPrefab("boat_item_collision")) -- hack until physics constraints are networked
+	
+	inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
@@ -99,14 +120,9 @@ local function fn()
     --inst.components.hull:SetMast(mast)
 	inst.components.hull:AttachEntityToBoat(SpawnPrefab("boat_player_collision"), 0, 0)
 
-    local boat_item_collision = SpawnPrefab("boat_item_collision")
-    boat_item_collision:AddTag("ignorewalkableplatforms")
-
-    inst.components.hull:AttachEntityToBoat(boat_item_collision, 0, 0, true, false)
-
     local walking_plank = SpawnPrefab("walkingplank")
     local edge_offset = -0.05
-    inst.components.hull:AttachEntityToBoat(walking_plank, 0, radius + edge_offset, false, true)
+    inst.components.hull:AttachEntityToBoat(walking_plank, 0, radius + edge_offset, true)
     inst.components.hull:SetPlank(walking_plank)
 
     inst:AddComponent("repairable")
@@ -124,23 +140,23 @@ local function fn()
 
 	local burnable_locator = SpawnPrefab('burnable_locator_medium')
 	burnable_locator.boat = inst
-	inst.components.hull:AttachEntityToBoat(burnable_locator, 0, 0, false, true)
+	inst.components.hull:AttachEntityToBoat(burnable_locator, 0, 0, true)
 
 	burnable_locator = SpawnPrefab('burnable_locator_medium')
 	burnable_locator.boat = inst
-	inst.components.hull:AttachEntityToBoat(burnable_locator, 2.5, 0, false, true)
+	inst.components.hull:AttachEntityToBoat(burnable_locator, 2.5, 0, true)
 
 	burnable_locator = SpawnPrefab('burnable_locator_medium')
 	burnable_locator.boat = inst
-	inst.components.hull:AttachEntityToBoat(burnable_locator, -2.5, 0, false, true)
+	inst.components.hull:AttachEntityToBoat(burnable_locator, -2.5, 0, true)
 
 	burnable_locator = SpawnPrefab('burnable_locator_medium')
 	burnable_locator.boat = inst
-	inst.components.hull:AttachEntityToBoat(burnable_locator, 0, 2.5, false, true)
+	inst.components.hull:AttachEntityToBoat(burnable_locator, 0, 2.5, true)
 
 	burnable_locator = SpawnPrefab('burnable_locator_medium')
 	burnable_locator.boat = inst
-	inst.components.hull:AttachEntityToBoat(burnable_locator, 0, -2.5, false, true)
+	inst.components.hull:AttachEntityToBoat(burnable_locator, 0, -2.5, true)
 	
     inst:SetStateGraph("SGboat")
 
@@ -231,7 +247,9 @@ local function boat_item_collision_fn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
-    inst.entity:AddNetwork()
+
+    --[[Non-networked entity]]
+    inst:AddTag("CLASSIFIED")
 
     local phys = inst.entity:AddPhysics()
     phys:SetMass(1000)
@@ -248,6 +266,7 @@ local function boat_item_collision_fn()
     phys:SetDontRemoveOnSleep(true)
 
     inst:AddTag("NOBLOCK")
+    inst:AddTag("ignorewalkableplatforms")
 
     inst.entity:SetPristine()
 

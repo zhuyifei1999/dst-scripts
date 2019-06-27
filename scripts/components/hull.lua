@@ -2,25 +2,19 @@ local Hull = Class(function(self, inst)
     self.inst = inst
 end)
 
-function Hull:FinishRemovingEntity(entity, constrain_to_boat)
+function Hull:FinishRemovingEntity(entity)
     if entity:IsValid() then
-        if constrain_to_boat then
-            entity.Physics:ConstrainTo(nil) 
-        end
         entity:Remove()
     end
 end
 
-function Hull:AttachEntityToBoat(obj, offset_x, offset_z, constrain_to_boat, parent_to_boat)
-	obj:ListenForEvent("onremove", function() self:FinishRemovingEntity(obj, constrain_to_boat) end, self.inst)
-    obj:ListenForEvent("onsink", function() self:FinishRemovingEntity(obj, constrain_to_boat) end, self.inst)
+function Hull:AttachEntityToBoat(obj, offset_x, offset_z, parent_to_boat)
+	obj:ListenForEvent("onremove", function() self:FinishRemovingEntity(obj) end, self.inst)
+    obj:ListenForEvent("onsink", function() self:FinishRemovingEntity(obj) end, self.inst)
 
     self.inst:DoTaskInTime(0, function(boat)
     	local boat_x, boat_y, boat_z = boat.Transform:GetWorldPosition()
         obj.Transform:SetPosition(boat_x + offset_x, boat_y, boat_z + offset_z)
-        if constrain_to_boat then
-        	obj.Physics:ConstrainTo(self.inst.entity)
-        end
         if parent_to_boat then
     		obj.entity:SetParent(self.inst.entity)
     		obj.Transform:SetPosition(offset_x, 0, offset_z)        	

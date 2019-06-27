@@ -1589,3 +1589,19 @@ function DisplayInventoryFailedPopup( screen )
 		TheFrontEnd:PushScreen(unowned_popup)		
     end
 end
+
+local ghost_preview_y_offset = -25
+local skintypesbycharacter = nil
+
+function GetSkinModes(character)
+	if skintypesbycharacter == nil then
+		skintypesbycharacter = {
+			woodie = { { type = "normal_skin", name = STRINGS.UI.SKINTYPES.NORMAL }, { type = "werebeaver_skin", name = STRINGS.UI.SKINTYPES.WEREBEAVER, scale = 3.25 }, { type = "ghost_skin", name = STRINGS.UI.SKINTYPES.GHOST, scale = 3, offset = { 0, ghost_preview_y_offset } }, { type = "ghost_werebeaver_skin", name = STRINGS.UI.SKINTYPES.GHOST_WEREBEAVER, scale = 3, offset = { 0, ghost_preview_y_offset } } },
+			wolfgang = { { type = "normal_skin", name = STRINGS.UI.SKINTYPES.NORMAL }, { type = "wimpy_skin", name = STRINGS.UI.SKINTYPES.WIMPY }, { type = "mighty_skin", name = STRINGS.UI.SKINTYPES.MIGHTY }, { type = "ghost_skin", name = STRINGS.UI.SKINTYPES.GHOST, scale = 3, offset = { 0, ghost_preview_y_offset } } },
+			wormwood = { { type = "normal_skin", name = STRINGS.UI.SKINTYPES.NORMAL }, { type = "stage_2", name = STRINGS.UI.SKINTYPES.WORMWOOD_STAGE2 }, { type = "stage_3", name = STRINGS.UI.SKINTYPES.WORMWOOD_STAGE3 }, { type = "stage_4", name = STRINGS.UI.SKINTYPES.WORMWOOD_STAGE4 }, { type = "ghost_skin", name = STRINGS.UI.SKINTYPES.GHOST, scale = 3, offset = { 0, ghost_preview_y_offset } } },
+
+			default = { { type = "normal_skin", name = STRINGS.UI.SKINTYPES.NORMAL }, { type = "ghost_skin", name = STRINGS.UI.SKINTYPES.GHOST, scale = 3, offset = { 0, ghost_preview_y_offset } } }
+		}
+	end
+	return skintypesbycharacter[character] or skintypesbycharacter.default
+end

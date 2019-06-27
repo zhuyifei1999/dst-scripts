@@ -17,8 +17,6 @@ local assets =
     Asset("IMAGE", "images/visited.tex"),
     Asset("ANIM", "anim/scroll_arrow.zip"),
 
-    Asset("ANIM", "anim/corner_dude.zip"),
-
     Asset("SHADER", "shaders/anim_bloom.ksh"),
     Asset("SHADER", "shaders/anim_bloom_ghost.ksh"),
     Asset("SHADER", "shaders/road.ksh"),
@@ -236,6 +234,11 @@ local assets =
 
     Asset("ATLAS", "images/profileflair.xml"),
     Asset("IMAGE", "images/profileflair.tex"),
+
+	--Wardrobe previewing
+	Asset("ANIM", "anim/player_ghost_withhat.zip"),
+	Asset("ANIM", "anim/werebeaver_basic.zip"),
+	Asset("ANIM", "anim/player_idles.zip"),
 
     Asset("DYNAMIC_ANIM", "anim/dynamic/body_default1.zip"),
     Asset("DYNAMIC_ANIM", "anim/dynamic/hand_default1.zip"),

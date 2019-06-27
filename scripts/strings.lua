@@ -6937,6 +6937,24 @@ STRINGS.UI =
         NEW = "New!",
     },
 
+	SKINTYPES =
+	{
+		NORMAL = "Normal",
+		GHOST = "Ghost",
+
+		WEREBEAVER = "Werebeaver",
+		GHOST_WEREBEAVER = "Ghost Werebeaver",
+
+		WIMPY = "Wimpy",
+		MIGHTY = "Mighty",
+
+		WORMWOOD_STAGE2 = "Bloom 1",
+		WORMWOOD_STAGE3 = "Bloom 2",
+		WORMWOOD_STAGE4 = "Bloom 3",
+
+		CYCLE_VIEW = "Cycle View"
+	},
+
     BARTERSCREEN =
     {
         TITLE = "The Curio Loom",

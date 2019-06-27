@@ -1075,9 +1075,11 @@ return {
         {
 			GENERIC = "Not for belly",
 		},
-        CHESSPIECE_PIPE = 
-        {
- 		},
+        CHESSPIECE_PIPE = "Bubbles!",
+        CHESSPIECE_DEERCLOPS = "Oh. Where legs?",
+        CHESSPIECE_BEARGER = "Not so smelly now",
+        CHESSPIECE_MOOSEGOOSE = "Oh. Tweeter can't tweet now",
+        CHESSPIECE_DRAGONFLY = "Only stone fire now",
         CHESSJUNK1 = "Machine stuff",
         CHESSJUNK2 = "Lots of machine stuff",
         CHESSJUNK3 = "Full of machine stuff",

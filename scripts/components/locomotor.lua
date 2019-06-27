@@ -555,7 +555,7 @@ function LocoMotor:GoToEntity(target, bufferedaction, run)
     else
         arrive_dist = ARRIVE_STEP + target:GetPhysicsRadius(0) + self.inst:GetPhysicsRadius(0)
 
-        local entity_arrive_distance_fn = bufferedaction.action.entity_arrive_distance_fn
+        local entity_arrive_distance_fn = (bufferedaction ~= nil and bufferedaction.action ~= nil and bufferedaction.action.entity_arrive_distance_fn) or nil
         if entity_arrive_distance_fn ~= nil then
             arrive_dist = arrive_dist + entity_arrive_distance_fn(self.inst, target)
         end

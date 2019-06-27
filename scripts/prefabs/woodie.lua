@@ -7,7 +7,7 @@ local assets =
     Asset("SOUND", "sound/woodie.fsb"),
 
     Asset("ANIM", "anim/werebeaver_build.zip"),
-    Asset("ANIM", "anim/werebeaver_basic.zip"),
+    --Asset("ANIM", "anim/werebeaver_basic.zip"),--Moved to global.lua for use in Item Collection
     Asset("ANIM", "anim/werebeaver_groggy.zip"),
     Asset("ANIM", "anim/werebeaver_dance.zip"),
 	Asset("ANIM", "anim/werebeaver_boat_jump.zip"),

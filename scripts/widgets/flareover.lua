@@ -17,7 +17,7 @@ local FlareOver = Class(Widget, function(self, owner)
     self.bg:SetHRegPoint(ANCHOR_MIDDLE)
     self.bg:SetVAnchor(ANCHOR_TOP)
     self.bg:SetHAnchor(ANCHOR_MIDDLE)
-    self.bg:SetScaleMode(SCALEMODE_PROPORTIONAL)
+    self.bg:SetScaleMode(SCALEMODE_FIXEDPROPORTIONAL)
 
     self:Hide()
 
