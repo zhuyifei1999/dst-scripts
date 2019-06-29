@@ -6952,7 +6952,7 @@ STRINGS.UI =
 		WORMWOOD_STAGE3 = "Bloom 2",
 		WORMWOOD_STAGE4 = "Bloom 3",
 
-		CYCLE_VIEW = "Cycle View"
+		CYCLE_VIEW = "Cycle View",
 	},
 
     BARTERSCREEN =

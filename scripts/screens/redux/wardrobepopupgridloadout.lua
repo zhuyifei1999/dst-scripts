@@ -111,8 +111,14 @@ function GridWardrobePopupScreen:OnDestroy()
 end
 
 function GridWardrobePopupScreen:OnBecomeActive()
-    self._base.OnBecomeActive(self)
-	self.loadout:_RefreshAfterSkinsLoad()
+	self._base.OnBecomeActive(self)
+
+	if self.loadout and self.loadout.subscreener then
+		for key,sub_screen in pairs(self.loadout.subscreener.sub_screens) do
+			sub_screen:RefreshInventory()
+		end
+	end
+
     if TheInput:ControllerAttached() then
         self.default_focus:SetFocus()
     end

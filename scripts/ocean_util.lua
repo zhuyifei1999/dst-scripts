@@ -135,3 +135,50 @@ function RaiseFlyingCreature(creature)
         creature.Physics:ClearCollidesWith(COLLISION.LIMITS)
     end
 end
+
+function ShouldEntitySink(entity, entity_sinks_in_water)
+    local inventory = (entity.components ~= nil and entity.components.inventoryitem) or nil
+    if not entity:IsInLimbo() and (not inventory or not inventory:IsHeld()) then
+        local px, _, pz = entity.Transform:GetWorldPosition()
+        return not TheWorld.Map:IsPassableAtPoint(px, 0, pz, not entity_sinks_in_water)
+    end
+end
+
+function SinkEntity(entity)
+    if not entity:IsValid() then
+        return
+    end
+
+    local px, py, pz = 0, 0, 0
+    if entity.Transform ~= nil then
+        px, py, pz = entity.Transform:GetWorldPosition()
+    end
+
+    if entity.components.inventory ~= nil then
+        entity.components.inventory:DropEverything()
+    end
+
+    if entity.components.container ~= nil then
+        entity.components.container:DropEverything()
+    end
+
+    local fx = SpawnPrefab((TheWorld.Map:IsValidTileAtPoint(px, py, pz) and "splash_sink") or "splash_ocean")
+    fx.Transform:SetPosition(px, py, pz)
+
+    -- If the entity is irreplaceable, respawn it at the player
+    if entity:HasTag("irreplaceable") then
+        local sx, sy, sz = FindRandomPointOnShoreFromOcean(px, py, pz)
+        if sx ~= nil then
+            entity.Transform:SetPosition(sx, sy, sz)
+        else
+            -- Our reasonable cases are out... so let's loop to find the portal and respawn there.
+            for k, v in pairs(Ents) do
+                if v:IsValid() and v:HasTag("multiplayer_portal") then
+                    entity.Transform:SetPosition(v.Transform:GetWorldPosition())
+                end
+            end
+        end
+    else
+        entity:Remove()
+    end
+end

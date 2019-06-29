@@ -140,15 +140,17 @@ function SkinsPuppet:SetCharacter(character)
 end
 
 function SkinsPuppet:SetSkins(prefabname, base_item, clothing_names, skip_change_emote, skintype)
-	local base_skin = prefabname
+	local none_skinned_base_builds = prefabname
 	if IsPrefabSkinned(prefabname) then
 		base_item = base_item or (prefabname .."_none")
-		base_skin = GetBuildForItem(base_item)
+		--none_skinned_base_builds = GetBuildForItem(base_item)
 	end
-
+	
 	local previousbank = self.currentanimbank
 	if skintype == "ghost_skin" or skintype == "ghost_werebeaver_skin" then
 		self.currentanimbank = "ghost"
+		none_skinned_base_builds = "ghost_" .. prefabname .. "_build"
+
 	elseif skintype == "werebeaver_skin" then
 		self.currentanimbank = "werebeaver"
 	else
@@ -170,10 +172,10 @@ function SkinsPuppet:SetSkins(prefabname, base_item, clothing_names, skip_change
 	local skindata = GetSkinData(base_item)
 	local skindata_skins = skindata.skins
 
-	if skintype ~= nil then
+	if skindata_skins ~= nil and skintype ~= nil then
 		SetSkinsOnAnim( self.animstate, prefabname, skindata_skins[skintype], clothing_names, skintype)
 	else
-		SetSkinsOnAnim( self.animstate, prefabname, base_skin, clothing_names, skintype)
+		SetSkinsOnAnim( self.animstate, prefabname, none_skinned_base_builds, clothing_names, skintype)
 	end
 	
 	if not skip_change_emote then 
@@ -181,7 +183,7 @@ function SkinsPuppet:SetSkins(prefabname, base_item, clothing_names, skip_change
         --is to ensure we get the last thing to change (when dealing with
         --multiple changes on one frame caused by the UI refreshing)
 		if self.animstate:IsCurrentAnimation(self.banktoidle["wilson"].anim) and (self.queued_change_slot == "" or self.time_to_change_emote < change_delay_time ) then
-			if self.last_skins.prefabname ~= prefabname or self.last_skins.base_skin ~= base_skin then
+			if self.last_skins.prefabname ~= prefabname or self.last_skins.base_skin ~= none_skinned_base_builds then
 				self.queued_change_slot = "base"
 			end
 			if self.last_skins.body ~= clothing_names.body then
@@ -211,7 +213,7 @@ function SkinsPuppet:SetSkins(prefabname, base_item, clothing_names, skip_change
 	end
 	
 	self.last_skins.prefabname = prefabname
-	self.last_skins.base_skin = base_skin
+	self.last_skins.base_skin = none_skinned_base_builds
 	self.last_skins.body = clothing_names.body
 	self.last_skins.hand = clothing_names.hand
 	self.last_skins.legs = clothing_names.legs

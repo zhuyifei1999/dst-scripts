@@ -426,15 +426,12 @@ end
 DESTSOUNDS = nil
 
 local function CheckSpawnedLoot(loot)
-    if loot.components.inventoryitem == nil or not loot.components.inventoryitem:IsHeld() then
-        local x, y, z = loot.Transform:GetWorldPosition()
-        if not loot:IsOnValidGround() or TheWorld.Map:IsPointNearHole(Vector3(x, 0, z)) then
-            SpawnPrefab("splash_ocean").Transform:SetPosition(x, y, z)
-            if loot:HasTag("irreplaceable") then
-                loot.Transform:SetPosition(FindSafeSpawnLocation(x, y, z))
-            else
-                loot:Remove()
-            end
+    if loot.components.inventoryitem ~= nil then
+        loot.components.inventoryitem:TryToSink()
+    else
+        local lootx, looty, lootz = loot.Transform:GetWorldPosition()
+        if ShouldEntitySink(loot, true) or TheWorld.Map:IsPointNearHole(Vector3(lootx, 0, lootz)) then
+            SinkEntity(loot)
         end
     end
 end

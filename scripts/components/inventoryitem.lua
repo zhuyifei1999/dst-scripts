@@ -354,53 +354,13 @@ function InventoryItem:ShouldSink()
     end
 end
 
-local function sink_item(item)
-    if not item:IsValid() then
-        return
-    end
-
-    local px, py, pz = 0, 0, 0
-    if item.Transform ~= nil then
-        px, py, pz = item.Transform:GetWorldPosition()
-    end
-
-    if item.components.inventory ~= nil then
-        item.components.inventory:DropEverything()
-    end
-
-    if item.components.container ~= nil then
-        item.components.container:DropEverything()
-    end
-
-    local fx = SpawnPrefab("splash_sink")
-    fx.Transform:SetPosition(px, py, pz)
-
-    -- If the item is irreplaceable, respawn it at the player
-    if item:HasTag("irreplaceable") then
-        local sx, sy, sz = FindRandomPointOnShoreFromOcean(px, py, pz)
-        if sx ~= nil then
-            item.Transform:SetPosition(sx, sy, sz)
-        else
-            -- Our reasonable cases are out... so let's loop to find the portal and respawn there.
-            for k, v in pairs(Ents) do
-                if v:IsValid() and v:HasTag("multiplayer_portal") then
-                    item.Transform:SetPosition(v.Transform:GetWorldPosition())
-                end
-            end
-        end
-    else
-        item:Remove()
-    end
-end
-
 function InventoryItem:TryToSink()
-    if self:ShouldSink() then
-        self.inst:DoTaskInTime(0, sink_item)
+    if ShouldEntitySink(self.inst, self.sinks) then
+        self.inst:DoTaskInTime(0, SinkEntity)
     end
 end
 
-function InventoryItem:OnUpdate(dt)    
-
+function InventoryItem:OnUpdate(dt)
     local x,y,z = self.inst.Transform:GetWorldPosition()
 
     if x and y and z then 
@@ -418,10 +378,10 @@ function InventoryItem:OnUpdate(dt)
 
         if y + vely * dt * 1.5 < 0.01 and vely <= 0 then
             self:SetLanded(true, false)
-        end        
-    else     
+        end
+    else
         self:SetLanded(true, false)
-    end 
-end 
+    end
+end
 
 return InventoryItem

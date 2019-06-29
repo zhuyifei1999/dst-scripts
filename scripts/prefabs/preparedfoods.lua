@@ -29,8 +29,9 @@ local function MakePreparedFood(data)
         MakeInventoryPhysics(inst)
 
         inst.AnimState:SetBuild("cook_pot_food")
-        inst.AnimState:SetBank("food")
-        inst.AnimState:PlayAnimation(data.name, false)
+        inst.AnimState:SetBank("cook_pot_food")
+        inst.AnimState:PlayAnimation("idle")
+        inst.AnimState:OverrideSymbol("swap_food", "cook_pot_food", data.name)
 
         inst:AddTag("preparedfood")
         if data.tags then
@@ -68,36 +69,24 @@ local function MakePreparedFood(data)
         inst:AddComponent("stackable")
         inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
-		if data.perishtime ~= nil and data.perishtime > 0 then
-			inst:AddComponent("perishable")
-			inst.components.perishable:SetPerishTime(data.perishtime)
-			inst.components.perishable:StartPerishing()
-			inst.components.perishable.onperishreplacement = "spoiled_food"
-		end
-		
+        if data.perishtime ~= nil and data.perishtime > 0 then
+            inst:AddComponent("perishable")
+            inst.components.perishable:SetPerishTime(data.perishtime)
+            inst.components.perishable:StartPerishing()
+            inst.components.perishable.onperishreplacement = "spoiled_food"
+        end
+
         MakeSmallBurnable(inst)
         MakeSmallPropagator(inst)
         MakeHauntableLaunchAndPerish(inst)
-        AddHauntableCustomReaction(inst, function(inst, haunter)
-            --#HAUNTFIX
-            --if math.random() <= TUNING.HAUNT_CHANCE_SUPERRARE then
-                --if inst.components.burnable and not inst.components.burnable:IsBurning() then
-                    --inst.components.burnable:Ignite()
-                    --inst.components.hauntable.hauntvalue = TUNING.HAUNT_MEDIUM
-                    --inst.components.hauntable.cooldown_on_successful_haunt = false
-                    --return true
-                --end
-            --end
-            return false
-        end, true, false, true)
-        ---------------------        
+        ---------------------
 
         inst:AddComponent("bait")
 
         ------------------------------------------------
         inst:AddComponent("tradable")
-        
-        ------------------------------------------------  
+
+        ------------------------------------------------
 
         return inst
     end

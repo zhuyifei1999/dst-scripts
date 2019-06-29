@@ -24,6 +24,7 @@ local foods=
 		perishtime = TUNING.PERISH_SLOW,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 2,
+        potlevel = "high",
         floater = {"med", nil, 0.55},
 	},
 	
@@ -80,6 +81,7 @@ local foods=
 		perishtime = TUNING.PERISH_MED,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 2,
+        potlevel =  "high",
 		tags = {"catfood"},
         floater = {"small", nil, nil},
 	},
@@ -94,6 +96,7 @@ local foods=
 		perishtime = TUNING.PERISH_SLOW,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 2,
+        potlevel = "high",
 		tags = {"honeyed"},
         floater = {"med", nil, 0.7},
 	},
@@ -140,6 +143,7 @@ local foods=
 		temperature = TUNING.HOT_FOOD_BONUS_TEMP,
 		temperatureduration = TUNING.FOOD_TEMP_LONG,
 		cooktime = 2,
+        potlevel = "high",
         floater = {"med", nil, 0.55},
 	},
 	mandrakesoup =
@@ -152,6 +156,7 @@ local foods=
 		perishtime = TUNING.PERISH_FAST,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 3,
+        potlevel = "low",
         floater = {"small", nil, nil},
 	},
 	baconeggs =
@@ -164,6 +169,7 @@ local foods=
 		perishtime = TUNING.PERISH_PRESERVED,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 2,
+        potlevel = "high",
         floater = {"med", nil, 0.6},
 	},
 	meatballs =
@@ -176,6 +182,7 @@ local foods=
 		perishtime = TUNING.PERISH_MED,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = .75,
+        potlevel = "high",
         floater = {"small", nil, nil},
 	},	
 	bonestew =
@@ -188,6 +195,7 @@ local foods=
 		perishtime = TUNING.PERISH_MED,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = .75,
+        potlevel = "low",
         floater = {"small", 0.1, 0.8},
 	},
 	perogies =
@@ -200,6 +208,7 @@ local foods=
 		perishtime = TUNING.PERISH_PRESERVED,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 1,
+        potlevel = "high",
         floater = {"med", nil, 0.65},
 	},
 	turkeydinner =
@@ -214,6 +223,7 @@ local foods=
 		temperature = TUNING.HOT_FOOD_BONUS_TEMP,
 		temperatureduration = TUNING.FOOD_TEMP_AVERAGE,
 		cooktime = 3,
+        potlevel = "high",
         floater = {"med", nil, 0.75},
 	},
 	ratatouille =
@@ -253,6 +263,7 @@ local foods=
 		temperature = TUNING.COLD_FOOD_BONUS_TEMP,
 		temperatureduration = TUNING.FOOD_TEMP_BRIEF,
 		cooktime = .5,
+        potlevel = "low",
         floater = {"small", nil, 0.6},
 	},
 	fishtacos =
@@ -265,6 +276,7 @@ local foods=
 		perishtime = TUNING.PERISH_FAST,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = .5,
+        potlevel = "high",
         floater = {"small", nil, nil},
 	},
 	waffles =
@@ -277,6 +289,7 @@ local foods=
 		perishtime = TUNING.PERISH_FAST,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = .5,
+        potlevel = "high",
         floater = {"med", nil, 0.75},
 	},	
 	
@@ -304,6 +317,7 @@ local foods=
 		perishtime = 9000000,
 		sanity = 0,
 		cooktime = 0.5,
+        potlevel = "low",
 		tags = {"honeyed"},
         floater = {"med", nil, 0.65},
 	},
@@ -344,6 +358,7 @@ local foods=
 		perishtime = TUNING.PERISH_FAST,
 		sanity = TUNING.SANITY_TINY,
 		cooktime = .5,
+        potlevel = "low",
         floater = {"small", nil, nil},
 	},	
 
@@ -359,6 +374,7 @@ local foods=
 		temperature = TUNING.COLD_FOOD_BONUS_TEMP,
 		temperatureduration = TUNING.FOOD_TEMP_LONG,
 		cooktime = .5,
+        potlevel = "low",
         floater = {"small", nil, nil},
 	},	
 
@@ -374,6 +390,7 @@ local foods=
 		temperature = TUNING.COLD_FOOD_BONUS_TEMP,
 		temperatureduration = TUNING.FOOD_TEMP_AVERAGE,
 		cooktime = .5,
+        potlevel = "low",
         floater = {"small", 0.1, 0.82},
 	},	
 
@@ -402,6 +419,7 @@ local foods=
 		temperature = TUNING.HOT_FOOD_BONUS_TEMP,
 		temperatureduration = TUNING.FOOD_TEMP_LONG,
 		cooktime = .5,
+        potlevel = "low",
         floater = {"small", nil, nil},
 	},	
 
@@ -415,6 +433,7 @@ local foods=
 		perishtime = TUNING.PERISH_MED,
 		sanity = 0,
 		cooktime = .5,
+        potlevel = "low",
         floater = {"small", nil, 0.85},
 	},
 
@@ -428,6 +447,7 @@ local foods=
 		perishtime = nil, -- not perishable
 		sanity = TUNING.SANITY_TINY,
 		cooktime = 2.5,
+        potlevel = "low",
 		tags = {"honeyed"},
 		stacksize = 3,
         prefabs = { "healthregenbuff" },

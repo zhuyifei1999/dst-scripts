@@ -86,21 +86,36 @@ local function onclose(inst)
     end
 end
 
+local function SetProductSymbol(inst, product, overridebuild)
+    local recipe = cooking.GetRecipe(inst.prefab, product)
+    local potlevel = recipe ~= nil and recipe.potlevel or nil
+    if potlevel == "high" then
+        inst.AnimState:Show("swap_high")
+        inst.AnimState:Hide("swap_mid")
+        inst.AnimState:Hide("swap_low")
+    elseif potlevel == "low" then
+        inst.AnimState:Hide("swap_high")
+        inst.AnimState:Hide("swap_mid")
+        inst.AnimState:Show("swap_low")
+    else
+        inst.AnimState:Hide("swap_high")
+        inst.AnimState:Show("swap_mid")
+        inst.AnimState:Hide("swap_low")
+    end
+    inst.AnimState:OverrideSymbol("swap_cooked", overridebuild or "cook_pot_food", product)
+end
+
 local function spoilfn(inst)
     if not inst:HasTag("burnt") then
         inst.components.stewer.product = inst.components.stewer.spoiledproduct
-        inst.AnimState:OverrideSymbol("swap_cooked", "cook_pot_food", inst.components.stewer.product)
+        SetProductSymbol(inst, inst.components.stewer.product)
     end
 end
 
 local function ShowProduct(inst)
     if not inst:HasTag("burnt") then
         local product = inst.components.stewer.product
-        if IsModCookingProduct(inst.prefab, product) then
-            inst.AnimState:OverrideSymbol("swap_cooked", product, product)
-        else
-            inst.AnimState:OverrideSymbol("swap_cooked", "cook_pot_food", product)
-        end
+        SetProductSymbol(inst, product, IsModCookingProduct(inst.prefab, product) and product or nil)
     end
 end
 

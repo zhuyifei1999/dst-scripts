@@ -108,6 +108,10 @@ local function MakeCritter(name, animname, face, diet, flying, data, prefabs)
 	    Asset("ANIM", "anim/"..animname.."_traits.zip"),
     }
 
+    if data.allow_platform_hopping then
+        table.insert(assets, Asset("ANIM", "anim/"..animname.."_jump.zip"))
+    end
+
     local function fn()
         local inst = CreateEntity()
 
@@ -328,13 +332,13 @@ end
 -------------------------------------------------------------------------------
 local standard_diet = { FOODGROUP.OMNI }
 
-return MakeCritter("critter_lamb", "sheepington", 6, standard_diet, false, {favoritefood="guacamole"}),
+return MakeCritter("critter_lamb", "sheepington", 6, standard_diet, false, {favoritefood="guacamole", allow_platform_hopping=true}),
        MakeBuilder("critter_lamb"),
        MakeCritter("critter_puppy", "pupington", 4, standard_diet, false, {favoritefood="monsterlasagna", allow_platform_hopping=true}),
        MakeBuilder("critter_puppy"),
-       MakeCritter("critter_kitten", "kittington", 6, standard_diet, false, {favoritefood="fishsticks"}),
+       MakeCritter("critter_kitten", "kittington", 6, standard_diet, false, {favoritefood="fishsticks", allow_platform_hopping=true}),
        MakeBuilder("critter_kitten"),
-       MakeCritter("critter_perdling", "perdling", 4, standard_diet, false, {favoritefood="trailmix"}),
+       MakeCritter("critter_perdling", "perdling", 4, standard_diet, false, {favoritefood="trailmix", allow_platform_hopping=true}),
        MakeBuilder("critter_perdling"),
        MakeCritter("critter_dragonling", "dragonling", 6, standard_diet, true, {favoritefood="hotchili", flyingsoundloop="dontstarve_DLC001/creatures/together/dragonling/fly_LP"}),
        MakeBuilder("critter_dragonling"),

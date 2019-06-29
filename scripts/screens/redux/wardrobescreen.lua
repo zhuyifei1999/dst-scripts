@@ -136,7 +136,7 @@ end
 function WardrobeScreen:_SetSkintype(skintypedata)
 	self.selected_skintype = skintypedata.type
 	self:_ApplySkins(self.preview_skins, true, self.selected_skintype)
-	self.puppet:SetScale(skintypedata.scale or self.puppet_default_scale)
+	self.puppet:SetScale((skintypedata.scale or 1) * self.puppet_default_scale)
 	if skintypedata.offset ~= nil then
 		self.puppet:SetPosition(self.puppet_base_offset[1] + (skintypedata.offset[1] or 0), self.puppet_base_offset[2] + (skintypedata.offset[2] or 0))
 	else

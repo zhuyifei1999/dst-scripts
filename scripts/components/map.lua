@@ -55,6 +55,11 @@ function Map:IsAboveGroundAtPoint(x, y, z, allow_water)
         tile ~= GROUND.INVALID
 end
 
+function Map:IsValidTileAtPoint(x, y, z)
+    local tile = self:GetTileAtPoint(x, y, z)
+    return tile ~= GROUND.IMPASSABLE and tile ~= GROUND.INVALID
+end
+
 function Map:CanTerraformAtPoint(x, y, z)
     local tile = self:GetTileAtPoint(x, y, z)
     if tile == GROUND.DIRT or
