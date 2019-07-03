@@ -143,7 +143,7 @@ function SkinsPuppet:SetSkins(prefabname, base_item, clothing_names, skip_change
 	local none_skinned_base_builds = prefabname
 	if IsPrefabSkinned(prefabname) then
 		base_item = base_item or (prefabname .."_none")
-		--none_skinned_base_builds = GetBuildForItem(base_item)
+		none_skinned_base_builds = GetBuildForItem(base_item)
 	end
 	
 	local previousbank = self.currentanimbank

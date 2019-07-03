@@ -55,6 +55,12 @@ function Map:IsAboveGroundAtPoint(x, y, z, allow_water)
         tile ~= GROUND.INVALID
 end
 
+function Map:IsOceanTileAtPoint(x, y, z)
+    local tile = self:GetTileAtPoint(x, y, z)
+    return tile >= GROUND.OCEAN_START and tile <= GROUND.OCEAN_END and
+        tile ~= GROUND.IMPASSABLE and
+        tile ~= GROUND.INVALID
+end
 function Map:IsValidTileAtPoint(x, y, z)
     local tile = self:GetTileAtPoint(x, y, z)
     return tile ~= GROUND.IMPASSABLE and tile ~= GROUND.INVALID
@@ -182,12 +188,6 @@ function Map:CanDeployAtPointInWater(pt, inst, mouseover, data)
     return (mouseover == nil or mouseover:HasTag("player"))
         and self:IsDeployPointClear(pt, nil, min_distance_from_boat + radius)
         and self:IsSurroundedByWater(pt.x, pt.y, pt.z, min_distance_from_land + radius)
-end
-
-function Map:CanDeployBoatAtPoint(pt, inst, mouseover)
-    return self:CanDeployAtPointInWater(pt, inst, mouseover, {
-        land = 0.5, boat = 0.5, radius = TUNING.MAX_WALKABLE_PLATFORM_RADIUS
-    })
 end
 
 function Map:CanDeployMastAtPoint(pt, inst, mouseover)

@@ -102,6 +102,7 @@ local function ondeploy(inst, pt, deployer)
         mast.Physics:SetCollides(true)
         mast.SoundEmitter:PlaySound("turnoftides/common/together/boat/mast/place")
         mast.AnimState:PlayAnimation("place")
+        mast.AnimState:PushAnimation("closed", false)
 
         inst:Remove()
     end

@@ -15,58 +15,41 @@ local function DefaultRangeCheck(doer, target)
     return dst <= 16
 end
 
-local function CheckDeployRange(doer, target)
-    if target == nil then
-        return
-    end
+local function CheckRowRange(doer, dest)
+	local doer_pos = doer:GetPosition()
+	local target_pos = Vector3(dest:GetPoint())
+	local dir = target_pos - doer_pos
 
-    local deploy_range = 1.1
+	local test_pt = doer_pos + dir:GetNormalized() * (doer:GetPhysicsRadius(0) + 0.25)
 
-    local locomotor = doer.components.locomotor
-
-    if locomotor ~= nil and locomotor.bufferedaction ~= nil and locomotor.bufferedaction.invobject ~= nil then
-        local inv_object = locomotor.bufferedaction.invobject
-        local deployable = inv_object.components.deployable
-        if deployable ~= nil then
-            deploy_range = deployable.deploy_range
-        end
-    end
-
-    return deploy_range
+    if TheWorld.Map:GetPlatformAtPoint(test_pt.x, test_pt.z) ~= nil then
+		return false
+	else
+        return true
+	end
 end
 
-local function CheckRowRange(doer, target)
-    local distance_to_water = 0.75
-    local rotation = doer.Transform:GetRotation() * DEGREES
-    local forward_x, forward_z = math.cos(rotation), -math.sin(rotation)
-    local doer_x, doer_y, doer_z = doer.Transform:GetWorldPosition()
-    local test_x, test_z = doer_x + forward_x * distance_to_water, doer_z + forward_z * distance_to_water
+local function ExtraPickupRange(doer, dest)
+	if dest ~= nil then
+		local target_x, target_y, target_z = dest:GetPoint()
 
-    
-    local target_x, target_y, target_z = target.Transform:GetWorldPosition()
-    local dist = VecUtil_Length(doer_x - target_x, doer_z - target_z)
-
-    local map = TheWorld.Map
-    if TheWorld.Map:IsVisualGroundAtPoint(test_x, 0, test_z) or map:GetPlatformAtPoint(test_x, test_z) ~= nil then
-        return distance_to_water
-    else
-        return dist
-    end
+		local is_on_water = TheWorld.Map:IsOceanTileAtPoint(target_x, 0, target_z) and not TheWorld.Map:IsPassableAtPoint(target_x, 0, target_z)
+		if is_on_water then
+			return 0.75
+		end
+	end
+    return 0
 end
 
-local function PickupRange(doer, target)
-    if not target:IsValid() then
-        return 0
-    end
+local function ExtraDeployDist(doer, dest, bufferedaction)
+	if dest ~= nil then
+		local target_x, target_y, target_z = dest:GetPoint()
 
-    local target_x, target_y, target_z = target.Transform:GetWorldPosition()
-
-    local is_on_water = not TheWorld.Map:IsVisualGroundAtPoint(target_x, 0, target_z) and not TheWorld.Map:IsPassableAtPoint(target_x, 0, target_z)            
-
-    if is_on_water then
-        return 0.75
-    end
-
+		local is_on_water = TheWorld.Map:IsOceanTileAtPoint(target_x, 0, target_z) and not TheWorld.Map:IsPassableAtPoint(target_x, 0, target_z)
+		if is_on_water then
+			return ((bufferedaction ~= nil and bufferedaction.invobject ~= nil and bufferedaction.invobject:HasTag("usedeployspacingasoffset") and bufferedaction.invobject.replica.inventoryitem ~= nil and bufferedaction.invobject.replica.inventoryitem:DeploySpacingRadius()) or 0) + 1.0
+		end
+	end
     return 0
 end
 
@@ -100,12 +83,12 @@ Action = Class(function(self, data, instant, rmb, distance, ghost_valid, ghost_e
 
     --new params, only supported by passing via data field
     self.actionmeter = data.actionmeter or nil
-    self.distanceupdatefn = data.distanceupdatefn
+    self.customarrivecheck = data.customarrivecheck
     self.is_relative_to_platform = data.is_relative_to_platform
     self.disable_platform_hopping = data.disable_platform_hopping
     self.skip_locomotor_facing = data.skip_locomotor_facing
     self.do_not_locomote = data.do_not_locomote
-    self.entity_arrive_distance_fn = data.entity_arrive_distance_fn
+    self.extra_arrive_dist = data.extra_arrive_dist
 end)
 
 ACTIONS =
@@ -117,8 +100,8 @@ ACTIONS =
     CHOP = Action(),
     ATTACK = Action({ priority=2, canforce=true, mount_valid=true }), -- No custom range check, attack already handles that
     EAT = Action({ mount_valid=true }),
-    PICK = Action({ canforce=true, rangecheckfn=DefaultRangeCheck, entity_arrive_distance_fn=PickupRange }),
-    PICKUP = Action({ priority=1, entity_arrive_distance_fn=PickupRange }),
+    PICK = Action({ canforce=true, rangecheckfn=DefaultRangeCheck, extra_arrive_dist=ExtraPickupRange }),
+    PICKUP = Action({ priority=1, extra_arrive_dist=ExtraPickupRange }),
     MINE = Action(),
     DIG = Action({ rmb=true }),
     GIVE = Action({ mount_valid=true, canforce=true, rangecheckfn=DefaultRangeCheck }),
@@ -150,7 +133,7 @@ ACTIONS =
     SHAVE = Action({ mount_valid=true }),
     STORE = Action(),
     RUMMAGE = Action({ priority=-1, mount_valid=true }),
-    DEPLOY = Action({distanceupdatefn=CheckDeployRange}),
+    DEPLOY = Action({distance=1.1, extra_arrive_dist=ExtraDeployDist}),
     PLAY = Action({ mount_valid=true }),
     CREATE = Action(),
     JOIN = Action(),
@@ -253,8 +236,8 @@ ACTIONS =
     SET_HEADING = Action({distance=9999, do_not_locomote=true}),
     STOP_STEERING_BOAT = Action({instant=true}),
     CAST_NET = Action({ priority=10, rmb=true, distance=12, mount_valid=true, disable_platform_hopping=true }),
-    ROW_FAIL = Action({distance=9999, disable_platform_hopping=true, skip_locomotor_facing=true}),
-    ROW = Action({priority=3, distanceupdatefn=CheckRowRange, is_relative_to_platform = true, disable_platform_hopping=true}),
+    ROW_FAIL = Action({customarrivecheck=function() return true end, disable_platform_hopping=true, skip_locomotor_facing=true}),
+    ROW = Action({priority=3, customarrivecheck=CheckRowRange, is_relative_to_platform=true, disable_platform_hopping=true}),
 }
 
 ACTIONS_BY_ACTION_CODE = {}

@@ -33,7 +33,6 @@ local Deployable = Class(function(self, inst)
     self.usegridplacer = false
 
     self.ondeploy = nil
-    self.deploy_range = 1.1
 
     self.inst:AddTag("deployable")
 end,
@@ -97,10 +96,6 @@ function Deployable:CanDeploy(pt, mouseover, deployer)
     elseif self.mode == DEPLOYMODE.MAST then
         return TheWorld.Map:CanDeployMastAtPoint(pt, self.inst, mouseover)
     end
-end
-
-function Deployable:SetDeployRange(deploy_range)
-    self.deploy_range = deploy_range
 end
 
 function Deployable:Deploy(pt, deployer, rot)

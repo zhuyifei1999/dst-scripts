@@ -76,12 +76,6 @@ local function fn()
 	inst:AddTag("show_spoilage")
     inst:AddTag("deployedplant")
 
-    inst:AddComponent("deployable")
-    inst.components.deployable.ondeploy = ondeploy
-    inst.components.deployable:SetDeploySpacing(DEPLOYSPACING.MEDIUM)
-    inst.components.deployable:SetDeployMode(DEPLOYMODE.WATER)
-    inst.components.deployable:SetDeployRange(2)
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -111,6 +105,11 @@ local function fn()
     inst.components.perishable:StartPerishing()
     inst.components.perishable.onperishreplacement = "spoiled_food"
 
+    inst:AddComponent("deployable")
+    inst.components.deployable.ondeploy = ondeploy
+    inst.components.deployable:SetDeploySpacing(DEPLOYSPACING.MEDIUM)
+    inst.components.deployable:SetDeployMode(DEPLOYMODE.WATER)
+
     MakeMediumBurnable(inst, TUNING.LARGE_BURNTIME)
     MakeSmallPropagator(inst)
 
@@ -121,4 +120,4 @@ local function fn()
 end
 
 return Prefab("bullkelp_root", fn, assets),
-		MakePlacer("bullkelp_root_placer", "bullkelp", "bullkelp", "idle", false, false, false, nil, nil, nil, nil, 4)
+		MakePlacer("bullkelp_root_placer", "bullkelp", "bullkelp", "preview", false, false, false, nil, nil, nil, nil, 4)

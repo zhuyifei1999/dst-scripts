@@ -114,6 +114,7 @@ local plantables =
     {
         name = "sapling_moon",
         mediumspacing = true,
+        inspectoverride = "dug_sapling",
         floater = {"large", 0.1, 0.55},
     },
     {

@@ -1295,6 +1295,7 @@ CommonStates.AddRowStates = function(states, is_client)
             local target_pos = locomotor.bufferedaction:GetPlatformRelativeAbsolutePosition()
             if target_pos == nil then
                 target_pos = locomotor.bufferedaction.target:GetPosition()
+                inst:ForceFacePoint(target_pos:Get())
             end
             inst:AddTag("is_rowing")
             inst.AnimState:PlayAnimation("row_pre")

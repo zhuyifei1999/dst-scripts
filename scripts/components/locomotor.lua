@@ -1,10 +1,5 @@
 local DOZE_OFF_TIME = 2
 
-Dest = Class(function(self, inst, world_offset)
-    self.inst = inst
-    self.world_offset = world_offset
-end)
-
 local PATHFIND_PERIOD = 1
 local PATHFIND_MAX_RANGE = 40
 
@@ -17,6 +12,11 @@ local NO_ISLAND = 127
 local ARRIVE_STEP = .15
 
 local INVALID_PLATFORM_ID = "INVALID PLATFORM"
+
+Dest = Class(function(self, inst, world_offset)
+    self.inst = inst
+    self.world_offset = world_offset
+end)
 
 function Dest:IsValid()
     return self.inst == nil or self.inst:IsValid()
@@ -141,7 +141,6 @@ end
 
 local LocoMotor = Class(function(self, inst)
     self.inst = inst
-    self.movement_locator = SpawnPrefab("movementlocator")
     self.ismastersim = TheWorld.ismastersim
 
     if self.ismastersim then
@@ -555,9 +554,9 @@ function LocoMotor:GoToEntity(target, bufferedaction, run)
     else
         arrive_dist = ARRIVE_STEP + target:GetPhysicsRadius(0) + self.inst:GetPhysicsRadius(0)
 
-        local entity_arrive_distance_fn = (bufferedaction ~= nil and bufferedaction.action ~= nil and bufferedaction.action.entity_arrive_distance_fn) or nil
-        if entity_arrive_distance_fn ~= nil then
-            arrive_dist = arrive_dist + entity_arrive_distance_fn(self.inst, target)
+        local extra_arrive_dist = (bufferedaction ~= nil and bufferedaction.action ~= nil and bufferedaction.action.extra_arrive_dist) or nil
+        if extra_arrive_dist ~= nil then
+            arrive_dist = arrive_dist + extra_arrive_dist(self.inst, self.dest)
         end
 
         if bufferedaction ~= nil and bufferedaction.action.mindistance ~= nil and bufferedaction.action.mindistance > arrive_dist then
@@ -582,26 +581,32 @@ function LocoMotor:GoToEntity(target, bufferedaction, run)
     self:StartUpdatingInternal()
 end
 
-function LocoMotor:UpdateMovementLocatorPlatform(new_platform, pt)
+function LocoMotor:SetMovementLocatorPlatform(new_platform, pt)
     self.movement_locator_platform = new_platform
     if new_platform ~= nil and new_platform:IsValid() then
         local new_platform_x, new_platform_y, new_platform_z = new_platform.Transform:GetWorldPosition()
         self.movement_locator_platform_x, self.movement_locator_platform_z = pt.x - new_platform_x, pt.z - new_platform_z
+
+	    self:UpdateMovementLocatorPosition()
+	else
+		self.movement_locator_platform_x = 0
+		self.movement_locator_platform_z = 0
     end
 end
 
 function LocoMotor:UpdateMovementLocatorPosition()
-    if self.movement_locator_platform ~= nil then
+    if self.dest ~= nil and self.movement_locator_platform ~= nil and self.dest.world_offset ~= nil then
         if self.movement_locator_platform:IsValid() then
             local movement_locator_platform_x, movement_locator_platform_y, movement_locator_platform_z = self.movement_locator_platform.Transform:GetWorldPosition()
-            self.movement_locator.Transform:SetPosition(movement_locator_platform_x + self.movement_locator_platform_x, 0, movement_locator_platform_z + self.movement_locator_platform_z)    
+			self.dest.world_offset.x = movement_locator_platform_x + self.movement_locator_platform_x
+			self.dest.world_offset.z = movement_locator_platform_z + self.movement_locator_platform_z
         end
     end
 end
 
 --V2C: Added overridedest for additional network controller support
 function LocoMotor:GoToPoint(pt, bufferedaction, run, overridedest)
-    local locator = overridedest
+    self.dest = Dest(overridedest, pt)
     if overridedest == nil then
         local target_parent = nil
         local target_parent_x, target_parent_y, target_parent_z = 0, 0, 0
@@ -622,20 +627,20 @@ function LocoMotor:GoToPoint(pt, bufferedaction, run, overridedest)
             end
         end
 
-        self.movement_locator.Transform:SetPosition(pt.x, 0, pt.z)
-
-        self:UpdateMovementLocatorPlatform(target_parent, pt)
-        self:UpdateMovementLocatorPosition()
-
-        locator = self.movement_locator        
+        self:SetMovementLocatorPlatform(target_parent, pt)
     end
-    self.dest = Dest(locator, pt)
     self.throttle = 1
 
     self.arrive_dist =
         bufferedaction ~= nil
         and (bufferedaction.distance or math.max(bufferedaction.action.mindistance or 0, ARRIVE_STEP))
         or ARRIVE_STEP
+
+    local extra_arrive_dist = (bufferedaction ~= nil and bufferedaction.action ~= nil and bufferedaction.action.extra_arrive_dist) or nil
+    if extra_arrive_dist ~= nil then
+        self.arrive_dist = self.arrive_dist + extra_arrive_dist(self.inst, self.dest, bufferedaction)
+    end
+
     --self.arrive_step_dist = ARRIVE_STEP
     self.wantstorun = run
 
@@ -879,22 +884,16 @@ function LocoMotor:OnUpdate(dt)
         local destpos_x, destpos_y, destpos_z = self.dest:GetPoint()
         local mypos_x, mypos_y, mypos_z = self.inst.Transform:GetWorldPosition()
 
-        local buffered_action = self.bufferedaction
         local reached_dest, invalid
-        if buffered_action ~= nil and
-            buffered_action.action == ACTIONS.ATTACK and
-            not buffered_action.forced and
+        if self.bufferedaction ~= nil and
+            self.bufferedaction.action == ACTIONS.ATTACK and
+            not self.bufferedaction.forced and
             self.inst.replica.combat ~= nil then
-            reached_dest, invalid = self.inst.replica.combat:CanAttack(buffered_action.target)
+            reached_dest, invalid = self.inst.replica.combat:CanAttack(self.bufferedaction.target)
+		elseif self.bufferedaction ~= nil 
+			and self.bufferedaction.action.customarrivecheck ~= nil then
+            reached_dest, invalid = self.bufferedaction.action.customarrivecheck(self.inst, self.dest)
         else
-            if buffered_action ~= nil and buffered_action.action.distanceupdatefn ~= nil then 
-                --You have to face your destination for the distance checks to be correct because they rely 
-                --On the character having the proper orientation
-                if self.dest.inst ~= nil and not buffered_action.action.skip_locomotor_facing then
-                    self.inst:FacePoint(self.dest.inst.Transform:GetWorldPosition())
-                end
-                self.arrive_dist = buffered_action.action.distanceupdatefn(self.inst, self.dest.inst)
-            end            
             local dsq = distsq(destpos_x, destpos_z, mypos_x, mypos_z)
             local run_dist = self:GetRunSpeed() * dt * .5
             reached_dest = dsq <= math.max(run_dist * run_dist, self.arrive_dist * self.arrive_dist)

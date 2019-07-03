@@ -118,6 +118,7 @@ local function fn()
 
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(TUNING.CARRAT.HEALTH)
+    inst.components.health.murdersound = inst.sounds.death
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetChanceLootTable("carrat")

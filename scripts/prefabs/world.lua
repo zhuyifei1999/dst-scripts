@@ -199,7 +199,6 @@ local prefabs =
     "constructionsite_classified",
 
     "dummytarget",
-    "movementlocator",
     "float_fx_front",
     "float_fx_back",
     "groundshadow",

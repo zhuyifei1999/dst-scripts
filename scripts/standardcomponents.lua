@@ -361,7 +361,7 @@ function MakeGhostPhysics(inst, mass, rad)
     phys:SetDamping(5)
     phys:SetCollisionGroup(COLLISION.CHARACTERS)
     phys:ClearCollisionMask()
-    phys:CollidesWith(COLLISION.GROUND)
+    phys:CollidesWith((TheWorld.has_ocean and COLLISION.GROUND) or COLLISION.WORLD)
     --phys:CollidesWith(COLLISION.OBSTACLES)
     phys:CollidesWith(COLLISION.CHARACTERS)
     phys:CollidesWith(COLLISION.GIANTS)
@@ -373,7 +373,7 @@ function ChangeToGhostPhysics(inst)
     local phys = inst.Physics
     phys:SetCollisionGroup(COLLISION.CHARACTERS)
     phys:ClearCollisionMask()
-    phys:CollidesWith(COLLISION.GROUND)
+    phys:CollidesWith((TheWorld.has_ocean and COLLISION.GROUND) or COLLISION.WORLD)
     --phys:CollidesWith(COLLISION.OBSTACLES)
     phys:CollidesWith(COLLISION.CHARACTERS)
     phys:CollidesWith(COLLISION.GIANTS)
@@ -434,8 +434,16 @@ function MakeObstaclePhysics(inst, rad, height)
 end
 
 function MakeWaterObstaclePhysics(inst, rad, height)
-    local phys = MakeObstaclePhysics(inst, rad, height)
+    inst:AddTag("blocker")
+    local phys = inst.entity:AddPhysics()
+    phys:SetMass(0) --Bullet wants 0 mass for static objects
+    phys:SetCollisionGroup(COLLISION.OBSTACLES)
+    phys:ClearCollisionMask()
+    phys:CollidesWith(COLLISION.ITEMS)
+    phys:CollidesWith(COLLISION.CHARACTERS)
+    phys:CollidesWith(COLLISION.GIANTS)
     phys:CollidesWith(COLLISION.OBSTACLES)
+    phys:SetCapsule(rad, height or 2)
     return phys
 end
 
@@ -468,12 +476,6 @@ function MakeHeavyObstaclePhysics(inst, rad, height)
     phys:CollidesWith(COLLISION.CHARACTERS)
     phys:CollidesWith(COLLISION.GIANTS)
     phys:SetCapsule(rad, height or 2)
-    return phys
-end
-
-function MakeHeavyWaterObstaclePhysics(inst, rad, height)
-    local phys = MakeHeavyObstaclePhysics(inst, rad, height)
-    phys:CollidesWith(COLLISION.OBSTACLES)
     return phys
 end
 

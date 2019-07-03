@@ -449,7 +449,6 @@ PREFABFILES = {
   "mossling",
   "mossling_spin_fx",
   "mound",
-  "movementlocator",
   "multiplayer_portal",
   "mushroom_farm",
   "mushroom_light",

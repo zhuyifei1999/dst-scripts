@@ -302,6 +302,7 @@ local function item_fn()
     inst.entity:AddNetwork()
 
     inst:AddTag("boatbuilder")
+	inst:AddTag("usedeployspacingasoffset")
 
     MakeInventoryPhysics(inst)
 
@@ -311,21 +312,16 @@ local function item_fn()
 
     MakeInventoryFloatable(inst, "med", 0.25, 0.83)
 
-    --Deployable needs to be client side because of the custom deploy range
-    inst:AddComponent("deployable")
-    inst.components.deployable.ondeploy = ondeploy
-    inst.components.deployable:SetDeploySpacing(DEPLOYSPACING.LARGE)
-    inst.components.deployable:SetDeployMode(DEPLOYMODE.WATER)
-    inst.components.deployable:SetDeployRange(9)
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
 
-    MakeLargeBurnable(inst)
-    MakeLargePropagator(inst)
+    inst:AddComponent("deployable")
+    inst.components.deployable.ondeploy = ondeploy
+    inst.components.deployable:SetDeploySpacing(DEPLOYSPACING.LARGE)
+    inst.components.deployable:SetDeployMode(DEPLOYMODE.WATER)
 
     inst:AddComponent("inspectable")
     inst:AddComponent("inventoryitem")
@@ -335,6 +331,8 @@ local function item_fn()
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.LARGE_FUEL
 
+    MakeLargeBurnable(inst)
+    MakeLargePropagator(inst)
     MakeHauntableLaunch(inst)
 
     return inst
