@@ -400,7 +400,7 @@ local function fn()
     inst:AddComponent("locomotor")
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
     inst.components.locomotor:SetTriggersCreep(false)
-    inst.components.locomotor.pathcaps = { ignorewalls = true }
+    inst.components.locomotor.pathcaps = { ignorewalls = true, allowocean = true }
     inst.components.locomotor.walkspeed = TUNING.BEEQUEEN_SPEED
 
     inst:AddComponent("health")

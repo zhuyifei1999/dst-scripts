@@ -15,9 +15,13 @@ local function fn()
     inst.AnimState:PlayAnimation("idle")
     inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
     inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
+    inst.AnimState:SetSortOrder(ANIM_SORT_ORDER.OCEAN_BOAT)
+    inst.AnimState:SetFinalOffset(2)
 
     inst:AddTag("NOBLOCK")
     inst:AddTag("DECOR")
+
+    inst.Transform:SetRotation(90)    
 
     inst.entity:SetPristine()
 

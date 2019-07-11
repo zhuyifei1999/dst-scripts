@@ -80,7 +80,7 @@ local function TrySpawnGestaltForPlayer(player, level, data)
 		_gestalts[ent] = {}
 		inst:ListenForEvent("onremove", StopTracking, ent)
         ent.Transform:SetPosition(pt.x, 0, pt.z)
-		ent.tracking_target = player
+		ent:SetTrackingTarget(player, GetTuningLevelForPlayer(player))
 	end
 end
 

@@ -2194,7 +2194,7 @@ local states =
                 inst:PerformPreviewBufferedAction()
 
                 if buffaction.pos ~= nil then
-                    inst:ForceFacePoint(buffaction.pos:Get())
+                    inst:ForceFacePoint(buffaction:GetActionPoint():Get())
                 end
             end
 
@@ -2232,7 +2232,7 @@ local states =
                 inst:PerformPreviewBufferedAction()
 
                 if buffaction.pos ~= nil then
-                    inst:ForceFacePoint(buffaction.pos:Get())
+                    inst:ForceFacePoint(buffaction:GetActionPoint():Get())
                 end
             end
 
@@ -2911,7 +2911,7 @@ local states =
                 inst:PerformPreviewBufferedAction()
 
                 if buffaction.pos ~= nil then
-                    inst:ForceFacePoint(buffaction.pos:Get())
+                    inst:ForceFacePoint(buffaction:GetActionPoint():Get())
                 end
             end
 

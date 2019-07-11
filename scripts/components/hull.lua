@@ -10,7 +10,6 @@ end
 
 function Hull:AttachEntityToBoat(obj, offset_x, offset_z, parent_to_boat)
 	obj:ListenForEvent("onremove", function() self:FinishRemovingEntity(obj) end, self.inst)
-    obj:ListenForEvent("onsink", function() self:FinishRemovingEntity(obj) end, self.inst)
 
     self.inst:DoTaskInTime(0, function(boat)
     	local boat_x, boat_y, boat_z = boat.Transform:GetWorldPosition()
@@ -22,30 +21,13 @@ function Hull:AttachEntityToBoat(obj, offset_x, offset_z, parent_to_boat)
     end)    
 end
 
---[[
-function Hull:SetRudder(obj)
-	self.rudder = obj;
-	obj:ListenForEvent("onsink", function() obj:Remove() end, self.inst)
-    self.inst:ListenForEvent("onremove", function(e) if e == self.rudder then self.rudder = nil end end, obj)  
-	obj.entity:SetParent(self.inst.entity)
-	obj.Transform:SetPosition(0,0,0)
-    obj.AnimState:SetSortOrder(ANIM_SORT_ORDER.OCEAN_BOAT)
-	obj.AnimState:SetFinalOffset(2)
-end
-]]--
-
 function Hull:SetPlank(obj)
     self.plank = obj
 end
 
 function Hull:SetBoatLip(obj)
 	self.boat_lip = obj;
-	obj:ListenForEvent("onsink", function() obj:Remove() end, self.inst)
-    self.inst:ListenForEvent("onremove", function(e) if e == self.boat_lip then self.boat_lip = nil end end, obj)  
-	obj.entity:SetParent(self.inst.entity)
-	obj.Transform:SetPosition(0,0,0)
-    obj.AnimState:SetSortOrder(ANIM_SORT_ORDER.OCEAN_BOAT)
-	obj.AnimState:SetFinalOffset(0)
+	obj.entity:SetParent(self.inst.entity)	
 end
 
 function Hull:SetRadius(radius)

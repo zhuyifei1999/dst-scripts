@@ -48,7 +48,6 @@ end
 
 local function AddConstrainedPhysicsObj(boat, physics_obj)
 	physics_obj:ListenForEvent("onremove", function() FinishRemovingEntity(physics_obj) end, boat)
-    physics_obj:ListenForEvent("onsink", function() FinishRemovingEntity(physics_obj) end, boat)
 
     physics_obj:DoTaskInTime(0, function()
 		if boat:IsValid() then
@@ -107,17 +106,9 @@ local function fn()
         return inst
     end
 
-    --inst:AddComponent("hauntable")
-    --inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
-
-    --local mast = SpawnPrefab('mast')
-    --mast.components.mast:SetBoat(inst)
-
     inst:AddComponent("hull")
     inst.components.hull:SetRadius(radius)
     inst.components.hull:SetBoatLip(SpawnPrefab('boatlip'))
-    --inst.components.hull:SetRudder(SpawnPrefab('rudder'))
-    --inst.components.hull:SetMast(mast)
 	inst.components.hull:AttachEntityToBoat(SpawnPrefab("boat_player_collision"), 0, 0)
 
     local walking_plank = SpawnPrefab("walkingplank")

@@ -262,6 +262,7 @@ local function fn()
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
     inst.components.locomotor:SetTriggersCreep(false)
     inst.components.locomotor.walkspeed = TUNING.BEEGUARD_SPEED
+    inst.components.locomotor.pathcaps = { allowocean = true }
 
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(TUNING.BEEGUARD_HEALTH)

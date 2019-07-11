@@ -6937,24 +6937,6 @@ STRINGS.UI =
         NEW = "New!",
     },
 
-	SKINTYPES =
-	{
-		NORMAL = "Normal",
-		GHOST = "Ghost",
-
-		WEREBEAVER = "Werebeaver",
-		GHOST_WEREBEAVER = "Ghost Werebeaver",
-
-		WIMPY = "Wimpy",
-		MIGHTY = "Mighty",
-
-		WORMWOOD_STAGE2 = "Bloom 1",
-		WORMWOOD_STAGE3 = "Bloom 2",
-		WORMWOOD_STAGE4 = "Bloom 3",
-
-		CYCLE_VIEW = "Cycle View",
-	},
-
     BARTERSCREEN =
     {
         TITLE = "The Curio Loom",
@@ -7010,6 +6992,8 @@ STRINGS.UI =
         TOOLTIP_HAND = "Equip a hand item",
         TOOLTIP_LEGS = "Equip a leg item",
         TOOLTIP_FEET = "Equip a foot item",
+
+		CYCLE_VIEW = "Cycle View",
     },
     
     MYSTERYBOXSCREEN = 

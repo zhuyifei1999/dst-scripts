@@ -16,8 +16,6 @@ local prefabs =
 
 local brain = require("brains/winonacatapultbrain")
 
-local KEEP_TARGET_BUFFER_DISTANCE = 5
-
 local function RetargetFn(inst)
     local target = inst.components.combat.target
     if target ~= nil and
@@ -63,7 +61,7 @@ local function ShouldKeepTarget(inst, target)
         and target:IsValid()
         and target.components.health ~= nil
         and not target.components.health:IsDead()
-        and inst:IsNear(target, TUNING.WINONA_CATAPULT_MAX_RANGE + KEEP_TARGET_BUFFER_DISTANCE)
+        and inst:IsNear(target, TUNING.WINONA_CATAPULT_MAX_RANGE + TUNING.WINONA_CATAPULT_KEEP_TARGET_BUFFER)
 end
 
 local function ShareTargetFn(dude)

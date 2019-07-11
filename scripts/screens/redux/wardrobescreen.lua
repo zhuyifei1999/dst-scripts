@@ -74,7 +74,9 @@ function WardrobeScreen:_DoInit()
 	self.skintypes = GetSkinModes(self.currentcharacter)
 	self.view_index = 1
 	self.selected_skintype = self.skintypes[self.view_index].type
-	self.portrait_view_index = 2--	1 < value <= #self.skintypes
+
+	-- Portrait view index must be 1 < ind <= #self.skintypes+1
+	self.portrait_view_index = #self.skintypes + 1
 
     local reader = function(item_key)
         return table.contains(self.selected_skins, item_key)
@@ -106,7 +108,7 @@ function WardrobeScreen:_DoInit()
         self.presetsbutton:SetFocusChangeDir(MOVE_DOWN, self.menu)
         self.presetsbutton:SetFocusChangeDir(MOVE_RIGHT, self.subscreener:GetActiveSubscreenFn())
 
-		self.cyclebutton = self.root:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "player_info.tex", STRINGS.UI.SKINTYPES.CYCLE_VIEW, false, false, function()
+		self.cyclebutton = self.root:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "player_info.tex", STRINGS.UI.WARDROBESCREEN.CYCLE_VIEW, false, false, function()
 				self:_CycleView()
 			end
 		))
@@ -144,38 +146,47 @@ function WardrobeScreen:_SetSkintype(skintypedata)
 	end
 end
 
-function WardrobeScreen:_CycleView(force_off)
-	if force_off then
+function WardrobeScreen:_CycleView(reset)
+	--[copied from loadoutselect.lua]
+	--When the cycle view button is clicked an index is incremented,
+	--EXCEPT when the index is about to become the same as the portrait
+	--view index, in which case the portrait is toggled on. On the next
+	--interaction the index increments and the portrait is toggled off,
+	--i.e. skintypes[portrait_index] still contains skintype data and
+	--is not overridden.
+	if reset then
 		if self.showing_portrait then
-			self.heroportrait:Hide()
-			self.puppet_root:Show()
-			self.showing_portrait = false
+			self:_SetShowPortrait(false)
 
 			self.view_index = 1
 			self:_SetSkintype(self.skintypes[self.view_index])
 		end
+		return
+	end
+
+	if self.view_index == self.portrait_view_index - 1 and not self.showing_portrait then
+		self:_SetShowPortrait(true)
 	else
-		if self.showing_portrait then
-			self.heroportrait:Hide()
-			self.puppet_root:Show()
-			self.showing_portrait = false
+		if self.showing_portrait then self:_SetShowPortrait(false) end
 
-			self:_SetSkintype(self.skintypes[self.view_index])
-		else
-			self.view_index = self.view_index + 1
-
-			if self.view_index == self.portrait_view_index then
-				self.heroportrait:Show()
-				self.puppet_root:Hide()
-				self.showing_portrait = true
-			else
-				if self.view_index > #self.skintypes then
-					self.view_index = 1
-				end
-			end
-
-			self:_SetSkintype(self.skintypes[self.view_index])
+		self.view_index = self.view_index + 1
+		if self.view_index > #self.skintypes then
+			self.view_index = 1
 		end
+
+		self:_SetSkintype(self.skintypes[self.view_index])
+	end
+end
+
+function WardrobeScreen:_SetShowPortrait(show)
+	if show then
+		self.heroportrait:Show()
+		self.puppet_root:Hide()
+		self.showing_portrait = true
+	else
+		self.heroportrait:Hide()
+		self.puppet_root:Show()
+		self.showing_portrait = false
 	end
 end
 
@@ -407,7 +418,7 @@ function WardrobeScreen:GetHelpText()
     table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE ) .. " " .. STRINGS.UI.WARDROBESCREEN.RESET)
 	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_1) .. " " .. STRINGS.UI.SKIN_PRESETS.TITLE)
 
-	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_3, false, false) .. " " .. STRINGS.UI.SKINTYPES.CYCLE_VIEW)
+	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_3, false, false) .. " " .. STRINGS.UI.WARDROBESCREEN.CYCLE_VIEW)
 
 	return table.concat(t, "  ")
 end

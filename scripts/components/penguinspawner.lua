@@ -262,10 +262,8 @@ local function EstablishColony(loc)
     if newFlock.rookery then
         for i, node in ipairs(TheWorld.topology.nodes) do
             if TheSim:WorldPointInPoly(loc.x, loc.z, node.poly) then
-                for _, tag in ipairs(node.tags) do
-                    if tag == "moonhunt" then
-                        newFlock.is_mutated = true
-                    end
+                if node.tags ~= nil and table.contains(node.tags, "moonhunt") then
+                    newFlock.is_mutated = true
                 end
                 break
             end

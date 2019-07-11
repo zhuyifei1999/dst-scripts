@@ -562,7 +562,7 @@ local function fn()
 
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
     inst.components.locomotor:SetTriggersCreep(false)
-    inst.components.locomotor.pathcaps = { ignorewalls = true }
+    inst.components.locomotor.pathcaps = { ignorewalls = true, allowocean = true }
     inst.components.locomotor.walkspeed = TUNING.DRAGONFLY_SPEED
 
     inst.components.rampingspawner.getspawnposfn = GetLavaePos

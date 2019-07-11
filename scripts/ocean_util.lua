@@ -72,7 +72,7 @@ function FindLandBetweenPoints(p0x, p0y, p1x, p1y)
     local e = 0;
     for i = 0, dx+dy - 1 do
 	    if IsLandTile(map:GetTileAtPoint(p0x, 0, p0y)) then
-			break
+			return map:GetTileCenterPoint(p0x, 0, p0y)
 		end
 
         local e1 = e + dy
@@ -86,7 +86,7 @@ function FindLandBetweenPoints(p0x, p0y, p1x, p1y)
         end
 	end
 
-	return map:GetTileCenterPoint(p0x, 0, p0y)
+	return nil
 end
 
 function FindRandomPointOnShoreFromOcean(x, y, z)
@@ -99,8 +99,10 @@ function FindRandomPointOnShoreFromOcean(x, y, z)
 	end
 	table.sort(nodes, function(a, b) return a.distsq < b.distsq end)
 	
+	local num_rooms_to_pick = 4
+
 	local closest = {}
-	for i = 1, 4 do
+	for i = 1, num_rooms_to_pick do
 		table.insert(closest, nodes[i])
 	end
 	shuffleArray(closest)
@@ -108,8 +110,18 @@ function FindRandomPointOnShoreFromOcean(x, y, z)
 	local dest_x, dest_y, dest_z
 	for _, c in ipairs(closest) do
 		dest_x, dest_y, dest_z = FindLandBetweenPoints(x, z, c.n.x, c.n.y)
-		if dest_x ~= nil then
+		if dest_x ~= nil and TheSim:WorldPointInPoly(dest_x, dest_z, c.n.poly) then
 			return dest_x, dest_y, dest_z
+		end
+	end
+
+	for i = num_rooms_to_pick + 1, #nodes do
+		local c = nodes[i]
+		if c ~= nil then
+			dest_x, dest_y, dest_z = FindLandBetweenPoints(x, z, c.n.x, c.n.y)
+			if dest_x ~= nil and TheSim:WorldPointInPoly(dest_x, dest_z, c.n.poly) then
+				return dest_x, dest_y, dest_z
+			end
 		end
 	end
 

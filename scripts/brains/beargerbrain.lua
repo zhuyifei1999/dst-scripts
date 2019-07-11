@@ -207,6 +207,11 @@ local function SetWanderDirection(inst, angle)
     inst.wanderdirection = angle
 end
 
+local OUTSIDE_CATAPULT_RANGE = TUNING.WINONA_CATAPULT_MAX_RANGE + TUNING.WINONA_CATAPULT_KEEP_TARGET_BUFFER + TUNING.MAX_WALKABLE_PLATFORM_RADIUS + 1
+local function OceanDistanceTest(inst, target)
+    return (inst.cangroundpound and not target:HasTag("beehive") and 10) or OUTSIDE_CATAPULT_RANGE
+end
+
 --[[local function OutsidePlayerRange(inst)
     local x,y,z = inst.Transform:GetWorldPosition()
     return TheWorld.state.isautumn and (not IsAnyPlayerInRange(x, y, z, OFFSCREEN_RANGE)) -- only run offscreen behaviour in autumn
@@ -229,7 +234,7 @@ function BeargerBrain:OnStart()
             WhileNode(function() return self.inst.components.health.takingfiredamage end, "OnFire", Panic(self.inst)),
 
             WhileNode(function()
-                    return self.inst.CanGroundPound
+                    return self.inst.cangroundpound
                         and self.inst.components.combat.target ~= nil
                         and not self.inst.components.combat.target:HasTag("beehive")
                         and (self.inst.sg:HasStateTag("running") or
@@ -237,7 +242,7 @@ function BeargerBrain:OnStart()
                 end,
                 "Charge Behaviours", ChaseAndRam(self.inst, MAX_CHASE_TIME, GIVE_UP_DIST, MAX_CHARGE_DIST)),
 
-            ChaseAndAttack(self.inst, 20, 60, nil, nil, true),
+            ChaseAndAttack(self.inst, 20, 60, nil, nil, true, OceanDistanceTest),
 
             WhileNode(function() return ShouldEatFoodFn(self.inst) end, "At Base",
                 PriorityNode(

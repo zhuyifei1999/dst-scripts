@@ -1087,6 +1087,8 @@ return {
         CHESSPIECE_BEARGER = "It was a lot bigger up close.",
         CHESSPIECE_MOOSEGOOSE = "Eurgh. It's so lifelike.",
         CHESSPIECE_DRAGONFLY = "Ah, that brings back memories. Bad ones.",
+        --CHESSPIECE_CLAYHOUND = "??",
+        --CHESSPIECE_CLAYWARG = "??",
         CHESSPIECE_BUTTERFLY = "It looks nice, doesn't it?",
         CHESSPIECE_ANCHOR = "It's as heavy as it looks.",
         CHESSPIECE_MOON = "I've been feeling pretty inspired lately.",

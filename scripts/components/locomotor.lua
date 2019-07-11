@@ -13,9 +13,12 @@ local ARRIVE_STEP = .15
 
 local INVALID_PLATFORM_ID = "INVALID PLATFORM"
 
-Dest = Class(function(self, inst, world_offset)
+Dest = Class(function(self, inst, pt, buffered_action)
     self.inst = inst
-    self.world_offset = world_offset
+	if pt ~= nil then
+		self.pt = pt
+	end
+	self.buffered_action = buffered_action
 end)
 
 function Dest:IsValid()
@@ -24,7 +27,8 @@ end
 
 function Dest:__tostring()
     return (self.inst ~= nil and ("Going to Entity: "..tostring(self.inst)))
-        or (self.world_offset ~= nil and ("Heading to Point: "..tostring(self.world_offset)))
+        or (self.pt ~= nil and ("Going to Point: "..tostring(self.pt)))
+        or (self.buffered_action ~= nil and ("Going to Point: "..tostring(self.buffered_action.pos)))
         or "No Dest"
 end
 
@@ -33,8 +37,13 @@ function Dest:GetPoint()
         return self.inst.components.inventoryitem.owner.Transform:GetWorldPosition()
     elseif self.inst ~= nil then
         return self.inst.Transform:GetWorldPosition()
-    elseif self.world_offset then
-        return self.world_offset:Get()
+    elseif self.pt then
+		return self.pt:Get()
+	elseif self.buffered_action ~= nil then
+		local act_pos = self.buffered_action:GetActionPoint()
+		if act_pos ~= nil then
+			return act_pos:Get()
+		end
     end
     return 0, 0, 0
 end
@@ -431,11 +440,13 @@ function LocoMotor:PreviewAction(bufferedaction, run, try_instant)
 
     self.throttle = 1
     self:Clear()
+	local action_pos = bufferedaction:GetActionPoint()
+
     if bufferedaction.action == ACTIONS.WALKTO then
         if bufferedaction.target ~= nil then
             self:GoToEntity(bufferedaction.target, bufferedaction, run)
-        elseif bufferedaction.pos ~= nil then
-            self:GoToPoint(bufferedaction.pos, bufferedaction, run)
+        elseif action_pos ~= nil then
+            self:GoToPoint(nil, bufferedaction, run)
         end
     elseif bufferedaction.action == ACTIONS.LOOKAT and
         self.inst.sg ~= nil and
@@ -454,27 +465,27 @@ function LocoMotor:PreviewAction(bufferedaction, run, try_instant)
         self.inst:PreviewBufferedAction(bufferedaction)
         self.inst.sg:GoToState("idle", "noanim")
     elseif bufferedaction.forced then
-        if bufferedaction.pos ~= nil then
-            self:GoToPoint(bufferedaction.pos, bufferedaction, run)
+        if action_pos ~= nil then
+            self:GoToPoint(nil, bufferedaction, run)
         end
     elseif bufferedaction.action.instant or bufferedaction.action.do_not_locomote then
         self.inst:PreviewBufferedAction(bufferedaction)
     elseif bufferedaction.target ~= nil then
         self:GoToEntity(bufferedaction.target, bufferedaction, run)
-    elseif bufferedaction.pos == nil then
+    elseif action_pos == nil then
         self.inst:PreviewBufferedAction(bufferedaction)
     elseif bufferedaction.action == ACTIONS.CASTAOE then
-        if self.inst:GetDistanceSqToPoint(bufferedaction.pos) <= bufferedaction.distance * bufferedaction.distance then
-            self.inst:FacePoint(bufferedaction.pos:Get())
+        if self.inst:GetDistanceSqToPoint(action_pos) <= bufferedaction.distance * bufferedaction.distance then
+            self.inst:FacePoint(action_pos:Get())
             self.inst:PreviewBufferedAction(bufferedaction)
         else
-            self:GoToPoint(bufferedaction.pos, bufferedaction, run)
+            self:GoToPoint(nil, bufferedaction, run)
             if self.bufferedaction == bufferedaction then
                 self.inst:PushEvent("bufferedcastaoe", bufferedaction)
             end
         end
     else
-        self:GoToPoint(bufferedaction.pos, bufferedaction, run)
+        self:GoToPoint(nil, bufferedaction, run)
     end
 end
 
@@ -491,11 +502,12 @@ function LocoMotor:PushAction(bufferedaction, run, try_instant)
     end
 
     self:Clear()
+	local action_pos = bufferedaction:GetActionPoint()
     if bufferedaction.action == ACTIONS.WALKTO then
         if bufferedaction.target ~= nil then
             self:GoToEntity(bufferedaction.target, bufferedaction, run)
-        elseif bufferedaction.pos then
-            self:GoToPoint(bufferedaction.pos, bufferedaction, run)
+        elseif action_pos then
+            self:GoToPoint(nil, bufferedaction, run)
         else
             return
         end
@@ -513,27 +525,27 @@ function LocoMotor:PushAction(bufferedaction, run, try_instant)
             bufferedaction.target = nil
             bufferedaction.initialtargetowner = nil
         end
-        if bufferedaction.pos ~= nil then
-            self:GoToPoint(bufferedaction.pos, bufferedaction, run, bufferedaction.overridedest)
+        if action_pos ~= nil then
+            self:GoToPoint(nil, bufferedaction, run, bufferedaction.overridedest)
         end
     elseif bufferedaction.action.instant or bufferedaction.action.do_not_locomote then
         self.inst:PushBufferedAction(bufferedaction)
     elseif bufferedaction.target ~= nil then
         self:GoToEntity(bufferedaction.target, bufferedaction, run)
-    elseif bufferedaction.pos == nil then
+    elseif action_pos == nil then
         self.inst:PushBufferedAction(bufferedaction)
     elseif bufferedaction.action == ACTIONS.CASTAOE then
-        if self.inst:GetDistanceSqToPoint(bufferedaction.pos) <= bufferedaction.distance * bufferedaction.distance then
-            self.inst:FacePoint(bufferedaction.pos:Get())
+        if self.inst:GetDistanceSqToPoint(action_pos) <= bufferedaction.distance * bufferedaction.distance then
+            self.inst:FacePoint(action_pos:Get())
             self.inst:PushBufferedAction(bufferedaction)
         else
-            self:GoToPoint(bufferedaction.pos, bufferedaction, run)
+            self:GoToPoint(nil, bufferedaction, run)
             if self.bufferedaction == bufferedaction then
                 self.inst:PushEvent("bufferedcastaoe", bufferedaction)
             end
         end
     else
-        self:GoToPoint(bufferedaction.pos, bufferedaction, run)
+        self:GoToPoint(nil, bufferedaction, run)
     end
 
     if self.inst.components.playercontroller ~= nil then
@@ -581,54 +593,20 @@ function LocoMotor:GoToEntity(target, bufferedaction, run)
     self:StartUpdatingInternal()
 end
 
-function LocoMotor:SetMovementLocatorPlatform(new_platform, pt)
-    self.movement_locator_platform = new_platform
-    if new_platform ~= nil and new_platform:IsValid() then
-        local new_platform_x, new_platform_y, new_platform_z = new_platform.Transform:GetWorldPosition()
-        self.movement_locator_platform_x, self.movement_locator_platform_z = pt.x - new_platform_x, pt.z - new_platform_z
-
-	    self:UpdateMovementLocatorPosition()
-	else
-		self.movement_locator_platform_x = 0
-		self.movement_locator_platform_z = 0
+local function GetPlatformForAction(inst, pt, bufferedaction)
+    if bufferedaction ~= nil and bufferedaction.action.is_relative_to_platform then            
+	    local my_x, my_y, my_z = inst.Transform:GetWorldPosition()
+        return TheWorld.Map:GetPlatformAtPoint(my_x, my_z) --locator is relative to my platform
+    else
+        return TheWorld.Map:GetPlatformAtPoint(pt.x, pt.z) --locator is relative to clicked platform
     end
-end
-
-function LocoMotor:UpdateMovementLocatorPosition()
-    if self.dest ~= nil and self.movement_locator_platform ~= nil and self.dest.world_offset ~= nil then
-        if self.movement_locator_platform:IsValid() then
-            local movement_locator_platform_x, movement_locator_platform_y, movement_locator_platform_z = self.movement_locator_platform.Transform:GetWorldPosition()
-			self.dest.world_offset.x = movement_locator_platform_x + self.movement_locator_platform_x
-			self.dest.world_offset.z = movement_locator_platform_z + self.movement_locator_platform_z
-        end
-    end
+	return nil
 end
 
 --V2C: Added overridedest for additional network controller support
 function LocoMotor:GoToPoint(pt, bufferedaction, run, overridedest)
-    self.dest = Dest(overridedest, pt)
-    if overridedest == nil then
-        local target_parent = nil
-        local target_parent_x, target_parent_y, target_parent_z = 0, 0, 0
-        local my_x, my_y, my_z = self.inst.Transform:GetWorldPosition()
-        if bufferedaction ~= nil and bufferedaction.action.is_relative_to_platform then            
-            local my_platform = TheWorld.Map:GetPlatformAtPoint(my_x, my_z)        
-            --locator is relative to my platform
-            if my_platform ~= nil then    
-                target_parent_x, target_parent_y, target_parent_z = my_platform.Transform:GetWorldPosition()
-                target_parent = my_platform
-            end
-        else
-            local target_platform = TheWorld.Map:GetPlatformAtPoint(my_x, my_z)        
-            --locator is relative to clicked platform
-            if target_platform ~= nil then
-                target_parent_x, target_parent_y, target_parent_z = target_platform.Transform:GetWorldPosition()
-                target_parent = target_platform
-            end
-        end
+    self.dest = Dest(overridedest, pt, bufferedaction)
 
-        self:SetMovementLocatorPlatform(target_parent, pt)
-    end
     self.throttle = 1
 
     self.arrive_dist =
@@ -844,9 +822,6 @@ function LocoMotor:ScanForPlatform(my_platform, target_x, target_z)
 end
 
 function LocoMotor:OnUpdate(dt)
-
-    self:UpdateMovementLocatorPosition()
-
     if self.hopping then 
         self:UpdateHopping(dt) 
         return
@@ -912,8 +887,11 @@ function LocoMotor:OnUpdate(dt)
             if self.bufferedaction ~= nil and self.bufferedaction ~= self.inst.bufferedaction then
                 if self.bufferedaction.target ~= nil and self.bufferedaction.target.Transform ~= nil and not self.bufferedaction.action.skip_locomotor_facing then
                     self.inst:FacePoint(self.bufferedaction.target.Transform:GetWorldPosition())
-                elseif self.bufferedaction.pos ~= nil and self.bufferedaction.invobject ~= nil and not self.bufferedaction.action.skip_locomotor_facing then
-                    self.inst:FacePoint(self.bufferedaction.pos:Get())
+                elseif self.bufferedaction.invobject ~= nil and not self.bufferedaction.action.skip_locomotor_facing then
+					local act_pos = self.bufferedaction:GetActionPoint() 
+					if act_pos ~= nil then
+	                    self.inst:FacePoint(act_pos:Get())
+					end
                 end
                 if self.ismastersim then
                     self.inst:PushBufferedAction(self.bufferedaction)

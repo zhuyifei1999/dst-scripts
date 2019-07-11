@@ -125,6 +125,7 @@ local function fn()
 
     inst:AddComponent("locomotor")
     inst.components.locomotor.walkspeed = 6
+    inst.components.locomotor.pathcaps = {allowocean = true}
 
     inst:AddComponent("periodicspawner")
     inst.components.periodicspawner:SetOnSpawnFn(OnSpawnFuel)

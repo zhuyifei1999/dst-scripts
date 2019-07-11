@@ -1,3 +1,4 @@
+
 BufferedAction = Class(function(self, doer, target, action, invobject, pos, recipe, distance, forced, rotation)
     self.doer = doer
     self.target = target
@@ -5,7 +6,7 @@ BufferedAction = Class(function(self, doer, target, action, invobject, pos, reci
     self.action = action
     self.invobject = invobject
     self.doerownsobject = doer ~= nil and invobject ~= nil and invobject.replica.inventoryitem ~= nil and invobject.replica.inventoryitem:IsHeldBy(doer)
-    self.pos = pos
+    self.pos = pos ~= nil and DynamicPosition(pos) or nil
     self.rotation = rotation
     self.onsuccess = {}
     self.onfail = {}
@@ -15,13 +16,6 @@ BufferedAction = Class(function(self, doer, target, action, invobject, pos, reci
     self.forced = forced
     self.autoequipped = nil --true if invobject should've been auto-equipped
     self.skin = nil
-    if pos ~= nil then
-        self.platform = TheWorld.Map:GetPlatformAtPoint(pos.x, pos.z)
-        if self.platform ~= nil then
-            local platform_x, platform_y, platform_z = self.platform.Transform:GetWorldPosition()
-            self.platform_local_x, self.platform_local_z = pos.x - platform_x, pos.z - platform_z
-        end
-    end
 end)
 
 function BufferedAction:Do()
@@ -44,6 +38,7 @@ function BufferedAction:IsValid()
     return (self.invobject == nil or self.invobject:IsValid()) and
            (self.doer == nil or (self.doer:IsValid() and (not self.autoequipped or self.doer.replica.inventory:GetActiveItem() == nil))) and
            (self.target == nil or (self.target:IsValid() and self.initialtargetowner == (self.target.components.inventoryitem ~= nil and self.target.components.inventoryitem.owner or nil))) and
+           (self.pos == nil or self.pos.walkable_platform == nil or self.pos.walkable_platform:IsValid()) and
            (not self.doerownsobject or (self.doer ~= nil and self.invobject ~= nil and self.invobject.replica.inventoryitem ~= nil and self.invobject.replica.inventoryitem:IsHeldBy(self.doer))) and
            (self.validfn == nil or self.validfn())
 end
@@ -86,14 +81,13 @@ function BufferedAction:Succeed()
     self.onfail = {}
 end
 
-function BufferedAction:GetPlatformRelativeAbsolutePosition()
-    local platform = self.platform
-    if platform ~= nil and platform:IsValid() then
-        local platform_x, platform_y, platform_z = platform.Transform:GetWorldPosition()
-        return Point(platform_x + self.platform_local_x, 0, platform_z + self.platform_local_z)
-    else
-        return self.pos
-    end
+function BufferedAction:GetActionPoint()
+	-- returns a Vector3 or nil
+	return self.pos ~= nil and self.pos:GetPosition() or nil
+end
+
+function BufferedAction:SetActionPoint(pt)
+	self.pos = DynamicPosition(pt)
 end
 
 function BufferedAction:Fail()

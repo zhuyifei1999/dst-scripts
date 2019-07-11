@@ -439,11 +439,11 @@ local function fncommon(bank, build, morphlist, custombrain, tag, data)
     if data.amphibious then
 		inst:AddComponent("embarker")
 		inst.components.embarker.embark_speed = inst.components.locomotor.runspeed
-
 	    inst.components.locomotor:SetAllowPlatformHopping(true)
 
 		inst:AddComponent("amphibiouscreature")
 		inst.components.amphibiouscreature:SetBanks(bank, bank.."_water")
+        inst.components.locomotor.pathcaps = { allowocean = true }
 	end
 
     inst:SetBrain(custombrain or brain)

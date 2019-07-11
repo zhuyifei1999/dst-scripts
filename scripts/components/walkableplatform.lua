@@ -1,7 +1,3 @@
-local function OnIsSunkDirty(inst)    
-    inst:RemoveComponent("walkableplatform") 
-end
-
 -- Boat camera zoom config variables.
 local ZOOM_STEP = 0.25
 local ZOOM_TARGET = 5
@@ -9,6 +5,38 @@ local ZOOM_TIME = 4
 
 local NUM_ZOOMS = ZOOM_TARGET / ZOOM_STEP
 local ZOOM_TASK_PERIOD = ZOOM_TIME / NUM_ZOOMS
+
+local function OnRemove(inst)
+    TheWorld.components.walkableplatformmanager:RemovePlatform(inst)
+
+    if TheWorld.ismastersim then
+        local shore_x, shore_y, shore_z
+        for k,v in pairs(inst.components.walkableplatform:GetEntitiesOnPlatform()) do
+            if v.components.drownable ~= nil then
+                if shore_x == nil then
+                    shore_x, shore_y, shore_z = FindRandomPointOnShoreFromOcean(inst.Transform:GetWorldPosition())
+                end
+                v.components.drownable:OnFallInOcean(shore_x, shore_y, shore_z)
+            end
+            v:PushEvent("onsink", {boat = inst})
+        end
+        inst:PushEvent("onsink")
+    end    
+
+    --Removing the tag should make it so that entities being destroyed 
+    --No longer detect the platform
+    inst:RemoveTag("walkableplatform")
+
+    local self = inst.components.walkableplatform
+
+    self:DestroyObjectsOnPlatform()
+
+    for k,v in pairs(self.previous_objects_on_platform) do
+        if k:IsValid() then
+            k:PushEvent("got_off_platform", inst)
+        end
+    end          
+end
 
 local WalkablePlatform = Class(function(self, inst)
     self.inst = inst    
@@ -19,10 +47,9 @@ local WalkablePlatform = Class(function(self, inst)
 
     if not TheWorld.ismastersim then
         self.inst:StartUpdatingComponent(self)
-    else
-        self.inst:ListenForEvent("onremove", function() self:OnRemove() end)
-        self.inst:ListenForEvent("onsink", function() self:OnSink() end)
     end
+
+    self.inst:ListenForEvent("onremove", OnRemove)
 
     self.player_zoomed_out = false
     self.player_zoom_task = nil
@@ -32,12 +59,6 @@ local WalkablePlatform = Class(function(self, inst)
     self.new_objects_on_platform = {}
     self.platform_radius = 4
     self.movement_locators = {}
-
-    if not TheNet:IsDedicated() then
-        self.inst:ListenForEvent("issunkdirty", OnIsSunkDirty)
-    end
-
-    self._is_sunk = net_bool(inst.GUID, "walkableplatform._is_sunk", "issunkdirty")
 end)
 
 local IGNORE_WALKABLE_PLATFORM_TAGS_ON_REMOVE = { "ignorewalkableplatforms", "flying", "FX", "DECOR", "INLIMBO", "player" }
@@ -50,29 +71,13 @@ function WalkablePlatform:OnUpdate(dt)
     self:TriggerEvents()
 end
 
-function WalkablePlatform:OnSink()  
-    self._is_sunk:set(true)
-    self:DestroyObjectsOnPlatform()
-    self.inst:RemoveComponent("walkableplatform")
-end
-
-function WalkablePlatform:OnRemoveFromEntity()
-    TheWorld.components.walkableplatformmanager:RemovePlatform(self.inst) 
-
-    self.inst:RemoveTag("walkableplatform") 
-
-    for k,v in pairs(self.previous_objects_on_platform) do
-        if k:IsValid() then
-            k:PushEvent("got_off_platform", self.inst)
-        end
-    end      
-end
-
-function WalkablePlatform:OnRemove()
-    TheWorld.components.walkableplatformmanager:RemovePlatform(self.inst)
+function WalkablePlatform:CanBeWalkedOn()
+    return self.inst:HasTag("walkableplatform")
 end
 
 function WalkablePlatform:DestroyObjectsOnPlatform()
+    if not TheWorld.ismastersim then return end
+
     for k,v in pairs(self:GetEntitiesOnPlatform(nil, IGNORE_WALKABLE_PLATFORM_TAGS_ON_REMOVE)) do
         if v:IsValid() and v.components.amphibiouscreature == nil then
             if v.components.inventoryitem ~= nil then

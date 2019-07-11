@@ -4882,7 +4882,7 @@ local states =
                         if buffaction ~= nil and buffaction.pos ~= nil then
                             inst.sg.statemem.targetfx = SpawnPrefab(book.components.aoetargeting.targetprefab)
                             if inst.sg.statemem.targetfx ~= nil then
-                                inst.sg.statemem.targetfx.Transform:SetPosition(buffaction.pos:Get())
+                                inst.sg.statemem.targetfx.Transform:SetPosition(buffaction:GetActionPoint():Get())
                                 inst.sg.statemem.targetfx:ListenForEvent("onremove", OnRemoveCleanupTargetFX, inst)
                             end
                         end
@@ -8160,7 +8160,7 @@ local states =
                 if buffaction ~= nil and buffaction.pos ~= nil then
                     inst.sg.statemem.targetfx = SpawnPrefab(staff.components.aoetargeting.targetprefab)
                     if inst.sg.statemem.targetfx ~= nil then
-                        inst.sg.statemem.targetfx.Transform:SetPosition(buffaction.pos:Get())
+                        inst.sg.statemem.targetfx.Transform:SetPosition(buffaction:GetActionPoint():Get())
                         inst.sg.statemem.targetfx:ListenForEvent("onremove", OnRemoveCleanupTargetFX, inst)
                     end
                 end
@@ -8447,7 +8447,7 @@ local states =
                 if buffaction ~= nil and buffaction.pos ~= nil then
                     inst.sg.statemem.targetfx = SpawnPrefab(weapon.components.aoetargeting.targetprefab)
                     if inst.sg.statemem.targetfx ~= nil then
-                        inst.sg.statemem.targetfx.Transform:SetPosition(buffaction.pos:Get())
+                        inst.sg.statemem.targetfx.Transform:SetPosition(buffaction:GetActionPoint():Get())
                         inst.sg.statemem.targetfx:ListenForEvent("onremove", OnRemoveCleanupTargetFX, inst)
                     end
                 end
@@ -8604,7 +8604,7 @@ local states =
                 if buffaction ~= nil and buffaction.pos ~= nil then
                     inst.sg.statemem.targetfx = SpawnPrefab(weapon.components.aoetargeting.targetprefab)
                     if inst.sg.statemem.targetfx ~= nil then
-                        inst.sg.statemem.targetfx.Transform:SetPosition(buffaction.pos:Get())
+                        inst.sg.statemem.targetfx.Transform:SetPosition(buffaction:GetActionPoint():Get())
                         inst.sg.statemem.targetfx:ListenForEvent("onremove", OnRemoveCleanupTargetFX, inst)
                     end
                 end
@@ -9109,7 +9109,7 @@ local states =
             end
 
             if buffaction ~= nil and buffaction.pos ~= nil then
-                inst:ForceFacePoint(buffaction.pos:Get())
+                inst:ForceFacePoint(buffaction:GetActionPoint():Get())
             end
 
             if (equip ~= nil and equip.projectiledelay or 0) > 0 then
@@ -9177,12 +9177,12 @@ local states =
             inst.AnimState:PlayAnimation("atk_pre")
 
             if buffaction ~= nil and buffaction.pos ~= nil then
-                inst:ForceFacePoint(buffaction.pos:Get())
+                inst:ForceFacePoint(buffaction:GetActionPoint():Get())
 
                 if equip ~= nil and equip.components.aoetargeting ~= nil and equip.components.aoetargeting.targetprefab ~= nil then
                     inst.sg.statemem.targetfx = SpawnPrefab(equip.components.aoetargeting.targetprefab)
                     if inst.sg.statemem.targetfx ~= nil then
-                        inst.sg.statemem.targetfx.Transform:SetPosition(buffaction.pos:Get())
+                        inst.sg.statemem.targetfx.Transform:SetPosition(buffaction:GetActionPoint():Get())
                         inst.sg.statemem.targetfx:ListenForEvent("onremove", OnRemoveCleanupTargetFX, inst)
                     end
                 end
@@ -10547,7 +10547,7 @@ local states =
 
             local buffaction = inst:GetBufferedAction()
             if buffaction ~= nil and buffaction.pos ~= nil then
-                inst:ForceFacePoint(buffaction.pos:Get())
+                inst:ForceFacePoint(buffaction:GetActionPoint():Get())
             end
         end,
 

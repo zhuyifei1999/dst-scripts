@@ -223,6 +223,10 @@ local function MakeCritter(name, animname, face, diet, flying, data, prefabs)
         inst.components.locomotor:SetTriggersCreep(false)
         inst.components.locomotor.softstop = true
         inst.components.locomotor.walkspeed = TUNING.CRITTER_WALK_SPEED
+        if flying then
+            -- Flying creatures can pathfind over the ocean/rivers
+            inst.components.locomotor.pathcaps = { allowocean = true }
+        end
 
         if data ~= nil and data.allow_platform_hopping then
             inst.components.locomotor:SetAllowPlatformHopping(true)

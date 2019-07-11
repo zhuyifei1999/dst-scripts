@@ -69,11 +69,9 @@ local GridWardrobePopupScreen = Class(Screen, function(self, owner_player, profi
 		self.profile:SetSkinsForCharacter(self.owner_player.prefab, self.initial_skins)
 	end
 
-	if self.owner_player.components.skinner ~= nil then
-		self.loadout = self.proot:AddChild(LoadoutSelect(profile, self.owner_player.prefab, self.owner_player.components.skinner.skintype))
-	else
-		self.loadout = self.proot:AddChild(LoadoutSelect(profile, self.owner_player.prefab))
-	end
+	local starting_skintype = GetSkinModeFromBuild(self.owner_player)
+
+	self.loadout = self.proot:AddChild(LoadoutSelect(profile, self.owner_player.prefab, starting_skintype))
 	self.loadout:SetDefaultMenuOption()
 
 

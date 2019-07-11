@@ -129,58 +129,23 @@ local states =
     State
     {
         name = "popping",
-        onenter = function(boat)         
+        onenter = function(inst)         
             local fx_boat_crackle = SpawnPrefab("fx_boat_pop")
-            fx_boat_crackle.Transform:SetPosition(boat.Transform:GetWorldPosition())            
-        end,
+            fx_boat_crackle.Transform:SetPosition(inst.Transform:GetWorldPosition())            
+            inst.SoundEmitter:PlaySoundWithParams("turnoftides/common/together/boat/damage", {intensity= 1})                 
+            inst.SoundEmitter:PlaySoundWithParams("turnoftides/common/together/boat/sink")
 
-        timeline =
-        {
-            TimeEvent(1 * FRAMES, function(inst)
-                inst.SoundEmitter:PlaySoundWithParams("turnoftides/common/together/boat/damage", {intensity= 1})                 
-            end),
-            TimeEvent(0 * FRAMES, function(inst)
-                inst.SoundEmitter:PlaySoundWithParams("turnoftides/common/together/boat/sink")
-            end),
-            TimeEvent(1 * FRAMES, function(inst)
-                inst.AnimState:PlayAnimation("hide")          
+            local ignitefragments = inst.activefires > 0
+            SpawnFragment(inst, "boatfragment", "04", 2.75, 0, 0.5, ignitefragments)
+            SpawnFragment(inst, "boatfragment", "05", -2.5, 0, -0.25, ignitefragments)
+            SpawnFragment(inst, "boatfragment", "04", 0.25, 0, -2.8, ignitefragments)
+            SpawnFragment(inst, "boatfragment", "05", -0.95, 0, 0.75, ignitefragments)
+            SpawnFragment(inst, "boards", "", 2, 2, -2.25, ignitefragments)
+            SpawnFragment(inst, "boards", "", -1.75, 2, -1.5, ignitefragments)
+            SpawnFragment(inst, "boards", "", 1.25, 2, 1.25, ignitefragments)                
 
-				local shore_x, shore_y, shore_z
-                for k,v in pairs(inst.components.walkableplatform:GetEntitiesOnPlatform()) do
-					if v.components.drownable ~= nil then
-						if shore_x == nil then
-							shore_x, shore_y, shore_z = FindRandomPointOnShoreFromOcean(inst.Transform:GetWorldPosition())
-						end
-						v.components.drownable:OnFallInOcean(shore_x, shore_y, shore_z)
-					end
-					v:PushEvent("onsink", {boat = inst})
-                end
-
-                inst:PushEvent("onsink")
-
-				local ignitefragments = inst.activefires > 0
-                SpawnFragment(inst, "boatfragment", "04", 2.75, 0, 0.5, ignitefragments)
-                SpawnFragment(inst, "boatfragment", "05", -2.5, 0, -0.25, ignitefragments)
-                SpawnFragment(inst, "boatfragment", "04", 0.25, 0, -2.8, ignitefragments)
-                SpawnFragment(inst, "boatfragment", "05", -0.95, 0, 0.75, ignitefragments)
-                SpawnFragment(inst, "boards", "", 2, 2, -2.25, ignitefragments)
-                SpawnFragment(inst, "boards", "", -1.75, 2, -1.5, ignitefragments)
-                SpawnFragment(inst, "boards", "", 1.25, 2, 1.25, ignitefragments)                
-
-            end),
-
-            TimeEvent(30 * FRAMES, function(inst)
-                inst:Remove()
-            end),
-            TimeEvent(110 * FRAMES, function(inst)
-                inst.SoundEmitter:PlaySoundWithParams("turnoftides/common/together/water/sinking_item")                 
-            end),            
-        },               
-
-        events =
-        {
-
-        },                        
+            inst:Remove()
+        end,                  
     },     
              
 }

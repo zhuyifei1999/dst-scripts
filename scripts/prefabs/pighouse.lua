@@ -139,8 +139,7 @@ local function onvacate(inst, child)
             end
 
             local child_platform = child:GetCurrentPlatform()
-            if (child_platform and child_platform.components.walkableplatform and child_platform.components.walkableplatform._is_sunk:value()) or
-                    (child_platform == nil and not child:IsOnValidGround()) then
+            if (child_platform == nil and not child:IsOnValidGround()) then
                 local fx = SpawnPrefab("splash_sink")
                 fx.Transform:SetPosition(child.Transform:GetWorldPosition())
 

@@ -264,7 +264,9 @@ function LootDropper:DropLoot(pt)
 
         local isstructure = self.inst:HasTag("structure")
         for k, v in pairs(prefabs) do
-            if PrefabExists(v.."_cooked") then
+            if TUNING.BURNED_LOOT_OVERRIDES[v] ~= nil then
+                prefabs[k] = TUNING.BURNED_LOOT_OVERRIDES[v]
+            elseif PrefabExists(v.."_cooked") then
                 prefabs[k] = v.."_cooked"
             elseif PrefabExists("cooked"..v) then
                 prefabs[k] = "cooked"..v

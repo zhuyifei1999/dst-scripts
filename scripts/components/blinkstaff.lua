@@ -21,7 +21,7 @@ function BlinkStaff:SpawnEffect(inst)
     end
 end
 
-local function OnBlinked(caster, self, pt)
+local function OnBlinked(caster, self, dpt)
     if caster.sg == nil then
         caster:Show()
         if caster.components.health ~= nil then
@@ -33,7 +33,10 @@ local function OnBlinked(caster, self, pt)
     elseif caster.sg.statemem.onstopblinking ~= nil then
         caster.sg.statemem.onstopblinking()
     end
-    caster.Physics:Teleport(pt:Get())
+	local pt = dpt:GetPosition()
+	if pt ~= nil and TheWorld.Map:IsPassableAtPoint(pt:Get()) and not TheWorld.Map:IsGroundTargetBlocked(pt) then
+	    caster.Physics:Teleport(pt:Get())
+	end
     self:SpawnEffect(caster)
     caster.SoundEmitter:PlaySound("dontstarve/common/staff_blink")
 end
@@ -62,7 +65,7 @@ function BlinkStaff:Blink(pt, caster)
         caster.sg.statemem.onstartblinking()
     end
 
-    self.blinktask = caster:DoTaskInTime(.25, OnBlinked, self, pt)
+    self.blinktask = caster:DoTaskInTime(.25, OnBlinked, self, DynamicPosition(pt))
 
     if self.onblinkfn ~= nil then
         self.onblinkfn(self.inst, pt, caster)

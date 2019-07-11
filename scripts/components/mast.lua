@@ -9,7 +9,21 @@ local function onissailraised(self, issailraised)
 end
 
 local function on_remove(inst)
-    local mast = inst.components.mast
+	local mast = inst.components.mast
+
+	local mast_sinking
+	if inst:HasTag("burnt") then
+		mast_sinking = SpawnPrefab("collapse_small")
+	elseif mast.boat ~= nil then
+		mast_sinking = SpawnPrefab("boat_mast_sink_fx")
+	end
+	
+	if mast_sinking ~= nil then
+		local x_pos, y_pos, z_pos = inst.Transform:GetWorldPosition()
+		mast_sinking.Transform:SetPosition(x_pos, y_pos, z_pos)
+	end
+	
+    
     if mast ~= nil and mast.boat ~= nil then
         mast.boat.components.boatphysics:RemoveMast(mast)
     end
@@ -26,7 +40,6 @@ local Mast = Class(function(self, inst)
 
     self.inst:StartUpdatingComponent(self)
 
-    self.inst:ListenForEvent("onsink", function(inst) self:OnSink() end)
     self.inst:ListenForEvent("onremove", on_remove)
 
     self.inst:DoTaskInTime(0,
@@ -51,29 +64,9 @@ function Mast:SetBoat(boat)
     end
 end
 
-function Mast:OnSink()
-	local mast_sinking
-	if self.inst:HasTag("burnt") then
-		mast_sinking = SpawnPrefab("collapse_small")
-	else
-		mast_sinking = SpawnPrefab("boat_mast_sink_fx")
-	end
-	
-	local x_pos, y_pos, z_pos = self.inst.Transform:GetWorldPosition()
-	mast_sinking.Transform:SetPosition(x_pos, y_pos, z_pos)
-
-    self.inst:Remove()
-end
-
 function Mast:SetRudder(obj)
     self.rudder = obj;
-    obj:ListenForEvent("onsink", function() obj:Remove() end, self.inst)
-    self.inst:ListenForEvent("onremove", function(e) if e == self.rudder then self.rudder = nil end end, obj)  
     obj.entity:SetParent(self.inst.entity)
-    obj.Transform:SetPosition(0,0,0)
-    obj.AnimState:SetSortOrder(ANIM_SORT_ORDER.OCEAN_BOAT)
-    obj.AnimState:SetFinalOffset(2)
-    obj.Transform:SetRotation(90)
 end
 
 function Mast:OnDeath()

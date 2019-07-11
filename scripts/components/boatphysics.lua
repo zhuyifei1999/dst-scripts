@@ -80,7 +80,6 @@ local BoatPhysics = Class(function(self, inst)
     self.rudder_turn_speed = TUNING.BOAT.RUDDER_TURN_SPEED
     self.fx_spawn_rate = 1.5
     self.fx_spawn_timer = 0
-    self.is_sinking = false
     self.masts = {}
     self.anchor_cmps = {}
 
@@ -96,7 +95,6 @@ local BoatPhysics = Class(function(self, inst)
 
     self.inst.Physics:SetCollisionCallback(OnCollide)
 
-    self.inst:ListenForEvent("onsink", function(inst) self:OnSink() end)
     self.inst:ListenForEvent("onignite", function() self:OnIgnite() end)
     self.inst:ListenForEvent("onbuilt", function(inst, data)  self:OnBuilt(data.builder, data.pos) end)  
     self.inst:ListenForEvent("deployed", function(inst, data)  self:OnBuilt(data.deployer, data.pos) end)  
@@ -120,10 +118,6 @@ function BoatPhysics:OnLoad(data)
         self.target_rudder_direction_z = data.target_rudder_direction_z
         self.rudder_direction_z = data.target_rudder_direction_z
     end
-end
-
-function BoatPhysics:OnSink()
-	self.is_sinking = true
 end
 
 function BoatPhysics:AddAnchorCmp(anchor_cmp)
@@ -181,7 +175,7 @@ function BoatPhysics:OnUpdate(dt)
 
     local total_anchor_drag = self:GetTotalAnchorDrag()
 
-    if raised_sail_count > 0 and total_anchor_drag <= 0 and not self.is_sinking then
+    if raised_sail_count > 0 and total_anchor_drag <= 0 then
         self.velocity_x, self.velocity_z = VecUtil_Add(self.velocity_x, self.velocity_z, VecUtil_Scale(self.rudder_direction_x, self.rudder_direction_z, sail_force * dt))
 	elseif raised_sail_count == 0 or total_anchor_drag > 0 then
 		local velocity_length = VecUtil_Length(self.velocity_x, self.velocity_z)	
@@ -226,7 +220,7 @@ function BoatPhysics:OnUpdate(dt)
 
     local time = GetTime()
     if self.lastzoomtime == nil or time - self.lastzoomtime > 1.0 then
-        local should_zoom_out = raised_sail_count > 0 and total_anchor_drag <= 0 and not self.is_sinking
+        local should_zoom_out = raised_sail_count > 0 and total_anchor_drag <= 0
         if not self.lastzoomwasout and should_zoom_out then
             self.inst:AddTag("doplatformcamerazoom")
             self.lastzoomwasout = true

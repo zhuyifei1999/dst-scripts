@@ -22,7 +22,9 @@ local function fn()
     inst.AnimState:SetBuild("boat_test")
     inst.AnimState:PlayAnimation("lip", true)
     inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGroundFixed)    
-    inst.AnimState:SetLayer(LAYER_BACKGROUND)    
+    inst.AnimState:SetLayer(LAYER_BACKGROUND)  
+    inst.AnimState:SetSortOrder(ANIM_SORT_ORDER.OCEAN_BOAT)
+    inst.AnimState:SetFinalOffset(0)      
 
     inst.Transform:SetRotation(90)
 

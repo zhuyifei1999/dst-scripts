@@ -1174,19 +1174,31 @@ end
 
 function c_makeboat()
 	local x, y, z = ConsoleWorldPosition():Get()
-	DebugSpawn("boat")
-	DebugSpawn("mast")
-	local inst = DebugSpawn("steeringwheel")
+
+	local inst = SpawnPrefab("boat")
+	inst.Transform:SetPosition(x, y, z)
+
+	local inst = SpawnPrefab("mast")
+	inst.Transform:SetPosition(x, y, z)
+	inst = SpawnPrefab("steeringwheel")
 	inst.Transform:SetPosition(x + 3.25, y, z)
-	inst = DebugSpawn("anchor")
+	inst = SpawnPrefab("anchor")
 	inst.Transform:SetPosition(x + 2.25, y, z + 2.25)
 
-	inst = DebugSpawn("oar")
+	inst = SpawnPrefab("oar")
 	inst.Transform:SetPosition(x, y, z - 3.25)
-	inst = DebugSpawn("oar")
-	inst.Transform:SetPosition(x + 1, y, z - 2.25)
-	inst = DebugSpawn("oar")
-	inst.Transform:SetPosition(x - 1, y, z - 1.25)
+	inst = SpawnPrefab("oar_driftwood")
+	inst.Transform:SetPosition(x + 1, y, z - 1.25)
+
+	inst = SpawnPrefab("mast_item")
+	inst.Transform:SetPosition(x - 1, y, z + 1.25)
+	inst = SpawnPrefab("boatpatch")
+	inst.Transform:SetPosition(x, y, z + 1.25)
+	inst.components.stackable:SetStackSize(5)
+
+	inst = SpawnPrefab("lantern")
+	inst.Transform:SetPosition(x - 3.25, y, z)
+	
 end
 
 function c_autoteleportplayers()

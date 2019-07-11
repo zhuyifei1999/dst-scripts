@@ -1446,7 +1446,12 @@ end
 
 function EntityScript:GetCurrentPlatform()
     local x, y, z = self.Transform:GetWorldPosition()
-    return TheWorld.Map:GetPlatformAtPoint(x, z)
+    local platform = TheWorld.Map:GetPlatformAtPoint(x, z)
+
+    if platform ~= nil and platform.components.walkableplatform:CanBeWalkedOn() then
+        return platform
+    end
+    return nil
 end
 
 function EntityScript:GetCurrentTileType()

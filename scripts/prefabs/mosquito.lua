@@ -161,6 +161,7 @@ local function mosquito()
     inst.components.locomotor:SetTriggersCreep(false)
     inst.components.locomotor.walkspeed = TUNING.MOSQUITO_WALKSPEED
     inst.components.locomotor.runspeed = TUNING.MOSQUITO_RUNSPEED
+    inst.components.locomotor.pathcaps = { allowocean = true }
     inst:SetStateGraph("SGmosquito")
 
     inst.sounds = sounds

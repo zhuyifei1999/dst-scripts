@@ -472,7 +472,7 @@ ACTIONS.DROP.fn = function(act)
                     act.invobject.components.stackable ~= nil and
                     act.invobject.components.stackable.forcedropsingle),
                 false,
-                act.pos)
+                act:GetActionPoint())
         or nil
 end
 
@@ -532,7 +532,7 @@ ACTIONS.ROW.fn = function(act)
 
     if oar == nil then return false end
     
-    local pos = act.pos
+    local pos = act:GetActionPoint()
     if pos == nil then
         pos = act.target:GetPosition()
     end
@@ -563,11 +563,12 @@ ACTIONS.BAIT.fn = function(act)
 end
 
 ACTIONS.DEPLOY.fn = function(act)
-    if act.invobject ~= nil and act.invobject.components.deployable ~= nil and act.invobject.components.deployable:CanDeploy(act:GetPlatformRelativeAbsolutePosition(), nil, act.doer) then
+	local act_pos = act:GetActionPoint()
+    if act.invobject ~= nil and act.invobject.components.deployable ~= nil and act.invobject.components.deployable:CanDeploy(act_pos, nil, act.doer) then
         local container = act.doer.components.inventory or act.doer.components.container
         local obj = container ~= nil and container:RemoveItem(act.invobject) or nil
         if obj ~= nil then
-            if obj.components.deployable:Deploy(act:GetPlatformRelativeAbsolutePosition(), act.doer, act.rotation) then
+            if obj.components.deployable:Deploy(act_pos, act.doer, act.rotation) then
                 return true
             else
                 container:GiveItem(obj)
@@ -1164,7 +1165,7 @@ end
 
 ACTIONS.BUILD.fn = function(act)
     if act.doer.components.builder ~= nil then
-        return act.doer.components.builder:DoBuild(act.recipe, act:GetPlatformRelativeAbsolutePosition(), act.rotation, act.skin)
+        return act.doer.components.builder:DoBuild(act.recipe, act:GetActionPoint(), act.rotation, act.skin)
     end
 end
 
@@ -1300,7 +1301,7 @@ end
 
 ACTIONS.TERRAFORM.fn = function(act)
     if act.invobject ~= nil and act.invobject.components.terraformer ~= nil then
-        return act.invobject.components.terraformer:Terraform(act.pos, true)
+        return act.invobject.components.terraformer:Terraform(act:GetActionPoint(), true)
     end
 end
 
@@ -1571,9 +1572,9 @@ end
 ACTIONS.CASTSPELL.fn = function(act)
     --For use with magical staffs
     local staff = act.invobject or act.doer.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-
-    if staff and staff.components.spellcaster and staff.components.spellcaster:CanCast(act.doer, act.target, act.pos) then
-        staff.components.spellcaster:CastSpell(act.target, act.pos)
+	local act_pos = act:GetActionPoint()
+    if staff and staff.components.spellcaster and staff.components.spellcaster:CanCast(act.doer, act.target, act_pos) then
+        staff.components.spellcaster:CastSpell(act.target, act_pos)
         return true
     end
 end
@@ -1583,18 +1584,19 @@ ACTIONS.BLINK.strfn = function(act)
 end
 
 ACTIONS.BLINK.fn = function(act)
+	local act_pos = act:GetActionPoint()
     if act.invobject ~= nil then
         if act.invobject.components.blinkstaff ~= nil then
-            return act.invobject.components.blinkstaff:Blink(act.pos, act.doer)
+            return act.invobject.components.blinkstaff:Blink(act_pos, act.doer)
         end
     elseif act.doer ~= nil
         and act.doer.sg ~= nil
         and act.doer.sg.currentstate.name == "portal_jumpin_pre"
-        and act.pos ~= nil
+        and act_pos ~= nil
         and act.doer.components.inventory ~= nil
         and act.doer.components.inventory:Has("wortox_soul", 1) then
         act.doer.components.inventory:ConsumeByName("wortox_soul", 1)
-        act.doer.sg:GoToState("portal_jumpin", act.pos)
+        act.doer.sg:GoToState("portal_jumpin", act_pos)
         return true
     end
 end
@@ -1783,7 +1785,7 @@ ACTIONS.TOSS.fn = function(act)
                     pos = act.target:GetPosition()
                     projectile.components.complexprojectile.targetoffset = {x=0,y=1.5,z=0}
                 else
-                    pos = act.pos
+                    pos = act:GetActionPoint()
                 end
                 projectile.components.complexprojectile:Launch(pos, act.doer)
                 return true
@@ -2120,8 +2122,9 @@ ACTIONS.CASTAOE.strfn = function(act)
 end
 
 ACTIONS.CASTAOE.fn = function(act)
-    if act.invobject ~= nil and act.invobject.components.aoespell ~= nil and act.invobject.components.aoespell:CanCast(act.doer, act.pos) then
-        act.invobject.components.aoespell:CastSpell(act.doer, act.pos)
+	local act_pos = act:GetActionPoint()
+    if act.invobject ~= nil and act.invobject.components.aoespell ~= nil and act.invobject.components.aoespell:CanCast(act.doer, act_pos) then
+        act.invobject.components.aoespell:CastSpell(act.doer, act_pos)
         return true
     end
 end
@@ -2129,7 +2132,7 @@ end
 --Quagmire
 ACTIONS.TILL.fn = function(act)
     if act.invobject ~= nil and act.invobject.components.quagmire_tiller ~= nil then
-        return act.invobject.components.quagmire_tiller:Till(act.pos, act.doer)
+        return act.invobject.components.quagmire_tiller:Till(act:GetActionPoint(), act.doer)
     end
 end
 
@@ -2342,7 +2345,8 @@ end
 
 ACTIONS.SET_HEADING.fn = function(act)
 	if act.doer.components.steeringwheeluser ~= nil then
-	    act.doer.components.steeringwheeluser:Steer(act.pos.x, act.pos.z)
+		local act_pos = act:GetActionPoint()
+	    act.doer.components.steeringwheeluser:Steer(act_pos.x, act_pos.z)
 	end
     return true
 end
@@ -2356,11 +2360,12 @@ end
 
 ACTIONS.CAST_NET.fn = function(act)
     if act.invobject and act.invobject.components.fishingnet then
-        if act.pos == nil then
+		local act_pos = act:GetActionPoint()
+        if act_pos == nil then
             local pos_x, pos_y, pos_z = act.target.Transform:GetWorldPosition()
             act.invobject.components.fishingnet:CastNet(pos_x, pos_z, act.doer)        
         else
-            act.invobject.components.fishingnet:CastNet(act.pos.x, act.pos.z, act.doer)        
+            act.invobject.components.fishingnet:CastNet(act_pos.x, act_pos.z, act.doer)        
         end
         return true
     end

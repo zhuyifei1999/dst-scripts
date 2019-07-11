@@ -143,10 +143,33 @@ local LoadoutSelect = Class(Widget, function(self, user_profile, character, init
 
 		--
 
-		self.skintypes = GetSkinModes(self.currentcharacter)
+		if IsPrefabSkinned(self.currentcharacter) then
+			self.skintypes = GetSkinModes(self.currentcharacter)
+		else
+			self.skintypes = {}
+			table.insert(self.skintypes, GetSkinModes("default")[1])
+
+			if MODCHARACTERMODES[self.currentcharacter] ~= nil then
+				for _,v in pairs(MODCHARACTERMODES[self.currentcharacter]) do
+					table.insert(self.skintypes,
+					{
+						type = {
+							build = v.build,
+							bank = v.bank,
+							idle_anim = v.idle_anim,
+							play_emotes = v.play_emotes,
+						},
+						scale = v.scale,
+						offset = v.offset,
+					})
+				end
+			end
+		end
 		self.view_index = 1
 		self.selected_skintype = self.skintypes[self.view_index].type
-		self.portrait_view_index = 2--	1 < value <= #self.skintypes
+
+		-- Portrait view index must be 1 < ind <= #self.skintypes+1
+		self.portrait_view_index = #self.skintypes + 1
 
 		if initial_skintype ~= nil and initial_skintype ~= "normal_skin" then
 			for i,v in ipairs(self.skintypes) do
@@ -161,7 +184,7 @@ local LoadoutSelect = Class(Widget, function(self, user_profile, character, init
     
     if not TheInput:ControllerAttached() then
         if self.show_puppet then
-            self.portraitbutton = self.loadout_root:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "player_info.tex", STRINGS.UI.SKINTYPES.CYCLE_VIEW, false, false, function()
+            self.portraitbutton = self.loadout_root:AddChild(TEMPLATES.IconButton("images/button_icons.xml", "player_info.tex", STRINGS.UI.WARDROBESCREEN.CYCLE_VIEW, false, false, function()
 			        self:_CycleView()
 		        end
 	        ))
@@ -205,38 +228,48 @@ function LoadoutSelect:SetDefaultMenuOption()
     end
 end
 
-function LoadoutSelect:_CycleView(force_off)
-	if force_off then
+function LoadoutSelect:_CycleView(reset)
+	--[[
+		When the cycle view button is clicked an index is incremented,
+		EXCEPT when the index is about to become the same as the portrait
+		view index, in which case the portrait is toggled on. On the next
+		interaction the index increments and the portrait is toggled off,
+		i.e. skintypes[portrait_index] still contains skintype data and
+		is not overridden.
+	]]
+	if reset then
 		if self.showing_portrait then
-			self.heroportrait:Hide()
-			self.puppet_root:Show()
-			self.showing_portrait = false
+			self:_SetShowPortrait(false)
 
 			self.view_index = 1
 			self:_SetSkintype(self.skintypes[self.view_index])
 		end
+		return
+	end
+
+	if self.view_index == self.portrait_view_index - 1 and not self.showing_portrait then
+		self:_SetShowPortrait(true)
 	else
-		if self.showing_portrait then
-			self.heroportrait:Hide()
-			self.puppet_root:Show()
-			self.showing_portrait = false
+		if self.showing_portrait then self:_SetShowPortrait(false) end
 
-			self:_SetSkintype(self.skintypes[self.view_index])--redundant?
-		else
-			self.view_index = self.view_index + 1
-
-			if self.view_index == self.portrait_view_index then
-				self.heroportrait:Show()
-				self.puppet_root:Hide()
-				self.showing_portrait = true
-			else
-				if self.view_index > #self.skintypes then
-					self.view_index = 1
-				end
-			end
-
-			self:_SetSkintype(self.skintypes[self.view_index])
+		self.view_index = self.view_index + 1
+		if self.view_index > #self.skintypes then
+			self.view_index = 1
 		end
+
+		self:_SetSkintype(self.skintypes[self.view_index])
+	end
+end
+
+function LoadoutSelect:_SetShowPortrait(show)
+	if show then
+		self.heroportrait:Show()
+		self.puppet_root:Hide()
+		self.showing_portrait = true
+	else
+		self.heroportrait:Hide()
+		self.puppet_root:Show()
+		self.showing_portrait = false
 	end
 end
 
@@ -456,7 +489,7 @@ function LoadoutSelect:GetHelpText()
 		local controller_id = TheInput:GetControllerID()
 		local t = {}
 
-		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_3) .. " " .. STRINGS.UI.SKINTYPES.CYCLE_VIEW)
+		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_3) .. " " .. STRINGS.UI.WARDROBESCREEN.CYCLE_VIEW)
         if TheNet:IsOnlineMode() then
 		    table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MENU_MISC_1) .. " " .. STRINGS.UI.SKIN_PRESETS.TITLE)
         end

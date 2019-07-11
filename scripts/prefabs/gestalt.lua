@@ -37,9 +37,10 @@ local function Client_CalcSanityForTranserency(inst, observer)
 	return math.min(0.5, 0.4*x*x*x + 0.3)
 end
 
-local function UpdateBestTrackingTarget(inst)
+local function SetTrackingTarget(inst, target, behaviour_level)
 	local prev_target = inst.tracking_target
-	inst.tracking_target, inst.behaviour_level = TheWorld.components.brightmarespawner:FindBestPlayer(inst)
+	inst.tracking_target = target
+	inst.behaviour_level = behaviour_level
 	if prev_target ~= inst.tracking_target then
 		if inst.OnTrackingTargetRemoved ~= nil then
 			inst:RemoveEventCallback("onremove", inst.OnTrackingTargetRemoved, prev_target)
@@ -52,6 +53,11 @@ local function UpdateBestTrackingTarget(inst)
 			inst:ListenForEvent("death", inst.OnTrackingTargetRemoved, inst.tracking_target)
 		end
 	end
+end
+
+local function UpdateBestTrackingTarget(inst)
+	local target, behaviour_level = TheWorld.components.brightmarespawner:FindBestPlayer(inst)
+	SetTrackingTarget(inst, target, behaviour_level)
 end
 
 local function Retarget(inst)
@@ -140,6 +146,7 @@ local function fn()
 
 	inst.tracking_target = nil
 	inst.behaviour_level = 1
+	inst.SetTrackingTarget = SetTrackingTarget
 	inst:DoPeriodicTask(0.1, UpdateBestTrackingTarget, 0)
 
     inst:AddComponent("sanityaura")

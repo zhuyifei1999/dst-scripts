@@ -1292,7 +1292,7 @@ CommonStates.AddRowStates = function(states, is_client)
 
         onenter = function(inst)
             local locomotor = inst.components.locomotor
-            local target_pos = locomotor.bufferedaction:GetPlatformRelativeAbsolutePosition()
+            local target_pos = locomotor.bufferedaction:GetActionPoint()
             if target_pos == nil then
                 target_pos = locomotor.bufferedaction.target:GetPosition()
                 inst:ForceFacePoint(target_pos:Get())

@@ -1597,12 +1597,30 @@ local skintypesbycharacter = nil
 function GetSkinModes(character)
 	if skintypesbycharacter == nil then
 		skintypesbycharacter = {
-			woodie = { { type = "normal_skin", name = STRINGS.UI.SKINTYPES.NORMAL }, { type = "werebeaver_skin", name = STRINGS.UI.SKINTYPES.WEREBEAVER, scale = 0.82 }, { type = "ghost_skin", name = STRINGS.UI.SKINTYPES.GHOST, scale = ghost_preview_scale, offset = { 0, ghost_preview_y_offset } }, { type = "ghost_werebeaver_skin", name = STRINGS.UI.SKINTYPES.GHOST_WEREBEAVER, scale = ghost_preview_scale, offset = { 0, ghost_preview_y_offset } } },
-			wolfgang = { { type = "normal_skin", name = STRINGS.UI.SKINTYPES.NORMAL }, { type = "wimpy_skin", name = STRINGS.UI.SKINTYPES.WIMPY, scale = 0.9 }, { type = "mighty_skin", name = STRINGS.UI.SKINTYPES.MIGHTY, scale = 1.25 }, { type = "ghost_skin", name = STRINGS.UI.SKINTYPES.GHOST, scale = ghost_preview_scale, offset = { 0, ghost_preview_y_offset } } },
-			wormwood = { { type = "normal_skin", name = STRINGS.UI.SKINTYPES.NORMAL }, { type = "stage_2", name = STRINGS.UI.SKINTYPES.WORMWOOD_STAGE2 }, { type = "stage_3", name = STRINGS.UI.SKINTYPES.WORMWOOD_STAGE3 }, { type = "stage_4", name = STRINGS.UI.SKINTYPES.WORMWOOD_STAGE4 }, { type = "ghost_skin", name = STRINGS.UI.SKINTYPES.GHOST, scale = ghost_preview_scale, offset = { 0, ghost_preview_y_offset } } },
+			woodie = { { type = "normal_skin" }, { type = "werebeaver_skin", scale = 0.82 }, { type = "ghost_skin", scale = ghost_preview_scale, offset = { 0, ghost_preview_y_offset } }, { type = "ghost_werebeaver_skin", scale = ghost_preview_scale, offset = { 0, ghost_preview_y_offset } } },
+			wolfgang = { { type = "normal_skin" }, { type = "wimpy_skin", scale = 0.9 }, { type = "mighty_skin", scale = 1.25 }, { type = "ghost_skin", scale = ghost_preview_scale, offset = { 0, ghost_preview_y_offset } } },
+			wormwood = { { type = "normal_skin" }, { type = "stage_2" }, { type = "stage_3" }, { type = "stage_4" }, { type = "ghost_skin", scale = ghost_preview_scale, offset = { 0, ghost_preview_y_offset } } },
 
-			default = { { type = "normal_skin", name = STRINGS.UI.SKINTYPES.NORMAL }, { type = "ghost_skin", name = STRINGS.UI.SKINTYPES.GHOST, scale = ghost_preview_scale, offset = { 0, ghost_preview_y_offset } } }
+			default = { { type = "normal_skin" }, { type = "ghost_skin", scale = ghost_preview_scale, offset = { 0, ghost_preview_y_offset } } }
 		}
 	end
 	return skintypesbycharacter[character] or skintypesbycharacter.default
+end
+
+function GetSkinModeFromBuild(player)
+	--this relies on builds not being shared across states
+	local build = player.AnimState:GetBuild()
+
+	if PREFAB_SKINS[player.prefab] == nil then return nil end
+
+	for _,skin in pairs(PREFAB_SKINS[player.prefab]) do
+		local skindata = GetSkinData(skin)
+		for skintype,skinbuild in pairs(skindata.skins) do
+			if build == skinbuild then
+				 return skintype
+			end
+		end
+	end
+
+	return nil
 end

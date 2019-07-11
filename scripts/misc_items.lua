@@ -1043,6 +1043,7 @@ MISC_ITEMS =
 		type = "purchase",
 		skin_tags = { },
 		steam_dlc_id = 712640,
+		display_order = 114,
 		build_name_override = "pack_hamlet_gift",
 		display_items = {  "wormwood_none", },
 		output_items = {  "wormwood_none", },

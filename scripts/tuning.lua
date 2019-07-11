@@ -2802,6 +2802,7 @@ function Tune(overrides)
         WINONA_CATAPULT_MAX_RANGE = 15,
         WINONA_CATAPULT_ATTACK_PERIOD = 2.5,
         WINONA_CATAPULT_AOE_RADIUS = 1.25,
+        WINONA_CATAPULT_KEEP_TARGET_BUFFER = 5,
 
         WINONA_SPOTLIGHT_RADIUS = 2.4,
         WINONA_SPOTLIGHT_MIN_RANGE = 4,
@@ -3150,6 +3151,18 @@ function Tune(overrides)
             MOVE_SPEED = 4,
             RETURN_MOVE_SPEED = 8,
             FAILSAFE_TIMELIMIT = total_day_time,
+        },
+
+        BURNED_LOOT_OVERRIDES =
+        {
+            carrot_seeds = "seeds_cooked",
+            corn_seeds = "seeds_cooked",
+            pumpkin_seeds = "seeds_cooked",
+            eggplant_seeds = "seeds_cooked",
+            durian_seeds = "seeds_cooked",
+            pomegranate_seeds = "seeds_cooked",
+            dragonfruit_seeds = "seeds_cooked",
+            watermelon_seeds = "seeds_cooked",
         },
 
         --wortox

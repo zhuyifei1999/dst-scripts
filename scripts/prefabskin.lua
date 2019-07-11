@@ -1071,6 +1071,8 @@ local function icebox_opened(inst)
     if inst.frost_fx ~= nil and inst._frostfx == nil then
         inst._frostfx = SpawnPrefab(inst.frost_fx)
         inst._frostfx.Transform:SetPosition(x, y, z)
+
+        --Note(Peter) Set the skin build here instead of overriding specific symbols, but we'd need to assign the id/sig first
         inst._frostfx.AnimState:OverrideItemSkinSymbol("cold_air", inst:GetSkinName(), "cold_air", inst.GUID, "ice_box")
         inst._frostfx.AnimState:OverrideItemSkinSymbol("blink_dot", inst:GetSkinName(), "blink_dot", inst.GUID, "ice_box")
     end

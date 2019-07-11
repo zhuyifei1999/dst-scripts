@@ -427,8 +427,6 @@ local states =
         timeline =
         {
             TimeEvent(75*FRAMES, function(inst)
-                --local x, y, z = math.random()*4, 7+math.random()*2, math.random()*4
-                --print("@stevenm dragonfly flyaway", x, y, z)
                 local x, y, z = 0.5019684438612,7.5216834009827,2.7178563798944
                 inst.Physics:SetMotorVel(x, y, z)
             end),

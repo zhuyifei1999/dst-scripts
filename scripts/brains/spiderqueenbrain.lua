@@ -61,7 +61,7 @@ function SpiderQueenBrain:OnStart()
         
         --SPIDERQUEEN_MINDENSPACING
         
-        ChaseAndAttack(self.inst, 60, 40),
+        ChaseAndAttack(self.inst, 60, 40, nil, nil, nil, TUNING.WINONA_CATAPULT_MAX_RANGE + TUNING.MAX_WALKABLE_PLATFORM_RADIUS + TUNING.WINONA_CATAPULT_KEEP_TARGET_BUFFER + 1),
         Wander(self.inst),
     }, 2)
     

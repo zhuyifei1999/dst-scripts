@@ -301,6 +301,7 @@ ROG_CHARACTERLIST =
 	"wathgrithr", "webber",
 }
 
+--When adding new characters with alternate states, be sure to update skinsutils.lua function GetSkinModes.
 DST_CHARACTERLIST =
 {
     "wilson", "willow", "wolfgang", "wendy", "wx78", "wickerbottom", "woodie", "wes", "waxwell", "wathgrithr", "webber", "winona", "wortox", "wormwood",
@@ -395,6 +396,8 @@ CHARACTER_GENDERS =
 	NEUTRAL = {}, --empty, for modders to add to
 	PLURAL = {}, --empty, for modders to add to
 }
+
+MODCHARACTERMODES = {} --empty, for modders to add to
 
 MAXITEMSLOTS = 15
 
