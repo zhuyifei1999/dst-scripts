@@ -194,3 +194,10 @@ function SinkEntity(entity)
         entity:Remove()
     end
 end
+
+function CanProbablyReachTargetFromShore(inst, target, max_distance)
+    local myx, myy, myz = inst.Transform:GetWorldPosition()
+    local tx, ty, tz = target.Transform:GetWorldPosition()
+    local normx, normz = VecUtil_Normalize(myx - tx, myz - tz)
+    return TheWorld.Map:IsAboveGroundAtPoint(tx + normx * max_distance, ty, tz + normz * max_distance)
+end

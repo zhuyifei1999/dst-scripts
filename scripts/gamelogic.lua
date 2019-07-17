@@ -13,6 +13,8 @@ require "usercommands"
 require "builtinusercommands"
 require "emotes"
 
+require "map/ocean_gen" -- for retrofitting the ocean tiles
+
 local EquipSlot = require("equipslotutil")
 local GroundTiles = require("worldtiledefs")
 local Stats = require("stats")
@@ -368,6 +370,11 @@ local function PopulateWorld(savedata, profile)
         end
 
         world.has_ocean = savedata.map.has_ocean
+
+		if world.components.watercolor ~= nil then
+			world.components.watercolor:Initialize(world.has_ocean)
+		end
+
         if world.has_ocean then
             world.Map:SetOceanEnabled(true)
         end
@@ -376,6 +383,15 @@ local function PopulateWorld(savedata, profile)
         world.Map:SetSize(savedata.map.width, savedata.map.height)
         world.Map:SetFromString(savedata.map.tiles)
         world.Map:ResetVisited()
+
+		if savedata.retrofit_oceantiles then
+			savedata.retrofit_oceantiles = nil
+			print ("Retrofitting for Return Of Them: Turn of Tides - Converting Ocean...")
+			Ocean_SetWorldForOceanGen(TheWorld.Map)
+			Ocean_ConvertImpassibleToWater(savedata.map.width, savedata.map.height, require("map/ocean_gen_config"))
+			print ("Retrofitting for Return Of Them: Turn of Tides - Converting Ocean done")
+		end
+
         if savedata.map.prefab == "cave" then
             TheFrontEnd:GetGraphicsOptions():DisableStencil()
             TheFrontEnd:GetGraphicsOptions():DisableLightMapComponent()
@@ -753,8 +769,6 @@ local function DoInitGame(savedata, profile)
     GroundTiles.Initialize()
 
     PopulateWorld(savedata, profile)
-
-    TheWorld.components.watercolor:Initialize(TheWorld.has_ocean)
 
     if true --[[ Profile.persistdata.debug_world  == 1]] then
     	if savedata.map.topology == nil then

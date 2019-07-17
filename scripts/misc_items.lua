@@ -2093,6 +2093,13 @@ MISC_ITEMS =
 		rarity_modifier = "Woven",
 		release_group = 51,
 	},
+	playerportrait_bg_eyebrellahatcrystal =
+	{
+		type = "playerportrait",
+		skin_tags = { "CIRCUS", "PLAYERPORTRAIT", },
+		rarity = "Loyal",
+		release_group = 69,
+	},
 	playerportrait_bg_factory =
 	{
 		type = "playerportrait",
@@ -2803,6 +2810,13 @@ MISC_ITEMS =
 		rarity = "Common",
 		rarity_modifier = "Woven",
 		release_group = 32,
+	},
+	profileflair_eyebrellahat_crystal =
+	{
+		type = "profileflair",
+		skin_tags = { "CIRCUS", "PROFILEFLAIR", },
+		rarity = "Loyal",
+		release_group = 69,
 	},
 	profileflair_factory =
 	{

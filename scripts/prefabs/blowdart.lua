@@ -37,6 +37,7 @@ end
 
 local function onthrown(inst, data)
     inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+    inst.components.inventoryitem.pushlandedevents = false
 end
 
 local function common(anim, tags, removephysicscolliders)

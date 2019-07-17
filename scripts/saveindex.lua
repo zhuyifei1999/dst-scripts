@@ -1,4 +1,4 @@
-local SAVEDATA_VERSION = 3
+local SAVEDATA_VERSION = 4
 
 local Levels = require"map/levels"
 
@@ -192,17 +192,27 @@ end
 local function UpgradeSavedLevelData(worldoptions)
     local savefileupgrades = require "savefileupgrades"
     local ret = {}
+	local upgraded = false
     for i,level in ipairs(worldoptions) do
         ret[i] = deepcopy(level)
+
         if level.version == nil or level.version == 1 then
             ret[i] = savefileupgrades.utilities.UpgradeSavedLevelFromV1toV2(ret[i], i == 1)
+			upgraded = true
         end
         
         if level.version == 2 then
             ret[i] = savefileupgrades.utilities.UpgradeSavedLevelFromV2toV3(ret[i], i == 1)
+			upgraded = true
         end
+
+        if level.version == 3 then
+            ret[i] = savefileupgrades.utilities.UpgradeSavedLevelFromV3toV4(ret[i], i == 1) -- RoT: Turn of Tids
+			upgraded = true
+        end
+		
     end
-    return ret
+    return ret, upgraded
 end
 
 local function OnLoad(self, filename, callback, load_success, str)
@@ -218,7 +228,7 @@ local function OnLoad(self, filename, callback, load_success, str)
 
         self:GuaranteeMinNumSlots(#savedata.slots)
         self.data.last_used_slot = savedata.last_used_slot
-
+		local was_upgraded = false
         for i, v in ipairs(self.data.slots) do
             ResetSlotData(v)
             local v2 = savedata.slots[i]
@@ -236,7 +246,7 @@ local function OnLoad(self, filename, callback, load_success, str)
                     print("OnLoad slot",i,": World options was empty! Populating with default")
                     v.world.options[1] = Levels.GetDefaultLevelData(LEVELTYPE.SURVIVAL)
                 else
-                    v.world.options = UpgradeSavedLevelData(v.world.options)
+                    v.world.options, was_upgraded = UpgradeSavedLevelData(v.world.options)
                 end
                 v.server = v2.server or v.server
                 v.session_id = v2.session_id or v.session_id
@@ -246,7 +256,13 @@ local function OnLoad(self, filename, callback, load_success, str)
 
         if filename ~= nil then
             print("loaded "..filename)
+
+			if was_upgraded then
+				print("Saving upgraded "..filename)
+				self:Save()
+			end
         end
+
     elseif filename ~= nil then
         print("Could not load "..filename)
     end

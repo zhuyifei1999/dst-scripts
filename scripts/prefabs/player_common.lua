@@ -163,7 +163,7 @@ end
 
 local function ShouldAcceptItem(inst, item)
     if inst:HasTag("playerghost") then
-        return item.prefab == "reviver"
+        return item.prefab == "reviver" and inst:IsOnPassablePoint()
     else
         return item.components.inventoryitem ~= nil
     end

@@ -8,7 +8,7 @@ require "behaviours/minperiod"
 require "behaviours/chaseandram"
 --require "behaviours/beargeroffscreen"
 
-local MAX_CHASE_TIME = 10
+local MAX_CHASE_TIME = 8
 local GIVE_UP_DIST = 20
 local MAX_CHARGE_DIST = 60
 local SEE_FOOD_DIST = 15
@@ -209,7 +209,26 @@ end
 
 local OUTSIDE_CATAPULT_RANGE = TUNING.WINONA_CATAPULT_MAX_RANGE + TUNING.WINONA_CATAPULT_KEEP_TARGET_BUFFER + TUNING.MAX_WALKABLE_PLATFORM_RADIUS + 1
 local function OceanDistanceTest(inst, target)
-    return (inst.cangroundpound and not target:HasTag("beehive") and 10) or OUTSIDE_CATAPULT_RANGE
+    if inst.cangroundpound and not target:HasTag("beehive") and
+            CanProbablyReachTargetFromShore(inst, target, TUNING.BEARGER_ATTACK_RANGE - 0.25) then
+        return TUNING.BEARGER_ATTACK_RANGE - 0.25
+    else
+        return OUTSIDE_CATAPULT_RANGE
+    end
+end
+
+local function InRamDistance(inst, target)
+    local target_is_close = inst:IsNear(target, 10)
+    if target_is_close then
+        return false
+    elseif target:IsOnValidGround() then
+        -- Our target is on land, and we already know we're far enough away because the above test failed!
+        return true
+    else
+        -- If our target is not on land, they are on a boat or in the water.
+        -- In that case, check whether we can stand close enough for them to be within our attack range.
+        return CanProbablyReachTargetFromShore(inst, target, TUNING.BEARGER_ATTACK_RANGE - 0.25)
+    end
 end
 
 --[[local function OutsidePlayerRange(inst)
@@ -237,12 +256,11 @@ function BeargerBrain:OnStart()
                     return self.inst.cangroundpound
                         and self.inst.components.combat.target ~= nil
                         and not self.inst.components.combat.target:HasTag("beehive")
-                        and (self.inst.sg:HasStateTag("running") or
-                            not self.inst:IsNear(self.inst.components.combat.target, 10))
+                        and (self.inst.sg:HasStateTag("running") or InRamDistance(self.inst, self.inst.components.combat.target))
                 end,
                 "Charge Behaviours", ChaseAndRam(self.inst, MAX_CHASE_TIME, GIVE_UP_DIST, MAX_CHARGE_DIST)),
 
-            ChaseAndAttack(self.inst, 20, 60, nil, nil, true, OceanDistanceTest),
+            ChaseAndAttack(self.inst, TUNING.BEARGER_MAX_CHASE_TIME, 60, nil, nil, true, OceanDistanceTest),
 
             WhileNode(function() return ShouldEatFoodFn(self.inst) end, "At Base",
                 PriorityNode(

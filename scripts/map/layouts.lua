@@ -904,6 +904,33 @@ local ExampleLayout =
 		}
     }),
 
+
+--------------------------------------------------------------------------------
+-- Return of Them Retrofitting
+--------------------------------------------------------------------------------
+	["retrofit_moonisland_small"] = StaticLayout.Get("map/static_layouts/retrofit_moonisland_small",
+	{
+		start_mask = PLACE_MASK.IGNORE_IMPASSABLE,
+		fill_mask = PLACE_MASK.IGNORE_IMPASSABLE,
+		areas =
+		{
+			tree_area = function() return math.random() < 0.9 and {"moon_tree"} or nil end,
+			fissure_area = {"moon_fissure"},
+		},
+	}),
+	
+	["retrofit_moonisland_large"] = StaticLayout.Get("map/static_layouts/retrofit_moonisland_large",
+	{
+		start_mask = PLACE_MASK.IGNORE_IMPASSABLE,
+		fill_mask = PLACE_MASK.IGNORE_IMPASSABLE,
+		areas =
+		{
+			tree_area = function() return math.random() < 0.9 and {"moon_tree"} or nil end,
+			fissure_area = {"moon_fissure"},
+		},
+	}),
+	
+	
 	
 --------------------------------------------------------------------------------
 

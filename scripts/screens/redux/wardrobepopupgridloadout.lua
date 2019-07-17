@@ -196,4 +196,8 @@ function GridWardrobePopupScreen:GetHelpText()
 
 end
 
+function GridWardrobePopupScreen:OnUpdate(dt)
+    self.loadout:OnUpdate(dt)
+end
+
 return GridWardrobePopupScreen

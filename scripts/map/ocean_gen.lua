@@ -205,46 +205,6 @@ function Ocean_ConvertImpassibleToWater(width, height, data)
 		data = {}
 	end
 
-	local function do_waterline(depthShallow, depthMed, fillOffset, fillDepth)
-		print("[Ocean]  Waterline...")
-		for y = 0, height - 1, 1 do
-			for x = 0, width - 1, 1 do
-				local ground = world:GetTile(x, y)
-				if is_waterlined(ground) then
-					placeWaterline(width, height, x + 1, y, 1, 0, depthShallow, depthMed, fillOffset, fillDepth)
-					placeWaterline(width, height, x - 1, y, -1, 0, depthShallow, depthMed, fillOffset, fillDepth)
-					placeWaterline(width, height, x, y + 1, 0, 1, depthShallow, depthMed, fillOffset, fillDepth)
-					placeWaterline(width, height, x, y - 1, 0, -1, depthShallow, depthMed, fillOffset, fillDepth)
-
-					placeWaterline(width, height, x + 1, y + 1, 1, 1, depthShallow, depthMed, fillOffset, fillDepth)
-					placeWaterline(width, height, x - 1, y + 1, -1, 1, depthShallow, depthMed, fillOffset, fillDepth)
-					placeWaterline(width, height, x + 1, y - 1, 1, -1, depthShallow, depthMed, fillOffset, fillDepth)
-					placeWaterline(width, height, x - 1, y - 1, -1, -1, depthShallow, depthMed, fillOffset, fillDepth)
-				end
-			end
-		end
-	end
-
-	local function do_filledwaterline(depthShallow, depthMed, fillOffset, fillDepth)
-		print("[Ocean]  Filled Waterline...")
-		for y = 0, height - 1, 1 do
-			for x = 0, width - 1, 1 do
-				local ground = world:GetTile(x, y)
-				if is_waterlined(ground) then
-					placeWaterlineFilled(width, height, x + 1, y, 1, 0, depthShallow, depthMed, fillOffset, fillDepth)
-					placeWaterlineFilled(width, height, x - 1, y, -1, 0, depthShallow, depthMed, fillOffset, fillDepth)
-					placeWaterlineFilled(width, height, x, y + 1, 0, 1, depthShallow, depthMed, fillOffset, fillDepth)
-					placeWaterlineFilled(width, height, x, y - 1, 0, -1, depthShallow, depthMed, fillOffset, fillDepth)
-
-					placeWaterlineFilled(width, height, x + 1, y + 1, 1, 1, depthShallow, depthMed, fillOffset, fillDepth)
-					placeWaterlineFilled(width, height, x - 1, y + 1, -1, 1, depthShallow, depthMed, fillOffset, fillDepth)
-					placeWaterlineFilled(width, height, x + 1, y - 1, 1, -1, depthShallow, depthMed, fillOffset, fillDepth)
-					placeWaterlineFilled(width, height, x - 1, y - 1, -1, -1, depthShallow, depthMed, fillOffset, fillDepth)
-				end
-			end
-		end
-	end
-
 	local function do_groundfill(fillTile, fillOffset, fillDepth, landRadius)
 		print("[Ocean]  Ground fill...")
 		for y = 0, height - 1, 1 do
@@ -377,16 +337,16 @@ function Ocean_ConvertImpassibleToWater(width, height, data)
 	local function do_void_outline()
 		print("[Ocean]  Void Outline...")
 
-		for y = 1, height - 1, 1 do
+		for y = 0, height - 1, 1 do
+			world:SetTile(0, y, GROUND.IMPASSABLE)
 			world:SetTile(1, y, GROUND.IMPASSABLE)
-			world:SetTile(2, y, GROUND.IMPASSABLE)
 			world:SetTile(width - 1, y, GROUND.IMPASSABLE)
 			world:SetTile(width - 2, y, GROUND.IMPASSABLE)
 		end
 
-		for x = 1, width - 1, 1 do
+		for x = 0, width - 1, 1 do
+			world:SetTile(x, 0, GROUND.IMPASSABLE)
 			world:SetTile(x, 1, GROUND.IMPASSABLE)
-			world:SetTile(x, 2, GROUND.IMPASSABLE)
 			world:SetTile(x, height - 2, GROUND.IMPASSABLE)
 			world:SetTile(x, height - 1, GROUND.IMPASSABLE)
 		end
@@ -397,27 +357,10 @@ function Ocean_ConvertImpassibleToWater(width, height, data)
 	local fillDepth = data.fillDepth or 5
 	local fillOffset = data.fillOffset or 4
 
-	if not data.nowaterline then
-		do_waterline(depthShallow, depthMed, fillOffset, fillDepth)
-	elseif not data.nofilledwaterline then
-		do_filledwaterline(depthShallow, depthMed, fillOffset, fillDepth)
-	end
-
-	if not data.nosqaurefill then
-		do_squarefill(data.shallowRadius)
-	end
-
-	if not data.nogroundfill then
-		do_groundfill(GROUND.OCEAN_COASTAL, fillOffset, fillDepth, data.shallowRadius or 5)
-	end
-
-	if not data.nonoise then
-		do_noise()
-	end
-
-	if not data.noblend then
-		do_blend()
-	end
+	do_squarefill(data.shallowRadius)
+	do_groundfill(GROUND.OCEAN_COASTAL, fillOffset, fillDepth, data.shallowRadius or 5)
+	do_noise()
+	do_blend()
 
 	AddShoreline(width, height)
 
@@ -602,7 +545,7 @@ function Ocean_PlaceSetPieces(set_pieces, add_entity, obj_layout, populating_til
 	    populating_tile = populating_tile or GROUND.IMPASSABLE
 
 	    local function ReserveAndPlaceLayoutFn(layout, prefabs, position)
-		    obj_layout.ReserveAndPlaceLayout("POSITIONED", layout, prefabs, add_entity, position)
+		    obj_layout.ReserveAndPlaceLayout("POSITIONED", layout, prefabs, add_entity, position, world)
 	    end
 
 	    for name, data in pairs(set_pieces) do
@@ -622,6 +565,7 @@ function Ocean_PlaceSetPieces(set_pieces, add_entity, obj_layout, populating_til
     end
 
 	print("[Ocean] Placed "..tostring(num_placed).." of "..tostring(total).." ocean set pieces.")
+	return total
 end
 
 function PopulateWaterPrefabWorldGenCustomizations(populating_tile, spawnFn, entitiesOut, width, height, edge_dist, water_contents, world_gen_choices, prefab_list)

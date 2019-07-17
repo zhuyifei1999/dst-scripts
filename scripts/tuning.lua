@@ -2071,6 +2071,7 @@ function Tune(overrides)
         BEARGER_SHED_INTERVAL = 45, -- time in seconds
         BEARGER_ATTACK_CONE_WIDTH = math.pi/2,
         BEARGER_NORMAL_GROUNDPOUND_COOLDOWN = 10,
+        BEARGER_MAX_CHASE_TIME = 9.5, -- important that this is less than the groundpound cooldown, to avoid an infinite chase
         BEARGER_YAWN_COOLDOWN = 14,
         BEARGER_YAWN_RANGE = 25,
         BEARGER_YAWN_SLEEPTIME = 10,

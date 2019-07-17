@@ -186,7 +186,9 @@ function Node:IsConnectedTo(node)
 end
 
 function PopulateWorld_AddEntity(prefab, tile_x, tile_y, tile_value, entitiesOut, width, height, prefab_list, prefab_data, rand_offset)
-	WorldSim:ReserveTile(tile_x, tile_y)
+	if _G.WorldSim ~= nil then
+		WorldSim:ReserveTile(tile_x, tile_y)
+	end
 
 	local x = (tile_x - width/2.0)*TILE_SCALE
 	local y = (tile_y - height/2.0)*TILE_SCALE
@@ -234,8 +236,8 @@ end
 
 
 function Node:AddEntity(prefab, points_x, points_y, current_pos_idx, entitiesOut, width, height, prefab_list, prefab_data, rand_offset)
-	local tile = WorldSim:GetVisualTileAtPosition(points_x[current_pos_idx], points_y[current_pos_idx]) -- Warning: This does not really work. It thinks the ground type id is in rendering order, which it totally is not!
-	if  tile <= GROUND.IMPASSABLE or tile >= GROUND.UNDERGROUND then
+	local tile = WorldSim:GetTile(points_x[current_pos_idx], points_y[current_pos_idx]) 
+	if tile <= GROUND.IMPASSABLE or tile >= GROUND.UNDERGROUND then
 		return
 	end
 	

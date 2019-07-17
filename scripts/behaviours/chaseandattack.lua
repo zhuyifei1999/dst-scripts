@@ -73,7 +73,7 @@ function ChaseAndAttack:Visit()
             local running = self.inst.components.locomotor:WantsToRun()
             --local angle = self.inst:GetAngleToPoint(target_position)
 
-            if self.distance_from_ocean_target ~= nil and (running or dsq > combat:CalcAttackRangeSq()) and not combat.target:IsOnValidGround() then
+            if self.distance_from_ocean_target ~= nil and dsq > combat:CalcAttackRangeSq() and not combat.target:IsOnValidGround() then
                 local reverse_direction = me - target_position
                 local rd_normal_x, rd_normal_z = VecUtil_Normalize(reverse_direction.x, reverse_direction.z)
 

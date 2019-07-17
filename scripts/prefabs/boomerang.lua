@@ -24,6 +24,8 @@ end
 
 local function OnDropped(inst)
     inst.AnimState:PlayAnimation("idle")
+    inst.components.inventoryitem.pushlandedevents = true
+    inst:PushEvent("on_landed")
 end
 
 local function OnUnequip(inst, owner)
@@ -40,6 +42,7 @@ local function OnThrown(inst, owner, target)
         owner.SoundEmitter:PlaySound("dontstarve/wilson/boomerang_throw")
     end
     inst.AnimState:PlayAnimation("spin_loop", true)
+    inst.components.inventoryitem.pushlandedevents = false
 end
 
 local function OnCaught(inst, catcher)

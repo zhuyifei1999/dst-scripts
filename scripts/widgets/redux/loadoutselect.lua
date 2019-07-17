@@ -67,6 +67,46 @@ local LoadoutSelect = Class(Widget, function(self, user_profile, character, init
         
     self:_LoadSavedSkins()
 
+
+	if IsPrefabSkinned(self.currentcharacter) then
+		self.skintypes = GetSkinModes(self.currentcharacter)
+	else
+		self.skintypes = {}
+		table.insert(self.skintypes, GetSkinModes("default")[1])
+
+		if MODCHARACTERMODES[self.currentcharacter] ~= nil then
+			for _,v in pairs(MODCHARACTERMODES[self.currentcharacter]) do
+				table.insert(self.skintypes,
+				{
+					type = {
+						build = v.build,
+						bank = v.bank,
+						idle_anim = v.idle_anim,
+						play_emotes = v.play_emotes,
+					},
+					scale = v.scale,
+					offset = v.offset,
+				})
+			end
+		end
+	end
+	self.view_index = 1
+	self.selected_skintype = self.skintypes[self.view_index].type
+
+	-- Portrait view index must be 1 < ind <= #self.skintypes+1
+	self.portrait_view_index = #self.skintypes + 1
+
+	if initial_skintype ~= nil and initial_skintype ~= "normal_skin" then
+		for i,v in ipairs(self.skintypes) do
+			if v.type == initial_skintype then
+				self.view_index = i
+				self:_SetSkintype(v)
+				break
+			end
+		end
+	end
+
+
     if not TheNet:IsOnlineMode() then
 		self.bg_group = self.loadout_root:AddChild(Widget("bg_group"))
         self.bg_group:SetPosition(370, 10)
@@ -140,46 +180,6 @@ local LoadoutSelect = Class(Widget, function(self, user_profile, character, init
 
         local active_sub = self.subscreener:GetActiveSubscreenFn()
         self.focus_forward = active_sub
-
-		--
-
-		if IsPrefabSkinned(self.currentcharacter) then
-			self.skintypes = GetSkinModes(self.currentcharacter)
-		else
-			self.skintypes = {}
-			table.insert(self.skintypes, GetSkinModes("default")[1])
-
-			if MODCHARACTERMODES[self.currentcharacter] ~= nil then
-				for _,v in pairs(MODCHARACTERMODES[self.currentcharacter]) do
-					table.insert(self.skintypes,
-					{
-						type = {
-							build = v.build,
-							bank = v.bank,
-							idle_anim = v.idle_anim,
-							play_emotes = v.play_emotes,
-						},
-						scale = v.scale,
-						offset = v.offset,
-					})
-				end
-			end
-		end
-		self.view_index = 1
-		self.selected_skintype = self.skintypes[self.view_index].type
-
-		-- Portrait view index must be 1 < ind <= #self.skintypes+1
-		self.portrait_view_index = #self.skintypes + 1
-
-		if initial_skintype ~= nil and initial_skintype ~= "normal_skin" then
-			for i,v in ipairs(self.skintypes) do
-				if v.type == initial_skintype then
-					self.view_index = i
-					self:_SetSkintype(v)
-					break
-				end
-			end
-		end
     end
     
     if not TheInput:ControllerAttached() then

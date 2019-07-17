@@ -1,21 +1,6 @@
 
 local watergen =
 {
-	--don't add lines of shallow then medium water out from a land tile
-	nowaterline = true,
-	nofilledwaterline = true,
-
-	--don't fill areas near land with shallow
-	--nogroundfill = true,
-
-	--don't fill areas near land with water using a square brush
-	--nosquarefill = true,
-
-	--don't apply Perlin noise to the water
-	--nonoise = true,
-
-	--don't apply a Guassian blur to the water
-	--noblend = true,
 
 	--waterline/ground fill
 	depthShallow = 2,

@@ -393,6 +393,7 @@ local function fn()
     inst.components.spawner:Configure("pigman", TUNING.TOTAL_DAY_TIME*4)
     inst.components.spawner.onoccupied = onoccupied
     inst.components.spawner.onvacate = onvacate
+    inst.components.spawner:SetWaterSpawning(false, true)
     inst.components.spawner:CancelSpawning()
 
     inst:AddComponent("playerprox")

@@ -39,15 +39,15 @@ local function OnRepaired(inst)
     --inst.SoundEmitter:PlaySound("dontstarve/creatures/together/fossil/repair")
 end
 
-local function FinishRemovingEntity(inst)
-    if inst:IsValid() then
-        inst.Physics:ConstrainTo(nil) 
-        inst:Remove()
+local function RemoveConstrainedPhysicsObj(physics_obj)
+    if physics_obj:IsValid() then
+        physics_obj.Physics:ConstrainTo(nil)
+        physics_obj:Remove()
     end
 end
 
 local function AddConstrainedPhysicsObj(boat, physics_obj)
-	physics_obj:ListenForEvent("onremove", function() FinishRemovingEntity(physics_obj) end, boat)
+	physics_obj:ListenForEvent("onremove", function() RemoveConstrainedPhysicsObj(physics_obj) end, boat)
 
     physics_obj:DoTaskInTime(0, function()
 		if boat:IsValid() then

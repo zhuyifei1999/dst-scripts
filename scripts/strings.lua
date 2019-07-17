@@ -4406,6 +4406,8 @@ STRINGS.UI =
 			SENT = "Meal Snackrificed",
 		},
 
+		RETROFITTING_ANNOUNCEMENT = "World will reload in {time} seconds to complete retrofitting.",
+		RETROFITTING_ANNOUNCEMENT_NOW = "World is reloading to complete retrofitting.",
     },
 
     ACCOUNT =

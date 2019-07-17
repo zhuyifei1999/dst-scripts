@@ -73,8 +73,8 @@ function SkinsPuppet:AddShadow()
 end
 
 function SkinsPuppet:DoEmote(emote, loop, force)
-    if force or self.animstate:AnimDone() or self.animstate:IsCurrentAnimation(self.banktoidle["wilson"].anim) then
-        self.animstate:SetBank("wilson")
+	if force or self.animstate:IsCurrentAnimation(self.banktoidle["wilson"].anim) then
+		self.animstate:SetBank("wilson")
         if type(emote) == "table" then
 			self.animstate:PlayAnimation(emote[1])
 			for i=2,#emote do
@@ -196,7 +196,11 @@ function SkinsPuppet:SetSkins(prefabname, base_item, clothing_names, skip_change
 			self.animstate:PlayAnimation(self.current_idle_anim, true)
 		end
 
-		self.play_non_idle_emotes = self.banktoidle[self.currentanimbank].play_emotes or self.banktoidle["wilson"]
+		if self.banktoidle[self.currentanimbank] ~= nil and self.banktoidle[self.currentanimbank].play_emotes ~= nil then
+			self.play_non_idle_emotes = self.banktoidle[self.currentanimbank].play_emotes
+		else
+			self.play_non_idle_emotes = self.banktoidle["wilson"].play_emotes
+		end
 	else
 		local restart_idle_anim = false
 

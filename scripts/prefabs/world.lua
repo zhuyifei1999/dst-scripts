@@ -392,11 +392,11 @@ function MakeWorld(name, customprefabs, customassets, common_postinit, master_po
 
         if not TheNet:IsDedicated() then
             inst:AddComponent("ocean")
+	        inst:AddComponent("watercolor")
         end
 
         --
         inst:AddComponent("walkableplatformmanager")
-        inst:AddComponent("watercolor")
 
         if not inst.ismastersim then
             return inst
